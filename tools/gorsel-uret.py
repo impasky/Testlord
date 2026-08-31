@@ -17,12 +17,19 @@ KULLANIM:
   python3 tools/gorsel-uret.py --zorla         # var olanların üstüne yaz
   python3 tools/gorsel-uret.py --liste         # ne üretilecek, üretmeden göster
 
-MALİYET:
-  Anahtar tek başına ücret doğurmaz. Google AI Studio anahtarı, projeye bir
-  faturalandırma hesabı BAĞLANMADIKÇA ücretsiz katmanda kalır; kota dolduğunda
-  istekler ücret yerine hata döner. Ücretli katmanda görsel başına maliyet
-  kuruşlar mertebesindedir (22 görsellik tam set ~1 dolar civarı), ama güncel
-  fiyatı Google'ın kendi sayfasından doğrula.
+MALİYET (ölçüldü, tahmin değil):
+  Görsel modellerinin ücretsiz katmanı YOK. Faturalandırma bağlı olmayan bir
+  anahtarla denendiğinde API şunu döner:
+
+    429 ... generate_content_free_tier_requests, limit: 0
+
+  Yani anahtar geçerli olsa bile ücretsiz katmanda TEK görsel üretilemez;
+  beklemek de işe yaramaz, çünkü limit sıfır. Üretim için projeye Google
+  Cloud'dan faturalandırma bağlamak şart. Bunun karşılığı: anahtar artık
+  ücret doğurabilir. 22 görsellik set kuruşlar mertebesinde (~1 dolar civarı)
+  ama güncel fiyatı Google'ın kendi sayfasından doğrula.
+
+  Faturalandırma açmak istemiyorsan: docs/GORSEL-REHBERI.md, Yol 2.
 
 Çıktı: apps/web/public/gorseller/{birimler,generaller,bolgeler}/<ad>.webp
 512x512, saydam zemin, ~%82 kalite.
@@ -49,11 +56,14 @@ API = "https://generativelanguage.googleapis.com/v1beta/models"
 # duyurulan kapanış: 2 Ekim 2026). Tek bir ada bağlanmak yerine sırayla
 # deneyip çalışan ilkini kullanıyoruz; böylece bir model kapandığında script
 # kendiliğinden bir sonrakine geçiyor.
+#
+# Liste, ListModels çıktısıyla doğrulandı: üçü de mevcut. Sıra ucuzdan
+# pahalıya: flash bu iş için yeterli, pro yedek.
 MODELLER = [
     m.strip()
     for m in os.environ.get(
         "GORSEL_MODEL",
-        "gemini-3.1-flash-image-preview,gemini-2.5-flash-image,gemini-2.0-flash-preview-image-generation",
+        "gemini-3.1-flash-image,gemini-2.5-flash-image,gemini-3-pro-image",
     ).split(",")
     if m.strip()
 ]
@@ -180,6 +190,21 @@ def istek_at(konu: str, anahtar: str) -> bytes:
     raise son_hata or RuntimeError("Hiçbir model çalışmadı")
 
 
+def _ucretsiz_katman_kapali(govde: str) -> bool:
+    """
+    429'un iki ayrı anlamı var, karıştırmamak gerekiyor:
+
+      free_tier + "limit: 0"  -> ücretsiz katmanda görsel üretimi hiç açık
+                                 değil. Beklemek işe yaramaz, faturalandırma
+                                 açılana kadar tek görsel bile üretilmez.
+      bunun dışındaki 429     -> gerçek hız sınırı; beklenip tekrar denenir.
+
+    İlkini ikincisi sanmak, 22 görselin her biri için 15 saniye boşuna
+    beklemek demek - üstelik sonunda hepsi başarısız.
+    """
+    return "free_tier" in govde and "limit: 0" in govde
+
+
 def kaydet(ham: bytes, yol: Path) -> int:
     """512x512 WebP olarak kaydeder. Kare değilse ortadan kırpar."""
     from PIL import Image
@@ -243,14 +268,27 @@ def main() -> int:
                 basarili += 1
                 break
             except urllib.error.HTTPError as e:
-                govde = e.read().decode("utf-8", "replace")[:200]
+                govde = e.read().decode("utf-8", "replace")[:600]
+                if e.code == 429 and _ucretsiz_katman_kapali(govde):
+                    print(
+                        "\n  Ücretsiz katmanda görsel üretimi kapalı (kota limiti 0).\n"
+                        "  Anahtar geçerli - sorun anahtarda değil, kotada: Google\n"
+                        "  görsel modellerini ücretsiz katmana hiç açmıyor.\n"
+                        "  Beklemenin faydası yok, bu yüzden burada duruyorum.\n\n"
+                        "  Seçenekler:\n"
+                        "    - Google Cloud'da projeye faturalandırma bağla (ücretli katman)\n"
+                        "    - ya da görselleri başka yerde üretip sohbete ekle:\n"
+                        "      docs/GORSEL-REHBERI.md, Yol 2",
+                        file=sys.stderr,
+                    )
+                    return 3
                 # 429/5xx geçici: bekleyip tekrar dene
                 if e.code in (429, 500, 503) and deneme < 2:
                     bekle = 5 * (deneme + 1)
                     print(f"  HTTP {e.code}, {bekle} sn sonra tekrar...")
                     time.sleep(bekle)
                     continue
-                print(f"  HATA HTTP {e.code}: {govde}")
+                print(f"  HATA HTTP {e.code}: {govde[:200]}")
                 basarisiz.append(f"{klasor}/{ad}")
                 break
             except Exception as e:  # noqa: BLE001

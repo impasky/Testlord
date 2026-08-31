@@ -16,11 +16,31 @@ Bu ortamda dışarıya çıkış kısıtlı: OpenAI, Stability, Replicate ve fal
 kapalı. Ama **`generativelanguage.googleapis.com` açık** — Google'ın görüntü
 üretme API'si buradan çalışıyor. Tek eksik bir anahtar.
 
+> **Önce maliyeti bil — bu yol bedava değil.** Gemini'nin görsel modellerinde
+> ücretsiz katman **yok**. Faturalandırma bağlı olmayan geçerli bir anahtarla
+> denendi, API şunu döndü:
+>
+> ```
+> 429 ... generate_content_free_tier_requests, limit: 0
+> ```
+>
+> `limit: 0` — yani beklemekle geçecek bir hız sınırı değil, ücretsiz katmanda
+> tek görsel bile üretilemiyor. Metin modelleri ücretsiz çalışıyor, görsel
+> modelleri çalışmıyor. Üretmek için projeye Google Cloud'dan **faturalandırma
+> bağlamak şart**; o andan itibaren anahtar ücret doğurabilir. 22 görsellik set
+> kuruşlar mertebesinde (~1 dolar civarı) ama güncel fiyatı Google'ın kendi
+> sayfasından doğrula. Ödeme istemiyorsan **Yol 2**'ye geç, sonuç aynı.
+
 **Tek seferlik kurulum (telefondan da yapılabilir, ~2 dakika):**
 
-1. https://aistudio.google.com/apikey → **Create API key** (ücretsiz katman var)
-2. Anahtarı Claude Code ortam değişkenlerine **`GEMINI_API_KEY`** adıyla ekle
+1. https://aistudio.google.com/apikey → **Create API key**
+2. Google Cloud Console'da o projeye faturalandırma hesabı bağla
+   (bu adım atlanırsa script `limit: 0` deyip durur)
+3. Anahtarı Claude Code ortam değişkenlerine **`GEMINI_API_KEY`** adıyla ekle
    (Claude Code web arayüzünde environment ayarları)
+
+Anahtarı **sohbete yapıştırma** — sohbet kaydında kalır. Ortam değişkeni olarak
+ver. Yapıştırdıysan AI Studio'dan o anahtarı sil ve yenisini oluştur.
 
 Sonra tek komut:
 
@@ -37,11 +57,12 @@ ve doğru klasöre yazar. Üslup tarifi dosyanın içinde **tek yerde** tutulur
 havasını değiştirebilirsin.
 
 Anahtar tanımlı değilse script hiçbir şey yapmaz, ne yapılması gerektiğini
-söyler.
+söyler. Anahtar var ama faturalandırma yoksa ilk görselde durur ve sebebini
+söyler — 22 görsel için sırayla boşuna beklemez.
 
-## Yol 2 — Sen üret, sohbete ekle
+## Yol 2 — Sen üret, sohbete ekle (bedava)
 
-Anahtar istemiyorsan: görselleri istediğin yerde üret (Claude uygulaması,
+Anahtar ya da ödeme istemiyorsan: görselleri istediğin yerde üret (Claude uygulaması,
 Midjourney, ne olursa) ve **bu sohbete ekle**. Claude dosyaları alıp kırpar,
 dönüştürür, doğru adla depoya koyar. Hangi görselin hangi dosya olduğunu
 söylemen yeterli.
