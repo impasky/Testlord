@@ -17,6 +17,13 @@ KULLANIM:
   python3 tools/gorsel-uret.py --zorla         # var olanların üstüne yaz
   python3 tools/gorsel-uret.py --liste         # ne üretilecek, üretmeden göster
 
+MALİYET:
+  Anahtar tek başına ücret doğurmaz. Google AI Studio anahtarı, projeye bir
+  faturalandırma hesabı BAĞLANMADIKÇA ücretsiz katmanda kalır; kota dolduğunda
+  istekler ücret yerine hata döner. Ücretli katmanda görsel başına maliyet
+  kuruşlar mertebesindedir (22 görsellik tam set ~1 dolar civarı), ama güncel
+  fiyatı Google'ın kendi sayfasından doğrula.
+
 Çıktı: apps/web/public/gorseller/{birimler,generaller,bolgeler}/<ad>.webp
 512x512, saydam zemin, ~%82 kalite.
 
@@ -37,7 +44,22 @@ KOK = Path(__file__).resolve().parent.parent
 CIKTI = KOK / "apps" / "web" / "public" / "gorseller"
 
 API = "https://generativelanguage.googleapis.com/v1beta/models"
-MODEL = os.environ.get("GORSEL_MODEL", "gemini-2.5-flash-image")
+
+# Model adları değişiyor ve eskiler kapatılıyor (gemini-2.5-flash-image için
+# duyurulan kapanış: 2 Ekim 2026). Tek bir ada bağlanmak yerine sırayla
+# deneyip çalışan ilkini kullanıyoruz; böylece bir model kapandığında script
+# kendiliğinden bir sonrakine geçiyor.
+MODELLER = [
+    m.strip()
+    for m in os.environ.get(
+        "GORSEL_MODEL",
+        "gemini-3.1-flash-image-preview,gemini-2.5-flash-image,gemini-2.0-flash-preview-image-generation",
+    ).split(",")
+    if m.strip()
+]
+
+# İlk başarılı model bulununca burada tutulur; kalan görseller için tekrar aranmaz.
+_calisan_model: str | None = None
 
 # --- Üslup: her istemin sonuna eklenir. Tutarlılık buradan gelir. ---
 USLUP = (
@@ -106,8 +128,7 @@ ISTEKLER: dict[str, dict[str, str]] = {
 }
 
 
-def istek_at(konu: str, anahtar: str) -> bytes:
-    """Modeli çağırır ve dönen PNG baytlarını verir."""
+def _tek_model_dene(model: str, konu: str, anahtar: str) -> bytes:
     govde = json.dumps(
         {
             "contents": [{"parts": [{"text": f"{konu}, {USLUP}"}]}],
@@ -116,7 +137,7 @@ def istek_at(konu: str, anahtar: str) -> bytes:
     ).encode()
 
     r = urllib.request.Request(
-        f"{API}/{MODEL}:generateContent?key={anahtar}",
+        f"{API}/{model}:generateContent?key={anahtar}",
         data=govde,
         headers={"Content-Type": "application/json"},
     )
@@ -129,6 +150,34 @@ def istek_at(konu: str, anahtar: str) -> bytes:
             if satir and satir.get("data"):
                 return base64.b64decode(satir["data"])
     raise RuntimeError(f"Yanıtta görsel yok: {json.dumps(veri)[:300]}")
+
+
+def istek_at(konu: str, anahtar: str) -> bytes:
+    """
+    Görsel üretir. Çalışan model bir kez bulunur, sonrakilerde tekrar aranmaz.
+
+    404/400 "model yok" hataları sıradaki modele geçmeyi tetikler; kota (429)
+    ve sunucu hataları çağırana bırakılır, orada beklenip tekrar denenir.
+    """
+    global _calisan_model
+
+    denenecek = [_calisan_model] if _calisan_model else MODELLER
+    son_hata: Exception | None = None
+
+    for model in denenecek:
+        try:
+            ham = _tek_model_dene(model, konu, anahtar)
+            if _calisan_model != model:
+                print(f"  model: {model}")
+                _calisan_model = model
+            return ham
+        except urllib.error.HTTPError as e:
+            # 404/400: model adı geçersiz ya da kapatılmış -> sıradakini dene
+            if e.code in (400, 404) and not _calisan_model:
+                son_hata = e
+                continue
+            raise
+    raise son_hata or RuntimeError("Hiçbir model çalışmadı")
 
 
 def kaydet(ham: bytes, yol: Path) -> int:
