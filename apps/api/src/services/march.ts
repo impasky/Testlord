@@ -14,6 +14,8 @@ import {
   battleXp,
   bosGeneralBonus,
   captureXp,
+  createRng,
+  generalLevelFromXp,
   lordContribution,
   marchDurationSec,
   npcClearXp,
@@ -128,6 +130,57 @@ async function writeGarrison(
     if (kalan <= 0) await tx.armyUnit.delete({ where: { id: r.id } });
     else await tx.armyUnit.update({ where: { id: r.id }, data: { count: kalan } });
   }
+}
+
+/**
+ * Savaşa katılan generallere XP verir ve kaybeden tarafta dinlenmeye gönderir.
+ * General XP'si lordun kazandığı XP'nin %40'ıdır (generals.json).
+ */
+async function generalleriOdullendir(
+  lordId: string,
+  lordXp: number,
+  kaybettiMi: boolean,
+  seed: string,
+  tx: Tx,
+): Promise<void> {
+  const sahada = await tx.lordGeneral.findMany({
+    where: { lordId, slotIndex: { not: null } },
+  });
+  if (sahada.length === 0) return;
+
+  const rng = createRng(`general-${seed}`);
+  const kazanilan = Math.round(lordXp * 0.4);
+
+  for (const g of sahada) {
+    const { level, xpIntoLevel } = generalLevelFromXp(
+      toplamGeneralXp(g.level, g.xp) + kazanilan,
+    );
+    // Kaybedilen savaşta %25 ihtimalle general 6 saat dinlenmeye girer
+    const dinlenir = kaybettiMi && rng.next() < 0.25;
+    await tx.lordGeneral.update({
+      where: { id: g.id },
+      data: {
+        level,
+        xp: xpIntoLevel,
+        ...(dinlenir ? { restUntil: new Date(Date.now() + 6 * 3_600_000) } : {}),
+      },
+    });
+    if (dinlenir) {
+      await pushEvent(
+        lordId,
+        'general_dinleniyor',
+        { mesaj: `${g.generalKey} savaşta yaralandı, 6 saat dinlenecek.` },
+        tx,
+      );
+    }
+  }
+}
+
+/** generalLevelFromXp toplam XP bekler; kayıtta seviye + seviyedeki ilerleme tutulur. */
+function toplamGeneralXp(level: number, xpIntoLevel: number): number {
+  let toplam = xpIntoLevel;
+  for (let n = 1; n < level; n++) toplam += Math.round(200 * Math.pow(n, 1.4));
+  return toplam;
 }
 
 /**
@@ -298,6 +351,21 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
           data: { woundedUntil: new Date(Date.now() + saat * 3_600_000) },
         });
 
+        await generalleriOdullendir(
+          march.lordId,
+          battleXp(defenderLord.level, attackerWon),
+          !attackerWon,
+          `${seed}-atk`,
+          tx,
+        );
+        await generalleriOdullendir(
+          defenderLordId,
+          battleXp(attackerLord.level, !attackerWon),
+          attackerWon,
+          `${seed}-def`,
+          tx,
+        );
+
         await pushEvent(
           defenderLordId,
           attackerWon ? 'bolge_kaybettin' : 'saldiriya_ugradin',
@@ -311,7 +379,9 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
         );
       } else {
         // NPC garnizonu
-        await grantXp(march.lordId, npcClearXp(armyCount(defenderArmy)), tx);
+        const npcXp = npcClearXp(armyCount(defenderArmy));
+        await grantXp(march.lordId, npcXp, tx);
+        await generalleriOdullendir(march.lordId, npcXp, !attackerWon, `${seed}-npc`, tx);
       }
 
       if (result.captured) {

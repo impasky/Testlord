@@ -51,8 +51,11 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return body as T;
 }
 
+// Content-Type application/json gönderip gövdeyi boş bırakmak sunucuda 400
+// üretir. Gövde istemeyen uçlar (kuşan, sat, yükselt, kirala) için boş nesne
+// göndeririz — aksi halde bu işlemlerin hiçbiri arayüzden çalışmaz.
 const post = <T>(path: string, body?: unknown): Promise<T> =>
-  request<T>(path, { method: 'POST', body: body ? JSON.stringify(body) : undefined });
+  request<T>(path, { method: 'POST', body: JSON.stringify(body ?? {}) });
 
 export interface LordState {
   id: string;
@@ -110,6 +113,170 @@ export interface MeResponse {
   serverTime: string;
 }
 
+export interface ItemDto {
+  id: string;
+  slot: string;
+  tier: number;
+  rarity: string;
+  upgradeLevel: number;
+  equipped: boolean;
+  power: number;
+  upgradeCost: Resources | null;
+  upgradeChance: number | null;
+  sellValue: number;
+}
+
+export interface TierDto {
+  tier: number;
+  unlockLevel: number;
+  unlocked: boolean;
+  cost: Resources;
+  durationSec: number;
+  rarityTable: Record<string, number>;
+}
+
+export interface UnitDto {
+  type: string;
+  ad: string;
+  saldiri: number;
+  savunma: number;
+  can: number;
+  hiz: number;
+  yer: number;
+  egitim_sn: number;
+  maliyet: Resources;
+  bakim_erzak_saat: number;
+}
+
+export interface ArmyDto {
+  home: Army;
+  byLocation: { unitType: string; count: number; locationType: string; locationId: string | null }[];
+  commandCapacity: number;
+  usedSlots: number;
+  upkeepPerHour: number;
+  netErzakPerHour: number;
+  units: UnitDto[];
+}
+
+export interface GearDto {
+  line: GearLineKey;
+  ad: string;
+  etki: string;
+  level: number;
+  maxLevel: number;
+  bonus: number;
+  nextCost: { altin: number; demir: number; sec: number } | null;
+}
+
+export interface RegionDto {
+  id: number;
+  name: string;
+  type: string;
+  province: string;
+  q: number;
+  r: number;
+  ring: number;
+  level: number;
+  incomeMult: number;
+  owner: { id: string; name: string; level: number } | null;
+  isMine: boolean;
+  shielded: boolean;
+  distance: number;
+  fortressBonus: number;
+}
+
+export interface MapDto {
+  home: { q: number; r: number };
+  maxRegions: number;
+  regions: RegionDto[];
+}
+
+export interface RegionDetailDto extends RegionDto {
+  garrison: Army;
+  garrisonVisible: boolean;
+  upgradeCost: { altin: number; demir: number; sec: number } | null;
+  store: Resources | null;
+  npcGarrison: Army;
+}
+
+export interface PreviewDto {
+  tahmin: {
+    kazanan: 'attacker' | 'defender';
+    eleGecirir: boolean;
+    saldiranKayip: Army;
+    savunanKayip: Army;
+    yagma: Resources;
+  };
+  istihbaratKesin: boolean;
+  marchSec: number;
+  not: string;
+}
+
+export interface GeneralDto {
+  key: string;
+  ad: string;
+  nadirlik: string;
+  maliyet_altin: number;
+  pasif: { ad: string; etki: string; deger: number };
+  yetenek: { ad: string; aciklama: string };
+  sahipMi: boolean;
+  level: number;
+  xp: number;
+  xpForNext: number;
+  slotIndex: number | null;
+  dinleniyor: string | null;
+  etkinDeger: number;
+}
+
+export interface RankingRow {
+  sira: number;
+  lordId: string;
+  name: string;
+  level: number;
+  deger: number;
+  bolgeSayisi: number;
+  tahtSahibi: boolean;
+}
+
+export interface RankingDto {
+  board: 'fame' | 'conquest' | 'elo';
+  toplam: number;
+  sayfa: number;
+  satirlar: RankingRow[];
+  benim: RankingRow | null;
+}
+
+export interface MarchDto {
+  id: string;
+  toRegionId: number;
+  kind: string;
+  army: Army;
+  departAt: string;
+  arriveAt: string;
+}
+
+export interface BattleDto {
+  id: string;
+  regionId: number;
+  result: string;
+  captured: boolean;
+  createdAt: string;
+  seed: string;
+  attackerLordId: string;
+  defenderLordId: string | null;
+  attacker: { name: string };
+  defender: { name: string } | null;
+  log: {
+    rounds: { tur: number; saldiranGuc: number; savunanGuc: number }[];
+    attackerLosses: Army;
+    defenderLosses: Army;
+    attackerSurvivors: Army;
+    defenderSurvivors: Army;
+    loot: Resources;
+    regionName: string;
+  };
+}
+
 export const api = {
   register: (email: string, password: string, lordName: string) =>
     post<{ token: string }>('/auth/register', { email, password, lordName }),
@@ -117,4 +284,40 @@ export const api = {
     post<{ token: string }>('/auth/login', { email, password }),
   me: () => request<MeResponse>('/me'),
   spendStats: (points: Partial<Record<StatKey, number>>) => post<LordState>('/me/stats', points),
+
+  items: () => request<{ items: ItemDto[]; tiers: TierDto[] }>('/items'),
+  craft: (tier: number, slot: string) => post('/items/craft', { tier, slot }),
+  equip: (id: string) => post(`/items/${id}/equip`),
+  upgradeItem: (id: string) => post(`/items/${id}/upgrade`),
+  sellItem: (id: string) => post(`/items/${id}/sell`),
+
+  army: () => request<ArmyDto>('/army'),
+  train: (unitType: string, count: number) => post('/army/train', { unitType, count }),
+  disband: (unitType: string, count: number) => post('/army/disband', { unitType, count }),
+  gear: () => request<GearDto[]>('/gear'),
+  upgradeGear: (line: string) => post(`/gear/${line}/upgrade`),
+
+  map: () => request<MapDto>('/map'),
+  region: (id: number) => request<RegionDetailDto>(`/map/${id}`),
+  upgradeRegion: (id: number) => post(`/map/${id}/upgrade`),
+  setGarrison: (id: number, army: Army) => post(`/map/${id}/garrison`, { army }),
+  preview: (toRegionId: number, army: Army, generalIds: string[] = []) =>
+    post<PreviewDto>('/battle/preview', { toRegionId, army, generalIds }),
+  march: (toRegionId: number, army: Army, generalIds: string[] = []) =>
+    post<{ marchId: string; arriveAt: string; distance: number; durationSec: number; uyari: string | null }>(
+      '/march',
+      { toRegionId, army, generalIds },
+    ),
+  marches: () => request<MarchDto[]>('/marches'),
+  recallMarch: (id: string) => request(`/march/${id}`, { method: 'DELETE' }),
+  battles: () => request<BattleDto[]>('/battles'),
+  battle: (id: string) => request<BattleDto>(`/battles/${id}`),
+
+  generals: () =>
+    request<{ slots: number; altin: number; kadro: GeneralDto[] }>('/generals'),
+  hireGeneral: (key: string) => post(`/generals/${key}/hire`),
+  assignGeneral: (key: string, slotIndex: number | null) =>
+    post(`/generals/${key}/assign`, { slotIndex }),
+
+  rankings: (board: string, page = 0) => request<RankingDto>(`/rankings/${board}?page=${page}`),
 };

@@ -10,9 +10,11 @@ import { GameError } from './errors.js';
 import { armyRoutes } from './routes/army.js';
 import { authRoutes } from './routes/auth.js';
 import { devRoutes } from './routes/dev.js';
+import { generalRoutes } from './routes/generals.js';
 import { itemRoutes } from './routes/items.js';
 import { mapRoutes } from './routes/map.js';
 import { meRoutes } from './routes/me.js';
+import { rankingRoutes } from './routes/rankings.js';
 
 // Bozuk denge verisiyle ayağa kalkmaktansa hemen ölmek iyidir.
 validateBalance();
@@ -25,6 +27,22 @@ export async function buildServer() {
   await app.register(cors, { origin: env.webOrigins, credentials: true });
   await app.register(jwt, { secret: env.JWT_SECRET, sign: { expiresIn: '7d' } });
   await app.register(rateLimit, { max: 300, timeWindow: '1 minute' });
+
+  // Gövde istemeyen POST uçları (kuşan, sat, yükselt, kirala) Content-Type
+  // application/json ile boş gövde alabilir. Fastify bunu varsayılan olarak
+  // 400 ile reddeder; boş gövdeyi {} saymak tüm istemciler için doğru davranış.
+  app.addContentTypeParser(
+    'application/json',
+    { parseAs: 'string' },
+    (_req, body: string, done) => {
+      if (!body || body.trim() === '') return done(null, {});
+      try {
+        done(null, JSON.parse(body));
+      } catch {
+        done(new GameError('Geçersiz JSON gövdesi.', 400, 'GECERSIZ_JSON'), undefined);
+      }
+    },
+  );
 
   app.setErrorHandler((err, _req, reply) => {
     if (err instanceof GameError) {
@@ -54,6 +72,8 @@ export async function buildServer() {
   await app.register(itemRoutes, { prefix: '/api' });
   await app.register(armyRoutes, { prefix: '/api' });
   await app.register(mapRoutes, { prefix: '/api' });
+  await app.register(generalRoutes, { prefix: '/api' });
+  await app.register(rankingRoutes, { prefix: '/api' });
 
   // Zaman ilerletme yardımcıları ÜRETİMDE hiç yüklenmez.
   if (env.NODE_ENV !== 'production') {

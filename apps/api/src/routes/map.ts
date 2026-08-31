@@ -211,10 +211,16 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
   app.get('/map/:id', { preHandler: requireAuth }, async (req) => {
     const { id } = z.object({ id: z.coerce.number().int() }).parse(req.params);
     const lordId = await findLordByUser(req.user.userId);
-    const region = await prisma.region.findUnique({
-      where: { id },
-      include: { owner: { select: { id: true, name: true, level: true } } },
-    });
+    const [region, me] = await Promise.all([
+      prisma.region.findUnique({
+        where: { id },
+        include: { owner: { select: { id: true, name: true, level: true } } },
+      }),
+      prisma.lord.findUniqueOrThrow({
+        where: { id: lordId },
+        select: { homeQ: true, homeR: true },
+      }),
+    ]);
     if (!region) throw hata.bulunamadi('Bölge');
 
     const benim = region.ownerLordId === lordId;
@@ -246,6 +252,9 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
     return {
       ...region,
       isMine: benim,
+      // Liste ucuyla aynı türetilmiş alanlar; arayüz iki uçtan da aynı şekli bekler.
+      distance: hexDistance({ q: me.homeQ, r: me.homeR }, { q: region.q, r: region.r }),
+      shielded: region.shieldUntil ? region.shieldUntil > new Date() : false,
       garrison,
       garrisonVisible: benim || !region.ownerLordId || Object.keys(garrison).length > 0,
       fortressBonus: regionFortressBonus(region.type, region.level),

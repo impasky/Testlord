@@ -86,6 +86,13 @@ kontrol('Kale aynı orduyla ele geçirilemez (zorluk farkı korunuyor)',
   kaleOnizleme.tahmin.eleGecirir === false,
   `${kale.name}: kazanan ${kaleOnizleme.tahmin.kazanan}`);
 
+// 4b. Bölge detayı liste ucuyla aynı şekli döndürmeli
+const detay = await cagir(`/map/${hedef.id}`);
+kontrol('Bölge detayı türetilmiş alanları döndürüyor',
+  typeof detay.distance === 'number' && typeof detay.shielded === 'boolean' &&
+  typeof detay.fortressBonus === 'number',
+  `mesafe ${detay.distance}, tahkimat ${detay.fortressBonus}`);
+
 // 5. Savaş önizlemesi
 const onizleme = await post('/battle/preview', {
   toRegionId: hedef.id,

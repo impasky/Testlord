@@ -3,15 +3,25 @@ import { useState } from 'react';
 import { api, getToken, setToken, type MeResponse } from './api/client';
 import { KaynakCubugu } from './components/KaynakCubugu';
 import { Button } from './components/ui';
+import { Demirhane } from './screens/Demirhane';
+import { Generaller } from './screens/Generaller';
 import { Giris } from './screens/Giris';
+import { Harita } from './screens/Harita';
+import { Kisla } from './screens/Kisla';
 import { LordEkrani } from './screens/LordEkrani';
 import { Malikane } from './screens/Malikane';
+import { Siralama } from './screens/Siralama';
 
-type Sekme = 'malikane' | 'lord';
+type Sekme = 'malikane' | 'lord' | 'demirhane' | 'kisla' | 'harita' | 'generaller' | 'siralama';
 
 const SEKMELER: { key: Sekme; ad: string }[] = [
   { key: 'malikane', ad: 'Malikâne' },
   { key: 'lord', ad: 'Lord' },
+  { key: 'demirhane', ad: 'Demirhane' },
+  { key: 'kisla', ad: 'Kışla' },
+  { key: 'harita', ad: 'Harita' },
+  { key: 'generaller', ad: 'Generaller' },
+  { key: 'siralama', ad: 'Sıralama' },
 ];
 
 export function App() {
@@ -26,6 +36,10 @@ export function App() {
     refetchInterval: 30_000,
     retry: false,
   });
+
+  const tazele = () => {
+    void qc.invalidateQueries({ queryKey: ['me'] });
+  };
 
   function cikis() {
     setToken(null);
@@ -81,7 +95,7 @@ export function App() {
       </header>
 
       <nav className="border-b border-kenar bg-panel/40">
-        <div className="mx-auto flex max-w-6xl gap-1 px-4">
+        <div className="mx-auto flex max-w-6xl gap-1 overflow-x-auto px-4">
           {SEKMELER.map((s) => (
             <button
               key={s.key}
@@ -100,9 +114,12 @@ export function App() {
 
       <main className="mx-auto max-w-6xl px-4 py-6">
         {sekme === 'malikane' && <Malikane lord={lord} queues={queues} events={events} />}
-        {sekme === 'lord' && (
-          <LordEkrani lord={lord} onGuncelle={() => qc.invalidateQueries({ queryKey: ['me'] })} />
-        )}
+        {sekme === 'lord' && <LordEkrani lord={lord} onGuncelle={tazele} />}
+        {sekme === 'demirhane' && <Demirhane onGuncelle={tazele} />}
+        {sekme === 'kisla' && <Kisla onGuncelle={tazele} />}
+        {sekme === 'harita' && <Harita onGuncelle={tazele} />}
+        {sekme === 'generaller' && <Generaller onGuncelle={tazele} />}
+        {sekme === 'siralama' && <Siralama lordId={lord.id} />}
       </main>
     </div>
   );
