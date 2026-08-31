@@ -22,13 +22,13 @@
       "nadirlik": "bronz",
       "maliyet_altin": 5000,
       "pasif": {
-        "ad": "Cekic ve Ors",
+        "ad": "Çekiç ve Örs",
         "etki": "ordu_savunma",
         "deger": 0.08
       },
       "yetenek": {
-        "ad": "Saglam Durus",
-        "aciklama": "Savasin 1. turunda gelen hasar %15 azalir."
+        "ad": "Sağlam Duruş",
+        "aciklama": "Savaşın 1. turunda gelen hasar %15 azalır."
       },
       "ek_etki": {
         "ilk_tur_hasar_azaltma": 0.15
@@ -36,17 +36,17 @@
     },
     {
       "key": "okcubasi_elif",
-      "ad": "Okcubasi Elif",
+      "ad": "Okçubaşı Elif",
       "nadirlik": "bronz",
       "maliyet_altin": 5000,
       "pasif": {
-        "ad": "Keskin Nisan",
+        "ad": "Keskin Nişan",
         "etki": "okcu_saldiri",
         "deger": 0.12
       },
       "yetenek": {
-        "ad": "Ok Yagmuru",
-        "aciklama": "Savas basinda dusmana ordu saldirinin %5'i kadar on hasar verir."
+        "ad": "Ok Yağmuru",
+        "aciklama": "Savaş başında düşmana ordu saldırısının %5'i kadar ön hasar verir."
       },
       "ek_etki": {
         "on_hasar_orani": 0.05
@@ -54,17 +54,17 @@
     },
     {
       "key": "suvari_bora",
-      "ad": "Suvari Onbasisi Bora",
+      "ad": "Süvari Onbaşısı Bora",
       "nadirlik": "bronz",
       "maliyet_altin": 5000,
       "pasif": {
-        "ad": "Dortnala",
+        "ad": "Dörtnala",
         "etki": "yuruyus_suresi",
         "deger": -0.1
       },
       "yetenek": {
-        "ad": "Ani Baskin",
-        "aciklama": "Suvari orani %50'nin uzerindeyse ilk turda saldiri +%10."
+        "ad": "Ani Baskın",
+        "aciklama": "Süvari oranı %50'nin üzerindeyse ilk turda saldırı +%10."
       },
       "ek_etki": {
         "suvari_orani_esigi": 0.5,
@@ -73,17 +73,17 @@
     },
     {
       "key": "erzakci_meryem",
-      "ad": "Erzakci Meryem",
+      "ad": "Erzakçı Meryem",
       "nadirlik": "bronz",
       "maliyet_altin": 5000,
       "pasif": {
-        "ad": "Sikı Kemer",
+        "ad": "Sıkı Kemer",
         "etki": "ordu_bakim_maliyeti",
         "deger": -0.15
       },
       "yetenek": {
-        "ad": "Sefer Hazirligi",
-        "aciklama": "Yuruyusteki ordu bakim erzagi harcamaz."
+        "ad": "Sefer Hazırlığı",
+        "aciklama": "Yürüyüşteki ordu bakım erzağı harcamaz."
       },
       "ek_etki": {
         "yuruyusteki_ordu_bakimsiz": true
@@ -91,17 +91,17 @@
     },
     {
       "key": "mizrakci_kadir",
-      "ad": "Mizrakci Kadir",
+      "ad": "Mızrakçı Kadir",
       "nadirlik": "bronz",
       "maliyet_altin": 5000,
       "pasif": {
-        "ad": "Mizrak Duvari",
+        "ad": "Mızrak Duvarı",
         "etki": "mizrakci_savunma",
         "deger": 0.14
       },
       "yetenek": {
-        "ad": "Kazikli Siper",
-        "aciklama": "Savunmada suvariye karsi kars carpani 1.5 -> 1.8."
+        "ad": "Kazıklı Siper",
+        "aciklama": "Savunmada süvariye karşı karşı çarpanı 1.5 → 1.8."
       },
       "ek_etki": {
         "mizrakci_suvari_kars": 1.8
@@ -109,17 +109,17 @@
     },
     {
       "key": "kahya_sinan",
-      "ad": "Kahya Sinan",
+      "ad": "Kâhya Sinan",
       "nadirlik": "bronz",
       "maliyet_altin": 5000,
       "pasif": {
-        "ad": "Duzenli Defter",
+        "ad": "Düzenli Defter",
         "etki": "bolge_geliri",
         "deger": 0.06
       },
       "yetenek": {
         "ad": "Vergi Toplama",
-        "aciklama": "Gunde bir kez bolge gelirinin 2 saatlik kismini aninda toplar."
+        "aciklama": "Günde bir kez bölge gelirinin 2 saatlik kısmını anında toplar."
       },
       "ek_etki": {
         "gunluk_vergi_saat": 2
@@ -127,17 +127,17 @@
     },
     {
       "key": "kusatmaci_tarik",
-      "ad": "Kusatma Ustasi Tarik",
+      "ad": "Kuşatma Ustası Tarık",
       "nadirlik": "gumus",
       "maliyet_altin": 25000,
       "pasif": {
-        "ad": "Sur Yikan",
+        "ad": "Sur Yıkan",
         "etki": "kusatma_saldiri",
         "deger": 0.25
       },
       "yetenek": {
-        "ad": "Gedik Acma",
-        "aciklama": "Savunanin kale savunma bonusunu %30 oraninda deler."
+        "ad": "Gedik Açma",
+        "aciklama": "Savunanın kale savunma bonusunu %30 oranında deler."
       },
       "ek_etki": {
         "kale_delme": 0.3
@@ -149,13 +149,13 @@
       "nadirlik": "gumus",
       "maliyet_altin": 25000,
       "pasif": {
-        "ad": "Golge Yolu",
+        "ad": "Gölge Yolu",
         "etki": "yagma",
         "deger": 0.25
       },
       "yetenek": {
-        "ad": "Kesif",
-        "aciklama": "Saldiri emrinden once hedefin garnizonunu ve deposunu gorursun."
+        "ad": "Keşif",
+        "aciklama": "Saldırı emrinden önce hedefin garnizonunu ve deposunu görürsün."
       },
       "ek_etki": {
         "kesif": true
@@ -163,7 +163,7 @@
     },
     {
       "key": "sovalye_doruk",
-      "ad": "Sovalye Doruk",
+      "ad": "Şövalye Doruk",
       "nadirlik": "gumus",
       "maliyet_altin": 25000,
       "pasif": {
@@ -172,8 +172,8 @@
         "deger": 0.2
       },
       "yetenek": {
-        "ad": "Kalkan Kardesligi",
-        "aciklama": "Lordun yaralanma suresi %50 kisalir."
+        "ad": "Kalkan Kardeşliği",
+        "aciklama": "Lordun yaralanma süresi %50 kısalır."
       },
       "ek_etki": {
         "lord_yaralanma_azaltma": 0.5
@@ -185,13 +185,13 @@
       "nadirlik": "gumus",
       "maliyet_altin": 25000,
       "pasif": {
-        "ad": "Sifa Duasi",
+        "ad": "Şifa Duası",
         "etki": "kayip_geri_donus",
         "deger": 0.2
       },
       "yetenek": {
-        "ad": "Yarali Toplama",
-        "aciklama": "Kazanilan savaslarda kayiplarin %20'si yarali olarak geri doner."
+        "ad": "Yaralı Toplama",
+        "aciklama": "Kazanılan savaşlarda kayıpların %20'si yaralı olarak geri döner."
       },
       "ek_etki": {}
     },
@@ -201,12 +201,12 @@
       "nadirlik": "altin",
       "maliyet_altin": 100000,
       "pasif": {
-        "ad": "Bas Kumandan",
+        "ad": "Baş Kumandan",
         "etki": "ordu_saldiri",
         "deger": 0.15
       },
       "yetenek": {
-        "ad": "Genis Sancak",
+        "ad": "Geniş Sancak",
         "aciklama": "Komuta kapasitesi +120."
       },
       "ek_etki": {
@@ -215,17 +215,17 @@
     },
     {
       "key": "kale_bekcisi_sarya",
-      "ad": "Kale Bekcisi Sarya",
+      "ad": "Kale Bekçisi Sarya",
       "nadirlik": "altin",
       "maliyet_altin": 100000,
       "pasif": {
-        "ad": "Asilmaz Sur",
+        "ad": "Aşılmaz Sur",
         "etki": "savunmada_ordu_savunma",
         "deger": 0.25
       },
       "yetenek": {
-        "ad": "Nobet Duzeni",
-        "aciklama": "Bolge garnizonundaki birimler bakim erzagi harcamaz."
+        "ad": "Nöbet Düzeni",
+        "aciklama": "Bölge garnizonundaki birimler bakım erzağı harcamaz."
       },
       "ek_etki": {
         "garnizon_bakimsiz": true

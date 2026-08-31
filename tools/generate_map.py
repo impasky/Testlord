@@ -17,10 +17,10 @@ RADIUS = 4
 PROVINCES = [
     {"key": "kuzeymark", "name": "Kuzeymark"},
     {"key": "demirvadi", "name": "Demirvadi"},
-    {"key": "gunbati",   "name": "Gunbati Kiyilari"},
-    {"key": "aksu",      "name": "Aksu Ovasi"},
+    {"key": "gunbati",   "name": "Günbatı Kıyıları"},
+    {"key": "aksu",      "name": "Aksu Ovası"},
     {"key": "karaorman", "name": "Karaorman"},
-    {"key": "tasgecit",  "name": "Tasgecit"},
+    {"key": "tasgecit",  "name": "Taşgeçit"},
 ]
 
 # Her vilayette sabit dagilim: 3 Tarla + 3 Sehir + 2 Maden + 2 Kale = 10
@@ -39,18 +39,18 @@ RING_GARRISON = {
 
 # Bolge isim havuzlari (tip bazli, sabit)
 NAME_POOL = {
-    "tarla": ["Bugday Duzu","Yesilcayir","Ekinlik","Bereket Ovasi","Sapkoy","Harmanyeri",
-              "Altinbasak","Cayirbasi","Tohumluk","Otlakkoy","Gunesli Tarla","Bolluk Ovasi",
-              "Yoncali","Degirmenderesi","Ambarkoy","Basakli","Cimenyurt","Ekinova"],
-    "sehir": ["Akkale Sehri","Tuccarlar Limani","Gumuscarsi","Yuksekkapi","Tas Meydan",
-              "Kervanbasi","Altinkapi","Loncalar Sehri","Dortyol","Camlica Sehri",
-              "Denizkapi","Buyukpazar","Sarraflar","Hanlar Sehri","Beyazsur","Ipekyolu",
-              "Tuzkoy","Zanaatkarlar"],
-    "maden": ["Demirocak","Karakuyu","Bakirdere","Kayaburun","Curufkoy","Derinkuyu",
-              "Cakmaktasi","Kirikkaya","Kurskuyu","Maden Bogazi","Kizilcevher","Korukbasi"],
-    "kale":  ["Sarpkaya Kalesi","Yildizburc","Kartalyuva","Sinirkule","Demirkapi Kalesi",
-              "Gozcukule","Ucgen Burc","Karahisar","Yuceburc","Sarpsurlar",
-              "Gecitbasi Kalesi","Aslanpence"],
+    "tarla": ["Buğday Düzü","Yeşilçayır","Ekinlik","Bereket Ovası","Sapköy","Harmanyeri",
+              "Altınbaşak","Çayırbaşı","Tohumluk","Otlakköy","Güneşli Tarla","Bolluk Ovası",
+              "Yoncalı","Değirmenderesi","Ambarköy","Başaklı","Çimenyurt","Ekinova"],
+    "sehir": ["Akkale Şehri","Tüccarlar Limanı","Gümüşçarşı","Yüksekkapı","Taş Meydan",
+              "Kervanbaşı","Altınkapı","Loncalar Şehri","Dörtyol","Çamlıca Şehri",
+              "Denizkapı","Büyükpazar","Sarraflar","Hanlar Şehri","Beyazsur","İpekyolu",
+              "Tuzköy","Zanaatkârlar"],
+    "maden": ["Demirocak","Karakuyu","Bakırdere","Kayaburun","Cürufköy","Derinkuyu",
+              "Çakmaktaşı","Kırıkkaya","Kürskuyu","Maden Boğazı","Kızılcevher","Körükbaşı"],
+    "kale":  ["Sarpkaya Kalesi","Yıldızburç","Kartalyuva","Sınırkule","Demirkapı Kalesi",
+              "Gözcükule","Üçgen Burç","Karahisar","Yüceburç","Sarpsurlar",
+              "Geçitbaşı Kalesi","Aslanpençe"],
 }
 
 
