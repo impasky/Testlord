@@ -125,7 +125,37 @@ export async function buildServer() {
  * Dağıtımda açılış hazırlığı: migration'ları uygula, dünya yoksa aç,
  * istenmişse rakip lordları ekle. Hepsi tekrar çalıştırılabilir.
  */
+async function veritabaniniBekle(azamiSaniye = 120): Promise<void> {
+  const bitis = Date.now() + azamiSaniye * 1000;
+  let deneme = 0;
+  for (;;) {
+    try {
+      await prisma.$queryRaw`SELECT 1`;
+      if (deneme > 0) console.log(`Veritabanı ${deneme} denemede hazır oldu.`);
+      return;
+    } catch (e) {
+      deneme++;
+      if (Date.now() >= bitis) {
+        console.error(
+          `Veritabanına ${azamiSaniye} saniyedir ulaşılamıyor.\n` +
+            'En sık sebep: veritabanı ile sunucu FARKLI BÖLGEDE. Render iç ağ\n' +
+            'adresi (dpg-xxxxx-a) yalnızca aynı bölgeden çözülür. render.yaml\n' +
+            'içinde databases[].region ile services[].region aynı olmalı.',
+        );
+        throw e;
+      }
+      const bekle = Math.min(5000, 500 * deneme);
+      if (deneme === 1) console.log('Veritabanı henüz hazır değil, bekleniyor...');
+      await new Promise((r) => setTimeout(r, bekle));
+    }
+  }
+}
+
 async function acilisHazirligi(): Promise<void> {
+  // Render'da veritabanı sunucudan sonra hazır olabiliyor; beklemeden
+  // migration çalıştırmak servisi sonsuz yeniden başlatma döngüsüne sokar.
+  await veritabaniniBekle();
+
   if (env.autoMigrate) {
     console.log('Migration uygulanıyor...');
     execFileSync('npx', ['prisma', 'migrate', 'deploy'], {

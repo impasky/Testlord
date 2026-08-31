@@ -12,6 +12,10 @@ databases:
     databaseName: lordlar_cagi
     user: lordlar
     plan: free
+    # ÖNEMLİ: servisle AYNI bölge olmalı. Render'ın verdiği iç ağ adresi
+    # (dpg-xxxxx-a) yalnızca aynı bölgedeki servislerden çözülür; farklı
+    # bölgede kalırsa sunucu veritabanına hiç ulaşamaz (Prisma P1001).
+    region: frankfurt
 
 services:
   - type: web

@@ -127,6 +127,18 @@ migration'ları uygular, dünyayı açar ve 6 rakip lord ekler.
 `https://lordlar-cagi.onrender.com` gibi bir adres verir — telefondan onu aç,
 kayıt ol, oyna.
 
+### Kurulum hata verirse
+
+**`P1001: Can't reach database server at dpg-...`** — veritabanı ile sunucu
+farklı bölgede. Render'ın iç ağ adresi yalnızca aynı bölgeden çözülür.
+`render.yaml` içinde `databases[].region` ile `services[].region` aynı olmalı
+(ikisi de `frankfurt`). Bölge sonradan değiştirilemez: Render panelinden hem
+servisi hem veritabanını silip Blueprint'i yeniden uygula.
+
+Sunucu açılışta veritabanına 2 dakika boyunca bağlanmayı dener, yani yavaş
+kurulan bir veritabanı sorun olmaz — yalnızca gerçekten ulaşılamıyorsa durur
+ve yukarıdaki açıklamayı loga yazar.
+
 ### Bilmen gerekenler
 
 | Konu | Durum |
