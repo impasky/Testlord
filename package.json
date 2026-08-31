@@ -1,0 +1,37 @@
+{
+  "name": "lordlar-cagi",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter \"./apps/*\" dev",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "test": "pnpm -r test",
+    "balance": "python3 tools/check_balance.py",
+    "db:migrate": "pnpm --filter @lordlar/api prisma migrate dev",
+    "db:seed": "pnpm --filter @lordlar/api seed",
+    "db:reset": "pnpm --filter @lordlar/api prisma migrate reset --force"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "prettier": "^3.4.2",
+    "tsx": "^4.23.13",
+    "typescript": "^5.7.2",
+    "vitest": "^4.1.11"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "@prisma/client",
+      "@prisma/engines",
+      "prisma",
+      "@node-rs/argon2"
+    ]
+  }
+}

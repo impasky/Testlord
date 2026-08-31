@@ -1,0 +1,230 @@
+// Lordlar Çağı — veri şeması
+// docs/03 §3'ün birebir uygulaması.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  lords        Lord[]
+}
+
+model World {
+  id        String   @id @default(cuid())
+  name      String
+  playerCap Int      @default(120)
+  status    String   @default("open") // open | full | closed
+  openedAt  DateTime @default(now())
+  lords     Lord[]
+  regions   Region[]
+}
+
+model Lord {
+  id      String @id @default(cuid())
+  userId  String
+  worldId String
+  name    String
+
+  level Int @default(1)
+  xp    Int @default(0)
+
+  guc          Int @default(5)
+  dayaniklilik Int @default(5)
+  liderlik     Int @default(5)
+  kurnazlik    Int @default(5)
+  statPoints   Int @default(0)
+
+  altin Int @default(0)
+  demir Int @default(0)
+  erzak Int @default(0)
+
+  fame               Int @default(0)
+  fortressFameAccrued Int @default(0)
+  elo                Int @default(1200)
+  pvpWins            Int @default(0)
+  pvpLosses          Int @default(0)
+
+  lastTickAt      DateTime  @default(now())
+  protectionUntil DateTime?
+  woundedUntil    DateTime?
+  dailyAttacks    Int       @default(0)
+  dailyResetAt    DateTime  @default(now())
+  createdAt       DateTime  @default(now())
+
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  world     World         @relation(fields: [worldId], references: [id], onDelete: Cascade)
+  items     Item[]
+  units     ArmyUnit[]
+  gearLines GearLine[]
+  generals  LordGeneral[]
+  regions   Region[]
+  queues    Queue[]
+  marches   March[]
+  events    Event[]
+
+  attackerBattles Battle[] @relation("AttackerBattles")
+  defenderBattles Battle[] @relation("DefenderBattles")
+
+  @@unique([userId, worldId])
+  @@index([worldId, fame])
+  @@index([worldId, elo])
+}
+
+model Item {
+  id           String   @id @default(cuid())
+  lordId       String
+  slot         String
+  tier         Int
+  rarity       String
+  upgradeLevel Int      @default(0)
+  equipped     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  lord Lord @relation(fields: [lordId], references: [id], onDelete: Cascade)
+
+  @@index([lordId, equipped])
+}
+
+model ArmyUnit {
+  id           String  @id @default(cuid())
+  lordId       String
+  unitType     String
+  count        Int
+  locationType String // home | region | march
+  locationId   String?
+
+  lord Lord @relation(fields: [lordId], references: [id], onDelete: Cascade)
+
+  @@unique([lordId, unitType, locationType, locationId])
+  @@index([locationType, locationId])
+}
+
+model GearLine {
+  lordId String
+  line   String // silahlik | zirhhane | nalbant
+  level  Int    @default(0)
+
+  lord Lord @relation(fields: [lordId], references: [id], onDelete: Cascade)
+
+  @@id([lordId, line])
+}
+
+model LordGeneral {
+  id         String    @id @default(cuid())
+  lordId     String
+  generalKey String
+  level      Int       @default(1)
+  xp         Int       @default(0)
+  slotIndex  Int?
+  restUntil  DateTime?
+
+  lord Lord @relation(fields: [lordId], references: [id], onDelete: Cascade)
+
+  @@unique([lordId, generalKey])
+}
+
+model Region {
+  id      Int    @id
+  worldId String
+  name    String
+  type    String
+  province String
+  q       Int
+  r       Int
+  ring    Int
+  level   Int    @default(1)
+
+  ownerLordId String?
+  npcGarrison Json
+  incomeMult  Float  @default(1)
+
+  storeAltin Int @default(0)
+  storeDemir Int @default(0)
+  storeErzak Int @default(0)
+
+  lastTickAt  DateTime  @default(now())
+  shieldUntil DateTime?
+
+  world World @relation(fields: [worldId], references: [id], onDelete: Cascade)
+  owner Lord? @relation(fields: [ownerLordId], references: [id])
+
+  @@unique([worldId, q, r])
+  @@index([worldId, ownerLordId])
+}
+
+model March {
+  id           String   @id @default(cuid())
+  worldId      String
+  lordId       String
+  fromRegionId Int?
+  toRegionId   Int
+  kind         String // attack | return
+  army         Json
+  generalIds   Json
+  loot         Json?
+  departAt     DateTime
+  arriveAt     DateTime
+  resolved     Boolean  @default(false)
+
+  lord Lord @relation(fields: [lordId], references: [id], onDelete: Cascade)
+
+  @@index([resolved, arriveAt])
+  @@index([lordId, resolved])
+}
+
+model Battle {
+  id             String   @id @default(cuid())
+  worldId        String
+  regionId       Int
+  attackerLordId String
+  defenderLordId String?
+  seed           String
+  result         String // attacker_win | defender_win
+  captured       Boolean  @default(false)
+  log            Json
+  createdAt      DateTime @default(now())
+
+  attacker Lord  @relation("AttackerBattles", fields: [attackerLordId], references: [id], onDelete: Cascade)
+  defender Lord? @relation("DefenderBattles", fields: [defenderLordId], references: [id])
+
+  @@index([attackerLordId, createdAt])
+  @@index([defenderLordId, createdAt])
+}
+
+model Queue {
+  id        String   @id @default(cuid())
+  lordId    String
+  kind      String // train | craft | upgrade_item | upgrade_gear | upgrade_region
+  payload   Json
+  startedAt DateTime @default(now())
+  finishAt  DateTime
+  resolved  Boolean  @default(false)
+
+  lord Lord @relation(fields: [lordId], references: [id], onDelete: Cascade)
+
+  @@index([resolved, finishAt])
+  @@index([lordId, resolved])
+}
+
+/// Oyuncuya gösterilen olay akışı (saldırıya uğradın, kuyruk bitti, bölge kaybettin...)
+model Event {
+  id        String   @id @default(cuid())
+  lordId    String
+  kind      String
+  payload   Json
+  readAt    DateTime?
+  createdAt DateTime @default(now())
+
+  lord Lord @relation(fields: [lordId], references: [id], onDelete: Cascade)
+
+  @@index([lordId, createdAt])
+}

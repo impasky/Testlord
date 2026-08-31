@@ -1,8 +1,11 @@
 {
   "schema": "lordlar-cagi/generals@1",
   "_aciklama": "SABIT KADRO: 12 general. v1'de yeni general EKLENMEZ. Slot: 1 + floor(liderlik/30), max 3.",
-
-  "slot_kurali": { "formul": "1 + floor(liderlik / 30)", "max": 3 },
+  "slot_kurali": {
+    "formul": "1 + floor(liderlik / bolen)",
+    "bolen": 30,
+    "max": 3
+  },
   "seviye": {
     "max": 20,
     "xp_formulu": "XP(n -> n+1) = 200 * n^1.4",
@@ -12,70 +15,236 @@
     "seviye_etkisi": "Pasif etkisi her seviyede +%2 guclenir. Lv20'de pasif x1.38"
   },
   "yaralanma": "Kaybedilen savasta %25 ihtimalle general 6 saat dinlenmeye girer (slotu bos kalir).",
-
   "generaller": [
     {
-      "key": "demirci_yusuf", "ad": "Demirci Yusuf", "nadirlik": "bronz", "maliyet_altin": 5000,
-      "pasif": { "ad": "Cekic ve Ors", "etki": "ordu_savunma", "deger": 0.08 },
-      "yetenek": { "ad": "Saglam Durus", "aciklama": "Savasin 1. turunda gelen hasar %15 azalir." }
+      "key": "demirci_yusuf",
+      "ad": "Demirci Yusuf",
+      "nadirlik": "bronz",
+      "maliyet_altin": 5000,
+      "pasif": {
+        "ad": "Cekic ve Ors",
+        "etki": "ordu_savunma",
+        "deger": 0.08
+      },
+      "yetenek": {
+        "ad": "Saglam Durus",
+        "aciklama": "Savasin 1. turunda gelen hasar %15 azalir."
+      },
+      "ek_etki": {
+        "ilk_tur_hasar_azaltma": 0.15
+      }
     },
     {
-      "key": "okcubasi_elif", "ad": "Okcubasi Elif", "nadirlik": "bronz", "maliyet_altin": 5000,
-      "pasif": { "ad": "Keskin Nisan", "etki": "okcu_saldiri", "deger": 0.12 },
-      "yetenek": { "ad": "Ok Yagmuru", "aciklama": "Savas basinda dusmana ordu saldirinin %5'i kadar on hasar verir." }
+      "key": "okcubasi_elif",
+      "ad": "Okcubasi Elif",
+      "nadirlik": "bronz",
+      "maliyet_altin": 5000,
+      "pasif": {
+        "ad": "Keskin Nisan",
+        "etki": "okcu_saldiri",
+        "deger": 0.12
+      },
+      "yetenek": {
+        "ad": "Ok Yagmuru",
+        "aciklama": "Savas basinda dusmana ordu saldirinin %5'i kadar on hasar verir."
+      },
+      "ek_etki": {
+        "on_hasar_orani": 0.05
+      }
     },
     {
-      "key": "suvari_bora", "ad": "Suvari Onbasisi Bora", "nadirlik": "bronz", "maliyet_altin": 5000,
-      "pasif": { "ad": "Dortnala", "etki": "yuruyus_suresi", "deger": -0.10 },
-      "yetenek": { "ad": "Ani Baskin", "aciklama": "Suvari orani %50'nin uzerindeyse ilk turda saldiri +%10." }
+      "key": "suvari_bora",
+      "ad": "Suvari Onbasisi Bora",
+      "nadirlik": "bronz",
+      "maliyet_altin": 5000,
+      "pasif": {
+        "ad": "Dortnala",
+        "etki": "yuruyus_suresi",
+        "deger": -0.1
+      },
+      "yetenek": {
+        "ad": "Ani Baskin",
+        "aciklama": "Suvari orani %50'nin uzerindeyse ilk turda saldiri +%10."
+      },
+      "ek_etki": {
+        "suvari_orani_esigi": 0.5,
+        "ilk_tur_saldiri": 0.1
+      }
     },
     {
-      "key": "erzakci_meryem", "ad": "Erzakci Meryem", "nadirlik": "bronz", "maliyet_altin": 5000,
-      "pasif": { "ad": "Sikı Kemer", "etki": "ordu_bakim_maliyeti", "deger": -0.15 },
-      "yetenek": { "ad": "Sefer Hazirligi", "aciklama": "Yuruyusteki ordu bakim erzagi harcamaz." }
+      "key": "erzakci_meryem",
+      "ad": "Erzakci Meryem",
+      "nadirlik": "bronz",
+      "maliyet_altin": 5000,
+      "pasif": {
+        "ad": "Sikı Kemer",
+        "etki": "ordu_bakim_maliyeti",
+        "deger": -0.15
+      },
+      "yetenek": {
+        "ad": "Sefer Hazirligi",
+        "aciklama": "Yuruyusteki ordu bakim erzagi harcamaz."
+      },
+      "ek_etki": {
+        "yuruyusteki_ordu_bakimsiz": true
+      }
     },
     {
-      "key": "mizrakci_kadir", "ad": "Mizrakci Kadir", "nadirlik": "bronz", "maliyet_altin": 5000,
-      "pasif": { "ad": "Mizrak Duvari", "etki": "mizrakci_savunma", "deger": 0.14 },
-      "yetenek": { "ad": "Kazikli Siper", "aciklama": "Savunmada suvariye karsi kars carpani 1.5 -> 1.8." }
+      "key": "mizrakci_kadir",
+      "ad": "Mizrakci Kadir",
+      "nadirlik": "bronz",
+      "maliyet_altin": 5000,
+      "pasif": {
+        "ad": "Mizrak Duvari",
+        "etki": "mizrakci_savunma",
+        "deger": 0.14
+      },
+      "yetenek": {
+        "ad": "Kazikli Siper",
+        "aciklama": "Savunmada suvariye karsi kars carpani 1.5 -> 1.8."
+      },
+      "ek_etki": {
+        "mizrakci_suvari_kars": 1.8
+      }
     },
     {
-      "key": "kahya_sinan", "ad": "Kahya Sinan", "nadirlik": "bronz", "maliyet_altin": 5000,
-      "pasif": { "ad": "Duzenli Defter", "etki": "bolge_geliri", "deger": 0.06 },
-      "yetenek": { "ad": "Vergi Toplama", "aciklama": "Gunde bir kez bolge gelirinin 2 saatlik kismini aninda toplar." }
-    },
-
-    {
-      "key": "kusatmaci_tarik", "ad": "Kusatma Ustasi Tarik", "nadirlik": "gumus", "maliyet_altin": 25000,
-      "pasif": { "ad": "Sur Yikan", "etki": "kusatma_saldiri", "deger": 0.25 },
-      "yetenek": { "ad": "Gedik Acma", "aciklama": "Savunanin kale savunma bonusunu %30 oraninda deler." }
-    },
-    {
-      "key": "casus_leyla", "ad": "Casus Leyla", "nadirlik": "gumus", "maliyet_altin": 25000,
-      "pasif": { "ad": "Golge Yolu", "etki": "yagma", "deger": 0.25 },
-      "yetenek": { "ad": "Kesif", "aciklama": "Saldiri emrinden once hedefin garnizonunu ve deposunu gorursun." }
-    },
-    {
-      "key": "sovalye_doruk", "ad": "Sovalye Doruk", "nadirlik": "gumus", "maliyet_altin": 25000,
-      "pasif": { "ad": "Sancaktar", "etki": "lord_savas_katkisi", "deger": 0.20 },
-      "yetenek": { "ad": "Kalkan Kardesligi", "aciklama": "Lordun yaralanma suresi %50 kisalir." }
+      "key": "kahya_sinan",
+      "ad": "Kahya Sinan",
+      "nadirlik": "bronz",
+      "maliyet_altin": 5000,
+      "pasif": {
+        "ad": "Duzenli Defter",
+        "etki": "bolge_geliri",
+        "deger": 0.06
+      },
+      "yetenek": {
+        "ad": "Vergi Toplama",
+        "aciklama": "Gunde bir kez bolge gelirinin 2 saatlik kismini aninda toplar."
+      },
+      "ek_etki": {
+        "gunluk_vergi_saat": 2
+      }
     },
     {
-      "key": "vaiz_bertan", "ad": "Vaiz Bertan", "nadirlik": "gumus", "maliyet_altin": 25000,
-      "pasif": { "ad": "Sifa Duasi", "etki": "kayip_geri_donus", "deger": 0.20 },
-      "yetenek": { "ad": "Yarali Toplama", "aciklama": "Kazanilan savaslarda kayiplarin %20'si yarali olarak geri doner." }
+      "key": "kusatmaci_tarik",
+      "ad": "Kusatma Ustasi Tarik",
+      "nadirlik": "gumus",
+      "maliyet_altin": 25000,
+      "pasif": {
+        "ad": "Sur Yikan",
+        "etki": "kusatma_saldiri",
+        "deger": 0.25
+      },
+      "yetenek": {
+        "ad": "Gedik Acma",
+        "aciklama": "Savunanin kale savunma bonusunu %30 oraninda deler."
+      },
+      "ek_etki": {
+        "kale_delme": 0.3
+      }
     },
-
     {
-      "key": "kumandan_alparslan", "ad": "Kumandan Alparslan", "nadirlik": "altin", "maliyet_altin": 100000,
-      "pasif": { "ad": "Bas Kumandan", "etki": "ordu_saldiri", "deger": 0.15 },
-      "yetenek": { "ad": "Genis Sancak", "aciklama": "Komuta kapasitesi +120." },
-      "ek_etki": { "komuta_kapasitesi": 120 }
+      "key": "casus_leyla",
+      "ad": "Casus Leyla",
+      "nadirlik": "gumus",
+      "maliyet_altin": 25000,
+      "pasif": {
+        "ad": "Golge Yolu",
+        "etki": "yagma",
+        "deger": 0.25
+      },
+      "yetenek": {
+        "ad": "Kesif",
+        "aciklama": "Saldiri emrinden once hedefin garnizonunu ve deposunu gorursun."
+      },
+      "ek_etki": {
+        "kesif": true
+      }
     },
     {
-      "key": "kale_bekcisi_sarya", "ad": "Kale Bekcisi Sarya", "nadirlik": "altin", "maliyet_altin": 100000,
-      "pasif": { "ad": "Asilmaz Sur", "etki": "savunmada_ordu_savunma", "deger": 0.25 },
-      "yetenek": { "ad": "Nobet Duzeni", "aciklama": "Bolge garnizonundaki birimler bakim erzagi harcamaz." }
+      "key": "sovalye_doruk",
+      "ad": "Sovalye Doruk",
+      "nadirlik": "gumus",
+      "maliyet_altin": 25000,
+      "pasif": {
+        "ad": "Sancaktar",
+        "etki": "lord_savas_katkisi",
+        "deger": 0.2
+      },
+      "yetenek": {
+        "ad": "Kalkan Kardesligi",
+        "aciklama": "Lordun yaralanma suresi %50 kisalir."
+      },
+      "ek_etki": {
+        "lord_yaralanma_azaltma": 0.5
+      }
+    },
+    {
+      "key": "vaiz_bertan",
+      "ad": "Vaiz Bertan",
+      "nadirlik": "gumus",
+      "maliyet_altin": 25000,
+      "pasif": {
+        "ad": "Sifa Duasi",
+        "etki": "kayip_geri_donus",
+        "deger": 0.2
+      },
+      "yetenek": {
+        "ad": "Yarali Toplama",
+        "aciklama": "Kazanilan savaslarda kayiplarin %20'si yarali olarak geri doner."
+      },
+      "ek_etki": {}
+    },
+    {
+      "key": "kumandan_alparslan",
+      "ad": "Kumandan Alparslan",
+      "nadirlik": "altin",
+      "maliyet_altin": 100000,
+      "pasif": {
+        "ad": "Bas Kumandan",
+        "etki": "ordu_saldiri",
+        "deger": 0.15
+      },
+      "yetenek": {
+        "ad": "Genis Sancak",
+        "aciklama": "Komuta kapasitesi +120."
+      },
+      "ek_etki": {
+        "komuta_kapasitesi": 120
+      }
+    },
+    {
+      "key": "kale_bekcisi_sarya",
+      "ad": "Kale Bekcisi Sarya",
+      "nadirlik": "altin",
+      "maliyet_altin": 100000,
+      "pasif": {
+        "ad": "Asilmaz Sur",
+        "etki": "savunmada_ordu_savunma",
+        "deger": 0.25
+      },
+      "yetenek": {
+        "ad": "Nobet Duzeni",
+        "aciklama": "Bolge garnizonundaki birimler bakim erzagi harcamaz."
+      },
+      "ek_etki": {
+        "garnizon_bakimsiz": true
+      }
     }
+  ],
+  "gecerli_pasif_etkileri": [
+    "bolge_geliri",
+    "kayip_geri_donus",
+    "kusatma_saldiri",
+    "lord_savas_katkisi",
+    "mizrakci_savunma",
+    "okcu_saldiri",
+    "ordu_bakim_maliyeti",
+    "ordu_can",
+    "ordu_saldiri",
+    "ordu_savunma",
+    "savunmada_ordu_savunma",
+    "yagma",
+    "yuruyus_suresi"
   ]
 }

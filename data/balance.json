@@ -74,7 +74,7 @@
       "can": 40,
       "hiz": 6,
       "yer": 1,
-      "eğitim_sn": 45,
+      "egitim_sn": 45,
       "maliyet": {
         "altin": 50,
         "demir": 0,
@@ -89,7 +89,7 @@
       "can": 70,
       "hiz": 5,
       "yer": 1,
-      "eğitim_sn": 90,
+      "egitim_sn": 90,
       "maliyet": {
         "altin": 120,
         "demir": 30,
@@ -104,7 +104,7 @@
       "can": 55,
       "hiz": 6,
       "yer": 1,
-      "eğitim_sn": 110,
+      "egitim_sn": 110,
       "maliyet": {
         "altin": 150,
         "demir": 40,
@@ -119,7 +119,7 @@
       "can": 110,
       "hiz": 12,
       "yer": 3,
-      "eğitim_sn": 240,
+      "egitim_sn": 240,
       "maliyet": {
         "altin": 320,
         "demir": 90,
@@ -134,7 +134,7 @@
       "can": 150,
       "hiz": 3,
       "yer": 5,
-      "eğitim_sn": 600,
+      "egitim_sn": 600,
       "maliyet": {
         "altin": 600,
         "demir": 200,
@@ -384,16 +384,16 @@
     "saldiri_formulu": "ordu_saldiri = SUM(sayi * birim_saldiri * kars_carpani) * (1 + silahlik) * (1 + general_saldiri) * (1 + liderlik*0.005) + lord_katkisi",
     "savunma_formulu": "ordu_savunma = SUM(sayi * birim_savunma * kars_carpani) * (1 + zirhhane) * (1 + general_savunma) * (1 + kale_bonusu)",
     "liderlik_savas_carpani": 0.005,
-    "guc_orani": "R = saldiri_A / (saldiri_A + savunma_D)",
+    "guc_orani": "R = saldiri_A / (saldiri_A + savunma_D)  (saldirganin guc payi)",
     "kayip": {
-      "kaybeden_taban": 0.6,
-      "kaybeden_max": 0.9,
-      "kazanan_formulu": "kayip_orani = min((1 - R) * 0.70, 0.45)",
+      "kazanan_formulu": "kayip_orani = min((1 - Rw) * 0.70, 0.45)",
+      "kaybeden_formulu": "kayip_orani = min(0.60 + (Rw - 0.5) * 0.6, 0.90)",
       "kazanan_max": 0.45,
-      "_not": "Kazanan da hep kaybeder. Ezici zafer bile bedava degil.",
-      "kaybeden_formulu": "kayip_orani = min(0.60 + (R - 0.5) * 0.6, 0.90)"
+      "kaybeden_max": 0.9,
+      "dagitim": "Kayiplar birim tipine 'maruziyet' agirligiyla dagitilir: agirlik = adet / (can + savunma). Ucuz birimler once olur - Koylu Milis'in 'et kalkani' rolu buradan gelir.",
+      "_not": "Kazanan da HER ZAMAN kaybeder. Ezici zaferde bile ordunun ~%17'si gomulur."
     },
-    "yagma_formulu": "min(savunan_deposu * 0.25 * (1 + kurnazlik * 0.01), tasima_kapasitesi)",
+    "yagma_formulu": "alinan = depo * 0.25 * (1 + kurnazlik*0.01 + general_yagma); tasima = SUM(birim * tasima_kapasitesi) * (1 + kurnazlik*0.01 + general_yagma); yagma = min(alinan, tasima)",
     "yagma_orani": 0.25,
     "tasima_kapasitesi_birim_basina": {
       "milis": 30,
@@ -402,8 +402,15 @@
       "suvari": 60,
       "kusatma": 10
     },
-    "bolge_ele_gecirme": "Garnizonun TAMAMI yok edilir + saldirganin en az 1 birimi hayatta kalirsa bolge el degistirir. Yagma da alinir.",
-    "rastgelelik_bandi": "Her turda saldiri/savunmaya +-%7 seed'li varyans. Kesin sonuc yok, ama guclu taraf ~%95 kazanir."
+    "bolge_ele_gecirme": {
+      "kural": "Saldirgan kazanir VE R >= ele_gecirme_esigi ise bolge el degistirir.",
+      "ele_gecirme_esigi": 0.6,
+      "aciklama": "R >= 0.60 kabaca 1.5 kat guc demektir. Garnizonun sag kalanlari sahibinin evine cekilir.",
+      "dar_zafer": "Saldirgan kazanir ama R < 0.60 ise bolge el degistirmez; sadece yagma alinir."
+    },
+    "rastgelelik_bandi": "Her turda saldiri/savunmaya +-%7 seed'li varyans. Kesin sonuc yok, ama guclu taraf ~%95 kazanir.",
+    "kazanan_payi": "Rw = max(R, 1 - R)  (KAZANANIN guc payi; formuller Rw ile calisir)",
+    "_yagma_notu": "Yagma bonusu hem alinan orani hem TASIMA kapasitesini artirir. Aksi halde zengin bir hedefe buyuk akinda kapasite tavana vurur ve Kurnazlik stati ile Casus Leyla tamamen etkisiz kalirdi."
   },
   "korumalar": {
     "yeni_oyuncu_saat": 72,

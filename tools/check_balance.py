@@ -91,10 +91,20 @@ pay = 100 * lord / (lord + ordu_sal)
 kontrol(6, "Lordun savas gucundeki payi", 15 <= pay <= 25,
         f"%{pay:.1f} (hedef %15-25)")
 
-# --- 7) Kazanan da her zaman kayip vermeli ----------------------------------
-Rmax = 30000 / (30000 + 10000)
-kz = min((1 - Rmax) * 0.70, B['savas']['kayip']['kazanan_max'])
-kontrol(7, "Ezici zaferde bile kayip var", kz > 0, f"kazanan kaybi %{kz*100:.1f}")
+# --- 7) Kazanan her zaman kayip vermeli, kaybeden hep daha cok kaybetmeli ---
+def kayiplar(R):
+    Rw = max(R, 1 - R)
+    return (min((1 - Rw) * 0.70, B['savas']['kayip']['kazanan_max']),
+            min(0.60 + (Rw - 0.5) * 0.6, B['savas']['kayip']['kaybeden_max']))
+
+tutarli = True
+detaylar = []
+for R in (0.75, 0.60, 0.51, 0.38, 0.25):
+    kz, kb = kayiplar(R)
+    if not (kz > 0 and kb > kz):
+        tutarli = False
+    detaylar.append(f"R={R}: kazanan %{kz*100:.1f} / kaybeden %{kb*100:.1f}")
+kontrol(7, "Kayip bandi tutarli (kazanan>0, kaybeden>kazanan)", tutarli, "; ".join(detaylar))
 
 # --- 8) Bolge kitligi korunmali: bolge/oyuncu < 0.75 ------------------------
 elde = M['region_count'] - 1                      # Taht Kalesi haric
