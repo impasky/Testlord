@@ -6,19 +6,22 @@ export function Panel({
   action,
   children,
   className = '',
+  suslu = true,
 }: {
   title?: string;
   action?: ReactNode;
   children: ReactNode;
   className?: string;
+  /** Köşe süsleri. Küçük veya iç içe panellerde kapatılabilir. */
+  suslu?: boolean;
 }) {
   return (
     <section
-      className={`rounded-lg border border-kenar bg-panel/70 shadow-lg shadow-black/30 ${className}`}
+      className={`panel-doku rounded-lg border border-kenar ${suslu ? 'kose-suslu' : ''} ${className}`}
     >
       {title && (
-        <header className="flex items-center justify-between border-b border-kenar px-4 py-2.5">
-          <h2 className="text-sm font-semibold tracking-wide text-parsomen/90 uppercase">
+        <header className="flex items-center justify-between gap-3 border-b border-kenar/80 px-4 py-2.5">
+          <h2 className="baslik text-sm font-semibold tracking-widest text-altin/85 uppercase">
             {title}
           </h2>
           {action}
@@ -79,11 +82,17 @@ export function Field({
   );
 }
 
-export function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
+export function Input({ className = '', ...props }: React.InputHTMLAttributes<HTMLInputElement>) {
+  // Taban sınıflarda genişlik YOK. Önceden 'w-full' gömülüydü ve çağıranın
+  // verdiği 'w-20' hiçbir zaman kazanamıyordu (aynı özgüllük, stylesheet
+  // sırası belirliyordu). Genişlik verilmediyse tam genişlik varsayılır.
+  const genislikVar = /(^|\s)(w-|max-w-)/.test(className);
   return (
     <input
       {...props}
-      className="w-full rounded border border-kenar bg-gece/60 px-3 py-2 text-parsomen outline-none focus:border-altin/70"
+      className={`rounded border border-kenar bg-oyuk/70 px-3 py-2 text-parsomen shadow-[inset_0_1px_2px_rgba(0,0,0,0.6)] outline-none transition-colors focus:border-altin/70 ${
+        genislikVar ? '' : 'w-full'
+      } ${className}`}
     />
   );
 }
@@ -93,17 +102,52 @@ export function Meter({
   value,
   max,
   tone = 'altin',
+  kalin = false,
 }: {
   value: number;
   max: number;
   tone?: 'altin' | 'demir' | 'erzak' | 'kan';
+  kalin?: boolean;
 }) {
   const pct = max > 0 ? Math.min(100, (value / max) * 100) : 0;
   const bg = { altin: 'bg-altin', demir: 'bg-demir', erzak: 'bg-erzak', kan: 'bg-kan' }[tone];
   return (
-    <div className="h-1.5 w-full overflow-hidden rounded-full bg-gece/80">
-      <div className={`h-full ${bg} transition-[width] duration-500`} style={{ width: `${pct}%` }} />
+    <div
+      className={`w-full overflow-hidden rounded-full bg-oyuk shadow-[inset_0_1px_2px_rgba(0,0,0,0.7)] ${
+        kalin ? 'h-2.5' : 'h-1.5'
+      }`}
+      role="presentation"
+    >
+      <div
+        className={`h-full ${bg} transition-[width] duration-500`}
+        style={{
+          width: `${pct}%`,
+          // Üstte açık bir kenar: çubuk düz renk yerine hacimli görünür
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.25)',
+        }}
+      />
     </div>
+  );
+}
+
+/** İkon + sayı ikilisi. Kışla'daki istatistik satırlarının yapı taşı. */
+export function IkonluDeger({
+  ikon,
+  deger,
+  baslik,
+  renk = 'text-solgun',
+}: {
+  ikon: ReactNode;
+  deger: ReactNode;
+  baslik: string;
+  renk?: string;
+}) {
+  return (
+    <span className={`inline-flex items-center gap-1 ${renk}`} title={baslik}>
+      <span className="opacity-75">{ikon}</span>
+      <span className="tabular">{deger}</span>
+      <span className="sr-only">{baslik}</span>
+    </span>
   );
 }
 

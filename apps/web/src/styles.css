@@ -1,5 +1,10 @@
 @import 'tailwindcss';
 
+/* Başlıklar için karakterli bir serif. Gövde metni sistem serifinde kalır:
+   uzun metinde Georgia daha okunur, Cinzel yalnızca vurgu taşır.
+   Font gelmezse fallback zinciri görüntüyü bozmaz. */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&display=swap');
+
 /* Lordlar Çağı — demir, parşömen ve meşale.
    Tek yön koyu tema: oyun ekranı uzun süre açık kalır, göz yormamalı. */
 @theme {
@@ -14,6 +19,13 @@
   --color-erzak: #86a361;
   --color-kan: #a63d40;
   --color-mese: #6b8f3e;
+
+  /* Yüzey derinliği: panel yüzeyi, oyuk alanlar, kabartma kenar */
+  --color-yuzey: #2a2119;
+  --color-oyuk: #191309;
+  --color-kabartma: #4a3b2c;
+
+  --font-baslik: Cinzel, 'Trajan Pro', Georgia, serif;
 }
 
 :root {
@@ -26,6 +38,106 @@ body {
   color: var(--color-parsomen);
   font-family: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
   -webkit-font-smoothing: antialiased;
+}
+
+/* ---- Doku ----
+   Parşömen dokusu SVG feTurbulence ile ÜRETİLİR: tek görsel dosya eklemeden,
+   her boyutta net, toplam maliyet birkaç yüz bayt. Çok hafif bırakıldı; amaç
+   yüzeyin "kağıt" hissi vermesi, deseni fark ettirmek değil. */
+:root {
+  /* Doku ince ve zayıf: amaç yüzeye kağıt hissi vermek, deseni fark ettirmek
+     değil. İlk deneme baseFrequency 0.8 / opacity 0.5 ile gri parazit gibi
+     duruyordu; daha ince tanecik ve düşük opaklık parşömene yaklaştırıyor. */
+  --doku: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.16'/%3E%3C/svg%3E");
+}
+
+/* Doku gövdeye sabitlenmez: sabit konumlu bir katman uzun sayfalarda
+   ekranın bittiği yerde gözle görülür bir dikiş bırakıyor. Normal akışta
+   kayan hafif bir doku hem dikişsiz hem daha ucuz. */
+body {
+  background-color: var(--color-gece);
+  background-image:
+    radial-gradient(ellipse 140% 60% at 50% 0%, rgba(70, 54, 34, 0.42) 0%, transparent 70%),
+    var(--doku);
+  background-repeat: no-repeat, repeat;
+}
+
+h1, h2, h3, .baslik {
+  font-family: var(--font-baslik);
+  letter-spacing: 0.02em;
+}
+
+/* ---- Panel: kabartma kenar + oyuk iç ----
+   Tek çizgilik kenarlık düz duruyordu. Üstte açık, altta koyu bir çizgi
+   yüzeye kalınlık hissi veriyor; iç gölge içeriği oyuğa oturtuyor. */
+.panel-doku {
+  background-image: var(--doku), linear-gradient(180deg, #2e251b 0%, #241d16 100%);
+  background-blend-mode: overlay, normal;
+  box-shadow:
+    inset 0 1px 0 rgba(212, 162, 76, 0.18),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.55),
+    0 3px 14px rgba(0, 0, 0, 0.45);
+}
+
+/* Köşe süsleri: dört köşede kısa altın çizgiler. Çerçeve çizmeden
+   "çerçevelenmiş" hissi verir. */
+.kose-suslu {
+  position: relative;
+}
+.kose-suslu::before,
+.kose-suslu::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-color: rgba(212, 162, 76, 0.45);
+  pointer-events: none;
+}
+.kose-suslu::before {
+  top: 5px;
+  left: 5px;
+  border-top: 1px solid;
+  border-left: 1px solid;
+}
+.kose-suslu::after {
+  bottom: 5px;
+  right: 5px;
+  border-bottom: 1px solid;
+  border-right: 1px solid;
+}
+
+/* Birim madalyonu: ikonu oyuk bir daireye oturtur */
+.madalyon {
+  background: radial-gradient(circle at 35% 30%, #3a2e22 0%, #1d1610 100%);
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.8),
+    inset 0 -1px 0 rgba(212, 162, 76, 0.12),
+    0 0 0 1px rgba(212, 162, 76, 0.2);
+}
+
+/* Kart kalkması — dokunmatikte de çalışsın diye active dahil */
+.kart-kalk {
+  transition:
+    transform 140ms ease,
+    box-shadow 140ms ease,
+    border-color 140ms ease;
+}
+.kart-kalk:hover {
+  transform: translateY(-1px);
+  border-color: rgba(212, 162, 76, 0.35);
+}
+.kart-kalk:active {
+  transform: translateY(0);
+}
+
+/* Hareket azaltma tercihini karşıla */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Haritada altıgenler tıklanabilir <g> öğeleri. Tarayıcının varsayılan odak
