@@ -37,7 +37,11 @@ export function regionFortressBonus(type: string, level: number): number {
   return fortressBonus(type, level);
 }
 
-/** world-map.json'daki taban NPC garnizonu — sabit, mutasyona uğramaz. */
+/**
+ * world-map.json'daki taban NPC garnizonu — sabit, mutasyona uğramaz.
+ * mapId ile anahtarlanır: veritabanı id'si dünyadan dünyaya değişir, harita
+ * numarası değişmez.
+ */
 const NPC_TABAN = new Map<number, Army>(
   WORLD_MAP.regions.map((r) => [r.id, r.npc_garrison as unknown as Army]),
 );
@@ -51,11 +55,11 @@ const NPC_TABAN = new Map<number, Army>(
  * garnizon yenilenmez.
  */
 export function regenerateNpcGarrison(
-  regionId: number,
+  mapId: number,
   mevcut: Army,
   hours: number,
 ): Army | null {
-  const taban = NPC_TABAN.get(regionId);
+  const taban = NPC_TABAN.get(mapId);
   if (!taban || hours <= 0) return null;
 
   const oran = B.npc_garnizonu.yenilenme_saatlik_oran * hours;
@@ -96,7 +100,7 @@ export async function accrueRegionStores(now: Date): Promise<void> {
     // Sahipsiz bölgelerde NPC garnizonu tabana doğru toparlanır
     const yenilenen = r.ownerLordId
       ? null
-      : regenerateNpcGarrison(r.id, r.npcGarrison as Army, hours);
+      : regenerateNpcGarrison(r.mapId, r.npcGarrison as Army, hours);
 
     await prisma.region.update({
       where: { id: r.id },

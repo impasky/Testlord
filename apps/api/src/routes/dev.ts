@@ -56,19 +56,45 @@ export async function devRoutes(app: FastifyInstance): Promise<void> {
     return grantXp(lordId, miktar);
   });
 
-  /** NPC bölgelerini world-map.json'daki tabana döndürür (testler arası izolasyon). */
-  app.post('/test/bolgeleri-sifirla', { preHandler: requireAuth }, async () => {
-    let n = 0;
-    for (const r of WORLD_MAP.regions) {
-      const guncel = await prisma.region.findUnique({ where: { id: r.id } });
-      if (!guncel || guncel.ownerLordId) continue;
-      await prisma.region.update({
-        where: { id: r.id },
-        data: { npcGarrison: r.npc_garrison as object, level: r.level, shieldUntil: null },
+  /**
+   * Çağıran lordun dünyasındaki TÜM bölgeleri başlangıç durumuna döndürür:
+   * sahiplik bırakılır, garnizonlar silinir, NPC garnizonu tabana çekilir,
+   * seviye ve kalkan sıfırlanır.
+   *
+   * Testler arası izolasyon için şart: sıfırlama olmadan her koşu haritadan
+   * bir bölge daha kapatır ve bir süre sonra saldırılacak boş hedef kalmaz.
+   */
+  app.post('/test/bolgeleri-sifirla', { preHandler: requireAuth }, async (req) => {
+    const lordId = await findLordByUser(req.user.userId);
+    const { worldId } = await prisma.lord.findUniqueOrThrow({
+      where: { id: lordId },
+      select: { worldId: true },
+    });
+
+    const bolgeler = await prisma.region.findMany({ where: { worldId } });
+    const taban = new Map(WORLD_MAP.regions.map((r) => [r.id, r]));
+
+    for (const b of bolgeler) {
+      const t = taban.get(b.mapId);
+      if (!t) continue;
+      // Bölgeye yerleştirilmiş garnizonları sil
+      await prisma.armyUnit.deleteMany({
+        where: { locationType: 'region', locationId: String(b.id) },
       });
-      n++;
+      await prisma.region.update({
+        where: { id: b.id },
+        data: {
+          ownerLordId: null,
+          npcGarrison: t.npc_garrison as object,
+          level: t.level,
+          shieldUntil: null,
+          storeAltin: 0,
+          storeDemir: 0,
+          storeErzak: 0,
+        },
+      });
     }
-    return { sifirlanan: n };
+    return { sifirlanan: bolgeler.length };
   });
 
   /** Kaynak verir: pahalı sistemleri test etmek için. */

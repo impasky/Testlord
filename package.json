@@ -18,7 +18,7 @@
     "db:seed": "pnpm --filter @lordlar/api seed",
     "db:reset": "pnpm --filter @lordlar/api prisma migrate reset --force",
     "smoke": "node tools/smoke.mjs",
-    "e2e": "node tools/oyun-dongusu-testi.mjs && node tools/worker-testi.mjs && node tools/tarayici-tam-akis.mjs",
+    "e2e": "node tools/oyun-dongusu-testi.mjs && node tools/shard-testi.mjs && node tools/worker-testi.mjs && node tools/tarayici-tam-akis.mjs",
     "worker": "pnpm --filter @lordlar/api worker"
   },
   "devDependencies": {

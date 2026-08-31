@@ -138,7 +138,11 @@ model LordGeneral {
 }
 
 model Region {
-  id      Int    @id
+  /// Veritabanı kimliği. world-map.json'daki numara DEĞİLDİR: birden çok dünya
+  /// (shard) aynı haritayı kullandığı için harita numarası dünya başına tekrar eder.
+  id      Int    @id @default(autoincrement())
+  /// world-map.json'daki bölge numarası (1-61). Kanonik harita verisine anahtar.
+  mapId   Int
   worldId String
   name    String
   type    String
@@ -162,6 +166,7 @@ model Region {
   world World @relation(fields: [worldId], references: [id], onDelete: Cascade)
   owner Lord? @relation(fields: [ownerLordId], references: [id])
 
+  @@unique([worldId, mapId])
   @@unique([worldId, q, r])
   @@index([worldId, ownerLordId])
 }

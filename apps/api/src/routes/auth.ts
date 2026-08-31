@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { hashPassword, verifyPassword } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError } from '../errors.js';
+import { findOrOpenWorld } from '../services/world.js';
 
 const registerSchema = z.object({
   email: z.string().email('Geçerli bir e-posta gir.'),
@@ -43,24 +44,6 @@ async function pickHomeAnchor(worldId: string): Promise<{ q: number; r: number }
     }
   }
   return { q: enIyi.q, r: enIyi.r };
-}
-
-/** Açık olan dünyayı bulur, yoksa yenisini açar. Dolmuşsa yeni shard açar. */
-async function findOrOpenWorld(): Promise<string> {
-  const open = await prisma.world.findFirst({
-    where: { status: 'open' },
-    orderBy: { openedAt: 'asc' },
-  });
-  if (open) {
-    const count = await prisma.lord.count({ where: { worldId: open.id } });
-    if (count < open.playerCap) return open.id;
-    await prisma.world.update({ where: { id: open.id }, data: { status: 'full' } });
-  }
-  throw new GameError(
-    'Şu anda açık dünya yok. Yönetici yeni dünya açmalı (pnpm db:seed).',
-    503,
-    'DUNYA_YOK',
-  );
 }
 
 export async function authRoutes(app: FastifyInstance): Promise<void> {

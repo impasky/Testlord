@@ -56,7 +56,7 @@ Harita'dan kenardaki tahkimatsız bir bölgeye saldır.
 pnpm test        # 40 birim testi (savaş motoru + tasarım garantileri)
 pnpm balance     # aritmetik denge kontrolleri
 pnpm typecheck   # üç paketin tip kontrolü
-pnpm e2e         # API + worker + tarayıcı uçtan uca testleri (sunucu ayakta olmalı)
+pnpm e2e         # oyun döngüsü + shard + worker + tarayıcı (sunucu ayakta olmalı)
 ```
 
 `pnpm e2e` gerçek Chromium açar ve yedi ekranı dolaşır. Tarayıcı testi
@@ -92,6 +92,7 @@ tools/
   generate_map.py         Haritayı üreten script
   check_balance.py        Aritmetik denge doğrulayıcı
   oyun-dongusu-testi.mjs  API üzerinden tam oyun döngüsü
+  shard-testi.mjs         Dünya dolunca yeni shard açıldığını doğrular
   worker-testi.mjs        Worker'ın yürüyüşü kendiliğinden çözdüğünü doğrular
   tarayici-tam-akis.mjs   Gerçek tarayıcıda yedi ekran akışı
   smoke.mjs               Hızlı duman testi
