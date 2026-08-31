@@ -1,0 +1,466 @@
+{
+  "schema": "lordlar-cagi/balance@1",
+  "_aciklama": "TUM sayisal denge burada. Kod hicbir yerde sabit sayi icermez, bu dosyayi okur. Denge degisikligi = sadece bu dosyada degisiklik.",
+  "kaynaklar": {
+    "turler": [
+      "altin",
+      "demir",
+      "erzak"
+    ],
+    "puan": "sohret",
+    "malikane_saatlik": {
+      "altin": 100,
+      "demir": 40,
+      "erzak": 120
+    },
+    "depo_kapasitesi": {
+      "taban": 20000,
+      "lord_seviye_basina": 3000
+    },
+    "_not": "Depo dolunca uretim durur. Malikane gelirini kimse elinden alamaz; bu oyuncunun taban gelirdir ve seviyeyle buyur, boylece bolgesiz kalan oyuncu olmez.",
+    "malikane_seviye_bonusu_saatlik": {
+      "altin": 6,
+      "demir": 3,
+      "erzak": 8
+    },
+    "malikane_formulu": "saatlik = malikane_saatlik + malikane_seviye_bonusu_saatlik * lord_seviyesi"
+  },
+  "lord": {
+    "max_seviye": 60,
+    "xp_formulu": "XP(n -> n+1) = 120 * n^1.55",
+    "xp_katsayi": 120,
+    "xp_us": 1.55,
+    "seviye_basina_stat_puani": 5,
+    "baslangic_statlari": {
+      "guc": 5,
+      "dayaniklilik": 5,
+      "liderlik": 5,
+      "kurnazlik": 5
+    },
+    "baslangic_kaynaklari": {
+      "altin": 5000,
+      "demir": 2000,
+      "erzak": 3000
+    },
+    "stat_etkileri": {
+      "guc": "Lordun savas katkisi: +3 saldiri / puan",
+      "dayaniklilik": "Lord canı: +25 can / puan. Yaralanma suresi -1% / puan (max -50%)",
+      "liderlik": "Komuta kapasitesi: +8 yer / puan. General slotu: 1 + floor(liderlik/30), max 3",
+      "kurnazlik": "Yagma: +1% / puan (max +100%). Casusluk basari sansi."
+    },
+    "xp_kaynaklari": {
+      "pvp_galibiyet": "80 * rakip_lord_seviyesi",
+      "pvp_maglubiyet": "20 * rakip_lord_seviyesi",
+      "bolge_ele_gecirme": "1500 * bolge_ring_carpani",
+      "bolge_yukseltme": "500 * yeni_seviye",
+      "npc_garnizon_temizleme": "40 * npc_toplam_birim / 10"
+    },
+    "yaralanma": {
+      "kaybedilen_savasta_saat": 4,
+      "aciklama": "Lord yaraliyken saldiri yapamaz, savunmada lord katkisi %50 duser. Bolgeler ve gelir etkilenmez."
+    },
+    "hedef_tempo": "Aktif oyuncu (gunde ~6 savas) icin Lv60 ~ 110-130 gun. Casual oyuncu Lv30 ~ 45 gun."
+  },
+  "komuta": {
+    "kapasite_formulu": "50 + liderlik * 8 + general_bonuslari",
+    "taban": 50,
+    "liderlik_carpani": 8
+  },
+  "birimler": {
+    "milis": {
+      "ad": "Koylu Milis",
+      "saldiri": 10,
+      "savunma": 8,
+      "can": 40,
+      "hiz": 6,
+      "yer": 1,
+      "eğitim_sn": 45,
+      "maliyet": {
+        "altin": 50,
+        "demir": 0,
+        "erzak": 20
+      },
+      "bakim_erzak_saat": 1
+    },
+    "mizrakci": {
+      "ad": "Mizrakci",
+      "saldiri": 18,
+      "savunma": 30,
+      "can": 70,
+      "hiz": 5,
+      "yer": 1,
+      "eğitim_sn": 90,
+      "maliyet": {
+        "altin": 120,
+        "demir": 30,
+        "erzak": 40
+      },
+      "bakim_erzak_saat": 2
+    },
+    "okcu": {
+      "ad": "Okcu",
+      "saldiri": 32,
+      "savunma": 12,
+      "can": 55,
+      "hiz": 6,
+      "yer": 1,
+      "eğitim_sn": 110,
+      "maliyet": {
+        "altin": 150,
+        "demir": 40,
+        "erzak": 35
+      },
+      "bakim_erzak_saat": 2
+    },
+    "suvari": {
+      "ad": "Suvari",
+      "saldiri": 55,
+      "savunma": 25,
+      "can": 110,
+      "hiz": 12,
+      "yer": 3,
+      "eğitim_sn": 240,
+      "maliyet": {
+        "altin": 320,
+        "demir": 90,
+        "erzak": 80
+      },
+      "bakim_erzak_saat": 5
+    },
+    "kusatma": {
+      "ad": "Mancinik",
+      "saldiri": 90,
+      "savunma": 5,
+      "can": 150,
+      "hiz": 3,
+      "yer": 5,
+      "eğitim_sn": 600,
+      "maliyet": {
+        "altin": 600,
+        "demir": 200,
+        "erzak": 60
+      },
+      "bakim_erzak_saat": 8
+    }
+  },
+  "birim_kars_carpanlari": {
+    "_aciklama": "saldiran_birim -> hedef_birim : carpan. Listede olmayan eslesme 1.0",
+    "mizrakci": {
+      "suvari": 1.5
+    },
+    "okcu": {
+      "mizrakci": 1.5
+    },
+    "suvari": {
+      "okcu": 1.5
+    },
+    "kusatma": {
+      "kale_savunmasi": 2.0,
+      "birim": 0.5
+    }
+  },
+  "erzak_acligi": {
+    "aciklama": "Erzak 0'a duserse ordu saatte %5 firar eder (asagi yuvarlanir, min 1 birim/tip).",
+    "saatlik_firar_orani": 0.05
+  },
+  "ordu_donanimi": {
+    "_aciklama": "Demirhane'de 3 hat, her biri 0-10 seviye. Ordu geneline yuzde bonus.",
+    "hatlar": {
+      "silahlik": {
+        "ad": "Silahlik",
+        "etki": "ordu_saldiri",
+        "seviye_basina": 0.03,
+        "max_seviye": 10
+      },
+      "zirhhane": {
+        "ad": "Zirhhane",
+        "etki": "ordu_savunma",
+        "seviye_basina": 0.03,
+        "max_seviye": 10
+      },
+      "nalbant": {
+        "ad": "Nalbant",
+        "etki": "ordu_can",
+        "seviye_basina": 0.03,
+        "max_seviye": 10
+      }
+    },
+    "maliyet_formulu": "Lv N: altin = 2000 * 1.7^(N-1), demir = 1200 * 1.7^(N-1)",
+    "maliyet_taban": {
+      "altin": 2000,
+      "demir": 1200
+    },
+    "maliyet_us": 1.7,
+    "sure_formulu_saat": "1 * 1.6^(N-1)",
+    "sure_us": 1.6
+  },
+  "ekipman": {
+    "slotlar": [
+      "silah",
+      "kalkan",
+      "zirh",
+      "migfer",
+      "at",
+      "sancak"
+    ],
+    "tier_taban_guc": {
+      "1": 12,
+      "2": 28,
+      "3": 60,
+      "4": 120,
+      "5": 220
+    },
+    "tier_acilis_lord_seviyesi": {
+      "1": 1,
+      "2": 10,
+      "3": 22,
+      "4": 36,
+      "5": 50
+    },
+    "nadirlik_carpani": {
+      "siradan": 1.0,
+      "usta": 1.25,
+      "nadir": 1.6,
+      "efsanevi": 2.1,
+      "kadim": 2.8
+    },
+    "guc_formulu": "ItemPower = tier_taban_guc * nadirlik_carpani * (1 + 0.08 * yukseltme_seviyesi)",
+    "yukseltme_basina_bonus": 0.08,
+    "max_yukseltme": 10,
+    "yukseltme_maliyet_formulu": "altin = 500 * 1.55^N * tier^1.5, demir = 250 * 1.55^N * tier^1.5  (N = mevcut seviye)",
+    "yukseltme_taban": {
+      "altin": 500,
+      "demir": 250
+    },
+    "yukseltme_us": 1.55,
+    "yukseltme_basari_sansi": {
+      "0": 1.0,
+      "1": 1.0,
+      "2": 1.0,
+      "3": 1.0,
+      "4": 1.0,
+      "5": 1.0,
+      "6": 0.8,
+      "7": 0.7,
+      "8": 0.55,
+      "9": 0.4,
+      "10": 0.25
+    },
+    "basarisiz_yukseltme": "Sadece malzeme kaybedilir. Esya seviyesi DUSMEZ, esya KIRILMAZ.",
+    "uretim_maliyeti": {
+      "1": {
+        "altin": 400,
+        "demir": 200,
+        "sure_dk": 5
+      },
+      "2": {
+        "altin": 1500,
+        "demir": 800,
+        "sure_dk": 15
+      },
+      "3": {
+        "altin": 4000,
+        "demir": 2000,
+        "sure_dk": 45
+      },
+      "4": {
+        "altin": 12000,
+        "demir": 6000,
+        "sure_dk": 120
+      },
+      "5": {
+        "altin": 35000,
+        "demir": 18000,
+        "sure_dk": 300
+      }
+    },
+    "uretim_nadirlik_tablosu": {
+      "1": {
+        "siradan": 0.6,
+        "usta": 0.3,
+        "nadir": 0.09,
+        "efsanevi": 0.01,
+        "kadim": 0.0
+      },
+      "2": {
+        "siradan": 0.5,
+        "usta": 0.32,
+        "nadir": 0.15,
+        "efsanevi": 0.03,
+        "kadim": 0.0
+      },
+      "3": {
+        "siradan": 0.4,
+        "usta": 0.32,
+        "nadir": 0.2,
+        "efsanevi": 0.07,
+        "kadim": 0.01
+      },
+      "4": {
+        "siradan": 0.3,
+        "usta": 0.32,
+        "nadir": 0.26,
+        "efsanevi": 0.1,
+        "kadim": 0.02
+      },
+      "5": {
+        "siradan": 0.2,
+        "usta": 0.3,
+        "nadir": 0.32,
+        "efsanevi": 0.14,
+        "kadim": 0.04
+      }
+    },
+    "lord_savas_katkisi": "guc * 3 + toplam_ekipman_gucu * 0.8",
+    "ekipman_katsayi": 0.8
+  },
+  "bolgeler": {
+    "toplam": 61,
+    "sahip_basina_max": "1 + floor(lord_seviyesi / 15)  -> Lv60'ta 5 bolge (Taht Kalesi bu limite dahil DEGIL)",
+    "max_taban": 1,
+    "max_seviye_bolen": 15,
+    "max_bolge_seviyesi": 5,
+    "taban_gelir_saatlik": {
+      "tarla": {
+        "erzak": 140
+      },
+      "maden": {
+        "demir": 100
+      },
+      "sehir": {
+        "altin": 200
+      },
+      "kale": {
+        "altin": 80,
+        "sohret_saat": 4
+      },
+      "taht": {
+        "altin": 300,
+        "demir": 150,
+        "erzak": 200,
+        "sohret_saat": 20
+      }
+    },
+    "gelir_formulu": "saatlik = taban_gelir * ring_income_mult * (1 + 0.25 * (bolge_seviyesi - 1))",
+    "seviye_basina_gelir": 0.25,
+    "yukseltme_maliyet_formulu": "Lv N -> N+1: altin = 3000 * 1.9^(N-1), demir = 1500 * 1.9^(N-1)",
+    "yukseltme_taban": {
+      "altin": 3000,
+      "demir": 1500
+    },
+    "yukseltme_us": 1.9,
+    "yukseltme_sure_formulu_saat": "2 * 2^(N-1)",
+    "kale_savunma_bonusu": {
+      "tarla": 0.0,
+      "maden": 0.05,
+      "sehir": 0.1,
+      "kale": 0.3,
+      "taht": 0.5
+    },
+    "kale_bonusu_seviye_basina": 0.05,
+    "garnizon": "Sahip, ordusunun bir kismini bolgede birakabilir. Sadece garnizon savunur; evdeki ordu bolgeyi savunmaz.",
+    "ilk_fetih_hedefi": "Ring 4 bolgeleri yeni oyuncunun ~1. gununde alinabilecek sekilde ayarlandi (garnizon savunmasi ~560)."
+  },
+  "taht_kalesi": {
+    "ad": "Taht Kalesi",
+    "aciklama": "Dunyada tek. Sahibi 'Diyarin Lordu' unvanini alir.",
+    "unvan_sohret_bonusu": 0.2,
+    "bolge_limitine_sayilmaz": true,
+    "kaybetme_korumasi_saat": 2,
+    "_not": "Herkese haritada gorunur ve gunluk saldiri limiti bu bolgeye islemez. Endgame rekabetinin odagi."
+  },
+  "yuruyus": {
+    "dakika_hex_basina": 12,
+    "hiz_referansi": 6,
+    "formul": "sure_dk = hex_mesafe * 12 * (6 / en_yavas_birim_hizi)",
+    "min_dakika": 10,
+    "max_dakika": 360,
+    "donus_suresi": "Gidis ile ayni",
+    "iptal": "Yuruyusun ilk %25'i icinde geri cagirilabilir; sonrasinda hayir."
+  },
+  "savas": {
+    "tur_sayisi": 5,
+    "rng": "Sunucuda seed'li deterministik. Seed savas kaydinda saklanir; log her zaman yeniden uretilebilir.",
+    "saldiri_formulu": "ordu_saldiri = SUM(sayi * birim_saldiri * kars_carpani) * (1 + silahlik) * (1 + general_saldiri) * (1 + liderlik*0.005) + lord_katkisi",
+    "savunma_formulu": "ordu_savunma = SUM(sayi * birim_savunma * kars_carpani) * (1 + zirhhane) * (1 + general_savunma) * (1 + kale_bonusu)",
+    "liderlik_savas_carpani": 0.005,
+    "guc_orani": "R = saldiri_A / (saldiri_A + savunma_D)",
+    "kayip": {
+      "kaybeden_taban": 0.6,
+      "kaybeden_max": 0.9,
+      "kazanan_formulu": "kayip_orani = min((1 - R) * 0.70, 0.45)",
+      "kazanan_max": 0.45,
+      "_not": "Kazanan da hep kaybeder. Ezici zafer bile bedava degil.",
+      "kaybeden_formulu": "kayip_orani = min(0.60 + (R - 0.5) * 0.6, 0.90)"
+    },
+    "yagma_formulu": "min(savunan_deposu * 0.25 * (1 + kurnazlik * 0.01), tasima_kapasitesi)",
+    "yagma_orani": 0.25,
+    "tasima_kapasitesi_birim_basina": {
+      "milis": 30,
+      "mizrakci": 25,
+      "okcu": 25,
+      "suvari": 60,
+      "kusatma": 10
+    },
+    "bolge_ele_gecirme": "Garnizonun TAMAMI yok edilir + saldirganin en az 1 birimi hayatta kalirsa bolge el degistirir. Yagma da alinir.",
+    "rastgelelik_bandi": "Her turda saldiri/savunmaya +-%7 seed'li varyans. Kesin sonuc yok, ama guclu taraf ~%95 kazanir."
+  },
+  "korumalar": {
+    "yeni_oyuncu_saat": 72,
+    "yeni_oyuncu_iptali": "Oyuncu ilk saldirisini yaptiginda koruma biter.",
+    "bolge_ele_gecirme_sonrasi_saat": 6,
+    "ayni_saldirgan_tekrar_saldiri_saat": 12,
+    "seviye_farki_kilidi": 8,
+    "seviye_farki_cezasi": "8+ seviye dusuk oyuncuya saldirilamaz. Taht Kalesi haric.",
+    "gunluk_saldiri_limiti": 12,
+    "taht_kalesi_limitten_muaf": true
+  },
+  "sohret": {
+    "formul": "lord_seviyesi*120 + SUM(bolge: 400*seviye*tip_carpani) + toplam_ekipman_gucu*0.6 + ordu_gucu*0.03 + pvp_galibiyet*40 + kale_birikimi",
+    "lord_seviye_carpani": 120,
+    "bolge_taban": 400,
+    "bolge_tip_carpani": {
+      "tarla": 0.9,
+      "maden": 0.95,
+      "sehir": 1.0,
+      "kale": 1.4,
+      "taht": 4.0
+    },
+    "ekipman_carpani": 0.6,
+    "ordu_carpani": 0.03,
+    "pvp_galibiyet": 40,
+    "ordu_gucu_tanimi": "SUM(sayi * (saldiri + savunma + can/4))"
+  },
+  "siralamalar": {
+    "sohret": {
+      "ad": "Sohret Siralamasi",
+      "kaynak": "sohret alani",
+      "yenileme_dk": 5
+    },
+    "fetih": {
+      "ad": "Fetih Siralamasi",
+      "kaynak": "SUM(bolge_seviyesi * tip_carpani)",
+      "yenileme_dk": 5
+    },
+    "kilic": {
+      "ad": "Kilic Siralamasi",
+      "kaynak": "elo",
+      "elo_baslangic": 1200,
+      "elo_k": 24,
+      "yenileme_dk": 5
+    }
+  },
+  "dunya": {
+    "oyuncu_kapasitesi": 120,
+    "dolunca": "Yeni dunya (shard) acilir. Siralamalar hem dunya bazli hem global tutulur.",
+    "gelir_hesabi": "Lazy accrual: last_tick_at ile su an arasindaki fark hesaplanir. Cron gerekmez.",
+    "worker_araligi_sn": 10,
+    "worker_isleri": [
+      "biten yuruyusleri coz",
+      "biten egitim kuyrugu",
+      "biten uretim kuyrugu",
+      "biten bolge yukseltme",
+      "erzak acligi firari"
+    ]
+  }
+}

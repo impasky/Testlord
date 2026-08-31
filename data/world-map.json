@@ -1,0 +1,1196 @@
+{
+  "schema": "lordlar-cagi/world-map@1",
+  "radius": 4,
+  "region_count": 61,
+  "provinces": [
+    {
+      "key": "kuzeymark",
+      "name": "Kuzeymark"
+    },
+    {
+      "key": "demirvadi",
+      "name": "Demirvadi"
+    },
+    {
+      "key": "gunbati",
+      "name": "Gunbati Kiyilari"
+    },
+    {
+      "key": "aksu",
+      "name": "Aksu Ovasi"
+    },
+    {
+      "key": "karaorman",
+      "name": "Karaorman"
+    },
+    {
+      "key": "tasgecit",
+      "name": "Tasgecit"
+    },
+    {
+      "key": "taht",
+      "name": "Taht Vilayeti"
+    }
+  ],
+  "regions": [
+    {
+      "id": 1,
+      "name": "Taht Kalesi",
+      "type": "taht",
+      "province": "taht",
+      "q": 0,
+      "r": 0,
+      "ring": 0,
+      "level": 1,
+      "income_mult": 3.0,
+      "npc_garrison": {
+        "milis": 0,
+        "mizrakci": 400,
+        "okcu": 300,
+        "suvari": 150,
+        "kusatma": 40
+      },
+      "unique": true
+    },
+    {
+      "id": 2,
+      "name": "Bugday Duzu",
+      "type": "tarla",
+      "province": "kuzeymark",
+      "q": 1,
+      "r": 0,
+      "ring": 1,
+      "level": 1,
+      "income_mult": 2.0,
+      "npc_garrison": {
+        "milis": 0,
+        "mizrakci": 200,
+        "okcu": 150,
+        "suvari": 80,
+        "kusatma": 10
+      },
+      "unique": false
+    },
+    {
+      "id": 3,
+      "name": "Akkale Sehri",
+      "type": "sehir",
+      "province": "kuzeymark",
+      "q": 1,
+      "r": 1,
+      "ring": 2,
+      "level": 1,
+      "income_mult": 1.5,
+      "npc_garrison": {
+        "milis": 0,
+        "mizrakci": 120,
+        "okcu": 80,
+        "suvari": 30,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 4,
+      "name": "Demirocak",
+      "type": "maden",
+      "province": "kuzeymark",
+      "q": 2,
+      "r": 0,
+      "ring": 2,
+      "level": 1,
+      "income_mult": 1.5,
+      "npc_garrison": {
+        "milis": 0,
+        "mizrakci": 120,
+        "okcu": 80,
+        "suvari": 30,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 5,
+      "name": "Sarpkaya Kalesi",
+      "type": "kale",
+      "province": "kuzeymark",
+      "q": 0,
+      "r": 3,
+      "ring": 3,
+      "level": 1,
+      "income_mult": 1.2,
+      "npc_garrison": {
+        "milis": 80,
+        "mizrakci": 50,
+        "okcu": 30,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 6,
+      "name": "Yesilcayir",
+      "type": "tarla",
+      "province": "kuzeymark",
+      "q": 1,
+      "r": 2,
+      "ring": 3,
+      "level": 1,
+      "income_mult": 1.2,
+      "npc_garrison": {
+        "milis": 80,
+        "mizrakci": 50,
+        "okcu": 30,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 7,
+      "name": "Tuccarlar Limani",
+      "type": "sehir",
+      "province": "kuzeymark",
+      "q": 2,
+      "r": 1,
+      "ring": 3,
+      "level": 1,
+      "income_mult": 1.2,
+      "npc_garrison": {
+        "milis": 80,
+        "mizrakci": 50,
+        "okcu": 30,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 8,
+      "name": "Karakuyu",
+      "type": "maden",
+      "province": "kuzeymark",
+      "q": 3,
+      "r": 0,
+      "ring": 3,
+      "level": 1,
+      "income_mult": 1.2,
+      "npc_garrison": {
+        "milis": 80,
+        "mizrakci": 50,
+        "okcu": 30,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 9,
+      "name": "Yildizburc",
+      "type": "kale",
+      "province": "kuzeymark",
+      "q": 1,
+      "r": 3,
+      "ring": 4,
+      "level": 1,
+      "income_mult": 1.0,
+      "npc_garrison": {
+        "milis": 25,
+        "mizrakci": 12,
+        "okcu": 0,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 10,
+      "name": "Ekinlik",
+      "type": "tarla",
+      "province": "kuzeymark",
+      "q": 2,
+      "r": 2,
+      "ring": 4,
+      "level": 1,
+      "income_mult": 1.0,
+      "npc_garrison": {
+        "milis": 25,
+        "mizrakci": 12,
+        "okcu": 0,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 11,
+      "name": "Gumuscarsi",
+      "type": "sehir",
+      "province": "kuzeymark",
+      "q": 3,
+      "r": 1,
+      "ring": 4,
+      "level": 1,
+      "income_mult": 1.0,
+      "npc_garrison": {
+        "milis": 25,
+        "mizrakci": 12,
+        "okcu": 0,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 12,
+      "name": "Bereket Ovasi",
+      "type": "tarla",
+      "province": "demirvadi",
+      "q": -1,
+      "r": 1,
+      "ring": 1,
+      "level": 1,
+      "income_mult": 2.0,
+      "npc_garrison": {
+        "milis": 0,
+        "mizrakci": 200,
+        "okcu": 150,
+        "suvari": 80,
+        "kusatma": 10
+      },
+      "unique": false
+    },
+    {
+      "id": 13,
+      "name": "Yuksekkapi",
+      "type": "sehir",
+      "province": "demirvadi",
+      "q": 0,
+      "r": 1,
+      "ring": 1,
+      "level": 1,
+      "income_mult": 2.0,
+      "npc_garrison": {
+        "milis": 0,
+        "mizrakci": 200,
+        "okcu": 150,
+        "suvari": 80,
+        "kusatma": 10
+      },
+      "unique": false
+    },
+    {
+      "id": 14,
+      "name": "Bakirdere",
+      "type": "maden",
+      "province": "demirvadi",
+      "q": -2,
+      "r": 2,
+      "ring": 2,
+      "level": 1,
+      "income_mult": 1.5,
+      "npc_garrison": {
+        "milis": 0,
+        "mizrakci": 120,
+        "okcu": 80,
+        "suvari": 30,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 15,
+      "name": "Kartalyuva",
+      "type": "kale",
+      "province": "demirvadi",
+      "q": -1,
+      "r": 2,
+      "ring": 2,
+      "level": 1,
+      "income_mult": 1.5,
+      "npc_garrison": {
+        "milis": 0,
+        "mizrakci": 120,
+        "okcu": 80,
+        "suvari": 30,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 16,
+      "name": "Sapkoy",
+      "type": "tarla",
+      "province": "demirvadi",
+      "q": 0,
+      "r": 2,
+      "ring": 2,
+      "level": 1,
+      "income_mult": 1.5,
+      "npc_garrison": {
+        "milis": 0,
+        "mizrakci": 120,
+        "okcu": 80,
+        "suvari": 30,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 17,
+      "name": "Tas Meydan",
+      "type": "sehir",
+      "province": "demirvadi",
+      "q": -2,
+      "r": 3,
+      "ring": 3,
+      "level": 1,
+      "income_mult": 1.2,
+      "npc_garrison": {
+        "milis": 80,
+        "mizrakci": 50,
+        "okcu": 30,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 18,
+      "name": "Kayaburun",
+      "type": "maden",
+      "province": "demirvadi",
+      "q": -1,
+      "r": 3,
+      "ring": 3,
+      "level": 1,
+      "income_mult": 1.2,
+      "npc_garrison": {
+        "milis": 80,
+        "mizrakci": 50,
+        "okcu": 30,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 19,
+      "name": "Sinirkule",
+      "type": "kale",
+      "province": "demirvadi",
+      "q": -4,
+      "r": 4,
+      "ring": 4,
+      "level": 1,
+      "income_mult": 1.0,
+      "npc_garrison": {
+        "milis": 25,
+        "mizrakci": 12,
+        "okcu": 0,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 20,
+      "name": "Harmanyeri",
+      "type": "tarla",
+      "province": "demirvadi",
+      "q": -3,
+      "r": 4,
+      "ring": 4,
+      "level": 1,
+      "income_mult": 1.0,
+      "npc_garrison": {
+        "milis": 25,
+        "mizrakci": 12,
+        "okcu": 0,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 21,
+      "name": "Kervanbasi",
+      "type": "sehir",
+      "province": "demirvadi",
+      "q": -2,
+      "r": 4,
+      "ring": 4,
+      "level": 1,
+      "income_mult": 1.0,
+      "npc_garrison": {
+        "milis": 25,
+        "mizrakci": 12,
+        "okcu": 0,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 22,
+      "name": "Altinbasak",
+      "type": "tarla",
+      "province": "gunbati",
+      "q": -2,
+      "r": 1,
+      "ring": 2,
+      "level": 1,
+      "income_mult": 1.5,
+      "npc_garrison": {
+        "milis": 0,
+        "mizrakci": 120,
+        "okcu": 80,
+        "suvari": 30,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 23,
+      "name": "Altinkapi",
+      "type": "sehir",
+      "province": "gunbati",
+      "q": -3,
+      "r": 1,
+      "ring": 3,
+      "level": 1,
+      "income_mult": 1.2,
+      "npc_garrison": {
+        "milis": 80,
+        "mizrakci": 50,
+        "okcu": 30,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 24,
+      "name": "Curufkoy",
+      "type": "maden",
+      "province": "gunbati",
+      "q": -3,
+      "r": 2,
+      "ring": 3,
+      "level": 1,
+      "income_mult": 1.2,
+      "npc_garrison": {
+        "milis": 80,
+        "mizrakci": 50,
+        "okcu": 30,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 25,
+      "name": "Demirkapi Kalesi",
+      "type": "kale",
+      "province": "gunbati",
+      "q": -3,
+      "r": 3,
+      "ring": 3,
+      "level": 1,
+      "income_mult": 1.2,
+      "npc_garrison": {
+        "milis": 80,
+        "mizrakci": 50,
+        "okcu": 30,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 26,
+      "name": "Cayirbasi",
+      "type": "tarla",
+      "province": "gunbati",
+      "q": -4,
+      "r": 1,
+      "ring": 4,
+      "level": 1,
+      "income_mult": 1.0,
+      "npc_garrison": {
+        "milis": 25,
+        "mizrakci": 12,
+        "okcu": 0,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 27,
+      "name": "Loncalar Sehri",
+      "type": "sehir",
+      "province": "gunbati",
+      "q": -4,
+      "r": 2,
+      "ring": 4,
+      "level": 1,
+      "income_mult": 1.0,
+      "npc_garrison": {
+        "milis": 25,
+        "mizrakci": 12,
+        "okcu": 0,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 28,
+      "name": "Derinkuyu",
+      "type": "maden",
+      "province": "gunbati",
+      "q": -4,
+      "r": 3,
+      "ring": 4,
+      "level": 1,
+      "income_mult": 1.0,
+      "npc_garrison": {
+        "milis": 25,
+        "mizrakci": 12,
+        "okcu": 0,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 29,
+      "name": "Gozcukule",
+      "type": "kale",
+      "province": "gunbati",
+      "q": -1,
+      "r": 4,
+      "ring": 4,
+      "level": 1,
+      "income_mult": 1.0,
+      "npc_garrison": {
+        "milis": 25,
+        "mizrakci": 12,
+        "okcu": 0,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 30,
+      "name": "Tohumluk",
+      "type": "tarla",
+      "province": "gunbati",
+      "q": 0,
+      "r": 4,
+      "ring": 4,
+      "level": 1,
+      "income_mult": 1.0,
+      "npc_garrison": {
+        "milis": 25,
+        "mizrakci": 12,
+        "okcu": 0,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 31,
+      "name": "Dortyol",
+      "type": "sehir",
+      "province": "gunbati",
+      "q": 4,
+      "r": 0,
+      "ring": 4,
+      "level": 1,
+      "income_mult": 1.0,
+      "npc_garrison": {
+        "milis": 25,
+        "mizrakci": 12,
+        "okcu": 0,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 32,
+      "name": "Otlakkoy",
+      "type": "tarla",
+      "province": "aksu",
+      "q": -1,
+      "r": 0,
+      "ring": 1,
+      "level": 1,
+      "income_mult": 2.0,
+      "npc_garrison": {
+        "milis": 0,
+        "mizrakci": 200,
+        "okcu": 150,
+        "suvari": 80,
+        "kusatma": 10
+      },
+      "unique": false
+    },
+    {
+      "id": 33,
+      "name": "Camlica Sehri",
+      "type": "sehir",
+      "province": "aksu",
+      "q": -2,
+      "r": 0,
+      "ring": 2,
+      "level": 1,
+      "income_mult": 1.5,
+      "npc_garrison": {
+        "milis": 0,
+        "mizrakci": 120,
+        "okcu": 80,
+        "suvari": 30,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 34,
+      "name": "Cakmaktasi",
+      "type": "maden",
+      "province": "aksu",
+      "q": -1,
+      "r": -1,
+      "ring": 2,
+      "level": 1,
+      "income_mult": 1.5,
+      "npc_garrison": {
+        "milis": 0,
+        "mizrakci": 120,
+        "okcu": 80,
+        "suvari": 30,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 35,
+      "name": "Ucgen Burc",
+      "type": "kale",
+      "province": "aksu",
+      "q": -3,
+      "r": 0,
+      "ring": 3,
+      "level": 1,
+      "income_mult": 1.2,
+      "npc_garrison": {
+        "milis": 80,
+        "mizrakci": 50,
+        "okcu": 30,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 36,
+      "name": "Gunesli Tarla",
+      "type": "tarla",
+      "province": "aksu",
+      "q": -2,
+      "r": -1,
+      "ring": 3,
+      "level": 1,
+      "income_mult": 1.2,
+      "npc_garrison": {
+        "milis": 80,
+        "mizrakci": 50,
+        "okcu": 30,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 37,
+      "name": "Denizkapi",
+      "type": "sehir",
+      "province": "aksu",
+      "q": -1,
+      "r": -2,
+      "ring": 3,
+      "level": 1,
+      "income_mult": 1.2,
+      "npc_garrison": {
+        "milis": 80,
+        "mizrakci": 50,
+        "okcu": 30,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 38,
+      "name": "Kirikkaya",
+      "type": "maden",
+      "province": "aksu",
+      "q": -4,
+      "r": 0,
+      "ring": 4,
+      "level": 1,
+      "income_mult": 1.0,
+      "npc_garrison": {
+        "milis": 25,
+        "mizrakci": 12,
+        "okcu": 0,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 39,
+      "name": "Karahisar",
+      "type": "kale",
+      "province": "aksu",
+      "q": -3,
+      "r": -1,
+      "ring": 4,
+      "level": 1,
+      "income_mult": 1.0,
+      "npc_garrison": {
+        "milis": 25,
+        "mizrakci": 12,
+        "okcu": 0,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 40,
+      "name": "Bolluk Ovasi",
+      "type": "tarla",
+      "province": "aksu",
+      "q": -2,
+      "r": -2,
+      "ring": 4,
+      "level": 1,
+      "income_mult": 1.0,
+      "npc_garrison": {
+        "milis": 25,
+        "mizrakci": 12,
+        "okcu": 0,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 41,
+      "name": "Buyukpazar",
+      "type": "sehir",
+      "province": "aksu",
+      "q": -1,
+      "r": -3,
+      "ring": 4,
+      "level": 1,
+      "income_mult": 1.0,
+      "npc_garrison": {
+        "milis": 25,
+        "mizrakci": 12,
+        "okcu": 0,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 42,
+      "name": "Yoncali",
+      "type": "tarla",
+      "province": "karaorman",
+      "q": 0,
+      "r": -1,
+      "ring": 1,
+      "level": 1,
+      "income_mult": 2.0,
+      "npc_garrison": {
+        "milis": 0,
+        "mizrakci": 200,
+        "okcu": 150,
+        "suvari": 80,
+        "kusatma": 10
+      },
+      "unique": false
+    },
+    {
+      "id": 43,
+      "name": "Sarraflar",
+      "type": "sehir",
+      "province": "karaorman",
+      "q": 0,
+      "r": -2,
+      "ring": 2,
+      "level": 1,
+      "income_mult": 1.5,
+      "npc_garrison": {
+        "milis": 0,
+        "mizrakci": 120,
+        "okcu": 80,
+        "suvari": 30,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 44,
+      "name": "Kurskuyu",
+      "type": "maden",
+      "province": "karaorman",
+      "q": 1,
+      "r": -2,
+      "ring": 2,
+      "level": 1,
+      "income_mult": 1.5,
+      "npc_garrison": {
+        "milis": 0,
+        "mizrakci": 120,
+        "okcu": 80,
+        "suvari": 30,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 45,
+      "name": "Yuceburc",
+      "type": "kale",
+      "province": "karaorman",
+      "q": 0,
+      "r": -3,
+      "ring": 3,
+      "level": 1,
+      "income_mult": 1.2,
+      "npc_garrison": {
+        "milis": 80,
+        "mizrakci": 50,
+        "okcu": 30,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 46,
+      "name": "Degirmenderesi",
+      "type": "tarla",
+      "province": "karaorman",
+      "q": 1,
+      "r": -3,
+      "ring": 3,
+      "level": 1,
+      "income_mult": 1.2,
+      "npc_garrison": {
+        "milis": 80,
+        "mizrakci": 50,
+        "okcu": 30,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 47,
+      "name": "Hanlar Sehri",
+      "type": "sehir",
+      "province": "karaorman",
+      "q": 2,
+      "r": -3,
+      "ring": 3,
+      "level": 1,
+      "income_mult": 1.2,
+      "npc_garrison": {
+        "milis": 80,
+        "mizrakci": 50,
+        "okcu": 30,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 48,
+      "name": "Maden Bogazi",
+      "type": "maden",
+      "province": "karaorman",
+      "q": 0,
+      "r": -4,
+      "ring": 4,
+      "level": 1,
+      "income_mult": 1.0,
+      "npc_garrison": {
+        "milis": 25,
+        "mizrakci": 12,
+        "okcu": 0,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 49,
+      "name": "Sarpsurlar",
+      "type": "kale",
+      "province": "karaorman",
+      "q": 1,
+      "r": -4,
+      "ring": 4,
+      "level": 1,
+      "income_mult": 1.0,
+      "npc_garrison": {
+        "milis": 25,
+        "mizrakci": 12,
+        "okcu": 0,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 50,
+      "name": "Ambarkoy",
+      "type": "tarla",
+      "province": "karaorman",
+      "q": 2,
+      "r": -4,
+      "ring": 4,
+      "level": 1,
+      "income_mult": 1.0,
+      "npc_garrison": {
+        "milis": 25,
+        "mizrakci": 12,
+        "okcu": 0,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 51,
+      "name": "Beyazsur",
+      "type": "sehir",
+      "province": "karaorman",
+      "q": 3,
+      "r": -4,
+      "ring": 4,
+      "level": 1,
+      "income_mult": 1.0,
+      "npc_garrison": {
+        "milis": 25,
+        "mizrakci": 12,
+        "okcu": 0,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 52,
+      "name": "Basakli",
+      "type": "tarla",
+      "province": "tasgecit",
+      "q": 1,
+      "r": -1,
+      "ring": 1,
+      "level": 1,
+      "income_mult": 2.0,
+      "npc_garrison": {
+        "milis": 0,
+        "mizrakci": 200,
+        "okcu": 150,
+        "suvari": 80,
+        "kusatma": 10
+      },
+      "unique": false
+    },
+    {
+      "id": 53,
+      "name": "Ipekyolu",
+      "type": "sehir",
+      "province": "tasgecit",
+      "q": 2,
+      "r": -2,
+      "ring": 2,
+      "level": 1,
+      "income_mult": 1.5,
+      "npc_garrison": {
+        "milis": 0,
+        "mizrakci": 120,
+        "okcu": 80,
+        "suvari": 30,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 54,
+      "name": "Kizilcevher",
+      "type": "maden",
+      "province": "tasgecit",
+      "q": 2,
+      "r": -1,
+      "ring": 2,
+      "level": 1,
+      "income_mult": 1.5,
+      "npc_garrison": {
+        "milis": 0,
+        "mizrakci": 120,
+        "okcu": 80,
+        "suvari": 30,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 55,
+      "name": "Gecitbasi Kalesi",
+      "type": "kale",
+      "province": "tasgecit",
+      "q": 3,
+      "r": -3,
+      "ring": 3,
+      "level": 1,
+      "income_mult": 1.2,
+      "npc_garrison": {
+        "milis": 80,
+        "mizrakci": 50,
+        "okcu": 30,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 56,
+      "name": "Cimenyurt",
+      "type": "tarla",
+      "province": "tasgecit",
+      "q": 3,
+      "r": -2,
+      "ring": 3,
+      "level": 1,
+      "income_mult": 1.2,
+      "npc_garrison": {
+        "milis": 80,
+        "mizrakci": 50,
+        "okcu": 30,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 57,
+      "name": "Tuzkoy",
+      "type": "sehir",
+      "province": "tasgecit",
+      "q": 3,
+      "r": -1,
+      "ring": 3,
+      "level": 1,
+      "income_mult": 1.2,
+      "npc_garrison": {
+        "milis": 80,
+        "mizrakci": 50,
+        "okcu": 30,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 58,
+      "name": "Korukbasi",
+      "type": "maden",
+      "province": "tasgecit",
+      "q": 4,
+      "r": -4,
+      "ring": 4,
+      "level": 1,
+      "income_mult": 1.0,
+      "npc_garrison": {
+        "milis": 25,
+        "mizrakci": 12,
+        "okcu": 0,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 59,
+      "name": "Aslanpence",
+      "type": "kale",
+      "province": "tasgecit",
+      "q": 4,
+      "r": -3,
+      "ring": 4,
+      "level": 1,
+      "income_mult": 1.0,
+      "npc_garrison": {
+        "milis": 25,
+        "mizrakci": 12,
+        "okcu": 0,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 60,
+      "name": "Ekinova",
+      "type": "tarla",
+      "province": "tasgecit",
+      "q": 4,
+      "r": -2,
+      "ring": 4,
+      "level": 1,
+      "income_mult": 1.0,
+      "npc_garrison": {
+        "milis": 25,
+        "mizrakci": 12,
+        "okcu": 0,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    },
+    {
+      "id": 61,
+      "name": "Zanaatkarlar",
+      "type": "sehir",
+      "province": "tasgecit",
+      "q": 4,
+      "r": -1,
+      "ring": 4,
+      "level": 1,
+      "income_mult": 1.0,
+      "npc_garrison": {
+        "milis": 25,
+        "mizrakci": 12,
+        "okcu": 0,
+        "suvari": 0,
+        "kusatma": 0
+      },
+      "unique": false
+    }
+  ]
+}
