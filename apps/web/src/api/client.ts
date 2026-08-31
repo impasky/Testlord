@@ -1,7 +1,24 @@
 /** Tipli API istemcisi. Sunucu tek otoritedir; istemci hiçbir sayı yazmaz. */
 import type { Army, GearLineKey, Resources, StatKey } from '@lordlar/shared';
 
-const BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+/**
+ * API adresi.
+ *
+ * Üretimde (tek servisli dağıtım) API arayüzle AYNI origin'den sunulur, bu
+ * yüzden göreli yol kullanılır — port yazmak yanlış olur.
+ *
+ * Geliştirmede arayüz Vite'ta (5173), API ayrı süreçte (3000) çalışır; adres
+ * sayfanın açıldığı host'tan türetilir. Sabit 'localhost' yazsaydık telefondan
+ * açıldığında 'localhost' telefonun KENDİSİ olurdu ve hiçbir istek gitmezdi.
+ *
+ * VITE_API_URL verilirse her ikisini de geçersiz kılar.
+ */
+const BASE =
+  import.meta.env.VITE_API_URL ??
+  (import.meta.env.DEV
+    ? `${window.location.protocol}//${window.location.hostname}:3000`
+    : '');
+
 const TOKEN_KEY = 'lordlar_token';
 
 export function getToken(): string | null {

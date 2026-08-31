@@ -1,0 +1,56 @@
+# Render Blueprint — Lordlar Çağı
+#
+# Telefon tarayıcısından kurulabilir: render.com → New → Blueprint → bu repoyu
+# seç. Render bu dosyayı okuyup hem sunucuyu hem PostgreSQL'i kendisi kurar.
+#
+# Tek servis: API hem oyunu hem arayüzü sunar (SERVE_WEB) ve worker'ı kendi
+# içinde çalıştırır (RUN_WORKER). Render'ın ücretsiz katmanında ayrı bir worker
+# süreci yok; ayrıca tek origin olduğu için CORS hiç devreye girmiyor.
+
+databases:
+  - name: lordlar-db
+    databaseName: lordlar_cagi
+    user: lordlar
+    plan: free
+
+services:
+  - type: web
+    name: lordlar-cagi
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build
+    startCommand: pnpm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+
+      - key: DATABASE_URL
+        fromDatabase:
+          name: lordlar-db
+          property: connectionString
+
+      # Render rastgele üretir; kimse (sen dahil) görmek zorunda değil
+      - key: JWT_SECRET
+        generateValue: true
+
+      - key: NODE_ENV
+        value: production
+
+      # Arayüzü aynı sunucudan sun
+      - key: SERVE_WEB
+        value: "true"
+
+      # Worker'ı API sürecinin içinde çalıştır
+      - key: RUN_WORKER
+        value: "true"
+
+      # Açılışta migration'ları uygula ve dünya yoksa aç
+      - key: AUTO_MIGRATE
+        value: "true"
+
+      # İlk açılışta 6 rakip lord ekle. Tek başına boş bir dünyada sıralama,
+      # PvP ve düşman garnizonu denenemez. Kendi dünyanı kurduğunda "false" yap.
+      - key: SEED_DEMO_LORDS
+        value: "true"

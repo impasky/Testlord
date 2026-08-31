@@ -33,6 +33,25 @@ NPC'den değil, başka bir lorddan almak zorundasın. Haritanın merkezindeki
 
 ---
 
+## Ekranlar
+
+| | |
+|---|---|
+| ![Malikâne](docs/gorseller/01-malikane.png) | ![Lord](docs/gorseller/02-lord.png) |
+| **Malikâne** — kaynaklar, kuyruklar, olay akışı | **Lord** — statlar, ekipman slotları, savaş gücü |
+| ![Demirhane](docs/gorseller/03-demirhane.png) | ![Kışla](docs/gorseller/04-kisla.png) |
+| **Demirhane** — ekipman üretimi, yükseltme, ordu donanımı | **Kışla** — birim eğitimi, komuta kapasitesi, erzak dengesi |
+| ![Harita](docs/gorseller/05-harita.png) | ![Saldırı](docs/gorseller/07-harita-saldiri.png) |
+| **Harita** — 61 hex, sahiplik renk + desenle | **Saldırı** — ordu seç, önizle, yürü |
+| ![Generaller](docs/gorseller/08-generaller.png) | ![Sıralama](docs/gorseller/09-siralama.png) |
+| **Generaller** — 12 kişilik kadro, 3 slot | **Sıralama** — Şöhret, Fetih, Kılıç |
+
+Telefonda:
+
+| | |
+|---|---|
+| ![Telefon Malikâne](docs/gorseller/11-telefon-malikane.png) | ![Telefon Harita](docs/gorseller/10-telefon-harita.png) |
+
 ## Kendin oyna
 
 Gereken: **Node 22+**, **pnpm**, ve bir **PostgreSQL 16** (Docker ile gelir).
@@ -51,6 +70,10 @@ pnpm dev                        # arayüz :5173, API :3000
 ```
 
 Tarayıcıda **http://localhost:5173** → kayıt ol.
+
+Aynı Wi-Fi'daki telefondan da açabilirsin: bilgisayarının yerel IP'siyle
+`http://192.168.x.x:5173`. Vite tüm arayüzlere bağlanır ve arayüz API adresini
+sayfanın açıldığı host'tan türetir, ek ayar gerekmez.
 
 **İkinci bir terminalde `pnpm worker` çalıştır.** Worker olmadan yürüyüşler
 varmaz ve kuyruklar bitmez — oyun ilerlemez.
@@ -86,6 +109,40 @@ Sonra kendi hesabınla kayıt ol. Haritada **noktalı desenli** bölgeler onlar�
 | Askerler kaçıyor | Erzak eksiye düşmüş — Tarla bölgesi al ya da ordunu küçült |
 | "Hedef koruma altında" | Yeni oyuncu 72 saat, fethedilen bölge 6 saat korumalı |
 
+## Telefondan oynamak — Render'a kur
+
+Bilgisayarın yoksa oyunu bir sunucuya kurup telefon tarayıcısından açabilirsin.
+Aşağıdaki adımların tamamı telefondan yapılabilir.
+
+1. **render.com**'a gir, GitHub hesabınla kayıt ol
+2. **New → Blueprint**
+3. Bu repoyu seç (`Testlord`) ve dalı `claude/medieval-strategy-game-design-y08qr7` yap
+4. **Apply** de
+
+Render repodaki `render.yaml`'ı okuyup gerisini kendisi yapar: PostgreSQL'i
+kurar, bağlantı bilgisini sunucuya geçirir, JWT anahtarını rastgele üretir,
+migration'ları uygular, dünyayı açar ve 6 rakip lord ekler.
+
+İlk kurulum 5–10 dakika sürer. Bittiğinde Render sana
+`https://lordlar-cagi.onrender.com` gibi bir adres verir — telefondan onu aç,
+kayıt ol, oyna.
+
+### Bilmen gerekenler
+
+| Konu | Durum |
+|---|---|
+| **Uyku** | Ücretsiz katmanda 15 dakika kullanılmazsa sunucu uyur. Sonraki açılış ~1 dakika sürer. Uyurken yürüyüşler ilerlemez ama uyanınca hepsi birden çözülür — kayıp olmaz |
+| **Veritabanı** | Ücretsiz PostgreSQL 30 gün sonra yenilenmek ister; Render e-posta gönderir |
+| **Test uçları** | Üretimde tamamen kapalı — kimse kendine kaynak veremez |
+| **Rakipler** | `SEED_DEMO_LORDS=true` ile 6 rakip lord eklenir. Gerçek oyuncularla oynayacaksan Render panelinden `false` yapıp veritabanını sıfırla |
+
+### Tek servis nasıl çalışıyor
+
+Sunucu hem API'yi hem derlenmiş arayüzü aynı adresten sunar ve worker'ı kendi
+sürecinde çalıştırır. Bunun üç faydası var: ücretsiz katmanda ayrı worker
+gerekmez, tek origin olduğu için CORS hiç devreye girmez, ve kurulumda tek
+servis ayarlaman yeter.
+
 ## Doğrulama
 
 ```bash
@@ -102,6 +159,7 @@ pnpm e2e         # oyun döngüsü + shard + worker + tarayıcı (sunucu ayakta 
 
 ```
 docs/
+  gorseller/              Ekran görüntüleri
   00-ozet-ve-kapsam.md    Yönetici özeti + DONDURULMUŞ kapsam sınırı (önce bunu oku)
   01-oyun-tasarimi.md     Tüm sistemler, oynanış döngüleri, ekranlar
   02-denge-formulleri.md  Her formül ve tablo, gerekçeleriyle
@@ -132,6 +190,7 @@ tools/
   worker-testi.mjs        Worker'ın yürüyüşü kendiliğinden çözdüğünü doğrular
   tarayici-tam-akis.mjs   Gerçek tarayıcıda yedi ekran akışı
   smoke.mjs               Hızlı duman testi
+  uretim-testi.mjs        Tek servisli üretim derlemesini telefon boyutunda test eder
   demo-lordlar.mjs        Test için rakip lordlarla dolu bir dünya kurar
 ```
 

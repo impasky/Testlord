@@ -8,6 +8,14 @@ const schema = z.object({
   // Virgülle ayrılmış liste. localhost ve 127.0.0.1 FARKLI origin sayılır —
   // ikisi de olmazsa tarayıcı isteği CORS'ta düşer.
   WEB_ORIGIN: z.string().default('http://localhost:5173,http://127.0.0.1:5173'),
+  /** true ise worker döngüsü API sürecinin içinde çalışır (tek servisli dağıtım). */
+  RUN_WORKER: z.enum(['true', 'false']).default('false'),
+  /** true ise derlenmiş arayüz aynı sunucudan servis edilir. */
+  SERVE_WEB: z.enum(['true', 'false']).default('false'),
+  /** Açılışta migration + bölge tohumlaması yapılsın mı. */
+  AUTO_MIGRATE: z.enum(['true', 'false']).default('false'),
+  /** İlk açılışta dünyaya rakip lordlar eklensin mi (test dağıtımı için). */
+  SEED_DEMO_LORDS: z.enum(['true', 'false']).default('false'),
 });
 
 const parsed = schema.safeParse(process.env);
@@ -21,6 +29,10 @@ if (!parsed.success) {
 
 export const env = {
   ...parsed.data,
+  runWorker: parsed.data.RUN_WORKER === 'true',
+  serveWeb: parsed.data.SERVE_WEB === 'true',
+  autoMigrate: parsed.data.AUTO_MIGRATE === 'true',
+  seedDemoLords: parsed.data.SEED_DEMO_LORDS === 'true',
   webOrigins: parsed.data.WEB_ORIGIN.split(',')
     .map((o) => o.trim())
     .filter(Boolean),
