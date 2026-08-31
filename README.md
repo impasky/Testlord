@@ -33,22 +33,58 @@ NPC'den değil, başka bir lorddan almak zorundasın. Haritanın merkezindeki
 
 ---
 
-## Çalıştırma
+## Kendin oyna
+
+Gereken: **Node 22+**, **pnpm**, ve bir **PostgreSQL 16** (Docker ile gelir).
 
 ```bash
-pnpm install
-docker compose up -d postgres           # ya da yerel bir PostgreSQL 16
+git clone <repo> && cd Testlord
+git checkout claude/medieval-strategy-game-design-y08qr7
 
-cp .env.example apps/api/.env           # DATABASE_URL ve JWT_SECRET'i düzenle
-pnpm --filter @lordlar/api prisma migrate dev
-pnpm db:seed                            # 61 bölgeyi yazar, ilk dünyayı açar
+pnpm install                    # Prisma istemcisi otomatik üretilir
+docker compose up -d postgres   # ya da kendi PostgreSQL'in
 
-pnpm dev                                # arayüz :5173, API :3000
-pnpm worker                             # ayrı terminalde: yürüyüş ve kuyruk çözümü
+cp .env.example apps/api/.env   # kendi PostgreSQL'ini kullanıyorsan DATABASE_URL'i düzenle
+pnpm db:setup                   # Prisma istemcisi + migration + 61 bölge + ilk dünya
+
+pnpm dev                        # arayüz :5173, API :3000
 ```
 
-Arayüz http://localhost:5173 adresinde. Kayıt ol, Kışla'da asker eğit,
-Harita'dan kenardaki tahkimatsız bir bölgeye saldır.
+Tarayıcıda **http://localhost:5173** → kayıt ol.
+
+**İkinci bir terminalde `pnpm worker` çalıştır.** Worker olmadan yürüyüşler
+varmaz ve kuyruklar bitmez — oyun ilerlemez.
+
+### Dünyayı canlandır (önerilir)
+
+Yeni bir dünyada tek başınasın: sıralamada tek satır, haritada saldıracak
+oyuncu yok. Rakip lordlar yaratmak için:
+
+```bash
+pnpm demo                       # 6 rakip lord, bölgeleriyle ve ordularıyla
+```
+
+Sonra kendi hesabınla kayıt ol. Haritada **noktalı desenli** bölgeler onların.
+
+### İlk 10 dakikada ne yap
+
+1. **Kışla** → 20 mızrakçı + 15 okçu eğit (başlangıç altının tam buna yeter)
+2. **Harita** → kenardaki *tahkimatsız* bir bölge seç (Tarla/Şehir/Maden).
+   Kale'ler %30 tahkimatlı, ilk ordunla alınamaz — bu bilinçli.
+3. **Önizle** → tahmini gör, sonra **Saldır**
+4. Worker yürüyüşü çözünce bölge senin olur; geliri kaynak çubuğuna yansır
+5. **Demirhane** → T1 ekipman üret, **Lord** sekmesinden kuşan
+6. **Lord** → stat puanlarını dağıt (Liderlik daha büyük ordu demek)
+
+### Sıkışırsan
+
+| Belirti | Sebep |
+|---|---|
+| Yürüyüş varmıyor, kuyruk bitmiyor | `pnpm worker` çalışmıyor |
+| "Komuta kapasiten yetmiyor" | Liderlik statını artır (Lord sekmesi) |
+| Savaşı kazandın ama bölge senin olmadı | Ele geçirmek için ~1,5 kat güç gerekir; dar zafer sadece yağma verir |
+| Askerler kaçıyor | Erzak eksiye düşmüş — Tarla bölgesi al ya da ordunu küçült |
+| "Hedef koruma altında" | Yeni oyuncu 72 saat, fethedilen bölge 6 saat korumalı |
 
 ## Doğrulama
 
@@ -96,6 +132,7 @@ tools/
   worker-testi.mjs        Worker'ın yürüyüşü kendiliğinden çözdüğünü doğrular
   tarayici-tam-akis.mjs   Gerçek tarayıcıda yedi ekran akışı
   smoke.mjs               Hızlı duman testi
+  demo-lordlar.mjs        Test için rakip lordlarla dolu bir dünya kurar
 ```
 
 ## Nereden başlamalı

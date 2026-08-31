@@ -39,6 +39,25 @@ export async function devRoutes(app: FastifyInstance): Promise<void> {
     return { cozulen: n };
   });
 
+  /**
+   * Çağıranın dünyasındaki tüm kalkanları kaldırır: bölge fetih korumaları ve
+   * lordların yeni oyuncu korumaları. Demo dünyası kurulduktan sonra her şeyin
+   * hemen saldırılabilir olması için.
+   */
+  app.post('/test/kalkanlari-kaldir', { preHandler: requireAuth }, async (req) => {
+    const lordId = await findLordByUser(req.user.userId);
+    const { worldId } = await prisma.lord.findUniqueOrThrow({
+      where: { id: lordId },
+      select: { worldId: true },
+    });
+    const b = await prisma.region.updateMany({ where: { worldId }, data: { shieldUntil: null } });
+    const l = await prisma.lord.updateMany({
+      where: { worldId, id: { not: lordId } },
+      data: { protectionUntil: null },
+    });
+    return { bolgeKalkani: b.count, lordKalkani: l.count };
+  });
+
   /** Saati geriye alır: gelir birikimini test etmek için. */
   app.post('/test/saat-ilerlet', { preHandler: requireAuth }, async (req) => {
     const lordId = await findLordByUser(req.user.userId);
