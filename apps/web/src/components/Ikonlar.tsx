@@ -75,6 +75,22 @@ export function BirimIkonu({ tip, ...rest }: { tip: string } & IkonProps) {
   return <C {...rest} />;
 }
 
+/* Gezinme ve arayüz */
+export const IkonNavMalikane = yap('navMalikane');
+export const IkonNavKisla = yap('navKisla');
+export const IkonNavHarita = yap('navHarita');
+export const IkonNavDemirhane = yap('navDemirhane');
+export const IkonNavMenu = yap('navMenu');
+export const IkonNavLord = yap('navLord');
+export const IkonNavGeneraller = yap('navGeneraller');
+export const IkonNavSiralama = yap('navSiralama');
+export const IkonSohret = yap('sohret');
+export const IkonKapali = yap('kapali');
+export const IkonOnay = yap('onay');
+export const IkonGoz = yap('goz');
+export const IkonSancak = yap('sancak');
+export const IkonKurnaz = yap('kurnaz');
+
 const BOLGE_IKONU = {
   tarla: IkonTarla,
   maden: IkonMaden,

@@ -332,6 +332,11 @@ Savaş raporu ekran değil, **modal**: Harita ve Malikâne'den açılır.
 
 ### Arayüz ilkeleri
 
+**Sadece mobil.** Masaüstü düzeni yok: tek sütun, sabit üst durum çubuğu,
+sabit alt gezinme (4 sekme + menü), dokunmatik hedefleri en az 44px.
+Bölge detayı yan panel değil alt sayfa olarak açılır.
+
+
 - **Her ekranda kaynak çubuğu görünür.** Oyuncu "param yeter mi?"yi hiç sormamalı.
 - **Her timer geri sayım gösterir**, bitiş saatini değil. ("18 dk" > "14:32'de")
 - **Her savaş öncesi tahmin gösterilir.** Aynı simülasyon istemcide çalışır,

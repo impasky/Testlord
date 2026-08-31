@@ -34,7 +34,7 @@ await page.fill('input[type=email]',`tel${d}@lordlar.dev`);
 await page.fill('input[type=password]','parola1234');
 await page.click('button[type=submit]');
 let girdi=true;
-try{ await page.waitForSelector('text=Malikâne',{timeout:15000}); }
+try{ await page.waitForSelector('nav button:has-text("Malikâne")',{timeout:15000}); }
 catch{ girdi=false; console.log('   sayfa:',(await page.locator('body').innerText()).slice(0,200)); }
 k('Telefondan kayıt olup oyuna girildi', girdi);
 if(!girdi){ for(const h of hatalar.slice(0,4)) console.log('    -',h); await b.close(); process.exit(1); }
@@ -44,15 +44,23 @@ await page.screenshot({path:`${SP}/tel-2-malikane.png`,fullPage:true});
 const tasma=await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+1);
 k('Yatay taşma yok',!tasma, await page.evaluate(()=>`${document.documentElement.scrollWidth}px içerik / ${window.innerWidth}px ekran`));
 
-for(const [s,f] of [['Kışla','tel-3-kisla.png'],['Harita','tel-4-harita.png'],['Sıralama','tel-5-siralama.png']]){
-  await page.click(`button:has-text("${s}")`);
+// Alt gezinme sekmeleri
+for(const [s,f] of [['Kışla','tel-3-kisla.png'],['Harita','tel-4-harita.png']]){
+  await page.locator(`nav button:has-text("${s}")`).click();
   await page.waitForTimeout(1600);
   await page.screenshot({path:`${SP}/${f}`,fullPage:true});
 }
-const satir=await page.locator('tbody tr').count();
-k('Sıralamada rakip lordlar var', satir>=5, `${satir} lord`);
+// Sıralama menü sayfasında
+await page.locator('nav button:has-text("Menü")').click();
+await page.waitForTimeout(600);
+await page.locator('button:has-text("Sıralama")').last().click();
+await page.waitForTimeout(1600);
+await page.screenshot({path:`${SP}/tel-5-siralama.png`,fullPage:true});
+// Sıralama artık tablo değil kart listesi (mobil düzen)
+const satir = await page.locator('text=/Sv \\d+ · \\d+ bölge/').count();
+k('Sıralamada rakip lordlar var', satir >= 5, `${satir} lord`);
 
-await page.click('button:has-text("Harita")');
+await page.locator('nav button:has-text("Harita")').click();
 await page.waitForTimeout(1500);
 const dusman=await page.locator('svg path[fill="url(#dusman)"]').count();
 k('Haritada düşman bölgesi var', dusman>0, `${dusman} bölge`);

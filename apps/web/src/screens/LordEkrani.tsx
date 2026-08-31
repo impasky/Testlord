@@ -1,14 +1,26 @@
-/** Ekran 2: Lord — statlar, puan dağıtımı, ekipman slotları. */
+/** Lord — statlar, puan dağıtımı, kuşanılan ekipman. */
 import { EQUIP_SLOTS, STAT_KEYS, type StatKey } from '@lordlar/shared';
 import { useState } from 'react';
 import { ApiError, api, type LordState } from '../api/client';
-import { Button, Panel, Sayi, formatSayi } from '../components/ui';
+import { IkonCan, IkonKurnaz, IkonSaldiri, IkonYer } from '../components/Ikonlar';
+import { Bolum, Buton, Kart, Rozet, formatSayi } from '../components/ui';
 
-const STAT_BILGI: Record<StatKey, { ad: string; etki: (n: number) => string }> = {
-  guc: { ad: 'Güç', etki: (n) => `Savaş katkısı +${n * 3}` },
-  dayaniklilik: { ad: 'Dayanıklılık', etki: (n) => `Can +${n * 25}, yaralanma -%${Math.min(50, n)}` },
-  liderlik: { ad: 'Liderlik', etki: (n) => `Komuta ${50 + n * 8} yer` },
-  kurnazlik: { ad: 'Kurnazlık', etki: (n) => `Yağma +%${Math.min(100, n)}` },
+const STAT: Record<StatKey, { ad: string; renk: string; etki: (n: number) => string }> = {
+  guc: { ad: 'Güç', renk: 'var(--color-kirmizi)', etki: (n) => `Savaş katkısı +${n * 3}` },
+  dayaniklilik: {
+    ad: 'Dayanıklılık',
+    renk: 'var(--color-yesil)',
+    etki: (n) => `Can +${n * 25} · yaralanma −%${Math.min(50, n)}`,
+  },
+  liderlik: { ad: 'Liderlik', renk: 'var(--color-mavi)', etki: (n) => `Komuta ${50 + n * 8} yer` },
+  kurnazlik: { ad: 'Kurnazlık', renk: 'var(--color-mor)', etki: (n) => `Yağma +%${Math.min(100, n)}` },
+};
+
+const STAT_IKONU: Record<StatKey, typeof IkonSaldiri> = {
+  guc: IkonSaldiri,
+  dayaniklilik: IkonCan,
+  liderlik: IkonYer,
+  kurnazlik: IkonKurnaz,
 };
 
 const SLOT_ADI: Record<string, string> = {
@@ -33,14 +45,6 @@ export function LordEkrani({ lord, onGuncelle }: { lord: LordState; onGuncelle: 
   const harcanan = STAT_KEYS.reduce((s, k) => s + dagitim[k], 0);
   const kalan = lord.statPoints - harcanan;
 
-  function degistir(k: StatKey, delta: number) {
-    setDagitim((d) => {
-      const yeni = Math.max(0, d[k] + delta);
-      if (delta > 0 && kalan <= 0) return d;
-      return { ...d, [k]: yeni };
-    });
-  }
-
   async function onayla() {
     setHata(null);
     setBekliyor(true);
@@ -48,122 +52,144 @@ export function LordEkrani({ lord, onGuncelle }: { lord: LordState; onGuncelle: 
       await api.spendStats(dagitim);
       setDagitim({ guc: 0, dayaniklilik: 0, liderlik: 0, kurnazlik: 0 });
       onGuncelle();
-    } catch (err) {
-      setHata(err instanceof ApiError ? err.message : 'İşlem başarısız.');
+    } catch (e) {
+      setHata(e instanceof ApiError ? e.message : 'İşlem başarısız.');
     } finally {
       setBekliyor(false);
     }
   }
 
+  const kusanilan = new Map(lord.equippedItems?.map((i) => [i.slot, i]) ?? []);
+
   return (
-    <div className="grid gap-4 lg:grid-cols-2">
-      <Panel
-        title="Statlar"
-        action={
+    <div className="space-y-4 pt-3">
+      <Bolum
+        baslik="Nitelikler"
+        yan={
           lord.statPoints > 0 ? (
-            <span className="rounded bg-altin/20 px-2 py-0.5 text-xs text-altin">
-              {kalan} puan dağıtılmayı bekliyor
-            </span>
+            <Rozet renk="var(--color-yesil)">{kalan} PUAN</Rozet>
           ) : undefined
         }
       >
-        <ul className="space-y-3">
+        <div className="space-y-2">
           {STAT_KEYS.map((k) => {
+            const Ikon = STAT_IKONU[k];
+            const bilgi = STAT[k];
             const mevcut = lord.stats[k];
             const eklenen = dagitim[k];
-            const bilgi = STAT_BILGI[k];
             return (
-              <li key={k} className="flex items-center gap-3">
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-baseline gap-2">
-                    <span className="font-semibold">{bilgi.ad}</span>
-                    <span className="tabular text-lg">
-                      {mevcut}
-                      {eklenen > 0 && <span className="text-altin"> +{eklenen}</span>}
-                    </span>
+              <Kart key={k} className="p-3">
+                <div className="flex items-center gap-3">
+                  <span
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+                    style={{
+                      background: `color-mix(in srgb, ${bilgi.renk} 20%, transparent)`,
+                      color: bilgi.renk,
+                    }}
+                  >
+                    <Ikon boyut={20} />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-baseline gap-2">
+                      <span className="baslik text-[13px]">{bilgi.ad}</span>
+                      <span className="tabular text-lg leading-none font-bold">
+                        {mevcut}
+                        {eklenen > 0 && <span className="text-yesil"> +{eklenen}</span>}
+                      </span>
+                    </div>
+                    <p className="mt-0.5 text-[11px] text-solgun">{bilgi.etki(mevcut + eklenen)}</p>
                   </div>
-                  <p className="text-xs text-solgun">{bilgi.etki(mevcut + eklenen)}</p>
+                  {lord.statPoints > 0 && (
+                    <div className="flex shrink-0 gap-1.5">
+                      <button
+                        onClick={() => setDagitim((d) => ({ ...d, [k]: Math.max(0, d[k] - 1) }))}
+                        disabled={eklenen === 0}
+                        className="bas baslik h-9 w-9 rounded-lg border border-kenar text-solgun disabled:opacity-30"
+                      >
+                        −
+                      </button>
+                      <button
+                        onClick={() => setDagitim((d) => ({ ...d, [k]: d[k] + 1 }))}
+                        disabled={kalan <= 0}
+                        className="bas baslik h-9 w-9 rounded-lg bg-yesil-koyu text-white disabled:opacity-30"
+                      >
+                        +
+                      </button>
+                    </div>
+                  )}
                 </div>
-                {lord.statPoints > 0 && (
-                  <div className="flex shrink-0 gap-1">
-                    <Button variant="ghost" onClick={() => degistir(k, -1)} disabled={eklenen === 0}>
-                      −
-                    </Button>
-                    <Button variant="ghost" onClick={() => degistir(k, 1)} disabled={kalan <= 0}>
-                      +
-                    </Button>
-                  </div>
-                )}
-              </li>
+              </Kart>
             );
           })}
-        </ul>
+        </div>
 
-        {hata && <p className="mt-3 text-sm text-kan">{hata}</p>}
+        {hata && <p className="mt-2 text-[13px] text-kirmizi">{hata}</p>}
 
         {harcanan > 0 && (
-          <div className="mt-4 flex gap-2">
-            <Button onClick={onayla} disabled={bekliyor}>
+          <div className="mt-3 flex gap-2">
+            <Buton onClick={onayla} disabled={bekliyor} tam boy="buyuk">
               {bekliyor ? 'Kaydediliyor...' : `${harcanan} puanı dağıt`}
-            </Button>
-            <Button
-              variant="ghost"
+            </Buton>
+            <Buton
+              tur="anahat"
+              boy="buyuk"
               onClick={() => setDagitim({ guc: 0, dayaniklilik: 0, liderlik: 0, kurnazlik: 0 })}
             >
               Sıfırla
-            </Button>
+            </Buton>
           </div>
         )}
-
-        <p className="mt-4 border-t border-kenar pt-3 text-xs text-solgun">
-          Puan dağıtımı kalıcıdır. Liderlik ordunun büyüklüğünü ve general slotunu belirler;
-          Güç ve ekipman lordun savaştaki payını.
+        <p className="mt-2 px-1 text-[11px] text-sonuk">
+          Puan dağıtımı kalıcıdır. Liderlik ordunun büyüklüğünü ve general slotunu belirler.
         </p>
-      </Panel>
+      </Bolum>
 
-      <div className="space-y-4">
-        <Panel title="Ekipman">
-          <div className="grid grid-cols-3 gap-2">
-            {EQUIP_SLOTS.map((slot) => (
-              <div
-                key={slot}
-                className="flex aspect-square flex-col items-center justify-center rounded border border-dashed border-kenar bg-gece/40 p-2 text-center"
-              >
-                <span className="text-xs text-solgun">{SLOT_ADI[slot]}</span>
-                <span className="mt-1 text-xs text-solgun/60">boş</span>
-              </div>
-            ))}
-          </div>
-          <p className="mt-3 text-xs text-solgun">
-            Ekipman Demirhane'de üretilir. (M3'te açılacak)
-          </p>
-        </Panel>
+      <Bolum baslik="Kuşanılan Ekipman">
+        <div className="grid grid-cols-3 gap-2">
+          {EQUIP_SLOTS.map((slot) => {
+            const it = kusanilan.get(slot);
+            return (
+              <Kart key={slot} className="flex aspect-square flex-col items-center justify-center p-2">
+                {it ? (
+                  <>
+                    <span className="baslik text-[10px] text-solgun">{SLOT_ADI[slot]}</span>
+                    <span className="baslik mt-1 text-[13px] text-altin">
+                      T{it.tier}
+                      {it.upgradeLevel > 0 && `+${it.upgradeLevel}`}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span className="baslik text-[10px] text-sonuk">{SLOT_ADI[slot]}</span>
+                    <span className="mt-1 text-[10px] text-sonuk/70">boş</span>
+                  </>
+                )}
+              </Kart>
+            );
+          })}
+        </div>
+      </Bolum>
 
-        <Panel title="Savaş Gücü">
-          <dl className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <dt className="text-solgun">Ekipman gücü</dt>
-              <dd>
-                <Sayi>{formatSayi(lord.equipmentPower)}</Sayi>
-              </dd>
+      <Bolum baslik="Savaş Gücü">
+        <Kart className="divide-y divide-kenar/70 p-0">
+          {[
+            ['Ekipman gücü', formatSayi(lord.equipmentPower)],
+            ['Lord savaş katkısı', formatSayi(lord.lordContribution)],
+            [
+              'Ordu donanımı',
+              `Sld +%${Math.round(lord.gearBonus.saldiri * 100)} · Sav +%${Math.round(
+                lord.gearBonus.savunma * 100,
+              )} · Can +%${Math.round(lord.gearBonus.can * 100)}`,
+            ],
+            ['ELO', `${lord.elo} · ${lord.pvpWins}G ${lord.pvpLosses}M`],
+          ].map(([ad, deger]) => (
+            <div key={ad} className="flex items-center justify-between gap-3 px-3 py-2.5">
+              <span className="text-[13px] text-solgun">{ad}</span>
+              <span className="tabular text-[13px] font-bold">{deger}</span>
             </div>
-            <div className="flex justify-between">
-              <dt className="text-solgun">Lord savaş katkısı</dt>
-              <dd>
-                <Sayi>{formatSayi(lord.lordContribution)}</Sayi>
-              </dd>
-            </div>
-            <div className="flex justify-between border-t border-kenar pt-2">
-              <dt className="text-solgun">Ordu donanımı</dt>
-              <dd className="text-xs">
-                Saldırı +%{Math.round(lord.gearBonus.saldiri * 100)} · Savunma +%
-                {Math.round(lord.gearBonus.savunma * 100)} · Can +%
-                {Math.round(lord.gearBonus.can * 100)}
-              </dd>
-            </div>
-          </dl>
-        </Panel>
-      </div>
+          ))}
+        </Kart>
+      </Bolum>
     </div>
   );
 }

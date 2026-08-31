@@ -46,6 +46,25 @@ const KULLANILAN = {
   sehir: 'village',
   kale: 'castle',
   taht: 'throne-king',
+
+  // Gezinme
+  navMalikane: 'castle',
+  navKisla: 'crossed-swords',
+  navHarita: 'treasure-map',
+  navDemirhane: 'anvil',
+  navMenu: 'hamburger-menu',
+  navLord: 'character',
+  navGeneraller: 'crested-helmet',
+  navSiralama: 'laurels-trophy',
+
+  // Arayüz
+  sohret: 'laurel-crown',
+  kapali: 'cross-mark',
+  onay: 'check-mark',
+  goz: 'all-seeing-eye',
+  artı: 'heart-plus',
+  sancak: 'vertical-banner',
+  kurnaz: 'hood',
 };
 
 const W = set.width ?? 512;

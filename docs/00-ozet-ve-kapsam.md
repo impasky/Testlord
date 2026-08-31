@@ -9,7 +9,7 @@ lordunu güçlendir, bölge ele geçir, ordu besle, sıralamada yüksel.
 
 | Karar | Seçim | Neden |
 |---|---|---|
-| Platform | Web tarayıcı | En hızlı geliştirilir, link ile dağıtılır, mobil tarayıcıda da açılır |
+| Platform | **Sadece mobil** (mobil web) | Oyun telefonda oynanacak. Masaüstü düzeni yok; tek sütun, alt gezinme, dokunmatik hedefleri ≥44px. Render'a tek servis olarak kurulur, telefon tarayıcısından açılır. İleride Capacitor ile mağaza uygulamasına sarılabilir — yeniden yazmak gerekmez |
 | Rakip | Gerçek oyuncular, **asenkron** PvP | Rakip online olmak zorunda değil; sunucu basit kalır, sıralama gerçek olur |
 | Zaman | Sürekli dünya + timer | Oyuncu günde 2-3 kez girer; gelir "lazy accrual" ile hesaplanır, cron gerekmez |
 | Dünya | Shard başına **120 oyuncu**, **61 bölge** | Bölge kıtlığı = zorunlu rekabet. Dolunca yeni shard açılır |
@@ -78,8 +78,8 @@ Yani oyuncuların yarısı bölgesiz. Bu bir hata değil, tasarımın motoru:
 - Kozmetik: arma tasarımcısı, renk seçimi, avatar
 
 **Platform**
-- Mobil uygulama (iOS/Android)
-- Masaüstü istemci
+- Mağaza uygulaması (iOS/Android paketi) — mobil web önce çalışsın
+- Masaüstü düzeni — bilinçli olarak yok
 - Push bildirimi
 - Çoklu dil (v1 sadece Türkçe)
 

@@ -1,14 +1,17 @@
-/** Ekran 6: Generaller — 12 kişilik sabit kadro, kiralama, slot yerleşimi. */
+/** Generaller — 12 kişilik sabit kadro, kiralama, slot yerleşimi. */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ApiError, api, type GeneralDto } from '../api/client';
-import { Button, Panel, formatSayi } from '../components/ui';
+import { Gorsel } from '../components/Gorsel';
+import { IkonAltin, IkonNavGeneraller } from '../components/Ikonlar';
+import { Bolum, Buton, Ilerleme, Kart, Rozet, formatSayi } from '../components/ui';
 
-const NADIRLIK: Record<string, { ad: string; renk: string; kenar: string }> = {
-  bronz: { ad: 'Bronz', renk: 'text-orange-300', kenar: 'border-orange-900/60' },
-  gumus: { ad: 'Gümüş', renk: 'text-slate-300', kenar: 'border-slate-500/50' },
-  altin: { ad: 'Altın', renk: 'text-altin', kenar: 'border-altin/60' },
+const NADIRLIK_RENGI: Record<string, string> = {
+  bronz: '#c97b3c',
+  gumus: '#b8c4cc',
+  altin: '#f5b731',
 };
+const NADIRLIK_ADI: Record<string, string> = { bronz: 'Bronz', gumus: 'Gümüş', altin: 'Altın' };
 
 const ETKI_ADI: Record<string, string> = {
   ordu_saldiri: 'Ordu saldırısı',
@@ -40,58 +43,88 @@ function GeneralKarti({
   onKirala: () => void;
   onAta: (slot: number | null) => void;
 }) {
-  const n = NADIRLIK[g.nadirlik]!;
+  const renk = NADIRLIK_RENGI[g.nadirlik] ?? '#9aa0a6';
   const yeterli = altin >= g.maliyet_altin;
   const yuzde = Math.round(g.etkinDeger * 100);
+  const sahada = g.slotIndex !== null;
 
   return (
-    <div className={`rounded border p-3 ${g.slotIndex !== null ? 'border-altin bg-altin/5' : n.kenar}`}>
-      <div className="flex items-baseline justify-between gap-2">
-        <h3 className="font-semibold">{g.ad}</h3>
-        <span className={`text-xs ${n.renk}`}>{n.ad}</span>
+    <Kart className="p-3" vurgu={sahada ? 'var(--color-altin)' : renk}>
+      <div className="flex gap-3">
+        <div
+          className="oyuk flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border"
+          style={{ borderColor: `color-mix(in srgb, ${renk} 45%, transparent)`, color: renk }}
+        >
+          <Gorsel
+            tur="generaller"
+            ad={g.key}
+            alt={g.ad}
+            boyut={64}
+            className="h-full w-full"
+            yedek={<IkonNavGeneraller boyut={34} />}
+          />
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <div className="flex items-start justify-between gap-2">
+            <h3 className="baslik min-w-0 flex-1 text-[13px] leading-tight">{g.ad}</h3>
+            <Rozet renk={renk}>{NADIRLIK_ADI[g.nadirlik]}</Rozet>
+          </div>
+
+          <p className="mt-1 text-[12px]">
+            <span className="text-solgun">{g.pasif.ad}:</span>{' '}
+            {ETKI_ADI[g.pasif.etki] ?? g.pasif.etki}{' '}
+            <span className="font-bold" style={{ color: renk }}>
+              {yuzde >= 0 ? '+' : ''}%{yuzde}
+            </span>
+          </p>
+          <p className="mt-0.5 text-[11px] leading-snug text-sonuk">
+            <span className="text-solgun">{g.yetenek.ad}:</span> {g.yetenek.aciklama}
+          </p>
+        </div>
       </div>
 
-      <p className="mt-1 text-sm">
-        <span className="text-solgun">{g.pasif.ad}:</span>{' '}
-        {ETKI_ADI[g.pasif.etki] ?? g.pasif.etki} {yuzde >= 0 ? '+' : ''}%{yuzde}
-      </p>
-      <p className="mt-0.5 text-xs text-solgun">
-        <span className="text-parsomen/80">{g.yetenek.ad}:</span> {g.yetenek.aciklama}
-      </p>
-
       {g.sahipMi ? (
-        <>
-          <p className="mt-2 text-xs text-solgun tabular">
-            Seviye {g.level}/20 · {formatSayi(g.xp)}/{formatSayi(g.xpForNext)} XP
-          </p>
+        <div className="mt-2.5 border-t border-kenar/70 pt-2.5">
+          <div className="mb-2 flex items-center gap-2">
+            <span className="tabular shrink-0 text-[11px] text-solgun">Sv {g.level}/20</span>
+            <div className="min-w-0 flex-1">
+              <Ilerleme deger={g.xp} max={g.xpForNext || 1} renk={renk} boy="ince" />
+            </div>
+          </div>
           {g.dinleniyor ? (
-            <p className="mt-2 text-xs text-kan">
-              Yaralı, {new Date(g.dinleniyor).toLocaleString('tr-TR')} tarihine kadar dinleniyor.
+            <p className="text-[11px] text-kirmizi">
+              Yaralı — {new Date(g.dinleniyor).toLocaleString('tr-TR')} tarihine kadar dinleniyor.
             </p>
           ) : (
-            <div className="mt-2 flex flex-wrap gap-1">
+            <div className="flex gap-1.5">
               {Array.from({ length: slots }, (_, i) => (
-                <Button
+                <Buton
                   key={i}
-                  variant={g.slotIndex === i ? 'primary' : 'ghost'}
+                  tur={g.slotIndex === i ? 'altin' : 'sessiz'}
+                  boy="kucuk"
                   onClick={() => onAta(g.slotIndex === i ? null : i)}
                   disabled={bekliyor}
+                  className="flex-1"
                 >
                   Slot {i + 1}
-                </Button>
+                </Buton>
               ))}
             </div>
           )}
-        </>
+        </div>
       ) : (
-        <div className="mt-2">
-          <Button onClick={onKirala} disabled={bekliyor || !yeterli}>
-            Kirala · {formatSayi(g.maliyet_altin)} altın
-          </Button>
-          {!yeterli && <p className="mt-1 text-xs text-kan">Altının yetmiyor.</p>}
+        <div className="mt-2.5 border-t border-kenar/70 pt-2.5">
+          <Buton onClick={onKirala} disabled={bekliyor || !yeterli} tam>
+            <span className="mr-1.5 inline-block align-[-2px]">
+              <IkonAltin boyut={14} />
+            </span>
+            Kirala · {formatSayi(g.maliyet_altin)}
+          </Buton>
+          {!yeterli && <p className="mt-1 text-center text-[11px] text-kirmizi">Altının yetmiyor</p>}
         </div>
       )}
-    </div>
+    </Kart>
   );
 }
 
@@ -110,36 +143,41 @@ export function Generaller({ onGuncelle }: { onGuncelle: () => void }) {
     onError: (e) => setHata(e instanceof ApiError ? e.message : 'İşlem başarısız.'),
   });
 
-  if (q.isLoading || !q.data) return <p className="text-solgun">Kadro çağrılıyor...</p>;
-
+  if (q.isLoading || !q.data) {
+    return <p className="pt-6 text-center text-solgun">Kadro çağrılıyor...</p>;
+  }
   const sahada = q.data.kadro.filter((g) => g.slotIndex !== null);
 
   return (
-    <div className="space-y-4">
-      <Panel title={`Sahadaki Generaller (${sahada.length}/${q.data.slots})`}>
-        {sahada.length === 0 ? (
-          <p className="text-sm text-solgun">
-            Sahada general yok. Kiraladığın bir generali slota yerleştir.
+    <div className="space-y-4 pt-3">
+      <Bolum baslik={`Sahadaki Generaller · ${sahada.length}/${q.data.slots}`}>
+        <Kart className="p-3">
+          {sahada.length === 0 ? (
+            <p className="text-[13px] text-solgun">
+              Sahada general yok. Kiraladığın bir generali slota yerleştir.
+            </p>
+          ) : (
+            <ul className="flex flex-wrap gap-2">
+              {sahada.map((g) => (
+                <li
+                  key={g.key}
+                  className="baslik rounded-lg border border-altin/50 bg-altin/10 px-2.5 py-1.5 text-[11px] text-altin"
+                >
+                  {g.ad} <span className="text-solgun">Sv{g.level}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          <p className="mt-2.5 border-t border-kenar/70 pt-2 text-[11px] text-sonuk">
+            Slot sayısı Liderlik statına bağlıdır: 1 + Liderlik/30, en fazla 3.
           </p>
-        ) : (
-          <ul className="flex flex-wrap gap-3">
-            {sahada.map((g) => (
-              <li key={g.key} className="rounded border border-altin/50 bg-altin/10 px-3 py-1.5 text-sm">
-                <span className="font-semibold">{g.ad}</span>
-                <span className="ml-2 text-xs text-solgun">Lv{g.level}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-        <p className="mt-3 text-xs text-solgun">
-          Slot sayısı Liderlik statına bağlıdır: 1 + Liderlik/30, en fazla 3.
-        </p>
-        {hata && <p className="mt-2 text-sm text-kan">{hata}</p>}
-      </Panel>
+        </Kart>
+        {hata && <p className="mt-2 text-[13px] text-kirmizi">{hata}</p>}
+      </Bolum>
 
       {(['altin', 'gumus', 'bronz'] as const).map((nad) => (
-        <Panel key={nad} title={`${NADIRLIK[nad]!.ad} Generaller`}>
-          <div className="grid gap-3 md:grid-cols-2">
+        <Bolum key={nad} baslik={`${NADIRLIK_ADI[nad]} Generaller`}>
+          <div className="space-y-2">
             {q.data.kadro
               .filter((g) => g.nadirlik === nad)
               .map((g) => (
@@ -154,7 +192,7 @@ export function Generaller({ onGuncelle }: { onGuncelle: () => void }) {
                 />
               ))}
           </div>
-        </Panel>
+        </Bolum>
       ))}
     </div>
   );

@@ -1,7 +1,18 @@
-/** Ekran 1: Malikâne — kaynaklar, kuyruklar, olay akışı. */
+/** Malikâne — durum özeti, kuyruklar, olay akışı. Mobil ana ekran. */
 import { useEffect, useState } from 'react';
 import type { GameEvent, LordState, QueueItem } from '../api/client';
-import { Panel, Sayi, formatKalan, formatSayi } from '../components/ui';
+import type { Sekme } from '../components/MobilKabuk';
+import {
+  IkonKale,
+  IkonNavDemirhane,
+  IkonNavHarita,
+  IkonNavKisla,
+  IkonSancak,
+  IkonSure,
+  IkonUyari,
+  IkonYer,
+} from '../components/Ikonlar';
+import { Bolum, Buton, DegerKarti, Ilerleme, Kart, formatKalan, formatSayi } from '../components/ui';
 
 const KUYRUK_ADI: Record<string, string> = {
   train: 'Asker eğitimi',
@@ -11,145 +22,212 @@ const KUYRUK_ADI: Record<string, string> = {
   upgrade_region: 'Bölge yükseltme',
 };
 
-const OLAY_ADI: Record<string, string> = {
-  saldiriya_ugradin: 'Saldırıya uğradın',
-  bolge_kaybettin: 'Bölge kaybettin',
-  bolge_aldin: 'Bölge aldın',
-  kuyruk_bitti: 'Kuyruk tamamlandı',
-  seviye_atladin: 'Seviye atladın',
-  aclik: 'Açlık',
+const OLAY_RENGI: Record<string, string> = {
+  bolge_aldin: 'var(--color-yesil)',
+  savas_kazandin: 'var(--color-yesil)',
+  bolge_kaybettin: 'var(--color-kirmizi)',
+  savas_kaybettin: 'var(--color-kirmizi)',
+  saldiriya_ugradin: 'var(--color-turuncu)',
+  aclik: 'var(--color-kirmizi)',
 };
 
-function GeriSayim({ finishAt }: { finishAt: string }) {
-  const [, setTick] = useState(0);
+function GeriSayim({ bitis }: { bitis: string }) {
+  const [, tik] = useState(0);
   useEffect(() => {
-    const id = setInterval(() => setTick((t) => t + 1), 1000);
+    const id = setInterval(() => tik((t) => t + 1), 1000);
     return () => clearInterval(id);
   }, []);
-  return <span className="tabular">{formatKalan(new Date(finishAt).getTime() - Date.now())}</span>;
+  return <span className="tabular">{formatKalan(new Date(bitis).getTime() - Date.now())}</span>;
+}
+
+function KuyrukSatiri({ q }: { q: QueueItem }) {
+  const bas = new Date(q.startedAt).getTime();
+  const bit = new Date(q.finishAt).getTime();
+  const gecen = Math.max(0, Math.min(1, (Date.now() - bas) / (bit - bas)));
+  return (
+    <Kart className="p-3">
+      <div className="mb-1.5 flex items-baseline justify-between gap-2 text-[13px]">
+        <span className="truncate">
+          {KUYRUK_ADI[q.kind] ?? q.kind}
+          {typeof q.payload.count === 'number' && (
+            <span className="ml-1.5 text-solgun">×{q.payload.count as number}</span>
+          )}
+        </span>
+        <span className="shrink-0 text-[12px] text-altin">
+          <GeriSayim bitis={q.finishAt} />
+        </span>
+      </div>
+      <Ilerleme deger={gecen} max={1} renk="var(--color-altin)" boy="ince" />
+    </Kart>
+  );
 }
 
 export function Malikane({
   lord,
   queues,
   events,
+  onGit,
 }: {
   lord: LordState;
   queues: QueueItem[];
   events: GameEvent[];
+  onGit: (s: Sekme) => void;
 }) {
   const yarali = lord.woundedUntil && new Date(lord.woundedUntil) > new Date();
   const korumali = lord.protectionUntil && new Date(lord.protectionUntil) > new Date();
 
   return (
-    <div className="grid gap-4 lg:grid-cols-3">
-      <div className="space-y-4 lg:col-span-2">
-        {lord.starving && (
-          <div className="rounded border border-kan/60 bg-kan/15 px-4 py-3">
-            <strong className="text-kan">Ordun aç.</strong>{' '}
-            <span className="text-sm text-parsomen/90">
-              Erzak bitti, askerler saatte %5 firar ediyor. Tarla bölgesi al ya da ordunu küçült.
+    <div className="space-y-4 pt-3">
+      {lord.starving && (
+        <Kart className="border-kirmizi/60 p-3" vurgu="var(--color-kirmizi)">
+          <div className="flex gap-2.5">
+            <span className="shrink-0 text-kirmizi">
+              <IkonUyari boyut={20} />
             </span>
+            <div className="text-[13px]">
+              <strong className="baslik text-kirmizi">Ordun aç</strong>
+              <p className="mt-0.5 text-solgun">
+                Erzak bitti, askerler saatte %5 firar ediyor. Tarla bölgesi al ya da ordunu küçült.
+              </p>
+            </div>
           </div>
-        )}
-        {yarali && (
-          <div className="rounded border border-kan/40 bg-kan/10 px-4 py-3 text-sm">
-            <strong>Lordun yaralı.</strong> İyileşmesine{' '}
-            <GeriSayim finishAt={lord.woundedUntil!} /> kaldı. Bu sürede saldıramazsın.
+        </Kart>
+      )}
+
+      {yarali && (
+        <Kart className="border-turuncu/50 p-3" vurgu="var(--color-turuncu)">
+          <div className="text-[13px]">
+            <strong className="baslik text-turuncu">Lordun yaralı</strong>
+            <p className="mt-0.5 text-solgun">
+              İyileşmesine <GeriSayim bitis={lord.woundedUntil!} /> kaldı. Bu sürede saldıramazsın.
+            </p>
           </div>
-        )}
+        </Kart>
+      )}
 
-        <Panel title="Malikâne">
-          <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm sm:grid-cols-3">
-            <div>
-              <dt className="text-xs text-solgun uppercase">Lord</dt>
-              <dd className="text-base">{lord.name}</dd>
-            </div>
-            <div>
-              <dt className="text-xs text-solgun uppercase">Seviye</dt>
-              <dd className="text-base">
-                <Sayi>{lord.level}</Sayi>
-                <span className="ml-2 text-xs text-solgun">
-                  <Sayi>
-                    {formatSayi(lord.xp)}/{formatSayi(lord.xpForNext)}
-                  </Sayi>{' '}
-                  XP
-                </span>
-              </dd>
-            </div>
-            <div>
-              <dt className="text-xs text-solgun uppercase">Bölge</dt>
-              <dd className="text-base">
-                <Sayi>
-                  {lord.regionCount}/{lord.maxRegions}
-                </Sayi>
-                {lord.ownsThrone && <span className="ml-2 text-altin">+ Taht Kalesi</span>}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-xs text-solgun uppercase">Komuta</dt>
-              <dd className="text-base">
-                <Sayi>
-                  {formatSayi(lord.usedSlots)}/{formatSayi(lord.commandCapacity)}
-                </Sayi>{' '}
-                yer
-              </dd>
-            </div>
-            <div>
-              <dt className="text-xs text-solgun uppercase">Ordu bakımı</dt>
-              <dd className="text-base">
-                <Sayi>{formatSayi(lord.upkeepPerHour)}</Sayi> erzak/sa
-              </dd>
-            </div>
-            <div>
-              <dt className="text-xs text-solgun uppercase">Günlük saldırı</dt>
-              <dd className="text-base">
-                <Sayi>{lord.dailyAttacks}/12</Sayi>
-              </dd>
-            </div>
-          </dl>
-
-          {korumali && (
-            <p className="mt-4 rounded border border-mese/40 bg-mese/10 px-3 py-2 text-xs">
-              Yeni lord kalkanın açık — <GeriSayim finishAt={lord.protectionUntil!} /> kaldı. İlk
-              saldırını yaptığında kalkan düşer.
-            </p>
-          )}
-        </Panel>
-
-        <Panel title={`Kuyruklar (${queues.length})`}>
-          {queues.length === 0 ? (
-            <p className="text-sm text-solgun">
-              Kuyruk boş. Kışlada asker eğit ya da Demirhane'de ekipman üret.
-            </p>
-          ) : (
-            <ul className="divide-y divide-kenar">
-              {queues.map((q) => (
-                <li key={q.id} className="flex items-center justify-between py-2 text-sm">
-                  <span>
-                    {KUYRUK_ADI[q.kind] ?? q.kind}
-                    {typeof q.payload.count === 'number' && (
-                      <span className="ml-2 text-solgun">×{q.payload.count as number}</span>
-                    )}
-                  </span>
-                  <GeriSayim finishAt={q.finishAt} />
-                </li>
-              ))}
-            </ul>
-          )}
-        </Panel>
+      <div className="grid grid-cols-2 gap-2.5">
+        <DegerKarti
+          ikon={<IkonKale boyut={20} />}
+          etiket="Bölgeler"
+          deger={
+            <>
+              {lord.regionCount}
+              <span className="text-sm text-solgun">/{lord.maxRegions}</span>
+              {lord.ownsThrone && <span className="ml-1 text-[11px] text-altin">+Taht</span>}
+            </>
+          }
+          renk="var(--color-altin)"
+        />
+        <DegerKarti
+          ikon={<IkonYer boyut={20} />}
+          etiket="Komuta"
+          deger={
+            <>
+              {formatSayi(lord.usedSlots)}
+              <span className="text-sm text-solgun">/{formatSayi(lord.commandCapacity)}</span>
+            </>
+          }
+          renk="var(--color-mavi)"
+          alt={<Ilerleme deger={lord.usedSlots} max={lord.commandCapacity} renk="var(--color-mavi)" boy="ince" />}
+        />
+        <DegerKarti
+          ikon={<IkonSancak boyut={20} />}
+          etiket="Seviye"
+          deger={lord.level}
+          renk="var(--color-yesil)"
+          alt={
+            <>
+              <Ilerleme deger={lord.xp} max={lord.xpForNext} renk="var(--color-yesil)" boy="ince" />
+              <div className="tabular mt-1 text-[10px] text-sonuk">
+                {formatSayi(lord.xp)}/{formatSayi(lord.xpForNext)} XP
+              </div>
+            </>
+          }
+        />
+        <DegerKarti
+          ikon={<IkonSure boyut={20} />}
+          etiket="Günlük saldırı"
+          deger={
+            <>
+              {lord.dailyAttacks}
+              <span className="text-sm text-solgun">/12</span>
+            </>
+          }
+          renk="var(--color-turuncu)"
+        />
       </div>
 
-      <Panel title="Olay Akışı" className="lg:col-span-1">
-        {events.length === 0 ? (
-          <p className="text-sm text-solgun">Henüz bir şey olmadı.</p>
+      {lord.statPoints > 0 && (
+        <Kart className="p-3" vurgu="var(--color-yesil)">
+          <div className="flex items-center gap-3">
+            <div className="min-w-0 flex-1 text-[13px]">
+              <strong className="baslik text-yesil">{lord.statPoints} stat puanı</strong>
+              <p className="text-solgun">Dağıtılmayı bekliyor.</p>
+            </div>
+            <Buton tur="yesil" boy="kucuk" onClick={() => onGit('lord')}>
+              Dağıt
+            </Buton>
+          </div>
+        </Kart>
+      )}
+
+      {korumali && (
+        <Kart className="border-yesil/40 p-3">
+          <p className="text-[12px] text-solgun">
+            <span className="baslik text-yesil">Yeni lord kalkanı</span> —{' '}
+            <GeriSayim bitis={lord.protectionUntil!} /> kaldı. İlk saldırında kalkan düşer.
+          </p>
+        </Kart>
+      )}
+
+      <Bolum baslik={`Kuyruklar${queues.length ? ` · ${queues.length}` : ''}`}>
+        {queues.length === 0 ? (
+          <Kart className="p-4">
+            <p className="mb-3 text-[13px] text-solgun">Kuyruk boş. Bir şeyler başlat.</p>
+            <div className="flex gap-2">
+              <Buton tur="sessiz" boy="kucuk" onClick={() => onGit('kisla')}>
+                <span className="mr-1.5 inline-block align-[-2px]">
+                  <IkonNavKisla boyut={13} />
+                </span>
+                Kışla
+              </Buton>
+              <Buton tur="sessiz" boy="kucuk" onClick={() => onGit('demirhane')}>
+                <span className="mr-1.5 inline-block align-[-2px]">
+                  <IkonNavDemirhane boyut={13} />
+                </span>
+                Demirhane
+              </Buton>
+              <Buton tur="sessiz" boy="kucuk" onClick={() => onGit('harita')}>
+                <span className="mr-1.5 inline-block align-[-2px]">
+                  <IkonNavHarita boyut={13} />
+                </span>
+                Harita
+              </Buton>
+            </div>
+          </Kart>
         ) : (
-          <ul className="space-y-2">
-            {events.map((e) => (
-              <li key={e.id} className="border-b border-kenar/60 pb-2 text-sm last:border-0">
+          <div className="space-y-2">
+            {queues.map((q) => (
+              <KuyrukSatiri key={q.id} q={q} />
+            ))}
+          </div>
+        )}
+      </Bolum>
+
+      <Bolum baslik="Olay Akışı">
+        {events.length === 0 ? (
+          <Kart className="p-4">
+            <p className="text-[13px] text-solgun">Henüz bir şey olmadı.</p>
+          </Kart>
+        ) : (
+          <div className="space-y-2">
+            {events.slice(0, 12).map((e) => (
+              <Kart key={e.id} className="p-3" vurgu={OLAY_RENGI[e.kind]}>
                 <div className="flex items-baseline justify-between gap-2">
-                  <span>{OLAY_ADI[e.kind] ?? e.kind}</span>
-                  <time className="shrink-0 text-xs text-solgun">
+                  <p className="min-w-0 flex-1 text-[13px]">
+                    {typeof e.payload.mesaj === 'string' ? e.payload.mesaj : e.kind}
+                  </p>
+                  <time className="shrink-0 text-[10px] text-sonuk">
                     {new Date(e.createdAt).toLocaleString('tr-TR', {
                       day: '2-digit',
                       month: '2-digit',
@@ -158,14 +236,11 @@ export function Malikane({
                     })}
                   </time>
                 </div>
-                {typeof e.payload.mesaj === 'string' && (
-                  <p className="mt-0.5 text-xs text-solgun">{e.payload.mesaj}</p>
-                )}
-              </li>
+              </Kart>
             ))}
-          </ul>
+          </div>
         )}
-      </Panel>
+      </Bolum>
     </div>
   );
 }

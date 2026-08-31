@@ -101,6 +101,8 @@ export interface LordState {
   generalSlots: number;
   equipmentPower: number;
   lordContribution: number;
+  /** Kuşanılan eşyalar — sunucu /me içinde döndürüyor. */
+  equippedItems: { slot: string; tier: number; rarity: string; upgradeLevel: number }[];
   gearLines: Record<GearLineKey, number>;
   gearBonus: { saldiri: number; savunma: number; can: number };
   woundedUntil: string | null;

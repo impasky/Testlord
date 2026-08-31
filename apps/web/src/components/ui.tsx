@@ -1,136 +1,274 @@
-/** Ortak arayüz parçaları. Ekranlar bunları kullanır, kendi stilini yazmaz. */
+/**
+ * Mobil arayüz parçaları.
+ *
+ * Görsel dil modern mobil RPG çıtasına göre: yuvarlak kartlar, kalın büyük
+ * harf başlıklar, parlak altın eylem butonları, nadirlik renk sistemi.
+ * Masaüstü düzeni YOK — her şey tek sütun, dokunmatik hedefleri ≥44px.
+ */
 import type { ReactNode } from 'react';
 
-export function Panel({
-  title,
-  action,
+/* ---------------- Nadirlik ---------------- */
+
+export type Nadirlik = 'siradan' | 'usta' | 'nadir' | 'efsanevi' | 'kadim';
+
+export const NADIRLIK: Record<Nadirlik, { ad: string; renk: string; sinif: string; kenar: string }> =
+  {
+    siradan: { ad: 'Sıradan', renk: '#9aa0a6', sinif: 'text-nadir-siradan', kenar: 'border-nadir-siradan/50' },
+    usta: { ad: 'Usta işi', renk: '#3ddc84', sinif: 'text-nadir-usta', kenar: 'border-nadir-usta/50' },
+    nadir: { ad: 'Nadir', renk: '#4a9eff', sinif: 'text-nadir-nadir', kenar: 'border-nadir-nadir/50' },
+    efsanevi: { ad: 'Efsanevi', renk: '#a76bff', sinif: 'text-nadir-efsanevi', kenar: 'border-nadir-efsanevi/50' },
+    kadim: { ad: 'Kadim', renk: '#f5b731', sinif: 'text-nadir-kadim', kenar: 'border-nadir-kadim/50' },
+  };
+
+export function nadirlikRengi(n: string): string {
+  return NADIRLIK[n as Nadirlik]?.renk ?? NADIRLIK.siradan.renk;
+}
+
+/* ---------------- Kart ---------------- */
+
+export function Kart({
   children,
   className = '',
-  suslu = true,
+  onClick,
+  vurgu,
 }: {
-  title?: string;
-  action?: ReactNode;
   children: ReactNode;
   className?: string;
-  /** Köşe süsleri. Küçük veya iç içe panellerde kapatılabilir. */
-  suslu?: boolean;
+  onClick?: () => void;
+  /** Üst kenarda nadirlik/durum rengi şeridi. */
+  vurgu?: string;
+}) {
+  const Etiket = onClick ? 'button' : 'div';
+  return (
+    <Etiket
+      onClick={onClick}
+      className={`kart relative overflow-hidden text-left ${onClick ? 'bas w-full' : ''} ${className}`}
+    >
+      {vurgu && (
+        <span
+          className="absolute inset-x-0 top-0 h-[3px]"
+          style={{ background: vurgu }}
+          aria-hidden="true"
+        />
+      )}
+      {children}
+    </Etiket>
+  );
+}
+
+/** Başlıklı bölüm. Mobilde panel yerine bölüm başlığı + kart kullanılır. */
+export function Bolum({
+  baslik,
+  yan,
+  children,
+  className = '',
+}: {
+  baslik?: string;
+  yan?: ReactNode;
+  children: ReactNode;
+  className?: string;
 }) {
   return (
-    <section
-      className={`panel-doku rounded-lg border border-kenar ${suslu ? 'kose-suslu' : ''} ${className}`}
-    >
-      {title && (
-        <header className="flex items-center justify-between gap-3 border-b border-kenar/80 px-4 py-2.5">
-          <h2 className="baslik text-sm font-semibold tracking-widest text-altin/85 uppercase">
-            {title}
-          </h2>
-          {action}
+    <section className={className}>
+      {baslik && (
+        <header className="mb-2 flex items-center justify-between gap-3 px-1">
+          <h2 className="baslik text-[13px] text-solgun">{baslik}</h2>
+          {yan}
         </header>
       )}
-      <div className="p-4">{children}</div>
+      {children}
     </section>
   );
 }
 
-export function Button({
+/* ---------------- Buton ---------------- */
+
+type ButonTuru = 'altin' | 'yesil' | 'kirmizi' | 'sessiz' | 'anahat';
+
+const BUTON_SINIFI: Record<ButonTuru, string> = {
+  altin:
+    'bg-gradient-to-b from-altin to-altin-koyu text-gece border-altin-koyu shadow-[0_2px_0_rgba(0,0,0,0.35)]',
+  yesil: 'bg-yesil-koyu text-white border-yesil/40',
+  kirmizi: 'bg-transparent text-kirmizi border-kirmizi/60',
+  sessiz: 'bg-yuzey text-parsomen border-kenar',
+  anahat: 'bg-transparent text-solgun border-kenar',
+};
+
+export function Buton({
   children,
   onClick,
   disabled,
-  variant = 'primary',
+  tur = 'altin',
+  boy = 'orta',
+  tam,
   type = 'button',
   className = '',
 }: {
   children: ReactNode;
   onClick?: () => void;
   disabled?: boolean;
-  variant?: 'primary' | 'ghost' | 'danger';
+  tur?: ButonTuru;
+  boy?: 'kucuk' | 'orta' | 'buyuk';
+  /** Tam genişlik — ana eylemler için. */
+  tam?: boolean;
   type?: 'button' | 'submit';
   className?: string;
 }) {
-  const styles = {
-    primary: 'bg-altin/85 text-gece hover:bg-altin border-altin/60 font-semibold',
-    ghost: 'bg-transparent text-parsomen/80 hover:bg-kenar/60 border-kenar',
-    danger: 'bg-kan/80 text-parsomen hover:bg-kan border-kan/60',
-  }[variant];
+  const boySinifi = {
+    kucuk: 'px-3 py-2 text-[12px] rounded-lg',
+    orta: 'px-4 py-2.5 text-[13px] rounded-xl',
+    buyuk: 'px-5 py-3.5 text-[15px] rounded-2xl',
+  }[boy];
+
   return (
     <button
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`rounded border px-3 py-1.5 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${styles} ${className}`}
+      className={`bas baslik border disabled:pointer-events-none disabled:opacity-40 ${BUTON_SINIFI[tur]} ${boySinifi} ${
+        tam ? 'w-full' : ''
+      } ${className}`}
     >
       {children}
     </button>
   );
 }
 
-export function Field({
-  label,
-  hint,
-  children,
-}: {
-  label: string;
-  hint?: string;
-  children: ReactNode;
-}) {
-  return (
-    <label className="block">
-      <span className="mb-1 block text-xs tracking-wide text-solgun uppercase">{label}</span>
-      {children}
-      {hint && <span className="mt-1 block text-xs text-solgun">{hint}</span>}
-    </label>
-  );
-}
+/* ---------------- Giriş ---------------- */
 
 export function Input({ className = '', ...props }: React.InputHTMLAttributes<HTMLInputElement>) {
-  // Taban sınıflarda genişlik YOK. Önceden 'w-full' gömülüydü ve çağıranın
-  // verdiği 'w-20' hiçbir zaman kazanamıyordu (aynı özgüllük, stylesheet
-  // sırası belirliyordu). Genişlik verilmediyse tam genişlik varsayılır.
   const genislikVar = /(^|\s)(w-|max-w-)/.test(className);
   return (
     <input
       {...props}
-      className={`rounded border border-kenar bg-oyuk/70 px-3 py-2 text-parsomen shadow-[inset_0_1px_2px_rgba(0,0,0,0.6)] outline-none transition-colors focus:border-altin/70 ${
+      className={`oyuk rounded-xl border border-kenar px-3 py-2.5 text-parsomen outline-none focus:border-altin/70 ${
         genislikVar ? '' : 'w-full'
       } ${className}`}
     />
   );
 }
 
-/** Değeri ve tavanı olan çubuk. Doluluk oranı renk değiştirir. */
-export function Meter({
-  value,
-  max,
-  tone = 'altin',
-  kalin = false,
-}: {
-  value: number;
-  max: number;
-  tone?: 'altin' | 'demir' | 'erzak' | 'kan';
-  kalin?: boolean;
-}) {
-  const pct = max > 0 ? Math.min(100, (value / max) * 100) : 0;
-  const bg = { altin: 'bg-altin', demir: 'bg-demir', erzak: 'bg-erzak', kan: 'bg-kan' }[tone];
+export function Alan({ etiket, ipucu, children }: { etiket: string; ipucu?: string; children: ReactNode }) {
   return (
-    <div
-      className={`w-full overflow-hidden rounded-full bg-oyuk shadow-[inset_0_1px_2px_rgba(0,0,0,0.7)] ${
-        kalin ? 'h-2.5' : 'h-1.5'
-      }`}
-      role="presentation"
-    >
+    <label className="block">
+      <span className="baslik mb-1.5 block text-[11px] text-solgun">{etiket}</span>
+      {children}
+      {ipucu && <span className="mt-1 block text-[11px] text-sonuk">{ipucu}</span>}
+    </label>
+  );
+}
+
+/* ---------------- İlerleme ---------------- */
+
+export function Ilerleme({
+  deger,
+  max,
+  renk = 'var(--color-altin)',
+  boy = 'orta',
+}: {
+  deger: number;
+  max: number;
+  renk?: string;
+  boy?: 'ince' | 'orta' | 'kalin';
+}) {
+  const yuzde = max > 0 ? Math.min(100, Math.max(0, (deger / max) * 100)) : 0;
+  const y = { ince: 'h-1.5', orta: 'h-2.5', kalin: 'h-3.5' }[boy];
+  return (
+    <div className={`oyuk w-full overflow-hidden rounded-full ${y}`} role="presentation">
       <div
-        className={`h-full ${bg} transition-[width] duration-500`}
-        style={{
-          width: `${pct}%`,
-          // Üstte açık bir kenar: çubuk düz renk yerine hacimli görünür
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.25)',
-        }}
+        className="h-full rounded-full transition-[width] duration-500"
+        style={{ width: `${yuzde}%`, background: renk, boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.3)' }}
       />
     </div>
   );
 }
 
-/** İkon + sayı ikilisi. Kışla'daki istatistik satırlarının yapı taşı. */
+/* ---------------- Rozet ---------------- */
+
+export function Rozet({
+  children,
+  renk,
+  className = '',
+}: {
+  children: ReactNode;
+  renk?: string;
+  className?: string;
+}) {
+  return (
+    <span
+      className={`baslik inline-flex items-center rounded-md px-1.5 py-0.5 text-[10px] ${className}`}
+      style={
+        renk
+          ? { color: renk, background: `color-mix(in srgb, ${renk} 16%, transparent)` }
+          : undefined
+      }
+    >
+      {children}
+    </span>
+  );
+}
+
+/** Renkli kare ikon + etiket + değer. Referanstaki istatistik kartı. */
+export function DegerKarti({
+  ikon,
+  etiket,
+  deger,
+  renk = 'var(--color-altin)',
+  alt,
+}: {
+  ikon: ReactNode;
+  etiket: string;
+  deger: ReactNode;
+  renk?: string;
+  alt?: ReactNode;
+}) {
+  return (
+    <Kart className="p-3">
+      <div className="flex items-center gap-2.5">
+        <span
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+          style={{ background: `color-mix(in srgb, ${renk} 22%, transparent)`, color: renk }}
+        >
+          {ikon}
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="baslik text-[10px] text-solgun">{etiket}</div>
+          <div className="tabular text-lg leading-tight font-bold">{deger}</div>
+        </div>
+      </div>
+      {alt && <div className="mt-2">{alt}</div>}
+    </Kart>
+  );
+}
+
+/* ---------------- Yardımcılar ---------------- */
+
+export function formatSayi(n: number): string {
+  return Math.floor(n).toLocaleString('tr-TR');
+}
+
+/** Büyük sayıları kısaltır: 65.081 -> 65,1B. Üst barda yer dar. */
+export function kisaSayi(n: number): string {
+  const a = Math.floor(Math.abs(n));
+  const isaret = n < 0 ? '-' : '';
+  if (a >= 1_000_000) return `${isaret}${(a / 1_000_000).toFixed(1).replace('.', ',')}M`;
+  if (a >= 10_000) return `${isaret}${(a / 1000).toFixed(1).replace('.', ',')}B`;
+  return `${isaret}${a.toLocaleString('tr-TR')}`;
+}
+
+export function formatKalan(ms: number): string {
+  if (ms <= 0) return 'bitti';
+  const sn = Math.floor(ms / 1000);
+  const gun = Math.floor(sn / 86400);
+  const sa = Math.floor((sn % 86400) / 3600);
+  const dk = Math.floor((sn % 3600) / 60);
+  const s = sn % 60;
+  if (gun > 0) return `${gun}g ${sa}sa`;
+  if (sa > 0) return `${sa}sa ${dk}dk`;
+  if (dk > 0) return `${dk}dk ${s}sn`;
+  return `${s}sn`;
+}
+
 export function IkonluDeger({
   ikon,
   deger,
@@ -144,33 +282,9 @@ export function IkonluDeger({
 }) {
   return (
     <span className={`inline-flex items-center gap-1 ${renk}`} title={baslik}>
-      {/* Dolu siluetler küçük boyutta detay yüzünden gürültü yapıyor;
-          opaklık düşürülünce sayı öne çıkıyor, ikon bağlam veriyor. */}
-      <span className="opacity-60">{ikon}</span>
-      <span className="tabular">{deger}</span>
+      <span className="opacity-70">{ikon}</span>
+      <span className="tabular font-medium">{deger}</span>
       <span className="sr-only">{baslik}</span>
     </span>
   );
-}
-
-export function Sayi({ children }: { children: ReactNode }) {
-  return <span className="tabular">{children}</span>;
-}
-
-export function formatSayi(n: number): string {
-  return Math.floor(n).toLocaleString('tr-TR');
-}
-
-/** Kalan süreyi "2sa 14dk" gibi gösterir. Bitiş saati değil geri sayım. */
-export function formatKalan(ms: number): string {
-  if (ms <= 0) return 'bitti';
-  const sn = Math.floor(ms / 1000);
-  const gun = Math.floor(sn / 86400);
-  const sa = Math.floor((sn % 86400) / 3600);
-  const dk = Math.floor((sn % 3600) / 60);
-  const s = sn % 60;
-  if (gun > 0) return `${gun}g ${sa}sa`;
-  if (sa > 0) return `${sa}sa ${dk}dk`;
-  if (dk > 0) return `${dk}dk ${s}sn`;
-  return `${s}sn`;
 }

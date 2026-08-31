@@ -35,22 +35,16 @@ NPC'den değil, başka bir lorddan almak zorundasın. Haritanın merkezindeki
 
 ## Ekranlar
 
-| | |
-|---|---|
-| ![Malikâne](docs/gorseller/01-malikane.png) | ![Lord](docs/gorseller/02-lord.png) |
-| **Malikâne** — kaynaklar, kuyruklar, olay akışı | **Lord** — statlar, ekipman slotları, savaş gücü |
-| ![Demirhane](docs/gorseller/03-demirhane.png) | ![Kışla](docs/gorseller/04-kisla.png) |
-| **Demirhane** — ekipman üretimi, yükseltme, ordu donanımı | **Kışla** — birim eğitimi, komuta kapasitesi, erzak dengesi |
-| ![Harita](docs/gorseller/05-harita.png) | ![Saldırı](docs/gorseller/07-harita-saldiri.png) |
-| **Harita** — 61 hex, sahiplik renk + desenle | **Saldırı** — ordu seç, önizle, yürü |
-| ![Generaller](docs/gorseller/08-generaller.png) | ![Sıralama](docs/gorseller/09-siralama.png) |
-| **Generaller** — 12 kişilik kadro, 3 slot | **Sıralama** — Şöhret, Fetih, Kılıç |
+Oyun **sadece mobil**. Masaüstü düzeni yok.
 
-Telefonda:
-
-| | |
-|---|---|
-| ![Telefon Malikâne](docs/gorseller/11-telefon-malikane.png) | ![Telefon Harita](docs/gorseller/10-telefon-harita.png) |
+| | | |
+|---|---|---|
+| ![Malikâne](docs/gorseller/1-malikane.png) | ![Kışla](docs/gorseller/2-kisla.png) | ![Harita](docs/gorseller/3-harita.png) |
+| **Malikâne** — durum, kuyruklar, olaylar | **Kışla** — birim kartları, komuta, erzak | **Harita** — 61 hex, tip ikonlu |
+| ![Demirhane](docs/gorseller/4-demirhane.png) | ![Bölge](docs/gorseller/5-harita-bolge.png) | ![Generaller](docs/gorseller/8-generaller.png) |
+| **Demirhane** — üretim, envanter, donanım | **Bölge** — alt sayfada saldırı ve garnizon | **Generaller** — 12 kişilik kadro |
+| ![Lord](docs/gorseller/7-lord.png) | ![Sıralama](docs/gorseller/9-siralama.png) | ![Giriş](docs/gorseller/0-giris.png) |
+| **Lord** — nitelikler, ekipman, savaş gücü | **Sıralama** — üç liste | **Giriş** |
 
 ## Kendin oyna
 

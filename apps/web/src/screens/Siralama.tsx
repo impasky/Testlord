@@ -1,33 +1,49 @@
-/** Ekran 7: Sıralama — üç ayrı liste, üç ayrı oyun tarzı. */
+/** Sıralama — üç liste, üç oyun tarzı. */
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { api, type RankingRow } from '../api/client';
-import { Panel, formatSayi } from '../components/ui';
+import { IkonNavSiralama } from '../components/Ikonlar';
+import { Bolum, Kart, Rozet, formatSayi } from '../components/ui';
 
 type Board = 'fame' | 'conquest' | 'elo';
 
-const TABLAR: { key: Board; ad: string; aciklama: string }[] = [
-  { key: 'fame', ad: 'Şöhret', aciklama: 'Genel toplam skor. Dengeli, uzun soluklu oyuncuyu ödüllendirir.' },
-  { key: 'conquest', ad: 'Fetih', aciklama: 'Bölge seviyesi × tip çarpanı. Toprak sahibinin sıralaması.' },
-  { key: 'elo', ad: 'Kılıç', aciklama: 'PvP derecesi. Bölgesiz bir lord da burada birinci olabilir.' },
+const TABLAR: { key: Board; ad: string; aciklama: string; renk: string }[] = [
+  { key: 'fame', ad: 'Şöhret', aciklama: 'Genel toplam skor. Dengeli oyuncuyu ödüllendirir.', renk: 'var(--color-altin)' },
+  { key: 'conquest', ad: 'Fetih', aciklama: 'Bölge seviyesi × tip çarpanı. Toprak sahibinin sıralaması.', renk: 'var(--color-yesil)' },
+  { key: 'elo', ad: 'Kılıç', aciklama: 'PvP derecesi. Bölgesiz bir lord da birinci olabilir.', renk: 'var(--color-kirmizi)' },
 ];
 
-function Satir({ r, benMi }: { r: RankingRow; benMi: boolean }) {
+const MADALYA = ['#f5b731', '#c8d1d9', '#c97b3c'];
+
+function Satir({ r, benMi, renk }: { r: RankingRow; benMi: boolean; renk: string }) {
+  const madalya = r.sira <= 3 ? MADALYA[r.sira - 1] : undefined;
   return (
-    <tr className={benMi ? 'bg-altin/10' : undefined}>
-      <td className="py-1.5 pr-3 text-right tabular text-solgun">{r.sira}</td>
-      <td className="py-1.5 pr-3">
-        {r.name}
-        {r.tahtSahibi && (
-          <span className="ml-2 rounded bg-altin/20 px-1.5 py-0.5 text-xs text-altin">
-            Diyarın Lordu
-          </span>
-        )}
-      </td>
-      <td className="py-1.5 pr-3 text-right tabular text-solgun">{r.level}</td>
-      <td className="py-1.5 pr-3 text-right tabular text-solgun">{r.bolgeSayisi}</td>
-      <td className="py-1.5 text-right tabular font-semibold">{formatSayi(r.deger)}</td>
-    </tr>
+    <Kart className={`p-2.5 ${benMi ? 'border-altin/60' : ''}`} vurgu={benMi ? 'var(--color-altin)' : undefined}>
+      <div className="flex items-center gap-2.5">
+        <span
+          className="baslik flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[12px]"
+          style={
+            madalya
+              ? { background: `color-mix(in srgb, ${madalya} 22%, transparent)`, color: madalya }
+              : { background: 'var(--color-oyuk)', color: 'var(--color-sonuk)' }
+          }
+        >
+          {r.sira}
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-1.5">
+            <span className="truncate text-[13px] font-medium">{r.name}</span>
+            {r.tahtSahibi && <Rozet renk="var(--color-altin)">DİYARIN LORDU</Rozet>}
+          </div>
+          <div className="text-[10px] text-sonuk">
+            Sv {r.level} · {r.bolgeSayisi} bölge
+          </div>
+        </div>
+        <span className="tabular shrink-0 text-[14px] font-bold" style={{ color: renk }}>
+          {formatSayi(r.deger)}
+        </span>
+      </div>
+    </Kart>
   );
 }
 
@@ -41,65 +57,62 @@ export function Siralama({ lordId }: { lordId: string }) {
   const aktif = TABLAR.find((t) => t.key === board)!;
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap gap-1">
+    <div className="space-y-4 pt-3">
+      <div className="oyuk flex gap-1 rounded-xl p-1">
         {TABLAR.map((t) => (
           <button
             key={t.key}
             onClick={() => setBoard(t.key)}
-            className={`rounded border px-4 py-2 text-sm transition-colors ${
-              board === t.key
-                ? 'border-altin bg-altin/20 text-altin'
-                : 'border-kenar text-solgun hover:bg-kenar/50'
+            className={`bas baslik flex-1 rounded-lg py-2.5 text-[12px] ${
+              board === t.key ? 'text-gece' : 'text-solgun'
             }`}
+            style={board === t.key ? { background: t.renk } : undefined}
           >
             {t.ad}
           </button>
         ))}
       </div>
 
-      <Panel title={`${aktif.ad} Sıralaması`}>
-        <p className="mb-3 text-xs text-solgun">{aktif.aciklama}</p>
+      <Bolum
+        baslik={`${aktif.ad} Sıralaması`}
+        yan={
+          <span className="text-[11px] text-sonuk">
+            {q.data ? `${q.data.toplam} lord` : ''}
+          </span>
+        }
+      >
+        <p className="mb-2 px-1 text-[11px] text-sonuk">{aktif.aciklama}</p>
 
         {q.isLoading || !q.data ? (
-          <p className="text-sm text-solgun">Yükleniyor...</p>
+          <Kart className="p-4">
+            <p className="text-[13px] text-solgun">Yükleniyor...</p>
+          </Kart>
         ) : (
           <>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-kenar text-xs text-solgun uppercase">
-                    <th className="py-2 pr-3 text-right font-normal">#</th>
-                    <th className="py-2 pr-3 text-left font-normal">Lord</th>
-                    <th className="py-2 pr-3 text-right font-normal">Sv</th>
-                    <th className="py-2 pr-3 text-right font-normal">Bölge</th>
-                    <th className="py-2 text-right font-normal">{aktif.ad}</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-kenar/50">
-                  {q.data.satirlar.map((r) => (
-                    <Satir key={r.lordId} r={r} benMi={r.lordId === lordId} />
-                  ))}
-                </tbody>
-              </table>
+            <div className="space-y-1.5">
+              {q.data.satirlar.map((r) => (
+                <Satir key={r.lordId} r={r} benMi={r.lordId === lordId} renk={aktif.renk} />
+              ))}
             </div>
 
             {q.data.benim && !q.data.satirlar.some((r) => r.lordId === lordId) && (
               <div className="mt-3 border-t border-kenar pt-3">
-                <table className="w-full text-sm">
-                  <tbody>
-                    <Satir r={q.data.benim} benMi />
-                  </tbody>
-                </table>
+                <p className="baslik mb-1.5 px-1 text-[10px] text-solgun">Senin sıran</p>
+                <Satir r={q.data.benim} benMi renk={aktif.renk} />
               </div>
             )}
 
-            <p className="mt-3 text-xs text-solgun">
-              Dünyada {q.data.toplam} lord var.
-            </p>
+            {q.data.satirlar.length === 0 && (
+              <Kart className="p-6 text-center">
+                <span className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-xl bg-altin/15 text-altin">
+                  <IkonNavSiralama boyut={26} />
+                </span>
+                <p className="text-[13px] text-solgun">Bu dünyada henüz kimse yok.</p>
+              </Kart>
+            )}
           </>
         )}
-      </Panel>
+      </Bolum>
     </div>
   );
 }
