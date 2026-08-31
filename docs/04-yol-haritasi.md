@@ -1,6 +1,10 @@
 # 04 — Yol Haritası
 
-**Toplam: 9 kilometre taşı, ~30 iş günü** (tek geliştirici, tam zamanlı).
+**Toplam: 9 kilometre taşı, ~34 iş günü** (tek geliştirici, tam zamanlı).
+
+> **Durum: M0–M8 tamamlandı.** Oyun uçtan uca oynanabilir durumda.
+> Kalan tek taş M9 (yayına hazırlık). Her taşın gerçekte ne çıkardığı ve
+> hangi hataların yakalandığı git geçmişinde.
 
 Sıralama tesadüfi değil: her taş bir öncekinin üstüne oturur ve **her taşın
 sonunda elle test edilebilir bir şey** olur. Hiçbir aşamada "çalışan bir şey yok,
@@ -8,7 +12,7 @@ sonunda elle test edilebilir bir şey** olur. Hiçbir aşamada "çalışan bir �
 
 ---
 
-## M0 — İskelet · 3 gün
+## M0 — İskelet · 3 gün  ✅
 
 - pnpm monorepo, TypeScript, ESLint, Prettier
 - Docker Compose (Postgres)
@@ -22,7 +26,7 @@ sonunda elle test edilebilir bir şey** olur. Hiçbir aşamada "çalışan bir �
 
 ---
 
-## M1 — Kaynaklar ve Malikâne · 3 gün
+## M1 — Kaynaklar ve Malikâne · 3 gün  ✅
 
 - `shared/economy.ts`: lazy accrual, depo kapasitesi, malikâne formülü
 - `GET /me` — tick uygulanmış kaynaklarla
@@ -33,7 +37,7 @@ Bu, tüm oyunun kalbidir; erken doğrulanması şart.
 
 ---
 
-## M2 — Lord ve İlerleme · 2 gün
+## M2 — Lord ve İlerleme · 2 gün  ✅
 
 - `shared/progression.ts`: XP eğrisi, seviye atlama, komuta kapasitesi, şöhret
 - `POST /me/stats` — puan dağıtımı
@@ -44,7 +48,7 @@ Bu, tüm oyunun kalbidir; erken doğrulanması şart.
 
 ---
 
-## M3 — Ekipman · 4 gün
+## M3 — Ekipman · 4 gün  ✅
 
 - `shared/equipment.ts`: ItemPower, üretim tablosu, yükseltme şansı
 - Kuyruk altyapısı (`Queue` tablosu + worker'ın ilk hali)
@@ -56,7 +60,7 @@ doğar — nadirlik çekilişini kendi gözünle görürsün.
 
 ---
 
-## M4 — Ordu · 3 gün
+## M4 — Ordu · 3 gün  ✅
 
 - Birim tablosu, eğitim kuyruğu, komuta kapasitesi kontrolü
 - Bakım hesabı + erzak açlığı firarı (worker)
@@ -67,7 +71,7 @@ doğar — nadirlik çekilişini kendi gözünle görürsün.
 
 ---
 
-## M5 — Harita ve Bölgeler · 4 gün
+## M5 — Harita ve Bölgeler · 4 gün  ✅
 
 - Bölge geliri (lazy accrual, bölge deposu)
 - Bölge yükseltme kuyruğu, bölge limiti kontrolü
@@ -80,7 +84,7 @@ doğar — nadirlik çekilişini kendi gözünle görürsün.
 
 ---
 
-## M6 — Savaş Motoru · 5 gün · **en riskli taş**
+## M6 — Savaş Motoru · 5 gün · **en riskli taş**  ✅
 
 - `shared/rng.ts` — mulberry32, deterministik
 - `shared/combat.ts` — 5 tur, karşı çarpanları, kayıp formülleri, yağma
@@ -97,7 +101,7 @@ doğar — nadirlik çekilişini kendi gözünle görürsün.
 
 ---
 
-## M7 — Generaller · 2 gün
+## M7 — Generaller · 2 gün  ✅
 
 - `generals.json` yükleme, kiralama, slot atama, general XP'si
 - Pasif ve yeteneklerin savaş motoruna bağlanması
@@ -107,7 +111,7 @@ doğar — nadirlik çekilişini kendi gözünle görürsün.
 
 ---
 
-## M8 — Rekabet ve Cila · 4 gün
+## M8 — Rekabet ve Cila · 4 gün  ✅
 
 - Şöhret hesabı + 3 sıralama tablosu (5 dk'da bir yenilenir)
 - **Ekran 7: Sıralama** (3 sekme)
@@ -120,7 +124,7 @@ doğar — nadirlik çekilişini kendi gözünle görürsün.
 
 ---
 
-## M9 — Yayın · 4 gün
+## M9 — Yayın · 4 gün  ⬜ (sırada)
 
 - 120 sanal oyuncuyla yük testi
 - Hata izleme (Sentry), yapılandırılmış log

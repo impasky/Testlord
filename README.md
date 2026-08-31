@@ -5,10 +5,10 @@ Bir lord olarak karakterini ve ekipmanını güçlendirir, bölgeler ele geçiri
 kazanır, ordu kurar, ordunun donanımını üretir, generaller kiralar ve
 sıralamada yükselirsin.
 
-> **Durum: Tasarım dondurulmuş, kod yazılmadı.**
-> Bu repoda şu an sadece tasarım ve veri var. Amaç bilinçli: her sayı, her formül
-> ve her sistem koda başlamadan önce netleştirildi ki geliştirme sırasında
-> kapsam büyümesin.
+> **Durum: M0–M8 tamam, oyun uçtan uca oynanabilir.**
+> Kayıt ol, asker eğit, orduyla yürü, savaş, bölge al, gelir kazan, ekipman
+> üret ve kuşan, general kirala, sıralamada yüksel — hepsi çalışıyor.
+> Kalan: M9 (yayına hazırlık — yük testi, izleme, onboarding, dağıtım).
 
 ---
 
@@ -33,6 +33,35 @@ NPC'den değil, başka bir lorddan almak zorundasın. Haritanın merkezindeki
 
 ---
 
+## Çalıştırma
+
+```bash
+pnpm install
+docker compose up -d postgres           # ya da yerel bir PostgreSQL 16
+
+cp .env.example apps/api/.env           # DATABASE_URL ve JWT_SECRET'i düzenle
+pnpm --filter @lordlar/api prisma migrate dev
+pnpm db:seed                            # 61 bölgeyi yazar, ilk dünyayı açar
+
+pnpm dev                                # arayüz :5173, API :3000
+pnpm worker                             # ayrı terminalde: yürüyüş ve kuyruk çözümü
+```
+
+Arayüz http://localhost:5173 adresinde. Kayıt ol, Kışla'da asker eğit,
+Harita'dan kenardaki tahkimatsız bir bölgeye saldır.
+
+## Doğrulama
+
+```bash
+pnpm test        # 40 birim testi (savaş motoru + tasarım garantileri)
+pnpm balance     # aritmetik denge kontrolleri
+pnpm typecheck   # üç paketin tip kontrolü
+pnpm e2e         # API + worker + tarayıcı uçtan uca testleri (sunucu ayakta olmalı)
+```
+
+`pnpm e2e` gerçek Chromium açar ve yedi ekranı dolaşır. Tarayıcı testi
+şimdiye kadar üç hatayı yakaladı — hiçbiri API testlerinde görünmüyordu.
+
 ## Repo yapısı
 
 ```
@@ -46,9 +75,26 @@ data/
   balance.json            TÜM sayısal denge — tek kaynak, kodda sabit sayı yok
   generals.json           12 generallik sabit kadro
   world-map.json          61 bölgelik sabit harita (üretilmiş çıktı)
+packages/shared/          Sunucu ve arayüzün ortak çekirdeği (saf fonksiyonlar)
+  src/balance.ts          data/*.json'u tipli yükler ve doğrular
+  src/combat.ts           Savaş simülatörü — I/O yok, seed'li, deterministik
+  src/economy.ts          Lazy accrual, depo, bakım, açlık
+  src/progression.ts      XP, komuta kapasitesi, şöhret, ELO
+  src/equipment.ts        ItemPower, üretim, yükseltme
+  src/generals.ts         General pasif ve yeteneklerini tek bonusa toplar
+  src/march.ts            Hex mesafesi ve yürüyüş süresi
+apps/api/                 Fastify + Prisma + PostgreSQL
+  src/routes/             Uç noktalar
+  src/services/           İş kuralları
+  src/worker.ts           10 sn aralıkla yürüyüş ve kuyruk çözümü
+apps/web/                 React + Vite + Tailwind, yedi ekran
 tools/
   generate_map.py         Haritayı üreten script
-  check_balance.py        Denge doğrulayıcı — balance.json değişince çalıştır
+  check_balance.py        Aritmetik denge doğrulayıcı
+  oyun-dongusu-testi.mjs  API üzerinden tam oyun döngüsü
+  worker-testi.mjs        Worker'ın yürüyüşü kendiliğinden çözdüğünü doğrular
+  tarayici-tam-akis.mjs   Gerçek tarayıcıda yedi ekran akışı
+  smoke.mjs               Hızlı duman testi
 ```
 
 ## Nereden başlamalı
