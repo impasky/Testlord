@@ -67,6 +67,13 @@ Midjourney, ne olursa) ve **bu sohbete ekle**. Claude dosyaları alıp kırpar,
 dönüştürür, doğru adla depoya koyar. Hangi görselin hangi dosya olduğunu
 söylemen yeterli.
 
+22 istemin kopyala-yapıştır hali: **[docs/GORSEL-ISTEMLERI.md](GORSEL-ISTEMLERI.md)**.
+O dosya elle yazılmaz, buradan üretilir:
+
+```bash
+python3 tools/gorsel-uret.py --istemler > docs/GORSEL-ISTEMLERI.md
+```
+
 ## Yol 3 — Hazır paket satın al
 
 Aşağıdaki "Hazır paket alıyorsan" bölümüne bak.

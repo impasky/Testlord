@@ -16,6 +16,7 @@ KULLANIM:
   python3 tools/gorsel-uret.py suvari kale     # sadece bunları
   python3 tools/gorsel-uret.py --zorla         # var olanların üstüne yaz
   python3 tools/gorsel-uret.py --liste         # ne üretilecek, üretmeden göster
+  python3 tools/gorsel-uret.py --istemler      # istemleri markdown olarak dök (API'siz)
 
 MALİYET (ölçüldü, tahmin değil):
   Görsel modellerinin ücretsiz katmanı YOK. Faturalandırma bağlı olmayan bir
@@ -190,6 +191,67 @@ def istek_at(konu: str, anahtar: str) -> bytes:
     raise son_hata or RuntimeError("Hiçbir model çalışmadı")
 
 
+def istemleri_yaz() -> str:
+    """
+    Görselleri elle üretecek biri için istemleri markdown olarak döker.
+
+    docs/GORSEL-ISTEMLERI.md bu çıktıdan üretilir:
+      python3 tools/gorsel-uret.py --istemler > docs/GORSEL-ISTEMLERI.md
+
+    Elle yazılmış ikinci bir istem listesi tutmuyoruz; tek kaynak yukarıdaki
+    ISTEKLER ve USLUP. Üslup değişirse bu dosya yeniden üretilir, kopyası
+    eskimez.
+    """
+    baslik = {
+        "birimler": ("Birimler", "Kışlada ve savaş ekranlarında görünür."),
+        "bolgeler": ("Bölge tipleri", "Haritada ve bölge kartlarında görünür."),
+        "generaller": ("Generaller", "General listesinde ve kartlarında görünür."),
+    }
+
+    s = [
+        "# Görsel İstemleri",
+        "",
+        "22 görselin kopyala-yapıştır istemleri. Her biri konu + ortak üslup",
+        "tarifinden oluşur; üslup hepsinde aynıdır, tutarlılık oradan gelir.",
+        "",
+        "**Bu dosya elle düzenlenmez.** Kaynağı `tools/gorsel-uret.py` içindeki",
+        "`ISTEKLER` ve `USLUP`. Değişiklik oraya yapılır, sonra:",
+        "",
+        "```bash",
+        "python3 tools/gorsel-uret.py --istemler > docs/GORSEL-ISTEMLERI.md",
+        "```",
+        "",
+        "## Nasıl kullanılır",
+        "",
+        "1. İstemi kopyala, görsel üreten bir araca yapıştır (Gemini uygulaması,",
+        "   ChatGPT, Midjourney — fark etmez).",
+        "2. Çıkan görseli sohbete ekle ve **hangi başlığa ait olduğunu söyle**.",
+        "3. Gerisi bende: kare kırpma, 512x512, WebP dönüşümü, doğru adla depoya",
+        "   koyma. Boyut ya da format ayarlamanla uğraşma, ham görsel yeter.",
+        "",
+        "Hepsini bir arada göndermen gerekmiyor; geldiği kadarı kullanılır,",
+        "gelmeyenin yerinde siluet kalır ve oyun yine tutarlı durur.",
+        "",
+        "İpucu: mümkünse hepsini aynı araçta ve aynı oturumda üret. Araç",
+        "değiştikçe üslup da kayar.",
+        "",
+    ]
+
+    for klasor, kayitlar in ISTEKLER.items():
+        ad_tr, aciklama = baslik[klasor]
+        s += ["---", "", f"## {ad_tr}", "", aciklama, ""]
+        for ad, konu in kayitlar.items():
+            s += [
+                f"### `{klasor}/{ad}.webp`",
+                "",
+                "```",
+                f"{konu}, {USLUP}",
+                "```",
+                "",
+            ]
+    return "\n".join(s)
+
+
 def _ucretsiz_katman_kapali(govde: str) -> bool:
     """
     429'un iki ayrı anlamı var, karıştırmamak gerekiyor:
@@ -225,6 +287,11 @@ def main() -> int:
     zorla = "--zorla" in argv
     sadece_liste = "--liste" in argv
     secilenler = {a for a in argv if not a.startswith("--")}
+
+    # Anahtar da ağ da gerektirmez: sadece istemleri yazar.
+    if "--istemler" in argv:
+        print(istemleri_yaz())
+        return 0
 
     isler: list[tuple[str, str, str, Path]] = []
     for klasor, kayitlar in ISTEKLER.items():
