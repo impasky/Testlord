@@ -49,6 +49,17 @@ hissettirmiyordu.
 Başlıklarda kullanılır. [SIL Open Font License 1.1](https://openfontlicense.org/),
 Google Fonts üzerinden yüklenir. Künye şartı yoktur.
 
+## Üretilen görseller
+
+`apps/web/public/gorseller/` altındaki illüstrasyonlar `tools/gorsel-uret.py`
+ile Google Generative Language API üzerinden üretilir. Üretilen görsellerin
+kullanım hakları sağlayıcının şartlarına tabidir; ticari kullanım öncesinde
+Google'ın o anki kullanım koşullarını doğrula.
+
+Hazır paketten görsel eklersen paketin adını, kaynağını ve lisansını buraya
+yaz — hem ticari kullanıma hem yeniden dağıtıma izin verdiğini önceden
+doğrula.
+
 ## Oyunun kendi içeriği
 
 Harita, denge verisi, general kadrosu, metinler ve kod bu projeye aittir.

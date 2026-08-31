@@ -156,6 +156,7 @@ pnpm test        # 40 birim testi (savaş motoru + tasarım garantileri)
 pnpm balance     # aritmetik denge kontrolleri
 pnpm typecheck   # üç paketin tip kontrolü
 pnpm e2e         # oyun döngüsü + shard + worker + tarayıcı (sunucu ayakta olmalı)
+pnpm gorsel      # 22 oyun görselini üretir — bkz. docs/GORSEL-REHBERI.md
 ```
 
 `pnpm e2e` gerçek Chromium açar ve yedi ekranı dolaşır. Tarayıcı testi
@@ -192,6 +193,7 @@ apps/api/                 Fastify + Prisma + PostgreSQL
 apps/web/                 React + Vite + Tailwind, yedi ekran
 tools/
   generate_map.py         Haritayı üreten script
+  gorsel-uret.py          Oyun görsellerini üretir (GEMINI_API_KEY ister)
   check_balance.py        Aritmetik denge doğrulayıcı
   oyun-dongusu-testi.mjs  API üzerinden tam oyun döngüsü
   shard-testi.mjs         Dünya dolunca yeni shard açıldığını doğrular

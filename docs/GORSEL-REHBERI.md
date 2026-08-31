@@ -1,13 +1,58 @@
-# Görsel Rehberi — gerçek illüstrasyon nasıl eklenir
+# Görsel Rehberi
+
+Oyunun 22 görseli var: 5 birim, 5 bölge tipi, 12 general. Üç yoldan
+eklenebilir. **Birincisi tercih edilendir: Claude hepsini kendisi üretir.**
 
 Oyun şu an **game-icons.net siluetleri** kullanıyor. Bunlar bedava, tutarlı ve
-her şeyi kapsıyor ama boyalı illüstrasyon değil. Gerçek çizim eklemek için kod
-değiştirmen gerekmiyor: **dosyayı doğru klasöre doğru adla koy, yeter.**
+her şeyi kapsıyor ama boyalı illüstrasyon değil. Görsel eklemek için kod
+değiştirmek gerekmiyor: **dosya doğru klasörde doğru adla varsa görünür**,
+yoksa siluet kalır. Yani yarısı hazırken de oyun tutarlı durur.
 
-Dosya varsa illüstrasyon görünür, yoksa siluet görünmeye devam eder. Yani
-yarısı çizilmişken de oyun tutarlı durur; birim birim ilerleyebilirsin.
+---
 
-## Nereye koyulacak
+## Yol 1 — Claude üretsin (önerilen)
+
+Bu ortamda dışarıya çıkış kısıtlı: OpenAI, Stability, Replicate ve fal
+kapalı. Ama **`generativelanguage.googleapis.com` açık** — Google'ın görüntü
+üretme API'si buradan çalışıyor. Tek eksik bir anahtar.
+
+**Tek seferlik kurulum (telefondan da yapılabilir, ~2 dakika):**
+
+1. https://aistudio.google.com/apikey → **Create API key** (ücretsiz katman var)
+2. Anahtarı Claude Code ortam değişkenlerine **`GEMINI_API_KEY`** adıyla ekle
+   (Claude Code web arayüzünde environment ayarları)
+
+Sonra tek komut:
+
+```bash
+python3 tools/gorsel-uret.py            # eksik olan 22 görselin hepsini üretir
+python3 tools/gorsel-uret.py suvari     # sadece birini
+python3 tools/gorsel-uret.py --zorla    # beğenmediklerini yeniden üret
+python3 tools/gorsel-uret.py --liste    # ne üretilecek, üretmeden göster
+```
+
+Script her görseli üretir, kare kırpar, 512×512'ye ölçekler, WebP'ye çevirir
+ve doğru klasöre yazar. Üslup tarifi dosyanın içinde **tek yerde** tutulur
+(`USLUP` sabiti); tutarlılık buradan gelir ve tek satır değiştirerek tüm setin
+havasını değiştirebilirsin.
+
+Anahtar tanımlı değilse script hiçbir şey yapmaz, ne yapılması gerektiğini
+söyler.
+
+## Yol 2 — Sen üret, sohbete ekle
+
+Anahtar istemiyorsan: görselleri istediğin yerde üret (Claude uygulaması,
+Midjourney, ne olursa) ve **bu sohbete ekle**. Claude dosyaları alıp kırpar,
+dönüştürür, doğru adla depoya koyar. Hangi görselin hangi dosya olduğunu
+söylemen yeterli.
+
+## Yol 3 — Hazır paket satın al
+
+Aşağıdaki "Hazır paket alıyorsan" bölümüne bak.
+
+---
+
+## Dosya yerleşimi
 
 ```
 apps/web/public/gorseller/
@@ -25,11 +70,18 @@ olmalı. Birim adları `data/balance.json` → `birimler` anahtarlarıyla aynı.
 |---|---|
 | Biçim | **WebP** (PNG'den ~%30 küçük, saydamlık destekler) |
 | Boyut | **512×512** kare |
-| Arka plan | **Saydam** — madalyon zaten dairesel çerçeve çiziyor |
+| Arka plan | **Koyu düz zemin** — saydam değil |
 | Dosya boyutu | Tane başına 80 KB altı hedefle |
 | Kadraj | Nesne kareyi doldursun, kenarlarda %8 boşluk bırak |
 
 PNG'den WebP'ye çevirmek için: `cwebp -q 82 girdi.png -o cikti.webp`
+(ya da `tools/gorsel-uret.py` içindeki `kaydet()` bunu zaten yapıyor.)
+
+**Saydamlık neden değil:** görüntü üretme modelleri gerçek alfa kanalı
+üretmez, "transparent background" istesen bile düz bir zemin çizer. Arayüz
+zaten görseli yuvarlak köşeli, kenarlıklı bir kutuya oturtuyor — koyu düz
+zemin orada çerçeveli portre gibi duruyor. Referans mobil oyunlar da bunu
+yapıyor.
 
 ## Üslup — hepsi aynı dünyadan görünmeli
 
