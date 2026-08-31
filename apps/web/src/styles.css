@@ -1,0 +1,35 @@
+@import 'tailwindcss';
+
+/* Lordlar Çağı — demir, parşömen ve meşale.
+   Tek yön koyu tema: oyun ekranı uzun süre açık kalır, göz yormamalı. */
+@theme {
+  --color-gece: #14100c;
+  --color-derin: #1c1712;
+  --color-panel: #241d16;
+  --color-kenar: #3a2f24;
+  --color-parsomen: #e8dcc4;
+  --color-solgun: #9c8a6e;
+  --color-altin: #d4a24c;
+  --color-demir: #8fa3b0;
+  --color-erzak: #86a361;
+  --color-kan: #a63d40;
+  --color-mese: #6b8f3e;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background: var(--color-gece);
+  color: var(--color-parsomen);
+  font-family: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Sayılar seri fontta hizalı ve okunur durur */
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace;
+}

@@ -16,10 +16,12 @@
     "balance": "python3 tools/check_balance.py",
     "db:migrate": "pnpm --filter @lordlar/api prisma migrate dev",
     "db:seed": "pnpm --filter @lordlar/api seed",
-    "db:reset": "pnpm --filter @lordlar/api prisma migrate reset --force"
+    "db:reset": "pnpm --filter @lordlar/api prisma migrate reset --force",
+    "smoke": "node tools/smoke.mjs"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
+    "playwright": "^1.62.1",
     "prettier": "^3.4.2",
     "tsx": "^4.23.13",
     "typescript": "^5.7.2",

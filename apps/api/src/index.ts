@@ -18,7 +18,7 @@ export async function buildServer() {
     logger: env.NODE_ENV === 'development' ? { level: 'warn' } : true,
   });
 
-  await app.register(cors, { origin: env.WEB_ORIGIN, credentials: true });
+  await app.register(cors, { origin: env.webOrigins, credentials: true });
   await app.register(jwt, { secret: env.JWT_SECRET, sign: { expiresIn: '7d' } });
   await app.register(rateLimit, { max: 300, timeWindow: '1 minute' });
 
