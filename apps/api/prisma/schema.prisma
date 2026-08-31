@@ -53,6 +53,11 @@ model Lord {
   pvpWins            Int @default(0)
   pvpLosses          Int @default(0)
 
+  /// Malikânenin harita üzerindeki çıpası. Yürüyüş mesafesi buradan ölçülür.
+  /// Kayıtta ring 4'e en az yüklü hex'e yerleştirilir; kimse buraya saldıramaz.
+  homeQ Int @default(0)
+  homeR Int @default(0)
+
   lastTickAt      DateTime  @default(now())
   protectionUntil DateTime?
   woundedUntil    DateTime?

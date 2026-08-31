@@ -469,5 +469,11 @@
       "biten bolge yukseltme",
       "erzak acligi firari"
     ]
+  },
+  "npc_garnizonu": {
+    "yenilenme_saatlik_oran": 0.1,
+    "aciklama": "Sahipsiz bolgelerin NPC garnizonu, world-map.json'daki TABAN gucune dogru saatte tabanin %10'u kadar yenilenir; ~10 saatte tam dolar.",
+    "neden": "Yenilenme olmasaydi oyuncu bir bolgeyi ucuz akinlarla yiprata yiprata bosaltip kuçuk bir kuvvetle alabilirdi. Bu ozellikle Taht Kalesi'ni (890 birim) anlamsiz kilardi: endgame'in odagi bir yipratma bulmacasina donusurdu.",
+    "kapsam": "SADECE sahipsiz (NPC) bolgeler. Oyuncunun garnizonu yenilenmez; kaybettigini yeniden egitip yerlestirmek zorundadir."
   }
 }

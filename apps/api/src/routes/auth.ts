@@ -1,4 +1,4 @@
-import { B, GEAR_LINES } from '@lordlar/shared';
+import { B, GEAR_LINES, WORLD_MAP } from '@lordlar/shared';
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { hashPassword, verifyPassword } from '../auth.js';
@@ -19,6 +19,31 @@ const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1),
 });
+
+/**
+ * Yeni lorda malikâne çıpası verir: ring 4'te (haritanın kenarı) en az lord
+ * barındıran hex. Böylece oyuncular başlangıçta haritaya yayılır ve kimse
+ * doğar doğmaz güçlü bir komşunun dibinde uyanmaz.
+ */
+async function pickHomeAnchor(worldId: string): Promise<{ q: number; r: number }> {
+  const kenar = WORLD_MAP.regions.filter((r) => r.ring === 4);
+  const mevcut = await prisma.lord.groupBy({
+    by: ['homeQ', 'homeR'],
+    where: { worldId },
+    _count: { _all: true },
+  });
+  const yuk = new Map(mevcut.map((m) => [`${m.homeQ},${m.homeR}`, m._count._all]));
+  let enIyi = kenar[0]!;
+  let enAz = Infinity;
+  for (const hex of kenar) {
+    const n = yuk.get(`${hex.q},${hex.r}`) ?? 0;
+    if (n < enAz) {
+      enAz = n;
+      enIyi = hex;
+    }
+  }
+  return { q: enIyi.q, r: enIyi.r };
+}
 
 /** Açık olan dünyayı bulur, yoksa yenisini açar. Dolmuşsa yeni shard açar. */
 async function findOrOpenWorld(): Promise<string> {
@@ -51,6 +76,7 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
     }
 
     const worldId = await findOrOpenWorld();
+    const home = await pickHomeAnchor(worldId);
     const now = new Date();
     const start = B.lord.baslangic_kaynaklari;
     const stats = B.lord.baslangic_statlari;
@@ -71,6 +97,8 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
           altin: start.altin,
           demir: start.demir,
           erzak: start.erzak,
+          homeQ: home.q,
+          homeR: home.r,
           lastTickAt: now,
           dailyResetAt: now,
           // Yeni oyuncu kalkanı: ilk saldırısını yapana kadar veya 72 saat

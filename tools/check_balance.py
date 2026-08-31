@@ -3,22 +3,25 @@
 Lordlar Cagi - Denge dogrulayici.
 
 data/balance.json degistirildiginde bu script calistirilir. docs/02 bolum 7'deki
-8 kontrolu uygular ve tasarim hedeflerinden sapma varsa hata verir.
+kontrollerden SAF ARITMETIK olanlari uygular.
 
-Kullanim: python3 tools/check_balance.py
+SAVAS MOTORUNA BAGLI kontroller (ilk fetih, kayip bandi, guc dagilimi) burada
+DEGIL, packages/shared/src/balance.test.ts icindedir - cunku sadece gercek motor
+tahkimati, karsi carpanlarini ve kayip dagitimini dogru hesaplar. Buradaki bir
+Python kopyasi kacinilmaz olarak motordan sapardi.
+
+  python3 tools/check_balance.py     <- aritmetik kontroller (bu dosya)
+  pnpm test                          <- motor bagimli kontroller
+
 Cikis kodu: 0 = tum kontroller gecti, 1 = en az bir kontrol basarisiz.
-
-M8'de bu kontroller apps/api icinde bir test dosyasina cevrilecek ve CI'da kosacak.
 """
 import json, os, sys
-from collections import Counter
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 B = json.load(open(os.path.join(ROOT, 'data', 'balance.json'), encoding='utf-8'))
 M = json.load(open(os.path.join(ROOT, 'data', 'world-map.json'), encoding='utf-8'))
 U = B['birimler']
 K = B['kaynaklar']
-E = B['ekipman']
 
 sonuclar = []
 
@@ -34,10 +37,6 @@ def malikane(lv):
 
 def bakim(ordu):
     return sum(U[t]['bakim_erzak_saat'] * c for t, c in ordu.items())
-
-
-def yer(ordu):
-    return sum(U[t]['yer'] * c for t, c in ordu.items())
 
 
 # --- 1) Lv60'a ulasma suresi: 100-130 gun -----------------------------------
@@ -62,16 +61,7 @@ g60 = malikane(60)['erzak'] + 3 * tarla * 1.5 * 2.0   # 3 tarla, ring2, Lv5
 b60 = bakim(endgame)
 kontrol(3, "Lv60 ordu bakimi karsilaniyor", g60 >= b60, f"gelir {g60:.0f} vs bakim {b60}")
 
-# --- 4) Ilk NPC bolgesi 1. gunde alinabilmeli -------------------------------
-ring4 = [r for r in M['regions'] if r['ring'] == 4][0]['npc_garrison']
-npc_sav = sum(U[t]['savunma'] * c for t, c in ring4.items() if c)
-sal = (baslangic['mizrakci'] * U['mizrakci']['saldiri']
-       + baslangic['okcu'] * U['okcu']['saldiri'] * 1.5)     # okcu -> mizrakci
-R4 = sal / (sal + npc_sav)
-maliyet = sum(U[t]['maliyet']['altin'] * c for t, c in baslangic.items())
-butce = B['lord']['baslangic_kaynaklari']['altin'] + malikane(1)['altin'] * 24
-kontrol(4, "1. gun ilk fetih mumkun", R4 >= 0.60 and maliyet <= butce,
-        f"R={R4:.2f} (>=0.60), maliyet {maliyet} <= 1 gunluk butce {butce:.0f}")
+# --- 4) TASINDI: ilk fetih kontrolu balance.test.ts'te (tahkimat hesabi gerekiyor) --
 
 # --- 5) Bolge Lv1->Lv5 geri odemesi: 7-12 gun -------------------------------
 bt, bus = B['bolgeler']['yukseltme_taban']['altin'], B['bolgeler']['yukseltme_us']
@@ -82,29 +72,9 @@ odeme = top / ek / 24
 kontrol(5, "Bolge yukseltme geri odemesi", 7 <= odeme <= 12,
         f"{odeme:.1f} gun (maliyet {top:,.0f} altin)")
 
-# --- 6) Lordun toplam savas gucundeki payi: %15-25 --------------------------
-esya = E['tier_taban_guc']['5'] * E['nadirlik_carpani']['kadim'] * (1 + E['yukseltme_basina_bonus'] * E['max_yukseltme'])
-gear = esya * len(E['slotlar'])
-lord = 100 * 3 + gear * E['ekipman_katsayi']
-ordu_sal = 280 * U['suvari']['saldiri'] * 1.30 * 1.15    # silahlik +%30, general +%15
-pay = 100 * lord / (lord + ordu_sal)
-kontrol(6, "Lordun savas gucundeki payi", 15 <= pay <= 25,
-        f"%{pay:.1f} (hedef %15-25)")
-
-# --- 7) Kazanan her zaman kayip vermeli, kaybeden hep daha cok kaybetmeli ---
-def kayiplar(R):
-    Rw = max(R, 1 - R)
-    return (min((1 - Rw) * 0.70, B['savas']['kayip']['kazanan_max']),
-            min(0.60 + (Rw - 0.5) * 0.6, B['savas']['kayip']['kaybeden_max']))
-
-tutarli = True
-detaylar = []
-for R in (0.75, 0.60, 0.51, 0.38, 0.25):
-    kz, kb = kayiplar(R)
-    if not (kz > 0 and kb > kz):
-        tutarli = False
-    detaylar.append(f"R={R}: kazanan %{kz*100:.1f} / kaybeden %{kb*100:.1f}")
-kontrol(7, "Kayip bandi tutarli (kazanan>0, kaybeden>kazanan)", tutarli, "; ".join(detaylar))
+# --- 6 ve 7) TASINDI --------------------------------------------------------
+# Lord guc payi ve kayip bandi kontrolleri packages/shared/src/balance.test.ts'te.
+# Gercek savas motorunu kullanirlar; buradaki Python kopyasi motordan sapardi.
 
 # --- 8) Bolge kitligi korunmali: bolge/oyuncu < 0.75 ------------------------
 elde = M['region_count'] - 1                      # Taht Kalesi haric
@@ -114,7 +84,7 @@ kontrol(8, "Bolge kitligi korunuyor", oran < 0.75,
 
 # --- Rapor ------------------------------------------------------------------
 print("=" * 70)
-print("LORDLAR CAGI - DENGE DOGRULAMA")
+print("LORDLAR CAGI - DENGE DOGRULAMA (aritmetik kontroller)")
 print("=" * 70)
 basarisiz = 0
 for no, ad, gecti, detay in sonuclar:
@@ -128,5 +98,6 @@ if basarisiz:
     print(f"SONUC: {len(sonuclar)-basarisiz}/{len(sonuclar)} gecti, {basarisiz} KONTROL BASARISIZ")
     print("data/balance.json duzeltilmeden koda gecilmemeli.")
     sys.exit(1)
-print(f"SONUC: {len(sonuclar)}/{len(sonuclar)} kontrol gecti. Denge tutarli.")
+print(f"SONUC: {len(sonuclar)}/{len(sonuclar)} aritmetik kontrol gecti.")
+print("Motor bagimli kontroller icin: pnpm test")
 sys.exit(0)

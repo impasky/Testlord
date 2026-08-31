@@ -312,35 +312,47 @@ oyuncunun da birinci olabileceği tek merdiven budur.
 
 ## 7. Doğrulama
 
-`data/balance.json` değiştirildiğinde **`python3 tools/check_balance.py`**
-çalıştırılır. Script şu 8 kontrolü uygular ve sapma varsa sıfırdan farklı
-çıkış kodu döner:
+Denge kontrolleri **iki yerde** koşar ve bu ayrım bilinçlidir:
 
-| # | Kontrol | Beklenen |
+| Nerede | Ne kontrol eder | Komut |
 |---|---|---|
-| 1 | Lv60'a ulaşma süresi | 100–130 gün |
-| 2 | Lv1 ordusu bakım vs malikâne | Gelir > bakım |
-| 3 | Lv60 ordusu bakım vs malikâne + 3 tarla | Gelir > bakım |
-| 4 | İlk NPC bölgesi (ring 4) | 1. günün ordusuyla R ≥ 0,60 ve maliyet ≤ başlangıç kaynağı |
-| 5 | Bölge Lv1→Lv5 geri ödemesi | 7–12 gün |
-| 6 | Lordun toplam savaş gücündeki payı | %15–25 |
-| 7 | Kazananın kaybı (ezici zafer) | > %0 |
-| 8 | Bölge / oyuncu oranı | < 0,75 (kıtlık korunmalı) |
+| `tools/check_balance.py` | Saf aritmetik: tempo, ekonomi, geri ödeme, kıtlık | `pnpm balance` |
+| `packages/shared/src/balance.test.ts` | **Gerçek savaş motorunu** kullanan garantiler | `pnpm test` |
 
-Mevcut durum: **8/8 geçiyor.**
+**Neden ikiye ayrıldı:** İlk sürümde "1. gün ilk fetih mümkün" kontrolü Python'da
+elle hesaplanıyordu ve **tahkimat bonusunu hesaba katmıyordu**. Gerçek oyunda
+denendiğinde yeni oyuncunun evine en yakın bölge bir Kale çıktı; %30 tahkimat
+güç oranını ele geçirme eşiğinin altına düşürdü ve oyuncu kazandığı savaşta
+bölgeyi alamadı. Kontrol "geçti" diyordu, oyun ise başka şey yapıyordu.
 
-```
-$ python3 tools/check_balance.py
-  [GEÇTİ] 1. Lv60'a ulaşma süresi          109 gün (hedef 100-130)
-  [GEÇTİ] 2. Lv1 ordu bakımı               gelir 128 vs bakım 70
-  [GEÇTİ] 3. Lv60 ordu bakımı              gelir 1860 vs bakım 1450
-  [GEÇTİ] 4. 1. gün ilk fetih mümkün       R=0.66, maliyet 4.650 ≤ bütçe 7.544
-  [GEÇTİ] 5. Bölge yükseltme geri ödemesi  8,4 gün
-  [GEÇTİ] 6. Lordun savaş gücündeki payı   %19,6 (hedef %15-25)
-  [GEÇTİ] 7. Ezici zaferde bile kayıp var  kazanan kaybı %17,5
-  [GEÇTİ] 8. Bölge kıtlığı korunuyor       60 bölge / 120 oyuncu = 0,50
-SONUÇ: 8/8 kontrol geçti. Denge tutarlı.
-```
+Ders: **motoru taklit eden bir kontrol, er ya da geç motordan sapar.** Savaşa
+bağlı her garanti artık motorun kendisiyle test edilir.
 
-M8'de bu kontroller `apps/api` içinde bir test dosyasına dönüştürülür ve CI'da
-koşar; böylece bir denge değişikliği oyunu sessizce bozamaz.
+### Aritmetik kontroller (`pnpm balance`)
+
+| # | Kontrol | Beklenen | Şu an |
+|---|---|---|---|
+| 1 | Lv60'a ulaşma süresi | 100–130 gün | 109 gün |
+| 2 | Lv1 ordusu bakım vs malikâne | Gelir > bakım | 128 > 70 |
+| 3 | Lv60 ordusu bakım vs malikâne + 3 tarla | Gelir > bakım | 1860 > 1450 |
+| 5 | Bölge Lv1→Lv5 geri ödemesi | 7–12 gün | 8,4 gün |
+| 8 | Bölge / oyuncu oranı | < 0,75 | 0,50 |
+
+### Motor bağımlı kontroller (`pnpm test`)
+
+| Kontrol | Beklenen |
+|---|---|
+| Yeni oyuncu 1. gün **tahkimatsız** ring-4 bölgesini alabilir | Ele geçirir |
+| Aynı orduyla **Kale** alınamaz | Ele geçiremez (zorluk farkı korunur) |
+| Başlangıç ordusu komuta kapasitesine sığar | 35 ≤ 90 yer |
+| Kazanan her zaman kayıp verir | > %0, dört senaryoda da |
+| Kaybeden her zaman kazanandan çok kaybeder | Dört senaryoda da |
+| Lordun toplam savaş gücündeki payı | %15–25 |
+| Taht Kalesi tek ve en güçlü garnizona sahip | Doğru |
+| Merkeze yaklaştıkça gelir çarpanı artar | Doğru |
+| Depo tavanı aşılamaz, açlık firarı tetiklenir | Doğru |
+
+Toplam **40 test**, hepsi geçiyor.
+
+Bir denge değişikliğinden sonra **ikisi de** koşmalıdır. Biri geçip diğeri
+kalırsa, geçen yanlış olandır.

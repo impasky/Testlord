@@ -7,7 +7,11 @@ import { ZodError } from 'zod';
 import { prisma } from './db.js';
 import { env } from './env.js';
 import { GameError } from './errors.js';
+import { armyRoutes } from './routes/army.js';
 import { authRoutes } from './routes/auth.js';
+import { devRoutes } from './routes/dev.js';
+import { itemRoutes } from './routes/items.js';
+import { mapRoutes } from './routes/map.js';
 import { meRoutes } from './routes/me.js';
 
 // Bozuk denge verisiyle ayağa kalkmaktansa hemen ölmek iyidir.
@@ -47,6 +51,15 @@ export async function buildServer() {
 
   await app.register(authRoutes, { prefix: '/api' });
   await app.register(meRoutes, { prefix: '/api' });
+  await app.register(itemRoutes, { prefix: '/api' });
+  await app.register(armyRoutes, { prefix: '/api' });
+  await app.register(mapRoutes, { prefix: '/api' });
+
+  // Zaman ilerletme yardımcıları ÜRETİMDE hiç yüklenmez.
+  if (env.NODE_ENV !== 'production') {
+    await app.register(devRoutes, { prefix: '/api' });
+    app.log.warn('Geliştirme test uçları açık (/api/test/*). Üretimde yüklenmez.');
+  }
 
   return app;
 }
