@@ -172,6 +172,8 @@ pnpm e2e         # oyun döngüsü + shard + worker + tarayıcı (sunucu ayakta 
 ```
 docs/
   gorseller/              Ekran görüntüleri
+  GORSEL-REHBERI.md       Gerçek illüstrasyon nasıl eklenir (dosyayı koy, yeter)
+  LISANSLAR.md            Üçüncü taraf varlıklar ve künye
   00-ozet-ve-kapsam.md    Yönetici özeti + DONDURULMUŞ kapsam sınırı (önce bunu oku)
   01-oyun-tasarimi.md     Tüm sistemler, oynanış döngüleri, ekranlar
   02-denge-formulleri.md  Her formül ve tablo, gerekçeleriyle

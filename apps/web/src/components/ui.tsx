@@ -144,7 +144,9 @@ export function IkonluDeger({
 }) {
   return (
     <span className={`inline-flex items-center gap-1 ${renk}`} title={baslik}>
-      <span className="opacity-75">{ikon}</span>
+      {/* Dolu siluetler küçük boyutta detay yüzünden gürültü yapıyor;
+          opaklık düşürülünce sayı öne çıkıyor, ikon bağlam veriyor. */}
+      <span className="opacity-60">{ikon}</span>
       <span className="tabular">{deger}</span>
       <span className="sr-only">{baslik}</span>
     </span>

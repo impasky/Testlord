@@ -3,6 +3,7 @@ import { unitName, type UnitType } from '@lordlar/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ApiError, api, type UnitDto } from '../api/client';
+import { Gorsel } from '../components/Gorsel';
 import {
   BirimIkonu,
   IkonAltin,
@@ -52,8 +53,16 @@ function BirimKarti({
   return (
     <li className="kart-kalk rounded-lg border border-kenar/70 bg-yuzey/40 p-3">
       <div className="flex gap-3">
-        <div className="madalyon flex h-14 w-14 shrink-0 items-center justify-center rounded-full text-altin/80">
-          <BirimIkonu tip={u.type} boyut={28} />
+        <div className="madalyon flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full text-altin/80">
+          {/* İllüstrasyon varsa o, yoksa siluet. Bkz. docs/GORSEL-REHBERI.md */}
+          <Gorsel
+            tur="birimler"
+            ad={u.type}
+            alt={unitName(tip)}
+            boyut={56}
+            className="h-full w-full"
+            yedek={<BirimIkonu tip={u.type} boyut={34} />}
+          />
         </div>
 
         <div className="min-w-0 flex-1">
@@ -66,13 +75,13 @@ function BirimKarti({
           <p className="mt-0.5 text-xs text-solgun">{ROL[u.type]}</p>
 
           <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
-            <IkonluDeger ikon={<IkonSaldiri boyut={14} />} deger={u.saldiri} baslik="Saldırı" />
-            <IkonluDeger ikon={<IkonSavunma boyut={14} />} deger={u.savunma} baslik="Savunma" />
-            <IkonluDeger ikon={<IkonCan boyut={14} />} deger={u.can} baslik="Can" />
-            <IkonluDeger ikon={<IkonHiz boyut={14} />} deger={u.hiz} baslik="Hız" />
-            <IkonluDeger ikon={<IkonYer boyut={14} />} deger={u.yer} baslik="Komuta yeri" />
+            <IkonluDeger ikon={<IkonSaldiri boyut={16} />} deger={u.saldiri} baslik="Saldırı" />
+            <IkonluDeger ikon={<IkonSavunma boyut={16} />} deger={u.savunma} baslik="Savunma" />
+            <IkonluDeger ikon={<IkonCan boyut={16} />} deger={u.can} baslik="Can" />
+            <IkonluDeger ikon={<IkonHiz boyut={16} />} deger={u.hiz} baslik="Hız" />
+            <IkonluDeger ikon={<IkonYer boyut={16} />} deger={u.yer} baslik="Komuta yeri" />
             <IkonluDeger
-              ikon={<IkonErzak boyut={14} />}
+              ikon={<IkonErzak boyut={16} />}
               deger={`${u.bakim_erzak_saat}/sa`}
               baslik="Bakım"
               renk="text-erzak/80"
@@ -97,14 +106,14 @@ function BirimKarti({
 
         <span className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs text-solgun">
           <IkonluDeger
-            ikon={<IkonAltin boyut={13} />}
+            ikon={<IkonAltin boyut={15} />}
             deger={formatSayi(u.maliyet.altin * adet)}
             baslik="Altın"
             renk="text-altin/75"
           />
           {u.maliyet.demir > 0 && (
             <IkonluDeger
-              ikon={<IkonDemir boyut={13} />}
+              ikon={<IkonDemir boyut={15} />}
               deger={formatSayi(u.maliyet.demir * adet)}
               baslik="Demir"
               renk="text-demir/75"
@@ -112,14 +121,14 @@ function BirimKarti({
           )}
           {u.maliyet.erzak > 0 && (
             <IkonluDeger
-              ikon={<IkonErzak boyut={13} />}
+              ikon={<IkonErzak boyut={15} />}
               deger={formatSayi(u.maliyet.erzak * adet)}
               baslik="Erzak"
               renk="text-erzak/75"
             />
           )}
           <IkonluDeger
-            ikon={<IkonSure boyut={13} />}
+            ikon={<IkonSure boyut={15} />}
             deger={formatKalan(u.egitim_sn * adet * 1000)}
             baslik="Eğitim süresi"
           />
@@ -144,7 +153,7 @@ function DagilimListesi({
         {satirlar.map((u, i) => (
           <li key={i} className="flex items-center gap-2 text-sm">
             <span className="text-altin/60">
-              <BirimIkonu tip={u.unitType} boyut={16} />
+              <BirimIkonu tip={u.unitType} boyut={18} />
             </span>
             <span className="flex-1 truncate">{unitName(u.unitType as UnitType)}</span>
             <span className="tabular text-parsomen">{formatSayi(u.count)}</span>
@@ -253,7 +262,7 @@ export function Kisla({ onGuncelle }: { onGuncelle: () => void }) {
           {a.netErzakPerHour < 0 && (
             <p className="mt-3 flex items-start gap-2 rounded border border-kan/50 bg-kan/10 px-2.5 py-2 text-xs">
               <span className="mt-0.5 shrink-0 text-kan">
-                <IkonUyari boyut={14} />
+                <IkonUyari boyut={16} />
               </span>
               <span>
                 Erzağın eksiliyor. Bittiğinde ordu saatte %5 firar eder. Tarla bölgesi al ya da

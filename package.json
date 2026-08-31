@@ -26,6 +26,7 @@
     "uretim-testi": "node tools/uretim-testi.mjs"
   },
   "devDependencies": {
+    "@iconify-json/game-icons": "^1.2.4",
     "@types/node": "^22.10.2",
     "playwright": "^1.62.1",
     "prettier": "^3.4.2",

@@ -107,6 +107,20 @@ export function Giris({ onGiris }: { onGiris: () => void }) {
             Yeni lordlar 72 saat saldırıya kapalıdır.
           </p>
         )}
+
+        {/* CC BY 3.0 künye şartı: ikonların kaynağı belirtilmeli. */}
+        <p className="mt-6 text-center text-[11px] text-solgun/60">
+          İkonlar:{' '}
+          <a
+            href="https://game-icons.net"
+            target="_blank"
+            rel="noreferrer noopener"
+            className="underline decoration-dotted underline-offset-2 hover:text-solgun"
+          >
+            game-icons.net
+          </a>{' '}
+          — CC BY 3.0
+        </p>
       </div>
     </div>
   );
