@@ -1,4 +1,5 @@
 /** Ekran 4: Kışla — birim eğitimi, ordu dağılımı, komuta kapasitesi. */
+import { unitName, type UnitType } from '@lordlar/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ApiError, api, type UnitDto } from '../api/client';
@@ -146,7 +147,7 @@ export function Kisla({ onGuncelle }: { onGuncelle: () => void }) {
                 <ul className="space-y-0.5 text-sm">
                   {garnizonlar.map((u, i) => (
                     <li key={i} className="flex justify-between">
-                      <span>{u.unitType}</span>
+                      <span>{unitName(u.unitType as UnitType)}</span>
                       <span className="tabular">{u.count}</span>
                     </li>
                   ))}
@@ -159,7 +160,7 @@ export function Kisla({ onGuncelle }: { onGuncelle: () => void }) {
                 <ul className="space-y-0.5 text-sm">
                   {yuruyustekiler.map((u, i) => (
                     <li key={i} className="flex justify-between">
-                      <span>{u.unitType}</span>
+                      <span>{unitName(u.unitType as UnitType)}</span>
                       <span className="tabular">{u.count}</span>
                     </li>
                   ))}

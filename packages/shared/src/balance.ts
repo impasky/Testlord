@@ -26,6 +26,22 @@ export function unit(type: UnitType): UnitStats {
   return B.birimler[type] as unknown as UnitStats;
 }
 
+/**
+ * Birimin oyuncuya gösterilecek adı.
+ * Arayüzde HİÇBİR yerde ham anahtar ('mizrakci') gösterilmemeli.
+ */
+export function unitName(type: UnitType): string {
+  return unit(type).ad;
+}
+
+/** Bir orduyu "40 Mızrakçı, 25 Okçu" gibi okunur metne çevirir. */
+export function formatArmy(army: Partial<Record<UnitType, number>>): string {
+  const parcalar = UNIT_TYPES.filter((t) => (army[t] ?? 0) > 0).map(
+    (t) => `${army[t]} ${unitName(t)}`,
+  );
+  return parcalar.length ? parcalar.join(', ') : 'yok';
+}
+
 /** Karşı çarpanı: saldıran birim -> hedef birim. Tanımsız eşleşme 1.0. */
 export function counterMultiplier(attacker: UnitType, target: UnitType): number {
   const table = B.birim_kars_carpanlari as unknown as Record<string, Record<string, number>>;

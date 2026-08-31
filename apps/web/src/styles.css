@@ -28,6 +28,18 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Haritada altıgenler tıklanabilir <g> öğeleri. Tarayıcının varsayılan odak
+   çerçevesi SVG'de öğenin sınır kutusunu çizer: altıgenin etrafında kocaman
+   beyaz bir dikdörtgen görünür. Onu kapatıp odağı altıgenin kendi konturuyla
+   gösteriyoruz — klavye erişilebilirliği korunuyor, görüntü bozulmuyor. */
+svg g[role='button']:focus {
+  outline: none;
+}
+svg g[role='button']:focus-visible > path:first-of-type {
+  stroke: var(--color-altin);
+  stroke-width: 3;
+}
+
 /* Sayılar seri fontta hizalı ve okunur durur */
 .tabular {
   font-variant-numeric: tabular-nums;

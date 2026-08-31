@@ -1,5 +1,5 @@
 /** Ekran 5: Harita — 61 bölge, bölge detayı, garnizon ve saldırı emri. */
-import { UNIT_TYPES, type Army } from '@lordlar/shared';
+import { UNIT_TYPES, formatArmy, unitName, type Army, type UnitType } from '@lordlar/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ApiError, api, type PreviewDto } from '../api/client';
@@ -27,7 +27,7 @@ function OrduSecici({
       <ul className="space-y-1">
         {UNIT_TYPES.filter((t) => (mevcut[t] ?? 0) > 0 || (secim[t] ?? 0) > 0).map((t) => (
           <li key={t} className="flex items-center gap-2 text-sm">
-            <span className="flex-1">{t}</span>
+            <span className="flex-1">{unitName(t)}</span>
             <span className="text-xs text-solgun tabular">/{mevcut[t] ?? 0}</span>
             <Input
               type="number"
@@ -221,7 +221,7 @@ export function Harita({ onGuncelle }: { onGuncelle: () => void }) {
                       .filter(([, n]) => (n as number) > 0)
                       .map(([t, n]) => (
                         <li key={t} className="flex justify-between">
-                          <span>{t}</span>
+                          <span>{unitName(t as UnitType)}</span>
                           <span className="tabular">{n as number}</span>
                         </li>
                       ))}
@@ -324,11 +324,7 @@ export function Harita({ onGuncelle }: { onGuncelle: () => void }) {
                       )}
                     </p>
                     <p className="mt-1 text-xs text-solgun">
-                      Tahmini kaybın:{' '}
-                      {Object.entries(onizleme.tahmin.saldiranKayip)
-                        .filter(([, n]) => (n as number) > 0)
-                        .map(([t, n]) => `${n} ${t}`)
-                        .join(', ') || 'yok'}
+                      Tahmini kaybın: {formatArmy(onizleme.tahmin.saldiranKayip)}
                     </p>
                     <p className="mt-1 text-xs text-solgun">
                       Yürüyüş: {formatKalan(onizleme.marchSec * 1000)}

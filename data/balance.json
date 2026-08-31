@@ -68,7 +68,7 @@
   },
   "birimler": {
     "milis": {
-      "ad": "Koylu Milis",
+      "ad": "Köylü Milis",
       "saldiri": 10,
       "savunma": 8,
       "can": 40,
@@ -83,7 +83,7 @@
       "bakim_erzak_saat": 1
     },
     "mizrakci": {
-      "ad": "Mizrakci",
+      "ad": "Mızrakçı",
       "saldiri": 18,
       "savunma": 30,
       "can": 70,
@@ -98,7 +98,7 @@
       "bakim_erzak_saat": 2
     },
     "okcu": {
-      "ad": "Okcu",
+      "ad": "Okçu",
       "saldiri": 32,
       "savunma": 12,
       "can": 55,
@@ -113,7 +113,7 @@
       "bakim_erzak_saat": 2
     },
     "suvari": {
-      "ad": "Suvari",
+      "ad": "Süvari",
       "saldiri": 55,
       "savunma": 25,
       "can": 110,
@@ -128,7 +128,7 @@
       "bakim_erzak_saat": 5
     },
     "kusatma": {
-      "ad": "Mancinik",
+      "ad": "Mancınık",
       "saldiri": 90,
       "savunma": 5,
       "can": 150,
