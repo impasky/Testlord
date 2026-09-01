@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { ApiError, api, type PreviewDto } from '../api/client';
 import { HexHarita } from '../components/HexHarita';
 import { BirimIkonu, BolgeIkonu, IkonKapali, IkonSure } from '../components/Ikonlar';
+import { SavasRaporu } from '../components/SavasRaporu';
 import { Bolum, Buton, Input, Kart, Rozet, formatKalan, formatSayi } from '../components/ui';
 
 const TIP_ADI: Record<string, string> = {
@@ -114,9 +115,10 @@ function OrduSecici({
   );
 }
 
-export function Harita({ onGuncelle }: { onGuncelle: () => void }) {
+export function Harita({ lordId, onGuncelle }: { lordId: string; onGuncelle: () => void }) {
   const qc = useQueryClient();
   const [seciliId, setSeciliId] = useState<number | null>(null);
+  const [rapor, setRapor] = useState<string | null>(null);
   const [saldiriOrdusu, setSaldiriOrdusu] = useState<Army>({});
   const [garnizon, setGarnizon] = useState<Army>({});
   const [onizleme, setOnizleme] = useState<PreviewDto | null>(null);
@@ -129,6 +131,15 @@ export function Harita({ onGuncelle }: { onGuncelle: () => void }) {
   const detay = useQuery({
     queryKey: ['region', seciliId],
     queryFn: () => api.region(seciliId!),
+    enabled: seciliId !== null,
+  });
+  // Diğer sorguların yanında duruyor, aşağıda değil: bu bileşen harita
+  // yüklenene kadar erken dönüyor ve o dönüşten sonra çağrılan bir hook
+  // "Rendered more hooks than during the previous render" hatası veriyor.
+  // enabled ile ağ isteği yine sadece alt sayfa açıkken yapılıyor.
+  const savaslar = useQuery({
+    queryKey: ['battles'],
+    queryFn: () => api.battles(),
     enabled: seciliId !== null,
   });
 
@@ -154,6 +165,7 @@ export function Harita({ onGuncelle }: { onGuncelle: () => void }) {
   }
 
   const bolge = detay.data;
+  const bolgeSavaslari = (savaslar.data ?? []).filter((b) => b.regionId === seciliId).slice(0, 5);
   const evdeki = army.data?.home ?? {};
   const secimBos = UNIT_TYPES.every((t) => (saldiriOrdusu[t] ?? 0) === 0);
   const benimSayi = harita.data.regions.filter((r) => r.isMine && r.type !== 'taht').length;
@@ -434,6 +446,47 @@ export function Harita({ onGuncelle }: { onGuncelle: () => void }) {
                 </Kart>
               )}
 
+              {bolgeSavaslari.length > 0 && (
+                <Kart className="p-3">
+                  <h3 className="baslik mb-2 text-[11px] text-solgun">Bu Bölgedeki Savaşların</h3>
+                  <ul className="space-y-1.5">
+                    {bolgeSavaslari.map((b) => {
+                      // Sonuç bakanın gözünden: aynı savaş saldıran için zafer,
+                      // savunan için yenilgi.
+                      const benimSaldirim = b.attackerLordId === lordId;
+                      const kazandim = (b.result === 'attacker_win') === benimSaldirim;
+                      return (
+                        <li key={b.id}>
+                          <button
+                            className="bas flex w-full items-center gap-2 text-left text-[12px]"
+                            onClick={() => setRapor(b.id)}
+                          >
+                            <span
+                              className={`baslik w-16 shrink-0 ${
+                                kazandim ? 'text-yesil' : 'text-kirmizi'
+                              }`}
+                            >
+                              {kazandim ? 'ZAFER' : 'YENİLGİ'}
+                            </span>
+                            <span className="min-w-0 flex-1 truncate text-solgun">
+                              {benimSaldirim ? `→ ${b.defender?.name ?? 'garnizon'}` : `← ${b.attacker.name}`}
+                            </span>
+                            <time className="shrink-0 text-[10px] text-sonuk">
+                              {new Date(b.createdAt).toLocaleString('tr-TR', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })}
+                            </time>
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </Kart>
+              )}
+
               {hata && (
                 <Kart className="border-kirmizi/50 p-3">
                   <p className="text-[13px] text-kirmizi">{hata}</p>
@@ -448,6 +501,8 @@ export function Harita({ onGuncelle }: { onGuncelle: () => void }) {
           </div>
         </>
       )}
+
+      {rapor && <SavasRaporu battleId={rapor} benimId={lordId} onKapat={() => setRapor(null)} />}
     </div>
   );
 }

@@ -71,7 +71,7 @@ export function App() {
         <Malikane lord={lord} queues={queues} events={events} onGit={setSekme} />
       )}
       {sekme === 'kisla' && <Kisla onGuncelle={tazele} />}
-      {sekme === 'harita' && <Harita onGuncelle={tazele} />}
+      {sekme === 'harita' && <Harita lordId={lord.id} onGuncelle={tazele} />}
       {sekme === 'demirhane' && <Demirhane onGuncelle={tazele} />}
       {sekme === 'lord' && <LordEkrani lord={lord} onGuncelle={tazele} />}
       {sekme === 'generaller' && <Generaller onGuncelle={tazele} />}
