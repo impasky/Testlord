@@ -133,7 +133,7 @@ export function App() {
           queues={queues}
           events={events}
           yokluk={yokluk}
-          onKarsiSaldiri={(bolgeId) => {
+          onBolgeyiAc={(bolgeId) => {
             setHedefBolge(bolgeId);
             setSekme('harita');
           }}

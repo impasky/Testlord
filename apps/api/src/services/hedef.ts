@@ -297,7 +297,9 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
   // sorusu gerçekten soruluyor ve ilk ALINABİLİR olan seçiliyor. Arama
   // yalnızca ilk birkaç adayda çalışır; 60 bölgenin hepsinde ikili arama
   // yapmak gereksiz olurdu.
-  if (enIyi && !enIyi.kazanir && orduVar) {
+  // Ordusu HİÇ olmayan oyuncu için de çalışır: "ne kadar asker lazım"
+  // sorusunun en çok sorulduğu an, henüz tek askeri olmayan andır.
+  if (enIyi && !enIyi.kazanir) {
     const tumOrdu = await prisma.armyUnit.findMany({ where: { lordId } });
     const kullanilan = armySlots(
       tumOrdu.reduce<Army>((a, u) => {
@@ -321,16 +323,19 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
         kaynak,
       );
       if (!eksik) continue;
-      const aday = { ...hedef, eksik };
-      // İlk KARŞILANABİLİR hedef kazanır: oyuncunun bugün yapabileceği bir
-      // adım, teorik olarak mümkün ama kesesinin yetmediği bir adımdan
-      // daha değerli. Karşılanabilir hiçbiri yoksa en yakın ulaşılabilir
-      // olan gösteriliyor ve arayüz eksik kaynağı söylüyor.
-      if (eksik.karsilanabilir) {
-        ulasilabilir = aday;
-        break;
-      }
-      ulasilabilir ??= aday;
+      // İlk ULAŞILABİLİR hedef kazanır — "karşılanabilir" olan değil.
+      //
+      // Kasten: kaynak, oyuncu asker eğittikçe değişen bir sayı. Seçimi ona
+      // bağlamak hedefi oynatıyordu: oyun "Bolluk Ovası için 27 okçu eğit"
+      // diyor, oyuncu eğitiyor, altını azalıyor ve oyun bu kez "Karahisar'a
+      // saldır" diyordu. Oyuncunun planını uygularken hedefin altından
+      // kayması, düzeltmeye çalıştığımız "karman çorman" duygusunun ta
+      // kendisi.
+      //
+      // Kaynak yetmiyorsa hedef yine de doğru hedeftir; gelir birikince
+      // karşılanır. Arayüz bunu "altının şu an yetmiyor" diye söylüyor.
+      ulasilabilir = { ...hedef, eksik };
+      break;
     }
 
     if (ulasilabilir) enIyi = ulasilabilir;
@@ -462,7 +467,12 @@ function eksikOrdu(
     // Güvenlik payı: dokuz örneğin hepsi fetihle bitse bile onuncu tohum
     // farklı düşebilir. Oyuncu oyunun dediğini yapıp bölgeyi alamazsa,
     // düzeltmeye çalıştığımız hayal kırıklığını oyunun kendisi üretmiş olur.
-    const adet = Math.min(tavan, Math.ceil(alt * (1 + B.oneri.guvenlik_payi)));
+    // Güvenlik payı kapasiteye sığmıyorsa bu seçenek TAVSİYE EDİLEMEZ.
+    // Payı sessizce kırpmak, payın tam da gerektiği yerde — kapasitenin
+    // sınırında — ortadan kalkması demekti: oyuncuya "tam 90 milis yeter"
+    // denip savaşın kıl payı kaybedilmesi.
+    const adet = Math.ceil(alt * (1 + B.oneri.guvenlik_payi));
+    if (adet > tavan) continue;
     const maliyet: Resources = {
       altin: u.maliyet.altin * adet,
       demir: u.maliyet.demir * adet,

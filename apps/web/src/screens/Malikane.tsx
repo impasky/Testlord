@@ -12,7 +12,7 @@ import {
   IkonUyari,
   IkonYer,
 } from '../components/Ikonlar';
-import { IlkAdimlar } from '../components/IlkAdimlar';
+import { Omurga } from '../components/Omurga';
 import { SavasRaporu } from '../components/SavasRaporu';
 import {
   Bolum,
@@ -106,14 +106,15 @@ export function Malikane({
   queues,
   events,
   yokluk,
-  onKarsiSaldiri,
+  onBolgeyiAc,
   onGit,
 }: {
   lord: LordState;
   queues: QueueItem[];
   events: GameEvent[];
   yokluk: YoklukOzeti | null;
-  onKarsiSaldiri: (regionId: number) => void;
+  /** Bir bölgeyi haritada açar: hem omurganın hedefi hem karşı saldırı. */
+  onBolgeyiAc: (regionId: number) => void;
   onGit: (s: Sekme) => void;
 }) {
   const [rapor, setRapor] = useState<string | null>(null);
@@ -151,7 +152,7 @@ export function Malikane({
 
       {yokluk && <YoklukKarti y={yokluk} onGit={onGit} />}
 
-      <IlkAdimlar lord={lord} queues={queues} onGit={onGit} />
+      <Omurga lord={lord} queues={queues} onGit={onGit} onHedefeGit={onBolgeyiAc} />
 
       <div className="grid grid-cols-2 gap-2.5">
         <DegerKarti
@@ -317,7 +318,7 @@ export function Malikane({
           onKapat={() => setRapor(null)}
           onKarsiSaldiri={(bolgeId) => {
             setRapor(null);
-            onKarsiSaldiri(bolgeId);
+            onBolgeyiAc(bolgeId);
           }}
         />
       )}

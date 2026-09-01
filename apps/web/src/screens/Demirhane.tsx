@@ -16,6 +16,7 @@ import {
   type LordState,
   type QueueItem,
 } from '../api/client';
+import { eYonelme, inIlgi } from '../components/ekler';
 import { hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { IkonAltin, IkonDemir, IkonSure, IkonNavDemirhane } from '../components/Ikonlar';
 import {
@@ -129,7 +130,7 @@ function KusanmaSonucu({ etki, onKapat }: { etki: EkipmanEtkisiDto; onKapat: () 
       </SonucSatiri>
       {etki.hedef &&
         (kayipDegisti ? (
-          <SonucSatiri etiket={`${etki.hedef.name} saldırısında kaybın`} vurgu>
+          <SonucSatiri etiket={`${inIlgi(etki.hedef.name)} savunmasında kaybın`} vurgu>
             <Fark
               oncesi={etki.kayipOncesi}
               sonrasi={etki.kayipSonrasi}
@@ -143,9 +144,9 @@ function KusanmaSonucu({ etki, onKapat }: { etki: EkipmanEtkisiDto; onKapat: () 
           // cevapsız bırakırdı. Dürüst cevap: bu parça tek başına savaşı
           // çevirmiyor.
           <p className="mt-1.5 text-[12px] leading-snug text-solgun">
-            {etki.hedef.name} saldırısında kaybın değişmiyor ({etki.kayipSonrasi} birim). Tek bir
-            parça savaşı çevirmiyor; etkisini görmek için daha üst tier ekipman ya da daha büyük
-            bir ordu gerekiyor.
+            {eYonelme(etki.hedef.name)} saldırında kaybın değişmiyor ({etki.kayipSonrasi} birim).
+            Tek bir parça savaşı çevirmiyor; etkisini görmek için daha üst tier ekipman ya da daha
+            büyük bir ordu gerekiyor.
           </p>
         ))}
       {etki.hedef && !etki.kazanirOncesi && etki.kazanirSonrasi && (
