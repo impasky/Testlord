@@ -326,6 +326,44 @@
     "max_taban": 1,
     "max_seviye_bolen": 15,
     "max_bolge_seviyesi": 5,
+    "gelisim_adlari": {
+      "tarla": [
+        "Köy Tarlası",
+        "Ekinlik",
+        "Bereketli Tarlalar",
+        "Tahıl Ambarı",
+        "Diyarın Kileri"
+      ],
+      "maden": [
+        "Taş Ocağı",
+        "Demir Madeni",
+        "Derin Ocak",
+        "Cevher Yatağı",
+        "Kadim Damar"
+      ],
+      "sehir": [
+        "Kasaba",
+        "Pazar Şehri",
+        "Ticaret Şehri",
+        "Büyük Şehir",
+        "Diyarın Başkenti"
+      ],
+      "kale": [
+        "Gözcü Kulesi",
+        "Hisar",
+        "Kale",
+        "Büyük Kale",
+        "Aşılmaz Kale"
+      ],
+      "taht": [
+        "Taht Kalesi",
+        "Taht Kalesi",
+        "Taht Kalesi",
+        "Taht Kalesi",
+        "Taht Kalesi"
+      ]
+    },
+    "_gelisim_adlari_not": "Bolge seviyesi 1-5 icin, TIPE OZEL asama adlari. Yeni mekanik degil: ayni yukseltme, sadece adlandirilmis. Oyuncu 'sehri gelistiremiyorum' diyordu; oysa gelistirebiliyordu ama arayuz ona 'Sv 2' diyordu. Bir yeri gelistirmek, o yerin AD DEGISTIRMESIYLE hissedilir -- Kasaba'nin Pazar Sehri olmasi, 'seviye 2' olmasindan bambaska bir sey.",
     "taban_gelir_saatlik": {
       "tarla": {
         "erzak": 140

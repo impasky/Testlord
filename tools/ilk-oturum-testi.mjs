@@ -145,6 +145,25 @@ async function oturum() {
   yaz('Raporda bölge sayısı arttı',
     (sonuc?.sonrasi.bolgeSayisi ?? 0) > (sonuc?.oncesi.bolgeSayisi ?? 0));
 
+  // --- 5b. Alınan bölge GELİŞTİRİLEBİLİYOR mu?
+  // Oyuncu "bölgeyi ele geçirdim ama şehri geliştiremiyorum" diyordu.
+  // Geliştirebiliyordu; arayüz ona "Seviye 2'ye yükselt" diyordu. Aşama
+  // adları da bu yüzden dengede: mekanik aynı, anlatım değişti.
+  const benimBolge = (await cagir('/map')).regions.find((r) => r.isMine && r.type !== 'taht');
+  yaz('Alınan bölge haritada benim görünüyor', Boolean(benimBolge), benimBolge?.name);
+  if (benimBolge) {
+    const detay = await cagir(`/map/${benimBolge.id}`);
+    yaz('Bölgenin geliştirme maliyeti var', detay.upgradeCost?.altin > 0,
+      `${detay.upgradeCost?.altin} altın`);
+    await post('/test/kaynak-ver', { altin: 50000, demir: 50000 });
+    const gelistirme = await post(`/map/${benimBolge.id}/upgrade`);
+    yaz('Bölge geliştirme kuyruğa girdi', gelistirme.queued === true);
+    await post('/test/kuyruklari-bitir');
+    const sonra = await cagir(`/map/${benimBolge.id}`);
+    yaz('Bölge bir aşama ilerledi', sonra.level === benimBolge.level + 1,
+      `seviye ${benimBolge.level} -> ${sonra.level}`);
+  }
+
   // --- 6. Ekipman kuşanmak savaş katkısını söylüyor
   await post('/test/kaynak-ver', { altin: 20000, demir: 10000 });
   await post('/items/craft', { tier: 1, slot: 'silah' });

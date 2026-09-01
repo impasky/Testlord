@@ -391,3 +391,60 @@ Yapılanlar:
 - **Alt çubukta altın nokta.** Omurganın işaret ettiği sekmede duruyor;
   hem kart hem çubuk aynı hesabı okuyor (`useOmurgaAdimi`), böylece ikisi
   ayrışamıyor.
+
+---
+
+## İ9 — Harita bir yer olsun
+
+Oyuncu: *"harita çok kötü, neyin ne olduğu anlaşılmıyor; bir zemin üstüne
+oturtulmuş olsa daha iyi olur; şu an bir dikdörtgende sağa sola gidiyormuşum
+gibi ham hissettiriyor."*
+
+Haklıydı. Önceki hâl boşlukta duran düz renkli altıgenlerden oluşan bir
+ızgaraydı — bir tablo, bir yer değil.
+
+- **Zemin var.** Altıgenler denizin üstünde bir kara parçası oluşturuyor;
+  kıyı şeridi ve deniz gerçekten çiziliyor. Harita artık bir dikdörtgen
+  değil, kenarları olan bir ada. (Teknik: genişletilmiş altıgenler üst üste
+  binerek tek bir kütle veriyor; kıyı ve kara iki katman hâlinde çizilince
+  aradaki fark sahil şeridi bırakıyor.)
+- **Arazi görselle anlatılıyor.** Her altıgen kendi bölge illüstrasyonuyla
+  dolduruluyor. Görsel 2,6 kat yakınlaştırılıp ortasından kırpılıyor: 512
+  piksellik bir sahne 41 piksellik altıgende okunmuyor, okunan şey doku —
+  buğday başağı, kaya, kiremit.
+- **Bölgelerin adı var.** İsimsiz altıgenler "neyin ne olduğu anlaşılmıyor"
+  duygusunun doğrudan sebebiydi. Tip ikonu da geri geldi: küçük ölçekte
+  "burası maden mi tarla mı" sorusuna cevap veren şey doku değil siluet.
+- **Seviye yalnızca yükseltilmişse yazılıyor.** 61 altıgende "Sv1" görmek
+  haritayı yine bir sayı duvarına çeviriyordu.
+
+---
+
+## İ10 — Bölge bir yer olsun
+
+Oyuncu: *"bir bölge ele geçirdiğimde neden orayı yönetip yükseltmeler yapıp
+şehri ya da tarlayı geliştiremiyorum, neden ele geçirdiğim bölgede değilim
+diye düşündürtüyor."*
+
+İki ayrı şey vardı burada ve ikisini de dürüstçe ayırmak gerekiyor:
+
+**Yönetip geliştirmek zaten mümkündü.** Bölge seviyesi 1–5, maliyeti, süresi
+ve gelir etkisi baştan beri motorda. Ama arayüz oyuncuya *"Seviye 2'ye
+yükselt"* diyordu — bir tabloda satır artırmak gibi. Bir yeri geliştirmek, o
+yerin **ad değiştirmesiyle** hissedilir:
+
+- `balance.json` → `bolgeler.gelisim_adlari`: her bölge tipine beş aşama adı.
+  Kasaba → Pazar Şehri → Ticaret Şehri → Büyük Şehir → Diyarın Başkenti.
+  Taş Ocağı → Demir Madeni → Derin Ocak → Cevher Yatağı → Kadim Damar.
+- Geliştirme kartı artık aşama geçişini ve gelir farkını gösteriyor:
+  *"KASABA → PAZAR ŞEHRİ · Saatlik altın 200 → 250 (+50)"*, düğmesi
+  *"Pazar Şehri yap"*.
+
+**"Orada değilim" duygusu bir sunum sorunuydu.** İllüstrasyon vardı ama
+başlığın üstünde bir dekor şeridiydi. Şimdi bölgenin adı ve aşaması
+görselin ÜSTÜNE biniyor: illüstrasyon bölgenin portresi oluyor. Geliştirme
+kartı da en üste alındı — oyuncunun oraya gelme sebebi o.
+
+**Yapılmayan:** bölgeye ayrı ayrı bina dikmek (ambar, sur, kışla) yeni bir
+sistem; bu turda yapılmadı. Var olan tek eksen — bölge aşaması — dürüstçe
+adlandırıldı ve görünür kılındı.

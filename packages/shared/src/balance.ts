@@ -146,3 +146,18 @@ export function validateBalance(): void {
     throw new Error(`Denge verisi geçersiz:\n  - ${hatalar.join('\n  - ')}`);
   }
 }
+
+/**
+ * Bölgenin o seviyedeki adı: "Kasaba", "Pazar Şehri", "Ticaret Şehri"…
+ *
+ * Yeni bir mekanik değil, var olan yükseltmenin adlandırılması. Oyuncu
+ * "şehri geliştiremiyorum" diyordu; oysa geliştirebiliyordu ama arayüz ona
+ * "Sv 2" diyordu. Bir yeri geliştirmek, o yerin AD DEĞİŞTİRMESİYLE
+ * hissedilir. (docs/08 İ10)
+ */
+export function bolgeAsamaAdi(type: string, level: number): string {
+  const tablo = B.bolgeler.gelisim_adlari as unknown as Record<string, string[]>;
+  const adlar = tablo[type];
+  if (!adlar || adlar.length === 0) return `Seviye ${level}`;
+  return adlar[Math.min(Math.max(1, level), adlar.length) - 1]!;
+}

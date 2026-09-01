@@ -1,10 +1,19 @@
 /** Harita — 61 bölge, alt sayfada bölge detayı, garnizon ve saldırı. */
-import { B, UNIT_TYPES, formatArmy, unitName, type Army, type UnitType } from '@lordlar/shared';
+import {
+  B,
+  UNIT_TYPES,
+  bolgeAsamaAdi,
+  formatArmy,
+  regionIncome,
+  unitName,
+  type Army,
+  type UnitType,
+} from '@lordlar/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { ApiError, api, type LordState, type PreviewDto, type QueueItem } from '../api/client';
 import { HexHarita } from '../components/HexHarita';
-import { BirimIkonu, BolgeIkonu, IkonKapali, IkonSure } from '../components/Ikonlar';
+import { BirimIkonu, IkonKapali, IkonSure } from '../components/Ikonlar';
 import { hisAgir, hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { DunyaBasligi, OlaySeridi } from '../components/DunyaSeridi';
 import { SaldiriOnizleme } from '../components/SaldiriOnizleme';
@@ -15,15 +24,19 @@ import {
   EngelNotu,
   Input,
   Iskelet,
+  Fark,
+  Hap,
   Kart,
   KuyrukSeridi,
-  Rozet,
+  SonucSatiri,
   formatKalan,
   formatSayi,
   kaynakEngeli,
 } from '../components/ui';
 
 const BOLGE_LIMITI = B.kuyruklar.es_zamanli.upgrade_region;
+
+const GELIR_ADI = { altin: 'altın', demir: 'demir', erzak: 'erzak' } as const;
 
 const TIP_ADI: Record<string, string> = {
   tarla: 'Tarla',
@@ -47,7 +60,16 @@ const TIP_ADI: Record<string, string> = {
  * bir doku şeridi kalıyor. 3/2 karenin üçte ikisini koruyor ve afiş
  * kaydırılınca yukarı çıktığı için alt sayfayı boğmuyor.
  */
-function BolgeAfisi({ tip, ad }: { tip: string; ad: string }) {
+function BolgeAfisi({
+  tip,
+  ad,
+  ustyazi,
+}: {
+  tip: string;
+  ad: string;
+  /** Görselin üstüne binen başlık: bölgenin adı ve gelişim aşaması. */
+  ustyazi?: ReactNode;
+}) {
   const [durum, setDurum] = useState<'bekliyor' | 'var' | 'yok'>('bekliyor');
 
   if (durum === 'yok') return null;
@@ -69,7 +91,13 @@ function BolgeAfisi({ tip, ad }: { tip: string; ad: string }) {
         onError={() => setDurum('yok')}
       />
       {/* Alt kenarı panele eritir; afişin sert kesimi başlık satırına bitişik durmasın. */}
-      <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-panel to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-panel via-panel/80 to-transparent" />
+
+      {/* Ad ve aşama görselin ÜSTÜNDE durur. Altında ayrı bir satırda
+          dururken görsel dekor gibi kalıyordu; üstüne binince illüstrasyon
+          bölgenin PORTRESİ oluyor ve oyuncu "oradaymış" gibi hissediyor.
+          (docs/08 İ10) */}
+      {ustyazi && <div className="absolute inset-x-0 bottom-0 px-4 pb-3">{ustyazi}</div>}
     </div>
   );
 }
@@ -419,37 +447,50 @@ export function Harita({
             className="fixed inset-x-0 bottom-0 z-50 mx-auto max-h-[82dvh] max-w-lg overflow-y-auto rounded-t-2xl border-t border-kenar bg-panel"
             style={{ paddingBottom: 'calc(var(--alt-bar) + 12px)' }}
           >
-            <BolgeAfisi tip={bolge.type} ad={TIP_ADI[bolge.type] ?? bolge.type} />
-            <div className="sticky top-0 z-10 border-b border-kenar bg-panel px-4 pt-3 pb-3">
-              <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-kenar" />
-              <div className="flex items-start gap-3">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-altin/15 text-altin">
-                  <BolgeIkonu tip={bolge.type} boyut={24} />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <h2 className="baslik truncate text-[15px]">{bolge.name}</h2>
-                  <p className="text-[11px] text-solgun">
-                    {TIP_ADI[bolge.type]} · Sv {bolge.level} ·{' '}
-                    {bolge.owner ? bolge.owner.name : 'sahipsiz'}
+            <BolgeAfisi
+              tip={bolge.type}
+              ad={TIP_ADI[bolge.type] ?? bolge.type}
+              ustyazi={
+                <>
+                  <h2
+                    className="baslik text-[22px] leading-tight text-parsomen"
+                    style={{ textShadow: '0 2px 6px rgba(0,0,0,0.9)' }}
+                  >
+                    {bolge.name}
+                  </h2>
+                  <p
+                    className="text-[13px] text-altin"
+                    style={{ textShadow: '0 2px 6px rgba(0,0,0,0.9)' }}
+                  >
+                    {bolgeAsamaAdi(bolge.type, bolge.level)}
+                    {bolge.owner && (
+                      <span className="text-parsomen/80">
+                        {' · '}
+                        {bolge.isMine ? 'senin' : bolge.owner.name}
+                      </span>
+                    )}
+                    {!bolge.owner && <span className="text-parsomen/70"> · sahipsiz</span>}
                   </p>
-                </div>
-                <button onClick={kapat} className="bas shrink-0 text-solgun">
-                  <IkonKapali boyut={20} />
-                </button>
-              </div>
-
-              <div className="mt-2.5 flex flex-wrap gap-1.5">
+                </>
+              }
+            />
+            <div className="sticky top-0 z-10 flex items-center justify-between gap-2 border-b border-kenar bg-panel px-4 py-2">
+              <div className="flex flex-wrap gap-1.5">
                 {bolge.type === 'taht' && (
-                  <Rozet renk="var(--color-altin)">
-                    {bolge.owner ? `DİYARIN LORDU · ${bolge.owner.name}` : 'TAHT BOŞ'}
-                  </Rozet>
+                  <Hap renk="var(--color-altin)">
+                    {bolge.owner ? `Diyarın Lordu · ${bolge.owner.name}` : 'taht boş'}
+                  </Hap>
                 )}
-                <Rozet renk="var(--color-mavi)">{bolge.distance} HEX</Rozet>
-                <Rozet renk="var(--color-kirmizi)">
-                  TAHKİMAT +%{Math.round(bolge.fortressBonus * 100)}
-                </Rozet>
-                <Rozet renk="var(--color-yesil)">GELİR ×{bolge.incomeMult}</Rozet>
+                <Hap renk="var(--color-mavi)">{bolge.distance} hex</Hap>
+                {bolge.fortressBonus > 0 && (
+                  <Hap renk="var(--color-kirmizi)">
+                    tahkimat +%{Math.round(bolge.fortressBonus * 100)}
+                  </Hap>
+                )}
               </div>
+              <button onClick={kapat} className="bas shrink-0 text-solgun" aria-label="Kapat">
+                <IkonKapali boyut={20} />
+              </button>
             </div>
 
             <div className="space-y-3 px-4 pt-3">
@@ -466,37 +507,116 @@ export function Harita({
                 </Kart>
               )}
 
-              {bolge.garrisonVisible ? (
-                <Kart className="p-3">
-                  <h3 className="baslik mb-1.5 text-[11px] text-solgun">Garnizon</h3>
-                  {Object.entries(bolge.garrison).filter(([, n]) => (n as number) > 0).length === 0 ? (
-                    <p className="text-[12px] text-solgun">boş</p>
-                  ) : (
-                    <ul className="space-y-1">
-                      {Object.entries(bolge.garrison)
-                        .filter(([, n]) => (n as number) > 0)
-                        .map(([t, n]) => (
-                          <li key={t} className="flex items-center gap-2 text-[13px]">
-                            <span className="text-altin/70">
-                              <BirimIkonu tip={t} boyut={17} />
-                            </span>
-                            <span className="flex-1">{unitName(t as UnitType)}</span>
-                            <span className="tabular font-bold">{n as number}</span>
-                          </li>
-                        ))}
-                    </ul>
-                  )}
-                </Kart>
-              ) : (
-                <Kart className="p-3">
-                  <p className="text-[11px] text-sonuk">
-                    Düşman garnizonu görünmüyor. Casus Leyla kadrondayken tam bilgi alırsın.
-                  </p>
-                </Kart>
-              )}
-
               {bolge.isMine ? (
                 <>
+                  {/*
+                    Geliştirme kartı.
+
+                    Oyuncu "bölgeyi ele geçirdim ama şehri geliştiremiyorum"
+                    diyordu; oysa geliştirebiliyordu — arayüz ona "Seviye 2'ye
+                    yükselt" diyordu. Bir yeri geliştirmek, o yerin AD
+                    DEĞİŞTİRMESİYLE hissedilir: Kasaba'nın Pazar Şehri olması,
+                    "seviye 2" olmasından bambaşka bir şey. Mekanik aynı,
+                    anlatım değişti. (docs/08 İ10)
+                  */}
+                  {bolge.upgradeCost ? (
+                    (() => {
+                      const engel =
+                        bolgeKuyrugu.length >= BOLGE_LIMITI
+                          ? {
+                              kisa: 'Geliştirme kuyruğu dolu',
+                              uzun: `Aynı anda en fazla ${BOLGE_LIMITI} bölge geliştirilebilir. Biri bitmeden yenisi başlamaz.`,
+                            }
+                          : kaynakEngeli(bolge.upgradeCost, lord.resources);
+                      const anahtar = `upgrade:${bolge.id}`;
+                      const sonrakiAd = bolgeAsamaAdi(bolge.type, bolge.level + 1);
+                      const simdi = regionIncome(bolge.type, bolge.level, bolge.incomeMult);
+                      const sonra = regionIncome(bolge.type, bolge.level + 1, bolge.incomeMult);
+                      return (
+                        <Kart className="p-3" vurgu="var(--color-altin)">
+                          <h3 className="baslik mb-2 text-[11px] text-solgun">Geliştirme</h3>
+
+                          <div className="flex flex-wrap items-center gap-2 text-[14px]">
+                            <span className="baslik text-solgun">
+                              {bolgeAsamaAdi(bolge.type, bolge.level)}
+                            </span>
+                            <span className="text-sonuk">→</span>
+                            <span className="baslik text-altin">{sonrakiAd}</span>
+                          </div>
+
+                          <div className="mt-2 space-y-0.5">
+                            {(['altin', 'demir', 'erzak'] as const)
+                              .filter((k) => Math.round(sonra[k]) > 0)
+                              .map((k) => (
+                                <SonucSatiri key={k} etiket={`Saatlik ${GELIR_ADI[k]}`}>
+                                  <Fark
+                                    oncesi={Math.round(simdi[k])}
+                                    sonrasi={Math.round(sonra[k])}
+                                  />
+                                </SonucSatiri>
+                              ))}
+                            {sonra.sohret > 0 && (
+                              <SonucSatiri etiket="Saatlik şöhret">
+                                <Fark
+                                  oncesi={Math.round(simdi.sohret)}
+                                  sonrasi={Math.round(sonra.sohret)}
+                                />
+                              </SonucSatiri>
+                            )}
+                          </div>
+
+                          <div className="mt-2 flex flex-wrap gap-1.5">
+                            <Hap
+                              renk={
+                                bolge.upgradeCost!.altin > lord.resources.altin
+                                  ? 'var(--color-kirmizi)'
+                                  : 'var(--color-kaynak-altin)'
+                              }
+                            >
+                              {formatSayi(bolge.upgradeCost!.altin)} altın
+                            </Hap>
+                            <Hap
+                              renk={
+                                bolge.upgradeCost!.demir > lord.resources.demir
+                                  ? 'var(--color-kirmizi)'
+                                  : 'var(--color-kaynak-demir)'
+                              }
+                            >
+                              {formatSayi(bolge.upgradeCost!.demir)} demir
+                            </Hap>
+                            <Hap ikon={<IkonSure boyut={13} />}>
+                              {formatKalan(bolge.upgradeCost!.sec * 1000)}
+                            </Hap>
+                          </div>
+
+                          <Buton
+                            className="mt-2.5"
+                            boy="buyuk"
+                            onClick={() =>
+                              mut.mutate({ anahtar, f: () => api.upgradeRegion(bolge.id) })
+                            }
+                            disabled={gonderilen === anahtar || engel !== null}
+                            tam
+                          >
+                            {gonderilen === anahtar ? 'Gönderiliyor…' : `${sonrakiAd} yap`}
+                          </Buton>
+                          {engel && <EngelNotu kisa={engel.kisa} uzun={engel.uzun} />}
+                          <KuyrukSeridi
+                            kuyruklar={bolgeKuyrugu.filter((q) => q.payload.regionId === bolge.id)}
+                            etiket={`${sonrakiAd} oluyor`}
+                          />
+                        </Kart>
+                      );
+                    })()
+                  ) : (
+                    <Kart className="p-3">
+                      <h3 className="baslik mb-1 text-[11px] text-solgun">Geliştirme</h3>
+                      <p className="text-[12px] text-solgun">
+                        {bolgeAsamaAdi(bolge.type, bolge.level)} — bu bölge en üst aşamada.
+                      </p>
+                    </Kart>
+                  )}
+
                   {bolge.store && (
                     <Kart className="p-3">
                       <h3 className="baslik mb-1 text-[11px] text-solgun">Yağmalanabilir depo</h3>
@@ -506,57 +626,6 @@ export function Harita({
                       </p>
                     </Kart>
                   )}
-
-                  {bolge.upgradeCost &&
-                    (() => {
-                      const engel =
-                        bolgeKuyrugu.length >= BOLGE_LIMITI
-                          ? {
-                              kisa: 'Yükseltme kuyruğu dolu',
-                              uzun: `Aynı anda en fazla ${BOLGE_LIMITI} bölge yükseltilebilir. Biri bitmeden yenisi başlamaz.`,
-                            }
-                          : kaynakEngeli(bolge.upgradeCost, lord.resources);
-                      const anahtar = `upgrade:${bolge.id}`;
-                      return (
-                        <Kart className="p-3">
-                          <Buton
-                            onClick={() =>
-                              mut.mutate({ anahtar, f: () => api.upgradeRegion(bolge.id) })
-                            }
-                            disabled={gonderilen === anahtar || engel !== null}
-                            tam
-                          >
-                            {gonderilen === anahtar
-                              ? 'Gönderiliyor…'
-                              : `Seviye ${bolge.level + 1}'e yükselt`}
-                          </Buton>
-                          <p className="tabular mt-1.5 text-center text-[10px] text-sonuk">
-                            <span
-                              className={
-                                bolge.upgradeCost!.altin > lord.resources.altin ? 'text-kirmizi' : ''
-                              }
-                            >
-                              {formatSayi(bolge.upgradeCost!.altin)} altın
-                            </span>
-                            {' · '}
-                            <span
-                              className={
-                                bolge.upgradeCost!.demir > lord.resources.demir ? 'text-kirmizi' : ''
-                              }
-                            >
-                              {formatSayi(bolge.upgradeCost!.demir)} demir
-                            </span>
-                            {' · '}
-                            {formatKalan(bolge.upgradeCost!.sec * 1000)}
-                          </p>
-                          {engel && <EngelNotu kisa={engel.kisa} uzun={engel.uzun} />}
-                          <KuyrukSeridi
-                            kuyruklar={bolgeKuyrugu.filter((q) => q.payload.regionId === bolge.id)}
-                            etiket="Yükseltiliyor"
-                          />
-                        </Kart>
-                      );
-                    })()}
 
                   <Kart className="p-3">
                     <OrduSecici
@@ -648,6 +717,35 @@ export function Harita({
                   {saldiriEngeli && (
                     <EngelNotu kisa={saldiriEngeli.kisa} uzun={saldiriEngeli.uzun} />
                   )}
+                </Kart>
+              )}
+
+              {bolge.garrisonVisible ? (
+                <Kart className="p-3">
+                  <h3 className="baslik mb-1.5 text-[11px] text-solgun">Garnizon</h3>
+                  {Object.entries(bolge.garrison).filter(([, n]) => (n as number) > 0).length === 0 ? (
+                    <p className="text-[12px] text-solgun">boş</p>
+                  ) : (
+                    <ul className="space-y-1">
+                      {Object.entries(bolge.garrison)
+                        .filter(([, n]) => (n as number) > 0)
+                        .map(([t, n]) => (
+                          <li key={t} className="flex items-center gap-2 text-[13px]">
+                            <span className="text-altin/70">
+                              <BirimIkonu tip={t} boyut={17} />
+                            </span>
+                            <span className="flex-1">{unitName(t as UnitType)}</span>
+                            <span className="tabular font-bold">{n as number}</span>
+                          </li>
+                        ))}
+                    </ul>
+                  )}
+                </Kart>
+              ) : (
+                <Kart className="p-3">
+                  <p className="text-[11px] text-sonuk">
+                    Düşman garnizonu görünmüyor. Casus Leyla kadrondayken tam bilgi alırsın.
+                  </p>
                 </Kart>
               )}
 
