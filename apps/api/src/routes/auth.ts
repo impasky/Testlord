@@ -4,7 +4,24 @@ import { z } from 'zod';
 import { hashPassword, verifyPassword } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError } from '../errors.js';
+import { env } from '../env.js';
 import { findOrOpenWorld } from '../services/world.js';
+
+/**
+ * Kayıt ve giriş IP başına sınırlanır, oturum başına değil: token'ı olmayan
+ * isteklerde sayılacak başka bir şey yok ve asıl korunmak istenen şey kaba
+ * kuvvet denemesi. Genel sınır (bkz. index.ts) oturuma bağlı olduğu için
+ * buradaki ayrı yapılandırma gerekiyor.
+ */
+const kimlikSiniri = {
+  config: {
+    rateLimit: {
+      max: env.AUTH_RATE_LIMIT_MAX,
+      timeWindow: '1 minute',
+      keyGenerator: (req: { ip: string }) => `ip:${req.ip}`,
+    },
+  },
+};
 
 const registerSchema = z.object({
   email: z.string().email('Geçerli bir e-posta gir.'),
@@ -47,7 +64,7 @@ async function pickHomeAnchor(worldId: string): Promise<{ q: number; r: number }
 }
 
 export async function authRoutes(app: FastifyInstance): Promise<void> {
-  app.post('/auth/register', async (req, reply) => {
+  app.post('/auth/register', kimlikSiniri, async (req, reply) => {
     const body = registerSchema.parse(req.body);
     const email = body.email.toLowerCase().trim();
 
@@ -96,7 +113,7 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
     return reply.code(201).send({ token });
   });
 
-  app.post('/auth/login', async (req) => {
+  app.post('/auth/login', kimlikSiniri, async (req) => {
     const body = loginSchema.parse(req.body);
     const email = body.email.toLowerCase().trim();
     const user = await prisma.user.findUnique({ where: { email } });

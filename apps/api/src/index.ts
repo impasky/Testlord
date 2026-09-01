@@ -51,7 +51,18 @@ export async function buildServer() {
     credentials: true,
   });
   await app.register(jwt, { secret: env.JWT_SECRET, sign: { expiresIn: '7d' } });
-  await app.register(rateLimit, { max: 300, timeWindow: '1 minute' });
+  // Sınır IP'ye değil oturuma bağlı. Mobil oyuncuların çoğu operatör NAT'ı
+  // arkasında: aynı çıkış IP'sini paylaşan onlarca oyuncu, IP başına sayan
+  // bir sınırda birbirini kilitler ve kimse hata yaptığını anlamaz.
+  //
+  // Anahtar için token'ın kendisi yeterli: burada yetkilendirme yapmıyoruz,
+  // sadece kararlı bir kova anahtarı arıyoruz. Doğrulama zaten preHandler'da.
+  // (rateLimit onRequest'te çalışır, yani req.user henüz dolmamıştır.)
+  await app.register(rateLimit, {
+    max: env.RATE_LIMIT_MAX,
+    timeWindow: '1 minute',
+    keyGenerator: (req) => req.headers.authorization ?? `ip:${req.ip}`,
+  });
 
   app.setErrorHandler((err, _req, reply) => {
     if (err instanceof GameError) {

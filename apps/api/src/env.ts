@@ -16,6 +16,10 @@ const schema = z.object({
   AUTO_MIGRATE: z.enum(['true', 'false']).default('false'),
   /** İlk açılışta dünyaya rakip lordlar eklensin mi (test dağıtımı için). */
   SEED_DEMO_LORDS: z.enum(['true', 'false']).default('false'),
+  /** Oturum başına dakikalık istek tavanı. Yük testinde yükseltilir. */
+  RATE_LIMIT_MAX: z.coerce.number().int().positive().default(300),
+  /** Kayıt/giriş için IP başına dakikalık tavan. Kaba kuvveti burası durdurur. */
+  AUTH_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(60),
 });
 
 const parsed = schema.safeParse(process.env);

@@ -24,7 +24,8 @@
     "db:setup": "pnpm --filter @lordlar/api exec prisma generate && pnpm --filter @lordlar/api exec prisma migrate deploy && pnpm --filter @lordlar/api seed",
     "start": "node apps/api/dist/index.js",
     "uretim-testi": "node tools/uretim-testi.mjs",
-    "gorsel": "python3 tools/gorsel-uret.py"
+    "gorsel": "python3 tools/gorsel-uret.py",
+    "yuk-testi": "node tools/yuk-testi.mjs"
   },
   "devDependencies": {
     "@iconify-json/game-icons": "^1.2.4",
