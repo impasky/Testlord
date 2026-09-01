@@ -1,8 +1,16 @@
-/** Kışla — birim eğitimi, komuta kapasitesi, ordu dağılımı. */
-import { unitName, type UnitType } from '@lordlar/shared';
+/**
+ * Kışla — birim eğitimi, komuta kapasitesi, ordu dağılımı.
+ *
+ * Ekranın tasarım kuralı: oyuncu bastığı her düğmenin sonucunu BU ekranda
+ * görmeli. Eğitim başlattığında kuyruk düğmenin hemen altında beliriyor,
+ * eğitim yapılamıyorsa düğme kapalı ve sebebi yazılı. Önceden ikisi de
+ * yoktu: oyuncu düğmeye basıyor, bütün kartlar bir an sönüyor ve askerin
+ * eğitime girip girmediğini anlamak için Malikâne'ye gitmesi gerekiyordu.
+ */
+import { B, unitName, type UnitType } from '@lordlar/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { ApiError, api, type UnitDto } from '../api/client';
+import { ApiError, api, type LordState, type QueueItem, type UnitDto } from '../api/client';
 import { Gorsel } from '../components/Gorsel';
 import {
   BirimIkonu,
@@ -21,6 +29,7 @@ import {
   Bolum,
   Buton,
   DegerKarti,
+  GeriSayim,
   IkonluDeger,
   Ilerleme,
   Input,
@@ -28,6 +37,9 @@ import {
   formatKalan,
   formatSayi,
 } from '../components/ui';
+
+/** Aynı anda kaç eğitim kuyruğu açılabilir. Sunucu da bu sayıyı kullanıyor. */
+const EGITIM_LIMITI = B.kuyruklar.es_zamanli.train;
 
 const ROL: Record<string, string> = {
   milis: 'Ucuz et kalkanı. Kayıpları önce o üstlenir.',
@@ -39,19 +51,122 @@ const ROL: Record<string, string> = {
 
 const ADETLER = [1, 10, 50, 100];
 
+type Engel = { kisa: string; uzun: string };
+
+/**
+ * Eğitimin neden yapılamadığını söyler; yapılabiliyorsa null döner.
+ *
+ * Kontrol sırası sunucudakiyle aynı (routes/army.ts): önce kuyruk, sonra
+ * komuta yeri, sonra kaynak. Sıra farklı olsaydı arayüz bir sebep gösterip
+ * sunucu başka bir sebeple reddedebilir, oyuncu da neyi düzelteceğini
+ * bilemezdi.
+ */
+function egitimEngeli(g: {
+  kuyrukSayisi: number;
+  gerekenYer: number;
+  bosYer: number;
+  maliyet: { altin: number; demir: number; erzak: number };
+  kaynaklar: { altin: number; demir: number; erzak: number };
+}): Engel | null {
+  if (g.kuyrukSayisi >= EGITIM_LIMITI) {
+    return {
+      kisa: 'Eğitim kuyruğu dolu',
+      uzun: `Aynı anda en fazla ${EGITIM_LIMITI} eğitim yapabilirsin. Biri bitmeden yenisi başlamaz.`,
+    };
+  }
+
+  if (g.gerekenYer > g.bosYer) {
+    return {
+      kisa: 'Komuta yerin yetmiyor',
+      uzun: `Boş yer ${formatSayi(g.bosYer)}, gereken ${formatSayi(g.gerekenYer)}. Liderlik statını artır ya da daha az birim eğit.`,
+    };
+  }
+
+  const eksik = (['altin', 'demir', 'erzak'] as const)
+    .map((k) => ({ k, fark: g.maliyet[k] - g.kaynaklar[k] }))
+    .filter((x) => x.fark > 0);
+
+  if (eksik.length > 0) {
+    const ad = { altin: 'altın', demir: 'demir', erzak: 'erzak' };
+    return {
+      kisa: eksik.length === 1 ? `${ad[eksik[0]!.k]} yetmiyor` : 'Kaynağın yetmiyor',
+      uzun: eksik.map((x) => `${formatSayi(x.fark)} ${ad[x.k]}`).join(', ') + ' eksik.',
+    };
+  }
+
+  return null;
+}
+
+/** Bu birimin eğitim kuyruğu: kaç asker, ne zaman biter. */
+function KuyrukSeridi({ kuyruklar }: { kuyruklar: QueueItem[] }) {
+  const toplam = kuyruklar.reduce(
+    (t, q) => t + (typeof q.payload.count === 'number' ? q.payload.count : 0),
+    0,
+  );
+  // En erken biten öne çıkar: oyuncunun beklediği ilk sonuç o.
+  const ilk = [...kuyruklar].sort(
+    (a, b) => new Date(a.finishAt).getTime() - new Date(b.finishAt).getTime(),
+  )[0]!;
+  const bas = new Date(ilk.startedAt).getTime();
+  const bit = new Date(ilk.finishAt).getTime();
+  const gecen = bit > bas ? Math.max(0, Math.min(1, (Date.now() - bas) / (bit - bas))) : 1;
+
+  return (
+    <div className="mt-2 rounded-xl border border-altin/35 bg-altin/10 p-2.5">
+      <div className="mb-1.5 flex items-baseline justify-between gap-2 text-[12px]">
+        <span className="baslik text-altin">
+          Eğitimde {formatSayi(toplam)}
+          {kuyruklar.length > 1 && (
+            <span className="ml-1 font-normal text-solgun">({kuyruklar.length} parti)</span>
+          )}
+        </span>
+        <span className="text-altin">
+          <GeriSayim bitis={ilk.finishAt} />
+        </span>
+      </div>
+      <Ilerleme deger={gecen} max={1} renk="var(--color-altin)" boy="ince" />
+    </div>
+  );
+}
+
 function BirimKarti({
   u,
   evdeki,
+  kaynaklar,
+  bosYer,
+  kuyrukSayisi,
+  kuyruklar,
   onEgit,
   bekliyor,
 }: {
   u: UnitDto;
   evdeki: number;
+  kaynaklar: { altin: number; demir: number; erzak: number };
+  bosYer: number;
+  kuyrukSayisi: number;
+  kuyruklar: QueueItem[];
   onEgit: (adet: number) => void;
   bekliyor: boolean;
 }) {
   const [adet, setAdet] = useState(10);
   const tip = u.type as UnitType;
+
+  const maliyet = {
+    altin: u.maliyet.altin * adet,
+    demir: u.maliyet.demir * adet,
+    erzak: u.maliyet.erzak * adet,
+  };
+  const engel = egitimEngeli({
+    kuyrukSayisi,
+    gerekenYer: u.yer * adet,
+    bosYer,
+    maliyet,
+    kaynaklar,
+  });
+
+  /** Yetmeyen kaynağı kırmızı gösterir: sebebi okumadan da göze çarpsın. */
+  const kaynakRengi = (k: 'altin' | 'demir' | 'erzak', varsayilan: string) =>
+    maliyet[k] > kaynaklar[k] ? 'text-kirmizi' : varsayilan;
 
   return (
     <Kart className="p-3">
@@ -120,24 +235,24 @@ function BirimKarti({
         <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-solgun">
           <IkonluDeger
             ikon={<IkonAltin boyut={13} />}
-            deger={formatSayi(u.maliyet.altin * adet)}
+            deger={formatSayi(maliyet.altin)}
             baslik="Altın"
-            renk="text-kaynak-altin/80"
+            renk={kaynakRengi('altin', 'text-kaynak-altin/80')}
           />
           {u.maliyet.demir > 0 && (
             <IkonluDeger
               ikon={<IkonDemir boyut={13} />}
-              deger={formatSayi(u.maliyet.demir * adet)}
+              deger={formatSayi(maliyet.demir)}
               baslik="Demir"
-              renk="text-kaynak-demir/80"
+              renk={kaynakRengi('demir', 'text-kaynak-demir/80')}
             />
           )}
           {u.maliyet.erzak > 0 && (
             <IkonluDeger
               ikon={<IkonErzak boyut={13} />}
-              deger={formatSayi(u.maliyet.erzak * adet)}
+              deger={formatSayi(maliyet.erzak)}
               baslik="Erzak"
-              renk="text-kaynak-erzak/80"
+              renk={kaynakRengi('erzak', 'text-kaynak-erzak/80')}
             />
           )}
           <IkonluDeger
@@ -147,27 +262,54 @@ function BirimKarti({
           />
         </div>
 
-        <Buton onClick={() => onEgit(adet)} disabled={bekliyor} tam>
-          {adet} {unitName(tip)} eğit
+        <Buton onClick={() => onEgit(adet)} disabled={bekliyor || engel !== null} tam>
+          {bekliyor ? 'Gönderiliyor…' : `${adet} ${unitName(tip)} eğit`}
         </Buton>
+
+        {engel && (
+          <p className="mt-1.5 flex gap-1.5 text-[11px] leading-snug text-kirmizi">
+            <span className="shrink-0">
+              <IkonUyari boyut={13} />
+            </span>
+            <span>
+              <strong className="font-bold">{engel.kisa}.</strong>{' '}
+              <span className="text-solgun">{engel.uzun}</span>
+            </span>
+          </p>
+        )}
+
+        {kuyruklar.length > 0 && <KuyrukSeridi kuyruklar={kuyruklar} />}
       </div>
     </Kart>
   );
 }
 
-export function Kisla({ onGuncelle }: { onGuncelle: () => void }) {
+export function Kisla({
+  lord,
+  queues,
+  onGuncelle,
+}: {
+  lord: LordState;
+  queues: QueueItem[];
+  onGuncelle: () => void;
+}) {
   const qc = useQueryClient();
   const [hata, setHata] = useState<string | null>(null);
+  // Hangi birim gönderiliyor: tek bir "bekliyor" bayrağı beş kartın da
+  // düğmesini birden söndürüyordu; oyuncu neyin olduğunu anlamıyordu.
+  const [gonderilen, setGonderilen] = useState<string | null>(null);
   const army = useQuery({ queryKey: ['army'], queryFn: api.army });
 
   const mut = useMutation({
-    mutationFn: async (f: () => Promise<unknown>) => f(),
+    mutationFn: async ({ f }: { f: () => Promise<unknown>; tip: string }) => f(),
+    onMutate: ({ tip }) => setGonderilen(tip),
     onSuccess: () => {
       setHata(null);
       void qc.invalidateQueries({ queryKey: ['army'] });
       onGuncelle();
     },
     onError: (e) => setHata(e instanceof ApiError ? e.message : 'İşlem başarısız.'),
+    onSettled: () => setGonderilen(null),
   });
 
   if (army.isLoading || !army.data) {
@@ -177,6 +319,16 @@ export function Kisla({ onGuncelle }: { onGuncelle: () => void }) {
   const doluluk = a.commandCapacity > 0 ? a.usedSlots / a.commandCapacity : 0;
   const garnizon = a.byLocation.filter((u) => u.locationType === 'region');
   const yuruyus = a.byLocation.filter((u) => u.locationType === 'march');
+
+  const egitimKuyruklari = queues.filter((q) => q.kind === 'train');
+
+  /** Kuyruktakiler de komuta yeri tutar — sunucu da böyle hesaplıyor. */
+  const kuyruktakiYer = egitimKuyruklari.reduce((t, q) => {
+    const birim = a.units.find((u) => u.type === q.payload.unitType);
+    const adet = typeof q.payload.count === 'number' ? q.payload.count : 0;
+    return t + (birim ? birim.yer * adet : 0);
+  }, 0);
+  const bosYer = Math.max(0, a.commandCapacity - a.usedSlots - kuyruktakiYer);
 
   return (
     <div className="space-y-4 pt-3">
@@ -238,15 +390,32 @@ export function Kisla({ onGuncelle }: { onGuncelle: () => void }) {
         </Kart>
       )}
 
-      <Bolum baslik="Asker Eğitimi">
+      <Bolum
+        baslik="Asker Eğitimi"
+        yan={
+          <span
+            className={`tabular text-[11px] ${
+              egitimKuyruklari.length >= EGITIM_LIMITI ? 'text-kirmizi' : 'text-solgun'
+            }`}
+          >
+            Kuyruk {egitimKuyruklari.length}/{EGITIM_LIMITI}
+          </span>
+        }
+      >
         <div className="space-y-2.5">
           {a.units.map((u) => (
             <BirimKarti
               key={u.type}
               u={u}
               evdeki={a.home[u.type as UnitType] ?? 0}
-              bekliyor={mut.isPending}
-              onEgit={(adet) => mut.mutate(() => api.train(u.type, adet))}
+              kaynaklar={lord.resources}
+              bosYer={bosYer}
+              kuyrukSayisi={egitimKuyruklari.length}
+              kuyruklar={egitimKuyruklari.filter((q) => q.payload.unitType === u.type)}
+              bekliyor={gonderilen === u.type}
+              onEgit={(adet) =>
+                mut.mutate({ tip: u.type, f: () => api.train(u.type, adet) })
+              }
             />
           ))}
         </div>

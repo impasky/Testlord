@@ -5,7 +5,25 @@
  * harf başlıklar, parlak altın eylem butonları, nadirlik renk sistemi.
  * Masaüstü düzeni YOK — her şey tek sütun, dokunmatik hedefleri ≥44px.
  */
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
+
+/* ---------------- Geri sayım ---------------- */
+
+/**
+ * Saniyede bir yenilenen kalan süre.
+ *
+ * Bitiş saatini değil kalan süreyi gösteriyoruz (docs/01 arayüz ilkesi):
+ * "18 dk" oyuncunun beklemesi gereken şeyi doğrudan söyler, "14:32'de"
+ * ise hesap yaptırır.
+ */
+export function GeriSayim({ bitis }: { bitis: string }) {
+  const [, tik] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => tik((t) => t + 1), 1000);
+    return () => clearInterval(id);
+  }, []);
+  return <span className="tabular">{formatKalan(new Date(bitis).getTime() - Date.now())}</span>;
+}
 
 /* ---------------- Nadirlik ---------------- */
 

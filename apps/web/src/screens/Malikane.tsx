@@ -1,5 +1,5 @@
 /** Malikâne — durum özeti, kuyruklar, olay akışı. Mobil ana ekran. */
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { GameEvent, LordState, QueueItem } from '../api/client';
 import type { Sekme } from '../components/MobilKabuk';
 import {
@@ -14,7 +14,15 @@ import {
 } from '../components/Ikonlar';
 import { IlkAdimlar } from '../components/IlkAdimlar';
 import { SavasRaporu } from '../components/SavasRaporu';
-import { Bolum, Buton, DegerKarti, Ilerleme, Kart, formatKalan, formatSayi } from '../components/ui';
+import {
+  Bolum,
+  Buton,
+  DegerKarti,
+  GeriSayim,
+  Ilerleme,
+  Kart,
+  formatSayi,
+} from '../components/ui';
 
 const KUYRUK_ADI: Record<string, string> = {
   train: 'Asker eğitimi',
@@ -32,15 +40,6 @@ const OLAY_RENGI: Record<string, string> = {
   saldiriya_ugradin: 'var(--color-turuncu)',
   aclik: 'var(--color-kirmizi)',
 };
-
-function GeriSayim({ bitis }: { bitis: string }) {
-  const [, tik] = useState(0);
-  useEffect(() => {
-    const id = setInterval(() => tik((t) => t + 1), 1000);
-    return () => clearInterval(id);
-  }, []);
-  return <span className="tabular">{formatKalan(new Date(bitis).getTime() - Date.now())}</span>;
-}
 
 function KuyrukSatiri({ q }: { q: QueueItem }) {
   const bas = new Date(q.startedAt).getTime();

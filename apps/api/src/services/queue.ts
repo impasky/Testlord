@@ -6,6 +6,7 @@
  * worker iki kez çalışsa da aynı kuyruk iki kez işlenmez.
  */
 import {
+  B,
   UNIT_TYPES,
   craftPrice,
   createRng,
@@ -80,13 +81,9 @@ export async function enqueue(
 }
 
 /** Aynı türden aynı anda kaç kuyruk olabilir. */
-const ES_ZAMANLI_LIMIT: Record<QueueKind, number> = {
-  train: 3,
-  craft: 2,
-  upgrade_item: 1,
-  upgrade_gear: 1,
-  upgrade_region: 2,
-};
+// Sayilar data/balance.json'da: arayuz de ayni siniri gosterip dolu kuyrukta
+// dugmeyi kapatiyor. Burada ayri bir sabit tutmak, ikisinin sapmasi demekti.
+const ES_ZAMANLI_LIMIT = B.kuyruklar.es_zamanli as Record<QueueKind, number>;
 
 export async function assertQueueSlot(lordId: string, kind: QueueKind, tx: Tx): Promise<void> {
   const aktif = await tx.queue.count({ where: { lordId, kind, resolved: false } });

@@ -475,5 +475,15 @@
     "aciklama": "Sahipsiz bolgelerin NPC garnizonu, world-map.json'daki TABAN gucune dogru saatte tabanin %10'u kadar yenilenir; ~10 saatte tam dolar.",
     "neden": "Yenilenme olmasaydi oyuncu bir bolgeyi ucuz akinlarla yiprata yiprata bosaltip kuçuk bir kuvvetle alabilirdi. Bu ozellikle Taht Kalesi'ni (890 birim) anlamsiz kilardi: endgame'in odagi bir yipratma bulmacasina donusurdu.",
     "kapsam": "SADECE sahipsiz (NPC) bolgeler. Oyuncunun garnizonu yenilenmez; kaybettigini yeniden egitip yerlestirmek zorundadir."
+  },
+  "kuyruklar": {
+    "_aciklama": "Ayni anda kac kuyruk acilabilir. Sunucu bunu zorunlu kilar, arayuz de ayni sayiyi gosterip dolu kuyrukta dugmeyi kapatir. Iki yerde ayri sabit tutulursa er ya da gec birbirinden sapar.",
+    "es_zamanli": {
+      "train": 3,
+      "craft": 2,
+      "upgrade_item": 1,
+      "upgrade_gear": 1,
+      "upgrade_region": 2
+    }
   }
 }
