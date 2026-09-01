@@ -12,6 +12,7 @@ import {
   IkonUyari,
   IkonYer,
 } from '../components/Ikonlar';
+import { IlkAdimlar } from '../components/IlkAdimlar';
 import { SavasRaporu } from '../components/SavasRaporu';
 import { Bolum, Buton, DegerKarti, Ilerleme, Kart, formatKalan, formatSayi } from '../components/ui';
 
@@ -106,6 +107,8 @@ export function Malikane({
           </div>
         </Kart>
       )}
+
+      <IlkAdimlar lord={lord} queues={queues} onGit={onGit} />
 
       <div className="grid grid-cols-2 gap-2.5">
         <DegerKarti
