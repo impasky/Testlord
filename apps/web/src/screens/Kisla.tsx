@@ -11,6 +11,7 @@ import { B, unitName, type UnitType } from '@lordlar/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ApiError, api, type LordState, type QueueItem, type UnitDto } from '../api/client';
+import { hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { Gorsel } from '../components/Gorsel';
 import {
   BirimIkonu,
@@ -33,6 +34,7 @@ import {
   IkonluDeger,
   Ilerleme,
   Input,
+  Iskelet,
   Kart,
   KuyrukSeridi,
   formatKalan,
@@ -268,15 +270,19 @@ export function Kisla({
     onMutate: ({ tip }) => setGonderilen(tip),
     onSuccess: () => {
       setHata(null);
+      hisOnay();
       void qc.invalidateQueries({ queryKey: ['army'] });
       onGuncelle();
     },
-    onError: (e) => setHata(e instanceof ApiError ? e.message : 'İşlem başarısız.'),
+    onError: (e) => {
+      hisRet();
+      setHata(e instanceof ApiError ? e.message : 'İşlem başarısız.');
+    },
     onSettled: () => setGonderilen(null),
   });
 
   if (army.isLoading || !army.data) {
-    return <p className="pt-6 text-center text-solgun">Kışla açılıyor...</p>;
+    return <Iskelet satir={5} />;
   }
   const a = army.data;
   const doluluk = a.commandCapacity > 0 ? a.usedSlots / a.commandCapacity : 0;

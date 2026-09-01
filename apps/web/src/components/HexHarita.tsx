@@ -5,7 +5,8 @@
  * gösterilir (renk körü güvenliği), bölge tipi ise ikonla — küçük ekranda
  * isim okunmuyor, ikon okunuyor.
  */
-import type { RegionDto } from '../api/client';
+import { useEffect, useState } from 'react';
+import type { MarchDto, RegionDto } from '../api/client';
 import { IKONLAR } from './ikon-verisi';
 
 const BOYUT = 34;
@@ -61,13 +62,29 @@ export function HexHarita({
   regions,
   home,
   seciliId,
+  yuruyusler,
   onSec,
 }: {
   regions: RegionDto[];
   home: { q: number; r: number };
   seciliId: number | null;
+  /** Yoldaki ordular: evden hedefe çizgi ve ilerleyen bir işaret. */
+  yuruyusler: MarchDto[];
   onSec: (id: number) => void;
 }) {
+  // Yürüyüş işaretinin yeri her karede Date.now()'dan hesaplanıyor; bileşen
+  // yeniden çizilmezse işaret donuyor. Sorgu 15 saniyede bir yenilendiği
+  // için işaret sıçrayarak ilerliyordu. Saniyelik tik akıcı hâle getiriyor.
+  //
+  // Yürüyüş yokken zamanlayıcı hiç kurulmuyor: haritanın çoğu zaman
+  // boşuna yeniden çizilmesi, uzun oturumlarda pil yakar.
+  const [, tik] = useState(0);
+  useEffect(() => {
+    if (yuruyusler.length === 0) return;
+    const id = setInterval(() => tik((t) => t + 1), 1000);
+    return () => clearInterval(id);
+  }, [yuruyusler.length]);
+
   const m = regions.map((r) => ({ r, ...merkez(r.q, r.r) }));
   const xs = m.map((a) => a.x);
   const ys = m.map((a) => a.y);
@@ -168,6 +185,49 @@ export function HexHarita({
           </g>
         );
       })}
+
+      {/* Yürüyüşler. Ordunun yolda olduğunu yalnızca listeden anlamak
+          bekleme süresini boş bir bekleyişe çeviriyordu; harita üzerinde
+          ilerleyen bir işaret aynı süreyi gerilime çeviriyor.
+
+          İşaretin yeri gerçek: yola çıkış ve varış zamanından oranlanıyor,
+          rastgele bir animasyon değil. */}
+      <g className="pointer-events-none">
+        {yuruyusler.map((y) => {
+          const hedef = m.find((a) => a.r.id === y.toRegionId);
+          if (!hedef) return null;
+
+          const bas = new Date(y.departAt).getTime();
+          const bit = new Date(y.arriveAt).getTime();
+          const oran = bit > bas ? Math.max(0, Math.min(1, (Date.now() - bas) / (bit - bas))) : 1;
+
+          // Dönüş yürüyüşü ters yönde ilerler: hedeften eve.
+          const donus = y.kind === 'return';
+          const bx = donus ? hedef.x : ev.x;
+          const by = donus ? hedef.y : ev.y;
+          const hx = donus ? ev.x : hedef.x;
+          const hy = donus ? ev.y : hedef.y;
+          const x = bx + (hx - bx) * oran;
+          const yy = by + (hy - by) * oran;
+          const renk = donus ? '#3ddc84' : '#e8524d';
+
+          return (
+            <g key={y.id}>
+              <line
+                x1={bx}
+                y1={by}
+                x2={hx}
+                y2={hy}
+                stroke={renk}
+                strokeWidth="1"
+                strokeDasharray="3 3"
+                opacity="0.45"
+              />
+              <circle cx={x} cy={yy} r={4} fill={renk} stroke="#17100c" strokeWidth="1.5" />
+            </g>
+          );
+        })}
+      </g>
 
       <g className="pointer-events-none">
         <circle cx={ev.x} cy={ev.y} r={8} fill="#f5b731" stroke="#17100c" strokeWidth="2.5" />

@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { api, getToken, setToken, type MeResponse } from './api/client';
+import { ApiError, api, getToken, setToken, type MeResponse } from './api/client';
+import { BaglantiDurumu } from './components/BaglantiDurumu';
 import { MobilKabuk, type Sekme } from './components/MobilKabuk';
 import { Buton } from './components/ui';
 import { Demirhane } from './screens/Demirhane';
@@ -42,13 +43,19 @@ export function App() {
   const [hedefBolge, setHedefBolge] = useState<number | null>(null);
   const qc = useQueryClient();
 
-  const { data, isLoading, error } = useQuery<MeResponse>({
+  const { data, isLoading, error, isFetching, failureCount } = useQuery<MeResponse>({
     queryKey: ['me'],
     queryFn: api.me,
     enabled: girisli,
     refetchInterval: 30_000,
-    retry: false,
+    // Ağ hatasında birkaç kez dene: ücretsiz katmanda sunucu uykudan
+    // uyanırken ilk istekler düşüyor. Yetki hatasında denemenin anlamı yok.
+    retry: (deneme, e) => deneme < 3 && !(e instanceof ApiError && e.status === 401),
+    retryDelay: (deneme) => Math.min(2000 * 2 ** deneme, 15_000),
   });
+
+  // İlk yanıt gelmeden önceki denemeler: sunucu muhtemelen uyanıyor.
+  const sunucuyaUlasilamiyor = failureCount > 0 && !data;
 
   const tazele = () => void qc.invalidateQueries({ queryKey: ['me'] });
 
@@ -81,7 +88,9 @@ export function App() {
     );
   }
 
-  if (error) {
+  // 401 dışındaki hatalarda oturumu düşürmüyoruz: ağ koptuğu için çıkış
+  // yaptırmak, oyuncuyu yeniden giriş yapmaya zorlayan bir ceza olurdu.
+  if (error && error instanceof ApiError && error.status === 401) {
     return (
       <div className="flex min-h-dvh flex-col items-center justify-center gap-4 px-6 text-center">
         <p className="text-kirmizi">Oturum açılamadı. Tekrar giriş yapman gerekiyor.</p>
@@ -94,9 +103,22 @@ export function App() {
 
   if (isLoading || !data) {
     return (
-      <div className="flex min-h-dvh items-center justify-center text-solgun">
-        Diyar yükleniyor...
-      </div>
+      <>
+        <BaglantiDurumu sunucuyaUlasilamiyor={sunucuyaUlasilamiyor} />
+        <div className="flex min-h-dvh flex-col items-center justify-center gap-3 px-6 text-center text-solgun">
+          <p>Diyar yükleniyor…</p>
+          {sunucuyaUlasilamiyor && (
+            <p className="max-w-xs text-[12px] text-sonuk">
+              Sunucu uykudan uyanıyor olabilir. Bu ilk açılışta 30–60 saniye sürebilir.
+            </p>
+          )}
+          {error && !sunucuyaUlasilamiyor && (
+            <Buton onClick={() => void qc.invalidateQueries({ queryKey: ['me'] })}>
+              Yeniden dene
+            </Buton>
+          )}
+        </div>
+      </>
     );
   }
 
@@ -104,6 +126,7 @@ export function App() {
 
   return (
     <MobilKabuk lord={lord} sekme={sekme} setSekme={setSekme} onCikis={cikis}>
+      <BaglantiDurumu sunucuyaUlasilamiyor={isFetching && failureCount > 0} />
       {sekme === 'malikane' && (
         <Malikane
           lord={lord}

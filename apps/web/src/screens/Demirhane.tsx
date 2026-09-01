@@ -9,12 +9,14 @@ import { EQUIP_SLOTS, B } from '@lordlar/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ApiError, api, type ItemDto, type LordState, type QueueItem } from '../api/client';
+import { hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { IkonAltin, IkonDemir, IkonSure, IkonNavDemirhane } from '../components/Ikonlar';
 import {
   Bolum,
   Buton,
   EngelNotu,
   Ilerleme,
+  Iskelet,
   Kart,
   KuyrukSeridi,
   NADIRLIK,
@@ -48,8 +50,28 @@ const SLOT_ADI: Record<string, string> = {
   sancak: 'Sancak',
 };
 
+/**
+ * Kuşanık eşyayla farkı.
+ *
+ * "Bu daha mı iyi" sorusunu oyuncu kafadan hesaplıyordu: iki kartı yan yana
+ * koyup güç sayılarını çıkarmak gerekiyordu. Fark artık kartın üstünde.
+ */
+function GucFarki({ fark }: { fark: number }) {
+  if (fark === 0) {
+    return <span className="text-[11px] text-sonuk">kuşanıkla aynı</span>;
+  }
+  const iyi = fark > 0;
+  return (
+    <span className={`tabular text-[11px] font-bold ${iyi ? 'text-yesil' : 'text-kirmizi'}`}>
+      {iyi ? '+' : ''}
+      {formatSayi(fark)} güç
+    </span>
+  );
+}
+
 function EsyaKarti({
   item,
+  kusanikGuc,
   kaynaklar,
   yukseltmeKuyrugu,
   bunuYukseltiyor,
@@ -59,6 +81,8 @@ function EsyaKarti({
   bekleyenEylem,
 }: {
   item: ItemDto;
+  /** Aynı slottaki kuşanık eşyanın gücü; yoksa null. */
+  kusanikGuc: number | null;
   kaynaklar: { altin: number; demir: number; erzak: number };
   yukseltmeKuyrugu: QueueItem[];
   bunuYukseltiyor: QueueItem[];
@@ -94,6 +118,16 @@ function EsyaKarti({
           <div className="tabular text-lg leading-none font-bold" style={{ color: renk }}>
             {formatSayi(item.power)}
           </div>
+          {/* Karşılaştırma yalnızca kuşanık OLMAYAN eşyada: kuşanık olanın
+              kendisiyle farkı sıfır ve satır gürültü olurdu. */}
+          {!item.equipped && kusanikGuc !== null && (
+            <div className="mt-0.5">
+              <GucFarki fark={item.power - kusanikGuc} />
+            </div>
+          )}
+          {!item.equipped && kusanikGuc === null && (
+            <div className="mt-0.5 text-[11px] text-yesil">slot boş</div>
+          )}
         </div>
       </div>
 
@@ -177,11 +211,15 @@ export function Demirhane({
     onMutate: ({ anahtar }) => setGonderilen(anahtar),
     onSuccess: () => {
       setHata(null);
+      hisOnay();
       void qc.invalidateQueries({ queryKey: ['items'] });
       void qc.invalidateQueries({ queryKey: ['gear'] });
       onGuncelle();
     },
-    onError: (e) => setHata(e instanceof ApiError ? e.message : 'İşlem başarısız.'),
+    onError: (e) => {
+      hisRet();
+      setHata(e instanceof ApiError ? e.message : 'İşlem başarısız.');
+    },
     onSettled: () => setGonderilen(null),
   });
 
@@ -190,7 +228,7 @@ export function Demirhane({
   const donanimKuyrugu = queues.filter((q) => q.kind === 'upgrade_gear');
 
   if (items.isLoading || gear.isLoading) {
-    return <p className="pt-6 text-center text-solgun">Demirhane açılıyor...</p>;
+    return <Iskelet satir={4} />;
   }
   const secili = items.data?.tiers.find((t) => t.tier === tier);
   const uretimEngeli = secili
@@ -324,6 +362,9 @@ export function Demirhane({
               <EsyaKarti
                 key={i.id}
                 item={i}
+                kusanikGuc={
+                  items.data?.items.find((x) => x.equipped && x.slot === i.slot)?.power ?? null
+                }
                 kaynaklar={lord.resources}
                 yukseltmeKuyrugu={yukseltmeKuyrugu}
                 bunuYukseltiyor={yukseltmeKuyrugu.filter((q) => q.payload.itemId === i.id)}

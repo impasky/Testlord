@@ -5,12 +5,14 @@ import { useEffect, useState } from 'react';
 import { ApiError, api, type LordState, type PreviewDto, type QueueItem } from '../api/client';
 import { HexHarita } from '../components/HexHarita';
 import { BirimIkonu, BolgeIkonu, IkonKapali, IkonSure } from '../components/Ikonlar';
+import { hisAgir, hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { SavasRaporu } from '../components/SavasRaporu';
 import {
   Bolum,
   Buton,
   EngelNotu,
   Input,
+  Iskelet,
   Kart,
   KuyrukSeridi,
   Rozet,
@@ -185,12 +187,16 @@ export function Harita({
     onMutate: ({ anahtar }) => setGonderilen(anahtar),
     onSuccess: (_v, degisken) => {
       setHata(null);
+      hisOnay();
       // Bırakılan bölgenin paneli açık kalırsa artık senin olmayan bir
       // bölgenin sahip arayüzünü gösterirdi.
       if (degisken.anahtar.startsWith('birak:')) kapat();
       tazele();
     },
-    onError: (e) => setHata(e instanceof ApiError ? e.message : 'İşlem başarısız.'),
+    onError: (e) => {
+      hisRet();
+      setHata(e instanceof ApiError ? e.message : 'İşlem başarısız.');
+    },
     onSettled: () => setGonderilen(null),
   });
 
@@ -205,7 +211,7 @@ export function Harita({
   }, [baslangicBolge, onBaslangicIslendi]);
 
   if (harita.isLoading || !harita.data) {
-    return <p className="pt-6 text-center text-solgun">Harita açılıyor...</p>;
+    return <Iskelet satir={3} />;
   }
 
   const bolge = detay.data;
@@ -277,6 +283,7 @@ export function Harita({
     setBilgi(null);
     try {
       const r = await api.march(bolge.id, saldiriOrdusu);
+      hisAgir();
       setBilgi(
         `Ordu yola çıktı. Varış ${formatKalan(new Date(r.arriveAt).getTime() - Date.now())} sonra.` +
           (r.uyari ? ` ${r.uyari}` : ''),
@@ -304,6 +311,7 @@ export function Harita({
             regions={harita.data.regions}
             home={harita.data.home}
             seciliId={seciliId}
+            yuruyusler={marches.data ?? []}
             onSec={(id) => {
               setSeciliId(id);
               setSaldiriOrdusu({});

@@ -26,6 +26,31 @@ export function GeriSayim({ bitis }: { bitis: string }) {
   return <span className="tabular">{formatKalan(new Date(bitis).getTime() - Date.now())}</span>;
 }
 
+/* ---------------- Yükleniyor ---------------- */
+
+/**
+ * Yükleme iskeleti.
+ *
+ * Düz "Kışla açılıyor…" satırı yerine sayfanın oturacağı yeri gösteriyor.
+ * İki faydası var: bekleme daha kısa hissettiriyor ve içerik geldiğinde
+ * düzen zıplamıyor.
+ *
+ * Animasyon prefers-reduced-motion'a saygı duyuyor — nabız gibi atan bir
+ * ekran, hareket hassasiyeti olan oyuncuda rahatsızlık yaratabilir.
+ */
+export function Iskelet({ satir = 3 }: { satir?: number }) {
+  return (
+    <div className="space-y-2.5 pt-3" aria-busy="true" aria-label="Yükleniyor">
+      {Array.from({ length: satir }, (_, i) => (
+        <div
+          key={i}
+          className="oyuk h-24 rounded-2xl border border-kenar/60 motion-safe:animate-pulse"
+        />
+      ))}
+    </div>
+  );
+}
+
 /* ---------------- Kuyruk ve engel ---------------- */
 
 /**
