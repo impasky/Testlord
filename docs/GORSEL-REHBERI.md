@@ -68,6 +68,30 @@ dönüştürür, doğru adla depoya koyar. Hangi görselin hangi dosya olduğunu
 söylemen yeterli.
 
 22 istemin kopyala-yapıştır hali: **[docs/GORSEL-ISTEMLERI.md](GORSEL-ISTEMLERI.md)**.
+
+Araçlar görselleri çoğu zaman **tek sayfada** veriyor; sorun değil, ayıklanır:
+
+```bash
+# Figürler (birimler, generaller) — saydam zemin
+python3 tools/gorsel-ayikla.py sayfa.png birimler milis mizrakci okcu suvari kusatma
+
+# Dikdörtgen illüstrasyonlar (bölgeler) — opak, kareye kırpılır
+python3 tools/gorsel-ayikla.py sayfa.png --pano bolgeler tarla maden sehir kale taht
+
+# Ne bulduğunu yazmadan göster
+python3 tools/gorsel-ayikla.py sayfa.png --onizleme
+```
+
+İsimler okuma sırasında verilir: üstten alta satırlar, her satırda soldan
+sağa. Bulunan parça sayısı isim sayısıyla tutmuyorsa hiçbir şey yazılmaz.
+
+Bazı araçlar köşeye kendi işaretini koyuyor:
+
+```bash
+python3 tools/filigran-sil.py <dosya>              # yerel yansıma
+python3 tools/filigran-sil.py <dosya> --tam-ayna   # simetrik sahnelerde
+python3 tools/filigran-sil.py <dosya> --onizleme   # yazmadan karşılaştır
+```
 O dosya elle yazılmaz, buradan üretilir:
 
 ```bash

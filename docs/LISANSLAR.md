@@ -73,9 +73,13 @@ tarafından, `docs/GORSEL-ISTEMLERI.md` içindeki istemlerle üretilmiştir.
 Üçüncü taraf bir eserden alınmadıkları için künye zorunluluğu yoktur.
 
 Üreten araç görselleri çoğu zaman tek bir sayfa olarak veriyor;
-`tools/gorsel-ayikla.py` sayfayı figürlere ayırıp saydam zeminli 512×512
-WebP olarak yazar. Kaynak sayfalar depoya konmaz — depoda oyunun kullandığı
-kesilmiş dosyalar durur.
+`tools/gorsel-ayikla.py` sayfayı parçalara ayırıp 512×512 WebP olarak yazar.
+Kaynak sayfalar depoya konmaz — depoda oyunun kullandığı kesilmiş dosyalar
+durur.
+
+Bazı araçlar çıktının bir köşesine kendi işaretini koyuyor. Oyunun içinde
+başka bir ürünün işareti taşınmasın diye bunlar `tools/filigran-sil.py` ile
+temizleniyor; hangi dosyada yapıldığı aşağıdaki tabloda yazıyor.
 
 | Dosya | Durum |
 |---|---|
@@ -84,7 +88,11 @@ kesilmiş dosyalar durur.
 | `birimler/okcu.webp` | eklendi |
 | `birimler/suvari.webp` | eklendi |
 | `birimler/kusatma.webp` | eklendi |
-| `bolgeler/*` (5) | bekliyor — siluet gösteriliyor |
+| `bolgeler/tarla.webp` | eklendi |
+| `bolgeler/maden.webp` | eklendi |
+| `bolgeler/sehir.webp` | eklendi |
+| `bolgeler/kale.webp` | eklendi |
+| `bolgeler/taht.webp` | eklendi (köşe filigranı silindi) |
 | `generaller/*` (12) | bekliyor — siluet gösteriliyor |
 
 İllüstrasyonu olmayan varlıklarda game-icons silueti görünmeye devam eder,

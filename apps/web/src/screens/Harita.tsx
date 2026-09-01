@@ -15,6 +15,47 @@ const TIP_ADI: Record<string, string> = {
   taht: 'Taht Kalesi',
 };
 
+/**
+ * Bölge alt sayfasının tepesindeki manzara afişi.
+ *
+ * Gorsel bileşenini kullanmıyor: orada illüstrasyon yoksa ikon gösteriliyor,
+ * burada ise hiçbir şey gösterilmemeli — küçük bir ikonu afiş yüksekliğine
+ * germek, afişi hiç koymamaktan kötü durur. Görsel gelene kadar yükseklik
+ * sıfır tutulur ki illüstrasyonu olmayan bölgelerde boşluk zıplaması olmasın.
+ *
+ * Oran 3/2: kaynak görseller kare ve kompozisyonları ortalı. Daha dar bir
+ * şeride (16/9 ya da sabit 112px) kırpınca tarlanın ambarı, kalenin
+ * kuleleri, taht salonunun tacı kadraj dışında kalıyordu — geriye sadece
+ * bir doku şeridi kalıyor. 3/2 karenin üçte ikisini koruyor ve afiş
+ * kaydırılınca yukarı çıktığı için alt sayfayı boğmuyor.
+ */
+function BolgeAfisi({ tip, ad }: { tip: string; ad: string }) {
+  const [durum, setDurum] = useState<'bekliyor' | 'var' | 'yok'>('bekliyor');
+
+  if (durum === 'yok') return null;
+
+  return (
+    <div
+      className={`relative overflow-hidden ${durum === 'var' ? 'aspect-[3/2]' : 'h-0'}`}
+    >
+      <img
+        src={`/gorseller/bolgeler/${tip}.webp`}
+        alt={ad}
+        className="h-full w-full object-cover"
+        // Ortadan değil, biraz yukarıdan kırpar: kare kaynaklarda ilgi çeken
+        // öğe (ambar, kule, taht) üst yarıda, alt yarı çoğunlukla zemin.
+        style={{ objectPosition: 'center 18%' }}
+        loading="lazy"
+        decoding="async"
+        onLoad={() => setDurum('var')}
+        onError={() => setDurum('yok')}
+      />
+      {/* Alt kenarı panele eritir; afişin sert kesimi başlık satırına bitişik durmasın. */}
+      <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-panel to-transparent" />
+    </div>
+  );
+}
+
 function OrduSecici({
   mevcut,
   secim,
@@ -227,6 +268,7 @@ export function Harita({ onGuncelle }: { onGuncelle: () => void }) {
             className="fixed inset-x-0 bottom-0 z-50 mx-auto max-h-[82dvh] max-w-lg overflow-y-auto rounded-t-2xl border-t border-kenar bg-panel"
             style={{ paddingBottom: 'calc(var(--alt-bar) + 12px)' }}
           >
+            <BolgeAfisi tip={bolge.type} ad={TIP_ADI[bolge.type] ?? bolge.type} />
             <div className="sticky top-0 z-10 border-b border-kenar bg-panel px-4 pt-3 pb-3">
               <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-kenar" />
               <div className="flex items-start gap-3">

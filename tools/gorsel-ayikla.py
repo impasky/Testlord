@@ -18,11 +18,20 @@ mizrak ucu gibi). Kucuk ve hicbir figure degmeyen bilesenler atilir.
 KULLANIM:
   python3 tools/gorsel-ayikla.py sayfa.png birimler milis mizrakci okcu suvari kusatma
   python3 tools/gorsel-ayikla.py sayfa.png --onizleme      # yazmadan, kontak sayfasi uret
+  python3 tools/gorsel-ayikla.py sayfa.png --pano bolgeler tarla maden sehir kale taht
   python3 tools/gorsel-ayikla.py sayfa.png --onizleme --esik 45
 
 Isimler okuma sirasinda verilir: once ustten alta satirlar, her satirda
 soldan saga. Script bulduklarini sayip isim sayisiyla karsilastirir;
 tutmuyorsa hicbir sey yazmaz, ne buldugunu soyler.
+
+IKI KIP:
+  varsayilan  Figurler icin. Zemin saydam birakilir, figur kare tuvale
+              ortalanir. Birimler ve generaller boyle.
+  --pano      Dikdortgen illustrasyonlar icin. Bolgeler cerceveyi dolduran
+              manzaralar; saydamligin anlami yok, karta bosluk birakmadan
+              oturmalari gerekiyor. Kutu panonun gercek dikdortgenine
+              oturtulur ve kareye KIRPILIR (doldurulmaz).
 
 Cikti: apps/web/public/gorseller/<klasor>/<ad>.webp
 """
@@ -138,6 +147,40 @@ def bilesenleri_bul(a, esik: int):
     return sonuc, zemin
 
 
+def pano_kutusu(maske, kutu):
+    """
+    Dikdortgen panonun gercek sinirini bulur.
+
+    Bilesen kutusu panodan tasan seyleri de iceriyor: uretici araclarin
+    kose filigrani panonun disina sarkiyor ve kutuyu birkac piksel
+    buyutuyor. Pano dolu bir dikdortgen oldugu icin, satir ve sutunlarin
+    en az %80'i dolu olanlari tutmak tasmayi kesiyor.
+    """
+    import numpy as np
+
+    x0, y0, x1, y1 = kutu
+    m = maske[y0:y1, x0:x1]
+    sat = m.sum(axis=1) >= 0.8 * m.shape[1]
+    sut = m.sum(axis=0) >= 0.8 * m.shape[0]
+    ys, xs = np.nonzero(sat)[0], np.nonzero(sut)[0]
+    if not len(ys) or not len(xs):
+        return kutu
+    return (x0 + int(xs[0]), y0 + int(ys[0]),
+            x0 + int(xs[-1]) + 1, y0 + int(ys[-1]) + 1)
+
+
+def pano_yap(a, kutu, maske):
+    """Panoyu kesip kare olacak sekilde ortadan kirpar, opak birakir."""
+    from PIL import Image
+
+    x0, y0, x1, y1 = pano_kutusu(maske, kutu)
+    im = Image.fromarray(a[y0:y1, x0:x1].astype("uint8"))
+    g, y = im.size
+    k = min(g, y)
+    im = im.crop(((g - k) // 2, (y - k) // 2, (g + k) // 2, (y + k) // 2))
+    return im.resize((BOYUT, BOYUT), Image.LANCZOS)
+
+
 def okuma_sirasi(bilesenler):
     """Ustten alta satirlara ayirir, her satiri soldan saga sirlar."""
     kalan = sorted(bilesenler, key=lambda b: b[0][1])
@@ -209,6 +252,7 @@ def main() -> int:
 
     sayfa = Path(argv[0])
     onizleme = "--onizleme" in argv
+    pano = "--pano" in argv
     esik = ESIK
     if "--esik" in argv:
         esik = int(argv[argv.index("--esik") + 1])
@@ -231,8 +275,11 @@ def main() -> int:
         N = 360
         yan = Image.new("RGB", (N * len(bilesenler), N), (70, 30, 30))
         for i, (kutu, mk) in enumerate(bilesenler):
-            kare = kare_yap(a, kutu, mk, zemin).resize((N, N))
-            yan.paste(kare, (i * N, 0), kare)
+            if pano:
+                yan.paste(pano_yap(a, kutu, mk).resize((N, N)), (i * N, 0))
+            else:
+                kare = kare_yap(a, kutu, mk, zemin).resize((N, N))
+                yan.paste(kare, (i * N, 0), kare)
         yol = sayfa.parent / "onizleme.png"
         yan.save(yol)
         print(f"\nOnizleme: {yol}")
@@ -250,7 +297,8 @@ def main() -> int:
     (CIKTI / klasor).mkdir(parents=True, exist_ok=True)
     for (kutu, mk), ad in zip(bilesenler, adlar):
         yol = CIKTI / klasor / f"{ad}.webp"
-        kare_yap(a, kutu, mk, zemin).save(yol, "WEBP", quality=82, method=6)
+        gorsel = pano_yap(a, kutu, mk) if pano else kare_yap(a, kutu, mk, zemin)
+        gorsel.save(yol, "WEBP", quality=82, method=6)
         print(f"  yazildi: {klasor}/{ad}.webp  ({yol.stat().st_size/1024:.0f} KB)")
     return 0
 
