@@ -63,3 +63,29 @@ doğrula.
 ## Oyunun kendi içeriği
 
 Harita, denge verisi, general kadrosu, metinler ve kod bu projeye aittir.
+
+---
+
+## İllüstrasyonlar — proje sahibi tarafından üretildi
+
+`apps/web/public/gorseller/` altındaki boyalı görseller oyunun sahibi
+tarafından, `docs/GORSEL-ISTEMLERI.md` içindeki istemlerle üretilmiştir.
+Üçüncü taraf bir eserden alınmadıkları için künye zorunluluğu yoktur.
+
+Üreten araç görselleri çoğu zaman tek bir sayfa olarak veriyor;
+`tools/gorsel-ayikla.py` sayfayı figürlere ayırıp saydam zeminli 512×512
+WebP olarak yazar. Kaynak sayfalar depoya konmaz — depoda oyunun kullandığı
+kesilmiş dosyalar durur.
+
+| Dosya | Durum |
+|---|---|
+| `birimler/milis.webp` | eklendi |
+| `birimler/mizrakci.webp` | eklendi |
+| `birimler/okcu.webp` | eklendi |
+| `birimler/suvari.webp` | eklendi |
+| `birimler/kusatma.webp` | eklendi |
+| `bolgeler/*` (5) | bekliyor — siluet gösteriliyor |
+| `generaller/*` (12) | bekliyor — siluet gösteriliyor |
+
+İllüstrasyonu olmayan varlıklarda game-icons silueti görünmeye devam eder,
+yani künye yukarıdaki tabloyla birlikte geçerliliğini korur.
