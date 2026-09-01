@@ -448,3 +448,83 @@ kartı da en üste alındı — oyuncunun oraya gelme sebebi o.
 **Yapılmayan:** bölgeye ayrı ayrı bina dikmek (ambar, sur, kışla) yeni bir
 sistem; bu turda yapılmadı. Var olan tek eksen — bölge aşaması — dürüstçe
 adlandırıldı ve görünür kılındı.
+
+---
+
+## İ11 — Görsel katman: tek bir üretim hattı
+
+Oyuncu: *"elimde bu tarz kullanabileceğin görseller var, ayrıca bana bu
+oyunda kullanmak için gereken tüm görsellerin promptlarını ver — t1 silah,
+t2 silah, t5 sancak, t3 kalkan gibi. Görsel olarak güçlendirip bakalım."*
+
+İ8'de yapılan şey biçimdi (rakamları hapa aldık), İ9–İ10'da yerdi (harita
+ada oldu, bölge portre kazandı). Geriye kalan tek eksik, o yerleri dolduran
+görsellerin **kendisi**. Bu bölüm iki iş yapıyor: istem listesini üretmek ve
+kodu o dosyaları bekleyecek hâle getirmek.
+
+### İstemler tek kaynaktan üretilir
+
+`tools/gorsel-uret.py` içinde artık iki katman var:
+
+- **`TABAN_USLUP`** — her görselde aynı: palet, ışık, render, "no text /
+  no border". Tutarlılık buradan gelir.
+- **`KATEGORI[...]['kompozisyon']`** — kategoriye göre değişir. Bir kılıç
+  ikonuyla bir ekran zemini aynı çerçeveyi paylaşamaz: biri düz koyu zeminde
+  ortalanmış tek nesne, diğeri alt üçte biri arayüze bırakılmış geniş manzara.
+
+Toplam **72 görsel**: 5 birim, 12 general, 13 bölge sahnesi (5 taban + 8
+gelişim aşaması), 30 ekipman, 6 harita karosu, 6 ekran zemini.
+
+Ekipmanın 30'u tek tek yazılmıyor: 4 metal yuva (silah/kalkan/zırh/miğfer)
+ortak bir tier merdiveniyle çarpılıyor, at ve sancak kendi merdivenlerini
+kullanıyor. Sebebi bakım: "T3 kalkan neden T4 miğferden gösterişli" gibi
+tutarsızlıklar merdiven tek yerde durduğu sürece oluşmuyor.
+
+**Nadirlik için ayrı görsel yok.** Sıradan/usta/nadir/efsanevi/kadim ayrımı
+arayüzde çerçeve ve renkle yapılıyor; tek görsel değişkeni tier. Aksi hâlde
+30 değil 150 görsel gerekirdi ve aradaki fark ekranda okunmazdı.
+
+`docs/GORSEL-ISTEMLERI.md` bu tanımlardan **üretilir**, elle yazılmaz:
+
+```bash
+python3 tools/gorsel-uret.py --istemler > docs/GORSEL-ISTEMLERI.md
+```
+
+`docs/GORSEL-REHBERI.md` içindeki elle yazılmış eski istem tablosu silindi ve
+üretilen dosyaya bağlandı. İki kopya tutmanın tek sonucu, üslup değiştiğinde
+birinin eskimesi olurdu.
+
+### Kod dosyaları bekliyor
+
+Yeni bir görsel eklemek hâlâ kod değişikliği gerektirmiyor — dosyayı doğru
+adla klasöre koymak yetiyor. Bu turda bekleyen yerler eklendi:
+
+- **`zeminler/*.webp` → `Zemin`.** Malikâne, Kışla, Demirhane, Generaller ve
+  Sıralama ekranlarının tepesinde tam genişlikte bir manzara şeridi; alt
+  kenarı sayfaya eritiliyor, ekranın adı ve tek satırlık "burası neresi"
+  cümlesi üstüne biniyor. Giriş ekranında ise `TamZemin`: şerit değil, tüm
+  ekranı kaplayan manzara — orada arayüz sadece ortadaki tek kart.
+  Görsel yoksa hiçbir şey çizilmiyor, ekran bugünkü haliyle kalıyor.
+- **`bolgeler/<tip>_3|_5.webp` → `bolgeGorselAdi()`.** Bölge afişi artık
+  seviyeye göre görsel seçiyor: 1–2 taban, 3–4 `_3`, 5 `_5`. Aşama görseli
+  yoksa tabana düşüyor. Geliştirmenin karşılığını **görünür** kılan tek şey
+  bu: "Kasabam Pazar Şehri oldu" cümlesinin bir resmi olmalı.
+- **`harita/<tip>.webp` → hex dolgusu.** Karolar bölge sahnelerinden ayrı:
+  sahneler üç çeyrek açıdan bakan tablolar, karolar tam tepeden bakan arazi
+  dokuları. Sahneyi karo olarak kullanmak haritayı bulanık bir kolaja
+  çeviriyordu; şimdi karo varsa o, yoksa sahne, o da yoksa düz renk.
+- **`ekipman/<yuva>_t<tier>.webp` → Demirhane kartları.** Yoksa nadirlik
+  rengiyle boyanmış bir `T{tier}` rozeti kalıyor.
+
+### Öncelik
+
+`docs/GORSEL-ISTEMLERI.md` başında bir sıra var ve keyfi değil:
+
+1. **Ekran zeminleri (6)** — oyunun gösterge paneli değil bir yer gibi
+   hissetmesi en çok buna bağlı.
+2. **Ekipman (30)** — Demirhane şu an tamamen sayıdan ibaret.
+3. **Harita karoları (6)** — haritanın okunurluğu.
+4. **Bölge aşamaları (8)** — geliştirmenin görünmesi.
+
+Altısı geldiğinde oyunun beş ekranı birden değişir; otuz ekipman görseli
+gelmeden de oyun tutarlı çalışmaya devam eder.

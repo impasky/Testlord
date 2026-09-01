@@ -5,6 +5,7 @@ import { ApiError, api, type GeneralDto } from '../api/client';
 import { Gorsel } from '../components/Gorsel';
 import { IkonAltin, IkonNavGeneraller } from '../components/Ikonlar';
 import { Bolum, Buton, EngelNotu, Ilerleme, Kart, Rozet, formatSayi } from '../components/ui';
+import { Zemin } from '../components/Zemin';
 
 const NADIRLIK_RENGI: Record<string, string> = {
   bronz: '#c97b3c',
@@ -159,7 +160,8 @@ export function Generaller({ onGuncelle }: { onGuncelle: () => void }) {
   const sahada = q.data.kadro.filter((g) => g.slotIndex !== null);
 
   return (
-    <div className="space-y-4 pt-3">
+    <div className="space-y-4">
+      <Zemin ad="generaller" baslik="Generaller" altyazi="Savaş meclisin" />
       <Bolum baslik={`Sahadaki Generaller · ${sahada.length}/${q.data.slots}`}>
         <Kart className="p-3">
           {sahada.length === 0 ? (

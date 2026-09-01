@@ -1,7 +1,12 @@
 # Görsel Rehberi
 
-Oyunun 22 görseli var: 5 birim, 5 bölge tipi, 12 general. Üç yoldan
-eklenebilir. **Birincisi tercih edilendir: Claude hepsini kendisi üretir.**
+Oyunun 72 görseli var: 5 birim, 12 general, 13 bölge sahnesi (5 taban +
+8 gelişim aşaması), 30 ekipman (6 yuva × 5 tier), 6 harita karosu ve
+6 ekran zemini. Üç yoldan eklenebilir. **Birincisi tercih edilendir:
+Claude hepsini kendisi üretir.**
+
+Sayılar burada da tutuluyor ama tek kaynak `tools/gorsel-uret.py`;
+güncel dökümü `python3 tools/gorsel-uret.py --liste` verir.
 
 Oyun şu an **game-icons.net siluetleri** kullanıyor. Bunlar bedava, tutarlı ve
 her şeyi kapsıyor ama boyalı illüstrasyon değil. Görsel eklemek için kod
@@ -27,7 +32,7 @@ kapalı. Ama **`generativelanguage.googleapis.com` açık** — Google'ın gör�
 > `limit: 0` — yani beklemekle geçecek bir hız sınırı değil, ücretsiz katmanda
 > tek görsel bile üretilemiyor. Metin modelleri ücretsiz çalışıyor, görsel
 > modelleri çalışmıyor. Üretmek için projeye Google Cloud'dan **faturalandırma
-> bağlamak şart**; o andan itibaren anahtar ücret doğurabilir. 22 görsellik set
+> bağlamak şart**; o andan itibaren anahtar ücret doğurabilir. 72 görsellik set
 > kuruşlar mertebesinde (~1 dolar civarı) ama güncel fiyatı Google'ın kendi
 > sayfasından doğrula. Ödeme istemiyorsan **Yol 2**'ye geç, sonuç aynı.
 
@@ -45,7 +50,7 @@ ver. Yapıştırdıysan AI Studio'dan o anahtarı sil ve yenisini oluştur.
 Sonra tek komut:
 
 ```bash
-python3 tools/gorsel-uret.py            # eksik olan 22 görselin hepsini üretir
+python3 tools/gorsel-uret.py            # eksik olan görsellerin hepsini üretir
 python3 tools/gorsel-uret.py suvari     # sadece birini
 python3 tools/gorsel-uret.py --zorla    # beğenmediklerini yeniden üret
 python3 tools/gorsel-uret.py --liste    # ne üretilecek, üretmeden göster
@@ -58,7 +63,7 @@ havasını değiştirebilirsin.
 
 Anahtar tanımlı değilse script hiçbir şey yapmaz, ne yapılması gerektiğini
 söyler. Anahtar var ama faturalandırma yoksa ilk görselde durur ve sebebini
-söyler — 22 görsel için sırayla boşuna beklemez.
+söyler — 72 görsel için sırayla boşuna beklemez.
 
 ## Yol 2 — Sen üret, sohbete ekle (bedava)
 
@@ -67,7 +72,8 @@ Midjourney, ne olursa) ve **bu sohbete ekle**. Claude dosyaları alıp kırpar,
 dönüştürür, doğru adla depoya koyar. Hangi görselin hangi dosya olduğunu
 söylemen yeterli.
 
-22 istemin kopyala-yapıştır hali: **[docs/GORSEL-ISTEMLERI.md](GORSEL-ISTEMLERI.md)**.
+72 istemin kopyala-yapıştır hali: **[docs/GORSEL-ISTEMLERI.md](GORSEL-ISTEMLERI.md)** —
+öncelik sırasıyla birlikte (önce ekran zeminleri, sonra ekipman).
 
 Araçlar görselleri çoğu zaman **tek sayfada** veriyor; sorun değil, ayıklanır:
 
@@ -111,7 +117,18 @@ apps/web/public/gorseller/
   birimler/     milis.webp  mizrakci.webp  okcu.webp  suvari.webp  kusatma.webp
   generaller/   demirci_yusuf.webp  okcubasi_elif.webp  ...  (12 dosya)
   bolgeler/     tarla.webp  maden.webp  sehir.webp  kale.webp  taht.webp
+                tarla_3.webp  ...  tarla_5.webp  ...   (gelişim aşamaları)
+  ekipman/      silah_t1.webp ... sancak_t5.webp        (6 yuva × 5 tier)
+  harita/       tarla.webp  maden.webp  sehir.webp  kale.webp  taht.webp  deniz.webp
+  zeminler/     malikane.webp  kisla.webp  demirhane.webp
+                generaller.webp  siralama.webp  giris.webp
 ```
+
+Bölge aşama görselleri (`_3`, `_5`) seviye 3 ve 5'te devreye girer; yoksa
+taban görsel kullanılmaya devam eder. Harita karoları bölge sahnelerinden
+ayrıdır: sahneler üç çeyrek açıdan bakan tablolar, karolar tam tepeden
+bakan arazi dokularıdır — sahneyi karo olarak kullanmak haritayı bulanık
+bir kolaja çeviriyor.
 
 General dosya adları `data/generals.json` içindeki `key` alanıyla birebir aynı
 olmalı. Birim adları `data/balance.json` → `birimler` anahtarlarıyla aynı.
@@ -147,36 +164,20 @@ görünür.
 
 ### Yapay zekâ ile üretiyorsan
 
-Şu kalıbı kullan, sadece köşeli parantez içini değiştir:
+İstemleri buraya kopyalamıyoruz. Tek kaynak **[docs/GORSEL-ISTEMLERI.md](GORSEL-ISTEMLERI.md)**:
+72 görselin tamamı, kategori kompozisyonlarıyla ve ortak taban üslupla
+birlikte, kopyala-yapıştır hâlinde orada. O dosya elle düzenlenmez;
+`tools/gorsel-uret.py` içindeki `ISTEKLER` + `KATEGORI` + `TABAN_USLUP`
+değiştikten sonra yeniden üretilir:
 
+```bash
+python3 tools/gorsel-uret.py --istemler > docs/GORSEL-ISTEMLERI.md
 ```
-[KONU], medieval fantasy game asset, painted illustration,
-dark muted palette of deep browns and parchment cream with warm gold accents,
-dramatic side lighting from the left, weathered and grounded — not shiny,
-centered composition, full figure fills the frame,
-transparent background, no text, no border, no frame,
-consistent art style across a set, square 1:1
-```
 
-Konu örnekleri:
+Buraya ikinci bir kopya koymanın tek sonucu, üslup değiştiğinde birinin
+eskimesi olurdu.
 
-| Dosya | `[KONU]` |
-|---|---|
-| `birimler/milis.webp` | a ragged peasant militiaman holding a pitchfork, no armor |
-| `birimler/mizrakci.webp` | a footman in chainmail with a long spear and kite shield |
-| `birimler/okcu.webp` | an archer in leather armor drawing a longbow |
-| `birimler/suvari.webp` | an armored knight on a warhorse with a couched lance |
-| `birimler/kusatma.webp` | a wooden catapult siege engine, loaded |
-| `bolgeler/tarla.webp` | golden wheat fields with a wooden barn |
-| `bolgeler/maden.webp` | a mine entrance in a rocky hillside with ore carts |
-| `bolgeler/sehir.webp` | a walled medieval market town from above |
-| `bolgeler/kale.webp` | a stone fortress with towers on a crag |
-| `bolgeler/taht.webp` | a grand throne hall, golden and imposing |
-
-Generaller için portre: `a [bronz: seasoned/gümüş: veteran/altın: legendary]
-medieval commander, [generalin karakteri], head and shoulders portrait`
-
-Aynı oturumda ve aynı çekirdek (seed) ile üretmek tutarlılığı ciddi artırır.
+Aynı oturumda ve aynı araçla üretmek tutarlılığı ciddi artırır.
 
 ### Hazır paket alıyorsan
 

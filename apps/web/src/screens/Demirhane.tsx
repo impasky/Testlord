@@ -6,6 +6,7 @@
  * yapılamayan işlemin düğmesi kapalı ve sebebi yazılı.
  */
 import { EQUIP_SLOTS, B, lordContribution, type EquippedItem } from '@lordlar/shared';
+import { Gorsel } from '../components/Gorsel';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -37,6 +38,7 @@ import {
   nadirlikRengi,
   type Nadirlik,
 } from '../components/ui';
+import { Zemin } from '../components/Zemin';
 
 const URETIM_LIMITI = B.kuyruklar.es_zamanli.craft;
 const YUKSELTME_LIMITI = B.kuyruklar.es_zamanli.upgrade_item;
@@ -209,8 +211,29 @@ function EsyaKarti({
 
   return (
     <Kart className="p-3" vurgu={renk}>
-      <div className="mb-2 flex items-start justify-between gap-2">
-        <div className="min-w-0">
+      <div className="mb-2 flex items-start gap-2.5">
+        {/* Ekipman illüstrasyonu. Dosya yoksa nadirlik renginde bir yuva
+            kalır; envanter yine okunur. Demirhane bugüne kadar tamamen
+            sayıdan ibaretti. */}
+        <div
+          className="oyuk flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border-2"
+          style={{ borderColor: `color-mix(in srgb, ${renk} 55%, transparent)` }}
+        >
+          <Gorsel
+            tur="ekipman"
+            ad={`${item.slot}_t${item.tier}`}
+            alt={`${SLOT_ADI[item.slot]} T${item.tier}`}
+            boyut={56}
+            className="h-full w-full"
+            yedek={
+              <span className="baslik text-[15px]" style={{ color: renk }}>
+                T{item.tier}
+              </span>
+            }
+          />
+        </div>
+
+        <div className="min-w-0 flex-1">
           <h3 className="baslik truncate text-[13px]">
             {SLOT_ADI[item.slot]}
             <span className="ml-1.5 text-solgun">T{item.tier}</span>
@@ -371,7 +394,8 @@ export function Demirhane({
     : null;
 
   return (
-    <div className="space-y-4 pt-3">
+    <div className="space-y-4">
+      <Zemin ad="demirhane" baslik="Demirhane" altyazi="Ocak, örs ve kuşandıkların" />
       {hata && (
         <Kart className="border-kirmizi/50 p-3">
           <p className="text-[13px] text-kirmizi">{hata}</p>

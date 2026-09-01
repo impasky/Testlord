@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ApiError, api, setToken } from '../api/client';
 import { IkonNavMalikane } from '../components/Ikonlar';
 import { Alan, Buton, Input, Kart } from '../components/ui';
+import { TamZemin } from '../components/Zemin';
 
 export function Giris({ onGiris }: { onGiris: () => void }) {
   const [mod, setMod] = useState<'giris' | 'kayit'>('kayit');
@@ -48,6 +49,7 @@ export function Giris({ onGiris }: { onGiris: () => void }) {
 
   return (
     <div className="flex min-h-dvh flex-col justify-center px-4 py-8">
+      <TamZemin ad="giris" />
       <div className="mx-auto w-full max-w-sm">
         <header className="mb-7 text-center">
           <span className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-2xl bg-altin/15 text-altin">

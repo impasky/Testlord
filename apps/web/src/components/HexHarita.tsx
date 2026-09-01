@@ -38,9 +38,20 @@ const TIP_ZEMIN: Record<string, string> = {
   taht: '#6b5015',
 };
 
-/** Hex dokusu olarak kullanılan illüstrasyon. Taht kaleyi ödünç alır:
- *  taht.webp bir iç mekân (taht odası), harita karosu olarak okunmuyor. */
-const TIP_DOKU: Record<string, string> = {
+/**
+ * Altıgen dolgusu iki katmandan gelir:
+ *
+ *   harita/<tip>.webp   — tam tepeden bakan arazi KAROSU (asıl istenen)
+ *   bolgeler/<tip>.webp — üç çeyrek açıdan bakan SAHNE (karo yoksa yedek)
+ *
+ * İkisi ayrı şeyler. Sahneyi karo olarak kullanmak haritayı bulanık bir
+ * kolaja çeviriyor; o yüzden sahne yedeği 2,6 kat yakınlaştırılıp
+ * ortasından kırpılıyor ki hiç değilse doku olarak okunsun.
+ *
+ * Taht'ın sahnesi bir İÇ MEKÂN (taht odası) ve arazi olarak hiç okunmuyor;
+ * yedeğinde kaleyi ödünç alıyor. Kendi karosu geldiğinde o kullanılır.
+ */
+const TIP_SAHNE: Record<string, string> = {
   tarla: 'tarla',
   maden: 'maden',
   sehir: 'sehir',
@@ -122,7 +133,7 @@ export function HexHarita({
   const w = Math.max(...xs) - minX + PAD;
   const h = Math.max(...ys) - minY + PAD;
   const ev = merkez(home.q, home.r);
-  const dokular = [...new Set(regions.map((r) => TIP_DOKU[r.type] ?? 'tarla'))];
+  const tipler = [...new Set(regions.map((r) => r.type))];
 
   return (
     <svg
@@ -134,17 +145,22 @@ export function HexHarita({
       <defs>
         {/* Her bölge tipi için doku. objectBoundingBox: illüstrasyon her
             altıgenin kendi kutusuna sığdırılır, 61 karo için 5 görsel yüklenir. */}
-        {dokular.map((d) => (
+        {tipler.map((d) => (
           <pattern key={d} id={`doku-${d}`} patternUnits="objectBoundingBox" width="1" height="1">
-            {/* Görsel 2,6 kat yakınlaştırılıp ortasından kırpılıyor.
-                512 piksellik bir sahne 41 piksellik altıgende okunmuyor;
-                okunan şey DOKU: buğday başağı, kaya, kiremit. */}
+            {/* Altta sahne yedeği (yakınlaştırılmış), üstte gerçek karo.
+                Karo dosyası varsa sahneyi tamamen örter. */}
             <image
-              href={`/gorseller/bolgeler/${d}.webp`}
+              href={`/gorseller/bolgeler/${TIP_SAHNE[d] ?? d}.webp`}
               x="-0.8"
               y="-0.8"
               width="2.6"
               height="2.6"
+              preserveAspectRatio="xMidYMid slice"
+            />
+            <image
+              href={`/gorseller/harita/${d}.webp`}
+              width="1"
+              height="1"
               preserveAspectRatio="xMidYMid slice"
             />
           </pattern>
@@ -188,7 +204,7 @@ export function HexHarita({
       {m.map(({ r, x, y }) => {
         const secili = seciliId === r.id;
         const taht = r.type === 'taht';
-        const doku = TIP_DOKU[r.type] ?? 'tarla';
+        const doku = r.type;
         return (
           <g
             key={r.id}

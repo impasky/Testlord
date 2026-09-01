@@ -95,7 +95,7 @@ temizleniyor; hangi dosyada yapıldığı aşağıdaki tabloda yazıyor.
 | `bolgeler/taht.webp` | eklendi (köşe filigranı silindi) |
 | `generaller/*` (12 dosya) | eklendi |
 
-22 görselin tamamı eklendi. game-icons ikonları arayüzde kullanılmaya devam
+O aşamadaki 22 görselin tamamı eklendi. game-icons ikonları arayüzde kullanılmaya devam
 ediyor (kaynak sayaçları, stat satırları, gezinme, harita hex'leri), o yüzden
 yukarıdaki künye geçerliliğini koruyor.
 

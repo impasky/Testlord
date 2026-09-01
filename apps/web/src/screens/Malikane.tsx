@@ -25,6 +25,7 @@ import {
   Kart,
   formatSayi,
 } from '../components/ui';
+import { Zemin } from '../components/Zemin';
 
 const KUYRUK_ADI: Record<string, string> = {
   train: 'Asker eğitimi',
@@ -124,7 +125,8 @@ export function Malikane({
   const korumali = lord.protectionUntil && new Date(lord.protectionUntil) > new Date();
 
   return (
-    <div className="space-y-4 pt-3">
+    <div className="space-y-4">
+      <Zemin ad="malikane" baslik="Malikâne" altyazi="Diyarının kalbi" />
       {lord.starving && (
         <Kart className="border-kirmizi/60 p-3" vurgu="var(--color-kirmizi)">
           <div className="flex gap-2.5">

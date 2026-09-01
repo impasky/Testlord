@@ -41,6 +41,7 @@ import {
   formatSayi,
   kaynakEngeli,
 } from '../components/ui';
+import { Zemin } from '../components/Zemin';
 
 /** Aynı anda kaç eğitim kuyruğu açılabilir. Sunucu da bu sayıyı kullanıyor. */
 const EGITIM_LIMITI = B.kuyruklar.es_zamanli.train;
@@ -342,7 +343,8 @@ export function Kisla({
   const oneri = harita.data?.oneri ?? null;
 
   return (
-    <div className="space-y-4 pt-3">
+    <div className="space-y-4">
+      <Zemin ad="kisla" baslik="Kışla" altyazi="Ordunu burada büyütürsün" />
       {hata && (
         <Kart className="border-kirmizi/50 p-3">
           <p className="flex gap-2 text-[13px] text-kirmizi">

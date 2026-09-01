@@ -14,6 +14,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { ApiError, api, type LordState, type PreviewDto, type QueueItem } from '../api/client';
 import { HexHarita } from '../components/HexHarita';
 import { BirimIkonu, IkonKapali, IkonSure } from '../components/Ikonlar';
+import { bolgeGorselAdi } from '../components/Gorsel';
 import { hisAgir, hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { DunyaBasligi, OlaySeridi } from '../components/DunyaSeridi';
 import { SaldiriOnizleme } from '../components/SaldiriOnizleme';
@@ -62,15 +63,44 @@ const TIP_ADI: Record<string, string> = {
  */
 function BolgeAfisi({
   tip,
+  seviye,
   ad,
   ustyazi,
 }: {
   tip: string;
+  /** Aşama görselini seçer: 1-2 taban, 3-4 `_3`, 5 `_5`. */
+  seviye: number;
   ad: string;
   /** Görselin üstüne binen başlık: bölgenin adı ve gelişim aşaması. */
   ustyazi?: ReactNode;
 }) {
+  // Aşama görseli yoksa tabana düşülür; taban da yoksa afiş hiç görünmez.
+  // Böylece "tarla_5.webp henüz çizilmedi" durumu bölgeyi görselsiz
+  // bırakmaz, sadece gelişimi görünmez kılar.
+  const asamaAdi = bolgeGorselAdi(tip, seviye);
+
   const [durum, setDurum] = useState<'bekliyor' | 'var' | 'yok'>('bekliyor');
+  const [dosya, setDosya] = useState(asamaAdi);
+  const [istenen, setIstenen] = useState(asamaAdi);
+
+  // Alt sayfa açık kalırken bölge değişebiliyor (haritada başka hex'e
+  // dokunmak) ve bölge gelişebiliyor. İkisinde de istenen dosya değişir.
+  //
+  // Render sırasında güncelliyoruz, useEffect ile değil: efektle yapınca
+  // bir kare boyunca ESKİ bölgenin görseli yeni bölgenin adıyla duruyor.
+  //
+  // Şart iki katmanlı, ve ikinci katman şart: `tarla_5` yoksa `tarla`ya
+  // düşmüş bir afişten seviye 1 bir tarlaya geçince istenen ad değişir ama
+  // gösterilecek dosya aynı kalır. Orada durumu sıfırlarsak img yeniden
+  // yüklenmediği için onLoad bir daha hiç gelmez ve afiş sonsuza dek
+  // "bekliyor"da, yani sıfır yükseklikte kalırdı.
+  if (istenen !== asamaAdi) {
+    setIstenen(asamaAdi);
+    if (dosya !== asamaAdi) {
+      setDosya(asamaAdi);
+      setDurum('bekliyor');
+    }
+  }
 
   if (durum === 'yok') return null;
 
@@ -79,7 +109,8 @@ function BolgeAfisi({
       className={`relative overflow-hidden ${durum === 'var' ? 'aspect-[3/2]' : 'h-0'}`}
     >
       <img
-        src={`/gorseller/bolgeler/${tip}.webp`}
+        key={dosya}
+        src={`/gorseller/bolgeler/${dosya}.webp`}
         alt={ad}
         className="h-full w-full object-cover"
         // Ortadan değil, biraz yukarıdan kırpar: kare kaynaklarda ilgi çeken
@@ -88,7 +119,7 @@ function BolgeAfisi({
         loading="lazy"
         decoding="async"
         onLoad={() => setDurum('var')}
-        onError={() => setDurum('yok')}
+        onError={() => (dosya === tip ? setDurum('yok') : setDosya(tip))}
       />
       {/* Alt kenarı panele eritir; afişin sert kesimi başlık satırına bitişik durmasın. */}
       <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-panel via-panel/80 to-transparent" />
@@ -449,6 +480,7 @@ export function Harita({
           >
             <BolgeAfisi
               tip={bolge.type}
+              seviye={bolge.level}
               ad={TIP_ADI[bolge.type] ?? bolge.type}
               ustyazi={
                 <>

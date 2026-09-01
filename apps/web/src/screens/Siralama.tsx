@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ApiError, api, type RankingRow } from '../api/client';
 import { IkonNavSiralama } from '../components/Ikonlar';
 import { Alan, Bolum, Buton, Input, Kart, Rozet, formatSayi } from '../components/ui';
+import { Zemin } from '../components/Zemin';
 
 type Board = 'fame' | 'conquest' | 'elo';
 
@@ -93,7 +94,8 @@ export function Siralama({ lordId }: { lordId: string }) {
   const aktif = TABLAR.find((t) => t.key === board)!;
 
   return (
-    <div className="space-y-4 pt-3">
+    <div className="space-y-4">
+      <Zemin ad="siralama" baslik="Sıralama" altyazi="Diyarın lordları" />
       <div className="oyuk flex gap-1 rounded-xl p-1">
         {TABLAR.map((t) => (
           <button
