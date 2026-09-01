@@ -560,7 +560,7 @@ export async function saldiriBildirimi(
         (bilgi.kaybedildi
           ? 'Bölge el değiştirdi.'
           : 'Saldırı püskürtüldü ama bölgen yağmalandı.') +
-        `\n\nSavaş raporunu oyunda görebilirsin: ${env.UYGULAMA_URL}\n`,
+        `\n\nSavaş raporunu oyunda görebilirsin: ${env.uygulamaUrl}\n`,
     },
     log,
   );

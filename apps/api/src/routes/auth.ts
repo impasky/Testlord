@@ -174,7 +174,7 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
         },
       });
 
-      const bag = `${env.UYGULAMA_URL}/#/parola-sifirla?jeton=${jeton}`;
+      const bag = `${env.uygulamaUrl}/#/parola-sifirla?jeton=${jeton}`;
       await postaGonder(
         {
           kime: adres,

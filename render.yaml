@@ -67,3 +67,24 @@ services:
       # info: her isteği değil, olayları yazar. Sorun ararken "debug" yap.
       - key: LOG_LEVEL
         value: info
+
+      # E-posta. "log" hiçbir şey göndermez, yalnızca sunucu log'una yazar —
+      # parola sıfırlama akışı çalışır ama posta gitmez. Gerçek posta için
+      # "resend" yapıp anahtarı ve doğrulanmış gönderen adresini gir.
+      - key: EPOSTA_TASIYICI
+        value: log
+      - key: EPOSTA_ANAHTAR
+        sync: false
+      - key: EPOSTA_GONDEREN
+        sync: false
+
+      # UYGULAMA_URL verilmezse Render'ın kendi dış adresi kullanılır;
+      # kendi alan adını bağladığında burayı onunla doldur.
+      - key: UYGULAMA_URL
+        sync: false
+
+      # Hız sınırları. Genel sınır oturuma, kayıt/giriş IP'ye bağlı.
+      - key: RATE_LIMIT_MAX
+        value: "300"
+      - key: AUTH_RATE_LIMIT_MAX
+        value: "60"

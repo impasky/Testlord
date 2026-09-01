@@ -26,7 +26,7 @@ karşılığıdır.
 | `EPOSTA_TASIYICI` | hayır | log | `log` dışarı göndermez; `resend` gerçek posta atar |
 | `EPOSTA_ANAHTAR` | resend ise | — | Resend API anahtarı |
 | `EPOSTA_GONDEREN` | resend ise | — | Gönderen adresi; alan adı doğrulanmış olmalı |
-| `UYGULAMA_URL` | evet* | localhost:5173 | Sıfırlama bağlantısının tabanı. *Üretimde şart |
+| `UYGULAMA_URL` | hayır | Render'ın dış adresi | Sıfırlama bağlantısının tabanı. Verilmezse `RENDER_EXTERNAL_URL` kullanılır; kendi alan adını bağlayınca burayı doldur |
 
 **`/health`** kimlik istemez ve `{ ok, time, izleme }` döner. `izleme` alanı
 Sentry'nin gerçekten açık olup olmadığını söyler — DSN'i girip de yazım hatası
@@ -135,3 +135,6 @@ Ayrıca:
 - [ ] `SEED_DEMO_LORDS=false` (gerçek oyuncular gelecekse)
 - [ ] Yedek alınıyor **ve** bir kez geri yüklenerek denendi
 - [ ] `SENTRY_DSN` girildi, `/health` `izleme: acik` diyor
+- [ ] Parola sıfırlama e-postası gerçekten gidiyor (`EPOSTA_TASIYICI=resend`)
+      — `log` bırakılırsa akış çalışır ama posta gitmez, oyuncu bağlantıyı
+      hiç görmez

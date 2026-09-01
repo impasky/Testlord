@@ -30,8 +30,16 @@ const schema = z.object({
   EPOSTA_ANAHTAR: z.string().default(''),
   /** Gönderen adresi. Alan adının doğrulanmış olması gerekir. */
   EPOSTA_GONDEREN: z.string().default('Lordlar Çağı <bildirim@localhost>'),
-  /** Parola sıfırlama bağlantısının tabanı (arayüzün adresi). */
-  UYGULAMA_URL: z.string().default('http://localhost:5173'),
+  /**
+   * Parola sıfırlama bağlantısının tabanı (arayüzün herkese açık adresi).
+   *
+   * Verilmezse Render'ın kendi verdiği dış adres kullanılır. Bu yedek
+   * olmadan üretimde varsayılan localhost kalıyordu ve sıfırlama
+   * e-postaları kırık bağlantı taşıyordu.
+   */
+  UYGULAMA_URL: z.string().optional(),
+  /** Render otomatik olarak veriyor; başka ortamlarda boştur. */
+  RENDER_EXTERNAL_URL: z.string().optional(),
   /** pino seviyesi: fatal|error|warn|info|debug|trace */
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
 });
@@ -47,6 +55,8 @@ if (!parsed.success) {
 
 export const env = {
   ...parsed.data,
+  uygulamaUrl:
+    parsed.data.UYGULAMA_URL ?? parsed.data.RENDER_EXTERNAL_URL ?? 'http://localhost:5173',
   runWorker: parsed.data.RUN_WORKER === 'true',
   serveWeb: parsed.data.SERVE_WEB === 'true',
   autoMigrate: parsed.data.AUTO_MIGRATE === 'true',
