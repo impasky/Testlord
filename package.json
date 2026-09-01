@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "pnpm --parallel --filter \"./apps/*\" dev",
     "build": "pnpm --filter @lordlar/web build && pnpm --filter @lordlar/api build",
-    "typecheck": "pnpm -r typecheck",
+    "typecheck": "pnpm -r --no-bail typecheck",
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest run",

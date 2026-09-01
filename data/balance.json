@@ -23,7 +23,13 @@
       "demir": 3,
       "erzak": 8
     },
-    "malikane_formulu": "saatlik = malikane_saatlik + malikane_seviye_bonusu_saatlik * lord_seviyesi"
+    "malikane_formulu": "saatlik = malikane_saatlik + malikane_seviye_bonusu_saatlik * lord_seviyesi",
+    "altin_karsiligi": {
+      "altin": 1.0,
+      "demir": 2.0,
+      "erzak": 0.6
+    },
+    "_altin_karsiligi_not": "Uc kaynagi tek sayida karsilastirmak icin kaba kur. Birim maliyetlerinden turetildi: demir yalniz madenden ve saatte 100 gelirken altin sehirden saatte 200 geliyor, erzak ise en bol (tarla 140) ve tek isi bakim odemek. SADECE siralama/karsilastirma icin kullanilir -- hicbir yerde takas kuru degildir, oyunda kaynak takasi yoktur."
   },
   "lord": {
     "max_seviye": 60,
@@ -378,7 +384,10 @@
     "donus_suresi": "Gidis ile ayni",
     "iptal": "Yuruyusun ilk %25'i icinde geri cagirilabilir; sonrasinda hayir.",
     "es_zamanli_limit": 5,
-    "_es_zamanli_not": "Ayni anda kac saldiri/donus yuruyusu olabilir. Sinirsiz birakildiginda ordusu yeten oyuncu tek seferde on hedefe saldirabiliyordu; kuyruk sistemlerinin hepsinde sinir varken yuruyuste yoktu."
+    "_es_zamanli_not": "Ayni anda kac saldiri/donus yuruyusu olabilir. Sinirsiz birakildiginda ordusu yeten oyuncu tek seferde on hedefe saldirabiliyordu; kuyruk sistemlerinin hepsinde sinir varken yuruyuste yoktu.",
+    "ilk_saldiri_dakika": 2,
+    "_ilk_saldiri_not": "Oyuncunun ILK saldirisi bu surede varir. Ucu birden gerekir: (1) lordun hic yuruyusu yok, (2) hedef sahipsiz bir NPC bolgesi, (3) hedef eve en fazla ilk_saldiri_max_hex uzaklikta. Sebep: en kisa yuruyus 10 dk, donusuyle 20; yeni oyuncu ilk oturumunda ordusunu yola cikarip hicbir sonuc gormeden cikiyordu -- 'saldiriya gonderdim, eee ne oldu simdi' sorusunun cevabi gercekten yoktu. Mesafe kosulu olmasa uzak ve degerli bir bolgeye 2 dakikada varilir ve haritanin kenardan baslama kurgusu bir kez atlanabilirdi. PvP'ye uygulanmaz: savunanin tepki suresi kisalmamali.",
+    "ilk_saldiri_max_hex": 1
   },
   "savas": {
     "tur_sayisi": 5,

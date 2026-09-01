@@ -445,13 +445,13 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
       // Sağ kalanlar eve döner
       const survivors = result.attackerSurvivors;
       if (armyCount(survivors) > 0) {
-        const home = await tx.region.findFirst({
-          where: { worldId: march.worldId, ownerLordId: march.lordId },
-          select: { q: true, r: true },
-        });
-        void home;
+        // Mesafe yürüyüş kaydından okunur. Eskiden gidiş süresinden geri
+        // türetiliyordu; ilk saldırının süresi kısaltılabilir olunca o
+        // türetme yanlış mesafe veriyor (2 dakikalık gidiş "0 hex" gibi
+        // okunurdu). Dönüş kısayoldan yararlanmaz: oyuncu sonucu çoktan
+        // gördü, kısaltmanın anlatacağı bir şey kalmadı.
         const donusSn = marchDurationSec(
-          Math.max(1, Math.round((march.arriveAt.getTime() - march.departAt.getTime()) / 60000 / 12)),
+          Math.max(1, march.distance),
           survivors,
           attacker.generalBonus,
         );
@@ -466,6 +466,7 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
             army: survivors as object,
             generalIds: generalKeys as object,
             loot: result.loot as object,
+            distance: march.distance,
             departAt: now,
             arriveAt: new Date(now.getTime() + donusSn * 1000),
           },

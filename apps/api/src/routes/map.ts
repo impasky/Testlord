@@ -2,18 +2,16 @@
 import {
   B,
   UNIT_TYPES,
-  aggregateGeneralBonus,
   armyCount,
   bosGeneralBonus,
   canRecallMarch,
   hexDistance,
-  lordContribution,
+  ilkSaldiriMi,
+  orduBedeli,
   marchDurationSec,
   maxRegions,
   simulateBattle,
   type Army,
-  type EquipSlot,
-  type Rarity,
   type Side,
   type UnitType,
 } from '@lordlar/shared';
@@ -22,7 +20,8 @@ import { z } from 'zod';
 import { requireAuth } from '../auth.js';
 import { prisma, type Tx } from '../db.js';
 import { GameError, hata } from '../errors.js';
-import { equippedGenerals, findLordByUser, gearBonusFrom, pushEvent } from '../services/lord.js';
+import { findLordByUser, pushEvent } from '../services/lord.js';
+import { fetihOdulu, lordSide, onerilenHedef } from '../services/hedef.js';
 import { addUnitsHome, assertQueueSlot, enqueue, spendResources } from '../services/queue.js';
 import { regionFortressBonus, regionUpgradeCost } from '../services/region.js';
 
@@ -145,34 +144,6 @@ async function assertCanAttack(
   }
 }
 
-/** Önizleme ve savaş için saldıran tarafı kurar. */
-async function previewSide(lordId: string, army: Army, generalKeys: string[]): Promise<Side> {
-  const lord = await prisma.lord.findUniqueOrThrow({
-    where: { id: lordId },
-    include: { items: true, gearLines: true, generals: true },
-  });
-  const sahada = equippedGenerals(lord.generals, new Date()).filter(
-    (g) => generalKeys.length === 0 || generalKeys.includes(g.key),
-  );
-  const items = lord.items
-    .filter((i) => i.equipped)
-    .map((i) => ({
-      slot: i.slot as EquipSlot,
-      tier: i.tier,
-      rarity: i.rarity as Rarity,
-      upgradeLevel: i.upgradeLevel,
-    }));
-  return {
-    units: army,
-    gearBonus: gearBonusFrom(lord.gearLines),
-    generalBonus: sahada.length ? aggregateGeneralBonus(sahada) : bosGeneralBonus(),
-    lordContribution: lordContribution(lord.guc, items),
-    leadership: lord.liderlik,
-    fortressBonus: 0,
-    isDefender: false,
-  };
-}
-
 export async function mapRoutes(app: FastifyInstance): Promise<void> {
   app.get('/map', { preHandler: requireAuth }, async (req) => {
     const lordId = await findLordByUser(req.user.userId);
@@ -181,15 +152,21 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       select: { worldId: true, homeQ: true, homeR: true, level: true },
     });
 
-    const regions = await prisma.region.findMany({
-      where: { worldId: me.worldId },
-      include: { owner: { select: { id: true, name: true, level: true } } },
-      orderBy: { id: 'asc' },
-    });
+    const [regions, oneri] = await Promise.all([
+      prisma.region.findMany({
+        where: { worldId: me.worldId },
+        include: { owner: { select: { id: true, name: true, level: true } } },
+        orderBy: { id: 'asc' },
+      }),
+      onerilenHedef(lordId),
+    ]);
 
     return {
       home: { q: me.homeQ, r: me.homeR },
       maxRegions: maxRegions(me.level),
+      // Oyuncu haritaya baktığında "neye saldırayım" sorusunun cevabı
+      // hazır olsun; hedef seçmek bir bulmaca olmamalı.
+      oneri,
       regions: regions.map((r) => ({
         id: r.id,
         name: r.name,
@@ -363,8 +340,19 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
     const region = await prisma.region.findUnique({ where: { id: body.toRegionId } });
     if (!region) throw hata.bulunamadi('Bölge');
 
-    const attacker = await previewSide(lordId, army, body.generalIds);
+    const attacker = await lordSide(lordId, army, body.generalIds);
     const fortress = regionFortressBonus(region.type, region.level);
+
+    const [me, yuruyusSayisi] = await Promise.all([
+      prisma.lord.findUniqueOrThrow({
+        where: { id: lordId },
+        select: { homeQ: true, homeR: true, level: true, pvpWins: true, fortressFameAccrued: true },
+      }),
+      prisma.march.count({ where: { lordId } }),
+    ]);
+    const dist = hexDistance({ q: me.homeQ, r: me.homeR }, { q: region.q, r: region.r });
+    const ilkSaldiri = ilkSaldiriMi(yuruyusSayisi, region.ownerLordId === null, dist);
+    const marchSec = marchDurationSec(dist, army, attacker.generalBonus, { ilkSaldiri });
 
     // Savunan ordusu: NPC ise tam bilinir, oyuncu ise tahmini (istihbarat yoksa)
     let defenderArmy: Army;
@@ -408,6 +396,11 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       canCapture: true,
     });
 
+    const [odul, bedel] = await Promise.all([
+      fetihOdulu(lordId, region),
+      Promise.resolve(orduBedeli(result.attackerLosses)),
+    ]);
+
     return {
       tahmin: {
         kazanan: result.winner,
@@ -416,18 +409,21 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
         savunanKayip: result.defenderLosses,
         yagma: result.loot,
       },
+      // "Kazanırsan ne olur, kaybedersen ne olur" — oyuncunun butona
+      // basmadan ÖNCE görmesi gereken iki cevap. Tahmin değil, motorun
+      // kendi formülleriyle hesaplanmış gerçek sayılar. (docs/08 İ1)
+      odul,
+      bedel: {
+        yenidenEgitim: bedel.kaynak,
+        yenidenEgitimSn: bedel.saniye,
+        kayipBirim: bedel.yer > 0 ? armyCount(result.attackerLosses) : 0,
+      },
       istihbaratKesin: kesin,
-      marchSec: marchDurationSec(
-        hexDistance(
-          {
-            q: (await prisma.lord.findUniqueOrThrow({ where: { id: lordId } })).homeQ,
-            r: (await prisma.lord.findUniqueOrThrow({ where: { id: lordId } })).homeR,
-          },
-          { q: region.q, r: region.r },
-        ),
-        army,
-        attacker.generalBonus,
-      ),
+      marchSec,
+      ilkSaldiri,
+      // Dönüş kısayoldan yararlanmaz ve en az bir hex sayılır — savaş
+      // çözümündeki hesapla birebir aynı olmalı, yoksa önizleme yalan söyler.
+      donusSec: marchDurationSec(Math.max(1, dist), army, attacker.generalBonus),
       not: kesin
         ? 'Savunan ordusu tam biliniyor.'
         : 'Savunanın garnizonu bilinmiyor; tahmin eksik istihbarata dayanıyor. Casus Leyla tam bilgi verir.',
@@ -450,7 +446,10 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       // varken yürüyüşte yoktu: ordusu yeten oyuncu tek seferde on hedefe
       // saldırabiliyordu. Dönüş yürüyüşleri de sayılıyor — onlar da hâlâ
       // yoldaki birlikler.
-      const aktifYuruyus = await tx.march.count({ where: { lordId, resolved: false } });
+      const [aktifYuruyus, aktifVeBitmisYuruyus] = await Promise.all([
+        tx.march.count({ where: { lordId, resolved: false } }),
+        tx.march.count({ where: { lordId } }),
+      ]);
       if (aktifYuruyus >= B.yuruyus.es_zamanli_limit) {
         throw hata.limitAsildi(
           `Aynı anda en fazla ${B.yuruyus.es_zamanli_limit} yürüyüş. ` +
@@ -469,7 +468,11 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
 
       const generalBonus = bosGeneralBonus();
       const dist = hexDistance({ q: lord.homeQ, r: lord.homeR }, { q: region.q, r: region.r });
-      const sec = marchDurationSec(dist, army, generalBonus);
+      // Oyuncunun ömürdeki ilk saldırısı, eve yakın ve sahipsiz bir hedefe
+      // ise dakikalar içinde varır. Yoksa yeni oyuncu ordusunu yola çıkarıp
+      // ilk oturumunda hiçbir sonuç görmeden oyunu kapatıyor.
+      const ilkSaldiri = ilkSaldiriMi(aktifVeBitmisYuruyus, region.ownerLordId === null, dist);
+      const sec = marchDurationSec(dist, army, generalBonus, { ilkSaldiri });
       const now = new Date();
 
       await takeFromHome(lordId, army, tx);
@@ -483,6 +486,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
           kind: 'attack',
           army: army as object,
           generalIds: body.generalIds as object,
+          distance: dist,
           departAt: now,
           arriveAt: new Date(now.getTime() + sec * 1000),
         },
@@ -523,6 +527,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
         arriveAt: march.arriveAt,
         distance: dist,
         durationSec: sec,
+        ilkSaldiri,
         uyari: limitDolu
           ? `Bölge limitin dolu (${sahip}/${maxRegions(lord.level)}). Kazansan bile bölgeyi alamazsın, sadece yağmalarsın.`
           : null,

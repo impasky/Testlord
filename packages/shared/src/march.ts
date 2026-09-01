@@ -24,6 +24,37 @@ export function slowestSpeed(army: Army): number {
   return Number.isFinite(slowest) ? slowest : B.yuruyus.hiz_referansi;
 }
 
+export interface MarchOptions {
+  /**
+   * Oyuncunun ilk saldırısı mı? Öyleyse süre `ilk_saldiri_dakika`ya sabitlenir.
+   *
+   * Neden var: normal en kısa yürüyüş 10 dakika, dönüşüyle 20. Yeni oyuncu
+   * ilk oturumunda ordusunu yola çıkarıp hiçbir sonuç görmeden oyunu
+   * kapatıyordu — "saldırıya gönderdim, eee ne oldu şimdi" sorusunun cevabı
+   * gerçekten yoktu. Bu kısayol yalnızca ilk saldırıya ve yalnızca sahipsiz
+   * bir bölgeye uygulanır (kararı çağıran verir); PvP'de savunanın tepki
+   * süresi kısalmaz.
+   */
+  ilkSaldiri?: boolean;
+}
+
+/**
+ * İlk saldırı kısayolu geçerli mi?
+ *
+ * Üç koşul birden gerekir; ikisi denge, biri deneyim içindir:
+ *  - lordun hiç yürüyüşü olmamalı (kısayol ömürde bir kez),
+ *  - hedef sahipsiz olmalı (PvP'de savunanın tepki süresi kısalmamalı),
+ *  - hedef eve yakın olmalı (yoksa haritanın "kenardan başla" kurgusu
+ *    bir kez ücretsiz atlanır).
+ */
+export function ilkSaldiriMi(
+  yuruyusSayisi: number,
+  sahipsizMi: boolean,
+  mesafe: number,
+): boolean {
+  return yuruyusSayisi === 0 && sahipsizMi && mesafe <= B.yuruyus.ilk_saldiri_max_hex;
+}
+
 /**
  * Yürüyüş süresi (saniye).
  * Sadece süvari = hızlı baskın; mancınık katarsan ordu ağırlaşır.
@@ -32,7 +63,9 @@ export function marchDurationSec(
   distance: number,
   army: Army,
   generalBonus?: GeneralBonus,
+  opts?: MarchOptions,
 ): number {
+  if (opts?.ilkSaldiri) return Math.round(B.yuruyus.ilk_saldiri_dakika * 60);
   const speed = slowestSpeed(army);
   const raw = distance * B.yuruyus.dakika_hex_basina * (B.yuruyus.hiz_referansi / speed);
   const withBonus = raw * (1 + (generalBonus?.yuruyusSuresi ?? 0));

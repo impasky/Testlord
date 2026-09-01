@@ -7,3 +7,4 @@ export * from './equipment.js';
 export * from './generals.js';
 export * from './combat.js';
 export * from './march.js';
+export * from './odul.js';

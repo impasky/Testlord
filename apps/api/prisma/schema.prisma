@@ -204,6 +204,10 @@ model March {
   army         Json
   generalIds   Json
   loot         Json?
+  /// Yürüyüşün hex mesafesi. Dönüş süresi buradan hesaplanır.
+  /// Eskiden gidiş süresinden geri türetiliyordu; ilk saldırının süresi
+  /// kısaltılabilir olunca o türetme yanlış mesafe veriyor.
+  distance     Int      @default(1)
   departAt     DateTime
   arriveAt     DateTime
   resolved     Boolean  @default(false)
