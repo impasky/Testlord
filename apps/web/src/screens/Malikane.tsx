@@ -12,6 +12,7 @@ import {
   IkonUyari,
   IkonYer,
 } from '../components/Ikonlar';
+import { DiyarTanitimi } from '../components/DiyarTanitimi';
 import { Omurga } from '../components/Omurga';
 import { SavasRaporu } from '../components/SavasRaporu';
 import {
@@ -151,6 +152,8 @@ export function Malikane({
       )}
 
       {yokluk && <YoklukKarti y={yokluk} onGit={onGit} />}
+
+      <DiyarTanitimi lord={lord} queues={queues} />
 
       <Omurga lord={lord} queues={queues} onGit={onGit} onHedefeGit={onBolgeyiAc} />
 

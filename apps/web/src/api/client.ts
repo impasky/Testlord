@@ -269,6 +269,34 @@ export interface PreviewDto {
   not: string;
 }
 
+/** Dünya özeti: kaç lord var, taht kimde, ben kaçıncıyım. */
+export interface DunyaDto {
+  ad: string;
+  kapasite: number;
+  lordSayisi: number;
+  aktifLord: number;
+  aktifGun: number;
+  bolgeSayisi: number;
+  benimSiram: number;
+  benimSohretim: number;
+  taht: {
+    regionId: number;
+    name: string;
+    sahip: { id: string; name: string } | null;
+    sohretBonusu: number;
+  } | null;
+  olaylar: {
+    id: string;
+    zaman: string;
+    bolgeId: number;
+    bolge: string;
+    saldiran: string;
+    savunan: string | null;
+    saldiranKazandi: boolean;
+    eleGecti: boolean;
+  }[];
+}
+
 /** Bir eşyayı kuşanmanın gerçek karşılığı — savaşa yansıması dahil. */
 export interface EkipmanEtkisiDto {
   katkiOncesi: number;
@@ -468,6 +496,8 @@ export const api = {
   hireGeneral: (key: string) => post(`/generals/${key}/hire`),
   assignGeneral: (key: string, slotIndex: number | null) =>
     post(`/generals/${key}/assign`, { slotIndex }),
+
+  dunya: () => request<DunyaDto>('/dunya'),
 
   rankings: (board: string, page = 0) => request<RankingDto>(`/rankings/${board}?page=${page}`),
   raporEt: (lordId: string, sebep: string) => post<{ alindi: boolean }>(`/rapor/${lordId}`, { sebep }),

@@ -16,6 +16,7 @@ import { hataBildir, izlemeAcikMi, izlemeBaslat, surecHatalariniYakala } from '.
 import { armyRoutes } from './routes/army.js';
 import { authRoutes } from './routes/auth.js';
 import { devRoutes } from './routes/dev.js';
+import { dunyaRoutes } from './routes/dunya.js';
 import { generalRoutes } from './routes/generals.js';
 import { itemRoutes } from './routes/items.js';
 import { mapRoutes } from './routes/map.js';
@@ -157,6 +158,7 @@ export async function buildServer() {
   await app.register(mapRoutes, { prefix: '/api' });
   await app.register(generalRoutes, { prefix: '/api' });
   await app.register(rankingRoutes, { prefix: '/api' });
+  await app.register(dunyaRoutes, { prefix: '/api' });
 
   // Zaman ilerletme yardımcıları ÜRETİMDE hiç yüklenmez.
   if (env.NODE_ENV !== 'production') {
