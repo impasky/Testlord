@@ -1,12 +1,25 @@
 /** Harita — 61 bölge, alt sayfada bölge detayı, garnizon ve saldırı. */
-import { UNIT_TYPES, formatArmy, unitName, type Army, type UnitType } from '@lordlar/shared';
+import { B, UNIT_TYPES, formatArmy, unitName, type Army, type UnitType } from '@lordlar/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { ApiError, api, type PreviewDto } from '../api/client';
+import { ApiError, api, type LordState, type PreviewDto, type QueueItem } from '../api/client';
 import { HexHarita } from '../components/HexHarita';
 import { BirimIkonu, BolgeIkonu, IkonKapali, IkonSure } from '../components/Ikonlar';
 import { SavasRaporu } from '../components/SavasRaporu';
-import { Bolum, Buton, Input, Kart, Rozet, formatKalan, formatSayi } from '../components/ui';
+import {
+  Bolum,
+  Buton,
+  EngelNotu,
+  Input,
+  Kart,
+  KuyrukSeridi,
+  Rozet,
+  formatKalan,
+  formatSayi,
+  kaynakEngeli,
+} from '../components/ui';
+
+const BOLGE_LIMITI = B.kuyruklar.es_zamanli.upgrade_region;
 
 const TIP_ADI: Record<string, string> = {
   tarla: 'Tarla',
@@ -115,10 +128,21 @@ function OrduSecici({
   );
 }
 
-export function Harita({ lordId, onGuncelle }: { lordId: string; onGuncelle: () => void }) {
+export function Harita({
+  lord,
+  queues,
+  onGuncelle,
+}: {
+  lord: LordState;
+  queues: QueueItem[];
+  onGuncelle: () => void;
+}) {
+  const lordId = lord.id;
   const qc = useQueryClient();
   const [seciliId, setSeciliId] = useState<number | null>(null);
   const [rapor, setRapor] = useState<string | null>(null);
+  // Tek bayrak alt sayfadaki bütün düğmeleri birden söndürüyordu.
+  const [gonderilen, setGonderilen] = useState<string | null>(null);
   const [saldiriOrdusu, setSaldiriOrdusu] = useState<Army>({});
   const [garnizon, setGarnizon] = useState<Army>({});
   const [onizleme, setOnizleme] = useState<PreviewDto | null>(null);
@@ -152,13 +176,17 @@ export function Harita({ lordId, onGuncelle }: { lordId: string; onGuncelle: () 
   };
 
   const mut = useMutation({
-    mutationFn: async (f: () => Promise<unknown>) => f(),
+    mutationFn: async ({ f }: { f: () => Promise<unknown>; anahtar: string }) => f(),
+    onMutate: ({ anahtar }) => setGonderilen(anahtar),
     onSuccess: () => {
       setHata(null);
       tazele();
     },
     onError: (e) => setHata(e instanceof ApiError ? e.message : 'İşlem başarısız.'),
+    onSettled: () => setGonderilen(null),
   });
+
+  const bolgeKuyrugu = queues.filter((q) => q.kind === 'upgrade_region');
 
   if (harita.isLoading || !harita.data) {
     return <p className="pt-6 text-center text-solgun">Harita açılıyor...</p>;
@@ -168,6 +196,40 @@ export function Harita({ lordId, onGuncelle }: { lordId: string; onGuncelle: () 
   const bolgeSavaslari = (savaslar.data ?? []).filter((b) => b.regionId === seciliId).slice(0, 5);
   const evdeki = army.data?.home ?? {};
   const secimBos = UNIT_TYPES.every((t) => (saldiriOrdusu[t] ?? 0) === 0);
+
+  /**
+   * Saldırının neden yapılamadığı. Sunucu bunların hepsini zaten reddediyor;
+   * fark, oyuncunun sebebi düğmeye basmadan ÖNCE görmesi. Sıra sunucudaki
+   * kontrol sırasıyla aynı tutuldu.
+   */
+  const saldiriEngeli = (() => {
+    if (!bolge) return null;
+    if (lord.woundedUntil && new Date(lord.woundedUntil) > new Date()) {
+      return {
+        kisa: 'Lordun yaralı',
+        uzun: 'İyileşene kadar saldıramazsın. Malikâne ekranında kalan süreyi görebilirsin.',
+      };
+    }
+    if (lord.dailyAttacks >= B.korumalar.gunluk_saldiri_limiti) {
+      return {
+        kisa: 'Günlük saldırı hakkın bitti',
+        uzun: `Günde en fazla ${B.korumalar.gunluk_saldiri_limiti} saldırı yapabilirsin. Yarın sıfırlanır.`,
+      };
+    }
+    if (bolge.shielded) {
+      return {
+        kisa: 'Bölge kalkan altında',
+        uzun: 'Yeni ele geçirilmiş ya da yeni oyuncuya ait bölgelere bir süre saldırılamaz.',
+      };
+    }
+    if (secimBos) {
+      return {
+        kisa: 'Ordu seçmedin',
+        uzun: 'Yukarıdan kaç birim göndereceğini seç.',
+      };
+    }
+    return null;
+  })();
   const benimSayi = harita.data.regions.filter((r) => r.isMine && r.type !== 'taht').length;
 
   function kapat() {
@@ -261,7 +323,10 @@ export function Harita({ lordId, onGuncelle }: { lordId: string; onGuncelle: () 
                     tur="anahat"
                     boy="kucuk"
                     className="mt-2"
-                    onClick={() => mut.mutate(() => api.recallMarch(m.id))}
+                    onClick={() =>
+                      mut.mutate({ anahtar: `recall:${m.id}`, f: () => api.recallMarch(m.id) })
+                    }
+                    disabled={gonderilen === `recall:${m.id}`}
                   >
                     Geri çağır
                   </Buton>
@@ -350,22 +415,56 @@ export function Harita({ lordId, onGuncelle }: { lordId: string; onGuncelle: () 
                     </Kart>
                   )}
 
-                  {bolge.upgradeCost && (
-                    <Kart className="p-3">
-                      <Buton
-                        onClick={() => mut.mutate(() => api.upgradeRegion(bolge.id))}
-                        disabled={mut.isPending}
-                        tam
-                      >
-                        Seviye {bolge.level + 1}'e yükselt
-                      </Buton>
-                      <p className="tabular mt-1.5 text-center text-[10px] text-sonuk">
-                        {formatSayi(bolge.upgradeCost.altin)} altın ·{' '}
-                        {formatSayi(bolge.upgradeCost.demir)} demir ·{' '}
-                        {formatKalan(bolge.upgradeCost.sec * 1000)}
-                      </p>
-                    </Kart>
-                  )}
+                  {bolge.upgradeCost &&
+                    (() => {
+                      const engel =
+                        bolgeKuyrugu.length >= BOLGE_LIMITI
+                          ? {
+                              kisa: 'Yükseltme kuyruğu dolu',
+                              uzun: `Aynı anda en fazla ${BOLGE_LIMITI} bölge yükseltilebilir. Biri bitmeden yenisi başlamaz.`,
+                            }
+                          : kaynakEngeli(bolge.upgradeCost, lord.resources);
+                      const anahtar = `upgrade:${bolge.id}`;
+                      return (
+                        <Kart className="p-3">
+                          <Buton
+                            onClick={() =>
+                              mut.mutate({ anahtar, f: () => api.upgradeRegion(bolge.id) })
+                            }
+                            disabled={gonderilen === anahtar || engel !== null}
+                            tam
+                          >
+                            {gonderilen === anahtar
+                              ? 'Gönderiliyor…'
+                              : `Seviye ${bolge.level + 1}'e yükselt`}
+                          </Buton>
+                          <p className="tabular mt-1.5 text-center text-[10px] text-sonuk">
+                            <span
+                              className={
+                                bolge.upgradeCost!.altin > lord.resources.altin ? 'text-kirmizi' : ''
+                              }
+                            >
+                              {formatSayi(bolge.upgradeCost!.altin)} altın
+                            </span>
+                            {' · '}
+                            <span
+                              className={
+                                bolge.upgradeCost!.demir > lord.resources.demir ? 'text-kirmizi' : ''
+                              }
+                            >
+                              {formatSayi(bolge.upgradeCost!.demir)} demir
+                            </span>
+                            {' · '}
+                            {formatKalan(bolge.upgradeCost!.sec * 1000)}
+                          </p>
+                          {engel && <EngelNotu kisa={engel.kisa} uzun={engel.uzun} />}
+                          <KuyrukSeridi
+                            kuyruklar={bolgeKuyrugu.filter((q) => q.payload.regionId === bolge.id)}
+                            etiket="Yükseltiliyor"
+                          />
+                        </Kart>
+                      );
+                    })()}
 
                   <Kart className="p-3">
                     <OrduSecici
@@ -382,8 +481,13 @@ export function Harita({ lordId, onGuncelle }: { lordId: string; onGuncelle: () 
                     <Buton
                       className="mt-2.5"
                       tam
-                      onClick={() => mut.mutate(() => api.setGarrison(bolge.id, garnizon))}
-                      disabled={mut.isPending || Object.keys(garnizon).length === 0}
+                      onClick={() =>
+                        mut.mutate({
+                          anahtar: 'garrison',
+                          f: () => api.setGarrison(bolge.id, garnizon),
+                        })
+                      }
+                      disabled={gonderilen === 'garrison' || Object.keys(garnizon).length === 0}
                     >
                       Garnizonu ayarla
                     </Buton>
@@ -439,10 +543,14 @@ export function Harita({ lordId, onGuncelle }: { lordId: string; onGuncelle: () 
                     <Buton tur="sessiz" onClick={onizle} disabled={secimBos} className="flex-1">
                       Önizle
                     </Buton>
-                    <Buton onClick={saldir} disabled={secimBos} className="flex-1">
+                    <Buton onClick={saldir} disabled={saldiriEngeli !== null} className="flex-1">
                       Saldır
                     </Buton>
                   </div>
+
+                  {saldiriEngeli && (
+                    <EngelNotu kisa={saldiriEngeli.kisa} uzun={saldiriEngeli.uzun} />
+                  )}
                 </Kart>
               )}
 

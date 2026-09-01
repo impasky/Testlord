@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { ApiError, api, type GeneralDto } from '../api/client';
 import { Gorsel } from '../components/Gorsel';
 import { IkonAltin, IkonNavGeneraller } from '../components/Ikonlar';
-import { Bolum, Buton, Ilerleme, Kart, Rozet, formatSayi } from '../components/ui';
+import { Bolum, Buton, EngelNotu, Ilerleme, Kart, Rozet, formatSayi } from '../components/ui';
 
 const NADIRLIK_RENGI: Record<string, string> = {
   bronz: '#c97b3c',
@@ -119,9 +119,14 @@ function GeneralKarti({
             <span className="mr-1.5 inline-block align-[-2px]">
               <IkonAltin boyut={14} />
             </span>
-            Kirala · {formatSayi(g.maliyet_altin)}
+            {bekliyor ? 'Gönderiliyor…' : `Kirala · ${formatSayi(g.maliyet_altin)}`}
           </Buton>
-          {!yeterli && <p className="mt-1 text-center text-[11px] text-kirmizi">Altının yetmiyor</p>}
+          {!yeterli && (
+            <EngelNotu
+              kisa="Altının yetmiyor"
+              uzun={`${formatSayi(g.maliyet_altin - altin)} altın eksik.`}
+            />
+          )}
         </div>
       )}
     </Kart>
@@ -133,8 +138,13 @@ export function Generaller({ onGuncelle }: { onGuncelle: () => void }) {
   const [hata, setHata] = useState<string | null>(null);
   const q = useQuery({ queryKey: ['generals'], queryFn: api.generals });
 
+  // Tek bayrak on iki kartin butun dugmelerini birden sonduruyordu.
+  const [gonderilen, setGonderilen] = useState<string | null>(null);
+
   const mut = useMutation({
-    mutationFn: async (f: () => Promise<unknown>) => f(),
+    mutationFn: async ({ f }: { f: () => Promise<unknown>; anahtar: string }) => f(),
+    onMutate: ({ anahtar }) => setGonderilen(anahtar),
+    onSettled: () => setGonderilen(null),
     onSuccess: () => {
       setHata(null);
       void qc.invalidateQueries({ queryKey: ['generals'] });
@@ -186,9 +196,13 @@ export function Generaller({ onGuncelle }: { onGuncelle: () => void }) {
                   g={g}
                   slots={q.data.slots}
                   altin={q.data.altin}
-                  bekliyor={mut.isPending}
-                  onKirala={() => mut.mutate(() => api.hireGeneral(g.key))}
-                  onAta={(slot) => mut.mutate(() => api.assignGeneral(g.key, slot))}
+                  bekliyor={gonderilen === g.key}
+                  onKirala={() =>
+                    mut.mutate({ anahtar: g.key, f: () => api.hireGeneral(g.key) })
+                  }
+                  onAta={(slot) =>
+                    mut.mutate({ anahtar: g.key, f: () => api.assignGeneral(g.key, slot) })
+                  }
                 />
               ))}
           </div>
