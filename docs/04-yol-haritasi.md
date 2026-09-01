@@ -5,6 +5,10 @@
 > **Durum: dokuz taşın dokuzu da bitti.** Oyun uçtan uca oynanabilir ve
 > yayına hazır. Her taşın gerçekte ne çıkardığı ve hangi hataların
 > yakalandığı git geçmişinde.
+>
+> **Sıradaki yol haritası v2'dir** — bu dokuz taş oyunu çalışır kıldı,
+> v2 oyuncunun geri gelmesini sağlıyor: M10–M16,
+> [`docs/07-v2-kapsam.md`](07-v2-kapsam.md).
 
 Sıralama tesadüfi değil: her taş bir öncekinin üstüne oturur ve **her taşın
 sonunda elle test edilebilir bir şey** olur. Hiçbir aşamada "çalışan bir şey yok,

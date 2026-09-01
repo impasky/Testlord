@@ -114,6 +114,12 @@ işaretleyen şey kanaat değil, `pnpm e2e` ve `pnpm yuk-testi`:
 
 Bu 7 madde tuttuğunda oyun yayına hazırdır. Fazlası v1 değildir.
 
+> **v1 kapsamı bilerek dondurulmuştu ve oyun bu sayede hızlı bitti. Ama o
+> kararın bir bedeli vardı:** ittifak, sohbet ve sezon "sonra eklenecek
+> güzellikler" diye sınıflandırıldı, oysa bu türde ittifak taşıyıcı
+> duvardır. Bedelin ne olduğu ve nasıl ödeneceği
+> [`docs/07-v2-kapsam.md`](07-v2-kapsam.md)'de.
+
 **Neden "general kiralandı" demek yetmiyor:** kriter generali *savaşa
 sokabilmek*. Kiralamayı test etmek generalin savaş hesabına katıldığını
 göstermez; testi generalin savaştan XP kazanmasına bağladık — kazanıyorsa
