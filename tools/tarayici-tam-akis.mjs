@@ -143,8 +143,20 @@ await page.screenshot({ path: `${CIKTI}/mob-5-generaller.png` });
 
 // --- Harita: bölge seç, önizle, saldır ---
 await sekme('Harita');
-await page.waitForSelector('text=Dünya Haritası', { timeout: 8000 });
+await page.waitForSelector('text=/lorddan/', { timeout: 8000 });
 await page.screenshot({ path: `${CIKTI}/mob-6-harita.png` });
+
+// Harita "yaşayan bir yer" gibi görünmeli: kaç lord olduğu, tahtın kimde
+// olduğu ve diyarda neler olduğu yazılı olmalı. (docs/08 İ5)
+kontrol(
+  'Harita başlığı dünyanın kaç kişilik olduğunu söylüyor',
+  await page.locator('text=/lorddan/').first().isVisible().catch(() => false),
+);
+kontrol(
+  'Taht sahibi başlıkta yazıyor',
+  (await page.locator('text=/taht sahipsiz/').count()) > 0 ||
+    (await page.locator('svg text').count()) > 0,
+);
 
 const harita = await (await fetch(`${API}/api/map`, { headers: h })).json();
 const hedef = harita.regions

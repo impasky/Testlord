@@ -6,6 +6,7 @@ import { ApiError, api, type LordState, type PreviewDto, type QueueItem } from '
 import { HexHarita } from '../components/HexHarita';
 import { BirimIkonu, BolgeIkonu, IkonKapali, IkonSure } from '../components/Ikonlar';
 import { hisAgir, hisOnay, hisRet } from '../components/hisGeriBildirimi';
+import { DunyaBasligi, OlaySeridi } from '../components/DunyaSeridi';
 import { SaldiriOnizleme } from '../components/SaldiriOnizleme';
 import { SavasRaporu } from '../components/SavasRaporu';
 import {
@@ -170,6 +171,7 @@ export function Harita({
   // yüklenene kadar erken dönüyor ve o dönüşten sonra çağrılan bir hook
   // "Rendered more hooks than during the previous render" hatası veriyor.
   // enabled ile ağ isteği yine sadece alt sayfa açıkken yapılıyor.
+  const dunya = useQuery({ queryKey: ['dunya'], queryFn: api.dunya });
   const savaslar = useQuery({
     queryKey: ['battles'],
     queryFn: () => api.battles(),
@@ -327,14 +329,22 @@ export function Harita({
 
   return (
     <div className="space-y-4 pt-3">
+      {/* Başlık "Dünya Haritası" değil diyarın ADI: oyuncu gördüğü 61
+          hex'in bir dünyanın parçası olduğunu ilk bakışta anlamalı. Kaç
+          lord olduğu ve tahtın kimde olduğu hemen altında. (docs/08 İ5) */}
       <Bolum
-        baslik="Dünya Haritası"
+        baslik={dunya.data?.ad ?? 'Dünya Haritası'}
         yan={
           <span className="text-[11px] text-solgun">
             Bölgen {benimSayi}/{harita.data.maxRegions}
           </span>
         }
       >
+        {dunya.data && (
+          <div className="mb-2 px-1">
+            <DunyaBasligi dunya={dunya.data} />
+          </div>
+        )}
         <Kart className="p-2">
           <HexHarita
             regions={harita.data.regions}
@@ -357,6 +367,13 @@ export function Harita({
             <span>⛨ korumalı</span>
           </div>
         </Kart>
+
+        {/* Haritanın altındaki boşluk, oyuncunun "tek oyunculu mu bu"
+            sorusunu soran boşluktu. Diyarda olup bitenler oraya konuyor;
+            savaş yoksa şerit hiç görünmüyor, sahte hareket üretilmiyor. */}
+        <div className="mt-3">
+          <OlaySeridi onBolgeAc={setSeciliId} />
+        </div>
       </Bolum>
 
       {(marches.data?.length ?? 0) > 0 && (

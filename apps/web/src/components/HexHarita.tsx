@@ -58,6 +58,53 @@ function TipIkonu({ tip, x, y, opaklik }: { tip: string; x: number; y: number; o
   );
 }
 
+/**
+ * Bölge sahibinin adı, hex'in üst kenarına oturan küçük bir etiket.
+ *
+ * Ad kısaltılıyor ve arkasına koyu bir zemin konuyor: yan yana iki sahipli
+ * bölge olduğunda etiketler birbirine giriyor ve ikisi de okunmaz hâle
+ * geliyordu. Zemin ayrıca etiketi kendi altıgenine bağlıyor — üstteki
+ * hex'in adı sanılmasın.
+ */
+function SahipEtiketi({
+  ad,
+  x,
+  y,
+  benim,
+}: {
+  ad: string;
+  x: number;
+  y: number;
+  benim: boolean;
+}) {
+  const kisa = ad.length > 8 ? `${ad.slice(0, 7)}…` : ad;
+  const g = kisa.length * 4.2 + 6;
+  const ty = y - BOYUT * 0.52;
+  return (
+    <g className="pointer-events-none select-none">
+      <rect
+        x={x - g / 2}
+        y={ty - 6.5}
+        width={g}
+        height={9}
+        rx={2}
+        fill="#17100c"
+        opacity="0.85"
+      />
+      <text
+        x={x}
+        y={ty}
+        textAnchor="middle"
+        fontSize="7"
+        fontWeight="700"
+        fill={benim ? '#f5b731' : '#e89a5a'}
+      >
+        {kisa}
+      </text>
+    </g>
+  );
+}
+
 export function HexHarita({
   regions,
   home,
@@ -169,19 +216,13 @@ export function HexHarita({
               {r.shielded ? '⛨' : ''}
             </text>
 
-            {taht && r.owner && (
-              <text
-                x={x}
-                y={y + BOYUT * 1.02}
-                textAnchor="middle"
-                className="pointer-events-none select-none"
-                fontSize="8"
-                fontWeight="700"
-                fill="#f5b731"
-              >
-                {r.owner.name.length > 12 ? `${r.owner.name.slice(0, 11)}…` : r.owner.name}
-              </text>
-            )}
+            {/* Sahibi olan her bölgenin altında lordun adı.
+                Önceden yalnızca Taht Kalesi'nde vardı ve harita bu yüzden
+                ıssız görünüyordu: 61 altıgen, hiçbirinde insan adı yok.
+                Oyuncunun "tek oyunculu bir oyun mu bu" sorusunun kaynağı
+                buydu. İsim, haritayı bir tahtadan bir komşuluğa çeviriyor.
+                (docs/08 İ5) */}
+            {r.owner && <SahipEtiketi ad={r.owner.name} x={x} y={y} benim={r.isMine} />}
           </g>
         );
       })}
