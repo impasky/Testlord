@@ -1,4 +1,17 @@
 import { STAT_KEYS, type StatKey } from '@lordlar/shared';
+
+/** Arayüzdeki sekmeler. Serbest metin kabul etmiyoruz: ölçüm alanı
+ * doğrulanmamış istemci verisiyle kirlenmesin. */
+const EKRANLAR = [
+  'malikane',
+  'kisla',
+  'harita',
+  'demirhane',
+  'lord',
+  'generaller',
+  'siralama',
+  'hesap',
+] as const;
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { hashPassword, requireAuth, verifyPassword } from '../auth.js';
@@ -18,6 +31,11 @@ const silmeSchema = z.object({
   }),
 });
 
+/** İstemcinin bildirdiği ekran adı; ölçüm dışında hiçbir işi yok. */
+const ekranSchema = z.object({
+  ekran: z.enum(EKRANLAR).optional(),
+});
+
 const statsSchema = z.object({
   guc: z.number().int().min(0).default(0),
   dayaniklilik: z.number().int().min(0).default(0),
@@ -29,6 +47,10 @@ export async function meRoutes(app: FastifyInstance): Promise<void> {
   app.get('/me', { preHandler: requireAuth }, async (req) => {
     const lordId = await findLordByUser(req.user.userId);
     const state = await tickLord(lordId);
+
+    // Ekran adı /me'ye takılıyor: istemci zaten bu ucu düzenli çağırıyor,
+    // ayrı bir ölçüm isteği açmak trafiği iki katına çıkarırdı. (docs/08 İ7)
+    const { ekran } = ekranSchema.parse(req.query);
 
     const { lastSeenAt } = await prisma.lord.findUniqueOrThrow({
       where: { id: lordId },
@@ -72,7 +94,10 @@ export async function meRoutes(app: FastifyInstance): Promise<void> {
 
     // Damgayı okuduktan SONRA güncelliyoruz: aynı istekte güncelleseydik
     // özet her zaman boş çıkardı.
-    await prisma.lord.update({ where: { id: lordId }, data: { lastSeenAt: new Date() } });
+    await prisma.lord.update({
+      where: { id: lordId },
+      data: { lastSeenAt: new Date(), ...(ekran ? { lastScreen: ekran } : {}) },
+    });
 
     return { lord: state, queues, events, yokluk, serverTime: new Date().toISOString() };
   });

@@ -21,6 +21,7 @@ import { generalRoutes } from './routes/generals.js';
 import { itemRoutes } from './routes/items.js';
 import { mapRoutes } from './routes/map.js';
 import { meRoutes } from './routes/me.js';
+import { olcumRoutes } from './routes/olcum.js';
 import { rankingRoutes } from './routes/rankings.js';
 import { seedDemoLords } from './services/demoWorld.js';
 import { createWorld } from './services/world.js';
@@ -159,6 +160,13 @@ export async function buildServer() {
   await app.register(generalRoutes, { prefix: '/api' });
   await app.register(rankingRoutes, { prefix: '/api' });
   await app.register(dunyaRoutes, { prefix: '/api' });
+
+  // Ölçüm ucu yalnızca anahtar tanımlıysa var olur: tanımsızken uç hiç
+  // yoktur, yanlış yapılandırma ile açıkta kalamaz.
+  if (env.olcumAnahtari) {
+    await app.register(olcumRoutes, { prefix: '/api' });
+    app.log.info('Ölçüm ucu açık: /api/olcum');
+  }
 
   // Zaman ilerletme yardımcıları ÜRETİMDE hiç yüklenmez.
   if (env.NODE_ENV !== 'production') {

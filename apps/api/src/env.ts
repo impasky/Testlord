@@ -21,6 +21,12 @@ const schema = z.object({
   /** Kayıt/giriş için IP başına dakikalık tavan. Kaba kuvveti burası durdurur. */
   AUTH_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(60),
   /** Boşsa hata izleme kapalıdır ve dışarıya hiçbir şey gönderilmez. */
+  /**
+   * İlk oturum ölçüm ucunun (/api/olcum) anahtarı. Boşsa uç hiç yüklenmez.
+   * Uç oyuncu verisi değil yalnızca toplamlar döner; yine de herkese açık
+   * olmasının bir sebebi yok.
+   */
+  OLCUM_ANAHTARI: z.string().optional(),
   SENTRY_DSN: z.string().default(''),
   /** İzleme örneklemesi. Ücretsiz katmanda kota var, varsayılan düşük. */
   SENTRY_TRACES_SAMPLE_RATE: z.coerce.number().min(0).max(1).default(0.05),
@@ -57,6 +63,8 @@ export const env = {
   ...parsed.data,
   uygulamaUrl:
     parsed.data.UYGULAMA_URL ?? parsed.data.RENDER_EXTERNAL_URL ?? 'http://localhost:5173',
+  /** Boşsa /olcum ucu hiç yüklenmez. */
+  olcumAnahtari: parsed.data.OLCUM_ANAHTARI ?? '',
   runWorker: parsed.data.RUN_WORKER === 'true',
   serveWeb: parsed.data.SERVE_WEB === 'true',
   autoMigrate: parsed.data.AUTO_MIGRATE === 'true',

@@ -44,8 +44,14 @@ export function App() {
   const qc = useQueryClient();
 
   const { data, isLoading, error, isFetching, failureCount } = useQuery<MeResponse>({
-    queryKey: ['me'],
-    queryFn: api.me,
+    // Sekme anahtara giriyor: sekme değişince /me yeniden çağrılır ve
+    // sunucu oyuncunun hangi ekranda olduğunu kaydeder. Ölçüm için ayrı
+    // bir istek açmıyoruz. (docs/08 İ7)
+    queryKey: ['me', sekme],
+    queryFn: () => api.me(sekme),
+    // Sekme değişince anahtar da değişiyor; önceki veriyi tutmazsak her
+    // sekme geçişinde "Diyar yükleniyor…" ekranı yanıp sönerdi.
+    placeholderData: (onceki) => onceki,
     enabled: girisli,
     refetchInterval: 30_000,
     // Ağ hatasında birkaç kez dene: ücretsiz katmanda sunucu uykudan

@@ -440,7 +440,12 @@ export const api = {
     post<{ token: string }>('/auth/register', { email, password, lordName }),
   login: (email: string, password: string) =>
     post<{ token: string }>('/auth/login', { email, password }),
-  me: () => request<MeResponse>('/me'),
+  /**
+   * `ekran` yalnızca ölçüm için: oyuncular oyunu hangi ekranda bırakıyor?
+   * Ayrı bir istek açmak yerine zaten düzenli çağrılan uca takılıyor.
+   */
+  me: (ekran?: string) =>
+    request<MeResponse>(ekran ? `/me?ekran=${encodeURIComponent(ekran)}` : '/me'),
 
   sifirlamaIste: (email: string) =>
     post<{ gonderildi: boolean; jeton?: string }>('/auth/sifirlama-iste', { email }),

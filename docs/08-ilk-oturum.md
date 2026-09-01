@@ -243,19 +243,86 @@ Bu dört sayı olmadan bir sonraki turda yine tahmin ederiz.
 
 ---
 
-## Sıra
+## Sıra ve durum
 
-| # | İş | Gün | Neden bu sırada |
-|---|---|---|---|
-| İ3 | İlk saldırı dakikalarda bitsin | 1 | "Ne oldu şimdi"nin cevabı yoksa diğerlerinin anlatacağı sonuç da yok |
-| İ1 | Eylem karşılığını önceden söylesin | 1.5 | Oyuncu neden bastığını bilmeden basıyor |
-| İ2 | Sonuç öncesi/sonrası gösterilsin | 1 | İ1'in vaadinin karşılığı; ikisi bir çift |
-| İ4 | Tek omurga | 1 | Yukarıdakiler yerine oturmadan omurga boş bir kutu olur |
-| İ6 | 30 saniyelik amaç | 0.5 | Omurga varken anlamlı; öncesinde havada kalır |
-| İ5 | Harita insanlı görünsün | 1 | Bağımsız; sona alınabilir |
-| İ7 | Ölçüm | 0.5 | Son, çünkü ölçülecek şeyin var olması gerekiyor |
+| # | İş | Durum |
+|---|---|---|
+| İ3 | İlk saldırı dakikalarda bitsin | ✅ bitti |
+| İ1 | Eylem karşılığını önceden söylesin | ✅ bitti |
+| İ2 | Sonuç öncesi/sonrası gösterilsin | ✅ bitti |
+| İ4 | Tek omurga | ✅ bitti |
+| İ6 | 30 saniyelik amaç | ✅ bitti |
+| İ5 | Harita insanlı görünsün | ✅ bitti |
+| İ7 | Ölçüm | ✅ bitti |
 
-**Toplam ~6.5 iş günü.**
+---
+
+## Uygulanırken çıkanlar
+
+Kapsamı yazarken bilmediğim, ancak kod ve ekran görüntüsü üzerinde
+görülebilen şeyler. Hepsi düzeltildi; buraya not düşülüyor çünkü her biri
+aynı hastalığın başka bir yüzüydü: **oyunun oyuncuya tutamayacağı sözler
+vermesi.**
+
+**Bölge, savaşı kazanmakla el değiştirmiyor.** `balance.json`'da fetih
+eşiği var: `R ≥ 0,60`, kabaca 1,5 kat güç. Dar zaferde yalnızca yağma
+alınıyor. Ne öneri ne önizleme bunu biliyordu; ikisi de "ordun yetiyor"
+deyip bölgeyi vermiyordu. Artık "kazanır" fetih demek, dar zafer ayrıca
+söyleniyor.
+
+**Aynı savaş için üç ayrı tohum vardı.** Öneri, önizleme ve ekipman
+karşılaştırması ayrı tohumlarla ayrı simülasyonlar çalıştırıyordu; aynı
+ekranda "ordun yetiyor" ile "bölge el değiştirmez" yan yana çıkabiliyordu.
+Üçü tek tohum tabanını ve **dokuz savaşlık örneklemeyi** kullanıyor. Savaşta
+tur başına ±%7 varyans var — tek simülasyon bir tahmin değil, bir kura
+sonucu. Önizleme artık kesinlik değil ihtimal söylüyor.
+
+**"Daha fazla asker eğit" bir tavsiye değil, bilmeceydi.** Ne kadar
+gerektiğini oyuncu bilmiyordu ve deneyerek öğrenmenin bedeli bir yürüyüş ve
+bir orduydu. Cevap artık somut ve motorun kendi savaşından ikili aramayla
+çıkıyor: hangi birimden kaç tane, kaç altına. Üç kez düzeltildi:
+
+- önce yalnızca en ucuz birime bakıyordu (57 milis) — oysa okçu altın
+  başına daha çok saldırı gücü veriyor (15 okçu);
+- sonra kaynağı hesaba katmıyordu — "57 milis" derken kesede 56'lık altın
+  vardı;
+- sonra güvenlik payı komuta kapasitesine sığmayınca sessizce kırpılıyordu,
+  yani pay tam gerektiği yerde yok oluyordu.
+
+**Öneri, oyuncunun harcadığı altına göre kayıyordu.** "Şu bölge için 27 okçu
+eğit" deyip, okçular eğitilince başka bir bölge gösteriyordu. Planı
+uygularken hedefin altından kayması, düzeltmeye çalıştığımız duygunun ta
+kendisiydi. Seçim artık kaynaktan bağımsız.
+
+**Yakınlık ile zorluk karıştırılıyordu.** Ring 4'teki bir kale ile bir tarla
+aynı 37 birimi barındırıyor ama kalenin tahkimatı onu 1. seviye lorda
+imkânsız kılıyor. Kale hex'inde doğan oyuncuya hiçbir orduyla alamayacağı
+hedef gösteriliyordu. Artık savunma gücüne bakılıyor ve en yakın adaylarda
+"kapasiten dolsa alır mıydın" sorusu gerçekten soruluyor.
+
+**Ordusu yoldayken oyuncuya "yeni ordu kur" deniyordu.** Ordusu vardı,
+sadece evde değildi.
+
+**`pnpm typecheck` ilk pakette duruyordu** ve `apps/api` hiç
+denetlenmiyordu. `--no-bail` eklendi; bu sayede yakalanan gerçek bir hata da
+düzeltildi.
+
+---
+
+## Ölçüm nasıl okunur
+
+```
+OLCUM_ANAHTARI=<değer> pnpm olcum
+```
+
+ya da telefondan: `https://<adres>/api/olcum?anahtar=<değer>`
+
+Anahtar tanımlı değilse uç **hiç yüklenmez**. Oyuncu verisi değil, yalnızca
+toplamlar döner.
+
+Asıl bakılacak sayı **"ilk 30 dakika içinde savaşan oranı"**: kayıt olup
+hiçbir sonuç görmeden çıkanları doğrudan gösterir. "Oyunun bırakıldığı
+ekran" ise bir sonraki turda nereye bakılacağını söyler.
 
 ---
 

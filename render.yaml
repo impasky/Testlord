@@ -68,6 +68,13 @@ services:
       - key: LOG_LEVEL
         value: info
 
+      # İlk oturum ölçümü (docs/08 İ7). Boş bırakılırsa /api/olcum ucu hiç
+      # yüklenmez. Bir değer girersen telefondan da bakabilirsin:
+      #   https://<adres>/api/olcum?anahtar=<değer>
+      # Oyuncu verisi değil, yalnızca toplamlar döner.
+      - key: OLCUM_ANAHTARI
+        sync: false
+
       # E-posta. "log" hiçbir şey göndermez, yalnızca sunucu log'una yazar —
       # parola sıfırlama akışı çalışır ama posta gitmez. Gerçek posta için
       # "resend" yapıp anahtarı ve doğrulanmış gönderen adresini gir.

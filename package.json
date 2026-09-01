@@ -26,7 +26,8 @@
     "uretim-testi": "node tools/uretim-testi.mjs",
     "gorsel": "python3 tools/gorsel-uret.py",
     "yuk-testi": "node tools/yuk-testi.mjs",
-    "yedekle": "bash tools/yedekle.sh"
+    "yedekle": "bash tools/yedekle.sh",
+    "olcum": "node tools/olcum.mjs"
   },
   "devDependencies": {
     "@iconify-json/game-icons": "^1.2.4",

@@ -86,6 +86,10 @@ model Lord {
   /// Oyuncunun oyunu en son ne zaman açtığı. "Sen yokken ne oldu" özeti
   /// bu ana göre hesaplanır.
   lastSeenAt DateTime @default(now())
+  /// En son hangi ekranda olduğu. Tek işi ölçüm: oyuncular oyunu hangi
+  /// ekranda bırakıyor? Bu soru tahminle cevaplanamaz ve cevabı olmadan
+  /// bir sonraki iyileştirme de tahmin olur. (docs/08 İ7)
+  lastScreen String?
   createdAt       DateTime  @default(now())
 
   user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
