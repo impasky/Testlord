@@ -13,3 +13,8 @@ apps/api/dist/
 # Prisma üretilen istemci
 .prisma/
 apps/api/node_modules/.prisma/
+
+# Veritabani yedekleri (tools/yedekle.sh). Depoya asla girmemeli:
+# icinde oyuncu e-postalari ve parola hash'leri var.
+yedek/
+*.dump

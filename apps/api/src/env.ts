@@ -20,6 +20,12 @@ const schema = z.object({
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(300),
   /** Kayıt/giriş için IP başına dakikalık tavan. Kaba kuvveti burası durdurur. */
   AUTH_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(60),
+  /** Boşsa hata izleme kapalıdır ve dışarıya hiçbir şey gönderilmez. */
+  SENTRY_DSN: z.string().default(''),
+  /** İzleme örneklemesi. Ücretsiz katmanda kota var, varsayılan düşük. */
+  SENTRY_TRACES_SAMPLE_RATE: z.coerce.number().min(0).max(1).default(0.05),
+  /** pino seviyesi: fatal|error|warn|info|debug|trace */
+  LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
 });
 
 const parsed = schema.safeParse(process.env);

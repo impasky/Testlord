@@ -70,13 +70,38 @@ kontrol('Askerler orduya katıldı',
 // 4. Harita
 const harita = await cagir('/map');
 kontrol('Harita 61 bölge döndü', harita.regions.length === 61);
-// Gerçek oyuncu gibi seç: kenar halkada, tahkimatsız, en yakın bölge.
-// Kale (%30 tahkimat) 1. gün ordusuyla alınamaz — bilinçli zorluk farkı.
-const hedef = harita.regions
+// Hedefi gerçek oyuncunun yaptığı gibi seçiyoruz: yakın adayları önizleyip
+// alınabilecek ilkini buluyoruz. Kale (%30 tahkimat) elenir — 1. gün
+// ordusuyla alınamaması bilinçli zorluk farkı.
+//
+// Neden "en yakın" değil: harita listesi garnizon döndürmüyor, dolayısıyla
+// zayıfı listeden seçmek mümkün değil. Sadece en yakını almak testi doğum
+// yerine bağlıyordu — lord bir şehrin dibinde doğduğunda 35 kişilik
+// başlangıç ordusu şehri alamıyor ve test rastgele kalıyordu.
+//
+// Kontrol tautoloji değil: docs/00'ın ikinci başarı kriteri "ilk gününde
+// bir NPC bölgesi ele geçirebiliyor". Denge bozulup hiçbiri alınamaz hale
+// gelirse aday listesi tükenir ve test düşer.
+const adaylar = harita.regions
   .filter((r) => r.ring === 4 && !r.owner && r.type !== 'kale')
-  .sort((a, b) => a.distance - b.distance)[0];
-kontrol('En yakın tahkimatsız NPC bölgesi bulundu', Boolean(hedef),
-  hedef && `${hedef.name} (${hedef.type}, ${hedef.distance} hex)`);
+  .sort((a, b) => a.distance - b.distance)
+  .slice(0, 8);
+
+let hedef = null;
+let onizleme = null;
+for (const aday of adaylar) {
+  const o = await post('/battle/preview', {
+    toRegionId: aday.id, army: { mizrakci: 20, okcu: 15 },
+  });
+  if (o?.tahmin?.eleGecirir === true) {
+    hedef = aday;
+    onizleme = o;
+    break;
+  }
+}
+kontrol('Başlangıç ordusuyla alınabilecek bir NPC bölgesi var', Boolean(hedef),
+  hedef ? `${hedef.name} (${hedef.type}, ${hedef.distance} hex)`
+        : `${adaylar.length} aday denendi, hiçbiri alınamıyor`);
 
 const kale = harita.regions.find((r) => r.ring === 4 && !r.owner && r.type === 'kale');
 const kaleOnizleme = await post('/battle/preview', {
@@ -93,11 +118,7 @@ kontrol('Bölge detayı türetilmiş alanları döndürüyor',
   typeof detay.fortressBonus === 'number',
   `mesafe ${detay.distance}, tahkimat ${detay.fortressBonus}`);
 
-// 5. Savaş önizlemesi
-const onizleme = await post('/battle/preview', {
-  toRegionId: hedef.id,
-  army: { mizrakci: 20, okcu: 15 },
-});
+// 5. Savaş önizlemesi (hedef seçilirken alındı)
 kontrol('Önizleme zafer ve fetih öngörüyor',
   onizleme.tahmin.kazanan === 'attacker' && onizleme.tahmin.eleGecirir === true,
   `${hedef.type}, ele geçirir: ${onizleme.tahmin.eleGecirir}`);
@@ -169,8 +190,19 @@ kontrol('Ekipman üretildi', ekipmanSonra.items.length === 1,
 const esya = ekipmanSonra.items[0];
 await post(`/items/${esya.id}/equip`);
 me = await cagir('/me');
-kontrol('Ekipman kuşanıldı ve güce yansıdı', me.lord.equipmentPower > 0,
-  `ekipman gücü ${Math.round(me.lord.equipmentPower)}`);
+const kusanikGuc = me.lord.equipmentPower;
+kontrol('Ekipman kuşanıldı ve güce yansıdı', kusanikGuc > 0,
+  `ekipman gücü ${Math.round(kusanikGuc)}`);
+
+// 11. Ekipman yükseltme — kuşanıkken yükseltilebilmeli ve güce yansımalı.
+// Yükseltme kuyruk üzerinden gider, anında bitmez.
+const yuk = await post(`/items/${esya.id}/upgrade`);
+await post('/test/kuyruklari-bitir');
+me = await cagir('/me');
+const yukseltilmis = (await cagir('/items')).items.find((i) => i.id === esya.id);
+kontrol('Ekipman yükseltildi ve güce yansıdı',
+  yukseltilmis?.upgradeLevel > esya.upgradeLevel && me.lord.equipmentPower > kusanikGuc,
+  `+${esya.upgradeLevel} -> +${yukseltilmis?.upgradeLevel}, güç ${Math.round(kusanikGuc)} -> ${Math.round(me.lord.equipmentPower)}${yuk?.error ? ` (${yuk.error})` : ''}`);
 
 console.log(hata === 0 ? '\nSONUÇ: oyun döngüsü baştan sona çalışıyor.' : `\nSONUÇ: ${hata} kontrol başarısız.`);
 process.exit(hata === 0 ? 0 : 1);

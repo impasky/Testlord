@@ -12,6 +12,7 @@ import { ZodError } from 'zod';
 import { prisma } from './db.js';
 import { env } from './env.js';
 import { GameError } from './errors.js';
+import { hataBildir, izlemeAcikMi, izlemeBaslat, surecHatalariniYakala } from './izleme.js';
 import { armyRoutes } from './routes/army.js';
 import { authRoutes } from './routes/auth.js';
 import { devRoutes } from './routes/dev.js';
@@ -27,10 +28,32 @@ import { startWorker } from './worker.js';
 // Bozuk denge verisiyle ayağa kalkmaktansa hemen ölmek iyidir.
 validateBalance();
 
+// Sunucu kurulmadan önce: Sentry'nin otomatik araçlaması, izleyeceği
+// kütüphaneler yüklenmeden önce başlatılmayı bekler.
+izlemeBaslat();
+
 export async function buildServer() {
   const app = Fastify({
-    logger: env.NODE_ENV === 'development' ? { level: 'warn' } : true,
+    logger:
+      env.NODE_ENV === 'development'
+        ? { level: 'warn' }
+        : {
+            level: env.LOG_LEVEL,
+            // Log'a token ya da parola düşmesin. Bir kez sızan log satırı
+            // kalıcıdır: toplanır, aktarılır, yedeklenir.
+            redact: {
+              paths: [
+                'req.headers.authorization',
+                'req.headers.cookie',
+                'req.body.password',
+                'res.headers["set-cookie"]',
+              ],
+              censor: '[gizlendi]',
+            },
+          },
   });
+
+  surecHatalariniYakala(app.log);
 
   /**
    * CORS.
@@ -81,11 +104,23 @@ export async function buildServer() {
         .code(asHttp.statusCode)
         .send({ error: asHttp.message ?? 'İstek hatası.', code: 'ISTEK_HATASI' });
     }
-    app.log.error(err);
+    // Buraya düşen her şey gerçek bir sunucu hatası: yukarıdaki dallar
+    // oyunun kendi kurallarını (4xx) çoktan ayıkladı.
+    app.log.error({ err, yol: _req.url, yontem: _req.method, istekId: _req.id }, 'Sunucu hatası');
+    hataBildir(err, {
+      yol: _req.url,
+      yontem: _req.method,
+      istekId: String(_req.id),
+      lordId: (_req as { user?: { userId?: string } }).user?.userId,
+    });
     return reply.code(500).send({ error: 'Sunucu hatası.', code: 'SUNUCU_HATASI' });
   });
 
-  app.get('/health', async () => ({ ok: true, time: new Date().toISOString() }));
+  app.get('/health', async () => ({
+    ok: true,
+    time: new Date().toISOString(),
+    izleme: izlemeAcikMi() ? 'acik' : 'kapali',
+  }));
 
   /**
    * Tek servisli dağıtım: derlenmiş arayüzü aynı sunucudan sunar.

@@ -58,3 +58,12 @@ services:
       # PvP ve düşman garnizonu denenemez. Kendi dünyanı kurduğunda "false" yap.
       - key: SEED_DEMO_LORDS
         value: "true"
+
+      # Hata izleme. Boş bırakılırsa kapalıdır ve dışarıya hiçbir şey gitmez.
+      # sentry.io'da ücretsiz proje açıp DSN'i Render panelinden gir.
+      - key: SENTRY_DSN
+        sync: false
+
+      # info: her isteği değil, olayları yazar. Sorun ararken "debug" yap.
+      - key: LOG_LEVEL
+        value: info

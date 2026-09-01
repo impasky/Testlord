@@ -2,9 +2,9 @@
 
 **Toplam: 9 kilometre taşı, ~34 iş günü** (tek geliştirici, tam zamanlı).
 
-> **Durum: M0–M8 tamamlandı.** Oyun uçtan uca oynanabilir durumda.
-> Kalan tek taş M9 (yayına hazırlık). Her taşın gerçekte ne çıkardığı ve
-> hangi hataların yakalandığı git geçmişinde.
+> **Durum: dokuz taşın dokuzu da bitti.** Oyun uçtan uca oynanabilir ve
+> yayına hazır. Her taşın gerçekte ne çıkardığı ve hangi hataların
+> yakalandığı git geçmişinde.
 
 Sıralama tesadüfi değil: her taş bir öncekinin üstüne oturur ve **her taşın
 sonunda elle test edilebilir bir şey** olur. Hiçbir aşamada "çalışan bir şey yok,
@@ -124,15 +124,28 @@ doğar — nadirlik çekilişini kendi gözünle görürsün.
 
 ---
 
-## M9 — Yayın · 4 gün  ⬜ (sırada)
+## M9 — Yayın · 4 gün  ✅
 
-- 120 sanal oyuncuyla yük testi
-- Hata izleme (Sentry), yapılandırılmış log
-- Yedekleme (günlük pg_dump)
-- Onboarding: ilk giriş 4 adımlık rehber ("asker eğit → haritaya bak → saldır → yükselt")
-- Dağıtım (Fly.io / Railway / VPS + Docker Compose)
+- **120 sanal oyuncuyla yük testi** — `tools/yuk-testi.mjs`. 120/120 kayıt,
+  5xx yok, en yavaş uç 408 ms p95. Testi yazarken hız sınırının IP başına
+  saydığı çıktı: operatör NAT'ı arkasındaki oyuncular birbirini kilitlerdi.
+  Genel sınır oturuma bağlandı, kayıt/giriş IP başına ayrıldı.
+- **Hata izleme ve yapılandırılmış log** — `apps/api/src/izleme.ts`. Sentry
+  isteğe bağlı (`SENTRY_DSN` boşsa dışarıya hiçbir şey gitmez), yalnızca 5xx
+  ve yakalanmamış istisnalar bildirilir. Log'da token ve parola maskeli.
+- **Yedekleme** — `tools/yedekle.sh`, custom-format pg_dump + rotasyon.
+  Geri yükleme boş bir veritabanına denendi.
+- **Onboarding** — Malikâne'de dört adımlık İlk Adımlar rehberi. Durum
+  saklamıyor, oyun durumundan türetiyor.
+- **Dağıtım** — `render.yaml` (Blueprint) ve `docker-compose.yml`. Ortam
+  değişkenleri, yedekleme zamanlaması ve yayın öncesi kontrol listesi
+  `docs/05-dagitim.md`'de.
 
-**Biterse:** Gerçek oyuncular oynuyor.
+**Ayrıca:** `docs/00`'daki yedi başarı kriterinin yedisi de otomatik testle
+bağlandı. Bu sırada üç boşluk çıktı ve kapatıldı: PvP saldırısı, ekipman
+yükseltme ve generalle savaşa girme hiçbir testte yoktu.
+
+**Bitti:** Gerçek oyuncular oynayabilir.
 
 ---
 

@@ -99,14 +99,22 @@ Bir şey eklemek için üç sorunun üçüne birden "evet" gerekir:
 
 ## Başarı kriteri
 
-v1 şu olduğunda bitmiştir:
+v1 şu olduğunda bitmiştir. **Yedisi de otomatik testle kanıtlı** — kutuyu
+işaretleyen şey kanaat değil, `pnpm e2e` ve `pnpm yuk-testi`:
 
-- [ ] Bir oyuncu kayıt olup 5 dakikada ilk askerini eğitebiliyor
-- [ ] İlk gününde bir NPC bölgesi ele geçirebiliyor
-- [ ] Başka bir oyuncuya saldırıp savaş logunu okuyabiliyor
-- [ ] Üç sıralamada da kendini ve ilk 100'ü görebiliyor
-- [ ] Ekipman üretip yükseltip kuşanabiliyor
-- [ ] General kiralayıp savaşa sokabiliyor
-- [ ] 120 oyuncu aynı dünyada, kimse çökmeden oynayabiliyor
+| # | Kriter | Kanıtı |
+|---|---|---|
+| 1 | ✅ Kayıt olup 5 dakikada ilk askerini eğitebiliyor | `onboarding-testi.mjs` — kayıttan eğitime saniyeler |
+| 2 | ✅ İlk gününde bir NPC bölgesi ele geçirebiliyor | `oyun-dongusu-testi.mjs` — başlangıç ordusuyla fetih |
+| 3 | ✅ Başka bir oyuncuya saldırıp savaş logunu okuyabiliyor | `pvp-testi.mjs` — oyuncu garnizonuna saldırı, iki taraf da raporu görüyor |
+| 4 | ✅ Üç sıralamada da kendini ve ilk 100'ü görebiliyor | `tarayici-tam-akis.mjs` — üç sekme de yükleniyor |
+| 5 | ✅ Ekipman üretip yükseltip kuşanabiliyor | `oyun-dongusu-testi.mjs` — üretim, kuşanma, yükseltme güce yansıyor |
+| 6 | ✅ General kiralayıp savaşa sokabiliyor | `pvp-testi.mjs` — general sahaya sürülüyor ve savaştan XP kazanıyor |
+| 7 | ✅ 120 oyuncu aynı dünyada, kimse çökmeden oynayabiliyor | `yuk-testi.mjs` — 120/120 kayıt, 5xx yok, en yavaş uç 408 ms p95 |
 
 Bu 7 madde tuttuğunda oyun yayına hazırdır. Fazlası v1 değildir.
+
+**Neden "general kiralandı" demek yetmiyor:** kriter generali *savaşa
+sokabilmek*. Kiralamayı test etmek generalin savaş hesabına katıldığını
+göstermez; testi generalin savaştan XP kazanmasına bağladık — kazanıyorsa
+gerçekten girmiştir.

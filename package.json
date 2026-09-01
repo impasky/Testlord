@@ -18,14 +18,15 @@
     "db:seed": "pnpm --filter @lordlar/api seed",
     "db:reset": "pnpm --filter @lordlar/api prisma migrate reset --force",
     "smoke": "node tools/smoke.mjs",
-    "e2e": "node tools/oyun-dongusu-testi.mjs && node tools/shard-testi.mjs && node tools/worker-testi.mjs && node tools/tarayici-tam-akis.mjs && node tools/savas-raporu-testi.mjs && node tools/onboarding-testi.mjs",
+    "e2e": "node tools/oyun-dongusu-testi.mjs && node tools/shard-testi.mjs && node tools/worker-testi.mjs && node tools/tarayici-tam-akis.mjs && node tools/pvp-testi.mjs && node tools/savas-raporu-testi.mjs && node tools/onboarding-testi.mjs",
     "worker": "pnpm --filter @lordlar/api worker",
     "demo": "node tools/demo-lordlar.mjs",
     "db:setup": "pnpm --filter @lordlar/api exec prisma generate && pnpm --filter @lordlar/api exec prisma migrate deploy && pnpm --filter @lordlar/api seed",
     "start": "node apps/api/dist/index.js",
     "uretim-testi": "node tools/uretim-testi.mjs",
     "gorsel": "python3 tools/gorsel-uret.py",
-    "yuk-testi": "node tools/yuk-testi.mjs"
+    "yuk-testi": "node tools/yuk-testi.mjs",
+    "yedekle": "bash tools/yedekle.sh"
   },
   "devDependencies": {
     "@iconify-json/game-icons": "^1.2.4",
