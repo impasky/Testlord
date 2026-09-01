@@ -25,6 +25,11 @@ Isimler okuma sirasinda verilir: once ustten alta satirlar, her satirda
 soldan saga. Script bulduklarini sayip isim sayisiyla karsilastirir;
 tutmuyorsa hicbir sey yazmaz, ne buldugunu soyler.
 
+Isim yerine "-" yazilirsa o parca atlanir. Araclar cogu zaman istenenden
+fazlasini uretiyor (12 general istenip 4x4 grid gelmesi gibi) ya da ayni
+kisiyi iki kez ciziyor; fazlaligi silmek yerine yerinde atlamak, kalan
+isimlerin sirasini bozmadan secim yapmayi sagliyor.
+
 IKI KIP:
   varsayilan  Figurler icin. Zemin saydam birakilir, figur kare tuvale
               ortalanir. Birimler ve generaller boyle.
@@ -272,7 +277,7 @@ def main() -> int:
         print(f"  {i+1}. x{kutu[0]}-{kutu[2]} y{kutu[1]}-{kutu[3]}")
 
     if onizleme:
-        N = 360
+        N = 300
         yan = Image.new("RGB", (N * len(bilesenler), N), (70, 30, 30))
         for i, (kutu, mk) in enumerate(bilesenler):
             if pano:
@@ -295,11 +300,18 @@ def main() -> int:
         return 1
 
     (CIKTI / klasor).mkdir(parents=True, exist_ok=True)
+    yazilan = 0
     for (kutu, mk), ad in zip(bilesenler, adlar):
+        if ad == "-":
+            continue
         yol = CIKTI / klasor / f"{ad}.webp"
         gorsel = pano_yap(a, kutu, mk) if pano else kare_yap(a, kutu, mk, zemin)
         gorsel.save(yol, "WEBP", quality=82, method=6)
+        yazilan += 1
         print(f"  yazildi: {klasor}/{ad}.webp  ({yol.stat().st_size/1024:.0f} KB)")
+    atlanan = len(bilesenler) - yazilan
+    if atlanan:
+        print(f"  {atlanan} parca atlandi (\"-\").")
     return 0
 
 

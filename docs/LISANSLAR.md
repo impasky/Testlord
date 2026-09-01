@@ -93,7 +93,12 @@ temizleniyor; hangi dosyada yapıldığı aşağıdaki tabloda yazıyor.
 | `bolgeler/sehir.webp` | eklendi |
 | `bolgeler/kale.webp` | eklendi |
 | `bolgeler/taht.webp` | eklendi (köşe filigranı silindi) |
-| `generaller/*` (12) | bekliyor — siluet gösteriliyor |
+| `generaller/*` (12 dosya) | eklendi |
 
-İllüstrasyonu olmayan varlıklarda game-icons silueti görünmeye devam eder,
-yani künye yukarıdaki tabloyla birlikte geçerliliğini korur.
+22 görselin tamamı eklendi. game-icons ikonları arayüzde kullanılmaya devam
+ediyor (kaynak sayaçları, stat satırları, gezinme, harita hex'leri), o yüzden
+yukarıdaki künye geçerliliğini koruyor.
+
+Generaller 4×4 grid olarak geldi: 16 kare, 12 general. Fazlalıklar
+`gorsel-ayikla.py`'ye isim yerine `-` verilerek atlandı; silmek yerine yerinde
+atlamak kalan isimlerin sırasını bozmuyor.

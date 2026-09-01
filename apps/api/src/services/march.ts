@@ -366,17 +366,6 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
           tx,
         );
 
-        await pushEvent(
-          defenderLordId,
-          attackerWon ? 'bolge_kaybettin' : 'saldiriya_ugradin',
-          {
-            mesaj: attackerWon
-              ? `${region.name} saldırıya uğradı ve ${result.captured ? 'kaybedildi' : 'yağmalandı'}.`
-              : `${region.name} savunuldu. Saldırı püskürtüldü.`,
-            regionId: region.id,
-          },
-          tx,
-        );
       } else {
         // NPC garnizonu
         const npcXp = npcClearXp(armyCount(defenderArmy));
@@ -414,6 +403,24 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
           } as object,
         },
       });
+
+      // Savunanın olayı bilerek burada: battle.create'ten önce basılırsa
+      // battleId olmaz ve savunan kendi savaş raporunu açamaz. Saldıranın
+      // olayı zaten aşağıda, aynı sebeple.
+      if (defenderLordId) {
+        await pushEvent(
+          defenderLordId,
+          attackerWon ? 'bolge_kaybettin' : 'saldiriya_ugradin',
+          {
+            mesaj: attackerWon
+              ? `${region.name} saldırıya uğradı ve ${result.captured ? 'kaybedildi' : 'yağmalandı'}.`
+              : `${region.name} savunuldu. Saldırı püskürtüldü.`,
+            regionId: region.id,
+            battleId: battle.id,
+          },
+          tx,
+        );
+      }
 
       // Sağ kalanlar eve döner
       const survivors = result.attackerSurvivors;

@@ -12,6 +12,7 @@ import {
   IkonUyari,
   IkonYer,
 } from '../components/Ikonlar';
+import { SavasRaporu } from '../components/SavasRaporu';
 import { Bolum, Buton, DegerKarti, Ilerleme, Kart, formatKalan, formatSayi } from '../components/ui';
 
 const KUYRUK_ADI: Record<string, string> = {
@@ -73,6 +74,7 @@ export function Malikane({
   events: GameEvent[];
   onGit: (s: Sekme) => void;
 }) {
+  const [rapor, setRapor] = useState<string | null>(null);
   const yarali = lord.woundedUntil && new Date(lord.woundedUntil) > new Date();
   const korumali = lord.protectionUntil && new Date(lord.protectionUntil) > new Date();
 
@@ -221,8 +223,12 @@ export function Malikane({
           </Kart>
         ) : (
           <div className="space-y-2">
-            {events.slice(0, 12).map((e) => (
-              <Kart key={e.id} className="p-3" vurgu={OLAY_RENGI[e.kind]}>
+            {events.slice(0, 12).map((e) => {
+              // Savaş olayları raporu taşır; taşımayanlar düz kart kalır.
+              // Tıklanamayan bir kartı tıklanabilir göstermek, olay akışında
+              // her satırı denemeye davet ederdi.
+              const raporId = typeof e.payload.battleId === 'string' ? e.payload.battleId : null;
+              const govde = (
                 <div className="flex items-baseline justify-between gap-2">
                   <p className="min-w-0 flex-1 text-[13px]">
                     {typeof e.payload.mesaj === 'string' ? e.payload.mesaj : e.kind}
@@ -236,11 +242,31 @@ export function Malikane({
                     })}
                   </time>
                 </div>
-              </Kart>
-            ))}
+              );
+              return (
+                <Kart key={e.id} className="p-3" vurgu={OLAY_RENGI[e.kind]}>
+                  {raporId ? (
+                    <button
+                      className="bas w-full text-left"
+                      onClick={() => setRapor(raporId)}
+                      aria-label="Savaş raporunu aç"
+                    >
+                      {govde}
+                      <span className="baslik mt-1 block text-[10px] text-altin">RAPORU AÇ</span>
+                    </button>
+                  ) : (
+                    govde
+                  )}
+                </Kart>
+              );
+            })}
           </div>
         )}
       </Bolum>
+
+      {rapor && (
+        <SavasRaporu battleId={rapor} benimId={lord.id} onKapat={() => setRapor(null)} />
+      )}
     </div>
   );
 }
