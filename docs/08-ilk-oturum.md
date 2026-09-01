@@ -351,3 +351,43 @@ eksiği ve 2. hafta için hâlâ doğru cevap. Ama bir oyuncu 2. dakikada
 çıkıyorsa ittifak sistemi boş bir odaya kurulmuş olur.
 
 Sıra: **M9.5 (bu doküman) → M10 → M11 → ...**
+
+---
+
+## İ8 — Görsel yoğunluğu kırma
+
+İlk yedi iş bittikten sonra oyuncu tekrar oynadı: *"genel olarak daha iyi ama
+hâlâ karmaşık hissettiriyor"* — ve referans olarak birkaç mobil RPG ekran
+görüntüsü gönderdi.
+
+Referansların ortak dili net ve benimkinin tam tersiydi:
+
+| Referans | Bendeki |
+|---|---|
+| Kart başına **tek eylem, tek büyük düğme** | Kışla kartında 18 öğe: 6 istatistik ikonu, 5 adet düğmesi, 3 maliyet, açıklama cümlesi |
+| Sayılar **rozet içinde** ("1/4", "0/2") | Sayılar cümlenin içine gömülü: "27 Okçu daha gerekiyor (4.050 altın)" |
+| Kalın çerçeve, geniş yuvarlama, **fiziksel** görünüm | 1px kenar, 16px yuvarlama — on kart tek bir gri duvar |
+| Bölüm başlığı **tabela** | Küçük gri büyük harf etiket |
+| Kırmızı nokta **nereye gideceğini söylüyor** | Alt çubukta hiçbir işaret yok |
+
+Yapılanlar:
+
+- **Görsel dil kalınlaştı.** Kart kenarı 2px, yuvarlama 20px, altında
+  kalınlık gölgesi. Bölüm başlıkları plaka. Düğmeler büyüdü ve basılınca
+  gerçekten çöküyor (`.dugme-3d`).
+- **Sayılar cümleden çıktı.** Yeni `Hap` bileşeni: omurga, hedef şeridi,
+  Kışla kartları ve Malikâne özeti artık rozet kullanıyor.
+- **Kışla kartı 18 öğeden 8'e indi.** Rol açıklaması ve altı istatistik
+  "Detay"ın altına alındı — bilgi silinmedi, öne çıkarılmadı.
+- **Dört istatistik kartı tek rozet satırı oldu** (Malikâne ve Kışla).
+  Kartlar ekranın yarısını kaplıyordu ve hepsi aynı ağırlıktaydı; yeni
+  oyuncu "KOMUTA 0/90" ile "GÜNLÜK SALDIRI 0/12" arasında hangisinin
+  önemli olduğunu ayırt edemiyordu.
+- **Hedef şeridi omurgayı tekrar etmiyor.** Aynı bilgi iki ekranda farklı
+  kelimelerle anlatılıyordu; şerit artık ad + rozetler + düğme.
+- **Omurga ile Kışla birbirine bağlandı.** Omurga "28 Okçu eğit" diyorsa
+  Kışla o kartı en üste alıyor, altın çerçeveyle işaretliyor ve adedi hazır
+  getiriyor. Oyuncu sayıyı elle yazmıyor.
+- **Alt çubukta altın nokta.** Omurganın işaret ettiği sekmede duruyor;
+  hem kart hem çubuk aynı hesabı okuyor (`useOmurgaAdimi`), böylece ikisi
+  ayrışamıyor.

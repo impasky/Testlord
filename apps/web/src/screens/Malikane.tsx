@@ -1,4 +1,5 @@
 /** Malikâne — durum özeti, kuyruklar, olay akışı. Mobil ana ekran. */
+import { B } from '@lordlar/shared';
 import { useState } from 'react';
 import type { GameEvent, LordState, QueueItem, YoklukOzeti } from '../api/client';
 import type { Sekme } from '../components/MobilKabuk';
@@ -18,8 +19,8 @@ import { SavasRaporu } from '../components/SavasRaporu';
 import {
   Bolum,
   Buton,
-  DegerKarti,
   GeriSayim,
+  Hap,
   Ilerleme,
   Kart,
   formatSayi,
@@ -157,56 +158,35 @@ export function Malikane({
 
       <Omurga lord={lord} queues={queues} onGit={onGit} onHedefeGit={onBolgeyiAc} />
 
-      <div className="grid grid-cols-2 gap-2.5">
-        <DegerKarti
-          ikon={<IkonKale boyut={20} />}
-          etiket="Bölgeler"
-          deger={
-            <>
-              {lord.regionCount}
-              <span className="text-sm text-solgun">/{lord.maxRegions}</span>
-              {lord.ownsThrone && <span className="ml-1 text-[11px] text-altin">+Taht</span>}
-            </>
+      {/*
+        Dört ayrı istatistik kartı yerine tek rozet satırı.
+        Kartlar ekranın yarısını kaplıyor ve hepsi aynı ağırlıkta
+        görünüyordu: yeni oyuncu "KOMUTA 0/90" ile "GÜNLÜK SALDIRI 0/12"
+        arasında hangisinin önemli olduğunu ayırt edemiyordu. Rozet satırı
+        aynı bilgiyi bir satırda veriyor ve omurgayı ekranın tepesinde
+        tek büyük öğe olarak bırakıyor.
+      */}
+      <div className="flex flex-wrap gap-1.5">
+        <Hap ikon={<IkonKale boyut={13} />} renk="var(--color-altin)">
+          {lord.regionCount}/{lord.maxRegions} bölge
+          {lord.ownsThrone && ' +Taht'}
+        </Hap>
+        <Hap
+          ikon={<IkonYer boyut={13} />}
+          renk={
+            lord.usedSlots >= lord.commandCapacity
+              ? 'var(--color-kirmizi)'
+              : 'var(--color-mavi)'
           }
-          renk="var(--color-altin)"
-        />
-        <DegerKarti
-          ikon={<IkonYer boyut={20} />}
-          etiket="Komuta"
-          deger={
-            <>
-              {formatSayi(lord.usedSlots)}
-              <span className="text-sm text-solgun">/{formatSayi(lord.commandCapacity)}</span>
-            </>
-          }
-          renk="var(--color-mavi)"
-          alt={<Ilerleme deger={lord.usedSlots} max={lord.commandCapacity} renk="var(--color-mavi)" boy="ince" />}
-        />
-        <DegerKarti
-          ikon={<IkonSancak boyut={20} />}
-          etiket="Seviye"
-          deger={lord.level}
-          renk="var(--color-yesil)"
-          alt={
-            <>
-              <Ilerleme deger={lord.xp} max={lord.xpForNext} renk="var(--color-yesil)" boy="ince" />
-              <div className="tabular mt-1 text-[10px] text-sonuk">
-                {formatSayi(lord.xp)}/{formatSayi(lord.xpForNext)} XP
-              </div>
-            </>
-          }
-        />
-        <DegerKarti
-          ikon={<IkonSure boyut={20} />}
-          etiket="Günlük saldırı"
-          deger={
-            <>
-              {lord.dailyAttacks}
-              <span className="text-sm text-solgun">/12</span>
-            </>
-          }
-          renk="var(--color-turuncu)"
-        />
+        >
+          {formatSayi(lord.usedSlots)}/{formatSayi(lord.commandCapacity)} komuta
+        </Hap>
+        <Hap ikon={<IkonSancak boyut={13} />} renk="var(--color-yesil)">
+          Sv {lord.level}
+        </Hap>
+        <Hap ikon={<IkonSure boyut={13} />}>
+          {lord.dailyAttacks}/{B.korumalar.gunluk_saldiri_limiti} saldırı
+        </Hap>
       </div>
 
       {lord.statPoints > 0 && (

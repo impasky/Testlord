@@ -102,12 +102,15 @@ export function MobilKabuk({
   sekme,
   setSekme,
   onCikis,
+  isaretli,
   children,
 }: {
   lord: LordState;
   sekme: Sekme;
   setSekme: (s: Sekme) => void;
   onCikis: () => void;
+  /** Omurganın işaret ettiği sekme; altın nokta oraya konur. */
+  isaretli?: Sekme | null;
   children: ReactNode;
 }) {
   const [menuAcik, setMenuAcik] = useState(false);
@@ -233,7 +236,18 @@ export function MobilKabuk({
                   }`}
                   aria-current={etkin ? 'page' : undefined}
                 >
-                  <Ikon boyut={22} />
+                  <span className="relative">
+                    <Ikon boyut={22} />
+                    {/* Omurganın işaret ettiği sekmede altın nokta.
+                        Referanstaki kırmızı noktaların işlevi bu: oyuncu
+                        nereye gideceğini okumadan görüyor. */}
+                    {isaretli === key && !etkin && (
+                      <span
+                        className="absolute -top-1 -right-1.5 h-2.5 w-2.5 rounded-full border border-gece bg-altin"
+                        aria-hidden
+                      />
+                    )}
+                  </span>
                   <span className="baslik text-[9px]">{ad}</span>
                 </button>
               </li>
@@ -246,7 +260,18 @@ export function MobilKabuk({
                 menuAcik || menudeMi ? 'text-altin' : 'text-sonuk'
               }`}
             >
-              <IkonNavMenu boyut={22} />
+              <span className="relative">
+                <IkonNavMenu boyut={22} />
+                {isaretli !== null &&
+                  isaretli !== undefined &&
+                  MENU_SEKMELERI.some((m) => m.key === isaretli) &&
+                  !menudeMi && (
+                    <span
+                      className="absolute -top-1 -right-1.5 h-2.5 w-2.5 rounded-full border border-gece bg-altin"
+                      aria-hidden
+                    />
+                  )}
+              </span>
               <span className="baslik text-[9px]">Menü</span>
             </button>
           </li>

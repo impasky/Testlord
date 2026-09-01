@@ -287,6 +287,13 @@ export function Kart({
 }
 
 /** Başlıklı bölüm. Mobilde panel yerine bölüm başlığı + kart kullanılır. */
+/**
+ * Başlıklı bölüm.
+ *
+ * Başlık artık küçük gri bir etiket değil, bir plaka. Referans oyunlarda
+ * her bölüm ahşap bir tabelayla başlıyor ve göz bölümleri saymak zorunda
+ * kalmıyor; küçük etiketler on kartı tek bir duvar hâline getiriyordu.
+ */
 export function Bolum({
   baslik,
   yan,
@@ -301,13 +308,43 @@ export function Bolum({
   return (
     <section className={className}>
       {baslik && (
-        <header className="mb-2 flex items-center justify-between gap-3 px-1">
-          <h2 className="baslik text-[13px] text-solgun">{baslik}</h2>
+        <header className="mb-2.5 flex items-center justify-between gap-2">
+          <h2 className="plaka baslik px-3.5 py-1.5 text-[12px] text-altin">{baslik}</h2>
           {yan}
         </header>
       )}
       {children}
     </section>
+  );
+}
+
+/**
+ * Sayaç hapı: "1/4", "27 Okçu", "4.050 altın".
+ *
+ * Referansın en belirgin alışkanlığı bu: hiçbir sayı cümlenin içinde
+ * durmuyor, hepsi kendi hapında. Sayıyı cümleden çıkarmak, aynı bilgiyi
+ * çok daha az okuma yüküyle veriyor.
+ */
+export function Hap({
+  ikon,
+  children,
+  renk,
+  className = '',
+}: {
+  ikon?: ReactNode;
+  children: ReactNode;
+  /** Metin rengi; varsayılan solgun. */
+  renk?: string;
+  className?: string;
+}) {
+  return (
+    <span
+      className={`hap tabular inline-flex items-center gap-1 px-2.5 py-1 text-[12px] font-bold whitespace-nowrap ${className}`}
+      style={renk ? { color: renk } : undefined}
+    >
+      {ikon && <span className="opacity-90">{ikon}</span>}
+      {children}
+    </span>
   );
 }
 
@@ -344,10 +381,13 @@ export function Buton({
   type?: 'button' | 'submit';
   className?: string;
 }) {
+  // Referansta eylem düğmeleri ekranın en büyük öğesi: "şimdi neye
+  // basacağım" sorusu boyutla cevaplanıyor. Düğmeler büyütüldü ve
+  // altlarına kalınlık gölgesi kondu.
   const boySinifi = {
-    kucuk: 'px-3 py-2 text-[12px] rounded-lg',
-    orta: 'px-4 py-2.5 text-[13px] rounded-xl',
-    buyuk: 'px-5 py-3.5 text-[15px] rounded-2xl',
+    kucuk: 'px-3.5 py-2 text-[12px] rounded-xl',
+    orta: 'px-4 py-3 text-[13px] rounded-2xl',
+    buyuk: 'px-5 py-4 text-[16px] rounded-2xl',
   }[boy];
 
   return (
@@ -355,7 +395,7 @@ export function Buton({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`bas baslik border disabled:pointer-events-none disabled:opacity-40 ${BUTON_SINIFI[tur]} ${boySinifi} ${
+      className={`bas baslik dugme-3d border-2 disabled:pointer-events-none disabled:opacity-40 disabled:shadow-none ${BUTON_SINIFI[tur]} ${boySinifi} ${
         tam ? 'w-full' : ''
       } ${className}`}
     >

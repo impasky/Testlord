@@ -91,14 +91,49 @@ a,
   touch-action: manipulation;
 }
 
-/* Kart: yuvarlak, ince sıcak kenar, hafif iç ışık */
+/*
+ * Kart: kalın kenar, geniş yuvarlama, belirgin gölge.
+ *
+ * Referans mobil RPG'lerin görsel dili "fiziksel": her kart tahtadan
+ * kesilmiş bir parça gibi duruyor ve gözün kartları birbirinden ayırması
+ * için çaba gerekmiyor. İnce kenar + küçük yuvarlama, on kartı tek bir
+ * gri duvara çeviriyordu — oyuncunun "karman çorman" dediği şeyin bir
+ * kısmı buydu.
+ */
 .kart {
   background: linear-gradient(180deg, var(--color-panel) 0%, var(--color-derin) 100%);
-  border: 1px solid var(--color-kenar);
-  border-radius: 16px;
+  border: 2px solid var(--color-kenar);
+  border-radius: 20px;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 2px 8px rgba(0, 0, 0, 0.35);
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 3px 0 rgba(0, 0, 0, 0.45),
+    0 6px 14px rgba(0, 0, 0, 0.4);
+}
+
+/*
+ * Plaka: bölüm başlığı. Referanstaki ahşap tabelaların karşılığı.
+ * Küçük gri büyük harf etiketler ekranı "form" gibi gösteriyordu;
+ * plaka her bölümün nerede başladığını tek bakışta söylüyor.
+ */
+.plaka {
+  background: linear-gradient(180deg, var(--color-yuzey) 0%, var(--color-panel) 100%);
+  border: 2px solid var(--color-kenar-acik);
+  border-radius: 999px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 2px 0 rgba(0, 0, 0, 0.4);
+}
+
+/*
+ * Rozet hap: sayaçlar için. Referansta her sayı ("1/4", "0/2") bir hapın
+ * içinde duruyor ve cümlenin içine gömülmüyor. Sayıyı cümleden çıkarmak
+ * okuma yükünü ciddi biçimde azaltıyor.
+ */
+.hap {
+  background: var(--color-oyuk);
+  border: 2px solid var(--color-kenar);
+  border-radius: 999px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
 }
 
 /* Oyuk alan: giriş kutusu, ilerleme çubuğu yatağı */
@@ -116,6 +151,22 @@ a,
 .bas:active:not(:disabled) {
   transform: scale(0.97);
   filter: brightness(1.08);
+}
+
+/*
+ * Ana eylem düğmesi: kalın, yüksek, altında gölge kalınlığı olan.
+ * Referansta eylem düğmeleri ekranın en büyük öğesi; oyuncunun "şimdi
+ * neye basacağım" sorusu düğmenin boyutuyla cevaplanıyor.
+ */
+.dugme-3d {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 4px 0 rgba(0, 0, 0, 0.45);
+}
+.dugme-3d:active:not(:disabled) {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 1px 0 rgba(0, 0, 0, 0.45);
 }
 
 /* Kaydırma çubuğunu gizle (yatay sekme şeritleri için) */

@@ -11,6 +11,7 @@ import { Hesap } from './screens/Hesap';
 import { Harita } from './screens/Harita';
 import { Kisla } from './screens/Kisla';
 import { LordEkrani } from './screens/LordEkrani';
+import { useOmurgaAdimi } from './components/Omurga';
 import { Malikane } from './screens/Malikane';
 import { ParolaSifirla } from './screens/ParolaSifirla';
 import { Siralama } from './screens/Siralama';
@@ -59,6 +60,10 @@ export function App() {
     retry: (deneme, e) => deneme < 3 && !(e instanceof ApiError && e.status === 401),
     retryDelay: (deneme) => Math.min(2000 * 2 ** deneme, 15_000),
   });
+
+  // Omurganın adımı hem Malikâne kartında hem alt çubuktaki işarette
+  // kullanılıyor. Hook, erken dönüşlerden ÖNCE çağrılmak zorunda.
+  const omurgaAdimi = useOmurgaAdimi(data?.lord, data?.queues ?? []);
 
   // İlk yanıt gelmeden önceki denemeler: sunucu muhtemelen uyanıyor.
   const sunucuyaUlasilamiyor = failureCount > 0 && !data;
@@ -131,7 +136,13 @@ export function App() {
   const { lord, queues, events, yokluk } = data;
 
   return (
-    <MobilKabuk lord={lord} sekme={sekme} setSekme={setSekme} onCikis={cikis}>
+    <MobilKabuk
+      lord={lord}
+      sekme={sekme}
+      setSekme={setSekme}
+      onCikis={cikis}
+      isaretli={omurgaAdimi?.hedefSekme ?? null}
+    >
       <BaglantiDurumu sunucuyaUlasilamiyor={isFetching && failureCount > 0} />
       {sekme === 'malikane' && (
         <Malikane

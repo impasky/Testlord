@@ -89,10 +89,16 @@ await page.waitForTimeout(1800);
 const ilk = await omurga();
 kontrol('Yeni lorda omurga görünüyor', ilk !== null);
 kontrol('İlk eylem ordu kurmak', kucult(ilk).includes('ordunu kur'), (ilk ?? '').slice(0, 70));
+// Sayılar artık cümlenin içinde değil rozette: "29 Okçu", "4.350".
 kontrol(
   'Kaç asker gerektiğini somut söylüyor',
-  /\d+\s+\S+.*daha gerekiyor/.test(kucult(ilk)),
-  (ilk ?? '').match(/almak için[^.]*/)?.[0] ?? '',
+  /\d+\s+(okçu|mızrakçı|köylü milis|süvari|mancınık)/.test(kucult(ilk)),
+  (ilk ?? '').slice(0, 90),
+);
+kontrol(
+  'Maliyet rozeti var',
+  /\d[\d.]{2,}/.test(kucult(ilk)),
+  (ilk ?? '').slice(0, 90),
 );
 kontrol('Tek birincil eylem düğmesi var', (await eylem())?.includes('eğit') === true, await eylem());
 await page.screenshot({ path: `${CIKTI}/omurga-1-ordu-yok.png` });
@@ -136,7 +142,11 @@ await page.waitForTimeout(1800);
 const hazir = await omurga();
 kontrol('Ordu hazır olunca eylem saldırıya dönüyor', kucult(hazir).includes('üzerine yürü'),
   (hazir ?? '').slice(0, 60));
-kontrol('Saldırının karşılığı yazıyor', kucult(hazir).includes('kazanırsın'));
+kontrol(
+  'Saldırının karşılığı yazıyor',
+  kucult(hazir).includes('kazanacakların') && /\+[\d.]+\/sa/.test(kucult(hazir)),
+  (hazir ?? '').slice(0, 110),
+);
 kontrol('Saldırı düğmesi hedefi adıyla anıyor', (await eylem())?.includes('saldır') === true,
   await eylem());
 await page.screenshot({ path: `${CIKTI}/omurga-3-saldiri.png` });

@@ -17,7 +17,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { api, type LordState, type QueueItem } from '../api/client';
 import { IkonTaht } from './Ikonlar';
-import { Kart, formatSayi } from './ui';
+import { Hap, Kart, formatSayi } from './ui';
 
 const KAPATILDI = 'lordlar_diyar_tanitimi';
 
@@ -72,35 +72,29 @@ export function DiyarTanitimi({ lord, queues }: { lord: LordState; queues: Queue
       </div>
 
       <ol className="space-y-2.5 text-[13px] leading-snug">
-        <li className="flex gap-2.5">
+        <li className="flex items-center gap-2.5">
           <Sira>1</Sira>
-          <span>
-            Bu diyarda <strong>{formatSayi(d.lordSayisi)} lord</strong> var ve{' '}
-            <strong>{formatSayi(d.bolgeSayisi)} bölge</strong> paylaşılıyor. Bölgeler her saat
-            gelir üretir; büyüyen ordu daha çok bölge tutar.
+          <span className="flex flex-wrap items-center gap-1.5">
+            <Hap>{formatSayi(d.lordSayisi)} lord</Hap>
+            <Hap>{formatSayi(d.bolgeSayisi)} bölge</Hap>
+            <span className="text-solgun">için savaşıyor</span>
           </span>
         </li>
-        <li className="flex gap-2.5">
+        <li className="flex items-center gap-2.5">
           <Sira>2</Sira>
-          <span>
-            Haritanın ortasında <strong className="text-altin">{d.taht?.name ?? 'Taht Kalesi'}</strong>{' '}
-            duruyor. Onu tutan kişi <strong>Diyarın Lordu</strong> olur ve şöhretine{' '}
-            %{Math.round((d.taht?.sohretBonusu ?? 0) * 100)} eklenir.
-            {d.taht?.sahip ? (
-              <>
-                {' '}
-                Şu an <strong className="text-kirmizi">{d.taht.sahip.name}</strong> elinde tutuyor.
-              </>
-            ) : (
-              ' Şu an kimsenin değil.'
-            )}
+          <span className="flex flex-wrap items-center gap-1.5">
+            <span className="text-solgun">Tahtı tutan</span>
+            <strong className="text-altin">Diyarın Lordu</strong>
+            <Hap renk="var(--color-altin)">
+              +%{Math.round((d.taht?.sohretBonusu ?? 0) * 100)} şöhret
+            </Hap>
           </span>
         </li>
-        <li className="flex gap-2.5">
+        <li className="flex items-center gap-2.5">
           <Sira>3</Sira>
-          <span>
-            Şöhret sıralamasında <strong>{d.benimSiram}. sıradasın</strong>. Aşağıdaki tek adımı
-            uygula; her savaş seni yukarı taşır.
+          <span className="flex flex-wrap items-center gap-1.5">
+            <span className="text-solgun">Şu an</span>
+            <Hap renk="var(--color-parsomen)">{d.benimSiram}. sıradasın</Hap>
           </span>
         </li>
       </ol>
