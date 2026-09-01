@@ -183,8 +183,11 @@ export function Harita({
   const mut = useMutation({
     mutationFn: async ({ f }: { f: () => Promise<unknown>; anahtar: string }) => f(),
     onMutate: ({ anahtar }) => setGonderilen(anahtar),
-    onSuccess: () => {
+    onSuccess: (_v, degisken) => {
       setHata(null);
+      // Bırakılan bölgenin paneli açık kalırsa artık senin olmayan bir
+      // bölgenin sahip arayüzünü gösterirdi.
+      if (degisken.anahtar.startsWith('birak:')) kapat();
       tazele();
     },
     onError: (e) => setHata(e instanceof ApiError ? e.message : 'İşlem başarısız.'),
@@ -530,6 +533,32 @@ export function Harita({
                       Bu bölgeyi sadece buradaki garnizon savunur.
                     </p>
                   </Kart>
+
+                  {/* Taht bırakılamaz; diyarın tek endgame hedefi elden ancak
+                      savaşla çıkar. Düğmeyi hiç göstermiyoruz. */}
+                  {bolge.type !== 'taht' && (
+                    <Kart className="border-kirmizi/30 p-3">
+                      <h3 className="baslik mb-1 text-[11px] text-solgun">Bölgeyi bırak</h3>
+                      <p className="text-[11px] text-solgun">
+                        Bölge sahipsiz kalır, garnizondaki birlikler eve döner. Bakımı ağır gelen
+                        ya da savunamadığın bir bölgeden böyle kurtulabilirsin.
+                      </p>
+                      <Buton
+                        tur="kirmizi"
+                        boy="kucuk"
+                        className="mt-2.5"
+                        onClick={() =>
+                          mut.mutate({
+                            anahtar: `birak:${bolge.id}`,
+                            f: () => api.bolgeyiBirak(bolge.id),
+                          })
+                        }
+                        disabled={gonderilen === `birak:${bolge.id}`}
+                      >
+                        {gonderilen === `birak:${bolge.id}` ? 'Bırakılıyor…' : 'Bu bölgeyi bırak'}
+                      </Buton>
+                    </Kart>
+                  )}
                 </>
               ) : (
                 <Kart className="p-3">

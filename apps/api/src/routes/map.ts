@@ -22,8 +22,8 @@ import { z } from 'zod';
 import { requireAuth } from '../auth.js';
 import { prisma, type Tx } from '../db.js';
 import { GameError, hata } from '../errors.js';
-import { equippedGenerals, findLordByUser, gearBonusFrom } from '../services/lord.js';
-import { assertQueueSlot, enqueue, spendResources } from '../services/queue.js';
+import { equippedGenerals, findLordByUser, gearBonusFrom, pushEvent } from '../services/lord.js';
+import { addUnitsHome, assertQueueSlot, enqueue, spendResources } from '../services/queue.js';
 import { regionFortressBonus, regionUpgradeCost } from '../services/region.js';
 
 const armySchema = z.record(
@@ -446,6 +446,18 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       const region = await tx.region.findUnique({ where: { id: body.toRegionId } });
       if (!region || region.worldId !== lord.worldId) throw hata.bulunamadi('Bölge');
 
+      // Eş zamanlı yürüyüş sınırı. Kuyruk sistemlerinin hepsinde sınır
+      // varken yürüyüşte yoktu: ordusu yeten oyuncu tek seferde on hedefe
+      // saldırabiliyordu. Dönüş yürüyüşleri de sayılıyor — onlar da hâlâ
+      // yoldaki birlikler.
+      const aktifYuruyus = await tx.march.count({ where: { lordId, resolved: false } });
+      if (aktifYuruyus >= B.yuruyus.es_zamanli_limit) {
+        throw hata.limitAsildi(
+          `Aynı anda en fazla ${B.yuruyus.es_zamanli_limit} yürüyüş. ` +
+            'Ordularından biri dönene kadar bekle',
+        );
+      }
+
       await assertCanAttack(lordId, region, tx);
       await assertHomeUnits(lordId, army, tx);
 
@@ -567,6 +579,58 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
         await tx.lord.update({ where: { id: lordId }, data: { dailyAttacks: { decrement: 1 } } });
       }
       return { recalled: true };
+    });
+  });
+
+  /**
+   * Bölgeden vazgeçer: bölge sahipsiz kalır, garnizon eve döner.
+   *
+   * Neden gerekli: bakımı ağır gelen ya da savunulamayan bir bölgeden
+   * kurtulmanın tek yolu onu kaybetmekti. Oyuncunun kendi toprağı üzerinde
+   * karar verememesi, stratejiyi değil çaresizliği zorluyordu.
+   *
+   * Taht Kalesi bırakılamaz: diyarın tek endgame hedefi, sahibinin canı
+   * istediğinde ortadan kaldırabileceği bir şey olmamalı — kaybetmek için
+   * savaşmak gerekir.
+   */
+  app.post('/map/:id/birak', { preHandler: requireAuth }, async (req) => {
+    const { id } = z.object({ id: z.coerce.number().int() }).parse(req.params);
+    const lordId = await findLordByUser(req.user.userId);
+
+    return prisma.$transaction(async (tx) => {
+      const region = await tx.region.findUnique({ where: { id } });
+      if (!region) throw hata.bulunamadi('Bölge');
+      if (region.ownerLordId !== lordId) {
+        throw new GameError('Bu bölge senin değil.', 403, 'YETKI_YOK');
+      }
+      if (region.type === 'taht') {
+        throw new GameError(
+          'Taht Kalesi bırakılamaz. Elinden ancak savaşla alınır.',
+          400,
+          'TAHT_BIRAKILAMAZ',
+        );
+      }
+
+      // Garnizon eve döner: bırakılan bölgede unutulan birlikler sessizce
+      // yok olsaydı oyuncu ordusunu kaybederdi.
+      const garnizon = await tx.armyUnit.findMany({
+        where: { lordId, locationType: 'region', locationId: String(id) },
+      });
+      for (const g of garnizon) {
+        await addUnitsHome(lordId, g.unitType as UnitType, g.count, tx);
+      }
+      await tx.armyUnit.deleteMany({
+        where: { lordId, locationType: 'region', locationId: String(id) },
+      });
+
+      await tx.region.update({
+        where: { id },
+        data: { ownerLordId: null, npcGarrison: {}, shieldUntil: null },
+      });
+
+      await pushEvent(lordId, 'bolge_birakildi', { mesaj: `${region.name} bırakıldı.` }, tx);
+
+      return { birakildi: true, donenBirlik: garnizon.reduce((t, g) => t + g.count, 0) };
     });
   });
 

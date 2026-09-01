@@ -1,9 +1,9 @@
 /** Sıralama — üç liste, üç oyun tarzı. */
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { api, type RankingRow } from '../api/client';
+import { ApiError, api, type RankingRow } from '../api/client';
 import { IkonNavSiralama } from '../components/Ikonlar';
-import { Bolum, Kart, Rozet, formatSayi } from '../components/ui';
+import { Alan, Bolum, Buton, Input, Kart, Rozet, formatSayi } from '../components/ui';
 
 type Board = 'fame' | 'conquest' | 'elo';
 
@@ -15,7 +15,17 @@ const TABLAR: { key: Board; ad: string; aciklama: string; renk: string }[] = [
 
 const MADALYA = ['#f5b731', '#c8d1d9', '#c97b3c'];
 
-function Satir({ r, benMi, renk }: { r: RankingRow; benMi: boolean; renk: string }) {
+function Satir({
+  r,
+  benMi,
+  renk,
+  onRapor,
+}: {
+  r: RankingRow;
+  benMi: boolean;
+  renk: string;
+  onRapor?: (r: RankingRow) => void;
+}) {
   const madalya = r.sira <= 3 ? MADALYA[r.sira - 1] : undefined;
   return (
     <Kart className={`p-2.5 ${benMi ? 'border-altin/60' : ''}`} vurgu={benMi ? 'var(--color-altin)' : undefined}>
@@ -42,6 +52,19 @@ function Satir({ r, benMi, renk }: { r: RankingRow; benMi: boolean; renk: string
         <span className="tabular shrink-0 text-[14px] font-bold" style={{ color: renk }}>
           {formatSayi(r.deger)}
         </span>
+
+        {/* Şikâyet yalnızca başkası için: kendini şikâyet etmek anlamsız,
+            sunucu da reddediyor. */}
+        {onRapor && !benMi && (
+          <button
+            onClick={() => onRapor(r)}
+            aria-label={`${r.name} adlı lordu şikâyet et`}
+            className="bas shrink-0 px-1 text-[15px] leading-none text-sonuk"
+            title="Şikâyet et"
+          >
+            ⚑
+          </button>
+        )}
       </div>
     </Kart>
   );
@@ -49,6 +72,19 @@ function Satir({ r, benMi, renk }: { r: RankingRow; benMi: boolean; renk: string
 
 export function Siralama({ lordId }: { lordId: string }) {
   const [board, setBoard] = useState<Board>('fame');
+  const [raporlanan, setRaporlanan] = useState<RankingRow | null>(null);
+  const [sebep, setSebep] = useState('');
+  const [raporBilgi, setRaporBilgi] = useState<string | null>(null);
+
+  const raporMut = useMutation({
+    mutationFn: () => api.raporEt(raporlanan!.lordId, sebep),
+    onSuccess: () => {
+      setRaporlanan(null);
+      setSebep('');
+      setRaporBilgi('Şikâyetin alındı. İnceleyeceğiz.');
+    },
+    onError: (e) => setRaporBilgi(e instanceof ApiError ? e.message : 'Şikâyet gönderilemedi.'),
+  });
   const q = useQuery({
     queryKey: ['rankings', board],
     queryFn: () => api.rankings(board),
@@ -91,7 +127,13 @@ export function Siralama({ lordId }: { lordId: string }) {
           <>
             <div className="space-y-1.5">
               {q.data.satirlar.map((r) => (
-                <Satir key={r.lordId} r={r} benMi={r.lordId === lordId} renk={aktif.renk} />
+                <Satir
+                  key={r.lordId}
+                  r={r}
+                  benMi={r.lordId === lordId}
+                  renk={aktif.renk}
+                  onRapor={setRaporlanan}
+                />
               ))}
             </div>
 
@@ -113,6 +155,50 @@ export function Siralama({ lordId }: { lordId: string }) {
           </>
         )}
       </Bolum>
+      {raporBilgi && (
+        <p className="px-1 text-center text-[12px] text-yesil">{raporBilgi}</p>
+      )}
+
+      {raporlanan && (
+        <>
+          <button
+            className="fixed inset-0 z-40 bg-black/70"
+            onClick={() => setRaporlanan(null)}
+            aria-label="Kapat"
+          />
+          <div
+            className="fixed inset-x-0 bottom-0 z-50 mx-auto max-w-lg rounded-t-2xl border-t border-kenar bg-panel p-4"
+            style={{ paddingBottom: 'calc(var(--alt-bar) + 16px)' }}
+          >
+            <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-kenar" />
+            <h2 className="baslik mb-1 text-[14px]">{raporlanan.name} şikâyet</h2>
+            <p className="mb-3 text-[12px] text-solgun">
+              Şikâyet edilen lorda otomatik bir ceza verilmez; kayıt insan
+              tarafından incelenir.
+            </p>
+            <Alan etiket="Sebep" ipucu="Kısaca yaz">
+              <Input
+                value={sebep}
+                onChange={(e) => setSebep(e.target.value)}
+                placeholder="Örn. uygunsuz lord adı"
+                maxLength={300}
+              />
+            </Alan>
+            <div className="mt-3 flex gap-2">
+              <Buton tur="anahat" className="flex-1" onClick={() => setRaporlanan(null)}>
+                Vazgeç
+              </Buton>
+              <Buton
+                className="flex-1"
+                onClick={() => raporMut.mutate()}
+                disabled={raporMut.isPending || sebep.trim().length < 3}
+              >
+                {raporMut.isPending ? 'Gönderiliyor…' : 'Şikâyet et'}
+              </Buton>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

@@ -375,4 +375,7 @@ export const api = {
     post(`/generals/${key}/assign`, { slotIndex }),
 
   rankings: (board: string, page = 0) => request<RankingDto>(`/rankings/${board}?page=${page}`),
+  raporEt: (lordId: string, sebep: string) => post<{ alindi: boolean }>(`/rapor/${lordId}`, { sebep }),
+  bolgeyiBirak: (id: number) =>
+    post<{ birakildi: boolean; donenBirlik: number }>(`/map/${id}/birak`),
 };

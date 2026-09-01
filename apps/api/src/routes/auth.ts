@@ -6,6 +6,7 @@ import { prisma } from '../db.js';
 import { GameError } from '../errors.js';
 import { createHash, randomBytes } from 'node:crypto';
 import { env } from '../env.js';
+import { adiDenetle } from '../services/adDenetimi.js';
 import { postaGonder } from '../services/eposta.js';
 import { findOrOpenWorld } from '../services/world.js';
 
@@ -82,6 +83,13 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
   app.post('/auth/register', kimlikSiniri, async (req, reply) => {
     const body = registerSchema.parse(req.body);
     const email = body.email.toLowerCase().trim();
+
+    // Ad denetimi benzersizlik kontrolünden ÖNCE: uygunsuz bir adın
+    // "alınmış" mı diye sorgulanması bile gereksiz.
+    const adSonuc = adiDenetle(body.lordName);
+    if (!adSonuc.uygun) {
+      throw new GameError(adSonuc.sebep ?? 'Bu ad kullanılamaz.', 400, 'AD_UYGUNSUZ');
+    }
 
     if (await prisma.user.findUnique({ where: { email } })) {
       throw new GameError('Bu e-posta zaten kayıtlı.', 409, 'EPOSTA_KAYITLI');

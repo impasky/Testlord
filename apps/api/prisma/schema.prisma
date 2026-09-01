@@ -261,3 +261,18 @@ model Event {
 
   @@index([lordId, createdAt])
 }
+
+/// Oyuncu şikâyeti.
+///
+/// Otomatik süzgeç kusursuz olamaz; kaçanı insana taşıyan yol bu. Şikâyet
+/// edilen lord silinmiyor, yalnızca kaydediliyor — kararı yönetici verir.
+model Report {
+  id         String   @id @default(cuid())
+  reporterId String
+  targetId   String
+  reason     String
+  createdAt  DateTime @default(now())
+
+  @@unique([reporterId, targetId])
+  @@index([targetId, createdAt])
+}

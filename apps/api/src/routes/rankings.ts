@@ -10,6 +10,7 @@ import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
+import { GameError, hata } from '../errors.js';
 import { findLordByUser } from '../services/lord.js';
 
 const SAYFA = 25;
@@ -103,5 +104,37 @@ export async function rankingRoutes(app: FastifyInstance): Promise<void> {
       satirlar: tum.slice(page * SAYFA, page * SAYFA + SAYFA),
       benim,
     };
+  });
+
+  /**
+   * Bir lordu şikâyet eder.
+   *
+   * Şikâyet edilen lorda hiçbir şey OLMUYOR: kayıt tutuluyor, kararı insan
+   * veriyor. Otomatik ceza, kalabalığın birini oyundan atmasına yarayan bir
+   * silaha dönerdi.
+   */
+  app.post('/rapor/:lordId', { preHandler: requireAuth }, async (req) => {
+    const { lordId: hedefId } = z.object({ lordId: z.string().min(1) }).parse(req.params);
+    const { sebep } = z
+      .object({ sebep: z.string().min(3, 'Sebebi kısaca yaz.').max(300) })
+      .parse(req.body);
+
+    const benim = await findLordByUser(req.user.userId);
+    if (benim === hedefId) {
+      throw new GameError('Kendini şikâyet edemezsin.', 400, 'GECERSIZ_ISTEK');
+    }
+    if (!(await prisma.lord.findUnique({ where: { id: hedefId }, select: { id: true } }))) {
+      throw hata.bulunamadi('Lord');
+    }
+
+    // Aynı kişiyi tekrar tekrar şikâyet etmek sayıyı şişirmesin: tek kayıt,
+    // sebebi güncellenir.
+    await prisma.report.upsert({
+      where: { reporterId_targetId: { reporterId: benim, targetId: hedefId } },
+      create: { reporterId: benim, targetId: hedefId, reason: sebep },
+      update: { reason: sebep, createdAt: new Date() },
+    });
+
+    return { alindi: true };
   });
 }

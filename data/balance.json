@@ -376,7 +376,9 @@
     "min_dakika": 10,
     "max_dakika": 360,
     "donus_suresi": "Gidis ile ayni",
-    "iptal": "Yuruyusun ilk %25'i icinde geri cagirilabilir; sonrasinda hayir."
+    "iptal": "Yuruyusun ilk %25'i icinde geri cagirilabilir; sonrasinda hayir.",
+    "es_zamanli_limit": 5,
+    "_es_zamanli_not": "Ayni anda kac saldiri/donus yuruyusu olabilir. Sinirsiz birakildiginda ordusu yeten oyuncu tek seferde on hedefe saldirabiliyordu; kuyruk sistemlerinin hepsinde sinir varken yuruyuste yoktu."
   },
   "savas": {
     "tur_sayisi": 5,
