@@ -82,6 +82,10 @@ model Lord {
   woundedUntil    DateTime?
   dailyAttacks    Int       @default(0)
   dailyResetAt    DateTime  @default(now())
+
+  /// Oyuncunun oyunu en son ne zaman açtığı. "Sen yokken ne oldu" özeti
+  /// bu ana göre hesaplanır.
+  lastSeenAt DateTime @default(now())
   createdAt       DateTime  @default(now())
 
   user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)

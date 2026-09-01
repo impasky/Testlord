@@ -1,6 +1,6 @@
 /** Malikâne — durum özeti, kuyruklar, olay akışı. Mobil ana ekran. */
 import { useState } from 'react';
-import type { GameEvent, LordState, QueueItem } from '../api/client';
+import type { GameEvent, LordState, QueueItem, YoklukOzeti } from '../api/client';
 import type { Sekme } from '../components/MobilKabuk';
 import {
   IkonKale,
@@ -63,15 +63,57 @@ function KuyrukSatiri({ q }: { q: QueueItem }) {
   );
 }
 
+/**
+ * "Sen yokken ne oldu" kartı.
+ *
+ * Bekleme üzerine kurulu bir oyunda dönüş anı en önemli an. Önceden oyuncu
+ * olay akışını kendisi taramak zorundaydı; şimdi ne kadar süre geçtiğini,
+ * kaç olay ve kaç savaş olduğunu tek bakışta görüyor.
+ */
+function YoklukKarti({ y, onGit }: { y: YoklukOzeti; onGit: (s: Sekme) => void }) {
+  const saat = Math.floor(y.sureSaniye / 3600);
+  const dakika = Math.floor((y.sureSaniye % 3600) / 60);
+  const sure = saat > 0 ? `${saat} saat ${dakika} dakika` : `${dakika} dakika`;
+
+  return (
+    <Kart className="p-3" vurgu="var(--color-mavi)">
+      <h3 className="baslik mb-1 text-[12px] text-mavi">Sen yokken</h3>
+      <p className="text-[13px] text-solgun">
+        <span className="text-parsomen">{sure}</span> uzaktaydın. Bu sürede{' '}
+        <span className="text-parsomen">{y.olaylar}</span> olay
+        {y.savaslar > 0 && (
+          <>
+            {' '}
+            ve <span className="text-kirmizi">{y.savaslar} savaş</span>
+          </>
+        )}{' '}
+        oldu.
+      </p>
+      {y.savaslar > 0 && (
+        <p className="mt-1 text-[11px] text-sonuk">
+          Savaş raporlarını aşağıdaki olay akışından açabilirsin.
+        </p>
+      )}
+      <Buton tur="sessiz" boy="kucuk" className="mt-2.5" onClick={() => onGit('harita')}>
+        Haritaya bak
+      </Buton>
+    </Kart>
+  );
+}
+
 export function Malikane({
   lord,
   queues,
   events,
+  yokluk,
+  onKarsiSaldiri,
   onGit,
 }: {
   lord: LordState;
   queues: QueueItem[];
   events: GameEvent[];
+  yokluk: YoklukOzeti | null;
+  onKarsiSaldiri: (regionId: number) => void;
   onGit: (s: Sekme) => void;
 }) {
   const [rapor, setRapor] = useState<string | null>(null);
@@ -106,6 +148,8 @@ export function Malikane({
           </div>
         </Kart>
       )}
+
+      {yokluk && <YoklukKarti y={yokluk} onGit={onGit} />}
 
       <IlkAdimlar lord={lord} queues={queues} onGit={onGit} />
 
@@ -267,7 +311,15 @@ export function Malikane({
       </Bolum>
 
       {rapor && (
-        <SavasRaporu battleId={rapor} benimId={lord.id} onKapat={() => setRapor(null)} />
+        <SavasRaporu
+          battleId={rapor}
+          benimId={lord.id}
+          onKapat={() => setRapor(null)}
+          onKarsiSaldiri={(bolgeId) => {
+            setRapor(null);
+            onKarsiSaldiri(bolgeId);
+          }}
+        />
       )}
     </div>
   );

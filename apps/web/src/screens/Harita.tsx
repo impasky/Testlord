@@ -1,7 +1,7 @@
 /** Harita — 61 bölge, alt sayfada bölge detayı, garnizon ve saldırı. */
 import { B, UNIT_TYPES, formatArmy, unitName, type Army, type UnitType } from '@lordlar/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ApiError, api, type LordState, type PreviewDto, type QueueItem } from '../api/client';
 import { HexHarita } from '../components/HexHarita';
 import { BirimIkonu, BolgeIkonu, IkonKapali, IkonSure } from '../components/Ikonlar';
@@ -131,15 +131,20 @@ function OrduSecici({
 export function Harita({
   lord,
   queues,
+  baslangicBolge,
+  onBaslangicIslendi,
   onGuncelle,
 }: {
   lord: LordState;
   queues: QueueItem[];
+  /** Başka ekrandan gelen hedef (karşı saldırı) — açılışta seçili gelir. */
+  baslangicBolge: number | null;
+  onBaslangicIslendi: () => void;
   onGuncelle: () => void;
 }) {
   const lordId = lord.id;
   const qc = useQueryClient();
-  const [seciliId, setSeciliId] = useState<number | null>(null);
+  const [seciliId, setSeciliId] = useState<number | null>(baslangicBolge);
   const [rapor, setRapor] = useState<string | null>(null);
   // Tek bayrak alt sayfadaki bütün düğmeleri birden söndürüyordu.
   const [gonderilen, setGonderilen] = useState<string | null>(null);
@@ -187,6 +192,14 @@ export function Harita({
   });
 
   const bolgeKuyrugu = queues.filter((q) => q.kind === 'upgrade_region');
+
+  // Karşı saldırı ekranı bu sekmeye getirdiyse bölgeyi aç ve isteği tüket;
+  // tüketmezsek oyuncu paneli kapattığında hemen yeniden açılırdı.
+  useEffect(() => {
+    if (baslangicBolge === null) return;
+    setSeciliId(baslangicBolge);
+    onBaslangicIslendi();
+  }, [baslangicBolge, onBaslangicIslendi]);
 
   if (harita.isLoading || !harita.data) {
     return <p className="pt-6 text-center text-solgun">Harita açılıyor...</p>;

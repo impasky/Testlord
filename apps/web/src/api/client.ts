@@ -129,7 +129,16 @@ export interface MeResponse {
   lord: LordState;
   queues: QueueItem[];
   events: GameEvent[];
+  /** Oyuncu bir süredir yoksa dönüş özeti; kısa aradan sonra null. */
+  yokluk: YoklukOzeti | null;
   serverTime: string;
+}
+
+export interface YoklukOzeti {
+  baslangic: string;
+  sureSaniye: number;
+  olaylar: number;
+  savaslar: number;
 }
 
 export interface ItemDto {

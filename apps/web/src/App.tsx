@@ -38,6 +38,8 @@ export function App() {
   }, []);
   const [girisli, setGirisli] = useState(() => getToken() !== null);
   const [sekme, setSekme] = useState<Sekme>('malikane');
+  // Savaş raporundan "karşı saldır" denince haritaya taşınan hedef.
+  const [hedefBolge, setHedefBolge] = useState<number | null>(null);
   const qc = useQueryClient();
 
   const { data, isLoading, error } = useQuery<MeResponse>({
@@ -98,15 +100,33 @@ export function App() {
     );
   }
 
-  const { lord, queues, events } = data;
+  const { lord, queues, events, yokluk } = data;
 
   return (
     <MobilKabuk lord={lord} sekme={sekme} setSekme={setSekme} onCikis={cikis}>
       {sekme === 'malikane' && (
-        <Malikane lord={lord} queues={queues} events={events} onGit={setSekme} />
+        <Malikane
+          lord={lord}
+          queues={queues}
+          events={events}
+          yokluk={yokluk}
+          onKarsiSaldiri={(bolgeId) => {
+            setHedefBolge(bolgeId);
+            setSekme('harita');
+          }}
+          onGit={setSekme}
+        />
       )}
       {sekme === 'kisla' && <Kisla lord={lord} queues={queues} onGuncelle={tazele} />}
-      {sekme === 'harita' && <Harita lord={lord} queues={queues} onGuncelle={tazele} />}
+      {sekme === 'harita' && (
+        <Harita
+          lord={lord}
+          queues={queues}
+          baslangicBolge={hedefBolge}
+          onBaslangicIslendi={() => setHedefBolge(null)}
+          onGuncelle={tazele}
+        />
+      )}
       {sekme === 'demirhane' && <Demirhane lord={lord} queues={queues} onGuncelle={tazele} />}
       {sekme === 'lord' && <LordEkrani lord={lord} onGuncelle={tazele} />}
       {sekme === 'generaller' && <Generaller onGuncelle={tazele} />}

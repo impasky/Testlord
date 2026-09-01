@@ -30,6 +30,8 @@ import {
   type UnitType,
 } from '@lordlar/shared';
 import { prisma, type Tx } from '../db.js';
+import { env } from '../env.js';
+import { postaGonder } from './eposta.js';
 import { equippedGenerals, gearBonusFrom, grantXp, pushEvent, tickLord } from './lord.js';
 import { addUnitsHome } from './queue.js';
 import { regionFortressBonus, transferRegion } from './region.js';
@@ -198,7 +200,7 @@ function toplamGeneralXp(level: number, xpIntoLevel: number): number {
  * Dönüş: işlendi mi.
  */
 export async function resolveMarch(marchId: string): Promise<boolean> {
-  return prisma.$transaction(
+  const sonuc = await prisma.$transaction(
     async (tx) => {
       const claimed = await tx.march.updateMany({
         where: { id: marchId, resolved: false },
@@ -496,8 +498,70 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
         tx,
       );
 
-      return true;
+      // Savunan bir oyuncuysa posta için gereken bilgiyi dışarı taşı;
+      // NPC garnizonunda bildirilecek kimse yok.
+      return defenderLordId
+        ? {
+            defenderLordId,
+            bolgeAdi: region.name,
+            attackerLordId: march.lordId,
+            kaybedildi: result.captured,
+          }
+        : true;
     },
     { timeout: 20_000 },
+  );
+
+  // Posta işlemin DIŞINDA: yavaş ve dışarıya bağımlı bir işi veritabanı
+  // kilitlerinin içinde beklemek, savaşı e-posta sağlayıcısının hızına
+  // bağlamak demekti.
+  if (sonuc !== false && sonuc !== true) {
+    await saldiriBildirimi(sonuc.defenderLordId, sonuc, console);
+  }
+  return sonuc !== false;
+}
+
+/**
+ * Savunana "bölgen saldırıya uğradı" postası atar.
+ *
+ * İşlemin DIŞINDA çağrılıyor: e-posta yavaş ve dışarıya bağımlı bir iş,
+ * savaş işlemini onun hızına bağlamak veritabanı kilitlerini gereksiz yere
+ * uzun tutardı. Gönderim başarısız olsa da savaş çoktan kaydedilmiştir.
+ *
+ * Neden yalnızca savunana: saldıran zaten ne yaptığını biliyor. Bildirimin
+ * değeri, oyuncunun OLMADIĞI anda olan bir şeyi haber vermesinde.
+ */
+export async function saldiriBildirimi(
+  defenderLordId: string,
+  bilgi: { bolgeAdi: string; attackerLordId: string; kaybedildi: boolean },
+  log: { info: (o: object, m: string) => void; error: (o: object, m: string) => void },
+): Promise<void> {
+  const [lord, saldiran] = await Promise.all([
+    prisma.lord.findUnique({
+      where: { id: defenderLordId },
+      select: { name: true, user: { select: { email: true } } },
+    }),
+    prisma.lord.findUnique({ where: { id: bilgi.attackerLordId }, select: { name: true } }),
+  ]);
+  if (!lord?.user?.email) return;
+  const saldiranAdi = saldiran?.name ?? 'Bilinmeyen bir lord';
+
+  const baslik = bilgi.kaybedildi
+    ? `${bilgi.bolgeAdi} elinden alındı`
+    : `${bilgi.bolgeAdi} saldırıya uğradı`;
+
+  await postaGonder(
+    {
+      kime: lord.user.email,
+      konu: `Lordlar Çağı — ${baslik}`,
+      metin:
+        `${lord.name},\n\n` +
+        `${saldiranAdi} ${bilgi.bolgeAdi} bölgene saldırdı. ` +
+        (bilgi.kaybedildi
+          ? 'Bölge el değiştirdi.'
+          : 'Saldırı püskürtüldü ama bölgen yağmalandı.') +
+        `\n\nSavaş raporunu oyunda görebilirsin: ${env.UYGULAMA_URL}\n`,
+    },
+    log,
   );
 }

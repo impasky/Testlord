@@ -29,6 +29,12 @@ export async function meRoutes(app: FastifyInstance): Promise<void> {
   app.get('/me', { preHandler: requireAuth }, async (req) => {
     const lordId = await findLordByUser(req.user.userId);
     const state = await tickLord(lordId);
+
+    const { lastSeenAt } = await prisma.lord.findUniqueOrThrow({
+      where: { id: lordId },
+      select: { lastSeenAt: true },
+    });
+
     const [queues, events] = await Promise.all([
       prisma.queue.findMany({
         where: { lordId, resolved: false },
@@ -36,7 +42,39 @@ export async function meRoutes(app: FastifyInstance): Promise<void> {
       }),
       prisma.event.findMany({ where: { lordId }, orderBy: { createdAt: 'desc' }, take: 20 }),
     ]);
-    return { lord: state, queues, events, serverTime: new Date().toISOString() };
+
+    /**
+     * "Sen yokken ne oldu" özeti.
+     *
+     * Bekleme üzerine kurulu bir oyunda dönüş anı en önemli an: oyuncu
+     * gelirin biriktiğini, kuyrukların bittiğini, bölgesinin saldırıya
+     * uğradığını görmeli. Önceden olay akışını kendisi taramak zorundaydı.
+     *
+     * Eşik 10 dakika: sekme değiştiren ya da sayfayı yenileyen oyuncuya her
+     * seferinde özet göstermek özeti değersizleştirirdi.
+     */
+    const ESIK_DK = 10;
+    const yoklukMs = Date.now() - lastSeenAt.getTime();
+    const yokluk =
+      yoklukMs >= ESIK_DK * 60_000
+        ? {
+            baslangic: lastSeenAt.toISOString(),
+            sureSaniye: Math.floor(yoklukMs / 1000),
+            olaylar: events.filter((e) => e.createdAt > lastSeenAt).length,
+            savaslar: await prisma.battle.count({
+              where: {
+                createdAt: { gt: lastSeenAt },
+                OR: [{ attackerLordId: lordId }, { defenderLordId: lordId }],
+              },
+            }),
+          }
+        : null;
+
+    // Damgayı okuduktan SONRA güncelliyoruz: aynı istekte güncelleseydik
+    // özet her zaman boş çıkardı.
+    await prisma.lord.update({ where: { id: lordId }, data: { lastSeenAt: new Date() } });
+
+    return { lord: state, queues, events, yokluk, serverTime: new Date().toISOString() };
   });
 
   app.post('/me/stats', { preHandler: requireAuth }, async (req) => {

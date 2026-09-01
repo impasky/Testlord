@@ -13,7 +13,7 @@ import { UNIT_TYPES, unitName, type Army, type UnitType } from '@lordlar/shared'
 import { useQuery } from '@tanstack/react-query';
 import { api, type BattleDto, type GeneralKatkisiDto } from '../api/client';
 import { BirimIkonu, IkonAltin, IkonDemir, IkonErzak, IkonKapali } from './Ikonlar';
-import { Kart, Rozet, formatSayi, nadirlikRengi } from './ui';
+import { Buton, Kart, Rozet, formatSayi, nadirlikRengi } from './ui';
 
 function toplam(a: Army | undefined): number {
   return UNIT_TYPES.reduce((t, u) => t + (a?.[u] ?? 0), 0);
@@ -179,10 +179,13 @@ export function SavasRaporu({
   battleId,
   benimId,
   onKapat,
+  onKarsiSaldiri,
 }: {
   battleId: string;
   benimId: string;
   onKapat: () => void;
+  /** Savunan taraftaysan doğrudan o bölgeye saldırmak için. */
+  onKarsiSaldiri?: (regionId: number) => void;
 }) {
   const { data: savas, isError } = useQuery({
     queryKey: ['battle', battleId],
@@ -306,6 +309,15 @@ export function SavasRaporu({
                   </div>
                 </Kart>
               ) : null}
+
+              {/* Karşı saldırı yalnızca savunandayken: saldıran zaten oraya
+                  nasıl gideceğini biliyor, savunan ise raporu okuyup
+                  haritada bölgeyi elle aramak zorunda kalıyordu. */}
+              {!saldiranBenim && onKarsiSaldiri && (
+                <Buton tam onClick={() => onKarsiSaldiri(savas.regionId)}>
+                  {savas.log.regionName} bölgesine karşı saldır
+                </Buton>
+              )}
 
               <p className="pb-1 text-center text-[10px] text-sonuk">
                 Toplam {formatSayi(toplam(savas.log.attackerLosses) + toplam(savas.log.defenderLosses))}{' '}

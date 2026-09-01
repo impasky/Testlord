@@ -177,6 +177,14 @@ kontrol(
   raporGeneraller.map((x) => `${x.ad}: ${x.pasifAd}`).join(', ') || 'katkı yok',
 );
 
+// --- Savunan taraf bildirim ve yokluk ozeti ---
+const savunanMe = await savunan.get('/me');
+kontrol(
+  'Savunanın olay akışı saldırıyı içeriyor',
+  savunanMe.events.some((e) => e.kind === 'bolge_kaybettin' || e.kind === 'saldiriya_ugradin'),
+  savunanMe.events[0]?.kind ?? 'olay yok',
+);
+
 // --- ELO ---
 const eloSonra = (await saldiran.get('/me')).lord.elo;
 kontrol('PvP savaşı ELO değiştirdi', eloSonra !== eloOnce, `${eloOnce} -> ${eloSonra}`);
