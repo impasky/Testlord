@@ -1,10 +1,22 @@
 import { STAT_KEYS, type StatKey } from '@lordlar/shared';
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
-import { requireAuth } from '../auth.js';
+import { hashPassword, requireAuth, verifyPassword } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError } from '../errors.js';
 import { findLordByUser, tickLord } from '../services/lord.js';
+
+const parolaSchema = z.object({
+  mevcut: z.string().min(1, 'Mevcut parolanı gir.'),
+  yeni: z.string().min(8, 'Yeni parola en az 8 karakter olmalı.'),
+});
+
+const silmeSchema = z.object({
+  parola: z.string().min(1, 'Silmek için parolanı gir.'),
+  onay: z.literal('HESABIMI SIL', {
+    errorMap: () => ({ message: 'Onay metnini birebir yazman gerekiyor.' }),
+  }),
+});
 
 const statsSchema = z.object({
   guc: z.number().int().min(0).default(0),
@@ -55,5 +67,70 @@ export async function meRoutes(app: FastifyInstance): Promise<void> {
       });
       return tickLord(lordId, new Date(), tx);
     });
+  });
+
+  /** Giriş yapmışken parola değiştirme. Mevcut parola doğrulanır. */
+  app.post('/me/parola', { preHandler: requireAuth }, async (req) => {
+    const { mevcut, yeni } = parolaSchema.parse(req.body);
+    const user = await prisma.user.findUniqueOrThrow({ where: { id: req.user.userId } });
+
+    if (!(await verifyPassword(user.passwordHash, mevcut))) {
+      throw new GameError('Mevcut parola hatalı.', 400, 'PAROLA_HATALI');
+    }
+
+    await prisma.$transaction([
+      prisma.user.update({
+        where: { id: user.id },
+        data: { passwordHash: await hashPassword(yeni) },
+      }),
+      // Açık sıfırlama jetonları da düşsün: parolayı bilerek değiştiren
+      // biri, daha önce istediği sıfırlama bağlantısının hâlâ çalışmasını
+      // istemez.
+      prisma.passwordReset.updateMany({
+        where: { userId: user.id, usedAt: null },
+        data: { usedAt: new Date() },
+      }),
+    ]);
+
+    return { degistirildi: true };
+  });
+
+  /**
+   * Hesabı ve ona bağlı her şeyi siler.
+   *
+   * Parola ve birebir yazılan bir onay metni isteniyor: geri alınamayan bir
+   * işlem için tek dokunuş fazla kolay. Silme sırasında lordun bölgeleri
+   * sahipsiz kalır — dünyadan bir bölgenin yok olması haritayı bozardı.
+   */
+  app.delete('/me', { preHandler: requireAuth }, async (req) => {
+    const { parola } = silmeSchema.parse(req.body);
+    const user = await prisma.user.findUniqueOrThrow({ where: { id: req.user.userId } });
+
+    if (!(await verifyPassword(user.passwordHash, parola))) {
+      throw new GameError('Parola hatalı.', 400, 'PAROLA_HATALI');
+    }
+
+    await prisma.$transaction(async (tx) => {
+      const lordlar = await tx.lord.findMany({
+        where: { userId: user.id },
+        select: { id: true },
+      });
+      const idler = lordlar.map((l) => l.id);
+
+      if (idler.length > 0) {
+        // Bölgeler NPC'ye döner: garnizonu boş, kalkanı yok, yeniden
+        // fethedilebilir.
+        await tx.region.updateMany({
+          where: { ownerLordId: { in: idler } },
+          data: { ownerLordId: null, npcGarrison: {}, shieldUntil: null },
+        });
+        await tx.armyUnit.deleteMany({ where: { lordId: { in: idler } } });
+      }
+
+      // Lord ve altındakiler onDelete: Cascade ile gidiyor.
+      await tx.user.delete({ where: { id: user.id } });
+    });
+
+    return { silindi: true };
   });
 }

@@ -87,20 +87,33 @@ const adaylar = harita.regions
   .sort((a, b) => a.distance - b.distance)
   .slice(0, 8);
 
+// İlk "ele geçirir" diyeni değil, PAYI EN BÜYÜK olanı seçiyoruz.
+//
+// Sebep: worker açıkken NPC garnizonları saatte %10 toparlanıyor. Önizleme
+// ile yürüyüşün varışı arasında hedef güçlenebiliyor ve kıl payı kazanılacak
+// bir savaş kaybedilebiliyor. Bu bir hata değil, oyunun kuralı — ama testi
+// kıl payı bir tahmine dayandırmak onu kararsız kılıyordu.
+//
+// Pay ölçüsü: saldıranın tahmini kaybının azlığı. Az kayıpla kazanılan savaş,
+// garnizon biraz toparlansa da kazanılır.
 let hedef = null;
 let onizleme = null;
+let enIyiPay = -1;
+const sayi = (a) => Object.values(a ?? {}).reduce((t, n) => t + Number(n || 0), 0);
 for (const aday of adaylar) {
   const o = await post('/battle/preview', {
     toRegionId: aday.id, army: { mizrakci: 20, okcu: 15 },
   });
-  if (o?.tahmin?.eleGecirir === true) {
+  if (o?.tahmin?.eleGecirir !== true) continue;
+  const pay = 35 - sayi(o.tahmin.saldiranKayip);
+  if (pay > enIyiPay) {
+    enIyiPay = pay;
     hedef = aday;
     onizleme = o;
-    break;
   }
 }
 kontrol('Başlangıç ordusuyla alınabilecek bir NPC bölgesi var', Boolean(hedef),
-  hedef ? `${hedef.name} (${hedef.type}, ${hedef.distance} hex)`
+  hedef ? `${hedef.name} (${hedef.type}, ${hedef.distance} hex, pay ${enIyiPay})`
         : `${adaylar.length} aday denendi, hiçbiri alınamıyor`);
 
 const kale = harita.regions.find((r) => r.ring === 4 && !r.owner && r.type === 'kale');

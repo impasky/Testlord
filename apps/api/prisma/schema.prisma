@@ -16,6 +16,25 @@ model User {
   passwordHash String
   createdAt    DateTime @default(now())
   lords        Lord[]
+  resets       PasswordReset[]
+}
+
+/// Parola sıfırlama jetonu.
+///
+/// Jetonun kendisi değil, SHA-256 özeti saklanır: veritabanı sızarsa
+/// jetonlarla hesap ele geçirilemesin. E-postaya giden ham jeton yalnızca
+/// bir kez, üretildiği anda var olur.
+model PasswordReset {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
 }
 
 model World {

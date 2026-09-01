@@ -317,6 +317,18 @@ export const api = {
   login: (email: string, password: string) =>
     post<{ token: string }>('/auth/login', { email, password }),
   me: () => request<MeResponse>('/me'),
+
+  sifirlamaIste: (email: string) =>
+    post<{ gonderildi: boolean; jeton?: string }>('/auth/sifirlama-iste', { email }),
+  sifirlamaYap: (token: string, password: string) =>
+    post<{ degistirildi: boolean }>('/auth/sifirlama-yap', { token, password }),
+  parolaDegistir: (mevcut: string, yeni: string) =>
+    post<{ degistirildi: boolean }>('/me/parola', { mevcut, yeni }),
+  hesabiSil: (parola: string) =>
+    request<{ silindi: boolean }>('/me', {
+      method: 'DELETE',
+      body: JSON.stringify({ parola, onay: 'HESABIMI SIL' }),
+    }),
   spendStats: (points: Partial<Record<StatKey, number>>) => post<LordState>('/me/stats', points),
 
   items: () => request<{ items: ItemDto[]; tiers: TierDto[] }>('/items'),

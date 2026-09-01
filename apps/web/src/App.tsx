@@ -1,18 +1,41 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { api, getToken, setToken, type MeResponse } from './api/client';
 import { MobilKabuk, type Sekme } from './components/MobilKabuk';
 import { Buton } from './components/ui';
 import { Demirhane } from './screens/Demirhane';
 import { Generaller } from './screens/Generaller';
 import { Giris } from './screens/Giris';
+import { Hesap } from './screens/Hesap';
 import { Harita } from './screens/Harita';
 import { Kisla } from './screens/Kisla';
 import { LordEkrani } from './screens/LordEkrani';
 import { Malikane } from './screens/Malikane';
+import { ParolaSifirla } from './screens/ParolaSifirla';
 import { Siralama } from './screens/Siralama';
 
+/**
+ * E-postadaki sıfırlama bağlantısının jetonu.
+ *
+ * Yönlendirici yok; tek bir bağlantı için kütüphane eklemek yerine hash
+ * okunuyor. Açılışta bir kez bakılıyor, sonra state üzerinden yürüyor.
+ */
+function hashJetonu(): string | null {
+  const h = window.location.hash;
+  if (!h.startsWith('#/parola-sifirla')) return null;
+  return new URLSearchParams(h.slice(h.indexOf('?') + 1)).get('jeton');
+}
+
 export function App() {
+  const [sifirlamaJetonu, setSifirlamaJetonu] = useState<string | null>(hashJetonu);
+
+  // Hash yalnızca açılışta okunursa, uygulama zaten açıkken tıklanan bağlantı
+  // hiçbir şey yapmaz: tarayıcı hash değişimini sayfa yüklemesi saymaz.
+  useEffect(() => {
+    const dinle = () => setSifirlamaJetonu(hashJetonu());
+    window.addEventListener('hashchange', dinle);
+    return () => window.removeEventListener('hashchange', dinle);
+  }, []);
   const [girisli, setGirisli] = useState(() => getToken() !== null);
   const [sekme, setSekme] = useState<Sekme>('malikane');
   const qc = useQueryClient();
@@ -31,6 +54,18 @@ export function App() {
     setToken(null);
     qc.clear();
     setGirisli(false);
+  }
+
+  if (sifirlamaJetonu) {
+    return (
+      <ParolaSifirla
+        jeton={sifirlamaJetonu}
+        onBitti={() => {
+          window.location.hash = '';
+          setSifirlamaJetonu(null);
+        }}
+      />
+    );
   }
 
   if (!girisli) {
@@ -76,6 +111,7 @@ export function App() {
       {sekme === 'lord' && <LordEkrani lord={lord} onGuncelle={tazele} />}
       {sekme === 'generaller' && <Generaller onGuncelle={tazele} />}
       {sekme === 'siralama' && <Siralama lordId={lord.id} />}
+      {sekme === 'hesap' && <Hesap lord={lord} onCikis={cikis} />}
     </MobilKabuk>
   );
 }

@@ -24,6 +24,14 @@ const schema = z.object({
   SENTRY_DSN: z.string().default(''),
   /** İzleme örneklemesi. Ücretsiz katmanda kota var, varsayılan düşük. */
   SENTRY_TRACES_SAMPLE_RATE: z.coerce.number().min(0).max(1).default(0.05),
+  /** E-posta taşıyıcısı. log = sadece sunucu log'una yaz, dışarı gitmez. */
+  EPOSTA_TASIYICI: z.enum(['log', 'resend']).default('log'),
+  /** resend taşıyıcısı için API anahtarı. */
+  EPOSTA_ANAHTAR: z.string().default(''),
+  /** Gönderen adresi. Alan adının doğrulanmış olması gerekir. */
+  EPOSTA_GONDEREN: z.string().default('Lordlar Çağı <bildirim@localhost>'),
+  /** Parola sıfırlama bağlantısının tabanı (arayüzün adresi). */
+  UYGULAMA_URL: z.string().default('http://localhost:5173'),
   /** pino seviyesi: fatal|error|warn|info|debug|trace */
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
 });

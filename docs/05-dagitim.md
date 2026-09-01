@@ -23,6 +23,10 @@ karşılığıdır.
 | `SENTRY_DSN` | hayır | boş | Boşsa hata izleme kapalıdır, dışarıya hiçbir şey gitmez |
 | `SENTRY_TRACES_SAMPLE_RATE` | hayır | 0.05 | İzleme örneklemesi. Ücretsiz katmanda kota var |
 | `LOG_LEVEL` | hayır | info | `fatal\|error\|warn\|info\|debug\|trace` |
+| `EPOSTA_TASIYICI` | hayır | log | `log` dışarı göndermez; `resend` gerçek posta atar |
+| `EPOSTA_ANAHTAR` | resend ise | — | Resend API anahtarı |
+| `EPOSTA_GONDEREN` | resend ise | — | Gönderen adresi; alan adı doğrulanmış olmalı |
+| `UYGULAMA_URL` | evet* | localhost:5173 | Sıfırlama bağlantısının tabanı. *Üretimde şart |
 
 **`/health`** kimlik istemez ve `{ ok, time, izleme }` döner. `izleme` alanı
 Sentry'nin gerçekten açık olup olmadığını söyler — DSN'i girip de yazım hatası

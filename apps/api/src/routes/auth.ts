@@ -4,8 +4,17 @@ import { z } from 'zod';
 import { hashPassword, verifyPassword } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError } from '../errors.js';
+import { createHash, randomBytes } from 'node:crypto';
 import { env } from '../env.js';
+import { postaGonder } from '../services/eposta.js';
 import { findOrOpenWorld } from '../services/world.js';
+
+/** Jetonun özeti saklanır; ham jeton yalnızca e-postada gider. */
+function ozet(jeton: string): string {
+  return createHash('sha256').update(jeton).digest('hex');
+}
+
+const JETON_OMRU_DK = 30;
 
 /**
  * Kayıt ve giriş IP başına sınırlanır, oturum başına değil: token'ı olmayan
@@ -36,6 +45,12 @@ const registerSchema = z.object({
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1),
+});
+
+const sifirlamaIsteSchema = z.object({ email: z.string().email() });
+const sifirlamaYapSchema = z.object({
+  token: z.string().min(20),
+  password: z.string().min(8, 'Parola en az 8 karakter olmalı.'),
 });
 
 /**
@@ -121,5 +136,80 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
       throw new GameError('E-posta veya parola hatalı.', 401, 'GIRIS_BASARISIZ');
     }
     return { token: app.jwt.sign({ userId: user.id, email }) };
+  });
+
+  /**
+   * Parola sıfırlama isteği.
+   *
+   * Adres kayıtlı olsa da olmasa da AYNI cevabı döner. Farklı cevap vermek,
+   * hangi e-postaların kayıtlı olduğunu sızdıran bir sorgu aracına dönerdi.
+   */
+  app.post('/auth/sifirlama-iste', kimlikSiniri, async (req) => {
+    const { email } = sifirlamaIsteSchema.parse(req.body);
+    const adres = email.toLowerCase().trim();
+    const user = await prisma.user.findUnique({ where: { email: adres } });
+
+    if (user) {
+      // Eski jetonları geçersiz kıl: aynı anda birden fazla açık jeton,
+      // saldırganın deneyeceği yüzeyi büyütür.
+      await prisma.passwordReset.updateMany({
+        where: { userId: user.id, usedAt: null },
+        data: { usedAt: new Date() },
+      });
+
+      const jeton = randomBytes(32).toString('base64url');
+      await prisma.passwordReset.create({
+        data: {
+          userId: user.id,
+          tokenHash: ozet(jeton),
+          expiresAt: new Date(Date.now() + JETON_OMRU_DK * 60_000),
+        },
+      });
+
+      const bag = `${env.UYGULAMA_URL}/#/parola-sifirla?jeton=${jeton}`;
+      await postaGonder(
+        {
+          kime: adres,
+          konu: 'Lordlar Çağı — parola sıfırlama',
+          metin:
+            `Parolanı sıfırlamak için ${JETON_OMRU_DK} dakika içinde bu bağlantıyı aç:\n\n${bag}\n\n` +
+            'Bu isteği sen yapmadıysan hiçbir şey yapmana gerek yok; parolan değişmedi.',
+        },
+        app.log,
+      );
+
+      // Geliştirmede jetonu cevaba koyuyoruz ki akış uçtan uca test
+      // edilebilsin. Üretimde ASLA: jeton yalnızca e-postayla gitmeli.
+      // Aynı koruma /api/test/* uçlarını da kapatan koşul.
+      if (env.NODE_ENV !== 'production') {
+        return { gonderildi: true, jeton };
+      }
+    }
+
+    return { gonderildi: true };
+  });
+
+  /** Jetonla yeni parola belirler. Jeton tek kullanımlık. */
+  app.post('/auth/sifirlama-yap', kimlikSiniri, async (req) => {
+    const { token, password } = sifirlamaYapSchema.parse(req.body);
+    const kayit = await prisma.passwordReset.findUnique({ where: { tokenHash: ozet(token) } });
+
+    if (!kayit || kayit.usedAt || kayit.expiresAt < new Date()) {
+      throw new GameError(
+        'Bağlantı geçersiz ya da süresi dolmuş. Yeniden sıfırlama iste.',
+        400,
+        'JETON_GECERSIZ',
+      );
+    }
+
+    await prisma.$transaction([
+      prisma.user.update({
+        where: { id: kayit.userId },
+        data: { passwordHash: await hashPassword(password) },
+      }),
+      prisma.passwordReset.update({ where: { id: kayit.id }, data: { usedAt: new Date() } }),
+    ]);
+
+    return { degistirildi: true };
   });
 }

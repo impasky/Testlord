@@ -29,7 +29,8 @@ export type Sekme =
   | 'demirhane'
   | 'lord'
   | 'generaller'
-  | 'siralama';
+  | 'siralama'
+  | 'hesap';
 
 const ALT_SEKMELER: { key: Sekme; ad: string; Ikon: typeof IkonNavMalikane }[] = [
   { key: 'malikane', ad: 'Malikâne', Ikon: IkonNavMalikane },
@@ -42,6 +43,7 @@ const MENU_SEKMELERI: { key: Sekme; ad: string; Ikon: typeof IkonNavMalikane }[]
   { key: 'lord', ad: 'Lord', Ikon: IkonNavLord },
   { key: 'generaller', ad: 'Generaller', Ikon: IkonNavGeneraller },
   { key: 'siralama', ad: 'Sıralama', Ikon: IkonNavSiralama },
+  { key: 'hesap', ad: 'Hesap', Ikon: IkonNavLord },
 ];
 
 /** Kaynak sayacı: sunucu değerinden itibaren saniye saniye ilerler. */

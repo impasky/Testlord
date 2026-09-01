@@ -5,6 +5,25 @@ import { Alan, Buton, Input, Kart } from '../components/ui';
 
 export function Giris({ onGiris }: { onGiris: () => void }) {
   const [mod, setMod] = useState<'giris' | 'kayit'>('kayit');
+  // Sıfırlama isteği aynı ekranda, ayrı bir sayfa değil: parolasını unutan
+  // oyuncu zaten burada ve bir tık uzağa gitmesi gereksiz.
+  const [sifirlamaAcik, setSifirlamaAcik] = useState(false);
+  const [sifirlamaBilgi, setSifirlamaBilgi] = useState<string | null>(null);
+  const [sifirlamaBekliyor, setSifirlamaBekliyor] = useState(false);
+
+  async function sifirlamaIste() {
+    setSifirlamaBekliyor(true);
+    try {
+      await api.sifirlamaIste(email);
+      // Adresin kayıtlı olup olmadığını söylemiyoruz — sunucu da söylemiyor.
+      // Söyleseydik hangi e-postaların kayıtlı olduğunu öğrenmenin yolu olurdu.
+      setSifirlamaBilgi(
+        'Adres kayıtlıysa sıfırlama bağlantısı gönderildi. Gelen kutunu kontrol et.',
+      );
+    } finally {
+      setSifirlamaBekliyor(false);
+    }
+  }
   const [email, setEmail] = useState('');
   const [parola, setParola] = useState('');
   const [lordAdi, setLordAdi] = useState('');
@@ -102,6 +121,41 @@ export function Giris({ onGiris }: { onGiris: () => void }) {
             <Buton type="submit" disabled={bekliyor} boy="buyuk" tam>
               {bekliyor ? 'Bekle...' : mod === 'kayit' ? 'Diyara Gir' : 'Giriş Yap'}
             </Buton>
+
+            {mod === 'giris' && !sifirlamaAcik && (
+              <button
+                type="button"
+                onClick={() => setSifirlamaAcik(true)}
+                className="bas w-full text-center text-[12px] text-sonuk underline decoration-dotted underline-offset-2"
+              >
+                Parolamı unuttum
+              </button>
+            )}
+
+            {mod === 'giris' && sifirlamaAcik && (
+              <div className="oyuk rounded-xl border border-kenar p-3">
+                <p className="mb-2 text-[12px] text-solgun">
+                  Yukarıdaki e-posta adresine sıfırlama bağlantısı gönderelim.
+                </p>
+                <Buton
+                  type="button"
+                  tur="sessiz"
+                  tam
+                  onClick={sifirlamaIste}
+                  disabled={sifirlamaBekliyor || !email.includes('@')}
+                >
+                  {sifirlamaBekliyor ? 'Gönderiliyor…' : 'Sıfırlama bağlantısı gönder'}
+                </Buton>
+                {!email.includes('@') && (
+                  <p className="mt-1.5 text-[11px] text-solgun">
+                    Önce e-posta adresini yaz.
+                  </p>
+                )}
+                {sifirlamaBilgi && (
+                  <p className="mt-2 text-[12px] text-yesil">{sifirlamaBilgi}</p>
+                )}
+              </div>
+            )}
           </form>
         </Kart>
 
