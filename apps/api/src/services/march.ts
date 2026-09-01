@@ -15,6 +15,7 @@ import {
   bosGeneralBonus,
   captureXp,
   createRng,
+  generalKatkilari,
   generalLevelFromXp,
   lordContribution,
   marchDurationSec,
@@ -23,6 +24,7 @@ import {
   updateElo,
   type Army,
   type EquipSlot,
+  type GeneralKatkisi,
   type Rarity,
   type Side,
   type UnitType,
@@ -42,7 +44,12 @@ function toArmy(value: unknown): Army {
   return army;
 }
 
-/** Bir lordun savaş tarafını kurar (ekipman, donanım, generaller dahil). */
+/**
+ * Bir lordun savaş tarafını kurar (ekipman, donanım, generaller dahil).
+ *
+ * Sahadaki generallerin katkısı da dönüyor: savaş kaydına yazılacak ve
+ * raporda oyuncuya hangi generalin ne kattığı gösterilecek.
+ */
 async function buildSide(
   lordId: string,
   units: Army,
@@ -50,7 +57,7 @@ async function buildSide(
   fortress: number,
   generalKeys: string[] | null,
   tx: Tx,
-): Promise<Side> {
+): Promise<{ side: Side; generaller: GeneralKatkisi[] }> {
   const lord = await tx.lord.findUnique({
     where: { id: lordId },
     include: { items: true, gearLines: true, generals: true },
@@ -77,18 +84,21 @@ async function buildSide(
   const katki = lordContribution(lord.guc, items) * (yarali ? 0.5 : 1);
 
   return {
-    units,
-    gearBonus: gearBonusFrom(lord.gearLines),
-    generalBonus: bonus,
-    lordContribution: katki,
-    leadership: lord.liderlik,
-    fortressBonus: fortress,
-    isDefender,
-    abilities: {
-      on_hasar_orani: abilityValue(sahada, 'on_hasar_orani'),
-      ilk_tur_saldiri: abilityValue(sahada, 'ilk_tur_saldiri'),
-      ilk_tur_hasar_azaltma: abilityValue(sahada, 'ilk_tur_hasar_azaltma'),
+    side: {
+      units,
+      gearBonus: gearBonusFrom(lord.gearLines),
+      generalBonus: bonus,
+      lordContribution: katki,
+      leadership: lord.liderlik,
+      fortressBonus: fortress,
+      isDefender,
+      abilities: {
+        on_hasar_orani: abilityValue(sahada, 'on_hasar_orani'),
+        ilk_tur_saldiri: abilityValue(sahada, 'ilk_tur_saldiri'),
+        ilk_tur_hasar_azaltma: abilityValue(sahada, 'ilk_tur_hasar_azaltma'),
+      },
     },
+    generaller: generalKatkilari(sahada),
   };
 }
 
@@ -237,7 +247,9 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
       const fortress = regionFortressBonus(region.type, region.level);
       const generalKeys = (march.generalIds as string[]) ?? [];
 
-      const attacker = await buildSide(march.lordId, army, false, 0, generalKeys, tx);
+      const { side: attacker, generaller: saldiranGeneraller } = await buildSide(
+        march.lordId, army, false, 0, generalKeys, tx,
+      );
 
       const npcGarrison = toArmy(region.npcGarrison);
       const defenderLordId = region.ownerLordId;
@@ -245,9 +257,13 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
         ? await readGarrison(region.id, defenderLordId, tx)
         : npcGarrison;
 
-      const defender = defenderLordId
+      // NPC garnizonunun generali yok; boş liste dönüyor ki rapor iki
+      // tarafı da aynı şekilde okuyabilsin.
+      const savunanKurulum = defenderLordId
         ? await buildSide(defenderLordId, defenderArmy, true, fortress, null, tx)
-        : npcSide(defenderArmy, fortress);
+        : { side: npcSide(defenderArmy, fortress), generaller: [] as GeneralKatkisi[] };
+      const defender = savunanKurulum.side;
+      const savunanGeneraller = savunanKurulum.generaller;
 
       const seed = `battle-${marchId}`;
       const result = simulateBattle(attacker, defender, seed, {
@@ -400,6 +416,8 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
             defenderSurvivors: result.defenderSurvivors,
             loot: result.loot,
             regionName: region.name,
+            attackerGenerals: saldiranGeneraller,
+            defenderGenerals: savunanGeneraller,
           } as object,
         },
       });

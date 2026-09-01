@@ -293,7 +293,22 @@ export interface BattleDto {
     defenderSurvivors: Army;
     loot: Resources;
     regionName: string;
+    /** Sahadaki generaller. Eski savaşlarda yok — arayüz bunu tolere eder. */
+    attackerGenerals?: GeneralKatkisiDto[];
+    defenderGenerals?: GeneralKatkisiDto[];
   };
+}
+
+export interface GeneralKatkisiDto {
+  key: string;
+  ad: string;
+  nadirlik: string;
+  level: number;
+  pasifAd: string;
+  pasifEtki: string;
+  pasifDeger: number;
+  yetenekAd: string | null;
+  yetenekAciklama: string | null;
 }
 
 export const api = {

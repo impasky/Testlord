@@ -115,3 +115,46 @@ export function abilityValue(equipped: EquippedGeneral[], ability: string): numb
   }
   return total;
 }
+
+/** Savaş raporunda bir generalin ne yaptığını anlatan satır. */
+export interface GeneralKatkisi {
+  key: string;
+  ad: string;
+  nadirlik: string;
+  level: number;
+  /** Pasifin adı ve bu seviyedeki gerçek değeri (ör. %11 ordu savunma). */
+  pasifAd: string;
+  pasifEtki: string;
+  pasifDeger: number;
+  /** Yeteneği varsa adı ve açıklaması; yoksa null. */
+  yetenekAd: string | null;
+  yetenekAciklama: string | null;
+}
+
+/**
+ * Sahadaki generallerin katkısını rapor için özetler.
+ *
+ * Neden ayrı bir fonksiyon: aggregateGeneralBonus tek bir toplam üretiyor ve
+ * hangi generalin ne kattığı orada kayboluyor. Oyuncu generali sahaya
+ * sürüyor, XP kazandığını görüyor ama savaşa ne kattığını göremiyordu —
+ * güçlenme hissinin en görünür olması gereken yer burası.
+ */
+export function generalKatkilari(equipped: EquippedGeneral[]): GeneralKatkisi[] {
+  const sonuc: GeneralKatkisi[] = [];
+  for (const g of equipped) {
+    const def = generalDef(g.key);
+    if (!def) continue;
+    sonuc.push({
+      key: g.key,
+      ad: def.ad,
+      nadirlik: def.nadirlik,
+      level: g.level,
+      pasifAd: def.pasif.ad,
+      pasifEtki: def.pasif.etki,
+      pasifDeger: def.pasif.deger * generalLevelMultiplier(g.level),
+      yetenekAd: def.yetenek?.ad ?? null,
+      yetenekAciklama: def.yetenek?.aciklama ?? null,
+    });
+  }
+  return sonuc;
+}

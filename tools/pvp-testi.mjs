@@ -168,6 +168,15 @@ kontrol('General savaşa girdi ve XP kazandı',
   generalSonra.xp > generalOnce.xp || generalSonra.level > generalOnce.level,
   `xp ${generalOnce.xp} -> ${generalSonra.xp}`);
 
+// Rapor generalin ne kattığını da anlatmalı: XP kazanması savaşa girdiğini
+// gösterir, katkı listesi ise oyuncuya NE yaptığını gösterir.
+const raporGeneraller = rapor?.log?.attackerGenerals ?? [];
+kontrol(
+  'Savaş raporu generalin katkısını taşıyor',
+  raporGeneraller.some((x) => x.key === general.key && x.pasifAd),
+  raporGeneraller.map((x) => `${x.ad}: ${x.pasifAd}`).join(', ') || 'katkı yok',
+);
+
 // --- ELO ---
 const eloSonra = (await saldiran.get('/me')).lord.elo;
 kontrol('PvP savaşı ELO değiştirdi', eloSonra !== eloOnce, `${eloOnce} -> ${eloSonra}`);

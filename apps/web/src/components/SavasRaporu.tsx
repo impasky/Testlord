@@ -11,9 +11,9 @@
  */
 import { UNIT_TYPES, unitName, type Army, type UnitType } from '@lordlar/shared';
 import { useQuery } from '@tanstack/react-query';
-import { api, type BattleDto } from '../api/client';
+import { api, type BattleDto, type GeneralKatkisiDto } from '../api/client';
 import { BirimIkonu, IkonAltin, IkonDemir, IkonErzak, IkonKapali } from './Ikonlar';
-import { Kart, Rozet, formatSayi } from './ui';
+import { Kart, Rozet, formatSayi, nadirlikRengi } from './ui';
 
 function toplam(a: Army | undefined): number {
   return UNIT_TYPES.reduce((t, u) => t + (a?.[u] ?? 0), 0);
@@ -105,6 +105,72 @@ function TarafKarti({
           </ul>
         </>
       )}
+    </Kart>
+  );
+}
+
+/** Pasif etkinin okunur adı. Ham anahtar ("ordu_saldiri") oyuncuya bir şey söylemez. */
+const ETKI_ADI: Record<string, string> = {
+  ordu_saldiri: 'ordu saldırısı',
+  ordu_savunma: 'ordu savunması',
+  ordu_can: 'ordu canı',
+  savunmada_ordu_savunma: 'savunmada ordu savunması',
+  okcu_saldiri: 'okçu saldırısı',
+  suvari_saldiri: 'süvari saldırısı',
+  mizrakci_savunma: 'mızrakçı savunması',
+  kusatma_tahkimat: 'kuşatma tahkimat hasarı',
+  yagma_bonusu: 'yağma',
+  bakim_indirimi: 'bakım indirimi',
+  egitim_hizi: 'eğitim hızı',
+  uretim_hizi: 'üretim hızı',
+};
+
+/**
+ * Sahadaki generallerin savaşa ne kattığı.
+ *
+ * Yetenekler savaş motorunda gerçekten çalışıyordu ama raporda görünmüyordu:
+ * oyuncu generali sahaya sürüyor, XP kazandığını görüyor, savaşa ne kattığını
+ * göremiyordu. Güçlenme hissinin en görünür olması gereken yer burası.
+ */
+function GeneralKatkilari({
+  generaller,
+  taraf,
+}: {
+  generaller: GeneralKatkisiDto[];
+  taraf: string;
+}) {
+  if (generaller.length === 0) return null;
+
+  return (
+    <Kart className="p-3">
+      <h3 className="baslik mb-2 text-[11px] text-solgun">{taraf} generalleri</h3>
+      <ul className="space-y-2.5">
+        {generaller.map((g) => {
+          const renk = nadirlikRengi(g.nadirlik);
+          return (
+            <li key={g.key}>
+              <div className="flex items-baseline justify-between gap-2">
+                <span className="truncate text-[13px] font-bold" style={{ color: renk }}>
+                  {g.ad}
+                </span>
+                <span className="tabular shrink-0 text-[11px] text-solgun">Sv{g.level}</span>
+              </div>
+              <p className="mt-0.5 text-[11px] text-solgun">
+                <span className="text-parsomen">{g.pasifAd}</span> — %
+                {Math.round(g.pasifDeger * 100)} {ETKI_ADI[g.pasifEtki] ?? g.pasifEtki}
+              </p>
+              {g.yetenekAd && (
+                <p className="mt-0.5 text-[11px] text-altin">
+                  {g.yetenekAd}
+                  {g.yetenekAciklama && (
+                    <span className="text-solgun"> — {g.yetenekAciklama}</span>
+                  )}
+                </p>
+              )}
+            </li>
+          );
+        })}
+      </ul>
     </Kart>
   );
 }
@@ -205,6 +271,9 @@ export function SavasRaporu({
                 kalan={savas.log.defenderSurvivors}
                 vurgu={!saldiranBenim ? 'var(--color-altin)' : undefined}
               />
+
+              <GeneralKatkilari generaller={savas.log.attackerGenerals ?? []} taraf="Saldıran" />
+              <GeneralKatkilari generaller={savas.log.defenderGenerals ?? []} taraf="Savunan" />
 
               {yagmaVar ? (
                 <Kart className="p-3">
