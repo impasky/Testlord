@@ -49,8 +49,17 @@
 
   --font-baslik: Rubik, system-ui, -apple-system, sans-serif;
 
-  /* Sabit çubukların yüksekliği — içerik dolgusu bunlara bağlı */
-  --ust-bar: 108px;
+  /*
+   * Sabit çubukların yüksekliği — içerik dolgusu bunlara bağlı.
+   *
+   * --ust-bar yalnızca ilk karenin başlangıç değeri: MobilKabuk başlığı
+   * ölçüp bunu gerçek yükseklikle değiştiriyor. Elle tutulan bir sayı
+   * er ya da geç başlıktan sapıyor (bu 21px sapmıştı).
+   *
+   * --alt-bar tersine KAYNAK: alt gezinme çubuğunun yüksekliği bundan
+   * geliyor, ölçülmüyor.
+   */
+  --ust-bar: 88px;
   --alt-bar: 68px;
 }
 

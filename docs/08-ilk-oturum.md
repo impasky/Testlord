@@ -528,3 +528,39 @@ adla klasöre koymak yetiyor. Bu turda bekleyen yerler eklendi:
 
 Altısı geldiğinde oyunun beş ekranı birden değişir; otuz ekipman görseli
 gelmeden de oyun tutarlı çalışmaya devam eder.
+
+### Altı ekran zemini geldi — ve iki hata çıkardı
+
+Oyuncu istemleri kullanıp altı zemini üretip gönderdi. Görseller yerine
+konunca iki hata ortaya çıktı; ikisi de görselsiz hâlde görünmüyordu.
+
+**1. Giriş zemini hiç görünmedi.** `TamZemin` görseli `-z-10` ile arkaya
+atıyordu. Boyama sırasında negatif z katmanı kök öğenin arka planının
+üstünde ama `body`nin arka planının ALTINDA kalıyor; `styles.css` `body`ye
+de opak bir zemin verdiği için görsel tamamen örtülüyordu. `z-0` konumlanmış
+öğeleri blok arka planlarından sonra boyatıyor — karşılığı içeriğin
+`relative z-10` olması.
+
+**2. Başlıkla afiş arasında karanlık bir bant.** `--ust-bar` elle yazılmış
+bir sabitti: 108px. Ölçülen başlık yüksekliği 87px. Yani her ekranın
+tepesinde 21px ölü boşluk vardı ve kimse fark etmemişti — kartlarda nefes
+payı gibi duruyor, manzara şeridi gelince afişi havada asılı bırakan bir
+bant oluyordu.
+
+Sabiti düzeltmek yerine ölçtürdük: `MobilKabuk` başlığa bir `ResizeObserver`
+takıp `--ust-bar`ı gerçek yükseklikten yazıyor. Tahmin etmekten ayrıca
+sağlam — uzun lord adı, sistem yazı tipi büyütmesi ya da çentik dolgusu
+başlığı büyütürse içerik altına kaymıyor. `styles.css`teki değer artık
+sadece ilk karenin başlangıcı. (`--alt-bar` tersine kaynak: gezinme
+çubuğunun yüksekliği ondan geliyor, ölçülmüyor.)
+
+**Filigran.** Üretim aracı işaretini köşeye yapıştırmıyor, kenardan bir
+tutam içeride bırakıyor; `filigran-sil.py`'nin köşe kutusu onu ancak yarım
+yakalıyordu. Araca `--kutu sol,ust,sag,alt` eklendi. `tools/zemin-ekle.py`
+üç adımı (işaret temizliği → orana kırpma → WebP) tek yerde topluyor ve
+kırpma/kayıt kısmını `gorsel-uret.py`den ödünç alıyor, kopyalamıyor:
+kategori boyutu değişirse elle eklenen görseller de uyar.
+
+**Açık kalan:** Demirhane zemini diğer beşten farklı bir üslupta geldi —
+ötekiler çizgi konturlu, o daha fotoğrafımsı. Tek başına iyi ama sette
+yamalı duruyor. Aynı istemle yeniden üretilirse set tamamlanır.

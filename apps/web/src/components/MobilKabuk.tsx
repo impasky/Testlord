@@ -4,7 +4,7 @@
  * Masaüstü düzeni yok. Tüm ekranlar tek sütun, dokunmatik hedefleri ≥44px,
  * içerik sabit çubukların altında kalmayacak şekilde dolgulu.
  */
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { LordState } from '../api/client';
 import {
   IkonAltin,
@@ -116,10 +116,33 @@ export function MobilKabuk({
   const [menuAcik, setMenuAcik] = useState(false);
   const menudeMi = MENU_SEKMELERI.some((m) => m.key === sekme);
 
+  // --ust-bar başlığın GERÇEK yüksekliğinden gelir, elle yazılmış bir
+  // sabitten değil. styles.css'teki 108px bir tahmindi ve ölçülen 87px'ten
+  // 21px fazlaydı: her ekranın tepesinde o kadar ölü boşluk kalıyordu.
+  // Kartlarda fark edilmiyordu, manzara şeridi gelince başlıkla afiş
+  // arasında duran karanlık bir bant olarak ortaya çıktı.
+  //
+  // Ölçmek tahminden ayrıca sağlam: lord adı uzunluğu, sistem yazı tipi
+  // büyütmesi ya da çentik dolgusu başlığı büyütürse içerik altına kaymıyor.
+  const baslikRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const el = baslikRef.current;
+    if (!el) return;
+    const yaz = () =>
+      document.documentElement.style.setProperty('--ust-bar', `${el.offsetHeight}px`);
+    yaz();
+    const gozcu = new ResizeObserver(yaz);
+    gozcu.observe(el);
+    return () => gozcu.disconnect();
+  }, []);
+
   return (
     <div className="min-h-dvh">
       {/* ---- Üst durum çubuğu ---- */}
-      <header className="fixed inset-x-0 top-0 z-30 border-b border-kenar bg-derin/95 backdrop-blur">
+      <header
+        ref={baslikRef}
+        className="fixed inset-x-0 top-0 z-30 border-b border-kenar bg-derin/95 backdrop-blur"
+      >
         <div className="mx-auto max-w-lg px-3 pt-2 pb-2">
           <div className="mb-2 flex items-center gap-2">
             <div className="flex min-w-0 flex-1 items-center gap-2">

@@ -82,6 +82,13 @@ export function Zemin({
  *
  * Şerit değil tam ekran: burada arayüz sayfayı doldurmuyor, ortada duran
  * tek bir kart var; şerit koysak kartın üstünde asılı kalırdı.
+ *
+ * `z-0`, `-z-10` DEĞİL. Negatif z ile denendi ve görsel hiç görünmedi:
+ * boyama sırasında negatif z katmanı kök öğenin arka planının üstünde ama
+ * `body`nin arka planının ALTINDA kalıyor; styles.css `body`ye de opak bir
+ * zemin verdiği için görseli tamamen örtüyordu. `z-0` konumlanmış öğeleri
+ * blok arka planlarından sonra boyatıyor. Karşılığı: içeriğin `relative`
+ * olması gerekiyor, yoksa zemin onun üstüne biner.
  */
 export function TamZemin({ ad }: { ad: string }) {
   const [gorunur, setGorunur] = useState(false);
@@ -92,7 +99,7 @@ export function TamZemin({ ad }: { ad: string }) {
         src={`/gorseller/zeminler/${ad}.webp`}
         alt=""
         aria-hidden
-        className="fixed inset-0 -z-10 h-full w-full object-cover transition-opacity duration-700"
+        className="fixed inset-0 z-0 h-full w-full object-cover transition-opacity duration-700"
         style={{ opacity: gorunur ? 1 : 0 }}
         loading="eager"
         decoding="async"
@@ -101,10 +108,10 @@ export function TamZemin({ ad }: { ad: string }) {
       {/* Perde: manzara okunaklı kalsın ama metnin kontrastını yemesin. */}
       {gorunur && (
         <div
-          className="fixed inset-0 -z-10"
+          className="fixed inset-0 z-0"
           style={{
             background:
-              'linear-gradient(180deg, color-mix(in srgb, var(--color-gece) 55%, transparent) 0%, color-mix(in srgb, var(--color-gece) 82%, transparent) 55%, var(--color-gece) 100%)',
+              'linear-gradient(180deg, color-mix(in srgb, var(--color-gece) 45%, transparent) 0%, color-mix(in srgb, var(--color-gece) 78%, transparent) 45%, color-mix(in srgb, var(--color-gece) 94%, transparent) 100%)',
           }}
         />
       )}

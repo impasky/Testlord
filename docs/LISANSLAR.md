@@ -94,6 +94,18 @@ temizleniyor; hangi dosyada yapıldığı aşağıdaki tabloda yazıyor.
 | `bolgeler/kale.webp` | eklendi |
 | `bolgeler/taht.webp` | eklendi (köşe filigranı silindi) |
 | `generaller/*` (12 dosya) | eklendi |
+| `zeminler/malikane.webp` | eklendi (işaret silindi) |
+| `zeminler/kisla.webp` | eklendi (işaret silindi) |
+| `zeminler/demirhane.webp` | eklendi (işaret silindi) |
+| `zeminler/generaller.webp` | eklendi (işaret silindi) |
+| `zeminler/siralama.webp` | eklendi (işaret silindi, tam ayna) |
+| `zeminler/giris.webp` | eklendi (işaret silindi) |
+
+Ekran zeminlerindeki işaret köşeye yapışık değil, kenardan bir tutam
+içerideydi; `filigran-sil.py`'nin köşe kutusu onu ancak yarım yakalıyordu.
+Araca `--kutu` eklendi ve altısı `tools/zemin-ekle.py` ile aynı işlemden
+geçirildi. Sıralama'da yerel yansıma taş basamakta ters V bırakıyordu,
+salon simetrik olduğu için `--tam-ayna` dikişsiz sonuç verdi.
 
 O aşamadaki 22 görselin tamamı eklendi. game-icons ikonları arayüzde kullanılmaya devam
 ediyor (kaynak sayaçları, stat satırları, gezinme, harita hex'leri), o yüzden

@@ -18,3 +18,7 @@ apps/api/node_modules/.prisma/
 # icinde oyuncu e-postalari ve parola hash'leri var.
 yedek/
 *.dump
+
+# Python onbellegi
+__pycache__/
+*.pyc

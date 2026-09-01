@@ -27,6 +27,12 @@ KULLANIM:
   python3 tools/filigran-sil.py <dosya> --oran 0.15      # kutuyu buyut
   python3 tools/filigran-sil.py <dosya> --tam-ayna       # simetrik sahnelerde
   python3 tools/filigran-sil.py <dosya> --onizleme       # yazmadan yan yana goster
+  python3 tools/filigran-sil.py <dosya> --kutu 0.88,0.81,0.94,0.90
+
+--kutu: filigran koseye YAPISIK degilse. Dort sayi: sol,ust,sag,alt.
+Hepsi 1'den kucukse oran, degilse piksel sayilir. Bazi araclar isaretini
+kenardan bir tutam iceride birakiyor; kose kutusu onu sadece kismen
+yakalayip yarim bir iz birakiyor.
 """
 from __future__ import annotations
 
@@ -48,21 +54,43 @@ def kutu_hesapla(g: int, y: int, kose: str, oran: float):
     return (x0, y0, x0 + kg, y0 + ky), sag
 
 
-def sil(im, kose: str, oran: float, tam_ayna: bool = False):
+def kutu_coz(metin: str, g: int, y: int):
+    """"sol,ust,sag,alt" metnini piksel kutusuna cevirir (oran ya da piksel)."""
+    sayilar = [float(p) for p in metin.split(",")]
+    if len(sayilar) != 4:
+        raise ValueError("--kutu dort sayi ister: sol,ust,sag,alt")
+    if all(s <= 1 for s in sayilar):
+        sayilar = [sayilar[0] * g, sayilar[1] * y, sayilar[2] * g, sayilar[3] * y]
+    x0, y0, x1, y1 = (int(round(s)) for s in sayilar)
+    if x1 <= x0 or y1 <= y0:
+        raise ValueError("--kutu bos: sag > sol ve alt > ust olmali")
+    return x0, y0, x1, y1
+
+
+def sil_kutu(im, kutu, tam_ayna: bool = False):
+    """
+    Verilen kutuyu komsu seridin yatay aynasiyla degistirir.
+
+    Yansima yonu kutunun goruntudeki yerine gore secilir: sag yaridaysa
+    solundaki serit, sol yaridaysa sagindaki serit tasinir. Boylece yama
+    her zaman goruntunun ICINDEN gelir, kenar disina tasmaz.
+    """
     from PIL import Image, ImageDraw, ImageFilter
 
     g, y = im.size
-    (x0, y0, x1, y1), sag = kutu_hesapla(g, y, kose, oran)
+    x0, y0, x1, y1 = kutu
     en = x1 - x0
 
     if tam_ayna:
         yamali = im.transpose(Image.FLIP_LEFT_RIGHT)
     else:
-        # Kutunun ic tarafindaki komsu serit: sag kosede solundaki, sol kosede sagindaki
-        if sag:
-            komsu = im.crop((x0 - en, y0, x0, y1))
-        else:
-            komsu = im.crop((x1, y0, x1 + en, y1))
+        sag = (x0 + x1) / 2 > g / 2
+        # Serit goruntu disina tasarsa ters yone don
+        if sag and x0 - en < 0:
+            sag = False
+        if not sag and x1 + en > g:
+            sag = True
+        komsu = im.crop((x0 - en, y0, x0, y1) if sag else (x1, y0, x1 + en, y1))
         komsu = komsu.transpose(Image.FLIP_LEFT_RIGHT)
         yamali = im.copy()
         yamali.paste(komsu, (x0, y0))
@@ -74,6 +102,12 @@ def sil(im, kose: str, oran: float, tam_ayna: bool = False):
     sonuc = im.copy()
     sonuc.paste(yamali, (0, 0), maske)
     return sonuc
+
+
+def sil(im, kose: str, oran: float, tam_ayna: bool = False):
+    g, y = im.size
+    kutu, _ = kutu_hesapla(g, y, kose, oran)
+    return sil_kutu(im, kutu, tam_ayna)
 
 
 def main() -> int:
@@ -98,7 +132,16 @@ def main() -> int:
     oran = float(argv[argv.index("--oran") + 1]) if "--oran" in argv else ORAN
 
     im = Image.open(yol).convert("RGB")
-    sonuc = sil(im, kose, oran, tam_ayna="--tam-ayna" in argv)
+    tam_ayna = "--tam-ayna" in argv
+    if "--kutu" in argv:
+        try:
+            kutu = kutu_coz(argv[argv.index("--kutu") + 1], *im.size)
+        except (IndexError, ValueError) as e:
+            print(f"--kutu okunamadi: {e}", file=sys.stderr)
+            return 2
+        sonuc = sil_kutu(im, kutu, tam_ayna)
+    else:
+        sonuc = sil(im, kose, oran, tam_ayna)
 
     if "--onizleme" in argv:
         g, y = im.size

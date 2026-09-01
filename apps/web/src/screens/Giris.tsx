@@ -50,7 +50,8 @@ export function Giris({ onGiris }: { onGiris: () => void }) {
   return (
     <div className="flex min-h-dvh flex-col justify-center px-4 py-8">
       <TamZemin ad="giris" />
-      <div className="mx-auto w-full max-w-sm">
+      {/* relative: TamZemin z-0'da duruyor, içerik onun üstünde kalmalı. */}
+      <div className="relative z-10 mx-auto w-full max-w-sm">
         <header className="mb-7 text-center">
           <span className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-2xl bg-altin/15 text-altin">
             <IkonNavMalikane boyut={36} />
