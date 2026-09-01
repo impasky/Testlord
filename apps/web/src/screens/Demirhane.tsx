@@ -1,21 +1,43 @@
-/** Demirhane — ekipman üretimi, envanter, ordu donanımı. */
-import { EQUIP_SLOTS } from '@lordlar/shared';
+/**
+ * Demirhane — ekipman üretimi, envanter, ordu donanımı.
+ *
+ * Kışla ile aynı kural: oyuncu bastığı her düğmenin sonucunu bu ekranda
+ * görmeli. Üretim ve yükseltme kuyrukları düğmelerin altında beliriyor,
+ * yapılamayan işlemin düğmesi kapalı ve sebebi yazılı.
+ */
+import { EQUIP_SLOTS, B } from '@lordlar/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { ApiError, api, type ItemDto } from '../api/client';
+import { ApiError, api, type ItemDto, type LordState, type QueueItem } from '../api/client';
 import { IkonAltin, IkonDemir, IkonSure, IkonNavDemirhane } from '../components/Ikonlar';
 import {
   Bolum,
   Buton,
+  EngelNotu,
   Ilerleme,
   Kart,
+  KuyrukSeridi,
   NADIRLIK,
   Rozet,
   formatKalan,
   formatSayi,
+  kaynakEngeli,
   nadirlikRengi,
   type Nadirlik,
 } from '../components/ui';
+
+const URETIM_LIMITI = B.kuyruklar.es_zamanli.craft;
+const YUKSELTME_LIMITI = B.kuyruklar.es_zamanli.upgrade_item;
+const DONANIM_LIMITI = B.kuyruklar.es_zamanli.upgrade_gear;
+
+/** Kuyruk doluysa sebebini söyler. Üç bölümde de aynı cümle kuruluyordu. */
+function kuyrukEngeli(acik: number, limit: number, ad: string) {
+  if (acik < limit) return null;
+  return {
+    kisa: `${ad} kuyruğu dolu`,
+    uzun: `Aynı anda en fazla ${limit} ${ad.toLocaleLowerCase('tr')} işi yapılabilir. Biri bitmeden yenisi başlamaz.`,
+  };
+}
 
 const SLOT_ADI: Record<string, string> = {
   silah: 'Silah',
@@ -28,17 +50,29 @@ const SLOT_ADI: Record<string, string> = {
 
 function EsyaKarti({
   item,
+  kaynaklar,
+  yukseltmeKuyrugu,
+  bunuYukseltiyor,
   onEquip,
   onUpgrade,
   onSell,
-  bekliyor,
+  bekleyenEylem,
 }: {
   item: ItemDto;
+  kaynaklar: { altin: number; demir: number; erzak: number };
+  yukseltmeKuyrugu: QueueItem[];
+  bunuYukseltiyor: QueueItem[];
   onEquip: () => void;
   onUpgrade: () => void;
   onSell: () => void;
-  bekliyor: boolean;
+  /** Bu kartta hangi eylem gönderiliyor; diğer kartlar etkilenmez. */
+  bekleyenEylem: 'equip' | 'upgrade' | 'sell' | null;
 }) {
+  const yukseltmeEngeli =
+    item.upgradeCost === null
+      ? { kisa: 'Yükseltme sonuna geldi', uzun: 'Bu eşya daha fazla yükseltilemez.' }
+      : (kuyrukEngeli(yukseltmeKuyrugu.length, YUKSELTME_LIMITI, 'Yükseltme') ??
+        kaynakEngeli(item.upgradeCost, kaynaklar));
   const renk = nadirlikRengi(item.rarity);
   const n = NADIRLIK[item.rarity as Nadirlik] ?? NADIRLIK.siradan;
 
@@ -64,16 +98,31 @@ function EsyaKarti({
       </div>
 
       <div className="flex flex-wrap gap-1.5">
-        <Buton tur={item.equipped ? 'sessiz' : 'altin'} boy="kucuk" onClick={onEquip} disabled={bekliyor}>
+        <Buton
+          tur={item.equipped ? 'sessiz' : 'altin'}
+          boy="kucuk"
+          onClick={onEquip}
+          disabled={bekleyenEylem !== null}
+        >
           {item.equipped ? 'Çıkar' : 'Kuşan'}
         </Buton>
         {item.upgradeCost && (
-          <Buton tur="sessiz" boy="kucuk" onClick={onUpgrade} disabled={bekliyor}>
+          <Buton
+            tur="sessiz"
+            boy="kucuk"
+            onClick={onUpgrade}
+            disabled={bekleyenEylem !== null || yukseltmeEngeli !== null}
+          >
             +{item.upgradeLevel + 1} · %{Math.round((item.upgradeChance ?? 0) * 100)}
           </Buton>
         )}
         {!item.equipped && (
-          <Buton tur="anahat" boy="kucuk" onClick={onSell} disabled={bekliyor}>
+          <Buton
+            tur="anahat"
+            boy="kucuk"
+            onClick={onSell}
+            disabled={bekleyenEylem !== null}
+          >
             Sat {formatSayi(item.sellValue)}
           </Buton>
         )}
@@ -81,25 +130,51 @@ function EsyaKarti({
 
       {item.upgradeCost && (
         <p className="tabular mt-1.5 text-[10px] text-sonuk">
-          {formatSayi(item.upgradeCost.altin)} altın · {formatSayi(item.upgradeCost.demir)} demir
+          <span className={item.upgradeCost.altin > kaynaklar.altin ? 'text-kirmizi' : ''}>
+            {formatSayi(item.upgradeCost.altin)} altın
+          </span>
+          {' · '}
+          <span className={item.upgradeCost.demir > kaynaklar.demir ? 'text-kirmizi' : ''}>
+            {formatSayi(item.upgradeCost.demir)} demir
+          </span>
           {(item.upgradeChance ?? 1) < 1 && ' · başarısızsa eşya sağlam kalır'}
         </p>
       )}
+
+      {/* Engeli yalnızca yükseltilebilir eşyada gösteriyoruz: sonuna gelmiş
+          bir eşyada "yükseltilemez" uyarısı her karta kırmızı satır ekler. */}
+      {item.upgradeCost && yukseltmeEngeli && (
+        <EngelNotu kisa={yukseltmeEngeli.kisa} uzun={yukseltmeEngeli.uzun} />
+      )}
+
+      <KuyrukSeridi kuyruklar={bunuYukseltiyor} etiket="Yükseltiliyor" />
     </Kart>
   );
 }
 
-export function Demirhane({ onGuncelle }: { onGuncelle: () => void }) {
+export function Demirhane({
+  lord,
+  queues,
+  onGuncelle,
+}: {
+  lord: LordState;
+  queues: QueueItem[];
+  onGuncelle: () => void;
+}) {
   const qc = useQueryClient();
   const [tier, setTier] = useState(1);
   const [slot, setSlot] = useState<string>('silah');
   const [hata, setHata] = useState<string | null>(null);
+  // Hangi eylem gönderiliyor. Tek bir bayrak ekrandaki BÜTÜN düğmeleri
+  // birden söndürüyordu; oyuncu hangi işin sürdüğünü göremiyordu.
+  const [gonderilen, setGonderilen] = useState<string | null>(null);
 
   const items = useQuery({ queryKey: ['items'], queryFn: api.items });
   const gear = useQuery({ queryKey: ['gear'], queryFn: api.gear });
 
   const mut = useMutation({
-    mutationFn: async (f: () => Promise<unknown>) => f(),
+    mutationFn: async ({ f }: { f: () => Promise<unknown>; anahtar: string }) => f(),
+    onMutate: ({ anahtar }) => setGonderilen(anahtar),
     onSuccess: () => {
       setHata(null);
       void qc.invalidateQueries({ queryKey: ['items'] });
@@ -107,12 +182,21 @@ export function Demirhane({ onGuncelle }: { onGuncelle: () => void }) {
       onGuncelle();
     },
     onError: (e) => setHata(e instanceof ApiError ? e.message : 'İşlem başarısız.'),
+    onSettled: () => setGonderilen(null),
   });
+
+  const uretimKuyrugu = queues.filter((q) => q.kind === 'craft');
+  const yukseltmeKuyrugu = queues.filter((q) => q.kind === 'upgrade_item');
+  const donanimKuyrugu = queues.filter((q) => q.kind === 'upgrade_gear');
 
   if (items.isLoading || gear.isLoading) {
     return <p className="pt-6 text-center text-solgun">Demirhane açılıyor...</p>;
   }
   const secili = items.data?.tiers.find((t) => t.tier === tier);
+  const uretimEngeli = secili
+    ? (kuyrukEngeli(uretimKuyrugu.length, URETIM_LIMITI, 'Üretim') ??
+      kaynakEngeli(secili.cost, lord.resources))
+    : null;
 
   return (
     <div className="space-y-4 pt-3">
@@ -162,10 +246,18 @@ export function Demirhane({ onGuncelle }: { onGuncelle: () => void }) {
             <>
               <div className="oyuk mb-3 rounded-xl p-3">
                 <div className="tabular mb-2 flex flex-wrap gap-x-3 gap-y-1 text-[12px] text-solgun">
-                  <span className="text-kaynak-altin">
+                  <span
+                    className={
+                      secili.cost.altin > lord.resources.altin ? 'text-kirmizi' : 'text-kaynak-altin'
+                    }
+                  >
                     <IkonAltin boyut={13} /> {formatSayi(secili.cost.altin)}
                   </span>
-                  <span className="text-kaynak-demir">
+                  <span
+                    className={
+                      secili.cost.demir > lord.resources.demir ? 'text-kirmizi' : 'text-kaynak-demir'
+                    }
+                  >
                     <IkonDemir boyut={13} /> {formatSayi(secili.cost.demir)}
                   </span>
                   <span>
@@ -186,9 +278,36 @@ export function Demirhane({ onGuncelle }: { onGuncelle: () => void }) {
                 </p>
               </div>
 
-              <Buton onClick={() => mut.mutate(() => api.craft(tier, slot))} disabled={mut.isPending} tam boy="buyuk">
-                T{tier} {SLOT_ADI[slot]} üret
+              <Buton
+                onClick={() =>
+                  mut.mutate({ anahtar: 'craft', f: () => api.craft(tier, slot) })
+                }
+                disabled={gonderilen === 'craft' || uretimEngeli !== null}
+                tam
+                boy="buyuk"
+              >
+                {gonderilen === 'craft'
+                  ? 'Gönderiliyor…'
+                  : `T${tier} ${SLOT_ADI[slot]} üret`}
               </Buton>
+
+              {uretimEngeli && (
+                <EngelNotu kisa={uretimEngeli.kisa} uzun={uretimEngeli.uzun} />
+              )}
+
+              <KuyrukSeridi
+                kuyruklar={uretimKuyrugu}
+                etiket={
+                  <>
+                    Üretimde
+                    {uretimKuyrugu.length > 1 && (
+                      <span className="ml-1 font-normal text-solgun">
+                        ({uretimKuyrugu.length} parça)
+                      </span>
+                    )}
+                  </>
+                }
+              />
             </>
           )}
         </Kart>
@@ -205,10 +324,23 @@ export function Demirhane({ onGuncelle }: { onGuncelle: () => void }) {
               <EsyaKarti
                 key={i.id}
                 item={i}
-                bekliyor={mut.isPending}
-                onEquip={() => mut.mutate(() => api.equip(i.id))}
-                onUpgrade={() => mut.mutate(() => api.upgradeItem(i.id))}
-                onSell={() => mut.mutate(() => api.sellItem(i.id))}
+                kaynaklar={lord.resources}
+                yukseltmeKuyrugu={yukseltmeKuyrugu}
+                bunuYukseltiyor={yukseltmeKuyrugu.filter((q) => q.payload.itemId === i.id)}
+                bekleyenEylem={
+                  gonderilen === `equip:${i.id}`
+                    ? 'equip'
+                    : gonderilen === `upgrade:${i.id}`
+                      ? 'upgrade'
+                      : gonderilen === `sell:${i.id}`
+                        ? 'sell'
+                        : null
+                }
+                onEquip={() => mut.mutate({ anahtar: `equip:${i.id}`, f: () => api.equip(i.id) })}
+                onUpgrade={() =>
+                  mut.mutate({ anahtar: `upgrade:${i.id}`, f: () => api.upgradeItem(i.id) })
+                }
+                onSell={() => mut.mutate({ anahtar: `sell:${i.id}`, f: () => api.sellItem(i.id) })}
               />
             ))}
           </div>
@@ -237,15 +369,52 @@ export function Demirhane({ onGuncelle }: { onGuncelle: () => void }) {
               </div>
               <Ilerleme deger={g.level} max={g.maxLevel} renk="var(--color-altin)" boy="ince" />
               {g.nextCost ? (
-                <div className="mt-2.5 flex items-center gap-2">
-                  <Buton tur="sessiz" boy="kucuk" onClick={() => mut.mutate(() => api.upgradeGear(g.line))} disabled={mut.isPending}>
-                    Seviye {g.level + 1}
-                  </Buton>
-                  <span className="tabular text-[10px] text-sonuk">
-                    {formatSayi(g.nextCost.altin)} altın · {formatSayi(g.nextCost.demir)} demir ·{' '}
-                    {formatKalan(g.nextCost.sec * 1000)}
-                  </span>
-                </div>
+                (() => {
+                  const engel =
+                    kuyrukEngeli(donanimKuyrugu.length, DONANIM_LIMITI, 'Donanım') ??
+                    kaynakEngeli(g.nextCost, lord.resources);
+                  const anahtar = `gear:${g.line}`;
+                  return (
+                    <>
+                      <div className="mt-2.5 flex items-center gap-2">
+                        <Buton
+                          tur="sessiz"
+                          boy="kucuk"
+                          onClick={() =>
+                            mut.mutate({ anahtar, f: () => api.upgradeGear(g.line) })
+                          }
+                          disabled={gonderilen === anahtar || engel !== null}
+                        >
+                          Seviye {g.level + 1}
+                        </Buton>
+                        <span className="tabular text-[10px] text-sonuk">
+                          <span
+                            className={
+                              g.nextCost.altin > lord.resources.altin ? 'text-kirmizi' : ''
+                            }
+                          >
+                            {formatSayi(g.nextCost.altin)} altın
+                          </span>
+                          {' · '}
+                          <span
+                            className={
+                              g.nextCost.demir > lord.resources.demir ? 'text-kirmizi' : ''
+                            }
+                          >
+                            {formatSayi(g.nextCost.demir)} demir
+                          </span>
+                          {' · '}
+                          {formatKalan(g.nextCost.sec * 1000)}
+                        </span>
+                      </div>
+                      {engel && <EngelNotu kisa={engel.kisa} uzun={engel.uzun} />}
+                      <KuyrukSeridi
+                        kuyruklar={donanimKuyrugu.filter((q) => q.payload.line === g.line)}
+                        etiket="Yükseltiliyor"
+                      />
+                    </>
+                  );
+                })()
               ) : (
                 <p className="mt-2 text-[11px] text-altin">En üst seviye</p>
               )}

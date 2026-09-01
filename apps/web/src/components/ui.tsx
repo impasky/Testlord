@@ -6,6 +6,7 @@
  * Masaüstü düzeni YOK — her şey tek sütun, dokunmatik hedefleri ≥44px.
  */
 import { useEffect, useState, type ReactNode } from 'react';
+import { IkonUyari } from './Ikonlar';
 
 /* ---------------- Geri sayım ---------------- */
 
@@ -23,6 +24,87 @@ export function GeriSayim({ bitis }: { bitis: string }) {
     return () => clearInterval(id);
   }, []);
   return <span className="tabular">{formatKalan(new Date(bitis).getTime() - Date.now())}</span>;
+}
+
+/* ---------------- Kuyruk ve engel ---------------- */
+
+/**
+ * Devam eden bir işin şeridi: ne kadar kaldı, ne kadarı bitti.
+ *
+ * Eylem düğmesinin hemen altına konur. Oyuncunun bastığı yerin altında
+ * belirmesi kasıtlı — parmağı zaten oradadır ve sonucu görmek için başka
+ * bir ekrana gitmesi gerekmez.
+ *
+ * Birden fazla iş varsa en erken biten öne çıkar: oyuncunun beklediği ilk
+ * sonuç odur.
+ */
+export function KuyrukSeridi({
+  kuyruklar,
+  etiket,
+}: {
+  kuyruklar: { startedAt: string; finishAt: string }[];
+  etiket: ReactNode;
+}) {
+  if (kuyruklar.length === 0) return null;
+
+  const ilk = [...kuyruklar].sort(
+    (a, b) => new Date(a.finishAt).getTime() - new Date(b.finishAt).getTime(),
+  )[0]!;
+  const bas = new Date(ilk.startedAt).getTime();
+  const bit = new Date(ilk.finishAt).getTime();
+  const gecen = bit > bas ? Math.max(0, Math.min(1, (Date.now() - bas) / (bit - bas))) : 1;
+
+  return (
+    <div className="mt-2 rounded-xl border border-altin/35 bg-altin/10 p-2.5">
+      <div className="mb-1.5 flex items-baseline justify-between gap-2 text-[12px]">
+        <span className="baslik text-altin">{etiket}</span>
+        <span className="text-altin">
+          <GeriSayim bitis={ilk.finishAt} />
+        </span>
+      </div>
+      <Ilerleme deger={gecen} max={1} renk="var(--color-altin)" boy="ince" />
+    </div>
+  );
+}
+
+/**
+ * Kapalı bir düğmenin sebebi.
+ *
+ * Kısa kısım ne olduğunu, uzun kısım nasıl düzeltileceğini söyler.
+ * Sebebi göstermeden düğmeyi kapatmak, oyuncuyu sessizce çıkmaza sokar.
+ */
+export function EngelNotu({ kisa, uzun }: { kisa: string; uzun: string }) {
+  return (
+    <p className="mt-1.5 flex gap-1.5 text-[11px] leading-snug text-kirmizi">
+      <span className="shrink-0 pt-px">
+        <IkonUyari boyut={13} />
+      </span>
+      <span>
+        <strong className="font-bold">{kisa}.</strong>{' '}
+        <span className="text-solgun">{uzun}</span>
+      </span>
+    </p>
+  );
+}
+
+/**
+ * Kaynak yetmiyorsa eksik miktarları söyler, yetiyorsa null.
+ * Üç ekranda da aynı hesap yapılıyordu.
+ */
+export function kaynakEngeli(
+  maliyet: { altin?: number; demir?: number; erzak?: number },
+  kaynaklar: { altin: number; demir: number; erzak: number },
+): { kisa: string; uzun: string } | null {
+  const ad = { altin: 'altın', demir: 'demir', erzak: 'erzak' } as const;
+  const eksik = (['altin', 'demir', 'erzak'] as const)
+    .map((k) => ({ k, fark: (maliyet[k] ?? 0) - kaynaklar[k] }))
+    .filter((x) => x.fark > 0);
+
+  if (eksik.length === 0) return null;
+  return {
+    kisa: eksik.length === 1 ? `${ad[eksik[0]!.k]} yetmiyor` : 'Kaynağın yetmiyor',
+    uzun: eksik.map((x) => `${formatSayi(x.fark)} ${ad[x.k]}`).join(', ') + ' eksik.',
+  };
 }
 
 /* ---------------- Nadirlik ---------------- */

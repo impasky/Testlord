@@ -29,13 +29,15 @@ import {
   Bolum,
   Buton,
   DegerKarti,
-  GeriSayim,
+  EngelNotu,
   IkonluDeger,
   Ilerleme,
   Input,
   Kart,
+  KuyrukSeridi,
   formatKalan,
   formatSayi,
+  kaynakEngeli,
 } from '../components/ui';
 
 /** Aynı anda kaç eğitim kuyruğu açılabilir. Sunucu da bu sayıyı kullanıyor. */
@@ -82,51 +84,7 @@ function egitimEngeli(g: {
     };
   }
 
-  const eksik = (['altin', 'demir', 'erzak'] as const)
-    .map((k) => ({ k, fark: g.maliyet[k] - g.kaynaklar[k] }))
-    .filter((x) => x.fark > 0);
-
-  if (eksik.length > 0) {
-    const ad = { altin: 'altın', demir: 'demir', erzak: 'erzak' };
-    return {
-      kisa: eksik.length === 1 ? `${ad[eksik[0]!.k]} yetmiyor` : 'Kaynağın yetmiyor',
-      uzun: eksik.map((x) => `${formatSayi(x.fark)} ${ad[x.k]}`).join(', ') + ' eksik.',
-    };
-  }
-
-  return null;
-}
-
-/** Bu birimin eğitim kuyruğu: kaç asker, ne zaman biter. */
-function KuyrukSeridi({ kuyruklar }: { kuyruklar: QueueItem[] }) {
-  const toplam = kuyruklar.reduce(
-    (t, q) => t + (typeof q.payload.count === 'number' ? q.payload.count : 0),
-    0,
-  );
-  // En erken biten öne çıkar: oyuncunun beklediği ilk sonuç o.
-  const ilk = [...kuyruklar].sort(
-    (a, b) => new Date(a.finishAt).getTime() - new Date(b.finishAt).getTime(),
-  )[0]!;
-  const bas = new Date(ilk.startedAt).getTime();
-  const bit = new Date(ilk.finishAt).getTime();
-  const gecen = bit > bas ? Math.max(0, Math.min(1, (Date.now() - bas) / (bit - bas))) : 1;
-
-  return (
-    <div className="mt-2 rounded-xl border border-altin/35 bg-altin/10 p-2.5">
-      <div className="mb-1.5 flex items-baseline justify-between gap-2 text-[12px]">
-        <span className="baslik text-altin">
-          Eğitimde {formatSayi(toplam)}
-          {kuyruklar.length > 1 && (
-            <span className="ml-1 font-normal text-solgun">({kuyruklar.length} parti)</span>
-          )}
-        </span>
-        <span className="text-altin">
-          <GeriSayim bitis={ilk.finishAt} />
-        </span>
-      </div>
-      <Ilerleme deger={gecen} max={1} renk="var(--color-altin)" boy="ince" />
-    </div>
-  );
+  return kaynakEngeli(g.maliyet, g.kaynaklar);
 }
 
 function BirimKarti({
@@ -150,6 +108,11 @@ function BirimKarti({
 }) {
   const [adet, setAdet] = useState(10);
   const tip = u.type as UnitType;
+
+  const kuyrukAdedi = kuyruklar.reduce(
+    (t, q) => t + (typeof q.payload.count === 'number' ? q.payload.count : 0),
+    0,
+  );
 
   const maliyet = {
     altin: u.maliyet.altin * adet,
@@ -266,19 +229,19 @@ function BirimKarti({
           {bekliyor ? 'Gönderiliyor…' : `${adet} ${unitName(tip)} eğit`}
         </Buton>
 
-        {engel && (
-          <p className="mt-1.5 flex gap-1.5 text-[11px] leading-snug text-kirmizi">
-            <span className="shrink-0">
-              <IkonUyari boyut={13} />
-            </span>
-            <span>
-              <strong className="font-bold">{engel.kisa}.</strong>{' '}
-              <span className="text-solgun">{engel.uzun}</span>
-            </span>
-          </p>
-        )}
+        {engel && <EngelNotu kisa={engel.kisa} uzun={engel.uzun} />}
 
-        {kuyruklar.length > 0 && <KuyrukSeridi kuyruklar={kuyruklar} />}
+        <KuyrukSeridi
+          kuyruklar={kuyruklar}
+          etiket={
+            <>
+              Eğitimde {formatSayi(kuyrukAdedi)}
+              {kuyruklar.length > 1 && (
+                <span className="ml-1 font-normal text-solgun">({kuyruklar.length} parti)</span>
+              )}
+            </>
+          }
+        />
       </div>
     </Kart>
   );

@@ -72,7 +72,7 @@ export function App() {
       )}
       {sekme === 'kisla' && <Kisla lord={lord} queues={queues} onGuncelle={tazele} />}
       {sekme === 'harita' && <Harita lordId={lord.id} onGuncelle={tazele} />}
-      {sekme === 'demirhane' && <Demirhane onGuncelle={tazele} />}
+      {sekme === 'demirhane' && <Demirhane lord={lord} queues={queues} onGuncelle={tazele} />}
       {sekme === 'lord' && <LordEkrani lord={lord} onGuncelle={tazele} />}
       {sekme === 'generaller' && <Generaller onGuncelle={tazele} />}
       {sekme === 'siralama' && <Siralama lordId={lord.id} />}
