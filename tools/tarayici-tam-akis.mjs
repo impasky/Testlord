@@ -154,11 +154,19 @@ await page.locator('svg > g').nth(harita.regions.findIndex((r) => r.id === hedef
 await page.waitForTimeout(900);
 kontrol('Bölge alt sayfası açıldı', await page.locator('text=Saldırı ordusu').isVisible().catch(() => false));
 
+// Önizleme artık ayrı bir düğme değil: ordu seçilince kendiliğinden gelir.
+const onizlemeSozu = page.waitForResponse((r) => r.url().includes('/battle/preview'), {
+  timeout: 15000,
+});
 await page.locator('button:has-text("Hepsi")').first().click();
-await page.waitForTimeout(400);
-await tiklaVeBekle(page, 'button:has-text("Önizle")', '/battle/preview');
-await page.waitForTimeout(500);
+await onizlemeSozu;
+await page.waitForTimeout(600);
 kontrol('Savaş önizlemesi geldi', await page.locator('text=Tahmin:').isVisible().catch(() => false));
+kontrol(
+  'Önizleme kazanç ve bedeli söylüyor',
+  (await page.locator('text=Kazanırsan').isVisible().catch(() => false)) ||
+    (await page.locator('text=Kazansan bile').isVisible().catch(() => false)),
+);
 await page.screenshot({ path: `${CIKTI}/mob-7-saldiri.png` });
 
 await tiklaVeBekle(page, 'button:has-text("Saldır")', '/march');

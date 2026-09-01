@@ -496,5 +496,13 @@
       "upgrade_gear": 1,
       "upgrade_region": 2
     }
+  },
+  "oneri": {
+    "ornek_savas_sayisi": 9,
+    "guvenli_fetih_orani": 1.0,
+    "muhtemel_kazanma_orani": 0.6,
+    "ulasilabilirlik_denetimi": 6,
+    "guvenlik_payi": 0.15,
+    "_not": "Oyuna 'suraya saldir' dedirten esikler. Savasta tur basina +-%7 varyans var; tek simulasyon bir tahmin degil bir kura sonucu. Bu yuzden ayni savas ornek_savas_sayisi kadar calistirilip DAGILIM okunuyor.\nguvenli_fetih_orani neden 1.0: oneri 'ordun yetiyor' ya da 'su kadar asker daha yeterli' dediginde bunu tutmak zorunda. 0.5'te tavsiye yazi-tura, 0.8'de bes seferde bir yaniltiyordu -- oyuncu denileni yapip bolgeyi alamiyordu ve bu, duzeltmeye calistigimiz 'eee ne oldu simdi' hayal kirikliginin ta kendisi. Simdi ORNEGIN HEPSI fetihle bitmeli.\nguvenlik_payi: dokuz ornegin hepsi fetihle bitse bile onuncu tohum farkli dusebilir. Onerilen asker sayisi bu oranda buyutulur -- iyi bir danisman 'elli lazim, altmis goturursen rahat edersin' der.\nmuhtemel_kazanma_orani: savasi kazanmak ama bolgeyi alamamak (dar zafer) bu esigin ustunde soyleniyor.\nulasilabilirlik_denetimi: en yakin hedef alinabilir hedef olmak zorunda degil. Ring 4'teki bir KALE ile bir TARLA ayni 37 birimi barindiriyor ama kalenin tahkimati onu 1. seviye bir lord icin imkansiz kiliyor; kale hex'inde dogan oyuncuya hicbir orduyla alamayacagi hedef gosteriliyordu. En iyi bu kadar aday icin 'komuta kapasiten dolsa alir miydin' sorusu gercekten soruluyor ve ilk ALINABILIR olan seciliyor."
   }
 }

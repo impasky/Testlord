@@ -11,13 +11,95 @@
  */
 import { UNIT_TYPES, unitName, type Army, type UnitType } from '@lordlar/shared';
 import { useQuery } from '@tanstack/react-query';
-import { api, type BattleDto, type GeneralKatkisiDto } from '../api/client';
+import { api, type BattleDto, type GeneralKatkisiDto, type LordOzetiDto } from '../api/client';
 import { BirimIkonu, IkonAltin, IkonDemir, IkonErzak, IkonKapali } from './Ikonlar';
-import { Buton, Kart, Rozet, formatSayi, nadirlikRengi } from './ui';
+import { Buton, Fark, Kart, Rozet, SonucSatiri, formatSayi, nadirlikRengi } from './ui';
 
 function toplam(a: Army | undefined): number {
   return UNIT_TYPES.reduce((t, u) => t + (a?.[u] ?? 0), 0);
 }
+
+/**
+ * "Bu savaş bana ne kazandırdı?"
+ *
+ * Rapor "ne oldu"yu (tur tur güç, kayıp/kalan) baştan beri anlatıyordu ama
+ * sonucu anlatmıyordu: oyuncu bölgeyi alıyor, hiçbir sayının değiştiğini
+ * görmüyor ve "eee ne oldu şimdi" diye soruyordu. Bu blok raporun EN
+ * BAŞINDA durur, çünkü okunacak ilk şey odur. (docs/08 İ2)
+ *
+ * Değerler savaş anında kaydedilir; sonradan hesaplanmaz. Aradan geçen
+ * zamanda şöhret değişmiş olabilir ve rapor o savaşın anlatısı olmalı.
+ */
+function SavasSonucu({ ozet }: { ozet: LordOzetiDto }) {
+  const { oncesi, sonrasi } = ozet;
+  const gelirDegisti =
+    oncesi.gelir.altin !== sonrasi.gelir.altin ||
+    oncesi.gelir.demir !== sonrasi.gelir.demir ||
+    oncesi.gelir.erzak !== sonrasi.gelir.erzak;
+  const hicDegismedi =
+    oncesi.sohret === sonrasi.sohret &&
+    oncesi.sira === sonrasi.sira &&
+    oncesi.bolgeSayisi === sonrasi.bolgeSayisi &&
+    oncesi.seviye === sonrasi.seviye &&
+    !gelirDegisti;
+
+  if (hicDegismedi) {
+    return (
+      <Kart className="p-3">
+        <h3 className="baslik mb-1 text-[11px] text-solgun">Sende ne değişti</h3>
+        <p className="text-[12px] text-solgun">
+          Bu savaş sıralamanı ve gelirini değiştirmedi — kazanılan tek şey tecrübe oldu.
+        </p>
+      </Kart>
+    );
+  }
+
+  return (
+    <Kart className="p-3" vurgu="var(--color-altin)">
+      <h3 className="baslik mb-1.5 text-[11px] text-solgun">Sende ne değişti</h3>
+      <SonucSatiri etiket="Şöhretin" vurgu>
+        <Fark oncesi={oncesi.sohret} sonrasi={sonrasi.sohret} />
+      </SonucSatiri>
+      <SonucSatiri etiket="Şöhret sıralaman" vurgu>
+        <Fark
+          oncesi={oncesi.sira}
+          sonrasi={sonrasi.sira}
+          birim="."
+          tersYon
+          bicim={(n) => String(Math.round(n))}
+          farkMetni={(f, iyi) => `${f} sıra ${iyi ? 'yukarı' : 'aşağı'}`}
+        />
+      </SonucSatiri>
+      {oncesi.bolgeSayisi !== sonrasi.bolgeSayisi && (
+        <SonucSatiri etiket="Bölgelerin">
+          <Fark
+            oncesi={oncesi.bolgeSayisi}
+            sonrasi={sonrasi.bolgeSayisi}
+            bicim={(n) => String(Math.round(n))}
+          />
+        </SonucSatiri>
+      )}
+      {gelirDegisti && (
+        <div className="mt-1 border-t border-kenar/60 pt-1">
+          {(['altin', 'demir', 'erzak'] as const).map((k) =>
+            oncesi.gelir[k] !== sonrasi.gelir[k] ? (
+              <SonucSatiri key={k} etiket={`Saatlik ${GELIR_ADI[k]}`}>
+                <Fark oncesi={oncesi.gelir[k]} sonrasi={sonrasi.gelir[k]} />
+              </SonucSatiri>
+            ) : null,
+          )}
+        </div>
+      )}
+      {oncesi.seviye !== sonrasi.seviye && (
+        <p className="mt-1.5 text-[12px] font-bold text-altin">
+          Seviye atladın: {oncesi.seviye} → {sonrasi.seviye}
+        </p>
+      )}
+    </Kart>
+  );
+}
+
+const GELIR_ADI = { altin: 'altın', demir: 'demir', erzak: 'erzak' } as const;
 
 /** Tur tur güç çubukları: savaşın nerede döndüğünü gösterir. */
 function TurCubuklari({ turlar }: { turlar: BattleDto['log']['rounds'] }) {
@@ -199,6 +281,10 @@ export function SavasRaporu({
   const kazandim = savas ? (savas.result === 'attacker_win') === saldiranBenim : false;
   const yagma = savas?.log.loot;
   const yagmaVar = yagma && (yagma.altin || yagma.demir || yagma.erzak);
+  // Rapor okuyanın kendi tarafı: saldıran ve savunan farklı şeyler kazanır.
+  const benimOzet = saldiranBenim
+    ? (savas?.log.sonuc?.saldiran ?? null)
+    : (savas?.log.sonuc?.savunan ?? null);
 
   return (
     <>
@@ -250,6 +336,11 @@ export function SavasRaporu({
 
           {savas && (
             <>
+              {/* Sonuç en başta: okunacak ilk şey "bu bana ne kazandırdı".
+                  Tur tur güç ve kayıp dökümü "neden oldu"yu anlatır ve
+                  aşağıda kalır. */}
+              {benimOzet && <SavasSonucu ozet={benimOzet} />}
+
               <Kart className="p-3">
                 <h3 className="baslik mb-2.5 text-[11px] text-solgun">
                   Tur Tur Güç · {savas.log.rounds.length} tur

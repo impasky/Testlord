@@ -10,6 +10,7 @@
  * Hedef sunucudan gelir ve gerçek savaş simülasyonuyla seçilir — burada
  * ikinci bir sezgisel kural yok.
  */
+import { unitName, type UnitType } from '@lordlar/shared';
 import type { HedefOnerisiDto } from '../api/client';
 import { BolgeIkonu, IkonAltin, IkonDemir, IkonErzak, IkonSohret } from './Ikonlar';
 import { Kart, formatKalan, formatSayi } from './ui';
@@ -90,11 +91,37 @@ export function HedefSeridi({
         }`}
       >
         {hedef.kazanir
-          ? `Ordun yetiyor — savaştan ${hedef.kalanBirim} birimin sağ çıkar.`
-          : hedef.orduVar
-            ? `Ordun henüz yetmiyor. Burayı ${toplam(hedef.garrison)} birim savunuyor; daha fazla asker eğit.`
-            : `Burayı ${toplam(hedef.garrison)} birim savunuyor. Almak için önce bir ordu kur.`}
+          ? `Ordun yetiyor — bölge senin olur, savaştan ${hedef.kalanBirim} birimin sağ çıkar.`
+          : hedef.darZafer
+            ? 'Savaşı kazanırsın ama bölge el değiştirmez: fetih için savunanın kabaca 1,5 katı güç gerekiyor.'
+            : `Burayı ${toplam(hedef.garrison)} birim savunuyor; ordun henüz yetmiyor.`}
       </p>
+
+      {/* "Daha fazla asker eğit" bir tavsiye değil bilmecedir: oyuncu ne kadar
+          lazım olduğunu bilmez ve deneyerek öğrenmenin bedeli bir yürüyüş ile
+          bir ordudur. Somut sayı motorun kendi savaş simülasyonundan geliyor. */}
+      {!hedef.kazanir && hedef.eksik && (
+        <p className="mt-1 text-[12px] leading-snug text-parsomen">
+          Bu bölgeyi almak için{' '}
+          <strong className="font-bold text-altin">
+            {hedef.eksik.adet} {birimAdi(hedef.eksik.birim)}
+          </strong>{' '}
+          daha yeterli.{' '}
+          <span className="text-solgun">({maliyetMetni(hedef.eksik.maliyet)})</span>
+          {!hedef.eksik.karsilanabilir && (
+            <span className="text-turuncu">
+              {' '}
+              Kaynağın şu an yetmiyor — gelirini biriktir.
+            </span>
+          )}
+        </p>
+      )}
+      {!hedef.kazanir && !hedef.eksik && hedef.orduVar && (
+        <p className="mt-1 text-[12px] leading-snug text-turuncu">
+          Komuta kapasiten dolsa bile burası alınmıyor. Önce Liderlik statını yükselt ya da daha
+          zayıf bir hedef seç.
+        </p>
+      )}
 
       {hedef.limitDolu && (
         <p className="mt-1 text-[11px] leading-snug text-turuncu">
@@ -114,6 +141,18 @@ export function HedefSeridi({
       )}
     </Kart>
   );
+}
+
+function birimAdi(k: string): string {
+  return unitName(k as UnitType);
+}
+
+function maliyetMetni(m: { altin: number; demir: number; erzak: number }): string {
+  const ad = { altin: 'altın', demir: 'demir', erzak: 'erzak' } as const;
+  return (['altin', 'demir', 'erzak'] as const)
+    .filter((k) => m[k] > 0)
+    .map((k) => `${formatSayi(m[k])} ${ad[k]}`)
+    .join(' · ');
 }
 
 function toplam(a: Record<string, number | undefined>): number {

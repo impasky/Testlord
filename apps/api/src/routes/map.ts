@@ -10,7 +10,6 @@ import {
   orduBedeli,
   marchDurationSec,
   maxRegions,
-  simulateBattle,
   type Army,
   type Side,
   type UnitType,
@@ -21,7 +20,13 @@ import { requireAuth } from '../auth.js';
 import { prisma, type Tx } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { findLordByUser, pushEvent } from '../services/lord.js';
-import { fetihOdulu, lordSide, onerilenHedef } from '../services/hedef.js';
+import {
+  fetihOdulu,
+  lordSide,
+  onerilenHedef,
+  onizlemeTohumu,
+  savasOrneklemesi,
+} from '../services/hedef.js';
 import { addUnitsHome, assertQueueSlot, enqueue, spendResources } from '../services/queue.js';
 import { regionFortressBonus, regionUpgradeCost } from '../services/region.js';
 
@@ -386,15 +391,26 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       isDefender: true,
     };
 
-    const result = simulateBattle(attacker, defender, `preview-${lordId}-${region.id}`, {
-      defenderStore: {
-        altin: region.storeAltin,
-        demir: region.storeDemir,
-        erzak: region.storeErzak,
+    // Tek simülasyon bir tahmin değil bir kura sonucu: her turda ±%7 tohumlu
+    // varyans var ve fetih eşiğinin yakınında aynı ordu bir seferde bölgeyi
+    // alır, bir seferde almaz. Önizleme dokuz savaş çalıştırıp DAĞILIMI
+    // gösteriyor — "kesin alırsın" deyip almamak, oyuncuya tutulmayan bir
+    // söz vermek olurdu. (docs/08 İ1)
+    const ornek = savasOrneklemesi(
+      attacker,
+      defender,
+      onizlemeTohumu(lordId, region.id),
+      {
+        defenderStore: {
+          altin: region.storeAltin,
+          demir: region.storeDemir,
+          erzak: region.storeErzak,
+        },
+        attackerCunning: 0,
+        canCapture: true,
       },
-      attackerCunning: 0,
-      canCapture: true,
-    });
+    );
+    const result = ornek.ortanca;
 
     const [odul, bedel] = await Promise.all([
       fetihOdulu(lordId, region),
@@ -403,11 +419,18 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
 
     return {
       tahmin: {
-        kazanan: result.winner,
-        eleGecirir: result.captured,
+        // Ortancanın kurası değil, ÖRNEKLEMİN tamamı karar veriyor: "BÖLGE
+        // ELE GEÇER" yazısı ancak dokuz savaşın hepsi fetihle bittiğinde
+        // çıkıyor. Öneri şeridiyle aynı eşik, aynı tohum — iki ekran aynı
+        // savaş için farklı şey söyleyemez.
+        kazanan: ornek.kazanmaOrani >= 0.5 ? 'attacker' : 'defender',
+        eleGecirir: ornek.fetihOrani >= B.oneri.guvenli_fetih_orani,
         saldiranKayip: result.attackerLosses,
         savunanKayip: result.defenderLosses,
         yagma: result.loot,
+        /** Dokuz savaşın kaçı zaferle / fetihle bitti. */
+        kazanmaOrani: ornek.kazanmaOrani,
+        fetihOrani: ornek.fetihOrani,
       },
       // "Kazanırsan ne olur, kaybedersen ne olur" — oyuncunun butona
       // basmadan ÖNCE görmesi gereken iki cevap. Tahmin değil, motorun

@@ -251,6 +251,9 @@ export interface PreviewDto {
     saldiranKayip: Army;
     savunanKayip: Army;
     yagma: Resources;
+    /** Dokuz savaşın kaçı zaferle / fetihle bitti (0–1). */
+    kazanmaOrani: number;
+    fetihOrani: number;
   };
   odul: FetihOduluDto;
   bedel: {
@@ -266,6 +269,20 @@ export interface PreviewDto {
   not: string;
 }
 
+/** Bir eşyayı kuşanmanın gerçek karşılığı — savaşa yansıması dahil. */
+export interface EkipmanEtkisiDto {
+  katkiOncesi: number;
+  katkiSonrasi: number;
+  sohretOncesi: number;
+  sohretSonrasi: number;
+  hedef: { regionId: number; name: string } | null;
+  neden: 'ordu_yok' | 'ordu_yolda' | 'hedef_yok' | null;
+  kayipOncesi: number;
+  kayipSonrasi: number;
+  kazanirOncesi: boolean;
+  kazanirSonrasi: boolean;
+}
+
 /** Haritanın önerdiği hedef: "şimdi neye saldırmalıyım" sorusunun cevabı. */
 export interface HedefOnerisiDto {
   regionId: number;
@@ -277,6 +294,14 @@ export interface HedefOnerisiDto {
   ilkSaldiri: boolean;
   orduVar: boolean;
   kazanir: boolean;
+  darZafer: boolean;
+  /** Bölgeyi almak için gereken ek birim; ordu yeterliyse null. */
+  eksik: {
+    birim: string;
+    adet: number;
+    maliyet: Resources;
+    karsilanabilir: boolean;
+  } | null;
   kalanBirim: number;
   garrison: Army;
   saatlikGelir: Resources & { sohret: number };
@@ -349,7 +374,25 @@ export interface BattleDto {
     /** Sahadaki generaller. Eski savaşlarda yok — arayüz bunu tolere eder. */
     attackerGenerals?: GeneralKatkisiDto[];
     defenderGenerals?: GeneralKatkisiDto[];
+    /** Savaşın iki tarafta ne değiştirdiği. Eski savaşlarda yok. */
+    sonuc?: {
+      saldiran: LordOzetiDto;
+      savunan: LordOzetiDto | null;
+    };
   };
+}
+
+export interface LordAnlikDto {
+  sohret: number;
+  sira: number;
+  seviye: number;
+  gelir: Resources;
+  bolgeSayisi: number;
+}
+
+export interface LordOzetiDto {
+  oncesi: LordAnlikDto;
+  sonrasi: LordAnlikDto;
 }
 
 export interface GeneralKatkisiDto {
@@ -386,7 +429,8 @@ export const api = {
 
   items: () => request<{ items: ItemDto[]; tiers: TierDto[] }>('/items'),
   craft: (tier: number, slot: string) => post('/items/craft', { tier, slot }),
-  equip: (id: string) => post(`/items/${id}/equip`),
+  equip: (id: string) =>
+    post<{ equipped: boolean; etki: EkipmanEtkisiDto }>(`/items/${id}/equip`),
   upgradeItem: (id: string) => post(`/items/${id}/upgrade`),
   sellItem: (id: string) => post(`/items/${id}/sell`),
 

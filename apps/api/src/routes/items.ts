@@ -18,6 +18,7 @@ import { z } from 'zod';
 import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError, hata } from '../errors.js';
+import { ekipmanEtkisi } from '../services/hedef.js';
 import { findLordByUser, tickLord } from '../services/lord.js';
 import { assertQueueSlot, enqueue, spendResources } from '../services/queue.js';
 
@@ -85,12 +86,15 @@ export async function itemRoutes(app: FastifyInstance): Promise<void> {
     const { id } = z.object({ id: z.string() }).parse(req.params);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    const { equipped, onceki } = await prisma.$transaction(async (tx) => {
       const item = await tx.item.findUnique({ where: { id } });
       if (!item || item.lordId !== lordId) throw hata.bulunamadi('Eşya');
+      // Değişiklikten ÖNCEKİ dizilim: karşılaştırma bunun üstünden yapılır.
+      const oncekiEsyalar = await tx.item.findMany({ where: { lordId } });
+
       if (item.equipped) {
         await tx.item.update({ where: { id }, data: { equipped: false } });
-        return { equipped: false };
+        return { equipped: false, onceki: oncekiEsyalar };
       }
       // Aynı slottaki eşyayı çıkar
       await tx.item.updateMany({
@@ -98,8 +102,14 @@ export async function itemRoutes(app: FastifyInstance): Promise<void> {
         data: { equipped: false },
       });
       await tx.item.update({ where: { id }, data: { equipped: true } });
-      return { equipped: true };
+      return { equipped: true, onceki: oncekiEsyalar };
     });
+
+    // İşlemin DIŞINDA: savaş simülasyonu saf ama ucuz değil, veritabanı
+    // kilitlerini onun için tutmanın anlamı yok.
+    const sonraki = await prisma.item.findMany({ where: { lordId } });
+    const etki = await ekipmanEtkisi(lordId, onceki, sonraki);
+    return { equipped, etki };
   });
 
   app.post('/items/:id/upgrade', { preHandler: requireAuth }, async (req) => {

@@ -32,7 +32,14 @@ import {
 import { prisma, type Tx } from '../db.js';
 import { env } from '../env.js';
 import { postaGonder } from './eposta.js';
-import { equippedGenerals, gearBonusFrom, grantXp, pushEvent, tickLord } from './lord.js';
+import {
+  calcHourlyIncome,
+  equippedGenerals,
+  gearBonusFrom,
+  grantXp,
+  pushEvent,
+  tickLord,
+} from './lord.js';
 import { addUnitsHome } from './queue.js';
 import { regionFortressBonus, transferRegion } from './region.js';
 
@@ -188,6 +195,45 @@ async function generalleriOdullendir(
   }
 }
 
+/**
+ * Savaşın oyuncuda ne değiştirdiğini ölçmek için anlık görüntü.
+ *
+ * Savaş raporu eskiden "ne oldu"yu (tur tur güç, kayıp/kalan) anlatıyordu
+ * ama "bu bana ne kazandırdı"yı anlatmıyordu. Oyuncu bölgeyi alıyor,
+ * sayıların değiştiğini görmüyor ve "eee ne oldu şimdi" diye soruyordu.
+ * Rapor artık öncesi/sonrası gösteriyor; bu fonksiyon iki ucu da ölçer.
+ * (docs/08 İ2)
+ */
+async function lordOzeti(lordId: string, tx: Tx) {
+  const lord = await tx.lord.findUniqueOrThrow({
+    where: { id: lordId },
+    include: { regions: true, generals: true },
+  });
+  const sahada = equippedGenerals(lord.generals, new Date());
+  const bonus = sahada.length ? aggregateGeneralBonus(sahada) : bosGeneralBonus();
+  const { income } = calcHourlyIncome(
+    lord.level,
+    lord.regions.map((r) => ({ type: r.type, level: r.level, incomeMult: r.incomeMult })),
+    bonus,
+  );
+  // Sıra: kendisinden yüksek şöhretli kaç lord var. Dünya başına 120 satır,
+  // [worldId, fame] indeksli — savaş işleminin içinde taşınabilir bir maliyet.
+  const ustunde = await tx.lord.count({
+    where: { worldId: lord.worldId, id: { not: lordId }, fame: { gt: lord.fame } },
+  });
+  return {
+    sohret: lord.fame,
+    sira: ustunde + 1,
+    seviye: lord.level,
+    gelir: {
+      altin: Math.round(income.altin),
+      demir: Math.round(income.demir),
+      erzak: Math.round(income.erzak),
+    },
+    bolgeSayisi: lord.regions.filter((r) => r.type !== 'taht').length,
+  };
+}
+
 /** generalLevelFromXp toplam XP bekler; kayıtta seviye + seviyedeki ilerleme tutulur. */
 function toplamGeneralXp(level: number, xpIntoLevel: number): number {
   let toplam = xpIntoLevel;
@@ -246,6 +292,9 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
 
       // --- Saldırı ---
       const region = await tx.region.findUniqueOrThrow({ where: { id: march.toRegionId } });
+      // Savaştan önceki hâl; rapordaki "öncesi/sonrası" bunun üstüne kurulur.
+      const saldiranOnce = await lordOzeti(march.lordId, tx);
+      const savunanOnce = region.ownerLordId ? await lordOzeti(region.ownerLordId, tx) : null;
       const fortress = regionFortressBonus(region.type, region.level);
       const generalKeys = (march.generalIds as string[]) ?? [];
 
@@ -401,6 +450,13 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
         );
       }
 
+      // Şöhret bölge değişiminden sonra yeniden hesaplanmalı; tickLord bunu
+      // yapıp lord satırına yazar, sonra özet güncel değeri okur.
+      await tickLord(march.lordId, new Date(), tx);
+      if (defenderLordId) await tickLord(defenderLordId, new Date(), tx);
+      const saldiranSonra = await lordOzeti(march.lordId, tx);
+      const savunanSonra = defenderLordId ? await lordOzeti(defenderLordId, tx) : null;
+
       const battle = await tx.battle.create({
         data: {
           worldId: march.worldId,
@@ -420,6 +476,13 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
             regionName: region.name,
             attackerGenerals: saldiranGeneraller,
             defenderGenerals: savunanGeneraller,
+            sonuc: {
+              saldiran: { oncesi: saldiranOnce, sonrasi: saldiranSonra },
+              savunan:
+                savunanOnce && savunanSonra
+                  ? { oncesi: savunanOnce, sonrasi: savunanSonra }
+                  : null,
+            },
           } as object,
         },
       });

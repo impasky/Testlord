@@ -5,22 +5,31 @@
  * görmeli. Üretim ve yükseltme kuyrukları düğmelerin altında beliriyor,
  * yapılamayan işlemin düğmesi kapalı ve sebebi yazılı.
  */
-import { EQUIP_SLOTS, B } from '@lordlar/shared';
+import { EQUIP_SLOTS, B, lordContribution, type EquippedItem } from '@lordlar/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
-import { ApiError, api, type ItemDto, type LordState, type QueueItem } from '../api/client';
+import { useEffect, useRef, useState } from 'react';
+import {
+  ApiError,
+  api,
+  type EkipmanEtkisiDto,
+  type ItemDto,
+  type LordState,
+  type QueueItem,
+} from '../api/client';
 import { hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { IkonAltin, IkonDemir, IkonSure, IkonNavDemirhane } from '../components/Ikonlar';
 import {
   Bolum,
   Buton,
   EngelNotu,
+  Fark,
   Ilerleme,
   Iskelet,
   Kart,
   KuyrukSeridi,
   NADIRLIK,
   Rozet,
+  SonucSatiri,
   formatKalan,
   formatSayi,
   kaynakEngeli,
@@ -69,9 +78,103 @@ function GucFarki({ fark }: { fark: number }) {
   );
 }
 
+/**
+ * "Bu eşya ne işe yarıyor?" — eşyanın gücünü savaşa çevirir.
+ *
+ * Ekipman gücü tek başına hiçbir şey anlatmıyor. Anlattığı şey lordun
+ * savaşa kattığı güç: `lord_savas_katkisi = guc*3 + ekipman_gucu*0.8`.
+ * Kartta gösterilen sayı artık o. (docs/08 İ2)
+ */
+function KatkiSatiri({ oncesi, sonrasi }: { oncesi: number; sonrasi: number }) {
+  if (oncesi === sonrasi) return null;
+  return (
+    <p className="mb-2 flex flex-wrap items-baseline gap-x-1.5 text-[11px]">
+      <span className="text-solgun">Kuşanırsan savaş katkın</span>
+      <Fark oncesi={oncesi} sonrasi={sonrasi} />
+    </p>
+  );
+}
+
+/**
+ * Kuşanmanın sonucu: çıplak sayı değil, öncesi/sonrası.
+ *
+ * Oyuncunun "gücümü en yüksek olanı kuşan dedim, gücüm arttı, eee ne oldu
+ * şimdi, ne işe yaradı" dediği yer burasıydı. Cevap üç satır: savaşa kattığın
+ * güç, şöhretin ve haritadaki gerçek bir hedefte beklenen kaybın.
+ */
+function KusanmaSonucu({ etki, onKapat }: { etki: EkipmanEtkisiDto; onKapat: () => void }) {
+  const kayipDegisti = etki.hedef !== null && etki.kayipOncesi !== etki.kayipSonrasi;
+
+  // Envanter uzun; "Kuşan" düğmesi ekranın altındaysa sonuç kartı görünmez
+  // yerde belirir ve oyuncu yine sonucu görmeden devam eder.
+  const kutu = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    kutu.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, [etki]);
+
+  return (
+    <Kart className="border-yesil/40 p-3" vurgu="var(--color-yesil)">
+      <div ref={kutu} />
+      <div className="mb-1 flex items-start justify-between gap-2">
+        <h3 className="baslik text-[12px] text-yesil">Kuşanıldı — ne değişti</h3>
+        <button onClick={onKapat} className="baslik text-[10px] text-sonuk" aria-label="Kapat">
+          KAPAT
+        </button>
+      </div>
+      <SonucSatiri etiket="Savaşa kattığın güç" vurgu>
+        <Fark oncesi={etki.katkiOncesi} sonrasi={etki.katkiSonrasi} />
+      </SonucSatiri>
+      <SonucSatiri etiket="Şöhretin">
+        <Fark oncesi={etki.sohretOncesi} sonrasi={etki.sohretSonrasi} />
+      </SonucSatiri>
+      {etki.hedef &&
+        (kayipDegisti ? (
+          <SonucSatiri etiket={`${etki.hedef.name} saldırısında kaybın`} vurgu>
+            <Fark
+              oncesi={etki.kayipOncesi}
+              sonrasi={etki.kayipSonrasi}
+              birim=" birim"
+              tersYon
+              bicim={(n) => String(Math.round(n))}
+            />
+          </SonucSatiri>
+        ) : (
+          // Fark ölçülemiyorsa susmak, "ne işe yaradı" sorusunu yine
+          // cevapsız bırakırdı. Dürüst cevap: bu parça tek başına savaşı
+          // çevirmiyor.
+          <p className="mt-1.5 text-[12px] leading-snug text-solgun">
+            {etki.hedef.name} saldırısında kaybın değişmiyor ({etki.kayipSonrasi} birim). Tek bir
+            parça savaşı çevirmiyor; etkisini görmek için daha üst tier ekipman ya da daha büyük
+            bir ordu gerekiyor.
+          </p>
+        ))}
+      {etki.hedef && !etki.kazanirOncesi && etki.kazanirSonrasi && (
+        <p className="mt-1.5 text-[12px] leading-snug text-yesil">
+          Bu ekipmanla {etki.hedef.name} artık kazanılabilir hâle geldi.
+        </p>
+      )}
+      {etki.hedef === null && etki.neden !== null && (
+        <p className="mt-1.5 text-[11px] leading-snug text-solgun">
+          {
+            {
+              ordu_yok:
+                'Savaştaki etkisini görmek için önce bir ordu kur — ekipman gücü orduyla birlikte iş görür.',
+              ordu_yolda:
+                'Ordun yolda. Döndüğünde bu farkın savaşa nasıl yansıdığını saldırı önizlemesinde göreceksin.',
+              hedef_yok: 'Karşılaştırılacak bir hedef kalmadı; haritada saldırılabilir bölge yok.',
+            }[etki.neden]
+          }
+        </p>
+      )}
+    </Kart>
+  );
+}
+
 function EsyaKarti({
   item,
   kusanikGuc,
+  katkiOncesi,
+  katkiSonrasi,
   kaynaklar,
   yukseltmeKuyrugu,
   bunuYukseltiyor,
@@ -83,6 +186,9 @@ function EsyaKarti({
   item: ItemDto;
   /** Aynı slottaki kuşanık eşyanın gücü; yoksa null. */
   kusanikGuc: number | null;
+  /** Lordun savaşa kattığı güç: şimdiki ve bu eşya kuşanılırsa. */
+  katkiOncesi: number;
+  katkiSonrasi: number;
   kaynaklar: { altin: number; demir: number; erzak: number };
   yukseltmeKuyrugu: QueueItem[];
   bunuYukseltiyor: QueueItem[];
@@ -130,6 +236,8 @@ function EsyaKarti({
           )}
         </div>
       </div>
+
+      {!item.equipped && <KatkiSatiri oncesi={katkiOncesi} sonrasi={katkiSonrasi} />}
 
       <div className="flex flex-wrap gap-1.5">
         <Buton
@@ -202,6 +310,8 @@ export function Demirhane({
   // Hangi eylem gönderiliyor. Tek bir bayrak ekrandaki BÜTÜN düğmeleri
   // birden söndürüyordu; oyuncu hangi işin sürdüğünü göremiyordu.
   const [gonderilen, setGonderilen] = useState<string | null>(null);
+  // Son kuşanmanın sonucu; kapatılana ya da başka bir eylem yapılana kadar durur.
+  const [sonEtki, setSonEtki] = useState<EkipmanEtkisiDto | null>(null);
 
   const items = useQuery({ queryKey: ['items'], queryFn: api.items });
   const gear = useQuery({ queryKey: ['gear'], queryFn: api.gear });
@@ -209,9 +319,15 @@ export function Demirhane({
   const mut = useMutation({
     mutationFn: async ({ f }: { f: () => Promise<unknown>; anahtar: string }) => f(),
     onMutate: ({ anahtar }) => setGonderilen(anahtar),
-    onSuccess: () => {
+    onSuccess: (sonuc, degisken) => {
       setHata(null);
       hisOnay();
+      // Kuşanma sonucunu göster; başka bir eylemde eski sonuç kalmasın.
+      setSonEtki(
+        degisken.anahtar.startsWith('equip:')
+          ? ((sonuc as { etki?: EkipmanEtkisiDto }).etki ?? null)
+          : null,
+      );
       void qc.invalidateQueries({ queryKey: ['items'] });
       void qc.invalidateQueries({ queryKey: ['gear'] });
       onGuncelle();
@@ -231,6 +347,23 @@ export function Demirhane({
     return <Iskelet satir={4} />;
   }
   const secili = items.data?.tiers.find((t) => t.tier === tier);
+
+  // Ekipman gücünü savaşa çeviren formül motorda; istemci aynı fonksiyonu
+  // çağırıyor, ikinci bir hesap yazılmıyor.
+  const kusanik = lord.equippedItems as unknown as EquippedItem[];
+  const katkiSimdi = Math.round(lordContribution(lord.stats.guc, kusanik));
+  const katkiIle = (i: ItemDto) =>
+    Math.round(
+      lordContribution(lord.stats.guc, [
+        ...kusanik.filter((e) => e.slot !== i.slot),
+        {
+          slot: i.slot as EquippedItem['slot'],
+          tier: i.tier,
+          rarity: i.rarity as EquippedItem['rarity'],
+          upgradeLevel: i.upgradeLevel,
+        },
+      ]),
+    );
   const uretimEngeli = secili
     ? (kuyrukEngeli(uretimKuyrugu.length, URETIM_LIMITI, 'Üretim') ??
       kaynakEngeli(secili.cost, lord.resources))
@@ -351,6 +484,8 @@ export function Demirhane({
         </Kart>
       </Bolum>
 
+      {sonEtki && <KusanmaSonucu etki={sonEtki} onKapat={() => setSonEtki(null)} />}
+
       <Bolum baslik={`Envanter · ${items.data?.items.length ?? 0}`}>
         {items.data?.items.length === 0 ? (
           <Kart className="p-4">
@@ -365,6 +500,8 @@ export function Demirhane({
                 kusanikGuc={
                   items.data?.items.find((x) => x.equipped && x.slot === i.slot)?.power ?? null
                 }
+                katkiOncesi={katkiSimdi}
+                katkiSonrasi={katkiIle(i)}
                 kaynaklar={lord.resources}
                 yukseltmeKuyrugu={yukseltmeKuyrugu}
                 bunuYukseltiyor={yukseltmeKuyrugu.filter((q) => q.payload.itemId === i.id)}
