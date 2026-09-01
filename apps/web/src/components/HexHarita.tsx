@@ -120,6 +120,21 @@ export function HexHarita({
             {r.isMine && <path d={hexYol(x, y)} fill="url(#benim)" stroke="none" />}
             {r.owner && !r.isMine && <path d={hexYol(x, y)} fill="url(#dusman)" stroke="none" />}
 
+            {/* Taht sahipliyse ikinci bir altın halka: haritanın tek
+                "kimde?" sorusu bu hex'te sorulur ve cevabı uzaktan
+                okunabilmeli. Sahipsizken halka yok, yani halkanın
+                varlığı bilgi taşıyor. */}
+            {taht && r.owner && (
+              <path
+                d={hexYol(x, y)}
+                fill="none"
+                stroke="#f5b731"
+                strokeWidth="1.5"
+                opacity="0.65"
+                transform={`translate(${x} ${y}) scale(0.72) translate(${-x} ${-y})`}
+              />
+            )}
+
             <g fill={taht ? '#f5b731' : '#f2e7d5'}>
               <TipIkonu tip={r.type} x={x} y={y} opaklik={taht ? 0.9 : 0.42} />
             </g>
@@ -136,6 +151,20 @@ export function HexHarita({
               {r.level}
               {r.shielded ? '⛨' : ''}
             </text>
+
+            {taht && r.owner && (
+              <text
+                x={x}
+                y={y + BOYUT * 1.02}
+                textAnchor="middle"
+                className="pointer-events-none select-none"
+                fontSize="8"
+                fontWeight="700"
+                fill="#f5b731"
+              >
+                {r.owner.name.length > 12 ? `${r.owner.name.slice(0, 11)}…` : r.owner.name}
+              </text>
+            )}
           </g>
         );
       })}

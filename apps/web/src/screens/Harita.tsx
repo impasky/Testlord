@@ -210,10 +210,14 @@ export function Harita({
         uzun: 'İyileşene kadar saldıramazsın. Malikâne ekranında kalan süreyi görebilirsin.',
       };
     }
-    if (lord.dailyAttacks >= B.korumalar.gunluk_saldiri_limiti) {
+    // Taht Kalesi günlük limitten muaf (docs/01 §5) — sunucu da böyle
+    // davranıyor. Burada muafiyeti atlamak, sunucunun izin verdiği bir
+    // saldırıyı arayüzün kapatması demekti.
+    const limitMuaf = bolge.type === 'taht' && B.korumalar.taht_kalesi_limitten_muaf;
+    if (!limitMuaf && lord.dailyAttacks >= B.korumalar.gunluk_saldiri_limiti) {
       return {
         kisa: 'Günlük saldırı hakkın bitti',
-        uzun: `Günde en fazla ${B.korumalar.gunluk_saldiri_limiti} saldırı yapabilirsin. Yarın sıfırlanır.`,
+        uzun: `Günde en fazla ${B.korumalar.gunluk_saldiri_limiti} saldırı yapabilirsin. Taht Kalesi bu limitten muaftır; yarın sıfırlanır.`,
       };
     }
     if (bolge.shielded) {
@@ -365,6 +369,11 @@ export function Harita({
               </div>
 
               <div className="mt-2.5 flex flex-wrap gap-1.5">
+                {bolge.type === 'taht' && (
+                  <Rozet renk="var(--color-altin)">
+                    {bolge.owner ? `DİYARIN LORDU · ${bolge.owner.name}` : 'TAHT BOŞ'}
+                  </Rozet>
+                )}
                 <Rozet renk="var(--color-mavi)">{bolge.distance} HEX</Rozet>
                 <Rozet renk="var(--color-kirmizi)">
                   TAHKİMAT +%{Math.round(bolge.fortressBonus * 100)}
@@ -374,6 +383,19 @@ export function Harita({
             </div>
 
             <div className="space-y-3 px-4 pt-3">
+              {bolge.type === 'taht' && (
+                <Kart className="p-3" vurgu="var(--color-altin)">
+                  <h3 className="baslik mb-1 text-[11px] text-altin">Taht Kalesi</h3>
+                  <p className="text-[12px] text-solgun">
+                    Diyarda tek. Sahibi %
+                    {Math.round(B.taht_kalesi.unvan_sohret_bonusu * 100)} şöhret bonusu alır,
+                    bölge limitine sayılmaz. Buraya saldırmak günlük hakkından düşmez ve el
+                    değiştirdikten sonra kalkanı yalnızca {B.taht_kalesi.kaybetme_korumasi_saat}{' '}
+                    saat sürer.
+                  </p>
+                </Kart>
+              )}
+
               {bolge.garrisonVisible ? (
                 <Kart className="p-3">
                   <h3 className="baslik mb-1.5 text-[11px] text-solgun">Garnizon</h3>

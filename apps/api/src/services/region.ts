@@ -115,20 +115,34 @@ export async function accrueRegionStores(now: Date): Promise<void> {
   }
 }
 
-/** Bölgeyi devreder: sahibi değişir, NPC garnizonu temizlenir, kalkan konur. */
+/**
+ * Bölgeyi devreder: sahibi değişir, NPC garnizonu temizlenir, kalkan konur.
+ *
+ * Taht Kalesi'nin kalkanı bilerek kısa (docs/01 §5): taht endgame'in odağı,
+ * sürekli el değiştirmesi gereken tek hedef. Normal bölge kalkanı oraya da
+ * uygulansaydı taht alan oyuncu yarım gün dokunulmaz olurdu ve rekabetin
+ * varış noktası donardı.
+ */
 export async function transferRegion(
   regionId: number,
   newOwnerId: string | null,
   tx: Tx,
 ): Promise<void> {
+  const { type } = await tx.region.findUniqueOrThrow({
+    where: { id: regionId },
+    select: { type: true },
+  });
+  const saat =
+    type === 'taht'
+      ? B.taht_kalesi.kaybetme_korumasi_saat
+      : B.korumalar.bolge_ele_gecirme_sonrasi_saat;
+
   await tx.region.update({
     where: { id: regionId },
     data: {
       ownerLordId: newOwnerId,
       npcGarrison: {},
-      shieldUntil: new Date(
-        Date.now() + B.korumalar.bolge_ele_gecirme_sonrasi_saat * 3_600_000,
-      ),
+      shieldUntil: new Date(Date.now() + saat * 3_600_000),
     },
   });
 }

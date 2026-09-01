@@ -91,7 +91,8 @@ async function assertCanAttack(
 
   if (attacker.woundedUntil && attacker.woundedUntil > now) throw hata.yarali(attacker.woundedUntil);
 
-  if (!tahtMi && attacker.dailyAttacks >= B.korumalar.gunluk_saldiri_limiti) {
+  const limitMuaf = tahtMi && B.korumalar.taht_kalesi_limitten_muaf;
+  if (!limitMuaf && attacker.dailyAttacks >= B.korumalar.gunluk_saldiri_limiti) {
     throw hata.limitAsildi(`Günlük ${B.korumalar.gunluk_saldiri_limiti} saldırı`);
   }
 
@@ -490,11 +491,17 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
         }
       }
 
+      // Taht Kalesi günlük limitten muaf (docs/01 §5). Muafiyet sadece
+      // kontrolde olsaydı yetmezdi: sayaç yine artar ve tahta yapılan
+      // saldırı normal saldırı hakkını yerdi. Muaf olmak, bütçeye hiç
+      // dokunmamak demek.
+      const limitiYer = !(region.type === 'taht' && B.korumalar.taht_kalesi_limitten_muaf);
+
       // İlk saldırı yeni oyuncu kalkanını düşürür
       await tx.lord.update({
         where: { id: lordId },
         data: {
-          dailyAttacks: { increment: 1 },
+          ...(limitiYer ? { dailyAttacks: { increment: 1 } } : {}),
           ...(lord.protectionUntil ? { protectionUntil: null } : {}),
         },
       });
@@ -547,7 +554,18 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
           });
         }
       }
-      await tx.lord.update({ where: { id: lordId }, data: { dailyAttacks: { decrement: 1 } } });
+      // Sayaç artmadıysa azaltılmamalı; yoksa tahta saldırıp geri çağırmak
+      // günlük hakkı çoğaltan bir açık olurdu.
+      const hedef = await tx.region.findUnique({
+        where: { id: march.toRegionId },
+        select: { type: true },
+      });
+      const sayacaGirdi = !(
+        hedef?.type === 'taht' && B.korumalar.taht_kalesi_limitten_muaf
+      );
+      if (sayacaGirdi) {
+        await tx.lord.update({ where: { id: lordId }, data: { dailyAttacks: { decrement: 1 } } });
+      }
       return { recalled: true };
     });
   });
