@@ -6,6 +6,7 @@ import { ApiError, api, type LordState, type PreviewDto, type QueueItem } from '
 import { HexHarita } from '../components/HexHarita';
 import { BirimIkonu, BolgeIkonu, IkonKapali, IkonSure } from '../components/Ikonlar';
 import { hisAgir, hisOnay, hisRet } from '../components/hisGeriBildirimi';
+import { SaldiriOnizleme } from '../components/SaldiriOnizleme';
 import { SavasRaporu } from '../components/SavasRaporu';
 import {
   Bolum,
@@ -153,6 +154,7 @@ export function Harita({
   const [saldiriOrdusu, setSaldiriOrdusu] = useState<Army>({});
   const [garnizon, setGarnizon] = useState<Army>({});
   const [onizleme, setOnizleme] = useState<PreviewDto | null>(null);
+  const [onizlemeBekliyor, setOnizlemeBekliyor] = useState(false);
   const [hata, setHata] = useState<string | null>(null);
   const [bilgi, setBilgi] = useState<string | null>(null);
 
@@ -210,6 +212,43 @@ export function Harita({
     onBaslangicIslendi();
   }, [baslangicBolge, onBaslangicIslendi]);
 
+  // Önizleme artık ayrı bir düğme değil: ordu seçilir seçilmez hesaplanır.
+  // Ayrı düğme, "ne kazanacağımı görmek" ile "saldırmak" arasına gereksiz
+  // bir adım koyuyordu ve oyuncuların çoğu o adımı atlayıp sonucu hiç
+  // görmeden saldırıyordu. (docs/08 İ1)
+  const hedefId = detay.data?.id ?? null;
+  const hedefBenim = detay.data?.isMine ?? false;
+  const orduAnahtari = JSON.stringify(saldiriOrdusu);
+  useEffect(() => {
+    if (hedefId === null || hedefBenim) return;
+    const ordu = JSON.parse(orduAnahtari) as Army;
+    if (UNIT_TYPES.every((t) => (ordu[t] ?? 0) === 0)) {
+      setOnizleme(null);
+      return;
+    }
+    let iptal = false;
+    setOnizlemeBekliyor(true);
+    // Sürgü her oynadığında istek atmamak için kısa gecikme.
+    const zaman = setTimeout(() => {
+      api
+        .preview(hedefId, ordu)
+        .then((p) => {
+          if (!iptal) setOnizleme(p);
+        })
+        .catch(() => {
+          if (!iptal) setOnizleme(null);
+        })
+        .finally(() => {
+          if (!iptal) setOnizlemeBekliyor(false);
+        });
+    }, 300);
+    return () => {
+      iptal = true;
+      clearTimeout(zaman);
+      setOnizlemeBekliyor(false);
+    };
+  }, [hedefId, hedefBenim, orduAnahtari]);
+
   if (harita.isLoading || !harita.data) {
     return <Iskelet satir={3} />;
   }
@@ -265,16 +304,6 @@ export function Harita({
     setOnizleme(null);
     setHata(null);
     setBilgi(null);
-  }
-
-  async function onizle() {
-    if (!bolge) return;
-    setHata(null);
-    try {
-      setOnizleme(await api.preview(bolge.id, saldiriOrdusu));
-    } catch (e) {
-      setHata(e instanceof ApiError ? e.message : 'Önizleme alınamadı.');
-    }
   }
 
   async function saldir() {
@@ -580,45 +609,24 @@ export function Harita({
                     etiket="Saldırı ordusu"
                   />
 
-                  {onizleme && (
-                    <div className="oyuk mt-3 rounded-xl p-3">
-                      <p className="baslik text-[13px]">
-                        Tahmin:{' '}
-                        <span
-                          className={
-                            onizleme.tahmin.kazanan === 'attacker' ? 'text-yesil' : 'text-kirmizi'
-                          }
-                        >
-                          {onizleme.tahmin.kazanan === 'attacker' ? 'ZAFER' : 'YENİLGİ'}
-                        </span>
-                        {onizleme.tahmin.eleGecirir && (
-                          <span className="text-altin"> · BÖLGE ELE GEÇER</span>
-                        )}
-                      </p>
-                      <p className="mt-1 text-[11px] text-solgun">
-                        Tahmini kaybın: {formatArmy(onizleme.tahmin.saldiranKayip)}
-                      </p>
-                      <p className="mt-0.5 text-[11px] text-solgun">
-                        Yürüyüş: {formatKalan(onizleme.marchSec * 1000)}
-                      </p>
-                      <p
-                        className={`mt-1 text-[10px] ${
-                          onizleme.istihbaratKesin ? 'text-yesil' : 'text-turuncu'
-                        }`}
-                      >
-                        {onizleme.not}
-                      </p>
-                    </div>
+                  {onizleme ? (
+                    <SaldiriOnizleme onizleme={onizleme} />
+                  ) : (
+                    !secimBos &&
+                    onizlemeBekliyor && (
+                      <p className="mt-3 text-[12px] text-solgun">Sonuç hesaplanıyor…</p>
+                    )
                   )}
 
-                  <div className="mt-3 flex gap-2">
-                    <Buton tur="sessiz" onClick={onizle} disabled={secimBos} className="flex-1">
-                      Önizle
-                    </Buton>
-                    <Buton onClick={saldir} disabled={saldiriEngeli !== null} className="flex-1">
-                      Saldır
-                    </Buton>
-                  </div>
+                  <Buton
+                    className="mt-3"
+                    boy="buyuk"
+                    tam
+                    onClick={saldir}
+                    disabled={saldiriEngeli !== null}
+                  >
+                    Saldır
+                  </Buton>
 
                   {saldiriEngeli && (
                     <EngelNotu kisa={saldiriEngeli.kisa} uzun={saldiriEngeli.uzun} />

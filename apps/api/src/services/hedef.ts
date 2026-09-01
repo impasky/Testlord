@@ -93,6 +93,8 @@ export interface HedefOnerisi {
   marchSec: number;
   /** İlk saldırı kısayolu bu hedefte geçerli mi. */
   ilkSaldiri: boolean;
+  /** Oyuncunun evde hiç ordusu var mı — "yetmiyor" ile "yok" farklı şeyler. */
+  orduVar: boolean;
   /** Mevcut ev ordusuyla kazanılır mı. */
   kazanir: boolean;
   /** Kazanırsa geriye kaç birim kalır — "kıl payı" ile "rahat" farkı. */
@@ -126,7 +128,11 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
   });
   const evOrdusu: Army = {};
   for (const r of evRows) evOrdusu[r.unitType as UnitType] = r.count;
-  if (armyCount(evOrdusu) === 0) return null;
+
+  // Ordusu olmayan oyuncuya da hedef gösterilir. Öneriyi burada kesmek,
+  // "ne için asker eğitiyorum" sorusunu tam da sorulduğu anda cevapsız
+  // bırakıyordu: yeni oyuncunun ordusu hep boştur.
+  const orduVar = armyCount(evOrdusu) > 0;
 
   const [saldiran, yuruyusSayisi, bolgeSayisi, adaylar] = await Promise.all([
     lordSide(lordId, evOrdusu, []),
@@ -153,28 +159,45 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
     const ham = (r.npcGarrison ?? {}) as Record<string, number>;
     for (const t of UNIT_TYPES) if ((ham[t] ?? 0) > 0) garrison[t] = ham[t]!;
 
-    const sonuc = simulateBattle(
-      saldiran,
-      npcDefender(garrison, r.type, r.level),
-      `oneri-${lordId}-${r.id}`,
-      { defenderStore: { altin: 0, demir: 0, erzak: 0 }, attackerCunning: 0, canCapture: true },
-    );
-    const kazanir = sonuc.winner === 'attacker';
-    const kalan = armyCount(sonuc.attackerSurvivors);
+    // Ordu boşsa savaş simülasyonu anlamsız — sonuç baştan bellidir.
+    let kazanir = false;
+    let kalan = 0;
+    if (orduVar) {
+      const sonuc = simulateBattle(
+        saldiran,
+        npcDefender(garrison, r.type, r.level),
+        `oneri-${lordId}-${r.id}`,
+        { defenderStore: { altin: 0, demir: 0, erzak: 0 }, attackerCunning: 0, canCapture: true },
+      );
+      kazanir = sonuc.winner === 'attacker';
+      kalan = armyCount(sonuc.attackerSurvivors);
+    }
 
     const distance = hexDistance({ q: lord.homeQ, r: lord.homeR }, { q: r.q, r: r.r });
     const ilkSaldiri = ilkYuruyus && distance <= B.yuruyus.ilk_saldiri_max_hex;
+    // Ordu boşken hız referansı kullanılır (marchDurationSec'in kendi
+    // davranışı); gösterilen süre "bu mesafe kabaca ne kadar" demektir.
     const marchSec = marchDurationSec(distance, evOrdusu, saldiran.generalBonus, { ilkSaldiri });
 
     const gelir = regionIncome(r.type, r.level, r.incomeMult);
 
-    // Puan: kazanılabilir olmak her şeyden önce gelir. Sonra saat başına
-    // düşen değer — yakın ve verimli hedef, uzak ve zengin hedefi yener.
-    // Kazanılamayan hedefler de sıralanır ki hiç öneri kalmadığında en
-    // yakın olanı gösterip "ordun yetmiyor" diyebilelim.
+    // İki ayrı sıralama, çünkü iki ayrı soru soruluyor:
+    //
+    //  - Kazanılabilen hedefler arasında soru "hangisi en kârlı": saat
+    //    başına düşen değer kazanır, yakın ve verimli hedef uzak ve zengin
+    //    hedefi yener.
+    //  - Kazanılamıyorsa soru "hangisi ulaşabileceğim ilk basamak":
+    //    önce YAKINLIK, sonra zayıf garnizon. Değere göre sıralamak
+    //    ordusu olmayan oyuncuya 160 birimlik şehri gösteriyordu; zayıf
+    //    garnizonu öne almak ise 6 hex uzaktaki bir bölgeyi — yani tam
+    //    da düzeltmeye çalıştığımız "ordumu yolladım, bir saat sonra
+    //    dönerim" deneyimini. Yeni oyuncunun ilk hedefi yürüme mesafesinde
+    //    olmalı.
     const saat = Math.max(marchSec, 60) / 3600;
-    const deger = altinKarsiligi(gelir) / saat;
-    const puan = (kazanir ? 1e9 : 0) + deger + (kazanir ? kalan : -distance * 1000);
+    const puan = kazanir
+      ? 1e9 + altinKarsiligi(gelir) / saat + kalan
+      : -distance * 1000 - armyCount(garrison);
+
 
     if (puan > enIyiPuan) {
       enIyiPuan = puan;
@@ -186,6 +209,7 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
         distance,
         marchSec,
         ilkSaldiri,
+        orduVar,
         kazanir,
         kalanBirim: kalan,
         garrison,

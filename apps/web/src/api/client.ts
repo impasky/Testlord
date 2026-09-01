@@ -216,6 +216,7 @@ export interface RegionDto {
 export interface MapDto {
   home: { q: number; r: number };
   maxRegions: number;
+  oneri: HedefOnerisiDto | null;
   regions: RegionDto[];
 }
 
@@ -227,6 +228,22 @@ export interface RegionDetailDto extends RegionDto {
   npcGarrison: Army;
 }
 
+/** "Bu bölgeyi alırsan ne olur" — motorun hesapladığı gerçek sayılar. */
+export interface FetihOduluDto {
+  saatlikGelir: Resources & { sohret: number };
+  toplamGelirOncesi: Resources;
+  toplamGelirSonrasi: Resources;
+  sohretOncesi: number;
+  sohretSonrasi: number;
+  siraOncesi: number;
+  siraSonrasi: number;
+  xp: number;
+  bolgeOncesi: number;
+  bolgeSonrasi: number;
+  bolgeLimiti: number;
+  limitDolu: boolean;
+}
+
 export interface PreviewDto {
   tahmin: {
     kazanan: 'attacker' | 'defender';
@@ -235,9 +252,36 @@ export interface PreviewDto {
     savunanKayip: Army;
     yagma: Resources;
   };
+  odul: FetihOduluDto;
+  bedel: {
+    yenidenEgitim: Resources;
+    yenidenEgitimSn: number;
+    kayipBirim: number;
+  };
   istihbaratKesin: boolean;
   marchSec: number;
+  /** İlk saldırı kısayolu uygulandı mı — süre neden bu kadar kısa. */
+  ilkSaldiri: boolean;
+  donusSec: number;
   not: string;
+}
+
+/** Haritanın önerdiği hedef: "şimdi neye saldırmalıyım" sorusunun cevabı. */
+export interface HedefOnerisiDto {
+  regionId: number;
+  name: string;
+  type: string;
+  level: number;
+  distance: number;
+  marchSec: number;
+  ilkSaldiri: boolean;
+  orduVar: boolean;
+  kazanir: boolean;
+  kalanBirim: number;
+  garrison: Army;
+  saatlikGelir: Resources & { sohret: number };
+  sohretFarki: number;
+  limitDolu: boolean;
 }
 
 export interface GeneralDto {
@@ -359,7 +403,14 @@ export const api = {
   preview: (toRegionId: number, army: Army, generalIds: string[] = []) =>
     post<PreviewDto>('/battle/preview', { toRegionId, army, generalIds }),
   march: (toRegionId: number, army: Army, generalIds: string[] = []) =>
-    post<{ marchId: string; arriveAt: string; distance: number; durationSec: number; uyari: string | null }>(
+    post<{
+      marchId: string;
+      arriveAt: string;
+      distance: number;
+      durationSec: number;
+      ilkSaldiri: boolean;
+      uyari: string | null;
+    }>(
       '/march',
       { toRegionId, army, generalIds },
     ),

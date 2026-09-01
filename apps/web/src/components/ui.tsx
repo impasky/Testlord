@@ -132,6 +132,111 @@ export function kaynakEngeli(
   };
 }
 
+/* ---------------- Öncesi / sonrası ---------------- */
+
+/**
+ * "1.240 → 1.640 (+400)".
+ *
+ * Oyunun ilk gerçek testinde oyuncu üç kez aynı şeyi söyledi: "gücüm arttı,
+ * eee ne oldu şimdi". Çıplak bir sayı hiçbir şey anlatmıyor; anlatan şey
+ * FARK. Bu yüzden hiçbir sonuç ekranı artık tek bir sayı göstermiyor.
+ *
+ * `tersYon` sıralama içindir: 41'den 28'e düşmek iyidir, sayı küçüldüğü
+ * hâlde yeşil yazılmalıdır.
+ */
+export function Fark({
+  oncesi,
+  sonrasi,
+  birim,
+  tersYon,
+  bicim = formatSayi,
+  farkMetni,
+}: {
+  oncesi: number;
+  sonrasi: number;
+  birim?: string;
+  tersYon?: boolean;
+  bicim?: (n: number) => string;
+  /** Parantez içindeki metni özelleştirir — ör. "7 sıra yukarı". */
+  farkMetni?: (mutlakFark: number, iyiMi: boolean) => string;
+}) {
+  const fark = sonrasi - oncesi;
+  const iyi = tersYon ? fark < 0 : fark > 0;
+  const renk = fark === 0 ? 'text-solgun' : iyi ? 'text-yesil' : 'text-kirmizi';
+  return (
+    <span className="tabular inline-flex items-baseline gap-1 whitespace-nowrap">
+      <span className="text-solgun">
+        {bicim(oncesi)}
+        {birim}
+      </span>
+      <span className="text-sonuk">→</span>
+      <span className="font-bold text-parsomen">
+        {bicim(sonrasi)}
+        {birim}
+      </span>
+      {fark !== 0 && (
+        <span className={`text-[11px] ${renk}`}>
+          (
+          {farkMetni
+            ? farkMetni(Math.abs(fark), iyi)
+            : `${fark > 0 ? '+' : '−'}${bicim(Math.abs(fark))}`}
+          )
+        </span>
+      )}
+    </span>
+  );
+}
+
+/** Etiketli tek satır: solda ne, sağda değer. Sonuç bloklarının tuğlası. */
+export function SonucSatiri({
+  etiket,
+  children,
+  vurgu,
+}: {
+  etiket: ReactNode;
+  children: ReactNode;
+  vurgu?: boolean;
+}) {
+  return (
+    <div className="flex items-baseline justify-between gap-3 py-1 text-[12px]">
+      <span className={vurgu ? 'text-parsomen' : 'text-solgun'}>{etiket}</span>
+      <span className="text-right">{children}</span>
+    </div>
+  );
+}
+
+/**
+ * "Kazanırsan ne olur / kaybedersen ne olur" bloğu.
+ *
+ * Kural: hiçbir onay düğmesi, bastıktan sonra ne olacağını söylemeden
+ * basılabilir olmamalı. Oyuncu ordusunu yola çıkarıp "eee ne işe yarayacak
+ * bu saldırı" diye sormak zorunda kalmamalı — cevap düğmenin üstünde durmalı.
+ */
+export function KazanKaybet({
+  kazanirsan,
+  kaybedersen,
+  kazanBaslik = 'Kazanırsan',
+  kaybetBaslik = 'Kaybedersen',
+}: {
+  kazanirsan: ReactNode;
+  kaybedersen: ReactNode;
+  kazanBaslik?: string;
+  kaybetBaslik?: string;
+}) {
+  return (
+    <div className="grid gap-2">
+      <div className="rounded-xl border border-yesil/30 bg-yesil/10 px-3 py-2">
+        <div className="baslik mb-0.5 text-[10px] text-yesil">{kazanBaslik}</div>
+        {kazanirsan}
+      </div>
+      <div className="rounded-xl border border-kenar bg-oyuk/40 px-3 py-2">
+        <div className="baslik mb-0.5 text-[10px] text-solgun">{kaybetBaslik}</div>
+        {kaybedersen}
+      </div>
+    </div>
+  );
+}
+
 /* ---------------- Nadirlik ---------------- */
 
 export type Nadirlik = 'siradan' | 'usta' | 'nadir' | 'efsanevi' | 'kadim';

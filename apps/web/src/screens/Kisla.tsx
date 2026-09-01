@@ -13,6 +13,7 @@ import { useState } from 'react';
 import { ApiError, api, type LordState, type QueueItem, type UnitDto } from '../api/client';
 import { hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { Gorsel } from '../components/Gorsel';
+import { HedefSeridi } from '../components/HedefSeridi';
 import {
   BirimIkonu,
   IkonAltin,
@@ -253,10 +254,13 @@ export function Kisla({
   lord,
   queues,
   onGuncelle,
+  onHaritayaGit,
 }: {
   lord: LordState;
   queues: QueueItem[];
   onGuncelle: () => void;
+  /** Önerilen hedefi haritada açar — "ne için asker eğitiyorum" sorusunun sonu. */
+  onHaritayaGit?: (regionId: number) => void;
 }) {
   const qc = useQueryClient();
   const [hata, setHata] = useState<string | null>(null);
@@ -264,6 +268,8 @@ export function Kisla({
   // düğmesini birden söndürüyordu; oyuncu neyin olduğunu anlamıyordu.
   const [gonderilen, setGonderilen] = useState<string | null>(null);
   const army = useQuery({ queryKey: ['army'], queryFn: api.army });
+  // Haritayla aynı sorgu anahtarı: veri paylaşılır, ikinci istek atılmaz.
+  const harita = useQuery({ queryKey: ['map'], queryFn: api.map });
 
   const mut = useMutation({
     mutationFn: async ({ f }: { f: () => Promise<unknown>; tip: string }) => f(),
@@ -299,8 +305,21 @@ export function Kisla({
   }, 0);
   const bosYer = Math.max(0, a.commandCapacity - a.usedSlots - kuyruktakiYer);
 
+  const oneri = harita.data?.oneri ?? null;
+
   return (
     <div className="space-y-4 pt-3">
+      {/* Asker eğitmenin sebebi ekranın en üstünde durur. Önceden beş kart
+          beş düğmeyle yan yanaydı ve hiçbiri neden eğitim yapıldığını
+          söylemiyordu. (docs/08 İ1) */}
+      {oneri && (
+        <HedefSeridi
+          hedef={oneri}
+          baslik="Ordunu ne için kuruyorsun"
+          onAc={onHaritayaGit ? () => onHaritayaGit(oneri.regionId) : undefined}
+        />
+      )}
+
       <div className="grid grid-cols-2 gap-2.5">
         <DegerKarti
           ikon={<IkonYer boyut={20} />}
