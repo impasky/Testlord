@@ -102,11 +102,16 @@ temizleniyor; hangi dosyada yapıldığı aşağıdaki tabloda yazıyor.
 | `zeminler/giris.webp` | eklendi (işaret silindi) |
 | `ekipman/silah_t1..t5.webp` | eklendi (zemin ayıklandı, saydam) |
 | `ekipman/kalkan_t1..t5.webp` | eklendi (zemin ayıklandı, saydam) |
+| `ekipman/zirh_t1..t5.webp` | eklendi (T2–T5 işaret silindi, zemin ayıklandı) |
 
 Ekipman ikonlarında filigran yoktu; onlarda yapılan iş zemin ayıklama.
-Onunda da eşik 8 ölçüldü. Silinen zemin kılıçlarda %81–87, kalkanlarda
-%50–57 — aradaki fark nesnenin biçimi: çapraz bir kılıç ince, kalkan
-kareyi doluduruyor. Envanterde otuz ikon yan yana dizildiği için zeminin
+On beşinde de eşik 8 ölçüldü. Silinen zemin kılıçlarda %81–87,
+kalkanlarda %50–57, zırhlarda %48–57 — aradaki fark nesnenin biçimi:
+çapraz bir kılıç ince, kalkan ve zırh kareyi dolduruyor.
+
+Zırhlarda yaka boşluğu (yakanın içindeki karanlık oyuk) korundu: zemin
+tonuna yakın ama görüntü kenarına bağlı değil, ayıklamanın bağlılık
+şartı tam da bunun için. Envanterde otuz ikon yan yana dizildiği için zeminin
 üreticiye göre değişmesi ızgarayı yamalı gösteriyordu; saydam olunca
 arayüzün kendi oyuğu görünüyor.
 
