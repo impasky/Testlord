@@ -828,3 +828,24 @@ Tek karelik bir figürün kolunu döndüremeyiz. Döndürebileceğimiz şeyler:
 tetiklemiyor, CSS de animasyonları kapatıyor. Sarsılan ekran baş dönmesi
 yapabiliyor; bu bir süs tercihi değil. İki kip de tarayıcıda kare kare
 doğrulandı.
+
+### Zincirleme düzenleme çalıştı
+
+Beş lord görseli üretildi ve yöntem doğrulandı: **aynı adam.** Aynı yüz,
+aynı koyu saç, aynı sakal, aynı duruş — hatta aynı çizmeler beş görselde de
+duruyor. T5'te yaşlanmış ve ağarmış, istemde öyle yazıyordu.
+
+Metinden sıfırdan üretilseydi beş ayrı adam çıkardı. Fark, istemin
+`SAME MAN, same face, same stance, same framing as the input image` ile
+başlaması ve bir önceki görselin **girdi olarak verilmesi**.
+
+**Filigran bir kez konunun üstüne düştü.** `lord_4`te işaret pelerinin
+üzerindeydi; orada zemin rengiyle doldurmak pelerinde delik açardı. Araca
+`--filigran-ayna` eklendi: zemin ayıklansa bile aynalar, yani komşu içeriği
+(pelerin, kürk, kanat) sürdürür. Hangi görselde gerektiği ölçüldü, tahmin
+edilmedi — kutunun çevresindeki piksellerin zeminden uzaklığına bakıldı ve
+beşten yalnızca biri işaretlendi.
+
+Ayrıca `zemin_sil` varsayılanı genişletildi. Ölçüt tek: görsel bir KUTUYA
+mı giriyor, bir SAHNEYE mi biniyor? Ekipman ve lord sahneye biniyor, zemini
+kalırsa ordunun üstüne koyu bir dikdörtgen yapıştırılmış gibi duruyor.

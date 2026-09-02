@@ -15,15 +15,20 @@ her partide ayni islem elle tekrarlanmasin (ve biri unutulmasin):
 Kirpma ve kayit gorsel-uret.py'den ODUNC ALINIYOR, kopyalanmiyor: kategori
 boyutu degisirse elle eklenen gorseller de otomatik uyar.
 
-ZEMIN AYIKLAMA NEDEN SADECE EKIPMANDA
+ZEMIN AYIKLAMA NEDEN BAZI KATEGORILERDE
+  Olcut tek: gorsel bir KUTUYA mi giriyor, yoksa bir SAHNEYE mi biniyor?
+
   Birim ve general gorselleri arayuzde cerceveli birer PORTRE; koyu duz
   zemin orada dogru duruyor ve zaten hepsi ayni oturumda uretildigi icin
   ayni zemini paylasiyor.
+
   Ekipman baska: envanterde otuz ikon YAN YANA diziliyor ve her biri ayri
   uretiliyor. Uretici her seferinde biraz baska bir zemin veriyor (biri
   yesilimsi, biri neredeyse siyah, biri sicak kahve) ve bu kutucuklarda
-  yamali bir izgara olarak goze batiyor. Zemin ayiklaninca arayuzun kendi
-  oyugu gorunuyor, otuzu da ayni kutuda duruyor.
+  yamali bir izgara olarak goze batiyor.
+
+  Lord da baska: ordu sahnesinde askerlerin ONUNE biniyor. Zemini kalirsa
+  ordunun ustune koyu bir dikdortgen yapistirilmis gibi duruyor.
 
   Ayiklama, olculen zemin rengine yakin VE goruntu kenarina BAGLI
   piksellerdir. Baglilik sarti onemli: koyu bir agzin icindeki daha da
@@ -53,8 +58,13 @@ Filigran nasil siliniyor, zemin ayiklamaya bagli:
   zemin ayiklaniyorsa  kutu cevresindeki ZEMIN RENGIYLE doldurulur ve
                        ayiklamayla birlikte tamamen gider.
   ayiklanmiyorsa       komsu seridin yatay aynasiyla yamalanir.
+
+  --filigran-ayna      zemin ayiklansa bile aynalar. Isaret KONUNUN
+                       USTUNE dusmusse gerekir: zemin rengiyle doldurmak
+                       orada konuda delik acar, ayna ise komsu icerigi
+                       (pelerin, kurk, kanat) surdurur.
   --zemin-sil / --zemin-tut    ayiklamayi acikca ac/kapat. Varsayilan:
-                               ekipmanda acik, digerlerinde kapali.
+                               ekipman ve lord'da acik, digerlerinde kapali.
   --kirpma                     icerige kirpmayi KAPAT. Varsayilan acik
                                (zemin ayiklandiginda): saydam paylar atilip
                                konu kareye oturtulur, boylece otuz ikon ayni
@@ -73,6 +83,9 @@ from io import BytesIO
 from pathlib import Path
 
 KOK = Path(__file__).resolve().parent.parent
+
+# Zemini ayiklanan kategoriler: ciktisi bir kutuya degil bir SAHNEYE biniyor.
+SAHNEYE_BINEN = {"ekipman", "lord"}
 
 # Zemin esigi SABIT DEGIL, zeminin kendi degiskenliginden olculur.
 #
@@ -271,6 +284,9 @@ def main() -> int:
     tam_ayna = "--tam-ayna" in argv
     if tam_ayna:
         argv.remove("--tam-ayna")
+    filigran_ayna = "--filigran-ayna" in argv
+    if filigran_ayna:
+        argv.remove("--filigran-ayna")
     kirp = "--kirpma" not in argv
     if not kirp:
         argv.remove("--kirpma")
@@ -300,8 +316,10 @@ def main() -> int:
 
     boyut = uretici.KATEGORI[kategori]["boyut"]
     bilinen = set(uretici.ISTEKLER[kategori])
-    # Ekipman ikonlari yan yana dizildigi icin zemin ayiklama orada varsayilan.
-    zemin_sil = zemin_sil_istegi if zemin_sil_istegi is not None else kategori == "ekipman"
+    # Sahneye binen kategorilerde ayiklama varsayilan olarak acik.
+    zemin_sil = (
+        zemin_sil_istegi if zemin_sil_istegi is not None else kategori in SAHNEYE_BINEN
+    )
 
     isler = []
     for arg in argv:
@@ -327,7 +345,7 @@ def main() -> int:
         notlar = []
         if filigran:
             kutu = fsil.kutu_coz(filigran, *im.size)
-            if zemin_sil and not tam_ayna:
+            if zemin_sil and not tam_ayna and not filigran_ayna:
                 im = filigran_zeminle(im, kutu)
                 notlar.append("filigran (zeminlendi)")
             else:

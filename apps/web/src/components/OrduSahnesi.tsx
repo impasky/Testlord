@@ -240,12 +240,16 @@ export function OrduSahnesi({
           çizilmiyor: yerine bir siluet koymak, olmayan bir şeyi varmış gibi
           göstermek olurdu. (docs/08 İ13) */}
       <div className="lord absolute bottom-0 left-1/2 -translate-x-1/2">
+        {/* Boy sahne yüksekliğinin tamamı değil: 168px verildiğinde 172px'lik
+            sahnede lordun saçı üst kenardan taşıyordu. 156 hem baş üstünde
+            pay bırakıyor hem askerlerden (ön sıra 132px) belirgin büyük
+            kalıyor — öndeki figür olduğu okunsun diye. */}
         <Gorsel
           tur="lord"
           ad={`lord_${seviye}`}
           alt={`Lordun — kuşam ${seviye}`}
-          boyut={168}
-          className="h-[168px] w-auto"
+          boyut={156}
+          className="h-[156px] w-auto"
           yedek={<></>}
         />
       </div>

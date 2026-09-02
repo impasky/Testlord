@@ -106,6 +106,13 @@ temizleniyor; hangi dosyada yapıldığı aşağıdaki tabloda yazıyor.
 | `ekipman/migfer_t1..t5.webp` | eklendi (işaret silindi, zemin ayıklandı) |
 | `ekipman/at_t1..t5.webp` | eklendi (işaret zeminlendi, zemin ayıklandı) |
 | `ekipman/sancak_t1..t5.webp` | eklendi (işaret zeminlendi, zemin ayıklandı) |
+| `lord/lord_1..5.webp` | eklendi (zincirleme düzenleme, zemin ayıklandı) |
+
+Lord figürleri zincirleme düzenlemeyle üretildi: `lord_1` metinden,
+sonrakiler bir öncekini girdi alarak. Beşinde de işaret aynı yerdeydi ama
+`lord_4`te **pelerinin üstüne** düşmüştü — orada zemin rengiyle doldurmak
+pelerinde delik açardı, komşu şeridin aynası kullanıldı. Diğer dördü düz
+zemindeydi, doldurma yeterliydi.
 
 Ekipman ikonlarında filigran yoktu; onlarda yapılan iş zemin ayıklama.
 Otuzunda da eşik 8 ölçüldü. Silinen zemin %48 ile %87 arasında; aradaki
