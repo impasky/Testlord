@@ -638,3 +638,20 @@ geçici bir dala yükleniyor, Claude oradan alıyor, işlenmiş WebP'ler
 çalışma dalına giriyor. Ham dosyalar çalışma dalının geçmişine hiç
 girmiyor — 72 görsellik bir set ~100 MB eder ve silmek geçmişten
 temizlemiyor.
+
+### Kuşanılan ekipman da bir vitrin olsun
+
+Oyuncu: *"oyuncunun kendi kısmında ekipmanlar görünmüyor."* Haklıydı:
+illüstrasyonu Demirhane'nin envanter kartlarına bağlamıştım, Lord
+ekranındaki kuşanma yuvalarına değil. Envanterde gördüğün kılıcı
+kuşanınca kaybediyordun.
+
+Bu, ilk oturum şikâyetinin tam da kalbindeki nokta: *"gücümü en yüksek
+olanı kuşan dedim, gücüm arttı, eee ne oldu şimdi."* Sayının arttığını
+görmek, bir şey kuşandığını görmekle aynı şey değil. Yuva artık bir
+vitrin: illüstrasyon kareyi dolduruyor, nadirlik rengi üst şeritte, yuva
+adı ve tier alttaki şeritte görselin üstüne biniyor.
+
+Şerit görselin ALTINDA ayrı bir satır değil ÜSTÜNE binen bir bant: kare
+zaten küçük (üç sütun, telefonda ~115px) ve altına ayrı satır koymak
+illüstrasyona kalan yeri yarıya indiriyordu.

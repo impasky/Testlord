@@ -3,7 +3,8 @@ import { EQUIP_SLOTS, STAT_KEYS, type StatKey } from '@lordlar/shared';
 import { useState } from 'react';
 import { ApiError, api, type LordState } from '../api/client';
 import { IkonCan, IkonKurnaz, IkonSaldiri, IkonYer } from '../components/Ikonlar';
-import { Bolum, Buton, Kart, Rozet, formatSayi } from '../components/ui';
+import { Bolum, Buton, Kart, Rozet, formatSayi, nadirlikRengi } from '../components/ui';
+import { Gorsel } from '../components/Gorsel';
 
 const STAT: Record<StatKey, { ad: string; renk: string; etki: (n: number) => string }> = {
   guc: { ad: 'Güç', renk: 'var(--color-kirmizi)', etki: (n) => `Savaş katkısı +${n * 3}` },
@@ -148,22 +149,47 @@ export function LordEkrani({ lord, onGuncelle }: { lord: LordState; onGuncelle: 
         <div className="grid grid-cols-3 gap-2">
           {EQUIP_SLOTS.map((slot) => {
             const it = kusanilan.get(slot);
+            if (!it) {
+              return (
+                <Kart
+                  key={slot}
+                  className="flex aspect-square flex-col items-center justify-center p-2"
+                >
+                  <span className="baslik text-[10px] text-sonuk">{SLOT_ADI[slot]}</span>
+                  <span className="mt-1 text-[10px] text-sonuk/70">boş</span>
+                </Kart>
+              );
+            }
+            const renk = nadirlikRengi(it.rarity);
             return (
-              <Kart key={slot} className="flex aspect-square flex-col items-center justify-center p-2">
-                {it ? (
-                  <>
-                    <span className="baslik text-[10px] text-solgun">{SLOT_ADI[slot]}</span>
-                    <span className="baslik mt-1 text-[13px] text-altin">
+              // Dolu yuva bir VİTRİN: kuşandığın şey görünüyor, adı ve tier'ı
+              // altındaki şeritte duruyor. Oyuncunun ilk oturumdaki
+              // şikâyetlerinden biri buydu — "gücümü en yüksek olanı kuşan
+              // dedim, gücüm arttı, eee ne oldu şimdi". Sayı arttığını
+              // görmek, bir şey kuşandığını görmekle aynı şey değil.
+              <Kart key={slot} className="relative aspect-square p-0" vurgu={renk}>
+                <Gorsel
+                  tur="ekipman"
+                  ad={`${slot}_t${it.tier}`}
+                  alt={`${SLOT_ADI[slot]} T${it.tier}`}
+                  boyut={128}
+                  className="h-full w-full"
+                  yedek={
+                    <span className="baslik flex h-full w-full items-center justify-center text-[20px]" style={{ color: renk }}>
                       T{it.tier}
-                      {it.upgradeLevel > 0 && `+${it.upgradeLevel}`}
                     </span>
-                  </>
-                ) : (
-                  <>
-                    <span className="baslik text-[10px] text-sonuk">{SLOT_ADI[slot]}</span>
-                    <span className="mt-1 text-[10px] text-sonuk/70">boş</span>
-                  </>
-                )}
+                  }
+                />
+                {/* Şerit görselin üstüne biner; kare zaten küçük, altına
+                    ayrı bir satır koymak illüstrasyona kalan yeri yarıya
+                    indiriyordu. */}
+                <div className="absolute inset-x-0 bottom-0 flex items-baseline justify-between gap-1 bg-gradient-to-t from-gece via-gece/85 to-transparent px-1.5 pt-3 pb-1">
+                  <span className="baslik truncate text-[9px] text-solgun">{SLOT_ADI[slot]}</span>
+                  <span className="baslik shrink-0 text-[12px] text-altin">
+                    T{it.tier}
+                    {it.upgradeLevel > 0 && `+${it.upgradeLevel}`}
+                  </span>
+                </div>
               </Kart>
             );
           })}
