@@ -599,3 +599,23 @@ anlamlı bir kısmını kaplar; sessizce boş bir görsel yazmaktansa zemini
 korumak doğru. Beş sentetik durumla sınandı — düz zemin, konunun kenara
 taştığı zemin, vinyetli zemin, gürültülü zemin ve ayıklanması imkânsız
 olan (ağız zeminle aynı tonda) durum.
+
+### Duruş kuralı: istem söylemiyorsa üretici karar veriyor
+
+İlk ekipman turunda aynı istemden kimi dikey kimi çapraz kılıç geldi.
+Sebep istemin kendisiydi: `three-quarter view` **bakış açısını** söylüyor
+ama karedeki **yönelimi** söylemiyor. Tek bir görselde fark etmez; otuz
+ikon envanterde yan yana dizildiği için ızgarada göze batıyor.
+
+Duruş artık kategori kompozisyonunda açıkça yazılı ve kural iki kollu,
+çünkü tek kollusu olmuyor: kılıç ve sancak gibi uzun nesnelerde çapraz
+kareyi köşeden köşeye dolduruyor, miğfer ve kalkan gibi toplu nesnelerde
+çapraz sadece eğri durur. Yuva tarifindeki `blade pointing up` kaldırıldı —
+iki yerden duruş söylemek, ikisinin çelişmesi demekti.
+
+Zemin tarifi de sıkılaştırıldı: `no gradient, no vignette, no texture` ve
+`crisp silhouette separation`. Bu doğrudan `gorsel-koy.py`nin zemin
+ayıklamasına hizmet ediyor — orası zemini tek renk olarak modelliyor ve
+dalgalı bir zeminin uzak ucu eşiğin dışında kalıyor. Zemin yine de KOYU
+isteniyor: ayıklama başarısız olup fren devreye girerse geriye kalan
+zeminin arayüzle uyumlu olması gerekiyor.

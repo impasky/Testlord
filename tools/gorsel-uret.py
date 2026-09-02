@@ -130,10 +130,28 @@ KATEGORI = {
             "nadir/efsanevi/kadim ayrımı arayüzde çerçeve ve renkle yapılıyor. "
             "Tek değişken tier."
         ),
+        # Duruş burada AÇIKÇA yazılıyor, yuva tarifinde değil. "three-quarter
+        # view" bakış açısını söylüyor ama karedeki yönelimi söylemiyordu:
+        # aynı istemden kimi dikey kimi çapraz kılıç geldi. Otuz ikon yan
+        # yana dizildiği için bu ızgarada göze batıyor.
+        #
+        # Kural iki kollu, çünkü tek kollusu olmuyor: kılıç ve sancak gibi
+        # uzun nesnelerde çapraz kareyi köşeden köşeye dolduruyor, miğfer
+        # ve kalkan gibi toplu nesnelerde çapraz sadece eğri durur.
+        #
+        # Zemin tarifi ayıklamaya da hizmet ediyor: gradyan/vinyet/doku
+        # istemiyoruz çünkü gorsel-koy.py zemini tek renk olarak modelliyor
+        # (bkz. docs/08 İ11). Yine de KOYU isteniyor — ayıklama başarısız
+        # olursa geriye kalan zemin arayüzle uyumlu olsun.
         "kompozisyon": "a single object presented as a game inventory icon, "
-                       "isolated and centered, three-quarter view, "
-                       "no hands, no character, no background scenery, "
-                       "plain flat dark background, square 1:1 composition",
+                       "isolated, no hands, no character, no background scenery, "
+                       "the object is large and fills the frame edge to edge; "
+                       "long objects such as blades and poles run diagonally "
+                       "from lower left to upper right, compact objects sit "
+                       "centered and fill the square, "
+                       "plain flat dark background with no gradient, no vignette "
+                       "and no texture, crisp silhouette separation between the "
+                       "object and the background, square 1:1 composition",
         "boyut": (512, 512),
     },
     "harita": {
@@ -172,10 +190,10 @@ KATEGORI = {
 # bakım: tier merdiveni değişince otuz istem birden düzeliyor ve "T3 kalkan
 # neden T4 miğferden gösterişli" gibi tutarsızlıklar oluşmuyor.
 EKIPMAN_YUVA = {
-    "silah": "a straight double-edged arming sword, blade pointing up",
-    "kalkan": "a heater shield seen from the front, slight three-quarter tilt",
+    "silah": "a straight double-edged arming sword",
+    "kalkan": "a heater shield seen from the front, tilted slightly",
     "zirh": "a torso cuirass and pauldrons displayed on an invisible stand",
-    "migfer": "a knight helmet, visor down, three-quarter view",
+    "migfer": "a knight helmet, visor down, seen from a three-quarter angle",
 }
 
 # Metal parçalar için ortak tier merdiveni.
