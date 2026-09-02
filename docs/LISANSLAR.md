@@ -103,7 +103,7 @@ temizleniyor; hangi dosyada yapıldığı aşağıdaki tabloda yazıyor.
 
 Ekran zeminlerindeki işaret köşeye yapışık değil, kenardan bir tutam
 içerideydi; `filigran-sil.py`'nin köşe kutusu onu ancak yarım yakalıyordu.
-Araca `--kutu` eklendi ve altısı `tools/zemin-ekle.py` ile aynı işlemden
+Araca `--kutu` eklendi ve altısı `tools/gorsel-koy.py` ile aynı işlemden
 geçirildi. Sıralama'da yerel yansıma taş basamakta ters V bırakıyordu,
 salon simetrik olduğu için `--tam-ayna` dikişsiz sonuç verdi.
 

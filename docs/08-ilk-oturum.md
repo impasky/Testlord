@@ -556,11 +556,46 @@ sadece ilk karenin başlangıcı. (`--alt-bar` tersine kaynak: gezinme
 
 **Filigran.** Üretim aracı işaretini köşeye yapıştırmıyor, kenardan bir
 tutam içeride bırakıyor; `filigran-sil.py`'nin köşe kutusu onu ancak yarım
-yakalıyordu. Araca `--kutu sol,ust,sag,alt` eklendi. `tools/zemin-ekle.py`
-üç adımı (işaret temizliği → orana kırpma → WebP) tek yerde topluyor ve
+yakalıyordu. Araca `--kutu sol,ust,sag,alt` eklendi. `tools/gorsel-koy.py`
+adımları (işaret temizliği → orana kırpma → WebP) tek yerde topluyor ve
 kırpma/kayıt kısmını `gorsel-uret.py`den ödünç alıyor, kopyalamıyor:
 kategori boyutu değişirse elle eklenen görseller de uyar.
 
 **Açık kalan:** Demirhane zemini diğer beşten farklı bir üslupta geldi —
 ötekiler çizgi konturlu, o daha fotoğrafımsı. Tek başına iyi ama sette
 yamalı duruyor. Aynı istemle yeniden üretilirse set tamamlanır.
+
+### Ekipman görselleri: zemin ayıklama
+
+Ekipman, zeminlerden farklı bir sorun getiriyor. Birim ve general
+görselleri arayüzde çerçeveli birer **portre**; koyu düz zemin orada doğru
+duruyor ve hepsi aynı oturumda üretildiği için aynı zemini paylaşıyorlar.
+
+Ekipman öyle değil: envanterde otuz ikon **yan yana** diziliyor ve her biri
+ayrı üretiliyor. Üretici her seferinde biraz başka bir zemin veriyor —
+biri yeşilimsi, biri neredeyse siyah, biri sıcak kahve. Otuz kutucukta bu
+yamalı bir ızgara olarak göze batıyor. Zemin ayıklanınca arayüzün kendi
+oyuğu görünüyor ve otuzu da aynı kutuda duruyor.
+
+`tools/gorsel-koy.py`, `zemin-ekle.py`nin yerini aldı: aynı ardışık düzen,
+ama kategori parametresiyle. İkinci bir neredeyse-aynı script yazmak,
+kırpma/kayıt/filigran mantığının iki kopyasını tutmak demekti.
+
+**Eşik ölçülüyor, verilmiyor.** İlk hâli sabit bir eşik kullanıyordu (38) ve
+kötü biçimde başarısız oldu: zemininden 9 birim uzaktaki koyu bir ağız da
+"zemine yakın" sayılıyor, gerçek zemine bitişik olduğu için aynı bağlı
+bileşene giriyor ve kılıcın tamamı siliniyordu — kenara bağlılık şartı bu
+durumda korumuyor. Şimdi eşik görüntünün dış çerçevesinden ölçülüyor:
+orası tanımı gereği zemin, oradaki uzaklıkların dağılımı zeminin ne kadar
+dalgalı olduğunu doğrudan söylüyor.
+
+Yayılım ölçüsü 99. yüzdelik değil **75.**: konu kenara değiyorsa (kabza,
+topuz) çerçeveye birkaç parlak piksel karışıyor ve yüksek yüzdelik onlarla
+birlikte tavana zıplayıp eşiği anlamsızca genişletiyor.
+
+**Güvenlik freni:** silinen alan %93'ü aşarsa ayıklama başarısız sayılıyor
+ve görsel olduğu gibi bırakılıyor. Bir envanter ikonunda konu görüntünün
+anlamlı bir kısmını kaplar; sessizce boş bir görsel yazmaktansa zemini
+korumak doğru. Beş sentetik durumla sınandı — düz zemin, konunun kenara
+taştığı zemin, vinyetli zemin, gürültülü zemin ve ayıklanması imkânsız
+olan (ağız zeminle aynı tonda) durum.
