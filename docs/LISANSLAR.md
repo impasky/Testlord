@@ -104,6 +104,7 @@ temizleniyor; hangi dosyada yapıldığı aşağıdaki tabloda yazıyor.
 | `ekipman/kalkan_t1..t5.webp` | eklendi (zemin ayıklandı, saydam) |
 | `ekipman/zirh_t1..t5.webp` | eklendi (T2–T5 işaret silindi, zemin ayıklandı) |
 | `ekipman/migfer_t1..t5.webp` | eklendi (işaret silindi, zemin ayıklandı) |
+| `ekipman/at_t1..t5.webp` | eklendi (işaret zeminlendi, zemin ayıklandı) |
 
 Ekipman ikonlarında filigran yoktu; onlarda yapılan iş zemin ayıklama.
 Yirmisinde de eşik 8 ölçüldü. Silinen zemin kılıçlarda %81–87,

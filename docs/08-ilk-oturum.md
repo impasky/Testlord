@@ -655,3 +655,23 @@ adı ve tier alttaki şeritte görselin üstüne biniyor.
 Şerit görselin ALTINDA ayrı bir satır değil ÜSTÜNE binen bir bant: kare
 zaten küçük (üç sütun, telefonda ~115px) ve altına ayrı satır koymak
 illüstrasyona kalan yeri yarıya indiriyordu.
+
+### Filigran silmenin doğru yolu, zemin ayıklamaya bağlı
+
+Atlarda ilk geçiş ikonun köşesinde küçük lekeler bıraktı. Sebep, iki
+temizliğin birbirini bozmasıydı:
+
+`filigran-sil.py` kutuyu **komşu şeridin aynasıyla** yamalıyor. O şerit
+zemin değilse — atın kuyruğu, gölgesi, T5'in nalından çıkan kıvılcım —
+aynalanan içerik zemin renginde olmuyor, ve zemin ayıklama onu *koruyor*.
+Ölçüldü: T1'de 156, T4'te 105 opak piksel kalmıştı.
+
+Zemin ayıklanacaksa doğru işlem yamalamak değil, kutuyu **çevresindeki
+zemin rengiyle doldurmak**: o zaman kutu zeminin bir parçası oluyor ve
+ayıklamayla birlikte tamamen gidiyor. `gorsel-koy.py` artık buna kendisi
+karar veriyor; ayna, zemin ayıklanmayan kategoriler (ekran zeminleri)
+için doğru olan yöntem olarak duruyor.
+
+Zırh ve miğferde bu sorun çıkmamıştı çünkü onların işaretinin çevresi düz
+zemindi — ayna zemin taşımıştı. Yani hata sessizdi ve ancak komşuluk
+değişince göründü. Yeniden tarandılar, ikisi de temiz.

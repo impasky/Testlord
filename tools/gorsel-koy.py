@@ -47,6 +47,12 @@ KULLANIM:
                                al. Simetrik sahnelerde (sutunlu salon)
                                dikissiz; simetrik olmayanda yanlis icerik
                                tasir, orada varsayilan yerel yansima dogru.
+                               Zemin ayiklamayi da aynalamaya dondurur.
+
+Filigran nasil siliniyor, zemin ayiklamaya bagli:
+  zemin ayiklaniyorsa  kutu cevresindeki ZEMIN RENGIYLE doldurulur ve
+                       ayiklamayla birlikte tamamen gider.
+  ayiklanmiyorsa       komsu seridin yatay aynasiyla yamalanir.
   --zemin-sil / --zemin-tut    ayiklamayi acikca ac/kapat. Varsayilan:
                                ekipmanda acik, digerlerinde kapali.
   --esik <sayi>                zemin rengine uzaklik esigini elle ver.
@@ -104,6 +110,37 @@ def _modul(ad: str):
     m = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(m)
     return m
+
+
+def filigran_zeminle(im, kutu):
+    """
+    Filigran kutusunu CEVRESINDEKI zemin rengiyle doldurur.
+
+    Zemin ayiklanacaksa dogru islem bu, aynalamak degil. Ayna kutuya
+    komsu seridi tasiyor; o serit zemin degilse (kuyruk ucu, golge, bir
+    kivilcim) ayiklama onu KORUYOR ve ikonun kosesinde yuzen bir leke
+    kaliyor. Olculdu: at ikonlarinda 156 ve 105 opak piksel kalmisti.
+
+    Zemin rengiyle doldurulunca kutu zeminin bir parcasi oluyor ve
+    ayiklamayla birlikte tamamen gidiyor. Ayna, zemin ayiklanmayan
+    kategoriler icin (ekran zeminleri) dogru olan yontem olarak kaliyor.
+    """
+    import numpy as np
+    from PIL import Image
+
+    x0, y0, x1, y1 = kutu
+    g, y = im.size
+    pay = max(6, (x1 - x0) // 4)
+    dis = im.crop((max(0, x0 - pay), max(0, y0 - pay), min(g, x1 + pay), min(y, y1 + pay)))
+    ic_x0, ic_y0 = x0 - max(0, x0 - pay), y0 - max(0, y0 - pay)
+    a = np.asarray(dis.convert("RGB")).astype(np.int16)
+    maske = np.ones(a.shape[:2], bool)
+    maske[ic_y0 : ic_y0 + (y1 - y0), ic_x0 : ic_x0 + (x1 - x0)] = False
+    renk = tuple(int(v) for v in np.median(a[maske], axis=0))
+
+    sonuc = im.copy()
+    sonuc.paste(Image.new("RGB", (x1 - x0, y1 - y0), renk), (x0, y0))
+    return sonuc
 
 
 def zemin_ayikla(im, esik: int | None = None):
@@ -236,8 +273,13 @@ def main() -> int:
         im = Image.open(kaynak).convert("RGB")
         notlar = []
         if filigran:
-            im = fsil.sil_kutu(im, fsil.kutu_coz(filigran, *im.size), tam_ayna)
-            notlar.append("filigran")
+            kutu = fsil.kutu_coz(filigran, *im.size)
+            if zemin_sil and not tam_ayna:
+                im = filigran_zeminle(im, kutu)
+                notlar.append("filigran (zeminlendi)")
+            else:
+                im = fsil.sil_kutu(im, kutu, tam_ayna)
+                notlar.append("filigran (aynalandi)")
         if zemin_sil:
             im, oran, kullanilan = zemin_ayikla(im, esik)
             if oran == 0.0:
