@@ -692,3 +692,64 @@ bozardı.
 
 Kırpma zemin ayıklamaya bağlı, çünkü alfası olmayan bir görselde
 sınırlayıcı kutu tüm kare olur ve işlem hiçbir şey yapmaz.
+
+---
+
+## İ12 — Lord kendi ordusunu görsün
+
+Oyuncu: *"bu ekipmanları oluşturduk ya, oyuncunun kendisinin T1 T2
+ekipmanları var vs, bunu bir karaktere giydirme şansımız var mı? Lord
+kısmında oyuncu kendi lordunu görse ve kendi karakterinin arkasında
+ordusunu görse?"*
+
+### Giydirme neden olmuyor
+
+Elimizdeki 30 ekipman görseli **envanter ikonu**: kılıç çapraz, kalkan
+cepheden, at profilden, sancak dikey. Her biri kendi açısında, kendi
+ışığında, tek başına duran bir nesne.
+
+Giydirme (paper doll) bambaşka bir set ister: sabit duruşta bir gövde ve o
+gövdenin üstüne oturan, aynı tuvalde, aynı çapa noktasında, aynı ışıkta
+çizilmiş 30 katman. Çapraz duran bir kılıç ikonu bir elin içine giremez.
+Bu 31 yeni görsel demek ve üreticilerin en zayıf olduğu iş bu: tek tek
+güzel çıkar, üst üste bindiğinde omuz hizası tutmaz.
+
+Dolayısıyla giydirme yapılmadı ve **yapılmış gibi de gösterilmedi**.
+
+### Ordu ise bugünkü varlıklarla çizilebiliyor
+
+Beş birim illüstrasyonu zaten saydam ve tam boy; `homeArmy` verisi Lord
+ekranına zaten geliyor. `OrduSahnesi` bu ikisini birleştiriyor: ekranın
+tepesinde, gerçek ordu bileşimini yansıtan bir kalabalık.
+
+Kışla'da *"okçu 42"* bir satır. Burada kırk iki okçunun oluşturduğu
+kalabalık bir **şey**. Ordu büyüdükçe sahne doluyor, bileşim değiştikçe
+görüntü değişiyor — oyuncunun ilk oturumda *"asker ürettim, eee ne oldu"*
+dediği yerin karşılığı.
+
+**Ağırlık adet değil komuta yeri.** Bir süvari üç, bir mancınık beş milis
+kadar yer tutuyor (`balance.json` → `yer`). Sahnede de öyle görünüyor;
+yoksa beş mancınığı olan bir oyuncunun sahnesi neredeyse boş kalırdı.
+Var olan her birimden en az bir figür çiziliyor: "üç süvarim var" bilgisi
+oranı küçük diye kaybolmamalı.
+
+### Uygulanırken çıkan iki hata
+
+**Sıralar sırayla dolduruluyordu ve tablo yalan söylüyordu.** 18 milis +
+6 okçuluk bir orduda milisler diziye önce girdiği için arka sıralara
+düşüyor, ön sıra baştan sona okçu oluyordu. Oyuncu ordusuna bakıp "okçu
+ordusu" görüyordu, oysa üçte biri okçu. Sıralar artık dönüşümlü
+dolduruluyor (0,1,2,0,1,2…) — her sıra bileşimi yansıtan bir karışım
+alıyor.
+
+**Derinlik payı bilgi siliyordu.** İlk denemede arka sıra %55 opaklık ve
+1.2px bulanıklıktaydı; süvari orada tamamen kayboluyordu, yani ordunun en
+etkileyici birimi görünmez oluyordu. %72 ve 0.7px derinlik hissi için
+yetiyor.
+
+### Sırada ne var
+
+Lord figürünün kendisi. En düşük riskli yol, ortalama tier'a göre değişen
+**beş tam boy lord görseli** (paçavralı → efsanevi): kuşandıkça lord gözle
+görülür değişiyor ama slot slot değil. `OrduSahnesi` o figürü önüne almaya
+hazır.

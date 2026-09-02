@@ -5,6 +5,7 @@ import { ApiError, api, type LordState } from '../api/client';
 import { IkonCan, IkonKurnaz, IkonSaldiri, IkonYer } from '../components/Ikonlar';
 import { Bolum, Buton, Kart, Rozet, formatSayi, nadirlikRengi } from '../components/ui';
 import { Gorsel } from '../components/Gorsel';
+import { OrduSahnesi } from '../components/OrduSahnesi';
 
 const STAT: Record<StatKey, { ad: string; renk: string; etki: (n: number) => string }> = {
   guc: { ad: 'Güç', renk: 'var(--color-kirmizi)', etki: (n) => `Savaş katkısı +${n * 3}` },
@@ -63,7 +64,11 @@ export function LordEkrani({ lord, onGuncelle }: { lord: LordState; onGuncelle: 
   const kusanilan = new Map(lord.equippedItems?.map((i) => [i.slot, i]) ?? []);
 
   return (
-    <div className="space-y-4 pt-3">
+    <div className="space-y-4">
+      {/* Ekranın tepesi artık bir sahne: lordun ordusu. Nitelik kartlarıyla
+          açılmak, bu ekranı bir karakter sayfası değil bir form yapıyordu. */}
+      <OrduSahnesi army={lord.homeArmy} komutaTavani={lord.commandCapacity} />
+
       <Bolum
         baslik="Nitelikler"
         yan={
