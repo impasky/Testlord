@@ -873,3 +873,35 @@ yuvaları da say" kuralı bariz değil.
 
 **Duran şey ordu sahnesi:** kalabalık, giriş dalgası, naara, kılıç
 savurma. Oyuncunun beğenmediği lord figürüydü, sahnenin kendisi değil.
+
+### Harita karoları — ve sessiz duran bir hata
+
+Altı karo geldi (tarla, maden, şehir, kale, taht, deniz). Yerine konunca
+haritada **hiçbir şey değişmedi**: altıgenler yine düz renkti.
+
+Sebep `HexHarita`da eskiden beri duran bir hataydı. `patternUnits`
+karonun **kutusunu** ölçekliyor; içindeki `<image>`ın birimini **ayrı** bir
+öznitelik belirliyor (`patternContentUnits`) ve varsayılanı
+`userSpaceOnUse`. Yani `width="1"` "kutunun tamamı" değil **1 piksel**
+demekti. Görseller yükleniyor, tek pikselde çiziliyordu.
+
+Hata sessizdi çünkü belirtisi "görsel yok" gibi görünüyordu — dosyalar
+gelene kadar ayırt edilemezdi. Karolar gelince ortaya çıktı.
+
+**Karo yakınlaştırılarak basılıyor.** Düzeltince ikinci sorun göründü:
+karolar birer sahne (bütün bir köy, bütün bir kale, bütün bir ocak) ve 60
+piksellik altıgene sığdırılınca lapa oluyor. `KARO_YAKINLIK = 2.2` ile
+altıgen sahnenin bir parçasını gösteriyor, yani doku oluyor — buğday
+buğday, taş taş. Bilgi kaybı yok: "burası maden mi tarla mı" sorusuna
+zaten altıgenin ikonu cevap veriyor, doku atmosfer taşıyor.
+
+**Karartma azaltıldı** (0.34 → 0.24). O katman karolar gelmeden önce
+altıgenin *rengiydi*, koyu olması gerekiyordu; karo gelince aynı koyuluk
+dokuyu çamura çeviriyor. Yazının okunurluğunu bu katman değil metnin kendi
+konturu koruyor. İkonlara da kontur eklendi: karartma azalınca parlak
+buğday karosunda açık renkli siluet kayboluyordu.
+
+**Deniz artık boyalı.** `harita/deniz.webp` döşenerek basılıyor
+(`userSpaceOnUse`, 190 birim adım). Eski radyal gradyan duruyor ama artık
+karonun altında yedek ve üstünde ince bir vinyet olarak — kenarlar ortadan
+koyu kalsın diye. Karo kullanılmasa depoda ölü dosya kalırdı.

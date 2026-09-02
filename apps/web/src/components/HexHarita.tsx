@@ -51,6 +51,17 @@ const TIP_ZEMIN: Record<string, string> = {
  * Taht'ın sahnesi bir İÇ MEKÂN (taht odası) ve arazi olarak hiç okunmuyor;
  * yedeğinde kaleyi ödünç alıyor. Kendi karosu geldiğinde o kullanılır.
  */
+/**
+ * Karo dokusunun altıgene basılma ölçeği.
+ *
+ * 1 = karonun tamamı sığdırılır (sahne okunmuyor, lapa oluyor).
+ * 2.2 = ortadan yaklaşık yarısı gösterilir; buğday buğday, taş taş çıkıyor.
+ */
+const KARO_YAKINLIK = 2.2;
+
+/** Deniz karosunun döşeme adımı (SVG kullanıcı birimi). Altıgen 34. */
+const DENIZ_KARO = 190;
+
 const TIP_SAHNE: Record<string, string> = {
   tarla: 'tarla',
   maden: 'maden',
@@ -144,9 +155,24 @@ export function HexHarita({
     >
       <defs>
         {/* Her bölge tipi için doku. objectBoundingBox: illüstrasyon her
-            altıgenin kendi kutusuna sığdırılır, 61 karo için 5 görsel yüklenir. */}
+            altıgenin kendi kutusuna sığdırılır, 61 karo için 5 görsel yüklenir.
+ 
+            patternContentUnits ŞART ve unutulmuştu. patternUnits karonun
+            KUTUSUNU ölçekliyor; içindeki <image>'ın birimini ayrı bir
+            öznitelik belirliyor ve varsayılanı userSpaceOnUse. Yani
+            width="1" "kutunun tamamı" değil "1 piksel" demekti — görseller
+            haritada hiç görünmüyordu ve altıgenler düz renk kalıyordu.
+            Hata sessizdi: eksik görsel gibi görünüyordu, oysa görsel
+            yüklenip 1 pikselde çiziliyordu. */}
         {tipler.map((d) => (
-          <pattern key={d} id={`doku-${d}`} patternUnits="objectBoundingBox" width="1" height="1">
+          <pattern
+            key={d}
+            id={`doku-${d}`}
+            patternUnits="objectBoundingBox"
+            patternContentUnits="objectBoundingBox"
+            width="1"
+            height="1"
+          >
             {/* Altta sahne yedeği (yakınlaştırılmış), üstte gerçek karo.
                 Karo dosyası varsa sahneyi tamamen örter. */}
             <image
@@ -157,15 +183,41 @@ export function HexHarita({
               height="2.6"
               preserveAspectRatio="xMidYMid slice"
             />
+            {/* Karo YAKINLAŞTIRILARAK basılıyor (1 değil KARO_YAKINLIK).
+                Karolar birer sahne: bütün bir köy, bütün bir kale, bütün bir
+                ocak. 60 piksellik bir altıgene sığdırıldığında o detay lapaya
+                dönüyor ve harita gürültü oluyordu. Yakınlaştırınca altıgen
+                sahnenin bir PARÇASINI gösteriyor, yani doku oluyor: buğday
+                buğday, taş taş görünüyor.
+
+                Bilgi kaybı yok, çünkü bilgi zaten dokuda değil: "burası
+                maden mi tarla mı" sorusuna altıgenin üstündeki ikon cevap
+                veriyor. Doku atmosfer taşıyor. */}
             <image
               href={`/gorseller/harita/${d}.webp`}
-              width="1"
-              height="1"
+              x={(1 - KARO_YAKINLIK) / 2}
+              y={(1 - KARO_YAKINLIK) / 2}
+              width={KARO_YAKINLIK}
+              height={KARO_YAKINLIK}
               preserveAspectRatio="xMidYMid slice"
             />
           </pattern>
         ))}
 
+        {/* Deniz: boyalı karo, döşenerek. userSpaceOnUse çünkü deniz tek
+            bir altıgen değil tüm tuval — objectBoundingBox olsaydı tek bir
+            görsel tuvale gerilir ve dalgalar dev gibi çıkardı. */}
+        <pattern
+          id="deniz-doku"
+          patternUnits="userSpaceOnUse"
+          width={DENIZ_KARO}
+          height={DENIZ_KARO}
+        >
+          <image href="/gorseller/harita/deniz.webp" width={DENIZ_KARO} height={DENIZ_KARO} />
+        </pattern>
+
+        {/* Karo gelmezse eski gradyan görünür; ayrıca karonun üstüne ince
+            bir vinyet olarak biniyor, kenarlar ortadan koyu kalsın diye. */}
         <radialGradient id="deniz" cx="50%" cy="45%" r="75%">
           <stop offset="0%" stopColor="#1d3a4a" />
           <stop offset="100%" stopColor="#12222c" />
@@ -186,6 +238,16 @@ export function HexHarita({
 
       {/* --- Deniz --- */}
       <rect x={minX} y={minY} width={w} height={h} fill="url(#deniz)" />
+      <rect x={minX} y={minY} width={w} height={h} fill="url(#deniz-doku)" opacity="0.85" />
+      <rect
+        x={minX}
+        y={minY}
+        width={w}
+        height={h}
+        fill="url(#deniz)"
+        opacity="0.45"
+        style={{ mixBlendMode: 'multiply' }}
+      />
 
       {/* --- Kıyı şeridi ---
           Genişletilmiş altıgenler üst üste binerek tek bir kara parçası
@@ -222,12 +284,18 @@ export function HexHarita({
             </title>
 
             {/* İllüstrasyon, üstüne arazi tonu: 61 karo tam parlaklıkta
-                çizilirse harita gürültüye dönüyor ve üstündeki yazı okunmuyor. */}
+                çizilirse harita gürültüye dönüyor.
+
+                Ton 0.34'ten 0.24'e indirildi. Karolar gelmeden önce bu
+                katman altıgenin RENGİYDİ, o yüzden koyu olması gerekiyordu;
+                karolar gelince aynı koyuluk dokuyu çamura çeviriyor. Yazının
+                okunurluğunu bu katman değil, aşağıdaki metnin kendi konturu
+                koruyor (paintOrder="stroke"). */}
             <path d={hexYol(x, y, BOYUT * 0.94)} fill={`url(#doku-${doku})`} />
             <path
               d={hexYol(x, y, BOYUT * 0.94)}
               fill={TIP_ZEMIN[r.type] ?? '#3a3025'}
-              opacity={taht ? 0.22 : 0.34}
+              opacity={taht ? 0.14 : 0.24}
             />
 
             {r.isMine && <path d={hexYol(x, y, BOYUT * 0.94)} fill="url(#benim)" />}
@@ -256,7 +324,16 @@ export function HexHarita({
             {/* Tip ikonu: 41 pikselde "burası maden mi tarla mı" sorusuna
                 cevap veren şey doku değil siluet. Doku atmosferi, ikon
                 bilgiyi taşıyor. */}
-            <g fill={taht ? '#ffe08a' : '#f2e7d5'} opacity={taht ? 0.95 : 0.72}>
+            <g
+              fill={taht ? '#ffe08a' : '#f2e7d5'}
+              opacity={taht ? 0.95 : 0.8}
+              // Karartma azalınca parlak karolarda (buğday) açık renkli
+              // siluet kayboluyordu; ince koyu kontur ikonu her dokuda
+              // ayakta tutuyor.
+              stroke="#140d08"
+              strokeWidth="1.6"
+              paintOrder="stroke"
+            >
               <TipIkonu tip={r.type} x={x} y={y - BOYUT * 0.16} />
             </g>
 

@@ -107,6 +107,7 @@ temizleniyor; hangi dosyada yapıldığı aşağıdaki tabloda yazıyor.
 | `ekipman/at_t1..t5.webp` | eklendi (işaret zeminlendi, zemin ayıklandı) |
 | `ekipman/sancak_t1..t5.webp` | eklendi (işaret zeminlendi, zemin ayıklandı) |
 | `lord/lord_1..5.webp` | eklendi (zincirleme düzenleme, zemin ayıklandı) |
+| `harita/*.webp` (6 dosya) | eklendi (işaret aynalandı) |
 
 Lord figürleri zincirleme düzenlemeyle üretildi: `lord_1` metinden,
 sonrakiler bir öncekini girdi alarak. Beşinde de işaret aynı yerdeydi ama
