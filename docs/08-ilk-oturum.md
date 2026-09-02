@@ -619,3 +619,22 @@ ayıklamasına hizmet ediyor — orası zemini tek renk olarak modelliyor ve
 dalgalı bir zeminin uzak ucu eşiğin dışında kalıyor. Zemin yine de KOYU
 isteniyor: ayıklama başarısız olup fren devreye girerse geriye kalan
 zeminin arayüzle uyumlu olması gerekiyor.
+
+### Gölge yasağı ve teslim yolu
+
+Üçüncü kılıç turunda duruş kuralı tuttu: beşi de çapraz, beşinin zemini de
+düz koyu geldi. Kalan tek pürüz zemine düşen **gölge** oldu.
+
+Gölge süs değil, ayıklama için özel bir sorun: nesneye BİTİŞİK bir zemin
+parçası. Ayıklama ya onu da siler ve nesnenin altı oyulur, ya da bırakır ve
+saydam ikonun altında koyu bir leke kalır. İkisi de yanlış; kaynakta hiç
+olmaması doğru. İsteme `no cast shadow falling on the background` eklendi.
+
+**Teslim yolu değişti.** Sohbete eklenen görseller üç turdur diske
+yazılmıyor — görüntü görünüyor, dosya yok. Aynı sohbette altı ekran zemini
+sorunsuz inmişti, yani dosya türü ya da boyutla ilgili değil. Kalan ~60
+görsel için `docs/GORSEL-TESLIM.md`: ham görseller `gorsel-gelen` adlı
+geçici bir dala yükleniyor, Claude oradan alıyor, işlenmiş WebP'ler
+çalışma dalına giriyor. Ham dosyalar çalışma dalının geçmişine hiç
+girmiyor — 72 görsellik bir set ~100 MB eder ve silmek geçmişten
+temizlemiyor.

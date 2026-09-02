@@ -143,6 +143,11 @@ KATEGORI = {
         # istemiyoruz çünkü gorsel-koy.py zemini tek renk olarak modelliyor
         # (bkz. docs/08 İ11). Yine de KOYU isteniyor — ayıklama başarısız
         # olursa geriye kalan zemin arayüzle uyumlu olsun.
+        #
+        # "no cast shadow" ayrı bir madde, süs değil: zemine düşen gölge
+        # nesneye BİTİŞİK bir zemin parçası. Ayıklama ya onu da siler ve
+        # nesnenin altı oyulur, ya da bırakır ve saydam ikonun altında koyu
+        # bir leke kalır. İkisi de yanlış; kaynakta hiç olmaması doğru.
         "kompozisyon": "a single object presented as a game inventory icon, "
                        "isolated, no hands, no character, no background scenery, "
                        "the object is large and fills the frame edge to edge; "
@@ -150,7 +155,8 @@ KATEGORI = {
                        "from lower left to upper right, compact objects sit "
                        "centered and fill the square, "
                        "plain flat dark background with no gradient, no vignette "
-                       "and no texture, crisp silhouette separation between the "
+                       "and no texture, no cast shadow falling on the background, "
+                       "crisp silhouette separation between the "
                        "object and the background, square 1:1 composition",
         "boyut": (512, 512),
     },

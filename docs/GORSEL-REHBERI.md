@@ -68,9 +68,14 @@ söyler — 72 görsel için sırayla boşuna beklemez.
 ## Yol 2 — Sen üret, sohbete ekle (bedava)
 
 Anahtar ya da ödeme istemiyorsan: görselleri istediğin yerde üret (Claude uygulaması,
-Midjourney, ne olursa) ve **bu sohbete ekle**. Claude dosyaları alıp kırpar,
-dönüştürür, doğru adla depoya koyar. Hangi görselin hangi dosya olduğunu
-söylemen yeterli.
+Midjourney, ne olursa) ve Claude'a ulaştır. Claude dosyaları alıp kırpar,
+dönüştürür, doğru adla depoya koyar (`tools/gorsel-koy.py`). Hangi görselin
+hangi dosya olduğunu söylemen yeterli.
+
+**Nasıl ulaştıracağın önemli:** sohbete eklemek her zaman çalışmıyor —
+görüntü görünüyor ama dosya diske inmiyor ve işlenemiyor. Güvenilir yol
+**[docs/GORSEL-TESLIM.md](GORSEL-TESLIM.md)**: ham görselleri geçici bir
+dala yükle, Claude oradan alsın.
 
 72 istemin kopyala-yapıştır hali: **[docs/GORSEL-ISTEMLERI.md](GORSEL-ISTEMLERI.md)** —
 öncelik sırasıyla birlikte (önce ekran zeminleri, sonra ekipman).
