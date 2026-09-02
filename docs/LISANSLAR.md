@@ -100,6 +100,13 @@ temizleniyor; hangi dosyada yapıldığı aşağıdaki tabloda yazıyor.
 | `zeminler/generaller.webp` | eklendi (işaret silindi) |
 | `zeminler/siralama.webp` | eklendi (işaret silindi, tam ayna) |
 | `zeminler/giris.webp` | eklendi (işaret silindi) |
+| `ekipman/silah_t1..t5.webp` | eklendi (zemin ayıklandı, saydam) |
+
+Ekipman ikonlarında filigran yoktu; onlarda yapılan iş zemin ayıklama.
+Beşinde de eşik 8 ölçüldü ve zeminin %81–87'si silindi — kalan oran
+kılıcın kendisi. Envanterde otuz ikon yan yana dizildiği için zeminin
+üreticiye göre değişmesi ızgarayı yamalı gösteriyordu; saydam olunca
+arayüzün kendi oyuğu görünüyor.
 
 Ekran zeminlerindeki işaret köşeye yapışık değil, kenardan bir tutam
 içerideydi; `filigran-sil.py`'nin köşe kutusu onu ancak yarım yakalıyordu.
