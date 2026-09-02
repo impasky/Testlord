@@ -101,10 +101,12 @@ temizleniyor; hangi dosyada yapıldığı aşağıdaki tabloda yazıyor.
 | `zeminler/siralama.webp` | eklendi (işaret silindi, tam ayna) |
 | `zeminler/giris.webp` | eklendi (işaret silindi) |
 | `ekipman/silah_t1..t5.webp` | eklendi (zemin ayıklandı, saydam) |
+| `ekipman/kalkan_t1..t5.webp` | eklendi (zemin ayıklandı, saydam) |
 
 Ekipman ikonlarında filigran yoktu; onlarda yapılan iş zemin ayıklama.
-Beşinde de eşik 8 ölçüldü ve zeminin %81–87'si silindi — kalan oran
-kılıcın kendisi. Envanterde otuz ikon yan yana dizildiği için zeminin
+Onunda da eşik 8 ölçüldü. Silinen zemin kılıçlarda %81–87, kalkanlarda
+%50–57 — aradaki fark nesnenin biçimi: çapraz bir kılıç ince, kalkan
+kareyi doluduruyor. Envanterde otuz ikon yan yana dizildiği için zeminin
 üreticiye göre değişmesi ızgarayı yamalı gösteriyordu; saydam olunca
 arayüzün kendi oyuğu görünüyor.
 
