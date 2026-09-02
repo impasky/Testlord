@@ -209,3 +209,117 @@ svg g[role='button']:focus-visible > path:first-of-type {
     transition-duration: 0.01ms !important;
   }
 }
+
+/*
+ * Ordu sahnesi animasyonları (docs/08 İ13).
+ *
+ * Hepsi CSS: yeni bir görsel, kare dizisi ya da animasyon kütüphanesi
+ * gerekmiyor. Tek bir durağan figürün kolunu sallayamayız ama figürün
+ * KENDİSİNİ yaylandırabilir, sahneyi sarsabilir, oyuncunun gerçekten
+ * kuşandığı kılıcı sahnenin önünden geçirebiliriz.
+ *
+ * Süreler kısa tutuldu (en uzunu 900ms): oyuncu bu ekrana bakmaya değil
+ * bir şey yapmaya geliyor, animasyon onun önüne geçmemeli.
+ */
+
+/* Girişte: figürler yerden doğrulur. Gecikme JS'ten (sıra + sıradaki yer). */
+.figur {
+  animation: figur-dogrul 520ms cubic-bezier(0.2, 0.9, 0.3, 1.2) backwards;
+}
+@keyframes figur-dogrul {
+  from {
+    transform: translateY(14px) scale(0.94);
+    opacity: 0;
+  }
+}
+
+/* Naara: sahne kısa ve sert bir sarsıntı alır. */
+.sahne-naara {
+  animation: sahne-sars 460ms ease-out;
+}
+@keyframes sahne-sars {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  12% { transform: translate3d(-3px, 1px, 0); }
+  28% { transform: translate3d(3px, -2px, 0); }
+  44% { transform: translate3d(-2px, 1px, 0); }
+  62% { transform: translate3d(2px, 0, 0); }
+  80% { transform: translate3d(-1px, 0, 0); }
+}
+
+/* Naara sırasında figürler dalga hâlinde doğrulur — gecikmeleri .figur'dan. */
+.sahne-naara .figur {
+  animation:
+    figur-dogrul 520ms cubic-bezier(0.2, 0.9, 0.3, 1.2) backwards,
+    figur-hayk 520ms ease-out 420ms backwards;
+}
+@keyframes figur-hayk {
+  0% { transform: translateY(0); }
+  35% { transform: translateY(-7px) scale(1.03); }
+  100% { transform: translateY(0); }
+}
+
+/* Lord öne çıkar, sonra yerine oturur. */
+.lord {
+  animation: lord-gir 700ms cubic-bezier(0.2, 0.9, 0.3, 1.15) backwards;
+}
+@keyframes lord-gir {
+  from {
+    transform: translate(-50%, 18px) scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0) scale(1);
+    opacity: 1;
+  }
+}
+
+/*
+ * Kılıç savurma.
+ *
+ * Durağan bir figürün kolunu döndüremiyoruz, ama oyuncunun KUŞANDIĞI
+ * kılıcı sahnenin önünden bir yay çizerek geçirebiliyoruz. Kılıç zaten
+ * saydam bir görsel; ayrı bir efekt varlığı gerekmiyor ve savurulan şey
+ * gerçekten onun kılıcı — T1 ise paslı demir, T5 ise akkor rünlü.
+ *
+ * Görünürlüğü animasyonun kendisi yönetiyor: dışında opaklık 0, yani
+ * naara yokken kılıç sahnede durmuyor.
+ */
+.savurma {
+  opacity: 0;
+  transform-origin: 20% 80%;
+}
+.sahne-naara .savurma {
+  animation: kilic-savur 620ms cubic-bezier(0.3, 0, 0.2, 1) 360ms;
+}
+@keyframes kilic-savur {
+  0% {
+    opacity: 0;
+    transform: translate(-190%, 30px) rotate(-70deg) scale(0.9);
+  }
+  25% { opacity: 1; }
+  75% { opacity: 1; }
+  100% {
+    opacity: 0;
+    transform: translate(90%, -30px) rotate(35deg) scale(1.15);
+  }
+}
+
+/*
+ * Hareket kısıtlıysa hiçbiri çalışmaz.
+ *
+ * Sarsılan ekran baş dönmesi yapabiliyor; bu bir süs tercihi değil.
+ * JS tarafı da naarayı hiç tetiklemiyor, burası ikinci savunma hattı:
+ * animasyon adı kalksa bile hareket kalmıyor.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .figur,
+  .sahne-naara,
+  .sahne-naara .figur,
+  .lord,
+  .sahne-naara .savurma {
+    animation: none;
+  }
+  .savurma {
+    display: none;
+  }
+}

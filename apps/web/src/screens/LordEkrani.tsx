@@ -67,7 +67,11 @@ export function LordEkrani({ lord, onGuncelle }: { lord: LordState; onGuncelle: 
     <div className="space-y-4">
       {/* Ekranın tepesi artık bir sahne: lordun ordusu. Nitelik kartlarıyla
           açılmak, bu ekranı bir karakter sayfası değil bir form yapıyordu. */}
-      <OrduSahnesi army={lord.homeArmy} komutaTavani={lord.commandCapacity} />
+      <OrduSahnesi
+        army={lord.homeArmy}
+        komutaTavani={lord.commandCapacity}
+        kusanilan={lord.equippedItems}
+      />
 
       <Bolum
         baslik="Nitelikler"

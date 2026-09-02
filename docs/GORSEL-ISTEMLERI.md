@@ -1,6 +1,6 @@
 # Görsel İstemleri
 
-Oyunun ihtiyacı olan **72 görselin** kopyala-yapıştır istemleri.
+Oyunun ihtiyacı olan **77 görselin** kopyala-yapıştır istemleri.
 Her istem üç parçadan oluşur: **konu** + **kategori kompozisyonu** +
 **taban üslup**. Taban üslup hepsinde aynıdır; tutarlılık oradan gelir.
 
@@ -509,6 +509,60 @@ a royal citadel precinct, golden roofed keep at the centre ringed by walls and b
 
 ```
 deep open sea water with gentle swell and foam streaks, top-down orthographic terrain tile seen straight from above, flat even lighting with no strong shadows, texture reads clearly when shrunk to thumbnail size, edges continue naturally with no vignette and no border, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+---
+
+## Lord figürü — 5 görsel
+
+Lord ekranının tepesinde, ordunun önünde durur. Beş görsel, kuşam seviyesine göre: oyuncu ekipmanını yükselttikçe lord gözle görülür değişir.
+
+**Bunlar tek tek üretilmez, ZİNCİRLEME DÜZENLENİR.** `lord_1` metinden üretilir; `lord_2`, `lord_1`i GİRDİ alıp düzenleyerek, `lord_3` `lord_2`den… böyle devam eder. Sebep tutarlılık: metinden sıfırdan üretilen beş görsel beş ayrı adam veriyor. Aynı görseli girdi verip "aynı adam, aynı duruş, şimdi şu zırhı giyiyor" demek aynı adamı veriyor.
+
+```bash
+python3 tools/gorsel-uret.py lord_1
+python3 tools/gorsel-uret.py lord_2 --kaynak apps/web/public/gorseller/lord/lord_1.webp
+python3 tools/gorsel-uret.py lord_3 --kaynak apps/web/public/gorseller/lord/lord_2.webp
+```
+
+Elle üretiyorsan aynı şey: `lord_1`i araca yükle, sonraki istemi ver, çıkanı yükle, sonrakini ver.
+
+Çıktı: `apps/web/public/gorseller/lord/<ad>.webp` · 768×1024
+
+Kompozisyon (her istemde var):
+
+```
+a single full-body character standing and facing the viewer in a slight three-quarter turn, feet on the ground, heroic but grounded stance, the figure fills the frame top to bottom, no other characters, no background scenery, plain flat dark background with no gradient, no vignette and no texture, no cast shadow falling on the background, crisp silhouette separation between the figure and the background, 3:4 portrait composition
+```
+
+### `lord/lord_1.webp`
+
+```
+a lean young Anatolian lord with dark hair and a short beard, no armor at all, patched wool tunic and a worn leather belt, a plain iron sword hanging at his hip, empty hands, wary and untested, a single full-body character standing and facing the viewer in a slight three-quarter turn, feet on the ground, heroic but grounded stance, the figure fills the frame top to bottom, no other characters, no background scenery, plain flat dark background with no gradient, no vignette and no texture, no cast shadow falling on the background, crisp silhouette separation between the figure and the background, 3:4 portrait composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `lord/lord_2.webp`
+
+```
+SAME MAN, same face, same hair, same age, same stance, same framing and same scale as the input image. Only his gear changes: he now wears a plain steel cuirass over mail with brass rivets and a simple open helmet under one arm, a well made arming sword at his hip. Still weathered, still no ornament, a single full-body character standing and facing the viewer in a slight three-quarter turn, feet on the ground, heroic but grounded stance, the figure fills the frame top to bottom, no other characters, no background scenery, plain flat dark background with no gradient, no vignette and no texture, no cast shadow falling on the background, crisp silhouette separation between the figure and the background, 3:4 portrait composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `lord/lord_3.webp`
+
+```
+SAME MAN, same face, same stance, same framing and same scale as the input image. Only his gear changes: blued steel armor with brass fittings and engraved scrollwork, a masterwork sword, a heater shield on his arm, a dark cloak. Confident now, a single full-body character standing and facing the viewer in a slight three-quarter turn, feet on the ground, heroic but grounded stance, the figure fills the frame top to bottom, no other characters, no background scenery, plain flat dark background with no gradient, no vignette and no texture, no cast shadow falling on the background, crisp silhouette separation between the figure and the background, 3:4 portrait composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `lord/lord_4.webp`
+
+```
+SAME MAN, same face, same stance, same framing and same scale as the input image. Only his gear changes: gilded engraved plate armor with interlace and inlaid gems, crimson silk wrapping, a rich fur-lined cloak, a golden-hilted sword held point down before him. A commander, a single full-body character standing and facing the viewer in a slight three-quarter turn, feet on the ground, heroic but grounded stance, the figure fills the frame top to bottom, no other characters, no background scenery, plain flat dark background with no gradient, no vignette and no texture, no cast shadow falling on the background, crisp silhouette separation between the figure and the background, 3:4 portrait composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `lord/lord_5.webp`
+
+```
+SAME MAN, older and scarred, same face, same stance, same framing and same scale as the input image. Only his gear changes: ancient dark meteoric armor veined with glowing golden runes, a crowned helm, a tattered crimson war cloak, a rune-lit blade raised. Unmistakably a legend, a single full-body character standing and facing the viewer in a slight three-quarter turn, feet on the ground, heroic but grounded stance, the figure fills the frame top to bottom, no other characters, no background scenery, plain flat dark background with no gradient, no vignette and no texture, no cast shadow falling on the background, crisp silhouette separation between the figure and the background, 3:4 portrait composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
 ```
 
 ---

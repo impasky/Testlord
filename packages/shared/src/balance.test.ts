@@ -15,6 +15,7 @@ import {
   commandCapacity,
   fortressBonus,
   itemPower,
+  kusamSeviyesi,
   lordContribution,
   malikaneIncome,
   maxRegions,
@@ -216,5 +217,31 @@ describe('harita', () => {
     expect(ring(1)).toBeGreaterThan(ring(2));
     expect(ring(2)).toBeGreaterThan(ring(3));
     expect(ring(3)).toBeGreaterThan(ring(4));
+  });
+});
+
+describe('kuşam seviyesi', () => {
+  const esya = (tier: number) => ({ tier });
+
+  it('hiç ekipman yokken en alt seviyede kalır', () => {
+    expect(kusamSeviyesi([])).toBe(1);
+  });
+
+  it('tek bir efsanevi parça lordu efsanevi göstermez', () => {
+    // Altı yuvanın beşi boşken bir T5 kılıç, figürü zirveye taşımamalı.
+    expect(kusamSeviyesi([esya(5)])).toBe(1);
+  });
+
+  it('altı yuva da doluysa ortalamayı verir', () => {
+    expect(kusamSeviyesi([3, 3, 3, 3, 3, 3].map(esya))).toBe(3);
+  });
+
+  it('aşağı yuvarlar — yarım kalan kuşam üst kademede görünmez', () => {
+    // Üç T5 + üç boş = 15/6 = 2.5 -> 2
+    expect(kusamSeviyesi([5, 5, 5].map(esya))).toBe(2);
+  });
+
+  it('tam takım T5 zirveyi verir ve orada durur', () => {
+    expect(kusamSeviyesi([5, 5, 5, 5, 5, 5].map(esya))).toBe(5);
   });
 });

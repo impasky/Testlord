@@ -121,7 +121,7 @@ def _modul(ad: str):
     return m
 
 
-def icerige_kirp(im, doluluk: float = DOLULUK):
+def icerige_kirp(im, oran: float = 1.0, doluluk: float = DOLULUK):
     """
     Saydam paylari atip konuyu kareye oturtur; tek boy verir.
 
@@ -130,9 +130,11 @@ def icerige_kirp(im, doluluk: float = DOLULUK):
     edilmiyor ama envanterde alt alta dizilince bazi esyalar digerlerinden
     kucuk gorunuyor - nadirlik ya da tier farkiymis gibi, ki degil.
 
-    Kutu KARE olarak buyutuluyor, konunun kendi orani korunuyor: ince bir
-    sancagi kareye germek onu bozardi. Kare goruntu disina tasarsa saydamla
-    dolduruluyor.
+    Kutu KATEGORININ ORANINDA buyutuluyor, konunun kendi orani korunuyor:
+    ince bir sancagi kareye germek onu bozardi. Oran kategoriden geliyor
+    (ekipman 1:1, lord 3:4) cunku sonrasinda kaydet() zaten o orana
+    kirpiyor; baska bir orana kirpmak ikinci bir kirpma demek olurdu.
+    Kutu goruntu disina tasarsa saydamla dolduruluyor.
 
     Sadece zemin ayiklanmis gorsellerde anlamli - alfa yoksa sinirlayici
     kutu tum kare olur ve islem hicbir sey yapmaz.
@@ -147,13 +149,16 @@ def icerige_kirp(im, doluluk: float = DOLULUK):
         return im
 
     x0, y0, x1, y1 = kutu
-    en = max(x1 - x0, y1 - y0)
-    kenar = int(round(en / doluluk))
+    ig, iy = x1 - x0, y1 - y0
+    # Hedef kutu: icerigi doluluk oraninda barindiran, `oran` en-boy kutusu
+    kg = max(ig / doluluk, (iy / doluluk) * oran)
+    ky = kg / oran
+    kg, ky = int(round(kg)), int(round(ky))
     mx, my = (x0 + x1) // 2, (y0 + y1) // 2
-    sol, ust = mx - kenar // 2, my - kenar // 2
+    sol, ust = mx - kg // 2, my - ky // 2
 
-    tuval = Image.new("RGBA", (kenar, kenar), (0, 0, 0, 0))
-    tuval.paste(im.crop((sol, ust, sol + kenar, ust + kenar)), (0, 0))
+    tuval = Image.new("RGBA", (kg, ky), (0, 0, 0, 0))
+    tuval.paste(im.crop((sol, ust, sol + kg, ust + ky)), (0, 0))
     return tuval
 
 
@@ -335,7 +340,7 @@ def main() -> int:
             else:
                 notlar.append(f"zemin %{oran * 100:.0f} (esik {kullanilan:.0f})")
                 if kirp:
-                    im = icerige_kirp(im)
+                    im = icerige_kirp(im, boyut[0] / boyut[1])
                     notlar.append("icerige kirpildi")
         tampon = BytesIO()
         im.save(tampon, "PNG")

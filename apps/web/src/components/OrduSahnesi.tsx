@@ -11,7 +11,16 @@
  * bileşim değiştikçe sahnenin görüntüsü değişiyor. Oyuncunun ilk oturumda
  * "asker ürettim, eee ne oldu" dediği yerin karşılığı bu.
  */
-import { UNIT_TYPES, armySlots, unit, unitName, type Army, type UnitType } from '@lordlar/shared';
+import {
+  UNIT_TYPES,
+  armySlots,
+  kusamSeviyesi,
+  unit,
+  unitName,
+  type Army,
+  type UnitType,
+} from '@lordlar/shared';
+import { useEffect, useRef, useState } from 'react';
 import { Gorsel } from './Gorsel';
 import { BirimIkonu } from './Ikonlar';
 
@@ -102,17 +111,64 @@ function sahneyeDiz(dagilim: { tur: UnitType; adet: number }[]) {
   return SIRALAR.map((sira, s) => ({ ...sira, birimler: kovalar[s]! }));
 }
 
-export function OrduSahnesi({ army, komutaTavani }: { army: Army; komutaTavani: number }) {
+/**
+ * Savaş naarası.
+ *
+ * Ekrana girince bir kez, sonra sahneye her dokunuşta tetiklenir. Tek bir
+ * durum değişkeni yetiyor: `naara` sayacı artınca CSS animasyonları
+ * yeniden başlıyor (key değişimiyle), süre dolunca sıfırlanmıyor —
+ * animasyonlar kendi kendine bitiyor.
+ *
+ * `prefers-reduced-motion` saygı görüyor: hareket kısıtlıysa naara hiç
+ * tetiklenmiyor. Bu bir süs değil erişilebilirlik gereği — sarsılan ekran
+ * baş dönmesi yapabiliyor.
+ */
+function useNaara() {
+  const [naara, setNaara] = useState(0);
+  const kisitli = useRef(false);
+
+  useEffect(() => {
+    kisitli.current =
+      typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (kisitli.current) return;
+    // Girişte kısa bir gecikme: sahne önce yerleşsin, sonra naara gelsin.
+    const id = setTimeout(() => setNaara((n) => n + 1), 420);
+    return () => clearTimeout(id);
+  }, []);
+
+  return {
+    naara,
+    naaraAt: () => {
+      if (!kisitli.current) setNaara((n) => n + 1);
+    },
+  };
+}
+
+export function OrduSahnesi({
+  army,
+  komutaTavani,
+  kusanilan,
+}: {
+  army: Army;
+  komutaTavani: number;
+  /** Lord figürünü ve savurulan silahı seçer. */
+  kusanilan: { slot: string; tier: number }[];
+}) {
   const dagilim = figurDagilimi(army);
   const kullanilan = armySlots(army);
   const siralar = sahneyeDiz(dagilim);
+  const seviye = kusamSeviyesi(kusanilan);
+  const silah = kusanilan.find((i) => i.slot === 'silah');
+  const { naara, naaraAt } = useNaara();
 
   return (
     <div
-      className="relative -mx-3 h-[172px] overflow-hidden"
+      onClick={naaraAt}
+      role="img"
+      aria-label={`Ordun: ${kullanilan}/${komutaTavani} komuta yeri dolu`}
+      key={naara}
+      className={`sahne relative -mx-3 h-[172px] overflow-hidden ${naara > 0 ? 'sahne-naara' : ''}`}
       style={{
-        // Ufuk çizgisi ve zemin: görselle değil renkle. Buraya bir manzara
-        // koymak figürlerin okunurluğunu düşürüyordu; ordu sahnenin konusu.
         background:
           'linear-gradient(180deg, var(--color-derin) 0%, #2b1f17 55%, #241a13 100%)',
       }}
@@ -142,13 +198,24 @@ export function OrduSahnesi({ army, komutaTavani }: { army: Army; komutaTavani: 
               {sira.birimler.map((tur, i) => (
                 <div
                   key={`${tur}-${i}`}
+                  className="figur"
                   // Negatif kenar boşluğu bilerek: figürler hafif üst üste
                   // binince sıra bir kalabalık gibi okunuyor, dizilmiş
                   // ikonlar gibi değil.
+                  //
+                  // Gecikme sıraya ve yere göre: ordu tek parça zıplamıyor,
+                  // arkadan öne bir dalga geçiyor. Naara o dalgayla okunuyor.
+                  //
+                  // Gecikmeler kısa: ilk denemede sıra başına 90ms, figür
+                  // başına 45ms verilmişti ve sahnenin dolması ~900ms
+                  // sürüyordu — ekrana girip yarım saniye boş bir alana
+                  // bakmak, animasyonun kazandırdığından fazlasını
+                  // kaybettiriyor.
                   style={{
                     marginLeft: i === 0 ? 0 : -26 * sira.olcek,
                     opacity: sira.opak,
                     filter: sira.bulanik ? `blur(${sira.bulanik}px)` : undefined,
+                    animationDelay: `${s * 60 + i * 25}ms`,
                   }}
                 >
                   <Gorsel
@@ -167,6 +234,34 @@ export function OrduSahnesi({ army, komutaTavani }: { army: Army; komutaTavani: 
             </div>
           </div>
         ))
+      )}
+
+      {/* Lord — ordunun önünde, hafif sağda. Görseli yoksa hiçbir şey
+          çizilmiyor: yerine bir siluet koymak, olmayan bir şeyi varmış gibi
+          göstermek olurdu. (docs/08 İ13) */}
+      <div className="lord absolute bottom-0 left-1/2 -translate-x-1/2">
+        <Gorsel
+          tur="lord"
+          ad={`lord_${seviye}`}
+          alt={`Lordun — kuşam ${seviye}`}
+          boyut={168}
+          className="h-[168px] w-auto"
+          yedek={<></>}
+        />
+      </div>
+
+      {/* Savurulan silah: oyuncunun GERÇEKTEN kuşandığı kılıç. Ayrı bir
+          animasyon karesi gerekmiyor, elimizdeki ikonu yayla geçiriyoruz. */}
+      {silah && (
+        <div className="savurma pointer-events-none absolute bottom-[26px] left-1/2">
+          <Gorsel
+            tur="ekipman"
+            ad={`${silah.slot}_t${silah.tier}`}
+            alt=""
+            boyut={96}
+            yedek={<></>}
+          />
+        </div>
       )}
 
       {/* Alt şerit: sahnenin söylemediği tek şey, gerçek sayılar. */}

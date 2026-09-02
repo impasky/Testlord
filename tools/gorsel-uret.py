@@ -17,6 +17,11 @@ KULLANIM:
   python3 tools/gorsel-uret.py --zorla         # var olanların üstüne yaz
   python3 tools/gorsel-uret.py --liste         # ne üretilecek, üretmeden göster
   python3 tools/gorsel-uret.py --istemler      # istemleri markdown olarak dök (API'siz)
+  python3 tools/gorsel-uret.py lord_2 --kaynak .../lord_1.webp   # düzenleyerek üret
+
+--kaynak: verilen görsel(ler) modele GİRDİ olarak gider ve istem onları
+düzenleme talimatı olur. Lord varyantları böyle üretiliyor; sıfırdan üretim
+aynı karakteri vermiyor, düzenleme veriyor.
 
 MALİYET (ölçüldü, tahmin değil):
   Görsel modellerinin ücretsiz katmanı YOK. Faturalandırma bağlı olmayan bir
@@ -175,6 +180,36 @@ KATEGORI = {
                        "square 1:1 composition",
         "boyut": (512, 512),
     },
+    "lord": {
+        "ad": "Lord figürü",
+        "aciklama": (
+            "Lord ekranının tepesinde, ordunun önünde durur. Beş görsel, "
+            "kuşam seviyesine göre: oyuncu ekipmanını yükselttikçe lord "
+            "gözle görülür değişir.\n\n"
+            "**Bunlar tek tek üretilmez, ZİNCİRLEME DÜZENLENİR.** `lord_1` "
+            "metinden üretilir; `lord_2`, `lord_1`i GİRDİ alıp düzenleyerek, "
+            "`lord_3` `lord_2`den… böyle devam eder. Sebep tutarlılık: "
+            "metinden sıfırdan üretilen beş görsel beş ayrı adam veriyor. "
+            "Aynı görseli girdi verip \"aynı adam, aynı duruş, şimdi şu "
+            "zırhı giyiyor\" demek aynı adamı veriyor.\n\n"
+            "```bash\n"
+            "python3 tools/gorsel-uret.py lord_1\n"
+            "python3 tools/gorsel-uret.py lord_2 --kaynak apps/web/public/gorseller/lord/lord_1.webp\n"
+            "python3 tools/gorsel-uret.py lord_3 --kaynak apps/web/public/gorseller/lord/lord_2.webp\n"
+            "```\n\n"
+            "Elle üretiyorsan aynı şey: `lord_1`i araca yükle, sonraki "
+            "istemi ver, çıkanı yükle, sonrakini ver."
+        ),
+        "kompozisyon": "a single full-body character standing and facing the viewer "
+                       "in a slight three-quarter turn, feet on the ground, "
+                       "heroic but grounded stance, the figure fills the frame "
+                       "top to bottom, no other characters, no background scenery, "
+                       "plain flat dark background with no gradient, no vignette "
+                       "and no texture, no cast shadow falling on the background, "
+                       "crisp silhouette separation between the figure and the "
+                       "background, 3:4 portrait composition",
+        "boyut": (768, 1024),
+    },
     "zeminler": {
         "ad": "Ekran zeminleri",
         "aciklama": (
@@ -331,6 +366,32 @@ ISTEKLER: dict[str, dict[str, str]] = {
                 "by walls and banner poles",
         "deniz": "deep open sea water with gentle swell and foam streaks",
     },
+    "lord": {
+        "lord_1": "a lean young Anatolian lord with dark hair and a short beard, "
+                  "no armor at all, patched wool tunic and a worn leather belt, "
+                  "a plain iron sword hanging at his hip, empty hands, "
+                  "wary and untested",
+        "lord_2": "SAME MAN, same face, same hair, same age, same stance, same "
+                  "framing and same scale as the input image. Only his gear "
+                  "changes: he now wears a plain steel cuirass over mail with "
+                  "brass rivets and a simple open helmet under one arm, "
+                  "a well made arming sword at his hip. Still weathered, "
+                  "still no ornament",
+        "lord_3": "SAME MAN, same face, same stance, same framing and same scale "
+                  "as the input image. Only his gear changes: blued steel armor "
+                  "with brass fittings and engraved scrollwork, a masterwork sword, "
+                  "a heater shield on his arm, a dark cloak. Confident now",
+        "lord_4": "SAME MAN, same face, same stance, same framing and same scale "
+                  "as the input image. Only his gear changes: gilded engraved "
+                  "plate armor with interlace and inlaid gems, crimson silk "
+                  "wrapping, a rich fur-lined cloak, a golden-hilted sword held "
+                  "point down before him. A commander",
+        "lord_5": "SAME MAN, older and scarred, same face, same stance, same "
+                  "framing and same scale as the input image. Only his gear "
+                  "changes: ancient dark meteoric armor veined with glowing "
+                  "golden runes, a crowned helm, a tattered crimson war cloak, "
+                  "a rune-lit blade raised. Unmistakably a legend",
+    },
     "zeminler": {
         "malikane": "a fortified lord's manor and its courtyard at dusk, "
                     "warm lit windows, outbuildings and a walled garden, "
@@ -353,10 +414,32 @@ def tam_istem(klasor: str, konu: str) -> str:
     return f"{konu}, {KATEGORI[klasor]['kompozisyon']}, {TABAN_USLUP}"
 
 
-def _tek_model_dene(model: str, istem: str, anahtar: str) -> bytes:
+def _mime(yol: Path) -> str:
+    return {"png": "image/png", "webp": "image/webp", "jpg": "image/jpeg", "jpeg": "image/jpeg"}[
+        yol.suffix.lower().lstrip(".")
+    ]
+
+
+def _tek_model_dene(model: str, istem: str, anahtar: str, kaynaklar: list[Path] | None = None) -> bytes:
+    """
+    Tek bir modele istek atar. `kaynaklar` verilirse DÜZENLEME yapılır.
+
+    Düzenleme, tutarlılık sorununun asıl çözümü. Metinden sıfırdan üretilen
+    iki görsel aynı karakteri vermiyor; aynı görseli girdi verip "aynı kişi,
+    aynı duruş, şimdi şu zırhı giyiyor" demek veriyor. Yani lord varyantları
+    KURULUŞ GEREĞİ hizalı oluyor — üst üste bindirme, çapa noktası, omuz
+    hizası diye bir sorun kalmıyor, çünkü bindirme yok: tüm görsel değişiyor.
+    """
+    parcalar: list[dict] = []
+    for k in kaynaklar or []:
+        parcalar.append(
+            {"inlineData": {"mimeType": _mime(k), "data": base64.b64encode(k.read_bytes()).decode()}}
+        )
+    parcalar.append({"text": istem})
+
     govde = json.dumps(
         {
-            "contents": [{"parts": [{"text": istem}]}],
+            "contents": [{"parts": parcalar}],
             "generationConfig": {"responseModalities": ["IMAGE"]},
         }
     ).encode()
@@ -377,7 +460,7 @@ def _tek_model_dene(model: str, istem: str, anahtar: str) -> bytes:
     raise RuntimeError(f"Yanıtta görsel yok: {json.dumps(veri)[:300]}")
 
 
-def istek_at(istem: str, anahtar: str) -> bytes:
+def istek_at(istem: str, anahtar: str, kaynaklar: list[Path] | None = None) -> bytes:
     """
     Görsel üretir. Çalışan model bir kez bulunur, sonrakilerde tekrar aranmaz.
 
@@ -391,7 +474,7 @@ def istek_at(istem: str, anahtar: str) -> bytes:
 
     for model in denenecek:
         try:
-            ham = _tek_model_dene(model, istem, anahtar)
+            ham = _tek_model_dene(model, istem, anahtar, kaynaklar)
             if _calisan_model != model:
                 print(f"  model: {model}")
                 _calisan_model = model
@@ -547,6 +630,19 @@ def main() -> int:
     argv = [a for a in sys.argv[1:]]
     zorla = "--zorla" in argv
     sadece_liste = "--liste" in argv
+
+    # --kaynak: modele girdi olarak gidecek görsel(ler). Birden fazla
+    # verilebilir (karakter + eklenecek nesne gibi).
+    kaynaklar: list[Path] = []
+    while "--kaynak" in argv:
+        i = argv.index("--kaynak")
+        yol = Path(argv[i + 1])
+        if not yol.exists():
+            print(f"--kaynak bulunamadı: {yol}", file=sys.stderr)
+            return 2
+        kaynaklar.append(yol)
+        del argv[i : i + 2]
+
     secilenler = {a for a in argv if not a.startswith("--")}
 
     # Anahtar da ağ da gerektirmez: sadece istemleri yazar.
@@ -567,6 +663,15 @@ def main() -> int:
     if not isler:
         print("Üretilecek bir şey yok. Hepsi mevcut (--zorla ile üstüne yazılır).")
         return 0
+
+    if kaynaklar and len(isler) > 1:
+        print(
+            f"--kaynak verildi ama {len(isler)} görsel seçildi. Düzenleme tek "
+            "hedefe yapılır; hangi görselin üretileceğini adıyla belirt "
+            "(ör. lord_2).",
+            file=sys.stderr,
+        )
+        return 2
 
     print(f"{len(isler)} görsel üretilecek:")
     for klasor, ad, _, _ in isler:
@@ -590,7 +695,7 @@ def main() -> int:
         print(f"\n[{i}/{len(isler)}] {klasor}/{ad} ...", flush=True)
         for deneme in range(3):
             try:
-                ham = istek_at(tam_istem(klasor, konu), anahtar)
+                ham = istek_at(tam_istem(klasor, konu), anahtar, kaynaklar or None)
                 bayt = kaydet(ham, yol, KATEGORI[klasor]["boyut"])
                 print(f"  tamam — {bayt / 1024:.0f} KB")
                 basarili += 1

@@ -753,3 +753,78 @@ Lord figürünün kendisi. En düşük riskli yol, ortalama tier'a göre değiş
 **beş tam boy lord görseli** (paçavralı → efsanevi): kuşandıkça lord gözle
 görülür değişiyor ama slot slot değil. `OrduSahnesi` o figürü önüne almaya
 hazır.
+
+---
+
+## İ13 — Giydirme: katman değil, düzenleme
+
+Oyuncu: *"giydirme işini istiyorum ve en rahat nasıl yapabiliriz
+araştırabilir misin, ayrıca lord sayfasına girince bir animasyon olsa,
+savaş naarası atsa ya da silahını savursa."*
+
+### Araştırmanın sonucu
+
+Klasik yol (paper doll) 31 görsel ister: sabit duruşlu bir gövde ve o
+gövdeye **kayıtlı** 30 katman — aynı tuval, aynı çapa noktası, aynı ışık,
+aynı omuz hizası. Üretim modelleri tam da bu kayıtta başarısız oluyor:
+katmanlar tek tek güzel çıkıyor, üst üste bindiğinde tutmuyor.
+
+Ama sorunun kendisi yanlış kurulmuş. Katmanlar gerekiyor çünkü **bindirme**
+yapmayı varsayıyoruz. Bindirme yapmazsak kayıt sorunu da yok.
+
+Üretim API'si **görsel girdisi** alıyor (`inlineData` + `mimeType`) ve bir
+görseli düzenleyebiliyor. Yani: bir lord görseli üret, sonra onu GİRDİ
+verip *"aynı adam, aynı yüz, aynı duruş, aynı çerçeve — sadece zırhı
+değişiyor"* de. Çıkan görsel **kuruluş gereği hizalı**, çünkü bindirilmiyor;
+tüm görsel değişiyor. Kayıt, çapa noktası, omuz hizası diye bir sorun
+kalmıyor.
+
+Metinden sıfırdan üretilen beş görsel beş ayrı adam veriyor. Aynı görseli
+düzenlettirmek aynı adamı veriyor. Fark tek satırlık ama her şeyi
+değiştiriyor.
+
+### Ne yapıldı
+
+- `gorsel-uret.py` artık `--kaynak` alıyor: verilen görsel(ler) modele
+  girdi olarak gidiyor ve istem düzenleme talimatı oluyor.
+- Yeni `lord` kategorisi: beş görsel, **zincirleme** üretiliyor. `lord_1`
+  metinden; `lord_2` `lord_1`i düzenleyerek; `lord_3` `lord_2`den…
+  İstemler `SAME MAN, same face, same stance, same framing` ile başlıyor.
+- `icerige_kirp` artık kareye değil **kategorinin oranına** kırpıyor
+  (ekipman 1:1, lord 3:4). Ayakta duran bir figürü kareye oturtmak, yanlara
+  bir sürü boşluk bırakıp figürü küçültüyordu.
+
+### Neden altı yuva değil tek seviye
+
+Lord figürü altı yuvayı ayrı ayrı gösteremiyor; gösterebilmesi için yine
+katman gerekirdi. Onun yerine `kusamSeviyesi()`: tek bir sayı, 1–5.
+
+Ölçü, kuşanılan parçaların ortalaması değil **boş yuvaları da sayan**
+ortalaması. Sebep: tek bir T5 kılıcı olan ama başka hiçbir şeyi olmayan
+bir lord efsanevi görünmemeli. Yuvarlama aşağı — yarım kalan kuşam üst
+kademede görünmüyor. Beş birim testiyle sabitlendi.
+
+Bunun karşılığında oyuncu tam olarak hangi parçayı taktığını **kuşanma
+yuvalarında** görüyor (İ11): figür "ne kadar heybetliyim", yuvalar "tam
+olarak ne takıyorum" sorusunu cevaplıyor.
+
+### Animasyon: durağan görselle ne yapılabilir
+
+Tek karelik bir figürün kolunu döndüremeyiz. Döndürebileceğimiz şeyler:
+
+- **Giriş dalgası.** Figürler arkadan öne, sırayla yerden doğruluyor.
+  İlk denemede sıra başına 90ms, figür başına 45ms gecikme vardı ve sahne
+  ~900ms'de doluyordu; ekrana girip yarım saniye boş alana bakmak
+  animasyonun kazandırdığından fazlasını kaybettiriyordu. 60/25ms'e indi.
+- **Naara.** Sahne sarsılıyor, figürler dalga hâlinde hayıkırıyor.
+  Ekrana girişte bir kez, sonra sahneye her dokunuşta.
+- **Kılıç savurma.** Kolu döndüremiyoruz ama oyuncunun **gerçekten
+  kuşandığı** kılıcı sahnenin önünden bir yay çizerek geçirebiliyoruz.
+  Kılıç zaten saydam bir görsel; ayrı bir efekt varlığı gerekmiyor ve
+  savurulan şey gerçekten onun kılıcı — T1 ise paslı demir, T5 ise akkor
+  rünlü.
+
+**`prefers-reduced-motion` iki katmanda saygı görüyor:** JS naarayı hiç
+tetiklemiyor, CSS de animasyonları kapatıyor. Sarsılan ekran baş dönmesi
+yapabiliyor; bu bir süs tercihi değil. İki kip de tarayıcıda kare kare
+doğrulandı.

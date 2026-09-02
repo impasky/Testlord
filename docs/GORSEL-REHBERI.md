@@ -1,8 +1,8 @@
 # Görsel Rehberi
 
-Oyunun 72 görseli var: 5 birim, 12 general, 13 bölge sahnesi (5 taban +
-8 gelişim aşaması), 30 ekipman (6 yuva × 5 tier), 6 harita karosu ve
-6 ekran zemini. Üç yoldan eklenebilir. **Birincisi tercih edilendir:
+Oyunun 77 görseli var: 5 birim, 12 general, 13 bölge sahnesi (5 taban +
+8 gelişim aşaması), 30 ekipman (6 yuva × 5 tier), 6 harita karosu, 6 ekran zemini ve
+5 lord figürü. Üç yoldan eklenebilir. **Birincisi tercih edilendir:
 Claude hepsini kendisi üretir.**
 
 Sayılar burada da tutuluyor ama tek kaynak `tools/gorsel-uret.py`;
@@ -63,7 +63,7 @@ havasını değiştirebilirsin.
 
 Anahtar tanımlı değilse script hiçbir şey yapmaz, ne yapılması gerektiğini
 söyler. Anahtar var ama faturalandırma yoksa ilk görselde durur ve sebebini
-söyler — 72 görsel için sırayla boşuna beklemez.
+söyler — 77 görsel için sırayla boşuna beklemez.
 
 ## Yol 2 — Sen üret, sohbete ekle (bedava)
 
@@ -77,7 +77,7 @@ görüntü görünüyor ama dosya diske inmiyor ve işlenemiyor. Güvenilir yol
 **[docs/GORSEL-TESLIM.md](GORSEL-TESLIM.md)**: ham görselleri geçici bir
 dala yükle, Claude oradan alsın.
 
-72 istemin kopyala-yapıştır hali: **[docs/GORSEL-ISTEMLERI.md](GORSEL-ISTEMLERI.md)** —
+77 istemin kopyala-yapıştır hali: **[docs/GORSEL-ISTEMLERI.md](GORSEL-ISTEMLERI.md)** —
 öncelik sırasıyla birlikte (önce ekran zeminleri, sonra ekipman).
 
 Araçlar görselleri çoğu zaman **tek sayfada** veriyor; sorun değil, ayıklanır:
