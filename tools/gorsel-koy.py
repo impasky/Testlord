@@ -55,6 +55,11 @@ Filigran nasil siliniyor, zemin ayiklamaya bagli:
   ayiklanmiyorsa       komsu seridin yatay aynasiyla yamalanir.
   --zemin-sil / --zemin-tut    ayiklamayi acikca ac/kapat. Varsayilan:
                                ekipmanda acik, digerlerinde kapali.
+  --kirpma                     icerige kirpmayi KAPAT. Varsayilan acik
+                               (zemin ayiklandiginda): saydam paylar atilip
+                               konu kareye oturtulur, boylece otuz ikon ayni
+                               boyda gorunur. Kapatmak, kaynagin cercevesini
+                               oldugu gibi korumak istendiginde.
   --esik <sayi>                zemin rengine uzaklik esigini elle ver.
                                Varsayilan: goruntunun dis cercevesinden
                                OLCULUR. Elle vermek sadece olcum yaniltiyorsa
@@ -91,6 +96,10 @@ ESIK_PAYI = 2.5         # ve uzerine bu carpan
 ESIK_TABAN = 8          # kusursuz duz zeminde bile bu kadar tolerans
 ESIK_TAVAN = 60         # bu kadarindan fazlasi konuyu yemeye baslar
 
+# Icerige kirptiktan sonra konunun kareyi doldurma orani. %94: kenarlara
+# degmeyecek kadar pay birakir, ama kutuda gorunur bir bosluk kalmaz.
+DOLULUK = 0.94
+
 # Silinen alan bundan buyukse ayiklama basarisiz sayilir: bir envanter
 # ikonunda konu goruntunun anlamli bir kismini kaplar. Sessizce bos bir
 # gorsel yazmaktansa zemini oldugu gibi birakmak dogru.
@@ -110,6 +119,42 @@ def _modul(ad: str):
     m = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(m)
     return m
+
+
+def icerige_kirp(im, doluluk: float = DOLULUK):
+    """
+    Saydam paylari atip konuyu kareye oturtur; tek boy verir.
+
+    Olculdu: ayni istemden gelen otuz ikonda konunun kareyi doldurma
+    orani %79 ile %96 arasinda oynuyordu. Tek basina bakinca fark
+    edilmiyor ama envanterde alt alta dizilince bazi esyalar digerlerinden
+    kucuk gorunuyor - nadirlik ya da tier farkiymis gibi, ki degil.
+
+    Kutu KARE olarak buyutuluyor, konunun kendi orani korunuyor: ince bir
+    sancagi kareye germek onu bozardi. Kare goruntu disina tasarsa saydamla
+    dolduruluyor.
+
+    Sadece zemin ayiklanmis gorsellerde anlamli - alfa yoksa sinirlayici
+    kutu tum kare olur ve islem hicbir sey yapmaz.
+    """
+    from PIL import Image
+
+    alfa = im.getchannel("A") if im.mode == "RGBA" else None
+    if alfa is None:
+        return im
+    kutu = alfa.point(lambda a: 255 if a > 24 else 0).getbbox()
+    if not kutu:
+        return im
+
+    x0, y0, x1, y1 = kutu
+    en = max(x1 - x0, y1 - y0)
+    kenar = int(round(en / doluluk))
+    mx, my = (x0 + x1) // 2, (y0 + y1) // 2
+    sol, ust = mx - kenar // 2, my - kenar // 2
+
+    tuval = Image.new("RGBA", (kenar, kenar), (0, 0, 0, 0))
+    tuval.paste(im.crop((sol, ust, sol + kenar, ust + kenar)), (0, 0))
+    return tuval
 
 
 def filigran_zeminle(im, kutu):
@@ -221,6 +266,9 @@ def main() -> int:
     tam_ayna = "--tam-ayna" in argv
     if tam_ayna:
         argv.remove("--tam-ayna")
+    kirp = "--kirpma" not in argv
+    if not kirp:
+        argv.remove("--kirpma")
     zemin_sil_istegi = None
     if "--zemin-sil" in argv:
         zemin_sil_istegi = True
@@ -286,6 +334,9 @@ def main() -> int:
                 notlar.append(f"ZEMIN AYIKLANAMADI (esik {kullanilan:.0f})")
             else:
                 notlar.append(f"zemin %{oran * 100:.0f} (esik {kullanilan:.0f})")
+                if kirp:
+                    im = icerige_kirp(im)
+                    notlar.append("icerige kirpildi")
         tampon = BytesIO()
         im.save(tampon, "PNG")
         hedef = uretici.CIKTI / kategori / f"{ad}.webp"

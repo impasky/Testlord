@@ -105,12 +105,18 @@ temizleniyor; hangi dosyada yapıldığı aşağıdaki tabloda yazıyor.
 | `ekipman/zirh_t1..t5.webp` | eklendi (T2–T5 işaret silindi, zemin ayıklandı) |
 | `ekipman/migfer_t1..t5.webp` | eklendi (işaret silindi, zemin ayıklandı) |
 | `ekipman/at_t1..t5.webp` | eklendi (işaret zeminlendi, zemin ayıklandı) |
+| `ekipman/sancak_t1..t5.webp` | eklendi (işaret zeminlendi, zemin ayıklandı) |
 
 Ekipman ikonlarında filigran yoktu; onlarda yapılan iş zemin ayıklama.
-Yirmisinde de eşik 8 ölçüldü. Silinen zemin kılıçlarda %81–87,
-kalkanlarda %50–57, zırhlarda %48–57, miğferlerde %60–67 — aradaki fark
-nesnenin biçimi: çapraz bir kılıç ince, kalkan ve zırh kareyi dolduruyor,
-miğfer ikisinin arasında.
+Otuzunda da eşik 8 ölçüldü. Silinen zemin %48 ile %87 arasında; aradaki
+fark nesnenin biçimi — çapraz bir kılıç ya da ince bir sancak az yer
+kaplıyor, kalkan ve zırh kareyi dolduruyor.
+
+Otuzu da içeriğe kırpıldı ve konunun kareyi doldurma oranı %94'e
+sabitlendi. Kırpmadan önce bu oran %79 ile %96 arasında oynuyordu:
+tek başına bakınca fark edilmiyor ama envanterde alt alta dizilince bazı
+eşyalar diğerlerinden küçük görünüyordu — nadirlik ya da tier farkıymış
+gibi, ki değil.
 
 Kapalı boşluklar korundu: zırhlarda yakanın içindeki karanlık oyuk,
 miğferlerde göz yarıkları ve T1'in çene kayışındaki halka. Hepsi zemin

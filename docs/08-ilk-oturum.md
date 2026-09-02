@@ -675,3 +675,20 @@ için doğru olan yöntem olarak duruyor.
 Zırh ve miğferde bu sorun çıkmamıştı çünkü onların işaretinin çevresi düz
 zemindi — ayna zemin taşımıştı. Yani hata sessizdi ve ancak komşuluk
 değişince göründü. Yeniden tarandılar, ikisi de temiz.
+
+### Otuz ikon aynı boyda olsun
+
+Otuz ekipman görseli tamamlanınca ızgarada bir tutarsızlık göründü:
+konunun kareyi doldurma oranı %79 ile %96 arasında oynuyordu. Tek başına
+bakınca fark edilmiyor ama envanterde alt alta dizilince bazı eşyalar
+diğerlerinden küçük duruyor — oyuncuya nadirlik ya da tier farkıymış gibi
+gelen, aslında sadece üreticinin kadrajından gelen bir fark.
+
+Zemin ayıklandıktan sonra alfa elde olduğu için bu ölçülebilir bir şey:
+`gorsel-koy.py` artık saydam payları atıp konuyu kareye oturtuyor ve
+doldurma oranını %94'e sabitliyor. Kutu **kare** olarak büyütülüyor,
+konunun kendi oranı korunuyor — ince bir sancağı kareye germek onu
+bozardı.
+
+Kırpma zemin ayıklamaya bağlı, çünkü alfası olmayan bir görselde
+sınırlayıcı kutu tüm kare olur ve işlem hiçbir şey yapmaz.
