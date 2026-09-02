@@ -8,13 +8,19 @@ yüklemesinin kendisi kararsız.
 
 Kalan ~60 görsel için sohbete güvenmek yerine depo üzerinden teslim:
 
-## Yol: geçici bir dala yükle
+## Yol: `gorsel-gelen` dalına yükle
 
-1. GitHub'da depoya git, **yeni bir dal** aç: `gorsel-gelen`
-2. `gelen/` klasörüne görselleri sürükle-bırak
-   (Add file → Upload files). Dosya adları serbest.
-3. Hangi görselin hangi ekipman olduğunu commit mesajına ya da sohbete yaz
-   (ör. "sırayla t1, t5, t4, t3, t2").
+Dal **hazır**, açman gerekmiyor: kod içermeyen, kopuk geçmişli, içinde tek
+bir `gelen/BENIOKU.md` olan ayrı bir dal.
+
+1. GitHub'da depoya git, üstteki dal seçiciden **`gorsel-gelen`**'i seç
+2. `gelen/` klasörüne gir, **Add file → Upload files** ile görselleri sürükle
+3. **Commit changes**
+4. Sohbette "yükledim" de
+
+Dosya adlarını oyunun beklediği adla verirsen (`kalkan_t1.png`,
+`migfer_t3.png`, `tarla_5.png`…) iş tek komuta iner. Bilmiyorsan sohbette
+ne olduklarını yaz, eşleştirilir. Tam liste: `docs/GORSEL-ISTEMLERI.md`.
 
 Sonrası Claude'da:
 
@@ -27,7 +33,8 @@ rm -rf gelen/
 
 İşlenen WebP'ler çalışma dalına giriyor; ham dosyalar hiçbir zaman oraya
 girmiyor. `gorsel-gelen` dalı iş bitince silinebilir — ham görsellerin
-geçmişi onunla birlikte gider, çalışma dalı şişmez.
+geçmişi onunla birlikte gider, çalışma dalı şişmez. Silinirse aynı adla
+yenisi açılabilir; dalın içeriği tek bir açıklama dosyasından ibaret.
 
 **Neden ayrı dal:** ham görseller 1–2 MB. Çalışma dalına commit edilip
 sonra silinseler bile git geçmişinde kalıcı olurlar; 72 görsellik set
