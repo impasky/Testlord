@@ -258,21 +258,6 @@ svg g[role='button']:focus-visible > path:first-of-type {
   100% { transform: translateY(0); }
 }
 
-/* Lord öne çıkar, sonra yerine oturur. */
-.lord {
-  animation: lord-gir 700ms cubic-bezier(0.2, 0.9, 0.3, 1.15) backwards;
-}
-@keyframes lord-gir {
-  from {
-    transform: translate(-50%, 18px) scale(0.9);
-    opacity: 0;
-  }
-  to {
-    transform: translate(-50%, 0) scale(1);
-    opacity: 1;
-  }
-}
-
 /*
  * Kılıç savurma.
  *
@@ -315,7 +300,6 @@ svg g[role='button']:focus-visible > path:first-of-type {
   .figur,
   .sahne-naara,
   .sahne-naara .figur,
-  .lord,
   .sahne-naara .savurma {
     animation: none;
   }

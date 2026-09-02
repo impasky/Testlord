@@ -79,6 +79,12 @@ export function sellValue(item: EquippedItem): number {
 /**
  * Lordun kuşam seviyesi: 1–5.
  *
+ * ŞU AN ÇAĞIRAN YOK. Lord figürü sahneye kondu, oyuncu beğenmedi ve geri
+ * alındı (docs/08 İ13). Bu fonksiyon ve testleri duruyor çünkü figür geri
+ * gelirse gereken karar burada: hangi görselin gösterileceği. Silinip
+ * yeniden yazılsa aynı tuzağa düşülür — aşağıdaki "boş yuvaları da say"
+ * kuralı bariz değil.
+ *
  * Lord figürü altı yuvayı ayrı ayrı gösteremiyor — bunun için her parçanın
  * aynı gövdeye kayıtlı çizilmiş olması gerekirdi (bkz. docs/08 İ13). Onun
  * yerine tek bir sayı: lordun ne kadar güçlü GÖRÜNDÜĞÜ. Beş görsel, beş

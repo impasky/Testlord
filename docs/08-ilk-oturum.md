@@ -849,3 +849,27 @@ beşten yalnızca biri işaretlendi.
 Ayrıca `zemin_sil` varsayılanı genişletildi. Ölçüt tek: görsel bir KUTUYA
 mı giriyor, bir SAHNEYE mi biniyor? Ekipman ve lord sahneye biniyor, zemini
 kalırsa ordunun üstüne koyu bir dikdörtgen yapıştırılmış gibi duruyor.
+
+### Lord figürü geri alındı
+
+Beş görsel üretildi, sahneye kondu, oyuncu baktı: *"yok çok kötü, iptal
+edelim şimdilik sadece lord kısmını iptal edelim, ordu dursun."*
+
+Figür sahneden kaldırıldı. **Silinmedi, kapatıldı:**
+
+| Duran | Yer |
+|---|---|
+| Beş lord görseli | `apps/web/public/gorseller/lord/` |
+| İstemler ve zincirleme reçete | `docs/GORSEL-ISTEMLERI.md` |
+| `--kaynak` (görsel girdisi) | `tools/gorsel-uret.py` |
+| `--filigran-ayna` | `tools/gorsel-koy.py` |
+| `kusamSeviyesi()` + 5 test | `packages/shared/src/equipment.ts` |
+
+Geri getirmek `OrduSahnesi`ye bir `<Gorsel tur="lord">` bloğu eklemek
+kadar. `kusamSeviyesi()` çağıransız kaldı ve bu docstring'inde açıkça
+yazıyor — sessiz ölü kod bırakmak, sonradan bakan birinin "bu neden var"
+diye silmesine ve aynı kararı baştan vermesine yol açar. Oradaki "boş
+yuvaları da say" kuralı bariz değil.
+
+**Duran şey ordu sahnesi:** kalabalık, giriş dalgası, naara, kılıç
+savurma. Oyuncunun beğenmediği lord figürüydü, sahnenin kendisi değil.

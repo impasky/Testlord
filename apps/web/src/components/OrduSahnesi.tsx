@@ -2,9 +2,13 @@
  * Ordu sahnesi — lordun arkasındaki kalabalık.
  *
  * Oyuncu: *"lord kısmında oyuncu kendi lordunu görse ve kendi karakterinin
- * arkasında ordusunu görse."* Bu, o isteğin ordu yarısı. Lord figürü için
- * ayrı bir görsel gerekiyor (bkz. docs/08 İ12); ordu ise elimizdeki beş
- * birim illüstrasyonuyla, hiç yeni görsel olmadan çizilebiliyor.
+ * arkasında ordusunu görse."* Bu, o isteğin ordu yarısı.
+ *
+ * Lord figürü DENENDİ ve geri alındı: beş görsel üretildi, sahneye kondu,
+ * oyuncu beğenmedi ("çok kötü"). Görseller ve üretim hattı yerinde duruyor
+ * (`gorseller/lord/`, `kusamSeviyesi()`), sadece çizilmiyorlar — geri
+ * getirmek bu dosyaya bir `<Gorsel tur="lord">` eklemek kadar. Neden
+ * kaldırıldığı ve nasıl geri geleceği: docs/08 İ13.
  *
  * Neden değerli: Kışla'da "okçu 42" yazısı bir satır. Burada kırk iki
  * okçunun oluşturduğu kalabalık bir ŞEY. Ordu büyüdükçe sahne doluyor,
@@ -14,7 +18,6 @@
 import {
   UNIT_TYPES,
   armySlots,
-  kusamSeviyesi,
   unit,
   unitName,
   type Army,
@@ -157,7 +160,6 @@ export function OrduSahnesi({
   const dagilim = figurDagilimi(army);
   const kullanilan = armySlots(army);
   const siralar = sahneyeDiz(dagilim);
-  const seviye = kusamSeviyesi(kusanilan);
   const silah = kusanilan.find((i) => i.slot === 'silah');
   const { naara, naaraAt } = useNaara();
 
@@ -235,24 +237,6 @@ export function OrduSahnesi({
           </div>
         ))
       )}
-
-      {/* Lord — ordunun önünde, hafif sağda. Görseli yoksa hiçbir şey
-          çizilmiyor: yerine bir siluet koymak, olmayan bir şeyi varmış gibi
-          göstermek olurdu. (docs/08 İ13) */}
-      <div className="lord absolute bottom-0 left-1/2 -translate-x-1/2">
-        {/* Boy sahne yüksekliğinin tamamı değil: 168px verildiğinde 172px'lik
-            sahnede lordun saçı üst kenardan taşıyordu. 156 hem baş üstünde
-            pay bırakıyor hem askerlerden (ön sıra 132px) belirgin büyük
-            kalıyor — öndeki figür olduğu okunsun diye. */}
-        <Gorsel
-          tur="lord"
-          ad={`lord_${seviye}`}
-          alt={`Lordun — kuşam ${seviye}`}
-          boyut={156}
-          className="h-[156px] w-auto"
-          yedek={<></>}
-        />
-      </div>
 
       {/* Savurulan silah: oyuncunun GERÇEKTEN kuşandığı kılıç. Ayrı bir
           animasyon karesi gerekmiyor, elimizdeki ikonu yayla geçiriyoruz. */}
