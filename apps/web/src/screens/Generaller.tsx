@@ -1,4 +1,5 @@
 /** Generaller — 12 kişilik sabit kadro, kiralama, slot yerleşimi. */
+import { GENERAL_LEVEL, generalLevelMultiplier } from '@lordlar/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ApiError, api, type GeneralDto } from '../api/client';
@@ -47,6 +48,9 @@ function GeneralKarti({
   const renk = NADIRLIK_RENGI[g.nadirlik] ?? '#9aa0a6';
   const yeterli = altin >= g.maliyet_altin;
   const yuzde = Math.round(g.etkinDeger * 100);
+  const sonrakiYuzde = Math.round(
+    g.pasif.deger * generalLevelMultiplier(g.level + 1) * 100,
+  );
   const sahada = g.slotIndex !== null;
 
   return (
@@ -87,12 +91,25 @@ function GeneralKarti({
 
       {g.sahipMi ? (
         <div className="mt-2.5 border-t border-kenar/70 pt-2.5">
-          <div className="mb-2 flex items-center gap-2">
-            <span className="tabular shrink-0 text-[11px] text-solgun">Sv {g.level}/20</span>
+          <div className="mb-1.5 flex items-center gap-2">
+            <span className="tabular shrink-0 text-[11px] text-solgun">
+              Sv {g.level}/{GENERAL_LEVEL.max}
+            </span>
             <div className="min-w-0 flex-1">
               <Ilerleme deger={g.xp} max={g.xpForNext || 1} renk={renk} boy="ince" />
             </div>
           </div>
+          {/* Çubuk tek başına neyin uğruna dolduğunu söylemiyor. Sonraki
+              seviyenin pasifi ne yapacağını yazmak "generalimi büyütüyorum"
+              hissini somutlaştırıyor (docs/09 §2.3). */}
+          {g.level < GENERAL_LEVEL.max ? (
+            <p className="mb-2 text-[11px] text-sonuk">
+              Sv {g.level + 1}: <span className="text-parsomen">%{sonrakiYuzde}</span>{' '}
+              {ETKI_ADI[g.pasif.etki] ?? g.pasif.etki} — savaşa girdikçe büyür.
+            </p>
+          ) : (
+            <p className="mb-2 text-[11px] text-altin">En yüksek seviye.</p>
+          )}
           {g.dinleniyor ? (
             <p className="text-[11px] text-kirmizi">
               Yaralı — {new Date(g.dinleniyor).toLocaleString('tr-TR')} tarihine kadar dinleniyor.

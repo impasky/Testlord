@@ -15,6 +15,14 @@ import {
   commandCapacity,
   fortressBonus,
   itemPower,
+  GENERAL_LEVEL,
+  generalLevelFromXp,
+  generalLevelMultiplier,
+  generalSavasSonrasi,
+  generalSavasXp,
+  generalToplamXp,
+  generalXpForLevel,
+  generalYaralanma,
   basarimSayaci,
   calculateLoot,
   liderAviGecerliMi,
@@ -495,6 +503,69 @@ describe('lider avı', () => {
     const avli = calculateLoot(depo, ordu, 0, liderAviYagmaBonusu());
     expect(avli.altin).toBeGreaterThan(normal.altin);
     expect(avli.altin).toBeLessThanOrEqual(depo.altin);
+  });
+});
+
+describe('general seviyesi', () => {
+  it('toplam XP çevrimi seviye okumasının tersi', () => {
+    // Kayıtta (level, xp) tutuluyor, generalLevelFromXp toplam XP bekliyor.
+    // Çevrim kaymışsa XP eklerken bir eğri, seviye okurken başka bir eğri
+    // kullanılır ve general sessizce yanlış seviyede kalır. api tarafında
+    // eğrinin ikinci bir kopyası duruyordu; bu test onun geri gelmesini
+    // yakalar.
+    for (let lv = 1; lv <= GENERAL_LEVEL.max; lv++) {
+      const geri = generalLevelFromXp(generalToplamXp(lv, 0));
+      expect(geri.level).toBe(lv);
+      expect(geri.xpIntoLevel).toBe(0);
+    }
+  });
+
+  it('seviye içindeki ilerleme de korunuyor', () => {
+    const toplam = generalToplamXp(5, 137);
+    expect(generalLevelFromXp(toplam)).toEqual({ level: 5, xpIntoLevel: 137 });
+  });
+
+  it('savaş XP payı generals.json ile aynı', () => {
+    expect(generalSavasXp(1000)).toBe(Math.round(1000 * GENERAL_LEVEL.xp_pay));
+    expect(generalSavasXp(0)).toBe(0);
+  });
+
+  it('yeterli XP seviye atlatır ve atlanan sayısını söyler', () => {
+    // Sv1'den atlamak için gereken XP, generalin savaşta kazandığının katı.
+    const gerekli = generalXpForLevel(1);
+    const s = generalSavasSonrasi(1, 0, gerekli / GENERAL_LEVEL.xp_pay);
+    expect(s.level).toBe(2);
+    expect(s.atlanan).toBe(1);
+  });
+
+  it('az XP seviye atlatmaz ama çubuğu doldurur', () => {
+    const s = generalSavasSonrasi(3, 0, 10);
+    expect(s.level).toBe(3);
+    expect(s.atlanan).toBe(0);
+    expect(s.xpIntoLevel).toBeGreaterThan(0);
+  });
+
+  it('tavanda XP birikmiyor, seviye taşmıyor', () => {
+    // Tavanda xpIntoLevel 0 kalmalı: dolmayan bir çubuk göstermek
+    // oyuncuya sonu olmayan bir ilerleme sözü verir.
+    const s = generalSavasSonrasi(GENERAL_LEVEL.max, 0, 10_000_000);
+    expect(s.level).toBe(GENERAL_LEVEL.max);
+    expect(s.atlanan).toBe(0);
+    expect(s.xpIntoLevel).toBe(0);
+  });
+
+  it('yaralanma sayıları veri dosyasından okunuyor', () => {
+    const y = generalYaralanma();
+    expect(y.ihtimal).toBeGreaterThan(0);
+    expect(y.ihtimal).toBeLessThan(1);
+    expect(y.saat).toBeGreaterThan(0);
+  });
+
+  it('seviye pasifi güçlendiriyor ama katlamıyor', () => {
+    // Sv20 çarpanı 1.38 civarı: general savaşı tek başına kazanmamalı.
+    expect(generalLevelMultiplier(1)).toBe(1);
+    expect(generalLevelMultiplier(GENERAL_LEVEL.max)).toBeGreaterThan(1.3);
+    expect(generalLevelMultiplier(GENERAL_LEVEL.max)).toBeLessThan(1.5);
   });
 });
 

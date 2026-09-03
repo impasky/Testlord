@@ -44,6 +44,8 @@ const OLAY_RENGI: Record<string, string> = {
   bolge_kaybettin: 'var(--color-kirmizi)',
   savas_kaybettin: 'var(--color-kirmizi)',
   saldiriya_ugradin: 'var(--color-turuncu)',
+  general_seviye: 'var(--color-altin)',
+  general_dinleniyor: 'var(--color-turuncu)',
   aclik: 'var(--color-kirmizi)',
 };
 

@@ -16,8 +16,11 @@ import {
   bosGeneralBonus,
   captureXp,
   createRng,
+  generalDef,
   generalKatkilari,
-  generalLevelFromXp,
+  generalLevelMultiplier,
+  generalSavasSonrasi,
+  generalYaralanma,
   lordContribution,
   marchDurationSec,
   npcClearXp,
@@ -26,6 +29,7 @@ import {
   type Army,
   type EquipSlot,
   type GeneralKatkisi,
+  type GeneralYukselisi,
   type Rarity,
   type Side,
   type UnitType,
@@ -154,7 +158,11 @@ async function writeGarrison(
 
 /**
  * Savaşa katılan generallere XP verir ve kaybeden tarafta dinlenmeye gönderir.
- * General XP'si lordun kazandığı XP'nin %40'ıdır (generals.json).
+ *
+ * XP payı ve yaralanma sayıları generals.json'da; buradaki iş sadece
+ * veritabanı tarafı. Dönüş, bu savaşta SEVİYE ATLAYAN generaller: motor
+ * seviyeyi zaten hesaplıyordu ama kimseye söylemiyordu, oyuncu güçlendiği
+ * anı hiç görmüyordu (docs/09 §2.3).
  */
 async function generalleriOdullendir(
   lordId: string,
@@ -162,38 +170,66 @@ async function generalleriOdullendir(
   kaybettiMi: boolean,
   seed: string,
   tx: Tx,
-): Promise<void> {
+): Promise<GeneralYukselisi[]> {
   const sahada = await tx.lordGeneral.findMany({
     where: { lordId, slotIndex: { not: null } },
   });
-  if (sahada.length === 0) return;
+  if (sahada.length === 0) return [];
 
   const rng = createRng(`general-${seed}`);
-  const kazanilan = Math.round(lordXp * 0.4);
+  const yaralanma = generalYaralanma();
+  const yukselenler: GeneralYukselisi[] = [];
 
   for (const g of sahada) {
-    const { level, xpIntoLevel } = generalLevelFromXp(
-      toplamGeneralXp(g.level, g.xp) + kazanilan,
-    );
-    // Kaybedilen savaşta %25 ihtimalle general 6 saat dinlenmeye girer
-    const dinlenir = kaybettiMi && rng.next() < 0.25;
+    const sonuc = generalSavasSonrasi(g.level, g.xp, lordXp);
+    const dinlenir = kaybettiMi && rng.next() < yaralanma.ihtimal;
     await tx.lordGeneral.update({
       where: { id: g.id },
       data: {
-        level,
-        xp: xpIntoLevel,
-        ...(dinlenir ? { restUntil: new Date(Date.now() + 6 * 3_600_000) } : {}),
+        level: sonuc.level,
+        xp: sonuc.xpIntoLevel,
+        ...(dinlenir
+          ? { restUntil: new Date(Date.now() + yaralanma.saat * 3_600_000) }
+          : {}),
       },
     });
+
+    // Oyuncu generali adıyla tanıyor; olay akışında `casus_leyla` değil
+    // "Casus Leyla" yazmalı.
+    const ad = generalDef(g.generalKey)?.ad ?? g.generalKey;
+
+    if (sonuc.atlanan > 0) {
+      yukselenler.push({
+        key: g.generalKey,
+        ad,
+        onceki: g.level,
+        sonraki: sonuc.level,
+        kazanilanXp: sonuc.kazanilanXp,
+      });
+      await pushEvent(
+        lordId,
+        'general_seviye',
+        {
+          mesaj: `${ad} seviye atladı: Sv ${g.level} → Sv ${sonuc.level}. Pasifi artık %${Math.round(
+            (generalLevelMultiplier(sonuc.level) - 1) * 100,
+          )} daha güçlü.`,
+          generalKey: g.generalKey,
+        },
+        tx,
+      );
+    }
+
     if (dinlenir) {
       await pushEvent(
         lordId,
         'general_dinleniyor',
-        { mesaj: `${g.generalKey} savaşta yaralandı, 6 saat dinlenecek.` },
+        { mesaj: `${ad} savaşta yaralandı, ${yaralanma.saat} saat dinlenecek.` },
         tx,
       );
     }
   }
+
+  return yukselenler;
 }
 
 /**
@@ -233,13 +269,6 @@ async function lordOzeti(lordId: string, tx: Tx) {
     },
     bolgeSayisi: lord.regions.filter((r) => r.type !== 'taht').length,
   };
-}
-
-/** generalLevelFromXp toplam XP bekler; kayıtta seviye + seviyedeki ilerleme tutulur. */
-function toplamGeneralXp(level: number, xpIntoLevel: number): number {
-  let toplam = xpIntoLevel;
-  for (let n = 1; n < level; n++) toplam += Math.round(200 * Math.pow(n, 1.4));
-  return toplam;
 }
 
 /**
@@ -397,6 +426,11 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
 
       const attackerWon = result.winner === 'attacker';
 
+      // Savaş kaydından ÖNCE dolduruluyor: seviye atlayışları rapora
+      // girecek, rapor da aşağıda yazılıyor.
+      let saldiranYukselisleri: GeneralYukselisi[] = [];
+      let savunanYukselisleri: GeneralYukselisi[] = [];
+
       // Savunanın kalanını yaz
       if (defenderLordId) {
         await writeGarrison(region.id, defenderLordId, result.defenderSurvivors, tx);
@@ -482,14 +516,14 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
           data: { woundedUntil: new Date(Date.now() + saat * 3_600_000) },
         });
 
-        await generalleriOdullendir(
+        saldiranYukselisleri = await generalleriOdullendir(
           march.lordId,
           battleXp(defenderLord.level, attackerWon),
           !attackerWon,
           `${seed}-atk`,
           tx,
         );
-        await generalleriOdullendir(
+        savunanYukselisleri = await generalleriOdullendir(
           defenderLordId,
           battleXp(attackerLord.level, !attackerWon),
           attackerWon,
@@ -501,7 +535,9 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
         // NPC garnizonu
         const npcXp = npcClearXp(armyCount(defenderArmy));
         await grantXp(march.lordId, npcXp, tx);
-        await generalleriOdullendir(march.lordId, npcXp, !attackerWon, `${seed}-npc`, tx);
+        saldiranYukselisleri = await generalleriOdullendir(
+          march.lordId, npcXp, !attackerWon, `${seed}-npc`, tx,
+        );
       }
 
       if (result.captured) {
@@ -545,6 +581,11 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
             tahkimatBonusu: fortress,
             attackerGenerals: saldiranGeneraller,
             defenderGenerals: savunanGeneraller,
+            // Bu savaşta seviye atlayanlar. Raporun "generalim büyüdü"
+            // satırı buradan geliyor; savaştan sonra generals'e bakmak
+            // hangi savaşın atlattığını söylemez.
+            attackerGeneralYukselisleri: saldiranYukselisleri,
+            defenderGeneralYukselisleri: savunanYukselisleri,
             sonuc: {
               saldiran: { oncesi: saldiranOnce, sonrasi: saldiranSonra },
               savunan:

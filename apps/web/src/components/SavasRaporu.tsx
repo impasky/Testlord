@@ -19,7 +19,13 @@ import {
 } from '@lordlar/shared';
 import { useQuery } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
-import { api, type BattleDto, type GeneralKatkisiDto, type LordOzetiDto } from '../api/client';
+import {
+  api,
+  type BattleDto,
+  type GeneralKatkisiDto,
+  type GeneralYukselisiDto,
+  type LordOzetiDto,
+} from '../api/client';
 import { BirimIkonu, IkonAltin, IkonDemir, IkonErzak, IkonKapali } from './Ikonlar';
 import { Buton, Fark, Kart, Rozet, SonucSatiri, formatSayi, nadirlikRengi } from './ui';
 
@@ -224,12 +230,15 @@ const ETKI_ADI: Record<string, string> = {
  */
 function GeneralKatkilari({
   generaller,
+  yukselisler,
   taraf,
 }: {
   generaller: GeneralKatkisiDto[];
+  yukselisler: GeneralYukselisiDto[];
   taraf: string;
 }) {
   if (generaller.length === 0) return null;
+  const yukselen = new Map(yukselisler.map((y) => [y.key, y]));
 
   return (
     <Kart className="p-3">
@@ -245,6 +254,19 @@ function GeneralKatkilari({
                 </span>
                 <span className="tabular shrink-0 text-[11px] text-solgun">Sv{g.level}</span>
               </div>
+              {(() => {
+                // Seviye SAVAŞTAN ÖNCEKİ hâl; atladıysa yeni seviye burada.
+                // Oyuncu generalinin büyüdüğü anı savaşla birlikte görmeli,
+                // sonradan general ekranına bakınca hangi savaşın atlattığı
+                // kaybolur.
+                const y = yukselen.get(g.key);
+                if (!y) return null;
+                return (
+                  <p className="mt-0.5 text-[11px] font-bold text-altin">
+                    Seviye atladı: Sv {y.onceki} → Sv {y.sonraki}
+                  </p>
+                );
+              })()}
               <p className="mt-0.5 text-[11px] text-solgun">
                 <span className="text-parsomen">{g.pasifAd}</span> — %
                 {Math.round(g.pasifDeger * 100)} {ETKI_ADI[g.pasifEtki] ?? g.pasifEtki}
@@ -494,8 +516,16 @@ export function SavasRaporu({
                 vurgu={!saldiranBenim ? 'var(--color-altin)' : undefined}
               />
 
-              <GeneralKatkilari generaller={savas.log.attackerGenerals ?? []} taraf="Saldıran" />
-              <GeneralKatkilari generaller={savas.log.defenderGenerals ?? []} taraf="Savunan" />
+              <GeneralKatkilari
+                generaller={savas.log.attackerGenerals ?? []}
+                yukselisler={savas.log.attackerGeneralYukselisleri ?? []}
+                taraf="Saldıran"
+              />
+              <GeneralKatkilari
+                generaller={savas.log.defenderGenerals ?? []}
+                yukselisler={savas.log.defenderGeneralYukselisleri ?? []}
+                taraf="Savunan"
+              />
 
               {yagmaVar ? (
                 <Kart className="p-3">

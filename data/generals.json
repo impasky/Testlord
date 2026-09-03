@@ -12,9 +12,14 @@
     "xp_katsayi": 200,
     "xp_us": 1.4,
     "xp_kaynagi": "Katildigi her savastan lordun kazandigi XP'nin %40'i",
+  "xp_pay": 0.4,
     "seviye_etkisi": "Pasif etkisi her seviyede +%2 guclenir. Lv20'de pasif x1.38"
   },
-  "yaralanma": "Kaybedilen savasta %25 ihtimalle general 6 saat dinlenmeye girer (slotu bos kalir).",
+  "yaralanma": {
+    "_not": "Kaybedilen savasta general dinlenmeye girer, slotu bos kalir. Sayilar burada: kodda durursa er ya da gec motordan sapar.",
+    "ihtimal": 0.25,
+    "saat": 6
+  },
   "generaller": [
     {
       "key": "demirci_yusuf",

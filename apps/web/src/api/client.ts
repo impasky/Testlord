@@ -422,6 +422,9 @@ export interface BattleDto {
     /** Sahadaki generaller. Eski savaşlarda yok — arayüz bunu tolere eder. */
     attackerGenerals?: GeneralKatkisiDto[];
     defenderGenerals?: GeneralKatkisiDto[];
+    /** Bu savaşta seviye atlayanlar. Eski savaşlarda yok. */
+    attackerGeneralYukselisleri?: GeneralYukselisiDto[];
+    defenderGeneralYukselisleri?: GeneralYukselisiDto[];
     /** Savaşın iki tarafta ne değiştirdiği. Eski savaşlarda yok. */
     sonuc?: {
       saldiran: LordOzetiDto;
@@ -441,6 +444,15 @@ export interface LordAnlikDto {
 export interface LordOzetiDto {
   oncesi: LordAnlikDto;
   sonrasi: LordAnlikDto;
+}
+
+/** Bu savaşta seviye atlayan bir general. */
+export interface GeneralYukselisiDto {
+  key: string;
+  ad: string;
+  onceki: number;
+  sonraki: number;
+  kazanilanXp: number;
 }
 
 export interface GeneralKatkisiDto {

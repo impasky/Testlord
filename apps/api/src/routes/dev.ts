@@ -8,6 +8,7 @@ import { WORLD_MAP } from '@lordlar/shared';
 import type { FastifyInstance } from 'fastify';
 import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
+import { GameError, hata } from '../errors.js';
 import { findLordByUser, grantXp, tickLord } from '../services/lord.js';
 import { resolveMarch } from '../services/march.js';
 import { resolveQueueItem } from '../services/queue.js';
@@ -73,6 +74,30 @@ export async function devRoutes(app: FastifyInstance): Promise<void> {
     const lordId = await findLordByUser(req.user.userId);
     const miktar = Number((req.body as { miktar?: number })?.miktar ?? 1000);
     return grantXp(lordId, miktar);
+  });
+
+  /**
+   * Bir generalin seviyesini/XP'sini kurar: seviye atlama ANINI test etmek için.
+   *
+   * Neden gerekli: bir general tek savaşta seviye atlamaya çoğu zaman yetmez
+   * (bir PvP savaşı ~176 XP, Sv1→Sv2 için 200 gerekiyor). Testin savaşı
+   * defalarca tekrarlaması hem yavaş hem kırılgan olurdu; bunun yerine
+   * general eşiğin hemen altına kurulup TEK savaşla atlaması sağlanıyor —
+   * ölçülen yol yine gerçek savaş yolu.
+   */
+  app.post('/test/general-xp', { preHandler: requireAuth }, async (req) => {
+    const lordId = await findLordByUser(req.user.userId);
+    const b = (req.body ?? {}) as { key?: string; level?: number; xp?: number };
+    if (!b.key) throw new GameError('key gerekli.', 400, 'EKSIK_ALAN');
+    const kayit = await prisma.lordGeneral.findUnique({
+      where: { lordId_generalKey: { lordId, generalKey: b.key } },
+    });
+    if (!kayit) throw hata.bulunamadi('General');
+    return prisma.lordGeneral.update({
+      where: { id: kayit.id },
+      data: { level: Math.max(1, b.level ?? kayit.level), xp: Math.max(0, b.xp ?? kayit.xp) },
+      select: { generalKey: true, level: true, xp: true },
+    });
   });
 
   /**

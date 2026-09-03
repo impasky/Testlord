@@ -111,6 +111,15 @@ const kadro = (await saldiran.get('/generals')).kadro;
 const general = kadro.filter((g) => !g.sahipMi).sort((a, b) => a.maliyet_altin - b.maliyet_altin)[0];
 await saldiran.post(`/generals/${general.key}/hire`);
 await saldiran.post(`/generals/${general.key}/assign`, { slotIndex: 0 });
+// Seviye atlama ANINI ölçebilmek için general eşiğin hemen altına kuruluyor:
+// bir PvP savaşı ~176 XP veriyor, Sv1 -> Sv2 için 200 gerekiyor. Savaşı
+// tekrarlamak yerine başlangıcı kuruyoruz; ölçülen yol yine gerçek savaş yolu.
+const esikAlti = (await saldiran.get('/generals')).kadro.find((g) => g.key === general.key);
+await saldiran.post('/test/general-xp', {
+  key: general.key,
+  level: 1,
+  xp: Math.max(0, esikAlti.xpForNext - 20),
+});
 const generalOnce = (await saldiran.get('/generals')).kadro.find((g) => g.key === general.key);
 kontrol('General kiralandı ve sahaya sürüldü', generalOnce?.slotIndex === 0, general.ad);
 
@@ -167,6 +176,33 @@ const generalSonra = (await saldiran.get('/generals')).kadro.find((g) => g.key =
 kontrol('General savaşa girdi ve XP kazandı',
   generalSonra.xp > generalOnce.xp || generalSonra.level > generalOnce.level,
   `xp ${generalOnce.xp} -> ${generalSonra.xp}`);
+
+// Seviye atlama oyuncunun "benim generalim" dediği an (docs/09 §2.3). Motor
+// seviyeyi zaten hesaplıyordu ama kimseye söylemiyordu; hem rapor hem olay
+// akışı bunu göstermeli, yoksa güçlenme görünmez kalır.
+kontrol(
+  'General savaşta seviye atladı',
+  generalSonra.level > generalOnce.level,
+  `Sv ${generalOnce.level} -> Sv ${generalSonra.level}`,
+);
+const yukselisler = rapor?.log?.attackerGeneralYukselisleri ?? [];
+kontrol(
+  'Rapor seviye atlayışını taşıyor',
+  yukselisler.some((y) => y.key === general.key && y.sonraki > y.onceki),
+  yukselisler.map((y) => `${y.ad}: ${y.onceki}->${y.sonraki} (+${y.kazanilanXp} XP)`).join(', ') ||
+    'yükseliş yok',
+);
+const seviyeOlayi = (await saldiran.get('/me')).events.find((e) => e.kind === 'general_seviye');
+kontrol(
+  'Olay akışı seviye atlayışını duyuruyor',
+  Boolean(seviyeOlayi) && /Sv/.test(seviyeOlayi.payload?.mesaj ?? ''),
+  seviyeOlayi?.payload?.mesaj ?? 'general_seviye olayı yok',
+);
+kontrol(
+  'Olay generali ADIYLA anıyor, key ile değil',
+  (seviyeOlayi?.payload?.mesaj ?? '').includes(general.ad),
+  seviyeOlayi?.payload?.mesaj ?? '-',
+);
 
 // Rapor generalin ne kattığını da anlatmalı: XP kazanması savaşa girdiğini
 // gösterir, katkı listesi ise oyuncuya NE yaptığını gösterir.

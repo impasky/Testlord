@@ -4,7 +4,7 @@
  * Tamamen veri güdümlü: generals.json'daki `pasif.etki` alanı hangi bonusa
  * yazılacağını belirler. Yeni bir etki eklemek = switch'e bir satır.
  */
-import { GENERAL_LEVEL, generalDef } from './balance.js';
+import { GENERAL_INJURY, GENERAL_LEVEL, generalDef } from './balance.js';
 import type { GeneralBonus } from './types.js';
 import { bosGeneralBonus } from './types.js';
 
@@ -33,6 +33,72 @@ export function generalLevelFromXp(totalXp: number): { level: number; xpIntoLeve
     level++;
   }
   return { level, xpIntoLevel: level >= GENERAL_LEVEL.max ? 0 : remaining };
+}
+
+/**
+ * Seviye + seviyedeki ilerlemeden TOPLAM XP'ye. generalLevelFromXp'in tersi.
+ *
+ * Kayıtta iki alan tutuluyor (level, xp) ama generalLevelFromXp toplam XP
+ * bekliyor; savaş sonunda XP eklemek için önce toplama dönmek gerekiyor.
+ * Bu çevrim api tarafında elle yazılmıştı ve eğriyi (200 * n^1.4) kod
+ * içinde ikinci kez tanımlıyordu. generals.json'daki katsayılar bir gün
+ * değişse motor sessizce sapardı: aynı generalin XP'si eklenirken bir
+ * eğriye, seviyesi okunurken başka bir eğriye göre hesaplanırdı. Tek
+ * kaynak generalXpForLevel olsun diye buraya taşındı.
+ */
+export function generalToplamXp(level: number, xpIntoLevel: number): number {
+  let toplam = Math.max(0, xpIntoLevel);
+  for (let n = 1; n < level; n++) toplam += generalXpForLevel(n);
+  return toplam;
+}
+
+/** Bir savaşın generale ne kadar XP kazandırdığı: lordun kazandığının payı. */
+export function generalSavasXp(lordXp: number): number {
+  return Math.round(lordXp * GENERAL_LEVEL.xp_pay);
+}
+
+/** Kaybedilen savaşta generalin yaralanma ihtimali ve dinlenme süresi. */
+export function generalYaralanma(): { ihtimal: number; saat: number } {
+  return { ihtimal: GENERAL_INJURY.ihtimal, saat: GENERAL_INJURY.saat };
+}
+
+/**
+ * Savaştan sonra generalin yeni hâli. Saf: rastgelelik ve saat dışarıda.
+ *
+ * `atlanan` savaşın kendisinde kaç seviye atlandığını söylüyor. Motor bunu
+ * zaten hesaplıyordu ama kimseye söylemiyordu: oyuncu generalini sahaya
+ * sürüp XP çubuğunun dolduğunu görüyor, seviye atladığı ANI hiç görmüyordu.
+ * Güçlenme hissinin en görünür olması gereken yer orası (docs/09 §2.3).
+ */
+export interface GeneralSavasSonucu {
+  level: number;
+  xpIntoLevel: number;
+  atlanan: number;
+  kazanilanXp: number;
+}
+
+/** Bu savaşta seviye atlayan bir general — rapor ve olay akışı için. */
+export interface GeneralYukselisi {
+  key: string;
+  ad: string;
+  onceki: number;
+  sonraki: number;
+  kazanilanXp: number;
+}
+
+export function generalSavasSonrasi(
+  level: number,
+  xpIntoLevel: number,
+  lordXp: number,
+): GeneralSavasSonucu {
+  const kazanilanXp = generalSavasXp(lordXp);
+  const yeni = generalLevelFromXp(generalToplamXp(level, xpIntoLevel) + kazanilanXp);
+  return {
+    level: yeni.level,
+    xpIntoLevel: yeni.xpIntoLevel,
+    atlanan: Math.max(0, yeni.level - level),
+    kazanilanXp,
+  };
 }
 
 /** Sahadaki generallerin toplam etkisi. */

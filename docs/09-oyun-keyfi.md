@@ -61,11 +61,22 @@ sıfırlanır, kazananın adı kalıcı bir onur listesine yazılır.
 Rise of Kingdoms'ın en sevilen sistemi komutanlar: topla, seviye atlat,
 eşleştir. Oyuncunun "benim" dediği şey.
 
-**Bizde durum:** 12 general var, adları ve karakterleri var. Ama seviye
-atlamıyorlar, eşleşmiyorlar, hikâyeleri yok.
+**Bizde durum:** 12 general var, adları ve karakterleri var. Her birinin
+özel bir yeteneği var ve Liderlik'e göre 3'e kadar general birlikte
+gidebiliyor — yani "eşleştirme" ve "özel yetenek" zaten vardı.
 
-**Ne alalım:** general seviyesi (savaşa katıldıkça), iki generali birlikte
-göndermek, generale özel bir yetenek.
+Seviye de vardı: motor XP veriyor, seviye hesaplıyor, pasifi +%2/seviye
+güçlendiriyordu. Eksik olan seviyenin kendisi değil, **görünmesiydi**.
+
+**K8 ile yapıldı:** seviye atlayış artık olay akışına düşüyor ve o savaşın
+raporunda generalin altında "Sv 3 → Sv 4" olarak duruyor; general ekranı
+sonraki seviyenin ne vereceğini yazıyor. Ayrıca XP eğrisi kodda ikinci kez
+tanımlanmıştı (api içinde `200 * n^1.4`) — XP eklerken bir eğri, seviye
+okurken başka bir eğri kullanılabilirdi. Tek kaynağa indirildi ve test
+kilitledi.
+
+**Sırada ne var:** generallere hikâye (kısa bir paragraf, nereden geldiği)
+ve generale bağlı küçük bir görev zinciri.
 
 ### 2.4 Okunası savaş raporları
 
@@ -204,7 +215,7 @@ Sıra keyfi değil: **oyuncunun hissettiği fark / harcanan emek** oranına gör
 | K5 | **Lider avı + azalan verim** | Kartopunu kırar, oyunu canlı tutar. | orta |
 | K6 | **Yağma sonrası kalkan** | Bir gecede silinen oyuncu geri gelmiyor. Zinciri kesen kalkan; kayıp tavanı çözmüyordu (§3.6). | küçük |
 | K7 | **"Yapacak bir şey yok" ekranı olmasın** | Her ekranın boş hâli bir sonraki işi göstersin. | küçük |
-| K8 | **General seviyesi** | Oyuncunun "benim generalim" demesi. | orta |
+| K8 | **General seviyesi görünsün** | Motor zaten seviye atlatıyordu, oyuncu görmüyordu. Rapor + olay + sonraki seviye. | orta |
 
 ### 4.2 Sanat gelince
 

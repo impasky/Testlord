@@ -153,8 +153,17 @@ Hatların maliyeti üstel: Lv10'a çıkmak yüz binlerce altın yer. Bu, oyunun 
 bir kez kiralanır, kalıcıdır. Slot sayısı Liderlik'e bağlı: **1 ile 3 arası.**
 
 Her generalin bir **pasifi** (sürekli yüzde bonusu) ve bir **yeteneği**
-(savaşta veya dışında özel etki) vardır. Savaşlardan XP kazanır, Lv20'de
-pasifi ×1,38 olur.
+(savaşta veya dışında özel etki) vardır. Katıldığı her savaştan lordun
+kazandığı XP'nin **%40'ını** alır; her seviye pasifi **+%2** güçlendirir,
+Lv20'de pasifi ×1,38 olur.
+
+Seviye atlama oyuncuya **söylenir**: olay akışına bir satır düşer ve o
+savaşın raporunda generalin altında "Sv 3 → Sv 4" yazar. Motor seviyeyi
+baştan beri hesaplıyordu ama kimseye söylemiyordu; sonradan general
+ekranına bakmak hangi savaşın atlattığını göstermiyor, güçlenme de o an
+hissedilmiyordu (docs/09 §2.3). General ekranı ayrıca **sonraki seviyenin
+ne vereceğini** yazıyor: dolan çubuk tek başına neyin uğruna dolduğunu
+söylemiyor.
 
 Tasarım niyeti: generaller **oyun tarzını mühürler.** Kuşatmacı Tarık + Kumandan
 Alparslan alan oyuncu saldırgan bir fatihtir; Kale Bekçisi Sarya + Mızrakçı

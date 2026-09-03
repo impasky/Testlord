@@ -26,6 +26,7 @@ export const BASARIM_KUMELERI = basarimlarJson.kumeler as unknown as {
   basarimlar: { key: string; ad: string; aciklama: string; olcut: string; hedef: number }[];
 }[];
 export const GENERAL_LEVEL = generalsJson.seviye;
+export const GENERAL_INJURY = generalsJson.yaralanma;
 export const WORLD_MAP = worldMapJson as unknown as {
   radius: number;
   region_count: number;
