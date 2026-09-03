@@ -27,6 +27,7 @@ import {
 } from '../components/ui';
 import { Basarimlar } from '../components/Basarimlar';
 import { BosHal } from '../components/BosHal';
+import { GunlukKart } from '../components/GunlukKart';
 import { Zemin } from '../components/Zemin';
 
 const KUYRUK_ADI: Record<string, string> = {
@@ -215,6 +216,10 @@ export function Malikane({
           </p>
         </Kart>
       )}
+
+      {/* "Bugün" kuyrukların ÜSTÜNDE: kuyruk "ne başlattım"ı gösteriyor,
+          bugün "ne yapmalıyım"ı. İkinci soru daha yukarıda durmalı. */}
+      <GunlukKart onGit={onGit} />
 
       <Bolum baslik={`Kuyruklar${queues.length ? ` · ${queues.length}` : ''}`}>
         {queues.length === 0 ? (

@@ -21,11 +21,15 @@ import {
   liderAviYagmaBonusu,
   basarimlar,
   eleGecirmeEsigi,
+  gunNumarasi,
+  gunlukGorevler,
+  gunlukSayaci,
   karsiIpuclari,
   kusamSeviyesi,
   kusatmaCarpanlari,
   kusatmaDurumu,
   ortalamaGucPayi,
+  seriGuncelle,
   savasSebepleri,
   lordContribution,
   malikaneIncome,
@@ -491,5 +495,56 @@ describe('lider avı', () => {
     const avli = calculateLoot(depo, ordu, 0, liderAviYagmaBonusu());
     expect(avli.altin).toBeGreaterThan(normal.altin);
     expect(avli.altin).toBeLessThanOrEqual(depo.altin);
+  });
+});
+
+describe('günlük görevler ve seri', () => {
+  it('üç görev, sabit', () => {
+    const g = gunlukGorevler({ saldiri: 0, egitim: 0, imar: 0 });
+    expect(g).toHaveLength(3);
+    expect(gunlukSayaci(g)).toEqual({ tamam: 0, toplam: 3 });
+  });
+
+  it('sayaç hedefe ulaşınca görev tamamlanır', () => {
+    const g = gunlukGorevler({ saldiri: 2, egitim: 1, imar: 0 });
+    expect(gunlukSayaci(g)).toEqual({ tamam: 2, toplam: 3 });
+    expect(g.find((x) => x.key === 'imar')!.tamam).toBe(false);
+  });
+
+  it('ilk giriş seriyi 1 yapar', () => {
+    expect(seriGuncelle(0, null, new Date('2026-09-03T10:00:00Z'))).toEqual({
+      seri: 1,
+      bugunIlk: true,
+    });
+  });
+
+  it('aynı gün ikinci giriş seriyi artırmaz', () => {
+    const r = seriGuncelle(4, new Date('2026-09-03T01:00:00Z'), new Date('2026-09-03T23:00:00Z'));
+    expect(r).toEqual({ seri: 4, bugunIlk: false });
+  });
+
+  it('dün girdiyse seri artar', () => {
+    const r = seriGuncelle(4, new Date('2026-09-02T23:00:00Z'), new Date('2026-09-03T00:30:00Z'));
+    expect(r).toEqual({ seri: 5, bugunIlk: true });
+  });
+
+  it('bir gün atlayınca seri sıfırlanır', () => {
+    const r = seriGuncelle(9, new Date('2026-09-01T12:00:00Z'), new Date('2026-09-03T12:00:00Z'));
+    expect(r).toEqual({ seri: 1, bugunIlk: true });
+  });
+
+  it('gün UTC ile ölçülür — saat dilimi seriyi kopartmaz', () => {
+    // Aynı UTC günü içindeki iki uzak saat aynı gün sayılmalı.
+    expect(gunNumarasi(new Date('2026-09-03T00:00:01Z'))).toBe(
+      gunNumarasi(new Date('2026-09-03T23:59:59Z')),
+    );
+    expect(gunNumarasi(new Date('2026-09-04T00:00:01Z'))).toBe(
+      gunNumarasi(new Date('2026-09-03T00:00:01Z')) + 1,
+    );
+  });
+
+  it('bozuk veriye dayanıklı: seri 0 kayıtlıysa 1e çıkar', () => {
+    const r = seriGuncelle(0, new Date('2026-09-02T12:00:00Z'), new Date('2026-09-03T12:00:00Z'));
+    expect(r.seri).toBe(2);
   });
 });

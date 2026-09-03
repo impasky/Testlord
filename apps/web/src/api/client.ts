@@ -2,6 +2,7 @@
 import type {
   Army,
   BasarimOlcutleri,
+  GunlukGorev,
   GearLineKey,
   Resources,
   StatKey,
@@ -521,6 +522,8 @@ export const api = {
   assignGeneral: (key: string, slotIndex: number | null) =>
     post(`/generals/${key}/assign`, { slotIndex }),
 
+  gunluk: () =>
+    request<{ gorevler: GunlukGorev[]; seri: number; bugunIlk: boolean }>('/gunluk'),
   dunya: () => request<DunyaDto>('/dunya'),
 
   rankings: (board: string, page = 0) => request<RankingDto>(`/rankings/${board}?page=${page}`),

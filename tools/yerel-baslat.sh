@@ -25,8 +25,15 @@ if ! hazir; then
   psql -h 127.0.0.1 -U lordlar -d postgres -tc \
     "SELECT 1 FROM pg_database WHERE datname='lordlar_cagi'" | grep -q 1 \
     || psql -h 127.0.0.1 -U lordlar -d postgres -c "CREATE DATABASE lordlar_cagi;" >/dev/null
-  pnpm --filter @lordlar/api exec prisma migrate deploy >/dev/null 2>&1
 fi
+
+# Göç HER ZAMAN uygulanıyor, yalnızca veritabanı yeni açılırken değil.
+#
+# Önceden bu satır postgres'i başlatan bloğun içindeydi ve oturum ortasında
+# eklenen bir göç hiç uygulanmıyordu: postgres zaten ayakta olduğu için blok
+# atlanıyor, API eski şemayla açılıyor ve "column does not exist" veriyordu.
+# migrate deploy zaten fikirsiz (idempotent) — her açılışta çalışması bedava.
+pnpm --filter @lordlar/api exec prisma migrate deploy 2>&1 | tail -1
 echo "PostgreSQL hazır."
 
 ayakta() { curl -sf -o /dev/null --max-time 2 "$1"; }

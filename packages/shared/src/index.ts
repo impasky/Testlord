@@ -9,5 +9,6 @@ export * from './combat.js';
 export * from './karsi.js';
 export * from './sebep.js';
 export * from './basarim.js';
+export * from './gunluk.js';
 export * from './march.js';
 export * from './odul.js';

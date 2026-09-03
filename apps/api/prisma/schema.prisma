@@ -86,6 +86,11 @@ model Lord {
   /// Oyuncunun oyunu en son ne zaman açtığı. "Sen yokken ne oldu" özeti
   /// bu ana göre hesaplanır.
   lastSeenAt DateTime @default(now())
+  /// Giriş serisi: kaç gün üst üste girildi. Türetilemiyor — tek bir
+  /// zaman damgası "kaç gün üst üste" sorusunu cevaplayamaz, o bir geçmiş.
+  girisSerisi Int @default(0)
+  /// Serinin en son işlendiği gün. Aynı gün ikinci girişte seri artmasın diye.
+  girisSerisiGunu DateTime?
   /// En son hangi ekranda olduğu. Tek işi ölçüm: oyuncular oyunu hangi
   /// ekranda bırakıyor? Bu soru tahminle cevaplanamaz ve cevabı olmadan
   /// bir sonraki iyileştirme de tahmin olur. (docs/08 İ7)
