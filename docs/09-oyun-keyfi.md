@@ -227,6 +227,7 @@ göründü.
 | # | İş | Nasıl bulundu | Durum |
 |---|---|---|---|
 | K9 | **İlk hedef her doğum yerinde yapılabilir olsun** | 24 doğum yerinin 6'sında (kale çapaları) oyuna göre 35 okçu gerekiyordu, başlangıç altını 33 okçuya yetiyordu | yapıldı |
+| K9b | Öneri motoru eğitim kuyruğunu görmüyordu — ne parasını ne yerini | K9'un açtığı omurga testi kaldığında | yapıldı |
 | K5b | Yağmada oran 1'i geçebiliyordu | lider avı testi yazarken | yapıldı |
 | K8b | General XP eğrisi kodda ikinci kez tanımlıydı | K8 sırasında | yapıldı |
 

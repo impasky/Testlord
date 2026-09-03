@@ -66,6 +66,7 @@ let karsilanamayan = 0;
 let araAdimKarsilanamayan = 0;
 let kazanamayan = 0;
 let kayan = 0;
+let planKaydi = 0;
 const enPahali = { altin: 0, ad: '' };
 
 for (let i = 0; i < OYUNCU; i++) {
@@ -93,6 +94,14 @@ for (let i = 0; i < OYUNCU; i++) {
   // Talimatın yarısını uygula: ara adımda da yapılabilir bir şey görmeli.
   const yari = Math.max(1, Math.floor(ilk.eksik.adet / 2));
   await o.post('/army/train', { unitType: ilk.eksik.birim, count: yari });
+
+  // EĞİTİM SÜRERKEN hedef değişmemeli. Bu an tuzaklı: oyuncu askerin
+  // parasını ödedi ama askeri henüz almadı, yani kesesi tanım gereği boş.
+  // "Karşılanabilir hedefi tercih et" kuralı bu ana da uygulanırsa oyuncu
+  // TAM DA söyleneni yaptığı için hedefini kaybediyor.
+  const kuyruktayken = (await o.get('/map')).oneri;
+  if (kuyruktayken?.regionId !== ilk.regionId) planKaydi++;
+
   await o.post('/test/kuyruklari-bitir');
 
   const orta = (await o.get('/map')).oneri;
@@ -125,6 +134,12 @@ kontrol(
   'Talimat tamamlanınca hedef gerçekten alınabilir oluyor',
   kazanamayan === 0,
   `${kazanamayan}/${OYUNCU} hâlâ "alınamaz"`,
+);
+
+kontrol(
+  'Eğitim sürerken hedef DEĞİŞMİYOR',
+  planKaydi === 0,
+  `${planKaydi}/${OYUNCU} oyuncuda plan uygulanırken hedef kaydı`,
 );
 
 // Kayma hata değil, ölçü: oyuncu güçlendikçe daha iyi hedefler açılıyor.

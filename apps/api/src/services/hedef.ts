@@ -308,9 +308,43 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
         return a;
       }, {}),
     );
-    const bosYer = Math.max(0, commandCapacity(lord.liderlik, saldiran.generalBonus) - kullanilan);
+    // Eğitim kuyruğu hem YER hem PARA tutuyor. İkisi de sayılmazsa öneri
+    // oyuncunun gerçekte yapamayacağı bir plan tarif ediyor:
+    //  - Yer: army.ts eğitim verirken kuyruktakileri kapasiteye sayıyor
+    //    (orada yıllardır öyle), burası saymıyordu; öneri "40 okçu daha"
+    //    diyebiliyordu, kışla ise kapasite yok diye reddediyordu.
+    //  - Para: asker eğitimine başlayan oyuncunun kesesi tanım gereği boş.
+    //    Harcanmış parayı yok sayınca oyuncu TAM DA söyleneni yaptığı için
+    //    hedefi "karşılanamaz" oluyor ve altından kayıyordu (omurga
+    //    testinin yakaladığı hâl). Kuyruktaki para hâlâ o planın parası.
+    const kuyruktakiler = await prisma.queue.findMany({
+      where: { lordId, kind: 'train', resolved: false },
+    });
+    let kuyrukYeri = 0;
+    const kuyrukMaliyeti: Resources = { altin: 0, demir: 0, erzak: 0 };
+    for (const q of kuyruktakiler) {
+      const p = q.payload as { unitType?: string; count?: number };
+      const t = p.unitType as UnitType | undefined;
+      if (!t || !UNIT_TYPES.includes(t)) continue;
+      const adet = p.count ?? 0;
+      const u = unit(t);
+      kuyrukYeri += u.yer * adet;
+      kuyrukMaliyeti.altin += u.maliyet.altin * adet;
+      kuyrukMaliyeti.demir += u.maliyet.demir * adet;
+      kuyrukMaliyeti.erzak += u.maliyet.erzak * adet;
+    }
 
-    const kaynak = { altin: lord.altin, demir: lord.demir, erzak: lord.erzak };
+    const bosYer = Math.max(
+      0,
+      commandCapacity(lord.liderlik, saldiran.generalBonus) - kullanilan - kuyrukYeri,
+    );
+
+    const kaynak = {
+      altin: lord.altin + kuyrukMaliyeti.altin,
+      demir: lord.demir + kuyrukMaliyeti.demir,
+      erzak: lord.erzak + kuyrukMaliyeti.erzak,
+    };
+
     let ilkUlasilabilir: HedefOnerisi | null = null;
     let ilkKarsilanabilir: HedefOnerisi | null = null;
 
@@ -344,13 +378,16 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
     //
     // Eski not hedefin oyuncunun altından kaymasından korkuyordu: oyun bir
     // hedef gösterir, oyuncu asker eğitir, altını azalır, oyun başka bir
-    // hedef gösterir. Kayma ölçüldü: bu değişiklikten SONRA 24 oyuncunun
-    // 5'inde ara adımda hedef değişiyor, ÖNCE 6/10'du — yani kayma azaldı,
-    // artmadı. Kalan kaymanın sebebi kaynak değil komuta kapasitesi: asker
-    // eğitildikçe boş yer daralıyor ve büyük hedef kapasiteye sığmaz olup
-    // eleniyor. Kaydığı her adımda gösterilen talimat yapılabilir kalıyor
-    // ve oyuncu sonunda alınabilir bir hedefe varıyor; ikisini de
-    // tools/ilk-hedef-testi.mjs ölçüyor.
+    // hedef gösterir. Korku HAKLIYDI — ama sebebi tercih kuralı değil,
+    // kuyruğun görünmemesiydi. Kuyruktaki para ve yer yukarıda hesaba
+    // katıldıktan sonra oyuncu söyleneni yaparken hedefi sabit kalıyor;
+    // tools/ilk-hedef-testi.mjs "eğitim sürerken hedef DEĞİŞMİYOR" diye
+    // ayrıca ölçüyor.
+    //
+    // Denenip ELENEN yol: "eğitim varsa tercihi kapat" freni. İşe
+    // yaramadı, çünkü frenin kendisi kural değiştiriyordu — plan
+    // karşılanabilirlik kuralıyla kurulup ulaşılabilirlik kuralıyla
+    // sürdürülünce hedef yine kayıyordu (24 oyuncunun 6'sında).
     //
     // Ölçüm not düşülmeye değer: "ulasilabilirlik_denetimi'yi büyüt" de
     // denendi, hiçbir şeyi düzeltmedi — döngü ilk ULAŞILABİLİR adayda
