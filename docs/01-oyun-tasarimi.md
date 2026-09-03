@@ -19,7 +19,7 @@ Her seviyede **5 serbest puan**. Dört stat, dört net rol:
 | **Güç** | Lordun savaş katkısı (+3 saldırı/puan) | Ekipmanına yatırım yapan, bizzat savaşan |
 | **Dayanıklılık** | Lord canı (+25/puan), yaralanma süresini kısaltır | Sık saldıran, ayakta kalmak isteyen |
 | **Liderlik** | Komuta kapasitesi (+8 yer/puan), general slotu | Büyük ordu kuran, klasik stratejist |
-| **Kurnazlık** | Yağma miktarı (+%1/puan), casusluk | Bölge almak yerine yağmalayarak zenginleşen |
+| **Kurnazlık** | Yağma miktarı (+%1/puan), casusun yakalanma riskini düşürür | Bölge almak yerine yağmalayarak zenginleşen, saldırmadan önce bilmek isteyen |
 
 **Neden serbest dağıtım:** Sınıf sistemi içerik ister (her sınıfa özel yetenek,
 denge, ikonografi). Serbest puan aynı çeşitliliği sıfır ek içerikle verir.
@@ -286,6 +286,37 @@ en az bir birimi hayatta kalır. Kısmi zafer bölgeyi vermez — sadece yağma 
 Savunanın deposunun **%25'i** (Kurnazlık ile artar), ordunun taşıma
 kapasitesiyle sınırlı. Süvari en çok taşır. Bölge alamayan oyuncu için yağma
 tam teşekküllü bir alternatif kariyerdir.
+
+---
+
+## 6b. Casusluk
+
+Saldırmadan önce bilgi almak. Bölgeye **casus** gönderilir: altın ve zaman
+harcanır, ordu harcanmaz.
+
+Ordusuz olması kasıtlı ve casusluğun kimliği bu: ordusu ezilmiş ya da henüz
+kurulmamış oyuncunun haritada yapabileceği bir şey kalıyor.
+
+Keşif **kuyruğa** girer (aynı anda en fazla 2), süresi mesafeye bağlıdır ama
+yürüyüşten çok daha kısadır — casus tek kişidir. Yavaş olsaydı "önce keşfet
+sonra saldır" zincirinin toplam süresi oyuncuyu keşiften vazgeçirirdi.
+
+**Yakalanma riski var.** Yakalanırsa rapor gelmez ve savunan, saldırganın
+adıyla haber alır. Bilerek: bilgi bedava olsaydı herkes her saldırıdan önce
+casus gönderirdi ve "göndereyim mi" diye bir karar kalmazdı. Risk hem kararı
+karar yapıyor hem savunana bir uyarı ve bir husumet veriyor.
+
+**Kurnazlık** riski düşürür ama sıfırlamaz. Bu, docs/01 §1'de Kurnazlık'a
+verilen "yağma miktarı, casusluk" sözünün ikinci yarısıdır; uzun süre
+tutulmamıştı.
+
+Rapor bir **fotoğraf**tır: garnizon, depo, tahkimat ve bölge seviyesi. Süresi
+geçince silinmez, "eski istihbarat" damgası alır — eski bilgi de bilgidir ve
+ona güvenip güvenmemek oyuncunun kararıdır. Oyun ise ona dayanıp akıl vermez:
+karşı-birim ipuçları yalnız taze raporla çalışır.
+
+Casus Leyla generali ayrı bir şey: sahada durduğu sürece **canlı** görüş
+verir. Keşif bir anı dondurur, o sürekli bakar.
 
 ---
 

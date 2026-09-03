@@ -36,6 +36,7 @@ const KUYRUK_ADI: Record<string, string> = {
   upgrade_item: 'Ekipman yükseltme',
   upgrade_gear: 'Ordu donanımı',
   upgrade_region: 'Bölge yükseltme',
+  kesif: 'Keşif',
 };
 
 const OLAY_RENGI: Record<string, string> = {
@@ -45,6 +46,9 @@ const OLAY_RENGI: Record<string, string> = {
   savas_kaybettin: 'var(--color-kirmizi)',
   saldiriya_ugradin: 'var(--color-turuncu)',
   general_seviye: 'var(--color-altin)',
+  kesif_raporu: 'var(--color-mavi)',
+  casus_yakalandi: 'var(--color-turuncu)',
+  casus_yakaladin: 'var(--color-yesil)',
   general_dinleniyor: 'var(--color-turuncu)',
   aclik: 'var(--color-kirmizi)',
 };

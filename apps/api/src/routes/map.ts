@@ -7,6 +7,10 @@ import {
   canRecallMarch,
   hexDistance,
   ilkSaldiriMi,
+  kesifDurumu,
+  kesifMaliyetiAltin,
+  kesifSuresiSn,
+  type KesifFotografi,
   orduBedeli,
   marchDurationSec,
   maxRegions,
@@ -232,6 +236,26 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       }
     }
 
+    /**
+     * Keşif raporu: casusun getirdiği fotoğraf.
+     *
+     * Casus Leyla CANLI görüş veriyor (sahada durduğu sürece), keşif ise
+     * bir ANI dondurup saklıyor. İkisi çakışırsa canlı olan kazanıyor:
+     * yukarıdaki garrison doluysa ona dokunulmuyor.
+     *
+     * Süresi geçmiş rapor da gösteriliyor, "eski" damgasıyla. Silmek
+     * oyuncuyu bilmediği bir noktaya geri atardı; eski istihbarat da
+     * bilgidir ve ona güvenip güvenmemek oyuncunun kararıdır.
+     */
+    const rapor = await prisma.scout.findUnique({
+      where: { lordId_regionId: { lordId, regionId: id } },
+    });
+    const kesif = kesifDurumu(rapor?.createdAt ?? null, new Date());
+    const foto = rapor ? (rapor.snapshot as unknown as KesifFotografi) : null;
+    if (foto && Object.keys(garrison).length === 0) {
+      garrison = foto.garrison as Army;
+    }
+
     return {
       ...region,
       isMine: benim,
@@ -240,6 +264,25 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       shielded: region.shieldUntil ? region.shieldUntil > new Date() : false,
       garrison,
       garrisonVisible: benim || !region.ownerLordId || Object.keys(garrison).length > 0,
+      // Görünür olmak başka, GÜVENİLİR olmak başka. Karşı-birim ipuçları
+      // (docs/09 K1) yalnız güvenilir veriyle çalışmalı: eski bir fotoğrafa
+      // bakıp "süvari al" demek, yanlış tavsiye vermektir ve yanlış tavsiye
+      // tavsiye yokluğundan kötüdür. Eski rapor yine de gösteriliyor —
+      // oyuncu okusun, ama oyun ona dayanıp akıl vermesin.
+      garrisonTaze: benim || !region.ownerLordId || !kesif.eski,
+      kesif: kesif.var
+        ? {
+            eski: kesif.eski,
+            yasSn: kesif.yasSn,
+            store: foto?.store ?? null,
+            tahkimatBonusu: foto?.tahkimatBonusu ?? null,
+            bolgeSeviyesi: foto?.bolgeSeviyesi ?? null,
+          }
+        : null,
+      kesifMaliyeti: kesifMaliyetiAltin(),
+      kesifSuresiSn: kesifSuresiSn(
+        hexDistance({ q: me.homeQ, r: me.homeR }, { q: region.q, r: region.r }),
+      ),
       fortressBonus: regionFortressBonus(region.type, region.level),
       upgradeCost:
         region.level < B.bolgeler.max_bolge_seviyesi ? regionUpgradeCost(region.level) : null,
@@ -264,6 +307,49 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       await spendResources(lordId, { altin: c.altin, demir: c.demir, erzak: 0 }, tx);
       const q = await enqueue(lordId, 'upgrade_region', { regionId: id }, c.sec, tx);
       return { queued: true, finishAt: q.finishAt };
+    });
+  });
+
+  /**
+   * Bölgeye casus gönderir (docs/01 §1: Kurnazlık'ın ikinci işi).
+   *
+   * Ordu istemiyor — casusluğun kimliği bu: ordusu ezilmiş ya da hiç
+   * kurulmamış oyuncu da bilgi alabiliyor, yani haritada yapacak bir şeyi
+   * kalıyor. Maliyet peşin, sonuç kuyrukta.
+   */
+  app.post('/map/:id/kesif', { preHandler: requireAuth }, async (req) => {
+    const { id } = z.object({ id: z.coerce.number().int() }).parse(req.params);
+    const lordId = await findLordByUser(req.user.userId);
+
+    return prisma.$transaction(async (tx) => {
+      const region = await tx.region.findUnique({ where: { id } });
+      if (!region) throw hata.bulunamadi('Bölge');
+      if (region.ownerLordId === lordId) {
+        throw new GameError('Kendi bölgeni keşfetmene gerek yok.', 400, 'KENDI_BOLGEN');
+      }
+      // Sahipsiz bölgede casusun anlatacağı yeni bir şey yok: NPC garnizonu
+      // zaten herkese açık. Kural sunucuda da duruyor, yalnız arayüzde
+      // değil — yoksa uç, altın alıp karşılığında bilinen bir şey satardı.
+      if (!region.ownerLordId) {
+        throw new GameError(
+          'Sahipsiz bölgenin garnizonu zaten görünüyor; casusa gerek yok.',
+          400,
+          'SAHIPSIZ_BOLGE',
+        );
+      }
+
+      const me = await tx.lord.findUniqueOrThrow({
+        where: { id: lordId },
+        select: { homeQ: true, homeR: true, worldId: true },
+      });
+      if (region.worldId !== me.worldId) throw hata.bulunamadi('Bölge');
+
+      await assertQueueSlot(lordId, 'kesif', tx);
+      await spendResources(lordId, { altin: kesifMaliyetiAltin(), demir: 0, erzak: 0 }, tx);
+
+      const mesafe = hexDistance({ q: me.homeQ, r: me.homeR }, { q: region.q, r: region.r });
+      const q = await enqueue(lordId, 'kesif', { regionId: id }, kesifSuresiSn(mesafe), tx);
+      return { queued: true, finishAt: q.finishAt, mesafe };
     });
   });
 

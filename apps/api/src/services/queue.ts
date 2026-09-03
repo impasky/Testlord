@@ -10,9 +10,12 @@ import {
   UNIT_TYPES,
   craftPrice,
   createRng,
+  kesifGecerlilikSn,
   rollCraftRarity,
   rollUpgrade,
   upgradeCost,
+  yakalanmaIhtimali,
+  type Army,
   type EquipSlot,
   type Resources,
   type UnitType,
@@ -20,8 +23,15 @@ import {
 import { prisma, type Tx } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { grantXp, pushEvent, tickLord } from './lord.js';
+import { regionFortressBonus } from './region.js';
 
-export type QueueKind = 'train' | 'craft' | 'upgrade_item' | 'upgrade_gear' | 'upgrade_region';
+export type QueueKind =
+  | 'train'
+  | 'craft'
+  | 'upgrade_item'
+  | 'upgrade_gear'
+  | 'upgrade_region'
+  | 'kesif';
 
 /** Tick uygular, kaynağın yeter mi diye bakar, yetiyorsa düşer. */
 export async function spendResources(lordId: string, cost: Resources, tx: Tx): Promise<void> {
@@ -204,9 +214,122 @@ export async function resolveQueueItem(row: QueueRow): Promise<boolean> {
         );
         break;
       }
+
+      case 'kesif': {
+        await kesfiCoz(row, p, tx);
+        break;
+      }
     }
     return true;
   });
+}
+
+/**
+ * Keşif varışı: ya rapor gelir ya casus yakalanır.
+ *
+ * Zar kuyruk satırının kimliğinden tohumlanıyor. Aynı satır iki kez
+ * çözülse bile (worker yarışı) sonuç aynı olurdu — ama `resolved` zaten
+ * ikinciyi engelliyor; tohum burada tekrarlanabilirlik için: bir oyuncu
+ * "casusum niye yakalandı" diye sorduğunda cevap kayıttan üretilebiliyor.
+ *
+ * Yakalanınca SAVUNAN haber alıyor, üstelik saldırganın adıyla. Casusluk
+ * tek yönlü bedava bilgi olsaydı herkes her seferinde casus gönderirdi;
+ * risk hem kararı anlamlı kılıyor hem savunana bir uyarı ve bir husumet
+ * veriyor.
+ */
+async function kesfiCoz(
+  row: QueueRow,
+  p: Record<string, unknown>,
+  tx: Tx,
+): Promise<void> {
+  const regionId = Number(p.regionId);
+  const region = await tx.region.findUnique({ where: { id: regionId } });
+  if (!region) return;
+
+  const casus = await tx.lord.findUnique({
+    where: { id: row.lordId },
+    select: { kurnazlik: true, name: true },
+  });
+  if (!casus) return;
+
+  const rng = createRng(`kesif-${row.id}`);
+  const yakalandi = rng.next() < yakalanmaIhtimali(casus.kurnazlik);
+
+  if (yakalandi) {
+    await pushEvent(
+      row.lordId,
+      'casus_yakalandi',
+      { mesaj: `${region.name} bölgesine gönderdiğin casus yakalandı. Rapor gelmedi.`, regionId },
+      tx,
+    );
+    // Savunan yalnızca OYUNCUYSA haber alır: NPC garnizonunun kimseye
+    // anlatacağı bir şey yok.
+    if (region.ownerLordId && region.ownerLordId !== row.lordId) {
+      await pushEvent(
+        region.ownerLordId,
+        'casus_yakaladin',
+        {
+          mesaj: `${region.name} bölgende ${casus.name} adına çalışan bir casus yakalandı.`,
+          regionId,
+        },
+        tx,
+      );
+    }
+    return;
+  }
+
+  // Garnizon: oyuncu bölgesiyse yerleştirilmiş birimler, değilse NPC garnizonu.
+  let garrison: Army = {};
+  if (region.ownerLordId) {
+    const rows = await tx.armyUnit.findMany({
+      where: {
+        lordId: region.ownerLordId,
+        locationType: 'region',
+        locationId: String(regionId),
+      },
+    });
+    for (const r of rows) garrison[r.unitType as UnitType] = r.count;
+  } else {
+    garrison = (region.npcGarrison ?? {}) as Army;
+  }
+
+  const sahip = region.ownerLordId
+    ? await tx.lord.findUnique({ where: { id: region.ownerLordId }, select: { name: true } })
+    : null;
+
+  const simdi = new Date();
+  const snapshot = {
+    garrison,
+    store: { altin: region.storeAltin, demir: region.storeDemir, erzak: region.storeErzak },
+    tahkimatBonusu: regionFortressBonus(region.type, region.level),
+    bolgeSeviyesi: region.level,
+    sahipAdi: sahip?.name ?? null,
+  };
+
+  // Yeni rapor eskisini eziyor: aynı bölgenin iki fotoğrafını saklamanın
+  // oyun içinde bir karşılığı yok.
+  await tx.scout.upsert({
+    where: { lordId_regionId: { lordId: row.lordId, regionId } },
+    create: {
+      lordId: row.lordId,
+      regionId,
+      createdAt: simdi,
+      expiresAt: new Date(simdi.getTime() + kesifGecerlilikSn() * 1000),
+      snapshot,
+    },
+    update: {
+      createdAt: simdi,
+      expiresAt: new Date(simdi.getTime() + kesifGecerlilikSn() * 1000),
+      snapshot,
+    },
+  });
+
+  await pushEvent(
+    row.lordId,
+    'kesif_raporu',
+    { mesaj: `${region.name} keşfedildi. Garnizonu ve deposu artık görünüyor.`, regionId },
+    tx,
+  );
 }
 
 export { craftPrice, upgradeCost };

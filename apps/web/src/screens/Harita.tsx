@@ -11,7 +11,14 @@ import {
 } from '@lordlar/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState, type ReactNode } from 'react';
-import { ApiError, api, type LordState, type PreviewDto, type QueueItem } from '../api/client';
+import {
+  ApiError,
+  api,
+  type LordState,
+  type PreviewDto,
+  type QueueItem,
+  type RegionDetailDto,
+} from '../api/client';
 import { HexHarita } from '../components/HexHarita';
 import { BirimIkonu, IkonKapali, IkonSure } from '../components/Ikonlar';
 import { bolgeGorselAdi } from '../components/Gorsel';
@@ -197,6 +204,127 @@ function OrduSecici({
         </ul>
       )}
     </div>
+  );
+}
+
+/**
+ * Süreyi kısa yazar: "26dk", "1sa 10dk".
+ *
+ * formatKalan geri sayım için: saniyeyi de yazıyor ("26dk 0sn") ve düğme
+ * metnini mobilde iki satıra taşıyor. Burada süre bir geri sayım değil,
+ * bir fiyat etiketi — dakika yeter.
+ */
+function kabaSure(sn: number): string {
+  const dk = Math.max(1, Math.round(sn / 60));
+  if (dk < 60) return `${dk}dk`;
+  const sa = Math.floor(dk / 60);
+  const kalan = dk % 60;
+  return kalan > 0 ? `${sa}sa ${kalan}dk` : `${sa}sa`;
+}
+
+/**
+ * Keşif kartı: casus gönder, gelen raporu göster.
+ *
+ * Casusluk oyunun tek ORDUSUZ hamlesi. Ordusu ezilmiş ya da henüz
+ * kurulmamış oyuncunun haritada yapabileceği bir şey kalıyor — "yapacak
+ * bir şey yok" ekranı olmasın kuralının (docs/09 K7) saldırı tarafındaki
+ * karşılığı.
+ *
+ * Rapor eskiyince SİLİNMİYOR, "eski" yazıyor. Eski istihbarat da bilgidir;
+ * ona güvenip güvenmemek oyuncunun kararı. Ama oyun ona dayanıp akıl
+ * vermiyor: karşı-birim ipuçları yalnız taze raporla çalışıyor.
+ */
+function KesifKarti({ bolge }: { bolge: RegionDetailDto }) {
+  const qc = useQueryClient();
+  const [hata, setHata] = useState<string | null>(null);
+  const gonder = useMutation({
+    mutationFn: () => api.kesifGonder(bolge.id),
+    onSuccess: () => {
+      hisOnay();
+      setHata(null);
+      void qc.invalidateQueries({ queryKey: ['me'] });
+      void qc.invalidateQueries({ queryKey: ['bolge', bolge.id] });
+    },
+    onError: (e: unknown) => {
+      hisRet();
+      setHata(e instanceof ApiError ? e.message : 'Casus gönderilemedi.');
+    },
+  });
+
+  // Sahipsiz bölgede casusun anlatacağı yeni bir şey yok: NPC garnizonu
+  // zaten herkese açık, deposu da çoğunlukla boş. Kartı orada göstermek
+  // oyuncuyu 500 altını boşa harcamaya davet ederdi.
+  if (bolge.isMine || !bolge.owner) return null;
+
+  // formatKalan MİLİSANİYE bekliyor; sunucu saniye gönderiyor.
+  const yas = bolge.kesif ? formatKalan(bolge.kesif.yasSn * 1000) : null;
+
+  return (
+    <Kart className="p-3">
+      <div className="flex items-baseline justify-between gap-2">
+        <h3 className="baslik text-[11px] text-solgun">Keşif</h3>
+        {bolge.kesif && (
+          <span className={`text-[11px] ${bolge.kesif.eski ? 'text-turuncu' : 'text-yesil'}`}>
+            {bolge.kesif.eski ? `eski bilgi · ${yas} önce` : `taze · ${yas} önce`}
+          </span>
+        )}
+      </div>
+
+      {bolge.kesif ? (
+        <div className="mt-1.5 space-y-1 text-[12px]">
+          {bolge.kesif.store && (
+            <p className="text-solgun">
+              Depo:{' '}
+              <span className="tabular text-parsomen">
+                {formatSayi(bolge.kesif.store.altin)} altın · {formatSayi(bolge.kesif.store.demir)}{' '}
+                demir · {formatSayi(bolge.kesif.store.erzak)} erzak
+              </span>
+            </p>
+          )}
+          {bolge.kesif.tahkimatBonusu !== null && (
+            <p className="text-solgun">
+              Tahkimat:{' '}
+              <span className="tabular text-parsomen">
+                %{Math.round(bolge.kesif.tahkimatBonusu * 100)}
+              </span>
+            </p>
+          )}
+          {bolge.kesif.eski && (
+            <p className="text-[11px] text-turuncu">
+              Bu bilgi eskidi; garnizon değişmiş olabilir. Tavsiyeler eski rapora göre
+              verilmiyor.
+            </p>
+          )}
+        </div>
+      ) : (
+        <p className="mt-1 text-[12px] text-sonuk">
+          Saldırmadan önce garnizonu ve depoyu öğren. Casus ordu götürmez.
+        </p>
+      )}
+
+      <Buton
+        className="mt-2"
+        tur="sessiz"
+        tam
+        onClick={() => gonder.mutate()}
+        disabled={gonder.isPending}
+      >
+        {gonder.isPending
+          ? 'Casus yola çıkıyor…'
+          : `Casus gönder · ${formatSayi(bolge.kesifMaliyeti)} altın · ${kabaSure(
+              bolge.kesifSuresiSn,
+            )}`}
+      </Buton>
+      {hata && (
+        <EngelNotu
+          kisa={hata}
+          uzun="Aynı anda açabileceğin keşif sayısı ve altının sınırlı; biri bitince tekrar dene."
+        />
+      )}
+      <p className="mt-1.5 text-[11px] text-sonuk">
+        Casus yakalanabilir; Kurnazlık statın riski düşürür.
+      </p>
+    </Kart>
   );
 }
 
@@ -754,7 +882,7 @@ export function Harita({
                     <KarsiIpuclari
                       benim={saldiriOrdusu}
                       garnizon={bolge.garrison}
-                      garnizonGorunur={bolge.garrisonVisible}
+                      garnizonGorunur={bolge.garrisonVisible && bolge.garrisonTaze}
                       tahkimatBonusu={bolge.fortressBonus}
                     />
                   )}
@@ -808,10 +936,13 @@ export function Harita({
               ) : (
                 <Kart className="p-3">
                   <p className="text-[11px] text-sonuk">
-                    Düşman garnizonu görünmüyor. Casus Leyla kadrondayken tam bilgi alırsın.
+                    Düşman garnizonu görünmüyor. Casus göndererek öğrenebilir ya da Casus
+                    Leyla'yı sahaya sürerek sürekli görebilirsin.
                   </p>
                 </Kart>
               )}
+
+              <KesifKarti bolge={bolge} />
 
               {bolgeSavaslari.length > 0 && (
                 <Kart className="p-3">

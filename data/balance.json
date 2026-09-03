@@ -543,8 +543,22 @@
       "craft": 2,
       "upgrade_item": 1,
       "upgrade_gear": 1,
-      "upgrade_region": 2
+      "upgrade_region": 2,
+      "kesif": 2
     }
+  },
+  "casusluk": {
+    "_aciklama": "Saldirmadan once bilgi almak. docs/01 §1 Kurnazlik statina 'casusluk' diye soz vermisti ve bu soz yillardir tutulmamisti: Kurnazlik yalniz yagmayi artiriyordu. Casusluk o statin ikinci isi.",
+    "maliyet_altin": 500,
+    "taban_dakika": 5,
+    "hex_basina_dakika": 3,
+    "_sure_notu": "Casus tek kisi, orduyla yurumuyor: kesif ayni mesafeye giden yuruyusten cok daha hizli. Yoksa 'once kesfet sonra saldir' zincirinin toplam suresi oyuncuyu kesiften vazgecirirdi.",
+    "gecerlilik_saat": 6,
+    "_gecerlilik_notu": "Rapor bir FOTOGRAF. Suresi gecince silinmiyor, ESKI diye isaretleniyor -- eski istihbarat da bilgidir, ama oyuncu ona guvenip guvenmeyecegine kendisi karar vermeli.",
+    "yakalanma_tabani": 0.3,
+    "kurnazlik_basina_azaltma": 0.01,
+    "en_dusuk_yakalanma": 0.05,
+    "_yakalanma_notu": "Yakalanirsa rapor gelmez ve SAVUNAN 'bolgende casus yakalandi' olayini saldirganin adiyla alir. Bilerek: casusluk tek yonlu bedava bilgi olsa herkes her seferinde casus gonderirdi. Risk hem karari anlamli kilar hem savunana bir uyari ve bir husumet verir. Kurnazlik yatirimi riski dusuruyor ama sifirlamiyor -- en_dusuk_yakalanma tabani, 'artik hic yakalanmam' noktasi olmasin diye."
   },
   "oneri": {
     "ornek_savas_sayisi": 9,

@@ -111,6 +111,7 @@ model Lord {
   queues    Queue[]
   marches   March[]
   events    Event[]
+  scouts    Scout[]
 
   attackerBattles Battle[] @relation("AttackerBattles")
   defenderBattles Battle[] @relation("DefenderBattles")
@@ -199,8 +200,9 @@ model Region {
   lastTickAt  DateTime  @default(now())
   shieldUntil DateTime?
 
-  world World @relation(fields: [worldId], references: [id], onDelete: Cascade)
-  owner Lord? @relation(fields: [ownerLordId], references: [id])
+  world  World  @relation(fields: [worldId], references: [id], onDelete: Cascade)
+  owner  Lord?  @relation(fields: [ownerLordId], references: [id])
+  scouts Scout[]
 
   @@unique([worldId, mapId])
   @@unique([worldId, q, r])
@@ -263,6 +265,30 @@ model Queue {
 
   @@index([resolved, finishAt])
   @@index([lordId, resolved])
+}
+
+/// Bir keşif raporu: bir lordun bir bölge hakkındaki istihbaratı.
+///
+/// Rapor bir FOTOĞRAF, canlı bir görüş değil. Bu yüzden `snapshot` saklanıyor:
+/// süresi geçince satır silinmiyor, "eski istihbarat" olarak gösteriliyor.
+/// Eski bilgi de bilgidir; ona güvenip güvenmemek oyuncunun kararı olmalı.
+///
+/// Lord başına bölge başına tek satır: yeni keşif eskisini ezer. Geçmiş
+/// tutmanın oyun içinde bir karşılığı yok, tablo ise sürekli büyürdü.
+model Scout {
+  id        String   @id @default(cuid())
+  lordId    String
+  regionId  Int
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  /// Keşif anındaki garnizon, depo, tahkimat ve sahip adı.
+  snapshot  Json
+
+  lord   Lord   @relation(fields: [lordId], references: [id], onDelete: Cascade)
+  region Region @relation(fields: [regionId], references: [id], onDelete: Cascade)
+
+  @@unique([lordId, regionId])
+  @@index([lordId, expiresAt])
 }
 
 /// Oyuncuya gösterilen olay akışı (saldırıya uğradın, kuyruk bitti, bölge kaybettin...)

@@ -232,6 +232,18 @@ export interface MapDto {
 export interface RegionDetailDto extends RegionDto {
   garrison: Army;
   garrisonVisible: boolean;
+  /** Garnizon bilgisi güncel mi. Eski keşif raporu görünür ama güvenilmez. */
+  garrisonTaze: boolean;
+  /** Keşif raporu — casus gönderilmişse. */
+  kesif: {
+    eski: boolean;
+    yasSn: number;
+    store: Resources | null;
+    tahkimatBonusu: number | null;
+    bolgeSeviyesi: number | null;
+  } | null;
+  kesifMaliyeti: number;
+  kesifSuresiSn: number;
   upgradeCost: { altin: number; demir: number; sec: number } | null;
   store: Resources | null;
   npcGarrison: Army;
@@ -558,6 +570,8 @@ export const api = {
 
   gunluk: () => request<GunlukDto>('/gunluk'),
   gunlukOdul: () => post<GunlukOdulDto>('/gunluk/odul', {}),
+  kesifGonder: (regionId: number) =>
+    post<{ queued: boolean; finishAt: string; mesafe: number }>(`/map/${regionId}/kesif`, {}),
   dunya: () => request<DunyaDto>('/dunya'),
 
   rankings: (board: string, page = 0) => request<RankingDto>(`/rankings/${board}?page=${page}`),

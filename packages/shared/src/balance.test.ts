@@ -36,6 +36,9 @@ import {
   odulAlindiMi,
   seriCarpani,
   karsiIpuclari,
+  kesifDurumu,
+  kesifGecerlilikSn,
+  kesifSuresiSn,
   kusamSeviyesi,
   kusatmaCarpanlari,
   kusatmaDurumu,
@@ -44,10 +47,12 @@ import {
   savasSebepleri,
   lordContribution,
   malikaneIncome,
+  marchDurationSec,
   maxRegions,
   simulateBattle,
   upkeepPerHour,
   xpForLevel,
+  yakalanmaIhtimali,
 } from './index.js';
 import type { Army, EquippedItem, Side } from './types.js';
 
@@ -569,6 +574,55 @@ describe('general seviyesi', () => {
     expect(generalLevelMultiplier(1)).toBe(1);
     expect(generalLevelMultiplier(GENERAL_LEVEL.max)).toBeGreaterThan(1.3);
     expect(generalLevelMultiplier(GENERAL_LEVEL.max)).toBeLessThan(1.5);
+  });
+});
+
+describe('casusluk', () => {
+  it('keşif aynı mesafeye giden yürüyüşten hızlı', () => {
+    // Yavaş olsaydı "önce keşfet sonra saldır" zincirinin toplam süresi
+    // oyuncuyu keşiften vazgeçirirdi; casusluk ölü bir sistem olurdu.
+    for (const mesafe of [1, 3, 6]) {
+      const yuruyus = marchDurationSec(mesafe, { mizrakci: 10 });
+      expect(kesifSuresiSn(mesafe)).toBeLessThan(yuruyus);
+    }
+  });
+
+  it('keşif süresi mesafeyle artıyor', () => {
+    expect(kesifSuresiSn(4)).toBeGreaterThan(kesifSuresiSn(1));
+    expect(kesifSuresiSn(0)).toBeGreaterThan(0);
+  });
+
+  it('Kurnazlık yakalanma riskini düşürüyor', () => {
+    expect(yakalanmaIhtimali(30)).toBeLessThan(yakalanmaIhtimali(5));
+  });
+
+  it('yakalanma riski hiç sıfırlanmıyor', () => {
+    // "Artık hiç yakalanmam" noktası olsaydı casusluk yüksek Kurnazlıklı
+    // oyuncu için bedava bilgiye dönerdi ve kararın gerilimi kaybolurdu.
+    expect(yakalanmaIhtimali(9999)).toBe(B.casusluk.en_dusuk_yakalanma);
+    expect(yakalanmaIhtimali(9999)).toBeGreaterThan(0);
+  });
+
+  it('yakalanma riski her zaman 0 ile 1 arasında', () => {
+    for (const k of [0, 5, 20, 60, 1000]) {
+      expect(yakalanmaIhtimali(k)).toBeGreaterThan(0);
+      expect(yakalanmaIhtimali(k)).toBeLessThan(1);
+    }
+  });
+
+  it('rapor süresi geçince silinmiyor, ESKİ oluyor', () => {
+    const alindi = new Date('2026-09-03T00:00:00Z');
+    const taze = kesifDurumu(alindi, new Date('2026-09-03T01:00:00Z'));
+    expect(taze).toEqual({ var: true, eski: false, yasSn: 3600 });
+
+    const gecmis = new Date(alindi.getTime() + (kesifGecerlilikSn() + 60) * 1000);
+    const eski = kesifDurumu(alindi, gecmis);
+    expect(eski.var).toBe(true);
+    expect(eski.eski).toBe(true);
+  });
+
+  it('rapor yoksa durum boş', () => {
+    expect(kesifDurumu(null, new Date())).toEqual({ var: false, eski: false, yasSn: 0 });
   });
 });
 

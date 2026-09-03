@@ -254,7 +254,7 @@ sayılı ve sıralı olduğu için tam tarama mümkündü ve hatayı ancak o gö
 | B2 | **Sezon** | 4–6 hafta, taht sahibi kazanır, dünya sıfırlanır, onur listesi kalır. |
 | B3 | **Sohbet** | Sosyal tutkalın kendisi. Moderasyon yükü getirir; ittifak sohbetiyle başlanmalı. |
 | B4 | **Süreli etkinlik** | Haftalık hedef + tablo. |
-| B5 | **Casusluk** | Saldırmadan önce bilgi almak. Casus generali (`casus_leyla`) zaten var. |
+| B5 | ~~**Casusluk**~~ **yapıldı** | Kuyruk tabanlı keşif, yakalanma riski Kurnazlık'a bağlı, rapor bir fotoğraf (docs/01 §6b). Beklenenden küçük çıktı: yeni motor gerekmedi, mevcut kuyruk makinesi yetti. |
 | B6 | **Ticaret** | Kaynak takası. İttifak olmadan sömürüye açık. |
 | B7 | **Yatay kazanç** | Görünüş satışı. Mağaza işi **açıkça beklemede** (docs/06). |
 
