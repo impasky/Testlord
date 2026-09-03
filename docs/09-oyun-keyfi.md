@@ -160,9 +160,18 @@ Sabah kalkınca ordusu yok olmuş oyuncu geri gelmiyor.
 
 **Bizde durum:** yeni oyuncu 72 saat korumalı, bölge alındıktan sonra 6 saat,
 aynı saldırgan 12 saat bekliyor, günlük 12 saldırı limiti var. İskelet iyi.
+**K6 ile kapatıldı:** yağma akınından sonra (saldıran kazandı ama bölgeyi
+ALMADI) oyuncu bölgesine 2 saat kalkan konuyor. Gerçek boşluk buydu — aynı
+saldırgan beklerken farklı saldırganlar zincirleyebiliyordu. Savunanın olay
+mesajı kalkanı da söylüyor: "elinde kaldı, 2 saat korumalı, garnizonu
+tazele" — koruma görünmezse rahatlatmıyor.
 
-**Ne ekleyelim:** kayıp tavanı (tek saldırıda ordunun en fazla %X'i),
-ve savunmada kaybedilen askerin bir kısmının **yaralı** dönmesi.
+**Neden kayıp tavanı DEĞİL:** tek saldırıda ordunun en fazla %X'i kuralı
+sorunu çözmüyor; %90'lık üç vuruş yine ordunun binde birini bırakıyor.
+Sorun tek savaşın şiddeti değil, savaşların **arka arkaya** gelmesiydi.
+
+**Ne ekleyebiliriz:** savunmada kaybedilen askerin bir kısmının **yaralı**
+dönmesi (henüz yok).
 
 ### 3.7 Anlaşılmayan savaş matematiği
 
@@ -193,7 +202,7 @@ Sıra keyfi değil: **oyuncunun hissettiği fark / harcanan emek** oranına gör
 | K3 | **Başarımlar** | "İlk fetih", "on bölge", "tam takım" — kilometre taşları hissedilir olur. | orta |
 | K4 | **Günlük görevler + giriş serisi** | Yarın geri gelme sebebi. | orta |
 | K5 | **Lider avı + azalan verim** | Kartopunu kırar, oyunu canlı tutar. | orta |
-| K6 | **Kayıp tavanı + yaralı dönüş** | Bir gecede silinen oyuncu geri gelmiyor. | küçük |
+| K6 | **Yağma sonrası kalkan** | Bir gecede silinen oyuncu geri gelmiyor. Zinciri kesen kalkan; kayıp tavanı çözmüyordu (§3.6). | küçük |
 | K7 | **"Yapacak bir şey yok" ekranı olmasın** | Her ekranın boş hâli bir sonraki işi göstersin. | küçük |
 | K8 | **General seviyesi** | Oyuncunun "benim generalim" demesi. | orta |
 

@@ -106,7 +106,7 @@ async function assertCanAttack(
 
   if (region.shieldUntil && region.shieldUntil > now) {
     throw new GameError(
-      `Bu bölge fetih sonrası koruma altında (${region.shieldUntil.toLocaleString('tr-TR')}).`,
+      `Bu bölge koruma altında (${region.shieldUntil.toLocaleString('tr-TR')}).`,
       400,
       'BOLGE_KORUMALI',
     );

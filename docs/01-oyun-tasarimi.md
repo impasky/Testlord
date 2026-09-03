@@ -283,15 +283,24 @@ tam teşekküllü bir alternatif kariyerdir.
 ## 7. Korumalar (Anti-Snowball)
 
 Sürekli dünyalı oyunların ölüm sebebi hep aynıdır: erken liderler zayıfları
-ezer, zayıflar bırakır, dünya boşalır. Beş kural bunu engeller:
+ezer, zayıflar bırakır, dünya boşalır. Altı kural bunu engeller:
 
 | Koruma | Değer | Neyi engeller |
 |---|---|---|
 | Yeni oyuncu kalkanı | 72 saat (ilk saldırında biter) | Doğar doğmaz ezilmeyi |
 | Fetih sonrası kalkan | 6 saat | Bölgenin ping-pong olmasını |
+| Yağma sonrası kalkan | 2 saat (yalnız oyuncu bölgesi) | Uykuda zincirleme akınla silinmeyi |
 | Aynı saldırgan kilidi | 12 saat | Tek oyuncunun taciz etmesini |
 | Seviye farkı kilidi | 8+ seviye alta saldırılamaz | Güçlünün kolay avlanmasını |
 | Günlük saldırı limiti | 12 | Oyunu 7/24 oynayanın avantajını |
+
+Yağma kalkanı ilk beşin arasındaki boşluğu kapatıyor: aynı saldırgan 12 saat
+bekliyordu ama **farklı** saldırganlar sınırsız zincirleyebiliyordu, fetih
+kalkanı da yalnız bölge el değiştirince kuruluyordu. Arada kalan hâl —
+garnizonu kırılan ama bölgesi elinde kalan oyuncu — korumasızdı. Kalkan
+bilerek fetih kalkanından kısa: fethetmek yağmalamaktan cezalı olmamalı.
+NPC garnizonlarına konmuyor; orada korunacak kimse yok ve konsa erken
+genişleme durur.
 
 Taht Kalesi son iki kuraldan muaftır — orada kural yoktur, olay da odur.
 

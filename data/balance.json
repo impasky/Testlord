@@ -465,6 +465,8 @@
     "yeni_oyuncu_saat": 72,
     "yeni_oyuncu_iptali": "Oyuncu ilk saldirisini yaptiginda koruma biter.",
     "bolge_ele_gecirme_sonrasi_saat": 6,
+    "yagma_sonrasi_saat": 2,
+    "_yagma_sonrasi_not": "Saldiran kazanip da bolgeyi ELE GECIRMEDIGI durumda (dar zafer, yagma akini) bolgeye kisa bir kalkan koyulur. Bosluk buydu: ayni saldirgan 12 saat bekliyor ama FARKLI saldirganlar sinirsiz zincirleyebiliyordu ve oyuncu sabah ordusu silinmis halde kalkiyordu. Genelde oyuncunun geri donmemesinin en buyuk sebebi bu (docs/09 §3.6). Sadece OYUNCU bolgelerinde: NPC garnizonunu korumak erken genislemeyi yavaslatir ve korunacak kimse yoktur.",
     "ayni_saldirgan_tekrar_saldiri_saat": 12,
     "seviye_farki_kilidi": 8,
     "seviye_farki_cezasi": "8+ seviye dusuk oyuncuya saldirilamaz. Taht Kalesi haric.",

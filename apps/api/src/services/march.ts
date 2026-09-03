@@ -243,6 +243,38 @@ function toplamGeneralXp(level: number, xpIntoLevel: number): number {
 }
 
 /**
+ * Yağma sonrası kalkan: saldıran kazandı ama bölgeyi ELE GEÇİRMEDİ.
+ *
+ * Kapatılan boşluk şuydu: aynı saldırgan aynı bölgeye 12 saat tekrar
+ * gelemiyor (B.korumalar.ayni_saldirgan_tekrar_saldiri_saat) ama FARKLI
+ * saldırganlar sınırsız zincirleyebiliyordu. Ele geçirme kalkanı da
+ * (bolge_ele_gecirme_sonrasi_saat) sadece bölge el değiştirdiğinde
+ * kuruluyordu. Sonuç: garnizonu kırılan oyuncu bölgeyi hâlâ elinde
+ * tutuyor, sırayla gelen üç dört akınla sabaha ordusu silinmiş halde
+ * kalkıyordu — oyuncunun geri dönmemesinin en büyük sebeplerinden biri
+ * (docs/09 §3.6).
+ *
+ * Yalnızca OYUNCU bölgelerinde: NPC garnizonuna kalkan koymak erken
+ * genişlemeyi yavaşlatır ve orada korunacak kimse yok.
+ *
+ * Var olan kalkan daha uzunsa ona dokunulmaz: uçuşta olan bir yürüyüş
+ * kalkan kurulduktan sonra da inebilir, o iniş kalkanı kısaltmasın.
+ *
+ * Prisma update data'sına yayılmak üzere parça döner; koşul tutmazsa boş
+ * nesne, yani alan hiç yazılmaz.
+ */
+function yagmaKalkani(
+  saldiranKazandi: boolean,
+  savunanLordId: string | null,
+  mevcut: Date | null,
+): { shieldUntil?: Date } {
+  if (!saldiranKazandi || savunanLordId === null) return {};
+  const bitis = new Date(Date.now() + B.korumalar.yagma_sonrasi_saat * 3_600_000);
+  if (mevcut && mevcut.getTime() > bitis.getTime()) return {};
+  return { shieldUntil: bitis };
+}
+
+/**
  * Bir yürüyüşü çözer. İdempotent: satırı koşullu updateMany ile alır.
  * Dönüş: işlendi mi.
  */
@@ -406,6 +438,7 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
             storeAltin: Math.max(0, region.storeAltin - result.loot.altin),
             storeDemir: Math.max(0, region.storeDemir - result.loot.demir),
             storeErzak: Math.max(0, region.storeErzak - result.loot.erzak),
+            ...yagmaKalkani(attackerWon, defenderLordId, region.shieldUntil),
           },
         });
       }
@@ -532,7 +565,9 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
           attackerWon ? 'bolge_kaybettin' : 'saldiriya_ugradin',
           {
             mesaj: attackerWon
-              ? `${region.name} saldırıya uğradı ve ${result.captured ? 'kaybedildi' : 'yağmalandı'}.`
+              ? result.captured
+                ? `${region.name} saldırıya uğradı ve kaybedildi.`
+                : `${region.name} yağmalandı ama elinde kaldı. Bölge ${B.korumalar.yagma_sonrasi_saat} saat koruma altında — garnizonu bu arada tazele.`
               : `${region.name} savunuldu. Saldırı püskürtüldü.`,
             regionId: region.id,
             battleId: battle.id,

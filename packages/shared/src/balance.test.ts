@@ -498,6 +498,37 @@ describe('lider avı', () => {
   });
 });
 
+describe('yağma sonrası kalkan', () => {
+  it('kalkan var ve sıfır değil', () => {
+    // Sıfır olursa farklı saldırganlar zinciri yeniden açılır (docs/09 §3.6).
+    expect(B.korumalar.yagma_sonrasi_saat).toBeGreaterThan(0);
+  });
+
+  it('yağma kalkanı fetih kalkanından KISA', () => {
+    // Tersi olursa dar zaferle kaybeden, bölgeyi kaptırandan daha uzun
+    // korunur: saldıranın "az daha alıyordum" hâli savunana ödül olur ve
+    // fethetmek yağmalamaktan cezalı hâle gelir.
+    expect(B.korumalar.yagma_sonrasi_saat).toBeLessThan(
+      B.korumalar.bolge_ele_gecirme_sonrasi_saat,
+    );
+  });
+
+  it('kalkan aynı saldırganın bekleme süresini geçmiyor', () => {
+    // Kalkan bu süreyi geçerse ikisinden kısası hiç işlemez; iki kuralın
+    // biri ölü kural olur ve neyin koruduğu okunamaz hâle gelir.
+    expect(B.korumalar.yagma_sonrasi_saat).toBeLessThan(
+      B.korumalar.ayni_saldirgan_tekrar_saldiri_saat,
+    );
+  });
+
+  it('bir günde art arda akın hâlâ mümkün — kalkan oyunu kilitlemiyor', () => {
+    // Kalkan savunanı korurken haritayı da dondurmamalı: bir bölgeye bir
+    // günde en az birkaç ayrı akın sığmalı, yoksa PvP durur.
+    const gunde = 24 / B.korumalar.yagma_sonrasi_saat;
+    expect(gunde).toBeGreaterThanOrEqual(4);
+  });
+});
+
 describe('günlük görevler ve seri', () => {
   it('üç görev, sabit', () => {
     const g = gunlukGorevler({ saldiri: 0, egitim: 0, imar: 0 });
