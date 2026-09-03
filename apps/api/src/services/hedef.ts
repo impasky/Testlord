@@ -311,7 +311,8 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
     const bosYer = Math.max(0, commandCapacity(lord.liderlik, saldiran.generalBonus) - kullanilan);
 
     const kaynak = { altin: lord.altin, demir: lord.demir, erzak: lord.erzak };
-    let ulasilabilir: HedefOnerisi | null = null;
+    let ilkUlasilabilir: HedefOnerisi | null = null;
+    let ilkKarsilanabilir: HedefOnerisi | null = null;
 
     for (const { hedef } of sirali.slice(0, B.oneri.ulasilabilirlik_denetimi)) {
       const eksik = eksikOrdu(
@@ -323,22 +324,40 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
         kaynak,
       );
       if (!eksik) continue;
-      // İlk ULAŞILABİLİR hedef kazanır — "karşılanabilir" olan değil.
-      //
-      // Kasten: kaynak, oyuncu asker eğittikçe değişen bir sayı. Seçimi ona
-      // bağlamak hedefi oynatıyordu: oyun "Bolluk Ovası için 27 okçu eğit"
-      // diyor, oyuncu eğitiyor, altını azalıyor ve oyun bu kez "Karahisar'a
-      // saldır" diyordu. Oyuncunun planını uygularken hedefin altından
-      // kayması, düzeltmeye çalıştığımız "karman çorman" duygusunun ta
-      // kendisi.
-      //
-      // Kaynak yetmiyorsa hedef yine de doğru hedeftir; gelir birikince
-      // karşılanır. Arayüz bunu "altının şu an yetmiyor" diye söylüyor.
-      ulasilabilir = { ...hedef, eksik };
-      break;
+      if (!ilkUlasilabilir) ilkUlasilabilir = { ...hedef, eksik };
+      if (eksik.karsilanabilir) {
+        ilkKarsilanabilir = { ...hedef, eksik };
+        break;
+      }
     }
 
-    if (ulasilabilir) enIyi = ulasilabilir;
+    // Karşılanabilen varsa o, yoksa ilk ulaşılabilir.
+    //
+    // eksikOrdu bu tercihi bir hedefin İÇİNDE zaten yapıyordu (birim tipleri
+    // arasında); HEDEFLER arasında yapmıyordu. Doğum yerlerinin hepsi
+    // tarandığında (ring 4'te 24 çapa var, pickHomeAnchor sırayla dolaşıyor)
+    // 6'sında — tam olarak KALE çapalarında — oyuncuya kuramayacağı bir ordu
+    // tarif ediliyordu: 35 okçu = 5250 altın, başlangıç altını 5000. Yani
+    // her dört yeni oyuncudan birinin gördüğü İLK talimat duvara çarpıyordu.
+    // "Gelir birikince yaparsın" ise docs/09'un "hiçbir ekran bekle demesin"
+    // kuralının tam tersi.
+    //
+    // Eski not hedefin oyuncunun altından kaymasından korkuyordu: oyun bir
+    // hedef gösterir, oyuncu asker eğitir, altını azalır, oyun başka bir
+    // hedef gösterir. Kayma ölçüldü: bu değişiklikten SONRA 24 oyuncunun
+    // 5'inde ara adımda hedef değişiyor, ÖNCE 6/10'du — yani kayma azaldı,
+    // artmadı. Kalan kaymanın sebebi kaynak değil komuta kapasitesi: asker
+    // eğitildikçe boş yer daralıyor ve büyük hedef kapasiteye sığmaz olup
+    // eleniyor. Kaydığı her adımda gösterilen talimat yapılabilir kalıyor
+    // ve oyuncu sonunda alınabilir bir hedefe varıyor; ikisini de
+    // tools/ilk-hedef-testi.mjs ölçüyor.
+    //
+    // Ölçüm not düşülmeye değer: "ulasilabilirlik_denetimi'yi büyüt" de
+    // denendi, hiçbir şeyi düzeltmedi — döngü ilk ULAŞILABİLİR adayda
+    // kırılıyor, listeye kuyruktan aday eklemek ilki değiştirmiyor. Sorun
+    // aday sayısı değil, sıralamadaki tercih kuralıydı.
+    const secilen = ilkKarsilanabilir ?? ilkUlasilabilir;
+    if (secilen) enIyi = secilen;
   }
 
   return enIyi;

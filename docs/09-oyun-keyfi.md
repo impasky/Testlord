@@ -217,6 +217,23 @@ Sıra keyfi değil: **oyuncunun hissettiği fark / harcanan emek** oranına gör
 | K7 | **"Yapacak bir şey yok" ekranı olmasın** | Her ekranın boş hâli bir sonraki işi göstersin. | küçük |
 | K8 | **General seviyesi görünsün** | Motor zaten seviye atlatıyordu, oyuncu görmüyordu. Rapor + olay + sonraki seviye. | orta |
 
+
+### 4.1b Ölçerken çıkanlar
+
+Yol haritasında olmayan ama ölçüm sırasında ortaya çıkan işler. Buraya
+yazılıyorlar çünkü hiçbirini "tasarım" bulmadı — hepsi sayıya bakınca
+göründü.
+
+| # | İş | Nasıl bulundu | Durum |
+|---|---|---|---|
+| K9 | **İlk hedef her doğum yerinde yapılabilir olsun** | 24 doğum yerinin 6'sında (kale çapaları) oyuna göre 35 okçu gerekiyordu, başlangıç altını 33 okçuya yetiyordu | yapıldı |
+| K5b | Yağmada oran 1'i geçebiliyordu | lider avı testi yazarken | yapıldı |
+| K8b | General XP eğrisi kodda ikinci kez tanımlıydı | K8 sırasında | yapıldı |
+
+Ortak ders: **tek örnekli test yanıltıyor.** ilk-oturum-testi tek bir
+oyuncuyla çalışıyor ve %25'lik bir bozukluğu görmüyordu; doğum yerleri
+sayılı ve sıralı olduğu için tam tarama mümkündü ve hatayı ancak o gösterdi.
+
 ### 4.2 Sanat gelince
 
 | # | İş | Gereken |
