@@ -1,0 +1,47 @@
+{
+  "_aciklama": "Basarim tanimlari. HEPSI MEVCUT DURUMDAN TURETILIR: yeni tablo, yeni yazma, goc yok. Sebep: sayilan seyler (bolge sayisi, PvP galibiyeti, kusanik parca) zaten Lord kaydinda duruyor. Ikinci bir yerde tutmak, er ya da gec ikisinin birbirinden sapmasi demek. 'olcut' alani hangi degerin okunacagini soyluyor; packages/shared/src/basarim.ts o degeri saglar.",
+  "kumeler": [
+    {
+      "ad": "Fetih",
+      "basarimlar": [
+        { "key": "ilk_fetih", "ad": "İlk Toprak", "aciklama": "Bir bölge ele geçir", "olcut": "bolge", "hedef": 1 },
+        { "key": "bes_bolge", "ad": "Beş Bayrak", "aciklama": "Beş bölgeye sahip ol", "olcut": "bolge", "hedef": 5 },
+        { "key": "on_bolge", "ad": "Diyarın Onda Biri", "aciklama": "On bölgeye sahip ol", "olcut": "bolge", "hedef": 10 },
+        { "key": "taht", "ad": "Diyarın Lordu", "aciklama": "Taht Kalesi'ni al", "olcut": "taht", "hedef": 1 }
+      ]
+    },
+    {
+      "ad": "Savaş",
+      "basarimlar": [
+        { "key": "ilk_pvp", "ad": "İlk Kan", "aciklama": "Bir lordu yen", "olcut": "pvp_galibiyet", "hedef": 1 },
+        { "key": "on_pvp", "ad": "Sınanmış Kumandan", "aciklama": "On lordu yen", "olcut": "pvp_galibiyet", "hedef": 10 },
+        { "key": "elo_1400", "ad": "Adı Duyulan", "aciklama": "1400 ELO'ya ulaş", "olcut": "elo", "hedef": 1400 }
+      ]
+    },
+    {
+      "ad": "Ordu",
+      "basarimlar": [
+        { "key": "komuta_dolu", "ad": "Tam Komuta", "aciklama": "Komuta yerini tamamen doldur", "olcut": "komuta_orani", "hedef": 100 },
+        { "key": "her_birim", "ad": "Beş Kol", "aciklama": "Her birim tipinden asker bulundur", "olcut": "birim_cesidi", "hedef": 5 },
+        { "key": "meclis", "ad": "Savaş Meclisi", "aciklama": "General slotlarını doldur", "olcut": "general_slot_orani", "hedef": 100 }
+      ]
+    },
+    {
+      "ad": "Demirhane",
+      "basarimlar": [
+        { "key": "ilk_kusam", "ad": "Kuşandı", "aciklama": "Bir parça ekipman kuşan", "olcut": "kusanik", "hedef": 1 },
+        { "key": "tam_takim", "ad": "Tepeden Tırnağa", "aciklama": "Altı yuvayı da doldur", "olcut": "kusanik", "hedef": 6 },
+        { "key": "efsanevi_parca", "ad": "Efsane Sahibi", "aciklama": "T5 bir parça kuşan", "olcut": "en_yuksek_tier", "hedef": 5 }
+      ]
+    },
+    {
+      "ad": "Diyar",
+      "basarimlar": [
+        { "key": "seviye_10", "ad": "Tanınan Lord", "aciklama": "Seviye 10 ol", "olcut": "seviye", "hedef": 10 },
+        { "key": "seviye_30", "ad": "Kudretli Lord", "aciklama": "Seviye 30 ol", "olcut": "seviye", "hedef": 30 },
+        { "key": "gelismis_bolge", "ad": "İmar Eden", "aciklama": "Bir bölgeyi seviye 3'e çıkar", "olcut": "en_yuksek_bolge_seviyesi", "hedef": 3 },
+        { "key": "zirve_bolge", "ad": "Diyarın Kileri", "aciklama": "Bir bölgeyi seviye 5'e çıkar", "olcut": "en_yuksek_bolge_seviyesi", "hedef": 5 }
+      ]
+    }
+  ]
+}

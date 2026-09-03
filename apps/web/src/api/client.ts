@@ -1,5 +1,11 @@
 /** Tipli API istemcisi. Sunucu tek otoritedir; istemci hiçbir sayı yazmaz. */
-import type { Army, GearLineKey, Resources, StatKey } from '@lordlar/shared';
+import type {
+  Army,
+  BasarimOlcutleri,
+  GearLineKey,
+  Resources,
+  StatKey,
+} from '@lordlar/shared';
 
 /**
  * API adresi.
@@ -108,6 +114,8 @@ export interface LordState {
   woundedUntil: string | null;
   protectionUntil: string | null;
   dailyAttacks: number;
+  /** Başarım ölçütleri; başarımlar bunlardan `basarimlar()` ile türetilir. */
+  basarimOlcutleri: BasarimOlcutleri;
 }
 
 export interface QueueItem {

@@ -5,6 +5,7 @@
  * Denge değişikliği = sadece data/balance.json'da değişiklik.
  */
 import balanceJson from '../../../data/balance.json';
+import basarimlarJson from '../../../data/basarimlar.json';
 import generalsJson from '../../../data/generals.json';
 import worldMapJson from '../../../data/world-map.json';
 import type { GeneralDef, RegionDef, Rarity, UnitStats, UnitType } from './types.js';
@@ -13,6 +14,17 @@ import { RARITIES, UNIT_TYPES } from './types.js';
 export const B = balanceJson;
 export const GENERALS = generalsJson.generaller as unknown as GeneralDef[];
 export const GENERAL_SLOT_RULE = generalsJson.slot_kurali;
+
+/**
+ * Başarım tanımları. İçerik veri dosyasında, mantık `basarim.ts`de.
+ *
+ * `olcut` alanı hangi değerin okunacağını söylüyor — yeni bir başarım
+ * eklemek çoğu zaman koda dokunmadan JSON'a bir satır.
+ */
+export const BASARIM_KUMELERI = basarimlarJson.kumeler as unknown as {
+  ad: string;
+  basarimlar: { key: string; ad: string; aciklama: string; olcut: string; hedef: number }[];
+}[];
 export const GENERAL_LEVEL = generalsJson.seviye;
 export const WORLD_MAP = worldMapJson as unknown as {
   radius: number;

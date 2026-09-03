@@ -25,6 +25,7 @@ import {
   Kart,
   formatSayi,
 } from '../components/ui';
+import { Basarimlar } from '../components/Basarimlar';
 import { Zemin } from '../components/Zemin';
 
 const KUYRUK_ADI: Record<string, string> = {
@@ -247,6 +248,11 @@ export function Malikane({
           </div>
         )}
       </Bolum>
+
+      {/* Başarımlar olay akışının üstünde: akış "ne oldu"yu anlatıyor,
+          başarımlar "nereye gidiyorum"u. İkinci soru daha yukarıda
+          durmalı. */}
+      <Basarimlar olcutler={lord.basarimOlcutleri} />
 
       <Bolum baslik="Olay Akışı">
         {events.length === 0 ? (

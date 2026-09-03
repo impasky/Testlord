@@ -15,6 +15,8 @@ import {
   commandCapacity,
   fortressBonus,
   itemPower,
+  basarimSayaci,
+  basarimlar,
   eleGecirmeEsigi,
   karsiIpuclari,
   kusamSeviyesi,
@@ -404,5 +406,52 @@ describe('savaş sebepleri', () => {
       tahkimatBonusu: 0.4,
     });
     expect(s.length).toBeLessThanOrEqual(4);
+  });
+});
+
+describe('başarımlar', () => {
+  const bos = {
+    bolge: 0, taht: 0, pvp_galibiyet: 0, elo: 1200, komuta_orani: 0,
+    birim_cesidi: 0, general_slot_orani: 0, kusanik: 0, en_yuksek_tier: 0,
+    seviye: 1, en_yuksek_bolge_seviyesi: 0,
+  };
+
+  it('yeni oyuncuda hiçbiri tamam değil ama hepsi görünür', () => {
+    const k = basarimlar(bos);
+    const { tamam, toplam } = basarimSayaci(k);
+    expect(tamam).toBe(0);
+    expect(toplam).toBeGreaterThan(10);
+    // Görünür olmaları önemli: kaybolan bir başarımın eksik olduğu
+    // anlaşılmaz.
+    expect(k.every((x) => x.basarimlar.length > 0)).toBe(true);
+  });
+
+  it('ölçüt hedefe ulaşınca tamamlanır', () => {
+    const k = basarimlar({ ...bos, bolge: 5 });
+    const hepsi = k.flatMap((x) => x.basarimlar);
+    expect(hepsi.find((b) => b.key === 'ilk_fetih')!.tamam).toBe(true);
+    expect(hepsi.find((b) => b.key === 'bes_bolge')!.tamam).toBe(true);
+    expect(hepsi.find((b) => b.key === 'on_bolge')!.tamam).toBe(false);
+  });
+
+  it('hedefi aşan değer tamamlanmayı bozmaz', () => {
+    const k = basarimlar({ ...bos, seviye: 60 });
+    const hepsi = k.flatMap((x) => x.basarimlar);
+    expect(hepsi.find((b) => b.key === 'seviye_10')!.tamam).toBe(true);
+    expect(hepsi.find((b) => b.key === 'seviye_30')!.tamam).toBe(true);
+  });
+
+  it('her başarımın ölçütü tanımlı — sessizce sıfırda kalan yok', () => {
+    // Bir ölçüt adı yanlış yazılırsa başarım hep 0 ilerlemede kalır ve
+    // bu gözle fark edilmez. Test her ölçütün BasarimOlcutleri'nde
+    // gerçekten var olduğunu doğruluyor.
+    const dolu = {
+      bolge: 99, taht: 1, pvp_galibiyet: 99, elo: 9999, komuta_orani: 100,
+      birim_cesidi: 5, general_slot_orani: 100, kusanik: 6, en_yuksek_tier: 5,
+      seviye: 99, en_yuksek_bolge_seviyesi: 5,
+    };
+    const k = basarimlar(dolu);
+    const eksik = k.flatMap((x) => x.basarimlar).filter((b) => !b.tamam);
+    expect(eksik).toEqual([]);
   });
 });

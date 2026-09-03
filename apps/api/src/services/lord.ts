@@ -5,6 +5,7 @@
  * lastTickAt'ten bu yana geçen sürenin üretimi uygulanır. (docs/02 §1)
  */
 import {
+  type BasarimOlcutleri,
   GEAR_LINES,
   UNIT_TYPES,
   accrue,
@@ -78,6 +79,13 @@ export interface LordState {
   woundedUntil: Date | null;
   protectionUntil: Date | null;
   dailyAttacks: number;
+  /**
+   * Başarım ölçütleri. Başarımların kendisi burada hesaplanmıyor:
+   * tanımlar `data/basarimlar.json`da, mantık `packages/shared`da.
+   * Sunucu yalnızca sayılan değerleri veriyor — aynı saf fonksiyon
+   * istemcide de çalışsın diye. (docs/09 K3)
+   */
+  basarimOlcutleri: BasarimOlcutleri;
 }
 
 type LordWithRelations = Prisma.LordGetPayload<{
@@ -294,6 +302,57 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
     woundedUntil: lord.woundedUntil,
     protectionUntil: lord.protectionUntil,
     dailyAttacks: dailyReset ? 0 : lord.dailyAttacks,
+    basarimOlcutleri: basarimOlcutleriHesapla(
+      lord,
+      items,
+      homeArmy,
+      allUnits,
+      bonus,
+      ownsThrone,
+      generals.length,
+    ),
+  };
+}
+
+/**
+ * Başarım ölçütleri — hepsi mevcut durumdan okunuyor.
+ *
+ * Yeni tablo ya da sayaç eklenmedi. Sayılan şeyler zaten Lord kaydında
+ * ve ilişkilerinde duruyor; ikinci bir yerde tutmak er ya da geç ikisinin
+ * birbirinden sapması demek.
+ */
+function basarimOlcutleriHesapla(
+  lord: {
+    level: number;
+    elo: number;
+    pvpWins: number;
+    liderlik: number;
+    regions: { type: string; level: number }[];
+  },
+  items: EquippedItem[],
+  homeArmy: Army,
+  allUnits: Army,
+  bonus: GeneralBonus,
+  ownsThrone: boolean,
+  /** Sahadaki (slotta ve dinlenmemiş) general sayısı. */
+  sahadakiGeneral: number,
+): BasarimOlcutleri {
+  const tavan = commandCapacity(lord.liderlik, bonus);
+  const slotlar = generalSlots(lord.liderlik);
+  const bolgeler = lord.regions.filter((r) => r.type !== 'taht');
+  return {
+    bolge: bolgeler.length,
+    taht: ownsThrone ? 1 : 0,
+    pvp_galibiyet: lord.pvpWins,
+    elo: lord.elo,
+    // Yüzde olarak: tavan 0 olamaz ama bölmeyi korumak bedava.
+    komuta_orani: tavan > 0 ? Math.round((armySlots(allUnits) / tavan) * 100) : 0,
+    birim_cesidi: UNIT_TYPES.filter((t) => (homeArmy[t] ?? 0) > 0).length,
+    general_slot_orani: slotlar > 0 ? Math.round((sahadakiGeneral / slotlar) * 100) : 0,
+    kusanik: items.length,
+    en_yuksek_tier: items.reduce((m, i) => Math.max(m, i.tier), 0),
+    seviye: lord.level,
+    en_yuksek_bolge_seviyesi: bolgeler.reduce((m, r) => Math.max(m, r.level), 0),
   };
 }
 
