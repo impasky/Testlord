@@ -17,6 +17,7 @@ import { BirimIkonu, IkonKapali, IkonSure } from '../components/Ikonlar';
 import { bolgeGorselAdi } from '../components/Gorsel';
 import { hisAgir, hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { DunyaBasligi, OlaySeridi } from '../components/DunyaSeridi';
+import { KarsiIpuclari } from '../components/KarsiIpuclari';
 import { SaldiriOnizleme } from '../components/SaldiriOnizleme';
 import { SavasRaporu } from '../components/SavasRaporu';
 import {
@@ -726,6 +727,15 @@ export function Harita({
                     }}
                     etiket="Saldırı ordusu"
                   />
+
+                  {!secimBos && (
+                    <KarsiIpuclari
+                      benim={saldiriOrdusu}
+                      garnizon={bolge.garrison}
+                      garnizonGorunur={bolge.garrisonVisible}
+                      tahkimatBonusu={bolge.fortressBonus}
+                    />
+                  )}
 
                   {onizleme ? (
                     <SaldiriOnizleme onizleme={onizleme} />

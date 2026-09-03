@@ -15,7 +15,10 @@ import {
   commandCapacity,
   fortressBonus,
   itemPower,
+  karsiIpuclari,
   kusamSeviyesi,
+  kusatmaCarpanlari,
+  kusatmaDurumu,
   lordContribution,
   malikaneIncome,
   maxRegions,
@@ -243,5 +246,55 @@ describe('kuşam seviyesi', () => {
 
   it('tam takım T5 zirveyi verir ve orada durur', () => {
     expect(kusamSeviyesi([5, 5, 5, 5, 5, 5].map(esya))).toBe(5);
+  });
+});
+
+describe('karşı-birim ipuçları', () => {
+  it('ordulardan biri boşsa ipucu yok', () => {
+    expect(karsiIpuclari({ okcu: 10 }, {})).toEqual([]);
+    expect(karsiIpuclari({}, { suvari: 10 })).toEqual([]);
+  });
+
+  it('lehte eşleşmeyi bulur', () => {
+    const i = karsiIpuclari({ mizrakci: 20 }, { suvari: 10 });
+    expect(i).toHaveLength(1);
+    expect(i[0]).toMatchObject({ yon: 'guclu', benim: 'mizrakci', onun: 'suvari', carpan: 1.5 });
+  });
+
+  it('aleyhte eşleşmeyi de bulur — oyuncu neyi göndermemesi gerektiğini de öğrenmeli', () => {
+    const i = karsiIpuclari({ okcu: 20 }, { suvari: 10 });
+    expect(i).toHaveLength(1);
+    expect(i[0]).toMatchObject({ yon: 'zayif', benim: 'okcu', onun: 'suvari', carpan: 1.5 });
+  });
+
+  it('savaşı belirleyen eşleşmeyi öne, alakasızı sona koyar', () => {
+    // 100 mızrakçı + 1 okçu, karşıda 100 süvari + 1 mızrakçı.
+    // Savaşı belirleyen: mızrakçılarım süvarilerini kırıyor (ağırlık ~0.98).
+    // Alakasız: tek okçum tek mızrakçısını kırıyor (ağırlık ~0.0001).
+    const i = karsiIpuclari({ mizrakci: 100, okcu: 1 }, { suvari: 100, mizrakci: 1 }, 3);
+    expect(i).toHaveLength(3);
+    expect(i[0]).toMatchObject({ yon: 'guclu', benim: 'mizrakci', onun: 'suvari' });
+    expect(i[2]).toMatchObject({ yon: 'guclu', benim: 'okcu', onun: 'mizrakci' });
+    expect(i[0]!.agirlik).toBeGreaterThan(i[2]!.agirlik * 100);
+  });
+
+  it('sıralama kararlı: aynı girdi aynı sırayı verir', () => {
+    const a = { mizrakci: 10, okcu: 10, suvari: 10 };
+    const b = { mizrakci: 10, okcu: 10, suvari: 10 };
+    expect(karsiIpuclari(a, b, 6)).toEqual(karsiIpuclari(a, b, 6));
+  });
+
+  it('mancınık tuzağı: tahkimat varsa iyi, canlı orduya karşı boşa', () => {
+    expect(kusatmaDurumu({ kusatma: 3 }, { milis: 50 }, 0.4)).toBe('kaleye_iyi');
+    expect(kusatmaDurumu({ kusatma: 3 }, { milis: 50 }, 0)).toBe('bosa_gidiyor');
+    expect(kusatmaDurumu({ okcu: 3 }, { milis: 50 }, 0)).toBeNull();
+    // Boş hedefte uyarı yok: yağmalanacak bir şey varsa mancınık zarar etmiyor.
+    expect(kusatmaDurumu({ kusatma: 3 }, {}, 0)).toBeNull();
+  });
+
+  it('mancınık çarpanları balance.json ile aynı', () => {
+    const c = kusatmaCarpanlari();
+    expect(c.kale).toBe(2.0);
+    expect(c.birim).toBe(0.5);
   });
 });
