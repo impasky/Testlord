@@ -1,3 +1,7 @@
+import { B } from './balance.js';
+import { malikaneIncome } from './economy.js';
+import type { Resources } from './types.js';
+
 /**
  * Günlük görevler ve giriş serisi.
  *
@@ -55,6 +59,42 @@ export function gunlukGorevler(s: GunlukSayaclar): GunlukGorev[] {
     yap('egitim', 'Ordunu büyüt', 'Asker eğitimi başlat', s.egitim, 1),
     yap('imar', 'Diyarını imar et', 'Ekipman üret ya da bölge geliştir', s.imar, 1),
   ];
+}
+
+/**
+ * Günün ödülü: üç görev de bitince alınır.
+ *
+ * Ödül SABİT BİR SAYI DEĞİL, malikâne saatlik gelirinin katı. İki sebep:
+ *  - Aynı anlamı taşısın: Lv1 için 800 altın bir günlük gelirken Lv60 için
+ *    iki saatlik harçlıktır. Katsayı olarak tanımlayınca ödül seviyeyle
+ *    birlikte büyüyor ve "artık uğraşmaya değmez" noktası hiç gelmiyor.
+ *  - Tek kaynak: malikâne gelirini değiştiren biri ödülü düzeltmeyi
+ *    unutamıyor, çünkü ödül zaten ondan türüyor.
+ *
+ * Seri çarpanı tavanlı. Tavansız bırakılırsa uzun seri sahibi oyuncu
+ * kapatılamaz bir gelir farkı açardı — docs/09 §3.4'te kırmaya çalıştığımız
+ * kartopunun aynısı, bu kez sadakat kılığında.
+ */
+export function gunlukOdul(lordSeviyesi: number, seri: number): Resources {
+  const k = B.gunluk_odul;
+  const gelir = malikaneIncome(lordSeviyesi);
+  const carpan = k.malikane_saati * seriCarpani(seri);
+  return {
+    altin: Math.round(gelir.altin * carpan),
+    demir: Math.round(gelir.demir * carpan),
+    erzak: Math.round(gelir.erzak * carpan),
+  };
+}
+
+/** Giriş serisinin ödül çarpanı — tavanlı. */
+export function seriCarpani(seri: number): number {
+  const k = B.gunluk_odul;
+  return 1 + Math.min(Math.max(0, seri), k.azami_seri_gunu) * k.seri_carpani_basina;
+}
+
+/** Ödül bugün alınmış mı? Kayıtta tutulan gün numarasıyla karşılaştırır. */
+export function odulAlindiMi(sonOdulGunu: Date | null, simdi: Date): boolean {
+  return sonOdulGunu !== null && gunNumarasi(sonOdulGunu) === gunNumarasi(simdi);
 }
 
 /** Kaç görev tamamlandı. */

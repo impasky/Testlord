@@ -527,6 +527,15 @@
     "neden": "Yenilenme olmasaydi oyuncu bir bolgeyi ucuz akinlarla yiprata yiprata bosaltip kuçuk bir kuvvetle alabilirdi. Bu ozellikle Taht Kalesi'ni (890 birim) anlamsiz kilardi: endgame'in odagi bir yipratma bulmacasina donusurdu.",
     "kapsam": "SADECE sahipsiz (NPC) bolgeler. Oyuncunun garnizonu yenilenmez; kaybettigini yeniden egitip yerlestirmek zorundadir."
   },
+  "gunluk_odul": {
+    "_aciklama": "Uc gunluk gorev de bitince alinan odul. Sabit sayi YAZILMADI: odul malikane saatlik gelirinin kati olarak tanimli, boylece Lv1 icin de Lv60 icin de ayni ANLAMI tasiyor ve malikane gelirini degistiren biri odulu duzeltmeyi unutamiyor.",
+    "malikane_saati": 7,
+    "_malikane_saati_not": "Odul = malikaneIncome(lord_seviyesi) * bu sayi. 7 saat: bir gunun ucte biri. Gorevleri yapan oyuncu yapmayana gore bariz onde ama gun icinde iki kez giren birinin dort katini kazanmiyor -- gunluk odul bir ALISKANLIK araci, bir gelir kaynagi degil.",
+    "seri_carpani_basina": 0.1,
+    "azami_seri_gunu": 7,
+    "_seri_not": "Carpan = 1 + min(seri, azami_seri_gunu) * seri_carpani_basina, yani 1.1 ile 1.7 arasi. Tavan sart: tavansiz birakilirsa 100 gunluk seri odulu 11 katina cikarir ve gec baslayan oyuncunun asla kapatamayacagi bir fark acilir -- docs/09 §3.4'te kirmaya calistigimiz kartopunun ta kendisi.",
+    "_neden_kaynak": "Odul KAYNAK, ekipman ya da asker degil. Kaynak oyuncunun kendi planina gidiyor; hazir asker vermek oyuncunun kurdugu orduyu anlamsizlastirirdi."
+  },
   "kuyruklar": {
     "_aciklama": "Ayni anda kac kuyruk acilabilir. Sunucu bunu zorunlu kilar, arayuz de ayni sayiyi gosterip dolu kuyrukta dugmeyi kapatir. Iki yerde ayri sabit tutulursa er ya da gec birbirinden sapar.",
     "es_zamanli": {

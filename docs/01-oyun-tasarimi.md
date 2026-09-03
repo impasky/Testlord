@@ -315,6 +315,38 @@ Taht Kalesi son iki kuraldan muaftır — orada kural yoktur, olay da odur.
 
 ---
 
+## 7b. Günlük Görevler ve Giriş Serisi
+
+Üç sabit görev — **bir akın, bir eğitim, bir imar** — oyunun üç eksenine
+karşılık geliyor. Rastgele görev üretilmiyor: rastgelelik "bugün şanssızım"
+hissi yaratıyor ve oyuncunun planını bozuyor. Aynı üç iş her gün, bir
+alışkanlık kuruyor.
+
+İlerleme **türetiliyor**, sayaç tutulmuyor: saldırı `Battle`, eğitim ve imar
+`Queue` kayıtlarında zaten duruyor. Ayrı sayaç tutmak, o sayacın gerçekten
+sapması demekti.
+
+Üçü de bitince ödül alınır — otomatik düşmez. Kendiliğinden gelen kaynak
+fark edilmez; "Al" düğmesi günü bitiren küçük bir tören.
+
+**Ödül sabit bir sayı değil**, malikâne saatlik gelirinin katı
+(`gunluk_odul.malikane_saati` = 7). Böylece Lv1 için de Lv60 için de aynı
+anlamı taşıyor ve "artık uğraşmaya değmez" noktası hiç gelmiyor. Malikâne
+gelirini değiştiren biri ödülü düzeltmeyi de unutamıyor, çünkü ödül zaten
+ondan türüyor.
+
+**Giriş serisi** ödülü çarpıyor: `1 + min(seri, 7) × 0,1`, yani ×1,1 ile
+×1,7 arası. Tavan şart — tavansız bırakılırsa uzun seri sahibi oyuncu
+kapatılamaz bir gelir farkı açardı; §7'de kırmaya çalıştığımız kartopunun
+aynısı, bu kez sadakat kılığında.
+
+Ödül **kaynak**tır; asker ya da ekipman değil. Kaynak oyuncunun kendi
+planına gider, hazır asker vermek oyuncunun kurduğu orduyu anlamsızlaştırırdı.
+Depo tavanı ödüle de işler ama sessizce değil: sığmayan kısım arayüzde
+söylenir.
+
+---
+
 ## 8. Sıralamalar
 
 Üç ayrı sıralama, çünkü tek sıralama tek oyun tarzını ödüllendirir:

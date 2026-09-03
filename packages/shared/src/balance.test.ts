@@ -31,7 +31,10 @@ import {
   eleGecirmeEsigi,
   gunNumarasi,
   gunlukGorevler,
+  gunlukOdul,
   gunlukSayaci,
+  odulAlindiMi,
+  seriCarpani,
   karsiIpuclari,
   kusamSeviyesi,
   kusatmaCarpanlari,
@@ -566,6 +569,56 @@ describe('general seviyesi', () => {
     expect(generalLevelMultiplier(1)).toBe(1);
     expect(generalLevelMultiplier(GENERAL_LEVEL.max)).toBeGreaterThan(1.3);
     expect(generalLevelMultiplier(GENERAL_LEVEL.max)).toBeLessThan(1.5);
+  });
+});
+
+describe('günlük ödül', () => {
+  it('ödül malikâne gelirinden türüyor — sabit sayı yok', () => {
+    // Tek kaynak kontrolü: malikâne gelirini değiştiren biri ödülü
+    // düzeltmeyi unutamamalı, çünkü ödül ondan hesaplanıyor.
+    const seviye = 1;
+    const gelir = malikaneIncome(seviye);
+    const o = gunlukOdul(seviye, 0);
+    expect(o.altin).toBe(Math.round(gelir.altin * B.gunluk_odul.malikane_saati));
+  });
+
+  it('seviye büyüdükçe ödül de büyüyor — anlamını kaybetmiyor', () => {
+    // Sabit ödül Lv60'ta harçlık kalırdı; oranı korumalı.
+    const dusuk = gunlukOdul(1, 0);
+    const yuksek = gunlukOdul(60, 0);
+    expect(yuksek.altin).toBeGreaterThan(dusuk.altin * 3);
+  });
+
+  it('seri çarpanı tavanlı — uzun seri kartopu yapmıyor', () => {
+    const k = B.gunluk_odul;
+    expect(seriCarpani(0)).toBe(1);
+    expect(seriCarpani(k.azami_seri_gunu)).toBeCloseTo(
+      1 + k.azami_seri_gunu * k.seri_carpani_basina,
+    );
+    // Tavanın çok üstünde bir seri çarpanı büyütmemeli.
+    expect(seriCarpani(1000)).toBe(seriCarpani(k.azami_seri_gunu));
+    expect(seriCarpani(1000)).toBeLessThanOrEqual(2);
+  });
+
+  it('bozuk seri değeri çarpanı küçültmüyor', () => {
+    expect(seriCarpani(-5)).toBe(1);
+  });
+
+  it('günlük ödül bir günlük gelirin altında kalıyor', () => {
+    // Ödül bir ALIŞKANLIK aracı, gelir kaynağı değil: günlük görevleri
+    // yapmak, oyunu hiç açmamaktan iyi olmalı ama gün boyu oynamanın
+    // yerini tutmamalı.
+    for (const seviye of [1, 20, 60]) {
+      const gunluk = malikaneIncome(seviye).altin * 24;
+      expect(gunlukOdul(seviye, 999).altin).toBeLessThan(gunluk);
+    }
+  });
+
+  it('ödül günü aynı gün ise alınmış sayılıyor', () => {
+    const simdi = new Date('2026-09-03T22:00:00Z');
+    expect(odulAlindiMi(new Date('2026-09-03T01:00:00Z'), simdi)).toBe(true);
+    expect(odulAlindiMi(new Date('2026-09-02T23:59:59Z'), simdi)).toBe(false);
+    expect(odulAlindiMi(null, simdi)).toBe(false);
   });
 });
 

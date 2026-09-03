@@ -9,23 +9,62 @@
  * imar. Rastgele görev üretmedik: rastgelelik "bugün şanssızım" hissi
  * yaratıyor ve oyuncunun planlamasını bozuyor.
  *
- * Görevler henüz ÖDÜL VERMİYOR. Ödül, "bugün alındı mı" durumunu
- * saklamak demek ve kaynak ödülü ekonomiyi dengelemeyi gerektiriyor;
- * ikisi de ayrı bir iş (docs/09 K4b). Şimdilik ödül serinin kendisi:
- * "yedi gün üst üste" görünür bir şey.
+ * Ödül BAŞTAN görünüyor, hak edilince belirmiyor: oyuncu üç işi neyin
+ * için yaptığını bilmeli. Kilitli bir ödül sebeptir, sonradan çıkan bir
+ * ödül sürprizdir — sürpriz kimseyi yarın geri getirmez.
+ *
+ * Ödül otomatik düşmüyor, oyuncu ALIYOR. Kendiliğinden gelen kaynak fark
+ * edilmez bile; "Al" düğmesi günü bitiren küçük bir tören. (docs/09 K4b)
  */
 import { gunlukSayaci } from '@lordlar/shared';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../api/client';
-import { Bolum, Kart } from './ui';
+import { IkonAltin, IkonDemir, IkonErzak } from './Ikonlar';
+import { Bolum, Buton, Kart, formatSayi } from './ui';
+
+/** Ödülün üç kaynağı tek satırda. */
+function OdulSatiri({ kaynak }: { kaynak: { altin: number; demir: number; erzak: number } }) {
+  return (
+    <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
+      <span className="flex items-center gap-1">
+        <span className="text-altin">
+          <IkonAltin boyut={13} />
+        </span>
+        <span className="tabular font-bold">{formatSayi(kaynak.altin)}</span>
+      </span>
+      <span className="flex items-center gap-1">
+        <span className="text-mavi">
+          <IkonDemir boyut={13} />
+        </span>
+        <span className="tabular font-bold">{formatSayi(kaynak.demir)}</span>
+      </span>
+      <span className="flex items-center gap-1">
+        <span className="text-yesil">
+          <IkonErzak boyut={13} />
+        </span>
+        <span className="tabular font-bold">{formatSayi(kaynak.erzak)}</span>
+      </span>
+    </span>
+  );
+}
 
 export function GunlukKart({ onGit }: { onGit: (s: 'harita' | 'kisla' | 'demirhane') => void }) {
   // Bir dakikalık tazelik yeterli: görevler gün boyunca değişiyor, saniye
   // saniye değil. Sık yoklamak üç sayım sorgusunu boşuna tekrarlardı.
   const q = useQuery({ queryKey: ['gunluk'], queryFn: api.gunluk, staleTime: 60_000 });
+  const qc = useQueryClient();
+  const al = useMutation({
+    mutationFn: api.gunlukOdul,
+    // Kaynaklar da değişiyor: üst bardaki sayılar ödülden sonra eski
+    // kalmamalı, yoksa oyuncu ödülü aldığını göremez.
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ['gunluk'] });
+      void qc.invalidateQueries({ queryKey: ['me'] });
+    },
+  });
   if (!q.data) return null;
 
-  const { gorevler, seri } = q.data;
+  const { gorevler, seri, odul } = q.data;
   const { tamam, toplam } = gunlukSayaci(gorevler);
   const hepsi = tamam === toplam;
 
@@ -76,11 +115,46 @@ export function GunlukKart({ onGit }: { onGit: (s: 'harita' | 'kisla' | 'demirha
             </li>
           ))}
         </ul>
-        {hepsi && (
-          <p className="mt-2 text-[12px] text-yesil">
-            Bugünün üçü de tamam. Yarın seri {seri + 1} olur.
-          </p>
-        )}
+        <div className="mt-2.5 border-t border-kenar/70 pt-2.5">
+          <div className="flex items-baseline justify-between gap-2">
+            <span className="baslik text-[11px] text-solgun">Günün ödülü</span>
+            {odul.seriCarpani > 1 && (
+              <span className="tabular text-[11px] text-altin">
+                seri ×{odul.seriCarpani.toFixed(1)}
+              </span>
+            )}
+          </div>
+          <div className="mt-1 text-[12px] text-parsomen">
+            <OdulSatiri kaynak={odul.kaynak} />
+          </div>
+
+          {odul.alindi ? (
+            <p className="mt-2 text-[12px] text-yesil">
+              Bugünün ödülü alındı. Yarın seri {seri + 1} olur, ödül de büyür.
+            </p>
+          ) : odul.hakEdildi ? (
+            <>
+              <Buton
+                tur="altin"
+                tam
+                className="mt-2"
+                onClick={() => al.mutate()}
+                disabled={al.isPending}
+              >
+                {al.isPending ? 'Alınıyor…' : 'Ödülü al'}
+              </Buton>
+              {al.data?.kirpildi && (
+                <p className="mt-1.5 text-[11px] text-turuncu">
+                  Deponun bir kısmı doluydu; sığan kadarı verildi.
+                </p>
+              )}
+            </>
+          ) : (
+            <p className="mt-2 text-[12px] text-sonuk">
+              Üç görevi de bitirince alınır ({tamam}/{toplam}).
+            </p>
+          )}
+        </div>
       </Kart>
     </Bolum>
   );

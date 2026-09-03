@@ -211,7 +211,7 @@ Sıra keyfi değil: **oyuncunun hissettiği fark / harcanan emek** oranına gör
 | K1 | **Karşı-birim ipuçları** | Motorda duran stratejiyi görünür kılar. Türün en büyük eleştirisine tek dosyayla cevap. | küçük |
 | K2 | **Rapor neden kazandığını söylesin** | Oyuncu öğrenmeye başlar. Veri zaten elde. | küçük |
 | K3 | **Başarımlar** | "İlk fetih", "on bölge", "tam takım" — kilometre taşları hissedilir olur. | orta |
-| K4 | **Günlük görevler + giriş serisi** | Yarın geri gelme sebebi. | orta |
+| K4 | **Günlük görevler + giriş serisi + ödül** | Yarın geri gelme sebebi. Ödül malikâne gelirinden türüyor, seri çarpanı tavanlı. | orta |
 | K5 | **Lider avı + azalan verim** | Kartopunu kırar, oyunu canlı tutar. | orta |
 | K6 | **Yağma sonrası kalkan** | Bir gecede silinen oyuncu geri gelmiyor. Zinciri kesen kalkan; kayıp tavanı çözmüyordu (§3.6). | küçük |
 | K7 | **"Yapacak bir şey yok" ekranı olmasın** | Her ekranın boş hâli bir sonraki işi göstersin. | küçük |
