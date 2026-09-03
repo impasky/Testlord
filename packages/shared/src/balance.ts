@@ -173,3 +173,27 @@ export function bolgeAsamaAdi(type: string, level: number): string {
   if (!adlar || adlar.length === 0) return `Seviye ${level}`;
   return adlar[Math.min(Math.max(1, level), adlar.length) - 1]!;
 }
+
+/**
+ * Lider avı — kartopu freni.
+ *
+ * Lider öne geçtikten sonra fark kapanmıyorsa oyun bitmeden ölüyor
+ * (docs/09 §3.4). Çözüm lideri zayıflatmak DEĞİL; ona saldırmayı kârlı
+ * kılmak. Nerf oyuncuyu cezalandırır ve zirveye çıkmayı anlamsızlaştırır;
+ * ödül ise herkese bir hedef verir ve zirvedeki oyuncu da bunu bilerek
+ * savunma kurar. Travian'ın "lidere karşı ittifak" dinamiği de böyle
+ * çalışıyor.
+ */
+export function liderAviYagmaBonusu(): number {
+  return B.lider_avi.yagma_bonusu;
+}
+
+/**
+ * Bu dünyada lider avı geçerli mi?
+ *
+ * İki kişilik bir dünyada "lider" anlamsız ve işaret sadece kafa
+ * karıştırır. Eşik `balance.json`da.
+ */
+export function liderAviGecerliMi(lordSayisi: number): boolean {
+  return lordSayisi >= B.lider_avi.en_az_lord;
+}

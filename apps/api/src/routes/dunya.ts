@@ -9,7 +9,7 @@
  *
  * Bu uç o üç cümlenin verisini veriyor. (docs/08 İ5, İ6)
  */
-import { B } from '@lordlar/shared';
+import { B, liderAviGecerliMi, liderAviYagmaBonusu } from '@lordlar/shared';
 import type { FastifyInstance } from 'fastify';
 import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
@@ -28,7 +28,7 @@ export async function dunyaRoutes(app: FastifyInstance): Promise<void> {
 
     const aktifSinir = new Date(Date.now() - AKTIF_GUN * 86_400_000);
 
-    const [dunya, lordSayisi, aktif, ustumde, taht, sonSavaslar] = await Promise.all([
+    const [dunya, lordSayisi, aktif, ustumde, taht, lider, sonSavaslar] = await Promise.all([
       prisma.world.findUniqueOrThrow({
         where: { id: ben.worldId },
         select: { name: true, playerCap: true },
@@ -41,6 +41,13 @@ export async function dunyaRoutes(app: FastifyInstance): Promise<void> {
       prisma.region.findFirst({
         where: { worldId: ben.worldId, type: 'taht' },
         select: { id: true, name: true, owner: { select: { id: true, name: true } } },
+      }),
+      // Lider avı: diyarın en yüksek şöhretli lordu. Kartopu freni buna
+      // bağlı ve oyuncunun kimin peşine düşeceğini bilmesi gerekiyor.
+      prisma.lord.findFirst({
+        where: { worldId: ben.worldId },
+        orderBy: { fame: 'desc' },
+        select: { id: true, name: true, fame: true },
       }),
       // Haritanın "yaşayan yer" hissi için son savaşlar. Veri zaten Battle
       // tablosunda; yeni model gerekmiyor. Sahte veri üretilmiyor — savaş
@@ -79,6 +86,18 @@ export async function dunyaRoutes(app: FastifyInstance): Promise<void> {
             sohretBonusu: B.taht_kalesi.unvan_sohret_bonusu,
           }
         : null,
+      // Lider tek başınaysa (ya da dünya çok küçükse) av yok: iki kişilik
+      // bir dünyada "lider" anlamsız ve işaret sadece kafa karıştırır.
+      liderAvi:
+        lider && liderAviGecerliMi(lordSayisi)
+          ? {
+              lordId: lider.id,
+              ad: lider.name,
+              sohret: lider.fame,
+              yagmaBonusu: liderAviYagmaBonusu(),
+              benMiyim: lider.id === lordId,
+            }
+          : null,
       olaylar: sonSavaslar.map((b) => {
         const log = b.log as { regionName?: string } | null;
         return {

@@ -17,7 +17,7 @@
  */
 import { useQuery } from '@tanstack/react-query';
 import { api, type DunyaDto } from '../api/client';
-import { IkonTaht } from './Ikonlar';
+import { IkonSaldiri, IkonTaht } from './Ikonlar';
 import { Kart, formatSayi } from './ui';
 
 /** "2 saat önce", "az önce". */
@@ -49,6 +49,36 @@ export function DunyaBasligi({ dunya }: { dunya: DunyaDto }) {
           <span>taht sahipsiz</span>
         )}
       </span>
+
+      {/* Lider avı: oyuncunun kimin peşine düşeceğini bilmesi gerekiyor.
+          Lider bensem cümle tersine dönüyor — av benim üstümde. */}
+      {dunya.liderAvi && (
+        <>
+          <span aria-hidden>·</span>
+          <span className="inline-flex items-center gap-1">
+            <span className="text-kirmizi">
+              <IkonSaldiri boyut={11} />
+            </span>
+            {dunya.liderAvi.benMiyim ? (
+              <span>
+                <strong className="text-kirmizi">av sensin</strong> · sana saldıran{' '}
+                <strong className="text-parsomen">
+                  +%{Math.round(dunya.liderAvi.yagmaBonusu * 100)}
+                </strong>{' '}
+                yağma alır
+              </span>
+            ) : (
+              <span>
+                lider avı <strong className="text-parsomen">{dunya.liderAvi.ad}</strong> ·{' '}
+                <strong className="text-kirmizi">
+                  +%{Math.round(dunya.liderAvi.yagmaBonusu * 100)}
+                </strong>{' '}
+                yağma
+              </span>
+            )}
+          </span>
+        </>
+      )}
     </div>
   );
 }

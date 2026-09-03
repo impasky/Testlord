@@ -515,6 +515,16 @@ export function Harita({
                   </Hap>
                 )}
                 <Hap renk="var(--color-mavi)">{bolge.distance} hex</Hap>
+                {/* Lider avı: bu bölge diyarın liderine aitse yağma
+                    bonuslu. Oyuncunun saldırıya karar verdiği yerde
+                    yazması gerekiyor, sadece dünya başlığında değil. */}
+                {dunya.data?.liderAvi &&
+                  !dunya.data.liderAvi.benMiyim &&
+                  bolge.owner?.id === dunya.data.liderAvi.lordId && (
+                    <Hap renk="var(--color-kirmizi)">
+                      lider avı · +%{Math.round(dunya.data.liderAvi.yagmaBonusu * 100)} yağma
+                    </Hap>
+                  )}
                 {bolge.fortressBonus > 0 && (
                   <Hap renk="var(--color-kirmizi)">
                     tahkimat +%{Math.round(bolge.fortressBonus * 100)}

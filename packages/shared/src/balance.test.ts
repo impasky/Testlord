@@ -16,6 +16,9 @@ import {
   fortressBonus,
   itemPower,
   basarimSayaci,
+  calculateLoot,
+  liderAviGecerliMi,
+  liderAviYagmaBonusu,
   basarimlar,
   eleGecirmeEsigi,
   karsiIpuclari,
@@ -453,5 +456,40 @@ describe('başarımlar', () => {
     const k = basarimlar(dolu);
     const eksik = k.flatMap((x) => x.basarimlar).filter((b) => !b.tamam);
     expect(eksik).toEqual([]);
+  });
+});
+
+describe('lider avı', () => {
+  it('küçük dünyada av yok', () => {
+    // İki kişilik bir dünyada "lider" anlamsız.
+    expect(liderAviGecerliMi(1)).toBe(false);
+    expect(liderAviGecerliMi(2)).toBe(false);
+    expect(liderAviGecerliMi(3)).toBe(true);
+    expect(liderAviGecerliMi(50)).toBe(true);
+  });
+
+  it('yağma bonusu balance.json ile aynı', () => {
+    expect(liderAviYagmaBonusu()).toBe(0.5);
+  });
+
+  it('yağma bölgede duran kaynaktan fazla olamaz', () => {
+    // Kritik: lider avı bonusu yağma ORANINI artırıyor. Oran 1'i geçerse
+    // saldıran yoktan kaynak kazanır ve bölge deposu Math.max(0,...) ile
+    // korunduğu için hata sessiz kalır.
+    const depo = { altin: 1000, demir: 1000, erzak: 1000 };
+    const ordu = { milis: 10_000 }; // taşıma kapasitesi sınırlamasın
+    const yagma = calculateLoot(depo, ordu, 500, 5); // absürt bonuslar
+    expect(yagma.altin).toBeLessThanOrEqual(depo.altin);
+    expect(yagma.demir).toBeLessThanOrEqual(depo.demir);
+    expect(yagma.erzak).toBeLessThanOrEqual(depo.erzak);
+  });
+
+  it('lider avı yağmayı artırıyor ama sınırın içinde', () => {
+    const depo = { altin: 10_000, demir: 0, erzak: 0 };
+    const ordu = { milis: 10_000 };
+    const normal = calculateLoot(depo, ordu, 0, 0);
+    const avli = calculateLoot(depo, ordu, 0, liderAviYagmaBonusu());
+    expect(avli.altin).toBeGreaterThan(normal.altin);
+    expect(avli.altin).toBeLessThanOrEqual(depo.altin);
   });
 });

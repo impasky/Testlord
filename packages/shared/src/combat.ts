@@ -7,7 +7,13 @@
  *   3. Seed savaş kaydında saklanır; her savaş sonsuza dek yeniden üretilebilir.
  *   4. İstemci önizleme için aynı fonksiyonu çağırır; sunucunun sonucu otoritedir.
  */
-import { B, carryCapacityPerUnit, counterMultiplier, unit } from './balance.js';
+import {
+  B,
+  carryCapacityPerUnit,
+  counterMultiplier,
+  liderAviYagmaBonusu,
+  unit,
+} from './balance.js';
 import { createRng } from './rng.js';
 import type { Army, BattleResult, Resources, RoundLog, Side, UnitType } from './types.js';
 import { UNIT_TYPES } from './types.js';
@@ -19,6 +25,15 @@ export interface BattleContext {
   attackerCunning: number;
   /** Bölge ele geçirilebilir mi (ör. Taht Kalesi hep evet, yağma akını hayır). */
   canCapture: boolean;
+  /**
+   * Lider avı: hedef, diyarın en yüksek şöhretli lorduna mı ait?
+   *
+   * Yağma bonusunu buradan geçiyoruz, sonradan çarpmıyoruz. Sebep:
+   * `calculateLoot` yağmayı bölgenin deposuna ve ordunun taşıma
+   * kapasitesine göre sınırlıyor. Sonuca çarpmak o iki sınırı da atlar ve
+   * saldıran bölgede olmayan kaynağı kazanır.
+   */
+  liderAvi?: boolean;
 }
 
 export function armyCount(army: Army): number {
@@ -195,7 +210,12 @@ export function calculateLoot(
   lootBonus: number,
 ): Resources {
   const plunderBonus = 1 + cunning * 0.01 + lootBonus;
-  const rate = B.savas.yagma_orani * plunderBonus;
+  // Oran 1'i geçemez: geçse yağma bölgede duran kaynaktan fazla olur ve
+  // saldıran yoktan kaynak kazanır. Bölge deposu Math.max(0, ...) ile
+  // korunuyor, yani hata sessiz kalırdı — açık gerçek olmasa da (bugünkü
+  // yagma_orani 0.25 ve erişilebilir kurnazlıkla 1'e ulaşılmıyor) yağma
+  // bonusu her eklendiğinde bu sınırın yeniden hesaplanması gerekirdi.
+  const rate = Math.min(1, B.savas.yagma_orani * plunderBonus);
   const wanted: Resources = {
     altin: store.altin * rate,
     demir: store.demir * rate,
@@ -298,7 +318,7 @@ export function simulateBattle(
           ctx.defenderStore,
           attackerSurvivors,
           ctx.attackerCunning,
-          attacker.generalBonus.yagma,
+          attacker.generalBonus.yagma + (ctx.liderAvi ? liderAviYagmaBonusu() : 0),
         )
       : { altin: 0, demir: 0, erzak: 0 };
 

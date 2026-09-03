@@ -293,6 +293,15 @@ export interface DunyaDto {
     sahip: { id: string; name: string } | null;
     sohretBonusu: number;
   } | null;
+  /** Lider avı — kartopu freni. Dünya çok küçükse null. */
+  liderAvi: {
+    lordId: string;
+    ad: string;
+    sohret: number;
+    yagmaBonusu: number;
+    /** Lider bensem işaret farklı okunmalı: av benim üstümde. */
+    benMiyim: boolean;
+  } | null;
   olaylar: {
     id: string;
     zaman: string;

@@ -6,6 +6,7 @@
  * dağıtır, bölgeyi devreder.
  */
 import {
+  liderAviGecerliMi,
   B,
   UNIT_TYPES,
   abilityValue,
@@ -245,6 +246,35 @@ function toplamGeneralXp(level: number, xpIntoLevel: number): number {
  * Bir yürüyüşü çözer. İdempotent: satırı koşullu updateMany ile alır.
  * Dönüş: işlendi mi.
  */
+/**
+ * Hedef, diyarın liderine mi ait?
+ *
+ * Lider = bu dünyada en yüksek şöhretli lord. Kendi kendine saldırılamaz,
+ * ama saldıran zaten lider olsa da bonus yine geçerli: kimse kendi
+ * bölgesine saldırmıyor, hedef başka birinin.
+ *
+ * Sorgu savaş çözümünde bir kez çalışıyor. Şöhreti sıralamak zaten
+ * indeksli ve tek satır dönüyor.
+ */
+async function liderAviGecerli(
+  worldId: string,
+  defenderLordId: string | null,
+  attackerLordId: string,
+  tx: Tx,
+): Promise<boolean> {
+  if (!defenderLordId || defenderLordId === attackerLordId) return false;
+
+  const lordSayisi = await tx.lord.count({ where: { worldId } });
+  if (!liderAviGecerliMi(lordSayisi)) return false;
+
+  const lider = await tx.lord.findFirst({
+    where: { worldId },
+    orderBy: { fame: 'desc' },
+    select: { id: true },
+  });
+  return lider?.id === defenderLordId;
+}
+
 export async function resolveMarch(marchId: string): Promise<boolean> {
   const sonuc = await prisma.$transaction(
     async (tx) => {
@@ -330,6 +360,7 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
           })
         ).kurnazlik,
         canCapture: true,
+        liderAvi: await liderAviGecerli(march.worldId, defenderLordId, march.lordId, tx),
       });
 
       const attackerWon = result.winner === 'attacker';
