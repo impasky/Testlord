@@ -299,14 +299,17 @@ export function Bolum({
   yan,
   children,
   className = '',
+  id,
 }: {
   baslik?: string;
   yan?: ReactNode;
   children: ReactNode;
   className?: string;
+  /** Aynı ekran içinde bu bölüme kaydırmak için (boş hâl eylemleri). */
+  id?: string;
 }) {
   return (
-    <section className={className}>
+    <section id={id} className={className}>
       {baslik && (
         <header className="mb-2.5 flex items-center justify-between gap-2">
           <h2 className="plaka baslik px-3.5 py-1.5 text-[12px] text-altin">{baslik}</h2>

@@ -6,6 +6,8 @@
  * yapılamayan işlemin düğmesi kapalı ve sebebi yazılı.
  */
 import { EQUIP_SLOTS, B, lordContribution, type EquippedItem } from '@lordlar/shared';
+import type { Sekme } from '../components/MobilKabuk';
+import { BosHal } from '../components/BosHal';
 import { Gorsel } from '../components/Gorsel';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
@@ -322,10 +324,13 @@ export function Demirhane({
   lord,
   queues,
   onGuncelle,
+  onGit,
 }: {
   lord: LordState;
   queues: QueueItem[];
   onGuncelle: () => void;
+  /** Boş hâllerden çıkış yolu — hiçbir ekran çıkmaz sokak olmamalı. */
+  onGit: (s: Sekme) => void;
 }) {
   const qc = useQueryClient();
   const [tier, setTier] = useState(1);
@@ -402,7 +407,7 @@ export function Demirhane({
         </Kart>
       )}
 
-      <Bolum baslik="Ekipman Üretimi">
+      <Bolum baslik="Ekipman Üretimi" id="ekipman-uretimi">
         <Kart className="p-3">
           <div className="gizli-kaydirma mb-2 flex gap-1.5 overflow-x-auto">
             {items.data?.tiers.map((t) => (
@@ -513,9 +518,21 @@ export function Demirhane({
 
       <Bolum baslik={`Envanter · ${items.data?.items.length ?? 0}`}>
         {items.data?.items.length === 0 ? (
-          <Kart className="p-4">
-            <p className="text-[13px] text-solgun">Henüz ekipmanın yok.</p>
-          </Kart>
+          // Üretim kartı bu ekranın YUKARISINDA; oyuncuyu başka sekmeye
+          // yollamak yerine oraya kaydırıyoruz.
+          <BosHal
+            mesaj="Henüz ekipmanın yok. İlk parçanı üretmek ordunun gücünü doğrudan artırır."
+            eylemler={[
+              {
+                etiket: 'Ekipman üret',
+                onTikla: () =>
+                  document
+                    .getElementById('ekipman-uretimi')
+                    ?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+              },
+              { etiket: 'Kışla', onTikla: () => onGit('kisla') },
+            ]}
+          />
         ) : (
           <div className="grid gap-2 sm:grid-cols-2">
             {items.data?.items.map((i) => (

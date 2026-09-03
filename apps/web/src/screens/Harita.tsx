@@ -17,6 +17,8 @@ import { BirimIkonu, IkonKapali, IkonSure } from '../components/Ikonlar';
 import { bolgeGorselAdi } from '../components/Gorsel';
 import { hisAgir, hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { DunyaBasligi, OlaySeridi } from '../components/DunyaSeridi';
+import type { Sekme } from '../components/MobilKabuk';
+import { BosHal } from '../components/BosHal';
 import { KarsiIpuclari } from '../components/KarsiIpuclari';
 import { SaldiriOnizleme } from '../components/SaldiriOnizleme';
 import { SavasRaporu } from '../components/SavasRaporu';
@@ -139,11 +141,14 @@ function OrduSecici({
   secim,
   onDegis,
   etiket,
+  onKislaGit,
 }: {
   mevcut: Army;
   secim: Army;
   onDegis: (a: Army) => void;
   etiket: string;
+  /** Ordu boşken çıkış yolu. Verilmezse boş hâl eylemsiz kalır. */
+  onKislaGit?: () => void;
 }) {
   const gorunen = UNIT_TYPES.filter((t) => (mevcut[t] ?? 0) > 0 || (secim[t] ?? 0) > 0);
   return (
@@ -160,7 +165,10 @@ function OrduSecici({
         )}
       </div>
       {gorunen.length === 0 ? (
-        <p className="text-[12px] text-solgun">Evde asker yok. Önce Kışla'da eğit.</p>
+        <BosHal
+          mesaj="Evde asker yok. Saldırmak için önce ordu kurman gerekiyor."
+          eylemler={onKislaGit ? [{ etiket: "Kışla'ya git", onTikla: onKislaGit }] : []}
+        />
       ) : (
         <ul className="space-y-1.5">
           {gorunen.map((t) => (
@@ -198,6 +206,7 @@ export function Harita({
   baslangicBolge,
   onBaslangicIslendi,
   onGuncelle,
+  onGit,
 }: {
   lord: LordState;
   queues: QueueItem[];
@@ -205,6 +214,8 @@ export function Harita({
   baslangicBolge: number | null;
   onBaslangicIslendi: () => void;
   onGuncelle: () => void;
+  /** Boş hâllerden çıkış yolu — hiçbir ekran çıkmaz sokak olmamalı. */
+  onGit: (s: Sekme) => void;
 }) {
   const lordId = lord.id;
   const qc = useQueryClient();
@@ -736,6 +747,7 @@ export function Harita({
                       setOnizleme(null);
                     }}
                     etiket="Saldırı ordusu"
+                    onKislaGit={() => onGit('kisla')}
                   />
 
                   {!secimBos && (

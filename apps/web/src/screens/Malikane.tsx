@@ -26,6 +26,7 @@ import {
   formatSayi,
 } from '../components/ui';
 import { Basarimlar } from '../components/Basarimlar';
+import { BosHal } from '../components/BosHal';
 import { Zemin } from '../components/Zemin';
 
 const KUYRUK_ADI: Record<string, string> = {
@@ -256,9 +257,13 @@ export function Malikane({
 
       <Bolum baslik="Olay Akışı">
         {events.length === 0 ? (
-          <Kart className="p-4">
-            <p className="text-[13px] text-solgun">Henüz bir şey olmadı.</p>
-          </Kart>
+          <BosHal
+            mesaj="Henüz bir şey olmadı. Bir saldırı yaptığında ya da bölgen geliştiğinde burada okursun."
+            eylemler={[
+              { etiket: 'Haritaya git', onTikla: () => onGit('harita') },
+              { etiket: 'Kışla', onTikla: () => onGit('kisla') },
+            ]}
+          />
         ) : (
           <div className="space-y-2">
             {events.slice(0, 12).map((e) => {

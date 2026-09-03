@@ -175,12 +175,15 @@ export function App() {
           baslangicBolge={hedefBolge}
           onBaslangicIslendi={() => setHedefBolge(null)}
           onGuncelle={tazele}
+          onGit={setSekme}
         />
       )}
-      {sekme === 'demirhane' && <Demirhane lord={lord} queues={queues} onGuncelle={tazele} />}
+      {sekme === 'demirhane' && (
+        <Demirhane lord={lord} queues={queues} onGuncelle={tazele} onGit={setSekme} />
+      )}
       {sekme === 'lord' && <LordEkrani lord={lord} onGuncelle={tazele} />}
       {sekme === 'generaller' && <Generaller onGuncelle={tazele} />}
-      {sekme === 'siralama' && <Siralama lordId={lord.id} />}
+      {sekme === 'siralama' && <Siralama lordId={lord.id} onGit={setSekme} />}
       {sekme === 'hesap' && <Hesap lord={lord} onCikis={cikis} />}
     </MobilKabuk>
   );

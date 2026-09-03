@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { ApiError, api, type RankingRow } from '../api/client';
 import { IkonNavSiralama } from '../components/Ikonlar';
 import { Alan, Bolum, Buton, Input, Kart, Rozet, formatSayi } from '../components/ui';
+import type { Sekme } from '../components/MobilKabuk';
+import { BosHal } from '../components/BosHal';
 import { Zemin } from '../components/Zemin';
 
 type Board = 'fame' | 'conquest' | 'elo';
@@ -71,7 +73,14 @@ function Satir({
   );
 }
 
-export function Siralama({ lordId }: { lordId: string }) {
+export function Siralama({
+  lordId,
+  onGit,
+}: {
+  lordId: string;
+  /** Boş hâllerden çıkış yolu — hiçbir ekran çıkmaz sokak olmamalı. */
+  onGit: (s: Sekme) => void;
+}) {
   const [board, setBoard] = useState<Board>('fame');
   const [raporlanan, setRaporlanan] = useState<RankingRow | null>(null);
   const [sebep, setSebep] = useState('');
@@ -151,7 +160,10 @@ export function Siralama({ lordId }: { lordId: string }) {
                 <span className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-xl bg-altin/15 text-altin">
                   <IkonNavSiralama boyut={26} />
                 </span>
-                <p className="text-[13px] text-solgun">Bu dünyada henüz kimse yok.</p>
+                <BosHal
+                  mesaj="Bu tabloda henüz kimse yok. Sıralamaya girmenin yolu bölge almaktan geçiyor."
+                  eylemler={[{ etiket: 'Haritaya git', onTikla: () => onGit('harita') }]}
+                />
               </Kart>
             )}
           </>
