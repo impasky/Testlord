@@ -9,8 +9,16 @@
  * hangi turda üstünlüğü kaybettiğini görürsün. Kayıp/kalan dökümü de
  * birimlerin ucuzdan pahalıya öldüğünü gözle doğrulatır.
  */
-import { UNIT_TYPES, unitName, type Army, type UnitType } from '@lordlar/shared';
+import {
+  UNIT_TYPES,
+  savasSebepleri,
+  unitName,
+  type Army,
+  type SavasSebebi,
+  type UnitType,
+} from '@lordlar/shared';
 import { useQuery } from '@tanstack/react-query';
+import type { ReactNode } from 'react';
 import { api, type BattleDto, type GeneralKatkisiDto, type LordOzetiDto } from '../api/client';
 import { BirimIkonu, IkonAltin, IkonDemir, IkonErzak, IkonKapali } from './Ikonlar';
 import { Buton, Fark, Kart, Rozet, SonucSatiri, formatSayi, nadirlikRengi } from './ui';
@@ -257,6 +265,121 @@ function GeneralKatkilari({
   );
 }
 
+
+/**
+ * "Neden böyle oldu" kartı.
+ *
+ * Raporun geri kalanı NE olduğunu anlatıyor; bu kart NEDEN olduğunu.
+ * Oyuncu neden kaybettiğini bilmiyorsa öğrenemiyor, öğrenemiyorsa oyun
+ * stratejiden kumara dönüyor (docs/09 §3.7).
+ *
+ * Yeni veri istemedi: savaşa giren ordular kayıp + kurtulan toplamından
+ * çıkıyor, güç oranı tur tur güçlerden. Tek eklenen alan tahkimat, çünkü
+ * bölge sonradan gelişebileceği için geriye dönük hesaplanamıyordu.
+ */
+function NedenKarti({ savas, saldiranBenim }: { savas: BattleDto; saldiranBenim: boolean }) {
+  const l = savas.log;
+  const saldiranOrdu = topla(l.attackerLosses, l.attackerSurvivors);
+  const savunanOrdu = topla(l.defenderLosses, l.defenderSurvivors);
+
+  const sebepler = savasSebepleri({
+    bakis: saldiranBenim ? 'saldiran' : 'savunan',
+    saldiranOrdu,
+    savunanOrdu,
+    turlar: l.rounds,
+    saldiranKazandi: savas.result === 'attacker_win',
+    eleGecirdi: savas.captured,
+    // Eski savaşlarda alan yok; 0 vermek "tahkimat sebep değildi" demek
+    // ve o eski raporlar için doğru olan da bu — yanlış bir sayı
+    // uydurmaktan iyi.
+    tahkimatBonusu: l.tahkimatBonusu ?? 0,
+  });
+
+  if (sebepler.length === 0) return null;
+
+  return (
+    <Kart className="p-3">
+      <h3 className="baslik mb-2 text-[11px] text-solgun">Neden Böyle Oldu</h3>
+      <ul className="space-y-1.5">
+        {sebepler.map((s, i) => (
+          <li key={i} className="flex gap-2 text-[13px]">
+            <span
+              className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full"
+              style={{
+                background: s.lehte ? 'var(--color-yesil)' : 'var(--color-kirmizi)',
+              }}
+            />
+            <span className="min-w-0 text-solgun">{sebepCumlesi(s)}</span>
+          </li>
+        ))}
+      </ul>
+    </Kart>
+  );
+}
+
+/** İki orduyu toplar: kayıp + kurtulan = savaşa giren. */
+function topla(a: Army, b: Army): Army {
+  const t: Army = {};
+  for (const k of UNIT_TYPES) {
+    const n = (a[k] ?? 0) + (b[k] ?? 0);
+    if (n > 0) t[k] = n;
+  }
+  return t;
+}
+
+/**
+ * Sebebi cümleye çevirir.
+ *
+ * Cümle burada, `packages/shared`da değil: aynı yapıyı önizlemede ve
+ * raporda farklı kiplerde ("kazanırsan" / "kazandın") göstermek
+ * isteyebiliriz. Paylaşılan katman veriyi taşıyor, dil arayüzde.
+ */
+function sebepCumlesi(s: SavasSebebi): ReactNode {
+  const g = (x: string) => <strong className="text-parsomen">{x}</strong>;
+  switch (s.tur) {
+    case 'guc':
+      return s.lehte ? (
+        <>Gücün savunanın {g(`${s.deger!.toFixed(1)} katıydı`)}.</>
+      ) : (
+        <>Karşı taraf {g(`${(1 / s.deger!).toFixed(1)} kat`)} güçlüydü.</>
+      );
+    case 'dar_zafer':
+      return (
+        <>
+          Savaş kazanıldı ama güç payı {g(`%${Math.round(s.deger! * 100)}`)} eşiğine
+          ulaşmadı — bölge el değiştirmedi, yalnızca yağma alındı.
+        </>
+      );
+    case 'tahkimat':
+      return s.lehte ? (
+        <>Tahkimatın savunmaya {g(`+%${Math.round(s.deger! * 100)}`)} kattı.</>
+      ) : (
+        <>Hedefin tahkimatı savunmaya {g(`+%${Math.round(s.deger! * 100)}`)} kattı.</>
+      );
+    case 'karsi':
+      return s.lehte ? (
+        <>
+          {g(unitName(s.benim!))} birliklerin {g(unitName(s.onun!))} karşısında{' '}
+          {g(`×${s.deger}`)} vurdu.
+        </>
+      ) : (
+        <>
+          {g(unitName(s.benim!))} birliklerin {g(unitName(s.onun!))} karşısında{' '}
+          {g(`×${s.deger}`)} yedi.
+        </>
+      );
+    case 'kusatma_iyi':
+      return <>Mancınıklar tahkimata karşı iki katı iş yaptı.</>;
+    case 'kusatma_bosa':
+      return (
+        <>
+          Tahkimat olmadığı için mancınıklar canlı orduya {g('yarım')} vurdu — o
+          kaynak boşa gitti.
+        </>
+      );
+  }
+}
+
 export function SavasRaporu({
   battleId,
   benimId,
@@ -340,6 +463,11 @@ export function SavasRaporu({
                   Tur tur güç ve kayıp dökümü "neden oldu"yu anlatır ve
                   aşağıda kalır. */}
               {benimOzet && <SavasSonucu ozet={benimOzet} />}
+
+              {/* "Neden" sonucun hemen altında: oyuncu ne kazandığını
+                  gördükten sonra soracağı ilk soru bu. Tur tur güç ve
+                  kayıp dökümü kanıtı, bu kart ise okuması. */}
+              <NedenKarti savas={savas} saldiranBenim={saldiranBenim} />
 
               <Kart className="p-3">
                 <h3 className="baslik mb-2.5 text-[11px] text-solgun">

@@ -474,6 +474,11 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
             defenderSurvivors: result.defenderSurvivors,
             loot: result.loot,
             regionName: region.name,
+            // Savaş anındaki tahkimat. Bölge sonradan gelişebilir ya da
+            // el değiştirebilir, o yüzden rapordan geriye dönük
+            // hesaplanamaz — savaşla birlikte saklanması gerekiyor.
+            // Raporun "neden" bölümü bunu kullanıyor (docs/09 K2).
+            tahkimatBonusu: fortress,
             attackerGenerals: saldiranGeneraller,
             defenderGenerals: savunanGeneraller,
             sonuc: {

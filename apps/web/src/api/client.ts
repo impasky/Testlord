@@ -399,6 +399,8 @@ export interface BattleDto {
     defenderSurvivors: Army;
     loot: Resources;
     regionName: string;
+    /** Savaş anındaki tahkimat bonusu. Eski savaşlarda yok. */
+    tahkimatBonusu?: number;
     /** Sahadaki generaller. Eski savaşlarda yok — arayüz bunu tolere eder. */
     attackerGenerals?: GeneralKatkisiDto[];
     defenderGenerals?: GeneralKatkisiDto[];

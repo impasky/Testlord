@@ -15,10 +15,13 @@ import {
   commandCapacity,
   fortressBonus,
   itemPower,
+  eleGecirmeEsigi,
   karsiIpuclari,
   kusamSeviyesi,
   kusatmaCarpanlari,
   kusatmaDurumu,
+  ortalamaGucPayi,
+  savasSebepleri,
   lordContribution,
   malikaneIncome,
   maxRegions,
@@ -296,5 +299,110 @@ describe('karşı-birim ipuçları', () => {
     const c = kusatmaCarpanlari();
     expect(c.kale).toBe(2.0);
     expect(c.birim).toBe(0.5);
+  });
+});
+
+describe('savaş sebepleri', () => {
+  const turlar = (a: number, d: number) =>
+    Array.from({ length: 5 }, () => ({ saldiranGuc: a, savunanGuc: d }));
+
+  it('ortalama güç payı: eşit güçte 0.5', () => {
+    expect(ortalamaGucPayi(turlar(100, 100))).toBeCloseTo(0.5);
+  });
+
+  it('boş turlarda 0.5 döner, bölme hatası vermez', () => {
+    expect(ortalamaGucPayi([{ saldiranGuc: 0, savunanGuc: 0 }])).toBe(0.5);
+    expect(ortalamaGucPayi([])).toBe(0.5);
+  });
+
+  it('güç farkı belirginse sebep olarak yazılır', () => {
+    const s = savasSebepleri({
+      bakis: 'saldiran',
+      saldiranOrdu: { milis: 100 },
+      savunanOrdu: { milis: 20 },
+      turlar: turlar(300, 100),
+      saldiranKazandi: true,
+      eleGecirdi: true,
+      tahkimatBonusu: 0,
+    });
+    const guc = s.find((x) => x.tur === 'guc');
+    expect(guc).toMatchObject({ lehte: true });
+    expect(guc!.deger).toBeGreaterThan(2);
+  });
+
+  it('şansa kalmış savaşta güç sebebi yazılmaz', () => {
+    // Tur başına ±%7 varyans var; 1.15'in altındaki fark sonucu açıklamıyor.
+    const s = savasSebepleri({
+      bakis: 'saldiran',
+      saldiranOrdu: { milis: 100 },
+      savunanOrdu: { milis: 95 },
+      turlar: turlar(105, 100),
+      saldiranKazandi: true,
+      eleGecirdi: true,
+      tahkimatBonusu: 0,
+    });
+    expect(s.find((x) => x.tur === 'guc')).toBeUndefined();
+  });
+
+  it('dar zafer: kazandı ama eşiği aşamadı', () => {
+    const s = savasSebepleri({
+      bakis: 'saldiran',
+      saldiranOrdu: { milis: 100 },
+      savunanOrdu: { milis: 90 },
+      turlar: turlar(110, 100),
+      saldiranKazandi: true,
+      eleGecirdi: false,
+      tahkimatBonusu: 0,
+    });
+    const dar = s.find((x) => x.tur === 'dar_zafer');
+    expect(dar).toBeDefined();
+    // Saldıranın aleyhine: kazandı ama bölgeyi alamadı.
+    expect(dar!.lehte).toBe(false);
+    expect(dar!.deger).toBe(eleGecirmeEsigi());
+  });
+
+  it('sebepler bakış açısına göre dönüyor', () => {
+    const girdi = {
+      saldiranOrdu: { okcu: 100 } as Army,
+      savunanOrdu: { suvari: 100 } as Army,
+      turlar: turlar(100, 300),
+      saldiranKazandi: false,
+      eleGecirdi: false,
+      tahkimatBonusu: 0.3,
+    };
+    const saldiran = savasSebepleri({ ...girdi, bakis: 'saldiran' });
+    const savunan = savasSebepleri({ ...girdi, bakis: 'savunan' });
+
+    // Aynı savaş, ters işaret: saldıranın aleyhine olan savunanın lehine.
+    expect(saldiran.find((x) => x.tur === 'guc')!.lehte).toBe(false);
+    expect(savunan.find((x) => x.tur === 'guc')!.lehte).toBe(true);
+    expect(saldiran.find((x) => x.tur === 'tahkimat')!.lehte).toBe(false);
+    expect(savunan.find((x) => x.tur === 'tahkimat')!.lehte).toBe(true);
+
+    // Eşleşme de ters: saldıranın okçusu süvariye yem, savunanın süvarisi
+    // okçuyu kırıyor.
+    expect(saldiran.find((x) => x.tur === 'karsi')).toMatchObject({
+      lehte: false,
+      benim: 'okcu',
+      onun: 'suvari',
+    });
+    expect(savunan.find((x) => x.tur === 'karsi')).toMatchObject({
+      lehte: true,
+      benim: 'suvari',
+      onun: 'okcu',
+    });
+  });
+
+  it('en fazla dört sebep döner', () => {
+    const s = savasSebepleri({
+      bakis: 'saldiran',
+      saldiranOrdu: { okcu: 50, mizrakci: 50, kusatma: 5 },
+      savunanOrdu: { suvari: 50, mizrakci: 50 },
+      turlar: turlar(400, 100),
+      saldiranKazandi: true,
+      eleGecirdi: false,
+      tahkimatBonusu: 0.4,
+    });
+    expect(s.length).toBeLessThanOrEqual(4);
   });
 });
