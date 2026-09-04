@@ -494,6 +494,10 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
         },
         attackerCunning: 0,
         canCapture: true,
+        // Yaralı dönüş savunanın kaybını değiştiriyor; önizleme aynı
+        // bayrağı geçirmezse oyuncuya gösterilen "savunanın kaybı"
+        // gerçekleşenden farklı çıkardı.
+        savunanOyuncu: region.ownerLordId !== null,
       },
     );
     const result = ornek.ortanca;

@@ -422,6 +422,8 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
         ).kurnazlik,
         canCapture: true,
         liderAvi: await liderAviGecerli(march.worldId, defenderLordId, march.lordId, tx),
+        // Yaralı dönüş yalnız oyuncu savunmasında (docs/09 §3.6).
+        savunanOyuncu: defenderLordId !== null,
       });
 
       const attackerWon = result.winner === 'attacker';
@@ -586,6 +588,10 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
             // hangi savaşın atlattığını söylemez.
             attackerGeneralYukselisleri: saldiranYukselisleri,
             defenderGeneralYukselisleri: savunanYukselisleri,
+            // Ölü sayılıp yaralı dönenler. Kayıp sayısı zaten düşülmüş
+            // hâlde yazılıyor; bu alan olmasa oyuncu daha az kayıp
+            // verdiğini görür ama nedenini bilmezdi.
+            yaraliDonen: result.yaraliDonen,
             sonuc: {
               saldiran: { oncesi: saldiranOnce, sonrasi: saldiranSonra },
               savunan:

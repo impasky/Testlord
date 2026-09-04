@@ -34,6 +34,15 @@ export interface BattleContext {
    * saldıran bölgede olmayan kaynağı kazanır.
    */
   liderAvi?: boolean;
+  /**
+   * Savunan bir OYUNCU mu (NPC garnizonu değil)?
+   *
+   * Yaralı dönüş yalnız oyuncu savunmasında işliyor. NPC garnizonuna
+   * vermek oyuncunun ilerlemesini yavaşlatırdı ve orada korunacak kimse
+   * yok. Önizleme de aynı bayrağı geçirmek zorunda, yoksa oyuncuya
+   * gösterilen "savunanın kaybı" gerçekleşenden farklı çıkar.
+   */
+  savunanOyuncu?: boolean;
 }
 
 export function armyCount(army: Army): number {
@@ -290,13 +299,37 @@ export function simulateBattle(
   let attackerLosses = distributeLosses(attacker.units, attackerFraction);
   let defenderLosses = distributeLosses(defender.units, defenderFraction);
 
-  // Vaiz Bertan: kazananın kayıplarının bir kısmı yaralı olarak geri döner
-  const winnerSide = attackerWins ? attacker : defender;
-  const recovery = winnerSide.generalBonus.kayipGeriDonus;
-  if (recovery > 0) {
-    if (attackerWins) attackerLosses = scaleArmy(attackerLosses, 1 - recovery);
-    else defenderLosses = scaleArmy(defenderLosses, 1 - recovery);
+  // Yaralı dönüş: "ölen" sayılan askerin bir kısmı aslında yaralı.
+  //
+  // İki kaynağı var ve TOPLANIYORLAR:
+  //  - Vaiz Bertan (generalBonus.kayipGeriDonus) yalnız KAZANANA işler.
+  //  - Savunmada yaralı dönüş yalnız SAVUNAN OYUNCUYA işler, kazansa da
+  //    kaybetse de. Asimetri kasıtlı: saldıran riski kendi aldı, savunan
+  //    almadı — saldırıya uğramayı seçmedi (docs/09 §3.6).
+  //
+  // Toplam tavanlı. Tavansız bırakılsa Vaiz Bertan'lı savunan oyuncu
+  // kayıplarının yarısından fazlasını geri alır ve savunması kırılmayan
+  // bölge el değiştirmez; fetih olmayan bir strateji oyunu durur.
+  const tavan = B.savas.kayip.yarali_donus_tavani;
+  const generalDonusu = (side: Side): number => side.generalBonus.kayipGeriDonus;
+
+  const saldiranDonus = attackerWins ? generalDonusu(attacker) : 0;
+  const savunanDonus =
+    (attackerWins ? 0 : generalDonusu(defender)) +
+    (ctx.savunanOyuncu ? B.savas.kayip.savunmada_yarali_donus : 0);
+
+  const saldiranHamKayip = attackerLosses;
+  const savunanHamKayip = defenderLosses;
+  if (saldiranDonus > 0) {
+    attackerLosses = scaleArmy(attackerLosses, 1 - Math.min(tavan, saldiranDonus));
   }
+  if (savunanDonus > 0) {
+    defenderLosses = scaleArmy(defenderLosses, 1 - Math.min(tavan, savunanDonus));
+  }
+  const yaraliDonen = {
+    saldiran: subtractArmy(saldiranHamKayip, attackerLosses),
+    savunan: subtractArmy(savunanHamKayip, defenderLosses),
+  };
 
   const attackerSurvivors = subtractArmy(attacker.units, attackerLosses);
   const defenderSurvivors = subtractArmy(defender.units, defenderLosses);
@@ -323,6 +356,7 @@ export function simulateBattle(
       : { altin: 0, demir: 0, erzak: 0 };
 
   return {
+    yaraliDonen,
     winner: attackerWins ? 'attacker' : 'defender',
     rounds,
     attackerLosses,

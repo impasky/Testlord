@@ -440,7 +440,10 @@
       "kazanan_max": 0.45,
       "kaybeden_max": 0.9,
       "dagitim": "Kayiplar birim tipine 'maruziyet' agirligiyla dagitilir: agirlik = adet / (can + savunma). Ucuz birimler once olur - Koylu Milis'in 'et kalkani' rolu buradan gelir.",
-      "_not": "Kazanan da HER ZAMAN kaybeder. Ezici zaferde bile ordunun ~%17'si gomulur."
+      "_not": "Kazanan da HER ZAMAN kaybeder. Ezici zaferde bile ordunun ~%17'si gomulur.",
+    "savunmada_yarali_donus": 0.25,
+    "_yarali_donus_notu": "SAVUNAN oyuncunun kayiplarinin bu orani olmemis, YARALANMIS sayilir ve geri doner. Kazansa da kaybetse de. Sebep asimetri: saldiran riski KENDI aldi, savunan almadi -- saldiriya ugramayi secmedi. docs/09 §3.6'nin kalan yarisi; K6 kalkani zinciri kesiyordu, bu tek bir vurusun acisini azaltiyor.\nOran kucuk tutuldu: buyutmek haritayi dondururdu, cunku savunmasi kirilmayan bolge el degistirmez ve fetih olmayan bir strateji oyunu durur.\nSADECE OYUNCU savunmasinda. NPC garnizonuna vermek oyuncunun ilerlemesini yavaslatirdi ve korunacak kimse yok.\nGeneral bonusu (kayip_geri_donus, Vaiz Bertan) ile toplaniyor, toplam yarali_donus_tavani ile sinirli.",
+    "yarali_donus_tavani": 0.5
     },
     "yagma_formulu": "alinan = depo * 0.25 * (1 + kurnazlik*0.01 + general_yagma); tasima = SUM(birim * tasima_kapasitesi) * (1 + kurnazlik*0.01 + general_yagma); yagma = min(alinan, tasima)",
     "yagma_orani": 0.25,

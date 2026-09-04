@@ -122,6 +122,14 @@ export interface BattleResult {
   captured: boolean;
   loot: Resources;
   seed: string;
+  /**
+   * Ölü sayılıp da yaralı olarak geri dönenler.
+   *
+   * Kayıp sayısı zaten düşülmüş hâlde dönüyor; bu alan FARKI taşıyor.
+   * Olmasa sistem görünmez kalırdı: oyuncu daha az kayıp verdiğini
+   * görür ama nedenini bilmezdi, bilmediği bir şey de onu rahatlatmaz.
+   */
+  yaraliDonen: { saldiran: Army; savunan: Army };
 }
 
 export interface GeneralDef {

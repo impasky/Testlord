@@ -437,6 +437,8 @@ export interface BattleDto {
     /** Bu savaşta seviye atlayanlar. Eski savaşlarda yok. */
     attackerGeneralYukselisleri?: GeneralYukselisiDto[];
     defenderGeneralYukselisleri?: GeneralYukselisiDto[];
+    /** Ölü sayılıp yaralı dönenler. Eski savaşlarda yok. */
+    yaraliDonen?: { saldiran: Army; savunan: Army };
     /** Savaşın iki tarafta ne değiştirdiği. Eski savaşlarda yok. */
     sonuc?: {
       saldiran: LordOzetiDto;

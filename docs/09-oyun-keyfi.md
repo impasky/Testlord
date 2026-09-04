@@ -181,8 +181,11 @@ tazele" — koruma görünmezse rahatlatmıyor.
 sorunu çözmüyor; %90'lık üç vuruş yine ordunun binde birini bırakıyor.
 Sorun tek savaşın şiddeti değil, savaşların **arka arkaya** gelmesiydi.
 
-**Ne ekleyebiliriz:** savunmada kaybedilen askerin bir kısmının **yaralı**
-dönmesi (henüz yok).
+**K6b ile tamamlandı:** savunmada kaybedilen askerin bir kısmı ölmüyor,
+yaralanıp geri dönüyor — kazansa da kaybetse de. Asimetri kasıtlı: saldıran
+riski kendi aldı, savunan almadı. K6 kalkanı zinciri kesiyordu, bu tek bir
+vuruşun acısını azaltıyor. Rapor ayrıca söylüyor, yoksa görünmeyen koruma
+rahatlatmaz.
 
 ### 3.7 Anlaşılmayan savaş matematiği
 

@@ -276,6 +276,29 @@ sonsuz saldıramaz; her savaş yeniden yatırım ister ve ekonomi savaşa bağla
 Her tura seed'li ±%7 varyans eklenir: sonuç kesin değildir ama güçlü taraf
 ~%95 kazanır. Yani ne "zar oyunu" ne de "hesap makinesi" olur.
 
+### Savunmada yaralı dönüş
+
+Bir oyuncu savunmasında kaybedilen askerin **bir kısmı ölmez, yaralanır** ve
+geri döner. Kazansa da kaybetse de.
+
+**Neden asimetrik:** saldıran riski **kendi** aldı — ordusunu seçti, hedefini
+seçti, zamanını seçti. Savunan hiçbirini seçmedi; saldırıya uğramayı da
+seçmedi. Bir gecede ordusu silinen oyuncu geri gelmiyor (docs/09 §3.6) ve
+bunun iki yarısı var: §7'deki yağma kalkanı **zinciri** kesiyor, yaralı
+dönüş **tek bir vuruşun** acısını azaltıyor.
+
+Oran küçük tutuldu. Büyütmek haritayı dondururdu: savunması kırılmayan bölge
+el değiştirmez, fetih olmayan bir strateji oyunu da durur. Sayı
+`balance.json` içinde, tavanı Vaiz Bertan'ın generallik bonusuyla toplanınca
+da aşılmıyor.
+
+**NPC garnizonuna işlemez.** Orada korunacak kimse yok ve vermek oyuncunun
+erken ilerlemesini yavaşlatırdı.
+
+Savaş raporu bunu ayrıca yazıyor: kayıp sayısı yaralılar düşülmüş hâlde
+görünüyor, altında "şu kadar asker ölü sanılmıştı, yaralı döndü" satırı var.
+Görünmeyen koruma rahatlatmıyor.
+
 ### Bölge ele geçirme
 
 Bölge el değiştirir ancak: **garnizonun tamamı yok edilir** ve saldırganın

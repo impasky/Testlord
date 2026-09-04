@@ -11,6 +11,7 @@ import {
   WORLD_MAP,
   accrue,
   armySlots,
+  armyCount,
   bosGeneralBonus,
   commandCapacity,
   fortressBonus,
@@ -786,6 +787,83 @@ describe('günlük ödül', () => {
     expect(odulAlindiMi(new Date('2026-09-03T01:00:00Z'), simdi)).toBe(true);
     expect(odulAlindiMi(new Date('2026-09-02T23:59:59Z'), simdi)).toBe(false);
     expect(odulAlindiMi(null, simdi)).toBe(false);
+  });
+});
+
+describe('savunmada yaralı dönüş', () => {
+  const taraf = (units: Army, savunan = false): Side => ({
+    units,
+    gearBonus: { saldiri: 0, savunma: 0, can: 0 },
+    generalBonus: bosGeneralBonus(),
+    lordContribution: 0,
+    leadership: 10,
+    fortressBonus: 0,
+    isDefender: savunan,
+  });
+  const ctx = {
+    defenderStore: { altin: 0, demir: 0, erzak: 0 },
+    attackerCunning: 0,
+    canCapture: true,
+  };
+
+  it('oyuncu savunmasında kayıp azalıyor', () => {
+    const a = taraf({ mizrakci: 300 });
+    const d = taraf({ mizrakci: 100 }, true);
+    const npc = simulateBattle(a, d, 'yarali', ctx);
+    const oyuncu = simulateBattle(a, d, 'yarali', { ...ctx, savunanOyuncu: true });
+    expect(armyCount(oyuncu.defenderLosses)).toBeLessThan(armyCount(npc.defenderLosses));
+  });
+
+  it('SALDIRANIN kaybı değişmiyor — asimetri bilerek', () => {
+    // Saldıran riski kendi aldı; yaralı dönüş savunanın ayrıcalığı.
+    const a = taraf({ mizrakci: 300 });
+    const d = taraf({ mizrakci: 100 }, true);
+    const npc = simulateBattle(a, d, 'yarali', ctx);
+    const oyuncu = simulateBattle(a, d, 'yarali', { ...ctx, savunanOyuncu: true });
+    expect(oyuncu.attackerLosses).toEqual(npc.attackerLosses);
+  });
+
+  it('kazananı değiştirmiyor — sadece kayıpları', () => {
+    const a = taraf({ mizrakci: 300 });
+    const d = taraf({ mizrakci: 100 }, true);
+    const npc = simulateBattle(a, d, 'yarali', ctx);
+    const oyuncu = simulateBattle(a, d, 'yarali', { ...ctx, savunanOyuncu: true });
+    expect(oyuncu.winner).toBe(npc.winner);
+  });
+
+  it('savunan kaybetse de yaralı dönüyor', () => {
+    // Asıl derdi bu: bir gecede silinen oyuncu geri gelmiyor.
+    const a = taraf({ mizrakci: 500 });
+    const d = taraf({ milis: 40 }, true);
+    const r = simulateBattle(a, d, 'ezici', { ...ctx, savunanOyuncu: true });
+    expect(r.winner).toBe('attacker');
+    expect(armyCount(r.defenderSurvivors)).toBeGreaterThan(0);
+  });
+
+  it('geri dönen asker survivors olarak sayılıyor — yoktan asker doğmuyor', () => {
+    const d = taraf({ mizrakci: 100 }, true);
+    const r = simulateBattle(taraf({ mizrakci: 300 }), d, 'toplam', {
+      ...ctx,
+      savunanOyuncu: true,
+    });
+    expect(armyCount(r.defenderLosses) + armyCount(r.defenderSurvivors)).toBe(100);
+  });
+
+  it('oran tavanın altında — savunma haritayı dondurmuyor', () => {
+    const k = B.savas.kayip;
+    expect(k.savunmada_yarali_donus).toBeGreaterThan(0);
+    expect(k.savunmada_yarali_donus).toBeLessThanOrEqual(k.yarali_donus_tavani);
+    expect(k.yarali_donus_tavani).toBeLessThan(1);
+  });
+
+  it('ezici saldırı hâlâ bölgeyi alabiliyor', () => {
+    // Yaralı dönüş fethi imkânsızlaştırmamalı: ele geçirme survivors > 0
+    // ve eşik şartına bağlı, savunanın hayatta kalması onu engellemiyor.
+    const r = simulateBattle(taraf({ mizrakci: 800 }), taraf({ milis: 30 }, true), 'fetih2', {
+      ...ctx,
+      savunanOyuncu: true,
+    });
+    expect(r.captured).toBe(true);
   });
 });
 

@@ -18,6 +18,8 @@ function kontrol(ad, kosul, detay = '') {
   if (!kosul) hata++;
 }
 
+const say = (a) => Object.values(a ?? {}).reduce((t, n) => t + Number(n || 0), 0);
+
 const damga = Date.now();
 async function lordKur(etiket) {
   const r = await fetch(`${API}/api/auth/register`, {
@@ -211,6 +213,24 @@ kontrol(
   'Savaş raporu generalin katkısını taşıyor',
   raporGeneraller.some((x) => x.key === general.key && x.pasifAd),
   raporGeneraller.map((x) => `${x.ad}: ${x.pasifAd}`).join(', ') || 'katkı yok',
+);
+
+// --- Yarali donus (docs/09 §3.6) ---
+// Savunan bir OYUNCU oldugu icin kayiplarinin bir kismi geri donmeli.
+// NPC garnizonunda donmez; bu savas tam da o ayrimi olcuyor.
+const yarali = rapor?.log?.yaraliDonen?.savunan ?? {};
+const yaraliSayi = Object.values(yarali).reduce((t, n) => t + Number(n || 0), 0);
+kontrol(
+  'Oyuncu savunmasinda yarali asker geri donuyor',
+  yaraliSayi > 0,
+  `${yaraliSayi} asker`,
+);
+const savunanKayip = say(rapor?.log?.defenderLosses);
+const savunanKalan = say(rapor?.log?.defenderSurvivors);
+kontrol(
+  'Yoktan asker dogmuyor: kayip + kalan = savasa giren',
+  savunanKayip + savunanKalan === garnizonAdedi,
+  `${savunanKayip} + ${savunanKalan} = ${savunanKayip + savunanKalan} vs ${garnizonAdedi}`,
 );
 
 // --- Savunan taraf bildirim ve yokluk ozeti ---

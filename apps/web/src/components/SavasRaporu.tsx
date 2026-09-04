@@ -159,15 +159,19 @@ function TarafKarti({
   ad,
   kayip,
   kalan,
+  yarali,
   vurgu,
 }: {
   baslik: string;
   ad: string;
   kayip: Army;
   kalan: Army;
+  /** Ölü sayılıp yaralı dönenler — kayıp sayısından zaten düşülmüş. */
+  yarali?: Army;
   vurgu?: string;
 }) {
   const gorunen = UNIT_TYPES.filter((u) => (kayip[u] ?? 0) > 0 || (kalan[u] ?? 0) > 0);
+  const yaraliSayi = toplam(yarali);
 
   return (
     <Kart className="p-3" vurgu={vurgu}>
@@ -199,6 +203,12 @@ function TarafKarti({
               </li>
             ))}
           </ul>
+          {yaraliSayi > 0 && (
+            <p className="mt-1.5 text-[11px] text-yesil">
+              {yaraliSayi} asker ölü sanılmıştı, yaralı olarak döndü. Kayıp sayısı bunu
+              çıkardıktan sonrası.
+            </p>
+          )}
         </>
       )}
     </Kart>
@@ -506,6 +516,7 @@ export function SavasRaporu({
                 ad={savas.attacker.name}
                 kayip={savas.log.attackerLosses}
                 kalan={savas.log.attackerSurvivors}
+                yarali={savas.log.yaraliDonen?.saldiran}
                 vurgu={saldiranBenim ? 'var(--color-altin)' : undefined}
               />
               <TarafKarti
@@ -513,6 +524,7 @@ export function SavasRaporu({
                 ad={savas.defender?.name ?? 'Garnizon'}
                 kayip={savas.log.defenderLosses}
                 kalan={savas.log.defenderSurvivors}
+                yarali={savas.log.yaraliDonen?.savunan}
                 vurgu={!saldiranBenim ? 'var(--color-altin)' : undefined}
               />
 
