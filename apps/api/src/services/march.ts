@@ -549,7 +549,7 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
 
       // Savaş kaydından ÖNCE dolduruluyor: seviye atlayışları rapora
       // girecek, rapor da aşağıda yazılıyor.
-      let saldiranYukselisleri: GeneralYukselisi[] = [];
+      let saldiranYukselisleri: GeneralYukselisi[];
       let savunanYukselisleri: GeneralYukselisi[] = [];
 
       // Savunanın kalanını yaz. Tek sahipli garnizonda bu eskisi gibi

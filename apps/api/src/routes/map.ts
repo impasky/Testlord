@@ -737,7 +737,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
 
     // Savunan ordusu: NPC ise tam bilinir, oyuncu ise tahmini (istihbarat yoksa)
     let defenderArmy: Army;
-    let kesin = false;
+    let kesin: boolean;
     if (!region.ownerLordId) {
       defenderArmy = region.npcGarrison as Army;
       kesin = true;

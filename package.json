@@ -18,7 +18,7 @@
     "db:seed": "pnpm --filter @lordlar/api seed",
     "db:reset": "pnpm --filter @lordlar/api prisma migrate reset --force",
     "smoke": "node tools/smoke.mjs",
-    "e2e": "node tools/oyun-dongusu-testi.mjs && node tools/shard-testi.mjs && node tools/worker-testi.mjs && node tools/tarayici-tam-akis.mjs && node tools/pvp-testi.mjs && node tools/taht-testi.mjs && node tools/hesap-testi.mjs && node tools/denetim-testi.mjs && node tools/savas-raporu-testi.mjs && node tools/kalkan-testi.mjs && node tools/gunluk-testi.mjs && node tools/casus-testi.mjs && node tools/sefer-testi.mjs && node tools/ittifak-testi.mjs && node tools/pakt-testi.mjs && node tools/ittifak-seviye-testi.mjs && node tools/takviye-testi.mjs && node tools/kimlik-testi.mjs && node tools/ogretici-testi.mjs && node tools/harita-testi.mjs && node tools/omurga-testi.mjs && node tools/ilk-oturum-testi.mjs && node tools/ilk-hedef-testi.mjs && CIKTI=/tmp node tools/gorsel-denetim.mjs",
+    "e2e": "node tools/oyun-dongusu-testi.mjs && node tools/smoke.mjs && node tools/shard-testi.mjs && node tools/worker-testi.mjs && node tools/tarayici-tam-akis.mjs && node tools/pvp-testi.mjs && node tools/taht-testi.mjs && node tools/hesap-testi.mjs && node tools/denetim-testi.mjs && node tools/savas-raporu-testi.mjs && node tools/kalkan-testi.mjs && node tools/gunluk-testi.mjs && node tools/casus-testi.mjs && node tools/sefer-testi.mjs && node tools/ittifak-testi.mjs && node tools/pakt-testi.mjs && node tools/ittifak-seviye-testi.mjs && node tools/takviye-testi.mjs && node tools/kimlik-testi.mjs && node tools/ogretici-testi.mjs && node tools/harita-testi.mjs && node tools/omurga-testi.mjs && node tools/ilk-oturum-testi.mjs && node tools/ilk-hedef-testi.mjs && CIKTI=/tmp node tools/gorsel-denetim.mjs",
     "worker": "pnpm --filter @lordlar/api worker",
     "demo": "node tools/demo-lordlar.mjs",
     "db:setup": "pnpm --filter @lordlar/api exec prisma generate && pnpm --filter @lordlar/api exec prisma migrate deploy && pnpm --filter @lordlar/api seed",
@@ -30,12 +30,16 @@
     "olcum": "node tools/olcum.mjs"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@iconify-json/game-icons": "^1.2.4",
     "@types/node": "^22.10.2",
+    "eslint": "^10.10.0",
+    "globals": "^17.12.0",
     "playwright": "^1.62.1",
     "prettier": "^3.4.2",
     "tsx": "^4.23.13",
     "typescript": "^5.7.2",
+    "typescript-eslint": "^8.69.0",
     "vitest": "^4.1.11"
   },
   "pnpm": {

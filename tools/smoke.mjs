@@ -10,7 +10,10 @@ import { chromium } from 'playwright';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
 
 const WEB = process.env.WEB_URL ?? 'http://127.0.0.1:5173';
-const CIKTI = process.env.SMOKE_OUT ?? '.';
+// Varsayılan çıktı klasörü: ekran görüntüleri deponun köküne düşmesin.
+// Kökteyken her test koşusu 20 MB'lık PNG'yi 'değişti' diye işaretliyordu ve
+// bu üretilen dosyalar depoya girmişti. Klasör .gitignore'da.
+const CIKTI = process.env.SMOKE_OUT ?? 'ekran-goruntuleri';
 const CHROME =
   process.env.CHROME_PATH ?? '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 
@@ -60,11 +63,21 @@ try {
 await page.waitForTimeout(1000);
 await page.screenshot({ path: `${CIKTI}/02-malikane.png` });
 
-const altin = await page.locator('text=Altın').first().locator('..').innerText();
-kontrol('Kaynak çubuğu saatlik geliri gösteriyor', /\+\d+\/sa/.test(altin));
+/**
+ * Kaynak sütunu artık "Altın" yazısını değil ikonu gösteriyor; sayı ve
+ * saatlik gelir `title` içinde ("Altın: 5000 (+128/sa)"). Bu test eskiden
+ * görünür metni okuyordu ve arayüz değişince sessizce kaldı — çünkü zincire
+ * bağlı değildi. Şimdi hem kontrol düzeltildi hem test `pnpm e2e` içine
+ * alındı.
+ */
+const altin = await page.locator('[title^="Altın:"]').first().getAttribute('title');
+kontrol('Kaynak çubuğu saatlik geliri gösteriyor', /\+\d+\/sa/.test(altin ?? ''), altin ?? 'yok');
 
-await page.click('button:has-text("Lord")');
-await page.waitForSelector('text=Statlar', { timeout: 8000 });
+// Lord alt çubuktan menüye taşındı (sayfa ayrımı): Menü -> Lord.
+await page.locator('nav button:has-text("Menü")').click();
+await page.waitForTimeout(400);
+await page.locator('button:has-text("Lord")').last().click();
+await page.waitForSelector('text=Nitelikler', { timeout: 8000 });
 await page.screenshot({ path: `${CIKTI}/03-lord.png` });
 kontrol('Lord ekranı açıldı', await page.locator('text=Liderlik').first().isVisible());
 
