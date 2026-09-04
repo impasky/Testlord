@@ -85,6 +85,7 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
   };
   const ittifak = B.ittifak as { azami_uye: number };
   const bagis = (B.ittifak as unknown as { bagis: { gunluk_hak: number } }).bagis;
+  const basvuru = (B.ittifak as unknown as { basvuru: { azami_bekleyen: number } }).basvuru;
   const pakt = (
     B.ittifak as unknown as {
       pakt: { azami: number; fesih_ihbar_saat: number };
@@ -293,6 +294,15 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
           metin:
             'Üyeler birbirine saldıramaz. Küçük tutuldu: bir kaleyi birlikte kuşatmaya ' +
             'yeter, haritayı tek başına yutmaya yetmez.',
+        },
+        {
+          // "Nasıl girerim" sorusu, "içeride ne yaparım"dan önce geliyor:
+          // oyuncunun çarptığı ilk kapı bu.
+          vurgu: 'Katılmak',
+          metin:
+            'Kimi ittifaklara doğrudan girersin, çoğu başvuruyla üye alır — o zaman ' +
+            `liderin onayını beklersin. Aynı anda ${basvuru.azami_bekleyen} başvurun ` +
+            'açık olabilir; kabul edilen biri gelince diğerleri kendiliğinden düşer.',
         },
         {
           vurgu: 'Takviye ve ortak hedef',

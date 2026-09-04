@@ -621,6 +621,12 @@ export interface IttifakListesiDto {
   /** İttifak seviyesi — birlikte ne kadar yol aldıkları. */
   seviye: number;
   benimki: boolean;
+  /** Kapı: "acik" doğrudan girilir, "basvuru" lider onaylar. */
+  katilim: 'acik' | 'basvuru';
+  /** İstenen en düşük lord seviyesi. 1 = eşik yok. */
+  asgariSeviye: number;
+  /** Bu ittifağa bekleyen başvurum varsa kimliği — geri çekmek için. */
+  basvurumId: string | null;
 }
 
 export interface IttifakDto {
@@ -636,6 +642,10 @@ export interface IttifakDto {
     seviye: IttifakSeviyeDto;
     ayricaliklar: IttifakAyricalikDto;
     duyuru: string | null;
+    katilim: 'acik' | 'basvuru';
+    asgariSeviye: number;
+    /** Bekleyen başvuru sayısı — liderin ekranındaki tek "yapılacak iş" sayacı. */
+    bekleyenBasvuru: number;
     hedef: {
       regionId: number;
       ad: string;
@@ -652,6 +662,29 @@ export interface IttifakDto {
   azamiUye: number;
   /** İttifaktan yeni ayrıldıysa kalan bekleme. */
   bekleme: { kalanSn: number } | null;
+  basvuru: {
+    /** Şu an açık olan başvurularım. */
+    acik: number;
+    azami: number;
+    mesajEnFazla: number;
+    azamiAsgariSeviye: number;
+  };
+}
+
+export interface BasvurularDto {
+  yonetebilir: boolean;
+  lider?: boolean;
+  katilim?: 'acik' | 'basvuru';
+  asgariSeviye?: number;
+  /** Kalan üye kontenjanı — doluysa kabul düğmesi anlamsız. */
+  bosYer?: number;
+  azamiAsgariSeviye?: number;
+  basvurular: {
+    id: string;
+    mesaj: string | null;
+    createdAt: string;
+    lord: { id: string; ad: string; seviye: number; sohret: number; arma: ArmaDto };
+  }[];
 }
 
 export interface SohbetDto {
@@ -786,6 +819,20 @@ export const api = {
   ittifakDuyuru: (metin: string) => post<{ duyuru: string | null }>('/ittifak/duyuru', { metin }),
   ittifakRutbe: (lordId: string, rutbe: 'yasli' | 'uye') =>
     post<{ lordId: string; ad: string; rutbe: string }>('/ittifak/rutbe', { lordId, rutbe }),
+
+  /* Başvuru: katılım liderin kararı (docs/09 §2.1) */
+  ittifakBasvur: (id: string, mesaj: string) =>
+    post<{ basvuruId: string; ad: string }>(`/ittifak/${id}/basvur`, { mesaj }),
+  ittifakBasvuruGeriCek: (id: string) =>
+    post<{ geriCekildi: string }>(`/ittifak/basvuru/${id}/geri-cek`, {}),
+  ittifakBasvurular: () => request<BasvurularDto>('/ittifak/basvurular'),
+  ittifakBasvuruKarar: (id: string, kabul: boolean) =>
+    post<{ karar: 'kabul' | 'ret'; lordId: string; ad?: string }>(
+      `/ittifak/basvuru/${id}/karar`,
+      { kabul },
+    ),
+  ittifakAyarlar: (v: { katilim?: 'acik' | 'basvuru'; asgariSeviye?: number }) =>
+    post<{ katilim: string; asgariSeviye: number }>('/ittifak/ayarlar', v),
 
   /* Saldırmazlık paktı (docs/09 B1d) */
   paktlar: () => request<PaktlarDto>('/ittifak/paktlar'),

@@ -85,6 +85,11 @@ const Bi = await c.post('/ittifak/kur', {
   ad: `Pakt B ${damga % 10000}`,
   etiket: `PB${damga % 100}`,
 });
+// Kapıyı aç: ittifak varsayılan olarak BAŞVURUYLA üye alıyor (docs/09
+// §2.1). Bu testin ölçtüğü şey başvuru değil; lider gibi davranıp
+// kapıyı açıyoruz. Başvurunun kendisi ittifak-basvuru-testi'nde.
+await a.post('/ittifak/ayarlar', { katilim: 'acik' });
+
 await b.post(`/ittifak/${A.id}/katil`);
 kontrol('İki ittifak kuruldu', Boolean(A?.id && Bi?.id), `${A?.ad} / ${Bi?.ad}`);
 

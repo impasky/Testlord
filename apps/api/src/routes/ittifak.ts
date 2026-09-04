@@ -30,6 +30,13 @@ import {
   paktTaraflari,
   paktTeklifDenetle,
   azamiUye,
+  asgariSeviyeDenetle,
+  azamiAsgariSeviye,
+  azamiBekleyenBasvuru,
+  basvurabilirMi,
+  basvuruMesajiDenetle,
+  basvuruMesajiEnFazla,
+  type KatilimTuru,
   ittifakAdiDenetle,
   ittifakEtiketiDenetle,
   ittifakaGirebilirMi,
@@ -115,9 +122,19 @@ async function ittifakOzeti(allianceId: string) {
     ]),
   );
 
+  // Bekleyen başvuru sayısı özete giriyor çünkü liderin ekranındaki tek
+  // "yapılacak iş" sayacı bu: kimse başvurmadıysa sayı görünmüyor,
+  // başvuran varsa rozet oluyor.
+  const bekleyenBasvuru = await prisma.allianceBasvuru.count({
+    where: { allianceId, durum: 'bekliyor' },
+  });
+
   const durum = ittifakSeviyesi(a.xp);
   return {
     seviye: durum,
+    katilim: a.katilim as KatilimTuru,
+    asgariSeviye: a.asgariSeviye,
+    bekleyenBasvuru,
     ayricaliklar: ittifakAyricaliklari(durum.seviye),
     duyuru: a.duyuru,
     id: a.id,
@@ -259,6 +276,20 @@ async function rutbemi(tx: Prisma.TransactionClient, lordId: string) {
   return { allianceId: lord.allianceId, rutbe, lider };
 }
 
+/**
+ * Bir ittifağa giren lordun DİĞER bekleyen başvurularını düşürür.
+ *
+ * Bırakılsaydı başka bir liderin başvuru kuyruğunda, artık kabul
+ * edilemeyecek bir satır dururdu: lider "kabul" der, işlem "zaten bir
+ * ittifakta" diye düşerdi. Kuyruğu temiz tutmak liderin işi olmamalı.
+ */
+async function bekleyenleriDusur(tx: Prisma.TransactionClient, lordId: string): Promise<void> {
+  await tx.allianceBasvuru.updateMany({
+    where: { lordId, durum: 'bekliyor' },
+    data: { durum: 'geri_cekildi', kararAt: new Date() },
+  });
+}
+
 export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
   /** Kendi durumu + dünyadaki ittifaklar. */
   app.get('/ittifak', { preHandler: requireAuth }, async (req) => {
@@ -268,13 +299,21 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
       select: { worldId: true, allianceId: true, allianceLeftAt: true, altin: true },
     });
 
-    const [benimki, hepsi] = await Promise.all([
+    const [benimki, hepsi, basvurularim] = await Promise.all([
       lord.allianceId ? ittifakOzeti(lord.allianceId) : Promise.resolve(null),
       prisma.alliance.findMany({
         where: { worldId: lord.worldId },
         include: { members: { select: { fame: true } } },
       }),
+      // Kendi başvurularım listeyle birlikte dönüyor: arayüz her satırda
+      // "Katıl" mı "Başvur" mu "Başvuruldu" mu yazacağına karar verirken
+      // ikinci bir istek atmak zorunda kalmasın.
+      prisma.allianceBasvuru.findMany({
+        where: { lordId, durum: 'bekliyor' },
+        select: { id: true, allianceId: true, createdAt: true },
+      }),
     ]);
+    const basvurdugum = new Map(basvurularim.map((b) => [b.allianceId, b]));
 
     // Sıralama toplam şöhrete göre: ittifakın gücünü tek sayıda anlatan
     // şey o ve zaten lord sıralamasının da ölçüsü — iki ayrı ölçü,
@@ -291,6 +330,11 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
         // ne kadar yol aldığı.
         seviye: ittifakSeviyesi(a.xp).seviye,
         benimki: a.id === lord.allianceId,
+        // Kapı açık mı, kapalı mı ve kime açık: oyuncu listeye bakarken
+        // görmeli, "Katıl"a basıp reddedilerek öğrenmemeli.
+        katilim: a.katilim as KatilimTuru,
+        asgariSeviye: a.asgariSeviye,
+        basvurumId: basvurdugum.get(a.id)?.id ?? null,
       }))
       .sort((x, y) => y.toplamSohret - x.toplamSohret);
 
@@ -302,6 +346,12 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
       kurmaMaliyeti: kurmaMaliyeti(),
       azamiUye: azamiUye(),
       bekleme: bekleme.girebilir ? null : { kalanSn: bekleme.kalanSn },
+      basvuru: {
+        acik: basvurularim.length,
+        azami: azamiBekleyenBasvuru(),
+        mesajEnFazla: basvuruMesajiEnFazla(),
+        azamiAsgariSeviye: azamiAsgariSeviye(),
+      },
     };
   });
 
@@ -377,7 +427,13 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
     return prisma.$transaction(async (tx) => {
       const lord = await tx.lord.findUniqueOrThrow({
         where: { id: lordId },
-        select: { worldId: true, allianceId: true, allianceLeftAt: true, name: true },
+        select: {
+          worldId: true,
+          allianceId: true,
+          allianceLeftAt: true,
+          name: true,
+          level: true,
+        },
       });
       if (lord.allianceId) throw new GameError('Zaten bir ittifaktasın.', 400, 'ZATEN_ITTIFAKTA');
 
@@ -396,11 +452,31 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
         include: { members: { select: { id: true } } },
       });
       if (!a || a.worldId !== lord.worldId) throw hata.bulunamadi('İttifak');
+      // Kapı: bu uç eskiden herkese açıktı ve liderin söz hakkı yoktu.
+      // Başvurulu ittifağa doğrudan girilmiyor.
+      if (a.katilim === 'basvuru') {
+        throw new GameError(
+          'Bu ittifak başvuruyla üye alıyor. Başvurup liderin onayını beklemelisin.',
+          400,
+          'BASVURU_GEREKLI',
+        );
+      }
       if (a.members.length >= azamiUye()) {
         throw new GameError(`İttifak dolu (${azamiUye()} üye).`, 400, 'ITTIFAK_DOLU');
       }
+      // Seviye eşiği AÇIK ittifakta da geçerli. Yalnız başvuruya bağlasaydık
+      // lider "kapımı herkese açayım ama Lv10 altı gelmesin" diyemezdi ve
+      // eşik, kapıyı kapatmanın yan etkisi olurdu.
+      if (lord.level < a.asgariSeviye) {
+        throw new GameError(
+          `Bu ittifak en az Sv${a.asgariSeviye} istiyor. Sen Sv${lord.level}'sin.`,
+          400,
+          'SEVIYE_YETERSIZ',
+        );
+      }
 
       await tx.lord.update({ where: { id: lordId }, data: { allianceId: a.id } });
+      await bekleyenleriDusur(tx, lordId);
       // Lidere haber: kimin katıldığını bilmeli, yoksa ittifak bir liste
       // olur, bir topluluk olmaz.
       await pushEvent(
@@ -657,6 +733,307 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
         tx,
       );
       return { cikarildi: body.lordId };
+    });
+  });
+
+  /* ------------------------------------------------------------------ *
+   *  Başvuru (docs/09 §2.1 "Sırada")
+   *
+   *  Katılım liderin kararı olsun diye. Kapı iki katmanlı: seviye eşiği
+   *  lider bakmadan süzüyor, başvuru kalanı insana taşıyor.
+   * ------------------------------------------------------------------ */
+
+  /**
+   * Katılım ayarları: kapı açık mı, kime açık?
+   *
+   * Tek uçta ikisi birden çünkü ikisi tek bir karar: "kimi alıyorum".
+   * Ayrı uçlar olsaydı arayüz iki isteği sıraya dizer, biri düşerse
+   * ittifak yarı ayarlanmış kalırdı.
+   */
+  app.post('/ittifak/ayarlar', { preHandler: requireAuth }, async (req) => {
+    const body = z
+      .object({
+        katilim: z.enum(['acik', 'basvuru']).optional(),
+        asgariSeviye: z.number().int().optional(),
+      })
+      .parse(req.body);
+    const lordId = await findLordByUser(req.user.userId);
+
+    return prisma.$transaction(async (tx) => {
+      const { allianceId, lider } = await rutbemi(tx, lordId);
+      if (!lider) throw hata.yetkisiz();
+
+      if (body.asgariSeviye !== undefined) {
+        const d = asgariSeviyeDenetle(body.asgariSeviye);
+        if (!d.olur) throw new GameError(d.sebep!, 400, 'SEVIYE_ESIGI');
+      }
+
+      const a = await tx.alliance.update({
+        where: { id: allianceId },
+        data: {
+          ...(body.katilim !== undefined ? { katilim: body.katilim } : {}),
+          ...(body.asgariSeviye !== undefined ? { asgariSeviye: body.asgariSeviye } : {}),
+        },
+        select: { katilim: true, asgariSeviye: true },
+      });
+
+      /**
+       * Kapı açılınca bekleyen başvurular ORTADA KALMIYOR.
+       *
+       * Açık ittifağa başvuru diye bir şey yok; satırları bıraksaydık
+       * lider onları hiçbir ekranda göremeyecek, başvuranlar da sonsuza
+       * kadar "cevap bekleniyor" görecekti. Geri çekilmiş sayılıyorlar ve
+       * artık doğrudan katılabilirler.
+       */
+      if (body.katilim === 'acik') {
+        await tx.allianceBasvuru.updateMany({
+          where: { allianceId, durum: 'bekliyor' },
+          data: { durum: 'geri_cekildi', kararAt: new Date() },
+        });
+      }
+      return { katilim: a.katilim, asgariSeviye: a.asgariSeviye };
+    });
+  });
+
+  /** Bir ittifağa başvur. */
+  app.post('/ittifak/:id/basvur', { preHandler: requireAuth }, async (req) => {
+    const { id } = z.object({ id: z.string() }).parse(req.params);
+    const { mesaj = '' } = z.object({ mesaj: z.string().optional() }).parse(req.body ?? {});
+    const lordId = await findLordByUser(req.user.userId);
+
+    const notu = mesaj.trim();
+    const md = basvuruMesajiDenetle(notu);
+    if (!md.olur) throw new GameError(md.sebep!, 400, 'NOT_UZUN');
+    // Not herkese değil ama ittifağın yönetimine görünüyor: sohbet
+    // mesajlarıyla aynı süzgeçten geçiyor, iki ayrı liste tutmuyoruz.
+    if (notu) {
+      const t = mesajDenetle(notu);
+      if (!t.uygun) throw new GameError(t.sebep!, 400, 'NOT_UYGUNSUZ');
+    }
+
+    return prisma.$transaction(async (tx) => {
+      const lord = await tx.lord.findUniqueOrThrow({
+        where: { id: lordId },
+        select: {
+          worldId: true,
+          allianceId: true,
+          allianceLeftAt: true,
+          name: true,
+          level: true,
+        },
+      });
+
+      const a = await tx.alliance.findUnique({
+        where: { id },
+        include: { members: { select: { id: true } } },
+      });
+      if (!a || a.worldId !== lord.worldId) throw hata.bulunamadi('İttifak');
+
+      /**
+       * Ayrılma beklemesi başvuru ANINDA da bakılıyor, yalnız kabulde
+       * değil. Yalnız kabulde baksaydık lider "kabul" der, işlem düşer ve
+       * hatayı gören liderin yapabileceği bir şey olmazdı — engel
+       * başvuranın tarafında.
+       */
+      const bekleme = ittifakaGirebilirMi(lord.allianceLeftAt, new Date());
+      if (!bekleme.girebilir) {
+        throw new GameError(
+          `İttifaktan yeni ayrıldın. ${Math.ceil(bekleme.kalanSn / 3600)} saat sonra ` +
+            'yeni bir ittifağa başvurabilirsin.',
+          400,
+          'ITTIFAK_BEKLEME',
+        );
+      }
+
+      const onceki = await tx.allianceBasvuru.findUnique({
+        where: { allianceId_lordId: { allianceId: id, lordId } },
+      });
+      const bekleyen = await tx.allianceBasvuru.count({
+        where: { lordId, durum: 'bekliyor', allianceId: { not: id } },
+      });
+
+      const karar = basvurabilirMi({
+        lordSeviye: lord.level,
+        ittifaktaMi: lord.allianceId !== null,
+        katilim: a.katilim as KatilimTuru,
+        asgariSeviye: a.asgariSeviye,
+        uyeSayisi: a.members.length,
+        bekleyenSayisi: bekleyen,
+        oncekiDurum: onceki?.durum as 'bekliyor' | 'kabul' | 'ret' | 'geri_cekildi' | undefined,
+        oncekiKararAt: onceki?.kararAt ?? null,
+        simdi: new Date(),
+      });
+      if (!karar.olur) throw new GameError(karar.sebep!, 400, 'BASVURU_OLMAZ');
+
+      // Tek satır: yeni başvuru eskisini yeniden açıyor. Her denemeye satır
+      // açsaydık tablo reddedilen her denemeyle büyürdü ve "bu lord bu
+      // ittifağa başvurdu mu" sorusu bir tarama olurdu.
+      const b = await tx.allianceBasvuru.upsert({
+        where: { allianceId_lordId: { allianceId: id, lordId } },
+        create: { allianceId: id, lordId, mesaj: notu || null },
+        update: { durum: 'bekliyor', mesaj: notu || null, kararAt: null, kararVerenId: null },
+      });
+
+      // Yönetimin hepsine haber: yalnız lidere gitseydi yaşlıların
+      // karar yetkisi olur ama haberi olmazdı.
+      const yonetim = await tx.lord.findMany({
+        where: { allianceId: id, OR: [{ id: a.leaderLordId }, { ittifakRutbe: 'yasli' }] },
+        select: { id: true },
+      });
+      for (const y of yonetim) {
+        await pushEvent(
+          y.id,
+          'ittifak_basvuru',
+          { mesaj: `${lord.name} (Sv${lord.level}) ittifağınıza başvurdu.` },
+          tx,
+        );
+      }
+      return { basvuruId: b.id, ad: a.name };
+    });
+  });
+
+  /** Başvuruyu geri çek. */
+  app.post('/ittifak/basvuru/:id/geri-cek', { preHandler: requireAuth }, async (req) => {
+    const { id } = z.object({ id: z.string() }).parse(req.params);
+    const lordId = await findLordByUser(req.user.userId);
+
+    // Koşullu updateMany: satır bu lorda ait DEĞİLSE ya da artık bekleyen
+    // değilse hiçbir şey güncellenmiyor. Önce okuyup sonra yazsaydık
+    // araya giren bir kabul kararı ezilebilirdi.
+    const sonuc = await prisma.allianceBasvuru.updateMany({
+      where: { id, lordId, durum: 'bekliyor' },
+      data: { durum: 'geri_cekildi', kararAt: new Date() },
+    });
+    if (sonuc.count === 0) throw hata.bulunamadi('Başvuru');
+    return { geriCekildi: id };
+  });
+
+  /** Bekleyen başvurular — yalnız ittifağın yönetimi görür. */
+  app.get('/ittifak/basvurular', { preHandler: requireAuth }, async (req) => {
+    const lordId = await findLordByUser(req.user.userId);
+    const lord = await prisma.lord.findUniqueOrThrow({
+      where: { id: lordId },
+      select: { allianceId: true, ittifakRutbe: true },
+    });
+    if (!lord.allianceId) return { basvurular: [], yonetebilir: false };
+
+    const a = await prisma.alliance.findUniqueOrThrow({
+      where: { id: lord.allianceId },
+      select: { leaderLordId: true, katilim: true, asgariSeviye: true, members: { select: { id: true } } },
+    });
+    const rutbe: IttifakRutbe =
+      a.leaderLordId === lordId ? 'lider' : lord.ittifakRutbe === 'yasli' ? 'yasli' : 'uye';
+    const yonetebilir = yonetebilirMi(rutbe);
+    if (!yonetebilir) return { basvurular: [], yonetebilir: false };
+
+    const satirlar = await prisma.allianceBasvuru.findMany({
+      where: { allianceId: lord.allianceId, durum: 'bekliyor' },
+      orderBy: { createdAt: 'asc' },
+      include: { lord: { select: uyeSecimi } },
+    });
+
+    return {
+      yonetebilir,
+      lider: rutbe === 'lider',
+      katilim: a.katilim as KatilimTuru,
+      asgariSeviye: a.asgariSeviye,
+      // Doluysa kabul düğmesi anlamsız; arayüz bunu sebebiyle söylüyor.
+      bosYer: azamiUye() - a.members.length,
+      azamiAsgariSeviye: azamiAsgariSeviye(),
+      basvurular: satirlar.map((b) => ({
+        id: b.id,
+        mesaj: b.mesaj,
+        createdAt: b.createdAt,
+        lord: {
+          id: b.lord.id,
+          ad: b.lord.name,
+          seviye: b.lord.level,
+          sohret: b.lord.fame,
+          arma: lordArmasi(b.lord),
+        },
+      })),
+    };
+  });
+
+  /** Başvuruyu kabul et ya da reddet. */
+  app.post('/ittifak/basvuru/:id/karar', { preHandler: requireAuth }, async (req) => {
+    const { id } = z.object({ id: z.string() }).parse(req.params);
+    const { kabul } = z.object({ kabul: z.boolean() }).parse(req.body);
+    const lordId = await findLordByUser(req.user.userId);
+
+    return prisma.$transaction(async (tx) => {
+      const { allianceId, rutbe } = await rutbemi(tx, lordId);
+      if (!yonetebilirMi(rutbe)) throw hata.yetkisiz();
+
+      const b = await tx.allianceBasvuru.findUnique({
+        where: { id },
+        include: { lord: { select: { id: true, name: true, level: true, allianceId: true, allianceLeftAt: true } } },
+      });
+      if (!b || b.allianceId !== allianceId) throw hata.bulunamadi('Başvuru');
+      if (b.durum !== 'bekliyor') {
+        throw new GameError('Bu başvuru zaten karara bağlanmış.', 400, 'BASVURU_KAPALI');
+      }
+
+      const simdi = new Date();
+      if (!kabul) {
+        await tx.allianceBasvuru.update({
+          where: { id },
+          data: { durum: 'ret', kararAt: simdi, kararVerenId: lordId },
+        });
+        await pushEvent(
+          b.lordId,
+          'ittifak_basvuru_ret',
+          { mesaj: 'İttifak başvurun kabul edilmedi.' },
+          tx,
+        );
+        return { karar: 'ret' as const, lordId: b.lordId };
+      }
+
+      /**
+       * Kabul anında koşullar YENİDEN bakılıyor.
+       *
+       * Başvuru ile karar arasında saatler geçebiliyor: aday bu arada
+       * başka bir ittifağa girmiş, ittifak dolmuş ya da adayın ayrılma
+       * beklemesi başlamış olabilir. Başvuru anındaki kontrole güvenmek,
+       * bu üç durumdan birinde bozuk bir üyelik yazmak demekti.
+       */
+      const a = await tx.alliance.findUniqueOrThrow({
+        where: { id: allianceId },
+        select: { name: true, asgariSeviye: true, members: { select: { id: true } } },
+      });
+      if (b.lord.allianceId) {
+        throw new GameError(
+          `${b.lord.name} bu arada başka bir ittifağa katılmış.`,
+          400,
+          'ADAY_ITTIFAKTA',
+        );
+      }
+      if (a.members.length >= azamiUye()) {
+        throw new GameError(`İttifak dolu (${azamiUye()} üye).`, 400, 'ITTIFAK_DOLU');
+      }
+      const bekleme = ittifakaGirebilirMi(b.lord.allianceLeftAt, simdi);
+      if (!bekleme.girebilir) {
+        throw new GameError(
+          `${b.lord.name} ittifaktan yeni ayrılmış, ${Math.ceil(bekleme.kalanSn / 3600)} ` +
+            'saat daha giremez.',
+          400,
+          'ITTIFAK_BEKLEME',
+        );
+      }
+
+      await tx.lord.update({ where: { id: b.lordId }, data: { allianceId } });
+      await tx.allianceBasvuru.update({
+        where: { id },
+        data: { durum: 'kabul', kararAt: simdi, kararVerenId: lordId },
+      });
+      await bekleyenleriDusur(tx, b.lordId);
+      await pushEvent(
+        b.lordId,
+        'ittifak_basvuru_kabul',
+        { mesaj: `${a.name} ittifakına kabul edildin.` },
+        tx,
+      );
+      return { karar: 'kabul' as const, lordId: b.lordId, ad: b.lord.name };
     });
   });
 

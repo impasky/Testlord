@@ -11,10 +11,10 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
+  id           String          @id @default(cuid())
+  email        String          @unique
   passwordHash String
-  createdAt    DateTime @default(now())
+  createdAt    DateTime        @default(now())
   lords        Lord[]
   resets       PasswordReset[]
 }
@@ -38,11 +38,11 @@ model PasswordReset {
 }
 
 model World {
-  id        String   @id @default(cuid())
+  id        String     @id @default(cuid())
   name      String
-  playerCap Int      @default(120)
-  status    String   @default("open") // open | full | closed
-  openedAt  DateTime @default(now())
+  playerCap Int        @default(120)
+  status    String     @default("open") // open | full | closed
+  openedAt  DateTime   @default(now())
   lords     Lord[]
   regions   Region[]
   alliances Alliance[]
@@ -68,11 +68,11 @@ model Lord {
   demir Int @default(0)
   erzak Int @default(0)
 
-  fame               Int @default(0)
+  fame                Int @default(0)
   fortressFameAccrued Int @default(0)
-  elo                Int @default(1200)
-  pvpWins            Int @default(0)
-  pvpLosses          Int @default(0)
+  elo                 Int @default(1200)
+  pvpWins             Int @default(0)
+  pvpLosses           Int @default(0)
 
   /// Malikânenin harita üzerindeki çıpası. Yürüyüş mesafesi buradan ölçülür.
   /// Kayıtta ring 4'e en az yüklü hex'e yerleştirilir; kimse buraya saldıramaz.
@@ -87,16 +87,16 @@ model Lord {
 
   /// Oyuncunun oyunu en son ne zaman açtığı. "Sen yokken ne oldu" özeti
   /// bu ana göre hesaplanır.
-  lastSeenAt DateTime @default(now())
+  lastSeenAt        DateTime  @default(now())
   /// Giriş serisi: kaç gün üst üste girildi. Türetilemiyor — tek bir
   /// zaman damgası "kaç gün üst üste" sorusunu cevaplayamaz, o bir geçmiş.
-  girisSerisi Int @default(0)
+  girisSerisi       Int       @default(0)
   /// Serinin en son işlendiği gün. Aynı gün ikinci girişte seri artmasın diye.
-  girisSerisiGunu DateTime?
+  girisSerisiGunu   DateTime?
   /// Günlük görev ödülünün en son alındığı gün. Bu da türetilemiyor: ödülün
   /// verilmesi mevcut hiçbir kayda iz bırakmıyor, kaynak artışı altına
   /// karışıyor.
-  gunlukOdulGunu DateTime?
+  gunlukOdulGunu    DateTime?
   /// Haftalık sefer ödülünün en son alındığı an. Hangi seferin açık olduğu
   /// SAKLANMIYOR — hafta numarasından türetiliyor (packages/shared/sefer.ts).
   seferOduluHaftasi DateTime?
@@ -105,7 +105,7 @@ model Lord {
   /// durumda duruyor. Sunucuda tutuluyor cunku tam ekran bir tanıtımı
   /// ikinci kez göstermek, kartı ikinci kez göstermekten çok daha rahatsız
   /// edici; tarayıcı deposu silinince ya da telefon değişince geri gelirdi.
-  ogreticiBittiAt DateTime?
+  ogreticiBittiAt   DateTime?
 
   /// Arma: oyuncunun heraldik kimliği (docs/10 §1.1). Beş küçük anahtar,
   /// hiçbir sayıya dokunmuyor. Boşsa lord adından türetiliyor.
@@ -116,10 +116,10 @@ model Lord {
   armaSembol String?
 
   /// Üyesi olduğu ittifak. Yoksa null — ittifak zorunlu değil.
-  allianceId String?
+  allianceId     String?
   /// İttifak içindeki rütbe: null = üye, "yasli" = yaşlı.
   /// Lider ayrıca saklanmıyor — o Alliance.leaderLordId'de.
-  ittifakRutbe String?
+  ittifakRutbe   String?
   /// En son ittifaktan ayrıldığı an. Bekleme süresi buradan ölçülüyor:
   /// ittifaktan çıkıp hemen başkasına girmek, saldırı kilidini kalkan gibi
   /// kullanmayı mümkün kılardı.
@@ -127,26 +127,27 @@ model Lord {
   /// En son hangi ekranda olduğu. Tek işi ölçüm: oyuncular oyunu hangi
   /// ekranda bırakıyor? Bu soru tahminle cevaplanamaz ve cevabı olmadan
   /// bir sonraki iyileştirme de tahmin olur. (docs/08 İ7)
-  lastScreen String?
-  createdAt       DateTime  @default(now())
+  lastScreen     String?
+  createdAt      DateTime  @default(now())
 
-  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  world     World         @relation(fields: [worldId], references: [id], onDelete: Cascade)
-  items     Item[]
-  units     ArmyUnit[]
-  gearLines GearLine[]
-  generals  LordGeneral[]
-  regions   Region[]
-  queues    Queue[]
-  marches   March[]
-  events    Event[]
-  scouts    Scout[]
-  messages  AllianceMessage[]
-  gonderilen Shipment[] @relation("ShipmentFrom")
-  gelen      Shipment[] @relation("ShipmentTo")
-  bagislar   AllianceDonation[]
-  alliance  Alliance? @relation("AllianceMembers", fields: [allianceId], references: [id])
-  ledAlliance Alliance? @relation("AllianceLeader")
+  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  world       World              @relation(fields: [worldId], references: [id], onDelete: Cascade)
+  items       Item[]
+  units       ArmyUnit[]
+  gearLines   GearLine[]
+  generals    LordGeneral[]
+  regions     Region[]
+  queues      Queue[]
+  marches     March[]
+  events      Event[]
+  scouts      Scout[]
+  messages    AllianceMessage[]
+  gonderilen  Shipment[]         @relation("ShipmentFrom")
+  gelen       Shipment[]         @relation("ShipmentTo")
+  bagislar    AllianceDonation[]
+  basvurular  AllianceBasvuru[]
+  alliance    Alliance?          @relation("AllianceMembers", fields: [allianceId], references: [id])
+  ledAlliance Alliance?          @relation("AllianceLeader")
 
   attackerBattles Battle[] @relation("AttackerBattles")
   defenderBattles Battle[] @relation("DefenderBattles")
@@ -213,21 +214,21 @@ model LordGeneral {
 model Region {
   /// Veritabanı kimliği. world-map.json'daki numara DEĞİLDİR: birden çok dünya
   /// (shard) aynı haritayı kullandığı için harita numarası dünya başına tekrar eder.
-  id      Int    @id @default(autoincrement())
+  id       Int    @id @default(autoincrement())
   /// world-map.json'daki bölge numarası (1-61). Kanonik harita verisine anahtar.
-  mapId   Int
-  worldId String
-  name    String
-  type    String
+  mapId    Int
+  worldId  String
+  name     String
+  type     String
   province String
-  q       Int
-  r       Int
-  ring    Int
-  level   Int    @default(1)
+  q        Int
+  r        Int
+  ring     Int
+  level    Int    @default(1)
 
   ownerLordId String?
   npcGarrison Json
-  incomeMult  Float  @default(1)
+  incomeMult  Float   @default(1)
 
   storeAltin Int @default(0)
   storeDemir Int @default(0)
@@ -236,9 +237,9 @@ model Region {
   lastTickAt  DateTime  @default(now())
   shieldUntil DateTime?
 
-  world  World  @relation(fields: [worldId], references: [id], onDelete: Cascade)
-  owner  Lord?  @relation(fields: [ownerLordId], references: [id])
-  scouts Scout[]
+  world      World      @relation(fields: [worldId], references: [id], onDelete: Cascade)
+  owner      Lord?      @relation(fields: [ownerLordId], references: [id])
+  scouts     Scout[]
   targetedBy Alliance[] @relation("AllianceTarget")
 
   @@unique([worldId, mapId])
@@ -310,14 +311,14 @@ model Queue {
 /// sohbet bunun üstüne gelir. Tek kuralı bile tek başına değerli —
 /// birbirine saldıramamak, "yalnız değilim" hissinin en somut hâli.
 model Alliance {
-  id        String   @id @default(cuid())
-  worldId   String
+  id           String   @id @default(cuid())
+  worldId      String
   /// Görünen ad. Dünya içinde benzersiz.
-  name      String
+  name         String
   /// Kısa etiket, sıralamada ve harita üzerinde adın yanında görünür.
-  tag       String
-  leaderLordId String @unique
-  createdAt DateTime @default(now())
+  tag          String
+  leaderLordId String   @unique
+  createdAt    DateTime @default(now())
 
   /// İttifakın ortak hedefi. Bir tane, bilerek: beş işaretli hedef
   /// koordinasyon değil gürültüdür. Tek hedef bir karardır ve karar
@@ -338,18 +339,30 @@ model Alliance {
   /// İki sayıyı birden tutmak, bir gün birinin diğerinden sapması demekti.
   xp Int @default(0)
 
+  /// Katılım türü: "acik" = herkes doğrudan girer, "basvuru" = lider onaylar.
+  ///
+  /// Varsayılan "basvuru". İlk hâlinde katılım herkese açıktı ve liderin
+  /// söz hakkı yoktu; ittifak seviyesi gelince (bkz. xp) bu delik büyüdü —
+  /// aylarca bağışla kazanılan ayrıcalıklar kapıdan girene bedava oluyordu.
+  katilim String @default("basvuru")
+
+  /// Başvuru için istenen en düşük lord seviyesi. 1 = eşik yok.
+  /// Liderin yerine ön eleme yapıyor; tavanı balance.json belirliyor.
+  asgariSeviye Int @default(1)
+
   /// Liderin panoya yazdığı kalıcı duyuru. Sohbetten farkı akıp gitmemesi:
   /// "günde 5 bağış yapın" her yeni üyenin görmesi gereken bir kural.
   duyuru String?
 
-  world    World             @relation(fields: [worldId], references: [id], onDelete: Cascade)
-  leader   Lord              @relation("AllianceLeader", fields: [leaderLordId], references: [id], onDelete: Cascade)
-  members  Lord[]            @relation("AllianceMembers")
-  messages AllianceMessage[]
-  paktA    Pakt[]            @relation("PaktA")
-  paktB    Pakt[]            @relation("PaktB")
-  bagislar AllianceDonation[]
-  target   Region?           @relation("AllianceTarget", fields: [targetRegionId], references: [id])
+  world      World              @relation(fields: [worldId], references: [id], onDelete: Cascade)
+  leader     Lord               @relation("AllianceLeader", fields: [leaderLordId], references: [id], onDelete: Cascade)
+  members    Lord[]             @relation("AllianceMembers")
+  messages   AllianceMessage[]
+  paktA      Pakt[]             @relation("PaktA")
+  paktB      Pakt[]             @relation("PaktB")
+  bagislar   AllianceDonation[]
+  basvurular AllianceBasvuru[]
+  target     Region?            @relation("AllianceTarget", fields: [targetRegionId], references: [id])
 
   @@unique([worldId, name])
   @@unique([worldId, tag])
@@ -368,17 +381,49 @@ model AllianceDonation {
   lordId     String
   /// İttifağa kazandırdığı XP. Bağış anındaki lord seviyesine bağlı, o
   /// yüzden satırda saklanıyor: sonradan yeniden hesaplanamaz.
-  xp        Int
-  altin     Int
-  demir     Int
-  erzak     Int
-  createdAt DateTime @default(now())
+  xp         Int
+  altin      Int
+  demir      Int
+  erzak      Int
+  createdAt  DateTime @default(now())
 
   alliance Alliance @relation(fields: [allianceId], references: [id], onDelete: Cascade)
   lord     Lord     @relation(fields: [lordId], references: [id], onDelete: Cascade)
 
   @@index([allianceId, createdAt])
   @@index([lordId, createdAt])
+}
+
+/// İttifağa başvuru.
+///
+/// Reddedilen başvuru SİLİNMİYOR, durumu değişiyor: ret beklemesi bu satırın
+/// kararAt'ından ölçülüyor. Silseydik reddedilen lord aynı dakika yeniden
+/// başvurabilirdi ve ret hiçbir şey ifade etmezdi.
+///
+/// Lord başına ittifak başına tek satır: yeni başvuru eskisini yeniden
+/// açıyor. Geçmiş biriktirmenin oyun içinde karşılığı yok, tablo ise her
+/// reddedilen denemeyle büyürdü.
+model AllianceBasvuru {
+  id         String  @id @default(cuid())
+  allianceId String
+  lordId     String
+  /// Başvuranın kısa notu ("Lv12, aktifim"). Liderin kararı için.
+  mesaj      String?
+  /// bekliyor | kabul | ret | geri_cekildi
+  durum      String  @default("bekliyor")
+
+  createdAt    DateTime  @default(now())
+  /// Kabul/ret/geri çekme anı. Ret beklemesi buradan ölçülüyor.
+  kararAt      DateTime?
+  /// Kararı veren lord (lider ya da yaşlı). Kayıt defterinde görünüyor.
+  kararVerenId String?
+
+  alliance Alliance @relation(fields: [allianceId], references: [id], onDelete: Cascade)
+  lord     Lord     @relation(fields: [lordId], references: [id], onDelete: Cascade)
+
+  @@unique([allianceId, lordId])
+  @@index([allianceId, durum])
+  @@index([lordId, durum])
 }
 
 /// Saldırmazlık paktı: iki ittifak birbirine saldırmamaya söz veriyor.
@@ -391,27 +436,27 @@ model AllianceDonation {
 /// işçiye gerek kalmıyor ve iki ittifakın geçmişte anlaşmış olduğu bilgisi
 /// kaybolmuyor.
 model Pakt {
-  id      String @id @default(cuid())
-  worldId String
+  id           String @id @default(cuid())
+  worldId      String
   /// Kanonik sırada iki taraf.
-  aId String
-  bId String
+  aId          String
+  bId          String
   /// Teklifi hangi taraf açtı. Kabul/ret yetkisi ÖTEKİ tarafın liderinde.
   teklifEdenId String
   /// teklif | yururlukte | feshediliyor | bitti
-  durum String @default("teklif")
+  durum        String @default("teklif")
 
-  createdAt DateTime  @default(now())
-  kabulAt   DateTime?
+  createdAt   DateTime  @default(now())
+  kabulAt     DateTime?
   /// Fesih ihbarının verildiği an ve paktın gerçekten biteceği an.
   /// Aradaki sürede pakt HÂLÂ koruyor — mekaniğin bütün değeri burada.
   fesihAt     DateTime?
   biterAt     DateTime?
   fesihEdenId String?
 
-  world World     @relation(fields: [worldId], references: [id], onDelete: Cascade)
-  a     Alliance  @relation("PaktA", fields: [aId], references: [id], onDelete: Cascade)
-  b     Alliance  @relation("PaktB", fields: [bId], references: [id], onDelete: Cascade)
+  world World    @relation(fields: [worldId], references: [id], onDelete: Cascade)
+  a     Alliance @relation("PaktA", fields: [aId], references: [id], onDelete: Cascade)
+  b     Alliance @relation("PaktB", fields: [bId], references: [id], onDelete: Cascade)
 
   @@unique([aId, bId])
   @@index([worldId])
@@ -487,12 +532,12 @@ model Scout {
 
 /// Oyuncuya gösterilen olay akışı (saldırıya uğradın, kuyruk bitti, bölge kaybettin...)
 model Event {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   lordId    String
   kind      String
   payload   Json
   readAt    DateTime?
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
 
   lord Lord @relation(fields: [lordId], references: [id], onDelete: Cascade)
 

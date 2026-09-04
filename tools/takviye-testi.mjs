@@ -78,6 +78,11 @@ const itt = await savunan.post('/ittifak/kur', {
   ad: `Kalkan ${damga % 10000}`,
   etiket: `T${damga % 100}`,
 });
+// Kapıyı aç: ittifak varsayılan olarak BAŞVURUYLA üye alıyor (docs/09
+// §2.1). Bu testin ölçtüğü şey başvuru değil; lider gibi davranıp
+// kapıyı açıyoruz. Başvurunun kendisi ittifak-basvuru-testi'nde.
+await savunan.post('/ittifak/ayarlar', { katilim: 'acik' });
+
 await dost.post(`/ittifak/${itt.id}/katil`);
 kontrol('İttifak kuruldu ve dost katıldı', Boolean(itt?.id), itt?.ad ?? itt?.code);
 

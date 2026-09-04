@@ -601,6 +601,17 @@
       "_puan_notu": "Bagis en agir cunku dogrudan ittifagi buyutuyor. Sevkiyat ve takviye bir uyeye yardim: degerli ama daha dar."
     },
     "duyuru_en_fazla_harf": 300,
+    "basvuru": {
+      "_aciklama": "Ittifaga katilim liderin karari olsun diye. Once /ittifak/:id/katil ucu HERKESE ACIKTI: istedigin ittifaga yuruyup giriyordun, lider yalnizca haber aliyordu. B1e ile seviye ve ayricaliklar gelince delik buyudu -- aylarca bagis toplayip Sv6'ya cikan bir ittifagin ticaret tavani ve takviye hizi, kapidan giren herkese bedava oluyordu.",
+      "azami_bekleyen": 3,
+      "_azami_bekleyen_notu": "Bir lord ayni anda en fazla 3 ittifaga basvurabilir. Sinirsiz olsaydi herkese basvurup ilk kabul edeni secmek en iyi hamle olurdu; o zaman basvuru bir tercih degil agir bir tarama olurdu ve liderler bosuna karar verirdi.",
+      "ret_bekleme_saat": 24,
+      "_ret_bekleme_notu": "Reddedilen lord ayni ittifaga 24 saat yeniden basvuramaz. Beklemesiz olsaydi ret hicbir sey ifade etmezdi: reddedilen ayni dakika tekrar basvurur, lider kuyrugu temizlemekle ugrasirdi. Kalici yasak da dogru degil -- insanlar fikir degistirir, ittifaklar uye arar.",
+      "mesaj_en_fazla_harf": 200,
+      "_mesaj_notu": "Basvuruya kisa bir not ('Lv12, aktifim, gece oynuyorum'). Liderin karari icin yeterli, moderasyon yuku icin kucuk.",
+      "azami_asgari_seviye": 30,
+      "_asgari_seviye_notu": "Lider en dusuk uye seviyesini belirleyebiliyor: 'Lv10 alti almiyoruz' kurali basvuru kuyrugunu liderin yerine suzuyor. Tavan 30, azami lord seviyesinin (60) yarisi: daha yukarisi ittifagi yeni oyuncuya tamamen kapatirdi ve oyunun en cok ihtiyaci olan sey yeni oyuncunun bir gruba girmesi."
+    },
     "rutbeler": {
       "_aciklama": "Lider tek basina 8 kisiyi yonetiyordu: uye alma, cikarma, hedef isaretleme, pakt. Yasli rutbesi yuku paylasiyor. Uc kademe yeter -- daha fazlasi kucuk bir grupta burokrasi olur.",
       "azami_yasli": 2,

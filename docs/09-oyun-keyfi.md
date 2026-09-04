@@ -90,8 +90,31 @@ sevkiyat + gönderilen takviyeden TÜRETİLİYOR, yeni sayaç yok — liderin
 (liderin yükünü paylaşıyor; en fazla 2, çünkü rütbe ancak nadirse bir şey
 ifade eder) ve **duyuru** (sohbetten farkı akıp gitmemesi).
 
-**Sırada:** ittifak sıralamasının kendi ekranı, ittifak arması, başvuru
-sistemi.
+**Başvuru sistemi yapıldı.** Katılım artık liderin kararı. Öncesinde
+`/ittifak/:id/katil` ucu herkese açıktı — istediğin ittifağa yürüyüp
+giriyordun, lider yalnızca "katıldı" bildirimi alıyordu. B1e ile seviye ve
+ayrıcalıklar gelince delik büyüdü: aylarca bağışla Sv6'ya çıkmış bir
+ittifağın ticaret tavanı ve takviye hızı, kapıdan giren herkese bedava
+oluyordu. Birlikte büyütülen bir şeyin kapısı olmalı.
+
+Kapı iki katmanlı, çünkü **liderin dikkati de bir maliyet**: seviye eşiği
+başvuruyu lider bakmadan süzüyor ("Lv10 altı almıyoruz"), başvuru kalanı
+insana taşıyor. Eşik açık ittifakta da geçerli — "herkese açığım ama Lv10
+altı gelmesin" meşru bir kural ve kapıyı kapatmayı gerektirmemeli.
+
+Varsayılan **başvuru**, açık değil. Yanlış olduğunda iki tarafın maliyeti
+eşit değil: varsayılan başvuruyken lider açmak isterse bir düğmeye basıyor;
+varsayılan açıkken lider fark etmeden ittifağına yabancı doluyor. Ucuz olan
+hatayı seçtik.
+
+Ret KALICI yasak değil (24 saat), geri çekmek hiç bekleme getirmiyor —
+biri ittifakın kararı, diğeri oyuncunun kendi kararı; ceza yalnız birinde
+anlamlı. Aynı anda 3 açık başvuru: sınırsız olsaydı herkese başvurup ilk
+kabul edeni seçmek en iyi hamle olurdu ve başvuru bir tercih değil ağır bir
+tarama olurdu.
+
+**Sırada:** ittifak arması, ittifak kayıt defteri, başka bir ittifağı
+inceleme, ittifak sıralamasının kendi ekranı.
 
 ### 2.2 Sezon / sunucu döngüsü — ALMIYORUZ
 

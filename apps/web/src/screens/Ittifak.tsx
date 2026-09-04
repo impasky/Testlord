@@ -17,6 +17,7 @@ import { IkonAltin, IkonSohret } from '../components/Ikonlar';
 import { hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { BosHal } from '../components/BosHal';
 import { IttifakSohbet } from '../components/IttifakSohbet';
+import { IttifakBasvurular } from '../components/IttifakBasvurular';
 import { IttifakBagis } from '../components/IttifakBagis';
 import { IttifakDuyuru } from '../components/IttifakDuyuru';
 import { KaynakGonder } from '../components/KaynakGonder';
@@ -150,6 +151,16 @@ export function Ittifak({ lordId }: { lordId: string }) {
     onSuccess: basarili,
     onError: yut,
   });
+  const basvur = useMutation({
+    mutationFn: (id: string) => api.ittifakBasvur(id, ''),
+    onSuccess: basarili,
+    onError: yut,
+  });
+  const basvuruGeriCek = useMutation({
+    mutationFn: (id: string) => api.ittifakBasvuruGeriCek(id),
+    onSuccess: basarili,
+    onError: yut,
+  });
   const ayril = useMutation({ mutationFn: api.ittifakAyril, onSuccess: basarili, onError: yut });
   const cikar = useMutation({
     mutationFn: (id: string) => api.ittifakUyeCikar(id),
@@ -168,10 +179,16 @@ export function Ittifak({ lordId }: { lordId: string }) {
     onError: yut,
   });
   const bekliyor =
-    kur.isPending || katil.isPending || ayril.isPending || cikar.isPending || hedefKaldir.isPending;
+    kur.isPending ||
+    katil.isPending ||
+    basvur.isPending ||
+    basvuruGeriCek.isPending ||
+    ayril.isPending ||
+    cikar.isPending ||
+    hedefKaldir.isPending;
 
   if (!q.data) return <Iskelet />;
-  const { ittifakim, liste, altin, kurmaMaliyeti, azamiUye, bekleme } = q.data;
+  const { ittifakim, liste, altin, kurmaMaliyeti, azamiUye, bekleme, basvuru } = q.data;
   const liderMiyim = ittifakim?.liderId === lordId;
 
   return (
@@ -329,6 +346,11 @@ export function Ittifak({ lordId }: { lordId: string }) {
             </Bolum>
           )}
 
+          {/* Başvuru kutusu üye listesinin hemen altında: liderin bekleyen
+              bir kararı varsa ekranda ilk o görünmeli. Yönetici olmayan
+              üyede bileşen hiç çizilmiyor. */}
+          {ittifakim && <IttifakBasvurular />}
+
           {/* Bağış kartı üye listesinin ALTINDA: önce "kimlerdeniz", sonra
               "birlikte neyi büyütüyoruz". */}
           {ittifakim && <IttifakBagis />}
@@ -381,20 +403,53 @@ export function Ittifak({ lordId }: { lordId: string }) {
                       </span>
                     </div>
 
-                    {!ittifakim && (
+                    {/* Kapının hâli satırda yazıyor: oyuncu "Katıl"a basıp
+                        reddedilerek öğrenmemeli. Eşik varsa da burada. */}
+                    {!ittifakim && (a.katilim === 'basvuru' || a.asgariSeviye > 1) && (
+                      <p className="mt-1.5 text-[11px] text-solgun">
+                        {a.katilim === 'basvuru' ? 'Başvuru ile üye alıyor' : 'Herkes katılabilir'}
+                        {a.asgariSeviye > 1 && ` · en az Sv${a.asgariSeviye}`}
+                      </p>
+                    )}
+
+                    {!ittifakim && a.basvurumId && (
+                      <Buton
+                        tur="anahat"
+                        boy="kucuk"
+                        tam
+                        className="mt-2"
+                        onClick={() => basvuruGeriCek.mutate(a.basvurumId!)}
+                        disabled={bekliyor}
+                      >
+                        Başvuruldu · geri çek
+                      </Buton>
+                    )}
+
+                    {!ittifakim && !a.basvurumId && (
                       <Buton
                         tur="sessiz"
                         boy="kucuk"
                         tam
                         className="mt-2"
-                        onClick={() => katil.mutate(a.id)}
-                        disabled={bekliyor || a.uyeSayisi >= azamiUye || bekleme !== null}
+                        onClick={() =>
+                          a.katilim === 'basvuru' ? basvur.mutate(a.id) : katil.mutate(a.id)
+                        }
+                        disabled={
+                          bekliyor ||
+                          a.uyeSayisi >= azamiUye ||
+                          bekleme !== null ||
+                          (a.katilim === 'basvuru' && basvuru.acik >= basvuru.azami)
+                        }
                       >
                         {a.uyeSayisi >= azamiUye
                           ? 'Dolu'
                           : bekleme
                             ? `${formatKalan(bekleme.kalanSn * 1000)} sonra katılabilirsin`
-                            : 'Katıl'}
+                            : a.katilim === 'basvuru'
+                              ? basvuru.acik >= basvuru.azami
+                                ? `${basvuru.azami} başvuru hakkın dolu`
+                                : 'Başvur'
+                              : 'Katıl'}
                       </Buton>
                     )}
                   </Kart>

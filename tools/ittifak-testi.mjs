@@ -92,6 +92,11 @@ kontrol('Boşluklu etiket reddediliyor', kotuEtiket?.code === 'AD_UYGUNSUZ',
 
 const kuruldu = await a.post('/ittifak/kur', { ad: `Kartal ${damga % 1000}`, etiket: `K${damga % 100}` });
 kontrol('İttifak kuruldu', Boolean(kuruldu?.id), kuruldu?.ad ?? kuruldu?.code);
+// Kapıyı aç: ittifak varsayılan olarak BAŞVURUYLA üye alıyor (docs/09
+// §2.1). Bu testin ölçtüğü şey başvuru değil; lider gibi davranıp
+// kapıyı açıyoruz. Başvurunun kendisi ittifak-basvuru-testi'nde.
+await a.post('/ittifak/ayarlar', { katilim: 'acik' });
+
 
 const durum = await a.get('/ittifak');
 kontrol('Kurucu kendi ittifakının üyesi', durum.ittifakim?.uyeler?.length === 1,

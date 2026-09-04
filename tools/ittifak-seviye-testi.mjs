@@ -44,6 +44,11 @@ const A = await a.post('/ittifak/kur', {
   ad: `Seviye ${damga % 10000}`,
   etiket: `S${damga % 100}`,
 });
+// Kapıyı aç: ittifak varsayılan olarak BAŞVURUYLA üye alıyor (docs/09
+// §2.1). Bu testin ölçtüğü şey başvuru değil; lider gibi davranıp
+// kapıyı açıyoruz. Başvurunun kendisi ittifak-basvuru-testi'nde.
+await a.post('/ittifak/ayarlar', { katilim: 'acik' });
+
 await b.post(`/ittifak/${A.id}/katil`);
 // İttifak kurmak 20.000 altın yiyor ve depo tavanı Lv1'de 23.000: kurma
 // sonrası elde 3.000 altın kalıyordu, yani beş bağış hakkı dolmadan
