@@ -550,6 +550,19 @@
       "kesif": 2
     }
   },
+  "ittifak": {
+    "_aciklama": "Turun en buyuk kaldiraci ve bizim en buyuk eksigimizdi (docs/09 §2.1): oyuncu yalniz oynuyordu. Cekirdek kasten kucuk tutuldu -- kur, katil, ayril, birbirine saldiramamak. Takviye, ortak hedef ve sohbet ustune gelir.",
+    "azami_uye": 8,
+    "_azami_uye_notu": "8 kisi: bir kaleyi birlikte kusatacak kadar cok, haritayi kilitleyecek kadar degil. Sinir hesabi: azami_uye * bolgeler.sahip_basina_max(Lv60) = 8 * 5 = 40, dunyanin 61 bolgesinin altinda. Yani en kotu ihtimalle bile bir ittifak diyarin tamamini kapatamaz. Bu iki sayidan biri degisirse balance.test.ts haber veriyor.",
+    "kurma_maliyeti_altin": 20000,
+    "_maliyet_notu": "Ucuz olsaydi herkes kendi tek kisilik ittifagini kurar ve sistem anlamsizlasirdi. Bu rakam bir bolge gelistirmenin biraz altinda: ciddi ama erisilemez degil.",
+    "ad_en_az": 3,
+    "ad_en_fazla": 24,
+    "etiket_en_az": 2,
+    "etiket_en_fazla": 5,
+    "ayrildiktan_sonra_bekleme_saat": 12,
+    "_bekleme_notu": "Ittifaktan cikip hemen bir baskasina girmek, saldiri kilidini kalkan gibi kullanmayi mumkun kilardi: saldiriya ugrayan oyuncu saldirganin ittifagina girip korunur, sonra cikar. Bekleme bu oyunu bozuyor."
+  },
   "casusluk": {
     "_aciklama": "Saldirmadan once bilgi almak. docs/01 §1 Kurnazlik statina 'casusluk' diye soz vermisti ve bu soz yillardir tutulmamisti: Kurnazlik yalniz yagmayi artiriyordu. Casusluk o statin ikinci isi.",
     "maliyet_altin": 500,

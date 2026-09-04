@@ -5,6 +5,7 @@ import {
   armyCount,
   bosGeneralBonus,
   canRecallMarch,
+  ayniIttifaktaMi,
   hexDistance,
   ilkSaldiriMi,
   kesifDurumu,
@@ -106,6 +107,25 @@ async function assertCanAttack(
 
   if (region.ownerLordId === attackerId) {
     throw new GameError('Kendi bölgene saldıramazsın.', 400, 'KENDI_BOLGEN');
+  }
+
+  // İttifak içi saldırı yok. İttifağın tek zorunlu kuralı bu ve tek
+  // başına değerli: sırtını dönebileceğin bir sınırın olması (docs/09 B1).
+  if (region.ownerLordId) {
+    const [ben, o] = await Promise.all([
+      tx.lord.findUniqueOrThrow({ where: { id: attackerId }, select: { allianceId: true } }),
+      tx.lord.findUnique({
+        where: { id: region.ownerLordId },
+        select: { allianceId: true, alliance: { select: { name: true } } },
+      }),
+    ]);
+    if (ayniIttifaktaMi(ben.allianceId, o?.allianceId ?? null)) {
+      throw new GameError(
+        `${o?.alliance?.name ?? 'İttifakın'} üyesine saldıramazsın.`,
+        400,
+        'ITTIFAK_UYESI',
+      );
+    }
   }
 
   if (region.shieldUntil && region.shieldUntil > now) {

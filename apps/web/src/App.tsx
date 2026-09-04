@@ -15,6 +15,7 @@ import { useOmurgaAdimi } from './components/Omurga';
 import { Malikane } from './screens/Malikane';
 import { ParolaSifirla } from './screens/ParolaSifirla';
 import { Siralama } from './screens/Siralama';
+import { Ittifak } from './screens/Ittifak';
 
 /**
  * E-postadaki sıfırlama bağlantısının jetonu.
@@ -184,6 +185,7 @@ export function App() {
       {sekme === 'lord' && <LordEkrani lord={lord} onGuncelle={tazele} />}
       {sekme === 'generaller' && <Generaller onGuncelle={tazele} />}
       {sekme === 'siralama' && <Siralama lordId={lord.id} onGit={setSekme} />}
+      {sekme === 'ittifak' && <Ittifak lordId={lord.id} />}
       {sekme === 'hesap' && <Hesap lord={lord} onCikis={cikis} />}
     </MobilKabuk>
   );

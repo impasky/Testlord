@@ -132,6 +132,30 @@ export interface BattleResult {
   yaraliDonen: { saldiran: Army; savunan: Army };
 }
 
+/**
+ * Arayüzdeki sekmeler — TEK KAYNAK.
+ *
+ * Hem istemcinin sekme tipi hem sunucunun ölçüm doğrulaması buradan
+ * geliyor. Ayrı tutulduğunda ne olduğunu gördük: İttifak ekranı eklendi,
+ * sunucudaki liste güncellenmedi ve `/me?ekran=ittifak` 400 dönmeye
+ * başladı — yani o ekranda oyuncunun kaynakları, kuyrukları ve olayları
+ * hiç yüklenmedi. Hata sessizdi: ekranın kendi verisi geliyordu, eksik
+ * olan çerçeveydi.
+ */
+export const EKRANLAR = [
+  'malikane',
+  'kisla',
+  'harita',
+  'demirhane',
+  'lord',
+  'generaller',
+  'siralama',
+  'ittifak',
+  'hesap',
+] as const;
+
+export type Ekran = (typeof EKRANLAR)[number];
+
 export interface GeneralDef {
   key: string;
   ad: string;

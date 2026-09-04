@@ -99,13 +99,21 @@ export function KuyrukSeridi({
  * Sebebi göstermeden düğmeyi kapatmak, oyuncuyu sessizce çıkmaza sokar.
  */
 export function EngelNotu({ kisa, uzun }: { kisa: string; uzun: string }) {
+  // Nokta koşullu: `kisa` çoğu yerde elle yazılıyor ama bazı yerlerde
+  // doğrudan sunucu mesajı geçiliyor ve o zaten noktayla bitiyor —
+  // "Zaten bir ittifaktasın.." çıkıyordu. Noktalamayı çağıranların
+  // hepsine bırakmak, birinin unutması demekti.
+  const nokta = /[.!?…]$/.test(kisa.trim()) ? '' : '.';
   return (
     <p className="mt-1.5 flex gap-1.5 text-[11px] leading-snug text-kirmizi">
       <span className="shrink-0 pt-px">
         <IkonUyari boyut={13} />
       </span>
       <span>
-        <strong className="font-bold">{kisa}.</strong>{' '}
+        <strong className="font-bold">
+          {kisa}
+          {nokta}
+        </strong>{' '}
         <span className="text-solgun">{uzun}</span>
       </span>
     </p>

@@ -514,6 +514,41 @@ export interface SeferOdulDto {
   kaynaklar: Resources;
 }
 
+export interface IttifakUyesiDto {
+  id: string;
+  ad: string;
+  seviye: number;
+  sohret: number;
+  elo: number;
+  lider: boolean;
+}
+
+export interface IttifakDto {
+  ittifakim: {
+    id: string;
+    ad: string;
+    etiket: string;
+    liderId: string;
+    kurulus: string;
+    uyeler: IttifakUyesiDto[];
+    toplamSohret: number;
+    azamiUye: number;
+  } | null;
+  liste: {
+    id: string;
+    ad: string;
+    etiket: string;
+    uyeSayisi: number;
+    toplamSohret: number;
+    benimki: boolean;
+  }[];
+  altin: number;
+  kurmaMaliyeti: number;
+  azamiUye: number;
+  /** İttifaktan yeni ayrıldıysa kalan bekleme. */
+  bekleme: { kalanSn: number } | null;
+}
+
 export interface GeneralKatkisiDto {
   key: string;
   ad: string;
@@ -596,6 +631,13 @@ export const api = {
   gunluk: () => request<GunlukDto>('/gunluk'),
   gunlukOdul: () => post<GunlukOdulDto>('/gunluk/odul', {}),
   sefer: () => request<SeferDto>('/sefer'),
+  ittifak: () => request<IttifakDto>('/ittifak'),
+  ittifakKur: (ad: string, etiket: string) =>
+    post<{ id: string; ad: string; etiket: string }>('/ittifak/kur', { ad, etiket }),
+  ittifakKatil: (id: string) => post<{ katildi: string; ad: string }>(`/ittifak/${id}/katil`, {}),
+  ittifakAyril: () => post<{ ayrildi: boolean; dagildi: boolean }>('/ittifak/ayril', {}),
+  ittifakUyeCikar: (lordId: string) =>
+    post<{ cikarildi: string }>('/ittifak/uye-cikar', { lordId }),
   seferOdul: () => post<SeferOdulDto>('/sefer/odul', {}),
   kesifGonder: (regionId: number) =>
     post<{ queued: boolean; finishAt: string; mesafe: number }>(`/map/${regionId}/kesif`, {}),

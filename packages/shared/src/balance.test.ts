@@ -8,6 +8,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   B,
+  EKRANLAR,
   WORLD_MAP,
   accrue,
   armySlots,
@@ -45,11 +46,18 @@ import {
   gunlukSayaci,
   odulAlindiMi,
   seriCarpani,
+  ayniIttifaktaMi,
+  azamiUye,
+  ittifakAdiDenetle,
+  ittifakBeklemeSn,
+  ittifakEtiketiDenetle,
+  ittifakaGirebilirMi,
   karsiIpuclari,
   kesifDurumu,
   kesifGecerlilikSn,
   kesifSuresiSn,
   kusamSeviyesi,
+  kurmaMaliyeti,
   kusatmaCarpanlari,
   kusatmaDurumu,
   ortalamaGucPayi,
@@ -584,6 +592,78 @@ describe('general seviyesi', () => {
     expect(generalLevelMultiplier(1)).toBe(1);
     expect(generalLevelMultiplier(GENERAL_LEVEL.max)).toBeGreaterThan(1.3);
     expect(generalLevelMultiplier(GENERAL_LEVEL.max)).toBeLessThan(1.5);
+  });
+});
+
+describe('ekran listesi', () => {
+  it('her sekme tek bir listede tanımlı', () => {
+    // Bu liste bir kez ikiye ayrılmıştı: İttifak ekranı eklendi, sunucudaki
+    // kopya güncellenmedi ve /me?ekran=ittifak 400 döndü — o ekranda
+    // oyuncunun kaynakları, kuyrukları ve olayları hiç yüklenmedi. Hata
+    // sessizdi çünkü ekranın kendi verisi geliyordu, eksik olan çerçeveydi.
+    expect(new Set(EKRANLAR).size).toBe(EKRANLAR.length);
+    for (const e of ['malikane', 'harita', 'ittifak', 'hesap']) {
+      expect(EKRANLAR).toContain(e);
+    }
+  });
+});
+
+describe('ittifak', () => {
+  it('bir ittifak haritanın tamamını tutamaz', () => {
+    // Sınırı belirleyen iki sayı var: azami üye ve oyuncu başına azami
+    // bölge (Lv60'ta 5). Çarpımları dünyanın bölge sayısını geçerse tek
+    // bir ittifak diyarın tamamını kapatabilir ve oyun biter. İkisinden
+    // biri değişirse bu test haber verir.
+    expect(azamiUye()).toBeGreaterThan(2);
+    const enFazlaBolge = azamiUye() * maxRegions(60);
+    expect(enFazlaBolge).toBeLessThan(WORLD_MAP.region_count);
+  });
+
+  it('kurma maliyeti sıfır değil', () => {
+    // Ucuz olsaydı herkes kendi tek kişilik ittifakını kurardı ve sistem
+    // anlamsızlaşırdı.
+    expect(kurmaMaliyeti()).toBeGreaterThan(0);
+  });
+
+  it('aynı ittifak kontrolü null güvenli', () => {
+    // İki ittifaksız oyuncu "aynı ittifakta" sayılırsa kimse kimseye
+    // saldıramaz ve oyun durur. En sessiz felaket bu olurdu.
+    expect(ayniIttifaktaMi(null, null)).toBe(false);
+    expect(ayniIttifaktaMi('a', null)).toBe(false);
+    expect(ayniIttifaktaMi(null, 'a')).toBe(false);
+    expect(ayniIttifaktaMi('a', 'b')).toBe(false);
+    expect(ayniIttifaktaMi('a', 'a')).toBe(true);
+  });
+
+  it('ad ve etiket biçim denetimi', () => {
+    expect(ittifakAdiDenetle('ab').uygun).toBe(false);
+    expect(ittifakAdiDenetle('Kartal Sancağı').uygun).toBe(true);
+    expect(ittifakAdiDenetle('x'.repeat(100)).uygun).toBe(false);
+
+    expect(ittifakEtiketiDenetle('K').uygun).toBe(false);
+    expect(ittifakEtiketiDenetle('KRT').uygun).toBe(true);
+    expect(ittifakEtiketiDenetle('KARTAL').uygun).toBe(false);
+    // Etiket adın yanında köşeli parantez içinde görünüyor; boşluk ve
+    // noktalama o gösterimi bozar.
+    expect(ittifakEtiketiDenetle('K R').uygun).toBe(false);
+    expect(ittifakEtiketiDenetle('K]T').uygun).toBe(false);
+  });
+
+  it('ayrıldıktan sonra bekleme işliyor', () => {
+    // Bekleme olmasaydı saldırı kilidi kalkan gibi kullanılabilirdi:
+    // saldırıya uğrayan oyuncu saldırganın ittifakına girip korunur,
+    // tehlike geçince çıkardı.
+    const ayrildi = new Date('2026-09-04T00:00:00Z');
+    const hemen = ittifakaGirebilirMi(ayrildi, new Date('2026-09-04T01:00:00Z'));
+    expect(hemen.girebilir).toBe(false);
+    expect(hemen.kalanSn).toBeGreaterThan(0);
+
+    const sonra = new Date(ayrildi.getTime() + (ittifakBeklemeSn() + 1) * 1000);
+    expect(ittifakaGirebilirMi(ayrildi, sonra).girebilir).toBe(true);
+  });
+
+  it('hiç ittifakta olmamış oyuncu beklemiyor', () => {
+    expect(ittifakaGirebilirMi(null, new Date()).girebilir).toBe(true);
   });
 });
 

@@ -426,6 +426,34 @@ Tam liste: `data/seferler.json`.
 
 ---
 
+## 7d. İttifak
+
+Oyuncu 60 bölgelik bir diyarda tek başına oynuyordu: kaybettiğinde kimseye
+anlatamıyor, kazandığında kimse görmüyordu. İttifak bunu kırıyor.
+
+**Çekirdek kasten küçük:** ad, etiket, lider, üyeler. Davet, rol, takviye,
+ortak hedef ve sohbet bunun üstüne gelir.
+
+**Tek zorunlu kural: üyeler birbirine saldıramaz.** Tek başına değerli —
+sırtını dönebileceğin bir sınırın olması, "yalnız değilim" hissinin en somut
+hâli.
+
+| Kural | Değer | Neden |
+|---|---|---|
+| Azami üye | 8 | 8 × 5 bölge = 40 < 61: bir ittifak diyarın tamamını kapatamaz |
+| Kurma maliyeti | 20.000 altın | Ucuz olsa herkes kendi tek kişilik ittifakını kurar |
+| Ayrıldıktan sonra bekleme | 12 saat | Saldırı kilidinin kalkan gibi kullanılmasını engeller |
+
+Son kural anlaşılması en zor olanı ve en gerekli: bekleme olmasaydı
+saldırıya uğrayan oyuncu saldırganın ittifakına girip korunur, tehlike
+geçince çıkardı.
+
+**Lider ayrılırsa ittifak dağılmaz**, liderlik en yüksek şöhretli üyeye
+geçer. Dağıtmak, liderin tek tıkla herkesin ittifakını silmesi demekti.
+İttifak ancak son üyesi de ayrılınca silinir.
+
+---
+
 ## 8. Sıralamalar
 
 Üç ayrı sıralama, çünkü tek sıralama tek oyun tarzını ödüllendirir:

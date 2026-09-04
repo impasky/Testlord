@@ -45,6 +45,7 @@ model World {
   openedAt  DateTime @default(now())
   lords     Lord[]
   regions   Region[]
+  alliances Alliance[]
 }
 
 model Lord {
@@ -98,6 +99,12 @@ model Lord {
   /// Haftalık sefer ödülünün en son alındığı an. Hangi seferin açık olduğu
   /// SAKLANMIYOR — hafta numarasından türetiliyor (packages/shared/sefer.ts).
   seferOduluHaftasi DateTime?
+  /// Üyesi olduğu ittifak. Yoksa null — ittifak zorunlu değil.
+  allianceId String?
+  /// En son ittifaktan ayrıldığı an. Bekleme süresi buradan ölçülüyor:
+  /// ittifaktan çıkıp hemen başkasına girmek, saldırı kilidini kalkan gibi
+  /// kullanmayı mümkün kılardı.
+  allianceLeftAt DateTime?
   /// En son hangi ekranda olduğu. Tek işi ölçüm: oyuncular oyunu hangi
   /// ekranda bırakıyor? Bu soru tahminle cevaplanamaz ve cevabı olmadan
   /// bir sonraki iyileştirme de tahmin olur. (docs/08 İ7)
@@ -115,11 +122,14 @@ model Lord {
   marches   March[]
   events    Event[]
   scouts    Scout[]
+  alliance  Alliance? @relation("AllianceMembers", fields: [allianceId], references: [id])
+  ledAlliance Alliance? @relation("AllianceLeader")
 
   attackerBattles Battle[] @relation("AttackerBattles")
   defenderBattles Battle[] @relation("DefenderBattles")
 
   @@unique([userId, worldId])
+  @@index([allianceId])
   @@index([worldId, fame])
   @@index([worldId, elo])
 }
@@ -268,6 +278,30 @@ model Queue {
 
   @@index([resolved, finishAt])
   @@index([lordId, resolved])
+}
+
+/// İttifak: birlikte oynayan lordlar.
+///
+/// Çekirdek kasten küçük: ad, etiket, lider, üyeler. Takviye, ortak hedef ve
+/// sohbet bunun üstüne gelir. Tek kuralı bile tek başına değerli —
+/// birbirine saldıramamak, "yalnız değilim" hissinin en somut hâli.
+model Alliance {
+  id        String   @id @default(cuid())
+  worldId   String
+  /// Görünen ad. Dünya içinde benzersiz.
+  name      String
+  /// Kısa etiket, sıralamada ve harita üzerinde adın yanında görünür.
+  tag       String
+  leaderLordId String @unique
+  createdAt DateTime @default(now())
+
+  world   World  @relation(fields: [worldId], references: [id], onDelete: Cascade)
+  leader  Lord   @relation("AllianceLeader", fields: [leaderLordId], references: [id], onDelete: Cascade)
+  members Lord[] @relation("AllianceMembers")
+
+  @@unique([worldId, name])
+  @@unique([worldId, tag])
+  @@index([worldId])
 }
 
 /// Bir keşif raporu: bir lordun bir bölge hakkındaki istihbaratı.

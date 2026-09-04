@@ -20,17 +20,15 @@ import {
   IkonNavSiralama,
   IkonSohret,
 } from './Ikonlar';
+import type { Ekran } from '@lordlar/shared';
 import { Ilerleme, kisaSayi } from './ui';
 
-export type Sekme =
-  | 'malikane'
-  | 'kisla'
-  | 'harita'
-  | 'demirhane'
-  | 'lord'
-  | 'generaller'
-  | 'siralama'
-  | 'hesap';
+/**
+ * Sekme adları packages/shared'daki EKRANLAR'dan geliyor — sunucunun
+ * ölçüm doğrulaması da aynı listeyi kullanıyor. Ayrı tutmak, yeni bir
+ * ekran eklendiğinde /me'nin o ekranda 400 dönmesi demekti.
+ */
+export type Sekme = Ekran;
 
 const ALT_SEKMELER: { key: Sekme; ad: string; Ikon: typeof IkonNavMalikane }[] = [
   { key: 'malikane', ad: 'Malikâne', Ikon: IkonNavMalikane },
@@ -43,6 +41,7 @@ const MENU_SEKMELERI: { key: Sekme; ad: string; Ikon: typeof IkonNavMalikane }[]
   { key: 'lord', ad: 'Lord', Ikon: IkonNavLord },
   { key: 'generaller', ad: 'Generaller', Ikon: IkonNavGeneraller },
   { key: 'siralama', ad: 'Sıralama', Ikon: IkonNavSiralama },
+  { key: 'ittifak', ad: 'İttifak', Ikon: IkonSohret },
   { key: 'hesap', ad: 'Hesap', Ikon: IkonNavLord },
 ];
 

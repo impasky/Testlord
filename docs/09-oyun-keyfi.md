@@ -38,11 +38,19 @@ için* katılıyor, anlaşma yapıyor, bazılarını tutuyor, koşullar değişi
 sessizce bozuyor. Konfederasyon ve saldırmazlık paktları bu katmanın resmî
 araçları.
 
-**Bizde durum:** yok. 61 bölge, tek taht, herkes tek başına. Taht iyi bir
-hedef ama **birleşme yolu yok**. Bu, elimizdeki en büyük eksik.
+**Bizde durum (B1'den önce):** yok. 61 bölge, tek taht, herkes tek başına.
+Taht iyi bir hedefti ama **birleşme yolu yoktu**. Elimizdeki en büyük
+eksikti.
 
-**Ne alalım:** ittifak (5–10 kişi), takviye gönderme, ortak hedef işaretleme,
-saldırmazlık paktı. Sıralamaya ittifak tablosu.
+**B1 ile yapıldı:** ittifak çekirdeği — kur, katıl, ayrıl, üye listesi,
+ittifak sıralaması ve tek zorunlu kural: **üyeler birbirine saldıramaz**
+(docs/01 §7d). Kurma maliyeti, üye tavanı ve ayrılma beklemesi üçü birden
+sistemin kötüye kullanılmasını kapatıyor; en ince olanı bekleme, çünkü
+onsuz saldırı kilidi kalkan gibi kullanılırdı.
+
+**Sırada:** takviye gönderme, ortak hedef işaretleme, saldırmazlık paktı,
+ittifak sohbeti (B3). Bunların hepsi artık var olan bir çekirdeğin üstüne
+geliyor.
 
 ### 2.2 Sezon / sunucu döngüsü
 
@@ -253,7 +261,7 @@ sayılı ve sıralı olduğu için tam tarama mümkündü ve hatayı ancak o gö
 
 | # | İş | Not |
 |---|---|---|
-| B1 | **İttifak** | Türün en büyük kaldıracı. 5–10 kişi, takviye, ortak hedef, pakt. DB + yeni ekran. |
+| B1 | ~~**İttifak**~~ **çekirdeği yapıldı** | Kur/katıl/ayrıl, üye listesi, **üyeye saldırılamaz**, ittifak sıralaması (docs/01 §7d). Kalan: takviye, ortak hedef, pakt, sohbet. |
 | B2 | **Sezon** | 4–6 hafta, taht sahibi kazanır, dünya sıfırlanır, onur listesi kalır. |
 | B3 | **Sohbet** | Sosyal tutkalın kendisi. Moderasyon yükü getirir; ittifak sohbetiyle başlanmalı. |
 | B4 | ~~**Süreli etkinlik**~~ **yapıldı** | Haftalık sefer: tema hafta numarasından türüyor (sunucu bir şey saklamıyor), hedef herkes için aynı. **Tablo YOK** — sıralamalı etkinlik zaten önde olanı ilerletirdi (§3.4). |

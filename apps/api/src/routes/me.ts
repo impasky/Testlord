@@ -1,17 +1,9 @@
-import { STAT_KEYS, type StatKey } from '@lordlar/shared';
+import { EKRANLAR, STAT_KEYS, type StatKey } from '@lordlar/shared';
 
-/** Arayüzdeki sekmeler. Serbest metin kabul etmiyoruz: ölçüm alanı
- * doğrulanmamış istemci verisiyle kirlenmesin. */
-const EKRANLAR = [
-  'malikane',
-  'kisla',
-  'harita',
-  'demirhane',
-  'lord',
-  'generaller',
-  'siralama',
-  'hesap',
-] as const;
+// Sekme listesi packages/shared'da: istemcinin sekme tipi de oradan
+// geliyor. Serbest metin kabul etmiyoruz (ölçüm alanı doğrulanmamış
+// istemci verisiyle kirlenmesin) ama listeyi burada İKİNCİ KEZ tutmak,
+// yeni bir ekran eklendiğinde /me'nin sessizce 400 dönmesi demekti.
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { hashPassword, requireAuth, verifyPassword } from '../auth.js';
