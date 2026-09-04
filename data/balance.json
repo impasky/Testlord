@@ -326,6 +326,12 @@
     "max_taban": 1,
     "max_seviye_bolen": 15,
     "max_bolge_seviyesi": 5,
+    "vilayet_birligi": {
+      "_aciklama": "Ayni vilayette birden fazla bolge tutmak, o vilayetteki HER bolgenin gelirini artirir. Diyar yedi vilayete bolunmustu (world-map.json -> provinces) ve bu bolunme hicbir yerde ise yaramiyordu: ne haritada goruluyordu ne mekanikte. Bonus 'hangi bolge' sorusunun yanina 'NEREDE' sorusunu koyuyor -- dagink uc bolge ile bitisik uc bolge artik ayni sey degil (docs/11 §1.2 H2).",
+      "bolge_basina": 0.08,
+      "azami": 0.3,
+      "_azami_notu": "Lv60 bir oyuncu 5 bolge tutabiliyor; hepsini tek vilayete yiginca 4 x 0.08 = 0.32, tavan 0.30'a kirpiliyor. Tavan olmasa vilayet yigmak tek dogru oyun olurdu; simdi guclu ama zorunlu degil."
+    },
     "gelisim_adlari": {
       "tarla": [
         "Köy Tarlası",

@@ -23,6 +23,8 @@ import {
   malikaneIncome,
   maxRegions,
   regionIncome,
+  vilayetCarpani,
+  vilayetSayilari,
   storageCapacity,
   totalEquipmentPower,
   addanArma,
@@ -137,7 +139,12 @@ function collectUnitsAt(
 }
 
 export function equippedGenerals(
-  generals: { generalKey: string; level: number; slotIndex: number | null; restUntil: Date | null }[],
+  generals: {
+    generalKey: string;
+    level: number;
+    slotIndex: number | null;
+    restUntil: Date | null;
+  }[],
   now: Date,
 ): EquippedGeneral[] {
   return generals
@@ -145,9 +152,11 @@ export function equippedGenerals(
     .map((g) => ({ key: g.generalKey, level: g.level }));
 }
 
-export function gearBonusFrom(
-  lines: { line: string; level: number }[],
-): { saldiri: number; savunma: number; can: number } {
+export function gearBonusFrom(lines: { line: string; level: number }[]): {
+  saldiri: number;
+  savunma: number;
+  can: number;
+} {
   const map = new Map(lines.map((l) => [l.line, l.level]));
   const per = 0.03;
   return {
@@ -163,13 +172,18 @@ export function gearBonusFrom(
  */
 export function calcHourlyIncome(
   level: number,
-  regions: { type: string; level: number; incomeMult: number }[],
+  regions: { type: string; level: number; incomeMult: number; province: string }[],
   bonus: GeneralBonus,
 ): { income: Resources; famePerHour: number } {
   const income = malikaneIncome(level);
   let famePerHour = 0;
+  // Vilayet birliği: aynı vilayetteki her bölge diğerlerini besliyor
+  // (docs/11 §1.2 H2). Sayımı döngünün DIŞINDA yapıyoruz, yoksa her bölge
+  // için bütün listeyi baştan tararız.
+  const vilayet = vilayetSayilari(regions);
   for (const r of regions) {
-    const ri = regionIncome(r.type, r.level, r.incomeMult, bonus);
+    const birlik = vilayetCarpani(vilayet[r.province] ?? 1);
+    const ri = regionIncome(r.type, r.level, r.incomeMult * birlik, bonus);
     income.altin += ri.altin;
     income.demir += ri.demir;
     income.erzak += ri.erzak;
@@ -221,7 +235,12 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
 
   const { income, famePerHour } = calcHourlyIncome(
     lord.level,
-    lord.regions.map((r) => ({ type: r.type, level: r.level, incomeMult: r.incomeMult })),
+    lord.regions.map((r) => ({
+      type: r.type,
+      level: r.level,
+      incomeMult: r.incomeMult,
+      province: r.province,
+    })),
     bonus,
   );
 

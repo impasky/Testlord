@@ -270,7 +270,12 @@ async function lordOzeti(lordId: string, tx: Tx) {
   const bonus = sahada.length ? aggregateGeneralBonus(sahada) : bosGeneralBonus();
   const { income } = calcHourlyIncome(
     lord.level,
-    lord.regions.map((r) => ({ type: r.type, level: r.level, incomeMult: r.incomeMult })),
+    lord.regions.map((r) => ({
+      type: r.type,
+      level: r.level,
+      incomeMult: r.incomeMult,
+      province: r.province,
+    })),
     bonus,
   );
   // Sıra: kendisinden yüksek şöhretli kaç lord var. Dünya başına 120 satır,

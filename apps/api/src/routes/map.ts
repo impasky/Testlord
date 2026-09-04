@@ -6,7 +6,6 @@ import {
   bosGeneralBonus,
   canRecallMarch,
   ayniIttifaktaMi,
-  hexDistance,
   ilkSaldiriMi,
   kesifDurumu,
   kesifMaliyetiAltin,
@@ -25,6 +24,7 @@ import { requireAuth } from '../auth.js';
 import { prisma, type Tx } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { findLordByUser, pushEvent } from '../services/lord.js';
+import { mesafeOlcer, mesafeOlcerHazir } from '../services/mesafe.js';
 import {
   fetihOdulu,
   lordSide,
@@ -98,7 +98,8 @@ async function assertCanAttack(
     select: { level: true, woundedUntil: true, dailyAttacks: true },
   });
 
-  if (attacker.woundedUntil && attacker.woundedUntil > now) throw hata.yarali(attacker.woundedUntil);
+  if (attacker.woundedUntil && attacker.woundedUntil > now)
+    throw hata.yarali(attacker.woundedUntil);
 
   const limitMuaf = tahtMi && B.korumalar.taht_kalesi_limitten_muaf;
   if (!limitMuaf && attacker.dailyAttacks >= B.korumalar.gunluk_saldiri_limiti) {
@@ -198,6 +199,13 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
         : Promise.resolve(null),
     ]);
 
+    // Mesafe en yakın TOPRAĞINDAN ölçülüyor (docs/11 §1.2 H1). Bölgeler
+    // zaten elde: ölçeri buradan kuruyoruz, ikinci bir sorgu açmadan.
+    const olc = mesafeOlcerHazir(
+      { q: me.homeQ, r: me.homeR },
+      regions.filter((r) => r.ownerLordId === lordId).map((r) => ({ q: r.q, r: r.r })),
+    );
+
     return {
       home: { q: me.homeQ, r: me.homeR },
       maxRegions: maxRegions(me.level),
@@ -220,7 +228,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
         owner: r.owner ? { id: r.owner.id, name: r.owner.name, level: r.owner.level } : null,
         isMine: r.ownerLordId === lordId,
         shielded: r.shieldUntil ? r.shieldUntil > new Date() : false,
-        distance: hexDistance({ q: me.homeQ, r: me.homeR }, { q: r.q, r: r.r }),
+        distance: olc({ q: r.q, r: r.r }),
         fortressBonus: regionFortressBonus(r.type, r.level),
       })),
     };
@@ -229,15 +237,14 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
   app.get('/map/:id', { preHandler: requireAuth }, async (req) => {
     const { id } = z.object({ id: z.coerce.number().int() }).parse(req.params);
     const lordId = await findLordByUser(req.user.userId);
-    const [region, me] = await Promise.all([
+    const [region, olc] = await Promise.all([
       prisma.region.findUnique({
         where: { id },
         include: { owner: { select: { id: true, name: true, level: true } } },
       }),
-      prisma.lord.findUniqueOrThrow({
-        where: { id: lordId },
-        select: { homeQ: true, homeR: true },
-      }),
+      // Mesafe en yakın toprağından (docs/11 §1.2 H1); ölçer evi ve
+      // toprakları kendi okuyor.
+      mesafeOlcer(lordId),
     ]);
     if (!region) throw hata.bulunamadi('Bölge');
 
@@ -326,7 +333,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       ...region,
       isMine: benim,
       // Liste ucuyla aynı türetilmiş alanlar; arayüz iki uçtan da aynı şekli bekler.
-      distance: hexDistance({ q: me.homeQ, r: me.homeR }, { q: region.q, r: region.r }),
+      distance: olc({ q: region.q, r: region.r }),
       shielded: region.shieldUntil ? region.shieldUntil > new Date() : false,
       garrison,
       /** Bu bölgede duran KENDİ askerin (takviye ya da kendi garnizonun). */
@@ -353,9 +360,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
           }
         : null,
       kesifMaliyeti: kesifMaliyetiAltin(),
-      kesifSuresiSn: kesifSuresiSn(
-        hexDistance({ q: me.homeQ, r: me.homeR }, { q: region.q, r: region.r }),
-      ),
+      kesifSuresiSn: kesifSuresiSn(olc({ q: region.q, r: region.r })),
       fortressBonus: regionFortressBonus(region.type, region.level),
       upgradeCost:
         region.level < B.bolgeler.max_bolge_seviyesi ? regionUpgradeCost(region.level) : null,
@@ -420,7 +425,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       await assertQueueSlot(lordId, 'kesif', tx);
       await spendResources(lordId, { altin: kesifMaliyetiAltin(), demir: 0, erzak: 0 }, tx);
 
-      const mesafe = hexDistance({ q: me.homeQ, r: me.homeR }, { q: region.q, r: region.r });
+      const mesafe = (await mesafeOlcer(lordId, tx))({ q: region.q, r: region.r });
       const q = await enqueue(lordId, 'kesif', { regionId: id }, kesifSuresiSn(mesafe), tx);
       return { queued: true, finishAt: q.finishAt, mesafe };
     });
@@ -479,7 +484,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       await assertHomeUnits(lordId, army, tx);
       await takeFromHome(lordId, army, tx);
 
-      const dist = hexDistance({ q: ben.homeQ, r: ben.homeR }, { q: region.q, r: region.r });
+      const dist = (await mesafeOlcer(lordId, tx))({ q: region.q, r: region.r });
       const sec = marchDurationSec(dist, army, bosGeneralBonus());
       const now = new Date();
 
@@ -556,7 +561,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
         where: { id: lordId },
         select: { worldId: true, homeQ: true, homeR: true },
       });
-      const dist = hexDistance({ q: ben.homeQ, r: ben.homeR }, { q: region.q, r: region.r });
+      const dist = (await mesafeOlcer(lordId, tx))({ q: region.q, r: region.r });
       const sec = marchDurationSec(dist, army, bosGeneralBonus());
       const now = new Date();
 
@@ -667,14 +672,8 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
     const attacker = await lordSide(lordId, army, body.generalIds);
     const fortress = regionFortressBonus(region.type, region.level);
 
-    const [me, yuruyusSayisi] = await Promise.all([
-      prisma.lord.findUniqueOrThrow({
-        where: { id: lordId },
-        select: { homeQ: true, homeR: true, level: true, pvpWins: true, fortressFameAccrued: true },
-      }),
-      prisma.march.count({ where: { lordId } }),
-    ]);
-    const dist = hexDistance({ q: me.homeQ, r: me.homeR }, { q: region.q, r: region.r });
+    const yuruyusSayisi = await prisma.march.count({ where: { lordId } });
+    const dist = (await mesafeOlcer(lordId))({ q: region.q, r: region.r });
     const ilkSaldiri = ilkSaldiriMi(yuruyusSayisi, region.ownerLordId === null, dist);
     const marchSec = marchDurationSec(dist, army, attacker.generalBonus, { ilkSaldiri });
 
@@ -715,24 +714,19 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
     // alır, bir seferde almaz. Önizleme dokuz savaş çalıştırıp DAĞILIMI
     // gösteriyor — "kesin alırsın" deyip almamak, oyuncuya tutulmayan bir
     // söz vermek olurdu. (docs/08 İ1)
-    const ornek = savasOrneklemesi(
-      attacker,
-      defender,
-      onizlemeTohumu(lordId, region.id),
-      {
-        defenderStore: {
-          altin: region.storeAltin,
-          demir: region.storeDemir,
-          erzak: region.storeErzak,
-        },
-        attackerCunning: 0,
-        canCapture: true,
-        // Yaralı dönüş savunanın kaybını değiştiriyor; önizleme aynı
-        // bayrağı geçirmezse oyuncuya gösterilen "savunanın kaybı"
-        // gerçekleşenden farklı çıkardı.
-        savunanOyuncu: region.ownerLordId !== null,
+    const ornek = savasOrneklemesi(attacker, defender, onizlemeTohumu(lordId, region.id), {
+      defenderStore: {
+        altin: region.storeAltin,
+        demir: region.storeDemir,
+        erzak: region.storeErzak,
       },
-    );
+      attackerCunning: 0,
+      canCapture: true,
+      // Yaralı dönüş savunanın kaybını değiştiriyor; önizleme aynı
+      // bayrağı geçirmezse oyuncuya gösterilen "savunanın kaybı"
+      // gerçekleşenden farklı çıkardı.
+      savunanOyuncu: region.ownerLordId !== null,
+    });
     const result = ornek.ortanca;
 
     const [odul, bedel] = await Promise.all([
@@ -813,7 +807,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       const limitDolu = sahip >= maxRegions(lord.level) && region.type !== 'taht';
 
       const generalBonus = bosGeneralBonus();
-      const dist = hexDistance({ q: lord.homeQ, r: lord.homeR }, { q: region.q, r: region.r });
+      const dist = (await mesafeOlcer(lordId, tx))({ q: region.q, r: region.r });
       // Oyuncunun ömürdeki ilk saldırısı, eve yakın ve sahipsiz bir hedefe
       // ise dakikalar içinde varır. Yoksa yeni oyuncu ordusunu yola çıkarıp
       // ilk oturumunda hiçbir sonuç görmeden oyunu kapatıyor.
@@ -897,7 +891,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       }
       if (!canRecallMarch(march.departAt, march.arriveAt, new Date())) {
         throw new GameError(
-          'Geri çağırma süresi doldu. Yürüyüşün ilk %25\'inde geri çağırabilirsin.',
+          "Geri çağırma süresi doldu. Yürüyüşün ilk %25'inde geri çağırabilirsin.",
           400,
           'GERI_CAGIRMA_SURESI',
         );
@@ -926,9 +920,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
         where: { id: march.toRegionId },
         select: { type: true },
       });
-      const sayacaGirdi = !(
-        hedef?.type === 'taht' && B.korumalar.taht_kalesi_limitten_muaf
-      );
+      const sayacaGirdi = !(hedef?.type === 'taht' && B.korumalar.taht_kalesi_limitten_muaf);
       if (sayacaGirdi) {
         await tx.lord.update({ where: { id: lordId }, data: { dailyAttacks: { decrement: 1 } } });
       }

@@ -61,8 +61,41 @@ export function regionIncome(
   };
 }
 
+/**
+ * Vilayet birliği çarpanı: aynı vilayette kaç bölge tutuyorsan o kadar
+ * verimli oluyorsun.
+ *
+ * Diyar yedi vilayete bölünmüştü (`world-map.json` → provinces) ve bu
+ * bölünme HİÇBİR yerde iş görmüyordu — ne haritada görünüyordu ne
+ * mekanikte. Bonus, "hangi bölgeyi alayım" sorusunun yanına "**nerede**"
+ * sorusunu koyuyor: dağınık üç bölge ile bitişik üç bölge artık aynı şey
+ * değil (docs/11 §1.2 H2).
+ *
+ * Tavan var, çünkü tavansız bir birlik bonusu "hepsini tek vilayete yığ"
+ * diye tek bir doğru oyun yaratırdı.
+ */
+export function vilayetCarpani(ayniVilayettekiBolgeSayisi: number): number {
+  const v = B.bolgeler.vilayet_birligi;
+  if (ayniVilayettekiBolgeSayisi <= 1) return 1;
+  return 1 + Math.min(v.azami, (ayniVilayettekiBolgeSayisi - 1) * v.bolge_basina);
+}
+
+/**
+ * Bölge listesinden vilayet → bölge sayısı tablosu.
+ *
+ * Taht Kalesi kendi vilayetinde tek: birlik bonusu ona hiçbir şey katmıyor
+ * ve katmamalı — tahtın değeri zaten kendi çarpanında.
+ */
+export function vilayetSayilari(bolgeler: readonly { province: string }[]): Record<string, number> {
+  const sayac: Record<string, number> = {};
+  for (const b of bolgeler) sayac[b.province] = (sayac[b.province] ?? 0) + 1;
+  return sayac;
+}
+
 export function storageCapacity(lordLevel: number): number {
-  return B.kaynaklar.depo_kapasitesi.taban + B.kaynaklar.depo_kapasitesi.lord_seviye_basina * lordLevel;
+  return (
+    B.kaynaklar.depo_kapasitesi.taban + B.kaynaklar.depo_kapasitesi.lord_seviye_basina * lordLevel
+  );
 }
 
 /** Ordunun saatlik erzak gideri. */

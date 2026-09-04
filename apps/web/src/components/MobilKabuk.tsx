@@ -71,9 +71,34 @@ function KaynakSayaci({
   const gecen = (Date.now() - baslangic) / 3_600_000;
   const canli = Math.min(tavan, Math.max(0, deger + saatlik * gecen));
   const dolu = canli >= tavan;
+  /**
+   * Kaynak sütununun DURUMU.
+   *
+   * Üç kaynak eşit ağırlıkta duruyordu; oysa ikisi sessizce israf edilebilir
+   * (depo dolunca üretim durur) ve biri eksiye düşüp orduyu eritebilir
+   * (erzak). "Bir şeyler ters" bilgisi, yalnız 9 piksellik bir yazıya
+   * bırakılamayacak kadar önemli — sütunun kendisi renk değiştiriyor
+   * (docs/11 §2.3 G3).
+   */
+  const durum = saatlik < 0 ? 'kritik' : dolu ? 'israf' : null;
 
   return (
-    <div className="min-w-0 flex-1" title={`${ad}: ${Math.floor(canli)} (${saatlik >= 0 ? '+' : ''}${Math.round(saatlik)}/sa)`}>
+    <div
+      className={`-mx-0.5 min-w-0 flex-1 rounded-lg px-1 py-0.5 ${
+        durum === 'kritik'
+          ? 'bg-kirmizi/15 ring-1 ring-kirmizi/40'
+          : durum === 'israf'
+            ? 'bg-turuncu/12 ring-1 ring-turuncu/30'
+            : ''
+      }`}
+      title={`${ad}: ${Math.floor(canli)} (${saatlik >= 0 ? '+' : ''}${Math.round(saatlik)}/sa)${
+        durum === 'kritik'
+          ? ' — eksiye gidiyor'
+          : durum === 'israf'
+            ? ' — depo dolu, üretim boşa gidiyor'
+            : ''
+      }`}
+    >
       <div className="flex items-center gap-1">
         <span className="shrink-0" style={{ color: renk }}>
           {ikon}
@@ -91,7 +116,8 @@ function KaynakSayaci({
           {Math.round(saatlik)}
         </span>
       </div>
-      {dolu && <div className="mt-0.5 text-[9px] text-kirmizi">dolu</div>}
+      {durum === 'israf' && <div className="mt-0.5 text-[9px] text-turuncu">depo dolu</div>}
+      {durum === 'kritik' && <div className="mt-0.5 text-[9px] text-kirmizi">azalıyor</div>}
     </div>
   );
 }

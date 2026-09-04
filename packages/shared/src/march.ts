@@ -15,6 +15,35 @@ export function hexDistance(a: HexCoord, b: HexCoord): number {
   return (Math.abs(dq) + Math.abs(dr) + Math.abs(dq + dr)) / 2;
 }
 
+/**
+ * Ordunun bir hedefe olan GERÇEK mesafesi: en yakın toprağından ölçülür.
+ *
+ * Eskiden mesafe yalnız malikâneden ölçülüyordu ve altıgen ızgara bu yüzden
+ * boş bir süstü: bölgenin senin bölgene bitişik olmasıyla haritanın öbür
+ * ucunda olması arasında hiçbir fark yoktu. Izgaranın maliyetini ödüyor,
+ * faydasını almıyorduk — oyuncunun "hex sistemi çok kısıtlayıcı
+ * hissettiriyor" dediği şey buydu (docs/11 §1).
+ *
+ * Şimdi aldığın her bölge bir çıkış noktası. Toprak sahibi olmak haritayı
+ * AÇIYOR; yayılma yayılma gibi hissediliyor.
+ *
+ * Kartopu riski yok: bölge sayısı seviyeye bağlı (`1 + floor(seviye/15)`),
+ * yani sınırsız yayılan bir oyuncu yok. Malikâne her zaman listede — bölgesi
+ * olmayan oyuncu eskisi gibi oynamaya devam ediyor.
+ */
+export function yakinlikMesafesi(
+  ev: HexCoord,
+  topraklarim: readonly HexCoord[],
+  hedef: HexCoord,
+): number {
+  let enAz = hexDistance(ev, hedef);
+  for (const t of topraklarim) {
+    const d = hexDistance(t, hedef);
+    if (d < enAz) enAz = d;
+  }
+  return enAz;
+}
+
 /** Ordunun en yavaş biriminin hızı — yürüyüşü o belirler. */
 export function slowestSpeed(army: Army): number {
   let slowest = Infinity;

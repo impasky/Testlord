@@ -20,12 +20,13 @@ import {
   armyCount,
   bosGeneralBonus,
   fetihKazanci,
-  hexDistance,
   lordContribution,
   marchDurationSec,
   maxRegions,
   calculateFame,
   regionIncome,
+  vilayetCarpani,
+  vilayetSayilari,
   armyPower,
   armySlots,
   commandCapacity,
@@ -43,6 +44,7 @@ import {
 import { prisma, type Tx } from '../db.js';
 import { equippedGenerals, gearBonusFrom } from './lord.js';
 import { regionFortressBonus } from './region.js';
+import { mesafeOlcerHazir } from './mesafe.js';
 
 /** Lordun savaş tarafını kurar (ekipman, donanım, generaller dahil). */
 export async function lordSide(
@@ -173,6 +175,12 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
 
   const limitDolu = bolgeSayisi >= maxRegions(lord.level);
   const ilkYuruyus = yuruyusSayisi === 0;
+  // Toprakları zaten yüklü (include: { regions: true }); ölçeri buradan
+  // kuruyoruz, ikinci bir sorgu açmadan.
+  const olc = mesafeOlcerHazir(
+    { q: lord.homeQ, r: lord.homeR },
+    lord.regions.map((r) => ({ q: r.q, r: r.r })),
+  );
 
   const sirali: { puan: number; hedef: HedefOnerisi }[] = [];
 
@@ -204,7 +212,10 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
       kalan = armyCount(ornek.ortanca.attackerSurvivors);
     }
 
-    const distance = hexDistance({ q: lord.homeQ, r: lord.homeR }, { q: r.q, r: r.r });
+    // Mesafe en yakın toprağından (docs/11 §1.2 H1): öneri motoru da
+    // haritayla aynı sayıyı görmeli, yoksa "2 hex" diyen öneri saldırı
+    // ekranında 5 hex çıkar.
+    const distance = olc({ q: r.q, r: r.r });
     const ilkSaldiri = ilkYuruyus && distance <= B.yuruyus.ilk_saldiri_max_hex;
     // Ordu boşken hız referansı kullanılır (marchDurationSec'in kendi
     // davranışı); gösterilen süre "bu mesafe kabaca ne kadar" demektir.
@@ -239,7 +250,6 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
     const puan = kazanir
       ? 1e9 + (ilkSaldiri ? 1e6 : 0) + altinKarsiligi(gelir) / saat + kalan
       : -distance * 1000 - savunmaGucu / 1000;
-
 
     sirali.push({
       puan,
@@ -399,7 +409,6 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
 
   return enIyi;
 }
-
 
 /** Önizleme örneklemesinde kaç savaş çalıştırılır. */
 const ORNEK = B.oneri.ornek_savas_sayisi;
@@ -583,7 +592,7 @@ export interface FetihOdulu {
  */
 export async function fetihOdulu(
   lordId: string,
-  region: { type: string; level: number; incomeMult: number },
+  region: { type: string; level: number; incomeMult: number; province: string },
 ): Promise<FetihOdulu> {
   const lord = await prisma.lord.findUniqueOrThrow({
     where: { id: lordId },
@@ -626,7 +635,33 @@ export async function fetihOdulu(
   });
   const puanlar = rakipler.map((r) => r.fame);
 
-  const gelirOncesi = topla(lord.regions.map((r) => regionIncome(r.type, r.level, r.incomeMult)));
+  /**
+   * Gelir, VİLAYET BİRLİĞİ dahil hesaplanıyor (docs/11 §1.2 H2).
+   *
+   * Naif hesap "eski gelir + hedefin geliri"dir ve bonusu tam da oyuncunun
+   * karar verdiği yerde gizler: aynı vilayetten ikinci bölgeyi almak
+   * yalnız o bölgeyi değil, oradaki ÖNCEKİ bölgeni de büyütüyor. Söylenmezse
+   * oyuncu kararını eksik bilgiyle veriyor ve "her eylem karşılığını
+   * önceden söylesin" kuralı (docs/08 İ1) delinmiş oluyor.
+   */
+  function gelirToplami(
+    bolgeler: { type: string; level: number; incomeMult: number; province: string }[],
+  ) {
+    const vilayet = vilayetSayilari(bolgeler);
+    return topla(
+      bolgeler.map((r) =>
+        regionIncome(r.type, r.level, r.incomeMult * vilayetCarpani(vilayet[r.province] ?? 1)),
+      ),
+    );
+  }
+
+  const oncekiler = lord.regions.map((r) => ({
+    type: r.type,
+    level: r.level,
+    incomeMult: r.incomeMult,
+    province: r.province,
+  }));
+  const gelirOncesi = topla(oncekiler.map((r) => regionIncome(r.type, r.level, r.incomeMult)));
   const hedefGelir = regionIncome(region.type, region.level, region.incomeMult);
   const bolgeSayisi = lord.regions.filter((r) => r.type !== 'taht').length;
   const limit = maxRegions(lord.level);
@@ -635,11 +670,19 @@ export async function fetihOdulu(
   return {
     saatlikGelir: yuvarla4(hedefGelir),
     toplamGelirOncesi: yuvarla3(gelirOncesi),
-    toplamGelirSonrasi: yuvarla3({
-      altin: gelirOncesi.altin + hedefGelir.altin,
-      demir: gelirOncesi.demir + hedefGelir.demir,
-      erzak: gelirOncesi.erzak + hedefGelir.erzak,
-    }),
+    toplamGelirSonrasi: yuvarla3(
+      limitDolu
+        ? gelirOncesi
+        : gelirToplami([
+            ...oncekiler,
+            {
+              type: region.type,
+              level: region.level,
+              incomeMult: region.incomeMult,
+              province: region.province,
+            },
+          ]),
+    ),
     sohretOncesi: kazanc.sohretOncesi,
     sohretSonrasi: kazanc.sohretSonrasi,
     siraOncesi: siraTahmini(puanlar, kazanc.sohretOncesi),
@@ -667,7 +710,6 @@ function yuvarla4(r: { altin: number; demir: number; erzak: number; sohret: numb
   return { ...yuvarla3(r), sohret: Math.round(r.sohret) };
 }
 
-
 export interface EkipmanEtkisi {
   /** Lordun savaşa kattığı güç — ekipmanın gerçekte etkilediği sayı. */
   katkiOncesi: number;
@@ -688,7 +730,13 @@ export interface EkipmanEtkisi {
   kazanirSonrasi: boolean;
 }
 
-type EsyaKaydi = { slot: string; tier: number; rarity: string; upgradeLevel: number; equipped: boolean };
+type EsyaKaydi = {
+  slot: string;
+  tier: number;
+  rarity: string;
+  upgradeLevel: number;
+  equipped: boolean;
+};
 
 function kusanik(items: EsyaKaydi[]) {
   return items

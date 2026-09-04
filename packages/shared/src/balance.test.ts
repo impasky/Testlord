@@ -20,6 +20,9 @@ import {
   garnizonToplami,
   itemPower,
   kayipPaylastir,
+  yakinlikMesafesi,
+  vilayetCarpani,
+  vilayetSayilari,
   karsiHalkasi,
   ogreticiSayfalari,
   orduDus,
@@ -31,6 +34,7 @@ import {
   generalToplamXp,
   generalXpForLevel,
   generalYaralanma,
+  hexDistance,
   basarimSayaci,
   calculateLoot,
   SEFERLER,
@@ -1332,5 +1336,96 @@ describe('öğretici (docs/09 — ilk giriş)', () => {
       .join(' ')
       .toLocaleLowerCase('tr');
     expect(tumMetin).toContain('sezon yok');
+  });
+});
+
+describe('harita: komşuluk ve vilayet (docs/11)', () => {
+  const ev = { q: 0, r: 0 };
+
+  it('toprağı olmayan oyuncu için mesafe evden ölçülür', () => {
+    // Bölgesiz oyuncunun oyunu değişmemeli: kural yeni bir avantaj
+    // ekliyor, eskisini elinden almıyor.
+    const hedef = { q: 4, r: 0 };
+    expect(yakinlikMesafesi(ev, [], hedef)).toBe(hexDistance(ev, hedef));
+  });
+
+  it('toprak sahibi olmak haritayı AÇIYOR', () => {
+    // docs/11 §1 asıl mesele: eskiden bölge almak hiçbir yeni yeri
+    // yaklaştırmıyordu ve ızgara boş bir süstü.
+    const uzak = { q: 6, r: 0 };
+    const oncesi = yakinlikMesafesi(ev, [], uzak);
+    const sonrasi = yakinlikMesafesi(ev, [{ q: 4, r: 0 }], uzak);
+    expect(sonrasi).toBeLessThan(oncesi);
+    expect(sonrasi).toBe(2);
+  });
+
+  it('mesafe hiçbir zaman evden ölçülenden BÜYÜK olmuyor', () => {
+    // min() alıyoruz; bir gün yanlışlıkla "son alınan bölgeden" gibi bir
+    // şeye dönerse bu kontrol düşer.
+    for (let q = -4; q <= 4; q++) {
+      for (let r = -4; r <= 4; r++) {
+        const hedef = { q, r };
+        const topraklar = [{ q: 3, r: -1 }, { q: -2, r: 2 }];
+        expect(yakinlikMesafesi(ev, topraklar, hedef)).toBeLessThanOrEqual(
+          hexDistance(ev, hedef),
+        );
+      }
+    }
+  });
+
+  it('kendi bölgene mesafe sıfır', () => {
+    expect(yakinlikMesafesi(ev, [{ q: 3, r: 1 }], { q: 3, r: 1 })).toBe(0);
+  });
+
+  it('tek bölge vilayet bonusu vermiyor', () => {
+    expect(vilayetCarpani(0)).toBe(1);
+    expect(vilayetCarpani(1)).toBe(1);
+  });
+
+  it('aynı vilayette ikinci bölge geliri artırıyor', () => {
+    expect(vilayetCarpani(2)).toBeCloseTo(1 + B.bolgeler.vilayet_birligi.bolge_basina, 10);
+    expect(vilayetCarpani(3)).toBeGreaterThan(vilayetCarpani(2));
+  });
+
+  it('vilayet bonusunun tavanı var', () => {
+    // Tavansız bir birlik bonusu "hepsini tek vilayete yığ" diye tek bir
+    // doğru oyun yaratırdı.
+    const tavan = 1 + B.bolgeler.vilayet_birligi.azami;
+    expect(vilayetCarpani(50)).toBeCloseTo(tavan, 10);
+    expect(vilayetCarpani(9)).toBeLessThanOrEqual(tavan);
+  });
+
+  it('tavan gerçekten ULAŞILABİLİR bir bölge sayısında bağlanıyor', () => {
+    // Oyuncu en fazla maxRegions(60) bölge tutabiliyor. Tavan bu sayının
+    // ötesinde bağlanıyorsa tavan diye bir şey yok demektir.
+    const enFazla = maxRegions(60);
+    expect(vilayetCarpani(enFazla)).toBeGreaterThan(1);
+    expect(enFazla).toBeGreaterThanOrEqual(2);
+  });
+
+  it('vilayet sayımı doğru', () => {
+    const sayac = vilayetSayilari([
+      { province: 'kuzeymark' },
+      { province: 'kuzeymark' },
+      { province: 'aksu' },
+    ]);
+    expect(sayac).toEqual({ kuzeymark: 2, aksu: 1 });
+  });
+
+  it('haritadaki her bölgenin bir vilayeti var', () => {
+    // Vilayet artık gelire dokunuyor: vilayetsiz bir bölge sessizce
+    // undefined bir anahtara düşer ve bonusu hiç almaz.
+    const vilayetler = new Set(WORLD_MAP.provinces.map((p) => p.key));
+    for (const r of WORLD_MAP.regions) {
+      expect(vilayetler.has(r.province)).toBe(true);
+    }
+  });
+
+  it('vilayet birliği ulaşılabilir: en az bir vilayette 2+ bölge var', () => {
+    // Her vilayette tek bölge olsaydı bonus yazılmış ama kazanılamaz
+    // olurdu.
+    const sayac = vilayetSayilari(WORLD_MAP.regions.filter((r) => r.type !== 'taht'));
+    const enKalabalik = Math.max(...Object.values(sayac));
+    expect(enKalabalik).toBeGreaterThanOrEqual(2);
   });
 });
