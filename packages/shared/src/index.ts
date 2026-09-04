@@ -11,5 +11,6 @@ export * from './sebep.js';
 export * from './basarim.js';
 export * from './casus.js';
 export * from './gunluk.js';
+export * from './sefer.js';
 export * from './march.js';
 export * from './odul.js';

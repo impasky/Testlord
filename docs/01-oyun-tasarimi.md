@@ -378,6 +378,31 @@ söylenir.
 
 ---
 
+## 7c. Haftalık Sefer
+
+Günlük görevler yarını tutuyor, **sefer** haftayı. Fark sadece süre değil:
+günlük görev üç küçük iş, sefer tek bir tema — bu hafta diyar neyle meşgul.
+Altı sefer sırayla dönüyor: Akın, Fetih, Seferberlik, Örs, Gölgeler, Zafer.
+
+**Hangi seferin açık olduğu saklanmıyor, türetiliyor.** Hafta numarası
+UTC gününden çıkıyor (pazartesi başlar), sefer de `hafta % sefer_sayısı`.
+Böylece "şu an hangi etkinlik açık" diye bir tablo, onu döndüren bir
+zamanlayıcı ve o zamanlayıcının bozulma ihtimali hiç doğmuyor. İlerleme de
+aynı sebeple `Battle` ve `Queue` kayıtlarından türetiliyor.
+
+**Sıralama tablosu yok, bilerek.** Türün klasik etkinliği "en çok
+yağmalayan ilk 10 ödül alır" olur. O, zaten önde olanı daha ileri taşır —
+§7'de kırmaya çalıştığımız kartopunun haftalık hâli — ve geç başlayan
+oyuncu hiçbir hafta ödül göremez. Hedef herkes için aynı: ulaşan alır.
+
+Ödül günlük ödülle aynı ilkeyle hesaplanıyor (malikâne saatlik gelirinin
+katı), seri çarpanı uygulanmıyor: seri zaten günlük ödülde karşılığını
+buluyor, iki kez ödüllendirmek olurdu.
+
+Tam liste: `data/seferler.json`.
+
+---
+
 ## 8. Sıralamalar
 
 Üç ayrı sıralama, çünkü tek sıralama tek oyun tarzını ödüllendirir:

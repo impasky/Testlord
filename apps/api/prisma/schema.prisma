@@ -95,6 +95,9 @@ model Lord {
   /// verilmesi mevcut hiçbir kayda iz bırakmıyor, kaynak artışı altına
   /// karışıyor.
   gunlukOdulGunu DateTime?
+  /// Haftalık sefer ödülünün en son alındığı an. Hangi seferin açık olduğu
+  /// SAKLANMIYOR — hafta numarasından türetiliyor (packages/shared/sefer.ts).
+  seferOduluHaftasi DateTime?
   /// En son hangi ekranda olduğu. Tek işi ölçüm: oyuncular oyunu hangi
   /// ekranda bırakıyor? Bu soru tahminle cevaplanamaz ve cevabı olmadan
   /// bir sonraki iyileştirme de tahmin olur. (docs/08 İ7)

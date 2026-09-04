@@ -489,6 +489,29 @@ export interface GunlukOdulDto {
   kaynaklar: Resources;
 }
 
+export interface SeferDto {
+  sefer: {
+    key: string;
+    ad: string;
+    aciklama: string;
+    olcut: string;
+    hedef: number;
+    birim: string;
+    simdi: number;
+    tamam: boolean;
+    gecenGun: number;
+    kalanGun: number;
+  };
+  odul: { kaynak: Resources; hakEdildi: boolean; alindi: boolean };
+}
+
+export interface SeferOdulDto {
+  odul: Resources;
+  verilen: Resources;
+  kirpildi: boolean;
+  kaynaklar: Resources;
+}
+
 export interface GeneralKatkisiDto {
   key: string;
   ad: string;
@@ -570,6 +593,8 @@ export const api = {
 
   gunluk: () => request<GunlukDto>('/gunluk'),
   gunlukOdul: () => post<GunlukOdulDto>('/gunluk/odul', {}),
+  sefer: () => request<SeferDto>('/sefer'),
+  seferOdul: () => post<SeferOdulDto>('/sefer/odul', {}),
   kesifGonder: (regionId: number) =>
     post<{ queued: boolean; finishAt: string; mesafe: number }>(`/map/${regionId}/kesif`, {}),
   dunya: () => request<DunyaDto>('/dunya'),

@@ -7,6 +7,7 @@
 import balanceJson from '../../../data/balance.json';
 import basarimlarJson from '../../../data/basarimlar.json';
 import generalsJson from '../../../data/generals.json';
+import seferlerJson from '../../../data/seferler.json';
 import worldMapJson from '../../../data/world-map.json';
 import type { GeneralDef, RegionDef, Rarity, UnitStats, UnitType } from './types.js';
 import { RARITIES, UNIT_TYPES } from './types.js';
@@ -27,6 +28,20 @@ export const BASARIM_KUMELERI = basarimlarJson.kumeler as unknown as {
 }[];
 export const GENERAL_LEVEL = generalsJson.seviye;
 export const GENERAL_INJURY = generalsJson.yaralanma;
+
+/**
+ * Haftalık sefer tanımları. Hangisinin açık olduğu sefer.ts'te hafta
+ * numarasından türetiliyor — burada yalnız içerik var.
+ */
+export const SEFERLER = seferlerJson.seferler as unknown as {
+  key: string;
+  ad: string;
+  aciklama: string;
+  olcut: string;
+  hedef: number;
+  birim: string;
+}[];
+export const SEFER_ODUL = seferlerJson.odul;
 export const WORLD_MAP = worldMapJson as unknown as {
   radius: number;
   region_count: number;

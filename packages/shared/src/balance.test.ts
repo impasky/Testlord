@@ -25,6 +25,15 @@ import {
   generalYaralanma,
   basarimSayaci,
   calculateLoot,
+  SEFERLER,
+  haftaBasi,
+  haftaNumarasi,
+  haftaninGunu,
+  haftaninSeferi,
+  seferDurumu,
+  seferOdulu,
+  seferOduluAlindiMi,
+  type SeferSayaclari,
   liderAviGecerliMi,
   liderAviYagmaBonusu,
   basarimlar,
@@ -574,6 +583,110 @@ describe('general seviyesi', () => {
     expect(generalLevelMultiplier(1)).toBe(1);
     expect(generalLevelMultiplier(GENERAL_LEVEL.max)).toBeGreaterThan(1.3);
     expect(generalLevelMultiplier(GENERAL_LEVEL.max)).toBeLessThan(1.5);
+  });
+});
+
+describe('haftalık sefer', () => {
+  it('hafta PAZARTESİ başlıyor', () => {
+    // Gün numarası 1970-01-01'den sayıyor ve o gün perşembe; kaydırma
+    // yanlış olursa hafta çarşamba başlar ve kimse fark etmez.
+    expect(haftaninGunu(new Date('2026-09-07T00:00:00Z'))).toBe(0); // pazartesi
+    expect(haftaninGunu(new Date('2026-09-13T23:59:59Z'))).toBe(6); // pazar
+    expect(haftaninGunu(new Date('2026-09-14T00:00:00Z'))).toBe(0); // sonraki pazartesi
+  });
+
+  it('pazartesi hafta numarasını artırıyor, pazar artırmıyor', () => {
+    const pzt = haftaNumarasi(new Date('2026-09-07T00:00:00Z'));
+    expect(haftaNumarasi(new Date('2026-09-13T23:00:00Z'))).toBe(pzt);
+    expect(haftaNumarasi(new Date('2026-09-14T00:00:00Z'))).toBe(pzt + 1);
+  });
+
+  it('haftaBasi o haftanın pazartesisini veriyor', () => {
+    const b = haftaBasi(new Date('2026-09-10T15:00:00Z'));
+    expect(b.toISOString()).toBe('2026-09-07T00:00:00.000Z');
+  });
+
+  it('sefer hafta numarasından türüyor — hafta boyunca değişmiyor', () => {
+    const pzt = haftaninSeferi(new Date('2026-09-07T06:00:00Z'));
+    const paz = haftaninSeferi(new Date('2026-09-13T22:00:00Z'));
+    expect(paz.key).toBe(pzt.key);
+    const sonraki = haftaninSeferi(new Date('2026-09-14T00:00:00Z'));
+    expect(sonraki.key).not.toBe(pzt.key);
+  });
+
+  it('seferler sırayla dönüyor ve hepsi kullanılıyor', () => {
+    const gorulen = new Set<string>();
+    for (let h = 0; h < SEFERLER.length; h++) {
+      const t = new Date(Date.UTC(2026, 8, 7 + h * 7));
+      gorulen.add(haftaninSeferi(t).key);
+    }
+    expect(gorulen.size).toBe(SEFERLER.length);
+  });
+
+  it('ilerleme ölçüte göre okunuyor', () => {
+    const sayac = {
+      saldiri: 3,
+      kazanilan_savas: 0,
+      fetih: 0,
+      egitilen_asker: 0,
+      imar: 0,
+      kesif: 0,
+    };
+    // Akın haftası (0. hafta konumu) saldırıyı okumalı.
+    const t = new Date('2026-09-07T00:00:00Z');
+    const s = seferDurumu(sayac, t);
+    expect(s.simdi).toBe(sayac[s.olcut as keyof typeof sayac]);
+    expect(s.kalanGun).toBe(7);
+  });
+
+  it('hedefe ulaşınca tamam oluyor', () => {
+    const t = new Date('2026-09-07T00:00:00Z');
+    const tanim = haftaninSeferi(t);
+    const sayac = {
+      saldiri: 0,
+      kazanilan_savas: 0,
+      fetih: 0,
+      egitilen_asker: 0,
+      imar: 0,
+      kesif: 0,
+    } as Record<string, number>;
+    sayac[tanim.olcut] = tanim.hedef;
+    expect(seferDurumu(sayac as never, t).tamam).toBe(true);
+  });
+
+  it('sefer ödülü günlük ödülden büyük ama bir günlük gelirin katı kadar değil', () => {
+    // Haftalık iş günlükten belirgin daha çok vermeli; ama bir haftalık
+    // oyunu tek ödülle atlatacak kadar değil.
+    for (const seviye of [1, 30, 60]) {
+      const gunluk = gunlukOdul(seviye, 0).altin;
+      const haftalik = seferOdulu(seviye).altin;
+      expect(haftalik).toBeGreaterThan(gunluk * 2);
+      expect(haftalik).toBeLessThan(malikaneIncome(seviye).altin * 24 * 3);
+    }
+  });
+
+  it('ödül aynı hafta ikinci kez alınmış sayılıyor', () => {
+    const simdi = new Date('2026-09-10T12:00:00Z');
+    expect(seferOduluAlindiMi(new Date('2026-09-07T01:00:00Z'), simdi)).toBe(true);
+    expect(seferOduluAlindiMi(new Date('2026-09-06T23:00:00Z'), simdi)).toBe(false);
+    expect(seferOduluAlindiMi(null, simdi)).toBe(false);
+  });
+
+  it('her seferin ölçütü sayaçlarda gerçekten var', () => {
+    // Veri dosyasına yeni sefer eklerken yanlış ölçüt adı yazmak sessizce
+    // "hep 0 ilerleme" demektir; oyuncu görevi asla bitiremez.
+    const sayac: SeferSayaclari = {
+      saldiri: 0,
+      kazanilan_savas: 0,
+      fetih: 0,
+      egitilen_asker: 0,
+      imar: 0,
+      kesif: 0,
+    };
+    for (const s of SEFERLER) {
+      expect(Object.keys(sayac)).toContain(s.olcut);
+      expect(s.hedef).toBeGreaterThan(0);
+    }
   });
 });
 

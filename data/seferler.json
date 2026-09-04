@@ -1,0 +1,59 @@
+{
+  "schema": "seferler/v1",
+  "_aciklama": "Haftalik seferler: her hafta bir tema, bir hedef, bir odul. Tema SUNUCUDA SAKLANMIYOR -- hafta numarasindan turetiliyor (hafta % sefer_sayisi). Boylece 'su an hangi etkinlik acik' diye bir tablo, bir zamanlayici ve onlarin bozulma ihtimali hic dogmuyor. Ayni sebeple ilerleme de mevcut kayitlardan (Battle, Queue) turetiliyor.",
+  "_neden_siralama_degil": "Turun klasik etkinligi bir TABLO olur: en cok yagmalayan ilk 10 odul alir. Bunu bilerek yapmiyoruz. Siralamali etkinlik zaten onde olani daha ilerletir; docs/09 §3.4'te kirmaya calistigimiz kartopunun haftalik hali olurdu ve gec baslayan oyuncu hicbir hafta odul goremezdi. Hedef ise herkes icin ayni: ulasan alir.",
+  "odul": {
+    "_not": "Gunluk odulle ayni ilke: sabit sayi degil, malikane saatlik gelirinin kati. Gunlugun (7 saat) uc katindan biraz fazla -- bir haftalik ise bir gunluk isten belirgin ama absurt olmayan bir fark.",
+    "malikane_saati": 24
+  },
+  "seferler": [
+    {
+      "key": "akin_haftasi",
+      "ad": "Akın Haftası",
+      "aciklama": "Diyar huzursuz. Bu hafta kim daha çok saldırırsa adı anılır.",
+      "olcut": "saldiri",
+      "hedef": 10,
+      "birim": "saldırı"
+    },
+    {
+      "key": "fetih_haftasi",
+      "ad": "Fetih Haftası",
+      "aciklama": "Sınırlar oynuyor. Bu hafta toprak kazanmanın zamanı.",
+      "olcut": "fetih",
+      "hedef": 2,
+      "birim": "bölge"
+    },
+    {
+      "key": "ordu_haftasi",
+      "ad": "Seferberlik",
+      "aciklama": "Kışlalar gece gündüz çalışıyor. Ordunu büyüt.",
+      "olcut": "egitilen_asker",
+      "hedef": 150,
+      "birim": "asker"
+    },
+    {
+      "key": "demir_haftasi",
+      "ad": "Örs Haftası",
+      "aciklama": "Demirhane sıcak. Bu hafta çelik konuşuyor.",
+      "olcut": "imar",
+      "hedef": 6,
+      "birim": "üretim"
+    },
+    {
+      "key": "istihbarat_haftasi",
+      "ad": "Gölgeler Haftası",
+      "aciklama": "Bu hafta kılıçtan çok bilgi kazandırıyor. Casuslarını yolla.",
+      "olcut": "kesif",
+      "hedef": 4,
+      "birim": "keşif"
+    },
+    {
+      "key": "zafer_haftasi",
+      "ad": "Zafer Haftası",
+      "aciklama": "Saldırmak yetmez; kazanman lazım.",
+      "olcut": "kazanilan_savas",
+      "hedef": 6,
+      "birim": "zafer"
+    }
+  ]
+}
