@@ -19,6 +19,7 @@ import { SavasRaporu } from '../components/SavasRaporu';
 import {
   Bolum,
   Buton,
+  DurumSiridi,
   GeriSayim,
   Hap,
   Ilerleme,
@@ -183,7 +184,7 @@ export function Malikane({
         aynı bilgiyi bir satırda veriyor ve omurgayı ekranın tepesinde
         tek büyük öğe olarak bırakıyor.
       */}
-      <div className="flex flex-wrap gap-1.5">
+      <DurumSiridi>
         <Hap ikon={<IkonKale boyut={13} />} renk="var(--color-altin)">
           {lord.regionCount}/{lord.maxRegions} bölge
           {lord.ownsThrone && ' +Taht'}
@@ -191,9 +192,7 @@ export function Malikane({
         <Hap
           ikon={<IkonYer boyut={13} />}
           renk={
-            lord.usedSlots >= lord.commandCapacity
-              ? 'var(--color-kirmizi)'
-              : 'var(--color-mavi)'
+            lord.usedSlots >= lord.commandCapacity ? 'var(--color-kirmizi)' : 'var(--color-mavi)'
           }
         >
           {formatSayi(lord.usedSlots)}/{formatSayi(lord.commandCapacity)} komuta
@@ -204,7 +203,7 @@ export function Malikane({
         <Hap ikon={<IkonSure boyut={13} />}>
           {lord.dailyAttacks}/{B.korumalar.gunluk_saldiri_limiti} saldırı
         </Hap>
-      </div>
+      </DurumSiridi>
 
       {lord.statPoints > 0 && (
         <Kart className="p-3" vurgu="var(--color-yesil)">
@@ -234,9 +233,12 @@ export function Malikane({
       <GunlukKart onGit={onGit} />
       <SeferKart />
 
-      <Bolum baslik={`Kuyruklar${queues.length ? ` · ${queues.length}` : ''}`}>
+      <Bolum
+        baslik={`Kuyruklar${queues.length ? ` · ${queues.length}` : ''}`}
+        sakin={queues.length === 0}
+      >
         {queues.length === 0 ? (
-          <Kart className="p-4">
+          <Kart sakin className="p-4">
             <p className="mb-3 text-[13px] text-solgun">Kuyruk boş. Bir şeyler başlat.</p>
             <div className="flex gap-2">
               <Buton tur="sessiz" boy="kucuk" onClick={() => onGit('kisla')}>
@@ -273,7 +275,7 @@ export function Malikane({
           durmalı. */}
       <Basarimlar olcutler={lord.basarimOlcutleri} />
 
-      <Bolum baslik="Olay Akışı">
+      <Bolum baslik="Olay Akışı" sakin={events.length === 0}>
         {events.length === 0 ? (
           <BosHal
             mesaj="Henüz bir şey olmadı. Bir saldırı yaptığında ya da bölgen geliştiğinde burada okursun."

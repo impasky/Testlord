@@ -120,6 +120,24 @@ a,
 }
 
 /*
+ * Sakin kart: ekranın SESSİZ bölümleri.
+ *
+ * Bütün kartlar aynı ağırlıktaydı ve bir ekranın "burada iş var" mı yoksa
+ * "burası sakin" mi olduğu ancak OKUYUNCA anlaşılıyordu (docs/11 §2.3 G1,
+ * G4). Boş hâller, olay akışı gibi destekleyici içerik artık gözle
+ * ayrılıyor: kesik kenar, kabartma yok, düz zemin.
+ *
+ * Bilgi kaybı yok — içerik aynı içerik. Değişen tek şey, gözün onu
+ * atlayabilmesi.
+ */
+.kart-sakin {
+  background: var(--color-oyuk);
+  border: 2px dashed var(--color-kenar);
+  border-radius: 20px;
+  box-shadow: none;
+}
+
+/*
  * Plaka: bölüm başlığı. Referanstaki ahşap tabelaların karşılığı.
  * Küçük gri büyük harf etiketler ekranı "form" gibi gösteriyordu;
  * plaka her bölümün nerede başladığını tek bakışta söylüyor.
@@ -131,6 +149,18 @@ a,
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
     0 2px 0 rgba(0, 0, 0, 0.4);
+}
+
+/*
+ * Sakin plaka: içi boş bölümün başlığı.
+ *
+ * Fark BAŞLIKTA olmak zorunda: oyuncu ekranı kaydırırken içeriği değil
+ * başlıkları tarıyor. Sakin bölüm gövdesine bakmadan atlanabilmeli.
+ */
+.plaka-sakin {
+  background: transparent;
+  border: 2px dashed var(--color-kenar);
+  box-shadow: none;
 }
 
 /*

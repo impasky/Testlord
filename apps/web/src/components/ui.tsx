@@ -249,14 +249,41 @@ export function KazanKaybet({
 
 export type Nadirlik = 'siradan' | 'usta' | 'nadir' | 'efsanevi' | 'kadim';
 
-export const NADIRLIK: Record<Nadirlik, { ad: string; renk: string; sinif: string; kenar: string }> =
-  {
-    siradan: { ad: 'Sıradan', renk: '#9aa0a6', sinif: 'text-nadir-siradan', kenar: 'border-nadir-siradan/50' },
-    usta: { ad: 'Usta işi', renk: '#3ddc84', sinif: 'text-nadir-usta', kenar: 'border-nadir-usta/50' },
-    nadir: { ad: 'Nadir', renk: '#4a9eff', sinif: 'text-nadir-nadir', kenar: 'border-nadir-nadir/50' },
-    efsanevi: { ad: 'Efsanevi', renk: '#a76bff', sinif: 'text-nadir-efsanevi', kenar: 'border-nadir-efsanevi/50' },
-    kadim: { ad: 'Kadim', renk: '#f5b731', sinif: 'text-nadir-kadim', kenar: 'border-nadir-kadim/50' },
-  };
+export const NADIRLIK: Record<
+  Nadirlik,
+  { ad: string; renk: string; sinif: string; kenar: string }
+> = {
+  siradan: {
+    ad: 'Sıradan',
+    renk: '#9aa0a6',
+    sinif: 'text-nadir-siradan',
+    kenar: 'border-nadir-siradan/50',
+  },
+  usta: {
+    ad: 'Usta işi',
+    renk: '#3ddc84',
+    sinif: 'text-nadir-usta',
+    kenar: 'border-nadir-usta/50',
+  },
+  nadir: {
+    ad: 'Nadir',
+    renk: '#4a9eff',
+    sinif: 'text-nadir-nadir',
+    kenar: 'border-nadir-nadir/50',
+  },
+  efsanevi: {
+    ad: 'Efsanevi',
+    renk: '#a76bff',
+    sinif: 'text-nadir-efsanevi',
+    kenar: 'border-nadir-efsanevi/50',
+  },
+  kadim: {
+    ad: 'Kadim',
+    renk: '#f5b731',
+    sinif: 'text-nadir-kadim',
+    kenar: 'border-nadir-kadim/50',
+  },
+};
 
 export function nadirlikRengi(n: string): string {
   return NADIRLIK[n as Nadirlik]?.renk ?? NADIRLIK.siradan.renk;
@@ -269,18 +296,29 @@ export function Kart({
   className = '',
   onClick,
   vurgu,
+  sakin = false,
 }: {
   children: ReactNode;
   className?: string;
   onClick?: () => void;
   /** Üst kenarda nadirlik/durum rengi şeridi. */
   vurgu?: string;
+  /**
+   * Destekleyici içerik: boş hâl, olay akışı, geçmiş kaydı.
+   *
+   * Bütün kartlar aynı ağırlıktaydı; bir ekranın "burada iş var" mı yoksa
+   * "burası sakin" mi olduğu ancak okuyunca anlaşılıyordu (docs/11 §2.3
+   * G1/G4). Sakin kart kesik kenarlı ve kabartmasız — göz onu atlayabiliyor.
+   */
+  sakin?: boolean;
 }) {
   const Etiket = onClick ? 'button' : 'div';
   return (
     <Etiket
       onClick={onClick}
-      className={`kart relative overflow-hidden text-left ${onClick ? 'bas w-full' : ''} ${className}`}
+      className={`${sakin ? 'kart-sakin' : 'kart'} relative overflow-hidden text-left ${
+        onClick ? 'bas w-full' : ''
+      } ${className}`}
     >
       {vurgu && (
         <span
@@ -308,6 +346,7 @@ export function Bolum({
   children,
   className = '',
   id,
+  sakin = false,
 }: {
   baslik?: string;
   yan?: ReactNode;
@@ -315,18 +354,47 @@ export function Bolum({
   className?: string;
   /** Aynı ekran içinde bu bölüme kaydırmak için (boş hâl eylemleri). */
   id?: string;
+  /**
+   * Bölümün içi boş / bekleyen bir iş yok.
+   *
+   * Fark BAŞLIKTA olmak zorunda: oyuncu ekranı kaydırırken gövdeleri değil
+   * başlıkları tarıyor. Sakin bölüm, gövdesine bakmadan atlanabilmeli.
+   */
+  sakin?: boolean;
 }) {
   return (
     <section id={id} className={className}>
       {baslik && (
         <header className="mb-2.5 flex items-center justify-between gap-2">
-          <h2 className="plaka baslik px-3.5 py-1.5 text-[12px] text-altin">{baslik}</h2>
+          <h2
+            className={`plaka baslik px-3.5 py-1.5 text-[12px] ${
+              sakin ? 'plaka-sakin text-sonuk' : 'text-altin'
+            }`}
+          >
+            {baslik}
+          </h2>
           {yan}
         </header>
       )}
       {children}
     </section>
   );
+}
+
+/**
+ * Durum şeridi: ekranın sabit sayaçları ("0/2 bölge", "200/586 komuta").
+ *
+ * `flex-wrap` ile dizildiğinde dört hap iki satıra sarıyor ve dördüncüsü
+ * tek başına kalıyordu — tırtıklı, kazara görünen bir kenar (docs/11 §2.3
+ * G2). Sayı uzunlukları oyuncudan oyuncuya değiştiği için sarma noktası da
+ * değişiyordu; yani düzen tesadüfe bağlıydı.
+ *
+ * Izgara bunu bitiriyor: hapların sayısı ne olursa olsun satırlar dolu.
+ * Serbest sayıdaki maliyet hapları (kışla, demirhane) yine `flex-wrap`
+ * kullanıyor — orada sarma DOĞRU davranış.
+ */
+export function DurumSiridi({ children }: { children: ReactNode }) {
+  return <div className="grid grid-cols-2 gap-1.5 [&>*]:w-full">{children}</div>;
 }
 
 /**
@@ -429,7 +497,15 @@ export function Input({ className = '', ...props }: React.InputHTMLAttributes<HT
   );
 }
 
-export function Alan({ etiket, ipucu, children }: { etiket: string; ipucu?: string; children: ReactNode }) {
+export function Alan({
+  etiket,
+  ipucu,
+  children,
+}: {
+  etiket: string;
+  ipucu?: string;
+  children: ReactNode;
+}) {
   return (
     <label className="block">
       <span className="baslik mb-1.5 block text-[11px] text-solgun">{etiket}</span>
@@ -458,7 +534,11 @@ export function Ilerleme({
     <div className={`oyuk w-full overflow-hidden rounded-full ${y}`} role="presentation">
       <div
         className="h-full rounded-full transition-[width] duration-500"
-        style={{ width: `${yuzde}%`, background: renk, boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.3)' }}
+        style={{
+          width: `${yuzde}%`,
+          background: renk,
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.3)',
+        }}
       />
     </div>
   );

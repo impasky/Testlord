@@ -36,7 +36,9 @@ function UyeSatiri({
   onCikar,
   bekliyor,
 }: {
-  uye: IttifakDto['ittifakim'] extends null ? never : NonNullable<IttifakDto['ittifakim']>['uyeler'][number];
+  uye: IttifakDto['ittifakim'] extends null
+    ? never
+    : NonNullable<IttifakDto['ittifakim']>['uyeler'][number];
   liderMiyim: boolean;
   benimId: string;
   onCikar: (id: string) => void;
@@ -124,11 +126,7 @@ export function Ittifak({ lordId }: { lordId: string }) {
     onError: yut,
   });
   const bekliyor =
-    kur.isPending ||
-    katil.isPending ||
-    ayril.isPending ||
-    cikar.isPending ||
-    hedefKaldir.isPending;
+    kur.isPending || katil.isPending || ayril.isPending || cikar.isPending || hedefKaldir.isPending;
 
   if (!q.data) return <Iskelet />;
   const { ittifakim, liste, altin, kurmaMaliyeti, azamiUye, bekleme } = q.data;
@@ -265,12 +263,9 @@ export function Ittifak({ lordId }: { lordId: string }) {
         </div>
       )}
 
-      <Bolum baslik="Diyarın İttifakları">
+      <Bolum baslik="Diyarın İttifakları" sakin={liste.length === 0}>
         {liste.length === 0 ? (
-          <BosHal
-            mesaj="Bu diyarda henüz ittifak yok. İlkini sen kurabilirsin."
-            eylemler={[]}
-          />
+          <BosHal mesaj="Bu diyarda henüz ittifak yok. İlkini sen kurabilirsin." eylemler={[]} />
         ) : (
           <ul className="space-y-2">
             {liste.map((a, i) => (

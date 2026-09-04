@@ -12,9 +12,24 @@ import { Zemin } from '../components/Zemin';
 type Board = 'fame' | 'conquest' | 'elo';
 
 const TABLAR: { key: Board; ad: string; aciklama: string; renk: string }[] = [
-  { key: 'fame', ad: 'Şöhret', aciklama: 'Genel toplam skor. Dengeli oyuncuyu ödüllendirir.', renk: 'var(--color-altin)' },
-  { key: 'conquest', ad: 'Fetih', aciklama: 'Bölge seviyesi × tip çarpanı. Toprak sahibinin sıralaması.', renk: 'var(--color-yesil)' },
-  { key: 'elo', ad: 'Kılıç', aciklama: 'PvP derecesi. Bölgesiz bir lord da birinci olabilir.', renk: 'var(--color-kirmizi)' },
+  {
+    key: 'fame',
+    ad: 'Şöhret',
+    aciklama: 'Genel toplam skor. Dengeli oyuncuyu ödüllendirir.',
+    renk: 'var(--color-altin)',
+  },
+  {
+    key: 'conquest',
+    ad: 'Fetih',
+    aciklama: 'Bölge seviyesi × tip çarpanı. Toprak sahibinin sıralaması.',
+    renk: 'var(--color-yesil)',
+  },
+  {
+    key: 'elo',
+    ad: 'Kılıç',
+    aciklama: 'PvP derecesi. Bölgesiz bir lord da birinci olabilir.',
+    renk: 'var(--color-kirmizi)',
+  },
 ];
 
 const MADALYA = ['#f5b731', '#c8d1d9', '#c97b3c'];
@@ -32,7 +47,10 @@ function Satir({
 }) {
   const madalya = r.sira <= 3 ? MADALYA[r.sira - 1] : undefined;
   return (
-    <Kart className={`p-2.5 ${benMi ? 'border-altin/60' : ''}`} vurgu={benMi ? 'var(--color-altin)' : undefined}>
+    <Kart
+      className={`p-2.5 ${benMi ? 'border-altin/60' : ''}`}
+      vurgu={benMi ? 'var(--color-altin)' : undefined}
+    >
       <div className="flex items-center gap-2.5">
         <span
           className="baslik flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[12px]"
@@ -129,9 +147,7 @@ export function Siralama({
       <Bolum
         baslik={`${aktif.ad} Sıralaması`}
         yan={
-          <span className="text-[11px] text-sonuk">
-            {q.data ? `${q.data.toplam} lord` : ''}
-          </span>
+          <span className="text-[11px] text-sonuk">{q.data ? `${q.data.toplam} lord` : ''}</span>
         }
       >
         <p className="mb-2 px-1 text-[11px] text-sonuk">{aktif.aciklama}</p>
@@ -162,22 +178,18 @@ export function Siralama({
             )}
 
             {q.data.satirlar.length === 0 && (
-              <Kart className="p-6 text-center">
-                <span className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-xl bg-altin/15 text-altin">
-                  <IkonNavSiralama boyut={26} />
-                </span>
-                <BosHal
-                  mesaj="Bu tabloda henüz kimse yok. Sıralamaya girmenin yolu bölge almaktan geçiyor."
-                  eylemler={[{ etiket: 'Haritaya git', onTikla: () => onGit('harita') }]}
-                />
-              </Kart>
+              // Boş hâl kendi kartını çiziyor; burada ikinci bir kartla
+              // sarmak iç içe iki kart demekti.
+              <BosHal
+                ikon={<IkonNavSiralama boyut={26} />}
+                mesaj="Bu tabloda henüz kimse yok. Sıralamaya girmenin yolu bölge almaktan geçiyor."
+                eylemler={[{ etiket: 'Haritaya git', onTikla: () => onGit('harita') }]}
+              />
             )}
           </>
         )}
       </Bolum>
-      {raporBilgi && (
-        <p className="px-1 text-center text-[12px] text-yesil">{raporBilgi}</p>
-      )}
+      {raporBilgi && <p className="px-1 text-center text-[12px] text-yesil">{raporBilgi}</p>}
 
       {raporlanan && (
         <>
@@ -193,8 +205,7 @@ export function Siralama({
             <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-kenar" />
             <h2 className="baslik mb-1 text-[14px]">{raporlanan.name} şikâyet</h2>
             <p className="mb-3 text-[12px] text-solgun">
-              Şikâyet edilen lorda otomatik bir ceza verilmez; kayıt insan
-              tarafından incelenir.
+              Şikâyet edilen lorda otomatik bir ceza verilmez; kayıt insan tarafından incelenir.
             </p>
             <Alan etiket="Sebep" ipucu="Kısaca yaz">
               <Input

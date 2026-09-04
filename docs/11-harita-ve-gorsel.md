@@ -125,10 +125,31 @@ yazıyor. Önceden ikisi de 9 piksellik bir yazıya bırakılmıştı ve
 görülmüyordu — oysa ikisi de oyuncunun HEMEN bir şey yapması gereken
 durumlar.
 
-**G1, G2 ve G4 sıradaki tura.** Üçü de gerçek ama haritanın yanında ikinci
-derece; G1 (kartlar arası hiyerarşi) ayrıca tek bir ekranda çözülecek bir
-iş değil, bütün ekranlarda birden verilecek bir karar. Bu turda haritaya
-harcanan yeri hak ediyordu: oyuncunun şikâyeti oradaydı.
+**G2 yapıldı.** Sabit sayaç hapları artık `DurumSiridi` ile iki sütunlu bir
+ızgarada duruyor. Önce `flex-wrap`tı ve dört haptan dördüncüsü tek başına
+alt satıra düşüyordu; üstelik sarma noktası sayı uzunluğuna bağlı olduğu
+için oyuncudan oyuncuya değişiyordu, yani düzen tesadüfe bağlıydı. Serbest
+sayıdaki maliyet hapları (kışla, demirhane) `flex-wrap` kullanmaya devam
+ediyor — orada sarma doğru davranış.
+
+**G4 ve G1'in yarısı yapıldı: SAKİN ağırlık.** Artık üç kart ağırlığı var:
+
+| Ağırlık | Nerede | Görünüş |
+|---|---|---|
+| Birincil | Omurga ("şimdi ne yapmalısın") | altın şerit + altın kenar |
+| Normal | İçeriği olan her bölüm | dolu kart, kabartma |
+| Sakin | Boş hâl, boş kuyruk, boş olay akışı, boş envanter | kesik kenar, kabartma yok, düz zemin |
+
+Fark BAŞLIKTA da var (`plaka-sakin`): oyuncu ekranı kaydırırken gövdeleri
+değil başlıkları tarıyor, sakin bölüm gövdesine bakmadan atlanabilmeli.
+Görsel denetim artık yepyeni bir lordun malikânesini de ölçüyor ve boş
+bölümlerin gerçekten sakin çizildiğini doğruluyor — bilgi kaybı yok,
+değişen tek şey gözün onu atlayabilmesi.
+
+**G1'in kalanı sıradaki tura.** Üç ağırlık hiyerarşinin iskeletini kurdu
+ama "normal" katman hâlâ kalabalık: aynı ekranda beş dolu kart varken göz
+hangisine önce bakacağını bilmiyor. Bu, tek bir bileşende değil ekran ekran
+verilecek bir karar ve kendi turunu hak ediyor.
 
 ---
 

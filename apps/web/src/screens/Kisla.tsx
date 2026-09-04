@@ -29,6 +29,7 @@ import {
 } from '../components/Ikonlar';
 import {
   Bolum,
+  DurumSiridi,
   Buton,
   EngelNotu,
   IkonluDeger,
@@ -168,9 +169,7 @@ function BirimKarti({
         <div className="min-w-0 flex-1">
           <div className="flex items-center justify-between gap-2">
             <h3 className="baslik truncate text-[15px]">{unitName(tip)}</h3>
-            <Hap className="shrink-0">
-              Evde {formatSayi(evdeki)}
-            </Hap>
+            <Hap className="shrink-0">Evde {formatSayi(evdeki)}</Hap>
           </div>
 
           <div className="mt-2 flex flex-wrap gap-1.5">
@@ -237,7 +236,12 @@ function BirimKarti({
         />
       </div>
 
-      <Buton className="mt-2.5" onClick={() => onEgit(adet)} disabled={bekliyor || engel !== null} tam>
+      <Buton
+        className="mt-2.5"
+        onClick={() => onEgit(adet)}
+        disabled={bekliyor || engel !== null}
+        tam
+      >
         {bekliyor ? 'Gönderiliyor…' : `${adet} ${unitName(tip)} eğit`}
       </Buton>
 
@@ -370,7 +374,7 @@ export function Kisla({
       {/* Malikâne'yle aynı dil: iki büyük kart yerine tek rozet satırı.
           Aynı bilgiyi bir satırda vermek, ekranın asıl işi olan birim
           kartlarına yer bırakıyor. */}
-      <div className="flex flex-wrap gap-1.5">
+      <DurumSiridi>
         <Hap
           ikon={<IkonYer boyut={13} />}
           renk={doluluk >= 1 ? 'var(--color-kirmizi)' : 'var(--color-mavi)'}
@@ -384,7 +388,7 @@ export function Kisla({
           {a.netErzakPerHour >= 0 ? '+' : ''}
           {formatSayi(a.netErzakPerHour)} erzak/sa
         </Hap>
-      </div>
+      </DurumSiridi>
 
       <Bolum
         baslik="Asker Eğitimi"
@@ -408,20 +412,18 @@ export function Kisla({
               return ox - oy;
             })
             .map((u) => (
-            <BirimKarti
-              key={u.type}
-              u={u}
-              evdeki={a.home[u.type as UnitType] ?? 0}
-              onerilenAdet={oneri?.eksik?.birim === u.type ? oneri.eksik.adet : null}
-              kaynaklar={lord.resources}
-              bosYer={bosYer}
-              kuyrukSayisi={egitimKuyruklari.length}
-              kuyruklar={egitimKuyruklari.filter((q) => q.payload.unitType === u.type)}
-              bekliyor={gonderilen === u.type}
-              onEgit={(adet) =>
-                mut.mutate({ tip: u.type, f: () => api.train(u.type, adet) })
-              }
-            />
+              <BirimKarti
+                key={u.type}
+                u={u}
+                evdeki={a.home[u.type as UnitType] ?? 0}
+                onerilenAdet={oneri?.eksik?.birim === u.type ? oneri.eksik.adet : null}
+                kaynaklar={lord.resources}
+                bosYer={bosYer}
+                kuyrukSayisi={egitimKuyruklari.length}
+                kuyruklar={egitimKuyruklari.filter((q) => q.payload.unitType === u.type)}
+                bekliyor={gonderilen === u.type}
+                onEgit={(adet) => mut.mutate({ tip: u.type, f: () => api.train(u.type, adet) })}
+              />
             ))}
         </div>
       </Bolum>

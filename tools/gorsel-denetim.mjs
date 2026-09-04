@@ -42,15 +42,17 @@ const r = await fetch(`${API}/api/auth/register`, {
 const { token } = await r.json();
 const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
 const post = (y, g) =>
-  fetch(`${API}/api${y}`, { method: 'POST', headers: h, body: JSON.stringify(g ?? {}) })
-    .then((x) => x.json());
+  fetch(`${API}/api${y}`, { method: 'POST', headers: h, body: JSON.stringify(g ?? {}) }).then((x) =>
+    x.json(),
+  );
 const get = (y) => fetch(`${API}/api${y}`, { headers: h }).then((x) => x.json());
 
 // Ekranların DOLU hâlini denetliyoruz: boş ekranda kayma görünmez.
 await post('/test/kaynak-ver', { altin: 900000, demir: 500000, erzak: 500000 });
 await post('/test/xp-ver', { miktar: 200000 });
 const puan = (await get('/me')).lord.statPoints;
-if (puan > 0) await post('/me/stats', { liderlik: Math.floor(puan / 2), guc: puan - Math.floor(puan / 2) });
+if (puan > 0)
+  await post('/me/stats', { liderlik: Math.floor(puan / 2), guc: puan - Math.floor(puan / 2) });
 await post('/army/train', { unitType: 'mizrakci', count: 120 });
 await post('/army/train', { unitType: 'okcu', count: 80 });
 await post('/items/craft', { tier: 2, slot: 'silah' });
@@ -205,7 +207,53 @@ await page
   .click({ timeout: 10000, force: true });
 await denetle('bolge-detay');
 
+/**
+ * YEPYENİ lordun malikânesi.
+ *
+ * Şimdiye kadar yalnız DOLU ekranları denetliyorduk; oysa oyuncunun ilk
+ * gördüğü şey boş ekran ve "burada iş var mı" sorusunun cevabı orada
+ * veriliyor (docs/11 §2.3 G4). Boş kuyruk ve boş olay akışı artık sakin
+ * kartla çiziliyor; bunun gerçekten öyle çizildiğini de ölçüyoruz.
+ */
+const yeniDamga = Date.now();
+const yr = await fetch(`${API}/api/auth/register`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    email: `gdbos${yeniDamga}@lordlar.dev`,
+    password: 'parola1234',
+    lordName: `Bos${yeniDamga.toString(36).slice(-5)}`,
+  }),
+});
+const yeniToken = (await yr.json()).token;
+if (yeniToken) {
+  await page.evaluate((t) => localStorage.setItem('lordlar_token', t), yeniToken);
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+  await ogreticiyiGec(page);
+  await denetle('yeni-lord-malikane');
+
+  const sakin = await page.evaluate(() => ({
+    kart: document.querySelectorAll('.kart-sakin').length,
+    plaka: document.querySelectorAll('.plaka-sakin').length,
+  }));
+  if (sakin.kart > 0 && sakin.plaka > 0) {
+    iyi(
+      'yeni-lord-malikane',
+      `boş bölümler sakin çiziliyor (${sakin.kart} kart, ${sakin.plaka} başlık)`,
+    );
+  } else {
+    sorun(
+      'yeni-lord-malikane',
+      'boş bölüm dolu bölümle aynı ağırlıkta',
+      `${sakin.kart} sakin kart, ${sakin.plaka} sakin başlık`,
+    );
+  }
+}
+
 console.log(`\n${bulgu === 0 ? 'GÖRSEL DENETİM TEMİZ' : `${bulgu} GÖRSEL SORUN`}`);
-console.log(`konsol hatası: ${konsol.length}${konsol.length ? ' — ' + konsol.slice(0, 3).join(' | ') : ''}`);
+console.log(
+  `konsol hatası: ${konsol.length}${konsol.length ? ' — ' + konsol.slice(0, 3).join(' | ') : ''}`,
+);
 await browser.close();
 process.exit(0);

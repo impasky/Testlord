@@ -285,12 +285,7 @@ function EsyaKarti({
           </Buton>
         )}
         {!item.equipped && (
-          <Buton
-            tur="anahat"
-            boy="kucuk"
-            onClick={onSell}
-            disabled={bekleyenEylem !== null}
-          >
+          <Buton tur="anahat" boy="kucuk" onClick={onSell} disabled={bekleyenEylem !== null}>
             Sat {formatSayi(item.sellValue)}
           </Buton>
         )}
@@ -455,14 +450,18 @@ export function Demirhane({
                 <div className="tabular mb-2 flex flex-wrap gap-x-3 gap-y-1 text-[12px] text-solgun">
                   <span
                     className={
-                      secili.cost.altin > lord.resources.altin ? 'text-kirmizi' : 'text-kaynak-altin'
+                      secili.cost.altin > lord.resources.altin
+                        ? 'text-kirmizi'
+                        : 'text-kaynak-altin'
                     }
                   >
                     <IkonAltin boyut={13} /> {formatSayi(secili.cost.altin)}
                   </span>
                   <span
                     className={
-                      secili.cost.demir > lord.resources.demir ? 'text-kirmizi' : 'text-kaynak-demir'
+                      secili.cost.demir > lord.resources.demir
+                        ? 'text-kirmizi'
+                        : 'text-kaynak-demir'
                     }
                   >
                     <IkonDemir boyut={13} /> {formatSayi(secili.cost.demir)}
@@ -486,21 +485,15 @@ export function Demirhane({
               </div>
 
               <Buton
-                onClick={() =>
-                  mut.mutate({ anahtar: 'craft', f: () => api.craft(tier, slot) })
-                }
+                onClick={() => mut.mutate({ anahtar: 'craft', f: () => api.craft(tier, slot) })}
                 disabled={gonderilen === 'craft' || uretimEngeli !== null}
                 tam
                 boy="buyuk"
               >
-                {gonderilen === 'craft'
-                  ? 'Gönderiliyor…'
-                  : `T${tier} ${SLOT_ADI[slot]} üret`}
+                {gonderilen === 'craft' ? 'Gönderiliyor…' : `T${tier} ${SLOT_ADI[slot]} üret`}
               </Buton>
 
-              {uretimEngeli && (
-                <EngelNotu kisa={uretimEngeli.kisa} uzun={uretimEngeli.uzun} />
-              )}
+              {uretimEngeli && <EngelNotu kisa={uretimEngeli.kisa} uzun={uretimEngeli.uzun} />}
 
               <KuyrukSeridi
                 kuyruklar={uretimKuyrugu}
@@ -522,7 +515,10 @@ export function Demirhane({
 
       {sonEtki && <KusanmaSonucu etki={sonEtki} onKapat={() => setSonEtki(null)} />}
 
-      <Bolum baslik={`Envanter · ${items.data?.items.length ?? 0}`}>
+      <Bolum
+        baslik={`Envanter · ${items.data?.items.length ?? 0}`}
+        sakin={items.data?.items.length === 0}
+      >
         {items.data?.items.length === 0 ? (
           // Üretim kartı bu ekranın YUKARISINDA; oyuncuyu başka sekmeye
           // yollamak yerine oraya kaydırıyoruz.
@@ -606,9 +602,7 @@ export function Demirhane({
                         <Buton
                           tur="sessiz"
                           boy="kucuk"
-                          onClick={() =>
-                            mut.mutate({ anahtar, f: () => api.upgradeGear(g.line) })
-                          }
+                          onClick={() => mut.mutate({ anahtar, f: () => api.upgradeGear(g.line) })}
                           disabled={gonderilen === anahtar || engel !== null}
                         >
                           Seviye {g.level + 1}
