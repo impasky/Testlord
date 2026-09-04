@@ -9,12 +9,12 @@
  * Saldırıyı başlatır, varış zamanını veritabanında geçmişe alır ve worker'ın
  * savaşı kendi döngüsünde çözmesini bekler. Hiçbir test ucu çağırmaz.
  */
+import { kayitOl } from './lib/kayit.mjs';
+
 const API=process.env.API_URL ?? 'http://localhost:3000';
 const DB=process.env.DATABASE_URL ?? 'postgresql://lordlar@127.0.0.1:5432/lordlar_cagi';
 const d=Date.now();
-const {token}=await (await fetch(`${API}/api/auth/register`,{method:'POST',
-  headers:{'Content-Type':'application/json'},
-  body:JSON.stringify({email:`w${d}@l.dev`,password:'parola1234',lordName:`W ${d}`})})).json();
+const {token}=await kayitOl(API,{email:`w${d}@l.dev`,lordName:`W ${d}`});
 const h={'Content-Type':'application/json',Authorization:`Bearer ${token}`};
 const P=(u,b)=>fetch(`${API}/api${u}`,{method:'POST',headers:h,body:JSON.stringify(b??{})}).then(r=>r.json());
 const G=(u)=>fetch(`${API}/api${u}`,{headers:h}).then(r=>r.json());

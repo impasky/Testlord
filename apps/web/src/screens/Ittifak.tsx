@@ -16,6 +16,7 @@ import { IkonAltin, IkonSohret } from '../components/Ikonlar';
 import { hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { BosHal } from '../components/BosHal';
 import { IttifakSohbet } from '../components/IttifakSohbet';
+import { KaynakGonder } from '../components/KaynakGonder';
 import {
   Bolum,
   Buton,
@@ -253,6 +254,8 @@ export function Ittifak({ lordId }: { lordId: string }) {
           </Kart>
         </Bolum>
       )}
+
+      {ittifakim && <KaynakGonder uyeler={ittifakim.uyeler} benimId={lordId} />}
 
       {ittifakim && <IttifakSohbet lordId={lordId} />}
 

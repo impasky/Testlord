@@ -38,6 +38,10 @@ import {
   seferDurumu,
   seferOdulu,
   seferOduluAlindiMi,
+  sevkiyatDenetle,
+  sevkiyatSuresiSn,
+  gunlukTavan,
+  yukAgirligi,
   type SeferSayaclari,
   liderAviGecerliMi,
   liderAviYagmaBonusu,
@@ -701,6 +705,66 @@ describe('takviye kayıp dağıtımı', () => {
   it('ordudan kayıp düşünce negatife inmiyor', () => {
     expect(orduDus({ milis: 3 }, { milis: 10 })).toEqual({});
     expect(orduDus({ milis: 10, okcu: 4 }, { milis: 3 })).toEqual({ milis: 7, okcu: 4 });
+  });
+});
+
+describe('ticaret', () => {
+  it('kaynak yolda vakit geçiriyor', () => {
+    // Anında gönderim, kuşatma altındaki oyuncuyu sınırsız beslerdi ve
+    // saldırının ekonomik anlamı kalmazdı.
+    expect(sevkiyatSuresiSn(0)).toBeGreaterThan(0);
+    expect(sevkiyatSuresiSn(6)).toBeGreaterThan(sevkiyatSuresiSn(1));
+  });
+
+  it('yük ağırlığı üç kaynağı tek sayıda ölçüyor', () => {
+    // Tavanı tek kaynak üzerinden koymak işe yaramazdı: altın tavanı
+    // dolan oyuncu aynı değeri demirle gönderirdi.
+    const a = yukAgirligi({ altin: 1000, demir: 0, erzak: 0 });
+    const d = yukAgirligi({ altin: 0, demir: 1000, erzak: 0 });
+    expect(a).toBeGreaterThan(0);
+    expect(d).toBeGreaterThan(0);
+    expect(yukAgirligi({ altin: 0, demir: 0, erzak: 0 })).toBe(0);
+  });
+
+  it('günlük tavan aşılamıyor', () => {
+    const tavan = gunlukTavan();
+    const denetim = sevkiyatDenetle({ altin: tavan * 2, demir: 0, erzak: 0 }, 0);
+    expect(denetim.uygun).toBe(false);
+    expect(denetim.sebep).toContain('tavan');
+  });
+
+  it('bugün gönderilen tavandan düşülüyor', () => {
+    const tavan = gunlukTavan();
+    // Tavanın yarısı zaten gönderilmişse, yarısından fazlası geçmemeli.
+    const d = sevkiyatDenetle({ altin: Math.floor(tavan * 0.6), demir: 0, erzak: 0 }, tavan / 2);
+    expect(d.uygun).toBe(false);
+    expect(d.kalanTavan).toBeCloseTo(tavan / 2, 0);
+  });
+
+  it('çok küçük gönderim reddediliyor', () => {
+    // Bir altınlık gönderimlerle tavanı bölerek aynı sömürüyü yapmak
+    // mümkün olmasın diye değil; sadece anlamsız kayıt üretmesin diye.
+    expect(sevkiyatDenetle({ altin: 1, demir: 0, erzak: 0 }, 0).uygun).toBe(false);
+  });
+
+  it('eksi miktar gönderilemiyor', () => {
+    // Eksi gönderim, alıcıdan kaynak ÇALMAK demekti.
+    const d = sevkiyatDenetle({ altin: -5000, demir: 0, erzak: 0 }, 0);
+    expect(d.uygun).toBe(false);
+  });
+
+  it('makul gönderim geçiyor', () => {
+    const d = sevkiyatDenetle({ altin: 5000, demir: 1000, erzak: 2000 }, 0);
+    expect(d.uygun).toBe(true);
+    expect(d.agirlik).toBeGreaterThan(0);
+  });
+
+  it('tavan bir oyuncunun günlük gelirini aşmıyor', () => {
+    // Tavanın anlamı: gerçek yardım geçsin, çiftlik geçmesin. Lv60 bir
+    // oyuncunun malikâne geliri bile tavanın üstündeyse fren işlevsizdir.
+    const gunlukGelir = malikaneIncome(60).altin * 24;
+    expect(gunlukTavan()).toBeLessThan(gunlukGelir * 3);
+    expect(gunlukTavan()).toBeGreaterThan(0);
   });
 });
 

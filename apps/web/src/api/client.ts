@@ -584,6 +584,14 @@ export interface ArmaDto {
   sembol: string;
 }
 
+export interface SevkiyatDto {
+  giden: { id: string; yuk: Resources; arriveAt: string; kime: string }[];
+  gelen: { id: string; yuk: Resources; arriveAt: string; kimden: string }[];
+  gunlukTavan: number;
+  bugunGonderilen: number;
+  kalanTavan: number;
+}
+
 export interface GeneralKatkisiDto {
   key: string;
   ad: string;
@@ -667,6 +675,12 @@ export const api = {
   gunlukOdul: () => post<GunlukOdulDto>('/gunluk/odul', {}),
   sefer: () => request<SeferDto>('/sefer'),
   armaKaydet: (arma: ArmaDto) => post<{ arma: ArmaDto }>('/me/arma', arma),
+  ticaret: () => request<SevkiyatDto>('/ticaret'),
+  kaynakGonder: (lordId: string, yuk: Resources) =>
+    post<{ id: string; arriveAt: string; durationSec: number; alici: string; kalanTavan: number }>(
+      '/ticaret/gonder',
+      { lordId, yuk },
+    ),
   ittifak: () => request<IttifakDto>('/ittifak'),
   ittifakKur: (ad: string, etiket: string) =>
     post<{ id: string; ad: string; etiket: string }>('/ittifak/kur', { ad, etiket }),

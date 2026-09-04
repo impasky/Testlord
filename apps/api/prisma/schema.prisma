@@ -131,6 +131,8 @@ model Lord {
   events    Event[]
   scouts    Scout[]
   messages  AllianceMessage[]
+  gonderilen Shipment[] @relation("ShipmentFrom")
+  gelen      Shipment[] @relation("ShipmentTo")
   alliance  Alliance? @relation("AllianceMembers", fields: [allianceId], references: [id])
   ledAlliance Alliance? @relation("AllianceLeader")
 
@@ -322,6 +324,30 @@ model Alliance {
   @@unique([worldId, name])
   @@unique([worldId, tag])
   @@index([worldId])
+}
+
+/// Kaynak sevkiyatı: bir müttefikten diğerine giden yük.
+///
+/// Kaynak da yol alıyor. Anında gönderim, kuşatma altındaki oyuncuyu
+/// sınırsız besler ve saldırının ekonomik anlamını yok ederdi.
+model Shipment {
+  id         String   @id @default(cuid())
+  worldId    String
+  fromLordId String
+  toLordId   String
+  altin      Int      @default(0)
+  demir      Int      @default(0)
+  erzak      Int      @default(0)
+  departAt   DateTime
+  arriveAt   DateTime
+  resolved   Boolean  @default(false)
+
+  from Lord @relation("ShipmentFrom", fields: [fromLordId], references: [id], onDelete: Cascade)
+  to   Lord @relation("ShipmentTo", fields: [toLordId], references: [id], onDelete: Cascade)
+
+  @@index([resolved, arriveAt])
+  @@index([fromLordId, departAt])
+  @@index([toLordId, resolved])
 }
 
 /// İttifak sohbeti mesajı.

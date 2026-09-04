@@ -198,6 +198,75 @@ await c.post('/test/kalkanlari-kaldir');
 const cDurum = await c.get('/ittifak');
 kontrol('Üçüncü lord ittifaksız', cDurum.ittifakim === null);
 
+// --- Ticaret (docs/09 B6)
+await a.post('/test/kaynak-ver', { altin: 60000, demir: 30000, erzak: 30000 });
+const ticaretOnce = await a.get('/ticaret');
+kontrol('Ticaret özeti geliyor', ticaretOnce?.gunlukTavan > 0,
+  `tavan ${ticaretOnce?.gunlukTavan}, kalan ${ticaretOnce?.kalanTavan}`);
+
+const bAd = (await b.get('/me')).lord;
+const bOnceAltin = Math.floor(bAd.resources.altin);
+const bLordId = bAd.id;
+const aOnceAltin = Math.floor((await a.get('/me')).lord.resources.altin);
+
+const sevk = await a.post('/ticaret/gonder', {
+  lordId: bLordId,
+  yuk: { altin: 5000, demir: 1000, erzak: 0 },
+});
+kontrol('İttifak üyesine kaynak gönderilebiliyor', Boolean(sevk?.id),
+  sevk?.code ?? `${sevk?.alici}, ${sevk?.durationSec} sn`);
+kontrol('Kaynak ANINDA gitmiyor, yolda', sevk?.durationSec > 0,
+  `${sevk?.durationSec} sn`);
+
+// Gonderen kesesinden HEMEN cikmali: yoksa ayni kaynagi uc kisiye
+// birden gonderebilirdi.
+// Sabit bir esikle degil FARKLA olcuyoruz: lordun onceki altını
+// testin gecmisine baglı, esik yazarsak test kendi gecmisine kilitlenir.
+const aSonraAltin = Math.floor((await a.get('/me')).lord.resources.altin);
+kontrol('Kaynak gönderenden hemen düşüyor',
+  aOnceAltin - aSonraAltin >= 4500,
+  `${aOnceAltin} -> ${aSonraAltin}`);
+
+await b.post('/test/sevkiyatlari-bitir');
+const bSonra = (await b.get('/me')).lord;
+kontrol('Kaynak alıcıya vardı', Math.floor(bSonra.resources.altin) > bOnceAltin,
+  `${bOnceAltin} -> ${Math.floor(bSonra.resources.altin)}`);
+const bOlaylar = (await b.get('/me')).events;
+kontrol('Alıcı sevkiyattan haberdar',
+  bOlaylar.some((e) => e.kind === 'sevkiyat_geldi'),
+  bOlaylar.find((e) => e.kind === 'sevkiyat_geldi')?.payload?.mesaj ?? 'olay yok');
+
+// Ittifak disina gonderilemiyor: B6'nin kendi notu "ittifak olmadan
+// somuruye acik" idi.
+const cId = (await c.get('/me')).lord.id;
+const disari = await a.post('/ticaret/gonder', {
+  lordId: cId,
+  yuk: { altin: 1000, demir: 0, erzak: 0 },
+});
+kontrol('İttifak dışına kaynak gönderilemiyor', disari?.code === 'ITTIFAK_DEGIL',
+  disari?.code ?? 'gönderildi');
+
+const kendine = await a.post('/ticaret/gonder', {
+  lordId: (await a.get('/me')).lord.id,
+  yuk: { altin: 1000, demir: 0, erzak: 0 },
+});
+kontrol('Kendine kaynak gönderilemiyor', kendine?.code === 'KENDINE', kendine?.code ?? 'gönderildi');
+
+// Gunluk tavan: coklu hesap freni.
+await a.post('/test/kaynak-ver', { altin: 900000, demir: 0, erzak: 0 });
+const tavanAsan = await a.post('/ticaret/gonder', {
+  lordId: bLordId,
+  yuk: { altin: ticaretOnce.gunlukTavan * 2, demir: 0, erzak: 0 },
+});
+kontrol('Günlük tavan aşılamıyor', tavanAsan?.code === 'GONDERIM_REDDEDILDI',
+  tavanAsan?.code ?? 'gönderildi');
+
+const eksi = await a.post('/ticaret/gonder', {
+  lordId: bLordId,
+  yuk: { altin: -5000, demir: 0, erzak: 0 },
+});
+kontrol('Eksi miktar gönderilemiyor', Boolean(eksi?.code), eksi?.code ?? 'gönderildi');
+
 // --- Ortak hedef (docs/09 B1b)
 const hedefsiz = (await a.get('/ittifak')).ittifakim?.hedef;
 kontrol('Başlangıçta ortak hedef yok', hedefsiz === null, JSON.stringify(hedefsiz));

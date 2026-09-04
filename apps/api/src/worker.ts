@@ -16,6 +16,7 @@ import { validateBalance } from '@lordlar/shared';
 import { prisma } from './db.js';
 import { resolveQueueItem } from './services/queue.js';
 import { resolveMarch } from './services/march.js';
+import { sevkiyatCoz } from './services/ticaret.js';
 import { accrueRegionStores } from './services/region.js';
 
 const ARALIK_MS = 10_000;
@@ -53,11 +54,25 @@ export async function tur(): Promise<void> {
       }
     }
 
+    // Sevkiyatlar: yürüyüşlerle aynı desen, aynı idempotentlik.
+    const sevkiyatlar = await prisma.shipment.findMany({
+      where: { resolved: false, arriveAt: { lte: now } },
+      orderBy: { arriveAt: 'asc' },
+      take: 100,
+    });
+    for (const sv of sevkiyatlar) {
+      try {
+        await sevkiyatCoz(sv.id);
+      } catch (e) {
+        console.error(`Sevkiyat çözülemedi (${sv.id}):`, e);
+      }
+    }
+
     await accrueRegionStores(now);
 
-    if (marches.length || queues.length) {
+    if (marches.length || queues.length || sevkiyatlar.length) {
       console.log(
-        `[worker] ${new Date().toISOString()} — ${marches.length} yürüyüş, ${queues.length} kuyruk çözüldü`,
+        `[worker] ${new Date().toISOString()} — ${marches.length} yürüyüş, ${queues.length} kuyruk, ${sevkiyatlar.length} sevkiyat çözüldü`,
       );
     }
   } catch (e) {

@@ -15,5 +15,6 @@ export * from './sefer.js';
 export * from './ittifak.js';
 export * from './takviye.js';
 export * from './kimlik.js';
+export * from './ticaret.js';
 export * from './march.js';
 export * from './odul.js';

@@ -570,6 +570,17 @@
     },
     "_bekleme_notu": "Ittifaktan cikip hemen bir baskasina girmek, saldiri kilidini kalkan gibi kullanmayi mumkun kilardi: saldiriya ugrayan oyuncu saldirganin ittifagina girip korunur, sonra cikar. Bekleme bu oyunu bozuyor."
   },
+  "ticaret": {
+    "_aciklama": "Ittifak ici kaynak gonderme (docs/09 B6). Yalniz ittifak uyelerine: 'Ittifak olmadan somuruye acik' notu B6'nin kendi tanimindaydi. Ittifak artik var, o yuzden acilabiliyor.",
+    "_neden_hediye_degil_gonderim": "Takas (senden 100 demir, benden 200 erzak) yerine tek yonlu GONDERIM sectik. Takas iki tarafin da onayini, bir teklif kuyrugunu ve teklif suresi dolunca ne olacagini gerektiriyor; oyunun geri kalani gibi beklemeli calisan bir sistemde bu uc yeni ekran demek. Gonderim tek hareket ve ayni ise yariyor: ihtiyaci olana kaynak gidiyor.",
+    "hex_basina_dakika": 4,
+    "taban_dakika": 6,
+    "_sure_notu": "Kaynak da yol aliyor. Aninda gonderim, kusatma altindaki oyuncuyu sinirsiz beslerdi ve saldirinin ekonomik anlami kalmazdi.",
+    "gunluk_gonderim_tavani": 20000,
+    "_tavan_notu": "Gunde gonderilebilecek toplam kaynak (altin karsiligiyla olculuyor). Coklu hesap freni: bes sahte hesap acip hepsinin gelirini tek oyuncuya akitmak, oyunun butun ekonomi dengesini anlamsiz kilardi. Tavan Lv30 bir oyuncunun yaklasik bir gunluk geliri kadar -- gercek yardim gecer, ciftlik gecmez.",
+    "en_az_gonderim": 100,
+    "es_zamanli": 3
+  },
   "casusluk": {
     "_aciklama": "Saldirmadan once bilgi almak. docs/01 §1 Kurnazlik statina 'casusluk' diye soz vermisti ve bu soz yillardir tutulmamisti: Kurnazlik yalniz yagmayi artiriyordu. Casusluk o statin ikinci isi.",
     "maliyet_altin": 500,

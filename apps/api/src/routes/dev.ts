@@ -12,6 +12,7 @@ import { GameError, hata } from '../errors.js';
 import { findLordByUser, grantXp, tickLord } from '../services/lord.js';
 import { resolveMarch } from '../services/march.js';
 import { resolveQueueItem } from '../services/queue.js';
+import { sevkiyatCoz } from '../services/ticaret.js';
 
 export async function devRoutes(app: FastifyInstance): Promise<void> {
   /** Bekleyen tüm kuyrukları hemen bitirir. */
@@ -74,6 +75,21 @@ export async function devRoutes(app: FastifyInstance): Promise<void> {
     const lordId = await findLordByUser(req.user.userId);
     const miktar = Number((req.body as { miktar?: number })?.miktar ?? 1000);
     return grantXp(lordId, miktar);
+  });
+
+  /** Bekleyen sevkiyatları hemen vardırır. */
+  app.post('/test/sevkiyatlari-bitir', { preHandler: requireAuth }, async (req) => {
+    const lordId = await findLordByUser(req.user.userId);
+    const sevk = await prisma.shipment.findMany({
+      where: { resolved: false, OR: [{ fromLordId: lordId }, { toLordId: lordId }] },
+    });
+    await prisma.shipment.updateMany({
+      where: { resolved: false, OR: [{ fromLordId: lordId }, { toLordId: lordId }] },
+      data: { arriveAt: new Date() },
+    });
+    let n = 0;
+    for (const s of sevk) if (await sevkiyatCoz(s.id)) n++;
+    return { cozulen: n };
   });
 
   /**
