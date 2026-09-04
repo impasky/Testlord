@@ -10,6 +10,7 @@
  *
  * SADECE GELİŞTİRME. node tools/hesap-testi.mjs
  */
+import { kayitOl } from './lib/kayit.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 
 let hata = 0;
@@ -26,13 +27,10 @@ const JS = { 'Content-Type': 'application/json' };
 const POST = (yol, govde, baslik = JS) =>
   fetch(`${API}/api${yol}`, { method: 'POST', headers: baslik, body: JSON.stringify(govde ?? {}) });
 
-const kayit = await (
-  await POST('/auth/register', {
-    email: eposta,
-    password: 'parola1234',
-    lordName: `Hsp ${d.toString(36).slice(-3)}`,
-  })
-).json();
+const kayit = await kayitOl(API, {
+  email: eposta,
+  lordName: `Hsp ${d.toString(36).slice(-3)}`,
+});
 const h = { ...JS, Authorization: `Bearer ${kayit.token}` };
 
 // --- 1. Parola değiştirme ---
@@ -131,11 +129,10 @@ kontrol(
 if (alinan) {
   // Bölgeyi başka bir hesapla sorgula: sahipsiz kalmalı, haritadan silinmemeli
   const d2 = Date.now();
-  const bakan = await (
-    await POST('/auth/register', {
-      email: `bakan${d2}@lordlar.dev`, password: 'parola1234', lordName: `Bkn ${d2.toString(36).slice(-3)}`,
-    })
-  ).json();
+  const bakan = await kayitOl(API, {
+    email: `bakan${d2}@lordlar.dev`,
+    lordName: `Bkn ${d2.toString(36).slice(-3)}`,
+  });
   const hb = { ...JS, Authorization: `Bearer ${bakan.token}` };
   const bolge = await (await fetch(`${API}/api/map/${alinan.id}`, { headers: hb })).json();
   kontrol(

@@ -18,6 +18,8 @@ console.log('Lordlar Çağı — denetim testi\n');
 
 const JS = { 'Content-Type': 'application/json' };
 const d = Date.now();
+// tools/lib/kayit.mjs kullanılmıyor: o yardımcı reddedilen adı düzeltip yeniden
+// deniyor. Burada ölçülen şey tam da reddin kendisi.
 const kayit = (ad, ek = '') =>
   fetch(`${API}/api/auth/register`, {
     method: 'POST',

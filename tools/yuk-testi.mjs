@@ -88,6 +88,8 @@ async function kaydol(i) {
   // 429 sunucunun hatası değil, kasten konmuş bir sınır. Beklenip yeniden
   // denenir; beş denemede olmuyorsa gerçekten bir sorun var.
   for (let deneme = 0; deneme < 5; deneme++) {
+    // tools/lib/kayit.mjs kullanılmıyor: yeniden deneme, ölçülen gecikmeyi
+    // bozar. Yük testinin sayısı ham isteğin sayısı olmalı.
     const v = await istek('POST /auth/register', '/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

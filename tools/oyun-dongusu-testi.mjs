@@ -4,6 +4,7 @@
  *
  * node tools/oyun-dongusu-testi.mjs
  */
+import { kayitOl } from './lib/kayit.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 let token = null;
 let hata = 0;
@@ -33,9 +34,8 @@ console.log('Lordlar Çağı — oyun döngüsü testi\n');
 
 // 1. Kayıt
 const damga = Date.now();
-({ token } = await post('/auth/register', {
+({ token } = await kayitOl(API, {
   email: `dongu${damga}@lordlar.dev`,
-  password: 'parola1234',
   lordName: `Fatih ${damga}`,
 }));
 // Testler arası izolasyon: NPC garnizonlarını tabana döndür
@@ -61,7 +61,7 @@ kontrol('Komuta kapasitesi aşımı reddedildi', kapasiteHatasi?.includes('kapas
 
 // 3. Kuyrukları bitir (test hızlandırması)
 await post('/test/kuyruklari-bitir');
-me = await cagir('/me');
+await cagir('/me');
 const ordu = await cagir('/army');
 kontrol('Askerler orduya katıldı',
   (ordu.home.mizrakci ?? 0) === 20 && (ordu.home.okcu ?? 0) === 15,

@@ -21,6 +21,7 @@
  */
 import { readFileSync } from 'node:fs';
 
+import { kayitOl } from './lib/kayit.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 
 // Doğum yerleri SABİT ve SAYILI: pickHomeAnchor ring 4'ten en az yüklü hex'i
@@ -40,16 +41,10 @@ function kontrol(ad, kosul, detay = '') {
 
 async function yeniOyuncu(i) {
   const damga = Date.now() + i * 13;
-  const r = await fetch(`${API}/api/auth/register`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      email: `ilkhedef${damga}@lordlar.dev`,
-      password: 'parola1234',
-      lordName: `Ilk${damga.toString(36).slice(-5)}`,
-    }),
+  const { token } = await kayitOl(API, {
+    email: `ilkhedef${damga}@lordlar.dev`,
+    lordName: `Ilk${damga.toString(36).slice(-5)}`,
   });
-  const { token } = await r.json();
   const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
   return {
     post: (yol, govde) =>

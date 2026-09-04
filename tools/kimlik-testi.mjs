@@ -7,6 +7,7 @@
  *
  * SADECE GELİŞTİRME. node tools/kimlik-testi.mjs
  */
+import { kayitOl } from './lib/kayit.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 
 let hata = 0;
@@ -17,18 +18,11 @@ function kontrol(ad, kosul, detay = '') {
 
 const damga = Date.now();
 async function lordKur(etiket) {
-  const r = await fetch(`${API}/api/auth/register`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      email: `km${damga}_${etiket}@lordlar.dev`,
-      password: 'parola1234',
-      lordName: `Km${damga.toString(36).slice(-3)}${etiket}`,
-    }),
+  const { token } = await kayitOl(API, {
+    email: `km${damga}_${etiket}@lordlar.dev`,
+    lordName: `Km${damga.toString(36).slice(-3)}${etiket}`,
   });
-  const govde = await r.json();
-  if (!govde.token) throw new Error(`kayıt başarısız: ${JSON.stringify(govde).slice(0, 150)}`);
-  const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${govde.token}` };
+  const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
   return {
     post: (y, g) =>
       fetch(`${API}/api${y}`, { method: 'POST', headers: h, body: JSON.stringify(g ?? {}) })

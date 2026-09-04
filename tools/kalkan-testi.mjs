@@ -18,6 +18,7 @@
  * SADECE GELİŞTİRME. /api/test/* uçlarını kullanır.
  * API ayakta olmalı. node tools/kalkan-testi.mjs
  */
+import { kayitOl } from './lib/kayit.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 
 let hata = 0;
@@ -28,16 +29,10 @@ function kontrol(ad, kosul, detay = '') {
 
 const damga = Date.now();
 async function lordKur(etiket) {
-  const r = await fetch(`${API}/api/auth/register`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      email: `kalkan${damga}_${etiket}@lordlar.dev`,
-      password: 'parola1234',
-      lordName: `Klk${damga.toString(36).slice(-3)}${etiket}`,
-    }),
+  const { token } = await kayitOl(API, {
+    email: `kalkan${damga}_${etiket}@lordlar.dev`,
+    lordName: `Klk${damga.toString(36).slice(-3)}${etiket}`,
   });
-  const { token } = await r.json();
   const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
   return {
     post: (yol, govde) =>

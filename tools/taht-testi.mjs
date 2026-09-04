@@ -11,6 +11,7 @@
  *
  * SADECE GELİŞTİRME. node tools/taht-testi.mjs
  */
+import { kayitOl } from './lib/kayit.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 
 let hata = 0;
@@ -22,17 +23,10 @@ function kontrol(ad, kosul, detay = '') {
 console.log('Lordlar Çağı — Taht Kalesi testi\n');
 
 const d = Date.now();
-const { token } = await (
-  await fetch(`${API}/api/auth/register`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      email: `taht${d}@lordlar.dev`,
-      password: 'parola1234',
-      lordName: `Taht ${d.toString(36).slice(-3)}`,
-    }),
-  })
-).json();
+const { token } = await kayitOl(API, {
+  email: `taht${d}@lordlar.dev`,
+  lordName: `Taht ${d.toString(36).slice(-3)}`,
+});
 const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
 const P = (u, b) =>
   fetch(`${API}/api${u}`, { method: 'POST', headers: h, body: JSON.stringify(b ?? {}) })

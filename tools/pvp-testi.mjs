@@ -10,6 +10,7 @@
  * SADECE GELİŞTİRME. /api/test/* uçlarını kullanır.
  * API ayakta olmalı. node tools/pvp-testi.mjs
  */
+import { kayitOl } from './lib/kayit.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 
 let hata = 0;
@@ -22,16 +23,10 @@ const say = (a) => Object.values(a ?? {}).reduce((t, n) => t + Number(n || 0), 0
 
 const damga = Date.now();
 async function lordKur(etiket) {
-  const r = await fetch(`${API}/api/auth/register`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      email: `pvp${damga}_${etiket}@lordlar.dev`,
-      password: 'parola1234',
-      lordName: `Pvp${damga.toString(36).slice(-3)}${etiket}`,
-    }),
+  const { token } = await kayitOl(API, {
+    email: `pvp${damga}_${etiket}@lordlar.dev`,
+    lordName: `Pvp${damga.toString(36).slice(-3)}${etiket}`,
   });
-  const { token } = await r.json();
   const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
   return {
     etiket,

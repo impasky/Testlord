@@ -12,6 +12,7 @@
  *
  * Sonra kendi hesabınla kayıt ol; haritada bu lordların bölgelerini görürsün.
  */
+import { kayitOl } from './lib/kayit.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 const ADET = Number(process.env.DEMO_ADET ?? 6);
 
@@ -47,9 +48,8 @@ const post = (yol, token, govde) =>
 
 async function lordKur(tanim, sira) {
   const ad = `${tanim.ad}`;
-  const { token } = await post('/auth/register', null, {
+  const { token } = await kayitOl(API, {
     email: `demo-${damga}-${sira}@lordlar.dev`,
-    password: 'parola1234',
     lordName: ad,
   });
   sonToken = token;

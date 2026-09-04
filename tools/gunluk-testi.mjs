@@ -9,6 +9,7 @@
  * SADECE GELİŞTİRME. /api/test/* uçlarını kullanır.
  * API ayakta olmalı. node tools/gunluk-testi.mjs
  */
+import { kayitOl } from './lib/kayit.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 
 let hata = 0;
@@ -18,16 +19,10 @@ function kontrol(ad, kosul, detay = '') {
 }
 
 const damga = Date.now();
-const r = await fetch(`${API}/api/auth/register`, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    email: `gunluk${damga}@lordlar.dev`,
-    password: 'parola1234',
-    lordName: `Gun${damga.toString(36).slice(-5)}`,
-  }),
+const { token } = await kayitOl(API, {
+  email: `gunluk${damga}@lordlar.dev`,
+  lordName: `Gun${damga.toString(36).slice(-5)}`,
 });
-const { token } = await r.json();
 const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
 const post = (yol, govde) =>
   fetch(`${API}/api${yol}`, { method: 'POST', headers: h, body: JSON.stringify(govde ?? {}) })

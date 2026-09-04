@@ -21,6 +21,8 @@ function kontrol(ad, kosul, detay = '') {
 // tarafından yenmesin diye.
 const sql = (q) => execSync(`psql "${DB}" -tAf -`, { input: q }).toString().trim();
 
+// tools/lib/kayit.mjs kullanılmıyor: o yardımcı başarısız kaydı hata sayıp
+// patlıyor. Bu test "dünya dolu" reddini bekliyor, cevabın kendisine bakıyor.
 async function kayit(ad) {
   const r = await fetch(`${API}/api/auth/register`, {
     method: 'POST',

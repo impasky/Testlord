@@ -7,6 +7,7 @@
  *
  * node tools/ilk-oturum-testi.mjs
  */
+import { kayitOl } from './lib/kayit.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 let token = null;
 let hata = 0;
@@ -56,9 +57,8 @@ async function oturum() {
 
   const damga = Date.now() + Math.floor(Math.random() * 1000);
   token = null;
-  ({ token } = await post('/auth/register', {
+  ({ token } = await kayitOl(API, {
     email: `ilkoturum${damga}@lordlar.dev`,
-    password: 'parola1234',
     lordName: `Yeni ${damga}`,
   }));
   // Testler arası izolasyon: önceki koşuların ele geçirdiği bölgeler yeni
