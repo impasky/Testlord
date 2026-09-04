@@ -12,7 +12,7 @@
  */
 
 /** Benzer görünen karakterleri sadeleştirir: "5ik1ş" -> "sikis". */
-function normalize(ad: string): string {
+export function normalize(ad: string): string {
   return ad
     .toLocaleLowerCase('tr')
     .replace(/[ıİ]/g, 'i')
@@ -36,7 +36,7 @@ function normalize(ad: string): string {
  * Yasaklı parçalar. Kelime değil PARÇA arıyoruz çünkü oyuncular araya
  * karakter sıkıştırıyor; normalize zaten onları temizliyor.
  */
-const YASAKLI = [
+export const YASAKLI = [
   'amk', 'aq', 'orospu', 'piclik', 'pic', 'sikis', 'sikik', 'siktir', 'yarrak',
   'gotveren', 'ibne', 'amcik', 'kahpe', 'oruspu',
   'fuck', 'shit', 'bitch', 'cunt', 'nigger', 'nazi', 'hitler',

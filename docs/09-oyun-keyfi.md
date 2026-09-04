@@ -48,9 +48,12 @@ ittifak sıralaması ve tek zorunlu kural: **üyeler birbirine saldıramaz**
 sistemin kötüye kullanılmasını kapatıyor; en ince olanı bekleme, çünkü
 onsuz saldırı kilidi kalkan gibi kullanılırdı.
 
-**Sırada:** takviye gönderme, ortak hedef işaretleme, saldırmazlık paktı,
-ittifak sohbeti (B3). Bunların hepsi artık var olan bir çekirdeğin üstüne
-geliyor.
+**B3 ile eklendi:** ittifak sohbeti. Kendi tavsiyemize uyduk ve kapalı
+grupla başladık — genel sohbet, moderasyon yükü kaldırılabilir hâle
+gelmeden açılmamalı.
+
+**Sırada:** takviye gönderme, ortak hedef işaretleme, saldırmazlık paktı.
+Hepsi artık var olan bir çekirdeğin üstüne geliyor.
 
 ### 2.2 Sezon / sunucu döngüsü
 
@@ -263,7 +266,7 @@ sayılı ve sıralı olduğu için tam tarama mümkündü ve hatayı ancak o gö
 |---|---|---|
 | B1 | ~~**İttifak**~~ **çekirdeği yapıldı** | Kur/katıl/ayrıl, üye listesi, **üyeye saldırılamaz**, ittifak sıralaması (docs/01 §7d). Kalan: takviye, ortak hedef, pakt, sohbet. |
 | B2 | **Sezon** | 4–6 hafta, taht sahibi kazanır, dünya sıfırlanır, onur listesi kalır. |
-| B3 | **Sohbet** | Sosyal tutkalın kendisi. Moderasyon yükü getirir; ittifak sohbetiyle başlanmalı. |
+| B3 | ~~**Sohbet**~~ **ittifak sohbeti yapıldı** | Kendi tavsiyemize uyduk: kapalı grupla başladık. Genel sohbet, moderasyon yükü kaldırılabilir olmadan açılmamalı. |
 | B4 | ~~**Süreli etkinlik**~~ **yapıldı** | Haftalık sefer: tema hafta numarasından türüyor (sunucu bir şey saklamıyor), hedef herkes için aynı. **Tablo YOK** — sıralamalı etkinlik zaten önde olanı ilerletirdi (§3.4). |
 | B5 | ~~**Casusluk**~~ **yapıldı** | Kuyruk tabanlı keşif, yakalanma riski Kurnazlık'a bağlı, rapor bir fotoğraf (docs/01 §6b). Beklenenden küçük çıktı: yeni motor gerekmedi, mevcut kuyruk makinesi yetti. |
 | B6 | **Ticaret** | Kaynak takası. İttifak olmadan sömürüye açık. |

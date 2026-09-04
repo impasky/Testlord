@@ -122,6 +122,7 @@ model Lord {
   marches   March[]
   events    Event[]
   scouts    Scout[]
+  messages  AllianceMessage[]
   alliance  Alliance? @relation("AllianceMembers", fields: [allianceId], references: [id])
   ledAlliance Alliance? @relation("AllianceLeader")
 
@@ -295,13 +296,32 @@ model Alliance {
   leaderLordId String @unique
   createdAt DateTime @default(now())
 
-  world   World  @relation(fields: [worldId], references: [id], onDelete: Cascade)
-  leader  Lord   @relation("AllianceLeader", fields: [leaderLordId], references: [id], onDelete: Cascade)
-  members Lord[] @relation("AllianceMembers")
+  world    World             @relation(fields: [worldId], references: [id], onDelete: Cascade)
+  leader   Lord              @relation("AllianceLeader", fields: [leaderLordId], references: [id], onDelete: Cascade)
+  members  Lord[]            @relation("AllianceMembers")
+  messages AllianceMessage[]
 
   @@unique([worldId, name])
   @@unique([worldId, tag])
   @@index([worldId])
+}
+
+/// İttifak sohbeti mesajı.
+///
+/// İttifak silinince mesajlar da gidiyor: sohbet ittifakın kendisi kadar
+/// yaşıyor, dağılmış bir topluluğun konuşmalarını saklamanın karşılığı yok.
+model AllianceMessage {
+  id         String   @id @default(cuid())
+  allianceId String
+  lordId     String
+  text       String
+  createdAt  DateTime @default(now())
+
+  alliance Alliance @relation(fields: [allianceId], references: [id], onDelete: Cascade)
+  lord     Lord     @relation(fields: [lordId], references: [id], onDelete: Cascade)
+
+  @@index([allianceId, createdAt])
+  @@index([lordId, createdAt])
 }
 
 /// Bir keşif raporu: bir lordun bir bölge hakkındaki istihbaratı.

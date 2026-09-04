@@ -10,6 +10,7 @@
  * dönebileceğin bir sınır.
  */
 import {
+  B,
   ayniIttifaktaMi,
   azamiUye,
   ittifakAdiDenetle,
@@ -23,6 +24,7 @@ import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { adiDenetle } from '../services/adDenetimi.js';
+import { mesajDenetle } from '../services/mesajDenetimi.js';
 import { findLordByUser, pushEvent, tickLord } from '../services/lord.js';
 
 const uyeSecimi = {
@@ -48,14 +50,19 @@ async function ittifakOzeti(allianceId: string) {
     etiket: a.tag,
     liderId: a.leaderLordId,
     kurulus: a.createdAt,
-    uyeler: a.members.map((u) => ({
-      id: u.id,
-      ad: u.name,
-      seviye: u.level,
-      sohret: u.fame,
-      elo: u.elo,
-      lider: u.id === a.leaderLordId,
-    })),
+    // Lider HER ZAMAN başta. Yalnız şöhrete göre sıralamak, eşit şöhretli
+    // iki üyede lideri ikinci sıraya düşürüyordu; listeye bakan kimin
+    // lider olduğunu rozetten anlıyor ama sıra da bunu söylemeli.
+    uyeler: a.members
+      .map((u) => ({
+        id: u.id,
+        ad: u.name,
+        seviye: u.level,
+        sohret: u.fame,
+        elo: u.elo,
+        lider: u.id === a.leaderLordId,
+      }))
+      .sort((x, y) => (x.lider ? -1 : y.lider ? 1 : y.sohret - x.sohret)),
     toplamSohret: a.members.reduce((t, u) => t + u.fame, 0),
     azamiUye: azamiUye(),
   };
@@ -262,6 +269,86 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
       );
       return { ayrildi: true, dagildi: false };
     });
+  });
+
+  /**
+   * İttifak sohbeti — son mesajlar.
+   *
+   * Sadece üyeler okuyabiliyor. Kapalı bir gruba (en fazla 8 kişi) yazmak,
+   * herkese açık bir kanala yazmaktan bambaşka bir sorumluluk: zarar
+   * yüzeyi küçük ve yazan kime yazdığını biliyor (docs/09 B3).
+   */
+  app.get('/ittifak/sohbet', { preHandler: requireAuth }, async (req) => {
+    const lordId = await findLordByUser(req.user.userId);
+    const lord = await prisma.lord.findUniqueOrThrow({
+      where: { id: lordId },
+      select: { allianceId: true },
+    });
+    if (!lord.allianceId) throw new GameError('Bir ittifakta değilsin.', 400, 'ITTIFAK_YOK');
+
+    const k = B.ittifak.sohbet;
+    const satirlar = await prisma.allianceMessage.findMany({
+      where: { allianceId: lord.allianceId },
+      orderBy: { createdAt: 'desc' },
+      take: k.gosterilen_mesaj,
+      include: { lord: { select: { id: true, name: true } } },
+    });
+
+    // Sunucu en yeniden eskiye çekiyor (indeks o yönde), arayüz eskiden
+    // yeniye gösteriyor: sohbet aşağı doğru akar.
+    return {
+      mesajlar: satirlar.reverse().map((m) => ({
+        id: m.id,
+        lordId: m.lord.id,
+        ad: m.lord.name,
+        metin: m.text,
+        an: m.createdAt,
+      })),
+      enFazlaHarf: k.mesaj_en_fazla_harf,
+    };
+  });
+
+  app.post('/ittifak/sohbet', { preHandler: requireAuth }, async (req) => {
+    const k = B.ittifak.sohbet;
+    const body = z
+      .object({ metin: z.string().min(1).max(k.mesaj_en_fazla_harf) })
+      .parse(req.body);
+    const metin = body.metin.trim();
+    const lordId = await findLordByUser(req.user.userId);
+
+    const denetim = mesajDenetle(metin);
+    if (!denetim.uygun) {
+      throw new GameError(denetim.sebep ?? 'Mesaj gönderilemez.', 400, 'MESAJ_UYGUNSUZ');
+    }
+
+    const lord = await prisma.lord.findUniqueOrThrow({
+      where: { id: lordId },
+      select: { allianceId: true },
+    });
+    if (!lord.allianceId) throw new GameError('Bir ittifakta değilsin.', 400, 'ITTIFAK_YOK');
+
+    // Spam freni. Dakikada 20 mesaj bir sohbeti kullanılmaz hâle
+    // getirmeye yeter; birkaç saniye normal konuşmayı hiç engellemiyor.
+    const sonuncu = await prisma.allianceMessage.findFirst({
+      where: { lordId },
+      orderBy: { createdAt: 'desc' },
+      select: { createdAt: true },
+    });
+    if (sonuncu) {
+      const gecen = (Date.now() - sonuncu.createdAt.getTime()) / 1000;
+      if (gecen < k.iki_mesaj_arasi_sn) {
+        throw new GameError(
+          `Çok hızlı yazıyorsun. ${Math.ceil(k.iki_mesaj_arasi_sn - gecen)} saniye bekle.`,
+          400,
+          'COK_HIZLI',
+        );
+      }
+    }
+
+    const m = await prisma.allianceMessage.create({
+      data: { allianceId: lord.allianceId, lordId, text: metin },
+    });
+    return { id: m.id, an: m.createdAt };
   });
 
   /** Lider bir üyeyi çıkarır. */

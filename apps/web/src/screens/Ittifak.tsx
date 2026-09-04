@@ -14,6 +14,7 @@ import { ApiError, api, type IttifakDto } from '../api/client';
 import { IkonAltin, IkonSohret } from '../components/Ikonlar';
 import { hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { BosHal } from '../components/BosHal';
+import { IttifakSohbet } from '../components/IttifakSohbet';
 import {
   Bolum,
   Buton,
@@ -208,6 +209,8 @@ export function Ittifak({ lordId }: { lordId: string }) {
           </Kart>
         </Bolum>
       )}
+
+      {ittifakim && <IttifakSohbet lordId={lordId} />}
 
       {hata && (
         <div className="px-3">

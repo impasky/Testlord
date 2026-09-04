@@ -134,6 +134,42 @@ kontrol('Lider katılımdan haberdar',
   liderOlaylari.some((e) => e.kind === 'ittifak_katilim'),
   liderOlaylari[0]?.payload?.mesaj ?? 'olay yok');
 
+// --- Sohbet (docs/09 B3)
+const bosSohbet = await a.get('/ittifak/sohbet');
+kontrol('Sohbet açılıyor', Array.isArray(bosSohbet?.mesajlar), `${bosSohbet?.mesajlar?.length} mesaj`);
+
+const yazildi = await a.post('/ittifak/sohbet', { metin: 'Kaleye birlikte gidelim' });
+kontrol('Mesaj yazılabiliyor', Boolean(yazildi?.id), yazildi?.code ?? 'yazıldı');
+
+const okundu = await b.get('/ittifak/sohbet');
+kontrol(
+  'Diğer üye mesajı görüyor',
+  okundu?.mesajlar?.some((m) => m.metin === 'Kaleye birlikte gidelim'),
+  `${okundu?.mesajlar?.length} mesaj`,
+);
+
+// Kapali grup: uye olmayan okuyamamali. Sohbetin butun tasarim gerekcesi
+// bu -- kapali bir gruba yazmak herkese acik bir kanala yazmaktan baska
+// bir sorumluluk.
+const disaridanOkuma = await c.get('/ittifak/sohbet');
+kontrol('Üye olmayan sohbeti okuyamıyor', disaridanOkuma?.code === 'ITTIFAK_YOK',
+  disaridanOkuma?.code ?? `${disaridanOkuma?.mesajlar?.length} mesaj okundu`);
+const disaridanYazma = await c.post('/ittifak/sohbet', { metin: 'merhaba' });
+kontrol('Üye olmayan sohbete yazamıyor', disaridanYazma?.code === 'ITTIFAK_YOK',
+  disaridanYazma?.code ?? 'yazdı');
+
+const hizli = await a.post('/ittifak/sohbet', { metin: 'ikinci mesaj' });
+kontrol('Spam freni çalışıyor', hizli?.code === 'COK_HIZLI', hizli?.code ?? 'yazıldı');
+
+const kufur = await b.post('/ittifak/sohbet', { metin: 'siktir git' });
+kontrol('Uygunsuz mesaj reddediliyor', kufur?.code === 'MESAJ_UYGUNSUZ', kufur?.code ?? 'yazıldı');
+
+// Suzgec MASUM kelimeyi elememeli: "sikisik" normalize edilince yasakli
+// bir parca iceriyor ama kelime olarak yasakli degil. Ad denetiminin
+// parca aramasini bir cumleye uygulamak tam da bunu bozardi.
+const masum = await b.post('/ittifak/sohbet', { metin: 'burasi cok sikisik, yer yok' });
+kontrol('Masum kelime elenmiyor', Boolean(masum?.id), masum?.code ?? 'yazıldı');
+
 // --- ÇEKİRDEK: ittifak üyesine saldırılamaz
 await orduKur(b);
 const bolge = await bolgeAl(b);
@@ -177,8 +213,11 @@ await d.post(`/ittifak/${kuruldu.id}/katil`);
 const aAyrildi = await a.post('/ittifak/ayril');
 kontrol('Lider ayrılınca ittifak dağılmıyor', aAyrildi?.dagildi === false, JSON.stringify(aAyrildi));
 const yeniDurum = await d.get('/ittifak');
-kontrol('Liderlik kalan üyeye geçti', yeniDurum.ittifakim?.liderId === yeniDurum.ittifakim?.uyeler?.[0]?.id,
+const yeniLider = yeniDurum.ittifakim?.uyeler?.find((u) => u.lider);
+kontrol('Liderlik kalan üyeye geçti', yeniLider?.id === yeniDurum.ittifakim?.liderId,
   yeniDurum.ittifakim?.uyeler?.map((u) => `${u.ad}${u.lider ? '*' : ''}`).join(', '));
+kontrol('Lider listenin başında', yeniDurum.ittifakim?.uyeler?.[0]?.lider === true,
+  yeniDurum.ittifakim?.uyeler?.[0]?.ad ?? '-');
 
 // --- Tek üye ayrılınca ittifak siliniyor
 const sonAyrilma = await d.post('/ittifak/ayril');

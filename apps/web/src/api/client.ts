@@ -549,6 +549,11 @@ export interface IttifakDto {
   bekleme: { kalanSn: number } | null;
 }
 
+export interface SohbetDto {
+  mesajlar: { id: string; lordId: string; ad: string; metin: string; an: string }[];
+  enFazlaHarf: number;
+}
+
 export interface GeneralKatkisiDto {
   key: string;
   ad: string;
@@ -636,6 +641,9 @@ export const api = {
     post<{ id: string; ad: string; etiket: string }>('/ittifak/kur', { ad, etiket }),
   ittifakKatil: (id: string) => post<{ katildi: string; ad: string }>(`/ittifak/${id}/katil`, {}),
   ittifakAyril: () => post<{ ayrildi: boolean; dagildi: boolean }>('/ittifak/ayril', {}),
+  ittifakSohbet: () => request<SohbetDto>('/ittifak/sohbet'),
+  ittifakYaz: (metin: string) =>
+    post<{ id: string; an: string }>('/ittifak/sohbet', { metin }),
   ittifakUyeCikar: (lordId: string) =>
     post<{ cikarildi: string }>('/ittifak/uye-cikar', { lordId }),
   seferOdul: () => post<SeferOdulDto>('/sefer/odul', {}),

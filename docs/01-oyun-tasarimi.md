@@ -452,6 +452,26 @@ geçince çıkardı.
 geçer. Dağıtmak, liderin tek tıkla herkesin ittifakını silmesi demekti.
 İttifak ancak son üyesi de ayrılınca silinir.
 
+### İttifak sohbeti
+
+Sohbet **yalnız ittifak içi.** Kapalı bir gruba (en fazla sekiz kişi) yazmak,
+herkese açık bir kanala yazmaktan bambaşka bir sorumluluk: zarar yüzeyi
+küçük ve yazan kime yazdığını biliyor. Genel sohbet, moderasyon yükü
+kaldırılabilir hâle gelmeden açılmamalı.
+
+Üç fren var: mesaj uzunluğu, iki mesaj arası bekleme (spam), ve uygunsuz
+kelime süzgeci. Süzgeç lord adı süzgeciyle **aynı listeyi** kullanıyor ama
+farklı arıyor: adda parça, mesajda kelime. Sebep, süzgecin kendisinin zarar
+vermemesi — "sıkışık" kelimesi parça aramasında yasaklı bir dizi barındırıyor
+ve bir oyuncunun "burası sıkışık" yazamaması saçma olurdu.
+
+Şikâyet yolu zaten var (§8): sohbette rahatsız eden biri, sıralamadan
+şikâyet edilebiliyor. Otomatik ceza yok; kararı insan veriyor.
+
+Sohbet **yoklamalı**, anlık değil. Gerçek zamanlı bir kanal sunucuda kalıcı
+bağlantı demek ve oyunun geri kalanı yoklamayla çalışıyor; sekiz kişilik bir
+sohbet için on saniyelik yoklama fazlasıyla yeterli.
+
 ---
 
 ## 8. Sıralamalar
