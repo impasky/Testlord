@@ -83,9 +83,12 @@ Yani oyuncuların yarısı bölgesiz. Bu bir hata değil, tasarımın motoru:
 - Push bildirimi
 - Çoklu dil (v1 sadece Türkçe)
 
-**Sonraya bırakılan tek "belki"**
-- **Sezon sistemi** (8 haftada bir sıralama sıfırlama + ödül). Mevcut tasarımın
-  üstüne sonradan temiz eklenir, çekirdeği değiştirmez. v1'de yok.
+**Kapalı karar: sezon YOK**
+- **Sezon sistemi** bir zamanlar "sonraya bırakılan belki" idi; artık
+  kapatıldı. Dünya **kalıcı**: Lordlar Çağı yıllarca oynanabilen bir oyun ve
+  kimsenin emeği takvim yüzünden silinmiyor. Sezonun çözdüğü iki sorunun
+  (kazanma hissi, geç gelenin yeri) sıfırlamasız cevabı
+  [`docs/09 §2.2`](09-oyun-keyfi.md)'de.
 
 ## Kapsam değişikliği kuralı
 
@@ -115,9 +118,9 @@ işaretleyen şey kanaat değil, `pnpm e2e` ve `pnpm yuk-testi`:
 Bu 7 madde tuttuğunda oyun yayına hazırdır. Fazlası v1 değildir.
 
 > **v1 kapsamı bilerek dondurulmuştu ve oyun bu sayede hızlı bitti. Ama o
-> kararın bir bedeli vardı:** ittifak, sohbet ve sezon "sonra eklenecek
+> kararın bir bedeli vardı:** ittifak ve sohbet "sonra eklenecek
 > güzellikler" diye sınıflandırıldı, oysa bu türde ittifak taşıyıcı
-> duvardır. Bedelin ne olduğu ve nasıl ödeneceği
+> duvardır. (İkisi de artık yapıldı; sezon ise kapatıldı — docs/09 §2.2.) Bedelin ne olduğu ve nasıl ödeneceği
 > [`docs/07-v2-kapsam.md`](07-v2-kapsam.md)'de.
 
 **Neden "general kiralandı" demek yetmiyor:** kriter generali *savaşa

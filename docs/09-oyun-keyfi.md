@@ -63,17 +63,42 @@ yuvarlama orada asker yoktan var ediyor.
 
 **Sırada:** saldırmazlık paktı ve ittifak sıralamasının kendi ekranı.
 
-### 2.2 Sezon / sunucu döngüsü
+### 2.2 Sezon / sunucu döngüsü — ALMIYORUZ
 
 Travian sunucuları birkaç ayda bir sıfırlıyor ve bu **döngüsel topluluklar**
-yaratıyor: her tur aynı insanlar yeniden buluşuyor. Uzun vadeli bağlılığı
-sağlayan şey bu.
+yaratıyor: her tur aynı insanlar yeniden buluşuyor.
 
-**Bizde durum:** dünya kalıcı. Sonuç: geç katılan oyuncu doğmuş bitmiş bir
-haritaya giriyor, önde olan da bir yere varamıyor — kazanmak diye bir şey yok.
+**Kararımız: dünya KALICI.** Lordlar Çağı yıllarca oynanabilen bir oyun
+olacak; kimsenin emeği takvim yüzünden silinmeyecek.
 
-**Ne alalım:** sezon. 4–6 hafta, sonunda tahtı tutan kazanır, dünya
-sıfırlanır, kazananın adı kalıcı bir onur listesine yazılır.
+Sezon iki gerçek soruna çözüm olarak öneriliyordu. İkisini de sıfırlamadan
+çözüyoruz:
+
+**"Kazanmak diye bir şey yok."** Sezon bunu bir bitiş çizgisiyle çözüyor.
+Biz **tekrarlanan zirvelerle** çözüyoruz: Taht Kalesi'nin kalkanı bilerek
+kısa (docs/01 §5), yani taht sürekli el değiştiriyor ve her ele geçiriş bir
+zafer. Buna **saatlik şöhret** eklenince taht tutmak bir an değil bir süreç
+oluyor. Zafer anlatısı onur listesinden değil, tahtın kaç saat kimde
+kaldığından çıkıyor. Haftalık sefer (B4) de her hafta yeni bir "bu turu
+kazandım" veriyor.
+
+**"Geç gelen doğmuş bitmiş bir haritaya giriyor."** Sezon bunu herkesi aynı
+gün başlatarak çözüyor — ama aynı çözüm, iki hafta geç gelen için yine
+işlemiyor. Bizim cevabımız haritanın kendisinde: yeni oyuncu ring 4'te,
+**zayıf NPC bölgelerinin arasında** doğuyor ve ilk hedefi her doğum yerinde
+karşılanabilir (K9). Önde olanla arasındaki mesafe, aradaki halkalar
+sayesinde bir duvar değil bir yol.
+
+**Sıfırlamanın bedeli neden kabul edilemez:** 110 günde Lv60'a çıkan bir
+oyuncuya "hepsi gitti, baştan başla" demek, oyunun kendi ilerleme sözünü
+bozmaktır. Ekipman kırılmasını bile reddettik (docs/01 §2) — "malzeme kaybı
+yeterli bir bedeldir ve oyuncunun elindeki ilerlemeye asla dokunmaz". Dünyayı
+sıfırlamak o kuralın en büyük ihlali olurdu.
+
+**Uzun soluklu oyunun kendi riskleri var** ve onlar ayrıca çözülüyor:
+kartopu (§3.4 → lider avı K5), uykuda silinmek (§3.6 → yağma kalkanı K6 +
+yaralı dönüş K6b), ölü sunucu (§3.5 → ittifak B1, sohbet B3), yapacak bir
+şey kalmaması (§3.8 → taht, seferler, ittifak hedefleri).
 
 ### 2.3 Adı olan komutanlar
 
@@ -273,7 +298,7 @@ sayılı ve sıralı olduğu için tam tarama mümkündü ve hatayı ancak o gö
 | # | İş | Not |
 |---|---|---|
 | B1 | ~~**İttifak**~~ **çekirdeği yapıldı** | Kur/katıl/ayrıl, üye listesi, **üyeye saldırılamaz**, ittifak sıralaması (docs/01 §7d). Kalan: takviye, ortak hedef, pakt, sohbet. |
-| B2 | **Sezon** | 4–6 hafta, taht sahibi kazanır, dünya sıfırlanır, onur listesi kalır. |
+| B2 | ~~**Sezon**~~ **YAPILMAYACAK** | Dünya KALICI. Karar ve gerekçesi §5 kural 6'da; sezonun çözdüğü sorunlar sıfırlama olmadan çözülüyor. |
 | B3 | ~~**Sohbet**~~ **ittifak sohbeti yapıldı** | Kendi tavsiyemize uyduk: kapalı grupla başladık. Genel sohbet, moderasyon yükü kaldırılabilir olmadan açılmamalı. |
 | B4 | ~~**Süreli etkinlik**~~ **yapıldı** | Haftalık sefer: tema hafta numarasından türüyor (sunucu bir şey saklamıyor), hedef herkes için aynı. **Tablo YOK** — sıralamalı etkinlik zaten önde olanı ilerletirdi (§3.4). |
 | B5 | ~~**Casusluk**~~ **yapıldı** | Kuyruk tabanlı keşif, yakalanma riski Kurnazlık'a bağlı, rapor bir fotoğraf (docs/01 §6b). Beklenenden küçük çıktı: yeni motor gerekmedi, mevcut kuyruk makinesi yetti. |
@@ -294,6 +319,11 @@ Bu doküman büyürken kolayca çiğnenebilecek şeyler:
    yetkili, istemci aynı fonksiyonla önizleme yapar.
 4. **Hiçbir ekran "bekle" demez.** Boş hâl bir sonraki işi gösterir.
 5. **Oyuncu neden kaybettiğini her zaman öğrenebilir.**
+6. **Dünya kalıcı; sezon yok, sıfırlama yok.** Hiçbir oyuncunun ilerlemesi
+   takvim yüzünden silinmez. Sezonun çözdüğü şeyler (kazanma hissi, geç
+   gelenin yeri) §2.2'de anlatılan yollarla çözülür. Bu kural, "oyuncunun
+   elindeki ilerlemeye dokunma" ilkesinin (docs/01 §2) dünya ölçeğindeki
+   hâli.
 
 ---
 

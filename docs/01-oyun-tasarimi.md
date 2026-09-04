@@ -240,9 +240,16 @@ Dünyada tek. Sahibi **"Diyarın Lordu"** unvanını ve **%20 şöhret bonusunu*
 alır. Herkese haritada görünür, günlük saldırı limitine tabi değildir ve
 kaybetme koruması sadece 2 saattir.
 
-Bu, endgame'in tamamıdır: sürekli kavga edilen tek bir hedef. Sezon sistemi,
-klan savaşı, dünya boss'u yazmaya gerek yok — 61 hex'in ortasındaki bir kare
-aynı işi görüyor.
+Bu, endgame'in tamamıdır: sürekli kavga edilen tek bir hedef. Klan savaşı,
+dünya boss'u yazmaya gerek yok — haritanın ortasındaki tek bölge aynı işi
+görüyor.
+
+**Sezon da gerekmiyor ve olmayacak** (docs/09 §2.2). Sezonlu oyunlarda
+"kazanmak" bir bitiş çizgisidir; burada **tekrarlanan bir zirve**: tahtın
+kalkanı kısa olduğu için sürekli el değiştiriyor ve her ele geçiriş bir
+zafer. Zafer anlatısı bir onur listesinden değil, tahtın kaç saat kimde
+kaldığından çıkıyor. Dünya kalıcı; kimsenin ilerlemesi takvim yüzünden
+silinmiyor.
 
 ---
 
