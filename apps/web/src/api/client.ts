@@ -22,9 +22,7 @@ import type {
  */
 const BASE =
   import.meta.env.VITE_API_URL ??
-  (import.meta.env.DEV
-    ? `${window.location.protocol}//${window.location.hostname}:3000`
-    : '');
+  (import.meta.env.DEV ? `${window.location.protocol}//${window.location.hostname}:3000` : '');
 
 const TOKEN_KEY = 'lordlar_token';
 
@@ -192,7 +190,12 @@ export interface UnitDto {
 
 export interface ArmyDto {
   home: Army;
-  byLocation: { unitType: string; count: number; locationType: string; locationId: string | null }[];
+  byLocation: {
+    unitType: string;
+    count: number;
+    locationType: string;
+    locationId: string | null;
+  }[];
   commandCapacity: number;
   usedSlots: number;
   upkeepPerHour: number;
@@ -224,7 +227,31 @@ export interface RegionDto {
   isMine: boolean;
   shielded: boolean;
   distance: number;
+  /** Sahibinin ittifakıyla saldırmazlık paktım var mı (docs/09 B1d). */
+  paktli?: boolean;
   fortressBonus: number;
+}
+
+/** Bir paktın oyuncuya görünen hâli. */
+export interface PaktSatiriDto {
+  id: string;
+  ittifakId: string;
+  ad: string;
+  etiket: string;
+  durum: 'teklif' | 'yururlukte' | 'feshediliyor' | 'bitti';
+  /** Fesih sürerken paktın hâlâ koruduğu süre. */
+  kalanSn: number | null;
+  benMiFeshettim: boolean;
+}
+
+export interface PaktlarDto {
+  ittifakim: string | null;
+  yururlukte: PaktSatiriDto[];
+  gelen: PaktSatiriDto[];
+  giden: PaktSatiriDto[];
+  azami: number;
+  ihbarSaat: number;
+  liderMiyim: boolean;
 }
 
 export interface MapDto {
@@ -242,6 +269,13 @@ export interface RegionDetailDto extends RegionDto {
   kendiGarnizonum: Army;
   /** Bölge sahibi ittifak arkadaşım mı. */
   muttefik: boolean;
+  /**
+   * Sahibinin ittifakıyla paktım var mı.
+   *
+   * Müttefiklikten ayrı: paktlıya saldıramıyorum ama takviye de
+   * gönderemiyorum, garnizonunu da göremiyorum.
+   */
+  paktli?: boolean;
   garrisonVisible: boolean;
   /** Garnizon bilgisi güncel mi. Eski keşif raporu görünür ama güvenilmez. */
   garrisonTaze: boolean;
@@ -538,6 +572,16 @@ export interface IttifakUyesiDto {
   lider: boolean;
 }
 
+/** Sıralama listesindeki bir ittifak satırı. */
+export interface IttifakListesiDto {
+  id: string;
+  ad: string;
+  etiket: string;
+  uyeSayisi: number;
+  toplamSohret: number;
+  benimki: boolean;
+}
+
 export interface IttifakDto {
   ittifakim: {
     id: string;
@@ -558,14 +602,7 @@ export interface IttifakDto {
       an: string | null;
     } | null;
   } | null;
-  liste: {
-    id: string;
-    ad: string;
-    etiket: string;
-    uyeSayisi: number;
-    toplamSohret: number;
-    benimki: boolean;
-  }[];
+  liste: IttifakListesiDto[];
   altin: number;
   kurmaMaliyeti: number;
   azamiUye: number;
@@ -638,8 +675,7 @@ export const api = {
 
   items: () => request<{ items: ItemDto[]; tiers: TierDto[] }>('/items'),
   craft: (tier: number, slot: string) => post('/items/craft', { tier, slot }),
-  equip: (id: string) =>
-    post<{ equipped: boolean; etki: EkipmanEtkisiDto }>(`/items/${id}/equip`),
+  equip: (id: string) => post<{ equipped: boolean; etki: EkipmanEtkisiDto }>(`/items/${id}/equip`),
   upgradeItem: (id: string) => post(`/items/${id}/upgrade`),
   sellItem: (id: string) => post(`/items/${id}/sell`),
 
@@ -663,17 +699,13 @@ export const api = {
       durationSec: number;
       ilkSaldiri: boolean;
       uyari: string | null;
-    }>(
-      '/march',
-      { toRegionId, army, generalIds },
-    ),
+    }>('/march', { toRegionId, army, generalIds }),
   marches: () => request<MarchDto[]>('/marches'),
   recallMarch: (id: string) => request(`/march/${id}`, { method: 'DELETE' }),
   battles: () => request<BattleDto[]>('/battles'),
   battle: (id: string) => request<BattleDto>(`/battles/${id}`),
 
-  generals: () =>
-    request<{ slots: number; altin: number; kadro: GeneralDto[] }>('/generals'),
+  generals: () => request<{ slots: number; altin: number; kadro: GeneralDto[] }>('/generals'),
   hireGeneral: (key: string) => post(`/generals/${key}/hire`),
   assignGeneral: (key: string, slotIndex: number | null) =>
     post(`/generals/${key}/assign`, { slotIndex }),
@@ -700,14 +732,24 @@ export const api = {
       { army },
     ),
   takviyeGeri: (regionId: number) =>
-    post<{ marchId: string; arriveAt: string; birim: number }>(
-      `/map/${regionId}/takviye-geri`,
-      {},
-    ),
+    post<{ marchId: string; arriveAt: string; birim: number }>(`/map/${regionId}/takviye-geri`, {}),
   ittifakHedef: (regionId: number | null, not?: string) =>
     post<{ hedef: { regionId: number; ad: string } | null }>('/ittifak/hedef', { regionId, not }),
-  ittifakYaz: (metin: string) =>
-    post<{ id: string; an: string }>('/ittifak/sohbet', { metin }),
+
+  /* Saldırmazlık paktı (docs/09 B1d) */
+  paktlar: () => request<PaktlarDto>('/ittifak/paktlar'),
+  paktTeklif: (ittifakId: string) =>
+    post<{ id: string; durum: string; hedef?: string; oteki?: string }>('/ittifak/pakt', {
+      ittifakId,
+    }),
+  paktKabul: (id: string) =>
+    post<{ id: string; durum: string; oteki: string }>(`/ittifak/pakt/${id}/kabul`),
+  paktReddet: (id: string) => post<{ reddedildi: boolean }>(`/ittifak/pakt/${id}/reddet`),
+  paktFesih: (id: string) =>
+    post<{ feshediliyor: boolean; biterAt: string; ihbarSaat: number }>(
+      `/ittifak/pakt/${id}/fesih`,
+    ),
+  ittifakYaz: (metin: string) => post<{ id: string; an: string }>('/ittifak/sohbet', { metin }),
   ittifakUyeCikar: (lordId: string) =>
     post<{ cikarildi: string }>('/ittifak/uye-cikar', { lordId }),
   seferOdul: () => post<SeferOdulDto>('/sefer/odul', {}),
@@ -716,7 +758,8 @@ export const api = {
   dunya: () => request<DunyaDto>('/dunya'),
 
   rankings: (board: string, page = 0) => request<RankingDto>(`/rankings/${board}?page=${page}`),
-  raporEt: (lordId: string, sebep: string) => post<{ alindi: boolean }>(`/rapor/${lordId}`, { sebep }),
+  raporEt: (lordId: string, sebep: string) =>
+    post<{ alindi: boolean }>(`/rapor/${lordId}`, { sebep }),
   bolgeyiBirak: (id: number) =>
     post<{ birakildi: boolean; donenBirlik: number }>(`/map/${id}/birak`),
 };

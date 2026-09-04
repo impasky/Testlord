@@ -46,6 +46,7 @@ model World {
   lords     Lord[]
   regions   Region[]
   alliances Alliance[]
+  paktlar   Pakt[]
 }
 
 model Lord {
@@ -326,11 +327,51 @@ model Alliance {
   leader   Lord              @relation("AllianceLeader", fields: [leaderLordId], references: [id], onDelete: Cascade)
   members  Lord[]            @relation("AllianceMembers")
   messages AllianceMessage[]
+  paktA    Pakt[]            @relation("PaktA")
+  paktB    Pakt[]            @relation("PaktB")
   target   Region?           @relation("AllianceTarget", fields: [targetRegionId], references: [id])
 
   @@unique([worldId, name])
   @@unique([worldId, tag])
   @@index([worldId])
+}
+
+/// Saldırmazlık paktı: iki ittifak birbirine saldırmamaya söz veriyor.
+///
+/// Taraflar KANONİK sırada saklanıyor (aId < bId). X–Y ile Y–X aynı pakt;
+/// sıralamadan geçirmeseydik benzersizlik kısıtı yön değiştiren bir teklifi
+/// yeni bir pakt sanardı ve aynı iki ittifak arasında iki satır oluşurdu.
+///
+/// Süresi dolmuş pakt SİLİNMİYOR, geçersiz sayılıyor: temizleyecek bir
+/// işçiye gerek kalmıyor ve iki ittifakın geçmişte anlaşmış olduğu bilgisi
+/// kaybolmuyor.
+model Pakt {
+  id      String @id @default(cuid())
+  worldId String
+  /// Kanonik sırada iki taraf.
+  aId String
+  bId String
+  /// Teklifi hangi taraf açtı. Kabul/ret yetkisi ÖTEKİ tarafın liderinde.
+  teklifEdenId String
+  /// teklif | yururlukte | feshediliyor | bitti
+  durum String @default("teklif")
+
+  createdAt DateTime  @default(now())
+  kabulAt   DateTime?
+  /// Fesih ihbarının verildiği an ve paktın gerçekten biteceği an.
+  /// Aradaki sürede pakt HÂLÂ koruyor — mekaniğin bütün değeri burada.
+  fesihAt     DateTime?
+  biterAt     DateTime?
+  fesihEdenId String?
+
+  world World     @relation(fields: [worldId], references: [id], onDelete: Cascade)
+  a     Alliance  @relation("PaktA", fields: [aId], references: [id], onDelete: Cascade)
+  b     Alliance  @relation("PaktB", fields: [bId], references: [id], onDelete: Cascade)
+
+  @@unique([aId, bId])
+  @@index([worldId])
+  @@index([aId])
+  @@index([bId])
 }
 
 /// Kaynak sevkiyatı: bir müttefikten diğerine giden yük.

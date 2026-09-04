@@ -61,7 +61,15 @@ fonksiyona alındı (`takviye.ts`), "en büyük kalan" yöntemiyle yazıldı ve
 "dağıtılan toplam gelen kayba TAM eşit" testiyle kilitlendi. Basit
 yuvarlama orada asker yoktan var ediyor.
 
-**Sırada:** saldırmazlık paktı ve ittifak sıralamasının kendi ekranı.
+**B1d ile eklendi:** saldırmazlık paktı. İki ittifak birbirine saldırmamaya
+söz veriyor. Üç kural sistemi taşıyor ve üçü de kötüye kullanımı kapatıyor:
+iki taraf da onaylar (tek taraflı pakt bedava kalkan olurdu), fesih ANINDA
+geçmez (ihbar süresi olmasaydı pakt bir kalkana dönerdi — zayıfken paktla,
+saldıracağın gün feshet, aynı saat saldır) ve pakt sayısı sınırlıdır
+(herkes herkesle paktlanırsa PvP durur). Pakt müttefiklik DEĞİL: paktlıya
+saldıramazsın ama takviye de gönderemezsin, garnizonunu da göremezsin.
+
+**Sırada:** ittifak sıralamasının kendi ekranı.
 
 ### 2.2 Sezon / sunucu döngüsü — ALMIYORUZ
 
@@ -297,7 +305,7 @@ sayılı ve sıralı olduğu için tam tarama mümkündü ve hatayı ancak o gö
 
 | # | İş | Not |
 |---|---|---|
-| B1 | ~~**İttifak**~~ **çekirdeği yapıldı** | Kur/katıl/ayrıl, üye listesi, **üyeye saldırılamaz**, ittifak sıralaması (docs/01 §7d). Kalan: takviye, ortak hedef, pakt, sohbet. |
+| B1 | ~~**İttifak**~~ **tamamlandı** | Kur/katıl/ayrıl, üye listesi, **üyeye saldırılamaz**, ittifak sıralaması (docs/01 §7d). Üstüne: sohbet (B3), ortak hedef (B1b), takviye (B1c), saldırmazlık paktı (B1d). |
 | B2 | ~~**Sezon**~~ **YAPILMAYACAK** | Dünya KALICI. Karar ve gerekçesi §5 kural 6'da; sezonun çözdüğü sorunlar sıfırlama olmadan çözülüyor. |
 | B3 | ~~**Sohbet**~~ **ittifak sohbeti yapıldı** | Kendi tavsiyemize uyduk: kapalı grupla başladık. Genel sohbet, moderasyon yükü kaldırılabilir olmadan açılmamalı. |
 | B4 | ~~**Süreli etkinlik**~~ **yapıldı** | Haftalık sefer: tema hafta numarasından türüyor (sunucu bir şey saklamıyor), hedef herkes için aynı. **Tablo YOK** — sıralamalı etkinlik zaten önde olanı ilerletirdi (§3.4). |

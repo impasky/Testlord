@@ -567,6 +567,13 @@
     "etiket_en_az": 2,
     "etiket_en_fazla": 5,
     "ayrildiktan_sonra_bekleme_saat": 12,
+    "pakt": {
+      "_aciklama": "Saldirmazlik pakti: iki ittifak birbirine saldirmamaya soz veriyor (docs/09 §2.1). Turun diplomasi katmaninin resmi araci; Travian'in kendi belgeleri oyunu 'isbirligi ve diplomasi uzerine kurulu' diye tanimliyor ve oyun sonu bunlara bagli. Bizde ittifak vardi ama ittifaklar ARASI hicbir sey yoktu.",
+      "azami": 3,
+      "_azami_notu": "Paktsiz bir tavan olsaydi herkes herkesle paktlanir ve PvP olurdu. Uc pakt: bir ittifak diyarin bir kosesini guvene alabilir, tamamini degil. Sinir hesabi: (1 + azami) * azami_uye = 4 * 8 = 32 saldirilamaz lord, dunyanin 120 oyuncu kapasitesinin dortte biri.",
+      "fesih_ihbar_saat": 24,
+      "_fesih_notu": "ANINDA fesih pakti kalkana cevirirdi: zayifken paktla, saldiracagin gun feshet, ayni saat saldir. Ihbar suresi paktin degerini geri veriyor -- feshi goren taraf hazirlanmak icin bir gun kazaniyor. Ayrilma beklemesiyle (ayrildiktan_sonra_bekleme_saat) ayni mantik: sozun bir bedeli olmali."
+    },
     "sohbet": {
       "_not": "Sohbet SADECE ittifak ici. docs/09 B3: 'sosyal tutkalin kendisi, moderasyon yuku getirir, ittifak sohbetiyle baslanmali.' Kapali bir gruba (en fazla 8 kisi) yazmak, herkese acik bir kanala yazmaktan bambaska bir sorumluluk: zarar yuzeyi kucuk, yazan da kime yazdigini biliyor.",
       "mesaj_en_fazla_harf": 300,

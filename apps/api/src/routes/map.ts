@@ -25,6 +25,7 @@ import { prisma, type Tx } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { findLordByUser, pushEvent } from '../services/lord.js';
 import { mesafeOlcer, mesafeOlcerHazir } from '../services/mesafe.js';
+import { paktVarMi, paktliIttifaklar } from '../services/pakt.js';
 import {
   fetihOdulu,
   lordSide,
@@ -127,6 +128,15 @@ async function assertCanAttack(
         'ITTIFAK_UYESI',
       );
     }
+    // Saldırmazlık paktı (docs/09 B1d). Feshedilmiş ama ihbar süresi
+    // dolmamış bir pakt HÂLÂ koruyor — mekaniğin bütün değeri orada.
+    if (await paktVarMi(ben.allianceId, o?.allianceId ?? null, tx)) {
+      throw new GameError(
+        `${o?.alliance?.name ?? 'Karşı ittifak'} ile saldırmazlık paktın var.`,
+        400,
+        'PAKT_VAR',
+      );
+    }
   }
 
   if (region.shieldUntil && region.shieldUntil > now) {
@@ -206,6 +216,20 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       regions.filter((r) => r.ownerLordId === lordId).map((r) => ({ q: r.q, r: r.r })),
     );
 
+    // Paktlı ittifaklar bir kez okunuyor: bölge başına ayrı sorgu 61 sorgu
+    // demekti. Sahiplerin ittifakı da tek sorguda geliyor.
+    const sahipIdler = [...new Set(regions.map((r) => r.owner?.id).filter(Boolean))] as string[];
+    const [paktlilar, sahipler] = await Promise.all([
+      paktliIttifaklar(me.allianceId),
+      sahipIdler.length
+        ? prisma.lord.findMany({
+            where: { id: { in: sahipIdler } },
+            select: { id: true, allianceId: true },
+          })
+        : Promise.resolve([]),
+    ]);
+    const sahipIttifaki = new Map(sahipler.map((l) => [l.id, l.allianceId ?? '']));
+
     return {
       home: { q: me.homeQ, r: me.homeR },
       maxRegions: maxRegions(me.level),
@@ -229,6 +253,9 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
         isMine: r.ownerLordId === lordId,
         shielded: r.shieldUntil ? r.shieldUntil > new Date() : false,
         distance: olc({ q: r.q, r: r.r }),
+        // Pakt: saldırılamaz ama müttefik de değil. Haritada ayrı bir
+        // işaret alıyor, yoksa oyuncu saldırıya kalkışıp reddediliyor.
+        paktli: r.owner ? paktlilar.has(sahipIttifaki.get(r.owner.id) ?? '') : false,
         fortressBonus: regionFortressBonus(r.type, r.level),
       })),
     };
@@ -262,6 +289,18 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
         }),
       ]);
       return ayniIttifaktaMi(ben?.allianceId ?? null, sahip?.allianceId ?? null);
+    })();
+
+    const paktli = await (async () => {
+      if (benim || muttefik || !region.ownerLordId) return false;
+      const [ben, sahip] = await Promise.all([
+        prisma.lord.findUnique({ where: { id: lordId }, select: { allianceId: true } }),
+        prisma.lord.findUnique({
+          where: { id: region.ownerLordId },
+          select: { allianceId: true },
+        }),
+      ]);
+      return paktVarMi(ben?.allianceId ?? null, sahip?.allianceId ?? null);
     })();
     let garrison: Army = {};
     // Bölgede duran KENDİ askerin: sahibi değilsen de olabilir (takviye).
@@ -344,6 +383,14 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       garrisonVisible: benim || muttefik || !region.ownerLordId || Object.keys(garrison).length > 0,
       /** Bölge sahibi ittifak arkadaşım mı. */
       muttefik,
+      /**
+       * Sahibinin ittifakıyla saldırmazlık paktım var mı.
+       *
+       * Müttefiklikten AYRI bir şey: paktlıya saldıramıyorum ama takviye
+       * de gönderemiyorum, garnizonunu da göremiyorum. İkisini tek bayrağa
+       * indirseydik arayüz paktlı bölgede takviye kartı açardı.
+       */
+      paktli,
       // Görünür olmak başka, GÜVENİLİR olmak başka. Karşı-birim ipuçları
       // (docs/09 K1) yalnız güvenilir veriyle çalışmalı: eski bir fotoğrafa
       // bakıp "süvari al" demek, yanlış tavsiye vermektir ve yanlış tavsiye

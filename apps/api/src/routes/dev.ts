@@ -93,6 +93,31 @@ export async function devRoutes(app: FastifyInstance): Promise<void> {
   });
 
   /**
+   * Fesih ihbarı süren paktların bitiş anını geçmişe alır.
+   *
+   * İhbar süresi 24 saat: testin gerçekten beklemesi mümkün değil. Zamanı
+   * ileri almak yerine BİTİŞİ geriye alıyoruz — böylece test paktın
+   * gerçekten sona erdiğini, yani üretimde çalışan aynı `paktKoruyorMu`
+   * kararını ölçüyor; ayrı bir "test modu" dalı açmıyoruz.
+   */
+  app.post('/test/paktlari-bitir', { preHandler: requireAuth }, async (req) => {
+    const lordId = await findLordByUser(req.user.userId);
+    const lord = await prisma.lord.findUniqueOrThrow({
+      where: { id: lordId },
+      select: { allianceId: true },
+    });
+    if (!lord.allianceId) return { bitirilen: 0 };
+    const sonuc = await prisma.pakt.updateMany({
+      where: {
+        durum: 'feshediliyor',
+        OR: [{ aId: lord.allianceId }, { bId: lord.allianceId }],
+      },
+      data: { biterAt: new Date(Date.now() - 1000), durum: 'bitti' },
+    });
+    return { bitirilen: sonuc.count };
+  });
+
+  /**
    * Bir generalin seviyesini/XP'sini kurar: seviye atlama ANINI test etmek için.
    *
    * Neden gerekli: bir general tek savaşta seviye atlamaya çoğu zaman yetmez

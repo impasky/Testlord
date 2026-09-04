@@ -12,6 +12,12 @@
 import {
   B,
   ayniIttifaktaMi,
+  azamiPakt,
+  fesihIhbarSaat,
+  paktBitisi,
+  paktKoruyorMu,
+  paktTaraflari,
+  paktTeklifDenetle,
   azamiUye,
   ittifakAdiDenetle,
   ittifakEtiketiDenetle,
@@ -27,6 +33,8 @@ import { GameError, hata } from '../errors.js';
 import { adiDenetle } from '../services/adDenetimi.js';
 import { mesajDenetle } from '../services/mesajDenetimi.js';
 import { findLordByUser, lordArmasi, pushEvent, tickLord } from '../services/lord.js';
+import { yururlukteMi } from '../services/pakt.js';
+import type { Prisma } from '@prisma/client';
 
 const uyeSecimi = {
   id: true,
@@ -88,6 +96,74 @@ async function ittifakOzeti(allianceId: string) {
   };
 }
 
+/**
+ * Paktın iki tarafını okur ve isteyenin YETKİLİ olduğunu doğrular.
+ *
+ * Üç uç aynı üç şeyi yapıyordu: paktı bul, hangi taraf benim olduğunu
+ * çöz, liderliği doğrula. Kopyalamak, bir gün birinde liderlik
+ * kontrolünün unutulması demekti — o da her üyenin ittifakın paktını
+ * feshedebilmesi.
+ */
+async function paktTaraflariniOku(tx: Prisma.TransactionClient, paktId: string, lordId: string) {
+  const lord = await tx.lord.findUniqueOrThrow({
+    where: { id: lordId },
+    select: { allianceId: true },
+  });
+  if (!lord.allianceId) throw new GameError('Bir ittifakta değilsin.', 400, 'ITTIFAK_YOK');
+
+  const pakt = await tx.pakt.findUnique({
+    where: { id: paktId },
+    include: {
+      a: { select: { id: true, name: true, leaderLordId: true } },
+      b: { select: { id: true, name: true, leaderLordId: true } },
+    },
+  });
+  if (!pakt) throw hata.bulunamadi('Pakt');
+  if (pakt.aId !== lord.allianceId && pakt.bId !== lord.allianceId) throw hata.yetkisiz();
+
+  const benim = pakt.aId === lord.allianceId ? pakt.a : pakt.b;
+  const oteki = pakt.aId === lord.allianceId ? pakt.b : pakt.a;
+  if (benim.leaderLordId !== lordId) throw hata.yetkisiz();
+  return { pakt, benim, oteki };
+}
+
+/** Kabul: iki tarafın liderine de haber gider. */
+async function paktiKabulEt(
+  tx: Prisma.TransactionClient,
+  paktId: string,
+  benimId: string,
+  otekiId: string,
+) {
+  const pakt = await tx.pakt.update({
+    where: { id: paktId },
+    data: {
+      durum: 'yururlukte',
+      kabulAt: new Date(),
+      fesihAt: null,
+      biterAt: null,
+      fesihEdenId: null,
+    },
+    include: {
+      a: { select: { id: true, name: true, leaderLordId: true } },
+      b: { select: { id: true, name: true, leaderLordId: true } },
+    },
+  });
+  const benim = pakt.aId === benimId ? pakt.a : pakt.b;
+  const oteki = pakt.aId === otekiId ? pakt.a : pakt.b;
+  for (const [kime, kimle] of [
+    [benim.leaderLordId, oteki.name],
+    [oteki.leaderLordId, benim.name],
+  ] as const) {
+    await pushEvent(
+      kime,
+      'pakt_kuruldu',
+      { mesaj: `${kimle} ile saldırmazlık paktı yürürlükte.`, paktId: pakt.id },
+      tx,
+    );
+  }
+  return { id: pakt.id, durum: pakt.durum, oteki: oteki.name };
+}
+
 export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
   /** Kendi durumu + dünyadaki ittifaklar. */
   app.get('/ittifak', { preHandler: requireAuth }, async (req) => {
@@ -142,7 +218,8 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
     // Uygunsuz içerik denetimi lord adıyla AYNI süzgeçten geçiyor: iki
     // ayrı kelime listesi tutmak ikisinin birbirinden sapması demekti.
     const icerik = adiDenetle(ad);
-    if (!icerik.uygun) throw new GameError(icerik.sebep ?? 'Bu ad kullanılamaz.', 400, 'AD_UYGUNSUZ');
+    if (!icerik.uygun)
+      throw new GameError(icerik.sebep ?? 'Bu ad kullanılamaz.', 400, 'AD_UYGUNSUZ');
 
     return prisma.$transaction(async (tx) => {
       const lord = await tx.lord.findUniqueOrThrow({
@@ -330,9 +407,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
 
   app.post('/ittifak/sohbet', { preHandler: requireAuth }, async (req) => {
     const k = B.ittifak.sohbet;
-    const body = z
-      .object({ metin: z.string().min(1).max(k.mesaj_en_fazla_harf) })
-      .parse(req.body);
+    const body = z.object({ metin: z.string().min(1).max(k.mesaj_en_fazla_harf) }).parse(req.body);
     const metin = body.metin.trim();
     const lordId = await findLordByUser(req.user.userId);
 
@@ -483,6 +558,257 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
         tx,
       );
       return { cikarildi: body.lordId };
+    });
+  });
+
+  /* ------------------------------------------------------------------ *
+   *  Saldırmazlık paktı (docs/09 B1d)
+   * ------------------------------------------------------------------ */
+
+  /**
+   * Paktlarım: yürürlüktekiler, gelen teklifler, gönderdiğim teklifler.
+   *
+   * Üçü ayrı listede dönüyor çünkü üçünde oyuncunun yapacağı iş farklı:
+   * yürürlüktekini feshedebilir, geleni kabul/ret edebilir, gönderdiğini
+   * geri çekebilir. Tek liste dönüp arayüze ayırtsaydık aynı ayrım orada
+   * yeniden yazılırdı.
+   */
+  app.get('/ittifak/paktlar', { preHandler: requireAuth }, async (req) => {
+    const lordId = await findLordByUser(req.user.userId);
+    const lord = await prisma.lord.findUniqueOrThrow({
+      where: { id: lordId },
+      select: { allianceId: true, worldId: true },
+    });
+    if (!lord.allianceId) {
+      return {
+        ittifakim: null,
+        yururlukte: [],
+        gelen: [],
+        giden: [],
+        azami: azamiPakt(),
+        ihbarSaat: fesihIhbarSaat(),
+        liderMiyim: false,
+      };
+    }
+
+    const [a, satirlar] = await Promise.all([
+      prisma.alliance.findUniqueOrThrow({
+        where: { id: lord.allianceId },
+        select: { leaderLordId: true },
+      }),
+      prisma.pakt.findMany({
+        where: { OR: [{ aId: lord.allianceId }, { bId: lord.allianceId }] },
+        include: {
+          a: { select: { id: true, name: true, tag: true } },
+          b: { select: { id: true, name: true, tag: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+      }),
+    ]);
+
+    const simdi = new Date();
+    const bicim = (p: (typeof satirlar)[number]) => {
+      const oteki = p.aId === lord.allianceId ? p.b : p.a;
+      return {
+        id: p.id,
+        ittifakId: oteki.id,
+        ad: oteki.name,
+        etiket: oteki.tag,
+        durum: p.durum,
+        // Fesih sürerken kaç saniye kaldığı: paktın HÂLÂ koruduğu süre.
+        kalanSn:
+          p.biterAt && p.biterAt > simdi
+            ? Math.floor((p.biterAt.getTime() - simdi.getTime()) / 1000)
+            : null,
+        benMiFeshettim: p.fesihEdenId === lord.allianceId,
+      };
+    };
+
+    return {
+      ittifakim: lord.allianceId,
+      yururlukte: satirlar
+        .filter((p) => paktKoruyorMu({ durum: p.durum as never, biterAt: p.biterAt }, simdi))
+        .map(bicim),
+      gelen: satirlar
+        .filter((p) => p.durum === 'teklif' && p.teklifEdenId !== lord.allianceId)
+        .map(bicim),
+      giden: satirlar
+        .filter((p) => p.durum === 'teklif' && p.teklifEdenId === lord.allianceId)
+        .map(bicim),
+      azami: azamiPakt(),
+      ihbarSaat: fesihIhbarSaat(),
+      liderMiyim: a.leaderLordId === lordId,
+    };
+  });
+
+  /** Pakt teklif et. Yalnız lider. */
+  app.post('/ittifak/pakt', { preHandler: requireAuth }, async (req) => {
+    const { ittifakId } = z.object({ ittifakId: z.string().min(1) }).parse(req.body);
+    const lordId = await findLordByUser(req.user.userId);
+
+    return prisma.$transaction(async (tx) => {
+      const lord = await tx.lord.findUniqueOrThrow({
+        where: { id: lordId },
+        select: { allianceId: true, worldId: true },
+      });
+      if (!lord.allianceId) throw new GameError('Bir ittifakta değilsin.', 400, 'ITTIFAK_YOK');
+      const benim = await tx.alliance.findUniqueOrThrow({
+        where: { id: lord.allianceId },
+        select: { id: true, name: true, leaderLordId: true },
+      });
+      if (benim.leaderLordId !== lordId) throw hata.yetkisiz();
+
+      const hedef = await tx.alliance.findUnique({
+        where: { id: ittifakId },
+        select: { id: true, name: true, worldId: true, leaderLordId: true },
+      });
+      if (!hedef || hedef.worldId !== lord.worldId) throw hata.bulunamadi('İttifak');
+
+      const [benimSayi, hedefSayi] = await Promise.all([
+        yururlukteMi(benim.id, tx),
+        yururlukteMi(hedef.id, tx),
+      ]);
+      const denetim = paktTeklifDenetle(benim.id, hedef.id, benimSayi, hedefSayi);
+      if (!denetim.uygun) {
+        throw new GameError(denetim.sebep!, 400, denetim.kod ?? 'PAKT_REDDEDILDI');
+      }
+
+      const [x, y] = paktTaraflari(benim.id, hedef.id);
+      const mevcut = await tx.pakt.findUnique({ where: { aId_bId: { aId: x, bId: y } } });
+
+      // Karşı taraf ZATEN teklif etmişse ikinci bir teklif açmıyoruz,
+      // onunkini kabul ediyoruz. İki tarafın aynı anda teklif etmesi
+      // "ikimiz de istiyoruz" demek; bunu çakışma sayıp reddetmek saçma
+      // olurdu.
+      if (mevcut?.durum === 'teklif' && mevcut.teklifEdenId !== benim.id) {
+        return paktiKabulEt(tx, mevcut.id, benim.id, hedef.id);
+      }
+      if (mevcut && paktKoruyorMu({ durum: mevcut.durum as never, biterAt: mevcut.biterAt })) {
+        throw new GameError('Bu ittifakla zaten paktın var.', 400, 'PAKT_VAR');
+      }
+      if (mevcut?.durum === 'teklif') {
+        throw new GameError('Teklifin zaten gönderildi.', 400, 'TEKLIF_VAR');
+      }
+
+      // Biten bir pakt varsa aynı satırı yeniden kullanıyoruz: benzersizlik
+      // kısıtı ikinci satıra izin vermiyor ve vermemeli.
+      const veri = {
+        worldId: lord.worldId,
+        aId: x,
+        bId: y,
+        teklifEdenId: benim.id,
+        durum: 'teklif',
+        kabulAt: null,
+        fesihAt: null,
+        biterAt: null,
+        fesihEdenId: null,
+        createdAt: new Date(),
+      };
+      const pakt = mevcut
+        ? await tx.pakt.update({ where: { id: mevcut.id }, data: veri })
+        : await tx.pakt.create({ data: veri });
+
+      await pushEvent(
+        hedef.leaderLordId,
+        'pakt_teklifi',
+        { mesaj: `${benim.name} saldırmazlık paktı teklif etti.`, paktId: pakt.id },
+        tx,
+      );
+      return { id: pakt.id, durum: pakt.durum, hedef: hedef.name };
+    });
+  });
+
+  /** Gelen teklifi kabul et. Yalnız teklif EDİLEN tarafın lideri. */
+  app.post('/ittifak/pakt/:id/kabul', { preHandler: requireAuth }, async (req) => {
+    const { id } = z.object({ id: z.string().min(1) }).parse(req.params);
+    const lordId = await findLordByUser(req.user.userId);
+
+    return prisma.$transaction(async (tx) => {
+      const { pakt, benim, oteki } = await paktTaraflariniOku(tx, id, lordId);
+      if (pakt.durum !== 'teklif') {
+        throw new GameError('Bu teklif artık açık değil.', 400, 'TEKLIF_YOK');
+      }
+      // Kendi teklifini kabul etmek tek taraflı pakt demekti.
+      if (pakt.teklifEdenId === benim.id) {
+        throw new GameError('Kendi teklifini kabul edemezsin.', 400, 'KENDI_TEKLIFIN');
+      }
+      const [benimSayi, otekiSayi] = await Promise.all([
+        yururlukteMi(benim.id, tx),
+        yururlukteMi(oteki.id, tx),
+      ]);
+      const denetim = paktTeklifDenetle(benim.id, oteki.id, benimSayi, otekiSayi);
+      if (!denetim.uygun) {
+        throw new GameError(denetim.sebep!, 400, denetim.kod ?? 'PAKT_REDDEDILDI');
+      }
+      return paktiKabulEt(tx, pakt.id, benim.id, oteki.id);
+    });
+  });
+
+  /**
+   * Teklifi reddet (gelen) ya da geri çek (giden).
+   *
+   * Tek uç, çünkü ikisi de "bu teklif artık yok" demek ve iki ayrı uç
+   * arayüzde iki ayrı düğme yolu açardı.
+   */
+  app.post('/ittifak/pakt/:id/reddet', { preHandler: requireAuth }, async (req) => {
+    const { id } = z.object({ id: z.string().min(1) }).parse(req.params);
+    const lordId = await findLordByUser(req.user.userId);
+
+    return prisma.$transaction(async (tx) => {
+      const { pakt, benim, oteki } = await paktTaraflariniOku(tx, id, lordId);
+      if (pakt.durum !== 'teklif') {
+        throw new GameError('Bu teklif artık açık değil.', 400, 'TEKLIF_YOK');
+      }
+      await tx.pakt.update({ where: { id: pakt.id }, data: { durum: 'bitti' } });
+      await pushEvent(
+        oteki.leaderLordId,
+        'pakt_reddedildi',
+        { mesaj: `${benim.name} pakt teklifini kapattı.` },
+        tx,
+      );
+      return { reddedildi: true };
+    });
+  });
+
+  /**
+   * Paktı feshet — ANINDA DEĞİL, ihbarlı.
+   *
+   * Mekaniğin bütün değeri bu satırda: fesih anında geçerli olsaydı pakt
+   * bir kalkana dönerdi (zayıfken paktla, saldıracağın gün feshet, aynı
+   * saat saldır). İhbar süresi boyunca pakt HÂLÂ koruyor ve karşı taraf
+   * hazırlanmak için zaman kazanıyor.
+   */
+  app.post('/ittifak/pakt/:id/fesih', { preHandler: requireAuth }, async (req) => {
+    const { id } = z.object({ id: z.string().min(1) }).parse(req.params);
+    const lordId = await findLordByUser(req.user.userId);
+
+    return prisma.$transaction(async (tx) => {
+      const { pakt, benim, oteki } = await paktTaraflariniOku(tx, id, lordId);
+      if (pakt.durum !== 'yururlukte') {
+        throw new GameError(
+          pakt.durum === 'feshediliyor'
+            ? 'Bu pakt zaten feshediliyor.'
+            : 'Yürürlükte olmayan pakt feshedilemez.',
+          400,
+          'PAKT_YURURLUKTE_DEGIL',
+        );
+      }
+      const simdi = new Date();
+      const biter = paktBitisi(simdi);
+      await tx.pakt.update({
+        where: { id: pakt.id },
+        data: { durum: 'feshediliyor', fesihAt: simdi, biterAt: biter, fesihEdenId: benim.id },
+      });
+      await pushEvent(
+        oteki.leaderLordId,
+        'pakt_feshi',
+        {
+          mesaj: `${benim.name} paktı feshetti. Pakt ${fesihIhbarSaat()} saat sonra sona eriyor.`,
+          biterAt: biter.toISOString(),
+        },
+        tx,
+      );
+      return { feshediliyor: true, biterAt: biter, ihbarSaat: fesihIhbarSaat() };
     });
   });
 }

@@ -84,6 +84,11 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
     bolge_ele_gecirme_sonrasi_saat: number;
   };
   const ittifak = B.ittifak as { azami_uye: number };
+  const pakt = (
+    B.ittifak as unknown as {
+      pakt: { azami: number; fesih_ihbar_saat: number };
+    }
+  ).pakt;
   const ticaret = B.ticaret as { gunluk_gonderim_tavani: number };
   const kaynak = B.kaynaklar as { malikane_saatlik: Record<string, number> };
   const vilayet = (
@@ -293,6 +298,13 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
           metin:
             'Bir üyenin bölgesine asker yollayıp savunmasını güçlendirebilir, lider ' +
             'olarak haritada ortak bir hedef işaretleyebilirsin.',
+        },
+        {
+          vurgu: 'Saldırmazlık paktı',
+          metin:
+            `İki ittifak birbirine saldırmamaya söz verebilir. En fazla ${pakt.azami} pakt, ` +
+            `ve fesih anında geçmiyor: ${pakt.fesih_ihbar_saat} saat ihbar süresi boyunca pakt ` +
+            'hâlâ koruyor. Verdiğin söz o yüzden bir şey ifade ediyor.',
         },
         {
           vurgu: 'Kaynak gönder',

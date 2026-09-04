@@ -17,6 +17,7 @@ import { hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { BosHal } from '../components/BosHal';
 import { IttifakSohbet } from '../components/IttifakSohbet';
 import { KaynakGonder } from '../components/KaynakGonder';
+import { Paktlar } from '../components/Paktlar';
 import {
   Bolum,
   Buton,
@@ -254,6 +255,11 @@ export function Ittifak({ lordId }: { lordId: string }) {
       )}
 
       {ittifakim && <KaynakGonder uyeler={ittifakim.uyeler} benimId={lordId} />}
+
+      {/* Paktlar üye listesinin ALTINDA: önce "kimlerdeniz", sonra
+          "kimlerle anlaşmışız". Diplomasi ittifakın kendisinden sonra
+          gelen bir katman. */}
+      {ittifakim && <Paktlar liste={liste} />}
 
       {ittifakim && <IttifakSohbet lordId={lordId} />}
 

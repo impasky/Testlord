@@ -20,6 +20,12 @@ import {
   garnizonToplami,
   itemPower,
   kayipPaylastir,
+  azamiPakt,
+  fesihIhbarSaat,
+  paktBitisi,
+  paktKoruyorMu,
+  paktTaraflari,
+  paktTeklifDenetle,
   yakinlikMesafesi,
   vilayetCarpani,
   vilayetSayilari,
@@ -1357,6 +1363,15 @@ describe('öğretici (docs/09 — ilk giriş)', () => {
     expect(metin).toContain(`%${Math.round(v.azami * 100)}`);
   });
 
+  it('öğretici paktı ve ihbar süresini anlatıyor', () => {
+    // Pakt ittifak katmanının en ince kuralı: fesih anında geçmiyor.
+    // Öğreticide yazmazsa oyuncu bunu ancak feshedip saldırmaya
+    // kalkışınca öğrenir.
+    const metin = sayfalar.flatMap((s) => s.maddeler.map((m) => `${m.vurgu} ${m.metin}`)).join(' ');
+    expect(metin).toContain(`${B.ittifak.pakt.fesih_ihbar_saat} saat ihbar`);
+    expect(metin).toContain(`${B.ittifak.pakt.azami} pakt`);
+  });
+
   it('öğretici komşuluk kuralını anlatıyor', () => {
     // Haritanın en önemli kuralı bu (docs/11 §1.2 H1) ve hiçbir ekranda
     // yazmıyor: oyuncu ancak öğreticide öğrenebilir.
@@ -1465,5 +1480,84 @@ describe('harita: komşuluk ve vilayet (docs/11)', () => {
     const sayac = vilayetSayilari(WORLD_MAP.regions.filter((r) => r.type !== 'taht'));
     const enKalabalik = Math.max(...Object.values(sayac));
     expect(enKalabalik).toBeGreaterThanOrEqual(2);
+  });
+});
+
+describe('saldırmazlık paktı (docs/09 B1d)', () => {
+  it('taraflar kanonik sıraya giriyor — X–Y ile Y–X aynı pakt', () => {
+    // Sıralamadan geçirmeseydik benzersizlik kısıtı yön değiştiren bir
+    // teklifi yeni bir pakt sanardı ve aynı iki ittifak arasında iki
+    // satır oluşurdu.
+    expect(paktTaraflari('b', 'a')).toEqual(['a', 'b']);
+    expect(paktTaraflari('a', 'b')).toEqual(['a', 'b']);
+  });
+
+  it('yürürlükteki pakt koruyor', () => {
+    expect(paktKoruyorMu({ durum: 'yururlukte', biterAt: null })).toBe(true);
+  });
+
+  it('FESHEDİLEN pakt ihbar süresi dolana kadar HÂLÂ koruyor', () => {
+    // Mekaniğin bütün değeri bu kontrolde. Anında fesih, paktı bir kalkana
+    // çevirirdi: zayıfken paktla, saldıracağın gün feshet, aynı saat saldır.
+    const simdi = new Date('2026-09-04T12:00:00Z');
+    const biter = new Date('2026-09-05T12:00:00Z');
+    expect(paktKoruyorMu({ durum: 'feshediliyor', biterAt: biter }, simdi)).toBe(true);
+  });
+
+  it('ihbar süresi dolunca pakt artık korumuyor', () => {
+    const simdi = new Date('2026-09-06T12:00:00Z');
+    const biter = new Date('2026-09-05T12:00:00Z');
+    expect(paktKoruyorMu({ durum: 'feshediliyor', biterAt: biter }, simdi)).toBe(false);
+  });
+
+  it('teklif ve bitmiş pakt korumuyor', () => {
+    // Teklif bir söz değil: karşı taraf kabul etmeden saldırıyı kilitlemek,
+    // tek taraflı kalkan demekti.
+    expect(paktKoruyorMu({ durum: 'teklif', biterAt: null })).toBe(false);
+    expect(paktKoruyorMu({ durum: 'bitti', biterAt: null })).toBe(false);
+  });
+
+  it('biterAt yazılmamış bir fesih koruma SAYILMIYOR', () => {
+    // Bozuk kayda karşı güvenli taraf: koruma iddia eden ama süresi
+    // olmayan bir satır sonsuza kadar kalkan olurdu.
+    expect(paktKoruyorMu({ durum: 'feshediliyor', biterAt: null })).toBe(false);
+  });
+
+  it('fesih bitişi ihbar süresi kadar sonra', () => {
+    const simdi = new Date('2026-09-04T12:00:00Z');
+    const biter = paktBitisi(simdi);
+    expect((biter.getTime() - simdi.getTime()) / 3_600_000).toBe(fesihIhbarSaat());
+  });
+
+  it('kendi ittifakınla pakt yapılamıyor', () => {
+    const r = paktTeklifDenetle('a', 'a', 0, 0);
+    expect(r.uygun).toBe(false);
+    expect(r.kod).toBe('KENDI_ITTIFAKIN');
+  });
+
+  it('ittifaksız oyuncu pakt teklif edemiyor', () => {
+    expect(paktTeklifDenetle(null, 'b', 0, 0).kod).toBe('ITTIFAK_YOK');
+  });
+
+  it('pakt kotası iki tarafta da uygulanıyor', () => {
+    const azami = azamiPakt();
+    expect(paktTeklifDenetle('a', 'b', azami, 0).kod).toBe('PAKT_LIMITI');
+    expect(paktTeklifDenetle('a', 'b', 0, azami).kod).toBe('PAKT_LIMITI');
+    expect(paktTeklifDenetle('a', 'b', azami - 1, azami - 1).uygun).toBe(true);
+  });
+
+  it('pakt tavanı haritayı kilitleyemiyor', () => {
+    // Paktsız bir tavan olsaydı herkes herkesle paktlanır ve PvP ölürdü.
+    // Bir ittifak + paktlıları, dünyanın oyuncu kapasitesinin altında
+    // kalmalı; yoksa "saldırılamaz" bir blok haritayı dondurur.
+    const dokunulmaz = (1 + azamiPakt()) * B.ittifak.azami_uye;
+    expect(dokunulmaz).toBeLessThan(B.dunya.oyuncu_kapasitesi / 2);
+  });
+
+  it('ihbar süresi ittifaktan ayrılma beklemesiyle aynı ailede', () => {
+    // İkisi de "sözün bir bedeli olmalı" kuralının hâli; biri gün, öteki
+    // saat ölçeğine kaçarsa oyun kendi içinde tutarsızlaşır.
+    expect(fesihIhbarSaat()).toBeGreaterThanOrEqual(B.ittifak.ayrildiktan_sonra_bekleme_saat);
+    expect(fesihIhbarSaat()).toBeLessThanOrEqual(72);
   });
 });
