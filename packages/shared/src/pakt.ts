@@ -81,6 +81,12 @@ export function paktTeklifDenetle(
   hedefId: string,
   mevcutPaktSayisi: number,
   hedefPaktSayisi: number,
+  /**
+   * Tarafların pakt kotaları. İttifak seviyesi kotayı büyütüyor
+   * (docs/09 B1e), o yüzden iki taraf için ayrı ayrı geliyor: Sv7 bir
+   * ittifak 5 pakt tutabilirken Sv1 karşısı 3'te kalıyor.
+   */
+  kotalar?: { benim: number; hedef: number },
 ): PaktDenetimi {
   if (!benimId) {
     return { uygun: false, sebep: 'Pakt için bir ittifakın olması gerekiyor.', kod: 'ITTIFAK_YOK' };
@@ -88,18 +94,19 @@ export function paktTeklifDenetle(
   if (benimId === hedefId) {
     return { uygun: false, sebep: 'Kendi ittifakınla pakt yapamazsın.', kod: 'KENDI_ITTIFAKIN' };
   }
-  const azami = azamiPakt();
-  if (mevcutPaktSayisi >= azami) {
+  const benimKota = kotalar?.benim ?? azamiPakt();
+  const hedefKota = kotalar?.hedef ?? azamiPakt();
+  if (mevcutPaktSayisi >= benimKota) {
     return {
       uygun: false,
-      sebep: `En fazla ${azami} paktın olabilir. Yenisi için birini feshetmen gerekiyor.`,
+      sebep: `En fazla ${benimKota} paktın olabilir. Yenisi için birini feshetmen gerekiyor.`,
       kod: 'PAKT_LIMITI',
     };
   }
-  if (hedefPaktSayisi >= azami) {
+  if (hedefPaktSayisi >= hedefKota) {
     return {
       uygun: false,
-      sebep: `Karşı ittifakın pakt kotası dolu (${azami}).`,
+      sebep: `Karşı ittifakın pakt kotası dolu (${hedefKota}).`,
       kod: 'PAKT_LIMITI',
     };
   }

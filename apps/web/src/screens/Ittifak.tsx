@@ -11,11 +11,14 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ApiError, api, type IttifakDto } from '../api/client';
+import { RUTBE_ADI } from '@lordlar/shared';
 import { Arma } from '../components/Arma';
 import { IkonAltin, IkonSohret } from '../components/Ikonlar';
 import { hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { BosHal } from '../components/BosHal';
 import { IttifakSohbet } from '../components/IttifakSohbet';
+import { IttifakBagis } from '../components/IttifakBagis';
+import { IttifakDuyuru } from '../components/IttifakDuyuru';
 import { KaynakGonder } from '../components/KaynakGonder';
 import { Paktlar } from '../components/Paktlar';
 import {
@@ -31,11 +34,17 @@ import {
   formatSayi,
 } from '../components/ui';
 
+const RUTBE_RENGI: Record<string, string> = {
+  lider: 'var(--color-altin)',
+  yasli: 'var(--color-mavi)',
+};
+
 function UyeSatiri({
   uye,
   liderMiyim,
   benimId,
   onCikar,
+  onRutbe,
   bekliyor,
 }: {
   uye: IttifakDto['ittifakim'] extends null
@@ -44,39 +53,63 @@ function UyeSatiri({
   liderMiyim: boolean;
   benimId: string;
   onCikar: (id: string) => void;
+  onRutbe: (id: string, rutbe: 'yasli' | 'uye') => void;
   bekliyor: boolean;
 }) {
   return (
-    <li className="flex items-center gap-2 text-[13px]">
-      <Arma arma={uye.arma} boyut={22} />
-      <span className="min-w-0 flex-1 truncate">
-        <span className={uye.id === benimId ? 'font-bold text-altin' : ''}>{uye.ad}</span>
-        {uye.lider && (
-          <span className="ml-1.5 align-middle">
-            <Rozet renk="var(--color-altin)">lider</Rozet>
-          </span>
-        )}
-      </span>
-      <span className="tabular w-10 shrink-0 text-right text-[11px] text-solgun">
-        Sv {uye.seviye}
-      </span>
-      <span className="tabular flex w-20 shrink-0 items-center justify-end gap-1 font-bold">
-        <span className="text-altin/70">
-          <IkonSohret boyut={13} />
+    <li className="border-b border-kenar/40 py-2 text-[13px] last:border-0">
+      <div className="flex items-center gap-2">
+        <Arma arma={uye.arma} boyut={22} />
+        <span className="min-w-0 flex-1 truncate">
+          <span className={uye.id === benimId ? 'font-bold text-altin' : ''}>{uye.ad}</span>
+          {uye.rutbe !== 'uye' && (
+            <span className="ml-1.5 align-middle">
+              <Rozet renk={RUTBE_RENGI[uye.rutbe]}>{RUTBE_ADI[uye.rutbe]}</Rozet>
+            </span>
+          )}
         </span>
-        {formatSayi(uye.sohret)}
-      </span>
-      {liderMiyim && !uye.lider && (
-        <Buton
-          tur="sessiz"
-          boy="kucuk"
-          onClick={() => onCikar(uye.id)}
-          disabled={bekliyor}
-          className="shrink-0"
+        <span className="tabular w-10 shrink-0 text-right text-[11px] text-solgun">
+          Sv {uye.seviye}
+        </span>
+        <span className="tabular flex w-20 shrink-0 items-center justify-end gap-1 font-bold">
+          <span className="text-altin/70">
+            <IkonSohret boyut={13} />
+          </span>
+          {formatSayi(uye.sohret)}
+        </span>
+      </div>
+
+      {/* Haftalık katkı: liderin tek sorusunu cevaplıyor — kim taşıyor,
+          kim taşınıyor. Sıfır katkı ayrıca işaretleniyor, çünkü asıl
+          bakılan o. */}
+      <div className="mt-1 flex items-center gap-2 pl-[30px]">
+        <span
+          className={`tabular text-[11px] ${uye.haftalikKatki === 0 ? 'text-sonuk' : 'text-yesil'}`}
         >
-          çıkar
-        </Buton>
-      )}
+          bu hafta {formatSayi(uye.haftalikKatki)} katkı
+        </span>
+        {/* Yönetim eylemleri METİN bağı, düğme değil. Düğme olduklarında
+            satır iki katına çıkıyor ve ikincil bir işlem üye satırının
+            kendisinden daha çok yer kaplıyordu. */}
+        {liderMiyim && !uye.lider && (
+          <div className="flex flex-1 justify-end gap-3">
+            <button
+              onClick={() => onRutbe(uye.id, uye.rutbe === 'yasli' ? 'uye' : 'yasli')}
+              disabled={bekliyor}
+              className="bas baslik -my-2.5 px-1 py-2.5 text-[10px] text-mavi disabled:opacity-40"
+            >
+              {uye.rutbe === 'yasli' ? 'RÜTBEYİ AL' : 'YAŞLI YAP'}
+            </button>
+            <button
+              onClick={() => onCikar(uye.id)}
+              disabled={bekliyor}
+              className="bas baslik -my-2.5 -mr-1 px-1 py-2.5 text-[10px] text-sonuk disabled:opacity-40"
+            >
+              ÇIKAR
+            </button>
+          </div>
+        )}
+      </div>
     </li>
   );
 }
@@ -120,6 +153,12 @@ export function Ittifak({ lordId }: { lordId: string }) {
   const ayril = useMutation({ mutationFn: api.ittifakAyril, onSuccess: basarili, onError: yut });
   const cikar = useMutation({
     mutationFn: (id: string) => api.ittifakUyeCikar(id),
+    onSuccess: basarili,
+    onError: yut,
+  });
+  const rutbe = useMutation({
+    mutationFn: ({ lordId: id, rutbe: r }: { lordId: string; rutbe: 'yasli' | 'uye' }) =>
+      api.ittifakRutbe(id, r),
     onSuccess: basarili,
     onError: yut,
   });
@@ -175,7 +214,18 @@ export function Ittifak({ lordId }: { lordId: string }) {
                   </span>
                 </div>
 
-                <ul className="space-y-1.5">
+                {/* Duyuru üye listesinin ÜSTÜNDE: yeni üyenin ilk okuması
+                    gereken şey ittifakın kuralı, kimlerin olduğu değil. */}
+                <div className="mb-2.5">
+                  <IttifakDuyuru
+                    duyuru={ittifakim.duyuru}
+                    yazabilir={
+                      liderMiyim || ittifakim.uyeler.find((u) => u.id === lordId)?.rutbe === 'yasli'
+                    }
+                  />
+                </div>
+
+                <ul>
                   {ittifakim.uyeler.map((u) => (
                     <UyeSatiri
                       key={u.id}
@@ -183,6 +233,7 @@ export function Ittifak({ lordId }: { lordId: string }) {
                       liderMiyim={liderMiyim}
                       benimId={lordId}
                       onCikar={(id) => cikar.mutate(id)}
+                      onRutbe={(id, r) => rutbe.mutate({ lordId: id, rutbe: r })}
                       bekliyor={bekliyor}
                     />
                   ))}
@@ -278,6 +329,10 @@ export function Ittifak({ lordId }: { lordId: string }) {
             </Bolum>
           )}
 
+          {/* Bağış kartı üye listesinin ALTINDA: önce "kimlerdeniz", sonra
+              "birlikte neyi büyütüyoruz". */}
+          {ittifakim && <IttifakBagis />}
+
           {ittifakim && <KaynakGonder uyeler={ittifakim.uyeler} benimId={lordId} />}
         </>
       )}
@@ -309,6 +364,11 @@ export function Ittifak({ lordId }: { lordId: string }) {
                       <span className="tabular w-6 shrink-0 text-[12px] text-solgun">{i + 1}.</span>
                       <span className="min-w-0 flex-1 truncate text-[13px] font-bold">
                         {a.ad} <span className="text-solgun">[{a.etiket}]</span>
+                      </span>
+                      {/* Seviye: katılacağı ya da pakt yapacağı ittifağı
+                          seçen oyuncunun baktığı ilk şey. */}
+                      <span className="baslik shrink-0 rounded-md bg-altin/15 px-1.5 py-0.5 text-[10px] text-altin">
+                        Sv {a.seviye}
                       </span>
                       <span className="tabular shrink-0 text-[11px] text-solgun">
                         {a.uyeSayisi}/{azamiUye}

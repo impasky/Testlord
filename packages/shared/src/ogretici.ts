@@ -84,6 +84,7 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
     bolge_ele_gecirme_sonrasi_saat: number;
   };
   const ittifak = B.ittifak as { azami_uye: number };
+  const bagis = (B.ittifak as unknown as { bagis: { gunluk_hak: number } }).bagis;
   const pakt = (
     B.ittifak as unknown as {
       pakt: { azami: number; fesih_ihbar_saat: number };
@@ -298,6 +299,13 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
           metin:
             'Bir üyenin bölgesine asker yollayıp savunmasını güçlendirebilir, lider ' +
             'olarak haritada ortak bir hedef işaretleyebilirsin.',
+        },
+        {
+          vurgu: 'İttifak seviyesi',
+          metin:
+            'Üyeler bağış yaptıkça ittifak seviye atlar ve HERKES kazanır: daha çok ' +
+            'kaynak gönderme hakkı, daha hızlı takviye, daha ucuz keşif. Günde ' +
+            `${bagis.gunluk_hak} bağış hakkın var.`,
         },
         {
           vurgu: 'Saldırmazlık paktı',

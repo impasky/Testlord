@@ -12,6 +12,17 @@
 import {
   B,
   ayniIttifaktaMi,
+  azamiYasli,
+  bagisMaliyeti,
+  bagisOdulu,
+  bagisXp,
+  duyuruEnFazlaHarf,
+  gunlukBagisHakki,
+  ittifakAyricaliklari,
+  ittifakSeviyesi,
+  haftalikKatki,
+  yonetebilirMi,
+  type IttifakRutbe,
   azamiPakt,
   fesihIhbarSaat,
   paktBitisi,
@@ -32,8 +43,10 @@ import { prisma } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { adiDenetle } from '../services/adDenetimi.js';
 import { mesajDenetle } from '../services/mesajDenetimi.js';
-import { findLordByUser, lordArmasi, pushEvent, tickLord } from '../services/lord.js';
+import { findLordByUser, grantXp, lordArmasi, pushEvent, tickLord } from '../services/lord.js';
+import { spendResources } from '../services/queue.js';
 import { yururlukteMi } from '../services/pakt.js';
+import { ittifakAyricaligi } from '../services/ittifakSeviye.js';
 import type { Prisma } from '@prisma/client';
 
 const uyeSecimi = {
@@ -47,6 +60,7 @@ const uyeSecimi = {
   armaRenk1: true,
   armaRenk2: true,
   armaSembol: true,
+  ittifakRutbe: true,
 } as const;
 
 /** İttifak + üyeleri, arayüzün beklediği şekilde. */
@@ -59,7 +73,53 @@ async function ittifakOzeti(allianceId: string) {
     },
   });
   if (!a) return null;
+
+  /**
+   * Haftalık katkı TÜRETİLİYOR: bağış, gönderilen sevkiyat ve gönderilen
+   * takviye zaten kayıtlı. Yeni bir sayaç tutmuyoruz — tutsaydık bir gün
+   * kayıtlarla sayacın birbirini tutmadığı bir hâl çıkardı.
+   *
+   * Üç sorgu, üye başına değil TOPLU: 8 üye için 24 sorgu açmak yerine
+   * üçünü gruplayıp haritaya çeviriyoruz.
+   */
+  const haftaBasi = new Date(Date.now() - 7 * 24 * 3_600_000);
+  const uyeIdler = a.members.map((u) => u.id);
+  const [bagislar, sevkiyatlar, takviyeler] = await Promise.all([
+    prisma.allianceDonation.groupBy({
+      by: ['lordId'],
+      where: { allianceId, createdAt: { gte: haftaBasi } },
+      _count: { _all: true },
+    }),
+    prisma.shipment.groupBy({
+      by: ['fromLordId'],
+      where: { fromLordId: { in: uyeIdler }, departAt: { gte: haftaBasi } },
+      _count: { _all: true },
+    }),
+    prisma.march.groupBy({
+      by: ['lordId'],
+      where: { lordId: { in: uyeIdler }, kind: 'takviye', departAt: { gte: haftaBasi } },
+      _count: { _all: true },
+    }),
+  ]);
+  const bagisSayisi = new Map(bagislar.map((r) => [r.lordId, r._count._all]));
+  const sevkSayisi = new Map(sevkiyatlar.map((r) => [r.fromLordId, r._count._all]));
+  const takviyeSayisi = new Map(takviyeler.map((r) => [r.lordId, r._count._all]));
+  const katki = new Map(
+    uyeIdler.map((id) => [
+      id,
+      haftalikKatki({
+        bagis: bagisSayisi.get(id) ?? 0,
+        sevkiyat: sevkSayisi.get(id) ?? 0,
+        takviye: takviyeSayisi.get(id) ?? 0,
+      }),
+    ]),
+  );
+
+  const durum = ittifakSeviyesi(a.xp);
   return {
+    seviye: durum,
+    ayricaliklar: ittifakAyricaliklari(durum.seviye),
+    duyuru: a.duyuru,
     id: a.id,
     ad: a.name,
     etiket: a.tag,
@@ -78,6 +138,13 @@ async function ittifakOzeti(allianceId: string) {
         arma: lordArmasi(u),
         unvan: unvan(u.fame).ad,
         lider: u.id === a.leaderLordId,
+        rutbe: (u.id === a.leaderLordId
+          ? 'lider'
+          : u.ittifakRutbe === 'yasli'
+            ? 'yasli'
+            : 'uye') as IttifakRutbe,
+        /** Bu hafta ittifaka ne kattı — "kim taşıyor, kim taşınıyor". */
+        haftalikKatki: katki.get(u.id) ?? 0,
       }))
       .sort((x, y) => (x.lider ? -1 : y.lider ? 1 : y.sohret - x.sohret)),
     toplamSohret: a.members.reduce((t, u) => t + u.fame, 0),
@@ -164,6 +231,34 @@ async function paktiKabulEt(
   return { id: pakt.id, durum: pakt.durum, oteki: oteki.name };
 }
 
+/** Günün başlangıcı (UTC). Bağış hakkı gün başında sıfırlanıyor. */
+function gunBasi(): Date {
+  const n = new Date();
+  return new Date(Date.UTC(n.getUTCFullYear(), n.getUTCMonth(), n.getUTCDate()));
+}
+
+/**
+ * "Bu ittifakta rütbem ne?"
+ *
+ * Üç uç aynı üç şeyi soruyordu: ittifakta mıyım, lider miyim, yaşlı
+ * mıyım. Kopyalamak, bir gün birinde yetki kontrolünün unutulması
+ * demekti — o da her üyenin duyuruyu değiştirebilmesi.
+ */
+async function rutbemi(tx: Prisma.TransactionClient, lordId: string) {
+  const lord = await tx.lord.findUniqueOrThrow({
+    where: { id: lordId },
+    select: { allianceId: true, ittifakRutbe: true },
+  });
+  if (!lord.allianceId) throw new GameError('Bir ittifakta değilsin.', 400, 'ITTIFAK_YOK');
+  const a = await tx.alliance.findUniqueOrThrow({
+    where: { id: lord.allianceId },
+    select: { leaderLordId: true },
+  });
+  const lider = a.leaderLordId === lordId;
+  const rutbe: IttifakRutbe = lider ? 'lider' : lord.ittifakRutbe === 'yasli' ? 'yasli' : 'uye';
+  return { allianceId: lord.allianceId, rutbe, lider };
+}
+
 export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
   /** Kendi durumu + dünyadaki ittifaklar. */
   app.get('/ittifak', { preHandler: requireAuth }, async (req) => {
@@ -191,6 +286,10 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
         etiket: a.tag,
         uyeSayisi: a.members.length,
         toplamSohret: a.members.reduce((t, u) => t + u.fame, 0),
+        // Seviye listede de görünüyor: katılacağı ya da pakt yapacağı
+        // ittifağı seçen oyuncunun baktığı ilk şey, o ittifakın birlikte
+        // ne kadar yol aldığı.
+        seviye: ittifakSeviyesi(a.xp).seviye,
         benimki: a.id === lord.allianceId,
       }))
       .sort((x, y) => y.toplamSohret - x.toplamSohret);
@@ -635,7 +734,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
       giden: satirlar
         .filter((p) => p.durum === 'teklif' && p.teklifEdenId === lord.allianceId)
         .map(bicim),
-      azami: azamiPakt(),
+      azami: (await ittifakAyricaligi(lord.allianceId)).paktSlotu,
       ihbarSaat: fesihIhbarSaat(),
       liderMiyim: a.leaderLordId === lordId,
     };
@@ -664,11 +763,16 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
       });
       if (!hedef || hedef.worldId !== lord.worldId) throw hata.bulunamadi('İttifak');
 
-      const [benimSayi, hedefSayi] = await Promise.all([
+      const [benimSayi, hedefSayi, benimAyr, hedefAyr] = await Promise.all([
         yururlukteMi(benim.id, tx),
         yururlukteMi(hedef.id, tx),
+        ittifakAyricaligi(benim.id, tx),
+        ittifakAyricaligi(hedef.id, tx),
       ]);
-      const denetim = paktTeklifDenetle(benim.id, hedef.id, benimSayi, hedefSayi);
+      const denetim = paktTeklifDenetle(benim.id, hedef.id, benimSayi, hedefSayi, {
+        benim: benimAyr.paktSlotu,
+        hedef: hedefAyr.paktSlotu,
+      });
       if (!denetim.uygun) {
         throw new GameError(denetim.sebep!, 400, denetim.kod ?? 'PAKT_REDDEDILDI');
       }
@@ -732,11 +836,16 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
       if (pakt.teklifEdenId === benim.id) {
         throw new GameError('Kendi teklifini kabul edemezsin.', 400, 'KENDI_TEKLIFIN');
       }
-      const [benimSayi, otekiSayi] = await Promise.all([
+      const [benimSayi, otekiSayi, benimAyr, otekiAyr] = await Promise.all([
         yururlukteMi(benim.id, tx),
         yururlukteMi(oteki.id, tx),
+        ittifakAyricaligi(benim.id, tx),
+        ittifakAyricaligi(oteki.id, tx),
       ]);
-      const denetim = paktTeklifDenetle(benim.id, oteki.id, benimSayi, otekiSayi);
+      const denetim = paktTeklifDenetle(benim.id, oteki.id, benimSayi, otekiSayi, {
+        benim: benimAyr.paktSlotu,
+        hedef: otekiAyr.paktSlotu,
+      });
       if (!denetim.uygun) {
         throw new GameError(denetim.sebep!, 400, denetim.kod ?? 'PAKT_REDDEDILDI');
       }
@@ -809,6 +918,218 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
         tx,
       );
       return { feshediliyor: true, biterAt: biter, ihbarSaat: fesihIhbarSaat() };
+    });
+  });
+
+  /* ------------------------------------------------------------------ *
+   *  İttifak seviyesi ve bağış (docs/09 B1e)
+   * ------------------------------------------------------------------ */
+
+  /** Bağış ekranı: maliyet, kalan hak, seviyenin getirdikleri. */
+  app.get('/ittifak/bagis', { preHandler: requireAuth }, async (req) => {
+    const lordId = await findLordByUser(req.user.userId);
+    const lord = await prisma.lord.findUniqueOrThrow({
+      where: { id: lordId },
+      select: { allianceId: true, level: true, altin: true, demir: true, erzak: true },
+    });
+    if (!lord.allianceId) throw new GameError('Bir ittifakta değilsin.', 400, 'ITTIFAK_YOK');
+
+    const [a, bugun] = await Promise.all([
+      prisma.alliance.findUniqueOrThrow({
+        where: { id: lord.allianceId },
+        select: { xp: true },
+      }),
+      prisma.allianceDonation.count({
+        where: { lordId, createdAt: { gte: gunBasi() } },
+      }),
+    ]);
+    const durum = ittifakSeviyesi(a.xp);
+    return {
+      maliyet: bagisMaliyeti(lord.level),
+      kazandiracakXp: bagisXp(lord.level),
+      odul: bagisOdulu(),
+      gunlukHak: gunlukBagisHakki(),
+      kalanHak: Math.max(0, gunlukBagisHakki() - bugun),
+      kaynaklarim: {
+        altin: Math.floor(lord.altin),
+        demir: Math.floor(lord.demir),
+        erzak: Math.floor(lord.erzak),
+      },
+      seviye: durum,
+      ayricaliklar: ittifakAyricaliklari(durum.seviye),
+      sonrakiAyricaliklar:
+        durum.sonrakiEsik === null ? null : ittifakAyricaliklari(durum.seviye + 1),
+    };
+  });
+
+  /**
+   * Bağış yap.
+   *
+   * Günlük hak SAYILARAK uygulanıyor (sayaç tutmuyoruz): bugünkü bağış
+   * satırlarını sayıyoruz. İşlem içinde sayıp işlem içinde yazdığımız
+   * için iki eş zamanlı istek hakkı aşamıyor.
+   */
+  app.post('/ittifak/bagis', { preHandler: requireAuth }, async (req) => {
+    const lordId = await findLordByUser(req.user.userId);
+
+    return prisma.$transaction(async (tx) => {
+      const lord = await tx.lord.findUniqueOrThrow({
+        where: { id: lordId },
+        select: { allianceId: true, level: true, name: true },
+      });
+      if (!lord.allianceId) throw new GameError('Bir ittifakta değilsin.', 400, 'ITTIFAK_YOK');
+
+      const bugun = await tx.allianceDonation.count({
+        where: { lordId, createdAt: { gte: gunBasi() } },
+      });
+      if (bugun >= gunlukBagisHakki()) {
+        throw new GameError(
+          `Bugünlük bağış hakkın bitti (${gunlukBagisHakki()}). Yarın tekrar.`,
+          400,
+          'HAK_BITTI',
+        );
+      }
+
+      const maliyet = bagisMaliyeti(lord.level);
+      await spendResources(lordId, maliyet, tx);
+
+      const xp = bagisXp(lord.level);
+      const oncekiSeviye = ittifakSeviyesi(
+        (
+          await tx.alliance.findUniqueOrThrow({
+            where: { id: lord.allianceId },
+            select: { xp: true },
+          })
+        ).xp,
+      ).seviye;
+
+      await tx.allianceDonation.create({
+        data: {
+          allianceId: lord.allianceId,
+          lordId,
+          xp,
+          altin: maliyet.altin,
+          demir: maliyet.demir,
+          erzak: maliyet.erzak,
+        },
+      });
+      const a = await tx.alliance.update({
+        where: { id: lord.allianceId },
+        data: { xp: { increment: xp } },
+        select: { xp: true, name: true, members: { select: { id: true } } },
+      });
+
+      // Bağış yapan da bir şey almalı, yoksa bağış "ittifak için
+      // fedakârlık" olur ve kimse yapmaz. Ödül LORD XP — şöhret DEĞİL:
+      // şöhret türetilen bir değer (calculateFame) ve kaynakla doğrudan
+      // şöhret satın almak, savaşmadan sıralamada yükselmek olurdu.
+      const odul = bagisOdulu();
+      await grantXp(lordId, odul.xp, tx);
+
+      const durum = ittifakSeviyesi(a.xp);
+      // Seviye atladıysa HERKES duysun: ortak emeğin karşılığını görmek
+      // bir sonraki bağışın sebebi.
+      if (durum.seviye > oncekiSeviye) {
+        for (const u of a.members) {
+          await pushEvent(
+            u.id,
+            'ittifak_seviye',
+            {
+              mesaj: `${a.name} ${durum.seviye}. seviyeye çıktı.`,
+              seviye: durum.seviye,
+            },
+            tx,
+          );
+        }
+      }
+
+      return {
+        bagislandi: true,
+        xp,
+        odul,
+        seviye: durum,
+        seviyeAtladi: durum.seviye > oncekiSeviye,
+        kalanHak: Math.max(0, gunlukBagisHakki() - bugun - 1),
+      };
+    });
+  });
+
+  /**
+   * Duyuru yaz. Lider ve yaşlı.
+   *
+   * Sohbetten farkı akıp gitmemesi: "günde 5 bağış yapın" her yeni üyenin
+   * görmesi gereken bir kural, sohbette üçüncü mesajda kayboluyor.
+   */
+  app.post('/ittifak/duyuru', { preHandler: requireAuth }, async (req) => {
+    const { metin } = z.object({ metin: z.string().max(duyuruEnFazlaHarf()) }).parse(req.body);
+    const lordId = await findLordByUser(req.user.userId);
+
+    return prisma.$transaction(async (tx) => {
+      const { rutbe, allianceId } = await rutbemi(tx, lordId);
+      if (!yonetebilirMi(rutbe)) throw hata.yetkisiz();
+
+      const temiz = metin.trim();
+      if (temiz.length > 0) {
+        const d = mesajDenetle(temiz);
+        if (!d.uygun) throw new GameError(d.sebep!, 400, 'MESAJ_UYGUNSUZ');
+      }
+      await tx.alliance.update({
+        where: { id: allianceId },
+        data: { duyuru: temiz.length ? temiz : null },
+      });
+      return { duyuru: temiz.length ? temiz : null };
+    });
+  });
+
+  /**
+   * Rütbe ver / al. Yalnız LİDER.
+   *
+   * Yaşlı sayısı sınırlı: rütbe ancak nadirse bir şey ifade eder.
+   */
+  app.post('/ittifak/rutbe', { preHandler: requireAuth }, async (req) => {
+    const { lordId: hedefId, rutbe } = z
+      .object({ lordId: z.string().min(1), rutbe: z.enum(['yasli', 'uye']) })
+      .parse(req.body);
+    const lordId = await findLordByUser(req.user.userId);
+
+    return prisma.$transaction(async (tx) => {
+      const { allianceId, lider } = await rutbemi(tx, lordId);
+      if (!lider) throw hata.yetkisiz();
+      if (hedefId === lordId) {
+        throw new GameError('Kendi rütbeni değiştiremezsin.', 400, 'KENDI_RUTBEN');
+      }
+
+      const hedef = await tx.lord.findUnique({
+        where: { id: hedefId },
+        select: { allianceId: true, name: true, ittifakRutbe: true },
+      });
+      if (!hedef || hedef.allianceId !== allianceId) throw hata.bulunamadi('Üye');
+
+      if (rutbe === 'yasli') {
+        const mevcut = await tx.lord.count({ where: { allianceId, ittifakRutbe: 'yasli' } });
+        if (mevcut >= azamiYasli()) {
+          throw new GameError(
+            `En fazla ${azamiYasli()} yaşlı olabilir. Önce birinin rütbesini almalısın.`,
+            400,
+            'YASLI_LIMITI',
+          );
+        }
+      }
+
+      await tx.lord.update({
+        where: { id: hedefId },
+        data: { ittifakRutbe: rutbe === 'yasli' ? 'yasli' : null },
+      });
+      await pushEvent(
+        hedefId,
+        'ittifak_rutbe',
+        {
+          mesaj:
+            rutbe === 'yasli' ? 'İttifakında Yaşlı oldun.' : 'İttifakındaki Yaşlı rütben alındı.',
+        },
+        tx,
+      );
+      return { lordId: hedefId, ad: hedef.name, rutbe };
     });
   });
 }

@@ -567,6 +567,45 @@
     "etiket_en_az": 2,
     "etiket_en_fazla": 5,
     "ayrildiktan_sonra_bekleme_saat": 12,
+    "seviye": {
+      "_aciklama": "Ittifak seviyesi: uyeler bagis yapiyor, ittifak XP kazaniyor, seviye atliyor ve BUTUN uyeler kazanciyor. Turun standart klan dongusu; bizde hic yoktu, ittifak kurulduktan sonra birlikte BUYUYECEK hicbir sey yoktu.",
+      "azami": 8,
+      "xp_taban": 25000,
+      "_xp_taban_notu": "Sv1 -> Sv2 icin gereken XP. Bir bagis 420-1480 XP arasi (bagiscinin seviyesine bagli). Ilk seviye tam aktif 8 kisilik bir ittifakta ~1 gunde geliyor -- ilerleme hemen hissedilmeli. Sv8 toplam ~1,4 milyon XP: tam aktiflikte ~47 gun, gercekci aktiflikte 2-3 ay. Ilk halinde taban 6000 idi ve Sv8 bir haftada geliyordu; 'aylarca surecek ortak hedef' sozu sayilarla tutmuyordu.",
+      "xp_carpani": 1.7,
+      "ticaret_tavani_seviye_basina": 4000,
+      "takviye_hizi_seviye_basina": 0.03,
+      "takviye_hizi_azami": 0.21,
+      "kesif_indirimi_seviye_basina": 0.04,
+      "kesif_indirimi_azami": 0.28,
+      "pakt_slotu_esikleri": [4, 7],
+      "_neden_gelir_ve_savas_bonusu_YOK": "Turun cogu oyunu klan seviyesini gelire ve savas gucune bagliyor. Biz BAGLAMIYORUZ ve bu bilincli bir sapma: orgutlu bir gruba guc carpani vermek, oyunun en cok ugrastigi seyi -- kartopunu (docs/09 K5, lider avi) -- ittifak olceginde geri getirirdi. Onde giden ittifak daha cok bagis yapar, daha cok bonus alir, daha cok onde gider. Bunun yerine seviye YARDIMLASMAYI buyutuyor: daha cok kaynak gonderebilirsin, takviyen daha hizli varir, kesif daha ucuz, daha cok pakt yapabilirsin. Hicbiri tek basina savas kazandirmiyor; hepsi birlikte oynamayi kolaylastiriyor."
+    },
+    "bagis": {
+      "_aciklama": "Ittifak seviyesinin TEK kaynagi. Gunluk hak var cunku sinirsiz bagis, oyunu 'en cok kaynagi olan ittifak kazanir'a cevirirdi; gunluk hak herkesi ayni tavana oturtuyor ve DUZENLI girmeyi odullendiriyor.",
+      "gunluk_hak": 5,
+      "maliyet_taban": { "altin": 800, "demir": 320, "erzak": 320 },
+      "maliyet_seviye_basina": { "altin": 280, "demir": 115, "erzak": 115 },
+      "_maliyet_notu": "Maliyet lord seviyesiyle buyuyor, kazandirdigi XP de. Sabit maliyet olsaydi Lv1 icin imkansiz, Lv60 icin bedava olurdu. Taban ilk halinde 3000 altindi ve TESTTE KALDI: Lv1 lordun gunluk malikane geliri 2544 altin, yani yeni oyuncu tek bir bagis bile yapamiyordu -- ittifagina katki veremeyen, saf yuk olan bir uye. Simdi taban gelirle gunde ~2 bagis yapilabiliyor; 5 hakkin tamami icin gercekten oynamak gerekiyor.",
+      "xp_taban": 400,
+      "xp_seviye_basina": 18,
+      "bagisciya_lord_xp": 90,
+      "_bagisciya_notu": "Bagis yapan da bir sey almali, yoksa bagis 'ittifak icin fedakarlik' olur ve kimse yapmaz. Odul LORD XP: seni ilerletiyor ve seviye uzerinden zaten sohrete donusuyor.",
+      "_neden_dogrudan_sohret_YOK": "Ilk halinde bagisciya dogrudan sohret veriyordum ve test yakaladi: sohret SAKLANMIYOR, calculateFame ile seviyeden/bolgeden/orduden TURETILIYOR -- kolona yazilan artis bir sonraki tick'te siliniyordu. Duzeltirken asil sorun goruldu: sohret siralama puani, ve kaynakla dogrudan sohret satin almak, savasmadan siralamada yukselmek demekti. Zengin bagisci lider tablosuna tirmanirdi. XP bu kapiyi kapatiyor: ilerletiyor ama sohrete ancak GERCEK seviye atlayarak donusuyor ve seviye egrisi tavanli."
+    },
+    "haftalik_katki": {
+      "_aciklama": "Uyenin bu hafta ittifaka ne katti. TURETILIYOR: bagis, gonderilen kaynak sevkiyati ve gonderilen takviye zaten kayitli. Yeni bir sayac tutmuyoruz. Liderin 'kim tasiyor, kim taşiniyor' sorusunu cevaplayan tek sayi.",
+      "bagis_puani": 100,
+      "sevkiyat_puani": 40,
+      "takviye_puani": 60,
+      "_puan_notu": "Bagis en agir cunku dogrudan ittifagi buyutuyor. Sevkiyat ve takviye bir uyeye yardim: degerli ama daha dar."
+    },
+    "duyuru_en_fazla_harf": 300,
+    "rutbeler": {
+      "_aciklama": "Lider tek basina 8 kisiyi yonetiyordu: uye alma, cikarma, hedef isaretleme, pakt. Yasli rutbesi yuku paylasiyor. Uc kademe yeter -- daha fazlasi kucuk bir grupta burokrasi olur.",
+      "azami_yasli": 2,
+      "_azami_yasli_notu": "8 kisilik bir ittifakta 1 lider + 2 yasli = yonetimin ucte biri. Daha fazlasi 'yonetici enflasyonu': rutbe ancak nadirse bir sey ifade eder."
+    },
     "pakt": {
       "_aciklama": "Saldirmazlik pakti: iki ittifak birbirine saldirmamaya soz veriyor (docs/09 §2.1). Turun diplomasi katmaninin resmi araci; Travian'in kendi belgeleri oyunu 'isbirligi ve diplomasi uzerine kurulu' diye tanimliyor ve oyun sonu bunlara bagli. Bizde ittifak vardi ama ittifaklar ARASI hicbir sey yoktu.",
       "azami": 3,

@@ -69,7 +69,29 @@ saldıracağın gün feshet, aynı saat saldır) ve pakt sayısı sınırlıdır
 (herkes herkesle paktlanırsa PvP durur). Pakt müttefiklik DEĞİL: paktlıya
 saldıramazsın ama takviye de gönderemezsin, garnizonunu da göremezsin.
 
-**Sırada:** ittifak sıralamasının kendi ekranı.
+**B1e ile eklendi:** ittifak seviyesi ve bağış. Referans klan sistemlerine
+bakarak yapıldı ama **kopyalanmadı** — ikisi bilerek farklı:
+
+1. **Üye tavanı 8'de kaldı.** Referansta klanlar 75 kişi. Bizde 8 ve bu
+   dengede kilitli: `azami_uye × sahip_basina_max(Lv60) = 8 × 5 = 40 < 61
+   bölge`, yani bir ittifak diyarın tamamını kapatamaz. 75'e çıkarmak oyunu
+   bitirirdi. Seviye üye tavanını da BÜYÜTMÜYOR; bir test bunu kilitliyor.
+2. **Seviye savaş gücüne ve gelire dokunmuyor.** Türün çoğu oyunu klan
+   seviyesini doğrudan güce bağlıyor. Örgütlü bir gruba güç çarpanı vermek,
+   oyunun en çok uğraştığı şeyi — kartopunu (§3.4, K5 lider avı) — ittifak
+   ölçeğinde geri getirirdi: önde giden ittifak daha çok bağış yapar, daha
+   çok bonus alır, daha çok öne geçer. Bunun yerine seviye YARDIMLAŞMAYI
+   büyütüyor: günlük kaynak gönderme tavanı, takviye hızı, keşif indirimi,
+   pakt hakkı. Hiçbiri tek başına savaş kazandırmıyor.
+
+Üstüne gelen üç küçük parça: **haftalık katkı** (bağış + gönderilen
+sevkiyat + gönderilen takviyeden TÜRETİLİYOR, yeni sayaç yok — liderin
+"kim taşıyor, kim taşınıyor" sorusunu cevaplıyor), **Yaşlı rütbesi**
+(liderin yükünü paylaşıyor; en fazla 2, çünkü rütbe ancak nadirse bir şey
+ifade eder) ve **duyuru** (sohbetten farkı akıp gitmemesi).
+
+**Sırada:** ittifak sıralamasının kendi ekranı, ittifak arması, başvuru
+sistemi.
 
 ### 2.2 Sezon / sunucu döngüsü — ALMIYORUZ
 

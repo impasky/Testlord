@@ -6,6 +6,7 @@
  * satırı alıyor, iki worker aynı yükü iki kez teslim edemiyor.
  */
 import { gunlukTavan, yukAgirligi } from '@lordlar/shared';
+import { lordunAyricaligi } from './ittifakSeviye.js';
 import { prisma, type Tx } from '../db.js';
 import { pushEvent, tickLord } from './lord.js';
 
@@ -20,6 +21,7 @@ export async function bugunGonderilen(lordId: string, tx: Tx = prisma): Promise<
 }
 
 export async function sevkiyatOzeti(lordId: string) {
+  const tavan = gunlukTavan((await lordunAyricaligi(lordId)).ticaretTavani);
   const [giden, gelen, gonderilen] = await Promise.all([
     prisma.shipment.findMany({
       where: { fromLordId: lordId, resolved: false },
@@ -49,9 +51,10 @@ export async function sevkiyatOzeti(lordId: string) {
   return {
     giden: giden.map((s) => ({ ...bicim(s), kime: s.to.name })),
     gelen: gelen.map((s) => ({ ...bicim(s), kimden: s.from.name })),
-    gunlukTavan: gunlukTavan(),
+    // Tavan ittifak seviyesinden geliyor (docs/09 B1e).
+    gunlukTavan: tavan,
     bugunGonderilen: gonderilen,
-    kalanTavan: Math.max(0, gunlukTavan() - gonderilen),
+    kalanTavan: Math.max(0, tavan - gonderilen),
   };
 }
 
@@ -93,8 +96,7 @@ export async function sevkiyatCoz(id: string): Promise<boolean> {
       },
     });
 
-    const kirpildi =
-      verilen.altin < s.altin || verilen.demir < s.demir || verilen.erzak < s.erzak;
+    const kirpildi = verilen.altin < s.altin || verilen.demir < s.demir || verilen.erzak < s.erzak;
     await pushEvent(
       s.toLordId,
       'sevkiyat_geldi',

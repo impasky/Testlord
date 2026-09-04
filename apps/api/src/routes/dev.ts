@@ -118,6 +118,30 @@ export async function devRoutes(app: FastifyInstance): Promise<void> {
   });
 
   /**
+   * İttifaka doğrudan XP verir: seviye atlama ANINI test etmek için.
+   *
+   * Neden gerekli: bir seviye ~25.000 XP, bir bağış ~420. Testin 60 bağış
+   * yapması hem yavaş hem imkânsız (günlük hak 5). XP'yi iteliyoruz ama
+   * SEVİYE yine gerçek fonksiyondan türüyor — ayrı bir "test modu" dalı
+   * açmıyoruz.
+   */
+  app.post('/test/ittifak-xp', { preHandler: requireAuth }, async (req) => {
+    const lordId = await findLordByUser(req.user.userId);
+    const lord = await prisma.lord.findUniqueOrThrow({
+      where: { id: lordId },
+      select: { allianceId: true },
+    });
+    if (!lord.allianceId) return { verildi: 0 };
+    const miktar = Number((req.body as { miktar?: number })?.miktar ?? 100000);
+    const a = await prisma.alliance.update({
+      where: { id: lord.allianceId },
+      data: { xp: { increment: miktar } },
+      select: { xp: true },
+    });
+    return { verildi: miktar, xp: a.xp };
+  });
+
+  /**
    * Bir generalin seviyesini/XP'sini kurar: seviye atlama ANINI test etmek için.
    *
    * Neden gerekli: bir general tek savaşta seviye atlamaya çoğu zaman yetmez

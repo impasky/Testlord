@@ -25,8 +25,16 @@ export function sevkiyatSuresiSn(mesafeHex: number): number {
   return Math.round((k.taban_dakika + k.hex_basina_dakika * Math.max(0, mesafeHex)) * 60);
 }
 
-export function gunlukTavan(): number {
-  return B.ticaret.gunluk_gonderim_tavani;
+/**
+ * Günlük gönderim tavanı.
+ *
+ * İttifak seviyesiyle büyüyor (docs/09 B1e): seviye atlamanın somut
+ * karşılıklarından biri, üyelerin birbirine daha çok kaynak
+ * gönderebilmesi. Tavan çağıran tarafından veriliyor çünkü seviye
+ * veritabanında; parametresiz çağrı Sv1 tavanını döndürüyor.
+ */
+export function gunlukTavan(ittifakTavani?: number): number {
+  return ittifakTavani ?? B.ticaret.gunluk_gonderim_tavani;
 }
 
 export function enAzGonderim(): number {
@@ -59,9 +67,11 @@ export interface SevkiyatDenetimi {
 export function sevkiyatDenetle(
   yuk: Resources,
   bugunGonderilen: number,
+  /** İttifak seviyesinin verdiği tavan; verilmezse taban tavan. */
+  tavan?: number,
 ): SevkiyatDenetimi {
   const agirlik = yukAgirligi(yuk);
-  const kalan = Math.max(0, gunlukTavan() - bugunGonderilen);
+  const kalan = Math.max(0, gunlukTavan(tavan) - bugunGonderilen);
 
   if (yuk.altin < 0 || yuk.demir < 0 || yuk.erzak < 0) {
     return { uygun: false, sebep: 'Eksi miktar gönderilemez.', agirlik, kalanTavan: kalan };

@@ -117,6 +117,9 @@ model Lord {
 
   /// Üyesi olduğu ittifak. Yoksa null — ittifak zorunlu değil.
   allianceId String?
+  /// İttifak içindeki rütbe: null = üye, "yasli" = yaşlı.
+  /// Lider ayrıca saklanmıyor — o Alliance.leaderLordId'de.
+  ittifakRutbe String?
   /// En son ittifaktan ayrıldığı an. Bekleme süresi buradan ölçülüyor:
   /// ittifaktan çıkıp hemen başkasına girmek, saldırı kilidini kalkan gibi
   /// kullanmayı mümkün kılardı.
@@ -141,6 +144,7 @@ model Lord {
   messages  AllianceMessage[]
   gonderilen Shipment[] @relation("ShipmentFrom")
   gelen      Shipment[] @relation("ShipmentTo")
+  bagislar   AllianceDonation[]
   alliance  Alliance? @relation("AllianceMembers", fields: [allianceId], references: [id])
   ledAlliance Alliance? @relation("AllianceLeader")
 
@@ -323,17 +327,58 @@ model Alliance {
   /// Hedefin yanına yazılan kısa not ("cuma akşamı", "mancınık lazım").
   targetNote     String?
 
+  /// Toplam bağış XP'si.
+  ///
+  /// Bağış satırlarının toplamından TÜRETİLEBİLİRDİ ve ilk tasarımda öyleydi;
+  /// ama bu sayı ticaret tavanından takviye hızına kadar her yerde okunuyor
+  /// ve her okumada bir toplama sorgusu açmak istemedik. Bağış işleminin
+  /// içinde artıyor, başka hiçbir yerde yazılmıyor.
+  ///
+  /// SEVİYE saklanmıyor: her zaman bu XP'den türetiliyor (ittifakSeviyesi).
+  /// İki sayıyı birden tutmak, bir gün birinin diğerinden sapması demekti.
+  xp Int @default(0)
+
+  /// Liderin panoya yazdığı kalıcı duyuru. Sohbetten farkı akıp gitmemesi:
+  /// "günde 5 bağış yapın" her yeni üyenin görmesi gereken bir kural.
+  duyuru String?
+
   world    World             @relation(fields: [worldId], references: [id], onDelete: Cascade)
   leader   Lord              @relation("AllianceLeader", fields: [leaderLordId], references: [id], onDelete: Cascade)
   members  Lord[]            @relation("AllianceMembers")
   messages AllianceMessage[]
   paktA    Pakt[]            @relation("PaktA")
   paktB    Pakt[]            @relation("PaktB")
+  bagislar AllianceDonation[]
   target   Region?           @relation("AllianceTarget", fields: [targetRegionId], references: [id])
 
   @@unique([worldId, name])
   @@unique([worldId, tag])
   @@index([worldId])
+}
+
+/// İttifak bağışı: üyenin ittifağı büyütmek için verdiği kaynak.
+///
+/// Satır olarak saklanıyor çünkü iki soruyu birden cevaplıyor: günlük hak
+/// kaldı mı (bugünkü satırları say) ve üye bu hafta ne kattı (haftalık
+/// satırları say). İkisi için ayrı sayaç tutmak, sayaçların kayıtlarla
+/// birbirini tutmadığı bir hâl demekti.
+model AllianceDonation {
+  id         String   @id @default(cuid())
+  allianceId String
+  lordId     String
+  /// İttifağa kazandırdığı XP. Bağış anındaki lord seviyesine bağlı, o
+  /// yüzden satırda saklanıyor: sonradan yeniden hesaplanamaz.
+  xp        Int
+  altin     Int
+  demir     Int
+  erzak     Int
+  createdAt DateTime @default(now())
+
+  alliance Alliance @relation(fields: [allianceId], references: [id], onDelete: Cascade)
+  lord     Lord     @relation(fields: [lordId], references: [id], onDelete: Cascade)
+
+  @@index([allianceId, createdAt])
+  @@index([lordId, createdAt])
 }
 
 /// Saldırmazlık paktı: iki ittifak birbirine saldırmamaya söz veriyor.

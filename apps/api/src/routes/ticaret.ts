@@ -22,6 +22,7 @@ import { prisma } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { findLordByUser, tickLord } from '../services/lord.js';
 import { bugunGonderilen, sevkiyatOzeti } from '../services/ticaret.js';
+import { lordunAyricaligi } from '../services/ittifakSeviye.js';
 
 const yukSemasi = z.object({
   altin: z.coerce.number().int().min(0).default(0),
@@ -63,7 +64,13 @@ export async function ticaretRoutes(app: FastifyInstance): Promise<void> {
         );
       }
 
-      const denetim = sevkiyatDenetle(body.yuk, await bugunGonderilen(lordId, tx));
+      const denetim = sevkiyatDenetle(
+        body.yuk,
+        await bugunGonderilen(lordId, tx),
+        // Tavan ittifak seviyesinden: seviye atlamanın somut
+        // karşılıklarından biri (docs/09 B1e).
+        (await lordunAyricaligi(lordId, tx)).ticaretTavani,
+      );
       if (!denetim.uygun) {
         throw new GameError(denetim.sebep ?? 'Gönderilemez.', 400, 'GONDERIM_REDDEDILDI');
       }
@@ -72,11 +79,7 @@ export async function ticaretRoutes(app: FastifyInstance): Promise<void> {
       // aynı kaynağı üç kişiye birden gönderebilirdi.
       const durum = await tickLord(lordId, new Date(), tx);
       const r = durum.resources;
-      if (
-        r.altin < body.yuk.altin ||
-        r.demir < body.yuk.demir ||
-        r.erzak < body.yuk.erzak
-      ) {
+      if (r.altin < body.yuk.altin || r.demir < body.yuk.demir || r.erzak < body.yuk.erzak) {
         throw hata.yetersizKaynak();
       }
       await tx.lord.update({
@@ -88,10 +91,7 @@ export async function ticaretRoutes(app: FastifyInstance): Promise<void> {
         },
       });
 
-      const mesafe = hexDistance(
-        { q: ben.homeQ, r: ben.homeR },
-        { q: o.homeQ, r: o.homeR },
-      );
+      const mesafe = hexDistance({ q: ben.homeQ, r: ben.homeR }, { q: o.homeQ, r: o.homeR });
       const sn = sevkiyatSuresiSn(mesafe);
       const simdi = new Date();
       const sevk = await tx.shipment.create({

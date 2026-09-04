@@ -20,6 +20,16 @@ import {
   garnizonToplami,
   itemPower,
   kayipPaylastir,
+  azamiIttifakSeviyesi,
+  azamiYasli,
+  bagisMaliyeti,
+  bagisXp,
+  haftalikKatki,
+  ittifakAyricaliklari,
+  ittifakSeviyeXp,
+  ittifakSeviyesi,
+  ittifakToplamXp,
+  yonetebilirMi,
   azamiPakt,
   fesihIhbarSaat,
   paktBitisi,
@@ -1363,6 +1373,14 @@ describe('öğretici (docs/09 — ilk giriş)', () => {
     expect(metin).toContain(`%${Math.round(v.azami * 100)}`);
   });
 
+  it('öğretici ittifak seviyesini anlatıyor', () => {
+    // İttifak seviyesi oyunun yeni ortak hedefi; öğreticide yazmazsa
+    // oyuncu bağış düğmesini görüp ne işe yaradığını bilemez.
+    const metin = sayfalar.flatMap((s) => s.maddeler.map((m) => `${m.vurgu} ${m.metin}`)).join(' ');
+    expect(metin).toContain(`${B.ittifak.bagis.gunluk_hak} bağış`);
+    expect(metin.toLocaleLowerCase('tr')).toContain('seviye atlar');
+  });
+
   it('öğretici paktı ve ihbar süresini anlatıyor', () => {
     // Pakt ittifak katmanının en ince kuralı: fesih anında geçmiyor.
     // Öğreticide yazmazsa oyuncu bunu ancak feshedip saldırmaya
@@ -1559,5 +1577,140 @@ describe('saldırmazlık paktı (docs/09 B1d)', () => {
     // saat ölçeğine kaçarsa oyun kendi içinde tutarsızlaşır.
     expect(fesihIhbarSaat()).toBeGreaterThanOrEqual(B.ittifak.ayrildiktan_sonra_bekleme_saat);
     expect(fesihIhbarSaat()).toBeLessThanOrEqual(72);
+  });
+});
+
+describe('ittifak seviyesi ve bağış (docs/09 B1e)', () => {
+  it('sıfır XP birinci seviye', () => {
+    const d = ittifakSeviyesi(0);
+    expect(d.seviye).toBe(1);
+    expect(d.seviyedeXp).toBe(0);
+    expect(d.sonrakiEsik).toBe(ittifakSeviyeXp(1));
+  });
+
+  it('eşiği geçmek seviye atlatıyor', () => {
+    expect(ittifakSeviyesi(ittifakSeviyeXp(1)).seviye).toBe(2);
+    expect(ittifakSeviyesi(ittifakSeviyeXp(1) - 1).seviye).toBe(1);
+  });
+
+  it('azami seviyede sonraki eşik yok', () => {
+    const azami = azamiIttifakSeviyesi();
+    const d = ittifakSeviyesi(ittifakToplamXp(azami) * 10);
+    expect(d.seviye).toBe(azami);
+    expect(d.sonrakiEsik).toBeNull();
+  });
+
+  it('seviye XP ile MONOTON artıyor', () => {
+    // Bir gün eğri elle değiştirilirse geri gitmemeli: seviye düşen bir
+    // ittifak, bağış yapan üyenin emeğini geri alıyor demektir.
+    let onceki = 1;
+    for (let xp = 0; xp < ittifakToplamXp(azamiIttifakSeviyesi()) * 1.2; xp += 5000) {
+      const s = ittifakSeviyesi(xp).seviye;
+      expect(s).toBeGreaterThanOrEqual(onceki);
+      onceki = s;
+    }
+  });
+
+  it('eğri üstel: her seviye bir öncekinden pahalı', () => {
+    for (let s = 1; s < azamiIttifakSeviyesi(); s++) {
+      expect(ittifakSeviyeXp(s + 1)).toBeGreaterThan(ittifakSeviyeXp(s));
+    }
+  });
+
+  it('azami seviye tam aktif bir ittifakta AYLAR sürüyor', () => {
+    // Balance notu "2-3 ay" diyor. İlk ayarda taban 6000'di ve Sv8 bir
+    // haftada geliyordu — söz sayılarla tutmuyordu. Bu kontrol o sözü
+    // kilitliyor.
+    const gunlukTamAktif = B.ittifak.azami_uye * B.ittifak.bagis.gunluk_hak * bagisXp(20);
+    const gun = ittifakToplamXp(azamiIttifakSeviyesi()) / gunlukTamAktif;
+    expect(gun).toBeGreaterThan(30);
+    expect(gun).toBeLessThan(120);
+  });
+
+  it('ilk seviye HIZLI geliyor — ilerleme hemen hissedilmeli', () => {
+    const gunlukTamAktif = B.ittifak.azami_uye * B.ittifak.bagis.gunluk_hak * bagisXp(5);
+    expect(ittifakSeviyeXp(1) / gunlukTamAktif).toBeLessThan(3);
+  });
+
+  it('bağış maliyeti ve XP birlikte büyüyor', () => {
+    expect(bagisMaliyeti(60).altin).toBeGreaterThan(bagisMaliyeti(1).altin);
+    expect(bagisXp(60)).toBeGreaterThan(bagisXp(1));
+  });
+
+  it('yeni lord SADECE taban geliriyle bağış yapabiliyor', () => {
+    // İlk ayarda yapamıyordu: taban maliyet 3000 altındı, Lv1 malikâne
+    // günlük 2544 altın veriyordu. Yani yeni oyuncu ittifakına tek bir
+    // katkı bile veremeyen, saf yük olan bir üyeydi.
+    //
+    // Malikâne geliri kaybedilemeyen taban gelir (docs/01): bölgesi
+    // olmayan, savaşı kaybeden oyuncunun bile elinde bu var.
+    const gunluk = malikaneIncome(1);
+    const m = bagisMaliyeti(1);
+    expect(m.altin).toBeLessThan(gunluk.altin * 24);
+    expect(m.demir).toBeLessThan(gunluk.demir * 24);
+    expect(m.erzak).toBeLessThan(gunluk.erzak * 24);
+  });
+
+  it('ama günlük hakkın TAMAMI taban gelirle karşılanmıyor', () => {
+    // Karşılansaydı bağış "her gün gir, düğmeye 5 kez bas" olurdu ve
+    // oynamakla bir ilgisi kalmazdı. Beş bağış gerçekten oynamayı
+    // gerektirmeli.
+    const gunlukAltin = malikaneIncome(1).altin * 24;
+    expect(bagisMaliyeti(1).altin * B.ittifak.bagis.gunluk_hak).toBeGreaterThan(gunlukAltin);
+  });
+
+  it('ayrıcalıklar seviyeyle artıyor ve TAVANLI', () => {
+    const azami = azamiIttifakSeviyesi();
+    const bir = ittifakAyricaliklari(1);
+    const son = ittifakAyricaliklari(azami);
+    expect(son.ticaretTavani).toBeGreaterThan(bir.ticaretTavani);
+    expect(son.takviyeHizi).toBeGreaterThan(bir.takviyeHizi);
+    expect(son.kesifIndirimi).toBeGreaterThan(bir.kesifIndirimi);
+    expect(son.takviyeHizi).toBeLessThanOrEqual(B.ittifak.seviye.takviye_hizi_azami);
+    expect(son.kesifIndirimi).toBeLessThanOrEqual(B.ittifak.seviye.kesif_indirimi_azami);
+  });
+
+  it('seviye SAVAŞ GÜCÜNE ve GELİRE dokunmuyor', () => {
+    // Bilinçli sapma (docs/09 B1e): örgütlü bir gruba güç çarpanı vermek,
+    // oyunun en çok uğraştığı kartopunu (K5) ittifak ölçeğinde geri
+    // getirirdi. Ayrıcalık listesinde güç/gelir alanı OLMAMALI.
+    const anahtarlar = Object.keys(ittifakAyricaliklari(azamiIttifakSeviyesi()));
+    expect(anahtarlar).toEqual(['ticaretTavani', 'takviyeHizi', 'kesifIndirimi', 'paktSlotu']);
+  });
+
+  it('en yüksek seviyede bile pakt kotası haritayı kilitleyemiyor', () => {
+    // pakt.ts'teki tavanın gerekçesi seviyeyle de korunmalı.
+    const slot = ittifakAyricaliklari(azamiIttifakSeviyesi()).paktSlotu;
+    expect((1 + slot) * B.ittifak.azami_uye).toBeLessThan(B.dunya.oyuncu_kapasitesi / 2);
+  });
+
+  it('üye tavanı DEĞİŞMİYOR — harita kilidi seviyeyle delinmiyor', () => {
+    // Referans oyunlarda klan seviyesi üye tavanını büyütüyor. Bizde
+    // büyütemez: azami_uye * bolge_max haritanın altında kalmak zorunda.
+    const anahtarlar = Object.keys(ittifakAyricaliklari(azamiIttifakSeviyesi()));
+    expect(anahtarlar).not.toContain('azamiUye');
+    expect(B.ittifak.azami_uye * maxRegions(60)).toBeLessThan(WORLD_MAP.region_count);
+  });
+
+  it('haftalık katkıda bağış en ağır', () => {
+    expect(haftalikKatki({ bagis: 1, sevkiyat: 0, takviye: 0 })).toBeGreaterThan(
+      haftalikKatki({ bagis: 0, sevkiyat: 1, takviye: 0 }),
+    );
+    expect(haftalikKatki({ bagis: 1, sevkiyat: 0, takviye: 0 })).toBeGreaterThan(
+      haftalikKatki({ bagis: 0, sevkiyat: 0, takviye: 1 }),
+    );
+    expect(haftalikKatki({ bagis: 0, sevkiyat: 0, takviye: 0 })).toBe(0);
+  });
+
+  it('rütbe yetkileri: lider ve yaşlı yönetir, üye yönetmez', () => {
+    expect(yonetebilirMi('lider')).toBe(true);
+    expect(yonetebilirMi('yasli')).toBe(true);
+    expect(yonetebilirMi('uye')).toBe(false);
+  });
+
+  it('yaşlı sayısı ittifakın azınlığında kalıyor', () => {
+    // Rütbe ancak nadirse bir şey ifade eder: 1 lider + yaşlılar,
+    // üyelerin yarısını geçmemeli.
+    expect(1 + azamiYasli()).toBeLessThan(B.ittifak.azami_uye / 2);
   });
 });

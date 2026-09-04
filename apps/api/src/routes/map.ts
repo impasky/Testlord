@@ -26,6 +26,7 @@ import { GameError, hata } from '../errors.js';
 import { findLordByUser, pushEvent } from '../services/lord.js';
 import { mesafeOlcer, mesafeOlcerHazir } from '../services/mesafe.js';
 import { paktVarMi, paktliIttifaklar } from '../services/pakt.js';
+import { lordunAyricaligi } from '../services/ittifakSeviye.js';
 import {
   fetihOdulu,
   lordSide,
@@ -406,7 +407,9 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
             bolgeSeviyesi: foto?.bolgeSeviyesi ?? null,
           }
         : null,
-      kesifMaliyeti: kesifMaliyetiAltin(),
+      kesifMaliyeti: Math.round(
+        kesifMaliyetiAltin() * (1 - (await lordunAyricaligi(lordId)).kesifIndirimi),
+      ),
       kesifSuresiSn: kesifSuresiSn(olc({ q: region.q, r: region.r })),
       fortressBonus: regionFortressBonus(region.type, region.level),
       upgradeCost:
@@ -470,7 +473,9 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       if (region.worldId !== me.worldId) throw hata.bulunamadi('Bölge');
 
       await assertQueueSlot(lordId, 'kesif', tx);
-      await spendResources(lordId, { altin: kesifMaliyetiAltin(), demir: 0, erzak: 0 }, tx);
+      const kesifAyricalik = await lordunAyricaligi(lordId, tx);
+      const kesifUcreti = Math.round(kesifMaliyetiAltin() * (1 - kesifAyricalik.kesifIndirimi));
+      await spendResources(lordId, { altin: kesifUcreti, demir: 0, erzak: 0 }, tx);
 
       const mesafe = (await mesafeOlcer(lordId, tx))({ q: region.q, r: region.r });
       const q = await enqueue(lordId, 'kesif', { regionId: id }, kesifSuresiSn(mesafe), tx);
@@ -532,7 +537,13 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       await takeFromHome(lordId, army, tx);
 
       const dist = (await mesafeOlcer(lordId, tx))({ q: region.q, r: region.r });
-      const sec = marchDurationSec(dist, army, bosGeneralBonus());
+      // İttifak seviyesi takviyeyi HIZLANDIRIYOR (docs/09 B1e). Saldırıyı
+      // değil yalnız takviyeyi: seviye yardımlaşmayı büyütsün, savaş
+      // gücünü değil.
+      const ayricalik = await lordunAyricaligi(lordId, tx);
+      const sec = Math.round(
+        marchDurationSec(dist, army, bosGeneralBonus()) * (1 - ayricalik.takviyeHizi),
+      );
       const now = new Date();
 
       const march = await tx.march.create({

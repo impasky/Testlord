@@ -13,6 +13,7 @@ export * from './casus.js';
 export * from './gunluk.js';
 export * from './sefer.js';
 export * from './ittifak.js';
+export * from './ittifakSeviye.js';
 export * from './pakt.js';
 export * from './takviye.js';
 export * from './kimlik.js';

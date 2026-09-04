@@ -570,6 +570,45 @@ export interface IttifakUyesiDto {
   arma: ArmaDto;
   unvan: string;
   lider: boolean;
+  rutbe: 'lider' | 'yasli' | 'uye';
+  /** Bu hafta ittifaka ne kattı — "kim taşıyor, kim taşınıyor". */
+  haftalikKatki: number;
+}
+
+export interface IttifakSeviyeDto {
+  seviye: number;
+  xp: number;
+  seviyedeXp: number;
+  sonrakiEsik: number | null;
+}
+
+export interface IttifakAyricalikDto {
+  ticaretTavani: number;
+  takviyeHizi: number;
+  kesifIndirimi: number;
+  paktSlotu: number;
+}
+
+export interface BagisDto {
+  maliyet: Resources;
+  kazandiracakXp: number;
+  odul: { xp: number };
+  gunlukHak: number;
+  kalanHak: number;
+  kaynaklarim: Resources;
+  seviye: IttifakSeviyeDto;
+  ayricaliklar: IttifakAyricalikDto;
+  /** Sonraki seviyede ne değişecek — bağışın SEBEBİ bu. */
+  sonrakiAyricaliklar: IttifakAyricalikDto | null;
+}
+
+export interface BagisSonucuDto {
+  bagislandi: boolean;
+  xp: number;
+  odul: { xp: number };
+  seviye: IttifakSeviyeDto;
+  seviyeAtladi: boolean;
+  kalanHak: number;
 }
 
 /** Sıralama listesindeki bir ittifak satırı. */
@@ -579,6 +618,8 @@ export interface IttifakListesiDto {
   etiket: string;
   uyeSayisi: number;
   toplamSohret: number;
+  /** İttifak seviyesi — birlikte ne kadar yol aldıkları. */
+  seviye: number;
   benimki: boolean;
 }
 
@@ -592,6 +633,9 @@ export interface IttifakDto {
     uyeler: IttifakUyesiDto[];
     toplamSohret: number;
     azamiUye: number;
+    seviye: IttifakSeviyeDto;
+    ayricaliklar: IttifakAyricalikDto;
+    duyuru: string | null;
     hedef: {
       regionId: number;
       ad: string;
@@ -735,6 +779,13 @@ export const api = {
     post<{ marchId: string; arriveAt: string; birim: number }>(`/map/${regionId}/takviye-geri`, {}),
   ittifakHedef: (regionId: number | null, not?: string) =>
     post<{ hedef: { regionId: number; ad: string } | null }>('/ittifak/hedef', { regionId, not }),
+
+  /* İttifak seviyesi ve bağış (docs/09 B1e) */
+  bagisDurumu: () => request<BagisDto>('/ittifak/bagis'),
+  bagisYap: () => post<BagisSonucuDto>('/ittifak/bagis'),
+  ittifakDuyuru: (metin: string) => post<{ duyuru: string | null }>('/ittifak/duyuru', { metin }),
+  ittifakRutbe: (lordId: string, rutbe: 'yasli' | 'uye') =>
+    post<{ lordId: string; ad: string; rutbe: string }>('/ittifak/rutbe', { lordId, rutbe }),
 
   /* Saldırmazlık paktı (docs/09 B1d) */
   paktlar: () => request<PaktlarDto>('/ittifak/paktlar'),
