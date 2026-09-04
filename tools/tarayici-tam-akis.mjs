@@ -125,11 +125,18 @@ await post('/test/kuyruklari-bitir');
 
 // --- Demirhane: üret ve kuşan ---
 await sekme('Demirhane');
-await page.waitForSelector('text=Ekipman Üretimi', { timeout: 8000 });
-await tiklaVeBekle(page, 'button:has-text("üret")', '/items/craft');
+// Demirhane üç alt sekmeye bölündü (üretim / envanter / donanım): üretim
+// varsayılan, envantere elle geçiyoruz.
+// Seçici DAR olmak zorunda: alt sekme şeridinde artık "ÜRETİM" düğmesi
+// var ve has-text("üret") önce onu buluyor, tıklayınca hiçbir istek
+// gitmiyordu. Üretim düğmesi "T1 SİLAH ÜRET" — sonu ÜRET.
+const uretDugmesi = page.getByRole('button', { name: /ÜRET$/i });
+await uretDugmesi.first().waitFor({ timeout: 8000 });
+await tiklaVeBekle(page, uretDugmesi.first(), '/items/craft');
 await post('/test/kuyruklari-bitir');
 await page.reload({ waitUntil: 'networkidle' });
 await sekme('Demirhane');
+await page.locator('button:has-text("Envanter")').click();
 await page.waitForSelector('button:has-text("Kuşan")', { timeout: 10000 }).catch(() => {});
 kontrol('Ekipman envanterde göründü', (await page.locator('button:has-text("Kuşan")').count()) > 0);
 await tiklaVeBekle(page, 'button:has-text("Kuşan")', '/equip');
@@ -138,8 +145,10 @@ await page.screenshot({ path: `${CIKTI}/mob-4-demirhane.png` });
 // --- Generaller ---
 await menuden('Generaller');
 await page.waitForSelector('text=Sahadaki Generaller', { timeout: 8000 });
-const bronz = page.locator('section:has(h2:text("Bronz Generaller"))');
-await tiklaVeBekle(page, bronz.locator('button:has-text("Kirala")').first(), '/hire');
+// Üç nadirlik rafı alt sekmelere bölündü; bronz artık kendi sekmesinde.
+await page.locator('button:has-text("Bronz")').first().click();
+await page.waitForTimeout(400);
+await tiklaVeBekle(page, page.locator('button:has-text("Kirala")').first(), '/hire');
 await page.waitForSelector('button:has-text("Slot 1")', { timeout: 10000 });
 await tiklaVeBekle(page, page.locator('button:has-text("Slot 1")').first(), '/assign');
 kontrol('General kiralandı ve sahaya sürüldü', true);

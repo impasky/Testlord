@@ -18,7 +18,9 @@ import {
   IkonNavMalikane,
   IkonNavMenu,
   IkonNavSiralama,
+  IkonSancak,
   IkonSohret,
+  IkonSure,
 } from './Ikonlar';
 import type { Ekran } from '@lordlar/shared';
 import { Ilerleme, kisaSayi } from './ui';
@@ -37,7 +39,16 @@ const ALT_SEKMELER: { key: Sekme; ad: string; Ikon: typeof IkonNavMalikane }[] =
   { key: 'demirhane', ad: 'Demirhane', Ikon: IkonNavDemirhane },
 ];
 
+/**
+ * Menü sayfaları.
+ *
+ * Sıra rastgele değil, kullanım sıklığına göre: görevler ve olaylar her
+ * girişte bakılan şeyler (Malikâne'den taşındılar), hesap en altta çünkü
+ * ayda bir açılıyor.
+ */
 const MENU_SEKMELERI: { key: Sekme; ad: string; Ikon: typeof IkonNavMalikane }[] = [
+  { key: 'gorevler', ad: 'Görevler', Ikon: IkonSure },
+  { key: 'olaylar', ad: 'Olaylar', Ikon: IkonSancak },
   { key: 'lord', ad: 'Lord', Ikon: IkonNavLord },
   { key: 'generaller', ad: 'Generaller', Ikon: IkonNavGeneraller },
   { key: 'siralama', ad: 'Sıralama', Ikon: IkonNavSiralama },

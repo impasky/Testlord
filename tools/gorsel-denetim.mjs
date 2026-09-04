@@ -186,6 +186,8 @@ for (const [ad, etiket] of sekmeler) {
 
 // Menü altındaki ekranlar
 for (const [ad, etiket] of [
+  ['gorevler', 'Görevler'],
+  ['olaylar', 'Olaylar'],
   ['lord', 'Lord'],
   ['generaller', 'Generaller'],
   ['siralama', 'Sıralama'],

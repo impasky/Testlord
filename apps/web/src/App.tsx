@@ -14,6 +14,8 @@ import { Kisla } from './screens/Kisla';
 import { LordEkrani } from './screens/LordEkrani';
 import { useOmurgaAdimi } from './components/Omurga';
 import { Malikane } from './screens/Malikane';
+import { Gorevler } from './screens/Gorevler';
+import { Olaylar } from './screens/Olaylar';
 import { ParolaSifirla } from './screens/ParolaSifirla';
 import { Siralama } from './screens/Siralama';
 import { Ittifak } from './screens/Ittifak';
@@ -202,6 +204,18 @@ export function App() {
       )}
       {sekme === 'demirhane' && (
         <Demirhane lord={lord} queues={queues} onGuncelle={tazele} onGit={setSekme} />
+      )}
+      {sekme === 'gorevler' && <Gorevler lord={lord} onGit={setSekme} />}
+      {sekme === 'olaylar' && (
+        <Olaylar
+          lord={lord}
+          events={events}
+          onGit={setSekme}
+          onBolgeyiAc={(bolgeId) => {
+            setHedefBolge(bolgeId);
+            setSekme('harita');
+          }}
+        />
       )}
       {sekme === 'lord' && <LordEkrani lord={lord} onGuncelle={tazele} />}
       {sekme === 'generaller' && <Generaller onGuncelle={tazele} />}

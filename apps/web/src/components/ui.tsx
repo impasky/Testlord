@@ -393,6 +393,51 @@ export function Bolum({
  * Serbest sayıdaki maliyet hapları (kışla, demirhane) yine `flex-wrap`
  * kullanıyor — orada sarma DOĞRU davranış.
  */
+/**
+ * Alt sekme şeridi — bir ekranın kendi içindeki sayfalar.
+ *
+ * Oyuncunun şikâyeti "her şey iç içe karman çorman": büyük ekranlar
+ * birbiriyle alâkasız üç dört işi alt alta diziyordu (Demirhane'de üretim
+ * + envanter + donanım, Generaller'de sahadakiler + üç ayrı kiralama
+ * rafı). Alt sekme, o işleri AYIRIYOR — aynı ekranda kalıyorlar ama aynı
+ * anda görünmüyorlar.
+ *
+ * Sıralama bu deseni zaten kendi içinde kullanıyordu; oradan alınıp
+ * ortaklaştırıldı, yoksa her ekran kendi sekme şeridini biraz farklı
+ * çizerdi.
+ */
+export function AltSekmeler<T extends string>({
+  sekmeler,
+  etkin,
+  onSec,
+}: {
+  sekmeler: { key: T; ad: string; sayi?: number }[];
+  etkin: T;
+  onSec: (k: T) => void;
+}) {
+  return (
+    <div className="oyuk flex gap-1 rounded-xl p-1">
+      {sekmeler.map((s) => (
+        <button
+          key={s.key}
+          onClick={() => onSec(s.key)}
+          aria-current={etkin === s.key ? 'page' : undefined}
+          className={`bas baslik flex-1 rounded-lg py-2.5 text-[12px] ${
+            etkin === s.key ? 'bg-altin text-gece' : 'text-solgun'
+          }`}
+        >
+          {s.ad}
+          {s.sayi !== undefined && s.sayi > 0 && (
+            <span className={`ml-1 ${etkin === s.key ? 'opacity-70' : 'text-sonuk'}`}>
+              {s.sayi}
+            </span>
+          )}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export function DurumSiridi({ children }: { children: ReactNode }) {
   return <div className="grid grid-cols-2 gap-1.5 [&>*]:w-full">{children}</div>;
 }

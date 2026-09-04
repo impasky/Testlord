@@ -146,10 +146,38 @@ Görsel denetim artık yepyeni bir lordun malikânesini de ölçüyor ve boş
 bölümlerin gerçekten sakin çizildiğini doğruluyor — bilgi kaybı yok,
 değişen tek şey gözün onu atlayabilmesi.
 
-**G1'in kalanı sıradaki tura.** Üç ağırlık hiyerarşinin iskeletini kurdu
-ama "normal" katman hâlâ kalabalık: aynı ekranda beş dolu kart varken göz
-hangisine önce bakacağını bilmiyor. Bu, tek bir bileşende değil ekran ekran
-verilecek bir karar ve kendi turunu hak ediyor.
+**G1'in kalanı yapıldı: SAYFA SAYISI ARTTI.** Oyuncunun sözü net oldu —
+*"sayfa sayısını arttır, şu an her şey iç içe karman çorman oldu."*
+
+Ölçtük, tahmin etmedik. Her ekranın iPhone 13'te kaç ekran boyu olduğu:
+
+| Ekran | Önce | Sonra |
+|---|---|---|
+| Generaller | 3,4 | **1,1** |
+| Malikâne | 2,2 | **1,3** |
+| Demirhane | 1,9 | **1,0** |
+| Lord | 1,8 | 1,7 |
+| İttifak | 1,5 (ve büyüyordu) | **1,0** |
+| Sıralama | 2,6 | 2,6 |
+| Kışla | 2,4 | 2,3 |
+
+Sıralama ve Kışla'ya dokunmadık ve bu bilerek: **sorun uzunluk değil.**
+Bir sıralama tablosu uzun OLMALI, bir birim listesi de öyle. Sorun tek
+sayfada birbiriyle alâkasız işlerin toplanmasıydı — Malikâne aynı anda
+sıradaki adımı, kuyrukları, günlük görevleri, haftalık seferi, başarımları
+ve olay akışını taşıyordu.
+
+Kural: **bir sayfa bir iş.** İki yolla uygulandı:
+
+1. **Yeni sayfalar.** Görevler (günlük + sefer + başarımlar: hepsi "nereye
+   gidiyorum") ve Olaylar (olay akışı + savaş raporları: "ne oldu")
+   Malikâne'den çıkıp kendi sayfaları oldu. Malikâne'de birer KANCA
+   kalıyor — görünmeyen bir "yarın geri gel" sebebi sebep değildir
+   (docs/09 K4), o yüzden ödül hazırsa görev şeridi yeşilleniyor.
+2. **Alt sekmeler** (`AltSekmeler`). Demirhane üretim/envanter/donanım,
+   Generaller altın/gümüş/bronz, İttifak ittifakım/diplomasi/sohbet, Lord
+   güç/görünüş. Aynı ekranda kalıyorlar ama aynı anda görünmüyorlar.
+   Desen zaten Sıralama'nın içinde vardı; ortaklaştırıldı.
 
 ---
 

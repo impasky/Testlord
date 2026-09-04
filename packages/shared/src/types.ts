@@ -142,11 +142,26 @@ export interface BattleResult {
  * hiç yüklenmedi. Hata sessizdi: ekranın kendi verisi geliyordu, eksik
  * olan çerçeveydi.
  */
+/**
+ * Oyundaki ekranlar.
+ *
+ * Liste büyüdü çünkü oyuncunun şikâyeti "her şey iç içe, karman çorman"dı:
+ * Malikâne tek başına altı ayrı işi (sıradaki adım, kuyruklar, günlük
+ * görevler, haftalık sefer, başarımlar, olay akışı) üst üste yığıyordu.
+ * Uzun LİSTELER sorun değil — sıralama uzun olmalı; sorun tek sayfada
+ * birbiriyle alâkasız işlerin toplanmasıydı.
+ *
+ * Kural: **bir sayfa bir iş.** Görevler ve olaylar kendi sayfalarına
+ * çıktı; büyük ekranlar (Demirhane, Generaller, İttifak, Lord) kendi
+ * içinde alt sekmelere bölündü.
+ */
 export const EKRANLAR = [
   'malikane',
   'kisla',
   'harita',
   'demirhane',
+  'gorevler',
+  'olaylar',
   'lord',
   'generaller',
   'siralama',

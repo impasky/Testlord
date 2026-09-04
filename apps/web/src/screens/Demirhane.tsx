@@ -23,6 +23,7 @@ import { eYonelme, inIlgi } from '../components/ekler';
 import { hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { IkonAltin, IkonDemir, IkonSure, IkonNavDemirhane } from '../components/Ikonlar';
 import {
+  AltSekmeler,
   Bolum,
   Buton,
   EngelNotu,
@@ -336,6 +337,7 @@ export function Demirhane({
   const [gonderilen, setGonderilen] = useState<string | null>(null);
   // Son kuşanmanın sonucu; kapatılana ya da başka bir eylem yapılana kadar durur.
   const [sonEtki, setSonEtki] = useState<EkipmanEtkisiDto | null>(null);
+  const [sekme, setSekme] = useState<'uretim' | 'envanter' | 'donanim'>('uretim');
 
   const items = useQuery({ queryKey: ['items'], queryFn: api.items });
   const gear = useQuery({ queryKey: ['gear'], queryFn: api.gear });
@@ -402,246 +404,271 @@ export function Demirhane({
         </Kart>
       )}
 
-      <Bolum baslik="Ekipman Üretimi" id="ekipman-uretimi">
-        <Kart className="p-3">
-          {/* Şeritler SARMALANIYOR, yatay kaymıyor.
+      {/* Üç ayrı iş alt alta duruyordu: parça DÖVMEK, sahip olduklarını
+          YÖNETMEK ve kalıcı donanım hatlarını YÜKSELTMEK. Üçü de aynı
+          ocakta geçiyor ama aynı anda yapılmıyor; sekmeler onları
+          ayırıyor (docs/11 §2.3 G1). */}
+      <AltSekmeler
+        sekmeler={[
+          { key: 'uretim', ad: 'Üretim' },
+          { key: 'envanter', ad: 'Envanter', sayi: items.data?.items.length ?? 0 },
+          { key: 'donanim', ad: 'Donanım' },
+        ]}
+        etkin={sekme}
+        onSec={setSekme}
+      />
+
+      {/* Bölüm başlığı YOK: sekme şeridi zaten "Üretim" diyor ve iki satır
+          üst üste aynı şeyi yazıyordu. id boş hâlin kaydırma hedefi. */}
+      {sekme === 'uretim' && (
+        <Bolum id="ekipman-uretimi">
+          <Kart className="p-3">
+            {/* Şeritler SARMALANIYOR, yatay kaymıyor.
               Önce overflow-x-auto idi: altı slot 390 piksele sığmıyor ve
               sonuncusu (Sancak) ekranın dışında kalıyordu. Kaydırma çubuğu
               da gizli olduğu için orada bir şey olduğu belli değildi —
               oyuncu bir slotu hiç görmeden oynayabilirdi. Sarmalayınca
               hepsi görünüyor ve düğmeler parmağa uygun büyüklükte. */}
-          <div className="mb-2 flex flex-wrap gap-1.5">
-            {items.data?.tiers.map((t) => (
-              <button
-                key={t.tier}
-                onClick={() => t.unlocked && setTier(t.tier)}
-                disabled={!t.unlocked}
-                className={`bas baslik min-h-11 shrink-0 rounded-lg border px-3 py-2 text-[12px] ${
-                  tier === t.tier
-                    ? 'border-altin/60 bg-altin/15 text-altin'
-                    : t.unlocked
-                      ? 'border-kenar text-solgun'
-                      : 'border-kenar/50 text-sonuk/50'
-                }`}
-              >
-                T{t.tier}
-                {!t.unlocked && <span className="ml-1 text-[10px]">Sv{t.unlockLevel}</span>}
-              </button>
-            ))}
-          </div>
+            <div className="mb-2 flex flex-wrap gap-1.5">
+              {items.data?.tiers.map((t) => (
+                <button
+                  key={t.tier}
+                  onClick={() => t.unlocked && setTier(t.tier)}
+                  disabled={!t.unlocked}
+                  className={`bas baslik min-h-11 shrink-0 rounded-lg border px-3 py-2 text-[12px] ${
+                    tier === t.tier
+                      ? 'border-altin/60 bg-altin/15 text-altin'
+                      : t.unlocked
+                        ? 'border-kenar text-solgun'
+                        : 'border-kenar/50 text-sonuk/50'
+                  }`}
+                >
+                  T{t.tier}
+                  {!t.unlocked && <span className="ml-1 text-[10px]">Sv{t.unlockLevel}</span>}
+                </button>
+              ))}
+            </div>
 
-          <div className="mb-3 flex flex-wrap gap-1.5">
-            {EQUIP_SLOTS.map((s) => (
-              <button
-                key={s}
-                onClick={() => setSlot(s)}
-                className={`bas baslik min-h-11 shrink-0 rounded-lg border px-3 py-2 text-[12px] ${
-                  slot === s ? 'border-altin/60 bg-altin/15 text-altin' : 'border-kenar text-solgun'
-                }`}
-              >
-                {SLOT_ADI[s]}
-              </button>
-            ))}
-          </div>
+            <div className="mb-3 flex flex-wrap gap-1.5">
+              {EQUIP_SLOTS.map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setSlot(s)}
+                  className={`bas baslik min-h-11 shrink-0 rounded-lg border px-3 py-2 text-[12px] ${
+                    slot === s
+                      ? 'border-altin/60 bg-altin/15 text-altin'
+                      : 'border-kenar text-solgun'
+                  }`}
+                >
+                  {SLOT_ADI[s]}
+                </button>
+              ))}
+            </div>
 
-          {secili && (
-            <>
-              <div className="oyuk mb-3 rounded-xl p-3">
-                <div className="tabular mb-2 flex flex-wrap gap-x-3 gap-y-1 text-[12px] text-solgun">
-                  <span
-                    className={
-                      secili.cost.altin > lord.resources.altin
-                        ? 'text-kirmizi'
-                        : 'text-kaynak-altin'
-                    }
-                  >
-                    <IkonAltin boyut={13} /> {formatSayi(secili.cost.altin)}
-                  </span>
-                  <span
-                    className={
-                      secili.cost.demir > lord.resources.demir
-                        ? 'text-kirmizi'
-                        : 'text-kaynak-demir'
-                    }
-                  >
-                    <IkonDemir boyut={13} /> {formatSayi(secili.cost.demir)}
-                  </span>
-                  <span>
-                    <IkonSure boyut={13} /> {formatKalan(secili.durationSec * 1000)}
-                  </span>
+            {secili && (
+              <>
+                <div className="oyuk mb-3 rounded-xl p-3">
+                  <div className="tabular mb-2 flex flex-wrap gap-x-3 gap-y-1 text-[12px] text-solgun">
+                    <span
+                      className={
+                        secili.cost.altin > lord.resources.altin
+                          ? 'text-kirmizi'
+                          : 'text-kaynak-altin'
+                      }
+                    >
+                      <IkonAltin boyut={13} /> {formatSayi(secili.cost.altin)}
+                    </span>
+                    <span
+                      className={
+                        secili.cost.demir > lord.resources.demir
+                          ? 'text-kirmizi'
+                          : 'text-kaynak-demir'
+                      }
+                    >
+                      <IkonDemir boyut={13} /> {formatSayi(secili.cost.demir)}
+                    </span>
+                    <span>
+                      <IkonSure boyut={13} /> {formatKalan(secili.durationSec * 1000)}
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-x-2.5 gap-y-1 text-[11px]">
+                    {Object.entries(secili.rarityTable)
+                      .filter(([, p]) => p > 0)
+                      .map(([r, p]) => (
+                        <span key={r} style={{ color: nadirlikRengi(r) }}>
+                          {NADIRLIK[r as Nadirlik]?.ad} %{Math.round(p * 100)}
+                        </span>
+                      ))}
+                  </div>
+                  <p className="mt-2 text-[10px] text-sonuk">
+                    Nadirlik üretim anında rastgele belirlenir.
+                  </p>
                 </div>
-                <div className="flex flex-wrap gap-x-2.5 gap-y-1 text-[11px]">
-                  {Object.entries(secili.rarityTable)
-                    .filter(([, p]) => p > 0)
-                    .map(([r, p]) => (
-                      <span key={r} style={{ color: nadirlikRengi(r) }}>
-                        {NADIRLIK[r as Nadirlik]?.ad} %{Math.round(p * 100)}
-                      </span>
-                    ))}
-                </div>
-                <p className="mt-2 text-[10px] text-sonuk">
-                  Nadirlik üretim anında rastgele belirlenir.
-                </p>
-              </div>
 
-              <Buton
-                onClick={() => mut.mutate({ anahtar: 'craft', f: () => api.craft(tier, slot) })}
-                disabled={gonderilen === 'craft' || uretimEngeli !== null}
-                tam
-                boy="buyuk"
-              >
-                {gonderilen === 'craft' ? 'Gönderiliyor…' : `T${tier} ${SLOT_ADI[slot]} üret`}
-              </Buton>
+                <Buton
+                  onClick={() => mut.mutate({ anahtar: 'craft', f: () => api.craft(tier, slot) })}
+                  disabled={gonderilen === 'craft' || uretimEngeli !== null}
+                  tam
+                  boy="buyuk"
+                >
+                  {gonderilen === 'craft' ? 'Gönderiliyor…' : `T${tier} ${SLOT_ADI[slot]} üret`}
+                </Buton>
 
-              {uretimEngeli && <EngelNotu kisa={uretimEngeli.kisa} uzun={uretimEngeli.uzun} />}
+                {uretimEngeli && <EngelNotu kisa={uretimEngeli.kisa} uzun={uretimEngeli.uzun} />}
 
-              <KuyrukSeridi
-                kuyruklar={uretimKuyrugu}
-                etiket={
-                  <>
-                    Üretimde
-                    {uretimKuyrugu.length > 1 && (
-                      <span className="ml-1 font-normal text-solgun">
-                        ({uretimKuyrugu.length} parça)
-                      </span>
-                    )}
-                  </>
-                }
-              />
-            </>
-          )}
-        </Kart>
-      </Bolum>
+                <KuyrukSeridi
+                  kuyruklar={uretimKuyrugu}
+                  etiket={
+                    <>
+                      Üretimde
+                      {uretimKuyrugu.length > 1 && (
+                        <span className="ml-1 font-normal text-solgun">
+                          ({uretimKuyrugu.length} parça)
+                        </span>
+                      )}
+                    </>
+                  }
+                />
+              </>
+            )}
+          </Kart>
+        </Bolum>
+      )}
 
       {sonEtki && <KusanmaSonucu etki={sonEtki} onKapat={() => setSonEtki(null)} />}
 
-      <Bolum
-        baslik={`Envanter · ${items.data?.items.length ?? 0}`}
-        sakin={items.data?.items.length === 0}
-      >
-        {items.data?.items.length === 0 ? (
-          // Üretim kartı bu ekranın YUKARISINDA; oyuncuyu başka sekmeye
-          // yollamak yerine oraya kaydırıyoruz.
-          <BosHal
-            mesaj="Henüz ekipmanın yok. İlk parçanı üretmek ordunun gücünü doğrudan artırır."
-            eylemler={[
-              {
-                etiket: 'Ekipman üret',
-                onTikla: () =>
-                  document
-                    .getElementById('ekipman-uretimi')
-                    ?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
-              },
-              { etiket: 'Kışla', onTikla: () => onGit('kisla') },
-            ]}
-          />
-        ) : (
-          <div className="grid gap-2 sm:grid-cols-2">
-            {items.data?.items.map((i) => (
-              <EsyaKarti
-                key={i.id}
-                item={i}
-                kusanikGuc={
-                  items.data?.items.find((x) => x.equipped && x.slot === i.slot)?.power ?? null
-                }
-                katkiOncesi={katkiSimdi}
-                katkiSonrasi={katkiIle(i)}
-                kaynaklar={lord.resources}
-                yukseltmeKuyrugu={yukseltmeKuyrugu}
-                bunuYukseltiyor={yukseltmeKuyrugu.filter((q) => q.payload.itemId === i.id)}
-                bekleyenEylem={
-                  gonderilen === `equip:${i.id}`
-                    ? 'equip'
-                    : gonderilen === `upgrade:${i.id}`
-                      ? 'upgrade'
-                      : gonderilen === `sell:${i.id}`
-                        ? 'sell'
-                        : null
-                }
-                onEquip={() => mut.mutate({ anahtar: `equip:${i.id}`, f: () => api.equip(i.id) })}
-                onUpgrade={() =>
-                  mut.mutate({ anahtar: `upgrade:${i.id}`, f: () => api.upgradeItem(i.id) })
-                }
-                onSell={() => mut.mutate({ anahtar: `sell:${i.id}`, f: () => api.sellItem(i.id) })}
-              />
+      {sekme === 'envanter' && (
+        <Bolum sakin={items.data?.items.length === 0}>
+          {items.data?.items.length === 0 ? (
+            // Üretim kartı bu ekranın YUKARISINDA; oyuncuyu başka sekmeye
+            // yollamak yerine oraya kaydırıyoruz.
+            <BosHal
+              mesaj="Henüz ekipmanın yok. İlk parçanı üretmek ordunun gücünü doğrudan artırır."
+              eylemler={[
+                {
+                  etiket: 'Ekipman üret',
+                  onTikla: () =>
+                    document
+                      .getElementById('ekipman-uretimi')
+                      ?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+                },
+                { etiket: 'Kışla', onTikla: () => onGit('kisla') },
+              ]}
+            />
+          ) : (
+            <div className="grid gap-2 sm:grid-cols-2">
+              {items.data?.items.map((i) => (
+                <EsyaKarti
+                  key={i.id}
+                  item={i}
+                  kusanikGuc={
+                    items.data?.items.find((x) => x.equipped && x.slot === i.slot)?.power ?? null
+                  }
+                  katkiOncesi={katkiSimdi}
+                  katkiSonrasi={katkiIle(i)}
+                  kaynaklar={lord.resources}
+                  yukseltmeKuyrugu={yukseltmeKuyrugu}
+                  bunuYukseltiyor={yukseltmeKuyrugu.filter((q) => q.payload.itemId === i.id)}
+                  bekleyenEylem={
+                    gonderilen === `equip:${i.id}`
+                      ? 'equip'
+                      : gonderilen === `upgrade:${i.id}`
+                        ? 'upgrade'
+                        : gonderilen === `sell:${i.id}`
+                          ? 'sell'
+                          : null
+                  }
+                  onEquip={() => mut.mutate({ anahtar: `equip:${i.id}`, f: () => api.equip(i.id) })}
+                  onUpgrade={() =>
+                    mut.mutate({ anahtar: `upgrade:${i.id}`, f: () => api.upgradeItem(i.id) })
+                  }
+                  onSell={() =>
+                    mut.mutate({ anahtar: `sell:${i.id}`, f: () => api.sellItem(i.id) })
+                  }
+                />
+              ))}
+            </div>
+          )}
+        </Bolum>
+      )}
+
+      {sekme === 'donanim' && (
+        <Bolum>
+          <div className="space-y-2">
+            {gear.data?.map((g) => (
+              <Kart key={g.line} className="p-3">
+                <div className="mb-1.5 flex items-center gap-2.5">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-altin/15 text-altin">
+                    <IkonNavDemirhane boyut={18} />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-baseline justify-between gap-2">
+                      <span className="baslik text-[13px]">{g.ad}</span>
+                      <span className="tabular text-[12px] text-solgun">
+                        {g.level}/{g.maxLevel}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-solgun">
+                      {g.etki.replace('ordu_', 'Ordu ')} +%{Math.round(g.bonus * 100)}
+                    </p>
+                  </div>
+                </div>
+                <Ilerleme deger={g.level} max={g.maxLevel} renk="var(--color-altin)" boy="ince" />
+                {g.nextCost ? (
+                  (() => {
+                    const engel =
+                      kuyrukEngeli(donanimKuyrugu.length, DONANIM_LIMITI, 'Donanım') ??
+                      kaynakEngeli(g.nextCost, lord.resources);
+                    const anahtar = `gear:${g.line}`;
+                    return (
+                      <>
+                        <div className="mt-2.5 flex items-center gap-2">
+                          <Buton
+                            tur="sessiz"
+                            boy="kucuk"
+                            onClick={() =>
+                              mut.mutate({ anahtar, f: () => api.upgradeGear(g.line) })
+                            }
+                            disabled={gonderilen === anahtar || engel !== null}
+                          >
+                            Seviye {g.level + 1}
+                          </Buton>
+                          <span className="tabular text-[10px] text-sonuk">
+                            <span
+                              className={
+                                g.nextCost.altin > lord.resources.altin ? 'text-kirmizi' : ''
+                              }
+                            >
+                              {formatSayi(g.nextCost.altin)} altın
+                            </span>
+                            {' · '}
+                            <span
+                              className={
+                                g.nextCost.demir > lord.resources.demir ? 'text-kirmizi' : ''
+                              }
+                            >
+                              {formatSayi(g.nextCost.demir)} demir
+                            </span>
+                            {' · '}
+                            {formatKalan(g.nextCost.sec * 1000)}
+                          </span>
+                        </div>
+                        {engel && <EngelNotu kisa={engel.kisa} uzun={engel.uzun} />}
+                        <KuyrukSeridi
+                          kuyruklar={donanimKuyrugu.filter((q) => q.payload.line === g.line)}
+                          etiket="Yükseltiliyor"
+                        />
+                      </>
+                    );
+                  })()
+                ) : (
+                  <p className="mt-2 text-[11px] text-altin">En üst seviye</p>
+                )}
+              </Kart>
             ))}
           </div>
-        )}
-      </Bolum>
-
-      <Bolum baslik="Ordu Donanımı">
-        <div className="space-y-2">
-          {gear.data?.map((g) => (
-            <Kart key={g.line} className="p-3">
-              <div className="mb-1.5 flex items-center gap-2.5">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-altin/15 text-altin">
-                  <IkonNavDemirhane boyut={18} />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-baseline justify-between gap-2">
-                    <span className="baslik text-[13px]">{g.ad}</span>
-                    <span className="tabular text-[12px] text-solgun">
-                      {g.level}/{g.maxLevel}
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-solgun">
-                    {g.etki.replace('ordu_', 'Ordu ')} +%{Math.round(g.bonus * 100)}
-                  </p>
-                </div>
-              </div>
-              <Ilerleme deger={g.level} max={g.maxLevel} renk="var(--color-altin)" boy="ince" />
-              {g.nextCost ? (
-                (() => {
-                  const engel =
-                    kuyrukEngeli(donanimKuyrugu.length, DONANIM_LIMITI, 'Donanım') ??
-                    kaynakEngeli(g.nextCost, lord.resources);
-                  const anahtar = `gear:${g.line}`;
-                  return (
-                    <>
-                      <div className="mt-2.5 flex items-center gap-2">
-                        <Buton
-                          tur="sessiz"
-                          boy="kucuk"
-                          onClick={() => mut.mutate({ anahtar, f: () => api.upgradeGear(g.line) })}
-                          disabled={gonderilen === anahtar || engel !== null}
-                        >
-                          Seviye {g.level + 1}
-                        </Buton>
-                        <span className="tabular text-[10px] text-sonuk">
-                          <span
-                            className={
-                              g.nextCost.altin > lord.resources.altin ? 'text-kirmizi' : ''
-                            }
-                          >
-                            {formatSayi(g.nextCost.altin)} altın
-                          </span>
-                          {' · '}
-                          <span
-                            className={
-                              g.nextCost.demir > lord.resources.demir ? 'text-kirmizi' : ''
-                            }
-                          >
-                            {formatSayi(g.nextCost.demir)} demir
-                          </span>
-                          {' · '}
-                          {formatKalan(g.nextCost.sec * 1000)}
-                        </span>
-                      </div>
-                      {engel && <EngelNotu kisa={engel.kisa} uzun={engel.uzun} />}
-                      <KuyrukSeridi
-                        kuyruklar={donanimKuyrugu.filter((q) => q.payload.line === g.line)}
-                        etiket="Yükseltiliyor"
-                      />
-                    </>
-                  );
-                })()
-              ) : (
-                <p className="mt-2 text-[11px] text-altin">En üst seviye</p>
-              )}
-            </Kart>
-          ))}
-        </div>
-      </Bolum>
+        </Bolum>
+      )}
     </div>
   );
 }

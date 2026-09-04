@@ -81,8 +81,14 @@ kontrol('Saldırı yapıldı ve yürüyüş çözüldü', true);
 
 // --- 1. giriş: Malikâne olay akışı ---
 await page.reload({ waitUntil: 'networkidle' });
+// Olay akışı artık Malikâne'de değil, kendi sayfasında: Malikâne
+// "şimdi ne yapmalısın"ı, Olaylar "ne oldu"yu anlatıyor.
 await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 15000 });
-await page.locator('nav button:has-text("Malikâne")').click();
+await page.locator('nav button:has-text("Menü")').click();
+await page.waitForTimeout(400);
+// Menü ızgarasına DARALTIYORUZ: Malikâne'deki olay kancasının etiketi de
+// "OLAYLAR" ve text=Olaylar ikisini birden buluyordu.
+await page.locator('ul.grid button:has-text("Olaylar")').click();
 await page.waitForTimeout(1500);
 
 const bag = page.locator('button[aria-label="Savaş raporunu aç"]');

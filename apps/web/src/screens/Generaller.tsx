@@ -5,7 +5,16 @@ import { useState } from 'react';
 import { ApiError, api, type GeneralDto } from '../api/client';
 import { Gorsel } from '../components/Gorsel';
 import { IkonAltin, IkonNavGeneraller } from '../components/Ikonlar';
-import { Bolum, Buton, EngelNotu, Ilerleme, Kart, Rozet, formatSayi } from '../components/ui';
+import {
+  AltSekmeler,
+  Bolum,
+  Buton,
+  EngelNotu,
+  Ilerleme,
+  Kart,
+  Rozet,
+  formatSayi,
+} from '../components/ui';
 import { Zemin } from '../components/Zemin';
 
 const NADIRLIK_RENGI: Record<string, string> = {
@@ -13,7 +22,8 @@ const NADIRLIK_RENGI: Record<string, string> = {
   gumus: '#b8c4cc',
   altin: '#f5b731',
 };
-const NADIRLIK_ADI: Record<string, string> = { bronz: 'Bronz', gumus: 'Gümüş', altin: 'Altın' };
+const NADIRLIK_ADI = { bronz: 'Bronz', gumus: 'Gümüş', altin: 'Altın' } as const;
+type Nadirlik = keyof typeof NADIRLIK_ADI;
 
 const ETKI_ADI: Record<string, string> = {
   ordu_saldiri: 'Ordu saldırısı',
@@ -48,9 +58,7 @@ function GeneralKarti({
   const renk = NADIRLIK_RENGI[g.nadirlik] ?? '#9aa0a6';
   const yeterli = altin >= g.maliyet_altin;
   const yuzde = Math.round(g.etkinDeger * 100);
-  const sonrakiYuzde = Math.round(
-    g.pasif.deger * generalLevelMultiplier(g.level + 1) * 100,
-  );
+  const sonrakiYuzde = Math.round(g.pasif.deger * generalLevelMultiplier(g.level + 1) * 100);
   const sahada = g.slotIndex !== null;
 
   return (
@@ -73,7 +81,7 @@ function GeneralKarti({
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
             <h3 className="baslik min-w-0 flex-1 text-[13px] leading-tight">{g.ad}</h3>
-            <Rozet renk={renk}>{NADIRLIK_ADI[g.nadirlik]}</Rozet>
+            <Rozet renk={renk}>{NADIRLIK_ADI[g.nadirlik as Nadirlik] ?? g.nadirlik}</Rozet>
           </div>
 
           <p className="mt-1 text-[12px]">
@@ -158,6 +166,7 @@ export function Generaller({ onGuncelle }: { onGuncelle: () => void }) {
 
   // Tek bayrak on iki kartin butun dugmelerini birden sonduruyordu.
   const [gonderilen, setGonderilen] = useState<string | null>(null);
+  const [raf, setRaf] = useState<Nadirlik>('altin');
 
   const mut = useMutation({
     mutationFn: async ({ f }: { f: () => Promise<unknown>; anahtar: string }) => f(),
@@ -204,29 +213,40 @@ export function Generaller({ onGuncelle }: { onGuncelle: () => void }) {
         {hata && <p className="mt-2 text-[13px] text-kirmizi">{hata}</p>}
       </Bolum>
 
-      {(['altin', 'gumus', 'bronz'] as const).map((nad) => (
-        <Bolum key={nad} baslik={`${NADIRLIK_ADI[nad]} Generaller`}>
-          <div className="space-y-2">
-            {q.data.kadro
-              .filter((g) => g.nadirlik === nad)
-              .map((g) => (
-                <GeneralKarti
-                  key={g.key}
-                  g={g}
-                  slots={q.data.slots}
-                  altin={q.data.altin}
-                  bekliyor={gonderilen === g.key}
-                  onKirala={() =>
-                    mut.mutate({ anahtar: g.key, f: () => api.hireGeneral(g.key) })
-                  }
-                  onAta={(slot) =>
-                    mut.mutate({ anahtar: g.key, f: () => api.assignGeneral(g.key, slot) })
-                  }
-                />
-              ))}
-          </div>
-        </Bolum>
-      ))}
+      {/* Üç nadirlik rafı ALT ALTA duruyordu ve ekran 3,4 ekran boyuna
+          çıkıyordu: oyuncu bronz generali görmek için altın ve gümüşün
+          tamamını kaydırmak zorundaydı. Sekmeler aynı bilgiyi aynı yerde
+          tutuyor ama aynı anda göstermiyor. */}
+      <AltSekmeler
+        sekmeler={(['altin', 'gumus', 'bronz'] as const).map((nad) => ({
+          key: nad,
+          ad: NADIRLIK_ADI[nad],
+          sayi: q.data.kadro.filter((g) => g.nadirlik === nad && g.sahipMi).length,
+        }))}
+        etkin={raf}
+        onSec={setRaf}
+      />
+
+      {/* Başlık YOK: sekme şeridi zaten nadirliği söylüyor. */}
+      <Bolum>
+        <div className="space-y-2">
+          {q.data.kadro
+            .filter((g) => g.nadirlik === raf)
+            .map((g) => (
+              <GeneralKarti
+                key={g.key}
+                g={g}
+                slots={q.data.slots}
+                altin={q.data.altin}
+                bekliyor={gonderilen === g.key}
+                onKirala={() => mut.mutate({ anahtar: g.key, f: () => api.hireGeneral(g.key) })}
+                onAta={(slot) =>
+                  mut.mutate({ anahtar: g.key, f: () => api.assignGeneral(g.key, slot) })
+                }
+              />
+            ))}
+        </div>
+      </Bolum>
     </div>
   );
 }

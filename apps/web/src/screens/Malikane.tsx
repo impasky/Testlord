@@ -1,6 +1,16 @@
-/** Malikâne — durum özeti, kuyruklar, olay akışı. Mobil ana ekran. */
+/**
+ * Malikâne — "şimdi ne yapmalısın" sayfası.
+ *
+ * Eskiden altı ayrı işi taşıyordu: sıradaki adım, durum, kuyruklar,
+ * günlük görevler, haftalık sefer, başarımlar ve olay akışı. İki buçuk
+ * ekran uzunluğundaydı ve oyuncunun "her şey iç içe, karman çorman"
+ * dediği şeyin merkezi buydu.
+ *
+ * Şimdi tek iş yapıyor: ŞU AN ne olduğu ve sıradaki adım. Görevler ve
+ * olaylar kendi sayfalarına çıktı; buradan yalnız birer kanca kalıyor
+ * (görünmeyen bir "yarın geri gel" sebebi sebep değildir, docs/09 K4).
+ */
 import { B } from '@lordlar/shared';
-import { useState } from 'react';
 import type { GameEvent, LordState, QueueItem, YoklukOzeti } from '../api/client';
 import type { Sekme } from '../components/MobilKabuk';
 import {
@@ -15,7 +25,6 @@ import {
 } from '../components/Ikonlar';
 import { DiyarTanitimi } from '../components/DiyarTanitimi';
 import { Omurga } from '../components/Omurga';
-import { SavasRaporu } from '../components/SavasRaporu';
 import {
   Bolum,
   Buton,
@@ -26,10 +35,7 @@ import {
   Kart,
   formatSayi,
 } from '../components/ui';
-import { Basarimlar } from '../components/Basarimlar';
-import { BosHal } from '../components/BosHal';
-import { GunlukKart } from '../components/GunlukKart';
-import { SeferKart } from '../components/SeferKart';
+import { GorevOzeti } from '../components/GorevOzeti';
 import { Zemin } from '../components/Zemin';
 
 const KUYRUK_ADI: Record<string, string> = {
@@ -39,25 +45,6 @@ const KUYRUK_ADI: Record<string, string> = {
   upgrade_gear: 'Ordu donanımı',
   upgrade_region: 'Bölge yükseltme',
   kesif: 'Keşif',
-};
-
-const OLAY_RENGI: Record<string, string> = {
-  bolge_aldin: 'var(--color-yesil)',
-  savas_kazandin: 'var(--color-yesil)',
-  bolge_kaybettin: 'var(--color-kirmizi)',
-  savas_kaybettin: 'var(--color-kirmizi)',
-  saldiriya_ugradin: 'var(--color-turuncu)',
-  general_seviye: 'var(--color-altin)',
-  ittifak_katilim: 'var(--color-yesil)',
-  ittifak_ayrilma: 'var(--color-solgun)',
-  ittifak_lider: 'var(--color-altin)',
-  ittifak_hedef: 'var(--color-mavi)',
-  ittifak_cikarildin: 'var(--color-turuncu)',
-  kesif_raporu: 'var(--color-mavi)',
-  casus_yakalandi: 'var(--color-turuncu)',
-  casus_yakaladin: 'var(--color-yesil)',
-  general_dinleniyor: 'var(--color-turuncu)',
-  aclik: 'var(--color-kirmizi)',
 };
 
 function KuyrukSatiri({ q }: { q: QueueItem }) {
@@ -136,7 +123,6 @@ export function Malikane({
   onBolgeyiAc: (regionId: number) => void;
   onGit: (s: Sekme) => void;
 }) {
-  const [rapor, setRapor] = useState<string | null>(null);
   const yarali = lord.woundedUntil && new Date(lord.woundedUntil) > new Date();
   const korumali = lord.protectionUntil && new Date(lord.protectionUntil) > new Date();
 
@@ -228,10 +214,10 @@ export function Malikane({
         </Kart>
       )}
 
-      {/* "Bugün" kuyrukların ÜSTÜNDE: kuyruk "ne başlattım"ı gösteriyor,
-          bugün "ne yapmalıyım"ı. İkinci soru daha yukarıda durmalı. */}
-      <GunlukKart onGit={onGit} />
-      <SeferKart />
+      {/* Görev KANCASI, görevlerin kendisi değil: ayrıntı Görevler
+          sayfasında. Ödül alınmayı bekliyorsa şerit yeşilleniyor —
+          oyuncunun oraya gitmesi için tek gerçek sebep o. */}
+      <GorevOzeti onGit={() => onGit('gorevler')} />
 
       <Bolum
         baslik={`Kuyruklar${queues.length ? ` · ${queues.length}` : ''}`}
@@ -270,74 +256,24 @@ export function Malikane({
         )}
       </Bolum>
 
-      {/* Başarımlar olay akışının üstünde: akış "ne oldu"yu anlatıyor,
-          başarımlar "nereye gidiyorum"u. İkinci soru daha yukarıda
-          durmalı. */}
-      <Basarimlar olcutler={lord.basarimOlcutleri} />
-
-      <Bolum baslik="Olay Akışı" sakin={events.length === 0}>
-        {events.length === 0 ? (
-          <BosHal
-            mesaj="Henüz bir şey olmadı. Bir saldırı yaptığında ya da bölgen geliştiğinde burada okursun."
-            eylemler={[
-              { etiket: 'Haritaya git', onTikla: () => onGit('harita') },
-              { etiket: 'Kışla', onTikla: () => onGit('kisla') },
-            ]}
-          />
-        ) : (
-          <div className="space-y-2">
-            {events.slice(0, 12).map((e) => {
-              // Savaş olayları raporu taşır; taşımayanlar düz kart kalır.
-              // Tıklanamayan bir kartı tıklanabilir göstermek, olay akışında
-              // her satırı denemeye davet ederdi.
-              const raporId = typeof e.payload.battleId === 'string' ? e.payload.battleId : null;
-              const govde = (
-                <div className="flex items-baseline justify-between gap-2">
-                  <p className="min-w-0 flex-1 text-[13px]">
-                    {typeof e.payload.mesaj === 'string' ? e.payload.mesaj : e.kind}
-                  </p>
-                  <time className="shrink-0 text-[10px] text-sonuk">
-                    {new Date(e.createdAt).toLocaleString('tr-TR', {
-                      day: '2-digit',
-                      month: '2-digit',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </time>
-                </div>
-              );
-              return (
-                <Kart key={e.id} className="p-3" vurgu={OLAY_RENGI[e.kind]}>
-                  {raporId ? (
-                    <button
-                      className="bas w-full text-left"
-                      onClick={() => setRapor(raporId)}
-                      aria-label="Savaş raporunu aç"
-                    >
-                      {govde}
-                      <span className="baslik mt-1 block text-[10px] text-altin">RAPORU AÇ</span>
-                    </button>
-                  ) : (
-                    govde
-                  )}
-                </Kart>
-              );
-            })}
-          </div>
-        )}
-      </Bolum>
-
-      {rapor && (
-        <SavasRaporu
-          battleId={rapor}
-          benimId={lord.id}
-          onKapat={() => setRapor(null)}
-          onKarsiSaldiri={(bolgeId) => {
-            setRapor(null);
-            onBolgeyiAc(bolgeId);
-          }}
-        />
-      )}
+      {/* Olay kancası: akışın kendisi Olaylar sayfasında. Son olayı
+          burada göstermek "bir şey oldu mu" sorusunu sayfaya gitmeden
+          cevaplıyor. */}
+      <Kart className="p-3" sakin={events.length === 0} onClick={() => onGit('olaylar')}>
+        <div className="flex items-center gap-2">
+          <span className="baslik shrink-0 text-[11px] text-solgun">OLAYLAR</span>
+          <p className="min-w-0 flex-1 truncate text-[12px] text-solgun">
+            {events.length === 0
+              ? 'Henüz bir şey olmadı.'
+              : typeof events[0]!.payload.mesaj === 'string'
+                ? events[0]!.payload.mesaj
+                : events[0]!.kind}
+          </p>
+          <span className="baslik shrink-0 text-[10px] text-altin">
+            {events.length > 0 ? `${events.length} · AÇ` : 'AÇ'}
+          </span>
+        </div>
+      </Kart>
     </div>
   );
 }

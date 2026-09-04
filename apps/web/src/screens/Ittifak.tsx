@@ -19,6 +19,7 @@ import { IttifakSohbet } from '../components/IttifakSohbet';
 import { KaynakGonder } from '../components/KaynakGonder';
 import { Paktlar } from '../components/Paktlar';
 import {
+  AltSekmeler,
   Bolum,
   Buton,
   EngelNotu,
@@ -86,6 +87,7 @@ export function Ittifak({ lordId }: { lordId: string }) {
   const [ad, setAd] = useState('');
   const [etiket, setEtiket] = useState('');
   const [hata, setHata] = useState<string | null>(null);
+  const [sekme, setSekme] = useState<'ittifakim' | 'diplomasi' | 'sohbet'>('ittifakim');
 
   const tazele = () => {
     void qc.invalidateQueries({ queryKey: ['ittifak'] });
@@ -135,133 +137,154 @@ export function Ittifak({ lordId }: { lordId: string }) {
 
   return (
     <>
-      {ittifakim ? (
-        <Bolum baslik={`${ittifakim.ad} [${ittifakim.etiket}]`}>
-          <Kart className="p-3" vurgu="var(--color-altin)">
-            <div className="mb-2 flex items-baseline justify-between gap-2 text-[12px]">
-              <span className="text-solgun">
-                {ittifakim.uyeler.length}/{ittifakim.azamiUye} üye
-              </span>
-              <span className="tabular flex items-center gap-1">
-                <span className="text-altin/70">
-                  <IkonSohret boyut={13} />
-                </span>
-                <span className="font-bold">{formatSayi(ittifakim.toplamSohret)}</span>
-                <span className="text-solgun">toplam şöhret</span>
-              </span>
-            </div>
+      {/* Bir ittifakın içindeyken sayfa dört ayrı işi taşıyordu: üyeler,
+          kaynak gönderme, diplomasi ve sohbet. Sohbet uzadıkça sayfa
+          uzuyordu ve oyuncu paktlarına bakmak için sohbetin tamamını
+          kaydırmak zorunda kalıyordu. Sekmeler üç işi ayırıyor.
 
-            <ul className="space-y-1.5">
-              {ittifakim.uyeler.map((u) => (
-                <UyeSatiri
-                  key={u.id}
-                  uye={u}
-                  liderMiyim={liderMiyim}
-                  benimId={lordId}
-                  onCikar={(id) => cikar.mutate(id)}
-                  bekliyor={bekliyor}
-                />
-              ))}
-            </ul>
-
-            <div className="mt-2.5 border-t border-kenar/70 pt-2.5">
-              <span className="baslik text-[11px] text-solgun">Ortak hedef</span>
-              {ittifakim.hedef ? (
-                <p className="mt-1 text-[12px]">
-                  <span className="font-bold text-mavi">{ittifakim.hedef.ad}</span>
-                  {ittifakim.hedef.not && (
-                    <span className="text-solgun"> — {ittifakim.hedef.not}</span>
-                  )}
-                  <span className="block text-[11px] text-sonuk">
-                    Haritada kesik çizgiyle işaretli.
-                  </span>
-                </p>
-              ) : (
-                <p className="mt-1 text-[12px] text-sonuk">
-                  {liderMiyim
-                    ? 'Haritadan bir bölge seç ve "İttifak hedefi yap" de.'
-                    : 'Lider henüz bir hedef işaretlemedi.'}
-                </p>
-              )}
-              {liderMiyim && ittifakim.hedef && (
-                <Buton
-                  tur="sessiz"
-                  boy="kucuk"
-                  className="mt-1.5"
-                  onClick={() => hedefKaldir.mutate()}
-                  disabled={bekliyor}
-                >
-                  Hedefi kaldır
-                </Buton>
-              )}
-            </div>
-
-            <p className="mt-2.5 border-t border-kenar/70 pt-2.5 text-[11px] text-sonuk">
-              İttifak üyelerine saldıramazsın, onlar da sana saldıramaz.
-            </p>
-
-            <Buton
-              tur="sessiz"
-              tam
-              className="mt-2"
-              onClick={() => ayril.mutate()}
-              disabled={bekliyor}
-            >
-              {liderMiyim ? 'Ayrıl (liderlik devredilir)' : 'İttifaktan ayrıl'}
-            </Buton>
-          </Kart>
-        </Bolum>
-      ) : (
-        <Bolum baslik="İttifak Kur">
-          <Kart className="p-3">
-            <p className="mb-2 text-[12px] text-solgun">
-              Tek başına oynamak zorunda değilsin. İttifak üyeleri birbirine saldıramaz.
-            </p>
-            <Input
-              value={ad}
-              onChange={(e) => setAd(e.target.value)}
-              placeholder="İttifak adı"
-              maxLength={24}
-            />
-            <div className="mt-2">
-              <Input
-                value={etiket}
-                onChange={(e) => setEtiket(e.target.value.toUpperCase())}
-                placeholder="Etiket (2-5 harf)"
-                maxLength={5}
-              />
-            </div>
-            <Buton
-              tam
-              className="mt-2"
-              onClick={() => kur.mutate()}
-              disabled={bekliyor || !ad.trim() || !etiket.trim() || altin < kurmaMaliyeti}
-            >
-              <span className="mr-1.5 inline-block align-[-2px]">
-                <IkonAltin boyut={14} />
-              </span>
-              Kur · {formatSayi(kurmaMaliyeti)}
-            </Buton>
-            {altin < kurmaMaliyeti && (
-              <EngelNotu
-                kisa="Altının yetmiyor"
-                uzun={`İttifak kurmak ${formatSayi(kurmaMaliyeti)} altın tutuyor; ${formatSayi(
-                  altin,
-                )} altının var.`}
-              />
-            )}
-          </Kart>
-        </Bolum>
+          İttifaksız oyuncuda sekme YOK: onun tek işi var, bir ittifak
+          bulmak. Kullanılmayan bir sekme şeridi göstermek, boş bir kapı
+          göstermektir. */}
+      {ittifakim && (
+        <AltSekmeler
+          sekmeler={[
+            { key: 'ittifakim', ad: 'İttifakım' },
+            { key: 'diplomasi', ad: 'Diplomasi' },
+            { key: 'sohbet', ad: 'Sohbet' },
+          ]}
+          etkin={sekme}
+          onSec={setSekme}
+        />
       )}
 
-      {ittifakim && <KaynakGonder uyeler={ittifakim.uyeler} benimId={lordId} />}
+      {(!ittifakim || sekme === 'ittifakim') && (
+        <>
+          {ittifakim ? (
+            <Bolum baslik={`${ittifakim.ad} [${ittifakim.etiket}]`}>
+              <Kart className="p-3" vurgu="var(--color-altin)">
+                <div className="mb-2 flex items-baseline justify-between gap-2 text-[12px]">
+                  <span className="text-solgun">
+                    {ittifakim.uyeler.length}/{ittifakim.azamiUye} üye
+                  </span>
+                  <span className="tabular flex items-center gap-1">
+                    <span className="text-altin/70">
+                      <IkonSohret boyut={13} />
+                    </span>
+                    <span className="font-bold">{formatSayi(ittifakim.toplamSohret)}</span>
+                    <span className="text-solgun">toplam şöhret</span>
+                  </span>
+                </div>
 
-      {/* Paktlar üye listesinin ALTINDA: önce "kimlerdeniz", sonra
-          "kimlerle anlaşmışız". Diplomasi ittifakın kendisinden sonra
-          gelen bir katman. */}
-      {ittifakim && <Paktlar liste={liste} />}
+                <ul className="space-y-1.5">
+                  {ittifakim.uyeler.map((u) => (
+                    <UyeSatiri
+                      key={u.id}
+                      uye={u}
+                      liderMiyim={liderMiyim}
+                      benimId={lordId}
+                      onCikar={(id) => cikar.mutate(id)}
+                      bekliyor={bekliyor}
+                    />
+                  ))}
+                </ul>
 
-      {ittifakim && <IttifakSohbet lordId={lordId} />}
+                <div className="mt-2.5 border-t border-kenar/70 pt-2.5">
+                  <span className="baslik text-[11px] text-solgun">Ortak hedef</span>
+                  {ittifakim.hedef ? (
+                    <p className="mt-1 text-[12px]">
+                      <span className="font-bold text-mavi">{ittifakim.hedef.ad}</span>
+                      {ittifakim.hedef.not && (
+                        <span className="text-solgun"> — {ittifakim.hedef.not}</span>
+                      )}
+                      <span className="block text-[11px] text-sonuk">
+                        Haritada kesik çizgiyle işaretli.
+                      </span>
+                    </p>
+                  ) : (
+                    <p className="mt-1 text-[12px] text-sonuk">
+                      {liderMiyim
+                        ? 'Haritadan bir bölge seç ve "İttifak hedefi yap" de.'
+                        : 'Lider henüz bir hedef işaretlemedi.'}
+                    </p>
+                  )}
+                  {liderMiyim && ittifakim.hedef && (
+                    <Buton
+                      tur="sessiz"
+                      boy="kucuk"
+                      className="mt-1.5"
+                      onClick={() => hedefKaldir.mutate()}
+                      disabled={bekliyor}
+                    >
+                      Hedefi kaldır
+                    </Buton>
+                  )}
+                </div>
+
+                <p className="mt-2.5 border-t border-kenar/70 pt-2.5 text-[11px] text-sonuk">
+                  İttifak üyelerine saldıramazsın, onlar da sana saldıramaz.
+                </p>
+
+                <Buton
+                  tur="sessiz"
+                  tam
+                  className="mt-2"
+                  onClick={() => ayril.mutate()}
+                  disabled={bekliyor}
+                >
+                  {liderMiyim ? 'Ayrıl (liderlik devredilir)' : 'İttifaktan ayrıl'}
+                </Buton>
+              </Kart>
+            </Bolum>
+          ) : (
+            <Bolum baslik="İttifak Kur">
+              <Kart className="p-3">
+                <p className="mb-2 text-[12px] text-solgun">
+                  Tek başına oynamak zorunda değilsin. İttifak üyeleri birbirine saldıramaz.
+                </p>
+                <Input
+                  value={ad}
+                  onChange={(e) => setAd(e.target.value)}
+                  placeholder="İttifak adı"
+                  maxLength={24}
+                />
+                <div className="mt-2">
+                  <Input
+                    value={etiket}
+                    onChange={(e) => setEtiket(e.target.value.toUpperCase())}
+                    placeholder="Etiket (2-5 harf)"
+                    maxLength={5}
+                  />
+                </div>
+                <Buton
+                  tam
+                  className="mt-2"
+                  onClick={() => kur.mutate()}
+                  disabled={bekliyor || !ad.trim() || !etiket.trim() || altin < kurmaMaliyeti}
+                >
+                  <span className="mr-1.5 inline-block align-[-2px]">
+                    <IkonAltin boyut={14} />
+                  </span>
+                  Kur · {formatSayi(kurmaMaliyeti)}
+                </Buton>
+                {altin < kurmaMaliyeti && (
+                  <EngelNotu
+                    kisa="Altının yetmiyor"
+                    uzun={`İttifak kurmak ${formatSayi(kurmaMaliyeti)} altın tutuyor; ${formatSayi(
+                      altin,
+                    )} altının var.`}
+                  />
+                )}
+              </Kart>
+            </Bolum>
+          )}
+
+          {ittifakim && <KaynakGonder uyeler={ittifakim.uyeler} benimId={lordId} />}
+        </>
+      )}
+
+      {ittifakim && sekme === 'diplomasi' && <Paktlar liste={liste} />}
+
+      {ittifakim && sekme === 'sohbet' && <IttifakSohbet lordId={lordId} />}
 
       {hata && (
         <div className="px-3">
@@ -269,52 +292,58 @@ export function Ittifak({ lordId }: { lordId: string }) {
         </div>
       )}
 
-      <Bolum baslik="Diyarın İttifakları" sakin={liste.length === 0}>
-        {liste.length === 0 ? (
-          <BosHal mesaj="Bu diyarda henüz ittifak yok. İlkini sen kurabilirsin." eylemler={[]} />
-        ) : (
-          <ul className="space-y-2">
-            {liste.map((a, i) => (
-              <li key={a.id}>
-                <Kart className="p-3" vurgu={a.benimki ? 'var(--color-altin)' : undefined}>
-                  <div className="flex items-center gap-2">
-                    <span className="tabular w-6 shrink-0 text-[12px] text-solgun">{i + 1}.</span>
-                    <span className="min-w-0 flex-1 truncate text-[13px] font-bold">
-                      {a.ad} <span className="text-solgun">[{a.etiket}]</span>
-                    </span>
-                    <span className="tabular shrink-0 text-[11px] text-solgun">
-                      {a.uyeSayisi}/{azamiUye}
-                    </span>
-                    <span className="tabular flex w-20 shrink-0 items-center justify-end gap-1 text-[13px] font-bold">
-                      <span className="text-altin/70">
-                        <IkonSohret boyut={13} />
+      {/* Diyarın ittifakları iki durumda lazım: ittifakı OLMAYAN için
+          katılacağı liste, ittifakı olan için pakt teklif edeceği liste.
+          "İttifakım" sekmesinde göstermiyoruz — zaten bir ittifaktasın,
+          orada başka ittifakların listesi gürültü. */}
+      {(!ittifakim || sekme === 'diplomasi') && (
+        <Bolum baslik="Diyarın İttifakları" sakin={liste.length === 0}>
+          {liste.length === 0 ? (
+            <BosHal mesaj="Bu diyarda henüz ittifak yok. İlkini sen kurabilirsin." eylemler={[]} />
+          ) : (
+            <ul className="space-y-2">
+              {liste.map((a, i) => (
+                <li key={a.id}>
+                  <Kart className="p-3" vurgu={a.benimki ? 'var(--color-altin)' : undefined}>
+                    <div className="flex items-center gap-2">
+                      <span className="tabular w-6 shrink-0 text-[12px] text-solgun">{i + 1}.</span>
+                      <span className="min-w-0 flex-1 truncate text-[13px] font-bold">
+                        {a.ad} <span className="text-solgun">[{a.etiket}]</span>
                       </span>
-                      {formatSayi(a.toplamSohret)}
-                    </span>
-                  </div>
+                      <span className="tabular shrink-0 text-[11px] text-solgun">
+                        {a.uyeSayisi}/{azamiUye}
+                      </span>
+                      <span className="tabular flex w-20 shrink-0 items-center justify-end gap-1 text-[13px] font-bold">
+                        <span className="text-altin/70">
+                          <IkonSohret boyut={13} />
+                        </span>
+                        {formatSayi(a.toplamSohret)}
+                      </span>
+                    </div>
 
-                  {!ittifakim && (
-                    <Buton
-                      tur="sessiz"
-                      boy="kucuk"
-                      tam
-                      className="mt-2"
-                      onClick={() => katil.mutate(a.id)}
-                      disabled={bekliyor || a.uyeSayisi >= azamiUye || bekleme !== null}
-                    >
-                      {a.uyeSayisi >= azamiUye
-                        ? 'Dolu'
-                        : bekleme
-                          ? `${formatKalan(bekleme.kalanSn * 1000)} sonra katılabilirsin`
-                          : 'Katıl'}
-                    </Buton>
-                  )}
-                </Kart>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Bolum>
+                    {!ittifakim && (
+                      <Buton
+                        tur="sessiz"
+                        boy="kucuk"
+                        tam
+                        className="mt-2"
+                        onClick={() => katil.mutate(a.id)}
+                        disabled={bekliyor || a.uyeSayisi >= azamiUye || bekleme !== null}
+                      >
+                        {a.uyeSayisi >= azamiUye
+                          ? 'Dolu'
+                          : bekleme
+                            ? `${formatKalan(bekleme.kalanSn * 1000)} sonra katılabilirsin`
+                            : 'Katıl'}
+                      </Buton>
+                    )}
+                  </Kart>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Bolum>
+      )}
     </>
   );
 }
