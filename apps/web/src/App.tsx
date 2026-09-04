@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { ApiError, api, getToken, setToken, type MeResponse } from './api/client';
 import { BaglantiDurumu } from './components/BaglantiDurumu';
 import { MobilKabuk, type Sekme } from './components/MobilKabuk';
+import { Ogretici } from './components/Ogretici';
 import { Buton } from './components/ui';
 import { Demirhane } from './screens/Demirhane';
 import { Generaller } from './screens/Generaller';
@@ -41,6 +42,15 @@ export function App() {
   }, []);
   const [girisli, setGirisli] = useState(() => getToken() !== null);
   const [sekme, setSekme] = useState<Sekme>('malikane');
+  /**
+   * Öğretici bu oturumda kapatıldı mı.
+   *
+   * Sunucudaki damga tek kaynak, ama /me 30 saniyede bir tazeleniyor:
+   * yalnız sunucuya bakarsak oyuncu "geç"e bastıktan sonra bir sonraki
+   * /me yanıtı gelene kadar öğretici ekranda kalırdı. Bu bayrak o boşluğu
+   * kapatıyor; kalıcı hâfıza değil.
+   */
+  const [ogreticiKapandi, setOgreticiKapandi] = useState(false);
   // Savaş raporundan "karşı saldır" denince haritaya taşınan hedef.
   const [hedefBolge, setHedefBolge] = useState<number | null>(null);
   const qc = useQueryClient();
@@ -145,6 +155,17 @@ export function App() {
       isaretli={omurgaAdimi?.hedefSekme ?? null}
     >
       <BaglantiDurumu sunucuyaUlasilamiyor={isFetching && failureCount > 0} />
+      {/* Öğretici her şeyin üstünde: ilk giren oyuncu önce oyunun ne
+          olduğunu okuyor, sonra ekranı görüyor. */}
+      <Ogretici
+        lord={lord}
+        acik={!lord.ogreticiGorundu && !ogreticiKapandi}
+        onKapat={() => {
+          setOgreticiKapandi(true);
+          tazele();
+        }}
+        onGit={setSekme}
+      />
       {sekme === 'malikane' && (
         <Malikane
           lord={lord}
@@ -186,7 +207,16 @@ export function App() {
       {sekme === 'generaller' && <Generaller onGuncelle={tazele} />}
       {sekme === 'siralama' && <Siralama lordId={lord.id} onGit={setSekme} />}
       {sekme === 'ittifak' && <Ittifak lordId={lord.id} />}
-      {sekme === 'hesap' && <Hesap lord={lord} onCikis={cikis} />}
+      {sekme === 'hesap' && (
+        <Hesap
+          lord={lord}
+          onCikis={cikis}
+          onOgreticiyiAc={() => {
+            setOgreticiKapandi(false);
+            tazele();
+          }}
+        />
+      )}
     </MobilKabuk>
   );
 }

@@ -14,6 +14,7 @@
  * API ve arayüz ayakta olmalı. node tools/omurga-testi.mjs
  */
 import { chromium, devices } from 'playwright';
+import { ogreticiyiGec } from './lib/ogretici.mjs';
 
 const WEB = process.env.WEB_URL ?? 'http://127.0.0.1:5173';
 const API = process.env.API_URL ?? 'http://localhost:3000';
@@ -72,6 +73,9 @@ await page.fill('input[type=email]', `omurga${damga}@lordlar.dev`);
 await page.fill('input[type=password]', 'parola1234');
 await page.click('button[type=submit]');
 await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+// Öğretici tam ekran açılıyor ve arkasını tıklatmıyor: gerçek oyuncu
+// gibi geçiyoruz (bkz. tools/lib/ogretici.mjs).
+await ogreticiyiGec(page);
 
 const token = await page.evaluate(() => localStorage.getItem('lordlar_token'));
 const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };

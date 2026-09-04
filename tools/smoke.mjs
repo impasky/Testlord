@@ -7,6 +7,7 @@
  * Çıkış kodu 0 = akış çalışıyor ve konsolda hata yok.
  */
 import { chromium } from 'playwright';
+import { ogreticiyiGec } from './lib/ogretici.mjs';
 
 const WEB = process.env.WEB_URL ?? 'http://127.0.0.1:5173';
 const CIKTI = process.env.SMOKE_OUT ?? '.';
@@ -46,6 +47,8 @@ await page.click('button[type=submit]');
 try {
   await page.waitForSelector('text=Malikâne', { timeout: 15000 });
   kontrol('Kayıt olup Malikâne ekranına girildi', true);
+  // Öğretici tam ekran açılıyor: gerçek oyuncu gibi geçiyoruz.
+  await ogreticiyiGec(page);
 } catch {
   kontrol('Kayıt olup Malikâne ekranına girildi', false);
   console.log('  Sayfa:', (await page.locator('body').innerText()).slice(0, 300));

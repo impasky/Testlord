@@ -99,6 +99,13 @@ model Lord {
   /// Haftalık sefer ödülünün en son alındığı an. Hangi seferin açık olduğu
   /// SAKLANMIYOR — hafta numarasından türetiliyor (packages/shared/sefer.ts).
   seferOduluHaftasi DateTime?
+  /// Öğreticiyi bitirdiği (ya da geçtiği) an. Türetilemiyor: öğreticinin
+  /// okunması oyunda hiçbir iz bırakmıyor — okuyan da okumayan da aynı
+  /// durumda duruyor. Sunucuda tutuluyor cunku tam ekran bir tanıtımı
+  /// ikinci kez göstermek, kartı ikinci kez göstermekten çok daha rahatsız
+  /// edici; tarayıcı deposu silinince ya da telefon değişince geri gelirdi.
+  ogreticiBittiAt DateTime?
+
   /// Arma: oyuncunun heraldik kimliği (docs/10 §1.1). Beş küçük anahtar,
   /// hiçbir sayıya dokunmuyor. Boşsa lord adından türetiliyor.
   armaKalkan String?

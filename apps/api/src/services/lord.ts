@@ -88,6 +88,13 @@ export interface LordState {
   protectionUntil: Date | null;
   dailyAttacks: number;
   /**
+   * Öğreticiyi görüp görmediği. Arayüz tam ekran tanıtımı buna bakarak
+   * açıyor — tarayıcı deposuna değil: telefon değişince ya da depo
+   * silinince öğreticinin geri gelmesi, oyunu bilen birinin yoluna
+   * dikilmek olurdu.
+   */
+  ogreticiGorundu: boolean;
+  /**
    * Başarım ölçütleri. Başarımların kendisi burada hesaplanmıyor:
    * tanımlar `data/basarimlar.json`da, mantık `packages/shared`da.
    * Sunucu yalnızca sayılan değerleri veriyor — aynı saf fonksiyon
@@ -340,6 +347,7 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
     woundedUntil: lord.woundedUntil,
     protectionUntil: lord.protectionUntil,
     dailyAttacks: dailyReset ? 0 : lord.dailyAttacks,
+    ogreticiGorundu: lord.ogreticiBittiAt !== null,
     basarimOlcutleri: basarimOlcutleriHesapla(
       lord,
       items,

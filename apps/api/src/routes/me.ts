@@ -160,6 +160,35 @@ export async function meRoutes(app: FastifyInstance): Promise<void> {
     });
   });
 
+  /**
+   * Öğreticiyi bitirdi (ya da geçti).
+   *
+   * `updateMany` + `ogreticiBittiAt: null` koşulu bilerek: oyuncu sayfalar
+   * arasında ilerlerken ya da iki sekmede birden açıkken bu uç birkaç kez
+   * çağrılabilir. Koşulsuz yazsaydık her çağrı damgayı ileri atardı ve
+   * "öğreticiyi ne zaman bitirdi" sorusunun cevabı sürekli kayardı.
+   */
+  app.post('/me/ogretici-bitti', { preHandler: requireAuth }, async (req) => {
+    const lordId = await findLordByUser(req.user.userId);
+    const sonuc = await prisma.lord.updateMany({
+      where: { id: lordId, ogreticiBittiAt: null },
+      data: { ogreticiBittiAt: new Date() },
+    });
+    return { bitti: true, ilkKez: sonuc.count === 1 };
+  });
+
+  /**
+   * Öğreticiyi yeniden aç.
+   *
+   * Bir kere gösterilip bir daha açılamayan öğretici, unutulduğu anda
+   * kaybolmuş demektir. Hesap ekranından tekrar okunabiliyor.
+   */
+  app.post('/me/ogretici-sifirla', { preHandler: requireAuth }, async (req) => {
+    const lordId = await findLordByUser(req.user.userId);
+    await prisma.lord.update({ where: { id: lordId }, data: { ogreticiBittiAt: null } });
+    return { sifirlandi: true };
+  });
+
   /** Giriş yapmışken parola değiştirme. Mevcut parola doğrulanır. */
   app.post('/me/parola', { preHandler: requireAuth }, async (req) => {
     const { mevcut, yeni } = parolaSchema.parse(req.body);

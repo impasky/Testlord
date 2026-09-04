@@ -10,7 +10,16 @@ import { useState } from 'react';
 import { ApiError, api, type LordState } from '../api/client';
 import { Alan, Bolum, Buton, EngelNotu, Input, Kart } from '../components/ui';
 
-export function Hesap({ lord, onCikis }: { lord: LordState; onCikis: () => void }) {
+export function Hesap({
+  lord,
+  onCikis,
+  onOgreticiyiAc,
+}: {
+  lord: LordState;
+  onCikis: () => void;
+  /** Öğreticiyi yeniden açar. */
+  onOgreticiyiAc: () => void;
+}) {
   const [mevcut, setMevcut] = useState('');
   const [yeni, setYeni] = useState('');
   const [parolaBilgi, setParolaBilgi] = useState<string | null>(null);
@@ -33,6 +42,14 @@ export function Hesap({ lord, onCikis }: { lord: LordState; onCikis: () => void 
       setParolaBilgi(null);
       setParolaHata(e instanceof ApiError ? e.message : 'Parola değiştirilemedi.');
     },
+  });
+
+  // Bir kere gösterilip bir daha açılamayan öğretici, unutulduğu anda
+  // kaybolmuş demektir. Sunucudaki damga siliniyor, sonra App öğreticiyi
+  // yeniden açıyor.
+  const ogreticiMut = useMutation({
+    mutationFn: api.ogreticiSifirla,
+    onSuccess: onOgreticiyiAc,
   });
 
   const silmeMut = useMutation({
@@ -63,6 +80,23 @@ export function Hesap({ lord, onCikis }: { lord: LordState; onCikis: () => void 
             Lordun <span className="font-bold text-parsomen">{lord.name}</span> · Seviye{' '}
             {lord.level}
           </p>
+        </Kart>
+      </Bolum>
+
+      <Bolum baslik="Öğretici">
+        <Kart className="p-3">
+          <p className="mb-2.5 text-[12px] leading-snug text-solgun">
+            Oyunun ne olduğunu, nasıl savaşıldığını ve seni koruyan kuralları
+            baştan okumak istersen öğreticiyi tekrar açabilirsin.
+          </p>
+          <Buton
+            tur="anahat"
+            className="w-full"
+            onClick={() => ogreticiMut.mutate()}
+            disabled={ogreticiMut.isPending}
+          >
+            {ogreticiMut.isPending ? 'Açılıyor…' : 'Öğreticiyi tekrar oku'}
+          </Buton>
         </Kart>
       </Bolum>
 

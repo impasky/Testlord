@@ -118,6 +118,8 @@ export interface LordState {
   woundedUntil: string | null;
   protectionUntil: string | null;
   dailyAttacks: number;
+  /** Öğreticiyi görüp görmediği — tam ekran tanıtım buna bakarak açılır. */
+  ogreticiGorundu: boolean;
   /** Başarım ölçütleri; başarımlar bunlardan `basarimlar()` ile türetilir. */
   basarimOlcutleri: BasarimOlcutleri;
 }
@@ -628,6 +630,11 @@ export const api = {
       body: JSON.stringify({ parola, onay: 'HESABIMI SIL' }),
     }),
   spendStats: (points: Partial<Record<StatKey, number>>) => post<LordState>('/me/stats', points),
+
+  /** Öğretici okundu/geçildi — bir daha kendiliğinden açılmaz. */
+  ogreticiBitti: () => post<{ bitti: boolean; ilkKez: boolean }>('/me/ogretici-bitti'),
+  /** Öğreticiyi tekrar okumak için (Hesap ekranı). */
+  ogreticiSifirla: () => post<{ sifirlandi: boolean }>('/me/ogretici-sifirla'),
 
   items: () => request<{ items: ItemDto[]; tiers: TierDto[] }>('/items'),
   craft: (tier: number, slot: string) => post('/items/craft', { tier, slot }),

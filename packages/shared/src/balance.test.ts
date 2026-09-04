@@ -15,10 +15,13 @@ import {
   armyCount,
   bosGeneralBonus,
   commandCapacity,
+  counterMultiplier,
   fortressBonus,
   garnizonToplami,
   itemPower,
   kayipPaylastir,
+  karsiHalkasi,
+  ogreticiSayfalari,
   orduDus,
   GENERAL_LEVEL,
   generalLevelFromXp,
@@ -1261,5 +1264,73 @@ describe('günlük görevler ve seri', () => {
   it('bozuk veriye dayanıklı: seri 0 kayıtlıysa 1e çıkar', () => {
     const r = seriGuncelle(0, new Date('2026-09-02T12:00:00Z'), new Date('2026-09-03T12:00:00Z'));
     expect(r.seri).toBe(2);
+  });
+});
+
+describe('öğretici (docs/09 — ilk giriş)', () => {
+  const sayfalar = ogreticiSayfalari();
+
+  it('her sayfanın başlığı, özeti ve en az iki maddesi var', () => {
+    // Boş bir sayfa öğreticide görünür ama hiçbir şey anlatmaz: oyuncu
+    // "Devam"a basar ve öğrendiğini sanır.
+    expect(sayfalar.length).toBeGreaterThanOrEqual(6);
+    for (const s of sayfalar) {
+      expect(s.baslik.length).toBeGreaterThan(5);
+      expect(s.ozet.length).toBeGreaterThan(10);
+      expect(s.maddeler.length).toBeGreaterThanOrEqual(2);
+      for (const m of s.maddeler) {
+        expect(m.vurgu.length).toBeGreaterThan(2);
+        expect(m.metin.length).toBeGreaterThan(20);
+      }
+    }
+  });
+
+  it('sayfa anahtarları benzersiz', () => {
+    // Anahtar hem React listesinde hem simge tablosunda kullanılıyor;
+    // tekrarlanan bir anahtar yanlış simgeyi çizerdi.
+    const anahtarlar = sayfalar.map((s) => s.anahtar);
+    expect(new Set(anahtarlar).size).toBe(anahtarlar.length);
+  });
+
+  it('gönderdiği her sekme gerçekten var', () => {
+    // "Şimdi oraya bak" düğmesi olmayan bir ekrana götürürse hiçbir şey
+    // olmaz ve oyuncu düğmenin bozuk olduğunu düşünür.
+    for (const s of sayfalar) {
+      if (s.sekme) expect(EKRANLAR).toContain(s.sekme);
+    }
+  });
+
+  it('taş-kağıt-makas halkası motordan geliyor, elle yazılmıyor', () => {
+    // Öğreticinin en kritik sayısı bu: dengede bir çarpan değişirse
+    // öğretici de değişmeli, yoksa yeni oyuncuya yanlış strateji öğretir.
+    const halka = karsiHalkasi();
+    expect(halka).toHaveLength(3);
+    for (const k of halka) {
+      expect(counterMultiplier(k.saldiran, k.hedef)).toBe(k.carpan);
+      expect(k.carpan).toBeGreaterThan(1);
+    }
+    // Halka gerçekten HALKA olmalı: her birim tam bir kurban ve tam bir
+    // avcıya sahip. Biri kopsa "taş-kağıt-makas" cümlesi yalan olurdu.
+    const saldiranlar = new Set(halka.map((k) => k.saldiran));
+    const hedefler = new Set(halka.map((k) => k.hedef));
+    expect(saldiranlar).toEqual(hedefler);
+  });
+
+  it('öğreticideki koruma süreleri dengeyle aynı', () => {
+    // Sayı metne gömülü olduğu için testin okuması da metinden: dengedeki
+    // saat değişip metin değişmezse bu kontrol düşer.
+    const koruma = sayfalar.find((s) => s.anahtar === 'koruma')!;
+    const metin = koruma.maddeler.map((m) => `${m.vurgu} ${m.metin}`).join(' ');
+    expect(metin).toContain(`${B.korumalar.yeni_oyuncu_saat} saat`);
+    expect(metin).toContain(`${B.korumalar.yagma_sonrasi_saat} saat`);
+    expect(metin).toContain(`${B.korumalar.bolge_ele_gecirme_sonrasi_saat} saat`);
+  });
+
+  it('öğretici sezon vaat etmiyor — dünya kalıcı (docs/09 §2.2)', () => {
+    const tumMetin = sayfalar
+      .flatMap((s) => [s.baslik, s.ozet, ...s.maddeler.map((m) => `${m.vurgu} ${m.metin}`)])
+      .join(' ')
+      .toLocaleLowerCase('tr');
+    expect(tumMetin).toContain('sezon yok');
   });
 });

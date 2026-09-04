@@ -13,6 +13,7 @@
  * SADECE GELİŞTİRME. node tools/gorsel-denetim.mjs
  */
 import { chromium } from 'playwright';
+import { ogreticiyiGec } from './lib/ogretici.mjs';
 
 const API = process.env.API_URL ?? 'http://localhost:3000';
 const WEB = process.env.WEB_URL ?? 'http://localhost:5173';
@@ -83,6 +84,9 @@ await page.goto(WEB, { waitUntil: 'domcontentloaded' });
 await page.evaluate((t) => localStorage.setItem('lordlar_token', t), token);
 await page.reload({ waitUntil: 'domcontentloaded' });
 await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+// Öğretici tam ekran açılıyor ve altındaki ekranı ölçmemizi engelliyor.
+// Denetim öğreticiyi DEĞİL, arkasındaki ekranları ölçüyor.
+await ogreticiyiGec(page);
 
 /** Bir ekranı ölç. */
 async function denetle(ad) {

@@ -12,6 +12,7 @@
  *   node tools/uretim-testi.mjs
  */
 import { chromium, devices } from 'playwright';
+import { ogreticiyiGec } from './lib/ogretici.mjs';
 const URL = process.env.URETIM_URL ?? 'http://localhost:3200';
 const SP = process.env.SMOKE_OUT ?? '.';
 let hata=0; const k=(a,c,d='')=>{console.log(`  ${c?'[GEÇTİ]':'[KALDI]'} ${a}${d?` — ${d}`:''}`); if(!c)hata++;};
@@ -37,6 +38,8 @@ let girdi=true;
 try{ await page.waitForSelector('nav button:has-text("Malikâne")',{timeout:15000}); }
 catch{ girdi=false; console.log('   sayfa:',(await page.locator('body').innerText()).slice(0,200)); }
 k('Telefondan kayıt olup oyuna girildi', girdi);
+// Öğretici tam ekran açılıyor: gerçek oyuncu gibi geçiyoruz.
+await ogreticiyiGec(page);
 if(!girdi){ for(const h of hatalar.slice(0,4)) console.log('    -',h); await b.close(); process.exit(1); }
 await page.waitForTimeout(1200);
 await page.screenshot({path:`${SP}/tel-2-malikane.png`,fullPage:true});

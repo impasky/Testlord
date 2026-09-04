@@ -302,8 +302,9 @@ sayılı ve sıralı olduğu için tam tarama mümkündü ve hatayı ancak o gö
 | B3 | ~~**Sohbet**~~ **ittifak sohbeti yapıldı** | Kendi tavsiyemize uyduk: kapalı grupla başladık. Genel sohbet, moderasyon yükü kaldırılabilir olmadan açılmamalı. |
 | B4 | ~~**Süreli etkinlik**~~ **yapıldı** | Haftalık sefer: tema hafta numarasından türüyor (sunucu bir şey saklamıyor), hedef herkes için aynı. **Tablo YOK** — sıralamalı etkinlik zaten önde olanı ilerletirdi (§3.4). |
 | B5 | ~~**Casusluk**~~ **yapıldı** | Kuyruk tabanlı keşif, yakalanma riski Kurnazlık'a bağlı, rapor bir fotoğraf (docs/01 §6b). Beklenenden küçük çıktı: yeni motor gerekmedi, mevcut kuyruk makinesi yetti. |
-| B6 | **Ticaret** | Kaynak takası. İttifak olmadan sömürüye açık. |
+| B6 | ~~**Ticaret**~~ **yapıldı** | İttifak içinde tek yönlü kaynak gönderme. Takas değil gönderim seçildi: takas iki tarafın onayını, teklif kuyruğunu ve teklif süresinin dolmasını gerektiriyordu — üç yeni ekran. İki fren açık: kaynak yol alır (kuşatılanı sınırsız beslemesin) ve günlük tavan var (çoklu hesap çiftliği geçmesin). |
 | B7 | **Yatay kazanç** | Görünüş satışı. Mağaza işi **açıkça beklemede** (docs/06). |
+| B8 | ~~**Öğretici**~~ **yapıldı** | İlk girişte sekiz sayfalık tam ekran tanıtım. Zorunlu tur DEĞİL: anlatım, ilk saniyede geçilebiliyor, Hesap ekranından tekrar okunabiliyor. Metin `packages/shared/src/ogretici.ts`'te ve sayıları `balance.json`'dan türetiyor — denge değişirse öğretici de değişir, sessizce yalan söylemez. |
 
 ---
 
