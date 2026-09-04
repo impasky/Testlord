@@ -1,6 +1,6 @@
 # Görsel İstemleri
 
-Oyunun ihtiyacı olan **77 görselin** kopyala-yapıştır istemleri.
+Oyunun ihtiyacı olan **79 görselin** kopyala-yapıştır istemleri.
 Her istem üç parçadan oluşur: **konu** + **kategori kompozisyonu** +
 **taban üslup**. Taban üslup hepsinde aynıdır; tutarlılık oradan gelir.
 
@@ -31,7 +31,7 @@ Hepsini birden yaptırmak gerekmiyor. Oyuna en çok katan sırayla:
 
 | Sıra | Kategori | Adet | Neden |
 |---|---|---|---|
-| 1 | Ekran zeminleri | 6 | Oyunun "gösterge paneli" değil bir yer gibi hissetmesi en çok buna bağlı |
+| 1 | Ekran zeminleri | 8 | Oyunun "gösterge paneli" değil bir yer gibi hissetmesi en çok buna bağlı |
 | 2 | Ekipman | 30 | Demirhane şu an tamamen sayıdan ibaret |
 | 3 | Harita karoları | 6 | Haritanın okunurluğu; sahne görselleri karo olarak bulanık kalıyor |
 | 4 | Bölge aşamaları | 8 | Geliştirmenin karşılığının GÖRÜNMESİ |
@@ -567,7 +567,7 @@ SAME MAN, older and scarred, same face, same stance, same framing and same scale
 
 ---
 
-## Ekran zeminleri — 6 görsel
+## Ekran zeminleri — 8 görsel
 
 Her ekranın tepesinde geniş bir şerit olarak durur ve alt kenarı arayüze eritilir. Oyunun "gösterge paneli" değil bir yer gibi hissettirmesi büyük ölçüde buna bağlı.
 
@@ -607,6 +607,18 @@ a war council chamber, great map table with carved markers, hanging banners, can
 
 ```
 a long hall of honour lined with the banners of rival houses, shafts of light from high windows, wide establishing shot, cinematic composition with the focal subject slightly above center, deep atmospheric perspective, empty darker area along the bottom third where interface will overlay, 16:10 landscape composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `zeminler/gorevler.webp`
+
+```
+a scriptorium desk with an open ledger of tallies and seals, quill and inkpot, a wax-sealed writ, morning light, wide establishing shot, cinematic composition with the focal subject slightly above center, deep atmospheric perspective, empty darker area along the bottom third where interface will overlay, 16:10 landscape composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `zeminler/olaylar.webp`
+
+```
+a messenger's table in a keep, scattered opened letters and broken seals, a raven at the window, evening light, wide establishing shot, cinematic composition with the focal subject slightly above center, deep atmospheric perspective, empty darker area along the bottom third where interface will overlay, 16:10 landscape composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
 ```
 
 ### `zeminler/giris.webp`

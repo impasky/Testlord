@@ -181,6 +181,50 @@ Kural: **bir sayfa bir iş.** İki yolla uygulandı:
 
 ---
 
+### 2.4 Açılış kayması (CLS)
+
+Oyuncu ikinci kez "görsel kaymalar var" dediğinde denetim aracı TEMİZ
+diyordu. Araç haklıydı ama ölçtüğü şey dardı: yatay taşma, örtüşme,
+kesilen metin, küçük dokunma hedefi. **Sayfa yerleşirken içeriğin
+zıplaması hiç ölçülmüyordu** — oysa "kayma" kelimesinin birebir karşılığı
+o.
+
+Ölçünce sebep tek satırdı: **manzara şeridi** görsel yüklenene kadar 12
+piksel, yüklendikten sonra 150 piksel oluyordu. Sayfa her açılışta 138
+piksel aşağı zıplıyor, parmağın bastığı yerde başka bir düğme oluyordu.
+Şerit sekiz ekranda olduğu için sorun da sekiz ekrandaydı.
+
+| | Önce | Sonra |
+|---|---|---|
+| Açılış CLS | **0,179** | **0,014** |
+
+(Chrome'un "iyi" eşiği 0,1.)
+
+İki düzeltme:
+
+1. **Şeridin yüksekliği artık sabit.** Hangi ekranın zemin görseli olduğu
+   DERLEME ZAMANI bilinen bir şey; çalışma anında "yükle, olmazsa küçült"
+   yapmak zıplamanın kendisiydi. Görseli olan ekran 150 piksellik şeridi
+   baştan ayırıyor, görseli olmayan ekran sade bir başlıkla açılıyor —
+   ikisi de bekleyip boyut değiştirmiyor. Listeyle klasörün ayrışmasını
+   görsel denetim yakalıyor.
+2. **Görev özeti yer tutuyor.** Veri gelene kadar `null` dönüyordu; kart
+   sonradan belirip altındaki her şeyi 80 piksel aşağı itiyordu. Boş kutu
+   göstermek, sayfayı zıplatmaktan iyi.
+
+Kalan 0,014, omurga cümlesinin veri gelince bir satır büyümesi. Sabit
+yükseklik vermek ekranın en önemli kartına ölü boşluk eklerdi; eşiğin çok
+altında olduğu için bırakıldı.
+
+**Denetim artık bunu ölçüyor.** Gözcü sayfa yüklenmeden kuruluyor, çünkü
+sekmeler arası geçiş kayma üretmiyor (React bütün alt ağacı birden
+değiştiriyor) — yalnız sekme geçişini ölçen bir denetim hep 0 görür ve
+hiçbir şey yakalamaz. İlk denemede tam olarak bu hataya düştüm: gözcüyü
+her ekranda `buffered: true` ile kurunca on bir ekranın hepsi aynı sayıyı
+(0,504) verdi. Ölçüm ekranı ayırt etmiyorsa ölçüm değildir.
+
+---
+
 ## 3. Ölçüt
 
 Bir sonraki turda "daha iyi oldu mu" sorusunun cevabı şunlar:

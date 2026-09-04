@@ -17,6 +17,23 @@
  */
 import { useState, type ReactNode } from 'react';
 
+/** Şeridin yüksekliği. Görsel gelse de gelmese de DEĞİŞMİYOR. */
+const BOY = 150;
+
+/**
+ * Zemin görseli OLAN ekranlar.
+ *
+ * Neden elle yazılmış bir liste: görselin var olup olmadığını çalışma
+ * anında öğrenmek (yükle, olmazsa küçült) sayfayı ZIPLATIYOR — oyuncunun
+ * "görsel kaymalar var" şikâyetinin asıl sebebi buydu. Hangi dosyanın var
+ * olduğu derleme zamanı bilinen bir şey; tahmin etmek yerine biliyoruz ve
+ * ilk boyamada doğru yüksekliği veriyoruz.
+ *
+ * Listeyle klasörün ayrışmasını `tools/gorsel-denetim.mjs` yakalıyor:
+ * dosya konur da liste güncellenmezse denetim kalıyor.
+ */
+const ZEMINI_OLAN = new Set(['malikane', 'kisla', 'demirhane', 'generaller', 'siralama']);
+
 export function Zemin({
   ad,
   baslik,
@@ -28,30 +45,58 @@ export function Zemin({
   /** Tek satırlık "burası neresi" cümlesi. */
   altyazi?: ReactNode;
 }) {
-  const [durum, setDurum] = useState<'bekliyor' | 'var' | 'yok'>('bekliyor');
+  const [yuklendi, setYuklendi] = useState(false);
+  const gorselVar = ZEMINI_OLAN.has(ad);
 
-  // Görsel yokken ekran bugünkü düzeniyle kalsın: sadece üst boşluk.
-  if (durum === 'yok') return <div className="h-3" />;
+  // Görseli olmayan ekran: koca boş bir bant yerine sade bir başlık.
+  // Yüksekliği yine SABİT — hiçbir şey beklemediği için zıplayacak bir şey
+  // de yok.
+  if (!gorselVar) {
+    return (
+      <div className="pt-3 pb-1">
+        <h1 className="baslik text-[20px] leading-tight text-parsomen">{baslik}</h1>
+        {altyazi && <p className="text-[12px] text-solgun">{altyazi}</p>}
+      </div>
+    );
+  }
 
   return (
     <div
       // -mx-3: kabuğun yatay dolgusundan taşıp tam genişlik kaplar. Kenardan
       // kenara gitmeyen bir manzara, manzara değil resimdir.
-      className={`relative -mx-3 overflow-hidden ${durum === 'var' ? 'h-[150px]' : 'h-3'}`}
+      //
+      // YÜKSEKLİK SABİT ve bu, oyuncunun "görsel kaymalar var" şikâyetinin
+      // asıl sebebinin düzeltilmesi. Önceden şerit görsel yüklenene kadar
+      // 12px, yüklendikten sonra 150px oluyordu: sayfa her açılışta 138
+      // piksel aşağı zıplıyordu ve altındaki her düğme yer değiştiriyordu.
+      // Ölçüldü — açılış CLS'i 0,179'du (Chrome'un "iyi" eşiği 0,1).
+      //
+      // Görsel YOKSA da şerit duruyor: altındaki degrade zaten başlığın
+      // arkasında ve şerit başlıklı bir kapak gibi okunuyor. Eskiden bu
+      // durumda şerit tamamen kayboluyordu; şimdi ekranlar birbiriyle
+      // tutarlı ve dosya sonradan konduğunda hazır kutuya yerleşiyor.
+      className="relative -mx-3 overflow-hidden"
+      style={{ height: BOY }}
     >
       <img
         src={`/gorseller/zeminler/${ad}.webp`}
         alt=""
         aria-hidden
-        className="h-full w-full object-cover"
+        className={`h-full w-full object-cover transition-opacity duration-300 ${
+          yuklendi ? 'opacity-100' : 'opacity-0'
+        }`}
         // Üst yarıdan kırpar: 16:10 kaynakta ilgi çeken öğe (avlu, ocak,
         // masa) üstte, alt üçte biri arayüz için bilerek boş bırakılıyor.
         style={{ objectPosition: 'center 38%' }}
         loading="eager"
         decoding="async"
-        onLoad={() => setDurum('var')}
-        onError={() => setDurum('yok')}
+        onLoad={() => setYuklendi(true)}
       />
+      {/* Görsel gelene kadar (ya da hiç gelmezse) şeridin zemini: boş bir
+          delik değil, sakin bir kapak. */}
+      {!yuklendi && (
+        <div className="absolute inset-0 bg-gradient-to-b from-panel to-gece" aria-hidden />
+      )}
       <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-gece via-gece/80 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 px-3 pb-2.5">
         <h1

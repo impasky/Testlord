@@ -84,15 +84,89 @@ page.on('console', (m) => {
 
 await page.goto(WEB, { waitUntil: 'domcontentloaded' });
 await page.evaluate((t) => localStorage.setItem('lordlar_token', t), token);
+
+/**
+ * Kayma gözcüsü SAYFA YÜKLENMEDEN kuruluyor.
+ *
+ * Asıl kayma burada oluyor — oyuncunun her açılışta yaşadığı şey.
+ * Sekmeler arası geçiş kayma üretmiyor (React bütün alt ağacı birden
+ * değiştiriyor, tarayıcı bunu "kayma" saymıyor), o yüzden yalnız sekme
+ * geçişini ölçen bir denetim hep 0 görür ve hiçbir şey yakalamaz.
+ */
+await page.addInitScript(() => {
+  const w = window;
+  w.__ilkKayma = 0;
+  w.__ilkKaynak = [];
+  new PerformanceObserver((liste) => {
+    for (const g of liste.getEntries()) {
+      if (g.hadRecentInput) continue;
+      w.__ilkKayma += g.value;
+      for (const k of g.sources ?? []) {
+        const el = k.node;
+        if (!el || !el.tagName || w.__ilkKaynak.length >= 4) continue;
+        const sinif =
+          typeof el.className === 'string' ? el.className.split(' ').slice(0, 2).join('.') : '';
+        w.__ilkKaynak.push(`${el.tagName.toLowerCase()}${sinif ? '.' + sinif : ''}`);
+      }
+    }
+  }).observe({ type: 'layout-shift' });
+});
 await page.reload({ waitUntil: 'domcontentloaded' });
 await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
 // Öğretici tam ekran açılıyor ve altındaki ekranı ölçmemizi engelliyor.
 // Denetim öğreticiyi DEĞİL, arkasındaki ekranları ölçüyor.
 await ogreticiyiGec(page);
 
+/**
+ * Sayfa yerleşirken KAÇ PİKSEL zıpladı?
+ *
+ * Denetimin şimdiye kadar ölçmediği şey buydu ve oyuncunun "görsel
+ * kaymalar var" derken kastettiği şeyin büyük ihtimalle ta kendisi:
+ * ekran açılıyor, bir kart geç geliyor, altındaki her şey aşağı kayıyor
+ * ve parmağın bastığı yerde artık başka bir düğme oluyor.
+ *
+ * Tarayıcının kendi ölçüsünü kullanıyoruz (layout-shift performans
+ * girişi) — göz kararı değil, Chrome'un CLS hesabıyla aynı sayı.
+ * Ölçüm sekme DEĞİŞTİĞİ anda sıfırlanıyor, yani her ekran kendi
+ * kaymasından sorumlu.
+ */
+async function kaymaOlcumuBaslat() {
+  await page.evaluate(() => {
+    const w = window;
+    w.__kayma = 0;
+    w.__kaymaKaynak = [];
+    // Gözcü BİR KEZ kuruluyor ve `buffered` KULLANMIYOR. İlk hâlinde her
+    // ekranda yeni bir gözcü kurup buffered:true veriyordum: gözcü sayfanın
+    // BÜTÜN geçmişini yeniden oynatıyordu ve on bir ekranın hepsi aynı
+    // sayıyı (0.504) veriyordu. Ölçüm ekranı ayırt etmiyorsa ölçüm değil.
+    if (!w.__kaymaGozcu) {
+      w.__kaymaGozcu = new PerformanceObserver((liste) => {
+        for (const g of liste.getEntries()) {
+          // hadRecentInput: oyuncunun kendi dokunuşuyla oluşan kayma
+          // (menü açılması gibi) kayma sayılmaz.
+          if (g.hadRecentInput) continue;
+          w.__kayma += g.value;
+          for (const k of g.sources ?? []) {
+            const el = k.node;
+            if (!el || !el.tagName || w.__kaymaKaynak.length >= 4) continue;
+            const sinif =
+              typeof el.className === 'string' ? el.className.split(' ').slice(0, 2).join('.') : '';
+            w.__kaymaKaynak.push(`${el.tagName.toLowerCase()}${sinif ? '.' + sinif : ''}`);
+          }
+        }
+      });
+      w.__kaymaGozcu.observe({ type: 'layout-shift' });
+    }
+  });
+}
+
 /** Bir ekranı ölç. */
 async function denetle(ad) {
   await page.waitForTimeout(1200);
+  const kayma = await page.evaluate(() => ({
+    puan: window.__kayma ?? 0,
+    kaynak: [...new Set(window.__kaymaKaynak ?? [])],
+  }));
 
   const olcum = await page.evaluate(() => {
     const sonuc = {
@@ -165,12 +239,42 @@ async function denetle(ad) {
   if (olcum.yatayTasma > 1) sorun(ad, 'sayfa YATAY kayıyor', `${olcum.yatayTasma}px`);
   else iyi(ad, 'yatay kayma yok');
 
+  // 0,1 Chrome'un "iyi CLS" eşiği. Bunun üstü, ekran yerleşirken
+  // içeriğin gözle görülür biçimde zıpladığı anlamına geliyor.
+  if (kayma.puan > 0.1) {
+    sorun(
+      ad,
+      'AÇILIRKEN İÇERİK ZIPLIYOR',
+      `CLS ${kayma.puan.toFixed(3)} — ${kayma.kaynak.join(', ')}`,
+    );
+  } else {
+    iyi(ad, `açılışta zıplama yok (CLS ${kayma.puan.toFixed(3)})`);
+  }
+
   if (olcum.ortusme) sorun(ad, 'üst bar içeriği örtüyor', olcum.ortusme);
   if (olcum.tasanlar.length) sorun(ad, 'ekrandan taşan öge', olcum.tasanlar.join(' | '));
   if (olcum.kesilenler.length) sorun(ad, 'kesilen metin', olcum.kesilenler.join(' | '));
   if (olcum.kucukDokunma.length) sorun(ad, 'küçük dokunma hedefi', olcum.kucukDokunma.join(' | '));
 
   await page.screenshot({ path: `${CIKTI}/gd-${ad}.png` });
+}
+
+// İlk yükleme kayması: ekranlar gezilmeden ÖNCE okunuyor.
+{
+  const ilk = await page.evaluate(() => ({
+    puan: window.__ilkKayma ?? 0,
+    kaynak: [...new Set(window.__ilkKaynak ?? [])],
+  }));
+  // 0,1 Chrome'un "iyi CLS" eşiği.
+  if (ilk.puan > 0.1) {
+    sorun(
+      'acilis',
+      'AÇILIRKEN İÇERİK ZIPLIYOR',
+      `CLS ${ilk.puan.toFixed(3)} — ${ilk.kaynak.join(', ')}`,
+    );
+  } else {
+    iyi('acilis', `açılışta zıplama yok (CLS ${ilk.puan.toFixed(3)})`);
+  }
 }
 
 const sekmeler = [
@@ -181,6 +285,7 @@ const sekmeler = [
 ];
 for (const [ad, etiket] of sekmeler) {
   await page.click(`nav button:has-text("${etiket}")`);
+  await kaymaOlcumuBaslat();
   await denetle(ad);
 }
 
@@ -196,6 +301,7 @@ for (const [ad, etiket] of [
   await page.click('nav button:has-text("Menü")');
   await page.waitForTimeout(500);
   await page.click(`text=${etiket}`);
+  await kaymaOlcumuBaslat();
   await denetle(ad);
 }
 
@@ -250,6 +356,46 @@ if (yeniToken) {
       'boş bölüm dolu bölümle aynı ağırlıkta',
       `${sakin.kart} sakin kart, ${sakin.plaka} sakin başlık`,
     );
+  }
+}
+
+/**
+ * Zemin listesi ile klasör birbirini tutuyor mu?
+ *
+ * Zemin.tsx hangi ekranın görseli olduğunu ELLE tutuyor; çalışma anında
+ * "yükle, olmazsa küçült" yapmak sayfayı zıplatıyordu. Elle tutulan liste
+ * kaçınılmaz olarak klasörden sapar — bu kontrol o sapmayı yakalıyor:
+ * dosya konur da liste güncellenmezse ekran görselsiz kalır ve kimse fark
+ * etmez; listede olup dosyası olmayan ekran ise boş bir bant gösterir.
+ */
+{
+  const { readdirSync, readFileSync } = await import('node:fs');
+  const klasor = new Set(
+    readdirSync('apps/web/public/gorseller/zeminler')
+      .filter((f) => f.endsWith('.webp'))
+      .map((f) => f.replace(/\.webp$/, '')),
+  );
+  const kaynak = readFileSync('apps/web/src/components/Zemin.tsx', 'utf8');
+  const blok = kaynak.match(/const ZEMINI_OLAN = new Set\(\[([^\]]*)\]/s)?.[1] ?? '';
+  const liste = new Set([...blok.matchAll(/'([^']+)'/g)].map((m) => m[1]));
+  // 'giris' tam ekran zemin (TamZemin) ve şerit listesinde olmamalı.
+  klasor.delete('giris');
+
+  const eksik = [...klasor].filter((k) => !liste.has(k));
+  const fazla = [...liste].filter((k) => !klasor.has(k));
+  if (eksik.length || fazla.length) {
+    sorun(
+      'zeminler',
+      'Zemin listesi klasörle uyuşmuyor',
+      [
+        eksik.length ? `dosyası var listede yok: ${eksik.join(', ')}` : '',
+        fazla.length ? `listede var dosyası yok: ${fazla.join(', ')}` : '',
+      ]
+        .filter(Boolean)
+        .join(' | '),
+    );
+  } else {
+    iyi('zeminler', `liste klasörle uyuşuyor (${liste.size} zemin)`);
   }
 }
 

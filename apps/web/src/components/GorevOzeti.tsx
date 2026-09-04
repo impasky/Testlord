@@ -19,7 +19,18 @@ import { Hap, Kart } from './ui';
 export function GorevOzeti({ onGit }: { onGit: () => void }) {
   const g = useQuery({ queryKey: ['gunluk'], queryFn: api.gunluk, staleTime: 60_000 });
   const s = useQuery({ queryKey: ['sefer'], queryFn: api.sefer, staleTime: 60_000 });
-  if (!g.data && !s.data) return null;
+
+  // Veri gelene kadar null DÖNMÜYORUZ, yerini tutuyoruz. Önceden null
+  // dönüyordu: kart veri gelince beliriyor ve altındaki her şeyi 80 piksel
+  // aşağı itiyordu — oyuncunun "görsel kaymalar var" dediği şeyin bir
+  // parçası. Boş kutu göstermek, sayfayı zıplatmaktan iyi.
+  if (!g.data && !s.data) {
+    return (
+      <Kart sakin className="h-[52px] p-3">
+        <span className="sr-only">Görevler yükleniyor</span>
+      </Kart>
+    );
+  }
 
   const sayac = g.data ? gunlukSayaci(g.data.gorevler) : null;
   const gunlukHazir = Boolean(sayac && sayac.tamam === sayac.toplam && !g.data?.odul.alindi);

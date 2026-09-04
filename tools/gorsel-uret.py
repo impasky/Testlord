@@ -404,6 +404,10 @@ ISTEKLER: dict[str, dict[str, str]] = {
                       "hanging banners, candlelight",
         "siralama": "a long hall of honour lined with the banners of rival houses, "
                     "shafts of light from high windows",
+        "gorevler": "a scriptorium desk with an open ledger of tallies and seals, "
+                    "quill and inkpot, a wax-sealed writ, morning light",
+        "olaylar": "a messenger's table in a keep, scattered opened letters and "
+                   "broken seals, a raven at the window, evening light",
         "giris": "a lord in a dark cloak standing on a ridge at dawn overlooking "
                  "a wide valley of fields, towns and a distant citadel",
     },
@@ -535,7 +539,7 @@ def istemleri_yaz() -> str:
         "",
         "| Sıra | Kategori | Adet | Neden |",
         "|---|---|---|---|",
-        "| 1 | Ekran zeminleri | 6 | Oyunun \"gösterge paneli\" değil bir yer gibi hissetmesi en çok buna bağlı |",
+        "| 1 | Ekran zeminleri | 8 | Oyunun \"gösterge paneli\" değil bir yer gibi hissetmesi en çok buna bağlı |",
         "| 2 | Ekipman | 30 | Demirhane şu an tamamen sayıdan ibaret |",
         "| 3 | Harita karoları | 6 | Haritanın okunurluğu; sahne görselleri karo olarak bulanık kalıyor |",
         "| 4 | Bölge aşamaları | 8 | Geliştirmenin karşılığının GÖRÜNMESİ |",
