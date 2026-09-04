@@ -217,6 +217,7 @@ model Region {
   world  World  @relation(fields: [worldId], references: [id], onDelete: Cascade)
   owner  Lord?  @relation(fields: [ownerLordId], references: [id])
   scouts Scout[]
+  targetedBy Alliance[] @relation("AllianceTarget")
 
   @@unique([worldId, mapId])
   @@unique([worldId, q, r])
@@ -296,10 +297,19 @@ model Alliance {
   leaderLordId String @unique
   createdAt DateTime @default(now())
 
+  /// İttifakın ortak hedefi. Bir tane, bilerek: beş işaretli hedef
+  /// koordinasyon değil gürültüdür. Tek hedef bir karardır ve karar
+  /// tartışılır — sohbetin konusu olur.
+  targetRegionId Int?
+  targetSetAt    DateTime?
+  /// Hedefin yanına yazılan kısa not ("cuma akşamı", "mancınık lazım").
+  targetNote     String?
+
   world    World             @relation(fields: [worldId], references: [id], onDelete: Cascade)
   leader   Lord              @relation("AllianceLeader", fields: [leaderLordId], references: [id], onDelete: Cascade)
   members  Lord[]            @relation("AllianceMembers")
   messages AllianceMessage[]
+  target   Region?           @relation("AllianceTarget", fields: [targetRegionId], references: [id])
 
   @@unique([worldId, name])
   @@unique([worldId, tag])

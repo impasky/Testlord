@@ -117,6 +117,7 @@ export function HexHarita({
   home,
   seciliId,
   yuruyusler,
+  ittifakHedefiId,
   onSec,
 }: {
   regions: RegionDto[];
@@ -124,6 +125,8 @@ export function HexHarita({
   seciliId: number | null;
   /** Yoldaki ordular: evden hedefe çizgi ve ilerleyen bir işaret. */
   yuruyusler: MarchDto[];
+  /** İttifakın ortak hedefi. Haritada işaretli olmazsa hedef değil, nottur. */
+  ittifakHedefiId?: number | null;
   onSec: (id: number) => void;
 }) {
   // Yürüyüş işaretinin yeri her karede Date.now()'dan hesaplanıyor; bileşen
@@ -308,6 +311,21 @@ export function HexHarita({
               strokeWidth={secili ? 3.5 : taht ? 2.2 : 1}
               opacity={secili || taht ? 1 : 0.55}
             />
+
+            {/* İttifakın ortak hedefi: kesik çizgili halka.
+                Seçili halkadan (düz, kalın) ve tahttan (altın) ayrı bir
+                dil kullanıyor — üçü aynı anda görünebilir ve hangisinin
+                ne olduğu birbirine karışmamalı. */}
+            {ittifakHedefiId === r.id && (
+              <path
+                d={hexYol(x, y, BOYUT * 0.8)}
+                fill="none"
+                stroke="#7cc4f0"
+                strokeWidth="2.5"
+                strokeDasharray="5 4"
+                opacity="0.95"
+              />
+            )}
 
             {/* Taht sahipliyse ikinci altın halka: haritanın tek "kimde?"
                 sorusu bu altıgende sorulur, cevabı uzaktan okunabilmeli. */}

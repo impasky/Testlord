@@ -189,6 +189,40 @@ await c.post('/test/kalkanlari-kaldir');
 const cDurum = await c.get('/ittifak');
 kontrol('Üçüncü lord ittifaksız', cDurum.ittifakim === null);
 
+// --- Ortak hedef (docs/09 B1b)
+const hedefsiz = (await a.get('/ittifak')).ittifakim?.hedef;
+kontrol('Başlangıçta ortak hedef yok', hedefsiz === null, JSON.stringify(hedefsiz));
+
+const sahipsizBolge = (await a.get('/map')).regions.find((r) => !r.owner && r.type !== 'taht');
+const isaret = await a.post('/ittifak/hedef', { regionId: sahipsizBolge.id, not: 'cuma akşamı' });
+kontrol('Lider ortak hedef işaretleyebiliyor', Boolean(isaret?.hedef?.regionId),
+  isaret?.hedef?.ad ?? isaret?.code);
+
+const hedefli = (await a.get('/ittifak')).ittifakim?.hedef;
+kontrol('Hedef ittifak özetinde görünüyor', hedefli?.regionId === sahipsizBolge.id,
+  `${hedefli?.ad} — ${hedefli?.not}`);
+
+// Cekirdek: hedef HARITADA gorunmeli. Ittifak ekraninda duran bir hedef,
+// oyuncunun saldiriya karar verdigi yerde yok demektir.
+const uyeHaritasi = await b.get('/map');
+kontrol('Hedef ÜYENİN haritasında işaretli',
+  uyeHaritasi.ittifakHedefi?.regionId === sahipsizBolge.id,
+  JSON.stringify(uyeHaritasi.ittifakHedefi));
+kontrol('Haritadaki hedef notu taşıyor', uyeHaritasi.ittifakHedefi?.not === 'cuma akşamı',
+  uyeHaritasi.ittifakHedefi?.not ?? '-');
+
+const uyeOlaylari = (await b.get('/me')).events;
+kontrol('Üyeler hedeften haberdar ediliyor',
+  uyeOlaylari.some((e) => e.kind === 'ittifak_hedef'),
+  uyeOlaylari.find((e) => e.kind === 'ittifak_hedef')?.payload?.mesaj ?? 'olay yok');
+
+const uyeIsaret = await b.post('/ittifak/hedef', { regionId: sahipsizBolge.id });
+kontrol('Üye hedef işaretleyemiyor', uyeIsaret?.code === 'YETKISIZ', uyeIsaret?.code ?? 'işaretledi');
+
+const disHarita = await c.get('/map');
+kontrol('İttifaksız oyuncu hedefi görmüyor', disHarita.ittifakHedefi === null,
+  JSON.stringify(disHarita.ittifakHedefi));
+
 // --- Ayrılınca saldırı açılıyor ama bekleme başlıyor
 const ayrildi = await b.post('/ittifak/ayril');
 kontrol('İttifaktan ayrılınabiliyor', ayrildi?.ayrildi === true, JSON.stringify(ayrildi));

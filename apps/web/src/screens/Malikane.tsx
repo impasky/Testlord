@@ -50,6 +50,7 @@ const OLAY_RENGI: Record<string, string> = {
   ittifak_katilim: 'var(--color-yesil)',
   ittifak_ayrilma: 'var(--color-solgun)',
   ittifak_lider: 'var(--color-altin)',
+  ittifak_hedef: 'var(--color-mavi)',
   ittifak_cikarildin: 'var(--color-turuncu)',
   kesif_raporu: 'var(--color-mavi)',
   casus_yakalandi: 'var(--color-turuncu)',

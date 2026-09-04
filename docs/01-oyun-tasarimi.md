@@ -452,6 +452,20 @@ geçince çıkardı.
 geçer. Dağıtmak, liderin tek tıkla herkesin ittifakını silmesi demekti.
 İttifak ancak son üyesi de ayrılınca silinir.
 
+### Ortak hedef
+
+Lider **tek** bir bölgeyi ittifakın ortak hedefi olarak işaretler. Hedef
+haritada kesik çizgili mavi halkayla görünür ve harita üstünde bir şerit
+olarak yazılır; işaretlendiğinde bütün üyelere olay düşer.
+
+**Neden tek hedef:** beş işaretli hedef koordinasyon değil gürültüdür. Tek
+hedef bir karardır ve karar tartışılır — yani sohbetin konusu olur. Sistemin
+işi kararı almak değil, alınan kararı herkesin gördüğü yere yazmak.
+
+Düğme bölge sayfasında, ittifak ekranında değil: hedef kararı bölgeye
+bakarken veriliyor. Kendi üyenizin bölgesi hedef olamaz (zaten
+saldırılamıyor).
+
 ### İttifak sohbeti
 
 Sohbet **yalnız ittifak içi.** Kapalı bir gruba (en fazla sekiz kişi) yazmak,

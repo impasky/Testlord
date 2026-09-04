@@ -226,6 +226,8 @@ export interface MapDto {
   home: { q: number; r: number };
   maxRegions: number;
   oneri: HedefOnerisiDto | null;
+  /** İttifakın ortak hedefi — varsa haritada işaretli. */
+  ittifakHedefi: { regionId: number; not: string | null; etiket: string } | null;
   regions: RegionDto[];
 }
 
@@ -533,6 +535,15 @@ export interface IttifakDto {
     uyeler: IttifakUyesiDto[];
     toplamSohret: number;
     azamiUye: number;
+    hedef: {
+      regionId: number;
+      ad: string;
+      tip: string;
+      seviye: number;
+      sahipsiz: boolean;
+      not: string | null;
+      an: string | null;
+    } | null;
   } | null;
   liste: {
     id: string;
@@ -642,6 +653,8 @@ export const api = {
   ittifakKatil: (id: string) => post<{ katildi: string; ad: string }>(`/ittifak/${id}/katil`, {}),
   ittifakAyril: () => post<{ ayrildi: boolean; dagildi: boolean }>('/ittifak/ayril', {}),
   ittifakSohbet: () => request<SohbetDto>('/ittifak/sohbet'),
+  ittifakHedef: (regionId: number | null, not?: string) =>
+    post<{ hedef: { regionId: number; ad: string } | null }>('/ittifak/hedef', { regionId, not }),
   ittifakYaz: (metin: string) =>
     post<{ id: string; an: string }>('/ittifak/sohbet', { metin }),
   ittifakUyeCikar: (lordId: string) =>

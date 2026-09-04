@@ -115,7 +115,17 @@ export function Ittifak({ lordId }: { lordId: string }) {
     onSuccess: basarili,
     onError: yut,
   });
-  const bekliyor = kur.isPending || katil.isPending || ayril.isPending || cikar.isPending;
+  const hedefKaldir = useMutation({
+    mutationFn: () => api.ittifakHedef(null),
+    onSuccess: basarili,
+    onError: yut,
+  });
+  const bekliyor =
+    kur.isPending ||
+    katil.isPending ||
+    ayril.isPending ||
+    cikar.isPending ||
+    hedefKaldir.isPending;
 
   if (!q.data) return <Iskelet />;
   const { ittifakim, liste, altin, kurmaMaliyeti, azamiUye, bekleme } = q.data;
@@ -151,6 +161,38 @@ export function Ittifak({ lordId }: { lordId: string }) {
                 />
               ))}
             </ul>
+
+            <div className="mt-2.5 border-t border-kenar/70 pt-2.5">
+              <span className="baslik text-[11px] text-solgun">Ortak hedef</span>
+              {ittifakim.hedef ? (
+                <p className="mt-1 text-[12px]">
+                  <span className="font-bold text-mavi">{ittifakim.hedef.ad}</span>
+                  {ittifakim.hedef.not && (
+                    <span className="text-solgun"> — {ittifakim.hedef.not}</span>
+                  )}
+                  <span className="block text-[11px] text-sonuk">
+                    Haritada kesik çizgiyle işaretli.
+                  </span>
+                </p>
+              ) : (
+                <p className="mt-1 text-[12px] text-sonuk">
+                  {liderMiyim
+                    ? 'Haritadan bir bölge seç ve "İttifak hedefi yap" de.'
+                    : 'Lider henüz bir hedef işaretlemedi.'}
+                </p>
+              )}
+              {liderMiyim && ittifakim.hedef && (
+                <Buton
+                  tur="sessiz"
+                  boy="kucuk"
+                  className="mt-1.5"
+                  onClick={() => hedefKaldir.mutate()}
+                  disabled={bekliyor}
+                >
+                  Hedefi kaldır
+                </Buton>
+              )}
+            </div>
 
             <p className="mt-2.5 border-t border-kenar/70 pt-2.5 text-[11px] text-sonuk">
               İttifak üyelerine saldıramazsın, onlar da sana saldıramaz.

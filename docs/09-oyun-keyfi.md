@@ -52,8 +52,14 @@ onsuz saldırı kilidi kalkan gibi kullanılırdı.
 grupla başladık — genel sohbet, moderasyon yükü kaldırılabilir hâle
 gelmeden açılmamalı.
 
-**Sırada:** takviye gönderme, ortak hedef işaretleme, saldırmazlık paktı.
-Hepsi artık var olan bir çekirdeğin üstüne geliyor.
+**B1b ile eklendi:** ortak hedef işaretleme (docs/01 §7d). Lider tek bir
+bölgeyi işaretliyor, herkesin haritasında görünüyor.
+
+**Sırada:** takviye gönderme ve saldırmazlık paktı. Takviye bilerek
+sonraya bırakıldı: asker göndermek savaş çözümünü değiştiriyor (kayıplar
+kime yazılacak, bölge el değiştirince takviye nereye dönecek) ve
+`march.ts`in en hassas yeri orası. Yarım yapılırsa asker kaybolur — o
+yüzden ayrı ve dikkatli bir iş.
 
 ### 2.2 Sezon / sunucu döngüsü
 

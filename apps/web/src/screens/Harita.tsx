@@ -223,6 +223,75 @@ function kabaSure(sn: number): string {
 }
 
 /**
+ * "İttifak hedefi yap" — yalnız lidere görünür.
+ *
+ * Düğme BURADA, bölge detayında: hedef kararı bölgeye bakarken veriliyor.
+ * İttifak ekranına koymak, lideri bölgeyi seçtiği yerden alıp başka bir
+ * ekrana yollamak ve orada bölgeyi yeniden aratmak demekti.
+ */
+function IttifakHedefiDugmesi({
+  bolgeId,
+  bolgeAdi,
+  lordId,
+}: {
+  bolgeId: number;
+  bolgeAdi: string;
+  lordId: string;
+}) {
+  const qc = useQueryClient();
+  const durum = useQuery({ queryKey: ['ittifak'], queryFn: api.ittifak, staleTime: 30_000 });
+  const [hata, setHata] = useState<string | null>(null);
+  const isaretle = useMutation({
+    mutationFn: () => api.ittifakHedef(bolgeId),
+    onSuccess: () => {
+      hisOnay();
+      setHata(null);
+      void qc.invalidateQueries({ queryKey: ['ittifak'] });
+      void qc.invalidateQueries({ queryKey: ['harita'] });
+    },
+    onError: (e: unknown) => {
+      hisRet();
+      setHata(e instanceof ApiError ? e.message : 'Hedef işaretlenemedi.');
+    },
+  });
+
+  // Lideri üye listesinden değil, OYUNCUNUN KENDİ kimliğinden buluyoruz.
+  // "Listedeki lider kim" diye sorup ona eşitlemek her oyuncuda doğru
+  // çıkardı ve düğme herkese görünürdü; sunucu reddederdi ama arayüz
+  // yapılamayacak bir şeyi öneriyor olurdu.
+  const ittifakim = durum.data?.ittifakim;
+  if (!ittifakim || ittifakim.liderId !== lordId) return null;
+
+  const zatenHedef = ittifakim.hedef?.regionId === bolgeId;
+
+  return (
+    <Kart className="p-3">
+      <h3 className="baslik mb-1.5 text-[11px] text-solgun">İttifak</h3>
+      {zatenHedef ? (
+        <p className="text-[12px] text-mavi">
+          {bolgeAdi} zaten ittifakın ortak hedefi. Haritada kesik çizgiyle işaretli.
+        </p>
+      ) : (
+        <>
+          <p className="mb-2 text-[12px] text-sonuk">
+            Ortak hedef bir tanedir; işaretlemek öncekini değiştirir.
+          </p>
+          <Buton
+            tur="sessiz"
+            tam
+            onClick={() => isaretle.mutate()}
+            disabled={isaretle.isPending}
+          >
+            {isaretle.isPending ? 'İşaretleniyor…' : 'İttifak hedefi yap'}
+          </Buton>
+        </>
+      )}
+      {hata && <EngelNotu kisa={hata} uzun="Kendi üyenizin bölgesi hedef olamaz." />}
+    </Kart>
+  );
+}
+
+/**
  * Keşif kartı: casus gönder, gelen raporu göster.
  *
  * Casusluk oyunun tek ORDUSUZ hamlesi. Ordusu ezilmiş ya da henüz
@@ -545,11 +614,31 @@ export function Harita({
           </div>
         )}
         <Kart className="p-2">
+          {harita.data.ittifakHedefi && (
+            <button
+              type="button"
+              className="bas mb-2 flex w-full items-center gap-2 rounded-xl border border-mavi/40 bg-mavi/10 px-3 py-2 text-left"
+              onClick={() => setSeciliId(harita.data!.ittifakHedefi!.regionId)}
+            >
+              <span className="baslik shrink-0 text-[10px] text-mavi">
+                [{harita.data.ittifakHedefi.etiket}] HEDEF
+              </span>
+              <span className="min-w-0 flex-1 truncate text-[12px]">
+                {harita.data.regions.find((r) => r.id === harita.data!.ittifakHedefi!.regionId)
+                  ?.name ?? 'Bölge'}
+                {harita.data.ittifakHedefi.not && (
+                  <span className="text-solgun"> — {harita.data.ittifakHedefi.not}</span>
+                )}
+              </span>
+            </button>
+          )}
+
           <HexHarita
             regions={harita.data.regions}
             home={harita.data.home}
             seciliId={seciliId}
             yuruyusler={marches.data ?? []}
+            ittifakHedefiId={harita.data.ittifakHedefi?.regionId ?? null}
             onSec={(id) => {
               setSeciliId(id);
               setSaldiriOrdusu({});
@@ -943,6 +1032,7 @@ export function Harita({
               )}
 
               <KesifKarti bolge={bolge} />
+              <IttifakHedefiDugmesi bolgeId={bolge.id} bolgeAdi={bolge.name} lordId={lordId} />
 
               {bolgeSavaslari.length > 0 && (
                 <Kart className="p-3">

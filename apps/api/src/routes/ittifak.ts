@@ -41,6 +41,7 @@ async function ittifakOzeti(allianceId: string) {
     where: { id: allianceId },
     include: {
       members: { select: uyeSecimi, orderBy: { fame: 'desc' } },
+      target: { select: { id: true, name: true, type: true, level: true, ownerLordId: true } },
     },
   });
   if (!a) return null;
@@ -65,6 +66,17 @@ async function ittifakOzeti(allianceId: string) {
       .sort((x, y) => (x.lider ? -1 : y.lider ? 1 : y.sohret - x.sohret)),
     toplamSohret: a.members.reduce((t, u) => t + u.fame, 0),
     azamiUye: azamiUye(),
+    hedef: a.target
+      ? {
+          regionId: a.target.id,
+          ad: a.target.name,
+          tip: a.target.type,
+          seviye: a.target.level,
+          sahipsiz: a.target.ownerLordId === null,
+          not: a.targetNote,
+          an: a.targetSetAt,
+        }
+      : null,
   };
 }
 
@@ -349,6 +361,82 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
       data: { allianceId: lord.allianceId, lordId, text: metin },
     });
     return { id: m.id, an: m.createdAt };
+  });
+
+  /**
+   * Ortak hedef işaretler (lider).
+   *
+   * İttifak başına TEK hedef, bilerek: beş işaretli hedef koordinasyon
+   * değil gürültüdür. Tek hedef bir karardır, karar da tartışılır — yani
+   * sohbetin konusu olur. Sistemin işi kararı almak değil, alınan kararı
+   * herkesin gördüğü bir yere yazmak.
+   */
+  app.post('/ittifak/hedef', { preHandler: requireAuth }, async (req) => {
+    const body = z
+      .object({ regionId: z.number().int().nullable(), not: z.string().max(120).optional() })
+      .parse(req.body);
+    const lordId = await findLordByUser(req.user.userId);
+
+    return prisma.$transaction(async (tx) => {
+      const lord = await tx.lord.findUniqueOrThrow({
+        where: { id: lordId },
+        select: { allianceId: true, worldId: true, name: true },
+      });
+      if (!lord.allianceId) throw new GameError('Bir ittifakta değilsin.', 400, 'ITTIFAK_YOK');
+
+      const a = await tx.alliance.findUniqueOrThrow({
+        where: { id: lord.allianceId },
+        include: { members: { select: { id: true } } },
+      });
+      if (a.leaderLordId !== lordId) throw hata.yetkisiz();
+
+      if (body.regionId === null) {
+        await tx.alliance.update({
+          where: { id: a.id },
+          data: { targetRegionId: null, targetSetAt: null, targetNote: null },
+        });
+        return { hedef: null };
+      }
+
+      const bolge = await tx.region.findUnique({ where: { id: body.regionId } });
+      if (!bolge || bolge.worldId !== lord.worldId) throw hata.bulunamadi('Bölge');
+      // Kendi üyesinin bölgesini hedef göstermek anlamsız: zaten
+      // saldırılamıyor.
+      if (bolge.ownerLordId) {
+        const sahip = await tx.lord.findUnique({
+          where: { id: bolge.ownerLordId },
+          select: { allianceId: true },
+        });
+        if (ayniIttifaktaMi(lord.allianceId, sahip?.allianceId ?? null)) {
+          throw new GameError('Kendi üyenizin bölgesi hedef olamaz.', 400, 'ITTIFAK_UYESI');
+        }
+      }
+
+      await tx.alliance.update({
+        where: { id: a.id },
+        data: {
+          targetRegionId: bolge.id,
+          targetSetAt: new Date(),
+          targetNote: body.not?.trim() || null,
+        },
+      });
+
+      // Herkese haber: işaretlenmiş ama kimsenin görmediği hedef,
+      // işaretlenmemiş hedefle aynı şeydir.
+      for (const u of a.members) {
+        if (u.id === lordId) continue;
+        await pushEvent(
+          u.id,
+          'ittifak_hedef',
+          {
+            mesaj: `${lord.name} ittifakın hedefini ${bolge.name} olarak işaretledi.`,
+            regionId: bolge.id,
+          },
+          tx,
+        );
+      }
+      return { hedef: { regionId: bolge.id, ad: bolge.name } };
+    });
   });
 
   /** Lider bir üyeyi çıkarır. */

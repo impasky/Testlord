@@ -178,21 +178,32 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
     const lordId = await findLordByUser(req.user.userId);
     const me = await prisma.lord.findUniqueOrThrow({
       where: { id: lordId },
-      select: { worldId: true, homeQ: true, homeR: true, level: true },
+      select: { worldId: true, homeQ: true, homeR: true, level: true, allianceId: true },
     });
 
-    const [regions, oneri] = await Promise.all([
+    const [regions, oneri, ittifak] = await Promise.all([
       prisma.region.findMany({
         where: { worldId: me.worldId },
         include: { owner: { select: { id: true, name: true, level: true } } },
         orderBy: { id: 'asc' },
       }),
       onerilenHedef(lordId),
+      // Ortak hedef HARİTADA görünmeli: ittifak ekranında duran bir hedef,
+      // oyuncunun saldırıya karar verdiği yerde yok demektir.
+      me.allianceId
+        ? prisma.alliance.findUnique({
+            where: { id: me.allianceId },
+            select: { targetRegionId: true, targetNote: true, tag: true },
+          })
+        : Promise.resolve(null),
     ]);
 
     return {
       home: { q: me.homeQ, r: me.homeR },
       maxRegions: maxRegions(me.level),
+      ittifakHedefi: ittifak?.targetRegionId
+        ? { regionId: ittifak.targetRegionId, not: ittifak.targetNote, etiket: ittifak.tag }
+        : null,
       // Oyuncu haritaya baktığında "neye saldırayım" sorusunun cevabı
       // hazır olsun; hedef seçmek bir bulmaca olmamalı.
       oneri,
