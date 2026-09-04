@@ -62,7 +62,7 @@ function Satir({
           <button
             onClick={() => onRapor(r)}
             aria-label={`${r.name} adlı lordu şikâyet et`}
-            className="bas shrink-0 px-1 text-[15px] leading-none text-sonuk"
+            className="bas -mr-1.5 flex h-10 w-10 shrink-0 items-center justify-center text-[15px] leading-none text-sonuk"
             title="Şikâyet et"
           >
             ⚑

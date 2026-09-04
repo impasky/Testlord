@@ -409,13 +409,19 @@ export function Demirhane({
 
       <Bolum baslik="Ekipman Üretimi" id="ekipman-uretimi">
         <Kart className="p-3">
-          <div className="gizli-kaydirma mb-2 flex gap-1.5 overflow-x-auto">
+          {/* Şeritler SARMALANIYOR, yatay kaymıyor.
+              Önce overflow-x-auto idi: altı slot 390 piksele sığmıyor ve
+              sonuncusu (Sancak) ekranın dışında kalıyordu. Kaydırma çubuğu
+              da gizli olduğu için orada bir şey olduğu belli değildi —
+              oyuncu bir slotu hiç görmeden oynayabilirdi. Sarmalayınca
+              hepsi görünüyor ve düğmeler parmağa uygun büyüklükte. */}
+          <div className="mb-2 flex flex-wrap gap-1.5">
             {items.data?.tiers.map((t) => (
               <button
                 key={t.tier}
                 onClick={() => t.unlocked && setTier(t.tier)}
                 disabled={!t.unlocked}
-                className={`bas baslik shrink-0 rounded-lg border px-3 py-2 text-[12px] ${
+                className={`bas baslik min-h-11 shrink-0 rounded-lg border px-3 py-2 text-[12px] ${
                   tier === t.tier
                     ? 'border-altin/60 bg-altin/15 text-altin'
                     : t.unlocked
@@ -429,12 +435,12 @@ export function Demirhane({
             ))}
           </div>
 
-          <div className="gizli-kaydirma mb-3 flex gap-1.5 overflow-x-auto">
+          <div className="mb-3 flex flex-wrap gap-1.5">
             {EQUIP_SLOTS.map((s) => (
               <button
                 key={s}
                 onClick={() => setSlot(s)}
-                className={`bas baslik shrink-0 rounded-lg border px-2.5 py-1.5 text-[11px] ${
+                className={`bas baslik min-h-11 shrink-0 rounded-lg border px-3 py-2 text-[12px] ${
                   slot === s ? 'border-altin/60 bg-altin/15 text-altin' : 'border-kenar text-solgun'
                 }`}
               >

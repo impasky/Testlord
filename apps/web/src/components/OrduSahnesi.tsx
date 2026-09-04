@@ -150,17 +150,13 @@ function useNaara() {
 export function OrduSahnesi({
   army,
   komutaTavani,
-  kusanilan,
 }: {
   army: Army;
   komutaTavani: number;
-  /** Lord figürünü ve savurulan silahı seçer. */
-  kusanilan: { slot: string; tier: number }[];
 }) {
   const dagilim = figurDagilimi(army);
   const kullanilan = armySlots(army);
   const siralar = sahneyeDiz(dagilim);
-  const silah = kusanilan.find((i) => i.slot === 'silah');
   const { naara, naaraAt } = useNaara();
 
   return (
@@ -236,20 +232,6 @@ export function OrduSahnesi({
             </div>
           </div>
         ))
-      )}
-
-      {/* Savurulan silah: oyuncunun GERÇEKTEN kuşandığı kılıç. Ayrı bir
-          animasyon karesi gerekmiyor, elimizdeki ikonu yayla geçiriyoruz. */}
-      {silah && (
-        <div className="savurma pointer-events-none absolute bottom-[26px] left-1/2">
-          <Gorsel
-            tur="ekipman"
-            ad={`${silah.slot}_t${silah.tier}`}
-            alt=""
-            boyut={96}
-            yedek={<></>}
-          />
-        </div>
       )}
 
       {/* Alt şerit: sahnenin söylemediği tek şey, gerçek sayılar. */}

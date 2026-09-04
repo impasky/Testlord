@@ -259,35 +259,13 @@ svg g[role='button']:focus-visible > path:first-of-type {
 }
 
 /*
- * Kılıç savurma.
+ * Kılıç savurma KALDIRILDI.
  *
- * Durağan bir figürün kolunu döndüremiyoruz, ama oyuncunun KUŞANDIĞI
- * kılıcı sahnenin önünden bir yay çizerek geçirebiliyoruz. Kılıç zaten
- * saydam bir görsel; ayrı bir efekt varlığı gerekmiyor ve savurulan şey
- * gerçekten onun kılıcı — T1 ise paslı demir, T5 ise akkor rünlü.
- *
- * Görünürlüğü animasyonun kendisi yönetiyor: dışında opaklık 0, yani
- * naara yokken kılıç sahnede durmuyor.
+ * Sahnenin önünden oyuncunun kuşandığı kılıcı geçiriyorduk. O efekt lord
+ * figürünün elindeki kılıçtı; figür sahneden çıkarılınca kılıç sahipsiz
+ * kaldı — askerlerin üstünde havada uçan, sahneden taşan bir nesne oldu.
+ * Sahne artık yalnız ordu.
  */
-.savurma {
-  opacity: 0;
-  transform-origin: 20% 80%;
-}
-.sahne-naara .savurma {
-  animation: kilic-savur 620ms cubic-bezier(0.3, 0, 0.2, 1) 360ms;
-}
-@keyframes kilic-savur {
-  0% {
-    opacity: 0;
-    transform: translate(-190%, 30px) rotate(-70deg) scale(0.9);
-  }
-  25% { opacity: 1; }
-  75% { opacity: 1; }
-  100% {
-    opacity: 0;
-    transform: translate(90%, -30px) rotate(35deg) scale(1.15);
-  }
-}
 
 /*
  * Hareket kısıtlıysa hiçbiri çalışmaz.
@@ -299,11 +277,7 @@ svg g[role='button']:focus-visible > path:first-of-type {
 @media (prefers-reduced-motion: reduce) {
   .figur,
   .sahne-naara,
-  .sahne-naara .figur,
-  .sahne-naara .savurma {
+  .sahne-naara .figur {
     animation: none;
-  }
-  .savurma {
-    display: none;
   }
 }

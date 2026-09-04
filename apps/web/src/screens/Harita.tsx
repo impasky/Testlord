@@ -165,7 +165,7 @@ function OrduSecici({
         {gorunen.length > 0 && (
           <button
             onClick={() => onDegis(Object.fromEntries(gorunen.map((t) => [t, mevcut[t] ?? 0])))}
-            className="baslik text-[10px] text-altin"
+            className="baslik -my-2 -mr-2 px-2 py-2 text-[11px] text-altin"
           >
             Hepsi
           </button>
@@ -873,7 +873,11 @@ export function Harita({
                   </Hap>
                 )}
               </div>
-              <button onClick={kapat} className="bas shrink-0 text-solgun" aria-label="Kapat">
+              <button
+                onClick={kapat}
+                className="bas -my-2 -mr-2 flex h-11 w-11 shrink-0 items-center justify-center text-solgun"
+                aria-label="Kapat"
+              >
                 <IkonKapali boyut={20} />
               </button>
             </div>
