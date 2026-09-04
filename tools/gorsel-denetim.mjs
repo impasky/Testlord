@@ -15,10 +15,14 @@
 import { chromium } from 'playwright';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
 
+import { kayitOl } from './lib/kayit.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 const WEB = process.env.WEB_URL ?? 'http://localhost:5173';
 const CHROME = process.env.CHROME_PATH ?? '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
-const CIKTI = process.env.CIKTI ?? '.';
+// Varsayılan çıktı klasörü: ekran görüntüleri deponun köküne düşmesin.
+// Kökteyken her test koşusu 20 MB'lık PNG'yi 'değişti' diye işaretliyordu ve
+// bu üretilen dosyalar depoya girmişti. Klasör .gitignore'da.
+const CIKTI = process.env.CIKTI ?? 'ekran-goruntuleri';
 
 let bulgu = 0;
 function sorun(ekran, ne, detay) {
@@ -30,16 +34,10 @@ function iyi(ekran, ne) {
 }
 
 const damga = Date.now();
-const r = await fetch(`${API}/api/auth/register`, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    email: `gd${damga}@lordlar.dev`,
-    password: 'parola1234',
-    lordName: `Gd${damga.toString(36).slice(-5)}`,
-  }),
+const { token } = await kayitOl(API, {
+  email: `gd${damga}@lordlar.dev`,
+  lordName: `Gd${damga.toString(36).slice(-5)}`,
 });
-const { token } = await r.json();
 const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
 const post = (y, g) =>
   fetch(`${API}/api${y}`, { method: 'POST', headers: h, body: JSON.stringify(g ?? {}) }).then((x) =>
@@ -324,16 +322,10 @@ await denetle('bolge-detay');
  * kartla çiziliyor; bunun gerçekten öyle çizildiğini de ölçüyoruz.
  */
 const yeniDamga = Date.now();
-const yr = await fetch(`${API}/api/auth/register`, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    email: `gdbos${yeniDamga}@lordlar.dev`,
-    password: 'parola1234',
-    lordName: `Bos${yeniDamga.toString(36).slice(-5)}`,
-  }),
+const { token: yeniToken } = await kayitOl(API, {
+  email: `gdbos${yeniDamga}@lordlar.dev`,
+  lordName: `Bos${yeniDamga.toString(36).slice(-5)}`,
 });
-const yeniToken = (await yr.json()).token;
 if (yeniToken) {
   await page.evaluate((t) => localStorage.setItem('lordlar_token', t), yeniToken);
   await page.reload({ waitUntil: 'domcontentloaded' });

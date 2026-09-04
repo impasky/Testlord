@@ -14,7 +14,10 @@
 import { chromium, devices } from 'playwright';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
 const URL = process.env.URETIM_URL ?? 'http://localhost:3200';
-const SP = process.env.SMOKE_OUT ?? '.';
+// Varsayılan çıktı klasörü: ekran görüntüleri deponun köküne düşmesin.
+// Kökteyken her test koşusu 20 MB'lık PNG'yi 'değişti' diye işaretliyordu ve
+// bu üretilen dosyalar depoya girmişti. Klasör .gitignore'da.
+const SP = process.env.SMOKE_OUT ?? 'ekran-goruntuleri';
 let hata=0; const k=(a,c,d='')=>{console.log(`  ${c?'[GEÇTİ]':'[KALDI]'} ${a}${d?` — ${d}`:''}`); if(!c)hata++;};
 
 const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium-1194/chrome-linux/chrome',args:['--no-sandbox']});
@@ -25,7 +28,17 @@ page.on('console',m=>{if(m.type()==='error')hatalar.push(m.text());});
 page.on('requestfailed',r=>hatalar.push('düştü: '+r.url()));
 
 console.log(`Üretim modu — telefon boyutunda, tek adres (${URL})\n`);
-await page.goto(URL,{waitUntil:'networkidle'});
+// Bu test, dev sunucusunu değil ÜRETİM derlemesini ölçüyor; ayakta değilse
+// Playwright'ın yığın izi yerine ne yapılacağını söyleyelim (yukarıdaki
+// başlıkta komutlar var). Kırık test ile koşmayan test aynı şey değil.
+try {
+  await page.goto(URL, { waitUntil: 'networkidle' });
+} catch {
+  console.log(`  Üretim sunucusu ${URL} adresinde ayakta değil.`);
+  console.log('  Bu dosyanın başındaki komutlarla başlat, sonra tekrar koştur.');
+  await b.close();
+  process.exit(2);
+}
 k('Sayfa açıldı', (await page.title())==='Lordlar Çağı');
 await page.screenshot({path:`${SP}/tel-1-giris.png`,fullPage:true});
 

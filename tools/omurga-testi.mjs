@@ -18,7 +18,10 @@ import { ogreticiyiGec } from './lib/ogretici.mjs';
 
 const WEB = process.env.WEB_URL ?? 'http://127.0.0.1:5173';
 const API = process.env.API_URL ?? 'http://localhost:3000';
-const CIKTI = process.env.SMOKE_OUT ?? '.';
+// Varsayılan çıktı klasörü: ekran görüntüleri deponun köküne düşmesin.
+// Kökteyken her test koşusu 20 MB'lık PNG'yi 'değişti' diye işaretliyordu ve
+// bu üretilen dosyalar depoya girmişti. Klasör .gitignore'da.
+const CIKTI = process.env.SMOKE_OUT ?? 'ekran-goruntuleri';
 const CHROME = process.env.CHROME_PATH ?? '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 
 let hata = 0;

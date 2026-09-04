@@ -22,3 +22,9 @@ yedek/
 # Python onbellegi
 __pycache__/
 *.pyc
+
+# Test araçlarının ürettiği ekran görüntüleri (tools/*.mjs, CIKTI/SMOKE_OUT).
+# Bunlar kaynak değil çıktı: her koşuda yeniden üretiliyorlar. Depoya girdikleri
+# sürece her test koşusu 20 MB'lık ikili dosyayı "değişti" diye işaretliyor ve
+# her commit geçmişi kalıcı olarak şişiriyor.
+ekran-goruntuleri/

@@ -11,7 +11,10 @@
 import { chromium } from 'playwright';
 
 const WEB = process.env.WEB_URL ?? 'http://localhost:5173';
-const CIKTI = process.env.CIKTI ?? '.';
+// Varsayılan çıktı klasörü: ekran görüntüleri deponun köküne düşmesin.
+// Kökteyken her test koşusu 20 MB'lık PNG'yi 'değişti' diye işaretliyordu ve
+// bu üretilen dosyalar depoya girmişti. Klasör .gitignore'da.
+const CIKTI = process.env.CIKTI ?? 'ekran-goruntuleri';
 
 let hata = 0;
 function kontrol(ad, kosul, detay = '') {
