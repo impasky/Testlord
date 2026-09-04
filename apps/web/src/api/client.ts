@@ -627,6 +627,8 @@ export interface IttifakListesiDto {
   asgariSeviye: number;
   /** Bu ittifağa bekleyen başvurum varsa kimliği — geri çekmek için. */
   basvurumId: string | null;
+  /** İttifak arması. Lord armasıyla aynı beş anahtar, aynı çizici. */
+  arma: ArmaDto;
 }
 
 export interface IttifakDto {
@@ -646,6 +648,7 @@ export interface IttifakDto {
     asgariSeviye: number;
     /** Bekleyen başvuru sayısı — liderin ekranındaki tek "yapılacak iş" sayacı. */
     bekleyenBasvuru: number;
+    arma: ArmaDto;
     hedef: {
       regionId: number;
       ad: string;
@@ -669,6 +672,62 @@ export interface IttifakDto {
     mesajEnFazla: number;
     azamiAsgariSeviye: number;
   };
+}
+
+export interface IttifakSiralamaSatiri {
+  sira: number;
+  id: string;
+  ad: string;
+  etiket: string;
+  arma: ArmaDto;
+  seviye: number;
+  uyeSayisi: number;
+  toplamSohret: number;
+  bolgeSayisi: number;
+  benimki: boolean;
+}
+
+export interface IttifakSiralamaDto {
+  toplam: number;
+  sayfa: number;
+  sayfaBoyu: number;
+  satirlar: IttifakSiralamaSatiri[];
+  benim: IttifakSiralamaSatiri | null;
+}
+
+/** Başka bir ittifağın DIŞARIYA açık hâli. Kayıt defteri, bağışlar,
+ *  ortak hedef ve paktlar burada YOK: onlar ittifağın iç bilgisi. */
+export interface IttifakInceleDto {
+  id: string;
+  ad: string;
+  etiket: string;
+  arma: ArmaDto;
+  kurulus: string;
+  liderId: string;
+  seviye: IttifakSeviyeDto;
+  ayricaliklar: IttifakAyricalikDto;
+  katilim: 'acik' | 'basvuru';
+  asgariSeviye: number;
+  azamiUye: number;
+  duyuru: string | null;
+  toplamSohret: number;
+  uyeler: {
+    id: string;
+    ad: string;
+    seviye: number;
+    sohret: number;
+    arma: ArmaDto;
+    rutbe: string;
+    unvan: string;
+  }[];
+  benimki: boolean;
+  basvurumId: string | null;
+  /** "Katılabilir miyim" sorusunun cevabı — kural sunucuda, tek kopya. */
+  katilabilirMiyim: { olur: boolean; sebep?: string };
+}
+
+export interface IttifakKayitDto {
+  kayitlar: { an: string; kind: string; mesaj: string }[];
 }
 
 export interface BasvurularDto {
@@ -831,6 +890,11 @@ export const api = {
       `/ittifak/basvuru/${id}/karar`,
       { kabul },
     ),
+  ittifakArma: (a: ArmaDto) => post<{ arma: ArmaDto }>('/ittifak/arma', a),
+  ittifakKayit: () => request<IttifakKayitDto>('/ittifak/kayit'),
+  ittifakIncele: (id: string) => request<IttifakInceleDto>(`/ittifak/${id}/incele`),
+  ittifakSiralamasi: (page = 0) =>
+    request<IttifakSiralamaDto>(`/rankings-ittifak?page=${page}`),
   ittifakAyarlar: (v: { katilim?: 'acik' | 'basvuru'; asgariSeviye?: number }) =>
     post<{ katilim: string; asgariSeviye: number }>('/ittifak/ayarlar', v),
 

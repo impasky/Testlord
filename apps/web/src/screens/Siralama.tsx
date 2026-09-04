@@ -1,7 +1,12 @@
 /** Sıralama — üç liste, üç oyun tarzı. */
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { ApiError, api, type RankingRow } from '../api/client';
+import {
+  ApiError,
+  api,
+  type IttifakSiralamaSatiri,
+  type RankingRow,
+} from '../api/client';
 import { Arma } from '../components/Arma';
 import { IkonNavSiralama } from '../components/Ikonlar';
 import { Alan, Bolum, Buton, Input, Kart, Rozet, formatSayi } from '../components/ui';
@@ -9,7 +14,7 @@ import type { Sekme } from '../components/MobilKabuk';
 import { BosHal } from '../components/BosHal';
 import { Zemin } from '../components/Zemin';
 
-type Board = 'fame' | 'conquest' | 'elo';
+type Board = 'fame' | 'conquest' | 'elo' | 'ittifak';
 
 const TABLAR: { key: Board; ad: string; aciklama: string; renk: string }[] = [
   {
@@ -29,6 +34,12 @@ const TABLAR: { key: Board; ad: string; aciklama: string; renk: string }[] = [
     ad: 'Kılıç',
     aciklama: 'PvP derecesi. Bölgesiz bir lord da birinci olabilir.',
     renk: 'var(--color-kirmizi)',
+  },
+  {
+    key: 'ittifak',
+    ad: 'İttifak',
+    aciklama: 'Üyelerin şöhret toplamı. Lord sıralamasıyla aynı ölçü.',
+    renk: 'var(--color-mavi)',
   },
 ];
 
@@ -97,6 +108,38 @@ function Satir({
   );
 }
 
+/**
+ * İttifak satırı.
+ *
+ * Lord satırından ayrı, çünkü sorular farklı: lordda "kim bu, şikâyet
+ * edeyim mi", ittifakta "kaç kişiler, kaç bölge tutuyorlar". Tek bileşeni
+ * ikisine birden uydurmak, her iki tarafta da yarısı boş bir satır demekti.
+ */
+function IttifakSatiri({ r, renk }: { r: IttifakSiralamaSatiri; renk: string }) {
+  return (
+    <Kart className="p-2.5" vurgu={r.benimki ? renk : undefined}>
+      <div className="flex items-center gap-2">
+        <span className="tabular w-6 shrink-0 text-center text-[12px] font-bold text-solgun">
+          {r.sira}
+        </span>
+        <Arma arma={r.arma} boyut={24} />
+        <span className="min-w-0 flex-1 truncate text-[13px] font-bold">
+          {r.ad} <span className="text-solgun">[{r.etiket}]</span>
+        </span>
+        <span className="baslik shrink-0 rounded-md bg-altin/15 px-1.5 py-0.5 text-[10px] text-altin">
+          Sv {r.seviye}
+        </span>
+        <span className="tabular w-16 shrink-0 text-right text-[13px] font-bold">
+          {formatSayi(r.toplamSohret)}
+        </span>
+      </div>
+      <div className="mt-1 pl-8 text-[11px] text-solgun">
+        {r.uyeSayisi} üye · {r.bolgeSayisi} bölge
+      </div>
+    </Kart>
+  );
+}
+
 export function Siralama({
   lordId,
   onGit,
@@ -119,16 +162,36 @@ export function Siralama({
     },
     onError: (e) => setRaporBilgi(e instanceof ApiError ? e.message : 'Şikâyet gönderilemedi.'),
   });
+  /**
+   * İki ayrı sorgu, tek ekran.
+   *
+   * İttifak sıralamasının satırları lord satırlarıyla aynı biçimde
+   * değil (üye ve bölge sayısı taşıyorlar). Tek sorguya sıkıştırıp
+   * arayüzde ayırsaydık, iki farklı şeyi tek tipmiş gibi göstermek
+   * için ikisini de yoksullaştırmak gerekirdi.
+   */
+  const lordluk = board !== 'ittifak';
   const q = useQuery({
     queryKey: ['rankings', board],
-    queryFn: () => api.rankings(board),
+    queryFn: () => api.rankings(board as 'fame' | 'conquest' | 'elo'),
     refetchInterval: 60_000,
+    enabled: lordluk,
+  });
+  const qi = useQuery({
+    queryKey: ['rankings-ittifak'],
+    queryFn: () => api.ittifakSiralamasi(),
+    refetchInterval: 60_000,
+    enabled: !lordluk,
   });
   const aktif = TABLAR.find((t) => t.key === board)!;
 
   return (
     <div className="space-y-4">
-      <Zemin ad="siralama" baslik="Sıralama" altyazi="Diyarın lordları" />
+      <Zemin
+        ad="siralama"
+        baslik="Sıralama"
+        altyazi={lordluk ? 'Diyarın lordları' : 'Diyarın ittifakları'}
+      />
       <div className="oyuk flex gap-1 rounded-xl p-1">
         {TABLAR.map((t) => (
           <button
@@ -147,12 +210,46 @@ export function Siralama({
       <Bolum
         baslik={`${aktif.ad} Sıralaması`}
         yan={
-          <span className="text-[11px] text-sonuk">{q.data ? `${q.data.toplam} lord` : ''}</span>
+          <span className="text-[11px] text-sonuk">
+            {lordluk
+              ? q.data
+                ? `${q.data.toplam} lord`
+                : ''
+              : qi.data
+                ? `${qi.data.toplam} ittifak`
+                : ''}
+          </span>
         }
       >
         <p className="mb-2 px-1 text-[11px] text-sonuk">{aktif.aciklama}</p>
 
-        {q.isLoading || !q.data ? (
+        {!lordluk ? (
+          !qi.data ? (
+            <Kart className="p-4">
+              <p className="text-[13px] text-solgun">Yükleniyor...</p>
+            </Kart>
+          ) : qi.data.satirlar.length === 0 ? (
+            <BosHal
+              ikon={<IkonNavSiralama boyut={26} />}
+              mesaj="Bu diyarda henüz ittifak yok. İlkini sen kurabilirsin."
+              eylemler={[{ etiket: 'İttifaka git', onTikla: () => onGit('ittifak') }]}
+            />
+          ) : (
+            <>
+              <div className="space-y-1.5">
+                {qi.data.satirlar.map((r) => (
+                  <IttifakSatiri key={r.id} r={r} renk={aktif.renk} />
+                ))}
+              </div>
+              {qi.data.benim && !qi.data.satirlar.some((r) => r.benimki) && (
+                <div className="mt-3 border-t border-kenar pt-3">
+                  <p className="baslik mb-1.5 px-1 text-[10px] text-solgun">İttifakının sırası</p>
+                  <IttifakSatiri r={qi.data.benim} renk={aktif.renk} />
+                </div>
+              )}
+            </>
+          )
+        ) : q.isLoading || !q.data ? (
           <Kart className="p-4">
             <p className="text-[13px] text-solgun">Yükleniyor...</p>
           </Kart>

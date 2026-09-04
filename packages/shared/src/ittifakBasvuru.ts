@@ -119,6 +119,61 @@ export function basvurabilirMi(k: BasvuruKosullari): BasvuruDurum {
 }
 
 /**
+ * Bu lord bu ittifağa DOĞRUDAN katılabilir mi? (kapı açıkken)
+ *
+ * `basvurabilirMi` ile aynı koşulların çoğuna bakıyor ama ayrı duruyor,
+ * çünkü sorular farklı: başvuru "sıraya girebilir miyim", katılım
+ * "şimdi içeri girebilir miyim". Ortak olan üçünü (ittifakta mı, dolu mu,
+ * seviye yeter mi) tek yerde tutmak için ikisi de aşağıdaki sırayı
+ * paylaşıyor.
+ *
+ * `kod` alanı var çünkü api tarafı hata kodunu bu karardan okuyor;
+ * kodları çağıran tarafta yeniden üretmek, aynı kuralı ikinci kez
+ * yazmak olurdu.
+ */
+export interface KatilimKarari {
+  olur: boolean;
+  sebep?: string;
+  kod?: 'ZATEN_ITTIFAKTA' | 'ITTIFAK_DOLU' | 'SEVIYE_YETERSIZ' | 'BASVURU_GEREKLI';
+}
+
+export function katilabilirMi(k: {
+  lordSeviye: number;
+  ittifaktaMi: boolean;
+  katilim: KatilimTuru;
+  asgariSeviye: number;
+  uyeSayisi: number;
+}): KatilimKarari {
+  if (k.ittifaktaMi) {
+    return { olur: false, kod: 'ZATEN_ITTIFAKTA', sebep: 'Zaten bir ittifaktasın.' };
+  }
+  if (k.katilim === 'basvuru') {
+    return {
+      olur: false,
+      kod: 'BASVURU_GEREKLI',
+      sebep: 'Bu ittifak başvuruyla üye alıyor. Başvurup liderin onayını beklemelisin.',
+    };
+  }
+  if (k.uyeSayisi >= B.ittifak.azami_uye) {
+    return {
+      olur: false,
+      kod: 'ITTIFAK_DOLU',
+      sebep: `İttifak dolu (${B.ittifak.azami_uye} üye).`,
+    };
+  }
+  // Seviye eşiği AÇIK ittifakta da geçerli: "herkese açığım ama Lv10 altı
+  // gelmesin" meşru bir kural ve kapıyı kapatmayı gerektirmemeli.
+  if (k.lordSeviye < k.asgariSeviye) {
+    return {
+      olur: false,
+      kod: 'SEVIYE_YETERSIZ',
+      sebep: `Bu ittifak en az Sv${k.asgariSeviye} istiyor. Sen Sv${k.lordSeviye}'sin.`,
+    };
+  }
+  return { olur: true };
+}
+
+/**
  * Liderin belirlediği asgari seviye geçerli mi?
  *
  * Tavan var çünkü tavansız bir eşik ittifağı yeni oyuncuya tamamen

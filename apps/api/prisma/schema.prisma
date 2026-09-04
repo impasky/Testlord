@@ -339,6 +339,15 @@ model Alliance {
   /// İki sayıyı birden tutmak, bir gün birinin diğerinden sapması demekti.
   xp Int @default(0)
 
+  /// İttifak arması. Lord armasıyla AYNI beş anahtar ve aynı çizici:
+  /// ikinci bir heraldik sistemi olsaydı ikisi bir gün birbirinden sapardı.
+  /// Boşsa ittifak ADINDAN türetiliyor — yeni ittifak da kimliksiz olmasın.
+  armaKalkan String?
+  armaDesen  String?
+  armaRenk1  String?
+  armaRenk2  String?
+  armaSembol String?
+
   /// Katılım türü: "acik" = herkes doğrudan girer, "basvuru" = lider onaylar.
   ///
   /// Varsayılan "basvuru". İlk hâlinde katılım herkese açıktı ve liderin
@@ -362,6 +371,7 @@ model Alliance {
   paktB      Pakt[]             @relation("PaktB")
   bagislar   AllianceDonation[]
   basvurular AllianceBasvuru[]
+  kayitlar   AllianceLog[]
   target     Region?            @relation("AllianceTarget", fields: [targetRegionId], references: [id])
 
   @@unique([worldId, name])
@@ -424,6 +434,35 @@ model AllianceBasvuru {
   @@unique([allianceId, lordId])
   @@index([allianceId, durum])
   @@index([lordId, durum])
+}
+
+/// İttifak kayıt defteri: "ben yokken ne oldu".
+///
+/// Bu tablo YALNIZCA başka hiçbir yerde izi kalmayan olayları tutuyor —
+/// katılma, ayrılma, çıkarılma, rütbe, kapı ve duyuru değişikliği. Bunların
+/// hiçbiri türetilemez: `Lord.allianceId` yalnız BUGÜNÜ söylüyor, dün kimin
+/// girip çıktığını değil.
+///
+/// Bağış, pakt ve başvuru kararları burada YOK ve bu bilinçli: üçünün de
+/// kendi satırı var (AllianceDonation, Pakt, AllianceBasvuru) ve kayıt
+/// defteri onları okuyup akışa karıştırıyor. Buraya da yazsaydık aynı olay
+/// iki yerde dururdu ve bir gün ikisi birbirinden saparadı. Türetmenin ikinci
+/// faydası: defter ilk günden DOLU açılıyor, geçmiş bağışlar ve paktlar
+/// kendiliğinden görünüyor.
+model AllianceLog {
+  id         String   @id @default(cuid())
+  allianceId String
+  /// uye_katildi | uye_ayrildi | uye_cikarildi | rutbe | hedef | duyuru | kapi | arma
+  kind       String
+  /// Olayın öznesi (katılan üye, rütbesi değişen). Yoksa ittifakın kendisi.
+  lordId     String?
+  /// Görüntülenecek metin ve varsa ek alanlar.
+  payload    Json
+  createdAt  DateTime @default(now())
+
+  alliance Alliance @relation(fields: [allianceId], references: [id], onDelete: Cascade)
+
+  @@index([allianceId, createdAt])
 }
 
 /// Saldırmazlık paktı: iki ittifak birbirine saldırmamaya söz veriyor.

@@ -5,7 +5,14 @@
  * Kılıç sıralaması önemli: bölge tutamayan oyuncunun da tırmanacağı bir
  * merdiven olur, böylece kaybeden oyuncu oyundan çıkmaz.
  */
-import { conquestScore, unvan, type Arma } from '@lordlar/shared';
+import {
+  addanArma,
+  armaDuzelt,
+  conquestScore,
+  ittifakSeviyesi,
+  unvan,
+  type Arma,
+} from '@lordlar/shared';
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { requireAuth } from '../auth.js';
@@ -98,6 +105,72 @@ async function basitSiralama(worldId: string, alan: 'fame' | 'elo'): Promise<Sat
   }));
 }
 
+/** Bir ittifakın sıralamadaki satırı. */
+interface IttifakSatiri {
+  sira: number;
+  id: string;
+  ad: string;
+  etiket: string;
+  arma: Arma;
+  seviye: number;
+  uyeSayisi: number;
+  toplamSohret: number;
+  bolgeSayisi: number;
+  benimki: boolean;
+}
+
+/**
+ * İttifak sıralaması.
+ *
+ * Ölçü TOPLAM ŞÖHRET, lord sıralamasıyla aynı. İkinci bir "ittifak gücü"
+ * formülü uydursaydık oyuncunun kafasında iki ayrı güç fikri olurdu ve
+ * ikisi birbirini tutmadığında hangisinin doğru olduğu sorulurdu.
+ *
+ * Üye sayısına BÖLMÜYORUZ: sekiz kişilik bir ittifak üç kişilikten daha
+ * güçlüdür ve sıralama bunu saklamamalı. Ortalama şöhret ayrı bir soru
+ * ("kim daha verimli") ve onun cevabı üye listesinde zaten duruyor.
+ */
+async function ittifakSiralamasi(worldId: string, allianceId: string | null) {
+  const hepsi = await prisma.alliance.findMany({
+    where: { worldId },
+    select: {
+      id: true,
+      name: true,
+      tag: true,
+      xp: true,
+      armaKalkan: true,
+      armaDesen: true,
+      armaRenk1: true,
+      armaRenk2: true,
+      armaSembol: true,
+      members: { select: { id: true, fame: true, _count: { select: { regions: true } } } },
+    },
+  });
+
+  return hepsi
+    .map((a) => ({
+      id: a.id,
+      ad: a.name,
+      etiket: a.tag,
+      arma: a.armaKalkan
+        ? armaDuzelt({
+            kalkan: a.armaKalkan,
+            desen: a.armaDesen ?? undefined,
+            renk1: a.armaRenk1 ?? undefined,
+            renk2: a.armaRenk2 ?? undefined,
+            sembol: a.armaSembol ?? undefined,
+          })
+        : addanArma(a.name),
+      seviye: ittifakSeviyesi(a.xp).seviye,
+      uyeSayisi: a.members.length,
+      toplamSohret: a.members.reduce((t, u) => t + u.fame, 0),
+      bolgeSayisi: a.members.reduce((t, u) => t + u._count.regions, 0),
+      benimki: a.id === allianceId,
+    }))
+    .sort((x, y) => y.toplamSohret - x.toplamSohret)
+    .map((a, i): IttifakSatiri => ({ sira: i + 1, ...a }));
+}
+
 export async function rankingRoutes(app: FastifyInstance): Promise<void> {
   app.get('/rankings/:board', { preHandler: requireAuth }, async (req) => {
     const { board } = z
@@ -135,6 +208,31 @@ export async function rankingRoutes(app: FastifyInstance): Promise<void> {
    * veriyor. Otomatik ceza, kalabalığın birini oyundan atmasına yarayan bir
    * silaha dönerdi.
    */
+  /**
+   * İttifak sıralaması: kendi ekranı değil, kendi SEKMESİ.
+   *
+   * Sıralama ekranının işi "diyarda kim önde"; ittifak bunun bir başka
+   * ölçekte sorulmuş hâli, ayrı bir soru değil. İttifak ekranındaki liste
+   * ise sıralama değil, KATILACAK ittifak arama listesi — iki iş, iki yer.
+   */
+  app.get('/rankings-ittifak', { preHandler: requireAuth }, async (req) => {
+    const { page } = z.object({ page: z.coerce.number().int().min(0).default(0) }).parse(req.query);
+    const lordId = await findLordByUser(req.user.userId);
+    const me = await prisma.lord.findUniqueOrThrow({
+      where: { id: lordId },
+      select: { worldId: true, allianceId: true },
+    });
+
+    const tum = await ittifakSiralamasi(me.worldId, me.allianceId);
+    return {
+      toplam: tum.length,
+      sayfa: page,
+      sayfaBoyu: SAYFA,
+      satirlar: tum.slice(page * SAYFA, page * SAYFA + SAYFA),
+      benim: tum.find((a) => a.benimki) ?? null,
+    };
+  });
+
   app.post('/rapor/:lordId', { preHandler: requireAuth }, async (req) => {
     const { lordId: hedefId } = z.object({ lordId: z.string().min(1) }).parse(req.params);
     const { sebep } = z

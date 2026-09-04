@@ -30,10 +30,14 @@ import {
   paktTaraflari,
   paktTeklifDenetle,
   azamiUye,
+  addanArma,
+  armaDuzelt,
+  type Arma,
   asgariSeviyeDenetle,
   azamiAsgariSeviye,
   azamiBekleyenBasvuru,
   basvurabilirMi,
+  katilabilirMi,
   basvuruMesajiDenetle,
   basvuruMesajiEnFazla,
   type KatilimTuru,
@@ -55,6 +59,34 @@ import { spendResources } from '../services/queue.js';
 import { yururlukteMi } from '../services/pakt.js';
 import { ittifakAyricaligi } from '../services/ittifakSeviye.js';
 import type { Prisma } from '@prisma/client';
+
+/**
+ * İttifak arması.
+ *
+ * Lord armasıyla aynı beş anahtar, aynı doğrulayıcı, aynı çizici. İkinci
+ * bir heraldik sistemi yazsaydık ikisi bir gün birbirinden sapardı — bir
+ * tarafa eklenen sembol diğerinde olmazdı.
+ *
+ * Boşsa ittifak ADINDAN türetiliyor: yeni kurulan ittifak da ilk günden
+ * kimlikli görünsün, sekiz kişinin hepsi aynı kırmızı kalkanı taşımasın.
+ */
+function ittifakArmasi(a: {
+  name: string;
+  armaKalkan: string | null;
+  armaDesen: string | null;
+  armaRenk1: string | null;
+  armaRenk2: string | null;
+  armaSembol: string | null;
+}): Arma {
+  if (!a.armaKalkan) return addanArma(a.name);
+  return armaDuzelt({
+    kalkan: a.armaKalkan,
+    desen: a.armaDesen ?? undefined,
+    renk1: a.armaRenk1 ?? undefined,
+    renk2: a.armaRenk2 ?? undefined,
+    sembol: a.armaSembol ?? undefined,
+  });
+}
 
 const uyeSecimi = {
   id: true,
@@ -135,6 +167,7 @@ async function ittifakOzeti(allianceId: string) {
     katilim: a.katilim as KatilimTuru,
     asgariSeviye: a.asgariSeviye,
     bekleyenBasvuru,
+    arma: ittifakArmasi(a),
     ayricaliklar: ittifakAyricaliklari(durum.seviye),
     duyuru: a.duyuru,
     id: a.id,
@@ -277,6 +310,25 @@ async function rutbemi(tx: Prisma.TransactionClient, lordId: string) {
 }
 
 /**
+ * Kayıt defterine bir satır yazar.
+ *
+ * Yalnız TÜRETİLEMEYEN olaylar için: katılma, ayrılma, çıkarılma, rütbe,
+ * kapı, duyuru, arma. Bağış, pakt ve başvuru kararları buraya YAZILMIYOR —
+ * onların kendi satırları var ve defter okurken karıştırılıyorlar.
+ */
+async function kayitYaz(
+  tx: Prisma.TransactionClient,
+  allianceId: string,
+  kind: string,
+  mesaj: string,
+  lordId?: string,
+): Promise<void> {
+  await tx.allianceLog.create({
+    data: { allianceId, kind, lordId: lordId ?? null, payload: { mesaj } },
+  });
+}
+
+/**
  * Bir ittifağa giren lordun DİĞER bekleyen başvurularını düşürür.
  *
  * Bırakılsaydı başka bir liderin başvuru kuyruğunda, artık kabul
@@ -335,6 +387,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
         katilim: a.katilim as KatilimTuru,
         asgariSeviye: a.asgariSeviye,
         basvurumId: basvurdugum.get(a.id)?.id ?? null,
+        arma: ittifakArmasi(a),
       }))
       .sort((x, y) => y.toplamSohret - x.toplamSohret);
 
@@ -373,7 +426,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
     return prisma.$transaction(async (tx) => {
       const lord = await tx.lord.findUniqueOrThrow({
         where: { id: lordId },
-        select: { worldId: true, allianceId: true },
+        select: { worldId: true, allianceId: true, name: true },
       });
       if (lord.allianceId) {
         throw new GameError('Zaten bir ittifaktasın.', 400, 'ZATEN_ITTIFAKTA');
@@ -416,6 +469,9 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
       // değil. Muaf olsa üye sayımı ve "aynı ittifakta mı" kontrolü
       // liderde yanlış çalışırdı.
       await tx.lord.update({ where: { id: lordId }, data: { allianceId: a.id } });
+      // Defterin ilk satırı kuruluş olmalı: yeni bir ittifakta boş bir
+      // defter, çalışmıyormuş gibi görünüyor.
+      await kayitYaz(tx, a.id, 'kuruldu', `${lord.name} ittifağı kurdu.`, lordId);
       return { id: a.id, ad: a.name, etiket: a.tag };
     });
   });
@@ -452,31 +508,23 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
         include: { members: { select: { id: true } } },
       });
       if (!a || a.worldId !== lord.worldId) throw hata.bulunamadi('İttifak');
+
       // Kapı: bu uç eskiden herkese açıktı ve liderin söz hakkı yoktu.
-      // Başvurulu ittifağa doğrudan girilmiyor.
-      if (a.katilim === 'basvuru') {
-        throw new GameError(
-          'Bu ittifak başvuruyla üye alıyor. Başvurup liderin onayını beklemelisin.',
-          400,
-          'BASVURU_GEREKLI',
-        );
-      }
-      if (a.members.length >= azamiUye()) {
-        throw new GameError(`İttifak dolu (${azamiUye()} üye).`, 400, 'ITTIFAK_DOLU');
-      }
-      // Seviye eşiği AÇIK ittifakta da geçerli. Yalnız başvuruya bağlasaydık
-      // lider "kapımı herkese açayım ama Lv10 altı gelmesin" diyemezdi ve
-      // eşik, kapıyı kapatmanın yan etkisi olurdu.
-      if (lord.level < a.asgariSeviye) {
-        throw new GameError(
-          `Bu ittifak en az Sv${a.asgariSeviye} istiyor. Sen Sv${lord.level}'sin.`,
-          400,
-          'SEVIYE_YETERSIZ',
-        );
-      }
+      // Karar (ve hata kodu) paylaşılan kuraldan geliyor; "incele" ucu
+      // aynı kararı okuyup düğmeyi ona göre çiziyor. İki yerde iki kopya
+      // olsaydı biri diğerinden saparadı.
+      const kapi = katilabilirMi({
+        lordSeviye: lord.level,
+        ittifaktaMi: false, // yukarıda zaten elendi
+        katilim: a.katilim as KatilimTuru,
+        asgariSeviye: a.asgariSeviye,
+        uyeSayisi: a.members.length,
+      });
+      if (!kapi.olur) throw new GameError(kapi.sebep!, 400, kapi.kod);
 
       await tx.lord.update({ where: { id: lordId }, data: { allianceId: a.id } });
       await bekleyenleriDusur(tx, lordId);
+      await kayitYaz(tx, a.id, 'uye_katildi', `${lord.name} katıldı.`, lordId);
       // Lidere haber: kimin katıldığını bilmeli, yoksa ittifak bir liste
       // olur, bir topluluk olmaz.
       await pushEvent(
@@ -524,6 +572,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
           where: { id: a.id },
           data: { leaderLordId: yeniLider.id },
         });
+        await kayitYaz(tx, a.id, 'uye_ayrildi', `${lord.name} ayrıldı; liderlik devredildi.`, lordId);
         await pushEvent(
           yeniLider.id,
           'ittifak_lider',
@@ -533,6 +582,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
         return { ayrildi: true, dagildi: false, yeniLiderId: yeniLider.id };
       }
 
+      await kayitYaz(tx, a.id, 'uye_ayrildi', `${lord.name} ayrıldı.`, lordId);
       await pushEvent(
         a.leaderLordId,
         'ittifak_ayrilma',
@@ -653,6 +703,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
           where: { id: a.id },
           data: { targetRegionId: null, targetSetAt: null, targetNote: null },
         });
+        await kayitYaz(tx, a.id, 'hedef', 'Ortak hedef kaldırıldı.', lordId);
         return { hedef: null };
       }
 
@@ -678,6 +729,8 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
           targetNote: body.not?.trim() || null,
         },
       });
+
+      await kayitYaz(tx, a.id, 'hedef', `Ortak hedef: ${bolge.name}.`, lordId);
 
       // Herkese haber: işaretlenmiş ama kimsenin görmediği hedef,
       // işaretlenmemiş hedefle aynı şeydir.
@@ -726,13 +779,53 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
         where: { id: body.lordId },
         data: { allianceId: null, allianceLeftAt: simdi },
       });
+      await kayitYaz(tx, a.id, 'uye_cikarildi', `${hedef.name} ittifaktan çıkarıldı.`, body.lordId);
       await pushEvent(
         body.lordId,
         'ittifak_cikarildin',
-        { mesaj: `${a.name} ittifakından çıkarıldın.` },
+        { mesaj: `${a.name} ittifakından çıkarıldı.` },
         tx,
       );
       return { cikarildi: body.lordId };
+    });
+  });
+
+  /**
+   * İttifak armasını değiştir. Yalnız lider.
+   *
+   * Lord armasıyla aynı doğrulayıcı: geçersiz parça REDDEDİLMİYOR,
+   * varsayılana düşürülüyor. Arma bir kimlik, hata mesajı verilecek bir
+   * form değil.
+   */
+  app.post('/ittifak/arma', { preHandler: requireAuth }, async (req) => {
+    const body = z
+      .object({
+        kalkan: z.string(),
+        desen: z.string(),
+        renk1: z.string(),
+        renk2: z.string(),
+        sembol: z.string(),
+      })
+      .parse(req.body);
+    const lordId = await findLordByUser(req.user.userId);
+
+    return prisma.$transaction(async (tx) => {
+      const { allianceId, lider } = await rutbemi(tx, lordId);
+      if (!lider) throw hata.yetkisiz();
+
+      const arma = armaDuzelt(body);
+      await tx.alliance.update({
+        where: { id: allianceId },
+        data: {
+          armaKalkan: arma.kalkan,
+          armaDesen: arma.desen,
+          armaRenk1: arma.renk1,
+          armaRenk2: arma.renk2,
+          armaSembol: arma.sembol,
+        },
+      });
+      await kayitYaz(tx, allianceId, 'arma', 'İttifak arması değişti.', lordId);
+      return { arma };
     });
   });
 
@@ -791,6 +884,14 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
           data: { durum: 'geri_cekildi', kararAt: new Date() },
         });
       }
+      await kayitYaz(
+        tx,
+        allianceId,
+        'kapi',
+        `Katılım: ${a.katilim === 'acik' ? 'herkese açık' : 'başvuruyla'}` +
+          (a.asgariSeviye > 1 ? `, en az Sv${a.asgariSeviye}` : ''),
+        lordId,
+      );
       return { katilim: a.katilim, asgariSeviye: a.asgariSeviye };
     });
   });
@@ -1022,6 +1123,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
       }
 
       await tx.lord.update({ where: { id: b.lordId }, data: { allianceId } });
+      await kayitYaz(tx, allianceId, 'uye_katildi', `${b.lord.name} başvurusu kabul edilip katıldı.`, b.lordId);
       await tx.allianceBasvuru.update({
         where: { id },
         data: { durum: 'kabul', kararAt: simdi, kararVerenId: lordId },
@@ -1035,6 +1137,210 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
       );
       return { karar: 'kabul' as const, lordId: b.lordId, ad: b.lord.name };
     });
+  });
+
+  /**
+   * Kayıt defteri: "ben yokken ittifakta ne oldu".
+   *
+   * Dört kaynak birleşiyor ve üçü TÜRETİLİYOR:
+   * - AllianceLog: katılma, ayrılma, çıkarılma, rütbe, hedef, duyuru, kapı,
+   *   arma. Bunların hiçbiri başka bir yerde iz bırakmıyor.
+   * - AllianceDonation: bağışlar. Kendi satırı var.
+   * - AllianceBasvuru: karara bağlanmış başvurular. Kendi satırı var.
+   * - Pakt: kurulan ve feshedilen paktlar. Kendi satırı var.
+   *
+   * Son üçünü de log'a yazsaydık aynı olay iki yerde dururdu. Türetmenin
+   * ikinci faydası defterin ilk günden DOLU açılması: bu özellik gelmeden
+   * önceki bağışlar ve paktlar da görünüyor.
+   */
+  app.get('/ittifak/kayit', { preHandler: requireAuth }, async (req) => {
+    const lordId = await findLordByUser(req.user.userId);
+    const lord = await prisma.lord.findUniqueOrThrow({
+      where: { id: lordId },
+      select: { allianceId: true },
+    });
+    if (!lord.allianceId) throw new GameError('Bir ittifakta değilsin.', 400, 'ITTIFAK_YOK');
+    const allianceId = lord.allianceId;
+
+    const SINIR = 60;
+    const [kayitlar, bagislar, basvurular, paktlar] = await Promise.all([
+      prisma.allianceLog.findMany({
+        where: { allianceId },
+        orderBy: { createdAt: 'desc' },
+        take: SINIR,
+      }),
+      prisma.allianceDonation.findMany({
+        where: { allianceId },
+        orderBy: { createdAt: 'desc' },
+        take: SINIR,
+        include: { lord: { select: { name: true } } },
+      }),
+      prisma.allianceBasvuru.findMany({
+        where: { allianceId, durum: { in: ['kabul', 'ret'] }, kararAt: { not: null } },
+        orderBy: { kararAt: 'desc' },
+        take: SINIR,
+        include: { lord: { select: { name: true } } },
+      }),
+      prisma.pakt.findMany({
+        where: { OR: [{ aId: allianceId }, { bId: allianceId }] },
+        orderBy: { createdAt: 'desc' },
+        take: SINIR,
+      }),
+    ]);
+
+    // Pakt satırı KARŞI tarafın adını taşımalı: "X ile pakt kuruldu".
+    const karsiIdler = paktlar.map((k) => (k.aId === allianceId ? k.bId : k.aId));
+    const karsilar = new Map(
+      (
+        await prisma.alliance.findMany({
+          where: { id: { in: karsiIdler } },
+          select: { id: true, name: true },
+        })
+      ).map((x) => [x.id, x.name]),
+    );
+
+    type Satir = { an: Date; kind: string; mesaj: string };
+    const satirlar: Satir[] = [
+      ...kayitlar.map((k) => ({
+        an: k.createdAt,
+        kind: k.kind,
+        mesaj: String((k.payload as { mesaj?: string })?.mesaj ?? ''),
+      })),
+      ...bagislar.map((b) => ({
+        an: b.createdAt,
+        kind: 'bagis',
+        mesaj: `${b.lord.name} bağış yaptı (+${b.xp} XP).`,
+      })),
+      ...basvurular.map((b) => ({
+        an: b.kararAt!,
+        kind: b.durum === 'kabul' ? 'basvuru_kabul' : 'basvuru_ret',
+        // Kabul edilen başvuru zaten "katıldı" satırı da yazıyor; buradaki
+        // satır KARARI anlatıyor, katılmayı değil.
+        mesaj:
+          b.durum === 'kabul'
+            ? `${b.lord.name} başvurusu kabul edildi.`
+            : `${b.lord.name} başvurusu reddedildi.`,
+      })),
+      ...paktlar.flatMap((k) => {
+        const ad = karsilar.get(k.aId === allianceId ? k.bId : k.aId) ?? 'bilinmeyen ittifak';
+        const cikti: Satir[] = [];
+        if (k.kabulAt) cikti.push({ an: k.kabulAt, kind: 'pakt', mesaj: `${ad} ile pakt kuruldu.` });
+        if (k.fesihAt)
+          cikti.push({ an: k.fesihAt, kind: 'pakt_fesih', mesaj: `${ad} ile pakt feshedildi.` });
+        return cikti;
+      }),
+    ];
+
+    satirlar.sort((x, y) => y.an.getTime() - x.an.getTime());
+    return {
+      kayitlar: satirlar.slice(0, SINIR).map((k) => ({ ...k, an: k.an.toISOString() })),
+    };
+  });
+
+  /**
+   * Başka bir ittifağı incele.
+   *
+   * Başvuru sistemi bunu ZORUNLU kıldı: kapıyı çalmadan önce "bunlar kim"
+   * sorusunun bir cevabı olmalı. Öncesinde listede yalnız ad, üye sayısı ve
+   * toplam şöhret vardı; bir ittifağa körlemesine giriliyordu.
+   *
+   * Görünen şey kasten SINIRLI. Üyeler, seviye, kapı ve duyuru dışarı
+   * açık — bunlar "katılayım mı" kararının girdileri. Kayıt defteri,
+   * bağış listesi, ortak hedef ve paktlar açık DEĞİL: onlar ittifağın iç
+   * bilgisi ve rakibin eline geçtiğinde istihbarat olurdu. Casusluk
+   * (B5) zaten var ve bilgi oradan, bedelini ödeyerek alınıyor.
+   */
+  app.get('/ittifak/:id/incele', { preHandler: requireAuth }, async (req) => {
+    const { id } = z.object({ id: z.string() }).parse(req.params);
+    const lordId = await findLordByUser(req.user.userId);
+    const lord = await prisma.lord.findUniqueOrThrow({
+      where: { id: lordId },
+      select: { worldId: true, allianceId: true, level: true, allianceLeftAt: true },
+    });
+
+    const a = await prisma.alliance.findUnique({
+      where: { id },
+      include: { members: { select: uyeSecimi, orderBy: { fame: 'desc' } } },
+    });
+    if (!a || a.worldId !== lord.worldId) throw hata.bulunamadi('İttifak');
+
+    const durum = ittifakSeviyesi(a.xp);
+    const basvurum = await prisma.allianceBasvuru.findUnique({
+      where: { allianceId_lordId: { allianceId: id, lordId } },
+      select: { id: true, durum: true, kararAt: true },
+    });
+    const bekleyen = await prisma.allianceBasvuru.count({
+      where: { lordId, durum: 'bekliyor', allianceId: { not: id } },
+    });
+
+    /**
+     * "Katılabilir miyim" sorusunun cevabı SUNUCUDAN geliyor.
+     *
+     * Arayüz aynı kuralı yeniden yazsaydı (seviye eşiği, kapı, doluluk,
+     * ayrılma beklemesi, başvuru tavanı) iki kural olurdu ve biri
+     * diğerinden saparadı. Burada tek çağrı, tek cevap.
+     */
+    const kapi = basvurabilirMi({
+      lordSeviye: lord.level,
+      ittifaktaMi: lord.allianceId !== null,
+      katilim: a.katilim as KatilimTuru,
+      asgariSeviye: a.asgariSeviye,
+      uyeSayisi: a.members.length,
+      bekleyenSayisi: bekleyen,
+      oncekiDurum: basvurum?.durum as 'bekliyor' | 'kabul' | 'ret' | 'geri_cekildi' | undefined,
+      oncekiKararAt: basvurum?.kararAt ?? null,
+      simdi: new Date(),
+    });
+    const ayrilmaBeklemesi = ittifakaGirebilirMi(lord.allianceLeftAt, new Date());
+
+    /**
+     * Düğmenin ne yazacağı: aynı kurallar, tek yerde.
+     *
+     * Ayrılma beklemesi her iki kapıda da geçerli ve HEPSİNDEN önce
+     * geliyor: beklemesi olan lord ne katılabilir ne başvurabilir.
+     */
+    const kapiKarari = !ayrilmaBeklemesi.girebilir
+      ? {
+          olur: false,
+          sebep: `İttifaktan yeni ayrıldın. ${Math.ceil(ayrilmaBeklemesi.kalanSn / 3600)} saat sonra girebilirsin.`,
+        }
+      : a.katilim === 'acik'
+        ? katilabilirMi({
+            lordSeviye: lord.level,
+            ittifaktaMi: lord.allianceId !== null,
+            katilim: 'acik',
+            asgariSeviye: a.asgariSeviye,
+            uyeSayisi: a.members.length,
+          })
+        : { olur: kapi.olur, sebep: kapi.sebep };
+
+    return {
+      id: a.id,
+      ad: a.name,
+      etiket: a.tag,
+      arma: ittifakArmasi(a),
+      kurulus: a.createdAt,
+      liderId: a.leaderLordId,
+      seviye: durum,
+      ayricaliklar: ittifakAyricaliklari(durum.seviye),
+      katilim: a.katilim as KatilimTuru,
+      asgariSeviye: a.asgariSeviye,
+      azamiUye: azamiUye(),
+      duyuru: a.duyuru,
+      toplamSohret: a.members.reduce((t, u) => t + u.fame, 0),
+      uyeler: a.members.map((u) => ({
+        id: u.id,
+        ad: u.name,
+        seviye: u.level,
+        sohret: u.fame,
+        arma: lordArmasi(u),
+        rutbe: u.id === a.leaderLordId ? 'lider' : u.ittifakRutbe === 'yasli' ? 'yasli' : 'uye',
+        unvan: unvan(u.fame).ad,
+      })),
+      benimki: a.id === lord.allianceId,
+      basvurumId: basvurum?.durum === 'bekliyor' ? basvurum.id : null,
+      katilabilirMiyim: kapiKarari,
+    };
   });
 
   /* ------------------------------------------------------------------ *
@@ -1454,6 +1760,13 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
         where: { id: allianceId },
         data: { duyuru: temiz.length ? temiz : null },
       });
+      await kayitYaz(
+        tx,
+        allianceId,
+        'duyuru',
+        temiz.length ? 'Duyuru güncellendi.' : 'Duyuru kaldırıldı.',
+        lordId,
+      );
       return { duyuru: temiz.length ? temiz : null };
     });
   });
@@ -1497,6 +1810,13 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
         where: { id: hedefId },
         data: { ittifakRutbe: rutbe === 'yasli' ? 'yasli' : null },
       });
+      await kayitYaz(
+        tx,
+        allianceId,
+        'rutbe',
+        rutbe === 'yasli' ? `${hedef.name} Yaşlı oldu.` : `${hedef.name} Yaşlı rütbesini kaybetti.`,
+        hedefId,
+      );
       await pushEvent(
         hedefId,
         'ittifak_rutbe',

@@ -298,7 +298,10 @@ for (const [ad, etiket] of [
 ]) {
   await page.click('nav button:has-text("Menü")');
   await page.waitForTimeout(500);
-  await page.click(`text=${etiket}`);
+  // Tıklamayı MENÜ ızgarasına daralt. `text=İttifak` artık iki eleman
+  // buluyor: menüdeki sayfa ve Sıralama ekranındaki ittifak sekmesi.
+  // Playwright ilkini seçip menü perdesine çarpıyordu.
+  await page.locator(`div.fixed ul.grid button:has-text("${etiket}")`).click();
   await kaymaOlcumuBaslat();
   await denetle(ad);
 }

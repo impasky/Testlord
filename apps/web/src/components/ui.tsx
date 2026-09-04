@@ -662,6 +662,20 @@ export function kisaSayi(n: number): string {
   return `${isaret}${a.toLocaleString('tr-TR')}`;
 }
 
+/**
+ * Geçen süre: "az önce", "3 dk", "2 sa", "5 g".
+ *
+ * Sohbette ve kayıt defterinde saat damgası fazla gürültülü; ikisinde de
+ * sorulan soru "ne zaman" değil, "ne kadar önce".
+ */
+export function formatGecen(an: string): string {
+  const sn = Math.max(0, Math.floor((Date.now() - new Date(an).getTime()) / 1000));
+  if (sn < 60) return 'az önce';
+  if (sn < 3600) return `${Math.floor(sn / 60)} dk`;
+  if (sn < 86400) return `${Math.floor(sn / 3600)} sa`;
+  return `${Math.floor(sn / 86400)} g`;
+}
+
 export function formatKalan(ms: number): string {
   if (ms <= 0) return 'bitti';
   const sn = Math.floor(ms / 1000);

@@ -18,6 +18,9 @@ import { hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { BosHal } from '../components/BosHal';
 import { IttifakSohbet } from '../components/IttifakSohbet';
 import { IttifakBasvurular } from '../components/IttifakBasvurular';
+import { ArmaSecici } from '../components/ArmaSecici';
+import { IttifakKayit } from '../components/IttifakKayit';
+import { IttifakIncele } from '../components/IttifakIncele';
 import { IttifakBagis } from '../components/IttifakBagis';
 import { IttifakDuyuru } from '../components/IttifakDuyuru';
 import { KaynakGonder } from '../components/KaynakGonder';
@@ -121,7 +124,11 @@ export function Ittifak({ lordId }: { lordId: string }) {
   const [ad, setAd] = useState('');
   const [etiket, setEtiket] = useState('');
   const [hata, setHata] = useState<string | null>(null);
-  const [sekme, setSekme] = useState<'ittifakim' | 'diplomasi' | 'sohbet'>('ittifakim');
+  // Açık inceleme: liste satırına basınca o ittifak tam ekran açılıyor.
+  const [inceleId, setInceleId] = useState<string | null>(null);
+  const [sekme, setSekme] = useState<'ittifakim' | 'diplomasi' | 'sohbet' | 'kayit'>(
+    'ittifakim',
+  );
 
   const tazele = () => {
     void qc.invalidateQueries({ queryKey: ['ittifak'] });
@@ -188,6 +195,9 @@ export function Ittifak({ lordId }: { lordId: string }) {
     hedefKaldir.isPending;
 
   if (!q.data) return <Iskelet />;
+  // İnceleme açıkken sayfanın geri kalanı çizilmiyor: karar burada
+  // veriliyor, arkada duran liste dikkat dağıtıyor.
+  if (inceleId) return <IttifakIncele id={inceleId} onKapat={() => setInceleId(null)} />;
   const { ittifakim, liste, altin, kurmaMaliyeti, azamiUye, bekleme, basvuru } = q.data;
   const liderMiyim = ittifakim?.liderId === lordId;
 
@@ -207,6 +217,7 @@ export function Ittifak({ lordId }: { lordId: string }) {
             { key: 'ittifakim', ad: 'İttifakım' },
             { key: 'diplomasi', ad: 'Diplomasi' },
             { key: 'sohbet', ad: 'Sohbet' },
+            { key: 'kayit', ad: 'Kayıt' },
           ]}
           etkin={sekme}
           onSec={setSekme}
@@ -216,7 +227,10 @@ export function Ittifak({ lordId }: { lordId: string }) {
       {(!ittifakim || sekme === 'ittifakim') && (
         <>
           {ittifakim ? (
-            <Bolum baslik={`${ittifakim.ad} [${ittifakim.etiket}]`}>
+            <Bolum
+              baslik={`${ittifakim.ad} [${ittifakim.etiket}]`}
+              yan={<Arma arma={ittifakim.arma} boyut={26} />}
+            >
               <Kart className="p-3" vurgu="var(--color-altin)">
                 <div className="mb-2 flex items-baseline justify-between gap-2 text-[12px]">
                   <span className="text-solgun">
@@ -351,6 +365,19 @@ export function Ittifak({ lordId }: { lordId: string }) {
               üyede bileşen hiç çizilmiyor. */}
           {ittifakim && <IttifakBasvurular />}
 
+          {/* Arma seçici yalnız liderde: ittifakın kimliği tek bir kişinin
+              kalemi olmalı, sekiz kişinin sırayla değiştirdiği bir şey
+              kimlik olmaz. Lord armasıyla AYNI seçici. */}
+          {ittifakim && liderMiyim && (
+            <ArmaSecici
+              mevcut={ittifakim.arma}
+              baslik="İttifakın Arması"
+              aciklama="İttifak listesinde, sıralamada ve üyelerinin yanında bu arma görünür."
+              dugme="Armayı değiştir"
+              kaydeden={(a) => api.ittifakArma(a)}
+            />
+          )}
+
           {/* Bağış kartı üye listesinin ALTINDA: önce "kimlerdeniz", sonra
               "birlikte neyi büyütüyoruz". */}
           {ittifakim && <IttifakBagis />}
@@ -362,6 +389,11 @@ export function Ittifak({ lordId }: { lordId: string }) {
       {ittifakim && sekme === 'diplomasi' && <Paktlar liste={liste} />}
 
       {ittifakim && sekme === 'sohbet' && <IttifakSohbet lordId={lordId} />}
+
+      {/* Kayıt defteri sohbetten AYRI bir sekme: sohbet insanların yazdığı
+          şey, defter ittifağın başına gelen şey. Tek listede olsalardı
+          "kim ayrıldı" üç günlük muhabbetin arasında kaybolurdu. */}
+      {ittifakim && sekme === 'kayit' && <IttifakKayit />}
 
       {hata && (
         <div className="px-3">
@@ -382,8 +414,18 @@ export function Ittifak({ lordId }: { lordId: string }) {
               {liste.map((a, i) => (
                 <li key={a.id}>
                   <Kart className="p-3" vurgu={a.benimki ? 'var(--color-altin)' : undefined}>
-                    <div className="flex items-center gap-2">
-                      <span className="tabular w-6 shrink-0 text-[12px] text-solgun">{i + 1}.</span>
+                    {/* Satırın tamamı tıklanabilir: "incele" diye ayrı bir
+                        düğme koymak, listeyi düğme tarlasına çevirirdi. */}
+                    <button
+                      type="button"
+                      className="bas flex w-full items-center gap-2 text-left"
+                      onClick={() => setInceleId(a.id)}
+                      aria-label={`${a.ad} ittifakını incele`}
+                    >
+                      <span className="tabular w-5 shrink-0 text-[12px] text-solgun">{i + 1}.</span>
+                      {/* Arma adın SOLUNDA: listede gezen oyuncu ittifakları
+                          okumadan önce ayırt edebilmeli. */}
+                      <Arma arma={a.arma} boyut={22} />
                       <span className="min-w-0 flex-1 truncate text-[13px] font-bold">
                         {a.ad} <span className="text-solgun">[{a.etiket}]</span>
                       </span>
@@ -401,7 +443,7 @@ export function Ittifak({ lordId }: { lordId: string }) {
                         </span>
                         {formatSayi(a.toplamSohret)}
                       </span>
-                    </div>
+                    </button>
 
                     {/* Kapının hâli satırda yazıyor: oyuncu "Katıl"a basıp
                         reddedilerek öğrenmemeli. Eşik varsa da burada. */}

@@ -43,13 +43,33 @@ function Secenek({
   );
 }
 
-export function ArmaSecici({ mevcut }: { mevcut: ArmaTipi }) {
+/**
+ * Seçici hem LORD hem İTTİFAK arması için kullanılıyor.
+ *
+ * Parçaları (kalkan, desen, renk, sembol) ikinci kez yazmak, bir gün
+ * birine eklenen sembolün diğerinde olmaması demekti. Değişen tek şey
+ * başlık, açıklama ve nereye kaydettiği; heraldiğin kendisi tek yerde.
+ */
+export function ArmaSecici({
+  mevcut,
+  baslik = 'Arman',
+  aciklama = 'Armanı sıralamada, ittifak listende ve savaş raporlarında herkes görür.',
+  dugme = 'Armanı değiştir',
+  kaydeden,
+}: {
+  mevcut: ArmaTipi;
+  baslik?: string;
+  aciklama?: string;
+  dugme?: string;
+  /** Varsayılan: lordun kendi arması. */
+  kaydeden?: (a: ArmaTipi) => Promise<unknown>;
+}) {
   const qc = useQueryClient();
   const [taslak, setTaslak] = useState<ArmaTipi>(mevcut);
   const [acik, setAcik] = useState(false);
 
   const kaydet = useMutation({
-    mutationFn: () => api.armaKaydet(taslak),
+    mutationFn: () => (kaydeden ?? api.armaKaydet)(taslak),
     onSuccess: () => {
       hisOnay();
       void qc.invalidateQueries({ queryKey: ['me'] });
@@ -67,14 +87,12 @@ export function ArmaSecici({ mevcut }: { mevcut: ArmaTipi }) {
     taslak.sembol !== mevcut.sembol;
 
   return (
-    <Bolum baslik="Arman">
+    <Bolum baslik={baslik}>
       <Kart className="p-3">
         <div className="flex items-center gap-3">
           <Arma arma={acik ? taslak : mevcut} boyut={64} />
           <div className="min-w-0 flex-1">
-            <p className="text-[12px] text-solgun">
-              Armanı sıralamada, ittifak listende ve savaş raporlarında herkes görür.
-            </p>
+            <p className="text-[12px] text-solgun">{aciklama}</p>
             <Buton
               tur="sessiz"
               boy="kucuk"
@@ -84,7 +102,7 @@ export function ArmaSecici({ mevcut }: { mevcut: ArmaTipi }) {
                 setAcik((a) => !a);
               }}
             >
-              {acik ? 'Kapat' : 'Armanı değiştir'}
+              {acik ? 'Kapat' : dugme}
             </Buton>
           </div>
         </div>

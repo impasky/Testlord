@@ -252,5 +252,151 @@ let basvuruId;
   kontrol('İttifağa girince diğer başvurular düştü', sonra === 0, `${sonra} başvuru kaldı`);
 }
 
+// --- 11. İttifak arması (docs/10 §1.1) ---
+{
+  const g = await lider.get('/ittifak');
+  const satir = g.liste.find((x) => x.id === A.id);
+  kontrol('Arması olmayan ittifak ADINDAN arma alıyor',
+    Boolean(satir?.arma?.kalkan && satir.arma.renk1),
+    JSON.stringify(satir?.arma ?? {}).slice(0, 60));
+
+  const yeni = { kalkan: 'kesik', desen: 'capraz', renk1: 'mavi', renk2: 'gumus', sembol: 'kartal' };
+  const kaydet = await lider.post('/ittifak/arma', yeni);
+  kontrol('Lider ittifak armasını değiştirebiliyor', kaydet.arma?.kalkan === 'kesik',
+    kaydet.error ?? JSON.stringify(kaydet.arma ?? {}).slice(0, 60));
+
+  const sonra = (await lider.get('/ittifak')).ittifakim.arma;
+  kontrol('Yeni arma listede ve özette görünüyor',
+    sonra.kalkan === 'kesik' && sonra.renk1 === 'mavi', JSON.stringify(sonra).slice(0, 60));
+
+  // Geçersiz parça REDDEDİLMİYOR, varsayılana düşüyor: arma bir kimlik,
+  // hata mesajı verilecek bir form değil.
+  const bozuk = await lider.post('/ittifak/arma', { ...yeni, sembol: 'ejderha_yok' });
+  kontrol('Geçersiz parça reddedilmiyor, varsayılana düşüyor',
+    bozuk.arma?.sembol === 'yok', JSON.stringify(bozuk.arma ?? bozuk).slice(0, 70));
+
+  const uye = await lordKur('armauye');
+  await lider.post('/ittifak/ayarlar', { katilim: 'acik' });
+  await uye.post(`/ittifak/${A.id}/katil`);
+  const yetkisiz = await uye.post('/ittifak/arma', yeni);
+  kontrol('Sıradan üye ittifak armasını değiştiremiyor', Boolean(yetkisiz.error),
+    yetkisiz.error ?? 'değiştirebildi!');
+}
+
+// --- 12. Kayıt defteri ---
+{
+  const d = await lider.get('/ittifak/kayit');
+  const metinler = (d.kayitlar ?? []).map((k) => k.mesaj).join(' | ');
+
+  kontrol('Kayıt defteri dolu', (d.kayitlar ?? []).length > 0, `${d.kayitlar?.length} satır`);
+  // Defterin ilk satırı kuruluş: yeni ittifakta boş defter, çalışmıyormuş
+  // gibi görünüyor.
+  kontrol('Kuruluş, kurucunun ADIYLA deftere yazıldı',
+    /Bsv \S+ ittifağı kurdu/.test(metinler) && !/undefined/.test(metinler),
+    metinler.match(/[^|]*ittifağı kurdu[^|]*/)?.[0]?.trim() ?? 'yok');
+
+  // Saklanan olaylar (başka hiçbir yerde izi yok).
+  kontrol('Katılmalar deftere yazıldı', /katıldı/.test(metinler));
+  kontrol('Rütbe değişikliği deftere yazıldı', /Yaşlı/.test(metinler));
+  kontrol('Kapı değişikliği deftere yazıldı', /Katılım:/.test(metinler));
+  kontrol('Arma değişikliği deftere yazıldı', /arması değişti/.test(metinler));
+
+  // Türetilen olaylar: kendi satırları var, deftere ikinci kez yazılmıyor.
+  kontrol('Başvuru kararları defterde görünüyor',
+    /başvurusu kabul edildi/.test(metinler) && /başvurusu reddedildi/.test(metinler));
+
+  const sirali = (d.kayitlar ?? []).every(
+    (k, i, a) => i === 0 || new Date(a[i - 1].an) >= new Date(k.an),
+  );
+  kontrol('Defter yeniden eskiye sıralı', sirali);
+
+  const disaridan = await lordKur('defterci');
+  const yasak = await disaridan.get('/ittifak/kayit');
+  kontrol('İttifaksız lord defteri okuyamıyor', yasak.code === 'ITTIFAK_YOK', yasak.error ?? '');
+
+  // Bağış: kendi satırından türetiliyor, log'a yazılmıyor.
+  await lider.post('/test/kaynak-ver', { altin: 90000, demir: 40000, erzak: 40000 });
+  const bagis = await lider.post('/ittifak/bagis');
+  if (bagis.error) throw new Error(`bağış yapılamadı: ${bagis.error}`);
+  const d2 = await lider.get('/ittifak/kayit');
+  kontrol('Bağış defterde görünüyor',
+    d2.kayitlar.some((k) => k.kind === 'bagis' && /bağış yaptı/.test(k.mesaj)));
+}
+
+// --- 13. Başka bir ittifağı inceleme ---
+{
+  const yabanci = await lordKur('gozlemci');
+  const d = await yabanci.get(`/ittifak/${A.id}/incele`);
+
+  kontrol('İttifak dışından incelenebiliyor', d.id === A.id, d.error ?? '');
+  kontrol('Üye listesi görünüyor', (d.uyeler ?? []).length > 0, `${d.uyeler?.length} üye`);
+  kontrol('Üyelerin armaları ve rütbeleri geliyor',
+    Boolean(d.uyeler?.[0]?.arma?.kalkan) && d.uyeler.some((u) => u.rutbe === 'lider'));
+  kontrol('Seviye ve ayrıcalıklar görünüyor',
+    typeof d.seviye?.seviye === 'number' && typeof d.ayricaliklar?.ticaretTavani === 'number');
+  kontrol('Kapı ve eşik görünüyor', d.katilim === 'acik' || d.katilim === 'basvuru');
+
+  /**
+   * İÇ bilgi dışarı açık DEĞİL. Bu kontrol bir sızıntıya karşı: kayıt
+   * defteri, bağış listesi, ortak hedef ve paktlar rakibin eline
+   * geçtiğinde istihbarat olurdu. Bilgi almanın yolu casusluk ve
+   * bedeli var.
+   */
+  const alanlar = Object.keys(d);
+  const sizinti = ['kayitlar', 'bagislar', 'hedef', 'paktlar', 'basvurular'].filter((k) =>
+    alanlar.includes(k),
+  );
+  kontrol('İç bilgi (defter, bağış, hedef, pakt) DIŞARI SIZMIYOR',
+    sizinti.length === 0, sizinti.join(', ') || 'temiz');
+
+  kontrol('"Katılabilir miyim" cevabı sunucudan geliyor',
+    typeof d.katilabilirMiyim?.olur === 'boolean', JSON.stringify(d.katilabilirMiyim ?? {}));
+
+  // A şu an açık ve Sv1 eşikli: yabancı katılabilmeli.
+  kontrol('Açık ittifakta katılabilir diyor', d.katilabilirMiyim.olur === true,
+    d.katilabilirMiyim.sebep ?? '');
+
+  await lider.post('/ittifak/ayarlar', { asgariSeviye: 20 });
+  const d2 = await yabanci.get(`/ittifak/${A.id}/incele`);
+  kontrol('Eşik konunca katılamaz diyor ve SEBEBİNİ söylüyor',
+    d2.katilabilirMiyim.olur === false && /Sv20/.test(d2.katilabilirMiyim.sebep ?? ''),
+    d2.katilabilirMiyim.sebep ?? '');
+  await lider.post('/ittifak/ayarlar', { asgariSeviye: 1 });
+
+  const yok = await yabanci.get('/ittifak/bulunmayan-kimlik/incele');
+  kontrol('Olmayan ittifak incelenemiyor', Boolean(yok.error), yok.error ?? 'cevap döndü!');
+}
+
+// --- 14. İttifak sıralaması ---
+{
+  const d = await lider.get('/rankings-ittifak');
+  kontrol('İttifak sıralaması geliyor', (d.satirlar ?? []).length > 0, `${d.toplam} ittifak`);
+
+  const benim = d.satirlar.find((x) => x.id === A.id);
+  kontrol('Kendi ittifakım işaretli', benim?.benimki === true);
+  kontrol('Satır üye ve bölge sayısını taşıyor',
+    typeof benim?.uyeSayisi === 'number' && typeof benim?.bolgeSayisi === 'number',
+    `${benim?.uyeSayisi} üye / ${benim?.bolgeSayisi} bölge`);
+  kontrol('Satır armayı taşıyor', Boolean(benim?.arma?.kalkan));
+
+  const sirali = d.satirlar.every((x, i, a) => i === 0 || a[i - 1].toplamSohret >= x.toplamSohret);
+  kontrol('Sıralama toplam şöhrete göre azalan', sirali);
+  kontrol('Sıra numaraları 1\'den başlıyor', d.satirlar[0]?.sira === 1, `${d.satirlar[0]?.sira}`);
+
+  /**
+   * Sıralamanın ölçüsü lord sıralamasıyla AYNI olmalı: ikinci bir
+   * "ittifak gücü" formülü, oyuncunun kafasında iki ayrı güç fikri
+   * yaratırdı. Üyelerin şöhret toplamı, ittifakın şöhreti.
+   */
+  const ozet = (await lider.get('/ittifak')).ittifakim;
+  kontrol('İttifak şöhreti üyelerin toplamı', benim?.toplamSohret === ozet.toplamSohret,
+    `${benim?.toplamSohret} vs ${ozet.toplamSohret}`);
+
+  const yabanci = await lordKur('siralamaci');
+  const d2 = await yabanci.get('/rankings-ittifak');
+  kontrol('İttifaksız lord sıralamayı görebiliyor', (d2.satirlar ?? []).length > 0);
+  kontrol('İttifaksız lordun "benim" satırı yok', d2.benim === null);
+}
+
 console.log(hata === 0 ? '\nTÜM KONTROLLER GEÇTİ' : `\n${hata} KONTROL BAŞARISIZ`);
 process.exit(hata === 0 ? 0 : 1);

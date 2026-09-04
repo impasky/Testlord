@@ -16,16 +16,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { ApiError, api } from '../api/client';
 import { hisRet } from './hisGeriBildirimi';
-import { Bolum, Buton, EngelNotu, Input, Kart } from './ui';
-
-/** "az önce", "3 dk", "2 sa" — sohbette saat damgası fazla gürültülü. */
-function ne(an: string): string {
-  const sn = Math.max(0, Math.floor((Date.now() - new Date(an).getTime()) / 1000));
-  if (sn < 60) return 'az önce';
-  if (sn < 3600) return `${Math.floor(sn / 60)} dk`;
-  if (sn < 86400) return `${Math.floor(sn / 3600)} sa`;
-  return `${Math.floor(sn / 86400)} g`;
-}
+import { Bolum, Buton, EngelNotu, Input, Kart, formatGecen } from './ui';
 
 export function IttifakSohbet({ lordId }: { lordId: string }) {
   const qc = useQueryClient();
@@ -85,7 +76,7 @@ export function IttifakSohbet({ lordId }: { lordId: string }) {
                     >
                       {m.ad}
                     </span>
-                    <span className="shrink-0 text-[10px] text-sonuk">{ne(m.an)}</span>
+                    <span className="shrink-0 text-[10px] text-sonuk">{formatGecen(m.an)}</span>
                   </div>
                   <p className="whitespace-pre-wrap break-words text-[13px] leading-snug">
                     {m.metin}

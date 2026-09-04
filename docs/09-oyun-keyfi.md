@@ -113,8 +113,39 @@ anlamlı. Aynı anda 3 açık başvuru: sınırsız olsaydı herkese başvurup i
 kabul edeni seçmek en iyi hamle olurdu ve başvuru bir tercih değil ağır bir
 tarama olurdu.
 
-**Sırada:** ittifak arması, ittifak kayıt defteri, başka bir ittifağı
-inceleme, ittifak sıralamasının kendi ekranı.
+**Arma, kayıt defteri, inceleme ve sıralama yapıldı.** Dördü de başvuru
+sisteminin açtığı boşlukları kapatıyor:
+
+- **Arma.** Lord armasıyla AYNI beş anahtar, aynı doğrulayıcı, aynı çizici
+  (docs/10 §1.1). İkinci bir heraldik sistemi yazsaydık ikisi bir gün
+  birbirinden sapardı — bir tarafa eklenen sembol diğerinde olmazdı.
+  Arması olmayan ittifak ADINDAN türetiyor: yeni kurulan da ilk günden
+  kimlikli. Sekiz kişinin hepsi aynı kırmızı kalkanı taşımamalı.
+- **Kayıt defteri.** "Ben yokken ne oldu" sorusu. Dört kaynak birleşiyor ve
+  **üçü türetiliyor**: bağış (AllianceDonation), pakt (Pakt) ve başvuru
+  kararı (AllianceBasvuru) kendi satırlarından okunuyor. Yalnız başka
+  hiçbir yerde izi kalmayanlar saklanıyor — katılma, ayrılma, çıkarılma,
+  rütbe, hedef, duyuru, kapı, arma, kuruluş. `Lord.allianceId` yalnız
+  BUGÜNÜ söylüyor, dün kimin girip çıktığını değil. Türetmenin ikinci
+  faydası: defter ilk günden dolu açılıyor, bu özellik gelmeden önceki
+  bağışlar ve paktlar da görünüyor.
+- **İnceleme.** Kapıyı çalmadan önce "bunlar kim". Gösterilen şey kasten
+  sınırlı: üyeler, seviye, ayrıcalıklar, kapı, duyuru — yani "katılayım mı"
+  kararının girdileri. Kayıt defteri, bağışlar, ortak hedef ve paktlar
+  dışarı **açık değil**: onlar rakibin eline geçtiğinde istihbarat olurdu
+  ve bilgi almanın yolu casusluk (B5), bedeli var. "Katılabilir miyim"in
+  cevabı da sunucudan geliyor; kuralı arayüzde ikinci kez yazsaydık biri
+  diğerinden sapardı.
+- **Sıralama.** Kendi ekranı değil, Sıralama ekranının dördüncü sekmesi:
+  o ekranın işi "diyarda kim önde" ve ittifak bunun başka ölçekte sorulmuş
+  hâli, ayrı bir soru değil. İttifak ekranındaki liste ise sıralama değil,
+  **katılacak ittifak arama** listesi — iki iş, iki yer. Ölçü toplam şöhret,
+  lord sıralamasıyla aynı: ikinci bir "ittifak gücü" formülü, oyuncunun
+  kafasında iki ayrı güç fikri yaratırdı. Üye sayısına bölünmüyor; sekiz
+  kişilik bir ittifak üç kişilikten güçlüdür ve sıralama bunu saklamamalı.
+
+**Sırada:** ittifak katmanında açık bir iş kalmadı. Bundan sonrası oyuncu
+geri bildirimine bağlı.
 
 ### 2.2 Sezon / sunucu döngüsü — ALMIYORUZ
 
