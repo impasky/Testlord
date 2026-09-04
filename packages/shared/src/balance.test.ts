@@ -94,7 +94,11 @@ import {
 } from './index.js';
 import type { Army, EquippedItem, Side } from './types.js';
 
-const ctx = { defenderStore: { altin: 0, demir: 0, erzak: 0 }, attackerCunning: 0, canCapture: true };
+const ctx = {
+  defenderStore: { altin: 0, demir: 0, erzak: 0 },
+  attackerCunning: 0,
+  canCapture: true,
+};
 
 function side(units: Army, isDefender: boolean, fort = 0, leadership = 5): Side {
   return {
@@ -126,8 +130,7 @@ describe('ilk gün deneyimi', () => {
   });
 
   it('başlangıç ordusunun maliyeti 1 günlük bütçeyi aşmaz', () => {
-    const maliyet =
-      20 * B.birimler.mizrakci.maliyet.altin + 15 * B.birimler.okcu.maliyet.altin;
+    const maliyet = 20 * B.birimler.mizrakci.maliyet.altin + 15 * B.birimler.okcu.maliyet.altin;
     const butce = B.lord.baslangic_kaynaklari.altin + malikaneIncome(1).altin * 24;
     expect(maliyet).toBeLessThanOrEqual(butce);
   });
@@ -206,14 +209,14 @@ describe('ilerleme temposu', () => {
     expect(gun).toBeLessThanOrEqual(130);
   });
 
-  it('bölge limiti seviyeyle büyür ve Lv60\'ta 5 olur', () => {
+  it("bölge limiti seviyeyle büyür ve Lv60'ta 5 olur", () => {
     expect(maxRegions(1)).toBe(1);
     expect(maxRegions(60)).toBe(5);
   });
 });
 
 describe('güç dağılımı', () => {
-  it('tam donanımlı lord toplam savaş gücünün %15-25\'ini taşır', () => {
+  it("tam donanımlı lord toplam savaş gücünün %15-25'ini taşır", () => {
     const tamSet: EquippedItem[] = B.ekipman.slotlar.map((slot) => ({
       slot: slot as EquippedItem['slot'],
       tier: 5,
@@ -266,7 +269,7 @@ describe('savaş sonuç bandı', () => {
 });
 
 describe('harita', () => {
-  it('bölge kıtlığı korunur — oyuncu başına 0.75\'ten az bölge', () => {
+  it("bölge kıtlığı korunur — oyuncu başına 0.75'ten az bölge", () => {
     const eldeEdilebilir = WORLD_MAP.region_count - 1; // Taht Kalesi hariç
     expect(eldeEdilebilir / B.dunya.oyuncu_kapasitesi).toBeLessThan(0.75);
   });
@@ -472,9 +475,17 @@ describe('savaş sebepleri', () => {
 
 describe('başarımlar', () => {
   const bos = {
-    bolge: 0, taht: 0, pvp_galibiyet: 0, elo: 1200, komuta_orani: 0,
-    birim_cesidi: 0, general_slot_orani: 0, kusanik: 0, en_yuksek_tier: 0,
-    seviye: 1, en_yuksek_bolge_seviyesi: 0,
+    bolge: 0,
+    taht: 0,
+    pvp_galibiyet: 0,
+    elo: 1200,
+    komuta_orani: 0,
+    birim_cesidi: 0,
+    general_slot_orani: 0,
+    kusanik: 0,
+    en_yuksek_tier: 0,
+    seviye: 1,
+    en_yuksek_bolge_seviyesi: 0,
   };
 
   it('yeni oyuncuda hiçbiri tamam değil ama hepsi görünür', () => {
@@ -507,9 +518,17 @@ describe('başarımlar', () => {
     // bu gözle fark edilmez. Test her ölçütün BasarimOlcutleri'nde
     // gerçekten var olduğunu doğruluyor.
     const dolu = {
-      bolge: 99, taht: 1, pvp_galibiyet: 99, elo: 9999, komuta_orani: 100,
-      birim_cesidi: 5, general_slot_orani: 100, kusanik: 6, en_yuksek_tier: 5,
-      seviye: 99, en_yuksek_bolge_seviyesi: 5,
+      bolge: 99,
+      taht: 1,
+      pvp_galibiyet: 99,
+      elo: 9999,
+      komuta_orani: 100,
+      birim_cesidi: 5,
+      general_slot_orani: 100,
+      kusanik: 6,
+      en_yuksek_tier: 5,
+      seviye: 99,
+      en_yuksek_bolge_seviyesi: 5,
     };
     const k = basarimlar(dolu);
     const eksik = k.flatMap((x) => x.basarimlar).filter((b) => !b.tamam);
@@ -1199,9 +1218,7 @@ describe('yağma sonrası kalkan', () => {
     // Tersi olursa dar zaferle kaybeden, bölgeyi kaptırandan daha uzun
     // korunur: saldıranın "az daha alıyordum" hâli savunana ödül olur ve
     // fethetmek yağmalamaktan cezalı hâle gelir.
-    expect(B.korumalar.yagma_sonrasi_saat).toBeLessThan(
-      B.korumalar.bolge_ele_gecirme_sonrasi_saat,
-    );
+    expect(B.korumalar.yagma_sonrasi_saat).toBeLessThan(B.korumalar.bolge_ele_gecirme_sonrasi_saat);
   });
 
   it('kalkan aynı saldırganın bekleme süresini geçmiyor', () => {
@@ -1330,6 +1347,26 @@ describe('öğretici (docs/09 — ilk giriş)', () => {
     expect(metin).toContain(`${B.korumalar.bolge_ele_gecirme_sonrasi_saat} saat`);
   });
 
+  it('öğretici vilayet bonusunu dengeyle aynı anlatıyor', () => {
+    // Öğretici oyunun ESKİ hâlini anlatmaya devam ederse yeni oyuncuya
+    // yanlış bir plan kurdurur. Vilayet birliği mekaniği eklendiğinde
+    // öğretici sessizce eskimişti; bu kontrol o eskimeyi yakalıyor.
+    const v = B.bolgeler.vilayet_birligi;
+    const metin = sayfalar.flatMap((s) => s.maddeler.map((m) => `${m.vurgu} ${m.metin}`)).join(' ');
+    expect(metin).toContain(`%${Math.round(v.bolge_basina * 100)}`);
+    expect(metin).toContain(`%${Math.round(v.azami * 100)}`);
+  });
+
+  it('öğretici komşuluk kuralını anlatıyor', () => {
+    // Haritanın en önemli kuralı bu (docs/11 §1.2 H1) ve hiçbir ekranda
+    // yazmıyor: oyuncu ancak öğreticide öğrenebilir.
+    const metin = sayfalar
+      .flatMap((s) => s.maddeler.map((m) => `${m.vurgu} ${m.metin}`))
+      .join(' ')
+      .toLocaleLowerCase('tr');
+    expect(metin).toContain('en yakın toprağından');
+  });
+
   it('öğretici sezon vaat etmiyor — dünya kalıcı (docs/09 §2.2)', () => {
     const tumMetin = sayfalar
       .flatMap((s) => [s.baslik, s.ozet, ...s.maddeler.map((m) => `${m.vurgu} ${m.metin}`)])
@@ -1365,10 +1402,11 @@ describe('harita: komşuluk ve vilayet (docs/11)', () => {
     for (let q = -4; q <= 4; q++) {
       for (let r = -4; r <= 4; r++) {
         const hedef = { q, r };
-        const topraklar = [{ q: 3, r: -1 }, { q: -2, r: 2 }];
-        expect(yakinlikMesafesi(ev, topraklar, hedef)).toBeLessThanOrEqual(
-          hexDistance(ev, hedef),
-        );
+        const topraklar = [
+          { q: 3, r: -1 },
+          { q: -2, r: 2 },
+        ];
+        expect(yakinlikMesafesi(ev, topraklar, hedef)).toBeLessThanOrEqual(hexDistance(ev, hedef));
       }
     }
   });

@@ -86,6 +86,11 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
   const ittifak = B.ittifak as { azami_uye: number };
   const ticaret = B.ticaret as { gunluk_gonderim_tavani: number };
   const kaynak = B.kaynaklar as { malikane_saatlik: Record<string, number> };
+  const vilayet = (
+    B.bolgeler as unknown as {
+      vilayet_birligi: { bolge_basina: number; azami: number };
+    }
+  ).vilayet_birligi;
   const komuta = B.komuta as { taban: number; liderlik_carpani: number };
   const savas = B.savas as { tur_sayisi: number };
 
@@ -110,6 +115,13 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
           metin:
             'Haritanın ortasındaki altın çerçeveli bölge. Onu tutan Diyarın Lordu olur ' +
             've şöhretini daha hızlı büyütür. Oyunun ucu burası.',
+        },
+        {
+          vurgu: 'Toprak haritayı açar',
+          metin:
+            'Yürüyüş süresi en yakın toprağından ölçülür, malikânenden değil. ' +
+            'Bir bölge aldığın anda onun çevresindeki her yer sana yaklaşır — ' +
+            'yayıldıkça daha uzağa uzanabilirsin.',
         },
         {
           vurgu: 'Malikânen güvende',
@@ -228,6 +240,13 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
           metin:
             `Her ${bolge.max_seviye_bolen} lord seviyesinde bir bölge daha tutabilirsin. ` +
             'Erken oyunda az bölgeyi iyi tutmak, çok bölgeyi kötü tutmaktan iyidir.',
+        },
+        {
+          vurgu: 'Aynı vilayette topla',
+          metin:
+            `Aynı vilayette tuttuğun her fazladan bölge, oradaki bütün bölgelerinin gelirini ` +
+            `%${Math.round(vilayet.bolge_basina * 100)} artırır (en çok %${Math.round(vilayet.azami * 100)}). ` +
+            'Dağınık üç bölge ile bitişik üç bölge aynı şey değil.',
         },
       ],
       sekme: 'demirhane',

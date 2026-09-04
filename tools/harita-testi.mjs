@@ -49,13 +49,17 @@ await P('/test/xp-ver', { miktar: 200000 });
 // ALAKASIZ bir satırda "Cannot read properties of undefined" diye
 // patlıyordu. Sebebi ilk satırda söylemek, aramaktan iyidir.
 const ben = await G('/me');
-if (!ben?.lord) throw new Error(`/me beklenen gövdeyi döndürmedi: ${JSON.stringify(ben).slice(0, 200)}`);
+if (!ben?.lord)
+  throw new Error(`/me beklenen gövdeyi döndürmedi: ${JSON.stringify(ben).slice(0, 200)}`);
 if (ben.lord.statPoints > 0) await P('/me/stats', { liderlik: ben.lord.statPoints });
 
 const once = await G('/map');
 const mesafelerOnce = new Map(once.regions.map((r) => [r.id, r.distance]));
-kontrol('Haritada vilayet bilgisi var', once.regions.every((r) => typeof r.province === 'string'),
-  `${new Set(once.regions.map((r) => r.province)).size} vilayet`);
+kontrol(
+  'Haritada vilayet bilgisi var',
+  once.regions.every((r) => typeof r.province === 'string'),
+  `${new Set(once.regions.map((r) => r.province)).size} vilayet`,
+);
 
 /** Öneri motorunun dediğini yaparak bir bölge alır. */
 async function bolgeAl() {
@@ -95,30 +99,43 @@ const mesafelerAra = new Map(ara.regions.map((r) => [r.id, r.distance]));
 
 for (let i = 0; i < 8 && (await benimBolgelerim()).length < 2; i++) await bolgeAl();
 const ikililer = await benimBolgelerim();
-kontrol('İkinci bölge de alındı', ikililer.length >= 2,
-  ikililer.map((r) => r.name).join(', ') || 'alınamadı');
+kontrol(
+  'İkinci bölge de alındı',
+  ikililer.length >= 2,
+  ikililer.map((r) => r.name).join(', ') || 'alınamadı',
+);
 
 if (ikililer.length >= 2) {
   const sonra = await G('/map');
   const yakinlasan = sonra.regions.filter((r) => r.distance < (mesafelerAra.get(r.id) ?? 99));
   // ASIL KONTROL: bölge almak haritayı açmalı. Mesafe yalnız malikâneden
   // ölçülseydi bu sayı SIFIR olurdu (docs/11 §1.2 H1).
-  kontrol('Bölge almak haritayı AÇIYOR', yakinlasan.length > 0,
+  kontrol(
+    'Bölge almak haritayı AÇIYOR',
+    yakinlasan.length > 0,
     `${yakinlasan.length} bölge yakınlaştı: ` +
       yakinlasan
         .slice(0, 3)
         .map((r) => `${r.name} ${mesafelerAra.get(r.id)}→${r.distance}`)
-        .join(', '));
+        .join(', '),
+  );
 
   for (const b of ikililer) {
     const kendi = sonra.regions.find((r) => r.id === b.id);
-    kontrol(`Kendi bölgene mesafe sıfır (${b.name})`, kendi?.distance === 0, `${kendi?.distance} hex`);
+    kontrol(
+      `Kendi bölgene mesafe sıfır (${b.name})`,
+      kendi?.distance === 0,
+      `${kendi?.distance} hex`,
+    );
   }
 
   // Hiçbir bölge UZAKLAŞMAMALI: min() alıyoruz.
   const uzaklasan = sonra.regions.filter((r) => r.distance > (mesafelerOnce.get(r.id) ?? 0));
-  kontrol('Hiçbir bölge uzaklaşmıyor', uzaklasan.length === 0,
-    uzaklasan.map((r) => r.name).join(', ') || 'yok');
+  kontrol(
+    'Hiçbir bölge uzaklaşmıyor',
+    uzaklasan.length === 0,
+    uzaklasan.map((r) => r.name).join(', ') || 'yok',
+  );
 }
 
 // --- 2. Görsel: tarayıcı
@@ -139,8 +156,11 @@ await sayfa.click('nav button:has-text("Harita")');
 await sayfa.waitForTimeout(2000);
 
 const svgMetni = await sayfa.locator('svg[role=img]').first().innerHTML();
-kontrol('Vilayet adları haritada yazıyor', /KUZEYMARK|KARAORMAN|AKSU OVASI/.test(svgMetni),
-  (svgMetni.match(/[A-ZÇĞİÖŞÜ]{4,}(?: [A-ZÇĞİÖŞÜ]+)*/g) ?? []).slice(0, 3).join(' / '));
+kontrol(
+  'Vilayet adları haritada yazıyor',
+  /KUZEYMARK|KARAORMAN|AKSU OVASI/.test(svgMetni),
+  (svgMetni.match(/[A-ZÇĞİÖŞÜ]{4,}(?: [A-ZÇĞİÖŞÜ]+)*/g) ?? []).slice(0, 3).join(' / '),
+);
 await sayfa.screenshot({ path: `${CIKTI}/harita-1-genel.png` });
 
 // Yakınlaştırma: düğmeye basınca ölçek büyümeli ve isimler AÇILMALI.
@@ -148,19 +168,28 @@ const oncekiKisaltma = (svgMetni.match(/…/g) ?? []).length;
 await sayfa.getByRole('button', { name: 'Yakınlaştır' }).click();
 await sayfa.getByRole('button', { name: 'Yakınlaştır' }).click();
 await sayfa.waitForTimeout(500);
-const donusum = await sayfa.locator('svg[role=img]').first().evaluate((el) => el.style.transform);
+const donusum = await sayfa
+  .locator('svg[role=img]')
+  .first()
+  .evaluate((el) => el.style.transform);
 kontrol('Yakınlaştırma çalışıyor', /scale\((?!1\))/.test(donusum), donusum);
 
 const yakinMetin = await sayfa.locator('svg[role=img]').first().innerHTML();
 const sonrakiKisaltma = (yakinMetin.match(/…/g) ?? []).length;
-kontrol('Yakınlaşınca bölge adları kısaltılmıyor', sonrakiKisaltma < oncekiKisaltma,
-  `${oncekiKisaltma} kısaltma -> ${sonrakiKisaltma}`);
+kontrol(
+  'Yakınlaşınca bölge adları kısaltılmıyor',
+  sonrakiKisaltma < oncekiKisaltma,
+  `${oncekiKisaltma} kısaltma -> ${sonrakiKisaltma}`,
+);
 await sayfa.screenshot({ path: `${CIKTI}/harita-2-yakin.png` });
 
 // Sığdır düğmesi geri almalı.
 await sayfa.getByRole('button', { name: 'Haritayı sığdır' }).click();
 await sayfa.waitForTimeout(400);
-const geri = await sayfa.locator('svg[role=img]').first().evaluate((el) => el.style.transform);
+const geri = await sayfa
+  .locator('svg[role=img]')
+  .first()
+  .evaluate((el) => el.style.transform);
 kontrol('Sığdır düğmesi haritayı geri alıyor', /scale\(1\)/.test(geri), geri);
 
 // Bölge seçmek hâlâ çalışıyor: yakınlaştırma dokunmayı bozmamalı.

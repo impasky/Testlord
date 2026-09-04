@@ -45,7 +45,9 @@ await sayfa.screenshot({ path: `${CIKTI}/ogretici-1-ilk.png` });
 
 // --- 2. Sayfalar gerçekten ilerliyor ve içerik doluyor
 const ilkBaslik = await sayfa.locator('[role=dialog] h2').innerText();
-const sayfaSayisi = Number((await sayfa.locator('[role=dialog] p').first().innerText()).split('/')[1]);
+const sayfaSayisi = Number(
+  (await sayfa.locator('[role=dialog] p').first().innerText()).split('/')[1],
+);
 kontrol('Sayfa sayacı okunuyor', sayfaSayisi >= 6, `${sayfaSayisi} sayfa`);
 
 await sayfa.getByRole('button', { name: 'Devam' }).click();
