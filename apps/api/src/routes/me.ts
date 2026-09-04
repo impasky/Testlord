@@ -1,4 +1,4 @@
-import { EKRANLAR, STAT_KEYS, type StatKey } from '@lordlar/shared';
+import { EKRANLAR, STAT_KEYS, armaDuzelt, type StatKey } from '@lordlar/shared';
 
 // Sekme listesi packages/shared'da: istemcinin sekme tipi de oradan
 // geliyor. Serbest metin kabul etmiyoruz (ölçüm alanı doğrulanmamış
@@ -92,6 +92,42 @@ export async function meRoutes(app: FastifyInstance): Promise<void> {
     });
 
     return { lord: state, queues, events, yokluk, serverTime: new Date().toISOString() };
+  });
+
+  /**
+   * Armayı değiştirir (docs/10 §2.1).
+   *
+   * Bedava ve istendiği kadar değiştirilebilir. Ortaçağda arma kalıcıydı
+   * ama oyunda değiştirememek bir ceza olurdu; parayla satmak ise parası
+   * olmayanı kimliksiz bırakırdı.
+   *
+   * Gelen değerler REDDEDİLMİYOR, düzeltiliyor: arma bir kimlik, hata
+   * mesajı verilecek bir form değil.
+   */
+  app.post('/me/arma', { preHandler: requireAuth }, async (req) => {
+    const body = z
+      .object({
+        kalkan: z.string(),
+        desen: z.string(),
+        renk1: z.string(),
+        renk2: z.string(),
+        sembol: z.string(),
+      })
+      .parse(req.body);
+    const lordId = await findLordByUser(req.user.userId);
+    const arma = armaDuzelt(body);
+
+    await prisma.lord.update({
+      where: { id: lordId },
+      data: {
+        armaKalkan: arma.kalkan,
+        armaDesen: arma.desen,
+        armaRenk1: arma.renk1,
+        armaRenk2: arma.renk2,
+        armaSembol: arma.sembol,
+      },
+    });
+    return { arma };
   });
 
   app.post('/me/stats', { preHandler: requireAuth }, async (req) => {

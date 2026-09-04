@@ -25,6 +25,11 @@ import {
   regionIncome,
   storageCapacity,
   totalEquipmentPower,
+  addanArma,
+  armaDuzelt,
+  unvan,
+  type Arma,
+  type Unvan,
   upkeepPerHour,
   hasAbility,
   type Army,
@@ -45,6 +50,9 @@ const MAX_LORD_LEVEL = B.lord.max_seviye;
 import { hata } from '../errors.js';
 
 export interface LordState {
+  /** Heraldik kimlik ve unvan — ikisi de saf görünüş (docs/10). */
+  arma: Arma;
+  unvan: Unvan;
   id: string;
   worldId: string;
   name: string;
@@ -167,6 +175,32 @@ export function calcHourlyIncome(
  * Lorda tick uygular ve tam durumunu döner.
  * Aynı transaction içinde çağrılabilir; çağrılmazsa kendi transaction'ını açar.
  */
+/**
+ * Bir lordun arması: kayıtlıysa o, değilse ADINDAN türetilmiş olan.
+ *
+ * Yeni oyuncunun arması boş kalmıyor. Herkesin aynı kırmızı kalkanla
+ * başlaması, armanın kimlik olma özelliğini daha ilk günden yok ederdi;
+ * addan türetince herkes farklı bir armayla açılıyor ve isteyen
+ * değiştiriyor.
+ */
+export function lordArmasi(lord: {
+  name: string;
+  armaKalkan: string | null;
+  armaDesen: string | null;
+  armaRenk1: string | null;
+  armaRenk2: string | null;
+  armaSembol: string | null;
+}): Arma {
+  if (!lord.armaKalkan) return addanArma(lord.name);
+  return armaDuzelt({
+    kalkan: lord.armaKalkan,
+    desen: lord.armaDesen ?? undefined,
+    renk1: lord.armaRenk1 ?? undefined,
+    renk2: lord.armaRenk2 ?? undefined,
+    sembol: lord.armaSembol ?? undefined,
+  });
+}
+
 export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promise<LordState> {
   const client = tx ?? prisma;
   const lord = (await client.lord.findUnique({
@@ -283,6 +317,10 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
     netErzakPerHour: income.erzak - upkeep,
     starving: result.starving,
     fame,
+    // Kimlik: arma ve unvan (docs/10). İkisi de saf görünüş, hiçbir sayıya
+    // dokunmuyorlar. Unvan şöhretten TÜRETİLİYOR — yeni sayaç yok.
+    arma: lordArmasi(lord),
+    unvan: unvan(fame, ownsThrone),
     elo: lord.elo,
     pvpWins: lord.pvpWins,
     pvpLosses: lord.pvpLosses,

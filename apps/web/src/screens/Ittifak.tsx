@@ -11,6 +11,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ApiError, api, type IttifakDto } from '../api/client';
+import { Arma } from '../components/Arma';
 import { IkonAltin, IkonSohret } from '../components/Ikonlar';
 import { hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { BosHal } from '../components/BosHal';
@@ -42,6 +43,7 @@ function UyeSatiri({
 }) {
   return (
     <li className="flex items-center gap-2 text-[13px]">
+      <Arma arma={uye.arma} boyut={22} />
       <span className="min-w-0 flex-1 truncate">
         <span className={uye.id === benimId ? 'font-bold text-altin' : ''}>{uye.ad}</span>
         {uye.lider && (

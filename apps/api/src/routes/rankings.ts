@@ -5,13 +5,13 @@
  * Kılıç sıralaması önemli: bölge tutamayan oyuncunun da tırmanacağı bir
  * merdiven olur, böylece kaybeden oyuncu oyundan çıkmaz.
  */
-import { conquestScore } from '@lordlar/shared';
+import { conquestScore, unvan, type Arma } from '@lordlar/shared';
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError, hata } from '../errors.js';
-import { findLordByUser } from '../services/lord.js';
+import { findLordByUser, lordArmasi } from '../services/lord.js';
 
 const SAYFA = 25;
 
@@ -25,7 +25,22 @@ interface Satir {
   deger: number;
   bolgeSayisi: number;
   tahtSahibi: boolean;
+  /** Heraldik kimlik ve unvan — sıralama bir isim listesi olmaktan çıkıyor. */
+  arma: Arma;
+  unvan: string;
 }
+
+/**
+ * Arma alanları iki sorguda da lazım; tek yerde tutuluyor ki biri
+ * güncellenip diğeri unutulmasın.
+ */
+const ARMA_SECIMI = {
+  armaKalkan: true,
+  armaDesen: true,
+  armaRenk1: true,
+  armaRenk2: true,
+  armaSembol: true,
+} as const;
 
 /** Fetih puanı bölgelerden hesaplandığı için SQL'de sıralanamaz; bellekte yapılır. */
 async function fetihSiralamasi(worldId: string): Promise<Satir[]> {
@@ -35,6 +50,8 @@ async function fetihSiralamasi(worldId: string): Promise<Satir[]> {
       id: true,
       name: true,
       level: true,
+      fame: true,
+      ...ARMA_SECIMI,
       regions: { select: { type: true, level: true } },
     },
   });
@@ -47,6 +64,8 @@ async function fetihSiralamasi(worldId: string): Promise<Satir[]> {
       deger: conquestScore(l.regions),
       bolgeSayisi: l.regions.filter((r) => r.type !== 'taht').length,
       tahtSahibi: l.regions.some((r) => r.type === 'taht'),
+      arma: lordArmasi(l),
+      unvan: unvan(l.fame, l.regions.some((r) => r.type === 'taht')).ad,
     }))
     .sort((a, b) => b.deger - a.deger)
     .map((r, i) => ({ ...r, sira: i + 1 }));
@@ -62,6 +81,7 @@ async function basitSiralama(worldId: string, alan: 'fame' | 'elo'): Promise<Sat
       level: true,
       fame: true,
       elo: true,
+      ...ARMA_SECIMI,
       regions: { select: { type: true } },
     },
   });
@@ -73,6 +93,8 @@ async function basitSiralama(worldId: string, alan: 'fame' | 'elo'): Promise<Sat
     deger: alan === 'fame' ? l.fame : l.elo,
     bolgeSayisi: l.regions.filter((r) => r.type !== 'taht').length,
     tahtSahibi: l.regions.some((r) => r.type === 'taht'),
+    arma: lordArmasi(l),
+    unvan: unvan(l.fame, l.regions.some((r) => r.type === 'taht')).ad,
   }));
 }
 

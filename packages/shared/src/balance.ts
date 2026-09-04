@@ -8,6 +8,8 @@ import balanceJson from '../../../data/balance.json';
 import basarimlarJson from '../../../data/basarimlar.json';
 import generalsJson from '../../../data/generals.json';
 import seferlerJson from '../../../data/seferler.json';
+import armaJson from '../../../data/arma.json';
+import unvanlarJson from '../../../data/unvanlar.json';
 import worldMapJson from '../../../data/world-map.json';
 import type { GeneralDef, RegionDef, Rarity, UnitStats, UnitType } from './types.js';
 import { RARITIES, UNIT_TYPES } from './types.js';
@@ -42,6 +44,18 @@ export const SEFERLER = seferlerJson.seferler as unknown as {
   birim: string;
 }[];
 export const SEFER_ODUL = seferlerJson.odul;
+
+/** Heraldik parçaları ve unvan kademeleri — ikisi de saf görünüş. */
+export const ARMA = armaJson as unknown as {
+  kalkanlar: { key: string; ad: string }[];
+  desenler: { key: string; ad: string }[];
+  renkler: { key: string; ad: string; kod: string }[];
+  semboller: { key: string; ad: string }[];
+};
+export const UNVANLAR = unvanlarJson as unknown as {
+  taht_unvani: string;
+  kademeler: { esik: number; ad: string; aciklama: string }[];
+};
 export const WORLD_MAP = worldMapJson as unknown as {
   radius: number;
   region_count: number;

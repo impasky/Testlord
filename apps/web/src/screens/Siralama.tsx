@@ -2,6 +2,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ApiError, api, type RankingRow } from '../api/client';
+import { Arma } from '../components/Arma';
 import { IkonNavSiralama } from '../components/Ikonlar';
 import { Alan, Bolum, Buton, Input, Kart, Rozet, formatSayi } from '../components/ui';
 import type { Sekme } from '../components/MobilKabuk';
@@ -43,13 +44,18 @@ function Satir({
         >
           {r.sira}
         </span>
+        {/* Arma: sıralama bir isim listesi olmaktan çıkıyor, yüzler
+            listesi oluyor. Ortaçağda armanın tek işi buydu — kalabalıkta
+            kim olduğunu söylemek (docs/10 §1.1). */}
+        <Arma arma={r.arma} boyut={26} />
+
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
             <span className="truncate text-[13px] font-medium">{r.name}</span>
             {r.tahtSahibi && <Rozet renk="var(--color-altin)">DİYARIN LORDU</Rozet>}
           </div>
-          <div className="text-[10px] text-sonuk">
-            Sv {r.level} · {r.bolgeSayisi} bölge
+          <div className="truncate text-[10px] text-sonuk">
+            {r.unvan} · Sv {r.level} · {r.bolgeSayisi} bölge
           </div>
         </div>
         <span className="tabular shrink-0 text-[14px] font-bold" style={{ color: renk }}>

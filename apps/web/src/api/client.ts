@@ -82,6 +82,9 @@ const post = <T>(path: string, body?: unknown): Promise<T> =>
   request<T>(path, { method: 'POST', body: JSON.stringify(body ?? {}) });
 
 export interface LordState {
+  /** Heraldik kimlik ve unvan — ikisi de saf görünüş (docs/10). */
+  arma: ArmaDto;
+  unvan: { ad: string; aciklama: string; sonrakiEsik: number | null; sonrakiAd: string | null };
   id: string;
   name: string;
   level: number;
@@ -390,6 +393,8 @@ export interface GeneralDto {
 }
 
 export interface RankingRow {
+  arma: ArmaDto;
+  unvan: string;
   sira: number;
   lordId: string;
   name: string;
@@ -526,6 +531,8 @@ export interface IttifakUyesiDto {
   seviye: number;
   sohret: number;
   elo: number;
+  arma: ArmaDto;
+  unvan: string;
   lider: boolean;
 }
 
@@ -567,6 +574,14 @@ export interface IttifakDto {
 export interface SohbetDto {
   mesajlar: { id: string; lordId: string; ad: string; metin: string; an: string }[];
   enFazlaHarf: number;
+}
+
+export interface ArmaDto {
+  kalkan: string;
+  desen: string;
+  renk1: string;
+  renk2: string;
+  sembol: string;
 }
 
 export interface GeneralKatkisiDto {
@@ -651,6 +666,7 @@ export const api = {
   gunluk: () => request<GunlukDto>('/gunluk'),
   gunlukOdul: () => post<GunlukOdulDto>('/gunluk/odul', {}),
   sefer: () => request<SeferDto>('/sefer'),
+  armaKaydet: (arma: ArmaDto) => post<{ arma: ArmaDto }>('/me/arma', arma),
   ittifak: () => request<IttifakDto>('/ittifak'),
   ittifakKur: (ad: string, etiket: string) =>
     post<{ id: string; ad: string; etiket: string }>('/ittifak/kur', { ad, etiket }),

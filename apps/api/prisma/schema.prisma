@@ -99,6 +99,14 @@ model Lord {
   /// Haftalık sefer ödülünün en son alındığı an. Hangi seferin açık olduğu
   /// SAKLANMIYOR — hafta numarasından türetiliyor (packages/shared/sefer.ts).
   seferOduluHaftasi DateTime?
+  /// Arma: oyuncunun heraldik kimliği (docs/10 §1.1). Beş küçük anahtar,
+  /// hiçbir sayıya dokunmuyor. Boşsa lord adından türetiliyor.
+  armaKalkan String?
+  armaDesen  String?
+  armaRenk1  String?
+  armaRenk2  String?
+  armaSembol String?
+
   /// Üyesi olduğu ittifak. Yoksa null — ittifak zorunlu değil.
   allianceId String?
   /// En son ittifaktan ayrıldığı an. Bekleme süresi buradan ölçülüyor:

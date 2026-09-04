@@ -17,6 +17,7 @@ import {
   ittifakEtiketiDenetle,
   ittifakaGirebilirMi,
   kurmaMaliyeti,
+  unvan,
 } from '@lordlar/shared';
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
@@ -25,7 +26,7 @@ import { prisma } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { adiDenetle } from '../services/adDenetimi.js';
 import { mesajDenetle } from '../services/mesajDenetimi.js';
-import { findLordByUser, pushEvent, tickLord } from '../services/lord.js';
+import { findLordByUser, lordArmasi, pushEvent, tickLord } from '../services/lord.js';
 
 const uyeSecimi = {
   id: true,
@@ -33,6 +34,11 @@ const uyeSecimi = {
   level: true,
   fame: true,
   elo: true,
+  armaKalkan: true,
+  armaDesen: true,
+  armaRenk1: true,
+  armaRenk2: true,
+  armaSembol: true,
 } as const;
 
 /** İttifak + üyeleri, arayüzün beklediği şekilde. */
@@ -61,6 +67,8 @@ async function ittifakOzeti(allianceId: string) {
         seviye: u.level,
         sohret: u.fame,
         elo: u.elo,
+        arma: lordArmasi(u),
+        unvan: unvan(u.fame).ad,
         lider: u.id === a.leaderLordId,
       }))
       .sort((x, y) => (x.lider ? -1 : y.lider ? 1 : y.sohret - x.sohret)),

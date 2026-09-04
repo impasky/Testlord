@@ -49,8 +49,14 @@ import {
   gunlukSayaci,
   odulAlindiMi,
   seriCarpani,
+  UNVANLAR,
+  addanArma,
+  armaDuzelt,
+  armaRengi,
   ayniIttifaktaMi,
   azamiUye,
+  unvan,
+  varsayilanArma,
   ittifakAdiDenetle,
   ittifakBeklemeSn,
   ittifakEtiketiDenetle,
@@ -695,6 +701,81 @@ describe('takviye kayıp dağıtımı', () => {
   it('ordudan kayıp düşünce negatife inmiyor', () => {
     expect(orduDus({ milis: 3 }, { milis: 10 })).toEqual({});
     expect(orduDus({ milis: 10, okcu: 4 }, { milis: 3 })).toEqual({ milis: 7, okcu: 4 });
+  });
+});
+
+describe('kimlik: arma ve unvan', () => {
+  it('varsayılan arma geçerli', () => {
+    expect(armaDuzelt(varsayilanArma())).toEqual(varsayilanArma());
+  });
+
+  it('geçersiz parça REDDEDİLMİYOR, düzeltiliyor', () => {
+    // Arma bir kimlik, hata mesajı verilecek bir form değil. Eski bir
+    // kayıtta artık var olmayan bir sembol kalmışsa oyuncunun arması
+    // bozuk görünmemeli, sadece o parçası varsayılana dönmeli.
+    const d = armaDuzelt({ kalkan: 'yok-boyle-bir-sey', desen: 'capraz', sembol: 'kartal' });
+    expect(d.kalkan).toBe(varsayilanArma().kalkan);
+    expect(d.desen).toBe('capraz');
+    expect(d.sembol).toBe('kartal');
+  });
+
+  it('boş/null arma varsayılana düşüyor', () => {
+    expect(armaDuzelt(null)).toEqual(varsayilanArma());
+    expect(armaDuzelt(undefined)).toEqual(varsayilanArma());
+  });
+
+  it('addan türeyen arma KARARLI', () => {
+    // Kayıt sırasında saklanacak bir şey yok: aynı ad her zaman aynı
+    // armayı vermeli, yoksa oyuncunun arması her yenilemede değişirdi.
+    expect(addanArma('Kartal Bey')).toEqual(addanArma('Kartal Bey'));
+    expect(addanArma('Kartal Bey')).not.toEqual(addanArma('Yıldız Han'));
+  });
+
+  it('addan türeyen armanın iki rengi FARKLI', () => {
+    // Aynı iki renk deseni görünmez yapar ve arma düz bir lekeye döner.
+    for (const ad of ['a', 'Bey', 'Kartal Sancağı', 'Zzz', 'Ömer', '12345']) {
+      const a = addanArma(ad);
+      expect(a.renk1).not.toBe(a.renk2);
+    }
+  });
+
+  it('addan türeyen arma her zaman geçerli', () => {
+    for (const ad of ['x', 'Uzun Bir Lord Adı', 'Şğüöçİ', '']) {
+      expect(armaDuzelt(addanArma(ad))).toEqual(addanArma(ad));
+    }
+  });
+
+  it('unvan şöhretle yükseliyor', () => {
+    const dusuk = unvan(0);
+    const yuksek = unvan(100000);
+    expect(dusuk.ad).not.toBe(yuksek.ad);
+    expect(yuksek.sonrakiAd).toBeNull();
+    expect(dusuk.sonrakiAd).not.toBeNull();
+  });
+
+  it('taht sahibinin unvanı her şeyi eziyor', () => {
+    // Taht zaten oyunun tepesi; orada iki farklı unvan görmek anlamsız.
+    expect(unvan(0, true).ad).toBe(UNVANLAR.taht_unvani);
+    expect(unvan(999999, true).ad).toBe(UNVANLAR.taht_unvani);
+  });
+
+  it('unvan eşikleri artan sırada', () => {
+    // Sıra bozulursa oyuncu şöhret kazandıkça unvanı DÜŞEBİLİRDİ.
+    const e = UNVANLAR.kademeler.map((k) => k.esik);
+    for (let i = 1; i < e.length; i++) expect(e[i]!).toBeGreaterThan(e[i - 1]!);
+    expect(e[0]).toBe(0);
+  });
+
+  it('her şöhret değerinde bir unvan var', () => {
+    for (const s of [0, 1, 399, 400, 4001, 64999, 65000, 1000000]) {
+      expect(unvan(s).ad.length).toBeGreaterThan(0);
+    }
+  });
+
+  it('renk anahtarı gerçek renge çözülüyor', () => {
+    expect(armaRengi('kirmizi')).toMatch(/^#[0-9a-f]{6}$/i);
+    // Bilinmeyen anahtar da bir renk vermeli: arma asla renksiz çizilmemeli.
+    expect(armaRengi('yok-boyle')).toMatch(/^#[0-9a-f]{6}$/i);
   });
 });
 

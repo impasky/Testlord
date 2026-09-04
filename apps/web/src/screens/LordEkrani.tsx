@@ -6,6 +6,8 @@ import { IkonCan, IkonKurnaz, IkonSaldiri, IkonYer } from '../components/Ikonlar
 import { Bolum, Buton, Kart, Rozet, formatSayi, nadirlikRengi } from '../components/ui';
 import { Gorsel } from '../components/Gorsel';
 import { OrduSahnesi } from '../components/OrduSahnesi';
+import { Arma } from '../components/Arma';
+import { ArmaSecici } from '../components/ArmaSecici';
 
 const STAT: Record<StatKey, { ad: string; renk: string; etki: (n: number) => string }> = {
   guc: { ad: 'Güç', renk: 'var(--color-kirmizi)', etki: (n) => `Savaş katkısı +${n * 3}` },
@@ -68,6 +70,24 @@ export function LordEkrani({ lord, onGuncelle }: { lord: LordState; onGuncelle: 
       {/* Ekranın tepesi artık bir sahne: lordun ordusu. Nitelik kartlarıyla
           açılmak, bu ekranı bir karakter sayfası değil bir form yapıyordu. */}
       <OrduSahnesi army={lord.homeArmy} komutaTavani={lord.commandCapacity} />
+
+      {/* Unvan: şöhretten türüyor, yeni sayaç yok (docs/10 §2.2). Taht
+          sahibinin unvanını "Diyarın Lordu" eziyor. */}
+      <Kart className="p-3">
+        <div className="flex items-center gap-3">
+          <Arma arma={lord.arma} boyut={44} />
+          <div className="min-w-0 flex-1">
+            <div className="baslik text-[15px] text-altin">{lord.unvan.ad}</div>
+            <p className="text-[12px] text-solgun">{lord.unvan.aciklama}</p>
+            {lord.unvan.sonrakiAd && (
+              <p className="mt-1 text-[11px] text-sonuk">
+                {formatSayi(lord.unvan.sonrakiEsik! - lord.fame)} şöhret sonra{' '}
+                <span className="text-parsomen">{lord.unvan.sonrakiAd}</span>
+              </p>
+            )}
+          </div>
+        </div>
+      </Kart>
 
       <Bolum
         baslik="Nitelikler"
@@ -221,6 +241,8 @@ export function LordEkrani({ lord, onGuncelle }: { lord: LordState; onGuncelle: 
           ))}
         </Kart>
       </Bolum>
+      <ArmaSecici mevcut={lord.arma} />
+
     </div>
   );
 }

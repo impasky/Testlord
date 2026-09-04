@@ -1,0 +1,44 @@
+{
+  "schema": "arma/v1",
+  "_aciklama": "Heraldik: oyuncunun kendi armasi. docs/10 §1.1 -- ortacag oyunlarinda en cok sevilen sey kimlik ve armanin kendisi ortacagin KIMLIK teknolojisiydi. Butun parcalar SVG olarak kodda ciziliyor: icerik maliyeti sifir, kombinasyon binlerce.",
+  "_kural": "Arma hicbir sayiya dokunmaz, saf gorunustur (docs/09 §5 kural 1) ve BEDAVADIR. Kimlik satilmaz; kimligin parayla alinmasi, parasi olmayanin kimliksiz kalmasi demektir.",
+  "kalkanlar": [
+    { "key": "sivri", "ad": "Sivri" },
+    { "key": "yuvarlak", "ad": "Yuvarlak" },
+    { "key": "kare", "ad": "Kare" },
+    { "key": "kesik", "ad": "Kesik" }
+  ],
+  "desenler": [
+    { "key": "duz", "ad": "Düz" },
+    { "key": "yatay", "ad": "Yatay bölünmüş" },
+    { "key": "dikey", "ad": "Dikey bölünmüş" },
+    { "key": "capraz", "ad": "Çapraz" },
+    { "key": "cheuron", "ad": "Şevron" },
+    { "key": "dortlu", "ad": "Dörtlü" }
+  ],
+  "renkler": [
+    { "key": "kirmizi", "ad": "Al", "kod": "#a8342a" },
+    { "key": "mavi", "ad": "Gök", "kod": "#2f5d8c" },
+    { "key": "yesil", "ad": "Yeşil", "kod": "#3f7343" },
+    { "key": "mor", "ad": "Erguvan", "kod": "#61407a" },
+    { "key": "siyah", "ad": "Kara", "kod": "#2a2420" },
+    { "key": "altin", "ad": "Altın", "kod": "#c8992e" },
+    { "key": "gumus", "ad": "Gümüş", "kod": "#b9bcc0" },
+    { "key": "bakir", "ad": "Bakır", "kod": "#9c5b2c" }
+  ],
+  "semboller": [
+    { "key": "yok", "ad": "Yok" },
+    { "key": "kilic", "ad": "Kılıç" },
+    { "key": "kule", "ad": "Kule" },
+    { "key": "kartal", "ad": "Kartal" },
+    { "key": "aslan", "ad": "Aslan" },
+    { "key": "kurt", "ad": "Kurt" },
+    { "key": "hilal", "ad": "Hilâl" },
+    { "key": "yildiz", "ad": "Yıldız" },
+    { "key": "mizrak", "ad": "Mızrak" },
+    { "key": "bugday", "ad": "Başak" },
+    { "key": "cekic", "ad": "Çekiç" },
+    { "key": "gul", "ad": "Gül" }
+  ],
+  "_kombinasyon": "4 kalkan x 6 desen x 8 renk x 8 renk x 12 sembol = 18.432 arma. Icerik maliyeti sifir: hepsi kodda cizilen SVG."
+}
