@@ -75,6 +75,36 @@ export async function addUnitsHome(
   }
 }
 
+/**
+ * Bir bölgedeki garnizona birim ekler.
+ *
+ * addUnitsHome ile aynı desen, farklı konum. Takviye için gerekli: asker
+ * bölgeye yerleşiyor ama GÖNDERENİN kalıyor, yani satır gönderenin adına
+ * ve konumu bölge oluyor. Aynı lordun aynı bölgede aynı tipten ikinci
+ * satırı olmamalı — benzersiz kısıt zaten bunu zorunlu kılıyor, burada
+ * da varsa üstüne ekliyoruz.
+ */
+export async function addUnitsRegion(
+  lordId: string,
+  regionId: number,
+  unitType: UnitType,
+  delta: number,
+  tx: Tx,
+): Promise<void> {
+  const existing = await tx.armyUnit.findFirst({
+    where: { lordId, unitType, locationType: 'region', locationId: String(regionId) },
+  });
+  if (existing) {
+    const next = existing.count + delta;
+    if (next <= 0) await tx.armyUnit.delete({ where: { id: existing.id } });
+    else await tx.armyUnit.update({ where: { id: existing.id }, data: { count: next } });
+  } else if (delta > 0) {
+    await tx.armyUnit.create({
+      data: { lordId, unitType, count: delta, locationType: 'region', locationId: String(regionId) },
+    });
+  }
+}
+
 export async function enqueue(
   lordId: string,
   kind: QueueKind,

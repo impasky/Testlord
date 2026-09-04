@@ -16,7 +16,10 @@ import {
   bosGeneralBonus,
   commandCapacity,
   fortressBonus,
+  garnizonToplami,
   itemPower,
+  kayipPaylastir,
+  orduDus,
   GENERAL_LEVEL,
   generalLevelFromXp,
   generalLevelMultiplier,
@@ -605,6 +608,93 @@ describe('ekran listesi', () => {
     for (const e of ['malikane', 'harita', 'ittifak', 'hesap']) {
       expect(EKRANLAR).toContain(e);
     }
+  });
+});
+
+describe('takviye kayıp dağıtımı', () => {
+  const toplamSay = (a: Army) => Object.values(a).reduce((t, n) => t + (n ?? 0), 0);
+
+  it('dağıtılan toplam, gelen kayba TAM eşit', () => {
+    // Bu testin varlık sebebi: basit yuvarlama burada asker YOKTAN VAR
+    // EDER. Üç lordun eşit payı olduğu 10 kayıpta Math.round üçüne de 3
+    // verir ve 1 asker sessizce hayatta kalır.
+    const paylar = [
+      { lordId: 'a', ordu: { milis: 10 } },
+      { lordId: 'b', ordu: { milis: 10 } },
+      { lordId: 'c', ordu: { milis: 10 } },
+    ];
+    const dagitim = kayipPaylastir({ milis: 10 }, paylar);
+    const toplam = [...dagitim.values()].reduce((t, a) => t + toplamSay(a), 0);
+    expect(toplam).toBe(10);
+  });
+
+  it('kimseye sahip olduğundan fazla kayıp yazılmıyor', () => {
+    const paylar = [
+      { lordId: 'a', ordu: { milis: 1 } },
+      { lordId: 'b', ordu: { milis: 99 } },
+    ];
+    const dagitim = kayipPaylastir({ milis: 100 }, paylar);
+    expect(dagitim.get('a')!.milis ?? 0).toBeLessThanOrEqual(1);
+    expect(dagitim.get('b')!.milis ?? 0).toBeLessThanOrEqual(99);
+  });
+
+  it('kayıp mevcuttan büyükse mevcutla sınırlanıyor', () => {
+    const paylar = [{ lordId: 'a', ordu: { milis: 5 } }];
+    const dagitim = kayipPaylastir({ milis: 500 }, paylar);
+    expect(dagitim.get('a')!.milis).toBe(5);
+  });
+
+  it('kayıp katkı oranında dağılıyor', () => {
+    const paylar = [
+      { lordId: 'a', ordu: { mizrakci: 90 } },
+      { lordId: 'b', ordu: { mizrakci: 10 } },
+    ];
+    const dagitim = kayipPaylastir({ mizrakci: 50 }, paylar);
+    expect(dagitim.get('a')!.mizrakci).toBe(45);
+    expect(dagitim.get('b')!.mizrakci).toBe(5);
+  });
+
+  it('o birimden askeri olmayan lorda kayıp yazılmıyor', () => {
+    const paylar = [
+      { lordId: 'a', ordu: { okcu: 20 } },
+      { lordId: 'b', ordu: { milis: 20 } },
+    ];
+    const dagitim = kayipPaylastir({ okcu: 10 }, paylar);
+    expect(dagitim.get('a')!.okcu).toBe(10);
+    expect(dagitim.get('b')!.okcu ?? 0).toBe(0);
+  });
+
+  it('dağıtım kararlı: aynı girdi aynı sonucu veriyor', () => {
+    // Savaş yeniden oynatılabilir olmak zorunda (seed'li RNG'nin bütün
+    // amacı bu); kayıp dağıtımı rastgele olursa o güvence kırılır.
+    const paylar = [
+      { lordId: 'b', ordu: { milis: 7 } },
+      { lordId: 'a', ordu: { milis: 7 } },
+      { lordId: 'c', ordu: { milis: 7 } },
+    ];
+    const bir = kayipPaylastir({ milis: 10 }, paylar);
+    const iki = kayipPaylastir({ milis: 10 }, paylar);
+    for (const id of ['a', 'b', 'c']) {
+      expect(bir.get(id)).toEqual(iki.get(id));
+    }
+  });
+
+  it('garnizon toplamı bütün payları topluyor', () => {
+    const toplam = garnizonToplami([
+      { lordId: 'a', ordu: { milis: 10, okcu: 5 } },
+      { lordId: 'b', ordu: { okcu: 3, suvari: 2 } },
+    ]);
+    expect(toplam).toEqual({ milis: 10, okcu: 8, suvari: 2 });
+  });
+
+  it('boş garnizon boş toplam veriyor', () => {
+    expect(garnizonToplami([])).toEqual({});
+    expect(kayipPaylastir({ milis: 5 }, []).size).toBe(0);
+  });
+
+  it('ordudan kayıp düşünce negatife inmiyor', () => {
+    expect(orduDus({ milis: 3 }, { milis: 10 })).toEqual({});
+    expect(orduDus({ milis: 10, okcu: 4 }, { milis: 3 })).toEqual({ milis: 7, okcu: 4 });
   });
 });
 

@@ -233,6 +233,10 @@ export interface MapDto {
 
 export interface RegionDetailDto extends RegionDto {
   garrison: Army;
+  /** Bu bölgede duran KENDİ askerin — takviye gönderdiysen dolu. */
+  kendiGarnizonum: Army;
+  /** Bölge sahibi ittifak arkadaşım mı. */
+  muttefik: boolean;
   garrisonVisible: boolean;
   /** Garnizon bilgisi güncel mi. Eski keşif raporu görünür ama güvenilmez. */
   garrisonTaze: boolean;
@@ -653,6 +657,16 @@ export const api = {
   ittifakKatil: (id: string) => post<{ katildi: string; ad: string }>(`/ittifak/${id}/katil`, {}),
   ittifakAyril: () => post<{ ayrildi: boolean; dagildi: boolean }>('/ittifak/ayril', {}),
   ittifakSohbet: () => request<SohbetDto>('/ittifak/sohbet'),
+  takviyeGonder: (regionId: number, army: Army) =>
+    post<{ marchId: string; arriveAt: string; durationSec: number; hedef: string }>(
+      `/map/${regionId}/takviye`,
+      { army },
+    ),
+  takviyeGeri: (regionId: number) =>
+    post<{ marchId: string; arriveAt: string; birim: number }>(
+      `/map/${regionId}/takviye-geri`,
+      {},
+    ),
   ittifakHedef: (regionId: number | null, not?: string) =>
     post<{ hedef: { regionId: number; ad: string } | null }>('/ittifak/hedef', { regionId, not }),
   ittifakYaz: (metin: string) =>

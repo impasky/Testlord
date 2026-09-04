@@ -61,6 +61,7 @@ async function yeniOyuncu(i) {
 
 console.log(`Lordlar Çağı — ilk hedef testi (${OYUNCU} doğum yeri taranıyor)\n`);
 
+const sifirlanan = new Set();
 let onerisiz = 0;
 let karsilanamayan = 0;
 let araAdimKarsilanamayan = 0;
@@ -71,11 +72,18 @@ const enPahali = { altin: 0, ad: '' };
 
 for (let i = 0; i < OYUNCU; i++) {
   const o = await yeniOyuncu(i);
-  // Taze dünya bir kez kuruluyor: önceki koşuların ele geçirdiği bölgeler
-  // komşulukları boşaltıyor. Bu turun oyuncuları saldırmıyor, o yüzden
-  // her oyuncu için tekrarlamak gerekmiyor (60 bölgeyi tek tek yazmak
-  // testin süresini katlıyordu).
-  if (i === 0) await o.post('/test/bolgeleri-sifirla');
+  // Taze dünya DÜNYA BAŞINA bir kez kuruluyor.
+  //
+  // Önce yalnız ilk oyuncu için sıfırlıyordum ve test e2e zincirinde
+  // ara sıra kalıyordu: zincir dünyayı doldurunca sonraki kayıtlar YENİ
+  // bir dünyaya düşüyor, orası sıfırlanmamış oluyor ve o oyunculara
+  // "öneri yok" dönüyordu. Ölçtüğümüz şey oyunun davranışı olmalı,
+  // testin hangi sırada çalıştığı değil.
+  const worldId = (await o.get('/me')).lord.worldId;
+  if (!sifirlanan.has(worldId)) {
+    await o.post('/test/bolgeleri-sifirla');
+    sifirlanan.add(worldId);
+  }
 
   const ilk = (await o.get('/map')).oneri;
   if (!ilk?.eksik) {

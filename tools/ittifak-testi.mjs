@@ -31,7 +31,16 @@ async function lordKur(etiket) {
       lordName: `Itt${damga.toString(36).slice(-3)}${etiket}`,
     }),
   });
-  const { token } = await r.json();
+  const govde = await r.json();
+  if (!govde.token) {
+    // Kayıt sessizce başarısız olursa bütün sonraki kontroller anlamsız
+    // bir hata (YETKISIZ) veriyor ve sebep görünmüyor. Burada patlatmak,
+    // testin neden kaldığını ilk satırda söylüyor.
+    throw new Error(
+      `Lord kaydı başarısız (${etiket}): ${r.status} ${JSON.stringify(govde).slice(0, 200)}`,
+    );
+  }
+  const token = govde.token;
   const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
   return {
     etiket,
@@ -222,6 +231,63 @@ kontrol('Üye hedef işaretleyemiyor', uyeIsaret?.code === 'YETKISIZ', uyeIsaret
 const disHarita = await c.get('/map');
 kontrol('İttifaksız oyuncu hedefi görmüyor', disHarita.ittifakHedefi === null,
   JSON.stringify(disHarita.ittifakHedefi));
+
+// --- Takviye (docs/09 B1c)
+// b'nin bolgesine a takviye gonderiyor. Cekirdek soru: asker savunmaya
+// katiliyor mu ve kayip SAHIPLERINE dagitiliyor mu?
+const takviyeOrdusu = { mizrakci: 60, okcu: 40 };
+await a.post('/army/train', { unitType: 'mizrakci', count: 60 });
+await a.post('/army/train', { unitType: 'okcu', count: 40 });
+await a.post('/test/kuyruklari-bitir');
+
+const bolgeOnce = await b.get(`/map/${bolge.id}`);
+const garnizonOnce = Object.values(bolgeOnce.garrison ?? {}).reduce((t, n) => t + Number(n || 0), 0);
+
+const gonderim = await a.post(`/map/${bolge.id}/takviye`, { army: takviyeOrdusu });
+kontrol('Takviye yola çıktı', Boolean(gonderim?.marchId), gonderim?.code ?? `${gonderim?.hedef}`);
+await a.post('/test/yuruyusleri-bitir');
+
+const bolgeSonra = await b.get(`/map/${bolge.id}`);
+const garnizonSonra = Object.values(bolgeSonra.garrison ?? {}).reduce(
+  (t, n) => t + Number(n || 0),
+  0,
+);
+kontrol(
+  'Takviye garnizona katıldı',
+  garnizonSonra === garnizonOnce + 100,
+  `${garnizonOnce} -> ${garnizonSonra}`,
+);
+
+const benimPayim = await a.get(`/map/${bolge.id}`);
+kontrol(
+  'Gönderen kendi askerini görüyor',
+  Object.values(benimPayim.kendiGarnizonum ?? {}).reduce((t, n) => t + Number(n || 0), 0) === 100,
+  JSON.stringify(benimPayim.kendiGarnizonum),
+);
+
+const sahipsizeTakviye = await a.post(`/map/${sahipsizBolge.id}/takviye`, { army: { milis: 1 } });
+kontrol('Sahipsiz bölgeye takviye gönderilemiyor', sahipsizeTakviye?.code === 'SAHIPSIZ_BOLGE',
+  sahipsizeTakviye?.code ?? 'gönderildi');
+
+const yabanciyaTakviye = await c.post(`/map/${bolge.id}/takviye`, { army: { milis: 1 } });
+kontrol('İttifak dışına takviye gönderilemiyor',
+  yabanciyaTakviye?.code === 'ITTIFAK_DEGIL' || yabanciyaTakviye?.code === 'YETERSIZ_ORDU',
+  yabanciyaTakviye?.code ?? 'gönderildi');
+
+// Geri cekme: bu uc olmadan takviye tek yonlu olurdu.
+const geriCek = await a.post(`/map/${bolge.id}/takviye-geri`);
+kontrol('Takviye geri çekilebiliyor', geriCek?.birim === 100, `${geriCek?.birim} birim`);
+await a.post('/test/yuruyusleri-bitir');
+const evdekiler = (await a.get('/army')).home;
+kontrol(
+  'Geri çekilen asker eve döndü',
+  (evdekiler.mizrakci ?? 0) >= 60 && (evdekiler.okcu ?? 0) >= 40,
+  JSON.stringify(evdekiler),
+);
+
+const bosGeriCekme = await a.post(`/map/${bolge.id}/takviye-geri`);
+kontrol('Askeri olmayan geri çekemiyor', bosGeriCekme?.code === 'ASKER_YOK',
+  bosGeriCekme?.code ?? 'çekti');
 
 // --- Ayrılınca saldırı açılıyor ama bekleme başlıyor
 const ayrildi = await b.post('/ittifak/ayril');

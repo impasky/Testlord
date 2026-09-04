@@ -242,14 +242,49 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
     if (!region) throw hata.bulunamadi('Bölge');
 
     const benim = region.ownerLordId === lordId;
+    // Bölge sahibi ittifak arkadaşım mı? Üç yerde lazım: garnizon
+    // görünürlüğü, keşif kartının gizlenmesi ve takviye kartının
+    // çıkması. Bir kez hesaplanıp aşağı taşınıyor.
+    const muttefik = await (async () => {
+      if (benim || !region.ownerLordId) return false;
+      const [ben, sahip] = await Promise.all([
+        prisma.lord.findUnique({ where: { id: lordId }, select: { allianceId: true } }),
+        prisma.lord.findUnique({
+          where: { id: region.ownerLordId },
+          select: { allianceId: true },
+        }),
+      ]);
+      return ayniIttifaktaMi(ben?.allianceId ?? null, sahip?.allianceId ?? null);
+    })();
     let garrison: Army = {};
+    // Bölgede duran KENDİ askerin: sahibi değilsen de olabilir (takviye).
+    const kendiSatirlarim = await prisma.armyUnit.findMany({
+      where: { lordId, locationType: 'region', locationId: String(id) },
+    });
+    const kendiGarnizonum: Army = {};
+    for (const r of kendiSatirlarim) kendiGarnizonum[r.unitType as UnitType] = r.count;
+
     if (benim) {
+      // Sahibi TOPLAMI görüyor: müttefikinin takviyesi de o bölgeyi
+      // savunuyor ve savunma gücünü hesaplarken görünmemesi yanlış olurdu.
       const rows = await prisma.armyUnit.findMany({
-        where: { lordId, locationType: 'region', locationId: String(id) },
+        where: { locationType: 'region', locationId: String(id) },
       });
-      for (const r of rows) garrison[r.unitType as UnitType] = r.count;
+      for (const r of rows) {
+        garrison[r.unitType as UnitType] = (garrison[r.unitType as UnitType] ?? 0) + r.count;
+      }
     } else if (!region.ownerLordId) {
       garrison = region.npcGarrison as Army; // NPC garnizonu herkese açık
+    } else if (muttefik) {
+      // Müttefikin garnizonu görünür. Takviye kararı bunu görmeden
+      // verilemez: kaç asker gerektiğini bilmeden takviye göndermek kör
+      // atıştır. Casusa da gerek yok — zaten aynı taraftayız.
+      const rows = await prisma.armyUnit.findMany({
+        where: { locationType: 'region', locationId: String(id) },
+      });
+      for (const r of rows) {
+        garrison[r.unitType as UnitType] = (garrison[r.unitType as UnitType] ?? 0) + r.count;
+      }
     } else {
       // Casus Leyla sahadaysa düşman garnizonu görünür
       const generals = await prisma.lordGeneral.findMany({
@@ -294,7 +329,14 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       distance: hexDistance({ q: me.homeQ, r: me.homeR }, { q: region.q, r: region.r }),
       shielded: region.shieldUntil ? region.shieldUntil > new Date() : false,
       garrison,
-      garrisonVisible: benim || !region.ownerLordId || Object.keys(garrison).length > 0,
+      /** Bu bölgede duran KENDİ askerin (takviye ya da kendi garnizonun). */
+      kendiGarnizonum,
+      // Müttefikte garnizon BOŞ olsa da "görünüyor": boş olduğunu bilmek
+      // de bilgidir ve "düşman garnizonu görünmüyor" yazısı müttefik için
+      // hem yanlış hem yanıltıcı olurdu.
+      garrisonVisible: benim || muttefik || !region.ownerLordId || Object.keys(garrison).length > 0,
+      /** Bölge sahibi ittifak arkadaşım mı. */
+      muttefik,
       // Görünür olmak başka, GÜVENİLİR olmak başka. Karşı-birim ipuçları
       // (docs/09 K1) yalnız güvenilir veriyle çalışmalı: eski bir fotoğrafa
       // bakıp "süvari al" demek, yanlış tavsiye vermektir ve yanlış tavsiye
@@ -381,6 +423,166 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       const mesafe = hexDistance({ q: me.homeQ, r: me.homeR }, { q: region.q, r: region.r });
       const q = await enqueue(lordId, 'kesif', { regionId: id }, kesifSuresiSn(mesafe), tx);
       return { queued: true, finishAt: q.finishAt, mesafe };
+    });
+  });
+
+  /**
+   * İttifak üyesinin bölgesine takviye gönderir.
+   *
+   * İttifakın en somut faydası bu: sohbette "yardım et" demek zaten
+   * mümkündü, gerçekten yardım etmek değildi (docs/01 §7d).
+   *
+   * Asker GÖNDERENİN kalıyor. Bölge el değiştirse bile takviye sahibinin
+   * evine dönüyor — yardım etmek yardım edene ceza olmamalı. Savaşta
+   * kayıp, katkı oranında bölünüyor.
+   */
+  app.post('/map/:id/takviye', { preHandler: requireAuth }, async (req) => {
+    const { id } = z.object({ id: z.coerce.number().int() }).parse(req.params);
+    const body = z.object({ army: armySchema }).parse(req.body);
+    const army = normalizeArmy(body.army);
+    if (armyCount(army) === 0) {
+      throw new GameError('Takviye için birim seçmedin.', 400, 'ORDU_BOS');
+    }
+    const lordId = await findLordByUser(req.user.userId);
+
+    return prisma.$transaction(async (tx) => {
+      const region = await tx.region.findUnique({ where: { id } });
+      if (!region) throw hata.bulunamadi('Bölge');
+      if (region.ownerLordId === lordId) {
+        throw new GameError('Kendi bölgene garnizon koy, takviye gönderme.', 400, 'KENDI_BOLGEN');
+      }
+      if (!region.ownerLordId) {
+        throw new GameError('Sahipsiz bölgeye takviye gönderilemez.', 400, 'SAHIPSIZ_BOLGE');
+      }
+
+      const [ben, sahip] = await Promise.all([
+        tx.lord.findUniqueOrThrow({
+          where: { id: lordId },
+          select: { worldId: true, homeQ: true, homeR: true, allianceId: true },
+        }),
+        tx.lord.findUniqueOrThrow({
+          where: { id: region.ownerLordId },
+          select: { allianceId: true, name: true },
+        }),
+      ]);
+      if (region.worldId !== ben.worldId) throw hata.bulunamadi('Bölge');
+      // Takviye YALNIZ ittifak içinde. Herkese takviye, ittifakı anlamsız
+      // kılardı; kural ittifakın kendisini bir şeye yarar hâle getiriyor.
+      if (!ayniIttifaktaMi(ben.allianceId, sahip.allianceId)) {
+        throw new GameError(
+          'Takviye yalnız ittifak üyelerine gönderilebilir.',
+          400,
+          'ITTIFAK_DEGIL',
+        );
+      }
+
+      await assertHomeUnits(lordId, army, tx);
+      await takeFromHome(lordId, army, tx);
+
+      const dist = hexDistance({ q: ben.homeQ, r: ben.homeR }, { q: region.q, r: region.r });
+      const sec = marchDurationSec(dist, army, bosGeneralBonus());
+      const now = new Date();
+
+      const march = await tx.march.create({
+        data: {
+          worldId: ben.worldId,
+          lordId,
+          fromRegionId: null,
+          toRegionId: region.id,
+          kind: 'takviye',
+          army: army as object,
+          generalIds: [] as object,
+          distance: dist,
+          departAt: now,
+          arriveAt: new Date(now.getTime() + sec * 1000),
+        },
+      });
+
+      for (const t of UNIT_TYPES) {
+        const c = army[t] ?? 0;
+        if (c > 0) {
+          await tx.armyUnit.create({
+            data: { lordId, unitType: t, count: c, locationType: 'march', locationId: march.id },
+          });
+        }
+      }
+
+      return {
+        marchId: march.id,
+        arriveAt: march.arriveAt,
+        distance: dist,
+        durationSec: sec,
+        hedef: sahip.name,
+      };
+    });
+  });
+
+  /**
+   * Takviyeyi geri çeker: bölgedeki kendi askerin eve doğru yola çıkar.
+   *
+   * Bu uç olmadan takviye tek yönlü olurdu — gönderilen asker sonsuza
+   * kadar müttefikin bölgesinde kalırdı ve kimse takviye göndermezdi.
+   * Yardım etmenin bedeli, yardımı geri alamamak olmamalı.
+   */
+  app.post('/map/:id/takviye-geri', { preHandler: requireAuth }, async (req) => {
+    const { id } = z.object({ id: z.coerce.number().int() }).parse(req.params);
+    const lordId = await findLordByUser(req.user.userId);
+
+    return prisma.$transaction(async (tx) => {
+      const region = await tx.region.findUnique({ where: { id } });
+      if (!region) throw hata.bulunamadi('Bölge');
+      if (region.ownerLordId === lordId) {
+        throw new GameError(
+          'Burası senin bölgen; garnizonu garnizon ekranından düzenle.',
+          400,
+          'KENDI_BOLGEN',
+        );
+      }
+
+      const rows = await tx.armyUnit.findMany({
+        where: { lordId, locationType: 'region', locationId: String(id) },
+      });
+      if (rows.length === 0) {
+        throw new GameError('Bu bölgede askerin yok.', 400, 'ASKER_YOK');
+      }
+
+      const army: Army = {};
+      for (const r of rows) army[r.unitType as UnitType] = r.count;
+      await tx.armyUnit.deleteMany({
+        where: { lordId, locationType: 'region', locationId: String(id) },
+      });
+
+      const ben = await tx.lord.findUniqueOrThrow({
+        where: { id: lordId },
+        select: { worldId: true, homeQ: true, homeR: true },
+      });
+      const dist = hexDistance({ q: ben.homeQ, r: ben.homeR }, { q: region.q, r: region.r });
+      const sec = marchDurationSec(dist, army, bosGeneralBonus());
+      const now = new Date();
+
+      const donus = await tx.march.create({
+        data: {
+          worldId: ben.worldId,
+          lordId,
+          fromRegionId: region.id,
+          toRegionId: region.id,
+          kind: 'return',
+          army: army as object,
+          generalIds: [] as object,
+          distance: dist,
+          departAt: now,
+          arriveAt: new Date(now.getTime() + sec * 1000),
+        },
+      });
+      for (const t of UNIT_TYPES) {
+        const c = army[t] ?? 0;
+        if (c > 0) {
+          await tx.armyUnit.create({
+            data: { lordId, unitType: t, count: c, locationType: 'march', locationId: donus.id },
+          });
+        }
+      }
+      return { marchId: donus.id, arriveAt: donus.arriveAt, birim: armyCount(army) };
     });
   });
 
@@ -687,7 +889,10 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       const march = await tx.march.findUnique({ where: { id } });
       if (!march || march.lordId !== lordId) throw hata.bulunamadi('Yürüyüş');
       if (march.resolved) throw new GameError('Bu yürüyüş zaten tamamlandı.', 400, 'COZULDU');
-      if (march.kind !== 'attack') {
+      // Takviye de geri çağrılabiliyor: fikrini değiştiren oyuncu ordusunu
+      // yolun başında geri alabilmeli. Dönüş yürüyüşü çağrılamaz — zaten
+      // eve gidiyor.
+      if (march.kind !== 'attack' && march.kind !== 'takviye') {
         throw new GameError('Dönüş yürüyüşü geri çağrılamaz.', 400, 'DONUS');
       }
       if (!canRecallMarch(march.departAt, march.arriveAt, new Date())) {

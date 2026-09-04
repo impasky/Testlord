@@ -452,6 +452,31 @@ geçince çıkardı.
 geçer. Dağıtmak, liderin tek tıkla herkesin ittifakını silmesi demekti.
 İttifak ancak son üyesi de ayrılınca silinir.
 
+### Takviye
+
+İttifak üyesinin bölgesine asker gönderilebilir. Sohbette "yardım et" demek
+zaten mümkündü; **gerçekten yardım etmek** bu.
+
+Üç kural sistemi ayakta tutuyor:
+
+1. **Asker gönderenin kalır.** Bölgeye yerleşir, savunmada garnizonun
+   toplamına katılır, ama sahibi değişmez.
+2. **Kayıp katkı oranında bölünür.** Savaş toplam bir kayıp veriyor; o kayıp
+   birim tipi tipi, sahiplerinin katkısı oranında dağıtılıyor. Yuvarlama
+   "en büyük kalan" yöntemiyle yapılıyor — basit yuvarlama burada asker
+   yoktan var eder ya da sessizce yok eder.
+3. **Bölge el değiştirse bile takviye evine döner.** Aksi hâlde yardım etmek
+   yardım edene ceza olurdu ve kimse takviye göndermezdi.
+
+Takviye **geri çekilebilir**: gönderen istediği an kendi askerini eve
+yollayabilir. Bu uç olmadan takviye tek yönlü olurdu.
+
+Yol boyunca bölge el değiştirir ya da müttefiklik biterse asker yabancının
+garnizonuna katılmaz; ordu eve döner.
+
+Takviyeye giden asker gönderenin **komuta kapasitesinden** düşmeye devam
+eder — sınırsız asker dağıtılamaz.
+
 ### Ortak hedef
 
 Lider **tek** bir bölgeyi ittifakın ortak hedefi olarak işaretler. Hedef

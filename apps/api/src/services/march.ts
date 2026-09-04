@@ -20,14 +20,19 @@ import {
   generalKatkilari,
   generalLevelMultiplier,
   generalSavasSonrasi,
+  ayniIttifaktaMi,
+  garnizonToplami,
   generalYaralanma,
+  kayipPaylastir,
   lordContribution,
+  orduDus,
   marchDurationSec,
   npcClearXp,
   simulateBattle,
   updateElo,
   type Army,
   type EquipSlot,
+  type GarnizonPayi,
   type GeneralKatkisi,
   type GeneralYukselisi,
   type Rarity,
@@ -45,7 +50,7 @@ import {
   pushEvent,
   tickLord,
 } from './lord.js';
-import { addUnitsHome } from './queue.js';
+import { addUnitsHome, addUnitsRegion } from './queue.js';
 import { regionFortressBonus, transferRegion } from './region.js';
 
 function toArmy(value: unknown): Army {
@@ -129,14 +134,29 @@ function npcSide(units: Army, fortress: number): Side {
   };
 }
 
-/** Bölgedeki garnizonu okur. */
-async function readGarrison(regionId: number, ownerId: string, tx: Tx): Promise<Army> {
+/**
+ * Bölgedeki BÜTÜN orduları sahipleriyle birlikte okur.
+ *
+ * Takviyeden sonra bir garnizon birden çok lorda ait olabiliyor
+ * (docs/01 §7d). Savaşa giren şey toplamı; kayıp da sahiplerine
+ * katkıları oranında dağıtılıyor.
+ *
+ * Sıralama lordId'ye göre sabit: kayıp dağıtımı kararlı olmak zorunda,
+ * yoksa aynı savaş yeniden oynatıldığında farklı sonuç verir ve seed'li
+ * RNG'nin bütün amacı boşa gider.
+ */
+async function readGarrisonPaylari(regionId: number, tx: Tx): Promise<GarnizonPayi[]> {
   const rows = await tx.armyUnit.findMany({
-    where: { lordId: ownerId, locationType: 'region', locationId: String(regionId) },
+    where: { locationType: 'region', locationId: String(regionId) },
+    orderBy: [{ lordId: 'asc' }, { unitType: 'asc' }],
   });
-  const army: Army = {};
-  for (const r of rows) army[r.unitType as UnitType] = r.count;
-  return army;
+  const map = new Map<string, Army>();
+  for (const r of rows) {
+    const ordu = map.get(r.lordId) ?? {};
+    ordu[r.unitType as UnitType] = (ordu[r.unitType as UnitType] ?? 0) + r.count;
+    map.set(r.lordId, ordu);
+  }
+  return [...map.entries()].map(([lordId, ordu]) => ({ lordId, ordu }));
 }
 
 /** Garnizonu verilen orduya eşitler; fazlası silinir. */
@@ -381,6 +401,99 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
         return true;
       }
 
+      // --- Takviye varışı ---
+      //
+      // Asker bölgeye YERLEŞİYOR ama GÖNDERENİN kalıyor: ArmyUnit satırı
+      // gönderenin adına, konumu bölge. Savaşta garnizonun toplamına
+      // katılıyor, kayıp katkı oranında bölünüyor, bölge el değiştirirse
+      // sahibinin evine dönüyor.
+      if (march.kind === 'takviye') {
+        const bolge = await tx.region.findUnique({ where: { id: march.toRegionId } });
+        // Yol boyunca bölge el değiştirmiş ya da müttefiklik bitmiş
+        // olabilir. Asker yabancının garnizonuna KATILMAMALI: böyle bir
+        // durumda ordu eve döner, kaybolmaz.
+        let gecerli = false;
+        if (bolge?.ownerLordId) {
+          const [ben, sahip] = await Promise.all([
+            tx.lord.findUnique({ where: { id: march.lordId }, select: { allianceId: true } }),
+            tx.lord.findUnique({
+              where: { id: bolge.ownerLordId },
+              select: { allianceId: true, name: true },
+            }),
+          ]);
+          gecerli =
+            bolge.ownerLordId !== march.lordId &&
+            ayniIttifaktaMi(ben?.allianceId ?? null, sahip?.allianceId ?? null);
+          if (gecerli) {
+            for (const t of UNIT_TYPES) {
+              const c = army[t] ?? 0;
+              if (c > 0) await addUnitsRegion(march.lordId, march.toRegionId, t, c, tx);
+            }
+            await pushEvent(
+              march.lordId,
+              'takviye_vardi',
+              {
+                mesaj: `${armyCount(army)} birim ${bolge.name} savunmasına katıldı.`,
+                regionId: bolge.id,
+              },
+              tx,
+            );
+            await pushEvent(
+              bolge.ownerLordId,
+              'takviye_geldi',
+              {
+                mesaj: `${sahip?.name ? '' : ''}${bolge.name} bölgene ${armyCount(
+                  army,
+                )} birim takviye geldi.`,
+                regionId: bolge.id,
+              },
+              tx,
+            );
+          }
+        }
+
+        if (!gecerli) {
+          // Dönüş yürüyüşü: asker yolda kaybolmamalı.
+          const donusSn = marchDurationSec(march.distance, army, bosGeneralBonus());
+          const simdi = new Date();
+          const donus = await tx.march.create({
+            data: {
+              worldId: march.worldId,
+              lordId: march.lordId,
+              fromRegionId: march.toRegionId,
+              toRegionId: march.toRegionId,
+              kind: 'return',
+              army: army as object,
+              generalIds: [] as object,
+              distance: march.distance,
+              departAt: simdi,
+              arriveAt: new Date(simdi.getTime() + donusSn * 1000),
+            },
+          });
+          for (const t of UNIT_TYPES) {
+            const c = army[t] ?? 0;
+            if (c > 0) {
+              await tx.armyUnit.create({
+                data: {
+                  lordId: march.lordId,
+                  unitType: t,
+                  count: c,
+                  locationType: 'march',
+                  locationId: donus.id,
+                },
+              });
+            }
+          }
+          await pushEvent(
+            march.lordId,
+            'takviye_donuyor',
+            { mesaj: 'Takviyen kabul edilmedi (bölge el değiştirmiş olabilir); ordun dönüyor.' },
+            tx,
+          );
+        }
+        return true;
+      }
+
       // --- Saldırı ---
       const region = await tx.region.findUniqueOrThrow({ where: { id: march.toRegionId } });
       // Savaştan önceki hâl; rapordaki "öncesi/sonrası" bunun üstüne kurulur.
@@ -395,9 +508,10 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
 
       const npcGarrison = toArmy(region.npcGarrison);
       const defenderLordId = region.ownerLordId;
-      const defenderArmy = defenderLordId
-        ? await readGarrison(region.id, defenderLordId, tx)
-        : npcGarrison;
+      // Takviyeden sonra garnizon birden çok lorda ait olabiliyor: savaşa
+      // giren şey toplamı, kayıp sahiplerine katkıları oranında dağıtılıyor.
+      const garnizonPaylari = defenderLordId ? await readGarrisonPaylari(region.id, tx) : [];
+      const defenderArmy = defenderLordId ? garnizonToplami(garnizonPaylari) : npcGarrison;
 
       // NPC garnizonunun generali yok; boş liste dönüyor ki rapor iki
       // tarafı da aynı şekilde okuyabilsin.
@@ -433,9 +547,17 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
       let saldiranYukselisleri: GeneralYukselisi[] = [];
       let savunanYukselisleri: GeneralYukselisi[] = [];
 
-      // Savunanın kalanını yaz
+      // Savunanın kalanını yaz. Tek sahipli garnizonda bu eskisi gibi
+      // çalışıyor (tek pay, kaybın tamamı ona); takviyeli garnizonda kayıp
+      // katkı oranında bölünüyor ve her lordun satırı ayrı güncelleniyor.
+      const savunanKalanlari = new Map<string, Army>();
       if (defenderLordId) {
-        await writeGarrison(region.id, defenderLordId, result.defenderSurvivors, tx);
+        const dagitim = kayipPaylastir(result.defenderLosses, garnizonPaylari);
+        for (const pay of garnizonPaylari) {
+          const kalan = orduDus(pay.ordu, dagitim.get(pay.lordId) ?? {});
+          savunanKalanlari.set(pay.lordId, kalan);
+          await writeGarrison(region.id, pay.lordId, kalan, tx);
+        }
       } else {
         await tx.region.update({
           where: { id: region.id },
@@ -443,20 +565,20 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
         });
       }
 
-      // Bölge el değiştirdiyse: sağ kalan garnizon sahibinin evine çekilir
+      // Bölge el değiştirdiyse: sağ kalan HER savunanın askeri kendi evine
+      // çekilir. Takviye gönderen müttefikin askeri bölgeyle birlikte el
+      // değiştirseydi, yardım etmek yardım edene ceza olurdu.
       if (result.captured) {
         if (defenderLordId) {
-          for (const t of UNIT_TYPES) {
-            const c = result.defenderSurvivors[t] ?? 0;
-            if (c > 0) await addUnitsHome(defenderLordId, t, c, tx);
+          for (const [lordId, kalan] of savunanKalanlari) {
+            for (const t of UNIT_TYPES) {
+              const c = kalan[t] ?? 0;
+              if (c > 0) await addUnitsHome(lordId, t, c, tx);
+            }
+            await tx.armyUnit.deleteMany({
+              where: { lordId, locationType: 'region', locationId: String(region.id) },
+            });
           }
-          await tx.armyUnit.deleteMany({
-            where: {
-              lordId: defenderLordId,
-              locationType: 'region',
-              locationId: String(region.id),
-            },
-          });
         }
         await transferRegion(region.id, march.lordId, tx);
         await tx.region.update({

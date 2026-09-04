@@ -223,6 +223,112 @@ function kabaSure(sn: number): string {
 }
 
 /**
+ * Takviye kartı: müttefikin bölgesine asker gönder, gönderdiğini geri çek.
+ *
+ * İttifakın en somut faydası. Sohbette "yardım et" demek zaten mümkündü,
+ * gerçekten yardım etmek değildi (docs/01 §7d).
+ *
+ * Kart yalnız İTTİFAK ÜYESİNİN bölgesinde çıkıyor. Sunucu da aynı kuralı
+ * uyguluyor; arayüzde göstermemek, yapılamayacak bir şeyi önermemek için.
+ */
+function TakviyeKarti({
+  bolge,
+  evdeki,
+  onKislaGit,
+}: {
+  bolge: RegionDetailDto;
+  evdeki: Army;
+  onKislaGit: () => void;
+}) {
+  const qc = useQueryClient();
+  const [secim, setSecim] = useState<Army>({});
+  const [hata, setHata] = useState<string | null>(null);
+
+  const tazele = () => {
+    void qc.invalidateQueries({ queryKey: ['bolge', bolge.id] });
+    void qc.invalidateQueries({ queryKey: ['army'] });
+    void qc.invalidateQueries({ queryKey: ['marches'] });
+    void qc.invalidateQueries({ queryKey: ['me'] });
+  };
+  const yut = (e: unknown) => {
+    hisRet();
+    setHata(e instanceof ApiError ? e.message : 'İşlem yapılamadı.');
+  };
+
+  const gonder = useMutation({
+    mutationFn: () => api.takviyeGonder(bolge.id, secim),
+    onSuccess: () => {
+      hisOnay();
+      setHata(null);
+      setSecim({});
+      tazele();
+    },
+    onError: yut,
+  });
+  const geri = useMutation({
+    mutationFn: () => api.takviyeGeri(bolge.id),
+    onSuccess: () => {
+      hisOnay();
+      setHata(null);
+      tazele();
+    },
+    onError: yut,
+  });
+
+  // Müttefiklik bayrağı SUNUCUDAN geliyor. Üye listesinden çıkarmak da
+  // mümkündü ama o liste ayrı bir istekle geliyor ve gecikirse kart yanlış
+  // anda görünüp kayboluyordu; bölgenin kendi cevabı hep tutarlı.
+  if (!bolge.muttefik) return null;
+
+  const bendekiler = UNIT_TYPES.reduce((t, u) => t + (bolge.kendiGarnizonum[u] ?? 0), 0);
+  const secili = UNIT_TYPES.reduce((t, u) => t + (secim[u] ?? 0), 0);
+
+  return (
+    <Kart className="p-3">
+      <h3 className="baslik mb-1.5 text-[11px] text-solgun">Takviye</h3>
+
+      {bendekiler > 0 && (
+        <div className="mb-2 rounded-lg border border-yesil/30 bg-yesil/10 p-2">
+          <p className="text-[12px]">
+            Bu bölgede <span className="font-bold text-yesil">{bendekiler} birim</span> askerin
+            savunmada.
+          </p>
+          <Buton
+            tur="sessiz"
+            boy="kucuk"
+            className="mt-1.5"
+            onClick={() => geri.mutate()}
+            disabled={geri.isPending}
+          >
+            {geri.isPending ? 'Çekiliyor…' : 'Takviyeyi geri çek'}
+          </Buton>
+        </div>
+      )}
+
+      <OrduSecici
+        mevcut={evdeki}
+        secim={secim}
+        onDegis={setSecim}
+        etiket="Gönderilecek takviye"
+        onKislaGit={onKislaGit}
+      />
+      <Buton
+        className="mt-2"
+        tam
+        onClick={() => gonder.mutate()}
+        disabled={secili === 0 || gonder.isPending}
+      >
+        {gonder.isPending ? 'Yola çıkıyor…' : `Takviye gönder (${secili} birim)`}
+      </Buton>
+      <p className="mt-1.5 text-[11px] text-sonuk">
+        Asker senin kalır. Bölge el değiştirse bile evine döner.
+      </p>
+      {hata && <EngelNotu kisa={hata} uzun="Ordunu ve ittifak durumunu gözden geçir." />}
+    </Kart>
+  );
+}
+
+/**
  * "İttifak hedefi yap" — yalnız lidere görünür.
  *
  * Düğme BURADA, bölge detayında: hedef kararı bölgeye bakarken veriliyor.
@@ -230,14 +336,14 @@ function kabaSure(sn: number): string {
  * ekrana yollamak ve orada bölgeyi yeniden aratmak demekti.
  */
 function IttifakHedefiDugmesi({
-  bolgeId,
-  bolgeAdi,
+  bolge,
   lordId,
 }: {
-  bolgeId: number;
-  bolgeAdi: string;
+  bolge: RegionDetailDto;
   lordId: string;
 }) {
+  const bolgeId = bolge.id;
+  const bolgeAdi = bolge.name;
   const qc = useQueryClient();
   const durum = useQuery({ queryKey: ['ittifak'], queryFn: api.ittifak, staleTime: 30_000 });
   const [hata, setHata] = useState<string | null>(null);
@@ -261,6 +367,13 @@ function IttifakHedefiDugmesi({
   // yapılamayacak bir şeyi öneriyor olurdu.
   const ittifakim = durum.data?.ittifakim;
   if (!ittifakim || ittifakim.liderId !== lordId) return null;
+  // Kendi üyenizin bölgesi hedef olamaz (zaten saldırılamıyor) ve kendi
+  // bölgeniz hiç olamaz. Sunucu ikisini de reddediyor; düğmeyi burada
+  // gizlemek, arayüzün yapılamayacak bir şeyi önermemesi için.
+  const uyeninBolgesi = Boolean(
+    bolge.owner && ittifakim.uyeler.some((u) => u.id === bolge.owner!.id),
+  );
+  if (bolge.isMine || uyeninBolgesi) return null;
 
   const zatenHedef = ittifakim.hedef?.regionId === bolgeId;
 
@@ -303,7 +416,7 @@ function IttifakHedefiDugmesi({
  * ona güvenip güvenmemek oyuncunun kararı. Ama oyun ona dayanıp akıl
  * vermiyor: karşı-birim ipuçları yalnız taze raporla çalışıyor.
  */
-function KesifKarti({ bolge }: { bolge: RegionDetailDto }) {
+function KesifKarti({ bolge, muttefikMi }: { bolge: RegionDetailDto; muttefikMi: boolean }) {
   const qc = useQueryClient();
   const [hata, setHata] = useState<string | null>(null);
   const gonder = useMutation({
@@ -322,8 +435,9 @@ function KesifKarti({ bolge }: { bolge: RegionDetailDto }) {
 
   // Sahipsiz bölgede casusun anlatacağı yeni bir şey yok: NPC garnizonu
   // zaten herkese açık, deposu da çoğunlukla boş. Kartı orada göstermek
-  // oyuncuyu 500 altını boşa harcamaya davet ederdi.
-  if (bolge.isMine || !bolge.owner) return null;
+  // oyuncuyu 500 altını boşa harcamaya davet ederdi. Müttefikin bölgesinde
+  // de aynı durum: garnizonu zaten görüyoruz.
+  if (bolge.isMine || !bolge.owner || muttefikMi) return null;
 
   // formatKalan MİLİSANİYE bekliyor; sunucu saniye gönderiyor.
   const yas = bolge.kesif ? formatKalan(bolge.kesif.yasSn * 1000) : null;
@@ -1031,8 +1145,9 @@ export function Harita({
                 </Kart>
               )}
 
-              <KesifKarti bolge={bolge} />
-              <IttifakHedefiDugmesi bolgeId={bolge.id} bolgeAdi={bolge.name} lordId={lordId} />
+              <KesifKarti bolge={bolge} muttefikMi={bolge.muttefik} />
+              <IttifakHedefiDugmesi bolge={bolge} lordId={lordId} />
+              <TakviyeKarti bolge={bolge} evdeki={evdeki} onKislaGit={() => onGit('kisla')} />
 
               {bolgeSavaslari.length > 0 && (
                 <Kart className="p-3">

@@ -55,11 +55,13 @@ gelmeden açılmamalı.
 **B1b ile eklendi:** ortak hedef işaretleme (docs/01 §7d). Lider tek bir
 bölgeyi işaretliyor, herkesin haritasında görünüyor.
 
-**Sırada:** takviye gönderme ve saldırmazlık paktı. Takviye bilerek
-sonraya bırakıldı: asker göndermek savaş çözümünü değiştiriyor (kayıplar
-kime yazılacak, bölge el değiştirince takviye nereye dönecek) ve
-`march.ts`in en hassas yeri orası. Yarım yapılırsa asker kaybolur — o
-yüzden ayrı ve dikkatli bir iş.
+**B1c ile eklendi:** takviye gönderme (docs/01 §7d). Savaş çözümüne
+dokunan tek iş buydu ve o yüzden ayrı yapıldı: kayıp dağıtımı saf bir
+fonksiyona alındı (`takviye.ts`), "en büyük kalan" yöntemiyle yazıldı ve
+"dağıtılan toplam gelen kayba TAM eşit" testiyle kilitlendi. Basit
+yuvarlama orada asker yoktan var ediyor.
+
+**Sırada:** saldırmazlık paktı ve ittifak sıralamasının kendi ekranı.
 
 ### 2.2 Sezon / sunucu döngüsü
 
