@@ -69,9 +69,11 @@ export async function ekrana(page, ad, bekle = 1200) {
  * oyuncuyu canlandırıyordu: ekranları gezen bu testler ilk oturumdaki
  * oyuncuyu değil, oyunu zaten öğrenmiş oyuncuyu ölçüyor.
  *
- * Karar ÜRÜNÜN kendi ucundan veriliyor (`POST /me/rehber-bitti` — oyuncu
- * "yeter, anladım" deyince çağrılan uç): testi geçirmek için ürüne kapı
- * açmıyoruz, olan kapıdan giriyoruz.
+ * Karar ÜRÜNÜN kendi ucundan veriliyor: `POST /me/rehber-bitti`, oyunun
+ * ilk bölge alınınca kendi vurduğu damga. Rehberin oyuncuya sunulan bir
+ * kapatma düğmesi YOK (zorunlu); bu uç "bu lord turu tamamladı" demek ve
+ * araçlar da tam olarak onu söylüyor — testi geçirmek için ürüne kapı
+ * açmıyoruz.
  *
  * Tarayıcı deposuna yazmıyor. Yazsaydı testler ürünün DÜZELTİLEN hatasını
  * canlandırırdı: karar hesaba değil tarayıcıya bağlanır, aynı tarayıcıda

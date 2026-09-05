@@ -89,9 +89,11 @@ const isikDurumu = () =>
       // Sayfadaki bütün işaretler: aynı ad iki kez varsa ışık hangisini
       // seçeceğini bilemez.
       tumIsaretler,
-      ipucu: [...document.querySelectorAll('[role="status"]')]
-        .map((e) => e.textContent?.trim() ?? '')
-        .find((t) => t.includes('bas')) ?? null,
+      // Perdenin ÜSTÜNDEKİ kâhya kartı: "neden bu düğme" burada yazıyor.
+      ipucu:
+        [...document.querySelectorAll('[role="status"]')]
+          .map((e) => e.textContent?.trim() ?? '')
+          .find((t) => t.includes('şimdi buna bas')) ?? null,
     };
   });
 
@@ -115,6 +117,9 @@ const ulasilirMi = async (loc) => {
   });
 };
 
+/** Hangi düğmede hangi sebep göründü — sebepler birbirini tekrar etmemeli. */
+const gorulenSebep = {};
+
 // --- 1. Malikâne: ışık omurga düğmesini açıkta bırakıyor mu ---
 await page.waitForTimeout(2500);
 {
@@ -122,7 +127,16 @@ await page.waitForTimeout(2500);
   kontrol('İlk oturumda ışık yanıyor', d.yaniyor === true);
   kontrol('Perde dört parça (delik gerçek, clip-path değil)', d.parca === 4, `${d.parca} parça`);
   kontrol('Delik omurga düğmesinin üstünde', d.isaret === 'omurga-dugme', d.isaret ?? 'yok');
-  kontrol('Tek satır ipucu var', Boolean(d.ipucu), d.ipucu ?? '');
+  /**
+   * Oyuncunun ikinci geri dönüşü: "şuraya bas diyoruz ama neden bastığını
+   * söylemiyoruz." Sebep kâhyanın kartında yazıyordu ama kart PERDENİN
+   * ALTINDA kalıyordu. Artık kâhya perdenin üstünde.
+   */
+  kontrol('Perdenin üstünde kâhya var', (d.ipucu ?? '').includes('Kâhya Sinan'), d.ipucu ?? 'yok');
+  kontrol('Sebep de yazıyor (yalnız "buna bas" değil)',
+    (d.ipucu ?? '').replace(/Kâhya Sinan|şimdi buna bas|↓/g, '').trim().length > 25,
+    (d.ipucu ?? '').slice(0, 70));
+  gorulenSebep.malikane = d.ipucu ?? '';
   kontrol(
     'Sayfada her işaret bir kez',
     new Set(d.tumIsaretler).size === d.tumIsaretler.length,
@@ -178,6 +192,13 @@ await page.waitForTimeout(2500);
 
   const ulas = await ulasilirMi(page.locator('[data-rehber="kisla-egit"]'));
   kontrol('Eğitim düğmesi ULAŞILIR', ulas === 'ulasilir', ulas);
+
+  // Sebep DÜĞMEYE özel olmalı: adımın cümlesi her düğmede aynı kalsaydı
+  // "neden buna basıyorum" sorusu ara düğmelerde cevapsız kalırdı.
+  kontrol('Kışladaki sebep, Malikâne\'dekinden FARKLI',
+    (d.ipucu ?? '') !== (gorulenSebep.malikane ?? ''),
+    (d.ipucu ?? '').slice(0, 60));
+  gorulenSebep.kisla = d.ipucu ?? '';
 }
 
 // --- 5. Eylem yapılınca ışık kendiliğinden sönüyor mu ---
@@ -232,6 +253,9 @@ await page.waitForTimeout(2500);
       const d2 = await isikDurumu();
       kontrol('Ordu seçilince delik "Saldır" düğmesine geçti',
         d2.isaret === 'harita-saldir', d2.isaret ?? 'yok');
+      kontrol('"Saldır"ın sebebi de kendine ait',
+        (d2.ipucu ?? '') !== (gorulenSebep.kisla ?? '') && (d2.ipucu ?? '').length > 30,
+        (d2.ipucu ?? '').slice(0, 60));
 
       const ulas = await ulasilirMi(page.locator('[data-rehber="harita-saldir"]'));
       kontrol('"Saldır" düğmesi ULAŞILIR', ulas === 'ulasilir', ulas);
@@ -244,7 +268,7 @@ await page.waitForTimeout(2500);
   }
 }
 
-// --- 6. Kaçış kapısı: "yeter, anladım" iki yeri birden susturuyor mu ---
+// --- 6. ZORUNLU: kaçış düğmesi yok, kapatma yolu yok ---
 {
   const d2 = Date.now();
   const { token: t2 } = await kayitOl(API, {
@@ -265,26 +289,74 @@ await page.waitForTimeout(2500);
   await page.waitForTimeout(2500);
   kontrol('Yeni lordda ışık yanıyor', (await isikDurumu()).yaniyor === true);
 
-  // Işığın kaçış kapısı sağ üstteki "GEÇ" — kâhya kartındaki "yeter,
-  // anladım" perdenin ALTINDA kalıyor ve zaten tıklanamaz.
-  await page.locator('button[aria-label="Rehberi kapat"]').click();
-  await page.waitForTimeout(800);
-  kontrol('Işığın "GEÇ" düğmesi ışığı söndürdü', (await isikDurumu()).yaniyor === false);
-
-  // Aynı karar kâhya kartını da susturmalı: biri kapanıp öbürü kalsaydı
-  // oyuncu yarım kapanmış bir öğreticiyle baş başa kalırdı.
-  const kartVar = await page.evaluate(() =>
-    (document.querySelector('main')?.textContent ?? '').includes('Kâhya Sinan'),
-  );
-  kontrol('Aynı karar kâhya kartını da kapattı', kartVar === false);
-  kontrol('Ekranda tek kapatma düğmesi kaldı — belirsizlik yok',
+  /**
+   * Oyuncu ayrımı net koydu: "öğretici ile zorunlu yaptırmayı ayır,
+   * oyuncu okusa da okumasa da yaptırmalı." Sekiz sayfalık tanıtımın
+   * "GEÇ"i duruyor; buranın kaçış düğmesi kaldırıldı. Bu kontroller
+   * geri konmasını engelliyor.
+   */
+  kontrol('Işıkta kaçış düğmesi YOK',
+    (await page.locator('button[aria-label="Rehberi kapat"]').count()) === 0);
+  kontrol('Kâhya kartında da kapatma YOK',
     (await page.locator('button:has-text("yeter, anladım")').count()) === 0);
+
+  // Perdenin her köşesine bas: hiçbiri ışığı söndürmemeli.
+  const boy = page.viewportSize();
+  for (const [x, y] of [[10, 10], [boy.width - 10, 10], [10, boy.height - 10], [boy.width - 10, boy.height - 10]]) {
+    await page.mouse.click(x, y);
+  }
+  await page.waitForTimeout(800);
+  kontrol('Perdenin dört köşesine basmak ışığı söndürmüyor',
+    (await isikDurumu()).yaniyor === true);
 
   await page.reload({ waitUntil: 'domcontentloaded' });
   await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
   await page.waitForTimeout(2500);
-  kontrol('Yenilemede geri gelmiyor', (await isikDurumu()).yaniyor === false);
+  kontrol('Yenileme de kaçış yolu değil', (await isikDurumu()).yaniyor === true);
+}
 
+// --- 6b. Tur BİTİNCE sönüyor ve damga vuruluyor ---
+{
+  /**
+   * Zorunluluğun sonu OYUNUN kendi olayı: ilk bölge alınınca rehber
+   * biter. Damga da orada vuruluyor (`Lord.rehberBittiAt`) — damgasız
+   * ölçüt tek başına "bölgesi yok" olurdu ve bölgelerini savaşta
+   * kaybetmiş kıdemli bir lord kendini kaçışı olmayan turun içinde
+   * bulurdu.
+   *
+   * Bölge gerçek yoldan alınıyor: baştaki lord zaten saldırıya çıkmıştı
+   * (5b), yürüyüşü bitiriyoruz.
+   */
+  const bas = { authorization: `Bearer ${token}`, 'content-type': 'application/json' };
+  await fetch(`${API}/api/test/yuruyusleri-bitir`, { method: 'POST', headers: bas, body: '{}' });
+  await page.evaluate((t) => localStorage.setItem('lordlar_token', t), token);
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+  await page.waitForTimeout(3500);
+
+  const me = await (
+    await fetch(`${API}/api/me`, { headers: { authorization: `Bearer ${token}` } })
+  ).json();
+  kontrol('Saldırı sonuçlandı, bölge alındı', (me.lord?.regionCount ?? 0) > 0,
+    `${me.lord?.regionCount} bölge`);
+  kontrol('Tur bitince ışık SÖNÜK', (await isikDurumu()).yaniyor === false);
+  kontrol('Tur bitince kâhya kartı da susuyor',
+    (await page.evaluate(() =>
+      (document.querySelector('main')?.textContent ?? '').includes('Kâhya Sinan'),
+    )) === false);
+
+  // Damgayı sunucuya sor: arayüz "sustu" derken sunucu "hâlâ yeni oyuncu"
+  // diyorsa, ordusunu kaybeden lord turun içine geri düşerdi.
+  await page.waitForTimeout(1500);
+  const me2 = await (
+    await fetch(`${API}/api/me`, { headers: { authorization: `Bearer ${token}` } })
+  ).json();
+  kontrol('Tur bitince sunucuya damga vuruluyor', me2.lord?.rehberGorundu === true,
+    String(me2.lord?.rehberGorundu));
+}
+
+// --- 6c. Aynı tarayıcıda yeni hesap ---
+{
   /**
    * AYNI TARAYICIDA YENİ HESAP: rehber GERİ GELMELİ.
    *
@@ -391,6 +463,55 @@ await page.waitForTimeout(2500);
   kontrol('Öğretici bitince ışık KENDİLİĞİNDEN yanıyor', son.parca === 4, `${son.parca} parça`);
   kontrol('Delik doğrudan omurga düğmesinde', son.isaret === 'omurga-dugme', son.isaret ?? 'yok');
   await ctx2.close();
+}
+
+/**
+ * --- 9. OKUMAYAN oyuncu da yapıyor ---
+ *
+ * Ayrımın kendisi: "öğretici ile zorunlu yaptırmayı ayır, oyuncu okusa da
+ * okumasa da yaptırmalı." Yukarıdaki bölüm okuyan oyuncuyu yürüdü; bu
+ * bölüm ilk saniyede "GEÇ"e basanı. İkisi de aynı yere varmalı.
+ */
+{
+  const ctx3 = await b.newContext({ ...devices['iPhone 13'] });
+  const s3 = await ctx3.newPage();
+  const d6 = Date.now().toString(36).slice(-5);
+  await s3.goto(WEB, { waitUntil: 'domcontentloaded' });
+  await s3.waitForSelector('input[type=email]', { timeout: 20000 });
+  await s3.locator('input').nth(0).fill(`Gec ${d6}`);
+  await s3.locator('input[type=email]').fill(`isikgec${d6}@lordlar.dev`);
+  await s3.locator('input[type=password]').fill('parola12345');
+  await s3.locator('form button[type="submit"]').last().click();
+
+  await s3.waitForSelector('[role="dialog"][aria-label="Öğretici"]', { timeout: 25000 });
+  // Tek sayfa bile okumadan geç.
+  await s3.locator('[role="dialog"] button[aria-label="Öğreticiyi geç"]').click();
+  await s3.waitForTimeout(3500);
+
+  const gecen = await s3.evaluate(() => {
+    const perde = [...document.querySelectorAll('div')].filter(
+      (d) => typeof d.className === 'string' && d.className.includes('z-[55]'),
+    );
+    const hedef = [...document.querySelectorAll('[data-rehber]')].find((e) => {
+      const r = e.getBoundingClientRect();
+      if (r.width < 4 || r.height < 4) return false;
+      const u = document.elementFromPoint(
+        Math.round(r.left + r.width / 2),
+        Math.round(r.top + r.height / 2),
+      );
+      return Boolean(u && (e === u || e.contains(u)));
+    });
+    return {
+      parca: perde.length,
+      isaret: hedef?.getAttribute('data-rehber') ?? null,
+      kacis: document.querySelectorAll('button[aria-label="Rehberi kapat"]').length,
+    };
+  });
+  kontrol('Tanıtımı GEÇEN oyuncuya da ışık yanıyor', gecen.parca === 4, `${gecen.parca} parça`);
+  kontrol('Geçene de aynı düğme gösteriliyor', gecen.isaret === 'omurga-dugme',
+    gecen.isaret ?? 'yok');
+  kontrol('Geçen oyuncu için de kaçış yolu yok', gecen.kacis === 0);
+  await ctx3.close();
 }
 
 kontrol('Konsol hatası yok', konsol.length === 0, konsol.slice(0, 3).join(' | '));

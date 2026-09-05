@@ -3,6 +3,7 @@ import {
   REHBER,
   REHBER_ISIKLARI,
   rehberGorunsunMu,
+  rehberIsaretSebebi,
   rehberIsigi,
   rehberSozleri,
   rehberSozu,
@@ -64,7 +65,21 @@ describe('rehber ne zaman susar', () => {
     expect(rehberGorunsunMu(1, false)).toBe(false);
   });
 
-  it('oyuncu kapatınca susar — zorunlu tur değil', () => {
+  /**
+   * Kapatma düğmesi YOK — oyuncu "öğretici ile zorunlu yaptırmayı ayır,
+   * okusa da okumasa da yaptırmalı" dedi. Bayrağın tek yazarı oyunun
+   * kendisi: ilk bölge alınınca damga vuruluyor.
+   */
+  it('tamamlanmış sayılan lorda susar', () => {
+    expect(rehberGorunsunMu(0, true)).toBe(false);
+  });
+
+  /**
+   * Damganın asıl işi bu: bölgelerini savaşta kaybetmiş kıdemli lord.
+   * Ölçüt tek başına "bölgesi yok" olsaydı, kaçış düğmesi de olmadığı için
+   * kendini yeniden zorunlu turun içinde bulurdu.
+   */
+  it('bölgelerini kaybeden KIDEMLİ lord zorunlu tura geri düşmez', () => {
     expect(rehberGorunsunMu(0, true)).toBe(false);
   });
 });
@@ -147,13 +162,36 @@ describe('rehber ışığı', () => {
    */
   it('her zincir Malikâne sekmesiyle bitiyor', () => {
     for (const liste of Object.values(REHBER_ISIKLARI)) {
-      expect(liste[liste.length - 1]).toBe('nav-malikane');
+      expect(liste[liste.length - 1]?.isaret).toBe('nav-malikane');
     }
   });
 
   it('bir zincirde aynı işaret iki kez geçmiyor', () => {
     for (const liste of Object.values(REHBER_ISIKLARI)) {
-      expect(new Set(liste).size).toBe(liste.length);
+      const adlar = liste.map((x) => x.isaret);
+      expect(new Set(adlar).size).toBe(adlar.length);
+    }
+  });
+
+  /**
+   * Her zincirde en az bir İŞ düğmesi olmalı. Hepsi `yol` olsaydı ışık
+   * oyuncuyu ekranlar arasında dolaştırır, hiçbir şey yaptırmazdı — ve
+   * kilitlenmeye karşı emniyet ("iş düğmelerinin hepsi kapalıysa perde
+   * kalksın") ölçecek bir şey bulamazdı.
+   */
+  it('her zincirde en az bir İŞ düğmesi var', () => {
+    for (const liste of Object.values(REHBER_ISIKLARI)) {
+      expect(liste.some((x) => !x.yol)).toBe(true);
+    }
+  });
+
+  it('yalnız yol düğmeleri zincirin SONUNDA', () => {
+    for (const liste of Object.values(REHBER_ISIKLARI)) {
+      const ilkYol = liste.findIndex((x) => x.yol);
+      if (ilkYol === -1) continue;
+      // İlk yol düğmesinden sonra iş düğmesi gelmemeli: iş düğmeleri
+      // ekranın derininde, yol düğmeleri yüzeyinde.
+      expect(liste.slice(ilkYol).every((x) => x.yol)).toBe(true);
     }
   });
 
@@ -163,11 +201,58 @@ describe('rehber ışığı', () => {
    * ışık oyuncuyu zaten üstünde durduğu düğmeden alıp sekmeye yollardı.
    */
   it('saldırı zinciri seçimden düğmeye doğru sıralı', () => {
-    expect(rehberIsigi('saldir')).toEqual([
+    expect(rehberIsigi('saldir').map((x) => x.isaret)).toEqual([
       'harita-saldir',
       'harita-hepsi',
       'omurga-dugme',
       'nav-malikane',
     ]);
+  });
+});
+
+/**
+ * Oyuncunun ikinci geri dönüşü: "şuraya bas diyoruz ama neden bastığını
+ * söylemiyoruz." Sebep aslında kâhyanın kartında yazıyordu ama kart
+ * perdenin ALTINDA kalıyordu — yani ekrandaydı, görünmüyordu.
+ */
+describe('neden bu düğme', () => {
+  it('aydınlatılan her düğmenin bir sebebi var', () => {
+    for (const [adim, liste] of Object.entries(REHBER_ISIKLARI)) {
+      for (const { isaret } of liste) {
+        const sebep = rehberIsaretSebebi(adim, isaret);
+        expect(sebep, `${adim}/${isaret}`).toBeTruthy();
+        expect(sebep!.length, `${adim}/${isaret}`).toBeGreaterThan(20);
+        // Tek cümlelik ölçü: oyuncunun ilk şikâyeti "her yerde bir şeyler
+        // yazıyor" idi, perdenin üstüne paragraf koyamayız.
+        expect(sebep!.length, `${adim}/${isaret}`).toBeLessThan(180);
+      }
+    }
+  });
+
+  /**
+   * Ara düğmelerin KENDİ gerekçesi olmalı. "Hepsi" düğmesini adımın
+   * cümlesiyle ("ordun hazır, saldır") açıklamak, sorulan soruyu
+   * cevaplamamak olurdu: oyuncu neden ORAYA bastığını soruyor.
+   */
+  it('ara düğmeler adımın cümlesini tekrarlamıyor', () => {
+    for (const [adim, liste] of Object.entries(REHBER_ISIKLARI)) {
+      for (const { isaret, yol } of liste) {
+        if (yol || isaret === 'omurga-dugme') continue;
+        expect(rehberIsaretSebebi(adim, isaret)).not.toBe(rehberSozu(adim));
+      }
+    }
+  });
+
+  /**
+   * Omurga düğmesinin sebebi adımın kendi sözü: o düğme zaten adımın ta
+   * kendisi, ona ayrı bir cümle yazmak aynı şeyi iki kez söylemek olurdu.
+   */
+  it('omurga düğmesi adımın sözünü kullanıyor', () => {
+    expect(rehberIsaretSebebi('ordu-kur', 'omurga-dugme')).toBe(rehberSozu('ordu-kur'));
+    expect(rehberIsaretSebebi('saldir', 'omurga-dugme')).toBe(rehberSozu('saldir'));
+  });
+
+  it('bilinmeyen işarette adımın sözüne düşüyor', () => {
+    expect(rehberIsaretSebebi('ordu-kur', 'boyle-bir-dugme-yok')).toBe(rehberSozu('ordu-kur'));
   });
 });

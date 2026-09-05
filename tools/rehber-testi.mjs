@@ -63,7 +63,10 @@ await page.waitForTimeout(1500);
 /** Kâhyanın o an söylediği cümle; yoksa null. */
 const kahyaSozu = () =>
   page.evaluate(() => {
-    const b = [...document.querySelectorAll('span')].find(
+    // `.kart` ile sınırlı: rehber ışığının perde üstündeki kartı da
+    // "Kâhya Sinan" yazıyor ve DOM'da önce geliyor. Burada ölçülen şey
+    // Malikâne'deki kart; ışık kendi testinde ölçülüyor.
+    const b = [...document.querySelectorAll('.kart span')].find(
       (x) => x.textContent?.trim() === 'Kâhya Sinan',
     );
     if (!b) return null;
@@ -174,29 +177,40 @@ kontrol(
   kontrol('Döngü kapanınca kâhya SUSUYOR', soz === null, soz ? `hâlâ konuşuyor: "${soz.slice(0, 40)}"` : 'sustu');
 }
 
-// --- 6. Kâhya elle de kapatılabiliyor (zorunlu tur değil) ---
+// --- 6. Kâhya KAPATILAMIYOR: tur zorunlu ---
 {
+  /**
+   * Eskiden burada "yeter, anladım" düğmesi vardı ve bu bölüm onun
+   * çalıştığını ölçüyordu. Oyuncu ayrımı net koydu:
+   *
+   *   "öğretici ile zorunlu yaptırmayı ayır, oyuncu okusa da okumasa da
+   *    yaptırmalı, öğretiyi yapmak zorunda olsun"
+   *
+   * Sekiz sayfalık tanıtımın "GEÇ"i duruyor — o ANLATIYOR. Kâhya
+   * YAPTIRIYOR ve geçilemiyor. Tur kısa ve sonlu: ilk bölge alınınca
+   * kendiliğinden bitiyor (yukarıdaki 5. bölüm onu ölçüyor).
+   */
   const d2 = Date.now();
   const { token: t2 } = await kayitOl(API, {
     email: `reh${d2}_k@lordlar.dev`,
     lordName: `Rehk ${d2.toString(36).slice(-4)}`,
   });
   await page.evaluate((t) => localStorage.setItem('lordlar_token', t), t2);
-  await page.evaluate(() => localStorage.removeItem('lordlar_rehber_kapali'));
   await page.reload({ waitUntil: 'domcontentloaded' });
   await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
   await ogreticiyiGec(page);
   await page.waitForTimeout(1500);
 
   kontrol('Yeni lordda kâhya yine görünüyor', (await kahyaSozu()) !== null);
-  await page.locator('button:has-text("yeter, anladım")').click();
-  await page.waitForTimeout(600);
-  kontrol('Kapatılınca susuyor', (await kahyaSozu()) === null);
+  kontrol('Kâhya kartında kapatma düğmesi YOK',
+    (await page.locator('button:has-text("yeter, anladım")').count()) === 0);
+  kontrol('Rehber ışığında da kaçış düğmesi YOK',
+    (await page.locator('button[aria-label="Rehberi kapat"]').count()) === 0);
 
   await page.reload({ waitUntil: 'domcontentloaded' });
   await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
   await page.waitForTimeout(1500);
-  kontrol('Kapalı kaldı — sayfa yenilenince geri gelmiyor', (await kahyaSozu()) === null);
+  kontrol('Yenileme de kaçış yolu değil — kâhya duruyor', (await kahyaSozu()) !== null);
 }
 
 // --- 7. Kademeli açılım: ilk döngüde ekran sade, sonra doluyor ---
@@ -243,8 +257,10 @@ kontrol(
     );
   const get3 = (y) => fetch(`${API}/api${y}`, { headers: h3 }).then((x) => x.json());
 
+  // Tarayıcı deposunu temizlemeye gerek yok: karar artık hesaba bağlı
+  // (`Lord.rehberBittiAt`). Depoya bağlıyken buradaki satır, ürünün
+  // kendi hatasını testte gizliyordu.
   await page.evaluate((t) => localStorage.setItem('lordlar_token', t), t3);
-  await page.evaluate(() => localStorage.removeItem('lordlar_rehber_kapali'));
   await page.reload({ waitUntil: 'domcontentloaded' });
   await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
   await ogreticiyiGec(page);

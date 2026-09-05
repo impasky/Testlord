@@ -115,31 +115,62 @@ export function rehberSozu(adim: string | null | undefined): string | null {
  * yirmi dakika gezinip hiçbir şey yapmamış oyuncunun rehbere hâlâ
  * ihtiyacı var, iki dakikada bölge almışınki yok.
  *
- * `elleKapatildi` oyuncunun kendi kararı — rehber zorunlu bir tur değil.
+ * `tamamlandi` ise hesabın kalıcı kaydı (`Lord.rehberBittiAt`). İki işi
+ * var:
+ *
+ *  - Rehber ZORUNLU: kapatma düğmesi yok. Oyuncu sekiz sayfalık tanıtımı
+ *    okusa da okumasa da, geçse de geçmese de, elinden tutulan bu bölümü
+ *    yapıyor. İki şey ayrı: biri ANLATIYOR, öbürü YAPTIRIYOR; birini
+ *    atlamak öbürünü atlamak değil.
+ *
+ *  - Kayıt olmasaydı ölçüt tek başına "bölgesi yok" olurdu ve bölgelerini
+ *    savaşta kaybetmiş KIDEMLİ bir lord kendini yeniden zorunlu turun
+ *    içinde bulurdu. Damga bir kez konur, bir daha dönmez.
  */
-export function rehberGorunsunMu(bolgeSayisi: number, elleKapatildi: boolean): boolean {
-  return !elleKapatildi && bolgeSayisi === 0;
+export function rehberGorunsunMu(bolgeSayisi: number, tamamlandi: boolean): boolean {
+  return !tamamlandi && bolgeSayisi === 0;
 }
 
 /* ---------------- Rehber ışığı: zorunlu tek düğme ---------------- */
 
 /**
- * Kâhya konuşuyordu ama oyuncu yine de "şimdi neye basacağım"ı arıyordu:
+ * Rehber ışığının aydınlatabileceği bir düğme.
  *
- *   "yaptıran öğretici olmamış... oyuncu girdiğinde zorunlu olarak
- *    tıklamasını istemeliyiz, sadece o buton aktif olmalı, diğer tüm ekran
- *    üzerinde transparan siyah bir panel olmalı."
+ * `sebep` neden BU düğmeye basıldığını söyler. Oyuncunun ikinci geri
+ * dönüşü buydu: "oyuncuya şuraya bas diyoruz ama neden bastığını
+ * söylemiyoruz." Sebep aslında kâhyanın kartında yazıyordu — ama kart
+ * perdenin ALTINDA kalıyordu. Yani sebep ekrandaydı, görünmüyordu.
  *
- * Bu tablo o panelin nereye delik açacağını söyler: omurga adımı → sırayla
- * denenecek işaret adları. Arayüzdeki düğmeler `data-rehber="<ad>"` ile
- * imzalanıyor; ışık listeyi baştan tarar ve BULUNAN VE BASILABİLİR ilk
- * düğmeyi açıkta bırakır.
+ * Bu yüzden sebep artık adımın değil DÜĞMENİN yanında duruyor: zincirin
+ * ara düğmelerinin ("Hepsi", Malikâne sekmesi) adım cümlesiyle
+ * açıklanamayacak kendi gerekçeleri var.
  *
- * Sıra öncelik değil KONUM: aynı anda ikisi birden ekranda olamaz. Liste
- * ekranın en derinindeki düğmeden başlar ve geriye doğru gider —
- * "saldır" yoksa "hepsi", o da yoksa Malikâne'deki omurga düğmesi, o da
- * yoksa Malikâne sekmesi. Böylece oyuncu hangi ekranda olursa olsun ışık
- * onu adım adım aynı düğmeye götürür ve zincir hiçbir yerde kopmaz.
+ * `yol` işaretli düğmeler iş yapmaz, yalnız oyuncuyu işin yapılacağı
+ * ekrana taşır. Ayrım kilitlenmeye karşı: ekrandaki İŞ düğmelerinin hepsi
+ * kapalıysa (ör. parası yetmiyor) ışık sönüyor. Yoksa oyuncu Malikâne ile
+ * Kışla arasında sonsuza kadar gidip gelirdi — basılabilir tek düğme onu
+ * hep diğer ekrana yollardı.
+ */
+export interface RehberIsaret {
+  /** Arayüzdeki `data-rehber` imzası. */
+  isaret: string;
+  /** Neden bu düğme. Verilmezse adımın kendi sözü kullanılır. */
+  sebep?: string;
+  /** İş yapmıyor, yalnız doğru ekrana götürüyor. */
+  yol?: true;
+}
+
+/**
+ * Hangi omurga adımında ışık hangi düğmeleri arar.
+ *
+ * Arayüzdeki düğmeler `data-rehber="<ad>"` ile imzalanıyor; ışık listeyi
+ * baştan tarar ve BULUNAN VE BASILABİLİR ilk düğmeyi açıkta bırakır.
+ *
+ * Sıra öncelik değil KONUM: aynı anda hepsi ekranda olamaz. Liste ekranın
+ * en derinindeki düğmeden başlar ve geriye doğru gider — "Saldır" yoksa
+ * "Hepsi", o da yoksa Malikâne'deki omurga düğmesi, o da yoksa Malikâne
+ * sekmesi. Böylece oyuncu hangi ekranda olursa olsun ışık onu adım adım
+ * aynı düğmeye götürür ve zincir hiçbir yerde kopmaz.
  *
  * ── Neden yalnız iki adım ─────────────────────────────────────────────
  *
@@ -148,13 +179,60 @@ export function rehberGorunsunMu(bolgeSayisi: number, elleKapatildi: boolean): b
  * "ordun yolda" adımlarında yapılacak bir şey yok — orada ekranı karartmak
  * öğretmek değil, oyuncuyu hapsetmek olurdu.
  */
-export const REHBER_ISIKLARI: Record<string, string[]> = {
-  'ordu-kur': ['kisla-egit', 'omurga-dugme', 'nav-malikane'],
-  saldir: ['harita-saldir', 'harita-hepsi', 'omurga-dugme', 'nav-malikane'],
+export const REHBER_ISIKLARI: Record<string, RehberIsaret[]> = {
+  'ordu-kur': [
+    {
+      isaret: 'kisla-egit',
+      sebep:
+        'Bu düğme askerleri kışlaya yazdırır. Sayıyı senin için hazır seçtim — ' +
+        'hedefi almaya yetecek kadarı bu.',
+    },
+    { isaret: 'omurga-dugme', yol: true },
+    {
+      isaret: 'nav-malikane',
+      sebep: 'Yapılacak iş Malikâne\'de yazılı. Önce oraya dönelim lordum.',
+      yol: true,
+    },
+  ],
+  saldir: [
+    {
+      isaret: 'harita-saldir',
+      sebep:
+        'Bu düğme orduyu yola çıkarır. Geri dönüşü yok — ama hesabı yaptım, ' +
+        'bu bölge senin olur.',
+    },
+    {
+      isaret: 'harita-hepsi',
+      sebep:
+        'Önce kimi göndereceğini seç. "Hepsi" evdeki bütün askeri katar; ' +
+        'ilk seferde orduyu bölmenin bir faydası yok.',
+    },
+    { isaret: 'omurga-dugme', yol: true },
+    {
+      isaret: 'nav-malikane',
+      sebep: 'Yapılacak iş Malikâne\'de yazılı. Önce oraya dönelim lordum.',
+      yol: true,
+    },
+  ],
 };
 
 /** Bir omurga adımında ışığın arayacağı işaretler; yoksa boş dizi. */
-export function rehberIsigi(adim: string | null | undefined): string[] {
+export function rehberIsigi(adim: string | null | undefined): RehberIsaret[] {
   if (!adim) return [];
   return REHBER_ISIKLARI[adim] ?? [];
+}
+
+/**
+ * Aydınlatılan düğmenin yanında yazacak cümle.
+ *
+ * Düğmenin kendi sebebi yoksa adımın sözüne düşüyor: omurga düğmesi zaten
+ * adımın ta kendisi, onun için ayrı bir cümle yazmak aynı şeyi iki kez
+ * söylemek olurdu.
+ */
+export function rehberIsaretSebebi(
+  adim: string | null | undefined,
+  isaret: string,
+): string | null {
+  const kayit = rehberIsigi(adim).find((x) => x.isaret === isaret);
+  return kayit?.sebep ?? rehberSozu(adim);
 }

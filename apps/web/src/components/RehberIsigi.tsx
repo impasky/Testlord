@@ -8,9 +8,25 @@
  *    üzerinde transparan siyah bir panel olmalı — bunu yapmadan başka bir
  *    şeye tıklayamazsın der gibi."
  *
- * Kâhya (Rehber.tsx) neden bastığını söylüyordu ama neye basacağını
- * göstermiyordu; ekranda hâlâ kırk tıklanabilir şey vardı ve oyuncunun
- * asıl şikâyeti oydu: "neler önemli neler önemsiz anlayamadım."
+ * ── Neden kaçış düğmesi YOK ───────────────────────────────────────────
+ *
+ * İlk hâlinde sağ üstte bir "GEÇ" vardı. Oyuncu ikinci turda ayrımı net
+ * koydu: "öğretici ile zorunlu yaptırmayı ayır, oyuncu okusa da okumasa da
+ * yaptırmalı." Sekiz sayfalık tanıtım ANLATIYOR ve geçilebilir; burası
+ * YAPTIRIYOR ve geçilemez. Birini atlamak öbürünü atlamak değil.
+ *
+ * Zorunluluk kısa ve sonlu: altı dokunuş (eğit → bekle → hepsi → saldır) ve
+ * ilk bölge alınınca rehber kendiliğinden biter, bir daha da dönmez.
+ *
+ * ── Neden sebep BURADA yazıyor ────────────────────────────────────────
+ *
+ * Oyuncunun ikinci şikâyeti: "şuraya bas diyoruz ama neden bastığını
+ * söylemiyoruz." Sebep aslında kâhyanın kartında yazıyordu — ama kart
+ * PERDENİN ALTINDA kalıyordu. Kendi perdem sebebi örtüyordu.
+ *
+ * Artık kâhya perdenin ÜSTÜNDE: portresi ve tek cümlesi deliğin yanında
+ * duruyor, cümle de adımın değil DÜĞMENİN sebebini söylüyor (zincirin ara
+ * düğmelerinin kendi gerekçesi var; `packages/shared/src/rehber.ts`).
  *
  * ── Delik nasıl açılıyor ───────────────────────────────────────────────
  *
@@ -22,18 +38,27 @@
  *
  * ── Kilitlenmeye karşı ────────────────────────────────────────────────
  *
- * Zorunlu bir perdenin tek gerçek riski oyuncuyu hapsetmesi. Üç ayrı
- * emniyet var:
- *   1. Hedef KAPALI ise (parası yetmiyor, kuyruk dolu) atlanır ve sıradaki
- *      işarete geçilir — kapalı bir düğmeye basmaya zorlamak kilit demekti.
- *   2. Listedeki hiçbir işaret bulunamazsa perde birkaç yoklama sonra
- *      tamamen kalkar; ışık ekranı asla "boşuna" karartmaz.
- *   3. Perdenin altında küçük bir "yeter, anladım" var — 8 sayfalık
- *      öğreticideki "GEÇ" ile aynı nezaket. Zorunlu tur değil.
+ * Kaçış düğmesi kalkınca emniyetlerin otomatik olması şart oldu. Üçü var:
+ *
+ *  1. Ekrandaki İŞ düğmelerinin hepsi kapalıysa (parası yetmiyor, kuyruk
+ *     dolu) perde tamamen kalkar. Bu olmasaydı oyuncu Malikâne ile Kışla
+ *     arasında sonsuza kadar gidip gelirdi: basılabilir tek düğme onu hep
+ *     öbür ekrana yollardı.
+ *  2. Listedeki hiçbir işaret bulunamazsa perde birkaç yoklama sonra
+ *     kalkar; ışık ekranı asla "boşuna" karartmaz.
+ *  3. Hedef güvenli şeride getirilemiyorsa yine kalkar — basılamayan bir
+ *     düğmeyi göstermektense hiç göstermemek yeğdir.
  */
-import { rehberGorunsunMu, rehberIsigi } from '@lordlar/shared';
-import { useEffect, useState } from 'react';
-import { useRehberOturumdaKapali, useRehberiKapat } from './rehberKapali';
+import {
+  REHBER,
+  rehberGorunsunMu,
+  rehberIsaretSebebi,
+  rehberIsigi,
+  type RehberIsaret,
+} from '@lordlar/shared';
+import { useEffect, useRef, useState } from 'react';
+import { Gorsel } from './Gorsel';
+import { IkonNavGeneraller } from './Ikonlar';
 
 /** Deliğin çevresindeki nefes payı. */
 const PAY = 8;
@@ -55,23 +80,41 @@ interface Kutu {
   boy: number;
 }
 
+function basilabilirMi(e: HTMLElement): boolean {
+  if (e.hasAttribute('disabled') || e.getAttribute('aria-disabled') === 'true') return false;
+  const r = e.getBoundingClientRect();
+  return r.width >= 4 && r.height >= 4;
+}
+
 /**
  * Sırayla dener, BULUNAN VE BASILABİLİR ilk işareti döndürür.
  *
- * `disabled` kontrolü şart: Kışla'da parası yetmeyen oyuncunun eğitim
- * düğmesi kapalı olur ve ışık onu aydınlatsaydı oyuncu basamadığı bir
- * düğmeye bakarak kilitli kalırdı.
+ * `null` iki şeyi birden anlatamaz, o yüzden `engelli` ayrı: ekranda İŞ
+ * düğmesi var ama hepsi kapalıysa (parası yetmiyor, kuyruk dolu) perde
+ * kalkmalı. Kaçış düğmesi olmadığı için bu emniyet şart — yoksa oyuncuyu
+ * Malikâne ile Kışla arasında sonsuz bir gidiş gelişe hapsederdik:
+ * basılabilir tek düğme onu hep öbür ekrana yollardı.
+ *
+ * `yol` düğmeleri (omurga düğmesi, Malikâne sekmesi) bu hesaba girmez;
+ * onlar iş yapmıyor, taşıyor.
  */
-function hedefBul(isaretler: string[]): HTMLElement | null {
-  for (const ad of isaretler) {
-    const e = document.querySelector<HTMLElement>(`[data-rehber="${ad}"]`);
+function hedefBul(isaretler: RehberIsaret[]): { hedef: HTMLElement | null; engelli: boolean } {
+  let isVar = false;
+  let isAcik = false;
+  let ilk: HTMLElement | null = null;
+
+  for (const { isaret, yol } of isaretler) {
+    const e = document.querySelector<HTMLElement>(`[data-rehber="${isaret}"]`);
     if (!e) continue;
-    if (e.hasAttribute('disabled') || e.getAttribute('aria-disabled') === 'true') continue;
-    const r = e.getBoundingClientRect();
-    if (r.width < 4 || r.height < 4) continue;
-    return e;
+    const acik = basilabilirMi(e);
+    if (!yol) {
+      isVar = true;
+      if (acik) isAcik = true;
+    }
+    if (acik && !ilk) ilk = e;
   }
-  return null;
+
+  return { hedef: ilk, engelli: isVar && !isAcik };
 }
 
 function ayniMi(a: Kutu | null, r: DOMRect): boolean {
@@ -102,24 +145,30 @@ export function RehberIsigi({
   /** Öğretici kapandı mı — iki tam ekran perde üst üste binmesin. */
   acik: boolean;
 }) {
-  const oturumdaKapali = useRehberOturumdaKapali();
-  const kapatDugmesi = useRehberiKapat();
-  const kapali = gorundu || oturumdaKapali;
   const [kutu, setKutu] = useState<Kutu | null>(null);
+  // Aydınlatılan düğmenin adı: kâhyanın cümlesi buna göre değişiyor.
+  const [hedefAdi, setHedefAdi] = useState<string | null>(null);
   const [itiraz, setItiraz] = useState(false);
 
   const isaretler = rehberIsigi(adim);
-  const calissin = acik && !kapali && rehberGorunsunMu(bolgeSayisi, kapali) && isaretler.length > 0;
+  const calissin =
+    acik && rehberGorunsunMu(bolgeSayisi, gorundu) && isaretler.length > 0;
   // Etki bağımlılığı için sabit bir değer: dizi her çizimde yeniden üretilir
   // ve doğrudan bağımlılık yapılsaydı etki her karede yeniden kurulurdu.
-  const anahtar = isaretler.join('|');
+  const anahtar = isaretler.map((x) => x.isaret).join('|');
+  // Etki yalnız `anahtar` değişince kuruluyor; listenin kendisini ref ile
+  // geçiriyoruz. Diziyi doğrudan bağımlılık yapmak etkiyi her karede
+  // yeniden kurardı (her çizimde yeni bir dizi üretiliyor).
+  const isaretlerRef = useRef<RehberIsaret[]>(isaretler);
+  isaretlerRef.current = isaretler;
 
   useEffect(() => {
     if (!calissin) {
       setKutu(null);
+      setHedefAdi(null);
       return;
     }
-    const liste = anahtar.split('|');
+    const liste = isaretlerRef.current;
     let yok = 0;
     /**
      * Hedef üst üste kaç kez güvenli şeridin dışında kaldı.
@@ -134,10 +183,21 @@ export function RehberIsigi({
     let sonAd = '';
 
     const olc = () => {
-      const e = hedefBul(liste);
+      const { hedef: e, engelli } = hedefBul(liste);
+      // Ekrandaki iş düğmelerinin hepsi kapalı: yapılacak bir şey yok,
+      // perde hemen kalksın. Beklemenin anlamı olmazdı — kapalı düğme
+      // birkaç yoklama sonra kendiliğinden açılmıyor.
+      if (engelli) {
+        setKutu(null);
+        setHedefAdi(null);
+        return;
+      }
       if (!e) {
         yok++;
-        if (yok >= SABIR) setKutu(null);
+        if (yok >= SABIR) {
+          setKutu(null);
+          setHedefAdi(null);
+        }
         return;
       }
       yok = 0;
@@ -158,6 +218,7 @@ export function RehberIsigi({
        * kilitlenmeye karşı şart.
        */
       const ad = e.getAttribute('data-rehber') ?? '';
+      setHedefAdi((o) => (o === ad ? o : ad));
       const disarida = r.top < UST_PAY || r.bottom > window.innerHeight - ALT_PAY;
       if (disarida) {
         // Hedef değiştiyse yumuşak (göz takip etsin), yerinde kaydıysa
@@ -205,9 +266,17 @@ export function RehberIsigi({
     window.setTimeout(() => setItiraz(false), 450);
   };
 
-  // İpucu deliğin altına, yer yoksa üstüne. Tek satır: oyuncunun şikâyeti
-  // zaten "her yerde bir şeyler yazıyor" idi.
-  const altaSigar = window.innerHeight - a > 96;
+  /*
+   * Kâhya kartı deliğin altına, yer yoksa üstüne.
+   *
+   * Kart perdenin ÜSTÜNDE (z-56) çünkü asıl mesele buydu: sebep
+   * Malikâne'deki kâhya kartında yazıyordu ama perdenin altında kalıyordu.
+   * Oyuncu "şuraya bas diyoruz ama neden bastığını söylemiyoruz" derken
+   * tam olarak bunu gördü.
+   */
+  const KART_BOY = 150;
+  const altaSigar = window.innerHeight - a > KART_BOY;
+  const sebep = rehberIsaretSebebi(adim, hedefAdi ?? '');
 
   return (
     <>
@@ -216,7 +285,7 @@ export function RehberIsigi({
       <div className={perde} style={{ top: u, left: 0, width: s, height: a - u }} onClick={dokun} />
       <div className={perde} style={{ top: u, left: g, right: 0, height: a - u }} onClick={dokun} />
 
-      {/* Halka ve yazı tıklamayı geçirir: deliğin üstünde duran hiçbir şey
+      {/* Halka ve kart tıklamayı geçirir: deliğin üstünde duran hiçbir şey
           düğmeye giden parmağı yakalamamalı. */}
       <div
         aria-hidden
@@ -234,32 +303,41 @@ export function RehberIsigi({
 
       <div
         role="status"
-        className="pointer-events-none fixed z-[56] flex justify-center px-4"
-        style={altaSigar ? { top: a + 12, left: 0, right: 0 } : { top: Math.max(8, u - 44), left: 0, right: 0 }}
+        className="pointer-events-none fixed z-[56] flex justify-center px-3"
+        style={
+          altaSigar
+            ? { top: a + 12, left: 0, right: 0 }
+            : { top: Math.max(8, u - KART_BOY + 6), left: 0, right: 0 }
+        }
       >
-        <span className="baslik rounded-xl border border-altin/40 bg-gece/90 px-3 py-1.5 text-[12px] text-altin">
-          Şimdi buna bas
-        </span>
+        <div className="w-full max-w-sm rounded-2xl border border-altin/45 bg-gece/95 p-3 shadow-xl">
+          <div className="flex items-start gap-2.5">
+            <div className="oyuk h-9 w-9 shrink-0 overflow-hidden rounded-lg border border-kenar">
+              <Gorsel
+                tur="generaller"
+                ad={REHBER.key}
+                alt={REHBER.ad}
+                boyut={36}
+                yedek={
+                  <span className="flex h-full w-full items-center justify-center text-solgun">
+                    <IkonNavGeneraller boyut={18} />
+                  </span>
+                }
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <div className="min-w-0 flex-1">
+              <span className="baslik text-[10px] text-mavi">{REHBER.ad}</span>
+              {/* NEDEN bastığı. Cümle adımın değil DÜĞMENİN sebebi —
+                  zincirin ara düğmelerinin kendi gerekçesi var. */}
+              <p className="mt-0.5 text-[13px] leading-snug text-parsomen">{sebep}</p>
+            </div>
+          </div>
+          <p className="baslik mt-2 text-center text-[11px] text-altin">
+            ↓ şimdi buna bas ↓
+          </p>
+        </div>
       </div>
-
-      {/* Kaçış kapısı SAĞ ÜSTTE, sekiz sayfalık öğreticideki "GEÇ" ile aynı
-          yerde ve aynı sözcükle: iki perde de aynı şekilde geçiliyor.
-
-          Önce ekranın altındaydı ve orada gerçek bir tuzaktı — alt gezinme
-          çubuğunun tam üstüne düşüyordu, ortadaki sekmeye basmak isteyen
-          oyuncu farkında olmadan öğreticiyi kapatıyordu (testteki "perdeye
-          bas, ışık sönmesin" kontrolü bunu yakaladı).
-
-          Yazısı da kâhya kartındaki "yeter, anladım"dan ayrı: aynı anda iki
-          özdeş kapatma düğmesi hem oyuncu için hem test için belirsizlik. */}
-      <button
-        type="button"
-        onClick={kapatDugmesi}
-        aria-label="Rehberi kapat"
-        className="bas baslik fixed top-2 right-3 z-[57] px-3 py-2 text-[11px] text-sonuk"
-      >
-        GEÇ
-      </button>
     </>
   );
 }

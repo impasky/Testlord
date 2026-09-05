@@ -1,11 +1,10 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useEffect, useRef, useState } from 'react';
 import { ApiError, api, getToken, setToken, type MeResponse } from './api/client';
 import { BaglantiDurumu } from './components/BaglantiDurumu';
 import { MobilKabuk, type Sekme } from './components/MobilKabuk';
 import { Ogretici } from './components/Ogretici';
 import { RehberIsigi } from './components/RehberIsigi';
-import { rehberOturumuSifirla } from './components/rehberKapali';
 import { Buton } from './components/ui';
 import { Demirhane } from './screens/Demirhane';
 import { Generaller } from './screens/Generaller';
@@ -80,6 +79,34 @@ export function App() {
   // kullanılıyor. Hook, erken dönüşlerden ÖNCE çağrılmak zorunda.
   const omurgaAdimi = useOmurgaAdimi(data?.lord, data?.queues ?? []);
 
+  /**
+   * Rehber turu bitti: ilk bölge alındı, damga vurulsun.
+   *
+   * Rehberin kapatma düğmesi yok (oyuncu "okusa da okumasa da yaptırmalı"
+   * dedi), o yüzden damgayı OYUN vuruyor: döngü kapandığı an.
+   *
+   * Görünürlük ölçütü tek başına "bölgesi yok" olsaydı damgaya gerek
+   * kalmazdı — ama o zaman bölgelerini savaşta kaybetmiş KIDEMLİ bir lord
+   * kendini yeniden zorunlu turun içinde bulurdu. Damga bir kez konuyor,
+   * uç da `updateMany ... rehberBittiAt: null` ile korunuyor.
+   */
+  const rehberBitir = useMutation({
+    mutationFn: api.rehberBitti,
+    onSuccess: () => void qc.invalidateQueries({ queryKey: ['me'] }),
+  });
+  const rehberDamgalandi = useRef(false);
+  const rehberTuruBitti = Boolean(
+    data?.lord && data.lord.regionCount > 0 && !data.lord.rehberGorundu,
+  );
+  useEffect(() => {
+    if (!rehberTuruBitti || rehberDamgalandi.current) return;
+    // Ref, /me tazelenene kadar geçen sürede ikinci bir isteği engelliyor.
+    rehberDamgalandi.current = true;
+    // Bağımlılık yalnız koşul: `rehberBitir` her çizimde yeni bir nesne,
+    // listeye koymak etkiyi sürekli yeniden kurardı.
+    rehberBitir.mutate();
+  }, [rehberTuruBitti]);
+
   // İlk yanıt gelmeden önceki denemeler: sunucu muhtemelen uyanıyor.
   const sunucuyaUlasilamiyor = failureCount > 0 && !data;
 
@@ -88,11 +115,9 @@ export function App() {
   function cikis() {
     setToken(null);
     qc.clear();
-    // Oturum bayrağı modül düzeyinde: sıfırlanmazsa aynı sekmede açılan
-    // BİR SONRAKİ hesap da rehbersiz açılırdı. Hatanın tarayıcı deposundaki
-    // hâli tam olarak buydu, aynısını bellekte tekrarlamayalım.
-    rehberOturumuSifirla();
     setOgreticiKapandi(false);
+    // Yeni lord kendi damgasını kendi hak etsin.
+    rehberDamgalandi.current = false;
     setGirisli(false);
   }
 
