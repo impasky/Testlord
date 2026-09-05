@@ -14,7 +14,7 @@
  */
 import { chromium } from 'playwright';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
-import { EKRANLAR, ekrana } from './lib/gezin.mjs';
+import { EKRANLAR, ekrana, rehberiSustur } from './lib/gezin.mjs';
 
 import { kayitOl } from './lib/kayit.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
@@ -75,6 +75,7 @@ const ctx = await browser.newContext({
   isMobile: true,
   hasTouch: true,
 });
+await rehberiSustur(ctx);
 const page = await ctx.newPage();
 const konsol = [];
 page.on('console', (m) => {

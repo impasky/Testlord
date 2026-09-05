@@ -241,6 +241,10 @@ function BirimKarti({
         onClick={() => onEgit(adet)}
         disabled={bekliyor || engel !== null}
         tam
+        /* Işık YALNIZ omurganın istediği birimin düğmesini arıyor:
+           beş kartın beşi de imzalı olsaydı ışık listedeki ilkini
+           seçerdi ve oyuncuya yanlış askeri eğittirirdi. */
+        isaret={onerilenAdet !== null ? 'kisla-egit' : undefined}
       >
         {bekliyor ? 'Gönderiliyor…' : `${adet} ${unitName(tip)} eğit`}
       </Buton>

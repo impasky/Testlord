@@ -50,7 +50,14 @@ export function DiyarTanitimi({ lord, queues }: { lord: LordState; queues: Queue
 
   const dunya = useQuery({ queryKey: ['dunya'], queryFn: api.dunya, enabled: gerekli && !kapali });
 
-  if (!gerekli || kapali || !dunya.data) return null;
+  if (!gerekli || kapali) return null;
+  /*
+   * Kart, dünya sayıları gelene kadar HİÇ çizilmiyordu ve yaklaşık 200 ms
+   * sonra yoktan var olup altındaki her şeyi aşağı itiyordu — ilk yükleme
+   * kaymasının (CLS) en büyük tek kalemi buydu. Yerini şimdiden tutuyoruz;
+   * yükseklik gerçek işaretlemeden çıkıyor, elle yazılmıyor.
+   */
+  if (!dunya.data) return <TanitimIskeleti />;
   const d = dunya.data;
 
   function kapat() {
@@ -103,6 +110,46 @@ export function DiyarTanitimi({ lord, queues }: { lord: LordState; queues: Queue
         <IkonTaht boyut={13} />
         Taht Kalesi haritada altın çerçeveyle işaretli.
       </p>
+    </Kart>
+  );
+}
+
+/**
+ * Tanıtım kartının yer tutucusu: aynı kart, aynı başlık, aynı üç satır.
+ * Metinler soluk bloklarla temsil ediliyor, ölçüyü tarayıcı hesaplıyor.
+ */
+function TanitimIskeleti() {
+  return (
+    <Kart className="p-4" vurgu="var(--color-altin)">
+      <div
+        aria-busy="true"
+        aria-label="Yükleniyor"
+        className="motion-safe:animate-pulse"
+      >
+        <div className="mb-2 flex items-start justify-between gap-2">
+          <h2 className="baslik text-[15px] text-transparent">
+            <span className="oyuk rounded">Diyar</span>
+          </h2>
+          <span className="baslik shrink-0 text-[11px] text-transparent">
+            <span className="oyuk rounded">ANLADIM</span>
+          </span>
+        </div>
+        <ol className="space-y-2.5 text-[13px] leading-snug">
+          {['1', '2', '3'].map((n) => (
+            <li key={n} className="flex items-center gap-2.5">
+              <Sira>{n}</Sira>
+              <span className="flex flex-wrap items-center gap-1.5">
+                <Hap>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Hap>
+                <Hap>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Hap>
+              </span>
+            </li>
+          ))}
+        </ol>
+        <p className="mt-3 flex items-center gap-1.5 text-[11px] text-transparent">
+          <IkonTaht boyut={13} />
+          <span className="oyuk rounded">Taht Kalesi haritada işaretli.</span>
+        </p>
+      </div>
     </Kart>
   );
 }

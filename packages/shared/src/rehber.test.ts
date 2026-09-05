@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { REHBER, rehberGorunsunMu, rehberSozleri, rehberSozu } from './rehber.js';
+import {
+  REHBER,
+  REHBER_ISIKLARI,
+  rehberGorunsunMu,
+  rehberIsigi,
+  rehberSozleri,
+  rehberSozu,
+} from './rehber.js';
 import { ilkEgitimMi, egitimSuresiSn } from './march.js';
 import { B } from './balance.js';
 
@@ -100,5 +107,67 @@ describe('ilk eğitim kısayolu', () => {
   it('kısayol sıfır değil — kuyruk kavramı yine öğreniliyor', () => {
     expect(B.ilk_egitim.saniye).toBeGreaterThan(0);
     expect(B.ilk_egitim.saniye).toBeLessThanOrEqual(15);
+  });
+});
+
+describe('rehber ışığı', () => {
+  it('yalnız basılacak düğmesi olan adımlarda yanıyor', () => {
+    expect(rehberIsigi('ordu-kur').length).toBeGreaterThan(0);
+    expect(rehberIsigi('saldir').length).toBeGreaterThan(0);
+  });
+
+  /**
+   * Beklerken ekranı karartmak öğretmek değil hapsetmektir: "askerlerin
+   * eğitiliyor" adımında basılacak bir düğme yok, oyuncu o sürede
+   * gezinebilmeli.
+   */
+  it('bekleme adımlarında sönük', () => {
+    expect(rehberIsigi('egitim-bekle')).toEqual([]);
+    expect(rehberIsigi('ordu-yolda')).toEqual([]);
+    expect(rehberIsigi('yarali')).toEqual([]);
+  });
+
+  it('bilinmeyen adımda ve adım yokken sönük', () => {
+    expect(rehberIsigi('boyle-bir-adim-yok')).toEqual([]);
+    expect(rehberIsigi(null)).toEqual([]);
+    expect(rehberIsigi(undefined)).toEqual([]);
+  });
+
+  it('ışığın yandığı her adım gerçek bir omurga adımı', () => {
+    const adimlar = new Set(rehberSozleri().map((s) => s.adim));
+    for (const a of Object.keys(REHBER_ISIKLARI)) expect(adimlar.has(a)).toBe(true);
+  });
+
+  /**
+   * ZİNCİR KOPMASIN. Oyuncu ışık yanarken alâkasız bir ekranda olabilir
+   * (ör. "saldır" adımındayken Demirhane'de). Orada listedeki hiçbir işaret
+   * bulunmazsa perde kalkar ve "yaptıran öğretici" yine anlatan öğreticiye
+   * döner. Son çare her zaman Malikâne sekmesi: o her ekranda duruyor ve
+   * omurga düğmesinin bulunduğu tek yere götürüyor.
+   */
+  it('her zincir Malikâne sekmesiyle bitiyor', () => {
+    for (const liste of Object.values(REHBER_ISIKLARI)) {
+      expect(liste[liste.length - 1]).toBe('nav-malikane');
+    }
+  });
+
+  it('bir zincirde aynı işaret iki kez geçmiyor', () => {
+    for (const liste of Object.values(REHBER_ISIKLARI)) {
+      expect(new Set(liste).size).toBe(liste.length);
+    }
+  });
+
+  /**
+   * Sıra ekranın derininden yüzeyine doğru olmalı: en spesifik düğme
+   * (Saldır) başta, en genel çıkış (Malikâne sekmesi) sonda. Ters sırada
+   * ışık oyuncuyu zaten üstünde durduğu düğmeden alıp sekmeye yollardı.
+   */
+  it('saldırı zinciri seçimden düğmeye doğru sıralı', () => {
+    expect(rehberIsigi('saldir')).toEqual([
+      'harita-saldir',
+      'harita-hepsi',
+      'omurga-dugme',
+      'nav-malikane',
+    ]);
   });
 });

@@ -494,6 +494,7 @@ export function Buton({
   tam,
   type = 'button',
   className = '',
+  isaret,
 }: {
   children: ReactNode;
   onClick?: () => void;
@@ -504,6 +505,14 @@ export function Buton({
   tam?: boolean;
   type?: 'button' | 'submit';
   className?: string;
+  /**
+   * Rehber ışığının arayacağı işaret (`packages/shared/src/rehber.ts`).
+   *
+   * Sınıf adı ya da metin üzerinden hedef bulmak yerine açık bir imza:
+   * ikisi de görünüşün parçası ve ilk üslup değişikliğinde sessizce
+   * kayardı — düğme yerinde dururken ışık başka yeri aydınlatırdı.
+   */
+  isaret?: string;
 }) {
   // Referansta eylem düğmeleri ekranın en büyük öğesi: "şimdi neye
   // basacağım" sorusu boyutla cevaplanıyor. Düğmeler büyütüldü ve
@@ -519,6 +528,7 @@ export function Buton({
       type={type}
       onClick={onClick}
       disabled={disabled}
+      data-rehber={isaret}
       className={`bas baslik dugme-3d border-2 disabled:pointer-events-none disabled:opacity-40 disabled:shadow-none ${BUTON_SINIFI[tur]} ${boySinifi} ${
         tam ? 'w-full' : ''
       } ${className}`}

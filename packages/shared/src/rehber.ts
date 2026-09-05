@@ -120,3 +120,41 @@ export function rehberSozu(adim: string | null | undefined): string | null {
 export function rehberGorunsunMu(bolgeSayisi: number, elleKapatildi: boolean): boolean {
   return !elleKapatildi && bolgeSayisi === 0;
 }
+
+/* ---------------- Rehber ışığı: zorunlu tek düğme ---------------- */
+
+/**
+ * Kâhya konuşuyordu ama oyuncu yine de "şimdi neye basacağım"ı arıyordu:
+ *
+ *   "yaptıran öğretici olmamış... oyuncu girdiğinde zorunlu olarak
+ *    tıklamasını istemeliyiz, sadece o buton aktif olmalı, diğer tüm ekran
+ *    üzerinde transparan siyah bir panel olmalı."
+ *
+ * Bu tablo o panelin nereye delik açacağını söyler: omurga adımı → sırayla
+ * denenecek işaret adları. Arayüzdeki düğmeler `data-rehber="<ad>"` ile
+ * imzalanıyor; ışık listeyi baştan tarar ve BULUNAN VE BASILABİLİR ilk
+ * düğmeyi açıkta bırakır.
+ *
+ * Sıra öncelik değil KONUM: aynı anda ikisi birden ekranda olamaz. Liste
+ * ekranın en derinindeki düğmeden başlar ve geriye doğru gider —
+ * "saldır" yoksa "hepsi", o da yoksa Malikâne'deki omurga düğmesi, o da
+ * yoksa Malikâne sekmesi. Böylece oyuncu hangi ekranda olursa olsun ışık
+ * onu adım adım aynı düğmeye götürür ve zincir hiçbir yerde kopmaz.
+ *
+ * ── Neden yalnız iki adım ─────────────────────────────────────────────
+ *
+ * Işık sadece "ordunu kur" ve "saldır" adımlarında yanar; ilk döngünün
+ * basılacak düğmesi olan iki adımı bunlar. "Askerlerin eğitiliyor" ya da
+ * "ordun yolda" adımlarında yapılacak bir şey yok — orada ekranı karartmak
+ * öğretmek değil, oyuncuyu hapsetmek olurdu.
+ */
+export const REHBER_ISIKLARI: Record<string, string[]> = {
+  'ordu-kur': ['kisla-egit', 'omurga-dugme', 'nav-malikane'],
+  saldir: ['harita-saldir', 'harita-hepsi', 'omurga-dugme', 'nav-malikane'],
+};
+
+/** Bir omurga adımında ışığın arayacağı işaretler; yoksa boş dizi. */
+export function rehberIsigi(adim: string | null | undefined): string[] {
+  if (!adim) return [];
+  return REHBER_ISIKLARI[adim] ?? [];
+}

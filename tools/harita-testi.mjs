@@ -12,6 +12,7 @@
  *
  * API ve web ayakta olmalı. node tools/harita-testi.mjs
  */
+import { rehberiSustur } from './lib/gezin.mjs';
 import { chromium } from 'playwright';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
 import { kayitOl } from './lib/kayit.mjs';
@@ -147,6 +148,7 @@ const tarayici = await chromium.launch({
   args: ['--no-sandbox'],
 });
 const sayfa = await tarayici.newPage({ viewport: { width: 390, height: 844 } });
+await rehberiSustur(sayfa);
 const konsol = [];
 sayfa.on('console', (m) => m.type() === 'error' && konsol.push(m.text()));
 

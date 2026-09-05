@@ -84,6 +84,7 @@ export function useOmurgaAdimi(
   if (!lord) return null;
   return siradakiAdim({
     lord,
+    oneriBekliyor: harita.isPending,
     oneri: harita.data?.oneri ?? null,
     egitimde: queues.filter((q) => q.kind === 'train'),
     uretimde: queues.filter((q) => q.kind === 'craft'),
@@ -120,6 +121,7 @@ export function Omurga({
 
   const adim = siradakiAdim({
     lord,
+    oneriBekliyor: harita.isPending,
     oneri,
     egitimde,
     uretimde,
@@ -129,7 +131,27 @@ export function Omurga({
     onGit,
     onHedefeGit,
   });
-  if (!adim) return null;
+
+  /*
+   * Sorgular gelmeden HİÇBİR ŞEY çizmemek, kartı yaklaşık 250 ms sonra
+   * yoktan var ediyordu ve altındaki her şeyi birden aşağı itiyordu:
+   * ölçülen ilk yükleme kayması bu tek kartın eseriydi (CLS 0,10 — eşik
+   * 0,10). Oyuncunun "görsel kaymalar var" dediği şeyin ta kendisi.
+   *
+   * Yerini ŞİMDİDEN tutuyoruz. Yükseklik elle yazılmıyor: iskelet gerçek
+   * kartın kendi işaretlemesini kullanıyor, ölçüyü tarayıcı hesaplıyor.
+   * (Daha önce `GorevOzeti`'ne tahmini bir `h-[52px]` yazmıştım ve yazı
+   * boyu değişince kayma 0,014'ten 0,361'e fırlamıştı — aynı hatayı iki
+   * kez yapmayalım.)
+   */
+  if (!adim) {
+    const bekliyor = harita.isPending || yuruyusler.isPending || generaller.isPending;
+
+    // Sorgular OTURDU ve yine de adım yoksa gerçekten gösterilecek bir şey
+    // yok demektir; orada boş bir iskelet asılı bırakmak yalan olurdu.
+    if (!bekliyor) return null;
+    return <OmurgaIskeleti />;
+  }
 
   return (
     <Kart className="p-4" vurgu="var(--color-altin)">
@@ -147,7 +169,7 @@ export function Omurga({
       )}
 
       {adim.dugme && adim.git && (
-        <Buton className="mt-3" boy="buyuk" tam onClick={adim.git}>
+        <Buton className="mt-3" boy="buyuk" tam onClick={adim.git} isaret="omurga-dugme">
           {adim.dugme}
         </Buton>
       )}
@@ -159,8 +181,59 @@ export function Omurga({
   );
 }
 
+/**
+ * Omurga kartının yer tutucusu.
+ *
+ * Gerçek kartla AYNI iskeleti kuruyor — aynı `Kart`, aynı `p-4`, aynı
+ * başlık, aynı `boy="buyuk"` düğme — yalnız metinlerin yerinde soluk
+ * bloklar var. Böylece yükseklik tahmin edilmiyor, gerçek bileşenlerin
+ * kendi ölçüsünden çıkıyor ve içerik geldiğinde sayfa zıplamıyor.
+ */
+function OmurgaIskeleti() {
+  return (
+    <Kart className="p-4" vurgu="var(--color-altin)">
+      <h3 className="baslik mb-1.5 text-[11px] text-sonuk">Şimdi ne yapmalısın</h3>
+      <div aria-busy="true" aria-label="Yükleniyor" className="motion-safe:animate-pulse">
+        {/* Başlık satırı: gerçek kartta text-[19px] leading-tight. */}
+        <p className="baslik text-[19px] leading-tight text-transparent">
+          <span className="oyuk rounded">Ordunu kur</span>
+        </p>
+        {/* Cümle satırı: text-[13px] leading-snug, TEK satır. Yer tutucu
+            metin uzun tutulunca ikinci satıra taşıyor ve iskelet gerçek
+            karttan 18 piksel yüksek kalıyordu — kayma tam o kadardı. */}
+        <p className="mt-1.5 text-[13px] leading-snug text-transparent">
+          <span className="oyuk rounded">Ordun henüz yetmiyor.</span>
+        </p>
+        {/* Rozet sırası ve birincil düğme: yüksekliği veren asıl parçalar. */}
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          <Hap>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Hap>
+          <Hap>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Hap>
+        </div>
+        <Buton className="mt-3" boy="buyuk" tam disabled>
+          &nbsp;
+        </Buton>
+        <p className="mt-2.5 text-[11px] leading-snug text-transparent">
+          <span className="oyuk rounded">sonra: sıradaki adım</span>
+        </p>
+      </div>
+    </Kart>
+  );
+}
+
 function siradakiAdim(g: {
   lord: LordState;
+  /**
+   * Hedef önerisi HENÜZ GELMEDİ mi?
+   *
+   * Bunu ayırt etmek şart: "öneri yok" ile "öneri daha gelmedi" aynı şey
+   * değil. Ayırt edilmediğinde yepyeni lord için zincir 5. ve 6. adımları
+   * atlayıp 7'ye düşüyordu ve oyuncu ~80 ms boyunca YANLIŞ adımı
+   * okuyordu: "Lorduna ekipman kuşan" yazıyor, harita cevabı gelince
+   * "Ordunu kur"a dönüyordu. Görünen sonucu kartın boy değiştirmesi
+   * (kayma) ama asıl sorun oyunun bir an yanlış şeyi söylemesiydi —
+   * üstelik artık rehber ışığı da o düğmeyi aydınlatıyor olurdu.
+   */
+  oneriBekliyor: boolean;
   oneri: HedefOnerisiDto | null;
   egitimde: QueueItem[];
   uretimde: QueueItem[];
@@ -171,6 +244,11 @@ function siradakiAdim(g: {
   onHedefeGit: (regionId: number) => void;
 }): Adim | null {
   const { lord, oneri, egitimde, uretimde, generalVar, yarali, yoldaki } = g;
+
+  // 0. Açlık ve yara oyun durumundan doğrudan okunuyor; onlar için harita
+  //    cevabını beklemeye gerek yok. Gerisi hedefe bağlı, o yüzden öneri
+  //    gelmeden karar verilmiyor.
+  if (g.oneriBekliyor && !lord.starving && !yarali) return null;
 
   // 1. Aç ordu her şeyin önünde: saatte %5 firar veriyor ve beklemek
   //    durumu kötüleştiriyor.

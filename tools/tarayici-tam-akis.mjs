@@ -8,7 +8,7 @@
  */
 import { chromium, devices } from 'playwright';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
-import { ekrana } from './lib/gezin.mjs';
+import { ekrana, rehberiSustur } from './lib/gezin.mjs';
 
 const WEB = process.env.WEB_URL ?? 'http://127.0.0.1:5173';
 const API = process.env.API_URL ?? 'http://localhost:3000';
@@ -39,6 +39,7 @@ async function tiklaVeBekle(page, secici, yolParcasi) {
 
 const browser = await chromium.launch({ executablePath: CHROME, args: ['--no-sandbox'] });
 const ctx = await browser.newContext({ ...devices['iPhone 13'] });
+await rehberiSustur(ctx);
 const page = await ctx.newPage();
 
 const konsolHatalari = [];

@@ -59,3 +59,33 @@ export async function ekrana(page, ad, bekle = 1200) {
   }
   await page.waitForTimeout(bekle);
 }
+
+/**
+ * Rehber ışığını bu tarayıcı bağlamında kapatır.
+ *
+ * Işık ilk oturumda ekranı karartıp TEK düğmeyi açıkta bırakıyor
+ * (`RehberIsigi.tsx`) — yani bir aracın "menüye bas, şu sekmeye geç"
+ * gezinmesini bilerek engelliyor. Engel doğru; engellenen araçlar yanlış
+ * oyuncuyu canlandırıyordu: ekranları gezen bu testler ilk oturumdaki
+ * oyuncuyu değil, oyunu zaten öğrenmiş oyuncuyu ölçüyor ve o oyuncu için
+ * rehber çoktan kapalı.
+ *
+ * Kararı ÜRÜNÜN kendi anahtarıyla yazıyoruz (oyuncunun "yeter, anladım"
+ * dediğinde yazdığı anahtar): testi geçirmek için ürüne kapı açmıyoruz,
+ * ürünün zaten olan kapısından giriyoruz.
+ *
+ * `addInitScript` bağlam düzeyinde: her yüklemede ve her yenilemede
+ * yeniden çalışıyor, jeton değiştirilip sayfa yenilendiğinde de duruyor.
+ *
+ * Rehberin KENDİSİNİ ölçen araçlar (rehber-testi, rehber-isigi-testi)
+ * bunu ÇAĞIRMAZ — orada ışığın yanması testin konusu.
+ */
+export async function rehberiSustur(ctx) {
+  await ctx.addInitScript(() => {
+    try {
+      localStorage.setItem('lordlar_rehber_kapali', '1');
+    } catch {
+      /* depo kapalıysa zaten rehber de görünmeyecek */
+    }
+  });
+}

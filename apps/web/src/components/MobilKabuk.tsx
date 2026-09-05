@@ -317,6 +317,11 @@ export function MobilKabuk({
                     etkin ? 'text-altin' : 'text-sonuk'
                   }`}
                   aria-current={etkin ? 'page' : undefined}
+                  /* Rehber ışığının son çare hedefi. Oyuncu ilk döngüde
+                     alâkasız bir ekrandaysa ışık onu Malikâne'ye — yani
+                     omurga düğmesinin durduğu tek yere — çağırıyor;
+                     zincirin hiçbir ekranda kopmamasını bu sağlıyor. */
+                  data-rehber={key === 'malikane' ? 'nav-malikane' : undefined}
                 >
                   <span className="relative">
                     <Ikon boyut={22} />

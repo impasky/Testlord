@@ -4,6 +4,7 @@ import { ApiError, api, getToken, setToken, type MeResponse } from './api/client
 import { BaglantiDurumu } from './components/BaglantiDurumu';
 import { MobilKabuk, type Sekme } from './components/MobilKabuk';
 import { Ogretici } from './components/Ogretici';
+import { RehberIsigi } from './components/RehberIsigi';
 import { Buton } from './components/ui';
 import { Demirhane } from './screens/Demirhane';
 import { Generaller } from './screens/Generaller';
@@ -167,6 +168,16 @@ export function App() {
           tazele();
         }}
         onGit={setSekme}
+      />
+      {/* Rehber ışığı ekranın TAMAMINI karartıp tek düğmeyi açıkta
+          bırakıyor, o yüzden burada duruyor: Malikâne'nin içinde olsaydı
+          Kışla ve Harita'da sönerdi, oysa zincirin asıl düğmeleri orada.
+          Sekiz sayfalık öğretici açıkken yanmıyor — iki tam ekran perde
+          üst üste binmesin. */}
+      <RehberIsigi
+        adim={omurgaAdimi?.anahtar ?? null}
+        bolgeSayisi={lord.regionCount}
+        acik={lord.ogreticiGorundu || ogreticiKapandi}
       />
       {sekme === 'malikane' && (
         <Malikane

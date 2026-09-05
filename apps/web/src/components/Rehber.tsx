@@ -13,36 +13,18 @@
  * Kapatma kararı oyuncunun; zorunlu bir tur değil.
  */
 import { REHBER, rehberGorunsunMu, rehberSozu } from '@lordlar/shared';
-import { useState } from 'react';
 import { Gorsel } from './Gorsel';
 import { IkonNavGeneraller } from './Ikonlar';
+// Kapatma kararı ortak modülde: "yeter, anladım" hem bu kartı hem ekranı
+// karartan rehber ışığını birden susturmalı (rehberKapali.ts başına bak).
+import { rehberiKapat, useRehberKapali } from './rehberKapali';
 import { Kart } from './ui';
 
-const KAPALI_ANAHTARI = 'lordlar_rehber_kapali';
-
-function kapaliMi(): boolean {
-  try {
-    return localStorage.getItem(KAPALI_ANAHTARI) === '1';
-  } catch {
-    // Gizli sekmede depo kapalı olabilir; rehber görünsün, oyun çalışsın.
-    return false;
-  }
-}
-
 export function Rehber({ adim, bolgeSayisi }: { adim: string | null; bolgeSayisi: number }) {
-  const [kapali, setKapali] = useState(kapaliMi);
+  const kapali = useRehberKapali();
 
   const soz = rehberSozu(adim);
   if (!soz || !rehberGorunsunMu(bolgeSayisi, kapali)) return null;
-
-  const kapat = () => {
-    try {
-      localStorage.setItem(KAPALI_ANAHTARI, '1');
-    } catch {
-      /* depo kapalıysa yalnız bu oturumda kapanır */
-    }
-    setKapali(true);
-  };
 
   return (
     <Kart className="p-3" vurgu="var(--color-mavi)">
@@ -67,7 +49,7 @@ export function Rehber({ adim, bolgeSayisi }: { adim: string | null; bolgeSayisi
             <span className="baslik text-[11px] text-mavi">{REHBER.ad}</span>
             <button
               type="button"
-              onClick={kapat}
+              onClick={rehberiKapat}
               className="bas shrink-0 text-[11px] text-sonuk underline"
             >
               yeter, anladım

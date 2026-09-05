@@ -9,6 +9,7 @@
  * API ve web ayakta olmalı. node tools/ogretici-testi.mjs
  */
 import { chromium } from 'playwright';
+import { rehberiSustur } from './lib/gezin.mjs';
 
 const WEB = process.env.WEB_URL ?? 'http://localhost:5173';
 // Varsayılan çıktı klasörü: ekran görüntüleri deponun köküne düşmesin.
@@ -29,6 +30,7 @@ const tarayici = await chromium.launch({
   args: ['--no-sandbox'],
 });
 const sayfa = await tarayici.newPage({ viewport: { width: 390, height: 844 } });
+await rehberiSustur(sayfa);
 const konsolHatalari = [];
 sayfa.on('console', (m) => m.type() === 'error' && konsolHatalari.push(m.text()));
 

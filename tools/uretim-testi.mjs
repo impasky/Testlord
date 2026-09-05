@@ -11,6 +11,7 @@
  *     node apps/api/dist/index.js
  *   node tools/uretim-testi.mjs
  */
+import { rehberiSustur } from './lib/gezin.mjs';
 import { chromium, devices } from 'playwright';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
 const URL = process.env.URETIM_URL ?? 'http://localhost:3200';
@@ -22,6 +23,7 @@ let hata=0; const k=(a,c,d='')=>{console.log(`  ${c?'[GEÇTİ]':'[KALDI]'} ${a}$
 
 const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium-1194/chrome-linux/chrome',args:['--no-sandbox']});
 const ctx=await b.newContext({...devices['iPhone 13']});
+await rehberiSustur(ctx);
 const page=await ctx.newPage();
 const hatalar=[];
 page.on('console',m=>{if(m.type()==='error')hatalar.push(m.text());});

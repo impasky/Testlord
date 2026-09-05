@@ -6,6 +6,7 @@
  *
  * Çıkış kodu 0 = akış çalışıyor ve konsolda hata yok.
  */
+import { rehberiSustur } from './lib/gezin.mjs';
 import { chromium } from 'playwright';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
 
@@ -19,6 +20,7 @@ const CHROME =
 
 const browser = await chromium.launch({ executablePath: CHROME, args: ['--no-sandbox'] });
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+await rehberiSustur(page);
 
 const hatalar = [];
 page.on('console', (m) => {

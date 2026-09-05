@@ -149,6 +149,7 @@ function OrduSecici({
   onDegis,
   etiket,
   onKislaGit,
+  hepsiIsareti,
 }: {
   mevcut: Army;
   secim: Army;
@@ -156,6 +157,12 @@ function OrduSecici({
   etiket: string;
   /** Ordu boşken çıkış yolu. Verilmezse boş hâl eylemsiz kalır. */
   onKislaGit?: () => void;
+  /**
+   * "Hepsi" düğmesine konacak rehber işareti. Yalnız saldırı seçicisine
+   * veriliyor: garnizon seçicisi de imzalı olsaydı ışık ikisinden hangisini
+   * bulacağını bilemezdi.
+   */
+  hepsiIsareti?: string;
 }) {
   const gorunen = UNIT_TYPES.filter((t) => (mevcut[t] ?? 0) > 0 || (secim[t] ?? 0) > 0);
   return (
@@ -165,6 +172,7 @@ function OrduSecici({
         {gorunen.length > 0 && (
           <button
             onClick={() => onDegis(Object.fromEntries(gorunen.map((t) => [t, mevcut[t] ?? 0])))}
+            data-rehber={hepsiIsareti}
             className="baslik -my-2 -mr-2 px-2 py-2 text-[11px] text-altin"
           >
             Hepsi
@@ -1083,6 +1091,7 @@ export function Harita({
                     }}
                     etiket="Saldırı ordusu"
                     onKislaGit={() => onGit('kisla')}
+                    hepsiIsareti="harita-hepsi"
                   />
 
                   {!secimBos && (
@@ -1109,6 +1118,7 @@ export function Harita({
                     tam
                     onClick={saldir}
                     disabled={saldiriEngeli !== null}
+                    isaret="harita-saldir"
                   >
                     Saldır
                   </Buton>

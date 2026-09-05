@@ -342,3 +342,13 @@ svg g[role='button']:focus-visible > path:first-of-type {
     animation: none;
   }
 }
+
+/*
+ * Rehber ışığının halkası: oyuncu perdeye bastığında bir kez nabız atar.
+ * Perde tıklamayı yutuyor; hiçbir tepki vermeseydi "oyun dondu" diye
+ * okunurdu. Sarsıntı değil nabız — "yanlış yaptın" değil, "buraya bak".
+ */
+@keyframes nabiz {
+  0%, 100% { transform: scale(1); }
+  45% { transform: scale(1.045); }
+}

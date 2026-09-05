@@ -7,6 +7,7 @@
  *
  * API ve arayüz ayakta olmalı. node tools/savas-raporu-testi.mjs
  */
+import { rehberiSustur } from './lib/gezin.mjs';
 import { chromium, devices } from 'playwright';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
 
@@ -28,6 +29,7 @@ console.log('Lordlar Çağı — savaş raporu testi (iPhone 13)\n');
 
 const browser = await chromium.launch({ executablePath: CHROME, args: ['--no-sandbox'] });
 const page = await (await browser.newContext({ ...devices['iPhone 13'] })).newPage();
+await rehberiSustur(page);
 
 const konsol = [];
 page.on('console', (m) => {
