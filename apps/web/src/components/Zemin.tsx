@@ -32,7 +32,15 @@ const BOY = 150;
  * Listeyle klasörün ayrışmasını `tools/gorsel-denetim.mjs` yakalıyor:
  * dosya konur da liste güncellenmezse denetim kalıyor.
  */
-const ZEMINI_OLAN = new Set(['malikane', 'kisla', 'demirhane', 'generaller', 'siralama']);
+const ZEMINI_OLAN = new Set([
+  'malikane',
+  'kisla',
+  'demirhane',
+  'generaller',
+  'siralama',
+  'gorevler',
+  'olaylar',
+]);
 
 export function Zemin({
   ad,

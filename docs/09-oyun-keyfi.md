@@ -368,11 +368,19 @@ sayılı ve sıralı olduğu için tam tarama mümkündü ve hatayı ancak o gö
 
 ### 4.2 Sanat gelince
 
+**`GORSEL-ISTEMLERI.md`'deki 79 görselin tamamı kondu** (`gorsel-uret.py
+--durum` boş dönüyor): 8 ekran zemini, 30 ekipman, 12 general, 8 bölge
+aşaması, 6 harita karosu, 5 birim, 5 bölge tabanı, 5 lord.
+
+Aşağıdaki satırlar bu listede OLMAYAN işler — biri mevcut görselleri
+yenilemek, diğerleri hiç açılmamış kategoriler. Yani "eksik görsel" değil,
+"bir sonraki sanat turu".
+
 | # | İş | Gereken |
 |---|---|---|
 | G1 | ~~Bölge gelişim aşamaları~~ **tamamlandı** | 8/8 kondu. Sv1-2 taban, Sv3-4 `_3`, Sv5 `_5`; üç seviyede de tarayıcıda doğrulandı |
 | G2 | Lord figürü (geri gelirse) | 5 görsel var, sahne kodu hazır, oyuncu beğenmedi |
-| G3 | Birim illüstrasyonlarını yenile | 5 görsel; eskiler diğer setten farklı üslupta |
+| G3 | Birim illüstrasyonlarını yenile | 5 görsel VAR ama diğer setten farklı üslupta; değiştirme işi, eksik değil |
 | G4 | Savaş sahnesi | Rapor ekranına iki ordunun karşılaştığı tek kare |
 | G5 | Sancak arması (yatay kazanç) | 10–20 arma parçası; oyuncunun kendi sancağı |
 | G6 | Bölge tipi çeşitliliği | Aynı tipin 2–3 varyantı; harita tekrar etmesin |
