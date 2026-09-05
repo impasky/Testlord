@@ -18,7 +18,7 @@
  * öğreticinin sessizce yalan söylemeye başlamaması.
  */
 import { useMutation } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ogreticiSayfalari, type OgreticiSayfa } from '@lordlar/shared';
 import { api, type LordState } from '../api/client';
 import type { Sekme } from './MobilKabuk';
@@ -72,6 +72,25 @@ export function Ogretici({
   // ağ hatası yüzünden oyuncuyu tanıtım ekranında tutmak, çözdüğünden
   // fazla sorun çıkarır (bir sonraki girişte tekrar açılır, o kadar).
   const bitirMut = useMutation({ mutationFn: api.ogreticiBitti });
+
+  /**
+   * Sayfa değişince kaydırmayı TEPEYE al.
+   *
+   * React sekiz sayfa için aynı kaydırma kabını yeniden kullanıyor ve
+   * kaydırma konumu devrediyordu. Somut hâli: dördüncü sayfayı okuyup
+   * dibe indikten sonra "Devam"a basınca beşinci sayfa 62 piksel
+   * kaydırılmış açılıyordu — başlık ve simge ekranın dışında kalıyor,
+   * oyuncu metnin ortasından başlıyordu. Bir oyuncu "öğreticide hata var
+   * gibi" dedi; bu oydu.
+   *
+   * Yalnız uzun sayfada oluyordu ve sinsiliği ondan: sonraki sayfa
+   * kısaysa tarayıcı konumu kendiliğinden kırpıyor ve hata görünmüyor.
+   * Sekiz sayfanın ikisinde tetikleniyordu.
+   */
+  const kaydiriciRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    kaydiriciRef.current?.scrollTo({ top: 0 });
+  }, [i]);
 
   // Tam ekran açıkken arkadaki sayfa kaymasın: öğretici kapanınca oyuncu
   // baktığı yerde kalsın diye gövde kilitleniyor.
@@ -129,7 +148,10 @@ export function Ogretici({
       {/* ---- Orta: sayfa ----
           flex-col + mt-auto: "oraya bak" düğmesi listenin hemen altında
           asılı kalmasın, okunacak şeyin sonunda dursun. */}
-      <div className="mx-auto flex w-full max-w-lg flex-1 flex-col overflow-y-auto px-4 pb-4">
+      <div
+        ref={kaydiriciRef}
+        className="mx-auto flex w-full max-w-lg flex-1 flex-col overflow-y-auto px-4 pb-4"
+      >
         <div className="mb-4 flex items-start gap-3">
           <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-altin/15 text-altin">
             <Simge boyut={26} />
