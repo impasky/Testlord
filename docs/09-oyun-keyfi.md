@@ -370,7 +370,7 @@ sayılı ve sıralı olduğu için tam tarama mümkündü ve hatayı ancak o gö
 
 | # | İş | Gereken |
 |---|---|---|
-| G1 | Bölge gelişim aşamaları | 8 görsel (`tarla_3` … `kale_5`) — istemler hazır |
+| G1 | ~~Bölge gelişim aşamaları~~ **7/8 kondu** | Yalnız `maden_5` eksik; o gelene dek Sv5 maden taban görsele düşüyor (ikona değil) |
 | G2 | Lord figürü (geri gelirse) | 5 görsel var, sahne kodu hazır, oyuncu beğenmedi |
 | G3 | Birim illüstrasyonlarını yenile | 5 görsel; eskiler diğer setten farklı üslupta |
 | G4 | Savaş sahnesi | Rapor ekranına iki ordunun karşılaştığı tek kare |
