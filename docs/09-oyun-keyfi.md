@@ -359,11 +359,27 @@ duruyordu ama üçü ölçülebildi ve üçü de doğru çıktı.
 | T1 | "Oyun çok karanlık, parlaklığımı yükseltmek zorunda kaldım" | 414 metnin 129'u (%31) WCAG AA altında; en çok yön gösteren küçük yazılar (`sonuk` 2.97, gerek 4.5) | yapıldı |
 | T2 | "Her yerde bir şeyler yazıyor, önemli-önemsiz belli değil" | 175 metin 11px altında (141'i 9px) | yapıldı |
 | T3 | "Görevler ve generallere ulaşmak uzun sürüyor" | Çubukta 4 ekran (1 dokunuş), menüde 7 (2 dokunuş); menü sıklığa göre değil "sığmayanlar" diye dizilmişti | yapıldı |
-| T4 | "Oyunun içine giremiyorum, her şeyi üstümüze atıyor" | — | **sırada** |
+| T4 | "Oyunun içine giremiyorum, her şeyi üstümüze atıyor" | — | rehber yapıldı; kademeli açılım sırada |
 
-T4 en büyüğü ve öğreticinin TÜRÜNÜ sorguluyor: bizimki sekiz sayfalık bir
-tanıtım (oku, sonra kendin dene), oyuncunun istediği bir zincir (şimdi
+T4 en büyüğü ve öğreticinin TÜRÜNÜ sorguluyordu: bizimki sekiz sayfalık
+bir tanıtım (oku, sonra kendin dene), oyuncunun istediği bir zincir (şimdi
 şuna bas, oldu mu bak, şimdi şuna). "Anlattım" ile "yaptırdım" farkı.
+
+**Rehber (Kâhya Sinan) yapıldı.** İki parçası var:
+
+- **Ses.** Omurganın hesapladığı adımın üstüne tek cümle. Kâhya EYLEMİ
+  değil SEBEBİ söylüyor — düğmede zaten "Kışlada mızrakçı eğit" yazıyor.
+  İlk bölge alınınca susuyor; ölçüt döngünün kapanması, geçen süre değil.
+- **Garanti.** İlk eğitim 5 saniyede bitiyor (`ilk_egitim.saniye`).
+  `ilk_saldiri_dakika` ile aynı aile: yeni oyuncu bir düğmeye basıp hiçbir
+  şey olmadığını görüyor ve çıkıyordu. Sıfır değil beş, çünkü anında biten
+  kuyruk "kuyruk" diye bir şey olduğunu hiç öğretmiyor.
+
+**Rehber kendi senaryosunu TUTMUYOR** ve bu en önemli karar. Omurga zaten
+"şimdi ne yapmalısın"ı oyun durumundan türetiyor; ayrı bir senaryo yazmak
+iki doğruluk kaynağı demekti ve klasik öğretici hatasını verirdi —
+senaryo "asker eğit" derken oyuncunun zaten askeri olur. Burada öyle bir
+hâl mümkün değil: rehberin gösterdiği adım, omurganın hesapladığı adımdır.
 
 ### 4.1b Ölçerken çıkanlar
 

@@ -85,6 +85,38 @@ export function ilkSaldiriMi(
 }
 
 /**
+ * İlk eğitim kısayolu geçerli mi?
+ *
+ * `ilkSaldiriMi` ile aynı aile ve aynı gerekçe: yeni oyuncu bir düğmeye
+ * basıp hiçbir şey olmadığını görüyor ve oyunu kapatıyor. Mızrakçı 90
+ * sn/birim; 10 mızrakçı 15 dakika eder ve ilk oturumun tamamı o beklemeye
+ * gider. Bir oyuncu testi bunu aynen söyledi: "ilk kez yaptığı için hemen
+ * eğitilir, sonra hemen haritada NPC olur, oraya götürür."
+ *
+ * İKİ koşul birden gerekiyor ve ikincisi şart:
+ *  - lordun hiç tamamlanmış eğitimi olmamalı,
+ *  - lordun hiç askeri olmamalı.
+ *
+ * Tek başına "hiç eğitim yapmamış" koşulu, ordusunu savaşta kaybetmiş bir
+ * Sv40 lorda da uyardı — ona bedava ordu vermek olurdu. Askeri olmama
+ * şartı kısayolu gerçekten ilk ana bağlıyor.
+ */
+export function ilkEgitimMi(tamamlananEgitim: number, mevcutAsker: number): boolean {
+  return tamamlananEgitim === 0 && mevcutAsker === 0;
+}
+
+/**
+ * Bir eğitim kuyruğunun süresi (saniye).
+ *
+ * Süreyi çağıranın hesaplaması (`u.egitim_sn * count`) ilk hâlindeydi ve
+ * kısayol eklenince o çarpımın iki yerde yaşaması gerekirdi. Tek yer.
+ */
+export function egitimSuresiSn(birimEgitimSn: number, adet: number, ilkMi = false): number {
+  if (ilkMi) return B.ilk_egitim.saniye;
+  return birimEgitimSn * adet;
+}
+
+/**
  * Yürüyüş süresi (saniye).
  * Sadece süvari = hızlı baskın; mancınık katarsan ordu ağırlaşır.
  */

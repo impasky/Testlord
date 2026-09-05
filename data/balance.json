@@ -72,6 +72,12 @@
     "taban": 50,
     "liderlik_carpani": 8
   },
+  "ilk_egitim": {
+    "_aciklama": "Oyuncunun ILK asker egitimi bu surede biter. Sebep ilk_saldiri_dakika ile ayni aile: yeni oyuncu bir dugmeye basip HICBIR SEY olmadigini goruyor ve oyunu kapatiyor. Mizrakci 90 sn/birim; 10 mizrakci 15 dakika eder ve ilk oturumun tamami o beklemeye gider. Bir oyuncu testi bunu aynen soyledi: 'ilk kez yaptigi icin hemen egitilir, sonra hemen haritada npc olur, oraya goturur'. Ilk kez bir sey yapan oyuncu SONUCU gormeli; dongu ancak kapandiktan sonra ogretilebilir.",
+    "saniye": 5,
+    "_saniye_notu": "Sifir degil bes: aninda biten kuyruk, kuyruk diye bir sey oldugunu HIC ogretmiyor. Bes saniye hem sonucu ayni oturumda veriyor hem 'burada bir bekleme var' bilgisini birakiyor. Ikinci egitimde normal sureye donuluyor ve oyuncu farki goruyor.",
+    "_omurde_bir_kez": "Kosul: lordun hic tamamlanmis egitimi VE hic askeri olmamali. Ikisi birden gerekiyor cunku tek basina 'kuyruk sayisi 0' kosulu, ordusu savasta kirilan Sv40 bir lorda da uyar ve ona bedava ordu verirdi."
+  },
   "birimler": {
     "milis": {
       "ad": "Köylü Milis",

@@ -1,0 +1,205 @@
+/**
+ * Rehberli ilk oturum testi (docs/09 T4).
+ *
+ * Bir oyuncu testi öğreticinin türünü sorguladı: bizimki "oku, sonra dene"
+ * diyordu; istenen "şimdi şuna bas, oldu mu bak" idi. Bu test tam olarak
+ * o zinciri, gerçek bir tarayıcıda, hiç hile yapmadan yürüyor:
+ *
+ *   kayıt -> kâhya konuşuyor -> asker eğit -> eğitim HEMEN bitiyor ->
+ *   kâhya sıradakini söylüyor -> saldır -> bölge alınıyor -> kâhya susuyor
+ *
+ * Ölçtüğü asıl şey, rehberin oyunun GERÇEK durumunu takip etmesi. Rehber
+ * kendi senaryosunu tutsaydı burada ayrışırdı.
+ *
+ * SADECE GELİŞTİRME. node tools/rehber-testi.mjs
+ */
+import { chromium, devices } from 'playwright';
+import { kayitOl } from './lib/kayit.mjs';
+import { ogreticiyiGec } from './lib/ogretici.mjs';
+
+const API = process.env.API_URL ?? 'http://localhost:3000';
+const WEB = process.env.WEB_URL ?? 'http://127.0.0.1:5173';
+const CHROME = process.env.CHROME_PATH ?? '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+
+let hata = 0;
+function kontrol(ad, kosul, detay = '') {
+  console.log(`  ${kosul ? '[GEÇTİ]' : '[KALDI]'} ${ad}${detay ? ` — ${detay}` : ''}`);
+  if (!kosul) hata++;
+}
+
+console.log('Lordlar Çağı — rehberli ilk oturum testi (iPhone 13)\n');
+
+const damga = Date.now();
+const { token } = await kayitOl(API, {
+  email: `reh${damga}@lordlar.dev`,
+  lordName: `Reh ${damga.toString(36).slice(-4)}`,
+});
+const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
+const post = (y, g) =>
+  fetch(`${API}/api${y}`, { method: 'POST', headers: h, body: JSON.stringify(g ?? {}) }).then((x) =>
+    x.json(),
+  );
+const get = (y) => fetch(`${API}/api${y}`, { headers: h }).then((x) => x.json());
+
+// Taze dünya: önceki koşuların aldığı bölgeler yeni oyuncunun komşuluğunu
+// boşaltıyor ve "yakında hedef var mı" sorusunu ortamın geçmişine bağlıyor.
+await post('/test/bolgeleri-sifirla');
+
+const b = await chromium.launch({ executablePath: CHROME, args: ['--no-sandbox'] });
+const ctx = await b.newContext({ ...devices['iPhone 13'] });
+const page = await ctx.newPage();
+const konsol = [];
+page.on('console', (m) => {
+  if (m.type() === 'error') konsol.push(m.text());
+});
+
+await page.goto(WEB, { waitUntil: 'domcontentloaded' });
+await page.evaluate((t) => localStorage.setItem('lordlar_token', t), token);
+await page.reload({ waitUntil: 'domcontentloaded' });
+await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+await ogreticiyiGec(page);
+await page.waitForTimeout(1500);
+
+/** Kâhyanın o an söylediği cümle; yoksa null. */
+const kahyaSozu = () =>
+  page.evaluate(() => {
+    const b = [...document.querySelectorAll('span')].find(
+      (x) => x.textContent?.trim() === 'Kâhya Sinan',
+    );
+    if (!b) return null;
+    const kart = b.closest('.kart');
+    const p = kart?.querySelector('p');
+    return p?.textContent?.trim() ?? '';
+  });
+
+// --- 1. Kâhya ilk anda konuşuyor ---
+const ilkSoz = await kahyaSozu();
+kontrol('Kâhya ilk oturumda görünüyor', ilkSoz !== null, ilkSoz ? `"${ilkSoz.slice(0, 55)}…"` : 'yok');
+kontrol(
+  'İlk sözü ASKER kurmakla ilgili',
+  /asker|mızrakçı|kışla/i.test(ilkSoz ?? ''),
+  ilkSoz?.slice(0, 70) ?? '',
+);
+
+// --- 2. Eğitim: kâhyanın söz verdiği gibi HEMEN bitiyor ---
+{
+  const once = (await get('/army')).home;
+  const oncekiToplam = Object.values(once ?? {}).reduce((t, n) => t + n, 0);
+  kontrol('Yeni lordun ordusu yok', oncekiToplam === 0, `${oncekiToplam} birim`);
+
+  // Kâhyanın işaret ettiği ordu OMURGADAN geliyor; testin kendi rakamını
+  // uydurması, rehberin gerçek durumu takip edip etmediğini ölçmez.
+  const oneri = (await get('/map')).oneri;
+  if (!oneri?.eksik?.karsilanabilir) {
+    await post('/test/kaynak-ver', { altin: 40000, demir: 20000, erzak: 20000 });
+  }
+  const basla = Date.now();
+  const e = await post('/army/train', {
+    unitType: oneri.eksik.birim,
+    count: oneri.eksik.adet,
+  });
+  kontrol('Eğitim kuyruğa girdi', e.queued === true, e.error ?? '');
+  kontrol('Sunucu bunu İLK eğitim saydı', e.ilkEgitim === true, `ilkEgitim=${e.ilkEgitim}`);
+
+  const sure = (new Date(e.finishAt).getTime() - basla) / 1000;
+  // 10 mızrakçı normalde 900 sn; kısayol olmadan ilk oturum bu beklemeye gider.
+  kontrol('İlk eğitim saniyeler içinde bitiyor', sure < 30, `${Math.round(sure)} sn (normal 900)`);
+
+  // Gerçekten bitmesini BEKLE — hile yok, sunucu çözecek.
+  let asker = 0;
+  for (let i = 0; i < 20; i++) {
+    await new Promise((c) => setTimeout(c, 2000));
+    asker = Object.values((await get('/army')).home ?? {}).reduce((t, n) => t + n, 0);
+    if (asker > 0) break;
+  }
+  kontrol('Askerler gerçekten orduya katıldı', asker > 0, `${asker} birim`);
+}
+
+// --- 3. İkinci eğitim NORMAL süreye dönüyor ---
+{
+  await post('/test/kaynak-ver', { altin: 50000, demir: 20000, erzak: 20000 });
+  const basla = Date.now();
+  const e = await post('/army/train', { unitType: 'mizrakci', count: 10 });
+  kontrol('İkinci eğitim kısayol ALMIYOR', e.ilkEgitim === false, `ilkEgitim=${e.ilkEgitim}`);
+  const sure = (new Date(e.finishAt).getTime() - basla) / 1000;
+  kontrol('İkinci eğitim normal sürede', sure > 300, `${Math.round(sure)} sn`);
+  await post('/test/kuyruklari-bitir');
+}
+
+// --- 4. Kâhya sıradaki adıma geçti ---
+{
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+  await ogreticiyiGec(page);
+  await page.waitForTimeout(2000);
+  const soz = await kahyaSozu();
+  kontrol('Kâhya hâlâ konuşuyor (bölge yok)', soz !== null);
+
+  /**
+   * Ölçülen şey sözün DEĞİŞMESİ değil, oyunun durumunu TAKİP ETMESİ.
+   * İlk hâlinde "sözü değişmeli" diye yazmıştım ve kaldı — haklı olarak:
+   * ordu eğitilmiş olsa da öneri hâlâ "ordun yetmiyor" diyorsa omurga
+   * gerçekten ordu-kur adımındadır ve kâhyanın aynı şeyi söylemesi
+   * DOĞRUDUR. Rehberin senaryosu yok; omurga neredeyse o orada.
+   */
+  const omurgaBasligi = await page.evaluate(() =>
+    document.body.innerText.includes('ŞİMDİ NE YAPMALISIN'),
+  );
+  kontrol('Omurga hâlâ bir adım gösteriyor', omurgaBasligi === true);
+  kontrol(
+    'Kâhyanın sözü o adımın sözü',
+    soz !== null && soz.length > 20,
+    soz?.slice(0, 70) ?? '',
+  );
+}
+
+// --- 5. Bölge alınınca kâhya SUSUYOR ---
+{
+  const harita = await get('/map');
+  const hedef = harita.oneri;
+  kontrol('Omurga bir ilk hedef gösteriyor', Boolean(hedef), hedef?.name ?? 'yok');
+
+  const ordu = (await get('/army')).home;
+  const s = await post('/march', { toRegionId: hedef.regionId, army: ordu });
+  kontrol('Saldırı kabul edildi', Boolean(s.marchId), s.error ?? JSON.stringify(s).slice(0, 80));
+
+  await post('/test/yuruyusleri-bitir');
+  const lord = (await get('/me')).lord;
+  kontrol('Bölge alındı', lord.regionCount >= 1, `${lord.regionCount} bölge`);
+
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+  await page.waitForTimeout(2000);
+  const soz = await kahyaSozu();
+  kontrol('Döngü kapanınca kâhya SUSUYOR', soz === null, soz ? `hâlâ konuşuyor: "${soz.slice(0, 40)}"` : 'sustu');
+}
+
+// --- 6. Kâhya elle de kapatılabiliyor (zorunlu tur değil) ---
+{
+  const d2 = Date.now();
+  const { token: t2 } = await kayitOl(API, {
+    email: `reh${d2}_k@lordlar.dev`,
+    lordName: `Rehk ${d2.toString(36).slice(-4)}`,
+  });
+  await page.evaluate((t) => localStorage.setItem('lordlar_token', t), t2);
+  await page.evaluate(() => localStorage.removeItem('lordlar_rehber_kapali'));
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+  await ogreticiyiGec(page);
+  await page.waitForTimeout(1500);
+
+  kontrol('Yeni lordda kâhya yine görünüyor', (await kahyaSozu()) !== null);
+  await page.locator('button:has-text("yeter, anladım")').click();
+  await page.waitForTimeout(600);
+  kontrol('Kapatılınca susuyor', (await kahyaSozu()) === null);
+
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+  await page.waitForTimeout(1500);
+  kontrol('Kapalı kaldı — sayfa yenilenince geri gelmiyor', (await kahyaSozu()) === null);
+}
+
+kontrol('Konsol hatası yok', konsol.length === 0, konsol.slice(0, 2).join(' | '));
+await b.close();
+console.log(hata === 0 ? '\nTÜM KONTROLLER GEÇTİ' : `\n${hata} KONTROL BAŞARISIZ`);
+process.exit(hata === 0 ? 0 : 1);

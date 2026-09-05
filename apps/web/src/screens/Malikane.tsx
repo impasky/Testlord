@@ -24,7 +24,8 @@ import {
   IkonYer,
 } from '../components/Ikonlar';
 import { DiyarTanitimi } from '../components/DiyarTanitimi';
-import { Omurga } from '../components/Omurga';
+import { Omurga, useOmurgaAdimi } from '../components/Omurga';
+import { Rehber } from '../components/Rehber';
 import {
   Bolum,
   Buton,
@@ -125,6 +126,9 @@ export function Malikane({
 }) {
   const yarali = lord.woundedUntil && new Date(lord.woundedUntil) > new Date();
   const korumali = lord.protectionUntil && new Date(lord.protectionUntil) > new Date();
+  // Rehber omurganın hesapladığı adımı okuyor; iki ayrı hesap olmasın diye
+  // aynı hook. Sorgular TanStack önbelleğinden, ikinci istek üretmiyor.
+  const rehberAdimi = useOmurgaAdimi(lord, queues);
 
   return (
     <div className="space-y-4">
@@ -160,6 +164,9 @@ export function Malikane({
 
       <DiyarTanitimi lord={lord} queues={queues} />
 
+      {/* Kâhya omurganın ÜSTÜNDE: önce neden, sonra ne. Adımı omurgadan
+          okuyor, kendi senaryosunu tutmuyor (docs/09 T4). */}
+      <Rehber adim={rehberAdimi?.anahtar ?? null} bolgeSayisi={lord.regionCount} />
       <Omurga lord={lord} queues={queues} onGit={onGit} onHedefeGit={onBolgeyiAc} />
 
       {/*

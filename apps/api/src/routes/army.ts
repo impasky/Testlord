@@ -5,6 +5,8 @@ import {
   UNIT_TYPES,
   armySlots,
   commandCapacity,
+  egitimSuresiSn,
+  ilkEgitimMi,
   unit,
   type GearLineKey,
   type UnitType,
@@ -97,8 +99,24 @@ export async function armyRoutes(app: FastifyInstance): Promise<void> {
         },
         tx,
       );
-      const q = await enqueue(lordId, 'train', { unitType, count }, u.egitim_sn * count, tx);
-      return { queued: true, finishAt: q.finishAt };
+      /**
+       * İlk eğitim kısayolu (docs/09 T4). Koşulu SUNUCU belirliyor:
+       * istemciye "ilk mi" diye sormak, herkesin her eğitimi 5 saniyede
+       * bitirmesi demekti.
+       */
+      const [tamamlanan, askerler] = await Promise.all([
+        tx.queue.count({ where: { lordId, kind: 'train', resolved: true } }),
+        tx.armyUnit.aggregate({ where: { lordId }, _sum: { count: true } }),
+      ]);
+      const ilkMi = ilkEgitimMi(tamamlanan, askerler._sum.count ?? 0);
+      const q = await enqueue(
+        lordId,
+        'train',
+        { unitType, count },
+        egitimSuresiSn(u.egitim_sn, count, ilkMi),
+        tx,
+      );
+      return { queued: true, finishAt: q.finishAt, ilkEgitim: ilkMi };
     });
   });
 

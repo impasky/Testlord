@@ -19,6 +19,7 @@ export * from './pakt.js';
 export * from './takviye.js';
 export * from './kimlik.js';
 export * from './ogretici.js';
+export * from './rehber.js';
 export * from './ticaret.js';
 export * from './march.js';
 export * from './odul.js';
