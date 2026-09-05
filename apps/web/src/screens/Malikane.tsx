@@ -126,6 +126,27 @@ export function Malikane({
 }) {
   const yarali = lord.woundedUntil && new Date(lord.woundedUntil) > new Date();
   const korumali = lord.protectionUntil && new Date(lord.protectionUntil) > new Date();
+  /**
+   * İLK DÖNGÜ: oyuncu henüz kaynak -> asker -> saldırı -> bölge zincirini
+   * bir kez tamamlamamış.
+   *
+   * Bu bayrak Malikâne'nin ne kadarını göstereceğimizi belirliyor. Oyuncu
+   * testi: "her yerde bir şeyler yazıyor, neler önemli neler önemsiz
+   * anlayamadım" ve "her şeyi üstümüze atıyor, al öğren oyna diyor".
+   * Sayınca haklı çıktı — hiçbir şey yapmamış bir lord bu ekranda SEKİZ
+   * blok görüyordu: diyar tanıtımı, rehber, omurga, durum şeridi, kalkan,
+   * görev özeti, kuyruklar, olaylar.
+   *
+   * İlk döngüde yalnız iki soru anlamlı: "burası neresi" ve "şimdi ne
+   * yapmalıyım". Gerisi ancak bir karşılığı olduğunda beliriyor — durum
+   * şeridi bölge varken, olaylar bir şey olduğunda. Gizlenenler
+   * ULAŞILAMAZ olmuyor: Görevler alt çubukta, Olaylar menüde duruyor.
+   *
+   * Ölçüt yine bölge sayısı (rehberle aynı): ordusunu kaybetmiş kıdemli
+   * bir lord da gerçekten "önce bir bölge al" durumundadır.
+   */
+  const ilkDongu = lord.regionCount === 0;
+
   // Rehber omurganın hesapladığı adımı okuyor; iki ayrı hesap olmasın diye
   // aynı hook. Sorgular TanStack önbelleğinden, ikinci istek üretmiyor.
   const rehberAdimi = useOmurgaAdimi(lord, queues);
@@ -162,12 +183,23 @@ export function Malikane({
 
       {yokluk && <YoklukKarti y={yokluk} onGit={onGit} />}
 
-      <DiyarTanitimi lord={lord} queues={queues} />
-
       {/* Kâhya omurganın ÜSTÜNDE: önce neden, sonra ne. Adımı omurgadan
           okuyor, kendi senaryosunu tutmuyor (docs/09 T4). */}
       <Rehber adim={rehberAdimi?.anahtar ?? null} bolgeSayisi={lord.regionCount} />
       <Omurga lord={lord} queues={queues} onGit={onGit} onHedefeGit={onBolgeyiAc} />
+
+      {/* Diyar tanıtımı omurganın ALTINDA.
+          Üstteydi ve ölçünce görüldü ki yeni oyuncunun tek eylem düğmesi
+          ("Kışlada okçu eğit") iki açıklama kartının altında, ekranın
+          dışında kalıyordu. Oyuncu testinin "her şeyi üstümüze atıyor"
+          cümlesinin somut hâli buydu: yapılacak şeye ulaşmak için iki
+          metin bloğunu kaydırmak.
+          Kartın KENDİ kapısı var (yepyeniMi): yalnız hiçbir şey yapmamış
+          lorda görünüyor, ilk eylemden sonra kendiliğinden kayboluyor —
+          bu yüzden ayrıca gizlenmesi gerekmiyor, yalnız sırası değişti.
+          "Burası neresi" hâlâ cevaplanıyor, ama "şimdi ne yapmalıyım"
+          cevabından sonra. */}
+      <DiyarTanitimi lord={lord} queues={queues} />
 
       {/*
         Dört ayrı istatistik kartı yerine tek rozet satırı.
@@ -177,6 +209,7 @@ export function Malikane({
         aynı bilgiyi bir satırda veriyor ve omurgayı ekranın tepesinde
         tek büyük öğe olarak bırakıyor.
       */}
+      {!ilkDongu && (
       <DurumSiridi>
         <Hap ikon={<IkonKale boyut={13} />} renk="var(--color-altin)">
           {lord.regionCount}/{lord.maxRegions} bölge
@@ -197,6 +230,7 @@ export function Malikane({
           {lord.dailyAttacks}/{B.korumalar.gunluk_saldiri_limiti} saldırı
         </Hap>
       </DurumSiridi>
+      )}
 
       {lord.statPoints > 0 && (
         <Kart className="p-3" vurgu="var(--color-yesil)">
@@ -224,8 +258,14 @@ export function Malikane({
       {/* Görev KANCASI, görevlerin kendisi değil: ayrıntı Görevler
           sayfasında. Ödül alınmayı bekliyorsa şerit yeşilleniyor —
           oyuncunun oraya gitmesi için tek gerçek sebep o. */}
-      <GorevOzeti onGit={() => onGit('gorevler')} />
+      {!ilkDongu && <GorevOzeti onGit={() => onGit('gorevler')} />}
 
+      {/* Boş kuyruk bölümü ilk döngüde de KALIYOR ve bu bilinçli — gizlemeyi
+          denedim, iki şeyi birden bozdu. Boş hâlindeki üç düğme (Kışla,
+          Demirhane, Harita) gürültü değil, docs/09 K7'nin ta kendisi:
+          "yapacak bir şey yok ekranı olmasın, boş hâl bir sonraki işi
+          göstersin". Ayrıca kart geç gelen kuyruk verisine bağlı gizlenince
+          açılışta zıplama çıkıyordu (CLS 0.024 -> 0.222). */}
       <Bolum
         baslik={`Kuyruklar${queues.length ? ` · ${queues.length}` : ''}`}
         sakin={queues.length === 0}
@@ -266,6 +306,7 @@ export function Malikane({
       {/* Olay kancası: akışın kendisi Olaylar sayfasında. Son olayı
           burada göstermek "bir şey oldu mu" sorusunu sayfaya gitmeden
           cevaplıyor. */}
+      {!ilkDongu && (
       <Kart className="p-3" sakin={events.length === 0} onClick={() => onGit('olaylar')}>
         <div className="flex items-center gap-2">
           <span className="baslik shrink-0 text-[11px] text-solgun">OLAYLAR</span>
@@ -281,6 +322,7 @@ export function Malikane({
           </span>
         </div>
       </Kart>
+      )}
     </div>
   );
 }

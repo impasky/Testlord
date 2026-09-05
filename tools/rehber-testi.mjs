@@ -143,7 +143,7 @@ kontrol(
    * DOĞRUDUR. Rehberin senaryosu yok; omurga neredeyse o orada.
    */
   const omurgaBasligi = await page.evaluate(() =>
-    document.body.innerText.includes('ŞİMDİ NE YAPMALISIN'),
+    (document.querySelector('main')?.textContent ?? '').includes('Şimdi ne yapmalısın'),
   );
   kontrol('Omurga hâlâ bir adım gösteriyor', omurgaBasligi === true);
   kontrol(
@@ -197,6 +197,120 @@ kontrol(
   await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
   await page.waitForTimeout(1500);
   kontrol('Kapalı kaldı — sayfa yenilenince geri gelmiyor', (await kahyaSozu()) === null);
+}
+
+// --- 7. Kademeli açılım: ilk döngüde ekran sade, sonra doluyor ---
+{
+  /**
+   * Oyuncu testi: "her yerde bir şeyler yazıyor, neler önemli neler
+   * önemsiz anlayamadım". Sayınca haklı çıktı — hiçbir şey yapmamış bir
+   * lord Malikâne'de sekiz blok görüyordu. Burada blokları SAYIYORUZ;
+   * "sade göründü" bir izlenim, sekiz-e-üç bir ölçüm.
+   */
+  const bloklariSay = () =>
+    page.evaluate(() => {
+      /**
+       * SAYFA İÇERİĞİ, gezinme değil: `document.body.innerText` okurken
+       * "GÖREVLER" hep bulunuyordu — artık alt çubukta bir sekme adı.
+       * <main> doğru sınır.
+       *
+       * Ve `textContent`, `innerText` değil: `innerText` CSS'in ÇİZDİĞİ
+       * metni döndürüyor, `.baslik` sınıfı da büyük harfe çeviriyor.
+       * "Kâhya Sinan" aradığımda DOM'da "KÂHYA SİNAN" yazıyordu ve kart
+       * ekranda dururken "yok" raporlanıyordu.
+       */
+      const govde = document.querySelector('main')?.textContent ?? '';
+      const v = (m) => (govde.includes(m) ? 1 : 0);
+      return {
+        diyar: v('DİYAR'),
+        durum: v('komuta'),
+        gorev: v('GÖREVLER'),
+        olay: v('OLAYLAR'),
+        omurga: v('Şimdi ne yapmalısın'),
+        kahya: v('Kâhya Sinan'),
+      };
+    });
+
+  const d3 = Date.now();
+  const { token: t3 } = await kayitOl(API, {
+    email: `reh${d3}_s@lordlar.dev`,
+    lordName: `Rehs ${d3.toString(36).slice(-4)}`,
+  });
+  const h3 = { 'Content-Type': 'application/json', Authorization: `Bearer ${t3}` };
+  const post3 = (y, g) =>
+    fetch(`${API}/api${y}`, { method: 'POST', headers: h3, body: JSON.stringify(g ?? {}) }).then(
+      (x) => x.json(),
+    );
+  const get3 = (y) => fetch(`${API}/api${y}`, { headers: h3 }).then((x) => x.json());
+
+  await page.evaluate((t) => localStorage.setItem('lordlar_token', t), t3);
+  await page.evaluate(() => localStorage.removeItem('lordlar_rehber_kapali'));
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+  await ogreticiyiGec(page);
+  await page.waitForTimeout(1800);
+
+  const once = await bloklariSay();
+  kontrol('İlk döngüde omurga ve kâhya VAR', once.omurga === 1 && once.kahya === 1,
+    `omurga=${once.omurga} kâhya=${once.kahya}`);
+  kontrol(
+    'İlk döngüde durum/görev/olay şeritleri GİZLİ',
+    once.durum + once.gorev + once.olay === 0,
+    `durum=${once.durum} görev=${once.gorev} olay=${once.olay}`,
+  );
+
+  /**
+   * BİRİNCİL EYLEM KAYDIRMADAN GÖRÜNMELİ.
+   *
+   * Kademeli açılımın asıl ölçüsü blok sayısı değil bu: ilk hâlinde diyar
+   * tanıtımı ve kâhya kartı omurganın üstündeydi ve tek eylem düğmesi
+   * ("Kışlada okçu eğit") 844px'lik ekranın dışında kalıyordu. Oyuncunun
+   * "her şeyi üstümüze atıyor" cümlesinin somut hâli buydu — yapılacak
+   * şeye ulaşmak için iki metin bloğunu kaydırmak.
+   */
+  const dugmeY = await page.evaluate(() => {
+    const b = [...document.querySelectorAll('main button')].find((x) =>
+      /eğit|saldır|üret|yükselt|git/i.test(x.textContent ?? ''),
+    );
+    return b ? Math.round(b.getBoundingClientRect().bottom) : -1;
+  });
+  kontrol(
+    'Birincil eylem düğmesi kaydırmadan görünüyor',
+    dugmeY > 0 && dugmeY <= 844,
+    `düğmenin alt kenarı ${dugmeY}px (ekran 844px)`,
+  );
+
+  // Döngüyü kapat: bölge al.
+  const o3 = (await get3('/map')).oneri;
+  await post3('/test/kaynak-ver', { altin: 60000, demir: 30000, erzak: 30000 });
+  await post3('/army/train', { unitType: o3.eksik.birim, count: o3.eksik.adet });
+  await post3('/test/kuyruklari-bitir');
+  const ordu3 = (await get3('/army')).home;
+  await post3('/march', { toRegionId: o3.regionId, army: ordu3 });
+  await post3('/test/yuruyusleri-bitir');
+  const lord3 = (await get3('/me')).lord;
+  kontrol('Bölge alındı (kademeli açılım tetiklendi)', lord3.regionCount >= 1,
+    `${lord3.regionCount} bölge`);
+
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+  await page.waitForTimeout(2000);
+  const sonra = await bloklariSay();
+  kontrol(
+    'Bölgeden sonra hepsi geri geliyor',
+    sonra.durum === 1 && sonra.gorev === 1 && sonra.olay === 1,
+    `durum=${sonra.durum} görev=${sonra.gorev} olay=${sonra.olay}`,
+  );
+
+  /**
+   * Gizlenen şeyler ULAŞILAMAZ olmamalı. Görevler alt çubukta, Olaylar
+   * menüde duruyor; ilk döngüde Malikâne'de görünmemeleri onları
+   * kaldırmak değil, ertelemek.
+   */
+  const cubukta = await page.evaluate(() =>
+    Boolean([...document.querySelectorAll('nav button')].find((b) => b.textContent?.includes('Görevler'))),
+  );
+  kontrol('Gizlenen Görevler alt çubuktan hâlâ ulaşılabilir', cubukta === true);
 }
 
 kontrol('Konsol hatası yok', konsol.length === 0, konsol.slice(0, 2).join(' | '));

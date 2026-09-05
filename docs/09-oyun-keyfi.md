@@ -359,7 +359,7 @@ duruyordu ama üçü ölçülebildi ve üçü de doğru çıktı.
 | T1 | "Oyun çok karanlık, parlaklığımı yükseltmek zorunda kaldım" | 414 metnin 129'u (%31) WCAG AA altında; en çok yön gösteren küçük yazılar (`sonuk` 2.97, gerek 4.5) | yapıldı |
 | T2 | "Her yerde bir şeyler yazıyor, önemli-önemsiz belli değil" | 175 metin 11px altında (141'i 9px) | yapıldı |
 | T3 | "Görevler ve generallere ulaşmak uzun sürüyor" | Çubukta 4 ekran (1 dokunuş), menüde 7 (2 dokunuş); menü sıklığa göre değil "sığmayanlar" diye dizilmişti | yapıldı |
-| T4 | "Oyunun içine giremiyorum, her şeyi üstümüze atıyor" | — | rehber yapıldı; kademeli açılım sırada |
+| T4 | "Oyunun içine giremiyorum, her şeyi üstümüze atıyor" | Yeni oyuncu Malikâne'de 8 blok görüyordu; tek eylem düğmesi 844px'lik ekranın DIŞINDA kalıyordu | yapıldı |
 
 T4 en büyüğü ve öğreticinin TÜRÜNÜ sorguluyordu: bizimki sekiz sayfalık
 bir tanıtım (oku, sonra kendin dene), oyuncunun istediği bir zincir (şimdi
@@ -374,6 +374,26 @@ bir tanıtım (oku, sonra kendin dene), oyuncunun istediği bir zincir (şimdi
   `ilk_saldiri_dakika` ile aynı aile: yeni oyuncu bir düğmeye basıp hiçbir
   şey olmadığını görüyor ve çıkıyordu. Sıfır değil beş, çünkü anında biten
   kuyruk "kuyruk" diye bir şey olduğunu hiç öğretmiyor.
+
+**Kademeli açılım.** İlk döngüde (bölge yokken) Malikâne yalnız iki soruyu
+cevaplıyor: "şimdi ne yapmalıyım" (kâhya + omurga) ve "burası neresi"
+(diyar tanıtımı, omurganın ALTINDA). Durum şeridi, görev özeti ve olay
+kancası ilk bölgeden sonra beliriyor; ikisi de alt çubuktan/menüden zaten
+ulaşılabilir olduğu için gizlemek kaldırmak değil, ertelemek.
+
+Asıl ölçü blok sayısı değil, **birincil eylemin kaydırmadan görünmesi**.
+Diyar tanıtımı omurganın üstündeyken "Kışlada okçu eğit" düğmesi ekranın
+dışında kalıyordu; şimdi 594px'te. Test bunu her koşuda ölçüyor.
+
+İki denemem geri alındı ve ikisi de öğreticiydi:
+- Diyar tanıtımını ilk döngüde gizlemek — kartın KENDİ kapısı (`yepyeniMi`)
+  zaten yalnız yepyeni lorda açıyordu, yani kartı tam da görünmesi gereken
+  anda gizlemiş, sonrasını da kendi kapısı kapattığı için HİÇ görünmez
+  yapmıştım. Doğru düzeltme gizlemek değil, sırasını değiştirmekti.
+- Boş kuyruk bölümünü gizlemek — o bölümün üç düğmesi gürültü değil,
+  docs/09 K7'nin ta kendisi ("boş hâl bir sonraki işi göstersin"). Üstelik
+  geç gelen veriye bağlı gizlenince açılış kayması çıkardı (CLS 0.024 →
+  0.222). Denetim ikisini de yakaladı.
 
 **Rehber kendi senaryosunu TUTMUYOR** ve bu en önemli karar. Omurga zaten
 "şimdi ne yapmalısın"ı oyun durumundan türetiyor; ayrı bir senaryo yazmak
