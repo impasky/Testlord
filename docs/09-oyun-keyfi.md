@@ -370,7 +370,7 @@ sayılı ve sıralı olduğu için tam tarama mümkündü ve hatayı ancak o gö
 
 | # | İş | Gereken |
 |---|---|---|
-| G1 | ~~Bölge gelişim aşamaları~~ **7/8 kondu** | Yalnız `maden_5` eksik; o gelene dek Sv5 maden taban görsele düşüyor (ikona değil) |
+| G1 | ~~Bölge gelişim aşamaları~~ **tamamlandı** | 8/8 kondu. Sv1-2 taban, Sv3-4 `_3`, Sv5 `_5`; üç seviyede de tarayıcıda doğrulandı |
 | G2 | Lord figürü (geri gelirse) | 5 görsel var, sahne kodu hazır, oyuncu beğenmedi |
 | G3 | Birim illüstrasyonlarını yenile | 5 görsel; eskiler diğer setten farklı üslupta |
 | G4 | Savaş sahnesi | Rapor ekranına iki ordunun karşılaştığı tek kare |
