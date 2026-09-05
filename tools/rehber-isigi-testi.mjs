@@ -514,6 +514,90 @@ await page.waitForTimeout(2500);
   await ctx3.close();
 }
 
+/**
+ * --- 10. YAVAŞ ŞEBEKE: ışık titremiyor, yanlış yön göstermiyor ---
+ *
+ * Bildirilen hata: "eğit diyorum, Kışla'ya yolluyor; Kışla ekranı açılınca
+ * Malikâne'yi gösteriyor, sonra Eğit'i gösteriyor, hepsi 1-2 saniyede
+ * oluyor."
+ *
+ * Yerelde HİÇ görünmüyordu ve bütün testler yereldeydi: her istek anında
+ * dönüyor, Kışla'nın verisi düğmeyle birlikte geliyor, boşluk oluşmuyor.
+ * Gerçek şebekede o boşlukta `kisla-egit` henüz yok ve ışık listenin
+ * gerisine düşüp oyuncuya GELDİĞİ yönü gösteriyordu.
+ *
+ * Bu bölüm her API isteğini geciktirerek o boşluğu bilerek açıyor ve iki
+ * şeyi ölçüyor: ışık asla yanlış yönü göstermiyor, perde asla bir kalkıp
+ * bir inmiyor.
+ */
+{
+  const ctx4 = await b.newContext({ ...devices['iPhone 13'] });
+  const s4 = await ctx4.newPage();
+  await s4.route('**/api/**', async (route) => {
+    await new Promise((r) => setTimeout(r, 600));
+    await route.continue();
+  });
+
+  const d7 = Date.now();
+  const { token: t7 } = await kayitOl(API, {
+    email: `isik${d7}_y@lordlar.dev`,
+    lordName: `Isikyv ${d7.toString(36).slice(-4)}`,
+  });
+  await fetch(`${API}/api/me/ogretici-bitti`, {
+    method: 'POST',
+    headers: { authorization: `Bearer ${t7}`, 'content-type': 'application/json' },
+    body: '{}',
+  });
+  await s4.goto(WEB, { waitUntil: 'domcontentloaded' });
+  await s4.evaluate((t) => localStorage.setItem('lordlar_token', t), t7);
+  await s4.reload({ waitUntil: 'domcontentloaded' });
+  await s4.waitForSelector('[data-rehber="omurga-dugme"]', { timeout: 30000 });
+  await s4.waitForTimeout(2500);
+
+  // Kaydı başlat, sonra omurga düğmesine bas.
+  await s4.evaluate(() => {
+    const w = window;
+    w.__iz = [];
+    const oku = () => {
+      const perde = [...document.querySelectorAll('div')].filter(
+        (x) => typeof x.className === 'string' && x.className.includes('z-[55]'),
+      ).length;
+      const hedef = [...document.querySelectorAll('[data-rehber]')].find((e) => {
+        const r = e.getBoundingClientRect();
+        if (r.width < 4 || r.height < 4) return false;
+        const u = document.elementFromPoint(
+          Math.round(r.left + r.width / 2),
+          Math.round(r.top + r.height / 2),
+        );
+        return Boolean(u && (e === u || e.contains(u)));
+      });
+      w.__iz.push({ perde, delik: perde > 0 ? (hedef?.getAttribute('data-rehber') ?? null) : null });
+      if (w.__iz.length < 60) setTimeout(oku, 80);
+    };
+    oku();
+  });
+  await s4.locator('[data-rehber="omurga-dugme"]').click();
+  await s4.waitForTimeout(5500);
+
+  const iz = await s4.evaluate(() => window.__iz);
+  const perdesiz = iz.filter((x) => x.perde === 0).length;
+  const geriYollayan = iz.filter((x) => x.delik === 'nav-malikane').length;
+  const son = iz[iz.length - 1];
+
+  // Asıl hata buydu: doğru ekrandayken oyuncuya geldiği yönü göstermek.
+  kontrol('Yavaş şebekede ışık ASLA "Malikâne\'ye dön" demiyor', geriYollayan === 0,
+    `${geriYollayan} kare`);
+  // Perdenin bir kalkıp bir inmesi de titremenin ta kendisiydi.
+  kontrol('Perde geçiş boyunca hiç düşmüyor', perdesiz === 0, `${perdesiz} kare perdesiz`);
+  kontrol('Yavaş şebekede de sonunda eğitim düğmesinde duruyor',
+    son?.delik === 'kisla-egit', son?.delik ?? 'yok');
+  // Kaç ayrı hedefe konuldu: ikiden fazlası titreme demek.
+  const gecisler = [...new Set(iz.map((x) => x.delik).filter(Boolean))];
+  kontrol('Geçiş boyunca en fazla iki hedef gösterildi', gecisler.length <= 2,
+    gecisler.join(' → '));
+  await ctx4.close();
+}
+
 kontrol('Konsol hatası yok', konsol.length === 0, konsol.slice(0, 3).join(' | '));
 await b.close();
 console.log(hata === 0 ? '\nTÜM KONTROLLER GEÇTİ' : `\n${hata} KONTROL BAŞARISIZ`);

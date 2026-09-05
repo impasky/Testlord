@@ -54,6 +54,7 @@ import {
   rehberGorunsunMu,
   rehberIsaretSebebi,
   rehberIsigi,
+  rehberSozu,
   type RehberIsaret,
 } from '@lordlar/shared';
 import { useEffect, useRef, useState } from 'react';
@@ -72,6 +73,30 @@ const ALT_PAY = 96;
 /** Kaç yoklama boyunca hedef bulunamazsa perde kalkar (150 ms × 20 = 3 sn). */
 const SABIR = 20;
 const YOKLAMA_MS = 150;
+/**
+ * Bir aday ışığı hak etmeden önce kaç milisaniye kararlı durmalı.
+ *
+ * Oyuncunun bildirdiği hata: "eğit diyorum, Kışla'ya yolluyor; Kışla
+ * ekranı açılınca Malikâne'yi gösteriyor, sonra Eğit'i gösteriyor, hepsi
+ * 1-2 saniyede oluyor." Sebep şuydu: Kışla açıldığı an listedeki asıl
+ * düğme (`kisla-egit`) HENÜZ YOK — verisi geliyor. Işık da o boşlukta
+ * listenin gerisine düşüp "Malikâne'ye dön" diyordu. Yani oyuncuya yarım
+ * saniyeliğine YANLIŞ yönü gösteriyordu, üstelik geldiği yönü.
+ *
+ * Yerelde hiç görünmüyordu: her istek anında dönüyor, boşluk oluşmuyor.
+ * 600 ms gecikmeyle bakınca kendini hemen gösterdi.
+ */
+const KARARLILIK_MS = 450;
+/**
+ * "İş düğmelerinin hepsi kapalı" hâli kaç ms sürerse GERÇEK sayılır.
+ *
+ * Kararlılık payından çok daha uzun, çünkü bu hâlin yükleme sırasındaki
+ * sahtesi tıpatıp aynı görünüyor: Kışla açılırken kaynaklar henüz
+ * gelmemişken eğitim düğmesi "altın yetmiyor" diye kapalı çiziliyor. 450
+ * ms'de karar verince perde bir kalkıp bir iniyordu. Parası gerçekten
+ * yetmeyen oyuncu üç saniye bekliyor; yükleme yapaylığı çok önce geçiyor.
+ */
+const ENGEL_SABRI = 3000;
 
 interface Kutu {
   ust: number;
@@ -98,12 +123,21 @@ function basilabilirMi(e: HTMLElement): boolean {
  * `yol` düğmeleri (omurga düğmesi, Malikâne sekmesi) bu hesaba girmez;
  * onlar iş yapmıyor, taşıyor.
  */
-function hedefBul(isaretler: RehberIsaret[]): { hedef: HTMLElement | null; engelli: boolean } {
+function hedefBul(
+  isaretler: RehberIsaret[],
+  yolYasak: boolean,
+): { hedef: HTMLElement | null; sira: number; ilkYol: boolean; engelli: boolean } {
   let isVar = false;
   let isAcik = false;
   let ilk: HTMLElement | null = null;
+  let ilkSira = -1;
+  let ilkYol = false;
 
-  for (const { isaret, yol } of isaretler) {
+  for (let i = 0; i < isaretler.length; i++) {
+    const { isaret, yol } = isaretler[i]!;
+    // Oyuncu zaten doğru ekrandaysa yol düğmesi aranmaz: "Malikâne'ye dön"
+    // demek ona geldiği yönü göstermek olurdu.
+    if (yol && yolYasak) continue;
     const e = document.querySelector<HTMLElement>(`[data-rehber="${isaret}"]`);
     if (!e) continue;
     const acik = basilabilirMi(e);
@@ -111,10 +145,14 @@ function hedefBul(isaretler: RehberIsaret[]): { hedef: HTMLElement | null; engel
       isVar = true;
       if (acik) isAcik = true;
     }
-    if (acik && !ilk) ilk = e;
+    if (acik && !ilk) {
+      ilk = e;
+      ilkSira = i;
+      ilkYol = Boolean(yol);
+    }
   }
 
-  return { hedef: ilk, engelli: isVar && !isAcik };
+  return { hedef: ilk, sira: ilkSira, ilkYol, engelli: isVar && !isAcik };
 }
 
 function ayniMi(a: Kutu | null, r: DOMRect): boolean {
@@ -131,6 +169,7 @@ export function RehberIsigi({
   adim,
   bolgeSayisi,
   gorundu,
+  dogruEkranda,
   acik,
 }: {
   /** Omurganın hesapladığı adım. Işık kendi senaryosunu tutmuyor. */
@@ -142,10 +181,26 @@ export function RehberIsigi({
    * yeni hesap rehbersiz açılıyordu.
    */
   gorundu: boolean;
+  /**
+   * Oyuncu zaten omurganın işaret ettiği ekranda mı?
+   *
+   * Bildirilen hatanın asıl çözümü bu. Kışla açılırken `kisla-egit` bir
+   * süre DOM'da yok — verisi geliyor. Işık o boşlukta listenin gerisine
+   * düşüp "Malikâne'ye dön" diyordu; oyuncu Kışla'ya yeni gelmişken ona
+   * geldiği yönü gösteriyordu. Doğru ekrandayken yol düğmeleri hiç
+   * aranmıyor: gösterilecek bir şey yoksa ışık BEKLİYOR, yanlış yeri
+   * göstermiyor.
+   *
+   * Ölçüt uydurma değil: omurga zaten her adım için `hedefSekme`
+   * hesaplıyor ve alt çubuktaki altın nokta da onu kullanıyor.
+   */
+  dogruEkranda: boolean;
   /** Öğretici kapandı mı — iki tam ekran perde üst üste binmesin. */
   acik: boolean;
 }) {
   const [kutu, setKutu] = useState<Kutu | null>(null);
+  /** Doğru ekrandayız ama düğme henüz gelmedi: perde dursun, delik yok. */
+  const [bekleme, setBekleme] = useState(false);
   // Aydınlatılan düğmenin adı: kâhyanın cümlesi buna göre değişiyor.
   const [hedefAdi, setHedefAdi] = useState<string | null>(null);
   const [itiraz, setItiraz] = useState(false);
@@ -165,10 +220,10 @@ export function RehberIsigi({
   useEffect(() => {
     if (!calissin) {
       setKutu(null);
+      setBekleme(false);
       setHedefAdi(null);
       return;
     }
-    const liste = isaretlerRef.current;
     let yok = 0;
     /**
      * Hedef üst üste kaç kez güvenli şeridin dışında kaldı.
@@ -182,25 +237,98 @@ export function RehberIsigi({
     let disari = 0;
     let sonAd = '';
 
+    /**
+     * O an ışığın üstünde durduğu işaretin listedeki DERİNLİĞİ.
+     *
+     * Küçük sıra = ekranın derinindeki asıl düğme, büyük sıra = yüzeydeki
+     * yol düğmesi. `null` ise henüz hiçbir şey aydınlatılmadı.
+     */
+    let mevcutSira: number | null = null;
+    /** Kabul edilmeyi bekleyen adayın sırası ve ne zamandır beklediği. */
+    let aday: { sira: number; ne: number } | null = null;
+    /** "İş düğmelerinin hepsi kapalı" hâli ne zamandır sürüyor. */
+    let engelDen: number | null = null;
+
+    /**
+     * Aday şimdi kabul edilsin mi?
+     *
+     * İŞ düğmesi anında kabul edilir: o bir yükleme yan ürünü değil,
+     * varış noktasının ta kendisi. Beklemeye sokmak, oyuncu Kışla'ya
+     * varmışken eğitim düğmesi ortadayken yarım saniye boş bakması
+     * demekti.
+     *
+     * DERİNE gitmek de anında: oyuncu bir düğmeye bastı ve asıl düğme
+     * belirdi, ışık hemen oraya geçmeli.
+     *
+     * Yalnız YOL düğmesine düşmek beklemeli — o neredeyse her zaman
+     * ekranın hâlâ yükleniyor olması demek.
+     */
+    const kabulEt = (sira: number, yol: boolean, simdi: number): boolean => {
+      if (!yol) return true;
+      if (mevcutSira !== null && sira <= mevcutSira) return true;
+      if (!aday || aday.sira !== sira) {
+        aday = { sira, ne: simdi };
+        return false;
+      }
+      return simdi - aday.ne >= KARARLILIK_MS;
+    };
+
     const olc = () => {
-      const { hedef: e, engelli } = hedefBul(liste);
-      // Ekrandaki iş düğmelerinin hepsi kapalı: yapılacak bir şey yok,
-      // perde hemen kalksın. Beklemenin anlamı olmazdı — kapalı düğme
-      // birkaç yoklama sonra kendiliğinden açılmıyor.
+      const liste = isaretlerRef.current;
+      const simdi = performance.now();
+      const { hedef: e, sira, ilkYol, engelli } = hedefBul(liste, dogruEkranda);
+
+      /*
+       * Ekrandaki iş düğmelerinin hepsi kapalı: yapılacak bir şey yok,
+       * perde kalksın. Buna da kararlılık aranıyor — bir eylem gönderilirken
+       * düğme kısa süre kapanıyor ve o an perdeyi kaldırmak titreme olurdu.
+       */
       if (engelli) {
+        engelDen ??= simdi;
+        const gercek = simdi - engelDen >= ENGEL_SABRI;
         setKutu(null);
-        setHedefAdi(null);
+        // Karar verilene kadar perde duruyor: bir kalkıp bir inmesin.
+        setBekleme(dogruEkranda && !gercek);
+        if (gercek) {
+          setHedefAdi(null);
+          mevcutSira = null;
+        }
         return;
       }
+      engelDen = null;
+
       if (!e) {
         yok++;
+        // Doğru ekranda ve düğme henüz gelmediyse perde DURUYOR, delik
+        // açılmıyor: oyuncu bu arada başka bir yere basamasın diye. Ekran
+        // zaten iskeletlerle yükleniyor, kâhya da ne beklediğini söylüyor.
+        setKutu(null);
+        setBekleme(dogruEkranda && yok < SABIR);
         if (yok >= SABIR) {
-          setKutu(null);
           setHedefAdi(null);
+          mevcutSira = null;
         }
         return;
       }
       yok = 0;
+      setBekleme(false);
+
+      if (!kabulEt(sira, ilkYol, simdi)) {
+        // Aday henüz olgunlaşmadı. Eski hedef DOM'dan gittiyse eski
+        // koordinatta delik açmak, o noktada artık duran başka bir şeyi
+        // aydınlatmak olurdu; delik kapanıyor ama PERDE DURUYOR — bir
+        // kalkıp bir inen perde oyuncunun şikâyet ettiği titremenin ta
+        // kendisiydi.
+        if (!document.body.contains(document.querySelector(`[data-rehber="${sonAd}"]`))) {
+          setKutu(null);
+          setBekleme(dogruEkranda);
+          setHedefAdi(null);
+        }
+        return;
+      }
+      aday = null;
+      mevcutSira = sira;
+
       const r = e.getBoundingClientRect();
 
       /*
@@ -227,6 +355,7 @@ export function RehberIsigi({
         disari++;
         if (disari >= SABIR) {
           setKutu(null);
+          setHedefAdi(null);
           sonAd = ad;
           return;
         }
@@ -249,22 +378,68 @@ export function RehberIsigi({
       window.removeEventListener('scroll', olc, true);
       window.removeEventListener('resize', olc);
     };
-  }, [calissin, anahtar]);
+  }, [calissin, anahtar, dogruEkranda]);
 
-  if (!calissin || !kutu) return null;
+  if (!calissin) return null;
 
-  const u = Math.max(0, kutu.ust - PAY);
-  const a = Math.min(window.innerHeight, kutu.ust + kutu.boy + PAY);
-  const s = Math.max(0, kutu.sol - PAY);
-  const g = kutu.sol + kutu.en + PAY;
-
-  // Perdeye basmak bir şey yapmaz ama sessiz kalmaz: halka bir kez
-  // titrer. Tepkisiz bir ekran "oyun dondu" diye okunur.
+  // Perdeye basmak bir şey yapmaz ama sessiz kalmaz: halka bir kez titrer.
+  // Tepkisiz bir ekran "oyun dondu" diye okunur.
   const perde = 'fixed z-[55] bg-black/72';
   const dokun = () => {
     setItiraz(true);
     window.setTimeout(() => setItiraz(false), 450);
   };
+
+  /*
+   * BEKLEME: doğru ekrandayız, düğme henüz gelmedi.
+   *
+   * Perde tam ekran duruyor ve delik açılmıyor. Perdeyi tamamen kaldırmak
+   * da bir seçenekti ama o da titreme olurdu — oyuncunun şikâyeti zaten
+   * "hepsi 1-2 saniye içinde anlık oluyor" idi. Perde sabit kalıyor,
+   * yalnız delik hazır olunca açılıyor.
+   */
+  if (!kutu) {
+    if (!bekleme) return null;
+    return (
+      <>
+        <div className={perde} style={{ inset: 0 }} onClick={dokun} />
+        <div
+          role="status"
+          className="pointer-events-none fixed inset-x-0 top-1/2 z-[56] flex -translate-y-1/2 justify-center px-3"
+        >
+          <div className="w-full max-w-sm rounded-2xl border border-altin/45 bg-gece/95 p-3 shadow-xl">
+            <div className="flex items-start gap-2.5">
+              <div className="oyuk h-9 w-9 shrink-0 overflow-hidden rounded-lg border border-kenar">
+                <Gorsel
+                  tur="generaller"
+                  ad={REHBER.key}
+                  alt={REHBER.ad}
+                  boyut={36}
+                  yedek={
+                    <span className="flex h-full w-full items-center justify-center text-solgun">
+                      <IkonNavGeneraller boyut={18} />
+                    </span>
+                  }
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <div className="min-w-0 flex-1">
+                <span className="baslik text-[10px] text-mavi">{REHBER.ad}</span>
+                <p className="mt-0.5 text-[13px] leading-snug text-parsomen">
+                  {rehberSozu(adim)}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  const u = Math.max(0, kutu.ust - PAY);
+  const a = Math.min(window.innerHeight, kutu.ust + kutu.boy + PAY);
+  const s = Math.max(0, kutu.sol - PAY);
+  const g = kutu.sol + kutu.en + PAY;
 
   /*
    * Kâhya kartı deliğin altına, yer yoksa üstüne.

@@ -209,6 +209,7 @@ export function App() {
         adim={omurgaAdimi?.anahtar ?? null}
         bolgeSayisi={lord.regionCount}
         gorundu={lord.rehberGorundu}
+        dogruEkranda={omurgaAdimi?.hedefSekme === sekme}
         acik={lord.ogreticiGorundu || ogreticiKapandi}
       />
       {sekme === 'malikane' && (
