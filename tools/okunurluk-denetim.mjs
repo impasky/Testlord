@@ -24,6 +24,7 @@
 import { chromium, devices } from 'playwright';
 import { kayitOl } from './lib/kayit.mjs';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
+import { EKRANLAR, ekrana } from './lib/gezin.mjs';
 
 const API = process.env.API_URL ?? 'http://localhost:3000';
 const WEB = process.env.WEB_URL ?? 'http://127.0.0.1:5173';
@@ -178,21 +179,6 @@ await page.reload({ waitUntil: 'domcontentloaded' });
 await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
 await ogreticiyiGec(page);
 
-const ALT = [
-  ['malikane', 'Malikâne'],
-  ['kisla', 'Kışla'],
-  ['harita', 'Harita'],
-  ['demirhane', 'Demirhane'],
-];
-const MENU = [
-  ['gorevler', 'Görevler'],
-  ['olaylar', 'Olaylar'],
-  ['lord', 'Lord'],
-  ['generaller', 'Generaller'],
-  ['siralama', 'Sıralama'],
-  ['ittifak', 'İttifak'],
-];
-
 const hepsi = [];
 async function olc(ad) {
   await page.waitForTimeout(1200);
@@ -211,14 +197,8 @@ async function olc(ad) {
   );
 }
 
-for (const [ad, etiket] of ALT) {
-  await page.click(`nav button:has-text("${etiket}")`);
-  await olc(ad);
-}
-for (const [ad, etiket] of MENU) {
-  await page.click('nav button:has-text("Menü")');
-  await page.waitForTimeout(400);
-  await page.locator(`div.fixed ul.grid button:has-text("${etiket}")`).click();
+for (const [ad] of EKRANLAR) {
+  await ekrana(page, ad, 0);
   await olc(ad);
 }
 

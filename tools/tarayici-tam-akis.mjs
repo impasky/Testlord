@@ -8,6 +8,7 @@
  */
 import { chromium, devices } from 'playwright';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
+import { ekrana } from './lib/gezin.mjs';
 
 const WEB = process.env.WEB_URL ?? 'http://127.0.0.1:5173';
 const API = process.env.API_URL ?? 'http://localhost:3000';
@@ -49,25 +50,18 @@ page.on('response', (r) => {
   if (r.status() === 404) konsolHatalari.push(`404: ${r.url()}`);
 });
 
-/** Alt gezinmeden bir sekmeye geçer. */
+/**
+ * Bir ekrana geçer. Çubukta mı menüde mi olduğunu `lib/gezin.mjs` biliyor;
+ * Demirhane menüye taşındığında bu araç değişmedi.
+ */
+const EKRAN_ANAHTARI = {
+  'Malikâne': 'malikane', 'Görevler': 'gorevler', 'Kışla': 'kisla',
+  'Harita': 'harita', 'Demirhane': 'demirhane', 'Olaylar': 'olaylar',
+  'Generaller': 'generaller', 'İttifak': 'ittifak', 'Lord': 'lord',
+  'Sıralama': 'siralama',
+};
 async function sekme(ad) {
-  await page.locator(`nav button:has-text("${ad}")`).click();
-  await page.waitForTimeout(900);
-}
-
-/** Menü sayfasındaki bir ekrana geçer. */
-async function menuden(ad) {
-  const acik = await page
-    .locator('button:has-text("Generaller")')
-    .first()
-    .isVisible()
-    .catch(() => false);
-  if (!acik) {
-    await page.locator('nav button:has-text("Menü")').click();
-    await page.waitForTimeout(500);
-  }
-  await page.locator(`button:has-text("${ad}")`).last().click();
-  await page.waitForTimeout(1000);
+  await ekrana(page, EKRAN_ANAHTARI[ad] ?? ad, 900);
 }
 
 console.log('Lordlar Çağı — mobil akış testi (iPhone 13)\n');
@@ -105,7 +99,7 @@ kontrol('Yatay taşma yok', !tasma);
 await page.screenshot({ path: `${CIKTI}/mob-1-malikane.png` });
 
 // --- Lord: stat dağıtımı (menüden) ---
-await menuden('Lord');
+await sekme('Lord');
 await page.waitForSelector('text=Nitelikler', { timeout: 8000 });
 const artilar = page.locator('button:has-text("+")');
 for (let i = 0; i < 10; i++) await artilar.nth(2).click();
@@ -146,7 +140,7 @@ await tiklaVeBekle(page, 'button:has-text("Kuşan")', '/equip');
 await page.screenshot({ path: `${CIKTI}/mob-4-demirhane.png` });
 
 // --- Generaller ---
-await menuden('Generaller');
+await sekme('Generaller');
 await page.waitForSelector('text=Sahadaki Generaller', { timeout: 8000 });
 // Üç nadirlik rafı alt sekmelere bölündü; bronz artık kendi sekmesinde.
 await page.locator('button:has-text("Bronz")').first().click();
@@ -205,7 +199,7 @@ await post('/test/yuruyusleri-bitir');
 // --- Sıralama ---
 await page.locator('button[aria-label="Kapat"]').click().catch(() => {});
 await page.waitForTimeout(400);
-await menuden('Sıralama');
+await sekme('Sıralama');
 await page.waitForSelector('text=Şöhret Sıralaması', { timeout: 8000 });
 kontrol('Şöhret sıralaması yüklendi', true);
 for (const t of ['Fetih', 'Kılıç']) {

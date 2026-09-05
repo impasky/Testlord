@@ -349,6 +349,22 @@ Sıra keyfi değil: **oyuncunun hissettiği fark / harcanan emek** oranına gör
 | K8 | **General seviyesi görünsün** | Motor zaten seviye atlatıyordu, oyuncu görmüyordu. Rapor + olay + sonraki seviye. | orta |
 
 
+### 4.1c Oyuncu testinden çıkanlar
+
+Bir arkadaşa hesap açılıp test ettirildi. Söyledikleri "fikir" gibi
+duruyordu ama üçü ölçülebildi ve üçü de doğru çıktı.
+
+| # | Ne dedi | Ölçüm | Durum |
+|---|---|---|---|
+| T1 | "Oyun çok karanlık, parlaklığımı yükseltmek zorunda kaldım" | 414 metnin 129'u (%31) WCAG AA altında; en çok yön gösteren küçük yazılar (`sonuk` 2.97, gerek 4.5) | yapıldı |
+| T2 | "Her yerde bir şeyler yazıyor, önemli-önemsiz belli değil" | 175 metin 11px altında (141'i 9px) | yapıldı |
+| T3 | "Görevler ve generallere ulaşmak uzun sürüyor" | Çubukta 4 ekran (1 dokunuş), menüde 7 (2 dokunuş); menü sıklığa göre değil "sığmayanlar" diye dizilmişti | yapıldı |
+| T4 | "Oyunun içine giremiyorum, her şeyi üstümüze atıyor" | — | **sırada** |
+
+T4 en büyüğü ve öğreticinin TÜRÜNÜ sorguluyor: bizimki sekiz sayfalık bir
+tanıtım (oku, sonra kendin dene), oyuncunun istediği bir zincir (şimdi
+şuna bas, oldu mu bak, şimdi şuna). "Anlattım" ile "yaptırdım" farkı.
+
 ### 4.1b Ölçerken çıkanlar
 
 Yol haritasında olmayan ama ölçüm sırasında ortaya çıkan işler. Buraya

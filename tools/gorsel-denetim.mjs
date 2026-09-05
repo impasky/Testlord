@@ -14,6 +14,7 @@
  */
 import { chromium } from 'playwright';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
+import { EKRANLAR, ekrana } from './lib/gezin.mjs';
 
 import { kayitOl } from './lib/kayit.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
@@ -275,33 +276,9 @@ async function denetle(ad) {
   }
 }
 
-const sekmeler = [
-  ['malikane', 'Malikâne'],
-  ['kisla', 'Kışla'],
-  ['harita', 'Harita'],
-  ['demirhane', 'Demirhane'],
-];
-for (const [ad, etiket] of sekmeler) {
-  await page.click(`nav button:has-text("${etiket}")`);
-  await kaymaOlcumuBaslat();
-  await denetle(ad);
-}
-
-// Menü altındaki ekranlar
-for (const [ad, etiket] of [
-  ['gorevler', 'Görevler'],
-  ['olaylar', 'Olaylar'],
-  ['lord', 'Lord'],
-  ['generaller', 'Generaller'],
-  ['siralama', 'Sıralama'],
-  ['ittifak', 'İttifak'],
-]) {
-  await page.click('nav button:has-text("Menü")');
-  await page.waitForTimeout(500);
-  // Tıklamayı MENÜ ızgarasına daralt. `text=İttifak` artık iki eleman
-  // buluyor: menüdeki sayfa ve Sıralama ekranındaki ittifak sekmesi.
-  // Playwright ilkini seçip menü perdesine çarpıyordu.
-  await page.locator(`div.fixed ul.grid button:has-text("${etiket}")`).click();
+// Hangi ekranın çubukta hangisinin menüde olduğunu `lib/gezin.mjs` biliyor.
+for (const [ad] of EKRANLAR) {
+  await ekrana(page, ad, 0);
   await kaymaOlcumuBaslat();
   await denetle(ad);
 }

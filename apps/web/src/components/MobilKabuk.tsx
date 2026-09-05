@@ -32,27 +32,50 @@ import { Ilerleme, kisaSayi } from './ui';
  */
 export type Sekme = Ekran;
 
+/**
+ * Alt çubuk: HER OTURUMDA açılan ekranlar.
+ *
+ * Ölçüt sıklık, "ana özellik mi" değil. Bir oyuncu testi şunu söyledi:
+ * "normalde önemli şeyler ekranda olur ama görevler ve generallere ulaşmak
+ * uzun sürüyor". Sayınca haklı çıktı: alt çubukta 4 ekran (1 dokunuş),
+ * menüde 7 ekran (2 dokunuş) vardı ve menü sıklığa göre değil, "çubuğa
+ * sığmayanlar" diye dizilmişti. Her oturumda bakılan Görevler de 2
+ * dokunuştu, ayda bir açılan Hesap da.
+ *
+ * Görevler çubuğa alındı çünkü YARIN GERİ GELME SEBEBİ o (docs/09 K4) ve
+ * görünmeyen bir sebep sebep değildir. Yerini Demirhane açtı — onun
+ * döngüsü yavaş: üretimi başlatıp saatler sonra dönülüyor, oysa Görevler
+ * her oturum açılıyor. Ölçüt "ana özellik mi" olsaydı Demirhane kalırdı;
+ * ölçüt sıklık.
+ *
+ * DÖRT sekme + Menü, beş değil. Altı yuva 390px'e sığıyor ama ölçtüğümde
+ * yuvalar 54-81px arası eşitsiz çıktı ve üç etiket kenara yapıştı
+ * (Malikâne 70/70, Görevler 71/71, Demirhane 81/81). Sığmak yetmiyor;
+ * eşit olmayan sekme genişliği bozuk görünüyor. Etiketi kısaltmak da
+ * yanlış olurdu: sayfanın başlığı "Demirhane", omurga "Demirhane'de üret"
+ * diyor — çubukta başka bir ad, tam da oyuncunun şikâyet ettiği
+ * "kafamda kategorize edemiyorum" duygusunu büyütürdü.
+ */
 const ALT_SEKMELER: { key: Sekme; ad: string; Ikon: typeof IkonNavMalikane }[] = [
   { key: 'malikane', ad: 'Malikâne', Ikon: IkonNavMalikane },
+  { key: 'gorevler', ad: 'Görevler', Ikon: IkonSure },
   { key: 'kisla', ad: 'Kışla', Ikon: IkonNavKisla },
   { key: 'harita', ad: 'Harita', Ikon: IkonNavHarita },
-  { key: 'demirhane', ad: 'Demirhane', Ikon: IkonNavDemirhane },
 ];
 
 /**
- * Menü sayfaları.
+ * Menü sayfaları — oturumda bir ya da daha seyrek açılanlar.
  *
- * Sıra rastgele değil, kullanım sıklığına göre: görevler ve olaylar her
- * girişte bakılan şeyler (Malikâne'den taşındılar), hesap en altta çünkü
- * ayda bir açılıyor.
+ * Sıra yine sıklığa göre: Olaylar her girişte bakılabilir, Hesap en altta
+ * çünkü ayda bir açılıyor.
  */
 const MENU_SEKMELERI: { key: Sekme; ad: string; Ikon: typeof IkonNavMalikane }[] = [
-  { key: 'gorevler', ad: 'Görevler', Ikon: IkonSure },
+  { key: 'demirhane', ad: 'Demirhane', Ikon: IkonNavDemirhane },
   { key: 'olaylar', ad: 'Olaylar', Ikon: IkonSancak },
-  { key: 'lord', ad: 'Lord', Ikon: IkonNavLord },
   { key: 'generaller', ad: 'Generaller', Ikon: IkonNavGeneraller },
-  { key: 'siralama', ad: 'Sıralama', Ikon: IkonNavSiralama },
   { key: 'ittifak', ad: 'İttifak', Ikon: IkonSohret },
+  { key: 'lord', ad: 'Lord', Ikon: IkonNavLord },
+  { key: 'siralama', ad: 'Sıralama', Ikon: IkonNavSiralama },
   { key: 'hesap', ad: 'Hesap', Ikon: IkonNavLord },
 ];
 
