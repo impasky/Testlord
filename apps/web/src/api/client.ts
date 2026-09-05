@@ -118,6 +118,8 @@ export interface LordState {
   dailyAttacks: number;
   /** Öğreticiyi görüp görmediği — tam ekran tanıtım buna bakarak açılır. */
   ogreticiGorundu: boolean;
+  /** Rehberi (kâhya kartı + rehber ışığı) kapattı mı. */
+  rehberGorundu: boolean;
   /** Başarım ölçütleri; başarımlar bunlardan `basarimlar()` ile türetilir. */
   basarimOlcutleri: BasarimOlcutleri;
 }
@@ -806,6 +808,7 @@ export const api = {
 
   /** Öğretici okundu/geçildi — bir daha kendiliğinden açılmaz. */
   ogreticiBitti: () => post<{ bitti: boolean; ilkKez: boolean }>('/me/ogretici-bitti'),
+  rehberBitti: () => post<{ bitti: boolean; ilkKez: boolean }>('/me/rehber-bitti'),
   /** Öğreticiyi tekrar okumak için (Hesap ekranı). */
   ogreticiSifirla: () => post<{ sifirlandi: boolean }>('/me/ogretici-sifirla'),
 

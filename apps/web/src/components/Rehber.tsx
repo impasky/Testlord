@@ -17,11 +17,26 @@ import { Gorsel } from './Gorsel';
 import { IkonNavGeneraller } from './Ikonlar';
 // Kapatma kararı ortak modülde: "yeter, anladım" hem bu kartı hem ekranı
 // karartan rehber ışığını birden susturmalı (rehberKapali.ts başına bak).
-import { rehberiKapat, useRehberKapali } from './rehberKapali';
+import { useRehberOturumdaKapali, useRehberiKapat } from './rehberKapali';
 import { Kart } from './ui';
 
-export function Rehber({ adim, bolgeSayisi }: { adim: string | null; bolgeSayisi: number }) {
-  const kapali = useRehberKapali();
+export function Rehber({
+  adim,
+  bolgeSayisi,
+  gorundu,
+}: {
+  adim: string | null;
+  bolgeSayisi: number;
+  /** Lord bu rehberi daha önce kapatmış mı (sunucudan, hesaba bağlı). */
+  gorundu: boolean;
+}) {
+  // İki kaynak birden: hesabın kalıcı kararı + bu oturumda az önce
+  // basılan düğme. İkincisi olmasaydı /me tazelenene kadar kart ekranda
+  // kalırdı. Kanca KOŞULSUZ çağrılıyor — `gorundu || useRehber…()` yazmak
+  // kısa devre yüzünden kancayı bazı çizimlerde atlardı.
+  const oturumdaKapali = useRehberOturumdaKapali();
+  const kapali = gorundu || oturumdaKapali;
+  const kapat = useRehberiKapat();
 
   const soz = rehberSozu(adim);
   if (!soz || !rehberGorunsunMu(bolgeSayisi, kapali)) return null;
@@ -49,7 +64,7 @@ export function Rehber({ adim, bolgeSayisi }: { adim: string | null; bolgeSayisi
             <span className="baslik text-[11px] text-mavi">{REHBER.ad}</span>
             <button
               type="button"
-              onClick={rehberiKapat}
+              onClick={kapat}
               className="bas shrink-0 text-[11px] text-sonuk underline"
             >
               yeter, anladım

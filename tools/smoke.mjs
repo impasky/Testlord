@@ -20,7 +20,6 @@ const CHROME =
 
 const browser = await chromium.launch({ executablePath: CHROME, args: ['--no-sandbox'] });
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
-await rehberiSustur(page);
 
 const hatalar = [];
 page.on('console', (m) => {
@@ -54,6 +53,7 @@ try {
   kontrol('Kayıt olup Malikâne ekranına girildi', true);
   // Öğretici tam ekran açılıyor: gerçek oyuncu gibi geçiyoruz.
   await ogreticiyiGec(page);
+  await rehberiSustur(page);
 } catch {
   kontrol('Kayıt olup Malikâne ekranına girildi', false);
   console.log('  Sayfa:', (await page.locator('body').innerText()).slice(0, 300));

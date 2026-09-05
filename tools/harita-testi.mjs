@@ -148,7 +148,6 @@ const tarayici = await chromium.launch({
   args: ['--no-sandbox'],
 });
 const sayfa = await tarayici.newPage({ viewport: { width: 390, height: 844 } });
-await rehberiSustur(sayfa);
 const konsol = [];
 sayfa.on('console', (m) => m.type() === 'error' && konsol.push(m.text()));
 
@@ -157,6 +156,7 @@ await sayfa.evaluate((t) => localStorage.setItem('lordlar_token', t), token);
 await sayfa.reload({ waitUntil: 'domcontentloaded' });
 await sayfa.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
 await ogreticiyiGec(sayfa);
+await rehberiSustur(sayfa);
 await sayfa.click('nav button:has-text("Harita")');
 await sayfa.waitForTimeout(2000);
 

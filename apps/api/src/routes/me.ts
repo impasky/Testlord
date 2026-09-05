@@ -178,6 +178,21 @@ export async function meRoutes(app: FastifyInstance): Promise<void> {
   });
 
   /**
+   * Rehberi kapattı — kâhya kartı ve ekranı karartan rehber ışığı sussun.
+   *
+   * Öğreticininki gibi `updateMany` + `null` koşulu: kart ile ışık aynı
+   * kararı paylaşıyor ve ikisi de bu ucu çağırabilir, damga kaymasın.
+   */
+  app.post('/me/rehber-bitti', { preHandler: requireAuth }, async (req) => {
+    const lordId = await findLordByUser(req.user.userId);
+    const sonuc = await prisma.lord.updateMany({
+      where: { id: lordId, rehberBittiAt: null },
+      data: { rehberBittiAt: new Date() },
+    });
+    return { bitti: true, ilkKez: sonuc.count === 1 };
+  });
+
+  /**
    * Öğreticiyi yeniden aç.
    *
    * Bir kere gösterilip bir daha açılamayan öğretici, unutulduğu anda
@@ -185,7 +200,13 @@ export async function meRoutes(app: FastifyInstance): Promise<void> {
    */
   app.post('/me/ogretici-sifirla', { preHandler: requireAuth }, async (req) => {
     const lordId = await findLordByUser(req.user.userId);
-    await prisma.lord.update({ where: { id: lordId }, data: { ogreticiBittiAt: null } });
+    // Rehber de sıfırlanıyor: "öğreticiyi tekrar aç" diyen oyuncu sekiz
+    // sayfayı değil, ONBOARDING'İN TAMAMINI istiyor — asıl öğreten kısım
+    // zaten kâhyanın elinden tutup yaptırdığı bölüm.
+    await prisma.lord.update({
+      where: { id: lordId },
+      data: { ogreticiBittiAt: null, rehberBittiAt: null },
+    });
     return { sifirlandi: true };
   });
 

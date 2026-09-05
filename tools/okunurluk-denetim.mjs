@@ -155,7 +155,6 @@ const OLCUM = () => {
 
 const b = await chromium.launch({ executablePath: CHROME, args: ['--no-sandbox'] });
 const ctx = await b.newContext({ ...devices['iPhone 13'] });
-await rehberiSustur(ctx);
 const page = await ctx.newPage();
 
 const damga = Date.now();
@@ -179,6 +178,7 @@ await page.evaluate((t) => localStorage.setItem('lordlar_token', t), token);
 await page.reload({ waitUntil: 'domcontentloaded' });
 await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
 await ogreticiyiGec(page);
+await rehberiSustur(page);
 
 const hepsi = [];
 async function olc(ad) {

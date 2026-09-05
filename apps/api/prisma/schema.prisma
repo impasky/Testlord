@@ -106,6 +106,18 @@ model Lord {
   /// ikinci kez göstermek, kartı ikinci kez göstermekten çok daha rahatsız
   /// edici; tarayıcı deposu silinince ya da telefon değişince geri gelirdi.
   ogreticiBittiAt   DateTime?
+  /// Rehberi (kâhya kartı + ekranı karartan rehber ışığı) kapattığı an.
+  ///
+  /// Tarayıcı deposunda tutuluyordu ve bu SESSİZ bir hataydı: anahtar
+  /// tarayıcı başına yazılıyor, hesap başına değil. Bir kez "yeter,
+  /// anladım" diyen oyuncunun aynı tarayıcıda açtığı HER YENİ HESAP
+  /// rehbersiz açılıyordu — sunucu "yepyeni oyuncu" derken tarayıcı
+  /// "zaten kapattım" diyordu. Yeni hesapla deneyen oyuncu haklı olarak
+  /// "yaptıran öğretici çalışmıyor" dedi.
+  ///
+  /// Öğreticininki gibi sunucuda: tam ekran bir perdeyi ikinci kez
+  /// göstermek, kartı ikinci kez göstermekten çok daha rahatsız edici.
+  rehberBittiAt     DateTime?
 
   /// Arma: oyuncunun heraldik kimliği (docs/10 §1.1). Beş küçük anahtar,
   /// hiçbir sayıya dokunmuyor. Boşsa lord adından türetiliyor.

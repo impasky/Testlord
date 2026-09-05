@@ -39,7 +39,6 @@ async function tiklaVeBekle(page, secici, yolParcasi) {
 
 const browser = await chromium.launch({ executablePath: CHROME, args: ['--no-sandbox'] });
 const ctx = await browser.newContext({ ...devices['iPhone 13'] });
-await rehberiSustur(ctx);
 const page = await ctx.newPage();
 
 const konsolHatalari = [];
@@ -79,6 +78,7 @@ await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 15000 
 // Öğretici tam ekran açılıyor ve arkasını tıklatmıyor: gerçek oyuncu
 // gibi geçiyoruz (bkz. tools/lib/ogretici.mjs).
 await ogreticiyiGec(page);
+await rehberiSustur(page);
 kontrol('Kayıt olup oyuna girildi', true);
 
 const token = await page.evaluate(() => localStorage.getItem('lordlar_token'));

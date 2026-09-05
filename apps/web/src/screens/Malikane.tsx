@@ -185,7 +185,11 @@ export function Malikane({
 
       {/* Kâhya omurganın ÜSTÜNDE: önce neden, sonra ne. Adımı omurgadan
           okuyor, kendi senaryosunu tutmuyor (docs/09 T4). */}
-      <Rehber adim={rehberAdimi?.anahtar ?? null} bolgeSayisi={lord.regionCount} />
+      <Rehber
+        adim={rehberAdimi?.anahtar ?? null}
+        bolgeSayisi={lord.regionCount}
+        gorundu={lord.rehberGorundu}
+      />
       <Omurga lord={lord} queues={queues} onGit={onGit} onHedefeGit={onBolgeyiAc} />
 
       {/* Diyar tanıtımı omurganın ALTINDA.

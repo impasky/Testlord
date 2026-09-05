@@ -75,7 +75,6 @@ const ctx = await browser.newContext({
   isMobile: true,
   hasTouch: true,
 });
-await rehberiSustur(ctx);
 const page = await ctx.newPage();
 const konsol = [];
 page.on('console', (m) => {
@@ -116,6 +115,7 @@ await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 
 // Öğretici tam ekran açılıyor ve altındaki ekranı ölçmemizi engelliyor.
 // Denetim öğreticiyi DEĞİL, arkasındaki ekranları ölçüyor.
 await ogreticiyiGec(page);
+await rehberiSustur(page);
 
 /**
  * Sayfa yerleşirken KAÇ PİKSEL zıpladı?
@@ -312,6 +312,11 @@ if (yeniToken) {
   await page.reload({ waitUntil: 'domcontentloaded' });
   await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
   await ogreticiyiGec(page);
+  // İkinci lord da yepyeni: rehber ışığı onun ekranını da karartırdı.
+  // Karar artık HESABA bağlı olduğu için bu lord için ayrıca kapatılıyor —
+  // ilk lordunki onun adına geçmiyor. (Tarayıcı deposunda tutulduğunda
+  // geçiyordu; ürün hatasının kendisi buydu.)
+  await rehberiSustur(page);
   await denetle('yeni-lord-malikane');
 
   const sakin = await page.evaluate(() => ({

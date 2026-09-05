@@ -97,6 +97,15 @@ export interface LordState {
    */
   ogreticiGorundu: boolean;
   /**
+   * Rehberi (kâhya kartı + rehber ışığı) kapattı mı.
+   *
+   * Bu da sunucuda, aynı sebeple ve bir sebep daha ile: tarayıcı deposunda
+   * tutulduğunda anahtar HESABA değil TARAYICIYA bağlı kalıyordu ve bir kez
+   * kapatan oyuncunun aynı tarayıcıda açtığı her yeni hesap rehbersiz
+   * açılıyordu.
+   */
+  rehberGorundu: boolean;
+  /**
    * Başarım ölçütleri. Başarımların kendisi burada hesaplanmıyor:
    * tanımlar `data/basarimlar.json`da, mantık `packages/shared`da.
    * Sunucu yalnızca sayılan değerleri veriyor — aynı saf fonksiyon
@@ -367,6 +376,7 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
     protectionUntil: lord.protectionUntil,
     dailyAttacks: dailyReset ? 0 : lord.dailyAttacks,
     ogreticiGorundu: lord.ogreticiBittiAt !== null,
+    rehberGorundu: lord.rehberBittiAt !== null,
     basarimOlcutleri: basarimOlcutleriHesapla(
       lord,
       items,

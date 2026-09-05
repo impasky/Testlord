@@ -16,7 +16,6 @@
  *
  * SADECE GELİŞTİRME. node tools/ogretici-tam-testi.mjs
  */
-import { rehberiSustur } from './lib/gezin.mjs';
 import { chromium, devices } from 'playwright';
 import { kayitOl } from './lib/kayit.mjs';
 
@@ -40,7 +39,6 @@ const { token } = await kayitOl(API, {
 
 const b = await chromium.launch({ executablePath: CHROME, args: ['--no-sandbox'] });
 const ctx = await b.newContext({ ...devices['iPhone 13'] });
-await rehberiSustur(ctx);
 const page = await ctx.newPage();
 const konsol = [];
 page.on('console', (m) => {

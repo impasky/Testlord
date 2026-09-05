@@ -29,7 +29,6 @@ console.log('Lordlar Çağı — savaş raporu testi (iPhone 13)\n');
 
 const browser = await chromium.launch({ executablePath: CHROME, args: ['--no-sandbox'] });
 const page = await (await browser.newContext({ ...devices['iPhone 13'] })).newPage();
-await rehberiSustur(page);
 
 const konsol = [];
 page.on('console', (m) => {
@@ -47,6 +46,7 @@ await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 15000 
 // Öğretici tam ekran açılıyor ve arkasını tıklatmıyor: gerçek oyuncu
 // gibi geçiyoruz (bkz. tools/lib/ogretici.mjs).
 await ogreticiyiGec(page);
+await rehberiSustur(page);
 
 const token = await page.evaluate(() => localStorage.getItem('lordlar_token'));
 const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };

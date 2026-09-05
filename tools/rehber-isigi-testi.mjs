@@ -284,6 +284,43 @@ await page.waitForTimeout(2500);
   await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
   await page.waitForTimeout(2500);
   kontrol('Yenilemede geri gelmiyor', (await isikDurumu()).yaniyor === false);
+
+  /**
+   * AYNI TARAYICIDA YENİ HESAP: rehber GERİ GELMELİ.
+   *
+   * Oyuncunun bildirdiği hata tam olarak buydu — "yaptıran öğretici
+   * çalışmıyor, yeni hesap açıp denedim". Kapatma kararı `localStorage`da
+   * tutuluyordu, yani TARAYICIYA bağlıydı: bir kez "yeter, anladım" diyen
+   * oyuncunun aynı tarayıcıda açtığı her yeni hesap sessizce rehbersiz
+   * açılıyordu. Sunucu "yepyeni lord" derken tarayıcı "zaten kapattım"
+   * diyordu ve kimse ikisini karşılaştırmıyordu.
+   *
+   * Karar artık lorda ait (`Lord.rehberBittiAt`). Bu kontrol o hatanın
+   * geri gelmesini imkânsız kılıyor: depo TEMİZLENMEDEN yeni bir jeton
+   * konuyor, çünkü gerçek oyuncu da tarayıcısını temizlemiyor.
+   */
+  const d4 = Date.now();
+  const { token: t4 } = await kayitOl(API, {
+    email: `isik${d4}_y@lordlar.dev`,
+    lordName: `Isiky ${d4.toString(36).slice(-4)}`,
+  });
+  await fetch(`${API}/api/me/ogretici-bitti`, {
+    method: 'POST',
+    headers: { authorization: `Bearer ${t4}`, 'content-type': 'application/json' },
+    body: '{}',
+  });
+  // localStorage'a DOKUNULMUYOR: eski hesabın izi dursun, hata orada saklıydı.
+  await page.evaluate((t) => localStorage.setItem('lordlar_token', t), t4);
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+  await page.waitForTimeout(2500);
+  const yeni = await isikDurumu();
+  kontrol('AYNI TARAYICIDA yeni hesapta ışık GERİ GELİYOR', yeni.yaniyor === true,
+    yeni.isaret ?? 'sönük');
+  kontrol('Yeni hesapta kâhya kartı da geri geliyor',
+    await page.evaluate(() =>
+      (document.querySelector('main')?.textContent ?? '').includes('Kâhya Sinan'),
+    ));
 }
 
 // --- 7. Sekiz sayfalık öğretici açıkken ışık yanmamalı ---
@@ -302,6 +339,58 @@ await page.waitForTimeout(2500);
   await page.waitForTimeout(2500);
   kontrol('Öğretici açıkken ışık SÖNÜK (iki perde üst üste binmiyor)',
     (await isikDurumu()).yaniyor === false);
+}
+
+/**
+ * --- 8. GERÇEK İLK OTURUM: arayüzden kayıt → sekiz sayfa → ışık ---
+ *
+ * Yukarıdaki bölümler sekiz sayfalık öğreticiyi API'den kapatıp işi
+ * kısaltıyor. Oyuncu bunu yapmıyor: kaydoluyor, sayfaları çeviriyor,
+ * "Diyarıma dön"e basıyor. Işığın YANDIĞI AN tam olarak orası ve o an
+ * hiçbir testte yürünmemişti — bildirilen hata da zaten oradaydı.
+ *
+ * Bu yüzden burada hiçbir kısayol yok: tertemiz bir tarayıcı bağlamı,
+ * arayüzden kayıt, sekiz sayfa tek tek.
+ */
+{
+  const ctx2 = await b.newContext({ ...devices['iPhone 13'] });
+  const s2 = await ctx2.newPage();
+  const d5 = Date.now().toString(36).slice(-5);
+  await s2.goto(WEB, { waitUntil: 'domcontentloaded' });
+  await s2.waitForSelector('input[type=email]', { timeout: 20000 });
+  await s2.locator('input').nth(0).fill(`Ilk ${d5}`);
+  await s2.locator('input[type=email]').fill(`isikilk${d5}@lordlar.dev`);
+  await s2.locator('input[type=password]').fill('parola12345');
+  await s2.locator('form button[type="submit"]').last().click();
+
+  await s2.waitForSelector('[role="dialog"][aria-label="Öğretici"]', { timeout: 25000 });
+  kontrol('Gerçek kayıtta önce sekiz sayfalık öğretici açılıyor', true);
+
+  for (let n = 1; n < 8; n++) {
+    await s2.locator('[role="dialog"] button:has-text("Devam")').click();
+    await s2.waitForTimeout(300);
+  }
+  await s2.locator('[role="dialog"] button:has-text("Diyarıma dön")').click();
+  await s2.waitForTimeout(3000);
+
+  const son = await s2.evaluate(() => {
+    const perde = [...document.querySelectorAll('div')].filter(
+      (d) => typeof d.className === 'string' && d.className.includes('z-[55]'),
+    );
+    const hedef = [...document.querySelectorAll('[data-rehber]')].find((e) => {
+      const r = e.getBoundingClientRect();
+      if (r.width < 4 || r.height < 4) return false;
+      const u = document.elementFromPoint(
+        Math.round(r.left + r.width / 2),
+        Math.round(r.top + r.height / 2),
+      );
+      return Boolean(u && (e === u || e.contains(u)));
+    });
+    return { parca: perde.length, isaret: hedef?.getAttribute('data-rehber') ?? null };
+  });
+  kontrol('Öğretici bitince ışık KENDİLİĞİNDEN yanıyor', son.parca === 4, `${son.parca} parça`);
+  kontrol('Delik doğrudan omurga düğmesinde', son.isaret === 'omurga-dugme', son.isaret ?? 'yok');
+  await ctx2.close();
 }
 
 kontrol('Konsol hatası yok', konsol.length === 0, konsol.slice(0, 3).join(' | '));

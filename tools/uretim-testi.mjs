@@ -23,7 +23,6 @@ let hata=0; const k=(a,c,d='')=>{console.log(`  ${c?'[GEÇTİ]':'[KALDI]'} ${a}$
 
 const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium-1194/chrome-linux/chrome',args:['--no-sandbox']});
 const ctx=await b.newContext({...devices['iPhone 13']});
-await rehberiSustur(ctx);
 const page=await ctx.newPage();
 const hatalar=[];
 page.on('console',m=>{if(m.type()==='error')hatalar.push(m.text());});
@@ -55,6 +54,7 @@ catch{ girdi=false; console.log('   sayfa:',(await page.locator('body').innerTex
 k('Telefondan kayıt olup oyuna girildi', girdi);
 // Öğretici tam ekran açılıyor: gerçek oyuncu gibi geçiyoruz.
 await ogreticiyiGec(page);
+await rehberiSustur(page);
 if(!girdi){ for(const h of hatalar.slice(0,4)) console.log('    -',h); await b.close(); process.exit(1); }
 await page.waitForTimeout(1200);
 await page.screenshot({path:`${SP}/tel-2-malikane.png`,fullPage:true});

@@ -5,6 +5,7 @@ import { BaglantiDurumu } from './components/BaglantiDurumu';
 import { MobilKabuk, type Sekme } from './components/MobilKabuk';
 import { Ogretici } from './components/Ogretici';
 import { RehberIsigi } from './components/RehberIsigi';
+import { rehberOturumuSifirla } from './components/rehberKapali';
 import { Buton } from './components/ui';
 import { Demirhane } from './screens/Demirhane';
 import { Generaller } from './screens/Generaller';
@@ -87,6 +88,11 @@ export function App() {
   function cikis() {
     setToken(null);
     qc.clear();
+    // Oturum bayrağı modül düzeyinde: sıfırlanmazsa aynı sekmede açılan
+    // BİR SONRAKİ hesap da rehbersiz açılırdı. Hatanın tarayıcı deposundaki
+    // hâli tam olarak buydu, aynısını bellekte tekrarlamayalım.
+    rehberOturumuSifirla();
+    setOgreticiKapandi(false);
     setGirisli(false);
   }
 
@@ -177,6 +183,7 @@ export function App() {
       <RehberIsigi
         adim={omurgaAdimi?.anahtar ?? null}
         bolgeSayisi={lord.regionCount}
+        gorundu={lord.rehberGorundu}
         acik={lord.ogreticiGorundu || ogreticiKapandi}
       />
       {sekme === 'malikane' && (

@@ -33,7 +33,7 @@
  */
 import { rehberGorunsunMu, rehberIsigi } from '@lordlar/shared';
 import { useEffect, useState } from 'react';
-import { rehberiKapat, useRehberKapali } from './rehberKapali';
+import { useRehberOturumdaKapali, useRehberiKapat } from './rehberKapali';
 
 /** Deliğin çevresindeki nefes payı. */
 const PAY = 8;
@@ -87,15 +87,24 @@ function ayniMi(a: Kutu | null, r: DOMRect): boolean {
 export function RehberIsigi({
   adim,
   bolgeSayisi,
+  gorundu,
   acik,
 }: {
   /** Omurganın hesapladığı adım. Işık kendi senaryosunu tutmuyor. */
   adim: string | null;
   bolgeSayisi: number;
+  /**
+   * Lord bu rehberi daha önce kapatmış mı — HESABA bağlı, tarayıcıya
+   * değil. Tarayıcı deposunda tutulduğunda aynı tarayıcıda açılan her
+   * yeni hesap rehbersiz açılıyordu.
+   */
+  gorundu: boolean;
   /** Öğretici kapandı mı — iki tam ekran perde üst üste binmesin. */
   acik: boolean;
 }) {
-  const kapali = useRehberKapali();
+  const oturumdaKapali = useRehberOturumdaKapali();
+  const kapatDugmesi = useRehberiKapat();
+  const kapali = gorundu || oturumdaKapali;
   const [kutu, setKutu] = useState<Kutu | null>(null);
   const [itiraz, setItiraz] = useState(false);
 
@@ -245,7 +254,7 @@ export function RehberIsigi({
           özdeş kapatma düğmesi hem oyuncu için hem test için belirsizlik. */}
       <button
         type="button"
-        onClick={rehberiKapat}
+        onClick={kapatDugmesi}
         aria-label="Rehberi kapat"
         className="bas baslik fixed top-2 right-3 z-[57] px-3 py-2 text-[11px] text-sonuk"
       >

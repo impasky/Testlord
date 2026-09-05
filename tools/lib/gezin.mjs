@@ -61,31 +61,35 @@ export async function ekrana(page, ad, bekle = 1200) {
 }
 
 /**
- * Rehber ışığını bu tarayıcı bağlamında kapatır.
+ * Rehber ışığını bu OYUNCU için kapatır.
  *
  * Işık ilk oturumda ekranı karartıp TEK düğmeyi açıkta bırakıyor
  * (`RehberIsigi.tsx`) — yani bir aracın "menüye bas, şu sekmeye geç"
  * gezinmesini bilerek engelliyor. Engel doğru; engellenen araçlar yanlış
  * oyuncuyu canlandırıyordu: ekranları gezen bu testler ilk oturumdaki
- * oyuncuyu değil, oyunu zaten öğrenmiş oyuncuyu ölçüyor ve o oyuncu için
- * rehber çoktan kapalı.
+ * oyuncuyu değil, oyunu zaten öğrenmiş oyuncuyu ölçüyor.
  *
- * Kararı ÜRÜNÜN kendi anahtarıyla yazıyoruz (oyuncunun "yeter, anladım"
- * dediğinde yazdığı anahtar): testi geçirmek için ürüne kapı açmıyoruz,
- * ürünün zaten olan kapısından giriyoruz.
+ * Karar ÜRÜNÜN kendi ucundan veriliyor (`POST /me/rehber-bitti` — oyuncu
+ * "yeter, anladım" deyince çağrılan uç): testi geçirmek için ürüne kapı
+ * açmıyoruz, olan kapıdan giriyoruz.
  *
- * `addInitScript` bağlam düzeyinde: her yüklemede ve her yenilemede
- * yeniden çalışıyor, jeton değiştirilip sayfa yenilendiğinde de duruyor.
+ * Tarayıcı deposuna yazmıyor. Yazsaydı testler ürünün DÜZELTİLEN hatasını
+ * canlandırırdı: karar hesaba değil tarayıcıya bağlanır, aynı tarayıcıda
+ * açılan yeni hesap da sessizce rehbersiz kalırdı.
+ *
+ * Sayfa GİRİŞ YAPMIŞ olmalı; jetonu sayfanın kendi deposundan okuyor.
  *
  * Rehberin KENDİSİNİ ölçen araçlar (rehber-testi, rehber-isigi-testi)
  * bunu ÇAĞIRMAZ — orada ışığın yanması testin konusu.
  */
-export async function rehberiSustur(ctx) {
-  await ctx.addInitScript(() => {
-    try {
-      localStorage.setItem('lordlar_rehber_kapali', '1');
-    } catch {
-      /* depo kapalıysa zaten rehber de görünmeyecek */
-    }
+export async function rehberiSustur(page, api = process.env.API_URL ?? 'http://localhost:3000') {
+  const jeton = await page.evaluate(() => localStorage.getItem('lordlar_token'));
+  if (!jeton) throw new Error('rehberiSustur: sayfada jeton yok — giriş yapıldıktan sonra çağır');
+  const y = await fetch(`${api}/api/me/rehber-bitti`, {
+    method: 'POST',
+    headers: { authorization: `Bearer ${jeton}` },
   });
+  if (!y.ok) throw new Error(`rehberiSustur: ${y.status} ${await y.text()}`);
+  // /me önbellekte duruyor olabilir; yeni bayrağı okusun.
+  await page.reload({ waitUntil: 'domcontentloaded' });
 }
