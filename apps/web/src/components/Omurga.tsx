@@ -58,6 +58,14 @@ interface Adim {
   sonraki?: string;
   /** Eylemin götürdüğü sekme; alt çubukta işaretlemek için. */
   hedefSekme?: Sekme;
+  /**
+   * Eylem doğrudan bir bölge paneli açıyorsa o bölgenin kimliği.
+   *
+   * Yalnız önden veri çekmek için: haritada bölge paneli kendi sorgusunu
+   * atıyor ve yavaş sunucuda düğmeye basmakla panelin dolması arasında
+   * boşluk kalıyordu.
+   */
+  hedefBolge?: number;
 }
 
 /**
@@ -391,6 +399,7 @@ function siradakiAdim(g: {
       dugme: `${eYonelme(oneri.name)} saldır`,
       git: () => g.onHedefeGit(oneri.regionId),
       hedefSekme: 'harita',
+      hedefBolge: oneri.regionId,
       sonraki: lord.equippedItems.length === 0 ? 'Demirhanede ekipman üret' : 'bölgeni yükselt',
     };
   }
@@ -441,6 +450,7 @@ function siradakiAdim(g: {
       dugme: `${iBelirtme(oneri.name)} incele`,
       git: () => g.onHedefeGit(oneri.regionId),
       hedefSekme: 'harita',
+      hedefBolge: oneri.regionId,
       sonraki: 'Taht Kalesi — diyarın tek sahibi olabilirsin',
     };
   }

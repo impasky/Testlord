@@ -384,7 +384,17 @@ export function RehberIsigi({
 
   // Perdeye basmak bir şey yapmaz ama sessiz kalmaz: halka bir kez titrer.
   // Tepkisiz bir ekran "oyun dondu" diye okunur.
-  const perde = 'fixed z-[55] bg-black/72';
+  /*
+   * Perde parçaları KAYARAK yer değiştiriyor, zıplayarak değil.
+   *
+   * Oyuncu: "yönlendirme işini daha akıcı ve smooth yapar mısın." Delik
+   * bir düğmeden öbürüne anında atlayınca göz bağı kopuyor ve zincir
+   * "bir şeyler oluyor" gibi okunuyordu. 220 ms'lik kayma, gözün deliği
+   * takip etmesine yetiyor.
+   *
+   * Hareket hassasiyeti olan oyuncu için kapalı: `motion-safe`.
+   */
+  const perde = 'fixed z-[55] bg-black/72 motion-safe:transition-all motion-safe:duration-200 motion-safe:ease-out';
   const dokun = () => {
     setItiraz(true);
     window.setTimeout(() => setItiraz(false), 450);
@@ -464,7 +474,7 @@ export function RehberIsigi({
           düğmeye giden parmağı yakalamamalı. */}
       <div
         aria-hidden
-        className={`pointer-events-none fixed z-[56] rounded-2xl border-2 border-altin ${
+        className={`pointer-events-none fixed z-[56] rounded-2xl border-2 border-altin motion-safe:transition-all motion-safe:duration-200 motion-safe:ease-out ${
           itiraz ? 'motion-safe:animate-[nabiz_0.45s_ease-in-out]' : ''
         }`}
         style={{
@@ -478,7 +488,7 @@ export function RehberIsigi({
 
       <div
         role="status"
-        className="pointer-events-none fixed z-[56] flex justify-center px-3"
+        className="pointer-events-none fixed z-[56] flex justify-center px-3 motion-safe:transition-all motion-safe:duration-200 motion-safe:ease-out"
         style={
           altaSigar
             ? { top: a + 12, left: 0, right: 0 }

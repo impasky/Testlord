@@ -363,3 +363,46 @@ async function kesfiCoz(
 }
 
 export { craftPrice, upgradeCost };
+
+/**
+ * Bu lordun VADESİ GELMİŞ işlerini şimdi çöz.
+ *
+ * Neden okuma yolunda: worker her 10 saniyede bir dönüyor ama tek servisli
+ * dağıtımda (Render ücretsiz katmanı) API uykuya dalınca worker da
+ * uyuyor. Gerçek bir oyuncu ekran görüntüsünde şu hâli yakaladı:
+ *
+ *   "EĞİTİMDE 26 — bitti"   ama   "Evde 0", "0/90 komuta"
+ *
+ * Eğitim bitmişti, askerler orduya hiç katılmamıştı. Omurga da haklı
+ * olarak "hâlâ ordun yok, asker eğit" diyordu — oysa altın o eğitime
+ * gitmişti. Oyuncu ne basacak bir düğme ne de bir açıklama bulabildiği
+ * bir ekranda kaldı ve "öğretici bu şekilde ekranda kalıyor" dedi.
+ *
+ * Artık her /me okuması, o lordun gecikmiş işlerini kapatıyor. Oyun
+ * worker'ın ayakta olmasına bağlı olmaktan çıkıyor: oyuncu ekranı açtığı
+ * an sonuçlar hazır.
+ *
+ * İş idempotent (`resolved` koşullu updateMany) ve LORDA ÖZEL, sayısı da
+ * sınırlı — okuma yolunu ağırlaştırmıyor. Worker yine duruyor: çevrimdışı
+ * oyuncunun bölgesine gelen saldırı onu bekleyemez.
+ */
+export async function gecikmisIsleriCoz(lordId: string, now = new Date()): Promise<number> {
+  const AZAMI = 20;
+  const bekleyen = await prisma.queue.findMany({
+    where: { lordId, resolved: false, finishAt: { lte: now } },
+    orderBy: { finishAt: 'asc' },
+    take: AZAMI,
+  });
+
+  let sayi = 0;
+  for (const row of bekleyen) {
+    try {
+      if (await resolveQueueItem(row)) sayi++;
+    } catch (e) {
+      // Tek bir kuyruk çözülemezse /me çökmemeli: oyuncu ekranını
+      // görebilsin, worker bir sonraki turda yeniden dener.
+      console.error(`Kuyruk çözülemedi (${row.id}):`, e);
+    }
+  }
+  return sayi;
+}

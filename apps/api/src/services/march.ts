@@ -874,3 +874,41 @@ export async function saldiriBildirimi(
     log,
   );
 }
+
+/**
+ * Bu lordun VADESİ GELMİŞ yürüyüşlerini şimdi çöz.
+ *
+ * Gerekçesi `queue.ts`'teki eşi ile aynı: worker uyuduğunda oyun
+ * durmamalı. Yürüyüşte etkisi daha da can yakıcı — oyuncu saldırısının
+ * sonucunu görmek için ekranı açıyor ve "ordun yolda" yazısı orada
+ * donmuş kalıyor.
+ *
+ * Yalnız bu lordun KENDİ çıkardığı yürüyüşler. Ona gelen saldırılar
+ * worker'ın işi olarak kalıyor: savunanı bulmak bölge sahipliğinden
+ * geçiyor (March'ta savunan alanı yok) ve zaten savunan çoğu zaman
+ * çevrimdışı — worker'ın var oluş sebebi tam olarak o.
+ *
+ * `resolveMarch` iki tarafın sonucunu da yazıyor ve `resolved` bayrağı
+ * işi tek sefere kilitliyor; burada çözülen bir saldırı savunana da
+ * eksiksiz işleniyor.
+ */
+export async function gecikmisYuruyusleriCoz(lordId: string, now = new Date()): Promise<number> {
+  const AZAMI = 20;
+  const bekleyen = await prisma.march.findMany({
+    where: { lordId, resolved: false, arriveAt: { lte: now } },
+    orderBy: { arriveAt: 'asc' },
+    take: AZAMI,
+    select: { id: true },
+  });
+
+  let sayi = 0;
+  for (const m of bekleyen) {
+    try {
+      if (await resolveMarch(m.id)) sayi++;
+    } catch (e) {
+      // Tek bir yürüyüş çözülemezse /me çökmemeli.
+      console.error(`Yürüyüş çözülemedi (${m.id}):`, e);
+    }
+  }
+  return sayi;
+}

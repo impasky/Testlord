@@ -80,6 +80,43 @@ export function App() {
   const omurgaAdimi = useOmurgaAdimi(data?.lord, data?.queues ?? []);
 
   /**
+   * Omurganın gösterdiği ekranın verisini ÖNCEDEN çek.
+   *
+   * Oyuncu: "hiç akıcı değil, sayfalar geç yükleniyor, bu yüzden de
+   * rahatsız edici hissettiriyor." Haklıydı ve sebebi şuydu: `/me` sekme
+   * değişince eski veriyle anında çiziliyor, ama ekranın KENDİ sorgusu
+   * (Kışla'da ordu, haritada yürüyüşler) o an sıfırdan başlıyordu. Yavaş
+   * bir sunucuda düğmeye basmakla ekranın dolması arasında yarım saniye
+   * boşluk kalıyor — rehber ışığının bekleyip durduğu yer de tam orası.
+   *
+   * Omurga zaten oyuncuyu nereye göndereceğini biliyor, o yüzden hedef
+   * ekranın verisi o daha basmadan çekiliyor. Basınca ekran dolu açılıyor.
+   *
+   * Ek istek maliyeti yok denecek kadar az: oyuncu zaten oraya gidecek,
+   * istek yalnızca erkene alınıyor.
+   */
+  const hedefSekme = omurgaAdimi?.hedefSekme ?? null;
+  const hedefBolge0 = omurgaAdimi?.hedefBolge ?? null;
+  useEffect(() => {
+    if (!girisli || !hedefSekme) return;
+    const cek = (anahtar: unknown[], fn: () => Promise<unknown>) =>
+      qc.prefetchQuery({ queryKey: anahtar, queryFn: fn, staleTime: 15_000 });
+    const isler: Promise<unknown>[] = [];
+    if (hedefSekme === 'kisla') isler.push(cek(['army'], api.army));
+    if (hedefSekme === 'harita') {
+      isler.push(cek(['army'], api.army), cek(['marches'], api.marches));
+      // Omurga doğrudan bir bölge paneli açıyorsa panelin verisi de gelsin:
+      // zincirin en yavaş adımı buydu.
+      if (hedefBolge0 !== null) {
+        isler.push(cek(['region', hedefBolge0], () => api.region(hedefBolge0)));
+      }
+    }
+    if (hedefSekme === 'demirhane') isler.push(cek(['items'], api.items), cek(['gear'], api.gear));
+    if (hedefSekme === 'generaller') isler.push(cek(['generals'], api.generals));
+    void Promise.all(isler);
+  }, [girisli, hedefSekme, hedefBolge0, qc]);
+
+  /**
    * Rehber turu bitti: ilk bölge alındı, damga vurulsun.
    *
    * Rehberin kapatma düğmesi yok (oyuncu "okusa da okumasa da yaptırmalı"

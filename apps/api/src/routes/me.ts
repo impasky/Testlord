@@ -10,6 +10,8 @@ import { hashPassword, requireAuth, verifyPassword } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError } from '../errors.js';
 import { findLordByUser, tickLord } from '../services/lord.js';
+import { gecikmisIsleriCoz } from '../services/queue.js';
+import { gecikmisYuruyusleriCoz } from '../services/march.js';
 
 const parolaSchema = z.object({
   mevcut: z.string().min(1, 'Mevcut parolanı gir.'),
@@ -38,6 +40,22 @@ const statsSchema = z.object({
 export async function meRoutes(app: FastifyInstance): Promise<void> {
   app.get('/me', { preHandler: requireAuth }, async (req) => {
     const lordId = await findLordByUser(req.user.userId);
+
+    /*
+     * Gecikmiş işleri ÖNCE kapat, sonra durumu oku.
+     *
+     * Worker her 10 saniyede bir dönüyor ama tek servisli dağıtımda API
+     * uykuya dalınca o da uyuyor. Bir oyuncu şu hâli yakaladı: "EĞİTİMDE
+     * 26 — bitti" yazıyor, ama "Evde 0". Eğitim bitmiş, askerler orduya
+     * katılmamıştı; omurga da haklı olarak "hâlâ asker eğit" diyordu ve
+     * altın çoktan harcandığı için düğme kapalıydı. Oyuncu basacak düğme
+     * bulamadığı bir ekranda kaldı.
+     *
+     * Sıra önemli: `tickLord` durumu hesaplıyor, dolayısıyla çözüm ondan
+     * ÖNCE olmalı — yoksa oyuncu bir istek boyunca eski hâli görürdü.
+     */
+    await Promise.all([gecikmisIsleriCoz(lordId), gecikmisYuruyusleriCoz(lordId)]);
+
     const state = await tickLord(lordId);
 
     // Ekran adı /me'ye takılıyor: istemci zaten bu ucu düzenli çağırıyor,

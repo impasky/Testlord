@@ -595,6 +595,21 @@ await page.waitForTimeout(2500);
   const gecisler = [...new Set(iz.map((x) => x.delik).filter(Boolean))];
   kontrol('Geçiş boyunca en fazla iki hedef gösterildi', gecisler.length <= 2,
     gecisler.join(' → '));
+
+  /**
+   * Deliksiz bekleme NE KADAR sürüyor?
+   *
+   * Oyuncu: "hiç akıcı değil, sayfalar geç yükleniyor." Kışla'nın kendi
+   * sorgusu düğmeye basıldıktan SONRA başlıyordu; 600 ms gecikmede boşluk
+   * da 600 ms'ydi. Omurga nereye göndereceğini zaten bildiği için hedef
+   * ekranın verisi artık oyuncu basmadan çekiliyor ve boşluk beşte birine
+   * iniyor. Ölçüt gevşek (400 ms) çünkü burada ölçülen şey şebeke değil,
+   * önden çekmenin çalışıp çalışmadığı: çalışmazsa boşluk gecikmenin
+   * tamamı kadar olur.
+   */
+  const bekleme = iz.filter((x) => x.perde > 0 && x.delik === null).length * 80;
+  kontrol('Hedef ekranın verisi önden çekiliyor (bekleme kısa)', bekleme <= 400,
+    `${bekleme}ms bekleme (şebeke gecikmesi 600ms)`);
   await ctx4.close();
 }
 

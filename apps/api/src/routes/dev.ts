@@ -28,6 +28,26 @@ export async function devRoutes(app: FastifyInstance): Promise<void> {
     return { cozulen: n };
   });
 
+  /**
+   * Kuyrukların vadesini geçmişe alır ama ÇÖZMEZ.
+   *
+   * "Worker uyuyakalmış" hâlini canlandırıyor. Bir oyuncu bunu gerçek
+   * dağıtımda yakaladı: ekranda "EĞİTİMDE 26 — bitti" yazıyor ama "Evde
+   * 0". Eğitim bitmiş, askerler orduya katılmamış; omurga da haklı olarak
+   * "hâlâ asker eğit" diyor ve altın harcandığı için düğme kapalı.
+   * Oyuncu basacak düğme bulamadığı bir ekranda kalıyor.
+   *
+   * `kuyruklari-bitir` bu hâli üretemez, çünkü o çözerek bitiriyor.
+   */
+  app.post('/test/kuyruklari-vadesinde-birak', { preHandler: requireAuth }, async (req) => {
+    const lordId = await findLordByUser(req.user.userId);
+    const sonuc = await prisma.queue.updateMany({
+      where: { lordId, resolved: false },
+      data: { finishAt: new Date(Date.now() - 1000) },
+    });
+    return { vadesiGecen: sonuc.count };
+  });
+
   /** Bekleyen tüm yürüyüşleri hemen vardırır ve çözer. */
   app.post('/test/yuruyusleri-bitir', { preHandler: requireAuth }, async (req) => {
     const lordId = await findLordByUser(req.user.userId);
