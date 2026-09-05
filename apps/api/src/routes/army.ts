@@ -16,6 +16,7 @@ import { z } from 'zod';
 import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError, hata } from '../errors.js';
+import { gecikmisleriKapat } from '../services/gecikmis.js';
 import { collectAllUnits, findLordByUser, tickLord } from '../services/lord.js';
 import { addUnitsHome, assertQueueSlot, enqueue, spendResources } from '../services/queue.js';
 
@@ -41,6 +42,10 @@ function gearUpgradeCost(level: number): { altin: number; demir: number; erzak: 
 export async function armyRoutes(app: FastifyInstance): Promise<void> {
   app.get('/army', { preHandler: requireAuth }, async (req) => {
     const lordId = await findLordByUser(req.user.userId);
+    // Biten eğitim orduya KATILMIŞ olarak okunsun. `/me` ile bu uç aynı
+    // anda tazeleniyor ve bu satır olmadan hangisi önce varırsa o kazanıyor:
+    // `/army` öne geçtiğinde ekran "0/90 komuta"da donuyordu.
+    await gecikmisleriKapat(lordId);
     const state = await tickLord(lordId);
     const units = await prisma.armyUnit.findMany({ where: { lordId } });
 

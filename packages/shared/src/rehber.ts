@@ -236,3 +236,46 @@ export function rehberIsaretSebebi(
   const kayit = rehberIsigi(adim).find((x) => x.isaret === isaret);
   return kayit?.sebep ?? rehberSozu(adim);
 }
+
+/* ---------------- Rehberin beklettiği anlar ---------------- */
+
+/**
+ * Oyuncunun basacak bir düğmesi olmadığı, sadece BEKLEDİĞİ adımlar.
+ *
+ * Oyuncu turu bir bütün olarak istedi:
+ *
+ *   "oyuncu tam bir eğitim turunu tamamlayana kadar harici işlem
+ *    yapamasın. Eğit dedi, o zaman eğitim tamamlanana kadar geçilemesin
+ *    ve Kâhya Sinan desin ki askerleriniz eğitiliyor, ve bekletsin
+ *    oyuncuyu."
+ *
+ * Önceden bu adımda ışık sönüyordu (basılacak düğme yok) ve oyuncu
+ * serbest kalıyordu; tur da tam orada, sonucu görmeden kopuyordu.
+ *
+ * ── Neden yalnız eğitim ───────────────────────────────────────────────
+ *
+ * İlk eğitim `ilk_egitim.saniye` kadar sürüyor — beş saniye. Bir oyuncuyu
+ * beş saniye tutmak bekletmek değil, sonucu göstermek. "Ordun yolda"
+ * adımı ise `ilk_saldiri_dakika` kadar, yani dakikalar: orada ekranı
+ * karartmak öğretmek değil hapsetmek olurdu, üstelik oyun o sürede
+ * yapılacak başka şeyler öneriyor.
+ *
+ * `azamiSaniye` emniyet supabı: kalan süre bundan uzunsa oyuncu
+ * tutulmuyor. İlk eğitim kısayolu bir şekilde devreye girmemişse (ör.
+ * oyuncu kendi başına uzun bir kuyruk açtıysa) kimseyi kara ekranda
+ * dakikalarca bekletmeyelim.
+ */
+export const REHBER_BEKLEYISLERI: Record<string, { soz: string; azamiSaniye: number }> = {
+  'egitim-bekle': {
+    soz: 'Askerlerin eğitiliyor lordum. Şuracıkta bekle, bittiğinde haber vereceğim.',
+    azamiSaniye: 90,
+  },
+};
+
+/** Bu adımda oyuncu bekletilmeli mi; bekletilecekse kâhya ne der. */
+export function rehberBeklemesi(
+  adim: string | null | undefined,
+): { soz: string; azamiSaniye: number } | null {
+  if (!adim) return null;
+  return REHBER_BEKLEYISLERI[adim] ?? null;
+}

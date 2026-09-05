@@ -23,6 +23,7 @@ import { z } from 'zod';
 import { requireAuth } from '../auth.js';
 import { prisma, type Tx } from '../db.js';
 import { GameError, hata } from '../errors.js';
+import { gecikmisleriKapat } from '../services/gecikmis.js';
 import { findLordByUser, pushEvent } from '../services/lord.js';
 import { mesafeOlcer, mesafeOlcerHazir } from '../services/mesafe.js';
 import { paktVarMi, paktliIttifaklar } from '../services/pakt.js';
@@ -188,6 +189,10 @@ async function assertCanAttack(
 export async function mapRoutes(app: FastifyInstance): Promise<void> {
   app.get('/map', { preHandler: requireAuth }, async (req) => {
     const lordId = await findLordByUser(req.user.userId);
+    // Öneri ORDUYA bakarak hesaplanıyor: biten eğitim henüz orduya
+    // katılmamışsa "ordun yetmiyor" der ve omurga oyuncuyu olmayan bir
+    // işe yollar. Aynı yarış `/me` ve `/army`'de de vardı.
+    await gecikmisleriKapat(lordId);
     const me = await prisma.lord.findUniqueOrThrow({
       where: { id: lordId },
       select: { worldId: true, homeQ: true, homeR: true, level: true, allianceId: true },
@@ -1040,6 +1045,8 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
 
   app.get('/marches', { preHandler: requireAuth }, async (req) => {
     const lordId = await findLordByUser(req.user.userId);
+    // Varmış yürüyüş "hâlâ yolda" görünmesin: aynı yarış burada da var.
+    await gecikmisleriKapat(lordId);
     return prisma.march.findMany({
       where: { lordId, resolved: false },
       orderBy: { arriveAt: 'asc' },

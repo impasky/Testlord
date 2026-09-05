@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ApiError, api, getToken, setToken, type MeResponse } from './api/client';
 import { BaglantiDurumu } from './components/BaglantiDurumu';
 import { MobilKabuk, type Sekme } from './components/MobilKabuk';
@@ -78,6 +78,68 @@ export function App() {
   // Omurganın adımı hem Malikâne kartında hem alt çubuktaki işarette
   // kullanılıyor. Hook, erken dönüşlerden ÖNCE çağrılmak zorunda.
   const omurgaAdimi = useOmurgaAdimi(data?.lord, data?.queues ?? []);
+
+  /**
+   * Biten iş EKRANDAKİ oyuncuya kendiliğinden ulaşsın.
+   *
+   * Oyuncu: "sayfa değişmeden askerler orduya eklenmiyor." Haklıydı:
+   * `/me` otuz saniyede bir tazeleniyor ve ekranı değiştirmeyen oyuncu o
+   * süre boyunca "EĞİTİMDE 27 — bitti" yazısına bakıyordu. Askerler
+   * gelmiş sayılmıyordu çünkü kimse sunucuya sormamıştı.
+   *
+   * Artık en yakın bitişe bir zamanlayıcı kuruluyor: iş bittiği an /me
+   * ve ordu yeniden okunuyor. Sunucu da o okumada gecikmiş işleri
+   * kapattığı için sonuç aynı saniyede ekrana düşüyor.
+   */
+  const enYakinBitis = useMemo(() => {
+    const anlar = (data?.queues ?? [])
+      .map((q) => new Date(q.finishAt).getTime())
+      .filter((t) => Number.isFinite(t));
+    return anlar.length > 0 ? Math.min(...anlar) : null;
+  }, [data?.queues]);
+
+  useEffect(() => {
+    if (!girisli || enYakinBitis === null) return;
+    // 400 ms pay: sunucunun saati ile tarayıcınınki birebir aynı değil ve
+    // erken sorulan bir soru "henüz bitmedi" cevabı alır.
+    const gecikme = Math.min(30 * 60_000, Math.max(300, enYakinBitis - Date.now() + 400));
+    const id = window.setTimeout(() => {
+      /*
+       * Önce /me, SONRA gerisi.
+       *
+       * Dördü birden gerekiyor çünkü ordu değişince öneri de değişiyor:
+       * yalnız `me` ve `army` tazelendiğinde tur eğitimden sonra
+       * takılıyordu — askerler gelmişti ama harita önerisi hâlâ "ordun
+       * yetmiyor" diyordu, omurga oyuncuyu az önce yaptığı işe geri
+       * yolluyordu.
+       *
+       * Sıra da önemli: dördü aynı anda çıkınca hangisi önce varırsa
+       * çözülmemiş hâli okuyor. Sunucu tarafında dört uç da gecikmiş işi
+       * kendi kapatıyor (services/gecikmis.ts), bu sıralama ikinci
+       * emniyet — soğuk açılışta sorgular yine paralel çıkıyor.
+       */
+      void qc.refetchQueries({ queryKey: ['me'] }).then(() => {
+        for (const anahtar of [['army'], ['map'], ['marches']]) {
+          void qc.invalidateQueries({ queryKey: anahtar });
+        }
+      });
+    }, gecikme);
+    return () => window.clearTimeout(id);
+  }, [girisli, enYakinBitis, qc]);
+
+  /**
+   * Rehberin beklettiği işin bitiş anı.
+   *
+   * Eğitim sürerken tur kopmasın diye kâhya oyuncuyu tutuyor ve kalan
+   * süreyi söylüyor; sayı buradan geliyor.
+   */
+  const egitimBitisi = useMemo(() => {
+    const t = (data?.queues ?? [])
+      .filter((q) => q.kind === 'train')
+      .map((q) => q.finishAt)
+      .sort();
+    return t[0] ?? null;
+  }, [data?.queues]);
 
   /**
    * Omurganın gösterdiği ekranın verisini ÖNCEDEN çek.
@@ -247,6 +309,7 @@ export function App() {
         bolgeSayisi={lord.regionCount}
         gorundu={lord.rehberGorundu}
         dogruEkranda={omurgaAdimi?.hedefSekme === sekme}
+        bekleyisBitis={egitimBitisi}
         acik={lord.ogreticiGorundu || ogreticiKapandi}
       />
       {sekme === 'malikane' && (

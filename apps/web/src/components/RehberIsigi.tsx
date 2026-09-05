@@ -51,6 +51,7 @@
  */
 import {
   REHBER,
+  rehberBeklemesi,
   rehberGorunsunMu,
   rehberIsaretSebebi,
   rehberIsigi,
@@ -59,7 +60,8 @@ import {
 } from '@lordlar/shared';
 import { useEffect, useRef, useState } from 'react';
 import { Gorsel } from './Gorsel';
-import { IkonNavGeneraller } from './Ikonlar';
+import { IkonNavGeneraller, IkonSure } from './Ikonlar';
+import { GeriSayim, Hap } from './ui';
 
 /** Deliğin çevresindeki nefes payı. */
 const PAY = 8;
@@ -103,6 +105,27 @@ interface Kutu {
   sol: number;
   en: number;
   boy: number;
+}
+
+/**
+ * Öğe SABİT bir katmanda mı duruyor (alt gezinme çubuğu gibi)?
+ *
+ * Güvenli şerit kuralı kaydırılan içerik için: orada hedef, üst başlık ya
+ * da alt çubuğun ARKASINA kayabiliyor ve delik oyuncunun basamayacağı bir
+ * yeri gösteriyor. Sabit bir öğe böyle kaybolmaz — çubuğun kendisi
+ * zaten o katman.
+ *
+ * Ayrım olmadan gerçek bir hata çıktı: Malikâne sekmesi (alt çubukta,
+ * ekranın son 67 pikselinde) her zaman "şeridin dışında" sayılıyor,
+ * kaydırma da onu kurtaramıyor ve ışık üç saniye sonra sönüyordu. Oyuncu
+ * eğitimden sonra Malikâne'ye çağrılıyor, üç saniye sonra tek başına
+ * kalıyordu.
+ */
+function sabitKatmandaMi(e: HTMLElement): boolean {
+  for (let n: HTMLElement | null = e; n && n !== document.body; n = n.parentElement) {
+    if (getComputedStyle(n).position === 'fixed') return true;
+  }
+  return false;
 }
 
 function basilabilirMi(e: HTMLElement): boolean {
@@ -170,6 +193,7 @@ export function RehberIsigi({
   bolgeSayisi,
   gorundu,
   dogruEkranda,
+  bekleyisBitis,
   acik,
 }: {
   /** Omurganın hesapladığı adım. Işık kendi senaryosunu tutmuyor. */
@@ -195,6 +219,11 @@ export function RehberIsigi({
    * hesaplıyor ve alt çubuktaki altın nokta da onu kullanıyor.
    */
   dogruEkranda: boolean;
+  /**
+   * Beklenen işin bitiş anı (ISO). Eğitim sürerken perde kalkmıyor;
+   * kâhya kalan süreyi söylüyor.
+   */
+  bekleyisBitis: string | null;
   /** Öğretici kapandı mı — iki tam ekran perde üst üste binmesin. */
   acik: boolean;
 }) {
@@ -206,8 +235,29 @@ export function RehberIsigi({
   const [itiraz, setItiraz] = useState(false);
 
   const isaretler = rehberIsigi(adim);
-  const calissin =
-    acik && rehberGorunsunMu(bolgeSayisi, gorundu) && isaretler.length > 0;
+  const gorunur = acik && rehberGorunsunMu(bolgeSayisi, gorundu);
+
+  /*
+   * TUTMA: basacak düğme yok, iş bitene kadar bekleniyor.
+   *
+   * Oyuncu turu bir bütün istedi: "eğit dedi, o zaman eğitim tamamlanana
+   * kadar geçilemesin ve Kâhya Sinan desin ki askerleriniz eğitiliyor."
+   * Önceden bu adımda ışık sönüyor, oyuncu serbest kalıyor ve tur tam
+   * orada — sonucu görmeden — kopuyordu.
+   *
+   * Emniyet: kalan süre `azamiSaniye`yi aşıyorsa tutmuyoruz. İlk eğitim
+   * beş saniye; kimseyi kara ekranda dakikalarca bekletmeyelim.
+   */
+  const bekleyis = rehberBeklemesi(adim);
+  const kalanMs = bekleyisBitis ? new Date(bekleyisBitis).getTime() - Date.now() : null;
+  const tutuluyor =
+    gorunur &&
+    bekleyis !== null &&
+    kalanMs !== null &&
+    kalanMs > 0 &&
+    kalanMs <= bekleyis.azamiSaniye * 1000;
+
+  const calissin = gorunur && !tutuluyor && isaretler.length > 0;
   // Etki bağımlılığı için sabit bir değer: dizi her çizimde yeniden üretilir
   // ve doğrudan bağımlılık yapılsaydı etki her karede yeniden kurulurdu.
   const anahtar = isaretler.map((x) => x.isaret).join('|');
@@ -347,7 +397,10 @@ export function RehberIsigi({
        */
       const ad = e.getAttribute('data-rehber') ?? '';
       setHedefAdi((o) => (o === ad ? o : ad));
-      const disarida = r.top < UST_PAY || r.bottom > window.innerHeight - ALT_PAY;
+      // Sabit katmandaki hedef için tek koşul: ekranda olsun.
+      const disarida = sabitKatmandaMi(e)
+        ? r.bottom <= 0 || r.top >= window.innerHeight
+        : r.top < UST_PAY || r.bottom > window.innerHeight - ALT_PAY;
       if (disarida) {
         // Hedef değiştiyse yumuşak (göz takip etsin), yerinde kaydıysa
         // anında — 150 ms'de bir yumuşak kaydırma titreme yaratırdı.
@@ -380,8 +433,6 @@ export function RehberIsigi({
     };
   }, [calissin, anahtar, dogruEkranda]);
 
-  if (!calissin) return null;
-
   // Perdeye basmak bir şey yapmaz ama sessiz kalmaz: halka bir kez titrer.
   // Tepkisiz bir ekran "oyun dondu" diye okunur.
   /*
@@ -399,6 +450,55 @@ export function RehberIsigi({
     setItiraz(true);
     window.setTimeout(() => setItiraz(false), 450);
   };
+
+  /*
+   * TUTMA: iş sürüyor, oyuncu turdan çıkmıyor.
+   *
+   * Perde tam ekran, delik yok, kâhya kalan süreyi söylüyor. Beş saniye
+   * sonra eğitim bitiyor, askerler orduya katılıyor ve tur "saldır"
+   * adımıyla kendiliğinden devam ediyor.
+   */
+  if (tutuluyor && bekleyis && bekleyisBitis) {
+    return (
+      <>
+        <div className={perde} style={{ inset: 0 }} onClick={dokun} />
+        <div
+          role="status"
+          className="pointer-events-none fixed inset-x-0 top-1/2 z-[56] flex -translate-y-1/2 justify-center px-3"
+        >
+          <div className="w-full max-w-sm rounded-2xl border border-altin/45 bg-gece/95 p-3 shadow-xl">
+            <div className="flex items-start gap-2.5">
+              <div className="oyuk h-9 w-9 shrink-0 overflow-hidden rounded-lg border border-kenar">
+                <Gorsel
+                  tur="generaller"
+                  ad={REHBER.key}
+                  alt={REHBER.ad}
+                  boyut={36}
+                  yedek={
+                    <span className="flex h-full w-full items-center justify-center text-solgun">
+                      <IkonNavGeneraller boyut={18} />
+                    </span>
+                  }
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <div className="min-w-0 flex-1">
+                <span className="baslik text-[10px] text-mavi">{REHBER.ad}</span>
+                <p className="mt-0.5 text-[13px] leading-snug text-parsomen">{bekleyis.soz}</p>
+              </div>
+            </div>
+            <div className="mt-2 flex justify-center">
+              <Hap ikon={<IkonSure boyut={13} />} renk="var(--color-altin)">
+                <GeriSayim bitis={bekleyisBitis} />
+              </Hap>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (!calissin) return null;
 
   /*
    * BEKLEME: doğru ekrandayız, düğme henüz gelmedi.

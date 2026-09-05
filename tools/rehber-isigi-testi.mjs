@@ -201,15 +201,102 @@ await page.waitForTimeout(2500);
   gorulenSebep.kisla = d.ipucu ?? '';
 }
 
-// --- 5. Eylem yapılınca ışık kendiliğinden sönüyor mu ---
+// --- 5. Eğitim SÜRERKEN oyuncu tutuluyor mu ---
 {
+  /**
+   * Oyuncu turu bir bütün istedi:
+   *
+   *   "oyuncu tam bir eğitim turunu tamamlayana kadar harici işlem
+   *    yapamasın. Eğit dedi, o zaman eğitim tamamlanana kadar geçilemesin
+   *    ve Kâhya Sinan desin ki askerleriniz eğitiliyor, ve bekletsin."
+   *
+   * Önceden bu adımda ışık sönüyor, oyuncu serbest kalıyordu ve tur tam
+   * orada — sonucu görmeden — kopuyordu.
+   */
   await page.locator('[data-rehber="kisla-egit"]').click();
-  await page.waitForTimeout(3000);
-  const d = await isikDurumu();
-  kontrol('Eğitim başlayınca ışık SÖNÜYOR (bekleme adımında hapis yok)', d.yaniyor === false);
+  await page.waitForTimeout(1200);
 
-  const kisla = await ulasilirMi(page.locator('nav button:has-text("Harita")'));
-  kontrol('Işık sönünce alt çubuk yeniden ulaşılır', kisla === 'ulasilir', kisla);
+  const tutma = await page.evaluate(() => {
+    const perde = [...document.querySelectorAll('div')].filter(
+      (d) => typeof d.className === 'string' && d.className.includes('z-[55]'),
+    ).length;
+    const kart =
+      [...document.querySelectorAll('[role="status"]')]
+        .map((e) => e.textContent?.trim() ?? '')
+        .find((t) => t.includes('Kâhya Sinan')) ?? '';
+    return { perde, kart };
+  });
+  kontrol('Eğitim sürerken perde DURUYOR', tutma.perde > 0, `${tutma.perde} parça`);
+  kontrol('Kâhya "askerlerin eğitiliyor" diyor', /eğitiliyor/i.test(tutma.kart),
+    tutma.kart.slice(0, 60));
+  kontrol('Kalan süre yazıyor', /\d/.test(tutma.kart.replace('Kâhya Sinan', '')),
+    tutma.kart.slice(0, 60));
+
+  const cubuk = await ulasilirMi(page.locator('nav button:has-text("Harita")'));
+  kontrol('Eğitim sürerken alt çubuk ÖRTÜLÜ — tur kopmuyor', cubuk === 'ortulu', cubuk);
+}
+
+// --- 5a. SAYFA DEĞİŞMEDEN askerler orduya katılıyor mu ---
+{
+  /**
+   * Oyuncu: "sayfa değişmeden askerler orduya eklenmiyor." Haklıydı:
+   * `/me` otuz saniyede bir tazeleniyor ve ekranı değiştirmeyen oyuncu o
+   * süre boyunca "EĞİTİMDE 27 — bitti" yazısına bakıyordu.
+   *
+   * Burada HİÇBİR ekran değiştirilmiyor, hiçbir yenileme yapılmıyor:
+   * yalnızca beklenip ekrandaki sayıya bakılıyor.
+   */
+  /*
+   * Ölçüt "N/90 komuta" şeridi: ekranda TEK bir tane var. İlk hâlinde
+   * kartlardaki "Evde N" yazısını okuyordum ve beş birim kartının beşi de
+   * o yazıyı taşıdığı için ölçüm yanlış karta düşüyordu — testin kendi
+   * hatasıydı, ürünün değil.
+   */
+  const komutaOku = () =>
+    page.evaluate(() => {
+      const m = (document.body.textContent ?? '').match(/(\d+)\s*\/\s*\d+\s*komuta/);
+      return m ? Number(m[1]) : -1;
+    });
+  kontrol('Eğitim başlarken orduda asker yok', (await komutaOku()) === 0,
+    `${await komutaOku()} yer dolu`);
+
+  // İlk eğitim `ilk_egitim.saniye` (5 sn) sürüyor; cömert bir pay bırak.
+  let geldi = false;
+  for (let i = 0; i < 25 && !geldi; i++) {
+    await page.waitForTimeout(1000);
+    geldi = (await komutaOku()) > 0;
+  }
+  kontrol('Sayfa DEĞİŞMEDEN askerler orduya katıldı', geldi, `${await komutaOku()} yer dolu`);
+
+  // Işık yola devam etmeli. Sabit uyku yerine yoklama: yol düğmesi
+  // kararlılık payı beklediği için ilk saniye sönük geçebilir.
+  let devam = null;
+  for (let i = 0; i < 12; i++) {
+    await page.waitForTimeout(700);
+    const d = await isikDurumu();
+    if (d.yaniyor && d.isaret) {
+      devam = d.isaret;
+      break;
+    }
+  }
+  kontrol('Eğitim bitince tutma kalkıyor, ışık yola devam ediyor', devam !== null,
+    devam ?? 'sönük');
+
+  /**
+   * Işık SÖNMEDEN durmalı.
+   *
+   * Kendi emniyetim yüzünden gerçek bir hata çıkmıştı: hedef "güvenli
+   * şeridin" dışındaysa ışık üç saniye sonra sönüyor. Alt gezinme
+   * çubuğundaki Malikâne sekmesi ekranın son 67 pikselinde duruyor, yani
+   * her zaman şeridin dışında sayılıyordu ve kaydırma da onu
+   * kurtaramıyordu. Oyuncu eğitimden sonra Malikâne'ye çağrılıyor, üç
+   * saniye sonra tek başına kalıyordu. Sabit katmandaki hedef için tek
+   * koşul artık "ekranda olsun".
+   */
+  await page.waitForTimeout(5000);
+  const surekli = await isikDurumu();
+  kontrol('Işık beş saniye sonra da yanıyor (sönüp kalmıyor)',
+    surekli.yaniyor === true && surekli.isaret !== null, surekli.isaret ?? 'söndü');
 }
 
 /**

@@ -10,8 +10,7 @@ import { hashPassword, requireAuth, verifyPassword } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError } from '../errors.js';
 import { findLordByUser, tickLord } from '../services/lord.js';
-import { gecikmisIsleriCoz } from '../services/queue.js';
-import { gecikmisYuruyusleriCoz } from '../services/march.js';
+import { gecikmisleriKapat } from '../services/gecikmis.js';
 
 const parolaSchema = z.object({
   mevcut: z.string().min(1, 'Mevcut parolanı gir.'),
@@ -54,7 +53,7 @@ export async function meRoutes(app: FastifyInstance): Promise<void> {
      * Sıra önemli: `tickLord` durumu hesaplıyor, dolayısıyla çözüm ondan
      * ÖNCE olmalı — yoksa oyuncu bir istek boyunca eski hâli görürdü.
      */
-    await Promise.all([gecikmisIsleriCoz(lordId), gecikmisYuruyusleriCoz(lordId)]);
+    await gecikmisleriKapat(lordId);
 
     const state = await tickLord(lordId);
 
