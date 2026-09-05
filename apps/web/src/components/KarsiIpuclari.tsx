@@ -42,7 +42,7 @@ export function KarsiIpuclari({
 
   return (
     <div className="oyuk mt-3 rounded-xl p-2.5">
-      <h4 className="baslik mb-1.5 text-[10px] text-solgun">Birim eşleşmesi</h4>
+      <h4 className="baslik mb-1.5 text-[11px] text-solgun">Birim eşleşmesi</h4>
       <ul className="space-y-1">
         {ipuclari.map((i) => {
           const iyi = i.yon === 'guclu';

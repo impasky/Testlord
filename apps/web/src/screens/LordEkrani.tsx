@@ -212,8 +212,8 @@ export function LordEkrani({ lord, onGuncelle }: { lord: LordState; onGuncelle: 
                       key={slot}
                       className="flex aspect-square flex-col items-center justify-center p-2"
                     >
-                      <span className="baslik text-[10px] text-sonuk">{SLOT_ADI[slot]}</span>
-                      <span className="mt-1 text-[10px] text-sonuk/70">boş</span>
+                      <span className="baslik text-[11px] text-sonuk">{SLOT_ADI[slot]}</span>
+                      <span className="mt-1 text-[11px] text-sonuk/70">boş</span>
                     </Kart>
                   );
                 }
@@ -244,7 +244,7 @@ export function LordEkrani({ lord, onGuncelle }: { lord: LordState; onGuncelle: 
                     ayrı bir satır koymak illüstrasyona kalan yeri yarıya
                     indiriyordu. */}
                     <div className="absolute inset-x-0 bottom-0 flex items-baseline justify-between gap-1 bg-gradient-to-t from-gece via-gece/85 to-transparent px-1.5 pt-3 pb-1">
-                      <span className="baslik truncate text-[9px] text-solgun">
+                      <span className="baslik truncate text-[11px] text-solgun">
                         {SLOT_ADI[slot]}
                       </span>
                       <span className="baslik shrink-0 text-[12px] text-altin">

@@ -92,7 +92,7 @@ export function GunlukKart({ onGit }: { onGit: (s: 'harita' | 'kisla' | 'demirha
                 className="bas flex w-full items-center gap-2.5 text-left"
               >
                 <span
-                  className="baslik flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[10px]"
+                  className="baslik flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[11px]"
                   style={{
                     background: g.tamam ? 'var(--color-yesil)' : 'var(--color-oyuk)',
                     color: g.tamam ? 'var(--color-gece)' : 'var(--color-sonuk)',
@@ -110,7 +110,7 @@ export function GunlukKart({ onGit }: { onGit: (s: 'harita' | 'kisla' | 'demirha
                     <span className="block truncate text-[11px] text-sonuk">{g.aciklama}</span>
                   )}
                 </span>
-                {!g.tamam && <span className="baslik shrink-0 text-[10px] text-altin">git</span>}
+                {!g.tamam && <span className="baslik shrink-0 text-[11px] text-altin">git</span>}
               </button>
             </li>
           ))}

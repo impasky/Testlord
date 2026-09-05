@@ -269,7 +269,7 @@ export function Malikane({
                 ? events[0]!.payload.mesaj
                 : events[0]!.kind}
           </p>
-          <span className="baslik shrink-0 text-[10px] text-altin">
+          <span className="baslik shrink-0 text-[11px] text-altin">
             {events.length > 0 ? `${events.length} · AÇ` : 'AÇ'}
           </span>
         </div>

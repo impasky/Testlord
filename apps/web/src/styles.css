@@ -10,41 +10,72 @@
  * parlak altın eylem butonları, nadirlik renk sistemi, kalın büyük harf
  * başlıklar.
  */
+/*
+ * Palet bir oyuncu testinden sonra baştan ölçüldü.
+ *
+ * Geri bildirim iki cümleydi: "oyun genel olarak çok karanlık, oyunu açınca
+ * parlaklığımı yükseltmek zorunda kaldım" ve "her yerde bir şeyler yazıyor,
+ * neler önemli neler önemsiz anlayamadım". İkisi de fikir gibi duruyordu
+ * ama ikisi de ölçülebilirdi; `tools/okunurluk-denetim.mjs` ölçtü ve
+ * oyuncuyu doğruladı: ekranda gerçekten çizilen 414 metnin 129'u (%31)
+ * WCAG AA kontrast eşiğinin altındaydı.
+ *
+ * En büyük suçlu `sonuk` idi: panel üstünde 2.97, gereken 4.5. Ve `sonuk`
+ * tam olarak yön gösteren küçük yazıların rengiydi ("şimdi ne yapmalısın",
+ * "sonra:", birim açıklamaları). Yani oyunun en çok okunması gereken
+ * metinleri, en okunmaz olanlarıydı.
+ *
+ * İKİ KOL BİRLİKTE hareket etti ve bu şart:
+ *  - Zeminler bir tık AÇILDI (gece %0.5 -> %0.8 parlaklık). "Genel olarak
+ *    karanlık" şikâyeti kontrastla değil, ekranın toplam parlaklığıyla
+ *    ilgili: %95'i neredeyse siyah olan bir ekran gün ışığında sönük
+ *    görünür.
+ *  - Metin ve vurgu renkleri YUKARI taşındı. Yalnız zemini açsaydık açık
+ *    metnin kontrastı DÜŞERDİ; şikâyeti çözerken okunurluğu bozardık.
+ *
+ * Sonuç: her metin rengi her zemin üstünde en az 4.5. Katman farkı da
+ * korundu — panel üstünde parsomen 12.7 > solgun 7.5 > sonuk 5.3, yani
+ * hiyerarşi hâlâ okunuyor ama en alt katman artık görünüyor.
+ *
+ * Bu sayılar `pnpm okunurluk` ile ölçülüyor; palet bozulursa denetim kalır.
+ */
 @theme {
   /* Zemin ve yüzeyler */
-  --color-gece: #17100c;
-  --color-derin: #1f1710;
-  --color-panel: #2a1d16;
-  --color-yuzey: #35251c;
-  --color-oyuk: #120c08;
-  --color-kenar: #4a3527;
-  --color-kenar-acik: #66492f;
+  --color-gece: #1c1410;
+  --color-derin: #261c15;
+  --color-panel: #33241b;
+  --color-yuzey: #402e23;
+  --color-oyuk: #150e0a;
+  --color-kenar: #57402f;
+  --color-kenar-acik: #75563a;
 
-  /* Metin */
-  --color-parsomen: #f2e7d5;
-  --color-solgun: #a89078;
-  --color-sonuk: #7a6553;
+  /* Metin — üç katman, hepsi 4.5 üstü */
+  --color-parsomen: #f6ecdc;
+  --color-solgun: #cbb49a;
+  --color-sonuk: #ad967f;
 
   /* Vurgu */
   --color-altin: #f5b731;
   --color-altin-koyu: #c98f18;
-  --color-yesil: #3ddc84;
-  --color-yesil-koyu: #1f8f4d;
-  --color-kirmizi: #e8524d;
-  --color-mavi: #4a9eff;
-  --color-mor: #a76bff;
-  --color-turuncu: #ff7a3d;
+  --color-yesil: #4ee093;
+  /* Yeşil düğmenin zemini. Üstündeki BEYAZ yazının 4.5'i geçmesi için
+     koyu tutuluyor: #23a259'da beyaz 3.29 kalıyordu. */
+  --color-yesil-koyu: #1d8549;
+  --color-kirmizi: #f27470;
+  --color-mavi: #5aa8ff;
+  --color-mor: #b57fff;
+  --color-turuncu: #ff8a52;
 
   /* Kaynaklar */
   --color-kaynak-altin: #f5b731;
-  --color-kaynak-demir: #93b0c4;
-  --color-kaynak-erzak: #8fc45c;
+  --color-kaynak-demir: #a6c1d3;
+  --color-kaynak-erzak: #9fd06e;
 
   /* Nadirlik — hem ekipmanda hem generallerde aynı ölçek */
-  --color-nadir-siradan: #9aa0a6;
-  --color-nadir-usta: #3ddc84;
-  --color-nadir-nadir: #4a9eff;
-  --color-nadir-efsanevi: #a76bff;
+  --color-nadir-siradan: #adb3b9;
+  --color-nadir-usta: #4ee093;
+  --color-nadir-nadir: #5aa8ff;
+  --color-nadir-efsanevi: #b57fff;
   --color-nadir-kadim: #f5b731;
 
   --font-baslik: Rubik, system-ui, -apple-system, sans-serif;

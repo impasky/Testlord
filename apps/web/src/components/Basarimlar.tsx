@@ -68,7 +68,7 @@ export function Basarimlar({ olcutler }: { olcutler: BasarimOlcutleri }) {
           </div>
           {yeniVar && (
             <span
-              className="baslik shrink-0 rounded-md px-1.5 py-0.5 text-[9px] text-gece"
+              className="baslik shrink-0 rounded-md px-1.5 py-0.5 text-[11px] text-gece"
               style={{ background: 'var(--color-altin)' }}
             >
               yeni
@@ -81,7 +81,7 @@ export function Basarimlar({ olcutler }: { olcutler: BasarimOlcutleri }) {
           <div className="space-y-3 border-t border-kenar px-3 pt-3 pb-3">
             {kumeler.map((k) => (
               <div key={k.ad}>
-                <h4 className="baslik mb-1.5 text-[10px] text-sonuk">{k.ad}</h4>
+                <h4 className="baslik mb-1.5 text-[11px] text-sonuk">{k.ad}</h4>
                 <ul className="space-y-1.5">
                   {k.basarimlar.map((b) => {
                     const oran = Math.min(1, b.hedef > 0 ? b.simdi / b.hedef : 0);

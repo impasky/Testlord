@@ -168,7 +168,7 @@ export function Giris({ onGiris }: { onGiris: () => void }) {
           </p>
         )}
 
-        <p className="mt-6 text-center text-[10px] text-sonuk">
+        <p className="mt-6 text-center text-[11px] text-sonuk">
           İkonlar{' '}
           <a
             href="https://game-icons.net"

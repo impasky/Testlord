@@ -261,7 +261,7 @@ function BirimKarti({
 
       <button
         onClick={() => setDetay((d) => !d)}
-        className="bas baslik mt-2 w-full text-[10px] text-sonuk"
+        className="bas baslik mt-2 w-full text-[11px] text-sonuk"
         aria-expanded={detay}
       >
         {detay ? 'DETAYI GİZLE' : 'DETAY'}
@@ -438,7 +438,7 @@ export function Kisla({
               .filter((g) => g.satirlar.length > 0)
               .map((g) => (
                 <div key={g.ad} className="mb-3 last:mb-0">
-                  <h3 className="baslik mb-1.5 text-[10px] text-solgun">{g.ad}</h3>
+                  <h3 className="baslik mb-1.5 text-[11px] text-solgun">{g.ad}</h3>
                   <ul className="space-y-1">
                     {g.satirlar.map((u, i) => (
                       <li key={i} className="flex items-center gap-2 text-[13px]">

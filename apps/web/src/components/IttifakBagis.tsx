@@ -102,7 +102,7 @@ export function IttifakBagis() {
         />
 
         <div className="mt-3 border-t border-kenar/70 pt-2.5">
-          <p className="baslik mb-1.5 text-[10px] text-sonuk">BİR BAĞIŞ</p>
+          <p className="baslik mb-1.5 text-[11px] text-sonuk">BİR BAĞIŞ</p>
           <div className="mb-2 flex flex-wrap items-center gap-1.5">
             <Hap
               ikon={<IkonAltin boyut={13} />}
@@ -143,7 +143,7 @@ export function IttifakBagis() {
       {/* Seviyenin KARŞILIĞI. Bu tablo olmadan bağış boş bir düğme:
           oyuncu kaynağını neye verdiğini bilmeden vermez. */}
       <Kart className="mt-2 p-3">
-        <p className="baslik mb-2 text-[10px] text-sonuk">
+        <p className="baslik mb-2 text-[11px] text-sonuk">
           {sonraki ? 'ŞİMDİ / SONRAKİ SEVİYEDE' : 'SEVİYENİN GETİRDİKLERİ'}
         </p>
         <ul className="space-y-1.5">

@@ -234,11 +234,11 @@ export function KazanKaybet({
   return (
     <div className="grid gap-2">
       <div className="rounded-xl border border-yesil/30 bg-yesil/10 px-3 py-2">
-        <div className="baslik mb-0.5 text-[10px] text-yesil">{kazanBaslik}</div>
+        <div className="baslik mb-0.5 text-[11px] text-yesil">{kazanBaslik}</div>
         {kazanirsan}
       </div>
       <div className="rounded-xl border border-kenar bg-oyuk/40 px-3 py-2">
-        <div className="baslik mb-0.5 text-[10px] text-solgun">{kaybetBaslik}</div>
+        <div className="baslik mb-0.5 text-[11px] text-solgun">{kaybetBaslik}</div>
         {kaybedersen}
       </div>
     </div>
@@ -602,7 +602,7 @@ export function Rozet({
 }) {
   return (
     <span
-      className={`baslik inline-flex items-center rounded-md px-1.5 py-0.5 text-[10px] ${className}`}
+      className={`baslik inline-flex items-center rounded-md px-1.5 py-0.5 text-[11px] ${className}`}
       style={
         renk
           ? { color: renk, background: `color-mix(in srgb, ${renk} 16%, transparent)` }
@@ -638,7 +638,7 @@ export function DegerKarti({
           {ikon}
         </span>
         <div className="min-w-0 flex-1">
-          <div className="baslik text-[10px] text-solgun">{etiket}</div>
+          <div className="baslik text-[11px] text-solgun">{etiket}</div>
           <div className="tabular text-lg leading-tight font-bold">{deger}</div>
         </div>
       </div>

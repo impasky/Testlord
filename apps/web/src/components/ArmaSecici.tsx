@@ -176,7 +176,7 @@ export function ArmaSecici({
                     onTikla={() => setTaslak({ ...taslak, sembol: sm.key })}
                   >
                     {sm.key === 'yok' ? (
-                      <span className="text-[10px]">yok</span>
+                      <span className="text-[11px]">yok</span>
                     ) : (
                       <Arma arma={{ ...taslak, sembol: sm.key }} boyut={22} />
                     )}

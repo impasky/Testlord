@@ -734,7 +734,7 @@ export function Harita({
               className="bas mb-2 flex w-full items-center gap-2 rounded-xl border border-mavi/40 bg-mavi/10 px-3 py-2 text-left"
               onClick={() => setSeciliId(harita.data!.ittifakHedefi!.regionId)}
             >
-              <span className="baslik shrink-0 text-[10px] text-mavi">
+              <span className="baslik shrink-0 text-[11px] text-mavi">
                 [{harita.data.ittifakHedefi.etiket}] HEDEF
               </span>
               <span className="min-w-0 flex-1 truncate text-[12px]">
@@ -762,7 +762,7 @@ export function Harita({
               setBilgi(null);
             }}
           />
-          <div className="mt-1.5 flex flex-wrap justify-center gap-x-3 gap-y-1 text-[10px] text-sonuk">
+          <div className="mt-1.5 flex flex-wrap justify-center gap-x-3 gap-y-1 text-[11px] text-sonuk">
             <span>Çapraz = senin</span>
             <span>Noktalı = düşman</span>
             <span>Düz = sahipsiz</span>
@@ -1041,7 +1041,7 @@ export function Harita({
                     >
                       Garnizonu ayarla
                     </Buton>
-                    <p className="mt-1.5 text-[10px] text-sonuk">
+                    <p className="mt-1.5 text-[11px] text-sonuk">
                       Bu bölgeyi sadece buradaki garnizon savunur.
                     </p>
                   </Kart>
@@ -1178,7 +1178,7 @@ export function Harita({
                             <span className="min-w-0 flex-1 truncate text-solgun">
                               {benimSaldirim ? `→ ${b.defender?.name ?? 'garnizon'}` : `← ${b.attacker.name}`}
                             </span>
-                            <time className="shrink-0 text-[10px] text-sonuk">
+                            <time className="shrink-0 text-[11px] text-sonuk">
                               {new Date(b.createdAt).toLocaleString('tr-TR', {
                                 day: '2-digit',
                                 month: '2-digit',

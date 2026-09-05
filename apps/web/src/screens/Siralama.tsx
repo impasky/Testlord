@@ -83,7 +83,7 @@ function Satir({
             <span className="truncate text-[13px] font-medium">{r.name}</span>
             {r.tahtSahibi && <Rozet renk="var(--color-altin)">DİYARIN LORDU</Rozet>}
           </div>
-          <div className="truncate text-[10px] text-sonuk">
+          <div className="truncate text-[11px] text-sonuk">
             {r.unvan} · Sv {r.level} · {r.bolgeSayisi} bölge
           </div>
         </div>
@@ -126,7 +126,7 @@ function IttifakSatiri({ r, renk }: { r: IttifakSiralamaSatiri; renk: string }) 
         <span className="min-w-0 flex-1 truncate text-[13px] font-bold">
           {r.ad} <span className="text-solgun">[{r.etiket}]</span>
         </span>
-        <span className="baslik shrink-0 rounded-md bg-altin/15 px-1.5 py-0.5 text-[10px] text-altin">
+        <span className="baslik shrink-0 rounded-md bg-altin/15 px-1.5 py-0.5 text-[11px] text-altin">
           Sv {r.seviye}
         </span>
         <span className="tabular w-16 shrink-0 text-right text-[13px] font-bold">
@@ -243,7 +243,7 @@ export function Siralama({
               </div>
               {qi.data.benim && !qi.data.satirlar.some((r) => r.benimki) && (
                 <div className="mt-3 border-t border-kenar pt-3">
-                  <p className="baslik mb-1.5 px-1 text-[10px] text-solgun">İttifakının sırası</p>
+                  <p className="baslik mb-1.5 px-1 text-[11px] text-solgun">İttifakının sırası</p>
                   <IttifakSatiri r={qi.data.benim} renk={aktif.renk} />
                 </div>
               )}
@@ -269,7 +269,7 @@ export function Siralama({
 
             {q.data.benim && !q.data.satirlar.some((r) => r.lordId === lordId) && (
               <div className="mt-3 border-t border-kenar pt-3">
-                <p className="baslik mb-1.5 px-1 text-[10px] text-solgun">Senin sıran</p>
+                <p className="baslik mb-1.5 px-1 text-[11px] text-solgun">Senin sıran</p>
                 <Satir r={q.data.benim} benMi renk={aktif.renk} />
               </div>
             )}

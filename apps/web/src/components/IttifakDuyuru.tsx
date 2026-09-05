@@ -48,7 +48,7 @@ export function IttifakDuyuru({
   return (
     <Kart className="p-3" sakin={!duyuru}>
       <div className="mb-1.5 flex items-center justify-between gap-2">
-        <span className="baslik text-[10px] text-sonuk">DUYURU</span>
+        <span className="baslik text-[11px] text-sonuk">DUYURU</span>
         {yazabilir && !duzenle && (
           <button
             onClick={() => {
@@ -57,7 +57,7 @@ export function IttifakDuyuru({
             }}
             // -m ile dolgu satırı büyütmüyor ama dokunma hedefi 44px:
             // görsel denetim ilk hâlini 23x15 diye yakaladı.
-            className="bas baslik -my-3.5 -mr-2 px-3.5 py-3.5 text-[10px] text-altin"
+            className="bas baslik -my-3.5 -mr-2 px-3.5 py-3.5 text-[11px] text-altin"
           >
             {duyuru ? 'DÜZENLE' : 'YAZ'}
           </button>
@@ -75,7 +75,7 @@ export function IttifakDuyuru({
             className="oyuk w-full rounded-lg px-3 py-2.5 text-[13px] text-parsomen"
           />
           <div className="mt-2 flex items-center gap-2">
-            <span className="tabular text-[10px] text-sonuk">
+            <span className="tabular text-[11px] text-sonuk">
               {metin.length}/{duyuruEnFazlaHarf()}
             </span>
             <div className="flex flex-1 justify-end gap-2">

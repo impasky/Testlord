@@ -116,7 +116,7 @@ export function OlaySeridi({ onBolgeAc }: { onBolgeAc: (regionId: number) => voi
                 )}
                 {o.savunan && <span className="text-sonuk"> · {o.savunan}</span>}
               </span>
-              <time className="shrink-0 text-[10px] text-sonuk">{nezaman(o.zaman)}</time>
+              <time className="shrink-0 text-[11px] text-sonuk">{nezaman(o.zaman)}</time>
             </button>
           </li>
         ))}

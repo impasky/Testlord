@@ -100,14 +100,14 @@ function UyeSatiri({
             <button
               onClick={() => onRutbe(uye.id, uye.rutbe === 'yasli' ? 'uye' : 'yasli')}
               disabled={bekliyor}
-              className="bas baslik -my-2.5 px-1 py-2.5 text-[10px] text-mavi disabled:opacity-40"
+              className="bas baslik -my-2.5 px-1 py-2.5 text-[11px] text-mavi disabled:opacity-40"
             >
               {uye.rutbe === 'yasli' ? 'RÜTBEYİ AL' : 'YAŞLI YAP'}
             </button>
             <button
               onClick={() => onCikar(uye.id)}
               disabled={bekliyor}
-              className="bas baslik -my-2.5 -mr-1 px-1 py-2.5 text-[10px] text-sonuk disabled:opacity-40"
+              className="bas baslik -my-2.5 -mr-1 px-1 py-2.5 text-[11px] text-sonuk disabled:opacity-40"
             >
               ÇIKAR
             </button>
@@ -431,7 +431,7 @@ export function Ittifak({ lordId }: { lordId: string }) {
                       </span>
                       {/* Seviye: katılacağı ya da pakt yapacağı ittifağı
                           seçen oyuncunun baktığı ilk şey. */}
-                      <span className="baslik shrink-0 rounded-md bg-altin/15 px-1.5 py-0.5 text-[10px] text-altin">
+                      <span className="baslik shrink-0 rounded-md bg-altin/15 px-1.5 py-0.5 text-[11px] text-altin">
                         Sv {a.seviye}
                       </span>
                       <span className="tabular shrink-0 text-[11px] text-solgun">

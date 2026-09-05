@@ -45,7 +45,7 @@ export class HataSiniri extends Component<{ children: ReactNode }, Durum> {
             bildirmek isteyene kopyalayacak bir şey bırakıyor. */}
         <details className="max-w-xs text-left">
           <summary className="bas cursor-pointer text-[11px] text-sonuk">Teknik ayrıntı</summary>
-          <pre className="oyuk mt-2 max-h-40 overflow-auto rounded-lg border border-kenar p-2 text-[10px] whitespace-pre-wrap text-sonuk">
+          <pre className="oyuk mt-2 max-h-40 overflow-auto rounded-lg border border-kenar p-2 text-[11px] whitespace-pre-wrap text-sonuk">
             {hata.message}
           </pre>
         </details>

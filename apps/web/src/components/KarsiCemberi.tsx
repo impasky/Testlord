@@ -93,7 +93,7 @@ export function KarsiCemberi() {
               <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-altin/50 bg-panel text-altin">
                 <BirimIkonu tip={k.saldiran} boyut={24} />
               </span>
-              <span className="baslik text-[9px] whitespace-nowrap text-solgun">
+              <span className="baslik text-[11px] whitespace-nowrap text-solgun">
                 {unitName(k.saldiran)}
               </span>
             </div>

@@ -121,14 +121,14 @@ function KaynakSayaci({
           <Ilerleme deger={canli} max={tavan} renk={renk} boy="ince" />
         </div>
         <span
-          className={`tabular shrink-0 text-[9px] ${saatlik < 0 ? 'text-kirmizi' : 'text-sonuk'}`}
+          className={`tabular shrink-0 text-[11px] ${saatlik < 0 ? 'text-kirmizi' : 'text-sonuk'}`}
         >
           {saatlik >= 0 ? '+' : ''}
           {Math.round(saatlik)}
         </span>
       </div>
-      {durum === 'israf' && <div className="mt-0.5 text-[9px] text-turuncu">depo dolu</div>}
-      {durum === 'kritik' && <div className="mt-0.5 text-[9px] text-kirmizi">azalıyor</div>}
+      {durum === 'israf' && <div className="mt-0.5 text-[11px] text-turuncu">depo dolu</div>}
+      {durum === 'kritik' && <div className="mt-0.5 text-[11px] text-kirmizi">azalıyor</div>}
     </div>
   );
 }
@@ -183,7 +183,7 @@ export function MobilKabuk({
           <div className="mb-2 flex items-center gap-2">
             <div className="flex min-w-0 flex-1 items-center gap-2">
               <span className="baslik truncate text-[13px]">{lord.name}</span>
-              <span className="baslik shrink-0 rounded-md bg-altin/20 px-1.5 py-0.5 text-[10px] text-altin">
+              <span className="baslik shrink-0 rounded-md bg-altin/20 px-1.5 py-0.5 text-[11px] text-altin">
                 Sv {lord.level}
               </span>
             </div>
@@ -195,7 +195,7 @@ export function MobilKabuk({
             </div>
             <button
               onClick={onCikis}
-              className="bas baslik shrink-0 rounded-lg border border-kenar px-2 py-1 text-[10px] text-solgun"
+              className="bas baslik shrink-0 rounded-lg border border-kenar px-2 py-1 text-[11px] text-solgun"
             >
               Çıkış
             </button>
@@ -266,7 +266,7 @@ export function MobilKabuk({
                     }`}
                   >
                     <Ikon boyut={24} />
-                    <span className="baslik text-[10px]">{ad}</span>
+                    <span className="baslik text-[11px]">{ad}</span>
                   </button>
                 </li>
               ))}
@@ -307,7 +307,7 @@ export function MobilKabuk({
                       />
                     )}
                   </span>
-                  <span className="baslik text-[9px]">{ad}</span>
+                  <span className="baslik text-[11px]">{ad}</span>
                 </button>
               </li>
             );
@@ -331,7 +331,7 @@ export function MobilKabuk({
                     />
                   )}
               </span>
-              <span className="baslik text-[9px]">Menü</span>
+              <span className="baslik text-[11px]">Menü</span>
             </button>
           </li>
         </ul>

@@ -89,7 +89,7 @@ export function Olaylar({
                   <p className="min-w-0 flex-1 text-[13px]">
                     {typeof e.payload.mesaj === 'string' ? e.payload.mesaj : e.kind}
                   </p>
-                  <time className="shrink-0 text-[10px] text-sonuk">
+                  <time className="shrink-0 text-[11px] text-sonuk">
                     {new Date(e.createdAt).toLocaleString('tr-TR', {
                       day: '2-digit',
                       month: '2-digit',
@@ -108,7 +108,7 @@ export function Olaylar({
                       aria-label="Savaş raporunu aç"
                     >
                       {govde}
-                      <span className="baslik mt-1 block text-[10px] text-altin">RAPORU AÇ</span>
+                      <span className="baslik mt-1 block text-[11px] text-altin">RAPORU AÇ</span>
                     </button>
                   ) : (
                     govde

@@ -66,7 +66,7 @@ export function DiyarTanitimi({ lord, queues }: { lord: LordState; queues: Queue
     <Kart className="p-4" vurgu="var(--color-altin)">
       <div className="mb-2 flex items-start justify-between gap-2">
         <h2 className="baslik text-[15px] text-altin">{d.ad}</h2>
-        <button onClick={kapat} className="baslik shrink-0 text-[10px] text-sonuk">
+        <button onClick={kapat} className="baslik shrink-0 text-[11px] text-sonuk">
           ANLADIM
         </button>
       </div>

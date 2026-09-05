@@ -76,7 +76,7 @@ export function IttifakSohbet({ lordId }: { lordId: string }) {
                     >
                       {m.ad}
                     </span>
-                    <span className="shrink-0 text-[10px] text-sonuk">{formatGecen(m.an)}</span>
+                    <span className="shrink-0 text-[11px] text-sonuk">{formatGecen(m.an)}</span>
                   </div>
                   <p className="whitespace-pre-wrap break-words text-[13px] leading-snug">
                     {m.metin}

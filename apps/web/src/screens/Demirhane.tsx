@@ -123,7 +123,7 @@ function KusanmaSonucu({ etki, onKapat }: { etki: EkipmanEtkisiDto; onKapat: () 
       <div ref={kutu} />
       <div className="mb-1 flex items-start justify-between gap-2">
         <h3 className="baslik text-[12px] text-yesil">Kuşanıldı — ne değişti</h3>
-        <button onClick={onKapat} className="baslik text-[10px] text-sonuk" aria-label="Kapat">
+        <button onClick={onKapat} className="baslik text-[11px] text-sonuk" aria-label="Kapat">
           KAPAT
         </button>
       </div>
@@ -247,7 +247,7 @@ function EsyaKarti({
           </Rozet>
         </div>
         <div className="shrink-0 text-right">
-          <div className="baslik text-[9px] text-solgun">GÜÇ</div>
+          <div className="baslik text-[11px] text-solgun">GÜÇ</div>
           <div className="tabular text-lg leading-none font-bold" style={{ color: renk }}>
             {formatSayi(item.power)}
           </div>
@@ -293,7 +293,7 @@ function EsyaKarti({
       </div>
 
       {item.upgradeCost && (
-        <p className="tabular mt-1.5 text-[10px] text-sonuk">
+        <p className="tabular mt-1.5 text-[11px] text-sonuk">
           <span className={item.upgradeCost.altin > kaynaklar.altin ? 'text-kirmizi' : ''}>
             {formatSayi(item.upgradeCost.altin)} altın
           </span>
@@ -444,7 +444,7 @@ export function Demirhane({
                   }`}
                 >
                   T{t.tier}
-                  {!t.unlocked && <span className="ml-1 text-[10px]">Sv{t.unlockLevel}</span>}
+                  {!t.unlocked && <span className="ml-1 text-[11px]">Sv{t.unlockLevel}</span>}
                 </button>
               ))}
             </div>
@@ -500,7 +500,7 @@ export function Demirhane({
                         </span>
                       ))}
                   </div>
-                  <p className="mt-2 text-[10px] text-sonuk">
+                  <p className="mt-2 text-[11px] text-sonuk">
                     Nadirlik üretim anında rastgele belirlenir.
                   </p>
                 </div>
@@ -633,7 +633,7 @@ export function Demirhane({
                           >
                             Seviye {g.level + 1}
                           </Buton>
-                          <span className="tabular text-[10px] text-sonuk">
+                          <span className="tabular text-[11px] text-sonuk">
                             <span
                               className={
                                 g.nextCost.altin > lord.resources.altin ? 'text-kirmizi' : ''

@@ -133,7 +133,7 @@ export function Omurga({
 
   return (
     <Kart className="p-4" vurgu="var(--color-altin)">
-      <h3 className="baslik mb-1.5 text-[10px] text-sonuk">Şimdi ne yapmalısın</h3>
+      <h3 className="baslik mb-1.5 text-[11px] text-sonuk">Şimdi ne yapmalısın</h3>
       <p className="baslik text-[19px] leading-tight text-altin">{adim.baslik}</p>
 
       {/* Tek satır cümle + rozetler. Önceden burada dört satırlık düz yazı

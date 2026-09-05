@@ -135,7 +135,7 @@ export function Ogretici({
             <Simge boyut={26} />
           </span>
           <div className="min-w-0 flex-1 pt-0.5">
-            <p className="baslik mb-1 text-[10px] text-sonuk">
+            <p className="baslik mb-1 text-[11px] text-sonuk">
               {i + 1} / {sayfalar.length}
             </p>
             <h2 className="baslik text-[17px] leading-tight text-altin">{sayfa.baslik}</h2>
@@ -153,7 +153,7 @@ export function Ogretici({
             <div className="min-w-0">
               <p className="baslik truncate text-[13px] text-parsomen">{lord.name}</p>
               <p className="text-[11px] text-solgun">{lord.unvan.ad}</p>
-              <p className="mt-0.5 text-[10px] text-sonuk">
+              <p className="mt-0.5 text-[11px] text-sonuk">
                 Bu senin arman. Haritada ve sıralamada seni bu temsil ediyor.
               </p>
             </div>

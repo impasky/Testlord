@@ -20,13 +20,28 @@ export function GorevOzeti({ onGit }: { onGit: () => void }) {
   const g = useQuery({ queryKey: ['gunluk'], queryFn: api.gunluk, staleTime: 60_000 });
   const s = useQuery({ queryKey: ['sefer'], queryFn: api.sefer, staleTime: 60_000 });
 
-  // Veri gelene kadar null DÖNMÜYORUZ, yerini tutuyoruz. Önceden null
-  // dönüyordu: kart veri gelince beliriyor ve altındaki her şeyi 80 piksel
-  // aşağı itiyordu — oyuncunun "görsel kaymalar var" dediği şeyin bir
-  // parçası. Boş kutu göstermek, sayfayı zıplatmaktan iyi.
+  /**
+   * Veri gelene kadar null DÖNMÜYORUZ, yerini tutuyoruz. Önceden null
+   * dönüyordu: kart veri gelince beliriyor ve altındaki her şeyi aşağı
+   * itiyordu — oyuncunun "görsel kaymalar var" dediği şeyin bir parçası.
+   *
+   * Yer tutucu SABİT YÜKSEKLİK DEĞİL, gerçek kartın iskeletinin aynısı.
+   * İlk halinde `h-[52px]` yazıyordu ve işe yarıyordu — ta ki yazı tabanı
+   * 10px'ten 11px'e çıkana kadar. O anda gerçek kart 52 pikseli aştı ve
+   * kayma geri geldi (CLS 0.014 -> 0.361). Ölçüyü tahmin etmek yerine
+   * tarayıcıya hesaplatmak, bu sınıf hatayı bir daha yaşatmıyor: yazı
+   * boyutu değişirse iki taraf birlikte değişiyor.
+   */
   if (!g.data && !s.data) {
     return (
-      <Kart sakin className="h-[52px] p-3">
+      <Kart sakin className="p-3">
+        <div className="flex items-center gap-2" aria-hidden>
+          <span className="baslik shrink-0 text-[11px] text-solgun">GÖREVLER</span>
+          <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
+            <Hap>&nbsp;</Hap>
+          </div>
+          <span className="baslik shrink-0 text-[11px] text-altin">&nbsp;</span>
+        </div>
         <span className="sr-only">Görevler yükleniyor</span>
       </Kart>
     );
@@ -53,7 +68,7 @@ export function GorevOzeti({ onGit }: { onGit: () => void }) {
             </Hap>
           )}
         </div>
-        <span className="baslik shrink-0 text-[10px] text-altin">
+        <span className="baslik shrink-0 text-[11px] text-altin">
           {odulVar ? 'ÖDÜL HAZIR' : 'AÇ'}
         </span>
       </div>

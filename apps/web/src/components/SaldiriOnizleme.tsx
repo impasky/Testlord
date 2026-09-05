@@ -201,7 +201,7 @@ export function SaldiriOnizleme({ onizleme }: { onizleme: PreviewDto }) {
       />
 
       <p
-        className={`text-[10px] leading-snug ${
+        className={`text-[11px] leading-snug ${
           onizleme.istihbaratKesin ? 'text-yesil' : 'text-turuncu'
         }`}
       >

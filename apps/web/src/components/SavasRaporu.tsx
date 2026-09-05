@@ -125,7 +125,7 @@ function TurCubuklari({ turlar }: { turlar: BattleDto['log']['rounds'] }) {
         const saldiranOnde = t.saldiranGuc >= t.savunanGuc;
         return (
           <div key={t.tur}>
-            <div className="mb-1 flex items-baseline justify-between text-[10px] text-sonuk">
+            <div className="mb-1 flex items-baseline justify-between text-[11px] text-sonuk">
               <span className="baslik">TUR {t.tur}</span>
               <span className="tabular">
                 {formatSayi(Math.round(t.saldiranGuc))} — {formatSayi(Math.round(t.savunanGuc))}
@@ -184,7 +184,7 @@ function TarafKarti({
         <p className="text-[12px] text-solgun">Birlik yok.</p>
       ) : (
         <>
-          <div className="mb-1 flex items-baseline gap-2 text-[10px] text-sonuk">
+          <div className="mb-1 flex items-baseline gap-2 text-[11px] text-sonuk">
             <span className="flex-1" />
             <span className="baslik w-12 text-right">KAYIP</span>
             <span className="baslik w-12 text-right">KALAN</span>
@@ -506,7 +506,7 @@ export function SavasRaporu({
                   Tur Tur Güç · {savas.log.rounds.length} tur
                 </h3>
                 <TurCubuklari turlar={savas.log.rounds} />
-                <p className="mt-2.5 text-[10px] text-sonuk">
+                <p className="mt-2.5 text-[11px] text-sonuk">
                   Üstteki çubuk saldıran, alttaki savunan.
                 </p>
               </Kart>
@@ -580,7 +580,7 @@ export function SavasRaporu({
                 </Buton>
               )}
 
-              <p className="pb-1 text-center text-[10px] text-sonuk">
+              <p className="pb-1 text-center text-[11px] text-sonuk">
                 Toplam {formatSayi(toplam(savas.log.attackerLosses) + toplam(savas.log.defenderLosses))}{' '}
                 birim öldü · tohum {savas.seed.slice(0, 12)}
               </p>

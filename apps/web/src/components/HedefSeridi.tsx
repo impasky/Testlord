@@ -59,7 +59,7 @@ export function HedefSeridi({
   const eksik = hedef.eksik;
   return (
     <Kart className="p-3" vurgu={hedef.kazanir ? 'var(--color-yesil)' : undefined}>
-      <div className="baslik mb-2 text-[10px] text-sonuk">{baslik}</div>
+      <div className="baslik mb-2 text-[11px] text-sonuk">{baslik}</div>
 
       <div className="flex items-center gap-2.5">
         <span className="shrink-0 text-altin">
