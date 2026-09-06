@@ -72,6 +72,12 @@ Harita, denge verisi, general kadrosu, metinler ve kod bu projeye aittir.
 tarafından, `docs/GORSEL-ISTEMLERI.md` içindeki istemlerle üretilmiştir.
 Üçüncü taraf bir eserden alınmadıkları için künye zorunluluğu yoktur.
 
+Görsellerin bir kısmı elle (sohbet arayüzlerinden), bir kısmı proje
+sahibinin Google AI Studio anahtarıyla `tools/gorsel-uret.py` üzerinden
+üretildi. İkisi de aynı istem dosyasını kullanıyor, o yüzden üslup tek.
+`zeminler/arastirma.webp` ikinci yolla üretilen ilk görsel
+(`gemini-3.1-flash-image`).
+
 Üreten araç görselleri çoğu zaman tek bir sayfa olarak veriyor;
 `tools/gorsel-ayikla.py` sayfayı parçalara ayırıp 512×512 WebP olarak yazar.
 Kaynak sayfalar depoya konmaz — depoda oyunun kullandığı kesilmiş dosyalar

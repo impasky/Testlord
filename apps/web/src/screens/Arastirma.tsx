@@ -13,6 +13,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { api, ApiError } from '../api/client';
+import { Zemin } from '../components/Zemin';
 import { hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { IkonAltin, IkonDemir, IkonErzak, IkonSure } from '../components/Ikonlar';
 import { Bolum, Buton, GeriSayim, Ilerleme, Iskelet, Kart, formatSayi } from '../components/ui';
@@ -79,11 +80,12 @@ export function Arastirma({ depoTavani }: { depoTavani: number }) {
 
   return (
     <div className="space-y-4">
-      {/* Zemin YOK: bu kapının zemin görseli henüz üretilmedi ve
-          görselsiz Zemin düz bir başlık basıyor — panel zaten "Araştırma"
-          yazdığı için başlık iki kez görünüyordu. İttifak ve Hesap da
-          aynı sebeple Zemin kullanmıyor. Görsel geldiğinde Generaller ve
-          Demirhane gibi eklenir (istem: docs/GORSEL-ISTEMLERI.md). */}
+      {/* Zemin görseli üretildi (usta atölyesi: planlar, maketler,
+          pergel). Artık Generaller ve Demirhane gibi kapak şeridi var;
+          başlık görselin ÜSTÜNDE durduğu için panel başlığıyla
+          çakışmıyor. */}
+      <Zemin ad="arastirma" baslik="Araştırma" altyazi="Diyarını kendi seçimlerinle büyüt" />
+
       <Kart className="p-3">
         <div className="flex items-baseline justify-between">
           <span className="baslik text-[11px] text-solgun">İlerleme</span>

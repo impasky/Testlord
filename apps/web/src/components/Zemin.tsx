@@ -40,6 +40,7 @@ const ZEMINI_OLAN = new Set([
   'siralama',
   'gorevler',
   'olaylar',
+  'arastirma',
 ]);
 
 export function Zemin({
