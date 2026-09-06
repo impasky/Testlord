@@ -120,6 +120,25 @@ export function varsayilanDizilim(ordu: Army): Dizilim {
   return d;
 }
 
+/**
+ * Bir birimin kaç askerinin HANGİ kareye düştüğü.
+ *
+ * Arayüzde her karenin altında bir sayı yazıyor ve bu sayılar toplamda
+ * birimin tamamını vermeli. İlk hâli `Math.floor(adet / kareSayisi)`
+ * yazıyordu: 17 okçu iki kareye bölününce ekranda 8 ve 8 görünüyor,
+ * 17. asker kayboluyordu. Oyuncu haklı olarak "bir okçu savaşa girmiyor"
+ * dedi — motor aslında 17'sini de sayıyor (dizilim yalnız ÇARPAN
+ * hesaplıyor, adet bölmüyor), yalan söyleyen ekrandı.
+ *
+ * Artık artan baştaki karelere dağıtılıyor: 17 -> 9 + 8.
+ */
+export function kareyeDusenAdet(toplam: number, kareSayisi: number, kacinci: number): number {
+  if (kareSayisi <= 0) return 0;
+  const taban = Math.floor(toplam / kareSayisi);
+  const artan = toplam % kareSayisi;
+  return taban + (kacinci < artan ? 1 : 0);
+}
+
 /** Bir birimin durduğu kare indeksleri. */
 export function birimKareleri(dizilim: Dizilim, t: UnitType): number[] {
   const out: number[] = [];

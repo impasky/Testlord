@@ -17,8 +17,10 @@ import {
   B,
   KARE_SAYISI,
   UNIT_TYPES,
+  birimKareleri,
   dizilimEtkisi,
   kareSatiri,
+  kareyeDusenAdet,
   kanattaMi,
   taktikDurumlari,
   unitName,
@@ -31,6 +33,15 @@ import { Gorsel } from './Gorsel';
 import { BirimIkonu } from './Ikonlar';
 import { Buton, Kart } from './ui';
 import { hisOnay, hisRet } from './hisGeriBildirimi';
+
+/**
+ * Kaç piksel oynayınca "sürükleme" sayılır.
+ *
+ * Parmak hiçbir zaman tam sabit durmuyor; eşiksiz her dokunuş sürükleme
+ * sayılırdı. Sekiz piksel, kasıtsız titremeyi eleyip kasıtlı hareketi
+ * geçiren aralık.
+ */
+const HAREKET_ESIGI = 8;
 
 const SATIR = B.dizilim.satir;
 const SUTUN = B.dizilim.sutun;
@@ -65,6 +76,21 @@ export function DizilimIzgarasi({
   /** Sürükleme sırasında parmağın üstünde durduğu kare. */
   const [hedefKare, setHedefKare] = useState<number | null>(null);
   const izgaraRef = useRef<HTMLDivElement>(null);
+  /**
+   * Basış NEREDE başladı: havuz rozetinde mi, bir karede mi, hiçbirinde mi.
+   *
+   * Bu ayrım olmadan SAYFAYI KAYDIRMAK sürükleme sayılıyordu: parmak
+   * ekranın herhangi bir yerinden aşağı kayınca pointermove ateşleniyor,
+   * pointerup ızgaranın dışına düşüyor ve seçim iptal ediliyordu.
+   * Oyuncunun sözü: "okçu seçip ekranı aşağı kaydırınca seçim gidiyor."
+   *
+   * Daha kötüsü: parmak ızgaranın ÜSTÜNDEN kayarak kalkarsa birim
+   * rastgele bir kareye yerleşiyordu. Kaydırma bir niyet değil; hiçbir
+   * şey yapmamalı.
+   */
+  const basimNerede = useRef<'havuz' | 'kare' | null>(null);
+  /** Basışın başladığı nokta; hareket eşiğini ölçmek için. */
+  const basimNoktasi = useRef<{ x: number; y: number } | null>(null);
   const surukluyor = useRef(false);
   /**
    * pointerdown ANINDAKİ seçim.
@@ -130,27 +156,46 @@ export function DizilimIzgarasi({
    */
   useEffect(() => {
     const tasi = (e: PointerEvent) => {
-      if (!tutulan) return;
+      // Basış havuzda başlamadıysa bu bir SÜRÜKLEME değil, kaydırmadır.
+      if (basimNerede.current !== 'havuz') return;
+      const b = basimNoktasi.current;
+      if (b && Math.hypot(e.clientX - b.x, e.clientY - b.y) < HAREKET_ESIGI) return;
       surukluyor.current = true;
       setHedefKare(kareBul(e.clientX, e.clientY));
     };
     const birak = (e: PointerEvent) => {
+      const nerede = basimNerede.current;
       const hedef = kareBul(e.clientX, e.clientY);
-      if (tutulan && hedef !== null) {
+      const b = basimNoktasi.current;
+      const oynadi = b ? Math.hypot(e.clientX - b.x, e.clientY - b.y) >= HAREKET_ESIGI : false;
+
+      if (nerede === 'havuz' && surukluyor.current && hedef !== null && tutulan) {
+        // Havuzdan sürükleyip kareye bıraktı.
         kareyeKoy(hedef, tutulan);
         hisOnay();
         setTutulan(null);
-      } else if (tutulan && surukluyor.current) {
-        // Izgara dışına bırakıldı: seçim düşsün.
+      } else if (nerede === 'havuz' && surukluyor.current) {
+        // Sürükledi ama ızgara dışına bıraktı: seçim düşsün.
         setTutulan(null);
         hisRet();
-      } else if (!tutulan && hedef !== null && dizilim[hedef]) {
-        // Elinde bir şey yokken dolu kareye dokunmak boşaltıyor.
-        kareyeKoy(hedef, null);
-        hisRet();
+      } else if (nerede === 'kare' && !oynadi && hedef !== null) {
+        // Kareye DOKUNDU (kaydırmadı): elindekini koy ya da kareyi boşalt.
+        if (tutulan) {
+          kareyeKoy(hedef, tutulan);
+          hisOnay();
+          setTutulan(null);
+        } else if (dizilim[hedef]) {
+          kareyeKoy(hedef, null);
+          hisRet();
+        }
       }
+      // nerede === null: basış havuzda da karede de başlamadı — sayfa
+      // kaydırılıyor. Hiçbir şey yapma, SEÇİMİ DE BOZMA.
+
       setHedefKare(null);
       surukluyor.current = false;
+      basimNerede.current = null;
+      basimNoktasi.current = null;
     };
     window.addEventListener('pointermove', tasi);
     window.addEventListener('pointerup', birak);
@@ -169,7 +214,16 @@ export function DizilimIzgarasi({
     e.preventDefault();
     oncekiSecim.current = tutulan;
     surukluyor.current = false;
+    basimNerede.current = 'havuz';
+    basimNoktasi.current = { x: e.clientX, y: e.clientY };
     setTutulan(tutulan === birim ? null : birim);
+  }
+
+  /** Karenin üstünde başlayan basış. Kaydırmadan ayırt etmek için. */
+  function kareyeBasla(e: React.PointerEvent) {
+    basimNerede.current = 'kare';
+    basimNoktasi.current = { x: e.clientX, y: e.clientY };
+    surukluyor.current = false;
   }
 
   /** Parmağın altındaki kareyi ekran koordinatından bulur. */
@@ -261,6 +315,7 @@ export function DizilimIzgarasi({
                 key={i}
                 type="button"
                 data-kare={i}
+                onPointerDown={kareyeBasla}
                 className={`relative flex aspect-square touch-none flex-col items-center justify-center rounded-lg border text-[9px] transition ${
                   vurgu
                     ? 'border-altin bg-altin/20'
@@ -283,8 +338,13 @@ export function DizilimIzgarasi({
                       yedek={<BirimIkonu tip={birim} boyut={22} />}
                     />
                     <span className="mt-0.5 leading-none text-solgun">
-                      {Math.floor(
-                        (ordu[birim] ?? 0) / Math.max(1, dizilim.filter((k) => k === birim).length),
+                      {/* Artan baştaki karelere dağıtılıyor: 17 okçu iki
+                          kareye bölününce 9 + 8 yazıyor, 8 + 8 değil.
+                          Eski hâli 17. askeri ekrandan siliyordu. */}
+                      {kareyeDusenAdet(
+                        ordu[birim] ?? 0,
+                        birimKareleri(dizilim, birim).length,
+                        birimKareleri(dizilim, birim).indexOf(i),
                       )}
                     </span>
                   </>

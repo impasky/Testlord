@@ -238,6 +238,25 @@ export function LordEkrani({
   const [bekliyor, setBekliyor] = useState(false);
   const [sekme, setSekme] = useState<'guc' | 'gorunus'>('guc');
 
+  /**
+   * Omurganın "aynı ekranda şu bölüme git" isteği.
+   *
+   * Oyuncunun şikâyeti: "lord ekranındayım ama bana kocaman LORD EKRANI
+   * git diyor." Omurga zaten bu sayfada duruyor; ekrana yollamak yerine
+   * işin yapıldığı BÖLÜME götürüyor.
+   *
+   * Bölüm bir alt sekmenin içindeyse önce o sekme açılıyor: kaydırmak tek
+   * başına yetmez, gizli bir bölüme kaydırmak hiçbir yere kaydırmamaktır.
+   * Kaydırma sekme değişikliğinin boyanmasını beklesin diye bir kare
+   * sonraya bırakılıyor.
+   */
+  function bolumeGit(bolumId: string) {
+    if (bolumId === 'nitelikler') setSekme('guc');
+    requestAnimationFrame(() => {
+      document.getElementById(bolumId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
   const harcanan = STAT_KEYS.reduce((s, k) => s + dagitim[k], 0);
   const kalan = lord.statPoints - harcanan;
 
@@ -346,6 +365,7 @@ export function LordEkrani({
         onGit={onGit}
         onKapiAc={onKapiAc}
         onHedefeGit={onBolgeyiAc}
+        onBolumeGit={bolumeGit}
       />
 
       {/* Diyar tanıtımı omurganın ALTINDA.
@@ -503,6 +523,7 @@ export function LordEkrani({
       {sekme === 'guc' && (
         <>
           <Bolum
+            id="nitelikler"
             baslik="Nitelikler"
             yan={
               lord.statPoints > 0 ? (
@@ -678,8 +699,23 @@ export function LordEkrani({
                     `Savunma +%${Math.round(lord.gearBonus.savunma * 100)} · ` +
                     `Can +%${Math.round(lord.gearBonus.can * 100)}`,
                 ],
-                ['Düello derecesi', formatSayi(lord.elo)],
-                ['Lord düelloları', `${lord.pvpWins} galibiyet · ${lord.pvpLosses} yenilgi`],
+                // Bu iki satır YALNIZCA bir oyuncuyla savaştıysan var.
+                //
+                // Geçen turda "ELO"yu "Düello" diye çevirmiştim; ortada
+                // düello diye bir özellik yok ve isim, olmayan bir sistemi
+                // varmış gibi gösteriyordu. Bu sayılar oyunculara karşı
+                // yapılan SALDIRILARIN karnesi (march.ts → updateElo);
+                // NPC bölgeleri saymıyor.
+                //
+                // Hiç oynamamışken "0 galibiyet 0 yenilgi" göstermek de
+                // bilgi değil: dokunmadığın bir sistemin sıfırı, o sistemi
+                // arattırmaktan başka bir şey yapmıyor.
+                ...(lord.pvpWins + lord.pvpLosses > 0
+                  ? ([
+                      ['Lordlara karşı', `${lord.pvpWins} galibiyet · ${lord.pvpLosses} yenilgi`],
+                      ['Savaş derecen', formatSayi(lord.elo)],
+                    ] as [string, string][])
+                  : []),
               ].map(([ad, deger]) => (
                 <div key={ad} className="flex items-center justify-between gap-3 px-3 py-2.5">
                   <span className="text-[13px] text-solgun">{ad}</span>

@@ -68,6 +68,11 @@ interface Adim {
    */
   hedefKapi?: Kapi;
   /**
+   * Eylem AYNI ekranda bir bölüme kaydırıyorsa o bölümün kimliği.
+   * Sekme değil, kapı değil — bulunulan sayfanın içinde bir yer.
+   */
+  hedefBolum?: string;
+  /**
    * Eylem doğrudan bir bölge paneli açıyorsa o bölgenin kimliği.
    *
    * Yalnız önden veri çekmek için: haritada bölge paneli kendi sorgusunu
@@ -136,6 +141,7 @@ export function useOmurgaAdimi(
     onGit: () => {},
     onKapiAc: () => {},
     onHedefeGit: () => {},
+    onBolumeGit: () => {},
   });
 }
 
@@ -145,6 +151,7 @@ export function Omurga({
   onGit,
   onKapiAc,
   onHedefeGit,
+  onBolumeGit,
 }: {
   lord: LordState;
   queues: QueueItem[];
@@ -153,6 +160,8 @@ export function Omurga({
   onKapiAc: (k: Kapi) => void;
   /** Bir bölgeyi doğrudan haritada açar. */
   onHedefeGit: (regionId: number) => void;
+  /** Aynı ekrandaki bir bölüme götürür (sekmeyi değiştirip kaydırarak). */
+  onBolumeGit: (bolumId: string) => void;
 }) {
   const harita = useQuery({ queryKey: ['map'], queryFn: api.map });
   const yuruyusler = useQuery({ queryKey: ['marches'], queryFn: api.marches });
@@ -191,6 +200,7 @@ export function Omurga({
     onGit,
     onKapiAc,
     onHedefeGit,
+    onBolumeGit,
   });
 
   /*
@@ -310,6 +320,16 @@ export function siradakiAdim(g: {
   onGit: (s: Sekme) => void;
   onKapiAc: (k: Kapi) => void;
   onHedefeGit: (regionId: number) => void;
+  /**
+   * AYNI ekrandaki bir bölüme götürür (gerekirse sekmeyi değiştirip
+   * kaydırarak).
+   *
+   * Omurga yalnız Lord ekranında duruyor. "Lord ekranı" düğmesi, zaten
+   * Lord ekranında olan oyuncuyu hiçbir yere götürmüyordu — oyuncunun
+   * kendi sözüyle: "lord ekranındayım ama bana kocaman lord ekranına git
+   * diyor". Adım artık ekrana değil, işin YAPILDIĞI bölüme yolluyor.
+   */
+  onBolumeGit: (bolumId: string) => void;
 }): Adim | null {
   const { lord, oneri, egitimde, uretimde, generalVar, yarali, yoldaki } = g;
 
@@ -405,15 +425,19 @@ export function siradakiAdim(g: {
       return {
         anahtar: 'liderlik',
         baslik: 'Komuta kapasiten yetmiyor',
-        cumle: `${oneri.name} kapasiten dolsa bile alınmıyor. Lord ekranından Liderlik yükselt.`,
+        // Cümle EKRAN ADI vermiyor. Omurga yalnız Lord ekranında
+        // duruyor; "Lord ekranından Liderlik yükselt" demek, zaten orada
+        // olan oyuncuya bulunduğu yeri tarif etmekti.
+        cumle: `${oneri.name} kapasiten dolsa bile alınmıyor. Liderlik statını yükseltmen gerek.`,
         rozetler: [
           <Hap key="sav" ikon={<IkonYer boyut={13} />} renk="var(--color-turuncu)">
             {toplamBirim(oneri.garrison)} savunan
           </Hap>,
         ],
-        dugme: 'Lord ekranı',
-        git: () => g.onGit('lord'),
+        dugme: 'Niteliklere git',
+        git: () => g.onBolumeGit('nitelikler'),
         hedefSekme: 'lord',
+        hedefBolum: 'nitelikler',
       };
     }
     return {

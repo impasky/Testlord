@@ -59,10 +59,25 @@ export class ApiError extends Error {
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const token = getToken();
+  /**
+   * Content-Type YALNIZCA gövde varken gönderiliyor.
+   *
+   * Fastify, `application/json` başlığı görüp gövde bulamazsa isteği
+   * 400 ile reddediyor: "Body cannot be empty when content-type is set
+   * to 'application/json'". Başlık koşulsuz eklendiği için gövdesiz her
+   * DELETE sessizce çalışmıyordu — yürüyüşü geri çağırmak ve araştırmayı
+   * iptal etmek dahil. Oyuncunun gördüğü şey "geri çağır'a bastım, ordu
+   * hâlâ saldırıyor" idi.
+   *
+   * Bu tuzak POST tarafında bir kez yakalanıp `post` yardımcısında boş
+   * nesne göndererek çözülmüştü (aşağıdaki nota bak) ama DELETE aynı
+   * yoldan geçmiyordu. Düzeltme artık taşıyıcıda: hangi yöntem olursa
+   * olsun gövde yoksa başlık da yok.
+   */
   const res = await fetch(`${BASE}/api${path}`, {
     ...init,
     headers: {
-      'Content-Type': 'application/json',
+      ...(init?.body === undefined ? {} : { 'Content-Type': 'application/json' }),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...init?.headers,
     },

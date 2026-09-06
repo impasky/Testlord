@@ -172,6 +172,29 @@ if (await katlanir.count()) {
     kontrol('dokun-dokun ile de yerleşiyor', false, 'birim ya da kare yok');
   }
 
+  /* --- KAYDIRMA seçimi bozmamalı --- */
+  // Oyuncunun raporu: "okçu vs seçip ekranı aşağı kaydırınca seçim
+  // gidiyor." Kaydırma bir niyet değil; hiçbir şey yapmamalı.
+  const secilecek = page.locator('[data-birim]').first();
+  await secilecek.scrollIntoViewIfNeeded();
+  await secilecek.click();
+  await page.waitForTimeout(300);
+  const secildiMi = (await page.locator('body').innerText()).includes('elinde');
+  kontrol('havuzdan birim seçildi', secildiMi);
+
+  // Parmakla sayfayı kaydır: ızgaranın ÜSTÜNDEN geçerek.
+  const izgara = await page.locator('[data-kare="8"]').boundingBox();
+  await page.mouse.move(izgara.x + izgara.width / 2, izgara.y + izgara.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(izgara.x + izgara.width / 2, izgara.y - 220, { steps: 14 });
+  await page.mouse.up();
+  await page.waitForTimeout(500);
+
+  kontrol(
+    'kaydırdıktan sonra seçim DURUYOR',
+    (await page.locator('body').innerText()).includes('elinde'),
+  );
+
   /* --- Taktik kilidi sebebini yazıyor mu --- */
   const govde2 = await page.locator('body').innerText();
   kontrol('taktik listesi görünüyor', /Kalkan Duvarı|Hilal Düzeni/.test(govde2));
