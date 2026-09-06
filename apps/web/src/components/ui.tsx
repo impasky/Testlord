@@ -297,10 +297,19 @@ export function Kart({
   onClick,
   vurgu,
   sakin = false,
+  kapi,
 }: {
   children: ReactNode;
   className?: string;
   onClick?: () => void;
+  /**
+   * Bu kart bir KAPI açıyorsa hangisini (`data-kapi`).
+   *
+   * `Buton`daki `isaret` ile aynı gerekçe: hedefi sınıf adından ya da
+   * metinden bulmak, ilk üslup değişikliğinde sessizce kayan bir bağ
+   * demekti. Testler kapıları bu imzayla açıyor.
+   */
+  kapi?: string;
   /** Üst kenarda nadirlik/durum rengi şeridi. */
   vurgu?: string;
   /**
@@ -316,6 +325,7 @@ export function Kart({
   return (
     <Etiket
       onClick={onClick}
+      data-kapi={kapi}
       className={`${sakin ? 'kart-sakin' : 'kart'} relative overflow-hidden text-left ${
         onClick ? 'bas w-full' : ''
       } ${className}`}

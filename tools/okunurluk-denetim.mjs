@@ -23,8 +23,9 @@
  */
 import { chromium, devices } from 'playwright';
 import { kayitOl } from './lib/kayit.mjs';
+import { bolgeKazandir } from './lib/ilerlet.mjs';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
-import { EKRANLAR, ekrana, rehberiSustur } from './lib/gezin.mjs';
+import { EKRANLAR, ekrana, kapiyiKapat, rehberiSustur } from './lib/gezin.mjs';
 
 const API = process.env.API_URL ?? 'http://localhost:3000';
 const WEB = process.env.WEB_URL ?? 'http://127.0.0.1:5173';
@@ -162,6 +163,16 @@ const { token } = await kayitOl(API, {
   email: `oku${damga}@lordlar.dev`,
   lordName: `Oku ${damga.toString(36).slice(-4)}`,
 });
+// İlk döngüde arayüz bilerek sade ve ekranların yarısı görünmüyor;
+// okunurluk oyunun YERLEŞMİŞ hâlinde ölçülmeli.
+const bolgeSayisi = await bolgeKazandir(API, token);
+if (bolgeSayisi === 0) {
+  // Sessizce devam etmek, ekranların yarısını hiç ölçmeden "temiz" demek
+  // olurdu — kapılar ilk döngüde bilerek gizli.
+  console.error('Denetim lorduna bölge kazandırılamadı; ilk döngü kapanmadan ölçüm eksik olur.');
+  process.exit(1);
+}
+
 const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
 const post = (y, g) =>
   fetch(`${API}/api${y}`, { method: 'POST', headers: h, body: JSON.stringify(g ?? {}) }).then((x) =>

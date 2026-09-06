@@ -14,9 +14,10 @@
  */
 import { chromium } from 'playwright';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
-import { EKRANLAR, ekrana, rehberiSustur } from './lib/gezin.mjs';
+import { EKRANLAR, ekrana, kapiyiKapat, rehberiSustur } from './lib/gezin.mjs';
 
 import { kayitOl } from './lib/kayit.mjs';
+import { bolgeKazandir } from './lib/ilerlet.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 const WEB = process.env.WEB_URL ?? 'http://localhost:5173';
 const CHROME = process.env.CHROME_PATH ?? '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
@@ -39,6 +40,17 @@ const { token } = await kayitOl(API, {
   email: `gd${damga}@lordlar.dev`,
   lordName: `Gd${damga.toString(36).slice(-5)}`,
 });
+// Denetim oyunun YERLEŞMİŞ hâlini ölçüyor: ilk döngüde arayüz bilerek
+// sade ve ekranların yarısı (olay akışı, diyarın kapıları) hiç görünmüyor.
+// Bu lorda gerçek yoldan bir bölge kazandırıp döngüyü kapatıyoruz.
+const bolgeSayisi = await bolgeKazandir(API, token);
+if (bolgeSayisi === 0) {
+  // Sessizce devam etmek, ekranların yarısını hiç ölçmeden "temiz" demek
+  // olurdu — kapılar ilk döngüde bilerek gizli.
+  console.error('Denetim lorduna bölge kazandırılamadı; ilk döngü kapanmadan ölçüm eksik olur.');
+  process.exit(1);
+}
+
 const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
 const post = (y, g) =>
   fetch(`${API}/api${y}`, { method: 'POST', headers: h, body: JSON.stringify(g ?? {}) }).then((x) =>
@@ -277,12 +289,15 @@ async function denetle(ad) {
   }
 }
 
-// Hangi ekranın çubukta hangisinin menüde olduğunu `lib/gezin.mjs` biliyor.
+// Hangi ekranın sekme hangisinin kapı olduğunu `lib/gezin.mjs` biliyor.
 for (const [ad] of EKRANLAR) {
   await ekrana(page, ad, 0);
   await kaymaOlcumuBaslat();
   await denetle(ad);
 }
+// Döngü bir KAPI ile bitiyor ve panel açık kalıyor: kapatmadan çubuğa
+// basmak paneli tıklamak olurdu.
+await kapiyiKapat(page);
 
 // Bölge detayı: alt sayfa açıkken en çok kayma buradaydı
 await page.click('nav button:has-text("Harita")');

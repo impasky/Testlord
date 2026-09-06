@@ -8,6 +8,14 @@ import {
   rehberSozleri,
   rehberSozu,
 } from './rehber.js';
+import {
+  ALT_SEKMELER,
+  EKRANLAR,
+  KAPILAR,
+  KAPI_ADI,
+  KAPI_EVI,
+  sekmeninKapilari,
+} from './types.js';
 import { ilkEgitimMi, egitimSuresiSn } from './march.js';
 import { B } from './balance.js';
 
@@ -254,5 +262,47 @@ describe('neden bu düğme', () => {
 
   it('bilinmeyen işarette adımın sözüne düşüyor', () => {
     expect(rehberIsaretSebebi('ordu-kur', 'boyle-bir-dugme-yok')).toBe(rehberSozu('ordu-kur'));
+  });
+});
+
+describe('arayüz mimarisi — beş sekme, gerisi kapı', () => {
+  it('alt çubukta tam beş sekme var', () => {
+    expect(ALT_SEKMELER.length).toBe(5);
+  });
+
+  /**
+   * Hiçbir ekran kaybolmasın: eskiden sayfa olan her şey ya sekme ya kapı.
+   * Bu kontrol olmadan bir ekran refaktör sırasında sessizce ulaşılamaz
+   * hâle gelebilirdi.
+   */
+  it('her ekran ya sekme ya kapı — hiçbiri ortada kalmıyor', () => {
+    const kapsanan = new Set<string>([...ALT_SEKMELER, ...KAPILAR]);
+    for (const e of EKRANLAR) expect(kapsanan.has(e), e).toBe(true);
+    expect(kapsanan.size).toBe(EKRANLAR.length);
+  });
+
+  it('bir ekran hem sekme hem kapı olamaz', () => {
+    for (const k of KAPILAR) expect(ALT_SEKMELER).not.toContain(k as never);
+  });
+
+  it('her kapının evi bir alt sekme', () => {
+    for (const k of KAPILAR) expect(ALT_SEKMELER).toContain(KAPI_EVI[k]);
+  });
+
+  it('her kapının bir adı var', () => {
+    for (const k of KAPILAR) expect(KAPI_ADI[k].length).toBeGreaterThan(2);
+  });
+
+  /**
+   * Bir sekmede altı kapı birikirse o sekme yine bir menüye dönerdi —
+   * kaçtığımız şey tam olarak oydu.
+   */
+  it('hiçbir sekmede dörtten fazla kapı yok', () => {
+    for (const s of ALT_SEKMELER) expect(sekmeninKapilari(s).length).toBeLessThanOrEqual(4);
+  });
+
+  it('kapısı olan sekmeler Lord ve Malikâne', () => {
+    expect(sekmeninKapilari('lord')).toEqual(['generaller', 'demirhane', 'siralama', 'hesap']);
+    expect(sekmeninKapilari('malikane')).toEqual(['olaylar', 'ittifak']);
   });
 });

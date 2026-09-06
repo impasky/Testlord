@@ -1,61 +1,78 @@
 /**
  * Test araçları için ekran gezinme.
  *
- * Hangi ekranın alt çubukta, hangisinin menüde olduğu ÜÇ ayrı araçta üç
- * ayrı listede yazıyordu (gorsel-denetim, okunurluk-denetim,
- * tarayici-tam-akis). Demirhane çubuktan menüye taşınınca üçü birden
- * kırıldı ve üçünü de elle düzeltmek gerekti.
- *
- * Liste artık tek yerde. Bir ekran çubukla menü arasında taşınırsa
- * araçların hiçbiri değişmiyor.
+ * Arayüz BEŞ sekme + KAPI mimarisine geçti (oyuncunun tarifi:
+ * "nav bar ile gidebileceğimiz yerler sadece 5 tane, gerisi o 5 sayfanın
+ * içinde pop-up"). Bu dosya o mimarinin test tarafındaki karşılığı.
  *
  * Not: bu liste arayüzün kopyası, kaynağı değil — kaynak
- * `apps/web/src/components/MobilKabuk.tsx`. İkisi ayrışırsa `ekranlar()`
- * ile gezen araçlar hemen kalıyor, çünkü tıklanacak düğmeyi bulamıyorlar.
- * Sessizce yanlış çalışan bir gezinme yerine gürültülü bir hata.
+ * `packages/shared/src/types.ts` (ALT_SEKMELER, KAPILAR, KAPI_EVI).
+ * İkisi ayrışırsa `ekrana()` ile gezen araçlar hemen kalıyor, çünkü
+ * tıklanacak düğmeyi bulamıyorlar. Sessizce yanlış çalışan bir gezinme
+ * yerine gürültülü bir hata.
  */
 
-/** Alt çubuktaki ekranlar: her oturumda açılanlar. */
+/** Alt çubuktaki BEŞ sekme. */
 export const CUBUK = [
   ['malikane', 'Malikâne'],
   ['gorevler', 'Görevler'],
   ['kisla', 'Kışla'],
   ['harita', 'Harita'],
-];
-
-/** Menüdeki ekranlar: oturumda bir ya da daha seyrek açılanlar. */
-export const MENU = [
-  ['demirhane', 'Demirhane'],
-  ['olaylar', 'Olaylar'],
-  ['generaller', 'Generaller'],
-  ['ittifak', 'İttifak'],
   ['lord', 'Lord'],
-  ['siralama', 'Sıralama'],
 ];
-
-/** Denetlenen bütün ekranlar, çubuk önce. */
-export const EKRANLAR = [...CUBUK, ...MENU];
-
-const menude = (ad) => MENU.some(([k]) => k === ad);
 
 /**
- * Bir ekrana gider. Çubukta mı menüde mi olduğunu kendi biliyor.
+ * Kapılar: kendi sayfası olmayan, konusunun içinde panel olarak açılanlar.
+ * Her satır [anahtar, evi] — panel `data-kapi` imzalı bir düğmeyle açılıyor.
+ */
+export const KAPILAR = [
+  ['olaylar', 'malikane'],
+  ['ittifak', 'malikane'],
+  ['generaller', 'lord'],
+  ['demirhane', 'lord'],
+  ['siralama', 'lord'],
+  ['hesap', 'lord'],
+];
+
+/** Denetlenen bütün ekranlar: önce sekmeler, sonra kapılar. */
+export const EKRANLAR = [
+  ...CUBUK,
+  ...KAPILAR.map(([k]) => [k, k]),
+];
+
+const kapiKaydi = (ad) => KAPILAR.find(([k]) => k === ad);
+
+/** Açık bir kapı panelini kapatır; açık değilse bir şey yapmaz. */
+export async function kapiyiKapat(page) {
+  const kapat = page.locator('[role="dialog"] button[aria-label="Kapat"]');
+  if (await kapat.count()) {
+    await kapat.first().click();
+    await page.waitForTimeout(350);
+  }
+}
+
+/**
+ * Bir ekrana gider: sekmeyse çubuktan, kapıysa evine geçip paneli açarak.
  *
- * Menü tıklaması IZGARAYA daraltılmış: `text=İttifak` iki eleman buluyor
- * (menüdeki sayfa ve Sıralama ekranındaki ittifak sekmesi) ve Playwright
- * ilkini seçip menü perdesine çarpıyordu.
+ * Kapı düğmeleri `data-kapi` ile imzalı — metinle aramak kırılgandı:
+ * "İttifak" hem Malikâne'deki kapı düğmesinde hem Sıralama ekranındaki
+ * sekmede geçiyor ve Playwright ilkini seçiyordu.
  */
 export async function ekrana(page, ad, bekle = 1200) {
-  const kayit = EKRANLAR.find(([k]) => k === ad);
-  if (!kayit) throw new Error(`bilinmeyen ekran: ${ad}`);
-  const [, etiket] = kayit;
+  // Önce varsa açık paneli kapat: üst üste iki panel açılmasın.
+  await kapiyiKapat(page);
 
-  if (menude(ad)) {
-    await page.click('nav button:has-text("Menü")');
-    await page.waitForTimeout(400);
-    await page.locator(`div.fixed ul.grid button:has-text("${etiket}")`).click();
+  const kapi = kapiKaydi(ad);
+  if (kapi) {
+    const [, ev] = kapi;
+    const evEtiketi = CUBUK.find(([k]) => k === ev)[1];
+    await page.click(`nav button:has-text("${evEtiketi}")`);
+    await page.waitForTimeout(500);
+    await page.locator(`[data-kapi="${ad}"]`).first().click();
   } else {
-    await page.click(`nav button:has-text("${etiket}")`);
+    const kayit = CUBUK.find(([k]) => k === ad);
+    if (!kayit) throw new Error(`bilinmeyen ekran: ${ad}`);
+    await page.click(`nav button:has-text("${kayit[1]}")`);
   }
   await page.waitForTimeout(bekle);
 }
@@ -94,4 +111,20 @@ export async function rehberiSustur(page, api = process.env.API_URL ?? 'http://l
   if (!y.ok) throw new Error(`rehberiSustur: ${y.status} ${await y.text()}`);
   // /me önbellekte duruyor olabilir; yeni bayrağı okusun.
   await page.reload({ waitUntil: 'domcontentloaded' });
+}
+
+/**
+ * Açık kapı panelinin İÇİNDE arayan seçici.
+ *
+ * Kapı mimarisinin test tarafındaki tuzağı bu: panel açıkken EV EKRANI
+ * arkada duruyor ve DOM'da hâlâ var. `button:has-text("Kuşan")` hem
+ * Demirhane panelindeki düğmeyi hem Lord ekranındaki ekipman yuvasını
+ * buluyor, `.first()` de arkadakini seçip perdeye çarpıyordu.
+ *
+ * Panel içi seçiciler bu yardımcıdan geçmeli.
+ */
+export function kapida(page, secici) {
+  // Panelin kendisinden zincirleniyor: `[role="dialog"] text=...` biçimi
+  // CSS ayrıştırıcısını kırıyor (text= bir Playwright motoru, CSS değil).
+  return page.locator('[role="dialog"]').locator(secici);
 }

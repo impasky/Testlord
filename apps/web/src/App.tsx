@@ -2,7 +2,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ApiError, api, getToken, setToken, type MeResponse } from './api/client';
 import { BaglantiDurumu } from './components/BaglantiDurumu';
-import { MobilKabuk, type Sekme } from './components/MobilKabuk';
+import { MobilKabuk } from './components/MobilKabuk';
+import { KapiPaneli } from './components/KapiPaneli';
+import { KAPI_ADI, KAPI_EVI, type AltSekme, type Kapi } from '@lordlar/shared';
 import { Ogretici } from './components/Ogretici';
 import { RehberIsigi } from './components/RehberIsigi';
 import { Buton } from './components/ui';
@@ -44,7 +46,15 @@ export function App() {
     return () => window.removeEventListener('hashchange', dinle);
   }, []);
   const [girisli, setGirisli] = useState(() => getToken() !== null);
-  const [sekme, setSekme] = useState<Sekme>('malikane');
+  const [sekme, setSekme] = useState<AltSekme>('malikane');
+  /**
+   * Açık kapı — konusunun içinde duran pop-up sayfa.
+   *
+   * Oyuncunun tarif ettiği yapı: beş sekme dışındaki her şey, ait olduğu
+   * sekmenin içinde açılıp kapanıyor. Sekme değişmediği için oyuncu
+   * bulunduğu yerden kopmuyor (`components/KapiPaneli.tsx`).
+   */
+  const [kapi, setKapi] = useState<Kapi | null>(null);
   /**
    * Öğretici bu oturumda kapatıldı mı.
    *
@@ -62,8 +72,10 @@ export function App() {
     // Sekme anahtara giriyor: sekme değişince /me yeniden çağrılır ve
     // sunucu oyuncunun hangi ekranda olduğunu kaydeder. Ölçüm için ayrı
     // bir istek açmıyoruz. (docs/08 İ7)
-    queryKey: ['me', sekme],
-    queryFn: () => api.me(sekme),
+    // Açık kapı da oyuncunun BAKTIĞI yer: ölçüme onu bildiriyoruz,
+    // yoksa Demirhane kapı olduğu an ölçümden düşerdi.
+    queryKey: ['me', kapi ?? sekme],
+    queryFn: () => api.me(kapi ?? sekme),
     // Sekme değişince anahtar da değişiyor; önceki veriyi tutmazsak her
     // sekme geçişinde "Diyar yükleniyor…" ekranı yanıp sönerdi.
     placeholderData: (onceki) => onceki,
@@ -158,6 +170,7 @@ export function App() {
    * istek yalnızca erkene alınıyor.
    */
   const hedefSekme = omurgaAdimi?.hedefSekme ?? null;
+  const hedefKapi = omurgaAdimi?.hedefKapi ?? null;
   const hedefBolge0 = omurgaAdimi?.hedefBolge ?? null;
   useEffect(() => {
     if (!girisli || !hedefSekme) return;
@@ -173,10 +186,11 @@ export function App() {
         isler.push(cek(['region', hedefBolge0], () => api.region(hedefBolge0)));
       }
     }
-    if (hedefSekme === 'demirhane') isler.push(cek(['items'], api.items), cek(['gear'], api.gear));
-    if (hedefSekme === 'generaller') isler.push(cek(['generals'], api.generals));
+    // Kapılar sekme değil: hedef kapıya göre çekiliyor.
+    if (hedefKapi === 'demirhane') isler.push(cek(['items'], api.items), cek(['gear'], api.gear));
+    if (hedefKapi === 'generaller') isler.push(cek(['generals'], api.generals));
     void Promise.all(isler);
-  }, [girisli, hedefSekme, hedefBolge0, qc]);
+  }, [girisli, hedefSekme, hedefKapi, hedefBolge0, qc]);
 
   /**
    * Rehber turu bitti: ilk bölge alındı, damga vurulsun.
@@ -211,10 +225,23 @@ export function App() {
 
   const tazele = () => void qc.invalidateQueries({ queryKey: ['me'] });
 
+  /**
+   * Bir kapıyı aç: önce EVİNE geç, sonra paneli aç.
+   *
+   * Ev de değişiyor çünkü kapı kapandığında oyuncu konuya ait sekmede
+   * kalmalı — Demirhane'yi kapatan oyuncu Lord ekranında, Olaylar'ı
+   * kapatan Malikâne'de bulmalı kendini.
+   */
+  const kapiAc = (k: Kapi) => {
+    setSekme(KAPI_EVI[k]);
+    setKapi(k);
+  };
+
   function cikis() {
     setToken(null);
     qc.clear();
     setOgreticiKapandi(false);
+    setKapi(null);
     // Yeni lord kendi damgasını kendi hak etsin.
     rehberDamgalandi.current = false;
     setGirisli(false);
@@ -323,6 +350,7 @@ export function App() {
             setSekme('harita');
           }}
           onGit={setSekme}
+          onKapiAc={kapiAc}
         />
       )}
       {sekme === 'kisla' && (
@@ -346,34 +374,69 @@ export function App() {
           onGit={setSekme}
         />
       )}
-      {sekme === 'demirhane' && (
-        <Demirhane lord={lord} queues={queues} onGuncelle={tazele} onGit={setSekme} />
+      {sekme === 'gorevler' && (
+        <Gorevler lord={lord} onGit={setSekme} onKapiAc={kapiAc} />
       )}
-      {sekme === 'gorevler' && <Gorevler lord={lord} onGit={setSekme} />}
-      {sekme === 'olaylar' && (
-        <Olaylar
-          lord={lord}
-          events={events}
-          onGit={setSekme}
-          onBolgeyiAc={(bolgeId) => {
-            setHedefBolge(bolgeId);
-            setSekme('harita');
-          }}
-        />
+      {sekme === 'lord' && (
+        <LordEkrani lord={lord} onGuncelle={tazele} onKapiAc={kapiAc} />
       )}
-      {sekme === 'lord' && <LordEkrani lord={lord} onGuncelle={tazele} />}
-      {sekme === 'generaller' && <Generaller onGuncelle={tazele} />}
-      {sekme === 'siralama' && <Siralama lordId={lord.id} onGit={setSekme} />}
-      {sekme === 'ittifak' && <Ittifak lordId={lord.id} />}
-      {sekme === 'hesap' && (
-        <Hesap
-          lord={lord}
-          onCikis={cikis}
-          onOgreticiyiAc={() => {
-            setOgreticiKapandi(false);
-            tazele();
-          }}
-        />
+
+      {/* ---- Kapılar ----
+          Beş sekme dışındaki her şey burada, konusunun içinde açılıyor.
+          Sekme değişmiyor: kapı kapanınca oyuncu kaldığı yerde buluyor
+          kendini (packages/shared/src/types.ts, KAPI_EVI). */}
+      {kapi !== null && (
+        <KapiPaneli baslik={KAPI_ADI[kapi]} onKapat={() => setKapi(null)}>
+          {kapi === 'olaylar' && (
+            <Olaylar
+              lord={lord}
+              events={events}
+              onGit={(s) => {
+                setKapi(null);
+                setSekme(s);
+              }}
+              onBolgeyiAc={(bolgeId) => {
+                setKapi(null);
+                setHedefBolge(bolgeId);
+                setSekme('harita');
+              }}
+            />
+          )}
+          {kapi === 'ittifak' && <Ittifak lordId={lord.id} />}
+          {kapi === 'generaller' && <Generaller onGuncelle={tazele} />}
+          {kapi === 'demirhane' && (
+            <Demirhane
+              lord={lord}
+              queues={queues}
+              onGuncelle={tazele}
+              onGit={(s) => {
+                setKapi(null);
+                setSekme(s);
+              }}
+            />
+          )}
+          {kapi === 'siralama' && (
+            <Siralama
+              lordId={lord.id}
+              onKapiAc={kapiAc}
+              onGit={(s) => {
+                setKapi(null);
+                setSekme(s);
+              }}
+            />
+          )}
+          {kapi === 'hesap' && (
+            <Hesap
+              lord={lord}
+              onCikis={cikis}
+              onOgreticiyiAc={() => {
+                setKapi(null);
+                setOgreticiKapandi(false);
+                tazele();
+              }}
+            />
+          )}
+        </KapiPaneli>
       )}
     </MobilKabuk>
   );

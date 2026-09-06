@@ -7,7 +7,7 @@
  *
  * API ve arayüz ayakta olmalı. node tools/savas-raporu-testi.mjs
  */
-import { rehberiSustur } from './lib/gezin.mjs';
+import { ekrana, rehberiSustur } from './lib/gezin.mjs';
 import { chromium, devices } from 'playwright';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
 
@@ -89,12 +89,8 @@ await page.reload({ waitUntil: 'networkidle' });
 // Olay akışı artık Malikâne'de değil, kendi sayfasında: Malikâne
 // "şimdi ne yapmalısın"ı, Olaylar "ne oldu"yu anlatıyor.
 await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 15000 });
-await page.locator('nav button:has-text("Menü")').click();
-await page.waitForTimeout(400);
-// Menü ızgarasına DARALTIYORUZ: Malikâne'deki olay kancasının etiketi de
-// "OLAYLAR" ve text=Olaylar ikisini birden buluyordu.
-await page.locator('ul.grid button:has-text("Olaylar")').click();
-await page.waitForTimeout(1500);
+// Olaylar artık Malikâne'nin içinde bir KAPI (panel).
+await ekrana(page, 'olaylar', 1500);
 
 const bag = page.locator('button[aria-label="Savaş raporunu aç"]');
 kontrol('Olay akışında rapor bağı var', (await bag.count()) > 0, `${await bag.count()} bağ`);

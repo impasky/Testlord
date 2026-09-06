@@ -12,11 +12,13 @@
  */
 import { B } from '@lordlar/shared';
 import type { GameEvent, LordState, QueueItem, YoklukOzeti } from '../api/client';
+import type { Kapi } from '@lordlar/shared';
 import type { Sekme } from '../components/MobilKabuk';
 import {
   IkonKale,
   IkonNavDemirhane,
   IkonNavHarita,
+  IkonSohret,
   IkonNavKisla,
   IkonSancak,
   IkonSure,
@@ -115,6 +117,7 @@ export function Malikane({
   yokluk,
   onBolgeyiAc,
   onGit,
+  onKapiAc,
 }: {
   lord: LordState;
   queues: QueueItem[];
@@ -123,6 +126,8 @@ export function Malikane({
   /** Bir bölgeyi haritada açar: hem omurganın hedefi hem karşı saldırı. */
   onBolgeyiAc: (regionId: number) => void;
   onGit: (s: Sekme) => void;
+  /** Malikâne'nin kapıları: Olaylar ve İttifak. */
+  onKapiAc: (k: Kapi) => void;
 }) {
   const yarali = lord.woundedUntil && new Date(lord.woundedUntil) > new Date();
   const korumali = lord.protectionUntil && new Date(lord.protectionUntil) > new Date();
@@ -190,7 +195,13 @@ export function Malikane({
         bolgeSayisi={lord.regionCount}
         gorundu={lord.rehberGorundu}
       />
-      <Omurga lord={lord} queues={queues} onGit={onGit} onHedefeGit={onBolgeyiAc} />
+      <Omurga
+        lord={lord}
+        queues={queues}
+        onGit={onGit}
+        onKapiAc={onKapiAc}
+        onHedefeGit={onBolgeyiAc}
+      />
 
       {/* Diyar tanıtımı omurganın ALTINDA.
           Üstteydi ve ölçünce görüldü ki yeni oyuncunun tek eylem düğmesi
@@ -284,7 +295,7 @@ export function Malikane({
                 </span>
                 Kışla
               </Buton>
-              <Buton tur="sessiz" boy="kucuk" onClick={() => onGit('demirhane')}>
+              <Buton tur="sessiz" boy="kucuk" onClick={() => onKapiAc('demirhane')}>
                 <span className="mr-1.5 inline-block align-[-2px]">
                   <IkonNavDemirhane boyut={13} />
                 </span>
@@ -310,8 +321,32 @@ export function Malikane({
       {/* Olay kancası: akışın kendisi Olaylar sayfasında. Son olayı
           burada göstermek "bir şey oldu mu" sorusunu sayfaya gitmeden
           cevaplıyor. */}
+      {/* ---- Diyarın kapıları ----
+          Olaylar ve İttifak buradan panel olarak açılıyor. İttifak eskiden
+          menüdeydi ve menü tam da oyuncunun şikâyet ettiği şeydi:
+          konusuyla ilgisi olmayan sayfaların düz listesi. Diyarına dair
+          iki şey artık diyarın ekranında. */}
       {!ilkDongu && (
-      <Kart className="p-3" sakin={events.length === 0} onClick={() => onGit('olaylar')}>
+      <Kart className="p-3" sakin onClick={() => onKapiAc('ittifak')} kapi="ittifak">
+        <div className="flex items-center gap-2">
+          <span className="shrink-0 text-mavi">
+            <IkonSohret boyut={16} />
+          </span>
+          <span className="baslik shrink-0 text-[11px] text-solgun">İTTİFAK</span>
+          <p className="min-w-0 flex-1 truncate text-[12px] text-sonuk">
+            Ortak hedef, takviye, sohbet
+          </p>
+          <span className="baslik shrink-0 text-[11px] text-altin">AÇ</span>
+        </div>
+      </Kart>
+      )}
+
+      {/* Olaylar kapısı, ARKASINDA BİR ŞEY VARSA açılıyor.
+          Ölçüt yalnız "ilk döngü kapandı mı" olsaydı, saldırıp KAYBEDEN
+          oyuncu savaş raporuna hiçbir yerden ulaşamazdı: bölgesi yok ama
+          olayı var. Kapı bir sayfa değil, içeriğin kapısı. */}
+      {(!ilkDongu || events.length > 0) && (
+      <Kart className="p-3" sakin={events.length === 0} onClick={() => onKapiAc('olaylar')} kapi="olaylar">
         <div className="flex items-center gap-2">
           <span className="baslik shrink-0 text-[11px] text-solgun">OLAYLAR</span>
           <p className="min-w-0 flex-1 truncate text-[12px] text-solgun">

@@ -10,6 +10,7 @@ import {
 import { Arma } from '../components/Arma';
 import { IkonNavSiralama } from '../components/Ikonlar';
 import { Alan, Bolum, Buton, Input, Kart, Rozet, formatSayi } from '../components/ui';
+import type { Kapi } from '@lordlar/shared';
 import type { Sekme } from '../components/MobilKabuk';
 import { BosHal } from '../components/BosHal';
 import { Zemin } from '../components/Zemin';
@@ -142,10 +143,12 @@ function IttifakSatiri({ r, renk }: { r: IttifakSiralamaSatiri; renk: string }) 
 
 export function Siralama({
   lordId,
+  onKapiAc,
   onGit,
 }: {
   lordId: string;
   /** Boş hâllerden çıkış yolu — hiçbir ekran çıkmaz sokak olmamalı. */
+  onKapiAc: (k: Kapi) => void;
   onGit: (s: Sekme) => void;
 }) {
   const [board, setBoard] = useState<Board>('fame');
@@ -232,7 +235,7 @@ export function Siralama({
             <BosHal
               ikon={<IkonNavSiralama boyut={26} />}
               mesaj="Bu diyarda henüz ittifak yok. İlkini sen kurabilirsin."
-              eylemler={[{ etiket: 'İttifaka git', onTikla: () => onGit('ittifak') }]}
+              eylemler={[{ etiket: 'İttifaka git', onTikla: () => onKapiAc('ittifak') }]}
             />
           ) : (
             <>

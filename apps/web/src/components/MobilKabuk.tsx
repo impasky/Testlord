@@ -10,19 +10,14 @@ import {
   IkonAltin,
   IkonDemir,
   IkonErzak,
-  IkonNavDemirhane,
-  IkonNavGeneraller,
   IkonNavHarita,
   IkonNavKisla,
   IkonNavLord,
   IkonNavMalikane,
-  IkonNavMenu,
-  IkonNavSiralama,
-  IkonSancak,
   IkonSohret,
   IkonSure,
 } from './Ikonlar';
-import type { Ekran } from '@lordlar/shared';
+import type { AltSekme } from '@lordlar/shared';
 import { Ilerleme, kisaSayi } from './ui';
 
 /**
@@ -30,53 +25,44 @@ import { Ilerleme, kisaSayi } from './ui';
  * ölçüm doğrulaması da aynı listeyi kullanıyor. Ayrı tutmak, yeni bir
  * ekran eklendiğinde /me'nin o ekranda 400 dönmesi demekti.
  */
-export type Sekme = Ekran;
+/**
+ * Gezinilebilen sekme = alt çubuktaki BEŞ yer.
+ *
+ * Eskiden `Ekran` idi, yani on bir sayfanın hepsi. Artık gezinme yalnız
+ * beş sekme; gerisi kapı (`Kapi`) ve panel olarak açılıyor. Tipin
+ * daraltılması refaktörün kendisini denetledi: kapıya "git" demeye çalışan
+ * her yer derlemede ortaya çıktı.
+ */
+export type Sekme = AltSekme;
 
 /**
- * Alt çubuk: HER OTURUMDA açılan ekranlar.
+ * Alt çubuk: BEŞ sekme, menü yok.
  *
- * Ölçüt sıklık, "ana özellik mi" değil. Bir oyuncu testi şunu söyledi:
- * "normalde önemli şeyler ekranda olur ama görevler ve generallere ulaşmak
- * uzun sürüyor". Sayınca haklı çıktı: alt çubukta 4 ekran (1 dokunuş),
- * menüde 7 ekran (2 dokunuş) vardı ve menü sıklığa göre değil, "çubuğa
- * sığmayanlar" diye dizilmişti. Her oturumda bakılan Görevler de 2
- * dokunuştu, ayda bir açılan Hesap da.
+ * Oyuncu referans bir oyunu göstererek anlattı:
  *
- * Görevler çubuğa alındı çünkü YARIN GERİ GELME SEBEBİ o (docs/09 K4) ve
- * görünmeyen bir sebep sebep değildir. Yerini Demirhane açtı — onun
- * döngüsü yavaş: üretimi başlatıp saatler sonra dönülüyor, oysa Görevler
- * her oturum açılıyor. Ölçüt "ana özellik mi" olsaydı Demirhane kalırdı;
- * ölçüt sıklık.
+ *   "ana sayfada nav bar ile gidebileceğimiz yerler sadece 5 tane, bunlar
+ *    gün içinde en çok giriş yapılanlar. Onun dışında her şeyi 5 ana
+ *    sayfanın içinde pop-up pencereleri şeklinde ayarlamış."
  *
- * DÖRT sekme + Menü, beş değil. Altı yuva 390px'e sığıyor ama ölçtüğümde
- * yuvalar 54-81px arası eşitsiz çıktı ve üç etiket kenara yapıştı
- * (Malikâne 70/70, Görevler 71/71, Demirhane 81/81). Sığmak yetmiyor;
- * eşit olmayan sekme genişliği bozuk görünüyor. Etiketi kısaltmak da
- * yanlış olurdu: sayfanın başlığı "Demirhane", omurga "Demirhane'de üret"
- * diyor — çubukta başka bir ad, tam da oyuncunun şikâyet ettiği
- * "kafamda kategorize edemiyorum" duygusunu büyütürdü.
+ * Önceki hâl DÖRT sekme + "Menü" idi ve menü tam da şikâyet edilen şeydi:
+ * konusuyla ilgisi olmayan yedi sayfanın düz listesi. Oyuncunun ilk geri
+ * dönüşü zaten "kafamda kategorize edemiyorum" idi ve menü o duygunun
+ * kaynağıydı — Demirhane ile Hesap yan yana duruyordu.
+ *
+ * Şimdi gezinilecek yer yalnız bu beşi; gerisi konusunun içinde kapı
+ * olarak açılıyor (`KAPI_EVI`, `KapiPaneli.tsx`). Lord menüden çubuğa
+ * çıktı çünkü oyuncunun kendini yönettiği yer orası ve artık kendine ait
+ * olanın (general, ekipman, sıralama, hesap) evi.
+ *
+ * Altı yuvanın 390px'te eşitsiz göründüğünü ölçmüştüm (54-81px); beş yuva
+ * o sorunu da çözüyor.
  */
-const ALT_SEKMELER: { key: Sekme; ad: string; Ikon: typeof IkonNavMalikane }[] = [
+const CUBUK: { key: AltSekme; ad: string; Ikon: typeof IkonNavMalikane }[] = [
   { key: 'malikane', ad: 'Malikâne', Ikon: IkonNavMalikane },
   { key: 'gorevler', ad: 'Görevler', Ikon: IkonSure },
   { key: 'kisla', ad: 'Kışla', Ikon: IkonNavKisla },
   { key: 'harita', ad: 'Harita', Ikon: IkonNavHarita },
-];
-
-/**
- * Menü sayfaları — oturumda bir ya da daha seyrek açılanlar.
- *
- * Sıra yine sıklığa göre: Olaylar her girişte bakılabilir, Hesap en altta
- * çünkü ayda bir açılıyor.
- */
-const MENU_SEKMELERI: { key: Sekme; ad: string; Ikon: typeof IkonNavMalikane }[] = [
-  { key: 'demirhane', ad: 'Demirhane', Ikon: IkonNavDemirhane },
-  { key: 'olaylar', ad: 'Olaylar', Ikon: IkonSancak },
-  { key: 'generaller', ad: 'Generaller', Ikon: IkonNavGeneraller },
-  { key: 'ittifak', ad: 'İttifak', Ikon: IkonSohret },
   { key: 'lord', ad: 'Lord', Ikon: IkonNavLord },
-  { key: 'siralama', ad: 'Sıralama', Ikon: IkonNavSiralama },
-  { key: 'hesap', ad: 'Hesap', Ikon: IkonNavLord },
 ];
 
 /** Kaynak sayacı: sunucu değerinden itibaren saniye saniye ilerler. */
@@ -165,15 +151,13 @@ export function MobilKabuk({
   children,
 }: {
   lord: LordState;
-  sekme: Sekme;
-  setSekme: (s: Sekme) => void;
+  sekme: AltSekme;
+  setSekme: (s: AltSekme) => void;
   onCikis: () => void;
   /** Omurganın işaret ettiği sekme; altın nokta oraya konur. */
-  isaretli?: Sekme | null;
+  isaretli?: AltSekme | null;
   children: ReactNode;
 }) {
-  const [menuAcik, setMenuAcik] = useState(false);
-  const menudeMi = MENU_SEKMELERI.some((m) => m.key === sekme);
 
   // --ust-bar başlığın GERÇEK yüksekliğinden gelir, elle yazılmış bir
   // sabitten değil. styles.css'teki 108px bir tahmindi ve ölçülen 87px'ten
@@ -261,58 +245,18 @@ export function MobilKabuk({
         {children}
       </main>
 
-      {/* ---- Menü sayfası ---- */}
-      {menuAcik && (
-        <>
-          <button
-            className="fixed inset-0 z-40 bg-black/60"
-            onClick={() => setMenuAcik(false)}
-            aria-label="Menüyü kapat"
-          />
-          <div
-            className="fixed inset-x-0 z-50 mx-auto max-w-lg rounded-t-2xl border-t border-kenar bg-panel p-3"
-            style={{ bottom: 'var(--alt-bar)' }}
-          >
-            <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-kenar" />
-            <ul className="grid grid-cols-3 gap-2">
-              {MENU_SEKMELERI.map(({ key, ad, Ikon }) => (
-                <li key={key}>
-                  <button
-                    onClick={() => {
-                      setSekme(key);
-                      setMenuAcik(false);
-                    }}
-                    className={`bas flex w-full flex-col items-center gap-1.5 rounded-xl border p-3 ${
-                      sekme === key
-                        ? 'border-altin/60 bg-altin/10 text-altin'
-                        : 'border-kenar bg-yuzey text-solgun'
-                    }`}
-                  >
-                    <Ikon boyut={24} />
-                    <span className="baslik text-[11px]">{ad}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </>
-      )}
-
       {/* ---- Alt gezinme ---- */}
       <nav
         className="fixed inset-x-0 bottom-0 z-50 border-t border-kenar bg-derin/95 backdrop-blur"
         style={{ height: 'var(--alt-bar)' }}
       >
         <ul className="mx-auto flex h-full max-w-lg items-stretch px-1">
-          {ALT_SEKMELER.map(({ key, ad, Ikon }) => {
+          {CUBUK.map(({ key, ad, Ikon }) => {
             const etkin = sekme === key;
             return (
               <li key={key} className="flex-1">
                 <button
-                  onClick={() => {
-                    setSekme(key);
-                    setMenuAcik(false);
-                  }}
+                  onClick={() => setSekme(key)}
                   className={`bas flex h-full w-full flex-col items-center justify-center gap-1 ${
                     etkin ? 'text-altin' : 'text-sonuk'
                   }`}
@@ -340,28 +284,6 @@ export function MobilKabuk({
               </li>
             );
           })}
-          <li className="flex-1">
-            <button
-              onClick={() => setMenuAcik((a) => !a)}
-              className={`bas flex h-full w-full flex-col items-center justify-center gap-1 ${
-                menuAcik || menudeMi ? 'text-altin' : 'text-sonuk'
-              }`}
-            >
-              <span className="relative">
-                <IkonNavMenu boyut={22} />
-                {isaretli !== null &&
-                  isaretli !== undefined &&
-                  MENU_SEKMELERI.some((m) => m.key === isaretli) &&
-                  !menudeMi && (
-                    <span
-                      className="absolute -top-1 -right-1.5 h-2.5 w-2.5 rounded-full border border-gece bg-altin"
-                      aria-hidden
-                    />
-                  )}
-              </span>
-              <span className="baslik text-[11px]">Menü</span>
-            </button>
-          </li>
         </ul>
       </nav>
     </div>

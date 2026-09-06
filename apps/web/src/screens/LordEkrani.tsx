@@ -1,8 +1,39 @@
-/** Lord — statlar, puan dağıtımı, kuşanılan ekipman. */
-import { EQUIP_SLOTS, STAT_KEYS, type StatKey } from '@lordlar/shared';
+/**
+ * Lord — oyuncunun KENDİSİ.
+ *
+ * Menüden çıkıp alt çubuğa yerleşti ve kendine ait olan her şeyin evi
+ * oldu. Oyuncu referans bir oyunu göstererek anlatmıştı:
+ *
+ *   "bizde generaller ayrı bir sayfada; onun yerine oyuncunun kendi üstünü
+ *    dizdiği, kontrol ettiği sayfa olan Lord sekmesini ana sayfaya
+ *    çevirip oraya bir general bölümü eklenebilir. Orada o general kısmına
+ *    tıklandığında oyuncu general sayfasına geçmez, general sayfası bir
+ *    pop-up gibi açılır."
+ *
+ * Aynen öyle: statlar, ekipman ve görünüş burada duruyor; General,
+ * Demirhane, Sıralama ve Hesap ise buradan KAPI olarak açılıyor. Dördü de
+ * lorda ait — hangisi nerede diye düşünmek gerekmiyor.
+ */
+import {
+  EQUIP_SLOTS,
+  KAPI_ADI,
+  STAT_KEYS,
+  sekmeninKapilari,
+  type Kapi,
+  type StatKey,
+} from '@lordlar/shared';
 import { useState } from 'react';
 import { ApiError, api, type LordState } from '../api/client';
-import { IkonCan, IkonKurnaz, IkonSaldiri, IkonYer } from '../components/Ikonlar';
+import {
+  IkonCan,
+  IkonKurnaz,
+  IkonNavDemirhane,
+  IkonNavGeneraller,
+  IkonNavLord,
+  IkonNavSiralama,
+  IkonSaldiri,
+  IkonYer,
+} from '../components/Ikonlar';
 import {
   AltSekmeler,
   Bolum,
@@ -48,7 +79,28 @@ const SLOT_ADI: Record<string, string> = {
   sancak: 'Sancak',
 };
 
-export function LordEkrani({ lord, onGuncelle }: { lord: LordState; onGuncelle: () => void }) {
+/** Kapı düğmesinin simgesi ve altındaki tek satır. */
+const KAPI_YUZU: Record<Kapi, { Ikon: typeof IkonNavLord; alt: (l: LordState) => string }> = {
+  generaller: { Ikon: IkonNavGeneraller, alt: (l) => `${l.generalSlots} yuva` },
+  demirhane: {
+    Ikon: IkonNavDemirhane,
+    alt: (l) => `${l.equippedItems.length}/${EQUIP_SLOTS.length} kuşanılı`,
+  },
+  siralama: { Ikon: IkonNavSiralama, alt: (l) => `${formatSayi(l.fame)} şöhret` },
+  hesap: { Ikon: IkonNavLord, alt: () => 'parola, çıkış' },
+  olaylar: { Ikon: IkonNavLord, alt: () => '' },
+  ittifak: { Ikon: IkonNavLord, alt: () => '' },
+};
+
+export function LordEkrani({
+  lord,
+  onGuncelle,
+  onKapiAc,
+}: {
+  lord: LordState;
+  onGuncelle: () => void;
+  onKapiAc: (k: Kapi) => void;
+}) {
   const [dagitim, setDagitim] = useState<Record<StatKey, number>>({
     guc: 0,
     dayaniklilik: 0,
@@ -83,6 +135,34 @@ export function LordEkrani({ lord, onGuncelle }: { lord: LordState; onGuncelle: 
       {/* Ekranın tepesi artık bir sahne: lordun ordusu. Nitelik kartlarıyla
           açılmak, bu ekranı bir karakter sayfası değil bir form yapıyordu. */}
       <OrduSahnesi army={lord.homeArmy} komutaTavani={lord.commandCapacity} />
+
+      {/* ---- Lordun kapıları ----
+          Ayrı sayfalar değil: buradan panel olarak açılıyorlar ve
+          kapanınca oyuncu yine burada oluyor. Her düğmenin altındaki tek
+          satır, açmadan önce içeride ne olduğunu söylüyor — düz bir menü
+          bağlantısı olmasınlar diye. */}
+      <div className="grid grid-cols-4 gap-2">
+        {sekmeninKapilari('lord').map((k) => {
+          const yuz = KAPI_YUZU[k];
+          return (
+            <button
+              key={k}
+              type="button"
+              onClick={() => onKapiAc(k)}
+              data-kapi={k}
+              className="bas flex flex-col items-center gap-1 rounded-2xl border-2 border-kenar bg-yuzey px-1 py-2.5 text-solgun"
+            >
+              <span className="text-altin">
+                <yuz.Ikon boyut={24} />
+              </span>
+              <span className="baslik text-[11px] text-parsomen">{KAPI_ADI[k]}</span>
+              {/* 11px taban: okunurluk denetimi bunun altını kabul etmiyor
+                  ve haklı — bu satır düğmenin ne yaptığını söylüyor. */}
+              <span className="text-[11px] leading-none text-sonuk">{yuz.alt(lord)}</span>
+            </button>
+          );
+        })}
+      </div>
 
       {/* Unvan: şöhretten türüyor, yeni sayaç yok (docs/10 §2.2). Taht
           sahibinin unvanını "Diyarın Lordu" eziyor. */}

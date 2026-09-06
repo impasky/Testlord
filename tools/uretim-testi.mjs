@@ -11,7 +11,7 @@
  *     node apps/api/dist/index.js
  *   node tools/uretim-testi.mjs
  */
-import { rehberiSustur } from './lib/gezin.mjs';
+import { ekrana, rehberiSustur } from './lib/gezin.mjs';
 import { chromium, devices } from 'playwright';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
 const URL = process.env.URETIM_URL ?? 'http://localhost:3200';
@@ -69,10 +69,8 @@ for(const [s,f] of [['Kışla','tel-3-kisla.png'],['Harita','tel-4-harita.png']]
   await page.screenshot({path:`${SP}/${f}`,fullPage:true});
 }
 // Sıralama menü sayfasında
-await page.locator('nav button:has-text("Menü")').click();
-await page.waitForTimeout(600);
-await page.locator('button:has-text("Sıralama")').last().click();
-await page.waitForTimeout(1600);
+// Sıralama artık Lord sekmesinin içinde bir KAPI (panel).
+await ekrana(page, 'siralama', 1600);
 await page.screenshot({path:`${SP}/tel-5-siralama.png`,fullPage:true});
 // Sıralama artık tablo değil kart listesi (mobil düzen)
 const satir = await page.locator('text=/Sv \\d+ · \\d+ bölge/').count();

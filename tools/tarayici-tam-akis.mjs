@@ -8,7 +8,7 @@
  */
 import { chromium, devices } from 'playwright';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
-import { ekrana, rehberiSustur } from './lib/gezin.mjs';
+import { ekrana, kapida, rehberiSustur } from './lib/gezin.mjs';
 
 const WEB = process.env.WEB_URL ?? 'http://127.0.0.1:5173';
 const API = process.env.API_URL ?? 'http://localhost:3000';
@@ -123,32 +123,44 @@ await post('/test/kuyruklari-bitir');
 
 // --- Demirhane: üret ve kuşan ---
 await sekme('Demirhane');
-// Demirhane üç alt sekmeye bölündü (üretim / envanter / donanım): üretim
-// varsayılan, envantere elle geçiyoruz.
-// Seçici DAR olmak zorunda: alt sekme şeridinde artık "ÜRETİM" düğmesi
-// var ve has-text("üret") önce onu buluyor, tıklayınca hiçbir istek
-// gitmiyordu. Üretim düğmesi "T1 SİLAH ÜRET" — sonu ÜRET.
-const uretDugmesi = page.getByRole('button', { name: /ÜRET$/i });
+/*
+ * Seçiciler PANEL İÇİNE daraltıldı.
+ *
+ * Kapı mimarisinin tuzağı: panel açıkken ev ekranı (Lord) arkada duruyor
+ * ve DOM'da hâlâ var. `button:has-text("Kuşan")` hem Demirhane
+ * panelindeki düğmeyi hem Lord ekranındaki ekipman yuvasını buluyordu;
+ * `.first()` arkadakini seçiyor ve perdeye çarpıyordu.
+ *
+ * Ayrıca üretim düğmesi DAR seçilmeli: alt sekme şeridinde "ÜRETİM"
+ * düğmesi de var ve has-text("üret") önce onu buluyor.
+ */
+const uretDugmesi = kapida(page, 'button').filter({ hasText: /ÜRET$/i });
 await uretDugmesi.first().waitFor({ timeout: 8000 });
 await tiklaVeBekle(page, uretDugmesi.first(), '/items/craft');
 await post('/test/kuyruklari-bitir');
 await page.reload({ waitUntil: 'networkidle' });
 await sekme('Demirhane');
-await page.locator('button:has-text("Envanter")').click();
-await page.waitForSelector('button:has-text("Kuşan")', { timeout: 10000 }).catch(() => {});
-kontrol('Ekipman envanterde göründü', (await page.locator('button:has-text("Kuşan")').count()) > 0);
-await tiklaVeBekle(page, 'button:has-text("Kuşan")', '/equip');
+await kapida(page, 'button:has-text("Envanter")').first().click();
+await kapida(page, 'button:has-text("Kuşan")')
+  .first()
+  .waitFor({ timeout: 10000 })
+  .catch(() => {});
+kontrol(
+  'Ekipman envanterde göründü',
+  (await kapida(page, 'button:has-text("Kuşan")').count()) > 0,
+);
+await tiklaVeBekle(page, kapida(page, 'button:has-text("Kuşan")').first(), '/equip');
 await page.screenshot({ path: `${CIKTI}/mob-4-demirhane.png` });
 
 // --- Generaller ---
 await sekme('Generaller');
-await page.waitForSelector('text=Sahadaki Generaller', { timeout: 8000 });
+await kapida(page, 'text=Sahadaki Generaller').first().waitFor({ timeout: 8000 });
 // Üç nadirlik rafı alt sekmelere bölündü; bronz artık kendi sekmesinde.
-await page.locator('button:has-text("Bronz")').first().click();
+await kapida(page, 'button:has-text("Bronz")').first().click();
 await page.waitForTimeout(400);
-await tiklaVeBekle(page, page.locator('button:has-text("Kirala")').first(), '/hire');
-await page.waitForSelector('button:has-text("Slot 1")', { timeout: 10000 });
-await tiklaVeBekle(page, page.locator('button:has-text("Slot 1")').first(), '/assign');
+await tiklaVeBekle(page, kapida(page, 'button:has-text("Kirala")').first(), '/hire');
+await kapida(page, 'button:has-text("Slot 1")').first().waitFor({ timeout: 10000 });
+await tiklaVeBekle(page, kapida(page, 'button:has-text("Slot 1")').first(), '/assign');
 kontrol('General kiralandı ve sahaya sürüldü', true);
 await page.screenshot({ path: `${CIKTI}/mob-5-generaller.png` });
 
@@ -198,15 +210,16 @@ kontrol('Saldırı emri verildi', await page.locator('text=Ordu yola çıktı').
 await post('/test/yuruyusleri-bitir');
 
 // --- Sıralama ---
-await page.locator('button[aria-label="Kapat"]').click().catch(() => {});
-await page.waitForTimeout(400);
 await sekme('Sıralama');
-await page.waitForSelector('text=Şöhret Sıralaması', { timeout: 8000 });
+await kapida(page, 'text=Şöhret Sıralaması').first().waitFor({ timeout: 8000 });
 kontrol('Şöhret sıralaması yüklendi', true);
 for (const t of ['Fetih', 'Kılıç']) {
-  await page.locator(`button:has-text("${t}")`).first().click();
+  await kapida(page, `button:has-text("${t}")`).first().click();
   await page.waitForTimeout(700);
-  kontrol(`${t} sıralaması yüklendi`, await page.locator(`text=${t} Sıralaması`).isVisible());
+  kontrol(
+    `${t} sıralaması yüklendi`,
+    await kapida(page, `text=${t} Sıralaması`).first().isVisible(),
+  );
 }
 await page.screenshot({ path: `${CIKTI}/mob-8-siralama.png` });
 

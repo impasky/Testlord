@@ -48,7 +48,14 @@ function OdulSatiri({ kaynak }: { kaynak: { altin: number; demir: number; erzak:
   );
 }
 
-export function GunlukKart({ onGit }: { onGit: (s: 'harita' | 'kisla' | 'demirhane') => void }) {
+export function GunlukKart({
+  onGit,
+  onKapiAc,
+}: {
+  onGit: (s: 'harita' | 'kisla') => void;
+  /** İmar görevi Demirhane'ye götürüyor; o artık bir kapı, sekme değil. */
+  onKapiAc: (k: 'demirhane') => void;
+}) {
   // Bir dakikalık tazelik yeterli: görevler gün boyunca değişiyor, saniye
   // saniye değil. Sık yoklamak üç sayım sorgusunu boşuna tekrarlardı.
   const q = useQuery({ queryKey: ['gunluk'], queryFn: api.gunluk, staleTime: 60_000 });
@@ -68,10 +75,9 @@ export function GunlukKart({ onGit }: { onGit: (s: 'harita' | 'kisla' | 'demirha
   const { tamam, toplam } = gunlukSayaci(gorevler);
   const hepsi = tamam === toplam;
 
-  const hedef: Record<string, 'harita' | 'kisla' | 'demirhane'> = {
+  const hedef: Record<string, 'harita' | 'kisla'> = {
     saldiri: 'harita',
     egitim: 'kisla',
-    imar: 'demirhane',
   };
 
   return (
@@ -87,7 +93,11 @@ export function GunlukKart({ onGit }: { onGit: (s: 'harita' | 'kisla' | 'demirha
             <li key={g.key}>
               <button
                 type="button"
-                onClick={() => !g.tamam && onGit(hedef[g.key] ?? 'harita')}
+                onClick={() => {
+                  if (g.tamam) return;
+                  if (g.key === 'imar') onKapiAc('demirhane');
+                  else onGit(hedef[g.key] ?? 'harita');
+                }}
                 disabled={g.tamam}
                 className="bas flex w-full items-center gap-2.5 text-left"
               >

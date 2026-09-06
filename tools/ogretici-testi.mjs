@@ -9,7 +9,7 @@
  * API ve web ayakta olmalı. node tools/ogretici-testi.mjs
  */
 import { chromium } from 'playwright';
-import { rehberiSustur } from './lib/gezin.mjs';
+import { ekrana, rehberiSustur } from './lib/gezin.mjs';
 
 const WEB = process.env.WEB_URL ?? 'http://localhost:5173';
 // Varsayılan çıktı klasörü: ekran görüntüleri deponun köküne düşmesin.
@@ -115,9 +115,8 @@ kontrol('Yenilemede öğretici geri gelmiyor', !(await ogretici.isVisible()));
 // o yüzden rehber ürünün kendi ucundan kapatılıyor.
 await rehberiSustur(sayfa);
 await sayfa.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
-await sayfa.click('nav button:has-text("Menü")');
-await sayfa.click('button:has-text("Hesap")');
-await sayfa.waitForTimeout(600);
+// Hesap artık Lord sekmesinin içinde bir KAPI (panel).
+await ekrana(sayfa, 'hesap', 800);
 const tekrarDugmesi = sayfa.getByRole('button', { name: 'Öğreticiyi tekrar oku' });
 kontrol('Hesap ekranında "tekrar oku" var', await tekrarDugmesi.isVisible());
 await tekrarDugmesi.click();

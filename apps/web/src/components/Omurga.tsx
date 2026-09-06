@@ -42,6 +42,7 @@ import {
   IkonSure,
   IkonYer,
 } from './Ikonlar';
+import type { Kapi } from '@lordlar/shared';
 import type { Sekme } from './MobilKabuk';
 import { Buton, GeriSayim, Hap, Kart, formatKalan, formatSayi } from './ui';
 
@@ -58,6 +59,14 @@ interface Adim {
   sonraki?: string;
   /** Eylemin götürdüğü sekme; alt çubukta işaretlemek için. */
   hedefSekme?: Sekme;
+  /**
+   * Eylem bir KAPI açıyorsa (Demirhane, Generaller gibi) hangisi.
+   *
+   * Kapılar sekme değil: ait oldukları sekmenin içinde panel olarak
+   * açılıyorlar. Alt çubuktaki altın nokta yine `hedefSekme`ye konuyor —
+   * oyuncunun gideceği YER o sekme, kapı orada açılıyor.
+   */
+  hedefKapi?: Kapi;
   /**
    * Eylem doğrudan bir bölge paneli açıyorsa o bölgenin kimliği.
    *
@@ -100,6 +109,7 @@ export function useOmurgaAdimi(
     yarali: lord.woundedUntil ? new Date(lord.woundedUntil) > new Date() : false,
     yoldaki: yuruyusler.data ?? [],
     onGit: () => {},
+    onKapiAc: () => {},
     onHedefeGit: () => {},
   });
 }
@@ -108,11 +118,14 @@ export function Omurga({
   lord,
   queues,
   onGit,
+  onKapiAc,
   onHedefeGit,
 }: {
   lord: LordState;
   queues: QueueItem[];
   onGit: (s: Sekme) => void;
+  /** Bir kapıyı (panel sayfayı) açar. */
+  onKapiAc: (k: Kapi) => void;
   /** Bir bölgeyi doğrudan haritada açar. */
   onHedefeGit: (regionId: number) => void;
 }) {
@@ -137,6 +150,7 @@ export function Omurga({
     yarali,
     yoldaki: yuruyusler.data ?? [],
     onGit,
+    onKapiAc,
     onHedefeGit,
   });
 
@@ -249,6 +263,7 @@ function siradakiAdim(g: {
   yarali: boolean;
   yoldaki: MarchDto[];
   onGit: (s: Sekme) => void;
+  onKapiAc: (k: Kapi) => void;
   onHedefeGit: (regionId: number) => void;
 }): Adim | null {
   const { lord, oneri, egitimde, uretimde, generalVar, yarali, yoldaki } = g;
@@ -331,8 +346,9 @@ function siradakiAdim(g: {
         </Hap>,
       ],
       dugme: 'Demirhaneye git',
-      git: () => g.onGit('demirhane'),
-      hedefSekme: 'demirhane',
+      git: () => g.onKapiAc('demirhane'),
+      hedefSekme: 'lord',
+      hedefKapi: 'demirhane',
       sonraki: oneri ? `${eYonelme(oneri.name)} saldır` : 'yeni bir hedef seç',
     };
   }
@@ -416,8 +432,9 @@ function siradakiAdim(g: {
         </Hap>,
       ],
       dugme: 'Demirhaneye git',
-      git: () => g.onGit('demirhane'),
-      hedefSekme: 'demirhane',
+      git: () => g.onKapiAc('demirhane'),
+      hedefSekme: 'lord',
+      hedefKapi: 'demirhane',
       sonraki: generalVar ? 'bölgeni yükselt' : 'general kirala',
     };
   }
@@ -429,8 +446,9 @@ function siradakiAdim(g: {
       baslik: 'General kirala',
       cumle: 'General bütün ordunu birden güçlendirir — tek bir ekipmandan büyük fark yaratır.',
       dugme: 'Generallere git',
-      git: () => g.onGit('generaller'),
-      hedefSekme: 'generaller',
+      git: () => g.onKapiAc('generaller'),
+      hedefSekme: 'lord',
+      hedefKapi: 'generaller',
       sonraki: 'bölgeni yükselt',
     };
   }

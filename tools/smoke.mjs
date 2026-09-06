@@ -75,10 +75,8 @@ await page.screenshot({ path: `${CIKTI}/02-malikane.png` });
 const altin = await page.locator('[title^="Altın:"]').first().getAttribute('title');
 kontrol('Kaynak çubuğu saatlik geliri gösteriyor', /\+\d+\/sa/.test(altin ?? ''), altin ?? 'yok');
 
-// Lord alt çubuktan menüye taşındı (sayfa ayrımı): Menü -> Lord.
-await page.locator('nav button:has-text("Menü")').click();
-await page.waitForTimeout(400);
-await page.locator('button:has-text("Lord")').last().click();
+// Lord menüden çıkıp alt çubuğa yerleşti: artık beş sekmeden biri.
+await page.locator('nav button:has-text("Lord")').click();
 await page.waitForSelector('text=Nitelikler', { timeout: 8000 });
 await page.screenshot({ path: `${CIKTI}/03-lord.png` });
 kontrol('Lord ekranı açıldı', await page.locator('text=Liderlik').first().isVisible());

@@ -14,13 +14,22 @@ import { GunlukKart } from '../components/GunlukKart';
 import { SeferKart } from '../components/SeferKart';
 import { Zemin } from '../components/Zemin';
 import type { LordState } from '../api/client';
+import type { Kapi } from '@lordlar/shared';
 import type { Sekme } from '../components/MobilKabuk';
 
-export function Gorevler({ lord, onGit }: { lord: LordState; onGit: (s: Sekme) => void }) {
+export function Gorevler({
+  lord,
+  onGit,
+  onKapiAc,
+}: {
+  lord: LordState;
+  onGit: (s: Sekme) => void;
+  onKapiAc: (k: Kapi) => void;
+}) {
   return (
     <div className="space-y-4">
       <Zemin ad="gorevler" baslik="Görevler" altyazi="Bugün, bu hafta ve kilometre taşları" />
-      <GunlukKart onGit={onGit} />
+      <GunlukKart onGit={onGit} onKapiAc={onKapiAc} />
       <SeferKart />
       <Basarimlar olcutler={lord.basarimOlcutleri} />
     </div>

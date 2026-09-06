@@ -171,6 +171,78 @@ export const EKRANLAR = [
 
 export type Ekran = (typeof EKRANLAR)[number];
 
+/* ---------------- Arayüz mimarisi: beş sekme, gerisi kapı ---------------- */
+
+/**
+ * Alt çubuktaki BEŞ sekme.
+ *
+ * Oyuncu referans bir oyunu göstererek anlattı:
+ *
+ *   "ana sayfada nav bar ile gidebileceğimiz yerler sadece 5 tane, bunlar
+ *    gün içinde en çok giriş yapılanlar. Onun dışında her şeyi 5 ana
+ *    sayfanın içinde pop-up pencereleri şeklinde ayarlamış. Mesela bizde
+ *    generaller ayrı bir sayfada; onun yerine Lord sekmesini ana sayfaya
+ *    çevirip oraya bir general bölümü eklenebilir, tıklandığında general
+ *    sayfası pop-up gibi açılır."
+ *
+ * Önceki yapı DÖRT sekme + "Menü" idi ve menü tam da şikâyet edilen şeydi:
+ * konusuyla ilgisi olmayan yedi sayfanın düz listesi. Oyuncunun ilk
+ * geri dönüşü de zaten "kafamda kategorize edemiyorum" idi.
+ *
+ * Ölçüt yine SIKLIK: her oturumda açılan beş yer çubukta. Lord menüden
+ * çubuğa çıktı çünkü oyuncunun kendini yönettiği yer orası ve artık
+ * kendine ait şeylerin (general, ekipman, sıralama, hesap) evi.
+ */
+export const ALT_SEKMELER = ['malikane', 'gorevler', 'kisla', 'harita', 'lord'] as const;
+export type AltSekme = (typeof ALT_SEKMELER)[number];
+
+/**
+ * KAPILAR: kendi sayfası değil, konusunun içinde açılan pop-up'lar.
+ *
+ * Haritada bir altıgene basınca açılan bölge paneliyle aynı fikir —
+ * oyuncu bulunduğu yerden kopmuyor, işini görüp kapatıyor.
+ */
+export const KAPILAR = [
+  'olaylar',
+  'ittifak',
+  'generaller',
+  'demirhane',
+  'siralama',
+  'hesap',
+] as const;
+export type Kapi = (typeof KAPILAR)[number];
+
+/**
+ * Her kapı KONUSUNUN evinde duruyor.
+ *
+ * Kural: bir şeyle ilgili her şey tek bir yerde. Lord kendine ait olanı
+ * (kimi komuta ediyor, ne kuşanıyor, nerede duruyor, hesabı) taşıyor;
+ * Malikâne diyara ait olanı (ne oldu, kimlerlesin).
+ */
+export const KAPI_EVI: Record<Kapi, AltSekme> = {
+  olaylar: 'malikane',
+  ittifak: 'malikane',
+  generaller: 'lord',
+  demirhane: 'lord',
+  siralama: 'lord',
+  hesap: 'lord',
+};
+
+/** Kapının başlığı — hem panelde hem onu açan düğmede aynı ad. */
+export const KAPI_ADI: Record<Kapi, string> = {
+  olaylar: 'Olaylar',
+  ittifak: 'İttifak',
+  generaller: 'Generaller',
+  demirhane: 'Demirhane',
+  siralama: 'Sıralama',
+  hesap: 'Hesap',
+};
+
+/** Bir sekmenin içinde açılabilen kapılar, tanımdaki sırayla. */
+export function sekmeninKapilari(sekme: AltSekme): Kapi[] {
+  return KAPILAR.filter((k) => KAPI_EVI[k] === sekme);
+}
+
 export interface GeneralDef {
   key: string;
   ad: string;
