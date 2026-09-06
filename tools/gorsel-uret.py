@@ -47,20 +47,16 @@ tutmayan görseller, tutarlı ama sade olanlardan kötü görünür.
 """
 import base64
 import json
-import hashlib
 import os
 import sys
 import time
 import urllib.error
-import urllib.parse
 import urllib.request
 from io import BytesIO
 from pathlib import Path
 
 KOK = Path(__file__).resolve().parent.parent
-# Çıktı klasörü değiştirilebilir: sağlayıcıyı gerçek varlıkların üstüne
-# yazmadan denemek için (GORSEL_CIKTI=/tmp/deneme).
-CIKTI = Path(os.environ.get("GORSEL_CIKTI") or (KOK / "apps" / "web" / "public" / "gorseller"))
+CIKTI = KOK / "apps" / "web" / "public" / "gorseller"
 
 API = "https://generativelanguage.googleapis.com/v1beta/models"
 
@@ -468,50 +464,6 @@ def _tek_model_dene(model: str, istem: str, anahtar: str, kaynaklar: list[Path] 
     raise RuntimeError(f"Yanıtta görsel yok: {json.dumps(veri)[:300]}")
 
 
-def _pollinations(istem: str, boyut: tuple[int, int], tohum: int | None = None) -> bytes:
-    """
-    Pollinations.ai üzerinden üretir. Anahtar istemiyor.
-
-    Oyuncu bunu öneren küçük bir Node betiği gönderdi. Betiğin kendisi
-    doğruydu ama AYRI bir araç olarak durması yanlış olurdu: istemler,
-    üslup, boyutlar ve WebP dönüşümü burada. İkinci bir araç, istem
-    kaynağının ikiye bölünmesi demekti — bu depoda tam olarak kaçındığımız
-    şey.
-
-    Bu ortamda ÇALIŞMAZ: `image.pollinations.ai` ağ politikasıyla kapalı
-    (CONNECT 403). Kendi makinende çalışır; kod burada duruyor ki istemler
-    ve çıktı düzeni tek yerden gelsin.
-
-    `nologo` ve `nofeed`: filigran istemiyoruz ve üretilen görsel herkese
-    açık akışta görünmesin. `tohum` verilirse üretim tekrarlanabilir olur —
-    bir görseli aynı istemle yeniden üretmek gerektiğinde şart.
-    """
-    g, y = boyut
-    sorgu = {
-        "width": str(g),
-        "height": str(y),
-        "nologo": "true",
-        "nofeed": "true",
-        "model": os.environ.get("POLLINATIONS_MODEL", "flux"),
-    }
-    if tohum is not None:
-        sorgu["seed"] = str(tohum)
-
-    taban = os.environ.get("POLLINATIONS_URL", "https://image.pollinations.ai")
-    url = f"{taban}/prompt/{urllib.parse.quote(istem, safe='')}?{urllib.parse.urlencode(sorgu)}"
-    r = urllib.request.Request(url, headers={"User-Agent": "lordlar-cagi/gorsel-uret"})
-    with urllib.request.urlopen(r, timeout=180) as y_:
-        tur = y_.headers.get("Content-Type", "")
-        ham = y_.read()
-
-    # Sağlayıcı hata durumunda 200 ile HTML/JSON dönebiliyor: baytları
-    # görsel sanıp diske yazmak, bozuk bir dosyayı "üretildi" diye
-    # raporlamak olurdu.
-    if not tur.startswith("image/"):
-        raise RuntimeError(f"Görsel değil ({tur or 'tür yok'}): {ham[:200]!r}")
-    return ham
-
-
 def istek_at(istem: str, anahtar: str, kaynaklar: list[Path] | None = None) -> bytes:
     """
     Görsel üretir. Çalışan model bir kez bulunur, sonrakilerde tekrar aranmaz.
@@ -695,17 +647,6 @@ def main() -> int:
         kaynaklar.append(yol)
         del argv[i : i + 2]
 
-    # --saglayici: gemini (varsayılan) | pollinations
-    saglayici = "gemini"
-    for i, a in enumerate(argv):
-        if a == "--saglayici" and i + 1 < len(argv):
-            saglayici = argv[i + 1]
-            del argv[i : i + 2]
-            break
-    if saglayici not in ("gemini", "pollinations"):
-        print(f"Bilinmeyen sağlayıcı: {saglayici} (gemini | pollinations)", file=sys.stderr)
-        return 2
-
     secilenler = {a for a in argv if not a.startswith("--")}
 
     # Anahtar da ağ da gerektirmez: sadece istemleri yazar.
@@ -743,19 +684,7 @@ def main() -> int:
         return 0
 
     anahtar = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
-    if saglayici == "pollinations":
-        # Anahtar istemiyor. --kaynak ise düzenleme demek ve Pollinations
-        # girdi görseli almıyor: sessizce sıfırdan üretip "düzenledim"
-        # demektense burada duruyoruz.
-        if kaynaklar:
-            print(
-                "--kaynak ile --saglayici pollinations birlikte olmuyor: "
-                "Pollinations girdi görseli almıyor, düzenleme yapamaz.",
-                file=sys.stderr,
-            )
-            return 2
-        anahtar = ""
-    elif not anahtar:
+    if not anahtar:
         print(
             "\nGEMINI_API_KEY tanımlı değil.\n"
             "  1. https://aistudio.google.com/apikey adresinden ücretsiz anahtar al\n"
@@ -770,23 +699,7 @@ def main() -> int:
         print(f"\n[{i}/{len(isler)}] {klasor}/{ad} ...", flush=True)
         for deneme in range(3):
             try:
-                if saglayici == "pollinations":
-                    # Tohum KATEGORİ + ADDAN türüyor: aynı görseli yeniden
-                    # üretmek gerektiğinde aynı sonucu veriyor.
-                    #
-                    # Kategori şart: yalnız ad kullanınca `bolgeler/kale` ile
-                    # `harita/kale` aynı tohumu alıyordu (yerel denemede
-                    # görüldü). Farklı iki varlığın aynı tohumu paylaşması,
-                    # istemleri farklı olsa bile birbirine benzemeleri
-                    # riskini boşuna doğuruyor.
-                    tohum = int(
-                        hashlib.sha256(f"{klasor}/{ad}".encode()).hexdigest()[:8], 16
-                    )
-                    ham = _pollinations(
-                        tam_istem(klasor, konu), KATEGORI[klasor]["boyut"], tohum
-                    )
-                else:
-                    ham = istek_at(tam_istem(klasor, konu), anahtar, kaynaklar or None)
+                ham = istek_at(tam_istem(klasor, konu), anahtar, kaynaklar or None)
                 bayt = kaydet(ham, yol, KATEGORI[klasor]["boyut"])
                 print(f"  tamam — {bayt / 1024:.0f} KB")
                 basarili += 1
