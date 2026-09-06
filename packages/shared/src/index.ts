@@ -9,6 +9,7 @@ export * from './combat.js';
 export * from './duzen.js';
 export * from './arastirma.js';
 export * from './pazar.js';
+export * from './hastane.js';
 export * from './karsi.js';
 export * from './sebep.js';
 export * from './basarim.js';

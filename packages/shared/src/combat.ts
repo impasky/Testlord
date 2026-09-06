@@ -335,7 +335,12 @@ export function simulateBattle(
   const tavan = B.savas.kayip.yarali_donus_tavani;
   const generalDonusu = (side: Side): number => side.generalBonus.kayipGeriDonus;
 
-  const saldiranDonus = attackerWins ? generalDonusu(attacker) : 0;
+  // Saldıranın yaralıları HASTANEYE gidiyor (sunucu tarafı), yani anında
+  // savaşa hazır değiller. O yüzden saldıran da yaralı dönüşü alabiliyor:
+  // eskiden alamıyordu ve bu doğruydu — anında dönen yaralı, saldırmanın
+  // bedelini sıfırlardı.
+  const saldiranDonus =
+    B.savas.kayip.saldirida_yarali_donus + (attackerWins ? generalDonusu(attacker) : 0);
   const savunanDonus =
     (attackerWins ? 0 : generalDonusu(defender)) +
     (ctx.savunanOyuncu ? B.savas.kayip.savunmada_yarali_donus : 0);

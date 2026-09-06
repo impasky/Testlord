@@ -414,7 +414,9 @@
       "_not": "Kazanan da HER ZAMAN kaybeder. Ezici zaferde bile ordunun ~%17'si gomulur.",
       "savunmada_yarali_donus": 0.25,
       "_yarali_donus_notu": "SAVUNAN oyuncunun kayiplarinin bu orani olmemis, YARALANMIS sayilir ve geri doner. Kazansa da kaybetse de. Sebep asimetri: saldiran riski KENDI aldi, savunan almadi -- saldiriya ugramayi secmedi. docs/09 §3.6'nin kalan yarisi; K6 kalkani zinciri kesiyordu, bu tek bir vurusun acisini azaltiyor.\nOran kucuk tutuldu: buyutmek haritayi dondururdu, cunku savunmasi kirilmayan bolge el degistirmez ve fetih olmayan bir strateji oyunu durur.\nSADECE OYUNCU savunmasinda. NPC garnizonuna vermek oyuncunun ilerlemesini yavaslatirdi ve korunacak kimse yok.\nGeneral bonusu (kayip_geri_donus, Vaiz Bertan) ile toplaniyor, toplam yarali_donus_tavani ile sinirli.",
-      "yarali_donus_tavani": 0.5
+      "yarali_donus_tavani": 0.5,
+      "saldirida_yarali_donus": 0.3,
+      "_saldirida_yarali_donus_notu": "SALDIRANIN kayiplarinin bu orani olmemis, YARALANMIS sayilir ve donus yuruyusuyle eve gelir -- ama orduya degil HASTANEYE girer (balance.json -> hastane). Eskiden saldiranin hic yaralisi yoktu ve bu dogruydu: aninda savasa hazir donen yarali, saldirmanin bedelini sifirlardi. Hastane o bedeli kayiptan ZAMANA cevirdigi icin saldiranin da yaralisi olabiliyor: asker olmuyor ama gunun geri kalaninda kullanilamiyor. Savunanin orani daha DUSUK (0.25) cunku savunanin yaralisi hastaneye girmiyor, aninda garnizonda kaliyor -- iki sistemin toplam etkisi boylece dengeleniyor."
     },
     "yagma_formulu": "alinan = depo * 0.25 * (1 + kurnazlik*0.01 + general_yagma); tasima = SUM(birim * tasima_kapasitesi) * (1 + kurnazlik*0.01 + general_yagma); yagma = min(alinan, tasima)",
     "yagma_orani": 0.25,
@@ -715,5 +717,18 @@
     "gunluk_tavan_seviye_basina": 1500,
     "_tavan_notu": "Gunluk hacim tavani, altin karsiligi cinsinden. Tavansiz pazar depoyu tasiran oyuncuyu sinirsiz cevirmeye birakir ve kaynak kitligi diye bir sey kalmaz. Seviyeyle buyuyor: buyuyen ekonomi buyuyen bir pazar istiyor.",
     "en_az_miktar": 100
+  },
+  "hastane": {
+    "_aciklama": "Savastan yarali donen askerler eve degil hastaneye giriyor; tedavi bitene kadar orduya katilmiyorlar.",
+    "_neden": "Yarali donus sistemi (K6b) olu sayilan askerin bir kismini geri veriyordu ama asker aninda savasa hazir oluyordu. Kaybin bir agirligi kalmiyordu: yenilen oyuncu bir dakika sonra ayni orduyla tekrar saldirabiliyordu. Hastane kaybi ZAMANA ceviriyor -- asker olmuyor ama hemen de kullanilamiyor.",
+    "saniye_taban": 180,
+    "saniye_birim_basina": 12,
+    "_sure_formulu": "taban + birim_basina * yarali_sayisi, birim egitim suresine gore olceklenir",
+    "egitim_suresi_carpani": 0.35,
+    "_carpan_notu": "Tedavi, o birimi sifirdan egitmekten UZUN SUREMEZ ve bu bir ayar degil, motorda GARANTI: hesap egitim suresini asarsa egitim suresine kirpiliyor. Ayarla saglansaydi, tabani buyuten bir denge degisikligi kucuk yigmlarda kurali sessizce bozardi -- ilk hesapta tam bu oldu (5 milis: tedavi 7,3dk, sifirdan egitim 3,8dk).",
+    "azami_saniye": 21600,
+    "_azami_notu": "Alti saat tavan. Buyuk bir yenilgide yuzlerce yarali doner ve tavansiz sure gunlere cikardi; ceza zamanla artmali ama oyuncuyu oyundan kopartmamali.",
+    "bakim_alir": false,
+    "_bakim_notu": "Tedavideki asker erzak YEMIYOR ve komuta yeri KAPLAMIYOR. Yenilgiyi hem kayipla hem bakim gideriyle iki kez cezalandirmak, dibe vurmus oyuncuyu daha da dibe iter."
   }
 }

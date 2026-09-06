@@ -31,6 +31,7 @@ import {
   simulateBattle,
   dizilimGecerliMi,
   varsayilanDizilim,
+  yaraliVarMi,
   updateElo,
   type Army,
   type EquipSlot,
@@ -53,7 +54,7 @@ import {
   tickLord,
   arastirmaBonusuOku,
 } from './lord.js';
-import { addUnitsHome, addUnitsRegion } from './queue.js';
+import { addUnitsHome, addUnitsRegion, hastaneyeYatir } from './queue.js';
 import { regionFortressBonus, transferRegion } from './region.js';
 
 function toArmy(value: unknown): Army {
@@ -423,9 +424,31 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
       await tx.armyUnit.deleteMany({ where: { locationType: 'march', locationId: marchId } });
 
       if (march.kind === 'return') {
+        // Yaralılar sağ kalanların İÇİNDE geliyor (savaş çözümünde
+        // kayıptan düşülüyorlar). Eve varınca orduya değil hastaneye
+        // giriyorlar: yenilginin bedeli "kaç asker gitti" değil, "ne
+        // kadar süre ordusuz kalacağım" olsun.
+        const yarali = (march.yarali as Army | null) ?? {};
+        const kuyrukId = yaraliVarMi(yarali)
+          ? await hastaneyeYatir(march.lordId, yarali, tx)
+          : null;
+
         for (const t of UNIT_TYPES) {
-          const c = army[t] ?? 0;
-          if (c > 0) await addUnitsHome(march.lordId, t, c, tx);
+          const gelen = army[t] ?? 0;
+          const yaraliAdet = Math.min(gelen, yarali[t] ?? 0);
+          const saglam = gelen - yaraliAdet;
+          if (saglam > 0) await addUnitsHome(march.lordId, t, saglam, tx);
+          if (yaraliAdet > 0 && kuyrukId) {
+            await tx.armyUnit.create({
+              data: {
+                lordId: march.lordId,
+                unitType: t,
+                count: yaraliAdet,
+                locationType: 'hastane',
+                locationId: kuyrukId,
+              },
+            });
+          }
         }
         const loot = march.loot as { altin?: number; demir?: number; erzak?: number } | null;
         if (loot) {
@@ -839,6 +862,9 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
             kind: 'return',
             army: survivors as object,
             generalIds: generalKeys as object,
+            // Hangi askerin yaralı olduğu varış anında başka hiçbir
+            // kayıttan çıkarılamıyor; yürüyüşle birlikte taşınıyor.
+            yarali: result.yaraliDonen.saldiran as object,
             loot: result.loot as object,
             distance: march.distance,
             departAt: now,

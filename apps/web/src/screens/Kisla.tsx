@@ -43,6 +43,7 @@ import {
   kaynakEngeli,
 } from '../components/ui';
 import { Zemin } from '../components/Zemin';
+import { Hastane } from '../components/Hastane';
 
 /** Aynı anda kaç eğitim kuyruğu açılabilir. Sunucu da bu sayıyı kullanıyor. */
 const EGITIM_LIMITI = B.kuyruklar.es_zamanli.train;
@@ -353,6 +354,9 @@ export function Kisla({
   return (
     <div className="space-y-4">
       <Zemin ad="kisla" baslik="Kışla" altyazi="Ordunu burada büyütürsün" />
+
+      {/* Hastane: yaralı dönenler. Yaralısı yoksa hiç çizilmiyor. */}
+      <Hastane hastane={lord.hastane ?? {}} queues={queues} />
       {hata && (
         <Kart className="border-kirmizi/50 p-3">
           <p className="flex gap-2 text-[13px] text-kirmizi">

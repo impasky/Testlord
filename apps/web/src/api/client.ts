@@ -111,6 +111,8 @@ export interface LordState {
   statPoints: number;
   resources: Resources;
   storageCapacity: number;
+  /** Hastanede tedavi bekleyenler. Orduya ve komuta kapasitesine dahil değil. */
+  hastane: Army;
   hourlyIncome: Resources;
   upkeepPerHour: number;
   netErzakPerHour: number;

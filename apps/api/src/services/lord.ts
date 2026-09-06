@@ -8,6 +8,7 @@ import {
   type ArastirmaBonusu,
   arastirmaBonusu,
   type BasarimOlcutleri,
+  tedavidekiSayilirMi,
   GEAR_LINES,
   UNIT_TYPES,
   accrue,
@@ -78,6 +79,8 @@ export interface LordState {
   homeArmy: Army;
   commandCapacity: number;
   usedSlots: number;
+  /** Hastanede tedavi bekleyen askerler. Orduya ve kapasiteye dahil değil. */
+  hastane: Army;
   maxRegions: number;
   regionCount: number;
   ownsThrone: boolean;
@@ -284,6 +287,10 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
   const marchExempt = hasAbility(generals, 'yuruyusteki_ordu_bakimsiz');
   const garrisonExempt = hasAbility(generals, 'garnizon_bakimsiz');
   const payingUnits = lord.units.filter((u) => {
+    // Hastanedeki yaralı erzak YEMİYOR (balance.json → hastane.bakim_alir).
+    // Yenilgiyi hem kayıpla hem bakım gideriyle iki kez cezalandırmak,
+    // dibe vurmuş oyuncuyu daha da dibe iter.
+    if (u.locationType === 'hastane' && !tedavidekiSayilirMi()) return false;
     if (marchExempt && u.locationType === 'march') return false;
     if (garrisonExempt && u.locationType === 'region') return false;
     return true;
@@ -324,7 +331,17 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
     }));
 
   const homeArmy = collectUnitsAt(lord.units, 'home');
-  const allUnits = collectAllUnits(lord.units);
+  // locationId İLE değil, yalnız türle topluyoruz: her tedavi kafilesi
+  // kendi kuyruk kimliğini taşıyor ve bir lordun aynı anda birden çok
+  // kafilesi olabiliyor. `collectUnitsAt` locationId'yi null bekliyor,
+  // o yüzden hastanedekileri hiç bulamıyordu.
+  const hastanedekiler = collectAllUnits(lord.units.filter((u) => u.locationType === 'hastane'));
+  // Komuta kapasitesi hastanedekini SAYMIYOR: tedavideki asker komuta
+  // edilmiyor. Sayılsaydı, yenilen oyuncunun yeni asker eğitme hakkı da
+  // kapanır ve toparlanması imkânsız hâle gelirdi.
+  const allUnits = collectAllUnits(
+    lord.units.filter((u) => tedavidekiSayilirMi() || u.locationType !== 'hastane'),
+  );
   const ownsThrone = lord.regions.some((r) => r.type === 'taht');
 
   const fame = calculateFame({
@@ -389,6 +406,8 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
     homeArmy,
     commandCapacity: commandCapacity(lord.liderlik, bonus, arastirmaBonusuOku(lord)),
     usedSlots: armySlots(allUnits),
+    /** Hastanede tedavi bekleyenler. Orduya dahil değiller. */
+    hastane: hastanedekiler,
     maxRegions: maxRegions(lord.level),
     regionCount: lord.regions.filter((r) => r.type !== 'taht').length,
     ownsThrone,

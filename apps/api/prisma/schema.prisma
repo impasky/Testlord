@@ -300,6 +300,13 @@ model March {
   /// lorda bağlansaydı, ordu yoldayken dizilimi değiştirmek savaşı
   /// etkilerdi ve oyuncu geri dönüp taktik değiştirebilirdi.
   duzen        Json?
+  /// Dönüş yürüyüşündeki YARALILAR: { birim: adet }.
+  ///
+  /// Sağ kalanların içinde geliyorlar (savaş çözümünde kayıptan
+  /// düşülüyorlar) ama eve varınca orduya değil hastaneye giriyorlar.
+  /// Ayrı tutuluyor çünkü varış anında hangi askerin yaralı olduğu
+  /// başka hiçbir kayıttan çıkarılamıyor.
+  yarali       Json?
   loot         Json?
   /// Yürüyüşün hex mesafesi. Dönüş süresi buradan hesaplanır.
   /// Eskiden gidiş süresinden geri türetiliyordu; ilk saldırının süresi

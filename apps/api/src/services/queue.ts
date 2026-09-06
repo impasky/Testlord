@@ -7,6 +7,7 @@
  */
 import {
   arastirmaDugumu,
+  kafileTedaviSuresiSn,
   B,
   UNIT_TYPES,
   craftPrice,
@@ -27,7 +28,30 @@ import { grantXp, okuArastirmalar, pushEvent, tickLord } from './lord.js';
 import { regionFortressBonus } from './region.js';
 
 export type QueueKind =
-  'train' | 'craft' | 'upgrade_item' | 'upgrade_gear' | 'upgrade_region' | 'kesif' | 'research';
+  | 'train'
+  | 'craft'
+  | 'upgrade_item'
+  | 'upgrade_gear'
+  | 'upgrade_region'
+  | 'kesif'
+  | 'research'
+  | 'iyilestir';
+
+/**
+ * Yaralı kafilesini hastaneye yatırır ve kuyruk kaydının kimliğini döner.
+ *
+ * Askerlerin kendisi çağıran tarafından `armyUnit` tablosuna
+ * `locationType: 'hastane'` ile yazılıyor; burada yalnız sayaç kuruluyor.
+ *
+ * Eş zamanlılık sınırı YOK: tedavi bir tercih değil, savaşın sonucu.
+ * Sınır koymak, ikinci kez yenilen oyuncunun yaralılarını sessizce yok
+ * etmek demekti.
+ */
+export async function hastaneyeYatir(lordId: string, yarali: Army, tx: Tx): Promise<string> {
+  const sn = kafileTedaviSuresiSn(yarali);
+  const kayit = await enqueue(lordId, 'iyilestir', {}, Math.max(1, sn), tx);
+  return kayit.id;
+}
 
 /** Tick uygular, kaynağın yeter mi diye bakar, yetiyorsa düşer. */
 export async function spendResources(lordId: string, cost: Resources, tx: Tx): Promise<void> {
@@ -253,6 +277,37 @@ export async function resolveQueueItem(row: QueueRow): Promise<boolean> {
 
       case 'kesif': {
         await kesfiCoz(row, p, tx);
+        break;
+      }
+
+      case 'iyilestir': {
+        // Tedavi bitti: hastanedeki askerler eve katılıyor.
+        //
+        // Askerler kuyruk satırının PAYLOAD'ında değil, `armyUnit`
+        // tablosunda `locationType: 'hastane'` olarak duruyor. Sebep:
+        // ordu tek bir yerden sayılabilsin — payload'a yazsaydım
+        // "kaç askerim var" sorusunun iki ayrı cevabı olurdu.
+        const yaralilar = await tx.armyUnit.findMany({
+          where: { lordId: row.lordId, locationType: 'hastane', locationId: row.id },
+        });
+        let toplam = 0;
+        for (const y of yaralilar) {
+          if (y.count > 0) {
+            await addUnitsHome(row.lordId, y.unitType as UnitType, y.count, tx);
+            toplam += y.count;
+          }
+        }
+        await tx.armyUnit.deleteMany({
+          where: { lordId: row.lordId, locationType: 'hastane', locationId: row.id },
+        });
+        if (toplam > 0) {
+          await pushEvent(
+            row.lordId,
+            'kuyruk_bitti',
+            { mesaj: `${toplam} yaralı asker iyileşti, orduna katıldı.` },
+            tx,
+          );
+        }
         break;
       }
 
