@@ -2,10 +2,13 @@
 import type {
   Army,
   BasarimOlcutleri,
+  Dizilim,
   GunlukGorev,
   GearLineKey,
   Resources,
+  SavasDuzeni,
   StatKey,
+  TaktikDurumu,
 } from '@lordlar/shared';
 
 /**
@@ -488,6 +491,11 @@ export interface BattleDto {
     defenderGeneralYukselisleri?: GeneralYukselisiDto[];
     /** Ölü sayılıp yaralı dönenler. Eski savaşlarda yok. */
     yaraliDonen?: { saldiran: Army; savunan: Army };
+    /**
+     * Dizilim ve taktiğin ne yaptığı — motorun ürettiği hazır cümleler.
+     * Düzen sisteminden önceki savaşlarda yok; arayüz bunu tolere ediyor.
+     */
+    duzenRaporu?: { saldiran: string[]; savunan: string[] };
     /** Savaşın iki tarafta ne değiştirdiği. Eski savaşlarda yok. */
     sonuc?: {
       saldiran: LordOzetiDto;
@@ -828,9 +836,13 @@ export const api = {
   region: (id: number) => request<RegionDetailDto>(`/map/${id}`),
   upgradeRegion: (id: number) => post(`/map/${id}/upgrade`),
   setGarrison: (id: number, army: Army) => post(`/map/${id}/garrison`, { army }),
-  preview: (toRegionId: number, army: Army, generalIds: string[] = []) =>
-    post<PreviewDto>('/battle/preview', { toRegionId, army, generalIds }),
-  march: (toRegionId: number, army: Army, generalIds: string[] = []) =>
+  preview: (
+    toRegionId: number,
+    army: Army,
+    generalIds: string[] = [],
+    duzen?: SavasDuzeni | null,
+  ) => post<PreviewDto>('/battle/preview', { toRegionId, army, generalIds, duzen }),
+  march: (toRegionId: number, army: Army, generalIds: string[] = [], duzen?: SavasDuzeni | null) =>
     post<{
       marchId: string;
       arriveAt: string;
@@ -838,7 +850,21 @@ export const api = {
       durationSec: number;
       ilkSaldiri: boolean;
       uyari: string | null;
-    }>('/march', { toRegionId, army, generalIds }),
+    }>('/march', { toRegionId, army, generalIds, duzen }),
+  /** Savunma düzeni: saldırıya uğradığında kullanılacak dizilim + taktik. */
+  savunmaDuzeni: () =>
+    request<{
+      dizilim: Dizilim;
+      taktik: string | null;
+      kayitli: boolean;
+      garnizon: Army;
+      taktikler: TaktikDurumu[];
+    }>('/me/savunma-duzeni'),
+  savunmaDuzeniKaydet: (dizilim: Dizilim, taktik: string | null) =>
+    request<{ kaydedildi: boolean }>('/me/savunma-duzeni', {
+      method: 'PUT',
+      body: JSON.stringify({ dizilim, taktik }),
+    }),
   marches: () => request<MarchDto[]>('/marches'),
   recallMarch: (id: string) => request(`/march/${id}`, { method: 'DELETE' }),
   battles: () => request<BattleDto[]>('/battles'),

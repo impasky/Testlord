@@ -3,10 +3,14 @@ import {
   B,
   UNIT_TYPES,
   bolgeAsamaAdi,
+  bosDizilim,
   formatArmy,
   regionIncome,
   unitName,
+  varsayilanDizilim,
   type Army,
+  type Dizilim,
+  type SavasDuzeni,
   type UnitType,
 } from '@lordlar/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -28,6 +32,7 @@ import type { Sekme } from '../components/MobilKabuk';
 import { BosHal } from '../components/BosHal';
 import { KarsiIpuclari } from '../components/KarsiIpuclari';
 import { SaldiriOnizleme } from '../components/SaldiriOnizleme';
+import { DizilimKatlanir } from '../components/DizilimIzgarasi';
 import { SavasRaporu } from '../components/SavasRaporu';
 import {
   Bolum,
@@ -532,6 +537,11 @@ export function Harita({
   const [garnizon, setGarnizon] = useState<Army>({});
   const [onizleme, setOnizleme] = useState<PreviewDto | null>(null);
   const [onizlemeBekliyor, setOnizlemeBekliyor] = useState(false);
+  // Dizilim ve taktik. Ordu değişince dizilim SIFIRLANMIYOR, yalnız
+  // yeni birim eklendiğinde varsayılana tamamlanıyor: oyuncu sürgüyü
+  // bir tık oynattı diye elle kurduğu düzeni kaybetmesin.
+  const [dizilim, setDizilim] = useState<Dizilim>(() => bosDizilim());
+  const [taktik, setTaktik] = useState<string | null>(null);
   const [hata, setHata] = useState<string | null>(null);
   const [bilgi, setBilgi] = useState<string | null>(null);
 
@@ -601,6 +611,9 @@ export function Harita({
   const hedefId = detay.data?.id ?? null;
   const hedefBenim = detay.data?.isMine ?? false;
   const orduAnahtari = JSON.stringify(saldiriOrdusu);
+  // Düzen de anahtara giriyor: kareyi oynatınca kazanma ihtimalinin
+  // değişmesi, dizilimin işe yaradığını gösteren tek şey.
+  const duzenAnahtari = JSON.stringify({ dizilim, taktik });
   useEffect(() => {
     if (hedefId === null || hedefBenim) return;
     const ordu = JSON.parse(orduAnahtari) as Army;
@@ -613,7 +626,7 @@ export function Harita({
     // Sürgü her oynadığında istek atmamak için kısa gecikme.
     const zaman = setTimeout(() => {
       api
-        .preview(hedefId, ordu)
+        .preview(hedefId, ordu, [], JSON.parse(duzenAnahtari) as SavasDuzeni)
         .then((p) => {
           if (!iptal) setOnizleme(p);
         })
@@ -629,7 +642,25 @@ export function Harita({
       clearTimeout(zaman);
       setOnizlemeBekliyor(false);
     };
-  }, [hedefId, hedefBenim, orduAnahtari]);
+  }, [hedefId, hedefBenim, orduAnahtari, duzenAnahtari]);
+
+  // Ordu değiştiğinde dizilimi TAMAMLA: yeni eğitilen birim kareye
+  // yerleşsin, elle konmuş kareler yerinde kalsın. Baştan kurmak
+  // oyuncunun emeğini siler, hiç dokunmamak yeni birimi dışarıda bırakırdı.
+  useEffect(() => {
+    const ordu = JSON.parse(orduAnahtari) as Army;
+    setDizilim((eski) => {
+      const eksik = UNIT_TYPES.filter((t) => (ordu[t] ?? 0) > 0 && !eski.some((k) => k === t));
+      if (eksik.length === 0) return eski;
+      const varsayilan = varsayilanDizilim(ordu);
+      const yeni = [...eski];
+      for (let i = 0; i < yeni.length; i++) {
+        const aday = varsayilan[i] ?? null;
+        if (yeni[i] === null && aday !== null && eksik.includes(aday)) yeni[i] = aday;
+      }
+      return yeni;
+    });
+  }, [orduAnahtari]);
 
   if (harita.isLoading || !harita.data) {
     return <Iskelet satir={3} />;
@@ -682,6 +713,8 @@ export function Harita({
   function kapat() {
     setSeciliId(null);
     setSaldiriOrdusu({});
+    setDizilim(bosDizilim());
+    setTaktik(null);
     setGarnizon({});
     setOnizleme(null);
     setHata(null);
@@ -693,7 +726,7 @@ export function Harita({
     setHata(null);
     setBilgi(null);
     try {
-      const r = await api.march(bolge.id, saldiriOrdusu);
+      const r = await api.march(bolge.id, saldiriOrdusu, [], { dizilim, taktik });
       hisAgir();
       setBilgi(
         `Ordu yola çıktı. Varış ${formatKalan(new Date(r.arriveAt).getTime() - Date.now())} sonra.` +
@@ -1103,6 +1136,21 @@ export function Harita({
                     onizlemeBekliyor && (
                       <p className="mt-3 text-[12px] text-solgun">Sonuç hesaplanıyor…</p>
                     )
+                  )}
+
+                  {/* Dizilim saldırı düğmesinin ÜSTÜNDE ve katlanır:
+                      ilgilenmeyen oyuncu görmezden gelip saldırabilsin,
+                      ilgilenen açıp kurabilsin. */}
+                  {!secimBos && (
+                    <DizilimKatlanir
+                      ordu={saldiriOrdusu}
+                      dizilim={dizilim}
+                      taktik={taktik}
+                      onDegis={(d, t) => {
+                        setDizilim(d);
+                        setTaktik(t);
+                      }}
+                    />
                   )}
 
                   <Buton

@@ -324,7 +324,13 @@ function NedenKarti({ savas, saldiranBenim }: { savas: BattleDto; saldiranBenim:
     tahkimatBonusu: l.tahkimatBonusu ?? 0,
   });
 
-  if (sebepler.length === 0) return null;
+  // Düzen satırları motordan hazır cümle olarak geliyor (duzen.ts).
+  // Oyuncunun KENDİ verdiği kararın sonucu olduğu için ayrı bir başlık
+  // altında: "gücüm azdı" başka şey, "mancınığı öne koydum" başka şey —
+  // ikincisi bir dahaki sefere düzeltilebilir.
+  const duzen = saldiranBenim ? l.duzenRaporu?.saldiran : l.duzenRaporu?.savunan;
+
+  if (sebepler.length === 0 && (duzen ?? []).length === 0) return null;
 
   return (
     <Kart className="p-3">
@@ -342,6 +348,19 @@ function NedenKarti({ savas, saldiranBenim }: { savas: BattleDto; saldiranBenim:
           </li>
         ))}
       </ul>
+
+      {(duzen ?? []).length > 0 && (
+        <div className="mt-2.5 border-t border-cerceve/50 pt-2.5">
+          <h4 className="baslik mb-1.5 text-[10px] text-solgun">Dizilim ve Taktik</h4>
+          <ul className="space-y-1">
+            {duzen!.map((satir, i) => (
+              <li key={i} className="text-[12px] leading-snug text-solgun">
+                {satir}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </Kart>
   );
 }

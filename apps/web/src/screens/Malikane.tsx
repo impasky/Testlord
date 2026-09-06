@@ -30,6 +30,7 @@ import {
   IkonSure,
 } from '../components/Ikonlar';
 import { Zemin } from '../components/Zemin';
+import { SavunmaDuzeni } from '../components/SavunmaDuzeni';
 import { BosHal } from '../components/BosHal';
 import {
   Bolum,
@@ -123,6 +124,11 @@ export function Malikane({
           </p>
         </Kart>
       )}
+
+      {/* Savunma düzeni: saldırıya uğradığında ordunun nasıl duracağı.
+          Malikâne'de çünkü burası oyuncunun kendi diyarını yönettiği yer;
+          saldırı kararları Harita'da veriliyor. */}
+      <SavunmaDuzeni />
 
       {/* ---- Topraklarım ----
           Bölgeye dokunmak haritada onu açıyor: yükseltme, garnizon ve
