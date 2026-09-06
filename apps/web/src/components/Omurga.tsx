@@ -105,10 +105,27 @@ export function useOmurgaAdimi(
     queryFn: api.generals,
     enabled: Boolean(lord),
   });
+  const arastirma = useQuery({
+    queryKey: ['arastirma'],
+    queryFn: api.arastirma,
+    enabled: Boolean(lord),
+  });
 
   if (!lord) return null;
+  // Depo dolu mu: türetiliyor, sunucuda yeni bir alan açılmadı.
+  // Üç kaynağın da tavana dayanması aranıyor; biri doluyken diğeri
+  // akıyorsa oyuncunun kaybettiği şey henüz bir sorun değil.
+  const depoTavani = lord.storageCapacity;
+  const hepsiDolu =
+    lord.resources.altin >= depoTavani &&
+    lord.resources.demir >= depoTavani &&
+    lord.resources.erzak >= depoTavani;
+  const depoArastirmasiVar = (arastirma.data?.dallar ?? []).some(
+    (d) => 'depo_carpani' in (d.etki ?? {}) && !d.tamamlandi,
+  );
   return siradakiAdim({
     lord,
+    depoDolu: hepsiDolu && depoArastirmasiVar,
     oneriBekliyor: harita.isPending,
     oneri: harita.data?.oneri ?? null,
     egitimde: queues.filter((q) => q.kind === 'train'),
@@ -141,6 +158,7 @@ export function Omurga({
   const yuruyusler = useQuery({ queryKey: ['marches'], queryFn: api.marches });
   // Generaller /me içinde dönmüyor; yalnızca gerekince çekiliyor.
   const generaller = useQuery({ queryKey: ['generals'], queryFn: api.generals });
+  const arastirma = useQuery({ queryKey: ['arastirma'], queryFn: api.arastirma });
 
   const oneri = harita.data?.oneri ?? null;
   const egitimde = queues.filter((q) => q.kind === 'train');
@@ -148,8 +166,21 @@ export function Omurga({
   const generalVar = (generaller.data?.kadro ?? []).some((g) => g.sahipMi);
   const yarali = lord.woundedUntil ? new Date(lord.woundedUntil) > new Date() : false;
 
+  // Depo dolu mu: türetiliyor, sunucuda yeni bir alan açılmadı.
+  // Üç kaynağın da tavana dayanması aranıyor; biri doluyken diğeri
+  // akıyorsa oyuncunun kaybettiği şey henüz bir sorun değil.
+  const depoTavani = lord.storageCapacity;
+  const hepsiDolu =
+    lord.resources.altin >= depoTavani &&
+    lord.resources.demir >= depoTavani &&
+    lord.resources.erzak >= depoTavani;
+  const depoArastirmasiVar = (arastirma.data?.dallar ?? []).some(
+    (d) => 'depo_carpani' in (d.etki ?? {}) && !d.tamamlandi,
+  );
+
   const adim = siradakiAdim({
     lord,
+    depoDolu: hepsiDolu && depoArastirmasiVar,
     oneriBekliyor: harita.isPending,
     oneri,
     egitimde,
@@ -248,7 +279,7 @@ function OmurgaIskeleti() {
   );
 }
 
-function siradakiAdim(g: {
+export function siradakiAdim(g: {
   lord: LordState;
   /**
    * Hedef önerisi HENÜZ GELMEDİ mi?
@@ -268,6 +299,14 @@ function siradakiAdim(g: {
   generalVar: boolean;
   yarali: boolean;
   yoldaki: MarchDto[];
+  /**
+   * Depo dolu VE hâlâ alınabilecek bir depo araştırması var mı.
+   *
+   * İkisi birden şart: depo doluysa ama Ambarlar zaten bitmişse omurga
+   * çözümü olmayan bir sorunu tekrar tekrar söylerdi — kâhyanın işi
+   * hatırlatmak değil yol göstermek.
+   */
+  depoDolu: boolean;
   onGit: (s: Sekme) => void;
   onKapiAc: (k: Kapi) => void;
   onHedefeGit: (regionId: number) => void;
@@ -444,6 +483,29 @@ function siradakiAdim(g: {
       hedefSekme: 'lord',
       hedefKapi: 'demirhane',
       sonraki: generalVar ? 'bölgeni yükselt' : 'general kirala',
+    };
+  }
+
+  // 7b. Depo dolu: üretilen her şey buharlaşıyor.
+  //
+  // Denetimde çıkan çıkmaz sokak buydu: ekranda üç kırmızı "depo dolu"
+  // uyarısı yanıyor ve hiçbirinin altında oyuncunun basabileceği bir şey
+  // yok. Araştırma ağacındaki Ambarlar o uyarının cevabı — omurga artık
+  // oraya yolluyor.
+  //
+  // Generalden ÖNCE, çünkü depo doluyken biriktirilen her saat boşa
+  // gidiyor; general kiralamak beklenebilir, kaynak israfı beklemiyor.
+  if (g.depoDolu) {
+    return {
+      anahtar: 'depo',
+      baslik: 'Deponun taşıyor',
+      cumle:
+        'Depon dolduğu için ürettiğin her şey boşa gidiyor. Ambarlar araştırması depoyu büyütür.',
+      dugme: 'Araştırmaya git',
+      git: () => g.onKapiAc('arastirma'),
+      hedefSekme: 'lord',
+      hedefKapi: 'arastirma',
+      sonraki: 'general kirala',
     };
   }
 
