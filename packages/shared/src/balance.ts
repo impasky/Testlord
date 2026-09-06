@@ -8,6 +8,7 @@ import balanceJson from '../../../data/balance.json';
 import basarimlarJson from '../../../data/basarimlar.json';
 import generalsJson from '../../../data/generals.json';
 import seferlerJson from '../../../data/seferler.json';
+import taktiklerJson from '../../../data/taktikler.json';
 import armaJson from '../../../data/arma.json';
 import unvanlarJson from '../../../data/unvanlar.json';
 import worldMapJson from '../../../data/world-map.json';
@@ -44,6 +45,22 @@ export const SEFERLER = seferlerJson.seferler as unknown as {
   birim: string;
 }[];
 export const SEFER_ODUL = seferlerJson.odul;
+
+/**
+ * Savaş taktikleri. Sayısal etkileri burada, mantığı `duzen.ts`de.
+ *
+ * `kosul` alanı hangi denetimin çalışacağını söylüyor — yeni bir taktik
+ * eklemek çoğu zaman koda dokunmadan JSON'a bir kayıt.
+ */
+export const TAKTIKLER = taktiklerJson.taktikler as unknown as {
+  key: string;
+  ad: string;
+  ozet: string;
+  aciklama: string;
+  kosul: Record<string, unknown> | null;
+  ek_kosul?: Record<string, unknown>;
+  etki: Record<string, number | Record<string, number>>;
+}[];
 
 /** Heraldik parçaları ve unvan kademeleri — ikisi de saf görünüş. */
 export const ARMA = armaJson as unknown as {

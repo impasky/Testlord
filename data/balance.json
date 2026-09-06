@@ -453,9 +453,9 @@
       "kaybeden_max": 0.9,
       "dagitim": "Kayiplar birim tipine 'maruziyet' agirligiyla dagitilir: agirlik = adet / (can + savunma). Ucuz birimler once olur - Koylu Milis'in 'et kalkani' rolu buradan gelir.",
       "_not": "Kazanan da HER ZAMAN kaybeder. Ezici zaferde bile ordunun ~%17'si gomulur.",
-    "savunmada_yarali_donus": 0.25,
-    "_yarali_donus_notu": "SAVUNAN oyuncunun kayiplarinin bu orani olmemis, YARALANMIS sayilir ve geri doner. Kazansa da kaybetse de. Sebep asimetri: saldiran riski KENDI aldi, savunan almadi -- saldiriya ugramayi secmedi. docs/09 §3.6'nin kalan yarisi; K6 kalkani zinciri kesiyordu, bu tek bir vurusun acisini azaltiyor.\nOran kucuk tutuldu: buyutmek haritayi dondururdu, cunku savunmasi kirilmayan bolge el degistirmez ve fetih olmayan bir strateji oyunu durur.\nSADECE OYUNCU savunmasinda. NPC garnizonuna vermek oyuncunun ilerlemesini yavaslatirdi ve korunacak kimse yok.\nGeneral bonusu (kayip_geri_donus, Vaiz Bertan) ile toplaniyor, toplam yarali_donus_tavani ile sinirli.",
-    "yarali_donus_tavani": 0.5
+      "savunmada_yarali_donus": 0.25,
+      "_yarali_donus_notu": "SAVUNAN oyuncunun kayiplarinin bu orani olmemis, YARALANMIS sayilir ve geri doner. Kazansa da kaybetse de. Sebep asimetri: saldiran riski KENDI aldi, savunan almadi -- saldiriya ugramayi secmedi. docs/09 §3.6'nin kalan yarisi; K6 kalkani zinciri kesiyordu, bu tek bir vurusun acisini azaltiyor.\nOran kucuk tutuldu: buyutmek haritayi dondururdu, cunku savunmasi kirilmayan bolge el degistirmez ve fetih olmayan bir strateji oyunu durur.\nSADECE OYUNCU savunmasinda. NPC garnizonuna vermek oyuncunun ilerlemesini yavaslatirdi ve korunacak kimse yok.\nGeneral bonusu (kayip_geri_donus, Vaiz Bertan) ile toplaniyor, toplam yarali_donus_tavani ile sinirli.",
+      "yarali_donus_tavani": 0.5
     },
     "yagma_formulu": "alinan = depo * 0.25 * (1 + kurnazlik*0.01 + general_yagma); tasima = SUM(birim * tasima_kapasitesi) * (1 + kurnazlik*0.01 + general_yagma); yagma = min(alinan, tasima)",
     "yagma_orani": 0.25,
@@ -584,14 +584,25 @@
       "takviye_hizi_azami": 0.21,
       "kesif_indirimi_seviye_basina": 0.04,
       "kesif_indirimi_azami": 0.28,
-      "pakt_slotu_esikleri": [4, 7],
+      "pakt_slotu_esikleri": [
+        4,
+        7
+      ],
       "_neden_gelir_ve_savas_bonusu_YOK": "Turun cogu oyunu klan seviyesini gelire ve savas gucune bagliyor. Biz BAGLAMIYORUZ ve bu bilincli bir sapma: orgutlu bir gruba guc carpani vermek, oyunun en cok ugrastigi seyi -- kartopunu (docs/09 K5, lider avi) -- ittifak olceginde geri getirirdi. Onde giden ittifak daha cok bagis yapar, daha cok bonus alir, daha cok onde gider. Bunun yerine seviye YARDIMLASMAYI buyutuyor: daha cok kaynak gonderebilirsin, takviyen daha hizli varir, kesif daha ucuz, daha cok pakt yapabilirsin. Hicbiri tek basina savas kazandirmiyor; hepsi birlikte oynamayi kolaylastiriyor."
     },
     "bagis": {
       "_aciklama": "Ittifak seviyesinin TEK kaynagi. Gunluk hak var cunku sinirsiz bagis, oyunu 'en cok kaynagi olan ittifak kazanir'a cevirirdi; gunluk hak herkesi ayni tavana oturtuyor ve DUZENLI girmeyi odullendiriyor.",
       "gunluk_hak": 5,
-      "maliyet_taban": { "altin": 800, "demir": 320, "erzak": 320 },
-      "maliyet_seviye_basina": { "altin": 280, "demir": 115, "erzak": 115 },
+      "maliyet_taban": {
+        "altin": 800,
+        "demir": 320,
+        "erzak": 320
+      },
+      "maliyet_seviye_basina": {
+        "altin": 280,
+        "demir": 115,
+        "erzak": 115
+      },
       "_maliyet_notu": "Maliyet lord seviyesiyle buyuyor, kazandirdigi XP de. Sabit maliyet olsaydi Lv1 icin imkansiz, Lv60 icin bedava olurdu. Taban ilk halinde 3000 altindi ve TESTTE KALDI: Lv1 lordun gunluk malikane geliri 2544 altin, yani yeni oyuncu tek bir bagis bile yapamiyordu -- ittifagina katki veremeyen, saf yuk olan bir uye. Simdi taban gelirle gunde ~2 bagis yapilabiliyor; 5 hakkin tamami icin gercekten oynamak gerekiyor.",
       "xp_taban": 400,
       "xp_seviye_basina": 18,
@@ -676,5 +687,53 @@
     "yagma_bonusu": 0.5,
     "en_az_lord": 3,
     "_en_az_lord_not": "Bu sayidan az lordun oldugu dunyada lider avi yok: iki kisilik bir dunyada 'lider' anlamsiz ve isaret sadece kafa karistirir."
+  },
+  "dizilim": {
+    "_aciklama": "Savas oncesi 4x4 dizilim. Kareler 1-16, satir 1 EN ON, satir 4 EN ARKA. Her birimin bir ideal satiri var; sapma ceza yazar. Kanat sutunlari 1 ve 4.",
+    "satir": 4,
+    "sutun": 4,
+    "kanat_sutunlari": [
+      1,
+      4
+    ],
+    "birim_yerlesimi": {
+      "milis": {
+        "ideal_satir": 1,
+        "satir_sapma_cezasi": 0.04,
+        "kanat_carpani": 0.0
+      },
+      "mizrakci": {
+        "ideal_satir": 1,
+        "satir_sapma_cezasi": 0.06,
+        "kanat_carpani": 0.0
+      },
+      "okcu": {
+        "ideal_satir": 3,
+        "satir_sapma_cezasi": 0.09,
+        "kanat_carpani": -0.05
+      },
+      "suvari": {
+        "ideal_satir": 2,
+        "satir_sapma_cezasi": 0.05,
+        "kanat_carpani": 0.12
+      },
+      "kusatma": {
+        "ideal_satir": 4,
+        "satir_sapma_cezasi": 0.15,
+        "kanat_carpani": -0.05
+      }
+    },
+    "_sapma_notu": "Ceza = |satir - ideal_satir| * satir_sapma_cezasi. Mancinik en agir cezayi aliyor: on hatta duran mancinik ilk carpismada dagilir.",
+    "acik_cephe_cezasi": 0.15,
+    "_acik_cephe_notu": "On satirda (1) hic yakin dovus birimi (milis/mizrakci) yokken orduda varsa savunmaya yazilan ceza. Okcuyu one koyup mizrakciyi arkaya saklamak bedava olmasin.",
+    "azami_bonus": 0.25,
+    "azami_ceza": 0.35,
+    "_tavan_notu": "Dizilimden gelen toplam etki bu araligin disina cikamaz: dizilim savasi tek basina belirlemesin, orduyu o hep yensin."
+  },
+  "taktik": {
+    "_aciklama": "Dizilimden SONRA secilen tek taktik. Taktik tanimlari data/taktikler.json icinde; burada yalniz kuresel tavanlar var.",
+    "azami_etki": 0.3,
+    "kosul_tutmazsa": "secilemez",
+    "_kosul_notu": "Kosulu tutmayan taktik gri gorunur ve secilemez. Yarim tutan taktige yarim bonus vermek oyuncuya neden az aldigini anlatmayi imkansiz kilardi."
   }
 }

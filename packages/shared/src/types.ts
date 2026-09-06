@@ -102,6 +102,14 @@ export interface Side {
   isDefender: boolean;
   /** General yeteneklerinin sayısal karşılıkları (generals.json -> ek_etki). */
   abilities?: Record<string, number>;
+  /**
+   * Savaş öncesi düzen: 4x4 dizilim + taktik. Tipi `duzen.ts`de.
+   *
+   * Burada `unknown` değil gerçek tip olmamasının sebebi döngüsel
+   * bağımlılık: duzen.ts balance.ts'i, balance.ts types.ts'i okuyor.
+   * combat.ts içeri girerken daraltıyor.
+   */
+  duzen?: { dizilim: (UnitType | null)[]; taktik: string | null } | null;
 }
 
 export interface RoundLog {
@@ -130,6 +138,14 @@ export interface BattleResult {
    * görür ama nedenini bilmezdi, bilmediği bir şey de onu rahatlatmaz.
    */
   yaraliDonen: { saldiran: Army; savunan: Army };
+  /**
+   * Dizilim ve taktiğin ne yaptığını anlatan cümleler.
+   *
+   * Sayı değil CÜMLE tutuluyor: oyuncunun raporda okuyacağı şey bu.
+   * Ceza görünmezse ceza değildir — mancınığını ön hatta koyan oyuncu
+   * bir daha koymasın diye burada yazılı duruyor.
+   */
+  duzenRaporu: { saldiran: string[]; savunan: string[] };
 }
 
 /**

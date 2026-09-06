@@ -14,6 +14,7 @@ import {
   liderAviYagmaBonusu,
   unit,
 } from './balance.js';
+import { duzenEtkisi } from './duzen.js';
 import { createRng } from './rng.js';
 import type { Army, BattleResult, Resources, RoundLog, Side, UnitType } from './types.js';
 import { UNIT_TYPES } from './types.js';
@@ -60,7 +61,7 @@ export function cloneArmy(army: Army): Army {
  * Mancınık canlı birime karşı zayıf, kaleye karşı güçlüdür; bu yüzden kale
  * bonusuna göre ölçeklenir (0 tahkimat -> ×0.5, Taht Kalesi -> ×2.0).
  */
-function attackPower(side: Side, enemy: Side): number {
+function attackPower(side: Side, enemy: Side, duzen: number): number {
   let total = 0;
   for (const t of UNIT_TYPES) {
     const count = side.units[t] ?? 0;
@@ -94,12 +95,15 @@ function attackPower(side: Side, enemy: Side): number {
   total *= 1 + side.gearBonus.saldiri;
   total *= 1 + side.generalBonus.orduSaldiri;
   total *= 1 + side.leadership * B.savas.liderlik_savas_carpani;
+  // Dizilim + taktik ordu gücünü ölçekliyor, lordun katkısını DEĞİL:
+  // lord kendi kılıcıyla savaşıyor, onu dizilim bozmaz.
+  total *= 1 + duzen;
   total += side.lordContribution * (1 + side.generalBonus.lordSavasKatkisi);
   return total;
 }
 
 /** Bir tarafın ham savunma gücü. Kale bonusu sadece savunanda geçerlidir. */
-function defensePower(side: Side, enemy: Side): number {
+function defensePower(side: Side, enemy: Side, duzen: number, kaleDelme: number): number {
   let total = 0;
   for (const t of UNIT_TYPES) {
     const count = side.units[t] ?? 0;
@@ -126,10 +130,14 @@ function defensePower(side: Side, enemy: Side): number {
   total *= 1 + side.generalBonus.orduSavunma;
   if (side.isDefender) {
     total *= 1 + side.generalBonus.savunmadaOrduSavunma;
-    // Kuşatma Ustası Tarık savunanın tahkimatını deler
-    const fort = side.fortressBonus * (1 - Math.min(0.9, enemy.generalBonus.kaleDelme));
+    // Kuşatma Ustası Tarık ve Kuşatma Düzeni taktiği tahkimatı deler.
+    // İkisi TOPLANIYOR, ayrı ayrı çarpılmıyor: iki delme kaynağı üst
+    // üste binince tahkimat eksiye düşer ve kale savunanı zayıflatırdı.
+    const delme = Math.min(0.9, enemy.generalBonus.kaleDelme + kaleDelme);
+    const fort = side.fortressBonus * (1 - delme);
     total *= 1 + fort;
   }
+  total *= 1 + duzen;
   return total;
 }
 
@@ -260,8 +268,14 @@ export function simulateBattle(
   const roundCount = B.savas.tur_sayisi;
   const band = 0.07;
 
-  const baseAtk = attackPower(attacker, defender);
-  const baseDef = defensePower(defender, attacker);
+  // Düzen etkileri savaştan ÖNCE, tek seferde. Her iki taraf da kendi
+  // dizilimini ve taktiğini getiriyor; savunanın düzeni saldırıya
+  // uğradığı anda kayıtlı olan "savunma düzeni".
+  const atkDuzen = duzenEtkisi(attacker.duzen, attacker.units, defender.units);
+  const defDuzen = duzenEtkisi(defender.duzen, defender.units, attacker.units);
+
+  const baseAtk = attackPower(attacker, defender, atkDuzen.saldiri);
+  const baseDef = defensePower(defender, attacker, defDuzen.savunma, atkDuzen.kaleDelme);
 
   let rSum = 0;
   for (let i = 0; i < roundCount; i++) {
@@ -272,7 +286,9 @@ export function simulateBattle(
     if (i === 0) {
       a *= 1 + (attacker.abilities?.on_hasar_orani ?? 0);
       a *= 1 + (attacker.abilities?.ilk_tur_saldiri ?? 0);
+      a *= 1 + atkDuzen.ilkTurSaldiri;
       d *= 1 + (defender.abilities?.ilk_tur_hasar_azaltma ?? 0);
+      d *= 1 + defDuzen.ilkTurSaldiri;
     }
 
     const r = a + d > 0 ? a / (a + d) : 0.5;
@@ -357,6 +373,7 @@ export function simulateBattle(
 
   return {
     yaraliDonen,
+    duzenRaporu: { saldiran: atkDuzen.satirlar, savunan: defDuzen.satirlar },
     winner: attackerWins ? 'attacker' : 'defender',
     rounds,
     attackerLosses,
