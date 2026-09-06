@@ -26,7 +26,7 @@ import { requireAuth } from '../auth.js';
 import { prisma, type Tx } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { gecikmisleriKapat } from '../services/gecikmis.js';
-import { findLordByUser, pushEvent } from '../services/lord.js';
+import { arastirmaBonusuOku, findLordByUser, pushEvent } from '../services/lord.js';
 import { mesafeOlcer, mesafeOlcerHazir } from '../services/mesafe.js';
 import { paktVarMi, paktliIttifaklar } from '../services/pakt.js';
 import { lordunAyricaligi } from '../services/ittifakSeviye.js';
@@ -119,15 +119,17 @@ async function assertCanAttack(
 
   const attacker = await tx.lord.findUniqueOrThrow({
     where: { id: attackerId },
-    select: { level: true, woundedUntil: true, dailyAttacks: true },
+    select: { level: true, woundedUntil: true, dailyAttacks: true, arastirmalar: true },
   });
 
   if (attacker.woundedUntil && attacker.woundedUntil > now)
     throw hata.yarali(attacker.woundedUntil);
 
   const limitMuaf = tahtMi && B.korumalar.taht_kalesi_limitten_muaf;
-  if (!limitMuaf && attacker.dailyAttacks >= B.korumalar.gunluk_saldiri_limiti) {
-    throw hata.limitAsildi(`Günlük ${B.korumalar.gunluk_saldiri_limiti} saldırı`);
+  // Divan araştırması günde bir akın hakkı ekliyor.
+  const gunlukHak = B.korumalar.gunluk_saldiri_limiti + arastirmaBonusuOku(attacker).gunlukSaldiri;
+  if (!limitMuaf && attacker.dailyAttacks >= gunlukHak) {
+    throw hata.limitAsildi(`Günlük ${gunlukHak} saldırı`);
   }
 
   if (region.ownerLordId === attackerId) {
@@ -459,7 +461,13 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       await assertQueueSlot(lordId, 'upgrade_region', tx);
       const c = regionUpgradeCost(region.level);
       await spendResources(lordId, { altin: c.altin, demir: c.demir, erzak: 0 }, tx);
-      const q = await enqueue(lordId, 'upgrade_region', { regionId: id }, c.sec, tx);
+      // İmar Ustaları araştırması süreyi kısaltıyor. Hız bonusu SÜREYİ
+      // bölüyor (eğitimdeki gibi): +%25 hız, %25 kısaltma değil.
+      const imarAr = arastirmaBonusuOku(
+        await tx.lord.findUniqueOrThrow({ where: { id: lordId }, select: { arastirmalar: true } }),
+      );
+      const yukseltmeSn = Math.round(c.sec / (1 + imarAr.bolgeYukseltmeHizi));
+      const q = await enqueue(lordId, 'upgrade_region', { regionId: id }, yukseltmeSn, tx);
       return { queued: true, finishAt: q.finishAt };
     });
   });
@@ -500,7 +508,14 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
 
       await assertQueueSlot(lordId, 'kesif', tx);
       const kesifAyricalik = await lordunAyricaligi(lordId, tx);
-      const kesifUcreti = Math.round(kesifMaliyetiAltin() * (1 - kesifAyricalik.kesifIndirimi));
+      // Casus Ağı araştırması ile ittifak ayrıcalığı TOPLANIYOR ve
+      // birlikte de ücreti sıfıra indiremiyor: bedava casusluk, riski
+      // olan bir kararı bedava bilgiye çevirirdi.
+      const casusAr = arastirmaBonusuOku(
+        await tx.lord.findUniqueOrThrow({ where: { id: lordId }, select: { arastirmalar: true } }),
+      );
+      const kesifIndirim = Math.min(0.8, kesifAyricalik.kesifIndirimi - casusAr.casusMaliyeti);
+      const kesifUcreti = Math.round(kesifMaliyetiAltin() * (1 - kesifIndirim));
       await spendResources(lordId, { altin: kesifUcreti, demir: 0, erzak: 0 }, tx);
 
       const mesafe = (await mesafeOlcer(lordId, tx))({ q: region.q, r: region.r });
@@ -913,7 +928,13 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       // ise dakikalar içinde varır. Yoksa yeni oyuncu ordusunu yola çıkarıp
       // ilk oturumunda hiçbir sonuç görmeden oyunu kapatıyor.
       const ilkSaldiri = ilkSaldiriMi(aktifVeBitmisYuruyus, region.ownerLordId === null, dist);
-      const sec = marchDurationSec(dist, army, generalBonus, { ilkSaldiri });
+      const sec = marchDurationSec(
+        dist,
+        army,
+        generalBonus,
+        { ilkSaldiri },
+        arastirmaBonusuOku(lord),
+      );
       const now = new Date();
 
       await takeFromHome(lordId, army, tx);

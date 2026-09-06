@@ -43,7 +43,7 @@ import {
   type UnitType,
 } from '@lordlar/shared';
 import { prisma, type Tx } from '../db.js';
-import { equippedGenerals, gearBonusFrom } from './lord.js';
+import { arastirmaBonusuOku, equippedGenerals, gearBonusFrom } from './lord.js';
 import { regionFortressBonus } from './region.js';
 import { mesafeOlcerHazir } from './mesafe.js';
 
@@ -70,8 +70,15 @@ export async function lordSide(
       rarity: i.rarity as Rarity,
       upgradeLevel: i.upgradeLevel,
     }));
+  const ar = arastirmaBonusuOku(lord);
   return {
     units: army,
+    arastirma: {
+      orduSaldiri: ar.orduSaldiri,
+      orduSavunma: ar.orduSavunma,
+      kaleSavunmasi: ar.kaleSavunmasi,
+      yagma: ar.yagma,
+    },
     // Önizleme ile gerçek savaşın AYNI düzeni kullanması şart: oyuncuya
     // gösterilen kazanma ihtimali, dizilimi hesaba katmayan bir sayı
     // olsaydı dizilim ekranı oyuncuya yalan söylemiş olurdu.
@@ -167,6 +174,7 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
   // "ne için asker eğitiyorum" sorusunu tam da sorulduğu anda cevapsız
   // bırakıyordu: yeni oyuncunun ordusu hep boştur.
   const orduVar = armyCount(evOrdusu) > 0;
+  const onerAr = arastirmaBonusuOku(lord);
 
   const [saldiran, yuruyusSayisi, bolgeSayisi, adaylar] = await Promise.all([
     lordSide(lordId, evOrdusu, []),
@@ -228,7 +236,16 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
     const ilkSaldiri = ilkYuruyus && distance <= B.yuruyus.ilk_saldiri_max_hex;
     // Ordu boşken hız referansı kullanılır (marchDurationSec'in kendi
     // davranışı); gösterilen süre "bu mesafe kabaca ne kadar" demektir.
-    const marchSec = marchDurationSec(distance, evOrdusu, saldiran.generalBonus, { ilkSaldiri });
+    // Önizlemedeki süre gerçek yürüyüşle aynı formülü kullanmalı;
+    // araştırmayı atlarsak oyuncuya "48dk" deyip 40dk sürer ve
+    // ekranlar birbiriyle çelişir.
+    const marchSec = marchDurationSec(
+      distance,
+      evOrdusu,
+      saldiran.generalBonus,
+      { ilkSaldiri },
+      onerAr,
+    );
 
     const gelir = regionIncome(r.type, r.level, r.incomeMult);
 

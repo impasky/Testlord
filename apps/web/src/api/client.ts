@@ -1,5 +1,6 @@
 /** Tipli API istemcisi. Sunucu tek otoritedir; istemci hiçbir sayı yazmaz. */
 import type {
+  ArastirmaDurumu,
   Army,
   BasarimOlcutleri,
   Dizilim,
@@ -851,6 +852,20 @@ export const api = {
       ilkSaldiri: boolean;
       uyari: string | null;
     }>('/march', { toRegionId, army, generalIds, duzen }),
+  /** Araştırma ağacı: düğüm durumları, ilerleme, süren araştırma. */
+  arastirma: () =>
+    request<{
+      dallar: ArastirmaDurumu[];
+      tamamlanan: string[];
+      ilerleme: { biten: number; toplam: number };
+      esZamanli: number;
+      suren: { id: string; key: string | null; ad: string; finishAt: string } | null;
+    }>('/arastirma'),
+  arastirmaBaslat: (key: string) =>
+    post<{ id: string; finishAt: string; ad: string }>('/arastirma', { key }),
+  arastirmaIptal: (id: string) =>
+    request<{ iptal: boolean; iade: number }>(`/arastirma/${id}`, { method: 'DELETE' }),
+
   /** Savunma düzeni: saldırıya uğradığında kullanılacak dizilim + taktik. */
   savunmaDuzeni: () =>
     request<{

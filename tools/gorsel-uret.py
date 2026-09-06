@@ -408,6 +408,9 @@ ISTEKLER: dict[str, dict[str, str]] = {
                     "quill and inkpot, a wax-sealed writ, morning light",
         "olaylar": "a messenger's table in a keep, scattered opened letters and "
                    "broken seals, a raven at the window, evening light",
+        "arastirma": "a master builder's workshop, architectural drawings on vellum, "
+                     "wooden scale models of a granary and a watchtower, dividers and "
+                     "measuring rods, afternoon light through a high window",
         "giris": "a lord in a dark cloak standing on a ridge at dawn overlooking "
                  "a wide valley of fields, towns and a distant citadel",
     },

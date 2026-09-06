@@ -1,6 +1,6 @@
 # Görsel İstemleri
 
-Oyunun ihtiyacı olan **79 görselin** kopyala-yapıştır istemleri.
+Oyunun ihtiyacı olan **80 görselin** kopyala-yapıştır istemleri.
 Her istem üç parçadan oluşur: **konu** + **kategori kompozisyonu** +
 **taban üslup**. Taban üslup hepsinde aynıdır; tutarlılık oradan gelir.
 
@@ -567,7 +567,7 @@ SAME MAN, older and scarred, same face, same stance, same framing and same scale
 
 ---
 
-## Ekran zeminleri — 8 görsel
+## Ekran zeminleri — 9 görsel
 
 Her ekranın tepesinde geniş bir şerit olarak durur ve alt kenarı arayüze eritilir. Oyunun "gösterge paneli" değil bir yer gibi hissettirmesi büyük ölçüde buna bağlı.
 
@@ -619,6 +619,12 @@ a scriptorium desk with an open ledger of tallies and seals, quill and inkpot, a
 
 ```
 a messenger's table in a keep, scattered opened letters and broken seals, a raven at the window, evening light, wide establishing shot, cinematic composition with the focal subject slightly above center, deep atmospheric perspective, empty darker area along the bottom third where interface will overlay, 16:10 landscape composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `zeminler/arastirma.webp`
+
+```
+a master builder's workshop, architectural drawings on vellum, wooden scale models of a granary and a watchtower, dividers and measuring rods, afternoon light through a high window, wide establishing shot, cinematic composition with the focal subject slightly above center, deep atmospheric perspective, empty darker area along the bottom third where interface will overlay, 16:10 landscape composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
 ```
 
 ### `zeminler/giris.webp`

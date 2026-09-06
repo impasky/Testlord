@@ -1,5 +1,6 @@
 /** Harita mesafesi ve yürüyüş süresi. */
 import { B, unit } from './balance.js';
+import type { ArastirmaBonusu } from './arastirma.js';
 import type { Army, GeneralBonus } from './types.js';
 import { UNIT_TYPES } from './types.js';
 
@@ -107,9 +108,17 @@ export function ilkEgitimMi(tamamlananEgitim: number, mevcutAsker: number): bool
  * Süreyi çağıranın hesaplaması (`u.egitim_sn * count`) ilk hâlindeydi ve
  * kısayol eklenince o çarpımın iki yerde yaşaması gerekirdi. Tek yer.
  */
-export function egitimSuresiSn(birimEgitimSn: number, adet: number, ilkMi = false): number {
+export function egitimSuresiSn(
+  birimEgitimSn: number,
+  adet: number,
+  ilkMi = false,
+  arastirma?: ArastirmaBonusu,
+): number {
   if (ilkMi) return B.ilk_egitim.saniye;
-  return birimEgitimSn * adet;
+  // Hız bonusu SÜREYİ bölüyor: +%20 hız, süreyi %20 kısaltmak değil
+  // 1/1.2 = %17 kısaltmak demek. Çarpanla yazsaydık +%100 hız süreyi
+  // sıfırlardı.
+  return Math.round((birimEgitimSn * adet) / (1 + (arastirma?.egitimHizi ?? 0)));
 }
 
 /**
@@ -121,11 +130,13 @@ export function marchDurationSec(
   army: Army,
   generalBonus?: GeneralBonus,
   opts?: MarchOptions,
+  arastirma?: ArastirmaBonusu,
 ): number {
   if (opts?.ilkSaldiri) return Math.round(B.yuruyus.ilk_saldiri_dakika * 60);
   const speed = slowestSpeed(army);
   const raw = distance * B.yuruyus.dakika_hex_basina * (B.yuruyus.hiz_referansi / speed);
-  const withBonus = raw * (1 + (generalBonus?.yuruyusSuresi ?? 0));
+  const withBonus =
+    (raw * (1 + (generalBonus?.yuruyusSuresi ?? 0))) / (1 + (arastirma?.yuruyusHizi ?? 0));
   const clamped = Math.min(B.yuruyus.max_dakika, Math.max(B.yuruyus.min_dakika, withBonus));
   return Math.round(clamped * 60);
 }

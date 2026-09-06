@@ -17,7 +17,7 @@ import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { gecikmisleriKapat } from '../services/gecikmis.js';
-import { collectAllUnits, findLordByUser, tickLord } from '../services/lord.js';
+import { arastirmaBonusuOku, collectAllUnits, findLordByUser, tickLord } from '../services/lord.js';
 import { addUnitsHome, assertQueueSlot, enqueue, spendResources } from '../services/queue.js';
 
 const trainSchema = z.object({
@@ -77,6 +77,12 @@ export async function armyRoutes(app: FastifyInstance): Promise<void> {
 
     return prisma.$transaction(async (tx) => {
       const state = await tickLord(lordId, new Date(), tx);
+      const arastirma = arastirmaBonusuOku(
+        await tx.lord.findUniqueOrThrow({
+          where: { id: lordId },
+          select: { arastirmalar: true },
+        }),
+      );
 
       // Kuyruktakiler de yer tutar; oyuncu kapasitesini aşan eğitim veremez.
       const kuyruktakiler = await tx.queue.findMany({
@@ -100,12 +106,17 @@ export async function armyRoutes(app: FastifyInstance): Promise<void> {
       }
 
       await assertQueueSlot(lordId, 'train', tx);
+      // Lonca Düzeni araştırması eğitim maliyetini düşürüyor. İndirim
+      // hiçbir zaman bedavaya inmiyor: Math.max(0, ...) yerine oranın
+      // kendisi balance.json'da eksi ve küçük tutuluyor, ama yine de
+      // taban 1 altının altına düşmesin diye yuvarlama yukarı.
+      const indirim = 1 + arastirma.egitimMaliyeti;
       await spendResources(
         lordId,
         {
-          altin: u.maliyet.altin * count,
-          demir: u.maliyet.demir * count,
-          erzak: u.maliyet.erzak * count,
+          altin: Math.ceil(u.maliyet.altin * count * indirim),
+          demir: Math.ceil(u.maliyet.demir * count * indirim),
+          erzak: Math.ceil(u.maliyet.erzak * count * indirim),
         },
         tx,
       );
@@ -123,7 +134,7 @@ export async function armyRoutes(app: FastifyInstance): Promise<void> {
         lordId,
         'train',
         { unitType, count },
-        egitimSuresiSn(u.egitim_sn, count, ilkMi),
+        egitimSuresiSn(u.egitim_sn, count, ilkMi, arastirma),
         tx,
       );
       return { queued: true, finishAt: q.finishAt, ilkEgitim: ilkMi };

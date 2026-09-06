@@ -298,11 +298,18 @@ describe('arayüz mimarisi — ana sayfa ve kapılar', () => {
 
   /**
    * Kapı sayısının bir tavanı olmalı: ana sayfa bir simge duvarına
-   * dönerse kaçtığımız menüye geri dönmüş oluruz. Altı, tek bakışta
-   * taranabilen üst sınır (iki satır, üçerli).
+   * dönerse kaçtığımız menüye geri dönmüş oluruz.
+   *
+   * Sınır önce altıydı (iki satır, üçerli). Araştırma eklenince yediye
+   * çıktı ve sayıyı büyütmeden önce şu soruldu: bu gerçekten ana sayfada
+   * durması gereken bir sistem mi? Evet — araştırma oyuncunun diyarını
+   * şekillendirdiği tek yer ve bir alt menüye gömülürse kimse bulmaz.
+   *
+   * Tavan dokuz: üçe üçlük ızgara hâlâ TEK BAKIŞTA taranıyor, kuralın
+   * asıl amacı o. Dokuzdan sonrası duvar olur.
    */
   it('kapı sayısı taranabilir sınırda', () => {
-    expect(KAPILAR.length).toBeLessThanOrEqual(6);
+    expect(KAPILAR.length).toBeLessThanOrEqual(9);
   });
 });
 

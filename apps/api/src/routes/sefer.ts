@@ -27,7 +27,7 @@ import type { FastifyInstance } from 'fastify';
 import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError } from '../errors.js';
-import { findLordByUser, tickLord } from '../services/lord.js';
+import { arastirmaBonusuOku, findLordByUser, tickLord } from '../services/lord.js';
 
 const IMAR_TURLERI = ['craft', 'upgrade_item', 'upgrade_gear', 'upgrade_region'];
 
@@ -79,7 +79,7 @@ export async function seferRoutes(app: FastifyInstance): Promise<void> {
     const [lord, sayaclar] = await Promise.all([
       prisma.lord.findUniqueOrThrow({
         where: { id: lordId },
-        select: { level: true, seferOduluHaftasi: true },
+        select: { level: true, arastirmalar: true, seferOduluHaftasi: true },
       }),
       haftalikSayaclar(lordId, hafta),
     ]);
@@ -112,7 +112,7 @@ export async function seferRoutes(app: FastifyInstance): Promise<void> {
 
     const lord = await prisma.lord.findUniqueOrThrow({
       where: { id: lordId },
-      select: { level: true, seferOduluHaftasi: true },
+      select: { level: true, arastirmalar: true, seferOduluHaftasi: true },
     });
     if (seferOduluAlindiMi(lord.seferOduluHaftasi, simdi)) {
       throw new GameError('Bu haftanın seferini zaten aldın.', 400, 'ODUL_ALINDI');
@@ -129,7 +129,9 @@ export async function seferRoutes(app: FastifyInstance): Promise<void> {
 
     const odul = seferOdulu(lord.level);
     const once = await tickLord(lordId, simdi);
-    const tavan = storageCapacity(lord.level);
+    // Ödül tavanı da araştırmayı görüyor: Ambarlar yapan oyuncunun
+    // ödülü depoya sığmadığı için buharlaşmasın.
+    const tavan = storageCapacity(lord.level, arastirmaBonusuOku(lord));
     const sigan = (istenen: number, mevcut: number): number =>
       Math.max(0, Math.min(istenen, tavan - mevcut));
     const verilen = {

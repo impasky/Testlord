@@ -110,6 +110,19 @@ export interface Side {
    * combat.ts içeri girerken daraltıyor.
    */
   duzen?: { dizilim: (UnitType | null)[]; taktik: string | null } | null;
+  /**
+   * Tamamlanmış araştırmaların savaşa etkisi. Tipi `arastirma.ts`de.
+   *
+   * gearBonus'a katlanmadı: o alan "ekipmandan gelen" demek ve
+   * araştırmayı oraya sıkıştırmak alan adını yalancı yapardı. Bir
+   * bonusun nereden geldiği raporda da lazım olacak.
+   */
+  arastirma?: {
+    orduSaldiri: number;
+    orduSavunma: number;
+    kaleSavunmasi: number;
+    yagma: number;
+  } | null;
 }
 
 export interface RoundLog {
@@ -182,6 +195,7 @@ export const EKRANLAR = [
   'generaller',
   'siralama',
   'ittifak',
+  'arastirma',
   'hesap',
 ] as const;
 
@@ -228,6 +242,7 @@ export const ANA_SEKME: AltSekme = 'lord';
 export const KAPILAR = [
   'generaller',
   'demirhane',
+  'arastirma',
   'ittifak',
   'olaylar',
   'siralama',
@@ -238,6 +253,7 @@ export type Kapi = (typeof KAPILAR)[number];
 /** Kapının başlığı — hem panelde hem onu açan düğmede aynı ad. */
 export const KAPI_ADI: Record<Kapi, string> = {
   generaller: 'Generaller',
+  arastirma: 'Araştırma',
   demirhane: 'Demirhane',
   ittifak: 'İttifak',
   olaylar: 'Olaylar',

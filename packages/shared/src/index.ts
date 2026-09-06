@@ -7,6 +7,7 @@ export * from './equipment.js';
 export * from './generals.js';
 export * from './combat.js';
 export * from './duzen.js';
+export * from './arastirma.js';
 export * from './karsi.js';
 export * from './sebep.js';
 export * from './basarim.js';

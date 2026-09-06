@@ -192,6 +192,7 @@ const KAPI_YUZU: Record<Kapi, { Ikon: typeof IkonNavLord; alt: (l: LordState) =>
     Ikon: IkonNavDemirhane,
     alt: (l) => `${l.equippedItems.length}/${EQUIP_SLOTS.length} kuşanılı`,
   },
+  arastirma: { Ikon: IkonKurnaz, alt: () => 'diyarını şekillendir' },
   ittifak: { Ikon: IkonSohret, alt: () => 'ortak hedef, sohbet' },
   olaylar: { Ikon: IkonSancak, alt: () => 'diyarda ne oldu' },
   siralama: { Ikon: IkonNavSiralama, alt: (l) => `${formatSayi(l.fame)} şöhret` },
@@ -400,15 +401,22 @@ export function LordEkrani({
           satır, açmadan önce içeride ne olduğunu söylüyor — düz bir menü
           bağlantısı olmasınlar diye. */}
       <div className="grid grid-cols-3 gap-2">
-        {KAPILAR.map((k) => {
+        {KAPILAR.map((k, i) => {
           const yuz = KAPI_YUZU[k];
+          // Son satırda TEK kart kalıyorsa satırı doldursun. Üç sütunlu
+          // ızgarada yedinci kart soldan tek başına asılı duruyor ve
+          // "eklenmiş" gibi görünüyor; sıranın tamamını kaplayınca
+          // kasıtlı bir vurgu gibi okunuyor.
+          const sonSatirdaYalniz = KAPILAR.length % 3 === 1 && i === KAPILAR.length - 1;
           return (
             <button
               key={k}
               type="button"
               onClick={() => onKapiAc(k)}
               data-kapi={k}
-              className="bas flex flex-col items-center gap-1 rounded-2xl border-2 border-kenar bg-yuzey px-1 py-2.5 text-solgun"
+              className={`bas flex flex-col items-center gap-1 rounded-2xl border-2 border-kenar bg-yuzey px-1 py-2.5 text-solgun ${
+                sonSatirdaYalniz ? 'col-span-3' : ''
+              }`}
             >
               <span className="text-altin">
                 <yuz.Ikon boyut={24} />

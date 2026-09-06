@@ -94,6 +94,7 @@ function attackPower(side: Side, enemy: Side, duzen: number): number {
 
   total *= 1 + side.gearBonus.saldiri;
   total *= 1 + side.generalBonus.orduSaldiri;
+  total *= 1 + (side.arastirma?.orduSaldiri ?? 0);
   total *= 1 + side.leadership * B.savas.liderlik_savas_carpani;
   // Dizilim + taktik ordu gücünü ölçekliyor, lordun katkısını DEĞİL:
   // lord kendi kılıcıyla savaşıyor, onu dizilim bozmaz.
@@ -128,13 +129,18 @@ function defensePower(side: Side, enemy: Side, duzen: number, kaleDelme: number)
 
   total *= 1 + side.gearBonus.savunma;
   total *= 1 + side.generalBonus.orduSavunma;
+  total *= 1 + (side.arastirma?.orduSavunma ?? 0);
   if (side.isDefender) {
     total *= 1 + side.generalBonus.savunmadaOrduSavunma;
     // Kuşatma Ustası Tarık ve Kuşatma Düzeni taktiği tahkimatı deler.
     // İkisi TOPLANIYOR, ayrı ayrı çarpılmıyor: iki delme kaynağı üst
     // üste binince tahkimat eksiye düşer ve kale savunanı zayıflatırdı.
     const delme = Math.min(0.9, enemy.generalBonus.kaleDelme + kaleDelme);
-    const fort = side.fortressBonus * (1 - delme);
+    // Sur Ustalığı araştırması tahkimatı BÜYÜTÜYOR, delmeden önce:
+    // araştırma surları kalınlaştırıyor, saldıranın mancınığı da o
+    // kalın surla uğraşıyor.
+    const tahkimat = side.fortressBonus * (1 + (side.arastirma?.kaleSavunmasi ?? 0));
+    const fort = tahkimat * (1 - delme);
     total *= 1 + fort;
   }
   total *= 1 + duzen;
@@ -367,7 +373,9 @@ export function simulateBattle(
           ctx.defenderStore,
           attackerSurvivors,
           ctx.attackerCunning,
-          attacker.generalBonus.yagma + (ctx.liderAvi ? liderAviYagmaBonusu() : 0),
+          attacker.generalBonus.yagma +
+            (attacker.arastirma?.yagma ?? 0) +
+            (ctx.liderAvi ? liderAviYagmaBonusu() : 0),
         )
       : { altin: 0, demir: 0, erzak: 0 };
 

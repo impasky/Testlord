@@ -51,6 +51,7 @@ import {
   grantXp,
   pushEvent,
   tickLord,
+  arastirmaBonusuOku,
 } from './lord.js';
 import { addUnitsHome, addUnitsRegion } from './queue.js';
 import { regionFortressBonus, transferRegion } from './region.js';
@@ -85,6 +86,7 @@ async function buildSide(
     include: { items: true, gearLines: true, generals: true },
   });
   if (!lord) throw new Error(`Lord bulunamadı: ${lordId}`);
+  const ar = arastirmaBonusuOku(lord);
 
   const now = new Date();
   const sahada = equippedGenerals(lord.generals, now).filter(
@@ -118,6 +120,12 @@ async function buildSide(
       // asimetri yaratırdı: saldıran her seferinde dizilim yapıyor,
       // savunan uykuda. İkisi de aynı taban dizilimden başlasın.
       duzen: duzen ?? { dizilim: varsayilanDizilim(units), taktik: null },
+      arastirma: {
+        orduSaldiri: ar.orduSaldiri,
+        orduSavunma: ar.orduSavunma,
+        kaleSavunmasi: ar.kaleSavunmasi,
+        yagma: ar.yagma,
+      },
       abilities: {
         on_hasar_orani: abilityValue(sahada, 'on_hasar_orani'),
         ilk_tur_saldiri: abilityValue(sahada, 'ilk_tur_saldiri'),

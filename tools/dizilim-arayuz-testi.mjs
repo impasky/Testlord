@@ -50,7 +50,7 @@ const gonder = (y, g = {}) =>
 // Seviye de veriliyor: komuta kapasitesi Lv1'de küçük ve eğitim
 // isteğinin bir kısmı sessizce reddediliyordu — testin ordusu yarım
 // kalınca dizilim ekranı da yarım açılıyordu.
-for (let i = 0; i < 6; i++) await gonder('/test/xp-ver', { xp: 200000 });
+for (let i = 0; i < 6; i++) await gonder('/test/xp-ver', { miktar: 200000 });
 await gonder('/test/kaynak-ver', { altin: 300000, demir: 150000, erzak: 150000 });
 await gonder('/army/train', { unitType: 'mizrakci', count: 20 });
 await gonder('/army/train', { unitType: 'kusatma', count: 3 });

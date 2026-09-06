@@ -1,5 +1,6 @@
 /** Lord seviyesi, XP, komuta kapasitesi, şöhret. */
 import { B, GENERAL_SLOT_RULE, fameTypeMultiplier, unit } from './balance.js';
+import type { ArastirmaBonusu } from './arastirma.js';
 import type { Army, GeneralBonus, LordStats, UnitType } from './types.js';
 import { UNIT_TYPES } from './types.js';
 
@@ -28,9 +29,16 @@ export function statPointsForLevelUp(fromLevel: number, toLevel: number): number
 }
 
 /** Komuta kapasitesi: kaç "yer"lik ordu taşınabilir. */
-export function commandCapacity(liderlik: number, generalBonus?: GeneralBonus): number {
+export function commandCapacity(
+  liderlik: number,
+  generalBonus?: GeneralBonus,
+  arastirma?: ArastirmaBonusu,
+): number {
   return (
-    B.komuta.taban + liderlik * B.komuta.liderlik_carpani + (generalBonus?.komutaKapasitesi ?? 0)
+    B.komuta.taban +
+    liderlik * B.komuta.liderlik_carpani +
+    (generalBonus?.komutaKapasitesi ?? 0) +
+    (arastirma?.komutaKapasitesi ?? 0)
   );
 }
 

@@ -4,6 +4,7 @@ import { ApiError, api, getToken, setToken, type MeResponse } from './api/client
 import { BaglantiDurumu } from './components/BaglantiDurumu';
 import { MobilKabuk } from './components/MobilKabuk';
 import { KapiPaneli } from './components/KapiPaneli';
+import { Arastirma } from './screens/Arastirma';
 import { ANA_SEKME, KAPI_ADI, type AltSekme, type Kapi } from '@lordlar/shared';
 import { Ogretici } from './components/Ogretici';
 import { RehberIsigi } from './components/RehberIsigi';
@@ -407,6 +408,7 @@ export function App() {
               }}
             />
           )}
+          {kapi === 'arastirma' && <Arastirma />}
           {kapi === 'ittifak' && <Ittifak lordId={lord.id} />}
           {kapi === 'generaller' && <Generaller onGuncelle={tazele} />}
           {kapi === 'demirhane' && (

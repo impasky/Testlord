@@ -6,6 +6,7 @@
  * süre kadar üretim eklenir. 120 oyuncu için de 120.000 için de maliyet aynıdır.
  */
 import { B, regionBaseIncome, unit } from './balance.js';
+import type { ArastirmaBonusu } from './arastirma.js';
 import type { Army, GeneralBonus, Resources } from './types.js';
 import { UNIT_TYPES } from './types.js';
 
@@ -32,13 +33,14 @@ export function kaynakCarp(a: Resources, k: number): Resources {
 }
 
 /** Malikânenin saatlik üretimi. Kaybedilemez taban gelir, seviyeyle büyür. */
-export function malikaneIncome(lordLevel: number): Resources {
+export function malikaneIncome(lordLevel: number, arastirma?: ArastirmaBonusu): Resources {
   const t = B.kaynaklar.malikane_saatlik;
   const b = B.kaynaklar.malikane_seviye_bonusu_saatlik;
+  const k = 1 + (arastirma?.malikaneGeliri ?? 0);
   return {
-    altin: t.altin + b.altin * lordLevel,
-    demir: t.demir + b.demir * lordLevel,
-    erzak: t.erzak + b.erzak * lordLevel,
+    altin: Math.round((t.altin + b.altin * lordLevel) * k),
+    demir: Math.round((t.demir + b.demir * lordLevel) * k),
+    erzak: Math.round((t.erzak + b.erzak * lordLevel) * k),
   };
 }
 
@@ -48,10 +50,14 @@ export function regionIncome(
   level: number,
   incomeMult: number,
   generalBonus?: GeneralBonus,
+  arastirma?: ArastirmaBonusu,
 ): Resources & { sohret: number } {
   const base = regionBaseIncome(type);
   const levelMult = 1 + B.bolgeler.seviye_basina_gelir * (level - 1);
-  const bonus = 1 + (generalBonus?.bolgeGeliri ?? 0);
+  // General ve araştırma bonusları TOPLANIYOR, çarpılmıyor: iki kaynak
+  // üst üste çarpıldığında yüzdeler sessizce birbirini büyütüyor ve
+  // oyuncuya gösterilen "+%20" gerçekte +%38 oluyordu.
+  const bonus = 1 + (generalBonus?.bolgeGeliri ?? 0) + (arastirma?.bolgeGeliri ?? 0);
   const f = incomeMult * levelMult * bonus;
   return {
     altin: (base.altin ?? 0) * f,
@@ -92,16 +98,26 @@ export function vilayetSayilari(bolgeler: readonly { province: string }[]): Reco
   return sayac;
 }
 
-export function storageCapacity(lordLevel: number): number {
-  return (
-    B.kaynaklar.depo_kapasitesi.taban + B.kaynaklar.depo_kapasitesi.lord_seviye_basina * lordLevel
-  );
+export function storageCapacity(lordLevel: number, arastirma?: ArastirmaBonusu): number {
+  const taban =
+    B.kaynaklar.depo_kapasitesi.taban + B.kaynaklar.depo_kapasitesi.lord_seviye_basina * lordLevel;
+  // Depo tavanı eskiden YALNIZ lord seviyesiyle büyüyordu: ekranda üç
+  // kırmızı "depo dolu" uyarısı yanıyor ve hiçbirinin altında oyuncunun
+  // basabileceği bir düğme yoktu. Ambarlar araştırması o uyarıya bir
+  // cevap veriyor.
+  return Math.round(taban * (1 + (arastirma?.depoCarpani ?? 0)));
 }
 
 /** Ordunun saatlik erzak gideri. */
-export function upkeepPerHour(army: Army, generalBonus?: GeneralBonus): number {
+export function upkeepPerHour(
+  army: Army,
+  generalBonus?: GeneralBonus,
+  arastirma?: ArastirmaBonusu,
+): number {
   const raw = UNIT_TYPES.reduce((s, t) => s + (army[t] ?? 0) * unit(t).bakim_erzak_saat, 0);
-  return raw * (1 + (generalBonus?.bakimMaliyeti ?? 0));
+  // İndirimler toplanıyor; bakım hiçbir zaman eksiye düşmüyor.
+  const indirim = (generalBonus?.bakimMaliyeti ?? 0) - (arastirma?.bakimIndirimi ?? 0);
+  return raw * Math.max(0, 1 + indirim);
 }
 
 export interface AccrualInput {

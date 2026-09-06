@@ -119,6 +119,14 @@ model Lord {
   /// göstermek, kartı ikinci kez göstermekten çok daha rahatsız edici.
   rehberBittiAt     DateTime?
 
+  /// Tamamlanan araştırmalar: düğüm anahtarlarının listesi.
+  ///
+  /// Türetilemiyor — araştırmanın bitmesi başka hiçbir kayda iz
+  /// bırakmıyor; etkileri hesaplanarak uygulanıyor, saklanmıyor.
+  /// Ayrı tabloya bölünmedi: en fazla on beş kısa anahtar, hiç
+  /// sorgulanmıyor, yalnız bütün hâlinde okunuyor.
+  arastirmalar Json?
+
   /// Savunma düzeni: saldırıya uğradığında kullanılacak 4x4 dizilim ve
   /// taktik. Türetilemiyor — bu bir KARAR, oyun durumunun sonucu değil.
   ///

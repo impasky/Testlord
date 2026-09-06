@@ -5,6 +5,8 @@
  * lastTickAt'ten bu yana geçen sürenin üretimi uygulanır. (docs/02 §1)
  */
 import {
+  type ArastirmaBonusu,
+  arastirmaBonusu,
   type BasarimOlcutleri,
   GEAR_LINES,
   UNIT_TYPES,
@@ -176,6 +178,29 @@ export function gearBonusFrom(lines: { line: string; level: number }[]): {
 }
 
 /**
+ * Lord kaydındaki araştırma listesini güvenli okur.
+ *
+ * Json alanı her şeyi kabul ediyor: alan hiç yazılmamış olabilir (eski
+ * lordlar) ya da elle bozulmuş olabilir. Bozuk veri yüzünden bonus
+ * hesabı çökmesin diye tek geçit.
+ */
+export function okuArastirmalar(ham: unknown): string[] {
+  if (!Array.isArray(ham)) return [];
+  return ham.filter((x): x is string => typeof x === 'string');
+}
+
+/**
+ * Lord kaydından araştırma bonusunu çıkarır.
+ *
+ * Tek geçit: Json alanı bozuk ya da hiç yazılmamış olabilir (araştırma
+ * öncesi lordlar) ve her çağrı yerinde ayrı ayrı kontrol etmek, birinde
+ * unutulduğunda bonusun sessizce yarım uygulanması demek olurdu.
+ */
+export function arastirmaBonusuOku(lord: { arastirmalar?: unknown }): ArastirmaBonusu {
+  return arastirmaBonusu(okuArastirmalar(lord.arastirmalar));
+}
+
+/**
  * Lordun saatlik brüt geliri: malikâne + sahip olunan bölgeler.
  * Bölgelerin kendi depoları ayrı işler (yağmalanabilir kısım orada birikir).
  */
@@ -183,8 +208,9 @@ export function calcHourlyIncome(
   level: number,
   regions: { type: string; level: number; incomeMult: number; province: string }[],
   bonus: GeneralBonus,
+  arastirma?: ArastirmaBonusu,
 ): { income: Resources; famePerHour: number } {
-  const income = malikaneIncome(level);
+  const income = malikaneIncome(level, arastirma);
   let famePerHour = 0;
   // Vilayet birliği: aynı vilayetteki her bölge diğerlerini besliyor
   // (docs/11 §1.2 H2). Sayımı döngünün DIŞINDA yapıyoruz, yoksa her bölge
@@ -192,7 +218,7 @@ export function calcHourlyIncome(
   const vilayet = vilayetSayilari(regions);
   for (const r of regions) {
     const birlik = vilayetCarpani(vilayet[r.province] ?? 1);
-    const ri = regionIncome(r.type, r.level, r.incomeMult * birlik, bonus);
+    const ri = regionIncome(r.type, r.level, r.incomeMult * birlik, bonus, arastirma);
     income.altin += ri.altin;
     income.demir += ri.demir;
     income.erzak += ri.erzak;
@@ -251,6 +277,7 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
       province: r.province,
     })),
     bonus,
+    arastirmaBonusuOku(lord),
   );
 
   // Bakım: tüm birimler. Meryem yürüyüştekini, Sarya garnizondakini muaf tutar.
@@ -261,7 +288,7 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
     if (garrisonExempt && u.locationType === 'region') return false;
     return true;
   });
-  const upkeep = upkeepPerHour(collectAllUnits(payingUnits), bonus);
+  const upkeep = upkeepPerHour(collectAllUnits(payingUnits), bonus, arastirmaBonusuOku(lord));
 
   const result = accrue({
     current: { altin: lord.altin, demir: lord.demir, erzak: lord.erzak },
@@ -346,7 +373,7 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
     },
     statPoints: lord.statPoints,
     resources: result.resources,
-    storageCapacity: storageCapacity(lord.level),
+    storageCapacity: storageCapacity(lord.level, arastirmaBonusuOku(lord)),
     hourlyIncome: income,
     upkeepPerHour: upkeep,
     netErzakPerHour: income.erzak - upkeep,
@@ -360,7 +387,7 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
     pvpWins: lord.pvpWins,
     pvpLosses: lord.pvpLosses,
     homeArmy,
-    commandCapacity: commandCapacity(lord.liderlik, bonus),
+    commandCapacity: commandCapacity(lord.liderlik, bonus, arastirmaBonusuOku(lord)),
     usedSlots: armySlots(allUnits),
     maxRegions: maxRegions(lord.level),
     regionCount: lord.regions.filter((r) => r.type !== 'taht').length,
@@ -412,6 +439,10 @@ function basarimOlcutleriHesapla(
   /** Sahadaki (slotta ve dinlenmemiş) general sayısı. */
   sahadakiGeneral: number,
 ): BasarimOlcutleri {
+  // Başarım ölçütü lorddan yalnız birkaç alan alıyor; araştırma listesi
+  // orada yok. Komuta tavanı burada YALNIZ başarım eşiğini karşılaştırmak
+  // için kullanılıyor, oyuncuya gösterilmiyor — araştırmasız hesaplamak
+  // sorgu maliyetini artırmamak için bilinçli.
   const tavan = commandCapacity(lord.liderlik, bonus);
   const slotlar = generalSlots(lord.liderlik);
   const bolgeler = lord.regions.filter((r) => r.type !== 'taht');

@@ -1,0 +1,164 @@
+{
+  "_aciklama": "Arastirma agaci. Uc dal, her dalda bes kademe. Kademe n icin onkosul ayni daldaki n-1. Etki anahtarlari kodda TEK bir yere baglanir (packages/shared/arastirma.ts); yeni bir dugum eklemek cogu zaman koda dokunmadan buraya bir kayit.",
+  "_neden": "Ayni seviyedeki iki lord bugun birebir ayni. Arastirma, oyuncunun diyarini KENDI secimleriyle sekillendirdigi tek katman: sirasi ve vurgusu farkli olan iki lord farkli oynuyor.",
+  "gecerli_etkiler": [
+    "depo_carpani",
+    "malikane_geliri",
+    "bolge_geliri",
+    "egitim_hizi",
+    "egitim_maliyeti",
+    "bakim_indirimi",
+    "komuta_kapasitesi",
+    "ordu_saldiri",
+    "ordu_savunma",
+    "yuruyus_hizi",
+    "yagma",
+    "kale_savunmasi",
+    "bolge_yukseltme_hizi",
+    "casus_maliyeti",
+    "gunluk_saldiri"
+  ],
+  "dallar": [
+    {
+      "key": "imar",
+      "ad": "İmar",
+      "ozet": "Ambarlar, değirmenler, vergi defteri.",
+      "dugumler": [
+        {
+          "key": "ambarlar",
+          "ad": "Ambarlar",
+          "aciklama": "Malikânenin altına taş ambarlar kazdırırsın. Deponun taşmadığı gün, kazandığın her şey senindir.",
+          "kademe": 1,
+          "lord_seviyesi": 3,
+          "etki": { "depo_carpani": 0.5 }
+        },
+        {
+          "key": "degirmenler",
+          "ad": "Değirmenler",
+          "aciklama": "Dere boyuna değirmen kurdurursun. Malikâne kendi başına daha çok üretir.",
+          "kademe": 2,
+          "lord_seviyesi": 8,
+          "etki": { "malikane_geliri": 0.15 }
+        },
+        {
+          "key": "lonca_duzeni",
+          "ad": "Lonca Düzeni",
+          "aciklama": "Zanaatkârları loncalara bağlarsın. Asker donatmak ucuzlar.",
+          "kademe": 3,
+          "lord_seviyesi": 15,
+          "etki": { "egitim_maliyeti": -0.12 }
+        },
+        {
+          "key": "tahil_ambarlari",
+          "ad": "Tahıl Ambarları",
+          "aciklama": "Kışlık tahılı doğru saklamayı öğrenirsin. Hem depon büyür hem ordun daha az yer.",
+          "kademe": 4,
+          "lord_seviyesi": 24,
+          "etki": { "depo_carpani": 0.5, "bakim_indirimi": 0.15 }
+        },
+        {
+          "key": "vergi_defteri",
+          "ad": "Vergi Defteri",
+          "aciklama": "Her köyün ne verdiğini yazdırırsın. Kaçak azalır, hazine dolar.",
+          "kademe": 5,
+          "lord_seviyesi": 34,
+          "etki": { "bolge_geliri": 0.2 }
+        }
+      ]
+    },
+    {
+      "key": "ordu",
+      "ad": "Ordu",
+      "ozet": "Talim, zırh, sancak.",
+      "dugumler": [
+        {
+          "key": "talim_meydani",
+          "ad": "Talim Meydanı",
+          "aciklama": "Kışlanın yanına talim meydanı açarsın. Asker daha çabuk yetişir.",
+          "kademe": 1,
+          "lord_seviyesi": 3,
+          "etki": { "egitim_hizi": 0.2 }
+        },
+        {
+          "key": "zirh_atolyesi",
+          "ad": "Zırh Atölyesi",
+          "aciklama": "Demirhanede zırh dövdürürsün. Ordun daha az kayıp verir.",
+          "kademe": 2,
+          "lord_seviyesi": 10,
+          "etki": { "ordu_savunma": 0.08 }
+        },
+        {
+          "key": "ok_atolyesi",
+          "ad": "Ok Atölyesi",
+          "aciklama": "Ok ve mızrak uçlarını kendi atölyende yaptırırsın. Vuruşun sertleşir.",
+          "kademe": 3,
+          "lord_seviyesi": 18,
+          "etki": { "ordu_saldiri": 0.08 }
+        },
+        {
+          "key": "sancak_beyligi",
+          "ad": "Sancak Beyliği",
+          "aciklama": "Sancak beyleri atarsın. Tek seferde daha kalabalık bir ordu yönetirsin.",
+          "kademe": 4,
+          "lord_seviyesi": 27,
+          "etki": { "komuta_kapasitesi": 40 }
+        },
+        {
+          "key": "seferi_ordu",
+          "ad": "Seferî Ordu",
+          "aciklama": "Ordun yükünü hafifletir, yolda konaklamayı öğretirsin. Yürüyüş kısalır.",
+          "kademe": 5,
+          "lord_seviyesi": 38,
+          "etki": { "yuruyus_hizi": 0.2 }
+        }
+      ]
+    },
+    {
+      "key": "diyar",
+      "ad": "Diyar",
+      "ozet": "Surlar, casuslar, divan.",
+      "dugumler": [
+        {
+          "key": "sur_ustaligi",
+          "ad": "Sur Ustalığı",
+          "aciklama": "Bölgelerinin surlarını ustalara yaptırırsın. Savunurken tahkimatın daha çok işe yarar.",
+          "kademe": 1,
+          "lord_seviyesi": 5,
+          "etki": { "kale_savunmasi": 0.15 }
+        },
+        {
+          "key": "yagma_yollari",
+          "ad": "Yağma Yolları",
+          "aciklama": "Hangi yoldan ne taşınacağını bilirsin. Akından daha dolu dönersin.",
+          "kademe": 2,
+          "lord_seviyesi": 12,
+          "etki": { "yagma": 0.2 }
+        },
+        {
+          "key": "casus_agi",
+          "ad": "Casus Ağı",
+          "aciklama": "Diyara kendi adamlarını yayarsın. Casusluk ucuzlar, adamların daha az yakalanır.",
+          "kademe": 3,
+          "lord_seviyesi": 20,
+          "etki": { "casus_maliyeti": -0.3 }
+        },
+        {
+          "key": "imar_ustalari",
+          "ad": "İmar Ustaları",
+          "aciklama": "Gezici usta takımları kurarsın. Bölge geliştirmek hızlanır.",
+          "kademe": 4,
+          "lord_seviyesi": 29,
+          "etki": { "bolge_yukseltme_hizi": 0.25 }
+        },
+        {
+          "key": "divan",
+          "ad": "Divan",
+          "aciklama": "Bir divan toplarsın; sefer kararları artık tek başına verilmiyor. Günde bir akın hakkın daha olur.",
+          "kademe": 5,
+          "lord_seviyesi": 40,
+          "etki": { "gunluk_saldiri": 1 }
+        }
+      ]
+    }
+  ]
+}

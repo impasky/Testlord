@@ -518,7 +518,8 @@
       "upgrade_item": 1,
       "upgrade_gear": 1,
       "upgrade_region": 2,
-      "kesif": 2
+      "kesif": 2,
+      "research": 1
     }
   },
   "ittifak": {
@@ -688,5 +689,21 @@
     "azami_etki": 0.3,
     "kosul_tutmazsa": "secilemez",
     "_kosul_notu": "Kosulu tutmayan taktik gri gorunur ve secilemez. Yarim tutan taktige yarim bonus vermek oyuncuya neden az aldigini anlatmayi imkansiz kilardi."
+  },
+  "arastirma": {
+    "_aciklama": "Arastirma agacinin SAYILARI. Dugum icerigi data/arastirma.json icinde. Maliyet ve sure yalniz KADEMEDEN turetiliyor: her dugumun kendi sayisini yazmak, dengeyi on bes ayri yere dagitirdi.",
+    "maliyet_taban": {
+      "altin": 4000,
+      "demir": 1500,
+      "erzak": 2000
+    },
+    "maliyet_us": 2.1,
+    "maliyet_formulu": "taban * kademe^us",
+    "sure_taban_dakika": 45,
+    "sure_us": 1.8,
+    "sure_formulu": "sure_taban_dakika * kademe^sure_us",
+    "_es_zamanli_notu": "Es zamanli sinir kuyruklar.es_zamanli.research icinde, burada DEGIL: kuyruk motoru o listeye bakiyor ve sayiyi ikinci bir yere yazmak, motorun gormedigi bir sinir yazmak demekti. Sinir 1: arastirma kalici ve geri alinamaz, o yuzden SIRAYLA verilen bir karar olmali; ucu birden acilabilseydi karar sirasi diye bir sey kalmazdi.",
+    "iptal_iadesi": 0.5,
+    "_iptal_notu": "Baslatilan arastirma iptal edilirse harcamanin yarisi geri veriliyor. Tamami geri verilseydi kuyrugu bedava park yeri olarak kullanmak mumkun olurdu."
   }
 }

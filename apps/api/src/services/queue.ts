@@ -6,6 +6,7 @@
  * worker iki kez çalışsa da aynı kuyruk iki kez işlenmez.
  */
 import {
+  arastirmaDugumu,
   B,
   UNIT_TYPES,
   craftPrice,
@@ -22,11 +23,11 @@ import {
 } from '@lordlar/shared';
 import { prisma, type Tx } from '../db.js';
 import { GameError, hata } from '../errors.js';
-import { grantXp, pushEvent, tickLord } from './lord.js';
+import { grantXp, okuArastirmalar, pushEvent, tickLord } from './lord.js';
 import { regionFortressBonus } from './region.js';
 
 export type QueueKind =
-  'train' | 'craft' | 'upgrade_item' | 'upgrade_gear' | 'upgrade_region' | 'kesif';
+  'train' | 'craft' | 'upgrade_item' | 'upgrade_gear' | 'upgrade_region' | 'kesif' | 'research';
 
 /** Tick uygular, kaynağın yeter mi diye bakar, yetiyorsa düşer. */
 export async function spendResources(lordId: string, cost: Resources, tx: Tx): Promise<void> {
@@ -252,6 +253,32 @@ export async function resolveQueueItem(row: QueueRow): Promise<boolean> {
 
       case 'kesif': {
         await kesfiCoz(row, p, tx);
+        break;
+      }
+
+      case 'research': {
+        const key = String(p.key ?? '');
+        const dugum = arastirmaDugumu(key);
+        if (!dugum) break; // veri dosyasından kaldırılmış düğüm
+        const lord = await tx.lord.findUnique({
+          where: { id: row.lordId },
+          select: { arastirmalar: true },
+        });
+        const mevcut = okuArastirmalar(lord?.arastirmalar);
+        // Aynı araştırma iki kez yazılmasın: bonus toplamalı, ikinci
+        // kayıt etkiyi sessizce ikiye katlardı.
+        if (!mevcut.includes(key)) {
+          await tx.lord.update({
+            where: { id: row.lordId },
+            data: { arastirmalar: [...mevcut, key] },
+          });
+        }
+        await pushEvent(
+          row.lordId,
+          'kuyruk_bitti',
+          { mesaj: `${dugum.ad} araştırması tamamlandı.` },
+          tx,
+        );
         break;
       }
     }

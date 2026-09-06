@@ -9,6 +9,7 @@ import basarimlarJson from '../../../data/basarimlar.json';
 import generalsJson from '../../../data/generals.json';
 import seferlerJson from '../../../data/seferler.json';
 import taktiklerJson from '../../../data/taktikler.json';
+import arastirmaJson from '../../../data/arastirma.json';
 import armaJson from '../../../data/arma.json';
 import unvanlarJson from '../../../data/unvanlar.json';
 import worldMapJson from '../../../data/world-map.json';
@@ -52,6 +53,24 @@ export const SEFER_ODUL = seferlerJson.odul;
  * `kosul` alanı hangi denetimin çalışacağını söylüyor — yeni bir taktik
  * eklemek çoğu zaman koda dokunmadan JSON'a bir kayıt.
  */
+/**
+ * Araştırma dalları. Sayıları balance.json'da (maliyet ve süre yalnız
+ * kademeden türetiliyor), içeriği burada.
+ */
+export const ARASTIRMA_DALLARI = arastirmaJson.dallar as unknown as {
+  key: string;
+  ad: string;
+  ozet: string;
+  dugumler: {
+    key: string;
+    ad: string;
+    aciklama: string;
+    kademe: number;
+    lord_seviyesi: number;
+    etki: Record<string, number>;
+  }[];
+}[];
+
 export const TAKTIKLER = taktiklerJson.taktikler as unknown as {
   key: string;
   ad: string;
