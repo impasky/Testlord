@@ -109,6 +109,57 @@ O dosya elle yazılmaz, buradan üretilir:
 python3 tools/gorsel-uret.py --istemler > docs/GORSEL-ISTEMLERI.md
 ```
 
+## Yol 2b — Pollinations (bedava, anahtarsız, KENDİ makinende)
+
+Aracın ikinci bir sağlayıcısı var: [Pollinations](https://pollinations.ai).
+API anahtarı istemiyor, ücret almıyor.
+
+```bash
+python3 tools/gorsel-uret.py --saglayici pollinations            # eksik olan her şey
+python3 tools/gorsel-uret.py --saglayici pollinations okcu kale  # sadece bunlar
+python3 tools/gorsel-uret.py --saglayici pollinations --zorla    # üstüne yaz
+```
+
+**Claude'un çalıştığı ortamda ÇALIŞMAZ.** `image.pollinations.ai` oradaki ağ
+politikasıyla kapalı (CONNECT 403); `api.deepinfra.com` de öyle. Açık olan tek
+görsel ucu `generativelanguage.googleapis.com` ve o da faturalandırma istiyor
+(Yol 1). Bu komutu kendi makinende çalıştır.
+
+Ayrı bir betik olarak değil, bu aracın içinde duruyor — istem, üslup, boyut ve
+WebP dönüşümü tek yerden gelsin diye. Elle yazılmış ikinci bir üretici,
+istemlerin iki ayrı yerde tutulması demekti.
+
+Araç şunları kendi hallediyor:
+
+- **`nofeed=true`** — üretilen görsel Pollinations'ın herkese açık akışında
+  görünmesin. Varsayılan davranış görünmesi yönünde; yayımlanmamış oyun
+  görselleri için bunu bilerek kapatıyoruz.
+- **`nologo=true`** — filigran yok.
+- **Tohum** — `kategori/ad`dan türüyor, yani aynı görseli yeniden üretmek aynı
+  sonucu veriyor. Yalnız addan türetildiğinde `bolgeler/kale` ile
+  `harita/kale` aynı tohumu alıyordu.
+- **İçerik türü denetimi** — sağlayıcı hata durumunda 200 ile HTML
+  dönebiliyor. Baytları görsel sanıp diske yazmak, bozuk bir dosyayı
+  "üretildi" diye raporlamak olurdu; öyle bir yanıt hata sayılıyor ve dosya
+  yazılmıyor.
+- **Boyut ve kırpma** — model istenen oranı vermezse görsel ortadan kırpılıp
+  kategorinin ölçüsüne indiriliyor, WebP olarak kaydediliyor.
+
+`--kaynak` ile birlikte KULLANILMAZ: Pollinations girdi görseli almıyor, yani
+düzenleme yapamıyor. Lord varyantları gibi "bu görseli şöyle değiştir"
+işleri Yol 1'e ait. Araç bu ikisi birlikte verilirse sessizce sıfırdan
+üretmek yerine duruyor.
+
+**Lisans:** üretilen görseli oyunda kullanmadan önce Pollinations'ın kendi
+kullanım koşullarını kontrol et — bu depo onun ticari kullanıma uygun
+olduğunu varsaymıyor. Künyeyi `docs/LISANSLAR.md`a işle.
+
+`POLLINATIONS_MODEL` ile model (varsayılan `flux`), `POLLINATIONS_URL` ile de
+uç değiştirilebilir. `GORSEL_CIKTI` çıktı klasörünü değiştirir — var olan
+görsellerin üstüne yazmadan denemek için.
+
+---
+
 ## Yol 3 — Hazır paket satın al
 
 Aşağıdaki "Hazır paket alıyorsan" bölümüne bak.
