@@ -8,6 +8,7 @@
  * API ayakta olmalı. node tools/shard-testi.mjs
  */
 import { execSync } from 'node:child_process';
+import { benzersizAd } from './lib/kayit.mjs';
 
 const API = process.env.API_URL ?? 'http://localhost:3000';
 const DB = process.env.DATABASE_URL ?? 'postgresql://lordlar@127.0.0.1:5432/lordlar_cagi';
@@ -42,8 +43,12 @@ sql(
 );
 console.log('  Açık dünyalar yapay olarak dolduruldu.');
 
-const damga = Date.now();
-const sonuc = await kayit(`Tasan${damga}`);
+// Ad, süzgece takılmayacak biçimde üretiliyor: ham `Date.now()` beş aynı
+// rakamı arka arkaya içerebiliyor ve kayıt "dünya dolu" yüzünden değil AD
+// yüzünden reddediliyordu — testi ölçtüğü şeyden bağımsız bir sebeple
+// kaldırıyordu.
+const ad = benzersizAd('Tasan');
+const sonuc = await kayit(ad);
 kontrol('Dünya doluyken kayıt BAŞARILI olmalı', sonuc.ok, `HTTP ${sonuc.status}`);
 if (!sonuc.ok) console.log('    yanıt:', JSON.stringify(sonuc.body));
 

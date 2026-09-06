@@ -107,25 +107,43 @@ await orduKur(ikinci, { mizrakci: 900, okcu: 600, suvari: 300 });
 await birinci.post('/test/kalkanlari-kaldir');
 await ikinci.post('/test/kalkanlari-kaldir');
 
-// Kazanan ama ELE GEÇİRMEYEN ordu: önizleme ikisini de söylüyor.
+/*
+ * Kazanan ama ELE GEÇİRMEYEN ordu.
+ *
+ * İlk hâli "önizleme kazanır diyor" ile yetiniyordu ve `kazanan` alanı
+ * DOKUZ örneğin ÇOĞUNLUĞU demek: beşi kazanan bir ordu da "kazanır"
+ * sayılıyordu. Sonra tek bir gerçek savaş yapılıyor ve o savaş başka bir
+ * tohumla çözülüyor — yani test yazı-tura atıyordu ve rastgele günlerde
+ * "Saldıran kazandı — defender_win" diye kalıyordu.
+ *
+ * Artık RAHAT bir zafer aranıyor: dokuz örneğin neredeyse hepsi kazanmalı
+ * ama hiçbiri ele geçirmemeli. Aday yoksa test bunu açıkça söylüyor;
+ * sınırda bir orduyla devam edip şansa bakmıyor.
+ */
+const RAHAT_ZAFER = 0.9;
 const tamOrdu = (await birinci.get('/army')).home;
 let akin = null;
-for (const oran of [0.16, 0.2, 0.25, 0.3, 0.36, 0.42, 0.5, 0.6, 0.7]) {
+let enIyi = null;
+for (const oran of [0.16, 0.2, 0.25, 0.3, 0.36, 0.42, 0.5, 0.6, 0.7, 0.8]) {
   const ordu = Object.fromEntries(
     Object.entries(tamOrdu).map(([t, n]) => [t, Math.max(1, Math.floor(n * oran))]),
   );
   const t = (await birinci.post('/battle/preview', { toRegionId: bolge.id, army: ordu }))?.tahmin;
-  if (t?.kazanan === 'attacker' && t?.eleGecirir === false) {
-    akin = { ordu, oran };
+  if (!t || t.eleGecirir !== false) continue;
+  if (!enIyi || (t.kazanmaOrani ?? 0) > enIyi.kazanmaOrani) {
+    enIyi = { ordu, oran, kazanmaOrani: t.kazanmaOrani ?? 0 };
+  }
+  if ((t.kazanmaOrani ?? 0) >= RAHAT_ZAFER) {
+    akin = { ordu, oran, kazanmaOrani: t.kazanmaOrani ?? 0 };
     break;
   }
 }
 kontrol(
-  'Dar zafer (kazanır, ele geçirmez) ordusu bulundu',
+  'Rahat zafer (kazanır, ele geçirmez) ordusu bulundu',
   Boolean(akin),
   akin
-    ? `ordunun %${Math.round(akin.oran * 100)}'i`
-    : 'bulunamadı — önizleme bandı kaymış olabilir',
+    ? `ordunun %${Math.round(akin.oran * 100)}'i · kazanma oranı ${akin.kazanmaOrani}`
+    : `bulunamadı — en iyi aday kazanma oranı ${enIyi?.kazanmaOrani ?? 0}, eşik ${RAHAT_ZAFER}`,
 );
 if (!akin) {
   console.log('\n1 KONTROL BAŞARISIZ');

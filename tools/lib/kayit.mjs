@@ -27,6 +27,37 @@ function adiUzat(ad, tur) {
   return `${ad}${ekler[tur] ?? tur}`;
 }
 
+/**
+ * Ad süzgecine takılmayan benzersiz bir lord adı.
+ *
+ * Araçlar adı `Tasan${Date.now()}` gibi üretiyordu ve milisaniye damgası
+ * er ya da geç beş aynı rakamı arka arkaya içeriyor ("...100000...").
+ * Sunucu bunu reddediyor ("Aynı harfi arka arkaya bu kadar
+ * tekrarlayamazsın") ve test, ölçtüğü şeyle hiç ilgisi olmayan bir
+ * sebeple kalıyordu. Gerçekte olan buydu: shard testi rastgele bir gün
+ * çöküyordu.
+ *
+ * Burada tekrarlar kırılıyor: aynı karakter üst üste ikiden fazla
+ * gelmiyor.
+ */
+export function benzersizAd(onek = 'Test') {
+  const ham = `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+  let cikti = '';
+  let oncekiKarakter = '';
+  let tekrar = 0;
+  for (const k of ham) {
+    if (k === oncekiKarakter) tekrar++;
+    else {
+      oncekiKarakter = k;
+      tekrar = 1;
+    }
+    // Üst üste ikiden fazlasına izin verilmiyor; süzgecin sınırı beş,
+    // aradaki pay bilerek geniş.
+    if (tekrar <= 2) cikti += k;
+  }
+  return `${onek}${cikti}`;
+}
+
 export async function kayitOl(API, { email, password = 'parola1234', lordName }) {
   let sonYanit = null;
   let ad = lordName;
