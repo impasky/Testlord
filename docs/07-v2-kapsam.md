@@ -233,3 +233,73 @@ v1'in kriteri "oyun çalışıyor mu" idi. v2'ninki farklı olmalı:
 Son madde en önemlisi: **v2'nin işe yarayıp yaramadığını tahminle değil
 sayıyla bilmemiz gerekiyor.** Ölçüm olmadan bir sonraki eleştiri de tahmin
 olur.
+
+---
+
+## Sonradan verilen kararlar
+
+Bu bölüm, yukarıdaki plan yazıldıktan SONRA değişen maddeleri kaydeder.
+Plan metnini geriye dönük düzeltmek yerine kararın kendisi ve gerekçesi
+buraya yazılıyor — bir sonraki okuyucunun ne düşünüldüğünü değil, ne
+değiştiğini de görmesi için.
+
+### M12 yerine: savaş öncesi dizilim + taktik ✅
+
+**Karar:** M12'nin önerdiği "duruş / hedef önceliği / yetenek turu"
+üçlüsü **yapılmadı.** Yerine iki katmanlı bir savaş öncesi düzen geldi.
+
+**Neden:** M12'nin üç ekseni de soyut listelerdi — oyuncu üç açılır menüden
+seçim yapıp "saldır"a basacaktı. Aynı karar uzayı, DOKUNULABİLİR bir
+şeyle daha iyi kuruluyor:
+
+1. **4x4 dizilim (sürükle-bırak).** Her birimin ideal satırı var; sapma
+   ceza yazar. Mancınık en önde durursa en ağır cezayı alıyor ve oyuncu
+   bunu savaş raporunda cümle olarak okuyor. Kanat sütunları süvariye
+   yarıyor, okçu ve mancınığa zarar veriyor. Ön satır boşken savunma
+   cezası var.
+2. **Taktik.** Dizilimden sonra seçilen tek kart. Koşullu: Hilal
+   süvarilerin kanatta durmasını, Kuşatma Düzeni mancınıkların arkada
+   olmasını istiyor. Koşulu tutmayan taktik seçilemiyor ve sunucuda
+   sessizce düşüyor.
+
+M12'nin "kritik kural"ı korundu ve genişletildi: önizleme seçilen düzenin
+sonucunu gösteriyor, savaş raporu da her cezayı ve bonusu tek tek
+yazıyor. Savaş kumar değil bulmaca.
+
+**Savunanın da düzeni var.** Async bir oyunda savunan çevrimdışıdır;
+`Lord.savunmaDizilim` o anda verilemeyecek kararı önceden verdiriyor.
+M12'de olmayan ama olması gereken parça buydu.
+
+**Motor:** `packages/shared/duzen.ts`, veri `data/taktikler.json` +
+`balance.json → dizilim`.
+
+### M11 (sezon) iptal edildi, sorunu araştırma ağacı karşılıyor ✅
+
+Sezon istenmedi: oyun kalıcı olacak, oyuncular yıllarca aynı dünyada
+oynayacak. Ama M11'in çözdüğü iki sorun ortada kalmıştı: **tavana gelen
+oyuncunun peşinden koşacağı şey** ve **ekonomide hiç seçim olmaması**
+(aynı seviyedeki iki lord birebir aynıydı).
+
+**Araştırma ağacı** ikisine birden cevap veriyor: üç dal, on beş düğüm,
+tamamı ~750 bin kaynak ve ~90 saatlik araştırma. Kalıcı dünyada bu haftalar
+sürüyor ve sıralama kararı her hafta işe yarıyor.
+
+**Kasıtlı olarak yasak yok, sıra var.** Kademeler karşılıklı dışlayan
+dallara ayrılmadı; herkes uzun vadede hepsini alabiliyor. Seçim "neyi asla
+alamayacağım" değil "neyi ÖNCE alacağım". Aylar süren bir dünyada geri
+alınamayan yanlış bir seçim oyuncuyu hesabını silmeye iter.
+
+**Motor:** `packages/shared/arastirma.ts`, veri `data/arastirma.json` +
+`balance.json → arastirma`.
+
+### Hâlâ açık olanlar
+
+- **M13 — i18n.** Metinler bileşenlerin içinde. Türkçe hedef kitle için
+  bugün sorun değil, "bitmiş ürün" ölçütünde eksik.
+- **M13/M14 — push bildirimi ve native kabuk.** PWA kabuğu (manifest,
+  simgeler, "ana ekrana ekle") yapıldı; push için servis çalışanı ve bir
+  bildirim sunucusu gerekiyor. Async bir oyunda en güçlü geri dönüş
+  kancası hâlâ bu.
+- **M15 — para modeli.** Mağaza işleri bilinçli olarak beklemede.
+- **M16 — canlı operasyon otomasyonu.** Sezon iptal edilince en büyük
+  parçası düştü; kalanı (denetim kuyruğu) kısmen var.
