@@ -54,7 +54,15 @@ export function KapiPaneli({
         role="dialog"
         aria-modal="true"
         aria-label={baslik}
-        className="fixed inset-x-0 bottom-0 z-[53] mx-auto flex max-h-[90dvh] w-full max-w-lg flex-col rounded-t-3xl border-t-2 border-kenar-acik bg-derin"
+        /*
+         * Yükseklik SABİT, `max-h` değil.
+         *
+         * Panel alt kenara yapışık: içerik geldikçe büyüyünce ÜST kenarı
+         * yukarı kayıyor ve altındaki her şey onunla birlikte zıplıyordu
+         * (ittifak panelinde ölçülen CLS 0,66). Sabit kutu bir kere
+         * yerleşiyor, sonra yalnız içindeki kaydırıcı doluyor.
+         */
+        className="fixed inset-x-0 bottom-0 z-[53] mx-auto flex h-[90dvh] w-full max-w-lg flex-col rounded-t-3xl border-t-2 border-kenar-acik bg-derin"
       >
         {/* Başlık şeridi: panelin adı ve tek çıkış. Referansta da panelin
             kendi başlığı ve kendi kapatma düğmesi var. */}

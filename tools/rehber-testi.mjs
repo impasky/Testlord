@@ -237,9 +237,11 @@ kontrol(
       const v = (m) => (govde.includes(m) ? 1 : 0);
       return {
         diyar: v('DİYAR'),
-        durum: v('komuta'),
+        // Durum şeridini "saldırı" hakkından tanıyoruz: "komuta" sözcüğü
+        // ana sayfanın tepesindeki ordu sahnesinde de geçiyor ve şerit
+        // gizliyken bile bulunuyordu.
+        durum: v('saldırı'),
         gorev: v('GÖREVLER'),
-        olay: v('OLAYLAR'),
         omurga: v('Şimdi ne yapmalısın'),
         kahya: v('Kâhya Sinan'),
       };
@@ -269,10 +271,15 @@ kontrol(
   const once = await bloklariSay();
   kontrol('İlk döngüde omurga ve kâhya VAR', once.omurga === 1 && once.kahya === 1,
     `omurga=${once.omurga} kâhya=${once.kahya}`);
+  /**
+   * Olay şeridi artık ANA SAYFADA DEĞİL: diyarın ekranına (Malikâne)
+   * taşındı ve orada "arkasında bir şey varsa" açılıyor. Ana sayfanın
+   * kademeli açılımı durum şeridi ve görev özeti üzerinden ölçülüyor.
+   */
   kontrol(
-    'İlk döngüde durum/görev/olay şeritleri GİZLİ',
-    once.durum + once.gorev + once.olay === 0,
-    `durum=${once.durum} görev=${once.gorev} olay=${once.olay}`,
+    'İlk döngüde durum ve görev şeritleri GİZLİ',
+    once.durum + once.gorev === 0,
+    `durum=${once.durum} görev=${once.gorev}`,
   );
 
   /**
@@ -314,8 +321,8 @@ kontrol(
   const sonra = await bloklariSay();
   kontrol(
     'Bölgeden sonra hepsi geri geliyor',
-    sonra.durum === 1 && sonra.gorev === 1 && sonra.olay === 1,
-    `durum=${sonra.durum} görev=${sonra.gorev} olay=${sonra.olay}`,
+    sonra.durum === 1 && sonra.gorev === 1,
+    `durum=${sonra.durum} görev=${sonra.gorev}`,
   );
 
   /**

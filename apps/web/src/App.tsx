@@ -4,7 +4,7 @@ import { ApiError, api, getToken, setToken, type MeResponse } from './api/client
 import { BaglantiDurumu } from './components/BaglantiDurumu';
 import { MobilKabuk } from './components/MobilKabuk';
 import { KapiPaneli } from './components/KapiPaneli';
-import { KAPI_ADI, KAPI_EVI, type AltSekme, type Kapi } from '@lordlar/shared';
+import { ANA_SEKME, KAPI_ADI, type AltSekme, type Kapi } from '@lordlar/shared';
 import { Ogretici } from './components/Ogretici';
 import { RehberIsigi } from './components/RehberIsigi';
 import { Buton } from './components/ui';
@@ -46,7 +46,7 @@ export function App() {
     return () => window.removeEventListener('hashchange', dinle);
   }, []);
   const [girisli, setGirisli] = useState(() => getToken() !== null);
-  const [sekme, setSekme] = useState<AltSekme>('malikane');
+  const [sekme, setSekme] = useState<AltSekme>(ANA_SEKME);
   /**
    * Açık kapı — konusunun içinde duran pop-up sayfa.
    *
@@ -226,16 +226,14 @@ export function App() {
   const tazele = () => void qc.invalidateQueries({ queryKey: ['me'] });
 
   /**
-   * Bir kapıyı aç: önce EVİNE geç, sonra paneli aç.
+   * Bir kapıyı aç. Sekme DEĞİŞMİYOR.
    *
-   * Ev de değişiyor çünkü kapı kapandığında oyuncu konuya ait sekmede
-   * kalmalı — Demirhane'yi kapatan oyuncu Lord ekranında, Olaylar'ı
-   * kapatan Malikâne'de bulmalı kendini.
+   * Kapı bir sayfa değil, bulunduğun yerin üstünde açılan bir panel:
+   * kapatınca oyuncu kaldığı yerde kalıyor. Girişleri ana sayfada ama bir
+   * kapı başka bir ekrandan da açılabiliyor (Malikâne'deki olay kartı
+   * gibi) ve o oyuncuyu ana sayfaya sürüklemiyor.
    */
-  const kapiAc = (k: Kapi) => {
-    setSekme(KAPI_EVI[k]);
-    setKapi(k);
-  };
+  const kapiAc = (k: Kapi) => setKapi(k);
 
   function cikis() {
     setToken(null);
@@ -342,9 +340,7 @@ export function App() {
       {sekme === 'malikane' && (
         <Malikane
           lord={lord}
-          queues={queues}
           events={events}
-          yokluk={yokluk}
           onBolgeyiAc={(bolgeId) => {
             setHedefBolge(bolgeId);
             setSekme('harita');
@@ -378,7 +374,18 @@ export function App() {
         <Gorevler lord={lord} onGit={setSekme} onKapiAc={kapiAc} />
       )}
       {sekme === 'lord' && (
-        <LordEkrani lord={lord} onGuncelle={tazele} onKapiAc={kapiAc} />
+        <LordEkrani
+          lord={lord}
+          queues={queues}
+          yokluk={yokluk}
+          onGuncelle={tazele}
+          onGit={setSekme}
+          onKapiAc={kapiAc}
+          onBolgeyiAc={(bolgeId) => {
+            setHedefBolge(bolgeId);
+            setSekme('harita');
+          }}
+        />
       )}
 
       {/* ---- Kapılar ----

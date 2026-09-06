@@ -8,14 +8,8 @@ import {
   rehberSozleri,
   rehberSozu,
 } from './rehber.js';
-import {
-  ALT_SEKMELER,
-  EKRANLAR,
-  KAPILAR,
-  KAPI_ADI,
-  KAPI_EVI,
-  sekmeninKapilari,
-} from './types.js';
+import { ALT_SEKMELER, ANA_SEKME, EKRANLAR, KAPILAR, KAPI_ADI } from './types.js';
+import { ipuclari, ipucuSec } from './ipuclari.js';
 import { ilkEgitimMi, egitimSuresiSn } from './march.js';
 import { B } from './balance.js';
 
@@ -168,9 +162,9 @@ describe('rehber ışığı', () => {
    * döner. Son çare her zaman Malikâne sekmesi: o her ekranda duruyor ve
    * omurga düğmesinin bulunduğu tek yere götürüyor.
    */
-  it('her zincir Malikâne sekmesiyle bitiyor', () => {
+  it('her zincir ANA SAYFA sekmesiyle bitiyor', () => {
     for (const liste of Object.values(REHBER_ISIKLARI)) {
-      expect(liste[liste.length - 1]?.isaret).toBe('nav-malikane');
+      expect(liste[liste.length - 1]?.isaret).toBe('nav-ana');
     }
   });
 
@@ -213,7 +207,7 @@ describe('rehber ışığı', () => {
       'harita-saldir',
       'harita-hepsi',
       'omurga-dugme',
-      'nav-malikane',
+      'nav-ana',
     ]);
   });
 });
@@ -265,9 +259,22 @@ describe('neden bu düğme', () => {
   });
 });
 
-describe('arayüz mimarisi — beş sekme, gerisi kapı', () => {
+describe('arayüz mimarisi — ana sayfa ve kapılar', () => {
   it('alt çubukta tam beş sekme var', () => {
     expect(ALT_SEKMELER.length).toBe(5);
+  });
+
+  /**
+   * Ana sayfa ÇUBUĞUN BAŞINDA. Oyuncu oraya iniyor ve bütün kapılar orada;
+   * ortada duran bir ana sayfa, "her şeye buradan erişilir" sözünü
+   * görsel olarak da bozardı.
+   */
+  it('ana sayfa çubuğun ilk sekmesi', () => {
+    expect(ALT_SEKMELER[0]).toBe(ANA_SEKME);
+  });
+
+  it('ana sayfa Lord', () => {
+    expect(ANA_SEKME).toBe('lord');
   });
 
   /**
@@ -285,24 +292,51 @@ describe('arayüz mimarisi — beş sekme, gerisi kapı', () => {
     for (const k of KAPILAR) expect(ALT_SEKMELER).not.toContain(k as never);
   });
 
-  it('her kapının evi bir alt sekme', () => {
-    for (const k of KAPILAR) expect(ALT_SEKMELER).toContain(KAPI_EVI[k]);
-  });
-
   it('her kapının bir adı var', () => {
     for (const k of KAPILAR) expect(KAPI_ADI[k].length).toBeGreaterThan(2);
   });
 
   /**
-   * Bir sekmede altı kapı birikirse o sekme yine bir menüye dönerdi —
-   * kaçtığımız şey tam olarak oydu.
+   * Kapı sayısının bir tavanı olmalı: ana sayfa bir simge duvarına
+   * dönerse kaçtığımız menüye geri dönmüş oluruz. Altı, tek bakışta
+   * taranabilen üst sınır (iki satır, üçerli).
    */
-  it('hiçbir sekmede dörtten fazla kapı yok', () => {
-    for (const s of ALT_SEKMELER) expect(sekmeninKapilari(s).length).toBeLessThanOrEqual(4);
+  it('kapı sayısı taranabilir sınırda', () => {
+    expect(KAPILAR.length).toBeLessThanOrEqual(6);
+  });
+});
+
+describe('ipuçları', () => {
+  it('en az altı ipucu var — aynı şey tekrarlanmasın', () => {
+    expect(ipuclari().length).toBeGreaterThanOrEqual(6);
   });
 
-  it('kapısı olan sekmeler Lord ve Malikâne', () => {
-    expect(sekmeninKapilari('lord')).toEqual(['generaller', 'demirhane', 'siralama', 'hesap']);
-    expect(sekmeninKapilari('malikane')).toEqual(['olaylar', 'ittifak']);
+  it('her ipucunun başlığı ve tek cümlesi var', () => {
+    for (const i of ipuclari()) {
+      expect(i.baslik.length).toBeGreaterThan(8);
+      expect(i.metin.length).toBeGreaterThan(30);
+      // Paragraf değil ipucu: oyuncunun şikâyeti "her yerde bir şeyler
+      // yazıyor" idi.
+      expect(i.metin.length).toBeLessThan(220);
+    }
+  });
+
+  /**
+   * Sayı geçen ipucu sayıyı DENGEDEN almalı. Elle yazılmış bir sayı denge
+   * dosyası değişince sessizce yalana döner.
+   */
+  it('sayılar dengeden türüyor', () => {
+    const hepsi = ipuclari().map((i) => i.metin).join(' ');
+    expect(hepsi).toContain(String(B.korumalar.gunluk_saldiri_limiti));
+    expect(hepsi).toContain(String(B.korumalar.yeni_oyuncu_saat));
+    expect(hepsi).toContain(String(B.korumalar.bolge_ele_gecirme_sonrasi_saat));
+  });
+
+  it('sıradaki ipucu sırayla geliyor, rastgele değil', () => {
+    const n = ipuclari().length;
+    for (let i = 0; i < n; i++) expect(ipucuSec(i)).toEqual(ipuclari()[i]);
+    // Başa dönüyor ve negatif sayaçta da patlamıyor.
+    expect(ipucuSec(n)).toEqual(ipuclari()[0]);
+    expect(ipucuSec(-1)).toEqual(ipuclari()[n - 1]);
   });
 });

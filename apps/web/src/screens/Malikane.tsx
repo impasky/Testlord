@@ -1,265 +1,112 @@
 /**
- * Malikâne — "şimdi ne yapmalısın" sayfası.
+ * Malikâne — DİYARIN kendisi: topraklar, koruma ve ipuçları.
  *
- * Eskiden altı ayrı işi taşıyordu: sıradaki adım, durum, kuyruklar,
- * günlük görevler, haftalık sefer, başarımlar ve olay akışı. İki buçuk
- * ekran uzunluğundaydı ve oyuncunun "her şey iç içe, karman çorman"
- * dediği şeyin merkezi buydu.
+ * Bu ekran eskiden oyunun ana sayfasıydı ve her şeyi taşıyordu: omurga,
+ * kâhya, durum şeridi, görev özeti, kuyruklar, olaylar. Oyuncu rolleri
+ * netleştirdi:
  *
- * Şimdi tek iş yapıyor: ŞU AN ne olduğu ve sıradaki adım. Görevler ve
- * olaylar kendi sayfalarına çıktı; buradan yalnız birer kanca kalıyor
- * (görünmeyen bir "yarın geri gel" sebebi sebep değildir, docs/09 K4).
+ *   "ana sayfada her şeye erişimimiz olmalı, tüm yönlendirmeleri oradan
+ *    yapabilmeliyiz. Malikâne'yi sahip olduğumuz arazi yönetimleri,
+ *    ipuçları gibi içerikleri barındıran bir alana çevirip Lord sayfasını
+ *    oyunun ana sayfası hâline getirirsek daha iyi olabilir."
+ *
+ * Öyle yapıldı. "Şimdi ne yapmalısın" ve bütün kapılar Lord'a taşındı;
+ * burada yalnız DİYAR kaldı — hangi topraklar senin, ne getiriyorlar, ne
+ * kadar korunuyorsun, ve oyunu daha iyi oynatan ipuçları.
+ *
+ * Toprak listesi yeni: oyunda "bölgelerim" diye bir yer hiç yoktu, sahip
+ * olduklarını görmek için haritada tek tek aramak gerekiyordu.
  */
-import { B } from '@lordlar/shared';
-import type { GameEvent, LordState, QueueItem, YoklukOzeti } from '../api/client';
-import type { Kapi } from '@lordlar/shared';
-import type { Sekme } from '../components/MobilKabuk';
-import {
-  IkonKale,
-  IkonNavDemirhane,
-  IkonNavHarita,
-  IkonSohret,
-  IkonNavKisla,
-  IkonSancak,
-  IkonSure,
-  IkonUyari,
-  IkonYer,
-} from '../components/Ikonlar';
-import { DiyarTanitimi } from '../components/DiyarTanitimi';
-import { Omurga, useOmurgaAdimi } from '../components/Omurga';
-import { Rehber } from '../components/Rehber';
+import { ipucuSec, regionIncome, type Kapi } from '@lordlar/shared';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import { api, type GameEvent, type LordState } from '../api/client';
+import { BolgeIkonu, IkonAltin, IkonDemir, IkonErzak, IkonKale, IkonSure } from '../components/Ikonlar';
+import { Zemin } from '../components/Zemin';
+import { BosHal } from '../components/BosHal';
 import {
   Bolum,
   Buton,
   DurumSiridi,
   GeriSayim,
   Hap,
-  Ilerleme,
+  Iskelet,
   Kart,
   formatSayi,
 } from '../components/ui';
-import { GorevOzeti } from '../components/GorevOzeti';
-import { Zemin } from '../components/Zemin';
+import type { Sekme } from '../components/MobilKabuk';
 
-const KUYRUK_ADI: Record<string, string> = {
-  train: 'Asker eğitimi',
-  craft: 'Ekipman üretimi',
-  upgrade_item: 'Ekipman yükseltme',
-  upgrade_gear: 'Ordu donanımı',
-  upgrade_region: 'Bölge yükseltme',
-  kesif: 'Keşif',
+const TIP_ADI: Record<string, string> = {
+  tarla: 'Tarla',
+  maden: 'Maden',
+  sehir: 'Şehir',
+  kale: 'Kale',
+  taht: 'Taht Kalesi',
 };
 
-function KuyrukSatiri({ q }: { q: QueueItem }) {
-  const bas = new Date(q.startedAt).getTime();
-  const bit = new Date(q.finishAt).getTime();
-  const gecen = Math.max(0, Math.min(1, (Date.now() - bas) / (bit - bas)));
-  return (
-    <Kart className="p-3">
-      <div className="mb-1.5 flex items-baseline justify-between gap-2 text-[13px]">
-        <span className="truncate">
-          {KUYRUK_ADI[q.kind] ?? q.kind}
-          {typeof q.payload.count === 'number' && (
-            <span className="ml-1.5 text-solgun">×{q.payload.count as number}</span>
-          )}
-        </span>
-        <span className="shrink-0 text-[12px] text-altin">
-          <GeriSayim bitis={q.finishAt} />
-        </span>
-      </div>
-      <Ilerleme deger={gecen} max={1} renk="var(--color-altin)" boy="ince" />
-    </Kart>
-  );
-}
-
 /**
- * "Sen yokken ne oldu" kartı.
+ * Bölgenin saatlik geliri.
  *
- * Bekleme üzerine kurulu bir oyunda dönüş anı en önemli an. Önceden oyuncu
- * olay akışını kendisi taramak zorundaydı; şimdi ne kadar süre geçtiğini,
- * kaç olay ve kaç savaş olduğunu tek bakışta görüyor.
+ * Formülü BURADA yeniden yazmıyoruz: `regionIncome` motorun kendi
+ * fonksiyonu ve sunucu da onu kullanıyor. İkinci bir hesap, er ya da geç
+ * ekranın sunucudan farklı bir sayı göstermesi demekti.
  */
-function YoklukKarti({ y, onGit }: { y: YoklukOzeti; onGit: (s: Sekme) => void }) {
-  const saat = Math.floor(y.sureSaniye / 3600);
-  const dakika = Math.floor((y.sureSaniye % 3600) / 60);
-  const sure = saat > 0 ? `${saat} saat ${dakika} dakika` : `${dakika} dakika`;
-
-  return (
-    <Kart className="p-3" vurgu="var(--color-mavi)">
-      <h3 className="baslik mb-1 text-[12px] text-mavi">Sen yokken</h3>
-      <p className="text-[13px] text-solgun">
-        <span className="text-parsomen">{sure}</span> uzaktaydın. Bu sürede{' '}
-        <span className="text-parsomen">{y.olaylar}</span> olay
-        {y.savaslar > 0 && (
-          <>
-            {' '}
-            ve <span className="text-kirmizi">{y.savaslar} savaş</span>
-          </>
-        )}{' '}
-        oldu.
-      </p>
-      {y.savaslar > 0 && (
-        <p className="mt-1 text-[11px] text-sonuk">
-          Savaş raporlarını aşağıdaki olay akışından açabilirsin.
-        </p>
-      )}
-      <Buton tur="sessiz" boy="kucuk" className="mt-2.5" onClick={() => onGit('harita')}>
-        Haritaya bak
-      </Buton>
-    </Kart>
-  );
+function gelir(tip: string, seviye: number, carpan: number) {
+  const g = regionIncome(tip, seviye, carpan);
+  return {
+    altin: Math.round(g.altin),
+    demir: Math.round(g.demir),
+    erzak: Math.round(g.erzak),
+  };
 }
 
 export function Malikane({
   lord,
-  queues,
   events,
-  yokluk,
   onBolgeyiAc,
   onGit,
   onKapiAc,
 }: {
   lord: LordState;
-  queues: QueueItem[];
   events: GameEvent[];
-  yokluk: YoklukOzeti | null;
-  /** Bir bölgeyi haritada açar: hem omurganın hedefi hem karşı saldırı. */
+  /** Bir bölgeyi haritada açar — yönetimi orada. */
   onBolgeyiAc: (regionId: number) => void;
   onGit: (s: Sekme) => void;
-  /** Malikâne'nin kapıları: Olaylar ve İttifak. */
   onKapiAc: (k: Kapi) => void;
 }) {
-  const yarali = lord.woundedUntil && new Date(lord.woundedUntil) > new Date();
+  const harita = useQuery({ queryKey: ['map'], queryFn: api.map });
   const korumali = lord.protectionUntil && new Date(lord.protectionUntil) > new Date();
-  /**
-   * İLK DÖNGÜ: oyuncu henüz kaynak -> asker -> saldırı -> bölge zincirini
-   * bir kez tamamlamamış.
-   *
-   * Bu bayrak Malikâne'nin ne kadarını göstereceğimizi belirliyor. Oyuncu
-   * testi: "her yerde bir şeyler yazıyor, neler önemli neler önemsiz
-   * anlayamadım" ve "her şeyi üstümüze atıyor, al öğren oyna diyor".
-   * Sayınca haklı çıktı — hiçbir şey yapmamış bir lord bu ekranda SEKİZ
-   * blok görüyordu: diyar tanıtımı, rehber, omurga, durum şeridi, kalkan,
-   * görev özeti, kuyruklar, olaylar.
-   *
-   * İlk döngüde yalnız iki soru anlamlı: "burası neresi" ve "şimdi ne
-   * yapmalıyım". Gerisi ancak bir karşılığı olduğunda beliriyor — durum
-   * şeridi bölge varken, olaylar bir şey olduğunda. Gizlenenler
-   * ULAŞILAMAZ olmuyor: Görevler alt çubukta, Olaylar menüde duruyor.
-   *
-   * Ölçüt yine bölge sayısı (rehberle aynı): ordusunu kaybetmiş kıdemli
-   * bir lord da gerçekten "önce bir bölge al" durumundadır.
-   */
-  const ilkDongu = lord.regionCount === 0;
 
-  // Rehber omurganın hesapladığı adımı okuyor; iki ayrı hesap olmasın diye
-  // aynı hook. Sorgular TanStack önbelleğinden, ikinci istek üretmiyor.
-  const rehberAdimi = useOmurgaAdimi(lord, queues);
+  /**
+   * İpucu SIRAYLA dönüyor ve sıra her açılışta bir ilerliyor.
+   * Rastgele seçim aynı ipucunu üst üste gösterebiliyor ve oyuncu "hep
+   * aynı şey yazıyor" diyor.
+   */
+  const [ipucuSayac, setIpucuSayac] = useState(() => Math.floor(Date.now() / 60_000));
+  const ipucu = ipucuSec(ipucuSayac);
+
+  const benim = (harita.data?.regions ?? []).filter((r) => r.isMine);
 
   return (
     <div className="space-y-4">
-      <Zemin ad="malikane" baslik="Malikâne" altyazi="Diyarının kalbi" />
-      {lord.starving && (
-        <Kart className="border-kirmizi/60 p-3" vurgu="var(--color-kirmizi)">
-          <div className="flex gap-2.5">
-            <span className="shrink-0 text-kirmizi">
-              <IkonUyari boyut={20} />
-            </span>
-            <div className="text-[13px]">
-              <strong className="baslik text-kirmizi">Ordun aç</strong>
-              <p className="mt-0.5 text-solgun">
-                Erzak bitti, askerler saatte %5 firar ediyor. Tarla bölgesi al ya da ordunu küçült.
-              </p>
-            </div>
-          </div>
-        </Kart>
-      )}
+      <Zemin ad="malikane" baslik="Malikâne" altyazi="Diyarının toprakları" />
 
-      {yarali && (
-        <Kart className="border-turuncu/50 p-3" vurgu="var(--color-turuncu)">
-          <div className="text-[13px]">
-            <strong className="baslik text-turuncu">Lordun yaralı</strong>
-            <p className="mt-0.5 text-solgun">
-              İyileşmesine <GeriSayim bitis={lord.woundedUntil!} /> kaldı. Bu sürede saldıramazsın.
-            </p>
-          </div>
-        </Kart>
-      )}
-
-      {yokluk && <YoklukKarti y={yokluk} onGit={onGit} />}
-
-      {/* Kâhya omurganın ÜSTÜNDE: önce neden, sonra ne. Adımı omurgadan
-          okuyor, kendi senaryosunu tutmuyor (docs/09 T4). */}
-      <Rehber
-        adim={rehberAdimi?.anahtar ?? null}
-        bolgeSayisi={lord.regionCount}
-        gorundu={lord.rehberGorundu}
-      />
-      <Omurga
-        lord={lord}
-        queues={queues}
-        onGit={onGit}
-        onKapiAc={onKapiAc}
-        onHedefeGit={onBolgeyiAc}
-      />
-
-      {/* Diyar tanıtımı omurganın ALTINDA.
-          Üstteydi ve ölçünce görüldü ki yeni oyuncunun tek eylem düğmesi
-          ("Kışlada okçu eğit") iki açıklama kartının altında, ekranın
-          dışında kalıyordu. Oyuncu testinin "her şeyi üstümüze atıyor"
-          cümlesinin somut hâli buydu: yapılacak şeye ulaşmak için iki
-          metin bloğunu kaydırmak.
-          Kartın KENDİ kapısı var (yepyeniMi): yalnız hiçbir şey yapmamış
-          lorda görünüyor, ilk eylemden sonra kendiliğinden kayboluyor —
-          bu yüzden ayrıca gizlenmesi gerekmiyor, yalnız sırası değişti.
-          "Burası neresi" hâlâ cevaplanıyor, ama "şimdi ne yapmalıyım"
-          cevabından sonra. */}
-      <DiyarTanitimi lord={lord} queues={queues} />
-
-      {/*
-        Dört ayrı istatistik kartı yerine tek rozet satırı.
-        Kartlar ekranın yarısını kaplıyor ve hepsi aynı ağırlıkta
-        görünüyordu: yeni oyuncu "KOMUTA 0/90" ile "GÜNLÜK SALDIRI 0/12"
-        arasında hangisinin önemli olduğunu ayırt edemiyordu. Rozet satırı
-        aynı bilgiyi bir satırda veriyor ve omurgayı ekranın tepesinde
-        tek büyük öğe olarak bırakıyor.
-      */}
-      {!ilkDongu && (
       <DurumSiridi>
         <Hap ikon={<IkonKale boyut={13} />} renk="var(--color-altin)">
           {lord.regionCount}/{lord.maxRegions} bölge
           {lord.ownsThrone && ' +Taht'}
         </Hap>
+        <Hap ikon={<IkonAltin boyut={13} />} renk="var(--color-kaynak-altin)">
+          +{formatSayi(lord.hourlyIncome.altin)}/sa
+        </Hap>
         <Hap
-          ikon={<IkonYer boyut={13} />}
-          renk={
-            lord.usedSlots >= lord.commandCapacity ? 'var(--color-kirmizi)' : 'var(--color-mavi)'
-          }
+          ikon={<IkonErzak boyut={13} />}
+          renk={lord.netErzakPerHour < 0 ? 'var(--color-kirmizi)' : 'var(--color-kaynak-erzak)'}
         >
-          {formatSayi(lord.usedSlots)}/{formatSayi(lord.commandCapacity)} komuta
-        </Hap>
-        <Hap ikon={<IkonSancak boyut={13} />} renk="var(--color-yesil)">
-          Sv {lord.level}
-        </Hap>
-        <Hap ikon={<IkonSure boyut={13} />}>
-          {lord.dailyAttacks}/{B.korumalar.gunluk_saldiri_limiti} saldırı
+          {lord.netErzakPerHour >= 0 ? '+' : ''}
+          {formatSayi(lord.netErzakPerHour)}/sa
         </Hap>
       </DurumSiridi>
-      )}
-
-      {lord.statPoints > 0 && (
-        <Kart className="p-3" vurgu="var(--color-yesil)">
-          <div className="flex items-center gap-3">
-            <div className="min-w-0 flex-1 text-[13px]">
-              <strong className="baslik text-yesil">{lord.statPoints} stat puanı</strong>
-              <p className="text-solgun">Dağıtılmayı bekliyor.</p>
-            </div>
-            <Buton tur="yesil" boy="kucuk" onClick={() => onGit('lord')}>
-              Dağıt
-            </Buton>
-          </div>
-        </Kart>
-      )}
 
       {korumali && (
         <Kart className="border-yesil/40 p-3">
@@ -270,98 +117,118 @@ export function Malikane({
         </Kart>
       )}
 
-      {/* Görev KANCASI, görevlerin kendisi değil: ayrıntı Görevler
-          sayfasında. Ödül alınmayı bekliyorsa şerit yeşilleniyor —
-          oyuncunun oraya gitmesi için tek gerçek sebep o. */}
-      {!ilkDongu && <GorevOzeti onGit={() => onGit('gorevler')} />}
-
-      {/* Boş kuyruk bölümü ilk döngüde de KALIYOR ve bu bilinçli — gizlemeyi
-          denedim, iki şeyi birden bozdu. Boş hâlindeki üç düğme (Kışla,
-          Demirhane, Harita) gürültü değil, docs/09 K7'nin ta kendisi:
-          "yapacak bir şey yok ekranı olmasın, boş hâl bir sonraki işi
-          göstersin". Ayrıca kart geç gelen kuyruk verisine bağlı gizlenince
-          açılışta zıplama çıkıyordu (CLS 0.024 -> 0.222). */}
-      <Bolum
-        baslik={`Kuyruklar${queues.length ? ` · ${queues.length}` : ''}`}
-        sakin={queues.length === 0}
-      >
-        {queues.length === 0 ? (
-          <Kart sakin className="p-4">
-            <p className="mb-3 text-[13px] text-solgun">Kuyruk boş. Bir şeyler başlat.</p>
-            <div className="flex gap-2">
-              <Buton tur="sessiz" boy="kucuk" onClick={() => onGit('kisla')}>
-                <span className="mr-1.5 inline-block align-[-2px]">
-                  <IkonNavKisla boyut={13} />
-                </span>
-                Kışla
-              </Buton>
-              <Buton tur="sessiz" boy="kucuk" onClick={() => onKapiAc('demirhane')}>
-                <span className="mr-1.5 inline-block align-[-2px]">
-                  <IkonNavDemirhane boyut={13} />
-                </span>
-                Demirhane
-              </Buton>
-              <Buton tur="sessiz" boy="kucuk" onClick={() => onGit('harita')}>
-                <span className="mr-1.5 inline-block align-[-2px]">
-                  <IkonNavHarita boyut={13} />
-                </span>
-                Harita
-              </Buton>
-            </div>
-          </Kart>
+      {/* ---- Topraklarım ----
+          Bölgeye dokunmak haritada onu açıyor: yükseltme, garnizon ve
+          bırakma zaten orada. Burada ikinci bir yönetim arayüzü kurmak,
+          aynı işi iki yerde tutmak olurdu. */}
+      <Bolum baslik={`Topraklarım${benim.length ? ` · ${benim.length}` : ''}`} sakin={benim.length === 0}>
+        {harita.isPending ? (
+          <Iskelet satir={2} />
+        ) : benim.length === 0 ? (
+          <BosHal
+            mesaj="Henüz toprağın yok. Haritada bir bölge al, geliri buraya işlesin."
+            eylemler={[{ etiket: 'Haritaya git', onTikla: () => onGit('harita') }]}
+          />
         ) : (
           <div className="space-y-2">
-            {queues.map((q) => (
-              <KuyrukSatiri key={q.id} q={q} />
-            ))}
+            {benim.map((r) => {
+              const g = gelir(r.type, r.level, r.incomeMult);
+              return (
+                <Kart key={r.id} className="p-3" onClick={() => onBolgeyiAc(r.id)}>
+                  <div className="flex items-center gap-3">
+                    <span className="shrink-0 text-altin">
+                      <BolgeIkonu tip={r.type} boyut={22} />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-baseline gap-2">
+                        <span className="baslik truncate text-[14px]">{r.name}</span>
+                        <span className="shrink-0 text-[11px] text-sonuk">
+                          {TIP_ADI[r.type] ?? r.type} · Sv {r.level}
+                        </span>
+                      </div>
+                      <div className="mt-1.5 flex flex-wrap gap-1.5">
+                        {g.altin > 0 && (
+                          <Hap ikon={<IkonAltin boyut={13} />} renk="var(--color-yesil)">
+                            +{formatSayi(g.altin)}/sa
+                          </Hap>
+                        )}
+                        {g.demir > 0 && (
+                          <Hap ikon={<IkonDemir boyut={13} />} renk="var(--color-yesil)">
+                            +{formatSayi(g.demir)}/sa
+                          </Hap>
+                        )}
+                        {g.erzak > 0 && (
+                          <Hap ikon={<IkonErzak boyut={13} />} renk="var(--color-yesil)">
+                            +{formatSayi(g.erzak)}/sa
+                          </Hap>
+                        )}
+                        {r.shielded && (
+                          <Hap ikon={<IkonSure boyut={13} />} renk="var(--color-mavi)">
+                            kalkan altında
+                          </Hap>
+                        )}
+                      </div>
+                    </div>
+                    <span className="baslik shrink-0 text-[11px] text-altin">YÖNET</span>
+                  </div>
+                </Kart>
+              );
+            })}
           </div>
         )}
       </Bolum>
 
-      {/* Olay kancası: akışın kendisi Olaylar sayfasında. Son olayı
-          burada göstermek "bir şey oldu mu" sorusunu sayfaya gitmeden
-          cevaplıyor. */}
-      {/* ---- Diyarın kapıları ----
-          Olaylar ve İttifak buradan panel olarak açılıyor. İttifak eskiden
-          menüdeydi ve menü tam da oyuncunun şikâyet ettiği şeydi:
-          konusuyla ilgisi olmayan sayfaların düz listesi. Diyarına dair
-          iki şey artık diyarın ekranında. */}
-      {!ilkDongu && (
-      <Kart className="p-3" sakin onClick={() => onKapiAc('ittifak')} kapi="ittifak">
-        <div className="flex items-center gap-2">
-          <span className="shrink-0 text-mavi">
-            <IkonSohret boyut={16} />
-          </span>
-          <span className="baslik shrink-0 text-[11px] text-solgun">İTTİFAK</span>
-          <p className="min-w-0 flex-1 truncate text-[12px] text-sonuk">
-            Ortak hedef, takviye, sohbet
-          </p>
-          <span className="baslik shrink-0 text-[11px] text-altin">AÇ</span>
+      {/* ---- İpucu ----
+          Oyuncunun istediği ikinci içerik. Sayılar dengeden türüyor
+          (packages/shared/src/ipuclari.ts): elle yazılmış bir sayı denge
+          değişince sessizce yalana döner. */}
+      <Kart className="p-3" vurgu="var(--color-mavi)">
+        <div className="flex items-start justify-between gap-2">
+          <span className="baslik text-[11px] text-mavi">İPUCU</span>
+          <button
+            type="button"
+            onClick={() => setIpucuSayac((n) => n + 1)}
+            className="bas baslik shrink-0 text-[11px] text-sonuk"
+          >
+            SONRAKİ
+          </button>
         </div>
+        <p className="baslik mt-1 text-[14px] text-parsomen">{ipucu.baslik}</p>
+        <p className="mt-1 text-[13px] leading-snug text-solgun">{ipucu.metin}</p>
       </Kart>
-      )}
 
-      {/* Olaylar kapısı, ARKASINDA BİR ŞEY VARSA açılıyor.
-          Ölçüt yalnız "ilk döngü kapandı mı" olsaydı, saldırıp KAYBEDEN
-          oyuncu savaş raporuna hiçbir yerden ulaşamazdı: bölgesi yok ama
-          olayı var. Kapı bir sayfa değil, içeriğin kapısı. */}
-      {(!ilkDongu || events.length > 0) && (
-      <Kart className="p-3" sakin={events.length === 0} onClick={() => onKapiAc('olaylar')} kapi="olaylar">
-        <div className="flex items-center gap-2">
-          <span className="baslik shrink-0 text-[11px] text-solgun">OLAYLAR</span>
-          <p className="min-w-0 flex-1 truncate text-[12px] text-solgun">
-            {events.length === 0
-              ? 'Henüz bir şey olmadı.'
-              : typeof events[0]!.payload.mesaj === 'string'
+      {/* Olay kancası: akış Olaylar kapısında, son olay burada.
+          Kapı arkasında bir şey varsa açılıyor — saldırıp kaybeden
+          oyuncunun bölgesi yoktur ama raporu vardır. */}
+      {events.length > 0 && (
+        <Kart className="p-3" onClick={() => onKapiAc('olaylar')} kapi="olaylar">
+          <div className="flex items-center gap-2">
+            <span className="baslik shrink-0 text-[11px] text-solgun">OLAYLAR</span>
+            <p className="min-w-0 flex-1 truncate text-[12px] text-solgun">
+              {typeof events[0]!.payload.mesaj === 'string'
                 ? events[0]!.payload.mesaj
                 : events[0]!.kind}
-          </p>
-          <span className="baslik shrink-0 text-[11px] text-altin">
-            {events.length > 0 ? `${events.length} · AÇ` : 'AÇ'}
-          </span>
-        </div>
-      </Kart>
+            </p>
+            <span className="baslik shrink-0 text-[11px] text-altin">{events.length} · AÇ</span>
+          </div>
+        </Kart>
       )}
+
+      {/* Boş hâl gürültü değil: "yapacak bir şey yok" ekranı olmasın,
+          bir sonraki iş görünsün (docs/09 K7). */}
+      {events.length === 0 && (
+        <Kart sakin className="p-3">
+          <p className="text-[12px] text-solgun">
+            Diyarda henüz bir şey olmadı. Bir sefere çıkınca burada okursun.
+          </p>
+        </Kart>
+      )}
+
+      <div className="pb-1">
+        <Buton tur="sessiz" boy="kucuk" onClick={() => onGit('harita')}>
+          Haritayı aç
+        </Buton>
+      </div>
     </div>
   );
 }

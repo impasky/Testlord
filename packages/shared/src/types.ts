@@ -174,75 +174,60 @@ export type Ekran = (typeof EKRANLAR)[number];
 /* ---------------- Arayüz mimarisi: beş sekme, gerisi kapı ---------------- */
 
 /**
- * Alt çubuktaki BEŞ sekme.
+ * Alt çubuktaki BEŞ sekme. İlki ANA SAYFA.
  *
- * Oyuncu referans bir oyunu göstererek anlattı:
+ * Oyuncu referans bir oyunu göstererek anlattı: "nav bar ile
+ * gidebileceğimiz yerler sadece 5 tane, gerisi o 5 sayfanın içinde
+ * pop-up". Sonra da rolleri netleştirdi:
  *
- *   "ana sayfada nav bar ile gidebileceğimiz yerler sadece 5 tane, bunlar
- *    gün içinde en çok giriş yapılanlar. Onun dışında her şeyi 5 ana
- *    sayfanın içinde pop-up pencereleri şeklinde ayarlamış. Mesela bizde
- *    generaller ayrı bir sayfada; onun yerine Lord sekmesini ana sayfaya
- *    çevirip oraya bir general bölümü eklenebilir, tıklandığında general
- *    sayfası pop-up gibi açılır."
+ *   "ana sayfada her şeye erişimimiz olmalı, tüm yönlendirmeleri oradan
+ *    yapabilmeliyiz. Malikâne'yi sahip olduğumuz arazi yönetimleri,
+ *    ipuçları gibi içerikleri barındıran bir alana çevirip Lord sayfasını
+ *    oyunun ana sayfası hâline getirirsek daha iyi olabilir."
  *
- * Önceki yapı DÖRT sekme + "Menü" idi ve menü tam da şikâyet edilen şeydi:
- * konusuyla ilgisi olmayan yedi sayfanın düz listesi. Oyuncunun ilk
- * geri dönüşü de zaten "kafamda kategorize edemiyorum" idi.
+ * Öyle yapıldı. LORD ana sayfa: oyuncu oraya iniyor, "şimdi ne
+ * yapmalısın" orada, bütün kapılar orada. MALİKÂNE ise diyarın kendisi:
+ * sahip olunan topraklar, gelirleri, koruma durumu ve ipuçları.
  *
- * Ölçüt yine SIKLIK: her oturumda açılan beş yer çubukta. Lord menüden
- * çubuğa çıktı çünkü oyuncunun kendini yönettiği yer orası ve artık
- * kendine ait şeylerin (general, ekipman, sıralama, hesap) evi.
+ * Sıra da bunu söylüyor: ana sayfa başta, sonra günlük döngü (görev →
+ * asker → sefer), en sonda diyarın envanteri.
  */
-export const ALT_SEKMELER = ['malikane', 'gorevler', 'kisla', 'harita', 'lord'] as const;
+export const ALT_SEKMELER = ['lord', 'gorevler', 'kisla', 'harita', 'malikane'] as const;
 export type AltSekme = (typeof ALT_SEKMELER)[number];
 
+/** Açılışta gelinen ve bütün kapıların durduğu sekme. */
+export const ANA_SEKME: AltSekme = 'lord';
+
 /**
- * KAPILAR: kendi sayfası değil, konusunun içinde açılan pop-up'lar.
+ * KAPILAR: kendi sayfası değil, ana sayfadan açılan pop-up'lar.
  *
  * Haritada bir altıgene basınca açılan bölge paneliyle aynı fikir —
  * oyuncu bulunduğu yerden kopmuyor, işini görüp kapatıyor.
+ *
+ * Hepsinin girişi ANA SAYFADA: oyuncunun isteği "ana sayfada her şeye
+ * erişimimiz olmalı" idi. Bir kapı başka bir ekrandan da açılabilir
+ * (Malikâne'deki olay kartı gibi) — kapı sekmeye bağlı değil, nereden
+ * açılırsa açılsın oyuncu kapatınca kaldığı yerde kalıyor.
  */
 export const KAPILAR = [
-  'olaylar',
-  'ittifak',
   'generaller',
   'demirhane',
+  'ittifak',
+  'olaylar',
   'siralama',
   'hesap',
 ] as const;
 export type Kapi = (typeof KAPILAR)[number];
 
-/**
- * Her kapı KONUSUNUN evinde duruyor.
- *
- * Kural: bir şeyle ilgili her şey tek bir yerde. Lord kendine ait olanı
- * (kimi komuta ediyor, ne kuşanıyor, nerede duruyor, hesabı) taşıyor;
- * Malikâne diyara ait olanı (ne oldu, kimlerlesin).
- */
-export const KAPI_EVI: Record<Kapi, AltSekme> = {
-  olaylar: 'malikane',
-  ittifak: 'malikane',
-  generaller: 'lord',
-  demirhane: 'lord',
-  siralama: 'lord',
-  hesap: 'lord',
-};
-
 /** Kapının başlığı — hem panelde hem onu açan düğmede aynı ad. */
 export const KAPI_ADI: Record<Kapi, string> = {
-  olaylar: 'Olaylar',
-  ittifak: 'İttifak',
   generaller: 'Generaller',
   demirhane: 'Demirhane',
+  ittifak: 'İttifak',
+  olaylar: 'Olaylar',
   siralama: 'Sıralama',
   hesap: 'Hesap',
 };
-
-/** Bir sekmenin içinde açılabilen kapılar, tanımdaki sırayla. */
-export function sekmeninKapilari(sekme: AltSekme): Kapi[] {
-  return KAPILAR.filter((k) => KAPI_EVI[k] === sekme);
-}
-
 export interface GeneralDef {
   key: string;
   ad: string;

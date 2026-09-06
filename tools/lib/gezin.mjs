@@ -12,35 +12,33 @@
  * yerine gürültülü bir hata.
  */
 
-/** Alt çubuktaki BEŞ sekme. */
+/** Alt çubuktaki BEŞ sekme; ilki ANA SAYFA. */
 export const CUBUK = [
-  ['malikane', 'Malikâne'],
+  ['lord', 'Lord'],
   ['gorevler', 'Görevler'],
   ['kisla', 'Kışla'],
   ['harita', 'Harita'],
-  ['lord', 'Lord'],
+  ['malikane', 'Malikâne'],
 ];
 
+/** Ana sayfa: bütün kapıların girişi orada. */
+export const ANA = 'lord';
+
 /**
- * Kapılar: kendi sayfası olmayan, konusunun içinde panel olarak açılanlar.
- * Her satır [anahtar, evi] — panel `data-kapi` imzalı bir düğmeyle açılıyor.
+ * Kapılar: kendi sayfası olmayan, ana sayfadan panel olarak açılanlar.
+ * Panel `data-kapi` imzalı bir düğmeyle açılıyor.
  */
 export const KAPILAR = [
-  ['olaylar', 'malikane'],
-  ['ittifak', 'malikane'],
-  ['generaller', 'lord'],
-  ['demirhane', 'lord'],
-  ['siralama', 'lord'],
-  ['hesap', 'lord'],
+  'generaller',
+  'demirhane',
+  'ittifak',
+  'olaylar',
+  'siralama',
+  'hesap',
 ];
 
 /** Denetlenen bütün ekranlar: önce sekmeler, sonra kapılar. */
-export const EKRANLAR = [
-  ...CUBUK,
-  ...KAPILAR.map(([k]) => [k, k]),
-];
-
-const kapiKaydi = (ad) => KAPILAR.find(([k]) => k === ad);
+export const EKRANLAR = [...CUBUK, ...KAPILAR.map((k) => [k, k])];
 
 /** Açık bir kapı panelini kapatır; açık değilse bir şey yapmaz. */
 export async function kapiyiKapat(page) {
@@ -52,21 +50,20 @@ export async function kapiyiKapat(page) {
 }
 
 /**
- * Bir ekrana gider: sekmeyse çubuktan, kapıysa evine geçip paneli açarak.
+ * Bir ekrana gider: sekmeyse çubuktan, kapıysa ANA SAYFAYA geçip paneli
+ * açarak.
  *
  * Kapı düğmeleri `data-kapi` ile imzalı — metinle aramak kırılgandı:
- * "İttifak" hem Malikâne'deki kapı düğmesinde hem Sıralama ekranındaki
- * sekmede geçiyor ve Playwright ilkini seçiyordu.
+ * "İttifak" hem kapı düğmesinde hem Sıralama ekranındaki sekmede geçiyor
+ * ve Playwright ilkini seçiyordu.
  */
 export async function ekrana(page, ad, bekle = 1200) {
   // Önce varsa açık paneli kapat: üst üste iki panel açılmasın.
   await kapiyiKapat(page);
 
-  const kapi = kapiKaydi(ad);
-  if (kapi) {
-    const [, ev] = kapi;
-    const evEtiketi = CUBUK.find(([k]) => k === ev)[1];
-    await page.click(`nav button:has-text("${evEtiketi}")`);
+  if (KAPILAR.includes(ad)) {
+    const anaEtiket = CUBUK.find(([k]) => k === ANA)[1];
+    await page.click(`nav button:has-text("${anaEtiket}")`);
     await page.waitForTimeout(500);
     await page.locator(`[data-kapi="${ad}"]`).first().click();
   } else {

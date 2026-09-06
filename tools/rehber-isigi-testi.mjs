@@ -668,11 +668,11 @@ await page.waitForTimeout(2500);
 
   const iz = await s4.evaluate(() => window.__iz);
   const perdesiz = iz.filter((x) => x.perde === 0).length;
-  const geriYollayan = iz.filter((x) => x.delik === 'nav-malikane').length;
+  const geriYollayan = iz.filter((x) => x.delik === 'nav-ana').length;
   const son = iz[iz.length - 1];
 
   // Asıl hata buydu: doğru ekrandayken oyuncuya geldiği yönü göstermek.
-  kontrol('Yavaş şebekede ışık ASLA "Malikâne\'ye dön" demiyor', geriYollayan === 0,
+  kontrol('Yavaş şebekede ışık ASLA "ana sayfaya dön" demiyor', geriYollayan === 0,
     `${geriYollayan} kare`);
   // Perdenin bir kalkıp bir inmesi de titremenin ta kendisiydi.
   kontrol('Perde geçiş boyunca hiç düşmüyor', perdesiz === 0, `${perdesiz} kare perdesiz`);

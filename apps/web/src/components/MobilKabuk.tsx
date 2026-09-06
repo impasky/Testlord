@@ -17,7 +17,7 @@ import {
   IkonSohret,
   IkonSure,
 } from './Ikonlar';
-import type { AltSekme } from '@lordlar/shared';
+import { ANA_SEKME, type AltSekme } from '@lordlar/shared';
 import { Ilerleme, kisaSayi } from './ui';
 
 /**
@@ -58,11 +58,11 @@ export type Sekme = AltSekme;
  * o sorunu da çözüyor.
  */
 const CUBUK: { key: AltSekme; ad: string; Ikon: typeof IkonNavMalikane }[] = [
-  { key: 'malikane', ad: 'Malikâne', Ikon: IkonNavMalikane },
+  { key: 'lord', ad: 'Lord', Ikon: IkonNavLord },
   { key: 'gorevler', ad: 'Görevler', Ikon: IkonSure },
   { key: 'kisla', ad: 'Kışla', Ikon: IkonNavKisla },
   { key: 'harita', ad: 'Harita', Ikon: IkonNavHarita },
-  { key: 'lord', ad: 'Lord', Ikon: IkonNavLord },
+  { key: 'malikane', ad: 'Malikâne', Ikon: IkonNavMalikane },
 ];
 
 /** Kaynak sayacı: sunucu değerinden itibaren saniye saniye ilerler. */
@@ -261,11 +261,11 @@ export function MobilKabuk({
                     etkin ? 'text-altin' : 'text-sonuk'
                   }`}
                   aria-current={etkin ? 'page' : undefined}
-                  /* Rehber ışığının son çare hedefi. Oyuncu ilk döngüde
-                     alâkasız bir ekrandaysa ışık onu Malikâne'ye — yani
-                     omurga düğmesinin durduğu tek yere — çağırıyor;
-                     zincirin hiçbir ekranda kopmamasını bu sağlıyor. */
-                  data-rehber={key === 'malikane' ? 'nav-malikane' : undefined}
+                  /* Rehber ışığının son çare hedefi: ANA SAYFA. Oyuncu ilk
+                     döngüde alâkasız bir ekrandaysa ışık onu omurga
+                     düğmesinin durduğu tek yere çağırıyor; zincirin hiçbir
+                     ekranda kopmamasını bu sağlıyor. */
+                  data-rehber={key === ANA_SEKME ? 'nav-ana' : undefined}
                 >
                   <span className="relative">
                     <Ikon boyut={22} />

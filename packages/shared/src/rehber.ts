@@ -147,7 +147,7 @@ export function rehberGorunsunMu(bolgeSayisi: number, tamamlandi: boolean): bool
  *
  * `yol` işaretli düğmeler iş yapmaz, yalnız oyuncuyu işin yapılacağı
  * ekrana taşır. Ayrım kilitlenmeye karşı: ekrandaki İŞ düğmelerinin hepsi
- * kapalıysa (ör. parası yetmiyor) ışık sönüyor. Yoksa oyuncu Malikâne ile
+ * kapalıysa (ör. parası yetmiyor) ışık sönüyor. Yoksa oyuncu ana sayfa ile
  * Kışla arasında sonsuza kadar gidip gelirdi — basılabilir tek düğme onu
  * hep diğer ekrana yollardı.
  */
@@ -189,8 +189,8 @@ export const REHBER_ISIKLARI: Record<string, RehberIsaret[]> = {
     },
     { isaret: 'omurga-dugme', yol: true },
     {
-      isaret: 'nav-malikane',
-      sebep: 'Yapılacak iş Malikâne\'de yazılı. Önce oraya dönelim lordum.',
+      isaret: 'nav-ana',
+      sebep: 'Yapılacak iş ana sayfada yazılı. Önce oraya dönelim lordum.',
       yol: true,
     },
   ],
@@ -209,8 +209,8 @@ export const REHBER_ISIKLARI: Record<string, RehberIsaret[]> = {
     },
     { isaret: 'omurga-dugme', yol: true },
     {
-      isaret: 'nav-malikane',
-      sebep: 'Yapılacak iş Malikâne\'de yazılı. Önce oraya dönelim lordum.',
+      isaret: 'nav-ana',
+      sebep: 'Yapılacak iş ana sayfada yazılı. Önce oraya dönelim lordum.',
       yol: true,
     },
   ],
