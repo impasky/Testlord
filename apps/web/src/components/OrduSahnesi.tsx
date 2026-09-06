@@ -162,9 +162,33 @@ export function OrduSahnesi({ army, komutaTavani }: { army: Army; komutaTavani: 
       />
 
       {dagilim.length === 0 ? (
-        <div className="flex h-full flex-col items-center justify-center gap-1 pb-6 text-center">
-          <span className="baslik text-[13px] text-solgun">Ordun yok</span>
-          <span className="text-[11px] text-sonuk">Kışla'da asker eğit, burası dolsun.</span>
+        /* Boş sahne 172 pikseli boşuna kaplıyordu: denetimde ana
+           sayfanın en büyük ölü alanı buydu. Yükseklik SABİT kalmalı
+           (ordu sorgusu geç gelirse sayfa zıplar), o yüzden alan
+           küçültülmedi — DOLDURULDU. Soluk siluetler burada ne
+           duracağını gösteriyor; boşluk bir vaade dönüşüyor. */
+        <div className="flex h-full flex-col items-center justify-end gap-2 pb-6 text-center">
+          <div className="flex items-end justify-center opacity-20" aria-hidden>
+            {UNIT_TYPES.map((tur, i) => (
+              <div key={tur} style={{ marginLeft: i === 0 ? 0 : -18 }}>
+                <Gorsel
+                  tur="birimler"
+                  ad={tur}
+                  alt=""
+                  boyut={Math.round(FIGUR_BOYU * 0.62)}
+                  yedek={
+                    <span className="text-solgun">
+                      <BirimIkonu tip={tur} boyut={28} />
+                    </span>
+                  }
+                />
+              </div>
+            ))}
+          </div>
+          <div>
+            <span className="baslik block text-[13px] text-solgun">Ordun yok</span>
+            <span className="text-[11px] text-sonuk">Kışla'da asker eğit, burası dolsun.</span>
+          </div>
         </div>
       ) : (
         siralar.map((sira, s) => (

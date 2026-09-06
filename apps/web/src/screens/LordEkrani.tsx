@@ -69,6 +69,7 @@ import {
   nadirlikRengi,
 } from '../components/ui';
 import { Gorsel } from '../components/Gorsel';
+import { addanPortre } from '@lordlar/shared';
 import { OrduSahnesi } from '../components/OrduSahnesi';
 import { Arma } from '../components/Arma';
 import { ArmaSecici } from '../components/ArmaSecici';
@@ -185,6 +186,16 @@ function YoklukKarti({ y, onGit }: { y: YoklukOzeti; onGit: (s: Sekme) => void }
   );
 }
 
+/**
+ * public/gorseller/lord/ altındaki portre sayısı.
+ *
+ * Elle yazılı bir sayı, çünkü tarayıcı klasörü listeleyemiyor. Dosya
+ * eklenip bu sayı güncellenmezse yeni portre hiç seçilmez (sessiz ama
+ * zararsız); sayı dosyalardan büyük olursa var olmayan bir dosya istenir
+ * ve Gorsel yedeğe düşer — yine sessiz, yine zararsız.
+ */
+const PORTRE_SAYISI = 5;
+
 /** Kapı düğmesinin simgesi ve altındaki tek satır. */
 const KAPI_YUZU: Record<Kapi, { Ikon: typeof IkonNavLord; alt: (l: LordState) => string }> = {
   generaller: { Ikon: IkonNavGeneraller, alt: (l) => `${l.generalSlots} yuva` },
@@ -259,6 +270,36 @@ export function LordEkrani({
 
   return (
     <div className="space-y-4">
+      {/* ---- Lordun kendisi ----
+          Denetimin en büyük bulgusu buydu: oyunun adı "Lordlar Çağı" ve
+          ana sayfada lord YOKTU. Ekranda tek bir görsel bile
+          bulunmuyordu; oyuncu kendi lorduna değil bir tabloya bakıyordu.
+          Portre addan türüyor (kimlik.ts → addanPortre), arma zaten
+          öyleydi: ikisi de kayıtta yer tutmuyor ve hep aynı kalıyor. */}
+      <Kart className="p-3">
+        <div className="flex items-center gap-3">
+          <div className="relative shrink-0">
+            <Gorsel
+              tur="lord"
+              ad={`lord_${addanPortre(lord.name, PORTRE_SAYISI)}`}
+              alt={lord.name}
+              boyut={56}
+              className="rounded-xl"
+              yedek={<IkonNavLord boyut={40} />}
+            />
+            {/* Arma portrenin köşesinde: ikisi tek bir kimlik. */}
+            <span className="absolute -bottom-1 -right-1">
+              <Arma arma={lord.arma} boyut={24} />
+            </span>
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="baslik truncate text-[16px] text-parsomen">{lord.name}</div>
+            <div className="baslik text-[13px] text-altin">{lord.unvan.ad}</div>
+            <p className="mt-0.5 text-[11px] leading-snug text-solgun">{lord.unvan.aciklama}</p>
+          </div>
+        </div>
+      </Kart>
+
       {/* Ekranın tepesi artık bir sahne: lordun ordusu. Nitelik kartlarıyla
           açılmak, bu ekranı bir karakter sayfası değil bir form yapıyordu. */}
       <OrduSahnesi army={lord.homeArmy} komutaTavani={lord.commandCapacity} />
@@ -432,21 +473,19 @@ export function LordEkrani({
 
       {/* Unvan: şöhretten türüyor, yeni sayaç yok (docs/10 §2.2). Taht
           sahibinin unvanını "Diyarın Lordu" eziyor. */}
-      <Kart className="p-3">
-        <div className="flex items-center gap-3">
-          <Arma arma={lord.arma} boyut={44} />
-          <div className="min-w-0 flex-1">
-            <div className="baslik text-[15px] text-altin">{lord.unvan.ad}</div>
-            <p className="text-[12px] text-solgun">{lord.unvan.aciklama}</p>
-            {lord.unvan.sonrakiAd && (
-              <p className="mt-1 text-[11px] text-sonuk">
-                {formatSayi(lord.unvan.sonrakiEsik! - lord.fame)} şöhret sonra{' '}
-                <span className="text-parsomen">{lord.unvan.sonrakiAd}</span>
-              </p>
-            )}
-          </div>
-        </div>
-      </Kart>
+      {/* Unvanın KENDİSİ yukarıdaki lord kartında; burada yalnız
+          "sıradaki ne" kalıyor. Aynı bilgiyi iki kez göstermek, sayfayı
+          uzatmaktan başka bir işe yaramıyordu. */}
+      {lord.unvan.sonrakiAd && (
+        <Kart className="p-3">
+          <p className="text-[12px] text-solgun">
+            <span className="text-parsomen">
+              {formatSayi(lord.unvan.sonrakiEsik! - lord.fame)} şöhret
+            </span>{' '}
+            sonra <span className="text-altin">{lord.unvan.sonrakiAd}</span> olacaksın.
+          </p>
+        </Kart>
+      )}
 
       {/* Arma KOZMETİK: hiçbir sayıya dokunmuyor (docs/10 §1.1). Güç
           kartlarıyla aynı sayfada durunca oyuncu onu da bir güç seçimi
@@ -549,18 +588,36 @@ export function LordEkrani({
           </Bolum>
 
           <Bolum baslik="Kuşanılan Ekipman">
+            {kusanilan.size === 0 && (
+              /* Altı boş kutu ve hiçbirinde "nereden alınır" yok — denetimde
+                 çıkan hâl buydu. Yuvalar ekipmanın nerede üretildiğini
+                 söylemiyorsa, oyuncu onları hiç dolmayan bir süs sanıyor. */
+              <p className="mb-2 text-[12px] leading-snug text-solgun">
+                Hiçbir yuvan dolu değil. Ekipman{' '}
+                <button
+                  type="button"
+                  className="text-altin underline underline-offset-2"
+                  onClick={() => onKapiAc('demirhane')}
+                >
+                  Demirhane
+                </button>
+                'de dövülür; ürettiğin parçayı buradan kuşanırsın.
+              </p>
+            )}
             <div className="grid grid-cols-3 gap-2">
               {EQUIP_SLOTS.map((slot) => {
                 const it = kusanilan.get(slot);
                 if (!it) {
                   return (
-                    <Kart
+                    <button
                       key={slot}
-                      className="flex aspect-square flex-col items-center justify-center p-2"
+                      type="button"
+                      onClick={() => onKapiAc('demirhane')}
+                      className="bas flex aspect-square flex-col items-center justify-center rounded-2xl border-2 border-dashed border-kenar bg-yuzey/50 p-2"
                     >
                       <span className="baslik text-[11px] text-sonuk">{SLOT_ADI[slot]}</span>
-                      <span className="mt-1 text-[11px] text-sonuk/70">boş</span>
-                    </Kart>
+                      <span className="mt-1 text-[11px] text-altin/70">Demirhane</span>
+                    </button>
                   );
                 }
                 const renk = nadirlikRengi(it.rarity);
@@ -606,16 +663,23 @@ export function LordEkrani({
 
           <Bolum baslik="Savaş Gücü">
             <Kart className="divide-y divide-kenar/70 p-0">
+              {/* Satır adları TÜRKÇE ve kısaltmasız.
+                  Eskiden burada "ELO 1200 · 0G 0M" ve "Sld +%0 · Sav +%0
+                  · Can +%0" yazıyordu: Türkçe bir ortaçağ oyununun ana
+                  sayfasında çevrilmemiş jargon ve kimsenin çözemeyeceği
+                  kısaltmalar. Oyuncu bir satırı okuyamıyorsa o satır
+                  bilgi değil gürültüdür. */}
               {[
                 ['Ekipman gücü', formatSayi(lord.equipmentPower)],
                 ['Lord savaş katkısı', formatSayi(lord.lordContribution)],
                 [
                   'Ordu donanımı',
-                  `Sld +%${Math.round(lord.gearBonus.saldiri * 100)} · Sav +%${Math.round(
-                    lord.gearBonus.savunma * 100,
-                  )} · Can +%${Math.round(lord.gearBonus.can * 100)}`,
+                  `Saldırı +%${Math.round(lord.gearBonus.saldiri * 100)} · ` +
+                    `Savunma +%${Math.round(lord.gearBonus.savunma * 100)} · ` +
+                    `Can +%${Math.round(lord.gearBonus.can * 100)}`,
                 ],
-                ['ELO', `${lord.elo} · ${lord.pvpWins}G ${lord.pvpLosses}M`],
+                ['Düello derecesi', formatSayi(lord.elo)],
+                ['Lord düelloları', `${lord.pvpWins} galibiyet · ${lord.pvpLosses} yenilgi`],
               ].map(([ad, deger]) => (
                 <div key={ad} className="flex items-center justify-between gap-3 px-3 py-2.5">
                   <span className="text-[13px] text-solgun">{ad}</span>

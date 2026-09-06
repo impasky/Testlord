@@ -99,6 +99,26 @@ export interface Unvan {
  * Taht sahibi olan herkesin unvanını "Diyarın Lordu" eziyor — taht zaten
  * oyunun tepesi ve orada iki farklı unvan görmek anlamsız olurdu.
  */
+/**
+ * Lordun portresi: addan türetilir, kayıtta tutulmaz.
+ *
+ * Armanın mantığıyla aynı (addanArma): kimlik oyuncuya SORULMADAN
+ * veriliyor ve hep aynı kalıyor. Ayrı bir alan açmak, oyuncunun hiç
+ * dokunmadığı bir tercihi veritabanında taşımak olurdu.
+ *
+ * Neden ada bağlı, seviyeye değil: portre oyuncunun YÜZÜ. Seviye
+ * atladıkça değişseydi, oyuncu kendi lorduna alışamazdı.
+ */
+export function addanPortre(ad: string, portreSayisi: number): number {
+  if (portreSayisi <= 0) return 1;
+  let h = 2166136261;
+  for (let i = 0; i < ad.length; i++) {
+    h ^= ad.charCodeAt(i);
+    h = Math.imul(h, 16777619) >>> 0;
+  }
+  return (h % portreSayisi) + 1;
+}
+
 export function unvan(sohret: number, tahtSahibi = false): Unvan {
   if (tahtSahibi) {
     return {
