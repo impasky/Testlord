@@ -234,7 +234,12 @@ describe('taktik etkisi düşman bileşimine göre ölçekleniyor', () => {
   it('hiçbir taktik küresel tavanı aşamaz', () => {
     for (const t of TAKTIKLER) {
       for (const dusman of [{ suvari: 100 }, { okcu: 100 }, { milis: 100 }] as Army[]) {
-        const e = taktikEtkisi(t.key, { suvari: 40, mizrakci: 40, okcu: 40, kusatma: 5 }, koy({ 5: 'suvari', 1: 'mizrakci', 9: 'okcu', 13: 'kusatma' }), dusman);
+        const e = taktikEtkisi(
+          t.key,
+          { suvari: 40, mizrakci: 40, okcu: 40, kusatma: 5 },
+          koy({ 5: 'suvari', 1: 'mizrakci', 9: 'okcu', 13: 'kusatma' }),
+          dusman,
+        );
         expect(Math.abs(e.saldiri)).toBeLessThanOrEqual(B.taktik.azami_etki + 1e-9);
         expect(Math.abs(e.savunma)).toBeLessThanOrEqual(B.taktik.azami_etki + 1e-9);
       }
@@ -283,11 +288,9 @@ describe('savaşta gerçekten fark yaratıyor', () => {
 describe('duzenEtkisi iki katmanı toplar', () => {
   it('dizilim ve taktik satırları birlikte dönüyor', () => {
     const ordu: Army = { suvari: 50, milis: 50 };
-    const e = duzenEtkisi(
-      { dizilim: koy({ 5: 'suvari', 1: 'milis' }), taktik: 'hilal' },
-      ordu,
-      { okcu: 100 },
-    );
+    const e = duzenEtkisi({ dizilim: koy({ 5: 'suvari', 1: 'milis' }), taktik: 'hilal' }, ordu, {
+      okcu: 100,
+    });
     const metin = e.satirlar.join(' ');
     expect(metin).toContain('kanatta'); // dizilim katmanı
     expect(metin).toContain('Hilal'); // taktik katmanı

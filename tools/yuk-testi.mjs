@@ -32,7 +32,7 @@ const ESZAMAN = Number(process.env.ESZAMAN ?? 30);
 
 const olcum = new Map(); // uc -> { sureler: [], hata: 0 }
 let toplamHata = 0;
-let toplamKisitlama = 0;   // 429: sunucu hatası değil, kasten konmuş sınır
+let toplamKisitlama = 0; // 429: sunucu hatası değil, kasten konmuş sınır
 const hataOrnekleri = [];
 
 function kaydet(uc, ms, hataMi, detay) {
@@ -155,9 +155,18 @@ await havuz(oyuncular.slice(0, 30), async (o) => {
 console.log('\n' + '='.repeat(74));
 console.log('UÇ BAŞINA GECİKME (ms)');
 console.log('='.repeat(74));
-console.log('  uç'.padEnd(34) + 'istek'.padStart(7) + 'p50'.padStart(8) + 'p95'.padStart(8) + 'p99'.padStart(8) + 'max'.padStart(9));
+console.log(
+  '  uç'.padEnd(34) +
+    'istek'.padStart(7) +
+    'p50'.padStart(8) +
+    'p95'.padStart(8) +
+    'p99'.padStart(8) +
+    'max'.padStart(9),
+);
 let enKotuP95 = 0;
-for (const [uc, o] of [...olcum].sort((a, b) => yuzdelik(b[1].sureler, 95) - yuzdelik(a[1].sureler, 95))) {
+for (const [uc, o] of [...olcum].sort(
+  (a, b) => yuzdelik(b[1].sureler, 95) - yuzdelik(a[1].sureler, 95),
+)) {
   const p95 = yuzdelik(o.sureler, 95);
   enKotuP95 = Math.max(enKotuP95, p95);
   console.log(
@@ -166,7 +175,9 @@ for (const [uc, o] of [...olcum].sort((a, b) => yuzdelik(b[1].sureler, 95) - yuz
       yuzdelik(o.sureler, 50).toFixed(0).padStart(8) +
       p95.toFixed(0).padStart(8) +
       yuzdelik(o.sureler, 99).toFixed(0).padStart(8) +
-      Math.max(...o.sureler).toFixed(0).padStart(9),
+      Math.max(...o.sureler)
+        .toFixed(0)
+        .padStart(9),
   );
 }
 

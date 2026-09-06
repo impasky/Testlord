@@ -13,8 +13,18 @@
       "ad": "Hilal Düzeni",
       "ozet": "Kanatlar sarar, merkez tutar.",
       "aciklama": "Süvarilerin iki kanattan dolanıp düşmanın gerisindeki okçulara ulaşır. Merkez sabit durup düşmanı oyalar. Sarma tuttuğunda savaş erken biter; tutmazsa kanatların incelmiş demektir.",
-      "kosul": { "tur": "birim_orani", "birim": "suvari", "en_az": 0.15, "metin": "Ordunun en az %15'i süvari olmalı." },
-      "ek_kosul": { "tur": "kanatta_birim", "birim": "suvari", "en_az_oran": 0.5, "metin": "Süvarilerinin en az yarısı kanat sütunlarında (1 ve 4) durmalı." },
+      "kosul": {
+        "tur": "birim_orani",
+        "birim": "suvari",
+        "en_az": 0.15,
+        "metin": "Ordunun en az %15'i süvari olmalı."
+      },
+      "ek_kosul": {
+        "tur": "kanatta_birim",
+        "birim": "suvari",
+        "en_az_oran": 0.5,
+        "metin": "Süvarilerinin en az yarısı kanat sütunlarında (1 ve 4) durmalı."
+      },
       "etki": { "saldiri": 0.15, "savunma": -0.08, "karsi_birim": { "okcu": 0.2 } }
     },
     {
@@ -22,8 +32,16 @@
       "ad": "Kalkan Duvarı",
       "ozet": "Ön hat kilitlenir, kimse geçemez.",
       "aciklama": "Milis ve mızrakçılar kalkanlarını kenetleyip tek gövde gibi durur. Saldırın yavaşlar ama hattın kolay kolay yarılmaz. Sayıca üstün düşmana karşı zaman kazandırır.",
-      "kosul": { "tur": "birim_orani", "birim": "yakin_dovus", "en_az": 0.4, "metin": "Ordunun en az %40'ı milis veya mızrakçı olmalı." },
-      "ek_kosul": { "tur": "on_hatta_yakin_dovus", "metin": "Ön satırda (1) yakın dövüş birimi durmalı." },
+      "kosul": {
+        "tur": "birim_orani",
+        "birim": "yakin_dovus",
+        "en_az": 0.4,
+        "metin": "Ordunun en az %40'ı milis veya mızrakçı olmalı."
+      },
+      "ek_kosul": {
+        "tur": "on_hatta_yakin_dovus",
+        "metin": "Ön satırda (1) yakın dövüş birimi durmalı."
+      },
       "etki": { "saldiri": -0.1, "savunma": 0.18 }
     },
     {
@@ -31,7 +49,12 @@
       "ad": "Ok Yağmuru",
       "ozet": "İlk salvo her şeyi belirler.",
       "aciklama": "Okçular düşman menzile girmeden tek ağızdan atar. İlk turda ağır hasar verir, sonrasında okçular yaklaşan düşmana karşı savunmasız kalır. Kısa savaşın taktiği.",
-      "kosul": { "tur": "birim_orani", "birim": "okcu", "en_az": 0.25, "metin": "Ordunun en az %25'i okçu olmalı." },
+      "kosul": {
+        "tur": "birim_orani",
+        "birim": "okcu",
+        "en_az": 0.25,
+        "metin": "Ordunun en az %25'i okçu olmalı."
+      },
       "etki": { "ilk_tur_saldiri": 0.28, "savunma": -0.07 }
     },
     {
@@ -39,7 +62,12 @@
       "ad": "Mızrak Seti",
       "ozet": "Süvariye karşı dikilen orman.",
       "aciklama": "Mızrakçılar diz çöküp mızrak uçlarını öne diker. Süvari hücumunu kıran klasik cevap: düşmanda ne kadar çok süvari varsa o kadar işe yarar. Süvarisiz düşmana karşı boşa gider.",
-      "kosul": { "tur": "birim_orani", "birim": "mizrakci", "en_az": 0.25, "metin": "Ordunun en az %25'i mızrakçı olmalı." },
+      "kosul": {
+        "tur": "birim_orani",
+        "birim": "mizrakci",
+        "en_az": 0.25,
+        "metin": "Ordunun en az %25'i mızrakçı olmalı."
+      },
       "etki": { "savunma": 0.06, "karsi_birim": { "suvari": 0.35 } }
     },
     {
@@ -47,8 +75,19 @@
       "ad": "Kuşatma Düzeni",
       "ozet": "Surlar önce, adamlar sonra.",
       "aciklama": "Mancınıklar arkada korunur, önce sur dövülür. Tahkimatlı bir hedefe karşı en etkili düzen; açık alanda savaşan bir orduya karşı yavaş kalır.",
-      "kosul": { "tur": "birim_en_az_adet", "birim": "kusatma", "en_az": 1, "metin": "En az bir mancınığın olmalı." },
-      "ek_kosul": { "tur": "birim_satirda", "birim": "kusatma", "satir": 4, "en_az_oran": 1.0, "metin": "Bütün mancınıkların en arka satırda (4) durmalı." },
+      "kosul": {
+        "tur": "birim_en_az_adet",
+        "birim": "kusatma",
+        "en_az": 1,
+        "metin": "En az bir mancınığın olmalı."
+      },
+      "ek_kosul": {
+        "tur": "birim_satirda",
+        "birim": "kusatma",
+        "satir": 4,
+        "en_az_oran": 1.0,
+        "metin": "Bütün mancınıkların en arka satırda (4) durmalı."
+      },
       "etki": { "saldiri": -0.05, "kale_delme": 0.25 }
     },
     {

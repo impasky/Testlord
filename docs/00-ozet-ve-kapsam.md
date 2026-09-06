@@ -7,13 +7,13 @@ lordunu güçlendir, bölge ele geçir, ordu besle, sıralamada yüksel.
 
 ## Temel kararlar (dondurulmuş)
 
-| Karar | Seçim | Neden |
-|---|---|---|
-| Platform | **Sadece mobil** (mobil web) | Oyun telefonda oynanacak. Masaüstü düzeni yok; tek sütun, alt gezinme, dokunmatik hedefleri ≥44px. Render'a tek servis olarak kurulur, telefon tarayıcısından açılır. İleride Capacitor ile mağaza uygulamasına sarılabilir — yeniden yazmak gerekmez |
-| Rakip | Gerçek oyuncular, **asenkron** PvP | Rakip online olmak zorunda değil; sunucu basit kalır, sıralama gerçek olur |
-| Zaman | Sürekli dünya + timer | Oyuncu günde 2-3 kez girer; gelir "lazy accrual" ile hesaplanır, cron gerekmez |
-| Dünya | Shard başına **120 oyuncu**, **61 bölge** | Bölge kıtlığı = zorunlu rekabet. Dolunca yeni shard açılır |
-| Para birimi | Altın, Demir, Erzak (+ Şöhret puanı) | Üç kaynak üç farklı bölge tipini değerli kılar; dördüncüsü gereksiz karmaşa |
+| Karar       | Seçim                                     | Neden                                                                                                                                                                                                                                                 |
+| ----------- | ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Platform    | **Sadece mobil** (mobil web)              | Oyun telefonda oynanacak. Masaüstü düzeni yok; tek sütun, alt gezinme, dokunmatik hedefleri ≥44px. Render'a tek servis olarak kurulur, telefon tarayıcısından açılır. İleride Capacitor ile mağaza uygulamasına sarılabilir — yeniden yazmak gerekmez |
+| Rakip       | Gerçek oyuncular, **asenkron** PvP        | Rakip online olmak zorunda değil; sunucu basit kalır, sıralama gerçek olur                                                                                                                                                                            |
+| Zaman       | Sürekli dünya + timer                     | Oyuncu günde 2-3 kez girer; gelir "lazy accrual" ile hesaplanır, cron gerekmez                                                                                                                                                                        |
+| Dünya       | Shard başına **120 oyuncu**, **61 bölge** | Bölge kıtlığı = zorunlu rekabet. Dolunca yeni shard açılır                                                                                                                                                                                            |
+| Para birimi | Altın, Demir, Erzak (+ Şöhret puanı)      | Üç kaynak üç farklı bölge tipini değerli kılar; dördüncüsü gereksiz karmaşa                                                                                                                                                                           |
 
 ## Oyunun çekirdek döngüsü
 
@@ -50,18 +50,21 @@ Yani oyuncuların yarısı bölgesiz. Bu bir hata değil, tasarımın motoru:
 > v1 çıkıp gerçek oyuncu verisi görülmeden bu listeden hiçbir şey yukarı taşınmaz.
 
 **Sosyal**
+
 - Klan / lonca / ittifak sistemi
 - Oyuncular arası sohbet, mesajlaşma, forum
 - Diplomasi, ateşkes, savaş ilanı
 - Arkadaş listesi, davet ödülleri
 
 **Ekonomi**
+
 - Oyuncular arası ticaret, pazar yeri, açık artırma
 - Kaynak takası, hediye gönderme
 - Mikro ödeme, premium para birimi, battle pass
 - Dördüncü kaynak (taş, odun, kereste vb.)
 
 **Savaş**
+
 - Gerçek zamanlı / izlenebilir savaş animasyonu
 - Kuşatma mekaniği detayı (duvar seviyesi, kule, hendek, koç başı)
 - Birim tipi çeşitlendirmesi (5 birimden fazlası)
@@ -69,6 +72,7 @@ Yani oyuncuların yarısı bölgesiz. Bu bir hata değil, tasarımın motoru:
 - Moral, yorgunluk, hava durumu, mevsim, gece/gündüz
 
 **İçerik**
+
 - Hikâye kampanyası, görev zinciri, günlük görev
 - NPC istilası / dünya boss'u / rastgele olay
 - Hanedan, evlilik, veraset, karakter yaşlanması
@@ -78,12 +82,14 @@ Yani oyuncuların yarısı bölgesiz. Bu bir hata değil, tasarımın motoru:
 - Kozmetik: arma tasarımcısı, renk seçimi, avatar
 
 **Platform**
+
 - Mağaza uygulaması (iOS/Android paketi) — mobil web önce çalışsın
 - Masaüstü düzeni — bilinçli olarak yok
 - Push bildirimi
 - Çoklu dil (v1 sadece Türkçe)
 
 **Kapalı karar: sezon YOK**
+
 - **Sezon sistemi** bir zamanlar "sonraya bırakılan belki" idi; artık
   kapatıldı. Dünya **kalıcı**: Lordlar Çağı yıllarca oynanabilen bir oyun ve
   kimsenin emeği takvim yüzünden silinmiyor. Sezonun çözdüğü iki sorunun
@@ -105,15 +111,15 @@ Bir şey eklemek için üç sorunun üçüne birden "evet" gerekir:
 v1 şu olduğunda bitmiştir. **Yedisi de otomatik testle kanıtlı** — kutuyu
 işaretleyen şey kanaat değil, `pnpm e2e` ve `pnpm yuk-testi`:
 
-| # | Kriter | Kanıtı |
-|---|---|---|
-| 1 | ✅ Kayıt olup 5 dakikada ilk askerini eğitebiliyor | `onboarding-testi.mjs` — kayıttan eğitime saniyeler |
-| 2 | ✅ İlk gününde bir NPC bölgesi ele geçirebiliyor | `oyun-dongusu-testi.mjs` — başlangıç ordusuyla fetih |
-| 3 | ✅ Başka bir oyuncuya saldırıp savaş logunu okuyabiliyor | `pvp-testi.mjs` — oyuncu garnizonuna saldırı, iki taraf da raporu görüyor |
-| 4 | ✅ Üç sıralamada da kendini ve ilk 100'ü görebiliyor | `tarayici-tam-akis.mjs` — üç sekme de yükleniyor |
-| 5 | ✅ Ekipman üretip yükseltip kuşanabiliyor | `oyun-dongusu-testi.mjs` — üretim, kuşanma, yükseltme güce yansıyor |
-| 6 | ✅ General kiralayıp savaşa sokabiliyor | `pvp-testi.mjs` — general sahaya sürülüyor ve savaştan XP kazanıyor |
-| 7 | ✅ 120 oyuncu aynı dünyada, kimse çökmeden oynayabiliyor | `yuk-testi.mjs` — 120/120 kayıt, 5xx yok, en yavaş uç 408 ms p95 |
+| #   | Kriter                                                   | Kanıtı                                                                    |
+| --- | -------------------------------------------------------- | ------------------------------------------------------------------------- |
+| 1   | ✅ Kayıt olup 5 dakikada ilk askerini eğitebiliyor       | `onboarding-testi.mjs` — kayıttan eğitime saniyeler                       |
+| 2   | ✅ İlk gününde bir NPC bölgesi ele geçirebiliyor         | `oyun-dongusu-testi.mjs` — başlangıç ordusuyla fetih                      |
+| 3   | ✅ Başka bir oyuncuya saldırıp savaş logunu okuyabiliyor | `pvp-testi.mjs` — oyuncu garnizonuna saldırı, iki taraf da raporu görüyor |
+| 4   | ✅ Üç sıralamada da kendini ve ilk 100'ü görebiliyor     | `tarayici-tam-akis.mjs` — üç sekme de yükleniyor                          |
+| 5   | ✅ Ekipman üretip yükseltip kuşanabiliyor                | `oyun-dongusu-testi.mjs` — üretim, kuşanma, yükseltme güce yansıyor       |
+| 6   | ✅ General kiralayıp savaşa sokabiliyor                  | `pvp-testi.mjs` — general sahaya sürülüyor ve savaştan XP kazanıyor       |
+| 7   | ✅ 120 oyuncu aynı dünyada, kimse çökmeden oynayabiliyor | `yuk-testi.mjs` — 120/120 kayıt, 5xx yok, en yavaş uç 408 ms p95          |
 
 Bu 7 madde tuttuğunda oyun yayına hazırdır. Fazlası v1 değildir.
 
@@ -123,7 +129,7 @@ Bu 7 madde tuttuğunda oyun yayına hazırdır. Fazlası v1 değildir.
 > duvardır. (İkisi de artık yapıldı; sezon ise kapatıldı — docs/09 §2.2.) Bedelin ne olduğu ve nasıl ödeneceği
 > [`docs/07-v2-kapsam.md`](07-v2-kapsam.md)'de.
 
-**Neden "general kiralandı" demek yetmiyor:** kriter generali *savaşa
-sokabilmek*. Kiralamayı test etmek generalin savaş hesabına katıldığını
+**Neden "general kiralandı" demek yetmiyor:** kriter generali _savaşa
+sokabilmek_. Kiralamayı test etmek generalin savaş hesabına katıldığını
 göstermez; testi generalin savaştan XP kazanmasına bağladık — kazanıyorsa
 gerçekten girmiştir.

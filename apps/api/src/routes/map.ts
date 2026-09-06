@@ -6,6 +6,8 @@ import {
   bosGeneralBonus,
   canRecallMarch,
   ayniIttifaktaMi,
+  dizilimGecerliMi,
+  varsayilanDizilim,
   ilkSaldiriMi,
   kesifDurumu,
   kesifMaliyetiAltin,
@@ -43,10 +45,29 @@ const armySchema = z.record(
   z.number().int().min(0),
 );
 
+/**
+ * 4x4 dizilim + taktik. İsteğe bağlı: göndermeyen oyuncu için sunucu
+ * ordunun varsayılan dizilimini kuruyor, yani dizilime hiç dokunmamak
+ * ceza değil.
+ *
+ * Taktiğin GEÇERLİLİĞİ burada denetlenmiyor, motorda denetleniyor:
+ * koşulu tutmayan taktik `taktikEtkisi` içinde sessizce düşüyor. Tek
+ * kaynak orası olsun; iki yerde denetlemek ikisinin ayrışmasına açık
+ * kapı bırakırdı.
+ */
+const duzenSchema = z
+  .object({
+    dizilim: z.array(z.enum(UNIT_TYPES as unknown as [UnitType, ...UnitType[]]).nullable()),
+    taktik: z.string().nullable().default(null),
+  })
+  .refine((d) => dizilimGecerliMi(d.dizilim), { message: 'Dizilim 16 kare olmalı.' })
+  .optional();
+
 const marchSchema = z.object({
   toRegionId: z.number().int(),
   army: armySchema,
   generalIds: z.array(z.string()).max(3).default([]),
+  duzen: duzenSchema,
 });
 
 function normalizeArmy(input: Record<string, number | undefined>): Army {
@@ -732,7 +753,10 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
     const region = await prisma.region.findUnique({ where: { id: body.toRegionId } });
     if (!region) throw hata.bulunamadi('Bölge');
 
-    const attacker = await lordSide(lordId, army, body.generalIds);
+    // Önizleme oyuncunun SEÇTİĞİ düzeni kullanıyor: dizilim ekranında
+    // kareyi oynatınca kazanma ihtimalinin değişmesi, dizilimin işe
+    // yaradığını gösteren tek şey.
+    const attacker = await lordSide(lordId, army, body.generalIds, prisma, body.duzen ?? undefined);
     const fortress = regionFortressBonus(region.type, region.level);
 
     const yuruyusSayisi = await prisma.march.count({ where: { lordId } });
@@ -762,8 +786,22 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       kesin = Boolean(casus);
     }
 
+    // Savunanın düzeni önizlemede de GERÇEK savaştaki gibi çözülüyor:
+    // kayıtlı savunma düzeni varsa o, yoksa garnizonun varsayılanı.
+    // Burada nötr bıraksaydık önizleme savunanı olduğundan zayıf
+    // gösterir, oyuncu kazanacağını sanıp kaybederdi.
+    const savunanKayit = region.ownerLordId
+      ? await prisma.lord.findUnique({
+          where: { id: region.ownerLordId },
+          select: { savunmaDizilim: true, savunmaTaktik: true },
+        })
+      : null;
     const defender: Side = {
       units: defenderArmy,
+      duzen:
+        savunanKayit && dizilimGecerliMi(savunanKayit.savunmaDizilim)
+          ? { dizilim: savunanKayit.savunmaDizilim, taktik: savunanKayit.savunmaTaktik ?? null }
+          : { dizilim: varsayilanDizilim(defenderArmy), taktik: null },
       gearBonus: { saldiri: 0, savunma: 0, can: 0 },
       generalBonus: bosGeneralBonus(),
       lordContribution: 0,
@@ -889,6 +927,9 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
           kind: 'attack',
           army: army as object,
           generalIds: body.generalIds as object,
+          // Karar yola çıkarken donuyor: ordu yoldayken dizilimi
+          // değiştirip savaşı etkilemek mümkün olmasın.
+          duzen: (body.duzen ?? { dizilim: varsayilanDizilim(army), taktik: null }) as object,
           distance: dist,
           departAt: now,
           arriveAt: new Date(now.getTime() + sec * 1000),

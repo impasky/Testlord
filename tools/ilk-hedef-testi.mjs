@@ -48,8 +48,11 @@ async function yeniOyuncu(i) {
   const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
   return {
     post: (yol, govde) =>
-      fetch(`${API}/api${yol}`, { method: 'POST', headers: h, body: JSON.stringify(govde ?? {}) })
-        .then((x) => x.json()),
+      fetch(`${API}/api${yol}`, {
+        method: 'POST',
+        headers: h,
+        body: JSON.stringify(govde ?? {}),
+      }).then((x) => x.json()),
     get: (yol) => fetch(`${API}/api${yol}`, { headers: h }).then((x) => x.json()),
   };
 }
@@ -120,7 +123,11 @@ for (let i = 0; i < OYUNCU; i++) {
   if (son?.kazanir !== true) kazanamayan++;
 }
 
-kontrol('Her yeni oyuncuya bir ilk hedef gösteriliyor', onerisiz === 0, `${onerisiz}/${OYUNCU} önerisiz`);
+kontrol(
+  'Her yeni oyuncuya bir ilk hedef gösteriliyor',
+  onerisiz === 0,
+  `${onerisiz}/${OYUNCU} önerisiz`,
+);
 kontrol(
   'İlk talimat mevcut kaynakla YAPILABİLİR',
   karsilanamayan === 0,

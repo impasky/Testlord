@@ -3,7 +3,7 @@
 Bu doküman bir soruya cevap veriyor: **ortaçağ temalı oyunlarda oyuncuların
 en çok sevdiği şey ne ve bizde hangisi yok?**
 
-`docs/09` türün *sistemlerine* bakıyordu (ittifak, sezon, günlük görev).
+`docs/09` türün _sistemlerine_ bakıyordu (ittifak, sezon, günlük görev).
 Burası **temaya** bakıyor: aynı mekanikler uzay gemisiyle de kurulabilirdi,
 oyuncuyu ortaçağa bağlayan şey ne?
 
@@ -68,13 +68,13 @@ takviye).
 
 ## 2. Ne yapıyoruz
 
-| Bulgu | Bizde | Karar |
-|---|---|---|
-| Heraldik / arma | **yok** | **YAPILIYOR** — oyuncunun kendi arması, her yerde görünür |
-| Unvan kademesi | tek kişilik | **YAPILIYOR** — şöhretten türeyen unvanlar |
-| Kuşatma | mekanik var, an yok | Savaş raporu kuşatmayı ayrıca anlatıyor (K2); yeni sistem gerekmiyor |
-| Kale inşası | bölge geliştirme var | Bu ölçeğe uymuyor; genişletmiyoruz |
-| Topluluk | yapıldı | — |
+| Bulgu           | Bizde                | Karar                                                                |
+| --------------- | -------------------- | -------------------------------------------------------------------- |
+| Heraldik / arma | **yok**              | **YAPILIYOR** — oyuncunun kendi arması, her yerde görünür            |
+| Unvan kademesi  | tek kişilik          | **YAPILIYOR** — şöhretten türeyen unvanlar                           |
+| Kuşatma         | mekanik var, an yok  | Savaş raporu kuşatmayı ayrıca anlatıyor (K2); yeni sistem gerekmiyor |
+| Kale inşası     | bölge geliştirme var | Bu ölçeğe uymuyor; genişletmiyoruz                                   |
+| Topluluk        | yapıldı              | —                                                                    |
 
 ### 2.1 Arma (heraldik)
 
@@ -86,6 +86,7 @@ Arma **her yerde** görünüyor: lord adının yanında, sıralamada, ittifak ü
 listesinde, savaş raporunda, haritada sahip olunan bölgede.
 
 Kurallar:
+
 - Arma **hiçbir sayıya dokunmaz.** Saf görünüş (docs/09 §5 kural 1).
 - **Bedava.** Kimlik satılmaz; kimliğin parayla alınması, parası olmayanın
   kimliksiz kalması demektir.

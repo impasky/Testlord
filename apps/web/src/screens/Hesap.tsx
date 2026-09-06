@@ -86,8 +86,8 @@ export function Hesap({
       <Bolum baslik="Öğretici">
         <Kart className="p-3">
           <p className="mb-2.5 text-[12px] leading-snug text-solgun">
-            Oyunun ne olduğunu, nasıl savaşıldığını ve seni koruyan kuralları
-            baştan okumak istersen öğreticiyi tekrar açabilirsin.
+            Oyunun ne olduğunu, nasıl savaşıldığını ve seni koruyan kuralları baştan okumak istersen
+            öğreticiyi tekrar açabilirsin.
           </p>
           <Buton
             tur="anahat"
@@ -140,8 +140,8 @@ export function Hesap({
         <Kart className="border-kirmizi/40 p-3">
           <p className="text-[12px] text-solgun">
             Hesabın, lordun, ordun ve ekipmanın kalıcı olarak silinir.{' '}
-            <span className="text-kirmizi">Bu işlem geri alınamaz.</span> Bölgelerin sahipsiz
-            kalır ve başkaları tarafından yeniden fethedilebilir.
+            <span className="text-kirmizi">Bu işlem geri alınamaz.</span> Bölgelerin sahipsiz kalır
+            ve başkaları tarafından yeniden fethedilebilir.
           </p>
 
           {!silmeAcik ? (

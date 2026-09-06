@@ -43,8 +43,7 @@ export function SeferKart() {
 
         <div className="mt-2 flex items-center gap-2">
           <span className="tabular shrink-0 text-[12px] text-parsomen">
-            {sefer.simdi}/{sefer.hedef}{' '}
-            <span className="text-solgun">{sefer.birim}</span>
+            {sefer.simdi}/{sefer.hedef} <span className="text-solgun">{sefer.birim}</span>
           </span>
           <div className="min-w-0 flex-1">
             <Ilerleme

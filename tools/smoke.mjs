@@ -15,8 +15,7 @@ const WEB = process.env.WEB_URL ?? 'http://127.0.0.1:5173';
 // Kökteyken her test koşusu 20 MB'lık PNG'yi 'değişti' diye işaretliyordu ve
 // bu üretilen dosyalar depoya girmişti. Klasör .gitignore'da.
 const CIKTI = process.env.SMOKE_OUT ?? 'ekran-goruntuleri';
-const CHROME =
-  process.env.CHROME_PATH ?? '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+const CHROME = process.env.CHROME_PATH ?? '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 
 const browser = await chromium.launch({ executablePath: CHROME, args: ['--no-sandbox'] });
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });

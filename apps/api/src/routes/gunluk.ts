@@ -172,9 +172,7 @@ export async function gunlukRoutes(app: FastifyInstance): Promise<void> {
       odul,
       verilen,
       kirpildi:
-        verilen.altin < odul.altin ||
-        verilen.demir < odul.demir ||
-        verilen.erzak < odul.erzak,
+        verilen.altin < odul.altin || verilen.demir < odul.demir || verilen.erzak < odul.erzak,
       seri: lord.girisSerisi,
       kaynaklar: sonra.resources,
     };

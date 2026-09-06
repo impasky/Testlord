@@ -28,7 +28,12 @@ const trainSchema = z.object({
 const disbandSchema = trainSchema;
 
 /** Ordu donanım hattının bir sonraki seviyesinin maliyeti ve süresi. */
-function gearUpgradeCost(level: number): { altin: number; demir: number; erzak: number; sec: number } {
+function gearUpgradeCost(level: number): {
+  altin: number;
+  demir: number;
+  erzak: number;
+  sec: number;
+} {
   const g = B.ordu_donanimi;
   const n = level + 1;
   return {
@@ -145,7 +150,10 @@ export async function armyRoutes(app: FastifyInstance): Promise<void> {
     const lordId = await findLordByUser(req.user.userId);
     const lines = await prisma.gearLine.findMany({ where: { lordId } });
     const map = new Map(lines.map((l) => [l.line, l.level]));
-    const cfg = B.ordu_donanimi.hatlar as Record<string, { ad: string; etki: string; max_seviye: number }>;
+    const cfg = B.ordu_donanimi.hatlar as Record<
+      string,
+      { ad: string; etki: string; max_seviye: number }
+    >;
 
     return GEAR_LINES.map((line) => {
       const level = map.get(line) ?? 0;
@@ -171,7 +179,8 @@ export async function armyRoutes(app: FastifyInstance): Promise<void> {
     return prisma.$transaction(async (tx) => {
       const gl = await tx.gearLine.findUnique({ where: { lordId_line: { lordId, line } } });
       if (!gl) throw hata.bulunamadi('Donanım hattı');
-      const max = (B.ordu_donanimi.hatlar as Record<string, { max_seviye: number }>)[line]!.max_seviye;
+      const max = (B.ordu_donanimi.hatlar as Record<string, { max_seviye: number }>)[line]!
+        .max_seviye;
       if (gl.level >= max) throw new GameError('Bu hat zaten en üst seviyede.', 400, 'MAKS_SEVIYE');
 
       await assertQueueSlot(lordId, 'upgrade_gear', tx);

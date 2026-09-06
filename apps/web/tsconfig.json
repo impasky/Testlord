@@ -6,5 +6,10 @@
     "jsx": "react-jsx",
     "types": ["vite/client"]
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "../../data/*.json", "../../packages/shared/src/**/*.ts"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "../../data/*.json",
+    "../../packages/shared/src/**/*.ts"
+  ]
 }

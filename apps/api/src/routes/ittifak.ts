@@ -572,7 +572,13 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
           where: { id: a.id },
           data: { leaderLordId: yeniLider.id },
         });
-        await kayitYaz(tx, a.id, 'uye_ayrildi', `${lord.name} ayrıldı; liderlik devredildi.`, lordId);
+        await kayitYaz(
+          tx,
+          a.id,
+          'uye_ayrildi',
+          `${lord.name} ayrıldı; liderlik devredildi.`,
+          lordId,
+        );
         await pushEvent(
           yeniLider.id,
           'ittifak_lider',
@@ -1020,7 +1026,12 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
 
     const a = await prisma.alliance.findUniqueOrThrow({
       where: { id: lord.allianceId },
-      select: { leaderLordId: true, katilim: true, asgariSeviye: true, members: { select: { id: true } } },
+      select: {
+        leaderLordId: true,
+        katilim: true,
+        asgariSeviye: true,
+        members: { select: { id: true } },
+      },
     });
     const rutbe: IttifakRutbe =
       a.leaderLordId === lordId ? 'lider' : lord.ittifakRutbe === 'yasli' ? 'yasli' : 'uye';
@@ -1068,7 +1079,11 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
 
       const b = await tx.allianceBasvuru.findUnique({
         where: { id },
-        include: { lord: { select: { id: true, name: true, level: true, allianceId: true, allianceLeftAt: true } } },
+        include: {
+          lord: {
+            select: { id: true, name: true, level: true, allianceId: true, allianceLeftAt: true },
+          },
+        },
       });
       if (!b || b.allianceId !== allianceId) throw hata.bulunamadi('Başvuru');
       if (b.durum !== 'bekliyor') {
@@ -1123,7 +1138,13 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
       }
 
       await tx.lord.update({ where: { id: b.lordId }, data: { allianceId } });
-      await kayitYaz(tx, allianceId, 'uye_katildi', `${b.lord.name} başvurusu kabul edilip katıldı.`, b.lordId);
+      await kayitYaz(
+        tx,
+        allianceId,
+        'uye_katildi',
+        `${b.lord.name} başvurusu kabul edilip katıldı.`,
+        b.lordId,
+      );
       await tx.allianceBasvuru.update({
         where: { id },
         data: { durum: 'kabul', kararAt: simdi, kararVerenId: lordId },
@@ -1224,7 +1245,8 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
       ...paktlar.flatMap((k) => {
         const ad = karsilar.get(k.aId === allianceId ? k.bId : k.aId) ?? 'bilinmeyen ittifak';
         const cikti: Satir[] = [];
-        if (k.kabulAt) cikti.push({ an: k.kabulAt, kind: 'pakt', mesaj: `${ad} ile pakt kuruldu.` });
+        if (k.kabulAt)
+          cikti.push({ an: k.kabulAt, kind: 'pakt', mesaj: `${ad} ile pakt kuruldu.` });
         if (k.fesihAt)
           cikti.push({ an: k.fesihAt, kind: 'pakt_fesih', mesaj: `${ad} ile pakt feshedildi.` });
         return cikti;

@@ -115,9 +115,7 @@ function BolgeAfisi({
   if (durum === 'yok') return null;
 
   return (
-    <div
-      className={`relative overflow-hidden ${durum === 'var' ? 'aspect-[3/2]' : 'h-0'}`}
-    >
+    <div className={`relative overflow-hidden ${durum === 'var' ? 'aspect-[3/2]' : 'h-0'}`}>
       <img
         key={dosya}
         src={`/gorseller/bolgeler/${dosya}.webp`}
@@ -343,13 +341,7 @@ function TakviyeKarti({
  * İttifak ekranına koymak, lideri bölgeyi seçtiği yerden alıp başka bir
  * ekrana yollamak ve orada bölgeyi yeniden aratmak demekti.
  */
-function IttifakHedefiDugmesi({
-  bolge,
-  lordId,
-}: {
-  bolge: RegionDetailDto;
-  lordId: string;
-}) {
+function IttifakHedefiDugmesi({ bolge, lordId }: { bolge: RegionDetailDto; lordId: string }) {
   const bolgeId = bolge.id;
   const bolgeAdi = bolge.name;
   const qc = useQueryClient();
@@ -397,12 +389,7 @@ function IttifakHedefiDugmesi({
           <p className="mb-2 text-[12px] text-sonuk">
             Ortak hedef bir tanedir; işaretlemek öncekini değiştirir.
           </p>
-          <Buton
-            tur="sessiz"
-            tam
-            onClick={() => isaretle.mutate()}
-            disabled={isaretle.isPending}
-          >
+          <Buton tur="sessiz" tam onClick={() => isaretle.mutate()} disabled={isaretle.isPending}>
             {isaretle.isPending ? 'İşaretleniyor…' : 'İttifak hedefi yap'}
           </Buton>
         </>
@@ -482,8 +469,7 @@ function KesifKarti({ bolge, muttefikMi }: { bolge: RegionDetailDto; muttefikMi:
           )}
           {bolge.kesif.eski && (
             <p className="text-[11px] text-turuncu">
-              Bu bilgi eskidi; garnizon değişmiş olabilir. Tavsiyeler eski rapora göre
-              verilmiyor.
+              Bu bilgi eskidi; garnizon değişmiş olabilir. Tavsiyeler eski rapora göre verilmiyor.
             </p>
           )}
         </div>
@@ -551,7 +537,11 @@ export function Harita({
 
   const harita = useQuery({ queryKey: ['map'], queryFn: api.map });
   const army = useQuery({ queryKey: ['army'], queryFn: api.army });
-  const marches = useQuery({ queryKey: ['marches'], queryFn: api.marches, refetchInterval: 15_000 });
+  const marches = useQuery({
+    queryKey: ['marches'],
+    queryFn: api.marches,
+    refetchInterval: 15_000,
+  });
   const detay = useQuery({
     queryKey: ['region', seciliId],
     queryFn: () => api.region(seciliId!),
@@ -790,7 +780,11 @@ export function Harita({
         <Bolum baslik="Yürüyüşler">
           <div className="space-y-2">
             {marches.data?.map((m) => (
-              <Kart key={m.id} className="p-3" vurgu={m.kind === 'attack' ? 'var(--color-turuncu)' : 'var(--color-yesil)'}>
+              <Kart
+                key={m.id}
+                className="p-3"
+                vurgu={m.kind === 'attack' ? 'var(--color-turuncu)' : 'var(--color-yesil)'}
+              >
                 <div className="flex items-center gap-2">
                   <span className="min-w-0 flex-1 truncate text-[13px]">
                     {m.kind === 'attack' ? 'Saldırı' : 'Dönüş'} →{' '}
@@ -895,11 +889,10 @@ export function Harita({
                 <Kart className="p-3" vurgu="var(--color-altin)">
                   <h3 className="baslik mb-1 text-[11px] text-altin">Taht Kalesi</h3>
                   <p className="text-[12px] text-solgun">
-                    Diyarda tek. Sahibi %
-                    {Math.round(B.taht_kalesi.unvan_sohret_bonusu * 100)} şöhret bonusu alır,
-                    bölge limitine sayılmaz. Buraya saldırmak günlük hakkından düşmez ve el
-                    değiştirdikten sonra kalkanı yalnızca {B.taht_kalesi.kaybetme_korumasi_saat}{' '}
-                    saat sürer.
+                    Diyarda tek. Sahibi %{Math.round(B.taht_kalesi.unvan_sohret_bonusu * 100)}{' '}
+                    şöhret bonusu alır, bölge limitine sayılmaz. Buraya saldırmak günlük hakkından
+                    düşmez ve el değiştirdikten sonra kalkanı yalnızca{' '}
+                    {B.taht_kalesi.kaybetme_korumasi_saat} saat sürer.
                   </p>
                 </Kart>
               )}
@@ -1018,8 +1011,8 @@ export function Harita({
                     <Kart className="p-3">
                       <h3 className="baslik mb-1 text-[11px] text-solgun">Yağmalanabilir depo</h3>
                       <p className="tabular text-[12px]">
-                        {formatSayi(bolge.store.altin)} altın · {formatSayi(bolge.store.demir)} demir
-                        · {formatSayi(bolge.store.erzak)} erzak
+                        {formatSayi(bolge.store.altin)} altın · {formatSayi(bolge.store.demir)}{' '}
+                        demir · {formatSayi(bolge.store.erzak)} erzak
                       </p>
                     </Kart>
                   )}
@@ -1060,8 +1053,8 @@ export function Harita({
                     <Kart className="border-kirmizi/30 p-3">
                       <h3 className="baslik mb-1 text-[11px] text-solgun">Bölgeyi bırak</h3>
                       <p className="text-[11px] text-solgun">
-                        Bölge sahipsiz kalır, garnizondaki birlikler eve döner. Bakımı ağır gelen
-                        ya da savunamadığın bir bölgeden böyle kurtulabilirsin.
+                        Bölge sahipsiz kalır, garnizondaki birlikler eve döner. Bakımı ağır gelen ya
+                        da savunamadığın bir bölgeden böyle kurtulabilirsin.
                       </p>
                       <Buton
                         tur="kirmizi"
@@ -1132,7 +1125,8 @@ export function Harita({
               {bolge.garrisonVisible ? (
                 <Kart className="p-3">
                   <h3 className="baslik mb-1.5 text-[11px] text-solgun">Garnizon</h3>
-                  {Object.entries(bolge.garrison).filter(([, n]) => (n as number) > 0).length === 0 ? (
+                  {Object.entries(bolge.garrison).filter(([, n]) => (n as number) > 0).length ===
+                  0 ? (
                     <p className="text-[12px] text-solgun">boş</p>
                   ) : (
                     <ul className="space-y-1">
@@ -1153,8 +1147,8 @@ export function Harita({
               ) : (
                 <Kart className="p-3">
                   <p className="text-[11px] text-sonuk">
-                    Düşman garnizonu görünmüyor. Casus göndererek öğrenebilir ya da Casus
-                    Leyla'yı sahaya sürerek sürekli görebilirsin.
+                    Düşman garnizonu görünmüyor. Casus göndererek öğrenebilir ya da Casus Leyla'yı
+                    sahaya sürerek sürekli görebilirsin.
                   </p>
                 </Kart>
               )}
@@ -1186,7 +1180,9 @@ export function Harita({
                               {kazandim ? 'ZAFER' : 'YENİLGİ'}
                             </span>
                             <span className="min-w-0 flex-1 truncate text-solgun">
-                              {benimSaldirim ? `→ ${b.defender?.name ?? 'garnizon'}` : `← ${b.attacker.name}`}
+                              {benimSaldirim
+                                ? `→ ${b.defender?.name ?? 'garnizon'}`
+                                : `← ${b.attacker.name}`}
                             </span>
                             <time className="shrink-0 text-[11px] text-sonuk">
                               {new Date(b.createdAt).toLocaleString('tr-TR', {

@@ -889,15 +889,13 @@ export const api = {
     post<{ geriCekildi: string }>(`/ittifak/basvuru/${id}/geri-cek`, {}),
   ittifakBasvurular: () => request<BasvurularDto>('/ittifak/basvurular'),
   ittifakBasvuruKarar: (id: string, kabul: boolean) =>
-    post<{ karar: 'kabul' | 'ret'; lordId: string; ad?: string }>(
-      `/ittifak/basvuru/${id}/karar`,
-      { kabul },
-    ),
+    post<{ karar: 'kabul' | 'ret'; lordId: string; ad?: string }>(`/ittifak/basvuru/${id}/karar`, {
+      kabul,
+    }),
   ittifakArma: (a: ArmaDto) => post<{ arma: ArmaDto }>('/ittifak/arma', a),
   ittifakKayit: () => request<IttifakKayitDto>('/ittifak/kayit'),
   ittifakIncele: (id: string) => request<IttifakInceleDto>(`/ittifak/${id}/incele`),
-  ittifakSiralamasi: (page = 0) =>
-    request<IttifakSiralamaDto>(`/rankings-ittifak?page=${page}`),
+  ittifakSiralamasi: (page = 0) => request<IttifakSiralamaDto>(`/rankings-ittifak?page=${page}`),
   ittifakAyarlar: (v: { katilim?: 'acik' | 'basvuru'; asgariSeviye?: number }) =>
     post<{ katilim: string; asgariSeviye: number }>('/ittifak/ayarlar', v),
 

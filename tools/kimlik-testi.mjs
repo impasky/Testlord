@@ -25,8 +25,9 @@ async function lordKur(etiket) {
   const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
   return {
     post: (y, g) =>
-      fetch(`${API}/api${y}`, { method: 'POST', headers: h, body: JSON.stringify(g ?? {}) })
-        .then((x) => x.json()),
+      fetch(`${API}/api${y}`, { method: 'POST', headers: h, body: JSON.stringify(g ?? {}) }).then(
+        (x) => x.json(),
+      ),
     get: (y) => fetch(`${API}/api${y}`, { headers: h }).then((x) => x.json()),
   };
 }
@@ -39,8 +40,11 @@ const b = await lordKur('b');
 const bas = (await a.get('/me')).lord;
 kontrol('Yeni oyuncunun arması var', Boolean(bas.arma?.kalkan), JSON.stringify(bas.arma));
 kontrol('Yeni oyuncunun unvanı var', Boolean(bas.unvan?.ad), bas.unvan?.ad);
-kontrol('Unvan bir sonrakini söylüyor', Boolean(bas.unvan?.sonrakiAd),
-  `${bas.unvan?.sonrakiAd} @ ${bas.unvan?.sonrakiEsik}`);
+kontrol(
+  'Unvan bir sonrakini söylüyor',
+  Boolean(bas.unvan?.sonrakiAd),
+  `${bas.unvan?.sonrakiAd} @ ${bas.unvan?.sonrakiEsik}`,
+);
 
 // Arma ADDAN türüyor: iki farklı lordun arması aynı olmamalı, yoksa
 // herkes aynı kalkanla başlar ve arma kimlik olmaktan çıkar.
@@ -50,23 +54,34 @@ kontrol(
   JSON.stringify(bas.arma) !== JSON.stringify(basB.arma),
   `${JSON.stringify(bas.arma)} vs ${JSON.stringify(basB.arma)}`,
 );
-kontrol('Armanın iki rengi farklı', bas.arma.renk1 !== bas.arma.renk2,
-  `${bas.arma.renk1}/${bas.arma.renk2}`);
+kontrol(
+  'Armanın iki rengi farklı',
+  bas.arma.renk1 !== bas.arma.renk2,
+  `${bas.arma.renk1}/${bas.arma.renk2}`,
+);
 
 // --- Arma değiştirme
 const yeni = { kalkan: 'kesik', desen: 'capraz', renk1: 'mor', renk2: 'altin', sembol: 'kartal' };
 const kaydedildi = await a.post('/me/arma', yeni);
-kontrol('Arma değiştirilebiliyor', kaydedildi?.arma?.sembol === 'kartal',
-  JSON.stringify(kaydedildi?.arma));
+kontrol(
+  'Arma değiştirilebiliyor',
+  kaydedildi?.arma?.sembol === 'kartal',
+  JSON.stringify(kaydedildi?.arma),
+);
 const sonra = (await a.get('/me')).lord;
-kontrol('Değişiklik /me üzerinde kalıcı', sonra.arma.sembol === 'kartal' && sonra.arma.renk1 === 'mor',
-  JSON.stringify(sonra.arma));
+kontrol(
+  'Değişiklik /me üzerinde kalıcı',
+  sonra.arma.sembol === 'kartal' && sonra.arma.renk1 === 'mor',
+  JSON.stringify(sonra.arma),
+);
 
 // Geçersiz parça REDDEDİLMİYOR, düzeltiliyor.
 const bozuk = await a.post('/me/arma', { ...yeni, kalkan: 'yok-boyle', sembol: 'ejderha' });
-kontrol('Geçersiz parça düzeltiliyor, hata verilmiyor',
+kontrol(
+  'Geçersiz parça düzeltiliyor, hata verilmiyor',
   Boolean(bozuk?.arma) && bozuk.arma.kalkan !== 'yok-boyle' && bozuk.arma.sembol !== 'ejderha',
-  JSON.stringify(bozuk?.arma ?? bozuk));
+  JSON.stringify(bozuk?.arma ?? bozuk),
+);
 
 // Geri al ki sonraki kontroller net olsun
 await a.post('/me/arma', yeni);
@@ -85,10 +100,16 @@ kontrol(
 
 // İttifak üye listesi
 await a.post('/test/kaynak-ver', { altin: 200000, demir: 0, erzak: 0 });
-const itt = await a.post('/ittifak/kur', { ad: `Kimlik ${damga % 10000}`, etiket: `M${damga % 100}` });
+const itt = await a.post('/ittifak/kur', {
+  ad: `Kimlik ${damga % 10000}`,
+  etiket: `M${damga % 100}`,
+});
 const uyeler = (await a.get('/ittifak')).ittifakim?.uyeler ?? [];
-kontrol('İttifak üye listesinde arma var', Boolean(uyeler[0]?.arma?.kalkan),
-  JSON.stringify(uyeler[0]?.arma));
+kontrol(
+  'İttifak üye listesinde arma var',
+  Boolean(uyeler[0]?.arma?.kalkan),
+  JSON.stringify(uyeler[0]?.arma),
+);
 kontrol('İttifak üye listesinde unvan var', Boolean(uyeler[0]?.unvan), uyeler[0]?.unvan);
 void itt;
 

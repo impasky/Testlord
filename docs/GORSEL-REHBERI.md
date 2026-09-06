@@ -20,8 +20,8 @@ yoksa siluet kalır. Yani yarısı hazırken de oyun tutarlı durur.
 Bu ortamda dışarıya çıkış kısıtlı. **Ölçüldü, tahmin değil** — on beş görsel
 ucu tek tek yoklandı ve yalnız Google'ınkiler açık çıktı:
 
-| Kapalı (CONNECT reddi) | Açık |
-|---|---|
+| Kapalı (CONNECT reddi)                                                                                                                 | Açık                                                             |
+| -------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
 | OpenAI, Stability, Replicate, fal, HuggingFace, Together, Fireworks, Novita, SiliconFlow, getimg, BFL, **Pollinations**, **DeepInfra** | `generativelanguage.googleapis.com`, `aiplatform.googleapis.com` |
 
 Yani "anahtar istemeyen bedava servis" diye bir çıkış yolu yok: anahtarsız
@@ -115,6 +115,7 @@ python3 tools/filigran-sil.py <dosya>              # yerel yansıma
 python3 tools/filigran-sil.py <dosya> --tam-ayna   # simetrik sahnelerde
 python3 tools/filigran-sil.py <dosya> --onizleme   # yazmadan karşılaştır
 ```
+
 O dosya elle yazılmaz, buradan üretilir:
 
 ```bash
@@ -152,13 +153,13 @@ olmalı. Birim adları `data/balance.json` → `birimler` anahtarlarıyla aynı.
 
 ## Teknik gereksinimler
 
-| | |
-|---|---|
-| Biçim | **WebP** (PNG'den ~%30 küçük, saydamlık destekler) |
-| Boyut | **512×512** kare |
-| Arka plan | **Koyu düz zemin** — saydam değil |
-| Dosya boyutu | Tane başına 80 KB altı hedefle |
-| Kadraj | Nesne kareyi doldursun, kenarlarda %8 boşluk bırak |
+|              |                                                    |
+| ------------ | -------------------------------------------------- |
+| Biçim        | **WebP** (PNG'den ~%30 küçük, saydamlık destekler) |
+| Boyut        | **512×512** kare                                   |
+| Arka plan    | **Koyu düz zemin** — saydam değil                  |
+| Dosya boyutu | Tane başına 80 KB altı hedefle                     |
+| Kadraj       | Nesne kareyi doldursun, kenarlarda %8 boşluk bırak |
 
 PNG'den WebP'ye çevirmek için: `cwebp -q 82 girdi.png -o cikti.webp`
 (ya da `tools/gorsel-uret.py` içindeki `kaydet()` bunu zaten yapıyor.)

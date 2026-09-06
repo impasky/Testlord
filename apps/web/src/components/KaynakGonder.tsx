@@ -19,13 +19,7 @@ import { Bolum, Buton, EngelNotu, Input, Kart, formatKalan, formatSayi } from '.
 
 const BOS: Resources = { altin: 0, demir: 0, erzak: 0 };
 
-export function KaynakGonder({
-  uyeler,
-  benimId,
-}: {
-  uyeler: IttifakUyesiDto[];
-  benimId: string;
-}) {
+export function KaynakGonder({ uyeler, benimId }: { uyeler: IttifakUyesiDto[]; benimId: string }) {
   const qc = useQueryClient();
   const [alici, setAlici] = useState<string>('');
   const [yuk, setYuk] = useState<Resources>(BOS);
@@ -54,12 +48,7 @@ export function KaynakGonder({
   const toplam = yuk.altin + yuk.demir + yuk.erzak;
   const gonderilebilir = Boolean(alici) && toplam > 0 && !gonder.isPending;
 
-  const alan = (
-    ad: keyof Resources,
-    etiket: string,
-    ikon: React.ReactNode,
-    renk: string,
-  ) => (
+  const alan = (ad: keyof Resources, etiket: string, ikon: React.ReactNode, renk: string) => (
     <div className="flex items-center gap-2">
       <span className={renk}>{ikon}</span>
       <span className="w-12 shrink-0 text-[12px] text-solgun">{etiket}</span>
@@ -86,7 +75,9 @@ export function KaynakGonder({
               type="button"
               onClick={() => setAlici(alici === u.id ? '' : u.id)}
               className={`bas min-h-11 rounded-lg border px-3 py-2 text-[12px] ${
-                alici === u.id ? 'border-altin/70 bg-altin/15 text-altin' : 'border-kenar text-solgun'
+                alici === u.id
+                  ? 'border-altin/70 bg-altin/15 text-altin'
+                  : 'border-kenar text-solgun'
               }`}
             >
               {u.ad}
@@ -107,8 +98,8 @@ export function KaynakGonder({
         {/* Frenler açıkça yazıyor: görünmeyen fren, reddedilen bir
             gönderimle karşılaşıp nedenini anlamamak demek. */}
         <p className="mt-1.5 text-[11px] text-sonuk">
-          Kaynak yolda vakit geçirir. Bugün {formatSayi(kalanTavan)} /{' '}
-          {formatSayi(gunlukTavan)} değerinde daha gönderebilirsin.
+          Kaynak yolda vakit geçirir. Bugün {formatSayi(kalanTavan)} / {formatSayi(gunlukTavan)}{' '}
+          değerinde daha gönderebilirsin.
         </p>
         {hata && <EngelNotu kisa={hata} uzun="Miktarı ve alıcıyı gözden geçir." />}
 

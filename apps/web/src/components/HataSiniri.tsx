@@ -37,8 +37,8 @@ export class HataSiniri extends Component<{ children: ReactNode }, Durum> {
       <div className="flex min-h-dvh flex-col items-center justify-center gap-4 px-6 text-center">
         <h1 className="baslik text-[18px] text-kirmizi">Bir şeyler ters gitti</h1>
         <p className="max-w-xs text-[13px] text-solgun">
-          Ekran yüklenirken beklenmedik bir hata oluştu. Sayfayı yenilemek çoğu zaman
-          yeterlidir; sürerse ilerlemen kaybolmadı, sunucuda duruyor.
+          Ekran yüklenirken beklenmedik bir hata oluştu. Sayfayı yenilemek çoğu zaman yeterlidir;
+          sürerse ilerlemen kaybolmadı, sunucuda duruyor.
         </p>
 
         {/* Hata metni açıkta değil ama ulaşılabilir: oyuncuyu korkutmadan,

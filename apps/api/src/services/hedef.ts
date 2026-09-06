@@ -31,6 +31,7 @@ import {
   armySlots,
   commandCapacity,
   simulateBattle,
+  varsayilanDizilim,
   siraTahmini,
   unit,
   totalEquipmentPower,
@@ -52,6 +53,7 @@ export async function lordSide(
   army: Army,
   generalKeys: string[],
   client: Tx = prisma,
+  duzen?: Side['duzen'],
 ): Promise<Side> {
   const lord = await client.lord.findUniqueOrThrow({
     where: { id: lordId },
@@ -70,6 +72,10 @@ export async function lordSide(
     }));
   return {
     units: army,
+    // Önizleme ile gerçek savaşın AYNI düzeni kullanması şart: oyuncuya
+    // gösterilen kazanma ihtimali, dizilimi hesaba katmayan bir sayı
+    // olsaydı dizilim ekranı oyuncuya yalan söylemiş olurdu.
+    duzen: duzen ?? { dizilim: varsayilanDizilim(army), taktik: null },
     gearBonus: gearBonusFrom(lord.gearLines),
     generalBonus: sahada.length ? aggregateGeneralBonus(sahada) : bosGeneralBonus(),
     lordContribution: lordContribution(lord.guc, items),
@@ -83,6 +89,9 @@ export async function lordSide(
 function npcDefender(garrison: Army, type: string, level: number): Side {
   return {
     units: garrison,
+    // march.ts'teki npcSide ile aynı gerekçe: NPC'yi nötr bırakmak
+    // oyuncuya her bölgede bedava dizilim avantajı verirdi.
+    duzen: { dizilim: varsayilanDizilim(garrison), taktik: null },
     gearBonus: { saldiri: 0, savunma: 0, can: 0 },
     generalBonus: bosGeneralBonus(),
     lordContribution: 0,

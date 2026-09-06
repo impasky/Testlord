@@ -38,7 +38,9 @@ export async function itemRoutes(app: FastifyInstance): Promise<void> {
     return {
       items: items.map((i) => ({
         ...i,
-        power: Math.round(itemPower({ tier: i.tier, rarity: i.rarity as Rarity, upgradeLevel: i.upgradeLevel })),
+        power: Math.round(
+          itemPower({ tier: i.tier, rarity: i.rarity as Rarity, upgradeLevel: i.upgradeLevel }),
+        ),
         upgradeCost: canUpgrade(i.upgradeLevel) ? upgradeCost(i.tier, i.upgradeLevel) : null,
         upgradeChance: canUpgrade(i.upgradeLevel) ? upgradeSuccessChance(i.upgradeLevel) : null,
         sellValue: sellValue({

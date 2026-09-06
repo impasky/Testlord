@@ -26,12 +26,7 @@ import { grantXp, pushEvent, tickLord } from './lord.js';
 import { regionFortressBonus } from './region.js';
 
 export type QueueKind =
-  | 'train'
-  | 'craft'
-  | 'upgrade_item'
-  | 'upgrade_gear'
-  | 'upgrade_region'
-  | 'kesif';
+  'train' | 'craft' | 'upgrade_item' | 'upgrade_gear' | 'upgrade_region' | 'kesif';
 
 /** Tick uygular, kaynağın yeter mi diye bakar, yetiyorsa düşer. */
 export async function spendResources(lordId: string, cost: Resources, tx: Tx): Promise<void> {
@@ -42,7 +37,11 @@ export async function spendResources(lordId: string, cost: Resources, tx: Tx): P
     if (r.altin < cost.altin) eksik.push(`${Math.ceil(cost.altin - r.altin)} altın`);
     if (r.demir < cost.demir) eksik.push(`${Math.ceil(cost.demir - r.demir)} demir`);
     if (r.erzak < cost.erzak) eksik.push(`${Math.ceil(cost.erzak - r.erzak)} erzak`);
-    throw new GameError(`Yeterli kaynağın yok. Eksik: ${eksik.join(', ')}.`, 400, 'YETERSIZ_KAYNAK');
+    throw new GameError(
+      `Yeterli kaynağın yok. Eksik: ${eksik.join(', ')}.`,
+      400,
+      'YETERSIZ_KAYNAK',
+    );
   }
   await tx.lord.update({
     where: { id: lordId },
@@ -100,7 +99,13 @@ export async function addUnitsRegion(
     else await tx.armyUnit.update({ where: { id: existing.id }, data: { count: next } });
   } else if (delta > 0) {
     await tx.armyUnit.create({
-      data: { lordId, unitType, count: delta, locationType: 'region', locationId: String(regionId) },
+      data: {
+        lordId,
+        unitType,
+        count: delta,
+        locationType: 'region',
+        locationId: String(regionId),
+      },
     });
   }
 }
@@ -267,11 +272,7 @@ export async function resolveQueueItem(row: QueueRow): Promise<boolean> {
  * risk hem kararı anlamlı kılıyor hem savunana bir uyarı ve bir husumet
  * veriyor.
  */
-async function kesfiCoz(
-  row: QueueRow,
-  p: Record<string, unknown>,
-  tx: Tx,
-): Promise<void> {
+async function kesfiCoz(row: QueueRow, p: Record<string, unknown>, tx: Tx): Promise<void> {
   const regionId = Number(p.regionId);
   const region = await tx.region.findUnique({ where: { id: regionId } });
   if (!region) return;

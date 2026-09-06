@@ -111,9 +111,7 @@ export async function olcumRoutes(app: FastifyInstance): Promise<void> {
         hicEylemYapmayan: [...eylemSayaci.values()].filter((n) => n === 0).length,
       },
 
-      birakilanEkran: Object.fromEntries(
-        [...ekranlar.entries()].sort((a, b) => b[1] - a[1]),
-      ),
+      birakilanEkran: Object.fromEntries([...ekranlar.entries()].sort((a, b) => b[1] - a[1])),
 
       ertesiGunDonus: {
         olgunLordSayisi: olgun.length,

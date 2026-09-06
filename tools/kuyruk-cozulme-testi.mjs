@@ -37,8 +37,8 @@ const { token } = await kayitOl(API, {
 });
 const bas = { authorization: `Bearer ${token}`, 'content-type': 'application/json' };
 const gonder = (yol, govde = {}) =>
-  fetch(`${API}/api${yol}`, { method: 'POST', headers: bas, body: JSON.stringify(govde) }).then((r) =>
-    r.json(),
+  fetch(`${API}/api${yol}`, { method: 'POST', headers: bas, body: JSON.stringify(govde) }).then(
+    (r) => r.json(),
   );
 const oku = (yol) => fetch(`${API}/api${yol}`, { headers: bas }).then((r) => r.json());
 
@@ -47,8 +47,11 @@ const egitim = await gonder('/army/train', { unitType: 'milis', count: 10 });
 kontrol('Eğitim kuyruğa girdi', egitim.queued === true, JSON.stringify(egitim).slice(0, 90));
 
 const once = await oku('/me');
-kontrol('Kuyruk /me yanıtında görünüyor', (once.queues ?? []).length === 1,
-  `${(once.queues ?? []).length} kuyruk`);
+kontrol(
+  'Kuyruk /me yanıtında görünüyor',
+  (once.queues ?? []).length === 1,
+  `${(once.queues ?? []).length} kuyruk`,
+);
 const evdeOnce = Object.values(once.lord?.homeArmy ?? {}).reduce((t, n) => t + (n ?? 0), 0);
 kontrol('Askerler henüz evde DEĞİL', evdeOnce === 0, `${evdeOnce} asker`);
 
@@ -57,18 +60,23 @@ kontrol('Askerler henüz evde DEĞİL', evdeOnce === 0, `${evdeOnce} asker`);
  * Ekran görüntüsündeki durum birebir bu.
  */
 const vade = await gonder('/test/kuyruklari-vadesinde-birak');
-kontrol('Kuyruğun vadesi geçti (çözülmeden)', vade.vadesiGecen === 1,
-  `${vade.vadesiGecen} kuyruk`);
+kontrol('Kuyruğun vadesi geçti (çözülmeden)', vade.vadesiGecen === 1, `${vade.vadesiGecen} kuyruk`);
 
 // --- TEK bir /me çağrısı ---
 const sonra = await oku('/me');
 const evdeSonra = Object.values(sonra.lord?.homeArmy ?? {}).reduce((t, n) => t + (n ?? 0), 0);
 
 kontrol('Tek /me çağrısı askerleri orduya kattı', evdeSonra === 10, `${evdeSonra} asker`);
-kontrol('Biten kuyruk artık listede değil', (sonra.queues ?? []).length === 0,
-  `${(sonra.queues ?? []).length} kuyruk`);
-kontrol('Komuta kapasitesi de güncellendi', (sonra.lord?.usedSlots ?? 0) > 0,
-  `${sonra.lord?.usedSlots} yer`);
+kontrol(
+  'Biten kuyruk artık listede değil',
+  (sonra.queues ?? []).length === 0,
+  `${(sonra.queues ?? []).length} kuyruk`,
+);
+kontrol(
+  'Komuta kapasitesi de güncellendi',
+  (sonra.lord?.usedSlots ?? 0) > 0,
+  `${sonra.lord?.usedSlots} yer`,
+);
 
 /**
  * İdempotenslik: ikinci okuma askerleri İKİ KEZ vermemeli. `resolved`

@@ -48,7 +48,10 @@ export function KarsiIpuclari({
           const iyi = i.yon === 'guclu';
           const renk = iyi ? 'var(--color-yesil)' : 'var(--color-kirmizi)';
           return (
-            <li key={`${i.yon}-${i.benim}-${i.onun}`} className="flex items-center gap-1.5 text-[12px]">
+            <li
+              key={`${i.yon}-${i.benim}-${i.onun}`}
+              className="flex items-center gap-1.5 text-[12px]"
+            >
               <span className="shrink-0" style={{ color: renk }}>
                 <BirimIkonu tip={i.benim} boyut={14} />
               </span>
@@ -57,10 +60,7 @@ export function KarsiIpuclari({
                 <span className="text-solgun">{iyi ? ' kırıyor: ' : ' zayıf: '}</span>
                 <strong className="text-parsomen">{unitName(i.onun)}</strong>
               </span>
-              <span
-                className="tabular baslik ml-auto shrink-0 text-[11px]"
-                style={{ color: renk }}
-              >
+              <span className="tabular baslik ml-auto shrink-0 text-[11px]" style={{ color: renk }}>
                 ×{i.carpan}
               </span>
             </li>

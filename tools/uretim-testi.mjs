@@ -19,14 +19,23 @@ const URL = process.env.URETIM_URL ?? 'http://localhost:3200';
 // Kökteyken her test koşusu 20 MB'lık PNG'yi 'değişti' diye işaretliyordu ve
 // bu üretilen dosyalar depoya girmişti. Klasör .gitignore'da.
 const SP = process.env.SMOKE_OUT ?? 'ekran-goruntuleri';
-let hata=0; const k=(a,c,d='')=>{console.log(`  ${c?'[GEÇTİ]':'[KALDI]'} ${a}${d?` — ${d}`:''}`); if(!c)hata++;};
+let hata = 0;
+const k = (a, c, d = '') => {
+  console.log(`  ${c ? '[GEÇTİ]' : '[KALDI]'} ${a}${d ? ` — ${d}` : ''}`);
+  if (!c) hata++;
+};
 
-const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium-1194/chrome-linux/chrome',args:['--no-sandbox']});
-const ctx=await b.newContext({...devices['iPhone 13']});
-const page=await ctx.newPage();
-const hatalar=[];
-page.on('console',m=>{if(m.type()==='error')hatalar.push(m.text());});
-page.on('requestfailed',r=>hatalar.push('düştü: '+r.url()));
+const b = await chromium.launch({
+  executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
+  args: ['--no-sandbox'],
+});
+const ctx = await b.newContext({ ...devices['iPhone 13'] });
+const page = await ctx.newPage();
+const hatalar = [];
+page.on('console', (m) => {
+  if (m.type() === 'error') hatalar.push(m.text());
+});
+page.on('requestfailed', (r) => hatalar.push('düştü: ' + r.url()));
 
 console.log(`Üretim modu — telefon boyutunda, tek adres (${URL})\n`);
 // Bu test, dev sunucusunu değil ÜRETİM derlemesini ölçüyor; ayakta değilse
@@ -40,48 +49,69 @@ try {
   await b.close();
   process.exit(2);
 }
-k('Sayfa açıldı', (await page.title())==='Lordlar Çağı');
-await page.screenshot({path:`${SP}/tel-1-giris.png`,fullPage:true});
+k('Sayfa açıldı', (await page.title()) === 'Lordlar Çağı');
+await page.screenshot({ path: `${SP}/tel-1-giris.png`, fullPage: true });
 
-const d=Date.now();
-await page.fill('input[placeholder="Kara Yusuf"]',`Gezgin ${d.toString(36).slice(-4)}`);
-await page.fill('input[type=email]',`tel${d}@lordlar.dev`);
-await page.fill('input[type=password]','parola1234');
+const d = Date.now();
+await page.fill('input[placeholder="Kara Yusuf"]', `Gezgin ${d.toString(36).slice(-4)}`);
+await page.fill('input[type=email]', `tel${d}@lordlar.dev`);
+await page.fill('input[type=password]', 'parola1234');
 await page.click('button[type=submit]');
-let girdi=true;
-try{ await page.waitForSelector('nav button:has-text("Malikâne")',{timeout:15000}); }
-catch{ girdi=false; console.log('   sayfa:',(await page.locator('body').innerText()).slice(0,200)); }
+let girdi = true;
+try {
+  await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 15000 });
+} catch {
+  girdi = false;
+  console.log('   sayfa:', (await page.locator('body').innerText()).slice(0, 200));
+}
 k('Telefondan kayıt olup oyuna girildi', girdi);
 // Öğretici tam ekran açılıyor: gerçek oyuncu gibi geçiyoruz.
 await ogreticiyiGec(page);
 await rehberiSustur(page);
-if(!girdi){ for(const h of hatalar.slice(0,4)) console.log('    -',h); await b.close(); process.exit(1); }
+if (!girdi) {
+  for (const h of hatalar.slice(0, 4)) console.log('    -', h);
+  await b.close();
+  process.exit(1);
+}
 await page.waitForTimeout(1200);
-await page.screenshot({path:`${SP}/tel-2-malikane.png`,fullPage:true});
+await page.screenshot({ path: `${SP}/tel-2-malikane.png`, fullPage: true });
 
-const tasma=await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+1);
-k('Yatay taşma yok',!tasma, await page.evaluate(()=>`${document.documentElement.scrollWidth}px içerik / ${window.innerWidth}px ekran`));
+const tasma = await page.evaluate(
+  () => document.documentElement.scrollWidth > window.innerWidth + 1,
+);
+k(
+  'Yatay taşma yok',
+  !tasma,
+  await page.evaluate(
+    () => `${document.documentElement.scrollWidth}px içerik / ${window.innerWidth}px ekran`,
+  ),
+);
 
 // Alt gezinme sekmeleri
-for(const [s,f] of [['Kışla','tel-3-kisla.png'],['Harita','tel-4-harita.png']]){
+for (const [s, f] of [
+  ['Kışla', 'tel-3-kisla.png'],
+  ['Harita', 'tel-4-harita.png'],
+]) {
   await page.locator(`nav button:has-text("${s}")`).click();
   await page.waitForTimeout(1600);
-  await page.screenshot({path:`${SP}/${f}`,fullPage:true});
+  await page.screenshot({ path: `${SP}/${f}`, fullPage: true });
 }
 // Sıralama menü sayfasında
 // Sıralama artık Lord sekmesinin içinde bir KAPI (panel).
 await ekrana(page, 'siralama', 1600);
-await page.screenshot({path:`${SP}/tel-5-siralama.png`,fullPage:true});
+await page.screenshot({ path: `${SP}/tel-5-siralama.png`, fullPage: true });
 // Sıralama artık tablo değil kart listesi (mobil düzen)
 const satir = await page.locator('text=/Sv \\d+ · \\d+ bölge/').count();
 k('Sıralamada rakip lordlar var', satir >= 5, `${satir} lord`);
 
 await page.locator('nav button:has-text("Harita")').click();
 await page.waitForTimeout(1500);
-const dusman=await page.locator('svg path[fill="url(#dusman)"]').count();
-k('Haritada düşman bölgesi var', dusman>0, `${dusman} bölge`);
+const dusman = await page.locator('svg path[fill="url(#dusman)"]').count();
+k('Haritada düşman bölgesi var', dusman > 0, `${dusman} bölge`);
 
-k('Konsolda hata yok', hatalar.length===0, hatalar[0]??'');
+k('Konsolda hata yok', hatalar.length === 0, hatalar[0] ?? '');
 await b.close();
-console.log(hata===0?'\nSONUÇ: telefondan üretim modunda oynanabiliyor.':`\nSONUÇ: ${hata} sorun.`);
-process.exit(hata===0?0:1);
+console.log(
+  hata === 0 ? '\nSONUÇ: telefondan üretim modunda oynanabiliyor.' : `\nSONUÇ: ${hata} sorun.`,
+);
+process.exit(hata === 0 ? 0 : 1);

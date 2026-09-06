@@ -26,12 +26,14 @@ Bu yüzden v2 bir "sürüm" değil, **v1'in tamamlanması**.
 ---
 
 ## M10 — İttifak ve sohbet · 6 gün
+
 ### Eleştiri 1 (sosyal katman yok), 2 (bekleme boş), 4 (yeni oyuncu eleniyor)
 
 Oyunun en büyük eksiği. Diğer her şeyden önce gelir; onsuz kalan maddelerin
 değeri düşer.
 
 **Yapı**
+
 - İttifak: en fazla **15 üye**. 120 kişilik shard'da 8 ittifak eder — rekabet
   için yeterince çok, herkesin birbirini tanıması için yeterince az.
 - Roller: lider, subay (davet/atma yetkisi), üye.
@@ -45,6 +47,7 @@ Bir üye, başka bir üyenin bölgesine ordu gönderebilir. Takviye orada garniz
 gibi savunur, 24 saat sonra kendiliğinden eve döner.
 
 Neden en önemli mekanik bu:
+
 - **Beklemeyi yardıma çevirir.** Altı saatlik yürüyüş, birinin bölgesini
   kurtarmak için yola çıkmışsa bekleyiş değil gerilimdir.
 - **Bölgesiz oyuncuyu oyunda tutar.** 60 bölge / 120 oyuncu matematiğinde
@@ -60,13 +63,15 @@ orada değil), ve bir bölgede en fazla 2 takviye durabilir.
 ---
 
 ## M11 — Sezon · 5 gün
+
 ### Eleştiri 3 (endgame darboğaz), 4 (olgun shard yeni oyuncuyu eliyor)
 
-`docs/01` Taht Kalesi için *"sezon sistemi yazmaya gerek yok"* diyordu.
+`docs/01` Taht Kalesi için _"sezon sistemi yazmaya gerek yok"_ diyordu.
 Yanlıştı. Tek taht, **bir kazanan ve 119 seyirci** üretir; sıralama donduğu
 an oyun ölür.
 
 **Döngü: 8 hafta**
+
 - Sezon sonunda sıralamalar dondurulur, şampiyon ittifak ve Diyarın Lordu
   kalıcı olarak kaydedilir.
 - Harita sıfırlanır: bölgeler, ordular, ekipman, kaynaklar gider.
@@ -91,6 +96,7 @@ kavga sebebi kalır hem de "alan bitirdi" olmaz.
 ---
 
 ## M12 — Savaşta karar · 4 gün
+
 ### Eleştiri 5 (oyuncunun savaşta kararı yok)
 
 Savaş sunucuda çözülüyor ve oyuncunun içeride kararı yok. Async bir oyunda
@@ -98,11 +104,11 @@ canlı müdahale zaten olmayacak — ama **savaş öncesi karar** olabilir.
 
 Üç dik eksen ekleniyor; hiçbiri yeni içerik değil, var olanı derinleştiriyor:
 
-| Karar | Seçenekler | Ne değiştirir |
-|---|---|---|
-| **Duruş** | Saldırgan / Dengeli / Temkinli | Verilen hasar ↔ alınan kayıp dengesi |
-| **Hedef önceliği** | Hangi düşman birimine yüklenilecek | Taş-kağıt-makası aramadan seçime çevirir |
-| **Yetenek turu** | Generalin yeteneği 1., 2. ya da 3. turda | Zamanlama kararı |
+| Karar              | Seçenekler                               | Ne değiştirir                            |
+| ------------------ | ---------------------------------------- | ---------------------------------------- |
+| **Duruş**          | Saldırgan / Dengeli / Temkinli           | Verilen hasar ↔ alınan kayıp dengesi     |
+| **Hedef önceliği** | Hangi düşman birimine yüklenilecek       | Taş-kağıt-makası aramadan seçime çevirir |
+| **Yetenek turu**   | Generalin yeteneği 1., 2. ya da 3. turda | Zamanlama kararı                         |
 
 5 birim × 3 duruş × 5 hedef × 3 tur = karar uzayı içerik eklemeden büyür.
 
@@ -113,6 +119,7 @@ suçlayabilmeli.
 ---
 
 ## M13 — Dil ve erişim · 4 gün
+
 ### Eleştiri 6 (Türkçe-only), 8 (mağaza yok), 9 (bildirim yok)
 
 - **i18n**: bütün metinler çıkarılır, TR + EN. Motor ve denge dosyaları
@@ -125,6 +132,7 @@ suçlayabilmeli.
 ---
 
 ## M14 — Geri dönüş kancaları · 3 gün
+
 ### Eleştiri 9 (kanca yok), 2 (bekleme boş)
 
 - **Push bildirimi**: saldırıya uğradın, ordun vardı, kuyruk bitti,
@@ -138,15 +146,18 @@ suçlayabilmeli.
 ---
 
 ## M15 — Para modeli · 3 gün
+
 ### Eleştiri 7 (başarı bir gider)
 
 Oyunun vaadi adil rekabet. Bu vaadi bozan hiçbir şey satılamaz.
 
 **Satılabilir**
+
 - Kozmetik: lord portresi, sancak deseni, bölge derisi, isim rengi
 - Sezon geçişi: oynayarak ilerleyen kozmetik hat + küçük kolaylıklar
 
 **Satılamaz**
+
 - Kaynak, hızlandırma, ekipman, general, ordu, ekstra bölge
 - Kısaca: **güç satılmaz.**
 
@@ -158,6 +169,7 @@ hedeflemek, oyunu bozan kararlara kapı açar.
 ---
 
 ## M16 — Kendi kendini yöneten canlı operasyon · 3 gün
+
 ### Eleştiri 8 (tek kişi, canlı operasyon kapasitesi yok)
 
 Bu tür etkinlikle yaşar ve etkinlik bir ekibin tam zamanlı işidir. Burada
@@ -190,15 +202,15 @@ kararlarıyla değil, ancak beklentiyi doğru kurarak yönetilir.
 
 ## Sıra ve gerekçe
 
-| # | Taş | Gün | Neden bu sırada |
-|---|---|---|---|
-| M10 | İttifak ve sohbet | 6 | Taşıyıcı duvar. Diğer her şeyin değeri buna bağlı |
-| M11 | Sezon | 5 | Ölü sıralama sorununu çözer; ittifak varken anlamlı |
-| M14 | Geri dönüş kancaları | 3 | İttifak yükümlülüğü en güçlü kanca — M10 gerekli |
-| M13 | Dil ve erişim | 4 | Push bildirimi M14'ü tamamlar; native kabuk gerekli |
-| M12 | Savaşta karar | 4 | Derinlik, oyuncu kalmaya başladıktan sonra değerli |
-| M16 | Canlı operasyon | 3 | Sezon otomasyonu M11'i gerektirir |
-| M15 | Para modeli | 3 | En son: satacak bir topluluk oluşmadan satış anlamsız |
+| #   | Taş                  | Gün | Neden bu sırada                                       |
+| --- | -------------------- | --- | ----------------------------------------------------- |
+| M10 | İttifak ve sohbet    | 6   | Taşıyıcı duvar. Diğer her şeyin değeri buna bağlı     |
+| M11 | Sezon                | 5   | Ölü sıralama sorununu çözer; ittifak varken anlamlı   |
+| M14 | Geri dönüş kancaları | 3   | İttifak yükümlülüğü en güçlü kanca — M10 gerekli      |
+| M13 | Dil ve erişim        | 4   | Push bildirimi M14'ü tamamlar; native kabuk gerekli   |
+| M12 | Savaşta karar        | 4   | Derinlik, oyuncu kalmaya başladıktan sonra değerli    |
+| M16 | Canlı operasyon      | 3   | Sezon otomasyonu M11'i gerektirir                     |
+| M15 | Para modeli          | 3   | En son: satacak bir topluluk oluşmadan satış anlamsız |
 
 **Toplam ~28 iş günü.**
 

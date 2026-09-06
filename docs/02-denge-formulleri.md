@@ -15,11 +15,11 @@ Tüm değerler `tools/` altındaki simülasyonla doğrulandı (bkz. bu doküman�
 saatlik = taban + seviye_bonusu × lord_seviyesi
 ```
 
-| | Taban | Seviye başına | Lv1 | Lv30 | Lv60 |
-|---|---|---|---|---|---|
-| Altın | 100 | +6 | 106 | 280 | 460 |
-| Demir | 40 | +3 | 43 | 130 | 220 |
-| Erzak | 120 | +8 | 128 | 360 | 600 |
+|       | Taban | Seviye başına | Lv1 | Lv30 | Lv60 |
+| ----- | ----- | ------------- | --- | ---- | ---- |
+| Altın | 100   | +6            | 106 | 280  | 460  |
+| Demir | 40    | +3            | 43  | 130  | 220  |
+| Erzak | 120   | +8            | 128 | 360  | 600  |
 
 **Neden seviyeyle büyüyor:** Sabit olsaydı, geç oyundaki ordu bakımı taban geliri
 ezer ve bölgesini kaybeden oyuncu geri dönüşü olmayan bir açlık sarmalına
@@ -31,13 +31,13 @@ girerdi. Büyüyen taban, "dibe vurdum ama ayaktayım" durumunu garanti eder.
 saatlik = taban_gelir × ring_çarpanı × (1 + 0.25 × (bölge_seviyesi − 1))
 ```
 
-| Tip | Taban/saat | ring4 (×1.0) | ring1 (×2.0) | ring1 + Lv5 |
-|---|---|---|---|---|
-| Tarla | 140 erzak | 140 | 280 | 560 |
-| Şehir | 200 altın | 200 | 400 | 800 |
-| Maden | 100 demir | 100 | 200 | 400 |
-| Kale | 80 altın + 4 şöhret | 80 | 160 | 320 |
-| Taht | 300/150/200 + 20 şöhret | — | — | 900/450/600 |
+| Tip   | Taban/saat              | ring4 (×1.0) | ring1 (×2.0) | ring1 + Lv5 |
+| ----- | ----------------------- | ------------ | ------------ | ----------- |
+| Tarla | 140 erzak               | 140          | 280          | 560         |
+| Şehir | 200 altın               | 200          | 400          | 800         |
+| Maden | 100 demir               | 100          | 200          | 400         |
+| Kale  | 80 altın + 4 şöhret     | 80           | 160          | 320         |
+| Taht  | 300/150/200 + 20 şöhret | —            | —            | 900/450/600 |
 
 ### Gelir hesaplama tekniği — "lazy accrual"
 
@@ -67,31 +67,31 @@ bir anlamı olması için depoda bir şey birikmesi gerekir.
 XP(n → n+1) = 120 × n^1.55
 ```
 
-| Aşama | Gereken XP | Kümülatif |
-|---|---|---|
-| Lv1 → 2 | 120 | 120 |
-| Lv10 → 11 | 4.263 | ~23.000 |
-| Lv30 → 31 | 25.116 | ~400.000 |
-| Lv59 → 60 | 70.827 | **1.576.298** |
+| Aşama     | Gereken XP | Kümülatif     |
+| --------- | ---------- | ------------- |
+| Lv1 → 2   | 120        | 120           |
+| Lv10 → 11 | 4.263      | ~23.000       |
+| Lv30 → 31 | 25.116     | ~400.000      |
+| Lv59 → 60 | 70.827     | **1.576.298** |
 
 ### XP kaynakları
 
-| Kaynak | Değer |
-|---|---|
-| PvP galibiyet | `80 × rakip_lord_seviyesi` |
-| PvP mağlubiyet | `20 × rakip_lord_seviyesi` |
-| Bölge ele geçirme | `1500 × ring_çarpanı` |
-| Bölge yükseltme | `500 × yeni_seviye` |
-| NPC garnizonu temizleme | `4 × npc_birim_sayısı` |
+| Kaynak                  | Değer                      |
+| ----------------------- | -------------------------- |
+| PvP galibiyet           | `80 × rakip_lord_seviyesi` |
+| PvP mağlubiyet          | `20 × rakip_lord_seviyesi` |
+| Bölge ele geçirme       | `1500 × ring_çarpanı`      |
+| Bölge yükseltme         | `500 × yeni_seviye`        |
+| NPC garnizonu temizleme | `4 × npc_birim_sayısı`     |
 
 **Doğrulanmış tempo** (günde 6 savaş oynayan aktif oyuncu):
 
-| Hedef | Süre |
-|---|---|
-| Lv10 | 9 gün |
-| Lv30 | 40 gün |
-| Lv45 | 70 gün |
-| Lv60 | **109 gün** |
+| Hedef | Süre        |
+| ----- | ----------- |
+| Lv10  | 9 gün       |
+| Lv30  | 40 gün      |
+| Lv45  | 70 gün      |
+| Lv60  | **109 gün** |
 
 Mağlubiyetin de XP vermesi kasıtlı: sürekli kaybeden oyuncu bile ilerler, ve
 ilerledikçe rakiplerine yaklaşır. Bu sessiz bir "rubber band"dir.
@@ -102,23 +102,23 @@ ilerledikçe rakiplerine yaklaşır. Bu sessiz bir "rubber band"dir.
 
 ### Birim tablosu
 
-| Birim | Sld | Sav | Can | Hız | Yer | Eğitim | Altın | Demir | Erzak | Bakım/sa |
-|---|---|---|---|---|---|---|---|---|---|---|
-| Köylü Milis | 10 | 8 | 40 | 6 | 1 | 45sn | 50 | — | 20 | 1 |
-| Mızrakçı | 18 | 30 | 70 | 5 | 1 | 90sn | 120 | 30 | 40 | 2 |
-| Okçu | 32 | 12 | 55 | 6 | 1 | 110sn | 150 | 40 | 35 | 2 |
-| Süvari | 55 | 25 | 110 | 12 | 3 | 240sn | 320 | 90 | 80 | 5 |
-| Mancınık | 90 | 5 | 150 | 3 | 5 | 600sn | 600 | 200 | 60 | 8 |
+| Birim       | Sld | Sav | Can | Hız | Yer | Eğitim | Altın | Demir | Erzak | Bakım/sa |
+| ----------- | --- | --- | --- | --- | --- | ------ | ----- | ----- | ----- | -------- |
+| Köylü Milis | 10  | 8   | 40  | 6   | 1   | 45sn   | 50    | —     | 20    | 1        |
+| Mızrakçı    | 18  | 30  | 70  | 5   | 1   | 90sn   | 120   | 30    | 40    | 2        |
+| Okçu        | 32  | 12  | 55  | 6   | 1   | 110sn  | 150   | 40    | 35    | 2        |
+| Süvari      | 55  | 25  | 110 | 12  | 3   | 240sn  | 320   | 90    | 80    | 5        |
+| Mancınık    | 90  | 5   | 150 | 3   | 5   | 600sn  | 600   | 200   | 60    | 8        |
 
 ### Karşı çarpanları
 
-| Saldıran | Hedef | Çarpan |
-|---|---|---|
-| Mızrakçı | Süvari | ×1.5 savunma |
-| Okçu | Mızrakçı | ×1.5 saldırı |
-| Süvari | Okçu | ×1.5 saldırı |
-| Mancınık | Kale savunması | ×2.0 |
-| Mancınık | Birim | ×0.5 |
+| Saldıran | Hedef          | Çarpan       |
+| -------- | -------------- | ------------ |
+| Mızrakçı | Süvari         | ×1.5 savunma |
+| Okçu     | Mızrakçı       | ×1.5 saldırı |
+| Süvari   | Okçu           | ×1.5 saldırı |
+| Mancınık | Kale savunması | ×2.0         |
+| Mancınık | Birim          | ×0.5         |
 
 Listede olmayan her eşleşme ×1.0.
 
@@ -128,20 +128,20 @@ Listede olmayan her eşleşme ×1.0.
 kapasite = 50 + Liderlik × 8 + general_bonusları
 ```
 
-| Liderlik | Yer | ≈ Süvari | General slotu |
-|---|---|---|---|
-| 5 (başlangıç) | 90 | 30 | 1 |
-| 25 | 250 | 83 | 1 |
-| 50 | 450 | 150 | 2 |
-| 100 | 850 | 283 | 3 |
+| Liderlik      | Yer | ≈ Süvari | General slotu |
+| ------------- | --- | -------- | ------------- |
+| 5 (başlangıç) | 90  | 30       | 1             |
+| 25            | 250 | 83       | 1             |
+| 50            | 450 | 150      | 2             |
+| 100           | 850 | 283      | 3             |
 
 ### Bakım dengesi — doğrulandı
 
-| Aşama | Ordu | Bakım/sa | Erzak geliri | Sonuç |
-|---|---|---|---|---|
-| Lv1 başlangıç | 20 mızrakçı + 15 okçu | 70 | 128 (malikâne) | ✅ rahat |
-| Lv15 orta | 60/50/15 süvari | 295 | 380 (malikâne + 1 tarla) | ✅ tutar |
-| Lv60 endgame | 150/120/150/20 | 1450 | 1860 (malikâne + 3 tarla) | ✅ tarla şart |
+| Aşama         | Ordu                  | Bakım/sa | Erzak geliri              | Sonuç         |
+| ------------- | --------------------- | -------- | ------------------------- | ------------- |
+| Lv1 başlangıç | 20 mızrakçı + 15 okçu | 70       | 128 (malikâne)            | ✅ rahat      |
+| Lv15 orta     | 60/50/15 süvari       | 295      | 380 (malikâne + 1 tarla)  | ✅ tutar      |
+| Lv60 endgame  | 150/120/150/20        | 1450     | 1860 (malikâne + 3 tarla) | ✅ tarla şart |
 
 Yani: **başlangıçta açlık yok, geç oyunda tarlasız büyük ordu yok.** İstenen tam olarak buydu.
 
@@ -152,11 +152,11 @@ Lv N maliyeti: altın = 2000 × 1.7^(N−1),  demir = 1200 × 1.7^(N−1)
 Lv N süresi:   1 saat × 1.6^(N−1)
 ```
 
-| Seviye | Altın | Demir | Süre | Kümülatif bonus |
-|---|---|---|---|---|
-| 1 | 2.000 | 1.200 | 1 sa | +%3 |
-| 5 | 16.700 | 10.000 | 6,5 sa | +%15 |
-| 10 | 236.000 | 141.600 | 69 sa | **+%30** |
+| Seviye | Altın   | Demir   | Süre   | Kümülatif bonus |
+| ------ | ------- | ------- | ------ | --------------- |
+| 1      | 2.000   | 1.200   | 1 sa   | +%3             |
+| 5      | 16.700  | 10.000  | 6,5 sa | +%15            |
+| 10     | 236.000 | 141.600 | 69 sa  | **+%30**        |
 
 Tek hattı sonuna kadar açmak ~570.000 altın. Üç hat ~1,7 milyon.
 Bu, geç oyunun ana altın deliğidir ve enflasyonu tek başına dengeler.
@@ -169,31 +169,31 @@ Bu, geç oyunun ana altın deliğidir ve enflasyonu tek başına dengeler.
 ItemPower = tier_taban × nadirlik_çarpanı × (1 + 0.08 × yükseltme)
 ```
 
-| Tier | Taban güç | Açılış seviyesi | Üretim maliyeti | Süre |
-|---|---|---|---|---|
-| T1 | 12 | Lv1 | 400 altın + 200 demir | 5 dk |
-| T2 | 28 | Lv10 | 1.500 + 800 | 15 dk |
-| T3 | 60 | Lv22 | 4.000 + 2.000 | 45 dk |
-| T4 | 120 | Lv36 | 12.000 + 6.000 | 2 sa |
-| T5 | 220 | Lv50 | 35.000 + 18.000 | 5 sa |
+| Tier | Taban güç | Açılış seviyesi | Üretim maliyeti       | Süre  |
+| ---- | --------- | --------------- | --------------------- | ----- |
+| T1   | 12        | Lv1             | 400 altın + 200 demir | 5 dk  |
+| T2   | 28        | Lv10            | 1.500 + 800           | 15 dk |
+| T3   | 60        | Lv22            | 4.000 + 2.000         | 45 dk |
+| T4   | 120       | Lv36            | 12.000 + 6.000        | 2 sa  |
+| T5   | 220       | Lv50            | 35.000 + 18.000       | 5 sa  |
 
 | Nadirlik | Çarpan |
-|---|---|
-| Sıradan | ×1.00 |
-| Usta işi | ×1.25 |
-| Nadir | ×1.60 |
-| Efsanevi | ×2.10 |
-| Kadim | ×2.80 |
+| -------- | ------ |
+| Sıradan  | ×1.00  |
+| Usta işi | ×1.25  |
+| Nadir    | ×1.60  |
+| Efsanevi | ×2.10  |
+| Kadim    | ×2.80  |
 
 ### Üretim nadirlik tablosu
 
-| Tier | Sıradan | Usta | Nadir | Efsanevi | Kadim |
-|---|---|---|---|---|---|
-| T1 | %60 | %30 | %9 | %1 | — |
-| T2 | %50 | %32 | %15 | %3 | — |
-| T3 | %40 | %32 | %20 | %7 | %1 |
-| T4 | %30 | %32 | %26 | %10 | %2 |
-| T5 | %20 | %30 | %32 | %14 | **%4** |
+| Tier | Sıradan | Usta | Nadir | Efsanevi | Kadim  |
+| ---- | ------- | ---- | ----- | -------- | ------ |
+| T1   | %60     | %30  | %9    | %1       | —      |
+| T2   | %50     | %32  | %15   | %3       | —      |
+| T3   | %40     | %32  | %20   | %7       | %1     |
+| T4   | %30     | %32  | %26   | %10      | %2     |
+| T5   | %20     | %30  | %32   | %14      | **%4** |
 
 T5 Kadim %4 → ortalama 25 denemede bir. Tek eşya ~35.000 altın olduğuna göre,
 bir Kadim T5 eşyanın beklenen maliyeti ~875.000 altın. Kasıtlı olarak
@@ -205,26 +205,26 @@ bir Kadim T5 eşyanın beklenen maliyeti ~875.000 altın. Kasıtlı olarak
 +N → +N+1:  altın = 500 × 1.55^N × tier^1.5,  demir = yarısı
 ```
 
-| Seviye | Başarı şansı |
-|---|---|
+| Seviye  | Başarı şansı   |
+| ------- | -------------- |
 | +0 → +5 | %100 (garanti) |
-| +6 | %80 |
-| +7 | %70 |
-| +8 | %55 |
-| +9 | %40 |
-| +10 | %25 |
+| +6      | %80            |
+| +7      | %70            |
+| +8      | %55            |
+| +9      | %40            |
+| +10     | %25            |
 
 Başarısızlıkta **sadece malzeme gider.** Eşya kırılmaz, seviye düşmez.
 
 ### Güç tavanı — doğrulandı
 
-| | Değer |
-|---|---|
-| Tek eşya maksimum (T5 Kadim +10) | 1.109 |
-| 6 slot toplam | 6.653 |
-| Lord savaş katkısı (Güç 100 + tam set) | 5.622 |
-| 280 süvarilik ordu (donanım + general) | 23.023 |
-| **Lordun toplam güçteki payı** | **%20** ✅ |
+|                                        | Değer      |
+| -------------------------------------- | ---------- |
+| Tek eşya maksimum (T5 Kadim +10)       | 1.109      |
+| 6 slot toplam                          | 6.653      |
+| Lord savaş katkısı (Güç 100 + tam set) | 5.622      |
+| 280 süvarilik ordu (donanım + general) | 23.023     |
+| **Lordun toplam güçteki payı**         | **%20** ✅ |
 
 ---
 
@@ -258,12 +258,12 @@ kaybedenin kaybı = min(0.60 + (R − 0.5) × 0.6, 0.90)
 
 5 tur, her turda seed'li **±%7** varyans.
 
-| Senaryo | R | Kazanan kaybı | Kaybeden kaybı |
-|---|---|---|---|
-| Ezici (3×) | 0,75 | %17,5 | %75,0 |
-| Belirgin (1,5×) | 0,60 | %28,0 | %66,0 |
-| Başabaş (1,05×) | 0,51 | %34,1 | %60,7 |
-| Zayıf saldırı (0,6×) | 0,38 | %43,8 | %52,5 |
+| Senaryo              | R    | Kazanan kaybı | Kaybeden kaybı |
+| -------------------- | ---- | ------------- | -------------- |
+| Ezici (3×)           | 0,75 | %17,5         | %75,0          |
+| Belirgin (1,5×)      | 0,60 | %28,0         | %66,0          |
+| Başabaş (1,05×)      | 0,51 | %34,1         | %60,7          |
+| Zayıf saldırı (0,6×) | 0,38 | %43,8         | %52,5          |
 
 **Kazananın kaybı hiçbir zaman sıfır değildir.** Oyun ekonomisinin çalışması
 buna bağlı: savaş kaynak yakar, kaynak yakılınca üretim anlamlı kalır.
@@ -314,10 +314,10 @@ oyuncunun da birinci olabileceği tek merdiven budur.
 
 Denge kontrolleri **iki yerde** koşar ve bu ayrım bilinçlidir:
 
-| Nerede | Ne kontrol eder | Komut |
-|---|---|---|
-| `tools/check_balance.py` | Saf aritmetik: tempo, ekonomi, geri ödeme, kıtlık | `pnpm balance` |
-| `packages/shared/src/balance.test.ts` | **Gerçek savaş motorunu** kullanan garantiler | `pnpm test` |
+| Nerede                                | Ne kontrol eder                                   | Komut          |
+| ------------------------------------- | ------------------------------------------------- | -------------- |
+| `tools/check_balance.py`              | Saf aritmetik: tempo, ekonomi, geri ödeme, kıtlık | `pnpm balance` |
+| `packages/shared/src/balance.test.ts` | **Gerçek savaş motorunu** kullanan garantiler     | `pnpm test`    |
 
 **Neden ikiye ayrıldı:** İlk sürümde "1. gün ilk fetih mümkün" kontrolü Python'da
 elle hesaplanıyordu ve **tahkimat bonusunu hesaba katmıyordu**. Gerçek oyunda
@@ -330,27 +330,27 @@ bağlı her garanti artık motorun kendisiyle test edilir.
 
 ### Aritmetik kontroller (`pnpm balance`)
 
-| # | Kontrol | Beklenen | Şu an |
-|---|---|---|---|
-| 1 | Lv60'a ulaşma süresi | 100–130 gün | 109 gün |
-| 2 | Lv1 ordusu bakım vs malikâne | Gelir > bakım | 128 > 70 |
-| 3 | Lv60 ordusu bakım vs malikâne + 3 tarla | Gelir > bakım | 1860 > 1450 |
-| 5 | Bölge Lv1→Lv5 geri ödemesi | 7–12 gün | 8,4 gün |
-| 8 | Bölge / oyuncu oranı | < 0,75 | 0,50 |
+| #   | Kontrol                                 | Beklenen      | Şu an       |
+| --- | --------------------------------------- | ------------- | ----------- |
+| 1   | Lv60'a ulaşma süresi                    | 100–130 gün   | 109 gün     |
+| 2   | Lv1 ordusu bakım vs malikâne            | Gelir > bakım | 128 > 70    |
+| 3   | Lv60 ordusu bakım vs malikâne + 3 tarla | Gelir > bakım | 1860 > 1450 |
+| 5   | Bölge Lv1→Lv5 geri ödemesi              | 7–12 gün      | 8,4 gün     |
+| 8   | Bölge / oyuncu oranı                    | < 0,75        | 0,50        |
 
 ### Motor bağımlı kontroller (`pnpm test`)
 
-| Kontrol | Beklenen |
-|---|---|
-| Yeni oyuncu 1. gün **tahkimatsız** ring-4 bölgesini alabilir | Ele geçirir |
-| Aynı orduyla **Kale** alınamaz | Ele geçiremez (zorluk farkı korunur) |
-| Başlangıç ordusu komuta kapasitesine sığar | 35 ≤ 90 yer |
-| Kazanan her zaman kayıp verir | > %0, dört senaryoda da |
-| Kaybeden her zaman kazanandan çok kaybeder | Dört senaryoda da |
-| Lordun toplam savaş gücündeki payı | %15–25 |
-| Taht Kalesi tek ve en güçlü garnizona sahip | Doğru |
-| Merkeze yaklaştıkça gelir çarpanı artar | Doğru |
-| Depo tavanı aşılamaz, açlık firarı tetiklenir | Doğru |
+| Kontrol                                                      | Beklenen                             |
+| ------------------------------------------------------------ | ------------------------------------ |
+| Yeni oyuncu 1. gün **tahkimatsız** ring-4 bölgesini alabilir | Ele geçirir                          |
+| Aynı orduyla **Kale** alınamaz                               | Ele geçiremez (zorluk farkı korunur) |
+| Başlangıç ordusu komuta kapasitesine sığar                   | 35 ≤ 90 yer                          |
+| Kazanan her zaman kayıp verir                                | > %0, dört senaryoda da              |
+| Kaybeden her zaman kazanandan çok kaybeder                   | Dört senaryoda da                    |
+| Lordun toplam savaş gücündeki payı                           | %15–25                               |
+| Taht Kalesi tek ve en güçlü garnizona sahip                  | Doğru                                |
+| Merkeze yaklaştıkça gelir çarpanı artar                      | Doğru                                |
+| Depo tavanı aşılamaz, açlık firarı tetiklenir                | Doğru                                |
 
 Toplam **40 test**, hepsi geçiyor.
 

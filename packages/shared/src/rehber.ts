@@ -229,10 +229,7 @@ export function rehberIsigi(adim: string | null | undefined): RehberIsaret[] {
  * adımın ta kendisi, onun için ayrı bir cümle yazmak aynı şeyi iki kez
  * söylemek olurdu.
  */
-export function rehberIsaretSebebi(
-  adim: string | null | undefined,
-  isaret: string,
-): string | null {
+export function rehberIsaretSebebi(adim: string | null | undefined, isaret: string): string | null {
   const kayit = rehberIsigi(adim).find((x) => x.isaret === isaret);
   return kayit?.sebep ?? rehberSozu(adim);
 }

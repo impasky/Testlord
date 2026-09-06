@@ -30,8 +30,11 @@ async function lordKur(etiket) {
   const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
   return {
     post: (yol, govde) =>
-      fetch(`${API}/api${yol}`, { method: 'POST', headers: h, body: JSON.stringify(govde ?? {}) })
-        .then((x) => x.json()),
+      fetch(`${API}/api${yol}`, {
+        method: 'POST',
+        headers: h,
+        body: JSON.stringify(govde ?? {}),
+      }).then((x) => x.json()),
     get: (yol) => fetch(`${API}/api${yol}`, { headers: h }).then((x) => x.json()),
   };
 }
@@ -80,9 +83,16 @@ kontrol('Savunan garnizon kurdu', gercekAdet > 0, `${gercekAdet} birim`);
 // --- Keşiften ÖNCE: düşman garnizonu görünmemeli
 await casus.post('/test/kaynak-ver', { altin: 100000, demir: 0, erzak: 0 });
 const once = await casus.get(`/map/${bolge.id}`);
-kontrol('Keşiften önce garnizon görünmüyor', once.garrisonVisible === false, `${once.garrisonVisible}`);
-kontrol('Keşif maliyeti ve süresi söyleniyor', once.kesifMaliyeti > 0 && once.kesifSuresiSn > 0,
-  `${once.kesifMaliyeti} altın · ${once.kesifSuresiSn} sn`);
+kontrol(
+  'Keşiften önce garnizon görünmüyor',
+  once.garrisonVisible === false,
+  `${once.garrisonVisible}`,
+);
+kontrol(
+  'Keşif maliyeti ve süresi söyleniyor',
+  once.kesifMaliyeti > 0 && once.kesifSuresiSn > 0,
+  `${once.kesifMaliyeti} altın · ${once.kesifSuresiSn} sn`,
+);
 kontrol('Henüz rapor yok', once.kesif === null);
 
 // --- Sabit sayıda keşif gönder ve DAĞILIMA bak.
@@ -116,13 +126,18 @@ console.log(`  (ölçüm) yakalanma oranı: ${yakalanma}/${DENEME}`);
 
 kontrol('Keşif sonrası garnizon görünüyor', rapor.garrisonVisible === true);
 const gorulen = Object.values(rapor.garrison ?? {}).reduce((t, n) => t + Number(n || 0), 0);
-kontrol('Görülen garnizon GERÇEK garnizonla aynı', gorulen === gercekAdet,
-  `${gorulen} vs ${gercekAdet}`);
+kontrol(
+  'Görülen garnizon GERÇEK garnizonla aynı',
+  gorulen === gercekAdet,
+  `${gorulen} vs ${gercekAdet}`,
+);
 kontrol('Rapor taze', rapor.kesif.eski === false, `${rapor.kesif.yasSn} sn`);
-kontrol('Rapor depoyu da söylüyor', rapor.kesif.store !== null,
-  JSON.stringify(rapor.kesif.store));
-kontrol('Rapor tahkimatı söylüyor', typeof rapor.kesif.tahkimatBonusu === 'number',
-  `%${Math.round((rapor.kesif.tahkimatBonusu ?? 0) * 100)}`);
+kontrol('Rapor depoyu da söylüyor', rapor.kesif.store !== null, JSON.stringify(rapor.kesif.store));
+kontrol(
+  'Rapor tahkimatı söylüyor',
+  typeof rapor.kesif.tahkimatBonusu === 'number',
+  `%${Math.round((rapor.kesif.tahkimatBonusu ?? 0) * 100)}`,
+);
 kontrol('Taze raporda tavsiye açık', rapor.garrisonTaze === true);
 
 // --- Olay akışları
@@ -142,9 +157,7 @@ if (yakalanma > 0) {
 }
 
 // --- Sahipsiz bölgeye casus göndermek anlamsız: garnizonu zaten açık
-const sahipsiz = (await casus.get('/map')).regions.find(
-  (r) => !r.owner && r.type !== 'taht',
-);
+const sahipsiz = (await casus.get('/map')).regions.find((r) => !r.owner && r.type !== 'taht');
 const bos = await casus.post(`/map/${sahipsiz.id}/kesif`);
 kontrol('Sahipsiz bölgeye casus gönderilemiyor', bos?.code === 'SAHIPSIZ_BOLGE', bos?.code ?? '-');
 

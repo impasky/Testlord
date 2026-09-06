@@ -33,12 +33,12 @@ tasarlamanın anlamı yok — kimse 2. haftaya varmıyor.
 
 Oyun **durum değişikliğini** bildiriyor, **sonucu** bildirmiyor.
 
-| Oyun ne diyor | Oyuncu ne duymak zorunda |
-|---|---|
-| "Güç 340 → 512" | "Demirkapı saldırında kaybın 340 asker değil 180 asker olur" |
+| Oyun ne diyor              | Oyuncu ne duymak zorunda                                           |
+| -------------------------- | ------------------------------------------------------------------ |
+| "Güç 340 → 512"            | "Demirkapı saldırında kaybın 340 asker değil 180 asker olur"       |
 | "Yürüyüş başladı, 4s 12dk" | "Kazanırsan Demirkapı senin: saatte +200 altın, sıralaman 41 → 28" |
-| "5 mızrakçı eğitiliyor" | "Bu 5 mızrakçıyla Demirkapı'yı alabilirsin — şu an alamıyorsun" |
-| "Şöhret 1.240" | "Şöhrette 41. sıradasın. 28. sıradaki Vardar'ın 1.640 şöhreti var" |
+| "5 mızrakçı eğitiliyor"    | "Bu 5 mızrakçıyla Demirkapı'yı alabilirsin — şu an alamıyorsun"    |
+| "Şöhret 1.240"             | "Şöhrette 41. sıradasın. 28. sıradaki Vardar'ın 1.640 şöhreti var" |
 
 Sol sütun bir muhasebe defteri. Sağ sütun bir oyun. Şu an sadece sol sütun var.
 
@@ -53,7 +53,7 @@ Kodda doğrulandı:
   yok.
 - `Demirhane.tsx:125` — `GucFarki` bileşeni **+172** gibi çıplak bir sayı
   gösteriyor. `balance.json`'da bu sayı `lord_savas_katkisi = güç*3 +
-  ekipman_gücü*0.8` formülüne giriyor, ama oyuncu bu formülü hiçbir ekranda
+ekipman_gücü*0.8` formülüne giriyor, ama oyuncu bu formülü hiçbir ekranda
   görmüyor. Ekipman, savaşla hiçbir yerde ilişkilendirilmemiş.
 - Savaş raporu var ve iyi — ama **saldırıdan saatler sonra** açılıyor. İlk
   oturumda hiç görülmüyor.
@@ -61,8 +61,8 @@ Kodda doğrulandı:
 ### Belirti 2 — "karman çorman, her şey iç içe"
 
 7 ekran, hepsi alt çubukta eşit seviyede duruyor. Hiyerarşi yok, sıra yok.
-Oyuncu döngüyü kendi kurmak zorunda: *kaynak → asker → saldırı → bölge → gelir →
-daha çok asker.* Bu döngü tasarımda var, arayüzde hiçbir yerde yazmıyor.
+Oyuncu döngüyü kendi kurmak zorunda: _kaynak → asker → saldırı → bölge → gelir →
+daha çok asker._ Bu döngü tasarımda var, arayüzde hiçbir yerde yazmıyor.
 
 `IlkAdimlar.tsx` var ama bir **kontrol listesi bileşeni**, omurga değil. Yanında
 duruyor, yönlendirmiyor.
@@ -89,6 +89,7 @@ Toplam **~6 iş günü**.
 ---
 
 ### İ1 — Her eylem, karşılığını önceden söyler · 1.5 gün
+
 #### Cevap verdiği: "ne işe yarayacak bu saldırı"
 
 Her eylem onayının üstünde iki satır: **kazanırsan ne olur, kaybedersen ne
@@ -117,6 +118,7 @@ tablosundan hesaplanır, `~` işareti korunur.
 ---
 
 ### İ2 — Her sonuç, öncesi/sonrası olarak gösterilir · 1 gün
+
 #### Cevap verdiği: "gücüm arttı, eee ne oldu şimdi"
 
 Sonuç ekranı **çıplak sayı göstermez, fark gösterir.**
@@ -148,6 +150,7 @@ son incelediği ya da en yakın ele geçirilebilir bölge kullanılır.
 ---
 
 ### İ3 — İlk saldırı dakikalarda biter, saatlerde değil · 1 gün
+
 #### Cevap verdiği: "asker ürettim, saldırıya gönderdim, eee ne oldu şimdi"
 
 Bu, "ne oldu şimdi" sorusunun **cevabının olmamasının** asıl sebebi. Gerçekten
@@ -170,6 +173,7 @@ oyuncu başına bir kez uygulanır. PvP'yi ve sonraki hiçbir şeyi etkilemez.
 ---
 
 ### İ4 — Tek omurga: "şimdi ne yapmalıyım" · 1 gün
+
 #### Cevap verdiği: "karman çorman, her şey iç içe, ne yaptığımı anlamıyorum"
 
 Malikâne ekranının en üstü **komuta bloğu** olur. Her an **tek bir birincil
@@ -197,6 +201,7 @@ sonra: Demirhane'de kılıç üret → savaş katkın artar
 ---
 
 ### İ5 — Harita insanlı görünsün · 1 gün
+
 #### Cevap verdiği: "harita niye bu kadar küçük, tek oyunculu bir oyun mu bu"
 
 - **Hexlerin üstünde sahip adı.** Sahipli her bölgede lord adı yazar. Harita
@@ -215,13 +220,14 @@ dünyada akış şeridi **son savaşlar yoksa gizlenir**, sahte veri üretilmez.
 ---
 
 ### İ6 — Oyun ne olduğunu 30 saniyede söyler · 0.5 gün
+
 #### Cevap verdiği: "ne saçma oyun deyip çıktım"
 
 Oyun şu an **kazanma koşulunu hiçbir yerde yazmıyor.** Taht Kalesi kodda var,
 oyuncuya hiç tanıtılmıyor.
 
-- Kayıttan hemen sonra tek ekran, üç cümle: *Bu diyarda 120 lord var. Ortadaki
-  Taht Kalesi'ni tutan kişi Diyarın Lordu olur. Sen 41. sıradasın.*
+- Kayıttan hemen sonra tek ekran, üç cümle: _Bu diyarda 120 lord var. Ortadaki
+  Taht Kalesi'ni tutan kişi Diyarın Lordu olur. Sen 41. sıradasın._
 - Ardından doğrudan İ4'teki komuta bloğuna düşer — metin ekranı zinciri yok.
 - Taht Kalesi haritada **ilk andan itibaren görünür ve işaretli** olur; oyuncu
   neye doğru oynadığını görür.
@@ -229,6 +235,7 @@ oyuncuya hiç tanıtılmıyor.
 ---
 
 ### İ7 — Ölçüm · 0.5 gün
+
 #### Cevap verdiği: bir sonraki eleştirinin de tahmin olmaması
 
 `docs/07`'nin başarı kriterlerindeki son madde buraya taşınıyor, çünkü asıl
@@ -245,15 +252,15 @@ Bu dört sayı olmadan bir sonraki turda yine tahmin ederiz.
 
 ## Sıra ve durum
 
-| # | İş | Durum |
-|---|---|---|
-| İ3 | İlk saldırı dakikalarda bitsin | ✅ bitti |
-| İ1 | Eylem karşılığını önceden söylesin | ✅ bitti |
-| İ2 | Sonuç öncesi/sonrası gösterilsin | ✅ bitti |
-| İ4 | Tek omurga | ✅ bitti |
-| İ6 | 30 saniyelik amaç | ✅ bitti |
-| İ5 | Harita insanlı görünsün | ✅ bitti |
-| İ7 | Ölçüm | ✅ bitti |
+| #   | İş                                 | Durum    |
+| --- | ---------------------------------- | -------- |
+| İ3  | İlk saldırı dakikalarda bitsin     | ✅ bitti |
+| İ1  | Eylem karşılığını önceden söylesin | ✅ bitti |
+| İ2  | Sonuç öncesi/sonrası gösterilsin   | ✅ bitti |
+| İ4  | Tek omurga                         | ✅ bitti |
+| İ6  | 30 saniyelik amaç                  | ✅ bitti |
+| İ5  | Harita insanlı görünsün            | ✅ bitti |
+| İ7  | Ölçüm                              | ✅ bitti |
 
 ---
 
@@ -356,19 +363,19 @@ Sıra: **M9.5 (bu doküman) → M10 → M11 → ...**
 
 ## İ8 — Görsel yoğunluğu kırma
 
-İlk yedi iş bittikten sonra oyuncu tekrar oynadı: *"genel olarak daha iyi ama
-hâlâ karmaşık hissettiriyor"* — ve referans olarak birkaç mobil RPG ekran
+İlk yedi iş bittikten sonra oyuncu tekrar oynadı: _"genel olarak daha iyi ama
+hâlâ karmaşık hissettiriyor"_ — ve referans olarak birkaç mobil RPG ekran
 görüntüsü gönderdi.
 
 Referansların ortak dili net ve benimkinin tam tersiydi:
 
-| Referans | Bendeki |
-|---|---|
-| Kart başına **tek eylem, tek büyük düğme** | Kışla kartında 18 öğe: 6 istatistik ikonu, 5 adet düğmesi, 3 maliyet, açıklama cümlesi |
-| Sayılar **rozet içinde** ("1/4", "0/2") | Sayılar cümlenin içine gömülü: "27 Okçu daha gerekiyor (4.050 altın)" |
-| Kalın çerçeve, geniş yuvarlama, **fiziksel** görünüm | 1px kenar, 16px yuvarlama — on kart tek bir gri duvar |
-| Bölüm başlığı **tabela** | Küçük gri büyük harf etiket |
-| Kırmızı nokta **nereye gideceğini söylüyor** | Alt çubukta hiçbir işaret yok |
+| Referans                                             | Bendeki                                                                                |
+| ---------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Kart başına **tek eylem, tek büyük düğme**           | Kışla kartında 18 öğe: 6 istatistik ikonu, 5 adet düğmesi, 3 maliyet, açıklama cümlesi |
+| Sayılar **rozet içinde** ("1/4", "0/2")              | Sayılar cümlenin içine gömülü: "27 Okçu daha gerekiyor (4.050 altın)"                  |
+| Kalın çerçeve, geniş yuvarlama, **fiziksel** görünüm | 1px kenar, 16px yuvarlama — on kart tek bir gri duvar                                  |
+| Bölüm başlığı **tabela**                             | Küçük gri büyük harf etiket                                                            |
+| Kırmızı nokta **nereye gideceğini söylüyor**         | Alt çubukta hiçbir işaret yok                                                          |
 
 Yapılanlar:
 
@@ -396,9 +403,9 @@ Yapılanlar:
 
 ## İ9 — Harita bir yer olsun
 
-Oyuncu: *"harita çok kötü, neyin ne olduğu anlaşılmıyor; bir zemin üstüne
+Oyuncu: _"harita çok kötü, neyin ne olduğu anlaşılmıyor; bir zemin üstüne
 oturtulmuş olsa daha iyi olur; şu an bir dikdörtgende sağa sola gidiyormuşum
-gibi ham hissettiriyor."*
+gibi ham hissettiriyor."_
 
 Haklıydı. Önceki hâl boşlukta duran düz renkli altıgenlerden oluşan bir
 ızgaraydı — bir tablo, bir yer değil.
@@ -422,23 +429,23 @@ Haklıydı. Önceki hâl boşlukta duran düz renkli altıgenlerden oluşan bir
 
 ## İ10 — Bölge bir yer olsun
 
-Oyuncu: *"bir bölge ele geçirdiğimde neden orayı yönetip yükseltmeler yapıp
+Oyuncu: _"bir bölge ele geçirdiğimde neden orayı yönetip yükseltmeler yapıp
 şehri ya da tarlayı geliştiremiyorum, neden ele geçirdiğim bölgede değilim
-diye düşündürtüyor."*
+diye düşündürtüyor."_
 
 İki ayrı şey vardı burada ve ikisini de dürüstçe ayırmak gerekiyor:
 
 **Yönetip geliştirmek zaten mümkündü.** Bölge seviyesi 1–5, maliyeti, süresi
-ve gelir etkisi baştan beri motorda. Ama arayüz oyuncuya *"Seviye 2'ye
-yükselt"* diyordu — bir tabloda satır artırmak gibi. Bir yeri geliştirmek, o
+ve gelir etkisi baştan beri motorda. Ama arayüz oyuncuya _"Seviye 2'ye
+yükselt"_ diyordu — bir tabloda satır artırmak gibi. Bir yeri geliştirmek, o
 yerin **ad değiştirmesiyle** hissedilir:
 
 - `balance.json` → `bolgeler.gelisim_adlari`: her bölge tipine beş aşama adı.
   Kasaba → Pazar Şehri → Ticaret Şehri → Büyük Şehir → Diyarın Başkenti.
   Taş Ocağı → Demir Madeni → Derin Ocak → Cevher Yatağı → Kadim Damar.
 - Geliştirme kartı artık aşama geçişini ve gelir farkını gösteriyor:
-  *"KASABA → PAZAR ŞEHRİ · Saatlik altın 200 → 250 (+50)"*, düğmesi
-  *"Pazar Şehri yap"*.
+  _"KASABA → PAZAR ŞEHRİ · Saatlik altın 200 → 250 (+50)"_, düğmesi
+  _"Pazar Şehri yap"_.
 
 **"Orada değilim" duygusu bir sunum sorunuydu.** İllüstrasyon vardı ama
 başlığın üstünde bir dekor şeridiydi. Şimdi bölgenin adı ve aşaması
@@ -453,9 +460,9 @@ adlandırıldı ve görünür kılındı.
 
 ## İ11 — Görsel katman: tek bir üretim hattı
 
-Oyuncu: *"elimde bu tarz kullanabileceğin görseller var, ayrıca bana bu
+Oyuncu: _"elimde bu tarz kullanabileceğin görseller var, ayrıca bana bu
 oyunda kullanmak için gereken tüm görsellerin promptlarını ver — t1 silah,
-t2 silah, t5 sancak, t3 kalkan gibi. Görsel olarak güçlendirip bakalım."*
+t2 silah, t5 sancak, t3 kalkan gibi. Görsel olarak güçlendirip bakalım."_
 
 İ8'de yapılan şey biçimdi (rakamları hapa aldık), İ9–İ10'da yerdi (harita
 ada oldu, bölge portre kazandı). Geriye kalan tek eksik, o yerleri dolduran
@@ -641,13 +648,13 @@ temizlemiyor.
 
 ### Kuşanılan ekipman da bir vitrin olsun
 
-Oyuncu: *"oyuncunun kendi kısmında ekipmanlar görünmüyor."* Haklıydı:
+Oyuncu: _"oyuncunun kendi kısmında ekipmanlar görünmüyor."_ Haklıydı:
 illüstrasyonu Demirhane'nin envanter kartlarına bağlamıştım, Lord
 ekranındaki kuşanma yuvalarına değil. Envanterde gördüğün kılıcı
 kuşanınca kaybediyordun.
 
-Bu, ilk oturum şikâyetinin tam da kalbindeki nokta: *"gücümü en yüksek
-olanı kuşan dedim, gücüm arttı, eee ne oldu şimdi."* Sayının arttığını
+Bu, ilk oturum şikâyetinin tam da kalbindeki nokta: _"gücümü en yüksek
+olanı kuşan dedim, gücüm arttı, eee ne oldu şimdi."_ Sayının arttığını
 görmek, bir şey kuşandığını görmekle aynı şey değil. Yuva artık bir
 vitrin: illüstrasyon kareyi dolduruyor, nadirlik rengi üst şeritte, yuva
 adı ve tier alttaki şeritte görselin üstüne biniyor.
@@ -663,7 +670,7 @@ temizliğin birbirini bozmasıydı:
 
 `filigran-sil.py` kutuyu **komşu şeridin aynasıyla** yamalıyor. O şerit
 zemin değilse — atın kuyruğu, gölgesi, T5'in nalından çıkan kıvılcım —
-aynalanan içerik zemin renginde olmuyor, ve zemin ayıklama onu *koruyor*.
+aynalanan içerik zemin renginde olmuyor, ve zemin ayıklama onu _koruyor_.
 Ölçüldü: T1'de 156, T4'te 105 opak piksel kalmıştı.
 
 Zemin ayıklanacaksa doğru işlem yamalamak değil, kutuyu **çevresindeki
@@ -697,10 +704,10 @@ sınırlayıcı kutu tüm kare olur ve işlem hiçbir şey yapmaz.
 
 ## İ12 — Lord kendi ordusunu görsün
 
-Oyuncu: *"bu ekipmanları oluşturduk ya, oyuncunun kendisinin T1 T2
+Oyuncu: _"bu ekipmanları oluşturduk ya, oyuncunun kendisinin T1 T2
 ekipmanları var vs, bunu bir karaktere giydirme şansımız var mı? Lord
 kısmında oyuncu kendi lordunu görse ve kendi karakterinin arkasında
-ordusunu görse?"*
+ordusunu görse?"_
 
 ### Giydirme neden olmuyor
 
@@ -722,9 +729,9 @@ Beş birim illüstrasyonu zaten saydam ve tam boy; `homeArmy` verisi Lord
 ekranına zaten geliyor. `OrduSahnesi` bu ikisini birleştiriyor: ekranın
 tepesinde, gerçek ordu bileşimini yansıtan bir kalabalık.
 
-Kışla'da *"okçu 42"* bir satır. Burada kırk iki okçunun oluşturduğu
+Kışla'da _"okçu 42"_ bir satır. Burada kırk iki okçunun oluşturduğu
 kalabalık bir **şey**. Ordu büyüdükçe sahne doluyor, bileşim değiştikçe
-görüntü değişiyor — oyuncunun ilk oturumda *"asker ürettim, eee ne oldu"*
+görüntü değişiyor — oyuncunun ilk oturumda _"asker ürettim, eee ne oldu"_
 dediği yerin karşılığı.
 
 **Ağırlık adet değil komuta yeri.** Bir süvari üç, bir mancınık beş milis
@@ -758,9 +765,9 @@ hazır.
 
 ## İ13 — Giydirme: katman değil, düzenleme
 
-Oyuncu: *"giydirme işini istiyorum ve en rahat nasıl yapabiliriz
+Oyuncu: _"giydirme işini istiyorum ve en rahat nasıl yapabiliriz
 araştırabilir misin, ayrıca lord sayfasına girince bir animasyon olsa,
-savaş naarası atsa ya da silahını savursa."*
+savaş naarası atsa ya da silahını savursa."_
 
 ### Araştırmanın sonucu
 
@@ -774,8 +781,8 @@ yapmayı varsayıyoruz. Bindirme yapmazsak kayıt sorunu da yok.
 
 Üretim API'si **görsel girdisi** alıyor (`inlineData` + `mimeType`) ve bir
 görseli düzenleyebiliyor. Yani: bir lord görseli üret, sonra onu GİRDİ
-verip *"aynı adam, aynı yüz, aynı duruş, aynı çerçeve — sadece zırhı
-değişiyor"* de. Çıkan görsel **kuruluş gereği hizalı**, çünkü bindirilmiyor;
+verip _"aynı adam, aynı yüz, aynı duruş, aynı çerçeve — sadece zırhı
+değişiyor"_ de. Çıkan görsel **kuruluş gereği hizalı**, çünkü bindirilmiyor;
 tüm görsel değişiyor. Kayıt, çapa noktası, omuz hizası diye bir sorun
 kalmıyor.
 
@@ -852,18 +859,18 @@ kalırsa ordunun üstüne koyu bir dikdörtgen yapıştırılmış gibi duruyor.
 
 ### Lord figürü geri alındı
 
-Beş görsel üretildi, sahneye kondu, oyuncu baktı: *"yok çok kötü, iptal
-edelim şimdilik sadece lord kısmını iptal edelim, ordu dursun."*
+Beş görsel üretildi, sahneye kondu, oyuncu baktı: _"yok çok kötü, iptal
+edelim şimdilik sadece lord kısmını iptal edelim, ordu dursun."_
 
 Figür sahneden kaldırıldı. **Silinmedi, kapatıldı:**
 
-| Duran | Yer |
-|---|---|
-| Beş lord görseli | `apps/web/public/gorseller/lord/` |
-| İstemler ve zincirleme reçete | `docs/GORSEL-ISTEMLERI.md` |
-| `--kaynak` (görsel girdisi) | `tools/gorsel-uret.py` |
-| `--filigran-ayna` | `tools/gorsel-koy.py` |
-| `kusamSeviyesi()` + 5 test | `packages/shared/src/equipment.ts` |
+| Duran                         | Yer                                |
+| ----------------------------- | ---------------------------------- |
+| Beş lord görseli              | `apps/web/public/gorseller/lord/`  |
+| İstemler ve zincirleme reçete | `docs/GORSEL-ISTEMLERI.md`         |
+| `--kaynak` (görsel girdisi)   | `tools/gorsel-uret.py`             |
+| `--filigran-ayna`             | `tools/gorsel-koy.py`              |
+| `kusamSeviyesi()` + 5 test    | `packages/shared/src/equipment.ts` |
 
 Geri getirmek `OrduSahnesi`ye bir `<Gorsel tur="lord">` bloğu eklemek
 kadar. `kusamSeviyesi()` çağıransız kaldı ve bu docstring'inde açıkça
@@ -896,7 +903,7 @@ buğday, taş taş. Bilgi kaybı yok: "burası maden mi tarla mı" sorusuna
 zaten altıgenin ikonu cevap veriyor, doku atmosfer taşıyor.
 
 **Karartma azaltıldı** (0.34 → 0.24). O katman karolar gelmeden önce
-altıgenin *rengiydi*, koyu olması gerekiyordu; karo gelince aynı koyuluk
+altıgenin _rengiydi_, koyu olması gerekiyordu; karo gelince aynı koyuluk
 dokuyu çamura çeviriyor. Yazının okunurluğunu bu katman değil metnin kendi
 konturu koruyor. İkonlara da kontur eklendi: karartma azalınca parlak
 buğday karosunda açık renkli siluet kayboluyordu.

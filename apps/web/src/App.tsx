@@ -370,9 +370,7 @@ export function App() {
           onGit={setSekme}
         />
       )}
-      {sekme === 'gorevler' && (
-        <Gorevler lord={lord} onGit={setSekme} onKapiAc={kapiAc} />
-      )}
+      {sekme === 'gorevler' && <Gorevler lord={lord} onGit={setSekme} onKapiAc={kapiAc} />}
       {sekme === 'lord' && (
         <LordEkrani
           lord={lord}

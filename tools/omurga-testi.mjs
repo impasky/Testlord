@@ -104,18 +104,21 @@ kontrol(
   /\d+\s+(okçu|mızrakçı|köylü milis|süvari|mancınık)/.test(kucult(ilk)),
   (ilk ?? '').slice(0, 90),
 );
+kontrol('Maliyet rozeti var', /\d[\d.]{2,}/.test(kucult(ilk)), (ilk ?? '').slice(0, 90));
 kontrol(
-  'Maliyet rozeti var',
-  /\d[\d.]{2,}/.test(kucult(ilk)),
-  (ilk ?? '').slice(0, 90),
+  'Tek birincil eylem düğmesi var',
+  (await eylem())?.includes('eğit') === true,
+  await eylem(),
 );
-kontrol('Tek birincil eylem düğmesi var', (await eylem())?.includes('eğit') === true, await eylem());
 await page.screenshot({ path: `${CIKTI}/omurga-1-ordu-yok.png` });
 
 const oneri = (await get('/map')).oneri;
 const hedefAdi = oneri.name;
-kontrol('Önerilen ordunun maliyeti yazılı', oneri.eksik?.maliyet?.altin > 0,
-  `${oneri.eksik.adet} ${oneri.eksik.birim} · ${oneri.eksik.maliyet.altin} altın`);
+kontrol(
+  'Önerilen ordunun maliyeti yazılı',
+  oneri.eksik?.maliyet?.altin > 0,
+  `${oneri.eksik.adet} ${oneri.eksik.birim} · ${oneri.eksik.maliyet.altin} altın`,
+);
 
 // Bu test omurganın MANTIĞINI ölçüyor, ekonomiyi değil. Önceki testlerin
 // sahiplendiği bölgeler yüzünden en yakın boş hedef bazen başlangıç
@@ -130,15 +133,21 @@ const egitimSonuc = await post('/army/train', {
   unitType: oneri.eksik.birim,
   count: oneri.eksik.adet,
 });
-kontrol('Önerilen ordu gerçekten eğitilebiliyor', egitimSonuc.ok,
-  egitimSonuc.ok ? '' : (await egitimSonuc.json()).error);
+kontrol(
+  'Önerilen ordu gerçekten eğitilebiliyor',
+  egitimSonuc.ok,
+  egitimSonuc.ok ? '' : (await egitimSonuc.json()).error,
+);
 await page.reload({ waitUntil: 'domcontentloaded' });
 await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
 await page.waitForTimeout(1800);
 
 const egitimde = await omurga();
-kontrol('Eğitim sürerken omurga beklemeyi söylüyor', kucult(egitimde).includes('eğitiliyor'),
-  (egitimde ?? '').slice(0, 70));
+kontrol(
+  'Eğitim sürerken omurga beklemeyi söylüyor',
+  kucult(egitimde).includes('eğitiliyor'),
+  (egitimde ?? '').slice(0, 70),
+);
 kontrol('Hedef plan uygulanırken değişmedi', (egitimde ?? '').includes(hedefAdi), hedefAdi);
 await page.screenshot({ path: `${CIKTI}/omurga-2-egitimde.png` });
 
@@ -149,27 +158,36 @@ await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 
 await page.waitForTimeout(1800);
 
 const hazir = await omurga();
-kontrol('Ordu hazır olunca eylem saldırıya dönüyor', kucult(hazir).includes('üzerine yürü'),
-  (hazir ?? '').slice(0, 60));
+kontrol(
+  'Ordu hazır olunca eylem saldırıya dönüyor',
+  kucult(hazir).includes('üzerine yürü'),
+  (hazir ?? '').slice(0, 60),
+);
 kontrol(
   'Saldırının karşılığı yazıyor',
   kucult(hazir).includes('kazanacakların') && /\+[\d.]+\/sa/.test(kucult(hazir)),
   (hazir ?? '').slice(0, 110),
 );
-kontrol('Saldırı düğmesi hedefi adıyla anıyor', (await eylem())?.includes('saldır') === true,
-  await eylem());
+kontrol(
+  'Saldırı düğmesi hedefi adıyla anıyor',
+  (await eylem())?.includes('saldır') === true,
+  await eylem(),
+);
 await page.screenshot({ path: `${CIKTI}/omurga-3-saldiri.png` });
 
 // --- 4. Düğme gerçekten haritada o bölgeyi açıyor
 await page.evaluate(() => {
-  const b = [...document.querySelectorAll('button')].find((x) =>
-    x.textContent.includes('saldır'),
-  );
+  const b = [...document.querySelectorAll('button')].find((x) => x.textContent.includes('saldır'));
   b?.click();
 });
 await page.waitForTimeout(2500);
-kontrol('Düğme haritada bölge sayfasını açtı',
-  await page.locator('text=Saldırı ordusu').isVisible().catch(() => false));
+kontrol(
+  'Düğme haritada bölge sayfasını açtı',
+  await page
+    .locator('text=Saldırı ordusu')
+    .isVisible()
+    .catch(() => false),
+);
 
 // --- 5. Bölge alınınca omurga bir sonraki adıma geçiyor
 const harita = await get('/map');
@@ -183,9 +201,11 @@ await page.waitForTimeout(1800);
 const sonra = await omurga();
 // Ordu yolda: omurga yeni bir ordu kurmayı DEĞİL, dönüşü beklemeyi
 // söylemeli — ordusu var, sadece evde değil.
-kontrol('Ordu yoldayken omurga dönüşü bekletiyor',
+kontrol(
+  'Ordu yoldayken omurga dönüşü bekletiyor',
   kucult(sonra).includes('ordun dönüyor') || kucult(sonra).includes('ordun yolda'),
-  (sonra ?? '').slice(0, 70));
+  (sonra ?? '').slice(0, 70),
+);
 await page.screenshot({ path: `${CIKTI}/omurga-4-sonrasi.png` });
 
 kontrol('Konsol hatası yok', konsol.length === 0, konsol.slice(0, 2).join(' | '));

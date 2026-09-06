@@ -54,11 +54,7 @@ const NPC_TABAN = new Map<number, Army>(
  * anlamsız kılardı. SADECE NPC bölgeleri için geçerli; oyuncunun kaybettiği
  * garnizon yenilenmez.
  */
-export function regenerateNpcGarrison(
-  mapId: number,
-  mevcut: Army,
-  hours: number,
-): Army | null {
+export function regenerateNpcGarrison(mapId: number, mevcut: Army, hours: number): Army | null {
   const taban = NPC_TABAN.get(mapId);
   if (!taban || hours <= 0) return null;
 

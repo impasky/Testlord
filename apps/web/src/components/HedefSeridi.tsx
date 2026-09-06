@@ -86,16 +86,12 @@ export function HedefSeridi({
           <Hap renk="var(--color-yesil)">ordun yetiyor</Hap>
         ) : eksik ? (
           <>
-            <Hap
-              renk={eksik.karsilanabilir ? 'var(--color-altin)' : 'var(--color-kirmizi)'}
-            >
+            <Hap renk={eksik.karsilanabilir ? 'var(--color-altin)' : 'var(--color-kirmizi)'}>
               {eksik.adet} {unitName(eksik.birim as UnitType)} daha
             </Hap>
             <Hap
               ikon={<IkonAltin boyut={13} />}
-              renk={
-                eksik.karsilanabilir ? 'var(--color-kaynak-altin)' : 'var(--color-kirmizi)'
-              }
+              renk={eksik.karsilanabilir ? 'var(--color-kaynak-altin)' : 'var(--color-kirmizi)'}
             >
               {formatSayi(eksik.maliyet.altin)}
             </Hap>

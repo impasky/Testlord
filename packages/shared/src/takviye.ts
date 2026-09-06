@@ -49,10 +49,7 @@ export function garnizonToplami(paylar: GarnizonPayi[]): Army {
  * Kimsenin o tipten askeri yoksa o tipin kaybı düşürülüyor: dağıtacak
  * yer yok demektir ve zorlamak negatif sayı üretirdi.
  */
-export function kayipPaylastir(
-  kayip: Army,
-  paylar: GarnizonPayi[],
-): Map<string, Army> {
+export function kayipPaylastir(kayip: Army, paylar: GarnizonPayi[]): Map<string, Army> {
   const sonuc = new Map<string, Army>();
   for (const p of paylar) sonuc.set(p.lordId, {});
 

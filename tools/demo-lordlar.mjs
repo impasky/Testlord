@@ -94,7 +94,9 @@ async function lordKur(tanim, sira) {
       // Sağ kalanların bir kısmını garnizona koy: saldırılınca gerçek savaş olsun
       const ev = (await cagir('/army', token)).home;
       const garnizon = Object.fromEntries(
-        Object.entries(ev).map(([t, n]) => [t, Math.floor(n * 0.5)]).filter(([, n]) => n > 0),
+        Object.entries(ev)
+          .map(([t, n]) => [t, Math.floor(n * 0.5)])
+          .filter(([, n]) => n > 0),
       );
       if (Object.keys(garnizon).length) {
         await post(`/map/${hedef.id}/garrison`, token, { army: garnizon }).catch(() => {});
@@ -129,5 +131,5 @@ if (sonToken) {
 
 console.log(`\n${kurulan.length} rakip lord hazır. Şimdi kendi hesabınla kayıt ol:`);
 console.log('  http://localhost:5173\n');
-console.log('Denemeye değer: Sıralama sekmesinde rakiplerini gör, Harita\'da');
-console.log('noktalı desenli (düşman) bölgelere saldır, Demirhane\'de ekipman üret.');
+console.log("Denemeye değer: Sıralama sekmesinde rakiplerini gör, Harita'da");
+console.log("noktalı desenli (düşman) bölgelere saldır, Demirhane'de ekipman üret.");

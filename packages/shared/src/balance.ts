@@ -133,17 +133,26 @@ export function rarityMultiplier(rarity: Rarity): number {
 }
 
 export function tierUnlockLevel(tier: number): number {
-  return (B.ekipman.tier_acilis_lord_seviyesi as unknown as Record<string, number>)[String(tier)] ?? 1;
+  return (
+    (B.ekipman.tier_acilis_lord_seviyesi as unknown as Record<string, number>)[String(tier)] ?? 1
+  );
 }
 
 export function craftCost(tier: number): { altin: number; demir: number; sure_dk: number } {
-  const c = (B.ekipman.uretim_maliyeti as unknown as Record<string, { altin: number; demir: number; sure_dk: number }>)[String(tier)];
+  const c = (
+    B.ekipman.uretim_maliyeti as unknown as Record<
+      string,
+      { altin: number; demir: number; sure_dk: number }
+    >
+  )[String(tier)];
   if (!c) throw new Error(`Bilinmeyen tier: ${tier}`);
   return c;
 }
 
 export function craftRarityTable(tier: number): Record<Rarity, number> {
-  const t = (B.ekipman.uretim_nadirlik_tablosu as unknown as Record<string, Record<string, number>>)[String(tier)];
+  const t = (
+    B.ekipman.uretim_nadirlik_tablosu as unknown as Record<string, Record<string, number>>
+  )[String(tier)];
   if (!t) throw new Error(`Bilinmeyen tier: ${tier}`);
   return t as Record<Rarity, number>;
 }
@@ -154,7 +163,10 @@ export function upgradeSuccessChance(currentLevel: number): number {
 }
 
 export function regionBaseIncome(type: string): Record<string, number> {
-  return (B.bolgeler.taban_gelir_saatlik as unknown as Record<string, Record<string, number>>)[type] ?? {};
+  return (
+    (B.bolgeler.taban_gelir_saatlik as unknown as Record<string, Record<string, number>>)[type] ??
+    {}
+  );
 }
 
 export function fortressBonus(type: string, level: number): number {

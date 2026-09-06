@@ -126,9 +126,7 @@ export function Ittifak({ lordId }: { lordId: string }) {
   const [hata, setHata] = useState<string | null>(null);
   // Açık inceleme: liste satırına basınca o ittifak tam ekran açılıyor.
   const [inceleId, setInceleId] = useState<string | null>(null);
-  const [sekme, setSekme] = useState<'ittifakim' | 'diplomasi' | 'sohbet' | 'kayit'>(
-    'ittifakim',
-  );
+  const [sekme, setSekme] = useState<'ittifakim' | 'diplomasi' | 'sohbet' | 'kayit'>('ittifakim');
 
   const tazele = () => {
     void qc.invalidateQueries({ queryKey: ['ittifak'] });

@@ -7,26 +7,26 @@ karşılığıdır.
 
 ## 1. Ortam değişkenleri
 
-| Değişken | Zorunlu | Varsayılan | Ne işe yarar |
-|---|---|---|---|
-| `DATABASE_URL` | evet | — | PostgreSQL bağlantısı |
-| `JWT_SECRET` | evet | — | Oturum imzası. **En az 32 karakter.** Değiştirilirse herkes çıkış yapar |
-| `PORT` | hayır | 3000 | Dinlenecek port |
-| `NODE_ENV` | hayır | development | `production` olmadan CORS gevşek kalır ve test uçları açılır |
-| `WEB_ORIGIN` | hayır | localhost:5173 | Üretimde izinli origin listesi. Tek servisli kurulumda kullanılmaz |
-| `SERVE_WEB` | hayır | false | Arayüzü API ile aynı sunucudan sunar |
-| `RUN_WORKER` | hayır | false | Worker'ı API sürecinin içinde çalıştırır |
-| `AUTO_MIGRATE` | hayır | false | Açılışta migration uygular, dünya yoksa açar |
-| `SEED_DEMO_LORDS` | hayır | false | İlk açılışta 6 rakip lord ekler |
-| `RATE_LIMIT_MAX` | hayır | 300 | Oturum başına dakikalık istek tavanı |
-| `AUTH_RATE_LIMIT_MAX` | hayır | 60 | Kayıt/giriş için IP başına dakikalık tavan |
-| `SENTRY_DSN` | hayır | boş | Boşsa hata izleme kapalıdır, dışarıya hiçbir şey gitmez |
-| `SENTRY_TRACES_SAMPLE_RATE` | hayır | 0.05 | İzleme örneklemesi. Ücretsiz katmanda kota var |
-| `LOG_LEVEL` | hayır | info | `fatal\|error\|warn\|info\|debug\|trace` |
-| `EPOSTA_TASIYICI` | hayır | log | `log` dışarı göndermez; `resend` gerçek posta atar |
-| `EPOSTA_ANAHTAR` | resend ise | — | Resend API anahtarı |
-| `EPOSTA_GONDEREN` | resend ise | — | Gönderen adresi; alan adı doğrulanmış olmalı |
-| `UYGULAMA_URL` | hayır | Render'ın dış adresi | Sıfırlama bağlantısının tabanı. Verilmezse `RENDER_EXTERNAL_URL` kullanılır; kendi alan adını bağlayınca burayı doldur |
+| Değişken                    | Zorunlu    | Varsayılan           | Ne işe yarar                                                                                                           |
+| --------------------------- | ---------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`              | evet       | —                    | PostgreSQL bağlantısı                                                                                                  |
+| `JWT_SECRET`                | evet       | —                    | Oturum imzası. **En az 32 karakter.** Değiştirilirse herkes çıkış yapar                                                |
+| `PORT`                      | hayır      | 3000                 | Dinlenecek port                                                                                                        |
+| `NODE_ENV`                  | hayır      | development          | `production` olmadan CORS gevşek kalır ve test uçları açılır                                                           |
+| `WEB_ORIGIN`                | hayır      | localhost:5173       | Üretimde izinli origin listesi. Tek servisli kurulumda kullanılmaz                                                     |
+| `SERVE_WEB`                 | hayır      | false                | Arayüzü API ile aynı sunucudan sunar                                                                                   |
+| `RUN_WORKER`                | hayır      | false                | Worker'ı API sürecinin içinde çalıştırır                                                                               |
+| `AUTO_MIGRATE`              | hayır      | false                | Açılışta migration uygular, dünya yoksa açar                                                                           |
+| `SEED_DEMO_LORDS`           | hayır      | false                | İlk açılışta 6 rakip lord ekler                                                                                        |
+| `RATE_LIMIT_MAX`            | hayır      | 300                  | Oturum başına dakikalık istek tavanı                                                                                   |
+| `AUTH_RATE_LIMIT_MAX`       | hayır      | 60                   | Kayıt/giriş için IP başına dakikalık tavan                                                                             |
+| `SENTRY_DSN`                | hayır      | boş                  | Boşsa hata izleme kapalıdır, dışarıya hiçbir şey gitmez                                                                |
+| `SENTRY_TRACES_SAMPLE_RATE` | hayır      | 0.05                 | İzleme örneklemesi. Ücretsiz katmanda kota var                                                                         |
+| `LOG_LEVEL`                 | hayır      | info                 | `fatal\|error\|warn\|info\|debug\|trace`                                                                               |
+| `EPOSTA_TASIYICI`           | hayır      | log                  | `log` dışarı göndermez; `resend` gerçek posta atar                                                                     |
+| `EPOSTA_ANAHTAR`            | resend ise | —                    | Resend API anahtarı                                                                                                    |
+| `EPOSTA_GONDEREN`           | resend ise | —                    | Gönderen adresi; alan adı doğrulanmış olmalı                                                                           |
+| `UYGULAMA_URL`              | hayır      | Render'ın dış adresi | Sıfırlama bağlantısının tabanı. Verilmezse `RENDER_EXTERNAL_URL` kullanılır; kendi alan adını bağlayınca burayı doldur |
 
 **`/health`** kimlik istemez ve `{ ok, time, izleme }` döner. `izleme` alanı
 Sentry'nin gerçekten açık olup olmadığını söyler — DSN'i girip de yazım hatası

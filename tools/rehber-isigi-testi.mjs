@@ -64,8 +64,8 @@ await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 
 const isikDurumu = () =>
   page.evaluate(() => {
     // Perde parçaları: z-[55] sınıfı taşıyan sabit dikdörtgenler.
-    const perdeler = [...document.querySelectorAll('div')].filter((d) =>
-      d.className && typeof d.className === 'string' && d.className.includes('z-[55]'),
+    const perdeler = [...document.querySelectorAll('div')].filter(
+      (d) => d.className && typeof d.className === 'string' && d.className.includes('z-[55]'),
     );
     const tumIsaretler = [...document.querySelectorAll('[data-rehber]')].map((e) =>
       e.getAttribute('data-rehber'),
@@ -133,9 +133,11 @@ await page.waitForTimeout(2500);
    * ALTINDA kalıyordu. Artık kâhya perdenin üstünde.
    */
   kontrol('Perdenin üstünde kâhya var', (d.ipucu ?? '').includes('Kâhya Sinan'), d.ipucu ?? 'yok');
-  kontrol('Sebep de yazıyor (yalnız "buna bas" değil)',
+  kontrol(
+    'Sebep de yazıyor (yalnız "buna bas" değil)',
     (d.ipucu ?? '').replace(/Kâhya Sinan|şimdi buna bas|↓/g, '').trim().length > 25,
-    (d.ipucu ?? '').slice(0, 70));
+    (d.ipucu ?? '').slice(0, 70),
+  );
   gorulenSebep.malikane = d.ipucu ?? '';
   kontrol(
     'Sayfada her işaret bir kez',
@@ -159,8 +161,11 @@ await page.waitForTimeout(2500);
   const sonrakiSekme = await page.evaluate(
     () => document.querySelector('nav button[aria-current="page"]')?.textContent?.trim() ?? '',
   );
-  kontrol('Perdeye basınca ekran DEĞİŞMİYOR', oncekiSekme === sonrakiSekme,
-    `${oncekiSekme} → ${sonrakiSekme}`);
+  kontrol(
+    'Perdeye basınca ekran DEĞİŞMİYOR',
+    oncekiSekme === sonrakiSekme,
+    `${oncekiSekme} → ${sonrakiSekme}`,
+  );
   kontrol('Basınca ışık hâlâ yanıyor', (await isikDurumu()).yaniyor === true);
 }
 
@@ -195,9 +200,11 @@ await page.waitForTimeout(2500);
 
   // Sebep DÜĞMEYE özel olmalı: adımın cümlesi her düğmede aynı kalsaydı
   // "neden buna basıyorum" sorusu ara düğmelerde cevapsız kalırdı.
-  kontrol('Kışladaki sebep, Malikâne\'dekinden FARKLI',
+  kontrol(
+    "Kışladaki sebep, Malikâne'dekinden FARKLI",
     (d.ipucu ?? '') !== (gorulenSebep.malikane ?? ''),
-    (d.ipucu ?? '').slice(0, 60));
+    (d.ipucu ?? '').slice(0, 60),
+  );
   gorulenSebep.kisla = d.ipucu ?? '';
 }
 
@@ -227,10 +234,16 @@ await page.waitForTimeout(2500);
     return { perde, kart };
   });
   kontrol('Eğitim sürerken perde DURUYOR', tutma.perde > 0, `${tutma.perde} parça`);
-  kontrol('Kâhya "askerlerin eğitiliyor" diyor', /eğitiliyor/i.test(tutma.kart),
-    tutma.kart.slice(0, 60));
-  kontrol('Kalan süre yazıyor', /\d/.test(tutma.kart.replace('Kâhya Sinan', '')),
-    tutma.kart.slice(0, 60));
+  kontrol(
+    'Kâhya "askerlerin eğitiliyor" diyor',
+    /eğitiliyor/i.test(tutma.kart),
+    tutma.kart.slice(0, 60),
+  );
+  kontrol(
+    'Kalan süre yazıyor',
+    /\d/.test(tutma.kart.replace('Kâhya Sinan', '')),
+    tutma.kart.slice(0, 60),
+  );
 
   const cubuk = await ulasilirMi(page.locator('nav button:has-text("Harita")'));
   kontrol('Eğitim sürerken alt çubuk ÖRTÜLÜ — tur kopmuyor', cubuk === 'ortulu', cubuk);
@@ -257,8 +270,11 @@ await page.waitForTimeout(2500);
       const m = (document.body.textContent ?? '').match(/(\d+)\s*\/\s*\d+\s*komuta/);
       return m ? Number(m[1]) : -1;
     });
-  kontrol('Eğitim başlarken orduda asker yok', (await komutaOku()) === 0,
-    `${await komutaOku()} yer dolu`);
+  kontrol(
+    'Eğitim başlarken orduda asker yok',
+    (await komutaOku()) === 0,
+    `${await komutaOku()} yer dolu`,
+  );
 
   // İlk eğitim `ilk_egitim.saniye` (5 sn) sürüyor; cömert bir pay bırak.
   let geldi = false;
@@ -279,8 +295,11 @@ await page.waitForTimeout(2500);
       break;
     }
   }
-  kontrol('Eğitim bitince tutma kalkıyor, ışık yola devam ediyor', devam !== null,
-    devam ?? 'sönük');
+  kontrol(
+    'Eğitim bitince tutma kalkıyor, ışık yola devam ediyor',
+    devam !== null,
+    devam ?? 'sönük',
+  );
 
   /**
    * Işık SÖNMEDEN durmalı.
@@ -295,8 +314,11 @@ await page.waitForTimeout(2500);
    */
   await page.waitForTimeout(5000);
   const surekli = await isikDurumu();
-  kontrol('Işık beş saniye sonra da yanıyor (sönüp kalmıyor)',
-    surekli.yaniyor === true && surekli.isaret !== null, surekli.isaret ?? 'söndü');
+  kontrol(
+    'Işık beş saniye sonra da yanıyor (sönüp kalmıyor)',
+    surekli.yaniyor === true && surekli.isaret !== null,
+    surekli.isaret ?? 'söndü',
+  );
 }
 
 /**
@@ -332,25 +354,36 @@ await page.waitForTimeout(2500);
     const d = await isikDurumu();
     // Saldırı ordusu boşken "Saldır" kapalı olur; ışık kapalı düğmeyi
     // atlayıp önce "Hepsi"yi göstermeli — zincirin can alıcı yeri burası.
-    kontrol('Haritada delik önce "Hepsi" seçicisinde', d.isaret === 'harita-hepsi', d.isaret ?? 'yok');
+    kontrol(
+      'Haritada delik önce "Hepsi" seçicisinde',
+      d.isaret === 'harita-hepsi',
+      d.isaret ?? 'yok',
+    );
 
     if (d.isaret === 'harita-hepsi') {
       await page.locator('[data-rehber="harita-hepsi"]').click();
       await page.waitForTimeout(2500);
       const d2 = await isikDurumu();
-      kontrol('Ordu seçilince delik "Saldır" düğmesine geçti',
-        d2.isaret === 'harita-saldir', d2.isaret ?? 'yok');
-      kontrol('"Saldır"ın sebebi de kendine ait',
+      kontrol(
+        'Ordu seçilince delik "Saldır" düğmesine geçti',
+        d2.isaret === 'harita-saldir',
+        d2.isaret ?? 'yok',
+      );
+      kontrol(
+        '"Saldır"ın sebebi de kendine ait',
         (d2.ipucu ?? '') !== (gorulenSebep.kisla ?? '') && (d2.ipucu ?? '').length > 30,
-        (d2.ipucu ?? '').slice(0, 60));
+        (d2.ipucu ?? '').slice(0, 60),
+      );
 
       const ulas = await ulasilirMi(page.locator('[data-rehber="harita-saldir"]'));
       kontrol('"Saldır" düğmesi ULAŞILIR', ulas === 'ulasilir', ulas);
 
       await page.locator('[data-rehber="harita-saldir"]').click();
       await page.waitForTimeout(3000);
-      kontrol('Saldırı başlayınca ışık SÖNÜYOR (ordu yolda, yapacak şey yok)',
-        (await isikDurumu()).yaniyor === false);
+      kontrol(
+        'Saldırı başlayınca ışık SÖNÜYOR (ordu yolda, yapacak şey yok)',
+        (await isikDurumu()).yaniyor === false,
+      );
     }
   }
 }
@@ -382,19 +415,27 @@ await page.waitForTimeout(2500);
    * "GEÇ"i duruyor; buranın kaçış düğmesi kaldırıldı. Bu kontroller
    * geri konmasını engelliyor.
    */
-  kontrol('Işıkta kaçış düğmesi YOK',
-    (await page.locator('button[aria-label="Rehberi kapat"]').count()) === 0);
-  kontrol('Kâhya kartında da kapatma YOK',
-    (await page.locator('button:has-text("yeter, anladım")').count()) === 0);
+  kontrol(
+    'Işıkta kaçış düğmesi YOK',
+    (await page.locator('button[aria-label="Rehberi kapat"]').count()) === 0,
+  );
+  kontrol(
+    'Kâhya kartında da kapatma YOK',
+    (await page.locator('button:has-text("yeter, anladım")').count()) === 0,
+  );
 
   // Perdenin her köşesine bas: hiçbiri ışığı söndürmemeli.
   const boy = page.viewportSize();
-  for (const [x, y] of [[10, 10], [boy.width - 10, 10], [10, boy.height - 10], [boy.width - 10, boy.height - 10]]) {
+  for (const [x, y] of [
+    [10, 10],
+    [boy.width - 10, 10],
+    [10, boy.height - 10],
+    [boy.width - 10, boy.height - 10],
+  ]) {
     await page.mouse.click(x, y);
   }
   await page.waitForTimeout(800);
-  kontrol('Perdenin dört köşesine basmak ışığı söndürmüyor',
-    (await isikDurumu()).yaniyor === true);
+  kontrol('Perdenin dört köşesine basmak ışığı söndürmüyor', (await isikDurumu()).yaniyor === true);
 
   await page.reload({ waitUntil: 'domcontentloaded' });
   await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
@@ -424,13 +465,18 @@ await page.waitForTimeout(2500);
   const me = await (
     await fetch(`${API}/api/me`, { headers: { authorization: `Bearer ${token}` } })
   ).json();
-  kontrol('Saldırı sonuçlandı, bölge alındı', (me.lord?.regionCount ?? 0) > 0,
-    `${me.lord?.regionCount} bölge`);
+  kontrol(
+    'Saldırı sonuçlandı, bölge alındı',
+    (me.lord?.regionCount ?? 0) > 0,
+    `${me.lord?.regionCount} bölge`,
+  );
   kontrol('Tur bitince ışık SÖNÜK', (await isikDurumu()).yaniyor === false);
-  kontrol('Tur bitince kâhya kartı da susuyor',
+  kontrol(
+    'Tur bitince kâhya kartı da susuyor',
     (await page.evaluate(() =>
       (document.querySelector('main')?.textContent ?? '').includes('Kâhya Sinan'),
-    )) === false);
+    )) === false,
+  );
 
   // Damgayı sunucuya sor: arayüz "sustu" derken sunucu "hâlâ yeni oyuncu"
   // diyorsa, ordusunu kaybeden lord turun içine geri düşerdi.
@@ -438,8 +484,11 @@ await page.waitForTimeout(2500);
   const me2 = await (
     await fetch(`${API}/api/me`, { headers: { authorization: `Bearer ${token}` } })
   ).json();
-  kontrol('Tur bitince sunucuya damga vuruluyor', me2.lord?.rehberGorundu === true,
-    String(me2.lord?.rehberGorundu));
+  kontrol(
+    'Tur bitince sunucuya damga vuruluyor',
+    me2.lord?.rehberGorundu === true,
+    String(me2.lord?.rehberGorundu),
+  );
 }
 
 // --- 6c. Aynı tarayıcıda yeni hesap ---
@@ -474,12 +523,17 @@ await page.waitForTimeout(2500);
   await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
   await page.waitForTimeout(2500);
   const yeni = await isikDurumu();
-  kontrol('AYNI TARAYICIDA yeni hesapta ışık GERİ GELİYOR', yeni.yaniyor === true,
-    yeni.isaret ?? 'sönük');
-  kontrol('Yeni hesapta kâhya kartı da geri geliyor',
+  kontrol(
+    'AYNI TARAYICIDA yeni hesapta ışık GERİ GELİYOR',
+    yeni.yaniyor === true,
+    yeni.isaret ?? 'sönük',
+  );
+  kontrol(
+    'Yeni hesapta kâhya kartı da geri geliyor',
     await page.evaluate(() =>
       (document.querySelector('main')?.textContent ?? '').includes('Kâhya Sinan'),
-    ));
+    ),
+  );
 }
 
 // --- 7. Sekiz sayfalık öğretici açıkken ışık yanmamalı ---
@@ -496,8 +550,10 @@ await page.waitForTimeout(2500);
   await page.reload({ waitUntil: 'domcontentloaded' });
   await page.waitForSelector('[role="dialog"][aria-label="Öğretici"]', { timeout: 20000 });
   await page.waitForTimeout(2500);
-  kontrol('Öğretici açıkken ışık SÖNÜK (iki perde üst üste binmiyor)',
-    (await isikDurumu()).yaniyor === false);
+  kontrol(
+    'Öğretici açıkken ışık SÖNÜK (iki perde üst üste binmiyor)',
+    (await isikDurumu()).yaniyor === false,
+  );
 }
 
 /**
@@ -595,8 +651,11 @@ await page.waitForTimeout(2500);
     };
   });
   kontrol('Tanıtımı GEÇEN oyuncuya da ışık yanıyor', gecen.parca === 4, `${gecen.parca} parça`);
-  kontrol('Geçene de aynı düğme gösteriliyor', gecen.isaret === 'omurga-dugme',
-    gecen.isaret ?? 'yok');
+  kontrol(
+    'Geçene de aynı düğme gösteriliyor',
+    gecen.isaret === 'omurga-dugme',
+    gecen.isaret ?? 'yok',
+  );
   kontrol('Geçen oyuncu için de kaçış yolu yok', gecen.kacis === 0);
   await ctx3.close();
 }
@@ -658,7 +717,10 @@ await page.waitForTimeout(2500);
         );
         return Boolean(u && (e === u || e.contains(u)));
       });
-      w.__iz.push({ perde, delik: perde > 0 ? (hedef?.getAttribute('data-rehber') ?? null) : null });
+      w.__iz.push({
+        perde,
+        delik: perde > 0 ? (hedef?.getAttribute('data-rehber') ?? null) : null,
+      });
       if (w.__iz.length < 60) setTimeout(oku, 80);
     };
     oku();
@@ -672,16 +734,25 @@ await page.waitForTimeout(2500);
   const son = iz[iz.length - 1];
 
   // Asıl hata buydu: doğru ekrandayken oyuncuya geldiği yönü göstermek.
-  kontrol('Yavaş şebekede ışık ASLA "ana sayfaya dön" demiyor', geriYollayan === 0,
-    `${geriYollayan} kare`);
+  kontrol(
+    'Yavaş şebekede ışık ASLA "ana sayfaya dön" demiyor',
+    geriYollayan === 0,
+    `${geriYollayan} kare`,
+  );
   // Perdenin bir kalkıp bir inmesi de titremenin ta kendisiydi.
   kontrol('Perde geçiş boyunca hiç düşmüyor', perdesiz === 0, `${perdesiz} kare perdesiz`);
-  kontrol('Yavaş şebekede de sonunda eğitim düğmesinde duruyor',
-    son?.delik === 'kisla-egit', son?.delik ?? 'yok');
+  kontrol(
+    'Yavaş şebekede de sonunda eğitim düğmesinde duruyor',
+    son?.delik === 'kisla-egit',
+    son?.delik ?? 'yok',
+  );
   // Kaç ayrı hedefe konuldu: ikiden fazlası titreme demek.
   const gecisler = [...new Set(iz.map((x) => x.delik).filter(Boolean))];
-  kontrol('Geçiş boyunca en fazla iki hedef gösterildi', gecisler.length <= 2,
-    gecisler.join(' → '));
+  kontrol(
+    'Geçiş boyunca en fazla iki hedef gösterildi',
+    gecisler.length <= 2,
+    gecisler.join(' → '),
+  );
 
   /**
    * Deliksiz bekleme NE KADAR sürüyor?
@@ -695,8 +766,11 @@ await page.waitForTimeout(2500);
    * tamamı kadar olur.
    */
   const bekleme = iz.filter((x) => x.perde > 0 && x.delik === null).length * 80;
-  kontrol('Hedef ekranın verisi önden çekiliyor (bekleme kısa)', bekleme <= 400,
-    `${bekleme}ms bekleme (şebeke gecikmesi 600ms)`);
+  kontrol(
+    'Hedef ekranın verisi önden çekiliyor (bekleme kısa)',
+    bekleme <= 400,
+    `${bekleme}ms bekleme (şebeke gecikmesi 600ms)`,
+  );
   await ctx4.close();
 }
 

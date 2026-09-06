@@ -205,8 +205,8 @@ function TarafKarti({
           </ul>
           {yaraliSayi > 0 && (
             <p className="mt-1.5 text-[11px] text-yesil">
-              {yaraliSayi} asker ölü sanılmıştı, yaralı olarak döndü. Kayıp sayısı bunu
-              çıkardıktan sonrası.
+              {yaraliSayi} asker ölü sanılmıştı, yaralı olarak döndü. Kayıp sayısı bunu çıkardıktan
+              sonrası.
             </p>
           )}
         </>
@@ -284,9 +284,7 @@ function GeneralKatkilari({
               {g.yetenekAd && (
                 <p className="mt-0.5 text-[11px] text-altin">
                   {g.yetenekAd}
-                  {g.yetenekAciklama && (
-                    <span className="text-solgun"> — {g.yetenekAciklama}</span>
-                  )}
+                  {g.yetenekAciklama && <span className="text-solgun"> — {g.yetenekAciklama}</span>}
                 </p>
               )}
             </li>
@@ -296,7 +294,6 @@ function GeneralKatkilari({
     </Kart>
   );
 }
-
 
 /**
  * "Neden böyle oldu" kartı.
@@ -378,8 +375,8 @@ function sebepCumlesi(s: SavasSebebi): ReactNode {
     case 'dar_zafer':
       return (
         <>
-          Savaş kazanıldı ama güç payı {g(`%${Math.round(s.deger! * 100)}`)} eşiğine
-          ulaşmadı — bölge el değiştirmedi, yalnızca yağma alındı.
+          Savaş kazanıldı ama güç payı {g(`%${Math.round(s.deger! * 100)}`)} eşiğine ulaşmadı —
+          bölge el değiştirmedi, yalnızca yağma alındı.
         </>
       );
     case 'tahkimat':
@@ -391,13 +388,13 @@ function sebepCumlesi(s: SavasSebebi): ReactNode {
     case 'karsi':
       return s.lehte ? (
         <>
-          {g(unitName(s.benim!))} birliklerin {g(unitName(s.onun!))} karşısında{' '}
-          {g(`×${s.deger}`)} vurdu.
+          {g(unitName(s.benim!))} birliklerin {g(unitName(s.onun!))} karşısında {g(`×${s.deger}`)}{' '}
+          vurdu.
         </>
       ) : (
         <>
-          {g(unitName(s.benim!))} birliklerin {g(unitName(s.onun!))} karşısında{' '}
-          {g(`×${s.deger}`)} yedi.
+          {g(unitName(s.benim!))} birliklerin {g(unitName(s.onun!))} karşısında {g(`×${s.deger}`)}{' '}
+          yedi.
         </>
       );
     case 'kusatma_iyi':
@@ -405,8 +402,7 @@ function sebepCumlesi(s: SavasSebebi): ReactNode {
     case 'kusatma_bosa':
       return (
         <>
-          Tahkimat olmadığı için mancınıklar canlı orduya {g('yarım')} vurdu — o
-          kaynak boşa gitti.
+          Tahkimat olmadığı için mancınıklar canlı orduya {g('yarım')} vurdu — o kaynak boşa gitti.
         </>
       );
   }
@@ -581,7 +577,8 @@ export function SavasRaporu({
               )}
 
               <p className="pb-1 text-center text-[11px] text-sonuk">
-                Toplam {formatSayi(toplam(savas.log.attackerLosses) + toplam(savas.log.defenderLosses))}{' '}
+                Toplam{' '}
+                {formatSayi(toplam(savas.log.attackerLosses) + toplam(savas.log.defenderLosses))}{' '}
                 birim öldü · tohum {savas.seed.slice(0, 12)}
               </p>
             </>

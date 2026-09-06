@@ -95,8 +95,16 @@ export function useOmurgaAdimi(
   queues: QueueItem[],
 ): Adim | null {
   const harita = useQuery({ queryKey: ['map'], queryFn: api.map, enabled: Boolean(lord) });
-  const yuruyusler = useQuery({ queryKey: ['marches'], queryFn: api.marches, enabled: Boolean(lord) });
-  const generaller = useQuery({ queryKey: ['generals'], queryFn: api.generals, enabled: Boolean(lord) });
+  const yuruyusler = useQuery({
+    queryKey: ['marches'],
+    queryFn: api.marches,
+    enabled: Boolean(lord),
+  });
+  const generaller = useQuery({
+    queryKey: ['generals'],
+    queryFn: api.generals,
+    enabled: Boolean(lord),
+  });
 
   if (!lord) return null;
   return siradakiAdim({
@@ -183,9 +191,7 @@ export function Omurga({
       {/* Tek satır cümle + rozetler. Önceden burada dört satırlık düz yazı
           vardı; aynı bilgiyi rozetlerle vermek okuma yükünü düşürüyor ve
           referanstaki "sayı cümlenin içinde durmaz" kuralına uyuyor. */}
-      {adim.cumle && (
-        <p className="mt-1.5 text-[13px] leading-snug text-parsomen">{adim.cumle}</p>
-      )}
+      {adim.cumle && <p className="mt-1.5 text-[13px] leading-snug text-parsomen">{adim.cumle}</p>}
       {adim.rozetler && adim.rozetler.length > 0 && (
         <div className="mt-2 flex flex-wrap gap-1.5">{adim.rozetler}</div>
       )}
@@ -376,15 +382,17 @@ function siradakiAdim(g: {
       baslik: oneri.orduVar ? 'Ordunu büyüt' : 'Ordunu kur',
       cumle: `${oneri.name} için ordun henüz yetmiyor.`,
       rozetler: [
-        <Hap key="ordu" ikon={<BirimIkonu tip={eksik.birim} boyut={13} />} renk="var(--color-altin)">
+        <Hap
+          key="ordu"
+          ikon={<BirimIkonu tip={eksik.birim} boyut={13} />}
+          renk="var(--color-altin)"
+        >
           {eksik.adet} {unitName(eksik.birim as UnitType)}
         </Hap>,
         <Hap
           key="mal"
           ikon={<IkonAltin boyut={13} />}
-          renk={
-            eksik.karsilanabilir ? 'var(--color-kaynak-altin)' : 'var(--color-kirmizi)'
-          }
+          renk={eksik.karsilanabilir ? 'var(--color-kaynak-altin)' : 'var(--color-kirmizi)'}
         >
           {formatSayi(eksik.maliyet.altin)}
         </Hap>,

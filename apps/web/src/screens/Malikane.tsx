@@ -21,7 +21,14 @@ import { ipucuSec, regionIncome, type Kapi } from '@lordlar/shared';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { api, type GameEvent, type LordState } from '../api/client';
-import { BolgeIkonu, IkonAltin, IkonDemir, IkonErzak, IkonKale, IkonSure } from '../components/Ikonlar';
+import {
+  BolgeIkonu,
+  IkonAltin,
+  IkonDemir,
+  IkonErzak,
+  IkonKale,
+  IkonSure,
+} from '../components/Ikonlar';
 import { Zemin } from '../components/Zemin';
 import { BosHal } from '../components/BosHal';
 import {
@@ -121,7 +128,10 @@ export function Malikane({
           Bölgeye dokunmak haritada onu açıyor: yükseltme, garnizon ve
           bırakma zaten orada. Burada ikinci bir yönetim arayüzü kurmak,
           aynı işi iki yerde tutmak olurdu. */}
-      <Bolum baslik={`Topraklarım${benim.length ? ` · ${benim.length}` : ''}`} sakin={benim.length === 0}>
+      <Bolum
+        baslik={`Topraklarım${benim.length ? ` · ${benim.length}` : ''}`}
+        sakin={benim.length === 0}
+      >
         {harita.isPending ? (
           <Iskelet satir={2} />
         ) : benim.length === 0 ? (

@@ -34,11 +34,35 @@ interface DemoTanim {
 
 const DEMO: DemoTanim[] = [
   { ad: 'Demirhan Bey', seviye: 5, ordu: { mizrakci: 40, okcu: 25 }, liderlik: 12, guc: 8 },
-  { ad: 'Yaman Alp', seviye: 8, ordu: { mizrakci: 60, okcu: 40, suvari: 8 }, liderlik: 20, guc: 12 },
-  { ad: 'Kılıçarslan', seviye: 12, ordu: { mizrakci: 80, okcu: 55, suvari: 15 }, liderlik: 30, guc: 18 },
+  {
+    ad: 'Yaman Alp',
+    seviye: 8,
+    ordu: { mizrakci: 60, okcu: 40, suvari: 8 },
+    liderlik: 20,
+    guc: 12,
+  },
+  {
+    ad: 'Kılıçarslan',
+    seviye: 12,
+    ordu: { mizrakci: 80, okcu: 55, suvari: 15 },
+    liderlik: 30,
+    guc: 18,
+  },
   { ad: 'Boran Tigin', seviye: 6, ordu: { mizrakci: 45, okcu: 30 }, liderlik: 15, guc: 9 },
-  { ad: 'Sungur Bey', seviye: 10, ordu: { mizrakci: 70, okcu: 45, suvari: 10 }, liderlik: 25, guc: 15 },
-  { ad: 'Aybüke Hatun', seviye: 14, ordu: { mizrakci: 90, okcu: 60, suvari: 20 }, liderlik: 36, guc: 22 },
+  {
+    ad: 'Sungur Bey',
+    seviye: 10,
+    ordu: { mizrakci: 70, okcu: 45, suvari: 10 },
+    liderlik: 25,
+    guc: 15,
+  },
+  {
+    ad: 'Aybüke Hatun',
+    seviye: 14,
+    ordu: { mizrakci: 90, okcu: 60, suvari: 20 },
+    liderlik: 36,
+    guc: 22,
+  },
 ];
 
 /** Seviyeye kadar biriken toplam XP (kayıtta seviye + kalan tutulur, bu sadece kontrol içindir). */
@@ -53,7 +77,9 @@ function toplamXp(seviye: number): number {
  * Dönüş: eklenen lord sayısı.
  */
 export async function seedDemoLords(worldId: string): Promise<number> {
-  const zaten = await prisma.lord.count({ where: { worldId, name: { in: DEMO.map((d) => d.ad) } } });
+  const zaten = await prisma.lord.count({
+    where: { worldId, name: { in: DEMO.map((d) => d.ad) } },
+  });
   if (zaten > 0) return 0;
 
   const kenar = WORLD_MAP.regions.filter((r) => r.ring === 4);
@@ -112,7 +138,13 @@ export async function seedDemoLords(worldId: string): Promise<number> {
       const evde = toplam - garnizon;
       if (evde > 0) {
         await prisma.armyUnit.create({
-          data: { lordId: lord.id, unitType: t, count: evde, locationType: 'home', locationId: null },
+          data: {
+            lordId: lord.id,
+            unitType: t,
+            count: evde,
+            locationType: 'home',
+            locationId: null,
+          },
         });
       }
       if (garnizon > 0 && bolge) {

@@ -11,13 +11,7 @@
  */
 import { useState } from 'react';
 
-export type GorselTuru =
-  | 'birimler'
-  | 'generaller'
-  | 'bolgeler'
-  | 'ekipman'
-  | 'harita'
-  | 'lord';
+export type GorselTuru = 'birimler' | 'generaller' | 'bolgeler' | 'ekipman' | 'harita' | 'lord';
 
 /**
  * Bölgenin aşamasına uygun görselin adı.

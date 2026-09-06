@@ -29,8 +29,9 @@ const { token } = await kayitOl(API, {
 });
 const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
 const post = (y, g) =>
-  fetch(`${API}/api${y}`, { method: 'POST', headers: h, body: JSON.stringify(g ?? {}) })
-    .then((x) => x.json());
+  fetch(`${API}/api${y}`, { method: 'POST', headers: h, body: JSON.stringify(g ?? {}) }).then((x) =>
+    x.json(),
+  );
 const get = (y) => fetch(`${API}/api${y}`, { headers: h }).then((x) => x.json());
 const say = (k) => Math.round((k?.altin ?? 0) + (k?.demir ?? 0) + (k?.erzak ?? 0));
 
@@ -38,21 +39,33 @@ console.log('Lordlar Çağı — haftalık sefer testi\n');
 
 const bas = await get('/sefer');
 kontrol('Bu haftanın seferi gösteriliyor', Boolean(bas.sefer?.key), bas.sefer?.ad ?? 'sefer yok');
-kontrol('Seferin hedefi ve birimi var', bas.sefer.hedef > 0 && Boolean(bas.sefer.birim),
-  `${bas.sefer.hedef} ${bas.sefer.birim}`);
-kontrol('Kalan gün 1 ile 7 arasında', bas.sefer.kalanGun >= 1 && bas.sefer.kalanGun <= 7,
-  `${bas.sefer.kalanGun} gün`);
+kontrol(
+  'Seferin hedefi ve birimi var',
+  bas.sefer.hedef > 0 && Boolean(bas.sefer.birim),
+  `${bas.sefer.hedef} ${bas.sefer.birim}`,
+);
+kontrol(
+  'Kalan gün 1 ile 7 arasında',
+  bas.sefer.kalanGun >= 1 && bas.sefer.kalanGun <= 7,
+  `${bas.sefer.kalanGun} gün`,
+);
 kontrol('Ödül baştan görünüyor', say(bas.odul?.kaynak) > 0, `${bas.odul?.kaynak?.altin} altın`);
-kontrol('Yeni oyuncuda sefer henüz bitmedi', bas.odul.hakEdildi === false,
-  `${bas.sefer.simdi}/${bas.sefer.hedef}`);
+kontrol(
+  'Yeni oyuncuda sefer henüz bitmedi',
+  bas.odul.hakEdildi === false,
+  `${bas.sefer.simdi}/${bas.sefer.hedef}`,
+);
 
 const erken = await post('/sefer/odul');
 kontrol('Sefer bitmeden ödül alınamıyor', erken?.code === 'SEFER_EKSIK', erken?.code ?? '-');
 
 // Sefer iki kez sorulduğunda AYNI seferi vermeli: türetme kararlı mı?
 const tekrar = await get('/sefer');
-kontrol('Sefer istekten isteğe değişmiyor', tekrar.sefer.key === bas.sefer.key,
-  `${bas.sefer.key} / ${tekrar.sefer.key}`);
+kontrol(
+  'Sefer istekten isteğe değişmiyor',
+  tekrar.sefer.key === bas.sefer.key,
+  `${bas.sefer.key} / ${tekrar.sefer.key}`,
+);
 
 // --- Seferi ölçütüne göre tamamla
 await post('/test/kaynak-ver', { altin: 900000, demir: 500000, erzak: 500000 });
@@ -137,16 +150,21 @@ if (sonra.odul.hakEdildi) {
   const oncekiKaynak = (await get('/me')).lord.resources;
   const alindi = await post('/sefer/odul');
   kontrol('Sefer ödülü verildi', say(alindi?.verilen) > 0, `${alindi?.verilen?.altin} altın`);
-  kontrol('Kaynaklar arttı', alindi.kaynaklar.altin > oncekiKaynak.altin,
-    `${Math.floor(oncekiKaynak.altin)} -> ${Math.floor(alindi.kaynaklar.altin)}`);
+  kontrol(
+    'Kaynaklar arttı',
+    alindi.kaynaklar.altin > oncekiKaynak.altin,
+    `${Math.floor(oncekiKaynak.altin)} -> ${Math.floor(alindi.kaynaklar.altin)}`,
+  );
 
   const ikinci = await post('/sefer/odul');
   kontrol('Sefer ödülü İKİNCİ kez alınamıyor', ikinci?.code === 'ODUL_ALINDI', ikinci?.code ?? '-');
 
   const esZamanli = await Promise.all([post('/sefer/odul'), post('/sefer/odul')]);
-  kontrol('Eş zamanlı iki istek de reddediliyor',
+  kontrol(
+    'Eş zamanlı iki istek de reddediliyor',
     esZamanli.every((x) => x?.code === 'ODUL_ALINDI'),
-    esZamanli.map((x) => x?.code ?? 'verildi').join(', '));
+    esZamanli.map((x) => x?.code ?? 'verildi').join(', '),
+  );
 
   kontrol('Ödül "alındı" olarak işaretlendi', (await get('/sefer')).odul.alindi === true);
 }

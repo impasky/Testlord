@@ -119,6 +119,17 @@ model Lord {
   /// göstermek, kartı ikinci kez göstermekten çok daha rahatsız edici.
   rehberBittiAt     DateTime?
 
+  /// Savunma düzeni: saldırıya uğradığında kullanılacak 4x4 dizilim ve
+  /// taktik. Türetilemiyor — bu bir KARAR, oyun durumunun sonucu değil.
+  ///
+  /// Async bir oyunda savunanın uykuda olması kural, istisna değil.
+  /// Saldıran her seferinde dizilim yaparken savunanın hep nötr kalması
+  /// savunmayı sistematik olarak zayıflatırdı; burada bir kez kurulup
+  /// her savaşta kullanılıyor. Boşsa garnizonun varsayılan dizilimi
+  /// uygulanıyor, yani hiç dokunmayan oyuncu da cezalı değil.
+  savunmaDizilim Json?
+  savunmaTaktik  String?
+
   /// Arma: oyuncunun heraldik kimliği (docs/10 §1.1). Beş küçük anahtar,
   /// hiçbir sayıya dokunmuyor. Boşsa lord adından türetiliyor.
   armaKalkan String?
@@ -268,6 +279,11 @@ model March {
   kind         String // attack | return
   army         Json
   generalIds   Json
+  /// Bu saldırının 4x4 dizilimi ve taktiği: { dizilim, taktik }.
+  /// Yürüyüş kaydında duruyor çünkü karar YOLA ÇIKARKEN veriliyor —
+  /// lorda bağlansaydı, ordu yoldayken dizilimi değiştirmek savaşı
+  /// etkilerdi ve oyuncu geri dönüp taktik değiştirebilirdi.
+  duzen        Json?
   loot         Json?
   /// Yürüyüşün hex mesafesi. Dönüş süresi buradan hesaplanır.
   /// Eskiden gidiş süresinden geri türetiliyordu; ilk saldırının süresi

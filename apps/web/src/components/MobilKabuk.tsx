@@ -158,7 +158,6 @@ export function MobilKabuk({
   isaretli?: AltSekme | null;
   children: ReactNode;
 }) {
-
   // --ust-bar başlığın GERÇEK yüksekliğinden gelir, elle yazılmış bir
   // sabitten değil. styles.css'teki 108px bir tahmindi ve ölçülen 87px'ten
   // 21px fazlaydı: her ekranın tepesinde o kadar ölü boşluk kalıyordu.

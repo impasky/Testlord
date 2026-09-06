@@ -28,13 +28,13 @@ sıralamada yüksel. Bizde de bu var. Fark detayda ve **sosyal katmanda**.
 
 ### 2.1 İttifak ve diplomasi (en büyük kaldıraç)
 
-Travian'ın kendi belgeleri oyunu *"işbirliği ve diplomasi üzerine kurulu"*
+Travian'ın kendi belgeleri oyunu _"işbirliği ve diplomasi üzerine kurulu"_
 diye tanımlıyor; ittifak üyeliği koordineli saldırı, savunma ve kaynak
 paylaşımı sağlıyor ve **oyun sonu bunlara bağlı**. Grepolis'te on yıldan
 uzun süredir birlikte oynayan ittifaklar var.
 
-Diplomasi üretimden daha önemli hâle geliyor: oyuncular ittifaka *korunmak
-için* katılıyor, anlaşma yapıyor, bazılarını tutuyor, koşullar değişince
+Diplomasi üretimden daha önemli hâle geliyor: oyuncular ittifaka _korunmak
+için_ katılıyor, anlaşma yapıyor, bazılarını tutuyor, koşullar değişince
 sessizce bozuyor. Konfederasyon ve saldırmazlık paktları bu katmanın resmî
 araçları.
 
@@ -74,7 +74,7 @@ bakarak yapıldı ama **kopyalanmadı** — ikisi bilerek farklı:
 
 1. **Üye tavanı 8'de kaldı.** Referansta klanlar 75 kişi. Bizde 8 ve bu
    dengede kilitli: `azami_uye × sahip_basina_max(Lv60) = 8 × 5 = 40 < 61
-   bölge`, yani bir ittifak diyarın tamamını kapatamaz. 75'e çıkarmak oyunu
+bölge`, yani bir ittifak diyarın tamamını kapatamaz. 75'e çıkarmak oyunu
    bitirirdi. Seviye üye tavanını da BÜYÜTMÜYOR; bir test bunu kilitliyor.
 2. **Seviye savaş gücüne ve gelire dokunmuyor.** Türün çoğu oyunu klan
    seviyesini doğrudan güce bağlıyor. Örgütlü bir gruba güç çarpanı vermek,
@@ -255,9 +255,9 @@ satılmaması demek.
 
 ### 3.2 Sonu gelmeyen bekleme
 
-Şikâyet net: *"Rise of Kingdoms'ta saatlerce grind yapıp minimum ilerleme
-görmekten yoruldum."* Evony'de her yükseltmede bekleme süresi artıyor ve
-oyuncular *sırf bekleme sürelerini kırmak için* yağma yapıyor.
+Şikâyet net: _"Rise of Kingdoms'ta saatlerce grind yapıp minimum ilerleme
+görmekten yoruldum."_ Evony'de her yükseltmede bekleme süresi artıyor ve
+oyuncular _sırf bekleme sürelerini kırmak için_ yağma yapıyor.
 
 **Bizde durum:** ilk saldırı 2 dakikaya indirildi (docs/08 İ3) — doğru yönde
 bir adım.
@@ -337,29 +337,28 @@ Sıra keyfi değil: **oyuncunun hissettiği fark / harcanan emek** oranına gör
 
 ### 4.1 Bugün yapılabilir (sanat gerekmez, dış servis gerekmez)
 
-| # | İş | Neden | Maliyet |
-|---|---|---|---|
-| K1 | **Karşı-birim ipuçları** | Motorda duran stratejiyi görünür kılar. Türün en büyük eleştirisine tek dosyayla cevap. | küçük |
-| K2 | **Rapor neden kazandığını söylesin** | Oyuncu öğrenmeye başlar. Veri zaten elde. | küçük |
-| K3 | **Başarımlar** | "İlk fetih", "on bölge", "tam takım" — kilometre taşları hissedilir olur. | orta |
-| K4 | **Günlük görevler + giriş serisi + ödül** | Yarın geri gelme sebebi. Ödül malikâne gelirinden türüyor, seri çarpanı tavanlı. | orta |
-| K5 | **Lider avı + azalan verim** | Kartopunu kırar, oyunu canlı tutar. | orta |
-| K6 | **Yağma sonrası kalkan** | Bir gecede silinen oyuncu geri gelmiyor. Zinciri kesen kalkan; kayıp tavanı çözmüyordu (§3.6). | küçük |
-| K7 | **"Yapacak bir şey yok" ekranı olmasın** | Her ekranın boş hâli bir sonraki işi göstersin. | küçük |
-| K8 | **General seviyesi görünsün** | Motor zaten seviye atlatıyordu, oyuncu görmüyordu. Rapor + olay + sonraki seviye. | orta |
-
+| #   | İş                                        | Neden                                                                                          | Maliyet |
+| --- | ----------------------------------------- | ---------------------------------------------------------------------------------------------- | ------- |
+| K1  | **Karşı-birim ipuçları**                  | Motorda duran stratejiyi görünür kılar. Türün en büyük eleştirisine tek dosyayla cevap.        | küçük   |
+| K2  | **Rapor neden kazandığını söylesin**      | Oyuncu öğrenmeye başlar. Veri zaten elde.                                                      | küçük   |
+| K3  | **Başarımlar**                            | "İlk fetih", "on bölge", "tam takım" — kilometre taşları hissedilir olur.                      | orta    |
+| K4  | **Günlük görevler + giriş serisi + ödül** | Yarın geri gelme sebebi. Ödül malikâne gelirinden türüyor, seri çarpanı tavanlı.               | orta    |
+| K5  | **Lider avı + azalan verim**              | Kartopunu kırar, oyunu canlı tutar.                                                            | orta    |
+| K6  | **Yağma sonrası kalkan**                  | Bir gecede silinen oyuncu geri gelmiyor. Zinciri kesen kalkan; kayıp tavanı çözmüyordu (§3.6). | küçük   |
+| K7  | **"Yapacak bir şey yok" ekranı olmasın**  | Her ekranın boş hâli bir sonraki işi göstersin.                                                | küçük   |
+| K8  | **General seviyesi görünsün**             | Motor zaten seviye atlatıyordu, oyuncu görmüyordu. Rapor + olay + sonraki seviye.              | orta    |
 
 ### 4.1c Oyuncu testinden çıkanlar
 
 Bir arkadaşa hesap açılıp test ettirildi. Söyledikleri "fikir" gibi
 duruyordu ama üçü ölçülebildi ve üçü de doğru çıktı.
 
-| # | Ne dedi | Ölçüm | Durum |
-|---|---|---|---|
-| T1 | "Oyun çok karanlık, parlaklığımı yükseltmek zorunda kaldım" | 414 metnin 129'u (%31) WCAG AA altında; en çok yön gösteren küçük yazılar (`sonuk` 2.97, gerek 4.5) | yapıldı |
-| T2 | "Her yerde bir şeyler yazıyor, önemli-önemsiz belli değil" | 175 metin 11px altında (141'i 9px) | yapıldı |
-| T3 | "Görevler ve generallere ulaşmak uzun sürüyor" | Çubukta 4 ekran (1 dokunuş), menüde 7 (2 dokunuş); menü sıklığa göre değil "sığmayanlar" diye dizilmişti | yapıldı |
-| T4 | "Oyunun içine giremiyorum, her şeyi üstümüze atıyor" | Yeni oyuncu Malikâne'de 8 blok görüyordu; tek eylem düğmesi 844px'lik ekranın DIŞINDA kalıyordu | yapıldı |
+| #   | Ne dedi                                                     | Ölçüm                                                                                                    | Durum   |
+| --- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ------- |
+| T1  | "Oyun çok karanlık, parlaklığımı yükseltmek zorunda kaldım" | 414 metnin 129'u (%31) WCAG AA altında; en çok yön gösteren küçük yazılar (`sonuk` 2.97, gerek 4.5)      | yapıldı |
+| T2  | "Her yerde bir şeyler yazıyor, önemli-önemsiz belli değil"  | 175 metin 11px altında (141'i 9px)                                                                       | yapıldı |
+| T3  | "Görevler ve generallere ulaşmak uzun sürüyor"              | Çubukta 4 ekran (1 dokunuş), menüde 7 (2 dokunuş); menü sıklığa göre değil "sığmayanlar" diye dizilmişti | yapıldı |
+| T4  | "Oyunun içine giremiyorum, her şeyi üstümüze atıyor"        | Yeni oyuncu Malikâne'de 8 blok görüyordu; tek eylem düğmesi 844px'lik ekranın DIŞINDA kalıyordu          | yapıldı |
 
 T4 en büyüğü ve öğreticinin TÜRÜNÜ sorguluyordu: bizimki sekiz sayfalık
 bir tanıtım (oku, sonra kendin dene), oyuncunun istediği bir zincir (şimdi
@@ -386,6 +385,7 @@ Diyar tanıtımı omurganın üstündeyken "Kışlada okçu eğit" düğmesi ekr
 dışında kalıyordu; şimdi 594px'te. Test bunu her koşuda ölçüyor.
 
 İki denemem geri alındı ve ikisi de öğreticiydi:
+
 - Diyar tanıtımını ilk döngüde gizlemek — kartın KENDİ kapısı (`yepyeniMi`)
   zaten yalnız yepyeni lorda açıyordu, yani kartı tam da görünmesi gereken
   anda gizlemiş, sonrasını da kendi kapısı kapattığı için HİÇ görünmez
@@ -407,12 +407,12 @@ Yol haritasında olmayan ama ölçüm sırasında ortaya çıkan işler. Buraya
 yazılıyorlar çünkü hiçbirini "tasarım" bulmadı — hepsi sayıya bakınca
 göründü.
 
-| # | İş | Nasıl bulundu | Durum |
-|---|---|---|---|
-| K9 | **İlk hedef her doğum yerinde yapılabilir olsun** | 24 doğum yerinin 6'sında (kale çapaları) oyuna göre 35 okçu gerekiyordu, başlangıç altını 33 okçuya yetiyordu | yapıldı |
-| K9b | Öneri motoru eğitim kuyruğunu görmüyordu — ne parasını ne yerini | K9'un açtığı omurga testi kaldığında | yapıldı |
-| K5b | Yağmada oran 1'i geçebiliyordu | lider avı testi yazarken | yapıldı |
-| K8b | General XP eğrisi kodda ikinci kez tanımlıydı | K8 sırasında | yapıldı |
+| #   | İş                                                               | Nasıl bulundu                                                                                                 | Durum   |
+| --- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ------- |
+| K9  | **İlk hedef her doğum yerinde yapılabilir olsun**                | 24 doğum yerinin 6'sında (kale çapaları) oyuna göre 35 okçu gerekiyordu, başlangıç altını 33 okçuya yetiyordu | yapıldı |
+| K9b | Öneri motoru eğitim kuyruğunu görmüyordu — ne parasını ne yerini | K9'un açtığı omurga testi kaldığında                                                                          | yapıldı |
+| K5b | Yağmada oran 1'i geçebiliyordu                                   | lider avı testi yazarken                                                                                      | yapıldı |
+| K8b | General XP eğrisi kodda ikinci kez tanımlıydı                    | K8 sırasında                                                                                                  | yapıldı |
 
 Ortak ders: **tek örnekli test yanıltıyor.** ilk-oturum-testi tek bir
 oyuncuyla çalışıyor ve %25'lik bir bozukluğu görmüyordu; doğum yerleri
@@ -428,27 +428,27 @@ Aşağıdaki satırlar bu listede OLMAYAN işler — biri mevcut görselleri
 yenilemek, diğerleri hiç açılmamış kategoriler. Yani "eksik görsel" değil,
 "bir sonraki sanat turu".
 
-| # | İş | Gereken |
-|---|---|---|
-| G1 | ~~Bölge gelişim aşamaları~~ **tamamlandı** | 8/8 kondu. Sv1-2 taban, Sv3-4 `_3`, Sv5 `_5`; üç seviyede de tarayıcıda doğrulandı |
-| G2 | Lord figürü (geri gelirse) | 5 görsel var, sahne kodu hazır, oyuncu beğenmedi |
-| G3 | Birim illüstrasyonlarını yenile | 5 görsel VAR ama diğer setten farklı üslupta; değiştirme işi, eksik değil |
-| G4 | Savaş sahnesi | Rapor ekranına iki ordunun karşılaştığı tek kare |
-| G5 | Sancak arması (yatay kazanç) | 10–20 arma parçası; oyuncunun kendi sancağı |
-| G6 | Bölge tipi çeşitliliği | Aynı tipin 2–3 varyantı; harita tekrar etmesin |
+| #   | İş                                         | Gereken                                                                            |
+| --- | ------------------------------------------ | ---------------------------------------------------------------------------------- |
+| G1  | ~~Bölge gelişim aşamaları~~ **tamamlandı** | 8/8 kondu. Sv1-2 taban, Sv3-4 `_3`, Sv5 `_5`; üç seviyede de tarayıcıda doğrulandı |
+| G2  | Lord figürü (geri gelirse)                 | 5 görsel var, sahne kodu hazır, oyuncu beğenmedi                                   |
+| G3  | Birim illüstrasyonlarını yenile            | 5 görsel VAR ama diğer setten farklı üslupta; değiştirme işi, eksik değil          |
+| G4  | Savaş sahnesi                              | Rapor ekranına iki ordunun karşılaştığı tek kare                                   |
+| G5  | Sancak arması (yatay kazanç)               | 10–20 arma parçası; oyuncunun kendi sancağı                                        |
+| G6  | Bölge tipi çeşitliliği                     | Aynı tipin 2–3 varyantı; harita tekrar etmesin                                     |
 
 ### 4.3 Daha sonra (büyük sistemler)
 
-| # | İş | Not |
-|---|---|---|
-| B1 | ~~**İttifak**~~ **tamamlandı** | Kur/katıl/ayrıl, üye listesi, **üyeye saldırılamaz**, ittifak sıralaması (docs/01 §7d). Üstüne: sohbet (B3), ortak hedef (B1b), takviye (B1c), saldırmazlık paktı (B1d). |
-| B2 | ~~**Sezon**~~ **YAPILMAYACAK** | Dünya KALICI. Karar ve gerekçesi §5 kural 6'da; sezonun çözdüğü sorunlar sıfırlama olmadan çözülüyor. |
-| B3 | ~~**Sohbet**~~ **ittifak sohbeti yapıldı** | Kendi tavsiyemize uyduk: kapalı grupla başladık. Genel sohbet, moderasyon yükü kaldırılabilir olmadan açılmamalı. |
-| B4 | ~~**Süreli etkinlik**~~ **yapıldı** | Haftalık sefer: tema hafta numarasından türüyor (sunucu bir şey saklamıyor), hedef herkes için aynı. **Tablo YOK** — sıralamalı etkinlik zaten önde olanı ilerletirdi (§3.4). |
-| B5 | ~~**Casusluk**~~ **yapıldı** | Kuyruk tabanlı keşif, yakalanma riski Kurnazlık'a bağlı, rapor bir fotoğraf (docs/01 §6b). Beklenenden küçük çıktı: yeni motor gerekmedi, mevcut kuyruk makinesi yetti. |
-| B6 | ~~**Ticaret**~~ **yapıldı** | İttifak içinde tek yönlü kaynak gönderme. Takas değil gönderim seçildi: takas iki tarafın onayını, teklif kuyruğunu ve teklif süresinin dolmasını gerektiriyordu — üç yeni ekran. İki fren açık: kaynak yol alır (kuşatılanı sınırsız beslemesin) ve günlük tavan var (çoklu hesap çiftliği geçmesin). |
-| B7 | **Yatay kazanç** | Görünüş satışı. Mağaza işi **açıkça beklemede** (docs/06). |
-| B8 | ~~**Öğretici**~~ **yapıldı** | İlk girişte sekiz sayfalık tam ekran tanıtım. Zorunlu tur DEĞİL: anlatım, ilk saniyede geçilebiliyor, Hesap ekranından tekrar okunabiliyor. Metin `packages/shared/src/ogretici.ts`'te ve sayıları `balance.json`'dan türetiyor — denge değişirse öğretici de değişir, sessizce yalan söylemez. |
+| #   | İş                                         | Not                                                                                                                                                                                                                                                                                                    |
+| --- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| B1  | ~~**İttifak**~~ **tamamlandı**             | Kur/katıl/ayrıl, üye listesi, **üyeye saldırılamaz**, ittifak sıralaması (docs/01 §7d). Üstüne: sohbet (B3), ortak hedef (B1b), takviye (B1c), saldırmazlık paktı (B1d).                                                                                                                               |
+| B2  | ~~**Sezon**~~ **YAPILMAYACAK**             | Dünya KALICI. Karar ve gerekçesi §5 kural 6'da; sezonun çözdüğü sorunlar sıfırlama olmadan çözülüyor.                                                                                                                                                                                                  |
+| B3  | ~~**Sohbet**~~ **ittifak sohbeti yapıldı** | Kendi tavsiyemize uyduk: kapalı grupla başladık. Genel sohbet, moderasyon yükü kaldırılabilir olmadan açılmamalı.                                                                                                                                                                                      |
+| B4  | ~~**Süreli etkinlik**~~ **yapıldı**        | Haftalık sefer: tema hafta numarasından türüyor (sunucu bir şey saklamıyor), hedef herkes için aynı. **Tablo YOK** — sıralamalı etkinlik zaten önde olanı ilerletirdi (§3.4).                                                                                                                          |
+| B5  | ~~**Casusluk**~~ **yapıldı**               | Kuyruk tabanlı keşif, yakalanma riski Kurnazlık'a bağlı, rapor bir fotoğraf (docs/01 §6b). Beklenenden küçük çıktı: yeni motor gerekmedi, mevcut kuyruk makinesi yetti.                                                                                                                                |
+| B6  | ~~**Ticaret**~~ **yapıldı**                | İttifak içinde tek yönlü kaynak gönderme. Takas değil gönderim seçildi: takas iki tarafın onayını, teklif kuyruğunu ve teklif süresinin dolmasını gerektiriyordu — üç yeni ekran. İki fren açık: kaynak yol alır (kuşatılanı sınırsız beslemesin) ve günlük tavan var (çoklu hesap çiftliği geçmesin). |
+| B7  | **Yatay kazanç**                           | Görünüş satışı. Mağaza işi **açıkça beklemede** (docs/06).                                                                                                                                                                                                                                             |
+| B8  | ~~**Öğretici**~~ **yapıldı**               | İlk girişte sekiz sayfalık tam ekran tanıtım. Zorunlu tur DEĞİL: anlatım, ilk saniyede geçilebiliyor, Hesap ekranından tekrar okunabiliyor. Metin `packages/shared/src/ogretici.ts`'te ve sayıları `balance.json`'dan türetiyor — denge değişirse öğretici de değişir, sessizce yalan söylemez.        |
 
 ---
 

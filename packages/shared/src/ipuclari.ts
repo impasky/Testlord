@@ -47,8 +47,7 @@ export function ipuclari(): Ipucu[] {
     },
     {
       baslik: 'Garnizon bölgeyi tek başına savunur',
-      metin:
-        'Evdeki ordu bölgeni korumaz. Aldığın toprağa asker bırakmazsan ilk gelen geri alır.',
+      metin: 'Evdeki ordu bölgeni korumaz. Aldığın toprağa asker bırakmazsan ilk gelen geri alır.',
     },
     {
       baslik: 'Günlük saldırı hakkın sınırlı',

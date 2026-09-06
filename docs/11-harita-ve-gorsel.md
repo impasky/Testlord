@@ -134,11 +134,11 @@ ediyor — orada sarma doğru davranış.
 
 **G4 ve G1'in yarısı yapıldı: SAKİN ağırlık.** Artık üç kart ağırlığı var:
 
-| Ağırlık | Nerede | Görünüş |
-|---|---|---|
-| Birincil | Omurga ("şimdi ne yapmalısın") | altın şerit + altın kenar |
-| Normal | İçeriği olan her bölüm | dolu kart, kabartma |
-| Sakin | Boş hâl, boş kuyruk, boş olay akışı, boş envanter | kesik kenar, kabartma yok, düz zemin |
+| Ağırlık  | Nerede                                            | Görünüş                              |
+| -------- | ------------------------------------------------- | ------------------------------------ |
+| Birincil | Omurga ("şimdi ne yapmalısın")                    | altın şerit + altın kenar            |
+| Normal   | İçeriği olan her bölüm                            | dolu kart, kabartma                  |
+| Sakin    | Boş hâl, boş kuyruk, boş olay akışı, boş envanter | kesik kenar, kabartma yok, düz zemin |
 
 Fark BAŞLIKTA da var (`plaka-sakin`): oyuncu ekranı kaydırırken gövdeleri
 değil başlıkları tarıyor, sakin bölüm gövdesine bakmadan atlanabilmeli.
@@ -147,19 +147,19 @@ bölümlerin gerçekten sakin çizildiğini doğruluyor — bilgi kaybı yok,
 değişen tek şey gözün onu atlayabilmesi.
 
 **G1'in kalanı yapıldı: SAYFA SAYISI ARTTI.** Oyuncunun sözü net oldu —
-*"sayfa sayısını arttır, şu an her şey iç içe karman çorman oldu."*
+_"sayfa sayısını arttır, şu an her şey iç içe karman çorman oldu."_
 
 Ölçtük, tahmin etmedik. Her ekranın iPhone 13'te kaç ekran boyu olduğu:
 
-| Ekran | Önce | Sonra |
-|---|---|---|
-| Generaller | 3,4 | **1,1** |
-| Malikâne | 2,2 | **1,3** |
-| Demirhane | 1,9 | **1,0** |
-| Lord | 1,8 | 1,7 |
-| İttifak | 1,5 (ve büyüyordu) | **1,0** |
-| Sıralama | 2,6 | 2,6 |
-| Kışla | 2,4 | 2,3 |
+| Ekran      | Önce               | Sonra   |
+| ---------- | ------------------ | ------- |
+| Generaller | 3,4                | **1,1** |
+| Malikâne   | 2,2                | **1,3** |
+| Demirhane  | 1,9                | **1,0** |
+| Lord       | 1,8                | 1,7     |
+| İttifak    | 1,5 (ve büyüyordu) | **1,0** |
+| Sıralama   | 2,6                | 2,6     |
+| Kışla      | 2,4                | 2,3     |
 
 Sıralama ve Kışla'ya dokunmadık ve bu bilerek: **sorun uzunluk değil.**
 Bir sıralama tablosu uzun OLMALI, bir birim listesi de öyle. Sorun tek
@@ -194,8 +194,8 @@ piksel, yüklendikten sonra 150 piksel oluyordu. Sayfa her açılışta 138
 piksel aşağı zıplıyor, parmağın bastığı yerde başka bir düğme oluyordu.
 Şerit sekiz ekranda olduğu için sorun da sekiz ekrandaydı.
 
-| | Önce | Sonra |
-|---|---|---|
+|            | Önce      | Sonra     |
+| ---------- | --------- | --------- |
 | Açılış CLS | **0,179** | **0,014** |
 
 (Chrome'un "iyi" eşiği 0,1.)

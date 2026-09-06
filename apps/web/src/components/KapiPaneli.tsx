@@ -69,7 +69,10 @@ export function KapiPaneli({
         <div className="relative flex items-center gap-2 border-b border-kenar px-3 py-2.5">
           {/* Tutamak: bunun sürüklenebilir bir sayfa olduğunu söyleyen
               görsel ipucu. */}
-          <span aria-hidden className="absolute inset-x-0 top-1.5 mx-auto h-1 w-10 rounded-full bg-kenar-acik" />
+          <span
+            aria-hidden
+            className="absolute inset-x-0 top-1.5 mx-auto h-1 w-10 rounded-full bg-kenar-acik"
+          />
           <h2 className="baslik min-w-0 flex-1 truncate pt-1 text-[15px] text-altin">{baslik}</h2>
           <button
             type="button"

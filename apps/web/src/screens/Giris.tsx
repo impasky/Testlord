@@ -37,7 +37,9 @@ export function Giris({ onGiris }: { onGiris: () => void }) {
     setBekliyor(true);
     try {
       const s =
-        mod === 'kayit' ? await api.register(email, parola, lordAdi) : await api.login(email, parola);
+        mod === 'kayit'
+          ? await api.register(email, parola, lordAdi)
+          : await api.login(email, parola);
       setToken(s.token);
       onGiris();
     } catch (err) {
@@ -150,13 +152,9 @@ export function Giris({ onGiris }: { onGiris: () => void }) {
                   {sifirlamaBekliyor ? 'Gönderiliyor…' : 'Sıfırlama bağlantısı gönder'}
                 </Buton>
                 {!email.includes('@') && (
-                  <p className="mt-1.5 text-[11px] text-solgun">
-                    Önce e-posta adresini yaz.
-                  </p>
+                  <p className="mt-1.5 text-[11px] text-solgun">Önce e-posta adresini yaz.</p>
                 )}
-                {sifirlamaBilgi && (
-                  <p className="mt-2 text-[12px] text-yesil">{sifirlamaBilgi}</p>
-                )}
+                {sifirlamaBilgi && <p className="mt-2 text-[12px] text-yesil">{sifirlamaBilgi}</p>}
               </div>
             )}
           </form>

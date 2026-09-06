@@ -91,9 +91,7 @@ describe('ret beklemesi', () => {
   });
 
   it('geri çekilen başvuru bekleme getirmez — kendi kararı, ceza değil', () => {
-    const s = basvurabilirMi(
-      kosul({ oncekiDurum: 'geri_cekildi', oncekiKararAt: SIMDI }),
-    );
+    const s = basvurabilirMi(kosul({ oncekiDurum: 'geri_cekildi', oncekiKararAt: SIMDI }));
     expect(s.olur).toBe(true);
   });
 });

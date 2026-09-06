@@ -14,13 +14,13 @@ sıralamada yükselirsin.
 
 ## Beş temel keyif ekseni
 
-| # | Eksen | Oyunda karşılığı |
-|---|-------|------------------|
-| 1 | **Rekabet ve sıralama** | 3 ayrı sıralama + dünyada tek olan Taht Kalesi |
-| 2 | **Karakter gücü** | 60 seviye, 4 stat, serbest puan dağıtımı |
-| 3 | **Ekipman gücü** | 6 slot, 5 tier, 5 nadirlik, +0→+10 yükseltme |
-| 4 | **Bölge ve gelir** | 61 bölgelik sabit harita, saatlik gelir, bölge seviyeleri |
-| 5 | **Ordu, donanım, generaller** | 5 birim + taş-kağıt-makas, 3 donanım hattı, 12 general |
+| #   | Eksen                         | Oyunda karşılığı                                          |
+| --- | ----------------------------- | --------------------------------------------------------- |
+| 1   | **Rekabet ve sıralama**       | 3 ayrı sıralama + dünyada tek olan Taht Kalesi            |
+| 2   | **Karakter gücü**             | 60 seviye, 4 stat, serbest puan dağıtımı                  |
+| 3   | **Ekipman gücü**              | 6 slot, 5 tier, 5 nadirlik, +0→+10 yükseltme              |
+| 4   | **Bölge ve gelir**            | 61 bölgelik sabit harita, saatlik gelir, bölge seviyeleri |
+| 5   | **Ordu, donanım, generaller** | 5 birim + taş-kağıt-makas, 3 donanım hattı, 12 general    |
 
 ## Nasıl oynanır (30 saniyelik özet)
 
@@ -37,14 +37,14 @@ NPC'den değil, başka bir lorddan almak zorundasın. Haritanın merkezindeki
 
 Oyun **sadece mobil**. Masaüstü düzeni yok.
 
-| | | |
-|---|---|---|
-| ![Malikâne](docs/gorseller/1-malikane.png) | ![Kışla](docs/gorseller/2-kisla.png) | ![Harita](docs/gorseller/3-harita.png) |
-| **Malikâne** — durum, kuyruklar, olaylar | **Kışla** — birim kartları, komuta, erzak | **Harita** — 61 hex, tip ikonlu |
+|                                              |                                             |                                                |
+| -------------------------------------------- | ------------------------------------------- | ---------------------------------------------- |
+| ![Malikâne](docs/gorseller/1-malikane.png)   | ![Kışla](docs/gorseller/2-kisla.png)        | ![Harita](docs/gorseller/3-harita.png)         |
+| **Malikâne** — durum, kuyruklar, olaylar     | **Kışla** — birim kartları, komuta, erzak   | **Harita** — 61 hex, tip ikonlu                |
 | ![Demirhane](docs/gorseller/4-demirhane.png) | ![Bölge](docs/gorseller/5-harita-bolge.png) | ![Generaller](docs/gorseller/8-generaller.png) |
-| **Demirhane** — üretim, envanter, donanım | **Bölge** — alt sayfada saldırı ve garnizon | **Generaller** — 12 kişilik kadro |
-| ![Lord](docs/gorseller/7-lord.png) | ![Sıralama](docs/gorseller/9-siralama.png) | ![Giriş](docs/gorseller/0-giris.png) |
-| **Lord** — nitelikler, ekipman, savaş gücü | **Sıralama** — üç liste | **Giriş** |
+| **Demirhane** — üretim, envanter, donanım    | **Bölge** — alt sayfada saldırı ve garnizon | **Generaller** — 12 kişilik kadro              |
+| ![Lord](docs/gorseller/7-lord.png)           | ![Sıralama](docs/gorseller/9-siralama.png)  | ![Giriş](docs/gorseller/0-giris.png)           |
+| **Lord** — nitelikler, ekipman, savaş gücü   | **Sıralama** — üç liste                     | **Giriş**                                      |
 
 ## Kendin oyna
 
@@ -86,7 +86,7 @@ Sonra kendi hesabınla kayıt ol. Haritada **noktalı desenli** bölgeler onlar�
 ### İlk 10 dakikada ne yap
 
 1. **Kışla** → 20 mızrakçı + 15 okçu eğit (başlangıç altının tam buna yeter)
-2. **Harita** → kenardaki *tahkimatsız* bir bölge seç (Tarla/Şehir/Maden).
+2. **Harita** → kenardaki _tahkimatsız_ bir bölge seç (Tarla/Şehir/Maden).
    Kale'ler %30 tahkimatlı, ilk ordunla alınamaz — bu bilinçli.
 3. **Önizle** → tahmini gör, sonra **Saldır**
 4. Worker yürüyüşü çözünce bölge senin olur; geliri kaynak çubuğuna yansır
@@ -95,13 +95,13 @@ Sonra kendi hesabınla kayıt ol. Haritada **noktalı desenli** bölgeler onlar�
 
 ### Sıkışırsan
 
-| Belirti | Sebep |
-|---|---|
-| Yürüyüş varmıyor, kuyruk bitmiyor | `pnpm worker` çalışmıyor |
-| "Komuta kapasiten yetmiyor" | Liderlik statını artır (Lord sekmesi) |
+| Belirti                                | Sebep                                                                |
+| -------------------------------------- | -------------------------------------------------------------------- |
+| Yürüyüş varmıyor, kuyruk bitmiyor      | `pnpm worker` çalışmıyor                                             |
+| "Komuta kapasiten yetmiyor"            | Liderlik statını artır (Lord sekmesi)                                |
 | Savaşı kazandın ama bölge senin olmadı | Ele geçirmek için ~1,5 kat güç gerekir; dar zafer sadece yağma verir |
-| Askerler kaçıyor | Erzak eksiye düşmüş — Tarla bölgesi al ya da ordunu küçült |
-| "Hedef koruma altında" | Yeni oyuncu 72 saat, fethedilen bölge 6 saat korumalı |
+| Askerler kaçıyor                       | Erzak eksiye düşmüş — Tarla bölgesi al ya da ordunu küçült           |
+| "Hedef koruma altında"                 | Yeni oyuncu 72 saat, fethedilen bölge 6 saat korumalı                |
 
 ## Telefondan oynamak — Render'a kur
 
@@ -135,12 +135,12 @@ ve yukarıdaki açıklamayı loga yazar.
 
 ### Bilmen gerekenler
 
-| Konu | Durum |
-|---|---|
-| **Uyku** | Ücretsiz katmanda 15 dakika kullanılmazsa sunucu uyur. Sonraki açılış ~1 dakika sürer. Uyurken yürüyüşler ilerlemez ama uyanınca hepsi birden çözülür — kayıp olmaz |
-| **Veritabanı** | Ücretsiz PostgreSQL 30 gün sonra yenilenmek ister; Render e-posta gönderir |
-| **Test uçları** | Üretimde tamamen kapalı — kimse kendine kaynak veremez |
-| **Rakipler** | `SEED_DEMO_LORDS=true` ile 6 rakip lord eklenir. Gerçek oyuncularla oynayacaksan Render panelinden `false` yapıp veritabanını sıfırla |
+| Konu            | Durum                                                                                                                                                               |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Uyku**        | Ücretsiz katmanda 15 dakika kullanılmazsa sunucu uyur. Sonraki açılış ~1 dakika sürer. Uyurken yürüyüşler ilerlemez ama uyanınca hepsi birden çözülür — kayıp olmaz |
+| **Veritabanı**  | Ücretsiz PostgreSQL 30 gün sonra yenilenmek ister; Render e-posta gönderir                                                                                          |
+| **Test uçları** | Üretimde tamamen kapalı — kimse kendine kaynak veremez                                                                                                              |
+| **Rakipler**    | `SEED_DEMO_LORDS=true` ile 6 rakip lord eklenir. Gerçek oyuncularla oynayacaksan Render panelinden `false` yapıp veritabanını sıfırla                               |
 
 ### Tek servis nasıl çalışıyor
 

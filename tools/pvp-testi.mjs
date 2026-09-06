@@ -32,8 +32,11 @@ async function lordKur(etiket) {
     etiket,
     h,
     post: (yol, govde) =>
-      fetch(`${API}/api${yol}`, { method: 'POST', headers: h, body: JSON.stringify(govde ?? {}) })
-        .then((x) => x.json()),
+      fetch(`${API}/api${yol}`, {
+        method: 'POST',
+        headers: h,
+        body: JSON.stringify(govde ?? {}),
+      }).then((x) => x.json()),
     get: (yol) => fetch(`${API}/api${yol}`, { headers: h }).then((x) => x.json()),
   };
 }
@@ -105,7 +108,9 @@ await saldiran.post('/test/kalkanlari-kaldir');
 // girdiğini XP kazanmasından anlayacağız. Sadece kiralamayı denemek,
 // generalin savaş hesabına katıldığını göstermez.
 const kadro = (await saldiran.get('/generals')).kadro;
-const general = kadro.filter((g) => !g.sahipMi).sort((a, b) => a.maliyet_altin - b.maliyet_altin)[0];
+const general = kadro
+  .filter((g) => !g.sahipMi)
+  .sort((a, b) => a.maliyet_altin - b.maliyet_altin)[0];
 await saldiran.post(`/generals/${general.key}/hire`);
 await saldiran.post(`/generals/${general.key}/assign`, { slotIndex: 0 });
 // Seviye atlama ANINI ölçebilmek için general eşiğin hemen altına kuruluyor:
@@ -123,7 +128,9 @@ kontrol('General kiralandı ve sahaya sürüldü', generalOnce?.slotIndex === 0,
 const eloOnce = (await saldiran.get('/me')).lord.elo;
 const ordu = (await saldiran.get('/army')).home;
 const onizleme = await saldiran.post('/battle/preview', {
-  toRegionId: bolge.id, army: ordu, generalIds: [general.key],
+  toRegionId: bolge.id,
+  army: ordu,
+  generalIds: [general.key],
 });
 kontrol(
   'Oyuncu bölgesi için önizleme alınabiliyor',
@@ -132,7 +139,9 @@ kontrol(
 );
 
 await saldiran.post('/march', {
-  toRegionId: bolge.id, army: ordu, generalIds: [general.key],
+  toRegionId: bolge.id,
+  army: ordu,
+  generalIds: [general.key],
 });
 await saldiran.post('/test/yuruyusleri-bitir');
 
@@ -170,9 +179,11 @@ kontrol(
 
 // --- General savaşa katıldı mı ---
 const generalSonra = (await saldiran.get('/generals')).kadro.find((g) => g.key === general.key);
-kontrol('General savaşa girdi ve XP kazandı',
+kontrol(
+  'General savaşa girdi ve XP kazandı',
   generalSonra.xp > generalOnce.xp || generalSonra.level > generalOnce.level,
-  `xp ${generalOnce.xp} -> ${generalSonra.xp}`);
+  `xp ${generalOnce.xp} -> ${generalSonra.xp}`,
+);
 
 // Seviye atlama oyuncunun "benim generalim" dediği an (docs/09 §2.3). Motor
 // seviyeyi zaten hesaplıyordu ama kimseye söylemiyordu; hem rapor hem olay
@@ -215,11 +226,7 @@ kontrol(
 // NPC garnizonunda donmez; bu savas tam da o ayrimi olcuyor.
 const yarali = rapor?.log?.yaraliDonen?.savunan ?? {};
 const yaraliSayi = Object.values(yarali).reduce((t, n) => t + Number(n || 0), 0);
-kontrol(
-  'Oyuncu savunmasinda yarali asker geri donuyor',
-  yaraliSayi > 0,
-  `${yaraliSayi} asker`,
-);
+kontrol('Oyuncu savunmasinda yarali asker geri donuyor', yaraliSayi > 0, `${yaraliSayi} asker`);
 const savunanKayip = say(rapor?.log?.defenderLosses);
 const savunanKalan = say(rapor?.log?.defenderSurvivors);
 kontrol(

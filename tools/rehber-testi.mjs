@@ -77,7 +77,11 @@ const kahyaSozu = () =>
 
 // --- 1. Kâhya ilk anda konuşuyor ---
 const ilkSoz = await kahyaSozu();
-kontrol('Kâhya ilk oturumda görünüyor', ilkSoz !== null, ilkSoz ? `"${ilkSoz.slice(0, 55)}…"` : 'yok');
+kontrol(
+  'Kâhya ilk oturumda görünüyor',
+  ilkSoz !== null,
+  ilkSoz ? `"${ilkSoz.slice(0, 55)}…"` : 'yok',
+);
 kontrol(
   'İlk sözü ASKER kurmakla ilgili',
   /asker|mızrakçı|kışla/i.test(ilkSoz ?? ''),
@@ -149,11 +153,7 @@ kontrol(
     (document.querySelector('main')?.textContent ?? '').includes('Şimdi ne yapmalısın'),
   );
   kontrol('Omurga hâlâ bir adım gösteriyor', omurgaBasligi === true);
-  kontrol(
-    'Kâhyanın sözü o adımın sözü',
-    soz !== null && soz.length > 20,
-    soz?.slice(0, 70) ?? '',
-  );
+  kontrol('Kâhyanın sözü o adımın sözü', soz !== null && soz.length > 20, soz?.slice(0, 70) ?? '');
 }
 
 // --- 5. Bölge alınınca kâhya SUSUYOR ---
@@ -174,7 +174,11 @@ kontrol(
   await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
   await page.waitForTimeout(2000);
   const soz = await kahyaSozu();
-  kontrol('Döngü kapanınca kâhya SUSUYOR', soz === null, soz ? `hâlâ konuşuyor: "${soz.slice(0, 40)}"` : 'sustu');
+  kontrol(
+    'Döngü kapanınca kâhya SUSUYOR',
+    soz === null,
+    soz ? `hâlâ konuşuyor: "${soz.slice(0, 40)}"` : 'sustu',
+  );
 }
 
 // --- 6. Kâhya KAPATILAMIYOR: tur zorunlu ---
@@ -202,10 +206,14 @@ kontrol(
   await page.waitForTimeout(1500);
 
   kontrol('Yeni lordda kâhya yine görünüyor', (await kahyaSozu()) !== null);
-  kontrol('Kâhya kartında kapatma düğmesi YOK',
-    (await page.locator('button:has-text("yeter, anladım")').count()) === 0);
-  kontrol('Rehber ışığında da kaçış düğmesi YOK',
-    (await page.locator('button[aria-label="Rehberi kapat"]').count()) === 0);
+  kontrol(
+    'Kâhya kartında kapatma düğmesi YOK',
+    (await page.locator('button:has-text("yeter, anladım")').count()) === 0,
+  );
+  kontrol(
+    'Rehber ışığında da kaçış düğmesi YOK',
+    (await page.locator('button[aria-label="Rehberi kapat"]').count()) === 0,
+  );
 
   await page.reload({ waitUntil: 'domcontentloaded' });
   await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
@@ -269,8 +277,11 @@ kontrol(
   await page.waitForTimeout(1800);
 
   const once = await bloklariSay();
-  kontrol('İlk döngüde omurga ve kâhya VAR', once.omurga === 1 && once.kahya === 1,
-    `omurga=${once.omurga} kâhya=${once.kahya}`);
+  kontrol(
+    'İlk döngüde omurga ve kâhya VAR',
+    once.omurga === 1 && once.kahya === 1,
+    `omurga=${once.omurga} kâhya=${once.kahya}`,
+  );
   /**
    * Olay şeridi artık ANA SAYFADA DEĞİL: diyarın ekranına (Malikâne)
    * taşındı ve orada "arkasında bir şey varsa" açılıyor. Ana sayfanın
@@ -312,8 +323,11 @@ kontrol(
   await post3('/march', { toRegionId: o3.regionId, army: ordu3 });
   await post3('/test/yuruyusleri-bitir');
   const lord3 = (await get3('/me')).lord;
-  kontrol('Bölge alındı (kademeli açılım tetiklendi)', lord3.regionCount >= 1,
-    `${lord3.regionCount} bölge`);
+  kontrol(
+    'Bölge alındı (kademeli açılım tetiklendi)',
+    lord3.regionCount >= 1,
+    `${lord3.regionCount} bölge`,
+  );
 
   await page.reload({ waitUntil: 'domcontentloaded' });
   await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
@@ -331,7 +345,9 @@ kontrol(
    * kaldırmak değil, ertelemek.
    */
   const cubukta = await page.evaluate(() =>
-    Boolean([...document.querySelectorAll('nav button')].find((b) => b.textContent?.includes('Görevler'))),
+    Boolean(
+      [...document.querySelectorAll('nav button')].find((b) => b.textContent?.includes('Görevler')),
+    ),
   );
   kontrol('Gizlenen Görevler alt çubuktan hâlâ ulaşılabilir', cubukta === true);
 }

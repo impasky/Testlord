@@ -76,14 +76,24 @@ const sayfaDurumu = () =>
     return {
       sayac,
       baslik: h2?.textContent?.trim() ?? '',
-      ozet: kok.querySelector('h2')?.closest('div')?.parentElement?.nextElementSibling?.textContent?.trim() ?? '',
+      ozet:
+        kok
+          .querySelector('h2')
+          ?.closest('div')
+          ?.parentElement?.nextElementSibling?.textContent?.trim() ?? '',
       madde: maddeler.length,
       bosMadde: maddeler.filter((m) => !m.vurgu || !m.metin).length,
       cubuk: cubuklar.length,
       dolu,
-      oraya: Boolean([...kok.querySelectorAll('button')].find((x) => /ORAYA BAK/i.test(x.textContent ?? ''))),
-      sonMu: Boolean([...kok.querySelectorAll('button')].find((x) => /Diyarıma dön/i.test(x.textContent ?? ''))),
-      geriKapali: [...kok.querySelectorAll('button')].find((x) => /^Geri$/i.test(x.textContent ?? ''))?.disabled,
+      oraya: Boolean(
+        [...kok.querySelectorAll('button')].find((x) => /ORAYA BAK/i.test(x.textContent ?? '')),
+      ),
+      sonMu: Boolean(
+        [...kok.querySelectorAll('button')].find((x) => /Diyarıma dön/i.test(x.textContent ?? '')),
+      ),
+      geriKapali: [...kok.querySelectorAll('button')].find((x) =>
+        /^Geri$/i.test(x.textContent ?? ''),
+      )?.disabled,
       yatayTasma: govde,
     };
   });
@@ -100,8 +110,11 @@ for (let n = 1; n <= toplam; n++) {
 
   kontrol(`Sayfa ${n}: sayaç doğru`, d.sayac === `${n} / ${toplam}`, d.sayac ?? 'yok');
   kontrol(`Sayfa ${n}: başlık dolu`, d.baslik.length > 3, d.baslik.slice(0, 40));
-  kontrol(`Sayfa ${n}: maddeler dolu`, d.madde > 0 && d.bosMadde === 0,
-    `${d.madde} madde, ${d.bosMadde} boş`);
+  kontrol(
+    `Sayfa ${n}: maddeler dolu`,
+    d.madde > 0 && d.bosMadde === 0,
+    `${d.madde} madde, ${d.bosMadde} boş`,
+  );
   kontrol(`Sayfa ${n}: ilerleme çubuğu ${n} dolu`, d.dolu === n, `${d.dolu}/${toplam}`);
   kontrol(`Sayfa ${n}: yatay taşma yok`, d.yatayTasma === false);
 
@@ -135,14 +148,20 @@ for (let n = 1; n <= toplam; n++) {
 // Başlıklar benzersiz mi: aynı sayfa iki kez gösterilirse sayaç ilerler
 // ama oyuncu aynı şeyi okur.
 const basliklar = gorulen.map((g) => g.baslik);
-kontrol('Sekiz sayfanın başlığı da farklı', new Set(basliklar).size === toplam,
-  `${new Set(basliklar).size} benzersiz`);
+kontrol(
+  'Sekiz sayfanın başlığı da farklı',
+  new Set(basliklar).size === toplam,
+  `${new Set(basliklar).size} benzersiz`,
+);
 
 // --- Son sayfa ---
 {
   const d = await sayfaDurumu();
   kontrol('Son sayfada "Diyarıma dön" var', d.sonMu === true);
-  kontrol('Son sayfada "Devam" YOK', !(await page.locator('[role="dialog"] button:has-text("Devam")').count()));
+  kontrol(
+    'Son sayfada "Devam" YOK',
+    !(await page.locator('[role="dialog"] button:has-text("Devam")').count()),
+  );
 }
 
 // --- Geri gerçekten geri gidiyor mu ---
@@ -151,8 +170,11 @@ kontrol('Sekiz sayfanın başlığı da farklı', new Set(basliklar).size === to
   await page.waitForTimeout(400);
   const d = await sayfaDurumu();
   kontrol('Geri bir önceki sayfaya döndü', d.sayac === `${toplam - 1} / ${toplam}`, d.sayac ?? '');
-  kontrol('Geri dönünce başlık da eski sayfanın', d.baslik === basliklar[toplam - 2],
-    `${d.baslik.slice(0, 30)} vs ${basliklar[toplam - 2]?.slice(0, 30)}`);
+  kontrol(
+    'Geri dönünce başlık da eski sayfanın',
+    d.baslik === basliklar[toplam - 2],
+    `${d.baslik.slice(0, 30)} vs ${basliklar[toplam - 2]?.slice(0, 30)}`,
+  );
   await page.locator('[role="dialog"] button:has-text("Devam")').click();
   await page.waitForTimeout(400);
 }

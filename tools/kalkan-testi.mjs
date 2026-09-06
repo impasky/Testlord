@@ -36,8 +36,11 @@ async function lordKur(etiket) {
   const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
   return {
     post: (yol, govde) =>
-      fetch(`${API}/api${yol}`, { method: 'POST', headers: h, body: JSON.stringify(govde ?? {}) })
-        .then((x) => x.json()),
+      fetch(`${API}/api${yol}`, {
+        method: 'POST',
+        headers: h,
+        body: JSON.stringify(govde ?? {}),
+      }).then((x) => x.json()),
     get: (yol) => fetch(`${API}/api${yol}`, { headers: h }).then((x) => x.json()),
   };
 }
@@ -120,7 +123,9 @@ for (const oran of [0.16, 0.2, 0.25, 0.3, 0.36, 0.42, 0.5, 0.6, 0.7]) {
 kontrol(
   'Dar zafer (kazanır, ele geçirmez) ordusu bulundu',
   Boolean(akin),
-  akin ? `ordunun %${Math.round(akin.oran * 100)}'i` : 'bulunamadı — önizleme bandı kaymış olabilir',
+  akin
+    ? `ordunun %${Math.round(akin.oran * 100)}'i`
+    : 'bulunamadı — önizleme bandı kaymış olabilir',
 );
 if (!akin) {
   console.log('\n1 KONTROL BAŞARISIZ');

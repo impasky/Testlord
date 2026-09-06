@@ -29,8 +29,9 @@ const { token } = await kayitOl(API, {
 });
 const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
 const P = (u, b) =>
-  fetch(`${API}/api${u}`, { method: 'POST', headers: h, body: JSON.stringify(b ?? {}) })
-    .then((x) => x.json());
+  fetch(`${API}/api${u}`, { method: 'POST', headers: h, body: JSON.stringify(b ?? {}) }).then((x) =>
+    x.json(),
+  );
 const G = (u) => fetch(`${API}/api${u}`, { headers: h }).then((x) => x.json());
 
 await P('/test/kaynak-ver', { altin: 9000000, demir: 4000000, erzak: 4000000 });
@@ -47,7 +48,12 @@ const limitOnce = (await G('/me')).lord.dailyAttacks;
 
 let alindi = false;
 for (let tur = 1; tur <= 6 && !alindi; tur++) {
-  for (const [t, n] of [['mizrakci', 900], ['okcu', 700], ['suvari', 500], ['kusatma', 200]]) {
+  for (const [t, n] of [
+    ['mizrakci', 900],
+    ['okcu', 700],
+    ['suvari', 500],
+    ['kusatma', 200],
+  ]) {
     await P('/army/train', { unitType: t, count: n });
   }
   await P('/test/kuyruklari-bitir');
@@ -69,8 +75,11 @@ kontrol(
 
 // --- Kalkan: tahtınki normal bölgenin çok altında olmalı ---
 const detay = await G(`/map/${taht.id}`);
-kontrol('Taht sahibinde ve kalkan altında', detay.owner !== null && detay.shielded === true,
-  detay.owner?.name ?? 'sahipsiz');
+kontrol(
+  'Taht sahibinde ve kalkan altında',
+  detay.owner !== null && detay.shielded === true,
+  detay.owner?.name ?? 'sahipsiz',
+);
 
 // --- Bölge limiti ve şöhret ---
 kontrol(

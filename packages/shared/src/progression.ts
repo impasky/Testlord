@@ -46,10 +46,7 @@ export function maxRegions(lordLevel: number): number {
 
 /** General slotu sayısı. */
 export function generalSlots(liderlik: number): number {
-  return Math.min(
-    GENERAL_SLOT_RULE.max,
-    1 + Math.floor(liderlik / GENERAL_SLOT_RULE.bolen),
-  );
+  return Math.min(GENERAL_SLOT_RULE.max, 1 + Math.floor(liderlik / GENERAL_SLOT_RULE.bolen));
 }
 
 /** Ordu gücü — şöhret hesabında kullanılır. */
@@ -87,9 +84,7 @@ export function calculateFame(input: FameInput): number {
 
 /** Fetih sıralaması puanı. */
 export function conquestScore(regions: { type: string; level: number }[]): number {
-  return Math.round(
-    regions.reduce((s, r) => s + r.level * fameTypeMultiplier(r.type) * 100, 0),
-  );
+  return Math.round(regions.reduce((s, r) => s + r.level * fameTypeMultiplier(r.type) * 100, 0));
 }
 
 /** PvP sonrası ELO. */

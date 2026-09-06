@@ -27,7 +27,6 @@ export function Rehber({
   /** Lord rehberi TAMAMLADI mı (sunucudan, hesaba bağlı). */
   gorundu: boolean;
 }) {
-
   const soz = rehberSozu(adim);
   if (!soz || !rehberGorunsunMu(bolgeSayisi, gorundu)) return null;
 

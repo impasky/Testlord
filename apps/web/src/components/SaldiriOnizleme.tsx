@@ -64,8 +64,7 @@ export function SaldiriOnizleme({ onizleme }: { onizleme: PreviewDto }) {
   const kazanir = tahmin.kazanan === 'attacker';
   const alir = tahmin.eleGecirir;
 
-  const gelirVar =
-    odul.saatlikGelir.altin + odul.saatlikGelir.demir + odul.saatlikGelir.erzak > 0;
+  const gelirVar = odul.saatlikGelir.altin + odul.saatlikGelir.demir + odul.saatlikGelir.erzak > 0;
 
   return (
     <div ref={kutu} className="mt-3 space-y-2.5">
@@ -121,52 +120,52 @@ export function SaldiriOnizleme({ onizleme }: { onizleme: PreviewDto }) {
               </div>
             </div>
           ) : (
-          <div>
-            {gelirVar && (
-              <SonucSatiri etiket="Bu bölgenin geliri" vurgu>
-                <span className="text-yesil">
-                  saatte +<Kaynaklar r={odul.saatlikGelir} />
-                </span>
+            <div>
+              {gelirVar && (
+                <SonucSatiri etiket="Bu bölgenin geliri" vurgu>
+                  <span className="text-yesil">
+                    saatte +<Kaynaklar r={odul.saatlikGelir} />
+                  </span>
+                </SonucSatiri>
+              )}
+              {odul.saatlikGelir.sohret > 0 && (
+                <SonucSatiri etiket="Şöhret üretimi">
+                  <span className="tabular inline-flex items-center gap-1 text-yesil">
+                    <IkonSohret boyut={11} /> saatte +{odul.saatlikGelir.sohret}
+                  </span>
+                </SonucSatiri>
+              )}
+              <SonucSatiri etiket="Şöhretin" vurgu>
+                <Fark oncesi={odul.sohretOncesi} sonrasi={odul.sohretSonrasi} />
               </SonucSatiri>
-            )}
-            {odul.saatlikGelir.sohret > 0 && (
-              <SonucSatiri etiket="Şöhret üretimi">
-                <span className="tabular inline-flex items-center gap-1 text-yesil">
-                  <IkonSohret boyut={11} /> saatte +{odul.saatlikGelir.sohret}
-                </span>
+              <SonucSatiri etiket="Şöhret sıralaman">
+                <Fark
+                  oncesi={odul.siraOncesi}
+                  sonrasi={odul.siraSonrasi}
+                  birim="."
+                  tersYon
+                  bicim={(n) => String(Math.round(n))}
+                  farkMetni={(f, iyi) => `${f} sıra ${iyi ? 'yukarı' : 'aşağı'}`}
+                />
               </SonucSatiri>
-            )}
-            <SonucSatiri etiket="Şöhretin" vurgu>
-              <Fark oncesi={odul.sohretOncesi} sonrasi={odul.sohretSonrasi} />
-            </SonucSatiri>
-            <SonucSatiri etiket="Şöhret sıralaman">
-              <Fark
-                oncesi={odul.siraOncesi}
-                sonrasi={odul.siraSonrasi}
-                birim="."
-                tersYon
-                bicim={(n) => String(Math.round(n))}
-                farkMetni={(f, iyi) => `${f} sıra ${iyi ? 'yukarı' : 'aşağı'}`}
-              />
-            </SonucSatiri>
-            <SonucSatiri etiket="Bölgelerin">
-              <Fark
-                oncesi={odul.bolgeOncesi}
-                sonrasi={odul.bolgeSonrasi}
-                bicim={(n) => String(Math.round(n))}
-              />
-              <span className="ml-1 text-[11px] text-sonuk">/ {odul.bolgeLimiti}</span>
-            </SonucSatiri>
-            <SonucSatiri etiket="Lord tecrübesi">
-              <span className="tabular text-yesil">+{formatSayi(odul.xp)} XP</span>
-            </SonucSatiri>
-            {odul.limitDolu && (
-              <p className="mt-1.5 text-[11px] leading-snug text-turuncu">
-                Bölge limitin dolu ({odul.bolgeOncesi}/{odul.bolgeLimiti}). Kazansan bile bölgeyi
-                alamazsın, sadece yağmalarsın — gelir artışı olmaz.
-              </p>
-            )}
-          </div>
+              <SonucSatiri etiket="Bölgelerin">
+                <Fark
+                  oncesi={odul.bolgeOncesi}
+                  sonrasi={odul.bolgeSonrasi}
+                  bicim={(n) => String(Math.round(n))}
+                />
+                <span className="ml-1 text-[11px] text-sonuk">/ {odul.bolgeLimiti}</span>
+              </SonucSatiri>
+              <SonucSatiri etiket="Lord tecrübesi">
+                <span className="tabular text-yesil">+{formatSayi(odul.xp)} XP</span>
+              </SonucSatiri>
+              {odul.limitDolu && (
+                <p className="mt-1.5 text-[11px] leading-snug text-turuncu">
+                  Bölge limitin dolu ({odul.bolgeOncesi}/{odul.bolgeLimiti}). Kazansan bile bölgeyi
+                  alamazsın, sadece yağmalarsın — gelir artışı olmaz.
+                </p>
+              )}
+            </div>
           )
         }
         kaybedersen={

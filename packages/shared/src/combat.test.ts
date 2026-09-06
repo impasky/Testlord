@@ -126,7 +126,10 @@ describe('mancınık ve tahkimat', () => {
     const acik = simulateBattle(atk, side({ mizrakci: 50 }, { isDefender: true }), 'k1', ctx);
     const kale = simulateBattle(
       atk,
-      side({ mizrakci: 50 }, { isDefender: true, fortressBonus: B.bolgeler.kale_savunma_bonusu.taht }),
+      side(
+        { mizrakci: 50 },
+        { isDefender: true, fortressBonus: B.bolgeler.kale_savunma_bonusu.taht },
+      ),
       'k1',
       ctx,
     );

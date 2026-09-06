@@ -103,7 +103,11 @@ body {
   margin: 0;
   background: var(--color-gece);
   color: var(--color-parsomen);
-  font-family: Rubik, system-ui, -apple-system, sans-serif;
+  font-family:
+    Rubik,
+    system-ui,
+    -apple-system,
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   /* Mobilde metin seçimi ve çift dokunuşla yakınlaştırma oyun hissini bozar */
   -webkit-text-size-adjust: 100%;
@@ -299,12 +303,25 @@ svg g[role='button']:focus-visible > path:first-of-type {
   animation: sahne-sars 460ms ease-out;
 }
 @keyframes sahne-sars {
-  0%, 100% { transform: translate3d(0, 0, 0); }
-  12% { transform: translate3d(-3px, 1px, 0); }
-  28% { transform: translate3d(3px, -2px, 0); }
-  44% { transform: translate3d(-2px, 1px, 0); }
-  62% { transform: translate3d(2px, 0, 0); }
-  80% { transform: translate3d(-1px, 0, 0); }
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  12% {
+    transform: translate3d(-3px, 1px, 0);
+  }
+  28% {
+    transform: translate3d(3px, -2px, 0);
+  }
+  44% {
+    transform: translate3d(-2px, 1px, 0);
+  }
+  62% {
+    transform: translate3d(2px, 0, 0);
+  }
+  80% {
+    transform: translate3d(-1px, 0, 0);
+  }
 }
 
 /* Naara sırasında figürler dalga hâlinde doğrulur — gecikmeleri .figur'dan. */
@@ -314,9 +331,15 @@ svg g[role='button']:focus-visible > path:first-of-type {
     figur-hayk 520ms ease-out 420ms backwards;
 }
 @keyframes figur-hayk {
-  0% { transform: translateY(0); }
-  35% { transform: translateY(-7px) scale(1.03); }
-  100% { transform: translateY(0); }
+  0% {
+    transform: translateY(0);
+  }
+  35% {
+    transform: translateY(-7px) scale(1.03);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 
 /*
@@ -349,6 +372,11 @@ svg g[role='button']:focus-visible > path:first-of-type {
  * okunurdu. Sarsıntı değil nabız — "yanlış yaptın" değil, "buraya bak".
  */
 @keyframes nabiz {
-  0%, 100% { transform: scale(1); }
-  45% { transform: scale(1.045); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.045);
+  }
 }

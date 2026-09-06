@@ -1,4 +1,15 @@
-import { EKRANLAR, STAT_KEYS, armaDuzelt, type StatKey } from '@lordlar/shared';
+import {
+  EKRANLAR,
+  STAT_KEYS,
+  UNIT_TYPES,
+  armaDuzelt,
+  dizilimGecerliMi,
+  taktikDurumlari,
+  varsayilanDizilim,
+  type Army,
+  type StatKey,
+  type UnitType,
+} from '@lordlar/shared';
 
 // Sekme listesi packages/shared'da: istemcinin sekme tipi de oradan
 // geliyor. Serbest metin kabul etmiyoruz (ölçüm alanı doğrulanmamış
@@ -11,6 +22,36 @@ import { prisma } from '../db.js';
 import { GameError } from '../errors.js';
 import { findLordByUser, tickLord } from '../services/lord.js';
 import { gecikmisleriKapat } from '../services/gecikmis.js';
+
+/**
+ * Savunma düzeni gövdesi. Taktiğin koşulu burada denetlenmiyor —
+ * kaydetmek serbest, GEÇERLİLİK savaş anında motorda sınanıyor.
+ *
+ * Sebep: savunma düzeni bir kez kurulup aylarca duruyor, garnizon ise
+ * her gün değişiyor. Kaydederken koşulu tutan taktik, saldırıya
+ * uğradığında tutmuyor olabilir. Kaydı reddetmek oyuncuya "şu an
+ * geçerli" yanılsaması verirdi; motor her savaşta yeniden bakıyor.
+ */
+const savunmaDuzeniSchema = z.object({
+  dizilim: z
+    .array(z.enum(UNIT_TYPES as unknown as [UnitType, ...UnitType[]]).nullable())
+    .refine((d) => dizilimGecerliMi(d), { message: 'Dizilim 16 kare olmalı.' }),
+  taktik: z.string().nullable().default(null),
+});
+
+/** Evde duran ordu: savunma dizilimi bunun üstüne kuruluyor. */
+async function savunmadakiOrdu(lordId: string): Promise<Army> {
+  const birimler = await prisma.armyUnit.findMany({
+    where: { lordId, locationType: 'home' },
+    select: { unitType: true, count: true },
+  });
+  const ordu: Army = {};
+  for (const b of birimler) {
+    const t = b.unitType as UnitType;
+    if (b.count > 0) ordu[t] = (ordu[t] ?? 0) + b.count;
+  }
+  return ordu;
+}
 
 const parolaSchema = z.object({
   mevcut: z.string().min(1, 'Mevcut parolanı gir.'),
@@ -192,6 +233,47 @@ export async function meRoutes(app: FastifyInstance): Promise<void> {
       data: { ogreticiBittiAt: new Date() },
     });
     return { bitti: true, ilkKez: sonuc.count === 1 };
+  });
+
+  /**
+   * Savunma düzeni: saldırıya uğradığında kullanılacak dizilim ve taktik.
+   *
+   * Async bir oyunda savunanın çevrimdışı olması kural. Bu uç, o anda
+   * verilemeyecek kararı ÖNCEDEN verdiriyor: bir kez kur, her savaşta
+   * kullanılsın. Kurmayanın garnizonu varsayılan dizilimde savaşıyor,
+   * yani dokunmamak ceza değil.
+   */
+  app.get('/me/savunma-duzeni', { preHandler: requireAuth }, async (req) => {
+    const lordId = await findLordByUser(req.user.userId);
+    const lord = await prisma.lord.findUniqueOrThrow({
+      where: { id: lordId },
+      select: { savunmaDizilim: true, savunmaTaktik: true },
+    });
+    // Garnizon dizilim ekranında gösterilecek: oyuncu neyi nereye
+    // koyduğunu ancak elindeki askeri görerek seçebilir.
+    const garnizon = await savunmadakiOrdu(lordId);
+    const kayitli = dizilimGecerliMi(lord.savunmaDizilim) ? lord.savunmaDizilim : null;
+    return {
+      dizilim: kayitli ?? varsayilanDizilim(garnizon),
+      taktik: lord.savunmaTaktik ?? null,
+      /** Kayıtlı mı yoksa varsayılan mı gösteriliyor — arayüz bunu söylüyor. */
+      kayitli: kayitli !== null,
+      garnizon,
+      taktikler: taktikDurumlari(garnizon, kayitli ?? varsayilanDizilim(garnizon)),
+    };
+  });
+
+  app.put('/me/savunma-duzeni', { preHandler: requireAuth }, async (req) => {
+    const govde = savunmaDuzeniSchema.parse(req.body);
+    const lordId = await findLordByUser(req.user.userId);
+    await prisma.lord.update({
+      where: { id: lordId },
+      data: {
+        savunmaDizilim: govde.dizilim as object,
+        savunmaTaktik: govde.taktik,
+      },
+    });
+    return { kaydedildi: true };
   });
 
   /**

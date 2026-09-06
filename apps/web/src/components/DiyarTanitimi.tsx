@@ -121,11 +121,7 @@ export function DiyarTanitimi({ lord, queues }: { lord: LordState; queues: Queue
 function TanitimIskeleti() {
   return (
     <Kart className="p-4" vurgu="var(--color-altin)">
-      <div
-        aria-busy="true"
-        aria-label="Yükleniyor"
-        className="motion-safe:animate-pulse"
-      >
+      <div aria-busy="true" aria-label="Yükleniyor" className="motion-safe:animate-pulse">
         <div className="mb-2 flex items-start justify-between gap-2">
           <h2 className="baslik text-[15px] text-transparent">
             <span className="oyuk rounded">Diyar</span>

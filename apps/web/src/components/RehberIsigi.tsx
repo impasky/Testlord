@@ -445,7 +445,8 @@ export function RehberIsigi({
    *
    * Hareket hassasiyeti olan oyuncu için kapalı: `motion-safe`.
    */
-  const perde = 'fixed z-[55] bg-black/72 motion-safe:transition-all motion-safe:duration-200 motion-safe:ease-out';
+  const perde =
+    'fixed z-[55] bg-black/72 motion-safe:transition-all motion-safe:duration-200 motion-safe:ease-out';
   const dokun = () => {
     setItiraz(true);
     window.setTimeout(() => setItiraz(false), 450);
@@ -535,9 +536,7 @@ export function RehberIsigi({
               </div>
               <div className="min-w-0 flex-1">
                 <span className="baslik text-[10px] text-mavi">{REHBER.ad}</span>
-                <p className="mt-0.5 text-[13px] leading-snug text-parsomen">
-                  {rehberSozu(adim)}
-                </p>
+                <p className="mt-0.5 text-[13px] leading-snug text-parsomen">{rehberSozu(adim)}</p>
               </div>
             </div>
           </div>
@@ -618,9 +617,7 @@ export function RehberIsigi({
               <p className="mt-0.5 text-[13px] leading-snug text-parsomen">{sebep}</p>
             </div>
           </div>
-          <p className="baslik mt-2 text-center text-[11px] text-altin">
-            ↓ şimdi buna bas ↓
-          </p>
+          <p className="baslik mt-2 text-center text-[11px] text-altin">↓ şimdi buna bas ↓</p>
         </div>
       </div>
     </>

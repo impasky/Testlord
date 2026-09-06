@@ -51,9 +51,7 @@ export function hataBildir(
  * Süreci düşüren hatalar. Fastify'ın hata yöneticisi bunları görmez:
  * istek döngüsünün dışında, zamanlayıcıda ya da worker'da patlarlar.
  */
-export function surecHatalariniYakala(log: {
-  fatal: (o: object, m: string) => void;
-}): void {
+export function surecHatalariniYakala(log: { fatal: (o: object, m: string) => void }): void {
   process.on('unhandledRejection', (sebep) => {
     log.fatal({ err: sebep }, 'Yakalanmamış promise reddi');
     hataBildir(sebep, { yol: 'unhandledRejection' });

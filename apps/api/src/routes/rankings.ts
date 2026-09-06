@@ -72,7 +72,10 @@ async function fetihSiralamasi(worldId: string): Promise<Satir[]> {
       bolgeSayisi: l.regions.filter((r) => r.type !== 'taht').length,
       tahtSahibi: l.regions.some((r) => r.type === 'taht'),
       arma: lordArmasi(l),
-      unvan: unvan(l.fame, l.regions.some((r) => r.type === 'taht')).ad,
+      unvan: unvan(
+        l.fame,
+        l.regions.some((r) => r.type === 'taht'),
+      ).ad,
     }))
     .sort((a, b) => b.deger - a.deger)
     .map((r, i) => ({ ...r, sira: i + 1 }));
@@ -101,7 +104,10 @@ async function basitSiralama(worldId: string, alan: 'fame' | 'elo'): Promise<Sat
     bolgeSayisi: l.regions.filter((r) => r.type !== 'taht').length,
     tahtSahibi: l.regions.some((r) => r.type === 'taht'),
     arma: lordArmasi(l),
-    unvan: unvan(l.fame, l.regions.some((r) => r.type === 'taht')).ad,
+    unvan: unvan(
+      l.fame,
+      l.regions.some((r) => r.type === 'taht'),
+    ).ad,
   }));
 }
 
@@ -173,9 +179,7 @@ async function ittifakSiralamasi(worldId: string, allianceId: string | null) {
 
 export async function rankingRoutes(app: FastifyInstance): Promise<void> {
   app.get('/rankings/:board', { preHandler: requireAuth }, async (req) => {
-    const { board } = z
-      .object({ board: z.enum(['fame', 'conquest', 'elo']) })
-      .parse(req.params);
+    const { board } = z.object({ board: z.enum(['fame', 'conquest', 'elo']) }).parse(req.params);
     const { page } = z.object({ page: z.coerce.number().int().min(0).default(0) }).parse(req.query);
 
     const lordId = await findLordByUser(req.user.userId);

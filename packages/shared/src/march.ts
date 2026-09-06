@@ -76,11 +76,7 @@ export interface MarchOptions {
  *  - hedef eve yakın olmalı (yoksa haritanın "kenardan başla" kurgusu
  *    bir kez ücretsiz atlanır).
  */
-export function ilkSaldiriMi(
-  yuruyusSayisi: number,
-  sahipsizMi: boolean,
-  mesafe: number,
-): boolean {
+export function ilkSaldiriMi(yuruyusSayisi: number, sahipsizMi: boolean, mesafe: number): boolean {
   return yuruyusSayisi === 0 && sahipsizMi && mesafe <= B.yuruyus.ilk_saldiri_max_hex;
 }
 

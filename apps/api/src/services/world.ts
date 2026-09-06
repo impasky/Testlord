@@ -9,8 +9,16 @@ import { B, WORLD_MAP } from '@lordlar/shared';
 import { prisma, type Tx } from '../db.js';
 
 const ROMEN = [
-  'Birinci', 'İkinci', 'Üçüncü', 'Dördüncü', 'Beşinci',
-  'Altıncı', 'Yedinci', 'Sekizinci', 'Dokuzuncu', 'Onuncu',
+  'Birinci',
+  'İkinci',
+  'Üçüncü',
+  'Dördüncü',
+  'Beşinci',
+  'Altıncı',
+  'Yedinci',
+  'Sekizinci',
+  'Dokuzuncu',
+  'Onuncu',
 ];
 
 function dunyaAdi(sira: number): string {

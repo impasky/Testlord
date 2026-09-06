@@ -25,8 +25,9 @@ const { token } = await kayitOl(API, {
 });
 const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
 const post = (yol, govde) =>
-  fetch(`${API}/api${yol}`, { method: 'POST', headers: h, body: JSON.stringify(govde ?? {}) })
-    .then((x) => x.json());
+  fetch(`${API}/api${yol}`, { method: 'POST', headers: h, body: JSON.stringify(govde ?? {}) }).then(
+    (x) => x.json(),
+  );
 const get = (yol) => fetch(`${API}/api${yol}`, { headers: h }).then((x) => x.json());
 const say = (k) => Math.round((k?.altin ?? 0) + (k?.demir ?? 0) + (k?.erzak ?? 0));
 

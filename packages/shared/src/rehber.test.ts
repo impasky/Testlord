@@ -326,7 +326,9 @@ describe('ipuçları', () => {
    * dosyası değişince sessizce yalana döner.
    */
   it('sayılar dengeden türüyor', () => {
-    const hepsi = ipuclari().map((i) => i.metin).join(' ');
+    const hepsi = ipuclari()
+      .map((i) => i.metin)
+      .join(' ');
     expect(hepsi).toContain(String(B.korumalar.gunluk_saldiri_limiti));
     expect(hepsi).toContain(String(B.korumalar.yeni_oyuncu_saat));
     expect(hepsi).toContain(String(B.korumalar.bolge_ele_gecirme_sonrasi_saat));

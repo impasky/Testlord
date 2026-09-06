@@ -29,6 +29,8 @@ import {
   marchDurationSec,
   npcClearXp,
   simulateBattle,
+  dizilimGecerliMi,
+  varsayilanDizilim,
   updateElo,
   type Army,
   type EquipSlot,
@@ -76,6 +78,7 @@ async function buildSide(
   fortress: number,
   generalKeys: string[] | null,
   tx: Tx,
+  duzen?: Side['duzen'],
 ): Promise<{ side: Side; generaller: GeneralKatkisi[] }> {
   const lord = await tx.lord.findUnique({
     where: { id: lordId },
@@ -111,6 +114,10 @@ async function buildSide(
       leadership: lord.liderlik,
       fortressBonus: fortress,
       isDefender,
+      // Düzen verilmediyse ordunun makul varsayılanı. Nötr bırakmak
+      // asimetri yaratırdı: saldıran her seferinde dizilim yapıyor,
+      // savunan uykuda. İkisi de aynı taban dizilimden başlasın.
+      duzen: duzen ?? { dizilim: varsayilanDizilim(units), taktik: null },
       abilities: {
         on_hasar_orani: abilityValue(sahada, 'on_hasar_orani'),
         ilk_tur_saldiri: abilityValue(sahada, 'ilk_tur_saldiri'),
@@ -121,10 +128,48 @@ async function buildSide(
   };
 }
 
+/**
+ * Kayıttaki JSON'u güvenli bir savaş düzenine çevirir.
+ *
+ * Veritabanındaki Json alanı her şeyi kabul eder; eski kayıtlar bu alanı
+ * hiç taşımıyor ve elle düzenlenmiş bir satır bozuk olabilir. Biçim
+ * tutmuyorsa null dönüyor, motor da varsayılana düşüyor: bozuk bir
+ * dizilim yüzünden savaş çözülememezlik etmesin.
+ */
+function marchDuzeni(ham: unknown): Side['duzen'] {
+  if (!ham || typeof ham !== 'object') return null;
+  const o = ham as { dizilim?: unknown; taktik?: unknown };
+  if (!dizilimGecerliMi(o.dizilim)) return null;
+  return { dizilim: o.dizilim, taktik: typeof o.taktik === 'string' ? o.taktik : null };
+}
+
+/**
+ * Savunanın düzeni: kayıtlıysa o, değilse garnizonun varsayılan dizilimi.
+ *
+ * Savunma düzeni ORDUDAN bağımsız saklanıyor (bir kez kurulur, garnizon
+ * değişse de kalır). Bu yüzden kayıttaki dizilimde artık sahip olunmayan
+ * bir birim durabiliyor — sorun değil: `dizilimEtkisi` yalnız orduda
+ * ADEDİ olan birimleri hesaba katıyor.
+ */
+async function savunmaDuzeni(lordId: string, garnizon: Army, tx: Tx): Promise<Side['duzen']> {
+  const lord = await tx.lord.findUnique({
+    where: { id: lordId },
+    select: { savunmaDizilim: true, savunmaTaktik: true },
+  });
+  if (lord && dizilimGecerliMi(lord.savunmaDizilim)) {
+    return { dizilim: lord.savunmaDizilim, taktik: lord.savunmaTaktik ?? null };
+  }
+  return { dizilim: varsayilanDizilim(garnizon), taktik: null };
+}
+
 /** NPC garnizonu için taraf: lordu yok, sadece birimler ve tahkimat. */
 function npcSide(units: Army, fortress: number): Side {
   return {
     units,
+    // NPC garnizonu da varsayılan dizilimde duruyor. Nötr bıraksaydık
+    // her NPC bölgesi oyuncuya bedava bir dizilim avantajı verirdi ve
+    // erken ilerlemenin bütün dengesi kaymış olurdu.
+    duzen: { dizilim: varsayilanDizilim(units), taktik: null },
     gearBonus: { saldiri: 0, savunma: 0, can: 0 },
     generalBonus: bosGeneralBonus(),
     lordContribution: 0,
@@ -160,12 +205,7 @@ async function readGarrisonPaylari(regionId: number, tx: Tx): Promise<GarnizonPa
 }
 
 /** Garnizonu verilen orduya eşitler; fazlası silinir. */
-async function writeGarrison(
-  regionId: number,
-  ownerId: string,
-  army: Army,
-  tx: Tx,
-): Promise<void> {
+async function writeGarrison(regionId: number, ownerId: string, army: Army, tx: Tx): Promise<void> {
   const rows = await tx.armyUnit.findMany({
     where: { lordId: ownerId, locationType: 'region', locationId: String(regionId) },
   });
@@ -208,9 +248,7 @@ async function generalleriOdullendir(
       data: {
         level: sonuc.level,
         xp: sonuc.xpIntoLevel,
-        ...(dinlenir
-          ? { restUntil: new Date(Date.now() + yaralanma.saat * 3_600_000) }
-          : {}),
+        ...(dinlenir ? { restUntil: new Date(Date.now() + yaralanma.saat * 3_600_000) } : {}),
       },
     });
 
@@ -508,7 +546,13 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
       const generalKeys = (march.generalIds as string[]) ?? [];
 
       const { side: attacker, generaller: saldiranGeneraller } = await buildSide(
-        march.lordId, army, false, 0, generalKeys, tx,
+        march.lordId,
+        army,
+        false,
+        0,
+        generalKeys,
+        tx,
+        marchDuzeni(march.duzen),
       );
 
       const npcGarrison = toArmy(region.npcGarrison);
@@ -521,7 +565,15 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
       // NPC garnizonunun generali yok; boş liste dönüyor ki rapor iki
       // tarafı da aynı şekilde okuyabilsin.
       const savunanKurulum = defenderLordId
-        ? await buildSide(defenderLordId, defenderArmy, true, fortress, null, tx)
+        ? await buildSide(
+            defenderLordId,
+            defenderArmy,
+            true,
+            fortress,
+            null,
+            tx,
+            await savunmaDuzeni(defenderLordId, defenderArmy, tx),
+          )
         : { side: npcSide(defenderArmy, fortress), generaller: [] as GeneralKatkisi[] };
       const defender = savunanKurulum.side;
       const savunanGeneraller = savunanKurulum.generaller;
@@ -659,13 +711,16 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
           `${seed}-def`,
           tx,
         );
-
       } else {
         // NPC garnizonu
         const npcXp = npcClearXp(armyCount(defenderArmy));
         await grantXp(march.lordId, npcXp, tx);
         saldiranYukselisleri = await generalleriOdullendir(
-          march.lordId, npcXp, !attackerWon, `${seed}-npc`, tx,
+          march.lordId,
+          npcXp,
+          !attackerWon,
+          `${seed}-npc`,
+          tx,
         );
       }
 
@@ -702,6 +757,11 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
             attackerSurvivors: result.attackerSurvivors,
             defenderSurvivors: result.defenderSurvivors,
             loot: result.loot,
+            // Dizilim ve taktiğin ne yaptığı — raporun "neden böyle
+            // oldu" bölümünün düzen ayağı. Savaşla birlikte saklanıyor
+            // çünkü sonradan hesaplanamaz: yürüyüş kaydı silinir,
+            // savunma düzeni değiştirilir, sayı geriye dönük çıkmaz.
+            duzenRaporu: result.duzenRaporu,
             regionName: region.name,
             // Savaş anındaki tahkimat. Bölge sonradan gelişebilir ya da
             // el değiştirebilir, o yüzden rapordan geriye dönük
@@ -722,9 +782,7 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
             sonuc: {
               saldiran: { oncesi: saldiranOnce, sonrasi: saldiranSonra },
               savunan:
-                savunanOnce && savunanSonra
-                  ? { oncesi: savunanOnce, sonrasi: savunanSonra }
-                  : null,
+                savunanOnce && savunanSonra ? { oncesi: savunanOnce, sonrasi: savunanSonra } : null,
             },
           } as object,
         },
@@ -866,9 +924,7 @@ export async function saldiriBildirimi(
       metin:
         `${lord.name},\n\n` +
         `${saldiranAdi} ${bilgi.bolgeAdi} bölgene saldırdı. ` +
-        (bilgi.kaybedildi
-          ? 'Bölge el değiştirdi.'
-          : 'Saldırı püskürtüldü ama bölgen yağmalandı.') +
+        (bilgi.kaybedildi ? 'Bölge el değiştirdi.' : 'Saldırı püskürtüldü ama bölgen yağmalandı.') +
         `\n\nSavaş raporunu oyunda görebilirsin: ${env.uygulamaUrl}\n`,
     },
     log,

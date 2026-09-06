@@ -15,14 +15,7 @@
  * bileşim değiştikçe sahnenin görüntüsü değişiyor. Oyuncunun ilk oturumda
  * "asker ürettim, eee ne oldu" dediği yerin karşılığı bu.
  */
-import {
-  UNIT_TYPES,
-  armySlots,
-  unit,
-  unitName,
-  type Army,
-  type UnitType,
-} from '@lordlar/shared';
+import { UNIT_TYPES, armySlots, unit, unitName, type Army, type UnitType } from '@lordlar/shared';
 import { useEffect, useRef, useState } from 'react';
 import { Gorsel } from './Gorsel';
 import { BirimIkonu } from './Ikonlar';
@@ -77,9 +70,7 @@ function figurDagilimi(army: Army): { tur: UnitType; adet: number }[] {
   // Tam sayıya inerken artıkları en büyükten dağıtıyoruz; aşağı yuvarlamak
   // bütçenin bir kısmını boşa harcıyordu.
   const taban = pay.map(Math.floor);
-  const artik = pay
-    .map((p, i) => ({ i, fark: p - taban[i]! }))
-    .sort((a, b) => b.fark - a.fark);
+  const artik = pay.map((p, i) => ({ i, fark: p - taban[i]! })).sort((a, b) => b.fark - a.fark);
   let eksik = kalan - taban.reduce((a, b) => a + b, 0);
   for (const { i } of artik) {
     if (eksik <= 0) break;
@@ -147,13 +138,7 @@ function useNaara() {
   };
 }
 
-export function OrduSahnesi({
-  army,
-  komutaTavani,
-}: {
-  army: Army;
-  komutaTavani: number;
-}) {
+export function OrduSahnesi({ army, komutaTavani }: { army: Army; komutaTavani: number }) {
   const dagilim = figurDagilimi(army);
   const kullanilan = armySlots(army);
   const siralar = sahneyeDiz(dagilim);
@@ -167,8 +152,7 @@ export function OrduSahnesi({
       key={naara}
       className={`sahne relative -mx-3 h-[172px] overflow-hidden ${naara > 0 ? 'sahne-naara' : ''}`}
       style={{
-        background:
-          'linear-gradient(180deg, var(--color-derin) 0%, #2b1f17 55%, #241a13 100%)',
+        background: 'linear-gradient(180deg, var(--color-derin) 0%, #2b1f17 55%, #241a13 100%)',
       }}
     >
       {/* Zemin şeridi — figürler havada durmasın. */}

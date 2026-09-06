@@ -28,14 +28,7 @@ export const ANA = 'lord';
  * Kapılar: kendi sayfası olmayan, ana sayfadan panel olarak açılanlar.
  * Panel `data-kapi` imzalı bir düğmeyle açılıyor.
  */
-export const KAPILAR = [
-  'generaller',
-  'demirhane',
-  'ittifak',
-  'olaylar',
-  'siralama',
-  'hesap',
-];
+export const KAPILAR = ['generaller', 'demirhane', 'ittifak', 'olaylar', 'siralama', 'hesap'];
 
 /** Denetlenen bütün ekranlar: önce sekmeler, sonra kapılar. */
 export const EKRANLAR = [...CUBUK, ...KAPILAR.map((k) => [k, k])];

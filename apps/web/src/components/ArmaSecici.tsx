@@ -185,11 +185,7 @@ export function ArmaSecici({
               </div>
             </div>
 
-            <Buton
-              tam
-              onClick={() => kaydet.mutate()}
-              disabled={!degisti || kaydet.isPending}
-            >
+            <Buton tam onClick={() => kaydet.mutate()} disabled={!degisti || kaydet.isPending}>
               {kaydet.isPending ? 'Kaydediliyor…' : degisti ? 'Armayı kaydet' : 'Değişiklik yok'}
             </Buton>
           </div>

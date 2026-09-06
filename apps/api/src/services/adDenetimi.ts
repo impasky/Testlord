@@ -40,9 +40,24 @@ export function normalize(ad: string): string {
  * tarafından zaten temizleniyor.
  */
 const UZUN_YASAKLI = [
-  'orospu', 'oruspu', 'piclik', 'sikis', 'sikik', 'siktir', 'yarrak',
-  'gotveren', 'ibne', 'amcik', 'kahpe',
-  'fuck', 'shit', 'bitch', 'cunt', 'nigger', 'nazi', 'hitler',
+  'orospu',
+  'oruspu',
+  'piclik',
+  'sikis',
+  'sikik',
+  'siktir',
+  'yarrak',
+  'gotveren',
+  'ibne',
+  'amcik',
+  'kahpe',
+  'fuck',
+  'shit',
+  'bitch',
+  'cunt',
+  'nigger',
+  'nazi',
+  'hitler',
 ];
 
 /**
@@ -86,7 +101,10 @@ export function adiDenetle(ad: string): AdSonucu {
   }
   // Kısa parçalar: adın TAMAMI buysa ("amk", "a.m.k") ya da ayrı bir
   // sözcük olarak geçiyorsa ("Kral amk") elenir.
-  const sozcukler = ad.split(/[^\p{L}\p{N}]+/u).map(normalize).filter(Boolean);
+  const sozcukler = ad
+    .split(/[^\p{L}\p{N}]+/u)
+    .map(normalize)
+    .filter(Boolean);
   for (const y of KISA_YASAKLI) {
     if (n === y || sozcukler.includes(y)) {
       return { uygun: false, sebep: 'Bu ad kullanılamaz. Başka bir ad seç.' };

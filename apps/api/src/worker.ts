@@ -94,8 +94,7 @@ export function startWorker(): () => void {
 }
 
 // Ayrı süreç olarak çalıştırıldığında (pnpm worker) kendi kendine başlar.
-const ayriSurec =
-  process.argv[1]?.endsWith('worker.ts') || process.argv[1]?.endsWith('worker.js');
+const ayriSurec = process.argv[1]?.endsWith('worker.ts') || process.argv[1]?.endsWith('worker.js');
 
 if (ayriSurec) {
   validateBalance();

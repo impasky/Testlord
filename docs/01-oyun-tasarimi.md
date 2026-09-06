@@ -14,12 +14,12 @@ stat dağıtımından ve ekipmandan gelir.
 
 Her seviyede **5 serbest puan**. Dört stat, dört net rol:
 
-| Stat | Ne yapar | Kime hitap eder |
-|---|---|---|
-| **Güç** | Lordun savaş katkısı (+3 saldırı/puan) | Ekipmanına yatırım yapan, bizzat savaşan |
-| **Dayanıklılık** | Lord canı (+25/puan), yaralanma süresini kısaltır | Sık saldıran, ayakta kalmak isteyen |
-| **Liderlik** | Komuta kapasitesi (+8 yer/puan), general slotu | Büyük ordu kuran, klasik stratejist |
-| **Kurnazlık** | Yağma miktarı (+%1/puan), casusun yakalanma riskini düşürür | Bölge almak yerine yağmalayarak zenginleşen, saldırmadan önce bilmek isteyen |
+| Stat             | Ne yapar                                                    | Kime hitap eder                                                              |
+| ---------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| **Güç**          | Lordun savaş katkısı (+3 saldırı/puan)                      | Ekipmanına yatırım yapan, bizzat savaşan                                     |
+| **Dayanıklılık** | Lord canı (+25/puan), yaralanma süresini kısaltır           | Sık saldıran, ayakta kalmak isteyen                                          |
+| **Liderlik**     | Komuta kapasitesi (+8 yer/puan), general slotu              | Büyük ordu kuran, klasik stratejist                                          |
+| **Kurnazlık**    | Yağma miktarı (+%1/puan), casusun yakalanma riskini düşürür | Bölge almak yerine yağmalayarak zenginleşen, saldırmadan önce bilmek isteyen |
 
 **Neden serbest dağıtım:** Sınıf sistemi içerik ister (her sınıfa özel yetenek,
 denge, ikonografi). Serbest puan aynı çeşitliliği sıfır ek içerikle verir.
@@ -97,13 +97,13 @@ Bu oran her iki pilar'ı da (ekipman gücü / ordu gücü) canlı tutar.
 
 ### Beş birim, bir üçgen
 
-| Birim | Rolü | Karakteri |
-|---|---|---|
-| **Köylü Milis** | Ucuz et kalkanı | Hızlı eğitilir, hiçbir şeyde iyi değil |
-| **Mızrakçı** | Savunma omurgası | Süvariye karşı ×1.5 |
-| **Okçu** | Ucuz hasar | Mızrakçıya karşı ×1.5 |
-| **Süvari** | Vurucu güç, hız | Okçuya karşı ×1.5, yürüyüşü hızlandırır |
-| **Mancınık** | Kale kırıcı | Kale savunmasına ×2.0, birime karşı ×0.5 |
+| Birim           | Rolü             | Karakteri                                |
+| --------------- | ---------------- | ---------------------------------------- |
+| **Köylü Milis** | Ucuz et kalkanı  | Hızlı eğitilir, hiçbir şeyde iyi değil   |
+| **Mızrakçı**    | Savunma omurgası | Süvariye karşı ×1.5                      |
+| **Okçu**        | Ucuz hasar       | Mızrakçıya karşı ×1.5                    |
+| **Süvari**      | Vurucu güç, hız  | Okçuya karşı ×1.5, yürüyüşü hızlandırır  |
+| **Mancınık**    | Kale kırıcı      | Kale savunmasına ×2.0, birime karşı ×0.5 |
 
 İlk dördü klasik taş-kağıt-makas. Mancınık üçgenin dışında: birime karşı kötü,
 duvara karşı şart. Bu, "ordumu neye göre kurayım?" sorusunu **hedefe** bağlar —
@@ -197,13 +197,13 @@ zorluk eğrisini taşır — ayrıca bir "bölge seviyesi" içeriği yazmaya ger
 
 ### Dört bölge tipi
 
-| Tip | Adet | Verir | Kale bonusu |
-|---|---|---|---|
-| Tarla | 18 | Erzak | %0 |
-| Şehir | 18 | Altın | %10 |
-| Maden | 12 | Demir | %5 |
-| Kale | 12 | Altın + **saatlik Şöhret** | %30 |
-| **Taht Kalesi** | 1 | Üçü birden + çok Şöhret | %50 |
+| Tip             | Adet | Verir                      | Kale bonusu |
+| --------------- | ---- | -------------------------- | ----------- |
+| Tarla           | 18   | Erzak                      | %0          |
+| Şehir           | 18   | Altın                      | %10         |
+| Maden           | 12   | Demir                      | %5          |
+| Kale            | 12   | Altın + **saatlik Şöhret** | %30         |
+| **Taht Kalesi** | 1    | Üçü birden + çok Şöhret    | %50         |
 
 Kale bölgeleri savunması en zor ama **doğrudan sıralama puanı basar** — yani
 sıralamada yükselmek isteyen oyuncu en zor bölgeyi tutmak zorundadır. Rekabet
@@ -271,11 +271,11 @@ Log kaydedilir ve seed sayesinde her zaman yeniden üretilebilir — yani
 Güç oranı `R = saldırı / (saldırı + savunma)` üzerinden kayıplar hesaplanır.
 Kritik tasarım kararı: **kazanan da her zaman kaybeder.**
 
-| Durum | Kazananın kaybı | Kaybedenin kaybı |
-|---|---|---|
-| Ezici üstünlük (3×) | ~%18 | ~%75 |
-| Belirgin üstünlük (1,5×) | ~%28 | ~%66 |
-| Başabaş (1,05×) | ~%34 | ~%61 |
+| Durum                    | Kazananın kaybı | Kaybedenin kaybı |
+| ------------------------ | --------------- | ---------------- |
+| Ezici üstünlük (3×)      | ~%18            | ~%75             |
+| Belirgin üstünlük (1,5×) | ~%28            | ~%66             |
+| Başabaş (1,05×)          | ~%34            | ~%61             |
 
 3 kat güçle saldırsan bile ordunun altıda birini gömersin. Bu yüzden hiç kimse
 sonsuz saldıramaz; her savaş yeniden yatırım ister ve ekonomi savaşa bağlanır.
@@ -355,14 +355,14 @@ verir. Keşif bir anı dondurur, o sürekli bakar.
 Sürekli dünyalı oyunların ölüm sebebi hep aynıdır: erken liderler zayıfları
 ezer, zayıflar bırakır, dünya boşalır. Altı kural bunu engeller:
 
-| Koruma | Değer | Neyi engeller |
-|---|---|---|
-| Yeni oyuncu kalkanı | 72 saat (ilk saldırında biter) | Doğar doğmaz ezilmeyi |
-| Fetih sonrası kalkan | 6 saat | Bölgenin ping-pong olmasını |
-| Yağma sonrası kalkan | 2 saat (yalnız oyuncu bölgesi) | Uykuda zincirleme akınla silinmeyi |
-| Aynı saldırgan kilidi | 12 saat | Tek oyuncunun taciz etmesini |
-| Seviye farkı kilidi | 8+ seviye alta saldırılamaz | Güçlünün kolay avlanmasını |
-| Günlük saldırı limiti | 12 | Oyunu 7/24 oynayanın avantajını |
+| Koruma                | Değer                          | Neyi engeller                      |
+| --------------------- | ------------------------------ | ---------------------------------- |
+| Yeni oyuncu kalkanı   | 72 saat (ilk saldırında biter) | Doğar doğmaz ezilmeyi              |
+| Fetih sonrası kalkan  | 6 saat                         | Bölgenin ping-pong olmasını        |
+| Yağma sonrası kalkan  | 2 saat (yalnız oyuncu bölgesi) | Uykuda zincirleme akınla silinmeyi |
+| Aynı saldırgan kilidi | 12 saat                        | Tek oyuncunun taciz etmesini       |
+| Seviye farkı kilidi   | 8+ seviye alta saldırılamaz    | Güçlünün kolay avlanmasını         |
+| Günlük saldırı limiti | 12                             | Oyunu 7/24 oynayanın avantajını    |
 
 Yağma kalkanı ilk beşin arasındaki boşluğu kapatıyor: aynı saldırgan 12 saat
 bekliyordu ama **farklı** saldırganlar sınırsız zincirleyebiliyordu, fetih
@@ -445,11 +445,11 @@ ortak hedef ve sohbet bunun üstüne gelir.
 sırtını dönebileceğin bir sınırın olması, "yalnız değilim" hissinin en somut
 hâli.
 
-| Kural | Değer | Neden |
-|---|---|---|
-| Azami üye | 8 | 8 × 5 bölge = 40 < 61: bir ittifak diyarın tamamını kapatamaz |
-| Kurma maliyeti | 20.000 altın | Ucuz olsa herkes kendi tek kişilik ittifakını kurar |
-| Ayrıldıktan sonra bekleme | 12 saat | Saldırı kilidinin kalkan gibi kullanılmasını engeller |
+| Kural                     | Değer        | Neden                                                         |
+| ------------------------- | ------------ | ------------------------------------------------------------- |
+| Azami üye                 | 8            | 8 × 5 bölge = 40 < 61: bir ittifak diyarın tamamını kapatamaz |
+| Kurma maliyeti            | 20.000 altın | Ucuz olsa herkes kendi tek kişilik ittifakını kurar           |
+| Ayrıldıktan sonra bekleme | 12 saat      | Saldırı kilidinin kalkan gibi kullanılmasını engeller         |
 
 Son kural anlaşılması en zor olanı ve en gerekli: bekleme olmasaydı
 saldırıya uğrayan oyuncu saldırganın ittifakına girip korunur, tehlike
@@ -524,11 +524,11 @@ sohbet için on saniyelik yoklama fazlasıyla yeterli.
 
 Üç ayrı sıralama, çünkü tek sıralama tek oyun tarzını ödüllendirir:
 
-| Sıralama | Ölçer | Kimi ödüllendirir |
-|---|---|---|
-| **Şöhret** | Genel toplam skor | Dengeli, uzun soluklu oyuncuyu |
-| **Fetih** | Bölge seviyesi × tip çarpanı | Toprak sahibini |
-| **Kılıç** | ELO (K=24) | Savaşçıyı — bölgesiz oyuncu da 1. olabilir |
+| Sıralama   | Ölçer                        | Kimi ödüllendirir                          |
+| ---------- | ---------------------------- | ------------------------------------------ |
+| **Şöhret** | Genel toplam skor            | Dengeli, uzun soluklu oyuncuyu             |
+| **Fetih**  | Bölge seviyesi × tip çarpanı | Toprak sahibini                            |
+| **Kılıç**  | ELO (K=24)                   | Savaşçıyı — bölgesiz oyuncu da 1. olabilir |
 
 Kılıç sıralaması özellikle önemli: bölge tutamayan oyuncunun da tırmanacak bir
 merdiveni olur. Böylece kaybeden oyuncu oyundan çıkmaz.
@@ -541,15 +541,15 @@ Sıralamalar hem dünya (shard) hem global tutulur, 5 dakikada bir yenilenir.
 
 v1 için **7 ekran**, fazlası yok:
 
-| # | Ekran | İçerik |
-|---|---|---|
-| 1 | **Malikâne** | Kaynak sayaçları, aktif kuyruklar, olay akışı, hızlı işlemler |
-| 2 | **Lord** | Statlar, puan dağıtımı, 6 ekipman slotu, envanter |
-| 3 | **Demirhane** | Ekipman üretimi, yükseltme, 3 ordu donanım hattı |
-| 4 | **Kışla** | Birim eğitimi, ordu dağılımı, komuta kapasitesi çubuğu |
-| 5 | **Harita** | 61 hex, sahiplik renkleri, bölge detay paneli, saldırı emri |
-| 6 | **Generaller** | 12 generallik kadro, kiralama, slot yerleşimi |
-| 7 | **Sıralama** | 3 sekme, ilk 100 + kendi sıran |
+| #   | Ekran          | İçerik                                                        |
+| --- | -------------- | ------------------------------------------------------------- |
+| 1   | **Malikâne**   | Kaynak sayaçları, aktif kuyruklar, olay akışı, hızlı işlemler |
+| 2   | **Lord**       | Statlar, puan dağıtımı, 6 ekipman slotu, envanter             |
+| 3   | **Demirhane**  | Ekipman üretimi, yükseltme, 3 ordu donanım hattı              |
+| 4   | **Kışla**      | Birim eğitimi, ordu dağılımı, komuta kapasitesi çubuğu        |
+| 5   | **Harita**     | 61 hex, sahiplik renkleri, bölge detay paneli, saldırı emri   |
+| 6   | **Generaller** | 12 generallik kadro, kiralama, slot yerleşimi                 |
+| 7   | **Sıralama**   | 3 sekme, ilk 100 + kendi sıran                                |
 
 Savaş raporu ekran değil, **modal**: Harita ve Malikâne'den açılır.
 
@@ -558,7 +558,6 @@ Savaş raporu ekran değil, **modal**: Harita ve Malikâne'den açılır.
 **Sadece mobil.** Masaüstü düzeni yok: tek sütun, sabit üst durum çubuğu,
 sabit alt gezinme (4 sekme + menü), dokunmatik hedefleri en az 44px.
 Bölge detayı yan panel değil alt sayfa olarak açılır.
-
 
 - **Her ekranda kaynak çubuğu görünür.** Oyuncu "param yeter mi?"yi hiç sormamalı.
 - **Her timer geri sayım gösterir**, bitiş saatini değil. ("18 dk" > "14:32'de")

@@ -31,8 +31,11 @@ async function lordKur(etiket) {
   return {
     etiket,
     post: (yol, govde) =>
-      fetch(`${API}/api${yol}`, { method: 'POST', headers: h, body: JSON.stringify(govde ?? {}) })
-        .then((x) => x.json()),
+      fetch(`${API}/api${yol}`, {
+        method: 'POST',
+        headers: h,
+        body: JSON.stringify(govde ?? {}),
+      }).then((x) => x.json()),
     get: (yol) => fetch(`${API}/api${yol}`, { headers: h }).then((x) => x.json()),
   };
 }
@@ -79,33 +82,50 @@ kontrol('Başlangıçta ittifak yok', bosluk.ittifakim === null);
 kontrol('Kurma maliyeti söyleniyor', bosluk.kurmaMaliyeti > 0, `${bosluk.kurmaMaliyeti} altın`);
 
 const fakir = await a.post('/ittifak/kur', { ad: 'Kartal Sancağı', etiket: 'KRT' });
-kontrol('Altın yetmezse ittifak kurulamıyor', fakir?.code === 'YETERSIZ_KAYNAK',
-  fakir?.code ?? 'kuruldu');
+kontrol(
+  'Altın yetmezse ittifak kurulamıyor',
+  fakir?.code === 'YETERSIZ_KAYNAK',
+  fakir?.code ?? 'kuruldu',
+);
 
 await a.post('/test/kaynak-ver', { altin: 200000, demir: 0, erzak: 0 });
 const kisa = await a.post('/ittifak/kur', { ad: 'ab', etiket: 'KRT' });
 kontrol('Çok kısa ad reddediliyor', kisa?.code === 'AD_UYGUNSUZ', kisa?.code ?? 'kuruldu');
 
 const kotuEtiket = await a.post('/ittifak/kur', { ad: 'Kartal Sancağı', etiket: 'K R' });
-kontrol('Boşluklu etiket reddediliyor', kotuEtiket?.code === 'AD_UYGUNSUZ',
-  kotuEtiket?.code ?? 'kuruldu');
+kontrol(
+  'Boşluklu etiket reddediliyor',
+  kotuEtiket?.code === 'AD_UYGUNSUZ',
+  kotuEtiket?.code ?? 'kuruldu',
+);
 
-const kuruldu = await a.post('/ittifak/kur', { ad: `Kartal ${damga % 1000}`, etiket: `K${damga % 100}` });
+const kuruldu = await a.post('/ittifak/kur', {
+  ad: `Kartal ${damga % 1000}`,
+  etiket: `K${damga % 100}`,
+});
 kontrol('İttifak kuruldu', Boolean(kuruldu?.id), kuruldu?.ad ?? kuruldu?.code);
 // Kapıyı aç: ittifak varsayılan olarak BAŞVURUYLA üye alıyor (docs/09
 // §2.1). Bu testin ölçtüğü şey başvuru değil; lider gibi davranıp
 // kapıyı açıyoruz. Başvurunun kendisi ittifak-basvuru-testi'nde.
 await a.post('/ittifak/ayarlar', { katilim: 'acik' });
 
-
 const durum = await a.get('/ittifak');
-kontrol('Kurucu kendi ittifakının üyesi', durum.ittifakim?.uyeler?.length === 1,
-  `${durum.ittifakim?.uyeler?.length} üye`);
+kontrol(
+  'Kurucu kendi ittifakının üyesi',
+  durum.ittifakim?.uyeler?.length === 1,
+  `${durum.ittifakim?.uyeler?.length} üye`,
+);
 kontrol('Kurucu lider', durum.ittifakim?.liderId === durum.ittifakim?.uyeler?.[0]?.id);
 
-const ikinciKurma = await a.post('/ittifak/kur', { ad: `Baska ${damga % 1000}`, etiket: `B${damga % 100}` });
-kontrol('İki ittifakta birden olunamıyor', ikinciKurma?.code === 'ZATEN_ITTIFAKTA',
-  ikinciKurma?.code ?? 'kuruldu');
+const ikinciKurma = await a.post('/ittifak/kur', {
+  ad: `Baska ${damga % 1000}`,
+  etiket: `B${damga % 100}`,
+});
+kontrol(
+  'İki ittifakta birden olunamıyor',
+  ikinciKurma?.code === 'ZATEN_ITTIFAKTA',
+  ikinciKurma?.code ?? 'kuruldu',
+);
 
 // b'nin altını olmadan denemek YETERSIZ_KAYNAK ile dönerdi ve asıl
 // kuralı (ad çakışması) hiç sınamazdı.
@@ -120,23 +140,35 @@ const ayniEtiket = await b.post('/ittifak/kur', {
   ad: `Baska ${damga % 1000}`,
   etiket: `K${damga % 100}`,
 });
-kontrol('Aynı etiket ikinci kez alınamıyor', ayniEtiket?.code === 'AD_ALINMIS',
-  ayniEtiket?.code ?? 'kuruldu');
+kontrol(
+  'Aynı etiket ikinci kez alınamıyor',
+  ayniEtiket?.code === 'AD_ALINMIS',
+  ayniEtiket?.code ?? 'kuruldu',
+);
 
 // --- b katılıyor
 const katildi = await b.post(`/ittifak/${kuruldu.id}/katil`);
 kontrol('İkinci lord ittifaka katıldı', Boolean(katildi?.katildi), katildi?.ad ?? katildi?.code);
 const ikiKisi = await a.get('/ittifak');
-kontrol('Üye listesi ikiye çıktı', ikiKisi.ittifakim?.uyeler?.length === 2,
-  `${ikiKisi.ittifakim?.uyeler?.length} üye`);
+kontrol(
+  'Üye listesi ikiye çıktı',
+  ikiKisi.ittifakim?.uyeler?.length === 2,
+  `${ikiKisi.ittifakim?.uyeler?.length} üye`,
+);
 const liderOlaylari = (await a.get('/me')).events;
-kontrol('Lider katılımdan haberdar',
+kontrol(
+  'Lider katılımdan haberdar',
   liderOlaylari.some((e) => e.kind === 'ittifak_katilim'),
-  liderOlaylari[0]?.payload?.mesaj ?? 'olay yok');
+  liderOlaylari[0]?.payload?.mesaj ?? 'olay yok',
+);
 
 // --- Sohbet (docs/09 B3)
 const bosSohbet = await a.get('/ittifak/sohbet');
-kontrol('Sohbet açılıyor', Array.isArray(bosSohbet?.mesajlar), `${bosSohbet?.mesajlar?.length} mesaj`);
+kontrol(
+  'Sohbet açılıyor',
+  Array.isArray(bosSohbet?.mesajlar),
+  `${bosSohbet?.mesajlar?.length} mesaj`,
+);
 
 const yazildi = await a.post('/ittifak/sohbet', { metin: 'Kaleye birlikte gidelim' });
 kontrol('Mesaj yazılabiliyor', Boolean(yazildi?.id), yazildi?.code ?? 'yazıldı');
@@ -152,11 +184,17 @@ kontrol(
 // bu -- kapali bir gruba yazmak herkese acik bir kanala yazmaktan baska
 // bir sorumluluk.
 const disaridanOkuma = await c.get('/ittifak/sohbet');
-kontrol('Üye olmayan sohbeti okuyamıyor', disaridanOkuma?.code === 'ITTIFAK_YOK',
-  disaridanOkuma?.code ?? `${disaridanOkuma?.mesajlar?.length} mesaj okundu`);
+kontrol(
+  'Üye olmayan sohbeti okuyamıyor',
+  disaridanOkuma?.code === 'ITTIFAK_YOK',
+  disaridanOkuma?.code ?? `${disaridanOkuma?.mesajlar?.length} mesaj okundu`,
+);
 const disaridanYazma = await c.post('/ittifak/sohbet', { metin: 'merhaba' });
-kontrol('Üye olmayan sohbete yazamıyor', disaridanYazma?.code === 'ITTIFAK_YOK',
-  disaridanYazma?.code ?? 'yazdı');
+kontrol(
+  'Üye olmayan sohbete yazamıyor',
+  disaridanYazma?.code === 'ITTIFAK_YOK',
+  disaridanYazma?.code ?? 'yazdı',
+);
 
 const hizli = await a.post('/ittifak/sohbet', { metin: 'ikinci mesaj' });
 kontrol('Spam freni çalışıyor', hizli?.code === 'COK_HIZLI', hizli?.code ?? 'yazıldı');
@@ -179,8 +217,11 @@ await orduKur(a);
 await a.post('/test/kalkanlari-kaldir');
 const orduA = (await a.get('/army')).home;
 const engel = await a.post('/march', { toRegionId: bolge.id, army: orduA });
-kontrol('İTTİFAK ÜYESİNE SALDIRILAMIYOR', engel?.code === 'ITTIFAK_UYESI',
-  engel?.code ?? `yürüyüş kabul edildi (${engel?.marchId ?? '?'})`);
+kontrol(
+  'İTTİFAK ÜYESİNE SALDIRILAMIYOR',
+  engel?.code === 'ITTIFAK_UYESI',
+  engel?.code ?? `yürüyüş kabul edildi (${engel?.marchId ?? '?'})`,
+);
 
 // --- Üçüncü lord ittifakta değil: ona saldırı serbest olmalı
 const disaridan = await c.post('/test/kaynak-ver', { altin: 1000, demir: 0, erzak: 0 });
@@ -192,8 +233,11 @@ kontrol('Üçüncü lord ittifaksız', cDurum.ittifakim === null);
 // --- Ticaret (docs/09 B6)
 await a.post('/test/kaynak-ver', { altin: 60000, demir: 30000, erzak: 30000 });
 const ticaretOnce = await a.get('/ticaret');
-kontrol('Ticaret özeti geliyor', ticaretOnce?.gunlukTavan > 0,
-  `tavan ${ticaretOnce?.gunlukTavan}, kalan ${ticaretOnce?.kalanTavan}`);
+kontrol(
+  'Ticaret özeti geliyor',
+  ticaretOnce?.gunlukTavan > 0,
+  `tavan ${ticaretOnce?.gunlukTavan}, kalan ${ticaretOnce?.kalanTavan}`,
+);
 
 const bAd = (await b.get('/me')).lord;
 const bOnceAltin = Math.floor(bAd.resources.altin);
@@ -204,28 +248,37 @@ const sevk = await a.post('/ticaret/gonder', {
   lordId: bLordId,
   yuk: { altin: 5000, demir: 1000, erzak: 0 },
 });
-kontrol('İttifak üyesine kaynak gönderilebiliyor', Boolean(sevk?.id),
-  sevk?.code ?? `${sevk?.alici}, ${sevk?.durationSec} sn`);
-kontrol('Kaynak ANINDA gitmiyor, yolda', sevk?.durationSec > 0,
-  `${sevk?.durationSec} sn`);
+kontrol(
+  'İttifak üyesine kaynak gönderilebiliyor',
+  Boolean(sevk?.id),
+  sevk?.code ?? `${sevk?.alici}, ${sevk?.durationSec} sn`,
+);
+kontrol('Kaynak ANINDA gitmiyor, yolda', sevk?.durationSec > 0, `${sevk?.durationSec} sn`);
 
 // Gonderen kesesinden HEMEN cikmali: yoksa ayni kaynagi uc kisiye
 // birden gonderebilirdi.
 // Sabit bir esikle degil FARKLA olcuyoruz: lordun onceki altını
 // testin gecmisine baglı, esik yazarsak test kendi gecmisine kilitlenir.
 const aSonraAltin = Math.floor((await a.get('/me')).lord.resources.altin);
-kontrol('Kaynak gönderenden hemen düşüyor',
+kontrol(
+  'Kaynak gönderenden hemen düşüyor',
   aOnceAltin - aSonraAltin >= 4500,
-  `${aOnceAltin} -> ${aSonraAltin}`);
+  `${aOnceAltin} -> ${aSonraAltin}`,
+);
 
 await b.post('/test/sevkiyatlari-bitir');
 const bSonra = (await b.get('/me')).lord;
-kontrol('Kaynak alıcıya vardı', Math.floor(bSonra.resources.altin) > bOnceAltin,
-  `${bOnceAltin} -> ${Math.floor(bSonra.resources.altin)}`);
+kontrol(
+  'Kaynak alıcıya vardı',
+  Math.floor(bSonra.resources.altin) > bOnceAltin,
+  `${bOnceAltin} -> ${Math.floor(bSonra.resources.altin)}`,
+);
 const bOlaylar = (await b.get('/me')).events;
-kontrol('Alıcı sevkiyattan haberdar',
+kontrol(
+  'Alıcı sevkiyattan haberdar',
   bOlaylar.some((e) => e.kind === 'sevkiyat_geldi'),
-  bOlaylar.find((e) => e.kind === 'sevkiyat_geldi')?.payload?.mesaj ?? 'olay yok');
+  bOlaylar.find((e) => e.kind === 'sevkiyat_geldi')?.payload?.mesaj ?? 'olay yok',
+);
 
 // Ittifak disina gonderilemiyor: B6'nin kendi notu "ittifak olmadan
 // somuruye acik" idi.
@@ -234,14 +287,21 @@ const disari = await a.post('/ticaret/gonder', {
   lordId: cId,
   yuk: { altin: 1000, demir: 0, erzak: 0 },
 });
-kontrol('İttifak dışına kaynak gönderilemiyor', disari?.code === 'ITTIFAK_DEGIL',
-  disari?.code ?? 'gönderildi');
+kontrol(
+  'İttifak dışına kaynak gönderilemiyor',
+  disari?.code === 'ITTIFAK_DEGIL',
+  disari?.code ?? 'gönderildi',
+);
 
 const kendine = await a.post('/ticaret/gonder', {
   lordId: (await a.get('/me')).lord.id,
   yuk: { altin: 1000, demir: 0, erzak: 0 },
 });
-kontrol('Kendine kaynak gönderilemiyor', kendine?.code === 'KENDINE', kendine?.code ?? 'gönderildi');
+kontrol(
+  'Kendine kaynak gönderilemiyor',
+  kendine?.code === 'KENDINE',
+  kendine?.code ?? 'gönderildi',
+);
 
 // Gunluk tavan: coklu hesap freni.
 await a.post('/test/kaynak-ver', { altin: 900000, demir: 0, erzak: 0 });
@@ -249,8 +309,11 @@ const tavanAsan = await a.post('/ticaret/gonder', {
   lordId: bLordId,
   yuk: { altin: ticaretOnce.gunlukTavan * 2, demir: 0, erzak: 0 },
 });
-kontrol('Günlük tavan aşılamıyor', tavanAsan?.code === 'GONDERIM_REDDEDILDI',
-  tavanAsan?.code ?? 'gönderildi');
+kontrol(
+  'Günlük tavan aşılamıyor',
+  tavanAsan?.code === 'GONDERIM_REDDEDILDI',
+  tavanAsan?.code ?? 'gönderildi',
+);
 
 const eksi = await a.post('/ticaret/gonder', {
   lordId: bLordId,
@@ -264,33 +327,53 @@ kontrol('Başlangıçta ortak hedef yok', hedefsiz === null, JSON.stringify(hede
 
 const sahipsizBolge = (await a.get('/map')).regions.find((r) => !r.owner && r.type !== 'taht');
 const isaret = await a.post('/ittifak/hedef', { regionId: sahipsizBolge.id, not: 'cuma akşamı' });
-kontrol('Lider ortak hedef işaretleyebiliyor', Boolean(isaret?.hedef?.regionId),
-  isaret?.hedef?.ad ?? isaret?.code);
+kontrol(
+  'Lider ortak hedef işaretleyebiliyor',
+  Boolean(isaret?.hedef?.regionId),
+  isaret?.hedef?.ad ?? isaret?.code,
+);
 
 const hedefli = (await a.get('/ittifak')).ittifakim?.hedef;
-kontrol('Hedef ittifak özetinde görünüyor', hedefli?.regionId === sahipsizBolge.id,
-  `${hedefli?.ad} — ${hedefli?.not}`);
+kontrol(
+  'Hedef ittifak özetinde görünüyor',
+  hedefli?.regionId === sahipsizBolge.id,
+  `${hedefli?.ad} — ${hedefli?.not}`,
+);
 
 // Cekirdek: hedef HARITADA gorunmeli. Ittifak ekraninda duran bir hedef,
 // oyuncunun saldiriya karar verdigi yerde yok demektir.
 const uyeHaritasi = await b.get('/map');
-kontrol('Hedef ÜYENİN haritasında işaretli',
+kontrol(
+  'Hedef ÜYENİN haritasında işaretli',
   uyeHaritasi.ittifakHedefi?.regionId === sahipsizBolge.id,
-  JSON.stringify(uyeHaritasi.ittifakHedefi));
-kontrol('Haritadaki hedef notu taşıyor', uyeHaritasi.ittifakHedefi?.not === 'cuma akşamı',
-  uyeHaritasi.ittifakHedefi?.not ?? '-');
+  JSON.stringify(uyeHaritasi.ittifakHedefi),
+);
+kontrol(
+  'Haritadaki hedef notu taşıyor',
+  uyeHaritasi.ittifakHedefi?.not === 'cuma akşamı',
+  uyeHaritasi.ittifakHedefi?.not ?? '-',
+);
 
 const uyeOlaylari = (await b.get('/me')).events;
-kontrol('Üyeler hedeften haberdar ediliyor',
+kontrol(
+  'Üyeler hedeften haberdar ediliyor',
   uyeOlaylari.some((e) => e.kind === 'ittifak_hedef'),
-  uyeOlaylari.find((e) => e.kind === 'ittifak_hedef')?.payload?.mesaj ?? 'olay yok');
+  uyeOlaylari.find((e) => e.kind === 'ittifak_hedef')?.payload?.mesaj ?? 'olay yok',
+);
 
 const uyeIsaret = await b.post('/ittifak/hedef', { regionId: sahipsizBolge.id });
-kontrol('Üye hedef işaretleyemiyor', uyeIsaret?.code === 'YETKISIZ', uyeIsaret?.code ?? 'işaretledi');
+kontrol(
+  'Üye hedef işaretleyemiyor',
+  uyeIsaret?.code === 'YETKISIZ',
+  uyeIsaret?.code ?? 'işaretledi',
+);
 
 const disHarita = await c.get('/map');
-kontrol('İttifaksız oyuncu hedefi görmüyor', disHarita.ittifakHedefi === null,
-  JSON.stringify(disHarita.ittifakHedefi));
+kontrol(
+  'İttifaksız oyuncu hedefi görmüyor',
+  disHarita.ittifakHedefi === null,
+  JSON.stringify(disHarita.ittifakHedefi),
+);
 
 // --- Takviye (docs/09 B1c)
 // b'nin bolgesine a takviye gonderiyor. Cekirdek soru: asker savunmaya
@@ -301,7 +384,10 @@ await a.post('/army/train', { unitType: 'okcu', count: 40 });
 await a.post('/test/kuyruklari-bitir');
 
 const bolgeOnce = await b.get(`/map/${bolge.id}`);
-const garnizonOnce = Object.values(bolgeOnce.garrison ?? {}).reduce((t, n) => t + Number(n || 0), 0);
+const garnizonOnce = Object.values(bolgeOnce.garrison ?? {}).reduce(
+  (t, n) => t + Number(n || 0),
+  0,
+);
 
 const gonderim = await a.post(`/map/${bolge.id}/takviye`, { army: takviyeOrdusu });
 kontrol('Takviye yola çıktı', Boolean(gonderim?.marchId), gonderim?.code ?? `${gonderim?.hedef}`);
@@ -326,13 +412,18 @@ kontrol(
 );
 
 const sahipsizeTakviye = await a.post(`/map/${sahipsizBolge.id}/takviye`, { army: { milis: 1 } });
-kontrol('Sahipsiz bölgeye takviye gönderilemiyor', sahipsizeTakviye?.code === 'SAHIPSIZ_BOLGE',
-  sahipsizeTakviye?.code ?? 'gönderildi');
+kontrol(
+  'Sahipsiz bölgeye takviye gönderilemiyor',
+  sahipsizeTakviye?.code === 'SAHIPSIZ_BOLGE',
+  sahipsizeTakviye?.code ?? 'gönderildi',
+);
 
 const yabanciyaTakviye = await c.post(`/map/${bolge.id}/takviye`, { army: { milis: 1 } });
-kontrol('İttifak dışına takviye gönderilemiyor',
+kontrol(
+  'İttifak dışına takviye gönderilemiyor',
   yabanciyaTakviye?.code === 'ITTIFAK_DEGIL' || yabanciyaTakviye?.code === 'YETERSIZ_ORDU',
-  yabanciyaTakviye?.code ?? 'gönderildi');
+  yabanciyaTakviye?.code ?? 'gönderildi',
+);
 
 // Geri cekme: bu uc olmadan takviye tek yonlu olurdu.
 const geriCek = await a.post(`/map/${bolge.id}/takviye-geri`);
@@ -346,47 +437,73 @@ kontrol(
 );
 
 const bosGeriCekme = await a.post(`/map/${bolge.id}/takviye-geri`);
-kontrol('Askeri olmayan geri çekemiyor', bosGeriCekme?.code === 'ASKER_YOK',
-  bosGeriCekme?.code ?? 'çekti');
+kontrol(
+  'Askeri olmayan geri çekemiyor',
+  bosGeriCekme?.code === 'ASKER_YOK',
+  bosGeriCekme?.code ?? 'çekti',
+);
 
 // --- Ayrılınca saldırı açılıyor ama bekleme başlıyor
 const ayrildi = await b.post('/ittifak/ayril');
 kontrol('İttifaktan ayrılınabiliyor', ayrildi?.ayrildi === true, JSON.stringify(ayrildi));
 
 const sonrakiEngel = await a.post('/march', { toRegionId: bolge.id, army: orduA });
-kontrol('Ayrıldıktan sonra saldırı açılıyor',
+kontrol(
+  'Ayrıldıktan sonra saldırı açılıyor',
   sonrakiEngel?.code !== 'ITTIFAK_UYESI',
-  sonrakiEngel?.code ?? 'yürüyüş kabul edildi');
+  sonrakiEngel?.code ?? 'yürüyüş kabul edildi',
+);
 
 const hemenKatil = await b.post(`/ittifak/${kuruldu.id}/katil`);
-kontrol('Ayrıldıktan HEMEN sonra yeni ittifaka girilemiyor',
-  hemenKatil?.code === 'ITTIFAK_BEKLEME', hemenKatil?.code ?? 'katıldı');
+kontrol(
+  'Ayrıldıktan HEMEN sonra yeni ittifaka girilemiyor',
+  hemenKatil?.code === 'ITTIFAK_BEKLEME',
+  hemenKatil?.code ?? 'katıldı',
+);
 
 const bekleyen = await b.get('/ittifak');
-kontrol('Bekleme süresi arayüze söyleniyor', bekleyen.bekleme?.kalanSn > 0,
-  `${bekleyen.bekleme?.kalanSn} sn`);
+kontrol(
+  'Bekleme süresi arayüze söyleniyor',
+  bekleyen.bekleme?.kalanSn > 0,
+  `${bekleyen.bekleme?.kalanSn} sn`,
+);
 
 // --- Lider ayrılınca ittifak dağılmıyor, liderlik devrediliyor
 const d = await lordKur('d');
 await d.post('/test/kaynak-ver', { altin: 200000, demir: 0, erzak: 0 });
 await d.post(`/ittifak/${kuruldu.id}/katil`);
 const aAyrildi = await a.post('/ittifak/ayril');
-kontrol('Lider ayrılınca ittifak dağılmıyor', aAyrildi?.dagildi === false, JSON.stringify(aAyrildi));
+kontrol(
+  'Lider ayrılınca ittifak dağılmıyor',
+  aAyrildi?.dagildi === false,
+  JSON.stringify(aAyrildi),
+);
 const yeniDurum = await d.get('/ittifak');
 const yeniLider = yeniDurum.ittifakim?.uyeler?.find((u) => u.lider);
-kontrol('Liderlik kalan üyeye geçti', yeniLider?.id === yeniDurum.ittifakim?.liderId,
-  yeniDurum.ittifakim?.uyeler?.map((u) => `${u.ad}${u.lider ? '*' : ''}`).join(', '));
-kontrol('Lider listenin başında', yeniDurum.ittifakim?.uyeler?.[0]?.lider === true,
-  yeniDurum.ittifakim?.uyeler?.[0]?.ad ?? '-');
+kontrol(
+  'Liderlik kalan üyeye geçti',
+  yeniLider?.id === yeniDurum.ittifakim?.liderId,
+  yeniDurum.ittifakim?.uyeler?.map((u) => `${u.ad}${u.lider ? '*' : ''}`).join(', '),
+);
+kontrol(
+  'Lider listenin başında',
+  yeniDurum.ittifakim?.uyeler?.[0]?.lider === true,
+  yeniDurum.ittifakim?.uyeler?.[0]?.ad ?? '-',
+);
 
 // --- Tek üye ayrılınca ittifak siliniyor
 const sonAyrilma = await d.post('/ittifak/ayril');
-kontrol('Son üye ayrılınca ittifak dağılıyor', sonAyrilma?.dagildi === true,
-  JSON.stringify(sonAyrilma));
+kontrol(
+  'Son üye ayrılınca ittifak dağılıyor',
+  sonAyrilma?.dagildi === true,
+  JSON.stringify(sonAyrilma),
+);
 const kalanListe = await c.get('/ittifak');
-kontrol('Dağılan ittifak listede yok',
+kontrol(
+  'Dağılan ittifak listede yok',
   !kalanListe.liste.some((x) => x.id === kuruldu.id),
-  `${kalanListe.liste.length} ittifak`);
+  `${kalanListe.liste.length} ittifak`,
+);
 
 console.log(hata === 0 ? '\nTÜM KONTROLLER GEÇTİ' : `\n${hata} KONTROL BAŞARISIZ`);
 process.exit(hata === 0 ? 0 : 1);

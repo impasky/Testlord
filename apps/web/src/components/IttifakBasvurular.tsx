@@ -57,7 +57,14 @@ export function IttifakBasvurular() {
   const bekliyor = karar.isPending || ayarla.isPending;
 
   if (!q.data?.yonetebilir) return null;
-  const { basvurular, lider, katilim, asgariSeviye = 1, bosYer = 0, azamiAsgariSeviye = 30 } = q.data;
+  const {
+    basvurular,
+    lider,
+    katilim,
+    asgariSeviye = 1,
+    bosYer = 0,
+    azamiAsgariSeviye = 30,
+  } = q.data;
 
   return (
     <>
@@ -125,9 +132,7 @@ export function IttifakBasvurular() {
         {basvurular.length === 0 ? (
           <BosHal
             mesaj={
-              katilim === 'acik'
-                ? 'Kapı herkese açık, başvuru gelmiyor.'
-                : 'Bekleyen başvuru yok.'
+              katilim === 'acik' ? 'Kapı herkese açık, başvuru gelmiyor.' : 'Bekleyen başvuru yok.'
             }
             eylemler={[]}
           />

@@ -160,9 +160,7 @@ export async function seferRoutes(app: FastifyInstance): Promise<void> {
       odul,
       verilen,
       kirpildi:
-        verilen.altin < odul.altin ||
-        verilen.demir < odul.demir ||
-        verilen.erzak < odul.erzak,
+        verilen.altin < odul.altin || verilen.demir < odul.demir || verilen.erzak < odul.erzak,
       kaynaklar: sonra.resources,
     };
   });

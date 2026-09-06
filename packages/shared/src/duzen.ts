@@ -239,8 +239,7 @@ export interface TaktikDurumu {
 function birimOrani(ordu: Army, birim: string): number {
   const toplam = orduToplami(ordu);
   if (toplam <= 0) return 0;
-  const adet =
-    birim === 'yakin_dovus' ? yakinDovus(ordu) : (ordu[birim as UnitType] ?? 0);
+  const adet = birim === 'yakin_dovus' ? yakinDovus(ordu) : (ordu[birim as UnitType] ?? 0);
   return adet / toplam;
 }
 
@@ -346,7 +345,9 @@ export function taktikEtkisi(
     if (dusmanToplam <= 0) continue;
     const pay = (dusmanOrdu[birim as UnitType] ?? 0) / dusmanToplam;
     if (pay <= 0) {
-      satirlar.push(`Düşmanda ${unitName(birim as UnitType).toLocaleLowerCase('tr')} yoktu; bu taktiğin asıl kozu boşa gitti.`);
+      satirlar.push(
+        `Düşmanda ${unitName(birim as UnitType).toLocaleLowerCase('tr')} yoktu; bu taktiğin asıl kozu boşa gitti.`,
+      );
       continue;
     }
     const ek = deger * pay;

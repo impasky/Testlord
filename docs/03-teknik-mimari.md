@@ -2,17 +2,17 @@
 
 ## 1. Teknoloji seçimi
 
-| Katman | Seçim | Neden |
-|---|---|---|
-| Arayüz | React 18 + TypeScript + Vite | Ekip bilgisi yaygın, build hızlı |
-| Durum | Zustand + TanStack Query | Sunucu durumu zaten otorite; global store'a az iş düşer |
-| Stil | Tailwind CSS | Tasarım sistemi yazmadan tutarlı arayüz |
-| Sunucu | Node.js 22 + Fastify + TypeScript | Tek dil, tek tip tanımı, hızlı |
-| Veri | PostgreSQL 16 + Prisma | İlişkisel model bu oyuna birebir; migration hazır gelir |
-| Kimlik | JWT (access + refresh), argon2 | Basit, dışa bağımlılık yok |
-| Worker | Ayrı Node süreci, 10 sn döngü | Yürüyüş ve kuyruk çözümü |
-| Paketleme | pnpm workspace monorepo | `shared` paketi iki tarafta da çalışır |
-| Dağıtım | Docker Compose | Tek komutla ayağa kalkar |
+| Katman    | Seçim                             | Neden                                                   |
+| --------- | --------------------------------- | ------------------------------------------------------- |
+| Arayüz    | React 18 + TypeScript + Vite      | Ekip bilgisi yaygın, build hızlı                        |
+| Durum     | Zustand + TanStack Query          | Sunucu durumu zaten otorite; global store'a az iş düşer |
+| Stil      | Tailwind CSS                      | Tasarım sistemi yazmadan tutarlı arayüz                 |
+| Sunucu    | Node.js 22 + Fastify + TypeScript | Tek dil, tek tip tanımı, hızlı                          |
+| Veri      | PostgreSQL 16 + Prisma            | İlişkisel model bu oyuna birebir; migration hazır gelir |
+| Kimlik    | JWT (access + refresh), argon2    | Basit, dışa bağımlılık yok                              |
+| Worker    | Ayrı Node süreci, 10 sn döngü     | Yürüyüş ve kuyruk çözümü                                |
+| Paketleme | pnpm workspace monorepo           | `shared` paketi iki tarafta da çalışır                  |
+| Dağıtım   | Docker Compose                    | Tek komutla ayağa kalkar                                |
 
 **Kritik karar — paylaşılan çekirdek:** Savaş simülatörü, gelir hesabı ve tüm
 formüller `packages/shared` içinde **tek bir yerde** yazılır. Sunucu otorite
@@ -238,6 +238,7 @@ model Queue {
 ```
 
 **Notlar**
+
 - `Region.id` haritadan gelir (1..61), rastgele değil → seed tekrar edilebilir.
 - Yağmalanabilir depo **bölgede** tutulur, lordun kasasında değil. Yani yağma
   bölgeyi vurur, oyuncunun toplam servetini sıfırlamaz.
@@ -249,6 +250,7 @@ model Queue {
 Hepsi `/api` altında, JWT ile korunur (auth hariç).
 
 ### Kimlik
+
 ```
 POST   /auth/register           { email, password, lordName }
 POST   /auth/login              { email, password }
@@ -256,12 +258,14 @@ POST   /auth/refresh
 ```
 
 ### Lord ve durum
+
 ```
 GET    /me                      Lord + kaynaklar + aktif kuyruklar (tick uygulanmış)
 POST   /me/stats                { guc?, dayaniklilik?, liderlik?, kurnazlik? }
 ```
 
 ### Ekipman
+
 ```
 GET    /items
 POST   /items/craft             { tier }              → kuyruk
@@ -271,6 +275,7 @@ POST   /items/:id/sell
 ```
 
 ### Ordu ve donanım
+
 ```
 GET    /army
 POST   /army/train              { unitType, count }   → kuyruk
@@ -280,6 +285,7 @@ POST   /gear/:line/upgrade      → kuyruk
 ```
 
 ### Generaller
+
 ```
 GET    /generals                Kadro + sahip olunanlar
 POST   /generals/:key/hire
@@ -287,6 +293,7 @@ POST   /generals/:key/assign    { slotIndex | null }
 ```
 
 ### Harita ve savaş
+
 ```
 GET    /map                     61 bölge + sahiplik (dünya geneli)
 GET    /map/:regionId           Detay + görünür garnizon (Casus Leyla varsa tam)
@@ -300,6 +307,7 @@ GET    /battles/:id
 ```
 
 ### Sıralama
+
 ```
 GET    /rankings/:board         board = fame | conquest | elo, ?page=
 ```
@@ -317,9 +325,9 @@ export interface Side {
   units: Record<UnitType, number>;
   gearBonus: { attack: number; defense: number; health: number };
   generalBonus: GeneralBonus;
-  lordContribution: number;   // Güç×3 + ekipman×0.8 (savunanda 0 olabilir)
+  lordContribution: number; // Güç×3 + ekipman×0.8 (savunanda 0 olabilir)
   leadership: number;
-  fortressBonus: number;      // sadece savunanda
+  fortressBonus: number; // sadece savunanda
 }
 
 export interface BattleResult {
@@ -331,14 +339,11 @@ export interface BattleResult {
   loot: Resources;
 }
 
-export function simulateBattle(
-  attacker: Side,
-  defender: Side,
-  seed: string,
-): BattleResult;
+export function simulateBattle(attacker: Side, defender: Side, seed: string): BattleResult;
 ```
 
 **Kesin kurallar**
+
 1. Fonksiyon **saftır**: aynı girdi + aynı seed → her zaman aynı sonuç.
 2. `Date.now()`, `Math.random()`, veritabanı **yasaktır.**
 3. Seed `Battle.seed` içinde saklanır → her savaş sonsuza dek yeniden üretilebilir.
@@ -369,25 +374,25 @@ transaction'ın içinde yazılır, worker iki kez çalışsa da savaş iki kez �
 
 ## 7. Güvenlik ve hile önleme
 
-| Risk | Önlem |
-|---|---|
-| İstemci kaynak/güç uydurur | Sunucu tek otorite; istemci hiçbir sayı yazamaz |
-| İstek tekrarı (replay) | Kuyruk ve yürüyüşte `resolved` bayrağı + transaction |
+| Risk                        | Önlem                                                                  |
+| --------------------------- | ---------------------------------------------------------------------- |
+| İstemci kaynak/güç uydurur  | Sunucu tek otorite; istemci hiçbir sayı yazamaz                        |
+| İstek tekrarı (replay)      | Kuyruk ve yürüyüşte `resolved` bayrağı + transaction                   |
 | Çoklu hesap (multi-account) | Kullanıcı başına dünyada tek lord (`@@unique`); IP başına kayıt limiti |
-| Savaş sonucu manipülasyonu | Seed saklanır, sonuç yeniden üretilebilir |
-| Bot / spam saldırı | Günlük 12 saldırı limiti + uç nokta rate limit |
-| Zaman oynaması | Tüm zaman sunucu saatinden; istemci saati hiç kullanılmaz |
-| Parola | argon2id, ham parola loglanmaz |
+| Savaş sonucu manipülasyonu  | Seed saklanır, sonuç yeniden üretilebilir                              |
+| Bot / spam saldırı          | Günlük 12 saldırı limiti + uç nokta rate limit                         |
+| Zaman oynaması              | Tüm zaman sunucu saatinden; istemci saati hiç kullanılmaz              |
+| Parola                      | argon2id, ham parola loglanmaz                                         |
 
 ## 8. Performans hedefleri
 
-| Metrik | Hedef | Nasıl |
-|---|---|---|
-| `/me` yanıtı | < 80 ms | Tek sorgu + lazy accrual, tick yok |
-| `/map` yanıtı | < 120 ms | 61 satır, 60 sn önbellek |
-| Savaş çözümü | < 5 ms | Saf fonksiyon, 5 tur, I/O yok |
-| Worker turu | < 500 ms | İki indeksli sorgu |
-| Eşzamanlı oyuncu (shard) | 120 | Tek Postgres örneği fazlasıyla yeter |
+| Metrik                   | Hedef    | Nasıl                                |
+| ------------------------ | -------- | ------------------------------------ |
+| `/me` yanıtı             | < 80 ms  | Tek sorgu + lazy accrual, tick yok   |
+| `/map` yanıtı            | < 120 ms | 61 satır, 60 sn önbellek             |
+| Savaş çözümü             | < 5 ms   | Saf fonksiyon, 5 tur, I/O yok        |
+| Worker turu              | < 500 ms | İki indeksli sorgu                   |
+| Eşzamanlı oyuncu (shard) | 120      | Tek Postgres örneği fazlasıyla yeter |
 
 Ölçek gerekirse çözüm hazır: yeni **shard**. Dünyalar birbirinden tamamen
 bağımsız olduğu için yatay büyüme, veritabanını bölmekten ibarettir.

@@ -29,8 +29,7 @@ import { EKRANLAR, ekrana, kapiyiKapat, rehberiSustur } from './lib/gezin.mjs';
 
 const API = process.env.API_URL ?? 'http://localhost:3000';
 const WEB = process.env.WEB_URL ?? 'http://127.0.0.1:5173';
-const CHROME =
-  process.env.CHROME_PATH ?? '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+const CHROME = process.env.CHROME_PATH ?? '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 
 /** En küçük kabul edilen yazı boyutu. */
 const EN_KUCUK_PX = 11;

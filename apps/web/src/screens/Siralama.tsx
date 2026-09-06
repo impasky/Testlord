@@ -1,12 +1,7 @@
 /** Sıralama — üç liste, üç oyun tarzı. */
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import {
-  ApiError,
-  api,
-  type IttifakSiralamaSatiri,
-  type RankingRow,
-} from '../api/client';
+import { ApiError, api, type IttifakSiralamaSatiri, type RankingRow } from '../api/client';
 import { Arma } from '../components/Arma';
 import { IkonNavSiralama } from '../components/Ikonlar';
 import { Alan, Bolum, Buton, Input, Kart, Rozet, formatSayi } from '../components/ui';

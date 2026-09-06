@@ -185,7 +185,6 @@ function YoklukKarti({ y, onGit }: { y: YoklukOzeti; onGit: (s: Sekme) => void }
   );
 }
 
-
 /** Kapı düğmesinin simgesi ve altındaki tek satır. */
 const KAPI_YUZU: Record<Kapi, { Ikon: typeof IkonNavLord; alt: (l: LordState) => string }> = {
   generaller: { Ikon: IkonNavGeneraller, alt: (l) => `${l.generalSlots} yuva` },
@@ -329,22 +328,22 @@ export function LordEkrani({
         tek büyük öğe olarak bırakıyor.
       */}
       {!ilkDongu && (
-      <DurumSiridi>
-        <Hap ikon={<IkonKale boyut={13} />} renk="var(--color-altin)">
-          {lord.regionCount}/{lord.maxRegions} bölge
-          {lord.ownsThrone && ' +Taht'}
-        </Hap>
-        {/* Komuta yeri BURADA YAZMIYOR: hemen yukarıdaki ordu sahnesi
+        <DurumSiridi>
+          <Hap ikon={<IkonKale boyut={13} />} renk="var(--color-altin)">
+            {lord.regionCount}/{lord.maxRegions} bölge
+            {lord.ownsThrone && ' +Taht'}
+          </Hap>
+          {/* Komuta yeri BURADA YAZMIYOR: hemen yukarıdaki ordu sahnesi
             aynı sayıyı zaten söylüyor ("12/90 komuta"). Aynı bilgiyi tek
             ekranda iki kez göstermek, oyuncunun "her yerde bir şeyler
             yazıyor" şikâyetini büyütmekten başka işe yaramıyor. */}
-        <Hap ikon={<IkonSancak boyut={13} />} renk="var(--color-yesil)">
-          Sv {lord.level}
-        </Hap>
-        <Hap ikon={<IkonSure boyut={13} />}>
-          {lord.dailyAttacks}/{B.korumalar.gunluk_saldiri_limiti} saldırı
-        </Hap>
-      </DurumSiridi>
+          <Hap ikon={<IkonSancak boyut={13} />} renk="var(--color-yesil)">
+            Sv {lord.level}
+          </Hap>
+          <Hap ikon={<IkonSure boyut={13} />}>
+            {lord.dailyAttacks}/{B.korumalar.gunluk_saldiri_limiti} saldırı
+          </Hap>
+        </DurumSiridi>
       )}
 
       {/* Görev KANCASI, görevlerin kendisi değil: ayrıntı Görevler
@@ -394,7 +393,6 @@ export function LordEkrani({
           </div>
         )}
       </Bolum>
-
 
       {/* ---- Lordun kapıları ----
           Ayrı sayfalar değil: buradan panel olarak açılıyorlar ve

@@ -29,13 +29,13 @@ değiştikçe üslup kayar ve otuz kılıç birbirinin akrabası olmaktan çıka
 
 Hepsini birden yaptırmak gerekmiyor. Oyuna en çok katan sırayla:
 
-| Sıra | Kategori | Adet | Neden |
-|---|---|---|---|
-| 1 | Ekran zeminleri | 8 | Oyunun "gösterge paneli" değil bir yer gibi hissetmesi en çok buna bağlı |
-| 2 | Ekipman | 30 | Demirhane şu an tamamen sayıdan ibaret |
-| 3 | Harita karoları | 6 | Haritanın okunurluğu; sahne görselleri karo olarak bulanık kalıyor |
-| 4 | Bölge aşamaları | 8 | Geliştirmenin karşılığının GÖRÜNMESİ |
-| — | Birimler, generaller, bölge tabanları | 22 | Zaten var |
+| Sıra | Kategori                              | Adet | Neden                                                                    |
+| ---- | ------------------------------------- | ---- | ------------------------------------------------------------------------ |
+| 1    | Ekran zeminleri                       | 8    | Oyunun "gösterge paneli" değil bir yer gibi hissetmesi en çok buna bağlı |
+| 2    | Ekipman                               | 30   | Demirhane şu an tamamen sayıdan ibaret                                   |
+| 3    | Harita karoları                       | 6    | Haritanın okunurluğu; sahne görselleri karo olarak bulanık kalıyor       |
+| 4    | Bölge aşamaları                       | 8    | Geliştirmenin karşılığının GÖRÜNMESİ                                     |
+| —    | Birimler, generaller, bölge tabanları | 22   | Zaten var                                                                |
 
 ## Taban üslup
 
@@ -626,4 +626,3 @@ a messenger's table in a keep, scattered opened letters and broken seals, a rave
 ```
 a lord in a dark cloak standing on a ridge at dawn overlooking a wide valley of fields, towns and a distant citadel, wide establishing shot, cinematic composition with the focal subject slightly above center, deep atmospheric perspective, empty darker area along the bottom third where interface will overlay, 16:10 landscape composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
 ```
-

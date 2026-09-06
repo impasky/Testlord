@@ -28,7 +28,7 @@ services:
     healthCheckPath: /health
     envVars:
       - key: NODE_VERSION
-        value: "22"
+        value: '22'
 
       - key: DATABASE_URL
         fromDatabase:
@@ -44,20 +44,20 @@ services:
 
       # Arayüzü aynı sunucudan sun
       - key: SERVE_WEB
-        value: "true"
+        value: 'true'
 
       # Worker'ı API sürecinin içinde çalıştır
       - key: RUN_WORKER
-        value: "true"
+        value: 'true'
 
       # Açılışta migration'ları uygula ve dünya yoksa aç
       - key: AUTO_MIGRATE
-        value: "true"
+        value: 'true'
 
       # İlk açılışta 6 rakip lord ekle. Tek başına boş bir dünyada sıralama,
       # PvP ve düşman garnizonu denenemez. Kendi dünyanı kurduğunda "false" yap.
       - key: SEED_DEMO_LORDS
-        value: "true"
+        value: 'true'
 
       # Hata izleme. Boş bırakılırsa kapalıdır ve dışarıya hiçbir şey gitmez.
       # sentry.io'da ücretsiz proje açıp DSN'i Render panelinden gir.
@@ -92,6 +92,6 @@ services:
 
       # Hız sınırları. Genel sınır oturuma, kayıt/giriş IP'ye bağlı.
       - key: RATE_LIMIT_MAX
-        value: "300"
+        value: '300'
       - key: AUTH_RATE_LIMIT_MAX
-        value: "60"
+        value: '60'

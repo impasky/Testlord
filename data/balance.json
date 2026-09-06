@@ -2,11 +2,7 @@
   "schema": "lordlar-cagi/balance@1",
   "_aciklama": "TUM sayisal denge burada. Kod hicbir yerde sabit sayi icermez, bu dosyayi okur. Denge degisikligi = sadece bu dosyada degisiklik.",
   "kaynaklar": {
-    "turler": [
-      "altin",
-      "demir",
-      "erzak"
-    ],
+    "turler": ["altin", "demir", "erzak"],
     "puan": "sohret",
     "malikane_saatlik": {
       "altin": 100,
@@ -207,14 +203,7 @@
     "sure_us": 1.6
   },
   "ekipman": {
-    "slotlar": [
-      "silah",
-      "kalkan",
-      "zirh",
-      "migfer",
-      "at",
-      "sancak"
-    ],
+    "slotlar": ["silah", "kalkan", "zirh", "migfer", "at", "sancak"],
     "tier_taban_guc": {
       "1": 12,
       "2": 28,
@@ -339,41 +328,11 @@
       "_azami_notu": "Lv60 bir oyuncu 5 bolge tutabiliyor; hepsini tek vilayete yiginca 4 x 0.08 = 0.32, tavan 0.30'a kirpiliyor. Tavan olmasa vilayet yigmak tek dogru oyun olurdu; simdi guclu ama zorunlu degil."
     },
     "gelisim_adlari": {
-      "tarla": [
-        "Köy Tarlası",
-        "Ekinlik",
-        "Bereketli Tarlalar",
-        "Tahıl Ambarı",
-        "Diyarın Kileri"
-      ],
-      "maden": [
-        "Taş Ocağı",
-        "Demir Madeni",
-        "Derin Ocak",
-        "Cevher Yatağı",
-        "Kadim Damar"
-      ],
-      "sehir": [
-        "Kasaba",
-        "Pazar Şehri",
-        "Ticaret Şehri",
-        "Büyük Şehir",
-        "Diyarın Başkenti"
-      ],
-      "kale": [
-        "Gözcü Kulesi",
-        "Hisar",
-        "Kale",
-        "Büyük Kale",
-        "Aşılmaz Kale"
-      ],
-      "taht": [
-        "Taht Kalesi",
-        "Taht Kalesi",
-        "Taht Kalesi",
-        "Taht Kalesi",
-        "Taht Kalesi"
-      ]
+      "tarla": ["Köy Tarlası", "Ekinlik", "Bereketli Tarlalar", "Tahıl Ambarı", "Diyarın Kileri"],
+      "maden": ["Taş Ocağı", "Demir Madeni", "Derin Ocak", "Cevher Yatağı", "Kadim Damar"],
+      "sehir": ["Kasaba", "Pazar Şehri", "Ticaret Şehri", "Büyük Şehir", "Diyarın Başkenti"],
+      "kale": ["Gözcü Kulesi", "Hisar", "Kale", "Büyük Kale", "Aşılmaz Kale"],
+      "taht": ["Taht Kalesi", "Taht Kalesi", "Taht Kalesi", "Taht Kalesi", "Taht Kalesi"]
     },
     "_gelisim_adlari_not": "Bolge seviyesi 1-5 icin, TIPE OZEL asama adlari. Yeni mekanik degil: ayni yukseltme, sadece adlandirilmis. Oyuncu 'sehri gelistiremiyorum' diyordu; oysa gelistirebiliyordu ama arayuz ona 'Sv 2' diyordu. Bir yeri gelistirmek, o yerin AD DEGISTIRMESIYLE hissedilir -- Kasaba'nin Pazar Sehri olmasi, 'seviye 2' olmasindan bambaska bir sey.",
     "taban_gelir_saatlik": {
@@ -584,10 +543,7 @@
       "takviye_hizi_azami": 0.21,
       "kesif_indirimi_seviye_basina": 0.04,
       "kesif_indirimi_azami": 0.28,
-      "pakt_slotu_esikleri": [
-        4,
-        7
-      ],
+      "pakt_slotu_esikleri": [4, 7],
       "_neden_gelir_ve_savas_bonusu_YOK": "Turun cogu oyunu klan seviyesini gelire ve savas gucune bagliyor. Biz BAGLAMIYORUZ ve bu bilincli bir sapma: orgutlu bir gruba guc carpani vermek, oyunun en cok ugrastigi seyi -- kartopunu (docs/09 K5, lider avi) -- ittifak olceginde geri getirirdi. Onde giden ittifak daha cok bagis yapar, daha cok bonus alir, daha cok onde gider. Bunun yerine seviye YARDIMLASMAYI buyutuyor: daha cok kaynak gonderebilirsin, takviyen daha hizli varir, kesif daha ucuz, daha cok pakt yapabilirsin. Hicbiri tek basina savas kazandirmiyor; hepsi birlikte oynamayi kolaylastiriyor."
     },
     "bagis": {
@@ -692,10 +648,7 @@
     "_aciklama": "Savas oncesi 4x4 dizilim. Kareler 1-16, satir 1 EN ON, satir 4 EN ARKA. Her birimin bir ideal satiri var; sapma ceza yazar. Kanat sutunlari 1 ve 4.",
     "satir": 4,
     "sutun": 4,
-    "kanat_sutunlari": [
-      1,
-      4
-    ],
+    "kanat_sutunlari": [1, 4],
     "birim_yerlesimi": {
       "milis": {
         "ideal_satir": 1,

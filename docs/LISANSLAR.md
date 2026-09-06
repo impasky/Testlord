@@ -12,27 +12,27 @@ alınmıştır.
 CC BY 3.0 eser sahibinin belirtilmesini şart koşar. Kullanılan ikonların
 çizerleri:
 
-| İkon | Kullanım | Çizer |
-|---|---|---|
-| `pitchfork` | Köylü Milis | Delapouite |
-| `spears` | Mızrakçı | Lorc |
-| `archer` | Okçu | Delapouite |
-| `cavalry` | Süvari | Delapouite |
-| `catapult` | Mancınık | Delapouite |
-| `broadsword` | Saldırı | Lorc |
-| `shield` | Savunma | Lorc |
-| `health-normal` | Can | Lorc |
-| `wingfoot` | Hız | Lorc |
-| `flying-flag` | Komuta yeri | Lorc |
-| `two-coins` | Altın | Lorc |
-| `metal-bar` | Demir | Delapouite |
-| `wheat` | Erzak, Tarla | Lorc |
-| `hourglass` | Süre | Lorc |
-| `hazard-sign` | Uyarı | Lorc |
-| `gold-mine` | Maden | Delapouite |
-| `village` | Şehir | Delapouite |
-| `castle` | Kale | Delapouite |
-| `throne-king` | Taht Kalesi | Delapouite |
+| İkon            | Kullanım     | Çizer      |
+| --------------- | ------------ | ---------- |
+| `pitchfork`     | Köylü Milis  | Delapouite |
+| `spears`        | Mızrakçı     | Lorc       |
+| `archer`        | Okçu         | Delapouite |
+| `cavalry`       | Süvari       | Delapouite |
+| `catapult`      | Mancınık     | Delapouite |
+| `broadsword`    | Saldırı      | Lorc       |
+| `shield`        | Savunma      | Lorc       |
+| `health-normal` | Can          | Lorc       |
+| `wingfoot`      | Hız          | Lorc       |
+| `flying-flag`   | Komuta yeri  | Lorc       |
+| `two-coins`     | Altın        | Lorc       |
+| `metal-bar`     | Demir        | Delapouite |
+| `wheat`         | Erzak, Tarla | Lorc       |
+| `hourglass`     | Süre         | Lorc       |
+| `hazard-sign`   | Uyarı        | Lorc       |
+| `gold-mine`     | Maden        | Delapouite |
+| `village`       | Şehir        | Delapouite |
+| `castle`        | Kale         | Delapouite |
+| `throne-king`   | Taht Kalesi  | Delapouite |
 
 Bu künye oyunun arayüzünde de gösterilir (giriş ekranı altbilgisi).
 
@@ -81,33 +81,33 @@ Bazı araçlar çıktının bir köşesine kendi işaretini koyuyor. Oyunun içi
 başka bir ürünün işareti taşınmasın diye bunlar `tools/filigran-sil.py` ile
 temizleniyor; hangi dosyada yapıldığı aşağıdaki tabloda yazıyor.
 
-| Dosya | Durum |
-|---|---|
-| `birimler/milis.webp` | eklendi |
-| `birimler/mizrakci.webp` | eklendi |
-| `birimler/okcu.webp` | eklendi |
-| `birimler/suvari.webp` | eklendi |
-| `birimler/kusatma.webp` | eklendi |
-| `bolgeler/tarla.webp` | eklendi |
-| `bolgeler/maden.webp` | eklendi |
-| `bolgeler/sehir.webp` | eklendi |
-| `bolgeler/kale.webp` | eklendi |
-| `bolgeler/taht.webp` | eklendi (köşe filigranı silindi) |
-| `generaller/*` (12 dosya) | eklendi |
-| `zeminler/malikane.webp` | eklendi (işaret silindi) |
-| `zeminler/kisla.webp` | eklendi (işaret silindi) |
-| `zeminler/demirhane.webp` | eklendi (işaret silindi) |
-| `zeminler/generaller.webp` | eklendi (işaret silindi) |
-| `zeminler/siralama.webp` | eklendi (işaret silindi, tam ayna) |
-| `zeminler/giris.webp` | eklendi (işaret silindi) |
-| `ekipman/silah_t1..t5.webp` | eklendi (zemin ayıklandı, saydam) |
-| `ekipman/kalkan_t1..t5.webp` | eklendi (zemin ayıklandı, saydam) |
-| `ekipman/zirh_t1..t5.webp` | eklendi (T2–T5 işaret silindi, zemin ayıklandı) |
-| `ekipman/migfer_t1..t5.webp` | eklendi (işaret silindi, zemin ayıklandı) |
-| `ekipman/at_t1..t5.webp` | eklendi (işaret zeminlendi, zemin ayıklandı) |
-| `ekipman/sancak_t1..t5.webp` | eklendi (işaret zeminlendi, zemin ayıklandı) |
-| `lord/lord_1..5.webp` | eklendi (zincirleme düzenleme, zemin ayıklandı) |
-| `harita/*.webp` (6 dosya) | eklendi (işaret aynalandı) |
+| Dosya                        | Durum                                           |
+| ---------------------------- | ----------------------------------------------- |
+| `birimler/milis.webp`        | eklendi                                         |
+| `birimler/mizrakci.webp`     | eklendi                                         |
+| `birimler/okcu.webp`         | eklendi                                         |
+| `birimler/suvari.webp`       | eklendi                                         |
+| `birimler/kusatma.webp`      | eklendi                                         |
+| `bolgeler/tarla.webp`        | eklendi                                         |
+| `bolgeler/maden.webp`        | eklendi                                         |
+| `bolgeler/sehir.webp`        | eklendi                                         |
+| `bolgeler/kale.webp`         | eklendi                                         |
+| `bolgeler/taht.webp`         | eklendi (köşe filigranı silindi)                |
+| `generaller/*` (12 dosya)    | eklendi                                         |
+| `zeminler/malikane.webp`     | eklendi (işaret silindi)                        |
+| `zeminler/kisla.webp`        | eklendi (işaret silindi)                        |
+| `zeminler/demirhane.webp`    | eklendi (işaret silindi)                        |
+| `zeminler/generaller.webp`   | eklendi (işaret silindi)                        |
+| `zeminler/siralama.webp`     | eklendi (işaret silindi, tam ayna)              |
+| `zeminler/giris.webp`        | eklendi (işaret silindi)                        |
+| `ekipman/silah_t1..t5.webp`  | eklendi (zemin ayıklandı, saydam)               |
+| `ekipman/kalkan_t1..t5.webp` | eklendi (zemin ayıklandı, saydam)               |
+| `ekipman/zirh_t1..t5.webp`   | eklendi (T2–T5 işaret silindi, zemin ayıklandı) |
+| `ekipman/migfer_t1..t5.webp` | eklendi (işaret silindi, zemin ayıklandı)       |
+| `ekipman/at_t1..t5.webp`     | eklendi (işaret zeminlendi, zemin ayıklandı)    |
+| `ekipman/sancak_t1..t5.webp` | eklendi (işaret zeminlendi, zemin ayıklandı)    |
+| `lord/lord_1..5.webp`        | eklendi (zincirleme düzenleme, zemin ayıklandı) |
+| `harita/*.webp` (6 dosya)    | eklendi (işaret aynalandı)                      |
 
 Lord figürleri zincirleme düzenlemeyle üretildi: `lord_1` metinden,
 sonrakiler bir öncekini girdi alarak. Beşinde de işaret aynı yerdeydi ama

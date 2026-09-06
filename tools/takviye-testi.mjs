@@ -32,8 +32,11 @@ async function lordKur(etiket) {
   const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
   return {
     post: (yol, govde) =>
-      fetch(`${API}/api${yol}`, { method: 'POST', headers: h, body: JSON.stringify(govde ?? {}) })
-        .then((x) => x.json()),
+      fetch(`${API}/api${yol}`, {
+        method: 'POST',
+        headers: h,
+        body: JSON.stringify(govde ?? {}),
+      }).then((x) => x.json()),
     get: (yol) => fetch(`${API}/api${yol}`, { headers: h }).then((x) => x.json()),
   };
 }
@@ -112,18 +115,30 @@ kontrol(
   toplamOnce === dostPayiOnce + savunanPayiOnce,
   `${savunanPayiOnce} + ${dostPayiOnce} = ${toplamOnce}`,
 );
-kontrol('Savunanın kendi payı ayrı sayılıyor', savunanPayiOnce === kendiGarnizon,
-  `${savunanPayiOnce} vs ${kendiGarnizon}`);
+kontrol(
+  'Savunanın kendi payı ayrı sayılıyor',
+  savunanPayiOnce === kendiGarnizon,
+  `${savunanPayiOnce} vs ${kendiGarnizon}`,
+);
 
 // Muttefikin garnizonu gorunmeli: takviye karari onu gormeden verilemez.
 const dostGoruyor = await dost.get(`/map/${bolge.id}`);
-kontrol('Müttefikin garnizonu görünüyor', dostGoruyor.garrisonVisible === true,
-  `${say(dostGoruyor.garrison)} birim`);
-kontrol('Müttefik bayrağı sunucudan geliyor', dostGoruyor.muttefik === true,
-  String(dostGoruyor.muttefik));
+kontrol(
+  'Müttefikin garnizonu görünüyor',
+  dostGoruyor.garrisonVisible === true,
+  `${say(dostGoruyor.garrison)} birim`,
+);
+kontrol(
+  'Müttefik bayrağı sunucudan geliyor',
+  dostGoruyor.muttefik === true,
+  String(dostGoruyor.muttefik),
+);
 const yabanciGoruyor = await saldiran.get(`/map/${bolge.id}`);
-kontrol('İttifak dışı garnizonu görmüyor', yabanciGoruyor.muttefik === false,
-  String(yabanciGoruyor.muttefik));
+kontrol(
+  'İttifak dışı garnizonu görmüyor',
+  yabanciGoruyor.muttefik === false,
+  String(yabanciGoruyor.muttefik),
+);
 
 // --- Saldırı: bölgeyi ALMAYAN bir akın (kayıp dağıtımı ölçülecek)
 await saldiran.post('/test/kalkanlari-kaldir');
@@ -211,9 +226,8 @@ for (const adet of [400, 700, 1000, 1400, 1800]) {
   await ikinciSaldiran.post('/test/kuyruklari-bitir');
   const ordu = (await ikinciSaldiran.get('/army')).home;
   if (say(ordu) === 0) break;
-  const t = (
-    await ikinciSaldiran.post('/battle/preview', { toRegionId: bolge.id, army: ordu })
-  )?.tahmin;
+  const t = (await ikinciSaldiran.post('/battle/preview', { toRegionId: bolge.id, army: ordu }))
+    ?.tahmin;
   if (t?.eleGecirir === true) {
     fetihOrdusu = ordu;
     break;

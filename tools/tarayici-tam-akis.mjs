@@ -55,10 +55,16 @@ page.on('response', (r) => {
  * Demirhane menüye taşındığında bu araç değişmedi.
  */
 const EKRAN_ANAHTARI = {
-  'Malikâne': 'malikane', 'Görevler': 'gorevler', 'Kışla': 'kisla',
-  'Harita': 'harita', 'Demirhane': 'demirhane', 'Olaylar': 'olaylar',
-  'Generaller': 'generaller', 'İttifak': 'ittifak', 'Lord': 'lord',
-  'Sıralama': 'siralama',
+  Malikâne: 'malikane',
+  Görevler: 'gorevler',
+  Kışla: 'kisla',
+  Harita: 'harita',
+  Demirhane: 'demirhane',
+  Olaylar: 'olaylar',
+  Generaller: 'generaller',
+  İttifak: 'ittifak',
+  Lord: 'lord',
+  Sıralama: 'siralama',
 };
 async function sekme(ad) {
   await ekrana(page, EKRAN_ANAHTARI[ad] ?? ad, 900);
@@ -106,7 +112,10 @@ const artilar = page.locator('button:has-text("+")');
 for (let i = 0; i < 10; i++) await artilar.nth(2).click();
 await tiklaVeBekle(page, 'button:has-text("puanı dağıt")', '/me/stats');
 await page.waitForTimeout(600);
-kontrol('Stat dağıtımı kaydedildi', !(await page.locator('button:has-text("puanı dağıt")').isVisible()));
+kontrol(
+  'Stat dağıtımı kaydedildi',
+  !(await page.locator('button:has-text("puanı dağıt")').isVisible()),
+);
 await page.screenshot({ path: `${CIKTI}/mob-2-lord.png` });
 
 // --- Kışla: asker eğit ---
@@ -145,10 +154,7 @@ await kapida(page, 'button:has-text("Kuşan")')
   .first()
   .waitFor({ timeout: 10000 })
   .catch(() => {});
-kontrol(
-  'Ekipman envanterde göründü',
-  (await kapida(page, 'button:has-text("Kuşan")').count()) > 0,
-);
+kontrol('Ekipman envanterde göründü', (await kapida(page, 'button:has-text("Kuşan")').count()) > 0);
 await tiklaVeBekle(page, kapida(page, 'button:has-text("Kuşan")').first(), '/equip');
 await page.screenshot({ path: `${CIKTI}/mob-4-demirhane.png` });
 
@@ -173,7 +179,11 @@ await page.screenshot({ path: `${CIKTI}/mob-6-harita.png` });
 // olduğu ve diyarda neler olduğu yazılı olmalı. (docs/08 İ5)
 kontrol(
   'Harita başlığı dünyanın kaç kişilik olduğunu söylüyor',
-  await page.locator('text=/lorddan/').first().isVisible().catch(() => false),
+  await page
+    .locator('text=/lorddan/')
+    .first()
+    .isVisible()
+    .catch(() => false),
 );
 kontrol(
   'Taht sahibi başlıkta yazıyor',
@@ -185,9 +195,18 @@ const harita = await (await fetch(`${API}/api/map`, { headers: h })).json();
 const hedef = harita.regions
   .filter((r) => r.ring === 4 && !r.owner && r.type !== 'kale')
   .sort((a, b) => a.distance - b.distance)[0];
-await page.locator('svg > g').nth(harita.regions.findIndex((r) => r.id === hedef.id)).click();
+await page
+  .locator('svg > g')
+  .nth(harita.regions.findIndex((r) => r.id === hedef.id))
+  .click();
 await page.waitForTimeout(900);
-kontrol('Bölge alt sayfası açıldı', await page.locator('text=Saldırı ordusu').isVisible().catch(() => false));
+kontrol(
+  'Bölge alt sayfası açıldı',
+  await page
+    .locator('text=Saldırı ordusu')
+    .isVisible()
+    .catch(() => false),
+);
 
 // Önizleme artık ayrı bir düğme değil: ordu seçilince kendiliğinden gelir.
 const onizlemeSozu = page.waitForResponse((r) => r.url().includes('/battle/preview'), {
@@ -196,17 +215,35 @@ const onizlemeSozu = page.waitForResponse((r) => r.url().includes('/battle/previ
 await page.locator('button:has-text("Hepsi")').first().click();
 await onizlemeSozu;
 await page.waitForTimeout(600);
-kontrol('Savaş önizlemesi geldi', await page.locator('text=Tahmin:').isVisible().catch(() => false));
+kontrol(
+  'Savaş önizlemesi geldi',
+  await page
+    .locator('text=Tahmin:')
+    .isVisible()
+    .catch(() => false),
+);
 kontrol(
   'Önizleme kazanç ve bedeli söylüyor',
-  (await page.locator('text=Kazanırsan').isVisible().catch(() => false)) ||
-    (await page.locator('text=Kazansan bile').isVisible().catch(() => false)),
+  (await page
+    .locator('text=Kazanırsan')
+    .isVisible()
+    .catch(() => false)) ||
+    (await page
+      .locator('text=Kazansan bile')
+      .isVisible()
+      .catch(() => false)),
 );
 await page.screenshot({ path: `${CIKTI}/mob-7-saldiri.png` });
 
 await tiklaVeBekle(page, 'button:has-text("Saldır")', '/march');
 await page.waitForTimeout(600);
-kontrol('Saldırı emri verildi', await page.locator('text=Ordu yola çıktı').isVisible().catch(() => false));
+kontrol(
+  'Saldırı emri verildi',
+  await page
+    .locator('text=Ordu yola çıktı')
+    .isVisible()
+    .catch(() => false),
+);
 await post('/test/yuruyusleri-bitir');
 
 // --- Sıralama ---
@@ -228,12 +265,17 @@ await sekme('Malikâne');
 await page.waitForTimeout(900);
 kontrol(
   'Olay akışında kayıt var',
-  !(await page.locator('text=Henüz bir şey olmadı').isVisible().catch(() => false)),
+  !(await page
+    .locator('text=Henüz bir şey olmadı')
+    .isVisible()
+    .catch(() => false)),
 );
 
 kontrol('Konsolda hata yok', konsolHatalari.length === 0, konsolHatalari[0] ?? '');
 if (konsolHatalari.length) for (const k of konsolHatalari.slice(0, 5)) console.log('    -', k);
 
 await browser.close();
-console.log(hata === 0 ? '\nSONUÇ: yedi ekran da mobilde çalışıyor.' : `\nSONUÇ: ${hata} kontrol başarısız.`);
+console.log(
+  hata === 0 ? '\nSONUÇ: yedi ekran da mobilde çalışıyor.' : `\nSONUÇ: ${hata} kontrol başarısız.`,
+);
 process.exit(hata === 0 ? 0 : 1);

@@ -41,31 +41,45 @@ const damga = Date.now();
 // Testler arası izolasyon: NPC garnizonlarını tabana döndür
 await post('/test/bolgeleri-sifirla');
 let { lord } = await cagir('/me');
-kontrol('Kayıt ve başlangıç durumu', lord.level === 1 && lord.resources.altin === 5000,
-  `altın ${lord.resources.altin}`);
+kontrol(
+  'Kayıt ve başlangıç durumu',
+  lord.level === 1 && lord.resources.altin === 5000,
+  `altın ${lord.resources.altin}`,
+);
 
 // 2. Asker eğitimi
 await post('/army/train', { unitType: 'mizrakci', count: 20 });
 await post('/army/train', { unitType: 'okcu', count: 15 });
 let me = await cagir('/me');
 kontrol('Eğitim kuyruğa girdi', me.queues.length === 2, `${me.queues.length} kuyruk`);
-kontrol('Maliyet peşin düşüldü', me.lord.resources.altin < 5000,
-  `altın ${me.lord.resources.altin}`);
+kontrol(
+  'Maliyet peşin düşüldü',
+  me.lord.resources.altin < 5000,
+  `altın ${me.lord.resources.altin}`,
+);
 
 // Kapasite aşımı reddedilmeli
 let kapasiteHatasi = null;
-try { await post('/army/train', { unitType: 'suvari', count: 500 }); }
-catch (e) { kapasiteHatasi = e.message; }
-kontrol('Komuta kapasitesi aşımı reddedildi', kapasiteHatasi?.includes('kapasiten'),
-  kapasiteHatasi?.slice(0, 60));
+try {
+  await post('/army/train', { unitType: 'suvari', count: 500 });
+} catch (e) {
+  kapasiteHatasi = e.message;
+}
+kontrol(
+  'Komuta kapasitesi aşımı reddedildi',
+  kapasiteHatasi?.includes('kapasiten'),
+  kapasiteHatasi?.slice(0, 60),
+);
 
 // 3. Kuyrukları bitir (test hızlandırması)
 await post('/test/kuyruklari-bitir');
 await cagir('/me');
 const ordu = await cagir('/army');
-kontrol('Askerler orduya katıldı',
+kontrol(
+  'Askerler orduya katıldı',
   (ordu.home.mizrakci ?? 0) === 20 && (ordu.home.okcu ?? 0) === 15,
-  JSON.stringify(ordu.home));
+  JSON.stringify(ordu.home),
+);
 
 // 4. Harita
 const harita = await cagir('/map');
@@ -102,7 +116,8 @@ let enIyiPay = -1;
 const sayi = (a) => Object.values(a ?? {}).reduce((t, n) => t + Number(n || 0), 0);
 for (const aday of adaylar) {
   const o = await post('/battle/preview', {
-    toRegionId: aday.id, army: { mizrakci: 20, okcu: 15 },
+    toRegionId: aday.id,
+    army: { mizrakci: 20, okcu: 15 },
   });
   if (o?.tahmin?.eleGecirir !== true) continue;
   const pay = 35 - sayi(o.tahmin.saldiranKayip);
@@ -112,37 +127,48 @@ for (const aday of adaylar) {
     onizleme = o;
   }
 }
-kontrol('Başlangıç ordusuyla alınabilecek bir NPC bölgesi var', Boolean(hedef),
-  hedef ? `${hedef.name} (${hedef.type}, ${hedef.distance} hex, pay ${enIyiPay})`
-        : `${adaylar.length} aday denendi, hiçbiri alınamıyor`);
+kontrol(
+  'Başlangıç ordusuyla alınabilecek bir NPC bölgesi var',
+  Boolean(hedef),
+  hedef
+    ? `${hedef.name} (${hedef.type}, ${hedef.distance} hex, pay ${enIyiPay})`
+    : `${adaylar.length} aday denendi, hiçbiri alınamıyor`,
+);
 
 const kale = harita.regions.find((r) => r.ring === 4 && !r.owner && r.type === 'kale');
 const kaleOnizleme = await post('/battle/preview', {
-  toRegionId: kale.id, army: { mizrakci: 20, okcu: 15 },
+  toRegionId: kale.id,
+  army: { mizrakci: 20, okcu: 15 },
 });
-kontrol('Kale aynı orduyla ele geçirilemez (zorluk farkı korunuyor)',
+kontrol(
+  'Kale aynı orduyla ele geçirilemez (zorluk farkı korunuyor)',
   kaleOnizleme.tahmin.eleGecirir === false,
-  `${kale.name}: kazanan ${kaleOnizleme.tahmin.kazanan}`);
+  `${kale.name}: kazanan ${kaleOnizleme.tahmin.kazanan}`,
+);
 
 // 4b. Bölge detayı liste ucuyla aynı şekli döndürmeli
 const detay = await cagir(`/map/${hedef.id}`);
-kontrol('Bölge detayı türetilmiş alanları döndürüyor',
-  typeof detay.distance === 'number' && typeof detay.shielded === 'boolean' &&
-  typeof detay.fortressBonus === 'number',
-  `mesafe ${detay.distance}, tahkimat ${detay.fortressBonus}`);
+kontrol(
+  'Bölge detayı türetilmiş alanları döndürüyor',
+  typeof detay.distance === 'number' &&
+    typeof detay.shielded === 'boolean' &&
+    typeof detay.fortressBonus === 'number',
+  `mesafe ${detay.distance}, tahkimat ${detay.fortressBonus}`,
+);
 
 // 5. Savaş önizlemesi (hedef seçilirken alındı)
-kontrol('Önizleme zafer ve fetih öngörüyor',
+kontrol(
+  'Önizleme zafer ve fetih öngörüyor',
   onizleme.tahmin.kazanan === 'attacker' && onizleme.tahmin.eleGecirir === true,
-  `${hedef.type}, ele geçirir: ${onizleme.tahmin.eleGecirir}`);
+  `${hedef.type}, ele geçirir: ${onizleme.tahmin.eleGecirir}`,
+);
 
 // 6. Yürüyüş
 const yuruyus = await post('/march', {
   toRegionId: hedef.id,
   army: { mizrakci: 20, okcu: 15 },
 });
-kontrol('Yürüyüş başladı', Boolean(yuruyus.marchId),
-  `${Math.round(yuruyus.durationSec / 60)} dk`);
+kontrol('Yürüyüş başladı', Boolean(yuruyus.marchId), `${Math.round(yuruyus.durationSec / 60)} dk`);
 
 const orduSonra = await cagir('/army');
 kontrol('Ordu evden çıktı', (orduSonra.home.mizrakci ?? 0) === 0);
@@ -159,19 +185,26 @@ kontrol('Bölge ele geçirildi', savaslar[0]?.captured === true);
 
 const haritaSonra = await cagir('/map');
 const alinan = haritaSonra.regions.find((r) => r.id === hedef.id);
-kontrol('Bölge haritada bana ait görünüyor', alinan?.isMine === true,
-  alinan?.owner?.name);
+kontrol('Bölge haritada bana ait görünüyor', alinan?.isMine === true, alinan?.owner?.name);
 
 me = await cagir('/me');
 // Bölgenin kendi kaynağı malikâne tabanının ÜZERİNE eklenmiş olmalı.
 const tabanAlan = { tarla: 'erzak', maden: 'demir', sehir: 'altin' }[hedef.type];
-const taban = { altin: 100 + 6 * me.lord.level, demir: 40 + 3 * me.lord.level,
-                erzak: 120 + 8 * me.lord.level }[tabanAlan];
-kontrol(`Bölge geliri (${hedef.type} -> ${tabanAlan}) gelire eklendi`,
+const taban = {
+  altin: 100 + 6 * me.lord.level,
+  demir: 40 + 3 * me.lord.level,
+  erzak: 120 + 8 * me.lord.level,
+}[tabanAlan];
+kontrol(
+  `Bölge geliri (${hedef.type} -> ${tabanAlan}) gelire eklendi`,
   me.lord.hourlyIncome[tabanAlan] > taban,
-  `${Math.round(me.lord.hourlyIncome[tabanAlan])} > malikâne tabanı ${taban}`);
-kontrol('Fetihten XP kazanıldı', me.lord.xp > 0 || me.lord.level > 1,
-  `seviye ${me.lord.level}, xp ${me.lord.xp}`);
+  `${Math.round(me.lord.hourlyIncome[tabanAlan])} > malikâne tabanı ${taban}`,
+);
+kontrol(
+  'Fetihten XP kazanıldı',
+  me.lord.xp > 0 || me.lord.level > 1,
+  `seviye ${me.lord.level}, xp ${me.lord.xp}`,
+);
 
 // 8. Korumalar — ordu yürüyüşten dönmediği için önce birkaç asker üret
 await post('/test/kaynak-ver', { altin: 50000, demir: 20000, erzak: 20000 });
@@ -181,14 +214,18 @@ await post('/test/kuyruklari-bitir');
 let tekrarHatasi = null;
 try {
   await post('/march', { toRegionId: hedef.id, army: { milis: 1 } });
-} catch (e) { tekrarHatasi = e.message; }
-kontrol('Kendi bölgene saldırı reddedildi', tekrarHatasi?.includes('Kendi bölgene'),
-  tekrarHatasi?.slice(0, 50));
+} catch (e) {
+  tekrarHatasi = e.message;
+}
+kontrol(
+  'Kendi bölgene saldırı reddedildi',
+  tekrarHatasi?.includes('Kendi bölgene'),
+  tekrarHatasi?.slice(0, 50),
+);
 
 // 9. Bölge yükseltme
 const yukseltme = await post(`/map/${hedef.id}/upgrade`).catch((e) => ({ error: e.message }));
-kontrol('Bölge yükseltme kuyruğa girdi', Boolean(yukseltme.queued),
-  yukseltme.error ?? '');
+kontrol('Bölge yükseltme kuyruğa girdi', Boolean(yukseltme.queued), yukseltme.error ?? '');
 
 // 10. Ekipman
 await post('/test/kaynak-ver', { altin: 20000, demir: 10000 });
@@ -197,15 +234,21 @@ kontrol('T1 açık, T5 kilitli', ekipman.tiers[0].unlocked && !ekipman.tiers[4].
 await post('/items/craft', { tier: 1, slot: 'silah' });
 await post('/test/kuyruklari-bitir');
 const ekipmanSonra = await cagir('/items');
-kontrol('Ekipman üretildi', ekipmanSonra.items.length === 1,
-  ekipmanSonra.items[0] && `${ekipmanSonra.items[0].rarity} güç ${ekipmanSonra.items[0].power}`);
+kontrol(
+  'Ekipman üretildi',
+  ekipmanSonra.items.length === 1,
+  ekipmanSonra.items[0] && `${ekipmanSonra.items[0].rarity} güç ${ekipmanSonra.items[0].power}`,
+);
 
 const esya = ekipmanSonra.items[0];
 await post(`/items/${esya.id}/equip`);
 me = await cagir('/me');
 const kusanikGuc = me.lord.equipmentPower;
-kontrol('Ekipman kuşanıldı ve güce yansıdı', kusanikGuc > 0,
-  `ekipman gücü ${Math.round(kusanikGuc)}`);
+kontrol(
+  'Ekipman kuşanıldı ve güce yansıdı',
+  kusanikGuc > 0,
+  `ekipman gücü ${Math.round(kusanikGuc)}`,
+);
 
 // 11. Ekipman yükseltme — kuşanıkken yükseltilebilmeli ve güce yansımalı.
 // Yükseltme kuyruk üzerinden gider, anında bitmez.
@@ -213,9 +256,15 @@ const yuk = await post(`/items/${esya.id}/upgrade`);
 await post('/test/kuyruklari-bitir');
 me = await cagir('/me');
 const yukseltilmis = (await cagir('/items')).items.find((i) => i.id === esya.id);
-kontrol('Ekipman yükseltildi ve güce yansıdı',
+kontrol(
+  'Ekipman yükseltildi ve güce yansıdı',
   yukseltilmis?.upgradeLevel > esya.upgradeLevel && me.lord.equipmentPower > kusanikGuc,
-  `+${esya.upgradeLevel} -> +${yukseltilmis?.upgradeLevel}, güç ${Math.round(kusanikGuc)} -> ${Math.round(me.lord.equipmentPower)}${yuk?.error ? ` (${yuk.error})` : ''}`);
+  `+${esya.upgradeLevel} -> +${yukseltilmis?.upgradeLevel}, güç ${Math.round(kusanikGuc)} -> ${Math.round(me.lord.equipmentPower)}${yuk?.error ? ` (${yuk.error})` : ''}`,
+);
 
-console.log(hata === 0 ? '\nSONUÇ: oyun döngüsü baştan sona çalışıyor.' : `\nSONUÇ: ${hata} kontrol başarısız.`);
+console.log(
+  hata === 0
+    ? '\nSONUÇ: oyun döngüsü baştan sona çalışıyor.'
+    : `\nSONUÇ: ${hata} kontrol başarısız.`,
+);
 process.exit(hata === 0 ? 0 : 1);

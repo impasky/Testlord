@@ -43,7 +43,8 @@ const iyi = await kayit(`Kara Yusuf ${d.toString(36).slice(-3)}`, 'a');
 kontrol('Normal ad kabul edildi', iyi.ok, `HTTP ${iyi.status}`);
 const { token } = await iyi.json();
 const h = { ...JS, Authorization: `Bearer ${token}` };
-const P = (u, b) => fetch(`${API}/api${u}`, { method: 'POST', headers: h, body: JSON.stringify(b ?? {}) });
+const P = (u, b) =>
+  fetch(`${API}/api${u}`, { method: 'POST', headers: h, body: JSON.stringify(b ?? {}) });
 const G = (u) => fetch(`${API}/api${u}`, { headers: h }).then((x) => x.json());
 
 // --- 2. Şikâyet ---
@@ -64,7 +65,10 @@ await P('/test/kaynak-ver', { altin: 3000000, demir: 1500000, erzak: 1500000 });
 await P('/test/xp-ver', { miktar: 400000 });
 const puan = (await G('/me')).lord.statPoints;
 if (puan > 0) await P('/me/stats', { liderlik: puan });
-for (const [t, n] of [['mizrakci', 600], ['okcu', 400]]) {
+for (const [t, n] of [
+  ['mizrakci', 600],
+  ['okcu', 400],
+]) {
   await P('/army/train', { unitType: t, count: n });
 }
 await P('/test/kuyruklari-bitir');
@@ -85,14 +89,15 @@ for (const aday of adaylar) {
   await P('/march', { toRegionId: aday.id, army: ordu });
   await P('/test/yuruyusleri-bitir');
   await P('/test/yuruyusleri-bitir');
-  if ((await G('/me')).lord.regionCount > 0) { alinan = aday; break; }
+  if ((await G('/me')).lord.regionCount > 0) {
+    alinan = aday;
+    break;
+  }
 }
 kontrol('Bırakma testi için bölge alındı', Boolean(alinan), alinan?.name ?? 'alınamadı');
 
 // Şimdi sınır: küçük ordularla üst üste yürüyüş gönder.
-const hedefler = (await G('/map')).regions
-  .filter((r) => !r.owner && r.type !== 'taht')
-  .slice(0, 8);
+const hedefler = (await G('/map')).regions.filter((r) => !r.owner && r.type !== 'taht').slice(0, 8);
 let gonderilen = 0;
 let sonDurum = 0;
 for (const hedef of hedefler) {
@@ -116,8 +121,10 @@ if (alinan) {
   const birak = await P(`/map/${alinan.id}/birak`);
   kontrol('Bölge bırakıldı', birak.ok, `HTTP ${birak.status}`);
   const sonra = await G(`/map/${alinan.id}`);
-  kontrol('Bırakılan bölge sahipsiz kaldı, haritada duruyor',
-    sonra.id === alinan.id && sonra.owner === null);
+  kontrol(
+    'Bırakılan bölge sahipsiz kaldı, haritada duruyor',
+    sonra.id === alinan.id && sonra.owner === null,
+  );
 }
 
 const taht = (await G('/map')).regions.find((r) => r.type === 'taht');

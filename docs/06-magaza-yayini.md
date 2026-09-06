@@ -17,11 +17,11 @@ Telefondan iOS derlemesi yapılamaz.
 
 Üç yol var:
 
-| Yol | Ne gerektirir |
-|---|---|
-| Mac satın al / ödünç al | Tek seferlik maliyet |
-| Bulut CI (Codemagic, Bitrise, EAS Build, GitHub Actions macOS runner) | Aylık ücret, kurulum telefondan yapılabilir |
-| Önce yalnızca Android | Hiçbir şey — Play derlemesi Linux'ta yapılır |
+| Yol                                                                   | Ne gerektirir                                |
+| --------------------------------------------------------------------- | -------------------------------------------- |
+| Mac satın al / ödünç al                                               | Tek seferlik maliyet                         |
+| Bulut CI (Codemagic, Bitrise, EAS Build, GitHub Actions macOS runner) | Aylık ücret, kurulum telefondan yapılabilir  |
+| Önce yalnızca Android                                                 | Hiçbir şey — Play derlemesi Linux'ta yapılır |
 
 **Öneri: önce Play Store.** Android tarafı bilgisayarsız yürüyebilir, iOS'u
 oyun oturduktan sonra ekle.
@@ -58,12 +58,12 @@ ama iOS yolunu tamamen kapatır.
 
 ## 3. Zorunlu metinler ve formlar
 
-| Ne | Play | Apple | Durum |
-|---|---|---|---|
-| Gizlilik politikası (herkese açık URL) | zorunlu | zorunlu | ❌ yok |
-| Veri güvenliği formu / App Privacy etiketi | zorunlu | zorunlu | ❌ doldurulmadı |
-| İçerik derecelendirme anketi | IARC | yaş derecesi | ❌ yapılmadı |
-| Destek e-postası / URL | zorunlu | zorunlu | ❌ yok |
+| Ne                                         | Play    | Apple        | Durum           |
+| ------------------------------------------ | ------- | ------------ | --------------- |
+| Gizlilik politikası (herkese açık URL)     | zorunlu | zorunlu      | ❌ yok          |
+| Veri güvenliği formu / App Privacy etiketi | zorunlu | zorunlu      | ❌ doldurulmadı |
+| İçerik derecelendirme anketi               | IARC    | yaş derecesi | ❌ yapılmadı    |
+| Destek e-postası / URL                     | zorunlu | zorunlu      | ❌ yok          |
 
 Toplanan veri: **e-posta adresi** ve **oyun içi ilerleme**. Formlarda ikisi de
 beyan edilmeli. Parola hash'lenmiş tutuluyor (argon2id), ham parola saklanmıyor.
@@ -93,12 +93,14 @@ Bunlar mağaza politikası, tercih değil:
 ## 5. Mağaza varlıkları
 
 **Play Store**
+
 - Uygulama simgesi 512×512 PNG
 - Öne çıkan görsel 1024×500
 - En az 2 telefon ekran görüntüsü (daha fazlası daha iyi)
 - Kısa açıklama (80 karakter) ve tam açıklama (4000 karakter)
 
 **App Store**
+
 - Uygulama simgesi 1024×1024 PNG
 - 6,7" ve 6,5" ekran görüntüleri (iPad destekleyeceksen onlar da)
 - Açıklama, anahtar kelimeler, destek URL'si
@@ -110,12 +112,12 @@ boyutunda görüntüsü duruyor, mağaza için yeniden çekilebilir.
 
 ## 6. Hesaplar ve maliyet
 
-| Kalem | Tutar |
-|---|---|
-| Google Play Developer hesabı | 25 USD, tek seferlik |
-| Apple Developer Program | 99 USD, yıllık |
-| Alan adı | yıllık, birkaç dolar |
-| Sunucu + veritabanı (ücretli katman) | aylık |
+| Kalem                                | Tutar                |
+| ------------------------------------ | -------------------- |
+| Google Play Developer hesabı         | 25 USD, tek seferlik |
+| Apple Developer Program              | 99 USD, yıllık       |
+| Alan adı                             | yıllık, birkaç dolar |
+| Sunucu + veritabanı (ücretli katman) | aylık                |
 
 **Doğrula:** Play'in bireysel geliştirici hesapları için, üretime çıkmadan
 önce belli sayıda test kullanıcısıyla belli bir süre kapalı test yapma şartı
@@ -127,12 +129,14 @@ kendi hesabının gördüğü şartı oku.
 ## 7. Teknik paketleme adımları
 
 **Android**
+
 - Çıktı biçimi AAB (APK artık kabul edilmiyor)
 - Play'in istediği hedef API seviyesi (her yıl yükseliyor)
 - İmzalama anahtarı — Play App Signing kullan, anahtarı kaybetmek uygulamayı
   bir daha güncelleyememek demek
 
 **iOS**
+
 - Bundle kimliği, provisioning profilleri
 - TestFlight üzerinden dahili test
 - İlk incelemede reddedilmeyi normal say; gerekçe yazılı gelir
