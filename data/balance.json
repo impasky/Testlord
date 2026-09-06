@@ -705,5 +705,15 @@
     "_es_zamanli_notu": "Es zamanli sinir kuyruklar.es_zamanli.research icinde, burada DEGIL: kuyruk motoru o listeye bakiyor ve sayiyi ikinci bir yere yazmak, motorun gormedigi bir sinir yazmak demekti. Sinir 1: arastirma kalici ve geri alinamaz, o yuzden SIRAYLA verilen bir karar olmali; ucu birden acilabilseydi karar sirasi diye bir sey kalmazdi.",
     "iptal_iadesi": 0.5,
     "_iptal_notu": "Baslatilan arastirma iptal edilirse harcamanin yarisi geri veriliyor. Tamami geri verilseydi kuyrugu bedava park yeri olarak kullanmak mumkun olurdu."
+  },
+  "pazar": {
+    "_aciklama": "Malikane pazari: bir kaynagi digerine cevirir. Kur kaynaklar.altin_karsiligi'ndan geliyor -- ayri bir kur tablosu tutmak, odul degerlemesiyle pazarin sessizce ayrisMasi demekti.",
+    "_neden": "Bolgeler TEK kaynak uretiyor (sehir sadece altin, maden sadece demir) ve Lv15'e kadar tek bolgen var. Sehir alan oyuncunun demiri 5.5 saat darbogaz olurken altini depoda tasiyor. Ittifak ici gonderim (ticaret) bu sorunu cozuyor ama ittifaki olmayan tek basina oyuncuya bir yol lazim.",
+    "komisyon": 0.25,
+    "_komisyon_notu": "Takasin dortte biri kayboluyor. Komisyonsuz pazar kaynak turlerini tek bir kaynaga indirger ve 'hangi bolgeyi alayim' sorusunu anlamsiz kilardi; kayip, dogru bolgeyi almanin hala daha iyi olmasini sagliyor.",
+    "gunluk_tavan_altin_karsiligi": 8000,
+    "gunluk_tavan_seviye_basina": 1500,
+    "_tavan_notu": "Gunluk hacim tavani, altin karsiligi cinsinden. Tavansiz pazar depoyu tasiran oyuncuyu sinirsiz cevirmeye birakir ve kaynak kitligi diye bir sey kalmaz. Seviyeyle buyuyor: buyuyen ekonomi buyuyen bir pazar istiyor.",
+    "en_az_miktar": 100
   }
 }

@@ -17,13 +17,33 @@ import { hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { IkonAltin, IkonDemir, IkonErzak, IkonSure } from '../components/Ikonlar';
 import { Bolum, Buton, GeriSayim, Ilerleme, Iskelet, Kart, formatSayi } from '../components/ui';
 
+/**
+ * Depo düğümünün oyuncunun KENDİ tavanına ne yapacağı.
+ *
+ * Depo düğümü değilse ya da tavan henüz gelmediyse null: tahmin
+ * uydurmaktansa hiçbir şey yazmamak doğru.
+ */
+function depoArtisi(
+  d: { etki: Record<string, number>; tamamlandi: boolean },
+  tavan: number,
+): string | null {
+  const carpan = d.etki.depo_carpani;
+  if (!carpan || d.tamamlandi) return null;
+  // Tavan zaten uygulanmış bonusları içeriyor; bu düğümün payı üstüne
+  // ekleniyor. Taban = tavan / (1 + mevcut bonuslar) hesabı sunucuda,
+  // burada yalnız FARKI gösteriyoruz ve nasıl hesaplandığını iddia
+  // etmiyoruz: "şu kadar artar" diyoruz, "şu kadar olur" değil.
+  const artis = Math.round(tavan * carpan);
+  return `Şu anki tavanın ${formatSayi(tavan)} — bu araştırma ${formatSayi(artis)} ekler.`;
+}
+
 function sureMetni(sn: number): string {
   const sa = Math.floor(sn / 3600);
   const dk = Math.round((sn % 3600) / 60);
   return sa > 0 ? `${sa}sa ${dk}dk` : `${dk}dk`;
 }
 
-export function Arastirma() {
+export function Arastirma({ depoTavani }: { depoTavani: number }) {
   const qc = useQueryClient();
   const [hata, setHata] = useState<string | null>(null);
   const veri = useQuery({ queryKey: ['arastirma'], queryFn: api.arastirma });
@@ -125,6 +145,27 @@ export function Arastirma() {
                       </span>
                     </div>
                     <p className="mt-0.5 text-[12px] leading-snug text-solgun">{d.aciklama}</p>
+
+                    {/* Ne kadar? Açıklama ne yaptığını anlatıyordu ama ne
+                        kadar yaptığını söylemiyordu; yüz binlerce kaynak
+                        bedeli olan bir karar böyle verilemez. Cümleler
+                        motordan geliyor (arastirma.ts → etkiCumlesi), yani
+                        sayı veri dosyasıyla aynı kaynaktan. */}
+                    <div className="mt-1.5 flex flex-wrap gap-1">
+                      {d.etkiSatirlari.map((e) => (
+                        <span
+                          key={e}
+                          className={`rounded-md px-1.5 py-0.5 text-[11px] ${
+                            d.tamamlandi ? 'bg-yesil/15 text-yesil' : 'bg-altin/12 text-altin'
+                          }`}
+                        >
+                          {e}
+                        </span>
+                      ))}
+                    </div>
+                    {depoArtisi(d, depoTavani) && (
+                      <p className="mt-1 text-[11px] text-solgun">{depoArtisi(d, depoTavani)}</p>
+                    )}
 
                     {!d.tamamlandi && (
                       <>

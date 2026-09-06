@@ -140,11 +140,65 @@ export function arastirmaSuresiSn(kademe: number): number {
   return Math.round(B.arastirma.sure_taban_dakika * Math.pow(kademe, B.arastirma.sure_us) * 60);
 }
 
+/**
+ * Bir etkiyi oyuncunun okuyabileceği tek satıra çevirir.
+ *
+ * Oyuncunun şikâyeti: "araştırma kısmında oranlar ve sayısal değerler
+ * yok, depo kapasitesi ne kadar artacak belli değil." Açıklama metni
+ * ne yaptığını ANLATIYOR ama ne kadar yaptığını söylemiyordu; bedeli
+ * yüz binlerce kaynak olan bir kararı böyle vermek mümkün değil.
+ *
+ * Cümle motorda üretiliyor, arayüzde değil: sayı `data/arastirma.json`
+ * ile aynı yerden gelsin, ikisi ayrışmasın.
+ */
+export function etkiCumlesi(etki: string, deger: number): string {
+  const yuzde = `%${Math.round(Math.abs(deger) * 100)}`;
+  switch (etki) {
+    case 'depo_carpani':
+      return `Depo kapasitesi +${yuzde}`;
+    case 'malikane_geliri':
+      return `Malikâne geliri +${yuzde}`;
+    case 'bolge_geliri':
+      return `Bölge geliri +${yuzde}`;
+    case 'egitim_hizi':
+      return `Asker eğitimi +${yuzde} hızlı`;
+    case 'egitim_maliyeti':
+      return `Asker maliyeti −${yuzde}`;
+    case 'bakim_indirimi':
+      return `Ordu bakımı −${yuzde}`;
+    case 'komuta_kapasitesi':
+      return `Komuta kapasitesi +${Math.round(deger)}`;
+    case 'ordu_saldiri':
+      return `Ordu saldırısı +${yuzde}`;
+    case 'ordu_savunma':
+      return `Ordu savunması +${yuzde}`;
+    case 'yuruyus_hizi':
+      return `Yürüyüş +${yuzde} hızlı`;
+    case 'yagma':
+      return `Yağma +${yuzde}`;
+    case 'kale_savunmasi':
+      return `Tahkimat +${yuzde} (savunmada)`;
+    case 'bolge_yukseltme_hizi':
+      return `Bölge geliştirme +${yuzde} hızlı`;
+    case 'casus_maliyeti':
+      return `Casusluk −${yuzde} ucuz`;
+    case 'gunluk_saldiri':
+      return `Günde +${Math.round(deger)} saldırı hakkı`;
+    default:
+      // Motorda karşılığı olmayan etki: veri dosyasına yeni bir anahtar
+      // eklenip buraya satır yazılmamış demektir. Sessizce boş geçmek
+      // yerine anahtarı gösteriyoruz ki gözden kaçmasın.
+      return `${etki}: ${deger}`;
+  }
+}
+
 export interface ArastirmaDurumu extends ArastirmaDugumu {
   dal: string;
   dalAdi: string;
   maliyet: Resources;
   sureSn: number;
+  /** Etkinin okunur hâli: "Depo kapasitesi +%50". */
+  etkiSatirlari: string[];
   tamamlandi: boolean;
   /** Başlatılabilir mi. Tamamlanmışsa false. */
   acik: boolean;
@@ -180,6 +234,7 @@ export function arastirmaDurumlari(
         dalAdi: dal.ad,
         maliyet: arastirmaMaliyeti(d.kademe),
         sureSn: arastirmaSuresiSn(d.kademe),
+        etkiSatirlari: Object.entries(d.etki).map(([k, v]) => etkiCumlesi(k, v)),
         tamamlandi,
         acik: !tamamlandi && engel === null,
         engel,

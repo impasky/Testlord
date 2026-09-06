@@ -408,7 +408,7 @@ export function App() {
               }}
             />
           )}
-          {kapi === 'arastirma' && <Arastirma />}
+          {kapi === 'arastirma' && <Arastirma depoTavani={lord.storageCapacity} />}
           {kapi === 'ittifak' && <Ittifak lordId={lord.id} />}
           {kapi === 'generaller' && <Generaller onGuncelle={tazele} />}
           {kapi === 'demirhane' && (

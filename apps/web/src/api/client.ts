@@ -867,6 +867,22 @@ export const api = {
       ilkSaldiri: boolean;
       uyari: string | null;
     }>('/march', { toRegionId, army, generalIds, duzen }),
+  /** Pazar: kaynak takası durumu ve kurlar. */
+  pazar: () =>
+    request<{
+      kaynaklar: Resources;
+      komisyon: number;
+      enAzMiktar: number;
+      kurlar: Record<string, number>;
+      gunluk: { kullanilan: number; tavan: number; kalan: number };
+    }>('/pazar'),
+  pazarTakas: (veren: string, alan: string, miktar: number) =>
+    post<{ verilen: number; alinan: number; kaynaklar: Resources }>('/pazar/takas', {
+      veren,
+      alan,
+      miktar,
+    }),
+
   /** Araştırma ağacı: düğüm durumları, ilerleme, süren araştırma. */
   arastirma: () =>
     request<{

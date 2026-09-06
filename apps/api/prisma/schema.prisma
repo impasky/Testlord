@@ -119,6 +119,14 @@ model Lord {
   /// göstermek, kartı ikinci kez göstermekten çok daha rahatsız edici.
   rehberBittiAt     DateTime?
 
+  /// Bugün pazarda çevrilen hacim (altın karşılığı) ve hangi gün.
+  ///
+  /// Türetilemiyor: takasın kendisi hiçbir kayda iz bırakmıyor, kaynak
+  /// artışı gelirle karışıyor. Günlük tavanı zorlamak için sayaç şart.
+  /// Gün değişince sıfırlanıyor (dailyAttacks ile aynı desen).
+  pazarHacmi    Int       @default(0)
+  pazarGunu     DateTime?
+
   /// Tamamlanan araştırmalar: düğüm anahtarlarının listesi.
   ///
   /// Türetilemiyor — araştırmanın bitmesi başka hiçbir kayda iz

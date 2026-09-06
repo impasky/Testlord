@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   ARASTIRMALAR,
+  etkiCumlesi,
   arastirmaBonusu,
   arastirmaDugumleri,
   arastirmaDugumu,
@@ -65,6 +66,43 @@ describe('ağaç verisi tutarlı', () => {
         expect(sirali[i]!.lord_seviyesi).toBeGreaterThan(sirali[i - 1]!.lord_seviyesi);
       }
     }
+  });
+});
+
+describe('etkiler okunur cümleye çevriliyor', () => {
+  // Oyuncunun şikâyeti: "araştırma kısmında oranlar ve sayısal değerler
+  // yok, depo kapasitesi ne kadar artacak belli değil." Yüz binlerce
+  // kaynak bedeli olan bir karar, ne kazandıracağını söylemeden verilemez.
+  it('her düğümün her etkisi bir cümleye dönüyor', () => {
+    for (const d of arastirmaDurumlari([], 99)) {
+      expect(d.etkiSatirlari.length).toBe(Object.keys(d.etki).length);
+      for (const satir of d.etkiSatirlari) expect(satir.length).toBeGreaterThan(5);
+    }
+  });
+
+  it('hiçbir etki "anahtar: sayı" ham hâline düşmüyor', () => {
+    // Veri dosyasına yeni bir etki eklenip etkiCumlesi'ne satır
+    // yazılmazsa cümle ham anahtarı basıyor. Bu test onu yakalar.
+    for (const d of arastirmaDurumlari([], 99)) {
+      for (const satir of d.etkiSatirlari) {
+        expect(satir).not.toMatch(/^[a-z_]+: /);
+      }
+    }
+  });
+
+  it('cümleler sayıyı içeriyor', () => {
+    expect(etkiCumlesi('depo_carpani', 0.5)).toContain('%50');
+    expect(etkiCumlesi('komuta_kapasitesi', 40)).toContain('40');
+    expect(etkiCumlesi('gunluk_saldiri', 1)).toContain('1');
+  });
+
+  it('indirimler eksi işaretiyle değil "azalıyor" diliyle yazılıyor', () => {
+    // egitim_maliyeti veri dosyasında NEGATİF; oyuncuya "−%12" diye
+    // gösterilmeli, "+%-12" diye değil.
+    const c = etkiCumlesi('egitim_maliyeti', -0.12);
+    expect(c).toContain('%12');
+    expect(c).not.toContain('-12');
+    expect(c).not.toContain('+%');
   });
 });
 

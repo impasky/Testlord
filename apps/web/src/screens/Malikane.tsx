@@ -31,6 +31,7 @@ import {
 } from '../components/Ikonlar';
 import { Zemin } from '../components/Zemin';
 import { SavunmaDuzeni } from '../components/SavunmaDuzeni';
+import { Pazar } from '../components/Pazar';
 import { BosHal } from '../components/BosHal';
 import {
   Bolum,
@@ -124,6 +125,12 @@ export function Malikane({
           </p>
         </Kart>
       )}
+
+      {/* Pazar: bölgeler tek kaynak ürettiği ve Lv15'e kadar tek bölge
+          tutulabildiği için bir kaynak hep darboğaz, bir diğeri hep
+          taşıyor. Malikâne'de duruyor çünkü burası oyuncunun kendi
+          ekonomisini yönettiği yer. */}
+      <Pazar />
 
       {/* Savunma düzeni: saldırıya uğradığında ordunun nasıl duracağı.
           Malikâne'de çünkü burası oyuncunun kendi diyarını yönettiği yer;
