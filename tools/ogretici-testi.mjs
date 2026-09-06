@@ -123,17 +123,16 @@ await tekrarDugmesi.click();
 await ogretici.waitFor({ timeout: 10000 }).catch(() => {});
 kontrol('Öğretici tekrar açılıyor', await ogretici.isVisible());
 
-// --- 6. "Şimdi oraya bak" öğreticiyi kapatıp doğru sekmeye götürüyor
-const oraya = sayfa.getByRole('button', { name: 'ŞİMDİ ORAYA BAK' });
-if (await oraya.isVisible()) {
-  await oraya.click();
-  await sayfa.waitForTimeout(700);
-  kontrol('"Oraya bak" öğreticiyi kapatıyor', !(await ogretici.isVisible()));
-  const etkin = await sayfa.locator('nav button[aria-current=page]').innerText();
-  kontrol('"Oraya bak" bir sekmeye götürüyor', etkin.length > 0, etkin.trim());
-} else {
-  kontrol('"Oraya bak" düğmesi var', false, 'düğme görünmedi');
-}
+// --- 6. Öğretici hiçbir yere GÖTÜRMÜYOR
+//
+// Sayfalarda "ŞİMDİ ORAYA BAK" diye bir düğme vardı; öğreticiyi yarıda
+// kapatıp bir sekmeye atlıyordu. Oyuncu kaldırılmasını istedi ve gerekçe
+// şuydu: iki katman aynı anda oyuncuyu farklı yerlere çekiyordu. Artık
+// öğretici yalnız ANLATIYOR, götürme işi zorunlu rehberin.
+kontrol(
+  'Öğreticide "oraya bak" düğmesi YOK',
+  !(await sayfa.getByRole('button', { name: /ORAYA BAK/i }).isVisible()),
+);
 
 kontrol('Konsol hatası yok', konsolHatalari.length === 0, konsolHatalari[0] ?? '');
 

@@ -443,47 +443,91 @@ await page.waitForTimeout(2500);
   kontrol('Yenileme de kaçış yolu değil', (await isikDurumu()).yaniyor === true);
 }
 
-// --- 6b. Tur BİTİNCE sönüyor ve damga vuruluyor ---
+// --- 6b. Tur BÜTÜN aşamalar bitince sönüyor ve damga vuruluyor ---
 {
   /**
-   * Zorunluluğun sonu OYUNUN kendi olayı: ilk bölge alınınca rehber
-   * biter. Damga da orada vuruluyor (`Lord.rehberBittiAt`) — damgasız
-   * ölçüt tek başına "bölgesi yok" olurdu ve bölgelerini savaşta
-   * kaybetmiş kıdemli bir lord kendini kaçışı olmayan turun içinde
-   * bulurdu.
+   * Zorunluluğun sonu OYUNUN kendi olayı — ama artık ilk bölge değil,
+   * turun BÜTÜN aşamaları (`REHBER_ASAMALARI`): ordu, bölge, ekipman,
+   * general, bölge geliştirme, araştırma. Eskiden ilk bölgede bitiyordu
+   * ve tur oyunun altıda birini gösterip kapanıyordu.
+   *
+   * Damga (`Lord.rehberBittiAt`) yine son aşamada vuruluyor — damgasız
+   * ölçüt tek başına duruma bakardı ve ordusunu savaşta kaybetmiş kıdemli
+   * bir lord kendini kaçışı olmayan turun içinde bulurdu.
    *
    * Bölge gerçek yoldan alınıyor: baştaki lord zaten saldırıya çıkmıştı
-   * (5b), yürüyüşü bitiriyoruz.
+   * (5b), yürüyüşü bitiriyoruz. Kalan aşamalar ürünün kendi uçlarından
+   * kapatılıyor.
    */
   const bas = { authorization: `Bearer ${token}`, 'content-type': 'application/json' };
-  await fetch(`${API}/api/test/yuruyusleri-bitir`, { method: 'POST', headers: bas, body: '{}' });
-  await page.evaluate((t) => localStorage.setItem('lordlar_token', t), token);
-  await page.reload({ waitUntil: 'domcontentloaded' });
-  await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
-  await page.waitForTimeout(3500);
+  const uc = (yol, govde) =>
+    fetch(`${API}/api${yol}`, {
+      method: 'POST',
+      headers: bas,
+      body: JSON.stringify(govde ?? {}),
+    }).then((x) => x.json());
+  const oku = (yol) =>
+    fetch(`${API}/api${yol}`, { headers: { authorization: `Bearer ${token}` } }).then((x) =>
+      x.json(),
+    );
+  const tazele = async () => {
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+    await page.waitForTimeout(2500);
+  };
+  const kahyaVar = () =>
+    page.evaluate(() =>
+      (document.querySelector('main')?.textContent ?? '').includes('Kâhya Sinan'),
+    );
 
-  const me = await (
-    await fetch(`${API}/api/me`, { headers: { authorization: `Bearer ${token}` } })
-  ).json();
+  await uc('/test/yuruyusleri-bitir');
+  await page.evaluate((t) => localStorage.setItem('lordlar_token', t), token);
+  await tazele();
+
+  const me = await oku('/me');
   kontrol(
     'Saldırı sonuçlandı, bölge alındı',
     (me.lord?.regionCount ?? 0) > 0,
     `${me.lord?.regionCount} bölge`,
   );
-  kontrol('Tur bitince ışık SÖNÜK', (await isikDurumu()).yaniyor === false);
+  kontrol('İlk bölgede kâhya kartı HÂLÂ duruyor — tur bitmedi', (await kahyaVar()) === true);
   kontrol(
-    'Tur bitince kâhya kartı da susuyor',
-    (await page.evaluate(() =>
-      (document.querySelector('main')?.textContent ?? '').includes('Kâhya Sinan'),
-    )) === false,
+    'İlk bölgede damga da vurulmuyor',
+    me.lord?.rehberGorundu === false,
+    String(me.lord?.rehberGorundu),
   );
+
+  // Kalan aşamalar: ekipman, general, bölge geliştirme, araştırma.
+  await uc('/test/kaynak-ver', { altin: 400000, demir: 200000, erzak: 200000 });
+  await uc('/items/craft', { tier: 1, slot: 'silah' });
+  await uc('/test/kuyruklari-bitir');
+  const envanter = await oku('/items');
+  const esya = (envanter.items ?? envanter).find?.((x) => !x.equipped);
+  if (esya) await uc(`/items/${esya.id}/equip`);
+
+  const kadro = (await oku('/generals')).kadro ?? [];
+  const ucuz = [...kadro]
+    .filter((g) => !g.sahipMi)
+    .sort((a, b) => a.maliyet_altin - b.maliyet_altin)[0];
+  if (ucuz) await uc(`/generals/${ucuz.key}/hire`);
+
+  const benim = (await oku('/map')).regions.filter((r) => r.isMine && r.type !== 'taht');
+  if (benim[0]) {
+    await uc(`/map/${benim[0].id}/upgrade`);
+    await uc('/test/kuyruklari-bitir');
+  }
+
+  const acik = (await oku('/arastirma')).dallar.find((d) => d.acik && !d.tamamlandi);
+  if (acik) await uc('/arastirma', { key: acik.key });
+
+  await tazele();
+  kontrol('Tur bitince ışık SÖNÜK', (await isikDurumu()).yaniyor === false);
+  kontrol('Tur bitince kâhya kartı da susuyor', (await kahyaVar()) === false);
 
   // Damgayı sunucuya sor: arayüz "sustu" derken sunucu "hâlâ yeni oyuncu"
   // diyorsa, ordusunu kaybeden lord turun içine geri düşerdi.
   await page.waitForTimeout(1500);
-  const me2 = await (
-    await fetch(`${API}/api/me`, { headers: { authorization: `Bearer ${token}` } })
-  ).json();
+  const me2 = await oku('/me');
   kontrol(
     'Tur bitince sunucuya damga vuruluyor',
     me2.lord?.rehberGorundu === true,
@@ -579,11 +623,15 @@ await page.waitForTimeout(2500);
   await s2.locator('form button[type="submit"]').last().click();
 
   await s2.waitForSelector('[role="dialog"][aria-label="Öğretici"]', { timeout: 25000 });
-  kontrol('Gerçek kayıtta önce sekiz sayfalık öğretici açılıyor', true);
+  kontrol('Gerçek kayıtta önce tam ekran öğretici açılıyor', true);
 
-  for (let n = 1; n < 8; n++) {
-    await s2.locator('[role="dialog"] button:has-text("Devam")').click();
-    await s2.waitForTimeout(300);
+  // Sayfa sayısı SABİT DEĞİL: öğretici genişledikçe artıyor. "Devam"
+  // görünmez olana kadar ilerliyoruz — son sayfada onun yerine
+  // "Diyarıma dön" duruyor.
+  const devam = s2.locator('[role="dialog"] button:has-text("Devam")');
+  for (let n = 0; n < 40 && (await devam.count()) > 0; n++) {
+    await devam.click();
+    await s2.waitForTimeout(250);
   }
   await s2.locator('[role="dialog"] button:has-text("Diyarıma dön")').click();
   await s2.waitForTimeout(3000);

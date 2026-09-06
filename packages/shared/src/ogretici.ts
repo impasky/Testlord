@@ -12,13 +12,28 @@
  * kontrolü, packages/shared/src/balance.test.ts) sayfaların motorla aynı
  * şeyi söylediği kilitli.
  *
- * Kapsam kasten "kabaca": oyuncuya oyunun TAMAMINI öğretmiyoruz, haritasını
- * veriyoruz. Ayrıntıyı zaten her ekran kendi içinde anlatıyor (karşı
- * ipuçları kışlada, savaş sebebi raporda, omurga malikânede). Öğreticinin
- * tek işi "burada neler var, ben ne yapıyorum" sorusunu cevaplamak.
+ * Kapsam: oyunun BÜTÜN ana mekanikleri bir kez geçiliyor — ama her biri
+ * bir iki maddeyle. Amaç ustalaştırmak değil, "burada böyle bir şey var"
+ * dedirtmek; ayrıntıyı zaten her ekran kendi içinde anlatıyor (karşı
+ * ipuçları kışlada, sapma cezası savaş raporunda, düğüm etkileri araştırma
+ * ekranında).
+ *
+ * Kapsam bir kez daraldı ve pahalıya patladı: dizilim, taktik, araştırma,
+ * hastane, pazar ve depo tavanı oyunda vardı ama öğreticide yoktu. Oyuncu
+ * onları ancak kaza eseri buluyordu — depo tavanını ise hiç bulmuyor,
+ * saatlerce boşa üretiyordu. Bir mekanik oyunda varsa öğreticide de
+ * olmalı; yoksa oyuncu için o mekanik yok demektir.
  */
-import { B, counterMultiplier, siegeVsFortress, siegeVsUnit, unitName } from './balance.js';
-import { UNIT_TYPES, type Ekran, type UnitType } from './types.js';
+import {
+  ARASTIRMA_DALLARI,
+  B,
+  TAKTIKLER,
+  counterMultiplier,
+  siegeVsFortress,
+  siegeVsUnit,
+  unitName,
+} from './balance.js';
+import { UNIT_TYPES, type UnitType } from './types.js';
 
 /** Sayfadaki tek bir madde. Cümleyi arayüz değil, burası kuruyor. */
 export interface OgreticiMadde {
@@ -38,7 +53,6 @@ export interface OgreticiSayfa {
    * Sayfanın anlattığı ekran. Arayüz bunu "oraya git" düğmesine çeviriyor;
    * öğreticiyi okuyup nereye basacağını bilmemek en sık şikâyet.
    */
-  sekme?: Ekran;
 }
 
 /** "mızrakçı süvariyi kırar" gibi bir eşleşme — motordan okunuyor. */
@@ -100,6 +114,28 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
   ).vilayet_birligi;
   const komuta = B.komuta as { taban: number; liderlik_carpani: number };
   const savas = B.savas as { tur_sayisi: number };
+  const diz = B.dizilim;
+  const kusatmaYer = diz.birim_yerlesimi.kusatma;
+  const suvariYer = diz.birim_yerlesimi.suvari;
+  const taktikTavan = B.taktik as { azami_etki: number };
+  const arastirma = B.arastirma as { iptal_iadesi: number };
+  const pazar = B.pazar as { komisyon: number; gunluk_tavan_altin_karsiligi: number };
+  const hastane = B.hastane as { azami_saniye: number; bakim_alir: boolean };
+  const casus = B.casusluk as { maliyet_altin: number; gecerlilik_saat: number };
+  const depo = B.kaynaklar.depo_kapasitesi as {
+    taban: number;
+    lord_seviye_basina: number;
+  };
+  const kuyruk = B.kuyruklar.es_zamanli as Record<string, number>;
+  // Dal başına kademe sayısı: en uzun daldan okunuyor. Dallar veri
+  // dosyasında eşit uzunlukta ve bir test bunu kilitliyor.
+  const kademeSayisi = Math.max(...ARASTIRMA_DALLARI.map((d) => d.dugumler.length));
+
+  // İdeal satırlar veriden okunuyor: "mızrakçı önde, mancınık arkada"
+  // cümlesi denge dosyası değişince kendiliğinden değişsin.
+  const idealSatirlar = UNIT_TYPES.map(
+    (t) => `${unitName(t)} ${diz.birim_yerlesimi[t].ideal_satir}. satır`,
+  ).join(', ');
 
   const halka = karsiHalkasi()
     .map((k) => `${unitName(k.saldiran)} → ${unitName(k.hedef)} ×${k.carpan}`)
@@ -137,7 +173,6 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
             `${kaynak.malikane_saatlik.altin} altın akmaya devam eder. Oyundan atılmazsın.`,
         },
       ],
-      sekme: 'harita',
     },
     {
       anahtar: 'kaynak',
@@ -160,8 +195,25 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
             'Harcanmaz, biriktirilir. Sıralamadaki yerin ve unvanın buradan gelir. ' +
             'Bölge tutmak, savaş kazanmak ve tahtı elinde tutmak şöhret kazandırır.',
         },
+        {
+          // Oyuncu testinde bu tavana çarpıldı ve fark edilmedi: altın
+          // taşarken demir bitiyordu. Hiçbir ekranda yazmıyordu.
+          vurgu: 'Deponun bir tavanı var',
+          metin:
+            `Her kaynağı en çok ${depo.taban.toLocaleString('tr-TR')} kadar biriktirebilirsin; ` +
+            `lord seviyen her arttığında tavan ${depo.lord_seviye_basina.toLocaleString('tr-TR')} büyür. ` +
+            'Tavana dayanan kaynak artık birikmez — üretilen boşa gider. Araştırmadaki ' +
+            'Ambarlar bu tavanı büyütür.',
+        },
+        {
+          vurgu: 'Pazarda takas',
+          metin:
+            'Bölgeler tek kaynak üretir: şehir altın, maden demir, tarla erzak. Malikâne ' +
+            `pazarında birini diğerine çevirebilirsin — komisyon %${Math.round(pazar.komisyon * 100)}, ` +
+            `günlük hacim ${pazar.gunluk_tavan_altin_karsiligi.toLocaleString('tr-TR')} altın karşılığıyla sınırlı. ` +
+            'Takas boşluğu kapatır, üretimin yerini tutmaz.',
+        },
       ],
-      sekme: 'malikane',
     },
     {
       anahtar: 'ordu',
@@ -185,7 +237,52 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
             `${komuta.liderlik_carpani} birim daha ekler. Ordu istediğin kadar büyümez.`,
         },
       ],
-      sekme: 'kisla',
+    },
+    {
+      anahtar: 'duzen',
+      baslik: 'Savaştan önce: dizilimin ve taktiğin',
+      ozet: `${diz.satir}x${diz.sutun} bir düzlükte orduyu sen yerleştirirsin, sonra bir taktik seçersin.`,
+      maddeler: [
+        {
+          vurgu: `${diz.satir * diz.sutun} kare`,
+          metin:
+            `Saldırıya çıkmadan önce ordunu ${diz.satir}x${diz.sutun} bir alana dizersin. ` +
+            `1. satır en ön (düşmanın ilk çarptığı yer), ${diz.satir}. satır en arka. ` +
+            'Kimin nerede durduğu savaşın gücünü değiştirir.',
+        },
+        {
+          vurgu: 'Her birimin bir yeri var',
+          metin:
+            `İdeal satırlar: ${idealSatirlar}. İdealinden her satır sapma güç kaybettirir; ` +
+            `en ağır ceza mancınığındır (satır başına %${Math.round(kusatmaYer.satir_sapma_cezasi * 100)}) — ` +
+            'ön hatta duran mancınık ilk çarpışmada dağılır.',
+        },
+        {
+          vurgu: 'Kanatlar ve açık cephe',
+          metin:
+            `Kenar sütunlar (${diz.kanat_sutunlari.join(' ve ')}) süvariye yarar ` +
+            `(%${Math.round(suvariYer.kanat_carpani * 100)}), okçuyla mancınığa zarar verir. ` +
+            `Ön satırda hiç yakın dövüş birimi bırakmazsan savunmandan %${Math.round(diz.acik_cephe_cezasi * 100)} ` +
+            'gider: okçuyu öne koyup mızrakçıyı arkaya saklamak bedava değil.',
+        },
+        {
+          vurgu: `${TAKTIKLER.length} taktik`,
+          metin:
+            'Dizilimi yaptıktan sonra bir taktik seçersin — Hilal Düzeni süvarini kanattan ' +
+            'dolandırır, Kalkan Duvarı ön hattı kilitler. Her taktiğin bir koşulu var ve ' +
+            'koşulu tutmayan taktik seçilemez: yarım tutan bir taktiğe yarım bonus vermek, ' +
+            'sana neden az aldığını anlatmayı imkânsız kılardı.',
+        },
+        {
+          vurgu: 'Tavanı var, savaşı belirlemez',
+          metin:
+            `Dizilimden gelen etki en çok +%${Math.round(diz.azami_bonus * 100)} / ` +
+            `-%${Math.round(diz.azami_ceza * 100)}, taktikten gelen en çok ` +
+            `%${Math.round(taktikTavan.azami_etki * 100)}. İyi dizilim kötü orduyu kurtarmaz, ` +
+            'ama iki denk ordudan hangisinin kazanacağını söyler. Yaptığın hatalar savaş ' +
+            'raporunda tek tek yazar.',
+        },
+      ],
     },
     {
       anahtar: 'savas',
@@ -205,10 +302,24 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
             'ya da kaybettiğin yazar. Rapordan doğrudan karşı saldırı açabilirsin.',
         },
         {
+          vurgu: 'Önce casus yolla',
+          metin:
+            `${casus.maliyet_altin.toLocaleString('tr-TR')} altına bir bölgeye casus gönderip garnizonunu ` +
+            `öğrenebilirsin. Rapor bir fotoğraftır: ${casus.gecerlilik_saat} saat sonra "eski" diye ` +
+            'işaretlenir. Kurnazlık statın hem başarı şansını artırır hem yakalanma riskini düşürür.',
+        },
+        {
           vurgu: 'Kaybetmek ölüm değil',
           metin:
             'Yenilirsen ordunun bir kısmını kaybedersin, hesabını değil. ' +
-            'Savunmada kaybedenlerin bir bölümü yaralı olarak evine döner.',
+            'Ölü sayılanların bir bölümü yaralı olarak geri döner — hem savunmada hem saldırıda.',
+        },
+        {
+          vurgu: 'Hastane',
+          metin:
+            'Yaralılar eve değil hastaneye girer ve tedavi bitene kadar savaşa katılamaz. ' +
+            `Tedavi en çok ${Math.round(hastane.azami_saniye / 3600)} saat sürer; o sürede ` +
+            'erzak yemez ve komuta yerini işgal etmezler. Yenilgi bir gecikmedir, silinme değil.',
         },
         {
           vurgu: 'Ganimet ve fetih',
@@ -217,7 +328,6 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
             'yalnız yağmalarsın: kaynağı alır, bölgeyi bırakırsın.',
         },
       ],
-      sekme: 'harita',
     },
     {
       anahtar: 'buyume',
@@ -256,7 +366,39 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
             'Dağınık üç bölge ile bitişik üç bölge aynı şey değil.',
         },
       ],
-      sekme: 'demirhane',
+    },
+    {
+      anahtar: 'arastirma',
+      baslik: 'Araştırma: diyarını sen şekillendirirsin',
+      ozet: 'Kalıcı seçimler. İki lord aynı seviyede olsa bile aynı olmaz.',
+      maddeler: [
+        {
+          vurgu: `${ARASTIRMA_DALLARI.length} dal, her dalda ${kademeSayisi} kademe`,
+          metin:
+            // Dal özetleri veri dosyasında noktayla bitiyor; parantez
+            // içine alırken kırpılıyor, yoksa "vergi defteri.)" oluyor.
+            ARASTIRMA_DALLARI.map(
+              (d) => `${d.ad} (${d.ozet.toLocaleLowerCase('tr').replace(/\.$/, '')})`,
+            ).join(' · ') + '. Bir dalda ilerlemek için önce alt kademesini bitirmen gerekir.',
+        },
+        {
+          vurgu: 'Kalıcı ve geri alınmaz',
+          metin:
+            'Araştırma bittiğinde etkisi sonsuza kadar durur — ekipman gibi eskimez, ordu ' +
+            'gibi ölmez. Depo tavanı, eğitim hızı, ordu saldırısı, yürüyüş hızı: hepsi ' +
+            'buradan büyür.',
+        },
+        {
+          vurgu:
+            kuyruk.research === 1
+              ? 'Aynı anda tek araştırma'
+              : `Aynı anda ${kuyruk.research} araştırma`,
+          metin:
+            `Aynı anda ${kuyruk.research} araştırma yürütebilirsin, yani sıra senin kararın: ` +
+            'önce ekonomiyi mi büyütürsün, orduyu mu? Vazgeçersen harcadığının ' +
+            `%${Math.round(arastirma.iptal_iadesi * 100)}'i geri gelir.`,
+        },
+      ],
     },
     {
       anahtar: 'koruma',
@@ -282,7 +424,6 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
             'garnizonunu toplamaya vaktin olur.',
         },
       ],
-      sekme: 'harita',
     },
     {
       anahtar: 'ittifak',
@@ -331,7 +472,6 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
             'altın karşılığına kadar, ve kaynak da yol alır — anında gitmez.',
         },
       ],
-      sekme: 'ittifak',
     },
     {
       anahtar: 'ritim',
@@ -357,13 +497,19 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
             'elinde bir şeyle çıkarsın.',
         },
         {
+          vurgu: 'Başarımlar',
+          metin:
+            'Lord ekranında bir başarım listesi var: bölge, savaş, ekipman, general. ' +
+            'Hiçbiri zorunlu değil — oyunu hiç görmediğin yerlerinden denemen için ' +
+            'birer bahane.',
+        },
+        {
           vurgu: 'Dünya kalıcı',
           metin:
             'Sezon yok, sıfırlama yok. Bugün kurduğun şey yarın da, seneye de duruyor. ' +
             'Acele etmene gerek yok.',
         },
       ],
-      sekme: 'malikane',
     },
   ];
 }

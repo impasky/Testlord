@@ -2,7 +2,11 @@ import { describe, expect, it } from 'vitest';
 import {
   REHBER,
   REHBER_ISIKLARI,
+  REHBER_ASAMALARI,
+  rehberAsamaDurumu,
   rehberGorunsunMu,
+  rehberIlerlemesi,
+  type RehberDurumu,
   rehberIsaretSebebi,
   rehberIsigi,
   rehberSozleri,
@@ -53,36 +57,99 @@ describe('rehberin sözü', () => {
   });
 });
 
+/** Hiçbir şey yapmamış yeni lord. */
+const yeniLord: RehberDurumu = {
+  orduVar: false,
+  bolgeSayisi: 0,
+  kusanilanEkipman: 0,
+  generalVar: false,
+  gelismisBolgeVar: false,
+  arastirmaBasladi: false,
+};
+
+/** Bütün aşamaları bitirmiş lord. */
+const bitiren: RehberDurumu = {
+  orduVar: true,
+  bolgeSayisi: 1,
+  kusanilanEkipman: 1,
+  generalVar: true,
+  gelismisBolgeVar: true,
+  arastirmaBasladi: true,
+};
+
+describe('rehberin kapsadığı aşamalar', () => {
+  it('aşama anahtarları benzersiz ve hepsinin adı var', () => {
+    const anahtarlar = REHBER_ASAMALARI.map((a) => a.key);
+    expect(new Set(anahtarlar).size).toBe(anahtarlar.length);
+    for (const a of REHBER_ASAMALARI) expect(a.ad.length).toBeGreaterThan(4);
+  });
+
+  it('oyunun ana mekaniklerini kapsıyor', () => {
+    // Eskiden tek aşama vardı (ilk bölge) ve tur oyunun altıda birini
+    // gösterip bitiyordu. Dizilim saldırı aşamasının içinde öğretiliyor,
+    // o yüzden ayrı bir aşama değil.
+    const anahtarlar = REHBER_ASAMALARI.map((a) => a.key);
+    for (const beklenen of ['ordu', 'bolge', 'ekipman', 'general', 'gelistir', 'arastirma']) {
+      expect(anahtarlar).toContain(beklenen);
+    }
+  });
+
+  it('yeni lordda hiçbir aşama bitmemiş', () => {
+    expect(rehberIlerlemesi(yeniLord)).toEqual({ biten: 0, toplam: REHBER_ASAMALARI.length });
+  });
+
+  it('her aşama KENDİ koşuluyla kapanıyor', () => {
+    // Bir alanı doğru aşamaya bağlamayı unutmak sessiz bir hata olurdu:
+    // oyuncu bir şeyi yapar, tur ilerlemez.
+    const tekil: [keyof RehberDurumu, string][] = [
+      ['orduVar', 'ordu'],
+      ['kusanilanEkipman', 'ekipman'],
+      ['generalVar', 'general'],
+      ['gelismisBolgeVar', 'gelistir'],
+      ['arastirmaBasladi', 'arastirma'],
+    ];
+    for (const [alan, asama] of tekil) {
+      const durum = { ...yeniLord, [alan]: alan === 'kusanilanEkipman' ? 1 : true };
+      const biten = rehberAsamaDurumu(durum).filter((a) => a.bitti);
+      expect(biten.map((a) => a.key)).toEqual([asama]);
+    }
+    const bolgeli = rehberAsamaDurumu({ ...yeniLord, bolgeSayisi: 1 }).filter((a) => a.bitti);
+    expect(bolgeli.map((a) => a.key)).toEqual(['bolge']);
+  });
+});
+
 describe('rehber ne zaman susar', () => {
-  it('bölgesi olmayan yeni lorda görünür', () => {
-    expect(rehberGorunsunMu(0, false)).toBe(true);
+  it('hiçbir şey yapmamış yeni lorda görünür', () => {
+    expect(rehberGorunsunMu(yeniLord, false)).toBe(true);
   });
 
   /**
-   * Ölçüt DÖNGÜNÜN KAPANMASI. Adım sayısı ya da geçen süre yanlış ölçüt
-   * olurdu: yirmi dakika gezinip hiçbir şey yapmamış oyuncunun rehbere
-   * hâlâ ihtiyacı var, iki dakikada bölge alanınki yok.
+   * Eskiden ilk bölge alınınca susuyordu ve oyunun geri kalanı oyuncunun
+   * kendi başına bulmasına kalıyordu — bulunmuyordu.
    */
-  it('ilk bölge alınınca susar', () => {
-    expect(rehberGorunsunMu(1, false)).toBe(false);
+  it('ilk bölge alınınca SUSMUYOR: tur daha bitmedi', () => {
+    expect(rehberGorunsunMu({ ...yeniLord, orduVar: true, bolgeSayisi: 1 }, false)).toBe(true);
+  });
+
+  it('bütün aşamalar bitince susar', () => {
+    expect(rehberGorunsunMu(bitiren, false)).toBe(false);
   });
 
   /**
    * Kapatma düğmesi YOK — oyuncu "öğretici ile zorunlu yaptırmayı ayır,
-   * okusa da okumasa da yaptırmalı" dedi. Bayrağın tek yazarı oyunun
-   * kendisi: ilk bölge alınınca damga vuruluyor.
+   * okusa da okumasa da yaptırmalı" dedi.
    */
-  it('tamamlanmış sayılan lorda susar', () => {
-    expect(rehberGorunsunMu(0, true)).toBe(false);
+  it('tamamlanmış damgası vurulmuş lorda susar', () => {
+    expect(rehberGorunsunMu(yeniLord, true)).toBe(false);
   });
 
   /**
-   * Damganın asıl işi bu: bölgelerini savaşta kaybetmiş kıdemli lord.
-   * Ölçüt tek başına "bölgesi yok" olsaydı, kaçış düğmesi de olmadığı için
-   * kendini yeniden zorunlu turun içinde bulurdu.
+   * Damganın asıl işi bu: ordusunu ve bölgelerini savaşta kaybetmiş
+   * kıdemli lord. Ölçüt tek başına duruma baksaydı, kaçış düğmesi de
+   * olmadığı için kendini yeniden zorunlu turun içinde bulurdu.
    */
-  it('bölgelerini kaybeden KIDEMLİ lord zorunlu tura geri düşmez', () => {
-    expect(rehberGorunsunMu(0, true)).toBe(false);
+  it('her şeyini kaybeden KIDEMLİ lord zorunlu tura geri düşmez', () => {
+    expect(rehberGorunsunMu(yeniLord, true)).toBe(false);
   });
 });
 
@@ -148,6 +215,24 @@ describe('rehber ışığı', () => {
     expect(rehberIsigi('boyle-bir-adim-yok')).toEqual([]);
     expect(rehberIsigi(null)).toEqual([]);
     expect(rehberIsigi(undefined)).toEqual([]);
+  });
+
+  /**
+   * TURUN ASIL SINAVI. Zorunlu turun bir aşaması varsa, ışığın o aşamada
+   * gösterecek bir düğmesi de olmalı — yoksa "yaptıran" öğretici o
+   * mekanikte yine "anlatan" öğreticiye düşer ve aşama listesinde kapanmayı
+   * bekleyen bir satır kalır.
+   */
+  it('zorunlu turun HER aşamasında ışık yanıyor', () => {
+    for (const a of REHBER_ASAMALARI) {
+      expect(rehberIsigi(a.adim).length, a.key).toBeGreaterThan(0);
+    }
+  });
+
+  it('her aşamanın kâhya cümlesi var', () => {
+    for (const a of REHBER_ASAMALARI) {
+      expect(rehberSozu(a.adim), a.key).toBeTruthy();
+    }
   });
 
   it('ışığın yandığı her adım gerçek bir omurga adımı', () => {

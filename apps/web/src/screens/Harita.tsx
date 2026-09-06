@@ -1020,6 +1020,7 @@ export function Harita({
                             }
                             disabled={gonderilen === anahtar || engel !== null}
                             tam
+                            isaret="bolge-yukselt"
                           >
                             {gonderilen === anahtar ? 'Gönderiliyor…' : `${sonrakiAd} yap`}
                           </Buton>

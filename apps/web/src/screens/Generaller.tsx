@@ -141,7 +141,7 @@ function GeneralKarti({
         </div>
       ) : (
         <div className="mt-2.5 border-t border-kenar/70 pt-2.5">
-          <Buton onClick={onKirala} disabled={bekliyor || !yeterli} tam>
+          <Buton onClick={onKirala} disabled={bekliyor || !yeterli} tam isaret="general-kirala">
             <span className="mr-1.5 inline-block align-[-2px]">
               <IkonAltin boyut={14} />
             </span>

@@ -5,7 +5,7 @@ import { BaglantiDurumu } from './components/BaglantiDurumu';
 import { MobilKabuk } from './components/MobilKabuk';
 import { KapiPaneli } from './components/KapiPaneli';
 import { Arastirma } from './screens/Arastirma';
-import { ANA_SEKME, KAPI_ADI, type AltSekme, type Kapi } from '@lordlar/shared';
+import { ANA_SEKME, KAPI_ADI, rehberGorunsunMu, type AltSekme, type Kapi } from '@lordlar/shared';
 import { Ogretici } from './components/Ogretici';
 import { RehberIsigi } from './components/RehberIsigi';
 import { Buton } from './components/ui';
@@ -17,6 +17,7 @@ import { Harita } from './screens/Harita';
 import { Kisla } from './screens/Kisla';
 import { LordEkrani } from './screens/LordEkrani';
 import { useOmurgaAdimi } from './components/Omurga';
+import { useRehberDurumu } from './rehberDurumu';
 import { Malikane } from './screens/Malikane';
 import { Gorevler } from './screens/Gorevler';
 import { Olaylar } from './screens/Olaylar';
@@ -91,6 +92,9 @@ export function App() {
   // Omurganın adımı hem Malikâne kartında hem alt çubuktaki işarette
   // kullanılıyor. Hook, erken dönüşlerden ÖNCE çağrılmak zorunda.
   const omurgaAdimi = useOmurgaAdimi(data?.lord, data?.queues ?? []);
+  // Rehberin aşamaları: hem ışığın görünürlüğü hem turu bitiren damga
+  // aynı hesabı okuyor.
+  const rehberDurumu = useRehberDurumu(data?.lord);
 
   /**
    * Biten iş EKRANDAKİ oyuncuya kendiliğinden ulaşsın.
@@ -194,15 +198,22 @@ export function App() {
   }, [girisli, hedefSekme, hedefKapi, hedefBolge0, qc]);
 
   /**
-   * Rehber turu bitti: ilk bölge alındı, damga vurulsun.
+   * Rehber turu bitti: BÜTÜN aşamalar kapandı, damga vurulsun.
    *
    * Rehberin kapatma düğmesi yok (oyuncu "okusa da okumasa da yaptırmalı"
-   * dedi), o yüzden damgayı OYUN vuruyor: döngü kapandığı an.
+   * dedi), o yüzden damgayı OYUN vuruyor: son aşama da kapandığı an.
    *
-   * Görünürlük ölçütü tek başına "bölgesi yok" olsaydı damgaya gerek
-   * kalmazdı — ama o zaman bölgelerini savaşta kaybetmiş KIDEMLİ bir lord
-   * kendini yeniden zorunlu turun içinde bulurdu. Damga bir kez konuyor,
-   * uç da `updateMany ... rehberBittiAt: null` ile korunuyor.
+   * Ölçüt eskiden tek başına "ilk bölge alındı" idi ve zorunlu tur oyunun
+   * altıda birini gösterip bitiyordu: dizilim, ekipman, general, bölge
+   * geliştirme ve araştırma oyuncunun kendi bulmasına kalıyordu. Artık
+   * ölçüt `rehberGorunsunMu` ile aynı yerden geliyor — damga ile kartın
+   * ayrı ayrı karar vermesi, birinin "bitti" öbürünün "bitmedi" demesi
+   * demekti.
+   *
+   * Görünürlük ölçütü tek başına duruma baksaydı damgaya gerek kalmazdı —
+   * ama o zaman bölgelerini savaşta kaybetmiş KIDEMLİ bir lord kendini
+   * yeniden zorunlu turun içinde bulurdu. Damga bir kez konuyor, uç da
+   * `updateMany ... rehberBittiAt: null` ile korunuyor.
    */
   const rehberBitir = useMutation({
     mutationFn: api.rehberBitti,
@@ -210,7 +221,7 @@ export function App() {
   });
   const rehberDamgalandi = useRef(false);
   const rehberTuruBitti = Boolean(
-    data?.lord && data.lord.regionCount > 0 && !data.lord.rehberGorundu,
+    data?.lord && !data.lord.rehberGorundu && !rehberGorunsunMu(rehberDurumu, false),
   );
   useEffect(() => {
     if (!rehberTuruBitti || rehberDamgalandi.current) return;
@@ -323,7 +334,6 @@ export function App() {
           setOgreticiKapandi(true);
           tazele();
         }}
-        onGit={setSekme}
       />
       {/* Rehber ışığı ekranın TAMAMINI karartıp tek düğmeyi açıkta
           bırakıyor, o yüzden burada duruyor: Malikâne'nin içinde olsaydı
@@ -332,7 +342,7 @@ export function App() {
           üst üste binmesin. */}
       <RehberIsigi
         adim={omurgaAdimi?.anahtar ?? null}
-        bolgeSayisi={lord.regionCount}
+        durum={rehberDurumu}
         gorundu={lord.rehberGorundu}
         dogruEkranda={omurgaAdimi?.hedefSekme === sekme}
         bekleyisBitis={egitimBitisi}

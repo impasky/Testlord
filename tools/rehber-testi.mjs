@@ -156,7 +156,16 @@ kontrol(
   kontrol('Kâhyanın sözü o adımın sözü', soz !== null && soz.length > 20, soz?.slice(0, 70) ?? '');
 }
 
-// --- 5. Bölge alınınca kâhya SUSUYOR ---
+// --- 5. Zorunlu tur ilk bölgede BİTMİYOR, bütün aşamalar bitince bitiyor ---
+//
+// Tur eskiden ilk bölgeyle kapanıyordu ve oyunun altıda birini gösterip
+// bitiyordu: dizilim, ekipman, general, bölge geliştirme ve araştırma
+// oyuncunun kendi bulmasına kalıyordu ve bulunmuyordu. Oyuncunun isteği
+// buydu: "öğreticiyi oyunun tüm ana mekaniklerini kapsayacak şekilde
+// genişlet."
+//
+// Bu bölüm turu BAŞTAN SONA yürüyor. Her aşamadan sonra kâhyanın hâlâ
+// konuştuğunu, en sonunda da sustuğunu ölçüyor.
 {
   const harita = await get('/map');
   const hedef = harita.oneri;
@@ -170,14 +179,76 @@ kontrol(
   const lord = (await get('/me')).lord;
   kontrol('Bölge alındı', lord.regionCount >= 1, `${lord.regionCount} bölge`);
 
-  await page.reload({ waitUntil: 'domcontentloaded' });
-  await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
-  await page.waitForTimeout(2000);
-  const soz = await kahyaSozu();
+  /** Kâhya kartındaki "N/M adım" sayacı; yoksa null. */
+  const sayac = () =>
+    page.evaluate(() => {
+      const b = [...document.querySelectorAll('.kart span')].find(
+        (x) => x.textContent?.trim() === 'Kâhya Sinan',
+      );
+      const kart = b?.closest('.kart');
+      const t = [...(kart?.querySelectorAll('span') ?? [])]
+        .map((x) => x.textContent?.trim() ?? '')
+        .find((x) => /^\d+\/\d+ adım$/.test(x));
+      return t ?? null;
+    });
+
+  const tazele = async () => {
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+    await page.waitForTimeout(1800);
+  };
+
+  await tazele();
   kontrol(
-    'Döngü kapanınca kâhya SUSUYOR',
-    soz === null,
-    soz ? `hâlâ konuşuyor: "${soz.slice(0, 40)}"` : 'sustu',
+    'İlk bölgede tur BİTMİYOR — kâhya hâlâ konuşuyor',
+    (await kahyaSozu()) !== null,
+    (await kahyaSozu())?.slice(0, 40) ?? 'sustu',
+  );
+  const ilkSayac = await sayac();
+  kontrol('Kâhya kartında ilerleme sayacı var', ilkSayac !== null, ilkSayac ?? 'yok');
+
+  // Kalan aşamaları ürünün kendi uçlarından kapat. Bol kaynak: turun
+  // konusu "yapabildi mi", "parası yetti mi" değil.
+  await post('/test/kaynak-ver', { altin: 400000, demir: 200000, erzak: 200000 });
+
+  // (a) Ekipman kuşan.
+  await post('/items/craft', { tier: 1, slot: 'silah' });
+  await post('/test/kuyruklari-bitir');
+  const esyalar = await get('/items');
+  const esya = (esyalar.items ?? esyalar).find?.((x) => !x.equipped) ?? null;
+  if (esya) await post(`/items/${esya.id}/equip`);
+
+  // (b) General kirala — kadrodaki en ucuzu.
+  const kadro = (await get('/generals')).kadro ?? [];
+  const ucuz = [...kadro]
+    .filter((g) => !g.sahipMi)
+    .sort((a, b) => a.maliyet_altin - b.maliyet_altin)[0];
+  if (ucuz) await post(`/generals/${ucuz.key}/hire`);
+
+  await tazele();
+  kontrol(
+    'Ekipman ve generalden sonra tur HÂLÂ sürüyor',
+    (await kahyaSozu()) !== null,
+    (await sayac()) ?? 'sayaç yok',
+  );
+
+  // (c) Bölge geliştir.
+  const benim = (await get('/map')).regions.filter((r) => r.isMine && r.type !== 'taht');
+  if (benim[0]) {
+    await post(`/map/${benim[0].id}/upgrade`);
+    await post('/test/kuyruklari-bitir');
+  }
+
+  // (d) Araştırma başlat — açık olan ilk düğüm.
+  const acik = (await get('/arastirma')).dallar.find((d) => d.acik && !d.tamamlandi);
+  if (acik) await post('/arastirma', { key: acik.key });
+
+  await tazele();
+  const sonSoz = await kahyaSozu();
+  kontrol(
+    'BÜTÜN aşamalar bitince kâhya SUSUYOR',
+    sonSoz === null,
+    sonSoz ? `hâlâ konuşuyor: "${sonSoz.slice(0, 40)}"` : 'sustu',
   );
 }
 

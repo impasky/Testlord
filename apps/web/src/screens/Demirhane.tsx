@@ -272,6 +272,9 @@ function EsyaKarti({
           boy="kucuk"
           onClick={onEquip}
           disabled={bekleyenEylem !== null}
+          /* Rehber ışığı yalnız KUŞANMAYI arıyor: "Çıkar" da bu düğme ama
+             zorunlu turda oyuncuya çıkarttıracak bir şey yok. */
+          isaret={item.equipped ? undefined : 'demirhane-kusan'}
         >
           {item.equipped ? 'Çıkar' : 'Kuşan'}
         </Buton>

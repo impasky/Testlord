@@ -21,7 +21,6 @@ import { useMutation } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { ogreticiSayfalari, type OgreticiSayfa } from '@lordlar/shared';
 import { api, type LordState } from '../api/client';
-import type { Sekme } from './MobilKabuk';
 import {
   IkonKale,
   IkonKapali,
@@ -29,12 +28,15 @@ import {
   IkonNavHarita,
   IkonNavKisla,
   IkonNavMalikane,
+  IkonKurnaz,
   IkonSancak,
   IkonSaldiri,
+  IkonSavunma,
   IkonSohret,
   IkonSure,
 } from './Ikonlar';
 import { Arma } from './Arma';
+import { DizilimSemasi } from './DizilimSemasi';
 import { KarsiCemberi } from './KarsiCemberi';
 import { Buton } from './ui';
 
@@ -44,8 +46,10 @@ const SIMGELER: Record<string, typeof IkonNavMalikane> = {
   diyar: IkonNavHarita,
   kaynak: IkonSohret,
   ordu: IkonNavKisla,
+  duzen: IkonSavunma,
   savas: IkonSaldiri,
   buyume: IkonNavDemirhane,
+  arastirma: IkonKurnaz,
   koruma: IkonKale,
   ittifak: IkonSancak,
   ritim: IkonSure,
@@ -55,15 +59,12 @@ export function Ogretici({
   lord,
   acik,
   onKapat,
-  onGit,
 }: {
   /** İlk sayfada oyuncunun kendi arması gösteriliyor. */
   lord: LordState;
   acik: boolean;
   /** Öğretici bitti ya da geçildi. */
   onKapat: () => void;
-  /** "Oraya git" — öğreticiyi kapatıp ilgili sekmeye taşır. */
-  onGit: (s: Sekme) => void;
 }) {
   const sayfalar = ogreticiSayfalari();
   const [i, setI] = useState(0);
@@ -145,9 +146,7 @@ export function Ogretici({
         </button>
       </div>
 
-      {/* ---- Orta: sayfa ----
-          flex-col + mt-auto: "oraya bak" düğmesi listenin hemen altında
-          asılı kalmasın, okunacak şeyin sonunda dursun. */}
+      {/* ---- Orta: sayfa ---- */}
       <div
         ref={kaydiriciRef}
         className="mx-auto flex w-full max-w-lg flex-1 flex-col overflow-y-auto px-4 pb-4"
@@ -190,6 +189,15 @@ export function Ogretici({
           </div>
         )}
 
+        {/* Dizilim sayfasında ideal yerleşimi ÇİZİYORUZ: "mancınık 4.
+            satır" cümlesi, mancınığın neden arkada durduğunu
+            göstermiyor. Bildirilen hata da buydu. */}
+        {sayfa.anahtar === 'duzen' && (
+          <div className="mb-3">
+            <DizilimSemasi />
+          </div>
+        )}
+
         <ul className="space-y-3 pb-3">
           {sayfa.maddeler.map((m) => (
             <li key={m.vurgu} className="oyuk rounded-xl p-3">
@@ -198,18 +206,6 @@ export function Ogretici({
             </li>
           ))}
         </ul>
-
-        {sayfa.sekme && (
-          <button
-            onClick={() => {
-              kapat();
-              onGit(sayfa.sekme as Sekme);
-            }}
-            className="bas baslik mt-auto w-full shrink-0 rounded-xl border border-kenar py-3 text-[11px] text-solgun"
-          >
-            ŞİMDİ ORAYA BAK
-          </button>
-        )}
       </div>
 
       {/* ---- Alt: gezinme ----

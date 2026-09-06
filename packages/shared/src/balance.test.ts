@@ -7,8 +7,11 @@
  */
 import { describe, expect, it } from 'vitest';
 import {
+  ARASTIRMA_DALLARI,
   B,
   EKRANLAR,
+  TAKTIKLER,
+  UNIT_TYPES,
   WORLD_MAP,
   accrue,
   armySlots,
@@ -104,6 +107,7 @@ import {
   marchDurationSec,
   maxRegions,
   simulateBattle,
+  unitName,
   upkeepPerHour,
   xpForLevel,
   yakalanmaIhtimali,
@@ -1329,11 +1333,13 @@ describe('öğretici (docs/09 — ilk giriş)', () => {
     expect(new Set(anahtarlar).size).toBe(anahtarlar.length);
   });
 
-  it('gönderdiği her sekme gerçekten var', () => {
-    // "Şimdi oraya bak" düğmesi olmayan bir ekrana götürürse hiçbir şey
-    // olmaz ve oyuncu düğmenin bozuk olduğunu düşünür.
+  it('sayfalar hiçbir yere GÖTÜRMÜYOR — yalnız anlatıyor', () => {
+    // Sayfalarda "Şimdi oraya bak" diye bir düğme vardı ve öğreticiyi
+    // yarıda kapatıp bir sekmeye atlıyordu. Artık öğretici yalnız
+    // ANLATIYOR, götürme işi zorunlu rehberin (rehber.ts): iki katmanın
+    // aynı anda oyuncuyu farklı yerlere çekmesi kafa karıştırıyordu.
     for (const s of sayfalar) {
-      if (s.sekme) expect(EKRANLAR).toContain(s.sekme);
+      expect(s).not.toHaveProperty('sekme');
     }
   });
 
@@ -1398,6 +1404,97 @@ describe('öğretici (docs/09 — ilk giriş)', () => {
       .join(' ')
       .toLocaleLowerCase('tr');
     expect(metin).toContain('en yakın toprağından');
+  });
+
+  /**
+   * KAPSAM KONTROLÜ. Öğreticinin bir kere daralması pahalıya patladı:
+   * dizilim, taktik, araştırma, hastane, pazar ve depo tavanı oyunda vardı
+   * ama öğreticide yoktu. Oyuncu için o mekanikler yok demekti.
+   *
+   * Bu liste "oyunda var ama başka hiçbir ekranın öğretmediği" mekanikleri
+   * tutuyor. Yeni bir ana sistem eklenip öğreticide unutulursa burası
+   * düşer.
+   */
+  it('öğretici oyunun bütün ana mekaniklerini geçiyor', () => {
+    const metin = sayfalar
+      .flatMap((s) => [s.baslik, s.ozet, ...s.maddeler.map((m) => `${m.vurgu} ${m.metin}`)])
+      .join(' ')
+      .toLocaleLowerCase('tr');
+    for (const konu of [
+      'dizilim',
+      'taktik',
+      'araştırma',
+      'hastane',
+      'pazar',
+      'casus',
+      'başarım',
+      'depo',
+    ]) {
+      expect(metin, konu).toContain(konu);
+    }
+  });
+
+  it('öğreticideki dizilim sayıları motorla aynı', () => {
+    // Oyuncunun bildirdiği ders buradaydı: "mancınık en önde olması
+    // mantıklı değil". Öğretici o cezayı yazıyorsa dengeyle aynı sayıyı
+    // yazmalı, yoksa oyuncu raporu okuyunca farklı bir sayı görür.
+    const d = sayfalar.find((s) => s.anahtar === 'duzen')!;
+    const metin = d.maddeler.map((m) => `${m.vurgu} ${m.metin}`).join(' ');
+    expect(d.ozet).toContain(`${B.dizilim.satir}x${B.dizilim.sutun}`);
+    // Yön KARIŞMASIN: 1. satır en ön. İlk yazdığımda "4. satır en ön"
+    // diyordu ve oyuncuya tam tersini öğretiyordu — dizilim motorunda
+    // (duzen.ts kareSatiri) 1 en öndür.
+    expect(metin).toContain('1. satır en ön');
+    expect(metin).toContain(`${B.dizilim.satir}. satır en arka`);
+    expect(metin).toContain(`${B.dizilim.satir * B.dizilim.sutun} kare`);
+    expect(metin).toContain(
+      `%${Math.round(B.dizilim.birim_yerlesimi.kusatma.satir_sapma_cezasi * 100)}`,
+    );
+    expect(metin).toContain(`%${Math.round(B.dizilim.acik_cephe_cezasi * 100)}`);
+    expect(metin).toContain(`+%${Math.round(B.dizilim.azami_bonus * 100)}`);
+    expect(metin).toContain(`-%${Math.round(B.dizilim.azami_ceza * 100)}`);
+    expect(metin).toContain(`%${Math.round(B.taktik.azami_etki * 100)}`);
+    // Taktik sayısı veri dosyasından: yeni bir taktik eklenip öğretici
+    // "5 taktik" demeye devam ederse burası düşer.
+    expect(metin).toContain(`${TAKTIKLER.length} taktik`);
+  });
+
+  it('öğreticideki ideal satırlar dizilim motoruyla aynı', () => {
+    const metin = sayfalar
+      .find((s) => s.anahtar === 'duzen')!
+      .maddeler.map((m) => m.metin)
+      .join(' ');
+    for (const t of UNIT_TYPES) {
+      expect(metin, t).toContain(
+        `${unitName(t)} ${B.dizilim.birim_yerlesimi[t].ideal_satir}. satır`,
+      );
+    }
+  });
+
+  it('öğreticideki araştırma ağacı veri dosyasıyla aynı', () => {
+    const metin = sayfalar
+      .find((s) => s.anahtar === 'arastirma')!
+      .maddeler.map((m) => `${m.vurgu} ${m.metin}`)
+      .join(' ');
+    expect(metin).toContain(`${ARASTIRMA_DALLARI.length} dal`);
+    // Dallar eşit uzunlukta: "her dalda N kademe" cümlesi ancak öyleyse
+    // doğru. Bir dal kısalırsa cümle yalan olur.
+    const uzunluklar = new Set(ARASTIRMA_DALLARI.map((d) => d.dugumler.length));
+    expect(uzunluklar.size).toBe(1);
+    expect(metin).toContain(`her dalda ${[...uzunluklar][0]} kademe`);
+    expect(metin).toContain(`${B.kuyruklar.es_zamanli.research} araştırma`);
+    expect(metin).toContain(`%${Math.round(B.arastirma.iptal_iadesi * 100)}`);
+  });
+
+  it('öğreticideki depo, pazar ve hastane sayıları dengeyle aynı', () => {
+    const metin = sayfalar.flatMap((s) => s.maddeler.map((m) => `${m.vurgu} ${m.metin}`)).join(' ');
+    expect(metin).toContain(B.kaynaklar.depo_kapasitesi.taban.toLocaleString('tr-TR'));
+    expect(metin).toContain(B.kaynaklar.depo_kapasitesi.lord_seviye_basina.toLocaleString('tr-TR'));
+    expect(metin).toContain(`komisyon %${Math.round(B.pazar.komisyon * 100)}`);
+    expect(metin).toContain(B.pazar.gunluk_tavan_altin_karsiligi.toLocaleString('tr-TR'));
+    expect(metin).toContain(`${Math.round(B.hastane.azami_saniye / 3600)} saat`);
+    expect(metin).toContain(B.casusluk.maliyet_altin.toLocaleString('tr-TR'));
+    expect(metin).toContain(`${B.casusluk.gecerlilik_saat} saat`);
   });
 
   it('öğretici sezon vaat etmiyor — dünya kalıcı (docs/09 §2.2)', () => {

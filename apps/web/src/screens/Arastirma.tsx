@@ -77,6 +77,10 @@ export function Arastirma({ depoTavani }: { depoTavani: number }) {
 
   // Dal başlıkları veriden geliyor; ekranda ikinci bir liste tutmuyoruz.
   const dalAnahtarlari = [...new Set(dallar.map((d) => d.dal))];
+  // Rehber ışığının SABİT hedefi: ilk başlatılabilir düğüm. Düğümlerin
+  // kendi imzaları (`arastirma-<key>`) değişken; ışık zinciri sabit bir ad
+  // arıyor ve zorunlu turda hangi araştırma olduğu oyuncunun kararı.
+  const ilkAcikDugum = dallar.find((d) => d.acik && !d.tamamlandi)?.key ?? null;
 
   return (
     <div className="space-y-4">
@@ -121,6 +125,15 @@ export function Arastirma({ depoTavani }: { depoTavani: number }) {
 
       {hata && <p className="text-[12px] text-kirmizi">{hata}</p>}
 
+      {/*
+        Rehber ışığının aradığı SABİT imza.
+
+        Her düğümün kendi `arastirma-<key>` imzası var ve o imzalar
+        değişken: zincir listesi sabit bir ad arıyor. İlk açık düğüme
+        ikinci bir sabit imza koyuyoruz — zorunlu turda "bir araştırma
+        başlat" adımı, HANGİ araştırma olduğunu oyuncuya bırakıyor ama
+        ışığın gösterecek bir düğmesi olmak zorunda.
+      */}
       {dalAnahtarlari.map((dalKey) => {
         const dugumler = dallar.filter((d) => d.dal === dalKey);
         const dalAdi = dugumler[0]?.dalAdi ?? dalKey;
@@ -191,7 +204,9 @@ export function Arastirma({ depoTavani }: { depoTavani: number }) {
                             tam
                             disabled={baslat.isPending || suren !== null}
                             onClick={() => baslat.mutate(d.key)}
-                            isaret={`arastirma-${d.key}`}
+                            isaret={
+                              d.key === ilkAcikDugum ? 'arastirma-baslat' : `arastirma-${d.key}`
+                            }
                           >
                             {suren ? 'Başka araştırma sürüyor' : 'Başlat'}
                           </Buton>

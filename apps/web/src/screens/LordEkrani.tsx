@@ -77,6 +77,7 @@ import { DiyarTanitimi } from '../components/DiyarTanitimi';
 import { GorevOzeti } from '../components/GorevOzeti';
 import { Omurga, useOmurgaAdimi } from '../components/Omurga';
 import { Rehber } from '../components/Rehber';
+import { useRehberDurumu } from '../rehberDurumu';
 import type { QueueItem, YoklukOzeti } from '../api/client';
 import type { Sekme } from '../components/MobilKabuk';
 
@@ -286,6 +287,7 @@ export function LordEkrani({
   // Kâhya omurganın hesapladığı adımı okuyor; iki ayrı hesap olmasın diye
   // aynı kanca. Sorgular TanStack önbelleğinden, ikinci istek üretmiyor.
   const rehberAdimi = useOmurgaAdimi(lord, queues);
+  const rehberDurumu = useRehberDurumu(lord);
 
   return (
     <div className="space-y-4">
@@ -356,7 +358,7 @@ export function LordEkrani({
           okuyor, kendi senaryosunu tutmuyor (docs/09 T4). */}
       <Rehber
         adim={rehberAdimi?.anahtar ?? null}
-        bolgeSayisi={lord.regionCount}
+        durum={rehberDurumu}
         gorundu={lord.rehberGorundu}
       />
       <Omurga

@@ -21,7 +21,7 @@
  * ordusu kırılan lord yeniden "ordunu kur" adımını görür — kusur değil, o an
  * gerçekten yapması gereken şey odur.
  */
-import { unitName, type UnitType } from '@lordlar/shared';
+import { B, unitName, type UnitType } from '@lordlar/shared';
 import { useQuery } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
 import {
@@ -117,6 +117,15 @@ export function useOmurgaAdimi(
   });
 
   if (!lord) return null;
+  // Bölge geliştirme durumu: haritadan türetiliyor, yeni bir alan yok.
+  // Taht Kalesi dışarıda — o zaten geliştirilemez.
+  const benimBolgeler = (harita.data?.regions ?? []).filter((r) => r.isMine && r.type !== 'taht');
+  const gelismisBolgeVar = benimBolgeler.some((r) => r.level > 1);
+  const gelistirilebilirBolge =
+    benimBolgeler.find((r) => r.level < B.bolgeler.max_bolge_seviyesi)?.id ?? null;
+  // Araştırma "başlamış" sayılıyorsa: ya biri bitmiş ya biri sürüyor.
+  const arastirmaBasladi =
+    (arastirma.data?.ilerleme.biten ?? 0) > 0 || arastirma.data?.suren != null;
   // Depo dolu mu: türetiliyor, sunucuda yeni bir alan açılmadı.
   // Üç kaynağın da tavana dayanması aranıyor; biri doluyken diğeri
   // akıyorsa oyuncunun kaybettiği şey henüz bir sorun değil.
@@ -131,6 +140,9 @@ export function useOmurgaAdimi(
   return siradakiAdim({
     lord,
     depoDolu: hepsiDolu && depoArastirmasiVar,
+    gelistirilebilirBolge,
+    gelismisBolgeVar,
+    arastirmaBasladi,
     oneriBekliyor: harita.isPending,
     oneri: harita.data?.oneri ?? null,
     egitimde: queues.filter((q) => q.kind === 'train'),
@@ -187,9 +199,22 @@ export function Omurga({
     (d) => 'depo_carpani' in (d.etki ?? {}) && !d.tamamlandi,
   );
 
+  // Bölge geliştirme durumu: haritadan türetiliyor, yeni bir alan yok.
+  // Taht Kalesi dışarıda — o zaten geliştirilemez.
+  const benimBolgeler = (harita.data?.regions ?? []).filter((r) => r.isMine && r.type !== 'taht');
+  const gelismisBolgeVar = benimBolgeler.some((r) => r.level > 1);
+  const gelistirilebilirBolge =
+    benimBolgeler.find((r) => r.level < B.bolgeler.max_bolge_seviyesi)?.id ?? null;
+  // Araştırma "başlamış" sayılıyorsa: ya biri bitmiş ya biri sürüyor.
+  const arastirmaBasladi =
+    (arastirma.data?.ilerleme.biten ?? 0) > 0 || arastirma.data?.suren != null;
+
   const adim = siradakiAdim({
     lord,
     depoDolu: hepsiDolu && depoArastirmasiVar,
+    gelistirilebilirBolge,
+    gelismisBolgeVar,
+    arastirmaBasladi,
     oneriBekliyor: harita.isPending,
     oneri,
     egitimde,
@@ -317,6 +342,18 @@ export function siradakiAdim(g: {
    * hatırlatmak değil yol göstermek.
    */
   depoDolu: boolean;
+  /**
+   * Geliştirilebilecek bir bölgenin kimliği (varsa).
+   *
+   * Bölge SAHİPLİĞİ değil GELİŞTİRİLEBİLİRLİĞİ aranıyor: en üst seviyeye
+   * çıkmış tek bölgesi olan oyuncuyu geliştirmeye yollamak, kapalı bir
+   * düğmeye yollamak olurdu.
+   */
+  gelistirilebilirBolge: number | null;
+  /** Hiç bölge geliştirmiş mi (herhangi biri 1. seviyenin üstünde). */
+  gelismisBolgeVar: boolean;
+  /** Hiç araştırma başlatmış ya da bitirmiş mi. */
+  arastirmaBasladi: boolean;
   onGit: (s: Sekme) => void;
   onKapiAc: (k: Kapi) => void;
   onHedefeGit: (regionId: number) => void;
@@ -544,6 +581,53 @@ export function siradakiAdim(g: {
       hedefSekme: 'lord',
       hedefKapi: 'generaller',
       sonraki: 'bölgeni yükselt',
+    };
+  }
+
+  /*
+   * 8b/8c — İLK KEZ adımları.
+   *
+   * Bu ikisi omurgada yoktu ve bu bir boşluktu: zorunlu rehber omurganın
+   * ÜSTÜNE biniyor, yani omurganın uğramadığı bir mekaniği rehber de
+   * öğretemiyor. Bölge geliştirme ve araştırma, oyuncunun kendi başına
+   * bulması gereken iki büyük sistemdi.
+   *
+   * "İlk kez" olmaları kasıtlı: koşul bir kez yapılınca sonsuza kadar
+   * kapanıyor. Kıdemli oyuncuya her oturumda "bölgeni geliştir" demek
+   * omurgayı bir hatırlatıcıya çevirirdi; omurganın işi SIRADAKİ adımı
+   * söylemek, yapılabilecek her şeyi listelemek değil.
+   *
+   * Saldırıdan SONRA duruyorlar: hedef alınabiliyorken oyuncuyu
+   * geliştirmeye yollamak, oyunun asıl anını geciktirmek olurdu.
+   */
+
+  // 8b. Hiç bölge geliştirmemiş: gelir seviyeyle büyüyor ve bunu kimse söylemiyor.
+  if (g.gelistirilebilirBolge && !g.gelismisBolgeVar) {
+    return {
+      anahtar: 'bolge-gelistir',
+      baslik: 'Bölgeni geliştir',
+      cumle:
+        'Bölgenin seviyesi geliri de savunmayı da büyütür. Yeni toprak almadan da güçlenebilirsin.',
+      dugme: 'Bölgeye git',
+      git: () => g.onHedefeGit(g.gelistirilebilirBolge!),
+      hedefSekme: 'harita',
+      hedefBolge: g.gelistirilebilirBolge,
+      sonraki: 'bir araştırma başlat',
+    };
+  }
+
+  // 8c. Hiç araştırma yapmamış: diyarını şekillendiren tek katman.
+  if (!g.arastirmaBasladi) {
+    return {
+      anahtar: 'arastirma',
+      baslik: 'Bir araştırma başlat',
+      cumle:
+        'Araştırma kalıcıdır ve diyarını senin seçimlerinle şekillendirir — iki lord aynı seviyede aynı olmaz.',
+      dugme: 'Araştırmaya git',
+      git: () => g.onKapiAc('arastirma'),
+      hedefSekme: 'lord',
+      hedefKapi: 'arastirma',
+      sonraki: 'diyarı büyütmeye devam et',
     };
   }
 

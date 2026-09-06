@@ -56,6 +56,7 @@ import {
   rehberIsaretSebebi,
   rehberIsigi,
   rehberSozu,
+  type RehberDurumu,
   type RehberIsaret,
 } from '@lordlar/shared';
 import { useEffect, useRef, useState } from 'react';
@@ -190,7 +191,7 @@ function ayniMi(a: Kutu | null, r: DOMRect): boolean {
 
 export function RehberIsigi({
   adim,
-  bolgeSayisi,
+  durum,
   gorundu,
   dogruEkranda,
   bekleyisBitis,
@@ -198,7 +199,8 @@ export function RehberIsigi({
 }: {
   /** Omurganın hesapladığı adım. Işık kendi senaryosunu tutmuyor. */
   adim: string | null;
-  bolgeSayisi: number;
+  /** Rehberin aşamalarını kapatan oyun durumu (docs/09 T4). */
+  durum: RehberDurumu;
   /**
    * Lord bu rehberi daha önce kapatmış mı — HESABA bağlı, tarayıcıya
    * değil. Tarayıcı deposunda tutulduğunda aynı tarayıcıda açılan her
@@ -235,7 +237,7 @@ export function RehberIsigi({
   const [itiraz, setItiraz] = useState(false);
 
   const isaretler = rehberIsigi(adim);
-  const gorunur = acik && rehberGorunsunMu(bolgeSayisi, gorundu);
+  const gorunur = acik && rehberGorunsunMu(durum, gorundu);
 
   /*
    * TUTMA: basacak düğme yok, iş bitene kadar bekleniyor.

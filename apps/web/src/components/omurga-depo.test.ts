@@ -1,4 +1,5 @@
 import { beforeAll, describe, expect, it } from 'vitest';
+import { REHBER_ASAMALARI } from '@lordlar/shared';
 
 /**
  * Omurga, api/client'ı çekiyor; o da modül yüklenirken `window`a bakıyor.
@@ -104,4 +105,61 @@ describe('omurga — depo adımı', () => {
     );
     expect(adim?.anahtar).not.toBe('depo');
   });
+});
+
+/**
+ * Zorunlu turun her aşaması omurgada GERÇEKTEN ulaşılabilir mi.
+ *
+ * Rehber omurganın üstüne biniyor: bir aşamayı kapatacak adıma omurga hiç
+ * uğramıyorsa, oyuncu oraya hiç yönlendirilmez ve tur o satırda sonsuza
+ * kadar açık kalır. Aşama ile adım arasındaki bağ `REHBER_ASAMALARI` içinde
+ * yazılı (`adim` alanı); burada o bağın karşılığı olduğu sınanıyor.
+ *
+ * Her senaryo, o adımdan ÖNCEKİ bütün adımların koşullarını kapatıyor —
+ * yani hem adımın varlığını hem de sırasını doğruluyor.
+ */
+describe('omurga — zorunlu turun her aşamasına uğruyor', () => {
+  const alinabilirHedef = {
+    regionId: 1,
+    name: 'Demirkapı',
+    kazanir: true,
+    eleGecirir: true,
+    orduVar: true,
+    saatlikGelir: { altin: 10, demir: 5, erzak: 5 },
+    sohretFarki: 3,
+    marchSec: 600,
+  };
+
+  /** Aşama anahtarı → o adımı doğuran omurga girdisi. */
+  const senaryolar: Record<string, Record<string, unknown>> = {
+    // Ordu yetmiyor: kışlaya yolluyor.
+    ordu: {
+      lord: lord({ regionCount: 0, equippedItems: [] }),
+      oneri: {
+        ...alinabilirHedef,
+        kazanir: false,
+        eksik: {
+          birim: 'okcu',
+          adet: 12,
+          maliyet: { altin: 600, demir: 200, erzak: 0 },
+          karsilanabilir: true,
+        },
+      },
+    },
+    // Ordu yetiyor: saldırı adımı.
+    bolge: { lord: lord({ regionCount: 0, equippedItems: [] }), oneri: alinabilirHedef },
+    // Bölge var, hedef yok, ekipman yok.
+    ekipman: { lord: lord({ equippedItems: [] }) },
+    general: { generalVar: false },
+    gelistir: { gelistirilebilirBolge: 7, gelismisBolgeVar: false, arastirmaBasladi: false },
+    arastirma: { gelismisBolgeVar: true, arastirmaBasladi: false },
+  };
+
+  for (const asama of REHBER_ASAMALARI) {
+    it(`${asama.key} aşaması "${asama.adim}" adımına ulaşıyor`, () => {
+      const ek = senaryolar[asama.key];
+      expect(ek, `${asama.key} için senaryo yazılmamış`).toBeDefined();
+      expect(siradakiAdim(girdi(ek))?.anahtar).toBe(asama.adim);
+    });
+  }
 });

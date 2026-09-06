@@ -1,18 +1,22 @@
 /**
  * Öğreticinin BAŞTAN SONA testi.
  *
- * `ogretici-testi.mjs` açılıp geçilebildiğini ölçüyor; bu araç sekiz
- * sayfanın HEPSİNİ tek tek geziyor ve her sayfada şunları arıyor:
+ * `ogretici-testi.mjs` açılıp geçilebildiğini ölçüyor; bu araç sayfaların
+ * HEPSİNİ tek tek geziyor ve her sayfada şunları arıyor:
  *
  *  - sayfa gerçekten değişti mi (ilerleme çubuğu ve sayaç),
  *  - başlık, özet ve maddeler dolu mu (boş bir sayfa sessizce geçilebilir),
  *  - metin taşıyor mu, okunuyor mu,
  *  - "Geri" gerçekten geri gidiyor mu,
- *  - "oraya bak" düğmesi doğru sekmeye götürüyor mu,
+ *  - oyunun ana mekanikleri gerçekten anlatılıyor mu,
  *  - son sayfada "Diyarıma dön" kapatıyor mu ve BİR DAHA AÇILMIYOR mu.
  *
- * Sekiz sayfa elle tıklanarak test edilmemişti; oyuncu "hata var gibi"
- * dedi ve haklıydı (aşağıdaki bulgular commit mesajında).
+ * Sayfalar elle tıklanarak test edilmemişti; oyuncu "hata var gibi" dedi
+ * ve haklıydı (bulgular commit mesajında).
+ *
+ * Sayfa SAYISI burada sabit değil: öğretici genişledikçe (dizilim,
+ * araştırma, hastane...) sayı değişir ve testin işi sayıyı saymak değil,
+ * her sayfanın çalıştığını görmek.
  *
  * SADECE GELİŞTİRME. node tools/ogretici-tam-testi.mjs
  */
@@ -85,6 +89,9 @@ const sayfaDurumu = () =>
       bosMadde: maddeler.filter((m) => !m.vurgu || !m.metin).length,
       cubuk: cubuklar.length,
       dolu,
+      // "ŞİMDİ ORAYA BAK" düğmesi kaldırıldı (oyuncu isteği): öğretici
+      // yalnız ANLATIYOR, götürme işi zorunlu rehberin. Varlığı değil
+      // YOKLUĞU sınanıyor.
       oraya: Boolean(
         [...kok.querySelectorAll('button')].find((x) => /ORAYA BAK/i.test(x.textContent ?? '')),
       ),
@@ -100,7 +107,9 @@ const sayfaDurumu = () =>
 
 const ilk = await sayfaDurumu();
 const toplam = ilk.cubuk;
-kontrol('Sekiz sayfa var', toplam === 8, `${toplam} sayfa`);
+// Alt sınır: öğretici bir gün kazayla budanırsa yakalansın. Üst sınır
+// yok — kapsam genişledikçe sayfa da artıyor.
+kontrol('En az sekiz sayfa var', toplam >= 8, `${toplam} sayfa`);
 kontrol('İlk sayfada "Geri" kapalı', ilk.geriKapali === true);
 
 const gorulen = [];
@@ -149,7 +158,7 @@ for (let n = 1; n <= toplam; n++) {
 // ama oyuncu aynı şeyi okur.
 const basliklar = gorulen.map((g) => g.baslik);
 kontrol(
-  'Sekiz sayfanın başlığı da farklı',
+  'Her sayfanın başlığı farklı',
   new Set(basliklar).size === toplam,
   `${new Set(basliklar).size} benzersiz`,
 );
@@ -204,38 +213,26 @@ kontrol(
   kontrol('Tarayıcı deposu silinse de açılmıyor (sunucuda kayıtlı)', (await perde.count()) === 0);
 }
 
-// --- "Şimdi oraya bak" doğru sekmeye götürüyor mu ---
+// --- Kapsam: oyunun ana mekanikleri gerçekten anlatılıyor mu ---
+//
+// Öğreticinin bir kere daralması pahalıya patladı: dizilim, taktik,
+// araştırma, hastane, pazar ve depo tavanı oyunda vardı ama öğreticide
+// yoktu. Oyuncu onları ancak kaza eseri buluyordu.
+//
+// Metin ölçütü motorda da kilitli (balance.test.ts); burada asıl mesele
+// o metnin gerçekten EKRANA çıkması. Bir sayfa yanlışlıkla çizilmezse
+// birim testi geçer, oyuncu hiçbir şey görmez.
 {
-  const d3 = Date.now();
-  const { token: t3 } = await kayitOl(API, {
-    email: `ogt${d3}_o@lordlar.dev`,
-    lordName: `Ogto ${d3.toString(36).slice(-4)}`,
-  });
-  await page.evaluate((t) => localStorage.setItem('lordlar_token', t), t3);
-  await page.reload({ waitUntil: 'domcontentloaded' });
-  await perde.waitFor({ timeout: 20000 });
-
-  // "oraya bak" düğmesi olan ilk sayfaya kadar ilerle.
-  let bulundu = false;
-  for (let n = 1; n <= toplam; n++) {
-    if ((await sayfaDurumu()).oraya) {
-      bulundu = true;
-      break;
-    }
-    await page.locator('[role="dialog"] button:has-text("Devam")').click();
-    await page.waitForTimeout(400);
-  }
-  kontrol('En az bir sayfada "oraya bak" düğmesi var', bulundu);
-
-  if (bulundu) {
-    await page.locator('[role="dialog"] button:has-text("ORAYA BAK")').click();
-    await page.waitForTimeout(1500);
-    kontrol('"Oraya bak" öğreticiyi kapattı', (await perde.count()) === 0);
-    const etkin = await page.evaluate(() => {
-      const b = document.querySelector('nav button[aria-current="page"]');
-      return b?.textContent?.trim() ?? '';
-    });
-    kontrol('"Oraya bak" bir sekmeye götürdü', etkin.length > 0, etkin);
+  const tumMetin = gorulen
+    .map((d) => `${d.baslik} ${d.ozet} `)
+    .join(' ')
+    .toLocaleLowerCase('tr');
+  kontrol(
+    'Hiçbir sayfada "oraya bak" düğmesi yok',
+    gorulen.every((d) => d.oraya === false),
+  );
+  for (const konu of ['dizilim', 'taktik', 'araştırma']) {
+    kontrol(`Öğretici "${konu}" konusunu geçiyor`, tumMetin.includes(konu));
   }
 }
 
