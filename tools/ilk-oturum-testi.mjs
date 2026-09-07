@@ -77,7 +77,7 @@ async function oturum() {
   yaz(
     'Hedef yürüme mesafesinde',
     (harita.oneri?.distance ?? 99) <= 1,
-    `${harita.oneri?.distance} hex`,
+    `${harita.oneri?.distance} adım`,
   );
   yaz(
     'Ordusu yokken "kazanır" demiyor',
@@ -85,15 +85,19 @@ async function oturum() {
   );
 
   // --- 2. Oyunun verdiği tavsiye İŞE YARIYOR mu?
-  // Testin asıl sorusu bu: "daha fazla asker eğit" demek kolay; oyun kaç asker
-  // gerektiğini söylüyor mu, söylediği ordu KURULABİLİYOR mu ve yetiyor mu?
-  await post('/army/train', { unitType: 'mizrakci', count: 20 });
-  await post('/test/kuyruklari-bitir');
-
-  harita = await cagir('/map');
+  //
+  // Testin asıl sorusu bu: "daha fazla asker eğit" demek kolay; oyun kaç
+  // asker gerektiğini söylüyor mu, söylediği ordu KURULABİLİYOR mu ve
+  // yetiyor mu?
+  //
+  // Ölçüm SIFIR orduyla yapılıyor — "ne kadar asker lazım" sorusunun en
+  // çok sorulduğu an, henüz tek askeri olmayan andır. Eskiden önce 20
+  // mızrakçı eğitiliyor, sonra eksik soruluyordu; ilk hedef bir köye
+  // dönünce (docs/12) 20 mızrakçı köyü zaten alıyor ve ölçüm konusuz
+  // kalıyordu. Sıfırdan sormak hem daha sağlam hem asıl vaadi ölçüyor.
   const eksik = harita.oneri?.eksik;
   yaz(
-    'Yetersiz orduya somut eksik sayısı veriliyor',
+    'Ordusuz oyuncuya somut eksik sayısı veriliyor',
     harita.oneri?.kazanir === false && eksik?.adet > 0,
     eksik ? `${eksik.adet} ${eksik.birim}` : 'eksik yok',
   );

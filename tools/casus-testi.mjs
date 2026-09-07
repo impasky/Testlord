@@ -13,6 +13,7 @@
  * API ayakta olmalı. node tools/casus-testi.mjs
  */
 import { kayitOl } from './lib/kayit.mjs';
+import { merkezUzakliklari } from './lib/harita.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 
 let hata = 0;
@@ -58,8 +59,14 @@ await savunan.post('/test/bolgeleri-sifirla');
 await orduKur(savunan, { mizrakci: 300, okcu: 200 });
 const harita = await savunan.get('/map');
 let bolge = null;
+// Eski `ring === 4` ölçütünün karşılığı: Taht Kalesi'nden en az 4 adım
+// uzaktaki bölgeler. Altıgen ızgara kalktı, ölçü komşuluk grafiğinden
+// türüyor (docs/12 §1).
+const kenar = new Set(
+  [...merkezUzakliklari(harita.regions)].filter(([, d]) => d >= 4).map(([id]) => id),
+);
 for (const aday of harita.regions
-  .filter((r) => r.ring === 4 && !r.owner && r.type !== 'taht')
+  .filter((r) => kenar.has(r.id) && !r.owner && r.type !== 'taht')
   .sort((a, b) => a.distance - b.distance)
   .slice(0, 10)) {
   const ordu = (await savunan.get('/army')).home;

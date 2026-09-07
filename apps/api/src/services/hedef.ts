@@ -195,8 +195,8 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
   // Toprakları zaten yüklü (include: { regions: true }); ölçeri buradan
   // kuruyoruz, ikinci bir sorgu açmadan.
   const olc = mesafeOlcerHazir(
-    { q: lord.homeQ, r: lord.homeR },
-    lord.regions.map((r) => ({ q: r.q, r: r.r })),
+    lord.homeBolgeId,
+    lord.regions.map((r) => r.mapId),
   );
 
   const sirali: { puan: number; hedef: HedefOnerisi }[] = [];
@@ -230,10 +230,10 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
     }
 
     // Mesafe en yakın toprağından (docs/11 §1.2 H1): öneri motoru da
-    // haritayla aynı sayıyı görmeli, yoksa "2 hex" diyen öneri saldırı
-    // ekranında 5 hex çıkar.
-    const distance = olc({ q: r.q, r: r.r });
-    const ilkSaldiri = ilkYuruyus && distance <= B.yuruyus.ilk_saldiri_max_hex;
+    // haritayla aynı sayıyı görmeli, yoksa "2 adım" diyen öneri saldırı
+    // ekranında 5 adım çıkar.
+    const distance = olc(r.mapId);
+    const ilkSaldiri = ilkYuruyus && distance <= B.yuruyus.ilk_saldiri_max_adim;
     // Ordu boşken hız referansı kullanılır (marchDurationSec'in kendi
     // davranışı); gösterilen süre "bu mesafe kabaca ne kadar" demektir.
     // Önizlemedeki süre gerçek yürüyüşle aynı formülü kullanmalı;
@@ -257,7 +257,7 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
     //  - Kazanılamıyorsa soru "hangisi ulaşabileceğim ilk basamak":
     //    önce YAKINLIK, sonra en ZAYIF savunma. Değere göre sıralamak
     //    ordusu olmayan oyuncuya 160 birimlik şehri gösteriyordu; zayıf
-    //    garnizonu öne almak ise 6 hex uzaktaki bir bölgeyi — yani tam
+    //    garnizonu öne almak ise 6 adım uzaktaki bir bölgeyi — yani tam
     //    da düzeltmeye çalıştığımız "ordumu yolladım, bir saat sonra
     //    dönerim" deneyimini. Yeni oyuncunun ilk hedefi yürüme mesafesinde
     //    olmalı.
@@ -267,7 +267,7 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
     //    oyuncuya hiçbir ordunun alamayacağı bir kaleyi hedef gösteriyordu.
     //
     //  - Oyuncunun İLK saldırısında yakınlık her şeyin önüne geçer. Değer
-    //    sıralaması, ordusunu yeni kurmuş bir oyuncuyu 4 hex öteye, 57
+    //    sıralaması, ordusunu yeni kurmuş bir oyuncuyu 4 adım öteye, 57
     //    dakikalık bir yürüyüşe yollayabiliyordu — yani "saldırıya
     //    gönderdim, eee ne oldu şimdi" duygusunun ta kendisine. İlk
     //    saldırı kısayolunun geçerli olduğu hedef öne alınıyor.
@@ -326,7 +326,7 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
   // En yakın hedef, alınabilir hedef olmak zorunda değil. Ring 4'teki bir
   // KALE ile bir TARLA aynı 37 birimi barındırıyor ama kalenin tahkimatı
   // onu 1. seviye bir lord için imkânsız kılıyor. Mesafe sıralamada baskın
-  // olduğu için, kale hex'inde doğan oyuncuya hiçbir orduyla alamayacağı
+  // olduğu için, kalenin dibinde doğan oyuncuya hiçbir orduyla alamayacağı
   // bir hedef gösteriliyordu.
   //
   // Bu yüzden en iyi birkaç aday için "komuta kapasiten dolsa alır mıydın"

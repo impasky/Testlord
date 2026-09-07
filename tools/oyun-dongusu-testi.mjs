@@ -5,6 +5,7 @@
  * node tools/oyun-dongusu-testi.mjs
  */
 import { kayitOl } from './lib/kayit.mjs';
+import { merkezUzakliklari } from './lib/harita.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 let token = null;
 let hata = 0;
@@ -96,8 +97,14 @@ kontrol('Harita 61 bölge döndü', harita.regions.length === 61);
 // Kontrol tautoloji değil: docs/00'ın ikinci başarı kriteri "ilk gününde
 // bir NPC bölgesi ele geçirebiliyor". Denge bozulup hiçbiri alınamaz hale
 // gelirse aday listesi tükenir ve test düşer.
+// Eski `ring === 4` ölçütünün karşılığı: Taht Kalesi'nden en az 4 adım
+// uzaktaki bölgeler. Altıgen ızgara kalktı, ölçü komşuluk grafiğinden
+// türüyor (docs/12 §1).
+const kenar = new Set(
+  [...merkezUzakliklari(harita.regions)].filter(([, d]) => d >= 4).map(([id]) => id),
+);
 const adaylar = harita.regions
-  .filter((r) => r.ring === 4 && !r.owner && r.type !== 'kale')
+  .filter((r) => kenar.has(r.id) && !r.owner && r.type !== 'kale')
   .sort((a, b) => a.distance - b.distance)
   .slice(0, 8);
 
@@ -131,11 +138,11 @@ kontrol(
   'Başlangıç ordusuyla alınabilecek bir NPC bölgesi var',
   Boolean(hedef),
   hedef
-    ? `${hedef.name} (${hedef.type}, ${hedef.distance} hex, pay ${enIyiPay})`
+    ? `${hedef.name} (${hedef.type}, ${hedef.distance} adım, pay ${enIyiPay})`
     : `${adaylar.length} aday denendi, hiçbiri alınamıyor`,
 );
 
-const kale = harita.regions.find((r) => r.ring === 4 && !r.owner && r.type === 'kale');
+const kale = harita.regions.find((r) => kenar.has(r.id) && !r.owner && r.type === 'kale');
 const kaleOnizleme = await post('/battle/preview', {
   toRegionId: kale.id,
   army: { mizrakci: 20, okcu: 15 },
@@ -189,7 +196,9 @@ kontrol('Bölge haritada bana ait görünüyor', alinan?.isMine === true, alinan
 
 me = await cagir('/me');
 // Bölgenin kendi kaynağı malikâne tabanının ÜZERİNE eklenmiş olmalı.
-const tabanAlan = { tarla: 'erzak', maden: 'demir', sehir: 'altin' }[hedef.type];
+// Köy iki kaynak birden veriyor (altın + erzak); ölçüyü altından
+// yapıyoruz. Tek kaynaklı türlerde zaten tek seçenek var.
+const tabanAlan = { koy: 'altin', tarla: 'erzak', maden: 'demir', sehir: 'altin' }[hedef.type];
 const taban = {
   altin: 100 + 6 * me.lord.level,
   demir: 40 + 3 * me.lord.level,

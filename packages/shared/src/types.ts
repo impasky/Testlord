@@ -4,7 +4,12 @@ export type ResourceType = 'altin' | 'demir' | 'erzak';
 export type UnitType = 'milis' | 'mizrakci' | 'okcu' | 'suvari' | 'kusatma';
 export type EquipSlot = 'silah' | 'kalkan' | 'zirh' | 'migfer' | 'at' | 'sancak';
 export type Rarity = 'siradan' | 'usta' | 'nadir' | 'efsanevi' | 'kadim';
-export type RegionType = 'tarla' | 'maden' | 'sehir' | 'kale' | 'taht';
+/**
+ * `koy` en küçük yerleşim: haritanın kenarında, garnizonu çok zayıf.
+ * Oyuna toprakSIZ başlandığı için (docs/12 §8) herkesin ilk fethi bir
+ * köydür ve o köy başkenti olur.
+ */
+export type RegionType = 'koy' | 'tarla' | 'maden' | 'sehir' | 'kale' | 'taht';
 export type GearLineKey = 'silahlik' | 'zirhhane' | 'nalbant';
 export type StatKey = 'guc' | 'dayaniklilik' | 'liderlik' | 'kurnazlik';
 export type GeneralRarity = 'bronz' | 'gumus' | 'altin';
@@ -275,9 +280,11 @@ export interface RegionDef {
   name: string;
   type: RegionType;
   province: string;
-  q: number;
-  r: number;
-  ring: number;
+  /** Harita resmi üzerindeki yüzdelik yer. YALNIZ çizim için (harita.ts). */
+  x: number;
+  y: number;
+  /** Bitişik bölgelerin kimlikleri. Mesafe ve komşuluk buradan gelir. */
+  komsular: number[];
   level: number;
   income_mult: number;
   npc_garrison: Record<UnitType, number>;

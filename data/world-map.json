@@ -1,6 +1,6 @@
 {
   "schema": "lordlar-cagi/world-map@1",
-  "radius": 4,
+  "_not": "Hex izgarasi kaldirildi (docs/12). Konum artik x/y (yuzdelik, YALNIZ cizim icin) ve komsuluk acikca yazili. Motor x/y okumaz: mesafe komsuluk grafiginde en kisa yoldur. Boylece harita resmi degistiginde oyunun kurallari kaymiyor.",
   "region_count": 61,
   "provinces": [
     {
@@ -38,9 +38,16 @@
       "name": "Taht Kalesi",
       "type": "taht",
       "province": "taht",
-      "q": 0,
-      "r": 0,
-      "ring": 0,
+      "x": 50.0,
+      "y": 50.0,
+      "komsular": [
+        2,
+        12,
+        13,
+        32,
+        42,
+        52
+      ],
       "level": 1,
       "income_mult": 3.0,
       "npc_garrison": {
@@ -57,9 +64,16 @@
       "name": "Buğday Düzü",
       "type": "tarla",
       "province": "kuzeymark",
-      "q": 1,
-      "r": 0,
-      "ring": 1,
+      "x": 61.0,
+      "y": 50.0,
+      "komsular": [
+        1,
+        3,
+        4,
+        13,
+        52,
+        54
+      ],
       "level": 1,
       "income_mult": 2.0,
       "npc_garrison": {
@@ -76,9 +90,16 @@
       "name": "Akkale Şehri",
       "type": "sehir",
       "province": "kuzeymark",
-      "q": 1,
-      "r": 1,
-      "ring": 2,
+      "x": 66.5,
+      "y": 61.0,
+      "komsular": [
+        2,
+        4,
+        6,
+        7,
+        13,
+        16
+      ],
       "level": 1,
       "income_mult": 1.5,
       "npc_garrison": {
@@ -95,9 +116,16 @@
       "name": "Demirocak",
       "type": "maden",
       "province": "kuzeymark",
-      "q": 2,
-      "r": 0,
-      "ring": 2,
+      "x": 72.0,
+      "y": 50.0,
+      "komsular": [
+        2,
+        3,
+        7,
+        8,
+        54,
+        57
+      ],
       "level": 1,
       "income_mult": 1.5,
       "npc_garrison": {
@@ -114,9 +142,16 @@
       "name": "Sarpkaya Kalesi",
       "type": "kale",
       "province": "kuzeymark",
-      "q": 0,
-      "r": 3,
-      "ring": 3,
+      "x": 66.5,
+      "y": 83.0,
+      "komsular": [
+        6,
+        9,
+        16,
+        18,
+        29,
+        30
+      ],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -133,9 +168,16 @@
       "name": "Yeşilçayır",
       "type": "tarla",
       "province": "kuzeymark",
-      "q": 1,
-      "r": 2,
-      "ring": 3,
+      "x": 72.0,
+      "y": 72.0,
+      "komsular": [
+        3,
+        5,
+        7,
+        9,
+        10,
+        16
+      ],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -152,9 +194,16 @@
       "name": "Tüccarlar Limanı",
       "type": "sehir",
       "province": "kuzeymark",
-      "q": 2,
-      "r": 1,
-      "ring": 3,
+      "x": 77.5,
+      "y": 61.0,
+      "komsular": [
+        3,
+        4,
+        6,
+        8,
+        10,
+        11
+      ],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -171,9 +220,16 @@
       "name": "Karakuyu",
       "type": "maden",
       "province": "kuzeymark",
-      "q": 3,
-      "r": 0,
-      "ring": 3,
+      "x": 83.0,
+      "y": 50.0,
+      "komsular": [
+        4,
+        7,
+        11,
+        31,
+        57,
+        61
+      ],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -187,17 +243,22 @@
     },
     {
       "id": 9,
-      "name": "Yıldızburç",
-      "type": "kale",
+      "name": "Bozkuyu Köyü",
+      "type": "koy",
       "province": "kuzeymark",
-      "q": 1,
-      "r": 3,
-      "ring": 4,
+      "x": 77.5,
+      "y": 83.0,
+      "komsular": [
+        5,
+        6,
+        10,
+        30
+      ],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
-        "milis": 25,
-        "mizrakci": 12,
+        "milis": 12,
+        "mizrakci": 4,
         "okcu": 0,
         "suvari": 0,
         "kusatma": 0
@@ -209,9 +270,14 @@
       "name": "Ekinlik",
       "type": "tarla",
       "province": "kuzeymark",
-      "q": 2,
-      "r": 2,
-      "ring": 4,
+      "x": 83.0,
+      "y": 72.0,
+      "komsular": [
+        6,
+        7,
+        9,
+        11
+      ],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -225,17 +291,22 @@
     },
     {
       "id": 11,
-      "name": "Gümüşçarşı",
-      "type": "sehir",
+      "name": "Çakıllı Köyü",
+      "type": "koy",
       "province": "kuzeymark",
-      "q": 3,
-      "r": 1,
-      "ring": 4,
+      "x": 88.5,
+      "y": 61.0,
+      "komsular": [
+        7,
+        8,
+        10,
+        31
+      ],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
-        "milis": 25,
-        "mizrakci": 12,
+        "milis": 12,
+        "mizrakci": 4,
         "okcu": 0,
         "suvari": 0,
         "kusatma": 0
@@ -247,9 +318,16 @@
       "name": "Bereket Ovası",
       "type": "tarla",
       "province": "demirvadi",
-      "q": -1,
-      "r": 1,
-      "ring": 1,
+      "x": 44.5,
+      "y": 61.0,
+      "komsular": [
+        1,
+        13,
+        14,
+        15,
+        22,
+        32
+      ],
       "level": 1,
       "income_mult": 2.0,
       "npc_garrison": {
@@ -266,9 +344,16 @@
       "name": "Yüksekkapı",
       "type": "sehir",
       "province": "demirvadi",
-      "q": 0,
-      "r": 1,
-      "ring": 1,
+      "x": 55.5,
+      "y": 61.0,
+      "komsular": [
+        1,
+        2,
+        3,
+        12,
+        15,
+        16
+      ],
       "level": 1,
       "income_mult": 2.0,
       "npc_garrison": {
@@ -285,9 +370,16 @@
       "name": "Bakırdere",
       "type": "maden",
       "province": "demirvadi",
-      "q": -2,
-      "r": 2,
-      "ring": 2,
+      "x": 39.0,
+      "y": 72.0,
+      "komsular": [
+        12,
+        15,
+        17,
+        22,
+        24,
+        25
+      ],
       "level": 1,
       "income_mult": 1.5,
       "npc_garrison": {
@@ -304,9 +396,16 @@
       "name": "Kartalyuva",
       "type": "kale",
       "province": "demirvadi",
-      "q": -1,
-      "r": 2,
-      "ring": 2,
+      "x": 50.0,
+      "y": 72.0,
+      "komsular": [
+        12,
+        13,
+        14,
+        16,
+        17,
+        18
+      ],
       "level": 1,
       "income_mult": 1.5,
       "npc_garrison": {
@@ -323,9 +422,16 @@
       "name": "Sapköy",
       "type": "tarla",
       "province": "demirvadi",
-      "q": 0,
-      "r": 2,
-      "ring": 2,
+      "x": 61.0,
+      "y": 72.0,
+      "komsular": [
+        3,
+        5,
+        6,
+        13,
+        15,
+        18
+      ],
       "level": 1,
       "income_mult": 1.5,
       "npc_garrison": {
@@ -342,9 +448,16 @@
       "name": "Taş Meydan",
       "type": "sehir",
       "province": "demirvadi",
-      "q": -2,
-      "r": 3,
-      "ring": 3,
+      "x": 44.5,
+      "y": 83.0,
+      "komsular": [
+        14,
+        15,
+        18,
+        20,
+        21,
+        25
+      ],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -361,9 +474,16 @@
       "name": "Kayaburun",
       "type": "maden",
       "province": "demirvadi",
-      "q": -1,
-      "r": 3,
-      "ring": 3,
+      "x": 55.5,
+      "y": 83.0,
+      "komsular": [
+        5,
+        15,
+        16,
+        17,
+        21,
+        29
+      ],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -380,9 +500,13 @@
       "name": "Sınırkule",
       "type": "kale",
       "province": "demirvadi",
-      "q": -4,
-      "r": 4,
-      "ring": 4,
+      "x": 28.0,
+      "y": 94.0,
+      "komsular": [
+        20,
+        25,
+        28
+      ],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -396,17 +520,22 @@
     },
     {
       "id": 20,
-      "name": "Harmanyeri",
-      "type": "tarla",
+      "name": "Gölcük Köyü",
+      "type": "koy",
       "province": "demirvadi",
-      "q": -3,
-      "r": 4,
-      "ring": 4,
+      "x": 39.0,
+      "y": 94.0,
+      "komsular": [
+        17,
+        19,
+        21,
+        25
+      ],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
-        "milis": 25,
-        "mizrakci": 12,
+        "milis": 12,
+        "mizrakci": 4,
         "okcu": 0,
         "suvari": 0,
         "kusatma": 0
@@ -418,9 +547,14 @@
       "name": "Kervanbaşı",
       "type": "sehir",
       "province": "demirvadi",
-      "q": -2,
-      "r": 4,
-      "ring": 4,
+      "x": 50.0,
+      "y": 94.0,
+      "komsular": [
+        17,
+        18,
+        20,
+        29
+      ],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -437,9 +571,16 @@
       "name": "Altınbaşak",
       "type": "tarla",
       "province": "gunbati",
-      "q": -2,
-      "r": 1,
-      "ring": 2,
+      "x": 33.5,
+      "y": 61.0,
+      "komsular": [
+        12,
+        14,
+        23,
+        24,
+        32,
+        33
+      ],
       "level": 1,
       "income_mult": 1.5,
       "npc_garrison": {
@@ -456,9 +597,16 @@
       "name": "Altınkapı",
       "type": "sehir",
       "province": "gunbati",
-      "q": -3,
-      "r": 1,
-      "ring": 3,
+      "x": 22.5,
+      "y": 61.0,
+      "komsular": [
+        22,
+        24,
+        26,
+        27,
+        33,
+        35
+      ],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -475,9 +623,16 @@
       "name": "Cürufköy",
       "type": "maden",
       "province": "gunbati",
-      "q": -3,
-      "r": 2,
-      "ring": 3,
+      "x": 28.0,
+      "y": 72.0,
+      "komsular": [
+        14,
+        22,
+        23,
+        25,
+        27,
+        28
+      ],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -494,9 +649,16 @@
       "name": "Demirkapı Kalesi",
       "type": "kale",
       "province": "gunbati",
-      "q": -3,
-      "r": 3,
-      "ring": 3,
+      "x": 33.5,
+      "y": 83.0,
+      "komsular": [
+        14,
+        17,
+        19,
+        20,
+        24,
+        28
+      ],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -510,17 +672,22 @@
     },
     {
       "id": 26,
-      "name": "Çayırbaşı",
-      "type": "tarla",
+      "name": "Kavaklı Köyü",
+      "type": "koy",
       "province": "gunbati",
-      "q": -4,
-      "r": 1,
-      "ring": 4,
+      "x": 11.5,
+      "y": 61.0,
+      "komsular": [
+        23,
+        27,
+        35,
+        38
+      ],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
-        "milis": 25,
-        "mizrakci": 12,
+        "milis": 12,
+        "mizrakci": 4,
         "okcu": 0,
         "suvari": 0,
         "kusatma": 0
@@ -532,9 +699,14 @@
       "name": "Loncalar Şehri",
       "type": "sehir",
       "province": "gunbati",
-      "q": -4,
-      "r": 2,
-      "ring": 4,
+      "x": 17.0,
+      "y": 72.0,
+      "komsular": [
+        23,
+        24,
+        26,
+        28
+      ],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -548,17 +720,22 @@
     },
     {
       "id": 28,
-      "name": "Derinkuyu",
-      "type": "maden",
+      "name": "Sarıkamış Köyü",
+      "type": "koy",
       "province": "gunbati",
-      "q": -4,
-      "r": 3,
-      "ring": 4,
+      "x": 22.5,
+      "y": 83.0,
+      "komsular": [
+        19,
+        24,
+        25,
+        27
+      ],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
-        "milis": 25,
-        "mizrakci": 12,
+        "milis": 12,
+        "mizrakci": 4,
         "okcu": 0,
         "suvari": 0,
         "kusatma": 0
@@ -567,17 +744,22 @@
     },
     {
       "id": 29,
-      "name": "Gözcükule",
-      "type": "kale",
+      "name": "Erikli Köyü",
+      "type": "koy",
       "province": "gunbati",
-      "q": -1,
-      "r": 4,
-      "ring": 4,
+      "x": 61.0,
+      "y": 94.0,
+      "komsular": [
+        5,
+        18,
+        21,
+        30
+      ],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
-        "milis": 25,
-        "mizrakci": 12,
+        "milis": 12,
+        "mizrakci": 4,
         "okcu": 0,
         "suvari": 0,
         "kusatma": 0
@@ -589,9 +771,13 @@
       "name": "Tohumluk",
       "type": "tarla",
       "province": "gunbati",
-      "q": 0,
-      "r": 4,
-      "ring": 4,
+      "x": 72.0,
+      "y": 94.0,
+      "komsular": [
+        5,
+        9,
+        29
+      ],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -608,9 +794,13 @@
       "name": "Dörtyol",
       "type": "sehir",
       "province": "gunbati",
-      "q": 4,
-      "r": 0,
-      "ring": 4,
+      "x": 94.0,
+      "y": 50.0,
+      "komsular": [
+        8,
+        11,
+        61
+      ],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -627,9 +817,16 @@
       "name": "Otlakköy",
       "type": "tarla",
       "province": "aksu",
-      "q": -1,
-      "r": 0,
-      "ring": 1,
+      "x": 39.0,
+      "y": 50.0,
+      "komsular": [
+        1,
+        12,
+        22,
+        33,
+        34,
+        42
+      ],
       "level": 1,
       "income_mult": 2.0,
       "npc_garrison": {
@@ -646,9 +843,16 @@
       "name": "Çamlıca Şehri",
       "type": "sehir",
       "province": "aksu",
-      "q": -2,
-      "r": 0,
-      "ring": 2,
+      "x": 28.0,
+      "y": 50.0,
+      "komsular": [
+        22,
+        23,
+        32,
+        34,
+        35,
+        36
+      ],
       "level": 1,
       "income_mult": 1.5,
       "npc_garrison": {
@@ -665,9 +869,16 @@
       "name": "Çakmaktaşı",
       "type": "maden",
       "province": "aksu",
-      "q": -1,
-      "r": -1,
-      "ring": 2,
+      "x": 33.5,
+      "y": 39.0,
+      "komsular": [
+        32,
+        33,
+        36,
+        37,
+        42,
+        43
+      ],
       "level": 1,
       "income_mult": 1.5,
       "npc_garrison": {
@@ -684,9 +895,16 @@
       "name": "Üçgen Burç",
       "type": "kale",
       "province": "aksu",
-      "q": -3,
-      "r": 0,
-      "ring": 3,
+      "x": 17.0,
+      "y": 50.0,
+      "komsular": [
+        23,
+        26,
+        33,
+        36,
+        38,
+        39
+      ],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -703,9 +921,16 @@
       "name": "Güneşli Tarla",
       "type": "tarla",
       "province": "aksu",
-      "q": -2,
-      "r": -1,
-      "ring": 3,
+      "x": 22.5,
+      "y": 39.0,
+      "komsular": [
+        33,
+        34,
+        35,
+        37,
+        39,
+        40
+      ],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -722,9 +947,16 @@
       "name": "Denizkapı",
       "type": "sehir",
       "province": "aksu",
-      "q": -1,
-      "r": -2,
-      "ring": 3,
+      "x": 28.0,
+      "y": 28.0,
+      "komsular": [
+        34,
+        36,
+        40,
+        41,
+        43,
+        45
+      ],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -741,9 +973,13 @@
       "name": "Kırıkkaya",
       "type": "maden",
       "province": "aksu",
-      "q": -4,
-      "r": 0,
-      "ring": 4,
+      "x": 6.0,
+      "y": 50.0,
+      "komsular": [
+        26,
+        35,
+        39
+      ],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -757,17 +993,22 @@
     },
     {
       "id": 39,
-      "name": "Karahisar",
-      "type": "kale",
+      "name": "Söğütlü Köyü",
+      "type": "koy",
       "province": "aksu",
-      "q": -3,
-      "r": -1,
-      "ring": 4,
+      "x": 11.5,
+      "y": 39.0,
+      "komsular": [
+        35,
+        36,
+        38,
+        40
+      ],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
-        "milis": 25,
-        "mizrakci": 12,
+        "milis": 12,
+        "mizrakci": 4,
         "okcu": 0,
         "suvari": 0,
         "kusatma": 0
@@ -779,9 +1020,14 @@
       "name": "Bolluk Ovası",
       "type": "tarla",
       "province": "aksu",
-      "q": -2,
-      "r": -2,
-      "ring": 4,
+      "x": 17.0,
+      "y": 28.0,
+      "komsular": [
+        36,
+        37,
+        39,
+        41
+      ],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -795,17 +1041,22 @@
     },
     {
       "id": 41,
-      "name": "Büyükpazar",
-      "type": "sehir",
+      "name": "Taşpınar Köyü",
+      "type": "koy",
       "province": "aksu",
-      "q": -1,
-      "r": -3,
-      "ring": 4,
+      "x": 22.5,
+      "y": 17.0,
+      "komsular": [
+        37,
+        40,
+        45,
+        48
+      ],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
-        "milis": 25,
-        "mizrakci": 12,
+        "milis": 12,
+        "mizrakci": 4,
         "okcu": 0,
         "suvari": 0,
         "kusatma": 0
@@ -817,9 +1068,16 @@
       "name": "Yoncalı",
       "type": "tarla",
       "province": "karaorman",
-      "q": 0,
-      "r": -1,
-      "ring": 1,
+      "x": 44.5,
+      "y": 39.0,
+      "komsular": [
+        1,
+        32,
+        34,
+        43,
+        44,
+        52
+      ],
       "level": 1,
       "income_mult": 2.0,
       "npc_garrison": {
@@ -836,9 +1094,16 @@
       "name": "Sarraflar",
       "type": "sehir",
       "province": "karaorman",
-      "q": 0,
-      "r": -2,
-      "ring": 2,
+      "x": 39.0,
+      "y": 28.0,
+      "komsular": [
+        34,
+        37,
+        42,
+        44,
+        45,
+        46
+      ],
       "level": 1,
       "income_mult": 1.5,
       "npc_garrison": {
@@ -855,9 +1120,16 @@
       "name": "Kürskuyu",
       "type": "maden",
       "province": "karaorman",
-      "q": 1,
-      "r": -2,
-      "ring": 2,
+      "x": 50.0,
+      "y": 28.0,
+      "komsular": [
+        42,
+        43,
+        46,
+        47,
+        52,
+        53
+      ],
       "level": 1,
       "income_mult": 1.5,
       "npc_garrison": {
@@ -874,9 +1146,16 @@
       "name": "Yüceburç",
       "type": "kale",
       "province": "karaorman",
-      "q": 0,
-      "r": -3,
-      "ring": 3,
+      "x": 33.5,
+      "y": 17.0,
+      "komsular": [
+        37,
+        41,
+        43,
+        46,
+        48,
+        49
+      ],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -893,9 +1172,16 @@
       "name": "Değirmenderesi",
       "type": "tarla",
       "province": "karaorman",
-      "q": 1,
-      "r": -3,
-      "ring": 3,
+      "x": 44.5,
+      "y": 17.0,
+      "komsular": [
+        43,
+        44,
+        45,
+        47,
+        49,
+        50
+      ],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -912,9 +1198,16 @@
       "name": "Hanlar Şehri",
       "type": "sehir",
       "province": "karaorman",
-      "q": 2,
-      "r": -3,
-      "ring": 3,
+      "x": 55.5,
+      "y": 17.0,
+      "komsular": [
+        44,
+        46,
+        50,
+        51,
+        53,
+        55
+      ],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -931,9 +1224,13 @@
       "name": "Maden Boğazı",
       "type": "maden",
       "province": "karaorman",
-      "q": 0,
-      "r": -4,
-      "ring": 4,
+      "x": 28.0,
+      "y": 6.0,
+      "komsular": [
+        41,
+        45,
+        49
+      ],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -947,17 +1244,22 @@
     },
     {
       "id": 49,
-      "name": "Sarpsurlar",
-      "type": "kale",
+      "name": "Değirmenbaşı Köyü",
+      "type": "koy",
       "province": "karaorman",
-      "q": 1,
-      "r": -4,
-      "ring": 4,
+      "x": 39.0,
+      "y": 6.0,
+      "komsular": [
+        45,
+        46,
+        48,
+        50
+      ],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
-        "milis": 25,
-        "mizrakci": 12,
+        "milis": 12,
+        "mizrakci": 4,
         "okcu": 0,
         "suvari": 0,
         "kusatma": 0
@@ -969,9 +1271,14 @@
       "name": "Ambarköy",
       "type": "tarla",
       "province": "karaorman",
-      "q": 2,
-      "r": -4,
-      "ring": 4,
+      "x": 50.0,
+      "y": 6.0,
+      "komsular": [
+        46,
+        47,
+        49,
+        51
+      ],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -985,17 +1292,22 @@
     },
     {
       "id": 51,
-      "name": "Beyazsur",
-      "type": "sehir",
+      "name": "Karaçalı Köyü",
+      "type": "koy",
       "province": "karaorman",
-      "q": 3,
-      "r": -4,
-      "ring": 4,
+      "x": 61.0,
+      "y": 6.0,
+      "komsular": [
+        47,
+        50,
+        55,
+        58
+      ],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
-        "milis": 25,
-        "mizrakci": 12,
+        "milis": 12,
+        "mizrakci": 4,
         "okcu": 0,
         "suvari": 0,
         "kusatma": 0
@@ -1007,9 +1319,16 @@
       "name": "Başaklı",
       "type": "tarla",
       "province": "tasgecit",
-      "q": 1,
-      "r": -1,
-      "ring": 1,
+      "x": 55.5,
+      "y": 39.0,
+      "komsular": [
+        1,
+        2,
+        42,
+        44,
+        53,
+        54
+      ],
       "level": 1,
       "income_mult": 2.0,
       "npc_garrison": {
@@ -1026,9 +1345,16 @@
       "name": "İpekyolu",
       "type": "sehir",
       "province": "tasgecit",
-      "q": 2,
-      "r": -2,
-      "ring": 2,
+      "x": 61.0,
+      "y": 28.0,
+      "komsular": [
+        44,
+        47,
+        52,
+        54,
+        55,
+        56
+      ],
       "level": 1,
       "income_mult": 1.5,
       "npc_garrison": {
@@ -1045,9 +1371,16 @@
       "name": "Kızılcevher",
       "type": "maden",
       "province": "tasgecit",
-      "q": 2,
-      "r": -1,
-      "ring": 2,
+      "x": 66.5,
+      "y": 39.0,
+      "komsular": [
+        2,
+        4,
+        52,
+        53,
+        56,
+        57
+      ],
       "level": 1,
       "income_mult": 1.5,
       "npc_garrison": {
@@ -1064,9 +1397,16 @@
       "name": "Geçitbaşı Kalesi",
       "type": "kale",
       "province": "tasgecit",
-      "q": 3,
-      "r": -3,
-      "ring": 3,
+      "x": 66.5,
+      "y": 17.0,
+      "komsular": [
+        47,
+        51,
+        53,
+        56,
+        58,
+        59
+      ],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -1083,9 +1423,16 @@
       "name": "Çimenyurt",
       "type": "tarla",
       "province": "tasgecit",
-      "q": 3,
-      "r": -2,
-      "ring": 3,
+      "x": 72.0,
+      "y": 28.0,
+      "komsular": [
+        53,
+        54,
+        55,
+        57,
+        59,
+        60
+      ],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -1102,9 +1449,16 @@
       "name": "Tuzköy",
       "type": "sehir",
       "province": "tasgecit",
-      "q": 3,
-      "r": -1,
-      "ring": 3,
+      "x": 77.5,
+      "y": 39.0,
+      "komsular": [
+        4,
+        8,
+        54,
+        56,
+        60,
+        61
+      ],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -1121,9 +1475,13 @@
       "name": "Körükbaşı",
       "type": "maden",
       "province": "tasgecit",
-      "q": 4,
-      "r": -4,
-      "ring": 4,
+      "x": 72.0,
+      "y": 6.0,
+      "komsular": [
+        51,
+        55,
+        59
+      ],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -1137,17 +1495,22 @@
     },
     {
       "id": 59,
-      "name": "Aslanpençe",
-      "type": "kale",
+      "name": "Yoncalı Köyü",
+      "type": "koy",
       "province": "tasgecit",
-      "q": 4,
-      "r": -3,
-      "ring": 4,
+      "x": 77.5,
+      "y": 17.0,
+      "komsular": [
+        55,
+        56,
+        58,
+        60
+      ],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
-        "milis": 25,
-        "mizrakci": 12,
+        "milis": 12,
+        "mizrakci": 4,
         "okcu": 0,
         "suvari": 0,
         "kusatma": 0
@@ -1159,9 +1522,14 @@
       "name": "Ekinova",
       "type": "tarla",
       "province": "tasgecit",
-      "q": 4,
-      "r": -2,
-      "ring": 4,
+      "x": 83.0,
+      "y": 28.0,
+      "komsular": [
+        56,
+        57,
+        59,
+        61
+      ],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -1175,17 +1543,22 @@
     },
     {
       "id": 61,
-      "name": "Zanaatkârlar",
-      "type": "sehir",
+      "name": "Akpınar Köyü",
+      "type": "koy",
       "province": "tasgecit",
-      "q": 4,
-      "r": -1,
-      "ring": 4,
+      "x": 88.5,
+      "y": 39.0,
+      "komsular": [
+        8,
+        31,
+        57,
+        60
+      ],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
-        "milis": 25,
-        "mizrakci": 12,
+        "milis": 12,
+        "mizrakci": 4,
         "okcu": 0,
         "suvari": 0,
         "kusatma": 0

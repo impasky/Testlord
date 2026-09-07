@@ -10,6 +10,7 @@
  * savaşı kendi döngüsünde çözmesini bekler. Hiçbir test ucu çağırmaz.
  */
 import { kayitOl } from './lib/kayit.mjs';
+import { merkezUzakliklari } from './lib/harita.mjs';
 
 const API = process.env.API_URL ?? 'http://localhost:3000';
 const DB = process.env.DATABASE_URL ?? 'postgresql://lordlar@127.0.0.1:5432/lordlar_cagi';
@@ -29,8 +30,14 @@ await P('/army/train', { unitType: 'okcu', count: 15 });
 await P('/test/kuyruklari-bitir');
 
 const harita = await G('/map');
+// Eski `ring === 4` ölçütünün karşılığı: Taht Kalesi'nden en az 4 adım
+// uzaktaki bölgeler. Altıgen ızgara kalktı, ölçü komşuluk grafiğinden
+// türüyor (docs/12 §1).
+const kenar = new Set(
+  [...merkezUzakliklari(harita.regions)].filter(([, d]) => d >= 4).map(([id]) => id),
+);
 const hedef = harita.regions
-  .filter((r) => r.ring === 4 && !r.owner && r.type !== 'kale')
+  .filter((r) => kenar.has(r.id) && !r.owner && r.type !== 'kale')
   .sort((a, b) => a.distance - b.distance)[0];
 const y = await P('/march', { toRegionId: hedef.id, army: { mizrakci: 20, okcu: 15 } });
 console.log('Yuruyus basladi:', hedef.name, '| varis', y.arriveAt);

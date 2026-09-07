@@ -129,7 +129,7 @@ if (ikililer.length >= 2) {
     kontrol(
       `Kendi bölgene mesafe sıfır (${b.name})`,
       kendi?.distance === 0,
-      `${kendi?.distance} hex`,
+      `${kendi?.distance} adım`,
     );
   }
 

@@ -241,9 +241,11 @@ export interface RegionDto {
   name: string;
   type: string;
   province: string;
-  q: number;
-  r: number;
-  ring: number;
+  /** Harita resmi üzerindeki yüzdelik yer. YALNIZ çizim için. */
+  x: number;
+  y: number;
+  /** Bitişik bölgelerin kimlikleri. Mesafe ve komşuluk buradan gelir. */
+  komsular: number[];
   level: number;
   incomeMult: number;
   owner: { id: string; name: string; level: number } | null;
@@ -278,7 +280,8 @@ export interface PaktlarDto {
 }
 
 export interface MapDto {
-  home: { q: number; r: number };
+  /** Kampın çıpası: hangi bölgenin yanında durduğu. */
+  homeBolgeId: number;
   maxRegions: number;
   oneri: HedefOnerisiDto | null;
   /** İttifakın ortak hedefi — varsa haritada işaretli. */

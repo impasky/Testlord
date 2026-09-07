@@ -67,7 +67,7 @@ await page.reload({ waitUntil: 'networkidle' });
 await page.waitForTimeout(1500);
 
 /* --- Haritada bir hedef aç --- */
-// Hedefi ürünün KENDİ önerisinden alıyoruz: rastgele bir hex korumalı ya
+// Hedefi ürünün KENDİ önerisinden alıyoruz: rastgele bir bölge korumalı ya
 // da başkasının olabilir ve saldırı paneli hiç açılmaz.
 const oneri = await fetch(`${API}/api/map`, { headers: bas }).then((r) => r.json());
 const hedefAd = oneri?.oneri?.name ?? null;
@@ -75,9 +75,9 @@ kontrol('oyunun önerdiği bir hedef var', Boolean(hedefAd), hedefAd ?? 'yok');
 
 await ekrana(page, 'harita', 2000);
 // Hex'ler <g role="button"> ve içlerinde <title> olarak bölge adı var.
-const hex = page.locator('g[role="button"]').filter({ hasText: hedefAd ?? '' });
-if (await hex.count()) {
-  await hex.first().click();
+const bolgeDugmesi = page.locator('g[role="button"]').filter({ hasText: hedefAd ?? '' });
+if (await bolgeDugmesi.count()) {
+  await bolgeDugmesi.first().click();
   await page.waitForTimeout(1500);
 }
 // "Hepsi" ile orduyu seç.

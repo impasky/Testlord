@@ -844,7 +844,7 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
       if (armyCount(survivors) > 0) {
         // Mesafe yürüyüş kaydından okunur. Eskiden gidiş süresinden geri
         // türetiliyordu; ilk saldırının süresi kısaltılabilir olunca o
-        // türetme yanlış mesafe veriyor (2 dakikalık gidiş "0 hex" gibi
+        // türetme yanlış mesafe veriyor (2 dakikalık gidiş "0 adım" gibi
         // okunurdu). Dönüş kısayoldan yararlanmaz: oyuncu sonucu çoktan
         // gördü, kısaltmanın anlatacağı bir şey kalmadı.
         const donusSn = marchDurationSec(

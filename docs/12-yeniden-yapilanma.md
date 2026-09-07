@@ -28,7 +28,7 @@ Plan on soruyla netleşti. Cevaplar (oyuncunun seçimleri):
 | NPC seferleri | **Gerçek sefer, kısa süre** — savaş motoru, dizilim, taktik aynen |
 | Alt çubuk | **Şehir · Ordu · Sefer · Dünya · Lord** |
 | Başkent kaybı | **Düşürülür**, elindeki en iyi bölgeye taşınırsın; hiç kalmazsa kampa |
-| Mevcut dünyalar | **Sıfırlanır** (hesaplar durur, oyun ilerlemesi gider) |
+| Mevcut dünyalar | Sıfırlanacaktı; **göç yazıldı** — bkz. §1.4 |
 | Sefer grupları | **Yenilenme süresi** ile geri döner |
 | Şehirdeki binalar | **Görünür ama inşa edilmemiş**, kaynakla dikilir |
 | Bina seviyesi | **Var** (1–5) |
@@ -61,6 +61,12 @@ q, r, ring          →   x, y  (haritadaki yüzdelik yer, 0–100)
 `x, y` yalnız **çizim** için. Motor onları hiç okumaz — bu bilinçli:
 harita resmini değiştirdiğimizde oyunun kuralları kaymasın.
 
+**Ölçüldü: değişiklik dengeyi hiç kaydırmadı.** Komşuluklar eski altıgen
+komşuluklarından türetildi ve 61 bölgenin **3721 çiftinin hepsinde**
+grafik mesafesi eski hex mesafesiyle birebir aynı çıktı. Yürüyüş
+süreleri, hedef önerileri ve ilk saldırı kısayolu olduğu gibi kaldı;
+yalnız altında duran hesap değişti.
+
 ### 1.2 Yeni bölge türü: `koy`
 
 Haritanın kenarında 12 köy. Garnizonları çok zayıf. Herkesin ilk fethi
@@ -72,7 +78,15 @@ kale 8 · taht 1**.
 Başkent olabilen türler: `koy`, `sehir`, `kale`, `taht`. Tarla ve maden
 yerleşim değil, gelir kaynağı.
 
-### 1.3 Şema değişiklikleri
+### 1.3 `ring` yerine merkez uzaklığı
+
+Halka kavramı altıgenle birlikte kalktı. Yerine **Taht Kalesi'nden kaç
+adım** geçti; aynı şeyi ölçüyor ama grafikten türüyor. Kodda ve
+testlerde `ring === 4` diyen her yer artık `merkezUzakligi(id) >= 4`
+diyor. Doğum yeri seçimi ise halkaya hiç bakmıyor: **köy türüne** bakıyor
+— "kenar" geometrik bir tesadüftü, "köy" tasarımın kendisi.
+
+### 1.4 Şema değişiklikleri
 
 ```
 Region:   q, r, ring        →  (silinir)
@@ -84,6 +98,27 @@ Queue:    kind = 'bina'     (inşa/yükseltme kuyruğu; mevcut sistem)
 
 `binalar` lorda bağlı, bölgeye değil — "binalar seninle taşınır"
 kararının doğrudan karşılığı.
+
+**Sıfırlama yerine göç.** Karar "dünyaları sıfırla" idi ve gerekçesi
+göçün pahalı olacağıydı. Uygulamada göç ~70 satır SQL çıktı, o yüzden
+sıfırlamaya gerek kalmadı: hiçbir dünya, lord ya da bölge silinmedi.
+Yeni alanlar boşluğa izin vererek eklendi, kanonik haritadan dolduruldu,
+sonra zorunlu hâle getirildi. Her lordun eski koordinatı denk geldiği
+bölgeye çevrildi, elindeki en gelişmiş yerleşim de başkenti oldu.
+Çalışan bir dünyanın ortasında da güvenle uygulanabilir.
+
+### 1.5 İki kimlik uzayı — dikkat
+
+Sunucuda iki bölge kimliği var: `mapId` kanonik haritadaki numara (1–61,
+her dünyada aynı) ve `id` veritabanı satır numarası (dünya başına
+farklı). `komsular` ile `homeBolgeId` **mapId** taşıyor; istemcinin
+gördüğü ve saldırırken gönderdiği ise **id**.
+
+`/map` ucu bu yüzden ikisini çeviriyor. Çevirmeyi ilk denemede atlamıştım
+ve sonuç sessiz bir çöküş oldu: komşu numaraları listedeki hiçbir
+bölgeyle eşleşmedi, istemci grafiği hiç gezemedi ve haritada tek bir
+aday bulunamadı. Yeni bir uç bölge komşuluğu döndürecekse aynı çeviriyi
+yapmak zorunda.
 
 ## 2. Yerleşim ve başkent
 
@@ -281,7 +316,7 @@ Her aşama sonunda oyun **oynanabilir** durumda kalır.
 
 | # | İş |
 |---|---|
-| **Y1** | Veri modeli: komşuluk grafiği, köy türü, başkent, bina alanı. Göç ve testler. |
+| **Y1** ✅ | Veri modeli: komşuluk grafiği, köy türü, başkent, bina alanı. Göç ve testler. |
 | **Y2** | Dünya haritası arayüzü: resimli zemin, kaydırma/yakınlaştırma, işaretçiler. |
 | **Y3** | Şehir sayfası: yerleşim zemini, bina yerleşimi, inşa ve yükseltme kuyruğu. |
 | **Y4** | Bina seviyesi etkileri: lord seviyesinden binaya taşınan sayılar. |

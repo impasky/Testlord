@@ -10,7 +10,7 @@
 import {
   ayniIttifaktaMi,
   gunlukTavan,
-  hexDistance,
+  bolgeMesafesi,
   sevkiyatDenetle,
   sevkiyatSuresiSn,
   yukAgirligi,
@@ -48,11 +48,11 @@ export async function ticaretRoutes(app: FastifyInstance): Promise<void> {
       const [ben, o] = await Promise.all([
         tx.lord.findUniqueOrThrow({
           where: { id: lordId },
-          select: { worldId: true, homeQ: true, homeR: true, allianceId: true },
+          select: { worldId: true, homeBolgeId: true, allianceId: true },
         }),
         tx.lord.findUnique({
           where: { id: body.lordId },
-          select: { worldId: true, homeQ: true, homeR: true, allianceId: true, name: true },
+          select: { worldId: true, homeBolgeId: true, allianceId: true, name: true },
         }),
       ]);
       if (!o || o.worldId !== ben.worldId) throw hata.bulunamadi('Lord');
@@ -91,7 +91,7 @@ export async function ticaretRoutes(app: FastifyInstance): Promise<void> {
         },
       });
 
-      const mesafe = hexDistance({ q: ben.homeQ, r: ben.homeR }, { q: o.homeQ, r: o.homeR });
+      const mesafe = bolgeMesafesi(ben.homeBolgeId, o.homeBolgeId);
       const sn = sevkiyatSuresiSn(mesafe);
       const simdi = new Date();
       const sevk = await tx.shipment.create({

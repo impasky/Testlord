@@ -17,9 +17,9 @@
 import { B } from './balance.js';
 
 /** Keşfin süresi: mesafeye bağlı ama yürüyüşten çok daha hızlı. */
-export function kesifSuresiSn(mesafeHex: number): number {
+export function kesifSuresiSn(mesafeAdim: number): number {
   const k = B.casusluk;
-  const dakika = k.taban_dakika + k.hex_basina_dakika * Math.max(0, mesafeHex);
+  const dakika = k.taban_dakika + k.adim_basina_dakika * Math.max(0, mesafeAdim);
   return Math.round(dakika * 60);
 }
 

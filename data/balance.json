@@ -2,7 +2,11 @@
   "schema": "lordlar-cagi/balance@1",
   "_aciklama": "TUM sayisal denge burada. Kod hicbir yerde sabit sayi icermez, bu dosyayi okur. Denge degisikligi = sadece bu dosyada degisiklik.",
   "kaynaklar": {
-    "turler": ["altin", "demir", "erzak"],
+    "turler": [
+      "altin",
+      "demir",
+      "erzak"
+    ],
     "puan": "sohret",
     "malikane_saatlik": {
       "altin": 100,
@@ -203,7 +207,14 @@
     "sure_us": 1.6
   },
   "ekipman": {
-    "slotlar": ["silah", "kalkan", "zirh", "migfer", "at", "sancak"],
+    "slotlar": [
+      "silah",
+      "kalkan",
+      "zirh",
+      "migfer",
+      "at",
+      "sancak"
+    ],
     "tier_taban_guc": {
       "1": 12,
       "2": 28,
@@ -328,14 +339,55 @@
       "_azami_notu": "Lv60 bir oyuncu 5 bolge tutabiliyor; hepsini tek vilayete yiginca 4 x 0.08 = 0.32, tavan 0.30'a kirpiliyor. Tavan olmasa vilayet yigmak tek dogru oyun olurdu; simdi guclu ama zorunlu degil."
     },
     "gelisim_adlari": {
-      "tarla": ["Köy Tarlası", "Ekinlik", "Bereketli Tarlalar", "Tahıl Ambarı", "Diyarın Kileri"],
-      "maden": ["Taş Ocağı", "Demir Madeni", "Derin Ocak", "Cevher Yatağı", "Kadim Damar"],
-      "sehir": ["Kasaba", "Pazar Şehri", "Ticaret Şehri", "Büyük Şehir", "Diyarın Başkenti"],
-      "kale": ["Gözcü Kulesi", "Hisar", "Kale", "Büyük Kale", "Aşılmaz Kale"],
-      "taht": ["Taht Kalesi", "Taht Kalesi", "Taht Kalesi", "Taht Kalesi", "Taht Kalesi"]
+      "koy": [
+        "Köy",
+        "Büyük Köy",
+        "Bucak",
+        "Nahiye",
+        "Kasaba Kapısı"
+      ],
+      "tarla": [
+        "Köy Tarlası",
+        "Ekinlik",
+        "Bereketli Tarlalar",
+        "Tahıl Ambarı",
+        "Diyarın Kileri"
+      ],
+      "maden": [
+        "Taş Ocağı",
+        "Demir Madeni",
+        "Derin Ocak",
+        "Cevher Yatağı",
+        "Kadim Damar"
+      ],
+      "sehir": [
+        "Kasaba",
+        "Pazar Şehri",
+        "Ticaret Şehri",
+        "Büyük Şehir",
+        "Diyarın Başkenti"
+      ],
+      "kale": [
+        "Gözcü Kulesi",
+        "Hisar",
+        "Kale",
+        "Büyük Kale",
+        "Aşılmaz Kale"
+      ],
+      "taht": [
+        "Taht Kalesi",
+        "Taht Kalesi",
+        "Taht Kalesi",
+        "Taht Kalesi",
+        "Taht Kalesi"
+      ]
     },
     "_gelisim_adlari_not": "Bolge seviyesi 1-5 icin, TIPE OZEL asama adlari. Yeni mekanik degil: ayni yukseltme, sadece adlandirilmis. Oyuncu 'sehri gelistiremiyorum' diyordu; oysa gelistirebiliyordu ama arayuz ona 'Sv 2' diyordu. Bir yeri gelistirmek, o yerin AD DEGISTIRMESIYLE hissedilir -- Kasaba'nin Pazar Sehri olmasi, 'seviye 2' olmasindan bambaska bir sey.",
     "taban_gelir_saatlik": {
+      "koy": {
+        "altin": 60,
+        "erzak": 50
+      },
       "tarla": {
         "erzak": 140
       },
@@ -366,6 +418,7 @@
     "yukseltme_us": 1.9,
     "yukseltme_sure_formulu_saat": "2 * 2^(N-1)",
     "kale_savunma_bonusu": {
+      "koy": 0.0,
       "tarla": 0.0,
       "maden": 0.05,
       "sehir": 0.1,
@@ -374,7 +427,8 @@
     },
     "kale_bonusu_seviye_basina": 0.05,
     "garnizon": "Sahip, ordusunun bir kismini bolgede birakabilir. Sadece garnizon savunur; evdeki ordu bolgeyi savunmaz.",
-    "ilk_fetih_hedefi": "Ring 4 bolgeleri yeni oyuncunun ~1. gununde alinabilecek sekilde ayarlandi (garnizon savunmasi ~560)."
+    "ilk_fetih_hedefi": "Koy bolgeleri (12 adet, haritanin kenarinda) yeni oyuncunun ILK fethi icin ayarlandi: garnizon ~16 birim. Oyuna toprakSIZ basliyoruz (docs/12 §8), o yuzden ilk hedef herkes icin dakikalar icinde ulasilabilir olmali.",
+    "_koy_notu": "Koy en kucuk yerlesim ve BASKENT olabilen turlerden biri. Geliri dusuk ama yerlesim kademesi verdigi icin degeri gelirinde degil: koyu olan oyuncu sehir sayfasina, bina dikmeye ve oyunun geri kalanina kavusuyor."
   },
   "taht_kalesi": {
     "ad": "Taht Kalesi",
@@ -385,9 +439,9 @@
     "_not": "Herkese haritada gorunur ve gunluk saldiri limiti bu bolgeye islemez. Endgame rekabetinin odagi."
   },
   "yuruyus": {
-    "dakika_hex_basina": 12,
+    "dakika_adim_basina": 12,
     "hiz_referansi": 6,
-    "formul": "sure_dk = hex_mesafe * 12 * (6 / en_yavas_birim_hizi)",
+    "formul": "sure_dk = adim_mesafesi * 12 * (6 / en_yavas_birim_hizi)",
     "min_dakika": 10,
     "max_dakika": 360,
     "donus_suresi": "Gidis ile ayni",
@@ -395,8 +449,8 @@
     "es_zamanli_limit": 5,
     "_es_zamanli_not": "Ayni anda kac saldiri/donus yuruyusu olabilir. Sinirsiz birakildiginda ordusu yeten oyuncu tek seferde on hedefe saldirabiliyordu; kuyruk sistemlerinin hepsinde sinir varken yuruyuste yoktu.",
     "ilk_saldiri_dakika": 2,
-    "_ilk_saldiri_not": "Oyuncunun ILK saldirisi bu surede varir. Ucu birden gerekir: (1) lordun hic yuruyusu yok, (2) hedef sahipsiz bir NPC bolgesi, (3) hedef eve en fazla ilk_saldiri_max_hex uzaklikta. Sebep: en kisa yuruyus 10 dk, donusuyle 20; yeni oyuncu ilk oturumunda ordusunu yola cikarip hicbir sonuc gormeden cikiyordu -- 'saldiriya gonderdim, eee ne oldu simdi' sorusunun cevabi gercekten yoktu. Mesafe kosulu olmasa uzak ve degerli bir bolgeye 2 dakikada varilir ve haritanin kenardan baslama kurgusu bir kez atlanabilirdi. PvP'ye uygulanmaz: savunanin tepki suresi kisalmamali.",
-    "ilk_saldiri_max_hex": 1
+    "_ilk_saldiri_not": "Oyuncunun ILK saldirisi bu surede varir. Ucu birden gerekir: (1) lordun hic yuruyusu yok, (2) hedef sahipsiz bir NPC bolgesi, (3) hedef eve en fazla ilk_saldiri_max_adim uzaklikta. Sebep: en kisa yuruyus 10 dk, donusuyle 20; yeni oyuncu ilk oturumunda ordusunu yola cikarip hicbir sonuc gormeden cikiyordu -- 'saldiriya gonderdim, eee ne oldu simdi' sorusunun cevabi gercekten yoktu. Mesafe kosulu olmasa uzak ve degerli bir bolgeye 2 dakikada varilir ve haritanin kenardan baslama kurgusu bir kez atlanabilirdi. PvP'ye uygulanmaz: savunanin tepki suresi kisalmamali.",
+    "ilk_saldiri_max_adim": 1
   },
   "savas": {
     "tur_sayisi": 5,
@@ -546,7 +600,10 @@
       "takviye_hizi_azami": 0.21,
       "kesif_indirimi_seviye_basina": 0.04,
       "kesif_indirimi_azami": 0.28,
-      "pakt_slotu_esikleri": [4, 7],
+      "pakt_slotu_esikleri": [
+        4,
+        7
+      ],
       "_neden_gelir_ve_savas_bonusu_YOK": "Turun cogu oyunu klan seviyesini gelire ve savas gucune bagliyor. Biz BAGLAMIYORUZ ve bu bilincli bir sapma: orgutlu bir gruba guc carpani vermek, oyunun en cok ugrastigi seyi -- kartopunu (docs/09 K5, lider avi) -- ittifak olceginde geri getirirdi. Onde giden ittifak daha cok bagis yapar, daha cok bonus alir, daha cok onde gider. Bunun yerine seviye YARDIMLASMAYI buyutuyor: daha cok kaynak gonderebilirsin, takviyen daha hizli varir, kesif daha ucuz, daha cok pakt yapabilirsin. Hicbiri tek basina savas kazandirmiyor; hepsi birlikte oynamayi kolaylastiriyor."
     },
     "bagis": {
@@ -612,7 +669,7 @@
   "ticaret": {
     "_aciklama": "Ittifak ici kaynak gonderme (docs/09 B6). Yalniz ittifak uyelerine: 'Ittifak olmadan somuruye acik' notu B6'nin kendi tanimindaydi. Ittifak artik var, o yuzden acilabiliyor.",
     "_neden_hediye_degil_gonderim": "Takas (senden 100 demir, benden 200 erzak) yerine tek yonlu GONDERIM sectik. Takas iki tarafin da onayini, bir teklif kuyrugunu ve teklif suresi dolunca ne olacagini gerektiriyor; oyunun geri kalani gibi beklemeli calisan bir sistemde bu uc yeni ekran demek. Gonderim tek hareket ve ayni ise yariyor: ihtiyaci olana kaynak gidiyor.",
-    "hex_basina_dakika": 4,
+    "adim_basina_dakika": 4,
     "taban_dakika": 6,
     "_sure_notu": "Kaynak da yol aliyor. Aninda gonderim, kusatma altindaki oyuncuyu sinirsiz beslerdi ve saldirinin ekonomik anlami kalmazdi.",
     "gunluk_gonderim_tavani": 20000,
@@ -624,7 +681,7 @@
     "_aciklama": "Saldirmadan once bilgi almak. docs/01 §1 Kurnazlik statina 'casusluk' diye soz vermisti ve bu soz yillardir tutulmamisti: Kurnazlik yalniz yagmayi artiriyordu. Casusluk o statin ikinci isi.",
     "maliyet_altin": 500,
     "taban_dakika": 5,
-    "hex_basina_dakika": 3,
+    "adim_basina_dakika": 3,
     "_sure_notu": "Casus tek kisi, orduyla yurumuyor: kesif ayni mesafeye giden yuruyusten cok daha hizli. Yoksa 'once kesfet sonra saldir' zincirinin toplam suresi oyuncuyu kesiften vazgecirirdi.",
     "gecerlilik_saat": 6,
     "_gecerlilik_notu": "Rapor bir FOTOGRAF. Suresi gecince silinmiyor, ESKI diye isaretleniyor -- eski istihbarat da bilgidir, ama oyuncu ona guvenip guvenmeyecegine kendisi karar vermeli.",
@@ -651,7 +708,10 @@
     "_aciklama": "Savas oncesi 4x4 dizilim. Kareler 1-16, satir 1 EN ON, satir 4 EN ARKA. Her birimin bir ideal satiri var; sapma ceza yazar. Kanat sutunlari 1 ve 4.",
     "satir": 4,
     "sutun": 4,
-    "kanat_sutunlari": [1, 4],
+    "kanat_sutunlari": [
+      1,
+      4
+    ],
     "birim_yerlesimi": {
       "milis": {
         "ideal_satir": 1,

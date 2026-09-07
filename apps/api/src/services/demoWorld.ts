@@ -82,17 +82,18 @@ export async function seedDemoLords(worldId: string): Promise<number> {
   });
   if (zaten > 0) return 0;
 
-  const kenar = WORLD_MAP.regions.filter((r) => r.ring === 4);
+  const koyler = WORLD_MAP.regions.filter((r) => r.type === 'koy');
   const parola = await hashPassword(`demo-${Math.random().toString(36).slice(2)}`);
   let eklenen = 0;
 
   for (let i = 0; i < DEMO.length; i++) {
     const d = DEMO[i]!;
-    const ev = kenar[(i * 4) % kenar.length]!;
+    const ev = koyler[(i * 4) % koyler.length]!;
 
-    // Sahipsiz bir bölge bul: eve yakın, kale ve taht dışında
+    // Sahipsiz bir bölge bul: kale ve taht dışında. Demo lord bir dolgu,
+    // hangi bölgeyi tuttuğu değil TUTUYOR olması önemli.
     const bolge = await prisma.region.findFirst({
-      where: { worldId, ownerLordId: null, type: { notIn: ['kale', 'taht'] }, ring: { gte: 3 } },
+      where: { worldId, ownerLordId: null, type: { notIn: ['kale', 'taht'] } },
       orderBy: { id: 'asc' },
     });
 
@@ -119,8 +120,10 @@ export async function seedDemoLords(worldId: string): Promise<number> {
         altin: 20000,
         demir: 8000,
         erzak: 15000,
-        homeQ: ev.q,
-        homeR: ev.r,
+        homeBolgeId: ev.id,
+        // Demo lord bir başkente sahip: şehir sayfası olan bir rakip,
+        // sıralamada kampta oturan bir isimden daha inandırıcı.
+        baskentBolgeId: bolge?.mapId ?? null,
         // Demo lordlar saldırılabilir olmalı: yeni oyuncu kalkanı yok
         protectionUntil: null,
         gearLines: { create: GEAR_LINES.map((line) => ({ line, level: 1 })) },

@@ -188,8 +188,25 @@ function ayirVilayetAdlari(
   return sirali;
 }
 
-function merkez(q: number, r: number) {
-  return { x: BOYUT * Math.sqrt(3) * (q + r / 2), y: BOYUT * 1.5 * r };
+/**
+ * Yüzdelik harita konumunu SVG birimine çevirecek ölçeği ÖLÇER.
+ *
+ * Bölgelerin `x`/`y` alanı harita resmi üzerindeki yüzdelik yer (0–100);
+ * bu bileşen ise altıgen çiziyor ve altıgenlerin bitişmesi gerekiyor.
+ * Ölçeği sabit yazmak yerine iki komşunun arasındaki gerçek uzaklıktan
+ * türetiyoruz: harita verisi değişse de altıgenler bitişik kalır.
+ *
+ * Bu bileşen Y2'de resimli haritayla değişecek (docs/12 §10); buradaki iş
+ * o güne kadar haritanın çalışmaya devam etmesi.
+ */
+function olcekBul(regions: RegionDto[]): number {
+  for (const r of regions) {
+    const k = regions.find((x) => x.id === r.komsular[0]);
+    if (!k) continue;
+    const d = Math.hypot(k.x - r.x, k.y - r.y);
+    if (d > 0) return (BOYUT * Math.sqrt(3)) / d;
+  }
+  return 1;
 }
 
 function hexYol(cx: number, cy: number, s: number): string {
@@ -208,14 +225,15 @@ function kisaAd(ad: string): string {
 
 export function HexHarita({
   regions,
-  home,
+  homeBolgeId,
   seciliId,
   yuruyusler,
   ittifakHedefiId,
   onSec,
 }: {
   regions: RegionDto[];
-  home: { q: number; r: number };
+  /** Kampın çıpası: hangi bölgenin yanında durduğu (world-map mapId). */
+  homeBolgeId: number;
   seciliId: number | null;
   /** Yoldaki ordular: evden hedefe çizgi ve ilerleyen bir işaret. */
   yuruyusler: MarchDto[];
@@ -317,19 +335,20 @@ export function HexHarita({
   // vaadi bu.
   const tamAd = gorunum.olcek >= 1.6;
 
-  const m = regions.map((r) => ({ r, ...merkez(r.q, r.r) }));
+  const olcek = olcekBul(regions);
+  const m = regions.map((r) => ({ r, x: r.x * olcek, y: r.y * olcek }));
   const xs = m.map((a) => a.x);
   const ys = m.map((a) => a.y);
   const minX = Math.min(...xs) - PAD;
   const minY = Math.min(...ys) - PAD;
   const w = Math.max(...xs) - minX + PAD;
   const h = Math.max(...ys) - minY + PAD;
-  const ev = merkez(home.q, home.r);
+  // Kamp, çıpasının olduğu bölgenin üstünde duruyor. Çıpa bulunamazsa
+  // (bozuk veri) haritanın ortası: işaret yanlış yerde durur ama harita
+  // çizilmeye devam eder.
+  const evBolge = m.find((a) => a.r.id === homeBolgeId);
+  const ev = { x: evBolge?.x ?? minX + w / 2, y: evBolge?.y ?? minY + h / 2 };
   const tipler = [...new Set(regions.map((r) => r.type))];
-
-  // Komşunun vilayeti: sınır çizerken her komşu için listeyi baştan
-  // taramak 61 × 6 arama demekti.
-  const vilayetHaritasi = new Map(regions.map((r) => [`${r.q},${r.r}`, r.province]));
 
   /**
    * Vilayet adının yazılacağı yer: o vilayetin altıgenlerinin ağırlık
@@ -641,8 +660,18 @@ export function HexHarita({
           ayırdığı şey görünürse sınırdır. */}
           <g className="pointer-events-none">
             {m.map(({ r, x, y }) =>
-              KENAR_YONU.map(([dq, dr], i) => {
-                const komsu = vilayetHaritasi.get(`${r.q + dq},${r.r + dr}`);
+              KENAR_YONU.map((_, i) => {
+                // Bu kenarın baktığı yönde bir komşu var mı: komşunun
+                // MERKEZİNE giden açı hangi kenara denk düşüyor, ondan.
+                // Eskiden komşu q/r toplamıyla bulunuyordu; altıgen
+                // koordinatlar kalkınca yön açıdan okunuyor.
+                const komsu = m.find((a) => {
+                  if (!r.komsular.includes(a.r.id)) return false;
+                  const aci = Math.atan2(a.y - y, a.x - x);
+                  const kenarAci = (Math.PI / 180) * (60 * i - 60);
+                  const d = Math.abs(((aci - kenarAci + Math.PI * 3) % (Math.PI * 2)) - Math.PI);
+                  return d > Math.PI - Math.PI / 6;
+                })?.r.province;
                 if (komsu === r.province) return null;
                 const [x1, y1] = kose(x, y, BOYUT * 0.97, i);
                 const [x2, y2] = kose(x, y, BOYUT * 0.97, i + 1);

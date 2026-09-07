@@ -4,16 +4,21 @@
  * Mesafe artık malikâneden değil, oyuncunun EN YAKIN TOPRAĞINDAN ölçülüyor
  * (docs/11 §1.2 H1). Sekiz ayrı uç aynı soruyu soruyor; hesabı sekiz yere
  * kopyalamak, bir gün birinin unutulup haritanın kendi içinde tutarsız
- * olması demekti — bölge listesinde "2 hex" yazan yerin saldırı ekranında
- * "5 hex" çıkması.
+ * olması demekti — bölge listesinde "2 adım" yazan yerin saldırı ekranında
+ * "5 adım" çıkması.
  *
  * Ölçer bir kez kuruluyor ve istek boyunca kullanılıyor: lordun toprakları
  * bir istek içinde değişmiyor.
  */
-import { yakinlikMesafesi, type HexCoord } from '@lordlar/shared';
+import { yakinlikMesafesi } from '@lordlar/shared';
 import { prisma } from '../db.js';
 
-export type Mesafeci = (hedef: HexCoord) => number;
+/**
+ * Ölçer artık bölge KİMLİĞİ alıyor, koordinat değil: altıgen ızgara
+ * kalktı ve mesafe komşuluk grafiğinde en kısa yol (docs/12 §1).
+ * Kimlik, kanonik haritadaki `mapId` — veritabanı satır numarası değil.
+ */
+export type Mesafeci = (hedefMapId: number) => number;
 
 type Istemci = Pick<typeof prisma, 'lord' | 'region'>;
 
@@ -21,12 +26,12 @@ export async function mesafeOlcer(lordId: string, tx: Istemci = prisma): Promise
   const [lord, topraklar] = await Promise.all([
     tx.lord.findUniqueOrThrow({
       where: { id: lordId },
-      select: { homeQ: true, homeR: true },
+      select: { homeBolgeId: true },
     }),
-    tx.region.findMany({ where: { ownerLordId: lordId }, select: { q: true, r: true } }),
+    tx.region.findMany({ where: { ownerLordId: lordId }, select: { mapId: true } }),
   ]);
-  const ev = { q: lord.homeQ, r: lord.homeR };
-  return (hedef) => yakinlikMesafesi(ev, topraklar, hedef);
+  const topraklarim = topraklar.map((t) => t.mapId);
+  return (hedef) => yakinlikMesafesi(lord.homeBolgeId, topraklarim, hedef);
 }
 
 /**
@@ -35,6 +40,6 @@ export async function mesafeOlcer(lordId: string, tx: Istemci = prisma): Promise
  * Harita listesi zaten TÜM bölgeleri çekiyor; oradan sahiplerine bakıp
  * ikinci bir sorgu açmak boşuna.
  */
-export function mesafeOlcerHazir(ev: HexCoord, topraklar: readonly HexCoord[]): Mesafeci {
-  return (hedef) => yakinlikMesafesi(ev, topraklar, hedef);
+export function mesafeOlcerHazir(evMapId: number, topraklar: readonly number[]): Mesafeci {
+  return (hedef) => yakinlikMesafesi(evMapId, topraklar, hedef);
 }

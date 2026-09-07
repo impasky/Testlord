@@ -20,9 +20,9 @@ import { B } from './balance.js';
 import { altinKarsiligi } from './odul.js';
 import type { Resources } from './types.js';
 
-export function sevkiyatSuresiSn(mesafeHex: number): number {
+export function sevkiyatSuresiSn(mesafeAdim: number): number {
   const k = B.ticaret;
-  return Math.round((k.taban_dakika + k.hex_basina_dakika * Math.max(0, mesafeHex)) * 60);
+  return Math.round((k.taban_dakika + k.adim_basina_dakika * Math.max(0, mesafeAdim)) * 60);
 }
 
 /**

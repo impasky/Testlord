@@ -1,49 +1,8 @@
-/** Harita mesafesi ve yürüyüş süresi. */
+/** Yürüyüş süresi ve ilk saldırı kısayolu. Mesafe: harita.ts. */
 import { B, unit } from './balance.js';
 import type { ArastirmaBonusu } from './arastirma.js';
 import type { Army, GeneralBonus } from './types.js';
 import { UNIT_TYPES } from './types.js';
-
-export interface HexCoord {
-  q: number;
-  r: number;
-}
-
-/** İki altıgen arasındaki mesafe (aksiyel koordinat). */
-export function hexDistance(a: HexCoord, b: HexCoord): number {
-  const dq = a.q - b.q;
-  const dr = a.r - b.r;
-  return (Math.abs(dq) + Math.abs(dr) + Math.abs(dq + dr)) / 2;
-}
-
-/**
- * Ordunun bir hedefe olan GERÇEK mesafesi: en yakın toprağından ölçülür.
- *
- * Eskiden mesafe yalnız malikâneden ölçülüyordu ve altıgen ızgara bu yüzden
- * boş bir süstü: bölgenin senin bölgene bitişik olmasıyla haritanın öbür
- * ucunda olması arasında hiçbir fark yoktu. Izgaranın maliyetini ödüyor,
- * faydasını almıyorduk — oyuncunun "hex sistemi çok kısıtlayıcı
- * hissettiriyor" dediği şey buydu (docs/11 §1).
- *
- * Şimdi aldığın her bölge bir çıkış noktası. Toprak sahibi olmak haritayı
- * AÇIYOR; yayılma yayılma gibi hissediliyor.
- *
- * Kartopu riski yok: bölge sayısı seviyeye bağlı (`1 + floor(seviye/15)`),
- * yani sınırsız yayılan bir oyuncu yok. Malikâne her zaman listede — bölgesi
- * olmayan oyuncu eskisi gibi oynamaya devam ediyor.
- */
-export function yakinlikMesafesi(
-  ev: HexCoord,
-  topraklarim: readonly HexCoord[],
-  hedef: HexCoord,
-): number {
-  let enAz = hexDistance(ev, hedef);
-  for (const t of topraklarim) {
-    const d = hexDistance(t, hedef);
-    if (d < enAz) enAz = d;
-  }
-  return enAz;
-}
 
 /** Ordunun en yavaş biriminin hızı — yürüyüşü o belirler. */
 export function slowestSpeed(army: Army): number {
@@ -78,7 +37,7 @@ export interface MarchOptions {
  *    bir kez ücretsiz atlanır).
  */
 export function ilkSaldiriMi(yuruyusSayisi: number, sahipsizMi: boolean, mesafe: number): boolean {
-  return yuruyusSayisi === 0 && sahipsizMi && mesafe <= B.yuruyus.ilk_saldiri_max_hex;
+  return yuruyusSayisi === 0 && sahipsizMi && mesafe <= B.yuruyus.ilk_saldiri_max_adim;
 }
 
 /**
@@ -134,7 +93,7 @@ export function marchDurationSec(
 ): number {
   if (opts?.ilkSaldiri) return Math.round(B.yuruyus.ilk_saldiri_dakika * 60);
   const speed = slowestSpeed(army);
-  const raw = distance * B.yuruyus.dakika_hex_basina * (B.yuruyus.hiz_referansi / speed);
+  const raw = distance * B.yuruyus.dakika_adim_basina * (B.yuruyus.hiz_referansi / speed);
   const withBonus =
     (raw * (1 + (generalBonus?.yuruyusSuresi ?? 0))) / (1 + (arastirma?.yuruyusHizi ?? 0));
   const clamped = Math.min(B.yuruyus.max_dakika, Math.max(B.yuruyus.min_dakika, withBonus));

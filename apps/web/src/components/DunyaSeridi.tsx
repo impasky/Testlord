@@ -8,7 +8,7 @@
  *     yoktu, dünyada kaç kişi olduğu yazmıyordu, kimsenin ne yaptığı
  *     görünmüyordu. Diğer 119 oyuncu arayüzde yalnızca Sıralama ekranında
  *     bir liste olarak vardı.
- *  2. Gördüğü 61 hex'in "oyunun tamamı" olduğunu sanıyordu; dünyanın 120
+ *  2. Gördüğü 61 bölgenin "oyunun tamamı" olduğunu sanıyordu; dünyanın 120
  *     kişilik olduğu bilgisi hiçbir yerde geçmiyordu.
  *
  * Başlık ikinciyi, olay şeridi birinciyi çözüyor. Şerit veriyi Battle

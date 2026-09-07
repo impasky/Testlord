@@ -24,14 +24,14 @@ import { readFileSync } from 'node:fs';
 import { kayitOl } from './lib/kayit.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 
-// Doğum yerleri SABİT ve SAYILI: pickHomeAnchor ring 4'ten en az yüklü hex'i
+// Doğum yerleri SABİT ve SAYILI: pickHomeAnchor en az yüklü KÖYÜ
 // seçiyor, yani art arda gelen kayıtlar bütün çapaları sırayla dolaşıyor.
 // Bu yüzden test örneklem değil TAM TARAMA yapabiliyor: çapa sayısı kadar
 // oyuncu kurmak her doğum yerini bir kez ziyaret ediyor. Rastgele 12 oyuncu
 // denemek yanıltıcıydı — turun neresine denk geldiğine göre bozuk çapaların
 // hepsini ıskalayabiliyordu.
 const DUNYA = JSON.parse(readFileSync(new URL('../data/world-map.json', import.meta.url), 'utf8'));
-const OYUNCU = DUNYA.regions.filter((r) => r.ring === 4).length;
+const OYUNCU = DUNYA.regions.filter((r) => r.type === 'koy').length;
 
 let hata = 0;
 function kontrol(ad, kosul, detay = '') {

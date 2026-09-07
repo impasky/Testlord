@@ -1,9 +1,11 @@
 /**
  * İlk dünyayı açar ve 61 bölgesini yazar. Tekrar çalıştırılabilir.
  *
- * Mevcut dünyalarda bölgelerin STATİK alanlarını (ad, tip, vilayet, koordinat,
- * halka, gelir çarpanı) world-map.json'dan tazeler; oyunun ürettiği durumu
- * (sahiplik, seviye, depo, kalkan, yıpranmış NPC garnizonu) korur.
+ * Mevcut dünyalarda bölgelerin STATİK alanlarını (ad, tip, vilayet, harita
+ * üzerindeki yer, komşuluk, gelir çarpanı) world-map.json'dan tazeler;
+ * oyunun ürettiği durumu (sahiplik, seviye, depo, kalkan, yıpranmış NPC
+ * garnizonu) korur. Tek istisna tür değişimi: bir tarla köye dönüştüyse
+ * garnizonu da yeni türün kanonik garnizonuna döner.
  */
 import { validateBalance } from '@lordlar/shared';
 import { prisma } from './db.js';

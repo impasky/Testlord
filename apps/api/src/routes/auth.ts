@@ -55,28 +55,38 @@ const sifirlamaYapSchema = z.object({
 });
 
 /**
- * Yeni lorda malikâne çıpası verir: ring 4'te (haritanın kenarı) en az lord
- * barındıran hex. Böylece oyuncular başlangıçta haritaya yayılır ve kimse
- * doğar doğmaz güçlü bir komşunun dibinde uyanmaz.
+ * Yeni lordun kampına çıpa verir: en az lord barındıran KÖY.
+ *
+ * Köyler haritanın kenarına dağılmış (world-map.json) ve oyunun ilk fethi
+ * hep bir köy. Kampı bir köyün yanına kurmak, o köyü ilk hedef hâline
+ * getiriyor: oyuncu doğar doğmaz "şurası alınabilir" diyebileceği bir yer
+ * görüyor ve kimse güçlü bir komşunun dibinde uyanmıyor.
+ *
+ * Eskiden ölçüt haritanın dış halkasıydı; halka kavramı altıgenle birlikte
+ * kalktı ve yerini bölge TÜRÜ aldı — daha okunur bir ölçüt, çünkü "kenar"
+ * geometrik bir tesadüftü, "köy" ise tasarımın kendisi.
  */
-async function pickHomeAnchor(worldId: string): Promise<{ q: number; r: number }> {
-  const kenar = WORLD_MAP.regions.filter((r) => r.ring === 4);
+async function pickHomeAnchor(worldId: string): Promise<number> {
+  // Köy yoksa (henüz tazelenmemiş eski bir dünya) haritanın tamamına
+  // düşüyoruz: kayıt hiçbir koşulda çökmemeli.
+  const koyler = WORLD_MAP.regions.filter((r) => r.type === 'koy');
+  const adaylar = koyler.length > 0 ? koyler : WORLD_MAP.regions;
   const mevcut = await prisma.lord.groupBy({
-    by: ['homeQ', 'homeR'],
+    by: ['homeBolgeId'],
     where: { worldId },
     _count: { _all: true },
   });
-  const yuk = new Map(mevcut.map((m) => [`${m.homeQ},${m.homeR}`, m._count._all]));
-  let enIyi = kenar[0]!;
+  const yuk = new Map(mevcut.map((m) => [m.homeBolgeId, m._count?._all ?? 0]));
+  let enIyi = adaylar[0]!;
   let enAz = Infinity;
-  for (const hex of kenar) {
-    const n = yuk.get(`${hex.q},${hex.r}`) ?? 0;
+  for (const koy of adaylar) {
+    const n = yuk.get(koy.id) ?? 0;
     if (n < enAz) {
       enAz = n;
-      enIyi = hex;
+      enIyi = koy;
     }
   }
-  return { q: enIyi.q, r: enIyi.r };
+  return enIyi.id;
 }
 
 export async function authRoutes(app: FastifyInstance): Promise<void> {
@@ -120,8 +130,7 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
           altin: start.altin,
           demir: start.demir,
           erzak: start.erzak,
-          homeQ: home.q,
-          homeR: home.r,
+          homeBolgeId: home,
           lastTickAt: now,
           dailyResetAt: now,
           // Yeni oyuncu kalkanı: ilk saldırısını yapana kadar veya 72 saat

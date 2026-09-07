@@ -39,9 +39,9 @@ export async function createWorld(client: Tx = prisma): Promise<string> {
       name: r.name,
       type: r.type,
       province: r.province,
-      q: r.q,
-      r: r.r,
-      ring: r.ring,
+      x: r.x,
+      y: r.y,
+      komsular: r.komsular,
       level: r.level,
       incomeMult: r.income_mult,
       npcGarrison: r.npc_garrison,
@@ -78,9 +78,8 @@ export async function refreshWorldRegions(worldId: string): Promise<number> {
       name: r.name,
       type: r.type,
       province: r.province,
-      q: r.q,
-      r: r.r,
-      ring: r.ring,
+      x: r.x,
+      y: r.y,
       incomeMult: r.income_mult,
     };
     const mevcut = await prisma.region.findUnique({
@@ -88,7 +87,14 @@ export async function refreshWorldRegions(worldId: string): Promise<number> {
     });
     if (!mevcut) {
       await prisma.region.create({
-        data: { mapId: r.id, worldId, level: r.level, npcGarrison: r.npc_garrison, ...statik },
+        data: {
+          mapId: r.id,
+          worldId,
+          level: r.level,
+          npcGarrison: r.npc_garrison,
+          komsular: r.komsular,
+          ...statik,
+        },
       });
       tazelenen++;
       continue;
@@ -96,8 +102,28 @@ export async function refreshWorldRegions(worldId: string): Promise<number> {
     const degisti = (Object.keys(statik) as (keyof typeof statik)[]).some(
       (k) => mevcut[k] !== statik[k],
     );
-    if (degisti) {
-      await prisma.region.update({ where: { id: mevcut.id }, data: statik });
+    /*
+     * TÜR DEĞİŞTİYSE garnizon da kanonik hâline döner.
+     *
+     * Normalde garnizona dokunmuyoruz: yıpranmış bir NPC garnizonu oyunun
+     * ÜRETTİĞİ durum ve tazeleme onu silmemeli. Ama bir tarla köye
+     * dönüştüyse orası artık başka bir yer; eski tarlanın 37 savunucusuyla
+     * duran bir "köy", ilk fethi imkânsız kılardı.
+     */
+    const turDegisti = mevcut.type !== statik.type;
+    // Komşuluk bir DİZİ: düz eşitlik her seferinde "değişti" derdi.
+    // Sıra kanonik dosyada sabit olduğu için metne çevirip karşılaştırmak
+    // yeterli ve ucuz.
+    const komsuDegisti = JSON.stringify(mevcut.komsular) !== JSON.stringify(r.komsular);
+    if (degisti || komsuDegisti || turDegisti) {
+      await prisma.region.update({
+        where: { id: mevcut.id },
+        data: {
+          ...statik,
+          komsular: r.komsular,
+          ...(turDegisti ? { npcGarrison: r.npc_garrison, level: r.level } : {}),
+        },
+      });
       tazelenen++;
     }
   }

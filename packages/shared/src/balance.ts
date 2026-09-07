@@ -93,7 +93,6 @@ export const UNVANLAR = unvanlarJson as unknown as {
   kademeler: { esik: number; ad: string; aciklama: string }[];
 };
 export const WORLD_MAP = worldMapJson as unknown as {
-  radius: number;
   region_count: number;
   provinces: { key: string; name: string }[];
   regions: RegionDef[];
@@ -231,6 +230,58 @@ export function validateBalance(): void {
   }
   const tahtlar = WORLD_MAP.regions.filter((r) => r.type === 'taht');
   if (tahtlar.length !== 1) hatalar.push(`Taht Kalesi tam 1 olmalı, ${tahtlar.length} bulundu`);
+
+  /*
+   * KOMŞULUK GRAFİĞİ (docs/12 §1).
+   *
+   * Altıgen ızgara kalkınca mesafe artık aritmetikten değil elle yazılmış
+   * bir listeden geliyor. Elle yazılan liste bozulabilir ve bozulduğunda
+   * sessizce bozulur: tek yönlü bir kenar, oraya giden yürüyüşü uzun,
+   * dönüşü kısa yapar ve kimse fark etmez. Grafiğin sağlığı bu yüzden
+   * denge doğrulamasının parçası.
+   */
+  const idler = new Set(WORLD_MAP.regions.map((r) => r.id));
+  if (idler.size !== WORLD_MAP.regions.length) {
+    hatalar.push('world-map.json: tekrar eden bölge kimliği var');
+  }
+  for (const r of WORLD_MAP.regions) {
+    if (r.komsular.includes(r.id)) hatalar.push(`${r.name}: kendi kendine komşu`);
+    for (const k of r.komsular) {
+      if (!idler.has(k)) {
+        hatalar.push(`${r.name}: olmayan bölgeye komşu (${k})`);
+        continue;
+      }
+      // Komşuluk KARŞILIKLI olmalı. Tek yönlü kenar, gidiş ve dönüş
+      // sürelerinin farklı çıkmasına yol açardı.
+      const karsi = WORLD_MAP.regions.find((x) => x.id === k);
+      if (karsi && !karsi.komsular.includes(r.id)) {
+        hatalar.push(`${r.name} → ${karsi.name} komşuluğu tek yönlü`);
+      }
+    }
+    if (r.komsular.length === 0) hatalar.push(`${r.name}: hiçbir bölgeye komşu değil`);
+    if (r.x < 0 || r.x > 100 || r.y < 0 || r.y > 100) {
+      hatalar.push(`${r.name}: harita üzerindeki yeri (${r.x}, ${r.y}) 0-100 dışında`);
+    }
+  }
+  // Harita TEK PARÇA olmalı: kopuk bir küme, oraya hiç saldıramamak demek.
+  {
+    const komsuluk = new Map(WORLD_MAP.regions.map((r) => [r.id, r.komsular]));
+    const gorulen = new Set<number>();
+    const kuyruk = [WORLD_MAP.regions[0]?.id].filter((x): x is number => x !== undefined);
+    gorulen.add(kuyruk[0]!);
+    for (let i = 0; i < kuyruk.length; i++) {
+      for (const k of komsuluk.get(kuyruk[i]!) ?? []) {
+        if (gorulen.has(k)) continue;
+        gorulen.add(k);
+        kuyruk.push(k);
+      }
+    }
+    if (gorulen.size !== WORLD_MAP.regions.length) {
+      hatalar.push(
+        `world-map.json: harita kopuk — ${WORLD_MAP.regions.length} bölgenin ${gorulen.size} tanesine ulaşılıyor`,
+      );
+    }
+  }
 
   if (hatalar.length > 0) {
     throw new Error(`Denge verisi geçersiz:\n  - ${hatalar.join('\n  - ')}`);

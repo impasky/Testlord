@@ -218,7 +218,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
     await gecikmisleriKapat(lordId);
     const me = await prisma.lord.findUniqueOrThrow({
       where: { id: lordId },
-      select: { worldId: true, homeQ: true, homeR: true, level: true, allianceId: true },
+      select: { worldId: true, homeBolgeId: true, level: true, allianceId: true },
     });
 
     const [regions, oneri, ittifak] = await Promise.all([
@@ -241,8 +241,8 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
     // Mesafe en yakın TOPRAĞINDAN ölçülüyor (docs/11 §1.2 H1). Bölgeler
     // zaten elde: ölçeri buradan kuruyoruz, ikinci bir sorgu açmadan.
     const olc = mesafeOlcerHazir(
-      { q: me.homeQ, r: me.homeR },
-      regions.filter((r) => r.ownerLordId === lordId).map((r) => ({ q: r.q, r: r.r })),
+      me.homeBolgeId,
+      regions.filter((r) => r.ownerLordId === lordId).map((r) => r.mapId),
     );
 
     // Paktlı ittifaklar bir kez okunuyor: bölge başına ayrı sorgu 61 sorgu
@@ -259,8 +259,28 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
     ]);
     const sahipIttifaki = new Map(sahipler.map((l) => [l.id, l.allianceId ?? '']));
 
+    /*
+     * Komşuluk ve kamp çıpası, İSTEMCİNİN KİMLİK UZAYINA çevriliyor.
+     *
+     * Sunucuda iki kimlik var: `mapId` kanonik haritadaki numara (1-61,
+     * her dünyada aynı) ve `id` veritabanı satır numarası (dünya başına
+     * farklı). `komsular` ile `homeBolgeId` mapId taşıyor; istemcinin
+     * gördüğü ve saldırırken gönderdiği ise `id`.
+     *
+     * Çevirmeseydik istemci grafiği hiç gezemezdi: komşu numaraları
+     * listedeki hiçbir bölgeyle eşleşmezdi. İlk denemede tam olarak bu
+     * oldu ve haritada hiçbir aday bulunamadı.
+     */
+    const mapIdToId = new Map(regions.map((r) => [r.mapId, r.id]));
+    const cevir = (ham: unknown): number[] =>
+      (Array.isArray(ham) ? ham : [])
+        .map((k) => mapIdToId.get(Number(k)))
+        .filter((x): x is number => x !== undefined);
+
     return {
-      home: { q: me.homeQ, r: me.homeR },
+      // Kampın çıpası: hangi bölgenin yanında durduğu. Harita bunu
+      // "burası senin kampın" işaretini koymak için kullanıyor.
+      homeBolgeId: mapIdToId.get(me.homeBolgeId) ?? regions[0]?.id ?? 0,
       maxRegions: maxRegions(me.level),
       ittifakHedefi: ittifak?.targetRegionId
         ? { regionId: ittifak.targetRegionId, not: ittifak.targetNote, etiket: ittifak.tag }
@@ -273,15 +293,15 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
         name: r.name,
         type: r.type,
         province: r.province,
-        q: r.q,
-        r: r.r,
-        ring: r.ring,
+        x: r.x,
+        y: r.y,
+        komsular: cevir(r.komsular),
         level: r.level,
         incomeMult: r.incomeMult,
         owner: r.owner ? { id: r.owner.id, name: r.owner.name, level: r.owner.level } : null,
         isMine: r.ownerLordId === lordId,
         shielded: r.shieldUntil ? r.shieldUntil > new Date() : false,
-        distance: olc({ q: r.q, r: r.r }),
+        distance: olc(r.mapId),
         // Pakt: saldırılamaz ama müttefik de değil. Haritada ayrı bir
         // işaret alıyor, yoksa oyuncu saldırıya kalkışıp reddediliyor.
         paktli: r.owner ? paktlilar.has(sahipIttifaki.get(r.owner.id) ?? '') : false,
@@ -401,7 +421,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       ...region,
       isMine: benim,
       // Liste ucuyla aynı türetilmiş alanlar; arayüz iki uçtan da aynı şekli bekler.
-      distance: olc({ q: region.q, r: region.r }),
+      distance: olc(region.mapId),
       shielded: region.shieldUntil ? region.shieldUntil > new Date() : false,
       garrison,
       /** Bu bölgede duran KENDİ askerin (takviye ya da kendi garnizonun). */
@@ -438,7 +458,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       kesifMaliyeti: Math.round(
         kesifMaliyetiAltin() * (1 - (await lordunAyricaligi(lordId)).kesifIndirimi),
       ),
-      kesifSuresiSn: kesifSuresiSn(olc({ q: region.q, r: region.r })),
+      kesifSuresiSn: kesifSuresiSn(olc(region.mapId)),
       fortressBonus: regionFortressBonus(region.type, region.level),
       upgradeCost:
         region.level < B.bolgeler.max_bolge_seviyesi ? regionUpgradeCost(region.level) : null,
@@ -502,7 +522,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
 
       const me = await tx.lord.findUniqueOrThrow({
         where: { id: lordId },
-        select: { homeQ: true, homeR: true, worldId: true },
+        select: { homeBolgeId: true, worldId: true },
       });
       if (region.worldId !== me.worldId) throw hata.bulunamadi('Bölge');
 
@@ -518,7 +538,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       const kesifUcreti = Math.round(kesifMaliyetiAltin() * (1 - kesifIndirim));
       await spendResources(lordId, { altin: kesifUcreti, demir: 0, erzak: 0 }, tx);
 
-      const mesafe = (await mesafeOlcer(lordId, tx))({ q: region.q, r: region.r });
+      const mesafe = (await mesafeOlcer(lordId, tx))(region.mapId);
       const q = await enqueue(lordId, 'kesif', { regionId: id }, kesifSuresiSn(mesafe), tx);
       return { queued: true, finishAt: q.finishAt, mesafe };
     });
@@ -556,7 +576,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       const [ben, sahip] = await Promise.all([
         tx.lord.findUniqueOrThrow({
           where: { id: lordId },
-          select: { worldId: true, homeQ: true, homeR: true, allianceId: true },
+          select: { worldId: true, homeBolgeId: true, allianceId: true },
         }),
         tx.lord.findUniqueOrThrow({
           where: { id: region.ownerLordId },
@@ -577,7 +597,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       await assertHomeUnits(lordId, army, tx);
       await takeFromHome(lordId, army, tx);
 
-      const dist = (await mesafeOlcer(lordId, tx))({ q: region.q, r: region.r });
+      const dist = (await mesafeOlcer(lordId, tx))(region.mapId);
       // İttifak seviyesi takviyeyi HIZLANDIRIYOR (docs/09 B1e). Saldırıyı
       // değil yalnız takviyeyi: seviye yardımlaşmayı büyütsün, savaş
       // gücünü değil.
@@ -658,9 +678,9 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
 
       const ben = await tx.lord.findUniqueOrThrow({
         where: { id: lordId },
-        select: { worldId: true, homeQ: true, homeR: true },
+        select: { worldId: true, homeBolgeId: true },
       });
-      const dist = (await mesafeOlcer(lordId, tx))({ q: region.q, r: region.r });
+      const dist = (await mesafeOlcer(lordId, tx))(region.mapId);
       const sec = marchDurationSec(dist, army, bosGeneralBonus());
       const now = new Date();
 
@@ -775,7 +795,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
     const fortress = regionFortressBonus(region.type, region.level);
 
     const yuruyusSayisi = await prisma.march.count({ where: { lordId } });
-    const dist = (await mesafeOlcer(lordId))({ q: region.q, r: region.r });
+    const dist = (await mesafeOlcer(lordId))(region.mapId);
     const ilkSaldiri = ilkSaldiriMi(yuruyusSayisi, region.ownerLordId === null, dist);
     const marchSec = marchDurationSec(dist, army, attacker.generalBonus, { ilkSaldiri });
 
@@ -877,7 +897,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       istihbaratKesin: kesin,
       marchSec,
       ilkSaldiri,
-      // Dönüş kısayoldan yararlanmaz ve en az bir hex sayılır — savaş
+      // Dönüş kısayoldan yararlanmaz ve en az bir adım sayılır — savaş
       // çözümündeki hesapla birebir aynı olmalı, yoksa önizleme yalan söyler.
       donusSec: marchDurationSec(Math.max(1, dist), army, attacker.generalBonus),
       not: kesin
@@ -923,7 +943,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       const limitDolu = sahip >= maxRegions(lord.level) && region.type !== 'taht';
 
       const generalBonus = bosGeneralBonus();
-      const dist = (await mesafeOlcer(lordId, tx))({ q: region.q, r: region.r });
+      const dist = (await mesafeOlcer(lordId, tx))(region.mapId);
       // Oyuncunun ömürdeki ilk saldırısı, eve yakın ve sahipsiz bir hedefe
       // ise dakikalar içinde varır. Yoksa yeni oyuncu ordusunu yola çıkarıp
       // ilk oturumunda hiçbir sonuç görmeden oyunu kapatıyor.

@@ -53,7 +53,9 @@ import {
   generalToplamXp,
   generalXpForLevel,
   generalYaralanma,
-  hexDistance,
+  EN_UZAK_MESAFE,
+  bolgeMesafesi,
+  komsuMu,
   basarimSayaci,
   calculateLoot,
   SEFERLER,
@@ -132,15 +134,25 @@ function side(units: Army, isDefender: boolean, fort = 0, leadership = 5): Side 
   };
 }
 
-const RING4_NPC = WORLD_MAP.regions.find((r) => r.ring === 4)!.npc_garrison as unknown as Army;
+/**
+ * Halka (`ring`) kavramı altıgen ızgarayla birlikte kalktı. Yerini
+ * MERKEZ UZAKLIĞI aldı: Taht Kalesi'nden kaç adım. Aynı şeyi ölçüyor ama
+ * artık komşuluk grafiğinden türüyor, koordinat aritmetiğinden değil.
+ */
+const TAHT_ID = WORLD_MAP.regions.find((r) => r.type === 'taht')!.id;
+const merkezUzakligi = (id: number): number => bolgeMesafesi(TAHT_ID, id);
+
+/** Haritanın kenarındaki bir NPC bölgesinin garnizonu (köy değil). */
+const KENAR_NPC = WORLD_MAP.regions.find((r) => r.type !== 'koy' && merkezUzakligi(r.id) === 4)!
+  .npc_garrison as unknown as Army;
 const BASLANGIC_ORDUSU: Army = { mizrakci: 20, okcu: 15 };
 
 describe('ilk gün deneyimi', () => {
-  it('yeni oyuncu 1. günün ordusuyla tahkimatsız bir ring-4 bölgesini ALABİLİR', () => {
+  it('yeni oyuncu 1. günün ordusuyla tahkimatsız bir kenar bölgesini ALABİLİR', () => {
     for (const tip of ['tarla', 'maden'] as const) {
       const r = simulateBattle(
         side(BASLANGIC_ORDUSU, false),
-        side(RING4_NPC, true, fortressBonus(tip, 1)),
+        side(KENAR_NPC, true, fortressBonus(tip, 1)),
         `ilk-fetih-${tip}`,
         ctx,
       );
@@ -158,7 +170,7 @@ describe('ilk gün deneyimi', () => {
   it('KALE aynı orduyla alınamaz — kenar bölgeler arasında bile zorluk farkı var', () => {
     const r = simulateBattle(
       side(BASLANGIC_ORDUSU, false),
-      side(RING4_NPC, true, fortressBonus('kale', 1)),
+      side(KENAR_NPC, true, fortressBonus('kale', 1)),
       'ilk-fetih-kale',
       ctx,
     );
@@ -305,10 +317,11 @@ describe('harita', () => {
   });
 
   it('merkeze yaklaştıkça gelir çarpanı artar', () => {
-    const ring = (n: number) => WORLD_MAP.regions.find((r) => r.ring === n)!.income_mult;
-    expect(ring(1)).toBeGreaterThan(ring(2));
-    expect(ring(2)).toBeGreaterThan(ring(3));
-    expect(ring(3)).toBeGreaterThan(ring(4));
+    const carpan = (n: number) =>
+      WORLD_MAP.regions.find((r) => merkezUzakligi(r.id) === n)!.income_mult;
+    expect(carpan(1)).toBeGreaterThan(carpan(2));
+    expect(carpan(2)).toBeGreaterThan(carpan(3));
+    expect(carpan(3)).toBeGreaterThan(carpan(4));
   });
 });
 
@@ -1506,45 +1519,99 @@ describe('öğretici (docs/09 — ilk giriş)', () => {
   });
 });
 
-describe('harita: komşuluk ve vilayet (docs/11)', () => {
-  const ev = { q: 0, r: 0 };
+describe('harita: mesafe ve komşuluk (docs/11, docs/12)', () => {
+  const ev = WORLD_MAP.regions.find((r) => r.type === 'koy')!.id;
 
   it('toprağı olmayan oyuncu için mesafe evden ölçülür', () => {
     // Bölgesiz oyuncunun oyunu değişmemeli: kural yeni bir avantaj
     // ekliyor, eskisini elinden almıyor.
-    const hedef = { q: 4, r: 0 };
-    expect(yakinlikMesafesi(ev, [], hedef)).toBe(hexDistance(ev, hedef));
+    expect(yakinlikMesafesi(ev, [], TAHT_ID)).toBe(bolgeMesafesi(ev, TAHT_ID));
   });
 
   it('toprak sahibi olmak haritayı AÇIYOR', () => {
     // docs/11 §1 asıl mesele: eskiden bölge almak hiçbir yeni yeri
-    // yaklaştırmıyordu ve ızgara boş bir süstü.
-    const uzak = { q: 6, r: 0 };
-    const oncesi = yakinlikMesafesi(ev, [], uzak);
-    const sonrasi = yakinlikMesafesi(ev, [{ q: 4, r: 0 }], uzak);
-    expect(sonrasi).toBeLessThan(oncesi);
-    expect(sonrasi).toBe(2);
+    // yaklaştırmıyordu ve harita boş bir süstü.
+    const ara = WORLD_MAP.regions.find(
+      (r) =>
+        bolgeMesafesi(ev, r.id) === 2 &&
+        bolgeMesafesi(r.id, TAHT_ID) < bolgeMesafesi(ev, TAHT_ID) - 1,
+    )!;
+    expect(yakinlikMesafesi(ev, [ara.id], TAHT_ID)).toBeLessThan(yakinlikMesafesi(ev, [], TAHT_ID));
   });
 
   it('mesafe hiçbir zaman evden ölçülenden BÜYÜK olmuyor', () => {
     // min() alıyoruz; bir gün yanlışlıkla "son alınan bölgeden" gibi bir
     // şeye dönerse bu kontrol düşer.
-    for (let q = -4; q <= 4; q++) {
-      for (let r = -4; r <= 4; r++) {
-        const hedef = { q, r };
-        const topraklar = [
-          { q: 3, r: -1 },
-          { q: -2, r: 2 },
-        ];
-        expect(yakinlikMesafesi(ev, topraklar, hedef)).toBeLessThanOrEqual(hexDistance(ev, hedef));
-      }
+    const topraklar = WORLD_MAP.regions.filter((r) => r.type === 'maden').map((r) => r.id);
+    for (const r of WORLD_MAP.regions) {
+      expect(yakinlikMesafesi(ev, topraklar, r.id)).toBeLessThanOrEqual(bolgeMesafesi(ev, r.id));
     }
   });
 
   it('kendi bölgene mesafe sıfır', () => {
-    expect(yakinlikMesafesi(ev, [{ q: 3, r: 1 }], { q: 3, r: 1 })).toBe(0);
+    expect(yakinlikMesafesi(ev, [TAHT_ID], TAHT_ID)).toBe(0);
   });
 
+  /*
+   * GRAFİĞİN KENDİSİ. Altıgen ızgarada bu kuralların hepsi aritmetiğin
+   * bedava sonucuydu; elle yazılan bir komşuluk listesinde hiçbiri bedava
+   * değil ve bozulduklarında sessizce bozuluyorlar.
+   */
+  it('mesafe simetrik', () => {
+    for (const a of WORLD_MAP.regions) {
+      for (const b of WORLD_MAP.regions) {
+        expect(bolgeMesafesi(a.id, b.id), `${a.name} ↔ ${b.name}`).toBe(bolgeMesafesi(b.id, a.id));
+      }
+    }
+  });
+
+  it('üçgen eşitsizliği bozulmuyor', () => {
+    const ornek = WORLD_MAP.regions.filter((_, i) => i % 7 === 0);
+    for (const a of ornek) {
+      for (const b of ornek) {
+        for (const c of ornek) {
+          expect(bolgeMesafesi(a.id, c.id)).toBeLessThanOrEqual(
+            bolgeMesafesi(a.id, b.id) + bolgeMesafesi(b.id, c.id),
+          );
+        }
+      }
+    }
+  });
+
+  it('komşuluk mesafe 1 demek, mesafe 1 komşuluk demek', () => {
+    for (const a of WORLD_MAP.regions) {
+      for (const b of WORLD_MAP.regions) {
+        if (a.id === b.id) continue;
+        expect(komsuMu(a.id, b.id), `${a.name} ↔ ${b.name}`).toBe(bolgeMesafesi(a.id, b.id) === 1);
+      }
+    }
+  });
+
+  it('haritanın her yerine ulaşılıyor', () => {
+    // Kopuk bir küme, oraya hiç saldıramamak demek. `dogrula()` bunu
+    // sunucu açılışında da kontrol ediyor; burada da duruyor çünkü
+    // dosyayı elle düzenleyen kişi önce testi çalıştırır.
+    for (const r of WORLD_MAP.regions) {
+      expect(bolgeMesafesi(TAHT_ID, r.id), r.name).toBeLessThan(EN_UZAK_MESAFE + 1);
+    }
+    expect(EN_UZAK_MESAFE).toBeGreaterThan(0);
+  });
+
+  it('köyler haritanın kenarında ve ilk fetih için zayıf', () => {
+    const koyler = WORLD_MAP.regions.filter((r) => r.type === 'koy');
+    expect(koyler.length).toBe(12);
+    for (const k of koyler) {
+      // Oyuna toprakSIZ başlıyoruz: ilk hedef merkezde olamaz.
+      expect(merkezUzakligi(k.id), k.name).toBeGreaterThanOrEqual(3);
+      const garnizon = Object.values(k.npc_garrison).reduce((t, n) => t + n, 0);
+      expect(garnizon, k.name).toBeLessThan(
+        Object.values(KENAR_NPC).reduce((t, n) => t + (n ?? 0), 0),
+      );
+    }
+  });
+});
+
+describe('harita: vilayet birliği (docs/11)', () => {
   it('tek bölge vilayet bonusu vermiyor', () => {
     expect(vilayetCarpani(0)).toBe(1);
     expect(vilayetCarpani(1)).toBe(1);

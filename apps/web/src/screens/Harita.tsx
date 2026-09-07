@@ -98,7 +98,7 @@ function BolgeAfisi({
   const [dosya, setDosya] = useState(asamaAdi);
   const [istenen, setIstenen] = useState(asamaAdi);
 
-  // Alt sayfa açık kalırken bölge değişebiliyor (haritada başka hex'e
+  // Alt sayfa açık kalırken bölge değişebiliyor (haritada başka bölgeye
   // dokunmak) ve bölge gelişebiliyor. İkisinde de istenen dosya değişir.
   //
   // Render sırasında güncelliyoruz, useEffect ile değil: efektle yapınca
@@ -743,7 +743,7 @@ export function Harita({
   return (
     <div className="space-y-4 pt-3">
       {/* Başlık "Dünya Haritası" değil diyarın ADI: oyuncu gördüğü 61
-          hex'in bir dünyanın parçası olduğunu ilk bakışta anlamalı. Kaç
+          bölgenin bir dünyanın parçası olduğunu ilk bakışta anlamalı. Kaç
           lord olduğu ve tahtın kimde olduğu hemen altında. (docs/08 İ5) */}
       <Bolum
         baslik={dunya.data?.ad ?? 'Dünya Haritası'}
@@ -780,7 +780,7 @@ export function Harita({
 
           <HexHarita
             regions={harita.data.regions}
-            home={harita.data.home}
+            homeBolgeId={harita.data.homeBolgeId}
             seciliId={seciliId}
             yuruyusler={marches.data ?? []}
             ittifakHedefiId={harita.data.ittifakHedefi?.regionId ?? null}
@@ -891,7 +891,7 @@ export function Harita({
                     {bolge.owner ? `Diyarın Lordu · ${bolge.owner.name}` : 'taht boş'}
                   </Hap>
                 )}
-                <Hap renk="var(--color-mavi)">{bolge.distance} hex</Hap>
+                <Hap renk="var(--color-mavi)">{bolge.distance} adım</Hap>
                 {/* Lider avı: bu bölge diyarın liderine aitse yağma
                     bonuslu. Oyuncunun saldırıya karar verdiği yerde
                     yazması gerekiyor, sadece dünya başlığında değil. */}

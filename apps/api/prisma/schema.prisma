@@ -74,10 +74,18 @@ model Lord {
   pvpWins             Int @default(0)
   pvpLosses           Int @default(0)
 
-  /// Malikânenin harita üzerindeki çıpası. Yürüyüş mesafesi buradan ölçülür.
-  /// Kayıtta ring 4'e en az yüklü hex'e yerleştirilir; kimse buraya saldıramaz.
-  homeQ Int @default(0)
-  homeR Int @default(0)
+  /// Kampın harita üzerindeki çıpası: hangi bölgenin yanında kurulduğu.
+  /// Yürüyüş mesafesi buraya göre ölçülür ve kimse buraya saldıramaz.
+  /// Kayıtta kenardaki en az yüklü köyün yanına konur (world-map.json id).
+  homeBolgeId Int @default(1)
+
+  /// Başkent: şehir sayfasının gösterdiği bölge. null = kamp (henüz toprağı
+  /// yok ya da başkentini kaybetti). Fetihle taşınır (docs/12 §2).
+  baskentBolgeId Int?
+
+  /// Dikilen binalar ve seviyeleri: { "kisla": 2, "demirhane": 1 }.
+  /// BÖLGEYE değil LORDA bağlı — başkent taşınınca binalar da taşınır.
+  binalar Json @default("{}")
 
   lastTickAt      DateTime  @default(now())
   protectionUntil DateTime?
@@ -260,9 +268,12 @@ model Region {
   name     String
   type     String
   province String
-  q        Int
-  r        Int
-  ring     Int
+  /// Harita resmi üzerindeki yüzdelik yer. YALNIZ çizim için; mesafe ve
+  /// komşuluk buradan değil `komsular` alanından gelir (docs/12 §1).
+  x        Float
+  y        Float
+  /// Bitişik bölgelerin mapId'leri. world-map.json'dan kopyalanır.
+  komsular Json
   level    Int    @default(1)
 
   ownerLordId String?
@@ -282,7 +293,6 @@ model Region {
   targetedBy Alliance[] @relation("AllianceTarget")
 
   @@unique([worldId, mapId])
-  @@unique([worldId, q, r])
   @@index([worldId, ownerLordId])
 }
 

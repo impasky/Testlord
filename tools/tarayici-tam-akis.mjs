@@ -9,6 +9,7 @@
 import { chromium, devices } from 'playwright';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
 import { ekrana, kapida, rehberiSustur } from './lib/gezin.mjs';
+import { merkezUzakliklari } from './lib/harita.mjs';
 
 const WEB = process.env.WEB_URL ?? 'http://127.0.0.1:5173';
 const API = process.env.API_URL ?? 'http://localhost:3000';
@@ -192,8 +193,14 @@ kontrol(
 );
 
 const harita = await (await fetch(`${API}/api/map`, { headers: h })).json();
+// Eski `ring === 4` ölçütünün karşılığı: Taht Kalesi'nden en az 4 adım
+// uzaktaki bölgeler. Altıgen ızgara kalktı, ölçü komşuluk grafiğinden
+// türüyor (docs/12 §1).
+const kenar = new Set(
+  [...merkezUzakliklari(harita.regions)].filter(([, d]) => d >= 4).map(([id]) => id),
+);
 const hedef = harita.regions
-  .filter((r) => r.ring === 4 && !r.owner && r.type !== 'kale')
+  .filter((r) => kenar.has(r.id) && !r.owner && r.type !== 'kale')
   .sort((a, b) => a.distance - b.distance)[0];
 await page
   .locator('svg > g')
