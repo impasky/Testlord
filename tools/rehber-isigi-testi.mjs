@@ -148,14 +148,14 @@ await page.waitForTimeout(2500);
 
 // --- 2. Perde gerçekten kapatıyor mu ---
 {
-  const kisla = await ulasilirMi(page.locator('nav button:has-text("Kışla")'));
+  const kisla = await ulasilirMi(page.locator('nav button:has-text("Ordu")'));
   kontrol('Alt çubuktaki başka sekme ÖRTÜLÜ', kisla === 'ortulu', kisla);
 
   // Örtülü olduğunu iddia etmek yetmez: bas ve ekranın değişmediğini gör.
   const oncekiSekme = await page.evaluate(
     () => document.querySelector('nav button[aria-current="page"]')?.textContent?.trim() ?? '',
   );
-  const kutu = await page.locator('nav button:has-text("Kışla")').boundingBox();
+  const kutu = await page.locator('nav button:has-text("Ordu")').boundingBox();
   await page.mouse.click(kutu.x + kutu.width / 2, kutu.y + kutu.height / 2);
   await page.waitForTimeout(700);
   const sonrakiSekme = await page.evaluate(
@@ -179,12 +179,14 @@ await page.waitForTimeout(2500);
   const sekme = await page.evaluate(
     () => document.querySelector('nav button[aria-current="page"]')?.textContent?.trim() ?? '',
   );
-  // Türkçe I tuzağı: /KIŞLA/i.test('Kışla') YANLIŞ döner, çünkü 'I'
-  // küçük harfe 'i' olarak iner, 'ı' olarak değil. Doğrudan karşılaştır.
-  kontrol('Düğmeye basınca Kışla açıldı', sekme === 'Kışla', sekme);
+  // Türkçe I tuzağı: /ORDU/i.test('Ordu') burada çalışıyor ama aynı
+  // dosyada 'Kışla' ile denenmişti ve YANLIŞ dönüyordu — 'I' küçük harfe
+  // 'i' olarak iner, 'ı' olarak değil. Kural duruyor: doğrudan
+  // karşılaştır, düzenli ifadeye güvenme.
+  kontrol('Düğmeye basınca Ordu sekmesi açıldı', sekme === 'Ordu', sekme);
 }
 
-// --- 4. Kışla: ışık doğru birimin eğitim düğmesine geçiyor mu ---
+// --- 4. Ordu: ışık doğru birimin eğitim düğmesine geçiyor mu ---
 await page.waitForTimeout(2500);
 {
   const d = await isikDurumu();
@@ -245,7 +247,7 @@ await page.waitForTimeout(2500);
     tutma.kart.slice(0, 60),
   );
 
-  const cubuk = await ulasilirMi(page.locator('nav button:has-text("Harita")'));
+  const cubuk = await ulasilirMi(page.locator('nav button:has-text("Dünya")'));
   kontrol('Eğitim sürerken alt çubuk ÖRTÜLÜ — tur kopmuyor', cubuk === 'ortulu', cubuk);
 }
 

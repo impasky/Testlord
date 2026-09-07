@@ -15,9 +15,9 @@
 /** Alt çubuktaki BEŞ sekme; ilki ANA SAYFA. */
 export const CUBUK = [
   ['sehir', 'Şehir'],
-  ['kisla', 'Kışla'],
-  ['harita', 'Harita'],
-  ['gorevler', 'Görevler'],
+  ['kisla', 'Ordu'],
+  ['akin', 'Akın'],
+  ['harita', 'Dünya'],
   ['lord', 'Lord'],
 ];
 
@@ -33,6 +33,7 @@ export const ANA = 'sehir';
  */
 export const KAPILAR = [
   'malikane',
+  'gorevler',
   'generaller',
   'demirhane',
   'arastirma',

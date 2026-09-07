@@ -20,6 +20,7 @@ import { useOmurgaAdimi } from './components/Omurga';
 import { useRehberDurumu } from './rehberDurumu';
 import { Malikane } from './screens/Malikane';
 import { Sehir } from './screens/Sehir';
+import { Akin } from './screens/Akin';
 import { Gorevler } from './screens/Gorevler';
 import { Olaylar } from './screens/Olaylar';
 import { ParolaSifirla } from './screens/ParolaSifirla';
@@ -406,7 +407,7 @@ export function App() {
           onGit={setSekme}
         />
       )}
-      {sekme === 'gorevler' && <Gorevler lord={lord} onGit={setSekme} onKapiAc={kapiAc} />}
+      {sekme === 'akin' && <Akin lord={lord} onGuncelle={tazele} />}
       {sekme === 'lord' && (
         <LordEkrani
           lord={lord}
@@ -451,6 +452,19 @@ export function App() {
                 setHedefBolge(bolgeId);
                 setSekme('harita');
               }}
+              onGit={(s) => {
+                setKapi(null);
+                setSekme(s);
+              }}
+              onKapiAc={kapiAc}
+            />
+          )}
+          {/* Görevler ÇUBUKTAN kapıya taşındı (docs/12 §7): günlük görev
+              bir sayfa dolduracak kadar iş değil ve yeri belli —
+              şehirdeki görev panosu. Yerine akın sekmesi geldi. */}
+          {kapi === 'gorevler' && (
+            <Gorevler
+              lord={lord}
               onGit={(s) => {
                 setKapi(null);
                 setSekme(s);

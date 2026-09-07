@@ -38,7 +38,7 @@ await page.fill('input[placeholder="Kara Yusuf"]', `Dizi ${damga.toString(36).sl
 await page.fill('input[type=email]', `dizi${damga}@lordlar.dev`);
 await page.fill('input[type=password]', 'parola1234');
 await page.click('button[type=submit]');
-await page.waitForSelector('nav button:has-text("Harita")', { timeout: 15000 });
+await page.waitForSelector('nav button:has-text("Dünya")', { timeout: 15000 });
 await ogreticiyiGec(page);
 await rehberiSustur(page);
 

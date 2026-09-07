@@ -157,7 +157,7 @@ await sayfa.reload({ waitUntil: 'domcontentloaded' });
 await sayfa.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
 await ogreticiyiGec(sayfa);
 await rehberiSustur(sayfa);
-await sayfa.click('nav button:has-text("Harita")');
+await sayfa.click('nav button:has-text("Dünya")');
 await sayfa.waitForTimeout(2000);
 
 /*

@@ -298,10 +298,12 @@ export function LordEkrani({
         </DurumSiridi>
       )}
 
-      {/* Görev KANCASI, görevlerin kendisi değil: ayrıntı Görevler
-          sayfasında. Ödül alınmayı bekliyorsa şerit yeşilleniyor —
-          oyuncunun oraya gitmesi için tek gerçek sebep o. */}
-      {!ilkDongu && <GorevOzeti onGit={() => onGit('gorevler')} />}
+      {/* Görev KANCASI, görevlerin kendisi değil: ayrıntı görev panosu
+          kapısında. Ödül alınmayı bekliyorsa şerit yeşilleniyor —
+          oyuncunun oraya gitmesi için tek gerçek sebep o.
+          Görevler artık bir SEKME değil, şehirdeki panonun açtığı kapı
+          (docs/12 §7); şerit de oraya götürüyor. */}
+      {!ilkDongu && <GorevOzeti onGit={() => onKapiAc('gorevler')} />}
 
       {/* Unvan: şöhretten türüyor, yeni sayaç yok (docs/10 §2.2). Taht
           sahibinin unvanını "Diyarın Lordu" eziyor. */}

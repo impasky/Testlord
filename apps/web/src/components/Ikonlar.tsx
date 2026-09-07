@@ -81,6 +81,7 @@ export const IkonNavMalikane = yap('navMalikane');
 export const IkonNavKisla = yap('navKisla');
 export const IkonNavHarita = yap('navHarita');
 export const IkonNavDemirhane = yap('navDemirhane');
+export const IkonNavAkin = yap('navAkin');
 export const IkonNavMenu = yap('navMenu');
 export const IkonNavLord = yap('navLord');
 export const IkonNavGeneraller = yap('navGeneraller');

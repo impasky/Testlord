@@ -308,7 +308,7 @@ for (const [ad] of EKRANLAR) {
 await kapiyiKapat(page);
 
 // Bölge detayı: alt sayfa açıkken en çok kayma buradaydı
-await page.click('nav button:has-text("Harita")');
+await page.click('nav button:has-text("Dünya")');
 await page.waitForTimeout(1800);
 const hedef = (await get('/map')).regions.filter((x) => !x.isMine && x.type !== 'taht')[0];
 // Bölgeler artık gerçek <button>; kimliğiyle bulunuyor. Ada göre

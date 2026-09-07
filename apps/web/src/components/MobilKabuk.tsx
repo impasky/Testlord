@@ -10,12 +10,12 @@ import {
   IkonAltin,
   IkonDemir,
   IkonErzak,
+  IkonNavAkin,
   IkonNavHarita,
   IkonNavKisla,
   IkonNavLord,
   IkonNavMalikane,
   IkonSohret,
-  IkonSure,
 } from './Ikonlar';
 import { ANA_SEKME, type AltSekme } from '@lordlar/shared';
 import { Ilerleme, kisaSayi } from './ui';
@@ -59,9 +59,9 @@ export type Sekme = AltSekme;
  */
 const CUBUK: { key: AltSekme; ad: string; Ikon: typeof IkonNavMalikane }[] = [
   { key: 'sehir', ad: 'Şehir', Ikon: IkonNavMalikane },
-  { key: 'kisla', ad: 'Kışla', Ikon: IkonNavKisla },
-  { key: 'harita', ad: 'Harita', Ikon: IkonNavHarita },
-  { key: 'gorevler', ad: 'Görevler', Ikon: IkonSure },
+  { key: 'kisla', ad: 'Ordu', Ikon: IkonNavKisla },
+  { key: 'akin', ad: 'Akın', Ikon: IkonNavAkin },
+  { key: 'harita', ad: 'Dünya', Ikon: IkonNavHarita },
   { key: 'lord', ad: 'Lord', Ikon: IkonNavLord },
 ];
 

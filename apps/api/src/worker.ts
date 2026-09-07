@@ -5,8 +5,9 @@
  *
  * Her 10 saniyede bir:
  *   1. Biten yürüyüşleri çözer (savaş, dönüş)
- *   2. Biten kuyrukları çözer (eğitim, üretim, yükseltme)
- *   3. Bölge depolarını biriktirir
+ *   2. Biten akınları çözer (NPC savaşı, ganimet, hastane)
+ *   3. Biten kuyrukları çözer (eğitim, üretim, yükseltme)
+ *   4. Bölge depolarını biriktirir
  *
  * Her adım tek transaction içinde ve idempotenttir: `resolved` bayrağı
  * koşullu updateMany ile alındığı için worker iki kez çalışsa bile iş
@@ -16,6 +17,7 @@ import { validateBalance } from '@lordlar/shared';
 import { prisma } from './db.js';
 import { resolveQueueItem } from './services/queue.js';
 import { resolveMarch } from './services/march.js';
+import { resolveAkin } from './services/akin.js';
 import { sevkiyatCoz } from './services/ticaret.js';
 import { accrueRegionStores } from './services/region.js';
 
@@ -38,6 +40,21 @@ export async function tur(): Promise<void> {
         await resolveMarch(m.id);
       } catch (e) {
         console.error(`Yürüyüş çözülemedi (${m.id}):`, e);
+      }
+    }
+
+    // Akınlar: yürüyüşlerle aynı desen, ayrı tablo. Tek döngüde
+    // birleştirmek, bir tarafın hatasının ötekini de durdurması demekti.
+    const akinlar = await prisma.akin.findMany({
+      where: { resolved: false, arriveAt: { lte: now } },
+      orderBy: { arriveAt: 'asc' },
+      take: 50,
+    });
+    for (const a of akinlar) {
+      try {
+        await resolveAkin(a.id);
+      } catch (e) {
+        console.error(`Akın çözülemedi (${a.id}):`, e);
       }
     }
 
@@ -70,9 +87,9 @@ export async function tur(): Promise<void> {
 
     await accrueRegionStores(now);
 
-    if (marches.length || queues.length || sevkiyatlar.length) {
+    if (marches.length || akinlar.length || queues.length || sevkiyatlar.length) {
       console.log(
-        `[worker] ${new Date().toISOString()} — ${marches.length} yürüyüş, ${queues.length} kuyruk, ${sevkiyatlar.length} sevkiyat çözüldü`,
+        `[worker] ${new Date().toISOString()} — ${marches.length} yürüyüş, ${akinlar.length} akın, ${queues.length} kuyruk, ${sevkiyatlar.length} sevkiyat çözüldü`,
       );
     }
   } catch (e) {

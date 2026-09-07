@@ -24,8 +24,8 @@ Plan on soruyla netleşti. Cevaplar (oyuncunun seçimleri):
 | Soru | Karar |
 |---|---|
 | Şehir sayfası ↔ bölge ilişkisi | **Başkentini taşırsın** |
-| Harita çizim tekniği | **Karma**: dünya/sefer tek resim + kod etiketi, yerleşim zemin + sprite |
-| NPC seferleri | **Gerçek sefer, kısa süre** — savaş motoru, dizilim, taktik aynen |
+| Harita çizim tekniği | **Karma**: dünya/akın tek resim + kod etiketi, yerleşim zemin + sprite |
+| NPC akınları | **Gerçek sefer, kısa süre** — savaş motoru, dizilim, taktik aynen (§6'da adı AKIN oldu) |
 | Alt çubuk | **Şehir · Ordu · Sefer · Dünya · Lord** |
 | Başkent kaybı | **Düşürülür**, elindeki en iyi bölgeye taşınırsın; hiç kalmazsa kampa |
 | Mevcut dünyalar | Sıfırlanacaktı; **göç yazıldı** — bkz. §1.4 |
@@ -362,29 +362,64 @@ komşu merkezi 37 piksel ötede. Ad şeridi de tıklama geçirmiyor; akışın
 içindeyken düğmenin kutusunu uzatıp alttaki komşunun tıklamasını
 yiyordu.
 
-## 6. Sefer haritaları (5 NPC)
+## 6. Akın haritaları (5 NPC)
 
-| Harita | Düşman | Ağırlıklı ödül | Açılış |
-|---|---|---|---|
-| Kırık Sahil | Deniz haydutları | Altın, ganimet | baştan |
-| Solgun Bataklık | Kaçak lejyonerler | Demir | sv. 5 |
-| Kuzey Buzulu | Barbar klanları | Erzak | sv. 10 |
-| Küller Vadisi | Dağ eşkıyaları | Demir, ekipman | sv. 15 |
-| Unutulmuş Nekropol | Mezar kültü | En iyi ekipman | sv. 20 |
+> **Adı "sefer" değil AKIN oldu.** Oyunda zaten bir sefer var: haftalık
+> etkinlik (`packages/shared/sefer.ts`, `Lord.seferOduluHaftasi`). İki
+> ayrı şeyin aynı adı taşıması, altı ay sonra hangisinin konuşulduğunu
+> kimsenin bilememesi demekti. "Akın" zaten yapılan şeyin tam adı:
+> düşman kampına inip vurup dönmek.
+
+| Harita | Düşman | Ağırlıklı ödül | Açılış | Azami ekipman |
+|---|---|---|---|---|
+| Kırık Sahil | Deniz haydutları | Altın | baştan | T2 |
+| Solgun Bataklık | Kaçak lejyonerler | Demir | sv. 5 | T3 |
+| Kuzey Buzulu | Barbar klanları | Erzak | sv. 10 | T3 |
+| Küller Vadisi | Dağ eşkıyaları | Demir | sv. 15 | T4 |
+| Unutulmuş Nekropol | Mezar kültü | Dengeli | sv. 20 | T5 |
 
 Her haritada **10 grup**, 1'den 10'a zorlaşır. Onuncu grup **şef**:
-garnizonu ağır, düşürdüğü ekipman kademesi yüksek.
+garnizonu ağır, ödülü büyük, yenilenmesi uzun.
 
-- Sefer **gerçek**: ordu yola çıkar, kayıp verir, yaralılar hastaneye
-  döner. Dizilim ve taktik aynen işler.
-- Süre kısa: PvP yürüyüşünün küçük bir katı.
+- Akın **gerçek**: aynı savaş motoru, aynı dizilim, aynı taktik, aynı
+  kayıp, aynı hastane. "Kolay mod" ayrı bir hesap değil — akın,
+  oyuncunun ordusunu öğrendiği yer ve öğrendiği şey PvP'de geçerli.
+- **Tek aşama**: gidiş, savaş ve dönüş tek `arriveAt`. PvP iki aşamalı
+  çünkü bölge el değiştiriyor; akında değişmiyor ve iki bekleyiş
+  vermek hiçbir karar kazandırmazdı.
 - Vurulan grup **yenilenme süresi** sonunda geri döner (normal 4 saat,
-  şef 12 saat). O sürede hedef gri durur.
-- Ödül: kaynak kesin, ekipman şansa bağlı. Ekipman tier'i grubun
-  zorluğuna bağlı — Nekropol'ün şefi en iyi kaynak.
+  şef 12 saat). O sürede hedef gri durur ama **görünür kalır**.
+- Ödül: kaynak **kesin**, ekipman **şansa bağlı**. Zar akının
+  tohumundan atılıyor — aynı akın iki kez çözülürse aynı sonucu
+  veriyor, yoksa rapor ile envanter bir gün ayrışırdı.
 
-Sefer bölgesi **fethedilmez**: burası kaynak ve ekipman kapısı,
-toprak kapısı değil. Toprak dünya haritasından alınır.
+Akın grubu **fethedilmez**: burası kaynak ve ekipman kapısı, toprak
+kapısı değil. Toprak dünya haritasından, yani başka bir oyuncudan
+alınır — akından toprak çıksaydı PvP'nin tek sebebi kalmazdı.
+
+### 6.1 Saklanmayan üç şey
+
+Y6'nın çekirdek kararı: **hiçbir durum ikinci kez yazılmıyor.**
+
+| Şey | Nereden türüyor | Saklansaydı ne olurdu |
+|---|---|---|
+| Garnizon | `akinGarnizonu(harita, grup)` | Denge değişikliği yoldaki akınları eski sayılarla bırakır; iki oyuncu aynı gruba farklı düşmanla çarpardı. |
+| "Grup dolu mu" | En son KAZANILMIŞ akının saati | Onu güncelleyecek bir zamanlayıcı gerekirdi; zamanlayıcı uyuduğunda harita yanlış görünürdü. |
+| Yenilenme sayacı | Aynı saatten | Aynı. |
+
+Yenilenme **oyuncuya özel**: bir başkasının vurduğu kamp senin haritanda
+duruyor. Ortak olsaydı kalabalık bir dünyada harita hep gri görünürdü.
+
+### 6.2 Elli garnizon elle yazılmadı
+
+Haritanın **karışımı** (`data/akinlar.json`) ile grubun **büyüklüğü**
+(`balance.json → akin`) çarpılıyor. Dengeyi değiştirmek için tek bir
+sayıyı oynatmak yetiyor; elle yazsaydık ilk denge turunda elli satır
+güncellemek gerekir ve biri mutlaka atlanırdı.
+
+Her haritanın karışımı **farklı** — taş-kağıt-makas (docs/09 K1) ancak
+düşman değişince bir karar olur. Kırık Sahil okçu ağırlıklı, Kuzey
+Buzulu süvari ağırlıklı: tek bir "en iyi ordu" olmasın diye.
 
 ## 7. Gezinme
 
@@ -392,12 +427,20 @@ toprak kapısı değil. Toprak dünya haritasından alınır.
 |---|---|
 | **Şehir** | Ana sayfa. Yerleşim haritası ve bütün kapılar. |
 | **Ordu** | Kışla, hastane, dizilim, komuta. |
-| **Sefer** | 5 NPC haritası. |
+| **Akın** | 5 NPC haritası. |
 | **Dünya** | PvP haritası. |
 | **Lord** | Karakter, nitelikler, başarımlar, unvan, hesap. |
 
-Lord ekranı **kapı ızgarası olmaktan çıkıyor**, bir karakter sayfasına
-dönüyor. Günlük görevler şehirdeki görev panosuna taşınıyor.
+Sıra bir cümle söylüyor: ana sayfa, sonra orduyu KURDUĞUN yer, sonra onu
+KULLANDIĞIN iki yer, en sonda lordun kendisi.
+
+**Görevler çubuktan çıktı.** Günlük görev bir sayfa dolduracak kadar iş
+değil ve yeri belli: şehirdeki görev panosu. Kaybolmadı, KAPI oldu —
+`GorevOzeti` şeridi de artık o kapıyı açıyor. Ertelemek ile kaldırmak
+aynı şey değil; `rehber-testi.mjs` bunu ölçüyor.
+
+Lord ekranı **kapı ızgarası olmaktan çıktı**, bir karakter sayfası oldu
+(Y3).
 
 ## 8. Yeni açılış — hikâyesel
 
@@ -406,7 +449,7 @@ dönüyor. Günlük görevler şehirdeki görev panosuna taşınıyor.
    korunuyor, sadece küçülüyor.)
 2. **Talimgahta ilk askerini eğit.** Beş saniyelik ilk eğitim kısayolu
    duruyor.
-3. **İlk seferine çık.** Kırık Sahil'in birinci grubu. İlk demirini
+3. **İlk akınına çık.** Kırık Sahil'in birinci grubu. İlk demirini
    savaşarak kazanırsın.
 4. **İlk köyünü al.** Dünya haritasında bir köy. Alınca başkentin olur,
    şehir sayfası kampdan köye döner.
@@ -422,15 +465,16 @@ toprak ve bina — dördü de kazanılıyor.
 | Ne | Adet |
 |---|---|
 | Yerleşim zeminleri (kamp, köy, kasaba, şehir, kale-şehir, metropol) | 6 |
-| Bina görselleri (12 × 2 durum: temel / gelişmiş) | 24 |
+| Bina görselleri (10 seviyeli × 2 durum: temel / gelişmiş) | 20 |
+| Seviyesiz yapılar (görev panosu, haberci kulesi, onur meydanı) | 3 |
 | Boş arsa (paylaşılan) | 1 |
 | Dünya haritası zemini | 1 |
 | Dünya bölge işaretçileri (köy, tarla, maden, şehir, kale, taht) | 6 |
-| Sefer haritası zeminleri | 5 |
+| Akın haritası zeminleri | 5 |
 | Düşman fraksiyon amblemleri | 10 |
-| Sefer hedef işaretçisi (normal / şef) | 2 |
-| **Alt toplam** | **55** |
-| Yeniden deneme ve varyant payı | 45 |
+| Akın hedef işaretçisi (normal / şef) | 2 |
+| **Alt toplam** | **54** |
+| Yeniden deneme ve varyant payı | 46 |
 | **Toplam** | **100** |
 
 **Kural: resimde yazı yok.** Bütün etiketler DOM'da. Görsel modeli
@@ -450,8 +494,8 @@ Her aşama sonunda oyun **oynanabilir** durumda kalır.
 | **Y2** ✅ | Dünya haritası arayüzü: resimli zemin, kaydırma/yakınlaştırma, işaretçiler. |
 | **Y3** ✅ | Şehir sayfası: yerleşim zemini, bina yerleşimi, inşa ve yükseltme kuyruğu, başkent taşıma (§2.2). |
 | **Y4** ✅ | Bina seviyesi etkileri: kapasiteler binaya bağlandı (§4.1). |
-| **Y5** | Gezinme: 5 sekme, Lord ekranının karakter sayfasına dönüşü. |
-| **Y6** | Sefer sistemi: 5 harita, 50 grup, yenilenme, ödül ve ekipman düşürme. |
+| **Y5** ✅ | Gezinme: Şehir · Ordu · Akın · Dünya · Lord. Görevler kapıya taşındı. |
+| **Y6** ✅ | Akın sistemi: 5 harita, 50 grup, yenilenme, ödül ve ekipman düşürme (§6). |
 | **Y7** | Yeni açılış: kamp, başkent **düşmesi** (§2.3), öğretici ve rehberin yeniden yazımı. Taşınma Y3'te girdi. |
 | **Y8** | Görsel üretimi (100 sınırı), denge, test ve temizlik. |
 

@@ -89,8 +89,8 @@ k(
 
 // Alt gezinme sekmeleri
 for (const [s, f] of [
-  ['Kışla', 'tel-3-kisla.png'],
-  ['Harita', 'tel-4-harita.png'],
+  ['Ordu', 'tel-3-kisla.png'],
+  ['Dünya', 'tel-4-harita.png'],
 ]) {
   await page.locator(`nav button:has-text("${s}")`).click();
   await page.waitForTimeout(1600);
@@ -104,7 +104,7 @@ await page.screenshot({ path: `${SP}/tel-5-siralama.png`, fullPage: true });
 const satir = await page.locator('text=/Sv \\d+ · \\d+ bölge/').count();
 k('Sıralamada rakip lordlar var', satir >= 5, `${satir} lord`);
 
-await page.locator('nav button:has-text("Harita")').click();
+await page.locator('nav button:has-text("Dünya")').click();
 await page.waitForTimeout(1500);
 const dusman = await page.locator('svg path[fill="url(#dusman)"]').count();
 k('Haritada düşman bölgesi var', dusman > 0, `${dusman} bölge`);

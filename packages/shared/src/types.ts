@@ -191,6 +191,7 @@ export interface BattleResult {
  */
 export const EKRANLAR = [
   'sehir',
+  'akin',
   'malikane',
   'kisla',
   'harita',
@@ -225,10 +226,16 @@ export type Ekran = (typeof EKRANLAR)[number];
  * yapmalısın" orada, bütün kapılar orada. MALİKÂNE ise diyarın kendisi:
  * sahip olunan topraklar, gelirleri, koruma durumu ve ipuçları.
  *
- * Sıra da bunu söylüyor: ana sayfa başta, sonra günlük döngü (görev →
- * asker → sefer), en sonda diyarın envanteri.
+ * Sıra da bunu söylüyor: ana sayfa başta, sonra ordunun kurulduğu yer,
+ * sonra onu KULLANDIĞIN iki yer (Akın ve Dünya), en sonda lordun
+ * kendisi.
+ *
+ * GÖREVLER ÇUBUKTAN ÇIKTI (docs/12 §7). Günlük görevler bir sayfa
+ * dolduracak kadar iş değil ve yeri belli: şehirdeki GÖREV PANOSU.
+ * Yerine akın geldi — ordusu olan oyuncunun her gün gireceği yer orası.
+ * Görevler kaybolmadı, kapı oldu (`KAPILAR`).
  */
-export const ALT_SEKMELER = ['sehir', 'kisla', 'harita', 'gorevler', 'lord'] as const;
+export const ALT_SEKMELER = ['sehir', 'kisla', 'akin', 'harita', 'lord'] as const;
 export type AltSekme = (typeof ALT_SEKMELER)[number];
 
 /**
@@ -258,6 +265,7 @@ export const ANA_SEKME: AltSekme = 'sehir';
  */
 export const KAPILAR = [
   'malikane',
+  'gorevler',
   'generaller',
   'demirhane',
   'arastirma',
@@ -271,6 +279,7 @@ export type Kapi = (typeof KAPILAR)[number];
 /** Kapının başlığı — hem panelde hem onu açan düğmede aynı ad. */
 export const KAPI_ADI: Record<Kapi, string> = {
   malikane: 'Malikâne',
+  gorevler: 'Görev Panosu',
   generaller: 'Generaller',
   arastirma: 'Araştırma',
   demirhane: 'Demirhane',

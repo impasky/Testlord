@@ -36,7 +36,7 @@
       "ad": "Görev Panosu",
       "ozet": "Günlük görevler.",
       "aciklama": "Meydandaki ilan tahtası. Günün işleri buraya asılır.",
-      "sekme": "gorevler",
+      "kapi": "gorevler",
       "x": 38,
       "y": 60,
       "seviyeli": false,
@@ -60,15 +60,15 @@
       "key": "hastane",
       "ad": "Hastane",
       "ozet": "Yaralıları tedavi eder.",
-      "aciklama": "Aynı anda kaç yaralı kafilesini tedavi edebileceğini belirler.",
+      "aciklama": "Büyük bir yenilgide tedavinin ne kadar süreceğinin tavanını hastane belirler.",
       "sekme": "kisla",
       "bolum": "hastane",
       "x": 62,
       "y": 60,
       "seviyeli": true,
       "acilis_kademesi": "koy",
-      "etki": "tedavi_kuyrugu",
-      "etki_metni": "Eş zamanlı tedavi",
+      "etki": "azami_tedavi",
+      "etki_metni": "En uzun tedavi",
       "maliyet_carpani": 0.85
     },
     {
@@ -157,14 +157,14 @@
       "key": "elcilik",
       "ad": "Elçilik",
       "ozet": "İttifak ve paktlar.",
-      "aciklama": "Aynı anda kaç saldırmazlık paktı tutabileceğini elçiliğin seviyesi belirler.",
+      "aciklama": "Aynı anda kaç müttefikine takviye tutabileceğini elçiliğin seviyesi belirler.",
       "kapi": "ittifak",
       "x": 50,
       "y": 14,
       "seviyeli": true,
       "acilis_kademesi": "koy",
-      "etki": "pakt_tavani",
-      "etki_metni": "Pakt tavanı",
+      "etki": "takviye_slotu",
+      "etki_metni": "Sahadaki takviye",
       "maliyet_carpani": 1.1
     },
     {
@@ -180,5 +180,6 @@
     }
   ],
   "_yerlesim_notu": "Yapilarin yerlesimi: merkezde malikane, cevresinde halkalar. Araliklar ETIKET GENISLIGINE gore secildi -- ilk denemede yapilar birbirine cok yakindi ve adlar ust uste biniyordu, Surlar da alt kenardan tasiyordu. Yatayda en az %22, dikeyde en az %18 ara var; en alt sira y=82, altina ad seridi sigsin diye.",
-  "_kademe_ilkesi": "Uc kademe, uc cins is:\\n  kamp  — SEVIYESIZ BILGI yapilari (gorev panosu, haberci kulesi, onur meydani) ve kampin kendisi. Bilgi hicbir zaman kilitli degil: savas raporu olay akisinda duruyor ve savasan oyuncu onu okuyabilmeli. Ilk denemede olay akisini kasabaya kilitlemistim; savasip raporunu goremeyen bir oyuncu birakti.\\n  koy   — uretim, savunma ve sosyal: demirhane, hastane, pazar, surlar, elcilik.\\n  kasaba— KAPASITE verenler: karargah (general slotu), kutuphane (arastirma kuyrugu), liman (sevkiyat tavani). Bunlarin bir sehir istemesi dogru; fetihin karsiligi bu."
+  "_kademe_ilkesi": "Uc kademe, uc cins is:\\n  kamp  — SEVIYESIZ BILGI yapilari (gorev panosu, haberci kulesi, onur meydani) ve kampin kendisi. Bilgi hicbir zaman kilitli degil: savas raporu olay akisinda duruyor ve savasan oyuncu onu okuyabilmeli. Ilk denemede olay akisini kasabaya kilitlemistim; savasip raporunu goremeyen bir oyuncu birakti.\\n  koy   — uretim, savunma ve sosyal: demirhane, hastane, pazar, surlar, elcilik.\\n  kasaba— KAPASITE verenler: karargah (general slotu), kutuphane (arastirma kuyrugu), liman (sevkiyat tavani). Bunlarin bir sehir istemesi dogru; fetihin karsiligi bu.",
+  "_etki_notu": "etki/etki_metni YALNIZ GORUNUS: sehir karti bu metni yaziyor. Sayilar bina ANAHTARINDAN bulunuyor (packages/shared/bina.ts, ETKI_BINASI), bu alandan degil. Iki tanesi Y4te sapti ve metin geride kalmisti: hastanenin es zamanli kuyrugu YOK (tedavi tavanini indiriyor), elcilik pakt tavani VEREMEZ (pakt iki ittifak arasinda). Metin dogruyu soylemezse oyuncu bina icin odedigi bedelin karsiligini yanlis bilir."
 }

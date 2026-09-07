@@ -11,6 +11,7 @@ import seferlerJson from '../../../data/seferler.json';
 import taktiklerJson from '../../../data/taktikler.json';
 import arastirmaJson from '../../../data/arastirma.json';
 import binalarJson from '../../../data/binalar.json';
+import akinlarJson from '../../../data/akinlar.json';
 import armaJson from '../../../data/arma.json';
 import unvanlarJson from '../../../data/unvanlar.json';
 import worldMapJson from '../../../data/world-map.json';
@@ -97,6 +98,26 @@ export const UNVANLAR = unvanlarJson as unknown as {
  * Şehir binaları. Seviyenin NE VERDİĞİ `etki` alanında; sayıları
  * `balance.json → binalar` içinde (bina.ts).
  */
+/**
+ * Akın haritaları: beş NPC diyarı, her birinde on grup (docs/12 §6).
+ *
+ * Buradaki her şey ANLATI ve BİLEŞİM. Garnizonun kaç kişi olduğu,
+ * akının kaç dakika sürdüğü, ne kadar ödül düştüğü `balance.json → akin`
+ * içinde — denge değişikliği anlatı dosyasına dokunmasın diye.
+ */
+export const AKIN_HARITALARI = akinlarJson.haritalar as unknown as {
+  key: string;
+  ad: string;
+  dusman: string;
+  ozet: string;
+  acilis_seviyesi: number;
+  guc_carpani: number;
+  azami_tier: number;
+  karisim: Record<string, number>;
+  odul_agirligi: Record<string, number>;
+  gruplar: string[];
+}[];
+
 export const BINALAR = binalarJson.binalar as unknown as {
   key: string;
   ad: string;

@@ -169,6 +169,20 @@ export const IKONLAR = {
     h: 512,
     body: '<path fill="currentColor" d="M128.688 115.594v147.75h285v-147.75zm-111.844 20.47c17.374 47.14 54.372 80.413 94.906 93.81v-93.81zm414.375 12.31v88.657c21.457-9.083 42.92-25.257 64.374-47.374c-21.52-22.562-42.633-35.173-64.375-41.28zm-226.25 132.47c-12.15 38.536-33.897 71.5-60.595 100.47l257.844-.002c-28.705-29.016-49.952-62.054-61.5-100.468H204.97zM101.843 400v43.78h337.562V400z"/>',
   },
+  /*
+   * Akın sekmesinin simgesi: kılıç darbesi.
+   *
+   * Kışla (çapraz kılıçlar) orduyu KURDUĞUN yer, akın onu KULLANDIĞIN
+   * yer. İkisi de kılıç ama biri duran biri vuran: çubuktaki iki
+   * komşunun aynı görünmemesi, 44 piksellik bir hedefte adı okumadan
+   * ayırt edebilmek demek.
+   */
+  navAkin: {
+    ad: 'sword-clash',
+    w: 512,
+    h: 512,
+    body: '<path fill="currentColor" d="M20.28 20.28v81.44l122.19 122.19l81.44-81.44L101.72 20.28zm389.72 0L287.81 142.47l40.72 40.72L491.72 101.72V20.28zm-183.5 183.5l-40.72 40.72l122.19 122.19l40.72-40.72zM101.72 288.28L20.28 369.72v122.19h81.44l122.19-122.19zm308.56 20.28l-81.44 81.44l101.72 101.72h81.16v-81.44z"/>',
+  },
   navMenu: {
     ad: 'hamburger-menu',
     w: 512,

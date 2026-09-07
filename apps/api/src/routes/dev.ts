@@ -11,6 +11,7 @@ import { prisma } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { findLordByUser, grantXp, tickLord } from '../services/lord.js';
 import { resolveMarch } from '../services/march.js';
+import { resolveAkin } from '../services/akin.js';
 import { resolveQueueItem } from '../services/queue.js';
 import { sevkiyatCoz } from '../services/ticaret.js';
 
@@ -58,6 +59,26 @@ export async function devRoutes(app: FastifyInstance): Promise<void> {
     });
     let n = 0;
     for (const m of marches) if (await resolveMarch(m.id)) n++;
+    return { cozulen: n };
+  });
+
+  /**
+   * Bekleyen akınları anında çözer.
+   *
+   * `yuruyusleri-bitir`in eşi ve aynı gerekçe: ölçülen şey akının kaç
+   * dakika sürdüğü değil, SONUCU. Beklemek testi yavaşlatmaktan başka
+   * bir şey yapmıyor. Hile değil — ürünün kendi çözüm yolu çağrılıyor,
+   * yalnız varış saati öne alınıyor.
+   */
+  app.post('/test/akinlari-bitir', { preHandler: requireAuth }, async (req) => {
+    const lordId = await findLordByUser(req.user.userId);
+    const akinlar = await prisma.akin.findMany({ where: { lordId, resolved: false } });
+    await prisma.akin.updateMany({
+      where: { lordId, resolved: false },
+      data: { arriveAt: new Date() },
+    });
+    let n = 0;
+    for (const a of akinlar) if (await resolveAkin(a.id)) n++;
     return { cozulen: n };
   });
 

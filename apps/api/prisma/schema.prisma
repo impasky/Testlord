@@ -186,6 +186,7 @@ model Lord {
   regions     Region[]
   queues      Queue[]
   marches     March[]
+  akinlar     Akin[]
   events      Event[]
   scouts      Scout[]
   messages    AllianceMessage[]
@@ -330,6 +331,47 @@ model March {
 
   @@index([resolved, arriveAt])
   @@index([lordId, resolved])
+}
+
+/// Akın: NPC haritasindaki bir gruba yapilan sefer (docs/12 §6).
+///
+/// March'tan AYRI bir tablo, cunku akinin hedefi bir Region degil ve
+/// March.toRegionId zorunlu. Sahte bir bolge kimligi uydurmak, harita
+/// sorgularinin bir gun o satirlari gercek bolge sanmasi demekti.
+///
+/// TEK asamali: gidis, savas ve donus ayni `arriveAt` icinde. PvP'de iki
+/// asama gerekiyor cunku bolge el degistiriyor; akinda degismiyor ve
+/// oyuncuya iki bekleyis verip hicbir karar kazandirmazdi.
+model Akin {
+  id         String   @id @default(cuid())
+  worldId    String
+  lordId     String
+  haritaKey  String
+  grupNo     Int
+  army       Json
+  generalIds Json
+  /// Bu akinin 4x4 dizilimi ve taktigi. March.duzen ile ayni gerekce:
+  /// karar YOLA CIKARKEN veriliyor.
+  duzen      Json?
+  /// Savas sonucu -- akin cozulunce yaziliyor.
+  kazanildi  Boolean  @default(false)
+  /// Donen yaralilar ve ganimet; rapor bunlari gosteriyor.
+  yarali     Json?
+  odul       Json?
+  /// Dusen ekipmanin kimligi (varsa). Sansa bagli olan tek sey bu.
+  dusenItemId String?
+  seed       String
+  log        Json?
+  departAt   DateTime
+  arriveAt   DateTime
+  resolved   Boolean  @default(false)
+
+  lord Lord @relation(fields: [lordId], references: [id], onDelete: Cascade)
+
+  @@index([resolved, arriveAt])
+  @@index([lordId, resolved])
+  /// Yenilenme bu indeksten turuyor: "bu lord bu grubu en son ne zaman dusurdu".
+  @@index([lordId, haritaKey, grupNo, kazanildi])
 }
 
 model Battle {

@@ -73,7 +73,7 @@ function toArmy(value: unknown): Army {
  * Sahadaki generallerin katkısı da dönüyor: savaş kaydına yazılacak ve
  * raporda oyuncuya hangi generalin ne kattığı gösterilecek.
  */
-async function buildSide(
+export async function buildSide(
   lordId: string,
   units: Army,
   isDefender: boolean,
@@ -172,7 +172,7 @@ async function savunmaDuzeni(lordId: string, garnizon: Army, tx: Tx): Promise<Si
 }
 
 /** NPC garnizonu için taraf: lordu yok, sadece birimler ve tahkimat. */
-function npcSide(units: Army, fortress: number): Side {
+export function npcSide(units: Army, fortress: number): Side {
   return {
     units,
     // NPC garnizonu da varsayılan dizilimde duruyor. Nötr bıraksaydık

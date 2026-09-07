@@ -412,16 +412,23 @@ kontrol(
     `${once.yapi} yapı -> ${sonra.yapi}`,
   );
 
-  /**
-   * Ertelenen şeyler ULAŞILAMAZ olmamalı. Görevler alt çubukta duruyor;
-   * şehirde henüz açılmamış olmaları onları kaldırmak değil, ertelemek.
+  /*
+   * Ertelenen şeyler ULAŞILAMAZ olmamalı.
+   *
+   * Görevler alt çubuktan çıktı (docs/12 §7) — yerine akın geldi. Ama
+   * "çubuktan çıktı" ile "kayboldu" aynı şey değil: görev panosu KAMP
+   * kademesinde, yani en yeni lordun bile şehrinde duruyor ve kapıyı o
+   * açıyor. Testin ölçtüğü şey değişmedi, yolu değişti.
    */
-  const cubukta = await page.evaluate(() =>
+  const panoVar = await page.locator('[data-bina-kapi="gorevler"]').count();
+  kontrol('Görevler şehirdeki panodan hâlâ ulaşılabilir', panoVar > 0, `${panoVar} pano`);
+
+  const akinCubukta = await page.evaluate(() =>
     Boolean(
-      [...document.querySelectorAll('nav button')].find((b) => b.textContent?.includes('Görevler')),
+      [...document.querySelectorAll('nav button')].find((b) => b.textContent?.includes('Akın')),
     ),
   );
-  kontrol('Gizlenen Görevler alt çubuktan hâlâ ulaşılabilir', cubukta === true);
+  kontrol('Akın alt çubukta', akinCubukta === true);
 }
 
 kontrol('Konsol hatası yok', konsol.length === 0, konsol.slice(0, 2).join(' | '));

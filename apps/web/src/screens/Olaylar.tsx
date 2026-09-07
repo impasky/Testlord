@@ -24,6 +24,8 @@ export const OLAY_RENGI: Record<string, string> = {
   savas_kazandin: 'var(--color-yesil)',
   bolge_kaybettin: 'var(--color-kirmizi)',
   savas_kaybettin: 'var(--color-kirmizi)',
+  akin_kazandin: 'var(--color-yesil)',
+  akin_kaybettin: 'var(--color-kirmizi)',
   saldiriya_ugradin: 'var(--color-turuncu)',
   general_seviye: 'var(--color-altin)',
   ittifak_katilim: 'var(--color-yesil)',

@@ -42,8 +42,16 @@
  * sınırlı.
  */
 import { gecikmisYuruyusleriCoz } from './march.js';
+import { gecikmisAkinlariCoz } from './akin.js';
 import { gecikmisIsleriCoz } from './queue.js';
 
 export async function gecikmisleriKapat(lordId: string, now = new Date()): Promise<void> {
-  await Promise.all([gecikmisIsleriCoz(lordId, now), gecikmisYuruyusleriCoz(lordId, now)]);
+  await Promise.all([
+    gecikmisIsleriCoz(lordId, now),
+    gecikmisYuruyusleriCoz(lordId, now),
+    // Akın da aynı kurala giriyor: "ordun nerede" sorusuna cevap veren
+    // her uç önce gecikmiş işleri kapatmalı. Kapatmasaydı worker
+    // uykudayken oyuncu ordusunu sonsuza kadar sahada görürdü.
+    gecikmisAkinlariCoz(lordId, now),
+  ]);
 }

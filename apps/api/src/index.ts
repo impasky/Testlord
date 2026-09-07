@@ -21,6 +21,7 @@ import { gunlukRoutes } from './routes/gunluk.js';
 import { seferRoutes } from './routes/sefer.js';
 import { ittifakRoutes } from './routes/ittifak.js';
 import { arastirmaRoutes } from './routes/arastirma.js';
+import { akinRoutes } from './routes/akin.js';
 import { sehirRoutes } from './routes/sehir.js';
 import { pazarRoutes } from './routes/pazar.js';
 import { ticaretRoutes } from './routes/ticaret.js';
@@ -174,6 +175,7 @@ export async function buildServer() {
   await app.register(arastirmaRoutes, { prefix: '/api' });
   await app.register(pazarRoutes, { prefix: '/api' });
   await app.register(sehirRoutes, { prefix: '/api' });
+  await app.register(akinRoutes, { prefix: '/api' });
 
   // Ölçüm ucu yalnızca anahtar tanımlıysa var olur: tanımsızken uç hiç
   // yoktur, yanlış yapılandırma ile açıkta kalamaz.

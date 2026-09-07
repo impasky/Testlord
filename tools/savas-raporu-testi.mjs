@@ -57,10 +57,10 @@ await post('/test/bolgeleri-sifirla');
 await post('/test/kaynak-ver', { altin: 400000, demir: 200000, erzak: 200000 });
 await post('/test/xp-ver', { miktar: 80000 });
 await page.reload({ waitUntil: 'networkidle' });
-await page.waitForSelector('nav button:has-text("Kışla")', { timeout: 15000 });
+await page.waitForSelector('nav button:has-text("Ordu")', { timeout: 15000 });
 
 // --- Ordu kur ---
-await page.locator('nav button:has-text("Kışla")').click();
+await page.locator('nav button:has-text("Ordu")').click();
 await page.waitForSelector('text=Asker Eğitimi', { timeout: 8000 });
 for (const birim of ['Mızrakçı', 'Okçu', 'Süvari']) {
   await page.locator(`button:has-text("${birim} eğit")`).first().click();
@@ -68,10 +68,10 @@ for (const birim of ['Mızrakçı', 'Okçu', 'Süvari']) {
 }
 await post('/test/kuyruklari-bitir');
 await page.reload({ waitUntil: 'networkidle' });
-await page.waitForSelector('nav button:has-text("Harita")', { timeout: 15000 });
+await page.waitForSelector('nav button:has-text("Dünya")', { timeout: 15000 });
 
 // --- Saldır ---
-await page.locator('nav button:has-text("Harita")').click();
+await page.locator('nav button:has-text("Dünya")').click();
 await page.waitForSelector('[role=img][aria-label*="Dünya haritası"]', { timeout: 15000 });
 await page.waitForTimeout(1200);
 // Bölgeler artık gerçek <button>; türü erişilebilir isimde yazılı.
@@ -115,8 +115,8 @@ await page.screenshot({ path: `${CIKTI}/rapor-malikane.png` });
 
 // --- 2. giriş: Harita bölge alt sayfası ---
 await page.reload({ waitUntil: 'networkidle' });
-await page.waitForSelector('nav button:has-text("Harita")', { timeout: 15000 });
-await page.locator('nav button:has-text("Harita")').click();
+await page.waitForSelector('nav button:has-text("Dünya")', { timeout: 15000 });
+await page.locator('nav button:has-text("Dünya")').click();
 await page.waitForSelector('[role=img][aria-label*="Dünya haritası"]', { timeout: 15000 });
 await page.waitForTimeout(1200);
 // Bölgeler artık gerçek <button>; türü erişilebilir isimde yazılı.

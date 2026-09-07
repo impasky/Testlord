@@ -1,5 +1,6 @@
 /** Tipli API istemcisi. Sunucu tek otoritedir; istemci hiçbir sayı yazmaz. */
 import type {
+  AkinHaritaDurumu,
   ArastirmaDurumu,
   Army,
   BasarimOlcutleri,
@@ -14,7 +15,7 @@ import type {
   TaktikDurumu,
 } from '@lordlar/shared';
 
-export type { BinaDurumu, Kademe } from '@lordlar/shared';
+export type { AkinGrupDurumu, AkinHaritaDurumu, BinaDurumu, Kademe } from '@lordlar/shared';
 
 /**
  * API adresi.
@@ -913,6 +914,59 @@ export const api = {
     post<{ id: string; finishAt: string; ad: string }>('/arastirma', { key }),
   arastirmaIptal: (id: string) =>
     request<{ iptal: boolean; iade: number }>(`/arastirma/${id}`, { method: 'DELETE' }),
+
+  /** Akın: beş NPC haritası, on grup, sahadaki ordular ve son sonuçlar. */
+  akin: () =>
+    request<{
+      haritalar: AkinHaritaDurumu[];
+      esZamanli: number;
+      sahadaki: {
+        id: string;
+        haritaKey: string;
+        haritaAdi: string;
+        grupNo: number;
+        grupAdi: string;
+        army: Army;
+        arriveAt: string;
+      }[];
+      sonuclar: {
+        id: string;
+        haritaKey: string;
+        haritaAdi: string;
+        grupNo: number;
+        grupAdi: string;
+        kazanildi: boolean;
+        odul: Resources | null;
+        yarali: Army | null;
+        dusenItemId: string | null;
+        arriveAt: string;
+      }[];
+    }>('/akin'),
+  akinOnizleme: (g: {
+    haritaKey: string;
+    grupNo: number;
+    army: Army;
+    generalIds?: string[];
+    duzen?: SavasDuzeni | null;
+  }) =>
+    post<{
+      kazanmaOrani: number;
+      garnizon: Army;
+      sureSn: number;
+      tahminiKayip: Army;
+      tahminiKalan: Army;
+    }>('/akin/onizleme', g),
+  akinaCik: (g: {
+    haritaKey: string;
+    grupNo: number;
+    army: Army;
+    generalIds?: string[];
+    duzen?: SavasDuzeni | null;
+  }) =>
+    post<{ id: string; arriveAt: string; sureSn: number; haritaAdi: string; grupAdi: string }>(
+      '/akin',
+      g,
+    ),
 
   /** Şehir: yerleşim kademesi, binalar ve süren inşaat. */
   sehir: () =>

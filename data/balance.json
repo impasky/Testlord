@@ -792,6 +792,47 @@
     "bakim_alir": false,
     "_bakim_notu": "Tedavideki asker erzak YEMIYOR ve komuta yeri KAPLAMIYOR. Yenilgiyi hem kayipla hem bakim gideriyle iki kez cezalandirmak, dibe vurmus oyuncuyu daha da dibe iter."
   },
+  "akin": {
+    "_aciklama": "Akin sistemi: bes NPC haritasi, her birinde on grup (docs/12 §6). Haritalarin ADI, dusmani ve birim karisimi data/akinlar.json icinde; buradaki her sey SAYI.",
+    "_neden_ayri": "Akin PvP'nin kolay hali degil, ayri bir dongu: toprak vermiyor, kaynak ve EKIPMAN veriyor. Sayilari PvP'den ayri tutmak, savas dengesini bozmadan akin odulunu ayarlayabilmek demek.",
+    "grup_sayisi": 10,
+    "garnizon_taban": 26,
+    "garnizon_us": 1.24,
+    "_garnizon_formulu": "adet = garnizon_taban * harita.guc_carpani * garnizon_us^(grup-1); 10. grup ayrica sef_carpani ile carpilir",
+    "sef_carpani": 1.5,
+    "_sef_notu": "Onuncu grup SEF: garnizonu agir, ekipman ihtimali yuksek, yenilenmesi uzun. Haritanin sonu bir duvar olmali; yoksa on grup tek oturusta suprulur ve harita bir gunde biter.",
+    "sure_taban_sn": 240,
+    "sure_grup_basina_sn": 45,
+    "sef_sure_carpani": 1.5,
+    "_sure_notu": "Akin PvP yuruyusunden KISA (docs/12 §6): ilk grup 4 dakika, sef 15 dakika civari. Gidis-donus TEK sure -- ordu ciktigi anda gider, savasir ve doner; oyuncuya tek bir bekleyis, tek bir rapor. Iki asamali yapmak (once savas, sonra donus) PvP'de gerekli cunku bolge el degistiriyor; akinda degismiyor.",
+    "yenilenme_saat": 4,
+    "sef_yenilenme_saat": 12,
+    "_yenilenme_notu": "Vurulan grup bu sure sonunda geri geliyor ve yenilenme OYUNCUYA OZEL: bir baskasinin vurdugu kamp senin haritanda duruyor. Ortak olsaydi kalabalik dunyada harita hep gri gorunurdu.",
+    "odul_taban": {
+      "altin": 600,
+      "demir": 300,
+      "erzak": 240
+    },
+    "odul_us": 1.27,
+    "_odul_formulu": "kaynak = odul_taban[k] * harita.odul_agirligi[k] * odul_us^(grup-1); sefte ayrica sef_carpani",
+    "xp_taban": 35,
+    "xp_us": 1.2,
+    "ekipman_ihtimali_taban": 0.1,
+    "ekipman_ihtimali_grup_basina": 0.025,
+    "sef_ekipman_ihtimali": 0.6,
+    "_ekipman_notu": "Kaynak KESIN, ekipman SANSA bagli (docs/12 §6). Ihtimal grupla buyuyor; sef ayri bir sayi kullaniyor cunku 'sefe gitmeye deger mi' sorusunun cevabi bu. Dusen ekipmanin kademesi grubun zorluguna VE haritanin azami_tier'ine bagli: Nekropol'un sefi T5 dusurebilir, Kirik Sahil'inki asla.",
+    "tier_grup_esikleri": [
+      1,
+      4,
+      7,
+      9,
+      10
+    ],
+    "_tier_notu": "tier N icin gereken en kucuk grup numarasi. Haritanin azami_tier'i tavan koyuyor; ikisinin kucugu geciyor.",
+    "kayipsiz_esik": 0.0,
+    "es_zamanli": 3,
+    "_es_zamanli_notu": "Ayni anda sahada tutulabilecek akin sayisi. PvP saldiri limitinden AYRI: akin gunluk saldiri hakkini yemiyor cunku PvE'yi PvP butcesine baglamak, oyuncuyu akin yapmamaya iterdi."
+  },
   "binalar": {
     "_aciklama": "Bina insa ve yukseltme sayilari. Bina TANIMLARI data/binalar.json icinde; burada yalniz kuresel formuller ve kademe tavanlari var.",
     "_ilke": "ARASTIRMA ORAN VERIR (yuzde carpani), BINA KAPASITE VE KILIT VERIR (sayi ve erisim). Ikisi hicbir zaman ayni sayiya dokunmaz -- bir bina hizlandirmaz, bir arastirma slot acmaz. Bu ayrim olmasa iki sistem ayni carpani ustuste bindirir ve denge tartismasinda hangisinin duzeltilecegi belli olmazdi (docs/12 §4).",
