@@ -126,6 +126,7 @@ export const BINALAR = binalarJson.binalar as unknown as {
   aciklama: string;
   x: number;
   y: number;
+  olcek: number;
   seviyeli: boolean;
   acilis_kademesi: string;
   etki?: string;

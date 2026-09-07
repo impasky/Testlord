@@ -187,6 +187,12 @@ Araç aynı dosyaya ikinci kez uygulanmaz: alfa açılıyor ama dama RGB'de
 duruyor (küçültmedeki hale gri kalsın diye), yani alfası atılınca desen geri
 gelir. `zaten_saydam` kontrolü bu yüzden var.
 
+Sprite'lar sonradan bir hizalama pasosundan geçti
+(`tools/sprite-hizala.py`): alfa sınırına kırpılıp ortak bir zemin
+çizgisine oturtuldular. Ölçüldüğünde alt boşlukları %3 ile %12 arasında
+geziyordu — aynı kutuya konsalar bile binaların tabanı aynı yere denk
+gelmiyordu. Kare tuval korundu; kırpma dosyaların üstüne yazıldı.
+
 **Dünya haritası iki kez üretildi.** İlki 4:3'tü ve parşömen çerçevesi
 vardı; kap `aspect-square` + `object-cover` olduğu için yanları kırpılıyor
 ve 61 işaretçinin en dıştakileri kırpılan şeride düşüyordu. İkincisi kare,

@@ -289,6 +289,39 @@ geliniyor ve liste seçimi kartı ekrana kaydırıyor. Bedeli bilinerek
 ödendi: oyuncu binaya günde onlarca kez giriyor, seviye yükseltmeye ayda
 birkaç kez.
 
+### 3.6 Zemine oturma
+
+Oyuncu iki referans ekran gönderip tek bir şey sordu: **"zemine tam
+oturan bir yapı kurabilir miyiz?"** Binalar büyümüştü ama hâlâ zeminin
+ÜSTÜNE yapıştırılmış kartlar gibi duruyordu. Fark çizimden değil
+yerleştirmeden geliyordu; dört şey birlikte çalışıyor:
+
+**1. Taban hizası.** Sprite'ların alt boşluğu %3 ile %12 arasında
+geziyordu: aynı kutuya konsalar bile biri zemine gömülü, öteki havada
+duruyordu. `tools/sprite-hizala.py` yirmi dördünü de alfa sınırına
+kırpıp ortak bir zemin çizgisine oturttu. Kare tuval korundu — en/boy
+dosyadan dosyaya değişseydi yükseklik ancak resim yüklendikten sonra
+bilinir ve kart zıplardı (CLS).
+
+**2. Tabandan çakma.** `translate(-50%, -100%)`: kutunun ALT kenarı
+x/y'ye oturuyor. `data/binalar.json` içindeki y artık "binanın ayak
+bastığı yer", merkezi değil.
+
+**3. Temas gölgesi.** Ayak basılan yere bir elips. Bir nesnenin zeminde
+durduğunu söyleyen şey bu; sprite'ın kendi düşen gölgesi onu kâğıt gibi
+gösteriyordu.
+
+**4. Derinlik sırası ve ölçek.** `zIndex = y` — önde duran arkadakini
+örtüyor; sıralar bilerek çakışıyor, çünkü çakışmasaydı binalar küçük
+kalırdı. Boy `olcek` ile geliyor: malikâne 1.25, görev panosu 0.60.
+Hepsi aynı boyken hangisinin diyarın kalbi olduğu okunmuyordu.
+
+**Etiketler artık her zaman durmuyor.** On üç koyu etiket hapı manzarayı
+örtüyordu ve referansların hiçbirinde yok. Boş arsada duruyor (orada
+sprite hepsi için AYNI — `arsa` — yani ad olmadan hangi yapı olduğu
+bilinemez) ve seçili yapıda duruyor. Dikili binanın kimliği silueti; adı
+`aria-label`da, Yapılar listesinde ve kartta.
+
 ## 4. Bina seviyesi ile araştırma neden çakışmıyor
 
 Bu, planın en riskli yeriydi ve ilkesi tek cümle:

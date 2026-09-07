@@ -206,6 +206,7 @@ tools/
   gorsel-uret.py          Oyun görsellerini üretir (GEMINI_API_KEY ister)
   gorsel-ayikla.py        Çok figürlü sayfayı tek tek varlıklara böler
   dama-sil.py             Modelin ÇİZDİĞİ saydamlık damasını gerçek alfaya çevirir
+  sprite-hizala.py        Bina sprite'larını ortak zemin çizgisine oturtur
   harita-yerlestir.py     Bölge işaretçilerini çizilmiş dünya zeminine oturtur
   check_balance.py        Aritmetik denge doğrulayıcı
   oyun-dongusu-testi.mjs  API üzerinden tam oyun döngüsü

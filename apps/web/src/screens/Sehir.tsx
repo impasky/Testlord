@@ -86,6 +86,15 @@ function KuyrukSatiri({ q }: { q: QueueItem }) {
   );
 }
 
+/**
+ * Bir yapının haritadaki taban genişliği (kabın yüzdesi).
+ *
+ * Gerçek boy bununla `data/binalar.json` içindeki `olcek` çarpımı. Tek
+ * bir sayı olmasının sebebi: hiyerarşi orandan gelmeli, elle yazılmış on
+ * üç ayrı boydan değil — biri değişince ötekilerle ilişkisi kayardı.
+ */
+const TABAN_BOY = 22;
+
 /** Bina anahtarı → ikon. Anahtarlar veride, ikonlar burada. */
 const BINA_IKONU: Record<string, keyof typeof IKONLAR> = {
   malikane: 'navMalikane',
@@ -323,7 +332,12 @@ export function Sehir({
           oyuncu onu ancak kaydırarak buluyordu. */}
       <div className="oyuk relative overflow-hidden rounded-xl border border-kenar">
         <div
-          className="relative aspect-[4/3] w-full bg-[radial-gradient(ellipse_at_50%_38%,#4a4028_0%,#332c1f_45%,#221c14_100%)]"
+          /* isolate: yapıların derinlik sırası (`zIndex = y`) YALNIZ
+             haritanın içinde geçerli olmalı. Kap kendi yığın bağlamını
+             kurmayınca z-index'ler kök bağlamda yarışıyordu ve 96'ya
+             çıkan bir bina, kapı panelinin (z-52) ÜSTÜNE geçip
+             tıklamayı yiyordu. */
+          className="relative aspect-[4/3] w-full isolate bg-[radial-gradient(ellipse_at_50%_38%,#4a4028_0%,#332c1f_45%,#221c14_100%)]"
           role="img"
           aria-label={`${yerlesim.ad} — ${binalar.length} yapı`}
         >
@@ -354,8 +368,7 @@ export function Sehir({
           />
         ) : (
           <p className="text-center text-[12px] text-sonuk">
-            Dikili bir yapıya dokun: doğrudan içine girersin. Boş arsaya dokun: ne işe yaradığını ve
-            bedelini söyler.
+            Dikili yapıya dokun: içine girersin. Boş arsaya dokun: bedelini söyler.
           </p>
         )}
       </div>
@@ -537,13 +550,6 @@ export function Sehir({
 }
 
 /**
- * Haritadaki tek bir yapı.
- *
- * Dikilmemiş bina soluk ve kesik çizgili bir arsa; dikilmiş olan dolu bir
- * madalyon. Fark bir bakışta okunmalı — oyuncunun "şehrimde ne eksik"
- * sorusu haritaya bakarak cevaplanabilmeli.
- */
-/**
  * Etki değerini insanın okuyacağı gibi yazar.
  *
  * Üç birim var ve üçü de aynı satırda görünüyor: düz sayı (kuyruk,
@@ -561,31 +567,39 @@ function etkiYazisi(deger: number | null, birim: BinaDurumu['etkiBirimi']): stri
 /**
  * Haritadaki tek bir yapı.
  *
- * ── Neden kutu yok ──────────────────────────────────────────────────
+ * Oyuncu referans olarak başka oyunlardan iki ekran gönderdi ve tek bir
+ * şey sordu: "zemine tam oturan bir yapı kurabilir miyiz?" Aradaki fark
+ * çizimden çok YERLEŞTİRMEDEN geliyordu. Dört şey birlikte çalışıyor:
  *
- * Oyuncu: "haritadaki bina görselleri aşırı küçük, şu an sadece ikon gibi
- * görünüyor." İki sebebi vardı ve ikisi de burada duruyordu: 18 piksellik
- * çizim ve onu çevreleyen 36 piksellik yuvarlatılmış kutu. Kutu, içindeki
- * ne olursa olsun "bu bir düğme" diyor; bina zemine KONMUŞ görünmüyordu.
+ * 1. TABANDAN ÇAKMA. `translate(-50%, -100%)` — kutunun ALT kenarı
+ *    x/y'ye oturuyor, merkezi değil. Sprite'ların tabanı da ortak bir
+ *    çizgiye getirildi (`tools/sprite-hizala.py`); önce alt boşlukları
+ *    %3 ile %12 arasında geziyordu, yani aynı kutuya konsalar bile biri
+ *    zemine gömülü, öteki havada duruyordu.
  *
- * Artık sprite doğrudan zeminin üstünde duruyor, altında bir gölge var ve
- * kutu yalnız sprite'ı OLMAYAN yapıda çiziliyor (çizgi ikonun zemine
- * oturacak bir silueti yok, kutusuz okunmuyor).
+ * 2. TEMAS GÖLGESİ. Binanın ayak bastığı yere bir elips. Bir nesnenin
+ *    zeminde durduğunu söyleyen şey bu; sprite'ın kendi düşen gölgesi
+ *    (drop-shadow) onu kâğıt gibi gösteriyordu.
  *
- * ── Neden %17 ───────────────────────────────────────────────────────
+ * 3. DERİNLİK SIRASI. `zIndex = y` — önde duran arkadakini örtüyor.
+ *    Sıralar bilerek çakışıyor; çakışmasaydı binalar küçük kalırdı.
  *
- * Boy keyfi seçilmedi: binalar dört sıraya diziliyor ve sıra arası 23
- * puan (`data/binalar.json`). Kap 4:3 olduğu için 23 puan dikeyde
- * genişliğin ~%17'si; işaretçi bundan büyük olursa DOKUNMA ALANLARI üst
- * üste biner ve oyuncu komşusunun binasını açar. Sprite'ların çizimi
- * karesinin ortalama %84'ünü dolduruyor, yani şeffaf pay bu çakışmayı
- * kurtarmıyor.
+ * 4. ÖLÇEK. Boy `data/binalar.json` içindeki `olcek` ile geliyor:
+ *    malikâne 1.25, görev panosu 0.60. Hepsi aynı boyken hangisinin
+ *    diyarın kalbi olduğu okunmuyordu.
+ *
+ * Etiket artık HER ZAMAN durmuyor. On üç koyu etiket hapı manzarayı
+ * örtüyordu ve referansların hiçbirinde yok. Boş arsada duruyor (orada
+ * sprite hepsi için AYNI — `arsa` — yani ad olmadan hangi yapı olduğu
+ * bilinemez) ve seçili yapıda duruyor. Dikili binanın kimliği silueti;
+ * adı `aria-label`da, listede ve dokununca açılan kartta.
  */
 function BinaIsareti({ b, secili, onSec }: { b: BinaDurumu; secili: boolean; onSec: () => void }) {
   const dikili = b.seviye > 0;
   const ad = spriteAdi(b.key, b.seviye, b.seviyeli);
   const sprite = SPRITE_OLAN.has(ad);
   const girilebilir = dikili && Boolean(b.kapi || b.sekme);
+  const etiketVar = secili || !dikili;
   return (
     <button
       type="button"
@@ -598,31 +612,43 @@ function BinaIsareti({ b, secili, onSec }: { b: BinaDurumu; secili: boolean; onS
         girilebilir ? b.ozet : b.aciklama
       }`}
       title={`${b.ad} — ${dikili ? `seviye ${b.seviye}` : 'boş arsa'}`}
-      className="absolute aspect-square w-[17%]"
-      style={{ left: `${b.x}%`, top: `${b.y}%`, transform: 'translate(-50%, -50%)' }}
+      className="absolute aspect-square"
+      style={{
+        left: `${b.x}%`,
+        top: `${b.y}%`,
+        width: `${TABAN_BOY * b.olcek}%`,
+        transform: 'translate(-50%, -100%)',
+        zIndex: Math.round(b.y),
+      }}
     >
+      {/* Temas gölgesi ÖNCE: sprite'ın arkasında kalmalı. */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute bottom-0 left-1/2 h-[13%] w-[62%] -translate-x-1/2 rounded-[50%]"
+        style={{
+          background:
+            'radial-gradient(ellipse at center, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.3) 45%, rgba(0,0,0,0) 72%)',
+        }}
+      />
+
       {sprite ? (
         <img
           src={`/gorseller/binalar/${ad}.webp`}
           alt=""
           aria-hidden="true"
-          className="h-full w-full object-contain"
+          className="relative h-full w-full object-contain"
           style={{
-            // Gölge SPRITE'IN SİLUETİNE düşüyor (box-shadow kareye
-            // düşerdi): bina zeminin üstünde duruyormuş gibi okunsun.
-            // Seçiliyken aynı gölge altın bir hâleye dönüyor — kutu
-            // olmadığı için çerçeve çizecek bir kenar yok.
+            // Seçiliyken altın hâle; kutu olmadığı için çizilecek kenar yok.
             filter: secili
-              ? 'drop-shadow(0 0 3px #fff3cf) drop-shadow(0 0 7px #f5b731)'
-              : 'drop-shadow(0 3px 3px rgba(0,0,0,0.55))',
-            // Dikilmemiş arsa soluk: haritaya bakınca "burada ne var, ne
-            // yok" tek bakışta okunmalı.
+              ? 'drop-shadow(0 0 3px #fff3cf) drop-shadow(0 0 8px #f5b731)'
+              : 'drop-shadow(0 2px 2px rgba(0,0,0,0.35))',
+            // Dikilmemiş arsa soluk: "burada ne var, ne yok" bir bakışta.
             opacity: dikili ? 1 : 0.72,
           }}
         />
       ) : (
         <span
-          className={`flex h-full w-full items-center justify-center rounded-xl shadow-[0_2px_6px_rgba(0,0,0,0.55)] ${
+          className={`relative flex h-full w-full items-center justify-center rounded-xl shadow-[0_2px_6px_rgba(0,0,0,0.55)] ${
             dikili
               ? 'bg-[#6a5334] text-parsomen'
               : 'border-2 border-dashed border-solgun/45 text-sonuk'
@@ -634,14 +660,14 @@ function BinaIsareti({ b, secili, onSec }: { b: BinaDurumu; secili: boolean; onS
       )}
 
       {b.seviyeli && dikili && (
-        <span className="tabular absolute right-0 bottom-3 rounded bg-gece px-1 text-[11px] leading-tight font-bold text-altin">
+        <span className="tabular absolute right-[6%] bottom-[6%] rounded bg-gece px-1 text-[11px] leading-tight font-bold text-altin">
           {b.seviye}
         </span>
       )}
       {/* Boş arsada artı: "burada bir şey YOK" ile "burada bir şey
           YAPABİLİRSİN" farklı iki cümle ve ikincisi görünmeliydi. */}
       {b.seviyeli && !dikili && !b.insaatta && (
-        <span className="absolute right-0 bottom-3 rounded bg-gece px-1 text-[11px] leading-tight font-bold text-solgun">
+        <span className="absolute right-[6%] bottom-[6%] rounded bg-gece px-1 text-[11px] leading-tight font-bold text-solgun">
           +
         </span>
       )}
@@ -650,13 +676,15 @@ function BinaIsareti({ b, secili, onSec }: { b: BinaDurumu; secili: boolean; onS
           ⚒
         </span>
       )}
-      <span
-        className={`pointer-events-none absolute top-full left-1/2 -mt-1.5 max-w-[100px] -translate-x-1/2 truncate rounded bg-gece/85 px-1 text-[11px] leading-tight font-bold whitespace-nowrap ${
-          dikili ? 'text-parsomen' : 'text-solgun'
-        }`}
-      >
-        {b.ad}
-      </span>
+      {etiketVar && (
+        <span
+          className={`pointer-events-none absolute top-full left-1/2 -mt-1 max-w-[110px] -translate-x-1/2 truncate rounded bg-gece/85 px-1 text-[11px] leading-tight font-bold whitespace-nowrap ${
+            dikili ? 'text-altin' : 'text-solgun'
+          }`}
+        >
+          {b.ad}
+        </span>
+      )}
     </button>
   );
 }

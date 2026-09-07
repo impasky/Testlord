@@ -147,7 +147,10 @@ export interface BinaDurumu {
   ozet: string;
   aciklama: string;
   x: number;
+  /** Binanın AYAK BASTIĞI y — merkezi değil (sprite tabanından çakılıyor). */
   y: number;
+  /** Taban boyun çarpanı: malikâne 1.25, görev panosu 0.60. */
+  olcek: number;
   seviye: number;
   seviyeli: boolean;
   /** Bu kademede çıkabileceği en yüksek seviye. */
@@ -211,6 +214,7 @@ export function binaDurumlari(
         aciklama: b.aciklama,
         x: b.x,
         y: b.y,
+        olcek: b.olcek,
         seviye: 1,
         seviyeli: false,
         tavan: 1,
@@ -257,6 +261,7 @@ export function binaDurumlari(
       aciklama: b.aciklama,
       x: b.x,
       y: b.y,
+      olcek: b.olcek,
       seviye,
       seviyeli: b.seviyeli,
       tavan,
