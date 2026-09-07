@@ -202,10 +202,10 @@ const kenar = new Set(
 const hedef = harita.regions
   .filter((r) => kenar.has(r.id) && !r.owner && r.type !== 'kale')
   .sort((a, b) => a.distance - b.distance)[0];
-await page
-  .locator('svg > g')
-  .nth(harita.regions.findIndex((r) => r.id === hedef.id))
-  .click();
+// Bölgeler artık SVG grubu değil gerçek <button>; kimliğiyle bulunuyor.
+// Ada göre aramıyoruz çünkü görünür etiket yakınlık kademesine göre
+// gizlenebiliyor — kimlik her ölçekte duruyor.
+await page.locator(`[data-bolge="${hedef.id}"]`).click();
 await page.waitForTimeout(900);
 kontrol(
   'Bölge alt sayfası açıldı',

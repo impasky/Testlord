@@ -232,6 +232,30 @@ korunuyor.
 Kurallar değişmiyor: komşuluk, vilayet birliği, kalkanlar, paktlar,
 casusluk, takviye, dizilim ve taktik hepsi olduğu gibi çalışır.
 
+### 5.1 Y2'de öğrenilenler
+
+Üçü de ilk denemede yanlış yapıldı ve ölçümle yakalandı:
+
+**İşaretçiler TERS ölçeklenir.** Sarmalayıcı yakınlaştıkça zemin büyür,
+işaretçi büyümemeli. İlk hâlde büyüyordu ve ×2,25'te madalyonlar
+devleşip adlar birbirine giriyordu: yakınlaştırmak haritayı okunur değil
+OKUNMAZ yapıyordu. Ters ölçek yakınlaştırmayı işaretçileri BİRBİRİNDEN
+AYIRAN bir şeye çeviriyor — asıl istenen buydu.
+
+**Etiketler kademeli.** 61 adı birden yazmak telefon genişliğinde
+geometrik olarak imkânsız. Uzak ölçekte yalnız oyuncuyu ilgilendiren
+yerler (senin, düşmanın, taht, seçili) adlanıyor; yakınlaşınca hepsi
+açılıyor. Ad her zaman `aria-label`'da duruyor — ekran okuyucu ve
+testler için.
+
+**Dokunma hedefi DAİRESEL.** Görsel denetim 32×32 işaretçileri yakaladı
+ve haklıydı. Ama kare bir 44'lük kutu daha kötü oldu: işaretçiler ~37
+piksel arayla duruyor ve kutunun köşesi komşunun MERKEZİNİ örtüyordu —
+bir bölgeye basmak yandakini seçiyordu. Daire çözüyor: yarıçap 22,
+komşu merkezi 37 piksel ötede. Ad şeridi de tıklama geçirmiyor; akışın
+içindeyken düğmenin kutusunu uzatıp alttaki komşunun tıklamasını
+yiyordu.
+
 ## 6. Sefer haritaları (5 NPC)
 
 | Harita | Düşman | Ağırlıklı ödül | Açılış |
@@ -317,7 +341,7 @@ Her aşama sonunda oyun **oynanabilir** durumda kalır.
 | # | İş |
 |---|---|
 | **Y1** ✅ | Veri modeli: komşuluk grafiği, köy türü, başkent, bina alanı. Göç ve testler. |
-| **Y2** | Dünya haritası arayüzü: resimli zemin, kaydırma/yakınlaştırma, işaretçiler. |
+| **Y2** ✅ | Dünya haritası arayüzü: resimli zemin, kaydırma/yakınlaştırma, işaretçiler. |
 | **Y3** | Şehir sayfası: yerleşim zemini, bina yerleşimi, inşa ve yükseltme kuyruğu. |
 | **Y4** | Bina seviyesi etkileri: lord seviyesinden binaya taşınan sayılar. |
 | **Y5** | Gezinme: 5 sekme, Lord ekranının karakter sayfasına dönüşü. |

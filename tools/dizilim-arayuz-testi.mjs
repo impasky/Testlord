@@ -74,8 +74,12 @@ const hedefAd = oneri?.oneri?.name ?? null;
 kontrol('oyunun önerdiği bir hedef var', Boolean(hedefAd), hedefAd ?? 'yok');
 
 await ekrana(page, 'harita', 2000);
-// Hex'ler <g role="button"> ve içlerinde <title> olarak bölge adı var.
-const bolgeDugmesi = page.locator('g[role="button"]').filter({ hasText: hedefAd ?? '' });
+// Bölgeler artık gerçek <button>; adları erişilebilir isimde duruyor.
+// Görünür etiket yakınlık kademesine göre gizlenebiliyor, o yüzden
+// metne değil erişilebilir isme bakıyoruz.
+const bolgeDugmesi = page.getByRole('button', {
+  name: new RegExp(`^${(hedefAd ?? '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')} —`),
+});
 if (await bolgeDugmesi.count()) {
   await bolgeDugmesi.first().click();
   await page.waitForTimeout(1500);

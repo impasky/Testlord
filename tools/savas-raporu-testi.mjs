@@ -72,9 +72,15 @@ await page.waitForSelector('nav button:has-text("Harita")', { timeout: 15000 });
 
 // --- Saldır ---
 await page.locator('nav button:has-text("Harita")').click();
-await page.waitForSelector('svg[aria-label*="Dünya haritası"]', { timeout: 15000 });
+await page.waitForSelector('[role=img][aria-label*="Dünya haritası"]', { timeout: 15000 });
 await page.waitForTimeout(1200);
-await page.locator('g:has(title:text-matches("— tarla,"))').first().click();
+// Bölgeler artık gerçek <button>; türü erişilebilir isimde yazılı.
+// Görünür etiket yakınlık kademesine göre gizlenebiliyor, o yüzden
+// metne değil erişilebilir isme bakıyoruz.
+await page
+  .getByRole('button', { name: /— tarla,/ })
+  .first()
+  .click();
 // DOM metni "Saldırı Ordusu"; ekranda büyük harf görünmesi .baslik'ten geliyor.
 await page.waitForSelector('text=Saldırı Ordusu', { timeout: 8000 });
 await page.locator('button:has-text("Hepsi")').first().click();
@@ -111,9 +117,15 @@ await page.screenshot({ path: `${CIKTI}/rapor-malikane.png` });
 await page.reload({ waitUntil: 'networkidle' });
 await page.waitForSelector('nav button:has-text("Harita")', { timeout: 15000 });
 await page.locator('nav button:has-text("Harita")').click();
-await page.waitForSelector('svg[aria-label*="Dünya haritası"]', { timeout: 15000 });
+await page.waitForSelector('[role=img][aria-label*="Dünya haritası"]', { timeout: 15000 });
 await page.waitForTimeout(1200);
-await page.locator('g:has(title:text-matches("— tarla,"))').first().click();
+// Bölgeler artık gerçek <button>; türü erişilebilir isimde yazılı.
+// Görünür etiket yakınlık kademesine göre gizlenebiliyor, o yüzden
+// metne değil erişilebilir isme bakıyoruz.
+await page
+  .getByRole('button', { name: /— tarla,/ })
+  .first()
+  .click();
 await page.waitForSelector('text=Bu Bölgedeki Savaşların', { timeout: 8000 });
 kontrol('Bölge alt sayfasında savaş listesi var', true);
 

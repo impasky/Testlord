@@ -56,6 +56,7 @@ export const IkonSure = yap('sure');
 export const IkonUyari = yap('uyari');
 
 /* Bölge tipleri */
+export const IkonKoy = yap('koy');
 export const IkonTarla = yap('tarla');
 export const IkonMaden = yap('maden');
 export const IkonSehir = yap('sehir');

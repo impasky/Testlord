@@ -1,6 +1,6 @@
 {
   "schema": "lordlar-cagi/world-map@1",
-  "_not": "Hex izgarasi kaldirildi (docs/12). Konum artik x/y (yuzdelik, YALNIZ cizim icin) ve komsuluk acikca yazili. Motor x/y okumaz: mesafe komsuluk grafiginde en kisa yoldur. Boylece harita resmi degistiginde oyunun kurallari kaymiyor.",
+  "_not": "Hex izgarasi kaldirildi (docs/12). Konum artik x/y (yuzdelik, YALNIZ cizim icin) ve komsuluk acikca yazili. Motor x/y okumaz: mesafe komsuluk grafiginde en kisa yoldur. x ve y AYNI olcekle normalize edildi -- ayri olceklenirse harita dikeyde gerilir ve resimli zeminde bu goze batar.",
   "region_count": 61,
   "provinces": [
     {
@@ -91,7 +91,7 @@
       "type": "sehir",
       "province": "kuzeymark",
       "x": 66.5,
-      "y": 61.0,
+      "y": 59.53,
       "komsular": [
         2,
         4,
@@ -143,7 +143,7 @@
       "type": "kale",
       "province": "kuzeymark",
       "x": 66.5,
-      "y": 83.0,
+      "y": 78.58,
       "komsular": [
         6,
         9,
@@ -169,7 +169,7 @@
       "type": "tarla",
       "province": "kuzeymark",
       "x": 72.0,
-      "y": 72.0,
+      "y": 69.05,
       "komsular": [
         3,
         5,
@@ -195,7 +195,7 @@
       "type": "sehir",
       "province": "kuzeymark",
       "x": 77.5,
-      "y": 61.0,
+      "y": 59.53,
       "komsular": [
         3,
         4,
@@ -247,7 +247,7 @@
       "type": "koy",
       "province": "kuzeymark",
       "x": 77.5,
-      "y": 83.0,
+      "y": 78.58,
       "komsular": [
         5,
         6,
@@ -271,7 +271,7 @@
       "type": "tarla",
       "province": "kuzeymark",
       "x": 83.0,
-      "y": 72.0,
+      "y": 69.05,
       "komsular": [
         6,
         7,
@@ -295,7 +295,7 @@
       "type": "koy",
       "province": "kuzeymark",
       "x": 88.5,
-      "y": 61.0,
+      "y": 59.53,
       "komsular": [
         7,
         8,
@@ -319,7 +319,7 @@
       "type": "tarla",
       "province": "demirvadi",
       "x": 44.5,
-      "y": 61.0,
+      "y": 59.53,
       "komsular": [
         1,
         13,
@@ -345,7 +345,7 @@
       "type": "sehir",
       "province": "demirvadi",
       "x": 55.5,
-      "y": 61.0,
+      "y": 59.53,
       "komsular": [
         1,
         2,
@@ -371,7 +371,7 @@
       "type": "maden",
       "province": "demirvadi",
       "x": 39.0,
-      "y": 72.0,
+      "y": 69.05,
       "komsular": [
         12,
         15,
@@ -397,7 +397,7 @@
       "type": "kale",
       "province": "demirvadi",
       "x": 50.0,
-      "y": 72.0,
+      "y": 69.05,
       "komsular": [
         12,
         13,
@@ -423,7 +423,7 @@
       "type": "tarla",
       "province": "demirvadi",
       "x": 61.0,
-      "y": 72.0,
+      "y": 69.05,
       "komsular": [
         3,
         5,
@@ -449,7 +449,7 @@
       "type": "sehir",
       "province": "demirvadi",
       "x": 44.5,
-      "y": 83.0,
+      "y": 78.58,
       "komsular": [
         14,
         15,
@@ -475,7 +475,7 @@
       "type": "maden",
       "province": "demirvadi",
       "x": 55.5,
-      "y": 83.0,
+      "y": 78.58,
       "komsular": [
         5,
         15,
@@ -501,7 +501,7 @@
       "type": "kale",
       "province": "demirvadi",
       "x": 28.0,
-      "y": 94.0,
+      "y": 88.11,
       "komsular": [
         20,
         25,
@@ -524,7 +524,7 @@
       "type": "koy",
       "province": "demirvadi",
       "x": 39.0,
-      "y": 94.0,
+      "y": 88.11,
       "komsular": [
         17,
         19,
@@ -548,7 +548,7 @@
       "type": "sehir",
       "province": "demirvadi",
       "x": 50.0,
-      "y": 94.0,
+      "y": 88.11,
       "komsular": [
         17,
         18,
@@ -572,7 +572,7 @@
       "type": "tarla",
       "province": "gunbati",
       "x": 33.5,
-      "y": 61.0,
+      "y": 59.53,
       "komsular": [
         12,
         14,
@@ -598,7 +598,7 @@
       "type": "sehir",
       "province": "gunbati",
       "x": 22.5,
-      "y": 61.0,
+      "y": 59.53,
       "komsular": [
         22,
         24,
@@ -624,7 +624,7 @@
       "type": "maden",
       "province": "gunbati",
       "x": 28.0,
-      "y": 72.0,
+      "y": 69.05,
       "komsular": [
         14,
         22,
@@ -650,7 +650,7 @@
       "type": "kale",
       "province": "gunbati",
       "x": 33.5,
-      "y": 83.0,
+      "y": 78.58,
       "komsular": [
         14,
         17,
@@ -676,7 +676,7 @@
       "type": "koy",
       "province": "gunbati",
       "x": 11.5,
-      "y": 61.0,
+      "y": 59.53,
       "komsular": [
         23,
         27,
@@ -700,7 +700,7 @@
       "type": "sehir",
       "province": "gunbati",
       "x": 17.0,
-      "y": 72.0,
+      "y": 69.05,
       "komsular": [
         23,
         24,
@@ -724,7 +724,7 @@
       "type": "koy",
       "province": "gunbati",
       "x": 22.5,
-      "y": 83.0,
+      "y": 78.58,
       "komsular": [
         19,
         24,
@@ -748,7 +748,7 @@
       "type": "koy",
       "province": "gunbati",
       "x": 61.0,
-      "y": 94.0,
+      "y": 88.11,
       "komsular": [
         5,
         18,
@@ -772,7 +772,7 @@
       "type": "tarla",
       "province": "gunbati",
       "x": 72.0,
-      "y": 94.0,
+      "y": 88.11,
       "komsular": [
         5,
         9,
@@ -870,7 +870,7 @@
       "type": "maden",
       "province": "aksu",
       "x": 33.5,
-      "y": 39.0,
+      "y": 40.47,
       "komsular": [
         32,
         33,
@@ -922,7 +922,7 @@
       "type": "tarla",
       "province": "aksu",
       "x": 22.5,
-      "y": 39.0,
+      "y": 40.47,
       "komsular": [
         33,
         34,
@@ -948,7 +948,7 @@
       "type": "sehir",
       "province": "aksu",
       "x": 28.0,
-      "y": 28.0,
+      "y": 30.95,
       "komsular": [
         34,
         36,
@@ -997,7 +997,7 @@
       "type": "koy",
       "province": "aksu",
       "x": 11.5,
-      "y": 39.0,
+      "y": 40.47,
       "komsular": [
         35,
         36,
@@ -1021,7 +1021,7 @@
       "type": "tarla",
       "province": "aksu",
       "x": 17.0,
-      "y": 28.0,
+      "y": 30.95,
       "komsular": [
         36,
         37,
@@ -1045,7 +1045,7 @@
       "type": "koy",
       "province": "aksu",
       "x": 22.5,
-      "y": 17.0,
+      "y": 21.42,
       "komsular": [
         37,
         40,
@@ -1069,7 +1069,7 @@
       "type": "tarla",
       "province": "karaorman",
       "x": 44.5,
-      "y": 39.0,
+      "y": 40.47,
       "komsular": [
         1,
         32,
@@ -1095,7 +1095,7 @@
       "type": "sehir",
       "province": "karaorman",
       "x": 39.0,
-      "y": 28.0,
+      "y": 30.95,
       "komsular": [
         34,
         37,
@@ -1121,7 +1121,7 @@
       "type": "maden",
       "province": "karaorman",
       "x": 50.0,
-      "y": 28.0,
+      "y": 30.95,
       "komsular": [
         42,
         43,
@@ -1147,7 +1147,7 @@
       "type": "kale",
       "province": "karaorman",
       "x": 33.5,
-      "y": 17.0,
+      "y": 21.42,
       "komsular": [
         37,
         41,
@@ -1173,7 +1173,7 @@
       "type": "tarla",
       "province": "karaorman",
       "x": 44.5,
-      "y": 17.0,
+      "y": 21.42,
       "komsular": [
         43,
         44,
@@ -1199,7 +1199,7 @@
       "type": "sehir",
       "province": "karaorman",
       "x": 55.5,
-      "y": 17.0,
+      "y": 21.42,
       "komsular": [
         44,
         46,
@@ -1225,7 +1225,7 @@
       "type": "maden",
       "province": "karaorman",
       "x": 28.0,
-      "y": 6.0,
+      "y": 11.89,
       "komsular": [
         41,
         45,
@@ -1248,7 +1248,7 @@
       "type": "koy",
       "province": "karaorman",
       "x": 39.0,
-      "y": 6.0,
+      "y": 11.89,
       "komsular": [
         45,
         46,
@@ -1272,7 +1272,7 @@
       "type": "tarla",
       "province": "karaorman",
       "x": 50.0,
-      "y": 6.0,
+      "y": 11.89,
       "komsular": [
         46,
         47,
@@ -1296,7 +1296,7 @@
       "type": "koy",
       "province": "karaorman",
       "x": 61.0,
-      "y": 6.0,
+      "y": 11.89,
       "komsular": [
         47,
         50,
@@ -1320,7 +1320,7 @@
       "type": "tarla",
       "province": "tasgecit",
       "x": 55.5,
-      "y": 39.0,
+      "y": 40.47,
       "komsular": [
         1,
         2,
@@ -1346,7 +1346,7 @@
       "type": "sehir",
       "province": "tasgecit",
       "x": 61.0,
-      "y": 28.0,
+      "y": 30.95,
       "komsular": [
         44,
         47,
@@ -1372,7 +1372,7 @@
       "type": "maden",
       "province": "tasgecit",
       "x": 66.5,
-      "y": 39.0,
+      "y": 40.47,
       "komsular": [
         2,
         4,
@@ -1398,7 +1398,7 @@
       "type": "kale",
       "province": "tasgecit",
       "x": 66.5,
-      "y": 17.0,
+      "y": 21.42,
       "komsular": [
         47,
         51,
@@ -1424,7 +1424,7 @@
       "type": "tarla",
       "province": "tasgecit",
       "x": 72.0,
-      "y": 28.0,
+      "y": 30.95,
       "komsular": [
         53,
         54,
@@ -1450,7 +1450,7 @@
       "type": "sehir",
       "province": "tasgecit",
       "x": 77.5,
-      "y": 39.0,
+      "y": 40.47,
       "komsular": [
         4,
         8,
@@ -1476,7 +1476,7 @@
       "type": "maden",
       "province": "tasgecit",
       "x": 72.0,
-      "y": 6.0,
+      "y": 11.89,
       "komsular": [
         51,
         55,
@@ -1499,7 +1499,7 @@
       "type": "koy",
       "province": "tasgecit",
       "x": 77.5,
-      "y": 17.0,
+      "y": 21.42,
       "komsular": [
         55,
         56,
@@ -1523,7 +1523,7 @@
       "type": "tarla",
       "province": "tasgecit",
       "x": 83.0,
-      "y": 28.0,
+      "y": 30.95,
       "komsular": [
         56,
         57,
@@ -1547,7 +1547,7 @@
       "type": "koy",
       "province": "tasgecit",
       "x": 88.5,
-      "y": 39.0,
+      "y": 40.47,
       "komsular": [
         8,
         31,

@@ -303,10 +303,9 @@ await kapiyiKapat(page);
 await page.click('nav button:has-text("Harita")');
 await page.waitForTimeout(1800);
 const hedef = (await get('/map')).regions.filter((x) => !x.isMine && x.type !== 'taht')[0];
-await page
-  .locator(`svg text:has-text("${hedef.name.slice(0, 6)}")`)
-  .last()
-  .click({ timeout: 10000, force: true });
+// Bölgeler artık gerçek <button>; kimliğiyle bulunuyor. Ada göre
+// aramıyoruz: görünür etiket yakınlık kademesine göre gizlenebiliyor.
+await page.locator(`[data-bolge="${hedef.id}"]`).click({ timeout: 10000, force: true });
 await denetle('bolge-detay');
 
 /**

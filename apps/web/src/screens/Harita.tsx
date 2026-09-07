@@ -23,7 +23,7 @@ import {
   type QueueItem,
   type RegionDetailDto,
 } from '../api/client';
-import { HexHarita } from '../components/HexHarita';
+import { DunyaHaritasi } from '../components/DunyaHaritasi';
 import { BirimIkonu, IkonKapali, IkonSure } from '../components/Ikonlar';
 import { bolgeGorselAdi } from '../components/Gorsel';
 import { hisAgir, hisOnay, hisRet } from '../components/hisGeriBildirimi';
@@ -778,7 +778,7 @@ export function Harita({
             </button>
           )}
 
-          <HexHarita
+          <DunyaHaritasi
             regions={harita.data.regions}
             homeBolgeId={harita.data.homeBolgeId}
             seciliId={seciliId}
@@ -793,10 +793,19 @@ export function Harita({
               setBilgi(null);
             }}
           />
+          {/* Gösterge: sahiplik hem RENK hem ŞEKİL taşıyor, o yüzden
+              açıklaması da ikisini birden söylüyor. */}
           <div className="mt-1.5 flex flex-wrap justify-center gap-x-3 gap-y-1 text-[11px] text-sonuk">
-            <span>Çapraz = senin</span>
-            <span>Noktalı = düşman</span>
-            <span>Düz = sahipsiz</span>
+            <span className="flex items-center gap-1">
+              <span className="h-2.5 w-2.5 rounded-full border-2 border-altin" /> senin
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="h-2.5 w-2.5 rounded-full border-2 border-kirmizi bg-kirmizi/40" />{' '}
+              düşman
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="h-2.5 w-2.5 rounded-full border-2 border-solgun/50" /> sahipsiz
+            </span>
             <span>⛨ korumalı</span>
           </div>
         </Kart>

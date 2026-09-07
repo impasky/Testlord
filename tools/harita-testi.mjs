@@ -160,45 +160,77 @@ await rehberiSustur(sayfa);
 await sayfa.click('nav button:has-text("Harita")');
 await sayfa.waitForTimeout(2000);
 
-const svgMetni = await sayfa.locator('svg[role=img]').first().innerHTML();
+/*
+ * Harita artık SVG altıgen değil: resimli bir zemin ve üstünde HTML
+ * işaretçiler (docs/12 §5). Ölçümler de oraya taşındı.
+ */
+const tuval = sayfa.locator('[data-harita-tuval]');
+const bolgeSayisi = await sayfa.locator('[data-bolge]').count();
+const govdeMetni = () => sayfa.locator('[data-harita-tuval]').innerText();
+const adSayisi = () => sayfa.locator('[data-bolge-ad]').count();
+
+const uzakMetin = await govdeMetni();
 kontrol(
   'Vilayet adları haritada yazıyor',
-  /KUZEYMARK|KARAORMAN|AKSU OVASI/.test(svgMetni),
-  (svgMetni.match(/[A-ZÇĞİÖŞÜ]{4,}(?: [A-ZÇĞİÖŞÜ]+)*/g) ?? []).slice(0, 3).join(' / '),
+  /KUZEYMARK|KARAORMAN|AKSU OVASI/.test(uzakMetin),
+  (uzakMetin.match(/[A-ZÇĞİÖŞÜ]{4,}(?: [A-ZÇĞİÖŞÜ]+)*/g) ?? []).slice(0, 3).join(' / '),
 );
 await sayfa.screenshot({ path: `${CIKTI}/harita-1-genel.png` });
 
-// Yakınlaştırma: düğmeye basınca ölçek büyümeli ve isimler AÇILMALI.
-const oncekiKisaltma = (svgMetni.match(/…/g) ?? []).length;
+/*
+ * ETİKET KADEMESİ. Uzak ölçekte 61 adın hepsi yazılamaz — telefon
+ * genişliğinde yer yok ve ilk denemede hepsi üst üste biniyordu. Uzakta
+ * yalnız oyuncuyu ilgilendiren yerler adlanıyor; yakınlaşınca hepsi
+ * açılıyor. Ölçüm bu sözleşmeyi tutuyor.
+ */
+const uzakAd = await adSayisi();
+kontrol(
+  'Uzak ölçekte adlar seçili: hepsi yazılmıyor',
+  uzakAd < bolgeSayisi,
+  `${uzakAd} / ${bolgeSayisi} ad`,
+);
+
 await sayfa.getByRole('button', { name: 'Yakınlaştır' }).click();
 await sayfa.getByRole('button', { name: 'Yakınlaştır' }).click();
-await sayfa.waitForTimeout(500);
-const donusum = await sayfa
-  .locator('svg[role=img]')
-  .first()
-  .evaluate((el) => el.style.transform);
+await sayfa.waitForTimeout(600);
+const donusum = await tuval.evaluate((el) => el.style.transform);
 kontrol('Yakınlaştırma çalışıyor', /scale\((?!1\))/.test(donusum), donusum);
 
-const yakinMetin = await sayfa.locator('svg[role=img]').first().innerHTML();
-const sonrakiKisaltma = (yakinMetin.match(/…/g) ?? []).length;
+const yakinAd = await adSayisi();
+kontrol(
+  'Yakınlaşınca bütün adlar açılıyor',
+  yakinAd > uzakAd,
+  `${uzakAd} -> ${yakinAd} ad (toplam ${bolgeSayisi})`,
+);
+const yakinMetin = await govdeMetni();
 kontrol(
   'Yakınlaşınca bölge adları kısaltılmıyor',
-  sonrakiKisaltma < oncekiKisaltma,
-  `${oncekiKisaltma} kısaltma -> ${sonrakiKisaltma}`,
+  !yakinMetin.includes('…'),
+  `${(yakinMetin.match(/…/g) ?? []).length} kısaltma`,
 );
-await sayfa.screenshot({ path: `${CIKTI}/harita-2-yakin.png` });
 
-// Sığdır düğmesi geri almalı.
+/*
+ * İŞARETÇİ SABİT BOYUTTA KALIYOR. Harita pinlerinin kuralı: zemin
+ * büyür, pin büyümez. İlk denemede büyüyordu ve yakınlaştırmak haritayı
+ * okunur değil OKUNMAZ yapıyordu — madalyonlar devleşip adlar birbirine
+ * giriyordu.
+ */
+const pinBoyu = async () => (await sayfa.locator('[data-bolge]').first().boundingBox())?.width ?? 0;
+const yakinPin = await pinBoyu();
 await sayfa.getByRole('button', { name: 'Haritayı sığdır' }).click();
-await sayfa.waitForTimeout(400);
-const geri = await sayfa
-  .locator('svg[role=img]')
-  .first()
-  .evaluate((el) => el.style.transform);
+await sayfa.waitForTimeout(500);
+const uzakPin = await pinBoyu();
+kontrol(
+  'Yakınlaşınca işaretçi büyümüyor',
+  Math.abs(yakinPin - uzakPin) < 4,
+  `${uzakPin.toFixed(0)}px -> ${yakinPin.toFixed(0)}px`,
+);
+
+const geri = await tuval.evaluate((el) => el.style.transform);
 kontrol('Sığdır düğmesi haritayı geri alıyor', /scale\(1\)/.test(geri), geri);
 
 // Bölge seçmek hâlâ çalışıyor: yakınlaştırma dokunmayı bozmamalı.
-await sayfa.locator('svg[role=img] g[role=button]').nth(20).click();
+await sayfa.locator('[data-bolge]').nth(20).click();
 await sayfa.waitForTimeout(900);
 const govde = await sayfa.locator('body').innerText();
 kontrol('Haritadan bölge seçilebiliyor', /garnizon|Garnizon|SALDIR|Seviye|GELİR/i.test(govde));
