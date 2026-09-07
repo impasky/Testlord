@@ -781,6 +781,31 @@ def main() -> int:
 
     secilenler = {a for a in argv if not a.startswith("--")}
 
+    # --- Seçim: küme adı, `kume/ad` ya da düz ad ---
+    #
+    # Önce yalnız düz ad çalışıyordu ve bu iki yerden bozuktu:
+    #
+    #  1. `gorsel-uret.py yerlesim` hiçbir şey üretmiyordu — "yerlesim"
+    #     bir görselin adı değil, bir KÜMENİN adı. Araç sessizce
+    #     "üretilecek bir şey yok" diyordu ve kullanan kişi neyi yanlış
+    #     yaptığını göremiyordu. Oysa kümeyle çağırmak en doğal istek:
+    #     zeminlerin hepsi bir arada üretiliyor (docs/12 §9).
+    #  2. Aynı ad iki kümede olabiliyor: `sehir` hem bölge sahnesi hem
+    #     yerleşim zemini. Düz ad ikisini birden seçiyordu. `kume/ad`
+    #     biçimi bunu ayırıyor.
+    def secildi_mi(klasor: str, ad: str) -> bool:
+        if not secilenler:
+            return True
+        return klasor in secilenler or ad in secilenler or f"{klasor}/{ad}" in secilenler
+
+    bilinenler = set(ISTEKLER) | {a for k in ISTEKLER.values() for a in k}
+    bilinenler |= {f"{k}/{a}" for k, v in ISTEKLER.items() for a in v}
+    tanimsiz = sorted(secilenler - bilinenler)
+    if tanimsiz:
+        print(f"Bilinmeyen görsel ya da küme: {', '.join(tanimsiz)}", file=sys.stderr)
+        print(f"Kümeler: {', '.join(ISTEKLER)}", file=sys.stderr)
+        return 2
+
     # Anahtar da ağ da gerektirmez: sadece istemleri yazar.
     if "--istemler" in argv:
         print(istemleri_yaz())
@@ -789,7 +814,7 @@ def main() -> int:
     isler: list[tuple[str, str, str, Path]] = []
     for klasor, kayitlar in ISTEKLER.items():
         for ad, konu in kayitlar.items():
-            if secilenler and ad not in secilenler:
+            if not secildi_mi(klasor, ad):
                 continue
             yol = CIKTI / klasor / f"{ad}.webp"
             if yol.exists() and not zorla:

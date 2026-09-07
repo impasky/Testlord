@@ -113,13 +113,27 @@ temizleniyor; hangi dosyada yapıldığı aşağıdaki tabloda yazıyor.
 | `ekipman/at_t1..t5.webp`     | eklendi (işaret zeminlendi, zemin ayıklandı)    |
 | `ekipman/sancak_t1..t5.webp` | eklendi (işaret zeminlendi, zemin ayıklandı)    |
 | `lord/lord_1..5.webp`        | eklendi (zincirleme düzenleme, zemin ayıklandı) |
-| `harita/*.webp` (6 dosya)    | eklendi (işaret aynalandı)                      |
+| `yerlesim/*.webp` (6 dosya)  | eklendi (filigran çıkmadı)                      |
+| ~~`harita/*.webp` (6 dosya)~~ | **silindi** — altıgen karolar emekli (docs/12 §5) |
 
 Lord figürleri zincirleme düzenlemeyle üretildi: `lord_1` metinden,
 sonrakiler bir öncekini girdi alarak. Beşinde de işaret aynı yerdeydi ama
 `lord_4`te **pelerinin üstüne** düşmüştü — orada zemin rengiyle doldurmak
 pelerinde delik açardı, komşu şeridin aynası kullanıldı. Diğer dördü düz
 zemindeydi, doldurma yeterliydi.
+
+**Yerleşim zeminleri (kamp, köy, kasaba, şehir, kale, metropol).** Şehir
+sayfasının altındaki resim; kademe yükseldikçe değişiyor. Altısında da
+filigran çıkmadı, düzeltme gerekmedi.
+
+Bu altısının istemi bir kural taşıyor: **manzara kenarlara, orta alan
+boş.** Binalar zeminin ÜSTÜNE DOM olarak konuyor (`data/binalar.json`
+x/y yüzdeleri); zeminde de bina çizilseydi iki kat bina görünürdü.
+Modelden gelen altı görselde de kural tuttu.
+
+Altıgen harita karoları (`harita/*.webp`) **silindi**: dünya haritası
+artık ızgara değil, çizilmiş tek bir zemin. Dosyalar duruyordu ama
+hiçbir ekran onları çağırmıyordu.
 
 Ekipman ikonlarında filigran yoktu; onlarda yapılan iş zemin ayıklama.
 Otuzunda da eşik 8 ölçüldü. Silinen zemin %48 ile %87 arasında; aradaki
