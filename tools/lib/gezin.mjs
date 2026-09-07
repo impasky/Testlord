@@ -84,9 +84,10 @@ export async function ekrana(page, ad, bekle = 1200) {
      * Kapılar ŞEHİRDEKİ BİNALARDAN açılıyor.
      *
      * Eskiden ana sayfada `data-kapi` imzalı bir düğme ızgarası vardı;
-     * şimdi yerleşim haritasındaki binaya dokunuluyor, açılan kartta
-     * "…'a git" düğmesi kapıyı açıyor. İki adım, çünkü ürün de iki adım:
-     * binaya bakmadan içine girilmiyor.
+     * şimdi yerleşim haritasındaki binaya dokunuluyor. DİKİLİ yapıda bu
+     * TEK dokunuş: kapı doğrudan açılıyor (docs/12 §3.5). Kart yalnız
+     * dikilmemiş ya da gidilecek yeri olmayan yapıda çıkıyor; orada
+     * ikinci dokunuş hâlâ gerekiyor, o yüzden ikisi de deneniyor.
      */
     const anaEtiket = CUBUK.find(([k]) => k === ANA)[1];
     await page.click(`nav button:has-text("${anaEtiket}")`);
@@ -96,8 +97,9 @@ export async function ekrana(page, ad, bekle = 1200) {
       throw new Error(`ekrana: "${ad}" kapısını açan bina şehirde yok (kademe yetmiyor olabilir)`);
     }
     await bina.first().click();
-    await page.waitForTimeout(400);
-    await page.locator('[data-rehber="sehir-kapiya-git"]').first().click();
+    await page.waitForTimeout(500);
+    const git = page.locator('[data-rehber="sehir-kapiya-git"]');
+    if ((await git.count()) > 0) await git.first().click();
   } else {
     const kayit = CUBUK.find(([k]) => k === ad);
     if (!kayit) throw new Error(`bilinmeyen ekran: ${ad}`);

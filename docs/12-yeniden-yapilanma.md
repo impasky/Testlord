@@ -253,6 +253,42 @@ malikâne 1 + kışla 1 ile başlıyor; var olan lordlara göç
 `services/march.ts` içindeki `ilkBaskentiAta` devreye giriyor; sonraki
 fetihlerde karar oyuncunun (§2.2).
 
+### 3.5 Sprite'lar gelince değişenler
+
+Bina görselleri üretilene kadar (§9) şehir haritası çizgi ikonlardan
+ibaretti ve sayfanın düzeni buna göre kurulmuştu. Görseller gelince üç
+şey birden yanlış göründü; üçü de oyuncunun kendi cümleleriyle:
+
+**"Üst kısımda sadece kâhya Sinan olsun."** Kâhya ile omurga üst üste
+duruyordu ve ikisi de "şimdi ne yapmalısın" diyordu — biri hikâyeyle,
+biri düğmeyle. Telefonda ilk ekranın tamamını bu ikisi yiyor, oyuncu
+şehrini görmeden kaydırmaya başlıyordu. Ana sayfanın şehir olmasının
+bütün gerekçesi şehri GÖRMEKTİ. Sıra artık: kâhya → harita → seçili
+yapının kartı → omurga → yerleşim kartı.
+
+**"Bina görselleri aşırı küçük, şu an sadece ikon gibi görünüyor."** İki
+sebebi vardı: 18 piksellik çizim ve onu çevreleyen 36 piksellik
+yuvarlatılmış kutu. Kutu, içinde ne olursa olsun "bu bir düğme" diyor.
+Sprite artık kutusuz, doğrudan zeminin üstünde ve **genişliğin %17'si**
+kadar — çizim 3,7 kat büyüdü.
+
+%17 keyfi değil: binalar dört sıraya diziliyor ve sıra arası 23 puan
+(`data/binalar.json`), kap 4:3 olduğu için bu dikeyde genişliğin
+~%17'sine denk geliyor. Daha büyüğü DOKUNMA ALANLARINI üst üste bindirir
+ve oyuncu komşusunun binasını açar. Sprite'ların çizimi karesinin
+ortalama %84'ünü doldurduğu için şeffaf pay bu çakışmayı kurtarmıyor.
+Sıraların y değerleri (13/36/59/82) bu yüzden eşitlendi.
+
+**"Kışlayı seçiyorum, sonra alttan bir daha kışlaya git diyorum."**
+Harita bir menüydü ve menünün de kendi menüsü vardı. Dikili ve bir yere
+açılan yapıya dokunmak artık DOĞRUDAN oraya götürüyor. Kart yalnız
+gidilecek yeri olmayanda açılıyor: boş arsa ve surlar.
+
+Seviye yükseltme kartta kaldı, ona aşağıdaki **Yapılar** listesinden
+geliniyor ve liste seçimi kartı ekrana kaydırıyor. Bedeli bilinerek
+ödendi: oyuncu binaya günde onlarca kez giriyor, seviye yükseltmeye ayda
+birkaç kez.
+
 ## 4. Bina seviyesi ile araştırma neden çakışmıyor
 
 Bu, planın en riskli yeriydi ve ilkesi tek cümle:

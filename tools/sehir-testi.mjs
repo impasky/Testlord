@@ -301,11 +301,57 @@ kontrol(
   (await page.locator('main').innerText()).includes('ŞİMDİ NE YAPMALISIN'),
 );
 
-// Bir yapıya dokun: kartı açılmalı.
-await page.locator('[data-bina]').first().click();
-await page.waitForTimeout(600);
-const govde = await page.locator('main').innerText();
-kontrol('Yapıya dokununca kartı açılıyor', /Seviye|boş arsa|yapı/i.test(govde));
+/*
+ * Haritadaki dokunuş: DİKİLİ yapı doğrudan açılıyor.
+ *
+ * Oyuncu: "kışlayı seçiyorum, sonra alttan bir daha kışlaya git
+ * diyorum." Ölçüt bu yüzden "kart açıldı mı" değil, "gidilecek yere
+ * GİDİLDİ mi". Malikâne bir KAPI açıyor (panel), Kışla bir SEKME.
+ */
+await page.locator('[data-bina="kisla"]').click();
+await page.waitForTimeout(900);
+kontrol(
+  'Dikili yapıya dokununca doğrudan içine giriyor',
+  (await page.locator('nav button[aria-current=page]').innerText()).includes('ORDU'),
+  await page.locator('nav button[aria-current=page]').innerText(),
+);
+
+await page.locator('nav button:has-text("Şehir")').click();
+await page.waitForTimeout(900);
+
+/*
+ * Boş arsada gidilecek yer yok: orada dokunuş hâlâ KART açıyor, çünkü
+ * gösterilecek tek şey bedeli ve ne işe yaradığı.
+ */
+const bosArsa = await page.evaluate(
+  () =>
+    [...document.querySelectorAll('[data-bina]')].find((e) =>
+      e.getAttribute('aria-label')?.includes('boş arsa'),
+    )?.dataset.bina ?? null,
+);
+if (bosArsa) {
+  await page.locator(`[data-bina="${bosArsa}"]`).click();
+  await page.waitForTimeout(600);
+  const govde = await page.locator('main').innerText();
+  kontrol('Boş arsaya dokununca kartı açılıyor', /boş arsa/i.test(govde), bosArsa);
+} else {
+  kontrol('Boş arsaya dokununca kartı açılıyor', true, 'boş arsa kalmamış, atlandı');
+}
+
+/*
+ * Seviye yükseltme kayboldu mu: haritadaki dokunuş girmeye ayrıldı,
+ * yükseltme LİSTEYE taşındı. Listeden seçilen yapının kartı açılmalı.
+ */
+await page.locator('[data-bina]').first().waitFor();
+await page.evaluate(() => document.getElementById('yapilar')?.scrollIntoView());
+await page.waitForTimeout(400);
+await page.locator('#yapilar button').first().click();
+await page.waitForTimeout(700);
+const listeGovde = await page.locator('main').innerText();
+kontrol(
+  'Listeden seçilen yapının kartı açılıyor',
+  /Seviye \d+ yap|İnşa et|En yüksek seviyede|tavan/i.test(listeGovde),
+);
 
 await page.screenshot({ path: `${process.env.CIKTI ?? 'ekran-goruntuleri'}/sehir.png` });
 kontrol('Konsol hatası yok', konsol.length === 0, konsol[0] ?? '');
