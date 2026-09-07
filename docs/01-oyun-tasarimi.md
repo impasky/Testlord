@@ -3,6 +3,13 @@
 Tüm sayısal değerler `data/balance.json` içindedir. Bu doküman **sistemleri ve
 niyeti** anlatır; sayıyı oradan oku.
 
+> **Y1–Y8 SONRASI — bu dokümanın bazı bölümleri AŞILDI.**
+> Altıgen ızgara kalktı (komşuluk grafiği), ana sayfa Şehir oldu, binalar
+> kapasite veriyor, akın sistemi ve yeni gezinme geldi. Çelişki gördüğün
+> yerde geçerli olan **`docs/12-yeniden-yapilanma.md`**; burası o
+> değişiklikten önceki tasarımın kaydı ve sistemlerin NİYETİNİ hâlâ
+> doğru anlatıyor.
+
 ---
 
 ## 1. Lord (Karakter)

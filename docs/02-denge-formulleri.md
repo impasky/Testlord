@@ -1,5 +1,13 @@
 # 02 — Denge ve Formüller
 
+> **Y1–Y8 SONRASI — bu dokümanın bazı bölümleri AŞILDI.**
+> Altıgen ızgara kalktı (komşuluk grafiği), ana sayfa Şehir oldu, binalar
+> kapasite veriyor, akın sistemi ve yeni gezinme geldi. Çelişki gördüğün
+> yerde geçerli olan **`docs/12-yeniden-yapilanma.md`**; burası o
+> değişiklikten önceki tasarımın kaydı ve sistemlerin NİYETİNİ hâlâ
+> doğru anlatıyor.
+
+
 > **Kural:** Bu dosyadaki hiçbir sayı koda gömülmez. Kod `data/balance.json`
 > okur. Denge değişikliği = tek dosyada değişiklik + sunucu yeniden başlatma.
 

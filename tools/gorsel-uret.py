@@ -165,20 +165,71 @@ KATEGORI = {
                        "object and the background, square 1:1 composition",
         "boyut": (512, 512),
     },
-    "harita": {
-        "ad": "Harita karoları",
+    "yerlesim": {
+        "ad": "Yerleşim zeminleri",
         "aciklama": (
-            "Dünya haritasındaki altıgenlerin dolgusu. Bölge sahnelerinden "
-            "AYRI: sahneler üç çeyrek açıdan bakan tablolar, karolar ise tam "
-            "tepeden bakan arazi dokuları. Sahneyi karo olarak kullanmak "
-            "haritayı bulanık bir kolaja çeviriyor."
+            "Şehir sayfasının zemini — oyuncunun her gün baktığı tek resim. "
+            "Kademe yükseldikçe değişiyor: kamp, köy, kasaba, şehir, "
+            "kale-şehir, metropol. Binalar bu zeminin ÜSTÜNE DOM olarak "
+            "konuyor (`data/binalar.json` içindeki x/y yüzdeleri), o yüzden "
+            "zeminde bina çizmiyoruz: çizersek iki kat bina görünür.\n\n"
+            "**Kural: orta alan boş kalsın.** Kompozisyon manzarayı kenarlara "
+            "yaslıyor; ortada 13 işaretçinin oturacağı sakin bir zemin olmalı."
         ),
-        "kompozisyon": "top-down orthographic terrain tile seen straight from above, "
-                       "flat even lighting with no strong shadows, "
-                       "texture reads clearly when shrunk to thumbnail size, "
-                       "edges continue naturally with no vignette and no border, "
-                       "square 1:1 composition",
-        "boyut": (512, 512),
+        "kompozisyon": "empty settlement ground seen from a high three-quarter "
+                       "aerial angle, terrain and boundary features pushed to the "
+                       "edges of the frame, the centre of the frame is calm open "
+                       "ground with no structures, no people, even lighting, "
+                       "4:3 composition",
+        "boyut": (1024, 768),
+    },
+    "binalar": {
+        "ad": "Bina işaretçileri",
+        "aciklama": (
+            "Yerleşim zeminine konan küçük yapı ikonları. Ekranda 44 piksel "
+            "civarında duruyorlar — ayrıntı değil SİLUET okunmalı.\n\n"
+            "Her seviyeli binanın İKİ hâli var: `_1` temel (ahşap, küçük, "
+            "sade), `_5` gelişmiş (taş, büyük, süslü). Aradaki seviyeler "
+            "arayüzde rozetle gösteriliyor; üç ayrı görsel üretmenin "
+            "karşılığı yok."
+        ),
+        "kompozisyon": "a single small building seen from a three-quarter aerial "
+                       "angle, isolated on a fully transparent background, "
+                       "the building fills the frame, strong readable silhouette, "
+                       "no ground plane, no shadow, no people, square 1:1 composition",
+        "boyut": (256, 256),
+    },
+    "harita": {
+        "ad": "Dünya haritası",
+        "aciklama": (
+            "Tek bir resimli zemin ve üstünde 61 DOM işaretçisi (docs/12 §5). "
+            "Altıgen karolar EMEKLİ: harita artık ızgara değil, çizilmiş bir "
+            "diyar.\n\n"
+            "**Zeminde yazı yok** ve olamaz: bölge adları veriden geliyor, "
+            "görsel modeli de okunabilir metin üretemiyor. İşaretçiler de "
+            "resimde değil, üstünde."
+        ),
+        "kompozisyon": "hand drawn fantasy world map in the style of an old "
+                       "parchment atlas, seen straight from above, coastlines "
+                       "rivers forests and mountain ranges, no text, no labels, "
+                       "no letters, no compass rose, no grid, no hexagons, "
+                       "4:3 composition",
+        "boyut": (1536, 1152),
+    },
+    "akin": {
+        "ad": "Akın diyarları",
+        "aciklama": (
+            "Beş NPC diyarının zemini (docs/12 §6). Akın sekmesinde diyar "
+            "kartının kapağı olarak duruyor — oyuncunun \"burası neresi\" "
+            "sorusunu tek bakışta cevaplaması gereken yer.\n\n"
+            "Diyarlar birbirine BENZEMEMELİ: beşi de aynı kahverengi manzara "
+            "olursa oyuncu hangi diyarda olduğunu ancak yazıdan anlar."
+        ),
+        "kompozisyon": "wide establishing shot of a hostile landscape with an "
+                       "enemy encampment in the middle distance, cinematic "
+                       "composition, strong single colour mood, no text, "
+                       "16:9 composition",
+        "boyut": (1024, 576),
     },
     "lord": {
         "ad": "Lord figürü",
@@ -354,17 +405,92 @@ ISTEKLER: dict[str, dict[str, str]] = {
                               "tower shield, unyielding stance",
     },
     "ekipman": _ekipman_istekleri(),
+        # --- Yerleşim zeminleri: şehir sayfasının altı (docs/12 §3) ---
+    "yerlesim": {
+        "kamp": "a bare campsite on open grassland, a ring of trodden earth, "
+                "a firepit with cold ashes and a leaning wooden training post "
+                "at one edge, wild grass and scattered stones around the rim",
+        "koy": "a village clearing with a muddy cart track curving along one edge, "
+               "a low timber palisade and a few tree stumps at the margins, "
+               "open packed earth in the middle",
+        "kasaba": "a town ground paved with worn flagstones, a low stone wall and "
+                  "a gatehouse at one edge, market awnings folded at the margins, "
+                  "the middle of the square swept and empty",
+        "sehir": "a city ground of fitted paving with a dry fountain basin at one "
+                 "edge, tall stone walls and an aqueduct arch along the far margin, "
+                 "the central plaza wide and open",
+        "kale": "a fortress bailey of hard packed gravel ringed by thick curtain "
+                "walls and corner towers at the frame edges, banner poles along "
+                "the rim, the middle of the bailey clear",
+        "metropol": "a grand imperial precinct, polished marble paving with gold "
+                    "inlay lines, colonnades and a triumphal arch along the far "
+                    "edges, the vast central court empty",
+    },
+    # --- Bina işaretçileri: her seviyeli bina için temel ve gelişmiş ---
+    "binalar": {
+        "malikane_1": "a modest timber and thatch manor house with a single chimney",
+        "malikane_5": "a grand stone manor with a tiled roof, glazed windows, "
+                      "a walled courtyard and a banner over the door",
+        "kisla_1": "a small wooden barracks hut with a weapon rack outside",
+        "kisla_5": "a large stone barracks with an arched gate, a drill yard and "
+                   "spears stacked in rows",
+        "demirhane_1": "a small open sided forge with an anvil and a stone chimney",
+        "demirhane_5": "a large stone smithy with two chimneys venting smoke, "
+                       "a waterwheel driven trip hammer and racks of finished blades",
+        "hastane_1": "a small timber infirmary tent with a herb bundle at the door",
+        "hastane_5": "a stone hospice with arched windows, a walled herb garden "
+                     "and a tiled roof",
+        "pazar_1": "a single market stall with a striped awning and crates",
+        "pazar_5": "a covered stone market hall with arcades and hanging scales",
+        "surlar_1": "a short wooden palisade section with a sharpened top",
+        "surlar_5": "a tall stone curtain wall section with crenellations, "
+                    "a corner tower and an arrow slit",
+        "karargah_1": "a plain command tent with a map table visible at the entrance",
+        "karargah_5": "a stone command keep with a banner mast, a balcony and "
+                      "standards planted at the base",
+        "kutuphane_1": "a small scriptorium hut with a shuttered window and a lectern",
+        "kutuphane_5": "a domed stone library with tall arched windows and "
+                       "an astrolabe on the roof terrace",
+        "liman_1": "a short wooden jetty with a single moored rowboat",
+        "liman_5": "a stone quay with a crane derrick, warehouses and a moored "
+                   "trading cog",
+        "elcilik_1": "a small guest lodge with a plain flagpole",
+        "elcilik_5": "a stone embassy hall with a colonnaded porch and several "
+                     "foreign banners on tall poles",
+        # Seviyesiz üçlü: bilgi yapıları, tek hâlleri var.
+        "gorev_panosu": "a wooden notice board on posts with pinned parchments "
+                        "and a small shingled roof",
+        "haberci_kulesi": "a slender stone watchtower with a signal brazier at "
+                          "the top and a pennant",
+        "onur_meydani": "a small stone monument plaza with a laurel wreathed "
+                        "pillar and a low step ring",
+        # Boş arsa: bütün dikilmemiş binalarda paylaşılıyor.
+        "arsa": "an empty building plot marked out with rope and wooden stakes, "
+                "a few cut stones and a shovel left on the bare earth",
+    },
+    # --- Dünya haritası: tek zemin (docs/12 §5) ---
     "harita": {
-        "tarla": "ripe wheat farmland with hedgerows and a cart track, "
-                 "a few thatched roofs at one edge",
-        "maden": "grey rocky ground with open quarry cuts, spoil heaps, "
-                 "timber props and a cart rail",
-        "sehir": "densely packed tiled rooftops and narrow streets of a town district",
-        "kale": "a fortress precinct, thick curtain walls and corner towers "
-                "around a stone courtyard",
-        "taht": "a royal citadel precinct, golden roofed keep at the centre ringed "
-                "by walls and banner poles",
-        "deniz": "deep open sea water with gentle swell and foam streaks",
+        "dunya": "a single continent surrounded by sea, rocky northern mountains, "
+                 "central plains crossed by two rivers, dark forests to the west, "
+                 "a marsh delta to the south east, small unnamed islands offshore",
+    },
+    # --- Akın diyarları (docs/12 §6) ---
+    "akin": {
+        "kirik_sahil": "a storm grey shoreline of black rock and broken ship ribs "
+                       "half buried in wet sand, pirate tents and a driftwood "
+                       "stockade above the tideline, cold blue green sea mist",
+        "solgun_bataklik": "a pale sunless marsh of reed beds and standing water, "
+                           "a deserter camp of army tents on a mud causeway, "
+                           "rusted shields hung on poles, sickly yellow green haze",
+        "kuzey_buzulu": "a blue white glacier field split by a deep crevasse, "
+                        "a barbarian camp of hide tents and reindeer pens on the "
+                        "wind scoured ice, hard white winter light",
+        "kuller_vadisi": "a black ash valley under a dead volcano, bandit forges "
+                         "and slag heaps smoking between basalt spurs, "
+                         "hot orange embers glowing in grey ash",
+        "unutulmus_nekropol": "a sunken city of tombs half swallowed by sand, "
+                              "broken obelisks and a stepped mausoleum, cult "
+                              "braziers burning cold violet in the dusk",
     },
     "lord": {
         "lord_1": "a lean young Anatolian lord with dark hair and a short beard, "
@@ -408,6 +534,9 @@ ISTEKLER: dict[str, dict[str, str]] = {
                     "quill and inkpot, a wax-sealed writ, morning light",
         "olaylar": "a messenger's table in a keep, scattered opened letters and "
                    "broken seals, a raven at the window, evening light",
+        "akin": "a war camp on a ridge at first light, scouts pointing toward "
+                "distant enemy fires on the plain below, horses saddled, "
+                "spears planted in the earth",
         "arastirma": "a master builder's workshop, architectural drawings on vellum, "
                      "wooden scale models of a granary and a watchtower, dividers and "
                      "measuring rods, afternoon light through a high window",

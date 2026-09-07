@@ -45,15 +45,42 @@ const damga = Date.now();
 await page.fill('input[placeholder="Kara Yusuf"]', `Lord ${damga}`);
 await page.fill('input[type=email]', `duman${damga}@lordlar.dev`);
 await page.fill('input[type=password]', 'parola1234');
-await page.click('button[type=submit]');
 
-try {
-  await page.waitForSelector('text=Malikâne', { timeout: 15000 });
+/*
+ * KAYIT ORAN SINIRINA takılabilir ve bu bir ÜRÜN HATASI DEĞİL.
+ *
+ * `/auth/register` dakikada `AUTH_RATE_LIMIT_MAX` istekle sınırlı ve
+ * `pnpm e2e` sırasında bu araçtan önce onlarca lord kaydediliyor. Öteki
+ * araçlar `lib/kayit.mjs` üzerinden gidiyor ve orada 429 için bekleyip
+ * yeniden deneme var; burası ARAYÜZDEN kaydoluyor (ölçtüğü şey o) ve o
+ * korumadan yararlanamıyordu. Bir kez gerçekten kaldı ve sebebi
+ * ekranda hiçbir yerde yazmıyordu.
+ *
+ * Sınır dakikalık: beklemek gerçekten çözüyor.
+ */
+async function kaydolmayiDene() {
+  for (let deneme = 0; deneme < 3; deneme++) {
+    await page.click('button[type=submit]');
+    try {
+      await page.waitForSelector('text=Malikâne', { timeout: 15000 });
+      return true;
+    } catch {
+      const govde = (await page.locator('main').innerText().catch(() => '')) ?? '';
+      const sinir = /çok fazla|too many|429/i.test(govde);
+      if (!sinir || deneme === 2) return false;
+      console.log('  (kayıt oran sınırına takıldı, 20 sn bekleniyor)');
+      await page.waitForTimeout(20000);
+    }
+  }
+  return false;
+}
+
+if (await kaydolmayiDene()) {
   kontrol('Kayıt olup Malikâne ekranına girildi', true);
   // Öğretici tam ekran açılıyor: gerçek oyuncu gibi geçiyoruz.
   await ogreticiyiGec(page);
   await rehberiSustur(page);
-} catch {
+} else {
   kontrol('Kayıt olup Malikâne ekranına girildi', false);
   console.log('  Sayfa:', (await page.locator('body').innerText()).slice(0, 300));
   await page.screenshot({ path: `${CIKTI}/hata.png` });

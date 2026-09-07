@@ -100,7 +100,63 @@ const BINA_IKONU: Record<string, keyof typeof IKONLAR> = {
   onur_meydani: 'navSiralama',
 };
 
-function BinaIkonu({ binaKey, boyut }: { binaKey: string; boyut: number }) {
+/**
+ * Üretilmiş bina sprite'ları — `public/gorseller/binalar/` ile aynı liste.
+ *
+ * `Zemin.tsx`teki `ZEMINI_OLAN` ile aynı desen ve aynı gerekçe: dosya
+ * yoksa isteği hiç atmıyoruz. `onError` ile denemek de olurdu ama şehir
+ * sayfasında 13 yapı var, yani her çizimde 13 boşa istek — üretimde 13
+ * gerçek 404. Vite geliştirme sunucusu eksik dosyaya index.html dönüp
+ * 200 verdiği için bu ölçümde de görünmezdi.
+ *
+ * ŞU AN BOŞ: istemler yazıldı (`tools/gorsel-uret.py`), görseller
+ * üretilmedi. Dosya konduğu gün buraya bir satır; `gorsel-denetim.mjs`
+ * listeyle klasörün ayrışmasını yakalıyor.
+ */
+const SPRITE_OLAN = new Set<string>([]);
+
+/**
+ * Binanın görseli: varsa SPRITE, yoksa çizgi ikon.
+ *
+ * İkisi birden duruyor ve bu bilinçli. Sprite'lar üretildikçe şehir
+ * kendiliğinden zenginleşiyor; üretilmeyen bina çizgi ikonuyla çalışmaya
+ * devam ediyor. Tersi — önce ikonu kaldırıp sprite beklemek — dosya
+ * gelene kadar boş kutular demekti.
+ *
+ * Dosya adı SEVİYEYE bağlı: `_1` temel, `_5` gelişmiş. Arada üç ayrı
+ * görsel üretmenin karşılığı yok; seviye zaten rozetle yazılı.
+ * Dikilmemiş bina paylaşılan `arsa` görselini kullanıyor.
+ */
+function spriteAdi(binaKey: string, seviye: number, seviyeli: boolean): string {
+  if (!seviyeli) return binaKey;
+  if (seviye <= 0) return 'arsa';
+  return `${binaKey}_${seviye >= 3 ? 5 : 1}`;
+}
+
+function BinaIkonu({
+  binaKey,
+  boyut,
+  seviye = 1,
+  seviyeli = true,
+}: {
+  binaKey: string;
+  boyut: number;
+  seviye?: number;
+  seviyeli?: boolean;
+}) {
+  const ad = spriteAdi(binaKey, seviye, seviyeli);
+  if (SPRITE_OLAN.has(ad)) {
+    return (
+      <img
+        src={`/gorseller/binalar/${ad}.webp`}
+        alt=""
+        aria-hidden="true"
+        width={boyut}
+        height={boyut}
+        className="object-contain"
+      />
+    );
+  }
   const v = IKONLAR[BINA_IKONU[binaKey] ?? 'navMalikane'];
   return (
     <svg
@@ -371,7 +427,7 @@ export function Sehir({
                   b.seviye > 0 ? 'bg-altin/15 text-altin' : 'bg-kenar/40 text-sonuk'
                 }`}
               >
-                <BinaIkonu binaKey={b.key} boyut={18} />
+                <BinaIkonu binaKey={b.key} boyut={18} seviye={b.seviye} seviyeli={b.seviyeli} />
               </span>
               <span className="min-w-0 flex-1">
                 <span className="flex items-baseline gap-1.5">
@@ -439,7 +495,7 @@ function BinaIsareti({ b, secili, onSec }: { b: BinaDurumu; secili: boolean; onS
         }`}
         style={secili ? { outline: '3px solid #fff3cf', outlineOffset: '2px' } : undefined}
       >
-        <BinaIkonu binaKey={b.key} boyut={18} />
+        <BinaIkonu binaKey={b.key} boyut={18} seviye={b.seviye} seviyeli={b.seviyeli} />
         {b.seviyeli && dikili && (
           <span className="tabular absolute -right-1.5 -bottom-1.5 rounded bg-gece px-1 text-[11px] leading-tight font-bold text-altin">
             {b.seviye}

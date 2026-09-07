@@ -124,7 +124,17 @@ export function akinOdulu(haritaKey: string, grupNo: number): Resources {
   const h = akinHaritasi(haritaKey);
   if (!h || !akinGrubuGecerliMi(grupNo)) return { altin: 0, demir: 0, erzak: 0 };
   const A = B.akin;
-  const buyume = Math.pow(A.odul_us, grupNo - 1) * (sefMi(grupNo) ? A.sef_carpani : 1);
+  /*
+   * Harita çarpanı `odul_carpani`, `guc_carpani` DEĞİL.
+   *
+   * İkisi aynı sayı olsaydı beş haritanın saatlik verimi eşit çıkardı:
+   * süre de `guc_carpani` ile uzuyor ve ikisi birbirini tam götürüyor.
+   * İlk yazışta böyleydi ve EN KOLAY harita saatlik en çok altını
+   * veriyordu — son haritaya gitmenin tek sebebi ekipman kademesi
+   * kalıyordu.
+   */
+  const buyume =
+    h.odul_carpani * Math.pow(A.odul_us, grupNo - 1) * (sefMi(grupNo) ? A.sef_carpani : 1);
   const hesap = (k: 'altin' | 'demir' | 'erzak'): number =>
     Math.round(A.odul_taban[k] * (h.odul_agirligi[k] ?? 1) * buyume);
   return { altin: hesap('altin'), demir: hesap('demir'), erzak: hesap('erzak') };

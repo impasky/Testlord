@@ -112,6 +112,7 @@ export const AKIN_HARITALARI = akinlarJson.haritalar as unknown as {
   ozet: string;
   acilis_seviyesi: number;
   guc_carpani: number;
+  odul_carpani: number;
   azami_tier: number;
   karisim: Record<string, number>;
   odul_agirligi: Record<string, number>;

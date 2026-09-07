@@ -399,6 +399,54 @@ if (yeniToken) {
   }
 }
 
+/**
+ * --- Bina sprite listesi ile klasör uyuşuyor mu ---
+ *
+ * Zemin listesiyle aynı gerekçe (`Sehir.tsx`, `SPRITE_OLAN`): elle
+ * tutulan liste kaçınılmaz olarak klasörden sapar. Dosya konur da liste
+ * güncellenmezse şehir hâlâ çizgi ikon gösterir ve kimse fark etmez;
+ * listede olup dosyası olmayan bina ise üretimde 404 verir.
+ *
+ * Klasör henüz YOK olabilir: sprite'ların istemleri yazıldı ama görsel
+ * üretilmedi. O durumda liste de boş olmalı.
+ */
+{
+  const { readdirSync, readFileSync, existsSync } = await import('node:fs');
+  const yol = 'apps/web/public/gorseller/binalar';
+  const klasor = new Set(
+    existsSync(yol)
+      ? readdirSync(yol)
+          .filter((f) => f.endsWith('.webp'))
+          .map((f) => f.replace(/\.webp$/, ''))
+      : [],
+  );
+  const kaynak = readFileSync('apps/web/src/screens/Sehir.tsx', 'utf8');
+  const blok = kaynak.match(/const SPRITE_OLAN = new Set<string>\(\[([^\]]*)\]/s)?.[1] ?? '';
+  const liste = new Set([...blok.matchAll(/'([^']+)'/g)].map((m) => m[1]));
+
+  const eksik = [...klasor].filter((k) => !liste.has(k));
+  const fazla = [...liste].filter((k) => !klasor.has(k));
+  if (eksik.length || fazla.length) {
+    sorun(
+      'bina-sprite',
+      'Bina sprite listesi klasörle uyuşmuyor',
+      [
+        eksik.length ? `dosyası var listede yok: ${eksik.join(', ')}` : '',
+        fazla.length ? `listede var dosyası yok: ${fazla.join(', ')}` : '',
+      ]
+        .filter(Boolean)
+        .join(' | '),
+    );
+  } else {
+    iyi(
+      'bina-sprite',
+      liste.size === 0
+        ? 'sprite üretilmemiş, liste de boş — çizgi ikonlar kullanılıyor'
+        : `liste klasörle uyuşuyor (${liste.size} sprite)`,
+    );
+  }
+}
+
 console.log(`\n${bulgu === 0 ? 'GÖRSEL DENETİM TEMİZ' : `${bulgu} GÖRSEL SORUN`}`);
 console.log(
   `konsol hatası: ${konsol.length}${konsol.length ? ' — ' + konsol.slice(0, 3).join(' | ') : ''}`,

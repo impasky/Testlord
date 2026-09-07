@@ -24,12 +24,19 @@ sıralamada yükselirsin.
 
 ## Nasıl oynanır (30 saniyelik özet)
 
-Malikânen sana her saat kaynak üretir — kimse elinden alamaz. O kaynakla asker
-eğitir, ordunla haritadaki bir bölgeye yürürsün. Bölgeyi alırsan geliri senindir;
-o gelirle daha iyi ekipman üretir, bölgeni yükseltir, daha büyük ordu beslersin.
-Ama bölgeler kıt: 120 oyuncuya 60 bölge düşüyor. Yani bir noktada bölgeyi
+Bir **kampta** başlarsın: toprağın yok, ordun yok, taban gelirin bir çadır
+kadar. Önce asker yazdırır, ilk savaşını bir **akın** kampında öğrenirsin —
+orada toprak riski yok. Sonra dünya haritasından ilk köyünü alırsın; orası
+başkentin olur ve şehir sayfan bir kamptan bir köye döner. Şehrinde bina
+dikersin, binalar kapasite verir: kışla eş zamanlı eğitim, demirhane
+dövebileceğin ekipman kademesi, malikâne depo.
+
+Bölgeler kıt: 120 oyuncuya 60 bölge düşüyor. Yani bir noktada bölgeyi
 NPC'den değil, başka bir lorddan almak zorundasın. Haritanın merkezindeki
 **Taht Kalesi** dünyada tek — onu tutan "Diyarın Lordu" olur.
+
+Sana hiçbir şey verilmiyor: ordu, demir, toprak ve bina — dördü de
+kazanılıyor.
 
 ---
 
@@ -39,8 +46,8 @@ Oyun **sadece mobil**. Masaüstü düzeni yok.
 
 |                                              |                                             |                                                |
 | -------------------------------------------- | ------------------------------------------- | ---------------------------------------------- |
-| ![Malikâne](docs/gorseller/1-malikane.png)   | ![Kışla](docs/gorseller/2-kisla.png)        | ![Harita](docs/gorseller/3-harita.png)         |
-| **Malikâne** — durum, kuyruklar, olaylar     | **Kışla** — birim kartları, komuta, erzak   | **Harita** — 61 hex, tip ikonlu                |
+| ![Şehir](docs/gorseller/1-malikane.png)      | ![Ordu](docs/gorseller/2-kisla.png)         | ![Dünya](docs/gorseller/3-harita.png)          |
+| **Şehir** — ana sayfa, yerleşim haritası     | **Ordu** — birim kartları, komuta, erzak    | **Dünya** — 61 bölge, resimli zemin            |
 | ![Demirhane](docs/gorseller/4-demirhane.png) | ![Bölge](docs/gorseller/5-harita-bolge.png) | ![Generaller](docs/gorseller/8-generaller.png) |
 | **Demirhane** — üretim, envanter, donanım    | **Bölge** — alt sayfada saldırı ve garnizon | **Generaller** — 12 kişilik kadro              |
 | ![Lord](docs/gorseller/7-lord.png)           | ![Sıralama](docs/gorseller/9-siralama.png)  | ![Giriş](docs/gorseller/0-giris.png)           |
@@ -85,13 +92,16 @@ Sonra kendi hesabınla kayıt ol. Haritada **noktalı desenli** bölgeler onlar�
 
 ### İlk 10 dakikada ne yap
 
-1. **Kışla** → 20 mızrakçı + 15 okçu eğit (başlangıç altının tam buna yeter)
-2. **Harita** → kenardaki _tahkimatsız_ bir bölge seç (Tarla/Şehir/Maden).
+1. **Ordu** → 20 mızrakçı + 15 okçu eğit (başlangıç altının tam buna yeter)
+2. **Akın** → Kırık Sahil'in birinci grubu. Kaybetsen bile toprağın gitmez;
+   ilk savaşını burada öğreniyorsun.
+3. **Dünya** → kenardaki _tahkimatsız_ bir bölge seç (Tarla/Şehir/Maden).
    Kale'ler %30 tahkimatlı, ilk ordunla alınamaz — bu bilinçli.
-3. **Önizle** → tahmini gör, sonra **Saldır**
-4. Worker yürüyüşü çözünce bölge senin olur; geliri kaynak çubuğuna yansır
-5. **Demirhane** → T1 ekipman üret, **Lord** sekmesinden kuşan
-6. **Lord** → stat puanlarını dağıt (Liderlik daha büyük ordu demek)
+4. **Önizle** → tahmini gör, sonra **Saldır**
+5. Worker yürüyüşü çözünce bölge senin olur; orası başkentin, şehrin bir
+   köye döner
+6. **Şehir** → demirhaneyi dik, ekipman döv ve **Lord** sekmesinden kuşan
+7. **Lord** → stat puanlarını dağıt (Liderlik daha büyük ordu demek)
 
 ### Sıkışırsan
 
@@ -192,7 +202,7 @@ apps/api/                 Fastify + Prisma + PostgreSQL
   src/worker.ts           10 sn aralıkla yürüyüş ve kuyruk çözümü
 apps/web/                 React + Vite + Tailwind, yedi ekran
 tools/
-  generate_map.py         Haritayı üreten script
+  generate_map.py         Haritayı DOĞRULAYAN script (artık üretmiyor)
   gorsel-uret.py          Oyun görsellerini üretir (GEMINI_API_KEY ister)
   check_balance.py        Aritmetik denge doğrulayıcı
   oyun-dongusu-testi.mjs  API üzerinden tam oyun döngüsü
@@ -212,7 +222,7 @@ tools/
 
 ```bash
 python3 tools/check_balance.py    # dengeyi doğrula (8/8 geçmeli)
-python3 tools/generate_map.py     # haritayı yeniden üret
+python3 tools/generate_map.py     # haritayı doğrula (komşuluk simetrik ve bağlı mı)
 ```
 
 ## Teknoloji

@@ -515,20 +515,42 @@ girdiği oyunda ekranın yarısını tanımıyordu.
 
 ## 9. Görsel bütçesi — 100
 
+İstemlerin hepsi yazıldı (`tools/gorsel-uret.py`, `docs/GORSEL-ISTEMLERI.md`);
+**hiçbiri henüz üretilmedi.** Üretim oyuncunun açık talimatını bekliyor.
+
 | Ne | Adet |
 |---|---|
 | Yerleşim zeminleri (kamp, köy, kasaba, şehir, kale-şehir, metropol) | 6 |
-| Bina görselleri (10 seviyeli × 2 durum: temel / gelişmiş) | 20 |
+| Bina işaretçileri (10 seviyeli × 2 durum: temel / gelişmiş) | 20 |
 | Seviyesiz yapılar (görev panosu, haberci kulesi, onur meydanı) | 3 |
 | Boş arsa (paylaşılan) | 1 |
 | Dünya haritası zemini | 1 |
-| Dünya bölge işaretçileri (köy, tarla, maden, şehir, kale, taht) | 6 |
-| Akın haritası zeminleri | 5 |
-| Düşman fraksiyon amblemleri | 10 |
-| Akın hedef işaretçisi (normal / şef) | 2 |
-| **Alt toplam** | **54** |
-| Yeniden deneme ve varyant payı | 46 |
-| **Toplam** | **100** |
+| Akın diyar zeminleri | 5 |
+| Akın sekmesi ekran zemini | 1 |
+| **Alt toplam — üretilecek** | **37** |
+| Yeniden deneme ve varyant payı | 63 |
+| **Toplam bütçe** | **100** |
+
+**Üç kalem listeden ÇIKTI, çünkü ekranda yerleri yok:**
+
+- *Düşman fraksiyon amblemleri (10)* ve *akın hedef işaretçisi (2)*:
+  akın ekranı diyarları kart, grupları düğme olarak gösteriyor
+  (`Akin.tsx`). Amblem koyacak bir yer yok.
+- *Dünya bölge işaretçileri (6)*: harita pinleri zaten satır içi SVG
+  (`ikon-verisi.ts`) ve 44 pikselde çizgi ikon fotoğraftan iyi okunuyor.
+
+On sekiz görsel üretip hiçbirini göstermemek bütçeyi boşa harcamak
+olurdu. Bir gün o yerler açılırsa istemleri yazılır.
+
+**Emekliye ayrılan: altıgen harita karoları (6).** Dünya haritası artık
+ızgara değil, çizilmiş tek bir diyar (§5). Altı dosya silindi;
+`public/gorseller/harita/` artık dünya zeminini bekliyor.
+
+**Bina sprite'ları için kod HAZIR, görsel yok.** `BinaIkonu` önce
+`/gorseller/binalar/<key>_<1|5>.webp` deniyor, bulamazsa çizgi ikona
+düşüyor (`onError`). Sprite'lar üretildikçe şehir kendiliğinden
+zenginleşiyor; üretilmeyen bina çalışmaya devam ediyor. Tersini yapmak —
+önce ikonu kaldırıp dosya beklemek — boş kutular demekti.
 
 **Kural: resimde yazı yok.** Bütün etiketler DOM'da. Görsel modeli
 okunabilir metin üretemiyor ve bölge adları veriden gelmek zorunda.
@@ -536,6 +558,10 @@ okunabilir metin üretemiyor ve bölge adları veriden gelmek zorunda.
 **Üretim sırası:** zeminler önce kilitlenir, bina ve işaretçi
 koordinatları ondan sonra yerleştirilir. Zemin yeniden üretilirse o
 haritanın bütün koordinatları elden geçer.
+
+**Yerleşim zemininin ortası BOŞ.** 13 bina işaretçisi oraya konuyor
+(`data/binalar.json` x/y); zeminde de bina çizilirse iki kat bina
+görünür. İstem bu yüzden manzarayı kenarlara yaslıyor.
 
 ## 10. Aşamalar
 
@@ -550,7 +576,21 @@ Her aşama sonunda oyun **oynanabilir** durumda kalır.
 | **Y5** ✅ | Gezinme: Şehir · Ordu · Akın · Dünya · Lord. Görevler kapıya taşındı. |
 | **Y6** ✅ | Akın sistemi: 5 harita, 50 grup, yenilenme, ödül ve ekipman düşürme (§6). |
 | **Y7** ✅ | Yeni açılış: akın turun içine girdi (§8.1), başkent düşmesi (§8.3), öğretici düzeltildi (§8.4). |
-| **Y8** | Görsel üretimi (100 sınırı), denge, test ve temizlik. |
+| **Y8** ✅ | Görsel İSTEMLERİ (üretim beklemede), akın dengesi, temizlik. |
+
+### 10.1 Y8'de yapılanlar
+
+- **Görsel istemleri yazıldı, görseller ÜRETİLMEDİ.** Üretim oyuncunun
+  açık talimatını bekliyor; bütçe ve gerekçeler §9'da.
+- **Akın dengesi yeniden çözüldü** (`tools/denge-akin.ts`, `pnpm
+  denge:akin`). İlk sayılar iki yönden bozuktu ve ikisi de sessizdi:
+  ödül toprak gelirinin yüzlerce katıydı, ve EN KOLAY harita saatlik en
+  çok kaynağı veriyordu. Üç invaryant artık `akin.test.ts` içinde.
+- **Bina sprite'ları için kod hazırlandı**, liste boş: `SPRITE_OLAN`.
+- **Ölü altıgen karoları silindi** (6 dosya).
+- **Eski dokümanlara "aşıldı" uyarısı** kondu (01, 02, 04, 08). Yeniden
+  yazılmadılar: onlar o günkü kararın kaydı ve sistemlerin niyetini hâlâ
+  doğru anlatıyorlar.
 
 ## 11. Emekliye ayrılanlar
 
@@ -559,7 +599,16 @@ Her aşama sonunda oyun **oynanabilir** durumda kalır.
 - `Region.q/r/ring` — yerine `x/y/komsular`.
 - Lord ekranının kapı ızgarası — kapılar şehre taşınıyor.
 - `ANA_SEKME = 'lord'` — artık `'sehir'`.
-- Mevcut dünya kayıtları — sıfırlanıyor (karar).
+- Görevler SEKMESİ — şehirdeki görev panosunun açtığı kapı oldu (§7).
+- Altıgen harita karoları (`gorseller/harita/*.webp`, 6 dosya) — silindi;
+  dünya haritası artık tek çizilmiş zemin (§5).
+
+**Sıfırlama YAPILMADI.** Plandaki "mevcut dünya kayıtları sıfırlanıyor"
+kararı uygulanmadı: Y1'de yerine yerinde göç yazıldı
+(`20260907073000_harita_grafigi_ve_baskent`), q/r'den x/y ve komşuluğa
+geçiş veri kaybetmeden yapıldı. Sonraki bütün göçler de aynı yolu izledi
+— var olan lordlar binalarını (Y3), damgalarını (Y7) ve akın geçmişini
+koruyarak geçti. Sıfırlamak kolaydı; kimseyi silmemek daha doğruydu.
 
 ## 12. Açık riskler
 

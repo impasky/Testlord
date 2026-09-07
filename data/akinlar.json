@@ -10,9 +10,18 @@
       "ozet": "Batık gemilerin kaburgaları arasında kurulmuş kamplar. Ne alırlarsa kıyıya gömüyorlar.",
       "acilis_seviyesi": 1,
       "guc_carpani": 1.0,
+      "odul_carpani": 1.0,
       "azami_tier": 2,
-      "karisim": { "milis": 0.45, "okcu": 0.3, "mizrakci": 0.25 },
-      "odul_agirligi": { "altin": 1.7, "demir": 0.5, "erzak": 0.8 },
+      "karisim": {
+        "milis": 0.45,
+        "okcu": 0.3,
+        "mizrakci": 0.25
+      },
+      "odul_agirligi": {
+        "altin": 1.7,
+        "demir": 0.5,
+        "erzak": 0.8
+      },
       "gruplar": [
         "Kıyı Yağmacıları",
         "Ağ Kesenler",
@@ -33,9 +42,18 @@
       "ozet": "Ordudan kaçmış bir alay, sazlığın içine kendi karargâhını kurmuş. Zırhları hâlâ üzerlerinde.",
       "acilis_seviyesi": 5,
       "guc_carpani": 1.35,
+      "odul_carpani": 1.65,
       "azami_tier": 3,
-      "karisim": { "mizrakci": 0.45, "milis": 0.25, "okcu": 0.3 },
-      "odul_agirligi": { "altin": 0.7, "demir": 1.8, "erzak": 0.5 },
+      "karisim": {
+        "mizrakci": 0.45,
+        "milis": 0.25,
+        "okcu": 0.3
+      },
+      "odul_agirligi": {
+        "altin": 0.7,
+        "demir": 1.8,
+        "erzak": 0.5
+      },
       "gruplar": [
         "Sazlık Devriyesi",
         "Çamur Mızrakları",
@@ -56,9 +74,18 @@
       "ozet": "Buz kırığının ötesinde göçebe klanlar. Sürüleri ve ambarları hep dolu, kimseye de vermiyorlar.",
       "acilis_seviyesi": 10,
       "guc_carpani": 1.75,
+      "odul_carpani": 4.3,
       "azami_tier": 3,
-      "karisim": { "milis": 0.35, "suvari": 0.35, "mizrakci": 0.3 },
-      "odul_agirligi": { "altin": 0.6, "demir": 0.7, "erzak": 1.9 },
+      "karisim": {
+        "milis": 0.35,
+        "suvari": 0.35,
+        "mizrakci": 0.3
+      },
+      "odul_agirligi": {
+        "altin": 0.6,
+        "demir": 0.7,
+        "erzak": 1.9
+      },
       "gruplar": [
         "Kar Avcıları",
         "Boynuzlu Sürücüler",
@@ -79,9 +106,19 @@
       "ozet": "Sönmüş bir yanardağın eteğinde ocak kurmuşlar. Çaldıkları demiri kendi silahlarına döküyorlar.",
       "acilis_seviyesi": 15,
       "guc_carpani": 2.2,
+      "odul_carpani": 4.4,
       "azami_tier": 4,
-      "karisim": { "mizrakci": 0.3, "okcu": 0.25, "suvari": 0.25, "kusatma": 0.2 },
-      "odul_agirligi": { "altin": 0.9, "demir": 1.9, "erzak": 0.4 },
+      "karisim": {
+        "mizrakci": 0.3,
+        "okcu": 0.25,
+        "suvari": 0.25,
+        "kusatma": 0.2
+      },
+      "odul_agirligi": {
+        "altin": 0.9,
+        "demir": 1.9,
+        "erzak": 0.4
+      },
       "gruplar": [
         "Yol Kesenler",
         "Kül Ocağı Bekçileri",
@@ -102,9 +139,19 @@
       "ozet": "Kimsenin adını anmadığı bir kral için kazılmış şehir. Aşağıda ne varsa yüz yıldır kimse dokunmadı.",
       "acilis_seviyesi": 20,
       "guc_carpani": 2.9,
+      "odul_carpani": 9.0,
       "azami_tier": 5,
-      "karisim": { "mizrakci": 0.3, "okcu": 0.3, "suvari": 0.2, "kusatma": 0.2 },
-      "odul_agirligi": { "altin": 1.2, "demir": 1.2, "erzak": 0.6 },
+      "karisim": {
+        "mizrakci": 0.3,
+        "okcu": 0.3,
+        "suvari": 0.2,
+        "kusatma": 0.2
+      },
+      "odul_agirligi": {
+        "altin": 1.2,
+        "demir": 1.2,
+        "erzak": 0.6
+      },
       "gruplar": [
         "Kapı Ağıtçıları",
         "Meşale Taşıyıcılar",
@@ -120,5 +167,6 @@
     }
   ],
   "_karisim_notu": "Karisim ORANLARDIR ve toplami 1'e yakin tutuluyor; garnizon buyuklugu balance.json'dan gelip bu oranlara bolunuyor. Boylece dengeyi degistirmek icin tek bir sayiyi (garnizon_taban ya da guc_carpani) oynatmak yetiyor, elli satiri elle guncellemek gerekmiyor.",
-  "_kars_notu": "Her haritanin karisimi FARKLI, cunku tas-kagit-makas (docs/09 K1) ancak dusman degisince bir karar olur. Kirik Sahil okcu agirlikli -- mizrakci gonderen zorlanir; Kuzey Buzulu suvari agirlikli -- mizrakci iyi gider. Tek bir 'en iyi ordu' olmasin diye."
+  "_kars_notu": "Her haritanin karisimi FARKLI, cunku tas-kagit-makas (docs/09 K1) ancak dusman degisince bir karar olur. Kirik Sahil okcu agirlikli -- mizrakci gonderen zorlanir; Kuzey Buzulu suvari agirlikli -- mizrakci iyi gider. Tek bir 'en iyi ordu' olmasin diye.",
+  "_odul_carpani_notu": "Odulun harita basina buyume carpani. guc_carpani'dan AYRI olmak zorunda: sure de guc_carpani ile uzuyor ve ikisi birbirini tam goturuyor -- ayni sayiyi kullansaydik bes haritanin saatlik verimi esit cikardi ve son haritaya gitmenin tek sebebi ekipman kademesi olurdu.\n\nSayilar ELLE SECILMEDI, COZULDU. Olcut: her haritanin saatlik TOPLAM DEGERI (altinKarsiligi ile) bir oncekinin ~1.35 kati olsun. Duz bir dizi (1, 1.8, 2.7, 4, 5.6) denendi ve Kuzey Buzulu, Solgun Bataklik'tan daha AZ verdi: erzak agirlikli bir harita, demir agirlikli bir haritadan dusuk deger uretiyor cunku erzagin altin karsiligi daha kucuk. Carpan bu yuzden odul_agirligi ve guc_carpani birlikte hesaba katilarak cozuldu; agirliklari degistiren biri bu sayilari da yeniden cozmeli (tools/denge-akin.mjs)."
 }

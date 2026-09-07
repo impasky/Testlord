@@ -14,6 +14,7 @@
     "format": "prettier --write .",
     "test": "vitest run",
     "balance": "python3 tools/check_balance.py",
+    "denge:akin": "tsx tools/denge-akin.ts",
     "db:migrate": "pnpm --filter @lordlar/api prisma migrate dev",
     "db:seed": "pnpm --filter @lordlar/api seed",
     "db:reset": "pnpm --filter @lordlar/api prisma migrate reset --force",

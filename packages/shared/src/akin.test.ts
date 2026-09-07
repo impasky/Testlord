@@ -7,7 +7,8 @@
  * bozulabilecek şeyler; testler o gün patlasın diye burada.
  */
 import { describe, expect, it } from 'vitest';
-import { AKIN_HARITALARI, B } from './balance.js';
+import { AKIN_HARITALARI, B, regionBaseIncome, unit } from './balance.js';
+import { altinKarsiligi } from './odul.js';
 import {
   AKINLAR,
   AKIN_ANAHTARLARI,
@@ -142,6 +143,68 @@ describe('ödül', () => {
   it('xp de grupla büyüyor', () => {
     expect(akinXp(10)).toBeGreaterThan(akinXp(1));
     expect(akinXp(0)).toBe(0);
+  });
+});
+
+/**
+ * DENGE SÖZLERİ.
+ *
+ * Bu üçü bir gün "denge" diye tek bir sayı oynatıldığında sessizce
+ * bozulabilir; testler o gün patlasın diye burada. Sayıları yeniden
+ * çözmek için `pnpm denge:akin`.
+ */
+describe('denge', () => {
+  const deger = (o: { altin: number; demir: number; erzak: number }) => altinKarsiligi(o);
+  const saatlik = (h: string, g: number) => (deger(akinOdulu(h, g)) / akinSuresiSn(h, g)) * 3600;
+
+  it('sonraki harita saatlik DAHA ÇOK veriyor', () => {
+    // İlk yazışta bozuktu: süre `guc_carpani` ile uzarken ödül uzamıyordu,
+    // en kolay harita saatlik en çok altını veriyordu.
+    for (let i = 1; i < AKIN_ANAHTARLARI.length; i++) {
+      const onceki = AKIN_ANAHTARLARI[i - 1]!;
+      const simdi = AKIN_ANAHTARLARI[i]!;
+      expect(saatlik(simdi, 1), `${onceki} → ${simdi}`).toBeGreaterThan(saatlik(onceki, 1));
+    }
+  });
+
+  it('sonraki harita daha AĞIR garnizon tutuyor', () => {
+    for (let i = 1; i < AKIN_ANAHTARLARI.length; i++) {
+      expect(akinGarnizonSayisi(AKIN_ANAHTARLARI[i]!, 1)).toBeGreaterThan(
+        akinGarnizonSayisi(AKIN_ANAHTARLARI[i - 1]!, 1),
+      );
+    }
+  });
+
+  it('akın bir GELİR KAYNAĞI değil: günlük tavan toprak gelirini yüzlerce kat aşmıyor', () => {
+    /*
+     * Akından toprak çıkması PvP'nin sebebini nasıl yok ederse, akından
+     * sınırsız kaynak çıkması da toprak tutmanın sebebini yok eder.
+     * İlk sayılarla bu oran 158 katı geçiyordu.
+     */
+    let tavan = 0;
+    for (const h of AKIN_ANAHTARLARI) {
+      for (let g = 1; g <= B.akin.grup_sayisi; g++) {
+        const kez = sefMi(g) ? 24 / B.akin.sef_yenilenme_saat : 24 / B.akin.yenilenme_saat;
+        tavan += deger(akinOdulu(h, g)) * kez;
+      }
+    }
+    const besKoy = 5 * (regionBaseIncome('koy').altin ?? 0) * 24;
+    expect(tavan / besKoy).toBeLessThan(80);
+  });
+
+  it('bir akın gönderdiği ordunun kaybını ÖDÜYOR ama zengin etmiyor', () => {
+    // İlk haritanın orta grubu: oraya gidecek ordu kabaca garnizon
+    // kadar; kaybı %5 varsayarsak ödül o kaybın 1-5 katı olmalı.
+    const g = 3;
+    const garnizon = akinGarnizonu(AKIN_ANAHTARLARI[0]!, g);
+    const ordununBedeli = UNIT_TYPES.reduce(
+      (t, u) => t + (garnizon[u] ?? 0) * altinKarsiligi(unit(u).maliyet),
+      0,
+    );
+    const kayip = ordununBedeli * 0.05;
+    const odul = deger(akinOdulu(AKIN_ANAHTARLARI[0]!, g));
+    expect(odul).toBeGreaterThan(kayip);
+    expect(odul).toBeLessThan(kayip * 8);
   });
 });
 
