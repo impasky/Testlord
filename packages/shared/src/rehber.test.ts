@@ -60,6 +60,7 @@ describe('rehberin sözü', () => {
 /** Hiçbir şey yapmamış yeni lord. */
 const yeniLord: RehberDurumu = {
   orduVar: false,
+  akinYapti: false,
   bolgeSayisi: 0,
   kusanilanEkipman: 0,
   generalVar: false,
@@ -70,6 +71,7 @@ const yeniLord: RehberDurumu = {
 /** Bütün aşamaları bitirmiş lord. */
 const bitiren: RehberDurumu = {
   orduVar: true,
+  akinYapti: true,
   bolgeSayisi: 1,
   kusanilanEkipman: 1,
   generalVar: true,
@@ -244,12 +246,16 @@ describe('rehber ışığı', () => {
    * ZİNCİR KOPMASIN. Oyuncu ışık yanarken alâkasız bir ekranda olabilir
    * (ör. "saldır" adımındayken Demirhane'de). Orada listedeki hiçbir işaret
    * bulunmazsa perde kalkar ve "yaptıran öğretici" yine anlatan öğreticiye
-   * döner. Son çare her zaman Malikâne sekmesi: o her ekranda duruyor ve
-   * omurga düğmesinin bulunduğu tek yere götürüyor.
+   * döner.
+   *
+   * Son çare her zaman ANA SAYFA sekmesi: o her ekranda duruyor ve
+   * omurga düğmesinin bulunduğu tek yere götürüyor. Akın zincirini kendi
+   * sekmesiyle bitirmeyi denedim — ışık eğitim bittikten sonra omurgaya
+   * geri dönemedi, çünkü omurga düğmesi Akın sekmesinde yok.
    */
   it('her zincir ANA SAYFA sekmesiyle bitiyor', () => {
-    for (const liste of Object.values(REHBER_ISIKLARI)) {
-      expect(liste[liste.length - 1]?.isaret).toBe('nav-ana');
+    for (const [adim, liste] of Object.entries(REHBER_ISIKLARI)) {
+      expect(liste[liste.length - 1]?.isaret, adim).toBe('nav-ana');
     }
   });
 

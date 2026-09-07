@@ -34,6 +34,21 @@ import { B, BINALAR } from './balance.js';
 import type { RegionType, Resources } from './types.js';
 
 /** Yerleşim kademeleri, küçükten büyüğe. */
+/**
+ * BAŞKENT olabilen bölge türleri — yani YERLEŞİMLER.
+ *
+ * Tarla ve maden bir gelir kaynağı, bir yerleşim değil: oyuncu bir
+ * buğday tarlasında oturmuyor. Sıra da anlamlı — dizideki yer "daha
+ * iyi" demek ve başkent düşerken en iyi kalan buradan seçiliyor
+ * (`services/region.ts`).
+ *
+ * Burada duruyor çünkü üç yer birden soruyor: ilk başkent ataması
+ * (march), başkent taşıma ve düşme (sehir, region). Üçünde ayrı bir
+ * dizi vardı; biri güncellenip ötekiler unutulduğunda oyuncu bir yere
+ * taşınabilir ama oradan düşemez hâle gelirdi.
+ */
+export const BASKENT_TURLERI: readonly string[] = ['koy', 'sehir', 'kale', 'taht'];
+
 export const KADEMELER = ['kamp', 'koy', 'kasaba', 'sehir', 'kale', 'metropol'] as const;
 export type Kademe = (typeof KADEMELER)[number];
 

@@ -60,18 +60,28 @@ export function rehberSozleri(): RehberSozu[] {
     {
       adim: 'ordu-kur',
       soz:
-        'Lordum, toprağın var ama askerin yok. Kışlada birkaç mızrakçı yazdıralım — ' +
-        `ilkini ${ilkEgitimSn} saniyede toplarım, beklemene gerek kalmaz.`,
+        'Lordum, elimizde bir çadır ve bir talimgahtan başka bir şey yok. Önce asker ' +
+        `yazdıralım — ilkini ${ilkEgitimSn} saniyede toplarım, beklemene gerek kalmaz.`,
     },
     {
       adim: 'egitim-bekle',
       soz: 'Adamlar toplanıyor. Şuracıkta bekle, bittiğinde haber vereceğim.',
     },
     {
+      adim: 'akin',
+      soz:
+        'Ordun ayakta ama toprağa saldırmak için erken. Şu deniz haydutlarının kampına ' +
+        'inelim: kimseyle husumetimiz olmaz, ganimeti de biz alırız.',
+    },
+    {
       adim: 'saldir',
       soz:
         'Ordun hazır. Karşıdakinin sayısı seninkinden çok olabilir — bakma sen ona, ' +
         'önemli olan hangi askerin hangisini yediği. Aşağıda yazıyor.',
+    },
+    {
+      adim: 'akin-yolda',
+      soz: 'Adamlar kampa iniyor. Dönünce ne getirdiklerini birlikte sayarız.',
     },
     {
       adim: 'ordu-yolda',
@@ -159,6 +169,10 @@ export interface RehberAsamasi {
 
 export const REHBER_ASAMALARI: RehberAsamasi[] = [
   { key: 'ordu', ad: 'Ordunu kur', adim: 'ordu-kur' },
+  // Akın, bölgeden ÖNCE: ilk savaş kimsenin toprağını almadan
+  // öğrenilmeli. Yeni oyuncunun ilk yenilgisi bir komşuyla husumet
+  // değil, bir kamptan dönen yaralılar olsun (docs/12 §8).
+  { key: 'akin', ad: 'İlk akınına çık', adim: 'akin' },
   { key: 'bolge', ad: 'İlk bölgeni al', adim: 'saldir' },
   { key: 'ekipman', ad: 'Ekipman kuşan', adim: 'ekipman' },
   { key: 'general', ad: 'General kirala', adim: 'general' },
@@ -170,6 +184,8 @@ export const REHBER_ASAMALARI: RehberAsamasi[] = [
 export interface RehberDurumu {
   /** Evde ya da yolda askeri var mı (kuyruktakiler dahil). */
   orduVar: boolean;
+  /** İlk akınını kazandı mı (`Lord.ilkAkinAt` damgası). */
+  akinYapti: boolean;
   bolgeSayisi: number;
   kusanilanEkipman: number;
   generalVar: boolean;
@@ -183,6 +199,7 @@ export interface RehberDurumu {
 export function rehberAsamaDurumu(d: RehberDurumu): { key: string; ad: string; bitti: boolean }[] {
   const bitti: Record<string, boolean> = {
     ordu: d.orduVar,
+    akin: d.akinYapti,
     bolge: d.bolgeSayisi > 0,
     ekipman: d.kusanilanEkipman > 0,
     general: d.generalVar,
@@ -289,6 +306,52 @@ export const REHBER_ISIKLARI: Record<string, RehberIsaret[]> = {
     {
       isaret: 'nav-ana',
       sebep: 'Yapılacak iş ana sayfada yazılı. Önce oraya dönelim lordum.',
+      yol: true,
+    },
+  ],
+  /*
+   * Akın zinciri DÖRT halkalı ve sırası ürünün kendi sırası: kampa
+   * gitmeden gruba, grubu seçmeden sefer kartına basılamıyor.
+   *
+   * İlk hâlinde iki halka vardı (`akina-cik` → `nav-akin`) ve bu bir
+   * TUZAKTI: Akın sekmesindeyken hiçbir grup seçili değilse "akına çık"
+   * düğmesi ekranda yok, ışık da oyuncuyu zaten üstünde olduğu sekmeye
+   * yolluyordu. Basılınca hiçbir şey değişmiyor, perde kalkmıyor.
+   *
+   * Son iki halka öteki zincirlerle AYNI ve öyle olmak zorunda: omurga
+   * düğmesi yalnız ana sayfada duruyor, dolayısıyla "hiçbir işaret
+   * bulunamadı" hâlinin tek çıkışı ana sayfa. Akın sekmesiyle bitirmeyi
+   * denedim; ışık eğitim bittikten sonra omurgaya geri dönemedi ve
+   * ölçüm bunu yakaladı.
+   */
+  akin: [
+    {
+      isaret: 'akina-cik',
+      sebep:
+        'Ordunu bu kampın üstüne yolla. Kaybetsen bile toprağın gitmez — akın ' +
+        'toprak almaz, toprak da vermez; öğrenmenin en ucuz yeri burası.',
+    },
+    /*
+     * Bu ikisi YOL DEĞİL, İŞ.
+     *
+     * `yol` işaretleri oyuncu doğru ekrandayken aranmıyor (`hedefBul`,
+     * `yolYasak`) — "geldiğin yere dön" demek olurdu. Diyarı ve grubu
+     * seçmek ise akının kendisi: `yol: true` yazdığım ilk hâlde ışık
+     * Akın sekmesinde hiçbir hedef bulamıyor ve perde kalkıyordu.
+     * `harita-hepsi` de aynı sebeple yol değil.
+     */
+    {
+      isaret: 'akin-grup',
+      sebep: 'Bir grup seç lordum. En üsttekiler en zayıfı; ilkiyle başlayalım.',
+    },
+    {
+      isaret: 'akin-harita',
+      sebep: 'Şu diyara girelim. İçinde on kamp var, hepsi ayrı ayrı vurulabiliyor.',
+    },
+    { isaret: 'omurga-dugme', yol: true },
+    {
+      isaret: 'nav-ana',
+      sebep: 'Düşman kampları Akın sekmesinde ama yol ana sayfadan geçiyor lordum.',
       yol: true,
     },
   ],

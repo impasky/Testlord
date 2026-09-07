@@ -10,6 +10,7 @@ import {
   UNIT_TYPES,
   WORLD_MAP,
   fortressBonus,
+  BASKENT_TURLERI,
   regionIncome,
   tahkimatEki,
   type Army,
@@ -17,7 +18,7 @@ import {
   type UnitType,
 } from '@lordlar/shared';
 import { prisma, type Tx } from '../db.js';
-import { binalariOku } from './lord.js';
+import { binalariOku, pushEvent } from './lord.js';
 
 /** Bölge deposunun üst sınırı — sonsuz birikip dev yağma hedefi olmasın. */
 export function regionStoreCap(level: number): number {
@@ -156,6 +157,11 @@ export async function transferRegion(
       ? B.taht_kalesi.kaybetme_korumasi_saat
       : B.korumalar.bolge_ele_gecirme_sonrasi_saat;
 
+  const onceki = await tx.region.findUniqueOrThrow({
+    where: { id: regionId },
+    select: { ownerLordId: true, mapId: true, name: true },
+  });
+
   await tx.region.update({
     where: { id: regionId },
     data: {
@@ -164,4 +170,62 @@ export async function transferRegion(
       shieldUntil: new Date(Date.now() + saat * 3_600_000),
     },
   });
+
+  // Kaybeden BAŞKENTİNİ kaybettiyse bir yere taşınmalı (docs/12 §2.3).
+  if (onceki.ownerLordId && onceki.ownerLordId !== newOwnerId) {
+    await baskentiDusur(onceki.ownerLordId, onceki.mapId, onceki.name, tx);
+  }
+}
+
+/**
+ * Başkentini kaybeden lordu yeni bir yerleşime taşır; yoksa kampa düşürür.
+ *
+ * Kural (docs/12 §2.3): oyuncu hiçbir durumda SİLİNMEZ, en fazla geriye
+ * düşer. Elindeki en iyi yerleşime kendiliğinden taşınıyor — "başkentini
+ * seç" diye bir soru sormak, kaybın üstüne bir de form doldurtmak
+ * olurdu. Hiç yerleşimi kalmadıysa `baskentBolgeId` null oluyor ve şehir
+ * sayfası kampı gösteriyor: binalar duruyor ama kademe tavanı kampa
+ * düştüğü için çoğu kilitli. Yeniden bir köy alınca binalar olduğu
+ * yerden devam ediyor — hiçbir seviye silinmiyor.
+ *
+ * Kendiliğinden değil de okuma anında türetseydik (şehir sayfası zaten
+ * "başkent başkasının olduysa kamp" diyor) lordun kaydında ölü bir
+ * bölge kimliği kalırdı ve o bölgeyi geri alan biri, eski sahibinin
+ * başkentini de geri vermiş olurdu.
+ */
+async function baskentiDusur(
+  lordId: string,
+  kaybedilenMapId: number,
+  kaybedilenAd: string,
+  tx: Tx,
+): Promise<void> {
+  const lord = await tx.lord.findUnique({
+    where: { id: lordId },
+    select: { baskentBolgeId: true, worldId: true },
+  });
+  if (!lord || lord.baskentBolgeId !== kaybedilenMapId) return;
+
+  // Elde kalan en iyi yerleşim: önce türü, sonra seviyesi.
+  const kalanlar = await tx.region.findMany({
+    where: { ownerLordId: lordId, type: { in: [...BASKENT_TURLERI] } },
+    select: { mapId: true, name: true, type: true, level: true },
+  });
+  const sira = (t: string): number => BASKENT_TURLERI.indexOf(t);
+  kalanlar.sort((a, b) => sira(b.type) - sira(a.type) || b.level - a.level);
+  const yeni = kalanlar[0] ?? null;
+
+  await tx.lord.update({
+    where: { id: lordId },
+    data: { baskentBolgeId: yeni?.mapId ?? null },
+  });
+  await pushEvent(
+    lordId,
+    'baskent_dustu',
+    {
+      mesaj: yeni
+        ? `${kaybedilenAd} elinden çıktı. Başkentin ${yeni.name} oldu; binaların seninle taşındı.`
+        : `${kaybedilenAd} elinden çıktı. Bir kampa çekildin — binaların duruyor, yeni bir yerleşim alınca kaldığın yerden devam edecek.`,
+    },
+    tx,
+  );
 }

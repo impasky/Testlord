@@ -151,15 +151,59 @@ kontrol(
 kontrol('Hedef plan uygulanırken değişmedi', (egitimde ?? '').includes(hedefAdi), hedefAdi);
 await page.screenshot({ path: `${CIKTI}/omurga-2-egitimde.png` });
 
-// --- 3. Ordu hazır: eylem saldırıya döner
+/*
+ * --- 3. Ordu hazır: sıra AKINDA
+ *
+ * Y7'de turun sırası değişti (docs/12 §8): ordu kurulduktan sonra ilk
+ * savaş bir NPC kampında öğreniliyor, bir komşunun toprağında değil.
+ * Omurga bu yüzden önce akını gösteriyor; saldırı ondan sonra geliyor.
+ */
 await post('/test/kuyruklari-bitir');
+await page.reload({ waitUntil: 'domcontentloaded' });
+await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
+await page.waitForTimeout(1800);
+
+const akinAdimi = await omurga();
+kontrol(
+  'Ordu hazır olunca eylem AKINA dönüyor',
+  kucult(akinAdimi).includes('ilk akınına çık'),
+  (akinAdimi ?? '').slice(0, 60),
+);
+kontrol(
+  'Akının karşılığı ve riski yazıyor',
+  kucult(akinAdimi).includes('toprağın gitmez'),
+  (akinAdimi ?? '').slice(0, 110),
+);
+kontrol('Akın düğmesi akına çağırıyor', (await eylem())?.includes('Akına') === true, await eylem());
+await page.screenshot({ path: `${CIKTI}/omurga-3-akin.png` });
+
+// Akını ürünün kendi ucundan bitir: ölçülen şey akının kendisi değil,
+// ondan SONRA omurganın saldırıya geçmesi (o akin-testi.mjs'in işi).
+{
+  const durum = await get('/akin');
+  const h = durum.haritalar.find((x) => x.acik);
+  const g = h?.gruplar.find((x) => x.acik);
+  const ordu = (await get('/army')).home ?? {};
+  if (h && g) {
+    await post('/akin', { haritaKey: h.key, grupNo: g.grupNo, army: ordu });
+    await post('/test/akinlari-bitir');
+  }
+}
+await post('/test/kaynak-ver', { altin: 200000, demir: 100000, erzak: 100000 });
+{
+  const oneri2 = (await get('/map')).oneri;
+  if (oneri2?.eksik?.karsilanabilir) {
+    await post('/army/train', { unitType: oneri2.eksik.birim, count: oneri2.eksik.adet });
+    await post('/test/kuyruklari-bitir');
+  }
+}
 await page.reload({ waitUntil: 'domcontentloaded' });
 await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
 await page.waitForTimeout(1800);
 
 const hazir = await omurga();
 kontrol(
-  'Ordu hazır olunca eylem saldırıya dönüyor',
+  'Akından sonra eylem saldırıya dönüyor',
   kucult(hazir).includes('üzerine yürü'),
   (hazir ?? '').slice(0, 60),
 );

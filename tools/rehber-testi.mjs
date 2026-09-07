@@ -243,6 +243,35 @@ kontrol(
   const acik = (await get('/arastirma')).dallar.find((d) => d.acik && !d.tamamlandi);
   if (acik) await post('/arastirma', { key: acik.key });
 
+  /*
+   * (e) İlk akın.
+   *
+   * Y7'de turun aşamalarına akın eklendi (docs/12 §8): yeni oyuncunun
+   * ilk savaşı bir komşuyla değil bir kampta olmalı. Kapatılmazsa kâhya
+   * haklı olarak konuşmaya devam ediyor — testin ilk hâli bu yüzden
+   * kaldı ve doğru olan testti, ürün değil.
+   */
+  {
+    const durum = await get('/me');
+    const bosYer = Math.max(0, durum.lord.commandCapacity - durum.lord.usedSlots);
+    if (bosYer > 4) {
+      await post('/army/train', { unitType: 'mizrakci', count: Math.floor(bosYer * 0.8) });
+      await post('/test/kuyruklari-bitir');
+    }
+    const evdeki = (await get('/army')).home ?? {};
+    const akinDurumu = await get('/akin');
+    const ilkHarita = akinDurumu.haritalar.find((h) => h.acik);
+    const ilkGrup = ilkHarita?.gruplar.find((g) => g.acik);
+    if (ilkHarita && ilkGrup) {
+      await post('/akin', {
+        haritaKey: ilkHarita.key,
+        grupNo: ilkGrup.grupNo,
+        army: evdeki,
+      });
+      await post('/test/akinlari-bitir');
+    }
+  }
+
   await tazele();
   const sonSoz = await kahyaSozu();
   kontrol(

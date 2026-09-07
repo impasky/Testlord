@@ -150,7 +150,7 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
         {
           vurgu: `${bolge.toplam} bölge`,
           metin:
-            'Haritadaki her altıgen bir bölge. Kimi boş durur, kimini bir lord tutar. ' +
+            'Haritadaki her işaret bir bölge. Kimi boş durur, kimini bir lord tutar. ' +
             'Bölgeler bitmez ama çoğalmaz da — biri alırsa, bir başkası kaybeder.',
         },
         {
@@ -167,10 +167,18 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
             'yayıldıkça daha uzağa uzanabilirsin.',
         },
         {
-          vurgu: 'Malikânen güvende',
+          vurgu: 'Dibe vurursun, silinmezsin',
           metin:
-            'Kimse malikânene saldıramaz. Her şeyini kaybetsen bile saatte ' +
-            `${kaynak.malikane_saatlik.altin} altın akmaya devam eder. Oyundan atılmazsın.`,
+            'Bütün bölgelerini kaybetsen bile taban gelirin akmaya devam eder: saatte ' +
+            `${kaynak.malikane_saatlik.altin} altın. Bir kampa çekilirsin, binaların ` +
+            'durur ve yeni bir yerleşim alınca kaldığın yerden devam edersin.',
+        },
+        {
+          vurgu: 'Kamptan başlarsın',
+          metin:
+            'Toprağın yok, ordun yok. İlk köyünü fethettiğinde orası başkentin olur ve ' +
+            'şehir sayfan bir kamptan bir köye döner. Sana hiçbir şey verilmiyor — ' +
+            'ordu da toprak da bina da kazanılıyor.',
         },
       ],
     },
@@ -326,6 +334,69 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
           metin:
             'Bir bölgeyi ezici bir üstünlükle alırsan bölge senin olur. Dar kazanırsan ' +
             'yalnız yağmalarsın: kaynağı alır, bölgeyi bırakırsın.',
+        },
+      ],
+    },
+    /*
+     * ŞEHİR ve AKIN — Y3'ten Y6'ya kadar gelen iki yeni sistem.
+     *
+     * Öğreticinin en sinsi eskimesi bu: oyuncu sekiz sayfa okuyup oyuna
+     * giriyor ve ekranın yarısını tanımıyor. Sayfa eklendi çünkü iki
+     * mekanik de oyuncunun HER GÜN dokunacağı yerler.
+     */
+    {
+      anahtar: 'sehir',
+      baslik: 'Şehrin: her binanın bir işi var',
+      ozet: 'Ana sayfan bir yerleşim haritası. Binalar kapasite verir.',
+      maddeler: [
+        {
+          vurgu: 'Yerleşim bir TAVAN',
+          metin:
+            'Kampta binalar 1. seviyeyi geçemez, köyde 2, kasabada 3, şehirde 4. ' +
+            'Fethin karşılığı bu: T5 ekipman dövmek için gerçek bir şehir gerekiyor.',
+        },
+        {
+          vurgu: 'Araştırma oran, bina kapasite',
+          metin:
+            'Araştırma "%15 daha hızlı" der, bina "aynı anda 2 eğitim" der. İkisi ' +
+            'hiçbir zaman aynı sayıya dokunmaz — hangisini yükselteceğin ayrı bir karar.',
+        },
+        {
+          vurgu: 'Binalar seninle taşınır',
+          metin:
+            'Daha büyük bir yerleşim fethedip başkentini oraya taşırsan binaların ' +
+            'seviyeleriyle birlikte gelir. Taşınmak hiçbir şey kaybettirmez.',
+        },
+      ],
+    },
+    {
+      anahtar: 'akin',
+      baslik: 'Akın: toprak almadan savaşmak',
+      ozet: 'Beş düşman diyarı, her birinde on kamp. Kaynak ve ekipman.',
+      maddeler: [
+        {
+          vurgu: 'Toprak riski yok',
+          metin:
+            'Akın toprak vermez, toprak da almaz. Kaybetsen bile bölgen elinde kalır — ' +
+            'ordunu denemenin en ucuz yeri burası.',
+        },
+        {
+          vurgu: 'Savaş gerçek',
+          metin:
+            'Aynı savaş motoru, aynı dizilim, aynı taktik, aynı kayıp. Yaralıların ' +
+            'hastaneye girer. Burada öğrendiğin her şey karşındaki lorda karşı da geçerli.',
+        },
+        {
+          vurgu: 'Kaynak kesin, ekipman şans',
+          metin:
+            'Kazanınca kaynağı mutlaka alırsın; ekipman ihtimale bağlı ve grup ' +
+            'zorlaştıkça hem ihtimal hem kademe büyür. Şefler en iyisini düşürür.',
+        },
+        {
+          vurgu: 'Vurulan kamp toparlanır',
+          metin:
+            'Düşürdüğün grup birkaç saat sonra geri döner. O sürede gri durur ama ' +
+            'kaybolmaz — ne zaman döneceği ekranda yazılı.',
         },
       ],
     },

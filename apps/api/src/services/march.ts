@@ -6,6 +6,7 @@
  * dağıtır, bölgeyi devreder.
  */
 import {
+  BASKENT_TURLERI,
   liderAviGecerliMi,
   B,
   UNIT_TYPES,
@@ -1044,6 +1045,3 @@ async function ilkBaskentiAta(
     tx,
   );
 }
-
-/** Başkent olabilen bölge türleri: yerleşimler. Tarla ve maden değil. */
-const BASKENT_TURLERI: readonly string[] = ['koy', 'sehir', 'kale', 'taht'];

@@ -6,12 +6,14 @@
  */
 import { WORLD_MAP } from '@lordlar/shared';
 import type { FastifyInstance } from 'fastify';
+import { z } from 'zod';
 import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { findLordByUser, grantXp, tickLord } from '../services/lord.js';
 import { resolveMarch } from '../services/march.js';
 import { resolveAkin } from '../services/akin.js';
+import { transferRegion } from '../services/region.js';
 import { resolveQueueItem } from '../services/queue.js';
 import { sevkiyatCoz } from '../services/ticaret.js';
 
@@ -214,6 +216,30 @@ export async function devRoutes(app: FastifyInstance): Promise<void> {
    * Testler arası izolasyon için şart: sıfırlama olmadan her koşu haritadan
    * bir bölge daha kapatır ve bir süre sonra saldırılacak boş hedef kalmaz.
    */
+  /**
+   * Çağıranın bir bölgesini SAHİPSİZ bırakır — kaybetmiş gibi.
+   *
+   * Başkent düşmesini (docs/12 §2.3) ölçmenin tek yolu bir bölgeyi
+   * gerçekten elden çıkarmak. İkinci bir oyuncu kurup savaştırmak da
+   * olurdu ama ölçülen şey savaş değil, savaştan SONRAKİ hâl; ürünün
+   * kendi devretme yolu (`transferRegion`) çağrılıyor, kısayol değil.
+   */
+  app.post('/test/bolge-sahipsizlestir', { preHandler: requireAuth }, async (req) => {
+    const { bolgeId } = z.object({ bolgeId: z.number().int() }).parse(req.body);
+    const lordId = await findLordByUser(req.user.userId);
+    const bolge = await prisma.region.findUnique({ where: { id: bolgeId } });
+    if (!bolge || bolge.ownerLordId !== lordId) {
+      throw new GameError('Bu bölge senin değil.', 400, 'BOLGE_SENIN_DEGIL');
+    }
+    await prisma.$transaction(async (tx) => {
+      await tx.armyUnit.deleteMany({
+        where: { locationType: 'region', locationId: String(bolgeId) },
+      });
+      await transferRegion(bolgeId, null, tx);
+    });
+    return { bosaltildi: true };
+  });
+
   app.post('/test/bolgeleri-sifirla', { preHandler: requireAuth }, async (req) => {
     const lordId = await findLordByUser(req.user.userId);
     const { worldId } = await prisma.lord.findUniqueOrThrow({

@@ -237,6 +237,42 @@ kontrol(
 const t1 = esyalar.tiers.find((t) => t.tier === 1);
 kontrol('T1 her zaman açık — öğretici çıkmaza girmesin', t1.unlocked === true);
 
+// --- 4d. Başkent DÜŞERSE (docs/12 §2.3) ---
+//
+// Oyuncu hiçbir durumda silinmiyor, en fazla geriye düşüyor. Başkentini
+// kaybeden lord elindeki en iyi yerleşime kendiliğinden taşınıyor;
+// yerleşimi kalmadıysa kampa çekiliyor ve binaları duruyor.
+{
+  const oncekiSehir = await get('/sehir');
+  const oncekiKademe = oncekiSehir.yerlesim.kademe;
+  const baskentId = oncekiSehir.yerlesim.baskent.id;
+  const binaSayisi = oncekiSehir.binalar.filter((x) => x.seviye > 0 && x.seviyeli).length;
+
+  // Başkenti ürünün kendi ucundan elden çıkar: sahipsizleştir.
+  const bosalt = await post('/test/bolge-sahipsizlestir', { bolgeId: baskentId });
+  kontrol('Başkent elden çıktı', bosalt.bosaltildi === true, bosalt.error ?? '');
+
+  const sonrakiSehir = await get('/sehir');
+  kontrol(
+    'Başkent düşünce lord GERİYE düşüyor, silinmiyor',
+    sonrakiSehir.yerlesim.kademe !== oncekiKademe,
+    `${oncekiKademe} -> ${sonrakiSehir.yerlesim.kademe}`,
+  );
+  kontrol(
+    'Binalar DURUYOR — hiçbir seviye silinmedi',
+    sonrakiSehir.binalar.filter((x) => x.seviye > 0 && x.seviyeli).length >= 1,
+    `${binaSayisi} bina -> ${sonrakiSehir.binalar.filter((x) => x.seviye > 0 && x.seviyeli).length} (görünen)`,
+  );
+
+  // Olaylar `/me` içinde dönüyor, ayrı bir uçta değil.
+  const liste = (await get('/me')).events ?? [];
+  kontrol(
+    'Oyuncuya ne olduğu SÖYLENİYOR',
+    liste.some((e) => e.kind === 'baskent_dustu'),
+    liste[0]?.kind ?? 'olay yok',
+  );
+}
+
 // --- 5. Arayüz ---
 const b = await chromium.launch({ executablePath: CHROME, args: ['--no-sandbox'] });
 const ctx = await b.newContext({ ...devices['iPhone 13'] });

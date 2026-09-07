@@ -17,6 +17,7 @@ import { api, type LordState } from './api/client';
 /** Lord henüz yüklenmemişken kullanılacak boş durum. */
 const BOS: RehberDurumu = {
   orduVar: false,
+  akinYapti: false,
   bolgeSayisi: 0,
   kusanilanEkipman: 0,
   generalVar: false,
@@ -45,6 +46,10 @@ export function useRehberDurumu(lord: LordState | undefined): RehberDurumu {
      * kurulmuştu, sadece evde değildi.
      */
     orduVar: lord.usedSlots > 0,
+    // Sunucudaki DAMGA (`Lord.ilkAkinAt`), akın sayısı değil: ordusunu
+    // kaybeden kıdemli lord kendini "ilk akınına çık" aşamasında
+    // bulmasın.
+    akinYapti: lord.akinYapti,
     bolgeSayisi: lord.regionCount,
     kusanilanEkipman: lord.equippedItems.length,
     // Sahiplik ölçütü, sahada olma ölçütü değil: dinlenen general de
@@ -53,6 +58,7 @@ export function useRehberDurumu(lord: LordState | undefined): RehberDurumu {
     // Taht Kalesi hariç en yüksek bölge seviyesi — /me içinde hazır.
     gelismisBolgeVar: lord.basarimOlcutleri.en_yuksek_bolge_seviyesi > 1,
     // "Başlamış" sayılıyorsa: ya biri bitmiş ya biri sürüyor.
-    arastirmaBasladi: (arastirma.data?.ilerleme.biten ?? 0) > 0 || arastirma.data?.suren != null,
+    arastirmaBasladi:
+      (arastirma.data?.ilerleme.biten ?? 0) > 0 || (arastirma.data?.surenler?.length ?? 0) > 0,
   };
 }

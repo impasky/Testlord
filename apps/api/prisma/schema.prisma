@@ -127,6 +127,16 @@ model Lord {
   /// göstermek, kartı ikinci kez göstermekten çok daha rahatsız edici.
   rehberBittiAt     DateTime?
 
+  /// İlk KAZANILAN akının saati; hiç kazanmadıysa null (docs/12 §8).
+  ///
+  /// Bir DAMGA, bir sayaç değil: rehberin "ilk akınına çık" aşaması
+  /// bunun dolu olup olmadığına bakıyor. Akın kayıtlarını saymak da
+  /// olurdu ama tickLord her istekte çalışıyor ve oraya bir sorgu daha
+  /// eklemek pahalı; üstelik damga GERİ ALINAMAZ olduğu için kıdemli
+  /// lord kendini bir daha o aşamada bulmuyor (rehberBittiAt ile aynı
+  /// gerekçe).
+  ilkAkinAt         DateTime?
+
   /// Bugün pazarda çevrilen hacim (altın karşılığı) ve hangi gün.
   ///
   /// Türetilemiyor: takasın kendisi hiçbir kayda iz bırakmıyor, kaynak

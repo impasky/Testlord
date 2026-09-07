@@ -345,47 +345,68 @@ await page.waitForTimeout(2500);
   kontrol('Eğitim bitince ışık kendiliğinden YENİDEN yanıyor', adimGeldi);
 
   if (adimGeldi) {
+    /*
+     * Y7'de tur değişti: eğitimden sonra sıra SALDIRIDA değil AKINDA.
+     * Yeni oyuncunun ilk savaşı bir komşuyla ömürlük husumet değil, bir
+     * kamptan dönen yaralılar olmalı (docs/12 §8). Zincir de dört
+     * halkalı ve her halkası ürünün kendi sırasını izliyor: kampa
+     * gitmeden gruba, grubu seçmeden sefer kartına basılamıyor.
+     */
     const metin = await page
       .locator('[data-rehber="omurga-dugme"]')
       .textContent()
       .catch(() => '');
-    kontrol('Yeni düğme saldırıya çağırıyor', /saldır/i.test(metin ?? ''), metin ?? '');
+    kontrol('Yeni düğme AKINA çağırıyor', /akın/i.test(metin ?? ''), metin ?? '');
 
     await page.locator('[data-rehber="omurga-dugme"]').click();
-    await page.waitForTimeout(3000);
+    /*
+     * Akın sekmesi kendi sorgusunu atıyor: sekme değişir değişmez ekranda
+     * iskelet var, diyarlar yok. Sabit bir bekleme yerine ELEMANI
+     * bekliyoruz — ilk yazışta 3 saniye sabitlemiştim ve yavaş turda
+     * ışığı henüz yanmamış yakalayıp "yok" diyordu.
+     */
+    await page
+      .waitForSelector('[data-rehber="akin-harita"]', { timeout: 15000 })
+      .catch(() => null);
+    await page.waitForTimeout(1200);
     const d = await isikDurumu();
-    // Saldırı ordusu boşken "Saldır" kapalı olur; ışık kapalı düğmeyi
-    // atlayıp önce "Hepsi"yi göstermeli — zincirin can alıcı yeri burası.
     kontrol(
-      'Haritada delik önce "Hepsi" seçicisinde',
-      d.isaret === 'harita-hepsi',
+      'Akın sekmesinde delik DİYARDA',
+      d.isaret === 'akin-harita',
       d.isaret ?? 'yok',
     );
+    kontrol(
+      'Diyarın sebebi kendine ait',
+      (d.ipucu ?? '') !== (gorulenSebep.kisla ?? '') && (d.ipucu ?? '').length > 30,
+      (d.ipucu ?? '').slice(0, 60),
+    );
 
-    if (d.isaret === 'harita-hepsi') {
-      await page.locator('[data-rehber="harita-hepsi"]').click();
-      await page.waitForTimeout(2500);
+    if (d.isaret === 'akin-harita') {
+      await page.locator('[data-rehber="akin-harita"]').click();
+      await page.waitForTimeout(2000);
       const d2 = await isikDurumu();
-      kontrol(
-        'Ordu seçilince delik "Saldır" düğmesine geçti',
-        d2.isaret === 'harita-saldir',
-        d2.isaret ?? 'yok',
-      );
-      kontrol(
-        '"Saldır"ın sebebi de kendine ait',
-        (d2.ipucu ?? '') !== (gorulenSebep.kisla ?? '') && (d2.ipucu ?? '').length > 30,
-        (d2.ipucu ?? '').slice(0, 60),
-      );
+      kontrol('Diyar açılınca delik GRUBA geçti', d2.isaret === 'akin-grup', d2.isaret ?? 'yok');
 
-      const ulas = await ulasilirMi(page.locator('[data-rehber="harita-saldir"]'));
-      kontrol('"Saldır" düğmesi ULAŞILIR', ulas === 'ulasilir', ulas);
+      if (d2.isaret === 'akin-grup') {
+        await page.locator('[data-rehber="akin-grup"]').click();
+        await page.waitForTimeout(2500);
+        const d3 = await isikDurumu();
+        kontrol(
+          'Grup seçilince delik "Akına çık" düğmesine geçti',
+          d3.isaret === 'akina-cik',
+          d3.isaret ?? 'yok',
+        );
 
-      await page.locator('[data-rehber="harita-saldir"]').click();
-      await page.waitForTimeout(3000);
-      kontrol(
-        'Saldırı başlayınca ışık SÖNÜYOR (ordu yolda, yapacak şey yok)',
-        (await isikDurumu()).yaniyor === false,
-      );
+        const ulas = await ulasilirMi(page.locator('[data-rehber="akina-cik"]'));
+        kontrol('"Akına çık" düğmesi ULAŞILIR', ulas === 'ulasilir', ulas);
+
+        await page.locator('[data-rehber="akina-cik"]').click();
+        await page.waitForTimeout(3000);
+        kontrol(
+          'Akın başlayınca ışık SÖNÜYOR (ordu sahada, yapacak şey yok)',
+          (await isikDurumu()).yaniyor === false,
+        );
+      }
     }
   }
 }
@@ -482,13 +503,33 @@ await page.waitForTimeout(2500);
       (document.querySelector('main')?.textContent ?? '').includes('Kâhya Sinan'),
     );
 
-  await uc('/test/yuruyusleri-bitir');
+  /*
+   * Önce AKIN, sonra bölge — turun yeni sırası (docs/12 §8).
+   *
+   * 5b'de oyuncu akına çıkmıştı; onu bitiriyoruz. Bölge ise sonraki
+   * aşama ve gerçek yoldan alınıyor: öneriyi oku, orduyu tazele, saldır.
+   */
+  await uc('/test/akinlari-bitir');
+  await uc('/test/kaynak-ver', { altin: 200000, demir: 100000, erzak: 100000 });
+
+  {
+    const oneri = (await oku('/map')).oneri;
+    if (oneri?.eksik?.karsilanabilir) {
+      await uc('/army/train', { unitType: oneri.eksik.birim, count: oneri.eksik.adet });
+      await uc('/test/kuyruklari-bitir');
+    }
+    const hedef = (await oku('/map')).oneri;
+    const ordu = (await oku('/army')).home ?? {};
+    if (hedef) await uc('/march', { toRegionId: hedef.regionId, army: ordu });
+    await uc('/test/yuruyusleri-bitir');
+  }
+
   await page.evaluate((t) => localStorage.setItem('lordlar_token', t), token);
   await tazele();
 
   const me = await oku('/me');
   kontrol(
-    'Saldırı sonuçlandı, bölge alındı',
+    'Akından sonra bölge de alındı',
     (me.lord?.regionCount ?? 0) > 0,
     `${me.lord?.regionCount} bölge`,
   );

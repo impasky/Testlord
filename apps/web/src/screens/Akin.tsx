@@ -77,6 +77,9 @@ export function Akin({ lord, onGuncelle }: { lord: LordState; onGuncelle: () => 
   if (veri.isPending || !veri.data) return <Iskelet satir={5} />;
   const { haritalar, sahadaki, sonuclar, esZamanli } = veri.data;
 
+  // Rehber ışığı zincirinin hedefleri: ilk AÇIK diyar ve onun ilk açık
+  // grubu. Işık tek düğme aydınlatıyor; hangisi olduğu burada seçiliyor.
+  const ilkAcikHarita = haritalar.find((h) => h.acik)?.key ?? null;
   const seciliHarita = secili ? (haritalar.find((h) => h.key === secili.harita) ?? null) : null;
   const seciliGrup = seciliHarita?.gruplar.find((g) => g.grupNo === secili?.grup) ?? null;
 
@@ -127,6 +130,7 @@ export function Akin({ lord, onGuncelle }: { lord: LordState; onGuncelle: () => 
                 setHata(null);
                 setSecili({ harita: h.key, grup: no });
               }}
+              ilkAcikMi={h.key === ilkAcikHarita}
             >
               {/* Sefer kartı SEÇİLEN GRUBUN ALTINDA açılıyor, sayfanın
                   sonunda değil. Önce sayfanın sonuna koymuştum: oyuncu
@@ -195,10 +199,13 @@ function HaritaKarti({
   seciliGrup,
   onAc,
   onGrupSec,
+  ilkAcikMi = false,
   children,
 }: {
   h: AkinHaritaDurumu;
   lordSeviyesi: number;
+  /** Rehber ışığının hedefi olan ilk açık diyar mı. */
+  ilkAcikMi?: boolean;
   acikMi: boolean;
   seciliGrup: number | null;
   onAc: () => void;
@@ -215,6 +222,10 @@ function HaritaKarti({
       <button
         type="button"
         data-akin-harita={h.key}
+        /* Rehber ışığı zincirinin üçüncü halkası: ilk (kilitsiz) diyar.
+           Yalnız ilkine konuyor — ışık TEK düğme aydınlatıyor ve beşini
+           birden açık bırakmak seçim değil kararsızlık üretirdi. */
+        data-rehber={ilkAcikMi ? 'akin-harita' : undefined}
         onClick={onAc}
         disabled={kilitli}
         className="bas w-full px-3 py-2.5 text-left"
@@ -243,6 +254,7 @@ function HaritaKarti({
                 key={g.grupNo}
                 g={g}
                 secili={seciliGrup === g.grupNo}
+                isikta={ilkAcikMi && g.grupNo === h.gruplar.find((x) => x.acik)?.grupNo}
                 onSec={() => onGrupSec(g.grupNo)}
               />
             ))}
@@ -263,10 +275,13 @@ function HaritaKarti({
 function GrupDugmesi({
   g,
   secili,
+  isikta = false,
   onSec,
 }: {
   g: AkinGrupDurumu;
   secili: boolean;
+  /** Rehber ışığının aydınlatacağı grup mu. */
+  isikta?: boolean;
   onSec: () => void;
 }) {
   const bekliyor = !g.acik && g.yenilenirAt !== null;
@@ -276,6 +291,7 @@ function GrupDugmesi({
       onClick={onSec}
       disabled={!g.acik}
       data-akin-grup={g.grupNo}
+      data-rehber={isikta ? 'akin-grup' : undefined}
       className={`bas min-h-[52px] rounded-lg border px-2 py-1.5 text-left ${
         secili
           ? 'border-altin/60 bg-altin/15'

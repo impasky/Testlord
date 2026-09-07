@@ -445,8 +445,8 @@ Lord ekranı **kapı ızgarası olmaktan çıktı**, bir karakter sayfası oldu
 ## 8. Yeni açılış — hikâyesel
 
 1. **Kayıt → Kamp.** Ordun yok, bölgen yok, gelirin bir çadır kadar.
-   (Malikâne taban geliri kampta da akar: oyundan atılmama garantisi
-   korunuyor, sadece küçülüyor.)
+   (Taban gelir kampta da akar: oyundan atılmama garantisi korunuyor,
+   sadece küçülüyor.)
 2. **Talimgahta ilk askerini eğit.** Beş saniyelik ilk eğitim kısayolu
    duruyor.
 3. **İlk akınına çık.** Kırık Sahil'in birinci grubu. İlk demirini
@@ -459,6 +459,59 @@ Lord ekranı **kapı ızgarası olmaktan çıktı**, bir karakter sayfası oldu
 
 Şu anki akıştan farkı: oyuncuya hiçbir şey **verilmiyor**. Ordu, demir,
 toprak ve bina — dördü de kazanılıyor.
+
+### 8.1 Akın neden BÖLGEDEN önce
+
+Sıra bir denge tercihi değil, bir merhamet: **yeni oyuncunun ilk
+yenilgisi bir komşuyla ömürlük husumet değil, bir kamptan dönen
+yaralılar olmalı.** Akın toprak almıyor, toprak da vermiyor — öğrenmenin
+en ucuz yeri orası.
+
+Omurgada bu adım "ordunu büyüt" adımından **önce** geliyor. Sonraya
+koymuştum ve hiç görünmedi: bölge hedefi için ordu neredeyse hiçbir zaman
+ilk seferde yetmiyor, omurga da hep kışlayı gösteriyordu. Oysa akının ilk
+grubu bir bölgeden çok daha zayıf; eldeki ordu ona zaten yetiyor.
+
+Aşama bir **damgaya** bakıyor (`Lord.ilkAkinAt`), akın sayısına değil:
+ordusunu kaybeden kıdemli lord kendini "ilk akınına çık" adımında
+bulmasın (`rehberBittiAt` ile aynı gerekçe). Damga `resolveAkin` içinde
+ilk KAZANILAN akında konuyor ve bir daha dönmüyor.
+
+Sahadayken ayrı bir bekleme adımı var (`akin-yolda`), tıpkı
+`ordu-yolda` gibi: olmasaydı omurga oyuncuyu zaten çıktığı akına tekrar
+yollar, rehber ışığı da onu Akın sekmesinde kilitlerdi.
+
+### 8.2 Rehber ışığı zinciri: iki tuzak
+
+**Yol düğmeleri oyuncu doğru ekrandayken aranmıyor** (`hedefBul`,
+`yolYasak`) — "geldiğin yere dön" demek olurdu. Diyar ve grup seçmeyi
+`yol: true` yazmıştım; ışık Akın sekmesinde hiçbir hedef bulamadı ve
+perde kalktı. İkisi de YOL değil İŞ: akının kendisi.
+
+**Zincirin son halkası ANA SAYFA olmak zorunda.** Akın sekmesiyle
+bitirmeyi denedim; eğitim bittikten sonra ışık omurgaya geri dönemedi,
+çünkü omurga düğmesi yalnız ana sayfada duruyor. Zincir şöyle:
+`akina-cik` → `akin-grup` → `akin-harita` → `omurga-dugme` → `nav-ana`.
+
+### 8.3 Başkent düşerse (§2.3'ün uygulanması)
+
+`transferRegion` tek geçit: bölge el değiştirdiğinde kaybedenin başkenti
+oydu ise elindeki **en iyi yerleşime** kendiliğinden taşınıyor, yoksa
+`baskentBolgeId` null oluyor ve şehir sayfası kampı gösteriyor. Binalar
+duruyor; yeniden bir köy alınca kaldığı yerden devam ediyor.
+
+Okuma anında türetmek yetmezdi (şehir sayfası zaten "başkent başkasının
+olduysa kamp" diyor): lordun kaydında ölü bir bölge kimliği kalırdı ve o
+bölgeyi geri alan biri, eski sahibinin başkentini de geri vermiş olurdu.
+
+### 8.4 Öğreticide düzeltilen iki yalan
+
+- **"Haritadaki her altıgen bir bölge."** Altıgenler Y1'de kalktı.
+- **"Kimse malikânene saldıramaz."** Malikâne artık başkent bölgesi ve
+  fethedilebiliyor. Doğrusu yazıldı: dibe vurursun, silinmezsin.
+
+Ayrıca iki yeni sayfa eklendi (Şehir ve Akın): oyuncu sekiz sayfa okuyup
+girdiği oyunda ekranın yarısını tanımıyordu.
 
 ## 9. Görsel bütçesi — 100
 
@@ -496,7 +549,7 @@ Her aşama sonunda oyun **oynanabilir** durumda kalır.
 | **Y4** ✅ | Bina seviyesi etkileri: kapasiteler binaya bağlandı (§4.1). |
 | **Y5** ✅ | Gezinme: Şehir · Ordu · Akın · Dünya · Lord. Görevler kapıya taşındı. |
 | **Y6** ✅ | Akın sistemi: 5 harita, 50 grup, yenilenme, ödül ve ekipman düşürme (§6). |
-| **Y7** | Yeni açılış: kamp, başkent **düşmesi** (§2.3), öğretici ve rehberin yeniden yazımı. Taşınma Y3'te girdi. |
+| **Y7** ✅ | Yeni açılış: akın turun içine girdi (§8.1), başkent düşmesi (§8.3), öğretici düzeltildi (§8.4). |
 | **Y8** | Görsel üretimi (100 sınırı), denge, test ve temizlik. |
 
 ## 11. Emekliye ayrılanlar

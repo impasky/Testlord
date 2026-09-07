@@ -41,6 +41,11 @@ function lord(ek: Record<string, unknown> = {}) {
     regionCount: 1,
     equippedItems: [{ slot: 'silah' }],
     dailyAttacks: 0,
+    // Varsayılan: akınını çoktan yapmış lord. Akın adımı ilk döngüye
+    // ait; öteki senaryolar onun ötesindeki adımları ölçüyor ve her
+    // birinde ayrıca yazmak gürültü olurdu.
+    akinYapti: true,
+    usedSlots: 20,
     ...ek,
   } as never;
 }
@@ -146,8 +151,20 @@ describe('omurga — zorunlu turun her aşamasına uğruyor', () => {
         },
       },
     },
-    // Ordu yetiyor: saldırı adımı.
-    bolge: { lord: lord({ regionCount: 0, equippedItems: [] }), oneri: alinabilirHedef },
+    /*
+     * Ordu var ama akın yapılmamış: ilk savaş kampta öğreniliyor
+     * (docs/12 §8). `usedSlots` sıfırdan büyük olmalı — omurga
+     * "ordun ayakta mı" sorusunu oradan cevaplıyor.
+     */
+    akin: {
+      lord: lord({ regionCount: 0, equippedItems: [], akinYapti: false, usedSlots: 20 }),
+      oneri: alinabilirHedef,
+    },
+    // Akın yapılmış, ordu yetiyor: sıra bölgeye geldi.
+    bolge: {
+      lord: lord({ regionCount: 0, equippedItems: [], akinYapti: true }),
+      oneri: alinabilirHedef,
+    },
     // Bölge var, hedef yok, ekipman yok.
     ekipman: { lord: lord({ equippedItems: [] }) },
     general: { generalVar: false },

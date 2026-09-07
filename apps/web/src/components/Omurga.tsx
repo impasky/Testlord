@@ -125,7 +125,7 @@ export function useOmurgaAdimi(
     benimBolgeler.find((r) => r.level < B.bolgeler.max_bolge_seviyesi)?.id ?? null;
   // Araştırma "başlamış" sayılıyorsa: ya biri bitmiş ya biri sürüyor.
   const arastirmaBasladi =
-    (arastirma.data?.ilerleme.biten ?? 0) > 0 || arastirma.data?.suren != null;
+    (arastirma.data?.ilerleme.biten ?? 0) > 0 || (arastirma.data?.surenler?.length ?? 0) > 0;
   // Depo dolu mu: türetiliyor, sunucuda yeni bir alan açılmadı.
   // Üç kaynağın da tavana dayanması aranıyor; biri doluyken diğeri
   // akıyorsa oyuncunun kaybettiği şey henüz bir sorun değil.
@@ -207,7 +207,7 @@ export function Omurga({
     benimBolgeler.find((r) => r.level < B.bolgeler.max_bolge_seviyesi)?.id ?? null;
   // Araştırma "başlamış" sayılıyorsa: ya biri bitmiş ya biri sürüyor.
   const arastirmaBasladi =
-    (arastirma.data?.ilerleme.biten ?? 0) > 0 || arastirma.data?.suren != null;
+    (arastirma.data?.ilerleme.biten ?? 0) > 0 || (arastirma.data?.surenler?.length ?? 0) > 0;
 
   const adim = siradakiAdim({
     lord,
@@ -452,6 +452,67 @@ export function siradakiAdim(g: {
       hedefSekme: 'lord',
       hedefKapi: 'demirhane',
       sonraki: oneri ? `${eYonelme(oneri.name)} saldır` : 'yeni bir hedef seç',
+    };
+  }
+
+  /*
+   * 4b. Akın SAHADA: bu bir eylem değil, bir bekleyiş.
+   *
+   * `ordu-yolda` ile aynı gerekçe. Olmasaydı omurga "ilk akınına çık"
+   * demeye devam ederdi ve oyuncu zaten çıkmış olduğu akına tekrar
+   * yollanırdı — rehber ışığı da onu Akın sekmesinde kilitlerdi.
+   */
+  if (lord.akindaOrduVar) {
+    return {
+      anahtar: 'akin-yolda',
+      baslik: 'Akının sürüyor',
+      cumle: 'Ordun kampa iniyor. Dönünce ganimeti ve raporu görürsün.',
+      rozetler: [
+        <Hap key="risk" ikon={<IkonYer boyut={13} />}>
+          toprağın güvende
+        </Hap>,
+      ],
+      sonraki: 'ilk bölgeni al',
+    };
+  }
+
+  /*
+   * 4c. Ordu var ama HENÜZ AKINA ÇIKMADI: ilk savaş bir kampta öğrenilir.
+   *
+   * Sıra bilerek böyle (docs/12 §8): yeni oyuncunun ilk yenilgisi bir
+   * komşuyla ömürlük husumet değil, bir kamptan dönen yaralılar olsun.
+   * Akın toprak almıyor, toprak da vermiyor — öğrenmenin en ucuz yeri.
+   *
+   * Yalnız BİR KEZ görünüyor: damga (`Lord.ilkAkinAt`) konunca adım bir
+   * daha çıkmıyor. Her akından sonra tekrar çıksaydı omurga oyuncuyu
+   * sonsuza kadar aynı yere yollar, "şimdi ne yapmalısın" sorusunun tek
+   * cevabı akın olurdu.
+   *
+   * SIRA ÖNEMLİ: bu adım "ordunu büyüt" adımından ÖNCE geliyor. Sonra
+   * koymuştum ve hiç görünmedi — bölge hedefi için ordu neredeyse hiçbir
+   * zaman ilk seferde yetmiyor, omurga da hep kışlayı gösteriyordu.
+   * Oysa akının ilk grubu bir bölgeden çok daha zayıf: eldeki ordu ona
+   * zaten yetiyor.
+   */
+  if (!lord.akinYapti && lord.usedSlots > 0) {
+    return {
+      anahtar: 'akin',
+      baslik: 'İlk akınına çık',
+      cumle:
+        'Ordun ayakta. Önce bir düşman kampına in: kaybetsen bile toprağın gitmez, ' +
+        'kazanırsan ilk demirini savaşarak alırsın.',
+      rozetler: [
+        <Hap key="ganimet" ikon={<IkonDemir boyut={13} />} renk="var(--color-altin)">
+          kaynak ve ekipman
+        </Hap>,
+        <Hap key="risk" ikon={<IkonYer boyut={13} />}>
+          toprak riski yok
+        </Hap>,
+      ],
+      dugme: 'Akına git',
+      git: () => g.onGit('akin'),
+      hedefSekme: 'akin',
+      sonraki: 'ilk bölgeni al',
     };
   }
 

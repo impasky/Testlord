@@ -103,6 +103,10 @@ export interface LordState {
    * dikilmek olurdu.
    */
   ogreticiGorundu: boolean;
+  /** İlk akınını kazandı mı. */
+  akinYapti: boolean;
+  /** Şu an sahada bir akın var mı. */
+  akindaOrduVar: boolean;
   /**
    * Rehberi (kâhya kartı + rehber ışığı) kapattı mı.
    *
@@ -453,6 +457,17 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
     protectionUntil: lord.protectionUntil,
     dailyAttacks: dailyReset ? 0 : lord.dailyAttacks,
     ogreticiGorundu: lord.ogreticiBittiAt !== null,
+    /** İlk akınını kazandı mı — rehberin akın aşaması buna bakıyor. */
+    akinYapti: lord.ilkAkinAt !== null,
+    /*
+     * Şu an sahada bir akın var mı.
+     *
+     * Zaten yüklü olan birim satırlarından TÜRETİLİYOR: akındaki asker
+     * `locationType: 'akin'` ile duruyor. Ayrı bir sayım sorgusu
+     * açsaydık `tickLord` her istekte bir sorgu daha atardı ve
+     * kazandığımız tek şey aynı bilginin ikinci bir yolu olurdu.
+     */
+    akindaOrduVar: lord.units.some((u) => u.locationType === 'akin'),
     rehberGorundu: lord.rehberBittiAt !== null,
     basarimOlcutleri: basarimOlcutleriHesapla(
       lord,

@@ -8,6 +8,7 @@
  */
 import {
   B,
+  BASKENT_TURLERI,
   BINALAR,
   KADEMELER,
   KADEME_ADI,
@@ -30,15 +31,6 @@ import { assertQueueSlot, enqueue, spendResources } from '../services/queue.js';
 
 const insaSchema = z.object({ key: z.string().min(1) });
 const baskentSchema = z.object({ bolgeId: z.number().int() });
-
-/**
- * Başkent olabilen bölge türleri: YERLEŞİMLER.
- *
- * Tarla ve maden bir gelir kaynağı, bir yerleşim değil — oyuncu bir buğday
- * tarlasında oturmuyor. Aynı liste `services/march.ts` içinde ilk başkent
- * atanırken de kullanılıyor.
- */
-const BASKENT_TURLERI = ['koy', 'sehir', 'kale', 'taht'];
 
 /** Kademe sıralaması: "daha büyüğüne taşın" karşılaştırması için. */
 const KADEME_SIRASI = (k: string): number => KADEMELER.indexOf(k as never);
@@ -133,7 +125,7 @@ export async function sehirRoutes(app: FastifyInstance) {
         await prisma.region.findMany({
           where: {
             ownerLordId: lordId,
-            type: { in: BASKENT_TURLERI },
+            type: { in: [...BASKENT_TURLERI] },
             NOT: { mapId: lord.baskentBolgeId ?? -1 },
           },
           select: { mapId: true, name: true, type: true, level: true },

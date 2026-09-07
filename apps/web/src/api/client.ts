@@ -146,6 +146,10 @@ export interface LordState {
   dailyAttacks: number;
   /** Öğreticiyi görüp görmediği — tam ekran tanıtım buna bakarak açılır. */
   ogreticiGorundu: boolean;
+  /** İlk akınını kazandı mı — rehberin akın aşaması buna bakıyor. */
+  akinYapti: boolean;
+  /** Şu an sahada bir akın var mı. */
+  akindaOrduVar: boolean;
   /** Rehberi (kâhya kartı + rehber ışığı) kapattı mı. */
   rehberGorundu: boolean;
   /** Başarım ölçütleri; başarımlar bunlardan `basarimlar()` ile türetilir. */

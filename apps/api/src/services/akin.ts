@@ -160,6 +160,19 @@ export async function resolveAkin(akinId: string): Promise<boolean> {
         await grantXp(akin.lordId, akinXp(akin.grupNo), tx);
 
         /*
+         * İlk KAZANILAN akının damgası.
+         *
+         * Rehberin "ilk akınına çık" aşaması buna bakıyor. Bir kez
+         * konuyor ve bir daha dönmüyor: kıdemli bir lord ordusunu
+         * kaybedip sıfıra dönse bile kendini o aşamada bulmasın
+         * (`rehberBittiAt` ile aynı gerekçe).
+         */
+        await tx.lord.updateMany({
+          where: { id: akin.lordId, ilkAkinAt: null },
+          data: { ilkAkinAt: new Date() },
+        });
+
+        /*
          * Ekipman ŞANSA bağlı ve zar AKININ TOHUMUNDAN atılıyor.
          *
          * Aynı akın iki kez çözülürse (worker çakışması, elle yeniden
