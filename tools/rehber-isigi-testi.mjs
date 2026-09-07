@@ -58,7 +58,7 @@ page.on('console', (m) => {
 await page.goto(WEB, { waitUntil: 'domcontentloaded' });
 await page.evaluate((t) => localStorage.setItem('lordlar_token', t), token);
 await page.reload({ waitUntil: 'domcontentloaded' });
-await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
 
 /** Işığın o an aydınlattığı işaret ve deliğin gerçekten açık olup olmadığı. */
 const isikDurumu = () =>
@@ -336,7 +336,7 @@ await page.waitForTimeout(2500);
   for (let i = 0; i < 12 && !adimGeldi; i++) {
     await page.waitForTimeout(2000);
     await page.reload({ waitUntil: 'domcontentloaded' });
-    await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+    await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
     await page.waitForTimeout(1800);
     adimGeldi = (await isikDurumu()).isaret === 'omurga-dugme';
   }
@@ -405,7 +405,7 @@ await page.waitForTimeout(2500);
     localStorage.setItem('lordlar_token', t);
   }, t2);
   await page.reload({ waitUntil: 'domcontentloaded' });
-  await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+  await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
   await page.waitForTimeout(2500);
   kontrol('Yeni lordda ışık yanıyor', (await isikDurumu()).yaniyor === true);
 
@@ -438,7 +438,7 @@ await page.waitForTimeout(2500);
   kontrol('Perdenin dört köşesine basmak ışığı söndürmüyor', (await isikDurumu()).yaniyor === true);
 
   await page.reload({ waitUntil: 'domcontentloaded' });
-  await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+  await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
   await page.waitForTimeout(2500);
   kontrol('Yenileme de kaçış yolu değil', (await isikDurumu()).yaniyor === true);
 }
@@ -472,7 +472,7 @@ await page.waitForTimeout(2500);
     );
   const tazele = async () => {
     await page.reload({ waitUntil: 'domcontentloaded' });
-    await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+    await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
     await page.waitForTimeout(2500);
   };
   const kahyaVar = () =>
@@ -564,7 +564,7 @@ await page.waitForTimeout(2500);
   // localStorage'a DOKUNULMUYOR: eski hesabın izi dursun, hata orada saklıydı.
   await page.evaluate((t) => localStorage.setItem('lordlar_token', t), t4);
   await page.reload({ waitUntil: 'domcontentloaded' });
-  await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+  await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
   await page.waitForTimeout(2500);
   const yeni = await isikDurumu();
   kontrol(

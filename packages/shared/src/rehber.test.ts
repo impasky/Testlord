@@ -358,8 +358,11 @@ describe('arayüz mimarisi — ana sayfa ve kapılar', () => {
     expect(ALT_SEKMELER[0]).toBe(ANA_SEKME);
   });
 
-  it('ana sayfa Lord', () => {
-    expect(ANA_SEKME).toBe('lord');
+  it('ana sayfa ŞEHİR', () => {
+    // Oyuncunun düzeltmesi: "ana sayfamız şu an lord ya, onu değiştirelim
+    // şehir sayfası yap." Kapılar bir ızgaradan bir haritaya taşındı;
+    // Lord ekranı da olması gereken şeye, bir karakter sayfasına döndü.
+    expect(ANA_SEKME).toBe('sehir');
   });
 
   /**

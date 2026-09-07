@@ -136,7 +136,7 @@ seviyesinden türetilir**. İkinci bir doğruluk kaynağı açmıyoruz.
 | `kale` | **Kale-şehir** | Surlar hâkim, askerî yerleşim |
 | `taht` | **Metropol** | Vangionum ölçeği |
 
-### 2.2 Taşınma
+### 2.2 Taşınma — Y3'te geldi
 
 Başkent olabilen bir bölgeyi fethedince "başkentini buraya taşı" teklifi
 gelir. Kabul edersen:
@@ -144,6 +144,21 @@ gelir. Kabul edersen:
 - Şehir sayfası yeni yerleşimi gösterir, kademe yükselir.
 - **Binaların seninle gelir.** Seviyeleri korunur.
 - Eski başkent normal bir bölgen olarak kalır.
+
+Y7'ye planlanmıştı ama Y3'te yazıldı: taşınma olmadan şehir sayfasının
+yarısı ölçülemiyordu. Kademe tavanı bir fetihle açılıyor; fetih başkenti
+kendiliğinden taşımadığı için lord bir şehir alsa bile köyde oturmaya
+devam ediyor ve kasaba binaları (karargâh, kütüphane, liman) hiç
+görünmüyordu. Uçlar:
+
+| Uç | İş |
+|---|---|
+| `GET /sehir` → `tasinabilir[]` | Elindeki **daha iyi** yerleşimler. Aynı ya da küçük kademe listelenmiyor: "taşın" demek bir kayıp teklifi olurdu. Liste boşsa arayüz hiçbir kart çizmiyor. |
+| `POST /sehir/baskent` | Sahiplik, yerleşim türü ve "zaten oradasın" kontrolü; `baskentBolgeId` güncellenir. |
+
+Binalar lordun kaydında (`Lord.binalar`) duruyor, bölgenin kaydında
+değil. Taşınmanın hiçbir şey kaybettirmemesi bu yüzden bir kural değil,
+veri modelinin sonucu — ikinci bir yerde ayrıca korunması gerekmiyor.
 
 ### 2.3 Başkent düşerse
 
@@ -201,6 +216,40 @@ anlamsız olurdu.
 Fethin karşılığı budur: **T5 ekipman dövmek için gerçek bir şehir
 gerekir.** Yerleşim kademesi böylece dekor olmaktan çıkıp bir tavan
 oluyor.
+
+### 3.4 Y3'te öğrenilenler
+
+**Hangi bina hangi kademede AÇILIR — ilke: bilgi ve sosyal erken,
+kapasite geç.** İlk dağıtımda binaları "önemine" göre sıralamıştım ve
+haberci kulesi kasabaya düşmüştü. Sonuç: savaş raporları olay akışında
+duruyor, olay akışı haberci kulesinde açılıyor, dolayısıyla **savaşan
+ama kasabası olmayan oyuncu savaşının sonucunu okuyamıyordu.** Bina
+kademesi bir kapasite tavanı olmalı, bir bilgi ambargosu değil. Son
+dağılım:
+
+| Kademe | Binalar |
+|---|---|
+| Kamp | Malikâne, Kışla, Görev Panosu, Haberci Kulesi, Onur Meydanı |
+| Köy | Demirhane, Hastane, Pazar, Surlar, Elçilik |
+| Kasaba | Karargâh, Kütüphane, Liman |
+
+İlke `data/binalar.json` içinde `_kademe_ilkesi` olarak yazılı; yeni bina
+eklerken oraya bakılmalı.
+
+**Seviyesiz yapılar "dikilebilir" görünmemeli.** `binaDurumlari` önce
+hepsini aynı yoldan geçiriyordu; görev panosunun seviyesi 0 olduğu için
+arayüz onu boş arsa sanıyor, oyuncuya dikilemeyecek bir bina için bedel
+gösteriyordu. Seviyesizler artık erken dönüyor: `seviye: 1`,
+`yukseltilebilir: false`, `maliyet: null`.
+
+**Yeni lordun sıfır binası olamaz.** Öğreticinin ilk adımı "asker eğit"
+ve asker kışlada eğitiliyor. `binalar.baslangic` ile her lord
+malikâne 1 + kışla 1 ile başlıyor; var olan lordlara göç
+(`20260907090000_baslangic_binalari`) aynısını verdi.
+
+**Fetih başkent atamıyorsa şehir sayfası hiç değişmiyor.** İlk fetihte
+`services/march.ts` içindeki `ilkBaskentiAta` devreye giriyor; sonraki
+fetihlerde karar oyuncunun (§2.2).
 
 ## 4. Bina seviyesi ile araştırma neden çakışmıyor
 
@@ -342,11 +391,11 @@ Her aşama sonunda oyun **oynanabilir** durumda kalır.
 |---|---|
 | **Y1** ✅ | Veri modeli: komşuluk grafiği, köy türü, başkent, bina alanı. Göç ve testler. |
 | **Y2** ✅ | Dünya haritası arayüzü: resimli zemin, kaydırma/yakınlaştırma, işaretçiler. |
-| **Y3** | Şehir sayfası: yerleşim zemini, bina yerleşimi, inşa ve yükseltme kuyruğu. |
+| **Y3** ✅ | Şehir sayfası: yerleşim zemini, bina yerleşimi, inşa ve yükseltme kuyruğu, başkent taşıma (§2.2). |
 | **Y4** | Bina seviyesi etkileri: lord seviyesinden binaya taşınan sayılar. |
 | **Y5** | Gezinme: 5 sekme, Lord ekranının karakter sayfasına dönüşü. |
 | **Y6** | Sefer sistemi: 5 harita, 50 grup, yenilenme, ödül ve ekipman düşürme. |
-| **Y7** | Yeni açılış: kamp, başkent taşınması, öğretici ve rehberin yeniden yazımı. |
+| **Y7** | Yeni açılış: kamp, başkent **düşmesi** (§2.3), öğretici ve rehberin yeniden yazımı. Taşınma Y3'te girdi. |
 | **Y8** | Görsel üretimi (100 sınırı), denge, test ve temizlik. |
 
 ## 11. Emekliye ayrılanlar

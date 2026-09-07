@@ -17,7 +17,7 @@ import { ogreticiyiGec } from './lib/ogretici.mjs';
 import { EKRANLAR, ekrana, kapiyiKapat, rehberiSustur } from './lib/gezin.mjs';
 
 import { kayitOl } from './lib/kayit.mjs';
-import { bolgeKazandir } from './lib/ilerlet.mjs';
+import { bolgeKazandir, sehriKur } from './lib/ilerlet.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 const WEB = process.env.WEB_URL ?? 'http://localhost:5173';
 const CHROME = process.env.CHROME_PATH ?? '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
@@ -44,6 +44,14 @@ const { token } = await kayitOl(API, {
 // sade ve ekranların yarısı (olay akışı, diyarın kapıları) hiç görünmüyor.
 // Bu lorda gerçek yoldan bir bölge kazandırıp döngüyü kapatıyoruz.
 const bolgeSayisi = await bolgeKazandir(API, token);
+// Bütün kapıları geziyoruz ve şehirdeki kapılar yerleşim kademesine bağlı
+// açılıyor: köydeki lordun karargâhı yok (docs/12 §3.3). Denetim oyunun
+// YERLEŞMİŞ hâlini ölçmeli, ilk döngüsünü değil.
+await sehriKur(API, token);
+// Bütün kapıları geziyoruz ve şehirdeki kapılar yerleşim kademesine bağlı
+// açılıyor: köydeki lordun karargâhı yok. Denetim oyunun YERLEŞMİŞ hâlini
+// ölçmeli, ilk döngüsünü değil.
+await sehriKur(API, token);
 if (bolgeSayisi === 0) {
   // Sessizce devam etmek, ekranların yarısını hiç ölçmeden "temiz" demek
   // olurdu — kapılar ilk döngüde bilerek gizli.
@@ -123,7 +131,7 @@ await page.addInitScript(() => {
   }).observe({ type: 'layout-shift' });
 });
 await page.reload({ waitUntil: 'domcontentloaded' });
-await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
 // Öğretici tam ekran açılıyor ve altındaki ekranı ölçmemizi engelliyor.
 // Denetim öğreticiyi DEĞİL, arkasındaki ekranları ölçüyor.
 await ogreticiyiGec(page);
@@ -324,7 +332,7 @@ const { token: yeniToken } = await kayitOl(API, {
 if (yeniToken) {
   await page.evaluate((t) => localStorage.setItem('lordlar_token', t), yeniToken);
   await page.reload({ waitUntil: 'domcontentloaded' });
-  await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+  await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
   await ogreticiyiGec(page);
   // İkinci lord da yepyeni: rehber ışığı onun ekranını da karartırdı.
   // Karar artık HESABA bağlı olduğu için bu lord için ayrıca kapatılıyor —

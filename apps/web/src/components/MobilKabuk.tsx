@@ -58,11 +58,11 @@ export type Sekme = AltSekme;
  * o sorunu da çözüyor.
  */
 const CUBUK: { key: AltSekme; ad: string; Ikon: typeof IkonNavMalikane }[] = [
-  { key: 'lord', ad: 'Lord', Ikon: IkonNavLord },
-  { key: 'gorevler', ad: 'Görevler', Ikon: IkonSure },
+  { key: 'sehir', ad: 'Şehir', Ikon: IkonNavMalikane },
   { key: 'kisla', ad: 'Kışla', Ikon: IkonNavKisla },
   { key: 'harita', ad: 'Harita', Ikon: IkonNavHarita },
-  { key: 'malikane', ad: 'Malikâne', Ikon: IkonNavMalikane },
+  { key: 'gorevler', ad: 'Görevler', Ikon: IkonSure },
+  { key: 'lord', ad: 'Lord', Ikon: IkonNavLord },
 ];
 
 /** Kaynak sayacı: sunucu değerinden itibaren saniye saniye ilerler. */

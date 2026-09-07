@@ -15,6 +15,24 @@
  * geliştirme uçlarıyla atlanıyor (`/test/kuyruklari-bitir`,
  * `/test/yuruyusleri-bitir`), ki onlar zaten bunun için var.
  */
+import { baskentiTasi, binalariDik, yerlesimAl } from './koy.mjs';
+
+/**
+ * Denetim araçları için TAM ilerlemiş lord: başkenti bir şehir, binaları
+ * dikili.
+ *
+ * `bolgeKazandir` bir bölge veriyor ama o bölge çoğu zaman bir KÖY ve
+ * köyde karargâh, kütüphane, liman açılmıyor (docs/12 §3.3). Bütün
+ * ekranları gezen denetimler o kapıları bulamıyordu. Kademe kuralı doğru;
+ * yanlış olan denetimin canlandırdığı oyuncuydu.
+ */
+export async function sehriKur(api, jeton) {
+  await yerlesimAl(api, jeton, 'sehir');
+  // Fethetmek yetmiyor: başkent taşınmadıkça kademe kamp/köy kalıyor ve
+  // kasaba binaları (karargâh, kütüphane, liman) hiç açılmıyor.
+  await baskentiTasi(api, jeton);
+  return binalariDik(api, jeton);
+}
 
 /**
  * Lorda bir bölge kazandırır. Bölge sayısını döndürür.

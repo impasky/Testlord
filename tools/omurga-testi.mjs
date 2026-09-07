@@ -76,7 +76,7 @@ await page.fill('input[placeholder="Kara Yusuf"]', `Omurga ${damga.toString(36).
 await page.fill('input[type=email]', `omurga${damga}@lordlar.dev`);
 await page.fill('input[type=password]', 'parola1234');
 await page.click('button[type=submit]');
-await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
 // Öğretici tam ekran açılıyor ve arkasını tıklatmıyor: gerçek oyuncu
 // gibi geçiyoruz (bkz. tools/lib/ogretici.mjs).
 await ogreticiyiGec(page);
@@ -91,7 +91,7 @@ const get = (yol) => fetch(`${API}/api${yol}`, { headers: h }).then((r) => r.jso
 // Taze dünya: önceki koşuların sahiplendiği bölgeler komşuluğu boşaltıyor.
 await post('/test/bolgeleri-sifirla');
 await page.reload({ waitUntil: 'domcontentloaded' });
-await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
 await page.waitForTimeout(1800);
 
 // --- 1. Ordusu olmayan lord: tek eylem "ordunu kur"
@@ -139,7 +139,7 @@ kontrol(
   egitimSonuc.ok ? '' : (await egitimSonuc.json()).error,
 );
 await page.reload({ waitUntil: 'domcontentloaded' });
-await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
 await page.waitForTimeout(1800);
 
 const egitimde = await omurga();
@@ -154,7 +154,7 @@ await page.screenshot({ path: `${CIKTI}/omurga-2-egitimde.png` });
 // --- 3. Ordu hazır: eylem saldırıya döner
 await post('/test/kuyruklari-bitir');
 await page.reload({ waitUntil: 'domcontentloaded' });
-await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
 await page.waitForTimeout(1800);
 
 const hazir = await omurga();
@@ -195,7 +195,7 @@ const me = await get('/me');
 await post('/march', { toRegionId: harita.oneri.regionId, army: me.lord.homeArmy });
 await post('/test/yuruyusleri-bitir');
 await page.reload({ waitUntil: 'domcontentloaded' });
-await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
 await page.waitForTimeout(1800);
 
 const sonra = await omurga();

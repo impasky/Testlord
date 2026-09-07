@@ -1,56 +1,24 @@
 /**
- * Lord — oyunun ANA SAYFASI.
+ * Lord — karakter sayfası.
  *
- * Menüden çıkıp alt çubuğa yerleşti ve kendine ait olan her şeyin evi
- * oldu. Oyuncu referans bir oyunu göstererek anlatmıştı:
+ * Bir zamanlar ana sayfaydı ve bütün kapılar buradaydı. Oyuncu onu
+ * değiştirdi: "ana sayfamız şu an lord ya, onu değiştirelim şehir sayfası
+ * yap." Kapılar şehre, omurga ve kâhya da onunla birlikte taşındı.
  *
- *   "bizde generaller ayrı bir sayfada; onun yerine oyuncunun kendi üstünü
- *    dizdiği, kontrol ettiği sayfa olan Lord sekmesini ana sayfaya
- *    çevirip oraya bir general bölümü eklenebilir. Orada o general kısmına
- *    tıklandığında oyuncu general sayfasına geçmez, general sayfası bir
- *    pop-up gibi açılır."
- *
- * Sonra rolleri de netleştirdi:
- *
- *   "ana sayfada her şeye erişimimiz olmalı, tüm yönlendirmeleri oradan
- *    yapabilmeliyiz. Malikâne'yi sahip olduğumuz arazi yönetimleri,
- *    ipuçları gibi içerikleri barındıran bir alana çevirip Lord sayfasını
- *    oyunun ana sayfası hâline getirirsek daha iyi olabilir."
- *
- * Öyle yapıldı. Oyuncu buraya iniyor ve buradan her yere gidiyor:
- *
- *   - kâhya ve omurga ("şimdi ne yapmalısın") — ekranın tepesinde,
- *   - ALTI kapının hepsi — general, demirhane, ittifak, olaylar, sıralama,
- *     hesap,
- *   - durum şeridi, görev özeti, kuyruklar,
- *   - ve lordun kendisi: unvan, nitelikler, ekipman, görünüş.
- *
- * Diyarın kendisi (topraklar, gelirleri, ipuçları) Malikâne'de kaldı.
+ * Geriye kalan şey aslında bu sayfanın hep olması gereken şey: LORDUN
+ * KENDİSİ. Unvan, nitelikler, kuşanılan ekipman, başarımlar, savaş
+ * geçmişi, görünüş. Bir kapı ızgarası değil, bir karakter sayfası.
  */
-import {
-  B,
-  EQUIP_SLOTS,
-  KAPILAR,
-  KAPI_ADI,
-  STAT_KEYS,
-  type Kapi,
-  type StatKey,
-} from '@lordlar/shared';
-import { useState } from 'react';
+import { B, EQUIP_SLOTS, STAT_KEYS, type Kapi, type StatKey } from '@lordlar/shared';
+import { useEffect, useState } from 'react';
 import { ApiError, api, type LordState } from '../api/client';
 import {
   IkonCan,
   IkonKale,
   IkonKurnaz,
-  IkonNavDemirhane,
-  IkonNavGeneraller,
-  IkonNavHarita,
-  IkonNavKisla,
   IkonNavLord,
-  IkonNavSiralama,
   IkonSaldiri,
   IkonSancak,
-  IkonSohret,
   IkonSure,
   IkonUyari,
   IkonYer,
@@ -62,7 +30,6 @@ import {
   DurumSiridi,
   GeriSayim,
   Hap,
-  Ilerleme,
   Kart,
   Rozet,
   formatSayi,
@@ -73,12 +40,8 @@ import { addanPortre } from '@lordlar/shared';
 import { OrduSahnesi } from '../components/OrduSahnesi';
 import { Arma } from '../components/Arma';
 import { ArmaSecici } from '../components/ArmaSecici';
-import { DiyarTanitimi } from '../components/DiyarTanitimi';
 import { GorevOzeti } from '../components/GorevOzeti';
-import { Omurga, useOmurgaAdimi } from '../components/Omurga';
-import { Rehber } from '../components/Rehber';
-import { useRehberDurumu } from '../rehberDurumu';
-import type { QueueItem, YoklukOzeti } from '../api/client';
+import type { YoklukOzeti } from '../api/client';
 import type { Sekme } from '../components/MobilKabuk';
 
 const STAT: Record<StatKey, { ad: string; renk: string; etki: (n: number) => string }> = {
@@ -111,43 +74,6 @@ const SLOT_ADI: Record<string, string> = {
   at: 'At',
   sancak: 'Sancak',
 };
-
-/**
- * Kuyruk satırı ve "sen yokken" kartı — eskiden Malikâne'deydiler.
- *
- * Malikâne diyarın ekranı oldu (topraklar, ipuçları); "şu an ne oluyor"
- * bilgisi ana sayfaya, yani buraya taşındı.
- */
-const KUYRUK_ADI: Record<string, string> = {
-  train: 'Asker eğitimi',
-  craft: 'Ekipman üretimi',
-  upgrade_item: 'Ekipman yükseltme',
-  upgrade_gear: 'Ordu donanımı',
-  upgrade_region: 'Bölge yükseltme',
-  kesif: 'Keşif',
-};
-
-function KuyrukSatiri({ q }: { q: QueueItem }) {
-  const bas = new Date(q.startedAt).getTime();
-  const bit = new Date(q.finishAt).getTime();
-  const gecen = Math.max(0, Math.min(1, (Date.now() - bas) / (bit - bas)));
-  return (
-    <Kart className="p-3">
-      <div className="mb-1.5 flex items-baseline justify-between gap-2 text-[13px]">
-        <span className="truncate">
-          {KUYRUK_ADI[q.kind] ?? q.kind}
-          {typeof q.payload.count === 'number' && (
-            <span className="ml-1.5 text-solgun">×{q.payload.count as number}</span>
-          )}
-        </span>
-        <span className="shrink-0 text-[12px] text-altin">
-          <GeriSayim bitis={q.finishAt} />
-        </span>
-      </div>
-      <Ilerleme deger={gecen} max={1} renk="var(--color-altin)" boy="ince" />
-    </Kart>
-  );
-}
 
 /**
  * "Sen yokken ne oldu" kartı.
@@ -197,37 +123,29 @@ function YoklukKarti({ y, onGit }: { y: YoklukOzeti; onGit: (s: Sekme) => void }
  */
 const PORTRE_SAYISI = 5;
 
-/** Kapı düğmesinin simgesi ve altındaki tek satır. */
-const KAPI_YUZU: Record<Kapi, { Ikon: typeof IkonNavLord; alt: (l: LordState) => string }> = {
-  generaller: { Ikon: IkonNavGeneraller, alt: (l) => `${l.generalSlots} yuva` },
-  demirhane: {
-    Ikon: IkonNavDemirhane,
-    alt: (l) => `${l.equippedItems.length}/${EQUIP_SLOTS.length} kuşanılı`,
-  },
-  arastirma: { Ikon: IkonKurnaz, alt: () => 'diyarını şekillendir' },
-  ittifak: { Ikon: IkonSohret, alt: () => 'ortak hedef, sohbet' },
-  olaylar: { Ikon: IkonSancak, alt: () => 'diyarda ne oldu' },
-  siralama: { Ikon: IkonNavSiralama, alt: (l) => `${formatSayi(l.fame)} şöhret` },
-  hesap: { Ikon: IkonNavLord, alt: () => 'parola, çıkış' },
-};
-
 export function LordEkrani({
   lord,
-  queues,
   yokluk,
   onGuncelle,
   onGit,
   onKapiAc,
-  onBolgeyiAc,
+  hedefBolum,
+  onBolumIslendi,
 }: {
   lord: LordState;
-  queues: QueueItem[];
   yokluk: YoklukOzeti | null;
   onGuncelle: () => void;
   onGit: (s: Sekme) => void;
   onKapiAc: (k: Kapi) => void;
-  /** Bir bölgeyi haritada açar: omurganın hedefi. */
-  onBolgeyiAc: (regionId: number) => void;
+  /**
+   * Omurganın kaydırmak istediği bölüm (App'ten geliyor).
+   *
+   * Omurga artık Şehir'de duruyor ama işaret ettiği bölüm burada
+   * olabiliyor. App önce bu sekmeye geçiyor, sonra hedefi buraya
+   * bildiriyor; gerisi aşağıdaki etkinin işi.
+   */
+  hedefBolum?: string | null;
+  onBolumIslendi?: () => void;
 }) {
   const [dagitim, setDagitim] = useState<Record<StatKey, number>>({
     guc: 0,
@@ -240,23 +158,24 @@ export function LordEkrani({
   const [sekme, setSekme] = useState<'guc' | 'gorunus'>('guc');
 
   /**
-   * Omurganın "aynı ekranda şu bölüme git" isteği.
+   * Omurganın işaret ettiği bölüme kaydır.
    *
    * Oyuncunun şikâyeti: "lord ekranındayım ama bana kocaman LORD EKRANI
-   * git diyor." Omurga zaten bu sayfada duruyor; ekrana yollamak yerine
-   * işin yapıldığı BÖLÜME götürüyor.
+   * git diyor." Ekrana yollamak yerine işin yapıldığı BÖLÜME götürüyoruz.
    *
    * Bölüm bir alt sekmenin içindeyse önce o sekme açılıyor: kaydırmak tek
    * başına yetmez, gizli bir bölüme kaydırmak hiçbir yere kaydırmamaktır.
    * Kaydırma sekme değişikliğinin boyanmasını beklesin diye bir kare
    * sonraya bırakılıyor.
    */
-  function bolumeGit(bolumId: string) {
-    if (bolumId === 'nitelikler') setSekme('guc');
+  useEffect(() => {
+    if (!hedefBolum) return;
+    if (hedefBolum === 'nitelikler') setSekme('guc');
     requestAnimationFrame(() => {
-      document.getElementById(bolumId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById(hedefBolum)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      onBolumIslendi?.();
     });
-  }
+  }, [hedefBolum, onBolumIslendi]);
 
   const harcanan = STAT_KEYS.reduce((s, k) => s + dagitim[k], 0);
   const kalan = lord.statPoints - harcanan;
@@ -286,8 +205,6 @@ export function LordEkrani({
   const yarali = lord.woundedUntil && new Date(lord.woundedUntil) > new Date();
   // Kâhya omurganın hesapladığı adımı okuyor; iki ayrı hesap olmasın diye
   // aynı kanca. Sorgular TanStack önbelleğinden, ikinci istek üretmiyor.
-  const rehberAdimi = useOmurgaAdimi(lord, queues);
-  const rehberDurumu = useRehberDurumu(lord);
 
   return (
     <div className="space-y-4">
@@ -354,35 +271,6 @@ export function LordEkrani({
 
       {yokluk && <YoklukKarti y={yokluk} onGit={onGit} />}
 
-      {/* Kâhya omurganın ÜSTÜNDE: önce neden, sonra ne. Adımı omurgadan
-          okuyor, kendi senaryosunu tutmuyor (docs/09 T4). */}
-      <Rehber
-        adim={rehberAdimi?.anahtar ?? null}
-        durum={rehberDurumu}
-        gorundu={lord.rehberGorundu}
-      />
-      <Omurga
-        lord={lord}
-        queues={queues}
-        onGit={onGit}
-        onKapiAc={onKapiAc}
-        onHedefeGit={onBolgeyiAc}
-        onBolumeGit={bolumeGit}
-      />
-
-      {/* Diyar tanıtımı omurganın ALTINDA.
-          Üstteydi ve ölçünce görüldü ki yeni oyuncunun tek eylem düğmesi
-          ("Kışlada okçu eğit") iki açıklama kartının altında, ekranın
-          dışında kalıyordu. Oyuncu testinin "her şeyi üstümüze atıyor"
-          cümlesinin somut hâli buydu: yapılacak şeye ulaşmak için iki
-          metin bloğunu kaydırmak.
-          Kartın KENDİ kapısı var (yepyeniMi): yalnız hiçbir şey yapmamış
-          lorda görünüyor, ilk eylemden sonra kendiliğinden kayboluyor —
-          bu yüzden ayrıca gizlenmesi gerekmiyor, yalnız sırası değişti.
-          "Burası neresi" hâlâ cevaplanıyor, ama "şimdi ne yapmalıyım"
-          cevabından sonra. */}
-      <DiyarTanitimi lord={lord} queues={queues} />
-
       {/*
         Dört ayrı istatistik kartı yerine tek rozet satırı.
         Kartlar ekranın yarısını kaplıyor ve hepsi aynı ağırlıkta
@@ -414,84 +302,6 @@ export function LordEkrani({
           sayfasında. Ödül alınmayı bekliyorsa şerit yeşilleniyor —
           oyuncunun oraya gitmesi için tek gerçek sebep o. */}
       {!ilkDongu && <GorevOzeti onGit={() => onGit('gorevler')} />}
-
-      {/* Boş kuyruk bölümü ilk döngüde de KALIYOR ve bu bilinçli — gizlemeyi
-          denedim, iki şeyi birden bozdu. Boş hâlindeki üç düğme (Kışla,
-          Demirhane, Harita) gürültü değil, docs/09 K7'nin ta kendisi:
-          "yapacak bir şey yok ekranı olmasın, boş hâl bir sonraki işi
-          göstersin". Ayrıca kart geç gelen kuyruk verisine bağlı gizlenince
-          açılışta zıplama çıkıyordu (CLS 0.024 -> 0.222). */}
-      <Bolum
-        baslik={`Kuyruklar${queues.length ? ` · ${queues.length}` : ''}`}
-        sakin={queues.length === 0}
-      >
-        {queues.length === 0 ? (
-          <Kart sakin className="p-4">
-            <p className="mb-3 text-[13px] text-solgun">Kuyruk boş. Bir şeyler başlat.</p>
-            <div className="flex gap-2">
-              <Buton tur="sessiz" boy="kucuk" onClick={() => onGit('kisla')}>
-                <span className="mr-1.5 inline-block align-[-2px]">
-                  <IkonNavKisla boyut={13} />
-                </span>
-                Kışla
-              </Buton>
-              <Buton tur="sessiz" boy="kucuk" onClick={() => onKapiAc('demirhane')}>
-                <span className="mr-1.5 inline-block align-[-2px]">
-                  <IkonNavDemirhane boyut={13} />
-                </span>
-                Demirhane
-              </Buton>
-              <Buton tur="sessiz" boy="kucuk" onClick={() => onGit('harita')}>
-                <span className="mr-1.5 inline-block align-[-2px]">
-                  <IkonNavHarita boyut={13} />
-                </span>
-                Harita
-              </Buton>
-            </div>
-          </Kart>
-        ) : (
-          <div className="space-y-2">
-            {queues.map((q) => (
-              <KuyrukSatiri key={q.id} q={q} />
-            ))}
-          </div>
-        )}
-      </Bolum>
-
-      {/* ---- Lordun kapıları ----
-          Ayrı sayfalar değil: buradan panel olarak açılıyorlar ve
-          kapanınca oyuncu yine burada oluyor. Her düğmenin altındaki tek
-          satır, açmadan önce içeride ne olduğunu söylüyor — düz bir menü
-          bağlantısı olmasınlar diye. */}
-      <div className="grid grid-cols-3 gap-2">
-        {KAPILAR.map((k, i) => {
-          const yuz = KAPI_YUZU[k];
-          // Son satırda TEK kart kalıyorsa satırı doldursun. Üç sütunlu
-          // ızgarada yedinci kart soldan tek başına asılı duruyor ve
-          // "eklenmiş" gibi görünüyor; sıranın tamamını kaplayınca
-          // kasıtlı bir vurgu gibi okunuyor.
-          const sonSatirdaYalniz = KAPILAR.length % 3 === 1 && i === KAPILAR.length - 1;
-          return (
-            <button
-              key={k}
-              type="button"
-              onClick={() => onKapiAc(k)}
-              data-kapi={k}
-              className={`bas flex flex-col items-center gap-1 rounded-2xl border-2 border-kenar bg-yuzey px-1 py-2.5 text-solgun ${
-                sonSatirdaYalniz ? 'col-span-3' : ''
-              }`}
-            >
-              <span className="text-altin">
-                <yuz.Ikon boyut={24} />
-              </span>
-              <span className="baslik text-[11px] text-parsomen">{KAPI_ADI[k]}</span>
-              {/* 11px taban: okunurluk denetimi bunun altını kabul etmiyor
-                  ve haklı — bu satır düğmenin ne yaptığını söylüyor. */}
-              <span className="text-[11px] leading-none text-sonuk">{yuz.alt(lord)}</span>
-            </button>
-          );
-        })}
-      </div>
 
       {/* Unvan: şöhretten türüyor, yeni sayaç yok (docs/10 §2.2). Taht
           sahibinin unvanını "Diyarın Lordu" eziyor. */}
@@ -730,6 +540,23 @@ export function LordEkrani({
       )}
 
       {sekme === 'gorunus' && <ArmaSecici mevcut={lord.arma} />}
+
+      {/* Hesap: parola, öğreticiyi tekrar oku, çıkış.
+          Şehirde binası YOK ve olmamalı — hesap ayarları diyarın bir
+          yapısı değil, oyuncunun kendi işi. Karakter sayfasının sonu
+          onun doğru yeri. */}
+      <button
+        type="button"
+        onClick={() => onKapiAc('hesap')}
+        data-kapi="hesap"
+        className="kart flex w-full items-center justify-between gap-2 p-3 text-left"
+      >
+        <span>
+          <span className="baslik block text-[13px] text-parsomen">Hesap</span>
+          <span className="block text-[12px] text-solgun">parola, öğretici, çıkış</span>
+        </span>
+        <span className="text-solgun">›</span>
+      </button>
     </div>
   );
 }

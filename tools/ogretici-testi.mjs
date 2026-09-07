@@ -98,13 +98,13 @@ if (process.env.TUM_SAYFALAR === '1') {
 await sayfa.getByRole('button', { name: 'Öğreticiyi geç' }).click();
 await sayfa.waitForTimeout(500);
 kontrol('Geç düğmesi öğreticiyi kapatıyor', !(await ogretici.isVisible()));
-await sayfa.waitForSelector('nav button:has-text("Malikâne")', { timeout: 15000 });
+await sayfa.waitForSelector('nav button:has-text("Şehir")', { timeout: 15000 });
 kontrol('Öğreticiden sonra oyun açılıyor', true);
 
 // --- 4. Yenilemede geri GELMİYOR. Asıl kural bu: geçtiğini söyleyen
 // oyuncuya aynı ekranı tekrar göstermek öğreticiyi cezaya çevirir.
 await sayfa.reload({ waitUntil: 'domcontentloaded' });
-await sayfa.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+await sayfa.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
 await sayfa.waitForTimeout(1200);
 kontrol('Yenilemede öğretici geri gelmiyor', !(await ogretici.isVisible()));
 
@@ -114,7 +114,7 @@ kontrol('Yenilemede öğretici geri gelmiyor', !(await ogretici.isVisible()));
 // öğrenmiş oyuncu" senaryosu (Hesap ekranından öğreticiyi tekrar açmak),
 // o yüzden rehber ürünün kendi ucundan kapatılıyor.
 await rehberiSustur(sayfa);
-await sayfa.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+await sayfa.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
 // Hesap artık Lord sekmesinin içinde bir KAPI (panel).
 await ekrana(sayfa, 'hesap', 800);
 const tekrarDugmesi = sayfa.getByRole('button', { name: 'Öğreticiyi tekrar oku' });

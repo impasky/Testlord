@@ -3,7 +3,9 @@ import type {
   ArastirmaDurumu,
   Army,
   BasarimOlcutleri,
+  BinaDurumu,
   Dizilim,
+  Kademe,
   GunlukGorev,
   GearLineKey,
   Resources,
@@ -11,6 +13,8 @@ import type {
   StatKey,
   TaktikDurumu,
 } from '@lordlar/shared';
+
+export type { BinaDurumu, Kademe } from '@lordlar/shared';
 
 /**
  * API adresi.
@@ -901,6 +905,46 @@ export const api = {
     post<{ id: string; finishAt: string; ad: string }>('/arastirma', { key }),
   arastirmaIptal: (id: string) =>
     request<{ iptal: boolean; iade: number }>(`/arastirma/${id}`, { method: 'DELETE' }),
+
+  /** Şehir: yerleşim kademesi, binalar ve süren inşaat. */
+  sehir: () =>
+    request<{
+      yerlesim: {
+        kademe: Kademe;
+        ad: string;
+        ozet: string;
+        baskent: { id: number; ad: string; tur: string; seviye: number } | null;
+        binaTavani: number;
+      };
+      binalar: BinaDurumu[];
+      /** Başkenti taşıyabileceğin, şu ankinden DAHA İYİ yerleşimlerin. */
+      tasinabilir: {
+        bolgeId: number;
+        ad: string;
+        tur: string;
+        seviye: number;
+        kademe: Kademe;
+        kademeAdi: string;
+        binaTavani: number;
+      }[];
+      esZamanli: number;
+      insaat: { id: string; key: string; ad: string; finishAt: string }[];
+    }>('/sehir'),
+  binaYap: (key: string) =>
+    post<{ queued: boolean; key: string; hedefSeviye: number; finishAt: string }>('/sehir/bina', {
+      key,
+    }),
+  binaIptal: (id: string) =>
+    request<{ iptal: boolean; iade: number }>(`/sehir/bina/${id}`, { method: 'DELETE' }),
+  /** Başkenti başka bir yerleşimine taşı: binalar seninle gelir. */
+  baskentTasi: (bolgeId: number) =>
+    post<{
+      tasindi: boolean;
+      baskent: { ad: string; tur: string; seviye: number };
+      kademe: Kademe;
+      kademeAdi: string;
+      binaTavani: number;
+    }>('/sehir/baskent', { bolgeId }),
 
   /** Savunma düzeni: saldırıya uğradığında kullanılacak dizilim + taktik. */
   savunmaDuzeni: () =>

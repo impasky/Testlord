@@ -59,7 +59,7 @@ await page.fill('input[type=password]', 'parola1234');
 await page.click('button[type=submit]');
 let girdi = true;
 try {
-  await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 15000 });
+  await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 15000 });
 } catch {
   girdi = false;
   console.log('   sayfa:', (await page.locator('body').innerText()).slice(0, 200));

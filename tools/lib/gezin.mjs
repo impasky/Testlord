@@ -14,21 +14,25 @@
 
 /** Alt çubuktaki BEŞ sekme; ilki ANA SAYFA. */
 export const CUBUK = [
-  ['lord', 'Lord'],
-  ['gorevler', 'Görevler'],
+  ['sehir', 'Şehir'],
   ['kisla', 'Kışla'],
   ['harita', 'Harita'],
-  ['malikane', 'Malikâne'],
+  ['gorevler', 'Görevler'],
+  ['lord', 'Lord'],
 ];
 
-/** Ana sayfa: bütün kapıların girişi orada. */
-export const ANA = 'lord';
+/**
+ * Ana sayfa: ŞEHİR. Bütün kapıların girişi orada — ama artık bir düğme
+ * ızgarası değil, yerleşim haritasındaki BİNALAR (docs/12 §3).
+ */
+export const ANA = 'sehir';
 
 /**
  * Kapılar: kendi sayfası olmayan, ana sayfadan panel olarak açılanlar.
  * Panel `data-kapi` imzalı bir düğmeyle açılıyor.
  */
 export const KAPILAR = [
+  'malikane',
   'generaller',
   'demirhane',
   'arastirma',
@@ -62,11 +66,37 @@ export async function ekrana(page, ad, bekle = 1200) {
   // Önce varsa açık paneli kapat: üst üste iki panel açılmasın.
   await kapiyiKapat(page);
 
+  /*
+   * HESAP şehirde bir bina DEĞİL: parola ve çıkış diyarın bir yapısı
+   * değil, oyuncunun kendi işi. Girişi Lord (karakter) sayfasının sonunda.
+   */
+  if (ad === 'hesap') {
+    await page.click('nav button:has-text("Lord")');
+    await page.waitForTimeout(500);
+    await page.locator('[data-kapi="hesap"]').first().click();
+    await page.waitForTimeout(bekle);
+    return;
+  }
+
   if (KAPILAR.includes(ad)) {
+    /*
+     * Kapılar ŞEHİRDEKİ BİNALARDAN açılıyor.
+     *
+     * Eskiden ana sayfada `data-kapi` imzalı bir düğme ızgarası vardı;
+     * şimdi yerleşim haritasındaki binaya dokunuluyor, açılan kartta
+     * "…'a git" düğmesi kapıyı açıyor. İki adım, çünkü ürün de iki adım:
+     * binaya bakmadan içine girilmiyor.
+     */
     const anaEtiket = CUBUK.find(([k]) => k === ANA)[1];
     await page.click(`nav button:has-text("${anaEtiket}")`);
-    await page.waitForTimeout(500);
-    await page.locator(`[data-kapi="${ad}"]`).first().click();
+    await page.waitForTimeout(600);
+    const bina = page.locator(`[data-bina-kapi="${ad}"]`);
+    if ((await bina.count()) === 0) {
+      throw new Error(`ekrana: "${ad}" kapısını açan bina şehirde yok (kademe yetmiyor olabilir)`);
+    }
+    await bina.first().click();
+    await page.waitForTimeout(400);
+    await page.locator('[data-rehber="sehir-kapiya-git"]').first().click();
   } else {
     const kayit = CUBUK.find(([k]) => k === ad);
     if (!kayit) throw new Error(`bilinmeyen ekran: ${ad}`);

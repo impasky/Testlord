@@ -23,7 +23,7 @@
  */
 import { chromium, devices } from 'playwright';
 import { kayitOl } from './lib/kayit.mjs';
-import { bolgeKazandir } from './lib/ilerlet.mjs';
+import { bolgeKazandir, sehriKur } from './lib/ilerlet.mjs';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
 import { EKRANLAR, ekrana, kapiyiKapat, rehberiSustur } from './lib/gezin.mjs';
 
@@ -165,6 +165,14 @@ const { token } = await kayitOl(API, {
 // İlk döngüde arayüz bilerek sade ve ekranların yarısı görünmüyor;
 // okunurluk oyunun YERLEŞMİŞ hâlinde ölçülmeli.
 const bolgeSayisi = await bolgeKazandir(API, token);
+// Bütün kapıları geziyoruz ve şehirdeki kapılar yerleşim kademesine bağlı
+// açılıyor: köydeki lordun karargâhı yok (docs/12 §3.3). Denetim oyunun
+// YERLEŞMİŞ hâlini ölçmeli, ilk döngüsünü değil.
+await sehriKur(API, token);
+// Bütün kapıları geziyoruz ve şehirdeki kapılar yerleşim kademesine bağlı
+// açılıyor: köydeki lordun karargâhı yok. Denetim oyunun YERLEŞMİŞ hâlini
+// ölçmeli, ilk döngüsünü değil.
+await sehriKur(API, token);
 if (bolgeSayisi === 0) {
   // Sessizce devam etmek, ekranların yarısını hiç ölçmeden "temiz" demek
   // olurdu — kapılar ilk döngüde bilerek gizli.
@@ -186,7 +194,7 @@ console.log('Lordlar Çağı — okunurluk denetimi (iPhone 13)\n');
 await page.goto(WEB, { waitUntil: 'domcontentloaded' });
 await page.evaluate((t) => localStorage.setItem('lordlar_token', t), token);
 await page.reload({ waitUntil: 'domcontentloaded' });
-await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
 await ogreticiyiGec(page);
 await rehberiSustur(page);
 

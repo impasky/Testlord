@@ -19,6 +19,7 @@ import { LordEkrani } from './screens/LordEkrani';
 import { useOmurgaAdimi } from './components/Omurga';
 import { useRehberDurumu } from './rehberDurumu';
 import { Malikane } from './screens/Malikane';
+import { Sehir } from './screens/Sehir';
 import { Gorevler } from './screens/Gorevler';
 import { Olaylar } from './screens/Olaylar';
 import { ParolaSifirla } from './screens/ParolaSifirla';
@@ -68,6 +69,29 @@ export function App() {
   const [ogreticiKapandi, setOgreticiKapandi] = useState(false);
   // Savaş raporundan "karşı saldır" denince haritaya taşınan hedef.
   const [hedefBolge, setHedefBolge] = useState<number | null>(null);
+  /**
+   * Omurganın işaret ettiği BÖLÜM ve onu taşıyan sekme.
+   *
+   * Omurga artık Şehir'de duruyor ama işaret ettiği bölümler başka
+   * ekranlarda olabiliyor (nitelikler Lord'da, hastane Kışla'da). Kaydırma
+   * tek başına yetmez: önce doğru sekmeye geçmek gerekiyor, sonra o
+   * ekranın kendi alt sekmesini açmak. Hedefi burada tutup ilgili ekrana
+   * geçiriyoruz; ekran işini bitirince temizliyor.
+   */
+  const [hedefBolum, setHedefBolum] = useState<string | null>(null);
+
+  /** Hangi bölüm hangi sekmede yaşıyor. */
+  const BOLUM_SEKMESI: Record<string, AltSekme> = {
+    nitelikler: 'lord',
+    hastane: 'kisla',
+    yapilar: 'sehir',
+  };
+
+  function bolumeGit(bolumId: string) {
+    const hedef = BOLUM_SEKMESI[bolumId];
+    if (hedef) setSekme(hedef);
+    setHedefBolum(bolumId);
+  }
   const qc = useQueryClient();
 
   const { data, isLoading, error, isFetching, failureCount } = useQuery<MeResponse>({
@@ -348,16 +372,17 @@ export function App() {
         bekleyisBitis={egitimBitisi}
         acik={lord.ogreticiGorundu || ogreticiKapandi}
       />
-      {sekme === 'malikane' && (
-        <Malikane
+      {sekme === 'sehir' && (
+        <Sehir
           lord={lord}
-          events={events}
+          queues={queues}
+          onGit={setSekme}
+          onKapiAc={kapiAc}
           onBolgeyiAc={(bolgeId) => {
             setHedefBolge(bolgeId);
             setSekme('harita');
           }}
-          onGit={setSekme}
-          onKapiAc={kapiAc}
+          onBolumeGit={bolumeGit}
         />
       )}
       {sekme === 'kisla' && (
@@ -385,15 +410,12 @@ export function App() {
       {sekme === 'lord' && (
         <LordEkrani
           lord={lord}
-          queues={queues}
+          hedefBolum={hedefBolum}
+          onBolumIslendi={() => setHedefBolum(null)}
           yokluk={yokluk}
           onGuncelle={tazele}
           onGit={setSekme}
           onKapiAc={kapiAc}
-          onBolgeyiAc={(bolgeId) => {
-            setHedefBolge(bolgeId);
-            setSekme('harita');
-          }}
         />
       )}
 
@@ -416,6 +438,24 @@ export function App() {
                 setHedefBolge(bolgeId);
                 setSekme('harita');
               }}
+            />
+          )}
+          {/* Malikâne artık bir SEKME değil, şehirdeki binadan açılan
+              kapı: diyarın toprakları, gelirleri, savunma düzeni. */}
+          {kapi === 'malikane' && (
+            <Malikane
+              lord={lord}
+              events={events}
+              onBolgeyiAc={(bolgeId) => {
+                setKapi(null);
+                setHedefBolge(bolgeId);
+                setSekme('harita');
+              }}
+              onGit={(s) => {
+                setKapi(null);
+                setSekme(s);
+              }}
+              onKapiAc={kapiAc}
             />
           )}
           {kapi === 'arastirma' && <Arastirma depoTavani={lord.storageCapacity} />}

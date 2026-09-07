@@ -6,6 +6,7 @@
  * worker iki kez çalışsa da aynı kuyruk iki kez işlenmez.
  */
 import {
+  BINALAR,
   arastirmaDugumu,
   kafileTedaviSuresiSn,
   B,
@@ -35,7 +36,8 @@ export type QueueKind =
   | 'upgrade_region'
   | 'kesif'
   | 'research'
-  | 'iyilestir';
+  | 'iyilestir'
+  | 'bina';
 
 /**
  * Yaralı kafilesini hastaneye yatırır ve kuyruk kaydının kimliğini döner.
@@ -277,6 +279,44 @@ export async function resolveQueueItem(row: QueueRow): Promise<boolean> {
 
       case 'kesif': {
         await kesfiCoz(row, p, tx);
+        break;
+      }
+
+      case 'bina': {
+        /*
+         * Binalar LORDA bağlı, bölgeye değil: başkent taşınınca binalar
+         * da taşınıyor (docs/12 §2.2). O yüzden burada yapılacak tek iş
+         * lordun bina tablosundaki sayacı bir artırmak.
+         *
+         * Hedef seviye payload'da DEĞİL, mevcut seviyeden türetiliyor.
+         * Payload'a yazsaydım iki kuyruk üst üste binebilir ve ikisi de
+         * "3. seviyeye çıkar" diyerek bir seviyeyi kaybettirebilirdi;
+         * artırma her zaman o anki değerin üstüne biniyor.
+         */
+        const key = String(p.key ?? '');
+        const lord = await tx.lord.findUnique({
+          where: { id: row.lordId },
+          select: { binalar: true },
+        });
+        if (!lord || !key) break;
+        const mevcut = (lord.binalar ?? {}) as Record<string, number>;
+        const yeni = (mevcut[key] ?? 0) + 1;
+        await tx.lord.update({
+          where: { id: row.lordId },
+          data: { binalar: { ...mevcut, [key]: yeni } },
+        });
+        const bina = BINALAR.find((b) => b.key === key);
+        await pushEvent(
+          row.lordId,
+          'kuyruk_bitti',
+          {
+            mesaj:
+              yeni === 1
+                ? `${bina?.ad ?? key} dikildi.`
+                : `${bina?.ad ?? key} seviye ${yeni} oldu.`,
+          },
+          tx,
+        );
         break;
       }
 

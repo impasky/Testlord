@@ -193,10 +193,10 @@ kontrol(
   await page.locator('[role="dialog"] button:has-text("Diyarıma dön")').click();
   await page.waitForTimeout(1200);
   kontrol('Öğretici kapandı', (await perde.count()) === 0);
-  await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+  await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
 
   await page.reload({ waitUntil: 'domcontentloaded' });
-  await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+  await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
   await page.waitForTimeout(2000);
   kontrol('Yenilemede TEKRAR AÇILMIYOR', (await perde.count()) === 0);
 
@@ -208,7 +208,7 @@ kontrol(
     localStorage.setItem('lordlar_token', t);
   });
   await page.reload({ waitUntil: 'domcontentloaded' });
-  await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+  await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
   await page.waitForTimeout(2000);
   kontrol('Tarayıcı deposu silinse de açılmıyor (sunucuda kayıtlı)', (await perde.count()) === 0);
 }

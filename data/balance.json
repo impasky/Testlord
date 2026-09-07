@@ -575,7 +575,8 @@
       "upgrade_gear": 1,
       "upgrade_region": 2,
       "kesif": 2,
-      "research": 1
+      "research": 1,
+      "bina": 1
     }
   },
   "ittifak": {
@@ -790,5 +791,38 @@
     "_azami_notu": "Alti saat tavan. Buyuk bir yenilgide yuzlerce yarali doner ve tavansiz sure gunlere cikardi; ceza zamanla artmali ama oyuncuyu oyundan kopartmamali.",
     "bakim_alir": false,
     "_bakim_notu": "Tedavideki asker erzak YEMIYOR ve komuta yeri KAPLAMIYOR. Yenilgiyi hem kayipla hem bakim gideriyle iki kez cezalandirmak, dibe vurmus oyuncuyu daha da dibe iter."
+  },
+  "binalar": {
+    "_aciklama": "Bina insa ve yukseltme sayilari. Bina TANIMLARI data/binalar.json icinde; burada yalniz kuresel formuller ve kademe tavanlari var.",
+    "_ilke": "ARASTIRMA ORAN VERIR (yuzde carpani), BINA KAPASITE VE KILIT VERIR (sayi ve erisim). Ikisi hicbir zaman ayni sayiya dokunmaz -- bir bina hizlandirmaz, bir arastirma slot acmaz. Bu ayrim olmasa iki sistem ayni carpani ustuste bindirir ve denge tartismasinda hangisinin duzeltilecegi belli olmazdi (docs/12 §4).",
+    "maliyet_taban": {
+      "altin": 1200,
+      "demir": 600,
+      "erzak": 300
+    },
+    "maliyet_us": 1.75,
+    "maliyet_formulu": "seviye N icin: taban * bina_maliyet_carpani * us^(N-1)",
+    "sure_taban_dakika": 8,
+    "sure_us": 1.85,
+    "sure_formulu": "sure_dk = sure_taban_dakika * us^(N-1)",
+    "azami_seviye": 5,
+    "kademe_tavani": {
+      "kamp": 1,
+      "koy": 2,
+      "kasaba": 3,
+      "sehir": 4,
+      "kale": 4,
+      "metropol": 5
+    },
+    "_kademe_notu": "Yerlesim kademesi bina seviyesine TAVAN koyuyor. Fetihin karsiligi bu: T5 ekipman dovmek icin gercek bir sehir gerekiyor. Kademe boylece dekor olmaktan cikip bir kural oluyor (docs/12 §3.3).",
+    "_kale_notu": "Kale-sehirde surlar bir seviye fazlasina cikabiliyor: askeri bir yerlesimin tek ayricaligi.",
+    "kale_sur_ayricaligi": 1,
+    "iptal_iadesi": 0.5,
+    "_iptal_notu": "Baslatilan insaat iptal edilirse harcamanin yarisi geri veriliyor -- arastirmayla ayni oran. Iki yerde farkli olmasi icin bir sebep yok.",
+    "baslangic": {
+      "malikane": 1,
+      "kisla": 1
+    },
+    "_baslangic_notu": "Yeni lord bir cadir ve bir talimgahla basliyor. Sifirdan baslasaydi ilk isi 'asker egit' diyen ogreticiyi bos bir arsayla karsilardi; kamp bir yokluk degil, kucuk bir baslangic."
   }
 }

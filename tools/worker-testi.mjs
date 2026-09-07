@@ -9,13 +9,13 @@
  * Saldırıyı başlatır, varış zamanını veritabanında geçmişe alır ve worker'ın
  * savaşı kendi döngüsünde çözmesini bekler. Hiçbir test ucu çağırmaz.
  */
-import { kayitOl } from './lib/kayit.mjs';
+import { benzersizAd, kayitOl } from './lib/kayit.mjs';
 import { merkezUzakliklari } from './lib/harita.mjs';
 
 const API = process.env.API_URL ?? 'http://localhost:3000';
 const DB = process.env.DATABASE_URL ?? 'postgresql://lordlar@127.0.0.1:5432/lordlar_cagi';
 const d = Date.now();
-const { token } = await kayitOl(API, { email: `w${d}@l.dev`, lordName: `W ${d}` });
+const { token } = await kayitOl(API, { email: `w${d}@l.dev`, lordName: benzersizAd('Worker') });
 const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
 const P = (u, b) =>
   fetch(`${API}/api${u}`, { method: 'POST', headers: h, body: JSON.stringify(b ?? {}) }).then((r) =>

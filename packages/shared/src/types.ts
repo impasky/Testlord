@@ -190,6 +190,7 @@ export interface BattleResult {
  * içinde alt sekmelere bölündü.
  */
 export const EKRANLAR = [
+  'sehir',
   'malikane',
   'kisla',
   'harita',
@@ -227,11 +228,22 @@ export type Ekran = (typeof EKRANLAR)[number];
  * Sıra da bunu söylüyor: ana sayfa başta, sonra günlük döngü (görev →
  * asker → sefer), en sonda diyarın envanteri.
  */
-export const ALT_SEKMELER = ['lord', 'gorevler', 'kisla', 'harita', 'malikane'] as const;
+export const ALT_SEKMELER = ['sehir', 'kisla', 'harita', 'gorevler', 'lord'] as const;
 export type AltSekme = (typeof ALT_SEKMELER)[number];
 
-/** Açılışta gelinen ve bütün kapıların durduğu sekme. */
-export const ANA_SEKME: AltSekme = 'lord';
+/**
+ * Açılışta gelinen ve bütün kapıların durduğu sekme: ŞEHİR.
+ *
+ * Oyuncunun ikinci düzeltmesi: "ana sayfamız şu an lord ya, onu
+ * değiştirelim şehir sayfası yap; şehir haritasından oyuncu demirci,
+ * lord, malikâne gibi ordan gezebilsin."
+ *
+ * Lord ekranı ana sayfayken kapılar bir IZGARAYDI — yan yana düğmeler.
+ * Oyuncu "demirhaneye gitmiyor", bir düğmeye basıyordu. Kapıların hepsi
+ * duruyor; sadece girişleri bir listeden bir BİNAYA döndü. Lord ekranı
+ * da hak ettiği şeye dönüştü: bir karakter sayfası.
+ */
+export const ANA_SEKME: AltSekme = 'sehir';
 
 /**
  * KAPILAR: kendi sayfası değil, ana sayfadan açılan pop-up'lar.
@@ -245,6 +257,7 @@ export const ANA_SEKME: AltSekme = 'lord';
  * açılırsa açılsın oyuncu kapatınca kaldığı yerde kalıyor.
  */
 export const KAPILAR = [
+  'malikane',
   'generaller',
   'demirhane',
   'arastirma',
@@ -257,6 +270,7 @@ export type Kapi = (typeof KAPILAR)[number];
 
 /** Kapının başlığı — hem panelde hem onu açan düğmede aynı ad. */
 export const KAPI_ADI: Record<Kapi, string> = {
+  malikane: 'Malikâne',
   generaller: 'Generaller',
   arastirma: 'Araştırma',
   demirhane: 'Demirhane',

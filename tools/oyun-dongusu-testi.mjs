@@ -4,7 +4,7 @@
  *
  * node tools/oyun-dongusu-testi.mjs
  */
-import { kayitOl } from './lib/kayit.mjs';
+import { benzersizAd, kayitOl } from './lib/kayit.mjs';
 import { merkezUzakliklari } from './lib/harita.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 let token = null;
@@ -37,7 +37,7 @@ console.log('Lordlar Çağı — oyun döngüsü testi\n');
 const damga = Date.now();
 ({ token } = await kayitOl(API, {
   email: `dongu${damga}@lordlar.dev`,
-  lordName: `Fatih ${damga}`,
+  lordName: benzersizAd('Fatih'),
 }));
 // Testler arası izolasyon: NPC garnizonlarını tabana döndür
 await post('/test/bolgeleri-sifirla');

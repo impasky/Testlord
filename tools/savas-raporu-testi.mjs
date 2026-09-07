@@ -42,7 +42,7 @@ await page.fill('input[placeholder="Kara Yusuf"]', `Rapor ${damga.toString(36).s
 await page.fill('input[type=email]', `rapor${damga}@lordlar.dev`);
 await page.fill('input[type=password]', 'parola1234');
 await page.click('button[type=submit]');
-await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 15000 });
+await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 15000 });
 // Öğretici tam ekran açılıyor ve arkasını tıklatmıyor: gerçek oyuncu
 // gibi geçiyoruz (bkz. tools/lib/ogretici.mjs).
 await ogreticiyiGec(page);
@@ -94,7 +94,7 @@ kontrol('Saldırı yapıldı ve yürüyüş çözüldü', true);
 await page.reload({ waitUntil: 'networkidle' });
 // Olay akışı artık Malikâne'de değil, kendi sayfasında: Malikâne
 // "şimdi ne yapmalısın"ı, Olaylar "ne oldu"yu anlatıyor.
-await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 15000 });
+await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 15000 });
 // Olaylar artık Malikâne'nin içinde bir KAPI (panel).
 await ekrana(page, 'olaylar', 1500);
 

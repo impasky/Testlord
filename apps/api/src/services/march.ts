@@ -763,6 +763,7 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
           { mesaj: `${region.name} ele geçirildi!`, regionId: region.id },
           tx,
         );
+        await ilkBaskentiAta(march.lordId, region, tx);
       }
 
       // Şöhret bölge değişiminden sonra yeniden hesaplanmalı; tickLord bunu
@@ -1002,3 +1003,40 @@ export async function gecikmisYuruyusleriCoz(lordId: string, now = new Date()): 
   }
   return sayi;
 }
+
+/**
+ * BAŞKENTİ OLMAYAN lord bir yerleşim fethederse orası başkenti olur.
+ *
+ * Oyuna toprakSIZ başlanıyor (docs/12 §8) ve kamptaki lordun şehir
+ * sayfası boş bir kamp gösteriyor. İlk fethedilen köy o kampı bir köye
+ * çeviriyor — hikâyenin kendisi bu ve kendiliğinden olmalı: "başkentini
+ * seç" diye bir soru sormak, ilk fethin sevincini bir forma çevirirdi.
+ *
+ * Yalnız YERLEŞİM türleri başkent olabiliyor. Tarla ve maden bir gelir
+ * kaynağı, bir yerleşim değil; oyuncu bir buğday tarlasında oturmuyor.
+ *
+ * Başkenti OLAN lorda dokunmuyoruz: taşınma ayrı bir karar ve oyuncunun
+ * kendi eliyle vermesi gerekiyor (Y7).
+ */
+async function ilkBaskentiAta(
+  lordId: string,
+  region: { mapId: number; type: string; name: string },
+  tx: Tx,
+): Promise<void> {
+  if (!BASKENT_TURLERI.includes(region.type)) return;
+  const lord = await tx.lord.findUnique({
+    where: { id: lordId },
+    select: { baskentBolgeId: true },
+  });
+  if (lord?.baskentBolgeId != null) return;
+  await tx.lord.update({ where: { id: lordId }, data: { baskentBolgeId: region.mapId } });
+  await pushEvent(
+    lordId,
+    'baskent',
+    { mesaj: `${region.name} artık başkentin. Şehrini burada kuracaksın.` },
+    tx,
+  );
+}
+
+/** Başkent olabilen bölge türleri: yerleşimler. Tarla ve maden değil. */
+const BASKENT_TURLERI: readonly string[] = ['koy', 'sehir', 'kale', 'taht'];

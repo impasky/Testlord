@@ -10,6 +10,7 @@ import { chromium, devices } from 'playwright';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
 import { ekrana, kapida, rehberiSustur } from './lib/gezin.mjs';
 import { merkezUzakliklari } from './lib/harita.mjs';
+import { binalariDik, yerlesimAl } from './lib/koy.mjs';
 
 const WEB = process.env.WEB_URL ?? 'http://127.0.0.1:5173';
 const API = process.env.API_URL ?? 'http://localhost:3000';
@@ -81,7 +82,7 @@ await page.fill('input[placeholder="Kara Yusuf"]', `Akis ${damga.toString(36).sl
 await page.fill('input[type=email]', `akis${damga}@lordlar.dev`);
 await page.fill('input[type=password]', 'parola1234');
 await page.click('button[type=submit]');
-await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 15000 });
+await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 15000 });
 // Öğretici tam ekran açılıyor ve arkasını tıklatmıyor: gerçek oyuncu
 // gibi geçiyoruz (bkz. tools/lib/ogretici.mjs).
 await ogreticiyiGec(page);
@@ -96,8 +97,9 @@ const post = (yol, govde) =>
 await post('/test/bolgeleri-sifirla');
 await post('/test/kaynak-ver', { altin: 300000, demir: 150000, erzak: 150000 });
 await post('/test/xp-ver', { miktar: 60000 });
+
 await page.reload({ waitUntil: 'networkidle' });
-await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 15000 });
+await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 15000 });
 
 // Sabit çubuklar içeriği kesmemeli
 const tasma = await page.evaluate(
@@ -118,6 +120,22 @@ kontrol(
   !(await page.locator('button:has-text("puanı dağıt")').isVisible()),
 );
 await page.screenshot({ path: `${CIKTI}/mob-2-lord.png` });
+
+/*
+ * Şehri BURADA kuruyoruz, stat testinden SONRA.
+ *
+ * Şehirdeki kapılar yerleşim kademesine bağlı açılıyor (docs/12 §3.3):
+ * kamptaki lordun demirhanesi yok ve bu ürünün doğru davranışı. Ama
+ * bütün kapıları gezen bir araç "oyunu oynayan" lordu canlandırmalı.
+ *
+ * Sıra önemli: yardımcı stat puanlarını Liderliğe yatırıyor (büyük ordu
+ * için kapasite lazım) ve önce çağrılsaydı yukarıdaki "puanı dağıt"
+ * ölçümü dağıtacak puan bulamazdı. İlk denemede tam bu oldu.
+ */
+await yerlesimAl(API, token, 'sehir');
+await binalariDik(API, token);
+await page.reload({ waitUntil: 'networkidle' });
+await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 15000 });
 
 // --- Kışla: asker eğit ---
 await sekme('Kışla');

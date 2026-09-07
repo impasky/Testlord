@@ -56,7 +56,7 @@ page.on('console', (m) => {
 await page.goto(WEB, { waitUntil: 'domcontentloaded' });
 await page.evaluate((t) => localStorage.setItem('lordlar_token', t), token);
 await page.reload({ waitUntil: 'domcontentloaded' });
-await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
 await ogreticiyiGec(page);
 await page.waitForTimeout(1500);
 
@@ -136,7 +136,7 @@ kontrol(
 // --- 4. Kâhya sıradaki adıma geçti ---
 {
   await page.reload({ waitUntil: 'domcontentloaded' });
-  await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+  await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
   await ogreticiyiGec(page);
   await page.waitForTimeout(2000);
   const soz = await kahyaSozu();
@@ -194,7 +194,7 @@ kontrol(
 
   const tazele = async () => {
     await page.reload({ waitUntil: 'domcontentloaded' });
-    await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+    await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
     await page.waitForTimeout(1800);
   };
 
@@ -272,7 +272,7 @@ kontrol(
   });
   await page.evaluate((t) => localStorage.setItem('lordlar_token', t), t2);
   await page.reload({ waitUntil: 'domcontentloaded' });
-  await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+  await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
   await ogreticiyiGec(page);
   await page.waitForTimeout(1500);
 
@@ -287,7 +287,7 @@ kontrol(
   );
 
   await page.reload({ waitUntil: 'domcontentloaded' });
-  await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+  await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
   await page.waitForTimeout(1500);
   kontrol('Yenileme de kaçış yolu değil — kâhya duruyor', (await kahyaSozu()) !== null);
 }
@@ -316,13 +316,12 @@ kontrol(
       const v = (m) => (govde.includes(m) ? 1 : 0);
       return {
         diyar: v('DİYAR'),
-        // Durum şeridini "saldırı" hakkından tanıyoruz: "komuta" sözcüğü
-        // ana sayfanın tepesindeki ordu sahnesinde de geçiyor ve şerit
-        // gizliyken bile bulunuyordu.
-        durum: v('saldırı'),
-        gorev: v('GÖREVLER'),
         omurga: v('Şimdi ne yapmalısın'),
         kahya: v('Kâhya Sinan'),
+        // Kademeli açılımın yeni ölçüsü: ana sayfa artık ŞEHİR ve şehrin
+        // yapıları yerleşim kademesine göre açılıyor (docs/12 §3.3).
+        // Kamptaki oyuncu beş yapı görüyor, köy alınca on.
+        yapi: document.querySelectorAll('[data-bina]').length,
       };
     });
 
@@ -343,7 +342,7 @@ kontrol(
   // kendi hatasını testte gizliyordu.
   await page.evaluate((t) => localStorage.setItem('lordlar_token', t), t3);
   await page.reload({ waitUntil: 'domcontentloaded' });
-  await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+  await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
   await ogreticiyiGec(page);
   await page.waitForTimeout(1800);
 
@@ -354,14 +353,17 @@ kontrol(
     `omurga=${once.omurga} kâhya=${once.kahya}`,
   );
   /**
-   * Olay şeridi artık ANA SAYFADA DEĞİL: diyarın ekranına (Malikâne)
-   * taşındı ve orada "arkasında bir şey varsa" açılıyor. Ana sayfanın
-   * kademeli açılımı durum şeridi ve görev özeti üzerinden ölçülüyor.
+   * KADEMELİ AÇILIM, artık yerleşim kademesiyle.
+   *
+   * Eskiden ana sayfa Lord'du ve ikincil şeritler (durum, görev özeti)
+   * ilk döngüde gizleniyordu. Ana sayfa ŞEHİR olunca aynı fikir daha iyi
+   * bir yere oturdu: kamptaki oyuncu beş yapı görüyor, köy alınca on.
+   * Ölçü bir arayüz tercihi değil, oyunun kendi kuralı.
    */
   kontrol(
-    'İlk döngüde durum ve görev şeritleri GİZLİ',
-    once.durum + once.gorev === 0,
-    `durum=${once.durum} görev=${once.gorev}`,
+    'Kampta yalnız kamp yapıları görünüyor',
+    once.yapi > 0 && once.yapi <= 5,
+    `${once.yapi} yapı`,
   );
 
   /**
@@ -401,19 +403,18 @@ kontrol(
   );
 
   await page.reload({ waitUntil: 'domcontentloaded' });
-  await page.waitForSelector('nav button:has-text("Malikâne")', { timeout: 20000 });
+  await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
   await page.waitForTimeout(2000);
   const sonra = await bloklariSay();
   kontrol(
-    'Bölgeden sonra hepsi geri geliyor',
-    sonra.durum === 1 && sonra.gorev === 1,
-    `durum=${sonra.durum} görev=${sonra.gorev}`,
+    'Bölge alınca şehir büyüyor: daha çok yapı',
+    sonra.yapi > once.yapi,
+    `${once.yapi} yapı -> ${sonra.yapi}`,
   );
 
   /**
-   * Gizlenen şeyler ULAŞILAMAZ olmamalı. Görevler alt çubukta, Olaylar
-   * menüde duruyor; ilk döngüde Malikâne'de görünmemeleri onları
-   * kaldırmak değil, ertelemek.
+   * Ertelenen şeyler ULAŞILAMAZ olmamalı. Görevler alt çubukta duruyor;
+   * şehirde henüz açılmamış olmaları onları kaldırmak değil, ertelemek.
    */
   const cubukta = await page.evaluate(() =>
     Boolean(

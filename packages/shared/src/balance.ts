@@ -10,6 +10,7 @@ import generalsJson from '../../../data/generals.json';
 import seferlerJson from '../../../data/seferler.json';
 import taktiklerJson from '../../../data/taktikler.json';
 import arastirmaJson from '../../../data/arastirma.json';
+import binalarJson from '../../../data/binalar.json';
 import armaJson from '../../../data/arma.json';
 import unvanlarJson from '../../../data/unvanlar.json';
 import worldMapJson from '../../../data/world-map.json';
@@ -92,6 +93,27 @@ export const UNVANLAR = unvanlarJson as unknown as {
   taht_unvani: string;
   kademeler: { esik: number; ad: string; aciklama: string }[];
 };
+/**
+ * Şehir binaları. Seviyenin NE VERDİĞİ `etki` alanında; sayıları
+ * `balance.json → binalar` içinde (bina.ts).
+ */
+export const BINALAR = binalarJson.binalar as unknown as {
+  key: string;
+  ad: string;
+  ozet: string;
+  aciklama: string;
+  x: number;
+  y: number;
+  seviyeli: boolean;
+  acilis_kademesi: string;
+  etki?: string;
+  etki_metni?: string;
+  maliyet_carpani?: number;
+  kapi?: string;
+  sekme?: string;
+  bolum?: string;
+}[];
+
 export const WORLD_MAP = worldMapJson as unknown as {
   region_count: number;
   provinces: { key: string; name: string }[];

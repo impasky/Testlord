@@ -131,6 +131,10 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
           demir: start.demir,
           erzak: start.erzak,
           homeBolgeId: home,
+          // Kamp bir yokluk değil, küçük bir başlangıç: bir çadır ve bir
+          // talimgah. Sıfırdan başlasaydı öğreticinin ilk cümlesi ("asker
+          // eğit") boş bir arsaya çarpardı.
+          binalar: B.binalar.baslangic,
           lastTickAt: now,
           dailyResetAt: now,
           // Yeni oyuncu kalkanı: ilk saldırısını yapana kadar veya 72 saat

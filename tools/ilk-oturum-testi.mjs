@@ -7,7 +7,7 @@
  *
  * node tools/ilk-oturum-testi.mjs
  */
-import { kayitOl } from './lib/kayit.mjs';
+import { benzersizAd, kayitOl } from './lib/kayit.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 let token = null;
 let hata = 0;
@@ -59,7 +59,7 @@ async function oturum() {
   token = null;
   ({ token } = await kayitOl(API, {
     email: `ilkoturum${damga}@lordlar.dev`,
-    lordName: `Yeni ${damga}`,
+    lordName: benzersizAd('Yeni'),
   }));
   // Testler arası izolasyon: önceki koşuların ele geçirdiği bölgeler yeni
   // oyuncunun komşuluğunu boşaltıyor ve "yürüme mesafesinde hedef var mı"
