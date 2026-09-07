@@ -20,7 +20,12 @@ Uretmek yerine DOGRULUYOR. Harita artik uretilen degil BAKILAN bir dosya:
 turetmek, o secimleri silmek olurdu.
 
   python3 tools/generate_map.py        # dogrula
+
+Isaretcilerin cizilmis zemine oturup oturmadigi da burada denetleniyor
+(x/y yalniz cizim icin; kural docs/12 §9). Suya dusen isaretci varsa
+duzeltmesi ayri bir arac: tools/harita-yerlestir.py
 """
+import importlib.util
 import json
 import os
 import sys
@@ -105,12 +110,58 @@ def dogrula(harita: dict) -> list[str]:
     return sorunlar
 
 
+def zemin_denetimi(bolgeler) -> tuple[list[str], str]:
+    """
+    Isaretciler cizilmis dunya zemininde KARAYA mi dusuyor?
+
+    Bu denetim buraya ait: x/y yalniz cizim icin ve tek olcutu zemine
+    oturmasi. Denizin ortasinda duran bir tarla, oyuncunun "burasi neresi"
+    sorusuna verilebilecek en kotu cevap -- ve hicbir testte gorunmez,
+    cunku oyunun mantigi `komsular` grafigine bakiyor.
+
+    Kara maskesi tools/harita-yerlestir.py icinde tanimli; ikinci bir kopya
+    yazmak, iki aracin "kara" tanimini zamanla ayirmak demekti. Zemin ya da
+    Pillow/scipy yoksa denetim ATLANIYOR: bu script gorselsiz de calismali.
+    """
+    yol = os.path.join(os.path.dirname(os.path.abspath(__file__)), "harita-yerlestir.py")
+    spec = importlib.util.spec_from_file_location("harita_yerlestir", yol)
+    if spec is None or spec.loader is None:
+        return [], "zemin denetimi atlandi (arac bulunamadi)"
+    arac = importlib.util.module_from_spec(spec)
+    try:
+        spec.loader.exec_module(arac)
+        if not arac.ZEMIN.exists():
+            return [], "zemin denetimi atlandi (dunya.webp yok)"
+        kara = arac.kara_maskesi()
+    except Exception as e:  # Pillow/scipy yok, ya da zemin okunamadi
+        return [], f"zemin denetimi atlandi ({type(e).__name__})"
+
+    yuk, gen = kara.shape
+    oran, _, _ = arac.TURLAR[-1]     # en gevsek kademe: kiyi burnu da kara sayilir
+    r = arac.YARICAP
+    suda = []
+    for b in bolgeler:
+        px, py = int(b["x"] / 100 * gen), int(b["y"] / 100 * yuk)
+        pencere = kara[max(0, py - r):py + r + 1, max(0, px - r):px + r + 1]
+        if pencere.size == 0 or pencere.mean() <= oran:
+            suda.append(f"{b['name']} ({b['x']}, {b['y']})")
+    if suda:
+        return [
+            f"{len(suda)} isaretci zeminde suya dusuyor "
+            f"(duzelt: python3 tools/harita-yerlestir.py --yaz): " + ", ".join(suda[:6])
+            + ("..." if len(suda) > 6 else "")
+        ], ""
+    return [], f"{len(bolgeler)} isaretcinin hepsi karada"
+
+
 def main() -> int:
     kok = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     harita = yukle(kok)
     sorunlar = dogrula(harita)
 
     bolgeler = harita.get("regions", [])
+    zemin_sorun, zemin_not = zemin_denetimi(bolgeler)
+    sorunlar += zemin_sorun
     tipler = Counter(b.get("type") for b in bolgeler)
     komsuSayilari = [len(b.get("komsular", [])) for b in bolgeler]
 
@@ -125,6 +176,8 @@ def main() -> int:
             "| ortalama",
             round(sum(komsuSayilari) / len(komsuSayilari), 2),
         )
+    if zemin_not:
+        print("Zemin:", zemin_not)
 
     if sorunlar:
         print(f"\n{len(sorunlar)} SORUN:")

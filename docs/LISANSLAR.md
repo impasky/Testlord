@@ -87,33 +87,37 @@ Bazı araçlar çıktının bir köşesine kendi işaretini koyuyor. Oyunun içi
 başka bir ürünün işareti taşınmasın diye bunlar `tools/filigran-sil.py` ile
 temizleniyor; hangi dosyada yapıldığı aşağıdaki tabloda yazıyor.
 
-| Dosya                        | Durum                                           |
-| ---------------------------- | ----------------------------------------------- |
-| `birimler/milis.webp`        | eklendi                                         |
-| `birimler/mizrakci.webp`     | eklendi                                         |
-| `birimler/okcu.webp`         | eklendi                                         |
-| `birimler/suvari.webp`       | eklendi                                         |
-| `birimler/kusatma.webp`      | eklendi                                         |
-| `bolgeler/tarla.webp`        | eklendi                                         |
-| `bolgeler/maden.webp`        | eklendi                                         |
-| `bolgeler/sehir.webp`        | eklendi                                         |
-| `bolgeler/kale.webp`         | eklendi                                         |
-| `bolgeler/taht.webp`         | eklendi (köşe filigranı silindi)                |
-| `generaller/*` (12 dosya)    | eklendi                                         |
-| `zeminler/malikane.webp`     | eklendi (işaret silindi)                        |
-| `zeminler/kisla.webp`        | eklendi (işaret silindi)                        |
-| `zeminler/demirhane.webp`    | eklendi (işaret silindi)                        |
-| `zeminler/generaller.webp`   | eklendi (işaret silindi)                        |
-| `zeminler/siralama.webp`     | eklendi (işaret silindi, tam ayna)              |
-| `zeminler/giris.webp`        | eklendi (işaret silindi)                        |
-| `ekipman/silah_t1..t5.webp`  | eklendi (zemin ayıklandı, saydam)               |
-| `ekipman/kalkan_t1..t5.webp` | eklendi (zemin ayıklandı, saydam)               |
-| `ekipman/zirh_t1..t5.webp`   | eklendi (T2–T5 işaret silindi, zemin ayıklandı) |
-| `ekipman/migfer_t1..t5.webp` | eklendi (işaret silindi, zemin ayıklandı)       |
-| `ekipman/at_t1..t5.webp`     | eklendi (işaret zeminlendi, zemin ayıklandı)    |
-| `ekipman/sancak_t1..t5.webp` | eklendi (işaret zeminlendi, zemin ayıklandı)    |
-| `lord/lord_1..5.webp`        | eklendi (zincirleme düzenleme, zemin ayıklandı) |
-| `yerlesim/*.webp` (6 dosya)  | eklendi (filigran çıkmadı)                      |
+| Dosya                         | Durum                                             |
+| ----------------------------- | ------------------------------------------------- |
+| `birimler/milis.webp`         | eklendi                                           |
+| `birimler/mizrakci.webp`      | eklendi                                           |
+| `birimler/okcu.webp`          | eklendi                                           |
+| `birimler/suvari.webp`        | eklendi                                           |
+| `birimler/kusatma.webp`       | eklendi                                           |
+| `bolgeler/tarla.webp`         | eklendi                                           |
+| `bolgeler/maden.webp`         | eklendi                                           |
+| `bolgeler/sehir.webp`         | eklendi                                           |
+| `bolgeler/kale.webp`          | eklendi                                           |
+| `bolgeler/taht.webp`          | eklendi (köşe filigranı silindi)                  |
+| `generaller/*` (12 dosya)     | eklendi                                           |
+| `zeminler/malikane.webp`      | eklendi (işaret silindi)                          |
+| `zeminler/kisla.webp`         | eklendi (işaret silindi)                          |
+| `zeminler/demirhane.webp`     | eklendi (işaret silindi)                          |
+| `zeminler/generaller.webp`    | eklendi (işaret silindi)                          |
+| `zeminler/siralama.webp`      | eklendi (işaret silindi, tam ayna)                |
+| `zeminler/giris.webp`         | eklendi (işaret silindi)                          |
+| `ekipman/silah_t1..t5.webp`   | eklendi (zemin ayıklandı, saydam)                 |
+| `ekipman/kalkan_t1..t5.webp`  | eklendi (zemin ayıklandı, saydam)                 |
+| `ekipman/zirh_t1..t5.webp`    | eklendi (T2–T5 işaret silindi, zemin ayıklandı)   |
+| `ekipman/migfer_t1..t5.webp`  | eklendi (işaret silindi, zemin ayıklandı)         |
+| `ekipman/at_t1..t5.webp`      | eklendi (işaret zeminlendi, zemin ayıklandı)      |
+| `ekipman/sancak_t1..t5.webp`  | eklendi (işaret zeminlendi, zemin ayıklandı)      |
+| `lord/lord_1..5.webp`         | eklendi (zincirleme düzenleme, zemin ayıklandı)   |
+| `yerlesim/*.webp` (6 dosya)   | eklendi (filigran çıkmadı)                        |
+| `binalar/*.webp` (24 dosya)   | eklendi (çizilmiş dama silindi, saydam)           |
+| `harita/dunya.webp`           | eklendi (kare, çerçevesiz — ikinci deneme)        |
+| `akin/*.webp` (5 dosya)       | eklendi (filigran çıkmadı)                        |
+| `zeminler/akin.webp`          | eklendi (filigran çıkmadı)                        |
 | ~~`harita/*.webp` (6 dosya)~~ | **silindi** — altıgen karolar emekli (docs/12 §5) |
 
 Lord figürleri zincirleme düzenlemeyle üretildi: `lord_1` metinden,
@@ -162,6 +166,37 @@ salon simetrik olduğu için `--tam-ayna` dikişsiz sonuç verdi.
 O aşamadaki 22 görselin tamamı eklendi. game-icons ikonları arayüzde kullanılmaya devam
 ediyor (kaynak sayaçları, stat satırları, gezinme, harita hex'leri), o yüzden
 yukarıdaki künye geçerliliğini koruyor.
+
+**Bina işaretçileri (24 dosya) — model saydamlığı ÇİZDİ.** İstem "isolated
+on a fully transparent background" diyordu; gelen dosyalarda alfa kanalı
+yoktu, onun yerine düzenleyicilerin saydamlık dama deseni gerçek piksel
+olarak boyanmıştı. Yirmi dördünde de aynı hata.
+
+`gorsel-ayikla.py` bunu çözemedi ve çözmemeli: orası çok figürlü bir sayfayı
+bölen araç ve zemini kenar MEDYANI ile buluyor. Dama tek renk değil; medyan
+iki tonun arasına düşüyor ve her iki ton da eşiğin dışında kalıyor, yani
+dama "figür" sayılıyor. Bunun için `tools/dama-sil.py` yazıldı.
+
+Ayırt edici ölçüt DESEN: dama yerel olarak iki tonludur — bir karelik
+pencerede alt yüzdelik koyu tona, üst yüzdelik açık tona oturur. Düz bir
+yüzey, rengi ne olursa olsun, bu testi geçemez. Bu gerekli çıktı: ilk
+denemede "iki tondan birine yakın gri" eşiği kullanıldı ve `arsa.webp`in
+koyu ahşabı tam o aralığa düştüğü için bina ortasından yendi.
+
+Araç aynı dosyaya ikinci kez uygulanmaz: alfa açılıyor ama dama RGB'de
+duruyor (küçültmedeki hale gri kalsın diye), yani alfası atılınca desen geri
+gelir. `zaten_saydam` kontrolü bu yüzden var.
+
+**Dünya haritası iki kez üretildi.** İlki 4:3'tü ve parşömen çerçevesi
+vardı; kap `aspect-square` + `object-cover` olduğu için yanları kırpılıyor
+ve 61 işaretçinin en dıştakileri kırpılan şeride düşüyordu. İkincisi kare,
+çerçevesiz ve kara çerçeveyi dolduruyor.
+
+Zemin kilitlendikten sonra işaretçiler ona oturtuldu (docs/12 §9 üretim
+sırası): eski düzen altıgen ızgaradan kalma düzgün bir kafesti ve 20
+işaretçi suya düşüyordu. `tools/harita-yerlestir.py` yalnız suya düşenleri
+en yakın uygun karaya taşıdı; taşımaların çoğu 1–2 puan. Denetimi
+`tools/generate_map.py` yapıyor.
 
 Generaller 4×4 grid olarak geldi: 16 kare, 12 general. Fazlalıklar
 `gorsel-ayikla.py`'ye isim yerine `-` verilerek atlandı; silmek yerine yerinde

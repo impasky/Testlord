@@ -44,11 +44,19 @@ export async function yerlesimAl(api, token, tur = 'sehir') {
   }
 
   const harita = await get('/map');
-  // En YAKIN uygun bölge: komşuluk kuralı uzağa saldırmayı engelliyor.
+  /*
+   * En YAKIN uygun bölge: komşuluk kuralı uzağa saldırmayı engelliyor.
+   *
+   * `shielded` de eleniyor: yağmalanıp elde kalan bölge birkaç saat
+   * koruma alıyor (docs/09 K6) ve sahipsiz görünmeye devam ediyor. Dünya
+   * araçlar arasında PAYLAŞILDIĞI için bu kalkanlar birikiyor; kalkanlı
+   * bölgeyi seçen araç "saldırı reddedildi — koruma altında" diye
+   * düşüyordu ve düşme sebebi ölçtüğü şeyle ilgisizdi.
+   */
   const hedef = harita.regions
-    .filter((r) => r.type === tur && !r.owner)
+    .filter((r) => r.type === tur && !r.owner && !r.shielded)
     .sort((a, b) => a.distance - b.distance)[0];
-  if (!hedef) throw new Error(`yerlesimAl: sahipsiz "${tur}" bölgesi kalmamış`);
+  if (!hedef) throw new Error(`yerlesimAl: saldırılabilir "${tur}" bölgesi kalmamış`);
 
   /*
    * Ordu KOMUTA KAPASİTESİNE göre kuruluyor, sabit bir sayıya göre değil.

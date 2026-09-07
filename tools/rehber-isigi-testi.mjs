@@ -365,16 +365,10 @@ await page.waitForTimeout(2500);
      * bekliyoruz — ilk yazışta 3 saniye sabitlemiştim ve yavaş turda
      * ışığı henüz yanmamış yakalayıp "yok" diyordu.
      */
-    await page
-      .waitForSelector('[data-rehber="akin-harita"]', { timeout: 15000 })
-      .catch(() => null);
+    await page.waitForSelector('[data-rehber="akin-harita"]', { timeout: 15000 }).catch(() => null);
     await page.waitForTimeout(1200);
     const d = await isikDurumu();
-    kontrol(
-      'Akın sekmesinde delik DİYARDA',
-      d.isaret === 'akin-harita',
-      d.isaret ?? 'yok',
-    );
+    kontrol('Akın sekmesinde delik DİYARDA', d.isaret === 'akin-harita', d.isaret ?? 'yok');
     kontrol(
       'Diyarın sebebi kendine ait',
       (d.ipucu ?? '') !== (gorulenSebep.kisla ?? '') && (d.ipucu ?? '').length > 30,

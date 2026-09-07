@@ -40,14 +40,7 @@
       "province": "taht",
       "x": 50.0,
       "y": 50.0,
-      "komsular": [
-        2,
-        12,
-        13,
-        32,
-        42,
-        52
-      ],
+      "komsular": [2, 12, 13, 32, 42, 52],
       "level": 1,
       "income_mult": 3.0,
       "npc_garrison": {
@@ -64,16 +57,9 @@
       "name": "Buğday Düzü",
       "type": "tarla",
       "province": "kuzeymark",
-      "x": 61.0,
-      "y": 50.0,
-      "komsular": [
-        1,
-        3,
-        4,
-        13,
-        52,
-        54
-      ],
+      "x": 60.5,
+      "y": 49.13,
+      "komsular": [1, 3, 4, 13, 52, 54],
       "level": 1,
       "income_mult": 2.0,
       "npc_garrison": {
@@ -90,16 +76,9 @@
       "name": "Akkale Şehri",
       "type": "sehir",
       "province": "kuzeymark",
-      "x": 66.5,
-      "y": 59.53,
-      "komsular": [
-        2,
-        4,
-        6,
-        7,
-        13,
-        16
-      ],
+      "x": 66.33,
+      "y": 60.51,
+      "komsular": [2, 4, 6, 7, 13, 16],
       "level": 1,
       "income_mult": 1.5,
       "npc_garrison": {
@@ -118,14 +97,7 @@
       "province": "kuzeymark",
       "x": 72.0,
       "y": 50.0,
-      "komsular": [
-        2,
-        3,
-        7,
-        8,
-        54,
-        57
-      ],
+      "komsular": [2, 3, 7, 8, 54, 57],
       "level": 1,
       "income_mult": 1.5,
       "npc_garrison": {
@@ -144,14 +116,7 @@
       "province": "kuzeymark",
       "x": 66.5,
       "y": 78.58,
-      "komsular": [
-        6,
-        9,
-        16,
-        18,
-        29,
-        30
-      ],
+      "komsular": [6, 9, 16, 18, 29, 30],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -168,16 +133,9 @@
       "name": "Yeşilçayır",
       "type": "tarla",
       "province": "kuzeymark",
-      "x": 72.0,
+      "x": 73.0,
       "y": 69.05,
-      "komsular": [
-        3,
-        5,
-        7,
-        9,
-        10,
-        16
-      ],
+      "komsular": [3, 5, 7, 9, 10, 16],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -196,14 +154,7 @@
       "province": "kuzeymark",
       "x": 77.5,
       "y": 59.53,
-      "komsular": [
-        3,
-        4,
-        6,
-        8,
-        10,
-        11
-      ],
+      "komsular": [3, 4, 6, 8, 10, 11],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -220,16 +171,9 @@
       "name": "Karakuyu",
       "type": "maden",
       "province": "kuzeymark",
-      "x": 83.0,
-      "y": 50.0,
-      "komsular": [
-        4,
-        7,
-        11,
-        31,
-        57,
-        61
-      ],
+      "x": 83.17,
+      "y": 50.98,
+      "komsular": [4, 7, 11, 31, 57, 61],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -246,14 +190,9 @@
       "name": "Bozkuyu Köyü",
       "type": "koy",
       "province": "kuzeymark",
-      "x": 77.5,
-      "y": 78.58,
-      "komsular": [
-        5,
-        6,
-        10,
-        30
-      ],
+      "x": 77.67,
+      "y": 79.56,
+      "komsular": [5, 6, 10, 30],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -272,12 +211,7 @@
       "province": "kuzeymark",
       "x": 83.0,
       "y": 69.05,
-      "komsular": [
-        6,
-        7,
-        9,
-        11
-      ],
+      "komsular": [6, 7, 9, 11],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -294,14 +228,9 @@
       "name": "Çakıllı Köyü",
       "type": "koy",
       "province": "kuzeymark",
-      "x": 88.5,
-      "y": 59.53,
-      "komsular": [
-        7,
-        8,
-        10,
-        31
-      ],
+      "x": 87.35,
+      "y": 60.49,
+      "komsular": [7, 8, 10, 31],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -320,14 +249,7 @@
       "province": "demirvadi",
       "x": 44.5,
       "y": 59.53,
-      "komsular": [
-        1,
-        13,
-        14,
-        15,
-        22,
-        32
-      ],
+      "komsular": [1, 13, 14, 15, 22, 32],
       "level": 1,
       "income_mult": 2.0,
       "npc_garrison": {
@@ -346,14 +268,7 @@
       "province": "demirvadi",
       "x": 55.5,
       "y": 59.53,
-      "komsular": [
-        1,
-        2,
-        3,
-        12,
-        15,
-        16
-      ],
+      "komsular": [1, 2, 3, 12, 15, 16],
       "level": 1,
       "income_mult": 2.0,
       "npc_garrison": {
@@ -370,16 +285,9 @@
       "name": "Bakırdere",
       "type": "maden",
       "province": "demirvadi",
-      "x": 39.0,
-      "y": 69.05,
-      "komsular": [
-        12,
-        15,
-        17,
-        22,
-        24,
-        25
-      ],
+      "x": 38.36,
+      "y": 68.28,
+      "komsular": [12, 15, 17, 22, 24, 25],
       "level": 1,
       "income_mult": 1.5,
       "npc_garrison": {
@@ -398,14 +306,7 @@
       "province": "demirvadi",
       "x": 50.0,
       "y": 69.05,
-      "komsular": [
-        12,
-        13,
-        14,
-        16,
-        17,
-        18
-      ],
+      "komsular": [12, 13, 14, 16, 17, 18],
       "level": 1,
       "income_mult": 1.5,
       "npc_garrison": {
@@ -424,14 +325,7 @@
       "province": "demirvadi",
       "x": 61.0,
       "y": 69.05,
-      "komsular": [
-        3,
-        5,
-        6,
-        13,
-        15,
-        18
-      ],
+      "komsular": [3, 5, 6, 13, 15, 18],
       "level": 1,
       "income_mult": 1.5,
       "npc_garrison": {
@@ -448,16 +342,9 @@
       "name": "Taş Meydan",
       "type": "sehir",
       "province": "demirvadi",
-      "x": 44.5,
+      "x": 46.0,
       "y": 78.58,
-      "komsular": [
-        14,
-        15,
-        18,
-        20,
-        21,
-        25
-      ],
+      "komsular": [14, 15, 18, 20, 21, 25],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -476,14 +363,7 @@
       "province": "demirvadi",
       "x": 55.5,
       "y": 78.58,
-      "komsular": [
-        5,
-        15,
-        16,
-        17,
-        21,
-        29
-      ],
+      "komsular": [5, 15, 16, 17, 21, 29],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -500,13 +380,9 @@
       "name": "Sınırkule",
       "type": "kale",
       "province": "demirvadi",
-      "x": 28.0,
-      "y": 88.11,
-      "komsular": [
-        20,
-        25,
-        28
-      ],
+      "x": 32.92,
+      "y": 88.98,
+      "komsular": [20, 25, 28],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -523,14 +399,9 @@
       "name": "Gölcük Köyü",
       "type": "koy",
       "province": "demirvadi",
-      "x": 39.0,
-      "y": 88.11,
-      "komsular": [
-        17,
-        19,
-        21,
-        25
-      ],
+      "x": 38.23,
+      "y": 88.75,
+      "komsular": [17, 19, 21, 25],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -547,14 +418,9 @@
       "name": "Kervanbaşı",
       "type": "sehir",
       "province": "demirvadi",
-      "x": 50.0,
+      "x": 51.0,
       "y": 88.11,
-      "komsular": [
-        17,
-        18,
-        20,
-        29
-      ],
+      "komsular": [17, 18, 20, 29],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -571,16 +437,9 @@
       "name": "Altınbaşak",
       "type": "tarla",
       "province": "gunbati",
-      "x": 33.5,
+      "x": 34.5,
       "y": 59.53,
-      "komsular": [
-        12,
-        14,
-        23,
-        24,
-        32,
-        33
-      ],
+      "komsular": [12, 14, 23, 24, 32, 33],
       "level": 1,
       "income_mult": 1.5,
       "npc_garrison": {
@@ -597,16 +456,9 @@
       "name": "Altınkapı",
       "type": "sehir",
       "province": "gunbati",
-      "x": 22.5,
-      "y": 59.53,
-      "komsular": [
-        22,
-        24,
-        26,
-        27,
-        33,
-        35
-      ],
+      "x": 23.14,
+      "y": 60.3,
+      "komsular": [22, 24, 26, 27, 33, 35],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -623,16 +475,9 @@
       "name": "Cürufköy",
       "type": "maden",
       "province": "gunbati",
-      "x": 28.0,
-      "y": 69.05,
-      "komsular": [
-        14,
-        22,
-        23,
-        25,
-        27,
-        28
-      ],
+      "x": 27.83,
+      "y": 70.03,
+      "komsular": [14, 22, 23, 25, 27, 28],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -651,14 +496,7 @@
       "province": "gunbati",
       "x": 33.5,
       "y": 78.58,
-      "komsular": [
-        14,
-        17,
-        19,
-        20,
-        24,
-        28
-      ],
+      "komsular": [14, 17, 19, 20, 24, 28],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -677,12 +515,7 @@
       "province": "gunbati",
       "x": 11.5,
       "y": 59.53,
-      "komsular": [
-        23,
-        27,
-        35,
-        38
-      ],
+      "komsular": [23, 27, 35, 38],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -699,14 +532,9 @@
       "name": "Loncalar Şehri",
       "type": "sehir",
       "province": "gunbati",
-      "x": 17.0,
-      "y": 69.05,
-      "komsular": [
-        23,
-        24,
-        26,
-        28
-      ],
+      "x": 16.23,
+      "y": 68.41,
+      "komsular": [23, 24, 26, 28],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -725,12 +553,7 @@
       "province": "gunbati",
       "x": 22.5,
       "y": 78.58,
-      "komsular": [
-        19,
-        24,
-        25,
-        27
-      ],
+      "komsular": [19, 24, 25, 27],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -747,14 +570,9 @@
       "name": "Erikli Köyü",
       "type": "koy",
       "province": "gunbati",
-      "x": 61.0,
-      "y": 88.11,
-      "komsular": [
-        5,
-        18,
-        21,
-        30
-      ],
+      "x": 60.23,
+      "y": 87.47,
+      "komsular": [5, 18, 21, 30],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -771,13 +589,9 @@
       "name": "Tohumluk",
       "type": "tarla",
       "province": "gunbati",
-      "x": 72.0,
-      "y": 88.11,
-      "komsular": [
-        5,
-        9,
-        29
-      ],
+      "x": 71.04,
+      "y": 86.96,
+      "komsular": [5, 9, 29],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -794,13 +608,9 @@
       "name": "Dörtyol",
       "type": "sehir",
       "province": "gunbati",
-      "x": 94.0,
-      "y": 50.0,
-      "komsular": [
-        8,
-        11,
-        61
-      ],
+      "x": 83.61,
+      "y": 56.0,
+      "komsular": [8, 11, 61],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -819,14 +629,7 @@
       "province": "aksu",
       "x": 39.0,
       "y": 50.0,
-      "komsular": [
-        1,
-        12,
-        22,
-        33,
-        34,
-        42
-      ],
+      "komsular": [1, 12, 22, 33, 34, 42],
       "level": 1,
       "income_mult": 2.0,
       "npc_garrison": {
@@ -845,14 +648,7 @@
       "province": "aksu",
       "x": 28.0,
       "y": 50.0,
-      "komsular": [
-        22,
-        23,
-        32,
-        34,
-        35,
-        36
-      ],
+      "komsular": [22, 23, 32, 34, 35, 36],
       "level": 1,
       "income_mult": 1.5,
       "npc_garrison": {
@@ -871,14 +667,7 @@
       "province": "aksu",
       "x": 33.5,
       "y": 40.47,
-      "komsular": [
-        32,
-        33,
-        36,
-        37,
-        42,
-        43
-      ],
+      "komsular": [32, 33, 36, 37, 42, 43],
       "level": 1,
       "income_mult": 1.5,
       "npc_garrison": {
@@ -897,14 +686,7 @@
       "province": "aksu",
       "x": 17.0,
       "y": 50.0,
-      "komsular": [
-        23,
-        26,
-        33,
-        36,
-        38,
-        39
-      ],
+      "komsular": [23, 26, 33, 36, 38, 39],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -923,14 +705,7 @@
       "province": "aksu",
       "x": 22.5,
       "y": 40.47,
-      "komsular": [
-        33,
-        34,
-        35,
-        37,
-        39,
-        40
-      ],
+      "komsular": [33, 34, 35, 37, 39, 40],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -949,14 +724,7 @@
       "province": "aksu",
       "x": 28.0,
       "y": 30.95,
-      "komsular": [
-        34,
-        36,
-        40,
-        41,
-        43,
-        45
-      ],
+      "komsular": [34, 36, 40, 41, 43, 45],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -975,11 +743,7 @@
       "province": "aksu",
       "x": 6.0,
       "y": 50.0,
-      "komsular": [
-        26,
-        35,
-        39
-      ],
+      "komsular": [26, 35, 39],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -998,12 +762,7 @@
       "province": "aksu",
       "x": 11.5,
       "y": 40.47,
-      "komsular": [
-        35,
-        36,
-        38,
-        40
-      ],
+      "komsular": [35, 36, 38, 40],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -1022,12 +781,7 @@
       "province": "aksu",
       "x": 17.0,
       "y": 30.95,
-      "komsular": [
-        36,
-        37,
-        39,
-        41
-      ],
+      "komsular": [36, 37, 39, 41],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -1046,12 +800,7 @@
       "province": "aksu",
       "x": 22.5,
       "y": 21.42,
-      "komsular": [
-        37,
-        40,
-        45,
-        48
-      ],
+      "komsular": [37, 40, 45, 48],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -1070,14 +819,7 @@
       "province": "karaorman",
       "x": 44.5,
       "y": 40.47,
-      "komsular": [
-        1,
-        32,
-        34,
-        43,
-        44,
-        52
-      ],
+      "komsular": [1, 32, 34, 43, 44, 52],
       "level": 1,
       "income_mult": 2.0,
       "npc_garrison": {
@@ -1096,14 +838,7 @@
       "province": "karaorman",
       "x": 39.0,
       "y": 30.95,
-      "komsular": [
-        34,
-        37,
-        42,
-        44,
-        45,
-        46
-      ],
+      "komsular": [34, 37, 42, 44, 45, 46],
       "level": 1,
       "income_mult": 1.5,
       "npc_garrison": {
@@ -1122,14 +857,7 @@
       "province": "karaorman",
       "x": 50.0,
       "y": 30.95,
-      "komsular": [
-        42,
-        43,
-        46,
-        47,
-        52,
-        53
-      ],
+      "komsular": [42, 43, 46, 47, 52, 53],
       "level": 1,
       "income_mult": 1.5,
       "npc_garrison": {
@@ -1148,14 +876,7 @@
       "province": "karaorman",
       "x": 33.5,
       "y": 21.42,
-      "komsular": [
-        37,
-        41,
-        43,
-        46,
-        48,
-        49
-      ],
+      "komsular": [37, 41, 43, 46, 48, 49],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -1174,14 +895,7 @@
       "province": "karaorman",
       "x": 44.5,
       "y": 21.42,
-      "komsular": [
-        43,
-        44,
-        45,
-        47,
-        49,
-        50
-      ],
+      "komsular": [43, 44, 45, 47, 49, 50],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -1200,14 +914,7 @@
       "province": "karaorman",
       "x": 55.5,
       "y": 21.42,
-      "komsular": [
-        44,
-        46,
-        50,
-        51,
-        53,
-        55
-      ],
+      "komsular": [44, 46, 50, 51, 53, 55],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -1226,11 +933,7 @@
       "province": "karaorman",
       "x": 28.0,
       "y": 11.89,
-      "komsular": [
-        41,
-        45,
-        49
-      ],
+      "komsular": [41, 45, 49],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -1249,12 +952,7 @@
       "province": "karaorman",
       "x": 39.0,
       "y": 11.89,
-      "komsular": [
-        45,
-        46,
-        48,
-        50
-      ],
+      "komsular": [45, 46, 48, 50],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -1273,12 +971,7 @@
       "province": "karaorman",
       "x": 50.0,
       "y": 11.89,
-      "komsular": [
-        46,
-        47,
-        49,
-        51
-      ],
+      "komsular": [46, 47, 49, 51],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -1297,12 +990,7 @@
       "province": "karaorman",
       "x": 61.0,
       "y": 11.89,
-      "komsular": [
-        47,
-        50,
-        55,
-        58
-      ],
+      "komsular": [47, 50, 55, 58],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -1321,14 +1009,7 @@
       "province": "tasgecit",
       "x": 55.5,
       "y": 40.47,
-      "komsular": [
-        1,
-        2,
-        42,
-        44,
-        53,
-        54
-      ],
+      "komsular": [1, 2, 42, 44, 53, 54],
       "level": 1,
       "income_mult": 2.0,
       "npc_garrison": {
@@ -1347,14 +1028,7 @@
       "province": "tasgecit",
       "x": 61.0,
       "y": 30.95,
-      "komsular": [
-        44,
-        47,
-        52,
-        54,
-        55,
-        56
-      ],
+      "komsular": [44, 47, 52, 54, 55, 56],
       "level": 1,
       "income_mult": 1.5,
       "npc_garrison": {
@@ -1373,14 +1047,7 @@
       "province": "tasgecit",
       "x": 66.5,
       "y": 40.47,
-      "komsular": [
-        2,
-        4,
-        52,
-        53,
-        56,
-        57
-      ],
+      "komsular": [2, 4, 52, 53, 56, 57],
       "level": 1,
       "income_mult": 1.5,
       "npc_garrison": {
@@ -1399,14 +1066,7 @@
       "province": "tasgecit",
       "x": 66.5,
       "y": 21.42,
-      "komsular": [
-        47,
-        51,
-        53,
-        56,
-        58,
-        59
-      ],
+      "komsular": [47, 51, 53, 56, 58, 59],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -1425,14 +1085,7 @@
       "province": "tasgecit",
       "x": 72.0,
       "y": 30.95,
-      "komsular": [
-        53,
-        54,
-        55,
-        57,
-        59,
-        60
-      ],
+      "komsular": [53, 54, 55, 57, 59, 60],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -1451,14 +1104,7 @@
       "province": "tasgecit",
       "x": 77.5,
       "y": 40.47,
-      "komsular": [
-        4,
-        8,
-        54,
-        56,
-        60,
-        61
-      ],
+      "komsular": [4, 8, 54, 56, 60, 61],
       "level": 1,
       "income_mult": 1.2,
       "npc_garrison": {
@@ -1477,11 +1123,7 @@
       "province": "tasgecit",
       "x": 72.0,
       "y": 11.89,
-      "komsular": [
-        51,
-        55,
-        59
-      ],
+      "komsular": [51, 55, 59],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -1500,12 +1142,7 @@
       "province": "tasgecit",
       "x": 77.5,
       "y": 21.42,
-      "komsular": [
-        55,
-        56,
-        58,
-        60
-      ],
+      "komsular": [55, 56, 58, 60],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -1522,14 +1159,9 @@
       "name": "Ekinova",
       "type": "tarla",
       "province": "tasgecit",
-      "x": 83.0,
-      "y": 30.95,
-      "komsular": [
-        56,
-        57,
-        59,
-        61
-      ],
+      "x": 82.13,
+      "y": 31.45,
+      "komsular": [56, 57, 59, 61],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {
@@ -1546,14 +1178,9 @@
       "name": "Akpınar Köyü",
       "type": "koy",
       "province": "tasgecit",
-      "x": 88.5,
+      "x": 86.0,
       "y": 40.47,
-      "komsular": [
-        8,
-        31,
-        57,
-        60
-      ],
+      "komsular": [8, 31, 57, 60],
       "level": 1,
       "income_mult": 1.0,
       "npc_garrison": {

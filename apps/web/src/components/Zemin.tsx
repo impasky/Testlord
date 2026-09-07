@@ -31,11 +31,6 @@ const BOY = 150;
  *
  * Listeyle klasörün ayrışmasını `tools/gorsel-denetim.mjs` yakalıyor:
  * dosya konur da liste güncellenmezse denetim kalıyor.
- *
- * `akin` HENÜZ BURADA DEĞİL ve olmamalı: istemi yazıldı
- * (`tools/gorsel-uret.py`) ama dosya üretilmedi. Listeye erken eklemek
- * her açılışta bir 404 demek — ekran zaten görselsiz çalışıyor, sade
- * bir başlıkla açılıyor. Dosya konduğu gün buraya bir satır.
  */
 const ZEMINI_OLAN = new Set([
   'malikane',
@@ -46,6 +41,7 @@ const ZEMINI_OLAN = new Set([
   'gorevler',
   'olaylar',
   'arastirma',
+  'akin',
 ]);
 
 export function Zemin({

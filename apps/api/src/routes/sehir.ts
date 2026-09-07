@@ -140,7 +140,11 @@ export async function sehirRoutes(app: FastifyInstance) {
           kademe: yerlesimKademesi(r.type as RegionType, r.level),
         }))
         .filter((r) => KADEME_SIRASI(r.kademe) > KADEME_SIRASI(kademe))
-        .map((r) => ({ ...r, kademeAdi: KADEME_ADI[r.kademe], binaTavani: kademeTavani(r.kademe) })),
+        .map((r) => ({
+          ...r,
+          kademeAdi: KADEME_ADI[r.kademe],
+          binaTavani: kademeTavani(r.kademe),
+        })),
       esZamanli: B.kuyruklar.es_zamanli.bina,
       insaat: kuyruk.map((q) => {
         const key = String((q.payload as { key?: string }).key ?? '');

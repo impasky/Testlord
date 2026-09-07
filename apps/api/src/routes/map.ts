@@ -27,12 +27,7 @@ import { requireAuth } from '../auth.js';
 import { prisma, type Tx } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { gecikmisleriKapat } from '../services/gecikmis.js';
-import {
-  arastirmaBonusuOku,
-  binalariOku,
-  findLordByUser,
-  pushEvent,
-} from '../services/lord.js';
+import { arastirmaBonusuOku, binalariOku, findLordByUser, pushEvent } from '../services/lord.js';
 import { mesafeOlcer, mesafeOlcerHazir } from '../services/mesafe.js';
 import { paktVarMi, paktliIttifaklar } from '../services/pakt.js';
 import { lordunAyricaligi } from '../services/ittifakSeviye.js';

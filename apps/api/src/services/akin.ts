@@ -306,6 +306,7 @@ export async function sahadakiAkinlar(lordId: string, tx: Tx = prisma) {
 /** Bir birimin akında olup olmadığını sayan yardımcı — komuta yeri için. */
 export function akindakiOrdu(satirlar: { unitType: string; count: number }[]): Army {
   const ordu: Army = {};
-  for (const s of satirlar) ordu[s.unitType as UnitType] = (ordu[s.unitType as UnitType] ?? 0) + s.count;
+  for (const s of satirlar)
+    ordu[s.unitType as UnitType] = (ordu[s.unitType as UnitType] ?? 0) + s.count;
   return ordu;
 }

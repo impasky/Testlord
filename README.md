@@ -204,6 +204,9 @@ apps/web/                 React + Vite + Tailwind, yedi ekran
 tools/
   generate_map.py         Haritayı DOĞRULAYAN script (artık üretmiyor)
   gorsel-uret.py          Oyun görsellerini üretir (GEMINI_API_KEY ister)
+  gorsel-ayikla.py        Çok figürlü sayfayı tek tek varlıklara böler
+  dama-sil.py             Modelin ÇİZDİĞİ saydamlık damasını gerçek alfaya çevirir
+  harita-yerlestir.py     Bölge işaretçilerini çizilmiş dünya zeminine oturtur
   check_balance.py        Aritmetik denge doğrulayıcı
   oyun-dongusu-testi.mjs  API üzerinden tam oyun döngüsü
   shard-testi.mjs         Dünya dolunca yeni shard açıldığını doğrular
@@ -222,7 +225,7 @@ tools/
 
 ```bash
 python3 tools/check_balance.py    # dengeyi doğrula (8/8 geçmeli)
-python3 tools/generate_map.py     # haritayı doğrula (komşuluk simetrik ve bağlı mı)
+python3 tools/generate_map.py     # haritayı doğrula (komşuluk simetrik, bağlı, işaretçiler karada)
 ```
 
 ## Teknoloji

@@ -228,22 +228,48 @@ function HaritaKarti({
         data-rehber={ilkAcikMi ? 'akin-harita' : undefined}
         onClick={onAc}
         disabled={kilitli}
-        className="bas w-full px-3 py-2.5 text-left"
+        className="bas w-full text-left"
         aria-expanded={acikMi}
       >
-        <div className="flex items-baseline justify-between gap-2">
-          <span className="baslik text-[14px] text-altin">{h.ad}</span>
-          {kilitli ? (
-            <Hap renk="var(--color-sonuk)">Sv{h.gerekenSeviye}</Hap>
-          ) : (
-            <span className="tabular text-[11.5px] text-solgun">{h.acikGrup}/10 grup hazır</span>
-          )}
+        {/* --- Diyarın kapağı ---
+            Beş diyarın tek ayırt edici işareti yazıydı; oyuncu "burası
+            neresi" sorusunu ancak okuyarak cevaplayabiliyordu. Boy SABİT
+            (aspect-[16/6]) — görsel yüklenirken kart zıplamasın diye,
+            `Zemin.tsx`teki gerekçenin aynısı.
+
+            Kilitli diyarda gri: kilidin sebebi seviye, ve renkli bir
+            kapak "gir" diye bağırıp kapıyı kapatıyordu. */}
+        <div
+          className={`relative w-full overflow-hidden rounded-t-[18px] aspect-[16/6] ${
+            kilitli ? 'grayscale' : ''
+          }`}
+        >
+          <img
+            src={`/gorseller/akin/${h.key}.webp`}
+            alt=""
+            aria-hidden="true"
+            className="h-full w-full object-cover"
+            loading="lazy"
+          />
+          {/* Alt kenarı karartan perde: kapağın açık tonu kart kenarıyla
+              birleşince kartın nerede bittiği kayboluyordu. */}
+          <span className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-[var(--color-panel)] to-transparent" />
         </div>
-        <p className="mt-0.5 text-[12px] leading-snug text-solgun">{h.ozet}</p>
-        <p className="mt-1 text-[11.5px] text-sonuk">
-          {h.dusman}
-          {kilitli && ` · ${h.gerekenSeviye - lordSeviyesi} seviye daha gerekiyor`}
-        </p>
+        <div className="px-3 pb-2.5 pt-2">
+          <div className="flex items-baseline justify-between gap-2">
+            <span className="baslik text-[14px] text-altin">{h.ad}</span>
+            {kilitli ? (
+              <Hap renk="var(--color-sonuk)">Sv{h.gerekenSeviye}</Hap>
+            ) : (
+              <span className="tabular text-[11.5px] text-solgun">{h.acikGrup}/10 grup hazır</span>
+            )}
+          </div>
+          <p className="mt-0.5 text-[12px] leading-snug text-solgun">{h.ozet}</p>
+          <p className="mt-1 text-[11.5px] text-sonuk">
+            {h.dusman}
+            {kilitli && ` · ${h.gerekenSeviye - lordSeviyesi} seviye daha gerekiyor`}
+          </p>
+        </div>
       </button>
 
       {acikMi && !kilitli && (

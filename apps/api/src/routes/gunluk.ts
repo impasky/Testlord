@@ -24,12 +24,7 @@ import type { FastifyInstance } from 'fastify';
 import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError } from '../errors.js';
-import {
-  arastirmaBonusuOku,
-  binalariOku,
-  findLordByUser,
-  tickLord,
-} from '../services/lord.js';
+import { arastirmaBonusuOku, binalariOku, findLordByUser, tickLord } from '../services/lord.js';
 
 /** Bugünün UTC başlangıcı — sayımların alt sınırı. */
 function gunBasi(simdi: Date): Date {

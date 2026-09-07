@@ -21,18 +21,18 @@ Oyuncunun tek mesajı bu dokümanın sebebi:
 
 Plan on soruyla netleşti. Cevaplar (oyuncunun seçimleri):
 
-| Soru | Karar |
-|---|---|
-| Şehir sayfası ↔ bölge ilişkisi | **Başkentini taşırsın** |
-| Harita çizim tekniği | **Karma**: dünya/akın tek resim + kod etiketi, yerleşim zemin + sprite |
-| NPC akınları | **Gerçek sefer, kısa süre** — savaş motoru, dizilim, taktik aynen (§6'da adı AKIN oldu) |
-| Alt çubuk | **Şehir · Ordu · Sefer · Dünya · Lord** |
-| Başkent kaybı | **Düşürülür**, elindeki en iyi bölgeye taşınırsın; hiç kalmazsa kampa |
-| Mevcut dünyalar | Sıfırlanacaktı; **göç yazıldı** — bkz. §1.4 |
-| Sefer grupları | **Yenilenme süresi** ile geri döner |
-| Şehirdeki binalar | **Görünür ama inşa edilmemiş**, kaynakla dikilir |
-| Bina seviyesi | **Var** (1–5) |
-| Başkent taşınınca binalar | **Seninle taşınır** |
+| Soru                           | Karar                                                                                   |
+| ------------------------------ | --------------------------------------------------------------------------------------- |
+| Şehir sayfası ↔ bölge ilişkisi | **Başkentini taşırsın**                                                                 |
+| Harita çizim tekniği           | **Karma**: dünya/akın tek resim + kod etiketi, yerleşim zemin + sprite                  |
+| NPC akınları                   | **Gerçek sefer, kısa süre** — savaş motoru, dizilim, taktik aynen (§6'da adı AKIN oldu) |
+| Alt çubuk                      | **Şehir · Ordu · Sefer · Dünya · Lord**                                                 |
+| Başkent kaybı                  | **Düşürülür**, elindeki en iyi bölgeye taşınırsın; hiç kalmazsa kampa                   |
+| Mevcut dünyalar                | Sıfırlanacaktı; **göç yazıldı** — bkz. §1.4                                             |
+| Sefer grupları                 | **Yenilenme süresi** ile geri döner                                                     |
+| Şehirdeki binalar              | **Görünür ama inşa edilmemiş**, kaynakla dikilir                                        |
+| Bina seviyesi                  | **Var** (1–5)                                                                           |
+| Başkent taşınınca binalar      | **Seninle taşınır**                                                                     |
 
 ## 1. Veri modeli — hex çıkıyor, komşuluk grafiği giriyor
 
@@ -127,14 +127,14 @@ yapmak zorunda.
 Yerleşim kademesi ayrı bir sayaç değil; **başkent bölgenin türü ve
 seviyesinden türetilir**. İkinci bir doğruluk kaynağı açmıyoruz.
 
-| Başkent | Kademe | Görünüm |
-|---|---|---|
-| yok | **Kamp** | Bir ateş, birkaç çadır, talim direği |
-| `koy` | **Köy** | Çamurlu yol, ahşap evler, palisad |
-| `sehir` sv. 1–2 | **Kasaba** | Taş meydan, ilk sur, çarşı |
-| `sehir` sv. 3–5 | **Şehir** | Forum, su kemeri, tapınak |
-| `kale` | **Kale-şehir** | Surlar hâkim, askerî yerleşim |
-| `taht` | **Metropol** | Vangionum ölçeği |
+| Başkent         | Kademe         | Görünüm                              |
+| --------------- | -------------- | ------------------------------------ |
+| yok             | **Kamp**       | Bir ateş, birkaç çadır, talim direği |
+| `koy`           | **Köy**        | Çamurlu yol, ahşap evler, palisad    |
+| `sehir` sv. 1–2 | **Kasaba**     | Taş meydan, ilk sur, çarşı           |
+| `sehir` sv. 3–5 | **Şehir**      | Forum, su kemeri, tapınak            |
+| `kale`          | **Kale-şehir** | Surlar hâkim, askerî yerleşim        |
+| `taht`          | **Metropol**   | Vangionum ölçeği                     |
 
 ### 2.2 Taşınma — Y3'te geldi
 
@@ -151,10 +151,10 @@ kendiliğinden taşımadığı için lord bir şehir alsa bile köyde oturmaya
 devam ediyor ve kasaba binaları (karargâh, kütüphane, liman) hiç
 görünmüyordu. Uçlar:
 
-| Uç | İş |
-|---|---|
+| Uç                             | İş                                                                                                                                                         |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `GET /sehir` → `tasinabilir[]` | Elindeki **daha iyi** yerleşimler. Aynı ya da küçük kademe listelenmiyor: "taşın" demek bir kayıp teklifi olurdu. Liste boşsa arayüz hiçbir kart çizmiyor. |
-| `POST /sehir/baskent` | Sahiplik, yerleşim türü ve "zaten oradasın" kontrolü; `baskentBolgeId` güncellenir. |
+| `POST /sehir/baskent`          | Sahiplik, yerleşim türü ve "zaten oradasın" kontrolü; `baskentBolgeId` güncellenir.                                                                        |
 
 Binalar lordun kaydında (`Lord.binalar`) duruyor, bölgenin kaydında
 değil. Taşınmanın hiçbir şey kaybettirmemesi bu yüzden bir kural değil,
@@ -185,18 +185,18 @@ dakikada görür ama hepsi birden üstüne gelmez.
 
 Etkilerin SAYILARI ve "seviye 0 = eski davranış" sözleşmesi §4.1'de.
 
-| Bina | Kapı | Seviye ne veriyor | Nereye bağlandı (Y4) |
-|---|---|---|---|
-| Malikâne | malikane | Depo tabanına ek | `storageCapacity(…, binalar)` |
-| Kışla | kisla | Eş zamanlı eğitim kuyruğu | `esZamanliLimit('train', …)` |
-| Demirhane | demirhane | Dövülebilir en yüksek tier | `canCraftTier(sv, tier, binalar)` |
-| Karargâh | generaller | General slotu eki | `generalSlots(liderlik, binalar)` |
-| Kütüphane | arastirma | Eş zamanlı araştırma | `esZamanliLimit('research', …)` |
-| Hastane | (ordu) | En uzun tedavi süresi | `tedaviSuresiSn(…, binalar)` |
-| Pazar | (pazar) | Günlük takas tavanına ek | `pazarGunlukTavan(sv, binalar)` |
-| Liman | (ticaret) | Günlük sevkiyat tavanına ek | `gunlukTavan(tavan, binalar)` |
-| Elçilik | ittifak | Sahadaki takviye sayısı | `takviyeSlotu(binalar)` |
-| Surlar | — | **Başkent** tahkimatına ek | `bolgeTahkimati(bolge, sahip)` |
+| Bina      | Kapı       | Seviye ne veriyor           | Nereye bağlandı (Y4)              |
+| --------- | ---------- | --------------------------- | --------------------------------- |
+| Malikâne  | malikane   | Depo tabanına ek            | `storageCapacity(…, binalar)`     |
+| Kışla     | kisla      | Eş zamanlı eğitim kuyruğu   | `esZamanliLimit('train', …)`      |
+| Demirhane | demirhane  | Dövülebilir en yüksek tier  | `canCraftTier(sv, tier, binalar)` |
+| Karargâh  | generaller | General slotu eki           | `generalSlots(liderlik, binalar)` |
+| Kütüphane | arastirma  | Eş zamanlı araştırma        | `esZamanliLimit('research', …)`   |
+| Hastane   | (ordu)     | En uzun tedavi süresi       | `tedaviSuresiSn(…, binalar)`      |
+| Pazar     | (pazar)    | Günlük takas tavanına ek    | `pazarGunlukTavan(sv, binalar)`   |
+| Liman     | (ticaret)  | Günlük sevkiyat tavanına ek | `gunlukTavan(tavan, binalar)`     |
+| Elçilik   | ittifak    | Sahadaki takviye sayısı     | `takviyeSlotu(binalar)`           |
+| Surlar    | —          | **Başkent** tahkimatına ek  | `bolgeTahkimati(bolge, sahip)`    |
 
 ### 3.2 Seviyesiz yapılar (3)
 
@@ -206,14 +206,14 @@ anlamsız olurdu.
 
 ### 3.3 Kademe, bina seviyesini kısıtlar
 
-| Yerleşim | Bina seviye tavanı |
-|---|---|
-| Kamp | — (yalnız çadır ve talimgah, sabit) |
-| Köy | 2 |
-| Kasaba | 3 |
-| Şehir | 4 |
-| Kale-şehir | 4 (Surlar 5) |
-| Metropol | 5 |
+| Yerleşim   | Bina seviye tavanı                  |
+| ---------- | ----------------------------------- |
+| Kamp       | — (yalnız çadır ve talimgah, sabit) |
+| Köy        | 2                                   |
+| Kasaba     | 3                                   |
+| Şehir      | 4                                   |
+| Kale-şehir | 4 (Surlar 5)                        |
+| Metropol   | 5                                   |
 
 Fethin karşılığı budur: **T5 ekipman dövmek için gerçek bir şehir
 gerekir.** Yerleşim kademesi böylece dekor olmaktan çıkıp bir tavan
@@ -229,11 +229,11 @@ ama kasabası olmayan oyuncu savaşının sonucunu okuyamıyordu.** Bina
 kademesi bir kapasite tavanı olmalı, bir bilgi ambargosu değil. Son
 dağılım:
 
-| Kademe | Binalar |
-|---|---|
-| Kamp | Malikâne, Kışla, Görev Panosu, Haberci Kulesi, Onur Meydanı |
-| Köy | Demirhane, Hastane, Pazar, Surlar, Elçilik |
-| Kasaba | Karargâh, Kütüphane, Liman |
+| Kademe | Binalar                                                     |
+| ------ | ----------------------------------------------------------- |
+| Kamp   | Malikâne, Kışla, Görev Panosu, Haberci Kulesi, Onur Meydanı |
+| Köy    | Demirhane, Hastane, Pazar, Surlar, Elçilik                  |
+| Kasaba | Karargâh, Kütüphane, Liman                                  |
 
 İlke `data/binalar.json` içinde `_kademe_ilkesi` olarak yazılı; yeni bina
 eklerken oraya bakılmalı.
@@ -287,18 +287,18 @@ bir gecede küçülür, sonraki denge tartışması da "binalar mı bozdu, sayı
 mı yanlıştı" diye cevapsız kalırdı. `bina.test.ts` bu sözleşmeyi bina bina
 ölçüyor.
 
-| Bina | Ne veriyor | Sv 0 (eski) | Sv 5 |
-|---|---|---|---|
-| Malikâne | Depo tabanına ek | +0 | +170.000 |
-| Kışla | Eş zamanlı eğitim | 3 | 6 |
-| Demirhane | En yüksek ekipman kademesi | T1 | T5 |
-| Karargâh | General slotu eki | +0 | +2 |
-| Kütüphane | Eş zamanlı araştırma | 1 | 4 |
-| Hastane | En uzun tedavi | 6 sa | 1 sa |
-| Pazar | Günlük takas tavanına ek | +0 | +30.000 |
-| Liman | Günlük sevkiyat tavanına ek | +0 | +42.000 |
-| Elçilik | Sahadaki takviye sayısı | 2 | 8 |
-| Surlar | **Başkent** tahkimatına ek | +0 | +%20 |
+| Bina      | Ne veriyor                  | Sv 0 (eski) | Sv 5     |
+| --------- | --------------------------- | ----------- | -------- |
+| Malikâne  | Depo tabanına ek            | +0          | +170.000 |
+| Kışla     | Eş zamanlı eğitim           | 3           | 6        |
+| Demirhane | En yüksek ekipman kademesi  | T1          | T5       |
+| Karargâh  | General slotu eki           | +0          | +2       |
+| Kütüphane | Eş zamanlı araştırma        | 1           | 4        |
+| Hastane   | En uzun tedavi              | 6 sa        | 1 sa     |
+| Pazar     | Günlük takas tavanına ek    | +0          | +30.000  |
+| Liman     | Günlük sevkiyat tavanına ek | +0          | +42.000  |
+| Elçilik   | Sahadaki takviye sayısı     | 2           | 8        |
+| Surlar    | **Başkent** tahkimatına ek  | +0          | +%20     |
 
 Üç tanesi ilk tasarımdan saptı ve sebebi kayda değer:
 
@@ -370,13 +370,13 @@ yiyordu.
 > kimsenin bilememesi demekti. "Akın" zaten yapılan şeyin tam adı:
 > düşman kampına inip vurup dönmek.
 
-| Harita | Düşman | Ağırlıklı ödül | Açılış | Azami ekipman |
-|---|---|---|---|---|
-| Kırık Sahil | Deniz haydutları | Altın | baştan | T2 |
-| Solgun Bataklık | Kaçak lejyonerler | Demir | sv. 5 | T3 |
-| Kuzey Buzulu | Barbar klanları | Erzak | sv. 10 | T3 |
-| Küller Vadisi | Dağ eşkıyaları | Demir | sv. 15 | T4 |
-| Unutulmuş Nekropol | Mezar kültü | Dengeli | sv. 20 | T5 |
+| Harita             | Düşman            | Ağırlıklı ödül | Açılış | Azami ekipman |
+| ------------------ | ----------------- | -------------- | ------ | ------------- |
+| Kırık Sahil        | Deniz haydutları  | Altın          | baştan | T2            |
+| Solgun Bataklık    | Kaçak lejyonerler | Demir          | sv. 5  | T3            |
+| Kuzey Buzulu       | Barbar klanları   | Erzak          | sv. 10 | T3            |
+| Küller Vadisi      | Dağ eşkıyaları    | Demir          | sv. 15 | T4            |
+| Unutulmuş Nekropol | Mezar kültü       | Dengeli        | sv. 20 | T5            |
 
 Her haritada **10 grup**, 1'den 10'a zorlaşır. Onuncu grup **şef**:
 garnizonu ağır, ödülü büyük, yenilenmesi uzun.
@@ -401,11 +401,11 @@ alınır — akından toprak çıksaydı PvP'nin tek sebebi kalmazdı.
 
 Y6'nın çekirdek kararı: **hiçbir durum ikinci kez yazılmıyor.**
 
-| Şey | Nereden türüyor | Saklansaydı ne olurdu |
-|---|---|---|
-| Garnizon | `akinGarnizonu(harita, grup)` | Denge değişikliği yoldaki akınları eski sayılarla bırakır; iki oyuncu aynı gruba farklı düşmanla çarpardı. |
-| "Grup dolu mu" | En son KAZANILMIŞ akının saati | Onu güncelleyecek bir zamanlayıcı gerekirdi; zamanlayıcı uyuduğunda harita yanlış görünürdü. |
-| Yenilenme sayacı | Aynı saatten | Aynı. |
+| Şey              | Nereden türüyor                | Saklansaydı ne olurdu                                                                                      |
+| ---------------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| Garnizon         | `akinGarnizonu(harita, grup)`  | Denge değişikliği yoldaki akınları eski sayılarla bırakır; iki oyuncu aynı gruba farklı düşmanla çarpardı. |
+| "Grup dolu mu"   | En son KAZANILMIŞ akının saati | Onu güncelleyecek bir zamanlayıcı gerekirdi; zamanlayıcı uyuduğunda harita yanlış görünürdü.               |
+| Yenilenme sayacı | Aynı saatten                   | Aynı.                                                                                                      |
 
 Yenilenme **oyuncuya özel**: bir başkasının vurduğu kamp senin haritanda
 duruyor. Ortak olsaydı kalabalık bir dünyada harita hep gri görünürdü.
@@ -423,13 +423,13 @@ Buzulu süvari ağırlıklı: tek bir "en iyi ordu" olmasın diye.
 
 ## 7. Gezinme
 
-| Sekme | İçerik |
-|---|---|
-| **Şehir** | Ana sayfa. Yerleşim haritası ve bütün kapılar. |
-| **Ordu** | Kışla, hastane, dizilim, komuta. |
-| **Akın** | 5 NPC haritası. |
-| **Dünya** | PvP haritası. |
-| **Lord** | Karakter, nitelikler, başarımlar, unvan, hesap. |
+| Sekme     | İçerik                                          |
+| --------- | ----------------------------------------------- |
+| **Şehir** | Ana sayfa. Yerleşim haritası ve bütün kapılar.  |
+| **Ordu**  | Kışla, hastane, dizilim, komuta.                |
+| **Akın**  | 5 NPC haritası.                                 |
+| **Dünya** | PvP haritası.                                   |
+| **Lord**  | Karakter, nitelikler, başarımlar, unvan, hesap. |
 
 Sıra bir cümle söylüyor: ana sayfa, sonra orduyu KURDUĞUN yer, sonra onu
 KULLANDIĞIN iki yer, en sonda lordun kendisi.
@@ -515,28 +515,29 @@ girdiği oyunda ekranın yarısını tanımıyordu.
 
 ## 9. Görsel bütçesi — 100
 
-İstemlerin hepsi yazıldı (`tools/gorsel-uret.py`, `docs/GORSEL-ISTEMLERI.md`);
-**hiçbiri henüz üretilmedi.** Üretim oyuncunun açık talimatını bekliyor.
+İstemlerin hepsi yazıldı (`tools/gorsel-uret.py`, `docs/GORSEL-ISTEMLERI.md`)
+ve **hepsi üretildi.** Harcanan çağrı: 39 (37 görsel + dünya haritası için
+iki deneme). Kalan pay 61.
 
-| Ne | Adet |
-|---|---|
-| Yerleşim zeminleri (kamp, köy, kasaba, şehir, kale-şehir, metropol) | 6 |
-| Bina işaretçileri (10 seviyeli × 2 durum: temel / gelişmiş) | 20 |
-| Seviyesiz yapılar (görev panosu, haberci kulesi, onur meydanı) | 3 |
-| Boş arsa (paylaşılan) | 1 |
-| Dünya haritası zemini | 1 |
-| Akın diyar zeminleri | 5 |
-| Akın sekmesi ekran zemini | 1 |
-| **Alt toplam — üretilecek** | **37** |
-| Yeniden deneme ve varyant payı | 63 |
-| **Toplam bütçe** | **100** |
+| Ne                                                                  | Adet    |
+| ------------------------------------------------------------------- | ------- |
+| Yerleşim zeminleri (kamp, köy, kasaba, şehir, kale-şehir, metropol) | 6       |
+| Bina işaretçileri (10 seviyeli × 2 durum: temel / gelişmiş)         | 20      |
+| Seviyesiz yapılar (görev panosu, haberci kulesi, onur meydanı)      | 3       |
+| Boş arsa (paylaşılan)                                               | 1       |
+| Dünya haritası zemini                                               | 1       |
+| Akın diyar zeminleri                                                | 5       |
+| Akın sekmesi ekran zemini                                           | 1       |
+| **Alt toplam — üretilecek**                                         | **37**  |
+| Yeniden deneme ve varyant payı                                      | 63      |
+| **Toplam bütçe**                                                    | **100** |
 
 **Üç kalem listeden ÇIKTI, çünkü ekranda yerleri yok:**
 
-- *Düşman fraksiyon amblemleri (10)* ve *akın hedef işaretçisi (2)*:
+- _Düşman fraksiyon amblemleri (10)_ ve _akın hedef işaretçisi (2)_:
   akın ekranı diyarları kart, grupları düğme olarak gösteriyor
   (`Akin.tsx`). Amblem koyacak bir yer yok.
-- *Dünya bölge işaretçileri (6)*: harita pinleri zaten satır içi SVG
+- _Dünya bölge işaretçileri (6)_: harita pinleri zaten satır içi SVG
   (`ikon-verisi.ts`) ve 44 pikselde çizgi ikon fotoğraftan iyi okunuyor.
 
 On sekiz görsel üretip hiçbirini göstermemek bütçeyi boşa harcamak
@@ -546,11 +547,15 @@ olurdu. Bir gün o yerler açılırsa istemleri yazılır.
 ızgara değil, çizilmiş tek bir diyar (§5). Altı dosya silindi;
 `public/gorseller/harita/` artık dünya zeminini bekliyor.
 
-**Bina sprite'ları için kod HAZIR, görsel yok.** `BinaIkonu` önce
-`/gorseller/binalar/<key>_<1|5>.webp` deniyor, bulamazsa çizgi ikona
-düşüyor (`onError`). Sprite'lar üretildikçe şehir kendiliğinden
-zenginleşiyor; üretilmeyen bina çalışmaya devam ediyor. Tersini yapmak —
-önce ikonu kaldırıp dosya beklemek — boş kutular demekti.
+**Bina sprite'ları eklendi (24 dosya).** `BinaIkonu` sprite'ı
+`SPRITE_OLAN` listesinde arıyor, yoksa çizgi ikona düşüyor. Liste elle
+tutuluyor ve `gorsel-denetim.mjs` onu klasörle karşılaştırıyor: çalışma
+anında yoklama (`onError`) her çizimde 13 boşa istek demekti.
+
+Modelin yaptığı hata burada anlatılmaya değer: "fully transparent
+background" istendi, model saydamlığı **çizdi** — dama deseni gerçek
+piksel olarak geldi. `tools/dama-sil.py` bunu deseni tanıyarak siliyor
+(ayrıntı `docs/LISANSLAR.md`).
 
 **Kural: resimde yazı yok.** Bütün etiketler DOM'da. Görsel modeli
 okunabilir metin üretemiyor ve bölge adları veriden gelmek zorunda.
@@ -558,6 +563,12 @@ okunabilir metin üretemiyor ve bölge adları veriden gelmek zorunda.
 **Üretim sırası:** zeminler önce kilitlenir, bina ve işaretçi
 koordinatları ondan sonra yerleştirilir. Zemin yeniden üretilirse o
 haritanın bütün koordinatları elden geçer.
+
+Bu kural dünya haritasında hemen işledi: çizilen diyarın kıyıları eski
+altıgen kafese uymuyordu ve 20 bölge işaretçisi denizde kalıyordu.
+`tools/harita-yerlestir.py` yalnız suya düşenleri en yakın uygun karaya
+taşıdı (çoğu 1–2 puan); `tools/generate_map.py` bundan sonra her
+doğrulamada işaretçilerin karada olup olmadığına da bakıyor.
 
 **Yerleşim zemininin ortası BOŞ.** 13 bina işaretçisi oraya konuyor
 (`data/binalar.json` x/y); zeminde de bina çizilirse iki kat bina
@@ -567,23 +578,23 @@ görünür. İstem bu yüzden manzarayı kenarlara yaslıyor.
 
 Her aşama sonunda oyun **oynanabilir** durumda kalır.
 
-| # | İş |
-|---|---|
-| **Y1** ✅ | Veri modeli: komşuluk grafiği, köy türü, başkent, bina alanı. Göç ve testler. |
-| **Y2** ✅ | Dünya haritası arayüzü: resimli zemin, kaydırma/yakınlaştırma, işaretçiler. |
+| #         | İş                                                                                                |
+| --------- | ------------------------------------------------------------------------------------------------- |
+| **Y1** ✅ | Veri modeli: komşuluk grafiği, köy türü, başkent, bina alanı. Göç ve testler.                     |
+| **Y2** ✅ | Dünya haritası arayüzü: resimli zemin, kaydırma/yakınlaştırma, işaretçiler.                       |
 | **Y3** ✅ | Şehir sayfası: yerleşim zemini, bina yerleşimi, inşa ve yükseltme kuyruğu, başkent taşıma (§2.2). |
-| **Y4** ✅ | Bina seviyesi etkileri: kapasiteler binaya bağlandı (§4.1). |
-| **Y5** ✅ | Gezinme: Şehir · Ordu · Akın · Dünya · Lord. Görevler kapıya taşındı. |
-| **Y6** ✅ | Akın sistemi: 5 harita, 50 grup, yenilenme, ödül ve ekipman düşürme (§6). |
-| **Y7** ✅ | Yeni açılış: akın turun içine girdi (§8.1), başkent düşmesi (§8.3), öğretici düzeltildi (§8.4). |
-| **Y8** ✅ | Görsel İSTEMLERİ (üretim beklemede), akın dengesi, temizlik. |
+| **Y4** ✅ | Bina seviyesi etkileri: kapasiteler binaya bağlandı (§4.1).                                       |
+| **Y5** ✅ | Gezinme: Şehir · Ordu · Akın · Dünya · Lord. Görevler kapıya taşındı.                             |
+| **Y6** ✅ | Akın sistemi: 5 harita, 50 grup, yenilenme, ödül ve ekipman düşürme (§6).                         |
+| **Y7** ✅ | Yeni açılış: akın turun içine girdi (§8.1), başkent düşmesi (§8.3), öğretici düzeltildi (§8.4).   |
+| **Y8** ✅ | Görsel İSTEMLERİ (üretim beklemede), akın dengesi, temizlik.                                      |
 
 ### 10.1 Y8'de yapılanlar
 
 - **Görsel istemleri yazıldı, görseller ÜRETİLMEDİ.** Üretim oyuncunun
   açık talimatını bekliyor; bütçe ve gerekçeler §9'da.
 - **Akın dengesi yeniden çözüldü** (`tools/denge-akin.ts`, `pnpm
-  denge:akin`). İlk sayılar iki yönden bozuktu ve ikisi de sessizdi:
+denge:akin`). İlk sayılar iki yönden bozuktu ve ikisi de sessizdi:
   ödül toprak gelirinin yüzlerce katıydı, ve EN KOLAY harita saatlik en
   çok kaynağı veriyordu. Üç invaryant artık `akin.test.ts` içinde.
 - **Bina sprite'ları için kod hazırlandı**, liste boş: `SPRITE_OLAN`.

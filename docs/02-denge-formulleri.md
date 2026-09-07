@@ -7,7 +7,6 @@
 > değişiklikten önceki tasarımın kaydı ve sistemlerin NİYETİNİ hâlâ
 > doğru anlatıyor.
 
-
 > **Kural:** Bu dosyadaki hiçbir sayı koda gömülmez. Kod `data/balance.json`
 > okur. Denge değişikliği = tek dosyada değişiklik + sunucu yeniden başlatma.
 

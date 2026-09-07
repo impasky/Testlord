@@ -7,7 +7,6 @@
 > değişiklikten önceki tasarımın kaydı ve sistemlerin NİYETİNİ hâlâ
 > doğru anlatıyor.
 
-
 **Toplam: 9 kilometre taşı, ~34 iş günü** (tek geliştirici, tam zamanlı).
 
 > **Durum: dokuz taşın dokuzu da bitti.** Oyun uçtan uca oynanabilir ve

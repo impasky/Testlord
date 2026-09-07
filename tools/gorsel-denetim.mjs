@@ -447,6 +447,28 @@ if (yeniToken) {
   }
 }
 
+/**
+ * --- Akın diyarlarının kapağı var mı ---
+ *
+ * Burada elle tutulan bir liste YOK ve olmamalı: diyarlar zaten
+ * `data/akinlar.json` içinde sayılı. `Akin.tsx` kapağı koşulsuz çiziyor
+ * (`/gorseller/akin/<key>.webp`), çünkü beşinin de dosyası var. Ölçüt bu
+ * yüzden "liste klasörle uyuşuyor mu" değil, "her diyarın dosyası var
+ * mı": eksik dosya, kartın tepesinde kırık bir görsel demek.
+ */
+{
+  const { existsSync, readFileSync } = await import('node:fs');
+  const akinlar = JSON.parse(readFileSync('data/akinlar.json', 'utf8'));
+  const eksik = akinlar.haritalar
+    .map((h) => h.key)
+    .filter((k) => !existsSync(`apps/web/public/gorseller/akin/${k}.webp`));
+  if (eksik.length) {
+    sorun('akin-kapak', 'Akın diyarının kapak görseli yok', eksik.join(', '));
+  } else {
+    iyi('akin-kapak', `${akinlar.haritalar.length} diyarın da kapağı yerinde`);
+  }
+}
+
 console.log(`\n${bulgu === 0 ? 'GÖRSEL DENETİM TEMİZ' : `${bulgu} GÖRSEL SORUN`}`);
 console.log(
   `konsol hatası: ${konsol.length}${konsol.length ? ' — ' + konsol.slice(0, 3).join(' | ') : ''}`,

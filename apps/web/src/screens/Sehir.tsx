@@ -109,11 +109,35 @@ const BINA_IKONU: Record<string, keyof typeof IKONLAR> = {
  * gerçek 404. Vite geliştirme sunucusu eksik dosyaya index.html dönüp
  * 200 verdiği için bu ölçümde de görünmezdi.
  *
- * ŞU AN BOŞ: istemler yazıldı (`tools/gorsel-uret.py`), görseller
- * üretilmedi. Dosya konduğu gün buraya bir satır; `gorsel-denetim.mjs`
- * listeyle klasörün ayrışmasını yakalıyor.
+ * Liste `gorsel-denetim.mjs` tarafından klasörle karşılaştırılıyor:
+ * dosya eklenip satır unutulursa ya da tersi olursa denetim düşüyor.
  */
-const SPRITE_OLAN = new Set<string>([]);
+const SPRITE_OLAN = new Set<string>([
+  'arsa',
+  'malikane_1',
+  'malikane_5',
+  'kisla_1',
+  'kisla_5',
+  'demirhane_1',
+  'demirhane_5',
+  'hastane_1',
+  'hastane_5',
+  'pazar_1',
+  'pazar_5',
+  'surlar_1',
+  'surlar_5',
+  'karargah_1',
+  'karargah_5',
+  'kutuphane_1',
+  'kutuphane_5',
+  'liman_1',
+  'liman_5',
+  'elcilik_1',
+  'elcilik_5',
+  'gorev_panosu',
+  'haberci_kulesi',
+  'onur_meydani',
+]);
 
 /**
  * Binanın görseli: varsa SPRITE, yoksa çizgi ikon.

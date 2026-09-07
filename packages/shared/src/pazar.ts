@@ -69,10 +69,7 @@ export function birimKuru(tur: KaynakTuru): number {
  * Pazarı olmayan lord Y4 öncesiyle aynı tavanı görüyor; bina onun
  * üstüne ekliyor (docs/12 §4). Yüzde değil sayı — çarpan araştırmanın işi.
  */
-export function pazarGunlukTavan(
-  lordSeviyesi: number,
-  binalar?: Record<string, number>,
-): number {
+export function pazarGunlukTavan(lordSeviyesi: number, binalar?: Record<string, number>): number {
   return (
     B.pazar.gunluk_tavan_altin_karsiligi +
     B.pazar.gunluk_tavan_seviye_basina * lordSeviyesi +

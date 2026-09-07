@@ -29,13 +29,13 @@ değiştikçe üslup kayar ve otuz kılıç birbirinin akrabası olmaktan çıka
 
 Hepsini birden yaptırmak gerekmiyor. Oyuna en çok katan sırayla:
 
-| Sıra | Kategori | Adet | Neden |
-|---|---|---|---|
-| 1 | Ekran zeminleri | 8 | Oyunun "gösterge paneli" değil bir yer gibi hissetmesi en çok buna bağlı |
-| 2 | Ekipman | 30 | Demirhane şu an tamamen sayıdan ibaret |
-| 3 | Harita karoları | 6 | Haritanın okunurluğu; sahne görselleri karo olarak bulanık kalıyor |
-| 4 | Bölge aşamaları | 8 | Geliştirmenin karşılığının GÖRÜNMESİ |
-| — | Birimler, generaller, bölge tabanları | 22 | Zaten var |
+| Sıra | Kategori                              | Adet | Neden                                                                    |
+| ---- | ------------------------------------- | ---- | ------------------------------------------------------------------------ |
+| 1    | Ekran zeminleri                       | 8    | Oyunun "gösterge paneli" değil bir yer gibi hissetmesi en çok buna bağlı |
+| 2    | Ekipman                               | 30   | Demirhane şu an tamamen sayıdan ibaret                                   |
+| 3    | Harita karoları                       | 6    | Haritanın okunurluğu; sahne görselleri karo olarak bulanık kalıyor       |
+| 4    | Bölge aşamaları                       | 8    | Geliştirmenin karşılığının GÖRÜNMESİ                                     |
+| —    | Birimler, generaller, bölge tabanları | 22   | Zaten var                                                                |
 
 ## Taban üslup
 
@@ -681,18 +681,20 @@ Tek bir resimli zemin ve üstünde 61 DOM işaretçisi (docs/12 §5). Altıgen k
 
 **Zeminde yazı yok** ve olamaz: bölge adları veriden geliyor, görsel modeli de okunabilir metin üretemiyor. İşaretçiler de resimde değil, üstünde.
 
-Çıktı: `apps/web/public/gorseller/harita/<ad>.webp` · 1536×1152
+**KARE ve çerçevesiz.** Kap `aspect-square` + `object-cover` (`DunyaHaritasi.tsx`): kare olmayan bir görselin yanları kırpılıyor. 4:3 üretilen ilk deneme, x=6 ile x=94 arasına yayılan 61 işaretçinin en dıştakilerini kırpılan şeride düşürüyordu. Parşömen çerçevesi de aynı sebeple istenmiyor: kenar süsü, işaretçilerin oturduğu alanı yiyor.
+
+Çıktı: `apps/web/public/gorseller/harita/<ad>.webp` · 1024×1024
 
 Kompozisyon (her istemde var):
 
 ```
-hand drawn fantasy world map in the style of an old parchment atlas, seen straight from above, coastlines rivers forests and mountain ranges, no text, no labels, no letters, no compass rose, no grid, no hexagons, 4:3 composition
+hand drawn fantasy world map in the style of an old parchment atlas, seen straight from above, coastlines rivers forests and mountain ranges, land covers the entire square frame from corner to corner and runs off all four edges, water appears only as rivers lakes and a few small bays, no open ocean, no border, no frame, no torn parchment edge, no text, no labels, no letters, no compass rose, no grid, no hexagons, square 1:1 composition
 ```
 
 ### `harita/dunya.webp`
 
 ```
-a single continent surrounded by sea, rocky northern mountains, central plains crossed by two rivers, dark forests to the west, a marsh delta to the south east, small unnamed islands offshore, hand drawn fantasy world map in the style of an old parchment atlas, seen straight from above, coastlines rivers forests and mountain ranges, no text, no labels, no letters, no compass rose, no grid, no hexagons, 4:3 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+a single continent surrounded by sea, rocky northern mountains, central plains crossed by two rivers, dark forests to the west, a marsh delta to the south east, small unnamed islands offshore, hand drawn fantasy world map in the style of an old parchment atlas, seen straight from above, coastlines rivers forests and mountain ranges, land covers the entire square frame from corner to corner and runs off all four edges, water appears only as rivers lakes and a few small bays, no open ocean, no border, no frame, no torn parchment edge, no text, no labels, no letters, no compass rose, no grid, no hexagons, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
 ```
 
 ---
@@ -868,4 +870,3 @@ a master builder's workshop, architectural drawings on vellum, wooden scale mode
 ```
 a lord in a dark cloak standing on a ridge at dawn overlooking a wide valley of fields, towns and a distant citadel, wide establishing shot, cinematic composition with the focal subject slightly above center, deep atmospheric perspective, empty darker area along the bottom third where interface will overlay, 16:10 landscape composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
 ```
-

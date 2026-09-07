@@ -7,7 +7,6 @@
 > değişiklikten önceki tasarımın kaydı ve sistemlerin NİYETİNİ hâlâ
 > doğru anlatıyor.
 
-
 > Bu doküman `docs/07`'nin **önüne** geçer. `docs/07`'deki M10–M16 iptal değil,
 > ertelendi: bu dokümandaki işler bitmeden hiçbiri başlamaz.
 

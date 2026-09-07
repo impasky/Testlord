@@ -234,7 +234,10 @@ const acikGrup = page.locator('[data-akin-grup]:not([disabled])');
 if (await acikGrup.count()) {
   await acikGrup.first().click();
   await page.waitForTimeout(2000);
-  kontrol('Grup seçilince sefer kartı açılıyor', (await page.locator('[data-akin-sefer]').count()) > 0);
+  kontrol(
+    'Grup seçilince sefer kartı açılıyor',
+    (await page.locator('[data-akin-sefer]').count()) > 0,
+  );
   kontrol(
     'Kart kazanma ihtimalini gösteriyor',
     (await page.locator('[data-akin-ihtimal]').count()) > 0,

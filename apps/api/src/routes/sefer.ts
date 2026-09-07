@@ -27,12 +27,7 @@ import type { FastifyInstance } from 'fastify';
 import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError } from '../errors.js';
-import {
-  arastirmaBonusuOku,
-  binalariOku,
-  findLordByUser,
-  tickLord,
-} from '../services/lord.js';
+import { arastirmaBonusuOku, binalariOku, findLordByUser, tickLord } from '../services/lord.js';
 
 const IMAR_TURLERI = ['craft', 'upgrade_item', 'upgrade_gear', 'upgrade_region'];
 

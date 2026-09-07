@@ -65,7 +65,11 @@ async function kaydolmayiDene() {
       await page.waitForSelector('text=Malikâne', { timeout: 15000 });
       return true;
     } catch {
-      const govde = (await page.locator('main').innerText().catch(() => '')) ?? '';
+      const govde =
+        (await page
+          .locator('main')
+          .innerText()
+          .catch(() => '')) ?? '';
       const sinir = /çok fazla|too many|429/i.test(govde);
       if (!sinir || deneme === 2) return false;
       console.log('  (kayıt oran sınırına takıldı, 20 sn bekleniyor)');

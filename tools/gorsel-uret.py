@@ -207,14 +207,24 @@ KATEGORI = {
             "diyar.\n\n"
             "**Zeminde yazı yok** ve olamaz: bölge adları veriden geliyor, "
             "görsel modeli de okunabilir metin üretemiyor. İşaretçiler de "
-            "resimde değil, üstünde."
+            "resimde değil, üstünde.\n\n"
+            "**KARE ve çerçevesiz.** Kap `aspect-square` + `object-cover` "
+            "(`DunyaHaritasi.tsx`): kare olmayan bir görselin yanları "
+            "kırpılıyor. 4:3 üretilen ilk deneme, x=6 ile x=94 arasına "
+            "yayılan 61 işaretçinin en dıştakilerini kırpılan şeride "
+            "düşürüyordu. Parşömen çerçevesi de aynı sebeple istenmiyor: "
+            "kenar süsü, işaretçilerin oturduğu alanı yiyor."
         ),
         "kompozisyon": "hand drawn fantasy world map in the style of an old "
                        "parchment atlas, seen straight from above, coastlines "
-                       "rivers forests and mountain ranges, no text, no labels, "
+                       "rivers forests and mountain ranges, land covers the "
+                       "entire square frame from corner to corner and runs off "
+                       "all four edges, water appears only as rivers lakes and "
+                       "a few small bays, no open ocean, no border, "
+                       "no frame, no torn parchment edge, no text, no labels, "
                        "no letters, no compass rose, no grid, no hexagons, "
-                       "4:3 composition",
-        "boyut": (1536, 1152),
+                       "square 1:1 composition",
+        "boyut": (1024, 1024),
     },
     "akin": {
         "ad": "Akın diyarları",
