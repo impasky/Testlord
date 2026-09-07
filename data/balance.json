@@ -823,6 +823,96 @@
       "malikane": 1,
       "kisla": 1
     },
-    "_baslangic_notu": "Yeni lord bir cadir ve bir talimgahla basliyor. Sifirdan baslasaydi ilk isi 'asker egit' diyen ogreticiyi bos bir arsayla karsilardi; kamp bir yokluk degil, kucuk bir baslangic."
+    "_baslangic_notu": "Yeni lord bir cadir ve bir talimgahla basliyor. Sifirdan baslasaydi ilk isi 'asker egit' diyen ogreticiyi bos bir arsayla karsilardi; kamp bir yokluk degil, kucuk bir baslangic.",
+    "etkiler": {
+      "_aciklama": "Bina SEVIYESININ verdigi kapasite. Dizinin indeksi = bina seviyesi (0 = dikilmemis).",
+      "_sifir_ilkesi": "Seviye 0 degeri, Y4 oncesi oyunun davranisi. Hicbir oyuncu bina sistemi geldi diye bir sey KAYBETMIYOR; her seviye bir kazanc. Aksi kurulsaydi mevcut lordlarin deposu, kuyrugu ve general slotu bir gecede kuculurdu -- denge tartismasi da 'bina mi bozdu, sayi mi yanlisti' diye cevapsiz kalirdi.",
+      "_carpan_yok": "Hepsi SAYI, hicbiri yuzde. Yuzde arastirmanin isi (docs/12 §4). Tek istisna surlar: tahkimat zaten bir oran oldugu icin ek de oran -- ama arastirmanin kale_savunmasi CARPANI ile toplanmiyor, tabana ekleniyor.",
+      "malikane_depo_ek": [
+        0,
+        15000,
+        35000,
+        65000,
+        110000,
+        170000
+      ],
+      "kisla_egitim_kuyrugu": [
+        3,
+        4,
+        4,
+        5,
+        5,
+        6
+      ],
+      "demirhane_azami_tier": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        5
+      ],
+      "_demirhane_notu": "Lord seviyesi kapisi DURUYOR; demirhane ikinci bir kapi. T5 icin hem 50. seviye hem 4. seviye demirhane, yani gercek bir sehir gerekiyor (docs/12 §3.3). Demirhanesiz lord T1 dovebiliyor: ogretici ilk ekipmani kampta yaptiriyor ve okunamayan savas raporu hatasini burada tekrarlamiyoruz.",
+      "karargah_general_slotu_ek": [
+        0,
+        1,
+        1,
+        1,
+        2,
+        2
+      ],
+      "_karargah_notu": "Liderlik tavaninin USTUNE ekleniyor: karargahsiz lord Y4 oncesiyle ayni 3 slotu goruyor, sehri olan 5 slota cikiyor. Ustu acik birakilmadi -- general bonusu savasa dogrudan giriyor ve 3ten 6ya cikarmak PvP dengesini bir gecede kaydirirdi.",
+      "kutuphane_arastirma_kuyrugu": [
+        1,
+        2,
+        2,
+        3,
+        3,
+        4
+      ],
+      "hastane_azami_tedavi_saniye": [
+        21600,
+        18000,
+        14400,
+        10800,
+        7200,
+        3600
+      ],
+      "_hastane_notu": "Tedavinin TAVANI. Hastanenin es zamanli kuyrugu yok ve olmamali: tedavi bir tercih degil savasin sonucu, sinir koymak ikinci kez yenilen oyuncunun yaralilarini sessizce yok etmek olurdu (services/queue.ts). Bunun yerine hastane BUYUK YENILGIYI kisaltiyor -- kucuk kafileler zaten tavana carpmiyor, degisen tek sey yuzlerce yaralinin dondugu gun.",
+      "pazar_takas_tavani_ek": [
+        0,
+        4000,
+        9000,
+        15000,
+        22000,
+        30000
+      ],
+      "liman_sevkiyat_tavani_ek": [
+        0,
+        5000,
+        12000,
+        20000,
+        30000,
+        42000
+      ],
+      "elcilik_takviye_slotu": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        8
+      ],
+      "_elcilik_notu": "Ayni anda sahada tutabilecegin takviye sayisi. Y4 oncesi sinirsizdi ama kimse ikiden fazlasini gondermiyordu; tavan koymak bir kisitlama degil, elciligi bir sey yapan bina haline getirmek.",
+      "surlar_tahkimat_ek": [
+        0,
+        0.04,
+        0.08,
+        0.12,
+        0.16,
+        0.2
+      ],
+      "_surlar_notu": "YALNIZ BASKENTE. Oteki bolgelerin tahkimati bolge turunden geliyor ve oyle kalmali: surlar oyuncunun oturdugu yeri savunuyor, imparatorlugunun tamamini degil."
+    }
   }
 }

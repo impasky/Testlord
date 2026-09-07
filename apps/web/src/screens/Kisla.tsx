@@ -7,7 +7,7 @@
  * yoktu: oyuncu düğmeye basıyor, bütün kartlar bir an sönüyor ve askerin
  * eğitime girip girmediğini anlamak için Malikâne'ye gitmesi gerekiyordu.
  */
-import { B, unitName, type UnitType } from '@lordlar/shared';
+import { esZamanliLimit, unitName, type UnitType } from '@lordlar/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ApiError, api, type LordState, type QueueItem, type UnitDto } from '../api/client';
@@ -45,8 +45,12 @@ import {
 import { Zemin } from '../components/Zemin';
 import { Hastane } from '../components/Hastane';
 
-/** Aynı anda kaç eğitim kuyruğu açılabilir. Sunucu da bu sayıyı kullanıyor. */
-const EGITIM_LIMITI = B.kuyruklar.es_zamanli.train;
+/*
+ * Eğitim kuyruğu sayısı artık KIŞLADAN geliyor (docs/12 §4), o yüzden
+ * modül düzeyinde bir sabit değil: `esZamanliLimit('train', lord.binalar)`.
+ * Sunucu da aynı fonksiyonu çağırıyor — sabiti burada tutmak, kışlasını
+ * yükselten oyuncuya hâlâ "kuyruk dolu" demek olurdu.
+ */
 
 const ROL: Record<string, string> = {
   milis: 'Ucuz et kalkanı. Kayıpları önce o üstlenir.',
@@ -72,15 +76,16 @@ type Engel = { kisa: string; uzun: string };
  */
 function egitimEngeli(g: {
   kuyrukSayisi: number;
+  egitimLimiti: number;
   gerekenYer: number;
   bosYer: number;
   maliyet: { altin: number; demir: number; erzak: number };
   kaynaklar: { altin: number; demir: number; erzak: number };
 }): Engel | null {
-  if (g.kuyrukSayisi >= EGITIM_LIMITI) {
+  if (g.kuyrukSayisi >= g.egitimLimiti) {
     return {
       kisa: 'Eğitim kuyruğu dolu',
-      uzun: `Aynı anda en fazla ${EGITIM_LIMITI} eğitim yapabilirsin. Biri bitmeden yenisi başlamaz.`,
+      uzun: `Aynı anda en fazla ${g.egitimLimiti} eğitim yapabilirsin. Kışlanı yükseltirsen artar.`,
     };
   }
 
@@ -101,6 +106,7 @@ function BirimKarti({
   kaynaklar,
   bosYer,
   kuyrukSayisi,
+  egitimLimiti,
   kuyruklar,
   onEgit,
   bekliyor,
@@ -112,6 +118,8 @@ function BirimKarti({
   kaynaklar: { altin: number; demir: number; erzak: number };
   bosYer: number;
   kuyrukSayisi: number;
+  /** Kışlanın verdiği eş zamanlı eğitim sayısı. */
+  egitimLimiti: number;
   kuyruklar: QueueItem[];
   onEgit: (adet: number) => void;
   bekliyor: boolean;
@@ -136,6 +144,7 @@ function BirimKarti({
   };
   const engel = egitimEngeli({
     kuyrukSayisi,
+    egitimLimiti,
     gerekenYer: u.yer * adet,
     bosYer,
     maliyet,
@@ -340,6 +349,9 @@ export function Kisla({
   const yuruyus = a.byLocation.filter((u) => u.locationType === 'march');
 
   const egitimKuyruklari = queues.filter((q) => q.kind === 'train');
+  // Sunucunun kullandığı fonksiyonun aynısı: kışla yükselince ekran da
+  // kendiliğinden yeni sayıyı gösteriyor.
+  const egitimLimiti = esZamanliLimit('train', lord.binalar);
 
   /** Kuyruktakiler de komuta yeri tutar — sunucu da böyle hesaplıyor. */
   const kuyruktakiYer = egitimKuyruklari.reduce((t, q) => {
@@ -403,10 +415,10 @@ export function Kisla({
         yan={
           <span
             className={`tabular text-[11px] ${
-              egitimKuyruklari.length >= EGITIM_LIMITI ? 'text-kirmizi' : 'text-solgun'
+              egitimKuyruklari.length >= egitimLimiti ? 'text-kirmizi' : 'text-solgun'
             }`}
           >
-            Kuyruk {egitimKuyruklari.length}/{EGITIM_LIMITI}
+            Kuyruk {egitimKuyruklari.length}/{egitimLimiti}
           </span>
         }
       >
@@ -428,6 +440,7 @@ export function Kisla({
                 kaynaklar={lord.resources}
                 bosYer={bosYer}
                 kuyrukSayisi={egitimKuyruklari.length}
+                egitimLimiti={egitimLimiti}
                 kuyruklar={egitimKuyruklari.filter((q) => q.payload.unitType === u.type)}
                 bekliyor={gonderilen === u.type}
                 onEgit={(adet) => mut.mutate({ tip: u.type, f: () => api.train(u.type, adet) })}

@@ -68,6 +68,8 @@ export interface LordState {
   statPoints: number;
   resources: Resources;
   storageCapacity: number;
+  /** Bina seviyeleri: arayüz kapasiteleri sunucuyla aynı yerden hesaplasın. */
+  binalar: Record<string, number>;
   hourlyIncome: Resources;
   upkeepPerHour: number;
   netErzakPerHour: number;
@@ -204,6 +206,24 @@ export function arastirmaBonusuOku(lord: { arastirmalar?: unknown }): ArastirmaB
 }
 
 /**
+ * Lord kaydından bina seviyelerini çıkarır.
+ *
+ * `arastirmaBonusuOku` ile aynı gerekçe: `Lord.binalar` bir Json alanı ve
+ * boş, `null` ya da bir dizi olarak gelebilir. Kapasite hesaplayan her
+ * yerde ayrı ayrı korunmak, birinde unutulduğunda malikânenin sessizce
+ * hiçbir şey yapmaması demekti.
+ */
+export function binalariOku(lord: { binalar?: unknown }): Record<string, number> {
+  const ham = lord.binalar;
+  if (!ham || typeof ham !== 'object' || Array.isArray(ham)) return {};
+  const cikti: Record<string, number> = {};
+  for (const [k, v] of Object.entries(ham as Record<string, unknown>)) {
+    if (typeof v === 'number' && Number.isFinite(v) && v > 0) cikti[k] = Math.floor(v);
+  }
+  return cikti;
+}
+
+/**
  * Lordun saatlik brüt geliri: malikâne + sahip olunan bölgeler.
  * Bölgelerin kendi depoları ayrı işler (yağmalanabilir kısım orada birikir).
  */
@@ -300,6 +320,8 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
   const result = accrue({
     current: { altin: lord.altin, demir: lord.demir, erzak: lord.erzak },
     lordLevel: lord.level,
+    binalar: binalariOku(lord),
+    arastirma: arastirmaBonusuOku(lord),
     hourlyIncome: income,
     upkeepPerHour: upkeep,
     lastTickAt: lord.lastTickAt,
@@ -390,7 +412,16 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
     },
     statPoints: lord.statPoints,
     resources: result.resources,
-    storageCapacity: storageCapacity(lord.level, arastirmaBonusuOku(lord)),
+    storageCapacity: storageCapacity(lord.level, arastirmaBonusuOku(lord), binalariOku(lord)),
+    /*
+     * Bina seviyeleri arayüze de gidiyor.
+     *
+     * Kışla eğitim kuyruğunu, demirhane ekipman kademesini belirliyor ve
+     * ekranlar bu sayıları SUNUCUYLA AYNI fonksiyondan hesaplamalı
+     * (`esZamanliLimit`, `azamiTier`). Arayüzde ayrı bir sabit tutmak,
+     * dolu kuyrukta açık kalan bir düğme ve reddedilen bir istek demekti.
+     */
+    binalar: binalariOku(lord),
     hourlyIncome: income,
     upkeepPerHour: upkeep,
     netErzakPerHour: income.erzak - upkeep,
@@ -411,7 +442,7 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
     maxRegions: maxRegions(lord.level),
     regionCount: lord.regions.filter((r) => r.type !== 'taht').length,
     ownsThrone,
-    generalSlots: generalSlots(lord.liderlik),
+    generalSlots: generalSlots(lord.liderlik, binalariOku(lord)),
     generalBonus: bonus,
     equippedItems: items,
     equipmentPower: totalEquipmentPower(items),
@@ -448,6 +479,7 @@ function basarimOlcutleriHesapla(
     elo: number;
     pvpWins: number;
     liderlik: number;
+    binalar?: unknown;
     regions: { type: string; level: number }[];
   },
   items: EquippedItem[],
@@ -463,7 +495,7 @@ function basarimOlcutleriHesapla(
   // için kullanılıyor, oyuncuya gösterilmiyor — araştırmasız hesaplamak
   // sorgu maliyetini artırmamak için bilinçli.
   const tavan = commandCapacity(lord.liderlik, bonus);
-  const slotlar = generalSlots(lord.liderlik);
+  const slotlar = generalSlots(lord.liderlik, binalariOku(lord));
   const bolgeler = lord.regions.filter((r) => r.type !== 'taht');
   return {
     bolge: bolgeler.length,

@@ -20,7 +20,7 @@ import { z } from 'zod';
 import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError } from '../errors.js';
-import { findLordByUser, tickLord } from '../services/lord.js';
+import { binalariOku, findLordByUser, tickLord } from '../services/lord.js';
 
 const takasSchema = z.object({
   veren: z.enum(KAYNAK_TURLERI as unknown as [KaynakTuru, ...KaynakTuru[]]),
@@ -41,10 +41,10 @@ export async function pazarRoutes(app: FastifyInstance) {
     const durum = await tickLord(lordId);
     const lord = await prisma.lord.findUniqueOrThrow({
       where: { id: lordId },
-      select: { level: true, pazarHacmi: true, pazarGunu: true },
+      select: { level: true, binalar: true, pazarHacmi: true, pazarGunu: true },
     });
     const kullanilan = bugunkuHacim(lord.pazarHacmi, lord.pazarGunu, new Date());
-    const tavan = pazarGunlukTavan(lord.level);
+    const tavan = pazarGunlukTavan(lord.level, binalariOku(lord));
     return {
       kaynaklar: durum.resources,
       komisyon: B.pazar.komisyon,
@@ -63,7 +63,7 @@ export async function pazarRoutes(app: FastifyInstance) {
       const durum = await tickLord(lordId, new Date(), tx);
       const lord = await tx.lord.findUniqueOrThrow({
         where: { id: lordId },
-        select: { level: true, pazarHacmi: true, pazarGunu: true },
+        select: { level: true, binalar: true, pazarHacmi: true, pazarGunu: true },
       });
       const simdi = new Date();
       const kullanilan = bugunkuHacim(lord.pazarHacmi, lord.pazarGunu, simdi);
@@ -74,7 +74,7 @@ export async function pazarRoutes(app: FastifyInstance) {
         miktar: govde.miktar,
         eldeki: durum.resources,
         bugunkuHacim: kullanilan,
-        gunlukTavan: pazarGunlukTavan(lord.level),
+        gunlukTavan: pazarGunlukTavan(lord.level, binalariOku(lord)),
       });
       if (engel) throw new GameError(engel.mesaj, 400, engel.kod);
 

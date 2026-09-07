@@ -179,6 +179,64 @@ kontrol('Taşındıktan sonra liste boşaldı', sehir.tasinabilir.length === 0);
 const tekrar = await post('/sehir/baskent', { bolgeId: hedefBolge.bolgeId });
 kontrol('Aynı yere yeniden taşınmak reddediliyor', Boolean(tekrar.error), tekrar.error ?? '');
 
+// --- 4c. Bina seviyesi bir işe YARIYOR mu (Y4) ---
+//
+// Bir binanın seviyesi ekranda görünüp hiçbir sayıya dokunmuyorsa o bina
+// dekordur. Burada ölçülen şey tam olarak bu: malikâne depoyu, demirhane
+// ekipman kademesini gerçekten değiştiriyor mu (docs/12 §4).
+const meOnce = await get('/me');
+kontrol(
+  'Lord durumu bina seviyelerini taşıyor',
+  meOnce.lord.binalar && typeof meOnce.lord.binalar === 'object',
+  JSON.stringify(meOnce.lord.binalar ?? null),
+);
+
+const depoOnce = meOnce.lord.storageCapacity;
+const malikaneOnce = sehir.binalar.find((x) => x.key === 'malikane')?.seviye ?? 0;
+await post('/sehir/bina', { key: 'malikane' });
+await post('/test/kuyruklari-bitir');
+const meSonra = await get('/me');
+kontrol(
+  'Malikâne yükselince DEPO büyüyor',
+  meSonra.lord.storageCapacity > depoOnce,
+  `${depoOnce} -> ${meSonra.lord.storageCapacity} (malikâne ${malikaneOnce} -> ${
+    meSonra.lord.binalar.malikane
+  })`,
+);
+
+// Şehir kartı seviye değil ETKİ yazmalı: "Depo tabanı 15.000 → 35.000".
+sehir = await get('/sehir');
+const malikaneKart = sehir.binalar.find((x) => x.key === 'malikane');
+kontrol(
+  'Kart etkinin SAYISINI veriyor, seviyeyi değil',
+  malikaneKart.etkiSimdi > malikaneKart.seviye,
+  `etkiSimdi=${malikaneKart.etkiSimdi} seviye=${malikaneKart.seviye}`,
+);
+kontrol(
+  'Kart bir sonraki seviyenin etkisini de veriyor',
+  malikaneKart.etkiSonra > malikaneKart.etkiSimdi,
+  `${malikaneKart.etkiSimdi} -> ${malikaneKart.etkiSonra}`,
+);
+
+// Demirhane ekipman kademesine kapı: kilidin SEBEBİ ayrı ayrı geliyor.
+await post('/test/xp-ver', { miktar: 4000000 });
+const esyalar = await get('/items');
+const t5 = esyalar.tiers.find((t) => t.tier === 5);
+kontrol('T5 için lord seviyesi yetiyor', t5.seviyeYetiyor === true, `Sv${t5.unlockLevel}`);
+kontrol(
+  'T5 DEMİRHANE yüzünden kilitli — kilidin sebebi ayrı',
+  t5.demirhaneYetiyor === false && t5.unlocked === false,
+  `gereken demirhane ${t5.gerekenDemirhane}`,
+);
+const t5Red = await post('/items/craft', { tier: 5, slot: 'silah' });
+kontrol(
+  'Sunucu da demirhane yüzünden reddediyor',
+  t5Red.code === 'DEMIRHANE_YETERSIZ',
+  t5Red.error ?? '',
+);
+const t1 = esyalar.tiers.find((t) => t.tier === 1);
+kontrol('T1 her zaman açık — öğretici çıkmaza girmesin', t1.unlocked === true);
+
 // --- 5. Arayüz ---
 const b = await chromium.launch({ executablePath: CHROME, args: ['--no-sandbox'] });
 const ctx = await b.newContext({ ...devices['iPhone 13'] });

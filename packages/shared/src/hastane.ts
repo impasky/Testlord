@@ -13,6 +13,7 @@
  * SAF: süre hesabı burada, askerin nereye yazıldığı sunucuda.
  */
 import { B, unit } from './balance.js';
+import { azamiTedaviSn } from './bina.js';
 import type { Army, UnitType } from './types.js';
 import { UNIT_TYPES } from './types.js';
 
@@ -28,16 +29,24 @@ import { UNIT_TYPES } from './types.js';
  *     ilk hesapta 5 milis için tedavi 7,3 dakika, eğitim 3,8 dakika
  *     çıkmıştı ve kural sessizce çiğneniyordu.
  *  3. Tavan: büyük bir yenilgide yüzlerce yaralı döner; ceza zamanla
- *     artmalı ama oyuncuyu oyundan kopartmamalı.
+ *     artmalı ama oyuncuyu oyundan kopartmamalı. HASTANE BİNASI bu
+ *     tavanı indiriyor (docs/12 §4): hastanesiz lord 6 saatlik tavanı
+ *     görüyor, 5. seviye hastanesi olan 1 saatlik. Küçük kafileler zaten
+ *     tavana çarpmıyor — bina yalnız kötü günü kısaltıyor.
  */
-export function tedaviSuresiSn(tur: UnitType, adet: number): number {
+export function tedaviSuresiSn(
+  tur: UnitType,
+  adet: number,
+  binalar?: Record<string, number>,
+): number {
   if (adet <= 0) return 0;
   const u = unit(tur);
   const H = B.hastane;
   const hesap =
     H.saniye_taban + H.saniye_birim_basina * adet + u.egitim_sn * adet * H.egitim_suresi_carpani;
   const sifirdanEgitim = u.egitim_sn * adet;
-  return Math.round(Math.min(hesap, sifirdanEgitim, H.azami_saniye));
+  const tavan = binalar ? azamiTedaviSn(binalar) : H.azami_saniye;
+  return Math.round(Math.min(hesap, sifirdanEgitim, tavan));
 }
 
 /**
@@ -47,11 +56,11 @@ export function tedaviSuresiSn(tur: UnitType, adet: number): number {
  * yaralı kafilesi parça parça taburcu olmuyor. Birim başına ayrı kuyruk
  * açmak, ekranı beş sayaçla doldurup oyuncuya hiçbir şey kazandırmazdı.
  */
-export function kafileTedaviSuresiSn(yarali: Army): number {
+export function kafileTedaviSuresiSn(yarali: Army, binalar?: Record<string, number>): number {
   let enUzun = 0;
   for (const t of UNIT_TYPES) {
     const adet = yarali[t] ?? 0;
-    if (adet > 0) enUzun = Math.max(enUzun, tedaviSuresiSn(t, adet));
+    if (adet > 0) enUzun = Math.max(enUzun, tedaviSuresiSn(t, adet, binalar));
   }
   return enUzun;
 }

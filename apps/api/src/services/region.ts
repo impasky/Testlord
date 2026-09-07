@@ -11,11 +11,13 @@ import {
   WORLD_MAP,
   fortressBonus,
   regionIncome,
+  tahkimatEki,
   type Army,
   type Resources,
   type UnitType,
 } from '@lordlar/shared';
 import { prisma, type Tx } from '../db.js';
+import { binalariOku } from './lord.js';
 
 /** Bölge deposunun üst sınırı — sonsuz birikip dev yağma hedefi olmasın. */
 export function regionStoreCap(level: number): number {
@@ -35,6 +37,27 @@ export function regionUpgradeCost(level: number): Resources & { sec: number } {
 
 export function regionFortressBonus(type: string, level: number): number {
   return fortressBonus(type, level);
+}
+
+/**
+ * Bölgenin tahkimatı + varsa SURLAR.
+ *
+ * Surlar yalnız BAŞKENTİ güçlendiriyor: oyuncunun oturduğu yeri savunan
+ * bir duvar, imparatorluğunun tamamını değil (docs/12 §4). Bu yüzden
+ * karşılaştırma bölgenin `mapId`si ile lordun `baskentBolgeId`si
+ * arasında — sahibi olmayan bölge zaten ek almıyor.
+ *
+ * Tek yerde: savaş, önizleme ve harita aynı sayıyı göstermeli. İkisinden
+ * biri surları unutsaydı oyuncu "kazanırım" yazan bir önizlemeye bakıp
+ * kaybederdi ve neden olduğunu hiçbir yerde göremezdi.
+ */
+export function bolgeTahkimati(
+  region: { type: string; level: number; mapId: number },
+  sahip: { binalar?: unknown; baskentBolgeId?: number | null } | null | undefined,
+): number {
+  const taban = fortressBonus(region.type, region.level);
+  if (!sahip || sahip.baskentBolgeId !== region.mapId) return taban;
+  return taban + tahkimatEki(binalariOku(sahip));
 }
 
 /**

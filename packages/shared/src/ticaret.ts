@@ -17,6 +17,7 @@
  *    gelirini tek oyuncuya akıtmak, ekonominin tamamını anlamsız kılardı.
  */
 import { B } from './balance.js';
+import { sevkiyatTavaniEki } from './bina.js';
 import { altinKarsiligi } from './odul.js';
 import type { Resources } from './types.js';
 
@@ -33,8 +34,11 @@ export function sevkiyatSuresiSn(mesafeAdim: number): number {
  * gönderebilmesi. Tavan çağıran tarafından veriliyor çünkü seviye
  * veritabanında; parametresiz çağrı Sv1 tavanını döndürüyor.
  */
-export function gunlukTavan(ittifakTavani?: number): number {
-  return ittifakTavani ?? B.ticaret.gunluk_gonderim_tavani;
+export function gunlukTavan(ittifakTavani?: number, binalar?: Record<string, number>): number {
+  // İttifak seviyesi tabanı belirliyor, LİMAN onun üstüne ekliyor: biri
+  // grubun ortak emeği, öteki lordun kendi fethi. İki ayrı yoldan
+  // geldikleri için toplanmaları amaç, kaza değil (docs/12 §4).
+  return (ittifakTavani ?? B.ticaret.gunluk_gonderim_tavani) + sevkiyatTavaniEki(binalar ?? {});
 }
 
 export function enAzGonderim(): number {
@@ -69,9 +73,11 @@ export function sevkiyatDenetle(
   bugunGonderilen: number,
   /** İttifak seviyesinin verdiği tavan; verilmezse taban tavan. */
   tavan?: number,
+  /** Lordun bina seviyeleri; liman tavanı büyütüyor. */
+  binalar?: Record<string, number>,
 ): SevkiyatDenetimi {
   const agirlik = yukAgirligi(yuk);
-  const kalan = Math.max(0, gunlukTavan(tavan) - bugunGonderilen);
+  const kalan = Math.max(0, gunlukTavan(tavan, binalar) - bugunGonderilen);
 
   if (yuk.altin < 0 || yuk.demir < 0 || yuk.erzak < 0) {
     return { uygun: false, sebep: 'Eksi miktar gönderilemez.', agirlik, kalanTavan: kalan };

@@ -55,7 +55,7 @@ import {
   arastirmaBonusuOku,
 } from './lord.js';
 import { addUnitsHome, addUnitsRegion, hastaneyeYatir } from './queue.js';
-import { regionFortressBonus, transferRegion } from './region.js';
+import { bolgeTahkimati, transferRegion } from './region.js';
 
 function toArmy(value: unknown): Army {
   const raw = (value ?? {}) as Record<string, unknown>;
@@ -573,7 +573,14 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
       // Savaştan önceki hâl; rapordaki "öncesi/sonrası" bunun üstüne kurulur.
       const saldiranOnce = await lordOzeti(march.lordId, tx);
       const savunanOnce = region.ownerLordId ? await lordOzeti(region.ownerLordId, tx) : null;
-      const fortress = regionFortressBonus(region.type, region.level);
+      // Surlar başkenti güçlendiriyor: savunanın kaydı bunun için okunuyor.
+      const savunanSahip = region.ownerLordId
+        ? await tx.lord.findUnique({
+            where: { id: region.ownerLordId },
+            select: { binalar: true, baskentBolgeId: true },
+          })
+        : null;
+      const fortress = bolgeTahkimati(region, savunanSahip);
       const generalKeys = (march.generalIds as string[]) ?? [];
 
       const { side: attacker, generaller: saldiranGeneraller } = await buildSide(

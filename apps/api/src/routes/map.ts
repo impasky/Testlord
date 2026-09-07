@@ -15,6 +15,7 @@ import {
   type KesifFotografi,
   orduBedeli,
   marchDurationSec,
+  takviyeSlotu,
   maxRegions,
   type Army,
   type Side,
@@ -26,7 +27,12 @@ import { requireAuth } from '../auth.js';
 import { prisma, type Tx } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { gecikmisleriKapat } from '../services/gecikmis.js';
-import { arastirmaBonusuOku, findLordByUser, pushEvent } from '../services/lord.js';
+import {
+  arastirmaBonusuOku,
+  binalariOku,
+  findLordByUser,
+  pushEvent,
+} from '../services/lord.js';
 import { mesafeOlcer, mesafeOlcerHazir } from '../services/mesafe.js';
 import { paktVarMi, paktliIttifaklar } from '../services/pakt.js';
 import { lordunAyricaligi } from '../services/ittifakSeviye.js';
@@ -38,7 +44,7 @@ import {
   savasOrneklemesi,
 } from '../services/hedef.js';
 import { addUnitsHome, assertQueueSlot, enqueue, spendResources } from '../services/queue.js';
-import { regionFortressBonus, regionUpgradeCost } from '../services/region.js';
+import { bolgeTahkimati, regionUpgradeCost } from '../services/region.js';
 
 const armySchema = z.record(
   z.enum(UNIT_TYPES as unknown as [UnitType, ...UnitType[]]),
@@ -224,7 +230,19 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
     const [regions, oneri, ittifak] = await Promise.all([
       prisma.region.findMany({
         where: { worldId: me.worldId },
-        include: { owner: { select: { id: true, name: true, level: true } } },
+        include: {
+          owner: {
+            // binalar + baskentBolgeId: surların tahkimata kattığı ek
+            // haritada da görünmeli, yoksa önizleme ile savaş ayrışır.
+            select: {
+              id: true,
+              name: true,
+              level: true,
+              binalar: true,
+              baskentBolgeId: true,
+            },
+          },
+        },
         orderBy: { id: 'asc' },
       }),
       onerilenHedef(lordId),
@@ -305,7 +323,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
         // Pakt: saldırılamaz ama müttefik de değil. Haritada ayrı bir
         // işaret alıyor, yoksa oyuncu saldırıya kalkışıp reddediliyor.
         paktli: r.owner ? paktlilar.has(sahipIttifaki.get(r.owner.id) ?? '') : false,
-        fortressBonus: regionFortressBonus(r.type, r.level),
+        fortressBonus: bolgeTahkimati(r, r.owner),
       })),
     };
   });
@@ -316,7 +334,17 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
     const [region, olc] = await Promise.all([
       prisma.region.findUnique({
         where: { id },
-        include: { owner: { select: { id: true, name: true, level: true } } },
+        include: {
+          owner: {
+            select: {
+              id: true,
+              name: true,
+              level: true,
+              binalar: true,
+              baskentBolgeId: true,
+            },
+          },
+        },
       }),
       // Mesafe en yakın toprağından (docs/11 §1.2 H1); ölçer evi ve
       // toprakları kendi okuyor.
@@ -459,7 +487,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
         kesifMaliyetiAltin() * (1 - (await lordunAyricaligi(lordId)).kesifIndirimi),
       ),
       kesifSuresiSn: kesifSuresiSn(olc(region.mapId)),
-      fortressBonus: regionFortressBonus(region.type, region.level),
+      fortressBonus: bolgeTahkimati(region, region.owner),
       upgradeCost:
         region.level < B.bolgeler.max_bolge_seviyesi ? regionUpgradeCost(region.level) : null,
       store: benim
@@ -576,7 +604,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       const [ben, sahip] = await Promise.all([
         tx.lord.findUniqueOrThrow({
           where: { id: lordId },
-          select: { worldId: true, homeBolgeId: true, allianceId: true },
+          select: { worldId: true, homeBolgeId: true, allianceId: true, binalar: true },
         }),
         tx.lord.findUniqueOrThrow({
           where: { id: region.ownerLordId },
@@ -591,6 +619,27 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
           'Takviye yalnız ittifak üyelerine gönderilebilir.',
           400,
           'ITTIFAK_DEGIL',
+        );
+      }
+
+      /*
+       * Sahadaki takviye sayısının tavanı ELÇİLİKTEN geliyor.
+       *
+       * Y4 öncesi sınırsızdı; kimse ikiden fazlasını göndermediği için
+       * elçilik seviye 0'da da iki takviyeye izin veriyor — tavan bir
+       * kısıtlama değil, elçiliği bir işe yarar hâle getirmek
+       * (docs/12 §4). Sayılan şey SAHADAKİ takviye: dönenler yerini
+       * boşaltıyor.
+       */
+      const sahadaki = await tx.march.count({
+        where: { lordId, kind: 'takviye', resolved: false },
+      });
+      const takviyeTavani = takviyeSlotu(binalariOku(ben));
+      if (sahadaki >= takviyeTavani) {
+        throw new GameError(
+          `Aynı anda en fazla ${takviyeTavani} takviye tutabilirsin. Elçiliğini yükselt.`,
+          400,
+          'TAKVIYE_TAVANI',
         );
       }
 
@@ -785,14 +834,17 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
     if (armyCount(army) === 0) throw new GameError('Ordu boş.', 400, 'ORDU_BOS');
 
     const lordId = await findLordByUser(req.user.userId);
-    const region = await prisma.region.findUnique({ where: { id: body.toRegionId } });
+    const region = await prisma.region.findUnique({
+      where: { id: body.toRegionId },
+      include: { owner: { select: { binalar: true, baskentBolgeId: true } } },
+    });
     if (!region) throw hata.bulunamadi('Bölge');
 
     // Önizleme oyuncunun SEÇTİĞİ düzeni kullanıyor: dizilim ekranında
     // kareyi oynatınca kazanma ihtimalinin değişmesi, dizilimin işe
     // yaradığını gösteren tek şey.
     const attacker = await lordSide(lordId, army, body.generalIds, prisma, body.duzen ?? undefined);
-    const fortress = regionFortressBonus(region.type, region.level);
+    const fortress = bolgeTahkimati(region, region.owner);
 
     const yuruyusSayisi = await prisma.march.count({ where: { lordId } });
     const dist = (await mesafeOlcer(lordId))(region.mapId);

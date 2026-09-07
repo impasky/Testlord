@@ -15,16 +15,26 @@
  */
 
 /**
+ * Ad süzgecine takılan bir adı YENİDEN ÜRETİR.
+ *
  * Araçlar lord adını `Km${Date.now().toString(36).slice(-3)}` gibi rastgele
  * üretiyor. Rastgele harf dizisi er ya da geç ad süzgecinin bir parçasına
  * denk geliyor ve test, ölçtüğü şeyle hiç ilgisi olmayan bir sebeple
- * kalıyor — bu bir kez gerçekten oldu ("Kmaq7…" içindeki "aq"). Süzgecin o
- * hatası düzeldi ama sınıf duruyor: 36^3 içinde "amk" da var. Adı bir harf
- * uzatmak parçayı bozar, testin ölçtüğü şeye ise dokunmaz.
+ * kalıyor — bu iki kez gerçekten oldu ("Kmaq7…" içindeki "aq", sonra
+ * "Csh17defv").
+ *
+ * Önce adın SONUNA bir harf ekleniyordu. İkinci vakada bu işe yaramadı ve
+ * sebebi öğreticiydi: süzgeç leetspeak'i çözüyor (`1`→`i`, `7`→`t`), yani
+ * "Csh17defv" onun gözünde "cshitdefv" ve yasak parça adın ORTASINDA. Sona
+ * harf eklemek ortadaki parçayı bozmaz; dört deneme de aynı sebeple
+ * reddedildi. Artık rastgele kısım tümüyle yenileniyor: nerede olursa
+ * olsun parça kayboluyor.
  */
-function adiUzat(ad, tur) {
-  const ekler = ['x', 'z', 'v'];
-  return `${ad}${ekler[tur] ?? tur}`;
+function adiYenile(ad) {
+  // Önek = baştaki harfler (ilk rakam ya da boşluğa kadar). Testin
+  // günlükte tanıdığı ad böylece okunur kalıyor.
+  const onek = /^[A-Za-zÇĞİÖŞÜçğıöşü]+/.exec(ad)?.[0] ?? 'Lord';
+  return benzersizAd(onek.slice(0, 10));
 }
 
 /**
@@ -74,7 +84,8 @@ export async function kayitOl(API, { email, password = 'parola1234', lordName })
     sonYanit = { status: r.status, govde, ad };
 
     if (govde?.code === 'AD_UYGUNSUZ' && adDenemesi < 3) {
-      ad = adiUzat(lordName, adDenemesi++);
+      ad = adiYenile(ad);
+      adDenemesi++;
       deneme--; // Ad denemesi, oran sınırı bütçesinden sayılmasın.
       continue;
     }

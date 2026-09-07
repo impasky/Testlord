@@ -20,7 +20,7 @@ import { z } from 'zod';
 import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError, hata } from '../errors.js';
-import { findLordByUser, tickLord } from '../services/lord.js';
+import { binalariOku, findLordByUser, tickLord } from '../services/lord.js';
 import { bugunGonderilen, sevkiyatOzeti } from '../services/ticaret.js';
 import { lordunAyricaligi } from '../services/ittifakSeviye.js';
 
@@ -48,7 +48,7 @@ export async function ticaretRoutes(app: FastifyInstance): Promise<void> {
       const [ben, o] = await Promise.all([
         tx.lord.findUniqueOrThrow({
           where: { id: lordId },
-          select: { worldId: true, homeBolgeId: true, allianceId: true },
+          select: { worldId: true, homeBolgeId: true, allianceId: true, binalar: true },
         }),
         tx.lord.findUnique({
           where: { id: body.lordId },
@@ -68,8 +68,10 @@ export async function ticaretRoutes(app: FastifyInstance): Promise<void> {
         body.yuk,
         await bugunGonderilen(lordId, tx),
         // Tavan ittifak seviyesinden: seviye atlamanın somut
-        // karşılıklarından biri (docs/09 B1e).
+        // karşılıklarından biri (docs/09 B1e). Liman onun üstüne
+        // ekliyor — grubun emeği ile lordun fethi ayrı yollardan geliyor.
         (await lordunAyricaligi(lordId, tx)).ticaretTavani,
+        binalariOku(ben),
       );
       if (!denetim.uygun) {
         throw new GameError(denetim.sebep ?? 'Gönderilemez.', 400, 'GONDERIM_REDDEDILDI');
@@ -113,7 +115,9 @@ export async function ticaretRoutes(app: FastifyInstance): Promise<void> {
         durationSec: sn,
         mesafe,
         agirlik: denetim.agirlik,
-        kalanTavan: gunlukTavan() - (await bugunGonderilen(lordId, tx)),
+        kalanTavan:
+          gunlukTavan((await lordunAyricaligi(lordId, tx)).ticaretTavani, binalariOku(ben)) -
+          (await bugunGonderilen(lordId, tx)),
         alici: o.name,
       };
     });

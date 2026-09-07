@@ -8,6 +8,7 @@ import {
   tierUnlockLevel,
   upgradeSuccessChance,
 } from './balance.js';
+import { azamiTier } from './bina.js';
 import { EQUIP_SLOTS } from './types.js';
 import type { EquippedItem, Rarity, Resources } from './types.js';
 import type { Rng } from './rng.js';
@@ -30,8 +31,23 @@ export function lordContribution(guc: number, equippedItems: EquippedItem[]): nu
   return guc * 3 + totalEquipmentPower(equippedItems) * B.ekipman.ekipman_katsayi;
 }
 
-export function canCraftTier(lordLevel: number, tier: number): boolean {
-  return lordLevel >= tierUnlockLevel(tier);
+/**
+ * Bu kademe dövülebilir mi: İKİ kapı birden.
+ *
+ * Lord seviyesi kapısı duruyor; demirhane ikincisi. T5 hem 50. seviye
+ * hem 4. seviye demirhane istiyor, 4. seviye demirhane de bir şehir —
+ * "fethin karşılığı" cümlesi burada bir sayıya dönüşüyor (docs/12 §3.3).
+ *
+ * Demirhanesi olmayan lord T1 dövebiliyor. Kapatmak, öğreticinin ilk
+ * ekipman adımını kampta çıkmaza sokardı — savaş raporunu haberci
+ * kulesine kilitleyip okunamaz hâle getirdiğim hatanın aynısı.
+ */
+export function canCraftTier(
+  lordLevel: number,
+  tier: number,
+  binalar?: Record<string, number>,
+): boolean {
+  return lordLevel >= tierUnlockLevel(tier) && tier <= azamiTier(binalar ?? {});
 }
 
 export function craftPrice(tier: number): { cost: Resources; durationSec: number } {

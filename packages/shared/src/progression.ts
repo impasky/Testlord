@@ -1,5 +1,6 @@
 /** Lord seviyesi, XP, komuta kapasitesi, şöhret. */
 import { B, GENERAL_SLOT_RULE, fameTypeMultiplier, unit } from './balance.js';
+import { generalSlotuEki } from './bina.js';
 import type { ArastirmaBonusu } from './arastirma.js';
 import type { Army, GeneralBonus, LordStats, UnitType } from './types.js';
 import { UNIT_TYPES } from './types.js';
@@ -52,9 +53,34 @@ export function maxRegions(lordLevel: number): number {
   return B.bolgeler.max_taban + Math.floor(lordLevel / B.bolgeler.max_seviye_bolen);
 }
 
-/** General slotu sayısı. */
-export function generalSlots(liderlik: number): number {
-  return Math.min(GENERAL_SLOT_RULE.max, 1 + Math.floor(liderlik / GENERAL_SLOT_RULE.bolen));
+/**
+ * General slotu sayısı: liderlik + KARARGÂH.
+ *
+ * Liderlik tavanı (`slot_kurali.max`) duruyor ve karargâh onun ÜSTÜNE
+ * ekliyor — karargâhsız lord Y4 öncesiyle aynı slot sayısını görüyor.
+ * Statı yükselterek açılan slot bir puan harcamasının, karargâhla açılan
+ * ise bir fethin karşılığı; ikisi ayrı yoldan geldiği için üst üste
+ * binmeleri sorun değil, amaç.
+ */
+export function generalSlots(liderlik: number, binalar?: Record<string, number>): number {
+  const stattan = Math.min(
+    GENERAL_SLOT_RULE.max,
+    1 + Math.floor(liderlik / GENERAL_SLOT_RULE.bolen),
+  );
+  return stattan + generalSlotuEki(binalar ?? {});
+}
+
+/**
+ * Oyunda mümkün olan EN YÜKSEK general slotu sayısı.
+ *
+ * Uç doğrulaması ve dizilim ızgarası bunu okuyor. Eskiden `max(0).max(2)`
+ * diye elle yazılıydı; karargâh geldiğinde slot 5'e çıktı ama doğrulama
+ * 2'de kaldığı için sunucu kendi verdiği slotu reddediyordu.
+ */
+export function azamiGeneralSlotu(): number {
+  const tablo = (B.binalar.etkiler as unknown as Record<string, number[]>)
+    .karargah_general_slotu_ek;
+  return GENERAL_SLOT_RULE.max + Math.max(...(tablo ?? [0]));
 }
 
 /** Ordu gücü — şöhret hesabında kullanılır. */

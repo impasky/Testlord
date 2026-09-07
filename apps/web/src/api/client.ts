@@ -115,6 +115,8 @@ export interface LordState {
   statPoints: number;
   resources: Resources;
   storageCapacity: number;
+  /** Bina seviyeleri: kapasiteler sunucuyla aynı fonksiyondan hesaplanıyor. */
+  binalar: Record<string, number>;
   /** Hastanede tedavi bekleyenler. Orduya ve komuta kapasitesine dahil değil. */
   hastane: Army;
   hourlyIncome: Resources;
@@ -197,6 +199,10 @@ export interface TierDto {
   tier: number;
   unlockLevel: number;
   unlocked: boolean;
+  /** Kilidin SEBEBİ ayrı ayrı: "Sv50" mi "Demirhane 4" mü eksik? */
+  seviyeYetiyor: boolean;
+  demirhaneYetiyor: boolean;
+  gerekenDemirhane: number;
   cost: Resources;
   durationSec: number;
   rarityTable: Record<string, number>;
@@ -899,6 +905,8 @@ export const api = {
       tamamlanan: string[];
       ilerleme: { biten: number; toplam: number };
       esZamanli: number;
+      /** Süren araştırmaların hepsi — kütüphane birden çoğuna izin veriyor. */
+      surenler: { id: string; key: string | null; ad: string; finishAt: string }[];
       suren: { id: string; key: string | null; ad: string; finishAt: string } | null;
     }>('/arastirma'),
   arastirmaBaslat: (key: string) =>

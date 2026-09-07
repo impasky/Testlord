@@ -9,10 +9,10 @@ import {
   BINALAR,
   arastirmaDugumu,
   kafileTedaviSuresiSn,
-  B,
   UNIT_TYPES,
   craftPrice,
   createRng,
+  esZamanliLimit,
   kesifGecerlilikSn,
   rollCraftRarity,
   rollUpgrade,
@@ -25,8 +25,8 @@ import {
 } from '@lordlar/shared';
 import { prisma, type Tx } from '../db.js';
 import { GameError, hata } from '../errors.js';
-import { grantXp, okuArastirmalar, pushEvent, tickLord } from './lord.js';
-import { regionFortressBonus } from './region.js';
+import { binalariOku, grantXp, okuArastirmalar, pushEvent, tickLord } from './lord.js';
+import { bolgeTahkimati } from './region.js';
 
 export type QueueKind =
   | 'train'
@@ -50,7 +50,11 @@ export type QueueKind =
  * etmek demekti.
  */
 export async function hastaneyeYatir(lordId: string, yarali: Army, tx: Tx): Promise<string> {
-  const sn = kafileTedaviSuresiSn(yarali);
+  // Hastane binası tedavinin TAVANINI indiriyor (docs/12 §4). Süre yatış
+  // anında donduruluyor: sonradan hastane yükseltmek yatanın süresini
+  // kısaltmıyor, çünkü kuyruk kaydı bitiş zamanını tutuyor.
+  const lord = await tx.lord.findUnique({ where: { id: lordId }, select: { binalar: true } });
+  const sn = kafileTedaviSuresiSn(yarali, binalariOku(lord ?? {}));
   const kayit = await enqueue(lordId, 'iyilestir', {}, Math.max(1, sn), tx);
   return kayit.id;
 }
@@ -152,15 +156,22 @@ export async function enqueue(
   return { id: row.id, finishAt };
 }
 
-/** Aynı türden aynı anda kaç kuyruk olabilir. */
-// Sayilar data/balance.json'da: arayuz de ayni siniri gosterip dolu kuyrukta
-// dugmeyi kapatiyor. Burada ayri bir sabit tutmak, ikisinin sapmasi demekti.
-const ES_ZAMANLI_LIMIT = B.kuyruklar.es_zamanli as Record<QueueKind, number>;
-
+/**
+ * Aynı türden aynı anda kaç kuyruk olabilir.
+ *
+ * Sayı `esZamanliLimit` içinde; arayüz de aynı fonksiyonu çağırıp dolu
+ * kuyrukta düğmeyi kapatıyor. Burada ayrı bir sabit tutmak, ikisinin
+ * sapması demekti. Y4'ten beri kışla eğitim, kütüphane araştırma
+ * kuyruğunu büyütüyor — bu yüzden lordun bina seviyeleri okunuyor.
+ */
 export async function assertQueueSlot(lordId: string, kind: QueueKind, tx: Tx): Promise<void> {
-  const aktif = await tx.queue.count({ where: { lordId, kind, resolved: false } });
-  if (aktif >= ES_ZAMANLI_LIMIT[kind]) {
-    throw hata.limitAsildi(`Aynı anda en fazla ${ES_ZAMANLI_LIMIT[kind]} ${kind} kuyruğu`);
+  const [aktif, lord] = await Promise.all([
+    tx.queue.count({ where: { lordId, kind, resolved: false } }),
+    tx.lord.findUnique({ where: { id: lordId }, select: { binalar: true } }),
+  ]);
+  const limit = esZamanliLimit(kind, binalariOku(lord ?? {}));
+  if (aktif >= limit) {
+    throw hata.limitAsildi(`Aynı anda en fazla ${limit} ${kind} kuyruğu`);
   }
 }
 
@@ -447,14 +458,20 @@ async function kesfiCoz(row: QueueRow, p: Record<string, unknown>, tx: Tx): Prom
   }
 
   const sahip = region.ownerLordId
-    ? await tx.lord.findUnique({ where: { id: region.ownerLordId }, select: { name: true } })
+    ? await tx.lord.findUnique({
+        where: { id: region.ownerLordId },
+        // binalar + baskentBolgeId: keşif raporu SURLARI da göstermeli.
+        // Göstermeseydi oyuncu casusun verdiği tahkimatla hesap yapar,
+        // savaşta başka bir sayıyla karşılaşırdı.
+        select: { name: true, binalar: true, baskentBolgeId: true },
+      })
     : null;
 
   const simdi = new Date();
   const snapshot = {
     garrison,
     store: { altin: region.storeAltin, demir: region.storeDemir, erzak: region.storeErzak },
-    tahkimatBonusu: regionFortressBonus(region.type, region.level),
+    tahkimatBonusu: bolgeTahkimati(region, sahip),
     bolgeSeviyesi: region.level,
     sahipAdi: sahip?.name ?? null,
   };

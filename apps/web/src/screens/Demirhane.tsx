@@ -447,7 +447,15 @@ export function Demirhane({
                   }`}
                 >
                   T{t.tier}
-                  {!t.unlocked && <span className="ml-1 text-[11px]">Sv{t.unlockLevel}</span>}
+                  {/* Kilidin SEBEBİ yazıyor. "Sv50" tek başına yanıltıcıydı:
+                      50. seviye lord demirhanesi küçük olduğu için hâlâ
+                      dövemiyorsa, ekranda düzeltebileceği bir şey
+                      görmeli (docs/09 İ1). */}
+                  {!t.unlocked && (
+                    <span className="ml-1 text-[11px]">
+                      {t.seviyeYetiyor ? `Demirhane ${t.gerekenDemirhane}` : `Sv${t.unlockLevel}`}
+                    </span>
+                  )}
                 </button>
               ))}
             </div>

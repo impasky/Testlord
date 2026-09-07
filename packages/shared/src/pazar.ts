@@ -21,6 +21,7 @@
  * SAF: takas matematiği burada, kaynağın düşülmesi sunucuda.
  */
 import { B } from './balance.js';
+import { takasTavaniEki } from './bina.js';
 import type { Resources } from './types.js';
 
 export const KAYNAK_TURLERI = ['altin', 'demir', 'erzak'] as const;
@@ -62,9 +63,21 @@ export function birimKuru(tur: KaynakTuru): number {
   return (B.kaynaklar.altin_karsiligi as unknown as Record<string, number>)[tur] ?? 1;
 }
 
-/** Günlük takas hacmi tavanı (altın karşılığı). */
-export function pazarGunlukTavan(lordSeviyesi: number): number {
-  return B.pazar.gunluk_tavan_altin_karsiligi + B.pazar.gunluk_tavan_seviye_basina * lordSeviyesi;
+/**
+ * Günlük takas hacmi tavanı (altın karşılığı): lord seviyesi + PAZAR.
+ *
+ * Pazarı olmayan lord Y4 öncesiyle aynı tavanı görüyor; bina onun
+ * üstüne ekliyor (docs/12 §4). Yüzde değil sayı — çarpan araştırmanın işi.
+ */
+export function pazarGunlukTavan(
+  lordSeviyesi: number,
+  binalar?: Record<string, number>,
+): number {
+  return (
+    B.pazar.gunluk_tavan_altin_karsiligi +
+    B.pazar.gunluk_tavan_seviye_basina * lordSeviyesi +
+    takasTavaniEki(binalar ?? {})
+  );
 }
 
 /**

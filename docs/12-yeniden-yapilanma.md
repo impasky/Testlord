@@ -183,18 +183,20 @@ dakikada görür ama hepsi birden üstüne gelmez.
 
 ### 3.1 Seviyeli binalar (10)
 
-| Bina | Kapı | Seviye ne veriyor | Bugün nereden geliyor |
+Etkilerin SAYILARI ve "seviye 0 = eski davranış" sözleşmesi §4.1'de.
+
+| Bina | Kapı | Seviye ne veriyor | Nereye bağlandı (Y4) |
 |---|---|---|---|
-| Malikâne | malikane | Depo kapasitesi tabanı | `storageCapacity(lordLevel)` |
-| Kışla | kisla | Eş zamanlı eğitim kuyruğu | sabit |
-| Demirhane | demirhane | Dövülebilir en yüksek tier | `canCraftTier(lordLevel, …)` |
-| Karargâh | generaller | General slotu tavanı | `generalSlots(liderlik)` |
-| Kütüphane | arastirma | Eş zamanlı araştırma | sabit (1) |
-| Hastane | (ordu) | Eş zamanlı tedavi kafilesi | yok, tek kuyruk |
-| Pazar | (pazar) | Günlük takas tavanı | `gunlukTavan(lordSeviyesi)` |
-| Liman | (ticaret) | Sevkiyat tavanı ve hızı | sabit |
-| Elçilik | ittifak | Pakt sayısı tavanı | sabit |
-| Surlar | — | Başkent tahkimatı | bölge türünden |
+| Malikâne | malikane | Depo tabanına ek | `storageCapacity(…, binalar)` |
+| Kışla | kisla | Eş zamanlı eğitim kuyruğu | `esZamanliLimit('train', …)` |
+| Demirhane | demirhane | Dövülebilir en yüksek tier | `canCraftTier(sv, tier, binalar)` |
+| Karargâh | generaller | General slotu eki | `generalSlots(liderlik, binalar)` |
+| Kütüphane | arastirma | Eş zamanlı araştırma | `esZamanliLimit('research', …)` |
+| Hastane | (ordu) | En uzun tedavi süresi | `tedaviSuresiSn(…, binalar)` |
+| Pazar | (pazar) | Günlük takas tavanına ek | `pazarGunlukTavan(sv, binalar)` |
+| Liman | (ticaret) | Günlük sevkiyat tavanına ek | `gunlukTavan(tavan, binalar)` |
+| Elçilik | ittifak | Sahadaki takviye sayısı | `takviyeSlotu(binalar)` |
+| Surlar | — | **Başkent** tahkimatına ek | `bolgeTahkimati(bolge, sahip)` |
 
 ### 3.2 Seviyesiz yapılar (3)
 
@@ -270,6 +272,61 @@ düzeltileceği baştan bellidir.
 seviyesi şu an her şeyi birden açan sihirli bir sayı; binaya taşımak
 onu yalnız XP ve bölge sınırının ölçüsü hâline getiriyor. Bu bir
 duplikasyon değil, mevcut bir kusurun düzeltilmesi.
+
+### 4.1 Y4'te kurulan sözleşme: seviye 0 = eski davranış
+
+Sayılar `balance.json → binalar.etkiler` içinde ve **dizinin indeksi bina
+seviyesi**. En önemli kural burada:
+
+> **Seviye 0 değeri, Y4 öncesi oyunun davranışıdır.**
+
+Bina sistemi kimsenin elinden bir şey almıyor; her seviye bir kazanç
+ekliyor. Tersini kursaydık — "kapasite artık BİNADAN geliyor, lord
+seviyesinden değil" — var olan lordların deposu, kuyruğu ve general slotu
+bir gecede küçülür, sonraki denge tartışması da "binalar mı bozdu, sayılar
+mı yanlıştı" diye cevapsız kalırdı. `bina.test.ts` bu sözleşmeyi bina bina
+ölçüyor.
+
+| Bina | Ne veriyor | Sv 0 (eski) | Sv 5 |
+|---|---|---|---|
+| Malikâne | Depo tabanına ek | +0 | +170.000 |
+| Kışla | Eş zamanlı eğitim | 3 | 6 |
+| Demirhane | En yüksek ekipman kademesi | T1 | T5 |
+| Karargâh | General slotu eki | +0 | +2 |
+| Kütüphane | Eş zamanlı araştırma | 1 | 4 |
+| Hastane | En uzun tedavi | 6 sa | 1 sa |
+| Pazar | Günlük takas tavanına ek | +0 | +30.000 |
+| Liman | Günlük sevkiyat tavanına ek | +0 | +42.000 |
+| Elçilik | Sahadaki takviye sayısı | 2 | 8 |
+| Surlar | **Başkent** tahkimatına ek | +0 | +%20 |
+
+Üç tanesi ilk tasarımdan saptı ve sebebi kayda değer:
+
+**Hastanenin eş zamanlı kuyruğu YOK ve olmamalı.** Önce "aynı anda kaç
+tedavi" diye tasarlamıştım; oysa `services/queue.ts` tedaviye bilerek
+sınır koymuyor — tedavi bir tercih değil, savaşın sonucu ve sınır koymak
+ikinci kez yenilen oyuncunun yaralılarını sessizce yok etmek olurdu.
+Hastane onun yerine **tedavi tavanını** indiriyor: küçük kafileler zaten
+tavana çarpmıyor, değişen tek şey yüzlerce yaralının döndüğü gün.
+
+**Elçilik pakt tavanı veremez.** Pakt iki İTTİFAK arasında ve tavanı
+ittifak seviyesinden geliyor (docs/09 B1e); bir lordun binası oraya
+dokunamaz. Elçilik bunun yerine **sahadaki takviye sayısını** tutuyor —
+diplomasinin lord ölçeğindeki karşılığı.
+
+**Karargâhın üstü açık bırakılmadı.** General bonusu doğrudan savaşa
+giriyor; slotu 3'ten 6'ya çıkarmak PvP dengesini bir gecede kaydırırdı.
+Tavan +2 (şehri olan lord 5 slot).
+
+Ayrıca iki kusur bu iş sırasında çıktı ve düzeltildi:
+
+- **`accrue` depo tavanını ARAŞTIRMASIZ hesaplıyordu.** Ambarlar'ı bitiren
+  oyuncu ekranda 45.000 kapasite görüyor, kaynağı 32.000'de duruyordu.
+  Aynı tavanın iki yerde iki farklı çıkması, bu dosyanın kaçındığı şeyin
+  ta kendisi.
+- **Günlük ve sefer ödülü tavanı ayrı hesaplıyordu.** `tickLord` büyük
+  tavana kadar biriktirir, ödül ucu küçük tavanla bakıp "sığmıyor" derdi:
+  oyuncuya "ödülü aldın" yazıp sıfır altın verilirdi.
 
 ## 5. Dünya haritası (PvP)
 
@@ -392,7 +449,7 @@ Her aşama sonunda oyun **oynanabilir** durumda kalır.
 | **Y1** ✅ | Veri modeli: komşuluk grafiği, köy türü, başkent, bina alanı. Göç ve testler. |
 | **Y2** ✅ | Dünya haritası arayüzü: resimli zemin, kaydırma/yakınlaştırma, işaretçiler. |
 | **Y3** ✅ | Şehir sayfası: yerleşim zemini, bina yerleşimi, inşa ve yükseltme kuyruğu, başkent taşıma (§2.2). |
-| **Y4** | Bina seviyesi etkileri: lord seviyesinden binaya taşınan sayılar. |
+| **Y4** ✅ | Bina seviyesi etkileri: kapasiteler binaya bağlandı (§4.1). |
 | **Y5** | Gezinme: 5 sekme, Lord ekranının karakter sayfasına dönüşü. |
 | **Y6** | Sefer sistemi: 5 harita, 50 grup, yenilenme, ödül ve ekipman düşürme. |
 | **Y7** | Yeni açılış: kamp, başkent **düşmesi** (§2.3), öğretici ve rehberin yeniden yazımı. Taşınma Y3'te girdi. |

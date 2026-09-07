@@ -146,6 +146,18 @@ export interface BinaDurumu {
   sureSn: number | null;
   /** Seviyenin ne verdiği: "Eş zamanlı eğitim" gibi. */
   etkiMetni: string | null;
+  /**
+   * Etkinin ŞU ANKİ ve BİR SONRAKİ değeri.
+   *
+   * Kart eskiden "Depo tabanı: 1 → 2" yazıyordu; o iki sayı binanın
+   * SEVİYESİYDİ, etkisi değil. Oyuncu 1200 altın harcadıktan sonra ne
+   * kazanacağını hiçbir yerde göremiyordu (docs/09 İ1). Tavandaysa
+   * `etkiSonra` null.
+   */
+  etkiSimdi: number | null;
+  etkiSonra: number | null;
+  /** Sayının nasıl yazılacağı: düz sayı, saniye ya da oran. */
+  etkiBirimi: 'sayi' | 'saniye' | 'oran' | null;
   /** Açtığı kapı/sekme/bölüm — arayüz yönlendirmeyi buradan kuruyor. */
   kapi: string | null;
   sekme: string | null;
@@ -192,6 +204,9 @@ export function binaDurumlari(
         maliyet: null,
         sureSn: null,
         etkiMetni: null,
+        etkiSimdi: null,
+        etkiSonra: null,
+        etkiBirimi: null,
         kapi: b.kapi ?? null,
         sekme: b.sekme ?? null,
         bolum: b.bolum ?? null,
@@ -235,10 +250,177 @@ export function binaDurumlari(
       maliyet,
       sureSn: maliyet ? binaSuresiSn(hedef) : null,
       etkiMetni: b.etki_metni ?? null,
+      etkiSimdi: etkiDegeri(b.key, seviye),
+      etkiSonra: hedef <= tavan ? etkiDegeri(b.key, hedef) : null,
+      etkiBirimi: etkiBirimi(b.key),
       kapi: b.kapi ?? null,
       sekme: b.sekme ?? null,
       bolum: b.bolum ?? null,
       insaatta,
     };
   });
+}
+
+/* ------------------------------------------------------------------ *
+ * Bina seviyesinin ETKİSİ (Y4)
+ *
+ * İlke değişmedi: **araştırma ORAN verir, bina KAPASİTE ve KİLİT verir**
+ * (docs/12 §4). Buradaki her sayı bir adet, bir tavan ya da bir kilit;
+ * hiçbiri yüzde değil.
+ *
+ * Tablolar `balance.json → binalar.etkiler` içinde ve dizinin indeksi
+ * bina seviyesi. **Seviye 0 değeri, Y4 öncesi oyunun davranışıdır**:
+ * bina sistemi kimsenin elinden bir şey almıyor, her seviye bir kazanç
+ * ekliyor. Tersini kursaydık var olan lordların deposu ve kuyruğu bir
+ * gecede küçülür, sonraki denge tartışması da "binalar mı bozdu, sayılar
+ * mı yanlıştı" diye cevapsız kalırdı.
+ * ------------------------------------------------------------------ */
+
+/** Bir etki tablosunun hangi binanın seviyesini okuduğu. */
+const ETKI_BINASI: Record<string, string> = {
+  malikane_depo_ek: 'malikane',
+  kisla_egitim_kuyrugu: 'kisla',
+  demirhane_azami_tier: 'demirhane',
+  karargah_general_slotu_ek: 'karargah',
+  kutuphane_arastirma_kuyrugu: 'kutuphane',
+  hastane_azami_tedavi_saniye: 'hastane',
+  pazar_takas_tavani_ek: 'pazar',
+  liman_sevkiyat_tavani_ek: 'liman',
+  elcilik_takviye_slotu: 'elcilik',
+  surlar_tahkimat_ek: 'surlar',
+};
+
+/** Binadan etki tablosuna: `ETKI_BINASI`'nin tersi, tek yerden türüyor. */
+const BINANIN_ETKISI: Record<string, string> = Object.fromEntries(
+  Object.entries(ETKI_BINASI).map(([etki, bina]) => [bina, etki]),
+);
+
+/**
+ * Binanın verilen SEVİYEDEKİ etki değeri; etkisi olmayan binada null.
+ *
+ * Şehir kartı bunu gösteriyor: "Depo tabanı 15.000 → 35.000". Eskiden
+ * kartta binanın seviyesi yazıyordu ve oyuncu 1200 altın harcamadan
+ * önce ne kazanacağını hiçbir yerde göremiyordu.
+ */
+export function etkiDegeri(binaKey: string, seviye: number): number | null {
+  const etki = BINANIN_ETKISI[binaKey];
+  if (!etki) return null;
+  const tablo = (B.binalar.etkiler as unknown as Record<string, number[]>)[etki];
+  if (!Array.isArray(tablo) || tablo.length === 0) return null;
+  return tablo[Math.min(Math.max(0, seviye), tablo.length - 1)] ?? null;
+}
+
+/**
+ * Etkinin birimi: arayüz sayıyı nasıl yazacağını buradan biliyor.
+ *
+ * Sayının kendisinden çıkarmaya çalışmak (0,04 gördüysem oran demektir
+ * gibi) ilk küçük değerde yanlış biçim verirdi.
+ */
+export function etkiBirimi(binaKey: string): 'sayi' | 'saniye' | 'oran' | null {
+  const etki = BINANIN_ETKISI[binaKey];
+  if (!etki) return null;
+  if (etki.endsWith('_saniye')) return 'saniye';
+  if (etki === 'surlar_tahkimat_ek') return 'oran';
+  return 'sayi';
+}
+
+/**
+ * Bir etki tablosunu binanın seviyesiyle okur.
+ *
+ * Seviye tablonun boyunu aşarsa son değer veriliyor: kademe tavanı zaten
+ * `azami_seviye`yi geçirmiyor ama tabloyu kısaltmak bir gün sessizce
+ * `undefined` döndürmesin diye burada da bir tutamak var.
+ */
+export function binaEtkisi(binalar: Record<string, number>, etki: string): number {
+  const tablo = (B.binalar.etkiler as unknown as Record<string, number[]>)[etki];
+  if (!Array.isArray(tablo) || tablo.length === 0) return 0;
+  const seviye = binaSeviyesi(binalar, ETKI_BINASI[etki] ?? '');
+  return tablo[Math.min(seviye, tablo.length - 1)] ?? 0;
+}
+
+/** Malikânenin depo kapasitesine kattığı ham miktar. */
+export const depoEki = (binalar: Record<string, number>): number =>
+  binaEtkisi(binalar, 'malikane_depo_ek');
+
+/** Aynı anda açılabilecek asker eğitim kuyruğu. */
+export const egitimKuyrugu = (binalar: Record<string, number>): number =>
+  binaEtkisi(binalar, 'kisla_egitim_kuyrugu');
+
+/**
+ * Demirhanenin izin verdiği en yüksek ekipman kademesi.
+ *
+ * Lord seviyesi kapısı DURUYOR; bu ikinci bir kapı. T5 hem 50. seviye
+ * hem 4. seviye demirhane istiyor, 4. seviye demirhane de bir şehir —
+ * "fethin karşılığı" cümlesi burada bir sayıya dönüşüyor.
+ */
+export const azamiTier = (binalar: Record<string, number>): number =>
+  binaEtkisi(binalar, 'demirhane_azami_tier');
+
+/**
+ * Bir ekipman kademesi için gereken en düşük demirhane seviyesi.
+ *
+ * `demirhane_azami_tier` tablosunun tersi. Elle ikinci bir tablo yazmak,
+ * birini değiştirip ötekini unutunca oyuncuya yanlış hedef göstermek
+ * demekti; burada aynı diziden türetiliyor.
+ */
+export function gerekenDemirhaneSeviyesi(tier: number): number {
+  const tablo = (B.binalar.etkiler as unknown as Record<string, number[]>).demirhane_azami_tier;
+  if (!Array.isArray(tablo)) return 0;
+  const i = tablo.findIndex((azami) => azami >= tier);
+  return i < 0 ? tablo.length - 1 : i;
+}
+
+/** Karargâhın liderliğin üstüne kattığı general slotu. */
+export const generalSlotuEki = (binalar: Record<string, number>): number =>
+  binaEtkisi(binalar, 'karargah_general_slotu_ek');
+
+/** Aynı anda yürütülebilecek araştırma. */
+export const arastirmaKuyrugu = (binalar: Record<string, number>): number =>
+  binaEtkisi(binalar, 'kutuphane_arastirma_kuyrugu');
+
+/**
+ * Bir tedavinin sürebileceği EN UZUN zaman (saniye).
+ *
+ * Hastanenin eş zamanlı kuyruğu yok ve olmamalı — tedavi bir tercih
+ * değil, savaşın sonucu (services/queue.ts). Onun yerine hastane BÜYÜK
+ * YENİLGİYİ kısaltıyor: küçük kafileler zaten tavana çarpmıyor, değişen
+ * tek şey yüzlerce yaralının döndüğü gün.
+ */
+export const azamiTedaviSn = (binalar: Record<string, number>): number =>
+  binaEtkisi(binalar, 'hastane_azami_tedavi_saniye');
+
+/** Pazarın günlük takas tavanına kattığı miktar (altın karşılığı). */
+export const takasTavaniEki = (binalar: Record<string, number>): number =>
+  binaEtkisi(binalar, 'pazar_takas_tavani_ek');
+
+/** Limanın günlük sevkiyat tavanına kattığı miktar. */
+export const sevkiyatTavaniEki = (binalar: Record<string, number>): number =>
+  binaEtkisi(binalar, 'liman_sevkiyat_tavani_ek');
+
+/** Aynı anda sahada tutulabilecek takviye sayısı. */
+export const takviyeSlotu = (binalar: Record<string, number>): number =>
+  binaEtkisi(binalar, 'elcilik_takviye_slotu');
+
+/**
+ * Surların BAŞKENTE kattığı tahkimat oranı.
+ *
+ * Yalnız başkente: öteki bölgelerin tahkimatı türlerinden geliyor ve
+ * öyle kalmalı. Surlar oyuncunun oturduğu yeri savunuyor, bütün
+ * imparatorluğunu değil.
+ */
+export const tahkimatEki = (binalar: Record<string, number>): number =>
+  binaEtkisi(binalar, 'surlar_tahkimat_ek');
+
+/**
+ * Bir kuyruk türünün eş zamanlı sınırı.
+ *
+ * Kışla eğitim kuyruğunu, kütüphane araştırma kuyruğunu belirliyor;
+ * ötekiler `balance.json → kuyruklar.es_zamanli` sabitleri. Sunucu da
+ * arayüz de bu tek fonksiyonu çağırıyor: sayıyı iki yerde tutmak,
+ * dolu kuyrukta düğmenin açık kalması demekti.
+ */
+export function esZamanliLimit(kind: string, binalar: Record<string, number>): number {
+  if (kind === 'train') return egitimKuyrugu(binalar);
+  if (kind === 'research') return arastirmaKuyrugu(binalar);
+  return (B.kuyruklar.es_zamanli as unknown as Record<string, number>)[kind] ?? 1;
 }

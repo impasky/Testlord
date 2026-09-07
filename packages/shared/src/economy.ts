@@ -6,6 +6,7 @@
  * süre kadar üretim eklenir. 120 oyuncu için de 120.000 için de maliyet aynıdır.
  */
 import { B, regionBaseIncome, unit } from './balance.js';
+import { depoEki } from './bina.js';
 import type { ArastirmaBonusu } from './arastirma.js';
 import type { Army, GeneralBonus, Resources } from './types.js';
 import { UNIT_TYPES } from './types.js';
@@ -98,13 +99,24 @@ export function vilayetSayilari(bolgeler: readonly { province: string }[]): Reco
   return sayac;
 }
 
-export function storageCapacity(lordLevel: number, arastirma?: ArastirmaBonusu): number {
+/**
+ * Depo tavanı: lord seviyesi + MALİKÂNE + araştırma çarpanı.
+ *
+ * Depo tavanı eskiden YALNIZ lord seviyesiyle büyüyordu: ekranda üç
+ * kırmızı "depo dolu" uyarısı yanıyor ve hiçbirinin altında oyuncunun
+ * basabileceği bir düğme yoktu. Önce Ambarlar araştırması, sonra
+ * malikâne o uyarıya birer cevap verdi — biri ORAN, öteki SAYI
+ * (docs/12 §4). Malikânesiz lord Y4 öncesiyle aynı tavanı görüyor.
+ */
+export function storageCapacity(
+  lordLevel: number,
+  arastirma?: ArastirmaBonusu,
+  binalar?: Record<string, number>,
+): number {
   const taban =
-    B.kaynaklar.depo_kapasitesi.taban + B.kaynaklar.depo_kapasitesi.lord_seviye_basina * lordLevel;
-  // Depo tavanı eskiden YALNIZ lord seviyesiyle büyüyordu: ekranda üç
-  // kırmızı "depo dolu" uyarısı yanıyor ve hiçbirinin altında oyuncunun
-  // basabileceği bir düğme yoktu. Ambarlar araştırması o uyarıya bir
-  // cevap veriyor.
+    B.kaynaklar.depo_kapasitesi.taban +
+    B.kaynaklar.depo_kapasitesi.lord_seviye_basina * lordLevel +
+    depoEki(binalar ?? {});
   return Math.round(taban * (1 + (arastirma?.depoCarpani ?? 0)));
 }
 
@@ -123,6 +135,17 @@ export function upkeepPerHour(
 export interface AccrualInput {
   current: Resources;
   lordLevel: number;
+  /** Lordun bina seviyeleri; malikâne depo tavanını büyütüyor. */
+  binalar?: Record<string, number>;
+  /**
+   * Araştırma bonusu — depo çarpanı için.
+   *
+   * Eskiden verilmiyordu ve `accrue` tavanı ÇARPANSIZ hesaplıyordu:
+   * Ambarlar araştırmasını bitiren oyuncu ekranda 45.000 kapasite
+   * görüyor ama kaynağı 32.000'de duruyordu. Aynı tavanın iki farklı
+   * yerde iki farklı çıkması, tam da bu dosyanın kaçındığı şey.
+   */
+  arastirma?: ArastirmaBonusu;
   hourlyIncome: Resources;
   upkeepPerHour: number;
   lastTickAt: Date;
@@ -144,7 +167,7 @@ export interface AccrualResult {
 export function accrue(input: AccrualInput): AccrualResult {
   const ms = input.now.getTime() - input.lastTickAt.getTime();
   const hours = Math.max(0, ms / 3_600_000);
-  const cap = storageCapacity(input.lordLevel);
+  const cap = storageCapacity(input.lordLevel, input.arastirma, input.binalar);
 
   const gained: Resources = {
     altin: input.hourlyIncome.altin * hours,

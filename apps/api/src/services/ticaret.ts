@@ -8,7 +8,7 @@
 import { gunlukTavan, yukAgirligi } from '@lordlar/shared';
 import { lordunAyricaligi } from './ittifakSeviye.js';
 import { prisma, type Tx } from '../db.js';
-import { pushEvent, tickLord } from './lord.js';
+import { binalariOku, pushEvent, tickLord } from './lord.js';
 
 /** Bugün gönderilen toplam ağırlık (altın karşılığı). */
 export async function bugunGonderilen(lordId: string, tx: Tx = prisma): Promise<number> {
@@ -21,7 +21,14 @@ export async function bugunGonderilen(lordId: string, tx: Tx = prisma): Promise<
 }
 
 export async function sevkiyatOzeti(lordId: string) {
-  const tavan = gunlukTavan((await lordunAyricaligi(lordId)).ticaretTavani);
+  const lord = await prisma.lord.findUnique({
+    where: { id: lordId },
+    select: { binalar: true },
+  });
+  const tavan = gunlukTavan(
+    (await lordunAyricaligi(lordId)).ticaretTavani,
+    binalariOku(lord ?? {}),
+  );
   const [giden, gelen, gonderilen] = await Promise.all([
     prisma.shipment.findMany({
       where: { fromLordId: lordId, resolved: false },

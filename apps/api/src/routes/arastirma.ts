@@ -12,6 +12,7 @@ import {
   arastirmaMaliyeti,
   arastirmaSuresiSn,
   B,
+  esZamanliLimit,
   arastirmaDugumu,
 } from '@lordlar/shared';
 import type { FastifyInstance } from 'fastify';
@@ -19,7 +20,7 @@ import { z } from 'zod';
 import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError } from '../errors.js';
-import { findLordByUser, okuArastirmalar, tickLord } from '../services/lord.js';
+import { binalariOku, findLordByUser, okuArastirmalar, tickLord } from '../services/lord.js';
 import { gecikmisleriKapat } from '../services/gecikmis.js';
 import { assertQueueSlot, enqueue, spendResources } from '../services/queue.js';
 
@@ -33,27 +34,38 @@ export async function arastirmaRoutes(app: FastifyInstance) {
     await gecikmisleriKapat(lordId);
     const lord = await prisma.lord.findUniqueOrThrow({
       where: { id: lordId },
-      select: { level: true, arastirmalar: true },
+      select: { level: true, arastirmalar: true, binalar: true },
     });
     const tamamlanan = okuArastirmalar(lord.arastirmalar);
-    const suren = await prisma.queue.findFirst({
+    /*
+     * Süren araştırmalar ÇOĞUL.
+     *
+     * Kütüphane eş zamanlı araştırma sayısını büyütüyor (docs/12 §4) ve
+     * uç tek satır döndürdüğü sürece arayüz ikinci araştırmayı hiç
+     * göremez, "başka araştırma sürüyor" diye kendi açtığı kuyruğu
+     * kapatırdı. `suren` geriye dönük uyum için duruyor: ilk biteni
+     * gösteriyor.
+     */
+    const surenler = await prisma.queue.findMany({
       where: { lordId, kind: 'research', resolved: false },
       orderBy: { finishAt: 'asc' },
     });
-    const surenKey = suren ? String((suren.payload as { key?: string }).key ?? '') : null;
+    const bicim = (q: (typeof surenler)[number]) => {
+      const key = String((q.payload as { key?: string }).key ?? '');
+      return {
+        id: q.id,
+        key: key || null,
+        ad: key ? (arastirmaDugumu(key)?.ad ?? key) : '',
+        finishAt: q.finishAt,
+      };
+    };
     return {
       dallar: arastirmaDurumlari(tamamlanan, lord.level),
       tamamlanan,
       ilerleme: arastirmaIlerlemesi(tamamlanan),
-      esZamanli: B.kuyruklar.es_zamanli.research,
-      suren: suren
-        ? {
-            id: suren.id,
-            key: surenKey,
-            ad: surenKey ? (arastirmaDugumu(surenKey)?.ad ?? surenKey) : '',
-            finishAt: suren.finishAt,
-          }
-        : null,
+      esZamanli: esZamanliLimit('research', binalariOku(lord)),
+      surenler: surenler.map(bicim),
+      suren: surenler[0] ? bicim(surenler[0]) : null,
     };
   });
 

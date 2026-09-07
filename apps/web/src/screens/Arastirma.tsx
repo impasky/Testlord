@@ -73,7 +73,8 @@ export function Arastirma({ depoTavani }: { depoTavani: number }) {
   });
 
   if (veri.isPending || !veri.data) return <Iskelet satir={4} />;
-  const { dallar, ilerleme, suren } = veri.data;
+  const { dallar, ilerleme, surenler, esZamanli } = veri.data;
+  const kuyrukDolu = surenler.length >= esZamanli;
 
   // Dal başlıkları veriden geliyor; ekranda ikinci bir liste tutmuyoruz.
   const dalAnahtarlari = [...new Set(dallar.map((d) => d.dal))];
@@ -99,21 +100,25 @@ export function Arastirma({ depoTavani }: { depoTavani: number }) {
         </div>
         <Ilerleme deger={ilerleme.biten} max={Math.max(1, ilerleme.toplam)} />
         <p className="mt-1.5 text-[11px] leading-snug text-solgun">
-          Aynı anda tek araştırma yürütebilirsin. Sıra senin kararın: önce ekonomiyi mi büyütürsün,
-          orduyu mu?
+          Aynı anda {esZamanli === 1 ? 'tek araştırma' : `${esZamanli} araştırma`} yürütebilirsin —
+          kütüphaneni yükseltirsen artar. Sıra senin kararın: önce ekonomiyi mi büyütürsün, orduyu
+          mu?
         </p>
       </Kart>
 
-      {suren && (
-        <Kart className="border-altin/40 p-3">
+      {/* Süren araştırmaların HEPSİ: kütüphane ikinciye izin veriyorsa
+          ikincisi de görünmeli, yoksa oyuncu başlattığı işi ekranda
+          bulamaz. */}
+      {surenler.map((s) => (
+        <Kart key={s.id} className="border-altin/40 p-3">
           <div className="flex items-center justify-between gap-2">
             <div className="min-w-0">
-              <p className="text-[13px] font-semibold text-altin">{suren.ad}</p>
+              <p className="text-[13px] font-semibold text-altin">{s.ad}</p>
               <p className="text-[12px] text-solgun">
-                <GeriSayim bitis={suren.finishAt} /> kaldı
+                <GeriSayim bitis={s.finishAt} /> kaldı
               </p>
             </div>
-            <Buton tur="anahat" disabled={iptal.isPending} onClick={() => iptal.mutate(suren.id)}>
+            <Buton tur="anahat" disabled={iptal.isPending} onClick={() => iptal.mutate(s.id)}>
               İptal
             </Buton>
           </div>
@@ -121,7 +126,7 @@ export function Arastirma({ depoTavani }: { depoTavani: number }) {
             İptal edersen harcadığının yarısı geri gelir.
           </p>
         </Kart>
-      )}
+      ))}
 
       {hata && <p className="text-[12px] text-kirmizi">{hata}</p>}
 
@@ -202,13 +207,13 @@ export function Arastirma({ depoTavani }: { depoTavani: number }) {
                           <Buton
                             className="mt-2"
                             tam
-                            disabled={baslat.isPending || suren !== null}
+                            disabled={baslat.isPending || kuyrukDolu}
                             onClick={() => baslat.mutate(d.key)}
                             isaret={
                               d.key === ilkAcikDugum ? 'arastirma-baslat' : `arastirma-${d.key}`
                             }
                           >
-                            {suren ? 'Başka araştırma sürüyor' : 'Başlat'}
+                            {kuyrukDolu ? 'Araştırma kuyruğu dolu' : 'Başlat'}
                           </Buton>
                         ) : (
                           <p className="mt-2 text-[11px] text-solgun">Kilitli — {d.engel}</p>

@@ -24,7 +24,12 @@ import type { FastifyInstance } from 'fastify';
 import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError } from '../errors.js';
-import { arastirmaBonusuOku, findLordByUser, tickLord } from '../services/lord.js';
+import {
+  arastirmaBonusuOku,
+  binalariOku,
+  findLordByUser,
+  tickLord,
+} from '../services/lord.js';
 
 /** Bugünün UTC başlangıcı — sayımların alt sınırı. */
 function gunBasi(simdi: Date): Date {
@@ -106,7 +111,13 @@ export async function gunlukRoutes(app: FastifyInstance): Promise<void> {
 
     const lord = await prisma.lord.findUniqueOrThrow({
       where: { id: lordId },
-      select: { girisSerisi: true, gunlukOdulGunu: true, level: true, arastirmalar: true },
+      select: {
+        girisSerisi: true,
+        gunlukOdulGunu: true,
+        level: true,
+        arastirmalar: true,
+        binalar: true,
+      },
     });
     if (odulAlindiMi(lord.gunlukOdulGunu, simdi)) {
       throw new GameError('Bugünün ödülünü zaten aldın.', 400, 'ODUL_ALINDI');
@@ -139,9 +150,15 @@ export async function gunlukRoutes(app: FastifyInstance): Promise<void> {
     // depo tavanını uygularken ödülü de kırpmasına yol açardı ve oyuncuya
     // "aldın" denip verilmemiş olurdu.
     const once = await tickLord(lordId, simdi);
-    // Ödül tavanı da araştırmayı görüyor: Ambarlar yapan oyuncunun
-    // ödülü depoya sığmadığı için buharlaşmasın.
-    const tavan = storageCapacity(lord.level, arastirmaBonusuOku(lord));
+    /*
+     * Ödül tavanı araştırmayı VE MALİKÂNEYİ görüyor.
+     *
+     * Aynı tavanı iki farklı yerde iki farklı hesaplamak, ödülü sessizce
+     * sıfıra kırpar: `tickLord` kaynağı büyük tavana kadar biriktirir,
+     * burası küçük tavanla bakar ve "sığmıyor" der. Oyuncuya "aldın"
+     * yazıp hiçbir şey vermemek, oyuna güveni en hızlı bozan şey.
+     */
+    const tavan = storageCapacity(lord.level, arastirmaBonusuOku(lord), binalariOku(lord));
 
     // Depo tavanı ödüle de işliyor. Bilerek: tavan oyunun kuralı, ödül
     // kuralın istisnası değil. Ama SESSİZ kırpılmıyor — ne verildiği

@@ -399,6 +399,21 @@ export function Sehir({
  * madalyon. Fark bir bakışta okunmalı — oyuncunun "şehrimde ne eksik"
  * sorusu haritaya bakarak cevaplanabilmeli.
  */
+/**
+ * Etki değerini insanın okuyacağı gibi yazar.
+ *
+ * Üç birim var ve üçü de aynı satırda görünüyor: düz sayı (kuyruk,
+ * slot), saniye (tedavi tavanı) ve oran (surlar). Tek biçimle
+ * yazsaydık "Başkent tahkimatı: 0,04" ya da "En uzun tedavi: 21600"
+ * çıkardı — ikisi de oyuncuya hiçbir şey söylemez.
+ */
+function etkiYazisi(deger: number | null, birim: BinaDurumu['etkiBirimi']): string {
+  if (deger === null) return '—';
+  if (birim === 'saniye') return formatKalan(deger * 1000);
+  if (birim === 'oran') return `%${Math.round(deger * 100)}`;
+  return formatSayi(deger);
+}
+
 function BinaIsareti({ b, secili, onSec }: { b: BinaDurumu; secili: boolean; onSec: () => void }) {
   const dikili = b.seviye > 0;
   return (
@@ -496,11 +511,14 @@ function BinaKarti({
               </span>
             )}
           </div>
-          {/* Seviyenin NE VERDİĞİ yazılı. Araştırmada da böyle: bedeli
-              olan bir kararı karşılığını bilmeden vermek olmaz. */}
+          {/* Seviyenin NE VERDİĞİ yazılı — binanın seviyesi değil ETKİSİ.
+              Önce "Depo tabanı: 1 → 2" yazıyordu; o iki sayı seviyeydi ve
+              oyuncu 1200 altını harcamadan önce ne kazanacağını hiçbir
+              yerde göremiyordu (docs/09 İ1). */}
           {b.etkiMetni && (
             <p className="mt-1.5 text-[11px] text-altin">
-              {b.etkiMetni}: {b.seviye} → {b.seviye + 1}
+              {b.etkiMetni}: {etkiYazisi(b.etkiSimdi, b.etkiBirimi)}
+              {b.etkiSonra !== null && ` → ${etkiYazisi(b.etkiSonra, b.etkiBirimi)}`}
             </p>
           )}
         </>

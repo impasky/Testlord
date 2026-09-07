@@ -1,10 +1,12 @@
 /** Ekipman: üretim, kuşanma, yükseltme, satış. */
 import {
   B,
+  azamiTier,
   EQUIP_SLOTS,
   canCraftTier,
   canUpgrade,
   craftPrice,
+  gerekenDemirhaneSeviyesi,
   itemPower,
   sellValue,
   tierUnlockLevel,
@@ -19,7 +21,7 @@ import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { ekipmanEtkisi } from '../services/hedef.js';
-import { findLordByUser, tickLord } from '../services/lord.js';
+import { binalariOku, findLordByUser, tickLord } from '../services/lord.js';
 import { assertQueueSlot, enqueue, spendResources } from '../services/queue.js';
 
 const craftSchema = z.object({
@@ -32,7 +34,10 @@ export async function itemRoutes(app: FastifyInstance): Promise<void> {
     const lordId = await findLordByUser(req.user.userId);
     const [items, lord] = await Promise.all([
       prisma.item.findMany({ where: { lordId }, orderBy: { createdAt: 'desc' } }),
-      prisma.lord.findUniqueOrThrow({ where: { id: lordId }, select: { level: true } }),
+      prisma.lord.findUniqueOrThrow({
+        where: { id: lordId },
+        select: { level: true, binalar: true },
+      }),
     ]);
 
     return {
@@ -50,10 +55,20 @@ export async function itemRoutes(app: FastifyInstance): Promise<void> {
           upgradeLevel: i.upgradeLevel,
         }),
       })),
+      /*
+       * Kilidin NEDENİ ayrı ayrı veriliyor.
+       *
+       * "T4 kilitli" tek başına oyuncuyu ekranda bırakır: seviye mi
+       * eksik, demirhane mi küçük? İkisini ayırmak, kartın altına
+       * doğru cümleyi yazmanın tek yolu (docs/09 İ1).
+       */
       tiers: [1, 2, 3, 4, 5].map((t) => ({
         tier: t,
         unlockLevel: tierUnlockLevel(t),
-        unlocked: canCraftTier(lord.level, t),
+        unlocked: canCraftTier(lord.level, t, binalariOku(lord)),
+        seviyeYetiyor: lord.level >= tierUnlockLevel(t),
+        demirhaneYetiyor: t <= azamiTier(binalariOku(lord)),
+        gerekenDemirhane: gerekenDemirhaneSeviyesi(t),
         ...craftPrice(t),
         rarityTable: (B.ekipman.uretim_nadirlik_tablosu as Record<string, unknown>)[String(t)],
       })),
@@ -67,13 +82,20 @@ export async function itemRoutes(app: FastifyInstance): Promise<void> {
     return prisma.$transaction(async (tx) => {
       const lord = await tx.lord.findUniqueOrThrow({
         where: { id: lordId },
-        select: { level: true },
+        select: { level: true, binalar: true },
       });
-      if (!canCraftTier(lord.level, tier)) {
+      if (lord.level < tierUnlockLevel(tier)) {
         throw new GameError(
           `T${tier} ekipman için seviye ${tierUnlockLevel(tier)} gerekiyor.`,
           400,
           'SEVIYE_YETERSIZ',
+        );
+      }
+      if (tier > azamiTier(binalariOku(lord))) {
+        throw new GameError(
+          `T${tier} ekipman için ${gerekenDemirhaneSeviyesi(tier)}. seviye demirhane gerekiyor.`,
+          400,
+          'DEMIRHANE_YETERSIZ',
         );
       }
       await assertQueueSlot(lordId, 'craft', tx);

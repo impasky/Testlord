@@ -2,6 +2,7 @@
 import {
   GENERALS,
   aggregateGeneralBonus,
+  azamiGeneralSlotu,
   generalDef,
   generalLevelMultiplier,
   generalSlots,
@@ -12,7 +13,7 @@ import { z } from 'zod';
 import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError, hata } from '../errors.js';
-import { equippedGenerals, findLordByUser, tickLord } from '../services/lord.js';
+import { binalariOku, equippedGenerals, findLordByUser, tickLord } from '../services/lord.js';
 
 export async function generalRoutes(app: FastifyInstance): Promise<void> {
   app.get('/generals', { preHandler: requireAuth }, async (req) => {
@@ -20,7 +21,7 @@ export async function generalRoutes(app: FastifyInstance): Promise<void> {
     const [lord, sahipOlunan] = await Promise.all([
       prisma.lord.findUniqueOrThrow({
         where: { id: lordId },
-        select: { liderlik: true, altin: true },
+        select: { liderlik: true, altin: true, binalar: true },
       }),
       prisma.lordGeneral.findMany({ where: { lordId } }),
     ]);
@@ -28,7 +29,7 @@ export async function generalRoutes(app: FastifyInstance): Promise<void> {
     const now = new Date();
 
     return {
-      slots: generalSlots(lord.liderlik),
+      slots: generalSlots(lord.liderlik, binalariOku(lord)),
       altin: lord.altin,
       kadro: GENERALS.map((g) => {
         const sahip = sahipMap.get(g.key);
@@ -82,14 +83,21 @@ export async function generalRoutes(app: FastifyInstance): Promise<void> {
   app.post('/generals/:key/assign', { preHandler: requireAuth }, async (req) => {
     const { key } = z.object({ key: z.string() }).parse(req.params);
     const { slotIndex } = z
-      .object({ slotIndex: z.number().int().min(0).max(2).nullable() })
+      .object({
+        slotIndex: z
+          .number()
+          .int()
+          .min(0)
+          .max(azamiGeneralSlotu() - 1)
+          .nullable(),
+      })
       .parse(req.body);
     const lordId = await findLordByUser(req.user.userId);
 
     return prisma.$transaction(async (tx) => {
       const lord = await tx.lord.findUniqueOrThrow({
         where: { id: lordId },
-        select: { liderlik: true },
+        select: { liderlik: true, binalar: true },
       });
       const general = await tx.lordGeneral.findUnique({
         where: { lordId_generalKey: { lordId, generalKey: key } },
@@ -101,10 +109,10 @@ export async function generalRoutes(app: FastifyInstance): Promise<void> {
         return { slotIndex: null };
       }
 
-      const slots = generalSlots(lord.liderlik);
+      const slots = generalSlots(lord.liderlik, binalariOku(lord));
       if (slotIndex >= slots) {
         throw new GameError(
-          `Sadece ${slots} general slotun var. Daha fazlası için Liderlik statını artır.`,
+          `Sadece ${slots} general slotun var. Liderlik statını artır ya da Karargâh'ı yükselt.`,
           400,
           'SLOT_YOK',
         );
