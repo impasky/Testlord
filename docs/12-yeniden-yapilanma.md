@@ -756,6 +756,54 @@ başa doldur, hiçbir yerde magenta olmasın" satırı var.
 zemin önce kilitlenir, koordinatlar sonra. Yeni kıyılara 7 işaretçi 1-2
 puan oynadı (`harita-yerlestir.py`), `generate_map.py` temiz.
 
+### 9.2 Eski çağdan kalan aileler de plakadan geçti
+
+Şehir, akın ve dünya haritası plakadan geçince geride beş aile kaldı:
+birimler (5), lord (5), generaller (12), ekipman (30), bölge sahneleri
+(13). Hepsi tek tek üretilmişti — 65 ayrı çağrı, 65 ayrı kamera. Oyuncu
+şehirden ordu ekranına geçtiğinde üslup değiştiği belli oluyordu.
+
+Sayfa akışı bunlara olduğu gibi uymuyordu, iki şey eklendi:
+
+- **`Duzen`** — sayfadaki varlığın ne olduğu. `zemin` zemine basan figür
+  (bina, birim, düşman, lord): çizim kutunun ALTINA oturtulur, çünkü
+  arayüz onu tabanından çakıyor (§3.6). `ikon` envanter ikonu ya da
+  portre (ekipman, general): çizim ORTALANIR — çapraz duran bir kılıcın
+  tabanı yok ve otuz ikon alt alta dizildiğinde biri aşağı biri yukarı
+  kaymış görünmemeli. `pano` dikdörtgen sahne (bölgeler): kırpılır, opak
+  bırakılır, hizalanmaz.
+- **`sprite-hizala.py --orta`** ve **`_panolari_bol()`** — sırasıyla o iki
+  yeni düzenin karşılığı.
+
+Eşleştirme yine anlamlı: her ekipman sayfasında BİR yuvanın beş kademesi,
+her bölge sayfasında BİR yerin üç aşaması, lord sayfasında aynı adamın
+beş kuşamı. T1 ile T5'in akraba görünmesi ancak aynı karede çizilirse
+oluyor.
+
+**Stil sözleşmesi öznesizleşti.** İlk sayfalar "isometric game BUILDING
+asset" diye başlayıp "no people" ile bitiyordu; bina sayfalarında
+doğruydu ama sözleşme HER sayfaya ekleniyor. Üstüne plakayı iliştiren
+cümle "Only the buildings change" diyordu ve plaka bir bina plakası.
+Sonuç: lord sayfası beş bina, general-2 dört bina döndü — model doğru
+olanı yaptı, biz yanlış şeyi istedik. Üç düzeltme:
+
+- Sözleşmede özne yok; kamera, güneş, palet ve fırça var.
+- Özne `SAYFA_KONUSU`'nda, klasör başına, ve istemin EN BAŞINDA. Olması
+  gerekeni söylediği kadar olmaması gerekeni de söylüyor ("no buildings
+  and no structures anywhere in the frame").
+- Plaka artık yalnız üslup referansı: "Do NOT copy its subject… the
+  reference shows buildings, but this page does not have to."
+
+**Pano sayfasına ayrıklık şartı eklendi.** Kale sayfası üç aşama yerine
+TEK sürekli kale çizdi; bölücü onu üçe böldüğünde elde kalan şey aynı
+yerin üç kırpıntısıydı. İstem artık panoların birbirinin devamı
+olmamasını açıkça istiyor (ufuk ve arazi boşlukta devam etmeyecek).
+
+Bu turda harcanan 17, toplam 85, kalan 15. Lord, general-2 ve bölge-kale
+sayfaları düzeltilmiş istemle yeniden üretilecek (3 çağrı); o üç ailenin
+eski görselleri o zamana kadar yerinde duruyor — bina resmi lord diye
+yayına gitmesin.
+
 | Ne                                                                  | Adet    |
 | ------------------------------------------------------------------- | ------- |
 | Yerleşim zeminleri (kamp, köy, kasaba, şehir, kale-şehir, metropol) | 6       |

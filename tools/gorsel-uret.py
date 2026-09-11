@@ -132,8 +132,13 @@ STIL_PLAKASI = KOK / "tools" / "stil" / "plaka.webp"
 
 # Kameranın, ışığın ve paletin sözleşmesi. Sayfa ve zemin istemlerinin
 # hepsi bunu taşıyor; plaka da bundan doğuyor.
+# Stil sözleşmesi ÖZNESİZ. İlk hâli "isometric game BUILDING asset" diye
+# başlıyor ve "no people" ile bitiyordu; bina sayfalarında doğruydu ama
+# sözleşme her sayfaya ekleniyor. Lord sayfası beş bina, general-2 dört bina
+# döndü: sözleşme konudan daha yüksek sesle konuşuyordu. Özne artık
+# SAYFA_KONUSU'nda, sayfanın klasörüne göre.
 STIL_SOZLESMESI = (
-    "isometric game building asset, ONE fixed three-quarter aerial camera "
+    "ONE fixed three-quarter aerial camera "
     "used for every asset, roughly 45 degree yaw and 35 degree pitch, "
     "ONE warm afternoon sun from the upper left casting soft shadows down "
     "to the lower right, consistent line weight and detail density, "
@@ -141,8 +146,33 @@ STIL_SOZLESMESI = (
     "dark muted palette of deep browns, weathered timber, slate grey roofs "
     "and parchment cream plaster with warm gold accents, "
     "painted semi-realistic illustration with soft cel shading, "
-    "no text, no watermark, no border, no frame, no UI elements, no people"
+    "no text, no watermark, no border, no frame, no UI elements"
 )
+
+# Sayfanın ÖZNESİ — klasör başına. İki iş yapıyor: varlığın ne olduğunu
+# söylüyor ve olmaması gerekeni açıkça yasaklıyor. Yasak kısmı süs değil:
+# kenar durumların hepsi "model komşu kategoriyi çizdi" diye bozuldu
+# (kişi istenen sayfaya bina, ekipman istenen sayfaya ekipmanı tutan el).
+SAYFA_KONUSU: dict[str, str] = {
+    "binalar": "isometric game building assets, every subject is a BUILDING, "
+               "a standalone structure, no people anywhere in the frame",
+    "birimler": "isometric game character assets, every subject is a STANDING "
+                "HUMAN FIGURE seen full body from head to feet, "
+                "no buildings and no structures anywhere in the frame",
+    "dusmanlar": "isometric game character assets, every subject is a STANDING "
+                 "HUMAN FIGURE seen full body from head to feet, "
+                 "no buildings and no structures anywhere in the frame",
+    "lord": "isometric game character assets, every subject is the SAME "
+            "STANDING HUMAN FIGURE seen full body from head to feet, "
+            "no buildings and no structures anywhere in the frame",
+    "generaller": "game character portrait assets, every subject is a WAIST-UP "
+                  "HUMAN CHARACTER PORTRAIT facing the viewer, "
+                  "no buildings and no structures anywhere in the frame",
+    "ekipman": "game inventory icon assets, every subject is a SINGLE PIECE OF "
+               "EQUIPMENT, an object on its own, no people, no hands "
+               "and no buildings anywhere in the frame",
+    "bolgeler": "game location illustrations, every panel is a LANDSCAPE SCENE",
+}
 
 # --- Sayfalar: dörtlü bina kümeleri ---
 #
@@ -154,21 +184,80 @@ STIL_SOZLESMESI = (
 # yana. Temel ile gelişmiş hâlin AYNI karede çizilmesi, ikisinin aynı bina
 # gibi görünmesini sağlıyor -- ayrı ayrı üretildiklerinde malikâne 1 ile
 # malikâne 5 akraba bile değildi.
-SAYFALAR: dict[str, tuple[str, list[str]]] = {
-    "kent-1": ("binalar", ["malikane_1", "malikane_5", "kisla_1", "kisla_5"]),
-    "kent-2": ("binalar", ["demirhane_1", "demirhane_5", "hastane_1", "hastane_5"]),
-    "kent-3": ("binalar", ["pazar_1", "pazar_5", "surlar_1", "surlar_5"]),
-    "kent-4": ("binalar", ["karargah_1", "karargah_5", "kutuphane_1", "kutuphane_5"]),
-    "kent-5": ("binalar", ["liman_1", "liman_5", "elcilik_1", "elcilik_5"]),
-    "kent-6": ("binalar", ["gorev_panosu", "haberci_kulesi", "onur_meydani", "arsa"]),
+# Düzen, sayfadaki varlığın NE OLDUĞUNU söylüyor ve üç şeyi birden
+# belirliyor: istemdeki dizilim tarifi, bölmeden sonraki hizalama ve
+# çıktının biçimi.
+#
+#   zemin  Zemine BASAN figür: bina, düşman, birim, lord. Çizim kutunun
+#          altına oturtuluyor, çünkü arayüz onları tabanından çakıyor ve
+#          tam oraya temas gölgesi koyuyor (docs/12 §3.6).
+#   ikon   Envanter ikonu ya da portre: ekipman, general. Çizim ORTALANIR
+#          — çapraz duran bir kılıcın "tabanı" yok ve otuz ikon alt alta
+#          dizildiğinde biri aşağı biri yukarı kaymış görünmemeli.
+#   pano   Dikdörtgen sahne: bölge illüstrasyonları. Kırpılıp opak
+#          bırakılıyor, hizalanmıyor — çerçeveyi dolduran bir manzaranın
+#          "tabanı" da yok.
+Duzen = str  # 'zemin' | 'ikon' | 'pano'
+
+SAYFALAR: dict[str, tuple[str, list[str], Duzen]] = {
+    "kent-1": ("binalar", ["malikane_1", "malikane_5", "kisla_1", "kisla_5"], "zemin"),
+    "kent-2": ("binalar", ["demirhane_1", "demirhane_5", "hastane_1", "hastane_5"], "zemin"),
+    "kent-3": ("binalar", ["pazar_1", "pazar_5", "surlar_1", "surlar_5"], "zemin"),
+    "kent-4": ("binalar", ["karargah_1", "karargah_5", "kutuphane_1", "kutuphane_5"], "zemin"),
+    "kent-5": ("binalar", ["liman_1", "liman_5", "elcilik_1", "elcilik_5"], "zemin"),
+    "kent-6": ("binalar", ["gorev_panosu", "haberci_kulesi", "onur_meydani", "arsa"], "zemin"),
     # Akın düşmanları: beş diyarın askeri bir sayfada, beş şefi bir sayfada.
     # Askerler aynı karede olunca "aynı dünyanın beş halkı" gibi duruyorlar;
     # tek tek üretilselerdi beşi beş ayrı oyundan gelmiş gibi olurdu.
-    "dusman-asker": ("dusmanlar", ["haydut", "lejyoner", "barbar", "eskiya", "kultist"]),
+    "dusman-asker": ("dusmanlar", ["haydut", "lejyoner", "barbar", "eskiya", "kultist"], "zemin"),
     "dusman-sef": (
         "dusmanlar",
         ["haydut_sef", "lejyoner_sef", "barbar_sef", "eskiya_sef", "kultist_sef"],
+        "zemin",
     ),
+    # --- Eski çağdan kalan aileler (docs/12 §9.2) ---
+    #
+    # Beşi de tek tek üretilmişti ve her birinin kendi kamerası, kendi
+    # güneşi vardı. Şehir ve akın plakadan geçince bunlar geride kaldı.
+    "birimler": (
+        "birimler",
+        ["milis", "mizrakci", "okcu", "suvari", "kusatma"],
+        "zemin",
+    ),
+    # Lord BEŞ KUŞAM HÂLİ tek karede. Zincirleme düzenlemeden bile iyi:
+    # aynı karede çizilen beş figürün aynı adam olması modelin tercihi
+    # değil, zorunluluğu.
+    "lord": ("lord", ["lord_1", "lord_2", "lord_3", "lord_4", "lord_5"], "zemin"),
+    "general-1": (
+        "generaller",
+        ["kumandan_alparslan", "sovalye_doruk", "suvari_bora", "okcubasi_elif"],
+        "ikon",
+    ),
+    "general-2": (
+        "generaller",
+        ["mizrakci_kadir", "kusatmaci_tarik", "kale_bekcisi_sarya", "casus_leyla"],
+        "ikon",
+    ),
+    "general-3": (
+        "generaller",
+        ["demirci_yusuf", "erzakci_meryem", "vaiz_bertan", "kahya_sinan"],
+        "ikon",
+    ),
+    # Ekipman: her sayfada BİR SLOT'un beş kademesi. Aynı karede çizilen
+    # beş kılıç birbirinin gelişmiş hâli gibi duruyor; ayrı ayrı
+    # üretildiklerinde T1 ile T5 akraba bile değildi.
+    "ekipman-silah": ("ekipman", [f"silah_t{i}" for i in range(1, 6)], "ikon"),
+    "ekipman-kalkan": ("ekipman", [f"kalkan_t{i}" for i in range(1, 6)], "ikon"),
+    "ekipman-zirh": ("ekipman", [f"zirh_t{i}" for i in range(1, 6)], "ikon"),
+    "ekipman-migfer": ("ekipman", [f"migfer_t{i}" for i in range(1, 6)], "ikon"),
+    "ekipman-at": ("ekipman", [f"at_t{i}" for i in range(1, 6)], "ikon"),
+    "ekipman-sancak": ("ekipman", [f"sancak_t{i}" for i in range(1, 6)], "ikon"),
+    # Bölge sahneleri: her sayfada BİR bölgenin üç aşaması. Aynı yerin
+    # gelişmiş hâli olduğu ancak yan yana çizilirse okunuyor.
+    "bolge-tarla": ("bolgeler", ["tarla", "tarla_3", "tarla_5"], "pano"),
+    "bolge-maden": ("bolgeler", ["maden", "maden_3", "maden_5"], "pano"),
+    "bolge-sehir": ("bolgeler", ["sehir", "sehir_3", "sehir_5"], "pano"),
+    "bolge-kale": ("bolgeler", ["kale", "kale_3", "kale_5"], "pano"),
 }
 
 # Sayfa kompozisyonu. Zemin SAYDAM değil DÜZ MAGENTA isteniyor ve bu
@@ -177,9 +266,9 @@ SAYFALAR: dict[str, tuple[str, list[str]]] = {
 # renk ise güvenilir şekilde geliyor ve ayıklaması kesin -- `gorsel-ayikla.py`
 # zemini kenar renginden bulup bileşenlere ayırıyor, yani bu araç tam da
 # böyle bir sayfa için yazılmıştı.
-def sayfa_kompozisyonu(adet: int) -> str:
+def sayfa_kompozisyonu(adet: int, duzen: Duzen) -> str:
     """
-    Sayfanın çerçeveleme tarifi — kaç varlık olduğuna göre.
+    Sayfanın çerçeveleme tarifi — kaç varlık ve ne türden olduğuna göre.
 
     Zemin SAYDAM değil DÜZ MAGENTA isteniyor ve bu bilinçli: modelden
     saydamlık istendiğinde saydamlığı ÇİZDİ (dama desenini gerçek piksel
@@ -188,19 +277,41 @@ def sayfa_kompozisyonu(adet: int) -> str:
     renginden bulup bileşenlere ayırıyor, yani bu araç tam da böyle bir
     sayfa için yazılmıştı.
 
-    Dörtlü 2x2, beşli tek sıra: beş figürü 2x3'e dizmek bir kareyi boş
-    bırakmak demek ve model o boşluğu altıncı bir figürle doldurmaya
-    çalışıyor — o zaman isim sayısı tutmuyor ve sayfa bölünemiyor.
+    Dörtlü 2x2, geri kalanı tek sıra: beş figürü 2x3'e dizmek bir kareyi
+    boş bırakmak demek ve model o boşluğu fazladan bir figürle doldurmaya
+    çalışıyor.
+
+    PANO ayrı: bölge sahneleri kesilecek sprite değil, çerçeveyi dolduran
+    dikdörtgen illüstrasyonlar. Aralarındaki magenta oluk, bölücünün
+    onları birbirinden ayırabilmesi için şart.
     """
-    duzen = (
-        "arranged in a 2x2 grid" if adet == 4 else f"arranged in a single horizontal row"
+    if duzen == "pano":
+        return (
+            f"exactly {adet} separate rectangular landscape illustrations side "
+            "by side, each panel is a COMPLETE SCENE that fills its own panel "
+            "edge to edge with terrain and sky, no magenta and no empty "
+            "background inside any panel, "
+            # Kale sayfası tek sürekli kale çizip üçe bölünmüştü: panolar
+            # birbirinin devamı olunca sonuç üç aşama değil, aynı yerin üç
+            # kırpıntısı oluyor. Ayrıklık AÇIKÇA isteniyor.
+            "each panel is a DIFFERENT and SELF-CONTAINED place drawn on its "
+            "own, never one continuous scene cut into pieces, the terrain, "
+            "the horizon and the sky do NOT line up or continue across the "
+            "gaps, "
+            "separated only by a thin flat "
+            "magenta gutter, no frames, no borders, no dividing lines, "
+            "no text, 16:9 composition overall"
+        )
+    duzen_tarifi = (
+        "arranged in a 2x2 grid" if adet == 4 else "arranged in a single horizontal row"
     )
     return (
-        f"exactly {adet} separate subjects {duzen} on a flat solid magenta "
+        f"exactly {adet} separate subjects {duzen_tarifi} on a flat solid magenta "
         "background, wide empty magenta gaps between them, each subject fully "
         "separate and touching nothing else, no ground plane, no baseplate, "
         "no cast shadow on the background, square 1:1 composition"
     )
+
 
 # Kategori başına kompozisyon kuralı + çıktı boyutu.
 #   kompozisyon : TABAN_USLUP'a eklenen çerçeveleme tarifi
@@ -699,24 +810,25 @@ ISTEKLER: dict[str, dict[str, str]] = {
                   "no armor at all, patched wool tunic and a worn leather belt, "
                   "a plain iron sword hanging at his hip, empty hands, "
                   "wary and untested",
-        "lord_2": "SAME MAN, same face, same hair, same age, same stance, same "
-                  "framing and same scale as the input image. Only his gear "
+        "lord_2": "the SAME MAN as the first figure on this page, same face, same "
+                  "hair, same age, same stance, same framing and same scale. "
+                  "Only his gear "
                   "changes: he now wears a plain steel cuirass over mail with "
                   "brass rivets and a simple open helmet under one arm, "
                   "a well made arming sword at his hip. Still weathered, "
                   "still no ornament",
-        "lord_3": "SAME MAN, same face, same stance, same framing and same scale "
-                  "as the input image. Only his gear changes: blued steel armor "
+        "lord_3": "the SAME MAN as the first figure on this page, same face, same "
+                  "stance, same framing and same scale. Only his gear changes: blued steel armor "
                   "with brass fittings and engraved scrollwork, a masterwork sword, "
                   "a heater shield on his arm, a dark cloak. Confident now",
-        "lord_4": "SAME MAN, same face, same stance, same framing and same scale "
-                  "as the input image. Only his gear changes: gilded engraved "
+        "lord_4": "the SAME MAN as the first figure on this page, same face, same "
+                  "stance, same framing and same scale. Only his gear changes: gilded engraved "
                   "plate armor with interlace and inlaid gems, crimson silk "
                   "wrapping, a rich fur-lined cloak, a golden-hilted sword held "
                   "point down before him. A commander",
-        "lord_5": "SAME MAN, older and scarred, same face, same stance, same "
-                  "framing and same scale as the input image. Only his gear "
-                  "changes: ancient dark meteoric armor veined with glowing "
+        "lord_5": "the SAME MAN as the first figure on this page, older and scarred, "
+                  "same face, same stance, same framing and same scale. "
+                  "Only his gear changes: ancient dark meteoric armor veined with glowing "
                   "golden runes, a crowned helm, a tattered crimson war cloak, "
                   "a rune-lit blade raised. Unmistakably a legend",
     },
@@ -754,15 +866,64 @@ def tam_istem(klasor: str, konu: str) -> str:
 
 def sayfa_istemi(sayfa: str) -> str:
     """Dörtlü bina sayfasının istemi: dört konu + ızgara + stil sözleşmesi."""
-    klasor, adlar = SAYFALAR[sayfa]
+    klasor, adlar, duzen = SAYFALAR[sayfa]
     konular = ISTEKLER[klasor]
     yerler = (
         ("top left", "top right", "bottom left", "bottom right")
-        if len(adlar) == 4
+        if len(adlar) == 4 and duzen != "pano"
         else ("first from the left", "second", "third", "fourth", "fifth")
     )
     dortlu = "; ".join(f"{yer}: {konular[ad]}" for yer, ad in zip(yerler, adlar))
-    return f"{dortlu}. {sayfa_kompozisyonu(len(adlar))}, {STIL_SOZLESMESI}"
+    # Özne EN BAŞTA: model istemin başını daha çok dinliyor ve sayfanın ne
+    # çizeceğini konulardan önce bilmesi gerekiyor.
+    return (
+        f"{SAYFA_KONUSU[klasor]}. {dortlu}. "
+        f"{sayfa_kompozisyonu(len(adlar), duzen)}, {STIL_SOZLESMESI}"
+    )
+
+
+def _panolari_bol(sayfa_yolu: Path, klasor: str, adlar: list[str]) -> int:
+    """Pano sayfasını eşit sütunlara böler, magenta oluğu kırpar, kareler."""
+    import numpy as np
+    from PIL import Image
+
+    im = Image.open(sayfa_yolu).convert("RGB")
+    gen, yuk = im.size
+    n = len(adlar)
+    (CIKTI / klasor).mkdir(parents=True, exist_ok=True)
+    yazilan = 0
+    for i, ad in enumerate(adlar):
+        if ad == "-":
+            continue
+        dilim = im.crop((round(gen * i / n), 0, round(gen * (i + 1) / n), yuk))
+        d = np.asarray(dilim).astype(int)
+        # Magenta: kırmızı VE mavi, yeşilin belirgin üstünde. Sahnenin
+        # kendi sıcak renkleri (kiremit, toprak) bu şartı geçmiyor çünkü
+        # onlarda mavi yeşilin ALTINDA.
+        magenta = (d[:, :, 0] > d[:, :, 1] + 40) & (d[:, :, 2] > d[:, :, 1] + 20)
+        # Eşik DÜŞÜK (0.25): oluk kenarında sahneye karışmış birkaç piksel
+        # bile kartın kenarında pembe bir şerit olarak görünüyor. Sahnenin
+        # kendi içinde bu orana ulaşan bir sütun yok, çünkü magenta şartı
+        # dar (mavi, yeşilin üstünde) ve sıcak sahne renkleri onu geçmiyor.
+        sut = magenta.mean(axis=0) < 0.25
+        sat = magenta.mean(axis=1) < 0.25
+        xs, ys = np.nonzero(sut)[0], np.nonzero(sat)[0]
+        if len(xs) and len(ys):
+            # Üstüne %1 pay: kalan tek piksellik saçak da gitsin.
+            pay_x = max(1, round(dilim.size[0] * 0.01))
+            pay_y = max(1, round(dilim.size[1] * 0.01))
+            x0, x1 = int(xs[0]) + pay_x, int(xs[-1]) + 1 - pay_x
+            y0, y1 = int(ys[0]) + pay_y, int(ys[-1]) + 1 - pay_y
+            if x1 > x0 and y1 > y0:
+                dilim = dilim.crop((x0, y0, x1, y1))
+        g, y = dilim.size
+        k = min(g, y)
+        dilim = dilim.crop(((g - k) // 2, (y - k) // 2, (g + k) // 2, (y + k) // 2))
+        yol = CIKTI / klasor / f"{ad}.webp"
+        dilim.resize((512, 512), Image.LANCZOS).save(yol, "WEBP", quality=82, method=6)
+        print(f"    {klasor}/{ad}.webp")
+        yazilan += 1
+    return yazilan
 
 
 def sayfayi_ayikla(sayfa_yolu: Path, sayfa: str) -> int:
@@ -776,7 +937,7 @@ def sayfayi_ayikla(sayfa_yolu: Path, sayfa: str) -> int:
     """
     import importlib.util
 
-    klasor, adlar = SAYFALAR[sayfa]
+    klasor, adlar, duzen = SAYFALAR[sayfa]
     araclar = Path(__file__).resolve().parent
     yazilan = 0
     for ad, arg in (("gorsel_ayikla", "gorsel-ayikla.py"), ("sprite_hizala", "sprite-hizala.py")):
@@ -792,6 +953,18 @@ def sayfayi_ayikla(sayfa_yolu: Path, sayfa: str) -> int:
     from PIL import Image
 
     a = np.asarray(Image.open(sayfa_yolu).convert("RGB")).astype(int)
+
+    if duzen == "pano":
+        # Panolar EŞİT SÜTUNA bölünüyor, bileşene göre değil.
+        #
+        # Bileşen bölmesi burada iki yerden bozuldu: (1) model panoların
+        # arasına ince koyu çizgiler çizince üç sahne tek parça oldu,
+        # (2) sahneler kendi çerçevelerini doldurduğu için kesim oluktan
+        # biraz magenta taşıyor ve kartın kenarında pembe şerit kalıyordu.
+        # İstenen dizilim zaten "yan yana N pano", yani eşit sütun hem
+        # kesin hem de modelin çizdiği ayraçtan etkilenmiyor.
+        return _panolari_bol(sayfa_yolu, klasor, adlar)
+
     bilesenler, zemin = ayikla.bilesenleri_bul(a, ayikla.ESIK)
     bilesenler = ayikla.okuma_sirasi(bilesenler)
     if len(bilesenler) != len(adlar):
@@ -809,14 +982,23 @@ def sayfayi_ayikla(sayfa_yolu: Path, sayfa: str) -> int:
 
     (CIKTI / klasor).mkdir(parents=True, exist_ok=True)
     for (kutu, maske), ad in zip(bilesenler, adlar):
+        if ad == "-":
+            continue
         yol = CIKTI / klasor / f"{ad}.webp"
-        ayikla.kare_yap(a, kutu, maske, zemin).save(yol, "WEBP", quality=82, method=6)
-        # Taban hizası ayrı bir adım: sprite'ın alt boşluğu her figürde
-        # farklı çıkıyor ve hizalanmazsa binalar ortak bir zemin çizgisine
-        # oturmuyor (docs/12 §3.6).
-        im, _ = hizala.hizala(yol)
-        if im is not None:
-            im.save(yol, "WEBP", quality=82, method=6)
+        if duzen == "pano":
+            # Sahne: kesilip kareye kırpılıyor, opak kalıyor. Hizalama yok
+            # -- çerçeveyi dolduran bir manzaranın "tabanı" da yok.
+            gorsel = ayikla.pano_yap(a, kutu, maske)
+        else:
+            gorsel = ayikla.kare_yap(a, kutu, maske, zemin)
+        gorsel.save(yol, "WEBP", quality=82, method=6)
+        if duzen != "pano":
+            # Hizalama ayrı bir adım: çizimin kutu içindeki boşluğu her
+            # figürde farklı çıkıyor. `zemin` düzeninde tabana, `ikon`
+            # düzeninde ORTAYA (docs/12 §3.6, §9.2).
+            im, _ = hizala.hizala(yol, duzen == "zemin")
+            if im is not None:
+                im.save(yol, "WEBP", quality=82, method=6)
         print(f"    {klasor}/{ad}.webp")
         yazilan += 1
     return yazilan
@@ -1085,10 +1267,16 @@ def kent_uret(argv: list[str], anahtar: str, zorla: bool) -> int:
         # Plaka metinden doğuyor; kalan sayfalar onu GİRDİ alıyor.
         kaynak = None if plaka_mi else [STIL_PLAKASI]
         if kaynak:
+            # "Only the buildings change" diyordu ve plaka bir BİNA plakası.
+            # Kişi isteyen sayfalarda model doğru olanı yaptı: plakanın
+            # konusunu korudu, beş lord yerine beş bina çizdi. Plaka artık
+            # yalnız ÜSLUBU veriyor; konuyu sayfa söylüyor.
             istem = (
-                "Match the reference image EXACTLY in camera angle, sun "
-                "direction, palette, line weight and level of detail. Only "
-                "the buildings change. " + istem
+                "Use the reference image ONLY as a style reference: match its "
+                "camera angle, sun direction, palette, line weight and level "
+                "of detail. Do NOT copy its subject, its objects or its "
+                "layout — the reference shows buildings, but this page does "
+                "not have to. Draw exactly what is described next. " + istem
             )
         try:
             ham = istek_at(istem, anahtar, kaynak)

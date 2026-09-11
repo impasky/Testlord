@@ -27,6 +27,7 @@ Islem TEKRARLANABILIR: zaten hizali bir dosya ayni kalir.
 KULLANIM:
   python3 tools/sprite-hizala.py apps/web/public/gorseller/binalar/*.webp
   python3 tools/sprite-hizala.py --onizleme apps/web/public/gorseller/binalar/*.webp
+  python3 tools/sprite-hizala.py --orta apps/web/public/gorseller/ekipman/*.webp
 """
 from __future__ import annotations
 
@@ -38,8 +39,18 @@ DOLULUK = 0.96   # cizim karenin bu kadarini doldurur
 ALT_PAY = 0.02   # tabanin altinda kalan pay
 
 
-def hizala(yol: Path):
-    """(hizalanmis gorsel, tasinan piksel) — alfa yoksa None."""
+def hizala(yol: Path, taban: bool = True):
+    """
+    (hizalanmis gorsel, tasinan piksel) — alfa yoksa None.
+
+    `taban=True`  cizim ALT kenara oturur. Zemine basan her sey boyle:
+                  bina, dusman, birim, lord. Arayuz onlari tabanindan
+                  cakiyor ve tam oraya temas golgesi koyuyor.
+    `taban=False` cizim ORTALANIR. Envanter ikonlari ve portreler boyle:
+                  capraz duran bir kilicin "tabani" yok, kutuya ortalanmasi
+                  gerekiyor -- otuz ikon alt alta dizildiginde biri asagi
+                  biri yukari kaymis gorunmesin diye.
+    """
     import numpy as np
     from PIL import Image
 
@@ -60,7 +71,7 @@ def hizala(yol: Path):
 
     tuval = Image.new("RGBA", (boy, boy), (0, 0, 0, 0))
     sol = (boy - yeni[0]) // 2
-    ust = boy - round(boy * ALT_PAY) - yeni[1]
+    ust = boy - round(boy * ALT_PAY) - yeni[1] if taban else (boy - yeni[1]) // 2
     tuval.paste(cizim, (sol, ust))
 
     # Ne kadar oynadi: taban zaten yerindeyse sifira yakin cikar.
@@ -76,6 +87,7 @@ def main() -> int:
         return 2
 
     bak = "--onizleme" in argv
+    taban = "--orta" not in argv
     dosyalar = [Path(x) for x in argv if not x.startswith("--")]
     if not dosyalar:
         print("Dosya verilmedi.", file=sys.stderr)
@@ -86,7 +98,7 @@ def main() -> int:
         if not yol.exists():
             print(f"  yok: {yol}", file=sys.stderr)
             return 2
-        im, kayma = hizala(yol)
+        im, kayma = hizala(yol, taban)
         if im is None:
             print(f"  atlandi, saydam degil: {yol.name}")
             continue

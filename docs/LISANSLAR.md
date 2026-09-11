@@ -87,40 +87,44 @@ Bazı araçlar çıktının bir köşesine kendi işaretini koyuyor. Oyunun içi
 başka bir ürünün işareti taşınmasın diye bunlar `tools/filigran-sil.py` ile
 temizleniyor; hangi dosyada yapıldığı aşağıdaki tabloda yazıyor.
 
-| Dosya                         | Durum                                             |
-| ----------------------------- | ------------------------------------------------- |
-| `birimler/milis.webp`         | eklendi                                           |
-| `birimler/mizrakci.webp`      | eklendi                                           |
-| `birimler/okcu.webp`          | eklendi                                           |
-| `birimler/suvari.webp`        | eklendi                                           |
-| `birimler/kusatma.webp`       | eklendi                                           |
-| `bolgeler/tarla.webp`         | eklendi                                           |
-| `bolgeler/maden.webp`         | eklendi                                           |
-| `bolgeler/sehir.webp`         | eklendi                                           |
-| `bolgeler/kale.webp`          | eklendi                                           |
-| `bolgeler/taht.webp`          | eklendi (köşe filigranı silindi)                  |
-| `generaller/*` (12 dosya)     | eklendi                                           |
-| `zeminler/malikane.webp`      | eklendi (işaret silindi)                          |
-| `zeminler/kisla.webp`         | eklendi (işaret silindi)                          |
-| `zeminler/demirhane.webp`     | eklendi (işaret silindi)                          |
-| `zeminler/generaller.webp`    | eklendi (işaret silindi)                          |
-| `zeminler/siralama.webp`      | eklendi (işaret silindi, tam ayna)                |
-| `zeminler/giris.webp`         | eklendi (işaret silindi)                          |
-| `ekipman/silah_t1..t5.webp`   | eklendi (zemin ayıklandı, saydam)                 |
-| `ekipman/kalkan_t1..t5.webp`  | eklendi (zemin ayıklandı, saydam)                 |
-| `ekipman/zirh_t1..t5.webp`    | eklendi (T2–T5 işaret silindi, zemin ayıklandı)   |
-| `ekipman/migfer_t1..t5.webp`  | eklendi (işaret silindi, zemin ayıklandı)         |
-| `ekipman/at_t1..t5.webp`      | eklendi (işaret zeminlendi, zemin ayıklandı)      |
-| `ekipman/sancak_t1..t5.webp`  | eklendi (işaret zeminlendi, zemin ayıklandı)      |
-| `lord/lord_1..5.webp`         | eklendi (zincirleme düzenleme, zemin ayıklandı)   |
-| `yerlesim/*.webp` (6 dosya)   | eklendi (filigran çıkmadı)                        |
-| `binalar/*.webp` (24 dosya)   | eklendi (çizilmiş dama silindi, saydam)           |
-| `harita/dunya.webp`           | eklendi (kare, çerçevesiz — ikinci deneme)        |
-| `akin/*.webp` (5 dosya)       | eklendi (filigran çıkmadı)                        |
-| `zeminler/akin.webp`          | eklendi (filigran çıkmadı)                        |
-| `akin_harita/*.webp` (5 dosya) | eklendi (plakadan, kampsız) |
-| `dusmanlar/*.webp` (10 dosya) | eklendi (iki beşerli sayfa, plakadan) |
-| ~~`harita/*.webp` (6 dosya)~~ | **silindi** — altıgen karolar emekli (docs/12 §5) |
+| Dosya                          | Durum                                             |
+| ------------------------------ | ------------------------------------------------- |
+| `birimler/milis.webp`          | eklendi                                           |
+| `birimler/mizrakci.webp`       | eklendi                                           |
+| `birimler/okcu.webp`           | eklendi                                           |
+| `birimler/suvari.webp`         | eklendi                                           |
+| `birimler/kusatma.webp`        | eklendi                                           |
+| `bolgeler/tarla.webp`          | eklendi                                           |
+| `bolgeler/maden.webp`          | eklendi                                           |
+| `bolgeler/sehir.webp`          | eklendi                                           |
+| `bolgeler/kale.webp`           | eklendi                                           |
+| `bolgeler/taht.webp`           | eklendi (köşe filigranı silindi)                  |
+| `generaller/*` (12 dosya)      | eklendi                                           |
+| `zeminler/malikane.webp`       | eklendi (işaret silindi)                          |
+| `zeminler/kisla.webp`          | eklendi (işaret silindi)                          |
+| `zeminler/demirhane.webp`      | eklendi (işaret silindi)                          |
+| `zeminler/generaller.webp`     | eklendi (işaret silindi)                          |
+| `zeminler/siralama.webp`       | eklendi (işaret silindi, tam ayna)                |
+| `zeminler/giris.webp`          | eklendi (işaret silindi)                          |
+| `ekipman/silah_t1..t5.webp`    | eklendi (zemin ayıklandı, saydam)                 |
+| `ekipman/kalkan_t1..t5.webp`   | eklendi (zemin ayıklandı, saydam)                 |
+| `ekipman/zirh_t1..t5.webp`     | eklendi (T2–T5 işaret silindi, zemin ayıklandı)   |
+| `ekipman/migfer_t1..t5.webp`   | eklendi (işaret silindi, zemin ayıklandı)         |
+| `ekipman/at_t1..t5.webp`       | eklendi (işaret zeminlendi, zemin ayıklandı)      |
+| `ekipman/sancak_t1..t5.webp`   | eklendi (işaret zeminlendi, zemin ayıklandı)      |
+| `lord/lord_1..5.webp`          | eklendi (zincirleme düzenleme, zemin ayıklandı)   |
+| `yerlesim/*.webp` (6 dosya)    | eklendi (filigran çıkmadı)                        |
+| `binalar/*.webp` (24 dosya)    | eklendi (çizilmiş dama silindi, saydam)           |
+| `harita/dunya.webp`            | eklendi (kare, çerçevesiz — ikinci deneme)        |
+| `akin/*.webp` (5 dosya)        | eklendi (filigran çıkmadı)                        |
+| `zeminler/akin.webp`           | eklendi (filigran çıkmadı)                        |
+| `akin_harita/*.webp` (5 dosya) | eklendi (plakadan, kampsız)                       |
+| `dusmanlar/*.webp` (10 dosya)  | eklendi (iki beşerli sayfa, plakadan)             |
+| ~~`harita/*.webp` (6 dosya)~~  | **silindi** — altıgen karolar emekli (docs/12 §5) |
+| `birimler/*.webp` (5 dosya)    | **yenilendi** (tek sayfa, plakadan)               |
+| `generaller/*.webp` (8 dosya)  | **yenilendi** (iki dörtlü sayfa, plakadan)        |
+| `ekipman/*.webp` (30 dosya)    | **yenilendi** (yuva başına bir sayfa, plakadan)   |
+| `bolgeler/*.webp` (13 dosya)   | **yenilendi** (bölge başına bir pano sayfası)     |
 
 Lord figürleri zincirleme düzenlemeyle üretildi: `lord_1` metinden,
 sonrakiler bir öncekini girdi alarak. Beşinde de işaret aynı yerdeydi ama
@@ -230,3 +234,28 @@ en yakın uygun karaya taşıdı; taşımaların çoğu 1–2 puan. Denetimi
 Generaller 4×4 grid olarak geldi: 16 kare, 12 general. Fazlalıklar
 `gorsel-ayikla.py`'ye isim yerine `-` verilerek atlandı; silmek yerine yerinde
 atlamak kalan isimlerin sırasını bozmuyor.
+
+**Eski çağdan kalan aileler de sayfaya geçti (docs/12 §9.2).** Birimler,
+generaller, ekipman ve bölge sahneleri tek tek üretilmişti; şimdi hepsi
+plakadan gelen sayfalarla üretiliyor. Sayfa düzeni üçe ayrıldı: zemine
+basan figür alta oturtuluyor, ikon ve portre ORTALANIYOR (çapraz duran
+bir kılıcın tabanı yok), bölge panoları ise kırpılıp opak bırakılıyor.
+
+Üç sayfa bu turda **kullanılmadı** ve eski görselleri yerinde bırakıldı:
+
+- `lord` (5 figür) ve `general-2` (4 portre) **bina döndü.** Sebep
+  istemde: stil sözleşmesi "isometric game BUILDING asset" diye
+  başlıyordu ve plakayı iliştiren cümle "Only the buildings change"
+  diyordu — plaka da bir bina plakası. Model tutarlı davrandı, istem
+  yanlıştı. Sözleşme öznesizleştirildi, özne klasör başına ayrı bir
+  alana (`SAYFA_KONUSU`) taşındı ve istemin başına alındı.
+- `bolge-kale` üç aşama yerine **tek sürekli kale** çizdi; üçe bölününce
+  aynı yerin üç kırpıntısı kaldı. Pano tarifi artık panoların
+  birbirinin devamı olmamasını açıkça istiyor.
+
+Üçü düzeltilmiş istemle yeniden üretilecek (3 çağrı).
+
+Miğfer sayfası beş yerine altı nesne döndürdü; fazlalık, istemdeki
+tanıma bakılarak seçildi (T4 yaldızlı ve taşlı, T5 göktaşı ve rün) ve
+`-` ile atlandı. Düşman sayfalarında da aynısı oldu: ikisinde de
+dördüncü sırada ikinci bir barbar vardı.
