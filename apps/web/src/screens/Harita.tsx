@@ -152,6 +152,7 @@ function OrduSecici({
   onDegis,
   etiket,
   onKislaGit,
+  sahadaOrduVar = false,
   hepsiIsareti,
 }: {
   mevcut: Army;
@@ -160,6 +161,14 @@ function OrduSecici({
   etiket: string;
   /** Ordu boşken çıkış yolu. Verilmezse boş hâl eylemsiz kalır. */
   onKislaGit?: () => void;
+  /**
+   * Evdeki ordu boşken ordunun SAHADA olup olmadığı.
+   *
+   * İkisi aynı şey değil: 831 askeri dönüş yolunda olan lorda "önce ordu
+   * kur" demek yanlış öğüt ve pahalı — oyuncu gereksiz asker yazdırıp
+   * erzağını yakıyor.
+   */
+  sahadaOrduVar?: boolean;
   /**
    * "Hepsi" düğmesine konacak rehber işareti. Yalnız saldırı seçicisine
    * veriliyor: garnizon seçicisi de imzalı olsaydı ışık ikisinden hangisini
@@ -184,8 +193,14 @@ function OrduSecici({
       </div>
       {gorunen.length === 0 ? (
         <BosHal
-          mesaj="Evde asker yok. Saldırmak için önce ordu kurman gerekiyor."
-          eylemler={onKislaGit ? [{ etiket: "Kışla'ya git", onTikla: onKislaGit }] : []}
+          mesaj={
+            sahadaOrduVar
+              ? 'Ordun sahada. Döndüğünde bu bölgeye yollayabilirsin.'
+              : 'Evde asker yok. Saldırmak için önce ordu kurman gerekiyor.'
+          }
+          eylemler={
+            !sahadaOrduVar && onKislaGit ? [{ etiket: "Kışla'ya git", onTikla: onKislaGit }] : []
+          }
         />
       ) : (
         <ul className="space-y-1.5">
@@ -245,10 +260,13 @@ function kabaSure(sn: number): string {
 function TakviyeKarti({
   bolge,
   evdeki,
+  sahadaOrduVar,
   onKislaGit,
 }: {
   bolge: RegionDetailDto;
   evdeki: Army;
+  /** Evdeki ordu boşken ordunun sahada olup olmadığı (bkz. `OrduSecici`). */
+  sahadaOrduVar: boolean;
   onKislaGit: () => void;
 }) {
   const qc = useQueryClient();
@@ -321,6 +339,7 @@ function TakviyeKarti({
         secim={secim}
         onDegis={setSecim}
         etiket="Gönderilecek takviye"
+        sahadaOrduVar={sahadaOrduVar}
         onKislaGit={onKislaGit}
       />
       <Buton
@@ -1126,6 +1145,7 @@ export function Harita({
                       setOnizleme(null);
                     }}
                     etiket="Saldırı ordusu"
+                    sahadaOrduVar={lord.usedSlots > 0}
                     onKislaGit={() => onGit('kisla')}
                     hepsiIsareti="harita-hepsi"
                   />
@@ -1213,7 +1233,12 @@ export function Harita({
 
               <KesifKarti bolge={bolge} muttefikMi={bolge.muttefik} />
               <IttifakHedefiDugmesi bolge={bolge} lordId={lordId} />
-              <TakviyeKarti bolge={bolge} evdeki={evdeki} onKislaGit={() => onGit('kisla')} />
+              <TakviyeKarti
+                bolge={bolge}
+                evdeki={evdeki}
+                sahadaOrduVar={lord.usedSlots > 0}
+                onKislaGit={() => onGit('kisla')}
+              />
 
               {bolgeSavaslari.length > 0 && (
                 <Kart className="p-3">

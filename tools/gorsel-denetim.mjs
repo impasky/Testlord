@@ -501,6 +501,43 @@ if (yeniToken) {
   }
 
   /*
+   * Dünya haritasında ETİKETLER ÜST ÜSTE BİNMEMELİ.
+   *
+   * Kademe kuralı ("uzak ölçekte yalnız seni ilgilendirenler") tek başına
+   * yetmiyordu: dolu bir diyarda 61 bölgenin neredeyse hepsinin sahibi
+   * var, yani kural pratikte "hepsini göster"e dönüşüyor. Oynarken
+   * ölçüldü — 19 etiketten 8 ÇİFTİ birbirinin üstündeydi ve hiçbiri
+   * okunmuyordu. Seyreltme (`DunyaHaritasi.tsx`) bunu çözüyor; bu ölçüm
+   * çözümün yerinde durduğunu söylüyor.
+   *
+   * Gizlenen etiket de ÖLÇÜLMÜYOR: `visibility:hidden` kutusunu koruyor,
+   * yani hepsini saymak seyreltmeyi hiç yapılmamış gibi gösterirdi.
+   */
+  await ekrana(page, 'harita', 900);
+  const etiketOlcum = await page.evaluate(() => {
+    const e = [...document.querySelectorAll('[data-bolge-ad]')]
+      .filter((x) => getComputedStyle(x).visibility !== 'hidden')
+      .map((x) => x.getBoundingClientRect());
+    let cakisan = 0;
+    for (let i = 0; i < e.length; i++)
+      for (let j = i + 1; j < e.length; j++) {
+        const a = e[i];
+        const b = e[j];
+        if (a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom) cakisan++;
+      }
+    return { adet: e.length, cakisan };
+  });
+  if (etiketOlcum.cakisan > 0) {
+    sorun(
+      'harita-etiket',
+      'Bölge adları üst üste biniyor',
+      `${etiketOlcum.adet} etiketten ${etiketOlcum.cakisan} çifti çakışıyor`,
+    );
+  } else {
+    iyi('harita-etiket', `${etiketOlcum.adet} bölge adı, çakışma yok`);
+  }
+
+  /*
    * Yol ile grup sayısı TUTMALI. On kamp on noktaya konuyor; yol kısa
    * kalırsa son kamplar (şef dahil) haritanın ortasına yığılır.
    */

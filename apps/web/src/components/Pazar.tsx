@@ -110,13 +110,24 @@ export function Pazar() {
                 key={t}
                 type="button"
                 onClick={() => verenSec(t)}
-                className={`flex flex-1 items-center justify-center gap-1 rounded-lg border px-2 py-1.5 text-[12px] ${
+                /*
+                  Miktar KENDİ SATIRINDA ve kutu daralabiliyor (`min-w-0`).
+                  Tek satırdayken üç kutu 390 pikseli aşıyordu: stok altı
+                  haneye çıkınca ("108.166") üçüncüsü panelin kenarından
+                  taşıp kesiliyordu — telefonda ölçüldü, "Erzak 103.51"
+                  diye yarım yazıyordu.
+                */
+                className={`flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-lg border px-1.5 py-1.5 text-[12px] ${
                   veren === t ? 'border-altin bg-altin/15 text-altin' : 'border-cerceve text-metin'
                 }`}
               >
-                <KaynakIkonu tur={t} />
-                {buyukBasla(KAYNAK_ADI[t])}
-                <span className="text-sonuk">{formatSayi(kaynaklar[t])}</span>
+                <span className="flex items-center gap-1">
+                  <KaynakIkonu tur={t} />
+                  {buyukBasla(KAYNAK_ADI[t])}
+                </span>
+                <span className="tabular w-full truncate text-center text-[11px] text-sonuk">
+                  {formatSayi(kaynaklar[t])}
+                </span>
               </button>
             ))}
           </div>

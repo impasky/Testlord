@@ -859,6 +859,41 @@ doğrulamada işaretçilerin karada olup olmadığına da bakıyor.
 (`data/binalar.json` x/y); zeminde de bina çizilirse iki kat bina
 görünür. İstem bu yüzden manzarayı kenarlara yaslıyor.
 
+### 9.3 Baştan sona oynandı — üç hata çıktı
+
+Oyun yeni bir lordla açılıştan ilk fethe kadar, sonra gelişmiş bir lordla
+beş sekme ve sekiz kapının hepsinde oynandı. Çıkanlar:
+
+**1. Dünya haritasında bölge adları üst üste biniyordu.** Kademe kuralı
+("uzak ölçekte yalnız seni ilgilendirenler") doğruydu ama ölçütü
+yanlıştı: `Boolean(r.owner)` dolu bir diyarda neredeyse her bölge için
+doğru, yani kural pratikte "hepsini göster"e dönüşüyordu. Ölçüldü: 19
+etiketten 8 çifti çakışıyordu. Çözüm haritacılığın kendi çözümü —
+SEYRELTME. Etiketler önceliğe göre sıralanıp sırayla yerleştiriliyor,
+yerleşmiş bir kutuya değen susturuluyor (seçili → taht → senin → düşman →
+gerisi). Hesapla değil ÖLÇÜLEREK: etiketin genişliği metne bağlı ve
+harita yakınlaştıkça işaretçiler ters ölçekleniyor. Susan ad kaybolmuyor;
+madalyonu duruyor, yakınlaşınca yeri açıldığı an geri geliyor.
+`gorsel-denetim.mjs` artık çakışma sayıyor (`harita-etiket`).
+
+**2. "Evde asker yok. Önce Kışla'da asker eğit."** — 831 askeri dönüş
+yolunda olan lorda söyleniyordu. Yanlış olmakla kalmıyor, pahalı: oyuncu
+gereksiz asker yazdırıp erzağını yakıyor. Evdeki ordunun boş olması ile
+ordunun olmaması ayrı şeyler; `usedSlots` yürüyüştekini de sayıyor.
+Akın ve harita ekranlarında ordu sahadaysa artık "Ordun sahada,
+döndüğünde…" yazıyor ve "Kışla'ya git" düğmesi çıkmıyor.
+
+**3. General slotu cümlesi başlıkla çelişiyordu.** Başlık "0/4" diyor,
+altındaki cümle "1 + Liderlik/30, en fazla 3". Cümle elle yazılmıştı ve
+karargâhın kattığı slottan (`karargah_general_slotu_ek`) hiç söz
+etmiyordu — yani saklanan şey tam da oynanacak kısımdı: o slotu açan bir
+fetih. Cümle artık sayıyı `q.data.slots`ten ve kuralı
+`GENERAL_SLOT_RULE`dan okuyor.
+
+Bir de düzen kusuru: Pazar'daki "vereceğin" satırında üç kutu 390 pikseli
+aşıyordu ve stok altı haneye çıkınca üçüncüsü kesiliyordu ("Erzak
+103.51"). Miktar kendi satırına indi.
+
 ## 10. Aşamalar
 
 Her aşama sonunda oyun **oynanabilir** durumda kalır.

@@ -1,5 +1,5 @@
 /** Generaller — 12 kişilik sabit kadro, kiralama, slot yerleşimi. */
-import { GENERAL_LEVEL, generalLevelMultiplier } from '@lordlar/shared';
+import { GENERAL_LEVEL, GENERAL_SLOT_RULE, generalLevelMultiplier } from '@lordlar/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ApiError, api, type GeneralDto } from '../api/client';
@@ -206,8 +206,17 @@ export function Generaller({ onGuncelle }: { onGuncelle: () => void }) {
               ))}
             </ul>
           )}
+          {/*
+            Cümle SAYIYI ELLE YAZMIYOR. Önceki hâli "1 + Liderlik/30, en
+            fazla 3" diyordu ve başlıkta "0/4" yazıyordu: karargâh
+            liderliğin üstüne slot ekliyor (`karargah_general_slotu_ek`)
+            ama cümle ondan hiç söz etmiyordu. Oyuncunun gözünde ikisinden
+            biri yalan söylüyordu — üstelik açığı kapatan şey bir fetihti,
+            yani saklanan tam da oynanacak kısımdı.
+          */}
           <p className="mt-2.5 border-t border-kenar/70 pt-2 text-[11px] text-sonuk">
-            Slot sayısı Liderlik statına bağlıdır: 1 + Liderlik/30, en fazla 3.
+            Slotun {q.data.slots}. Liderlik {GENERAL_SLOT_RULE.bolen} puanda bir slot açar (en fazla{' '}
+            {GENERAL_SLOT_RULE.max}); karargâhın seviyesi bunun üstüne ekler.
           </p>
         </Kart>
         {hata && <p className="mt-2 text-[13px] text-kirmizi">{hata}</p>}

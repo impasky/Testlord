@@ -148,6 +148,58 @@ export function DunyaHaritasi({
 
   const [gorunum, setGorunum] = useState<Gorunum>({ olcek: 1, dx: 0, dy: 0 });
   const kutuRef = useRef<HTMLDivElement>(null);
+
+  /*
+   * ETİKET SEYRELTME — çakışanı sustur.
+   *
+   * Kademe kuralı (aşağıda) hangi adların ADAY olduğunu söylüyor; bu etki
+   * hangilerinin gerçekten YAZILACAĞINI söylüyor. İkisi ayrı iş: aday
+   * olmak yer bulmak demek değil.
+   *
+   * Ölçüm şart, hesap yetmiyor: etiketin genişliği metne bağlı ("Taht
+   * Kalesi" ile "Çakıllı Köyü" aynı yeri kaplamıyor) ve harita
+   * yakınlaştıkça işaretçiler ters ölçekleniyor. Dolayısıyla kutular
+   * çizildikten SONRA okunuyor.
+   *
+   * Yöntem haritacılığın kendi yöntemi: önceliğe göre sırala, sırayla
+   * yerleştir, yerleşmiş bir kutuya değen etiketi sustur. Susan etiket
+   * kaybolmuyor — madalyonu duruyor, dokununca panelde adıyla açılıyor
+   * ve yakınlaşınca yeri açıldığı an geri geliyor.
+   */
+  useEffect(() => {
+    const kutu = kutuRef.current;
+    if (!kutu) return;
+    let kare = 0;
+    const seyrelt = () => {
+      const etiketler = [...kutu.querySelectorAll<HTMLElement>('[data-bolge-ad]')];
+      // Ölçmeden önce hepsi açılıyor: kapalı kalan bir etiketin kutusu
+      // sıfır olur ve bir daha asla yer bulamazdı.
+      for (const e of etiketler) e.style.visibility = '';
+      const sirali = etiketler
+        .map((e) => ({ e, oncelik: Number(e.dataset.oncelik ?? 9) }))
+        .sort((a, b) => a.oncelik - b.oncelik);
+      const yerlesen: DOMRect[] = [];
+      for (const { e } of sirali) {
+        const r = e.getBoundingClientRect();
+        if (r.width === 0) continue;
+        // 2 piksel pay: kutular tam değmese de bitişik iki ad tek bir
+        // bulanık şerit gibi okunuyor.
+        const carpisti = yerlesen.some(
+          (o) =>
+            r.left < o.right + 2 &&
+            o.left < r.right + 2 &&
+            r.top < o.bottom + 2 &&
+            o.top < r.bottom + 2,
+        );
+        if (carpisti) e.style.visibility = 'hidden';
+        else yerlesen.push(r);
+      }
+    };
+    // Dönüşüm bittikten sonra ölç: kaydırma sırasında her karede ölçmek
+    // 61 kutuyu boşuna okumak olurdu.
+    kare = requestAnimationFrame(seyrelt);
+    return () => cancelAnimationFrame(kare);
+  });
   const isaretciler = useRef(new Map<number, { x: number; y: number }>());
   const surukleme = useRef({ mesafe: 0, ilkAralik: 0, ilkOlcek: 1 });
 
@@ -427,6 +479,17 @@ function BolgeIsareti({
   const taht = r.type === 'taht';
   // Uzak ölçekte yalnız oyuncuyu ilgilendiren yerlerin adı yazılıyor.
   const adGoster = kademe !== 'uzak' || r.isMine || Boolean(r.owner) || taht || secili;
+  /*
+   * Etiket ÖNCELİĞİ — çakışanı hangisinin yeneceği.
+   *
+   * Kademe kuralı tek başına yetmiyordu ve sebebi ölçüldü: dolu bir
+   * diyarda 61 bölgenin neredeyse hepsinin sahibi var, yani "sahipli
+   * olanı göster" kuralı ×1'de "hepsini göster"e dönüşüyor. Telefon
+   * genişliğinde 19 etiketten 8 çifti üst üste biniyordu.
+   *
+   * Sayı küçük olan önce yerleşir; yer kalmazsa büyük olan susar.
+   */
+  const oncelik = secili ? 0 : taht ? 1 : r.isMine ? 2 : r.owner ? 3 : 4;
   const halka = r.isMine
     ? '#f5b731'
     : r.owner
@@ -544,6 +607,7 @@ function BolgeIsareti({
         {adGoster && (
           <span
             data-bolge-ad=""
+            data-oncelik={oncelik}
             className="max-w-[96px] truncate rounded bg-gece/85 px-1 text-[11px] leading-tight font-bold whitespace-nowrap text-parsomen"
             style={{ textShadow: '0 1px 2px #000' }}
           >

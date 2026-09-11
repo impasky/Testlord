@@ -527,9 +527,22 @@ function SeferKarti({
             onDegis={(n) => setOrdu((o) => ({ ...o, [u]: n }))}
           />
         ))}
-        {orduSayisi(lord.homeArmy) === 0 && (
-          <p className="text-[12px] text-kirmizi">Evde asker yok. Önce Kışla'da asker eğit.</p>
-        )}
+        {/*
+          "Asker eğit" ile "ordun yolda" AYNI ŞEY DEĞİL.
+          Evdeki ordu boşken ikisi de aynı cümleyi görüyordu: 831 askeri
+          dönüş yolunda olan lorda "önce asker eğit" deniyordu. Öğüt
+          yanlış olmakla kalmıyor, pahalı — oyuncu gereksiz asker yazdırıp
+          erzağını yakıyor. Sayı zaten elimizde: `usedSlots` yürüyüştekini
+          de sayıyor, `homeArmy` saymıyor.
+        */}
+        {orduSayisi(lord.homeArmy) === 0 &&
+          (lord.usedSlots > 0 ? (
+            <p className="text-[12px] text-altin">
+              Ordun sahada. Döndüğünde buradan akına çıkabilirsin.
+            </p>
+          ) : (
+            <p className="text-[12px] text-kirmizi">Evde asker yok. Önce Kışla'da asker eğit.</p>
+          ))}
       </div>
 
       {/* --- Önizleme: ne olacağını gitmeden söyle --- */}
