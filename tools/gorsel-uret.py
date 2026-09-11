@@ -173,14 +173,22 @@ KATEGORI = {
             "kale-şehir, metropol. Binalar bu zeminin ÜSTÜNE DOM olarak "
             "konuyor (`data/binalar.json` içindeki x/y yüzdeleri), o yüzden "
             "zeminde bina çizmiyoruz: çizersek iki kat bina görünür.\n\n"
-            "**Kural: orta alan boş kalsın.** Kompozisyon manzarayı kenarlara "
-            "yaslıyor; ortada 13 işaretçinin oturacağı sakin bir zemin olmalı."
+            "**Kural: karede HİÇ bina olmayacak.** İlk denemede kompozisyon "
+            "\"manzarayı kenarlara yasla\" diyordu ve model kenarlara ev, "
+            "çadır, kule çizdi. Sonuç, oyuncunun tarifiyle: binalar havada "
+            "duruyor gibi görünüyordu — çünkü zeminin kendi boyalı binaları "
+            "bizim sprite'larımızla yarışıyor, ikisi farklı ışık ve farklı "
+            "kalemle çizildiği için sprite yapıştırılmış duruyordu.\n\n"
+            "Zemin artık YALNIZCA zemin: toprak, çimen, taş döşeme, dolanan "
+            "bir patika, kenarda çit ve ağaç. Ekrandaki her bina bizim."
         ),
-        "kompozisyon": "empty settlement ground seen from a high three-quarter "
-                       "aerial angle, terrain and boundary features pushed to the "
-                       "edges of the frame, the centre of the frame is calm open "
-                       "ground with no structures, no people, even lighting, "
-                       "4:3 composition",
+        "kompozisyon": "an empty buildable ground seen from a high three-quarter "
+                       "aerial view, open terrain filling the whole frame with a "
+                       "winding dirt path looping through it, ABSOLUTELY NO "
+                       "BUILDINGS anywhere in the image: no houses, huts, tents, "
+                       "towers, roofs, ruins or market stalls, only ground, path, "
+                       "grass, rocks, trees and low fences at the outer rim, "
+                       "no people, bright even daylight, 4:3 composition",
         "boyut": (1024, 768),
     },
     "binalar": {
@@ -417,24 +425,24 @@ ISTEKLER: dict[str, dict[str, str]] = {
     "ekipman": _ekipman_istekleri(),
         # --- Yerleşim zeminleri: şehir sayfasının altı (docs/12 §3) ---
     "yerlesim": {
-        "kamp": "a bare campsite on open grassland, a ring of trodden earth, "
-                "a firepit with cold ashes and a leaning wooden training post "
-                "at one edge, wild grass and scattered stones around the rim",
-        "koy": "a village clearing with a muddy cart track curving along one edge, "
-               "a low timber palisade and a few tree stumps at the margins, "
-               "open packed earth in the middle",
-        "kasaba": "a town ground paved with worn flagstones, a low stone wall and "
-                  "a gatehouse at one edge, market awnings folded at the margins, "
-                  "the middle of the square swept and empty",
-        "sehir": "a city ground of fitted paving with a dry fountain basin at one "
-                 "edge, tall stone walls and an aqueduct arch along the far margin, "
-                 "the central plaza wide and open",
-        "kale": "a fortress bailey of hard packed gravel ringed by thick curtain "
-                "walls and corner towers at the frame edges, banner poles along "
-                "the rim, the middle of the bailey clear",
-        "metropol": "a grand imperial precinct, polished marble paving with gold "
-                    "inlay lines, colonnades and a triumphal arch along the far "
-                    "edges, the vast central court empty",
+        "kamp": "wild green grassland with wide patches of trodden bare earth, "
+                "a cold firepit ring of stones, scattered boulders and thin "
+                "shrubs around the outer rim",
+        "koy": "a cleared village ground of packed brown earth and grass, deep "
+               "cart ruts, a low split rail fence and tree stumps around the "
+               "outer rim",
+        "kasaba": "a town ground where packed earth meets the first worn "
+                  "flagstones, gravel edges, a wooden fence line and young trees "
+                  "around the outer rim",
+        "sehir": "a city ground of fitted paving stones with grass growing "
+                 "between them, a stone kerb and a dry water channel crossing it, "
+                 "clipped garden hedges around the outer rim",
+        "kale": "a fortress bailey of hard packed gravel with wheel ruts and "
+                "drill yard scuff marks, a thick stone curtain wall running "
+                "along the outer rim only",
+        "metropol": "a grand imperial precinct of polished marble paving with "
+                    "gold inlay lines and a mosaic medallion, ornamental hedges "
+                    "and empty statue plinths around the outer rim",
     },
     # --- Bina işaretçileri: her seviyeli bina için temel ve gelişmiş ---
     "binalar": {

@@ -29,13 +29,13 @@ değiştikçe üslup kayar ve otuz kılıç birbirinin akrabası olmaktan çıka
 
 Hepsini birden yaptırmak gerekmiyor. Oyuna en çok katan sırayla:
 
-| Sıra | Kategori                              | Adet | Neden                                                                    |
-| ---- | ------------------------------------- | ---- | ------------------------------------------------------------------------ |
-| 1    | Ekran zeminleri                       | 8    | Oyunun "gösterge paneli" değil bir yer gibi hissetmesi en çok buna bağlı |
-| 2    | Ekipman                               | 30   | Demirhane şu an tamamen sayıdan ibaret                                   |
-| 3    | Harita karoları                       | 6    | Haritanın okunurluğu; sahne görselleri karo olarak bulanık kalıyor       |
-| 4    | Bölge aşamaları                       | 8    | Geliştirmenin karşılığının GÖRÜNMESİ                                     |
-| —    | Birimler, generaller, bölge tabanları | 22   | Zaten var                                                                |
+| Sıra | Kategori | Adet | Neden |
+|---|---|---|---|
+| 1 | Ekran zeminleri | 8 | Oyunun "gösterge paneli" değil bir yer gibi hissetmesi en çok buna bağlı |
+| 2 | Ekipman | 30 | Demirhane şu an tamamen sayıdan ibaret |
+| 3 | Harita karoları | 6 | Haritanın okunurluğu; sahne görselleri karo olarak bulanık kalıyor |
+| 4 | Bölge aşamaları | 8 | Geliştirmenin karşılığının GÖRÜNMESİ |
+| — | Birimler, generaller, bölge tabanları | 22 | Zaten var |
 
 ## Taban üslup
 
@@ -467,50 +467,52 @@ an ancient war standard of dark silk covered in glowing golden sigils, crowned f
 
 Şehir sayfasının zemini — oyuncunun her gün baktığı tek resim. Kademe yükseldikçe değişiyor: kamp, köy, kasaba, şehir, kale-şehir, metropol. Binalar bu zeminin ÜSTÜNE DOM olarak konuyor (`data/binalar.json` içindeki x/y yüzdeleri), o yüzden zeminde bina çizmiyoruz: çizersek iki kat bina görünür.
 
-**Kural: orta alan boş kalsın.** Kompozisyon manzarayı kenarlara yaslıyor; ortada 13 işaretçinin oturacağı sakin bir zemin olmalı.
+**Kural: karede HİÇ bina olmayacak.** İlk denemede kompozisyon "manzarayı kenarlara yasla" diyordu ve model kenarlara ev, çadır, kule çizdi. Sonuç, oyuncunun tarifiyle: binalar havada duruyor gibi görünüyordu — çünkü zeminin kendi boyalı binaları bizim sprite'larımızla yarışıyor, ikisi farklı ışık ve farklı kalemle çizildiği için sprite yapıştırılmış duruyordu.
+
+Zemin artık YALNIZCA zemin: toprak, çimen, taş döşeme, dolanan bir patika, kenarda çit ve ağaç. Ekrandaki her bina bizim.
 
 Çıktı: `apps/web/public/gorseller/yerlesim/<ad>.webp` · 1024×768
 
 Kompozisyon (her istemde var):
 
 ```
-empty settlement ground seen from a high three-quarter aerial angle, terrain and boundary features pushed to the edges of the frame, the centre of the frame is calm open ground with no structures, no people, even lighting, 4:3 composition
+an empty buildable ground seen from a high three-quarter aerial view, open terrain filling the whole frame with a winding dirt path looping through it, ABSOLUTELY NO BUILDINGS anywhere in the image: no houses, huts, tents, towers, roofs, ruins or market stalls, only ground, path, grass, rocks, trees and low fences at the outer rim, no people, bright even daylight, 4:3 composition
 ```
 
 ### `yerlesim/kamp.webp`
 
 ```
-a bare campsite on open grassland, a ring of trodden earth, a firepit with cold ashes and a leaning wooden training post at one edge, wild grass and scattered stones around the rim, empty settlement ground seen from a high three-quarter aerial angle, terrain and boundary features pushed to the edges of the frame, the centre of the frame is calm open ground with no structures, no people, even lighting, 4:3 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+wild green grassland with wide patches of trodden bare earth, a cold firepit ring of stones, scattered boulders and thin shrubs around the outer rim, an empty buildable ground seen from a high three-quarter aerial view, open terrain filling the whole frame with a winding dirt path looping through it, ABSOLUTELY NO BUILDINGS anywhere in the image: no houses, huts, tents, towers, roofs, ruins or market stalls, only ground, path, grass, rocks, trees and low fences at the outer rim, no people, bright even daylight, 4:3 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
 ```
 
 ### `yerlesim/koy.webp`
 
 ```
-a village clearing with a muddy cart track curving along one edge, a low timber palisade and a few tree stumps at the margins, open packed earth in the middle, empty settlement ground seen from a high three-quarter aerial angle, terrain and boundary features pushed to the edges of the frame, the centre of the frame is calm open ground with no structures, no people, even lighting, 4:3 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+a cleared village ground of packed brown earth and grass, deep cart ruts, a low split rail fence and tree stumps around the outer rim, an empty buildable ground seen from a high three-quarter aerial view, open terrain filling the whole frame with a winding dirt path looping through it, ABSOLUTELY NO BUILDINGS anywhere in the image: no houses, huts, tents, towers, roofs, ruins or market stalls, only ground, path, grass, rocks, trees and low fences at the outer rim, no people, bright even daylight, 4:3 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
 ```
 
 ### `yerlesim/kasaba.webp`
 
 ```
-a town ground paved with worn flagstones, a low stone wall and a gatehouse at one edge, market awnings folded at the margins, the middle of the square swept and empty, empty settlement ground seen from a high three-quarter aerial angle, terrain and boundary features pushed to the edges of the frame, the centre of the frame is calm open ground with no structures, no people, even lighting, 4:3 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+a town ground where packed earth meets the first worn flagstones, gravel edges, a wooden fence line and young trees around the outer rim, an empty buildable ground seen from a high three-quarter aerial view, open terrain filling the whole frame with a winding dirt path looping through it, ABSOLUTELY NO BUILDINGS anywhere in the image: no houses, huts, tents, towers, roofs, ruins or market stalls, only ground, path, grass, rocks, trees and low fences at the outer rim, no people, bright even daylight, 4:3 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
 ```
 
 ### `yerlesim/sehir.webp`
 
 ```
-a city ground of fitted paving with a dry fountain basin at one edge, tall stone walls and an aqueduct arch along the far margin, the central plaza wide and open, empty settlement ground seen from a high three-quarter aerial angle, terrain and boundary features pushed to the edges of the frame, the centre of the frame is calm open ground with no structures, no people, even lighting, 4:3 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+a city ground of fitted paving stones with grass growing between them, a stone kerb and a dry water channel crossing it, clipped garden hedges around the outer rim, an empty buildable ground seen from a high three-quarter aerial view, open terrain filling the whole frame with a winding dirt path looping through it, ABSOLUTELY NO BUILDINGS anywhere in the image: no houses, huts, tents, towers, roofs, ruins or market stalls, only ground, path, grass, rocks, trees and low fences at the outer rim, no people, bright even daylight, 4:3 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
 ```
 
 ### `yerlesim/kale.webp`
 
 ```
-a fortress bailey of hard packed gravel ringed by thick curtain walls and corner towers at the frame edges, banner poles along the rim, the middle of the bailey clear, empty settlement ground seen from a high three-quarter aerial angle, terrain and boundary features pushed to the edges of the frame, the centre of the frame is calm open ground with no structures, no people, even lighting, 4:3 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+a fortress bailey of hard packed gravel with wheel ruts and drill yard scuff marks, a thick stone curtain wall running along the outer rim only, an empty buildable ground seen from a high three-quarter aerial view, open terrain filling the whole frame with a winding dirt path looping through it, ABSOLUTELY NO BUILDINGS anywhere in the image: no houses, huts, tents, towers, roofs, ruins or market stalls, only ground, path, grass, rocks, trees and low fences at the outer rim, no people, bright even daylight, 4:3 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
 ```
 
 ### `yerlesim/metropol.webp`
 
 ```
-a grand imperial precinct, polished marble paving with gold inlay lines, colonnades and a triumphal arch along the far edges, the vast central court empty, empty settlement ground seen from a high three-quarter aerial angle, terrain and boundary features pushed to the edges of the frame, the centre of the frame is calm open ground with no structures, no people, even lighting, 4:3 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+a grand imperial precinct of polished marble paving with gold inlay lines and a mosaic medallion, ornamental hedges and empty statue plinths around the outer rim, an empty buildable ground seen from a high three-quarter aerial view, open terrain filling the whole frame with a winding dirt path looping through it, ABSOLUTELY NO BUILDINGS anywhere in the image: no houses, huts, tents, towers, roofs, ruins or market stalls, only ground, path, grass, rocks, trees and low fences at the outer rim, no people, bright even daylight, 4:3 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
 ```
 
 ---
@@ -870,3 +872,4 @@ a master builder's workshop, architectural drawings on vellum, wooden scale mode
 ```
 a lord in a dark cloak standing on a ridge at dawn overlooking a wide valley of fields, towns and a distant citadel, wide establishing shot, cinematic composition with the focal subject slightly above center, deep atmospheric perspective, empty darker area along the bottom third where interface will overlay, 16:10 landscape composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
 ```
+

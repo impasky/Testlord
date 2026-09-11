@@ -322,6 +322,58 @@ sprite hepsi için AYNI — `arsa` — yani ad olmadan hangi yapı olduğu
 bilinemez) ve seçili yapıda duruyor. Dikili binanın kimliği silueti; adı
 `aria-label`da, Yapılar listesinde ve kartta.
 
+### 3.7 Denemeye verilen sürüm — gelen üç şikâyet
+
+**"Yazılar birbirinin üstüne biniyor."** Rozet kutunun sağ alt
+köşesindeydi. Çizim kareyi doldurmadığı için rozet binadan kopuyor,
+bazen komşu binanın üstüne düşüyor, kenardaki yapılarda yarısı
+kırpılıyordu. Üstelik üç ayrı rozet aynı anda yer istiyordu: seviye, boş
+arsadaki artı ve süren işin sayacı.
+
+Hepsi **tabanın üstünde, ortada, TEK rozet** oldu. Sıra: meşgulse sayaç,
+değilse seviye, dikilmemişse artı. Sayacın seviyeyi örtmesi doğru — bir
+iş sürerken sorulan şey "kaçıncı seviye" değil "ne zaman biter".
+
+Sayaç da kısaldı: `formatKalan` iki birim yazıyor ("44dk 55sn") ve bu,
+rozeti komşu binaların yarısını örtecek kadar uzatıyordu. Haritada
+`formatKisaKalan` tek birim yazıyor ("44dk"); ayrıntı binanın içinde.
+
+**"Binalar havada duruyor gibi."** İki sebebi vardı. Birincisi gölgeydi:
+tek bir yumuşak elips yetmiyor, iki ayrı sinyal gerekiyor — geniş ve
+soluk bir ORTAM karartması, dar ve koyu bir TEMAS karartması; ikisinin
+de dikey merkezi çizimin tabanına oturuyor, yani gölge binanın önüne de
+taşıyor. Önceki hâlde elips kutunun dibindeydi, yani binanın altında
+değil altındaki boşluktaydı.
+
+İkincisi ve asıl sebebi ZEMİNİN KENDİSİ: yerleşim zeminlerinde model
+kenarlara ev, çadır, kule çizmişti. O boyalı binalar bizim
+sprite'larımızla yarışıyor ve ikisi farklı ışıkla çizildiği için sprite
+yapıştırılmış duruyordu. Zemin istemi yeniden yazıldı — karede artık
+hiçbir bina yok, yalnız toprak, çimen, taş döşeme, dolanan bir patika ve
+kenarda çit. **Altı zemin yeniden üretilmeyi bekliyor** (§9).
+
+**"Köyü, eğitilen o yeri görmek isterim — daha kendine bağlar."** Asker
+kışlada eğitiliyor, ekipman demirhanede dövülüyor, yaralı hastanede
+yatıyordu ama köyde bunun hiçbir izi yoktu; sayaçlar ayrı bir listede
+duruyordu. Artık her iş HANGİ BİNADA geçiyorsa onun tabanında sayıyor ve
+o bina hafifçe parlıyor. Eşleme `KUYRUK_BINASI` içinde tek yerde:
+
+| İş                                      | Bina              |
+| --------------------------------------- | ----------------- |
+| `train`                                 | Kışla             |
+| `iyilestir`                             | Hastane           |
+| `craft`, `upgrade_item`, `upgrade_gear` | Demirhane         |
+| `research`                              | Kütüphane         |
+| `kesif`                                 | Haberci Kulesi    |
+| `bina`                                  | payload'daki yapı |
+
+`upgrade_region` listede yok ve olmamalı: bölge şehirde değil dünya
+haritasında yükseliyor, köyde gösterecek bir binası yok.
+
+Meşgul ya da seçili yapı öne alınıyor (`zIndex + 200`). Sıralar bilerek
+çakıştığı için öndeki bina arkadakinin tabanını örtüyor ve sayaç tam
+orada duruyordu; olan biteni gösteren şey üstü örtülü olmamalı.
+
 ## 4. Bina seviyesi ile araştırma neden çakışmıyor
 
 Bu, planın en riskli yeriydi ve ilkesi tek cümle:
@@ -587,6 +639,13 @@ girdiği oyunda ekranın yarısını tanımıyordu.
 İstemlerin hepsi yazıldı (`tools/gorsel-uret.py`, `docs/GORSEL-ISTEMLERI.md`)
 ve **hepsi üretildi.** Harcanan çağrı: 39 (37 görsel + dünya haritası için
 iki deneme). Kalan pay 61.
+
+**Altı yerleşim zemini yeniden üretilecek (§3.7).** İlk denemede
+kompozisyon "manzarayı kenarlara yasla" diyordu ve model kenarlara ev,
+çadır, kule çizdi; o boyalı binalar bizim sprite'larımızla yarışıyor.
+İstem yeniden yazıldı — karede hiçbir bina olmayacak, yalnız zemin,
+patika, çimen, kaya ve kenarda çit. Üretim yeni bir API anahtarı
+bekliyor; eski anahtar 401 dönüyor.
 
 | Ne                                                                  | Adet    |
 | ------------------------------------------------------------------- | ------- |

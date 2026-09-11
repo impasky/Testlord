@@ -17,13 +17,14 @@ import { IkonUyari } from './Ikonlar';
  * "18 dk" oyuncunun beklemesi gereken şeyi doğrudan söyler, "14:32'de"
  * ise hesap yaptırır.
  */
-export function GeriSayim({ bitis }: { bitis: string }) {
+export function GeriSayim({ bitis, kisa = false }: { bitis: string; kisa?: boolean }) {
   const [, tik] = useState(0);
   useEffect(() => {
     const id = setInterval(() => tik((t) => t + 1), 1000);
     return () => clearInterval(id);
   }, []);
-  return <span className="tabular">{formatKalan(new Date(bitis).getTime() - Date.now())}</span>;
+  const kalan = new Date(bitis).getTime() - Date.now();
+  return <span className="tabular">{kisa ? formatKisaKalan(kalan) : formatKalan(kalan)}</span>;
 }
 
 /* ---------------- Yükleniyor ---------------- */
@@ -707,6 +708,24 @@ export function formatKalan(ms: number): string {
   if (sa > 0) return `${sa}sa ${dk}dk`;
   if (dk > 0) return `${dk}dk ${s}sn`;
   return `${s}sn`;
+}
+
+/**
+ * Tek birimlik kısa süre: "45dk", "2sa", "55sn".
+ *
+ * Şehir haritasındaki sayaç için. `formatKalan` iki birim yazıyor
+ * ("44dk 55sn") ve bu, binanın üstündeki rozeti komşu binaların yarısını
+ * örtecek kadar uzatıyordu. Haritada sorulan soru "tam olarak ne kadar
+ * kaldı" değil, "burada bir iş var mı ve kabaca ne kadar sürer" —
+ * ayrıntı binanın içinde.
+ */
+export function formatKisaKalan(ms: number): string {
+  if (ms <= 0) return 'bitti';
+  const sn = Math.floor(ms / 1000);
+  if (sn >= 86400) return `${Math.floor(sn / 86400)}g`;
+  if (sn >= 3600) return `${Math.floor(sn / 3600)}sa`;
+  if (sn >= 60) return `${Math.floor(sn / 60)}dk`;
+  return `${sn}sn`;
 }
 
 export function IkonluDeger({

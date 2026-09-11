@@ -87,6 +87,46 @@ function KuyrukSatiri({ q }: { q: QueueItem }) {
 }
 
 /**
+ * Hangi iş HANGİ BİNADA geçiyor.
+ *
+ * Sayaçlar ayrı bir listede duruyordu; köyde asker eğitildiğinin hiçbir
+ * izi yoktu. Oysa oyunun her işi bir binaya ait: asker kışlada eğitilir,
+ * ekipman demirhanede dövülür, yaralı hastanede yatar. Eşleme burada tek
+ * yerde duruyor, `bina` işi ise kendi anahtarını payload'ında taşıyor.
+ *
+ * `upgrade_region` listede YOK ve olmamalı: bölge şehirde değil dünya
+ * haritasında yükseliyor, köyde gösterecek bir binası yok.
+ */
+const KUYRUK_BINASI: Record<string, string> = {
+  train: 'kisla',
+  iyilestir: 'hastane',
+  craft: 'demirhane',
+  upgrade_item: 'demirhane',
+  upgrade_gear: 'demirhane',
+  research: 'kutuphane',
+  kesif: 'haberci_kulesi',
+};
+
+/** Bina anahtarı → o binada süren işin bitişi. Aynı binada birden çok iş
+ *  varsa EN ERKEN bitecek olan gösteriliyor: sayaç bir sonraki olaya
+ *  bakmalı, rastgele birine değil. */
+function binadakiIsler(queues: QueueItem[]): Map<string, { bitis: string; ad: string }> {
+  const harita = new Map<string, { bitis: string; ad: string }>();
+  for (const q of queues) {
+    const key =
+      q.kind === 'bina'
+        ? ((q.payload as { key?: string }).key ?? null)
+        : (KUYRUK_BINASI[q.kind] ?? null);
+    if (!key) continue;
+    const mevcut = harita.get(key);
+    if (!mevcut || q.finishAt < mevcut.bitis) {
+      harita.set(key, { bitis: q.finishAt, ad: KUYRUK_ADI[q.kind] ?? q.kind });
+    }
+  }
+  return harita;
+}
+
+/**
  * Bir yapının haritadaki taban genişliği (kabın yüzdesi).
  *
  * Gerçek boy bununla `data/binalar.json` içindeki `olcek` çarpımı. Tek
@@ -274,6 +314,7 @@ export function Sehir({
 
   if (veri.isPending || !veri.data) return <Iskelet satir={5} />;
   const { yerlesim, binalar, insaat, tasinabilir } = veri.data;
+  const isler = binadakiIsler(queues);
   const seciliBina = binalar.find((b) => b.key === secili) ?? null;
 
   /**
@@ -351,7 +392,13 @@ export function Sehir({
             }}
           />
           {binalar.map((b) => (
-            <BinaIsareti key={b.key} b={b} secili={secili === b.key} onSec={() => haritadaSec(b)} />
+            <BinaIsareti
+              key={b.key}
+              b={b}
+              secili={secili === b.key}
+              mesgul={isler.get(b.key) ?? null}
+              onSec={() => haritadaSec(b)}
+            />
           ))}
         </div>
       </div>
@@ -594,7 +641,18 @@ function etkiYazisi(deger: number | null, birim: BinaDurumu['etkiBirimi']): stri
  * bilinemez) ve seçili yapıda duruyor. Dikili binanın kimliği silueti;
  * adı `aria-label`da, listede ve dokununca açılan kartta.
  */
-function BinaIsareti({ b, secili, onSec }: { b: BinaDurumu; secili: boolean; onSec: () => void }) {
+function BinaIsareti({
+  b,
+  secili,
+  mesgul,
+  onSec,
+}: {
+  b: BinaDurumu;
+  secili: boolean;
+  /** Bu yapıda süren iş — varsa bitiş zamanı ve tek kelimelik adı. */
+  mesgul: { bitis: string; ad: string } | null;
+  onSec: () => void;
+}) {
   const dikili = b.seviye > 0;
   const ad = spriteAdi(b.key, b.seviye, b.seviyeli);
   const sprite = SPRITE_OLAN.has(ad);
@@ -608,9 +666,10 @@ function BinaIsareti({ b, secili, onSec }: { b: BinaDurumu; secili: boolean; onS
       // Testler ve rehber ışığı binayı AÇTIĞI KAPIDAN buluyor: bina
       // anahtarı ile kapı adı her zaman aynı değil (karargâh → generaller).
       data-bina-kapi={b.kapi ?? undefined}
+      data-bina-mesgul={mesgul ? '' : undefined}
       aria-label={`${b.ad} — ${dikili ? `seviye ${b.seviye}` : 'boş arsa'}, ${
         girilebilir ? b.ozet : b.aciklama
-      }`}
+      }${mesgul ? `, ${mesgul.ad} sürüyor` : ''}`}
       title={`${b.ad} — ${dikili ? `seviye ${b.seviye}` : 'boş arsa'}`}
       className="absolute aspect-square"
       style={{
@@ -618,16 +677,51 @@ function BinaIsareti({ b, secili, onSec }: { b: BinaDurumu; secili: boolean; onS
         top: `${b.y}%`,
         width: `${TABAN_BOY * b.olcek}%`,
         transform: 'translate(-50%, -100%)',
-        zIndex: Math.round(b.y),
+        /*
+         * Derinlik sırası y'den; AMA meşgul ya da seçili yapı öne alınıyor.
+         * Sıralar bilerek çakıştığı için öndeki bina arkadakinin tabanını
+         * örtüyor ve sayaç tam orada duruyor — demirhanenin "4dk"si
+         * kütüphanenin çatısının altında kalıyordu. Olan biteni gösteren
+         * şey, üstü örtülü olmamalı.
+         */
+        zIndex: Math.round(b.y) + (mesgul || secili ? 200 : 0),
       }}
     >
-      {/* Temas gölgesi ÖNCE: sprite'ın arkasında kalmalı. */}
+      {/*
+        --- Zemine oturtan iki gölge ---
+
+        Oyuncu: "binalar havada duruyor gibi görünüyor." Tek bir yumuşak
+        elips yetmiyordu; bir nesnenin yere BASTIĞINI söyleyen şey iki ayrı
+        sinyal:
+
+          ORTAM — geniş ve soluk, binanın çevresine yayılan karartma.
+          TEMAS — dar ve KOYU, tam tabanın olduğu yerde.
+
+        İkisinin de dikey merkezi çizimin tabanına (kutunun altından %2
+        yukarısı) oturuyor, yani gölge binanın ÖNÜNE de taşıyor. Önceki
+        hâlde elips kutunun dibindeydi: binanın altında değil, altındaki
+        boşluktaydı ve açık zeminde hiç görünmüyordu.
+      */}
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute bottom-0 left-1/2 h-[13%] w-[62%] -translate-x-1/2 rounded-[50%]"
+        className="pointer-events-none absolute bottom-[-7%] left-1/2 h-[18%] w-[84%] -translate-x-1/2 rounded-[50%]"
+        style={{
+          // Sıcak siyah: saf siyah bir leke taş döşemede mürekkep gibi
+          // duruyordu; kahveye çalan karartma çimende çiğnenmiş toprak,
+          // taşta aşınma gibi okunuyor. (`mix-blend-multiply` denendi ve
+          // çalışmadı: düğmenin kendi z-index'i var, yani kendi yığın
+          // bağlamını kuruyor ve karışım zemine değil düğmenin saydam
+          // arkasına uygulanıyordu — beyaz halkalar çıktı.)
+          background:
+            'radial-gradient(ellipse at center, rgba(38,28,16,0.44) 0%, rgba(38,28,16,0.20) 52%, rgba(38,28,16,0) 78%)',
+        }}
+      />
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute bottom-[-2%] left-1/2 h-[8%] w-[46%] -translate-x-1/2 rounded-[50%]"
         style={{
           background:
-            'radial-gradient(ellipse at center, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.3) 45%, rgba(0,0,0,0) 72%)',
+            'radial-gradient(ellipse at center, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.30) 55%, rgba(0,0,0,0) 82%)',
         }}
       />
 
@@ -638,10 +732,14 @@ function BinaIsareti({ b, secili, onSec }: { b: BinaDurumu; secili: boolean; onS
           aria-hidden="true"
           className="relative h-full w-full object-contain"
           style={{
-            // Seçiliyken altın hâle; kutu olmadığı için çizilecek kenar yok.
+            // Sprite'ın KENDİ düşen gölgesi kalktı: temas gölgesi varken
+            // ikincisi binayı zemine basan bir yapı değil, zeminin üstüne
+            // yapıştırılmış bir çıkartma gibi gösteriyordu.
             filter: secili
               ? 'drop-shadow(0 0 3px #fff3cf) drop-shadow(0 0 8px #f5b731)'
-              : 'drop-shadow(0 2px 2px rgba(0,0,0,0.35))',
+              : mesgul
+                ? 'drop-shadow(0 0 5px rgba(245,183,49,0.55))'
+                : undefined,
             // Dikilmemiş arsa soluk: "burada ne var, ne yok" bir bakışta.
             opacity: dikili ? 1 : 0.72,
           }}
@@ -659,26 +757,51 @@ function BinaIsareti({ b, secili, onSec }: { b: BinaDurumu; secili: boolean; onS
         </span>
       )}
 
-      {b.seviyeli && dikili && (
-        <span className="tabular absolute right-[6%] bottom-[6%] rounded bg-gece px-1 text-[11px] leading-tight font-bold text-altin">
+      {/*
+        --- Rozet TABANDA, köşede değil ---
+
+        Rozet kutunun sağ alt köşesindeydi. Çizim kareyi doldurmadığı için
+        rozet binadan kopuyor, bazen komşu binanın üstüne düşüyor, kenardaki
+        yapılarda yarısı kırpılıyordu — oyuncunun "yazılar birbirinin üstüne
+        biniyor" dediği şey buydu. Ortaya, tabanın üstüne alındı: her yapıda
+        aynı yerde ve komşusuyla çakışamıyor, çünkü tabanlar birbirinden
+        uzak.
+      */}
+      {/*
+        --- Tabanda TEK rozet ---
+
+        Üç şey aynı anda rozet istiyordu: seviye, boş arsadaki artı ve süren
+        işin sayacı. Üçü ayrı köşelere konunca haritada yazı kalabalığı
+        oluyor, biri komşu binanın üstüne düşüyordu. Hepsi tabanın üstünde
+        AYNI yerde duruyor ve sırası şu: meşgulse sayaç, değilse seviye,
+        dikilmemişse artı.
+
+        Sayacın seviyeyi örtmesi doğru: bir iş sürerken oyuncunun sorduğu
+        şey "kaçıncı seviye" değil, "ne zaman biter". Seviye zaten binanın
+        içinde ve Yapılar listesinde yazıyor.
+
+        Sayacın kendisi, denemeye veren bir oyuncunun cümlesinden geldi:
+        "ben köyü görmek isterim, eğitilen o yeri görmek daha kendine
+        bağlar." Asker kışlada eğitiliyor, ekipman demirhanede dövülüyor
+        ama köyde bunun hiçbir izi yoktu.
+      */}
+      {mesgul ? (
+        <span className="tabular absolute bottom-[1%] left-1/2 -translate-x-1/2 rounded-full border border-altin/70 bg-gece/90 px-1 text-[11px] leading-tight font-bold whitespace-nowrap text-altin">
+          <GeriSayim bitis={mesgul.bitis} kisa />
+        </span>
+      ) : b.seviyeli && dikili ? (
+        <span className="tabular absolute bottom-[1%] left-1/2 -translate-x-1/2 rounded-full bg-gece/90 px-1.5 text-[11px] leading-tight font-bold text-altin">
           {b.seviye}
         </span>
-      )}
-      {/* Boş arsada artı: "burada bir şey YOK" ile "burada bir şey
-          YAPABİLİRSİN" farklı iki cümle ve ikincisi görünmeliydi. */}
-      {b.seviyeli && !dikili && !b.insaatta && (
-        <span className="absolute right-[6%] bottom-[6%] rounded bg-gece px-1 text-[11px] leading-tight font-bold text-solgun">
+      ) : b.seviyeli && !dikili ? (
+        <span className="absolute bottom-[1%] left-1/2 -translate-x-1/2 rounded-full bg-gece/90 px-1.5 text-[11px] leading-tight font-bold text-solgun">
           +
         </span>
-      )}
-      {b.insaatta && (
-        <span className="absolute top-0 right-0 flex h-5 w-5 items-center justify-center rounded-full border border-altin bg-gece text-[11px] leading-none text-altin">
-          ⚒
-        </span>
-      )}
+      ) : null}
+
       {etiketVar && (
         <span
-          className={`pointer-events-none absolute top-full left-1/2 -mt-1 max-w-[110px] -translate-x-1/2 truncate rounded bg-gece/85 px-1 text-[11px] leading-tight font-bold whitespace-nowrap ${
+          className={`pointer-events-none absolute top-full left-1/2 mt-1 max-w-[110px] -translate-x-1/2 truncate rounded bg-gece/85 px-1 text-[11px] leading-tight font-bold whitespace-nowrap ${
             dikili ? 'text-altin' : 'text-solgun'
           }`}
         >
