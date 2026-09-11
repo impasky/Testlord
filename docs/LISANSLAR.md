@@ -173,6 +173,12 @@ karıştığı docs/12 §9.1'de. Özeti: 24 bina 24 ayrı çağrıyla üretilmi�
 her birinin kendi kamerası, kendi güneşi vardı. Şimdi bir stil plakası
 var, binalar dörtlü sayfalar hâlinde ve her sayfa o plakadan üretiliyor.
 
+Akın diyarları (5), akın ekran zemini ve dünya haritası da aynı plakadan
+geçti: oyuncu ard arda üç ekran geziyor ve şehir toparlanınca geri kalanı
+ondan kopuk kalmıştı. Kamera devralınmıyor — plaka izometrik bir bina,
+diyar geniş bir manzara, harita tepeden bir parşömen; ortak olan ışık,
+palet ve fırça.
+
 Zemin saydam değil DÜZ MAGENTA isteniyor; ayıklama `gorsel-ayikla.py`de
 gerçek bir chroma anahtarıyla yapılıyor (kromatiklik + despill). Model
 her binanın altına gölge çizdi: parlaklığa bakan bir eşik onları figür

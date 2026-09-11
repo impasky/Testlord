@@ -712,37 +712,37 @@ Diyarlar birbirine BENZEMEMELİ: beşi de aynı kahverengi manzara olursa oyuncu
 Kompozisyon (her istemde var):
 
 ```
-wide establishing shot of a hostile landscape with an enemy encampment in the middle distance, cinematic composition, strong single colour mood, no text, 16:9 composition
+wide establishing shot of a hostile landscape with an enemy encampment in the middle distance, cinematic composition, strong single colour mood, the scene fills the entire frame edge to edge with no background colour and no magenta visible anywhere, no text, 16:9 composition
 ```
 
 ### `akin/kirik_sahil.webp`
 
 ```
-a storm grey shoreline of black rock and broken ship ribs half buried in wet sand, pirate tents and a driftwood stockade above the tideline, cold blue green sea mist, wide establishing shot of a hostile landscape with an enemy encampment in the middle distance, cinematic composition, strong single colour mood, no text, 16:9 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+a storm grey shoreline of black rock and broken ship ribs half buried in wet sand, pirate tents and a driftwood stockade above the tideline, cold blue green sea mist, wide establishing shot of a hostile landscape with an enemy encampment in the middle distance, cinematic composition, strong single colour mood, the scene fills the entire frame edge to edge with no background colour and no magenta visible anywhere, no text, 16:9 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
 ```
 
 ### `akin/solgun_bataklik.webp`
 
 ```
-a pale sunless marsh of reed beds and standing water, a deserter camp of army tents on a mud causeway, rusted shields hung on poles, sickly yellow green haze, wide establishing shot of a hostile landscape with an enemy encampment in the middle distance, cinematic composition, strong single colour mood, no text, 16:9 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+a pale sunless marsh of reed beds and standing water, a deserter camp of army tents on a mud causeway, rusted shields hung on poles, sickly yellow green haze, wide establishing shot of a hostile landscape with an enemy encampment in the middle distance, cinematic composition, strong single colour mood, the scene fills the entire frame edge to edge with no background colour and no magenta visible anywhere, no text, 16:9 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
 ```
 
 ### `akin/kuzey_buzulu.webp`
 
 ```
-a blue white glacier field split by a deep crevasse, a barbarian camp of hide tents and reindeer pens on the wind scoured ice, hard white winter light, wide establishing shot of a hostile landscape with an enemy encampment in the middle distance, cinematic composition, strong single colour mood, no text, 16:9 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+a blue white glacier field split by a deep crevasse, a barbarian camp of hide tents and reindeer pens on the wind scoured ice, hard white winter light, wide establishing shot of a hostile landscape with an enemy encampment in the middle distance, cinematic composition, strong single colour mood, the scene fills the entire frame edge to edge with no background colour and no magenta visible anywhere, no text, 16:9 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
 ```
 
 ### `akin/kuller_vadisi.webp`
 
 ```
-a black ash valley under a dead volcano, bandit forges and slag heaps smoking between basalt spurs, hot orange embers glowing in grey ash, wide establishing shot of a hostile landscape with an enemy encampment in the middle distance, cinematic composition, strong single colour mood, no text, 16:9 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+a black ash valley under a dead volcano, bandit forges and slag heaps smoking between basalt spurs, hot orange embers glowing in grey ash, wide establishing shot of a hostile landscape with an enemy encampment in the middle distance, cinematic composition, strong single colour mood, the scene fills the entire frame edge to edge with no background colour and no magenta visible anywhere, no text, 16:9 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
 ```
 
 ### `akin/unutulmus_nekropol.webp`
 
 ```
-a sunken city of tombs half swallowed by sand, broken obelisks and a stepped mausoleum, cult braziers burning cold violet in the dusk, wide establishing shot of a hostile landscape with an enemy encampment in the middle distance, cinematic composition, strong single colour mood, no text, 16:9 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+a sunken city of tombs half swallowed by sand, broken obelisks and a stepped mausoleum, cult braziers burning cold violet in the dusk, wide establishing shot of a hostile landscape with an enemy encampment in the middle distance, cinematic composition, strong single colour mood, the scene fills the entire frame edge to edge with no background colour and no magenta visible anywhere, no text, 16:9 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
 ```
 
 ---

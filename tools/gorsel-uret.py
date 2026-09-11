@@ -328,8 +328,10 @@ KATEGORI = {
         ),
         "kompozisyon": "wide establishing shot of a hostile landscape with an "
                        "enemy encampment in the middle distance, cinematic "
-                       "composition, strong single colour mood, no text, "
-                       "16:9 composition",
+                       "composition, strong single colour mood, "
+                       "the scene fills the entire frame edge to edge with no "
+                       "background colour and no magenta visible anywhere, "
+                       "no text, 16:9 composition",
         "boyut": (1024, 576),
     },
     "lord": {
@@ -1122,15 +1124,24 @@ def main() -> int:
             try:
                 istem = tam_istem(klasor, konu)
                 girdi = kaynaklar or None
-                # Sahne kategorileri plakaya BAĞLANIYOR: yerleşim zemini ve
-                # akın diyarı, binaların durduğu dünyanın parçası. Ayrı ayrı
-                # üretildiklerinde kendi kameralarını ve kendi güneşlerini
-                # getiriyorlar ve bina üstlerinde yapıştırılmış duruyordu.
-                if not girdi and klasor in ("yerlesim", "akin") and STIL_PLAKASI.exists():
+                # Sahne kategorileri plakaya BAĞLANIYOR: yerleşim zemini,
+                # akın diyarı ve dünya haritası aynı oyunun içinde ard arda
+                # görülüyor. Ayrı ayrı üretildiklerinde her biri kendi
+                # paletini ve kendi fırçasını getiriyor; şehir ekranı
+                # toparlanınca geri kalanı ondan kopuk kaldı.
+                #
+                # KAMERA devralınmıyor ve devralınmamalı: plaka izometrik bir
+                # bina, akın diyarı geniş bir manzara, dünya haritası ise tam
+                # tepeden bir parşömen. Her birinin çerçevelemesi kendi
+                # `kompozisyon` satırında; plakadan gelen şey ışık, palet,
+                # çizgi kalınlığı ve boyama üslubu.
+                if not girdi and klasor in ("yerlesim", "akin", "harita") and STIL_PLAKASI.exists():
                     girdi = [STIL_PLAKASI]
                     istem = (
-                        "Match the reference image in sun direction, palette "
-                        "and painting style. Draw the described scene. " + istem
+                        "Match the reference image in sun direction, colour "
+                        "palette, line weight and painting style. Do NOT copy "
+                        "its camera angle or its subject. Draw the described "
+                        "scene with its own framing. " + istem
                     )
                 ham = istek_at(istem, anahtar, girdi)
                 bayt = kaydet(ham, yol, KATEGORI[klasor]["boyut"])

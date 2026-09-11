@@ -701,6 +701,26 @@ model kenarlara ev, çadır, kule çizmişti; o boyalı binalar sprite'larla
 yarışıyordu. Şimdi karede yalnız zemin, patika, çimen, kaya ve kenarda
 çit var — ekrandaki her bina bizim.
 
+**Akın diyarları ve dünya haritası da plakadan geçti** (6 görsel + 2
+yenileme; toplam harcanan 61, kalan 39). Şehir ekranı toparlanınca geri
+kalanı ondan kopuk kalmıştı — oyuncu ard arda üç ekran geziyor ve üçü
+farklı fırçadan çıkmış görünüyordu.
+
+Bu üçünde **kamera devralınmıyor ve devralınmamalı**: plaka izometrik bir
+bina, akın diyarı geniş bir manzara, dünya haritası tam tepeden bir
+parşömen. Her birinin çerçevelemesi kendi `kompozisyon` satırında;
+plakadan gelen şey ışık, palet, çizgi kalınlığı ve boyama üslubu. İstem
+bunu açıkça söylüyor ("Do NOT copy its camera angle or its subject").
+
+**Magenta sızıntısı üç kez çıktı** (kamp, metropol, sonra kuzey buzulu ve
+küller vadisi): plaka girdi olduğu için model onun zeminini kenarlara
+taşıyor. Hem yerleşim hem akın kompozisyonunda artık "çerçeveyi baştan
+başa doldur, hiçbir yerde magenta olmasın" satırı var.
+
+**Harita yenilenince işaretçiler yeniden oturtuldu** — §9'un kendi kuralı:
+zemin önce kilitlenir, koordinatlar sonra. Yeni kıyılara 7 işaretçi 1-2
+puan oynadı (`harita-yerlestir.py`), `generate_map.py` temiz.
+
 | Ne                                                                  | Adet    |
 | ------------------------------------------------------------------- | ------- |
 | Yerleşim zeminleri (kamp, köy, kasaba, şehir, kale-şehir, metropol) | 6       |
