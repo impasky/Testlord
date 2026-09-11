@@ -640,6 +640,55 @@ girdiği oyunda ekranın yarısını tanımıyordu.
 ve **hepsi üretildi.** Harcanan çağrı: 39 (37 görsel + dünya haritası için
 iki deneme). Kalan pay 61.
 
+### 9.1 Bütünlük: tek tek üretim BIRAKILDI
+
+Oyuncu: **"Bu iş böyle olmayacak, bütünlük hissi yok."** Haklıydı ve
+sebebi tek cümleyle söylenebilir: **24 bina 24 ayrı çağrıyla üretildi.**
+Her çağrı modelin dağılımından bağımsız bir örnek — her binanın kendi
+kamera açısı, kendi ışık yönü, kendi renk sıcaklığı, kendi ayrıntı
+yoğunluğu var. Metinde "aynı üslup" yazmak bunu düzeltmiyor; CSS gölgesi
+de düzeltmiyor, denendi (§3.6, §3.7).
+
+Yeni akış iki kurala dayanıyor:
+
+**1. Aynı karede üretilen varlıklar zaten tutarlıdır.** Model dört binayı
+tek resimde çizerken dördüne de aynı kamerayı ve aynı güneşi uygulamak
+zorunda. Binalar artık tek tek değil **dörtlü sayfalar** hâlinde
+üretiliyor (`SAYFALAR`, 6 sayfa). Eşleştirme de anlamlı: her sayfada aynı
+binanın iki hâli (`_1` ve `_5`) yan yana — ayrı üretildiklerinde malikâne
+1 ile malikâne 5 akraba bile değildi.
+
+**2. Sayfaları birbirine PLAKA bağlıyor.** İlk sayfa beğenilene kadar
+yeniden denenir; oyunun bütün görünüşü o tek karede kararlaşır. Sonra her
+sayfa ve her zemin o plaka **girdi verilerek** üretilir. Lord portreleri
+zaten böyle üretilmişti ve beşi de aynı adam çıkmıştı.
+
+```bash
+python3 tools/gorsel-uret.py --plaka    # beğenene kadar tekrarla
+python3 tools/gorsel-uret.py --sayfa    # kalan sayfalar + bölme + hizalama
+```
+
+Maliyet de düşüyor: 30 ayrı çağrı yerine **12** (6 sayfa + 6 zemin).
+
+**Saydamlık artık istenmiyor, ANAHTAR RENK isteniyor.** Modelden "saydam
+zemin" istendiğinde saydamlığı *çizmişti* (dama desenini gerçek piksel
+olarak, bkz. `tools/dama-sil.py`). Düz ve doygun bir magenta ise
+güvenilir geliyor ve ayıklaması kesin. `gorsel-ayikla.py` zaten çok
+figürlü bir sayfayı bileşenlere ayıran araç; tam bunun için yazılmıştı.
+
+Ayıklamaya iki düzeltme gerekti ve ikisi de sahte bir magenta sayfayla
+ölçülerek bulundu:
+
+- **Kenar taşırma.** Saydam piksellerin RGB'si zemin rengiyle
+  dolduruluyordu; koyu sayfada görünmeyen bu şey magenta zeminde
+  binaların etrafında mor çerçeve bıraktı. Artık her boş piksel en yakın
+  figür pikselinin rengini alıyor.
+- **Gerçek anahtar çözümü.** Kenar pikselleri zeminle KARIŞMIŞ geliyor
+  (P = a·C + (1−a)·K); "zemin mi değil mi" diye ikiye ayırmak imkânsız,
+  çünkü yarısı zemin. Alfa artık anahtara uzaklıktan çıkarılıyor ve renk
+  geri hesaplanıyor. Eşik taranarak seçildi: 150'de mor kenar kalıyor,
+  400'de duvarlar yarı saydam oluyor — 300 ikisinin de olmadığı yer.
+
 **Altı yerleşim zemini yeniden üretilecek (§3.7).** İlk denemede
 kompozisyon "manzarayı kenarlara yasla" diyordu ve model kenarlara ev,
 çadır, kule çizdi; o boyalı binalar bizim sprite'larımızla yarışıyor.

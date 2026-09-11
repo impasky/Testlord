@@ -1,0 +1,5 @@
+# Uretilen ham sayfalar burada durur: yeniden bolmek icin lazim, oyunun
+# paketine girmesi gereksiz. plaka.webp ise KUNYE: butun sayfalar ondan
+# uretiliyor, o yuzden depoya giriyor.
+*.webp
+!plaka.webp

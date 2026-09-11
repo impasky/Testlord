@@ -204,6 +204,7 @@ apps/web/                 React + Vite + Tailwind, yedi ekran
 tools/
   generate_map.py         Haritayı DOĞRULAYAN script (artık üretmiyor)
   gorsel-uret.py          Oyun görsellerini üretir (GEMINI_API_KEY ister)
+                          --plaka / --sayfa: kent varlıkları sayfa sayfa
   gorsel-ayikla.py        Çok figürlü sayfayı tek tek varlıklara böler
   dama-sil.py             Modelin ÇİZDİĞİ saydamlık damasını gerçek alfaya çevirir
   sprite-hizala.py        Bina sprite'larını ortak zemin çizgisine oturtur

@@ -19,6 +19,16 @@ KULLANIM:
   python3 tools/gorsel-uret.py --istemler      # istemleri markdown olarak dök (API'siz)
   python3 tools/gorsel-uret.py lord_2 --kaynak .../lord_1.webp   # düzenleyerek üret
 
+KENT VARLIKLARI (bina sprite'ları ve zeminler) — ayrı bir akış:
+  python3 tools/gorsel-uret.py --plaka     # stil plakası (beğenene kadar tekrarla)
+  python3 tools/gorsel-uret.py --sayfa     # kalan sayfalar, plakadan üretilir
+
+Neden ayrı: bunlar TEK BİR SAHNEDE yan yana duruyor, yani birbirini
+tutmak zorundalar. Tek tek üretildiklerinde her birinin kendi kamerası ve
+kendi güneşi oluyor ve oyuncunun dediği çıkıyor: "bütünlük hissi yok."
+Sayfa düzeni bunu yapısal olarak çözüyor — aynı karedeki dört bina zaten
+tutarlı, plaka da sayfaları birbirine bağlıyor. Ayrıntı: STIL_PLAKASI.
+
 --kaynak: verilen görsel(ler) modele GİRDİ olarak gider ve istem onları
 düzenleme talimatı olur. Lord varyantları böyle üretiliyor; sıfırdan üretim
 aynı karakteri vermiyor, düzenleme veriyor.
@@ -94,6 +104,77 @@ TABAN_USLUP = (
     "and crimson highlights, dramatic side lighting from the upper left, "
     "weathered and grounded, not glossy, not cartoonish, "
     "no text, no watermark, no border, no frame, no UI elements"
+)
+
+# --- Stil plakası: bütünlüğün TEK kaynağı ---
+#
+# Sorun şuydu: 24 bina ayrı ayrı üretildi ve her biri modelin dağılımından
+# bağımsız bir örnek. Yani her birinin kendi kamera açısı, kendi ışık yönü,
+# kendi renk sıcaklığı ve kendi ayrıntı yoğunluğu var. Metinle "aynı üslup"
+# demek bunu düzeltmiyor -- oyuncunun cümlesiyle: "bütünlük hissi yok."
+# CSS gölgesiyle de düzelmiyor; denendi.
+#
+# Çözüm iki kurala dayanıyor:
+#
+#   1. AYNI KAREDE ÜRETİLEN varlıklar zaten tutarlıdır. Model dört binayı
+#      tek bir resimde çizerken dördüne de aynı kamerayı ve aynı güneşi
+#      uygular; seçenek yok. Bu yüzden binalar tek tek değil DÖRTLÜ
+#      SAYFALAR hâlinde üretiliyor.
+#   2. Sayfaları birbirine bağlayan şey PLAKA: ilk sayfa beğenilene kadar
+#      yeniden denenir, sonra her sayfa ve her zemin o plaka GİRDİ
+#      verilerek üretilir ("bunun kamerasını, ışığını, paletini aynen
+#      koru"). Lord portreleri zaten böyle üretildi ve beşi de aynı adam
+#      çıktı; aynı mekanizma.
+#
+# Plaka oyunun varlığı DEĞİL, üretimin girdisi. O yüzden `public/` altında
+# değil burada duruyor: pakete girse boşuna yük olurdu.
+STIL_PLAKASI = KOK / "tools" / "stil" / "plaka.webp"
+
+# Kameranın, ışığın ve paletin sözleşmesi. Sayfa ve zemin istemlerinin
+# hepsi bunu taşıyor; plaka da bundan doğuyor.
+STIL_SOZLESMESI = (
+    "isometric game building asset, ONE fixed three-quarter aerial camera "
+    "used for every asset, roughly 45 degree yaw and 35 degree pitch, "
+    "ONE warm afternoon sun from the upper left casting soft shadows down "
+    "to the lower right, consistent line weight and detail density, "
+    "readable silhouette at small size, "
+    "dark muted palette of deep browns, weathered timber, slate grey roofs "
+    "and parchment cream plaster with warm gold accents, "
+    "painted semi-realistic illustration with soft cel shading, "
+    "no text, no watermark, no border, no frame, no UI elements, no people"
+)
+
+# --- Sayfalar: dörtlü bina kümeleri ---
+#
+# Sıra ÖNEMLİ. `gorsel-ayikla.py` sayfadaki figürleri okuma sırasında
+# adlandırıyor: üstten alta satırlar, her satırda soldan sağa. Buradaki
+# dizilim de 2x2 ızgaranın [sol üst, sağ üst, sol alt, sağ alt] sırası.
+#
+# Eşleştirme keyfi değil: her sayfada aynı binanın iki hâli (_1 ve _5) yan
+# yana. Temel ile gelişmiş hâlin AYNI karede çizilmesi, ikisinin aynı bina
+# gibi görünmesini sağlıyor -- ayrı ayrı üretildiklerinde malikâne 1 ile
+# malikâne 5 akraba bile değildi.
+SAYFALAR: dict[str, tuple[str, list[str]]] = {
+    "kent-1": ("binalar", ["malikane_1", "malikane_5", "kisla_1", "kisla_5"]),
+    "kent-2": ("binalar", ["demirhane_1", "demirhane_5", "hastane_1", "hastane_5"]),
+    "kent-3": ("binalar", ["pazar_1", "pazar_5", "surlar_1", "surlar_5"]),
+    "kent-4": ("binalar", ["karargah_1", "karargah_5", "kutuphane_1", "kutuphane_5"]),
+    "kent-5": ("binalar", ["liman_1", "liman_5", "elcilik_1", "elcilik_5"]),
+    "kent-6": ("binalar", ["gorev_panosu", "haberci_kulesi", "onur_meydani", "arsa"]),
+}
+
+# Sayfa kompozisyonu. Zemin SAYDAM değil DÜZ MAGENTA isteniyor ve bu
+# bilinçli: modelden saydamlık istendiğinde saydamlığı ÇİZDİ (dama desenini
+# gerçek piksel olarak boyadı, bkz. tools/dama-sil.py). Düz ve doygun bir
+# renk ise güvenilir şekilde geliyor ve ayıklaması kesin -- `gorsel-ayikla.py`
+# zemini kenar renginden bulup bileşenlere ayırıyor, yani bu araç tam da
+# böyle bir sayfa için yazılmıştı.
+SAYFA_KOMPOZISYONU = (
+    "exactly four separate buildings arranged in a 2x2 grid on a flat solid "
+    "magenta background, wide empty magenta gaps between them, each building "
+    "fully inside its own quadrant and touching nothing else, "
+    "no ground plane, no baseplate, no cast shadow on the background, "
+    "square 1:1 composition"
 )
 
 # Kategori başına kompozisyon kuralı + çıktı boyutu.
@@ -568,6 +649,76 @@ def tam_istem(klasor: str, konu: str) -> str:
     return f"{konu}, {KATEGORI[klasor]['kompozisyon']}, {TABAN_USLUP}"
 
 
+def sayfa_istemi(sayfa: str) -> str:
+    """Dörtlü bina sayfasının istemi: dört konu + ızgara + stil sözleşmesi."""
+    klasor, adlar = SAYFALAR[sayfa]
+    konular = ISTEKLER[klasor]
+    dortlu = "; ".join(
+        f"{yer}: {konular[ad]}"
+        for yer, ad in zip(
+            ("top left", "top right", "bottom left", "bottom right"), adlar
+        )
+    )
+    return f"{dortlu}. {SAYFA_KOMPOZISYONU}, {STIL_SOZLESMESI}"
+
+
+def sayfayi_ayikla(sayfa_yolu: Path, sayfa: str) -> int:
+    """
+    Sayfayı dört sprite'a böler, tabana hizalar. Yazılan dosya sayısı.
+
+    Bölme işi `gorsel-ayikla.py`de: çok figürlü bir tuvali bileşenlere
+    ayırmak tam olarak onun işi ve magenta zemin onun kenar-rengi
+    yöntemine birebir uyuyor. İkinci bir kopya yazmak, iki aracın "zemin
+    nedir" tanımını zamanla ayırmak olurdu.
+    """
+    import importlib.util
+
+    klasor, adlar = SAYFALAR[sayfa]
+    araclar = Path(__file__).resolve().parent
+    yazilan = 0
+    for ad, arg in (("gorsel_ayikla", "gorsel-ayikla.py"), ("sprite_hizala", "sprite-hizala.py")):
+        if not (araclar / arg).exists():
+            print(f"  {arg} bulunamadı, atlandı", file=sys.stderr)
+            return 0
+
+    spec = importlib.util.spec_from_file_location("gorsel_ayikla", araclar / "gorsel-ayikla.py")
+    ayikla = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(ayikla)
+
+    import numpy as np
+    from PIL import Image
+
+    a = np.asarray(Image.open(sayfa_yolu).convert("RGB")).astype(int)
+    bilesenler, zemin = ayikla.bilesenleri_bul(a, ayikla.ESIK)
+    bilesenler = ayikla.okuma_sirasi(bilesenler)
+    if len(bilesenler) != len(adlar):
+        print(
+            f"  {len(bilesenler)} figür bulundu ama {len(adlar)} isim var. "
+            f"Sayfa elle bölünmeli:\n"
+            f"    python3 tools/gorsel-ayikla.py {sayfa_yolu} --onizleme",
+            file=sys.stderr,
+        )
+        return 0
+
+    spec2 = importlib.util.spec_from_file_location("sprite_hizala", araclar / "sprite-hizala.py")
+    hizala = importlib.util.module_from_spec(spec2)
+    spec2.loader.exec_module(hizala)
+
+    (CIKTI / klasor).mkdir(parents=True, exist_ok=True)
+    for (kutu, maske), ad in zip(bilesenler, adlar):
+        yol = CIKTI / klasor / f"{ad}.webp"
+        ayikla.kare_yap(a, kutu, maske, zemin).save(yol, "WEBP", quality=82, method=6)
+        # Taban hizası ayrı bir adım: sprite'ın alt boşluğu her figürde
+        # farklı çıkıyor ve hizalanmazsa binalar ortak bir zemin çizgisine
+        # oturmuyor (docs/12 §3.6).
+        im, _ = hizala.hizala(yol)
+        if im is not None:
+            im.save(yol, "WEBP", quality=82, method=6)
+        print(f"    {klasor}/{ad}.webp")
+        yazilan += 1
+    return yazilan
+
+
 def _mime(yol: Path) -> str:
     return {"png": "image/png", "webp": "image/webp", "jpg": "image/jpeg", "jpeg": "image/jpeg"}[
         yol.suffix.lower().lstrip(".")
@@ -780,6 +931,91 @@ def kaydet(ham: bytes, yol: Path, boyut: tuple[int, int]) -> int:
     return yol.stat().st_size
 
 
+def kent_uret(argv: list[str], anahtar: str, zorla: bool) -> int:
+    """
+    Kent varlıklarını SAYFA SAYFA üretir; bütünlüğü plaka taşır.
+
+      python3 tools/gorsel-uret.py --plaka            # stil plakasını üret
+      python3 tools/gorsel-uret.py --sayfa            # kalan sayfaları üret
+      python3 tools/gorsel-uret.py --sayfa kent-3     # tek sayfayı yenile
+
+    Sıra önemli: plaka önce gelir ve BEĞENİLENE KADAR yeniden denenir.
+    Oyunun bütün görünüşü o tek karede kararlaştırılıyor; sonraki her
+    sayfa ve her zemin onu girdi alıyor. Plakayı beğenmeden devam etmek,
+    tutmayan yirmi dört bina daha üretmek demek.
+    """
+    from shutil import copyfile
+
+    STIL_PLAKASI.parent.mkdir(parents=True, exist_ok=True)
+    plaka_mi = "--plaka" in argv
+    istenen = [a for a in argv if a in SAYFALAR]
+
+    if plaka_mi:
+        sayfalar = [next(iter(SAYFALAR))]
+    elif istenen:
+        sayfalar = istenen
+    else:
+        sayfalar = list(SAYFALAR)
+
+    if not plaka_mi and not STIL_PLAKASI.exists():
+        print(
+            "Stil plakası yok. Önce onu üret ve beğen:\n"
+            "  python3 tools/gorsel-uret.py --plaka\n"
+            "Beğenmezsen aynı komutu tekrarla; plaka beğenilmeden sayfa "
+            "üretmek, tutmayan yirmi dört bina daha demek.",
+            file=sys.stderr,
+        )
+        return 2
+
+    print(f"{len(sayfalar)} sayfa üretilecek" + (" (PLAKA)" if plaka_mi else ""))
+    basarili, basarisiz = 0, []
+    for i, sayfa in enumerate(sayfalar, 1):
+        ham_yol = STIL_PLAKASI.parent / f"{sayfa}.webp"
+        if ham_yol.exists() and not zorla and not plaka_mi:
+            print(f"\n[{i}/{len(sayfalar)}] {sayfa} — sayfa duruyor, yalnız bölünüyor")
+            sayfayi_ayikla(ham_yol, sayfa)
+            basarili += 1
+            continue
+
+        print(f"\n[{i}/{len(sayfalar)}] {sayfa} ...", flush=True)
+        istem = sayfa_istemi(sayfa)
+        # Plaka metinden doğuyor; kalan sayfalar onu GİRDİ alıyor.
+        kaynak = None if plaka_mi else [STIL_PLAKASI]
+        if kaynak:
+            istem = (
+                "Match the reference image EXACTLY in camera angle, sun "
+                "direction, palette, line weight and level of detail. Only "
+                "the buildings change. " + istem
+            )
+        try:
+            ham = istek_at(istem, anahtar, kaynak)
+        except Exception as e:  # ağ/kota hataları burada da aynı
+            print(f"  HATA {e}", file=sys.stderr)
+            basarisiz.append(sayfa)
+            continue
+
+        from PIL import Image
+
+        Image.open(BytesIO(ham)).convert("RGB").save(ham_yol, "WEBP", quality=90, method=6)
+        print(f"  sayfa yazıldı — {ham_yol.stat().st_size / 1024:.0f} KB")
+        if plaka_mi:
+            copyfile(ham_yol, STIL_PLAKASI)
+            print(f"  plaka: {STIL_PLAKASI.relative_to(KOK)}")
+        if sayfayi_ayikla(ham_yol, sayfa) == 0:
+            basarisiz.append(sayfa)
+        else:
+            basarili += 1
+
+    print(f"\n{basarili} sayfa tamam" + (f", başarısız: {', '.join(basarisiz)}" if basarisiz else ""))
+    if plaka_mi:
+        print(
+            "\nPlakaya BAK. Beğenmediysen aynı komutu tekrarla — bütün oyunun\n"
+            "görünüşü bu tek karede kararlaşıyor. Beğendiysen:\n"
+            "  python3 tools/gorsel-uret.py --sayfa"
+        )
+    return 0 if not basarisiz else 1
+
+
 def main() -> int:
     argv = [a for a in sys.argv[1:]]
     zorla = "--zorla" in argv
@@ -818,6 +1054,7 @@ def main() -> int:
 
     bilinenler = set(ISTEKLER) | {a for k in ISTEKLER.values() for a in k}
     bilinenler |= {f"{k}/{a}" for k, v in ISTEKLER.items() for a in v}
+    bilinenler |= set(SAYFALAR)
     tanimsiz = sorted(secilenler - bilinenler)
     if tanimsiz:
         print(f"Bilinmeyen görsel ya da küme: {', '.join(tanimsiz)}", file=sys.stderr)
@@ -828,6 +1065,13 @@ def main() -> int:
     if "--istemler" in argv:
         print(istemleri_yaz())
         return 0
+
+    if "--plaka" in argv or "--sayfa" in argv:
+        anahtar = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+        if not anahtar:
+            print("GEMINI_API_KEY tanımlı değil.", file=sys.stderr)
+            return 2
+        return kent_uret(argv, anahtar, zorla)
 
     isler: list[tuple[str, str, str, Path]] = []
     for klasor, kayitlar in ISTEKLER.items():
@@ -874,7 +1118,19 @@ def main() -> int:
         print(f"\n[{i}/{len(isler)}] {klasor}/{ad} ...", flush=True)
         for deneme in range(3):
             try:
-                ham = istek_at(tam_istem(klasor, konu), anahtar, kaynaklar or None)
+                istem = tam_istem(klasor, konu)
+                girdi = kaynaklar or None
+                # Sahne kategorileri plakaya BAĞLANIYOR: yerleşim zemini ve
+                # akın diyarı, binaların durduğu dünyanın parçası. Ayrı ayrı
+                # üretildiklerinde kendi kameralarını ve kendi güneşlerini
+                # getiriyorlar ve bina üstlerinde yapıştırılmış duruyordu.
+                if not girdi and klasor in ("yerlesim", "akin") and STIL_PLAKASI.exists():
+                    girdi = [STIL_PLAKASI]
+                    istem = (
+                        "Match the reference image in sun direction, palette "
+                        "and painting style. Draw the described scene. " + istem
+                    )
+                ham = istek_at(istem, anahtar, girdi)
                 bayt = kaydet(ham, yol, KATEGORI[klasor]["boyut"])
                 print(f"  tamam — {bayt / 1024:.0f} KB")
                 basarili += 1

@@ -207,6 +207,65 @@ def okuma_sirasi(bilesenler):
     return sirali
 
 
+DOYGUN_ZEMIN = 80   # zeminin R-G-B yayilimi bundan buyukse ANAHTAR RENK sayilir
+# Anahtardan bu uzakliktaki (3 kanal mutlak fark toplami) piksel tam opak.
+# ELLE SECILMEDI, TARANDI: 150'de binalarin etrafinda mor kenar kaliyor,
+# 400'de duvarlar yari saydam oluyor ve arkadaki zemin iceriden goruluyor.
+# 300 ikisinin de olmadigi yer.
+ANAHTAR_ESIK = 300
+
+
+def _anahtari_coz(parca, zemin):
+    """
+    Duz renkli bir zeminden GERCEK alfayi ve GERCEK rengi cikarir.
+
+    Kenar yumusatmasi yuzunden sinir pikselleri zeminle KARISMIS geliyor:
+    gozlenen P = a*C + (1-a)*K. Bu pikselleri "zemin mi degil mi" diye ikiye
+    ayirmak imkansiz -- yarisi zemin. Ikiye ayirmaya calisan iki deneme de
+    binalarin etrafinda mor cerceve birakti.
+
+    Burada a, pikselin anahtar renge UZAKLIGINDAN cikariliyor; sonra C geri
+    hesaplaniyor (unpremultiply). Sonuc: kenar binanin kendi rengiyle yumusak
+    biter, anahtar rengin izi kalmaz.
+
+    Yalniz DOYGUN zeminde calisir. Eski koyu sayfalarda figurun kendisi de
+    zemine yakin tonda olabiliyor ve bu hesap binayi yari saydam yapardi.
+    """
+    import numpy as np
+
+    d = np.abs(parca - zemin).sum(axis=2)
+    a = np.clip(d / ANAHTAR_ESIK, 0.0, 1.0)
+    a3 = a[..., None]
+    renk = (parca - (1.0 - a3) * zemin) / np.maximum(a3, 1e-3)
+    return np.clip(renk, 0, 255), a
+
+
+def _anahtar_zemin_mi(zemin) -> bool:
+    return float(max(zemin) - min(zemin)) > DOYGUN_ZEMIN
+
+
+def _kenar_tasir(parca, ait):
+    """
+    Figurun kendi renklerini disari tasirir (edge extend / de-fringe).
+
+    NEDEN: saydam piksellerin RGB'si zemin rengiyle doldurulursa, alfa
+    kenari yumusatildiginda o renk figurun etrafinda HALE birakir. Koyu bir
+    sayfada bu gorunmuyordu; magenta anahtar zeminde (yeni sayfa duzeni,
+    bkz. gorsel-uret.py SAYFA_KOMPOZISYONU) binalarin etrafinda mor bir
+    cerceve cikti.
+
+    Cozum: her bos piksel EN YAKIN figur pikselinin rengini alir. Boylece
+    yumusatilan kenar figurun kendi rengine karisir ve hale olmaz.
+    """
+    import numpy as np
+    from scipy import ndimage
+
+    if not ait.any():
+        return parca
+    _, idx = ndimage.distance_transform_edt(~ait, return_indices=True)
+    return parca[idx[0], idx[1]]
+
+
 def kare_yap(a, kutu, maske, zemin):
     """
     Figuru kesip saydam zeminli kare bir tuvale oturtur.
@@ -220,8 +279,9 @@ def kare_yap(a, kutu, maske, zemin):
     Maske kenari 1.2 pikselle yumusatilir; sert kesim, boyanmis bir
     illustrasyonun yaninda makasla kesilmis gibi duruyor.
 
-    Saydam piksellerin RGB'si zemin rengi olarak birakilir: kucultmede
-    olusabilecek halo, sayfanin koyusuyla ayni tonda kalir.
+    Saydam piksellerin RGB'si figurun KENDI kenar renginden tasiriliyor
+    (_kenar_tasir): zemin rengi birakilsaydi yumusatilan kenar o rengi hale
+    olarak gosterirdi -- magenta anahtar zeminde mor cerceve cikti.
     """
     import numpy as np
     from PIL import Image, ImageFilter
@@ -230,18 +290,29 @@ def kare_yap(a, kutu, maske, zemin):
     x0, y0, x1, y1 = kutu
     parca = a[y0:y1, x0:x1].copy()
     ait = ndimage.binary_dilation(maske[y0:y1, x0:x1], iterations=3)
-    parca[~ait] = zemin                     # komsu figurlerin tasan parcalari
 
-    alfa = Image.fromarray((ait * 255).astype("uint8"))
-    alfa = alfa.filter(ImageFilter.GaussianBlur(1.2))
+    import numpy as np
+
+    if _anahtar_zemin_mi(zemin):
+        # Magenta anahtar sayfa (gorsel-uret.py SAYFA_KOMPOZISYONU): alfa
+        # anahtardan cozuluyor, bilesen maskesi yalniz KOMSU figurleri
+        # disarida tutmak icin kullaniliyor.
+        renk, anahtar_alfa = _anahtari_coz(parca, zemin)
+        alfa01 = anahtar_alfa * ait
+        parca = _kenar_tasir(renk, alfa01 > 0.6)
+        alfa = Image.fromarray((alfa01 * 255).astype("uint8"))
+    else:
+        # Eski koyu sayfa: siluet bilesen maskesinden, renk disari tasirilir.
+        parca = _kenar_tasir(parca, ait)
+        alfa = Image.fromarray((ait * 255).astype("uint8"))
+    alfa = alfa.filter(ImageFilter.GaussianBlur(0.8))
 
     g, y = x1 - x0, y1 - y0
     kenar = int(max(g, y) * (1 + 2 * MARJ))
     ust = Image.fromarray(parca.astype("uint8")).convert("RGBA")
     ust.putalpha(alfa)
 
-    tuval = Image.new("RGBA", (kenar, kenar),
-                      tuple(int(v) for v in zemin) + (0,))
+    tuval = Image.new("RGBA", (kenar, kenar), (0, 0, 0, 0))
     tuval.paste(ust, ((kenar - g) // 2, (kenar - y) // 2), ust)
     return tuval.resize((BOYUT, BOYUT), Image.LANCZOS)
 
