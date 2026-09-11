@@ -167,6 +167,21 @@ O aşamadaki 22 görselin tamamı eklendi. game-icons ikonları arayüzde kullan
 ediyor (kaynak sayaçları, stat satırları, gezinme, harita hex'leri), o yüzden
 yukarıdaki künye geçerliliğini koruyor.
 
+**Bina işaretçileri ve yerleşim zeminleri YENİDEN ÜRETİLDİ — sayfa
+düzeniyle.** Aşağıdaki tek tek üretim hikâyesi tarihe karıştı; neden
+karıştığı docs/12 §9.1'de. Özeti: 24 bina 24 ayrı çağrıyla üretilmişti ve
+her birinin kendi kamerası, kendi güneşi vardı. Şimdi bir stil plakası
+var, binalar dörtlü sayfalar hâlinde ve her sayfa o plakadan üretiliyor.
+
+Zemin saydam değil DÜZ MAGENTA isteniyor; ayıklama `gorsel-ayikla.py`de
+gerçek bir chroma anahtarıyla yapılıyor (kromatiklik + despill). Model
+her binanın altına gölge çizdi: parlaklığa bakan bir eşik onları figür
+sayıp sprite'ın altında pembe leke bırakıyordu, kromatiklik ise gölgeyi
+kendiliğinden ayıklıyor — koyu magenta yine magenta. Kenarda kalan iz de
+despill ile nötrleniyor.
+
+**Aşağısı ESKİ yöntemin kaydı (tek tek üretim).**
+
 **Bina işaretçileri (24 dosya) — model saydamlığı ÇİZDİ.** İstem "isolated
 on a fully transparent background" diyordu; gelen dosyalarda alfa kanalı
 yoktu, onun yerine düzenleyicilerin saydamlık dama deseni gerçek piksel

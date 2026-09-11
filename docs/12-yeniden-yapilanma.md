@@ -671,7 +671,7 @@ python3 tools/gorsel-uret.py --sayfa    # kalan sayfalar + bölme + hizalama
 Maliyet de düşüyor: 30 ayrı çağrı yerine **12** (6 sayfa + 6 zemin).
 
 **Saydamlık artık istenmiyor, ANAHTAR RENK isteniyor.** Modelden "saydam
-zemin" istendiğinde saydamlığı *çizmişti* (dama desenini gerçek piksel
+zemin" istendiğinde saydamlığı _çizmişti_ (dama desenini gerçek piksel
 olarak, bkz. `tools/dama-sil.py`). Düz ve doygun bir magenta ise
 güvenilir geliyor ve ayıklaması kesin. `gorsel-ayikla.py` zaten çok
 figürlü bir sayfayı bileşenlere ayıran araç; tam bunun için yazılmıştı.
@@ -689,12 +689,17 @@ Ayıklamaya iki düzeltme gerekti ve ikisi de sahte bir magenta sayfayla
   geri hesaplanıyor. Eşik taranarak seçildi: 150'de mor kenar kalıyor,
   400'de duvarlar yarı saydam oluyor — 300 ikisinin de olmadığı yer.
 
-**Altı yerleşim zemini yeniden üretilecek (§3.7).** İlk denemede
-kompozisyon "manzarayı kenarlara yasla" diyordu ve model kenarlara ev,
-çadır, kule çizdi; o boyalı binalar bizim sprite'larımızla yarışıyor.
-İstem yeniden yazıldı — karede hiçbir bina olmayacak, yalnız zemin,
-patika, çimen, kaya ve kenarda çit. Üretim yeni bir API anahtarı
-bekliyor; eski anahtar 401 dönüyor.
+**Kent varlıkları yeniden üretildi (§9.1).** 24 bina + 6 zemin,
+sayfa düzeniyle ve tek plakadan. Harcanan çağrı bu turda 14: 1 plaka +
+5 sayfa + 6 zemin + 2 zemin yenilemesi (kamp ve metropolün kenarına
+plakanın magentası bulaşmıştı; istemde "çerçeveyi baştan başa doldur,
+hiçbir yerde magenta olmasın" satırı bu yüzden var). Toplam harcanan 53,
+kalan 47.
+
+Zeminler artık BİNASIZ. Eski istem "manzarayı kenarlara yasla" diyordu ve
+model kenarlara ev, çadır, kule çizmişti; o boyalı binalar sprite'larla
+yarışıyordu. Şimdi karede yalnız zemin, patika, çimen, kaya ve kenarda
+çit var — ekrandaki her bina bizim.
 
 | Ne                                                                  | Adet    |
 | ------------------------------------------------------------------- | ------- |

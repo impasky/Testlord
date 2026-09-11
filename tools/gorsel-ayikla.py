@@ -208,14 +208,82 @@ def okuma_sirasi(bilesenler):
 
 
 DOYGUN_ZEMIN = 80   # zeminin R-G-B yayilimi bundan buyukse ANAHTAR RENK sayilir
-# Anahtardan bu uzakliktaki (3 kanal mutlak fark toplami) piksel tam opak.
-# ELLE SECILMEDI, TARANDI: 150'de binalarin etrafinda mor kenar kaliyor,
-# 400'de duvarlar yari saydam oluyor ve arkadaki zemin iceriden goruluyor.
-# 300 ikisinin de olmadigi yer.
-ANAHTAR_ESIK = 300
+# Anahtar esigi SABIT DEGIL, her sayfa icin olculur.
+#
+# Ilk surumde 300 yaziyordu ve bu sahte bir test sayfasinda (saf magenta,
+# 255-0-255) dogruydu. Gercek sayfada model zemini gul rengi verdi
+# (174-66-112): figurun zemine uzakligi yariya dustu ve butun binalar
+# hayalet gibi, neredeyse tamamen saydam cikti. Modelin tam olarak hangi
+# magentayi verecegine bel baglanamaz.
+#
+# Olcu: bilesenin ICINDEKI (kenarindan uzak) piksellerin zemine ortanca
+# uzakligi. Esik bunun bir orani; boylece ayni hesap saf magentada da,
+# solgun bir gulde de calisiyor.
+ANAHTAR_ORANI = 0.45   # ic pikselin tipik RENK uzakliginin bu orani = tam opak
+ANAHTAR_ALT, ANAHTAR_UST = 12, 200
 
 
-def _anahtari_coz(parca, zemin):
+def _kromatiklik(a):
+    """Parlakligi atip yalniz RENGI birakir (kromatiklik)."""
+    import numpy as np
+
+    toplam = np.clip(a.sum(axis=2, keepdims=True), 1, None)
+    return a / toplam
+
+
+def _anahtar_uzakligi(parca, zemin):
+    """
+    Her pikselin anahtar RENGE uzakligi -- parlakliktan bagimsiz.
+
+    Neden parlaklik degil renk: model her binanin altina bir golge cizdi ve
+    golge, zeminin KOYULASMIS hali. Parlaklik farkina bakan bir esik onu
+    "figur" sayiyor ve sprite'in altinda pembe bir leke kaliyor. Kromatiklik
+    ayni kaliyor -- koyu magenta yine magenta -- o yuzden golge kendiliginden
+    ayikleniyor. Adi zaten bundan geliyor: CHROMA key.
+    """
+    import numpy as np
+
+    d = np.abs(_kromatiklik(parca) - _kromatiklik(zemin.reshape(1, 1, 3))).sum(axis=2) * 255.0
+    # Cok koyu piksellerde kromatiklik gurultulu (0'a bolmeye yakin) ve
+    # anahtar renk parlak; karanlik piksel her hal
+    # de figurdur.
+    return np.where(parca.sum(axis=2) < 90, 255.0, d)
+
+
+def _lekeyi_gider(renk, zemin):
+    """
+    Anahtar rengin figure bulasan izini notrler (despill).
+
+    Model her binanin altina bir golge cizdi ve golge zeminin uzerine
+    yari saydam dustugu icin PEMBE. Chroma anahtari golgenin cogunu
+    ayikliyor ama kenarinda kalan pikseller hâlâ magentaya caliyor.
+
+    Notrleme yalniz GERCEKTEN magenta imzasi tasiyan pikselde yapiliyor:
+    kirmizi VE mavi, yesilin uzerinde. Kahverengi bir kiriste mavi zaten
+    yesilin altinda, kiremit bir catida da oyle -- ikisi de dokunulmadan
+    kaliyor. Sart bu kadar dar olmasaydi butun sicak renkler bozulurdu.
+    """
+    import numpy as np
+
+    if zemin[1] >= min(zemin[0], zemin[2]):
+        return renk                      # anahtar magenta degil, yapacak is yok
+    r, g, b = renk[..., 0], renk[..., 1], renk[..., 2]
+    leke = (r > g) & (b > g)
+    yeni_g = np.where(leke, (r + b) / 2.0, g)
+    return np.stack([r, np.minimum(np.maximum(g, yeni_g), 255), b], axis=-1)
+
+
+def _anahtar_esigi(parca, zemin, ic) -> float:
+    """Bu sayfanin esigi: ic piksellerin tipik renk uzakliginin orani."""
+    import numpy as np
+
+    if not ic.any():
+        return float(ANAHTAR_UST)
+    tipik = float(np.median(_anahtar_uzakligi(parca, zemin)[ic]))
+    return float(min(max(ANAHTAR_ORANI * tipik, ANAHTAR_ALT), ANAHTAR_UST))
+
+
+def _anahtari_coz(parca, zemin, esik: float):
     """
     Duz renkli bir zeminden GERCEK alfayi ve GERCEK rengi cikarir.
 
@@ -224,7 +292,7 @@ def _anahtari_coz(parca, zemin):
     ayirmak imkansiz -- yarisi zemin. Ikiye ayirmaya calisan iki deneme de
     binalarin etrafinda mor cerceve birakti.
 
-    Burada a, pikselin anahtar renge UZAKLIGINDAN cikariliyor; sonra C geri
+    Burada a, pikselin anahtar RENGE uzakligindan cikariliyor; sonra C geri
     hesaplaniyor (unpremultiply). Sonuc: kenar binanin kendi rengiyle yumusak
     biter, anahtar rengin izi kalmaz.
 
@@ -233,8 +301,7 @@ def _anahtari_coz(parca, zemin):
     """
     import numpy as np
 
-    d = np.abs(parca - zemin).sum(axis=2)
-    a = np.clip(d / ANAHTAR_ESIK, 0.0, 1.0)
+    a = np.clip(_anahtar_uzakligi(parca, zemin) / esik, 0.0, 1.0)
     a3 = a[..., None]
     renk = (parca - (1.0 - a3) * zemin) / np.maximum(a3, 1e-3)
     return np.clip(renk, 0, 255), a
@@ -297,7 +364,10 @@ def kare_yap(a, kutu, maske, zemin):
         # Magenta anahtar sayfa (gorsel-uret.py SAYFA_KOMPOZISYONU): alfa
         # anahtardan cozuluyor, bilesen maskesi yalniz KOMSU figurleri
         # disarida tutmak icin kullaniliyor.
-        renk, anahtar_alfa = _anahtari_coz(parca, zemin)
+        ic = ndimage.binary_erosion(maske[y0:y1, x0:x1], iterations=4)
+        esik = _anahtar_esigi(parca, zemin, ic)
+        renk, anahtar_alfa = _anahtari_coz(parca, zemin, esik)
+        renk = _lekeyi_gider(renk, zemin)
         alfa01 = anahtar_alfa * ait
         parca = _kenar_tasir(renk, alfa01 > 0.6)
         alfa = Image.fromarray((alfa01 * 255).astype("uint8"))

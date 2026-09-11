@@ -269,6 +269,8 @@ KATEGORI = {
                        "BUILDINGS anywhere in the image: no houses, huts, tents, "
                        "towers, roofs, ruins or market stalls, only ground, path, "
                        "grass, rocks, trees and low fences at the outer rim, "
+                       "the terrain fills the entire frame edge to edge with no "
+                       "background colour and no magenta visible anywhere, "
                        "no people, bright even daylight, 4:3 composition",
         "boyut": (1024, 768),
     },
