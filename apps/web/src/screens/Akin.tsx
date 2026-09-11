@@ -19,7 +19,7 @@
  *    sorusu ekranda cevaplanmalı.
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import {
   ApiError,
   api,
@@ -27,7 +27,7 @@ import {
   type AkinHaritaDurumu,
   type LordState,
 } from '../api/client';
-import { UNIT_TYPES, unitName, type Army, type UnitType } from '@lordlar/shared';
+import { AKIN_YOLU, UNIT_TYPES, unitName, type Army, type UnitType } from '@lordlar/shared';
 import {
   Bolum,
   Buton,
@@ -274,17 +274,12 @@ function HaritaKarti({
 
       {acikMi && !kilitli && (
         <div className="border-t border-kenar px-3 py-2.5">
-          <div className="grid grid-cols-2 gap-1.5">
-            {h.gruplar.map((g) => (
-              <GrupDugmesi
-                key={g.grupNo}
-                g={g}
-                secili={seciliGrup === g.grupNo}
-                isikta={ilkAcikMi && g.grupNo === h.gruplar.find((x) => x.acik)?.grupNo}
-                onSec={() => onGrupSec(g.grupNo)}
-              />
-            ))}
-          </div>
+          <DiyarHaritasi
+            h={h}
+            seciliGrup={seciliGrup}
+            isiktakiGrup={ilkAcikMi ? (h.gruplar.find((x) => x.acik)?.grupNo ?? null) : null}
+            onGrupSec={onGrupSec}
+          />
           {children && <div className="mt-2.5">{children}</div>}
         </div>
       )}
@@ -298,19 +293,127 @@ function HaritaKarti({
  * Vurulan grup KAYBOLMUYOR, gri duruyor ve ne zaman döneceğini yazıyor.
  * Gizleseydik oyuncu "burada bir şey vardı" diye ekranı arardı.
  */
-function GrupDugmesi({
+/** Kampın haritadaki genişliği (kabın yüzdesi). */
+const KAMP_BOY = 14;
+
+/**
+ * Diyar haritası — on kamp, bir yol.
+ *
+ * Oyuncu: "akın kısmında harita yap, 10 NPC karakteri de o haritaya ekle;
+ * oyuncu o karaktere tıklayarak akın saldırısı yapsın." Önceden gruplar iki
+ * sütunlu bir YAZI ızgarasıydı: on düğme, on isim, hepsi aynı görünüyordu.
+ * Diyarın neresi olduğu ve nereye kadar gelindiği hiçbir yerde yoktu.
+ *
+ * Yol beş diyarda da AYNI (`AKIN_YOLU`) ve bu bilinçli: oyuncu bir kez
+ * öğreniyor — 1 sol altta, şef sağ üstte — ve bu her diyarda geçerli.
+ * Diyarı ayıran şey zemin. Ayrıca zemin istemi tam bu yolu tarif ediyor;
+ * yol diyara göre değişseydi zeminle koordine edilemezdi, çünkü zemin
+ * üretilirken hangi yolun geleceği bilinmiyor (`data/akinlar.json`).
+ */
+function DiyarHaritasi({
+  h,
+  seciliGrup,
+  isiktakiGrup,
+  onGrupSec,
+}: {
+  h: AkinHaritaDurumu;
+  seciliGrup: number | null;
+  /** Rehber ışığının aydınlatacağı grup — yoksa null. */
+  isiktakiGrup: number | null;
+  onGrupSec: (grupNo: number) => void;
+}) {
+  /*
+   * Diyar açılınca harita KENDİLİĞİNDEN görünür oluyor.
+   *
+   * Kart sırası kapak → ad → özet → harita; telefonda harita ekranın
+   * altında kalıyor ve oyuncu diyara dokunup hiçbir şey olmadı sanıyordu.
+   * Bileşen yalnız açıkken var olduğu için kaydırma mount'ta bir kez
+   * yapılıyor, ayrı bir bayrak tutmaya gerek yok.
+   */
+  const kutu = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    kutu.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, []);
+  return (
+    <div
+      ref={kutu}
+      className="oyuk relative isolate aspect-square w-full overflow-hidden rounded-lg border border-kenar"
+    >
+      <img
+        src={`/gorseller/akin_harita/${h.key}.webp`}
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 h-full w-full object-cover"
+        onError={(e) => {
+          (e.currentTarget as HTMLImageElement).style.visibility = 'hidden';
+        }}
+      />
+
+      {/* Kampları bağlayan iz. Zeminde boyalı bir patika zaten var ama
+          işaretçiler tam onun üstüne oturmuyor — bu çizgi hangi kampın
+          hangisinden sonra geldiğini kesinleştiriyor. Kesikli ve soluk:
+          yolun kendisi zemindeki resim, bu yalnızca sırayı söylüyor. */}
+      <svg
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+        className="pointer-events-none absolute inset-0 h-full w-full"
+        aria-hidden="true"
+      >
+        <polyline
+          points={AKIN_YOLU.map((n) => `${n.x},${n.y}`).join(' ')}
+          fill="none"
+          stroke="rgba(245,183,49,0.35)"
+          strokeWidth="0.8"
+          strokeDasharray="2 2"
+          vectorEffect="non-scaling-stroke"
+        />
+      </svg>
+
+      {h.gruplar.map((g, i) => (
+        <KampIsareti
+          key={g.grupNo}
+          g={g}
+          yer={AKIN_YOLU[i] ?? { x: 50, y: 50 }}
+          dusmanKey={h.dusmanKey}
+          secili={seciliGrup === g.grupNo}
+          isikta={isiktakiGrup === g.grupNo}
+          onSec={() => onGrupSec(g.grupNo)}
+        />
+      ))}
+    </div>
+  );
+}
+
+/**
+ * Haritadaki tek bir düşman kampı.
+ *
+ * Şehir haritasındaki yapıyla aynı mimari (`Sehir.tsx`): figür TABANINDAN
+ * çakılıyor, altında temas gölgesi var ve derinlik sırası y'den geliyor.
+ * Aynı gerekçeler: taban hizası olmadan figürler havada duruyor, gölge
+ * olmadan zemine basmıyorlar.
+ *
+ * Çizim diyarın düşmanı — 1-9. kamplarda asker, 10.'da ŞEF. Elli grubun
+ * her birine ayrı çizim bütçeye sığmazdı ve gerekmiyor da: oyuncunun
+ * sorduğu şey "burada tam olarak kim var" değil, "hangi diyardayım ve
+ * sonuncu muyum".
+ */
+function KampIsareti({
   g,
+  yer,
+  dusmanKey,
   secili,
-  isikta = false,
+  isikta,
   onSec,
 }: {
   g: AkinGrupDurumu;
+  yer: { x: number; y: number };
+  dusmanKey: string;
   secili: boolean;
-  /** Rehber ışığının aydınlatacağı grup mu. */
-  isikta?: boolean;
+  isikta: boolean;
   onSec: () => void;
 }) {
   const bekliyor = !g.acik && g.yenilenirAt !== null;
+  const ad = g.sef ? `${dusmanKey}_sef` : dusmanKey;
   return (
     <button
       type="button"
@@ -318,27 +421,56 @@ function GrupDugmesi({
       disabled={!g.acik}
       data-akin-grup={g.grupNo}
       data-rehber={isikta ? 'akin-grup' : undefined}
-      className={`bas min-h-[52px] rounded-lg border px-2 py-1.5 text-left ${
-        secili
-          ? 'border-altin/60 bg-altin/15'
-          : g.acik
-            ? 'border-kenar'
-            : 'border-kenar/50 opacity-60'
+      aria-label={`${g.grupNo}. ${g.ad}${g.sef ? ', şef' : ''} — ${
+        g.acik ? `${formatSayi(g.garnizonSayisi)} savaşçı` : bekliyor ? 'yenileniyor' : 'kilitli'
       }`}
+      className="absolute aspect-square"
+      style={{
+        left: `${yer.x}%`,
+        top: `${yer.y}%`,
+        // Şef daha iri: son kampın "patron" olduğu çizimden değil
+        // boyuttan da okunmalı, çünkü çizim küçükken ayrıntı kaybolur.
+        width: `${KAMP_BOY * (g.sef ? 1.3 : 1)}%`,
+        transform: 'translate(-50%, -100%)',
+        // Seçili kamp öne: sıralar çakışabiliyor ve seçtiğin şeyin üstü
+        // örtülü olmamalı.
+        zIndex: Math.round(yer.y) + (secili ? 200 : 0),
+      }}
     >
-      <div className="flex items-baseline justify-between gap-1">
-        <span className="truncate text-[12px] font-semibold text-parsomen">{g.ad}</span>
-        {g.sef && <span className="shrink-0 text-[10px] text-altin">ŞEF</span>}
-      </div>
-      <p className="tabular text-[11px] text-solgun">
-        {bekliyor ? (
-          <>
-            <GeriSayim bitis={g.yenilenirAt!} /> sonra
-          </>
-        ) : (
-          `${formatSayi(g.garnizonSayisi)} savaşçı`
-        )}
-      </p>
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute bottom-[-7%] left-1/2 h-[18%] w-[80%] -translate-x-1/2 rounded-[50%]"
+        style={{
+          background:
+            'radial-gradient(ellipse at center, rgba(20,14,8,0.55) 0%, rgba(20,14,8,0.24) 52%, rgba(20,14,8,0) 78%)',
+        }}
+      />
+      <img
+        src={`/gorseller/dusmanlar/${ad}.webp`}
+        alt=""
+        aria-hidden="true"
+        className="relative h-full w-full object-contain"
+        style={{
+          filter: secili
+            ? 'drop-shadow(0 0 3px #fff3cf) drop-shadow(0 0 8px #f5b731)'
+            : isikta
+              ? 'drop-shadow(0 0 6px rgba(245,183,49,0.8))'
+              : undefined,
+          // Vurulmuş ya da henüz açılmamış kamp solgun: oyuncu nereye
+          // kadar geldiğini haritaya bakarak görmeli.
+          opacity: g.acik ? 1 : 0.4,
+          // Kilitli kamp GRİ, yenilenen kamp renkli ama solgun — ikisi
+          // farklı şey söylüyor: "burası sana kapalı" ve "burayı vurdun".
+          ...(g.acik || bekliyor ? {} : { filter: 'grayscale(1)' }),
+        }}
+      />
+      <span
+        className={`tabular absolute bottom-[1%] left-1/2 -translate-x-1/2 rounded-full px-1 text-[11px] leading-tight font-bold whitespace-nowrap ${
+          bekliyor ? 'bg-gece/90 text-solgun' : 'bg-gece/90 text-altin'
+        }`}
+      >
+        {bekliyor ? <GeriSayim bitis={g.yenilenirAt!} kisa /> : g.sef ? 'ŞEF' : g.grupNo}
+      </span>
     </button>
   );
 }

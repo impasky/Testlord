@@ -374,6 +374,41 @@ Meşgul ya da seçili yapı öne alınıyor (`zIndex + 200`). Sıralar bilerek
 çakıştığı için öndeki bina arkadakinin tabanını örtüyor ve sayaç tam
 orada duruyordu; olan biteni gösteren şey üstü örtülü olmamalı.
 
+### 6.1 Diyar haritası — gruplar yazı ızgarasından çıktı
+
+Oyuncu: **"Akın kısmında harita yap, 10 NPC karakteri de o haritaya ekle;
+oyuncu o karaktere tıklayarak akın saldırısı yapsın."**
+
+Önceden on grup iki sütunlu bir YAZI ızgarasıydı: on düğme, on isim,
+hepsi aynı görünüyordu. Diyarın neresi olduğu, nereye kadar gelindiği ve
+sonuncunun şef olduğu hiçbir yerde görünmüyordu.
+
+Artık diyar açılınca **kare bir harita** geliyor: zemin o diyarın arazisi,
+üstünde on düşman figürü, aralarında sırayı gösteren kesik bir iz.
+Figüre dokunmak sefer kartını açıyor — akış değişmedi, görünen şey
+değişti. Diyar kapağı yerinde duruyor (kapalı listede diyarı o tanıtıyor).
+
+**Yol beş diyarda da AYNI** (`data/akinlar.json` → `yol`). İki sebep:
+oyuncu bir kez öğreniyor ("1 sol altta, şef sağ üstte") ve bu her diyarda
+geçerli oluyor; ayrıca zemin istemi tam bu yolu tarif ediyor ("sol alttan
+sağ üste dolanan bir patika"), yani yol diyara göre değişseydi zeminle
+koordine edilemezdi — zemin üretilirken hangi yolun geleceği bilinmiyor.
+Diyarı ayıran şey zemin.
+
+Aralıklar ölçüldü: kare haritada en yakın iki kamp 54 piksel, işaretçi
+genişliği %14 (50 piksel) — çakışmıyorlar.
+
+**Elli grubun elli çizimi yok ve olmamalı.** Her diyarın BİR askeri ve
+BİR şefi var: asker 1-9. kamplarda, şef 10.'da (ve daha iri çiziliyor).
+Oyuncunun sorduğu şey "burada tam olarak kim var" değil, "hangi
+diyardayım ve sonuncu muyum". On figür iki sayfada üretildi — beş asker
+bir karede, beş şef bir karede (§9.1).
+
+Kamp durumu üç hâlde okunuyor: açık kamp renkli, kilitli kamp GRİ,
+vurulmuş kamp solgun ve üstünde yenilenme sayacı. Diyar açılınca harita
+kendiliğinden ekrana kaydırılıyor — kart sırası kapak → ad → özet →
+harita ve telefonda harita ekranın altında kalıyordu.
+
 ## 4. Bina seviyesi ile araştırma neden çakışmıyor
 
 Bu, planın en riskli yeriydi ve ilkesi tek cümle:

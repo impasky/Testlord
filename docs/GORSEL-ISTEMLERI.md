@@ -1,6 +1,6 @@
 # Görsel İstemleri
 
-Oyunun ihtiyacı olan **111 görselin** kopyala-yapıştır istemleri.
+Oyunun ihtiyacı olan **126 görselin** kopyala-yapıştır istemleri.
 Her istem üç parçadan oluşur: **konu** + **kategori kompozisyonu** +
 **taban üslup**. Taban üslup hepsinde aynıdır; tutarlılık oradan gelir.
 
@@ -743,6 +743,128 @@ a black ash valley under a dead volcano, bandit forges and slag heaps smoking be
 
 ```
 a sunken city of tombs half swallowed by sand, broken obelisks and a stepped mausoleum, cult braziers burning cold violet in the dusk, wide establishing shot of a hostile landscape with an enemy encampment in the middle distance, cinematic composition, strong single colour mood, the scene fills the entire frame edge to edge with no background colour and no magenta visible anywhere, no text, 16:9 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+---
+
+## Akın diyar haritaları — 5 görsel
+
+Diyar kartı açılınca gelen harita. On düşman kampı bu zeminin ÜSTÜNE DOM olarak konuyor (`data/akinlar.json` → `yol`), o yüzden zeminde kamp çizmiyoruz — şehir zeminlerinde öğrenilen dersin aynısı: zeminin kendi boyalı kampları bizim işaretçilerimizle yarışıyor.
+
+**Patika ŞART ve yeri sabit.** İstem sol alttan sağ üste dolanan bir patika tarif ediyor, çünkü on kamp tam o yol üzerine konuyor. Yol beş diyarda da aynı; diyarı ayıran şey zemin.
+
+Çıktı: `apps/web/public/gorseller/akin_harita/<ad>.webp` · 1024×1024
+
+Kompozisyon (her istemde var):
+
+```
+an empty hostile landscape seen from a high three-quarter aerial view, a winding path running from the lower left corner to the upper right corner across the whole frame, ABSOLUTELY NO CAMPS, no tents, no buildings, no people and no banners anywhere, only terrain and the path, the scene fills the entire frame edge to edge with no background colour and no magenta visible, square 1:1 composition
+```
+
+### `akin_harita/kirik_sahil.webp`
+
+```
+a rocky storm grey shore of black rock and wet sand, broken ship ribs half buried, tide pools and driftwood, cold blue green sea mist, an empty hostile landscape seen from a high three-quarter aerial view, a winding path running from the lower left corner to the upper right corner across the whole frame, ABSOLUTELY NO CAMPS, no tents, no buildings, no people and no banners anywhere, only terrain and the path, the scene fills the entire frame edge to edge with no background colour and no magenta visible, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `akin_harita/solgun_bataklik.webp`
+
+```
+a pale sunless marsh of reed beds, standing water and mud causeways, dead trees, sickly yellow green haze, an empty hostile landscape seen from a high three-quarter aerial view, a winding path running from the lower left corner to the upper right corner across the whole frame, ABSOLUTELY NO CAMPS, no tents, no buildings, no people and no banners anywhere, only terrain and the path, the scene fills the entire frame edge to edge with no background colour and no magenta visible, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `akin_harita/kuzey_buzulu.webp`
+
+```
+a blue white glacier field split by a deep crevasse, wind scoured ice ridges and snow drifts, hard winter light, an empty hostile landscape seen from a high three-quarter aerial view, a winding path running from the lower left corner to the upper right corner across the whole frame, ABSOLUTELY NO CAMPS, no tents, no buildings, no people and no banners anywhere, only terrain and the path, the scene fills the entire frame edge to edge with no background colour and no magenta visible, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `akin_harita/kuller_vadisi.webp`
+
+```
+a black ash valley under a dead volcano, basalt spurs, slag heaps and cracked lava crust, hot orange embers in grey ash, an empty hostile landscape seen from a high three-quarter aerial view, a winding path running from the lower left corner to the upper right corner across the whole frame, ABSOLUTELY NO CAMPS, no tents, no buildings, no people and no banners anywhere, only terrain and the path, the scene fills the entire frame edge to edge with no background colour and no magenta visible, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `akin_harita/unutulmus_nekropol.webp`
+
+```
+a sand swallowed necropolis floor, broken obelisks and sunken paving, dunes drifting over stone steps, cold violet dusk, an empty hostile landscape seen from a high three-quarter aerial view, a winding path running from the lower left corner to the upper right corner across the whole frame, ABSOLUTELY NO CAMPS, no tents, no buildings, no people and no banners anywhere, only terrain and the path, the scene fills the entire frame edge to edge with no background colour and no magenta visible, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+---
+
+## Akın düşmanları — 10 görsel
+
+Diyar haritasındaki on kampın figürü. Her diyarın BİR askeri ve BİR şefi var: asker o diyarın 1-9. kamplarında, şef 10.'da. Elli grubun her birine ayrı çizim bütçeye sığmazdı ve gerekmiyor da — oyuncunun sorduğu şey "burada tam olarak kim var" değil, "hangi diyardayım ve sonuncu muyum".
+
+BEŞERLİ sayfa hâlinde üretiliyorlar: beş asker tek karede, beş şef tek karede. Aynı karedekiler zaten tutarlı (docs/12 §9.1).
+
+Çıktı: `apps/web/public/gorseller/dusmanlar/<ad>.webp` · 512×512
+
+Kompozisyon (her istemde var):
+
+```
+single standing figure seen from a three-quarter angle, full body, feet flat on the ground, plain flat magenta background, square 1:1 composition
+```
+
+### `dusmanlar/haydut.webp`
+
+```
+a sea raider in a salt stained leather jerkin with a hooked axe and a small round shield, single standing figure seen from a three-quarter angle, full body, feet flat on the ground, plain flat magenta background, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `dusmanlar/lejyoner.webp`
+
+```
+a deserter legionary in rusted scale armour with a battered rectangular shield and a short sword, single standing figure seen from a three-quarter angle, full body, feet flat on the ground, plain flat magenta background, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `dusmanlar/barbar.webp`
+
+```
+a fur clad northern clansman with a two handed axe and bone charms braided into his beard, single standing figure seen from a three-quarter angle, full body, feet flat on the ground, plain flat magenta background, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `dusmanlar/eskiya.webp`
+
+```
+a mountain bandit smith in a scorched apron with a heavy hammer and a soot blackened face, single standing figure seen from a three-quarter angle, full body, feet flat on the ground, plain flat magenta background, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `dusmanlar/kultist.webp`
+
+```
+a tomb cult acolyte in grey funeral wrappings holding a cold violet brazier, single standing figure seen from a three-quarter angle, full body, feet flat on the ground, plain flat magenta background, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `dusmanlar/haydut_sef.webp`
+
+```
+a pirate captain in a heavy coat with a plumed hat, two cutlasses and a captured officer sash, single standing figure seen from a three-quarter angle, full body, feet flat on the ground, plain flat magenta background, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `dusmanlar/lejyoner_sef.webp`
+
+```
+a renegade legion centurion in a crested helmet with a torn standard strapped to his back, single standing figure seen from a three-quarter angle, full body, feet flat on the ground, plain flat magenta background, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `dusmanlar/barbar_sef.webp`
+
+```
+a clan chieftain in a horned helm and a bearskin mantle with a great war axe, single standing figure seen from a three-quarter angle, full body, feet flat on the ground, plain flat magenta background, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `dusmanlar/eskiya_sef.webp`
+
+```
+a master bandit smith in blackened plate holding a glowing forged blade, single standing figure seen from a three-quarter angle, full body, feet flat on the ground, plain flat magenta background, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `dusmanlar/kultist_sef.webp`
+
+```
+a high priest of the tomb cult in a horned gilt mask and trailing robes, holding a sceptre, single standing figure seen from a three-quarter angle, full body, feet flat on the ground, plain flat magenta background, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
 ```
 
 ---

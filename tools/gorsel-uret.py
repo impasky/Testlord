@@ -161,6 +161,14 @@ SAYFALAR: dict[str, tuple[str, list[str]]] = {
     "kent-4": ("binalar", ["karargah_1", "karargah_5", "kutuphane_1", "kutuphane_5"]),
     "kent-5": ("binalar", ["liman_1", "liman_5", "elcilik_1", "elcilik_5"]),
     "kent-6": ("binalar", ["gorev_panosu", "haberci_kulesi", "onur_meydani", "arsa"]),
+    # Akın düşmanları: beş diyarın askeri bir sayfada, beş şefi bir sayfada.
+    # Askerler aynı karede olunca "aynı dünyanın beş halkı" gibi duruyorlar;
+    # tek tek üretilselerdi beşi beş ayrı oyundan gelmiş gibi olurdu.
+    "dusman-asker": ("dusmanlar", ["haydut", "lejyoner", "barbar", "eskiya", "kultist"]),
+    "dusman-sef": (
+        "dusmanlar",
+        ["haydut_sef", "lejyoner_sef", "barbar_sef", "eskiya_sef", "kultist_sef"],
+    ),
 }
 
 # Sayfa kompozisyonu. Zemin SAYDAM değil DÜZ MAGENTA isteniyor ve bu
@@ -169,13 +177,30 @@ SAYFALAR: dict[str, tuple[str, list[str]]] = {
 # renk ise güvenilir şekilde geliyor ve ayıklaması kesin -- `gorsel-ayikla.py`
 # zemini kenar renginden bulup bileşenlere ayırıyor, yani bu araç tam da
 # böyle bir sayfa için yazılmıştı.
-SAYFA_KOMPOZISYONU = (
-    "exactly four separate buildings arranged in a 2x2 grid on a flat solid "
-    "magenta background, wide empty magenta gaps between them, each building "
-    "fully inside its own quadrant and touching nothing else, "
-    "no ground plane, no baseplate, no cast shadow on the background, "
-    "square 1:1 composition"
-)
+def sayfa_kompozisyonu(adet: int) -> str:
+    """
+    Sayfanın çerçeveleme tarifi — kaç varlık olduğuna göre.
+
+    Zemin SAYDAM değil DÜZ MAGENTA isteniyor ve bu bilinçli: modelden
+    saydamlık istendiğinde saydamlığı ÇİZDİ (dama desenini gerçek piksel
+    olarak, bkz. tools/dama-sil.py). Düz ve doygun bir renk ise güvenilir
+    geliyor ve ayıklaması kesin -- `gorsel-ayikla.py` zemini kenar
+    renginden bulup bileşenlere ayırıyor, yani bu araç tam da böyle bir
+    sayfa için yazılmıştı.
+
+    Dörtlü 2x2, beşli tek sıra: beş figürü 2x3'e dizmek bir kareyi boş
+    bırakmak demek ve model o boşluğu altıncı bir figürle doldurmaya
+    çalışıyor — o zaman isim sayısı tutmuyor ve sayfa bölünemiyor.
+    """
+    duzen = (
+        "arranged in a 2x2 grid" if adet == 4 else f"arranged in a single horizontal row"
+    )
+    return (
+        f"exactly {adet} separate subjects {duzen} on a flat solid magenta "
+        "background, wide empty magenta gaps between them, each subject fully "
+        "separate and touching nothing else, no ground plane, no baseplate, "
+        "no cast shadow on the background, square 1:1 composition"
+    )
 
 # Kategori başına kompozisyon kuralı + çıktı boyutu.
 #   kompozisyon : TABAN_USLUP'a eklenen çerçeveleme tarifi
@@ -333,6 +358,44 @@ KATEGORI = {
                        "background colour and no magenta visible anywhere, "
                        "no text, 16:9 composition",
         "boyut": (1024, 576),
+    },
+    "akin_harita": {
+        "ad": "Akın diyar haritaları",
+        "aciklama": (
+            "Diyar kartı açılınca gelen harita. On düşman kampı bu zeminin "
+            "ÜSTÜNE DOM olarak konuyor (`data/akinlar.json` → `yol`), o "
+            "yüzden zeminde kamp çizmiyoruz — şehir zeminlerinde öğrenilen "
+            "dersin aynısı: zeminin kendi boyalı kampları bizim "
+            "işaretçilerimizle yarışıyor.\n\n"
+            "**Patika ŞART ve yeri sabit.** İstem sol alttan sağ üste dolanan "
+            "bir patika tarif ediyor, çünkü on kamp tam o yol üzerine "
+            "konuyor. Yol beş diyarda da aynı; diyarı ayıran şey zemin."
+        ),
+        "kompozisyon": "an empty hostile landscape seen from a high "
+                       "three-quarter aerial view, a winding path running from "
+                       "the lower left corner to the upper right corner across "
+                       "the whole frame, ABSOLUTELY NO CAMPS, no tents, no "
+                       "buildings, no people and no banners anywhere, only "
+                       "terrain and the path, the scene fills the entire frame "
+                       "edge to edge with no background colour and no magenta "
+                       "visible, square 1:1 composition",
+        "boyut": (1024, 1024),
+    },
+    "dusmanlar": {
+        "ad": "Akın düşmanları",
+        "aciklama": (
+            "Diyar haritasındaki on kampın figürü. Her diyarın BİR askeri ve "
+            "BİR şefi var: asker o diyarın 1-9. kamplarında, şef 10.'da. "
+            "Elli grubun her birine ayrı çizim bütçeye sığmazdı ve gerekmiyor "
+            "da — oyuncunun sorduğu şey \"burada tam olarak kim var\" değil, "
+            "\"hangi diyardayım ve sonuncu muyum\".\n\n"
+            "BEŞERLİ sayfa hâlinde üretiliyorlar: beş asker tek karede, beş "
+            "şef tek karede. Aynı karedekiler zaten tutarlı (docs/12 §9.1)."
+        ),
+        "kompozisyon": "single standing figure seen from a three-quarter "
+                       "angle, full body, feet flat on the ground, "
+                       "plain flat magenta background, square 1:1 composition",
+        "boyut": (512, 512),
     },
     "lord": {
         "ad": "Lord figürü",
@@ -595,6 +658,42 @@ ISTEKLER: dict[str, dict[str, str]] = {
                               "broken obelisks and a stepped mausoleum, cult "
                               "braziers burning cold violet in the dusk",
     },
+    "akin_harita": {
+        "kirik_sahil": "a rocky storm grey shore of black rock and wet sand, "
+                       "broken ship ribs half buried, tide pools and driftwood, "
+                       "cold blue green sea mist",
+        "solgun_bataklik": "a pale sunless marsh of reed beds, standing water and "
+                           "mud causeways, dead trees, sickly yellow green haze",
+        "kuzey_buzulu": "a blue white glacier field split by a deep crevasse, "
+                        "wind scoured ice ridges and snow drifts, hard winter light",
+        "kuller_vadisi": "a black ash valley under a dead volcano, basalt spurs, "
+                         "slag heaps and cracked lava crust, hot orange embers in grey ash",
+        "unutulmus_nekropol": "a sand swallowed necropolis floor, broken obelisks "
+                              "and sunken paving, dunes drifting over stone steps, "
+                              "cold violet dusk",
+    },
+    "dusmanlar": {
+        "haydut": "a sea raider in a salt stained leather jerkin with a hooked "
+                  "axe and a small round shield",
+        "lejyoner": "a deserter legionary in rusted scale armour with a battered "
+                    "rectangular shield and a short sword",
+        "barbar": "a fur clad northern clansman with a two handed axe and "
+                  "bone charms braided into his beard",
+        "eskiya": "a mountain bandit smith in a scorched apron with a heavy "
+                  "hammer and a soot blackened face",
+        "kultist": "a tomb cult acolyte in grey funeral wrappings holding a "
+                   "cold violet brazier",
+        "haydut_sef": "a pirate captain in a heavy coat with a plumed hat, two "
+                      "cutlasses and a captured officer sash",
+        "lejyoner_sef": "a renegade legion centurion in a crested helmet with a "
+                        "torn standard strapped to his back",
+        "barbar_sef": "a clan chieftain in a horned helm and a bearskin mantle "
+                      "with a great war axe",
+        "eskiya_sef": "a master bandit smith in blackened plate holding a "
+                      "glowing forged blade",
+        "kultist_sef": "a high priest of the tomb cult in a horned gilt mask "
+                       "and trailing robes, holding a sceptre",
+    },
     "lord": {
         "lord_1": "a lean young Anatolian lord with dark hair and a short beard, "
                   "no armor at all, patched wool tunic and a worn leather belt, "
@@ -657,13 +756,13 @@ def sayfa_istemi(sayfa: str) -> str:
     """Dörtlü bina sayfasının istemi: dört konu + ızgara + stil sözleşmesi."""
     klasor, adlar = SAYFALAR[sayfa]
     konular = ISTEKLER[klasor]
-    dortlu = "; ".join(
-        f"{yer}: {konular[ad]}"
-        for yer, ad in zip(
-            ("top left", "top right", "bottom left", "bottom right"), adlar
-        )
+    yerler = (
+        ("top left", "top right", "bottom left", "bottom right")
+        if len(adlar) == 4
+        else ("first from the left", "second", "third", "fourth", "fifth")
     )
-    return f"{dortlu}. {SAYFA_KOMPOZISYONU}, {STIL_SOZLESMESI}"
+    dortlu = "; ".join(f"{yer}: {konular[ad]}" for yer, ad in zip(yerler, adlar))
+    return f"{dortlu}. {sayfa_kompozisyonu(len(adlar))}, {STIL_SOZLESMESI}"
 
 
 def sayfayi_ayikla(sayfa_yolu: Path, sayfa: str) -> int:

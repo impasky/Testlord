@@ -33,7 +33,8 @@
         "Kara Yelken Bölüğü",
         "Mercan Kapanı",
         "Reis Boğaz Kesen"
-      ]
+      ],
+      "dusman_key": "haydut"
     },
     {
       "key": "solgun_bataklik",
@@ -65,7 +66,8 @@
         "Firari Yüzbaşılar",
         "Bataklık Kalesi",
         "Lejyon Artığı Vardar"
-      ]
+      ],
+      "dusman_key": "lejyoner"
     },
     {
       "key": "kuzey_buzulu",
@@ -97,7 +99,8 @@
         "Ambar Muhafızları",
         "Klan Meclisi",
         "Kağan Buzdişi"
-      ]
+      ],
+      "dusman_key": "barbar"
     },
     {
       "key": "kuller_vadisi",
@@ -130,7 +133,8 @@
         "Cüruf Mancınıkları",
         "Ocakbaşı Muhafızları",
         "Usta Demirci Kavurgan"
-      ]
+      ],
+      "dusman_key": "eskiya"
     },
     {
       "key": "unutulmus_nekropol",
@@ -163,10 +167,55 @@
         "Yeraltı Süvarileri",
         "Kral Salonu Bekçileri",
         "Baş Rahip Kül Ağız"
-      ]
+      ],
+      "dusman_key": "kultist"
     }
   ],
   "_karisim_notu": "Karisim ORANLARDIR ve toplami 1'e yakin tutuluyor; garnizon buyuklugu balance.json'dan gelip bu oranlara bolunuyor. Boylece dengeyi degistirmek icin tek bir sayiyi (garnizon_taban ya da guc_carpani) oynatmak yetiyor, elli satiri elle guncellemek gerekmiyor.",
   "_kars_notu": "Her haritanin karisimi FARKLI, cunku tas-kagit-makas (docs/09 K1) ancak dusman degisince bir karar olur. Kirik Sahil okcu agirlikli -- mizrakci gonderen zorlanir; Kuzey Buzulu suvari agirlikli -- mizrakci iyi gider. Tek bir 'en iyi ordu' olmasin diye.",
-  "_odul_carpani_notu": "Odulun harita basina buyume carpani. guc_carpani'dan AYRI olmak zorunda: sure de guc_carpani ile uzuyor ve ikisi birbirini tam goturuyor -- ayni sayiyi kullansaydik bes haritanin saatlik verimi esit cikardi ve son haritaya gitmenin tek sebebi ekipman kademesi olurdu.\n\nSayilar ELLE SECILMEDI, COZULDU. Olcut: her haritanin saatlik TOPLAM DEGERI (altinKarsiligi ile) bir oncekinin ~1.35 kati olsun. Duz bir dizi (1, 1.8, 2.7, 4, 5.6) denendi ve Kuzey Buzulu, Solgun Bataklik'tan daha AZ verdi: erzak agirlikli bir harita, demir agirlikli bir haritadan dusuk deger uretiyor cunku erzagin altin karsiligi daha kucuk. Carpan bu yuzden odul_agirligi ve guc_carpani birlikte hesaba katilarak cozuldu; agirliklari degistiren biri bu sayilari da yeniden cozmeli (tools/denge-akin.mjs)."
+  "_odul_carpani_notu": "Odulun harita basina buyume carpani. guc_carpani'dan AYRI olmak zorunda: sure de guc_carpani ile uzuyor ve ikisi birbirini tam goturuyor -- ayni sayiyi kullansaydik bes haritanin saatlik verimi esit cikardi ve son haritaya gitmenin tek sebebi ekipman kademesi olurdu.\n\nSayilar ELLE SECILMEDI, COZULDU. Olcut: her haritanin saatlik TOPLAM DEGERI (altinKarsiligi ile) bir oncekinin ~1.35 kati olsun. Duz bir dizi (1, 1.8, 2.7, 4, 5.6) denendi ve Kuzey Buzulu, Solgun Bataklik'tan daha AZ verdi: erzak agirlikli bir harita, demir agirlikli bir haritadan dusuk deger uretiyor cunku erzagin altin karsiligi daha kucuk. Carpan bu yuzden odul_agirligi ve guc_carpani birlikte hesaba katilarak cozuldu; agirliklari degistiren biri bu sayilari da yeniden cozmeli (tools/denge-akin.mjs).",
+  "yol": [
+    {
+      "x": 14,
+      "y": 88
+    },
+    {
+      "x": 33,
+      "y": 81
+    },
+    {
+      "x": 21,
+      "y": 68
+    },
+    {
+      "x": 40,
+      "y": 60
+    },
+    {
+      "x": 27,
+      "y": 47
+    },
+    {
+      "x": 46,
+      "y": 40
+    },
+    {
+      "x": 65,
+      "y": 46
+    },
+    {
+      "x": 56,
+      "y": 29
+    },
+    {
+      "x": 75,
+      "y": 23
+    },
+    {
+      "x": 88,
+      "y": 10
+    }
+  ],
+  "_yol_notu": "On kampin diyar haritasindaki yeri. TEK bir yol var ve BES DIYARDA DA ayni; diyari ayiran sey zemin, yolun sekli degil. Iki sebep:\n1) Oyuncu bir kez ogreniyor -- '1 sol altta, sef sag ustte' -- ve bu bes diyarda da gecerli. Her diyara ayri bir yol, her girisinde yeniden aranacak bir duzen demekti.\n2) Zemin istemi bu yolu TARIF EDIYOR ('sol alttan sag uste dolanan bir patika'). Yol diyara gore degisseydi zeminle koordine edilemezdi, cunku zemin uretilirken hangi yolun gelecegi bilinmiyor.\nSira ONEMLI: 1'den 10'a ilerliyor ve 10. grup sef. Kilitli kamplar solgun cizildigi icin oyuncu nereye kadar geldigini bir bakista goruyor.\nAraliklar olculdu: kare haritada en yakin iki kamp 54 piksel, isaretci genisligi %14 (50 piksel) -- cakismiyorlar.",
+  "_dusman_notu": "dusman_key: diyarin haritasindaki figurun dosya adi (apps/web/public/gorseller/dusmanlar/). 1-9. kamplarda '<key>', 10. kampta '<key>_sef' kullaniliyor. Elli grubun her birine ayri cizim butceye sigmazdi ve gerekmiyor da: oyuncunun sordugu sey 'burada tam olarak kim var' degil, 'hangi diyardayim ve sonuncu muyum'."
 }

@@ -467,6 +467,53 @@ if (yeniToken) {
   } else {
     iyi('akin-kapak', `${akinlar.haritalar.length} diyarın da kapağı yerinde`);
   }
+
+  /*
+   * Diyar haritası ve on kampın figürü.
+   *
+   * Kapakla aynı gerekçe: elle tutulan bir liste yok, diyarlar zaten
+   * veride sayılı. Ölçüt "her diyarın haritası ve her düşmanın iki hâli
+   * (asker + şef) yerinde mi". Eksik dosya, haritanın ortasında kırık
+   * bir görsel demek — üstelik oyuncu oraya DOKUNARAK akına çıkıyor.
+   */
+  const eksikHarita = akinlar.haritalar
+    .map((h) => h.key)
+    .filter((k) => !existsSync(`apps/web/public/gorseller/akin_harita/${k}.webp`));
+  const eksikDusman = akinlar.haritalar
+    .flatMap((h) => [h.dusman_key, `${h.dusman_key}_sef`])
+    .filter((k) => !existsSync(`apps/web/public/gorseller/dusmanlar/${k}.webp`));
+  if (eksikHarita.length || eksikDusman.length) {
+    sorun(
+      'akin-diyar',
+      'Diyar haritası ya da düşman figürü eksik',
+      [
+        eksikHarita.length ? `harita: ${eksikHarita.join(', ')}` : '',
+        eksikDusman.length ? `düşman: ${eksikDusman.join(', ')}` : '',
+      ]
+        .filter(Boolean)
+        .join(' | '),
+    );
+  } else {
+    iyi(
+      'akin-diyar',
+      `${akinlar.haritalar.length} diyar haritası ve ${akinlar.haritalar.length * 2} düşman figürü yerinde`,
+    );
+  }
+
+  /*
+   * Yol ile grup sayısı TUTMALI. On kamp on noktaya konuyor; yol kısa
+   * kalırsa son kamplar (şef dahil) haritanın ortasına yığılır.
+   */
+  const grupSayisi = akinlar.haritalar[0]?.gruplar.length ?? 0;
+  if (akinlar.yol?.length !== grupSayisi) {
+    sorun(
+      'akin-yol',
+      'Yol noktası sayısı grup sayısıyla uyuşmuyor',
+      `${akinlar.yol?.length ?? 0} nokta / ${grupSayisi} grup`,
+    );
+  } else {
+    iyi('akin-yol', `${grupSayisi} kamp, ${grupSayisi} yol noktası`);
+  }
 }
 
 console.log(`\n${bulgu === 0 ? 'GÖRSEL DENETİM TEMİZ' : `${bulgu} GÖRSEL SORUN`}`);

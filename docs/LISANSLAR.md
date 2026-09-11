@@ -118,6 +118,8 @@ temizleniyor; hangi dosyada yapıldığı aşağıdaki tabloda yazıyor.
 | `harita/dunya.webp`           | eklendi (kare, çerçevesiz — ikinci deneme)        |
 | `akin/*.webp` (5 dosya)       | eklendi (filigran çıkmadı)                        |
 | `zeminler/akin.webp`          | eklendi (filigran çıkmadı)                        |
+| `akin_harita/*.webp` (5 dosya) | eklendi (plakadan, kampsız) |
+| `dusmanlar/*.webp` (10 dosya) | eklendi (iki beşerli sayfa, plakadan) |
 | ~~`harita/*.webp` (6 dosya)~~ | **silindi** — altıgen karolar emekli (docs/12 §5) |
 
 Lord figürleri zincirleme düzenlemeyle üretildi: `lord_1` metinden,

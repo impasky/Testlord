@@ -22,7 +22,7 @@
  * SAF: burada veritabanı yok. Hangi grubun açık olduğu, çağıranın
  * verdiği "son vuruş" listesinden TÜRETİLİYOR.
  */
-import { AKIN_HARITALARI, B, unit } from './balance.js';
+import { AKIN_HARITALARI, AKIN_YOL, B, unit } from './balance.js';
 import type { Army, Resources, UnitType } from './types.js';
 import { UNIT_TYPES } from './types.js';
 
@@ -30,16 +30,29 @@ export interface AkinHarita {
   key: string;
   ad: string;
   dusman: string;
+  /** Haritadaki figürün dosya adı: 1-9 `<key>`, 10 `<key>_sef`. */
+  dusmanKey: string;
   ozet: string;
   acilisSeviyesi: number;
   azamiTier: number;
 }
+
+/**
+ * On kampın diyar haritasındaki yeri — beş diyarda da AYNI.
+ *
+ * Diyarı ayıran şey zemin, yolun şekli değil. Oyuncu bir kez öğreniyor
+ * ("1 sol altta, şef sağ üstte") ve bu beş diyarda da geçerli oluyor;
+ * ayrıca zemin istemi tam bu yolu tarif ediyor, yani yol diyara göre
+ * değişseydi zeminle koordine edilemezdi (`data/akinlar.json` → `_yol_notu`).
+ */
+export const AKIN_YOLU: { x: number; y: number }[] = AKIN_YOL;
 
 export const AKINLAR: AkinHarita[] = AKIN_HARITALARI.map((h) => ({
   key: h.key,
   ad: h.ad,
   dusman: h.dusman,
   ozet: h.ozet,
+  dusmanKey: h.dusman_key,
   acilisSeviyesi: h.acilis_seviyesi,
   azamiTier: h.azami_tier,
 }));
@@ -257,6 +270,7 @@ export function akinDurumlari(
       key: h.key,
       ad: h.ad,
       dusman: h.dusman,
+      dusmanKey: h.dusman_key,
       ozet: h.ozet,
       acilisSeviyesi: h.acilis_seviyesi,
       azamiTier: h.azami_tier,

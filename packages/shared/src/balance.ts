@@ -109,6 +109,7 @@ export const AKIN_HARITALARI = akinlarJson.haritalar as unknown as {
   key: string;
   ad: string;
   dusman: string;
+  dusman_key: string;
   ozet: string;
   acilis_seviyesi: number;
   guc_carpani: number;
@@ -118,6 +119,9 @@ export const AKIN_HARITALARI = akinlarJson.haritalar as unknown as {
   odul_agirligi: Record<string, number>;
   gruplar: string[];
 }[];
+
+/** On kampın diyar haritasındaki yeri — beş diyarda da aynı yol. */
+export const AKIN_YOL = akinlarJson.yol as unknown as { x: number; y: number }[];
 
 export const BINALAR = binalarJson.binalar as unknown as {
   key: string;
