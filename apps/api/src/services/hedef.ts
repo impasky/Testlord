@@ -148,6 +148,28 @@ export interface HedefOnerisi {
 }
 
 /**
+ * Kazanılabilen bir hedefin sıralama puanı.
+ *
+ * Tek yerde duruyor çünkü iki kez okunuyor: bir kez savaşa girmeden ÜST
+ * SINIR olarak (`kalan` yerine evdeki toplam birikle), bir kez de tarama
+ * sonrası gerçek `kalan` ile. İki kopya olsaydı tavan gerçeğin altına
+ * düşebilir ve dal budama yanlış adayı elerdi.
+ *
+ * 1e9 tabanı kazananı kaybedenin önüne koyuyor, 1e6 ise ilk saldırı
+ * kısayolunu; geri kalan "saat başına kaç altın eder" ve eşitlik bozan
+ * kalan birik.
+ */
+function kazananPuani(
+  gelir: ReturnType<typeof regionIncome>,
+  marchSec: number,
+  ilkSaldiri: boolean,
+  kalan: number,
+): number {
+  const saat = Math.max(marchSec, 60) / 3600;
+  return 1e9 + (ilkSaldiri ? 1e6 : 0) + altinKarsiligi(gelir) / saat + kalan;
+}
+
+/**
  * Lorda saldırması gereken bölgeyi önerir.
  *
  * Yalnızca SAHİPSİZ bölgeler önerilir. Bir oyuncunun bölgesini önermek,
@@ -199,35 +221,59 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
     lord.regions.map((r) => r.mapId),
   );
 
-  const sirali: { puan: number; hedef: HedefOnerisi }[] = [];
+  /*
+   * ADAY TARAMASI — neden iki geçiş.
+   *
+   * Bir adayın puanı iki parçadan geliyor: SİMÜLASYONSUZ olanlar (mesafe,
+   * yürüyüş süresi, gelir, savunma gücü) ve savaşın kendisi (alınır mı,
+   * kazanırsan geriye ne kalır). İkincisi pahalı: bölge başına dokuz savaş.
+   * Diyar 61 bölgeyken kimsenin dikkatini çekmedi, 121'e çıkınca ölçüldü —
+   * istek başına ~19 ms ve bu süre boyunca sunucu başka kimseye bakamıyor.
+   * Otuz eşzamanlı oyuncuda sona kalan yarım saniyeden fazla sırada
+   * bekliyordu; yük testinde p95 eşiğini geçen şey buydu.
+   *
+   * Çözüm sıralamayı değil, GEREKSİZ SAVAŞI atmak. Kazanan adayın puanı
+   *
+   *     1e9 + (ilk saldırı ? 1e6 : 0) + saatlik değer + kalan birim
+   *
+   * ve buradaki tek bilinmeyen `kalan`; onun da tavanı belli: evdeki
+   * toplam birikten fazlası geri dönemez. Yani her aday için savaşa hiç
+   * girmeden bir ÜST SINIR yazılabiliyor. Adaylar bu üst sınıra göre
+   * sıralanıp sırayla taranıyor ve sıradaki adayın üst sınırı eldeki en
+   * iyi GERÇEK puanı geçemez olunca durulabiliyor: geri kalanların cevabı
+   * sıralamayı değiştiremez.
+   *
+   * Kaybeden adayın puanı zaten simülasyonsuz (-mesafe, -savunma gücü),
+   * yani ordusu yetmeyen oyuncuda da fazladan iş yok: orada erken çıkış
+   * `taramaSonucu`nun içinde çalışıyor.
+   *
+   * Sonuç aynı, sıralama aynı; yalnız cevabı değiştiremeyecek savaşlar
+   * çalışmıyor.
+   */
+  interface Aday {
+    r: (typeof adaylar)[number];
+    garrison: Army;
+    distance: number;
+    ilkSaldiri: boolean;
+    marchSec: number;
+    gelir: ReturnType<typeof regionIncome>;
+    savunmaGucu: number;
+    /** Savaşa girmeden yazılabilen tavan; azalan sırada taranıyor. */
+    puanUst: number;
+    /** Tarandıysa gerçek puan, taranmadıysa -Infinity. */
+    puan: number;
+    kazanir: boolean;
+    darZafer: boolean;
+    kalan: number;
+  }
 
-  for (const r of adaylar) {
+  // Kazanan bir savaştan evdeki ordudan fazlası dönemez: `kalan`ın tavanı.
+  const enCokKalan = armyCount(evOrdusu);
+
+  const liste: Aday[] = adaylar.map((r) => {
     const garrison: Army = {};
     const ham = (r.npcGarrison ?? {}) as Record<string, number>;
     for (const t of UNIT_TYPES) if ((ham[t] ?? 0) > 0) garrison[t] = ham[t]!;
-
-    // Ordu boşsa savaş simülasyonu anlamsız — sonuç baştan bellidir.
-    //
-    // Tarama da ÖRNEKLEME kullanıyor ve önizlemeyle aynı tohum tabanından
-    // gidiyor. Tek kurayla taramak, şanslı bir tohum düşen alınamaz bir
-    // şehri gerçekten alınabilir bir tarlanın önüne geçiriyordu: sıralamayı
-    // güvenilmeyen sayı, cevabı güvenilen sayı veriyordu ve ikisi
-    // birbirini tutmuyordu. 61 bölge × 9 savaş ≈ 9 ms; bu tutarlılığın
-    // bedeli olarak kabul edilebilir.
-    let kazanir = false;
-    let darZafer = false;
-    let kalan = 0;
-    if (orduVar) {
-      const ornek = savasOrneklemesi(
-        saldiran,
-        npcDefender(garrison, r.type, r.level),
-        onizlemeTohumu(lordId, r.id),
-        { defenderStore: { altin: 0, demir: 0, erzak: 0 }, attackerCunning: 0, canCapture: true },
-      );
-      kazanir = ornek.fetihOrani >= B.oneri.guvenli_fetih_orani;
-      darZafer = !kazanir && ornek.kazanmaOrani >= B.oneri.muhtemel_kazanma_orani;
-      kalan = armyCount(ornek.ortanca.attackerSurvivors);
-    }
 
     // Mesafe en yakın toprağından (docs/11 §1.2 H1): öneri motoru da
     // haritayla aynı sayıyı görmeli, yoksa "2 adım" diyen öneri saldırı
@@ -246,79 +292,111 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
       { ilkSaldiri },
       onerAr,
     );
-
     const gelir = regionIncome(r.type, r.level, r.incomeMult);
-
-    // İki ayrı sıralama, çünkü iki ayrı soru soruluyor:
-    //
-    //  - Kazanılabilen hedefler arasında soru "hangisi en kârlı": saat
-    //    başına düşen değer kazanır, yakın ve verimli hedef uzak ve zengin
-    //    hedefi yener.
-    //  - Kazanılamıyorsa soru "hangisi ulaşabileceğim ilk basamak":
-    //    önce YAKINLIK, sonra en ZAYIF savunma. Değere göre sıralamak
-    //    ordusu olmayan oyuncuya 160 birimlik şehri gösteriyordu; zayıf
-    //    garnizonu öne almak ise 6 adım uzaktaki bir bölgeyi — yani tam
-    //    da düzeltmeye çalıştığımız "ordumu yolladım, bir saat sonra
-    //    dönerim" deneyimini. Yeni oyuncunun ilk hedefi yürüme mesafesinde
-    //    olmalı.
-    //
-    //    Zorluk ölçüsü birim SAYISI değil savunma GÜCÜ: aynı 37 birimlik
-    //    garnizon bir kalede tahkimat bonusuyla çok daha zor. Sayıya bakmak,
-    //    oyuncuya hiçbir ordunun alamayacağı bir kaleyi hedef gösteriyordu.
-    //
-    //  - Oyuncunun İLK saldırısında yakınlık her şeyin önüne geçer. Değer
-    //    sıralaması, ordusunu yeni kurmuş bir oyuncuyu 4 adım öteye, 57
-    //    dakikalık bir yürüyüşe yollayabiliyordu — yani "saldırıya
-    //    gönderdim, eee ne oldu şimdi" duygusunun ta kendisine. İlk
-    //    saldırı kısayolunun geçerli olduğu hedef öne alınıyor.
-    const saat = Math.max(marchSec, 60) / 3600;
+    // Zorluk ölçüsü birim SAYISI değil savunma GÜCÜ: aynı 37 birimlik
+    // garnizon bir kalede tahkimat bonusuyla çok daha zor. Sayıya bakmak,
+    // oyuncuya hiçbir ordunun alamayacağı bir kaleyi hedef gösteriyordu.
     const savunmaGucu = armyPower(garrison) * (1 + regionFortressBonus(r.type, r.level));
-    const puan = kazanir
-      ? 1e9 + (ilkSaldiri ? 1e6 : 0) + altinKarsiligi(gelir) / saat + kalan
-      : -distance * 1000 - savunmaGucu / 1000;
 
-    sirali.push({
-      puan,
-      hedef: {
-        regionId: r.id,
-        name: r.name,
-        type: r.type,
-        level: r.level,
-        distance,
-        marchSec,
-        ilkSaldiri,
-        orduVar,
-        kazanir,
-        darZafer,
-        eksik: null,
-        kalanBirim: kalan,
-        garrison,
-        saatlikGelir: {
-          altin: Math.round(gelir.altin),
-          demir: Math.round(gelir.demir),
-          erzak: Math.round(gelir.erzak),
-          sohret: Math.round(gelir.sohret),
-        },
-        sohretFarki: fetihKazanci({
-          lordLevel: lord.level,
-          regions: lord.regions.map((x) => ({ type: x.type, level: x.level })),
-          hedef: { type: r.type, level: r.level, incomeMult: r.incomeMult },
-          totalEquipmentPower: 0,
-          army: {},
-          pvpWins: lord.pvpWins,
-          fortressFameAccrued: lord.fortressFameAccrued,
-          ownsThrone: lord.regions.some((x) => x.type === 'taht'),
-        }).sohretFarki,
-        limitDolu,
-      },
-    });
+    return {
+      r,
+      garrison,
+      distance,
+      ilkSaldiri,
+      marchSec,
+      gelir,
+      savunmaGucu,
+      puanUst: kazananPuani(gelir, marchSec, ilkSaldiri, enCokKalan),
+      puan: Number.NEGATIVE_INFINITY,
+      kazanir: false,
+      darZafer: false,
+      kalan: 0,
+    };
+  });
+
+  liste.sort((a, b) => b.puanUst - a.puanUst);
+
+  let enIyiPuan = Number.NEGATIVE_INFINITY;
+  for (const a of liste) {
+    // Sıradakinin tavanı eldekini geçemiyorsa geri kalanı taramak boşuna.
+    if (a.puanUst <= enIyiPuan) break;
+
+    if (orduVar) {
+      const s = taramaSonucu(
+        saldiran,
+        npcDefender(a.garrison, a.r.type, a.r.level),
+        onizlemeTohumu(lordId, a.r.id),
+        { defenderStore: { altin: 0, demir: 0, erzak: 0 }, attackerCunning: 0, canCapture: true },
+      );
+      a.kazanir = s.kazanir;
+      a.darZafer = s.darZafer;
+      a.kalan = s.kalan;
+    }
+
+    /*
+     * İki ayrı sıralama, çünkü iki ayrı soru soruluyor:
+     *
+     *  - Kazanılabilen hedefler arasında soru "hangisi en kârlı": saat
+     *    başına düşen değer kazanır, yakın ve verimli hedef uzak ve zengin
+     *    hedefi yener.
+     *  - Kazanılamıyorsa soru "hangisi ulaşabileceğim ilk basamak":
+     *    önce YAKINLIK, sonra en ZAYIF savunma. Değere göre sıralamak
+     *    ordusu olmayan oyuncuya 160 birimlik şehri gösteriyordu; zayıf
+     *    garnizonu öne almak ise 6 adım uzaktaki bir bölgeyi — yani tam
+     *    da düzeltmeye çalıştığımız "ordumu yolladım, bir saat sonra
+     *    dönerim" deneyimini. Yeni oyuncunun ilk hedefi yürüme mesafesinde
+     *    olmalı.
+     *  - Oyuncunun İLK saldırısında yakınlık her şeyin önüne geçer. Değer
+     *    sıralaması, ordusunu yeni kurmuş bir oyuncuyu 4 adım öteye, 57
+     *    dakikalık bir yürüyüşe yollayabiliyordu — yani "saldırıya
+     *    gönderdim, eee ne oldu şimdi" duygusunun ta kendisine. İlk
+     *    saldırı kısayolunun geçerli olduğu hedef öne alınıyor.
+     */
+    a.puan = a.kazanir
+      ? kazananPuani(a.gelir, a.marchSec, a.ilkSaldiri, a.kalan)
+      : -a.distance * 1000 - a.savunmaGucu / 1000;
+    if (a.puan > enIyiPuan) enIyiPuan = a.puan;
   }
 
-  sirali.sort((a, b) => b.puan - a.puan);
-  let enIyi = sirali[0]?.hedef ?? null;
+  liste.sort((a, b) => b.puan - a.puan);
 
-  // Aday taraması tek simülasyonla yapılır (60 bölge × 9 örnek gereksiz);
-  // ama SEÇİLEN hedefin "alınır mı" cevabı örneklemeyle veriliyor ve
+  /** Aday satırından arayüzün beklediği öneri nesnesi. */
+  const hedefKur = (a: Aday): HedefOnerisi => ({
+    regionId: a.r.id,
+    name: a.r.name,
+    type: a.r.type,
+    level: a.r.level,
+    distance: a.distance,
+    marchSec: a.marchSec,
+    ilkSaldiri: a.ilkSaldiri,
+    orduVar,
+    kazanir: a.kazanir,
+    darZafer: a.darZafer,
+    eksik: null,
+    kalanBirim: a.kalan,
+    garrison: a.garrison,
+    saatlikGelir: {
+      altin: Math.round(a.gelir.altin),
+      demir: Math.round(a.gelir.demir),
+      erzak: Math.round(a.gelir.erzak),
+      sohret: Math.round(a.gelir.sohret),
+    },
+    sohretFarki: fetihKazanci({
+      lordLevel: lord.level,
+      regions: lord.regions.map((x) => ({ type: x.type, level: x.level })),
+      hedef: { type: a.r.type, level: a.r.level, incomeMult: a.r.incomeMult },
+      totalEquipmentPower: 0,
+      army: {},
+      pvpWins: lord.pvpWins,
+      fortressFameAccrued: lord.fortressFameAccrued,
+      ownsThrone: lord.regions.some((x) => x.type === 'taht'),
+    }).sohretFarki,
+    limitDolu,
+  });
+
+  let enIyi = liste[0] ? hedefKur(liste[0]) : null;
+
+  // Seçilen hedefin "alınır mı" cevabı ÖRNEKLEMEYLE veriliyor ve
   // önizlemeyle AYNI tohum tabanını kullanıyor — böylece öneri şeridi ile
   // saldırı önizlemesi aynı ekranda birbirine ters düşemiyor.
   // --- Ulaşılabilirlik denetimi ---
@@ -384,7 +462,8 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
     let ilkUlasilabilir: HedefOnerisi | null = null;
     let ilkKarsilanabilir: HedefOnerisi | null = null;
 
-    for (const { hedef } of sirali.slice(0, B.oneri.ulasilabilirlik_denetimi)) {
+    for (const aday of liste.slice(0, B.oneri.ulasilabilirlik_denetimi)) {
+      const hedef = hedefKur(aday);
       const eksik = eksikOrdu(
         (ordu) => ({ ...saldiran, units: ordu }),
         evOrdusu,
@@ -490,6 +569,79 @@ export function savasOrneklemesi(
     kazanmaOrani: kazanan / ORNEK,
     fetihOrani: fetih / ORNEK,
     ortanca: sirali[Math.floor(ORNEK / 2)]!,
+  };
+}
+
+/** Aday taramasının tek bir bölge için verdiği cevap. */
+export interface TaramaSonucu {
+  /** Örneğin HEPSİ fetihle bitti mi — öneri şeridinin "ordun yetiyor"u. */
+  kazanir: boolean;
+  /** Savaşı kazanır ama bölgeyi alamaz. */
+  darZafer: boolean;
+  /** Kazanırsa geriye kaç birim kalır. Kazanmıyorsa anlamsız, 0. */
+  kalan: number;
+}
+
+/**
+ * Aday taraması: `savasOrneklemesi` ile AYNI cevap, daha az savaş.
+ *
+ * NEDEN VAR: harita ucu her açılışta sahipsiz bölgelerin hepsini tarıyor.
+ * 61 bölgede bu dokuz yüz savaştı ve kimse fark etmedi; diyar 121 bölgeye
+ * çıkınca bin yetmiş oldu ve ölçüldü: istek başına ~17 ms, üstelik olay
+ * döngüsünü BLOKE ederek. Otuz eşzamanlı oyuncuda bu, sona kalanın yarım
+ * saniyeden fazla sırada beklemesi demek — yük testinde p95 1 sn eşiğini
+ * geçen şey buydu.
+ *
+ * Cevabı bozmadan nasıl kısalıyor: eşikler bir ORANA bakıyor, orana ise
+ * kalan örneklerin hepsi lehte ya da aleyhte düşse bile erişilemeyeceği bir
+ * an geliyor. O andan sonra çalıştırılan savaş cevabı değiştiremez.
+ *
+ *   guvenli_fetih_orani 1.0  -> tek bir örnek fethedemezse `kazanir` bitti,
+ *   muhtemel_kazanma_orani   -> dört yenilgide `darZafer` de imkânsız.
+ *
+ * Yani ordusu yetmeyen bir hedef dokuz yerine dört savaşta kapanıyor;
+ * gerçekten alınabilen hedef zaten dokuzunu da koşuyor (ortancaya, yani
+ * `kalan`a ihtiyaç var). Eşikler `data/balance.json`dan okunuyor, burada
+ * kopyası yok: oran değişirse kısa devre de kendiliğinden değişir.
+ *
+ * `kalan` yalnız `kazanir` iken anlamlı: "kazanırsan geriye ne kalır"
+ * sorusunun kaybedilen savaşta cevabı yok. Erken çıkışta 0 dönüyor.
+ */
+export function taramaSonucu(
+  saldiran: Side,
+  savunan: Side,
+  seedTaban: string,
+  baglam: Parameters<typeof simulateBattle>[3],
+): TaramaSonucu {
+  const sonuclar: ReturnType<typeof simulateBattle>[] = [];
+  let fetih = 0;
+  let kazanan = 0;
+
+  for (let i = 0; i < ORNEK; i++) {
+    const r = simulateBattle(saldiran, savunan, `${seedTaban}-${i}`, baglam);
+    sonuclar.push(r);
+    if (r.captured) fetih++;
+    if (r.winner === 'attacker') kazanan++;
+
+    const kalanOrnek = ORNEK - sonuclar.length;
+    // En iyi ihtimalle ulaşılabilecek oran; buna bile yetmiyorsa cevap "hayır".
+    const fetihMumkun = (fetih + kalanOrnek) / ORNEK >= B.oneri.guvenli_fetih_orani;
+    const zaferMumkun = (kazanan + kalanOrnek) / ORNEK >= B.oneri.muhtemel_kazanma_orani;
+    // En kötü ihtimalde bile aşılan oran; aşıldıysa cevap "evet".
+    const zaferKesin = kazanan / ORNEK >= B.oneri.muhtemel_kazanma_orani;
+    if (!fetihMumkun && (zaferKesin || !zaferMumkun)) {
+      return { kazanir: false, darZafer: zaferKesin, kalan: 0 };
+    }
+  }
+
+  const kazanir = fetih / ORNEK >= B.oneri.guvenli_fetih_orani;
+  const sirali = [...sonuclar].sort(
+    (a, b) => armyCount(a.attackerSurvivors) - armyCount(b.attackerSurvivors),
+  );
+  return {
+    kazanir,
+    darZafer: !kazanir && kazanan / ORNEK >= B.oneri.muhtemel_kazanma_orani,
+    kalan: armyCount(sirali[Math.floor(ORNEK / 2)]!.attackerSurvivors),
   };
 }
 
