@@ -67,10 +67,33 @@ const sifirlamaYapSchema = z.object({
  * geometrik bir tesadüftü, "köy" ise tasarımın kendisi.
  */
 async function pickHomeAnchor(worldId: string): Promise<number> {
+  /*
+   * Adaylar DÜNYANIN KENDİ bölgelerinden okunuyor, kanonik dosyadan değil.
+   *
+   * Bir dünya kendi harita sürümünü taşıyor (docs/12 §14): kanonik dosyada
+   * köy olan numara, eski haritalı bir dünyada bambaşka bir yer olabilir.
+   * Kanonik dosyaya bakmak, oyuncuyu var olmayan bir köyün yanına
+   * kurdururdu. Bugün böyle bir dünyaya kayıt açılmıyor (eski haritalı
+   * dünyalar kapatılıyor) ama kuralı veriye bağlamak, o korumayı
+   * unutulabilir olmaktan çıkarıyor.
+   */
+  const koyler = await prisma.region.findMany({
+    where: { worldId, type: 'koy' },
+    select: { mapId: true },
+    orderBy: { mapId: 'asc' },
+  });
   // Köy yoksa (henüz tazelenmemiş eski bir dünya) haritanın tamamına
   // düşüyoruz: kayıt hiçbir koşulda çökmemeli.
-  const koyler = WORLD_MAP.regions.filter((r) => r.type === 'koy');
-  const adaylar = koyler.length > 0 ? koyler : WORLD_MAP.regions;
+  const adaylar =
+    koyler.length > 0
+      ? koyler
+      : await prisma.region.findMany({
+          where: { worldId },
+          select: { mapId: true },
+          orderBy: { mapId: 'asc' },
+        });
+  if (adaylar.length === 0) return WORLD_MAP.regions[0]!.id;
+
   const mevcut = await prisma.lord.groupBy({
     by: ['homeBolgeId'],
     where: { worldId },
@@ -80,13 +103,13 @@ async function pickHomeAnchor(worldId: string): Promise<number> {
   let enIyi = adaylar[0]!;
   let enAz = Infinity;
   for (const koy of adaylar) {
-    const n = yuk.get(koy.id) ?? 0;
+    const n = yuk.get(koy.mapId) ?? 0;
     if (n < enAz) {
       enAz = n;
       enIyi = koy;
     }
   }
-  return enIyi.id;
+  return enIyi.mapId;
 }
 
 export async function authRoutes(app: FastifyInstance): Promise<void> {

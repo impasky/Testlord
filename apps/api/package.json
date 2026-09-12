@@ -10,6 +10,7 @@
     "start": "node dist/index.js",
     "build": "tsup",
     "seed": "tsx src/seed.ts",
+    "dunya-temizle": "tsx src/dunya-temizle.ts",
     "typecheck": "tsc --noEmit",
     "prisma": "prisma"
   },

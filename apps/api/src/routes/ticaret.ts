@@ -10,7 +10,6 @@
 import {
   ayniIttifaktaMi,
   gunlukTavan,
-  bolgeMesafesi,
   sevkiyatDenetle,
   sevkiyatSuresiSn,
   yukAgirligi,
@@ -21,6 +20,7 @@ import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { binalariOku, findLordByUser, tickLord } from '../services/lord.js';
+import { lordlarArasiMesafe } from '../services/mesafe.js';
 import { bugunGonderilen, sevkiyatOzeti } from '../services/ticaret.js';
 import { lordunAyricaligi } from '../services/ittifakSeviye.js';
 
@@ -93,7 +93,7 @@ export async function ticaretRoutes(app: FastifyInstance): Promise<void> {
         },
       });
 
-      const mesafe = bolgeMesafesi(ben.homeBolgeId, o.homeBolgeId);
+      const mesafe = await lordlarArasiMesafe(ben.worldId, ben.homeBolgeId, o.homeBolgeId, tx);
       const sn = sevkiyatSuresiSn(mesafe);
       const simdi = new Date();
       const sevk = await tx.shipment.create({

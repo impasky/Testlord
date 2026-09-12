@@ -76,16 +76,18 @@ export const BOLGE_IDLERI: readonly number[] = WORLD_MAP.regions.map((r) => r.id
  * hazır tablo tutmak, sunucunun sıcak yolundaki (hedef önerisi, saldırı
  * önizlemesi) yüzlerce mesafe sorgusunu tek bir tablo okumasına indiriyor.
  */
-const MESAFE: ReadonlyMap<number, ReadonlyMap<number, number>> = (() => {
+function mesafeTablosu(
+  komsuluk: ReadonlyMap<number, readonly number[]>,
+): Map<number, Map<number, number>> {
   const tablo = new Map<number, Map<number, number>>();
-  for (const bas of BOLGE_IDLERI) {
+  for (const bas of komsuluk.keys()) {
     const uzaklik = new Map<number, number>([[bas, 0]]);
     // Dizi + okuma imleci: shift() büyük kuyrukta O(n), burada gereksiz.
     const kuyruk: number[] = [bas];
     for (let i = 0; i < kuyruk.length; i++) {
       const su = kuyruk[i]!;
       const d = uzaklik.get(su)!;
-      for (const komsu of KOMSULUK.get(su) ?? []) {
+      for (const komsu of komsuluk.get(su) ?? []) {
         if (uzaklik.has(komsu)) continue;
         uzaklik.set(komsu, d + 1);
         kuyruk.push(komsu);
@@ -94,7 +96,9 @@ const MESAFE: ReadonlyMap<number, ReadonlyMap<number, number>> = (() => {
     tablo.set(bas, uzaklik);
   }
   return tablo;
-})();
+}
+
+const MESAFE: ReadonlyMap<number, ReadonlyMap<number, number>> = mesafeTablosu(KOMSULUK);
 
 /** Haritanın çapı: birbirine en uzak iki bölge arasındaki adım sayısı. */
 export const EN_UZAK_MESAFE: number = (() => {
@@ -144,3 +148,116 @@ export function yakinlikMesafesi(
   }
   return enAz;
 }
+
+/*
+ * ─── DÜNYANIN KENDİ GRAFİĞİ ──────────────────────────────────────────
+ *
+ * Yukarıdaki KOMSULUK/MESAFE kanonik dosyadan geliyor ve tek bir haritaya
+ * bağlı. Bu, açık bir riskti (docs/12 §14): `world-map.json` değişince
+ * CANLI dünyalar da değişiyordu. Daha sinsisi, motorla veri ayrışıyordu —
+ * bölgenin komşuları veritabanı satırında yazılı, ama mesafe kanonik
+ * dosyadan okunuyordu. İkisi ayrılırsa oyun yalan söyler: haritada
+ * çizilmeyen bir yoldan yürüyüş "1 adım" sürer.
+ *
+ * `haritaGrafi` o bağı kesiyor: bir dünyanın grafiği KENDİ bölge
+ * satırlarından kuruluyor. Kanonik dosya yalnız YENİ dünya açarken
+ * okunuyor; açılmış dünya kendi haritasını taşıyor.
+ */
+
+/** Bir dünyanın komşuluk grafiği üzerinde mesafe ve bitişiklik. */
+export interface HaritaGrafi {
+  /** İki bölge arası en kısa yol; ulaşılamıyorsa grafiğin çapı. */
+  mesafe(a: number, b: number): number;
+  komsuMu(a: number, b: number): boolean;
+  /** Grafiğin çapı — "çok uzak"ın sonlu karşılığı. */
+  readonly enUzak: number;
+  readonly bolgeSayisi: number;
+}
+
+/**
+ * Komşuluk listesinden gezilebilir bir grafik kurar.
+ *
+ * Mesafe tablosu BİR KEZ hesaplanıyor (bölge başına bir genişlik-öncelikli
+ * arama) ve sonra her sorgu tek tablo okuması. Sunucunun sıcak yolu —
+ * hedef önerisi 121 bölgenin hepsine mesafe soruyor — bu yüzden çağrı
+ * başına yeniden aramaya dayanamaz.
+ */
+export function haritaGrafi(komsuluk: ReadonlyMap<number, readonly number[]>): HaritaGrafi {
+  const tablo = mesafeTablosu(komsuluk);
+  let enUzak = 0;
+  for (const satir of tablo.values()) for (const d of satir.values()) enUzak = Math.max(enUzak, d);
+  return {
+    mesafe: (a, b) => (a === b ? 0 : (tablo.get(a)?.get(b) ?? enUzak)),
+    komsuMu: (a, b) => (komsuluk.get(a) ?? []).includes(b),
+    enUzak,
+    bolgeSayisi: tablo.size,
+  };
+}
+
+/** Kanonik haritanın grafiği — yeni dünyaların ve testlerin başlangıcı. */
+export const KANONIK_GRAFIK: HaritaGrafi = haritaGrafi(KOMSULUK);
+
+/**
+ * Ordunun bir hedefe mesafesi, VERİLEN grafik üzerinde.
+ *
+ * `yakinlikMesafesi` ile aynı kural (en yakın toprağından ölçülür), tek
+ * farkı hangi haritaya baktığının çağıranca söylenmesi.
+ */
+export function yakinlikMesafesiGraf(
+  graf: HaritaGrafi,
+  evBolgeId: number,
+  topraklarim: readonly number[],
+  hedefBolgeId: number,
+): number {
+  let enAz = graf.mesafe(evBolgeId, hedefBolgeId);
+  for (const t of topraklarim) {
+    const d = graf.mesafe(t, hedefBolgeId);
+    if (d < enAz) enAz = d;
+  }
+  return enAz;
+}
+
+/**
+ * HARİTA SÜRÜMÜ — kanonik haritanın içeriğinden türetilir.
+ *
+ * Elle yazılan bir sürüm numarası er ya da geç unutulur: haritayı
+ * değiştirip sürümü artırmayan bir commit, tam da korunmak istenen
+ * kazayı yapar. Bu yüzden sürüm haritanın KENDİSİNDEN çıkıyor —
+ * bölgenin yerini, adını, türünü ve komşuluğunu değiştiren her düzenleme
+ * sürümü kendiliğinden değiştiriyor, unutulacak bir adım yok.
+ *
+ * Gelir çarpanı ve NPC garnizonu da içeride: ikisi de "burası neresi"
+ * sorusunun parçası ve ikisi de denge ayarıyla değişiyor.
+ *
+ * Hash 32 bit FNV-1a: kriptografik değil, çakışmaya karşı da değil —
+ * "aynı mı, değil mi" sorusuna cevap veren kısa ve okunabilir bir imza.
+ */
+export const HARITA_SURUMU: string = (() => {
+  const ozet = WORLD_MAP.regions
+    .map((r) =>
+      [
+        r.id,
+        r.name,
+        r.type,
+        r.province,
+        r.x,
+        r.y,
+        r.level,
+        r.income_mult,
+        [...r.komsular].sort((a, b) => a - b).join('.'),
+        Object.entries(r.npc_garrison ?? {})
+          .sort(([a], [b]) => a.localeCompare(b))
+          .map(([k, v]) => `${k}=${v}`)
+          .join('.'),
+      ].join('|'),
+    )
+    .sort()
+    .join('\n');
+
+  let h = 0x811c9dc5;
+  for (let i = 0; i < ozet.length; i++) {
+    h ^= ozet.charCodeAt(i);
+    h = Math.imul(h, 0x01000193) >>> 0;
+  }
+  return `h${WORLD_MAP.regions.length}-${h.toString(16).padStart(8, '0')}`;
+})();

@@ -1171,14 +1171,8 @@ koruyarak geçti. Sıfırlamak kolaydı; kimseyi silmemek daha doğruydu.
 
 ## 14. Açık riskler
 
-**Harita değişikliği CANLI dünyaları da değiştiriyor.** `world-map.json`
-tek ve kanonik; `seed.ts` açılışta `refreshWorldRegions` ile bütün
-dünyaların bölgelerini ona eşitliyor. Geliştirme sırasında doğru davranış
-— ama yayında bir oyuncunun tuttuğu "Gölcük Köyü" bir gecede başka bir
-yer olabilir. Bunun doğru cevabı harita SÜRÜMLEMESİ: her dünya hangi
-harita sürümüyle açıldığını taşısın, yeni harita yalnız yeni dünyalara
-uygulansın. Bugün yapılmadı çünkü oyun henüz yayında değil; yayına
-çıkmadan önce yapılmalı.
+**~~Harita değişikliği CANLI dünyaları da değiştiriyor.~~ KAPANDI —
+§15.**
 
 1. **Görsel tutarlılığı.** 6 zemin ve 24 bina aynı elden çıkmış gibi
    durmalı. Tek istem şablonu ve sabit bir stil cümlesi kullanılacak;
@@ -1190,3 +1184,74 @@ uygulansın. Bugün yapılmadı çünkü oyun henüz yayında değil; yayına
    tutulacak ve `pnpm e2e` içindeki ilk oturum ölçümü bunu izleyecek.
 4. **İşin büyüklüğü.** Sekiz aşama, sekiz commit. Aradaki her aşamada
    oyun ayakta kalacak; tek büyük teslim yok.
+
+## 15. Harita sürümlemesi
+
+§14'ün yayın engeli kapandı. Kural tek cümle: **üzerinde oyuncu olan
+dünyanın haritası değişmez.**
+
+### 15.1 Sürüm elle yazılmıyor, haritadan çıkıyor
+
+Elle artırılan bir sürüm numarası er ya da geç unutulur — haritayı
+değiştirip numarayı artırmayan bir commit, tam da korunmak istenen kazayı
+yapar. Bu yüzden `HARITA_SURUMU` kanonik haritanın İÇERİĞİNDEN
+türetiliyor: bölgenin yerini, adını, türünü, komşuluğunu, gelir
+çarpanını ya da NPC garnizonunu değiştiren her düzenleme sürümü
+kendiliğinden değiştiriyor. Bugünkü değer `h121-ee240b03`.
+
+`World.mapVersion` açılışta damgalanıyor. Seed dört karardan birini
+veriyor:
+
+| durum | karar |
+|---|---|
+| sürüm yok (sürümlemeden önce açılmış) | damgala + tazele |
+| sürüm bugünküyle aynı | tazele |
+| sürüm farklı, dünyada lord yok | yeni haritaya taşı, damgayı yenile |
+| sürüm farklı, dünyada lord VAR | **dokunma**, yeni kayıtlara kapat |
+
+Kapatmak silmek değil: oyuncular oynamaya devam ediyor, yalnız kapı
+kapanıyor — yeni oyuncular bugünkü haritanın olduğu dünyalara düşüyor.
+
+### 15.2 Asıl sinsi olan: motorun veriyle ayrışması
+
+Sürümleme yazılırken daha derin bir bağ çıktı. Bölgenin komşuları
+veritabanı satırında yazılı ve harita onları ORADAN çizerken, mesafe
+`packages/shared` içinde kanonik dosyadan kurulan tablodan okunuyordu.
+İkisi ayrılsa oyun yalan söylerdi: haritada çizilmeyen bir yoldan
+yürüyüş "1 adım" sürerdi.
+
+Artık grafik dünyanın kendi bölge satırlarından kuruluyor
+(`haritaGrafi`, `services/mesafe.ts`) ve bellekte tutuluyor — bölge
+başına bir genişlik-öncelikli arama, istek başına ödenirse pahalı, bir
+kez ödenirse bedava. Kanonik dosya yalnız YENİ dünya açarken okunuyor.
+
+Aynı gerekçeyle iki şey daha veriye taşındı:
+
+- **NPC garnizonunun tabanı** artık `Region.npcTaban` sütununda. Yıpranan
+  garnizon buna doğru toparlanıyor; kanonik dosyadan okunsaydı eski
+  haritalı bir dünya YENİ haritanın garnizonuna doğru yenilenirdi.
+- **Kamp çıpası** (`pickHomeAnchor`) dünyanın kendi köylerinden seçiliyor.
+  Bugün eski haritalı dünyaya kayıt açılmıyor zaten; kuralı veriye
+  bağlamak o korumayı unutulabilir olmaktan çıkarıyor.
+
+### 15.3 Test kuralı gerçekten sınıyor
+
+`tools/harita-surumu-testi.mjs` taklit kurmuyor: kanonik haritayı geçici
+olarak BOZUYOR — oyuncunun evinin adını ve türünü değiştiriyor — seed'i o
+hâlde koşturuyor, oyuncunun evinin yerinde durduğunu ölçüyor, sonra
+haritayı geri alıyor. İkinci bir seed koşusu kararın kalıcı olduğunu da
+gösteriyor.
+
+Yan kazanç: `refreshWorldRegions` bölgeleri tek sorguda okuyor. Eskiden
+bölge başına ayrı bir `findUnique` vardı — 61 bölgede fark edilmiyordu,
+121 bölge ve 198 dünya olunca seed dakikalarca sürüyordu. Şimdi 2 saniye.
+
+### 15.4 Ölü dünya süpürgesi
+
+`pnpm dunya-temizle` (yalnız geliştirme). Yük testi her koşuşta 120
+oyuncu kaydediyor ve kapasite dolunca yeni dünya açılıyor; biriken sonuç
+ölçüldü — 198 dünya, 9.661 lord, 23.837 bölge. Ölü dünya tanımı dar:
+hiç lordu olmayan, ya da kimsenin bölge almadığı ve günlerdir kimsenin
+girmediği dünya. En son açılan dünya her hâlükârda korunuyor. Varsayılan
+PROVA; silmek için `--uygula` gerekiyor.
+

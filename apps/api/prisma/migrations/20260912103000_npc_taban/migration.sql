@@ -1,0 +1,13 @@
+-- Bölge, kendi kanonik NPC garnizonunu taşısın.
+--
+-- Yıpranan NPC garnizonu bir TABANA doğru toparlanıyor. O taban bugüne
+-- kadar kanonik world-map.json'dan okunuyordu; harita sürümü değişen bir
+-- dünya, kendi haritasının değil YENİ haritanın garnizonuna doğru
+-- yenilenirdi (docs/12 §14).
+--
+-- Sürümlemeden önce yazılmış satırlarda null kalıyor ve kod kanonik
+-- dosyaya düşüyor. Bu doğru: o dünyaların hepsi zaten kanonik haritada,
+-- çünkü eski seed hepsini ona eşitliyordu. Mevcut garnizonu tabana
+-- kopyalamak YANLIŞ olurdu — yağmalanmış bir bölgenin yıpranmış
+-- garnizonu taban sayılır ve bir daha asla toparlanmazdı.
+ALTER TABLE "Region" ADD COLUMN "npcTaban" JSONB;

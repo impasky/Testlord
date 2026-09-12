@@ -43,6 +43,10 @@ model World {
   playerCap Int        @default(120)
   status    String     @default("open") // open | full | closed
   openedAt  DateTime   @default(now())
+  /// Açıldığı harita sürümü (HARITA_SURUMU). Kanonik harita değişince
+  /// oyunculu dünyalar yeniden yazılmasın diye var: yeni harita yalnız
+  /// yeni dünyalara uygulanır. Sürümlemeden önce açılmış dünyalarda null.
+  mapVersion String?
   lords     Lord[]
   regions   Region[]
   alliances Alliance[]
@@ -289,6 +293,11 @@ model Region {
 
   ownerLordId String?
   npcGarrison Json
+  /// Bu bölgenin KANONİK NPC garnizonu — yıpranan garnizon buna doğru
+  /// toparlanır. Dünya kendi tabanını taşıyor ki harita sürümü değişince
+  /// eski dünya yeni haritanın garnizonuna doğru yenilenmesin (docs/12 §14).
+  /// Sürümlemeden önce yazılmış satırlarda null; seed dolduruyor.
+  npcTaban    Json?
   incomeMult  Float   @default(1)
 
   storeAltin Int @default(0)

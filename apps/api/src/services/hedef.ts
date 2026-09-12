@@ -45,7 +45,7 @@ import {
 import { prisma, type Tx } from '../db.js';
 import { arastirmaBonusuOku, equippedGenerals, gearBonusFrom } from './lord.js';
 import { regionFortressBonus } from './region.js';
-import { mesafeOlcerHazir } from './mesafe.js';
+import { dunyaGrafigi, mesafeOlcerHazir } from './mesafe.js';
 
 /** Lordun savaş tarafını kurar (ekipman, donanım, generaller dahil). */
 export async function lordSide(
@@ -198,7 +198,7 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
   const orduVar = armyCount(evOrdusu) > 0;
   const onerAr = arastirmaBonusuOku(lord);
 
-  const [saldiran, yuruyusSayisi, bolgeSayisi, adaylar] = await Promise.all([
+  const [saldiran, yuruyusSayisi, bolgeSayisi, adaylar, graf] = await Promise.all([
     lordSide(lordId, evOrdusu, []),
     prisma.march.count({ where: { lordId } }),
     prisma.region.count({ where: { ownerLordId: lordId, type: { not: 'taht' } } }),
@@ -210,6 +210,7 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
         OR: [{ shieldUntil: null }, { shieldUntil: { lte: new Date() } }],
       },
     }),
+    dunyaGrafigi(lord.worldId),
   ]);
 
   const limitDolu = bolgeSayisi >= maxRegions(lord.level);
@@ -217,6 +218,7 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
   // Toprakları zaten yüklü (include: { regions: true }); ölçeri buradan
   // kuruyoruz, ikinci bir sorgu açmadan.
   const olc = mesafeOlcerHazir(
+    graf,
     lord.homeBolgeId,
     lord.regions.map((r) => r.mapId),
   );

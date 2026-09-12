@@ -28,7 +28,7 @@ import { prisma, type Tx } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { gecikmisleriKapat } from '../services/gecikmis.js';
 import { arastirmaBonusuOku, binalariOku, findLordByUser, pushEvent } from '../services/lord.js';
-import { mesafeOlcer, mesafeOlcerHazir } from '../services/mesafe.js';
+import { dunyaGrafigi, mesafeOlcer, mesafeOlcerHazir } from '../services/mesafe.js';
 import { paktVarMi, paktliIttifaklar } from '../services/pakt.js';
 import { lordunAyricaligi } from '../services/ittifakSeviye.js';
 import {
@@ -222,7 +222,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       select: { worldId: true, homeBolgeId: true, level: true, allianceId: true },
     });
 
-    const [regions, oneri, ittifak] = await Promise.all([
+    const [regions, oneri, ittifak, graf] = await Promise.all([
       prisma.region.findMany({
         where: { worldId: me.worldId },
         include: {
@@ -249,11 +249,15 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
             select: { targetRegionId: true, targetNote: true, tag: true },
           })
         : Promise.resolve(null),
+      // Grafik DÜNYANIN kendi bölgelerinden (bkz. services/mesafe.ts):
+      // haritanın çizdiği yollarla motorun yürüdüğü yollar aynı olmalı.
+      dunyaGrafigi(me.worldId),
     ]);
 
     // Mesafe en yakın TOPRAĞINDAN ölçülüyor (docs/11 §1.2 H1). Bölgeler
     // zaten elde: ölçeri buradan kuruyoruz, ikinci bir sorgu açmadan.
     const olc = mesafeOlcerHazir(
+      graf,
       me.homeBolgeId,
       regions.filter((r) => r.ownerLordId === lordId).map((r) => r.mapId),
     );

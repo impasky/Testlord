@@ -62,11 +62,15 @@ export function bolgeTahkimati(
 }
 
 /**
- * world-map.json'daki taban NPC garnizonu — sabit, mutasyona uğramaz.
- * mapId ile anahtarlanır: veritabanı id'si dünyadan dünyaya değişir, harita
- * numarası değişmez.
+ * Kanonik haritanın taban NPC garnizonu — YEDEK yol.
+ *
+ * Taban artık bölgenin kendi satırında (`npcTaban`) duruyor: bir dünya
+ * kendi haritasının garnizonuna doğru toparlanmalı, kanonik dosyanın o
+ * günkü hâline doğru değil (docs/12 §14). Burası yalnız sürümlemeden
+ * ÖNCE yazılmış, tabanı henüz doldurulmamış satırlar için var — onların
+ * hepsi zaten kanonik haritada, çünkü eski seed hepsini ona eşitliyordu.
  */
-const NPC_TABAN = new Map<number, Army>(
+const KANONIK_NPC_TABAN = new Map<number, Army>(
   WORLD_MAP.regions.map((r) => [r.id, r.npc_garrison as unknown as Army]),
 );
 
@@ -78,8 +82,12 @@ const NPC_TABAN = new Map<number, Army>(
  * anlamsız kılardı. SADECE NPC bölgeleri için geçerli; oyuncunun kaybettiği
  * garnizon yenilenmez.
  */
-export function regenerateNpcGarrison(mapId: number, mevcut: Army, hours: number): Army | null {
-  const taban = NPC_TABAN.get(mapId);
+export function regenerateNpcGarrison(
+  bolge: { mapId: number; npcTaban: unknown },
+  mevcut: Army,
+  hours: number,
+): Army | null {
+  const taban = (bolge.npcTaban as Army | null) ?? KANONIK_NPC_TABAN.get(bolge.mapId);
   if (!taban || hours <= 0) return null;
 
   const oran = B.npc_garnizonu.yenilenme_saatlik_oran * hours;
@@ -120,7 +128,7 @@ export async function accrueRegionStores(now: Date): Promise<void> {
     // Sahipsiz bölgelerde NPC garnizonu tabana doğru toparlanır
     const yenilenen = r.ownerLordId
       ? null
-      : regenerateNpcGarrison(r.mapId, r.npcGarrison as Army, hours);
+      : regenerateNpcGarrison(r, r.npcGarrison as Army, hours);
 
     await prisma.region.update({
       where: { id: r.id },
