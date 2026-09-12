@@ -9,13 +9,13 @@
  *
  * API ve arayüz ayakta olmalı. node tools/dizilim-arayuz-testi.mjs
  */
-import { chromium, devices } from 'playwright';
+import { devices } from 'playwright';
+import { tarayiciAc } from './lib/tarayici.mjs';
 import { ekrana, rehberiSustur } from './lib/gezin.mjs';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
 
 const WEB = process.env.WEB_URL ?? 'http://127.0.0.1:5173';
 const API = process.env.API_URL ?? 'http://localhost:3000';
-const CHROME = process.env.CHROME_PATH ?? '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 const CIKTI = process.env.SMOKE_OUT ?? 'ekran-goruntuleri';
 
 let hata = 0;
@@ -26,7 +26,7 @@ function kontrol(ad, kosul, detay = '') {
 
 console.log('Lordlar Çağı — dizilim arayüzü testi (iPhone 13)\n');
 
-const browser = await chromium.launch({ executablePath: CHROME, args: ['--no-sandbox'] });
+const browser = await tarayiciAc();
 const page = await (await browser.newContext({ ...devices['iPhone 13'] })).newPage();
 const konsol = [];
 page.on('console', (m) => m.type() === 'error' && konsol.push(m.text()));

@@ -1,0 +1,162 @@
+# Lordlar Çağı — her itişte koşan denetim.
+#
+# NEDEN VAR: 462 birim testi, 859 uçtan uca kontrolü, denge aritmetiği ve
+# görsel denetim vardı ama hepsi ELLE koşuyordu. Elle koşan test, koşulmayan
+# testtir: unutulan bir koşu iki hafta sonra "ne zaman bozuldu bu" sorusuna
+# dönüşür.
+#
+# İKİ İŞ, çünkü ikisinin maliyeti çok farklı:
+#
+#   hizli   Veritabanı istemiyor, bir dakikada biter. Tip denetimi, lint,
+#           biçim, birim testleri, denge aritmetiği ve ÜRETİLEN DOSYALARIN
+#           hâlâ üretilebildiği. Her itişte koşar.
+#   e2e     Postgres, API, worker, arayüz ve tarayıcı gerekiyor. Dakikalar
+#           sürüyor; yine de her itişte koşar, çünkü asıl yakalayan o.
+#
+# Yük testi bilerek DIŞARIDA: eşiği makinenin hızına bağlı ve paylaşılan
+# koşucuda dalgalanır. Yanlış alarm veren bir kontrol, bir süre sonra
+# bakılmayan bir kontroldür.
+name: Denetim
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  # Aynı dala arka arkaya itilirse yalnız sonuncusu koşsun.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '22'
+
+jobs:
+  hizli:
+    name: Tip, lint, birim testi, denge
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Prisma istemcisi olmadan apps/api tip denetimi geçmez.
+      - name: Prisma istemcisi
+        run: pnpm --filter @lordlar/api exec prisma generate
+
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - name: Biçim (prettier)
+        run: npx prettier --check .
+      - run: pnpm test
+      - name: Denge aritmetiği
+        run: python3 tools/check_balance.py
+
+      # ── Üretilen dosyalar hâlâ üretilebiliyor mu ────────────────────
+      #
+      # `data/world-map.json` ve `docs/GORSEL-ISTEMLERI.md` elle
+      # düzenlenmiyor; ikisi de bir betiğin çıktısı. Elle düzenlenmiş bir
+      # satır sessizce yaşar ve betik bir gün yeniden koşunca kaybolur.
+      # Burası o sessizliği bozuyor: betiği koşturup dosyanın DEĞİŞMEDİĞİNİ
+      # ölçüyor.
+      - name: Harita yeniden üretilebiliyor
+        run: |
+          python3 tools/generate_map.py
+          git diff --exit-code data/world-map.json
+
+      - name: Görsel istemleri yeniden üretilebiliyor
+        run: |
+          python3 tools/gorsel-uret.py --istemler > docs/GORSEL-ISTEMLERI.md
+          npx prettier --write docs/GORSEL-ISTEMLERI.md
+          git diff --exit-code docs/GORSEL-ISTEMLERI.md
+
+      - name: Derleme
+        run: pnpm build
+
+  e2e:
+    name: Uçtan uca
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: lordlar
+          POSTGRES_USER: lordlar
+          POSTGRES_DB: lordlar_cagi
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U lordlar"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      DATABASE_URL: postgresql://lordlar:lordlar@127.0.0.1:5432/lordlar_cagi
+      JWT_SECRET: ci-icin-otuz-iki-karakterden-uzun-bir-anahtar
+      NODE_ENV: development
+      # Testler zincir hâlinde koşuyor ve hepsi tek IP'den geliyor; kayıt
+      # tavanı varsayılan kalırsa 429 yüzünden alâkasız yerlerde düşerler.
+      AUTH_RATE_LIMIT_MAX: '1000'
+      RATE_LIMIT_MAX: '5000'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Veritabanı
+        run: |
+          pnpm --filter @lordlar/api exec prisma generate
+          pnpm --filter @lordlar/api exec prisma migrate deploy
+          pnpm --filter @lordlar/api seed
+
+      - name: Tarayıcı
+        run: npx playwright install --with-deps chromium
+
+      # API, worker ve arayüz arka planda. Günlükler dosyaya yazılıyor:
+      # bir test kalırsa sebebi çoğu zaman bu üç günlüğün birinde.
+      - name: Sunucular
+        run: |
+          (pnpm --filter @lordlar/api exec tsx src/index.ts > /tmp/api.log 2>&1 &)
+          (pnpm --filter @lordlar/api exec tsx src/worker.ts > /tmp/worker.log 2>&1 &)
+          (pnpm --filter @lordlar/web exec vite --host > /tmp/web.log 2>&1 &)
+          # Hazır olmalarını dışarıdan bir paket beklemeden bekliyoruz:
+          # /api/me kimliksiz 401 döner, o da "sunucu ayakta" demek.
+          for uc in http://127.0.0.1:3000/api/me http://127.0.0.1:5173/; do
+            for i in $(seq 1 120); do
+              curl -s -o /dev/null "$uc" && break
+              sleep 1
+            done
+            curl -s -o /dev/null "$uc" || { echo "$uc açılmadı"; exit 1; }
+          done
+
+      - name: Uçtan uca
+        run: pnpm e2e
+
+      - name: Günlükler (kalırsa)
+        if: failure()
+        run: |
+          echo '── api ──';    tail -100 /tmp/api.log    || true
+          echo '── worker ──'; tail -50  /tmp/worker.log || true
+          echo '── web ──';    tail -50  /tmp/web.log    || true
+
+      - name: Ekran görüntüleri (kalırsa)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ekran-goruntuleri
+          path: /tmp/*.png
+          if-no-files-found: ignore

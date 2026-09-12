@@ -126,9 +126,7 @@ export async function accrueRegionStores(now: Date): Promise<void> {
     const cap = regionStoreCap(r.level);
 
     // Sahipsiz bölgelerde NPC garnizonu tabana doğru toparlanır
-    const yenilenen = r.ownerLordId
-      ? null
-      : regenerateNpcGarrison(r, r.npcGarrison as Army, hours);
+    const yenilenen = r.ownerLordId ? null : regenerateNpcGarrison(r, r.npcGarrison as Army, hours);
 
     await prisma.region.update({
       where: { id: r.id },

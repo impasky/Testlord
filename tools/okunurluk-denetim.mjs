@@ -21,7 +21,8 @@
  *
  * SADECE GELİŞTİRME. node tools/okunurluk-denetim.mjs
  */
-import { chromium, devices } from 'playwright';
+import { devices } from 'playwright';
+import { tarayiciAc } from './lib/tarayici.mjs';
 import { kayitOl } from './lib/kayit.mjs';
 import { bolgeKazandir, sehriKur } from './lib/ilerlet.mjs';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
@@ -29,7 +30,6 @@ import { EKRANLAR, ekrana, kapiyiKapat, rehberiSustur } from './lib/gezin.mjs';
 
 const API = process.env.API_URL ?? 'http://localhost:3000';
 const WEB = process.env.WEB_URL ?? 'http://127.0.0.1:5173';
-const CHROME = process.env.CHROME_PATH ?? '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 
 /** En küçük kabul edilen yazı boyutu. */
 const EN_KUCUK_PX = 11;
@@ -153,7 +153,7 @@ const OLCUM = () => {
   return cikti;
 };
 
-const b = await chromium.launch({ executablePath: CHROME, args: ['--no-sandbox'] });
+const b = await tarayiciAc();
 const ctx = await b.newContext({ ...devices['iPhone 13'] });
 const page = await ctx.newPage();
 

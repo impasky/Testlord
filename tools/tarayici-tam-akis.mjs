@@ -6,7 +6,8 @@
  *
  * API ve arayüz ayakta olmalı. node tools/tarayici-tam-akis.mjs
  */
-import { chromium, devices } from 'playwright';
+import { devices } from 'playwright';
+import { tarayiciAc } from './lib/tarayici.mjs';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
 import { ekrana, kapida, rehberiSustur } from './lib/gezin.mjs';
 import { merkezUzakliklari } from './lib/harita.mjs';
@@ -18,7 +19,6 @@ const API = process.env.API_URL ?? 'http://localhost:3000';
 // Kökteyken her test koşusu 20 MB'lık PNG'yi 'değişti' diye işaretliyordu ve
 // bu üretilen dosyalar depoya girmişti. Klasör .gitignore'da.
 const CIKTI = process.env.SMOKE_OUT ?? 'ekran-goruntuleri';
-const CHROME = process.env.CHROME_PATH ?? '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 
 let hata = 0;
 function kontrol(ad, kosul, detay = '') {
@@ -39,7 +39,7 @@ async function tiklaVeBekle(page, secici, yolParcasi) {
   return r;
 }
 
-const browser = await chromium.launch({ executablePath: CHROME, args: ['--no-sandbox'] });
+const browser = await tarayiciAc();
 const ctx = await browser.newContext({ ...devices['iPhone 13'] });
 const page = await ctx.newPage();
 

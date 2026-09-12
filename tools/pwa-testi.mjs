@@ -9,10 +9,10 @@
  *
  * Arayüz ayakta olmalı. node tools/pwa-testi.mjs
  */
-import { chromium, devices } from 'playwright';
+import { devices } from 'playwright';
+import { tarayiciAc } from './lib/tarayici.mjs';
 
 const WEB = process.env.WEB_URL ?? 'http://127.0.0.1:5173';
-const CHROME = process.env.CHROME_PATH ?? '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 
 let hata = 0;
 function kontrol(ad, kosul, detay = '') {
@@ -22,7 +22,7 @@ function kontrol(ad, kosul, detay = '') {
 
 console.log('Lordlar Çağı — PWA kabuğu testi\n');
 
-const browser = await chromium.launch({ executablePath: CHROME, args: ['--no-sandbox'] });
+const browser = await tarayiciAc();
 const page = await (await browser.newContext({ ...devices['iPhone 13'] })).newPage();
 await page.goto(WEB, { waitUntil: 'networkidle' });
 

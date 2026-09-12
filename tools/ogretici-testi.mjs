@@ -8,7 +8,7 @@
  *
  * API ve web ayakta olmalı. node tools/ogretici-testi.mjs
  */
-import { chromium } from 'playwright';
+import { tarayiciAc } from './lib/tarayici.mjs';
 import { ekrana, rehberiSustur } from './lib/gezin.mjs';
 
 const WEB = process.env.WEB_URL ?? 'http://localhost:5173';
@@ -25,10 +25,7 @@ function kontrol(ad, kosul, detay = '') {
 
 console.log('Lordlar Çağı — öğretici testi (iPhone 13)\n');
 
-const tarayici = await chromium.launch({
-  executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
-  args: ['--no-sandbox'],
-});
+const tarayici = await tarayiciAc();
 const sayfa = await tarayici.newPage({ viewport: { width: 390, height: 844 } });
 const konsolHatalari = [];
 sayfa.on('console', (m) => m.type() === 'error' && konsolHatalari.push(m.text()));

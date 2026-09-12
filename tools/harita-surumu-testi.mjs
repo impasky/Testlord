@@ -160,8 +160,6 @@ try {
 }
 
 console.log(
-  kalan === 0
-    ? '\nSONUÇ: harita sürümlemesi çalışıyor.\n'
-    : `\nSONUÇ: ${kalan} kontrol kaldı.\n`,
+  kalan === 0 ? '\nSONUÇ: harita sürümlemesi çalışıyor.\n' : `\nSONUÇ: ${kalan} kontrol kaldı.\n`,
 );
 process.exit(kalan === 0 ? 0 : 1);

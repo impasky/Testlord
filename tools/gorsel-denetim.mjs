@@ -12,7 +12,7 @@
  *
  * SADECE GELİŞTİRME. node tools/gorsel-denetim.mjs
  */
-import { chromium } from 'playwright';
+import { tarayiciAc } from './lib/tarayici.mjs';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
 import { EKRANLAR, ekrana, kapiyiKapat, rehberiSustur } from './lib/gezin.mjs';
 
@@ -20,7 +20,6 @@ import { kayitOl } from './lib/kayit.mjs';
 import { bolgeKazandir, sehriKur } from './lib/ilerlet.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 const WEB = process.env.WEB_URL ?? 'http://localhost:5173';
-const CHROME = process.env.CHROME_PATH ?? '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 // Varsayılan çıktı klasörü: ekran görüntüleri deponun köküne düşmesin.
 // Kökteyken her test koşusu 20 MB'lık PNG'yi 'değişti' diye işaretliyordu ve
 // bu üretilen dosyalar depoya girmişti. Klasör .gitignore'da.
@@ -88,7 +87,7 @@ await post('/ittifak/kur', { ad: `Denetim ${damga % 10000}`, etiket: `D${damga %
 
 console.log('Lordlar Çağı — görsel denetim (iPhone 13)\n');
 
-const browser = await chromium.launch({ executablePath: CHROME, args: ['--no-sandbox'] });
+const browser = await tarayiciAc();
 const ctx = await browser.newContext({
   viewport: { width: 390, height: 844 },
   deviceScaleFactor: 2,

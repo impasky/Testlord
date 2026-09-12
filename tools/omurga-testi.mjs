@@ -14,7 +14,8 @@
  * API ve arayüz ayakta olmalı. node tools/omurga-testi.mjs
  */
 import { rehberiSustur } from './lib/gezin.mjs';
-import { chromium, devices } from 'playwright';
+import { devices } from 'playwright';
+import { tarayiciAc } from './lib/tarayici.mjs';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
 
 const WEB = process.env.WEB_URL ?? 'http://127.0.0.1:5173';
@@ -23,7 +24,6 @@ const API = process.env.API_URL ?? 'http://localhost:3000';
 // Kökteyken her test koşusu 20 MB'lık PNG'yi 'değişti' diye işaretliyordu ve
 // bu üretilen dosyalar depoya girmişti. Klasör .gitignore'da.
 const CIKTI = process.env.SMOKE_OUT ?? 'ekran-goruntuleri';
-const CHROME = process.env.CHROME_PATH ?? '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 
 let hata = 0;
 function kontrol(ad, kosul, detay = '') {
@@ -33,7 +33,7 @@ function kontrol(ad, kosul, detay = '') {
 
 console.log('Lordlar Çağı — omurga testi (iPhone 13)\n');
 
-const browser = await chromium.launch({ executablePath: CHROME, args: ['--no-sandbox'] });
+const browser = await tarayiciAc();
 const page = await (await browser.newContext({ ...devices['iPhone 13'] })).newPage();
 const konsol = [];
 page.on('console', (m) => {

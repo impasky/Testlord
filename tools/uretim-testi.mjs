@@ -12,7 +12,8 @@
  *   node tools/uretim-testi.mjs
  */
 import { ekrana, rehberiSustur } from './lib/gezin.mjs';
-import { chromium, devices } from 'playwright';
+import { devices } from 'playwright';
+import { tarayiciAc } from './lib/tarayici.mjs';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
 const URL = process.env.URETIM_URL ?? 'http://localhost:3200';
 // Varsayılan çıktı klasörü: ekran görüntüleri deponun köküne düşmesin.
@@ -25,10 +26,7 @@ const k = (a, c, d = '') => {
   if (!c) hata++;
 };
 
-const b = await chromium.launch({
-  executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
-  args: ['--no-sandbox'],
-});
+const b = await tarayiciAc();
 const ctx = await b.newContext({ ...devices['iPhone 13'] });
 const page = await ctx.newPage();
 const hatalar = [];

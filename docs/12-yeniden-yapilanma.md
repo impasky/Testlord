@@ -1202,12 +1202,12 @@ kendiliğinden değiştiriyor. Bugünkü değer `h121-ee240b03`.
 `World.mapVersion` açılışta damgalanıyor. Seed dört karardan birini
 veriyor:
 
-| durum | karar |
-|---|---|
-| sürüm yok (sürümlemeden önce açılmış) | damgala + tazele |
-| sürüm bugünküyle aynı | tazele |
-| sürüm farklı, dünyada lord yok | yeni haritaya taşı, damgayı yenile |
-| sürüm farklı, dünyada lord VAR | **dokunma**, yeni kayıtlara kapat |
+| durum                                 | karar                              |
+| ------------------------------------- | ---------------------------------- |
+| sürüm yok (sürümlemeden önce açılmış) | damgala + tazele                   |
+| sürüm bugünküyle aynı                 | tazele                             |
+| sürüm farklı, dünyada lord yok        | yeni haritaya taşı, damgayı yenile |
+| sürüm farklı, dünyada lord VAR        | **dokunma**, yeni kayıtlara kapat  |
 
 Kapatmak silmek değil: oyuncular oynamaya devam ediyor, yalnız kapı
 kapanıyor — yeni oyuncular bugünkü haritanın olduğu dünyalara düşüyor.
@@ -1254,4 +1254,3 @@ oyuncu kaydediyor ve kapasite dolunca yeni dünya açılıyor; biriken sonuç
 hiç lordu olmayan, ya da kimsenin bölge almadığı ve günlerdir kimsenin
 girmediği dünya. En son açılan dünya her hâlükârda korunuyor. Varsayılan
 PROVA; silmek için `--uygula` gerekiyor.
-

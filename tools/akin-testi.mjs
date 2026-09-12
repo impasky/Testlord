@@ -12,14 +12,14 @@
  *
  * SADECE GELİŞTİRME. node tools/akin-testi.mjs
  */
-import { chromium, devices } from 'playwright';
+import { devices } from 'playwright';
+import { tarayiciAc } from './lib/tarayici.mjs';
 import { benzersizAd, kayitOl } from './lib/kayit.mjs';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
 import { rehberiSustur } from './lib/gezin.mjs';
 
 const API = process.env.API_URL ?? 'http://localhost:3000';
 const WEB = process.env.WEB_URL ?? 'http://127.0.0.1:5173';
-const CHROME = process.env.CHROME_PATH ?? '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 
 let hata = 0;
 function kontrol(ad, kosul, detay = '') {
@@ -201,7 +201,7 @@ kontrol('Rapor okunabiliyor', rapor.id === sonuc.id && rapor.kazanildi === true)
 kontrol('Raporda savaş kaydı var', Boolean(rapor.log));
 
 // --- 8. Arayüz ---
-const b = await chromium.launch({ executablePath: CHROME, args: ['--no-sandbox'] });
+const b = await tarayiciAc();
 const ctx = await b.newContext({ ...devices['iPhone 13'] });
 const page = await ctx.newPage();
 const konsol = [];

@@ -13,7 +13,7 @@
  * API ve web ayakta olmalı. node tools/harita-testi.mjs
  */
 import { rehberiSustur } from './lib/gezin.mjs';
-import { chromium } from 'playwright';
+import { tarayiciAc } from './lib/tarayici.mjs';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
 import { kayitOl } from './lib/kayit.mjs';
 
@@ -143,10 +143,7 @@ if (ikililer.length >= 2) {
 }
 
 // --- 2. Görsel: tarayıcı
-const tarayici = await chromium.launch({
-  executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
-  args: ['--no-sandbox'],
-});
+const tarayici = await tarayiciAc();
 const sayfa = await tarayici.newPage({ viewport: { width: 390, height: 844 } });
 const konsol = [];
 sayfa.on('console', (m) => m.type() === 'error' && konsol.push(m.text()));

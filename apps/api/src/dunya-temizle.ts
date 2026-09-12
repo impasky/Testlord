@@ -67,7 +67,11 @@ for (const d of dunyalar) {
     prisma.lord.count({ where: { worldId: d.id, lastSeenAt: { gte: esik } } }),
   ]);
   if (sahipli === 0 && taze === 0) {
-    olu.push({ ...d, lordSayisi, sebep: `${lordSayisi} lord, bölge alınmamış, ${GUN} gündür giriş yok` });
+    olu.push({
+      ...d,
+      lordSayisi,
+      sebep: `${lordSayisi} lord, bölge alınmamış, ${GUN} gündür giriş yok`,
+    });
   } else {
     canli++;
   }
