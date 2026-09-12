@@ -142,9 +142,22 @@ function side(units: Army, isDefender: boolean, fort = 0, leadership = 5): Side 
 const TAHT_ID = WORLD_MAP.regions.find((r) => r.type === 'taht')!.id;
 const merkezUzakligi = (id: number): number => bolgeMesafesi(TAHT_ID, id);
 
-/** Haritanın kenarındaki bir NPC bölgesinin garnizonu (köy değil). */
-const KENAR_NPC = WORLD_MAP.regions.find((r) => r.type !== 'koy' && merkezUzakligi(r.id) === 4)!
-  .npc_garrison as unknown as Army;
+/**
+ * Sınır bandındaki bir türün KENDİ garnizonu.
+ *
+ * Önceki hâli tek bir bölgenin garnizonunu alıp üç ayrı tahkimatla
+ * sınıyordu ve o bölge "dosyadaki ilk 4-adım-uzaklıktaki köy olmayan
+ * bölge" diye seçiliyordu — yani ölçüm DOSYA SIRASINA bağlıydı. Harita
+ * yeniden kurulup o sıra değişince test, oyunun hiç sormadığı bir soruyu
+ * sormaya başladı: "bir KALE garnizonu bir TARLA tahkimatının arkasında
+ * dursa alınır mı?" Öyle bir bölge yok.
+ *
+ * Artık her tür kendi garnizonuyla ölçülüyor. Tasarım cümlesi aynı: ilk
+ * günün ordusu sınırdaki tahkimatsız bir yeri alır, kaleyi alamaz.
+ */
+const kenarGarnizonu = (tip: string): Army =>
+  WORLD_MAP.regions.find((r) => r.type === tip && merkezUzakligi(r.id) >= 4)!
+    .npc_garrison as unknown as Army;
 const BASLANGIC_ORDUSU: Army = { mizrakci: 20, okcu: 15 };
 
 describe('ilk gün deneyimi', () => {
@@ -152,7 +165,7 @@ describe('ilk gün deneyimi', () => {
     for (const tip of ['tarla', 'maden'] as const) {
       const r = simulateBattle(
         side(BASLANGIC_ORDUSU, false),
-        side(KENAR_NPC, true, fortressBonus(tip, 1)),
+        side(kenarGarnizonu(tip), true, fortressBonus(tip, 1)),
         `ilk-fetih-${tip}`,
         ctx,
       );
@@ -170,7 +183,7 @@ describe('ilk gün deneyimi', () => {
   it('KALE aynı orduyla alınamaz — kenar bölgeler arasında bile zorluk farkı var', () => {
     const r = simulateBattle(
       side(BASLANGIC_ORDUSU, false),
-      side(KENAR_NPC, true, fortressBonus('kale', 1)),
+      side(kenarGarnizonu('kale'), true, fortressBonus('kale', 1)),
       'ilk-fetih-kale',
       ctx,
     );
@@ -1605,7 +1618,7 @@ describe('harita: mesafe ve komşuluk (docs/11, docs/12)', () => {
       expect(merkezUzakligi(k.id), k.name).toBeGreaterThanOrEqual(3);
       const garnizon = Object.values(k.npc_garrison).reduce((t, n) => t + n, 0);
       expect(garnizon, k.name).toBeLessThan(
-        Object.values(KENAR_NPC).reduce((t, n) => t + (n ?? 0), 0),
+        Object.values(kenarGarnizonu('tarla')).reduce((t, n) => t + (n ?? 0), 0),
       );
     }
   });

@@ -826,6 +826,15 @@ export function Harita({
               <span className="h-2.5 w-2.5 rounded-full border-2 border-solgun/50" /> sahipsiz
             </span>
             <span>⛨ korumalı</span>
+            {/* Geçit göstergede, çünkü haritadaki turuncu kesik çizgi bir süs
+                değil bir KURAL: dağın öte yanına ancak oradan geçiliyor. */}
+            <span className="flex items-center gap-1">
+              <span
+                className="h-0 w-4 border-t-2 border-dashed"
+                style={{ borderColor: '#ff8c3a' }}
+              />{' '}
+              geçit
+            </span>
           </div>
         </Kart>
 

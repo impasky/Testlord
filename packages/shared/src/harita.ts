@@ -13,11 +13,18 @@
  * her bölge komşularını `world-map.json` içinde açıkça taşıyor ve mesafe
  * bu grafikte en kısa yol.
  *
- * Geçiş sırasında komşuluklar eski altıgen komşuluklarından türetildi ve
- * ölçüldü: 61 bölgenin 3721 çiftinin HEPSİNDE grafik mesafesi eski hex
- * mesafesiyle birebir aynı çıktı. Yani bu değişiklik dengeyi, yürüyüş
- * sürelerini ve mevcut hedef önerilerini hiç kaydırmadı — yalnız altıgeni
- * söktü (docs/12 §1).
+ * İlk geçişte komşuluklar eski altıgen komşuluklarından TÜRETİLMİŞTİ ve
+ * bu, altıgeni sökmeden görüntüsünü sökmek anlamına geliyordu: grafik
+ * hâlâ bir kafesti. Ölçüldü — 61 bölgenin 37'sinin tam 6, 18'inin tam 4
+ * komşusu vardı. Her yer birbirine benziyordu; bir geçidi tutmakla
+ * ovanın ortasında oturmak arasında fark yoktu.
+ *
+ * Harita artık ÇİZİLMİŞ ZEMİNDEN türetiliyor (`tools/harita-kur.py`,
+ * docs/12 §11): bölgeler araziye serpiliyor, komşuluk Delaunay'dan çıkıp
+ * budanıyor, dağın arkasına yalnız GEÇİTLERDEN geçiliyor. Derece dağılımı
+ * artık 2'den 7'ye yayılıyor — yani haritada dar boğaz da var kavşak da.
+ * Dengenin omurgası değişmedi: gelir çarpanı ve NPC garnizonu hâlâ Taht
+ * Kalesi'ne uzaklıktan geliyor.
  *
  * ── x/y'yi motor OKUMAZ ───────────────────────────────────────────────
  *
@@ -25,7 +32,8 @@
  * üzerinde işaretçinin duracağı yer. Mesafe ve komşuluk buradan
  * hesaplanmaz. Bu kasıtlı — harita resmini yeniden ürettiğimizde
  * işaretçileri yeniden yerleştirmek gerekecek ve o iş oyunun kurallarını
- * kaydırmamalı.
+ * kaydırmamalı. (Ters yönü de doğru: x/y artık RESİMDEN geliyor, yani
+ * zemin değişirse harita da değişir ve `harita-kur.py` yeniden koşar.)
  */
 import { WORLD_MAP } from './balance.js';
 
@@ -33,6 +41,29 @@ import { WORLD_MAP } from './balance.js';
 export const KOMSULUK: ReadonlyMap<number, readonly number[]> = new Map(
   WORLD_MAP.regions.map((r) => [r.id, Object.freeze([...r.komsular])]),
 );
+
+/**
+ * GEÇİTLER — dağı aşan komşuluklar.
+ *
+ * Haritanın bütün meselesi bunlar. Komşuluk grafiği Delaunay'dan çıkıp
+ * budanırken dağ aşan her kenar atılıyor; sonra dağın arkasına ulaşmak
+ * için EN KISA olanlar geri ekleniyor (`tools/harita-kur.py`). Sonuç:
+ * sıradağın öte yanı ancak birkaç noktadan geçilebiliyor ve o noktaları
+ * tutan bölge -- çoğu zaman bir KALE -- arkasındaki her şeyi tutuyor.
+ *
+ * Motor için geçit ayrı bir kural DEĞİL: komşuluk komşuluktur. Ayrım
+ * arayüzde: oyuncu dar boğazı görmeden orayı tutmanın değerini anlayamaz.
+ */
+const gecitAnahtari = (a: number, b: number) => `${Math.min(a, b)}-${Math.max(a, b)}`;
+
+export const GECITLER: ReadonlySet<string> = new Set(
+  ((WORLD_MAP as { gecitler?: number[][] }).gecitler ?? []).map(([a, b]) => gecitAnahtari(a!, b!)),
+);
+
+/** Bu iki bölge arasındaki yol bir dağ geçidi mi. */
+export function gecitMi(a: number, b: number): boolean {
+  return GECITLER.has(gecitAnahtari(a, b));
+}
 
 /** Haritadaki bütün bölge kimlikleri, dosyadaki sırayla. */
 export const BOLGE_IDLERI: readonly number[] = WORLD_MAP.regions.map((r) => r.id);

@@ -923,7 +923,116 @@ denge:akin`). İlk sayılar iki yönden bozuktu ve ikisi de sessizdi:
   yazılmadılar: onlar o günkü kararın kaydı ve sistemlerin niyetini hâlâ
   doğru anlatıyorlar.
 
-## 11. Emekliye ayrılanlar
+## 11. Dünya haritası — sıfırdan
+
+### 11.1 Sorun: ızgara sökülmüştü, izi kalmıştı
+
+§1'de altıgen ızgara kaldırıldı ama komşuluklar **eski altıgen
+komşuluklarından türetilmişti**. Yani görüntüsü gitti, kafes kaldı.
+Ölçüldü:
+
+| Ne                        | Eski harita             |
+| ------------------------- | ----------------------- |
+| Tam 6 komşulu bölge       | 37 / 61                 |
+| Tam 4 komşulu bölge       | 18 / 61                 |
+| Farklı `y` değeri         | 24 (61 bölge için)      |
+| Derece dağılımı           | yalnız {3, 4, 6}        |
+
+İşaretçiler satır satır diziliydi ve resmedilmiş bir diyarın üstünde
+askeri bir şablon duruyordu. Mekanik sonucu daha ağırdı: **her yer
+birbirine benziyordu.** Bir geçidi tutmakla ovanın ortasında oturmak
+arasında fark yoktu, çünkü herkesin altı komşusu vardı. Harita bir karar
+alanı değil, bir listeydi.
+
+### 11.2 Yeni sıra: önce coğrafya, sonra siyaset, en son koordinat
+
+Eski sıra resimle başlıyordu ve işaretçiler sonra ona oturtuluyordu
+(`harita-yerlestir.py` 7 tanesini denizden karaya taşımak zorunda
+kalmıştı). Yeni sıra `tools/harita-kur.py`de ve altı adım:
+
+**1. Arazi resimden okunuyor** (`tools/harita-arazi.py`). Üç ölçü yetiyor
+ve üçü de tek bir gri resimden çıkıyor: sıcaklık (R−B) karayı denizden,
+**doku** (15 pikselde parlaklığın standart sapması) düz ovayı dağdan ve
+ormandan, bulanık parlaklık da dağı ormandan ayırıyor. Ölçüldü: ova
+5–10, orman ~30, dağ ~38–41. Eşikler göz kararıyla değil, resmin üstüne
+boyanıp **bakılarak** seçildi (`--onizleme`).
+
+**2. Bölgeler araziye serpiliyor**, ızgaraya değil. Mavi-gürültü örnekleme
+(Mitchell'in "en iyi aday" yöntemi): her yeni nokta için altmış aday
+atılıyor ve mevcutlara en uzak olan seçiliyor. Sonuç düzensiz ama dengeli
+dağılmış bir serpinti. **En küçük aralık araziye göre değişiyor** ve bu
+bir süslemenin değil oynanışın kararı: ovada 8,6 — dağda 11,2. Dağın az
+bölgesi olması, dağı geçmenin az yolu olması demek.
+
+**3. Komşuluk Delaunay'dan çıkıp budanıyor.** Deniz geçen kenar atılıyor
+(kara yolu yok), çok uzun kenar atılıyor (uzaktan bakışan iki yer komşu
+değildir), **dağ aşan kenar atılıyor** — sonra dağın arkasına ulaşmak
+için yalnız **en kısaları** geri ekleniyor. Bunlar GEÇİT.
+
+**4. Vilayetler grafikte büyüyor**, haritada değil: altı tohumdan dengeli
+genişleme. Her vilayet bitişik bir siyasi blok, cetvelle çizilmiş bir
+dilim değil. Adlar da karakterlerine göre dağılıyor — Demirvadi en dağlı
+vilayete, Karaorman en ormanlısına, Aksu Ovası en ovalısına gidiyor.
+
+**5. Tür arazi + stratejik rol.** Dağda maden, ovada tarla, kıyıda ve
+kavşakta şehir, **geçidin ağzında kale**. Köy sınır bandında (Taht
+Kalesi'ne 4+ adım) — bu bir tasarım kuralı: köy ilk fethin yeri ve
+garnizonu buna göre zayıf.
+
+**6. Denge mesafeden ve eskisinin aynısı.** Gelir çarpanı ve NPC
+garnizonu hâlâ Taht Kalesi'ne kaç adım uzakta olduğunla belirleniyor.
+Harita değişti, dengenin omurgası değişmedi.
+
+### 11.3 Sonuç
+
+| Ne                  | Eski           | Yeni                    |
+| ------------------- | -------------- | ----------------------- |
+| Derece dağılımı     | {3, 4, 6}      | {2, 3, 4, 5, 6, 7}      |
+| Tam 6 komşulu       | 37             | 5                       |
+| İki komşulu (boğaz) | 0              | 18                      |
+| Geçit               | yok            | 14                      |
+| Farklı `y` değeri   | 24             | 61                      |
+| Çap                 | 8              | 10                      |
+
+**Geçit haritanın bütün meselesi.** Sıradağın öte yanına ancak birkaç
+noktadan geçiliyor ve o noktaları tutan bölge — çoğu zaman bir kale —
+arkasındaki her şeyi tutuyor. Motor için geçit ayrı bir kural değil
+(komşuluk komşuluktur); ayrım arayüzde, çünkü dar boğazı görmeyen oyuncu
+orayı tutmanın değerini anlayamaz.
+
+**Harita ekranına yollar geldi.** Oyunun en önemli kuralı — saldırabildiğin
+yer, toprağına BİTİŞİK olan yer — veride yazılıydı ama ekranda hiç
+çizilmiyordu; oyuncu iki bölgenin komşu olup olmadığını ancak deneyerek
+öğreniyordu. Artık her komşuluk soluk bir yol, her geçit turuncu kesik
+çizgi ve göstergede kendi satırı var.
+
+**Madalyon uzakta küçüldü** (32 → 24 piksel). Eşit kafeste 32 denk
+düşüyordu; serpintide bitişikleri birbirine değiyor ve altındaki harita
+hiç görünmüyordu — oyuncunun baktığı şey diyar değil bir rozet
+kalabalığı oluyordu. Dokunma hedefi değişmedi (44 piksellik daire).
+
+### 11.4 Denge testi iki şey yakaladı
+
+**Köy iç halkaya düşmüştü.** İlk sürümde tür ataması mesafeyi bilmiyordu;
+bir köy 3. halkaya düştü ve o halkanın 160 kişilik garnizonunu aldı —
+yani oyunun en zayıf bölgesi en sert kapılarından biri oldu. Köy artık
+yalnız sınır bandında.
+
+**Testin kendisi de dosya sırasına bağlıydı.** `KENAR_NPC` "dosyadaki ilk
+4-adım-uzaklıktaki köy olmayan bölge"nin garnizonunu alıp üç ayrı
+tahkimatla sınıyordu. Harita yeniden kurulunca o sıra değişti ve test,
+oyunun hiç sormadığı bir soruyu sormaya başladı: "bir KALE garnizonu bir
+TARLA tahkimatının arkasında dursa alınır mı?" Öyle bir bölge yok. Artık
+her tür kendi garnizonuyla ölçülüyor; tasarım cümlesi aynı kaldı.
+
+### 11.5 Yapılmayan: parçalı zemin
+
+Zemin hâlâ tek 1024×1024 WebP. Altı vilayeti ayrı ayrı üretmek hem
+netlik kazandırırdı hem de bir vilayeti yeniden çizmeyi mümkün kılardı —
+ama bu altı görsel üretimi demek ve o iş görsel bütçesine bağlı (§9).
+Haritanın bugünkü sorunu zaten çözünürlük değildi, **topolojiydi.**
+
+## 12. Emekliye ayrılanlar
 
 - `HexHarita.tsx` (828 satır) — yerine `DunyaHaritasi.tsx`.
 - `hexDistance`, `yakinlikMesafesi` — yerine grafik mesafesi.
@@ -941,7 +1050,7 @@ geçiş veri kaybetmeden yapıldı. Sonraki bütün göçler de aynı yolu izled
 — var olan lordlar binalarını (Y3), damgalarını (Y7) ve akın geçmişini
 koruyarak geçti. Sıfırlamak kolaydı; kimseyi silmemek daha doğruydu.
 
-## 12. Açık riskler
+## 13. Açık riskler
 
 1. **Görsel tutarlılığı.** 6 zemin ve 24 bina aynı elden çıkmış gibi
    durmalı. Tek istem şablonu ve sabit bir stil cümlesi kullanılacak;

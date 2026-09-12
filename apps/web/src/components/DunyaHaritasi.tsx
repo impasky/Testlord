@@ -27,7 +27,8 @@
  * Sahiplik hem RENK hem ŞEKİL ile gösteriliyor (renk körü güvenliği):
  * seninkinde altın halka, düşmanınkinde kırmızı ve içi dolu bir nokta.
  */
-import { useEffect, useRef, useState } from 'react';
+import { gecitMi } from '@lordlar/shared';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { MarchDto, RegionDto } from '../api/client';
 import { IKONLAR } from './ikon-verisi';
 
@@ -284,6 +285,27 @@ export function DunyaHaritasi({
    * Adı görünmeyen bölge kaybolmuyor: madalyonu türünü söylüyor ve
    * dokununca panelde adıyla açılıyor.
    */
+  /*
+   * Yollar: her komsuluk BIR kez. `komsular` karsilikli oldugu icin
+   * suzmeden cizersek her cizgi iki kere cizilir ve gecit cizgileri
+   * kalinlasip titrer.
+   */
+  const yollar = useMemo(() => {
+    const yer = new Map(regions.map((r) => [r.id, r]));
+    const liste: { a: RegionDto; b: RegionDto; gecit: boolean }[] = [];
+    for (const r of regions) {
+      for (const k of r.komsular) {
+        if (k <= r.id) continue;
+        const komsu = yer.get(k);
+        if (komsu) liste.push({ a: r, b: komsu, gecit: gecitMi(r.id, k) });
+      }
+    }
+    // Geçitler EN SONA: aynı katmanda çizilen sıradan yollar onların
+    // üstünü örtüyordu ve dağ geçidi sıradan bir yol gibi görünüyordu.
+    liste.sort((x, y) => Number(x.gecit) - Number(y.gecit));
+    return liste;
+  }, [regions]);
+
   const kademe: 'uzak' | 'orta' | 'yakin' =
     gorunum.olcek >= 1.8 ? 'yakin' : gorunum.olcek >= 1.4 ? 'orta' : 'uzak';
 
@@ -324,6 +346,43 @@ export function DunyaHaritasi({
               }}
             />
           </div>
+
+          {/* --- Yollar ve geçitler ---
+              Haritanin en onemli KURALI burada gorunuyor: saldirabilecegin
+              yer, toprağına BİTİŞİK olan yer. O bitişiklik veride yazılı
+              (`komsular`) ama ekranda hiç çizilmiyordu; oyuncu iki bölgenin
+              komşu olup olmadığını ancak deneyerek öğreniyordu.
+
+              GEÇİT ayrı çiziliyor: dağı aşan tek yol. Diyarın dar boğazları
+              bunlar ve iki yanında çoğu zaman bir kale duruyor. Bir geçidi
+              tutmak arkasındaki her şeyi tutmak demek — ama bunu görmeyen
+              oyuncu için harita yine düz bir liste olurdu.
+
+              Yakınlaşınca soluyor: o ölçekte bölge adları yazılıyor ve
+              çizgiler onların altında kalıyor. */}
+          <svg
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+            className="pointer-events-none absolute inset-0 h-full w-full"
+            style={{ opacity: gorunum.olcek >= 1.8 ? 0.35 : 0.8 }}
+            aria-hidden="true"
+          >
+            {yollar.map(({ a, b, gecit }) => (
+              <line
+                key={`${a.id}-${b.id}`}
+                x1={a.x}
+                y1={a.y}
+                x2={b.x}
+                y2={b.y}
+                stroke={gecit ? '#ff8c3a' : '#e6d3ae'}
+                strokeWidth={gecit ? 1.6 : 0.6}
+                strokeDasharray={gecit ? '2.2 1.4' : undefined}
+                strokeLinecap="round"
+                opacity={gecit ? 1 : 0.38}
+                vectorEffect="non-scaling-stroke"
+              />
+            ))}
+          </svg>
 
           {/* --- Yürüyüşler ---
               Ordunun yolda olduğunu yalnız listeden anlamak beklemeyi boş bir
@@ -490,6 +549,8 @@ function BolgeIsareti({
    * Sayı küçük olan önce yerleşir; yer kalmazsa büyük olan susar.
    */
   const oncelik = secili ? 0 : taht ? 1 : r.isMine ? 2 : r.owner ? 3 : 4;
+  // Seçili ve taht her ölçekte büyük: ikisi de "buraya bak" demek.
+  const madalyon = kademe === 'uzak' && !secili && !taht ? 24 : 32;
   const halka = r.isMine
     ? '#f5b731'
     : r.owner
@@ -537,7 +598,10 @@ function BolgeIsareti({
         transform: `translate(-50%, -50%) scale(${1 / olcek})`,
         // Kutular komşularıyla hafifçe örtüşüyor; oyuncuyu ilgilendiren
         // bölge üstte kalmalı ki dokunuş ona gitsin.
-        zIndex: secili ? 30 : r.isMine || r.owner ? 20 : taht ? 10 : 1,
+        // Taht, sahipli bölgelerin ÜSTÜNDE. Altındayken komşusunun ad
+        // şeridi (madalyonun hemen altında duruyor) tahtın madalyonunu
+        // kesiyordu — oyunun ucu yarım bir daire olarak görünüyordu.
+        zIndex: secili ? 30 : taht ? 25 : r.isMine || r.owner ? 20 : 1,
       }}
       /*
        * Ad HER ZAMAN erişilebilir isimde duruyor, görünür etiket
@@ -555,16 +619,29 @@ function BolgeIsareti({
         r.owner ? `sahibi ${r.owner.name}` : 'sahipsiz'
       }, ${r.distance} adım`}
     >
+      {/*
+        Madalyon UZAKTA KÜÇÜK.
+        Bölgeler artık ızgarada değil araziye serpili (docs/12 §11) ve
+        aralıkları eşit değil: ovada sık, dağda seyrek. 32 pikselli madalyon
+        eşit kafeste denk düşüyordu, serpintide bitişikleri birbirine
+        değiyor ve altlarındaki harita hiç görünmüyordu — oyuncunun
+        baktığı şey diyar değil, bir rozet kalabalığı oluyordu.
+
+        Uzakta 24, yakında 32. Dokunma hedefi değişmiyor: onu saran
+        44 piksellik daire yukarıda ve oralı değil.
+      */}
       <span
-        className="relative flex h-8 w-8 items-center justify-center rounded-full text-parsomen shadow-[0_2px_6px_rgba(0,0,0,0.55)]"
+        className="relative flex items-center justify-center rounded-full text-parsomen shadow-[0_2px_6px_rgba(0,0,0,0.55)]"
         style={{
+          width: madalyon,
+          height: madalyon,
           background: TIP_RENGI[r.type] ?? '#6a5334',
           border: `${secili ? 3 : 2}px solid ${secili ? '#fff3cf' : halka}`,
           outline: ortakHedef ? '2px dashed #7cc4f0' : undefined,
           outlineOffset: '2px',
         }}
       >
-        <TipIkonu tip={r.type} boyut={16} />
+        <TipIkonu tip={r.type} boyut={kademe === 'uzak' ? 13 : 16} />
 
         {/*
           ROZETLER hep KOYU BİR ÇİPİN üstünde duruyor.

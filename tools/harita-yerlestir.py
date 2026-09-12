@@ -2,6 +2,13 @@
 """
 Lordlar Cagi - Bolge isaretcilerini cizilmis dunya zeminine oturtur.
 
+ARTIK IKINCIL: harita `tools/harita-kur.py` ile kuruluyor ve o arac
+bolgeleri zaten karaya serpiyor (docs/12 §11), yani tasinacak isaretci
+cikmiyor. Bu arac ELDEN GECIRME icin duruyor: harita dosyasi elle
+duzenlenirse ya da zemin degisip harita yeniden kurulmazsa, suya dusen
+isaretciyi bulup tasiyabiliyor. `generate_map.py` denetimi de bunu
+kullaniyor.
+
 NEDEN VAR: docs/12 §9 uretim sirasini soyluyor -- "zeminler once kilitlenir,
 isaretci koordinatlari ondan sonra yerlestirilir". `data/world-map.json`
 icindeki x/y bir YUZDE ve YALNIZ CIZIM ICIN: oyunun mantigi `komsular`
