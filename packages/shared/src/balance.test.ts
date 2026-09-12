@@ -1612,7 +1612,16 @@ describe('harita: mesafe ve komşuluk (docs/11, docs/12)', () => {
 
   it('köyler haritanın kenarında ve ilk fetih için zayıf', () => {
     const koyler = WORLD_MAP.regions.filter((r) => r.type === 'koy');
-    expect(koyler.length).toBe(12);
+    /*
+     * Sayı ORANLA ölçülüyor, sabitle değil. Önceki hâli `toBe(12)` diyordu
+     * ve bu eski 61 bölgeli haritadan kalma bir sihirli sayıydı: dünya
+     * 121 bölgeye çıkınca test, tasarımda hiçbir şey bozulmadığı hâlde
+     * kaldı. Korunması gereken şey adet değil, KÖYÜN OYUNDAKİ YERİ —
+     * yeni lordun ilk hedefi olacak kadar çok, diyarı köy tarlasına
+     * çevirmeyecek kadar az.
+     */
+    expect(koyler.length / WORLD_MAP.regions.length).toBeGreaterThan(0.1);
+    expect(koyler.length / WORLD_MAP.regions.length).toBeLessThan(0.3);
     for (const k of koyler) {
       // Oyuna toprakSIZ başlıyoruz: ilk hedef merkezde olamaz.
       expect(merkezUzakligi(k.id), k.name).toBeGreaterThanOrEqual(3);

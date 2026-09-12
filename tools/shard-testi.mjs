@@ -9,6 +9,9 @@
  */
 import { execSync } from 'node:child_process';
 import { benzersizAd } from './lib/kayit.mjs';
+// Bölge sayısı KANONİK DOSYADAN: elle yazılan sayı, harita her
+// büyüdüğünde tasarımda hiçbir şey bozulmadan testi kırıyordu.
+import { BOLGE_SAYISI } from './lib/harita.mjs';
 
 const API = process.env.API_URL ?? 'http://localhost:3000';
 const DB = process.env.DATABASE_URL ?? 'postgresql://lordlar@127.0.0.1:5432/lordlar_cagi';
@@ -58,7 +61,11 @@ kontrol('Yeni dünya açıldı', sonrakiDunya === oncekiDunya + 1, `${oncekiDuny
 const yeniDunyaBolge = sql(
   `SELECT count(*) FROM "Region" r JOIN "World" w ON w.id = r."worldId" WHERE w.status = 'open' AND w."openedAt" = (SELECT max("openedAt") FROM "World");`,
 );
-kontrol('Yeni dünyanın 61 bölgesi var', Number(yeniDunyaBolge) === 61, `${yeniDunyaBolge} bölge`);
+kontrol(
+  `Yeni dünyanın ${BOLGE_SAYISI} bölgesi var`,
+  Number(yeniDunyaBolge) === BOLGE_SAYISI,
+  `${yeniDunyaBolge} bölge`,
+);
 
 const eskiDolu = sql(`SELECT count(*) FROM "World" WHERE status = 'full';`);
 kontrol('Dolan dünya "full" işaretlendi', Number(eskiDolu) >= 1, `${eskiDolu} dolu dünya`);
@@ -67,7 +74,7 @@ kontrol('Dolan dünya "full" işaretlendi', Number(eskiDolu) >= 1, `${eskiDolu} 
 if (sonuc.ok) {
   const h = { Authorization: `Bearer ${sonuc.body.token}` };
   const harita = await (await fetch(`${API}/api/map`, { headers: h })).json();
-  kontrol('Yeni oyuncunun haritası 61 bölge', harita.regions?.length === 61);
+  kontrol(`Yeni oyuncunun haritası ${BOLGE_SAYISI} bölge`, harita.regions?.length === BOLGE_SAYISI);
   kontrol(
     'Yeni dünyada hiçbir bölge sahipli değil',
     harita.regions?.every((r) => !r.owner),

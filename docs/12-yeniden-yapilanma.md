@@ -931,12 +931,12 @@ denge:akin`). İlk sayılar iki yönden bozuktu ve ikisi de sessizdi:
 komşuluklarından türetilmişti**. Yani görüntüsü gitti, kafes kaldı.
 Ölçüldü:
 
-| Ne                        | Eski harita             |
-| ------------------------- | ----------------------- |
-| Tam 6 komşulu bölge       | 37 / 61                 |
-| Tam 4 komşulu bölge       | 18 / 61                 |
-| Farklı `y` değeri         | 24 (61 bölge için)      |
-| Derece dağılımı           | yalnız {3, 4, 6}        |
+| Ne                  | Eski harita        |
+| ------------------- | ------------------ |
+| Tam 6 komşulu bölge | 37 / 61            |
+| Tam 4 komşulu bölge | 18 / 61            |
+| Farklı `y` değeri   | 24 (61 bölge için) |
+| Derece dağılımı     | yalnız {3, 4, 6}   |
 
 İşaretçiler satır satır diziliydi ve resmedilmiş bir diyarın üstünde
 askeri bir şablon duruyordu. Mekanik sonucu daha ağırdı: **her yer
@@ -985,14 +985,14 @@ Harita değişti, dengenin omurgası değişmedi.
 
 ### 11.3 Sonuç
 
-| Ne                  | Eski           | Yeni                    |
-| ------------------- | -------------- | ----------------------- |
-| Derece dağılımı     | {3, 4, 6}      | {2, 3, 4, 5, 6, 7}      |
-| Tam 6 komşulu       | 37             | 5                       |
-| İki komşulu (boğaz) | 0              | 18                      |
-| Geçit               | yok            | 14                      |
-| Farklı `y` değeri   | 24             | 61                      |
-| Çap                 | 8              | 10                      |
+| Ne                  | Eski      | Yeni               |
+| ------------------- | --------- | ------------------ |
+| Derece dağılımı     | {3, 4, 6} | {2, 3, 4, 5, 6, 7} |
+| Tam 6 komşulu       | 37        | 5                  |
+| İki komşulu (boğaz) | 0         | 18                 |
+| Geçit               | yok       | 14                 |
+| Farklı `y` değeri   | 24        | 61                 |
+| Çap                 | 8         | 10                 |
 
 **Geçit haritanın bütün meselesi.** Sıradağın öte yanına ancak birkaç
 noktadan geçiliyor ve o noktaları tutan bölge — çoğu zaman bir kale —
@@ -1025,12 +1025,75 @@ oyunun hiç sormadığı bir soruyu sormaya başladı: "bir KALE garnizonu bir
 TARLA tahkimatının arkasında dursa alınır mı?" Öyle bir bölge yok. Artık
 her tür kendi garnizonuyla ölçülüyor; tasarım cümlesi aynı kaldı.
 
-### 11.5 Yapılmayan: parçalı zemin
+### 11.5 Devasa dünya: 121 bölge, kaydırarak gezilen harita
+
+Oyuncu: **"Haritayı devasa yapsak, gerçekten devasa olsa ve oyuncu
+kaydırarak sağa sola yukarı aşağı gitse?"**
+
+Doğru soru, çünkü bir dünyanın büyük hissettirmesi onu tek bakışta
+GÖREMEMENDEN geliyor. Harita 61 bölgeyle tek karede duruyordu; dünya
+değil bir tahta gibi okunuyordu.
+
+**Dünya ikiye katlandı — her iki boyutta da.**
+
+| Ne                    | Önce | Sonra |
+| --------------------- | ---- | ----- |
+| Bölge                 | 61   | 121   |
+| Oyuncu kapasitesi     | 120  | 240   |
+| Oyuncu başına bölge   | 0.50 | 0.50  |
+| Geçit                 | 14   | 25    |
+| Çap (en uzak iki yer) | 10   | 14    |
+| Halka                 | 0–6  | 0–8   |
+
+**Kapasite de ikiye katlandı ve bu şart.** Bölgeyi iki katına çıkarıp
+lord sayısını sabit bırakmak herkese yer açmak, yani çatışmayı kaldırmak
+olurdu. Kıtlık (oyuncu başına 0,50 bölge) oyunun gerilim kaynağı ve
+`balance.test.ts` bunu 0,75 tavanıyla koruyor.
+
+Çap 14, keyfî değil: yürüyüş süresi adım başına 12 dakika ve tavan 360
+dakika. 14 adım = 168 dakika, yani en uzak köşe üç saatten kısa —
+tavanın yarısı. Büyük dünya uzak demek, ulaşılmaz demek değil.
+
+**Harita artık YAKIN açılıyor** (×2,4), oyuncunun kendi toprağının
+üstünde. Dünyanın kenar uzunluğunun ~%42'si görünüyor: 121 bölgenin
+yaklaşık 20'si. Yani ekran eskisinden SAKİN — dünya büyürken
+kalabalıklaşmadı. Gerisi kaydırarak bulunuyor; "sığdır" düğmesi (⊡) bir
+dokunuşta bütünü getiriyor.
+
+Kaydırılan bir haritanın iki tane olmazsa olmazı var ve ikisi de eklendi:
+
+- **Ekran dışı okları.** Yoldaki ordun, kampın ve toprakların ekranın
+  dışında kaldığında kenarda küçük bir ok beliriyor; dokununca oraya
+  götürüyor. En fazla dört tane ve öncelik sırası belli (önce ordular,
+  sonra ev, sonra öteki topraklar) — yoksa kenar ok ormanına dönerdi.
+- **Seçilen bölge ekrana geliyor.** Bölgeyi her zaman parmak seçmiyor:
+  omurga "şuraya saldır" diyor, ittifak ortak hedef işaretliyor, olay
+  şeridi bir savaşı gösteriyor. Seçim ekranın dışındaysa harita oraya
+  kayıyor. Görünen bir bölge için kaymıyor — oyuncunun kurduğu görüntüyü
+  sebepsiz bozmak olurdu.
+
+Etiket kademeleri de kaydı (1,35 / 2,80): açılış artık ORTA kademe —
+kısa adlar, sahip etiketi yok. Tam ayrıntı bir yakınlaştırma uzakta.
+
+**Ölçüldü:** 121 işaretçiyle telefon profilinde 62 FPS, etiket çakışması
+sıfır, konsol hatası sıfır.
+
+**Testlerden dört sihirli sayı çıktı.** `61` üç ayrı yerde (oyun döngüsü,
+shard testi, `generate_map.py`) ve `12` bir yerde (köy sayısı) elle
+yazılmıştı. Dünya büyüyünce dördü de, tasarımda hiçbir şey bozulmadığı
+hâlde kaldı. Hepsi kanonik dosyadan okunur oldu: ölçülen şey sayının
+kendisi değil, dosyanın kendi içinde tutarlı olması.
+
+### 11.6 Yapılmayan: parçalı zemin
 
 Zemin hâlâ tek 1024×1024 WebP. Altı vilayeti ayrı ayrı üretmek hem
 netlik kazandırırdı hem de bir vilayeti yeniden çizmeyi mümkün kılardı —
 ama bu altı görsel üretimi demek ve o iş görsel bütçesine bağlı (§9).
-Haritanın bugünkü sorunu zaten çözünürlük değildi, **topolojiydi.**
+Haritanın ilk sorunu zaten çözünürlük değildi, **topolojiydi.** Dünya iki
+katına çıkınca çözünürlük daha çok önem kazandı: ×2,4'te 1024 piksellik
+zemin telefonun 3× ekranında gerilerek çiziliyor. Boyalı üslup bunu
+büyük ölçüde saklıyor ama parçalı zemin artık bir cila değil, sıradaki
+iş.
 
 ## 12. Emekliye ayrılanlar
 
@@ -1051,6 +1114,15 @@ geçiş veri kaybetmeden yapıldı. Sonraki bütün göçler de aynı yolu izled
 koruyarak geçti. Sıfırlamak kolaydı; kimseyi silmemek daha doğruydu.
 
 ## 13. Açık riskler
+
+**Harita değişikliği CANLI dünyaları da değiştiriyor.** `world-map.json`
+tek ve kanonik; `seed.ts` açılışta `refreshWorldRegions` ile bütün
+dünyaların bölgelerini ona eşitliyor. Geliştirme sırasında doğru davranış
+— ama yayında bir oyuncunun tuttuğu "Gölcük Köyü" bir gecede başka bir
+yer olabilir. Bunun doğru cevabı harita SÜRÜMLEMESİ: her dünya hangi
+harita sürümüyle açıldığını taşısın, yeni harita yalnız yeni dünyalara
+uygulansın. Bugün yapılmadı çünkü oyun henüz yayında değil; yayına
+çıkmadan önce yapılmalı.
 
 1. **Görsel tutarlılığı.** 6 zemin ve 24 bina aynı elden çıkmış gibi
    durmalı. Tek istem şablonu ve sabit bir stil cümlesi kullanılacak;

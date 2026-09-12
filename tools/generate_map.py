@@ -31,7 +31,12 @@ import os
 import sys
 from collections import Counter, deque
 
-BEKLENEN_BOLGE = 61
+# Beklenen bolge sayisi KANONIK DOSYADAN okunuyor, elle yazilmiyor. Once
+# 61 diye sabitti; dunya 121 bolgeye cikinca denetim, tasarimda hicbir sey
+# bozulmadigi halde "121 var, 61 bekleniyordu" diye kaldi. Denetlenecek sey
+# sayinin kendisi degil, dosyanin KENDI ICINDE tutarli olmasi.
+# (Sayi artik `dogrula` icinde harita dosyasinin kendi region_count'undan
+# okunuyor; burada bir sabit tutulmuyor.)
 # Bolge turleri: ayni liste packages/shared/src/types.ts icinde de var.
 GECERLI_TURLER = {"taht", "koy", "tarla", "maden", "sehir", "kale"}
 
@@ -47,8 +52,11 @@ def dogrula(harita: dict) -> list[str]:
     bolgeler = harita.get("regions", [])
     kimlikler = {b["id"] for b in bolgeler}
 
-    if len(bolgeler) != BEKLENEN_BOLGE:
-        sorunlar.append(f"{len(bolgeler)} bolge var, {BEKLENEN_BOLGE} bekleniyordu")
+    beklenen = harita.get("region_count")
+    if beklenen is None:
+        sorunlar.append("region_count alani yok")
+    elif len(bolgeler) != beklenen:
+        sorunlar.append(f"{len(bolgeler)} bolge var, region_count {beklenen} diyor")
     if len(kimlikler) != len(bolgeler):
         sorunlar.append("bolge kimlikleri benzersiz degil")
 

@@ -5,7 +5,7 @@
  * node tools/oyun-dongusu-testi.mjs
  */
 import { benzersizAd, kayitOl } from './lib/kayit.mjs';
-import { merkezUzakliklari } from './lib/harita.mjs';
+import { BOLGE_SAYISI, merkezUzakliklari } from './lib/harita.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 let token = null;
 let hata = 0;
@@ -84,7 +84,18 @@ kontrol(
 
 // 4. Harita
 const harita = await cagir('/map');
-kontrol('Harita 61 bölge döndü', harita.regions.length === 61);
+/*
+ * Sayı KANONİK DOSYADAN okunuyor, elle yazılmıyor. Önceki hâli 61 diye
+ * sabitti ve dünya 121 bölgeye çıkınca test, tasarımda hiçbir şey
+ * bozulmadığı hâlde kaldı. Ölçülen şey sayının kendisi değil, sunucunun
+ * haritanın TAMAMINI döndürmesi.
+ */
+const beklenenBolge = BOLGE_SAYISI;
+kontrol(
+  `Harita ${beklenenBolge} bölge döndü`,
+  harita.regions.length === beklenenBolge,
+  `${harita.regions.length} geldi`,
+);
 // Hedefi gerçek oyuncunun yaptığı gibi seçiyoruz: yakın adayları önizleyip
 // alınabilecek ilkini buluyoruz. Kale (%30 tahkimat) elenir — 1. gün
 // ordusuyla alınamaması bilinçli zorluk farkı.

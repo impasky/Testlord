@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+
 /**
  * Harita yardımcıları — testler için.
  *
@@ -6,6 +8,18 @@
  * Kalesi'nden kaç ADIM uzakta olduğu ve o sayı komşuluk grafiğinden
  * türetiliyor. Aynı ölçü, koordinat aritmetiği olmadan.
  */
+
+/**
+ * Kanonik harita dosyası. Araçlar `@lordlar/shared`i import edemiyor
+ * (kök paket onu bağımlılık olarak taşımıyor); dosyayı okumak hem
+ * bağımsız hem de TEK KAYNAK kuralına uygun.
+ */
+export const HARITA = JSON.parse(
+  readFileSync(new URL('../../data/world-map.json', import.meta.url), 'utf8'),
+);
+
+/** Haritadaki bölge sayısı — testler bunu elle yazmasın. */
+export const BOLGE_SAYISI = HARITA.region_count;
 
 /** Bölge kimliği → Taht Kalesi'nden adım sayısı. */
 export function merkezUzakliklari(regions) {

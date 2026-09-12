@@ -169,6 +169,21 @@ const bolgeSayisi = await sayfa.locator('[data-bolge]').count();
 const govdeMetni = () => sayfa.locator('[data-harita-tuval]').innerText();
 const adSayisi = () => sayfa.locator('[data-bolge-ad]').count();
 
+/*
+ * HARİTA YAKIN AÇILIYOR (docs/12 §11.6). Dünya 121 bölge; hepsini tek
+ * karede göstermek onu bir rozet kalabalığına çeviriyordu. Açılış artık
+ * oyuncunun toprağının üstünde ve gerisi kaydırarak bulunuyor.
+ */
+const acilisDonusumu = await tuval.evaluate((el) => el.style.transform);
+const acilisOlcegi = Number(/scale\(([\d.]+)\)/.exec(acilisDonusumu)?.[1] ?? '1');
+kontrol('Harita yakınlaşmış açılıyor', acilisOlcegi > 1.5, acilisDonusumu);
+
+await sayfa.screenshot({ path: `${CIKTI}/harita-0-acilis.png` });
+
+// Kademe ölçümleri UZAK ölçekte yapılıyor: "sığdır" bütün dünyayı getiriyor.
+await sayfa.getByRole('button', { name: 'Haritayı sığdır' }).click();
+await sayfa.waitForTimeout(600);
+
 const uzakMetin = await govdeMetni();
 kontrol(
   'Vilayet adları haritada yazıyor',
@@ -178,7 +193,7 @@ kontrol(
 await sayfa.screenshot({ path: `${CIKTI}/harita-1-genel.png` });
 
 /*
- * ETİKET KADEMESİ. Uzak ölçekte 61 adın hepsi yazılamaz — telefon
+ * ETİKET KADEMESİ. Uzak ölçekte adların hepsi yazılamaz — telefon
  * genişliğinde yer yok ve ilk denemede hepsi üst üste biniyordu. Uzakta
  * yalnız oyuncuyu ilgilendiren yerler adlanıyor; yakınlaşınca hepsi
  * açılıyor. Ölçüm bu sözleşmeyi tutuyor.
@@ -190,6 +205,8 @@ kontrol(
   `${uzakAd} / ${bolgeSayisi} ad`,
 );
 
+// Üç adım: ×1 → 1,5 → 2,25 → 3,375. "Yakın" kademesinin eşiği 2,8.
+await sayfa.getByRole('button', { name: 'Yakınlaştır' }).click();
 await sayfa.getByRole('button', { name: 'Yakınlaştır' }).click();
 await sayfa.getByRole('button', { name: 'Yakınlaştır' }).click();
 await sayfa.waitForTimeout(600);

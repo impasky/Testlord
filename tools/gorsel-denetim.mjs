@@ -313,6 +313,15 @@ await page.waitForTimeout(1800);
 const hedef = (await get('/map')).regions.filter((x) => !x.isMine && x.type !== 'taht')[0];
 // Bölgeler artık gerçek <button>; kimliğiyle bulunuyor. Ada göre
 // aramıyoruz: görünür etiket yakınlık kademesine göre gizlenebiliyor.
+// Harita yakınlaşmış açılıyor; uzaktaki bölge ekranın dışında kalabilir.
+// "Sığdır" bütün dünyayı getiriyor (docs/12 §11.6).
+{
+  const sigdir = page.getByRole('button', { name: 'Haritayı sığdır' });
+  if (await sigdir.count()) {
+    await sigdir.click();
+    await page.waitForTimeout(500);
+  }
+}
 await page.locator(`[data-bolge="${hedef.id}"]`).click({ timeout: 10000, force: true });
 await denetle('bolge-detay');
 

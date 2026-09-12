@@ -492,7 +492,7 @@
     }
   },
   "dunya": {
-    "oyuncu_kapasitesi": 120,
+    "oyuncu_kapasitesi": 240,
     "dolunca": "Yeni dunya (shard) acilir. Siralamalar hem dunya bazli hem global tutulur.",
     "gelir_hesabi": "Lazy accrual: last_tick_at ile su an arasindaki fark hesaplanir. Cron gerekmez.",
     "worker_araligi_sn": 10,
@@ -502,7 +502,8 @@
       "biten uretim kuyrugu",
       "biten bolge yukseltme",
       "erzak acligi firari"
-    ]
+    ],
+    "_kapasite_notu": "Dunya 61'den 121 bolgeye cikinca kapasite de 120'den 240'a cikti. Sebep KITLIK: oyuncu basina dusen bolge orani (0.50) oyunun gerilim kaynagi ve `balance.test.ts` bunu 0.75 tavaniyla koruyor. Bolgeyi iki katina cikarip lord sayisini sabit birakmak, herkese yer acmak yani catismayi kaldirmak olurdu."
   },
   "npc_garnizonu": {
     "yenilenme_saatlik_oran": 0.1,

@@ -118,6 +118,13 @@ interface Gorunum {
 
 const EN_AZ = 1;
 const EN_COK = 3.2;
+/*
+ * Açılış ölçeği. ×2,4'te dünyanın kenar uzunluğunun ~%42'si, alanının
+ * ~%17'si görünüyor: 121 bölgenin yaklaşık 20'si. Eski haritada ×1'de 61
+ * bölgenin hepsi birden görünüyordu, yani ekran bugün ESKİSİNDEN SAKİN --
+ * dünya büyürken kalabalıklaşmadı.
+ */
+const ACILIS_OLCEGI = 2.4;
 
 export function DunyaHaritasi({
   regions,
@@ -149,6 +156,7 @@ export function DunyaHaritasi({
 
   const [gorunum, setGorunum] = useState<Gorunum>({ olcek: 1, dx: 0, dy: 0 });
   const kutuRef = useRef<HTMLDivElement>(null);
+  const acilisYapildi = useRef(false);
 
   /*
    * ETİKET SEYRELTME — çakışanı sustur.
@@ -223,6 +231,79 @@ export function DunyaHaritasi({
       dy: Math.max(-boyPay, Math.min(boyPay, g.dy)),
     };
   }
+
+  /**
+   * Bir bölgeyi ekranın ortasına getiren görünüm.
+   *
+   * Dönüşüm `translate(dx,dy) scale(s)` ve `transformOrigin: center`, yani
+   * yüzdelik p konumundaki bir nokta ekranda `merkez + (p-50)/100·W·s + d`
+   * yerine düşüyor. Onu merkeze eşitleyince d çıkıyor.
+   */
+  function ortala(x: number, y: number, olcek: number): Gorunum {
+    const kutu = kutuRef.current;
+    const en = kutu?.clientWidth ?? 0;
+    const boy = kutu?.clientHeight ?? en;
+    return sinirla({
+      olcek,
+      dx: (-(x - 50) / 100) * en * olcek,
+      dy: (-(y - 50) / 100) * boy * olcek,
+    });
+  }
+
+  /*
+   * AÇILIŞ YAKIN, uzak değil.
+   *
+   * Dünya 61'den 121 bölgeye çıktı (docs/12 §11.6) ve hepsini tek karede
+   * göstermek diyarı bir rozet kalabalığına çeviriyordu. Daha önemlisi:
+   * bir dünyanın büyük hissettirmesi, onu tek bakışta GÖREMEMENDEN
+   * geliyor. Harita artık senin toprağının üstünde açılıyor ve gerisini
+   * kaydırarak buluyorsun; "sığdır" düğmesi (⊡) bir dokunuşta bütünü
+   * gösteriyor.
+   *
+   * Bir KEZ çalışıyor: oyuncu haritayı kaydırdıktan sonra her veri
+   * tazelenmesinde onu eve geri fırlatmak, elinden haritayı almak olurdu.
+   */
+  useEffect(() => {
+    if (acilisYapildi.current || regions.length === 0) return;
+    const kutu = kutuRef.current;
+    if (!kutu || kutu.clientWidth === 0) return;
+    const ev0 = regions.find((r) => r.id === homeBolgeId) ?? regions[0];
+    if (!ev0) return;
+    acilisYapildi.current = true;
+    setGorunum(ortala(ev0.x, ev0.y, ACILIS_OLCEGI));
+    // Bağımlılık listesi bilerek dar: `ortala`/`sinirla` her çizimde
+    // yeniden kuruluyor ama içerikleri sabit, listeye eklemek etkiyi her
+    // karede tetikler ve haritayı oyuncunun elinden alırdı.
+  }, [regions, homeBolgeId]);
+
+  /*
+   * SEÇİLEN BÖLGE EKRANA GETİRİLİYOR.
+   *
+   * Harita yakın açılıp kaydırılabilir olunca yeni bir boşluk doğdu:
+   * bölgeyi her zaman oyuncunun parmağı seçmiyor. Omurga "şuraya saldır"
+   * diyor, ittifak ortak hedef işaretliyor, olay şeridi bir savaşı
+   * gösteriyor — hepsi `seciliId`yi değiştiriyor ve seçilen yer ekranın
+   * dışındaysa oyuncu hiçbir şey olmamış gibi görüyordu.
+   *
+   * Yalnız DIŞARIDAYSA kaydırılıyor: görünen bir bölgeyi ortalamak,
+   * oyuncunun kurduğu görüntüyü sebepsiz bozmak olurdu.
+   */
+  useEffect(() => {
+    if (seciliId == null) return;
+    const kutu = kutuRef.current;
+    if (!kutu || kutu.clientWidth === 0) return;
+    const r = regions.find((x) => x.id === seciliId);
+    if (!r) return;
+    const en = kutu.clientWidth;
+    const boy = kutu.clientHeight || en;
+    const PAY = 28; // kenara yapışık bir seçim de "dışarıda" sayılır
+    const sx = en / 2 + ((r.x - 50) / 100) * en * gorunum.olcek + gorunum.dx;
+    const sy = boy / 2 + ((r.y - 50) / 100) * boy * gorunum.olcek + gorunum.dy;
+    if (sx >= PAY && sx <= en - PAY && sy >= PAY && sy <= boy - PAY) return;
+    setGorunum(ortala(r.x, r.y, gorunum.olcek));
+    // Yalnız SEÇİM değişince: görünümü de dinleseydi oyuncunun her
+    // kaydırışında haritayı geri çekerdi.
+  }, [seciliId, regions]);
 
   function isaretciIndi(e: React.PointerEvent) {
     isaretciler.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
@@ -306,8 +387,77 @@ export function DunyaHaritasi({
     return liste;
   }, [regions]);
 
+  /*
+   * Ekran dışında kalan, oyuncuyu ilgilendiren yerler.
+   *
+   * Bölgenin ekrandaki yeri açılış hesabının tersi: merkez + (p-50)/100·W·s
+   * + d. Kutunun dışına düşüyorsa kenara yaslanıp yönü gösteriyoruz.
+   */
+  const disaridakiler = useMemo(() => {
+    const kutu = kutuRef.current;
+    if (!kutu || gorunum.olcek <= 1.02) return [];
+    const en = kutu.clientWidth;
+    const boy = kutu.clientHeight || en;
+    if (en === 0) return [];
+    const PAY = 18; // okun kenardan içeri payı
+
+    const adaylar: { anahtar: string; ad: string; x: number; y: number; renk: string }[] = [];
+    for (const y of yuruyusler) {
+      const h = regions.find((r) => r.id === y.toRegionId);
+      if (h) {
+        adaylar.push({
+          anahtar: `y${y.id}`,
+          ad: y.kind === 'return' ? 'Dönen ordun' : `Ordun ${h.name} yolunda`,
+          x: h.x,
+          y: h.y,
+          renk: y.kind === 'return' ? '#3ddc84' : '#e8524d',
+        });
+      }
+    }
+    const evim = regions.find((r) => r.id === homeBolgeId);
+    if (evim) adaylar.push({ anahtar: 'ev', ad: 'Kampın', x: evim.x, y: evim.y, renk: '#f5b731' });
+    for (const r of regions) {
+      if (r.isMine && r.id !== homeBolgeId) {
+        adaylar.push({ anahtar: `b${r.id}`, ad: r.name, x: r.x, y: r.y, renk: '#f5b731' });
+      }
+    }
+
+    const sonuc: {
+      anahtar: string;
+      ad: string;
+      x: number;
+      y: number;
+      renk: string;
+      ekranX: number;
+      ekranY: number;
+      aci: number;
+    }[] = [];
+    for (const a of adaylar) {
+      if (sonuc.length >= 4) break;
+      const sx = en / 2 + ((a.x - 50) / 100) * en * gorunum.olcek + gorunum.dx;
+      const sy = boy / 2 + ((a.y - 50) / 100) * boy * gorunum.olcek + gorunum.dy;
+      if (sx >= 0 && sx <= en && sy >= 0 && sy <= boy) continue; // zaten görünüyor
+      const aci = (Math.atan2(sy - boy / 2, sx - en / 2) * 180) / Math.PI;
+      sonuc.push({
+        ...a,
+        ekranX: Math.max(PAY, Math.min(en - PAY, sx)),
+        ekranY: Math.max(PAY, Math.min(boy - PAY, sy)),
+        aci,
+      });
+    }
+    return sonuc;
+  }, [regions, yuruyusler, homeBolgeId, gorunum]);
+
+  /*
+   * Eşikler AÇILIŞ ÖLÇEĞİNE göre. Eskiden 1,8 ve 1,4'tü ve harita ×1'de
+   * açılıyordu; şimdi ×2,4'te açılıyor, yani o eşiklerle oyuncu daha ilk
+   * karede "yakın" kademesine düşüyor ve tam adlarla sahip etiketleri
+   * birden geliyordu — açılış kalabalık okunuyordu. Kademeler kaydı:
+   * açılış artık ORTA (kısa adlar, sahip etiketi yok) ve tam ayrıntı bir
+   * yakınlaştırma uzakta duruyor.
+   */
   const kademe: 'uzak' | 'orta' | 'yakin' =
-    gorunum.olcek >= 1.8 ? 'yakin' : gorunum.olcek >= 1.4 ? 'orta' : 'uzak';
+    gorunum.olcek >= 2.8 ? 'yakin' : gorunum.olcek >= 1.35 ? 'orta' : 'uzak';
 
   return (
     <div className="oyuk relative overflow-hidden rounded-xl border border-kenar">
@@ -484,6 +634,40 @@ export function DunyaHaritasi({
           </div>
         </div>
       </div>
+
+      {/* --- Ekran dışı işaretler ---
+          Kaydırılan bir haritanın olmazsa olmazı. Dünya tek karede
+          görünmüyorsa oyuncu kaybolur: ordusunun nereye gittiğini,
+          toprağının hangi yönde kaldığını bilemez. Ekranın kenarına konan
+          küçük bir ok bunu tek bakışta söylüyor ve dokununca oraya
+          götürüyor.
+
+          Kalabalık yapmıyor: en fazla dört tane ve öncelik sırası belli —
+          önce yoldaki ordular, sonra ev, sonra öteki toprakların. */}
+      {disaridakiler.length > 0 && (
+        <div className="pointer-events-none absolute inset-0">
+          {disaridakiler.map((d) => (
+            <button
+              key={d.anahtar}
+              type="button"
+              onClick={() => setGorunum(ortala(d.x, d.y, Math.max(gorunum.olcek, 1.6)))}
+              aria-label={`${d.ad} — haritada göster`}
+              title={`${d.ad} — haritada göster`}
+              /* Dokunma hedefi 44, görünen madalyon 32 — bölge işaretçisiyle
+                 aynı kural (görsel denetim ölçüyor). */
+              className="bas pointer-events-auto absolute flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full"
+              style={{ left: d.ekranX, top: d.ekranY }}
+            >
+              <span
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-gece/70 text-[13px] shadow-[0_2px_6px_rgba(0,0,0,0.5)]"
+                style={{ background: d.renk, color: '#17100c' }}
+              >
+                <span style={{ transform: `rotate(${d.aci}deg)` }}>➤</span>
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Yakınlaştırma düğmeleri: parmakla yakınlaştırmayı bilmeyen ya da tek
           eliyle oynayan oyuncu da haritaya yaklaşabilmeli. */}

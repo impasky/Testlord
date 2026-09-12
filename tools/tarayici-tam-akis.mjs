@@ -226,6 +226,17 @@ const hedef = harita.regions
 // Bölgeler artık SVG grubu değil gerçek <button>; kimliğiyle bulunuyor.
 // Ada göre aramıyoruz çünkü görünür etiket yakınlık kademesine göre
 // gizlenebiliyor — kimlik her ölçekte duruyor.
+//
+// ÖNCE "SIĞDIR": harita artık oyuncunun toprağına yakınlaşmış açılıyor
+// (docs/12 §11.6) ve uzaktaki bir bölge ekranın dışında kalıyor. Oyuncu
+// oraya kaydırarak gider; test tek dokunuşla bütün dünyayı getiriyor.
+// Zorlamalı tıklama DEĞİL: ekran dışındaki bir düğmeye basmak, oyuncunun
+// yapamayacağı bir şeyi ölçmek olurdu.
+const sigdir = page.getByRole('button', { name: 'Haritayı sığdır' });
+if (await sigdir.count()) {
+  await sigdir.click();
+  await page.waitForTimeout(500);
+}
 await page.locator(`[data-bolge="${hedef.id}"]`).click();
 await page.waitForTimeout(900);
 kontrol(

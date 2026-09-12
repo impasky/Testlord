@@ -79,18 +79,18 @@ KOK = Path(__file__).resolve().parent.parent
 HEDEF = KOK / "data" / "world-map.json"
 
 TOHUM = 20260911
-BOLGE_SAYISI = 61
+BOLGE_SAYISI = 121
 
 # --- Serpinti ---------------------------------------------------------
 # Arazi basina EN KUCUK ARALIK (yuzde). Ovada sik, dagda seyrek.
-ARALIK = {OVA: 8.6, ORMAN: 9.6, DAG: 11.2}
+ARALIK = {OVA: 6.1, ORMAN: 6.8, DAG: 7.9}
 ADAY = 60          # her nokta icin atilan aday sayisi (Mitchell)
 KENAR_PAY = 6.5    # haritanin kenarina bu kadar yaklasilmaz (yuzde)
 KARA_ORANI = 0.72  # isaretcinin altindaki alanin bu kadari kara olmali
 ISARET_YARICAP = 6 # isaretcinin zeminde kapladigi yaricap (piksel)
 
 # --- Komsuluk ---------------------------------------------------------
-EN_UZUN_KENAR = 17.0   # bundan uzunu komsuluk degil
+EN_UZUN_KENAR = 12.0   # bundan uzunu komsuluk degil
 DENIZ_PAYI = 0.22      # kenarin bu kadari denizse kara yolu yok
 DAG_PAYI = 0.34        # kenarin bu kadari dagsa bu bir GECIT
 ORNEK = 24             # kenar uzerinde kac nokta orneklenir
@@ -100,8 +100,12 @@ EN_AZ_KOMSU = 2        # cikmaz sokak olmasin: tek komsulu bolge birakilmiyor
 # haritanin bir ucundan obur ucuna 58 birimlik bir cizgi cekildi: iki bolge
 # "komsu" oluyor ama aralarinda dort bolge duruyor. Komsuluk bitisiklik
 # demek; uzaktan bakisan iki yer komsu degildir.
-EN_UZUN_ONARIM = 22.0
-EN_COK_CAP = 10        # haritanin capi; buyudukce yuruyus sureleri gerilir
+EN_UZUN_ONARIM = 15.5
+EN_COK_CAP = 15        # haritanin capi; buyudukce yuruyus sureleri gerilir
+# Cap 15 bir hesaptan cikiyor: yuruyus suresi adim basina 12 dakika
+# (`balance.json` yuruyus.dakika_adim_basina) ve tavan 360 dakika. 15 adim
+# = 180 dakika, yani en uzak kose uc saat. Tavanin yarisi; buyuk dunya
+# uzak demek ama ulasilmaz demek degil.
 
 # --- Vilayetler -------------------------------------------------------
 VILAYETLER = ["kuzeymark", "demirvadi", "gunbati", "aksu", "karaorman", "tasgecit"]
@@ -119,7 +123,7 @@ VILAYET_ADI = {
 # Sayilar ESKI HARITANIN AYNISI. Tur dagilimi dengeye giriyor (gelir,
 # tahkimat, ilk fetih zorlugu); haritanin sekli degisirken ekonominin
 # agirligi degismemeli.
-TUR_HEDEFI = {"tarla": 16, "sehir": 14, "koy": 12, "maden": 11, "kale": 7}
+TUR_HEDEFI = {"tarla": 32, "sehir": 28, "koy": 24, "maden": 22, "kale": 14}
 
 # --- Denge: her sey TAHT'A UZAKLIKTAN ---------------------------------
 GELIR_CARPANI = {0: 3.0, 1: 2.0, 2: 1.5, 3: 1.2}
@@ -149,26 +153,38 @@ ADLAR = {
     "maden": [
         "Demirtaş", "Karakaya", "Gümüşoluk", "Bakırtepe", "Çeliktaş", "Kurşunlu",
         "Taşocağı", "Demirocak", "Çakmaktaş", "Madenkuyu", "Kırıkkaya", "Közlüce",
-        "Sarpkaya", "Karataş",
+        "Sarpkaya", "Karataş", "Tuncbeli", "Gümüşdere", "Bakırdağ", "Kömürlük",
+        "Yalçınkaya", "Cevherli", "Demirbel", "Kayaardı", "Örensivri", "Taşbaşı",
+        "Ocaklı", "Çakılkaya", "Mermerli", "Kavlaktaş",
     ],
     "koy": [
         "Çamlıbel", "Meşelik", "Kızılçam", "Ardıçlı", "Gürgenli", "Kavaklı",
         "Söğütlü", "Fındıklı", "Palamutlu", "Karaağaç", "Çınaraltı", "Kestanelik",
-        "Yabanardıç", "Dutluca", "Pelitli",
+        "Yabanardıç", "Dutluca", "Pelitli", "Kayınlık", "Ihlamurlu", "Alıçlı",
+        "Böğürtlen", "Kuşburnu", "Sarıçam", "Akçakavak", "Eğrigürgen", "Yaşlımeşe",
+        "Çakmaklı", "Tozlukoru", "Kurtboğan", "Gökçepelit", "Yaylakonak", "Sazlıdere",
     ],
     "tarla": [
         "Buğdayova", "Yoncalı", "Altınbaşak", "Ekinlik", "Harmanlı", "Başakçayır",
         "Arpalık", "Sarıova", "Bereketli", "Çayırbaşı", "Darıova", "Tarlabaşı",
         "Gökçeova", "Ballıova", "Akçaova", "Üzümlü", "Susamlık", "Otluca",
+        "Bostanlı", "Nadaslı", "Sapçayır", "Buğdaylı", "Çeltikli", "Mercimekli",
+        "Nohutlu", "Pancarlı", "Ekinbaşı", "Samanlık", "Taneli", "Kekikova",
+        "Sütlüce", "Yemlik", "Kuyulukır", "Beyazbaşak", "Bolluova", "Verimli",
     ],
     "sehir": [
         "Akpazar", "Kervanbaşı", "Çarşıkent", "Handibi", "Bezirgan", "Altınçarşı",
         "Gümüşliman", "Tuzlaburnu", "Denizkapı", "Mercanlı", "Yelkenli", "Körfezkent",
-        "Fenerbaşı", "Balıkçıburnu", "Tuzpazarı", "Gemlik",
+        "Fenerbaşı", "Balıkçıburnu", "Tuzpazarı", "Gemlik", "Kalafatlı", "Demirliman",
+        "Sarıkervan", "Dörtyol", "Köprübaşı", "Kantarcı", "Tezgâhlı", "Boyacılar",
+        "Urganlı", "Halıcılar", "Bakırcılar", "Tellallar", "Konaklı", "Menzilhan",
+        "İskelebaşı", "Sarraflar", "Camlıçarşı", "Kösedağıtı",
     ],
     "kale": [
         "Demirkapı", "Sarpgeçit", "Kartalyuva", "Boğazkale", "Gedikkale",
-        "Zindankapı", "Şahinkaya", "Dikmen Kalesi", "Sıradağ Kalesi",
+        "Zindankapı", "Şahinkaya", "Dikmen Kalesi", "Sıradağ Kalesi", "Yalçınkapı",
+        "Kuzgunkaya", "Bekçitepe", "Gözcükule", "Sarphisar", "Dörtburç",
+        "Çelikkapı", "Aslanyatağı", "Karakule",
     ],
 }
 
