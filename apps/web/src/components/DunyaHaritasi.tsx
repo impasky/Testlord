@@ -573,14 +573,49 @@ export function DunyaHaritasi({
                     opacity="0.65"
                     vectorEffect="non-scaling-stroke"
                   />
-                  <circle
-                    cx={bx + (hx - bx) * oran}
-                    cy={by + (hy - by) * oran}
-                    r={1.1 / gorunum.olcek}
-                    fill={renk}
-                    stroke="#17100c"
-                    strokeWidth={0.4 / gorunum.olcek}
-                  />
+                  {/*
+                    SANCAK. Önce düz bir daireydi ve yoldaki ordu haritada
+                    "ilerleyen bir nokta" olarak okunuyordu; oyuncunun
+                    gördüğü şey bir ordu değil bir imleçti.
+
+                    Sancak yönü de taşıyor: direk dik, bez gidiş yönüne
+                    doğru. Nereden nereye gittiğini çizgiyi takip etmeden
+                    söylüyor. Dönüşte yeşil ve bez ters yöne bakıyor.
+
+                    Ölçek TERS: harita yakınlaşınca sancak büyümüyor —
+                    işaretçilerle aynı kural.
+                  */}
+                  <g
+                    transform={`translate(${bx + (hx - bx) * oran} ${by + (hy - by) * oran}) scale(${1 / gorunum.olcek})`}
+                  >
+                    {/* Direk */}
+                    <line
+                      x1={0}
+                      y1={0.6}
+                      x2={0}
+                      y2={-2.6}
+                      stroke="#17100c"
+                      strokeWidth={0.55}
+                      strokeLinecap="round"
+                    />
+                    {/* Bez: gidiş yönüne doğru dalgalanıyor */}
+                    <path
+                      d={`M0 -2.5 L${hx >= bx ? 2.1 : -2.1} -1.85 L0 -1.2 Z`}
+                      fill={renk}
+                      stroke="#17100c"
+                      strokeWidth={0.3}
+                      strokeLinejoin="round"
+                    />
+                    {/* Ayak: sancağın yere bastığı nokta */}
+                    <circle
+                      cx={0}
+                      cy={0.6}
+                      r={0.55}
+                      fill={renk}
+                      stroke="#17100c"
+                      strokeWidth={0.3}
+                    />
+                  </g>
                 </g>
               );
             })}
@@ -735,6 +770,21 @@ function BolgeIsareti({
   const oncelik = secili ? 0 : taht ? 1 : r.isMine ? 2 : r.owner ? 3 : 4;
   // Seçili ve taht her ölçekte büyük: ikisi de "buraya bak" demek.
   const madalyon = kademe === 'uzak' && !secili && !taht ? 24 : 32;
+  /*
+   * SUR HALKASI.
+   *
+   * Tahkimat savaşın en büyük tek kalemi olabiliyor — bir kalenin surları
+   * savunmaya %40 katıyor — ama haritada 1. seviye tarlayla 5. seviye kale
+   * aynı görünüyordu. Oyuncu bunu ancak bölgeye dokunup paneli açınca,
+   * yani hedefini SEÇTİKTEN sonra görüyordu.
+   *
+   * Halka kalınlığı tahkimatla büyüyor: taş rengi bir ikinci çember.
+   * Sayı yazmıyoruz — madalyon 24 piksel ve üstünde zaten seviye rozeti
+   * var; kalınlık "burası sert" demeye yetiyor, sayı panelde duruyor.
+   */
+  const sur = r.fortressBonus ?? 0;
+  const surKalinligi = sur <= 0 ? 0 : sur < 0.2 ? 2 : sur < 0.35 ? 3 : 4;
+  const surYazisi = sur > 0 ? `, tahkimat +%${Math.round(sur * 100)}` : '';
   const halka = r.isMine
     ? '#f5b731'
     : r.owner
@@ -797,11 +847,11 @@ function BolgeIsareti({
        */
       aria-label={`${r.name} — ${r.type}, seviye ${r.level}, ${
         r.owner ? `sahibi ${r.owner.name}` : 'sahipsiz'
-      }, ${r.distance} adım`}
+      }, ${r.distance} adım${surYazisi}`}
       data-bolge={r.id}
       title={`${r.name} — ${r.type}, seviye ${r.level}, ${
         r.owner ? `sahibi ${r.owner.name}` : 'sahipsiz'
-      }, ${r.distance} adım`}
+      }, ${r.distance} adım${surYazisi}`}
     >
       {/*
         Madalyon UZAKTA KÜÇÜK.
@@ -815,7 +865,7 @@ function BolgeIsareti({
         44 piksellik daire yukarıda ve oralı değil.
       */}
       <span
-        className="relative flex items-center justify-center rounded-full text-parsomen shadow-[0_2px_6px_rgba(0,0,0,0.55)]"
+        className="relative flex items-center justify-center rounded-full text-parsomen"
         style={{
           width: madalyon,
           height: madalyon,
@@ -823,6 +873,11 @@ function BolgeIsareti({
           border: `${secili ? 3 : 2}px solid ${secili ? '#fff3cf' : halka}`,
           outline: ortakHedef ? '2px dashed #7cc4f0' : undefined,
           outlineOffset: '2px',
+          // Sur halkası madalyonun DIŞINDA: kenarlık sahipliği söylüyor,
+          // ikisi aynı çizgiye binerse ikisi de okunmaz.
+          boxShadow: surKalinligi
+            ? `0 0 0 ${surKalinligi}px rgba(196,188,172,0.85), 0 2px 6px rgba(0,0,0,0.55)`
+            : '0 2px 6px rgba(0,0,0,0.55)',
         }}
       >
         <TipIkonu tip={r.type} boyut={kademe === 'uzak' ? 13 : 16} />

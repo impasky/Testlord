@@ -943,6 +943,8 @@ export const api = {
         odul: Resources | null;
         yarali: Army | null;
         dusenItemId: string | null;
+        /** Düşen parçanın kendisi: ganimet sahnesi görselini buradan çiziyor. */
+        dusenParca: { slot: string; tier: number; rarity: string } | null;
         arriveAt: string;
       }[];
     }>('/akin'),

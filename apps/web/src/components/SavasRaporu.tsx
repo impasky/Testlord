@@ -398,6 +398,24 @@ function sebepCumlesi(s: SavasSebebi): ReactNode {
           bölge el değiştirmedi, yalnızca yağma alındı.
         </>
       );
+    case 'donum':
+      /*
+       * Savaşın AKIŞI. Öteki cümleler sabit şartları anlatıyor; bu, beş
+       * turluk çubuk grafiğini tek cümleye çeviriyor — oyuncu grafiği
+       * okumak zorunda kalmasın diye.
+       */
+      return s.lehte ? (
+        <>
+          Makas {g(`${s.turNo}. turda`)} en çok açıldı: {g(s.guc!.benim.toLocaleString('tr-TR'))}{' '}
+          güce karşı {s.guc!.onun.toLocaleString('tr-TR')}.
+        </>
+      ) : (
+        <>
+          Karşı taraf {g(`${s.turNo}. turda`)} en çok öne geçti:{' '}
+          {g(s.guc!.onun.toLocaleString('tr-TR'))} güce karşı {s.guc!.benim.toLocaleString('tr-TR')}
+          .
+        </>
+      );
     case 'tahkimat':
       return s.lehte ? (
         <>Tahkimatın savunmaya {g(`+%${Math.round(s.deger! * 100)}`)} kattı.</>

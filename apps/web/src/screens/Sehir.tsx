@@ -725,6 +725,40 @@ function BinaIsareti({
         }}
       />
 
+      {/*
+        İSKELE — kuyruktaki bina inşa hâlinde görünsün.
+
+        Bekleme süresi sayıyla anlatılıyordu ("2dk 14sn") ve şehirde
+        hiçbir izi yoktu: 1. seviye kışla ile yükseltilmekte olan kışla
+        birebir aynı duruyordu. Oyuncunun beklediği şey ekranda yoksa
+        beklemek boş bir sayaç oluyor.
+
+        Çizim değil ÇİZGİ: yeni bir görsel üretmiyoruz, binanın üstüne
+        ahşap bir iskele çiziliyor. Bütün binalar için çalışıyor, hiçbiri
+        için ayrı dosya gerekmiyor.
+      */}
+      {mesgul && (
+        <svg
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-10 h-full w-full"
+        >
+          <g stroke="#c79a5a" strokeWidth={2.4} strokeLinecap="round" fill="none" opacity={0.92}>
+            {/* Dikmeler */}
+            <line x1={16} y1={96} x2={16} y2={26} />
+            <line x1={84} y1={96} x2={84} y2={26} />
+            {/* Kat kirişleri */}
+            <line x1={13} y1={68} x2={87} y2={68} />
+            <line x1={13} y1={44} x2={87} y2={44} />
+            {/* Çapraz destek: iskeleyi "iki çizgi" olmaktan çıkaran şey */}
+            <line x1={16} y1={68} x2={84} y2={44} strokeWidth={1.6} opacity={0.75} />
+            {/* Tepe kalası */}
+            <line x1={22} y1={26} x2={78} y2={26} strokeWidth={1.8} />
+          </g>
+        </svg>
+      )}
+
       {sprite ? (
         <img
           src={`/gorseller/binalar/${ad}.webp`}

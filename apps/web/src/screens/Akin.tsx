@@ -37,8 +37,28 @@ import {
   Kart,
   formatKalan,
   formatSayi,
+  nadirlikRengi,
 } from '../components/ui';
+import { Gorsel } from '../components/Gorsel';
 import { Zemin } from '../components/Zemin';
+
+/**
+ * Ganimet hapı — bir kaynak kalemi, ikonu ve sayısıyla.
+ *
+ * Sıfır olan kalemi ÇİZMİYOR: "0 demir" bir bilgi değil, bir gürültü.
+ */
+function GanimetHapi({ ikon, renk, deger }: { ikon: ReactNode; renk: string; deger: number }) {
+  if (deger <= 0) return null;
+  return (
+    <span
+      className="flex items-center gap-1 rounded-lg border border-kenar/70 bg-gece/40 px-1.5 py-1"
+      style={{ color: renk }}
+    >
+      {ikon}
+      <span className="tabular text-[12px] font-bold">{formatSayi(deger)}</span>
+    </span>
+  );
+}
 import { IkonAltin, IkonDemir, IkonErzak, IkonSure } from '../components/Ikonlar';
 
 /** Ordunun toplam birim sayısı. */
@@ -170,12 +190,61 @@ export function Akin({ lord, onGuncelle }: { lord: LordState; onGuncelle: () => 
                     {s.kazanildi ? 'zafer' : 'yenilgi'}
                   </Hap>
                 </div>
+                {/*
+                  GANİMET SAHNESİ.
+
+                  Önce tek satır düz yazıydı: "1.240 altın · 310 demir ·
+                  180 erzak · bir ekipman düştü". Akının bütün karşılığı
+                  o satırdı ve okunmuyordu — özellikle "bir ekipman
+                  düştü", yani en heyecanlı kısım, envantere gidip
+                  aramayı gerektiren bir dipnottu.
+
+                  Şimdi eline geçenler tek tek duruyor: her kaynak kendi
+                  ikonuyla, düşen parça KENDİ GÖRSELİYLE. Aynı veri,
+                  bakılabilir hâlde.
+                */}
                 {s.kazanildi && s.odul && (
-                  <p className="mt-1 text-[12px] text-solgun">
-                    {formatSayi(s.odul.altin)} altın · {formatSayi(s.odul.demir)} demir ·{' '}
-                    {formatSayi(s.odul.erzak)} erzak
-                    {s.dusenItemId && ' · bir ekipman düştü'}
-                  </p>
+                  <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                    <GanimetHapi
+                      ikon={<IkonAltin boyut={13} />}
+                      renk="var(--color-altin)"
+                      deger={s.odul.altin}
+                    />
+                    <GanimetHapi
+                      ikon={<IkonDemir boyut={13} />}
+                      renk="var(--color-mavi)"
+                      deger={s.odul.demir}
+                    />
+                    <GanimetHapi
+                      ikon={<IkonErzak boyut={13} />}
+                      renk="var(--color-yesil)"
+                      deger={s.odul.erzak}
+                    />
+                    {s.dusenParca && (
+                      <span
+                        className="flex items-center gap-1.5 rounded-lg border px-1.5 py-1"
+                        style={{
+                          borderColor: nadirlikRengi(s.dusenParca.rarity),
+                          background: 'rgba(0,0,0,0.25)',
+                        }}
+                        title={`${s.dusenParca.slot} · T${s.dusenParca.tier}`}
+                      >
+                        <Gorsel
+                          tur="ekipman"
+                          ad={`${s.dusenParca.slot}_t${s.dusenParca.tier}`}
+                          alt=""
+                          boyut={22}
+                          yedek={<span className="text-[13px]">⚔</span>}
+                        />
+                        <span
+                          className="baslik text-[11px]"
+                          style={{ color: nadirlikRengi(s.dusenParca.rarity) }}
+                        >
+                          T{s.dusenParca.tier}
+                        </span>
+                      </span>
+                    )}
+                  </div>
                 )}
                 {orduSayisi(s.yarali) > 0 && (
                   <p className="mt-0.5 text-[11.5px] text-turuncu">

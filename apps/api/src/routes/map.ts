@@ -440,6 +440,20 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       garrison = foto.garrison as Army;
     }
 
+    /*
+     * KOMŞUYLA İLK TEMAS.
+     *
+     * Diyar kalabalık ama sessizdi: başka bir lordun varlığını ancak
+     * saldırıya uğrayınca hissediyordun. Oysa birinin toprağına BAKMASI
+     * da bir olay ve bedava: uç zaten çağrılıyor.
+     *
+     * "Falanca lord Akpınar'a göz dikti" satırı iki iş yapıyor — diyarı
+     * canlandırıyor ve bir uyarı veriyor. Mekanik hiçbir şey değişmiyor.
+     *
+     * Beklenmiyor (`void`): yan etki, bölge panelini geciktirmemeli.
+     */
+    void gozDikildi(lordId, region, benim, muttefik);
+
     return {
       ...region,
       isMine: benim,
@@ -1211,4 +1225,50 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
     if (battle.attackerLordId !== lordId && battle.defenderLordId !== lordId) throw hata.yetkisiz();
     return battle;
   });
+}
+
+/**
+ * "Falanca lord toprağına baktı" olayı — bölge sahibine.
+ *
+ * KISITLAR, çünkü bu uç her panel açılışında çağrılıyor:
+ *   - yalnız OYUNCU sahipli bölge (NPC'nin haberi olmaz),
+ *   - kendi toprağına bakmak olay değil,
+ *   - müttefikin bakması olay değil (ittifakta zaten birbirini görüyorlar),
+ *   - aynı çift için GÜNDE BİR: yoksa paneli beş kez açan biri karşı
+ *     tarafın olay akışını doldururdu ve akış okunmaz olurdu.
+ *
+ * Hata YUTULUYOR: bu bir yan etki, bölge panelini açmayı engellememeli.
+ */
+async function gozDikildi(
+  bakanId: string,
+  region: { mapId: number; name: string; ownerLordId: string | null },
+  benim: boolean,
+  muttefik: boolean,
+): Promise<void> {
+  try {
+    if (benim || muttefik || !region.ownerLordId) return;
+    const gunOnce = new Date(Date.now() - 24 * 3_600_000);
+    const zatenVar = await prisma.event.findFirst({
+      where: {
+        lordId: region.ownerLordId,
+        kind: 'goz_dikildi',
+        createdAt: { gte: gunOnce },
+        payload: { path: ['bakanId'], equals: bakanId },
+      },
+      select: { id: true },
+    });
+    if (zatenVar) return;
+    const bakan = await prisma.lord.findUnique({
+      where: { id: bakanId },
+      select: { name: true },
+    });
+    if (!bakan) return;
+    await pushEvent(region.ownerLordId, 'goz_dikildi', {
+      mesaj: `${bakan.name}, ${region.name} üzerine göz dikti.`,
+      bakanId,
+      bolgeId: region.mapId,
+    });
+  } catch {
+    // Yan etki: bölge paneli açılmaya devam etmeli.
+  }
 }

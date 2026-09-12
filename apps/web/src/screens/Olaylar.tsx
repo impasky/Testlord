@@ -34,6 +34,9 @@ export const OLAY_RENGI: Record<string, string> = {
   ittifak_ayrilma: 'var(--color-solgun)',
   ittifak_lider: 'var(--color-altin)',
   ittifak_hedef: 'var(--color-mavi)',
+  /* Komşunun toprağına bakması: tehdit değil ama haber. Turuncu, çünkü
+     kırmızı "saldırıya uğradın" için ayrılmış. */
+  goz_dikildi: 'var(--color-turuncu)',
   ittifak_cikarildin: 'var(--color-turuncu)',
   ittifak_basvuru: 'var(--color-mavi)',
   ittifak_basvuru_kabul: 'var(--color-yesil)',

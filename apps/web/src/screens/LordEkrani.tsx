@@ -36,7 +36,7 @@ import {
   nadirlikRengi,
 } from '../components/ui';
 import { Gorsel } from '../components/Gorsel';
-import { addanPortre } from '@lordlar/shared';
+import { kusamSeviyesi } from '@lordlar/shared';
 import { OrduSahnesi } from '../components/OrduSahnesi';
 import { Arma } from '../components/Arma';
 import { ArmaSecici } from '../components/ArmaSecici';
@@ -121,7 +121,12 @@ function YoklukKarti({ y, onGit }: { y: YoklukOzeti; onGit: (s: Sekme) => void }
  * zararsız); sayı dosyalardan büyük olursa var olmayan bir dosya istenir
  * ve Gorsel yedeğe düşer — yine sessiz, yine zararsız.
  */
-const PORTRE_SAYISI = 5;
+/*
+ * Kuşam hâllerinin adları. Görselle aynı sırada (`lord_1..lord_5`) ve
+ * sayıyı değil ANLAMI söylüyorlar: "kuşam 3" bir şey ifade etmiyor,
+ * "usta işi" ediyor.
+ */
+const KUSAM_ADI = ['Çaylak', 'Tecrübeli', 'Usta işi', 'Kumandan', 'Efsanevi'] as const;
 
 export function LordEkrani({
   lord,
@@ -195,6 +200,14 @@ export function LordEkrani({
   }
 
   const kusanilan = new Map(lord.equippedItems?.map((i) => [i.slot, i]) ?? []);
+  /*
+   * Lordun figürü KUŞAMDAN geliyor: altı yuvanın tier ortalaması
+   * (`kusamSeviyesi`). Yuva boşsa 0 sayılıyor, yani hiçbir şey kuşanmamış
+   * lord 1. hâlde — paçavralar içinde. Bu, ekipman yükseltmenin ekrandaki
+   * tek görünür karşılığı.
+   */
+  const kusam = kusamSeviyesi(lord.equippedItems ?? []);
+  const kusamAdi = KUSAM_ADI[kusam - 1] ?? KUSAM_ADI[0]!;
 
   /**
    * İLK DÖNGÜ: oyuncu kaynak → asker → saldırı → bölge zincirini bir kez
@@ -212,25 +225,42 @@ export function LordEkrani({
           Denetimin en büyük bulgusu buydu: oyunun adı "Lordlar Çağı" ve
           ana sayfada lord YOKTU. Ekranda tek bir görsel bile
           bulunmuyordu; oyuncu kendi lorduna değil bir tabloya bakıyordu.
-          Portre addan türüyor (kimlik.ts → addanPortre), arma zaten
-          öyleydi: ikisi de kayıtta yer tutmuyor ve hep aynı kalıyor. */}
-      <Kart className="p-3">
-        <div className="flex items-center gap-3">
-          <div className="relative shrink-0">
+
+          İKİ DÜZELTME:
+
+          1. Figür artık ADDAN değil KUŞAMDAN geliyor. Beş lord görseli
+             `lord_1..lord_5` beş ayrı adam değil, AYNI adamın beş kuşam
+             hâli — paçavradan göktaşı zırhına. Ad hash'iyle birini seçmek
+             o beş aşamayı beş rastgele portreye çeviriyordu, yani
+             ekipman yükseltmenin görünür karşılığı hiç yoktu. Şimdi
+             demirhaneden çıkan her parça bu figürü değiştiriyor.
+
+          2. Figür 56 pikselden ekranın tepesindeki bir SAHNEYE çıktı.
+             Oyuncunun kendi lorduna bakması gereken tek yer burası ve
+             pul büyüklüğünde bir avatarla bakılmıyor. */}
+      <Kart className="overflow-hidden p-0">
+        <div className="relative">
+          <div className="relative flex h-[190px] items-end justify-center bg-[radial-gradient(ellipse_at_50%_85%,#3a2b1b_0%,#241a12_55%,#1a120c_100%)]">
             <Gorsel
               tur="lord"
-              ad={`lord_${addanPortre(lord.name, PORTRE_SAYISI)}`}
-              alt={lord.name}
-              boyut={56}
-              className="rounded-xl"
-              yedek={<IkonNavLord boyut={40} />}
+              ad={`lord_${kusam}`}
+              alt={`${lord.name} — ${kusamAdi}`}
+              boyut={190}
+              className="h-full w-auto object-contain"
+              yedek={<IkonNavLord boyut={72} />}
             />
-            {/* Arma portrenin köşesinde: ikisi tek bir kimlik. */}
-            <span className="absolute -bottom-1 -right-1">
-              <Arma arma={lord.arma} boyut={24} />
+            {/* Arma köşede: figür ve arma tek bir kimlik. */}
+            <span className="absolute top-2 right-2">
+              <Arma arma={lord.arma} boyut={30} />
+            </span>
+            {/* Kuşam rozeti: figürün NEDEN değiştiğini söylüyor. Değişen
+                ama sebebi yazmayan bir görsel, oyuncunun gözünde
+                rastgeledir. */}
+            <span className="baslik absolute top-2 left-2 rounded-lg bg-gece/80 px-2 py-1 text-[11px] text-altin">
+              {kusamAdi}
             </span>
           </div>
-          <div className="min-w-0 flex-1">
+          <div className="p-3">
             <div className="baslik truncate text-[16px] text-parsomen">{lord.name}</div>
             <div className="baslik text-[13px] text-altin">{lord.unvan.ad}</div>
             <p className="mt-0.5 text-[11px] leading-snug text-solgun">{lord.unvan.aciklama}</p>

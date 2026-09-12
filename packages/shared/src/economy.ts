@@ -200,6 +200,27 @@ export function accrue(input: AccrualInput): AccrualResult {
   };
 }
 
+/**
+ * Erzak tükenmesine kaç SAAT kaldığı. Akış artıdaysa ya da zaten bittiyse null.
+ *
+ * Neden var: kaynak çubuğu "azalıyor" diyordu ve bu bir uyarı değil bir
+ * gözlemdi. Oyuncu ne zaman biteceğini ve bitince ne olacağını bilmeden
+ * karar veremez — "altı saat sonra biter, sonra saatte %5 firar" ise bir
+ * plan. Mekanik zaten vardı (`accrue` → `starving` → `applyDesertion`),
+ * yalnız söylenmiyordu.
+ *
+ * Sayı MOTORDAN geliyor, arayüzde yeniden hesaplanmıyor: aynı bölmeyi iki
+ * yere yazmak er ya da geç ikisini ayırır.
+ */
+export function erzakTukenmesiSaat(stok: number, saatlikNet: number): number | null {
+  if (saatlikNet >= 0) return null;
+  if (stok <= 0) return null; // zaten bitti; orası açlık hâli, uyarı değil
+  return stok / -saatlikNet;
+}
+
+/** Aç ordunun saatlik firar oranı (0–1). Uyarı metni bunu söylüyor. */
+export const ERZAK_FIRAR_ORANI: number = B.erzak_acligi.saatlik_firar_orani;
+
 /** Açlık firarını orduya uygular. Her birim tipinden en az 1 kalır. */
 export function applyDesertion(army: Army, rate: number): Army {
   if (rate <= 0) return army;

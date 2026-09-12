@@ -826,6 +826,17 @@ export function Harita({
               <span className="h-2.5 w-2.5 rounded-full border-2 border-solgun/50" /> sahipsiz
             </span>
             <span>⛨ korumalı</span>
+            {/* Sur halkası: tahkimatlı bölge madalyonun dışında taş rengi
+                bir çember taşıyor. Savaşın en büyük tek kalemi olabiliyor,
+                haritada görünmemesi oyuncuyu hedefini seçtikten sonra
+                şaşırtıyordu. */}
+            <span className="flex items-center gap-1">
+              <span
+                className="h-2.5 w-2.5 rounded-full border border-solgun/60"
+                style={{ boxShadow: '0 0 0 2px rgba(196,188,172,0.85)' }}
+              />{' '}
+              surlu
+            </span>
             {/* Geçit göstergede, çünkü haritadaki turuncu kesik çizgi bir süs
                 değil bir KURAL: dağın öte yanına ancak oradan geçiliyor. */}
             <span className="flex items-center gap-1">

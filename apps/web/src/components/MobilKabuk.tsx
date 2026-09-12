@@ -17,7 +17,7 @@ import {
   IkonNavMalikane,
   IkonSohret,
 } from './Ikonlar';
-import { ANA_SEKME, type AltSekme } from '@lordlar/shared';
+import { ANA_SEKME, ERZAK_FIRAR_ORANI, erzakTukenmesiSaat, type AltSekme } from '@lordlar/shared';
 import { Ilerleme, kisaSayi } from './ui';
 
 /**
@@ -101,6 +101,18 @@ function KaynakSayaci({
    * (docs/11 §2.3 G3).
    */
   const durum = saatlik < 0 ? 'kritik' : dolu ? 'israf' : null;
+  /*
+   * "Azalıyor" bir GÖZLEMDİ, uyarı değil. Oyuncu ne zaman biteceğini ve
+   * bitince ne olacağını bilmeden karar veremez. Sayı motordan geliyor
+   * (`erzakTukenmesiSaat`), burada yeniden hesaplanmıyor.
+   */
+  const kalanSaat = erzakTukenmesiSaat(canli, saatlik);
+  const bitisYazisi =
+    kalanSaat === null
+      ? null
+      : kalanSaat < 1
+        ? `${Math.max(1, Math.round(kalanSaat * 60))} dk sonra biter`
+        : `${Math.round(kalanSaat)} sa sonra biter`;
 
   return (
     <div
@@ -113,7 +125,9 @@ function KaynakSayaci({
       }`}
       title={`${ad}: ${Math.floor(canli)} (${saatlik >= 0 ? '+' : ''}${Math.round(saatlik)}/sa)${
         durum === 'kritik'
-          ? ' — eksiye gidiyor'
+          ? bitisYazisi
+            ? ` — ${bitisYazisi}, sonra ordu saatte %${Math.round(ERZAK_FIRAR_ORANI * 100)} firar verir`
+            : ' — eksiye gidiyor'
           : durum === 'israf'
             ? ' — depo dolu, üretim boşa gidiyor'
             : ''
@@ -137,7 +151,11 @@ function KaynakSayaci({
         </span>
       </div>
       {durum === 'israf' && <div className="mt-0.5 text-[11px] text-turuncu">depo dolu</div>}
-      {durum === 'kritik' && <div className="mt-0.5 text-[11px] text-kirmizi">azalıyor</div>}
+      {durum === 'kritik' && (
+        <div className="text-[11px] text-kirmizi mt-0.5 leading-tight">
+          {bitisYazisi ?? 'azalıyor'}
+        </div>
+      )}
     </div>
   );
 }

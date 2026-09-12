@@ -30,10 +30,29 @@ export type SebepTuru =
   /** Mancınık tahkimata iki katı vurdu. */
   | 'kusatma_iyi'
   /** Savunanın tahkimatı. */
-  | 'tahkimat';
+  | 'tahkimat'
+  /**
+   * DÖNÜM TURU — makasın en açıldığı tur.
+   *
+   * Öteki sebepler savaşın SABİT şartlarını anlatıyor (gücüm azdı, surları
+   * vardı, okçum mızrakçısını yedi). Söylemedikleri şey savaşın AKIŞIydı:
+   * oyuncu beş tur çubuğuna bakıp "demek üçüncü turda açıldı" diye
+   * okuyamıyordu. Bu sebep o tek cümleyi veriyor.
+   *
+   * Uydurma yok: motor tur tur kayıp simüle etmiyor (`combat.ts` beş turun
+   * güç oranını ortalıyor), o yüzden "üçüncü turda 40 mızrakçı düştü"
+   * denmiyor. Söylenen şey motorun gerçekten kaydettiği şey: o turdaki iki
+   * güç. Uydurulmuş bir kayıp sayısı, oyuncuya oyunun çalışmadığı bir
+   * kuralı öğretirdi.
+   */
+  | 'donum';
 
 export interface SavasSebebi {
   tur: SebepTuru;
+  /** `donum`da dolu: kaçıncı turda. */
+  turNo?: number;
+  /** `donum`da dolu: o turdaki iki güç (bakanın lehine sıralı). */
+  guc?: { benim: number; onun: number };
   /** Bakan oyuncunun lehine mi? Arayüz rengi buradan geliyor. */
   lehte: boolean;
   /** Eşleşme sebeplerinde dolu — bakan oyuncunun birimi. */
@@ -96,6 +115,7 @@ export function savasSebepleri(g: SebepGirdisi, enFazla = 4): SavasSebebi[] {
   const sebepler: SavasSebebi[] = [];
   const R = ortalamaGucPayi(g.turlar);
   const saldiranBakiyor = g.bakis === 'saldiran';
+  const kazandimMi = g.saldiranKazandi === saldiranBakiyor;
 
   // --- Güç oranı ---
   // R saldıranın payı. Bakan savunansa payı 1-R.
@@ -110,6 +130,37 @@ export function savasSebepleri(g: SebepGirdisi, enFazla = 4): SavasSebebi[] {
   // "Kazandım ama bölge neden benim olmadı?" sorusu burada cevaplanıyor.
   if (g.saldiranKazandi && !g.eleGecirdi) {
     sebepler.push({ tur: 'dar_zafer', lehte: !saldiranBakiyor, deger: eleGecirmeEsigi() });
+  }
+
+  // --- Dönüm turu ---
+  // Beş turun hangisinde makas en çok açıldı. Çubuk grafiği bunu zaten
+  // ÇİZİYOR ama oyuncunun onu okuması gerekiyordu; cümle okumayı
+  // gerektirmiyor.
+  if (g.turlar.length > 1) {
+    let enTur = 0;
+    let enFark = -Infinity;
+    for (let i = 0; i < g.turlar.length; i++) {
+      const t = g.turlar[i]!;
+      const benim = saldiranBakiyor ? t.saldiranGuc : t.savunanGuc;
+      const onun = saldiranBakiyor ? t.savunanGuc : t.saldiranGuc;
+      // Bakan oyuncunun LEHİNE en açık tur; aleyhine bitmişse en dar tur.
+      const fark = kazandimMi ? benim - onun : onun - benim;
+      if (fark > enFark) {
+        enFark = fark;
+        enTur = i;
+      }
+    }
+    const t = g.turlar[enTur]!;
+    const benim = saldiranBakiyor ? t.saldiranGuc : t.savunanGuc;
+    const onun = saldiranBakiyor ? t.savunanGuc : t.saldiranGuc;
+    if (benim > 0 && onun > 0) {
+      sebepler.push({
+        tur: 'donum',
+        lehte: kazandimMi,
+        turNo: enTur + 1,
+        guc: { benim, onun },
+      });
+    }
   }
 
   // --- Tahkimat ---

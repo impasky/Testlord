@@ -21,7 +21,7 @@
  * ordusu kırılan lord yeniden "ordunu kur" adımını görür — kusur değil, o an
  * gerçekten yapması gereken şey odur.
  */
-import { B, unitName, type UnitType } from '@lordlar/shared';
+import { B, ERZAK_FIRAR_ORANI, erzakTukenmesiSaat, unitName, type UnitType } from '@lordlar/shared';
 import { useQuery } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
 import {
@@ -391,6 +391,43 @@ export function siradakiAdim(g: {
       git: () => g.onGit('harita'),
       hedefSekme: 'harita',
     };
+  }
+
+  /*
+   * 1b. Erzak TÜKENMEK ÜZERE. Açlığın kendisi yukarıda; burası ondan
+   *     önceki saat.
+   *
+   *     Oyuncu erzağın bittiğini ancak ordusu dağılmaya başlayınca
+   *     görüyordu — yani uyarı, uyarılacak şey olup bittikten sonra
+   *     geliyordu. Kaynak çubuğu "azalıyor" diyordu ama ne zaman biteceğini
+   *     ve bitince ne olacağını söylemiyordu.
+   *
+   *     Eşik 12 saat: bir oturumdan öbürüne geçen süre. Daha geniş olsaydı
+   *     depo dolu bir lorda da bağırırdı, daha dar olsaydı oyuncu uyarıyı
+   *     ancak iş işten geçtikten sonra görürdü.
+   */
+  {
+    const kalan = erzakTukenmesiSaat(lord.resources.erzak, lord.netErzakPerHour);
+    if (kalan !== null && kalan <= 12) {
+      return {
+        anahtar: 'erzak-bitiyor',
+        baslik: 'Erzağın bitiyor',
+        cumle:
+          `Bittiğinde ordun saatte %${Math.round(ERZAK_FIRAR_ORANI * 100)} firar verir. ` +
+          'Bir tarla bölgesi al ya da ordunu küçült.',
+        rozetler: [
+          <Hap key="kalan" ikon={<IkonSure boyut={13} />} renk="var(--color-turuncu)">
+            {kalan < 1 ? `${Math.max(1, Math.round(kalan * 60))} dk` : `${Math.round(kalan)} saat`}
+          </Hap>,
+          <Hap key="akis" ikon={<IkonErzak boyut={13} />} renk="var(--color-kirmizi)">
+            {Math.round(lord.netErzakPerHour)}/sa
+          </Hap>,
+        ],
+        dugme: 'Haritada tarla ara',
+        git: () => g.onGit('harita'),
+        hedefSekme: 'harita',
+      };
+    }
   }
 
   // 2. Yaralı lord saldıramaz; bu bir eylem değil, bir bekleyiş.

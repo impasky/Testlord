@@ -122,8 +122,8 @@ export async function akinRoutes(app: FastifyInstance): Promise<void> {
         arriveAt: a.arriveAt,
       })),
       /** Son çözülmüş akınlar — "ne oldu" sorusunun cevabı. */
-      sonuclar: (
-        await prisma.akin.findMany({
+      sonuclar: await (async () => {
+        const kayitlar = await prisma.akin.findMany({
           where: { lordId, resolved: true },
           orderBy: { arriveAt: 'desc' },
           take: 5,
@@ -137,12 +137,37 @@ export async function akinRoutes(app: FastifyInstance): Promise<void> {
             dusenItemId: true,
             arriveAt: true,
           },
-        })
-      ).map((a) => ({
-        ...a,
-        haritaAdi: akinHaritasi(a.haritaKey)?.ad ?? a.haritaKey,
-        grupAdi: akinHaritasi(a.haritaKey)?.gruplar[a.grupNo - 1] ?? `${a.grupNo}. grup`,
-      })),
+        });
+        /*
+         * Düşen parçanın KİMLİĞİ yetmiyordu.
+         *
+         * İstemci yalnız bir id görüyordu ve "bir ekipman düştü" diye
+         * yazabiliyordu — yani akının en heyecanlı anı, envantere gidip
+         * aramayı gerektiren bir dipnottu. Yuva ve tier geldiğinde parça
+         * ganimet sahnesinde kendi görseliyle duruyor.
+         *
+         * Tek sorgu: beş akının düşen parçaları bir kerede çekiliyor.
+         */
+        const idler = kayitlar.map((a) => a.dusenItemId).filter((x): x is string => x !== null);
+        const parcalar = idler.length
+          ? await prisma.item.findMany({
+              where: { id: { in: idler } },
+              select: { id: true, slot: true, tier: true, rarity: true },
+            })
+          : [];
+        const parcaHaritasi = new Map(parcalar.map((p) => [p.id, p]));
+        return kayitlar.map((a) => ({
+          ...a,
+          haritaAdi: akinHaritasi(a.haritaKey)?.ad ?? a.haritaKey,
+          grupAdi: akinHaritasi(a.haritaKey)?.gruplar[a.grupNo - 1] ?? `${a.grupNo}. grup`,
+          dusenParca: a.dusenItemId
+            ? (() => {
+                const p = parcaHaritasi.get(a.dusenItemId);
+                return p ? { slot: p.slot, tier: p.tier, rarity: p.rarity } : null;
+              })()
+            : null,
+        }));
+      })(),
     };
   });
 

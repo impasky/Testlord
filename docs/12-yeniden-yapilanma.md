@@ -1095,7 +1095,63 @@ zemin telefonun 3× ekranında gerilerek çiziliyor. Boyalı üslup bunu
 büyük ölçüde saklıyor ama parçalı zemin artık bir cila değil, sıradaki
 iş.
 
-## 12. Emekliye ayrılanlar
+## 12. Dokuz cila
+
+Oyuncunun listesi. Üçüncü madde (harita ızgaradan çıksın) §11'de yapılmıştı;
+kalan sekizi burada.
+
+**1. Erzak uyarısı bir plan oldu.** Kaynak çubuğu "azalıyor" diyordu — bir
+uyarı değil bir gözlem. Ne zaman biteceğini ve bitince ne olacağını
+bilmeden karar verilemez. Artık "78 sa sonra biter" yazıyor, ipucunda
+"sonra ordu saatte %5 firar verir" duruyor ve omurgaya BİTMEDEN ÖNCEKİ
+adım eklendi (12 saat eşiği: bir oturumdan öbürüne geçen süre). Sayı
+motordan geliyor (`erzakTukenmesiSaat`), arayüzde ikinci kez
+hesaplanmıyor.
+
+**2. Savaş raporuna akış geldi.** Rapor sabit şartları anlatıyordu
+(gücüm azdı, surları vardı, okçum mızrakçısını yedi); söylemediği şey
+savaşın AKIŞIydı. Yeni sebep `donum` beş turluk çubuk grafiğini tek
+cümleye çeviriyor: "Makas 3. turda en çok açıldı: 1.240 güce karşı 890."
+Uydurma yok — motor tur tur kayıp simüle etmiyor (`combat.ts` ortalama
+alıyor), o yüzden "3. turda 40 mızrakçı düştü" DENMİYOR. Uydurulmuş bir
+kayıp sayısı oyuncuya oyunun çalışmadığı bir kuralı öğretirdi.
+
+**4. Sur seviyesi haritada görünüyor.** Tahkimat savaşın en büyük tek
+kalemi olabiliyor ama 1. seviye tarlayla 5. seviye kale haritada aynı
+duruyordu; oyuncu bunu ancak hedefini SEÇTİKTEN sonra görüyordu. Madalyon
+artık taş renkli bir dış halka taşıyor, kalınlığı tahkimatla büyüyor.
+Göstergede kendi satırı var ("surlu").
+
+**5. Komşuyla ilk temas.** Diyar kalabalık ama sessizdi: başka bir lordun
+varlığını ancak saldırıya uğrayınca hissediyordun. Artık biri toprağına
+BAKTIĞINDA olay akışına düşüyor: "Falanca lord, Akpınar üzerine göz
+dikti." Bedava — uç zaten çağrılıyor. Kısıtlar dar: NPC bölgesi değil,
+kendi toprağın değil, müttefik değil ve aynı çift için GÜNDE BİR.
+
+**6. Kuyruktaki bina iskele oldu.** Bekleme sayıyla anlatılıyordu ve
+şehirde hiçbir izi yoktu: yükseltilmekte olan kışla, duran kışlayla
+birebir aynıydı. Artık üstüne ahşap iskele çiziliyor. Çizim değil ÇİZGİ:
+yeni görsel üretmiyoruz, bütün binalarda çalışıyor.
+
+**7. Yoldaki ordu sancak taşıyor.** Önce düz bir daireydi; oyuncunun
+gördüğü şey bir ordu değil bir imleçti. Sancak yönü de taşıyor — bez
+gidiş yönüne bakıyor, dönüşte yeşil ve ters yöne.
+
+**8. Lord ekranı portre oldu — ve figür KUŞAMDAN geliyor.** İki hata
+vardı. Figür 56 pikseldi, yani oyunun adını taşıyan karakter bir avatar
+kadardı. Daha ağırı: `lord_1..lord_5` görselleri beş ayrı adam değil AYNI
+adamın beş kuşam hâli, ama arayüz onlardan birini ADIN HASH'İYLE
+seçiyordu. Yani ekipman yükseltmenin görünür karşılığı hiç yoktu. Artık
+altı yuvanın tier ortalaması figürü belirliyor (`kusamSeviyesi`) ve
+üstünde neden değiştiğini söyleyen bir rozet duruyor: Çaylak → Efsanevi.
+
+**9. Akın ganimeti dökülüyor.** Tek satır düz yazıydı ve en heyecanlı
+kısım — "bir ekipman düştü" — envantere gidip aramayı gerektiren bir
+dipnottu. Artık her kaynak kendi ikonuyla, düşen parça KENDİ GÖRSELİYLE
+ve nadirlik renginde duruyor. Sunucu artık parçanın yuvasını ve tier'ını
+da dönüyor (tek ek sorgu, beş akın için bir kez).
+
+## 13. Emekliye ayrılanlar
 
 - `HexHarita.tsx` (828 satır) — yerine `DunyaHaritasi.tsx`.
 - `hexDistance`, `yakinlikMesafesi` — yerine grafik mesafesi.
@@ -1113,7 +1169,7 @@ geçiş veri kaybetmeden yapıldı. Sonraki bütün göçler de aynı yolu izled
 — var olan lordlar binalarını (Y3), damgalarını (Y7) ve akın geçmişini
 koruyarak geçti. Sıfırlamak kolaydı; kimseyi silmemek daha doğruydu.
 
-## 13. Açık riskler
+## 14. Açık riskler
 
 **Harita değişikliği CANLI dünyaları da değiştiriyor.** `world-map.json`
 tek ve kanonik; `seed.ts` açılışta `refreshWorldRegions` ile bütün

@@ -13,7 +13,9 @@ import {
   TAKTIKLER,
   UNIT_TYPES,
   WORLD_MAP,
+  ERZAK_FIRAR_ORANI,
   accrue,
+  erzakTukenmesiSaat,
   armySlots,
   armyCount,
   bosGeneralBonus,
@@ -236,6 +238,23 @@ describe('ekonomi dengesi', () => {
     });
     expect(r.starving).toBe(true);
     expect(r.desertionRate).toBeGreaterThan(0);
+  });
+
+  /*
+   * Uyarı bir GÖZLEM değil bir PLAN olmalı: "azalıyor" değil, "altı saat
+   * sonra biter, sonra saatte %5 firar". Sayı motordan geliyor ki arayüz
+   * aynı bölmeyi ikinci kez yazmasın.
+   */
+  it('erzak tükenmesine kalan saat akıştan hesaplanıyor', () => {
+    expect(erzakTukenmesiSaat(600, -100)).toBe(6);
+    expect(erzakTukenmesiSaat(600, 0), 'akış artıysa uyarı yok').toBeNull();
+    expect(erzakTukenmesiSaat(600, 50), 'akış artıysa uyarı yok').toBeNull();
+    expect(erzakTukenmesiSaat(0, -100), 'zaten bittiyse burası açlık hâli').toBeNull();
+  });
+
+  it('firar oranı denge dosyasından okunuyor', () => {
+    expect(ERZAK_FIRAR_ORANI).toBe(B.erzak_acligi.saatlik_firar_orani);
+    expect(ERZAK_FIRAR_ORANI).toBeGreaterThan(0);
   });
 });
 
