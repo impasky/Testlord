@@ -940,6 +940,9 @@ ISTEKLER: dict[str, dict[str, str]] = {
         "arastirma": "a master builder's workshop, architectural drawings on vellum, "
                      "wooden scale models of a granary and a watchtower, dividers and "
                      "measuring rods, afternoon light through a high window",
+        "ittifak": "a great hall where the banners of several allied houses hang "
+                   "together along the walls, a long oath table with sealed pacts "
+                   "and cups, firelight",
         "giris": "a lord in a dark cloak standing on a ridge at dawn overlooking "
                  "a wide valley of fields, towns and a distant citadel",
     },

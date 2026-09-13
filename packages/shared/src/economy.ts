@@ -100,6 +100,28 @@ export function vilayetSayilari(bolgeler: readonly { province: string }[]): Reco
 }
 
 /**
+ * Vilayet → o vilayetteki bölgelerin gelir çarpanı.
+ *
+ * `vilayetSayilari` + `vilayetCarpani` zaten bu ikisini veriyordu ama
+ * arayüz onları ÇAĞIRMIYORDU: bölge kartı geliri `regionIncome(tip,
+ * seviye, incomeMult)` ile hesaplıyor, sunucu ise aynı geliri
+ * `incomeMult * vilayetCarpani(...)` ile. Yani iki bölgesi aynı vilayette
+ * olan oyuncuya ekran, aldığından %8-30 DAHA AZ gelir yazıyordu — üstelik
+ * üst çubuktaki gerçek gelirle yan yana.
+ *
+ * Tek bir fonksiyon olması, "hangi bölgeler sayılır" kuralının tek yerde
+ * durması demek: lordun KENDİ bölgeleri, hepsi.
+ */
+export function vilayetCarpanlari(
+  bolgelerim: readonly { province: string }[],
+): Record<string, number> {
+  const sayac = vilayetSayilari(bolgelerim);
+  const sonuc: Record<string, number> = {};
+  for (const [vilayet, adet] of Object.entries(sayac)) sonuc[vilayet] = vilayetCarpani(adet);
+  return sonuc;
+}
+
+/**
  * Depo tavanı: lord seviyesi + MALİKÂNE + araştırma çarpanı.
  *
  * Depo tavanı eskiden YALNIZ lord seviyesiyle büyüyordu: ekranda üç

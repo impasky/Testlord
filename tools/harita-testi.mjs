@@ -16,6 +16,7 @@ import { rehberiSustur } from './lib/gezin.mjs';
 import { tarayiciAc } from './lib/tarayici.mjs';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
 import { kayitOl } from './lib/kayit.mjs';
+import { readFileSync } from 'node:fs';
 
 const API = process.env.API_URL ?? 'http://localhost:3000';
 const WEB = process.env.WEB_URL ?? 'http://localhost:5173';
@@ -248,6 +249,70 @@ await sayfa.locator('[data-bolge]').nth(20).click();
 await sayfa.waitForTimeout(900);
 const govde = await sayfa.locator('body').innerText();
 kontrol('Haritadan bölge seçilebiliyor', /garnizon|Garnizon|SALDIR|Seviye|GELİR/i.test(govde));
+
+/*
+ * VİLAYET BİRLİĞİ EKRANDA YAZIYOR MU (docs/11 §1.2 H2).
+ *
+ * Bonus motorda vardı, arayüzde YOKTU: aynı vilayetteki her bölge
+ * diğerlerinin gelirini artırıyor ama bunu hiçbir ekran söylemiyordu —
+ * oyuncu ödüllendirildiğini bilmeden ödüllendiriliyordu. Daha kötüsü
+ * geliştirme kartı geliri çarpansız hesaplıyor ve oyuncuya ALDIĞINDAN
+ * AZINI yazıyordu.
+ *
+ * Beklenen çarpan burada `data/balance.json`dan yeniden kuruluyor:
+ * araçlar `@lordlar/shared`i import edemiyor ve ekranın yazdığı sayıyı
+ * ekranın kendi formülüyle doğrulamak hiçbir şey ölçmez.
+ */
+{
+  const { vilayet_birligi: vb } = JSON.parse(
+    readFileSync(new URL('../data/balance.json', import.meta.url), 'utf8'),
+  ).bolgeler;
+  const beklenen = (adet) => (adet <= 1 ? 1 : 1 + Math.min(vb.azami, (adet - 1) * vb.bolge_basina));
+
+  const benimler = (await G('/map')).regions.filter((r) => r.isMine);
+  const sayac = {};
+  for (const r of benimler) sayac[r.province] = (sayac[r.province] ?? 0) + 1;
+
+  // Taht Vilayeti'nde tek bölge var; birlik oradan ölçülemez.
+  const hedef = benimler.find((r) => r.province !== 'taht');
+  if (!hedef) {
+    kontrol('Vilayet birliği rozeti ölçülebildi', false, 'taht dışı bölgesi olmayan lord');
+  } else {
+    // Önceki bölge kartı hâlâ açık ve perdesi tıklamayı yutuyor.
+    // Perde düğmesi kartın ARKASINDA duruyor (oyuncu için "dışarı dokun,
+    // kapansın"), o yüzden kartın kendi kapatma düğmesi seçiliyor.
+    await sayfa.getByRole('button', { name: 'Kapat' }).last().click();
+    await sayfa.waitForTimeout(600);
+    /*
+     * Tıklama DOM üzerinden gönderiliyor, fare ile değil.
+     *
+     * 121 bölgelik haritada işaretçiler yer yer üst üste biniyor ve
+     * Playwright'ın erişilebilirlik denetimi "hedefin üstünde başka bir
+     * işaretçi var" diyerek reddediyor. Gerçek oyuncu bunu kaydırarak
+     * çözüyor; buradaki ölçüm ise KARTIN İÇERİĞİ, işaretçiye
+     * dokunulabilirliği değil — o zaten yukarıda ("Haritadan bölge
+     * seçilebiliyor") ölçüldü. `force` de çare değil: örtüşmede tıklamayı
+     * üstteki işaretçi yer ve YANLIŞ bölge açılır.
+     */
+    await sayfa.locator(`[data-bolge="${hedef.id}"]`).dispatchEvent('click');
+    await sayfa.waitForTimeout(900);
+    const kart = await sayfa.locator('body').innerText();
+    const carpan = beklenen(sayac[hedef.province]);
+    const yazi = `×${carpan.toFixed(2).replace('.', ',')}`;
+
+    kontrol(
+      'Bölge kartı vilayeti söylüyor',
+      new RegExp(hedef.province === 'aksu' ? 'Aksu' : '[A-ZÇĞİÖŞÜ]', 'i').test(kart) &&
+        /birlik|tek bölgen/i.test(kart),
+      kart.match(/(birlik ×[\d,]+|tek bölgen)/i)?.[0] ?? 'rozet yok',
+    );
+    kontrol(
+      'Birlik çarpanı motorun verdiği sayı',
+      carpan > 1 ? kart.includes(yazi) : /tek bölgen/i.test(kart),
+      carpan > 1 ? `${sayac[hedef.province]} bölge -> ${yazi}` : 'tek bölge, bonus yok',
+    );
+  }
+}
 
 kontrol('Konsol hatası yok', konsol.length === 0, konsol[0] ?? '');
 

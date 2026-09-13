@@ -27,7 +27,7 @@
  * Sahiplik hem RENK hem ŞEKİL ile gösteriliyor (renk körü güvenliği):
  * seninkinde altın halka, düşmanınkinde kırmızı ve içi dolu bir nokta.
  */
-import { gecitMi } from '@lordlar/shared';
+import { gecitMi, VILAYET_ADI } from '@lordlar/shared';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { MarchDto, RegionDto } from '../api/client';
 import { IKONLAR } from './ikon-verisi';
@@ -41,16 +41,6 @@ const VILAYET_RENGI: Record<string, string> = {
   karaorman: '#9ad06a',
   tasgecit: '#d69a7a',
   taht: '#f5b731',
-};
-
-const VILAYET_ADI: Record<string, string> = {
-  kuzeymark: 'Kuzeymark',
-  demirvadi: 'Demirvadi',
-  gunbati: 'Günbatı Kıyıları',
-  aksu: 'Aksu Ovası',
-  karaorman: 'Karaorman',
-  tasgecit: 'Taşgeçit',
-  taht: 'Taht Vilayeti',
 };
 
 const TIP_IKON: Record<string, keyof typeof IKONLAR> = {

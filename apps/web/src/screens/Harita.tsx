@@ -7,6 +7,9 @@ import {
   formatArmy,
   regionIncome,
   unitName,
+  vilayetCarpani,
+  vilayetCarpanlari,
+  VILAYET_ADI,
   varsayilanDizilim,
   type Army,
   type Dizilim,
@@ -755,6 +758,19 @@ export function Harita({
     return null;
   })();
   const benimSayi = harita.data.regions.filter((r) => r.isMine && r.type !== 'taht').length;
+  /*
+   * Vilayet birliği (docs/11 §1.2 H2): aynı vilayette tuttuğun her bölge
+   * o vilayetteki BÜTÜN bölgelerinin gelirini artırıyor.
+   *
+   * Sunucu bunu uyguluyordu, bu ekran UYGULAMIYORDU: gelir
+   * `regionIncome(tip, seviye, incomeMult)` ile hesaplanıyor, sunucu ise
+   * aynı geliri `incomeMult * vilayetCarpani(...)` ile. Yani iki bölgesi
+   * aynı vilayette olan oyuncuya geliştirme kartı, aldığından %8-30 daha
+   * az gelir yazıyordu. Sayım lordun BÜTÜN bölgelerinden — sunucunun
+   * saydığı kümenin aynısı.
+   */
+  const bolgelerim = harita.data.regions.filter((r) => r.isMine);
+  const birlikler = vilayetCarpanlari(bolgelerim);
 
   function kapat() {
     setSeciliId(null);
@@ -967,6 +983,44 @@ export function Harita({
                   </Hap>
                 )}
                 <Hap renk="var(--color-mavi)">{bolge.distance} adım</Hap>
+                {/* Vilayet birliği, oyuncunun HİÇ göremediği bir mekanikti:
+                    aynı vilayetteki her bölge diğerlerinin gelirini
+                    artırıyor ama bunu ne harita ne bölge kartı söylüyordu —
+                    yani oyuncu ödüllendirildiğini bilmeden ödüllendiriliyor,
+                    "hangi bölgeyi alayım" sorusunun "NEREDE" yarısını hiç
+                    sormuyordu.
+
+                    Kendi bölgende mevcut çarpan, başkasınınkinde ALIRSAN ne
+                    olacağı yazıyor. Taht Vilayeti'nde tek bölge var, orada
+                    birlik diye bir şey yok. */}
+                {(() => {
+                  const ad = VILAYET_ADI[bolge.province];
+                  if (!ad || bolge.province === 'taht') return null;
+                  const oradaki = bolgelerim.filter(
+                    (r) => r.province === bolge.province && r.id !== bolge.id,
+                  ).length;
+                  const simdiki = vilayetCarpani(oradaki + (bolge.isMine ? 1 : 0));
+                  const alirsan = vilayetCarpani(oradaki + 1);
+                  const yuzde = (c: number) => `×${c.toFixed(2).replace('.', ',')}`;
+                  if (bolge.isMine) {
+                    return (
+                      <Hap renk="var(--color-yesil)">
+                        {ad}
+                        {simdiki > 1 ? ` · birlik ${yuzde(simdiki)}` : ' · tek bölgen'}
+                      </Hap>
+                    );
+                  }
+                  return (
+                    <Hap renk={alirsan > simdiki ? 'var(--color-yesil)' : 'var(--color-mavi)'}>
+                      {ad}
+                      {alirsan > simdiki
+                        ? ` · alırsan birlik ${yuzde(alirsan)}`
+                        : oradaki > 0
+                          ? ` · ${oradaki} bölgen`
+                          : ''}
+                    </Hap>
+                  );
+                })()}
                 {/* Lider avı: bu bölge diyarın liderine aitse yağma
                     bonuslu. Oyuncunun saldırıya karar verdiği yerde
                     yazması gerekiyor, sadece dünya başlığında değil. */}
@@ -1028,8 +1082,17 @@ export function Harita({
                           : kaynakEngeli(bolge.upgradeCost, lord.resources);
                       const anahtar = `upgrade:${bolge.id}`;
                       const sonrakiAd = bolgeAsamaAdi(bolge.type, bolge.level + 1);
-                      const simdi = regionIncome(bolge.type, bolge.level, bolge.incomeMult);
-                      const sonra = regionIncome(bolge.type, bolge.level + 1, bolge.incomeMult);
+                      const birlik = birlikler[bolge.province] ?? 1;
+                      const simdi = regionIncome(
+                        bolge.type,
+                        bolge.level,
+                        bolge.incomeMult * birlik,
+                      );
+                      const sonra = regionIncome(
+                        bolge.type,
+                        bolge.level + 1,
+                        bolge.incomeMult * birlik,
+                      );
                       return (
                         <Kart className="p-3" vurgu="var(--color-altin)">
                           <h3 className="baslik mb-2 text-[11px] text-solgun">Geliştirme</h3>

@@ -37,10 +37,32 @@ function kontrol(ad, kosul, detay = '') {
   if (!kosul) kalan++;
 }
 
+/**
+ * `/map` — sunucu yeniden BAŞLARKEN de sorulabilsin diye tekrar deneyen.
+ *
+ * Bu test kanonik `data/world-map.json` dosyasını bilerek bozuyor ve
+ * geliştirme sunucusu (`tsx watch`) o dosyayı izliyor: yazma anında API
+ * kendini yeniden başlatıyor ve o sırada açık olan istek "other side
+ * closed" ile düşüyor. Ölçülen şey harita SÜRÜMLEMESİ; geliştirme
+ * sunucusunun yeniden başlaması ürünün değil ortamın davranışı — CI'da
+ * API `watch`siz koştuğu için orada hiç olmuyor.
+ *
+ * Tekrar denemek burada kusuru gizlemiyor: gerçek bir bozukluk her
+ * denemede aynı şekilde düşer, yeniden başlama ise bir saniyede geçer.
+ */
 async function harita(jeton) {
-  const r = await fetch(`${API}/api/map`, { headers: { authorization: `Bearer ${jeton}` } });
-  if (!r.ok) throw new Error(`/map -> ${r.status} ${await r.text()}`);
-  return r.json();
+  let sonHata;
+  for (let deneme = 0; deneme < 10; deneme++) {
+    try {
+      const r = await fetch(`${API}/api/map`, { headers: { authorization: `Bearer ${jeton}` } });
+      if (!r.ok) throw new Error(`/map -> ${r.status} ${await r.text()}`);
+      return r.json();
+    } catch (e) {
+      sonHata = e;
+      await new Promise((c) => setTimeout(c, 500));
+    }
+  }
+  throw sonHata;
 }
 
 async function yeniOyuncu(onek) {

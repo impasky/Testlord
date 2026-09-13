@@ -64,6 +64,21 @@ Aynı vilayette birden fazla bölge tutmak gelir çarpanı veriyor. Böylece
 "hangi bölge" sorusunun yanında "**nerede**" sorusu da doğuyor: dağınık üç
 bölge ile bitişik üç bölge artık aynı şey değil.
 
+**H2b — …ve artık GÖRÜNÜYOR.** Bonus motorda vardı, arayüzde yoktu: hiçbir
+ekran ondan söz etmiyordu, yani oyuncu ödüllendirildiğini bilmeden
+ödüllendiriliyor ve "nerede" sorusunu hiç sormuyordu. Daha kötüsü, ekran
+geliri `regionIncome(tip, seviye, incomeMult)` ile hesaplıyordu; sunucu ise
+aynı geliri `incomeMult * vilayetCarpani(...)` ile. Yani aynı vilayette iki
+bölgesi olan oyuncuya bölge kartı, **aldığından %8–30 azını** yazıyordu —
+üstelik üst çubuktaki gerçek gelirin hemen altında. Aynı fonksiyonu çağırmak
+yetmiyor, AYNI girdiyle çağırmak gerekiyor (`vilayetCarpanlari`, tek yerde).
+
+Bölge kartında artık vilayet rozeti var: kendi bölgende mevcut çarpan
+(`Karaorman · birlik ×1,08`), başkasınınkinde alırsan ne olacağı
+(`· alırsan birlik ×1,16`). `tools/harita-testi.mjs` rozetin yazdığı sayıyı
+`data/balance.json`dan yeniden kurup karşılaştırıyor — ekranın sayısını
+ekranın kendi formülüyle doğrulamak hiçbir şey ölçmez.
+
 **H3 — Vilayetler haritada görünüyor.**
 Her vilayetin kendi rengi ve haritada okunan bir adı var. Tek başına bu
 değişiklik haritayı tek tip bir petekten yedi parçalı bir diyara çeviriyor.

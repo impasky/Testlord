@@ -17,7 +17,7 @@
  * Toprak listesi yeni: oyunda "bölgelerim" diye bir yer hiç yoktu, sahip
  * olduklarını görmek için haritada tek tek aramak gerekiyordu.
  */
-import { ipucuSec, regionIncome, type Kapi } from '@lordlar/shared';
+import { ipucuSec, regionIncome, vilayetCarpanlari, type Kapi } from '@lordlar/shared';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { api, type GameEvent, type LordState } from '../api/client';
@@ -48,20 +48,29 @@ import type { Sekme } from '../components/MobilKabuk';
 const TIP_ADI: Record<string, string> = {
   tarla: 'Tarla',
   maden: 'Maden',
+  // Köy haritanın 24 bölgesi ve oyuncunun İLK fethi; listede yoktu, yani
+  // ekranda ham anahtarıyla ("koy") görünüyordu.
+  koy: 'Köy',
   sehir: 'Şehir',
   kale: 'Kale',
   taht: 'Taht Kalesi',
 };
 
 /**
- * Bölgenin saatlik geliri.
+ * Bölgenin saatlik geliri — VİLAYET BİRLİĞİ dahil.
  *
  * Formülü BURADA yeniden yazmıyoruz: `regionIncome` motorun kendi
  * fonksiyonu ve sunucu da onu kullanıyor. İkinci bir hesap, er ya da geç
  * ekranın sunucudan farklı bir sayı göstermesi demekti.
+ *
+ * Tam olarak o oldu: sunucu geliri `incomeMult * vilayetCarpani(...)` ile
+ * hesaplıyordu, bu ekran ise çarpansız. Aynı vilayette iki bölgesi olan
+ * oyuncuya burada aldığından %8-30 daha az gelir yazıyordu — üstelik üst
+ * çubuktaki gerçek gelirin hemen altında. Aynı fonksiyonu çağırmak
+ * yetmiyor; AYNI girdiyle çağırmak gerekiyor.
  */
-function gelir(tip: string, seviye: number, carpan: number) {
-  const g = regionIncome(tip, seviye, carpan);
+function gelir(tip: string, seviye: number, carpan: number, birlik: number) {
+  const g = regionIncome(tip, seviye, carpan * birlik);
   return {
     altin: Math.round(g.altin),
     demir: Math.round(g.demir),
@@ -95,6 +104,9 @@ export function Malikane({
   const ipucu = ipucuSec(ipucuSayac);
 
   const benim = (harita.data?.regions ?? []).filter((r) => r.isMine);
+  // Vilayet birliği çarpanı lordun BÜTÜN bölgelerinden çıkıyor —
+  // sunucunun saydığı kümenin aynısı.
+  const birlikler = vilayetCarpanlari(benim);
 
   return (
     <div className="space-y-4">
@@ -155,7 +167,8 @@ export function Malikane({
         ) : (
           <div className="space-y-2">
             {benim.map((r) => {
-              const g = gelir(r.type, r.level, r.incomeMult);
+              const birlik = birlikler[r.province] ?? 1;
+              const g = gelir(r.type, r.level, r.incomeMult, birlik);
               return (
                 <Kart key={r.id} className="p-3" onClick={() => onBolgeyiAc(r.id)}>
                   <div className="flex items-center gap-3">

@@ -43,6 +43,7 @@ import {
   paktTeklifDenetle,
   yakinlikMesafesi,
   vilayetCarpani,
+  vilayetCarpanlari,
   vilayetSayilari,
   karsiHalkasi,
   ogreticiSayfalari,
@@ -1686,6 +1687,33 @@ describe('harita: vilayet birliği (docs/11)', () => {
       { province: 'aksu' },
     ]);
     expect(sayac).toEqual({ kuzeymark: 2, aksu: 1 });
+  });
+
+  it('çarpan tablosu sunucunun uyguladığı çarpanın AYNISI', () => {
+    // Arayüz bu tabloyu kullanıyor, sunucu ise `vilayetSayilari` +
+    // `vilayetCarpani` ikilisini elle kuruyor. İkisi ayrışırsa ekran
+    // oyuncuya aldığından başka bir gelir yazar ve bu tam olarak
+    // düzeltilen kusurdu.
+    const bolgelerim = [
+      { province: 'kuzeymark' },
+      { province: 'kuzeymark' },
+      { province: 'kuzeymark' },
+      { province: 'aksu' },
+    ];
+    const tablo = vilayetCarpanlari(bolgelerim);
+    for (const [vilayet, adet] of Object.entries(vilayetSayilari(bolgelerim))) {
+      expect(tablo[vilayet]).toBeCloseTo(vilayetCarpani(adet), 12);
+    }
+    expect(tablo.kuzeymark!).toBeGreaterThan(tablo.aksu!);
+    expect(tablo.aksu).toBe(1);
+  });
+
+  it('hiç bölgesi olmayan lord için tablo boş ve varsayılan 1', () => {
+    // Arayüz `tablo[bolge.province] ?? 1` diyor; boş tablo o yüzden
+    // sessiz bir sıfır değil, doğru varsayılan olmalı.
+    const tablo = vilayetCarpanlari([]);
+    expect(Object.keys(tablo)).toHaveLength(0);
+    expect(tablo.kuzeymark ?? 1).toBe(1);
   });
 
   it('haritadaki her bölgenin bir vilayeti var', () => {

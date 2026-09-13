@@ -121,6 +121,7 @@ temizleniyor; hangi dosyada yapıldığı aşağıdaki tabloda yazıyor.
 | `harita/dunya-onizleme.webp`   | **eklendi** (karo tuvalinden küçültüldü)          |
 | `akin/*.webp` (5 dosya)        | eklendi (filigran çıkmadı)                        |
 | `zeminler/akin.webp`           | eklendi (filigran çıkmadı)                        |
+| `zeminler/ittifak.webp`        | **eklendi** (müttefik sancakları, ant masası)     |
 | `akin_harita/*.webp` (5 dosya) | eklendi (plakadan, kampsız)                       |
 | `dusmanlar/*.webp` (10 dosya)  | eklendi (iki beşerli sayfa, plakadan)             |
 | ~~`harita/*.webp` (6 dosya)~~  | **silindi** — altıgen karolar emekli (docs/12 §5) |

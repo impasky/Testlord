@@ -13,6 +13,7 @@ import { useState } from 'react';
 import { ApiError, api, type IttifakDto } from '../api/client';
 import { RUTBE_ADI } from '@lordlar/shared';
 import { Arma } from '../components/Arma';
+import { Zemin } from '../components/Zemin';
 import { IkonAltin, IkonSohret } from '../components/Ikonlar';
 import { hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { BosHal } from '../components/BosHal';
@@ -201,6 +202,12 @@ export function Ittifak({ lordId }: { lordId: string }) {
 
   return (
     <>
+      {/* Oyunun üç direğinden biri (şehir · ordu · ittifak) ve tek zeminsiz
+          olan buydu: dokuz ekranın dokuzunda manzara şeridi vardı, burada
+          yoktu. Şerit ekranı bir mekâna oturtuyor — müttefik sancaklarının
+          birlikte asıldığı, paktların mühürlendiği salon. */}
+      <Zemin ad="ittifak" baslik="İttifak" altyazi="Kiminle birlikte oynuyorsun" />
+
       {/* Bir ittifakın içindeyken sayfa dört ayrı işi taşıyordu: üyeler,
           kaynak gönderme, diplomasi ve sohbet. Sohbet uzadıkça sayfa
           uzuyordu ve oyuncu paktlarına bakmak için sohbetin tamamını

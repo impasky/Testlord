@@ -69,6 +69,18 @@ export function gecitMi(a: number, b: number): boolean {
 export const BOLGE_IDLERI: readonly number[] = WORLD_MAP.regions.map((r) => r.id);
 
 /**
+ * Vilayet anahtarı → görünen ad.
+ *
+ * Arayüz bu eşlemeyi ELLE tutuyordu (`DunyaHaritasi.tsx`), oysa adlar
+ * `world-map.json` → `provinces` içinde zaten yazılı. Elle tutulan kopya,
+ * haritaya bir vilayet eklendiği gün sessizce eksik kalır: ekranda ham
+ * anahtar ("tasgecit") görünür ve kimse fark etmez.
+ */
+export const VILAYET_ADI: Readonly<Record<string, string>> = Object.freeze(
+  Object.fromEntries(WORLD_MAP.provinces.map((p) => [p.key, p.name])),
+);
+
+/**
  * Bütün çiftler için mesafe, modül yüklenirken bir kez hesaplanır.
  *
  * 61 bölge için 61 kez genişlik-öncelikli arama; toplam birkaç bin adım,

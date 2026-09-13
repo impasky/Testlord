@@ -42,6 +42,7 @@ const ZEMINI_OLAN = new Set([
   'olaylar',
   'arastirma',
   'akin',
+  'ittifak',
 ]);
 
 export function Zemin({
