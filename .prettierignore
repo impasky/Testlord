@@ -6,3 +6,9 @@ pnpm-lock.yaml
 # Derleme çıktıları ve üretilen görseller.
 dist/
 apps/web/public/gorseller/
+
+# Uretilen ceviri dosyalari: bicimi `tools/metin-cikar.mjs` belirliyor.
+# Prettier onlari yeniden bicimlendirirse arac ile bicimlendirici her
+# kosuda birbirinin uzerine yazar.
+ceviri/metinler.json
+ceviri/metinler.csv
