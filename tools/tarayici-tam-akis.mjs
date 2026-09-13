@@ -12,6 +12,7 @@ import { ogreticiyiGec } from './lib/ogretici.mjs';
 import { ekrana, kapida, rehberiSustur } from './lib/gezin.mjs';
 import { merkezUzakliklari } from './lib/harita.mjs';
 import { binalariDik, yerlesimAl } from './lib/koy.mjs';
+import { birimiAc } from './lib/birim.mjs';
 
 const WEB = process.env.WEB_URL ?? 'http://127.0.0.1:5173';
 const API = process.env.API_URL ?? 'http://localhost:3000';
@@ -144,6 +145,8 @@ await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 15000 });
 await sekme('Kışla');
 await page.waitForSelector('text=Asker Eğitimi', { timeout: 8000 });
 {
+  // Birim kartı kapalıysa önce açılıyor (bkz. lib/birim.mjs).
+  await birimiAc(page, 'Mızrakçı');
   const yanit = page.waitForResponse((r) => r.url().includes('/army/train'), { timeout: 15000 });
   await page.locator('button:has-text("Mızrakçı eğit")').first().click();
   const r = await yanit;

@@ -39,7 +39,10 @@ for (const kotu of ['amk lord', 'S1kt1r Bey', 'admin', 'aaaaaaa']) {
   const r = await kayit(kotu, Math.random().toString(36).slice(2, 6));
   kontrol(`Uygunsuz ad reddedildi: "${kotu}"`, r.status === 400, `HTTP ${r.status}`);
 }
-const iyi = await kayit(`Kara Yusuf ${d.toString(36).slice(-3)}`, 'a');
+const iyi = await kayit(
+  `Kara Yusuf ${d.toString(36).slice(-3) + Math.random().toString(36).slice(2, 4)}`,
+  'a',
+);
 kontrol('Normal ad kabul edildi', iyi.ok, `HTTP ${iyi.status}`);
 const { token } = await iyi.json();
 const h = { ...JS, Authorization: `Bearer ${token}` };

@@ -109,6 +109,8 @@ function BirimKarti({
   kuyruklar,
   onEgit,
   bekliyor,
+  acik,
+  onAc,
 }: {
   u: UnitDto;
   evdeki: number;
@@ -122,6 +124,9 @@ function BirimKarti({
   kuyruklar: QueueItem[];
   onEgit: (adet: number) => void;
   bekliyor: boolean;
+  /** Tam kart mı, tek satır mı. Aynı anda tek birim açık. */
+  acik: boolean;
+  onAc: () => void;
 }) {
   // Omurga "28 Okçu eğit" diyorsa oyuncu o sayıyı elle yazmak zorunda
   // kalmasın: iki ekran arasındaki bağı kopartan en küçük sürtünme bile
@@ -149,6 +154,52 @@ function BirimKarti({
     maliyet,
     kaynaklar,
   });
+
+  /*
+   * KAPALI HÂL: beş birimin beşi birden tam kart değil.
+   *
+   * Beş kart 1318 piksel tutuyordu — Ordu ekranının içeriğinin %65'i —
+   * oysa oyuncu tek seferde TEK birim eğitiyor. Beş adet düğmesi, beş
+   * maliyet, beş "Detay" satırı; hepsi tek bir karar için.
+   *
+   * Kapalı satır karşılaştırmaya yetecek kadarını taşıyor: kim, kaç tane
+   * var, birimi neye mal oluyor. Açık olan tek kart kararın verildiği
+   * yer. Omurganın işaret ettiği birim hazır açık geliyor, yani rehberli
+   * oyuncu hiçbir şeye fazladan dokunmuyor.
+   */
+  if (!acik) {
+    return (
+      <button
+        type="button"
+        onClick={onAc}
+        aria-expanded={false}
+        className={`kart bas flex w-full items-center gap-2.5 p-2 text-left ${
+          onerilenAdet ? 'border-altin/60' : ''
+        }`}
+      >
+        <span className="oyuk flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-kenar text-altin">
+          <Gorsel
+            tur="birimler"
+            ad={u.type}
+            alt={unitName(tip)}
+            boyut={40}
+            className="h-full w-full"
+            yedek={<BirimIkonu tip={u.type} boyut={24} />}
+          />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="baslik block truncate text-[13.5px]">{unitName(tip)}</span>
+          <span className="block text-[11px] text-sonuk">Evde {formatSayi(evdeki)}</span>
+        </span>
+        <Maliyet
+          altin={u.maliyet.altin}
+          demir={u.maliyet.demir}
+          erzak={u.maliyet.erzak}
+          className="shrink-0"
+        />
+      </button>
+    );
+  }
 
   return (
     <Kart className="p-3" vurgu={onerilenAdet ? 'var(--color-altin)' : undefined}>
@@ -297,6 +348,20 @@ export function Kisla({
   // Hangi birim gönderiliyor: tek bir "bekliyor" bayrağı beş kartın da
   // düğmesini birden söndürüyordu; oyuncu neyin olduğunu anlamıyordu.
   const [gonderilen, setGonderilen] = useState<string | null>(null);
+  /*
+   * AÇIK BİRİM: aynı anda tek kart açık.
+   *
+   * Hook BURADA duruyor, çünkü aşağıda veri gelmediğinde `<Iskelet/>` ile
+   * erken dönüş var: hook'u onun ALTINA koymak "hooks called
+   * conditionally" demek ve React ağacı hiç çizmiyor — ekran bomboş
+   * kalıyordu. (Bir kez yapıldı ve ölçüm `main` bulamayınca ortaya çıktı.)
+   *
+   * Varsayılan aşağıda TÜRETİLİYOR: omurganın işaret ettiği birim, yoksa
+   * listenin ilki. O seçim VERİYE bağlı, bu durum ise oyuncunun kendi
+   * dokunuşu; ikisini tek `useState`e sıkıştırmak, veri geldiğinde
+   * varsayılanı bir daha hesaplamamak demekti.
+   */
+  const [secilenBirim, setAcikBirim] = useState<UnitType | null>(null);
   const army = useQuery({ queryKey: ['army'], queryFn: api.army });
   // Haritayla aynı sorgu anahtarı: veri paylaşılır, ikinci istek atılmaz.
   const harita = useQuery({ queryKey: ['map'], queryFn: api.map });
@@ -339,6 +404,12 @@ export function Kisla({
   const bosYer = Math.max(0, a.commandCapacity - a.usedSlots - kuyruktakiYer);
 
   const oneri = harita.data?.oneri ?? null;
+
+  const acikBirim =
+    secilenBirim ??
+    (oneri?.eksik?.birim as UnitType | undefined) ??
+    (a.units[0]?.type as UnitType | undefined) ??
+    null;
 
   return (
     <div className="space-y-4">
@@ -399,7 +470,7 @@ export function Kisla({
           </span>
         }
       >
-        <div className="space-y-2.5">
+        <div className="space-y-2">
           {[...a.units]
             .sort((x, y) => {
               // Omurganın işaret ettiği birim en üstte: oyuncu listeyi
@@ -411,6 +482,8 @@ export function Kisla({
             .map((u) => (
               <BirimKarti
                 key={u.type}
+                acik={acikBirim === u.type}
+                onAc={() => setAcikBirim(u.type as UnitType)}
                 u={u}
                 evdeki={a.home[u.type as UnitType] ?? 0}
                 onerilenAdet={oneri?.eksik?.birim === u.type ? oneri.eksik.adet : null}

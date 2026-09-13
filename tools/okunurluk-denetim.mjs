@@ -160,7 +160,7 @@ const page = await ctx.newPage();
 const damga = Date.now();
 const { token } = await kayitOl(API, {
   email: `oku${damga}@lordlar.dev`,
-  lordName: `Oku ${damga.toString(36).slice(-4)}`,
+  lordName: `Oku ${damga.toString(36).slice(-4) + Math.random().toString(36).slice(2, 4)}`,
 });
 // İlk döngüde arayüz bilerek sade ve ekranların yarısı görünmüyor;
 // okunurluk oyunun YERLEŞMİŞ hâlinde ölçülmeli.

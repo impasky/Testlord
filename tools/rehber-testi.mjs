@@ -32,7 +32,7 @@ console.log('Lordlar Çağı — rehberli ilk oturum testi (iPhone 13)\n');
 const damga = Date.now();
 const { token } = await kayitOl(API, {
   email: `reh${damga}@lordlar.dev`,
-  lordName: `Reh ${damga.toString(36).slice(-4)}`,
+  lordName: `Reh ${damga.toString(36).slice(-4) + Math.random().toString(36).slice(2, 4)}`,
 });
 const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
 const post = (y, g) =>
@@ -304,7 +304,7 @@ kontrol(
   const d2 = Date.now();
   const { token: t2 } = await kayitOl(API, {
     email: `reh${d2}_k@lordlar.dev`,
-    lordName: `Rehk ${d2.toString(36).slice(-4)}`,
+    lordName: `Rehk ${d2.toString(36).slice(-4) + Math.random().toString(36).slice(2, 4)}`,
   });
   await page.evaluate((t) => localStorage.setItem('lordlar_token', t), t2);
   await page.reload({ waitUntil: 'domcontentloaded' });

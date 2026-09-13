@@ -37,7 +37,7 @@ console.log('Lordlar Çağı — harita testi\n');
 const damga = Date.now();
 const { token } = await kayitOl(API, {
   email: `harita${damga}@lordlar.dev`,
-  lordName: `Har ${damga.toString(36).slice(-4)}`,
+  lordName: `Har ${damga.toString(36).slice(-4) + Math.random().toString(36).slice(2, 4)}`,
 });
 const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
 const P = (yol, govde) =>

@@ -25,7 +25,7 @@ const kayit = await fetch(`${API}/api/auth/register`, {
   body: JSON.stringify({
     email: `duzen${damga}@lordlar.dev`,
     password: 'parola1234',
-    lordName: `Duzen ${damga.toString(36).slice(-4)}`,
+    lordName: `Duzen ${damga.toString(36).slice(-4) + Math.random().toString(36).slice(2, 4)}`,
   }),
 }).then((r) => r.json());
 const jeton = kayit.token;

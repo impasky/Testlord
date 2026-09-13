@@ -413,6 +413,13 @@ export function Sehir({
               onSec={() => haritadaSec(b)}
             />
           ))}
+          {/* Adlar en üstte ve tıklamayı geçiriyor: hangi binanın adı
+              olduğu konumdan belli, dokunuş binanın kendisine gitmeli. */}
+          <div className="pointer-events-none absolute inset-0 z-[400]">
+            {binalar.map((b) => (
+              <YapiEtiketi key={b.key} b={b} secili={secili === b.key} />
+            ))}
+          </div>
         </div>
       </div>
 
@@ -693,7 +700,6 @@ function BinaIsareti({
   const ad = spriteAdi(b.key, b.seviye, b.seviyeli);
   const sprite = SPRITE_OLAN.has(ad);
   const girilebilir = dikili && Boolean(b.kapi || b.sekme);
-  const etiketVar = secili || !dikili;
   return (
     <button
       type="button"
@@ -869,16 +875,57 @@ function BinaIsareti({
         </span>
       ) : null}
 
-      {etiketVar && (
-        <span
-          className={`pointer-events-none absolute top-full left-1/2 mt-1 max-w-[110px] -translate-x-1/2 truncate rounded bg-gece/85 px-1 text-[11px] leading-tight font-bold whitespace-nowrap ${
-            dikili ? 'text-altin' : 'text-solgun'
-          }`}
-        >
-          {b.ad}
-        </span>
-      )}
+      {/* Ad etiketi burada DEĞİL: `YapiEtiketi` ile ayrı bir katmanda
+          (bkz. o bileşenin notu). */}
     </button>
+  );
+}
+
+/**
+ * YAPI ADI — binaların ÜSTÜNDE, ayrı bir katmanda.
+ *
+ * ── Neden düğmenin içinde olamıyor ───────────────────────────────────
+ *
+ * Etiket binanın kutusunun altına (`top-full`) çiziliyordu ve iki kusuru
+ * vardı:
+ *
+ *  1. KIRPILIYORDU. Haritanın alt sırasındaki yapıların etiketi kabın
+ *     dışına taşıyor, `overflow-hidden` onu kesiyordu — "Pazar" yazısının
+ *     alt yarısı yoktu.
+ *  2. KOMŞUNUN ALTINDA KALIYORDU. Her bina düğmesi kendi `zIndex`ini
+ *     kuruyor (derinlik sırası y'den geliyor), yani kendi YIĞIN BAĞLAMINI
+ *     açıyor. İçindeki etiket o bağlamdan çıkamıyor: aşağıdaki bir
+ *     binanın çizimi, yukarıdaki binanın adını örtüyordu.
+ *
+ * İkisi de tek bir şeyden: etiket, ait olduğu düğmenin içindeydi. Ayrı
+ * katmanda ikisi de kendiliğinden çözülüyor — katman bütün binaların
+ * üstünde ve kabın içinde kalıyor.
+ *
+ * Alt sıradaki yapıda etiket yapının ÜSTÜNE geçiyor: aşağı sığmıyorsa
+ * yukarı sığar, kırpılmaktansa yer değiştirsin.
+ */
+function YapiEtiketi({ b, secili }: { b: BinaDurumu; secili: boolean }) {
+  const dikili = b.seviye > 0;
+  if (!(secili || !dikili)) return null;
+  // %86'dan aşağıdaki yapının etiketi kaba sığmıyor: üstüne alınıyor.
+  const ustte = b.y > 86;
+  return (
+    <span
+      aria-hidden="true"
+      className={`pointer-events-none absolute max-w-[110px] -translate-x-1/2 truncate rounded bg-gece/85 px-1 text-[11px] leading-tight font-bold whitespace-nowrap ${
+        dikili ? 'text-altin' : 'text-solgun'
+      }`}
+      style={{
+        left: `${b.x}%`,
+        // Yapının tabanı y'de; etiket ya hemen altında ya da kutunun
+        // üstünde. Kutu yüksekliği genişlikle aynı (aspect-square).
+        top: ustte
+          ? `calc(${b.y}% - ${TABAN_BOY * b.olcek}% - 1.15rem)`
+          : `calc(${b.y}% + 0.25rem)`,
+      }}
+    >
+      {b.ad}
+    </span>
   );
 }
 

@@ -147,3 +147,54 @@ sözcüğü yan yana ve hangisinin ne ölçtüğünü söyleyen hiçbir şey yok
 Ordu'nun yüksekliği 16 piksel arttı: omurga şeridi için içeriğe eklenen
 dolgu. Aynı şerit Şehir'den 500 piksellik kartı kaldırdığı için orada
 kazanç net.
+
+## 13.9 Yerleşim haritasında adlar kırpılıyordu
+
+Yapı adı, binanın kutusunun altına (`top-full`) çiziliyordu ve iki kusuru
+vardı:
+
+1. **Kırpılıyordu.** Haritanın alt sırasındaki yapıların etiketi kabın
+   dışına taşıyor, `overflow-hidden` onu kesiyordu — "Pazar" yazısının
+   alt yarısı yoktu.
+2. **Komşunun altında kalıyordu.** Her bina düğmesi kendi `zIndex`ini
+   kuruyor (derinlik sırası y'den geliyor), yani kendi **yığın bağlamını**
+   açıyor. İçindeki etiket o bağlamdan çıkamıyor: aşağıdaki bir binanın
+   çizimi, yukarıdaki binanın adını örtüyordu.
+
+İkisi de tek bir şeyden geliyordu — etiket, ait olduğu düğmenin içindeydi.
+Adlar artık binaların üstünde ayrı bir katmanda; katman kabın içinde
+kaldığı için kırpılma, bütün binaların üstünde olduğu için örtülme
+kendiliğinden bitiyor. Alt sıradaki yapıda etiket yapının **üstüne**
+geçiyor: aşağı sığmıyorsa yukarı sığar.
+
+## 13.10 Ordu: beş kart, tek karar
+
+Beş birim kartı 1318 piksel tutuyordu — Ordu ekranının içeriğinin
+**%65'i.** Oysa oyuncu tek seferde **tek** birim eğitiyor: beş adet
+düğmesi, beş maliyet, beş "Detay" satırı, hepsi bir karar için.
+
+Aynı anda tek kart açık. Kapalı satır karşılaştırmaya yetecek kadarını
+taşıyor: kim, kaç tane var, birimi neye mal oluyor. Omurganın işaret
+ettiği birim **hazır açık** geliyor, yani rehberli oyuncu fazladan hiçbir
+şeye dokunmuyor.
+
+**Ordu 2244 → 1420 piksel**, birim kartları 1318 → 508, hap 30 → 9.
+
+Bir hata yapıldı ve ölçüm yakaladı: `useState` erken dönüşün (`<Iskelet/>`)
+**altına** konmuştu. Hook koşullu çağrılınca React ağacı hiç çizilmiyor ve
+ekran bomboş kalıyor — ölçüm aracı `main` bulamayınca ortaya çıktı.
+
+Testler oyuncunun yaptığını yapıyor: `lib/birim.mjs` birimin kartını
+açıyor, sonra eğitim düğmesine basılıyor.
+
+Bu arada bir test kırılganlığı da çıktı: lord adları
+`Date.now().toString(36)`nın son üç karakterinden türüyordu ve o dizi ~47
+saniyede bir tekrar ediyor. Süiti üst üste koşturunca "Bu lord adı
+alınmış" (409) ile düşüyordu; adlara rastgelelik eklendi.
+
+## 13.11 Kalanlar
+
+Lord (2007 px) ve Akın (1757 px) hâlâ iki ekrandan uzun. Lord'da yer
+tutan şey 190 piksellik portre kartı ve boş ordu sahnesi; Akın'da beş
+diyar kapağı. İkisi de aynı ilkeyle küçültülebilir — tek karar, tek kart —
+ama ikisinde de asıl soru "kaç piksel" değil, "bu ekranın tek işi ne".

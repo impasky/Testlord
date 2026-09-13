@@ -38,7 +38,7 @@ console.log('Lordlar Çağı — öğretici tam testi (iPhone 13)\n');
 const damga = Date.now();
 const { token } = await kayitOl(API, {
   email: `ogt${damga}@lordlar.dev`,
-  lordName: `Ogt ${damga.toString(36).slice(-4)}`,
+  lordName: `Ogt ${damga.toString(36).slice(-4) + Math.random().toString(36).slice(2, 4)}`,
 });
 
 const b = await tarayiciAc();

@@ -29,7 +29,7 @@ const POST = (yol, govde, baslik = JS) =>
 
 const kayit = await kayitOl(API, {
   email: eposta,
-  lordName: `Hsp ${d.toString(36).slice(-3)}`,
+  lordName: `Hsp ${d.toString(36).slice(-3) + Math.random().toString(36).slice(2, 4)}`,
 });
 const h = { ...JS, Authorization: `Bearer ${kayit.token}` };
 
@@ -150,7 +150,7 @@ if (alinan) {
   const d2 = Date.now();
   const bakan = await kayitOl(API, {
     email: `bakan${d2}@lordlar.dev`,
-    lordName: `Bkn ${d2.toString(36).slice(-3)}`,
+    lordName: `Bkn ${d2.toString(36).slice(-3) + Math.random().toString(36).slice(2, 4)}`,
   });
   const hb = { ...JS, Authorization: `Bearer ${bakan.token}` };
   const bolge = await (await fetch(`${API}/api/map/${alinan.id}`, { headers: hb })).json();

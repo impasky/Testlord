@@ -33,7 +33,7 @@ console.log('Lordlar Çağı — gecikmiş iş çözülme testi\n');
 const damga = Date.now();
 const { token } = await kayitOl(API, {
   email: `kyr${damga}@lordlar.dev`,
-  lordName: `Kyr ${damga.toString(36).slice(-4)}`,
+  lordName: `Kyr ${damga.toString(36).slice(-4) + Math.random().toString(36).slice(2, 4)}`,
 });
 const bas = { authorization: `Bearer ${token}`, 'content-type': 'application/json' };
 const gonder = (yol, govde = {}) =>

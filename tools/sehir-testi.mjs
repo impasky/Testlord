@@ -30,7 +30,7 @@ console.log('Lordlar Çağı — şehir testi (iPhone 13)\n');
 const damga = Date.now();
 const { token } = await kayitOl(API, {
   email: `sehir${damga}@lordlar.dev`,
-  lordName: `Sehir ${damga.toString(36).slice(-4)}`,
+  lordName: `Sehir ${damga.toString(36).slice(-4) + Math.random().toString(36).slice(2, 4)}`,
 });
 const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
 const post = (y, g) =>

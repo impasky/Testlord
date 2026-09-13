@@ -96,7 +96,7 @@ async function kaydol(i) {
       body: JSON.stringify({
         email: `yuk${damga}_${i}@lordlar.dev`,
         password: 'parola1234',
-        lordName: `Yuk${damga.toString(36).slice(-3)}${i}`,
+        lordName: `Yuk${damga.toString(36).slice(-3) + Math.random().toString(36).slice(2, 4)}${i}`,
       }),
     });
     if (v?.token) {

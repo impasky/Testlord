@@ -22,7 +22,7 @@ const damga = Date.now();
 async function lordKur(etiket) {
   const { token } = await kayitOl(API, {
     email: `sev${damga}_${etiket}@lordlar.dev`,
-    lordName: `Sev ${damga.toString(36).slice(-3)}${etiket}`,
+    lordName: `Sev ${damga.toString(36).slice(-3) + Math.random().toString(36).slice(2, 4)}${etiket}`,
   });
   const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
   return {

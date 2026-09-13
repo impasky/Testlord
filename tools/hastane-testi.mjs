@@ -28,7 +28,7 @@ const { token: jeton } = await fetch(`${API}/api/auth/register`, {
   body: JSON.stringify({
     email: `hs${damga}@lordlar.dev`,
     password: 'parola1234',
-    lordName: `Hekim ${damga.toString(36).slice(-4)}`,
+    lordName: `Hekim ${damga.toString(36).slice(-4) + Math.random().toString(36).slice(2, 4)}`,
   }),
 }).then((r) => r.json());
 

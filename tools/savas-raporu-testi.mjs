@@ -11,6 +11,7 @@ import { ekrana, rehberiSustur } from './lib/gezin.mjs';
 import { devices } from 'playwright';
 import { tarayiciAc } from './lib/tarayici.mjs';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
+import { birimiAc } from './lib/birim.mjs';
 
 const WEB = process.env.WEB_URL ?? 'http://127.0.0.1:5173';
 const API = process.env.API_URL ?? 'http://localhost:3000';
@@ -63,6 +64,8 @@ await page.waitForSelector('nav button:has-text("Ordu")', { timeout: 15000 });
 await page.locator('nav button:has-text("Ordu")').click();
 await page.waitForSelector('text=Asker Eğitimi', { timeout: 8000 });
 for (const birim of ['Mızrakçı', 'Okçu', 'Süvari']) {
+  // Birim kartı kapalıysa önce açılıyor (bkz. lib/birim.mjs).
+  await birimiAc(page, birim);
   await page.locator(`button:has-text("${birim} eğit")`).first().click();
   await page.waitForTimeout(700);
 }

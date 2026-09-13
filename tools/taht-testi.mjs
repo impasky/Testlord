@@ -11,7 +11,7 @@
  *
  * SADECE GELİŞTİRME. node tools/taht-testi.mjs
  */
-import { kayitOl } from './lib/kayit.mjs';
+import { benzersizAd, kayitOl } from './lib/kayit.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 
 let hata = 0;
@@ -23,9 +23,14 @@ function kontrol(ad, kosul, detay = '') {
 console.log('Lordlar Çağı — Taht Kalesi testi\n');
 
 const d = Date.now();
+/*
+ * Ad `benzersizAd` ile: `Date.now().toString(36)`nın son ÜÇ karakteri
+ * ~47 saniyede bir tekrar ediyor ve süiti üst üste koşturunca "Bu lord
+ * adı alınmış" (409) ile düşüyordu. Yardımcı rastgelelik de katıyor.
+ */
 const { token } = await kayitOl(API, {
   email: `taht${d}@lordlar.dev`,
-  lordName: `Taht ${d.toString(36).slice(-3)}`,
+  lordName: benzersizAd('Taht'),
 });
 const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
 const P = (u, b) =>

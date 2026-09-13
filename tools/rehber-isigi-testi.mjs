@@ -36,7 +36,7 @@ console.log('Lordlar Çağı — rehber ışığı testi (iPhone 13)\n');
 const damga = Date.now();
 const { token } = await kayitOl(API, {
   email: `isik${damga}@lordlar.dev`,
-  lordName: `Isik ${damga.toString(36).slice(-4)}`,
+  lordName: `Isik ${damga.toString(36).slice(-4) + Math.random().toString(36).slice(2, 4)}`,
 });
 
 // Sekiz sayfalık öğreticiyi kapat: ışık onun ÜSTÜNE binmemeli ve zaten
@@ -410,7 +410,7 @@ await page.waitForTimeout(2500);
   const d2 = Date.now();
   const { token: t2 } = await kayitOl(API, {
     email: `isik${d2}_k@lordlar.dev`,
-    lordName: `Isikk ${d2.toString(36).slice(-4)}`,
+    lordName: `Isikk ${d2.toString(36).slice(-4) + Math.random().toString(36).slice(2, 4)}`,
   });
   await fetch(`${API}/api/me/ogretici-bitti`, {
     method: 'POST',
