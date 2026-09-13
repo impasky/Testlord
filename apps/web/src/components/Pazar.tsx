@@ -93,7 +93,11 @@ export function Pazar() {
   return (
     <Kart className="p-3">
       <div className="flex items-baseline justify-between">
-        <h3 className="baslik text-[11px] text-solgun">Pazar</h3>
+        {/* Ekranın doğrudan altında duran bir bölüm başlığı: h2.
+            h3 bırakmak h1'den sonra bir seviye atlamak demekti ve
+            ekran okuyucu kullanıcısının başlıklarla gezinmesini
+            bozuyordu (erisim-denetim.mjs yakaladı). */}
+        <h2 className="baslik text-[11px] text-solgun">Pazar</h2>
         <span className="text-[11px] text-sonuk">komisyon %{Math.round(komisyon * 100)}</span>
       </div>
       <p className="mt-0.5 text-[12px] leading-snug text-solgun">

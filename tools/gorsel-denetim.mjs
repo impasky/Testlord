@@ -233,9 +233,24 @@ async function denetle(ad) {
         }
       }
 
-      // Kabına sığmayan metin: taşan içerik gizleniyor
+      /*
+       * Kabına sığmayan metin: taşan içerik gizleniyor.
+       *
+       * EKRAN OKUYUCU METNİ HARİÇ. `sr-only` deseni öğeyi 1x1 piksele
+       * kırpıyor — gözle hiçbir şey görünmesin, ekran okuyucu okusun
+       * diye. O kutuda "kesilen metin" aramak tanım gereği anlamsız:
+       * zaten hiçbir şey gösterilmiyor. Sayfa başlıkları bu desenle
+       * eklenince (docs/12 §18) denetim on dört ekranda birden yalan
+       * alarm verdi.
+       */
+      const gizliOkuma = el.clientWidth <= 1 || el.clientHeight <= 1;
       const metinli = el.children.length === 0 && (el.textContent ?? '').trim().length > 0;
-      if (metinli && el.scrollWidth > el.clientWidth + 2 && s.overflow !== 'visible') {
+      if (
+        !gizliOkuma &&
+        metinli &&
+        el.scrollWidth > el.clientWidth + 2 &&
+        s.overflow !== 'visible'
+      ) {
         const yazi = (el.textContent ?? '').trim().slice(0, 40);
         // Bilerek kırpılan yazılar (truncate) hata değil; yalnız
         // ellipsis OLMAYANLARI bildiriyoruz.
@@ -566,4 +581,14 @@ console.log(
   `konsol hatası: ${konsol.length}${konsol.length ? ' — ' + konsol.slice(0, 3).join(' | ') : ''}`,
 );
 await browser.close();
-process.exit(0);
+
+/*
+ * BULGU VARSA DÜŞ.
+ *
+ * Burası `process.exit(0)` yazıyordu: denetim sorunları buluyor,
+ * ekrana yazıyor ve sonra "başardım" diyerek çıkıyordu. `pnpm e2e`
+ * zinciri de bu yüzden hiç kırılmıyordu — yani araç aylardır bir
+ * denetim değil bir rapordu. Alarm vermeyen bir alarm, olmayan alarmdan
+ * kötüdür: olduğunu sanıp güvenirsin.
+ */
+process.exit(bulgu === 0 ? 0 : 1);

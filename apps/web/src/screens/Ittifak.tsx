@@ -416,7 +416,7 @@ export function Ittifak({ lordId }: { lordId: string }) {
                         düğme koymak, listeyi düğme tarlasına çevirirdi. */}
                     <button
                       type="button"
-                      className="bas flex w-full items-center gap-2 text-left"
+                      className="bas flex w-full items-center gap-2 py-1 text-left"
                       onClick={() => setInceleId(a.id)}
                       aria-label={`${a.ad} ittifakını incele`}
                     >

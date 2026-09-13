@@ -211,7 +211,9 @@ export function Malikane({
           <button
             type="button"
             onClick={() => setIpucuSayac((n) => n + 1)}
-            className="bas baslik shrink-0 text-[11px] text-sonuk"
+            // Negatif dış boşluk + iç dolgu: dokunma hedefi 24px'in
+            // üstüne çıkıyor ama satırın görünen yerleşimi kaymıyor.
+            className="bas baslik -my-1.5 shrink-0 px-1 py-1.5 text-[11px] text-sonuk"
           >
             SONRAKİ
           </button>

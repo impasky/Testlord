@@ -51,7 +51,11 @@ export function SavunmaDuzeni() {
     <Kart className="p-3">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <h3 className="baslik text-[11px] text-solgun">Savunma Düzeni</h3>
+          {/* Ekranın doğrudan altında duran bir bölüm başlığı: h2.
+              h3 bırakmak h1'den sonra bir seviye atlamak demekti ve
+              ekran okuyucu kullanıcısının başlıklarla gezinmesini
+              bozuyordu (erisim-denetim.mjs yakaladı). */}
+          <h2 className="baslik text-[11px] text-solgun">Savunma Düzeni</h2>
           <p className="mt-0.5 text-[12px] leading-snug text-solgun">
             {asker === 0
               ? 'Evde asker yok. Kışla’da asker eğitince buradan savunma dizilimini kurabilirsin.'

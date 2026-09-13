@@ -251,7 +251,7 @@ export function Omurga({
 
   return (
     <Kart className="p-4" vurgu="var(--color-altin)">
-      <h3 className="baslik mb-1.5 text-[11px] text-sonuk">Şimdi ne yapmalısın</h3>
+      <h2 className="baslik mb-1.5 text-[11px] text-sonuk">Şimdi ne yapmalısın</h2>
       <p className="baslik text-[19px] leading-tight text-altin">{adim.baslik}</p>
 
       {/* Tek satır cümle + rozetler. Önceden burada dört satırlık düz yazı
@@ -286,7 +286,7 @@ export function Omurga({
 function OmurgaIskeleti() {
   return (
     <Kart className="p-4" vurgu="var(--color-altin)">
-      <h3 className="baslik mb-1.5 text-[11px] text-sonuk">Şimdi ne yapmalısın</h3>
+      <h2 className="baslik mb-1.5 text-[11px] text-sonuk">Şimdi ne yapmalısın</h2>
       <div aria-busy="true" aria-label="Yükleniyor" className="motion-safe:animate-pulse">
         {/* Başlık satırı: gerçek kartta text-[19px] leading-tight. */}
         <p className="baslik text-[19px] leading-tight text-transparent">

@@ -90,14 +90,17 @@ export function OlaySeridi({ onBolgeAc }: { onBolgeAc: (regionId: number) => voi
 
   return (
     <Kart className="p-3">
-      <h3 className="baslik mb-2 text-[11px] text-solgun">Diyarda neler oluyor</h3>
+      <h2 className="baslik mb-2 text-[11px] text-solgun">Diyarda neler oluyor</h2>
       <ul className="space-y-1.5">
         {olaylar.slice(0, 6).map((o) => (
           <li key={o.id}>
             <button
               type="button"
               onClick={() => onBolgeAc(o.bolgeId)}
-              className="bas flex w-full items-baseline gap-2 text-left text-[12px]"
+              // Satır 12px yazıyla 18px yüksekliğinde kalıyordu; WCAG
+              // 2.5.8'in 24px alt sınırının altında ve başparmakla
+              // ıskalanıyor. Dikey dolgu listeyi de nefes aldırıyor.
+              className="bas flex w-full items-baseline gap-2 py-1 text-left text-[12px]"
             >
               <span className="min-w-0 flex-1 leading-snug">
                 <strong className="text-parsomen">{o.saldiran}</strong>{' '}

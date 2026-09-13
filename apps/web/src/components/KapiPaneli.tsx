@@ -73,6 +73,15 @@ export function KapiPaneli({
             aria-hidden
             className="absolute inset-x-0 top-1.5 mx-auto h-1 w-10 rounded-full bg-kenar-acik"
           />
+          {/*
+           * Panel başlığı h2 KALIYOR, h1 değil.
+           *
+           * Bir denemede h1 yapıldı ("dialog'un en üst başlığı olmalı")
+           * ve ölçüm yanlışı gösterdi: kapıların çoğu içeride `Zemin`
+           * afişiyle zaten bir h1 çiziyor, yani ekranda iki sayfa
+           * başlığı oluyordu. Panelin ADI zaten var — sarmalayıcıdaki
+           * `aria-label`. Başlığın ayrıca h1 olmasına gerek yok.
+           */}
           <h2 className="baslik min-w-0 flex-1 truncate pt-1 text-[15px] text-altin">{baslik}</h2>
           <button
             type="button"

@@ -275,7 +275,9 @@ function BirimKarti({
 
       <button
         onClick={() => setDetay((d) => !d)}
-        className="bas baslik mt-2 w-full text-[11px] text-sonuk"
+        // Dokunma hedefi: 11px yazı tek başına 17px yükseklik veriyordu
+        // ve WCAG 2.5.8'in 24px alt sınırının altında kalıyordu.
+        className="bas baslik mt-2 w-full py-1.5 text-[11px] text-sonuk"
         aria-expanded={detay}
       >
         {detay ? 'DETAYI GİZLE' : 'DETAY'}

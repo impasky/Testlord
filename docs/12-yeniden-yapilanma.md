@@ -1392,3 +1392,60 @@ yönü de sessiz kusur — ölü aboneliği silmezsen push servisi bir gün
 bütün bildirimlerini engeller; geçici bir hatada silersen oyuncunun
 aboneliğini ekranda "açık" yazarken kaybedersin. 404 ve 410 siliyor;
 429, 5xx, 401/403 ve durum kodu olmayan ağ hataları silmiyor.
+
+## 18. Erişim — göremeyen ve dokunamayan oyuncu
+
+docs/07 M13'ün "erişim" yarısı. Dil desteğinden ayrı tutuldu, çünkü
+ikisi ayrı işler: oyunun hedef kitlesi Türkçe konuşuyor ama görme
+güçlüğü çeken oyuncu da Türkçe konuşuyor.
+
+`okunurluk-denetim.mjs` GÖZLE okunabilirliği ölçüyordu (kontrast, yazı
+boyutu). `erisim-denetim.mjs` onun ölçmediği yarıyı ölçüyor: ekran
+okuyucuyla ve klavyeyle oyunun ne kadarının anlaşılabildiğini.
+
+### 18.1 İlk koşu dört sorun buldu, ikisi gerçek değildi
+
+| bulgu                        | sonuç                                         |
+| ---------------------------- | --------------------------------------------- |
+| `lang="tr"`                  | zaten vardı                                   |
+| Adsız düğme / alt'sız görsel | hiç yok — daha önceki denetimler işini görmüş |
+| "Odak görünmüyor"            | **ölçüm hatasıydı**                           |
+| "138 dokunma hedefi küçük"   | **eşik hatasıydı**                            |
+
+**Odak.** Ölçüm `el.focus()` çağırıp `outline` okuyordu ve "görünmüyor"
+dedi. Oysa `:focus-visible` yalnız KLAVYEYLE gelen odakta açılıyor;
+betikten odaklamak `:focus` veriyor, `:focus-visible` vermiyor. Yani
+ölçüm, ölçtüğünü sandığı şeyi hiç uyandırmıyordu. Gerçekten Tab'a
+basılınca altın 2px'lik halka çıkıyor — stil zaten doğruydu.
+
+**Dokunma.** Tek eşik (44px, herhangi bir kenar) 138 satırlık bir rapor
+üretiyordu; o kadar uzun bir liste okunmaz, yani hiçbir şey ölçmemekle
+aynı. İki standart ayrıldı: **24px (WCAG 2.5.8 AA)** geçilmesi zorunlu,
+**44px (2.5.5 AAA)** rahatlık ölçüsü. Ölçü de KÜÇÜK kenar oldu —
+338×17'lik bir satır geniş ama ince ve ıskalanıyor, 85×42'lik bir düğme
+ise pratikte gayet rahat.
+
+Bir de standardın kendi istisnası eklendi: cümle içindeki bir bağlantı
+muaf. "Ekipman Demirhane'de dövülür" cümlesindeki bağlantıyı 24px yapmak
+için satırı şişirmek gerekir ve o zaman cümle okunmaz olur.
+
+### 18.2 Gerçekten düzeltilenler
+
+- **Sayfa başlığı.** Tasarımda bilerek görünür bir sayfa başlığı yok:
+  telefon ekranı dar. Ama ekran okuyucu kullanıcısı için sayfanın adı
+  gezinmenin omurgası. `sr-only` bir `h1` ikisini birden veriyor —
+  gözle hiçbir şey değişmiyor, ekran okuyucu her sekmede nerede
+  olduğunu söylüyor.
+- **Başlık seviyeleri.** Altı bileşen (`Omurga`, `Hastane`, `Pazar`,
+  `SavunmaDuzeni`, `DunyaSeridi`) ekranın doğrudan altında duran bölüm
+  başlığını `h3` çiziyordu; `h1`den sonra bir seviye atlamak, başlıklarla
+  gezinmeyi bozuyor. Hepsi `h2` oldu.
+- **Dört küçük hedef:** Kışla "DETAY" (338×17), Malikâne "SONRAKİ"
+  (61×17), ittifak listesi satırı (338×22) ve diyar şeridi satırı
+  (338×18). Malikâne'ninki negatif dış boşlukla büyütüldü: hedef
+  24px'in üstüne çıktı ama satırın görünen yerleşimi kaymadı.
+
+Bir deneme de geri alındı: kapı panelinin başlığı `h1` yapılmıştı
+("dialog'un en üst başlığı olmalı"), ölçüm iki sayfa başlığı gösterdi —
+kapıların çoğu içeride `Zemin` afişiyle zaten bir `h1` çiziyor. Panelin
+ADI zaten `aria-label`da; başlık `h2` kaldı.

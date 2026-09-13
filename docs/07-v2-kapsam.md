@@ -294,8 +294,15 @@ alınamayan yanlış bir seçim oyuncuyu hesabını silmeye iter.
 
 ### Hâlâ açık olanlar
 
+- **M13 — erişim. YAPILDI** (docs/12 §18). `pnpm erisim` ekran
+  okuyucu ve klavye erişilebilirliğini ölçüyor: sayfa dili, her düğmenin
+  okunabilir adı, görsellerin alt metni, başlık yapısı, odak görünürlüğü
+  ve WCAG 2.5.8 dokunma hedefleri. Denetim temiz ve `pnpm e2e` içinde.
 - **M13 — i18n.** Metinler bileşenlerin içinde. Türkçe hedef kitle için
-  bugün sorun değil, "bitmiş ürün" ölçütünde eksik.
+  bugün sorun değil, "bitmiş ürün" ölçütünde eksik. Bilerek yapılmadı:
+  bin küsur metni çıkarmak büyük ve riskli bir mekanik değişiklik ve
+  bugün hiçbir oyuncuya bir şey kazandırmıyor. İkinci bir dil gerçekten
+  gerekince yapılmalı.
 - **M14 — push bildirimi. YAPILDI** (docs/12 §17). Web Push + VAPID:
   anahtar yerel üretiliyor, dış servis yok. Service worker, cihaz başına
   abonelik, Hesap ekranında izin kartı ve altı olay türü bildirim

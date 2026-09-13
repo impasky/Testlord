@@ -259,6 +259,18 @@ export function MobilKabuk({
         className="mx-auto max-w-lg px-3"
         style={{ paddingTop: 'var(--ust-bar)', paddingBottom: 'calc(var(--alt-bar) + 16px)' }}
       >
+        {/*
+         * GÖRÜNMEZ SAYFA BAŞLIĞI.
+         *
+         * Tasarımda bilerek görünür bir sayfa başlığı yok: telefon ekranı
+         * dar ve her ekranın tepesinde bir satır harcamak, asıl içeriği
+         * aşağı itiyor. Ama ekran okuyucu kullanıcısı için sayfanın adı
+         * gezinmenin OMURGASI — "hangi ekrandayım" sorusunun cevabı.
+         *
+         * `sr-only` ikisini birden veriyor: gözle hiçbir şey değişmiyor,
+         * ekran okuyucu her sekmede nerede olduğunu söylüyor.
+         */}
+        <h1 className="sr-only">{CUBUK.find((c) => c.key === sekme)?.ad ?? 'Lordlar Çağı'}</h1>
         {children}
       </main>
 

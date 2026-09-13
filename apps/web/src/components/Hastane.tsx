@@ -27,7 +27,11 @@ export function Hastane({ hastane, queues }: { hastane: Army; queues: QueueItem[
   return (
     <Kart className="border-kirmizi/30 p-3">
       <div className="flex items-baseline justify-between gap-2">
-        <h3 className="baslik text-[11px] text-solgun">Hastane</h3>
+        {/* Ekranın doğrudan altında duran bir bölüm başlığı: h2.
+            h3 bırakmak h1'den sonra bir seviye atlamak demekti ve
+            ekran okuyucu kullanıcısının başlıklarla gezinmesini
+            bozuyordu (erisim-denetim.mjs yakaladı). */}
+        <h2 className="baslik text-[11px] text-solgun">Hastane</h2>
         {tedavi && (
           <span className="tabular text-[12px] text-altin">
             <GeriSayim bitis={tedavi.finishAt} />
