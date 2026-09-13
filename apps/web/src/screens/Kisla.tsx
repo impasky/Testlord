@@ -16,14 +16,11 @@ import { Gorsel } from '../components/Gorsel';
 import { HedefSeridi } from '../components/HedefSeridi';
 import {
   BirimIkonu,
-  IkonAltin,
   IkonCan,
-  IkonDemir,
   IkonErzak,
   IkonHiz,
   IkonSaldiri,
   IkonSavunma,
-  IkonSure,
   IkonUyari,
   IkonYer,
 } from '../components/Ikonlar';
@@ -38,6 +35,8 @@ import {
   Iskelet,
   Kart,
   KuyrukSeridi,
+  Maliyet,
+  Sure,
   formatKalan,
   formatSayi,
   kaynakEngeli,
@@ -182,42 +181,18 @@ function BirimKarti({
             <Hap className="shrink-0">Evde {formatSayi(evdeki)}</Hap>
           </div>
 
-          <div className="mt-2 flex flex-wrap gap-1.5">
-            <Hap
-              ikon={<IkonAltin boyut={13} />}
-              renk={
-                maliyet.altin > kaynaklar.altin
-                  ? 'var(--color-kirmizi)'
-                  : 'var(--color-kaynak-altin)'
-              }
-            >
-              {formatSayi(maliyet.altin)}
-            </Hap>
-            {u.maliyet.demir > 0 && (
-              <Hap
-                ikon={<IkonDemir boyut={13} />}
-                renk={
-                  maliyet.demir > kaynaklar.demir
-                    ? 'var(--color-kirmizi)'
-                    : 'var(--color-kaynak-demir)'
-                }
-              >
-                {formatSayi(maliyet.demir)}
-              </Hap>
-            )}
-            {u.maliyet.erzak > 0 && (
-              <Hap
-                ikon={<IkonErzak boyut={13} />}
-                renk={
-                  maliyet.erzak > kaynaklar.erzak
-                    ? 'var(--color-kirmizi)'
-                    : 'var(--color-kaynak-erzak)'
-                }
-              >
-                {formatSayi(maliyet.erzak)}
-              </Hap>
-            )}
-            <Hap ikon={<IkonSure boyut={13} />}>{formatKalan(u.egitim_sn * adet * 1000)}</Hap>
+          {/* Fiyat TEK nesne, süre ayrı tür (bkz. `Maliyet`, `Sure`).
+              Önceden beşi de aynı haptı: üç kaynak, süre ve evdeki sayı
+              yan yana duruyor, hangisinin ödenecek hangisinin beklenecek
+              olduğunu ancak okuyarak anlıyordun. */}
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            <Maliyet
+              altin={maliyet.altin}
+              demir={maliyet.demir}
+              erzak={maliyet.erzak}
+              kaynaklar={kaynaklar}
+            />
+            <Sure>{formatKalan(u.egitim_sn * adet * 1000)}</Sure>
           </div>
         </div>
       </div>

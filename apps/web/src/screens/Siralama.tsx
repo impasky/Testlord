@@ -54,9 +54,23 @@ function Satir({
 }) {
   const madalya = r.sira <= 3 ? MADALYA[r.sira - 1] : undefined;
   return (
-    <Kart
-      className={`p-2.5 ${benMi ? 'border-altin/60' : ''}`}
-      vurgu={benMi ? 'var(--color-altin)' : undefined}
+    /*
+     * SATIR, KART DEĞİL.
+     *
+     * Sıralama ekranı bir liste için 37 kart çiziyordu: her satırın kendi
+     * kenarlığı, kendi zemini, kendi köşe yuvarlaması. Kart, RESMİ VE
+     * KARARI olan şey içindir — bir bölge, bir bina, bir hedef. Göz
+     * gezdirilen şey satır ister. Otuz yedi kart, otuz yedi ayrı nesne
+     * gibi okunuyor ve aralarındaki tek fark olan SIRA kayboluyordu.
+     *
+     * Kendi satırın hâlâ ayrı duruyor — ama kart olarak değil, zemin ve
+     * sol kenar vurgusuyla: listede kendini aramak bir dokunuşluk iş
+     * olmamalı.
+     */
+    <div
+      className={`border-b border-kenar/40 px-1.5 py-2 last:border-0 ${
+        benMi ? 'rounded-lg border-b-0 bg-altin/10 ring-1 ring-altin/40' : ''
+      }`}
     >
       <div className="flex items-center gap-2.5">
         <span
@@ -100,7 +114,7 @@ function Satir({
           </button>
         )}
       </div>
-    </Kart>
+    </div>
   );
 }
 
@@ -253,7 +267,7 @@ export function Siralama({
           </Kart>
         ) : (
           <>
-            <div className="space-y-1.5">
+            <div className="oyuk rounded-xl border border-kenar px-1 py-0.5">
               {q.data.satirlar.map((r) => (
                 <Satir
                   key={r.lordId}

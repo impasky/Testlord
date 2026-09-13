@@ -66,6 +66,14 @@ const CUBUK: { key: AltSekme; ad: string; Ikon: typeof IkonNavMalikane }[] = [
 ];
 
 /** Kaynak sayacı: sunucu değerinden itibaren saniye saniye ilerler. */
+/**
+ * Doluluk çubuğunun görünmeye başladığı oran.
+ *
+ * %75: taşmaya bu noktadan sonra bir şey yapılabilir (harcamak, araştırma
+ * açmak). Daha erken göstermek çubuğu yine süse çevirirdi.
+ */
+const ESIK = 0.75;
+
 function KaynakSayaci({
   ikon,
   deger,
@@ -101,6 +109,21 @@ function KaynakSayaci({
    * (docs/11 §2.3 G3).
    */
   const durum = saatlik < 0 ? 'kritik' : dolu ? 'israf' : null;
+  /**
+   * ÇUBUK HER ZAMAN ÇİZİLMİYOR.
+   *
+   * Üç kaynağın üç dolu çubuğu, ekranın tepesinde her ekranda duruyordu ve
+   * çoğu zaman hiçbir şey söylemiyordu: oyuncu "%93 dolu" ile "%70 dolu"
+   * arasında farklı bir şey yapamıyor. Daha kötüsü, sürekli çizilen bir
+   * çubuk UYARI hâlini de sıradanlaştırıyor — kritik durumda kızaran
+   * çubuk, yanındaki iki dolu çubuğun içinde kayboluyordu.
+   *
+   * Çubuk artık yalnız DOLULUK BİR KARARA DÖNÜŞÜNCE çiziliyor: taşmaya
+   * yaklaşan depo ya da eksiye giden erzak. O zaman da tek başına
+   * duruyor, yani gerçekten görülüyor.
+   */
+  const oran = tavan > 0 ? canli / tavan : 0;
+  const cubukGerek = durum !== null || oran >= ESIK;
   /*
    * "Azalıyor" bir GÖZLEMDİ, uyarı değil. Oyuncu ne zaman biteceğini ve
    * bitince ne olacağını bilmeden karar veremez. Sayı motordan geliyor
@@ -140,11 +163,15 @@ function KaynakSayaci({
         <span className="tabular truncate text-[13px] font-bold">{kisaSayi(canli)}</span>
       </div>
       <div className="mt-1 flex items-center gap-1">
-        <div className="min-w-0 flex-1">
-          <Ilerleme deger={canli} max={tavan} renk={renk} boy="ince" />
-        </div>
+        {cubukGerek && (
+          <div className="min-w-0 flex-1">
+            <Ilerleme deger={canli} max={tavan} renk={renk} boy="ince" />
+          </div>
+        )}
         <span
-          className={`tabular shrink-0 text-[11px] ${saatlik < 0 ? 'text-kirmizi' : 'text-sonuk'}`}
+          className={`tabular shrink-0 text-[11px] ${
+            cubukGerek ? '' : 'flex-1'
+          } ${saatlik < 0 ? 'text-kirmizi' : 'text-sonuk'}`}
         >
           {saatlik >= 0 ? '+' : ''}
           {Math.round(saatlik)}

@@ -45,6 +45,8 @@ import {
   Iskelet,
   Fark,
   Hap,
+  Maliyet,
+  Sure,
   Kart,
   KuyrukSeridi,
   SonucSatiri,
@@ -1126,28 +1128,14 @@ export function Harita({
                             )}
                           </div>
 
-                          <div className="mt-2 flex flex-wrap gap-1.5">
-                            <Hap
-                              renk={
-                                bolge.upgradeCost!.altin > lord.resources.altin
-                                  ? 'var(--color-kirmizi)'
-                                  : 'var(--color-kaynak-altin)'
-                              }
-                            >
-                              {formatSayi(bolge.upgradeCost!.altin)} altın
-                            </Hap>
-                            <Hap
-                              renk={
-                                bolge.upgradeCost!.demir > lord.resources.demir
-                                  ? 'var(--color-kirmizi)'
-                                  : 'var(--color-kaynak-demir)'
-                              }
-                            >
-                              {formatSayi(bolge.upgradeCost!.demir)} demir
-                            </Hap>
-                            <Hap ikon={<IkonSure boyut={13} />}>
-                              {formatKalan(bolge.upgradeCost!.sec * 1000)}
-                            </Hap>
+                          {/* Fiyat tek nesne, süre ayrı tür (`Maliyet`, `Sure`). */}
+                          <div className="mt-2 flex flex-wrap items-center gap-2">
+                            <Maliyet
+                              altin={bolge.upgradeCost!.altin}
+                              demir={bolge.upgradeCost!.demir}
+                              kaynaklar={lord.resources}
+                            />
+                            <Sure>{formatKalan(bolge.upgradeCost!.sec * 1000)}</Sure>
                           </div>
 
                           <Buton

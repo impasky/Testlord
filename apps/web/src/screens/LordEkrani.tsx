@@ -255,14 +255,26 @@ export function LordEkrani({
             </span>
             {/* Kuşam rozeti: figürün NEDEN değiştiğini söylüyor. Değişen
                 ama sebebi yazmayan bir görsel, oyuncunun gözünde
-                rastgeledir. */}
-            <span className="baslik absolute top-2 left-2 rounded-lg bg-gece/80 px-2 py-1 text-[11px] text-altin">
-              {kusamAdi}
+                rastgeledir.
+
+                "KUŞAM" ÖNEKİ ŞART. Rozet yalnız "ÇAYLAK" yazıyordu ve
+                dört santim aşağıda, adın altında "ŞÖVALYE" duruyordu:
+                iki rütbe sözcüğü yan yana, hangisinin ne ölçtüğünü
+                söyleyen hiçbir şey yok. İkisi gerçekten ayrı şey —
+                biri kuşanılan ekipmanın kademesi, öteki şöhret unvanı —
+                ama oyuncu bunu bilemez, çelişki sanır. */}
+            <span className="absolute top-2 left-2 rounded-lg bg-gece/80 px-2 py-1 text-[11px]">
+              <span className="baslik text-sonuk">Kuşam</span>{' '}
+              <span className="baslik text-altin">{kusamAdi}</span>
             </span>
           </div>
           <div className="p-3">
             <div className="baslik truncate text-[16px] text-parsomen">{lord.name}</div>
-            <div className="baslik text-[13px] text-altin">{lord.unvan.ad}</div>
+            {/* Unvan da neyin karşılığı olduğunu söylüyor: şöhretin. */}
+            <div className="text-[13px]">
+              <span className="baslik text-sonuk">Unvan</span>{' '}
+              <span className="baslik text-altin">{lord.unvan.ad}</span>
+            </div>
             <p className="mt-0.5 text-[11px] leading-snug text-solgun">{lord.unvan.aciklama}</p>
           </div>
         </div>

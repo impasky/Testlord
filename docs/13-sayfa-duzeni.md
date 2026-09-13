@@ -73,3 +73,77 @@ sekmeye altın nokta konsun" diye kullanıyordu. Şerit ise adımı
 ÇALIŞTIRIYOR. Düğme çiziliyor, basılıyor, hiçbir şey olmuyordu: `git`
 vardı ama içi boştu, yani "düğme var mı" denetimi geçiyor, iş
 yapılmıyordu. Kanca artık işleyicileri isteğe bağlı alıyor.
+
+## 13.4 Hap grameri: şekil anlam taşısın
+
+Kışla ekranında tek bakışta 30 hap vardı ve beş ayrı anlam
+taşıyorlardı: `+65/sa` gelir, `1.850` maliyet, `37 Köylü Milis daha`
+şart, `31/90` kapasite, `27dk 45sn` süre. Hepsi aynı yuvarlak
+dikdörtgen. Şekil hiçbir şey söylemediği için oyuncu her birini **okumak**
+zorundaydı; göz listeyi tarayamıyordu.
+
+En büyük küme maliyetti: altın, demir ve erzak üç ayrı hap olarak yan yana
+duruyordu. Oysa onlar üç şey değil **bir** şey — bir fiyat etiketi.
+
+İki yeni tür (`components/ui.tsx`):
+
+- **`Maliyet`** — üç kaynak tek çerçevede. Göz "fiyat" diye tek bir nesne
+  görüyor, içindeki sayıları ancak gerekince okuyor. Yetmeyen kalem
+  kırmızı: karar renkte, cümlede değil. Sıfır olan kaynak hiç yazılmıyor.
+- **`Sure`** — çerçevesiz, soluk, saatli. Süre ödediğin bir şey değil,
+  ödedikten sonra beklediğin şey; fiyatın yanında hap olarak durunca "bu
+  da mı ödenecek" diye okunuyordu.
+
+Kışla, Şehir'in yapı kartı ve Harita'nın bölge kartı aynı gramere geçti.
+**Kışla'da hap sayısı 30 → 13.**
+
+Ölçüm bir şeyi de düzeltti: ilk sayımda "30 hap, beş anlam" derken
+Malikâne'dekileri de maliyet sanmıştım — onlar GELİR (`+X/sa`), Demirhane
+ise zaten hap kullanmıyordu. Sorun sandığımdan dardı; gramer yine de
+kuruldu, çünkü dar olması yanlış olmasını engellemiyor.
+
+## 13.5 Sıralama: 37 kart, bir liste
+
+Sıralama ekranı bir liste için 37 kart çiziyordu — her satırın kendi
+kenarlığı, kendi zemini, kendi köşe yuvarlaması. Kart **resmi ve kararı**
+olan şey içindir: bir bölge, bir bina, bir hedef. Göz gezdirilen şey satır
+ister. Otuz yedi kart otuz yedi ayrı nesne gibi okunuyor ve aralarındaki
+tek anlamlı fark olan SIRA kayboluyordu.
+
+Satırlar tek bir çerçevenin içinde, aralarında saç teli kalınlığında
+ayraçla duruyor. Kendi satırın hâlâ ayrı — ama kart olarak değil, zemin ve
+kenar vurgusuyla. **37 → 11 kart.**
+
+## 13.6 Üst çubuk: çubuk ancak karara dönüşünce
+
+Üç kaynağın üç doluluk çubuğu her ekranın tepesinde duruyordu ve çoğu
+zaman hiçbir şey söylemiyordu: oyuncu "%93 dolu" ile "%70 dolu" arasında
+farklı bir şey yapamıyor. Daha kötüsü, sürekli çizilen bir çubuk UYARI
+hâlini de sıradanlaştırıyordu — kritik durumda kızaran çubuk, yanındaki
+iki dolu çubuğun içinde kayboluyordu.
+
+Çubuk artık yalnız doluluk bir karara dönüşünce çiziliyor: %75 üstü ya da
+eksiye giden erzak. O zaman da tek başına duruyor, yani gerçekten
+görülüyor.
+
+## 13.7 Lord kartında iki rütbe, hangisi ne söylemiyordu
+
+Sol üstte `ÇAYLAK`, dört santim aşağıda adın altında `ŞÖVALYE`. İki rütbe
+sözcüğü yan yana ve hangisinin ne ölçtüğünü söyleyen hiçbir şey yok.
+İkisi gerçekten ayrı şey — biri kuşanılan ekipmanın kademesi, öteki
+şöhret unvanı — ama oyuncu bunu bilemez, çelişki sanır.
+
+İkisi de artık neyin karşılığı olduğunu söylüyor: "Kuşam Çaylak",
+"Unvan Şövalye".
+
+## 13.8 Sayılar
+
+| ekran    | önce    | sonra   | kart        | hap         |
+| -------- | ------- | ------- | ----------- | ----------- |
+| Şehir    | 1915 px | 1225 px | 12 → 11     | 1 → 0       |
+| Ordu     | 2244 px | 2260 px | 7 → 7       | **30 → 13** |
+| Sıralama | —       | —       | **37 → 11** | 1 → 0       |
+
+Ordu'nun yüksekliği 16 piksel arttı: omurga şeridi için içeriğe eklenen
+dolgu. Aynı şerit Şehir'den 500 piksellik kartı kaldırdığı için orada
+kazanç net.

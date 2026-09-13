@@ -36,11 +36,13 @@ import {
   GeriSayim,
   Ilerleme,
   Iskelet,
+  Maliyet,
+  Sure,
   Kart,
   formatKalan,
   formatSayi,
 } from '../components/ui';
-import { IkonAltin, IkonDemir, IkonErzak, IkonSure, IkonUyari } from '../components/Ikonlar';
+import { IkonUyari } from '../components/Ikonlar';
 import type { Kapi } from '@lordlar/shared';
 import type { Sekme } from '../components/MobilKabuk';
 
@@ -908,30 +910,16 @@ function BinaKarti({
 
       {b.maliyet && (
         <>
-          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-solgun">
-            <span className="flex items-center gap-1">
-              <IkonAltin boyut={12} />{' '}
-              <span className={kaynak.altin < b.maliyet.altin ? 'text-kirmizi' : ''}>
-                {formatSayi(b.maliyet.altin)}
-              </span>
-            </span>
-            <span className="flex items-center gap-1">
-              <IkonDemir boyut={12} />{' '}
-              <span className={kaynak.demir < b.maliyet.demir ? 'text-kirmizi' : ''}>
-                {formatSayi(b.maliyet.demir)}
-              </span>
-            </span>
-            <span className="flex items-center gap-1">
-              <IkonErzak boyut={12} />{' '}
-              <span className={kaynak.erzak < b.maliyet.erzak ? 'text-kirmizi' : ''}>
-                {formatSayi(b.maliyet.erzak)}
-              </span>
-            </span>
-            {b.sureSn !== null && (
-              <span className="flex items-center gap-1">
-                <IkonSure boyut={12} /> {formatKalan(b.sureSn * 1000)}
-              </span>
-            )}
+          {/* Fiyat tek nesne, süre ayrı tür (`Maliyet`, `Sure`) — kışla ve
+              bölge kartıyla aynı gramer. */}
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            <Maliyet
+              altin={b.maliyet.altin}
+              demir={b.maliyet.demir}
+              erzak={b.maliyet.erzak}
+              kaynaklar={kaynak}
+            />
+            {b.sureSn !== null && <Sure>{formatKalan(b.sureSn * 1000)}</Sure>}
           </div>
           {/* Seviyenin NE VERDİĞİ yazılı — binanın seviyesi değil ETKİSİ.
               Önce "Depo tabanı: 1 → 2" yazıyordu; o iki sayı seviyeydi ve

@@ -6,7 +6,7 @@
  * Masaüstü düzeni YOK — her şey tek sütun, dokunmatik hedefleri ≥44px.
  */
 import { useEffect, useState, type ReactNode } from 'react';
-import { IkonUyari } from './Ikonlar';
+import { IkonAltin, IkonDemir, IkonErzak, IkonSure, IkonUyari } from './Ikonlar';
 
 /* ---------------- Geri sayım ---------------- */
 
@@ -478,6 +478,92 @@ export function Hap({
       style={renk ? { color: renk } : undefined}
     >
       {ikon && <span className="opacity-90">{ikon}</span>}
+      {children}
+    </span>
+  );
+}
+
+/* ---------------- Maliyet ---------------- */
+
+/**
+ * MALİYET KÜMESİ — "bu ne kadar tutuyor" sorusunun TEK cevabı.
+ *
+ * ── Sorun: şekil anlam taşımıyordu ───────────────────────────────────
+ *
+ * Kışla ekranında tek bakışta 30 hap vardı ve beş ayrı anlam
+ * taşıyorlardı: `+65/sa` gelir, `1.850` maliyet, `37 Köylü Milis daha`
+ * şart, `31/90` kapasite, `27dk 45sn` süre. Hepsi aynı yuvarlak
+ * dikdörtgen. Şekil hiçbir şey söylemediği için oyuncu her birini
+ * OKUMAK zorundaydı — göz, listeyi tarayamıyordu.
+ *
+ * En büyük küme maliyetti: altın, demir, erzak üç ayrı hap olarak yan
+ * yana duruyordu. Oysa onlar üç şey değil, BİR şey — bir fiyat etiketi.
+ *
+ * ── Karar ────────────────────────────────────────────────────────────
+ *
+ * Maliyet artık tek bir çerçevenin içinde. Göz "fiyat" diye tek bir
+ * nesne görüyor, içindeki üç sayıyı ancak gerekince okuyor. Yetmeyen
+ * kaynak kırmızı: kararın kendisi renkte, cümlede değil.
+ *
+ * Sıfır olan kaynak HİÇ yazılmıyor — "0 demir" bir bilgi değil, gürültü.
+ */
+export function Maliyet({
+  altin,
+  demir,
+  erzak,
+  kaynaklar,
+  className = '',
+}: {
+  altin?: number;
+  demir?: number;
+  erzak?: number;
+  /** Oyuncunun elindekiler; verilirse yetmeyen kalem kırmızı olur. */
+  kaynaklar?: { altin: number; demir: number; erzak: number };
+  className?: string;
+}) {
+  const kalemler = (
+    [
+      ['altin', altin, <IkonAltin key="a" boyut={13} />, 'var(--color-kaynak-altin)'],
+      ['demir', demir, <IkonDemir key="d" boyut={13} />, 'var(--color-kaynak-demir)'],
+      ['erzak', erzak, <IkonErzak key="e" boyut={13} />, 'var(--color-kaynak-erzak)'],
+    ] as const
+  ).filter(([, deger]) => (deger ?? 0) > 0);
+
+  if (kalemler.length === 0) return null;
+
+  return (
+    <span
+      className={`hap inline-flex items-center gap-2.5 px-2.5 py-1 ${className}`}
+      aria-label="maliyet"
+    >
+      {kalemler.map(([ad, deger, ikon, renk]) => {
+        const yetmiyor = kaynaklar ? (deger ?? 0) > kaynaklar[ad] : false;
+        return (
+          <span
+            key={ad}
+            className="tabular inline-flex items-center gap-1 text-[12px] font-bold whitespace-nowrap"
+            style={{ color: yetmiyor ? 'var(--color-kirmizi)' : renk }}
+          >
+            {ikon}
+            {formatSayi(deger ?? 0)}
+          </span>
+        );
+      })}
+    </span>
+  );
+}
+
+/**
+ * SÜRE — maliyet değil, SONUÇ.
+ *
+ * Süre de hap olarak çiziliyordu ve fiyatın yanında durunca "bu da mı
+ * ödenecek" diye okunuyordu. Oysa süre ödediğin bir şey değil, ödedikten
+ * sonra beklediğin şey. Çerçevesiz, soluk ve saatli: ayrı bir tür.
+ */
+export function Sure({ children }: { children: ReactNode }) {
+  return (
+    <span className="tabular inline-flex items-center gap-1 text-[12px] whitespace-nowrap text-sonuk">
+      <IkonSure boyut={13} />
       {children}
     </span>
   );
