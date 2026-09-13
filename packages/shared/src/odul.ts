@@ -11,7 +11,7 @@
  * istemci aynı sayıyı üretir. (docs/08 İ1, İ2)
  */
 import { B, unit } from './balance.js';
-import { regionIncome, upkeepPerHour } from './economy.js';
+import { upkeepPerHour } from './economy.js';
 import { calculateFame, armySlots } from './progression.js';
 import type { Army, GeneralBonus, Resources } from './types.js';
 import { UNIT_TYPES } from './types.js';
@@ -34,12 +34,9 @@ export interface FetihKazanciGirdi {
   pvpWins: number;
   fortressFameAccrued: number;
   ownsThrone: boolean;
-  generalBonus?: GeneralBonus;
 }
 
 export interface FetihKazanci {
-  /** Bölgenin saatlik üretimi. */
-  saatlikGelir: Resources & { sohret: number };
   sohretOncesi: number;
   sohretSonrasi: number;
   sohretFarki: number;
@@ -48,10 +45,15 @@ export interface FetihKazanci {
 }
 
 /**
- * Bir bölgeyi ele geçirmenin karşılığı.
+ * Bir bölgeyi ele geçirmenin ŞÖHRET karşılığı.
  *
  * Şöhret farkı gerçekten hesaplanır (formül tahmin edilmez): mevcut bölge
  * listesine hedef eklenip `calculateFame` iki kez çağrılır.
+ *
+ * GELİR burada DÖNMÜYOR ve dönmemeli. Bir `saatlikGelir` alanı vardı, hiçbir
+ * çağıran onu okumuyordu (ikisi de geliri kendi hesaplıyor) ve vilayet
+ * birliğini saymadığı için YANLIŞTI. Okunmayan yanlış bir alan, bir gün
+ * okunacak yanlış bir alandır; gelir hesabı tek yerde (`hedef.ts`) kalsın.
  */
 export function fetihKazanci(g: FetihKazanciGirdi): FetihKazanci {
   const ortak = {
@@ -69,7 +71,6 @@ export function fetihKazanci(g: FetihKazanciGirdi): FetihKazanci {
   });
 
   return {
-    saatlikGelir: regionIncome(g.hedef.type, g.hedef.level, g.hedef.incomeMult, g.generalBonus),
     sohretOncesi: oncesi,
     sohretSonrasi: sonrasi,
     sohretFarki: sonrasi - oncesi,

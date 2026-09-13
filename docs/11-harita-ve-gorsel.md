@@ -73,6 +73,20 @@ bölgesi olan oyuncuya bölge kartı, **aldığından %8–30 azını** yazıyor
 üstelik üst çubuktaki gerçek gelirin hemen altında. Aynı fonksiyonu çağırmak
 yetmiyor, AYNI girdiyle çağırmak gerekiyor (`vilayetCarpanlari`, tek yerde).
 
+**H2c — Öneri motoru da "nerede" diye soruyor.** Hedef taraması geliri
+çarpansız hesaplıyordu; yani oyun bir kuralı uyguluyor, kendi ÖNERİSİ o
+kuralı yok sayıyordu. Aynı sayı ekranda "saatte +X" olarak da yazıldığı
+için saldırı kararı alacağından az gelirle veriliyordu. Tarama artık
+fetihten SONRAKİ çarpanı kullanıyor (oyuncu bu bölgeyi alınca o vilayette
+bir bölgesi daha olacak), sayım döngünün dışında yapılıyor.
+
+Yanında iki kusur daha çıktı: saldırı önizlemesinde `toplamGelirSonrasi`
+çarpanlı, `toplamGelirOncesi` çarpansız hesaplanıyordu — oyuncuya zaten
+sahip olduğu bonusu hedefin getirisi gibi gösteren şişik bir fark.
+`FetihKazanci.saatlikGelir` ise hem çarpansızdı hem de hiçbir çağıran onu
+okumuyordu; okunmayan yanlış bir alan bir gün okunacak yanlış bir alandır,
+kaldırıldı.
+
 Bölge kartında artık vilayet rozeti var: kendi bölgende mevcut çarpan
 (`Karaorman · birlik ×1,08`), başkasınınkinde alırsan ne olacağı
 (`· alırsan birlik ×1,16`). `tools/harita-testi.mjs` rozetin yazdığı sayıyı

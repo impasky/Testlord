@@ -312,6 +312,60 @@ kontrol('Haritadan bölge seçilebiliyor', /garnizon|Garnizon|SALDIR|Seviye|GEL�
       carpan > 1 ? `${sayac[hedef.province]} bölge -> ${yazi}` : 'tek bölge, bonus yok',
     );
   }
+
+  /*
+   * SALDIRI ÖNİZLEMESİNDEKİ "saatte +X" de birliği saymalı.
+   *
+   * Oyuncu saldırı kararını bu sayıya bakarak veriyor. Tarama onu
+   * çarpansız hesaplıyordu: kendi vilayetindeki bir hedef için ekranda
+   * yazan gelir, fetihten sonra gerçekten alacağının altındaydı — üstelik
+   * öneri motoru da aynı sayıyla sıralama yaptığı için "nerede" sorusunu
+   * hiç sormuyordu.
+   *
+   * Ölçü, motorun formülünü tekrar yazmadan kuruluyor: `regionIncome`
+   * altın/demir/erzak için `incomeMult` ile DOĞRUSAL. O hâlde aynı tür ve
+   * seviyedeki iki bölgede `gelir / (incomeMult × birlikÇarpanı)` aynı
+   * sayı olmalı — biri kendi vilayetinde, öteki hiç bölgen olmayan bir
+   * vilayette olsa bile.
+   */
+  const ordu = await G('/army');
+  const evOrdusu = Object.fromEntries(
+    Object.entries(ordu.home ?? {}).filter(([, n]) => (n ?? 0) > 0),
+  );
+  const oncelik = (await G('/map')).regions.filter((r) => !r.isMine && r.type !== 'taht');
+  const benimVilayet = Object.keys(sayac).find((v) => v !== 'taht' && sayac[v] >= 1);
+  const esle = (r) => `${r.type}|${r.level}`;
+  const icerde = oncelik.filter((r) => r.province === benimVilayet);
+  const disarda = oncelik.filter((r) => !sayac[r.province]);
+  const ic = icerde.find((a) => disarda.some((b) => esle(a) === esle(b)));
+  const dis = ic ? disarda.find((b) => esle(b) === esle(ic)) : null;
+
+  if (!ic || !dis || Object.keys(evOrdusu).length === 0) {
+    kontrol(
+      'Önizleme geliri ölçülebildi',
+      false,
+      `eşleşen çift yok (içerde ${icerde.length}, dışarda ${disarda.length}, ordu ${Object.keys(evOrdusu).length})`,
+    );
+  } else {
+    const onizle = (id) => P('/battle/preview', { toRegionId: id, army: evOrdusu, generalIds: [] });
+    const [a, b] = [await onizle(ic.id), await onizle(dis.id)];
+    const carpanIc = beklenen(sayac[benimVilayet] + 1);
+    // Üç kaynağın TOPLAMI: tarla altın üretmiyor, maden erzak üretmiyor —
+    // tek bir kaynağa bakmak türe göre sıfır bölme demekti. Üçü de
+    // `incomeMult` ile doğrusal, şöhret değil (o yüzden toplama girmiyor).
+    const birim = (o, r, c) => {
+      const g = o.odul.saatlikGelir;
+      return (g.altin + g.demir + g.erzak) / (r.incomeMult * c);
+    };
+    const x = birim(a, ic, carpanIc);
+    const y = birim(b, dis, 1);
+    kontrol(
+      'Önizlemedeki saatlik gelir vilayet birliğini sayıyor',
+      y > 0 && Math.abs(x - y) / y < 0.02,
+      `${ic.name} (${ic.type} sv${ic.level}, ×${carpanIc.toFixed(2)}) ${x.toFixed(2)} ` +
+        `vs ${dis.name} ${y.toFixed(2)}`,
+    );
+  }
 }
 
 kontrol('Konsol hatası yok', konsol.length === 0, konsol[0] ?? '');

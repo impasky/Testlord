@@ -277,6 +277,21 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
   // Kazanan bir savaştan evdeki ordudan fazlası dönemez: `kalan`ın tavanı.
   const enCokKalan = armyCount(evOrdusu);
 
+  /*
+   * Vilayet birliği ÖNERİYE de giriyor (docs/11 §1.2 H2).
+   *
+   * Bonus "hangi bölgeyi alayım" sorusunun yanına "NEREDE" sorusunu koymak
+   * için var: aynı vilayetten ikinci bölge hem kendi geliri hem oradaki
+   * önceki bölgen için daha değerli. Öneri motoru bunu görmüyordu — yani
+   * oyun bir kuralı uyguluyor, kendi önerisi o kuralı yok sayıyordu. Aynı
+   * `gelir` ekranda "saatte +X" olarak da yazılıyor, dolayısıyla oyuncuya
+   * alacağından azı söyleniyordu.
+   *
+   * Sayım döngünün DIŞINDA: her aday için bütün listeyi taramak, 121
+   * bölgelik haritada taramayı ikinci kez yavaşlatmak olurdu.
+   */
+  const vilayetSayaci = vilayetSayilari(lord.regions);
+
   const liste: Aday[] = adaylar.map((r) => {
     const garrison: Army = {};
     const ham = (r.npcGarrison ?? {}) as Record<string, number>;
@@ -299,7 +314,10 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
       { ilkSaldiri },
       onerAr,
     );
-    const gelir = regionIncome(r.type, r.level, r.incomeMult);
+    // Fetihten SONRAKİ çarpan: oyuncu bu bölgeyi aldığında o vilayette
+    // bir bölgesi daha olacak ve ekranda yazan sayı da onun alacağı sayı.
+    const birlik = vilayetCarpani((vilayetSayaci[r.province] ?? 0) + 1);
+    const gelir = regionIncome(r.type, r.level, r.incomeMult * birlik);
     // Zorluk ölçüsü birim SAYISI değil savunma GÜCÜ: aynı 37 birimlik
     // garnizon bir kalede tahkimat bonusuyla çok daha zor. Sayıya bakmak,
     // oyuncuya hiçbir ordunun alamayacağı bir kaleyi hedef gösteriyordu.
@@ -726,8 +744,15 @@ export async function fetihOdulu(
     incomeMult: r.incomeMult,
     province: r.province,
   }));
-  const gelirOncesi = topla(oncekiler.map((r) => regionIncome(r.type, r.level, r.incomeMult)));
-  const hedefGelir = regionIncome(region.type, region.level, region.incomeMult);
+  // ÖNCESİ de aynı hesapla: çarpansız bir "öncesi" ile çarpanlı bir
+  // "sonrası" karşılaştırmak, oyuncuya zaten sahip olduğu bonusu hedefin
+  // getirisi gibi gösterir — fark olduğundan büyük görünür.
+  const gelirOncesi = gelirToplami(oncekiler);
+  const hedefGelir = regionIncome(
+    region.type,
+    region.level,
+    region.incomeMult * vilayetCarpani((vilayetSayilari(oncekiler)[region.province] ?? 0) + 1),
+  );
   const bolgeSayisi = lord.regions.filter((r) => r.type !== 'taht').length;
   const limit = maxRegions(lord.level);
   const limitDolu = bolgeSayisi >= limit && region.type !== 'taht';
