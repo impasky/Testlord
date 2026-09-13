@@ -23,7 +23,7 @@
  */
 import { B, ERZAK_FIRAR_ORANI, erzakTukenmesiSaat, unitName, type UnitType } from '@lordlar/shared';
 import { useQuery } from '@tanstack/react-query';
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import {
   api,
   type HedefOnerisiDto,
@@ -93,11 +93,38 @@ interface Adim {
  * Sorgular TanStack önbelleğinden geliyor; iki çağrı ikinci bir istek
  * üretmiyor.
  */
+/** Adımın çağırabileceği işleyiciler. Verilmezse adım yalnız OKUNUR. */
+export interface OmurgaIslemleri {
+  onGit: (s: Sekme) => void;
+  onKapiAc: (k: Kapi) => void;
+  onHedefeGit: (regionId: number) => void;
+  onBolumeGit: (bolumId: string) => void;
+}
+
+const BOS_ISLEMLER: OmurgaIslemleri = {
+  onGit: () => {},
+  onKapiAc: () => {},
+  onHedefeGit: () => {},
+  onBolumeGit: () => {},
+};
+
 export function useOmurgaAdimi(
   // Lord henüz yüklenmemiş olabilir: hook'lar erken dönüşten önce
   // çağrılmak zorunda, bu yüzden eksik durumu burada karşılanıyor.
   lord: LordState | undefined,
   queues: QueueItem[],
+  /**
+   * İşleyiciler İSTEĞE BAĞLI ve sebebi iki ayrı çağıran.
+   *
+   * App yalnız `hedefSekme` ile `anahtar`ı okuyor — alt çubuğa altın
+   * noktayı koymak için; onun tıklanacak bir düğmesi yok. Omurga şeridi
+   * ise adımı ÇALIŞTIRIYOR.
+   *
+   * Boş işleyiciler bir kez şeridi sessizce kırdı: düğme çiziliyor,
+   * basılıyor, hiçbir şey olmuyordu. `git` vardı ama içi boştu — yani
+   * "düğme var mı" denetimi geçiyor, iş yapılmıyordu.
+   */
+  islemler: OmurgaIslemleri = BOS_ISLEMLER,
 ): Adim | null {
   const harita = useQuery({ queryKey: ['map'], queryFn: api.map, enabled: Boolean(lord) });
   const yuruyusler = useQuery({
@@ -150,10 +177,7 @@ export function useOmurgaAdimi(
     generalVar: (generaller.data?.kadro ?? []).some((x) => x.sahipMi),
     yarali: lord.woundedUntil ? new Date(lord.woundedUntil) > new Date() : false,
     yoldaki: yuruyusler.data ?? [],
-    onGit: () => {},
-    onKapiAc: () => {},
-    onHedefeGit: () => {},
-    onBolumeGit: () => {},
+    ...islemler,
   });
 }
 
@@ -272,6 +296,167 @@ export function Omurga({
         <p className="mt-2.5 text-[11px] leading-snug text-sonuk">sonra: {adim.sonraki}</p>
       )}
     </Kart>
+  );
+}
+
+/**
+ * OMURGA ŞERİDİ — "şimdi ne yapmalısın", her ekranda, 56 pikselde.
+ *
+ * ── Neden şerit ──────────────────────────────────────────────────────
+ *
+ * Omurga oyunun en değerli parçası: bekleme üzerine kurulu bir oyunda
+ * "sırada ne var" sorusunun tek cevabı. Ama yalnız ŞEHİR ekranında ve
+ * 500 piksellik bir kart olarak duruyordu. Yani oyuncu Ordu'dayken,
+ * Dünya'dayken ya da Lord'dayken cevabı görmüyor; görmek için sekme
+ * değiştirip kaydırması gerekiyordu.
+ *
+ * Şerit alt gezinmenin hemen üstünde, BEŞ sekmenin beşinde de duruyor.
+ * Kapalıyken tek satır: ne yapılacağı ve düğmesi. Dokununca tam kart
+ * açılıyor — cümlesi, rozetleri, "sonra:" satırıyla.
+ *
+ * ── Neden kartın kopyası değil ───────────────────────────────────────
+ *
+ * Açılan panel `Omurga`nın kendisini çiziyor. İki ayrı çizim, iki ayrı
+ * doğruluk demekti: kart düzelir, şerit eski kalırdı.
+ */
+export function OmurgaSeridi({
+  lord,
+  queues,
+  onGit,
+  onKapiAc,
+  onHedefeGit,
+  onBolumeGit,
+}: {
+  lord: LordState;
+  queues: QueueItem[];
+  onGit: (s: Sekme) => void;
+  onKapiAc: (k: Kapi) => void;
+  onHedefeGit: (regionId: number) => void;
+  onBolumeGit: (bolumId: string) => void;
+}) {
+  const [acik, setAcik] = useState(false);
+  // Panel açıksa kapatıp sonra işi yap: aksi hâlde oyuncu yeni ekrana
+  // geçiyor ve perde arkasında açık kalmış bir panel buluyor.
+  const kapat =
+    <T,>(f: (x: T) => void) =>
+    (x: T) => {
+      setAcik(false);
+      f(x);
+    };
+  const adim = useOmurgaAdimi(lord, queues, {
+    onGit: kapat(onGit),
+    onKapiAc: kapat(onKapiAc),
+    onHedefeGit: kapat(onHedefeGit),
+    onBolumeGit: kapat(onBolumeGit),
+  });
+
+  // Adım yoksa şerit de yok: boş bir çubuk asılı bırakmak, ekranın
+  // altından 56 piksel çalıp karşılığında hiçbir şey vermemek olurdu.
+  if (!adim) return null;
+
+  return (
+    <>
+      {acik && (
+        <>
+          <button
+            type="button"
+            aria-label="Kapat"
+            onClick={() => setAcik(false)}
+            className="fixed inset-0 z-40 bg-black/70"
+          />
+          <div
+            className="fixed inset-x-0 z-50 mx-auto max-w-lg px-3"
+            style={{ bottom: 'calc(var(--alt-bar) + var(--omurga-serit))' }}
+          >
+            <Omurga
+              lord={lord}
+              queues={queues}
+              onGit={(s) => {
+                setAcik(false);
+                onGit(s);
+              }}
+              onKapiAc={(k) => {
+                setAcik(false);
+                onKapiAc(k);
+              }}
+              onHedefeGit={(r) => {
+                setAcik(false);
+                onHedefeGit(r);
+              }}
+              onBolumeGit={(b) => {
+                setAcik(false);
+                onBolumeGit(b);
+              }}
+            />
+          </div>
+        </>
+      )}
+
+      {/*
+       * KATMAN: şerit kendi paneli açıkken 50, yoksa 30.
+       *
+       * 50'de sabit kalınca alttan açılan panellerin (bölge kartı, kapı
+       * panelleri — hepsi `fixed bottom-0`) alt 56 pikselini kapatıyordu:
+       * o alandaki düğmeler görünüyor ama basılamıyordu. 30, perdenin
+       * (z-40) ALTINDA kalıyor — yani panel açıkken şerit hem soluyor hem
+       * tıklamayı yutmuyor. Oyuncu bir karara girdiğinde "şimdi ne
+       * yapmalısın" zaten beklemeli.
+       *
+       * Kendi paneli açıkken durum tersine dönüyor: şerit o panelin
+       * kapatma düğmesi, perdenin üstünde kalması gerek.
+       */}
+      <div
+        className={`fixed inset-x-0 border-t border-altin/30 bg-derin/95 backdrop-blur ${
+          acik ? 'z-50' : 'z-30'
+        }`}
+        style={{ bottom: 'var(--alt-bar)', height: 'var(--omurga-serit)' }}
+      >
+        <div className="mx-auto flex h-full max-w-lg items-center gap-2 px-3">
+          {/* Şeridin GÖVDESİ paneli açıyor, düğme İŞİ yapıyor. İkisini tek
+              dokunuşa bağlasaydık oyuncu ayrıntıya bakmak isterken
+              istemeden ekran değiştirirdi. */}
+          <button
+            type="button"
+            onClick={() => setAcik((a) => !a)}
+            aria-expanded={acik}
+            className="bas flex min-w-0 flex-1 items-center gap-2 py-1 text-left"
+          >
+            <span className="shrink-0 text-altin">
+              <IkonYer boyut={16} />
+            </span>
+            <span className="min-w-0">
+              <span className="baslik block truncate text-[13px] leading-tight text-altin">
+                {adim.baslik}
+              </span>
+              {adim.sonraki && (
+                <span className="block truncate text-[11px] leading-tight text-sonuk">
+                  sonra: {adim.sonraki}
+                </span>
+              )}
+            </span>
+          </button>
+          {/* Panel AÇIKKEN düğme şeritte tekrarlanmıyor: panelin kendi
+              büyük düğmesi zaten iki santim yukarıda duruyor ve aynı
+              yazıyı iki kez göstermek, ikisinin farklı işler yaptığını
+              düşündürür. */}
+          {!acik && adim.dugme && adim.git && (
+            <Buton
+              boy="kucuk"
+              onClick={adim.git}
+              isaret="omurga-dugme"
+              className="max-w-[52%] shrink-0 truncate"
+            >
+              {adim.dugme}
+            </Buton>
+          )}
+          {acik && (
+            <span className="shrink-0 text-[11px] text-sonuk" aria-hidden="true">
+              kapat
+            </span>
+          )}
+        </div>
+      </div>
+    </>
   );
 }
 

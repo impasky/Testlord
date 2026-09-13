@@ -25,7 +25,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { ApiError, api, type BinaDurumu, type LordState, type QueueItem } from '../api/client';
-import { Omurga, useOmurgaAdimi } from '../components/Omurga';
+import { useOmurgaAdimi } from '../components/Omurga';
 import { Rehber } from '../components/Rehber';
 import { useRehberDurumu } from '../rehberDurumu';
 import { DiyarTanitimi } from '../components/DiyarTanitimi';
@@ -34,7 +34,6 @@ import {
   Bolum,
   Buton,
   GeriSayim,
-  Hap,
   Ilerleme,
   Iskelet,
   Kart,
@@ -265,15 +264,12 @@ export function Sehir({
   queues,
   onGit,
   onKapiAc,
-  onBolgeyiAc,
   onBolumeGit,
 }: {
   lord: LordState;
   queues: QueueItem[];
   onGit: (s: Sekme) => void;
   onKapiAc: (k: Kapi) => void;
-  /** Bir bölgeyi haritada açar: omurganın hedefi. */
-  onBolgeyiAc: (regionId: number) => void;
   /** Aynı ekrandaki bir bölüme kaydırır. */
   onBolumeGit: (bolumId: string) => void;
 }) {
@@ -440,14 +436,11 @@ export function Sehir({
       {/* --- Şimdi ne yapmalısın ---
           Haritanın ALTINDA: oyuncu önce şehrini görüyor, sonra "sırada ne
           var" cevabını alıyor. Cevap ekrandan çıkmadı, sırası değişti. */}
-      <Omurga
-        lord={lord}
-        queues={queues}
-        onGit={onGit}
-        onKapiAc={onKapiAc}
-        onHedefeGit={onBolgeyiAc}
-        onBolumeGit={onBolumeGit}
-      />
+      {/* Omurga kartı buradan KALKTI: artık alt gezinmenin üstünde,
+          beş sekmenin beşinde de duran bir şerit (`OmurgaSeridi`).
+          Şehir'e özel 500 piksellik bir kart olarak durduğu sürece
+          oyuncu Ordu'dayken ya da Dünya'dayken "sırada ne var"
+          cevabını göremiyordu. */}
 
       {/* Diyar tanıtımı omurganın ALTINDA: "burası neresi" hâlâ
           cevaplanıyor ama "şimdi ne yapmalıyım" cevabından sonra. Kartın
@@ -566,15 +559,27 @@ export function Sehir({
         )}
       </Bolum>
 
-      {/* --- Liste görünümü ---
-          Harita güzel ama bir LİSTE de gerekiyor: hangi binanın kaçıncı
-          seviyede olduğunu görmek, haritada tek tek dokunmakla değil tek
-          bakışta olmalı. */}
+      {/* --- Yapı ızgarası ---
+          Bir LİSTE gerekiyor ve gerekçesi hâlâ geçerli: hangi yapının
+          kaçıncı seviyede olduğunu görmek, haritada tek tek dokunmakla
+          değil tek bakışta olmalı.
+
+          Ama liste TAM GENİŞLİK SATIRLARDAN kuruluydu: on üç yapı ×74px =
+          962 piksel, yani ekranın bir buçuk katı. "Tek bakış" diye
+          başlayan şey iki ekran kaydırmaya dönüşüyordu ve sayfanın
+          1915 pikselinin yarısını bu tutuyordu. Üstelik her satır yapının
+          ÖZETİNİ de taşıyordu — "Ekipman döver", "Yaralıları tedavi
+          eder" — ilk seferde öğrenilen, yüzüncü seferde okunmayan bir
+          cümle.
+
+          Izgara aynı bilgiyi (ad, seviye, inşa hâli) ~200 pikselde ve
+          HEPSİ AYNI ANDA görünür şekilde veriyor. Özet, yapının kendi
+          paneline taşındı: oraya zaten dokunuyorsun. */}
       <Bolum baslik="Yapılar" id="yapilar">
         <p className="mb-2 text-[12px] text-sonuk">
           Seviye yükseltmek için buradan seç: haritadaki dokunuş yapının içine giriyor.
         </p>
-        <div className="space-y-1.5">
+        <div className="grid grid-cols-4 gap-1.5">
           {binalar.map((b) => (
             <button
               key={b.key}
@@ -583,26 +588,40 @@ export function Sehir({
                 listedenGeldi.current = true;
                 setSecili(b.key);
               }}
-              className="kart flex w-full items-center gap-2.5 p-2.5 text-left"
+              className="kart relative flex min-h-[76px] w-full flex-col items-center justify-start gap-1 p-1.5 text-center"
             >
               <span
-                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg ${
+                className={`relative flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
                   b.seviye > 0 ? 'bg-altin/15 text-altin' : 'bg-kenar/40 text-sonuk'
                 }`}
               >
-                <BinaIkonu binaKey={b.key} boyut={26} seviye={b.seviye} seviyeli={b.seviyeli} />
+                <BinaIkonu binaKey={b.key} boyut={22} seviye={b.seviye} seviyeli={b.seviyeli} />
+                {/* Seviye rozeti ikonun ÜSTÜNDE: ızgarada her karo dar ve
+                    adın yanına sığmıyor. Boş arsada rozet yok — yokluğu
+                    zaten "dikilmemiş" demek, ayrıca "boş arsa" yazmak
+                    on üç karoda on üç kez aynı şeyi söylemek olurdu. */}
+                {b.seviyeli && b.seviye > 0 && (
+                  <span className="tabular absolute -top-1.5 -right-1.5 rounded-full border border-kenar bg-panel px-1 text-[11px] leading-[15px] font-bold text-altin">
+                    {b.seviye}
+                  </span>
+                )}
               </span>
-              <span className="min-w-0 flex-1">
-                <span className="flex items-baseline gap-1.5">
-                  <span className="text-[13px] font-semibold text-parsomen">{b.ad}</span>
-                  {b.seviyeli && b.seviye > 0 && (
-                    <span className="tabular text-[11px] text-altin">Sv {b.seviye}</span>
-                  )}
-                  {b.seviye === 0 && <span className="text-[11px] text-sonuk">boş arsa</span>}
-                </span>
-                <span className="block truncate text-[12px] text-solgun">{b.ozet}</span>
+              <span
+                className={`line-clamp-2 text-[11px] leading-tight ${
+                  b.seviye > 0 ? 'text-parsomen' : 'text-sonuk'
+                }`}
+              >
+                {b.ad}
               </span>
-              {b.insaatta && <Hap renk="var(--color-altin)">inşa</Hap>}
+              {/* İnşa hâli hap değil ÇERÇEVE: dar karoda bir hap adın
+                  yerini yer, oysa "şu an inşa ediliyor" tek bakışlık bir
+                  durum ve kenarlık onu yazıya yer açmadan söylüyor. */}
+              {b.insaatta && (
+                <span
+                  aria-label="inşa ediliyor"
+                  className="pointer-events-none absolute inset-0 rounded-[inherit] border-2 border-altin"
+                />
+              )}
             </button>
           ))}
         </div>

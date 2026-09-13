@@ -166,6 +166,7 @@ export function MobilKabuk({
   setSekme,
   onCikis,
   isaretli,
+  omurga,
   children,
 }: {
   lord: LordState;
@@ -174,6 +175,14 @@ export function MobilKabuk({
   onCikis: () => void;
   /** Omurganın işaret ettiği sekme; altın nokta oraya konur. */
   isaretli?: AltSekme | null;
+  /**
+   * Alt gezinmenin ÜSTÜNDE duran omurga şeridi.
+   *
+   * Kabuk şeridi kendi kurmuyor, yalnız yerini veriyor: şeridin ihtiyacı
+   * olan altı işleyici (`onGit`, `onKapiAc`, ...) App'te duruyor ve
+   * hepsini kabuktan geçirmek, kabuğu App'in ikizine çevirirdi.
+   */
+  omurga?: ReactNode;
   children: ReactNode;
 }) {
   // --ust-bar başlığın GERÇEK yüksekliğinden gelir, elle yazılmış bir
@@ -257,7 +266,11 @@ export function MobilKabuk({
       {/* ---- İçerik ---- */}
       <main
         className="mx-auto max-w-lg px-3"
-        style={{ paddingTop: 'var(--ust-bar)', paddingBottom: 'calc(var(--alt-bar) + 16px)' }}
+        style={{
+          paddingTop: 'var(--ust-bar)',
+          // Şerit varsa içerik onun da altında kalmamalı.
+          paddingBottom: 'calc(var(--alt-bar) + var(--omurga-serit) + 16px)',
+        }}
       >
         {/*
          * GÖRÜNMEZ SAYFA BAŞLIĞI.
@@ -273,6 +286,8 @@ export function MobilKabuk({
         <h1 className="sr-only">{CUBUK.find((c) => c.key === sekme)?.ad ?? 'Lordlar Çağı'}</h1>
         {children}
       </main>
+
+      {omurga}
 
       {/* ---- Alt gezinme ---- */}
       <nav

@@ -16,7 +16,7 @@ import { Hesap } from './screens/Hesap';
 import { Harita } from './screens/Harita';
 import { Kisla } from './screens/Kisla';
 import { LordEkrani } from './screens/LordEkrani';
-import { useOmurgaAdimi } from './components/Omurga';
+import { OmurgaSeridi, useOmurgaAdimi } from './components/Omurga';
 import { useRehberDurumu } from './rehberDurumu';
 import { Malikane } from './screens/Malikane';
 import { Sehir } from './screens/Sehir';
@@ -348,6 +348,19 @@ export function App() {
       setSekme={setSekme}
       onCikis={cikis}
       isaretli={omurgaAdimi?.hedefSekme ?? null}
+      omurga={
+        <OmurgaSeridi
+          lord={lord}
+          queues={queues}
+          onGit={setSekme}
+          onKapiAc={kapiAc}
+          onHedefeGit={(bolgeId) => {
+            setHedefBolge(bolgeId);
+            setSekme('harita');
+          }}
+          onBolumeGit={bolumeGit}
+        />
+      }
     >
       <BaglantiDurumu sunucuyaUlasilamiyor={isFetching && failureCount > 0} />
       {/* Öğretici her şeyin üstünde: ilk giren oyuncu önce oyunun ne
@@ -379,10 +392,6 @@ export function App() {
           queues={queues}
           onGit={setSekme}
           onKapiAc={kapiAc}
-          onBolgeyiAc={(bolgeId) => {
-            setHedefBolge(bolgeId);
-            setSekme('harita');
-          }}
           onBolumeGit={bolumeGit}
         />
       )}

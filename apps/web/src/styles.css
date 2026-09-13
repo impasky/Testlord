@@ -92,6 +92,16 @@
    */
   --ust-bar: 88px;
   --alt-bar: 68px;
+  /*
+   * --omurga-serit: "şimdi ne yapmalısın" şeridinin yüksekliği.
+   *
+   * --alt-bar gibi KAYNAK, ölçüm değil: şeridin kendisi bu sayıdan
+   * yükseklik alıyor ve içerik dolgusu da aynı sayıyı sayıyor. Adım
+   * yokken şerit hiç çizilmiyor ama değişken sıfırlanmıyor — 56 piksel
+   * boşluk, şeridin bir sonraki adımda gelip içeriği zıplatmasından
+   * iyidir.
+   */
+  --omurga-serit: 56px;
 }
 
 :root {

@@ -50,8 +50,28 @@ page.on('pageerror', (e) => konsol.push(String(e)));
  */
 const kucult = (m) => (m ?? '').toLocaleLowerCase('tr');
 
+/**
+ * Omurga ŞERİDİNİ açar — kart artık orada.
+ *
+ * Omurga Şehir'e özel 500 piksellik bir karttan, alt gezinmenin üstünde
+ * duran ve beş sekmede de görünen bir şeride döndü. Kapalıyken tek satır
+ * yazıyor; cümle, rozetler ve "sonra:" satırı bir dokunuş uzakta. Bu
+ * dosyadaki ölçütlerin hepsi o AYRINTIYA bakıyor, o yüzden okumadan önce
+ * panel açılıyor.
+ */
+async function seridiAc() {
+  const serit = page.locator('button[aria-expanded]').first();
+  if (!(await serit.count())) return false;
+  if ((await serit.getAttribute('aria-expanded')) !== 'true') {
+    await serit.click();
+    await page.waitForTimeout(500);
+  }
+  return true;
+}
+
 /** Omurga kartının tamamı; kart yoksa null. */
 async function omurga() {
+  if (!(await seridiAc())) return null;
   const baslik = page.locator('text=Şimdi ne yapmalısın');
   if (!(await baslik.count())) return null;
   return (await baslik.locator('..').innerText()).replace(/\s+/g, ' ').trim();
@@ -59,6 +79,7 @@ async function omurga() {
 
 /** Omurgadaki birincil eylem düğmesinin metni. */
 async function eylem() {
+  await seridiAc();
   return page.evaluate(() => {
     const b = [...document.querySelectorAll('*')].find(
       (x) => x.textContent?.trim() === 'Şimdi ne yapmalısın',

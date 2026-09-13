@@ -70,9 +70,25 @@ const PAY = 8;
  * Deliğin durabileceği güvenli şerit — üstte başlık çubuğu, altta gezinme
  * çubuğu var ve ikisi de perdenin ÜSTÜNDE değil ALTINDA kalıyor. Hedef bu
  * şeridin dışına taşarsa delik oyuncunun basamayacağı bir yeri gösterir.
+ *
+ * ALT PAY ÖLÇÜLÜYOR, elle yazılmıyor. Önce 96 sabitiydi ve o sayı yalnız
+ * gezinme çubuğuna (68px) göre seçilmişti. Omurga şeridi gelince alt krom
+ * 124 piksele çıktı: aradaki 28 piksellik kuşakta duran bir düğme
+ * "güvenli" sayılıyor ama gerçekte şeridin altında kalıyordu — ışık,
+ * basılamayan bir düğmeyi gösteriyordu. Kabuk bu iki yüksekliği zaten CSS
+ * değişkeni olarak tutuyor; tahmin etmek yerine onlara soruyoruz.
  */
 const UST_PAY = 96;
-const ALT_PAY = 96;
+const NEFES = 28;
+
+function altPay(): number {
+  const oku = (ad: string) => {
+    const ham = getComputedStyle(document.documentElement).getPropertyValue(ad).trim();
+    const n = Number.parseFloat(ham);
+    return Number.isFinite(n) ? n : 0;
+  };
+  return oku('--alt-bar') + oku('--omurga-serit') + NEFES;
+}
 /** Kaç yoklama boyunca hedef bulunamazsa perde kalkar (150 ms × 20 = 3 sn). */
 const SABIR = 20;
 const YOKLAMA_MS = 150;
@@ -402,7 +418,7 @@ export function RehberIsigi({
       // Sabit katmandaki hedef için tek koşul: ekranda olsun.
       const disarida = sabitKatmandaMi(e)
         ? r.bottom <= 0 || r.top >= window.innerHeight
-        : r.top < UST_PAY || r.bottom > window.innerHeight - ALT_PAY;
+        : r.top < UST_PAY || r.bottom > window.innerHeight - altPay();
       if (disarida) {
         // Hedef değiştiyse yumuşak (göz takip etsin), yerinde kaydıysa
         // anında — 150 ms'de bir yumuşak kaydırma titreme yaratırdı.

@@ -149,9 +149,16 @@ kontrol(
    * gerçekten ordu-kur adımındadır ve kâhyanın aynı şeyi söylemesi
    * DOĞRUDUR. Rehberin senaryosu yok; omurga neredeyse o orada.
    */
-  const omurgaBasligi = await page.evaluate(() =>
-    (document.querySelector('main')?.textContent ?? '').includes('Şimdi ne yapmalısın'),
-  );
+  // Omurga artık `main` içinde DEĞİL: alt gezinmenin üstünde, beş
+  // sekmede de duran bir şerit (`OmurgaSeridi`). Şerit kapalıyken
+  // "Şimdi ne yapmalısın" başlığını yazmıyor — o başlık açılan panelde.
+  // Ölçüt bu yüzden başlık değil, şeridin KENDİSİ: bir adım varsa şerit
+  // var, yoksa hiç çizilmiyor.
+  const omurgaBasligi = await page
+    .locator('button[aria-expanded]')
+    .first()
+    .isVisible()
+    .catch(() => false);
   kontrol('Omurga hâlâ bir adım gösteriyor', omurgaBasligi === true);
   kontrol('Kâhyanın sözü o adımın sözü', soz !== null && soz.length > 20, soz?.slice(0, 70) ?? '');
 }
@@ -343,9 +350,13 @@ kontrol(
        */
       const govde = document.querySelector('main')?.textContent ?? '';
       const v = (m) => (govde.includes(m) ? 1 : 0);
+      // Omurga `main` dışına, alt şeride taşındı; onu gövdede aramak
+      // gerekiyor. Gezinme adlarıyla karışmıyor çünkü aranan şey metin
+      // değil, şeridin kendi düğmesi.
+      const omurgaSeridi = document.querySelector('button[aria-expanded]') ? 1 : 0;
       return {
         diyar: v('DİYAR'),
-        omurga: v('Şimdi ne yapmalısın'),
+        omurga: omurgaSeridi,
         kahya: v('Kâhya Sinan'),
         // Kademeli açılımın yeni ölçüsü: ana sayfa artık ŞEHİR ve şehrin
         // yapıları yerleşim kademesine göre açılıyor (docs/12 §3.3).
@@ -404,9 +415,16 @@ kontrol(
    * "her şeyi üstümüze atıyor" cümlesinin somut hâli buydu — yapılacak
    * şeye ulaşmak için iki metin bloğunu kaydırmak.
    */
+  // Düğme artık `main` içinde değil: omurga şeridinde ve şerit `fixed`,
+  // yani tanım gereği ekranda. Ölçüm yine de yapılıyor — "tasarım gereği
+  // doğru" diye ölçmeyi bırakmak, bir gün şeridin ekran dışına kaymasını
+  // kimsenin fark etmemesi demek.
   const dugmeY = await page.evaluate(() => {
-    const b = [...document.querySelectorAll('main button')].find((x) =>
-      /eğit|saldır|üret|yükselt|git/i.test(x.textContent ?? ''),
+    const b = [...document.querySelectorAll('button')].find(
+      (x) =>
+        x.closest('nav') === null &&
+        /eğit|saldır|üret|yükselt|git/i.test(x.textContent ?? '') &&
+        x.getClientRects().length > 0,
     );
     return b ? Math.round(b.getBoundingClientRect().bottom) : -1;
   });

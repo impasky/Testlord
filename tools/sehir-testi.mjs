@@ -296,10 +296,48 @@ kontrol(
 );
 const yapiSayisi = await page.locator('[data-bina]').count();
 kontrol('Yerleşim haritasında yapılar çizili', yapiSayisi > 4, `${yapiSayisi} yapı`);
-kontrol(
-  'Kâhya ve omurga ana sayfada',
-  (await page.locator('main').innerText()).includes('ŞİMDİ NE YAPMALISIN'),
-);
+/*
+ * OMURGA ARTIK ŞERİTTE ve BEŞ SEKMEDE DE var.
+ *
+ * Eskiden Şehir'e özel 500 piksellik bir karttı ve bu kontrol onu
+ * `main` içinde arıyordu. Oyuncu Ordu'dayken ya da Dünya'dayken "sırada
+ * ne var" cevabını göremiyordu; şerit alt gezinmenin üstünde, her
+ * ekranda duruyor. Ölçüt de oraya taşındı: bir sekmede görünmesi değil,
+ * HEPSİNDE görünmesi.
+ */
+{
+  const serit = page.locator('button[aria-expanded]').first();
+  const eksik = [];
+  for (const [yol, ad] of [
+    ['sehir', 'Şehir'],
+    ['kisla', 'Ordu'],
+    ['akin', 'Akın'],
+    ['harita', 'Dünya'],
+    ['lord', 'Lord'],
+  ]) {
+    await page.click(`nav button:has-text("${ad}")`);
+    await page.waitForTimeout(900);
+    if (!(await serit.isVisible().catch(() => false))) eksik.push(yol);
+  }
+  kontrol(
+    'Omurga şeridi beş sekmede de duruyor',
+    eksik.length === 0,
+    eksik.length ? `yok: ${eksik.join(', ')}` : '5/5',
+  );
+
+  // Şerit AÇILINCA tam kart geliyor: kapalı hâl tek satır, ayrıntı bir
+  // dokunuş uzakta.
+  await page.click('nav button:has-text("Şehir")');
+  await page.waitForTimeout(900);
+  await serit.click();
+  await page.waitForTimeout(600);
+  kontrol(
+    'Şerit dokununca tam omurga kartını açıyor',
+    (await page.locator('body').innerText()).includes('ŞİMDİ NE YAPMALISIN'),
+  );
+  await serit.click();
+  await page.waitForTimeout(400);
+}
 
 /*
  * Haritadaki dokunuş: DİKİLİ yapı doğrudan açılıyor.
