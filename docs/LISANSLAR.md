@@ -116,6 +116,8 @@ temizleniyor; hangi dosyada yapıldığı aşağıdaki tabloda yazıyor.
 | `yerlesim/*.webp` (6 dosya)    | eklendi (filigran çıkmadı)                        |
 | `binalar/*.webp` (24 dosya)    | eklendi (çizilmiş dama silindi, saydam)           |
 | `harita/dunya.webp`            | eklendi (kare, çerçevesiz — ikinci deneme)        |
+| `harita/dunya-00..22.webp`     | **eklendi** (9 karo, dunya.webp'ten; 2592²)       |
+| `harita/dunya-onizleme.webp`   | **eklendi** (karo tuvalinden küçültüldü)          |
 | `akin/*.webp` (5 dosya)        | eklendi (filigran çıkmadı)                        |
 | `zeminler/akin.webp`           | eklendi (filigran çıkmadı)                        |
 | `akin_harita/*.webp` (5 dosya) | eklendi (plakadan, kampsız)                       |

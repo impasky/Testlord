@@ -116,6 +116,14 @@ interface Gorunum {
   dy: number;
 }
 
+/**
+ * Zemin karolarının ızgarası (`tools/dunya-karo.py` ile aynı bölme).
+ *
+ * Elle dokuz satır yazmak birini unutmanın kapısı; eksik karo da ekranda
+ * boş bir kare demek.
+ */
+const ZEMIN_KAROLARI = [0, 1, 2].flatMap((r) => [0, 1, 2].map((c) => ({ c, r })));
+
 const EN_AZ = 1;
 const EN_COK = 3.2;
 /*
@@ -478,23 +486,60 @@ export function DunyaHaritasi({
             transformOrigin: 'center',
           }}
         >
-          {/* --- Zemin ---
+          {/* --- Zemin: 3x3 karo ---
+              Zemin tek bir 1024'lük kareydi ve bu ekran ×2,4 ile AÇILIYOR,
+              ×3,2'ye çıkıyor: 390 CSS piksellik bir telefonda 3× ekranda
+              en yakınında 3744 aygıt pikseli isteniyordu, yani o tek kare
+              3,7 kat geriliyordu. Kıyı çizgileri eriyor, dağlar lekeye
+              dönüyordu — üstelik oyunun en çok bakılan ekranında.
+
+              Görsel modeli bir çağrıda en fazla 1024 veriyor; büyük zemin
+              tek çağrıyla ALINAMIYOR. `tools/dunya-karo.py` haritayı dokuz
+              parçaya bölüp her parçayı ayrı ürettiriyor ve payları
+              karıştırıp TEK tuvalde birleştirip yeniden dilimliyor:
+              2592x2592, yani 2,5 kat gerçek piksel ve dikişsiz.
+
+              Önce ÖNİZLEME (21 KB) geliyor: dokuz karo sırayla düşerken
+              harita yapboz gibi kurulmasın, bulanıktan nete geçsin.
+
+              Karolar %33,34 geniş, yani bir tık BİNDİRİYOR. Ölçek ×3,2'ye
+              çıkınca %33,33'lük kutular yuvarlanmada birbirinden ayrılıyor
+              ve aralarında kıl gibi çizgiler kalıyor; bindirme onu kapatıyor.
+
               Resim yoksa altındaki gradyan kalır ve harita çalışmaya devam
               eder; işaretçilerin yeri resme değil veriye bağlı. */}
           <div
-            className="aspect-square w-full bg-[radial-gradient(ellipse_at_50%_45%,#3c4a2e_0%,#2a3626_42%,#16242e_72%,#0f1b23_100%)]"
+            className="relative aspect-square w-full bg-[radial-gradient(ellipse_at_50%_45%,#3c4a2e_0%,#2a3626_42%,#16242e_72%,#0f1b23_100%)]"
             role="img"
             aria-label={`Dünya haritası, ${regions.length} bölge`}
           >
             <img
-              src="/gorseller/harita/dunya.webp"
+              src="/gorseller/harita/dunya-onizleme.webp"
               alt=""
               aria-hidden="true"
-              className="h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-cover"
               onError={(e) => {
                 (e.currentTarget as HTMLImageElement).style.visibility = 'hidden';
               }}
             />
+            {ZEMIN_KAROLARI.map(({ c, r }) => (
+              <img
+                key={`${c}${r}`}
+                src={`/gorseller/harita/dunya-${c}${r}.webp`}
+                alt=""
+                aria-hidden="true"
+                className="absolute"
+                style={{
+                  left: `${(c * 100) / 3}%`,
+                  top: `${(r * 100) / 3}%`,
+                  width: '33.34%',
+                  height: '33.34%',
+                }}
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).style.visibility = 'hidden';
+                }}
+              />
+            ))}
           </div>
 
           {/* --- Yollar ve geçitler ---

@@ -1096,16 +1096,44 @@ yazılmıştı. Dünya büyüyünce dördü de, tasarımda hiçbir şey bozulmad
 hâlde kaldı. Hepsi kanonik dosyadan okunur oldu: ölçülen şey sayının
 kendisi değil, dosyanın kendi içinde tutarlı olması.
 
-### 11.6 Yapılmayan: parçalı zemin
+### 11.6 Parçalı zemin
 
-Zemin hâlâ tek 1024×1024 WebP. Altı vilayeti ayrı ayrı üretmek hem
-netlik kazandırırdı hem de bir vilayeti yeniden çizmeyi mümkün kılardı —
-ama bu altı görsel üretimi demek ve o iş görsel bütçesine bağlı (§9).
-Haritanın ilk sorunu zaten çözünürlük değildi, **topolojiydi.** Dünya iki
-katına çıkınca çözünürlük daha çok önem kazandı: ×2,4'te 1024 piksellik
-zemin telefonun 3× ekranında gerilerek çiziliyor. Boyalı üslup bunu
-büyük ölçüde saklıyor ama parçalı zemin artık bir cila değil, sıradaki
-iş.
+Zemin tek 1024×1024 WebP'ti. Haritanın ilk sorunu zaten çözünürlük
+değildi, **topolojiydi** — ama dünya iki katına çıkınca çözünürlük de
+sorun oldu: ekran ×2,4 ile AÇILIYOR ve ×3,2'ye çıkıyor, yani 390 CSS
+piksellik bir telefonda 3× ekranda 3744 aygıt pikseli isteniyor. O tek
+kare en yakınında 3,7 kat geriliyordu.
+
+Görsel modeli bir çağrıda en fazla 1024 veriyor; büyük zemin tek çağrıyla
+ALINAMIYOR. `tools/dunya-karo.py` haritayı 3×3 bölüp her parçayı ayrı
+ürettiriyor: 2592×2592, yani **2,5 kat gerçek piksel**, dokuz çağrıyla.
+
+Üç karar işi kurtardı:
+
+**Karolar sıfırdan değil, mevcut zeminden.** 121 işaretçinin yeri
+`data/world-map.json`daki x/y ile sabit ve o koordinatlar mevcut zemine
+göre yerleşmiş — ırmak kenarındaki bölge ırmağın üstünde, liman kıyıda.
+Sıfırdan çizilen bir harita bu ilişkiyi bozardı ve 121 işaretçiyi elle
+yeniden yerleştirmek gerekirdi. Her karo mevcut zeminin o parçası girdi
+verilerek üretildi: "aynı kıyı, aynı ırmak, aynı yerde — yalnız daha
+ayrıntılı."
+
+**Bindirme payı ve tek tuval.** Dokuz karo dokuz ayrı yorum demek ve karo
+sınırında iki yorum yan yana gelince dikiş görünür. Her karo kendi
+alanından %10 taşarak üretildi; taşan şeritler yumuşak geçişle
+karıştırılıp TEK tuvalde birleştirildi ve tuval sonra dilimlendi.
+Karoları doğrudan modelden alıp yan yana koysaydık dikiş kalırdı;
+tuvali dilimlemek dikişsizliği kuruluş gereği garantiliyor.
+
+**Önizleme.** Dokuz karo sırayla düşerken harita yapboz gibi kuruluyordu.
+21 KB'lık bulanık zemin ilk karede geliyor, karolar üstüne netleşiyor.
+
+Ekranda karolar %33,34 geniş, yani bir tık bindiriyor: ×3,2'de %33,33'lük
+kutular yuvarlanmada ayrılıp aralarında kıl gibi çizgiler bırakıyor.
+
+Maliyet 947 KB — eski zeminin 4,7 katı, ama 6,6 katı piksel için.
+q72'den q55'e inmek yalnız %10 kazandırıyor: mürekkep çizgisi sıkışmıyor,
+kazanmadığın yer için keskinlik verilmez.
 
 ## 12. Dokuz cila
 

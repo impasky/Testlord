@@ -513,6 +513,30 @@ if (yeniToken) {
 }
 
 /**
+ * --- Dünya zemini karoları tam mı ---
+ *
+ * Zemin dokuz karoya bölündü (`tools/dunya-karo.py`). Eksik bir karo
+ * ekranda BOŞ bir kare demek ve tam ortada durmuyorsa kimse fark etmez:
+ * oyuncu haritanın o köşesine gitmeden görünmüyor. Önizleme de şart —
+ * yoksa dokuz karo sırayla düşerken harita yapboz gibi kuruluyor.
+ *
+ * Izgara `DunyaHaritasi.tsx`teki ZEMIN_KAROLARI ile aynı: 3x3.
+ */
+{
+  const { existsSync } = await import('node:fs');
+  const yol = 'apps/web/public/gorseller/harita';
+  const bekleneni = [];
+  for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) bekleneni.push(`dunya-${c}${r}.webp`);
+  bekleneni.push('dunya-onizleme.webp');
+  const eksik = bekleneni.filter((f) => !existsSync(`${yol}/${f}`));
+  if (eksik.length) {
+    sorun('dunya-karo', 'Dünya zemini eksik', `yok: ${eksik.join(', ')}`);
+  } else {
+    iyi('dunya-karo', `9 karo ve önizleme yerinde`);
+  }
+}
+
+/**
  * --- Akın diyarlarının kapağı var mı ---
  *
  * Burada elle tutulan bir liste YOK ve olmamalı: diyarlar zaten
