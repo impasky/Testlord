@@ -48,6 +48,22 @@ const schema = z.object({
   RENDER_EXTERNAL_URL: z.string().optional(),
   /** pino seviyesi: fatal|error|warn|info|debug|trace */
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
+
+  /*
+   * PUSH BİLDİRİMİ (VAPID).
+   *
+   * Anahtar çifti YEREL üretiliyor (`pnpm push-anahtari`), dış bir
+   * servise kaydolmak gerekmiyor: VAPID tarayıcının push sunucusuna
+   * "bu bildirimi gönderen benim" demenin standart yolu.
+   *
+   * İkisi de boşsa push tamamen KAPALI ve uçlar bunu açıkça söylüyor.
+   * Yarı yapılandırılmış bir push'tan (açık görünüp sessizce hiçbir şey
+   * göndermeyen) daha iyisi, kapalı olduğunu bilmek.
+   */
+  VAPID_ACIK_ANAHTAR: z.string().default(''),
+  VAPID_GIZLI_ANAHTAR: z.string().default(''),
+  /** Push servislerinin sorun çıkınca ulaşacağı adres. */
+  VAPID_ILETISIM: z.string().default('mailto:bildirim@lordlarcagi.local'),
 });
 
 const parsed = schema.safeParse(process.env);
@@ -72,4 +88,6 @@ export const env = {
   webOrigins: parsed.data.WEB_ORIGIN.split(',')
     .map((o) => o.trim())
     .filter(Boolean),
+  /** Push açık mı — iki anahtar da varsa. */
+  pushAcik: Boolean(parsed.data.VAPID_ACIK_ANAHTAR && parsed.data.VAPID_GIZLI_ANAHTAR),
 };

@@ -296,10 +296,14 @@ alınamayan yanlış bir seçim oyuncuyu hesabını silmeye iter.
 
 - **M13 — i18n.** Metinler bileşenlerin içinde. Türkçe hedef kitle için
   bugün sorun değil, "bitmiş ürün" ölçütünde eksik.
-- **M13/M14 — push bildirimi ve native kabuk.** PWA kabuğu (manifest,
-  simgeler, "ana ekrana ekle") yapıldı; push için servis çalışanı ve bir
-  bildirim sunucusu gerekiyor. Async bir oyunda en güçlü geri dönüş
-  kancası hâlâ bu.
+- **M14 — push bildirimi. YAPILDI** (docs/12 §17). Web Push + VAPID:
+  anahtar yerel üretiliyor, dış servis yok. Service worker, cihaz başına
+  abonelik, Hesap ekranında izin kartı ve altı olay türü bildirim
+  gönderiyor. Yayına çıkmadan yapılacak tek şey `pnpm push-anahtari` ile
+  anahtar üretip sunucunun ortamına koymak.
+- **M13 — native kabuk.** PWA kabuğu (manifest, simgeler, "ana ekrana
+  ekle") ve artık push da var; gerçek bir uygulama mağazası kabuğu
+  bilinçli olarak beklemede.
 - **M15 — para modeli.** Mağaza işleri bilinçli olarak beklemede.
 - **M16 — canlı operasyon otomasyonu.** Sezon iptal edilince en büyük
   parçası düştü; kalanı (denetim kuyruğu) kısmen var.

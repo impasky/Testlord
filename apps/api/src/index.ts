@@ -28,6 +28,7 @@ import { ticaretRoutes } from './routes/ticaret.js';
 import { generalRoutes } from './routes/generals.js';
 import { itemRoutes } from './routes/items.js';
 import { mapRoutes } from './routes/map.js';
+import { pushRoutes } from './routes/push.js';
 import { meRoutes } from './routes/me.js';
 import { olcumRoutes } from './routes/olcum.js';
 import { rankingRoutes } from './routes/rankings.js';
@@ -165,6 +166,7 @@ export async function buildServer() {
   await app.register(itemRoutes, { prefix: '/api' });
   await app.register(armyRoutes, { prefix: '/api' });
   await app.register(mapRoutes, { prefix: '/api' });
+  await app.register(pushRoutes, { prefix: '/api' });
   await app.register(generalRoutes, { prefix: '/api' });
   await app.register(rankingRoutes, { prefix: '/api' });
   await app.register(dunyaRoutes, { prefix: '/api' });

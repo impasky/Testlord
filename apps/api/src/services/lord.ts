@@ -51,8 +51,10 @@ import type { Prisma } from '@prisma/client';
 import { prisma, type Tx } from '../db.js';
 import { B } from '@lordlar/shared';
 
-const MAX_LORD_LEVEL = B.lord.max_seviye;
+import { bildirimGonder } from './push.js';
 import { hata } from '../errors.js';
+
+const MAX_LORD_LEVEL = B.lord.max_seviye;
 
 export interface LordState {
   /** Heraldik kimlik ve unvan — ikisi de saf görünüş (docs/10). */
@@ -577,7 +579,44 @@ export async function grantXp(
   return { level, leveledUp: gainedLevels };
 }
 
-/** Oyuncuya gösterilecek olay kaydı. */
+/*
+ * TELEFONU TİTRETMEYE DEĞEN OLAYLAR.
+ *
+ * Otuz küsur olay türü var ve hepsini bildirim yapmak, bildirimleri
+ * kapattırmanın en hızlı yolu olurdu. Liste iki soruya birden "evet"
+ * diyenlerle sınırlı: oyuncu YOKKEN mi oluyor, ve oyuncunun BİR ŞEY
+ * YAPMASI mı gerekiyor?
+ *
+ * Dışarıda kalanlar da bilinçli: casus yakalandı, keşif raporu geldi,
+ * sevkiyat vardı — hepsi oyuna girince görülecek şeyler, gece yarısı
+ * telefon titretecek şeyler değil.
+ *
+ * `etiket` aynı türden bildirimleri ÜST ÜSTE YAZDIRIYOR: üç eğitim
+ * arka arkaya bitince bildirim merkezinde üç satır değil bir satır
+ * kalıyor.
+ */
+const BILDIRIM_KONULARI: Record<string, { baslik: string; yol: string; etiket: string }> = {
+  saldiriya_ugradin: { baslik: 'Toprağın saldırı altında', yol: '/dunya', etiket: 'savas' },
+  savas_kaybettin: { baslik: 'Savaş kaybedildi', yol: '/dunya', etiket: 'savas' },
+  baskent_dustu: { baslik: 'Başkentin düştü', yol: '/sehir', etiket: 'savas' },
+  ordu_dondu: { baslik: 'Ordun eve döndü', yol: '/ordu', etiket: 'ordu' },
+  bolge_aldin: { baslik: 'Bölge ele geçirildi', yol: '/dunya', etiket: 'fetih' },
+  kuyruk_bitti: { baslik: 'İşin bitti', yol: '/sehir', etiket: 'kuyruk' },
+};
+
+/**
+ * Oyuncuya gösterilecek olay kaydı — ve gerekirse telefonuna bildirim.
+ *
+ * Bildirim BEKLENMİYOR (`void`): push servisine ulaşmak saniyeler
+ * sürebilir ve savaşın çözülmesi onu beklememeli. Hata da yutuluyor
+ * (bkz. `services/push.ts`).
+ *
+ * Dürüst bir kusur: olay bir transaction içinde yazılıyorsa ve o
+ * transaction geri alınırsa bildirim yine de gitmiş olur. Zararı küçük —
+ * geri alınan iş worker'ın bir sonraki turunda yeniden yapılıyor ve aynı
+ * `etiket` ikinci bildirimi birincinin üstüne yazıyor, yani oyuncu iki
+ * satır değil bir satır görüyor.
+ */
 export async function pushEvent(
   lordId: string,
   kind: string,
@@ -586,4 +625,15 @@ export async function pushEvent(
 ): Promise<void> {
   const client = tx ?? prisma;
   await client.event.create({ data: { lordId, kind, payload: payload as object } });
+
+  const konu = BILDIRIM_KONULARI[kind];
+  const mesaj = typeof payload.mesaj === 'string' ? payload.mesaj : null;
+  if (konu && mesaj) {
+    void bildirimGonder(lordId, {
+      baslik: konu.baslik,
+      govde: mesaj,
+      yol: konu.yol,
+      etiket: konu.etiket,
+    });
+  }
 }

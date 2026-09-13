@@ -27,6 +27,9 @@ karşılığıdır.
 | `EPOSTA_ANAHTAR`            | resend ise | —                    | Resend API anahtarı                                                                                                    |
 | `EPOSTA_GONDEREN`           | resend ise | —                    | Gönderen adresi; alan adı doğrulanmış olmalı                                                                           |
 | `UYGULAMA_URL`              | hayır      | Render'ın dış adresi | Sıfırlama bağlantısının tabanı. Verilmezse `RENDER_EXTERNAL_URL` kullanılır; kendi alan adını bağlayınca burayı doldur |
+| `VAPID_ACIK_ANAHTAR`        | hayır      | boş                  | Push bildirimi. `pnpm push-anahtari` ile üret; ikisi de boşsa bildirim kapalı ve arayüzde düğme hiç çıkmaz             |
+| `VAPID_GIZLI_ANAHTAR`       | push ise   | —                    | Aynı komutun ürettiği gizli yarısı. **Depoya yazma.** Değiştirmek bütün abonelikleri geçersiz kılar                    |
+| `VAPID_ILETISIM`            | hayır      | mailto: yerel        | Push servislerinin sorun çıkınca ulaşacağı adres                                                                       |
 
 **`/health`** kimlik istemez ve `{ ok, time, izleme }` döner. `izleme` alanı
 Sentry'nin gerçekten açık olup olmadığını söyler — DSN'i girip de yazım hatası
@@ -136,5 +139,7 @@ Ayrıca:
 - [ ] Yedek alınıyor **ve** bir kez geri yüklenerek denendi
 - [ ] `SENTRY_DSN` girildi, `/health` `izleme: acik` diyor
 - [ ] Parola sıfırlama e-postası gerçekten gidiyor (`EPOSTA_TASIYICI=resend`)
+- [ ] Push bildirimi açık (`pnpm push-anahtari` ile üretilmiş VAPID çifti) ve
+      Hesap ekranındaki "Deneme gönder" gerçekten telefona düşüyor
       — `log` bırakılırsa akış çalışır ama posta gitmez, oyuncu bağlantıyı
       hiç görmez

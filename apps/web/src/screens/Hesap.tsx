@@ -9,6 +9,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ApiError, api, type LordState } from '../api/client';
 import { Alan, Bolum, Buton, EngelNotu, Input, Kart } from '../components/ui';
+import { BildirimKarti } from '../components/BildirimKarti';
 
 export function Hesap({
   lord,
@@ -81,6 +82,10 @@ export function Hesap({
             {lord.level}
           </p>
         </Kart>
+      </Bolum>
+
+      <Bolum baslik="Bildirimler">
+        <BildirimKarti />
       </Bolum>
 
       <Bolum baslik="Öğretici">

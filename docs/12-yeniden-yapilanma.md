@@ -1320,3 +1320,75 @@ kopya, bir gün birinin eksik askerle yürüyüş başlatması demekti. İş
 `services/queue.ts`e, `addUnitsHome`in yanına taşındı (`evdenCikar`) ve
 yetmediğinde hiçbir şey çıkarmadan `false` dönüyor: kararı çağıran
 veriyor — oyuncuya hata, NPC'ye "bu turu pas geç".
+
+## 17. Push bildirimi — oyuncuyu geri çağıran kanal
+
+docs/07 M14. Lordlar Çağı bekleme üzerine kurulu: ordu yürür, kuyruk
+dolar, saldırı gelir. Oyuncu bunların hiçbirini uygulama kapalıyken
+göremiyordu — "ordum ne zaman döner" sorusunun tek cevabı tahminen dönüp
+bakmaktı. Daha kötüsü savunma tarafındaydı: gece uğranan bir baskını
+oyuncu sabah, olan bitmiş hâlde öğreniyordu.
+
+### 17.1 Dış servis yok
+
+Web Push standardı ve VAPID sayesinde araya kimse girmiyor. Anahtar çifti
+YEREL üretiliyor (`pnpm push-anahtari`), sunucu bildirimi tarayıcının
+kendi push servisine imzalayıp gönderiyor. Kaydolunacak bir hesap,
+ödenecek bir ücret, paylaşılacak bir oyuncu listesi yok.
+
+Abonelik oyuncu başına değil **cihaz** başına (`PushAbonesi.endpoint`
+benzersiz): aynı lord telefondan ve tabletten girebilir, ikisine de haber
+gitmeli. Aynı adres yeniden gelirse satır güncelleniyor — tarayıcı izni
+yenileyince aynı adresi veriyor ve iki satır, aynı cihaza iki bildirim
+demek.
+
+### 17.2 Kapalıyken sessiz değil
+
+Anahtar yoksa push kapalı ve bunu herkes açıkça söylüyor: uçlar 503 +
+`PUSH_KAPALI`, arayüzde kart hiç çıkmıyor. Yarı yapılandırılmış bir
+push — açık görünüp sessizce hiçbir şey göndermeyen — hata ayıklanamayan
+bir özelliktir.
+
+Aynı kural arayüzün her hâlinde geçerli: iOS'ta ana ekran gerekiyorsa
+bunu söylüyor (Safari sekmesinde `PushManager` var ama izin sessizce
+reddediliyor), tarayıcı izni reddettiyse nereden açılacağını tarif
+ediyor. "Düğmeye bastım, hiçbir şey olmadı" en kötü sonuç: oyuncu
+bildirimlerin açık olduğunu sanıp beklerse, hiç açmamış olmasından kötü
+durumdadır.
+
+### 17.3 Hangi olaylar telefon titretir
+
+Otuz küsur olay türü var ve hepsini bildirim yapmak, bildirimleri
+kapattırmanın en hızlı yolu olurdu. Liste iki soruya birden "evet"
+diyenlerle sınırlı — oyuncu YOKKEN mi oluyor, oyuncunun BİR ŞEY YAPMASI
+mı gerekiyor:
+
+`saldiriya_ugradin`, `savas_kaybettin`, `baskent_dustu`, `ordu_dondu`,
+`bolge_aldin`, `kuyruk_bitti`.
+
+Dışarıda kalanlar da bilinçli: casus yakalandı, keşif raporu geldi,
+sevkiyat vardı — hepsi oyuna girince görülecek şeyler. Bağlantı noktası
+tek: `pushEvent`. Her olay zaten oradan geçiyor ve `etiket` aynı türden
+bildirimleri üst üste yazdırıyor — üç eğitim arka arkaya bitince bildirim
+merkezinde üç satır değil bir satır kalıyor.
+
+### 17.4 Testin ölçebildiği ve ölçemediği
+
+İlk deneme gerçek Chromium açıp `pushManager.subscribe` çağırdı:
+"Registration failed - permission denied". Tarayıcı aboneliği gerçek bir
+push servisine (Chrome'da FCM) kaydolmayı gerektiriyor. İkinci deneme
+yerel bir HTTP sunucusunu sahte push servisi yaptı; o da tutmadı —
+`web-push` hedefe her hâlükârda TLS ile bağlanıyor ("packet length too
+long"). Sahte servisi HTTPS yapmak, sunucuya kendi sertifikamızı
+tanıtmayı gerektirirdi.
+
+Test bu yüzden ölçebildiğini ölçüyor ve ölçemediğini SÖYLÜYOR: abonelik
+kaydı, aynı cihazın satır çoğaltmaması, iki cihazın ayrı sayılması,
+geçersiz aboneliğin reddi, çıkış ve kapalıyken uçların açık reddi.
+
+Teslimin en kritik halkası ise ayrı bir yere çıkarılıp birim testi
+edildi (`services/pushPolitika.ts`): hangi hatada abonelik silinir. İki
+yönü de sessiz kusur — ölü aboneliği silmezsen push servisi bir gün
+bütün bildirimlerini engeller; geçici bir hatada silersen oyuncunun
+aboneliğini ekranda "açık" yazarken kaybedersin. 404 ve 410 siliyor;
+429, 5xx, 401/403 ve durum kodu olmayan ağ hataları silmiyor.

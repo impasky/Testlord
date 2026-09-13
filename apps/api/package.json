@@ -11,6 +11,7 @@
     "build": "tsup",
     "seed": "tsx src/seed.ts",
     "dunya-temizle": "tsx src/dunya-temizle.ts",
+    "push-anahtari": "tsx src/push-anahtari.ts",
     "typecheck": "tsc --noEmit",
     "prisma": "prisma"
   },
@@ -24,9 +25,11 @@
     "@prisma/client": "^6.2.1",
     "@sentry/node": "^10.73.0",
     "fastify": "^5.2.1",
+    "web-push": "3.6.7",
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@types/web-push": "^3.6.4",
     "prisma": "^6.2.1",
     "tsup": "^8.3.5"
   }

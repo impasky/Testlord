@@ -223,6 +223,8 @@ model Lord {
   defenderBattles Battle[] @relation("DefenderBattles")
 
   @@unique([userId, worldId])
+  pushAbonelikleri PushAbonesi[]
+
   @@index([isNpc, npcSonTur])
   @@index([allianceId])
   @@index([worldId, fame])
@@ -727,4 +729,32 @@ model Report {
 
   @@unique([reporterId, targetId])
   @@index([targetId, createdAt])
+}
+
+/// Bir cihazın push bildirimi aboneliği.
+///
+/// Oyuncu BAŞINA değil CİHAZ başına: aynı lord telefondan ve tabletten
+/// girebilir ve ikisine de haber gitmeli. Tarayıcı aboneliği `endpoint`
+/// ile benzersiz — aynı cihaz izni yeniden verdiğinde aynı adres gelir.
+model PushAbonesi {
+  id       String @id @default(cuid())
+  lordId   String
+  endpoint String @unique
+  /// Tarayıcının ürettiği şifreleme anahtarları. Sunucu bunlar olmadan
+  /// bildirimi şifreleyemez; gövde tarayıcıya kapalı gider.
+  p256dh   String
+  auth     String
+
+  /// Cihazın kendini tanıttığı satır — "hangi cihazdan çıkayım"
+  /// sorusuna cevap vermek için. Kimliğe dair bir şey taşımıyor.
+  cihaz     String?
+  createdAt DateTime @default(now())
+  /// En son ne zaman başarıyla bildirim gitti. Ölü aboneliği ayıklamak
+  /// için: push servisi 404/410 dönerse abonelik zaten siliniyor, bu
+  /// alan yalnız gözlem içindir.
+  sonGonderim DateTime?
+
+  lord Lord @relation(fields: [lordId], references: [id], onDelete: Cascade)
+
+  @@index([lordId])
 }

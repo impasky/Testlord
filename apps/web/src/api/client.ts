@@ -856,6 +856,18 @@ export const api = {
   /** Öğreticiyi tekrar okumak için (Hesap ekranı). */
   ogreticiSifirla: () => post<{ sifirlandi: boolean }>('/me/ogretici-sifirla'),
 
+  /** Push bildirimi (docs/07 M14). `acik: false` ise düğme hiç çıkmıyor. */
+  pushAnahtar: () =>
+    request<{ acik: boolean; anahtar: string | null; cihazSayisi: number }>('/push/anahtar'),
+  pushAbone: (abonelik: unknown, cihaz?: string) =>
+    post<{ abone: boolean; cihazSayisi: number }>('/push/abone', {
+      ...(abonelik as object),
+      cihaz,
+    }),
+  pushCik: (endpoint: string) =>
+    post<{ cikildi: boolean; cihazSayisi: number }>('/push/cik', { endpoint }),
+  pushDeneme: () => post<{ gonderildi: number }>('/push/deneme'),
+
   items: () => request<{ items: ItemDto[]; tiers: TierDto[] }>('/items'),
   craft: (tier: number, slot: string) => post('/items/craft', { tier, slot }),
   equip: (id: string) => post<{ equipped: boolean; etki: EkipmanEtkisiDto }>(`/items/${id}/equip`),

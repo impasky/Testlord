@@ -1,0 +1,8 @@
+# pnpm'in ürettiği kilit dosyası. Prettier'ın biçimi pnpm'inkiyle
+# uyuşmuyor ve her bağımlılık eklendiğinde "biçim bozuk" hatası
+# veriyordu — üreten araç neyse biçimi de o belirlesin.
+pnpm-lock.yaml
+
+# Derleme çıktıları ve üretilen görseller.
+dist/
+apps/web/public/gorseller/
