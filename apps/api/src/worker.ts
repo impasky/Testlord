@@ -8,6 +8,7 @@
  *   2. Biten akınları çözer (NPC savaşı, ganimet, hastane)
  *   3. Biten kuyrukları çözer (eğitim, üretim, yükseltme)
  *   4. Bölge depolarını biriktirir
+ *   5. Sırası gelen RAKİP LORDLARA sıra verir (services/npc.ts)
  *
  * Her adım tek transaction içinde ve idempotenttir: `resolved` bayrağı
  * koşullu updateMany ile alındığı için worker iki kez çalışsa bile iş
@@ -20,6 +21,7 @@ import { resolveMarch } from './services/march.js';
 import { resolveAkin } from './services/akin.js';
 import { sevkiyatCoz } from './services/ticaret.js';
 import { accrueRegionStores } from './services/region.js';
+import { npcTuru } from './services/npc.js';
 
 const ARALIK_MS = 10_000;
 let calisiyor = false;
@@ -87,9 +89,17 @@ export async function tur(): Promise<void> {
 
     await accrueRegionStores(now);
 
-    if (marches.length || akinlar.length || queues.length || sevkiyatlar.length) {
+    // Rakip lordlar. Çoğu turda hiç kimsenin sırası gelmiyor ve tek bir
+    // indeksli sorguya iniyor; sırası gelen olursa yürüyüşünü oyuncununkiyle
+    // AYNI boru hattından başlatıyor ve bir sonraki turda aynı kod çözüyor.
+    const npc = await npcTuru(now);
+
+    if (marches.length || akinlar.length || queues.length || sevkiyatlar.length || npc.oynayan) {
+      const npcOzet = npc.oynayan
+        ? `, ${npc.oynayan} NPC oynadı (${npc.isler['sahipsiz-fetih']} fetih, ${npc.isler['oyuncuya-saldiri']} saldırı, ${npc.isler.egitim} eğitim)`
+        : '';
       console.log(
-        `[worker] ${new Date().toISOString()} — ${marches.length} yürüyüş, ${akinlar.length} akın, ${queues.length} kuyruk, ${sevkiyatlar.length} sevkiyat çözüldü`,
+        `[worker] ${new Date().toISOString()} — ${marches.length} yürüyüş, ${akinlar.length} akın, ${queues.length} kuyruk, ${sevkiyatlar.length} sevkiyat çözüldü${npcOzet}`,
       );
     }
   } catch (e) {

@@ -10,8 +10,10 @@
  * dibidir.
  */
 import { describe, expect, it } from 'vitest';
-import { B, bosGeneralBonus, varsayilanDizilim, type Army, type Side } from '@lordlar/shared';
-import { savasOrneklemesi, taramaSonucu } from './hedef.js';
+import { B } from './balance.js';
+import { varsayilanDizilim } from './duzen.js';
+import { bosGeneralBonus, type Army, type Side } from './types.js';
+import { savasOrneklemesi, taramaSonucu } from './tarama.js';
 
 function taraf(units: Army, savunan: boolean, tahkimat = 0): Side {
   return {

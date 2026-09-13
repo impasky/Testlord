@@ -1254,3 +1254,69 @@ oyuncu kaydediyor ve kapasite dolunca yeni dünya açılıyor; biriken sonuç
 hiç lordu olmayan, ya da kimsenin bölge almadığı ve günlerdir kimsenin
 girmediği dünya. En son açılan dünya her hâlükârda korunuyor. Varsayılan
 PROVA; silmek için `--uygula` gerekiyor.
+
+## 16. Rakip lordlar hareket ediyor
+
+Diyar kalabalıktı ama ölüydü. `seedDemoLords` altı rakip lord açıyor,
+onlara bölge, ordu ve seviye veriyor; sonra hiçbiri hiçbir şey
+yapmıyordu. Sıralamada bir isim, haritada duran bir bayrak. Oyuncu
+girmediği sürece dünyada tek bir şey değişmiyordu — harita en son
+bırakıldığı gibi duruyordu ve bu, oyunu çok oyunculu bir diyar değil
+bekleyen bir kayıt dosyası gibi gösteriyordu.
+
+### 16.1 Ayrı uç değil, aynı motor
+
+NPC'ye özel bir savaş çözümü yazmak kolaydı ve yanlış olurdu: iki motor
+er ya da geç ayrışır, NPC'nin kazandığı savaş oyuncunun gördüğü rapordan
+başka bir hikâye anlatır. NPC oyuncunun yaptığının aynısını yapıyor —
+evden ordusunu çıkarıp gerçek bir `March` kaydı açıyor. Worker onu
+oyuncunun yürüyüşüyle **aynı kodla** çözüyor: aynı savaş, aynı kayıp,
+aynı yağma, aynı rapor, aynı olay akışı. Uçtan uca test bunu ölçüyor —
+NPC'nin fethettiği bölgenin savaş kaydı `attacker_win, fetih: true`.
+
+Rakip artık bir bayrakla işaretli (`Lord.isNpc`). Ada bakarak ayırmak
+kırılgandı: demo lord adları bir listede yazılıydı ve bir oyuncu aynı
+adı alabilirdi — o gün oyuncunun ordusu kendi kendine yürüyüşe çıkardı.
+
+### 16.2 Oyuncuyu ezmemek için dört kural
+
+NPC saldırısı oyunun bütün koruma kurallarından geçiyor: yeni oyuncu
+kalkanı, bölge kalkanı, seviye farkı kilidi, 12 saat tekrar sınırı.
+Üstüne dördü daha var ve hepsi tek soruyu cevaplıyor — "bu, oyunu
+bırakma sebebi olur mu?"
+
+| kural                          | neden                                                |
+| ------------------------------ | ---------------------------------------------------- |
+| Hedef en çok 4 adım ötede      | Haritanın öbür ucundan gelen saldırının anlatısı yok |
+| Tek bölgesi olana dokunulmaz   | Birini oyundan silmek NPC'nin işi değil              |
+| Savunmanın 1,3 katı ordu şart  | Kaybeden NPC, oyuncuya bedava şöhret dağıtır         |
+| NPC'ler haritanın en çok %10'u | Oyuncunun genişleyecek yeri kalmalı                  |
+
+NPC ayrıca NPC'ye saldırmıyor (oyuncunun görmediği gürültü), Taht
+Kalesi'ne gitmiyor (oyunun bitiş hedefi bir NPC'nin sabah aldığı yer
+olmamalı) ve oyuncusuz dünyada hiç oynamıyor.
+
+### 16.3 Denge testleri bir ayarı geri çevirdi
+
+Pay tavanı önce %15 yazılmıştı. `balance.test.ts`e eklenen kıtlık
+kontrolü onu reddetti: 121 bölge 240 oyuncuya zaten kıt (bölge/oyuncu
+0,50) ve %15 pay oranı 0,43'e düşürüyordu. %10'da 0,45'te kalıyor —
+harita on iki rakip bayrağıyla yaşıyor görünüyor, kıtlık ise oyuncular
+arasında kalıyor.
+
+Testin ikincisi de bir kavram hatası yakaladı: haritayı sınırlayan şey
+tur HIZI değil, pay TAVANI. NPC'ler tavana saatler içinde çarpıp orada
+duruyor; tur aralığının işi başka — diyarın ritmi. Çok sık olursa oyuncu
+her girişinde savaş yağmuruna tutulur, çok seyrek olursa dünya yine ölü
+görünür. Varsayılan 45 dakika, üstüne 30 dakikaya kadar rastgele kayma:
+saçılma olmadan bütün NPC'ler aynı anda kalkar, diyar kırk beş dakika
+ölü kalıp bir anda altı savaş üretirdi.
+
+### 16.4 Yan temizlik
+
+`takeFromHome` `routes/map.ts` içinde yerel bir yardımcıydı. NPC'ler de
+ordularını evden çıkarmaya başlayınca ikinci bir kopya gerekti — ve iki
+kopya, bir gün birinin eksik askerle yürüyüş başlatması demekti. İş
+`services/queue.ts`e, `addUnitsHome`in yanına taşındı (`evdenCikar`) ve
+yetmediğinde hiçbir şey çıkarmadan `false` dönüyor: kararı çağıran
+veriyor — oyuncuya hata, NPC'ye "bu turu pas geç".

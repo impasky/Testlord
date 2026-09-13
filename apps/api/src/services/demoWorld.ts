@@ -126,6 +126,11 @@ export async function seedDemoLords(worldId: string): Promise<number> {
         baskentBolgeId: bolge?.mapId ?? null,
         // Demo lordlar saldırılabilir olmalı: yeni oyuncu kalkanı yok
         protectionUntil: null,
+        // RAKİP işareti: worker bu bayrağa bakıp sıra veriyor
+        // (services/npc.ts). Ada bakarak ayırmak kırılgandı — bir oyuncu
+        // aynı adı alabilir ve o gün oyuncunun ordusu kendi kendine
+        // yürüyüşe çıkardı.
+        isNpc: true,
         gearLines: { create: GEAR_LINES.map((line) => ({ line, level: 1 })) },
       },
     });

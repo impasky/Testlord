@@ -828,5 +828,25 @@
       "surlar_tahkimat_ek": [0, 0.04, 0.08, 0.12, 0.16, 0.2],
       "_surlar_notu": "YALNIZ BASKENTE. Oteki bolgelerin tahkimati bolge turunden geliyor ve oyle kalmali: surlar oyuncunun oturdugu yeri savunuyor, imparatorlugunun tamamini degil."
     }
+  },
+  "npc_lordlar": {
+    "etkin": true,
+    "tur_araligi_dakika": 45,
+    "tur_sacilmasi_dakika": 30,
+    "dunya_basina_tur_basi_lord": 2,
+    "ordu_esigi": 0.6,
+    "egitim_harcama_orani": 0.35,
+    "en_cok_bolge_payi": 0.1,
+    "oyuncuya_saldiri_olasiligi": 0.25,
+    "oyuncuya_saldiri_en_cok_adim": 4,
+    "oyuncuya_saldiri_en_az_bolge": 2,
+    "guvenli_fetih_payi": 1.3,
+    "_aciklama": "Rakip lordlar hareket etsin diye. Dunya sessizdi: demo lordlar sirada bir isim olarak duruyor, hic saldirmiyor, hic buyumuyordu. Artik worker her turda birkac NPC lorda sira veriyor ve NPC ayni ucları degil ayni MOTORU kullaniyor -- gercek yuruyus, gercek savas, gercek rapor.",
+    "_tur_araligi": "Bir NPC lord ortalama bu kadar dakikada bir is yapar; tur_sacilmasi kadar rastgele kayma ekleniyor ki hepsi ayni anda kalkmasin. 45 dakika bilerek yavas: NPC'ler haritayi bir gunde yutmamali, oyuncuya alacak yer kalmali.",
+    "_dunya_basina": "Tek turda bir dunyada en fazla bu kadar NPC oynar. Worker her 10 saniyede bir donuyor; tavan olmasa yuz dunyalik bir sunucuda tur uzar.",
+    "_ordu_esigi": "Evdeki ordu komuta kapasitesinin bu oraninin altindaysa NPC saldirmak yerine ASKER EGITIR. Ordusu tukenmis bir NPC'nin ust uste kaybetmesi hem inandirici degil hem de oyuncuya bedava sohret dagitir.",
+    "_en_cok_bolge_payi": "Butun NPC'ler birlikte dunyanin bolgelerinin en fazla bu kadarini tutabilir. Asil koruma bu: NPC'ler oyuncunun genisleyecek yerini yemesin. Deger 0.15'ten 0.10'a cekildi -- 121 bolge 240 oyuncuya zaten kit (bolge/oyuncu 0.50) ve %15 pay o orani 0.43'e dusuruyordu. %10'da 0.45'te kaliyor: harita on iki rakip bayragiyla yasiyor gorunuyor ama kitlik oyuncular arasinda kaliyor.",
+    "_oyuncuya_saldiri": "NPC turunun bu orani oyuncu bolgesine gider, kalani sahipsiz bolgeye. Oyuncuya saldiri oyunun KORUMA kurallarinin tamamindan gecer (yeni oyuncu kalkani, bolge kalkani, seviye farki, 12 saat tekrar sinirlamasi) ve ustune iki kural daha: hedef en cok birkac adim uzakta olmali (haritanin obur ucundan gelen saldiri anlamsiz) ve oyuncunun TEK bolgesi olmamali -- birini oyundan silmek NPC'nin isi degil.",
+    "_guvenli_fetih_payi": "NPC ancak savunanin gucunun bu kati kadar ordusu varsa saldirir. Kaybetmeyi goze alan bir NPC, oyuncuya bedava zafer dagitan bir NPC'dir."
   }
 }

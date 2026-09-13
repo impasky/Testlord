@@ -16,6 +16,7 @@ import { resolveAkin } from '../services/akin.js';
 import { transferRegion } from '../services/region.js';
 import { resolveQueueItem } from '../services/queue.js';
 import { sevkiyatCoz } from '../services/ticaret.js';
+import { npcTuru, npcYap } from '../services/npc.js';
 
 export async function devRoutes(app: FastifyInstance): Promise<void> {
   /** Bekleyen tüm kuyrukları hemen bitirir. */
@@ -111,6 +112,26 @@ export async function devRoutes(app: FastifyInstance): Promise<void> {
     await prisma.lord.update({ where: { id: lordId }, data: { lastTickAt: geri } });
     await prisma.region.updateMany({ where: { ownerLordId: lordId }, data: { lastTickAt: geri } });
     return tickLord(lordId);
+  });
+
+  /**
+   * Bu lordu RAKİP (NPC) yapar ve sırasını hemen açar.
+   *
+   * Testin NPC davranışını ölçebilmesinin tek yolu bu: gerçek NPC'ler
+   * `seedDemoLords` ile açılıyor ve kırk beş dakikada bir oynuyor. Test
+   * kırk beş dakika bekleyemez, ama bekleme dışında her şeyin aynı
+   * olmasını da istiyoruz — bu uç yalnız BAYRAĞI koyuyor, davranışı
+   * değiştirmiyor.
+   */
+  app.post('/test/npc-yap', { preHandler: requireAuth }, async (req) => {
+    const lordId = await findLordByUser(req.user.userId);
+    await npcYap(lordId);
+    return { npc: true };
+  });
+
+  /** Bir NPC turu koşturur ve ne yapıldığını söyler. */
+  app.post('/test/npc-turu', { preHandler: requireAuth }, async () => {
+    return npcTuru(new Date());
   });
 
   /** XP verir: seviye bağımlı sistemleri test etmek için. */

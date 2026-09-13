@@ -27,6 +27,7 @@ export * from './rehber.js';
 export * from './ipuclari.js';
 export * from './ticaret.js';
 export * from './harita.js';
+export * from './tarama.js';
 export * from './akin.js';
 export * from './bina.js';
 export * from './march.js';

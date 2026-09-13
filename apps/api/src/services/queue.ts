@@ -106,6 +106,36 @@ export async function addUnitsHome(
 }
 
 /**
+ * Evdeki ordudan bir kuvvet çıkarır (yürüyüşe, garnizona, takviyeye).
+ *
+ * `addUnitsHome`in tersi ve onunla aynı yerde duruyor. Daha önce bu iş
+ * `routes/map.ts` içinde yerel bir yardımcıydı; NPC lordlar da ordularını
+ * evden çıkarmaya başlayınca ikinci bir kopya gerekiyordu ve iki kopya,
+ * bir gün birinin eksik askerle yürüyüş başlatması demekti.
+ *
+ * Yetmiyorsa hiçbir şey çıkarmıyor ve `false` dönüyor: çağıran taraf
+ * kararı kendi veriyor (oyuncuya hata, NPC'ye "bu turu pas geç").
+ */
+export async function evdenCikar(lordId: string, army: Army, tx: Tx): Promise<boolean> {
+  const rows = await tx.armyUnit.findMany({
+    where: { lordId, locationType: 'home', locationId: null },
+  });
+  const evde = new Map(rows.map((r) => [r.unitType as UnitType, r]));
+  for (const t of UNIT_TYPES) {
+    if ((army[t] ?? 0) > (evde.get(t)?.count ?? 0)) return false;
+  }
+  for (const t of UNIT_TYPES) {
+    const n = army[t] ?? 0;
+    if (n <= 0) continue;
+    const row = evde.get(t)!;
+    const kalan = row.count - n;
+    if (kalan <= 0) await tx.armyUnit.delete({ where: { id: row.id } });
+    else await tx.armyUnit.update({ where: { id: row.id }, data: { count: kalan } });
+  }
+  return true;
+}
+
+/**
  * Bir bölgedeki garnizona birim ekler.
  *
  * addUnitsHome ile aynı desen, farklı konum. Takviye için gerekli: asker

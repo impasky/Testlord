@@ -91,6 +91,14 @@ model Lord {
   /// BÖLGEYE değil LORDA bağlı — başkent taşınınca binalar da taşınır.
   binalar Json @default("{}")
 
+  /// Bu lord bir RAKİP mi, yoksa gerçek bir oyuncu mu.
+  /// Worker yalnız işaretli olanlara sıra veriyor (services/npc.ts).
+  /// Ada bakarak ayırmak kırılgandı: oyuncu aynı adı alabilir.
+  isNpc           Boolean   @default(false)
+  /// NPC en son ne zaman oynadı. Sırayı bu belirliyor; hepsi aynı anda
+  /// kalkmasın diye üstüne rastgele bir kayma ekleniyor.
+  npcSonTur       DateTime?
+
   lastTickAt      DateTime  @default(now())
   protectionUntil DateTime?
   woundedUntil    DateTime?
@@ -215,6 +223,7 @@ model Lord {
   defenderBattles Battle[] @relation("DefenderBattles")
 
   @@unique([userId, worldId])
+  @@index([isNpc, npcSonTur])
   @@index([allianceId])
   @@index([worldId, fame])
   @@index([worldId, elo])

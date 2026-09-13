@@ -38,7 +38,13 @@ import {
   onizlemeTohumu,
   savasOrneklemesi,
 } from '../services/hedef.js';
-import { addUnitsHome, assertQueueSlot, enqueue, spendResources } from '../services/queue.js';
+import {
+  addUnitsHome,
+  assertQueueSlot,
+  enqueue,
+  evdenCikar,
+  spendResources,
+} from '../services/queue.js';
 import { bolgeTahkimati, regionUpgradeCost } from '../services/region.js';
 
 const armySchema = z.record(
@@ -91,21 +97,6 @@ async function assertHomeUnits(lordId: string, army: Army, tx: Tx): Promise<void
     if (istenen > (home.get(t) ?? 0)) {
       throw new GameError(`Evde yeterli ${t} yok.`, 400, 'BIRIM_YOK');
     }
-  }
-}
-
-/** Evdeki ordudan düşer. */
-async function takeFromHome(lordId: string, army: Army, tx: Tx): Promise<void> {
-  for (const t of UNIT_TYPES) {
-    const n = army[t] ?? 0;
-    if (n <= 0) continue;
-    const row = await tx.armyUnit.findFirst({
-      where: { lordId, unitType: t, locationType: 'home', locationId: null },
-    });
-    if (!row) continue;
-    const kalan = row.count - n;
-    if (kalan <= 0) await tx.armyUnit.delete({ where: { id: row.id } });
-    else await tx.armyUnit.update({ where: { id: row.id }, data: { count: kalan } });
   }
 }
 
@@ -657,7 +648,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       }
 
       await assertHomeUnits(lordId, army, tx);
-      await takeFromHome(lordId, army, tx);
+      await evdenCikar(lordId, army, tx);
 
       const dist = (await mesafeOlcer(lordId, tx))(region.mapId);
       // İttifak seviyesi takviyeyi HIZLANDIRIYOR (docs/09 B1e). Saldırıyı
@@ -1022,7 +1013,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       );
       const now = new Date();
 
-      await takeFromHome(lordId, army, tx);
+      await evdenCikar(lordId, army, tx);
 
       const march = await tx.march.create({
         data: {

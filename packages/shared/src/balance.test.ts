@@ -1919,3 +1919,78 @@ describe('ittifak seviyesi ve bağış (docs/09 B1e)', () => {
     expect(1 + azamiYasli()).toBeLessThan(B.ittifak.azami_uye / 2);
   });
 });
+
+/**
+ * RAKİP LORDLAR — dengenin sınırları.
+ *
+ * NPC davranışının kendisi `apps/api/src/services/npc.ts`te ve uçtan uca
+ * `tools/npc-testi.mjs` ile ölçülüyor. Buradaki testler o davranışın
+ * DAYANDIĞI sayıların oyuncuyu ezmeyecek yerde durduğunu sınıyor: bir
+ * denge ayarı bu sınırların dışına taşarsa burada patlasın, canlı diyarda
+ * değil.
+ */
+describe('rakip lordlar (npc_lordlar)', () => {
+  const N = B.npc_lordlar;
+
+  it('NPC payı bölge kıtlığını bozmuyor', () => {
+    /*
+     * Bölge OYUNCULAR ARASINDA kıt olmalı, NPC yüzünden değil.
+     * check_balance.py aynı oranı ölçüyor: Taht Kalesi dışındaki bölge
+     * sayısı / dünya kapasitesi ≈ 0,50. NPC'ler o paydan yiyor ve oran
+     * çok düşerse yeni oyuncunun alacak yeri kalmaz.
+     *
+     * Bu test ilk yazıldığında pay %15'ti ve oranı 0,43'e düşürüyordu;
+     * %10'a çekildi. Sınır burada duruyor ki bir denge ayarı sessizce
+     * geri kaydırmasın.
+     */
+    const alinabilir = WORLD_MAP.region_count - 1; // Taht Kalesi hariç
+    const npcBolge = WORLD_MAP.region_count * N.en_cok_bolge_payi;
+    expect((alinabilir - npcBolge) / B.dunya.oyuncu_kapasitesi).toBeGreaterThan(0.4);
+  });
+
+  it('NPC kaybedeceği savaşa girmiyor', () => {
+    // Payı 1'in altına düşürmek, NPC'yi oyuncuya bedava şöhret dağıtan
+    // bir hedefe çevirirdi.
+    expect(N.guvenli_fetih_payi).toBeGreaterThan(1);
+  });
+
+  it('NPC kimseyi oyundan silemiyor', () => {
+    // Tek bölgesi olan oyuncuya dokunulmuyor: eşik en az 2 olmalı.
+    expect(N.oyuncuya_saldiri_en_az_bolge).toBeGreaterThanOrEqual(2);
+  });
+
+  it('NPC saldırısı haritanın öbür ucundan gelmiyor', () => {
+    // Menzil haritanın çapından küçük olmalı, yoksa "yakınlık" kuralı
+    // hiçbir şeyi elemez.
+    expect(N.oyuncuya_saldiri_en_cok_adim).toBeLessThan(EN_UZAK_MESAFE);
+  });
+
+  it('NPC ritmi oyuncununkinden yavaş ve dağınık', () => {
+    /*
+     * Haritayı sınırlayan şey tur HIZI değil, pay TAVANI — NPC'ler
+     * tavana saatler içinde çarpıp orada durur. Tur aralığının işi
+     * başka: diyarın RİTMİ. Çok sık olursa oyuncu her girişinde savaş
+     * yağmuruna tutulur, çok seyrek olursa dünya yine ölü görünür.
+     *
+     * Saçılma sıfır olamaz: sıfırken bütün NPC'ler aynı anda kalkar ve
+     * diyar kırk beş dakika ölü kalıp bir anda altı savaş üretir.
+     */
+    expect(N.tur_araligi_dakika).toBeGreaterThanOrEqual(15);
+    expect(N.tur_araligi_dakika).toBeLessThanOrEqual(24 * 60);
+    expect(N.tur_sacilmasi_dakika).toBeGreaterThan(0);
+    expect(N.dunya_basina_tur_basi_lord).toBeGreaterThanOrEqual(1);
+  });
+
+  it('ordu eşiği NPC ordusuz kalmasın diye var', () => {
+    // Sıfır olsaydı NPC hiç asker eğitmez, ilk yenilgide kalıcı olarak
+    // boşalırdı; 1 olsaydı hiç saldırmaz, sadece eğitirdi.
+    expect(N.ordu_esigi).toBeGreaterThan(0);
+    expect(N.ordu_esigi).toBeLessThan(1);
+  });
+
+  it('NPC turlarının çoğu sahipsiz bölgeye gidiyor', () => {
+    // Oyuncuya saldırı diyarı canlandırmalı, taciz etmemeli.
+    expect(N.oyuncuya_saldiri_olasiligi).toBeGreaterThan(0);
+    expect(N.oyuncuya_saldiri_olasiligi).toBeLessThan(0.5);
+  });
+});
