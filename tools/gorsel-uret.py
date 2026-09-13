@@ -197,7 +197,7 @@ SAYFA_KONUSU: dict[str, str] = {
 #   pano   Dikdörtgen sahne: bölge illüstrasyonları. Kırpılıp opak
 #          bırakılıyor, hizalanmıyor — çerçeveyi dolduran bir manzaranın
 #          "tabanı" da yok.
-Duzen = str  # 'zemin' | 'ikon' | 'pano'
+Duzen = str  # 'zemin' | 'ikon' | 'pano' | 'tam'
 
 SAYFALAR: dict[str, tuple[str, list[str], Duzen]] = {
     "kent-1": ("binalar", ["malikane_1", "malikane_5", "kisla_1", "kisla_5"], "zemin"),
@@ -258,6 +258,24 @@ SAYFALAR: dict[str, tuple[str, list[str], Duzen]] = {
     "bolge-maden": ("bolgeler", ["maden", "maden_3", "maden_5"], "pano"),
     "bolge-sehir": ("bolgeler", ["sehir", "sehir_3", "sehir_5"], "pano"),
     "bolge-kale": ("bolgeler", ["kale", "kale_3", "kale_5"], "pano"),
+    "bolge-koy": ("bolgeler", ["koy", "koy_3", "koy_5"], "pano"),
+    # --- Bölge afişleri tek tek, TAM çözünürlükte ---
+    #
+    # Yukarıdaki pano sayfaları duruyor (istem geçmişi ve yeniden üretim
+    # için) ama afişler artık bunlardan geliyor. Gerekçe `sayfa_kompozisyonu`
+    # içindeki "tam" notunda: pano üç sahneyi tek kareye sığdırıyor ve
+    # afişe ~458 piksel kalıyor, ekranda ise 1170 pikselde çiziliyor.
+    **{
+        f"afis-{ad}": ("bolgeler", [ad], "tam")
+        for ad in [
+            "tarla", "tarla_3", "tarla_5",
+            "maden", "maden_3", "maden_5",
+            "sehir", "sehir_3", "sehir_5",
+            "kale", "kale_3", "kale_5",
+            "koy", "koy_3", "koy_5",
+            "taht",
+        ]
+    },
 }
 
 # Sayfa kompozisyonu. Zemin SAYDAM değil DÜZ MAGENTA isteniyor ve bu
@@ -285,6 +303,27 @@ def sayfa_kompozisyonu(adet: int, duzen: Duzen) -> str:
     dikdörtgen illüstrasyonlar. Aralarındaki magenta oluk, bölücünün
     onları birbirinden ayırabilmesi için şart.
     """
+    # TAM: sahne tek başına, sayfada bölünecek bir şey yok.
+    #
+    # Pano üç sahneyi tek kareye sığdırıyor ve her birine ~458 piksel
+    # kalıyor; bölge afişi ise panel genişliğinde, 3x ekranda ~1170
+    # pikselde çiziliyor. Yani afişler üretildikleri andan beri
+    # BÜYÜTÜLEREK gösteriliyordu. Tek sahnelik sayfa, aynı çağrıyı bir
+    # sahneye harcayıp çözünürlüğü üçe katlıyor.
+    #
+    # Kaybedilen şey: pano, üç aşamanın AYNI YER olduğunu garanti
+    # ediyordu. Ölçüldü ki o garanti zaten zayıftı (aynı tür yer, farklı
+    # yerleşim) ve oyuncu iki aşamayı hiçbir zaman yan yana görmüyor --
+    # afişte tek seferde bir aşama var. Tutarlılığı taşıyan şey plaka.
+    if duzen == "tam":
+        return (
+            "ONE single landscape illustration that fills the ENTIRE frame "
+            "edge to edge with terrain and sky, no panels, no grid, no "
+            "dividers, no magenta and no empty background anywhere, "
+            "seen from a high vantage point looking across the place, "
+            "wide cinematic composition"
+        )
+
     if duzen == "pano":
         return (
             f"exactly {adet} separate rectangular landscape illustrations side "
@@ -631,6 +670,12 @@ ISTEKLER: dict[str, dict[str, str]] = {
         "maden": "a timbered mine entrance in a rocky hillside with ore carts and a lift",
         "sehir": "a walled medieval market town, tiled roofs and a market square",
         "kale": "a stone fortress with square towers on a rocky crag, banners flying",
+        # KÖY: haritadaki 121 bölgenin 24'ü köy ve oyuncunun ilk fethi hep
+        # bir köy. Buna rağmen ailesi hiç üretilmemişti; bölge paneli o
+        # bölgelerde afişsiz açılıyordu (Harita.tsx dosya bulamayınca
+        # afişi hiç çizmiyor).
+        "koy": "a small farming village, a dozen thatched cottages along a "
+               "dirt lane, a well and a low stone chapel, smoke from chimneys",
         "taht": "a grand throne hall, golden throne on a stepped dais, "
                 "tall columns and hanging banners",
         # Aşama 3-4: gelişmiş
@@ -642,6 +687,9 @@ ISTEKLER: dict[str, dict[str, str]] = {
                    "guild halls, a river quay with moored barges",
         "kale_3": "a great castle with concentric curtain walls and a barbican gate, "
                   "many banners, a drilling yard inside the walls",
+        "koy_3": "a grown village becoming a market hamlet, tiled roofs replacing "
+                 "thatch, a timber-framed mill on the stream, fenced pastures, "
+                 "a market cross on the green",
         # Aşama 5: zirve
         "tarla_5": "a vast breadbasket valley, terraced fields stretching to the horizon, "
                    "great stone granaries and grain barges on a canal",
@@ -651,6 +699,9 @@ ISTEKLER: dict[str, dict[str, str]] = {
                    "wide avenues, a great harbour crowded with ships",
         "kale_5": "an unassailable mountain citadel, towering walls and keeps stacked "
                   "up the crag, storm light, countless banners",
+        "koy_5": "a rich country town grown from a village, stone houses and a "
+                 "tall church spire, a walled tithe barn, orchards and a "
+                 "stone bridge over the stream",
     },
     "generaller": {
         # Bronz — deneyimli ama sıradan komutanlar
@@ -868,18 +919,57 @@ def sayfa_istemi(sayfa: str) -> str:
     """Dörtlü bina sayfasının istemi: dört konu + ızgara + stil sözleşmesi."""
     klasor, adlar, duzen = SAYFALAR[sayfa]
     konular = ISTEKLER[klasor]
-    yerler = (
-        ("top left", "top right", "bottom left", "bottom right")
-        if len(adlar) == 4 and duzen != "pano"
-        else ("first from the left", "second", "third", "fourth", "fifth")
-    )
-    dortlu = "; ".join(f"{yer}: {konular[ad]}" for yer, ad in zip(yerler, adlar))
+    # Tek sahnelik sayfada yer tarifi YOK. "first from the left: ..." demek
+    # modele görünmez bir ızgara olduğunu söylüyor ve o ızgarayı çizmeye
+    # çalışıyor — istenen ise çerçeveyi dolduran tek bir manzara.
+    if duzen == "tam":
+        dortlu = konular[adlar[0]]
+    else:
+        yerler = (
+            ("top left", "top right", "bottom left", "bottom right")
+            if len(adlar) == 4 and duzen != "pano"
+            else ("first from the left", "second", "third", "fourth", "fifth")
+        )
+        dortlu = "; ".join(f"{yer}: {konular[ad]}" for yer, ad in zip(yerler, adlar))
     # Özne EN BAŞTA: model istemin başını daha çok dinliyor ve sayfanın ne
     # çizeceğini konulardan önce bilmesi gerekiyor.
     return (
         f"{SAYFA_KONUSU[klasor]}. {dortlu}. "
         f"{sayfa_kompozisyonu(len(adlar), duzen)}, {STIL_SOZLESMESI}"
     )
+
+
+# Bölge afişinin ekranda çizildiği oran ve hedef piksel. 390 CSS piksel
+# genişliğinde bir panel, 3x yoğunluklu telefonda 1170 gerçek piksel;
+# 3:2 oranda yüksekliği 780. Modelin döndürdüğü 1376x768 kareyi 3:2'ye
+# kırpınca 1152x768 kalıyor ve bu, hedefin bir tık altında ama
+# BÜYÜTMEDEN karşılıyor. 512'ye indirmek, üretilen pikselin yarısını
+# atıp sonra ekranda geri şişirmek demekti.
+AFIS_ORANI = (3, 2)
+AFIS_BOYU = (1152, 768)
+
+
+def _tam_sahneyi_yaz(sayfa_yolu: Path, klasor: str, ad: str) -> int:
+    """Tek sahnelik sayfayı bölmeden, 3:2'ye kırpıp yazar."""
+    from PIL import Image
+
+    im = Image.open(sayfa_yolu).convert("RGB")
+    gen, yuk = im.size
+    hedef = AFIS_ORANI[0] / AFIS_ORANI[1]
+    if gen / yuk > hedef:
+        yeni_gen = round(yuk * hedef)
+        x0 = (gen - yeni_gen) // 2
+        im = im.crop((x0, 0, x0 + yeni_gen, yuk))
+    else:
+        yeni_yuk = round(gen / hedef)
+        y0 = (yuk - yeni_yuk) // 2
+        im = im.crop((0, y0, gen, y0 + yeni_yuk))
+
+    (CIKTI / klasor).mkdir(parents=True, exist_ok=True)
+    yol = CIKTI / klasor / f"{ad}.webp"
+    im.resize(AFIS_BOYU, Image.LANCZOS).save(yol, "WEBP", quality=82, method=6)
+    print(f"    {klasor}/{ad}.webp  ({AFIS_BOYU[0]}x{AFIS_BOYU[1]})")
+    return 1
 
 
 def _panolari_bol(sayfa_yolu: Path, klasor: str, adlar: list[str]) -> int:
@@ -951,6 +1041,10 @@ def sayfayi_ayikla(sayfa_yolu: Path, sayfa: str) -> int:
 
     import numpy as np
     from PIL import Image
+
+    # TAM: bölünecek bir şey yok, sahnenin kendisi zaten varlık.
+    if duzen == "tam":
+        return _tam_sahneyi_yaz(sayfa_yolu, klasor, adlar[0])
 
     a = np.asarray(Image.open(sayfa_yolu).convert("RGB")).astype(int)
 

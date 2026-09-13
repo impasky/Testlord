@@ -1,6 +1,6 @@
 # Görsel İstemleri
 
-Oyunun ihtiyacı olan **126 görselin** kopyala-yapıştır istemleri.
+Oyunun ihtiyacı olan **129 görselin** kopyala-yapıştır istemleri.
 Her istem üç parçadan oluşur: **konu** + **kategori kompozisyonu** +
 **taban üslup**. Taban üslup hepsinde aynıdır; tutarlılık oradan gelir.
 
@@ -91,7 +91,7 @@ a wooden catapult siege engine loaded with a boulder, rope tension visible, sing
 
 ---
 
-## Bölge sahneleri — 13 görsel
+## Bölge sahneleri — 16 görsel
 
 Bölge sayfasının tepesinde tam genişlikte görünür — oyuncunun "oradaymış" gibi hissettiği yer burası. Aşama görselleri (`_3`, `_5`) bölge geliştikçe devreye girer; yoksa taban görsel kullanılmaya devam eder.
 
@@ -127,6 +127,12 @@ a walled medieval market town, tiled roofs and a market square, establishing sce
 a stone fortress with square towers on a rocky crag, banners flying, establishing scene from a low three-quarter aerial angle, the subject fills the frame, atmospheric depth, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
 ```
 
+### `bolgeler/koy.webp`
+
+```
+a small farming village, a dozen thatched cottages along a dirt lane, a well and a low stone chapel, smoke from chimneys, establishing scene from a low three-quarter aerial angle, the subject fills the frame, atmospheric depth, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
 ### `bolgeler/taht.webp`
 
 ```
@@ -157,6 +163,12 @@ a thriving walled trade city, crowded market square with awnings, guild halls, a
 a great castle with concentric curtain walls and a barbican gate, many banners, a drilling yard inside the walls, establishing scene from a low three-quarter aerial angle, the subject fills the frame, atmospheric depth, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
 ```
 
+### `bolgeler/koy_3.webp`
+
+```
+a grown village becoming a market hamlet, tiled roofs replacing thatch, a timber-framed mill on the stream, fenced pastures, a market cross on the green, establishing scene from a low three-quarter aerial angle, the subject fills the frame, atmospheric depth, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
 ### `bolgeler/tarla_5.webp`
 
 ```
@@ -179,6 +191,12 @@ a grand capital city seen from above, cathedral and palace domes, wide avenues, 
 
 ```
 an unassailable mountain citadel, towering walls and keeps stacked up the crag, storm light, countless banners, establishing scene from a low three-quarter aerial angle, the subject fills the frame, atmospheric depth, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `bolgeler/koy_5.webp`
+
+```
+a rich country town grown from a village, stone houses and a tall church spire, a walled tithe barn, orchards and a stone bridge over the stream, establishing scene from a low three-quarter aerial angle, the subject fills the frame, atmospheric depth, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
 ```
 
 ---

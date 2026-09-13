@@ -423,6 +423,48 @@ if (yeniToken) {
 }
 
 /**
+ * BÖLGE AFİŞİ listesi klasörle uyuşuyor mu.
+ *
+ * `Harita.tsx` içindeki `AFISI_OLAN`, afişin yerini İLK BOYAMADA ayırmak
+ * için var: dosyanın gelmesini bekleyip sonra yer açmak paneli
+ * zıplatıyordu (ölçüldü, CLS 0,253). Ama liste yanlışsa iki yönde de
+ * zarar var — listede olup dosyası olmayan tür boş bir bant gösterir,
+ * dosyası olup listede olmayan tür yine zıplar.
+ *
+ * Aşama dosyaları (`_3`, `_5`) sayılmıyor: liste TÜRÜ tutuyor, aşamayı
+ * değil; aşama yoksa kod zaten tabana düşüyor.
+ */
+{
+  const { readdirSync, readFileSync } = await import('node:fs');
+  const turler = new Set(
+    readdirSync('apps/web/public/gorseller/bolgeler')
+      .filter((f) => f.endsWith('.webp'))
+      .map((f) => f.replace(/\.webp$/, ''))
+      .filter((a) => !/_\d+$/.test(a)),
+  );
+  const kaynak = readFileSync('apps/web/src/screens/Harita.tsx', 'utf8');
+  const blok = kaynak.match(/const AFISI_OLAN = new Set\(\[([^\]]*)\]/s)?.[1] ?? '';
+  const liste = new Set([...blok.matchAll(/'([^']+)'/g)].map((m) => m[1]));
+
+  const eksik = [...turler].filter((k) => !liste.has(k));
+  const fazla = [...liste].filter((k) => !turler.has(k));
+  if (eksik.length || fazla.length) {
+    sorun(
+      'bolge-afis',
+      'Afiş listesi klasörle uyuşmuyor',
+      [
+        eksik.length ? `dosyası var listede yok: ${eksik.join(', ')}` : '',
+        fazla.length ? `listede var dosyası yok: ${fazla.join(', ')}` : '',
+      ]
+        .filter(Boolean)
+        .join(' | '),
+    );
+  } else {
+    iyi('bolge-afis', `liste klasörle uyuşuyor (${liste.size} tür)`);
+  }
+}
+
+/**
  * --- Bina sprite listesi ile klasör uyuşuyor mu ---
  *
  * Zemin listesiyle aynı gerekçe (`Sehir.tsx`, `SPRITE_OLAN`): elle

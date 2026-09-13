@@ -67,8 +67,7 @@ const TIP_ADI: Record<string, string> = {
  *
  * Gorsel bileşenini kullanmıyor: orada illüstrasyon yoksa ikon gösteriliyor,
  * burada ise hiçbir şey gösterilmemeli — küçük bir ikonu afiş yüksekliğine
- * germek, afişi hiç koymamaktan kötü durur. Görsel gelene kadar yükseklik
- * sıfır tutulur ki illüstrasyonu olmayan bölgelerde boşluk zıplaması olmasın.
+ * germek, afişi hiç koymamaktan kötü durur.
  *
  * Oran 3/2: kaynak görseller kare ve kompozisyonları ortalı. Daha dar bir
  * şeride (16/9 ya da sabit 112px) kırpınca tarlanın ambarı, kalenin
@@ -76,6 +75,25 @@ const TIP_ADI: Record<string, string> = {
  * bir doku şeridi kalıyor. 3/2 karenin üçte ikisini koruyor ve afiş
  * kaydırılınca yukarı çıktığı için alt sayfayı boğmuyor.
  */
+/**
+ * AFİŞİ OLAN bölge türleri.
+ *
+ * Neden elle yazılmış bir liste — `Zemin`'deki `ZEMINI_OLAN` ile aynı
+ * gerekçe ve aynı ders: dosyanın var olup olmadığını çalışma anında
+ * öğrenmek (yükle, gelirse yer aç) sayfayı ZIPLATIYOR.
+ *
+ * Bu ölçüldü. Afişler 512 pikselden 1152'ye çıkınca dosya boyutu dört
+ * katına çıktı, yükleme uzadı ve `gorsel-denetim.mjs` bölge panelinde
+ * CLS 0,253 raporladı — Chrome'un "iyi" eşiğinin iki buçuk katı. Küçük
+ * dosyalarda aynı kusur vardı, yalnız görülmeyecek kadar hızlı
+ * kapanıyordu.
+ *
+ * Artık altı türün de afişi var (köy en son geldi), yani yeri ilk
+ * boyamada ayırmak güvenli. Listeyle klasörün ayrışmasını
+ * `tools/gorsel-denetim.mjs` yakalıyor.
+ */
+const AFISI_OLAN = new Set(['tarla', 'maden', 'sehir', 'kale', 'koy', 'taht']);
+
 function BolgeAfisi({
   tip,
   seviye,
@@ -94,7 +112,9 @@ function BolgeAfisi({
   // bırakmaz, sadece gelişimi görünmez kılar.
   const asamaAdi = bolgeGorselAdi(tip, seviye);
 
-  const [durum, setDurum] = useState<'bekliyor' | 'var' | 'yok'>('bekliyor');
+  const [durum, setDurum] = useState<'bekliyor' | 'var' | 'yok'>(
+    AFISI_OLAN.has(tip) ? 'var' : 'bekliyor',
+  );
   const [dosya, setDosya] = useState(asamaAdi);
   const [istenen, setIstenen] = useState(asamaAdi);
 
@@ -113,7 +133,10 @@ function BolgeAfisi({
     setIstenen(asamaAdi);
     if (dosya !== asamaAdi) {
       setDosya(asamaAdi);
-      setDurum('bekliyor');
+      // Afişi OLAN türde yüksekliği bırakmıyoruz: bölge değiştirince
+      // kutuyu sıfıra indirip yeniden açmak, panelin içeriğini bir kez
+      // daha zıplatırdı. Yeni görsel eskisinin yerine geliyor.
+      if (!AFISI_OLAN.has(tip)) setDurum('bekliyor');
     }
   }
 
@@ -126,9 +149,13 @@ function BolgeAfisi({
         src={`/gorseller/bolgeler/${dosya}.webp`}
         alt={ad}
         className="h-full w-full object-cover"
-        // Ortadan değil, biraz yukarıdan kırpar: kare kaynaklarda ilgi çeken
-        // öğe (ambar, kule, taht) üst yarıda, alt yarı çoğunlukla zemin.
-        style={{ objectPosition: 'center 18%' }}
+        // Kaynak da 3:2 (1152x768) ve kutu da 3:2, yani `object-cover`
+        // artık hiçbir şeyi kırpmıyor — kaydırmaya gerek yok. Eskiden
+        // kaynaklar KAREYDİ ve merkezden kırpınca ambar, kule ya da taht
+        // kadraj dışında kalıyordu; o yüzden %18 yukarı kaydırılıyordu.
+        style={{ objectPosition: 'center' }}
+        // Afiş panelin en üstünde ve panel açılır açılmaz görüş alanında:
+        // `lazy` burada beklemeye değil, hemen yüklemeye denk geliyor.
         loading="lazy"
         decoding="async"
         onLoad={() => setDurum('var')}
