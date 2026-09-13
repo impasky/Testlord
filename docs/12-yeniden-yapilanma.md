@@ -1135,6 +1135,27 @@ Maliyet 947 KB — eski zeminin 4,7 katı, ama 6,6 katı piksel için.
 q72'den q55'e inmek yalnız %10 kazandırıyor: mürekkep çizgisi sıkışmıyor,
 kazanmadığın yer için keskinlik verilmez.
 
+### 11.7 Binaların orta kademesi
+
+Bina sprite'larının iki hâli vardı: `_1` ahşap, `_5` taş. Seçim
+`seviye >= 3 ? 5 : 1`di ve bu, tasarımla çelişiyordu: bina tavanı yerleşim
+kademesine bağlı (kamp 1, köy 2, kasaba 3, şehir/kale 4, metropol 5), yani
+oyuncu daha **kasabadayken** binanın en gelişmiş hâlini görüyordu. Sonraki
+iki yükseltme sayıyı artırıyor, ekranda hiçbir şey değiştirmiyordu — üstelik
+oyunun en çok bakılan ekranında, en çok yapılan işte.
+
+On seviyeli binanın `_3` hâli üretildi: taş taban, ahşap üst kat, kiremit
+ya da padavra çatı — `_1` ile `_5` arasında hem malzeme hem gövde olarak
+ortada. Seçim `seviye >= 5 ? 5 : seviye >= 3 ? 3 : 1` oldu, yani tam taş
+hâl artık metropole kalıyor.
+
+Maliyet **iki çağrı**: sayfa başına beş sprite (`kent-orta-1`,
+`kent-orta-2`). Birincisi ilk denemede bölünemedi — malikânenin bahçe
+duvarıyla demirhanenin taş duvarı birbirine değdiği için bileşen bulucu
+ikisini tek figür saydı ve eşiği 100'e çıkarmak da ayırmadı (gerçekten
+bitişiklerdi). Sayfa yeniden üretildi; istem zaten "each subject fully
+separate and touching nothing else" diyor, model bir kez uymadı.
+
 ## 12. Dokuz cila
 
 Oyuncunun listesi. Üçüncü madde (harita ızgaradan çıksın) §11'de yapılmıştı;

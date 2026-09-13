@@ -167,24 +167,34 @@ const BINA_IKONU: Record<string, keyof typeof IKONLAR> = {
 const SPRITE_OLAN = new Set<string>([
   'arsa',
   'malikane_1',
+  'malikane_3',
   'malikane_5',
   'kisla_1',
+  'kisla_3',
   'kisla_5',
   'demirhane_1',
+  'demirhane_3',
   'demirhane_5',
   'hastane_1',
+  'hastane_3',
   'hastane_5',
   'pazar_1',
+  'pazar_3',
   'pazar_5',
   'surlar_1',
+  'surlar_3',
   'surlar_5',
   'karargah_1',
+  'karargah_3',
   'karargah_5',
   'kutuphane_1',
+  'kutuphane_3',
   'kutuphane_5',
   'liman_1',
+  'liman_3',
   'liman_5',
   'elcilik_1',
+  'elcilik_3',
   'elcilik_5',
   'gorev_panosu',
   'haberci_kulesi',
@@ -199,14 +209,19 @@ const SPRITE_OLAN = new Set<string>([
  * devam ediyor. Tersi — önce ikonu kaldırıp sprite beklemek — dosya
  * gelene kadar boş kutular demekti.
  *
- * Dosya adı SEVİYEYE bağlı: `_1` temel, `_5` gelişmiş. Arada üç ayrı
- * görsel üretmenin karşılığı yok; seviye zaten rozetle yazılı.
+ * Dosya adı SEVİYEYE bağlı: `_1` ahşap, `_3` taş taban + ahşap üst kat,
+ * `_5` tam taş. Üç kademe, çünkü ikisi az kalıyordu: bina tavanı kademeye
+ * bağlı (kamp 1, köy 2, kasaba 3, şehir/kale 4, metropol 5) ve iki
+ * görselle oyuncu seviye 3'te zaten en gelişmiş hâli görüyordu — geri
+ * kalan iki yükseltme görsel olarak hiçbir şey vermiyordu. Üç kademeyle
+ * tam taş hâl metropole, yani oyunun sonuna kalıyor.
+ *
  * Dikilmemiş bina paylaşılan `arsa` görselini kullanıyor.
  */
 function spriteAdi(binaKey: string, seviye: number, seviyeli: boolean): string {
   if (!seviyeli) return binaKey;
   if (seviye <= 0) return 'arsa';
-  return `${binaKey}_${seviye >= 3 ? 5 : 1}`;
+  return `${binaKey}_${seviye >= 5 ? 5 : seviye >= 3 ? 3 : 1}`;
 }
 
 function BinaIkonu({

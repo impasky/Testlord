@@ -1,6 +1,6 @@
 # Görsel İstemleri
 
-Oyunun ihtiyacı olan **129 görselin** kopyala-yapıştır istemleri.
+Oyunun ihtiyacı olan **139 görselin** kopyala-yapıştır istemleri.
 Her istem üç parçadan oluşur: **konu** + **kategori kompozisyonu** +
 **taban üslup**. Taban üslup hepsinde aynıdır; tutarlılık oradan gelir.
 
@@ -535,7 +535,7 @@ a grand imperial precinct of polished marble paving with gold inlay lines and a 
 
 ---
 
-## Bina işaretçileri — 24 görsel
+## Bina işaretçileri — 34 görsel
 
 Yerleşim zeminine konan küçük yapı ikonları. Ekranda 44 piksel civarında duruyorlar — ayrıntı değil SİLUET okunmalı.
 
@@ -667,6 +667,66 @@ a small guest lodge with a plain flagpole, a single small building seen from a t
 
 ```
 a stone embassy hall with a colonnaded porch and several foreign banners on tall poles, a single small building seen from a three-quarter aerial angle, isolated on a fully transparent background, the building fills the frame, strong readable silhouette, no ground plane, no shadow, no people, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `binalar/malikane_3.webp`
+
+```
+a two storey manor with a stone ground floor and a timber upper storey, a tiled roof and a low garden wall, a single small building seen from a three-quarter aerial angle, isolated on a fully transparent background, the building fills the frame, strong readable silhouette, no ground plane, no shadow, no people, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `binalar/kisla_3.webp`
+
+```
+a timber barracks on a stone foundation with a shingled roof, a fenced drill yard and a weapon rack, a single small building seen from a three-quarter aerial angle, isolated on a fully transparent background, the building fills the frame, strong readable silhouette, no ground plane, no shadow, no people, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `binalar/demirhane_3.webp`
+
+```
+a walled forge with a stone chimney and a tiled lean to roof, a bellows at the hearth and a rack of horseshoes, a single small building seen from a three-quarter aerial angle, isolated on a fully transparent background, the building fills the frame, strong readable silhouette, no ground plane, no shadow, no people, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `binalar/hastane_3.webp`
+
+```
+a timber infirmary building on a stone base with a shingled roof and a small fenced herb bed, a single small building seen from a three-quarter aerial angle, isolated on a fully transparent background, the building fills the frame, strong readable silhouette, no ground plane, no shadow, no people, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `binalar/pazar_3.webp`
+
+```
+a row of three market stalls under one shared shingled roof with barrels and stacked sacks, a single small building seen from a three-quarter aerial angle, isolated on a fully transparent background, the building fills the frame, strong readable silhouette, no ground plane, no shadow, no people, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `binalar/surlar_3.webp`
+
+```
+a wall section with a stone base and a timber palisade above, and a small wooden gate tower, a single small building seen from a three-quarter aerial angle, isolated on a fully transparent background, the building fills the frame, strong readable silhouette, no ground plane, no shadow, no people, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `binalar/karargah_3.webp`
+
+```
+a timber command hall on a stone base with a banner mast and a map table under an awning, a single small building seen from a three-quarter aerial angle, isolated on a fully transparent background, the building fills the frame, strong readable silhouette, no ground plane, no shadow, no people, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `binalar/kutuphane_3.webp`
+
+```
+a two storey scriptorium, stone below and timber above, with tall shuttered windows and a book chest, a single small building seen from a three-quarter aerial angle, isolated on a fully transparent background, the building fills the frame, strong readable silhouette, no ground plane, no shadow, no people, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `binalar/liman_3.webp`
+
+```
+a timber pier on stone piles with a small crane, a net rack and two moored fishing boats, a single small building seen from a three-quarter aerial angle, isolated on a fully transparent background, the building fills the frame, strong readable silhouette, no ground plane, no shadow, no people, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `binalar/elcilik_3.webp`
+
+```
+a timber guest hall on a stone base with a covered porch and two banners on poles, a single small building seen from a three-quarter aerial angle, isolated on a fully transparent background, the building fills the frame, strong readable silhouette, no ground plane, no shadow, no people, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
 ```
 
 ### `binalar/gorev_panosu.webp`

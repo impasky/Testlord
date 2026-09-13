@@ -115,6 +115,7 @@ temizleniyor; hangi dosyada yapıldığı aşağıdaki tabloda yazıyor.
 | `lord/lord_1..5.webp`          | eklendi (zincirleme düzenleme, zemin ayıklandı)   |
 | `yerlesim/*.webp` (6 dosya)    | eklendi (filigran çıkmadı)                        |
 | `binalar/*.webp` (24 dosya)    | eklendi (çizilmiş dama silindi, saydam)           |
+| `binalar/*_3.webp` (10 dosya)  | **eklendi** (orta kademe, iki beşerli sayfa)      |
 | `harita/dunya.webp`            | eklendi (kare, çerçevesiz — ikinci deneme)        |
 | `harita/dunya-00..22.webp`     | **eklendi** (9 karo, dunya.webp'ten; 2592²)       |
 | `harita/dunya-onizleme.webp`   | **eklendi** (karo tuvalinden küçültüldü)          |

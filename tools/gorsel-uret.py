@@ -206,6 +206,18 @@ SAYFALAR: dict[str, tuple[str, list[str], Duzen]] = {
     "kent-4": ("binalar", ["karargah_1", "karargah_5", "kutuphane_1", "kutuphane_5"], "zemin"),
     "kent-5": ("binalar", ["liman_1", "liman_5", "elcilik_1", "elcilik_5"], "zemin"),
     "kent-6": ("binalar", ["gorev_panosu", "haberci_kulesi", "onur_meydani", "arsa"], "zemin"),
+    # ORTA seviye (docs/12 §11.7): on seviyeli binanin da _3 hali var.
+    # Besli sayfa, yani on sprite IKI cagriya siginiyor.
+    "kent-orta-1": (
+        "binalar",
+        ["malikane_3", "kisla_3", "demirhane_3", "hastane_3", "pazar_3"],
+        "zemin",
+    ),
+    "kent-orta-2": (
+        "binalar",
+        ["surlar_3", "karargah_3", "kutuphane_3", "liman_3", "elcilik_3"],
+        "zemin",
+    ),
     # Akın düşmanları: beş diyarın askeri bir sayfada, beş şefi bir sayfada.
     # Askerler aynı karede olunca "aynı dünyanın beş halkı" gibi duruyorlar;
     # tek tek üretilselerdi beşi beş ayrı oyundan gelmiş gibi olurdu.
@@ -785,6 +797,29 @@ ISTEKLER: dict[str, dict[str, str]] = {
         "elcilik_1": "a small guest lodge with a plain flagpole",
         "elcilik_5": "a stone embassy hall with a colonnaded porch and several "
                      "foreign banners on tall poles",
+        # ORTA seviye: taş tabana oturmuş ama hâlâ ahşap üst kat. Her
+        # tarif _1 ile _5 ARASINDA duracak şekilde yazıldı — malzeme yarı
+        # yarıya, gövde bir kat büyük, bir tane de yeni ayrıntı.
+        "malikane_3": "a two storey manor with a stone ground floor and a timber "
+                      "upper storey, a tiled roof and a low garden wall",
+        "kisla_3": "a timber barracks on a stone foundation with a shingled roof, "
+                   "a fenced drill yard and a weapon rack",
+        "demirhane_3": "a walled forge with a stone chimney and a tiled lean to "
+                       "roof, a bellows at the hearth and a rack of horseshoes",
+        "hastane_3": "a timber infirmary building on a stone base with a shingled "
+                     "roof and a small fenced herb bed",
+        "pazar_3": "a row of three market stalls under one shared shingled roof "
+                   "with barrels and stacked sacks",
+        "surlar_3": "a wall section with a stone base and a timber palisade above, "
+                    "and a small wooden gate tower",
+        "karargah_3": "a timber command hall on a stone base with a banner mast "
+                      "and a map table under an awning",
+        "kutuphane_3": "a two storey scriptorium, stone below and timber above, "
+                       "with tall shuttered windows and a book chest",
+        "liman_3": "a timber pier on stone piles with a small crane, a net rack "
+                   "and two moored fishing boats",
+        "elcilik_3": "a timber guest hall on a stone base with a covered porch "
+                     "and two banners on poles",
         # Seviyesiz üçlü: bilgi yapıları, tek hâlleri var.
         "gorev_panosu": "a wooden notice board on posts with pinned parchments "
                         "and a small shingled roof",
