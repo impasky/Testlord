@@ -804,6 +804,18 @@ sayfaları düzeltilmiş istemle yeniden üretilecek (3 çağrı); o üç aileni
 eski görselleri o zamana kadar yerinde duruyor — bina resmi lord diye
 yayına gitmesin.
 
+**Sonradan: üçü de üretildi.** `bolge-kale` aynı turda, `lord` ve
+`general-2` anahtar geri gelince (2 çağrı). **Toplam 87, kalan 13.**
+Generaller ailesi artık tek elden: on iki portrenin üçü de plakadan
+geçmiş üç sayfadan geliyor.
+
+Lord sayfasında model BEŞ yerine ALTI figür çizdi — beş kuşam hâli, üstüne
+taçlı bir kral. Altıncısı atıldı (`gorsel-ayikla.py` "-" ile atlıyor),
+çünkü duruşu ötekilerden farklı: kılıcı havada. Arayüzde figür kuşam
+yükseldikçe yerinde değişiyor ve okunması gereken şey ZIRH, duruş değil.
+Beşinci (altın zırh, kürk pelerin) ötekilerle aynı duruşta ve zaten
+"efsanevi" okunuyor.
+
 | Ne                                                                  | Adet    |
 | ------------------------------------------------------------------- | ------- |
 | Yerleşim zeminleri (kamp, köy, kasaba, şehir, kale-şehir, metropol) | 6       |
