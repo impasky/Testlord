@@ -16,13 +16,26 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { ApiError, api } from '../api/client';
 import { hisRet } from './hisGeriBildirimi';
+import { SikayetSayfasi } from './SikayetSayfasi';
 import { Bolum, Buton, EngelNotu, Input, Kart, formatGecen } from './ui';
 
 export function IttifakSohbet({ lordId }: { lordId: string }) {
   const qc = useQueryClient();
   const [metin, setMetin] = useState('');
   const [hata, setHata] = useState<string | null>(null);
+  const [sikayet, setSikayet] = useState<{ id: string; ad: string; metin: string } | null>(null);
+  const [bilgi, setBilgi] = useState<string | null>(null);
   const dip = useRef<HTMLDivElement | null>(null);
+
+  /**
+   * Susturulmuşsam yazamam ve bunu YAZMAYA ÇALIŞMADAN ÖNCE bilmeliyim.
+   * Sebebini bilmeyen oyuncu davranışını değiştiremez.
+   */
+  const durum = useQuery({
+    queryKey: ['moderasyon-durum'],
+    queryFn: api.moderasyonDurumu,
+    staleTime: 60_000,
+  });
 
   const q = useQuery({
     queryKey: ['ittifak-sohbet'],
@@ -41,6 +54,9 @@ export function IttifakSohbet({ lordId }: { lordId: string }) {
     onError: (e: unknown) => {
       hisRet();
       setHata(e instanceof ApiError ? e.message : 'Mesaj gönderilemedi.');
+      // Susturma yazarken de yürürlüğe girebilir: durumu tazele ki kutu
+      // yerini sebebe bıraksın.
+      void qc.invalidateQueries({ queryKey: ['moderasyon-durum'] });
     },
   });
 
@@ -78,9 +94,26 @@ export function IttifakSohbet({ lordId }: { lordId: string }) {
                     </span>
                     <span className="shrink-0 text-[11px] text-sonuk">{formatGecen(m.an)}</span>
                   </div>
-                  <p className="whitespace-pre-wrap break-words text-[13px] leading-snug">
-                    {m.metin}
-                  </p>
+                  <div className="flex items-start gap-1">
+                    <p
+                      className={`min-w-0 flex-1 whitespace-pre-wrap break-words text-[13px] leading-snug ${
+                        m.kaldirildi ? 'italic text-sonuk' : ''
+                      }`}
+                    >
+                      {m.metin}
+                    </p>
+                    {/* Kendi mesajını ve zaten kaldırılmışı şikâyet etmenin
+                        anlamı yok: düğme yalnız işe yarayacağı yerde var. */}
+                    {!benim && !m.kaldirildi && (
+                      <button
+                        onClick={() => setSikayet({ id: m.id, ad: m.ad, metin: m.metin })}
+                        aria-label={`${m.ad} adlı lordun mesajını şikâyet et`}
+                        className="bas -my-1 flex h-7 w-7 shrink-0 items-center justify-center rounded text-[13px] text-sonuk"
+                      >
+                        ⚑
+                      </button>
+                    )}
+                  </div>
                 </li>
               );
             })}
@@ -88,24 +121,44 @@ export function IttifakSohbet({ lordId }: { lordId: string }) {
           </ul>
         )}
 
-        <div className="mt-2.5 flex gap-2 border-t border-kenar/70 pt-2.5">
-          <div className="min-w-0 flex-1">
-            <Input
-              value={metin}
-              onChange={(e) => setMetin(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && gonderilebilir) yaz.mutate();
-              }}
-              placeholder="Bir şey yaz…"
-              maxLength={enFazlaHarf}
-            />
+        {durum.data?.susturulmus ? (
+          <p className="mt-2.5 border-t border-kenar/70 pt-2.5 text-[12px] text-turuncu">
+            {durum.data.susturmaMetni}
+          </p>
+        ) : (
+          <div className="mt-2.5 flex gap-2 border-t border-kenar/70 pt-2.5">
+            <div className="min-w-0 flex-1">
+              <Input
+                value={metin}
+                onChange={(e) => setMetin(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && gonderilebilir) yaz.mutate();
+                }}
+                placeholder="Bir şey yaz…"
+                maxLength={enFazlaHarf}
+              />
+            </div>
+            <Buton onClick={() => yaz.mutate()} disabled={!gonderilebilir} className="shrink-0">
+              Yaz
+            </Buton>
           </div>
-          <Buton onClick={() => yaz.mutate()} disabled={!gonderilebilir} className="shrink-0">
-            Yaz
-          </Buton>
-        </div>
+        )}
         {hata && <EngelNotu kisa={hata} uzun="Mesajını gözden geçir ve tekrar dene." />}
+        {bilgi && <p className="mt-2 text-[12px] text-yesil">{bilgi}</p>}
       </Kart>
+
+      {sikayet && (
+        <SikayetSayfasi
+          baslik={`${sikayet.ad} — mesaj şikâyeti`}
+          alinti={sikayet.metin}
+          onKapat={() => setSikayet(null)}
+          onGonderildi={(m) => {
+            setBilgi(m);
+            void qc.invalidateQueries({ queryKey: ['ittifak-sohbet'] });
+          }}
+          gonder={(sebep, aciklama) => api.mesajRaporEt(sikayet.id, sebep, aciklama)}
+        />
+      )}
     </Bolum>
   );
 }

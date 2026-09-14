@@ -54,14 +54,23 @@ const G = (u) => fetch(`${API}/api${u}`, { headers: h }).then((x) => x.json());
 const me = await G('/me');
 const siralama = await G('/rankings/fame?page=0');
 const baskasi = siralama.satirlar.find((r) => r.lordId !== me.lord.id);
+// Sebep artık serbest metin değil, hazır bir anahtar (+ isteğe bağlı
+// açıklama): mesaj şikâyetiyle aynı biçim, böylece kuyruk iki şikâyet
+// türünü de aynı dille okuyor (docs/14).
 if (baskasi) {
-  const r = await P(`/rapor/${baskasi.lordId}`, { sebep: 'uygunsuz lord adı' });
+  const r = await P(`/rapor/${baskasi.lordId}`, { sebep: 'ad', aciklama: 'Uygunsuz lord adı' });
   kontrol('Şikâyet alındı', r.ok, `HTTP ${r.status}`);
-  const tekrar = await P(`/rapor/${baskasi.lordId}`, { sebep: 'tekrar' });
+  const tekrar = await P(`/rapor/${baskasi.lordId}`, { sebep: 'hakaret', aciklama: '' });
   kontrol('Aynı kişiyi tekrar şikâyet sayıyı şişirmiyor', tekrar.ok, 'upsert');
 }
-const kendini = await P(`/rapor/${me.lord.id}`, { sebep: 'kendim' });
+const kendini = await P(`/rapor/${me.lord.id}`, { sebep: 'hakaret', aciklama: '' });
 kontrol('Kendini şikâyet edemiyor', kendini.status === 400, `HTTP ${kendini.status}`);
+const uydurmaSebep = await P(`/rapor/${me.lord.id}`, { sebep: 'uydurma', aciklama: '' });
+kontrol(
+  'Bilinmeyen sebep reddediliyor',
+  uydurmaSebep.status === 400,
+  `HTTP ${uydurmaSebep.status}`,
+);
 
 // --- 3. Yürüyüş sınırı ---
 await P('/test/kaynak-ver', { altin: 3000000, demir: 1500000, erzak: 1500000 });

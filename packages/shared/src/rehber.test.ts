@@ -12,7 +12,7 @@ import {
   rehberSozleri,
   rehberSozu,
 } from './rehber.js';
-import { ALT_SEKMELER, ANA_SEKME, EKRANLAR, KAPILAR, KAPI_ADI } from './types.js';
+import { ALT_SEKMELER, ANA_SEKME, EKRANLAR, KAPILAR, KAPI_ADI, OYUNCU_KAPILARI } from './types.js';
 import { ipuclari, ipucuSec } from './ipuclari.js';
 import { ilkEgitimMi, egitimSuresiSn } from './march.js';
 import { B } from './balance.js';
@@ -401,9 +401,20 @@ describe('arayüz mimarisi — ana sayfa ve kapılar', () => {
    *
    * Tavan dokuz: üçe üçlük ızgara hâlâ TEK BAKIŞTA taranıyor, kuralın
    * asıl amacı o. Dokuzdan sonrası duvar olur.
+   *
+   * Sayılan küme OYUNCU_KAPILARI, KAPILAR değil: yönetici kapısı
+   * (şikâyet kuyruğu) hiçbir ızgarada çizilmiyor ve duvara taş
+   * koymuyor. Kuralı "görünen kapı" üzerinden okumak, kuralın amacını
+   * koruyor; sayıyı büyütmek korumazdı.
    */
   it('kapı sayısı taranabilir sınırda', () => {
-    expect(KAPILAR.length).toBeLessThanOrEqual(9);
+    expect(OYUNCU_KAPILARI.length).toBeLessThanOrEqual(9);
+  });
+
+  /** Yönetici kapısı oyuncunun gördüğü kümede OLMAMALI. */
+  it('şikâyet kuyruğu oyuncu kapısı değil', () => {
+    expect(OYUNCU_KAPILARI).not.toContain('moderasyon' as never);
+    expect(KAPILAR).toContain('moderasyon');
   });
 });
 

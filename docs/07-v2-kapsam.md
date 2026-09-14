@@ -298,11 +298,13 @@ alınamayan yanlış bir seçim oyuncuyu hesabını silmeye iter.
   okuyucu ve klavye erişilebilirliğini ölçüyor: sayfa dili, her düğmenin
   okunabilir adı, görsellerin alt metni, başlık yapısı, odak görünürlüğü
   ve WCAG 2.5.8 dokunma hedefleri. Denetim temiz ve `pnpm e2e` içinde.
-- **M13 — i18n.** Metinler bileşenlerin içinde. Türkçe hedef kitle için
-  bugün sorun değil, "bitmiş ürün" ölçütünde eksik. Bilerek yapılmadı:
-  bin küsur metni çıkarmak büyük ve riskli bir mekanik değişiklik ve
-  bugün hiçbir oyuncuya bir şey kazandırmıyor. İkinci bir dil gerçekten
-  gerekince yapılmalı.
+- **M13 — i18n. YARISI YAPILDI.** Oyundaki bütün metinler
+  `tools/metin-cikar.mjs` ile çıkarılıyor ve `ceviri/metinler.json` +
+  `.csv` olarak duruyor (2100+ kayıt, içerik özetinden türeyen kalıcı
+  anahtarlarla). Çeviri gelince yapılacak olan: Hesap ekranında dil
+  seçimi, cihaz başına kayıt, sözlükten okuma ve çıkarımın CI'a
+  bağlanması. Metinler hâlâ bileşenlerin içinde — çıkarım onları
+  taşımıyor, okuyor.
 - **M14 — push bildirimi. YAPILDI** (docs/12 §17). Web Push + VAPID:
   anahtar yerel üretiliyor, dış servis yok. Service worker, cihaz başına
   abonelik, Hesap ekranında izin kartı ve altı olay türü bildirim
@@ -313,4 +315,7 @@ alınamayan yanlış bir seçim oyuncuyu hesabını silmeye iter.
   bilinçli olarak beklemede.
 - **M15 — para modeli.** Mağaza işleri bilinçli olarak beklemede.
 - **M16 — canlı operasyon otomasyonu.** Sezon iptal edilince en büyük
-  parçası düştü; kalanı (denetim kuyruğu) kısmen var.
+  parçası düştü. Kalan parçası — **şikâyet kuyruğu — YAPILDI**
+  (docs/14): sohbet mesajı şikâyeti, yöneticinin kuyruğu, üç karar
+  (yok say · mesajı kaldır · sustur), süreli susturma ve kalıcı
+  moderasyon kaydı. Otomatik ceza yok; kararı insan veriyor.

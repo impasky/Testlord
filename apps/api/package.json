@@ -13,7 +13,8 @@
     "dunya-temizle": "tsx src/dunya-temizle.ts",
     "push-anahtari": "tsx src/push-anahtari.ts",
     "typecheck": "tsc --noEmit",
-    "prisma": "prisma"
+    "prisma": "prisma",
+    "yonetici": "tsx src/yonetici.ts"
   },
   "dependencies": {
     "@fastify/cors": "^11.0.1",

@@ -136,6 +136,8 @@ Ayrıca:
 - [ ] `JWT_SECRET` üretimde rastgele ve en az 32 karakter
 - [ ] `NODE_ENV=production` (yoksa `/api/test/*` uçları açık kalır)
 - [ ] `SEED_DEMO_LORDS=false` (gerçek oyuncular gelecekse)
+- [ ] **En az bir yönetici hesabı atandı** (`pnpm yonetici ver <eposta>`) —
+      yoksa şikâyetler kuyrukta birikir ve kimse bakamaz (docs/14)
 - [ ] Yedek alınıyor **ve** bir kez geri yüklenerek denendi
 - [ ] `SENTRY_DSN` girildi, `/health` `izleme: acik` diyor
 - [ ] Parola sıfırlama e-postası gerçekten gidiyor (`EPOSTA_TASIYICI=resend`)

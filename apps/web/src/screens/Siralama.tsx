@@ -1,10 +1,11 @@
 /** Sıralama — üç liste, üç oyun tarzı. */
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { ApiError, api, type IttifakSiralamaSatiri, type RankingRow } from '../api/client';
+import { api, type IttifakSiralamaSatiri, type RankingRow } from '../api/client';
+import { SikayetSayfasi } from '../components/SikayetSayfasi';
 import { Arma } from '../components/Arma';
 import { IkonNavSiralama } from '../components/Ikonlar';
-import { Alan, Bolum, Buton, Input, Kart, Rozet, formatSayi } from '../components/ui';
+import { Bolum, Kart, Rozet, formatSayi } from '../components/ui';
 import type { Kapi } from '@lordlar/shared';
 import type { Sekme } from '../components/MobilKabuk';
 import { BosHal } from '../components/BosHal';
@@ -162,18 +163,7 @@ export function Siralama({
 }) {
   const [board, setBoard] = useState<Board>('fame');
   const [raporlanan, setRaporlanan] = useState<RankingRow | null>(null);
-  const [sebep, setSebep] = useState('');
   const [raporBilgi, setRaporBilgi] = useState<string | null>(null);
-
-  const raporMut = useMutation({
-    mutationFn: () => api.raporEt(raporlanan!.lordId, sebep),
-    onSuccess: () => {
-      setRaporlanan(null);
-      setSebep('');
-      setRaporBilgi('Şikâyetin alındı. İnceleyeceğiz.');
-    },
-    onError: (e) => setRaporBilgi(e instanceof ApiError ? e.message : 'Şikâyet gönderilemedi.'),
-  });
   /**
    * İki ayrı sorgu, tek ekran.
    *
@@ -301,43 +291,12 @@ export function Siralama({
       {raporBilgi && <p className="px-1 text-center text-[12px] text-yesil">{raporBilgi}</p>}
 
       {raporlanan && (
-        <>
-          <button
-            className="fixed inset-0 z-40 bg-black/70"
-            onClick={() => setRaporlanan(null)}
-            aria-label="Kapat"
-          />
-          <div
-            className="fixed inset-x-0 bottom-0 z-50 mx-auto max-w-lg rounded-t-2xl border-t border-kenar bg-panel p-4"
-            style={{ paddingBottom: 'calc(var(--alt-bar) + 16px)' }}
-          >
-            <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-kenar" />
-            <h2 className="baslik mb-1 text-[14px]">{raporlanan.name} şikâyet</h2>
-            <p className="mb-3 text-[12px] text-solgun">
-              Şikâyet edilen lorda otomatik bir ceza verilmez; kayıt insan tarafından incelenir.
-            </p>
-            <Alan etiket="Sebep" ipucu="Kısaca yaz">
-              <Input
-                value={sebep}
-                onChange={(e) => setSebep(e.target.value)}
-                placeholder="Örn. uygunsuz lord adı"
-                maxLength={300}
-              />
-            </Alan>
-            <div className="mt-3 flex gap-2">
-              <Buton tur="anahat" className="flex-1" onClick={() => setRaporlanan(null)}>
-                Vazgeç
-              </Buton>
-              <Buton
-                className="flex-1"
-                onClick={() => raporMut.mutate()}
-                disabled={raporMut.isPending || sebep.trim().length < 3}
-              >
-                {raporMut.isPending ? 'Gönderiliyor…' : 'Şikâyet et'}
-              </Buton>
-            </div>
-          </div>
-        </>
+        <SikayetSayfasi
+          baslik={`${raporlanan.name} şikâyet`}
+          onKapat={() => setRaporlanan(null)}
+          onGonderildi={setRaporBilgi}
+          gonder={(sebep, aciklama) => api.raporEt(raporlanan.lordId, sebep, aciklama)}
+        />
       )}
     </div>
   );

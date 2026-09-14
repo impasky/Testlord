@@ -11,12 +11,19 @@ datasource db {
 }
 
 model User {
-  id           String          @id @default(cuid())
-  email        String          @unique
+  id           String   @id @default(cuid())
+  email        String   @unique
   passwordHash String
-  createdAt    DateTime        @default(now())
-  lords        Lord[]
-  resets       PasswordReset[]
+  createdAt    DateTime @default(now())
+
+  /// Şikâyet kuyruğunu görebilen ve karar verebilen hesap.
+  /// LORDA değil KULLANICIYA bağlı: yetki oyundaki karaktere değil,
+  /// arkasındaki insana verilir ve dünya değişince kaybolmaz.
+  /// `pnpm yonetici <eposta>` ile açılır, elle veritabanından değil.
+  yonetici Boolean @default(false)
+
+  lords  Lord[]
+  resets PasswordReset[]
 }
 
 /// Parola sıfırlama jetonu.
@@ -38,19 +45,19 @@ model PasswordReset {
 }
 
 model World {
-  id        String     @id @default(cuid())
-  name      String
-  playerCap Int        @default(120)
-  status    String     @default("open") // open | full | closed
-  openedAt  DateTime   @default(now())
+  id         String     @id @default(cuid())
+  name       String
+  playerCap  Int        @default(120)
+  status     String     @default("open") // open | full | closed
+  openedAt   DateTime   @default(now())
   /// Açıldığı harita sürümü (HARITA_SURUMU). Kanonik harita değişince
   /// oyunculu dünyalar yeniden yazılmasın diye var: yeni harita yalnız
   /// yeni dünyalara uygulanır. Sürümlemeden önce açılmış dünyalarda null.
   mapVersion String?
-  lords     Lord[]
-  regions   Region[]
-  alliances Alliance[]
-  paktlar   Pakt[]
+  lords      Lord[]
+  regions    Region[]
+  alliances  Alliance[]
+  paktlar    Pakt[]
 }
 
 model Lord {
@@ -94,10 +101,10 @@ model Lord {
   /// Bu lord bir RAKİP mi, yoksa gerçek bir oyuncu mu.
   /// Worker yalnız işaretli olanlara sıra veriyor (services/npc.ts).
   /// Ada bakarak ayırmak kırılgandı: oyuncu aynı adı alabilir.
-  isNpc           Boolean   @default(false)
+  isNpc     Boolean   @default(false)
   /// NPC en son ne zaman oynadı. Sırayı bu belirliyor; hepsi aynı anda
   /// kalkmasın diye üstüne rastgele bir kayma ekleniyor.
-  npcSonTur       DateTime?
+  npcSonTur DateTime?
 
   lastTickAt      DateTime  @default(now())
   protectionUntil DateTime?
@@ -147,15 +154,15 @@ model Lord {
   /// eklemek pahalı; üstelik damga GERİ ALINAMAZ olduğu için kıdemli
   /// lord kendini bir daha o aşamada bulmuyor (rehberBittiAt ile aynı
   /// gerekçe).
-  ilkAkinAt         DateTime?
+  ilkAkinAt DateTime?
 
   /// Bugün pazarda çevrilen hacim (altın karşılığı) ve hangi gün.
   ///
   /// Türetilemiyor: takasın kendisi hiçbir kayda iz bırakmıyor, kaynak
   /// artışı gelirle karışıyor. Günlük tavanı zorlamak için sayaç şart.
   /// Gün değişince sıfırlanıyor (dailyAttacks ile aynı desen).
-  pazarHacmi    Int       @default(0)
-  pazarGunu     DateTime?
+  pazarHacmi Int       @default(0)
+  pazarGunu  DateTime?
 
   /// Tamamlanan araştırmalar: düğüm anahtarlarının listesi.
   ///
@@ -222,9 +229,18 @@ model Lord {
   attackerBattles Battle[] @relation("AttackerBattles")
   defenderBattles Battle[] @relation("DefenderBattles")
 
-  @@unique([userId, worldId])
-  pushAbonelikleri PushAbonesi[]
+  /// Sohbette susturulmuşsa ne zamana kadar. Süresi geçmiş kayıt
+  /// TEMİZLENMİYOR: yöneticinin "bu kaçıncı" sorusunun cevabı burada.
+  /// Aktif olup olmadığı her seferinde tarihe bakılarak bulunuyor
+  /// (shared `susturmaDurumu`).
+  susturmaBitis       DateTime?
+  /// Oyuncuya gösterilen sebep. Neden susturulduğunu söylemeyen bir
+  /// ceza, oyuncuya davranışını değiştirme şansı vermiyor.
+  susturmaSebebi      String?
+  pushAbonelikleri    PushAbonesi[]
+  moderasyonKayitlari ModerasyonKaydi[]
 
+  @@unique([userId, worldId])
   @@index([isNpc, npcSonTur])
   @@index([allianceId])
   @@index([worldId, fame])
@@ -373,28 +389,28 @@ model March {
 /// asama gerekiyor cunku bolge el degistiriyor; akinda degismiyor ve
 /// oyuncuya iki bekleyis verip hicbir karar kazandirmazdi.
 model Akin {
-  id         String   @id @default(cuid())
-  worldId    String
-  lordId     String
-  haritaKey  String
-  grupNo     Int
-  army       Json
-  generalIds Json
+  id          String   @id @default(cuid())
+  worldId     String
+  lordId      String
+  haritaKey   String
+  grupNo      Int
+  army        Json
+  generalIds  Json
   /// Bu akinin 4x4 dizilimi ve taktigi. March.duzen ile ayni gerekce:
   /// karar YOLA CIKARKEN veriliyor.
-  duzen      Json?
+  duzen       Json?
   /// Savas sonucu -- akin cozulunce yaziliyor.
-  kazanildi  Boolean  @default(false)
+  kazanildi   Boolean  @default(false)
   /// Donen yaralilar ve ganimet; rapor bunlari gosteriyor.
-  yarali     Json?
-  odul       Json?
+  yarali      Json?
+  odul        Json?
   /// Dusen ekipmanin kimligi (varsa). Sansa bagli olan tek sey bu.
   dusenItemId String?
-  seed       String
-  log        Json?
-  departAt   DateTime
-  arriveAt   DateTime
-  resolved   Boolean  @default(false)
+  seed        String
+  log         Json?
+  departAt    DateTime
+  arriveAt    DateTime
+  resolved    Boolean  @default(false)
 
   lord Lord @relation(fields: [lordId], references: [id], onDelete: Cascade)
 
@@ -671,6 +687,15 @@ model AllianceMessage {
   text       String
   createdAt  DateTime @default(now())
 
+  /// Yönetici kaldırdıysa ne zaman. Metin SİLİNMİYOR, gizleniyor:
+  /// silinen metin, şikâyeti inceleyen yöneticinin kanıtıdır.
+  silindiAn DateTime?
+  /// Kaldıran yöneticinin kullanıcı kimliği.
+  silenId   String?
+  /// Eşiği aşan şikâyet yüzünden yönetici bakana kadar gizli.
+  /// Ceza değil: yazana bir şey olmuyor, "yok say" kararı geri getiriyor.
+  gizli     Boolean   @default(false)
+
   alliance Alliance @relation(fields: [allianceId], references: [id], onDelete: Cascade)
   lord     Lord     @relation(fields: [lordId], references: [id], onDelete: Cascade)
 
@@ -727,8 +752,56 @@ model Report {
   reason     String
   createdAt  DateTime @default(now())
 
-  @@unique([reporterId, targetId])
+  /// "lord" (adı/davranışı) ya da "mesaj" (tek bir söz).
+  tur     String @default("lord")
+  /// Şikâyet edilen sohbet mesajı. Lord şikâyetinde BOŞ DİZE, null değil:
+  /// Postgres tekilliğinde null'lar birbirinden farklı sayılır ve aynı
+  /// lordu tekrar tekrar şikâyet etmek kuyruğu şişirirdi.
+  mesajId String @default("")
+
+  /// "acik" | "kapali". Kapalı şikâyet silinmiyor — yöneticinin
+  /// "bu kaçıncı" sorusunun cevabı geçmişte duruyor.
+  durum     String    @default("acik")
+  /// Verilen karar (moderasyon.ts `kararMetni`).
+  karar     String?
+  /// Kararı veren yöneticinin kullanıcı kimliği.
+  bakanId   String?
+  bakildiAn DateTime?
+
+  @@unique([reporterId, targetId, mesajId])
   @@index([targetId, createdAt])
+  @@index([durum, createdAt])
+  @@index([mesajId])
+}
+
+/// Bir moderasyon kararının kalıcı kaydı.
+///
+/// Şikâyetten AYRI: şikâyet "biri bundan rahatsız oldu", kayıt "bir
+/// yönetici şunu yaptı". Karar geri alınsa bile kayıt kalır, çünkü
+/// yöneticinin de denetlenebilir olması gerekir.
+model ModerasyonKaydi {
+  id String @id @default(cuid())
+
+  /// Hakkında karar verilen lord.
+  lordId     String
+  /// Kararı veren yöneticinin kullanıcı kimliği.
+  yoneticiId String
+  /// Hangi şikâyetten doğdu. Şikâyet silinirse kayıt kalır.
+  raporId    String?
+
+  /// "yok_say" | "mesaj_sil" | "sustur"
+  karar String
+  /// İnsanın okuduğu hâli.
+  ozet  String
+  /// Susturma kararıysa kaç saat.
+  saat  Int?
+
+  createdAt DateTime @default(now())
+
+  lord Lord @relation(fields: [lordId], references: [id], onDelete: Cascade)
+
+  @@index([lordId, createdAt])
+  @@index([createdAt])
 }
 
 /// Bir cihazın push bildirimi aboneliği.
@@ -747,8 +820,8 @@ model PushAbonesi {
 
   /// Cihazın kendini tanıttığı satır — "hangi cihazdan çıkayım"
   /// sorusuna cevap vermek için. Kimliğe dair bir şey taşımıyor.
-  cihaz     String?
-  createdAt DateTime @default(now())
+  cihaz       String?
+  createdAt   DateTime  @default(now())
   /// En son ne zaman başarıyla bildirim gitti. Ölü aboneliği ayıklamak
   /// için: push servisi 404/410 dönerse abonelik zaten siliniyor, bu
   /// alan yalnız gözlem içindir.

@@ -793,8 +793,47 @@ export interface BasvurularDto {
 }
 
 export interface SohbetDto {
-  mesajlar: { id: string; lordId: string; ad: string; metin: string; an: string }[];
+  mesajlar: {
+    id: string;
+    lordId: string;
+    ad: string;
+    metin: string;
+    /** Yönetici kaldırdı ya da şikâyet eşiği aştı: metin yerine bir not var. */
+    kaldirildi: boolean;
+    an: string;
+  }[];
   enFazlaHarf: number;
+}
+
+export interface ModerasyonDurumuDto {
+  yonetici: boolean;
+  /** Bekleyen şikâyet sayısı. Yalnız yöneticide dolu. */
+  bekleyen: number;
+  susturulmus: boolean;
+  susturmaMetni: string | null;
+}
+
+export interface KuyrukSatiriDto {
+  id: string;
+  tur: 'lord' | 'mesaj';
+  an: string;
+  sebep: string;
+  durum: string;
+  karar: string | null;
+  sikayetEden: string;
+  hedefId: string;
+  hedef: string;
+  hedefSusturulmus: boolean;
+  mesaj: { id: string; metin: string; an: string; silinmis: boolean; gizli: boolean } | null;
+  gecmis: { ozet: string; an: string }[];
+}
+
+export interface KuyrukDto {
+  toplam: number;
+  sayfa: number;
+  sayfaBoyu: number;
+  sureler: { saat: number; metin: string }[];
+  satirlar: KuyrukSatiriDto[];
 }
 
 export interface ArmaDto {
@@ -1122,8 +1161,19 @@ export const api = {
   dunya: () => request<DunyaDto>('/dunya'),
 
   rankings: (board: string, page = 0) => request<RankingDto>(`/rankings/${board}?page=${page}`),
-  raporEt: (lordId: string, sebep: string) =>
-    post<{ alindi: boolean }>(`/rapor/${lordId}`, { sebep }),
+  raporEt: (lordId: string, sebep: string, aciklama: string) =>
+    post<{ alindi: boolean }>(`/rapor/${lordId}`, { sebep, aciklama }),
+  mesajRaporEt: (mesajId: string, sebep: string, aciklama: string) =>
+    post<{ alindi: boolean; gizlendi: boolean }>(`/rapor/mesaj/${mesajId}`, { sebep, aciklama }),
+  sikayetSebepleri: () =>
+    request<{ sebepler: { anahtar: string; metin: string }[] }>('/moderasyon/sebepler'),
+  moderasyonDurumu: () => request<ModerasyonDurumuDto>('/moderasyon/durum'),
+  moderasyonKuyrugu: (durum: 'acik' | 'kapali', sayfa: number) =>
+    request<KuyrukDto>(`/moderasyon/kuyruk?durum=${durum}&sayfa=${sayfa}`),
+  moderasyonKarar: (raporId: string, karar: string, saat: number | null) =>
+    post<{ tamam: boolean; karar: string }>('/moderasyon/karar', { raporId, karar, saat }),
+  susturmaKaldir: (lordId: string) =>
+    post<{ tamam: boolean }>('/moderasyon/susturma-kaldir', { lordId }),
   bolgeyiBirak: (id: number) =>
     post<{ birakildi: boolean; donenBirlik: number }>(`/map/${id}/birak`),
 };

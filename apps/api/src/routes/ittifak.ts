@@ -46,6 +46,8 @@ import {
   ittifakaGirebilirMi,
   kurmaMaliyeti,
   unvan,
+  GIZLI_MESAJ,
+  SILINMIS_MESAJ,
 } from '@lordlar/shared';
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
@@ -54,6 +56,7 @@ import { prisma } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { adiDenetle } from '../services/adDenetimi.js';
 import { mesajDenetle } from '../services/mesajDenetimi.js';
+import { susturmaKontrol } from '../services/moderasyon.js';
 import { findLordByUser, grantXp, lordArmasi, pushEvent, tickLord } from '../services/lord.js';
 import { spendResources } from '../services/queue.js';
 import { yururlukteMi } from '../services/pakt.js';
@@ -629,7 +632,11 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
         id: m.id,
         lordId: m.lord.id,
         ad: m.lord.name,
-        metin: m.text,
+        // Kaldırılan ya da şikâyet eşiğini aşan mesajın METNİ SUNUCUDAN
+        // HİÇ ÇIKMIYOR. Gönderip arayüzde gizlemek, gizlemek değil:
+        // ağı dinleyen herkes metni görürdü.
+        metin: m.silindiAn ? SILINMIS_MESAJ : m.gizli ? GIZLI_MESAJ : m.text,
+        kaldirildi: m.silindiAn !== null || m.gizli,
         an: m.createdAt,
       })),
       enFazlaHarf: k.mesaj_en_fazla_harf,
@@ -641,6 +648,11 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
     const body = z.object({ metin: z.string().min(1).max(k.mesaj_en_fazla_harf) }).parse(req.body);
     const metin = body.metin.trim();
     const lordId = await findLordByUser(req.user.userId);
+
+    // Susturma denetimi süzgeçten ÖNCE: susturulmuş bir oyuncuya önce
+    // "mesajın uygunsuz" deyip sonra "zaten susturuldun" demek, ona
+    // durumunu iki adımda öğretir.
+    await susturmaKontrol(lordId);
 
     const denetim = mesajDenetle(metin);
     if (!denetim.uygun) {

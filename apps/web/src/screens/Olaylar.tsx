@@ -34,6 +34,9 @@ export const OLAY_RENGI: Record<string, string> = {
   ittifak_ayrilma: 'var(--color-solgun)',
   ittifak_lider: 'var(--color-altin)',
   ittifak_hedef: 'var(--color-mavi)',
+  /* Moderasyon kararı: ceza değil uyarı rengi. Kırmızı bir savaş
+     kaybı kadar ağır okunurdu; bu bir davranış hatırlatması. */
+  moderasyon: 'var(--color-turuncu)',
   /* Komşunun toprağına bakması: tehdit değil ama haber. Turuncu, çünkü
      kırmızı "saldırıya uğradın" için ayrılmış. */
   goz_dikildi: 'var(--color-turuncu)',

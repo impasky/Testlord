@@ -204,6 +204,7 @@ export const EKRANLAR = [
   'ittifak',
   'arastirma',
   'hesap',
+  'moderasyon',
 ] as const;
 
 export type Ekran = (typeof EKRANLAR)[number];
@@ -273,8 +274,27 @@ export const KAPILAR = [
   'olaylar',
   'siralama',
   'hesap',
+  /**
+   * Şikâyet kuyruğu. Öteki kapılardan farklı olarak HERKESE AÇIK DEĞİL:
+   * yalnız `User.yonetici` olan hesaplar Hesap ekranından açabiliyor,
+   * sunucu da uçları ayrıca koruyor. Listede olması bir menüde
+   * görünmesi anlamına gelmiyor — kapılar bir menüden değil, ait
+   * oldukları ekrandan açılıyor.
+   */
+  'moderasyon',
 ] as const;
 export type Kapi = (typeof KAPILAR)[number];
+
+/**
+ * Oyuncuya görünen kapılar — taranabilirlik kuralının uygulandığı küme.
+ *
+ * `KAPILAR` yönlendirilebilir HER kapıyı sayıyor; bu liste oyuncunun
+ * ana sayfada görebildiklerini. Aradaki tek fark `moderasyon`: yalnız
+ * yönetici hesapları Hesap ekranından açabiliyor, hiçbir ızgarada
+ * çizilmiyor. Tavan kuralının amacı "ana sayfa simge duvarına dönmesin"
+ * ve görünmeyen bir kapı o duvara bir taş koymuyor.
+ */
+export const OYUNCU_KAPILARI = KAPILAR.filter((k) => k !== 'moderasyon');
 
 /** Kapının başlığı — hem panelde hem onu açan düğmede aynı ad. */
 export const KAPI_ADI: Record<Kapi, string> = {
@@ -287,6 +307,7 @@ export const KAPI_ADI: Record<Kapi, string> = {
   olaylar: 'Olaylar',
   siralama: 'Sıralama',
   hesap: 'Hesap',
+  moderasyon: 'Şikâyet Kuyruğu',
 };
 export interface GeneralDef {
   key: string;

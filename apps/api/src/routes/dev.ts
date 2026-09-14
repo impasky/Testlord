@@ -129,6 +129,16 @@ export async function devRoutes(app: FastifyInstance): Promise<void> {
     return { npc: true };
   });
 
+  /**
+   * Çağıran hesabı yönetici yapar — yalnız şikâyet kuyruğunu test etmek
+   * için. Bu dosyanın tamamı gibi ÜRETİMDE HİÇ YÜKLENMİYOR (index.ts);
+   * yükleniyor olsaydı bu uç herkesi yönetici yapabilirdi.
+   */
+  app.post('/test/yonetici-yap', { preHandler: requireAuth }, async (req) => {
+    await prisma.user.update({ where: { id: req.user.userId }, data: { yonetici: true } });
+    return { yonetici: true };
+  });
+
   /** Bir NPC turu koşturur ve ne yapıldığını söyler. */
   app.post('/test/npc-turu', { preHandler: requireAuth }, async () => {
     return npcTuru(new Date());

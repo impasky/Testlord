@@ -10,7 +10,10 @@ import {
   armaDuzelt,
   conquestScore,
   ittifakSeviyesi,
+  sikayetSatiri,
+  sikayetiDenetle,
   unvan,
+  SIKAYET_SEBEP_ANAHTARLARI as SEBEP_ANAHTARLARI,
   type Arma,
 } from '@lordlar/shared';
 import type { FastifyInstance } from 'fastify';
@@ -239,9 +242,20 @@ export async function rankingRoutes(app: FastifyInstance): Promise<void> {
 
   app.post('/rapor/:lordId', { preHandler: requireAuth }, async (req) => {
     const { lordId: hedefId } = z.object({ lordId: z.string().min(1) }).parse(req.params);
-    const { sebep } = z
-      .object({ sebep: z.string().min(3, 'Sebebi kısaca yaz.').max(300) })
+    // Mesaj şikâyetiyle AYNI biçim: hazır sebep + isteğe bağlı açıklama.
+    // İki şikâyet türünün iki ayrı biçimi olsaydı kuyruk iki ayrı dille
+    // konuşurdu; yönetici aynı ekranda ikisini de okuyor.
+    const { sebep, aciklama } = z
+      .object({
+        sebep: z.enum(SEBEP_ANAHTARLARI),
+        aciklama: z.string().max(1000).default(''),
+      })
       .parse(req.body);
+
+    const denetim = sikayetiDenetle(sebep, aciklama);
+    if (!denetim.uygun) {
+      throw new GameError(denetim.sebep ?? 'Şikâyet gönderilemedi.', 400, 'GECERSIZ_ISTEK');
+    }
 
     const benim = await findLordByUser(req.user.userId);
     if (benim === hedefId) {
@@ -252,11 +266,19 @@ export async function rankingRoutes(app: FastifyInstance): Promise<void> {
     }
 
     // Aynı kişiyi tekrar tekrar şikâyet etmek sayıyı şişirmesin: tek kayıt,
-    // sebebi güncellenir.
+    // sebebi güncellenir. mesajId boş dize = lord şikâyeti (bkz. şema).
     await prisma.report.upsert({
-      where: { reporterId_targetId: { reporterId: benim, targetId: hedefId } },
-      create: { reporterId: benim, targetId: hedefId, reason: sebep },
-      update: { reason: sebep, createdAt: new Date() },
+      where: {
+        reporterId_targetId_mesajId: { reporterId: benim, targetId: hedefId, mesajId: '' },
+      },
+      create: {
+        reporterId: benim,
+        targetId: hedefId,
+        mesajId: '',
+        tur: 'lord',
+        reason: sikayetSatiri(sebep, aciklama),
+      },
+      update: { reason: sikayetSatiri(sebep, aciklama), durum: 'acik', createdAt: new Date() },
     });
 
     return { alindi: true };

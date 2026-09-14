@@ -4,7 +4,7 @@
     "tr": " — {0}, sonra ordu saatte %{1} firar verir",
     "en": "",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:129"
+      "apps/web/src/components/MobilKabuk.tsx:152"
     ]
   },
   "td402df3c": {
@@ -12,7 +12,7 @@
     "tr": " — depo dolu, üretim boşa gidiyor",
     "en": "",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:132"
+      "apps/web/src/components/MobilKabuk.tsx:155"
     ]
   },
   "t29564332": {
@@ -20,7 +20,7 @@
     "tr": " — eksiye gidiyor",
     "en": "",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:130"
+      "apps/web/src/components/MobilKabuk.tsx:153"
     ]
   },
   "te04af9d4": {
@@ -28,7 +28,7 @@
     "tr": " · {0} bölgen",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1019"
+      "apps/web/src/screens/Harita.tsx:1021"
     ]
   },
   "teaf79905": {
@@ -52,7 +52,7 @@
     "tr": " · alırsan birlik {0}",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1017"
+      "apps/web/src/screens/Harita.tsx:1019"
     ]
   },
   "tf308233e": {
@@ -68,7 +68,7 @@
     "tr": " · birlik {0}",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1009"
+      "apps/web/src/screens/Harita.tsx:1011"
     ]
   },
   "t64fe69d3": {
@@ -84,7 +84,7 @@
     "tr": " · tek bölgen",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1009"
+      "apps/web/src/screens/Harita.tsx:1011"
     ]
   },
   "t94503747": {
@@ -92,7 +92,7 @@
     "tr": " +Taht",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:316",
+      "apps/web/src/screens/LordEkrani.tsx:328",
       "apps/web/src/screens/Malikane.tsx:118"
     ]
   },
@@ -109,7 +109,7 @@
     "tr": " Daha büyük bir başkent daha yükseğine izin verir.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:473"
+      "apps/web/src/screens/Sehir.tsx:476"
     ]
   },
   "t8c81192e": {
@@ -151,7 +151,7 @@
     "tr": "— bu bölge en üst aşamada.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1177"
+      "apps/web/src/screens/Harita.tsx:1165"
     ]
   },
   "tad25400b": {
@@ -183,7 +183,7 @@
     "tr": ", {0} sürüyor",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:687"
+      "apps/web/src/screens/Sehir.tsx:715"
     ]
   },
   "tf674c3d7": {
@@ -231,7 +231,7 @@
     "tr": ". seviye",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:472"
+      "apps/web/src/screens/Sehir.tsx:475"
     ]
   },
   "tec6052c8": {
@@ -263,7 +263,7 @@
     "tr": "· bina tavanı",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:519"
+      "apps/web/src/screens/Sehir.tsx:522"
     ]
   },
   "ta0f4c75c": {
@@ -287,7 +287,7 @@
     "tr": "· sahipsiz",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:973"
+      "apps/web/src/screens/Harita.tsx:975"
     ]
   },
   "t94297445": {
@@ -303,7 +303,7 @@
     "tr": "· Seviye",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:81"
+      "apps/web/src/screens/Hesap.tsx:97"
     ]
   },
   "t5bedf9cf": {
@@ -312,7 +312,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/screens/Malikane.tsx:182",
-      "apps/web/src/screens/Siralama.tsx:83"
+      "apps/web/src/screens/Siralama.tsx:98"
     ]
   },
   "t9839ce6a": {
@@ -328,7 +328,7 @@
     "tr": "'a git",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:942"
+      "apps/web/src/screens/Sehir.tsx:964"
     ]
   },
   "t243874a1": {
@@ -336,7 +336,7 @@
     "tr": "'de dövülür; ürettiğin parçayı buradan kuşanırsın.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:469"
+      "apps/web/src/screens/LordEkrani.tsx:481"
     ]
   },
   "tea6f95f4": {
@@ -353,6 +353,22 @@
     "en": "",
     "nerede": [
       "apps/web/src/lib/bildirim.ts:44"
+    ]
+  },
+  "ta53c0918": {
+    "grup": "arayuz",
+    "tr": "(gizlendi)",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Moderasyon.tsx:168"
+    ]
+  },
+  "t45dabfa5": {
+    "grup": "arayuz",
+    "tr": "(kaldırıldı)",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Moderasyon.tsx:167"
     ]
   },
   "te6bfcf01": {
@@ -384,7 +400,7 @@
     "tr": "] HEDEF",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:831"
+      "apps/web/src/screens/Harita.tsx:833"
     ]
   },
   "t87382ec3": {
@@ -392,7 +408,7 @@
     "tr": "{0} — {1} yapı",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:398"
+      "apps/web/src/screens/Sehir.tsx:397"
     ]
   },
   "t00e6ccb6": {
@@ -413,6 +429,14 @@
       "apps/web/src/components/DunyaHaritasi.tsx:725"
     ]
   },
+  "t63d3475f": {
+    "grup": "arayuz",
+    "tr": "{0} — mesaj şikâyeti",
+    "en": "",
+    "nerede": [
+      "apps/web/src/components/IttifakSohbet.tsx:152"
+    ]
+  },
   "t80e8b78f": {
     "grup": "arayuz",
     "tr": "{0} · T{1}",
@@ -426,7 +450,7 @@
     "tr": "{0} {1} eğit",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:259"
+      "apps/web/src/screens/Kisla.tsx:285"
     ]
   },
   "t53f178e2": {
@@ -435,7 +459,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/screens/Akin.tsx:688",
-      "apps/web/src/screens/Kisla.tsx:244"
+      "apps/web/src/screens/Kisla.tsx:270"
     ]
   },
   "te723bf3b": {
@@ -443,7 +467,15 @@
     "tr": "{0} adlı lordu şikâyet et",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:95"
+      "apps/web/src/screens/Siralama.tsx:110"
+    ]
+  },
+  "t8dca1ff7": {
+    "grup": "arayuz",
+    "tr": "{0} adlı lordun mesajını şikâyet et",
+    "en": "",
+    "nerede": [
+      "apps/web/src/components/IttifakSohbet.tsx:110"
     ]
   },
   "te89bff62": {
@@ -475,7 +507,7 @@
     "tr": "{0} dk",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:420"
+      "apps/web/src/components/Omurga.tsx:605"
     ]
   },
   "t518c818a": {
@@ -491,7 +523,7 @@
     "tr": "{0} dk sonra biter",
     "en": "",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:114"
+      "apps/web/src/components/MobilKabuk.tsx:137"
     ]
   },
   "t69140c6e": {
@@ -507,7 +539,7 @@
     "tr": "{0} galibiyet · {1} yenilgi",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:559"
+      "apps/web/src/screens/LordEkrani.tsx:571"
     ]
   },
   "t9244b49a": {
@@ -523,7 +555,7 @@
     "tr": "{0} için ordun henüz yetmiyor.",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:581"
+      "apps/web/src/components/Omurga.tsx:766"
     ]
   },
   "t4438dd01": {
@@ -531,7 +563,7 @@
     "tr": "{0} ittifak",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:217"
+      "apps/web/src/screens/Siralama.tsx:221"
     ]
   },
   "td16ad5e7": {
@@ -547,7 +579,7 @@
     "tr": "{0} kapasiten dolsa bile alınmıyor. Liderlik statını yükseltmen gerek.",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:566"
+      "apps/web/src/components/Omurga.tsx:751"
     ]
   },
   "t24069ac0": {
@@ -571,7 +603,7 @@
     "tr": "{0} lord",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:214"
+      "apps/web/src/screens/Siralama.tsx:218"
     ]
   },
   "t2088a96f": {
@@ -579,7 +611,7 @@
     "tr": "{0} oluyor",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1168"
+      "apps/web/src/screens/Harita.tsx:1156"
     ]
   },
   "t50fdf262": {
@@ -595,7 +627,7 @@
     "tr": "{0} puanı dağıt",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:439"
+      "apps/web/src/screens/LordEkrani.tsx:451"
     ]
   },
   "t2a3b407a": {
@@ -603,7 +635,7 @@
     "tr": "{0} sa sonra biter",
     "en": "",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:115"
+      "apps/web/src/components/MobilKabuk.tsx:138"
     ]
   },
   "t423b2a6e": {
@@ -611,7 +643,7 @@
     "tr": "{0} saat",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:420"
+      "apps/web/src/components/Omurga.tsx:605"
     ]
   },
   "tf1a6d8b4": {
@@ -635,10 +667,10 @@
     "tr": "{0} saldır",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:466",
-      "apps/web/src/components/Omurga.tsx:491",
-      "apps/web/src/components/Omurga.tsx:602",
-      "apps/web/src/components/Omurga.tsx:621"
+      "apps/web/src/components/Omurga.tsx:651",
+      "apps/web/src/components/Omurga.tsx:676",
+      "apps/web/src/components/Omurga.tsx:787",
+      "apps/web/src/components/Omurga.tsx:806"
     ]
   },
   "t4aa99003": {
@@ -671,7 +703,7 @@
     "tr": "{0} Sıralaması",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:209"
+      "apps/web/src/screens/Siralama.tsx:213"
     ]
   },
   "t705bb4d6": {
@@ -682,13 +714,30 @@
       "apps/web/src/screens/Ittifak.tsx:494"
     ]
   },
+  "t2b400840": {
+    "grup": "arayuz",
+    "tr": "{0} şikâyet",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Moderasyon.tsx:93",
+      "apps/web/src/screens/Siralama.tsx:295"
+    ]
+  },
+  "tcccb2184": {
+    "grup": "arayuz",
+    "tr": "{0} şikâyet karar bekliyor.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Hesap.tsx:119"
+    ]
+  },
   "tb1cd334c": {
     "grup": "arayuz",
     "tr": "{0} T{1}",
     "en": "",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:228",
-      "apps/web/src/screens/LordEkrani.tsx:499"
+      "apps/web/src/screens/LordEkrani.tsx:511"
     ]
   },
   "t91ecc24f": {
@@ -696,7 +745,7 @@
     "tr": "{0} üzerine yürü",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:610"
+      "apps/web/src/components/Omurga.tsx:795"
     ]
   },
   "tc9199a6f": {
@@ -704,7 +753,7 @@
     "tr": "{0} yap",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1163"
+      "apps/web/src/screens/Harita.tsx:1151"
     ]
   },
   "tee0863e9": {
@@ -714,7 +763,7 @@
     "nerede": [
       "apps/web/src/screens/Akin.tsx:234",
       "apps/web/src/screens/Demirhane.tsx:227",
-      "apps/web/src/screens/LordEkrani.tsx:498"
+      "apps/web/src/screens/LordEkrani.tsx:510"
     ]
   },
   "tc0aafdeb": {
@@ -722,7 +771,7 @@
     "tr": "{0}: {1} ({2}{3}/sa){4}",
     "en": "",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:126"
+      "apps/web/src/components/MobilKabuk.tsx:149"
     ]
   },
   "t01f3bcfa": {
@@ -730,7 +779,7 @@
     "tr": "{0}dk {1}sn",
     "en": "",
     "nerede": [
-      "apps/web/src/components/ui.tsx:709"
+      "apps/web/src/components/ui.tsx:795"
     ]
   },
   "t474d6d19": {
@@ -738,7 +787,7 @@
     "tr": "{0}g {1}sa",
     "en": "",
     "nerede": [
-      "apps/web/src/components/ui.tsx:707"
+      "apps/web/src/components/ui.tsx:793"
     ]
   },
   "ta07b2c09": {
@@ -754,9 +803,9 @@
     "tr": "{0}sa {1}dk",
     "en": "",
     "nerede": [
-      "apps/web/src/components/ui.tsx:708",
+      "apps/web/src/components/ui.tsx:794",
       "apps/web/src/screens/Arastirma.tsx:44",
-      "apps/web/src/screens/Harita.tsx:278"
+      "apps/web/src/screens/Harita.tsx:280"
     ]
   },
   "tb3cd10fd": {
@@ -774,8 +823,8 @@
     "nerede": [
       "apps/web/src/components/HedefSeridi.tsx:38",
       "apps/web/src/components/HedefSeridi.tsx:43",
-      "apps/web/src/components/Omurga.tsx:423",
-      "apps/web/src/components/Omurga.tsx:768",
+      "apps/web/src/components/Omurga.tsx:608",
+      "apps/web/src/components/Omurga.tsx:953",
       "apps/web/src/screens/Malikane.tsx:121",
       "apps/web/src/screens/Malikane.tsx:128",
       "apps/web/src/screens/Malikane.tsx:188",
@@ -790,7 +839,7 @@
     "nerede": [
       "apps/web/src/components/GorevOzeti.tsx:41",
       "apps/web/src/components/GorevOzeti.tsx:43",
-      "apps/web/src/components/Omurga.tsx:307"
+      "apps/web/src/components/Omurga.tsx:492"
     ]
   },
   "teea047c7": {
@@ -807,7 +856,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:138",
-      "apps/web/src/components/Omurga.tsx:304"
+      "apps/web/src/components/Omurga.tsx:489"
     ]
   },
   "tec707e45": {
@@ -815,7 +864,7 @@
     "tr": "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:303"
+      "apps/web/src/components/Omurga.tsx:488"
     ]
   },
   "tcdcc1386": {
@@ -847,7 +896,7 @@
     "tr": "↓ şimdi buna bas ↓",
     "en": "",
     "nerede": [
-      "apps/web/src/components/RehberIsigi.tsx:622"
+      "apps/web/src/components/RehberIsigi.tsx:638"
     ]
   },
   "tc1118513": {
@@ -871,7 +920,7 @@
     "tr": "⛨ korumalı",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:871"
+      "apps/web/src/screens/Harita.tsx:873"
     ]
   },
   "t9a07e0b5": {
@@ -887,7 +936,7 @@
     "tr": "0 0 0 2px rgba(0,0,0,0.55), 0 0 22px 4px var(--color-altin)",
     "en": "",
     "nerede": [
-      "apps/web/src/components/RehberIsigi.tsx:586"
+      "apps/web/src/components/RehberIsigi.tsx:602"
     ]
   },
   "t890d2018": {
@@ -895,7 +944,7 @@
     "tr": "0 0 0 2px rgba(196,188,172,0.85)",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:879"
+      "apps/web/src/screens/Harita.tsx:881"
     ]
   },
   "t7fbe7e5c": {
@@ -929,8 +978,8 @@
     "nerede": [
       "apps/web/src/components/Zemin.tsx:115",
       "apps/web/src/components/Zemin.tsx:122",
-      "apps/web/src/screens/Harita.tsx:958",
-      "apps/web/src/screens/Harita.tsx:964"
+      "apps/web/src/screens/Harita.tsx:960",
+      "apps/web/src/screens/Harita.tsx:966"
     ]
   },
   "t12986790": {
@@ -946,7 +995,7 @@
     "tr": "3px solid #fff3cf",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:803"
+      "apps/web/src/screens/Sehir.tsx:798"
     ]
   },
   "tdda3a9a9": {
@@ -966,7 +1015,9 @@
       "apps/web/src/components/BildirimKarti.tsx:98",
       "apps/web/src/components/IttifakBasvurular.tsx:135",
       "apps/web/src/components/IttifakBasvurular.tsx:75",
-      "apps/web/src/components/IttifakIncele.tsx:74"
+      "apps/web/src/components/IttifakIncele.tsx:74",
+      "apps/web/src/screens/Moderasyon.tsx:77",
+      "apps/web/src/screens/Moderasyon.tsx:87"
     ]
   },
   "tca25ca91": {
@@ -991,7 +1042,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/components/BildirimKarti.tsx:94",
-      "apps/web/src/screens/Hesap.tsx:103"
+      "apps/web/src/screens/Hesap.tsx:145"
     ]
   },
   "t3ac1bfd2": {
@@ -1000,7 +1051,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/components/Rehber.tsx:74",
-      "apps/web/src/screens/Harita.tsx:985"
+      "apps/web/src/screens/Harita.tsx:987"
     ]
   },
   "t230c7ce3": {
@@ -1058,7 +1109,7 @@
     "tr": "Akına git",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:549"
+      "apps/web/src/components/Omurga.tsx:734"
     ]
   },
   "t1386e6f0": {
@@ -1066,7 +1117,7 @@
     "tr": "Akının sürüyor",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:505"
+      "apps/web/src/components/Omurga.tsx:690"
     ]
   },
   "tc7f89f9e": {
@@ -1074,7 +1125,7 @@
     "tr": "akin",
     "en": "",
     "nerede": [
-      "apps/web/src/App.tsx:410",
+      "apps/web/src/App.tsx:420",
       "apps/web/src/screens/Akin.tsx:108"
     ]
   },
@@ -1105,8 +1156,7 @@
       "apps/web/src/components/ui.tsx:132",
       "apps/web/src/screens/Demirhane.tsx:301",
       "apps/web/src/screens/Demirhane.tsx:653",
-      "apps/web/src/screens/Harita.tsx:1137",
-      "apps/web/src/screens/Harita.tsx:58",
+      "apps/web/src/screens/Harita.tsx:60",
       "packages/shared/src/bina.ts:251",
       "packages/shared/src/pazar.ts:38"
     ]
@@ -1117,7 +1167,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:89",
-      "apps/web/src/components/MobilKabuk.tsx:235",
+      "apps/web/src/components/MobilKabuk.tsx:271",
       "apps/web/src/screens/Generaller.tsx:25",
       "data/arma.json:renkler[5].ad"
     ]
@@ -1127,8 +1177,8 @@
     "tr": "altın ·",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1186",
-      "apps/web/src/screens/Harita.tsx:511"
+      "apps/web/src/screens/Harita.tsx:1174",
+      "apps/web/src/screens/Harita.tsx:513"
     ]
   },
   "t4b2c0a68": {
@@ -1170,7 +1220,7 @@
     "tr": "arastirma",
     "en": "",
     "nerede": [
-      "apps/web/src/App.tsx:475",
+      "apps/web/src/App.tsx:485",
       "apps/web/src/screens/Arastirma.tsx:92"
     ]
   },
@@ -1180,7 +1230,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:92",
-      "packages/shared/src/types.ts:284"
+      "packages/shared/src/types.ts:304"
     ]
   },
   "t0f317dd7": {
@@ -1196,7 +1246,7 @@
     "tr": "Araştırma kalıcıdır ve diyarını senin seçimlerinle şekillendirir — iki lord aynı seviyede aynı olmaz.",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:723"
+      "apps/web/src/components/Omurga.tsx:908"
     ]
   },
   "td71e7d01": {
@@ -1212,8 +1262,8 @@
     "tr": "Araştırmaya git",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:663",
-      "apps/web/src/components/Omurga.tsx:724"
+      "apps/web/src/components/Omurga.tsx:848",
+      "apps/web/src/components/Omurga.tsx:909"
     ]
   },
   "t74a561cc": {
@@ -1285,7 +1335,7 @@
     "tr": "Asker eğitimi",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:59"
+      "apps/web/src/screens/Sehir.tsx:61"
     ]
   },
   "tc9c35393": {
@@ -1293,7 +1343,7 @@
     "tr": "Asker Eğitimi",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:416"
+      "apps/web/src/screens/Kisla.tsx:462"
     ]
   },
   "tc3b989ec": {
@@ -1309,7 +1359,7 @@
     "tr": "Asker senin kalır. Bölge el değiştirse bile evine döner.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:384"
+      "apps/web/src/screens/Harita.tsx:386"
     ]
   },
   "tae209ca6": {
@@ -1325,7 +1375,7 @@
     "tr": "askerin savunmada.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:352"
+      "apps/web/src/screens/Harita.tsx:354"
     ]
   },
   "tebbe0d76": {
@@ -1333,7 +1383,7 @@
     "tr": "Askerlerin eğitiliyor",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:459"
+      "apps/web/src/components/Omurga.tsx:644"
     ]
   },
   "tc9721fbc": {
@@ -1359,8 +1409,8 @@
     "tr": "attack",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:914",
-      "apps/web/src/screens/Harita.tsx:923"
+      "apps/web/src/screens/Harita.tsx:916",
+      "apps/web/src/screens/Harita.tsx:925"
     ]
   },
   "t091167b6": {
@@ -1384,7 +1434,7 @@
     "tr": "Aynı anda açabileceğin keşif sayısı ve altının sınırlı; biri bitince tekrar dene.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:552"
+      "apps/web/src/screens/Harita.tsx:554"
     ]
   },
   "t44f73d61": {
@@ -1400,7 +1450,7 @@
     "tr": "Aynı anda en fazla {0} bölge geliştirilebilir. Biri bitmeden yenisi başlamaz.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1080"
+      "apps/web/src/screens/Harita.tsx:1082"
     ]
   },
   "t74ab2913": {
@@ -1408,7 +1458,7 @@
     "tr": "Aynı anda en fazla {0} eğitim yapabilirsin. Kışlanı yükseltirsen artar.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:88"
+      "apps/web/src/screens/Kisla.tsx:87"
     ]
   },
   "t8ba0b91f": {
@@ -1425,7 +1475,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:26",
-      "apps/web/src/components/ui.tsx:694"
+      "apps/web/src/components/ui.tsx:780"
     ]
   },
   "t03f09d10": {
@@ -1433,7 +1483,7 @@
     "tr": "azalıyor",
     "en": "",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:156"
+      "apps/web/src/components/MobilKabuk.tsx:183"
     ]
   },
   "t6a9fb3a1": {
@@ -1497,7 +1547,7 @@
     "tr": "Bakım",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:298"
+      "apps/web/src/screens/Kisla.tsx:324"
     ]
   },
   "tb27ae1b2": {
@@ -1540,7 +1590,7 @@
     "tr": "Başkent taşınamadı.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:327"
+      "apps/web/src/screens/Sehir.tsx:326"
     ]
   },
   "t2947aef5": {
@@ -1548,7 +1598,7 @@
     "tr": "başkentin yok",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:465"
+      "apps/web/src/screens/Sehir.tsx:468"
     ]
   },
   "tc727a7f6": {
@@ -1556,7 +1606,7 @@
     "tr": "Başkentini taşıyabilirsin",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:504"
+      "apps/web/src/screens/Sehir.tsx:507"
     ]
   },
   "tea7af10a": {
@@ -1659,6 +1709,14 @@
       "apps/web/src/screens/Giris.tsx:127"
     ]
   },
+  "t4d534b42": {
+    "grup": "arayuz",
+    "tr": "Bekleyen",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Moderasyon.tsx:77"
+    ]
+  },
   "t7b8f58f9": {
     "grup": "arayuz",
     "tr": "Bekleyen başvuru yok.",
@@ -1667,12 +1725,28 @@
       "apps/web/src/components/IttifakBasvurular.tsx:135"
     ]
   },
+  "td806f1f4": {
+    "grup": "arayuz",
+    "tr": "Bekleyen şikâyet yok.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Hesap.tsx:120"
+    ]
+  },
+  "t225a2417": {
+    "grup": "arayuz",
+    "tr": "Bekleyen şikâyet yok. Sohbet ve lord adları temiz görünüyor — yeni şikâyet gelince burada belirir.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Moderasyon.tsx:88"
+    ]
+  },
   "tfc8bbaee": {
     "grup": "arayuz",
     "tr": "Bırakılıyor…",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1243"
+      "apps/web/src/screens/Harita.tsx:1231"
     ]
   },
   "t341083b0": {
@@ -1680,7 +1754,7 @@
     "tr": "Bildirimler",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:87"
+      "apps/web/src/screens/Hesap.tsx:129"
     ]
   },
   "t7bcd8a64": {
@@ -1728,7 +1802,7 @@
     "tr": "Binaların bu yerleşimde en fazla",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:471"
+      "apps/web/src/screens/Sehir.tsx:474"
     ]
   },
   "te7b9c929": {
@@ -1736,7 +1810,7 @@
     "tr": "bir araştırma başlat",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:713"
+      "apps/web/src/components/Omurga.tsx:898"
     ]
   },
   "tb1bc8549": {
@@ -1744,7 +1818,7 @@
     "tr": "Bir araştırma başlat",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:721"
+      "apps/web/src/components/Omurga.tsx:906"
     ]
   },
   "te3e4d049": {
@@ -1760,7 +1834,7 @@
     "tr": "Bir bölgeyi sadece oraya bıraktığın garnizon savunur.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:479"
+      "apps/web/src/screens/Kisla.tsx:527"
     ]
   },
   "t4dcb8fd1": {
@@ -1768,7 +1842,7 @@
     "tr": "Bir şey yaz…",
     "en": "",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:99"
+      "apps/web/src/components/IttifakSohbet.tsx:137"
     ]
   },
   "t2d3fb36b": {
@@ -1784,7 +1858,7 @@
     "tr": "Bir tarla bölgesi al ya da ordunu küçült.",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:417"
+      "apps/web/src/components/Omurga.tsx:602"
     ]
   },
   "t02c706ee": {
@@ -1792,7 +1866,7 @@
     "tr": "birak:{0}",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1243"
+      "apps/web/src/screens/Harita.tsx:1231"
     ]
   },
   "t42301cb4": {
@@ -1800,7 +1874,7 @@
     "tr": "birim",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:352"
+      "apps/web/src/screens/Harita.tsx:354"
     ]
   },
   "t6ba9eca2": {
@@ -1849,7 +1923,7 @@
     "tr": "Bittiğinde ordun saatte %{0} firar verir. ",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:416"
+      "apps/web/src/components/Omurga.tsx:601"
     ]
   },
   "tcca5f4e6": {
@@ -1865,7 +1939,7 @@
     "tr": "boş",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1318"
+      "apps/web/src/screens/Harita.tsx:1306"
     ]
   },
   "t6e980c82": {
@@ -1873,10 +1947,9 @@
     "tr": "boş arsa",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:601",
-      "apps/web/src/screens/Sehir.tsx:685",
-      "apps/web/src/screens/Sehir.tsx:688",
-      "apps/web/src/screens/Sehir.tsx:885"
+      "apps/web/src/screens/Sehir.tsx:713",
+      "apps/web/src/screens/Sehir.tsx:716",
+      "apps/web/src/screens/Sehir.tsx:921"
     ]
   },
   "t0f1623db": {
@@ -1884,7 +1957,7 @@
     "tr": "Boş yer {0}, gereken {1}. Liderlik statını artır ya da daha az birim eğit.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:95"
+      "apps/web/src/screens/Kisla.tsx:94"
     ]
   },
   "tceac3637": {
@@ -1893,10 +1966,10 @@
     "en": "",
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:86",
-      "apps/web/src/screens/LordEkrani.tsx:315",
+      "apps/web/src/screens/LordEkrani.tsx:327",
       "apps/web/src/screens/Malikane.tsx:117",
-      "apps/web/src/screens/Siralama.tsx:133",
-      "apps/web/src/screens/Siralama.tsx:83",
+      "apps/web/src/screens/Siralama.tsx:148",
+      "apps/web/src/screens/Siralama.tsx:98",
       "data/seferler.json:seferler[1].birim"
     ]
   },
@@ -1905,7 +1978,7 @@
     "tr": "Bölge",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:717",
+      "apps/api/src/routes/ittifak.ts:729",
       "apps/api/src/routes/map.ts:1149",
       "apps/api/src/routes/map.ts:343",
       "apps/api/src/routes/map.ts:540",
@@ -1915,7 +1988,7 @@
       "apps/api/src/routes/map.ts:710",
       "apps/api/src/routes/map.ts:845",
       "apps/api/src/routes/map.ts:975",
-      "apps/web/src/screens/Harita.tsx:835"
+      "apps/web/src/screens/Harita.tsx:837"
     ]
   },
   "t8e157175": {
@@ -1947,7 +2020,7 @@
     "tr": "Bölge kalkan altında",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:748"
+      "apps/web/src/screens/Harita.tsx:750"
     ]
   },
   "t2bc4f28b": {
@@ -1979,7 +2052,7 @@
     "tr": "Bölge sahipsiz kalır, garnizondaki birlikler eve döner. Bakımı ağır gelen ya da savunamadığın bir bölgeden böyle kurtulabilirsin.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1228"
+      "apps/web/src/screens/Harita.tsx:1216"
     ]
   },
   "t141e709a": {
@@ -1987,7 +2060,7 @@
     "tr": "Bölge seviyesi × tip çarpanı. Toprak sahibinin sıralaması.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:25"
+      "apps/web/src/screens/Siralama.tsx:26"
     ]
   },
   "tc9b5abfb": {
@@ -1995,7 +2068,7 @@
     "tr": "Bölge yükseltme",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:63"
+      "apps/web/src/screens/Sehir.tsx:65"
     ]
   },
   "ta5c31fa5": {
@@ -2012,7 +2085,7 @@
     "tr": "Bölgelerin sahipsiz kalır ve başkaları tarafından yeniden fethedilebilir.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:148"
+      "apps/web/src/screens/Hesap.tsx:190"
     ]
   },
   "tcbb3dc3b": {
@@ -2020,7 +2093,7 @@
     "tr": "Bölgen",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:814"
+      "apps/web/src/screens/Harita.tsx:816"
     ]
   },
   "tc94ced4d": {
@@ -2028,7 +2101,7 @@
     "tr": "Bölgeni geliştir",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:706",
+      "apps/web/src/components/Omurga.tsx:891",
       "packages/shared/src/rehber.ts:179"
     ]
   },
@@ -2037,9 +2110,9 @@
     "tr": "bölgeni yükselt",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:625",
-      "apps/web/src/components/Omurga.tsx:644",
-      "apps/web/src/components/Omurga.tsx:681"
+      "apps/web/src/components/Omurga.tsx:810",
+      "apps/web/src/components/Omurga.tsx:829",
+      "apps/web/src/components/Omurga.tsx:866"
     ]
   },
   "t52203242": {
@@ -2047,7 +2120,7 @@
     "tr": "Bölgenin seviyesi geliri de savunmayı da büyütür. Yeni toprak almadan da güçlenebilirsin.",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:708"
+      "apps/web/src/components/Omurga.tsx:893"
     ]
   },
   "t9422d5a7": {
@@ -2079,7 +2152,7 @@
     "tr": "Bölgeye git",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:709"
+      "apps/web/src/components/Omurga.tsx:894"
     ]
   },
   "t9a01f3ab": {
@@ -2103,7 +2176,7 @@
     "tr": "Bölgeyi bırak",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1226"
+      "apps/web/src/screens/Harita.tsx:1214"
     ]
   },
   "tec7a2e6e": {
@@ -2119,7 +2192,7 @@
     "tr": "Bu bilgi eskidi; garnizon değişmiş olabilir. Tavsiyeler eski rapora göre verilmiyor.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:526"
+      "apps/web/src/screens/Harita.tsx:528"
     ]
   },
   "t8f0d3d8f": {
@@ -2127,7 +2200,7 @@
     "tr": "Bu bölgede",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:352"
+      "apps/web/src/screens/Harita.tsx:354"
     ]
   },
   "t0bb9d20f": {
@@ -2135,7 +2208,7 @@
     "tr": "Bu Bölgedeki Savaşların",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1355"
+      "apps/web/src/screens/Harita.tsx:1343"
     ]
   },
   "t6a9f9031": {
@@ -2151,7 +2224,7 @@
     "tr": "Bu bölgeyi bırak",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1243"
+      "apps/web/src/screens/Harita.tsx:1231"
     ]
   },
   "t82f1944e": {
@@ -2159,7 +2232,7 @@
     "tr": "Bu bölgeyi sadece buradaki garnizon savunur.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1218"
+      "apps/web/src/screens/Harita.tsx:1206"
     ]
   },
   "t48c3baf4": {
@@ -2168,7 +2241,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/screens/Ittifak.tsx:416",
-      "apps/web/src/screens/Siralama.tsx:232"
+      "apps/web/src/screens/Siralama.tsx:236"
     ]
   },
   "tef1de820": {
@@ -2216,7 +2289,7 @@
     "tr": "Bu işlem geri alınamaz.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:148"
+      "apps/web/src/screens/Hesap.tsx:190"
     ]
   },
   "t48c066f2": {
@@ -2248,7 +2321,7 @@
     "tr": "Bu sürede ekipman üretebilir ya da bölgeni yükseltebilirsin.",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:481"
+      "apps/web/src/components/Omurga.tsx:666"
     ]
   },
   "tb4911234": {
@@ -2256,7 +2329,7 @@
     "tr": "Bu sürede ordunu büyütebilir ya da ekipman üretebilirsin.",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:438"
+      "apps/web/src/components/Omurga.tsx:623"
     ]
   },
   "t0289e4af": {
@@ -2264,7 +2337,7 @@
     "tr": "Bu tabloda henüz kimse yok. Sıralamaya girmenin yolu bölge almaktan geçiyor.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:280"
+      "apps/web/src/screens/Siralama.tsx:284"
     ]
   },
   "t4905a6f9": {
@@ -2328,7 +2401,7 @@
     "tr": "Can",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:292"
+      "apps/web/src/screens/Kisla.tsx:318"
     ]
   },
   "ta06cea5b": {
@@ -2344,7 +2417,7 @@
     "tr": "Can +%{0}",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:544"
+      "apps/web/src/screens/LordEkrani.tsx:556"
     ]
   },
   "t25bfe7af": {
@@ -2352,7 +2425,7 @@
     "tr": "Casus gönder · {0} altın · {1}",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:545"
+      "apps/web/src/screens/Harita.tsx:547"
     ]
   },
   "t324c016f": {
@@ -2360,7 +2433,7 @@
     "tr": "Casus gönderilemedi.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:481"
+      "apps/web/src/screens/Harita.tsx:483"
     ]
   },
   "td9552ee2": {
@@ -2368,7 +2441,7 @@
     "tr": "Casus yakalanabilir; Kurnazlık statın riski düşürür.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:556"
+      "apps/web/src/screens/Harita.tsx:558"
     ]
   },
   "tcc2c2673": {
@@ -2376,7 +2449,7 @@
     "tr": "Casus yola çıkıyor…",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:544"
+      "apps/web/src/screens/Harita.tsx:546"
     ]
   },
   "t8910b63e": {
@@ -2408,7 +2481,7 @@
     "tr": "Çekiliyor…",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:362"
+      "apps/web/src/screens/Harita.tsx:364"
     ]
   },
   "t24548309": {
@@ -2432,7 +2505,7 @@
     "tr": "Çıkış",
     "en": "",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:224"
+      "apps/web/src/components/MobilKabuk.tsx:260"
     ]
   },
   "t26ef993a": {
@@ -2457,7 +2530,7 @@
     "tr": "Daha büyük bir yerleşimin var. Taşınırsan binaların seninle gelir — hiçbir seviye kaybolmaz, yalnız tavan yükselir.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:506"
+      "apps/web/src/screens/Sehir.tsx:509"
     ]
   },
   "t3116499d": {
@@ -2497,7 +2570,7 @@
     "tr": "Değişikliği doğrulamak için gerekiyor.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:64"
+      "apps/web/src/screens/Hesap.tsx:80"
     ]
   },
   "t56f6ebbc": {
@@ -2514,8 +2587,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:305",
-      "apps/web/src/screens/Demirhane.tsx:661",
-      "apps/web/src/screens/Harita.tsx:1146"
+      "apps/web/src/screens/Demirhane.tsx:661"
     ]
   },
   "t9e99f30a": {
@@ -2524,7 +2596,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:90",
-      "apps/web/src/components/MobilKabuk.tsx:243"
+      "apps/web/src/components/MobilKabuk.tsx:279"
     ]
   },
   "t107cc86b": {
@@ -2532,8 +2604,8 @@
     "tr": "demir ·",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1187",
-      "apps/web/src/screens/Harita.tsx:512"
+      "apps/web/src/screens/Harita.tsx:1175",
+      "apps/web/src/screens/Harita.tsx:514"
     ]
   },
   "t15fbd33c": {
@@ -2541,7 +2613,7 @@
     "tr": "demirhane",
     "en": "",
     "nerede": [
-      "apps/web/src/App.tsx:478",
+      "apps/web/src/App.tsx:488",
       "apps/web/src/screens/Demirhane.tsx:403"
     ]
   },
@@ -2551,12 +2623,12 @@
     "en": "",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:403",
-      "apps/web/src/screens/LordEkrani.tsx:467",
-      "apps/web/src/screens/LordEkrani.tsx:484",
-      "apps/web/src/screens/Sehir.tsx:553",
+      "apps/web/src/screens/LordEkrani.tsx:479",
+      "apps/web/src/screens/LordEkrani.tsx:496",
+      "apps/web/src/screens/Sehir.tsx:556",
       "data/basarimlar.json:kumeler[3].ad",
       "data/binalar.json:binalar[3].ad",
-      "packages/shared/src/types.ts:285"
+      "packages/shared/src/types.ts:305"
     ]
   },
   "tb2ce20de": {
@@ -2572,7 +2644,7 @@
     "tr": "Demirhanede ekipman üret",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:625"
+      "apps/web/src/components/Omurga.tsx:810"
     ]
   },
   "t0bd85dea": {
@@ -2580,8 +2652,8 @@
     "tr": "Demirhaneye git",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:487",
-      "apps/web/src/components/Omurga.tsx:640"
+      "apps/web/src/components/Omurga.tsx:672",
+      "apps/web/src/components/Omurga.tsx:825"
     ]
   },
   "t88a73dfe": {
@@ -2613,7 +2685,7 @@
     "tr": "depo dolu",
     "en": "",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:153"
+      "apps/web/src/components/MobilKabuk.tsx:180"
     ]
   },
   "t98a9b4f3": {
@@ -2621,7 +2693,7 @@
     "tr": "Depo:",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:509"
+      "apps/web/src/screens/Harita.tsx:511"
     ]
   },
   "t1d20a17b": {
@@ -2629,7 +2701,7 @@
     "tr": "Depon dolduğu için ürettiğin her şey boşa gidiyor. Ambarlar araştırması depoyu büyütür.",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:662"
+      "apps/web/src/components/Omurga.tsx:847"
     ]
   },
   "t24cb06e6": {
@@ -2646,7 +2718,7 @@
     "tr": "Deponun taşıyor",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:660"
+      "apps/web/src/components/Omurga.tsx:845"
     ]
   },
   "t7dc33a54": {
@@ -2662,7 +2734,7 @@
     "tr": "DETAY",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:283"
+      "apps/web/src/screens/Kisla.tsx:309"
     ]
   },
   "t37cf0867": {
@@ -2670,7 +2742,7 @@
     "tr": "DETAYI GİZLE",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:283"
+      "apps/web/src/screens/Kisla.tsx:309"
     ]
   },
   "ta6d41ede": {
@@ -2694,7 +2766,7 @@
     "tr": "Dikili yapıya dokun: içine girersin. Boş arsaya dokun: bedelini söyler.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:433"
+      "apps/web/src/screens/Sehir.tsx:439"
     ]
   },
   "t1518faf9": {
@@ -2737,7 +2809,7 @@
     "tr": "Diyar yükleniyor…",
     "en": "",
     "nerede": [
-      "apps/web/src/App.tsx:326"
+      "apps/web/src/App.tsx:327"
     ]
   },
   "tadebb397": {
@@ -2777,7 +2849,7 @@
     "tr": "Diyarda tek. Sahibi %",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1054"
+      "apps/web/src/screens/Harita.tsx:1056"
     ]
   },
   "t1693e09c": {
@@ -2785,7 +2857,7 @@
     "tr": "Diyarı büyüt",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:736"
+      "apps/web/src/components/Omurga.tsx:921"
     ]
   },
   "t0ce7b20a": {
@@ -2793,7 +2865,7 @@
     "tr": "diyarı büyütmeye devam et",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:728"
+      "apps/web/src/components/Omurga.tsx:913"
     ]
   },
   "t0824910b": {
@@ -2809,7 +2881,7 @@
     "tr": "Diyarın ittifakları",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:191"
+      "apps/web/src/screens/Siralama.tsx:195"
     ]
   },
   "t43e1e7d0": {
@@ -2825,7 +2897,7 @@
     "tr": "Diyarın lordları",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:191"
+      "apps/web/src/screens/Siralama.tsx:195"
     ]
   },
   "te912c2d3": {
@@ -2843,7 +2915,7 @@
     "tr": "DİYARIN LORDU",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:80"
+      "apps/web/src/screens/Siralama.tsx:95"
     ]
   },
   "tecde6250": {
@@ -2851,7 +2923,7 @@
     "tr": "Diyarın Lordu · {0}",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:982"
+      "apps/web/src/screens/Harita.tsx:984"
     ]
   },
   "t8adeae05": {
@@ -2859,7 +2931,7 @@
     "tr": "Diyarında ne oldu",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Olaylar.tsx:73"
+      "apps/web/src/screens/Olaylar.tsx:76"
     ]
   },
   "tf8838c3c": {
@@ -2972,7 +3044,7 @@
     "tr": "Dönüş",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:914"
+      "apps/web/src/screens/Harita.tsx:916"
     ]
   },
   "tca377742": {
@@ -2981,7 +3053,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/screens/Akin.tsx:524",
-      "apps/web/src/screens/Sehir.tsx:788"
+      "apps/web/src/screens/Sehir.tsx:783"
     ]
   },
   "t210d7b4a": {
@@ -2989,7 +3061,7 @@
     "tr": "drop-shadow(0 0 5px rgba(245,183,49,0.55))",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:790"
+      "apps/web/src/screens/Sehir.tsx:785"
     ]
   },
   "t265757b1": {
@@ -3046,7 +3118,7 @@
     "tr": "Dünya Haritası",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:811"
+      "apps/web/src/screens/Harita.tsx:813"
     ]
   },
   "t92c998be": {
@@ -3062,7 +3134,7 @@
     "tr": "düşman",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:866"
+      "apps/web/src/screens/Harita.tsx:868"
     ]
   },
   "tcb8eae6b": {
@@ -3070,7 +3142,7 @@
     "tr": "Düşman garnizonu görünmüyor. Casus göndererek öğrenebilir ya da Casus Leyla'yı sahaya sürerek sürekli görebilirsin.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1338"
+      "apps/web/src/screens/Harita.tsx:1326"
     ]
   },
   "t4d955461": {
@@ -3144,7 +3216,7 @@
     "tr": "Eğitim kuyruğu dolu",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:87"
+      "apps/web/src/screens/Kisla.tsx:86"
     ]
   },
   "tc38ff08d": {
@@ -3152,7 +3224,7 @@
     "tr": "Eğitimde",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:268"
+      "apps/web/src/screens/Kisla.tsx:294"
     ]
   },
   "tf408ef01": {
@@ -3176,7 +3248,7 @@
     "tr": "Ekipman gücü",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:538"
+      "apps/web/src/screens/LordEkrani.tsx:550"
     ]
   },
   "tf8c29599": {
@@ -3184,7 +3256,7 @@
     "tr": "Ekipman lordun savaş katkısını büyütür; aynı savaştan daha az kayıpla çıkarsın.",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:634"
+      "apps/web/src/components/Omurga.tsx:819"
     ]
   },
   "tdc7c54cf": {
@@ -3200,7 +3272,7 @@
     "tr": "Ekipman üretimi",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:60"
+      "apps/web/src/screens/Sehir.tsx:62"
     ]
   },
   "t12fb0004": {
@@ -3208,7 +3280,15 @@
     "tr": "Ekipman yükseltme",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:61"
+      "apps/web/src/screens/Sehir.tsx:63"
+    ]
+  },
+  "tcf58093a": {
+    "grup": "arayuz",
+    "tr": "Eklemek istediğin bir şey?",
+    "en": "",
+    "nerede": [
+      "apps/web/src/components/SikayetSayfasi.tsx:113"
     ]
   },
   "t9322a83e": {
@@ -3240,7 +3320,7 @@
     "tr": "En az 8 karakter",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:119",
+      "apps/web/src/screens/Hesap.tsx:161",
       "apps/web/src/screens/ParolaSifirla.tsx:46"
     ]
   },
@@ -3249,7 +3329,7 @@
     "tr": "En az 8 karakter olmalı.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:66",
+      "apps/web/src/screens/Hesap.tsx:82",
       "apps/web/src/screens/ParolaSifirla.tsx:66"
     ]
   },
@@ -3330,7 +3410,7 @@
     "tr": "Enter",
     "en": "",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:97"
+      "apps/web/src/components/IttifakSohbet.tsx:135"
     ]
   },
   "t96ea6f96": {
@@ -3354,7 +3434,7 @@
     "tr": "Erzağın bitiyor",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:414"
+      "apps/web/src/components/Omurga.tsx:599"
     ]
   },
   "t97421dbc": {
@@ -3362,8 +3442,8 @@
     "tr": "erzak",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1187",
-      "apps/web/src/screens/Harita.tsx:512"
+      "apps/web/src/screens/Harita.tsx:1175",
+      "apps/web/src/screens/Harita.tsx:514"
     ]
   },
   "t693ca05c": {
@@ -3372,7 +3452,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:91",
-      "apps/web/src/components/MobilKabuk.tsx:251",
+      "apps/web/src/components/MobilKabuk.tsx:287",
       "packages/shared/src/ogretici.ts:195"
     ]
   },
@@ -3381,7 +3461,7 @@
     "tr": "Erzak bitti, askerler saatte %5 firar ediyor. Tarla bölgesi al ya da ordunu küçült.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:284"
+      "apps/web/src/screens/LordEkrani.tsx:296"
     ]
   },
   "t709594fe": {
@@ -3389,7 +3469,7 @@
     "tr": "Erzak bitti, askerlerin kaçıyor. Bir tarla bölgesi al ya da ordunu küçült.",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:384"
+      "apps/web/src/components/Omurga.tsx:569"
     ]
   },
   "t9d5a171d": {
@@ -3397,7 +3477,7 @@
     "tr": "erzak/sa",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:411"
+      "apps/web/src/screens/Kisla.tsx:457"
     ]
   },
   "tae8a6ae3": {
@@ -3405,7 +3485,7 @@
     "tr": "eski bilgi · {0} önce",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:500"
+      "apps/web/src/screens/Harita.tsx:502"
     ]
   },
   "t99e130e8": {
@@ -3445,7 +3525,8 @@
     "tr": "Evde",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:182"
+      "apps/web/src/screens/Kisla.tsx:192",
+      "apps/web/src/screens/Kisla.tsx:232"
     ]
   },
   "ta56383d3": {
@@ -3469,7 +3550,7 @@
     "tr": "Evde asker yok. Saldırmak için önce ordu kurman gerekiyor.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:229"
+      "apps/web/src/screens/Harita.tsx:231"
     ]
   },
   "tac9a5137": {
@@ -3509,7 +3590,7 @@
     "tr": "Fetih",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:24",
+      "apps/web/src/screens/Siralama.tsx:25",
       "data/basarimlar.json:kumeler[0].ad"
     ]
   },
@@ -3518,7 +3599,7 @@
     "tr": "fixed z-[55] bg-black/72 motion-safe:transition-all motion-safe:duration-200 motion-safe:ease-out",
     "en": "",
     "nerede": [
-      "apps/web/src/components/RehberIsigi.tsx:451"
+      "apps/web/src/components/RehberIsigi.tsx:467"
     ]
   },
   "t80e9a745": {
@@ -3535,8 +3616,8 @@
     "en": "",
     "nerede": [
       "apps/web/src/components/SavasRaporu.tsx:557",
-      "apps/web/src/screens/Harita.tsx:1202",
-      "apps/web/src/screens/Harita.tsx:1315"
+      "apps/web/src/screens/Harita.tsx:1190",
+      "apps/web/src/screens/Harita.tsx:1303"
     ]
   },
   "t7bd683bd": {
@@ -3544,7 +3625,7 @@
     "tr": "Garnizonlarda",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:458"
+      "apps/web/src/screens/Kisla.tsx:506"
     ]
   },
   "t19ae54dc": {
@@ -3552,7 +3633,7 @@
     "tr": "Garnizonu ayarla",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1215"
+      "apps/web/src/screens/Harita.tsx:1203"
     ]
   },
   "t2adab535": {
@@ -3576,7 +3657,7 @@
     "tr": "geçit",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:890"
+      "apps/web/src/screens/Harita.tsx:892"
     ]
   },
   "tead799ae": {
@@ -3592,8 +3673,8 @@
     "tr": "Geliştirme",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1098",
-      "apps/web/src/screens/Harita.tsx:1175"
+      "apps/web/src/screens/Harita.tsx:1100",
+      "apps/web/src/screens/Harita.tsx:1163"
     ]
   },
   "t3a40efac": {
@@ -3601,7 +3682,7 @@
     "tr": "Geliştirme kuyruğu dolu",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1079"
+      "apps/web/src/screens/Harita.tsx:1081"
     ]
   },
   "t5a0b4fde": {
@@ -3609,7 +3690,7 @@
     "tr": "Genel toplam skor. Dengeli oyuncuyu ödüllendirir.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:19"
+      "apps/web/src/screens/Siralama.tsx:20"
     ]
   },
   "tc9e13052": {
@@ -3617,7 +3698,7 @@
     "tr": "General bütün ordunu birden güçlendirir — tek bir ekipmandan büyük fark yaratır.",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:676"
+      "apps/web/src/components/Omurga.tsx:861"
     ]
   },
   "tcdfb3203": {
@@ -3625,8 +3706,8 @@
     "tr": "general kirala",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:644",
-      "apps/web/src/components/Omurga.tsx:667"
+      "apps/web/src/components/Omurga.tsx:829",
+      "apps/web/src/components/Omurga.tsx:852"
     ]
   },
   "t587175a3": {
@@ -3634,7 +3715,7 @@
     "tr": "General kirala",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:675",
+      "apps/web/src/components/Omurga.tsx:860",
       "packages/shared/src/rehber.ts:178"
     ]
   },
@@ -3643,7 +3724,7 @@
     "tr": "generaller",
     "en": "",
     "nerede": [
-      "apps/web/src/App.tsx:477",
+      "apps/web/src/App.tsx:487",
       "apps/web/src/screens/Generaller.tsx:190"
     ]
   },
@@ -3653,7 +3734,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/screens/Generaller.tsx:190",
-      "packages/shared/src/types.ts:283"
+      "packages/shared/src/types.ts:303"
     ]
   },
   "tbf8d2b79": {
@@ -3661,7 +3742,7 @@
     "tr": "Generallere git",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:677"
+      "apps/web/src/components/Omurga.tsx:862"
     ]
   },
   "t0e1e33ed": {
@@ -3685,7 +3766,7 @@
     "tr": "Geri çağır",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:933"
+      "apps/web/src/screens/Harita.tsx:935"
     ]
   },
   "tde74af89": {
@@ -3727,7 +3808,7 @@
     "tr": "Giriş ekranına dön",
     "en": "",
     "nerede": [
-      "apps/web/src/App.tsx:315",
+      "apps/web/src/App.tsx:316",
       "apps/web/src/screens/ParolaSifirla.tsx:41"
     ]
   },
@@ -3752,7 +3833,7 @@
     "tr": "gorevler",
     "en": "",
     "nerede": [
-      "apps/web/src/App.tsx:465",
+      "apps/web/src/App.tsx:475",
       "apps/web/src/screens/Gorevler.tsx:31"
     ]
   },
@@ -3761,7 +3842,7 @@
     "tr": "gorunus",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:574"
+      "apps/web/src/screens/LordEkrani.tsx:586"
     ]
   },
   "t5228efad": {
@@ -3785,7 +3866,7 @@
     "tr": "Gönderilecek takviye",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:371"
+      "apps/web/src/screens/Harita.tsx:373"
     ]
   },
   "t694ea4fc": {
@@ -3802,16 +3883,16 @@
     "en": "",
     "nerede": [
       "apps/web/src/components/Paktlar.tsx:192",
+      "apps/web/src/components/SikayetSayfasi.tsx:123",
       "apps/web/src/screens/Akin.tsx:659",
       "apps/web/src/screens/Demirhane.tsx:525",
       "apps/web/src/screens/Generaller.tsx:148",
       "apps/web/src/screens/Giris.tsx:152",
-      "apps/web/src/screens/Harita.tsx:1163",
-      "apps/web/src/screens/Hesap.tsx:135",
-      "apps/web/src/screens/Kisla.tsx:259",
+      "apps/web/src/screens/Harita.tsx:1151",
+      "apps/web/src/screens/Hesap.tsx:177",
+      "apps/web/src/screens/Kisla.tsx:285",
       "apps/web/src/screens/ParolaSifirla.tsx:62",
-      "apps/web/src/screens/Sehir.tsx:937",
-      "apps/web/src/screens/Siralama.tsx:322"
+      "apps/web/src/screens/Sehir.tsx:959"
     ]
   },
   "t5b346f80": {
@@ -3844,7 +3925,7 @@
     "tr": "Görünüş",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:361"
+      "apps/web/src/screens/LordEkrani.tsx:373"
     ]
   },
   "t41352bde": {
@@ -3852,7 +3933,7 @@
     "tr": "guc",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:367"
+      "apps/web/src/screens/LordEkrani.tsx:379"
     ]
   },
   "t935ad3f0": {
@@ -3885,7 +3966,7 @@
     "tr": "Güç",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:360",
+      "apps/web/src/screens/LordEkrani.tsx:372",
       "apps/web/src/screens/LordEkrani.tsx:48"
     ]
   },
@@ -3935,7 +4016,7 @@
     "tr": "Günde en fazla {0} saldırı yapabilirsin. Taht Kalesi bu limitten muaftır; yarın sıfırlanır.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:743"
+      "apps/web/src/screens/Harita.tsx:745"
     ]
   },
   "t6ed6957e": {
@@ -3951,7 +4032,7 @@
     "tr": "Günlük saldırı hakkın bitti",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:742"
+      "apps/web/src/screens/Harita.tsx:744"
     ]
   },
   "t13da7c2c": {
@@ -3967,7 +4048,7 @@
     "tr": "harita",
     "en": "",
     "nerede": [
-      "apps/web/src/App.tsx:400"
+      "apps/web/src/App.tsx:410"
     ]
   },
   "ta565dc14": {
@@ -3975,7 +4056,7 @@
     "tr": "Harita",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:556"
+      "apps/web/src/screens/Sehir.tsx:559"
     ]
   },
   "t811aa7b9": {
@@ -3991,8 +4072,8 @@
     "tr": "Haritada tarla ara",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:390",
-      "apps/web/src/components/Omurga.tsx:426"
+      "apps/web/src/components/Omurga.tsx:575",
+      "apps/web/src/components/Omurga.tsx:611"
     ]
   },
   "t87727ea5": {
@@ -4017,8 +4098,8 @@
     "en": "",
     "nerede": [
       "apps/web/src/screens/Malikane.tsx:165",
-      "apps/web/src/screens/Olaylar.tsx:83",
-      "apps/web/src/screens/Siralama.tsx:281"
+      "apps/web/src/screens/Olaylar.tsx:86",
+      "apps/web/src/screens/Siralama.tsx:285"
     ]
   },
   "tbb18b696": {
@@ -4060,7 +4141,7 @@
     "tr": "Hazır olunca {0} üzerine yürüyeceksin.",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:460"
+      "apps/web/src/components/Omurga.tsx:645"
     ]
   },
   "t67fd13ec": {
@@ -4068,7 +4149,7 @@
     "tr": "Hedef işaretlenemedi.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:414"
+      "apps/web/src/screens/Harita.tsx:416"
     ]
   },
   "t4a708677": {
@@ -4100,7 +4181,7 @@
     "tr": "Henüz bir şey olmadı. Bir saldırı yaptığında ya da bölgen geliştiğinde burada okursun.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Olaylar.tsx:81"
+      "apps/web/src/screens/Olaylar.tsx:84"
     ]
   },
   "t56cda73a": {
@@ -4119,12 +4200,20 @@
       "apps/web/src/screens/Demirhane.tsx:557"
     ]
   },
+  "t2a444b53": {
+    "grup": "arayuz",
+    "tr": "Henüz karara bağlanan şikâyet yok. Verdiğin kararlar burada birikir.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Moderasyon.tsx:89"
+    ]
+  },
   "t0f78ebc0": {
     "grup": "arayuz",
     "tr": "Henüz kimse yazmadı. İlk sözü sen söyle — bir hedef göster, yardım iste.",
     "en": "",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:63"
+      "apps/web/src/components/IttifakSohbet.tsx:79"
     ]
   },
   "t03b91b40": {
@@ -4140,7 +4229,7 @@
     "tr": "Hepsi",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:220"
+      "apps/web/src/screens/Harita.tsx:222"
     ]
   },
   "t5cf0de08": {
@@ -4174,7 +4263,7 @@
     "tr": "Hesabı Sil",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:144"
+      "apps/web/src/screens/Hesap.tsx:186"
     ]
   },
   "t30c7d34d": {
@@ -4183,9 +4272,9 @@
     "en": "",
     "nerede": [
       "apps/api/src/routes/me.ts:63",
-      "apps/web/src/api/client.ts:849",
-      "apps/web/src/screens/Hesap.tsx:171",
-      "apps/web/src/screens/Hesap.tsx:72"
+      "apps/web/src/api/client.ts:888",
+      "apps/web/src/screens/Hesap.tsx:213",
+      "apps/web/src/screens/Hesap.tsx:88"
     ]
   },
   "te485c18d": {
@@ -4193,7 +4282,7 @@
     "tr": "Hesabımı silmek istiyorum",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:154"
+      "apps/web/src/screens/Hesap.tsx:196"
     ]
   },
   "t8b2fd54f": {
@@ -4201,7 +4290,7 @@
     "tr": "Hesabın, lordun, ordun ve ekipmanın kalıcı olarak silinir.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:147"
+      "apps/web/src/screens/Hesap.tsx:189"
     ]
   },
   "t766c9b1e": {
@@ -4209,7 +4298,7 @@
     "tr": "hesap",
     "en": "",
     "nerede": [
-      "apps/web/src/App.tsx:499"
+      "apps/web/src/App.tsx:510"
     ]
   },
   "t1c280cbe": {
@@ -4217,9 +4306,9 @@
     "tr": "Hesap",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:78",
-      "apps/web/src/screens/LordEkrani.tsx:587",
-      "packages/shared/src/types.ts:289"
+      "apps/web/src/screens/Hesap.tsx:94",
+      "apps/web/src/screens/LordEkrani.tsx:599",
+      "packages/shared/src/types.ts:309"
     ]
   },
   "t571cff1d": {
@@ -4227,7 +4316,7 @@
     "tr": "Hesap silinemedi.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:59"
+      "apps/web/src/screens/Hesap.tsx:75"
     ]
   },
   "t5a3adcd8": {
@@ -4235,7 +4324,7 @@
     "tr": "Hız",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:293"
+      "apps/web/src/screens/Kisla.tsx:319"
     ]
   },
   "td1bd2e13": {
@@ -4251,7 +4340,7 @@
     "tr": "Hiçbir yuvan dolu değil. Ekipman",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:461"
+      "apps/web/src/screens/LordEkrani.tsx:473"
     ]
   },
   "t9cb9666b": {
@@ -4331,7 +4420,7 @@
     "tr": "İlk akınına çık",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:537",
+      "apps/web/src/components/Omurga.tsx:722",
       "packages/shared/src/rehber.ts:175"
     ]
   },
@@ -4340,8 +4429,8 @@
     "tr": "ilk bölgeni al",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:512",
-      "apps/web/src/components/Omurga.tsx:552"
+      "apps/web/src/components/Omurga.tsx:697",
+      "apps/web/src/components/Omurga.tsx:737"
     ]
   },
   "te491c731": {
@@ -4365,15 +4454,7 @@
     "tr": "inset 0 1px 0 rgba(255,255,255,0.3)",
     "en": "",
     "nerede": [
-      "apps/web/src/components/ui.tsx:606"
-    ]
-  },
-  "t27a68836": {
-    "grup": "arayuz",
-    "tr": "inşa",
-    "en": "",
-    "nerede": [
-      "apps/web/src/screens/Sehir.tsx:605"
+      "apps/web/src/components/ui.tsx:692"
     ]
   },
   "t11e05dd1": {
@@ -4381,7 +4462,8 @@
     "tr": "inşa ediliyor",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:482"
+      "apps/web/src/screens/Sehir.tsx:485",
+      "apps/web/src/screens/Sehir.tsx:631"
     ]
   },
   "tff2e7684": {
@@ -4389,7 +4471,7 @@
     "tr": "İnşa et",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:937"
+      "apps/web/src/screens/Sehir.tsx:959"
     ]
   },
   "t776ce02a": {
@@ -4397,7 +4479,7 @@
     "tr": "İnşaat",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:58"
+      "apps/web/src/screens/Sehir.tsx:60"
     ]
   },
   "t22b61a98": {
@@ -4405,7 +4487,7 @@
     "tr": "İnşaat başlatılamadı.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:311"
+      "apps/web/src/screens/Sehir.tsx:310"
     ]
   },
   "t15c47209": {
@@ -4430,7 +4512,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:122",
-      "apps/web/src/screens/Sehir.tsx:488"
+      "apps/web/src/screens/Sehir.tsx:491"
     ]
   },
   "t8f6427be": {
@@ -4439,7 +4521,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:126",
-      "apps/web/src/screens/Sehir.tsx:492"
+      "apps/web/src/screens/Sehir.tsx:495"
     ]
   },
   "t57dca8ac": {
@@ -4455,7 +4537,7 @@
     "tr": "israf",
     "en": "",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:153"
+      "apps/web/src/components/MobilKabuk.tsx:180"
     ]
   },
   "t65acff74": {
@@ -4463,7 +4545,7 @@
     "tr": "İşaretleniyor…",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:447"
+      "apps/web/src/screens/Harita.tsx:449"
     ]
   },
   "t55615cba": {
@@ -4473,8 +4555,8 @@
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:366",
       "apps/web/src/screens/Generaller.tsx:180",
-      "apps/web/src/screens/Harita.tsx:641",
-      "apps/web/src/screens/Kisla.tsx:340",
+      "apps/web/src/screens/Harita.tsx:643",
+      "apps/web/src/screens/Kisla.tsx:380",
       "apps/web/src/screens/LordEkrani.tsx:196"
     ]
   },
@@ -4493,8 +4575,16 @@
     "nerede": [
       "apps/web/src/components/IttifakBasvurular.tsx:43",
       "apps/web/src/components/IttifakIncele.tsx:44",
-      "apps/web/src/screens/Harita.tsx:314",
+      "apps/web/src/screens/Harita.tsx:316",
       "apps/web/src/screens/Ittifak.tsx:138"
+    ]
+  },
+  "ta85f1541": {
+    "grup": "arayuz",
+    "tr": "italic text-sonuk",
+    "en": "",
+    "nerede": [
+      "apps/web/src/components/IttifakSohbet.tsx:100"
     ]
   },
   "tbb418e1f": {
@@ -4502,7 +4592,7 @@
     "tr": "ittifak",
     "en": "",
     "nerede": [
-      "apps/web/src/App.tsx:476",
+      "apps/web/src/App.tsx:486",
       "apps/web/src/screens/Ittifak.tsx:209"
     ]
   },
@@ -4511,14 +4601,14 @@
     "tr": "İttifak",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1287",
-      "apps/api/src/routes/ittifak.ts:1469",
-      "apps/api/src/routes/ittifak.ts:510",
-      "apps/api/src/routes/ittifak.ts:937",
-      "apps/web/src/screens/Harita.tsx:436",
+      "apps/api/src/routes/ittifak.ts:1299",
+      "apps/api/src/routes/ittifak.ts:1481",
+      "apps/api/src/routes/ittifak.ts:513",
+      "apps/api/src/routes/ittifak.ts:949",
+      "apps/web/src/screens/Harita.tsx:438",
       "apps/web/src/screens/Ittifak.tsx:209",
-      "apps/web/src/screens/Siralama.tsx:36",
-      "packages/shared/src/types.ts:286"
+      "apps/web/src/screens/Siralama.tsx:37",
+      "packages/shared/src/types.ts:306"
     ]
   },
   "t1d6a6fe8": {
@@ -4542,7 +4632,7 @@
     "tr": "İttifak hedefi yap",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:447"
+      "apps/web/src/screens/Harita.tsx:449"
     ]
   },
   "ta58c0e06": {
@@ -4590,7 +4680,7 @@
     "tr": "İttifak Sohbeti",
     "en": "",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:59"
+      "apps/web/src/components/IttifakSohbet.tsx:75"
     ]
   },
   "tad6b90ff": {
@@ -4614,7 +4704,7 @@
     "tr": "İttifaka git",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:233"
+      "apps/web/src/screens/Siralama.tsx:237"
     ]
   },
   "t53231bc6": {
@@ -4662,7 +4752,7 @@
     "tr": "İttifakının sırası",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:244"
+      "apps/web/src/screens/Siralama.tsx:248"
     ]
   },
   "t99b38c7d": {
@@ -4686,7 +4776,7 @@
     "tr": "İyileşene kadar saldıramazsın. Malikâne ekranında kalan süreyi görebilirsin.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:733"
+      "apps/web/src/screens/Harita.tsx:735"
     ]
   },
   "t3922a4ac": {
@@ -4694,7 +4784,7 @@
     "tr": "iyileşince saldır",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:447"
+      "apps/web/src/components/Omurga.tsx:632"
     ]
   },
   "tecfae1d8": {
@@ -4702,7 +4792,7 @@
     "tr": "İyileşmesine",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:296"
+      "apps/web/src/screens/LordEkrani.tsx:308"
     ]
   },
   "t217040e8": {
@@ -4759,7 +4849,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:118",
-      "apps/web/src/screens/Sehir.tsx:484"
+      "apps/web/src/screens/Sehir.tsx:487"
     ]
   },
   "ta26a9886": {
@@ -4767,7 +4857,7 @@
     "tr": "kaldı. Bu sürede saldıramazsın.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:296"
+      "apps/web/src/screens/LordEkrani.tsx:308"
     ]
   },
   "t8a4e1a1c": {
@@ -4784,7 +4874,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/components/HedefSeridi.tsx:22",
-      "apps/web/src/screens/Harita.tsx:64",
+      "apps/web/src/screens/Harita.tsx:66",
       "apps/web/src/screens/Malikane.tsx:55"
     ]
   },
@@ -4793,7 +4883,7 @@
     "tr": "Kale kırıcı. Tahkimata ×2, birime karşı ×0,5.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:60"
+      "apps/web/src/screens/Kisla.tsx:59"
     ]
   },
   "t9d1f376a": {
@@ -4809,7 +4899,7 @@
     "tr": "Kalıcı olarak sil",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:196"
+      "apps/web/src/screens/Hesap.tsx:238"
     ]
   },
   "t0f86f2e3": {
@@ -4852,7 +4942,8 @@
     "tr": "kapat",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Basarimlar.tsx:77"
+      "apps/web/src/components/Basarimlar.tsx:77",
+      "apps/web/src/components/Omurga.tsx:454"
     ]
   },
   "t66e09026": {
@@ -4863,13 +4954,14 @@
       "apps/web/src/components/ArmaSecici.tsx:105",
       "apps/web/src/components/BildirimKarti.tsx:133",
       "apps/web/src/components/KapiPaneli.tsx:89",
+      "apps/web/src/components/Omurga.tsx:363",
       "apps/web/src/components/SavasRaporu.tsx:479",
       "apps/web/src/components/SavasRaporu.tsx:502",
       "apps/web/src/components/SavunmaDuzeni.tsx:69",
+      "apps/web/src/components/SikayetSayfasi.tsx:69",
       "apps/web/src/screens/Demirhane.tsx:126",
-      "apps/web/src/screens/Harita.tsx:1043",
-      "apps/web/src/screens/Harita.tsx:945",
-      "apps/web/src/screens/Siralama.tsx:294"
+      "apps/web/src/screens/Harita.tsx:1045",
+      "apps/web/src/screens/Harita.tsx:947"
     ]
   },
   "t0ffc6da6": {
@@ -4894,6 +4986,22 @@
     "en": "",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:92"
+    ]
+  },
+  "t07d6d627": {
+    "grup": "arayuz",
+    "tr": "Karar uygulanamadı.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Moderasyon.tsx:45"
+    ]
+  },
+  "ta30ec875": {
+    "grup": "arayuz",
+    "tr": "Karara bağlanan",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Moderasyon.tsx:77"
     ]
   },
   "t4e8e5eb4": {
@@ -4969,7 +5077,7 @@
     "tr": "katkı",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:637",
+      "apps/web/src/components/Omurga.tsx:822",
       "apps/web/src/screens/Ittifak.tsx:94"
     ]
   },
@@ -5003,7 +5111,7 @@
     "tr": "Kaydediliyor...",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:439"
+      "apps/web/src/screens/LordEkrani.tsx:451"
     ]
   },
   "t6e20f3cf": {
@@ -5099,7 +5207,7 @@
     "tr": "kaynak ve ekipman",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:543"
+      "apps/web/src/components/Omurga.tsx:728"
     ]
   },
   "t0b71fc53": {
@@ -5132,7 +5240,7 @@
     "tr": "kazanırsan ilk demirini savaşarak alırsın.",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:540"
+      "apps/web/src/components/Omurga.tsx:725"
     ]
   },
   "t545b2a19": {
@@ -5164,8 +5272,8 @@
     "tr": "Kendi üyenizin bölgesi hedef olamaz.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:726",
-      "apps/web/src/screens/Harita.tsx:451"
+      "apps/api/src/routes/ittifak.ts:738",
+      "apps/web/src/screens/Harita.tsx:453"
     ]
   },
   "tb766e201": {
@@ -5173,8 +5281,8 @@
     "tr": "Keşif",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:497",
-      "apps/web/src/screens/Sehir.tsx:64",
+      "apps/web/src/screens/Harita.tsx:499",
+      "apps/web/src/screens/Sehir.tsx:66",
       "data/generals.json:generaller[7].yetenek.ad"
     ]
   },
@@ -5199,7 +5307,7 @@
     "tr": "Kılıç",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:30",
+      "apps/web/src/screens/Siralama.tsx:31",
       "data/arma.json:semboller[1].ad"
     ]
   },
@@ -5211,23 +5319,15 @@
       "apps/web/src/components/IttifakIncele.tsx:139"
     ]
   },
-  "te6aa59ed": {
-    "grup": "arayuz",
-    "tr": "Kısaca yaz",
-    "en": "",
-    "nerede": [
-      "apps/web/src/screens/Siralama.tsx:305"
-    ]
-  },
   "t727d8719": {
     "grup": "arayuz",
     "tr": "Kışla",
     "en": "",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:566",
-      "apps/web/src/screens/Kisla.tsx:370",
-      "apps/web/src/screens/Olaylar.tsx:84",
-      "apps/web/src/screens/Sehir.tsx:550",
+      "apps/web/src/screens/Kisla.tsx:416",
+      "apps/web/src/screens/Olaylar.tsx:87",
+      "apps/web/src/screens/Sehir.tsx:553",
       "data/binalar.json:binalar[1].ad"
     ]
   },
@@ -5244,7 +5344,7 @@
     "tr": "Kışla'ya git",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:232"
+      "apps/web/src/screens/Harita.tsx:234"
     ]
   },
   "t4aa6e545": {
@@ -5252,7 +5352,7 @@
     "tr": "Kışlada {0} eğit",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:599"
+      "apps/web/src/components/Omurga.tsx:784"
     ]
   },
   "t28f07577": {
@@ -5260,7 +5360,7 @@
     "tr": "Kışlaya git",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:444"
+      "apps/web/src/components/Omurga.tsx:629"
     ]
   },
   "t992e14ad": {
@@ -5300,8 +5400,8 @@
     "tr": "kisla",
     "en": "",
     "nerede": [
-      "apps/web/src/App.tsx:389",
-      "apps/web/src/screens/Kisla.tsx:370"
+      "apps/web/src/App.tsx:399",
+      "apps/web/src/screens/Kisla.tsx:416"
     ]
   },
   "tab84326b": {
@@ -5318,7 +5418,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/components/OrduSahnesi.tsx:259",
-      "apps/web/src/screens/Kisla.tsx:404"
+      "apps/web/src/screens/Kisla.tsx:450"
     ]
   },
   "t48dcce40": {
@@ -5334,7 +5434,7 @@
     "tr": "Komuta kapasiten yetmiyor",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:562"
+      "apps/web/src/components/Omurga.tsx:747"
     ]
   },
   "t6070c855": {
@@ -5342,7 +5442,7 @@
     "tr": "Komuta yeri",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:294"
+      "apps/web/src/screens/Kisla.tsx:320"
     ]
   },
   "t42c135b1": {
@@ -5350,7 +5450,7 @@
     "tr": "Komuta yerin yetmiyor",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:94"
+      "apps/web/src/screens/Kisla.tsx:93"
     ]
   },
   "t44600e9f": {
@@ -5383,7 +5483,7 @@
     "tr": "kritik",
     "en": "",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:154"
+      "apps/web/src/components/MobilKabuk.tsx:181"
     ]
   },
   "t5932d212": {
@@ -5427,6 +5527,14 @@
       "apps/web/src/components/SavunmaDuzeni.tsx:64"
     ]
   },
+  "tabcbcfc8": {
+    "grup": "arayuz",
+    "tr": "Kuşam",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/LordEkrani.tsx:267"
+    ]
+  },
   "taecbd481": {
     "grup": "arayuz",
     "tr": "Kuşan",
@@ -5448,7 +5556,7 @@
     "tr": "Kuşanılan Ekipman",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:455"
+      "apps/web/src/screens/LordEkrani.tsx:467"
     ]
   },
   "t43eafc33": {
@@ -5480,7 +5588,7 @@
     "tr": "Kutuya birebir HESABIMI SIL yazman gerekiyor.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:73"
+      "apps/web/src/screens/Hesap.tsx:89"
     ]
   },
   "ta64656fc": {
@@ -5488,7 +5596,15 @@
     "tr": "Kutuya HESABIMI SIL yaz",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:167"
+      "apps/web/src/screens/Hesap.tsx:209"
+    ]
+  },
+  "t11d481cd": {
+    "grup": "arayuz",
+    "tr": "Kuyruğu tazeleyip tekrar dene.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Moderasyon.tsx:82"
     ]
   },
   "ta51165f2": {
@@ -5496,7 +5612,7 @@
     "tr": "Kuyruk",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:423"
+      "apps/web/src/screens/Kisla.tsx:469"
     ]
   },
   "t24a14132": {
@@ -5504,7 +5620,7 @@
     "tr": "Kuyruk boş. Bir şeyler başlat.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:547"
+      "apps/web/src/screens/Sehir.tsx:550"
     ]
   },
   "t2b606a9d": {
@@ -5512,7 +5628,7 @@
     "tr": "Kuyruklar{0}",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:542"
+      "apps/web/src/screens/Sehir.tsx:545"
     ]
   },
   "t5f435eb1": {
@@ -5544,7 +5660,7 @@
     "tr": "lider avı · +%",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1031"
+      "apps/web/src/screens/Harita.tsx:1033"
     ]
   },
   "tf8bf69b9": {
@@ -5576,7 +5692,7 @@
     "tr": "lord",
     "en": "",
     "nerede": [
-      "apps/web/src/App.tsx:411",
+      "apps/web/src/App.tsx:421",
       "apps/web/src/components/DiyarTanitimi.tsx:85"
     ]
   },
@@ -5585,7 +5701,7 @@
     "tr": "Lord",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/rankings.ts:251",
+      "apps/api/src/routes/rankings.ts:265",
       "apps/api/src/routes/ticaret.ts:58",
       "apps/api/src/services/lord.ts:295",
       "apps/api/src/services/lord.ts:536",
@@ -5606,7 +5722,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/screens/Generaller.tsx:35",
-      "apps/web/src/screens/LordEkrani.tsx:539"
+      "apps/web/src/screens/LordEkrani.tsx:551"
     ]
   },
   "t10934225": {
@@ -5648,7 +5764,7 @@
     "en": "",
     "nerede": [
       "apps/api/src/routes/push.ts:82",
-      "apps/web/src/components/MobilKabuk.tsx:273",
+      "apps/web/src/components/MobilKabuk.tsx:313",
       "apps/web/src/screens/Giris.tsx:61",
       "apps/web/src/screens/ParolaSifirla.tsx:31"
     ]
@@ -5658,7 +5774,7 @@
     "tr": "Lordlara karşı",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:559"
+      "apps/web/src/screens/LordEkrani.tsx:571"
     ]
   },
   "tc8f2ac29": {
@@ -5666,7 +5782,7 @@
     "tr": "Lordun",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:81"
+      "apps/web/src/screens/Hesap.tsx:97"
     ]
   },
   "t752657eb": {
@@ -5674,7 +5790,7 @@
     "tr": "Lordun iyileşiyor",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:437"
+      "apps/web/src/components/Omurga.tsx:622"
     ]
   },
   "t906de783": {
@@ -5682,8 +5798,8 @@
     "tr": "Lordun yaralı",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:732",
-      "apps/web/src/screens/LordEkrani.tsx:294"
+      "apps/web/src/screens/Harita.tsx:734",
+      "apps/web/src/screens/LordEkrani.tsx:306"
     ]
   },
   "t3ce76409": {
@@ -5691,7 +5807,7 @@
     "tr": "Lorduna ekipman kuşan",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:633"
+      "apps/web/src/components/Omurga.tsx:818"
     ]
   },
   "t8cc7e97f": {
@@ -5732,7 +5848,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/components/HedefSeridi.tsx:20",
-      "apps/web/src/screens/Harita.tsx:62",
+      "apps/web/src/screens/Harita.tsx:64",
       "apps/web/src/screens/Malikane.tsx:50"
     ]
   },
@@ -5749,7 +5865,7 @@
     "tr": "malikane",
     "en": "",
     "nerede": [
-      "apps/web/src/App.tsx:446",
+      "apps/web/src/App.tsx:456",
       "apps/web/src/screens/Malikane.tsx:113"
     ]
   },
@@ -5760,7 +5876,15 @@
     "nerede": [
       "apps/web/src/screens/Malikane.tsx:113",
       "data/binalar.json:binalar[0].ad",
-      "packages/shared/src/types.ts:281"
+      "packages/shared/src/types.ts:301"
+    ]
+  },
+  "t79aa19c6": {
+    "grup": "arayuz",
+    "tr": "maliyet",
+    "en": "",
+    "nerede": [
+      "apps/web/src/components/ui.tsx:537"
     ]
   },
   "t961f8b59": {
@@ -5795,12 +5919,28 @@
       "apps/web/src/components/Ogretici.tsx:219"
     ]
   },
+  "t2c4201f7": {
+    "grup": "arayuz",
+    "tr": "mesaj",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Moderasyon.tsx:195"
+    ]
+  },
   "tf7042dec": {
     "grup": "arayuz",
     "tr": "Mesaj gönderilemedi.",
     "en": "",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:43"
+      "apps/web/src/components/IttifakSohbet.tsx:56"
+    ]
+  },
+  "t1910af19": {
+    "grup": "arayuz",
+    "tr": "Mesajı kaldır",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Moderasyon.tsx:203"
     ]
   },
   "t7ff46615": {
@@ -5808,7 +5948,7 @@
     "tr": "Mesajını gözden geçir ve tekrar dene.",
     "en": "",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:107"
+      "apps/web/src/components/IttifakSohbet.tsx:146"
     ]
   },
   "t3a8615ed": {
@@ -5816,7 +5956,7 @@
     "tr": "metropol",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:473"
+      "apps/web/src/screens/Sehir.tsx:476"
     ]
   },
   "t05e52e04": {
@@ -5824,7 +5964,7 @@
     "tr": "Mevcut parola",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:110"
+      "apps/web/src/screens/Hesap.tsx:152"
     ]
   },
   "t180f3ffb": {
@@ -5832,7 +5972,7 @@
     "tr": "Mevcut parolanı gir",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:64"
+      "apps/web/src/screens/Hesap.tsx:80"
     ]
   },
   "tacecf5b8": {
@@ -5868,6 +6008,14 @@
       "apps/web/src/components/KaynakGonder.tsx:104"
     ]
   },
+  "tae97eb36": {
+    "grup": "arayuz",
+    "tr": "moderasyon",
+    "en": "",
+    "nerede": [
+      "apps/web/src/App.tsx:509"
+    ]
+  },
   "tb1714ce7": {
     "grup": "arayuz",
     "tr": "Nadir",
@@ -5882,6 +6030,14 @@
     "en": "",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:515"
+    ]
+  },
+  "t19e787fd": {
+    "grup": "arayuz",
+    "tr": "Ne olduğunu kısaca yaz (zorunlu)",
+    "en": "",
+    "nerede": [
+      "apps/web/src/components/SikayetSayfasi.tsx:113"
     ]
   },
   "t9f6b9fa1": {
@@ -5905,7 +6061,7 @@
     "tr": "Nitelikler",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:371"
+      "apps/web/src/screens/LordEkrani.tsx:383"
     ]
   },
   "t9465a68b": {
@@ -5913,7 +6069,7 @@
     "tr": "Niteliklere git",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:572"
+      "apps/web/src/components/Omurga.tsx:757"
     ]
   },
   "tcadc5e67": {
@@ -5937,7 +6093,7 @@
     "tr": "number",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:76"
+      "apps/web/src/screens/Sehir.tsx:78"
     ]
   },
   "t92152373": {
@@ -5977,7 +6133,7 @@
     "tr": "olabilir.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:472"
+      "apps/web/src/screens/Sehir.tsx:475"
     ]
   },
   "tfbfb89a6": {
@@ -5985,7 +6141,7 @@
     "tr": "olacaksın.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:349"
+      "apps/web/src/screens/LordEkrani.tsx:361"
     ]
   },
   "t76b2da24": {
@@ -6001,7 +6157,7 @@
     "tr": "Olay Akışı{0}",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Olaylar.tsx:76"
+      "apps/web/src/screens/Olaylar.tsx:79"
     ]
   },
   "td5698e6b": {
@@ -6009,8 +6165,8 @@
     "tr": "olaylar",
     "en": "",
     "nerede": [
-      "apps/web/src/App.tsx:429",
-      "apps/web/src/screens/Olaylar.tsx:73"
+      "apps/web/src/App.tsx:439",
+      "apps/web/src/screens/Olaylar.tsx:76"
     ]
   },
   "tad5a2d0b": {
@@ -6018,8 +6174,8 @@
     "tr": "Olaylar",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Olaylar.tsx:73",
-      "packages/shared/src/types.ts:287"
+      "apps/web/src/screens/Olaylar.tsx:76",
+      "packages/shared/src/types.ts:307"
     ]
   },
   "t5833840b": {
@@ -6051,7 +6207,7 @@
     "tr": "Onay",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:167"
+      "apps/web/src/screens/Hesap.tsx:209"
     ]
   },
   "t280ff98c": {
@@ -6059,7 +6215,7 @@
     "tr": "Onay metnini yaz",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:73"
+      "apps/web/src/screens/Hesap.tsx:89"
     ]
   },
   "tdf1a404f": {
@@ -6109,8 +6265,8 @@
     "tr": "Ordu donanımı",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:541",
-      "apps/web/src/screens/Sehir.tsx:62"
+      "apps/web/src/screens/LordEkrani.tsx:553",
+      "apps/web/src/screens/Sehir.tsx:64"
     ]
   },
   "tb1ed25c1": {
@@ -6158,7 +6314,7 @@
     "tr": "Ordu seçmedin",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:754"
+      "apps/web/src/screens/Harita.tsx:756"
     ]
   },
   "tb51bd036": {
@@ -6166,7 +6322,7 @@
     "tr": "Ordu yola çıktı. Varış {0} sonra.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:794"
+      "apps/web/src/screens/Harita.tsx:796"
     ]
   },
   "t7b119d9d": {
@@ -6182,8 +6338,8 @@
     "tr": "Ordun aç",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:383",
-      "apps/web/src/screens/LordEkrani.tsx:282"
+      "apps/web/src/components/Omurga.tsx:568",
+      "apps/web/src/screens/LordEkrani.tsx:294"
     ]
   },
   "t9ac4fffa": {
@@ -6191,7 +6347,7 @@
     "tr": "Ordun ayakta. Önce bir düşman kampına in: kaybetsen bile toprağın gitmez, ",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:539"
+      "apps/web/src/components/Omurga.tsx:724"
     ]
   },
   "td35bcc13": {
@@ -6207,7 +6363,7 @@
     "tr": "Ordun dönüyor",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:480"
+      "apps/web/src/components/Omurga.tsx:665"
     ]
   },
   "t320993d2": {
@@ -6215,7 +6371,7 @@
     "tr": "Ordun henüz yetmiyor.",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:299"
+      "apps/web/src/components/Omurga.tsx:484"
     ]
   },
   "t99fe05c3": {
@@ -6223,7 +6379,7 @@
     "tr": "Ordun kampa iniyor. Dönünce ganimeti ve raporu görürsün.",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:506"
+      "apps/web/src/components/Omurga.tsx:691"
     ]
   },
   "tfa58b931": {
@@ -6231,7 +6387,7 @@
     "tr": "Ordun sahada. Döndüğünde bu bölgeye yollayabilirsin.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:228"
+      "apps/web/src/screens/Harita.tsx:230"
     ]
   },
   "tec21ead2": {
@@ -6255,7 +6411,7 @@
     "tr": "Ordun yetiyor. Bölge senin olunca kazanacakların:",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:611"
+      "apps/web/src/components/Omurga.tsx:796"
     ]
   },
   "tb34abcf2": {
@@ -6271,7 +6427,7 @@
     "tr": "Ordun yolda",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:480",
+      "apps/web/src/components/Omurga.tsx:665",
       "apps/web/src/components/SaldiriOnizleme.tsx:186"
     ]
   },
@@ -6296,7 +6452,7 @@
     "tr": "Ordunu burada büyütürsün",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:370"
+      "apps/web/src/screens/Kisla.tsx:416"
     ]
   },
   "td1115723": {
@@ -6304,7 +6460,7 @@
     "tr": "Ordunu büyüt",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:580",
+      "apps/web/src/components/Omurga.tsx:765",
       "packages/shared/src/gunluk.ts:59"
     ]
   },
@@ -6313,8 +6469,8 @@
     "tr": "Ordunu kur",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:293",
-      "apps/web/src/components/Omurga.tsx:580",
+      "apps/web/src/components/Omurga.tsx:478",
+      "apps/web/src/components/Omurga.tsx:765",
       "packages/shared/src/rehber.ts:171"
     ]
   },
@@ -6323,7 +6479,7 @@
     "tr": "Ordunu ne için kuruyorsun",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:391"
+      "apps/web/src/screens/Kisla.tsx:437"
     ]
   },
   "tcdac426c": {
@@ -6331,7 +6487,7 @@
     "tr": "Ordunu ve ittifak durumunu gözden geçir.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:386"
+      "apps/web/src/screens/Harita.tsx:388"
     ]
   },
   "t5db509a2": {
@@ -6339,7 +6495,7 @@
     "tr": "Ordunun Dağılımı",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:455"
+      "apps/web/src/screens/Kisla.tsx:503"
     ]
   },
   "t5d7d275e": {
@@ -6355,7 +6511,15 @@
     "tr": "Ortak hedef bir tanedir; işaretlemek öncekini değiştirir.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:444"
+      "apps/web/src/screens/Harita.tsx:446"
+    ]
+  },
+  "t2302bad8": {
+    "grup": "arayuz",
+    "tr": "Otomatik bir ceza verilmez — şikâyetin bir yöneticinin önüne düşer, kararı insan verir.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/components/SikayetSayfasi.tsx:78"
     ]
   },
   "t07113420": {
@@ -6363,7 +6527,7 @@
     "tr": "Oturum açılamadı. Tekrar giriş yapman gerekiyor.",
     "en": "",
     "nerede": [
-      "apps/web/src/App.tsx:313"
+      "apps/web/src/App.tsx:314"
     ]
   },
   "t5d44ffda": {
@@ -6371,7 +6535,7 @@
     "tr": "Oyunun ne olduğunu, nasıl savaşıldığını ve seni koruyan kuralları baştan okumak istersen öğreticiyi tekrar açabilirsin.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:94"
+      "apps/web/src/screens/Hesap.tsx:136"
     ]
   },
   "t9bf3ffd3": {
@@ -6396,7 +6560,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/components/Ogretici.tsx:129",
-      "apps/web/src/screens/Hesap.tsx:91"
+      "apps/web/src/screens/Hesap.tsx:133"
     ]
   },
   "t47d30263": {
@@ -6412,7 +6576,7 @@
     "tr": "Öğreticiyi tekrar oku",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:103"
+      "apps/web/src/screens/Hesap.tsx:145"
     ]
   },
   "t96de5998": {
@@ -6429,6 +6593,14 @@
     "en": "",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:155"
+    ]
+  },
+  "t2037d289": {
+    "grup": "arayuz",
+    "tr": "Önceki",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Moderasyon.tsx:117"
     ]
   },
   "tae2b3eb1": {
@@ -6453,14 +6625,6 @@
     "en": "",
     "nerede": [
       "apps/web/src/components/IttifakDuyuru.tsx:74"
-    ]
-  },
-  "t5a5eb374": {
-    "grup": "arayuz",
-    "tr": "Örn. uygunsuz lord adı",
-    "en": "",
-    "nerede": [
-      "apps/web/src/screens/Siralama.tsx:309"
     ]
   },
   "td00d71ef": {
@@ -6532,7 +6696,7 @@
     "tr": "Parola Değiştir",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:108"
+      "apps/web/src/screens/Hesap.tsx:150"
     ]
   },
   "t0cb4198c": {
@@ -6540,7 +6704,7 @@
     "tr": "Parola değiştirilemedi.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:44"
+      "apps/web/src/screens/Hesap.tsx:60"
     ]
   },
   "t4369fb1e": {
@@ -6556,7 +6720,7 @@
     "tr": "parola, öğretici, çıkış",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:588"
+      "apps/web/src/screens/LordEkrani.tsx:600"
     ]
   },
   "t53526980": {
@@ -6572,7 +6736,7 @@
     "tr": "Parolan",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:158"
+      "apps/web/src/screens/Hesap.tsx:200"
     ]
   },
   "t349238d8": {
@@ -6588,7 +6752,7 @@
     "tr": "Parolan değişti. Diğer cihazlarda yeniden giriş yapman gerekebilir.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:38"
+      "apps/web/src/screens/Hesap.tsx:54"
     ]
   },
   "ta02569d1": {
@@ -6596,7 +6760,7 @@
     "tr": "Parolanı gir",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:71"
+      "apps/web/src/screens/Hesap.tsx:87"
     ]
   },
   "tbb5ecdaf": {
@@ -6612,7 +6776,7 @@
     "tr": "Parolayı değiştir",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:135"
+      "apps/web/src/screens/Hesap.tsx:177"
     ]
   },
   "t794028aa": {
@@ -6620,7 +6784,7 @@
     "tr": "parti)",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:270"
+      "apps/web/src/screens/Kisla.tsx:296"
     ]
   },
   "tbc71d6a3": {
@@ -6637,7 +6801,7 @@
     "tr": "PUAN",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:374"
+      "apps/web/src/screens/LordEkrani.tsx:386"
     ]
   },
   "tada147bf": {
@@ -6645,7 +6809,7 @@
     "tr": "Puan dağıtımı kalıcıdır. Liderlik ordunun büyüklüğünü ve general slotunu belirler.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:451"
+      "apps/web/src/screens/LordEkrani.tsx:463"
     ]
   },
   "t5792870d": {
@@ -6669,7 +6833,7 @@
     "tr": "PvP derecesi. Bölgesiz bir lord da birinci olabilir.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:31"
+      "apps/web/src/screens/Siralama.tsx:32"
     ]
   },
   "t57a1844e": {
@@ -6685,7 +6849,7 @@
     "tr": "RAPORU AÇ",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Olaylar.tsx:118"
+      "apps/web/src/screens/Olaylar.tsx:121"
     ]
   },
   "t7866edab": {
@@ -6743,7 +6907,7 @@
     "tr": "saat sürer.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1057"
+      "apps/web/src/screens/Harita.tsx:1059"
     ]
   },
   "t9cb2e0a2": {
@@ -6752,7 +6916,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/components/SavasRaporu.tsx:100",
-      "apps/web/src/screens/Harita.tsx:1112"
+      "apps/web/src/screens/Harita.tsx:1114"
     ]
   },
   "tb7be14e2": {
@@ -6760,7 +6924,7 @@
     "tr": "Saatlik şöhret",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1120"
+      "apps/web/src/screens/Harita.tsx:1122"
     ]
   },
   "t32bbc8e5": {
@@ -6768,7 +6932,7 @@
     "tr": "saatte %5 firar",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:387"
+      "apps/web/src/components/Omurga.tsx:572"
     ]
   },
   "tbebb3ab2": {
@@ -6809,7 +6973,7 @@
     "tr": "sahipsiz",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:869"
+      "apps/web/src/screens/Harita.tsx:871"
     ]
   },
   "t39eb2036": {
@@ -6817,7 +6981,7 @@
     "tr": "Saldır",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1304"
+      "apps/web/src/screens/Harita.tsx:1292"
     ]
   },
   "t9f872c01": {
@@ -6842,7 +7006,7 @@
     "tr": "saldırı",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:326",
+      "apps/web/src/screens/LordEkrani.tsx:338",
       "data/seferler.json:seferler[0].birim"
     ]
   },
@@ -6851,8 +7015,8 @@
     "tr": "Saldırı",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:914",
-      "apps/web/src/screens/Kisla.tsx:290"
+      "apps/web/src/screens/Harita.tsx:916",
+      "apps/web/src/screens/Kisla.tsx:316"
     ]
   },
   "tccf92bf8": {
@@ -6868,7 +7032,7 @@
     "tr": "Saldırı +%{0} · ",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:542"
+      "apps/web/src/screens/LordEkrani.tsx:554"
     ]
   },
   "t293989d5": {
@@ -6876,7 +7040,7 @@
     "tr": "Saldırı başlatılamadı.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:801"
+      "apps/web/src/screens/Harita.tsx:803"
     ]
   },
   "t09fe9781": {
@@ -6884,7 +7048,7 @@
     "tr": "Saldırı ordusu",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1257"
+      "apps/web/src/screens/Harita.tsx:1245"
     ]
   },
   "ta2a5ac5e": {
@@ -6900,7 +7064,7 @@
     "tr": "Saldırmadan önce garnizonu ve depoyu öğren. Casus ordu götürmez.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:532"
+      "apps/web/src/screens/Harita.tsx:534"
     ]
   },
   "t7b0a257c": {
@@ -6957,7 +7121,7 @@
     "tr": "Savaş derecen",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:560"
+      "apps/web/src/screens/LordEkrani.tsx:572"
     ]
   },
   "t951ee66f": {
@@ -6965,7 +7129,7 @@
     "tr": "Savaş Gücü",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:529"
+      "apps/web/src/screens/LordEkrani.tsx:541"
     ]
   },
   "tc54d661e": {
@@ -7013,7 +7177,7 @@
     "tr": "Savaş raporunu aç",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Olaylar.tsx:115"
+      "apps/web/src/screens/Olaylar.tsx:118"
     ]
   },
   "t88e6ed97": {
@@ -7046,7 +7210,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/components/HedefSeridi.tsx:100",
-      "apps/web/src/components/Omurga.tsx:569"
+      "apps/web/src/components/Omurga.tsx:754"
     ]
   },
   "tcf63e975": {
@@ -7079,7 +7243,7 @@
     "tr": "Savunma",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:291"
+      "apps/web/src/screens/Kisla.tsx:317"
     ]
   },
   "t8c7b20f1": {
@@ -7087,7 +7251,7 @@
     "tr": "Savunma +%{0} · ",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:543"
+      "apps/web/src/screens/LordEkrani.tsx:555"
     ]
   },
   "t739f8573": {
@@ -7135,7 +7299,7 @@
     "tr": "Savunmanın omurgası. Süvariye karşı ×1,5.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:57"
+      "apps/web/src/screens/Kisla.tsx:56"
     ]
   },
   "t000a6979": {
@@ -7146,12 +7310,12 @@
       "apps/web/src/components/HataSiniri.tsx:57"
     ]
   },
-  "tc1bd22d0": {
+  "tf15245fc": {
     "grup": "arayuz",
-    "tr": "Sebep",
+    "tr": "Sebebini gözden geçir ve tekrar dene.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:305"
+      "apps/web/src/components/SikayetSayfasi.tsx:126"
     ]
   },
   "t71db8912": {
@@ -7183,7 +7347,7 @@
     "tr": "sehir",
     "en": "",
     "nerede": [
-      "apps/web/src/App.tsx:376"
+      "apps/web/src/App.tsx:390"
     ]
   },
   "t7115f0ed": {
@@ -7216,8 +7380,8 @@
     "tr": "senin",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:862",
-      "apps/web/src/screens/Harita.tsx:970"
+      "apps/web/src/screens/Harita.tsx:864",
+      "apps/web/src/screens/Harita.tsx:972"
     ]
   },
   "tf3b32dff": {
@@ -7225,7 +7389,7 @@
     "tr": "Senin sıran",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:270"
+      "apps/web/src/screens/Siralama.tsx:274"
     ]
   },
   "t502b5051": {
@@ -7249,7 +7413,7 @@
     "tr": "Seviye {0} / {1}",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:885"
+      "apps/web/src/screens/Sehir.tsx:921"
     ]
   },
   "tc15fa5ea": {
@@ -7257,7 +7421,7 @@
     "tr": "Seviye {0} yap",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:937"
+      "apps/web/src/screens/Sehir.tsx:959"
     ]
   },
   "t7e801fb8": {
@@ -7289,7 +7453,7 @@
     "tr": "Seviye yükseltmek için buradan seç: haritadaki dokunuş yapının içine giriyor.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:575"
+      "apps/web/src/screens/Sehir.tsx:590"
     ]
   },
   "t2e677d3f": {
@@ -7305,7 +7469,7 @@
     "tr": "Sıfırla",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:446"
+      "apps/web/src/screens/LordEkrani.tsx:458"
     ]
   },
   "t481ea9d9": {
@@ -7329,7 +7493,7 @@
     "tr": "Sıradaki hedefin {0}.",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:737"
+      "apps/web/src/components/Omurga.tsx:922"
     ]
   },
   "t6652a5fb": {
@@ -7345,8 +7509,8 @@
     "tr": "Sıralama",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:190",
-      "packages/shared/src/types.ts:288"
+      "apps/web/src/screens/Siralama.tsx:194",
+      "packages/shared/src/types.ts:308"
     ]
   },
   "t7b72734e": {
@@ -7363,7 +7527,7 @@
     "tr": "Siliniyor…",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:196"
+      "apps/web/src/screens/Hesap.tsx:238"
     ]
   },
   "t51f40fea": {
@@ -7371,7 +7535,7 @@
     "tr": "Silme işlemini doğrulamak için gerekiyor.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:71"
+      "apps/web/src/screens/Hesap.tsx:87"
     ]
   },
   "t05e4389d": {
@@ -7379,8 +7543,8 @@
     "tr": "siralama",
     "en": "",
     "nerede": [
-      "apps/web/src/App.tsx:489",
-      "apps/web/src/screens/Siralama.tsx:189"
+      "apps/web/src/App.tsx:499",
+      "apps/web/src/screens/Siralama.tsx:193"
     ]
   },
   "tf0c19391": {
@@ -7436,7 +7600,7 @@
     "tr": "sonra",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:349"
+      "apps/web/src/screens/LordEkrani.tsx:361"
     ]
   },
   "tb0e7e0a7": {
@@ -7452,7 +7616,8 @@
     "tr": "sonra:",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:272"
+      "apps/web/src/components/Omurga.tsx:296",
+      "apps/web/src/components/Omurga.tsx:433"
     ]
   },
   "t4f98c945": {
@@ -7460,7 +7625,15 @@
     "tr": "sonra: sıradaki adım",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:310"
+      "apps/web/src/components/Omurga.tsx:495"
+    ]
+  },
+  "tc2bc7132": {
+    "grup": "arayuz",
+    "tr": "Sonraki",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Moderasyon.tsx:128"
     ]
   },
   "t98b88a6d": {
@@ -7476,7 +7649,7 @@
     "tr": "Sonuç hesaplanıyor…",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1277"
+      "apps/web/src/screens/Harita.tsx:1265"
     ]
   },
   "t17c16538": {
@@ -7485,7 +7658,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/screens/Malikane.tsx:246",
-      "apps/web/src/screens/Olaylar.tsx:97"
+      "apps/web/src/screens/Olaylar.tsx:100"
     ]
   },
   "tb27f170d": {
@@ -7493,7 +7666,7 @@
     "tr": "Sunucu uykudan uyanıyor olabilir. Bu ilk açılışta 30–60 saniye sürebilir.",
     "en": "",
     "nerede": [
-      "apps/web/src/App.tsx:329"
+      "apps/web/src/App.tsx:330"
     ]
   },
   "t0a0f8af7": {
@@ -7509,7 +7682,55 @@
     "tr": "surlu",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:881"
+      "apps/web/src/screens/Harita.tsx:883"
+    ]
+  },
+  "t2fc5c33d": {
+    "grup": "arayuz",
+    "tr": "Sustur:",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Moderasyon.tsx:208"
+    ]
+  },
+  "t67ca406b": {
+    "grup": "arayuz",
+    "tr": "Susturma",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Hesap.tsx:104"
+    ]
+  },
+  "t16aafb87": {
+    "grup": "arayuz",
+    "tr": "Susturma kaldırılamadı.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Moderasyon.tsx:55"
+    ]
+  },
+  "ta6e05d38": {
+    "grup": "arayuz",
+    "tr": "Susturmayı kaldır",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Moderasyon.tsx:235"
+    ]
+  },
+  "tededc44c": {
+    "grup": "arayuz",
+    "tr": "SUSTURULMUŞ",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Moderasyon.tsx:155"
+    ]
+  },
+  "tfd8148a4": {
+    "grup": "arayuz",
+    "tr": "Süre dolunca ittifak sohbetine yeniden yazabilirsin. Oyunun geri kalanı açık.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Hesap.tsx:108"
     ]
   },
   "t2453a2e0": {
@@ -7528,7 +7749,7 @@
       "apps/web/src/components/IttifakBasvurular.tsx:149",
       "apps/web/src/components/IttifakIncele.tsx:104",
       "apps/web/src/components/IttifakIncele.tsx:69",
-      "apps/web/src/components/MobilKabuk.tsx:211",
+      "apps/web/src/components/MobilKabuk.tsx:247",
       "apps/web/src/components/SavasRaporu.tsx:265",
       "apps/web/src/screens/Akin.tsx:331",
       "apps/web/src/screens/Generaller.tsx:104",
@@ -7536,9 +7757,8 @@
       "apps/web/src/screens/Generaller.tsx:204",
       "apps/web/src/screens/Ittifak.tsx:440",
       "apps/web/src/screens/Ittifak.tsx:77",
-      "apps/web/src/screens/LordEkrani.tsx:323",
-      "apps/web/src/screens/Sehir.tsx:599",
-      "apps/web/src/screens/Siralama.tsx:126"
+      "apps/web/src/screens/LordEkrani.tsx:335",
+      "apps/web/src/screens/Siralama.tsx:141"
     ]
   },
   "tc15d3f3e": {
@@ -7580,25 +7800,9 @@
     "nerede": [
       "apps/web/src/components/HedefSeridi.tsx:21",
       "apps/web/src/components/MobilKabuk.tsx:61",
-      "apps/web/src/screens/Harita.tsx:63",
+      "apps/web/src/screens/Harita.tsx:65",
       "apps/web/src/screens/Malikane.tsx:54",
       "packages/shared/src/bina.ts:59"
-    ]
-  },
-  "tf754cde2": {
-    "grup": "arayuz",
-    "tr": "şikâyet",
-    "en": "",
-    "nerede": [
-      "apps/web/src/screens/Siralama.tsx:301"
-    ]
-  },
-  "t20bb9d55": {
-    "grup": "arayuz",
-    "tr": "Şikâyet edilen lorda otomatik bir ceza verilmez; kayıt insan tarafından incelenir.",
-    "en": "",
-    "nerede": [
-      "apps/web/src/screens/Siralama.tsx:303"
     ]
   },
   "tfefb225a": {
@@ -7606,8 +7810,16 @@
     "tr": "Şikâyet et",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:322",
-      "apps/web/src/screens/Siralama.tsx:97"
+      "apps/web/src/components/SikayetSayfasi.tsx:123",
+      "apps/web/src/screens/Siralama.tsx:112"
+    ]
+  },
+  "td3fc733e": {
+    "grup": "arayuz",
+    "tr": "şikâyet etti:",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Moderasyon.tsx:160"
     ]
   },
   "tc5837606": {
@@ -7615,15 +7827,25 @@
     "tr": "Şikâyet gönderilemedi.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:161"
+      "apps/api/src/routes/moderasyon.ts:97",
+      "apps/api/src/routes/rankings.ts:257",
+      "apps/web/src/components/SikayetSayfasi.tsx:54"
     ]
   },
-  "tb1ff536a": {
+  "t1f9dc1af": {
     "grup": "arayuz",
-    "tr": "Şikâyetin alındı. İnceleyeceğiz.",
+    "tr": "Şikâyet kuyruğu",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:159"
+      "apps/web/src/screens/Hesap.tsx:123"
+    ]
+  },
+  "tca312c06": {
+    "grup": "arayuz",
+    "tr": "Şikâyetin alındı. Bir yönetici inceleyecek.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/components/SikayetSayfasi.tsx:49"
     ]
   },
   "t75144a38": {
@@ -7639,8 +7861,8 @@
     "tr": "Şimdi ne yapmalısın",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:254",
-      "apps/web/src/components/Omurga.tsx:289"
+      "apps/web/src/components/Omurga.tsx:278",
+      "apps/web/src/components/Omurga.tsx:474"
     ]
   },
   "t6ef56307": {
@@ -7650,8 +7872,8 @@
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:96",
       "apps/web/src/components/IttifakIncele.tsx:73",
-      "apps/web/src/components/Omurga.tsx:740",
-      "apps/web/src/screens/LordEkrani.tsx:347"
+      "apps/web/src/components/Omurga.tsx:925",
+      "apps/web/src/screens/LordEkrani.tsx:359"
     ]
   },
   "tb961283e": {
@@ -7659,7 +7881,7 @@
     "tr": "Şöhret",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:18",
+      "apps/web/src/screens/Siralama.tsx:19",
       "packages/shared/src/ogretici.ts:201"
     ]
   },
@@ -7668,7 +7890,7 @@
     "tr": "şöhret bonusu alır, bölge limitine sayılmaz. Buraya saldırmak günlük hakkından düşmez ve el değiştirdikten sonra kalkanı yalnızca",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1055"
+      "apps/web/src/screens/Harita.tsx:1057"
     ]
   },
   "t73998c3c": {
@@ -7703,7 +7925,7 @@
     "tr": "şu an",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:637"
+      "apps/web/src/components/Omurga.tsx:822"
     ]
   },
   "teb231933": {
@@ -7747,8 +7969,8 @@
       "apps/web/src/screens/Demirhane.tsx:233",
       "apps/web/src/screens/Demirhane.tsx:242",
       "apps/web/src/screens/Demirhane.tsx:449",
-      "apps/web/src/screens/LordEkrani.tsx:507",
-      "apps/web/src/screens/LordEkrani.tsx:519"
+      "apps/web/src/screens/LordEkrani.tsx:519",
+      "apps/web/src/screens/LordEkrani.tsx:531"
     ]
   },
   "t5170099f": {
@@ -7764,7 +7986,7 @@
     "tr": "tahkimat +%",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1036"
+      "apps/web/src/screens/Harita.tsx:1038"
     ]
   },
   "t644e2cdf": {
@@ -7788,7 +8010,7 @@
     "tr": "Tahkimat:",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:518"
+      "apps/web/src/screens/Harita.tsx:520"
     ]
   },
   "tba74bf4e": {
@@ -7820,9 +8042,9 @@
     "tr": "taht",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1050",
-      "apps/web/src/screens/Harita.tsx:1224",
-      "apps/web/src/screens/Harita.tsx:980"
+      "apps/web/src/screens/Harita.tsx:1052",
+      "apps/web/src/screens/Harita.tsx:1212",
+      "apps/web/src/screens/Harita.tsx:982"
     ]
   },
   "t1319ad6a": {
@@ -7830,7 +8052,7 @@
     "tr": "taht boş",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:982"
+      "apps/web/src/screens/Harita.tsx:984"
     ]
   },
   "tdb506b31": {
@@ -7839,8 +8061,8 @@
     "en": "",
     "nerede": [
       "apps/web/src/components/HedefSeridi.tsx:23",
-      "apps/web/src/screens/Harita.tsx:1052",
-      "apps/web/src/screens/Harita.tsx:65",
+      "apps/web/src/screens/Harita.tsx:1054",
+      "apps/web/src/screens/Harita.tsx:67",
       "apps/web/src/screens/Malikane.tsx:56",
       "data/world-map.json:regions[0].name",
       "packages/shared/src/ogretici.ts:157"
@@ -7851,7 +8073,7 @@
     "tr": "Taht Kalesi — diyarın tek sahibi olabilirsin",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:748"
+      "apps/web/src/components/Omurga.tsx:933"
     ]
   },
   "t7f1d33d3": {
@@ -7923,7 +8145,7 @@
     "tr": "Takviye",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:347"
+      "apps/web/src/screens/Harita.tsx:349"
     ]
   },
   "t8d452854": {
@@ -7931,7 +8153,7 @@
     "tr": "Takviye gönder ({0} birim)",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:381"
+      "apps/web/src/screens/Harita.tsx:383"
     ]
   },
   "t0e0c4fc6": {
@@ -7947,7 +8169,7 @@
     "tr": "Takviyeyi geri çek",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:362"
+      "apps/web/src/screens/Harita.tsx:364"
     ]
   },
   "tdc01c291": {
@@ -7980,7 +8202,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/components/HedefSeridi.tsx:19",
-      "apps/web/src/screens/Harita.tsx:61",
+      "apps/web/src/screens/Harita.tsx:63",
       "apps/web/src/screens/Malikane.tsx:49"
     ]
   },
@@ -7989,7 +8211,7 @@
     "tr": "Taşın",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:528"
+      "apps/web/src/screens/Sehir.tsx:531"
     ]
   },
   "tf3733180": {
@@ -7997,7 +8219,7 @@
     "tr": "taze · {0} önce",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:500"
+      "apps/web/src/screens/Harita.tsx:502"
     ]
   },
   "t82fd453f": {
@@ -8061,7 +8283,7 @@
     "tr": "toprağın güvende",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:509"
+      "apps/web/src/components/Omurga.tsx:694"
     ]
   },
   "ta971096d": {
@@ -8069,7 +8291,7 @@
     "tr": "toprak riski yok",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:546"
+      "apps/web/src/components/Omurga.tsx:731"
     ]
   },
   "tde533a1f": {
@@ -8117,7 +8339,7 @@
     "tr": "Ucuz et kalkanı. Kayıpları önce o üstlenir.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:56"
+      "apps/web/src/screens/Kisla.tsx:55"
     ]
   },
   "tbeb2b0c2": {
@@ -8125,7 +8347,15 @@
     "tr": "Ucuz hasar. Mızrakçıya karşı ×1,5.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:58"
+      "apps/web/src/screens/Kisla.tsx:57"
+    ]
+  },
+  "t89558a23": {
+    "grup": "arayuz",
+    "tr": "Unvan",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/LordEkrani.tsx:275"
     ]
   },
   "t43a46b15": {
@@ -8242,7 +8472,7 @@
     "tr": "üye ·",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:133"
+      "apps/web/src/screens/Siralama.tsx:148"
     ]
   },
   "t911d6f24": {
@@ -8258,7 +8488,7 @@
     "tr": "Üyelerin şöhret toplamı. Lord sıralamasıyla aynı ölçü.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:37"
+      "apps/web/src/screens/Siralama.tsx:38"
     ]
   },
   "t5ad62e9f": {
@@ -8267,8 +8497,8 @@
     "en": "",
     "nerede": [
       "apps/web/src/components/IttifakDuyuru.tsx:83",
-      "apps/web/src/screens/Hesap.tsx:188",
-      "apps/web/src/screens/Siralama.tsx:315"
+      "apps/web/src/components/SikayetSayfasi.tsx:120",
+      "apps/web/src/screens/Hesap.tsx:230"
     ]
   },
   "teacb0314": {
@@ -8316,7 +8546,7 @@
     "tr": "Vurucu güç ve hız. Okçuya karşı ×1,5.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:59"
+      "apps/web/src/screens/Kisla.tsx:58"
     ]
   },
   "te30b10c9": {
@@ -8344,7 +8574,7 @@
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:76",
       "apps/web/src/components/SavasRaporu.tsx:228",
-      "apps/web/src/screens/Harita.tsx:1031"
+      "apps/web/src/screens/Harita.tsx:1033"
     ]
   },
   "t884b8a52": {
@@ -8377,7 +8607,7 @@
     "tr": "Yağmalanabilir depo",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1184"
+      "apps/web/src/screens/Harita.tsx:1172"
     ]
   },
   "t88e04ff0": {
@@ -8410,7 +8640,7 @@
     "tr": "yapı",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:885"
+      "apps/web/src/screens/Sehir.tsx:921"
     ]
   },
   "tdd99127b": {
@@ -8418,7 +8648,7 @@
     "tr": "Yapılar",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:573"
+      "apps/web/src/screens/Sehir.tsx:588"
     ]
   },
   "tee074955": {
@@ -8474,7 +8704,7 @@
     "tr": "Yaz",
     "en": "",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:104"
+      "apps/web/src/components/IttifakSohbet.tsx:142"
     ]
   },
   "ta45efa0f": {
@@ -8506,7 +8736,7 @@
     "tr": "yeni bir hedef seç",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:491"
+      "apps/web/src/components/Omurga.tsx:676"
     ]
   },
   "td5185ac1": {
@@ -8522,7 +8752,7 @@
     "tr": "Yeni ele geçirilmiş ya da yeni oyuncuya ait bölgelere bir süre saldırılamaz.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:749"
+      "apps/web/src/screens/Harita.tsx:751"
     ]
   },
   "t3b0cfa0d": {
@@ -8562,7 +8792,7 @@
     "tr": "Yeni parola",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:119",
+      "apps/web/src/screens/Hesap.tsx:161",
       "apps/web/src/screens/ParolaSifirla.tsx:46"
     ]
   },
@@ -8571,7 +8801,7 @@
     "tr": "Yeni parola çok kısa",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:66"
+      "apps/web/src/screens/Hesap.tsx:82"
     ]
   },
   "tf46d6ce7": {
@@ -8587,7 +8817,7 @@
     "tr": "Yeniden dene",
     "en": "",
     "nerede": [
-      "apps/web/src/App.tsx:334"
+      "apps/web/src/App.tsx:335"
     ]
   },
   "t56d9b3e2": {
@@ -8605,7 +8835,7 @@
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:75",
       "apps/web/src/components/SavasRaporu.tsx:510",
-      "apps/web/src/screens/Harita.tsx:1373"
+      "apps/web/src/screens/Harita.tsx:1361"
     ]
   },
   "t47e174c5": {
@@ -8625,13 +8855,21 @@
       "apps/web/src/components/ArmaSecici.tsx:179"
     ]
   },
+  "t15ceec85": {
+    "grup": "arayuz",
+    "tr": "Yok say",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Moderasyon.tsx:193"
+    ]
+  },
   "tf0bd371a": {
     "grup": "arayuz",
     "tr": "Yola çıkıyor…",
     "en": "",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:95",
-      "apps/web/src/screens/Harita.tsx:381"
+      "apps/web/src/screens/Harita.tsx:383"
     ]
   },
   "t60a8f3a9": {
@@ -8640,6 +8878,14 @@
     "en": "",
     "nerede": [
       "apps/web/src/screens/Malikane.tsx:208"
+    ]
+  },
+  "tfb3f07d7": {
+    "grup": "arayuz",
+    "tr": "Yönetim",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Hesap.tsx:115"
     ]
   },
   "t10956f9e": {
@@ -8664,7 +8910,7 @@
     "tr": "Yukarıdan kaç birim göndereceğini seç.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:755"
+      "apps/web/src/screens/Harita.tsx:757"
     ]
   },
   "t461c15f3": {
@@ -8681,7 +8927,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:124",
-      "apps/web/src/components/Omurga.tsx:290",
+      "apps/web/src/components/Omurga.tsx:475",
       "apps/web/src/components/ui.tsx:44"
     ]
   },
@@ -8698,8 +8944,8 @@
     "tr": "Yükleniyor...",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:227",
-      "apps/web/src/screens/Siralama.tsx:252"
+      "apps/web/src/screens/Siralama.tsx:231",
+      "apps/web/src/screens/Siralama.tsx:256"
     ]
   },
   "t727a3377": {
@@ -8756,7 +9002,7 @@
     "tr": "Yürüyüşler",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:904"
+      "apps/web/src/screens/Harita.tsx:906"
     ]
   },
   "t5753527f": {
@@ -8764,7 +9010,7 @@
     "tr": "Yürüyüşte",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:459"
+      "apps/web/src/screens/Kisla.tsx:507"
     ]
   },
   "tdd948d11": {
@@ -8782,7 +9028,7 @@
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:75",
       "apps/web/src/components/SavasRaporu.tsx:510",
-      "apps/web/src/screens/Harita.tsx:1373"
+      "apps/web/src/screens/Harita.tsx:1361"
     ]
   },
   "t69e973b0": {
@@ -8798,7 +9044,7 @@
     "tr": "zaten ittifakın ortak hedefi. Haritada kesik çizgiyle işaretli.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:439"
+      "apps/web/src/screens/Harita.tsx:441"
     ]
   },
   "t7626de64": {
@@ -8826,12 +9072,28 @@
       "apps/web/src/screens/LordEkrani.tsx:72"
     ]
   },
+  "t154e9396": {
+    "grup": "motor",
+    "tr": " Sebep: {0}",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/moderasyon.ts:170"
+    ]
+  },
   "tb249a729": {
     "grup": "motor",
     "tr": "-%{0}, taktikten gelen en çok ",
     "en": "",
     "nerede": [
       "packages/shared/src/ogretici.ts:288"
+    ]
+  },
+  "t335dc8d5": {
+    "grup": "motor",
+    "tr": "\"Başka bir sebep\" seçtiysen en az {0} harfle açıkla.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/moderasyon.ts:92"
     ]
   },
   "tf4e6dc26": {
@@ -8904,6 +9166,15 @@
     "en": "",
     "nerede": [
       "packages/shared/src/ogretici.ts:447"
+    ]
+  },
+  "tebc946e2": {
+    "grup": "motor",
+    "tr": "{0} gün",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/moderasyon.ts:139",
+      "packages/shared/src/moderasyon.ts:183"
     ]
   },
   "t85178a8c": {
@@ -9024,6 +9295,14 @@
     "en": "",
     "nerede": [
       "packages/shared/src/ogretici.ts:517"
+    ]
+  },
+  "tc2e13b6e": {
+    "grup": "motor",
+    "tr": "Açıklama en fazla {0} harf olabilir.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/moderasyon.ts:87"
     ]
   },
   "t8d064cc7": {
@@ -9306,6 +9585,14 @@
       "packages/shared/src/ogretici.ts:571"
     ]
   },
+  "t61dd4ca7": {
+    "grup": "motor",
+    "tr": "Başka bir sebep",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/moderasyon.ts:55"
+    ]
+  },
   "tb0dc5379": {
     "grup": "motor",
     "tr": "başlar — büyük ordu kurmak yetmiyor, besleyebilmek gerekiyor.",
@@ -9344,6 +9631,14 @@
     "en": "",
     "nerede": [
       "packages/shared/src/progression.ts:149"
+    ]
+  },
+  "t8baee2f4": {
+    "grup": "motor",
+    "tr": "Bilinmeyen karar.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/moderasyon.ts:203"
     ]
   },
   "t0c435da3": {
@@ -9442,6 +9737,14 @@
     "en": "",
     "nerede": [
       "packages/shared/src/rehber.ts:345"
+    ]
+  },
+  "t8be1fc5a": {
+    "grup": "motor",
+    "tr": "Bir sebep seç.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/moderasyon.ts:83"
     ]
   },
   "t83ca86e1": {
@@ -9661,6 +9964,22 @@
       "packages/shared/src/ittifakBasvuru.ts:92"
     ]
   },
+  "t7a278779": {
+    "grup": "motor",
+    "tr": "Bu mesaj kaldırıldı.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/moderasyon.ts:230"
+    ]
+  },
+  "t7556cf71": {
+    "grup": "motor",
+    "tr": "Bu mesaj şikâyet edildi, inceleniyor.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/moderasyon.ts:232"
+    ]
+  },
   "tbd18938b": {
     "grup": "motor",
     "tr": "Bu oyun beklemeli. Günde birkaç dakika yeter.",
@@ -9675,6 +9994,14 @@
     "en": "",
     "nerede": [
       "packages/shared/src/rehber.ts:362"
+    ]
+  },
+  "t7d008c01": {
+    "grup": "motor",
+    "tr": "Bu şikâyette silinecek bir mesaj yok.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/moderasyon.ts:206"
     ]
   },
   "t438772cd": {
@@ -10173,6 +10500,14 @@
       "packages/shared/src/ogretici.ts:495"
     ]
   },
+  "tb41d91b9": {
+    "grup": "motor",
+    "tr": "Geçersiz susturma süresi.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/moderasyon.ts:211"
+    ]
+  },
   "t806d7bef": {
     "grup": "motor",
     "tr": "General ordunun tamamını çarpar",
@@ -10243,7 +10578,7 @@
     "en": "",
     "nerede": [
       "data/binalar.json:binalar[2].ad",
-      "packages/shared/src/types.ts:282"
+      "packages/shared/src/types.ts:302"
     ]
   },
   "t588131dd": {
@@ -10308,6 +10643,14 @@
     "en": "",
     "nerede": [
       "packages/shared/src/ipuclari.ts:53"
+    ]
+  },
+  "t97c33115": {
+    "grup": "motor",
+    "tr": "Hakaret veya küfür",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/moderasyon.ts:50"
     ]
   },
   "t044df9bf": {
@@ -10483,7 +10826,7 @@
     "tr": "İttifak dolu ({0} üye).",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1128",
+      "apps/api/src/routes/ittifak.ts:1140",
       "packages/shared/src/ittifakBasvuru.ts:161",
       "packages/shared/src/ittifakBasvuru.ts:87"
     ]
@@ -10793,6 +11136,14 @@
       "packages/shared/src/ogretici.ts:561"
     ]
   },
+  "t8df806ac": {
+    "grup": "motor",
+    "tr": "Mesaj kaldırıldı",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/moderasyon.ts:223"
+    ]
+  },
   "t72e21d0d": {
     "grup": "motor",
     "tr": "Metropol",
@@ -10807,6 +11158,14 @@
     "en": "",
     "nerede": [
       "packages/shared/src/ipuclari.ts:37"
+    ]
+  },
+  "t0d3a343c": {
+    "grup": "motor",
+    "tr": "Nefret söylemi",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/moderasyon.ts:52"
     ]
   },
   "t3d5e14ec": {
@@ -11057,6 +11416,14 @@
       "packages/shared/src/ogretici.ts:291"
     ]
   },
+  "t0f6c0cea": {
+    "grup": "motor",
+    "tr": "Reklam veya bağlantı yağmuru",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/moderasyon.ts:53"
+    ]
+  },
   "t1823c307": {
     "grup": "motor",
     "tr": "Saldırıya çıkmadan önce ordunu {0}x{1} bir alana dizersin. ",
@@ -11193,12 +11560,36 @@
       "packages/shared/src/ogretici.ts:489"
     ]
   },
+  "t6f40c54e": {
+    "grup": "motor",
+    "tr": "Sohbette susturuldu ({0})",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/moderasyon.ts:225"
+    ]
+  },
+  "t82cf938f": {
+    "grup": "motor",
+    "tr": "Sohbette susturuldun — {0} kaldı.{1}",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/moderasyon.ts:174"
+    ]
+  },
   "tebdafe82": {
     "grup": "motor",
     "tr": "Surlar hâkim. Askerî bir yerleşim.",
     "en": "",
     "nerede": [
       "packages/shared/src/bina.ts:69"
+    ]
+  },
+  "tc841a9ec": {
+    "grup": "motor",
+    "tr": "Susturma süresi seç.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/moderasyon.ts:209"
     ]
   },
   "t2cba21ff": {
@@ -11215,6 +11606,22 @@
     "en": "",
     "nerede": [
       "packages/shared/src/ogretici.ts:349"
+    ]
+  },
+  "t9368b74f": {
+    "grup": "motor",
+    "tr": "Şikâyet Kuyruğu",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/types.ts:310"
+    ]
+  },
+  "t90215b3d": {
+    "grup": "motor",
+    "tr": "Şikâyet yok sayıldı",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/moderasyon.ts:221"
     ]
   },
   "td1b9e13b": {
@@ -11239,6 +11646,14 @@
     "en": "",
     "nerede": [
       "packages/shared/src/rehber.ts:349"
+    ]
+  },
+  "tc0314923": {
+    "grup": "motor",
+    "tr": "Taciz veya tehdit",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/moderasyon.ts:51"
     ]
   },
   "tf1703d7a": {
@@ -11377,6 +11792,14 @@
       "packages/shared/src/balance.ts:269"
     ]
   },
+  "t41c5d512": {
+    "grup": "motor",
+    "tr": "Uygunsuz lord adı",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/moderasyon.ts:54"
+    ]
+  },
   "t5b3f33e5": {
     "grup": "motor",
     "tr": "Uykudayken silinmezsin. Bu oyunda kalkanlar gerçekten var.",
@@ -11398,8 +11821,8 @@
     "tr": "Üye",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1818",
-      "apps/api/src/routes/ittifak.ts:781",
+      "apps/api/src/routes/ittifak.ts:1830",
+      "apps/api/src/routes/ittifak.ts:793",
       "packages/shared/src/ittifakSeviye.ts:186"
     ]
   },
@@ -11657,8 +12080,8 @@
     "tr": "Zaten bir ittifaktasın.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:432",
-      "apps/api/src/routes/ittifak.ts:494",
+      "apps/api/src/routes/ittifak.ts:435",
+      "apps/api/src/routes/ittifak.ts:497",
       "packages/shared/src/ittifakBasvuru.ts:148"
     ]
   },
@@ -11734,6 +12157,30 @@
       "apps/api/src/dunya-temizle.ts:84"
     ]
   },
+  "t9f5a9e98": {
+    "grup": "sunucu",
+    "tr": "  pnpm yonetici al  <eposta>     — yetkiyi geri alır",
+    "en": "",
+    "nerede": [
+      "apps/api/src/yonetici.ts:21"
+    ]
+  },
+  "t8f56b871": {
+    "grup": "sunucu",
+    "tr": "  pnpm yonetici liste            — yetkili hesapları listeler",
+    "en": "",
+    "nerede": [
+      "apps/api/src/yonetici.ts:19"
+    ]
+  },
+  "t26df850f": {
+    "grup": "sunucu",
+    "tr": "  pnpm yonetici ver <eposta>     — yetki verir",
+    "en": "",
+    "nerede": [
+      "apps/api/src/yonetici.ts:20"
+    ]
+  },
   "t9b23abc4": {
     "grup": "sunucu",
     "tr": " Deponun bir kısmı doluydu; sığan kadarı alındı.",
@@ -11755,7 +12202,7 @@
     "tr": ", en az Sv{0}",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:898"
+      "apps/api/src/routes/ittifak.ts:910"
     ]
   },
   "tb6bc6cea": {
@@ -11766,12 +12213,21 @@
       "apps/api/src/services/march.ts:471"
     ]
   },
+  "t00c5c118": {
+    "grup": "sunucu",
+    "tr": "(silinmiş)",
+    "en": "",
+    "nerede": [
+      "apps/api/src/routes/moderasyon.ts:236",
+      "apps/api/src/routes/moderasyon.ts:238"
+    ]
+  },
   "te5671777": {
     "grup": "sunucu",
     "tr": "{0} (Sv{1}) ittifağınıza başvurdu.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:994"
+      "apps/api/src/routes/ittifak.ts:1006"
     ]
   },
   "tf684dd4f": {
@@ -11812,7 +12268,7 @@
     "en": "",
     "nerede": [
       "apps/api/src/routes/generals.ts:67",
-      "apps/api/src/routes/ittifak.ts:440"
+      "apps/api/src/routes/ittifak.ts:443"
     ]
   },
   "t2b49968f": {
@@ -11821,6 +12277,14 @@
     "en": "",
     "nerede": [
       "apps/api/src/services/queue.ts:415"
+    ]
+  },
+  "t117008b3": {
+    "grup": "sunucu",
+    "tr": "{0} artık {1}.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/yonetici.ts:63"
     ]
   },
   "t31d4a1cd": {
@@ -11836,7 +12300,7 @@
     "tr": "{0} ayrıldı; liderlik devredildi.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:579"
+      "apps/api/src/routes/ittifak.ts:582"
     ]
   },
   "t81ae1cbb": {
@@ -11844,7 +12308,7 @@
     "tr": "{0} ayrıldı.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:591"
+      "apps/api/src/routes/ittifak.ts:594"
     ]
   },
   "tfc65d2a9": {
@@ -11852,7 +12316,7 @@
     "tr": "{0} bağış yaptı (+{1} XP).",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1233"
+      "apps/api/src/routes/ittifak.ts:1245"
     ]
   },
   "t8a093e37": {
@@ -11860,7 +12324,7 @@
     "tr": "{0} başvurusu kabul edildi.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1242"
+      "apps/api/src/routes/ittifak.ts:1254"
     ]
   },
   "t03052597": {
@@ -11868,7 +12332,7 @@
     "tr": "{0} başvurusu kabul edilip katıldı.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1145"
+      "apps/api/src/routes/ittifak.ts:1157"
     ]
   },
   "t847a8c87": {
@@ -11876,7 +12340,7 @@
     "tr": "{0} başvurusu reddedildi.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1243"
+      "apps/api/src/routes/ittifak.ts:1255"
     ]
   },
   "t4fe888ec": {
@@ -11916,7 +12380,7 @@
     "tr": "{0} bu arada başka bir ittifağa katılmış.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1122"
+      "apps/api/src/routes/ittifak.ts:1134"
     ]
   },
   "t0f5e6bb4": {
@@ -11996,7 +12460,7 @@
     "tr": "{0} ile pakt feshedildi.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1251"
+      "apps/api/src/routes/ittifak.ts:1263"
     ]
   },
   "ta76946fb": {
@@ -12004,7 +12468,7 @@
     "tr": "{0} ile pakt kuruldu.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1249"
+      "apps/api/src/routes/ittifak.ts:1261"
     ]
   },
   "teb26cc7c": {
@@ -12012,7 +12476,7 @@
     "tr": "{0} ile saldırmazlık paktı yürürlükte.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:277"
+      "apps/api/src/routes/ittifak.ts:280"
     ]
   },
   "t1c74170c": {
@@ -12036,7 +12500,7 @@
     "tr": "{0} ittifağı kurdu.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:474"
+      "apps/api/src/routes/ittifak.ts:477"
     ]
   },
   "t599e965f": {
@@ -12044,7 +12508,7 @@
     "tr": "{0} ittifakın hedefini {1} olarak işaretledi.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:749"
+      "apps/api/src/routes/ittifak.ts:761"
     ]
   },
   "t8ccb6e59": {
@@ -12052,7 +12516,7 @@
     "tr": "{0} ittifakına kabul edildin.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1156"
+      "apps/api/src/routes/ittifak.ts:1168"
     ]
   },
   "tb280b5d3": {
@@ -12060,7 +12524,7 @@
     "tr": "{0} ittifakına katıldı.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:533"
+      "apps/api/src/routes/ittifak.ts:536"
     ]
   },
   "t9669a6af": {
@@ -12068,7 +12532,7 @@
     "tr": "{0} ittifakından ayrıldı.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:595"
+      "apps/api/src/routes/ittifak.ts:598"
     ]
   },
   "t94b1ad61": {
@@ -12076,7 +12540,7 @@
     "tr": "{0} ittifakından çıkarıldı.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:792"
+      "apps/api/src/routes/ittifak.ts:804"
     ]
   },
   "t9b853237": {
@@ -12084,7 +12548,7 @@
     "tr": "{0} ittifakının liderliği sana geçti.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:585"
+      "apps/api/src/routes/ittifak.ts:588"
     ]
   },
   "t95169f36": {
@@ -12092,7 +12556,7 @@
     "tr": "{0} ittifaktan çıkarıldı.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:788"
+      "apps/api/src/routes/ittifak.ts:800"
     ]
   },
   "t42200140": {
@@ -12100,7 +12564,7 @@
     "tr": "{0} ittifaktan yeni ayrılmış, {1} ",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1133"
+      "apps/api/src/routes/ittifak.ts:1145"
     ]
   },
   "tc84e1ceb": {
@@ -12108,7 +12572,7 @@
     "tr": "{0} katıldı.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:527"
+      "apps/api/src/routes/ittifak.ts:530"
     ]
   },
   "t83307e55": {
@@ -12140,7 +12604,7 @@
     "tr": "{0} pakt teklifini kapattı.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1580"
+      "apps/api/src/routes/ittifak.ts:1592"
     ]
   },
   "t3d8681d2": {
@@ -12148,7 +12612,7 @@
     "tr": "{0} paktı feshetti. Pakt {1} saat sonra sona eriyor.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1620"
+      "apps/api/src/routes/ittifak.ts:1632"
     ]
   },
   "td1064cc0": {
@@ -12180,7 +12644,7 @@
     "tr": "{0} saldırmazlık paktı teklif etti.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1523"
+      "apps/api/src/routes/ittifak.ts:1535"
     ]
   },
   "t024a1acb": {
@@ -12261,7 +12725,7 @@
     "tr": "{0} Yaşlı oldu.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1839"
+      "apps/api/src/routes/ittifak.ts:1851"
     ]
   },
   "t4bbe2f22": {
@@ -12269,7 +12733,23 @@
     "tr": "{0} Yaşlı rütbesini kaybetti.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1839"
+      "apps/api/src/routes/ittifak.ts:1851"
+    ]
+  },
+  "t7a95c958": {
+    "grup": "sunucu",
+    "tr": "{0} yönetici:",
+    "en": "",
+    "nerede": [
+      "apps/api/src/yonetici.ts:40"
+    ]
+  },
+  "t3adf7642": {
+    "grup": "sunucu",
+    "tr": "{0} zaten {1}. Bir şey yapılmadı.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/yonetici.ts:58"
     ]
   },
   "t12f9a857": {
@@ -12423,8 +12903,8 @@
     "tr": "Başvuru",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1014",
-      "apps/api/src/routes/ittifak.ts:1088"
+      "apps/api/src/routes/ittifak.ts:1026",
+      "apps/api/src/routes/ittifak.ts:1100"
     ]
   },
   "t3e65b797": {
@@ -12432,7 +12912,7 @@
     "tr": "başvuruyla",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:897"
+      "apps/api/src/routes/ittifak.ts:909"
     ]
   },
   "t5ac47aa2": {
@@ -12488,7 +12968,7 @@
     "tr": "bilinmeyen ittifak",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1246"
+      "apps/api/src/routes/ittifak.ts:1258"
     ]
   },
   "tb724b5e4": {
@@ -12496,17 +12976,17 @@
     "tr": "Bir ittifakta değilsin.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1183",
-      "apps/api/src/routes/ittifak.ts:1458",
-      "apps/api/src/routes/ittifak.ts:1640",
-      "apps/api/src/routes/ittifak.ts:1685",
-      "apps/api/src/routes/ittifak.ts:229",
-      "apps/api/src/routes/ittifak.ts:302",
-      "apps/api/src/routes/ittifak.ts:548",
-      "apps/api/src/routes/ittifak.ts:615",
-      "apps/api/src/routes/ittifak.ts:654",
-      "apps/api/src/routes/ittifak.ts:699",
-      "apps/api/src/routes/ittifak.ts:769"
+      "apps/api/src/routes/ittifak.ts:1195",
+      "apps/api/src/routes/ittifak.ts:1470",
+      "apps/api/src/routes/ittifak.ts:1652",
+      "apps/api/src/routes/ittifak.ts:1697",
+      "apps/api/src/routes/ittifak.ts:232",
+      "apps/api/src/routes/ittifak.ts:305",
+      "apps/api/src/routes/ittifak.ts:551",
+      "apps/api/src/routes/ittifak.ts:618",
+      "apps/api/src/routes/ittifak.ts:666",
+      "apps/api/src/routes/ittifak.ts:711",
+      "apps/api/src/routes/ittifak.ts:781"
     ]
   },
   "t2ffdc779": {
@@ -12590,6 +13070,14 @@
       "apps/api/src/routes/sehir.ts:169"
     ]
   },
+  "t50cb1bfe": {
+    "grup": "sunucu",
+    "tr": "Böyle bir hesap yok: {0}",
+    "en": "",
+    "nerede": [
+      "apps/api/src/yonetici.ts:52"
+    ]
+  },
   "t9da35381": {
     "grup": "sunucu",
     "tr": "Böyle bir inşaat yok.",
@@ -12612,7 +13100,7 @@
     "en": "",
     "nerede": [
       "apps/api/src/routes/auth.ts:124",
-      "apps/api/src/routes/ittifak.ts:424"
+      "apps/api/src/routes/ittifak.ts:427"
     ]
   },
   "t4efc0763": {
@@ -12637,7 +13125,7 @@
     "tr": "Bu başvuru zaten karara bağlanmış.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1090"
+      "apps/api/src/routes/ittifak.ts:1102"
     ]
   },
   "t285dc203": {
@@ -12653,7 +13141,7 @@
     "tr": "Bu bölge senin değil.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/dev.ts:253",
+      "apps/api/src/routes/dev.ts:263",
       "apps/api/src/routes/map.ts:1151"
     ]
   },
@@ -12694,7 +13182,7 @@
     "tr": "Bu etiket alınmış.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:455"
+      "apps/api/src/routes/ittifak.ts:458"
     ]
   },
   "t0f68c4b9": {
@@ -12759,7 +13247,7 @@
     "tr": "Bu ittifak adı alınmış.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:455"
+      "apps/api/src/routes/ittifak.ts:458"
     ]
   },
   "tffc5910f": {
@@ -12767,7 +13255,7 @@
     "tr": "Bu ittifakla zaten paktın var.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1496"
+      "apps/api/src/routes/ittifak.ts:1508"
     ]
   },
   "t7c2cd60c": {
@@ -12783,7 +13271,15 @@
     "tr": "Bu pakt zaten feshediliyor.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1604"
+      "apps/api/src/routes/ittifak.ts:1616"
+    ]
+  },
+  "t432b4daf": {
+    "grup": "sunucu",
+    "tr": "Bu şikâyet zaten karara bağlanmış.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/routes/moderasyon.ts:283"
     ]
   },
   "t1a13bc53": {
@@ -12791,8 +13287,8 @@
     "tr": "Bu teklif artık açık değil.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1538",
-      "apps/api/src/routes/ittifak.ts:1574"
+      "apps/api/src/routes/ittifak.ts:1550",
+      "apps/api/src/routes/ittifak.ts:1586"
     ]
   },
   "t14d7d3bd": {
@@ -12808,7 +13304,7 @@
     "tr": "Bugünlük bağış hakkın bitti ({0}). Yarın tekrar.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1692"
+      "apps/api/src/routes/ittifak.ts:1704"
     ]
   },
   "tea1021b9": {
@@ -12818,6 +13314,14 @@
     "nerede": [
       "apps/api/src/routes/gunluk.ts:118",
       "apps/api/src/routes/gunluk.ts:181"
+    ]
+  },
+  "te3f87bb7": {
+    "grup": "sunucu",
+    "tr": "Bulunamadı.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/services/moderasyon.ts:26"
     ]
   },
   "t22a3a644": {
@@ -12844,12 +13348,20 @@
       "apps/api/src/routes/sehir.ts:233"
     ]
   },
+  "t4f5adcbf": {
+    "grup": "sunucu",
+    "tr": "Çok hızlı şikâyet ediyorsun. {0} saniye bekle.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/routes/moderasyon.ts:128"
+    ]
+  },
   "t07a010f1": {
     "grup": "sunucu",
     "tr": "Çok hızlı yazıyorsun. {0} saniye bekle.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:667"
+      "apps/api/src/routes/ittifak.ts:679"
     ]
   },
   "t46b749aa": {
@@ -12915,7 +13427,7 @@
     "tr": "Duyuru güncellendi.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1789"
+      "apps/api/src/routes/ittifak.ts:1801"
     ]
   },
   "tf7049390": {
@@ -12923,7 +13435,7 @@
     "tr": "Duyuru kaldırıldı.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1789"
+      "apps/api/src/routes/ittifak.ts:1801"
     ]
   },
   "t27282e04": {
@@ -12979,7 +13491,7 @@
     "tr": "En fazla {0} yaşlı olabilir. Önce birinin rütbesini almalısın.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1824"
+      "apps/api/src/routes/ittifak.ts:1836"
     ]
   },
   "t99f8a247": {
@@ -13039,7 +13551,7 @@
     "tr": "General",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/dev.ts:224",
+      "apps/api/src/routes/dev.ts:234",
       "apps/api/src/routes/generals.ts:54"
     ]
   },
@@ -13104,7 +13616,7 @@
     "tr": "herkese açık",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:897"
+      "apps/api/src/routes/ittifak.ts:909"
     ]
   },
   "t2e637fbf": {
@@ -13113,6 +13625,14 @@
     "en": "",
     "nerede": [
       "apps/api/src/dunya-temizle.ts:61"
+    ]
+  },
+  "t33bc6476": {
+    "grup": "sunucu",
+    "tr": "Hiç yönetici yok. \"pnpm yonetici ver <eposta>\" ile ekle.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/yonetici.ts:37"
     ]
   },
   "t94408dab": {
@@ -13136,7 +13656,7 @@
     "tr": "İttifak arması değişti.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:833"
+      "apps/api/src/routes/ittifak.ts:845"
     ]
   },
   "td286be2a": {
@@ -13144,7 +13664,7 @@
     "tr": "İttifak başvurun kabul edilmedi.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1102"
+      "apps/api/src/routes/ittifak.ts:1114"
     ]
   },
   "t2fe2dde9": {
@@ -13152,7 +13672,15 @@
     "tr": "İttifak kurmak {0} altın tutuyor, ",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:439"
+      "apps/api/src/routes/ittifak.ts:442"
+    ]
+  },
+  "tc4ef09fd": {
+    "grup": "sunucu",
+    "tr": "İttifak sohbetinde {0} susturuldun. Sebep: {1}",
+    "en": "",
+    "nerede": [
+      "apps/api/src/routes/moderasyon.ts:310"
     ]
   },
   "t52231a33": {
@@ -13168,7 +13696,7 @@
     "tr": "İttifakında Yaşlı oldun.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1847"
+      "apps/api/src/routes/ittifak.ts:1859"
     ]
   },
   "taaa9a7ea": {
@@ -13176,7 +13704,7 @@
     "tr": "İttifakındaki Yaşlı rütben alındı.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1847"
+      "apps/api/src/routes/ittifak.ts:1859"
     ]
   },
   "t97bd47ee": {
@@ -13184,8 +13712,8 @@
     "tr": "İttifaktan yeni ayrıldın. {0} saat sonra ",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:499",
-      "apps/api/src/routes/ittifak.ts:948"
+      "apps/api/src/routes/ittifak.ts:502",
+      "apps/api/src/routes/ittifak.ts:960"
     ]
   },
   "tb15d50e9": {
@@ -13193,7 +13721,15 @@
     "tr": "İttifaktan yeni ayrıldın. {0} saat sonra girebilirsin.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1327"
+      "apps/api/src/routes/ittifak.ts:1339"
+    ]
+  },
+  "tdfb3274c": {
+    "grup": "sunucu",
+    "tr": "Karar uygulanamaz.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/routes/moderasyon.ts:288"
     ]
   },
   "t0bab1641": {
@@ -13209,7 +13745,7 @@
     "tr": "Katılım: {0}",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:897"
+      "apps/api/src/routes/ittifak.ts:909"
     ]
   },
   "t8a322ea6": {
@@ -13244,12 +13780,20 @@
       "apps/api/src/routes/map.ts:542"
     ]
   },
+  "t2151cf3f": {
+    "grup": "sunucu",
+    "tr": "Kendi mesajını şikâyet edemezsin.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/routes/moderasyon.ts:114"
+    ]
+  },
   "tad9f0652": {
     "grup": "sunucu",
     "tr": "Kendi rütbeni değiştiremezsin.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1811"
+      "apps/api/src/routes/ittifak.ts:1823"
     ]
   },
   "t3adae11a": {
@@ -13257,7 +13801,7 @@
     "tr": "Kendi teklifini kabul edemezsin.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1542"
+      "apps/api/src/routes/ittifak.ts:1554"
     ]
   },
   "ta36df99b": {
@@ -13273,7 +13817,7 @@
     "tr": "Kendini çıkaramazsın; ayrılmak için \"Ayrıl\" kullan.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:774"
+      "apps/api/src/routes/ittifak.ts:786"
     ]
   },
   "t4533a4b2": {
@@ -13281,7 +13825,7 @@
     "tr": "Kendini şikâyet edemezsin.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/rankings.ts:248"
+      "apps/api/src/routes/rankings.ts:262"
     ]
   },
   "t2e4c444d": {
@@ -13289,7 +13833,7 @@
     "tr": "key gerekli.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/dev.ts:220"
+      "apps/api/src/routes/dev.ts:230"
     ]
   },
   "t97b65f24": {
@@ -13306,6 +13850,14 @@
     "en": "",
     "nerede": [
       "apps/api/src/routes/army.ts:101"
+    ]
+  },
+  "t823bc75e": {
+    "grup": "sunucu",
+    "tr": "Kullanım:",
+    "en": "",
+    "nerede": [
+      "apps/api/src/yonetici.ts:18"
     ]
   },
   "t75541e19": {
@@ -13396,12 +13948,21 @@
       "apps/api/src/errors.ts:19"
     ]
   },
+  "tfe3e1797": {
+    "grup": "sunucu",
+    "tr": "Mesaj",
+    "en": "",
+    "nerede": [
+      "apps/api/src/routes/moderasyon.ts:104",
+      "apps/api/src/routes/moderasyon.ts:112"
+    ]
+  },
   "t5e499c35": {
     "grup": "sunucu",
     "tr": "Mesaj gönderilemez.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:647"
+      "apps/api/src/routes/ittifak.ts:659"
     ]
   },
   "te3021106": {
@@ -13506,7 +14067,7 @@
     "tr": "Ortak hedef kaldırıldı.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:712"
+      "apps/api/src/routes/ittifak.ts:724"
     ]
   },
   "tc9991460": {
@@ -13514,7 +14075,7 @@
     "tr": "Ortak hedef: {0}.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:739"
+      "apps/api/src/routes/ittifak.ts:751"
     ]
   },
   "t6540798f": {
@@ -13530,7 +14091,7 @@
     "tr": "Pakt",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:238"
+      "apps/api/src/routes/ittifak.ts:241"
     ]
   },
   "t0724dcdd": {
@@ -13571,7 +14132,7 @@
     "tr": "saat daha giremez.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1134"
+      "apps/api/src/routes/ittifak.ts:1146"
     ]
   },
   "tea8d3f85": {
@@ -13647,14 +14208,6 @@
       "apps/api/src/routes/map.ts:961"
     ]
   },
-  "t58684f8b": {
-    "grup": "sunucu",
-    "tr": "Sebebi kısaca yaz.",
-    "en": "",
-    "nerede": [
-      "apps/api/src/routes/rankings.ts:243"
-    ]
-  },
   "t8f413a36": {
     "grup": "sunucu",
     "tr": "Sekizinci",
@@ -13671,12 +14224,44 @@
       "apps/api/src/routes/me.ts:62"
     ]
   },
+  "t5aa871ff": {
+    "grup": "sunucu",
+    "tr": "Sohbette susturuldun.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/services/moderasyon.ts:43"
+    ]
+  },
   "te71c8e7d": {
     "grup": "sunucu",
     "tr": "Sungur Bey",
     "en": "",
     "nerede": [
       "apps/api/src/services/demoWorld.ts:53"
+    ]
+  },
+  "t7b130fb7": {
+    "grup": "sunucu",
+    "tr": "Susturman kaldırıldı. İttifak sohbetine yeniden yazabilirsin.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/routes/moderasyon.ts:382"
+    ]
+  },
+  "t9bc99ae9": {
+    "grup": "sunucu",
+    "tr": "Şikâyet",
+    "en": "",
+    "nerede": [
+      "apps/api/src/routes/moderasyon.ts:281"
+    ]
+  },
+  "tde6ba813": {
+    "grup": "sunucu",
+    "tr": "Şikâyet kuyruğu: Hesap ekranından \"Şikâyet kuyruğu\" ile açılır.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/yonetici.ts:65"
     ]
   },
   "t5659abad": {
@@ -13740,7 +14325,7 @@
     "tr": "Teklifin zaten gönderildi.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1499"
+      "apps/api/src/routes/ittifak.ts:1511"
     ]
   },
   "tb739c118": {
@@ -13780,7 +14365,7 @@
     "tr": "yeni bir ittifağa başvurabilirsin.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:949"
+      "apps/api/src/routes/ittifak.ts:961"
     ]
   },
   "t816504d5": {
@@ -13788,7 +14373,7 @@
     "tr": "yeni bir ittifağa girebilirsin.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:500"
+      "apps/api/src/routes/ittifak.ts:503"
     ]
   },
   "t44a98c68": {
@@ -13815,6 +14400,31 @@
       "apps/api/src/services/queue.ts:72"
     ]
   },
+  "te6f13230": {
+    "grup": "sunucu",
+    "tr": "yönetici",
+    "en": "",
+    "nerede": [
+      "apps/api/src/yonetici.ts:58"
+    ]
+  },
+  "tb3eebce8": {
+    "grup": "sunucu",
+    "tr": "YÖNETİCİ",
+    "en": "",
+    "nerede": [
+      "apps/api/src/yonetici.ts:63"
+    ]
+  },
+  "t77f270a9": {
+    "grup": "sunucu",
+    "tr": "yönetici değil",
+    "en": "",
+    "nerede": [
+      "apps/api/src/yonetici.ts:58",
+      "apps/api/src/yonetici.ts:63"
+    ]
+  },
   "te056a93d": {
     "grup": "sunucu",
     "tr": "Yükseltme başarılı: +{0}",
@@ -13836,7 +14446,7 @@
     "tr": "Yürürlükte olmayan pakt feshedilemez.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1605"
+      "apps/api/src/routes/ittifak.ts:1617"
     ]
   },
   "t4403a7f4": {

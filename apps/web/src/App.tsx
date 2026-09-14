@@ -13,6 +13,7 @@ import { Demirhane } from './screens/Demirhane';
 import { Generaller } from './screens/Generaller';
 import { Giris } from './screens/Giris';
 import { Hesap } from './screens/Hesap';
+import { Moderasyon } from './screens/Moderasyon';
 import { Harita } from './screens/Harita';
 import { Kisla } from './screens/Kisla';
 import { LordEkrani } from './screens/LordEkrani';
@@ -505,10 +506,12 @@ export function App() {
               }}
             />
           )}
+          {kapi === 'moderasyon' && <Moderasyon />}
           {kapi === 'hesap' && (
             <Hesap
               lord={lord}
               onCikis={cikis}
+              onKapiAc={kapiAc}
               onOgreticiyiAc={() => {
                 setKapi(null);
                 setOgreticiKapandi(false);

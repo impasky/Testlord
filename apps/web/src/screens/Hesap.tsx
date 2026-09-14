@@ -5,22 +5,38 @@
  * işlem ve yanlışlıkla tetiklenmemeli. Parola ve birebir yazılan bir onay
  * metni isteniyor; tek dokunuşla silinen bir hesap, kaza demek.
  */
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ApiError, api, type LordState } from '../api/client';
 import { Alan, Bolum, Buton, EngelNotu, Input, Kart } from '../components/ui';
 import { BildirimKarti } from '../components/BildirimKarti';
+import type { Kapi } from '@lordlar/shared';
 
 export function Hesap({
   lord,
   onCikis,
   onOgreticiyiAc,
+  onKapiAc,
 }: {
   lord: LordState;
   onCikis: () => void;
   /** Öğreticiyi yeniden açar. */
   onOgreticiyiAc: () => void;
+  onKapiAc: (k: Kapi) => void;
 }) {
+  /**
+   * Yöneticilik ve susturma durumu.
+   *
+   * Şikâyet kuyruğunun girişi burada, bir menüde değil: yetkili olmayan
+   * için düğme HİÇ ÇİZİLMİYOR ve sunucu da uçları ayrıca koruyor.
+   * Susturulmuşsan sebebini burada da görüyorsun — sohbete girip
+   * yazamadığını keşfetmen gerekmesin.
+   */
+  const moderasyon = useQuery({
+    queryKey: ['moderasyon-durum'],
+    queryFn: api.moderasyonDurumu,
+    staleTime: 60_000,
+  });
   const [mevcut, setMevcut] = useState('');
   const [yeni, setYeni] = useState('');
   const [parolaBilgi, setParolaBilgi] = useState<string | null>(null);
@@ -83,6 +99,32 @@ export function Hesap({
           </p>
         </Kart>
       </Bolum>
+
+      {moderasyon.data?.susturulmus && (
+        <Bolum baslik="Susturma">
+          <Kart className="p-3">
+            <p className="text-[13px] text-turuncu">{moderasyon.data.susturmaMetni}</p>
+            <p className="mt-1 text-[12px] text-sonuk">
+              Süre dolunca ittifak sohbetine yeniden yazabilirsin. Oyunun geri kalanı açık.
+            </p>
+          </Kart>
+        </Bolum>
+      )}
+
+      {moderasyon.data?.yonetici && (
+        <Bolum baslik="Yönetim">
+          <Kart className="p-3">
+            <p className="mb-2 text-[13px] text-solgun">
+              {moderasyon.data.bekleyen > 0
+                ? `${moderasyon.data.bekleyen} şikâyet karar bekliyor.`
+                : 'Bekleyen şikâyet yok.'}
+            </p>
+            <Buton tur="anahat" boy="kucuk" onClick={() => onKapiAc('moderasyon')}>
+              Şikâyet kuyruğu
+            </Buton>
+          </Kart>
+        </Bolum>
+      )}
 
       <Bolum baslik="Bildirimler">
         <BildirimKarti />
