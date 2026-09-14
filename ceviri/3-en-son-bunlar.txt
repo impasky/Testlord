@@ -1,0 +1,280 @@
+LORDLAR ÇAĞI — ÇEVİRİ 3/3: KUYRUK
+
+Sunucu hataları ve bildirimleri. Oyuncu bunları ancak bir şey ters gidince
+görüyor; en sona bırakılabilir ama atlanamaz.
+
+Bu dosyada 258 satır var.
+
+NASIL ÇEVİRİLİR
+  Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.
+  Türkçesinin yerine İngilizcesini yaz, numarayı ve noktayı bırak:
+
+      12. Ordun yetiyor.        ->   12. Your army is enough.
+
+  {0} ve {1} birer yer tutucu; oyun onların yerine sayı ya da ad
+  koyuyor. Sırası değişebilir, kendisi silinemez.
+
+  Bitince dosyayı olduğu gibi geri ver; gerisini ben hallederim.
+
+==========================================================================
+
+--- Sunucu mesajları (258) ---
+
+72. Akın
+131. Bearer {0}
+161. Bölge
+405. HESABIMI SIL
+436. İttifak
+505. Kendi üyenizin bölgesi hedef olamaz.
+552. Lord
+559. Lordlar Çağı
+777. Şikâyet gönderilemedi.
+1144. (silinmiş)
+1145. {0} (Sv{1}) ittifağınıza başvurdu.
+1146. {0} {1} eğitimi tamamlandı.
+1147. {0} altın
+1148. {0} altın, {1} demir, {2} erzak.
+1149. {0} altının var.
+1150. {0} araştırması tamamlandı.
+1152. {0} artık başkentin. Şehrini burada kuracaksın.
+1153. {0} ayrıldı; liderlik devredildi.
+1154. {0} ayrıldı.
+1155. {0} bağış yaptı (+{1} XP).
+1156. {0} başvurusu kabul edildi.
+1157. {0} başvurusu kabul edilip katıldı.
+1158. {0} başvurusu reddedildi.
+1159. {0} bırakıldı.
+1160. {0} birim {1} savunmasına katıldı.
+1161. {0} bölgende {1} adına çalışan bir casus yakalandı.
+1162. {0} bölgesine gönderdiğin casus yakalandı. Rapor gelmedi.
+1163. {0} bu arada başka bir ittifağa katılmış.
+1164. {0} bu yerleşimde en fazla {1}. seviye olabilir. Daha büyük bir başkent gerekiyor.
+1165. {0} bulunamadı.
+1166. {0} Diyar
+1167. {0} ele geçirildi!
+1168. {0} elinden alındı
+1169. {0} elinden çıktı. Başkentin {1} oldu; binaların seninle taşındı.
+1170. {0} elinden çıktı. Bir kampa çekildin — binaların duruyor, yeni bir yerleşim alınca kaldığın yerden devam edecek.
+1171. {0} henüz bitmedi ({1}/{2} {3}).
+1172. {0} ile pakt feshedildi.
+1173. {0} ile pakt kuruldu.
+1174. {0} ile saldırmazlık paktı yürürlükte.
+1175. {0} ile saldırmazlık paktın var.
+1176. {0} inşa gerektirmiyor.
+1177. {0} ittifağı kurdu.
+1178. {0} ittifakın hedefini {1} olarak işaretledi.
+1179. {0} ittifakına kabul edildin.
+1180. {0} ittifakına katıldı.
+1181. {0} ittifakından ayrıldı.
+1182. {0} ittifakından çıkarıldı.
+1183. {0} ittifakının liderliği sana geçti.
+1184. {0} ittifaktan çıkarıldı.
+1185. {0} katıldı.
+1186. {0} keşfedildi. Garnizonu ve deposu artık görünüyor.
+1187. {0} limitine ulaştın.
+1189. {0} pakt teklifini kapattı.
+1190. {0} paktı feshetti. Pakt {1} saat sonra sona eriyor.
+1191. {0} rakip lord dünyaya eklendi (test dağıtımı).
+1192. {0} saldırıya uğradı
+1193. {0} saldırıya uğradı ve kaybedildi.
+1194. {0} saldırmazlık paktı teklif etti.
+1195. {0} savaşta yaralandı, {1} saat dinlenecek.
+1196. {0} savunuldu. Saldırı püskürtüldü.
+1197. {0} seviye {1} oldu.
+1198. {0} seviye atladı: Sv {1} → Sv {2}. Pasifi artık %{3} daha güçlü.
+1199. {0} üyesine saldıramazsın.
+1200. {0} veya daha fazla seviye altındaki lorda saldıramazsın.
+1201. {0} yağmalandı ama elinde kaldı. Bölge {1} saat koruma altında — garnizonu bu arada tazele.
+1202. {0} yaralı asker iyileşti, orduna katıldı.
+1203. {0} Yaşlı oldu.
+1204. {0} Yaşlı rütbesini kaybetti.
+1206. {0}, {1} üzerine göz dikti.
+1207. {0}{1} bölgene {2} birim takviye geldi.
+1208. 1 minute
+1209. Akın başarılı: {0} altın, {1} demir{2} getirdin.
+1210. Akın başarısız: grubu düşüremedin, kalan askerin döndü.
+1211. Akın grubu
+1212. Akın haritası
+1213. Akın henüz sonuçlanmadı.
+1214. Altıncı
+1215. Aybüke Hatun
+1216. Aynı anda en fazla {0} {1} kuyruğu
+1217. Aynı anda en fazla {0} akın
+1218. Aynı anda en fazla {0} takviye tutabilirsin. Elçiliğini yükselt.
+1219. Aynı harfi arka arkaya bu kadar tekrarlayamazsın.
+1220. Bağlantı geçersiz ya da süresi dolmuş. Yeniden sıfırlama iste.
+1221. Başkentin düştü
+1222. Başvuru
+1223. başvuruyla
+1224. Beşinci
+1225. Bildirimler açık değil.
+1226. Bildirimler açık. Ordun döndüğünde haberin olacak.
+1227. Bildirimler bu sunucuda açık değil.
+1228. Bilinmeyen bir lord
+1229. bilinmeyen bölge
+1230. bilinmeyen ittifak
+1231. Bir ittifakta değilsin.
+1232. Birinci
+1233. Boran Tigin
+1234. Boş mesaj gönderilemez.
+1235. Bölge el değiştirdi.
+1236. Bölge ele geçirildi
+1237. Bölge limitin dolu ({0}/{1}). Kazansan bile bölgeyi alamazsın, sadece yağmalarsın.
+1238. Bölge senin.
+1239. Bölge zaten en üst seviyede.
+1240. Böyle bir araştırma yok.
+1241. Böyle bir bina yok.
+1243. Böyle bir inşaat yok.
+1244. Bu ad ayrılmış. Başka bir ad seç.
+1245. Bu ad kullanılamaz.
+1246. Bu ad kullanılamaz. Başka bir ad seç.
+1247. Bu araştırma zaten tamamlandı.
+1248. Bu başvuru zaten karara bağlanmış.
+1249. Bu bölge koruma altında ({0}).
+1250. Bu bölge senin değil.
+1251. Bu bölgede askerin yok.
+1252. Bu bölgeye {0} saat içinde tekrar saldıramazsın.
+1253. Bu e-posta zaten kayıtlı.
+1254. Bu eşya zaten en üst seviyede.
+1255. Bu etiket alınmış.
+1256. Bu general kadronda değil.
+1257. Bu general zaten kadronda.
+1258. Bu grup henüz toparlanmadı. Yenilenmesini bekle.
+1259. Bu haftanın seferini zaten aldın.
+1260. Bu hat zaten en üst seviyede.
+1261. Bu isteği sen yapmadıysan hiçbir şey yapmana gerek yok; parolan değişmedi.
+1262. Bu işlem için yetkin yok.
+1263. Bu ittifak adı alınmış.
+1264. Bu ittifakla zaten paktın var.
+1265. Bu lord adı alınmış.
+1266. Bu pakt zaten feshediliyor.
+1267. Bu şikâyet zaten karara bağlanmış.
+1268. Bu teklif artık açık değil.
+1269. Bu yürüyüş zaten tamamlandı.
+1270. Bugünlük bağış hakkın bitti ({0}). Yarın tekrar.
+1271. Bugünün ödülünü zaten aldın.
+1272. Bulunamadı.
+1273. Burası bir yerleşim değil. Başkentin bir köy, şehir ya da kale olabilir.
+1274. Burası senin bölgen; garnizonu garnizon ekranından düzenle.
+1275. Burası senin değil.
+1276. Çok hızlı şikâyet ediyorsun. {0} saniye bekle.
+1277. Çok hızlı yazıyorsun. {0} saniye bekle.
+1278. Dağıtılacak puan belirtmedin.
+1279. Demirhan Bey
+1280. Dizilim 16 kare olmalı.
+1281. Dokuzuncu
+1282. Donanım hattı
+1283. Dönüş yürüyüşü geri çağrılamaz.
+1284. Dördüncü
+1285. Duyuru güncellendi.
+1286. Duyuru kaldırıldı.
+1288. E-posta (log taşıyıcısı)
+1289. E-posta gönderildi
+1290. E-posta gönderilemedi
+1291. E-posta gönderilemedi ({0}): {1}
+1292. E-posta veya parola hatalı.
+1293. En fazla {0} yaşlı olabilir. Önce birinin rütbesini almalısın.
+1294. Eşya
+1295. Evde o kadar birimin yok.
+1296. Evde yeterli {0} yok.
+1297. GameError
+1298. Geçerli bir e-posta gir.
+1299. Geçersiz anahtar.
+1300. General
+1301. Geri çağırma süresi doldu. Yürüyüşün ilk %25'inde geri çağırabilirsin.
+1302. Giriş yapman gerekiyor.
+1303. Gönderilemez.
+1304. Günlük {0} saldırı
+1305. Hedef koruma altında.
+1306. Henüz açılmadı.
+1307. Henüz oyuncu yok.
+1308. herkese açık
+1311. İkinci
+1312. İşin bitti
+1313. İttifak arması değişti.
+1314. İttifak başvurun kabul edilmedi.
+1315. İttifak sohbetinde {0} susturuldun. Sebep: {1}
+1316. İttifakın
+1317. İttifakında Yaşlı oldun.
+1318. İttifakındaki Yaşlı rütben alındı.
+1319. İttifaktan yeni ayrıldın. {0} saat sonra girebilirsin.
+1320. Karar uygulanamaz.
+1321. Karşı ittifak
+1322. Katılım: {0}
+1323. Kaynak yalnız ittifak üyelerine gönderilebilir.
+1324. Kendi bölgene garnizon koy, takviye gönderme.
+1325. Kendi bölgene saldıramazsın.
+1326. Kendi bölgeni keşfetmene gerek yok.
+1327. Kendi mesajını şikâyet edemezsin.
+1328. Kendi rütbeni değiştiremezsin.
+1329. Kendi teklifini kabul edemezsin.
+1330. Kendine kaynak gönderemezsin.
+1331. Kendini çıkaramazsın; ayrılmak için "Ayrıl" kullan.
+1332. Kendini şikâyet edemezsin.
+1333. Kılıçarslan
+1334. Kuşandığın eşyayı satamazsın.
+1335. Liderlik statını artır ya da daha az birim eğit.
+1336. Lord adı en az 3 harf içermeli.
+1337. Lord adı en az 3 karakter olmalı.
+1338. Lord adı en fazla 20 karakter olabilir.
+1339. Lord adında geçersiz karakter var.
+1340. Lord bulunamadı: {0}
+1341. Lordlar Çağı — {0}
+1342. Lordlar Çağı — parola sıfırlama
+1343. Lordun yaralı. {0} tarihine kadar saldıramazsın.
+1344. Mesaj
+1345. Mesaj gönderilemez.
+1346. Mesajın uygunsuz bir kelime içeriyor.
+1347. Mevcut parola hatalı.
+1348. Mevcut parolanı gir.
+1349. miğfer
+1350. Onay metnini birebir yazman gerekiyor.
+1351. Onuncu
+1352. Ordu boş.
+1353. Ordu donanımı yükseldi: {0} seviye {1}.
+1354. Ordularından biri dönene kadar bekle
+1355. Ordun eve döndü
+1356. Ordun eve döndü ({0} birim){1}.
+1357. Ortak hedef kaldırıldı.
+1358. Ortak hedef: {0}.
+1359. Önce üç görevi de bitir ({0}/{1}).
+1360. Pakt
+1361. Parola en az 8 karakter olmalı.
+1362. Parola hatalı.
+1363. Push gönderilemedi (lord {0}, durum {1}): {2}
+1364. Sadece {0} general slotun var. Liderlik statını artır ya da Karargâh'ı yükselt.
+1365. Sadece {0} stat puanın var, {1} dağıtmaya çalıştın.
+1366. Sahipsiz bölgenin garnizonu zaten görünüyor; casusa gerek yok.
+1367. Sahipsiz bölgeye takviye gönderilemez.
+1368. Saldırı püskürtüldü ama bölgen yağmalandı.
+1369. Savaş
+1370. Savaş kaybedildi
+1371. Savunan ordusu tam biliniyor.
+1372. Savunanın garnizonu bilinmiyor; tahmin eksik istihbarata dayanıyor. Casus Leyla tam bilgi verir.
+1373. Sekizinci
+1374. Silmek için parolanı gir.
+1375. Sohbette susturuldun.
+1376. Sungur Bey
+1377. Susturman kaldırıldı. İttifak sohbetine yeniden yazabilirsin.
+1378. Şikâyet
+1380. T{0} {1} üretildi: {2}.
+1381. T{0} ekipman için {1}. seviye demirhane gerekiyor.
+1382. T{0} ekipman için seviye {1} gerekiyor.
+1383. Taht Kalesi bırakılamaz. Elinden ancak savaşla alınır.
+1384. Takviye için birim seçmedin.
+1385. Takviye yalnız ittifak üyelerine gönderilebilir.
+1386. Takviyen kabul edilmedi (bölge el değiştirmiş olabilir); ordun dönüyor.
+1387. Teklifin zaten gönderildi.
+1388. Toprağın saldırı altında
+1389. Üçüncü
+1390. Yaman Alp
+1391. Yedinci
+1392. Yeni parola en az 8 karakter olmalı.
+1393. Yeterli kaynağın yok.
+1394. Yeterli kaynağın yok. Eksik: {0}.
+1398. Yükseltme başarılı: +{0}
+1399. Yükseltme başarısız (şans %{0}). Malzeme kayboldu, eşya sağlam.
+1400. Yürürlükte olmayan pakt feshedilemez.
+1401. Yürüyüş
+1402. yüzük
+1403. Zaten burada oturuyorsun.

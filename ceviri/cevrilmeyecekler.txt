@@ -1,0 +1,695 @@
+LORDLAR ÇAĞI — ÇEVİRİLMEYECEK METİNLER
+
+Bu dosya çeviri için DEĞİL. Burada duranlar bilerek çeviri listesinin
+dışında bırakıldı; ne olduklarını ve neden dışarıda kaldıklarını
+görebilesin diye yazılıyor.
+
+==========================================================================
+
+--- Bölge ve vilayet adları (127) ---
+
+Bunlar ÖZEL AD. "Akçakavak Köyü" İngilizce oynayan biri için de Akçakavak
+Köyü; Londra'nın Fransızcada Londra kalması gibi. Oyun Anadolu'da geçiyor
+ve yer adları o dünyanın parçası.
+
+  Akpazar
+  Aksu Ovası
+  Akçakavak Köyü
+  Akçaova
+  Altınbaşak
+  Altınçarşı
+  Ardıçlı Köyü
+  Arpalık
+  Aslanyatağı
+  Bakırcılar
+  Bakırdağ
+  Bakırtepe
+  Ballıova
+  Balıkçıburnu
+  Başakçayır
+  Bekçitepe
+  Bereketli
+  Beyazbaşak
+  Bezirgan
+  Bostanlı
+  Boyacılar
+  Buğdaylı
+  Buğdayova
+  Böğürtlen Köyü
+  Camlıçarşı
+  Cevherli
+  Demirbel
+  Demirkapı
+  Demirliman
+  Demirocak
+  Demirtaş
+  Demirvadi
+  Denizkapı
+  Dikmen Kalesi
+  Dutluca Köyü
+  Dörtburç
+  Dörtyol
+  Ekinbaşı
+  Ekinlik
+  Eğrigürgen Köyü
+  Fenerbaşı
+  Gedikkale
+  Gemlik
+  Gökçepelit Köyü
+  Gümüşliman
+  Gümüşoluk
+  Günbatı Kıyıları
+  Gürgenli Köyü
+  Handibi
+  Harmanlı
+  Ihlamurlu Köyü
+  Kalafatlı
+  Karaağaç Köyü
+  Karakaya
+  Karakule
+  Karaorman
+  Karataş
+  Kartalyuva
+  Kayaardı
+  Kayınlık Köyü
+  Kekikova
+  Kervanbaşı
+  Kestanelik Köyü
+  Konaklı
+  Kurşunlu
+  Kuzeymark
+  Kuşburnu Köyü
+  Kömürlük
+  Köprübaşı
+  Körfezkent
+  Közlüce
+  Kızılçam Köyü
+  Madenkuyu
+  Menzilhan
+  Mercanlı
+  Mercimekli
+  Mermerli
+  Meşelik Köyü
+  Nadaslı
+  Nohutlu
+  Otluca
+  Palamutlu Köyü
+  Pancarlı
+  Pelitli Köyü
+  Samanlık
+  Sapçayır
+  Sarpgeçit
+  Sarphisar
+  Sarpkaya
+  Sarıkervan
+  Sarıova
+  Sarıçam Köyü
+  Sazlıdere Köyü
+  Susamlık
+  Söğütlü Köyü
+  Sütlüce
+  Sıradağ Kalesi
+  Taht Vilayeti
+  Taneli
+  Tarlabaşı
+  Taşbaşı
+  Taşgeçit
+  Taşocağı
+  Tellallar
+  Tezgâhlı
+  Tozlukoru Köyü
+  Tuzlaburnu
+  Tuzpazarı
+  Verimli
+  Yabanardıç Köyü
+  Yalçınkapı
+  Yalçınkaya
+  Yaşlımeşe Köyü
+  Yelkenli
+  Yemlik
+  Yoncalı
+  Çakmaktaş
+  Çamlıbel Köyü
+  Çayırbaşı
+  Çelikkapı
+  Çeliktaş
+  Çeltikli
+  Çınaraltı Köyü
+  Örensivri
+  Üzümlü
+  İskelebaşı
+  Şahinkaya
+
+--- Cümle parçaları (272) ---
+
+Bunlar tek başına çevrilemez, çünkü tek başına bir anlamı yok: kodda başka
+metinlerle birleşerek cümle oluyorlar (" ve ", ", boş" gibi). Bir
+çevirmene bunları vermek işe yaramaz — hangi cümlenin ortasında durduğunu
+bilmeden çeviremez, üstelik İngilizcede sözcük sırası değişince parça
+yanlış yere düşer. Bunların çözümü çeviri değil KOD: birleştirmelerin tek
+bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
+
+  "\n\nSavaş raporunu oyunda görebilirsin: {0}\n"
+      apps/api/src/services/march.ts:971
+  " — {0}, sonra ordu saatte %{1} firar verir"
+      apps/web/src/components/MobilKabuk.tsx:152
+  " — depo dolu, üretim boşa gidiyor"
+      apps/web/src/components/MobilKabuk.tsx:155
+  " — eksiye gidiyor"
+      apps/web/src/components/MobilKabuk.tsx:153
+  " · {0} bölgen"
+      apps/web/src/screens/Harita.tsx:1021
+  " · {0} cihaz"
+      apps/web/src/components/BildirimKarti.tsx:102
+  " · {0} seviye daha gerekiyor"
+      apps/web/src/screens/Akin.tsx:339
+  " · alırsan birlik {0}"
+      apps/web/src/screens/Harita.tsx:1019
+  " · başarısızsa eşya sağlam kalır"
+      apps/web/src/screens/Demirhane.tsx:307
+  " · birlik {0}"
+      apps/web/src/screens/Harita.tsx:1011
+  " · en az Sv{0}"
+      apps/web/src/screens/Ittifak.tsx:458
+  " · tek bölgen"
+      apps/web/src/screens/Harita.tsx:1011
+  " +Taht"
+      apps/web/src/screens/LordEkrani.tsx:328
+  " birim"
+      apps/web/src/screens/Demirhane.tsx:142
+  " Daha büyük bir başkent daha yükseğine izin verir."
+      apps/web/src/screens/Sehir.tsx:476
+  " Deponun bir kısmı doluydu; sığan kadarı alındı."
+      apps/api/src/services/ticaret.ts:114
+  " eksik."
+      apps/web/src/components/ui.tsx:140
+  " kırıyor: "
+      apps/web/src/components/KarsiIpuclari.tsx:60
+  " Sebep: {0}"
+      packages/shared/src/moderasyon.ts:170
+  " ve "
+      apps/web/src/components/DizilimSemasi.tsx:69
+  " ve bir ekipman"
+      apps/api/src/services/akin.ts:230
+  " zayıf: "
+      apps/web/src/components/KarsiIpuclari.tsx:60
+  "-%{0}, taktikten gelen en çok "
+      packages/shared/src/ogretici.ts:288
+  "— bu bölge en üst aşamada."
+      apps/web/src/screens/Harita.tsx:1165
+  "— CC BY 3.0"
+      apps/web/src/screens/Giris.tsx:179
+  "— pakt"
+      apps/web/src/components/Paktlar.tsx:130
+  "— savaşa girdikçe büyür."
+      apps/web/src/screens/Generaller.tsx:116
+  ", {0} sürüyor"
+      apps/web/src/screens/Sehir.tsx:715
+  ", boş"
+      apps/web/src/components/DizilimIzgarasi.tsx:326
+  ", en az Sv{0}"
+      apps/api/src/routes/ittifak.ts:910
+  ", sana"
+      apps/web/src/components/IttifakBagis.tsx:127
+  ", şef"
+      apps/web/src/screens/Akin.tsx:493
+  ", tahkimat +%{0}"
+      apps/web/src/components/DunyaHaritasi.tsx:822
+  ", yağma: {0} altın"
+      apps/api/src/services/march.ts:471
+  ". Liderlik"
+      apps/web/src/screens/Generaller.tsx:218
+  ". seviye"
+      apps/web/src/screens/Sehir.tsx:475
+  ". Seviye"
+      apps/web/src/components/IttifakBagis.tsx:91
+  ". sıradasın"
+      apps/web/src/components/DiyarTanitimi.tsx:104
+  "· AÇ"
+      apps/web/src/screens/Malikane.tsx:250
+  "· bina tavanı"
+      apps/web/src/screens/Sehir.tsx:522
+  "· BÖLGE ELE GEÇER"
+      apps/web/src/components/SaldiriOnizleme.tsx:77
+  "· haritada aç"
+      apps/web/src/components/HedefSeridi.tsx:112
+  "· sahipsiz"
+      apps/web/src/screens/Harita.tsx:975
+  "· sana saldıran"
+      apps/web/src/components/DunyaSeridi.tsx:64
+  "· Seviye"
+      apps/web/src/screens/Hesap.tsx:97
+  "· Sv"
+      apps/web/src/screens/Malikane.tsx:182
+  "· takviye %"
+      apps/web/src/components/IttifakIncele.tsx:88
+  "(%{0}), okçuyla mancınığa zarar verir. "
+      packages/shared/src/ogretici.ts:272
+  "{0} {1} bölgene saldırdı. "
+      apps/api/src/services/march.ts:969
+  "{0} altın. Bir kampa çekilirsin, binaların "
+      packages/shared/src/ogretici.ts:173
+  "{0} altına bir bölgeye casus gönderip garnizonunu "
+      packages/shared/src/ogretici.ts:315
+  "{0} için {1} altın gerekiyor, "
+      apps/api/src/routes/generals.ts:66
+  "{0} ittifaktan yeni ayrılmış, {1} "
+      apps/api/src/routes/ittifak.ts:1145
+  "{0} sana kaynak yolladı: "
+      apps/api/src/services/ticaret.ts:112
+  "&nbsp;"
+      apps/web/src/components/GorevOzeti.tsx:41
+  "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+      apps/web/src/components/DiyarTanitimi.tsx:139
+  "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+      apps/web/src/components/DiyarTanitimi.tsx:138
+  "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+      apps/web/src/components/Omurga.tsx:488
+  "%{0} artırır (en çok %{1}). "
+      packages/shared/src/ogretici.ts:436
+  "%{0}. İyi dizilim kötü orduyu kurtarmaz, "
+      packages/shared/src/ogretici.ts:289
+  "+{0} ittifak XP · sana +{1} lord XP"
+      apps/web/src/components/IttifakBagis.tsx:47
+  "1. satır en ön (düşmanın ilk çarptığı yer), {0}. satır en arka. "
+      packages/shared/src/ogretici.ts:258
+  "a ·"
+      apps/web/src/components/KaynakGonder.tsx:111
+  "açık olabilir; kabul edilen biri gelince diğerleri kendiliğinden düşer."
+      packages/shared/src/ogretici.ts:517
+  "Akın çözülemedi ({0}):"
+      apps/api/src/services/akin.ts:267
+  "Akın toprak vermez, toprak da almaz. Kaybetsen bile bölgen elinde kalır — "
+      packages/shared/src/ogretici.ts:380
+  "Aldığın bölgeyi yükseltmek geliri ve savunmayı artırır. Yeni bölge almaktan "
+      packages/shared/src/ogretici.ts:411
+  "altın ·"
+      apps/web/src/screens/Harita.tsx:1174
+  "altın karşılığı."
+      apps/web/src/components/Pazar.tsx:193
+  "altın karşılığına kadar, ve kaynak da yol alır — anında gitmez."
+      packages/shared/src/ogretici.ts:543
+  "ama iki denk ordudan hangisinin kazanacağını söyler. Yaptığın hatalar savaş "
+      packages/shared/src/ogretici.ts:290
+  "Ambarlar taştı lordum — bu saatten sonra ürettiğimiz her şey yere dökülüyor. "
+      packages/shared/src/rehber.ts:105
+  "Araştırma \"%15 daha hızlı\" der, bina \"aynı anda 2 eğitim\" der. İkisi "
+      packages/shared/src/ogretici.ts:361
+  "Araştırma bittiğinde etkisi sonsuza kadar durur — ekipman gibi eskimez, ordu "
+      packages/shared/src/ogretici.ts:458
+  "Arayüz hatası:"
+      apps/web/src/components/HataSiniri.tsx:29
+  "artık kazanılabilir hâle geldi."
+      apps/web/src/screens/Demirhane.tsx:159
+  "asker ·"
+      apps/web/src/screens/Akin.tsx:638
+  "asker ölü sanılmıştı, yaralı olarak döndü. Kayıp sayısı bunu çıkardıktan sonrası."
+      apps/web/src/components/SavasRaporu.tsx:208
+  "asker yaralı döndü. İyileşene kadar savaşa giremez, erzak yemez ve komuta yerini kaplamaz."
+      apps/web/src/components/Hastane.tsx:42
+  "askerin savunmada."
+      apps/web/src/screens/Harita.tsx:354
+  "Aynı anda {0} araştırma yürütebilirsin, yani sıra senin kararın: "
+      packages/shared/src/ogretici.ts:468
+  "Aynı anda {0} birim komuta edebilirsin; Liderlik her puanda "
+      packages/shared/src/ogretici.ts:244
+  "Aynı anda en fazla {0} yürüyüş. "
+      apps/api/src/routes/map.ts:987
+  "Aynı savaş motoru, aynı dizilim, aynı taktik, aynı kayıp. Yaralıların "
+      packages/shared/src/ogretici.ts:386
+  "Aynı vilayette tuttuğun her fazladan bölge, oradaki bütün bölgelerinin gelirini "
+      packages/shared/src/ogretici.ts:435
+  "başlar — büyük ordu kurmak yetmiyor, besleyebilmek gerekiyor."
+      packages/shared/src/ogretici.ts:198
+  "Başlarken kimse sana saldıramaz. Kalkan, sen ilk saldırını yaptığında "
+      packages/shared/src/ogretici.ts:482
+  "Başvuru ile"
+      apps/web/src/components/IttifakBasvurular.tsx:87
+  "bilemezsen oraya bak, gerisini düşünme."
+      packages/shared/src/ogretici.ts:562
+  "bilmek, iki katı asker toplamaktan ucuza gelir."
+      packages/shared/src/ipuclari.ts:38
+  "Bir bölge aldığın anda onun çevresindeki her yer sana yaklaşır — "
+      packages/shared/src/ogretici.ts:166
+  "Bir bölgeyi ezici bir üstünlükle alırsan bölge senin olur. Dar kazanırsan "
+      packages/shared/src/ogretici.ts:335
+  "bir generalin etkisi bütün birliklerine birden işler."
+      packages/shared/src/rehber.ts:377
+  "Bir üyenin bölgesine asker yollayıp savunmasını güçlendirebilir, lider "
+      packages/shared/src/ogretici.ts:522
+  "birer bahane."
+      packages/shared/src/ogretici.ts:575
+  "birim). Tek bir parça savaşı çevirmiyor; etkisini görmek için daha üst tier ekipman ya da daha büyük bir ordu gerekiyor."
+      apps/web/src/screens/Demirhane.tsx:152
+  "Bittiğinde ordun saatte %{0} firar verir. "
+      apps/web/src/components/Omurga.tsx:601
+  "bölge el değiştirmez."
+      apps/web/src/components/SaldiriOnizleme.tsx:109
+  "Bölgeler tek kaynak üretir: şehir altın, maden demir, tarla erzak. Malikâne "
+      packages/shared/src/ogretici.ts:219
+  "Bölgen yağmalandıysa kısa bir süre dokunulmaz olur. Farklı saldırganların "
+      packages/shared/src/ogretici.ts:488
+  "Bölgeyi yükselt. Aynı toprak daha çok verir, üstelik savunması da artar — "
+      packages/shared/src/rehber.ts:390
+  "bu bölge senin olur."
+      packages/shared/src/rehber.ts:419
+  "Bu düğme askerleri kışlaya yazdırır. Sayıyı senin için hazır seçtim — "
+      packages/shared/src/rehber.ts:302
+  "Bu düğme orduyu yola çıkarır. Geri dönüşü yok — ama hesabı yaptım, "
+      packages/shared/src/rehber.ts:418
+  "Bu parçayı kuşan. Ekipman ordunun sayısını değil, senin savaşa kattığın "
+      packages/shared/src/rehber.ts:362
+  "bu siteye bildirim izni vermen gerekiyor."
+      apps/web/src/components/BildirimKarti.tsx:55
+  "Bugünkü pazar hakkın:"
+      apps/web/src/components/Pazar.tsx:193
+  "Bunu başlat. Hangisini seçtiğin senin kararın — araştırma kalıcıdır ve "
+      packages/shared/src/rehber.ts:404
+  "Bunu kirala. General tek bir askeri değil ORDUNUN KURALLARINI değiştirir; "
+      packages/shared/src/rehber.ts:376
+  "buradan büyür."
+      packages/shared/src/ogretici.ts:460
+  "Bütün bölgelerini kaybetsen bile taban gelirin akmaya devam eder: saatte "
+      packages/shared/src/ogretici.ts:172
+  "çoğu zaman daha kârlıdır — ve kimse elinden almaya kalkışmaz."
+      packages/shared/src/ogretici.ts:412
+  "d ·"
+      apps/web/src/components/KaynakGonder.tsx:111
+  "Daha büyük bir yerleşim fethedip başkentini oraya taşırsan binaların "
+      packages/shared/src/ogretici.ts:367
+  "değerinde daha gönderebilirsin."
+      apps/web/src/components/KaynakGonder.tsx:102
+  "demir ·"
+      apps/web/src/screens/Harita.tsx:1175
+  "Demirhanede kuşandığın eşyalar ordunun saldırı ve savunmasına doğrudan "
+      packages/shared/src/ogretici.ts:417
+  "Depo:"
+      apps/web/src/screens/Harita.tsx:511
+  "deyip oyunu oradan aç, sonra buraya dön."
+      apps/web/src/components/BildirimKarti.tsx:75
+  "diyarını başka lordlarınkinden ayıran tek katman odur."
+      packages/shared/src/rehber.ts:405
+  "Dizilimden gelen etki en çok +%{0} / "
+      packages/shared/src/ogretici.ts:287
+  "Dizilimi yaptıktan sonra bir taktik seçersin — Hilal Düzeni süvarini kanattan "
+      packages/shared/src/ogretici.ts:279
+  "dolandırır, Kalkan Duvarı ön hattı kilitler. Her taktiğin bir koşulu var ve "
+      packages/shared/src/ogretici.ts:280
+  "durur ve yeni bir yerleşim alınca kaldığın yerden devam edersin."
+      packages/shared/src/ogretici.ts:174
+  "düşer — hazır olduğuna kendin karar veriyorsun."
+      packages/shared/src/ogretici.ts:483
+  "Düşürdüğün grup birkaç saat sonra geri döner. O sürede gri durur ama "
+      packages/shared/src/ogretici.ts:398
+  "Eğitim, yürüyüş ve imar zamanla biter. Uygulamayı açık tutman gerekmez; "
+      packages/shared/src/ogretici.ts:555
+  "ekipman düşer."
+      apps/web/src/screens/Akin.tsx:647
+  "eklenir. Aynı orduyla daha güçlü savaşırsın."
+      packages/shared/src/ogretici.ts:418
+  "elinde bir şeyle çıkarsın."
+      packages/shared/src/ogretici.ts:568
+  "en ağır ceza mancınığındır (satır başına %{0}) — "
+      packages/shared/src/ogretici.ts:265
+  "en çok açıldı:"
+      apps/web/src/components/SavasRaporu.tsx:409
+  "en çok öne geçti:"
+      apps/web/src/components/SavasRaporu.tsx:414
+  "erzak yemez ve komuta yerini işgal etmezler. Yenilgi bir gecikmedir, silinme değil."
+      packages/shared/src/ogretici.ts:330
+  "eşiğine ulaşmadı — bölge el değiştirmedi, yalnızca yağma alındı."
+      apps/web/src/components/SavasRaporu.tsx:397
+  "garnizonunu toplamaya vaktin olur."
+      packages/shared/src/ogretici.ts:495
+  "Generaller savaşa katıldıkça seviye atlar ve ordunun bonuslarını büyütür. "
+      packages/shared/src/ogretici.ts:423
+  "gibi ölmez. Depo tavanı, eğitim hızı, ordu saldırısı, yürüyüş hızı: hepsi "
+      packages/shared/src/ogretici.ts:459
+  "gider: okçuyu öne koyup mızrakçıyı arkaya saklamak bedava değil."
+      packages/shared/src/ogretici.ts:274
+  "gidiş ·"
+      apps/web/src/components/SaldiriOnizleme.tsx:188
+  "gösteriyoruz. Kör atış yok."
+      packages/shared/src/ogretici.ts:304
+  "gücü büyütür — aynı orduyla daha sert vurursun."
+      packages/shared/src/rehber.ts:363
+  "günlük hacim {0} altın karşılığıyla sınırlı. "
+      packages/shared/src/ogretici.ts:221
+  "hâlâ koruyor. Verdiğin söz o yüzden bir şey ifade ediyor."
+      packages/shared/src/ogretici.ts:537
+  "Harcanmaz, biriktirilir. Sıralamadaki yerin ve unvanın buradan gelir. "
+      packages/shared/src/ogretici.ts:203
+  "Haritadaki her işaret bir bölge. Kimi boş durur, kimini bir lord tutar. "
+      packages/shared/src/ogretici.ts:153
+  "Haritanın ortasındaki altın çerçeveli bölge. Onu tutan Diyarın Lordu olur "
+      packages/shared/src/ogretici.ts:159
+  "hastaneye girer. Burada öğrendiğin her şey karşındaki lorda karşı da geçerli."
+      packages/shared/src/ogretici.ts:387
+  "hedefi almaya yetecek kadarı bu."
+      packages/shared/src/rehber.ts:303
+  "Her {0} lord seviyesinde bir bölge daha tutabilirsin. "
+      packages/shared/src/ogretici.ts:429
+  "Her gün üç küçük görev, her hafta bir sefer. Kısa bir girişte bile "
+      packages/shared/src/ogretici.ts:567
+  "Her kaynağı en çok {0} kadar biriktirebilirsin; "
+      packages/shared/src/ogretici.ts:211
+  "hiçbir zaman aynı sayıya dokunmaz — hangisini yükselteceğin ayrı bir karar."
+      packages/shared/src/ogretici.ts:362
+  "Hiçbiri zorunlu değil — oyunu hiç görmediğin yerlerinden denemen için "
+      packages/shared/src/ogretici.ts:574
+  "içinde varacak, sonucu bu oturumda göreceksin."
+      apps/web/src/components/SaldiriOnizleme.tsx:194
+  "İdeal satırlar: {0}. İdealinden her satır sapma güç kaybettirir; "
+      packages/shared/src/ogretici.ts:264
+  "ihbar süresi boyunca pakt hâlâ korur — söz verdiğin an geri alınamıyor, o yüzden söz değerli."
+      apps/web/src/components/Paktlar.tsx:162
+  "İki ittifak birbirine saldırmamaya söz verebilir. En fazla {0} pakt, "
+      packages/shared/src/ogretici.ts:535
+  "ilk seferde orduyu bölmenin bir faydası yok."
+      packages/shared/src/rehber.ts:425
+  "inelim: kimseyle husumetimiz olmaz, ganimeti de biz alırız."
+      packages/shared/src/rehber.ts:74
+  "işaretlenir. Kurnazlık statın hem başarı şansını artırır hem yakalanma riskini düşürür."
+      packages/shared/src/ogretici.ts:317
+  "İttifak kurmak {0} altın tutuyor, "
+      apps/api/src/routes/ittifak.ts:442
+  "İttifaktan yeni ayrıldın. {0} saat sonra "
+      apps/api/src/routes/ittifak.ts:502
+  "kaldı. Bu sürede saldıramazsın."
+      apps/web/src/screens/LordEkrani.tsx:308
+  "kaldı. İlk saldırında kalkan düşer."
+      apps/web/src/screens/Malikane.tsx:136
+  "Kaleye karşı ×{0}, canlı birime karşı ×{1}. "
+      packages/shared/src/ogretici.ts:238
+  "Kampta binalar 1. seviyeyi geçemez, köyde 2, kasabada 3, şehirde 4. "
+      packages/shared/src/ogretici.ts:355
+  "kapalıyken de işler."
+      packages/shared/src/ogretici.ts:556
+  "Karşında:"
+      apps/web/src/screens/Akin.tsx:587
+  "kaybolmaz — ne zaman döneceği ekranda yazılı."
+      packages/shared/src/ogretici.ts:399
+  "kaynak gönderme hakkı, daha hızlı takviye, daha ucuz keşif. Günde "
+      packages/shared/src/ogretici.ts:529
+  "Kaynak gönderme tavanı +"
+      apps/web/src/components/IttifakIncele.tsx:88
+  "Kazanınca kaynağı mutlaka alırsın; ekipman ihtimale bağlı ve grup "
+      packages/shared/src/ogretici.ts:392
+  "kazanırsan ilk demirini savaşarak alırsın."
+      apps/web/src/components/Omurga.tsx:725
+  "Kazanırsan:"
+      apps/web/src/screens/Akin.tsx:642
+  "Kenar sütunlar ({0}) süvariye yarar "
+      packages/shared/src/ogretici.ts:271
+  "key gerekli."
+      apps/api/src/routes/dev.ts:230
+  "Kilitli —"
+      apps/web/src/screens/Arastirma.tsx:219
+  "Kimi ittifaklara doğrudan girersin, çoğu başvuruyla üye alır — o zaman "
+      packages/shared/src/ogretici.ts:515
+  "Komuta kapasiten yetmiyor. Boş yer: {0}, gereken: {1}. "
+      apps/api/src/routes/army.ts:101
+  "koşulu tutmayan taktik seçilemez: yarım tutan bir taktiğe yarım bonus vermek, "
+      packages/shared/src/ogretici.ts:281
+  "Kur ·"
+      apps/web/src/screens/Ittifak.tsx:354
+  "Kuyruk çözülemedi ({0}):"
+      apps/api/src/services/queue.ts:574
+  "liderin onayını beklersin. Aynı anda {0} başvurun "
+      packages/shared/src/ogretici.ts:516
+  "Lord ekranında bir başarım listesi var: bölge, savaş, ekipman, general. "
+      packages/shared/src/ogretici.ts:573
+  "lord seviyen her arttığında tavan {0} büyür. "
+      packages/shared/src/ogretici.ts:212
+  "Lordum, elimizde bir çadır ve bir talimgahtan başka bir şey yok. Önce asker "
+      packages/shared/src/rehber.ts:63
+  "Malikânede tek bir kart her zaman sıradaki adımı söyler. Ne yapacağını "
+      packages/shared/src/ogretici.ts:561
+  "Mızrakçı süvariyi, süvari okçuyu, okçu mızrakçıyı yer. Karşıdakinin ne tuttuğunu "
+      packages/shared/src/ipuclari.ts:37
+  "NPC turu başarısız ({0}):"
+      apps/api/src/services/npc.ts:452
+  "olarak haritada ortak bir hedef işaretleyebilirsin."
+      packages/shared/src/ogretici.ts:523
+  "olur, ödül de büyür."
+      apps/web/src/components/GunlukKart.tsx:143
+  "Ordu "
+      apps/web/src/screens/Demirhane.tsx:623
+  "ordu da toprak da bina da kazanılıyor."
+      packages/shared/src/ogretici.ts:181
+  "Ordun ayakta ama toprağa saldırmak için erken. Şu deniz haydutlarının kampına "
+      packages/shared/src/rehber.ts:73
+  "Ordun ayakta. Önce bir düşman kampına in: kaybetsen bile toprağın gitmez, "
+      apps/web/src/components/Omurga.tsx:724
+  "Ordun hazır. Karşıdakinin sayısı seninkinden çok olabilir — bakma sen ona, "
+      packages/shared/src/rehber.ts:79
+  "Ordun her saat erzak yer. Erzak biterse askerlerin açlıktan erimeye "
+      packages/shared/src/ogretici.ts:197
+  "Ordun yetiyor. Bölge senin olunca kazanacakların:"
+      apps/web/src/components/Omurga.tsx:796
+  "Ordunu bu kampın üstüne yolla. Kaybetsen bile toprağın gitmez — akın "
+      packages/shared/src/rehber.ts:331
+  "ordunu denemenin en ucuz yeri burası."
+      packages/shared/src/ogretici.ts:381
+  "öğrenebilirsin. Rapor bir fotoğraftır: {0} saat sonra \"eski\" diye "
+      packages/shared/src/ogretici.ts:316
+  "ön hatta duran mancınık ilk çarpışmada dağılır."
+      packages/shared/src/ogretici.ts:266
+  "Ön satırda hiç yakın dövüş birimi bırakmazsan savunmandan %{0} "
+      packages/shared/src/ogretici.ts:273
+  "önce ekonomiyi mi büyütürsün, orduyu mu? Vazgeçersen harcadığının "
+      packages/shared/src/ogretici.ts:469
+  "Önce kimi göndereceğini seç. \"Hepsi\" evdeki bütün askeri katar; "
+      packages/shared/src/rehber.ts:424
+  "önemli olan hangi askerin hangisini yediği. Aşağıda yazıyor."
+      packages/shared/src/rehber.ts:80
+  "Pakt iki tarafın da onayıyla kurulur. Feshetmek anında değil:"
+      apps/web/src/components/Paktlar.tsx:161
+  "Parolanı sıfırlamak için {0} dakika içinde bu bağlantıyı aç:\n\n{1}\n\n"
+      apps/api/src/routes/auth.ts:219
+  "pazarında birini diğerine çevirebilirsin — komisyon %{0}, "
+      packages/shared/src/ogretici.ts:220
+  "raporunda tek tek yazar."
+      packages/shared/src/ogretici.ts:291
+  "saat daha giremez."
+      apps/api/src/routes/ittifak.ts:1146
+  "saat sürer."
+      apps/web/src/screens/Harita.tsx:1059
+  "saatte +"
+      apps/web/src/components/SaldiriOnizleme.tsx:127
+  "saldırı ·"
+      apps/web/src/components/DizilimIzgarasi.tsx:372
+  "Saldırı +%{0} · "
+      apps/web/src/screens/LordEkrani.tsx:554
+  "Saldırıya çıkmadan önce ordunu {0}x{1} bir alana dizersin. "
+      packages/shared/src/ogretici.ts:257
+  "Saldırmadan önce kazanma ihtimalini, tahmini kaybını ve ganimetini "
+      packages/shared/src/ogretici.ts:303
+  "sana neden az aldığını anlatmayı imkânsız kılardı."
+      packages/shared/src/ogretici.ts:282
+  "Savaş tur tur hesaplanır ve raporu okunabilir: neyi neden kazandığın "
+      packages/shared/src/ogretici.ts:309
+  "Savaşı kazanırsın ama"
+      apps/web/src/components/SaldiriOnizleme.tsx:109
+  "Savunma +%{0} · "
+      apps/web/src/screens/LordEkrani.tsx:555
+  "Seviye atladın:"
+      apps/web/src/components/SavasRaporu.tsx:109
+  "seviyede olsa bile aynı olmaz."
+      packages/shared/src/rehber.ts:118
+  "seviyeleriyle birlikte gelir. Taşınmak hiçbir şey kaybettirmez."
+      packages/shared/src/ogretici.ts:368
+  "Sezon yok, sıfırlama yok. Bugün kurduğun şey yarın da, seneye de duruyor. "
+      packages/shared/src/ogretici.ts:580
+  "sırayla gelip seni bir gecede silmesi böyle engelleniyor."
+      packages/shared/src/ogretici.ts:489
+  "sonra"
+      apps/web/src/screens/LordEkrani.tsx:361
+  "sonra sona eriyor. O ana kadar iki taraf da saldıramaz."
+      apps/web/src/components/Paktlar.tsx:131
+  "sonra:"
+      apps/web/src/components/Omurga.tsx:296
+  "Sustur:"
+      apps/web/src/screens/Moderasyon.tsx:206
+  "şehir sayfan bir kamptan bir köye döner. Sana hiçbir şey verilmiyor — "
+      packages/shared/src/ogretici.ts:180
+  "şikâyet etti:"
+      apps/web/src/screens/Moderasyon.tsx:158
+  "Şimdi diyarını kendine benzetme vakti. Araştırma kalıcıdır — iki lord aynı "
+      packages/shared/src/rehber.ts:117
+  "Tahkimat:"
+      apps/web/src/screens/Harita.tsx:520
+  "Tahmin:"
+      apps/web/src/components/SaldiriOnizleme.tsx:73
+  "Tahmini kayıp:"
+      apps/web/src/screens/Akin.tsx:638
+  "Tarayıcı bildirimleri engelliyor. Adres çubuğundaki kilit simgesinden "
+      apps/web/src/components/BildirimKarti.tsx:54
+  "tarihine kadar dinleniyor."
+      apps/web/src/screens/Generaller.tsx:123
+  "Tavana dayanan kaynak artık birikmez — üretilen boşa gider. Araştırmadaki "
+      packages/shared/src/ogretici.ts:213
+  "Tedavi en çok {0} saat sürer; o sürede "
+      packages/shared/src/ogretici.ts:329
+  "Toprağı çoğaltmak tek yol değil. Elindekini yükselt: aynı bölge daha çok "
+      packages/shared/src/rehber.ts:111
+  "Toprağın yok, ordun yok. İlk köyünü fethettiğinde orası başkentin olur ve "
+      packages/shared/src/ogretici.ts:179
+  "toprak almaz, toprak da vermez; öğrenmenin en ucuz yeri burası."
+      packages/shared/src/rehber.ts:332
+  "Tur Tur Güç ·"
+      apps/web/src/components/SavasRaporu.tsx:539
+  "üst üste giriyorsun."
+      apps/web/src/components/GunlukKart.tsx:88
+  "üye ·"
+      apps/web/src/screens/Siralama.tsx:148
+  "Üyeler bağış yaptıkça ittifak seviye atlar ve HERKES kazanır: daha çok "
+      packages/shared/src/ogretici.ts:528
+  "Üyeler birbirine saldıramaz. Küçük tutuldu: bir kaleyi birlikte kuşatmaya "
+      packages/shared/src/ogretici.ts:507
+  "ve"
+      apps/web/src/screens/LordEkrani.tsx:99
+  "ve fesih anında geçmiyor: {0} saat ihbar süresi boyunca pakt "
+      packages/shared/src/ogretici.ts:536
+  "ve şöhretini daha hızlı büyütür. Oyunun ucu burası."
+      packages/shared/src/ogretici.ts:160
+  "verir, üstelik saldırana da daha pahalıya patlar."
+      packages/shared/src/rehber.ts:112
+  "vurdu — o kaynak boşa gitti."
+      apps/web/src/components/SavasRaporu.tsx:442
+  "ya da kaybettiğin yazar. Rapordan doğrudan karşı saldırı açabilirsin."
+      packages/shared/src/ogretici.ts:310
+  "yalnız yağmalarsın: kaynağı alır, bölgeyi bırakırsın."
+      packages/shared/src/ogretici.ts:336
+  "Yaralı —"
+      apps/web/src/screens/Generaller.tsx:123
+  "yaralı hastaneye girdi."
+      apps/web/src/screens/Akin.tsx:251
+  "Yaralılar eve değil hastaneye girer ve tedavi bitene kadar savaşa katılamaz. "
+      packages/shared/src/ogretici.ts:328
+  "yayıldıkça daha uzağa uzanabilirsin."
+      packages/shared/src/ogretici.ts:167
+  "yazdıralım — ilkini {0} saniyede toplarım, beklemene gerek kalmaz."
+      packages/shared/src/rehber.ts:64
+  "Yeni aldığın bölge bir süre korunur. Aldığın anda elinden alınmaz, "
+      packages/shared/src/ogretici.ts:494
+  "yeni bir ittifağa başvurabilirsin."
+      apps/api/src/routes/ittifak.ts:961
+  "yeni bir ittifağa girebilirsin."
+      apps/api/src/routes/ittifak.ts:503
+  "yeni yer almadan güçlenmenin yolu bu."
+      packages/shared/src/rehber.ts:391
+  "Yenilirsen ordunun bir kısmını kaybedersin, hesabını değil. "
+      packages/shared/src/ogretici.ts:322
+  "yeter, haritayı tek başına yutmaya yetmez."
+      packages/shared/src/ogretici.ts:508
+  "Yürüyüş çözülemedi ({0}):"
+      apps/api/src/services/march.ts:1009
+  "Yürüyüş süresi en yakın toprağından ölçülür, malikânenden değil. "
+      packages/shared/src/ogretici.ts:165
+  "zaten ittifakın ortak hedefi. Haritada kesik çizgiyle işaretli."
+      apps/web/src/screens/Harita.tsx:441
+  "Zorda kalan üyeye kaynak yollayabilirsin. Günde {0} "
+      packages/shared/src/ogretici.ts:542
+  "zorlaştıkça hem ihtimal hem kademe büyür. Şefler en iyisini düşürür."
+      packages/shared/src/ogretici.ts:393

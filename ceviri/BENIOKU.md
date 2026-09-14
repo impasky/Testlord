@@ -1,85 +1,123 @@
-# Çeviri dosyası — Lordlar Çağı
+# Çeviri — Lordlar Çağı
 
-Oyundaki **2067** metnin tamamı burada. İkisi de aynı içerik, hangisi
-kolayına gelirse:
+> Buradaki dosyalar **el yazısıyla doldurulmak için**. Tek yapman gereken
+> `1-once-bunlar.txt` dosyasını açıp her satırın Türkçesinin yerine
+> İngilizcesini yazmak.
 
-| Dosya           | Ne zaman                                |
-| --------------- | --------------------------------------- |
-| `metinler.json` | Metin düzenleyiciyle çalışacaksan       |
-| `metinler.csv`  | Excel / Google E-Tablolar kullanacaksan |
+## Önce şunu bil: hepsini çevirmen gerekmiyor
 
-Dosyaları `tools/metin-cikar.mjs` üretiyor; **elle düzenlenmiyor.** Oyunun
-metni değişince aynı komut yeniden koşuyor:
+Oyunda 2027 metin var ama çevirmen listesi **1628**. Aradaki 399'u
+bilerek çıkardım — `cevrilmeyecekler.txt` neyin neden çıkarıldığını
+yazıyor:
 
-```
-node tools/metin-cikar.mjs
-```
+| Ne                      | Kaç | Neden                                                   |
+| ----------------------- | --: | ------------------------------------------------------- |
+| Bölge ve vilayet adları | 127 | Özel ad. "Akçakavak Köyü" İngilizcede de öyle kalır     |
+| Cümle parçaları         | 272 | Tek başına çevrilemez; önce kodda birleştirilmesi gerek |
 
-## Ne yapman gerekiyor
+1628 da tek oturuşta bitmez. Bu yüzden **üçe bölünmüş** ve sıra
+oyuncunun onlarla karşılaşma sırası:
 
-Her kaydın `en` alanı **boş**. Oraya İngilizcesini yaz, `tr` alanına
-dokunma. CSV'de `ingilizce` sütunu aynı işi görüyor.
+| Dosya                 | Satır | Ne                                                        |
+| --------------------- | ----: | --------------------------------------------------------- |
+| `1-once-bunlar.txt`   |   502 | Gezinme, düğmeler, ilk saatin ekranları, öğretici         |
+| `2-sonra-bunlar.txt`  |   868 | Savaş raporu, demirhane, general, araştırma, ittifak      |
+| `3-en-son-bunlar.txt` |   258 | Sunucu hataları — oyuncu ancak bir şey ters gidince görür |
 
-```json
-"t3a91f4c2": {
-  "grup": "arayuz",
-  "tr": "Ordun yetiyor. Bölge senin olunca kazanacakların:",
-  "en": "",
-  "nerede": ["apps/web/src/components/Omurga.tsx:611"]
-}
-```
+**Birincisi bitince oyun baştan sona İngilizce oynanabilir.** İkisi ve
+üçü sonra gelebilir; yarım çeviri oyunu kırmaz, çevrilmemiş satır
+Türkçe kalır.
 
-`anahtar` (`t3a91f4c2`) **değişmemeli** — çeviriyi metne o bağlıyor.
+## Nasıl çevrilir
 
-## Üç kural
-
-**1. `{0}`, `{1}` yer tutucudur, olduğu gibi kalır.** Oyun onların yerine
-sayı ya da ad koyuyor. Yeri değişebilir, kendisi değişemez:
+Dosyayı aç. İçi böyle görünüyor:
 
 ```
-tr: "Günde en fazla {0} saldırı yapabilirsin."
-en: "You can attack at most {0} times a day."
+--- Sehir (35) ---
+
+142. Ordun yetiyor.
+143. Günde en fazla {0} saldırı yapabilirsin.
+144. Bölgeyi geliştir
 ```
 
-**2. Baştaki ve sondaki boşluk anlamlıdır.** Bazı metinler cümlenin
-ortasına ekleniyor: `" · {0} bölgen"` kaydındaki baştaki boşluk
-kaybolursa ekranda sözcükler birbirine yapışır.
-
-**3. Boş bıraktığın kayıt Türkçe kalır.** Dil ayarı geldiğinde çevirisi
-olmayan metin Türkçesiyle gösterilecek — yarım bir çeviri oyunu
-bozmuyor, yalnız bazı satırlar Türkçe kalıyor.
-
-## Gruplar
-
-| Grup     | Adet | Ne                                                  |
-| -------- | ---- | --------------------------------------------------- |
-| `arayuz` | 1062 | Ekranlar, kartlar, düğmeler, uyarılar               |
-| `motor`  | 356  | Birim ve bölge adları, rütbeler, öğretici, ipuçları |
-| `sunucu` | 269  | Hata mesajları, bildirimler, e-postalar             |
-| `veri`   | 253  | Binalar, generaller, araştırma, başarımlar, akınlar |
-| `harita` | 127  | Bölge ve vilayet adları                             |
-
-`harita` grubunu **çevirmeden bırakabilirsin**: 121 bölge ve 6 vilayet adı
-özel isim (Kayınlık Köyü, Karaorman). İngilizce oyunda Türkçe kalmaları
-tuhaf durmaz; istersen çevir, istersen dokunma.
-
-## Bilmen gereken bir kusur
-
-Yaklaşık 400 kayıt bir cümlenin **parçası**. Arayüzde metnin arasına sayı
-girdiğinde cümle ikiye bölünüyor ve iki ayrı kayıt oluyor:
+Türkçenin yerine İngilizcesini yaz. **Numarayı ve noktayı bırak** —
+çeviriyi metne bağlayan o:
 
 ```
-"Bölgen "        <- parça 1
-" · {0} seviye"  <- parça 2
+142. Your army is enough.
+143. You can attack at most {0} times a day.
+144. Upgrade the region
 ```
 
-İngilizcede sözcük sırası değiştiği için bu parçaların bazıları tek
-başına doğru çevrilemiyor. Takıldığın yerde **çevirme, işaretle** —
-`nerede` alanı hangi dosyanın kaçıncı satırı olduğunu söylüyor, o
-satırları cümle bütünlüğü bozulmayacak şekilde ben yeniden yazarım.
+### Üç kural
 
-## Dosyayı bana nasıl geri verirsin
+**1. Numara değişmez.** Satırları silme, sıralarını değiştirmen sorun
+değil ama numara kaybolursa o çeviri kaybolur.
 
-Doldurduğun dosyayı sohbete yükle. Sonrasında dil ayarını ben kuruyorum:
-Hesap ekranına Türkçe/İngilizce seçeneği, seçimin cihazda saklanması ve
-bütün metinlerin sözlükten okunması.
+**2. `{0}` ve `{1}` yer tutucudur, olduğu gibi kalır.** Oyun onların
+yerine sayı ya da ad koyuyor. Cümledeki **sırası değişebilir**, kendisi
+silinemez:
+
+```
+tr: "{0} lord, {1} bölge"
+en: "{1} regions, {0} lords"      ✔ sıra değişti, ikisi de duruyor
+en: "several regions and lords"   ✘ oyun sayıları hiç göstermez
+```
+
+**3. Kısa tut.** Telefon ekranı dar. Türkçesi iki sözcükse İngilizcesi
+de iki sözcük olsun; uzun çeviri düğmeden taşar.
+
+`--- Sehir (35) ---` satırları hangi ekranda olduğunu söylüyor, çeviri
+değil. Onlara dokunma.
+
+## Bitince
+
+Dosyayı olduğu gibi bana geri ver. Gerisini ben yaparım:
+
+```bash
+node tools/ceviri-al.mjs ceviri/1-once-bunlar.txt          # denetler
+node tools/ceviri-al.mjs ceviri/1-once-bunlar.txt --uygula  # yazar
+```
+
+Denetim asıl iş: numarası silinmiş, boş bırakılmış, yer tutucusu düşmüş
+ya da Türkçe kalmış her satırı sayıyla söylüyor ve **`--uygula`
+demeden hiçbir şey yazmıyor.** Yarım çevrilmiş bir oyunun yayına
+çıkması böyle engelleniyor.
+
+## Makine çevirisi kullanacaksan
+
+Kullanabilirsin — 1628 satırı elle çevirmek günler sürer. Dosyalar
+düz metin ve satır yapısını koruyan her araç çalışır. Ama:
+
+- **Yer tutucuları kontrol et.** Çoğu araç `{0}`'ı bozar. `ceviri-al.mjs`
+  bozulanı yakalıyor, sen de listeye bak.
+- **1. dosyayı elden geçir.** Oyuncunun en çok gördüğü metin orada;
+  makine çevirisi anlaşılır olur ama tadı kaçar. 2 ve 3'te makine
+  çevirisi fazlasıyla yeterli.
+
+## Bu dosyalar nereden geliyor
+
+| Dosya                    | Üreten                   | Elle düzenlenir mi       |
+| ------------------------ | ------------------------ | ------------------------ |
+| `1/2/3-*.txt`            | `tools/ceviri-liste.mjs` | **Evet — çeviri buraya** |
+| `cevrilmeyecekler.txt`   | `tools/ceviri-liste.mjs` | Hayır, bilgi için        |
+| `metinler.json` / `.csv` | `tools/metin-cikar.mjs`  | Hayır, makine dosyası    |
+| `numaralar.json`         | `tools/ceviri-liste.mjs` | Hayır, numara–metin bağı |
+
+Oyunun metni değişince:
+
+```bash
+node tools/metin-cikar.mjs    # kaynaktan metinleri topla
+node tools/ceviri-liste.mjs   # listeleri yeniden yaz
+```
+
+Numaralar **kalıcı**: yeni metin sona ekleniyor, eskilerin numarası
+değişmiyor. Yani yarım kalmış bir çeviri, oyun güncellenince çöpe
+gitmiyor.
+
+## Dil ayarı ne zaman gelecek
+
+Çeviri dosyası geri geldiğinde. O iş üç parça: Hesap ekranında dil
+seçimi, cihaz başına kayıt, ve metinlerin sözlükten okunması. Bir de
+yukarıdaki 272 cümle parçasının kodda birleştirilmesi — çeviri
+listesine giremeyen o satırlar ancak öyle çevrilebilir hâle gelir.

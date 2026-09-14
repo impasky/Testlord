@@ -58,6 +58,15 @@ const OPERASYON = [
   'apps/api/src/seed.ts',
   'apps/api/src/worker.ts',
   'apps/api/src/push-anahtari.ts',
+  'apps/api/src/dunya-temizle.ts',
+  'apps/api/src/yonetici.ts',
+  /*
+   * Denge doğrulayıcısı. Mesajları ("world-map.json: harita kopuk",
+   * "Taht Kalesi tam 1 olmalı") yalnız `pnpm balance` koşan GELİŞTİRİCİYE
+   * çıkıyor ve ancak veri dosyaları bozuksa. Oyuncu bunları hiçbir
+   * koşulda görmüyor; çeviri listesinde on yedi satır yer kaplıyorlardı.
+   */
+  'packages/shared/src/balance.ts',
 ];
 
 function dosyalar(kok, uzantilar) {
@@ -195,13 +204,30 @@ function metinMi(s) {
  * bunu kesin söylüyor; şekil asla söyleyemez.
  */
 function kesinMetin(node) {
-  // Üçlü işleç, parantez ve `??` zinciri içinden yukarı yürü.
+  /*
+   * Üçlü işleç, parantez ve `??`/`||`/`&&` zinciri içinden yukarı yürü.
+   *
+   * KARŞILAŞTIRMADAN YÜRÜNMÜYOR ve sebebi somut bir hataydı: her ikili
+   * ifadeden yukarı yürünüyordu, bu yüzden `{m.kind === 'attack' ? …}`
+   * içindeki `'attack'` JSX gövdesine kadar tırmanıp METİN sayılıyordu.
+   * Çeviri listesine `attack`, `acik`, `akin`, `basvuru` gibi KOD
+   * DEĞERLERİ böyle giriyordu — çevrilirlerse oyun bozulurdu.
+   *
+   * `??`/`||`/`&&` bir DEĞER seçiyor (`ad ?? 'Bilinmiyor'`), `===` ise
+   * bir soru soruyor. İlkinin sonucu ekrana çıkabilir, ikincisinin
+   * işlenenleri asla.
+   */
+  const DEGER_ISLECI = new Set([
+    ts.SyntaxKind.QuestionQuestionToken,
+    ts.SyntaxKind.BarBarToken,
+    ts.SyntaxKind.AmpersandAmpersandToken,
+  ]);
   let n = node;
   while (
     n.parent &&
     (ts.isConditionalExpression(n.parent) ||
       ts.isParenthesizedExpression(n.parent) ||
-      ts.isBinaryExpression(n.parent))
+      (ts.isBinaryExpression(n.parent) && DEGER_ISLECI.has(n.parent.operatorToken.kind)))
   )
     n = n.parent;
   const p = n.parent;
@@ -243,9 +269,92 @@ function atlanirMi(node) {
   if (ts.isPropertyAssignment(p) && p.name === node) return true;
   // dizi erişimi: obj['anahtar']
   if (ts.isElementAccessExpression(p) && p.argumentExpression === node) return true;
-  const nit = nitelikAdi(node);
+  // Karşılaştırma işleneni: `tur === 'acik'`. Bir soru soruluyor, metin
+  // gösterilmiyor. Sağdaki dizge bir KOD DEĞERİ; çevrilirse karşılaştırma
+  // hiçbir zaman tutmaz ve özellik sessizce ölür.
+  if (
+    ts.isBinaryExpression(p) &&
+    [
+      ts.SyntaxKind.EqualsEqualsEqualsToken,
+      ts.SyntaxKind.ExclamationEqualsEqualsToken,
+      ts.SyntaxKind.EqualsEqualsToken,
+      ts.SyntaxKind.ExclamationEqualsToken,
+    ].includes(p.operatorToken.kind)
+  )
+    return true;
+
+  // `case 'acik':` — yine kod değeri.
+  if (ts.isCaseClause(p)) return true;
+
+  // Metot çağrısının ALICISI: `'aı'.includes(v)`. Dilbilgisi makinesi
+  // (ekler.ts) sesli harf tablolarını böyle tutuyor; bunlar metin değil.
+  if (ts.isPropertyAccessExpression(p) && p.expression === node) return true;
+
+  // BÜYÜK_HARFLİ sabitin değeri: `const KALIN = 'aıouâî'`. Projede bu
+  // yazım makine sabiti demek; ekrana çıkan metin böyle adlandırılmıyor.
+  if (
+    ts.isVariableDeclaration(p) &&
+    p.initializer === node &&
+    ts.isIdentifier(p.name) &&
+    /^[A-Z][A-Z0-9_]*$/.test(p.name.text)
+  )
+    return true;
+
+  // Biçim niteliği — dizgenin KENDİ ebeveyni olmasa da. `className={`a
+  // ${x ? 'bas w-full' : ''}`}` içindeki dizgenin ebeveyni üçlü işleç,
+  // nitelik değil; sınıf adları çeviri listesine böyle sızıyordu.
+  const nit = nitelikAdi(node) ?? kapsayanNitelik(node);
   if (nit && ATLANAN_NITELIK.has(nit)) return true;
+
+  // Öğeye özgü: `<Zemin ad="arastirma">` görsel anahtarı, metin değil.
+  const nitelikDugumu = ts.isJsxAttribute(p)
+    ? p
+    : ts.isJsxExpression(p) && p.parent && ts.isJsxAttribute(p.parent)
+      ? p.parent
+      : null;
+  if (nitelikDugumu) {
+    const oge = ogeAdi(nitelikDugumu);
+    if (oge && OGEYE_OZGU_ATLANAN.get(oge)?.has(nitelikDugumu.name.getText())) return true;
+  }
   return false;
+}
+
+/**
+ * Öğeye ÖZGÜ atlanan nitelikler.
+ *
+ * `ad` genel olarak atlanamaz — `<Kaynak ad="Altın">` gerçek metin. Ama
+ * `<Zemin ad="arastirma">` bir GÖRSEL ANAHTARI: hangi zemin resminin
+ * yükleneceğini söylüyor. Aynı nitelik adı iki farklı iş yapıyorsa karar
+ * öğeye bakılarak verilmeli; listeyi nitelik adıyla budamak "Altın"ı da
+ * götürürdü.
+ */
+const OGEYE_OZGU_ATLANAN = new Map([
+  ['Zemin', new Set(['ad'])],
+  ['TamZemin', new Set(['ad'])],
+]);
+
+/** Niteliğin üstündeki JSX öğesinin etiket adı. */
+function ogeAdi(nitelik) {
+  const p = nitelik.parent;
+  if (!p || !ts.isJsxAttributes(p)) return null;
+  const oge = p.parent;
+  if (!oge) return null;
+  const etiket = ts.isJsxSelfClosingElement(oge) ? oge.tagName : oge.tagName;
+  return etiket ? etiket.getText() : null;
+}
+
+/**
+ * Düğümü çevreleyen EN YAKIN JSX niteliğinin adı.
+ *
+ * Bir JSX öğesine girildiğinde duruyor: `title={<b>{'x'}</b>}` içindeki
+ * `'x'` başlığın değil, iç öğenin gövdesi.
+ */
+function kapsayanNitelik(node) {
+  for (let n = node.parent; n; n = n.parent) {
+    if (ts.isJsxAttribute(n)) return n.name.getText();
+    if (ts.isJsxElement(n) || ts.isJsxSelfClosingElement(n) || ts.isFunctionLike(n)) return null;
+  }
+  return null;
 }
 
 function dosyayiTara(yol, ekle) {

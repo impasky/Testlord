@@ -34,7 +34,9 @@
     "yedekle": "bash tools/yedekle.sh",
     "olcum": "node tools/olcum.mjs",
     "simge": "python3 tools/simge-uret.py",
-    "yonetici": "pnpm --filter @lordlar/api yonetici"
+    "yonetici": "pnpm --filter @lordlar/api yonetici",
+    "ceviri": "node tools/metin-cikar.mjs && node tools/ceviri-liste.mjs",
+    "ceviri-al": "node tools/ceviri-al.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

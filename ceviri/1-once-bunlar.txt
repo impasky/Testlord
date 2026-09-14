@@ -1,0 +1,563 @@
+LORDLAR ÇAĞI — ÇEVİRİ 1/3: OYUNU OYNANIR KILAN
+
+Gezinme, düğmeler, kaynak ve birim adları, ilk saatin ekranları ve
+öğretici. Bu parti bitince oyun baştan sona oynanabilir.
+
+Bu dosyada 502 satır var.
+
+NASIL ÇEVİRİLİR
+  Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.
+  Türkçesinin yerine İngilizcesini yaz, numarayı ve noktayı bırak:
+
+      12. Ordun yetiyor.        ->   12. Your army is enough.
+
+  {0} ve {1} birer yer tutucu; oyun onların yerine sayı ya da ad
+  koyuyor. Sırası değişebilir, kendisi silinemez.
+
+  Bitince dosyayı olduğu gibi geri ver; gerisini ben hallederim.
+
+==========================================================================
+
+--- Oyun motoru (91) ---
+
+908. "Başka bir sebep" seçtiysen en az {0} harfle açıkla.
+915. {0} gün
+916. {0} için tavan. Daha büyük bir yerleşim gerekiyor.
+917. {0} kanatta konuşlandı: +{1} güç.
+927. Açıklama en fazla {0} harf olabilir.
+931. Akına boş orduyla çıkılmaz.
+941. Asker eğitimi +{0} hızlı
+942. Asker eğitimi başlat
+944. Asker maliyeti −{0}
+947. Aynı anda en fazla {0} başvurun olabilir. Birini geri çek.
+949. Aynı kaynağı kendisiyle takas edemezsin.
+952. Başka bir sebep
+954. Bilinmeyen birim: {0}
+955. Bilinmeyen karar.
+958. Bir akın
+959. Bir ateş, birkaç çadır. Henüz toprağın yok.
+961. Bir bölgeye saldırı gönder
+964. Bir sebep seç.
+969. Bölge geliri +{0}
+971. Bölge geliştirme +{0} hızlı
+978. Böyle bir kaynak yok.
+979. Bu ittifağa zaten başvurdun, cevap bekleniyor.
+980. Bu ittifak başvuru almıyor, doğrudan katılabilirsin.
+981. Bu ittifak başvurunu reddetti. {0} saat sonra yeniden başvurabilirsin.
+982. Bu ittifak başvuruyla üye alıyor. Başvurup liderin onayını beklemelisin.
+983. Bu ittifak en az Sv{0} istiyor. Sen Sv{1}'sin.
+985. Bu şikâyette silinecek bir mesaj yok.
+986. Bugün en fazla {0} {1} daha takas edebilirsin.
+987. Bugünkü pazar hakkın doldu. Yarın yenilenir.
+990. Casusluk −{0} ucuz
+991. Çamurlu bir yol, ahşap evler, bir palisad.
+995. Depo kapasitesi +{0}
+999. Diyarın merkezi.
+1000. Diyarını imar et
+1004. Düşmanda {0} yoktu; bu taktiğin asıl kozu boşa gitti.
+1005. Düşmanın {0}'i {1}ydı: +{2} saldırı.
+1008. Ekipman üret ya da bölge geliştir
+1009. Eksi miktar gönderilemez.
+1011. Elinde bu kadar yok.
+1012. En az {0} birim takas edebilirsin.
+1013. En az {0} değerinde yük gönderilebilir.
+1014. En fazla {0} paktın olabilir. Yenisi için birini feshetmen gerekiyor.
+1016. En yüksek seviyede.
+1020. Etiket {0}-{1} karakter olmalı.
+1021. Etiket yalnız harf ve rakam içerebilir.
+1025. Forum, su kemeri, tapınak. Artık bir şehirsin.
+1028. Geçersiz susturma süresi.
+1036. Günde +{0} saldırı hakkı
+1037. Günlük gönderim tavanını aşıyor. Bugün {0} değerinde daha gönderebilirsin.
+1040. Hakaret veya küfür
+1044. İttifak adı en az {0} harf olmalı.
+1045. İttifak adı en fazla {0} harf olabilir.
+1050. Kale-şehir
+1053. Kamp
+1056. Karşı ittifakın pakt kotası dolu ({0}).
+1057. Kasaba
+1061. Kendi ittifakınla pakt yapamazsın.
+1063. Komuta kapasitesi +{0}
+1065. Koşul tutmuyor.
+1067. Lider
+1068. Lord seviyesi {0} gerekiyor.
+1069. Malikâne geliri +{0}
+1071. Mesaj kaldırıldı
+1072. Metropol
+1073. Nefret söylemi
+1074. Not en fazla {0} harf olabilir.
+1075. Ordu bakımı −{0}
+1077. Ordu saldırısı +{0}
+1078. Ordu savunması +{0}
+1084. Ön hattın açıktı: milis ve mızrakçı arkada beklerken düşman doğrudan içeri girdi. {0} savunma kaybı.
+1085. Önce {0} gerekiyor.
+1088. Pakt için bir ittifakın olması gerekiyor.
+1090. Reklam veya bağlantı yağmuru
+1098. Seviye eşiği en az 1 olmalı.
+1099. Seviye eşiği en fazla {0} olabilir.
+1100. Sohbette susturuldu ({0})
+1101. Sohbette susturuldun — {0} kaldı.{1}
+1102. Surlar hâkim. Askerî bir yerleşim.
+1103. Susturma süresi seç.
+1105. Şikâyet Kuyruğu
+1106. Şikâyet yok sayıldı
+1107. Şu an inşa ediliyor.
+1109. Taciz veya tehdit
+1110. Tahkimat +{0} (savunmada)
+1112. Taht senin. Diyar seni tanıyor.
+1115. Taş bir meydan, ilk sur, bir çarşı.
+1122. Uygunsuz lord adı
+1130. Yağma +{0}
+1136. Yaşlı
+1141. Yürüyüş +{0} hızlı
+1143. Zaten bir ittifaktasın. Önce ayrılman gerekir.
+
+--- Öğretici (86) ---
+
+909. "Şimdi ne yapmalısın"
+911. {0} bağış hakkın var.
+912. {0} birim daha ekler. Ordu istediğin kadar büyümez.
+913. {0} bölge
+914. {0} dal, her dalda {1} kademe
+918. {0} saat yeni lord kalkanı
+923. {0}x{1} bir düzlükte orduyu sen yerleştirirsin, sonra bir taktik seçersin.
+924. %{0}'i geri gelir.
+925. Acele etmene gerek yok.
+930. Akın: toprak almadan savaşmak
+932. Altın ve demir
+933. Altın, demir, erzak biriktirirsin; şöhret sıralamandır.
+934. Ambarlar bu tavanı büyütür.
+935. Ana sayfan bir yerleşim haritası. Binalar kapasite verir.
+937. Araştırma oran, bina kapasite
+938. Araştırma: diyarını sen şekillendirirsin
+943. Asker eğitmek, ekipman dövmek ve bölge geliştirmek bunlarla olur.
+946. Aynı anda {0} araştırma
+948. Aynı anda tek araştırma
+950. Aynı vilayette topla
+951. Başarımlar
+953. Beş düşman diyarı, her birinde on kamp. Kaynak ve ekipman.
+957. Binalar seninle taşınır
+965. Bir şey başlat, kapat
+966. Birimler birbirini kırar. Kimi göndereceğin, kaç kişi olduğundan önemli.
+970. Bölge geliştir
+973. Bölge sınırı
+974. Bölge tutmak, savaş kazanmak ve tahtı elinde tutmak şöhret kazandırır.
+975. Bölge, ekipman ve general. Üçü de aynı anda ilerler.
+976. Bölgeler bitmez ama çoğalmaz da — biri alırsa, bir başkası kaybeder.
+984. Bu oyun beklemeli. Günde birkaç dakika yeter.
+988. Burası bir diyar, sen bir lordsun
+989. Büyümenin üç yolu
+992. Dağınık üç bölge ile bitişik üç bölge aynı şey değil.
+996. Deponun bir tavanı var
+998. Dibe vurursun, silinmezsin
+1001. Duvara karşı harika, insana karşı berbat — yanına muhafız al.
+1002. Dünya kalıcı
+1006. Ekipman döv
+1015. En fazla {0} üye
+1017. Erken oyunda az bölgeyi iyi tutmak, çok bölgeyi kötü tutmaktan iyidir.
+1023. Fethin karşılığı bu: T5 ekipman dövmek için gerçek bir şehir gerekiyor.
+1024. Fetih sonrası {0} saat
+1026. Ganimet ve fetih
+1030. General topla
+1038. Günlük görevler ve haftalık sefer
+1041. Her birimin bir yeri var
+1047. İttifak seviyesi
+1048. İttifak; birbirine saldıramayan, birbirini besleyen bir grup.
+1051. Kalıcı seçimler. İki lord aynı seviyede olsa bile aynı olmaz.
+1052. Kalıcı ve geri alınmaz
+1054. Kamptan başlarsın
+1055. Kanatlar ve açık cephe
+1058. Kaybetmek ölüm değil
+1059. Kaynak gönder
+1060. Kaynak kesin, ekipman şans
+1062. Kimin nerede durduğu savaşın gücünü değiştirir.
+1064. Komuta sınırı
+1066. Kuşatma silahı
+1079. Ordu: kalabalık değil, doğru kalabalık
+1081. Orduyu yollarsın, yol alır, çarpışır; sen izlersin.
+1082. Oyunun ritmi
+1083. Ölü sayılanların bir bölümü yaralı olarak geri döner — hem savunmada hem saldırıda.
+1086. Önce casus yolla
+1087. Önce önizleme
+1089. Pazarda takas
+1091. Saldırmazlık paktı
+1092. Savaş gerçek
+1093. Savaş kendiliğinden çözülür
+1094. Savaştan önce: dizilimin ve taktiğin
+1096. Seni koruyan kurallar
+1104. Şehrin: her binanın bir işi var
+1113. Takas boşluğu kapatır, üretimin yerini tutmaz.
+1114. Takviye ve ortak hedef
+1116. Taş-kağıt-makas
+1117. Tavanı var, savaşı belirlemez
+1118. Tek bir harita, üzerinde herkes. Sen de onlardan birisin.
+1119. Toprak haritayı açar
+1120. Toprak riski yok
+1123. Uykudayken silinmezsin. Bu oyunda kalkanlar gerçekten var.
+1124. Üç kaynak, bir puan
+1126. Vurulan kamp toparlanır
+1131. Yağma sonrası {0} saat
+1132. Yalnız oynamak zorunda değilsin
+1134. Yaralanırlarsa bir süre dinlenmeleri gerekir.
+1140. Yerleşim bir TAVAN
+
+--- Harita (76) ---
+
+10. ] HEDEF
+36. {0} oluyor
+53. {0} yap
+66. ⛨ korumalı
+96. Asker senin kalır. Bölge el değiştirse bile evine döner.
+102. Aynı anda açabileceğin keşif sayısı ve altının sınırlı; biri bitince tekrar dene.
+104. Aynı anda en fazla {0} bölge geliştirilebilir. Biri bitmeden yenisi başlamaz.
+137. Bırakılıyor…
+152. birim
+157. boş
+164. Bölge kalkan altında
+168. Bölge sahipsiz kalır, garnizondaki birlikler eve döner. Bakımı ağır gelen ya da savunamadığın bir bölgeden böyle kurtulabilirsin.
+173. Bölgen
+183. Bölgeyi bırak
+185. Bu bilgi eskidi; garnizon değişmiş olabilir. Tavsiyeler eski rapora göre verilmiyor.
+186. Bu bölgede
+187. Bu Bölgedeki Savaşların
+189. Bu bölgeyi bırak
+190. Bu bölgeyi sadece buradaki garnizon savunur.
+212. Casus gönder · {0} altın · {1}
+213. Casus gönderilemedi.
+214. Casus yakalanabilir; Kurnazlık statın riski düşürür.
+215. Casus yola çıkıyor…
+217. Çekiliyor…
+253. Diyarda tek. Sahibi %
+262. Diyarın Lordu · {0}
+276. Dönüş
+281. Dünya Haritası
+283. düşman
+284. Düşman garnizonu görünmüyor. Casus göndererek öğrenebilir ya da Casus Leyla'yı sahaya sürerek sürekli görebilirsin.
+315. erzak
+320. eski bilgi · {0} önce
+327. Evde asker yok. Saldırmak için önce ordu kurman gerekiyor.
+336. Garnizonu ayarla
+339. geçit
+341. Geliştirme
+342. Geliştirme kuyruğu dolu
+351. Geri çağır
+359. Gönderilecek takviye
+375. Günde en fazla {0} saldırı yapabilirsin. Taht Kalesi bu limitten muaftır; yarın sıfırlanır.
+377. Günlük saldırı hakkın bitti
+390. Hedef işaretlenemedi.
+400. Hepsi
+432. İşaretleniyor…
+439. İttifak hedefi yap
+456. İyileşene kadar saldıramazsın. Malikâne ekranında kalan süreyi görebilirsin.
+506. Keşif
+513. Kışla'ya git
+547. lider avı · +%
+563. Lordun yaralı
+616. Ordu seçmedin
+617. Ordu yola çıktı. Varış {0} sonra.
+624. Ordun sahada. Döndüğünde bu bölgeye yollayabilirsin.
+635. Ordunu ve ittifak durumunu gözden geçir.
+638. Ortak hedef bir tanedir; işaretlemek öncekini değiştirir.
+683. Saatlik şöhret
+688. sahipsiz
+689. Saldır
+693. Saldırı
+694. Saldırı başlatılamadı.
+695. Saldırı ordusu
+697. Saldırmadan önce garnizonu ve depoyu öğren. Casus ordu götürmez.
+733. senin
+760. Sonuç hesaplanıyor…
+763. surlu
+784. şöhret bonusu alır, bölge limitine sayılmaz. Buraya saldırmak günlük hakkından düşmez ve el değiştirdikten sonra kalkanı yalnızca
+795. tahkimat +%
+799. taht boş
+810. Takviye
+811. Takviye gönder ({0} birim)
+813. Takviyeyi geri çek
+817. taze · {0} önce
+857. Yağmalanabilir depo
+871. Yeni ele geçirilmiş ya da yeni oyuncuya ait bölgelere bir süre saldırılamaz.
+890. Yukarıdan kaç birim göndereceğini seç.
+900. Yürüyüşler
+
+--- Omurga (62) ---
+
+23. {0} dk
+29. {0} için ordun henüz yetmiyor.
+32. {0} kapasiten dolsa bile alınmıyor. Liderlik statını yükseltmen gerek.
+40. {0} saat
+43. {0} saldır
+52. {0} üzerine yürü
+75. Akına git
+76. Akının sürüyor
+86. Araştırma kalıcıdır ve diyarını senin seçimlerinle şekillendirir — iki lord aynı seviyede aynı olmaz.
+88. Araştırmaya git
+97. Askerlerin eğitiliyor
+145. bir araştırma başlat
+146. Bir araştırma başlat
+151. Bir tarla bölgesi al ya da ordunu küçült.
+174. Bölgeni geliştir
+175. bölgeni yükselt
+176. Bölgenin seviyesi geliri de savunmayı da büyütür. Yeni toprak almadan da güçlenebilirsin.
+180. Bölgeye git
+200. Bu sürede ekipman üretebilir ya da bölgeni yükseltebilirsin.
+201. Bu sürede ordunu büyütebilir ya da ekipman üretebilirsin.
+232. Demirhanede ekipman üret
+233. Demirhaneye git
+238. Depon dolduğu için ürettiğin her şey boşa gidiyor. Ambarlar araştırması depoyu büyütür.
+240. Deponun taşıyor
+254. Diyarı büyüt
+255. diyarı büyütmeye devam et
+296. Ekipman lordun savaş katkısını büyütür; aynı savaştan daha az kayıpla çıkarsın.
+314. Erzağın bitiyor
+318. Erzak bitti, askerlerin kaçıyor. Bir tarla bölgesi al ya da ordunu küçült.
+344. General bütün ordunu birden güçlendirir — tek bir ekipmandan büyük fark yaratır.
+345. general kirala
+346. General kirala
+348. Generallere git
+381. Haritada tarla ara
+389. Hazır olunca {0} üzerine yürüyeceksin.
+420. İlk akınına çık
+421. ilk bölgeni al
+457. iyileşince saldır
+486. katkı
+499. kaynak ve ekipman
+514. Kışlada {0} eğit
+515. Kışlaya git
+522. Komuta kapasiten yetmiyor
+562. Lordun iyileşiyor
+564. Lorduna ekipman kuşan
+591. Niteliklere git
+619. Ordun aç
+621. Ordun dönüyor
+622. Ordun henüz yetmiyor.
+623. Ordun kampa iniyor. Dönünce ganimeti ve raporu görürsün.
+628. Ordun yolda
+632. Ordunu büyüt
+633. Ordunu kur
+684. saatte %5 firar
+746. Sıradaki hedefin {0}.
+757. sonra: sıradaki adım
+781. Şimdi ne yapmalısın
+788. şu an
+801. Taht Kalesi — diyarın tek sahibi olabilirsin
+825. toprağın güvende
+826. toprak riski yok
+869. yeni bir hedef seç
+
+--- LordEkrani (44) ---
+
+2. 'de dövülür; ürettiğin parçayı buradan kuşanırsın.
+27. {0} galibiyet · {1} yenilgi
+38. {0} puanı dağıt
+41. {0} saat {1} dakika
+210. Can +{0} · yaralanma −%{1}
+211. Can +%{0}
+216. Çaylak
+224. Dayanıklılık
+295. Ekipman gücü
+317. Erzak bitti, askerler saatte %5 firar ediyor. Tarla bölgesi al ya da ordunu küçült.
+365. Görünüş
+369. Güç
+383. Haritaya bak
+412. Hiçbir yuvan dolu değil. Ekipman
+458. İyileşmesine
+490. Kaydediliyor...
+521. Komuta {0} yer
+528. Kumandan
+530. Kurnazlık
+532. Kuşam
+535. Kuşanılan Ekipman
+550. Liderlik
+557. lord_{0}
+560. Lordlara karşı
+590. Nitelikler
+599. olacaksın.
+600. olay
+604. oldu.
+610. Ordu donanımı
+662. parola, öğretici, çıkış
+672. PUAN
+673. Puan dağıtımı kalıcıdır. Liderlik ordunun büyüklüğünü ve general slotunu belirler.
+692. saldırı
+703. savaş
+704. Savaş derecen
+705. Savaş Gücü
+706. Savaş katkısı +{0}
+709. Savaş raporlarını aşağıdaki olay akışından açabilirsin.
+731. Sen yokken
+743. Sıfırla
+818. Tecrübeli
+833. Unvan
+836. uzaktaydın. Bu sürede
+855. Yağma +%{0}
+
+--- Rehber ve ipuçları (37) ---
+
+926. Aç ordu saatte %{0} firar verir. Tarla bölgesi almak, asker eğitmekten önce gelir.
+928. Adamlar kampa iniyor. Dönünce ne getirdiklerini birlikte sayarız.
+929. Adamlar toplanıyor. Şuracıkta bekle, bittiğinde haber vereceğim.
+936. Araştırma başlat
+939. Araştırmanın girişi ana sayfada. Önce oraya dönelim lordum.
+940. Artık bir general tutabilirsin. Onlar ordunun değil, ORDUNUN KURALLARININ gücüdür.
+945. Askerlerin eğitiliyor lordum. Şuracıkta bekle, bittiğinde haber vereceğim.
+960. Bir bölgen oldu. Demirhanede kuşanacağın her parça, savaşa senin katkını büyütür.
+962. Bir ekipman parçası yalnız lorda etki eder; general bütün orduya. Yuvan varsa boş bırakma.
+963. Bir grup seç lordum. En üsttekiler en zayıfı; ilkiyle başlayalım.
+972. Bölge seviyesi geliri büyütür
+977. Bölgeni haritadan açacağız; yol ana sayfadaki adımdan geçiyor.
+993. Demirhanenin girişi ana sayfada lordum. Önce oraya dönelim.
+997. Depoyu büyütmeden biriktirmenin anlamı yok.
+1003. Düşman kampları Akın sekmesinde ama yol ana sayfadan geçiyor lordum.
+1007. Ekipman kuşan
+1010. Ele geçirilen bölge {0} saat kalkan altında kalır — hem seninki hem düşmanınki.
+1018. Erzak eksiye düşerse ordu dağılır
+1019. Erzak eksiye düştü lordum. Aç ordu dağılır — önce burayı kapatalım.
+1022. Evdeki ordu bölgeni korumaz. Aldığın toprağa asker bırakmazsan ilk gelen geri alır.
+1027. Garnizon bölgeyi tek başına savunur
+1029. General ordunun tamamını çarpar
+1031. Generallerin listesi ana sayfada duruyor. Önce oraya dönelim lordum.
+1035. Günde {0} saldırı yapabilirsin; Taht Kalesi bu limitten muaf. Hedefini seçerek harca.
+1039. Günlük saldırı hakkın sınırlı
+1042. İlk {0} saat kimse sana saldıramaz. O süre kurulmak için — sonrası için hazırlan.
+1043. İlk bölgeni al
+1070. Malikâne kâhyan
+1076. Ordu büyüdükçe komuta gerekir. Liderlik statın kaç asker taşıyabileceğini söyler.
+1080. Ordun yolda. İlk yürüyüşün {0} dakika sürer; sonucu bu oturumda görürsün.
+1095. Sayı değil, eşleşme kazandırır
+1108. Şu diyara girelim. İçinde on kamp var, hepsi ayrı ayrı vurulabiliyor.
+1133. Yapılacak iş ana sayfada yazılı. Önce oraya dönelim lordum.
+1135. Yaralısın. Dinlenmeden sefere çıkmak, orduyu iki kez kaybetmektir.
+1137. Yeni bölge almak tek yol değil: elindekini yükseltmek de saatlik geliri artırır ve kimse onu senden alamaz.
+1138. Yeni bölge bir süre dokunulmaz
+1139. Yeni lordlar korumalı
+
+--- Kisla (29) ---
+
+16. {0} {1} eğit
+95. Asker Eğitimi
+105. Aynı anda en fazla {0} eğitim yapabilirsin. Kışlanı yükseltirsen artar.
+116. Bakım
+148. Bir bölgeyi sadece oraya bıraktığın garnizon savunur.
+159. Boş yer {0}, gereken {1}. Liderlik statını artır ya da daha az birim eğit.
+209. Can
+242. DETAY
+243. DETAYI GİZLE
+293. Eğitim kuyruğu dolu
+294. Eğitimde
+319. erzak/sa
+324. Evde
+335. Garnizonlarda
+410. Hız
+467. Kale kırıcı. Tahkimata ×2, birime karşı ×0,5.
+523. Komuta yeri
+524. Komuta yerin yetmiyor
+542. Kuyruk
+631. Ordunu burada büyütürsün
+634. Ordunu ne için kuruyorsun
+636. Ordunun Dağılımı
+670. parti)
+718. Savunma
+724. Savunmanın omurgası. Süvariye karşı ×1,5.
+831. Ucuz et kalkanı. Kayıpları önce o üstlenir.
+832. Ucuz hasar. Mızrakçıya karşı ×1,5.
+850. Vurucu güç ve hız. Okçuya karşı ×1,5.
+901. Yürüyüşte
+
+--- Sehir (27) ---
+
+1. 'a git
+11. {0} — {1} yapı
+94. Asker eğitimi
+119. Başkent taşınamadı.
+120. başkentin yok
+121. Başkentini taşıyabilirsin
+144. Binaların bu yerleşimde en fazla
+158. boş arsa
+170. Bölge yükseltme
+222. Daha büyük bir yerleşimin var. Taşınırsan binaların seninle gelir — hiçbir seviye kaybolmaz, yalnız tavan yükselir.
+245. Dikili yapıya dokun: içine girersin. Boş arsaya dokun: bedelini söyler.
+298. Ekipman üretimi
+299. Ekipman yükseltme
+379. Harita
+424. inşa ediliyor
+425. İnşa et
+426. İnşaat
+427. İnşaat başlatılamadı.
+543. Kuyruk boş. Bir şeyler başlat.
+544. Kuyruklar{0}
+598. olabilir.
+737. Seviye {0} / {1}
+738. Seviye {0} yap
+741. Seviye yükseltmek için buradan seç: haritadaki dokunuş yapının içine giriyor.
+816. Taşın
+860. yapı
+861. Yapılar
+
+--- Giris (22) ---
+
+71. Adres kayıtlıysa sıfırlama bağlantısı gönderildi. Gelen kutunu kontrol et.
+114. Bağlantı kurulamadı.
+132. Bekle...
+165. Bölge kıt, rakip çok. Tahtı hak eden alır.
+249. Diyara Gir
+252. Diyarda seni bu adla tanıyacaklar.
+289. E-posta
+306. En az 8 karakter.
+333. game-icons.net
+353. Giriş
+355. Giriş Yap
+418. İkonlar
+476. Kara Yusuf
+553. Lord adı
+592. noreferrer noopener
+648. Önce e-posta adresini yaz.
+658. Parola
+663. Parolamı unuttum
+744. Sıfırlama bağlantısı gönder
+872. Yeni Lord
+874. Yeni lordlar 72 saat saldırıya kapalıdır.
+889. Yukarıdaki e-posta adresine sıfırlama bağlantısı gönderelim.
+
+--- ui (10) ---
+
+56. {0}dk {1}sn
+57. {0}g {1}sa
+58. {0}sa {1}dk
+290. Efsanevi
+462. Kadim
+488. Kaybedersen
+572. maliyet
+585. Nadir
+747. Sıradan
+834. Usta işi
+
+--- MobilKabuk (8) ---
+
+25. {0} dk sonra biter
+39. {0} sa sonra biter
+55. {0}: {1} ({2}{3}/sa){4}
+108. azalıyor
+220. Çıkış
+237. depo dolu
+280. Dünya
+607. Ordu
+
+--- ParolaSifirla (5) ---
+
+661. Parola sıfırlanamadı.
+665. Parolan değişti. Artık yeni parolanla giriş yapabilirsin.
+668. Parolayı belirle
+847. Vazgeç, giriş ekranına dön
+878. Yeni parolanı belirle
+
+--- Sunucu mesajları (3) ---
+
+1046. İttifak dolu ({0} üye).
+1125. Üye
+1142. Zaten bir ittifaktasın.
+
+--- Diğer (2) ---
+
+1034. Görev Panosu
+1049. Kâhya Sinan
