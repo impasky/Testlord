@@ -122,8 +122,6 @@ temizleniyor; hangi dosyada yapıldığı aşağıdaki tabloda yazıyor.
 | `akin/*.webp` (5 dosya)        | eklendi (filigran çıkmadı)                        |
 | `zeminler/akin.webp`           | eklendi (filigran çıkmadı)                        |
 | `zeminler/ittifak.webp`        | **eklendi** (müttefik sancakları, ant masası)     |
-| `bolge_zemin/tarla.webp`       | **eklendi** (boş tarla, yapısız — sahne zemini)   |
-| `bolge_yapi/*.webp` (5 dosya)  | **eklendi** (beşli sayfa, tabana hizalı)          |
 | `akin_harita/*.webp` (5 dosya) | eklendi (plakadan, kampsız)                       |
 | `dusmanlar/*.webp` (10 dosya)  | eklendi (iki beşerli sayfa, plakadan)             |
 | ~~`harita/*.webp` (6 dosya)~~  | **silindi** — altıgen karolar emekli (docs/12 §5) |

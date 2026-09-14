@@ -199,81 +199,47 @@ tutan şey 190 piksellik portre kartı ve boş ordu sahnesi; Akın'da beş
 diyar kapağı. İkisi de aynı ilkeyle küçültülebilir — tek karar, tek kart —
 ama ikisinde de asıl soru "kaç piksel" değil, "bu ekranın tek işi ne".
 
-## 13.12 Bölge sahnesi: afiş yerine bileşen (pilot)
+## 13.12 Bölge sahnesi denendi ve GERİ ALINDI
 
 Oyuncunun sorusu: _"şehir köy vs görsellerini stok kullanmak yerine
 bileşenleri tespit edip kendimiz üretsek?"_
 
-Cevabın yarısı depoda zaten yazılıydı: **şehir ekranı bugün de böyle
-çalışıyor.** Yerleşim zemini boş bir arazi, 34 bina sprite'ı
-`binalar.json`'daki x/y ile üstüne konuyor. Yöntem denendi ve tuttu —
-bedeli de biliniyor (docs/12 §3.6, §9.1):
+Fikir sağlamdı ve yarısı zaten uygulanmıştı — **şehir ekranı bugün de
+böyle çalışıyor**: yerleşim zemini boş bir arazi, 34 bina sprite'ı
+`binalar.json`'daki x/y ile üstüne konuyor. O yüzden denemeye değerdi.
 
-- Tek tek üretilen varlıklar bir araya gelmiyor: 24 bina 24 ayrı çağrıyla
-  üretilmişti ve her birinin kendi kamerası, kendi güneşi çıkmıştı.
-  Çözüm sayfa + plaka: bir karede üretilen varlıklar zaten tutarlı.
-- Zeminin **boşaltılması** gerekti; zeminin kendi boyalı binaları
-  sprite'larla yarışınca sprite yapıştırılmış duruyor.
-- Sprite'lar tabana hizalandı (`sprite-hizala.py`) ve iki gölge eklendi
-  (ortam + temas), yoksa binalar havada duruyordu.
+Denendi. Tarla için iki çağrı harcandı (boş bir tarla zemini + beş
+yapının tek sayfası), sprite'lar tabanlarına hizalandı, sahne bölge
+kartına bağlandı ve üç seviye için yerleşim yazıldı.
 
-Yani kompozisyon üç şartla çalışıyor: **tek kamera, tek güneş, boş
-zemin.**
+**Karar: eski boyalı afişler daha iyi.** Oyuncu yan yana gördü ve öyle
+dedi. Sahne, afişin yerini almadı; kod, veri ve varlıklar geri alındı.
 
-### Neden afişin kendisi bileşenleştirilmedi
+### Ne öğrenildi
 
-Geriye kalan tek "stok" görsel bölge afişleri (16 dosya) ve onlar 3:2
-**manzara** — ufuk, derinlik, atmosfer. Kompozisyonun en zayıf olduğu yer
-orası. Bu yüzden afişi parçalara ayırmak yerine **ne gösterdiği**
-değişti: bölge kartı artık boyalı bir kartpostal değil, şehir ekranıyla
-aynı yöntemle kurulmuş bir sahne.
+Bunu bir başarısızlık gibi yazmak yanlış olur, çünkü teknik taraf tuttu:
 
-İki kazanç:
+- **Kompozisyon dağılmıyor.** Beş yapı tek sayfada üretildiği için aynı
+  kamerayı ve aynı güneşi taşıyordu; zemine oturdular, kolaj hissi
+  vermediler. Yani "bileşenden kurmak imkânsız" değil.
+- **İlerleme gerçekten görünüyordu.** Sv1 bir ambar, sv5'te tahıl
+  ambarı + değirmen + ikinci ambar + arabalar. Boyalı afiş bunu yapamaz.
+- **Ama afiş daha iyi bir RESİM.** Sahne bilgi taşıyor, afiş atmosfer
+  taşıyor ve bölge kartında ağır basan şey atmosfermiş. 3:2 bir manzara,
+  kompozisyonun en zayıf olduğu yer — bu baştan söylenmişti, pilot da
+  onu doğruladı.
 
-- **Yeni bölge türü = 0 görsel çağrısı.** Bugün 3 çağrı (seviye 1/3/5).
-  Tür artık sanat değil, `data/bolge-sahne.json` içinde bir yerleşim
-  listesi.
-- **Sahne bilgi taşıyor.** Seviye arttıkça yapı sayısı ve cinsi
-  değişiyor: tarla 1'de ambar ve saman, 5'te tahıl ambarı, değirmen,
-  ikinci ambar ve öküz arabası. Boyalı resim bunu yapamaz.
+Not: `tarla_5` afişi konusu bakımından hâlâ tuhaf — bir tarla bölgesi
+için ırmak kıyısında surlu bir kasaba çiziyor. Bu ayrı bir iş ve çözümü
+sahne değil, o afişin yeniden üretilmesi.
 
-### Pilotun durumu
+### Geriye ne kaldı
 
-Kod tamam ve ölçüldü: sahne kutusu 390×260, yapılar tabanlarından
-çakılıyor, derinlik y'den geliyor, eritme ve üst yazı afiş yolundakiyle
-aynı. Mekanizma **geçici sprite'larla** doğrulandı — malikâne ve pazar
-tezgâhı tarla zeminine kondu ve yapıştırılmış durmadı, çünkü ikisi de
-aynı plakadan geliyor.
+`ZemineGolgesi`. İki gölge (geniş "ortam" + dar "temas") şehir ekranında
+satır içindeydi ve sahne için ikinci bir kopya çıkacaktı; ortak bileşene
+alındı ve pilot geri alınınca da kaldı. İki kopya, bir gün birinin
+düzelip ötekinin düzelmemesi demek.
 
-### Pilot sonucu: geçti
-
-Tarla **iki çağrıyla** üretildi (bir zemin + beş yapının tek sayfası) ve
-açıldı. Sonuç dürüstçe:
-
-**Tutan taraf.** Kompozisyon dağılmıyor — ambar, tahıl ambarı, değirmen,
-saman yığınları ve öküz arabası aynı kamerayı ve aynı güneşi taşıyor,
-zemine oturuyorlar, kolaj hissi yok. Ve asıl kazanç görünüyor:
-**seviye ilerlemesi ekranda okunuyor.** Sv1 bir ambar ve bir saman
-yığını; sv5'te tahıl ambarı, değirmen, ikinci ambar, iki saman ve bir
-araba. Boyalı afiş bunu asla yapamaz — üç seviye üç ayrı resimdi ve
-hiçbiri "şu an ne durumdayım" sorusunu cevaplamıyordu.
-
-**Boyalı afişin hâlâ kazandığı taraf.** `tarla_5` daha zengin bir RESİM:
-ırmak kıyısında surlu bir kasaba, teraslı tarlalar. Ama tam da bu yüzden
-konusu YANLIŞ — bir tarla bölgesi için kale-kasaba çiziyor. Güzel ama
-başka bir şeyin resmi.
-
-**İlk yerleşim düzeltildi.** Yapıların hepsi y≥70'teydi: sahnenin üst
-%40'ı boş kalıyor, yapılar tarlanın içinde değil kenarında duruyordu.
-Yerleşim derinliğe yayıldı (y 50–90) ve uzaktaki yapının ölçeği düşürüldü
-— aynı ölçekte iki yapı, biri uzakta biri yakında durunca perspektif
-bozuluyor. Bu düzeltme **veriyle** yapıldı, yeni çağrı harcanmadı; kurgunun
-asıl vaadi de buydu.
-
-`etkin` bayrağı duruyor: görseli olmayan tür eski afişine düşüyor.
-`gorsel-denetim.mjs` bayrağı iki yönde de tutuyor — etkin ama dosya yok,
-ya da dosya var ama etkin değil.
-
-İki gölge artık ortak bileşende (`ZemineGolgesi`): aynı iş iki yerde
-yapılıyor ve iki kopya, bir gün birinin düzelip ötekinin düzelmemesi
-demek.
+Sahne kurgusunun tamamı git geçmişinde duruyor (`a0700a4`): bir gün
+tekrar istenirse üretilmiş sprite'lar dahil oradan alınır, yeni çağrı
+gerekmez.

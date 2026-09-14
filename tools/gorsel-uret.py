@@ -156,13 +156,6 @@ STIL_SOZLESMESI = (
 SAYFA_KONUSU: dict[str, str] = {
     "binalar": "isometric game building assets, every subject is a BUILDING, "
                "a standalone structure, no people anywhere in the frame",
-    # Bölge yapıları bina sprite'larıyla AYNI özneyi paylaşıyor: ikisi de
-    # aynı zemine konacak, yani aynı kamerayı ve aynı güneşi taşımalı.
-    "bolge_yapi": "isometric game building assets, every subject is a "
-                  "STRUCTURE, a standalone building or farm structure, "
-                  "no people anywhere in the frame",
-    "bolge_zemin": "a game location background, the subject is EMPTY GROUND "
-                   "itself, no buildings anywhere in the frame",
     "birimler": "isometric game character assets, every subject is a STANDING "
                 "HUMAN FIGURE seen full body from head to feet, "
                 "no buildings and no structures anywhere in the frame",
@@ -213,13 +206,6 @@ SAYFALAR: dict[str, tuple[str, list[str], Duzen]] = {
     "kent-4": ("binalar", ["karargah_1", "karargah_5", "kutuphane_1", "kutuphane_5"], "zemin"),
     "kent-5": ("binalar", ["liman_1", "liman_5", "elcilik_1", "elcilik_5"], "zemin"),
     "kent-6": ("binalar", ["gorev_panosu", "haberci_kulesi", "onur_meydani", "arsa"], "zemin"),
-    # BÖLGE SAHNESİ pilotu: zemin tek sahne, yapılar tek sayfada beşli.
-    "bolge-zemin-tarla": ("bolge_zemin", ["tarla"], "tam"),
-    "tarla-yapi": (
-        "bolge_yapi",
-        ["ambar", "degirmen", "tahil_ambari", "saman", "okuz_arabasi"],
-        "zemin",
-    ),
     # ORTA seviye (docs/12 §11.7): on seviyeli binanin da _3 hali var.
     # Besli sayfa, yani on sprite IKI cagriya siginiyor.
     "kent-orta-1": (
@@ -489,45 +475,6 @@ KATEGORI = {
                        "angle, isolated on a fully transparent background, "
                        "the building fills the frame, strong readable silhouette, "
                        "no ground plane, no shadow, no people, square 1:1 composition",
-        "boyut": (256, 256),
-    },
-    "bolge_zemin": {
-        "ad": "Bölge zeminleri",
-        "aciklama": (
-            "Bölge kartının sahnesi. Şehir ekranıyla AYNI yöntem: zemin boş, "
-            "yapılar onun üstüne DOM olarak konuyor "
-            "(`data/bolge-sahne.json`).\n\n"
-            "**Kural: karede HİÇ yapı olmayacak.** Yerleşim zeminlerinde "
-            "öğrenilen ders birebir geçerli — zeminin kendi boyalı binaları "
-            "bizim sprite'larımızla yarışıyor ve ikisi farklı ışıkla "
-            "çizildiği için sprite yapıştırılmış duruyor.\n\n"
-            "3:2, çünkü bölge kartının kutusu `aspect-[3/2]`."
-        ),
-        "kompozisyon": "an empty piece of open countryside seen from a high "
-                       "three-quarter aerial view, terrain filling the whole "
-                       "frame with a dirt track crossing it, ABSOLUTELY NO "
-                       "BUILDINGS anywhere in the image: no houses, barns, "
-                       "huts, mills, towers, walls, tents or ruins, only "
-                       "ground, track, vegetation, rocks and low fences, "
-                       "the terrain fills the entire frame edge to edge with "
-                       "no background colour and no magenta visible anywhere, "
-                       "no people, bright even daylight, 3:2 composition",
-        "boyut": (1152, 768),
-    },
-    "bolge_yapi": {
-        "ad": "Bölge yapıları",
-        "aciklama": (
-            "Bölge sahnesine konan yapılar. Bina sprite'larıyla AYNI "
-            "kurallar: saydam zemin, aynı üç-çeyrek hava açısı, tabana "
-            "hizalanmış (`tools/sprite-hizala.py`).\n\n"
-            "Bunlar yeni bölge TÜRÜNÜ görsel üretmeden kurmayı mümkün "
-            "kılan parçalar: tür artık sanat değil, bir yerleşim listesi."
-        ),
-        "kompozisyon": "a single small structure seen from a three-quarter "
-                       "aerial angle, isolated on a fully transparent "
-                       "background, the structure fills the frame, strong "
-                       "readable silhouette, no ground plane, no shadow, "
-                       "no people, square 1:1 composition",
         "boyut": (256, 256),
     },
     "harita": {
@@ -883,22 +830,6 @@ ISTEKLER: dict[str, dict[str, str]] = {
         # Boş arsa: bütün dikilmemiş binalarda paylaşılıyor.
         "arsa": "an empty building plot marked out with rope and wooden stakes, "
                 "a few cut stones and a shovel left on the bare earth",
-    },
-    # --- Bölge sahnesi: boş zemin + yapı parçaları ---
-    "bolge_zemin": {
-        "tarla": "rolling farmland of ploughed brown furrows and green crop "
-                 "strips divided by low hedgerows, a cart track curving "
-                 "through, a shallow irrigation ditch at one edge",
-    },
-    "bolge_yapi": {
-        "ambar": "a timber barn with a steep thatched roof and wide double doors",
-        "degirmen": "a wooden windmill on a stone base with four cloth sails",
-        "tahil_ambari": "a stone granary raised on staddle stones with a "
-                        "shingled roof and a loading hatch",
-        "saman": "a round haystack capped with a thatched top and tied down "
-                 "with rope",
-        "okuz_arabasi": "a loaded ox cart with tall spoked wheels, sacks of "
-                        "grain stacked under a cloth",
     },
     # --- Dünya haritası: tek zemin (docs/12 §5) ---
     "harita": {
