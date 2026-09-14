@@ -198,3 +198,65 @@ Lord (2007 px) ve Akın (1757 px) hâlâ iki ekrandan uzun. Lord'da yer
 tutan şey 190 piksellik portre kartı ve boş ordu sahnesi; Akın'da beş
 diyar kapağı. İkisi de aynı ilkeyle küçültülebilir — tek karar, tek kart —
 ama ikisinde de asıl soru "kaç piksel" değil, "bu ekranın tek işi ne".
+
+## 13.12 Bölge sahnesi: afiş yerine bileşen (pilot)
+
+Oyuncunun sorusu: _"şehir köy vs görsellerini stok kullanmak yerine
+bileşenleri tespit edip kendimiz üretsek?"_
+
+Cevabın yarısı depoda zaten yazılıydı: **şehir ekranı bugün de böyle
+çalışıyor.** Yerleşim zemini boş bir arazi, 34 bina sprite'ı
+`binalar.json`'daki x/y ile üstüne konuyor. Yöntem denendi ve tuttu —
+bedeli de biliniyor (docs/12 §3.6, §9.1):
+
+- Tek tek üretilen varlıklar bir araya gelmiyor: 24 bina 24 ayrı çağrıyla
+  üretilmişti ve her birinin kendi kamerası, kendi güneşi çıkmıştı.
+  Çözüm sayfa + plaka: bir karede üretilen varlıklar zaten tutarlı.
+- Zeminin **boşaltılması** gerekti; zeminin kendi boyalı binaları
+  sprite'larla yarışınca sprite yapıştırılmış duruyor.
+- Sprite'lar tabana hizalandı (`sprite-hizala.py`) ve iki gölge eklendi
+  (ortam + temas), yoksa binalar havada duruyordu.
+
+Yani kompozisyon üç şartla çalışıyor: **tek kamera, tek güneş, boş
+zemin.**
+
+### Neden afişin kendisi bileşenleştirilmedi
+
+Geriye kalan tek "stok" görsel bölge afişleri (16 dosya) ve onlar 3:2
+**manzara** — ufuk, derinlik, atmosfer. Kompozisyonun en zayıf olduğu yer
+orası. Bu yüzden afişi parçalara ayırmak yerine **ne gösterdiği**
+değişti: bölge kartı artık boyalı bir kartpostal değil, şehir ekranıyla
+aynı yöntemle kurulmuş bir sahne.
+
+İki kazanç:
+
+- **Yeni bölge türü = 0 görsel çağrısı.** Bugün 3 çağrı (seviye 1/3/5).
+  Tür artık sanat değil, `data/bolge-sahne.json` içinde bir yerleşim
+  listesi.
+- **Sahne bilgi taşıyor.** Seviye arttıkça yapı sayısı ve cinsi
+  değişiyor: tarla 1'de ambar ve saman, 5'te tahıl ambarı, değirmen,
+  ikinci ambar ve öküz arabası. Boyalı resim bunu yapamaz.
+
+### Pilotun durumu
+
+Kod tamam ve ölçüldü: sahne kutusu 390×260, yapılar tabanlarından
+çakılıyor, derinlik y'den geliyor, eritme ve üst yazı afiş yolundakiyle
+aynı. Mekanizma **geçici sprite'larla** doğrulandı — malikâne ve pazar
+tezgâhı tarla zeminine kondu ve yapıştırılmış durmadı, çünkü ikisi de
+aynı plakadan geliyor.
+
+**Üretim bloke:** API anahtarı 401 dönüyor (iptal edilmiş). Tarla için
+gereken iki çağrı hazır bekliyor:
+
+```
+python3 tools/gorsel-uret.py --sayfa bolge-zemin-tarla tarla-yapi
+```
+
+`etkin: false` olduğu sürece tarla eski boyalı afişine düşüyor; görsel
+gelince tek satır veri değişikliğiyle açılıyor, kod değişmiyor.
+`gorsel-denetim.mjs` bayrağı iki yönde de tutuyor — etkin ama dosya yok,
+ya da dosya var ama etkin değil.
+
+İki gölge artık ortak bileşende (`ZemineGolgesi`): aynı iş iki yerde
+yapılıyor ve iki kopya, bir gün birinin düzelip ötekinin düzelmemesi
+demek.

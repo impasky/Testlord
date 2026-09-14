@@ -513,6 +513,43 @@ if (yeniToken) {
 }
 
 /**
+ * --- Bölge sahnesi: veri ile varlık uyuşuyor mu ---
+ *
+ * Sahne, boyalı afişin yerine geçen bileşen kurgusu: boş zemin + konan
+ * yapılar (`data/bolge-sahne.json`). Veri görselden ÖNCE yazılabiliyor —
+ * yazıldı da — ve o yüzden `etkin` bayrağı var: görseli üretilmemiş tür
+ * eski afişe düşüyor.
+ *
+ * Denetim tam bu bayrağı tutuyor. İki yönde de hata mümkün:
+ *   `etkin: true` ama dosya yok  -> bölge kartında boş bir kutu.
+ *   Dosya var ama `etkin: false` -> üretilmiş görsel hiç görünmüyor.
+ */
+{
+  const { existsSync, readFileSync } = await import('node:fs');
+  const veri = JSON.parse(readFileSync('data/bolge-sahne.json', 'utf8'));
+  const kok = 'apps/web/public/gorseller';
+  const sorunlar = [];
+  let acik = 0;
+  for (const [tur, t] of Object.entries(veri.turler)) {
+    const gerekli = new Set([`${kok}/bolge_zemin/${t.zemin}.webp`]);
+    for (const seviye of Object.values(t.seviyeler))
+      for (const y of seviye) gerekli.add(`${kok}/bolge_yapi/${y.yapi}.webp`);
+    const eksik = [...gerekli].filter((f) => !existsSync(f));
+    if (t.etkin) {
+      acik++;
+      if (eksik.length) sorunlar.push(`${tur}: etkin ama eksik -> ${eksik.join(', ')}`);
+    } else if (eksik.length === 0) {
+      sorunlar.push(`${tur}: varlıkların hepsi var ama etkin değil`);
+    }
+  }
+  if (sorunlar.length) {
+    sorun('bolge-sahne', 'Bölge sahnesi verisi varlıklarla uyuşmuyor', sorunlar.join(' | '));
+  } else {
+    iyi('bolge-sahne', `${Object.keys(veri.turler).length} tür tanımlı, ${acik} tanesi açık`);
+  }
+}
+
+/**
  * --- Dünya zemini karoları tam mı ---
  *
  * Zemin dokuz karoya bölündü (`tools/dunya-karo.py`). Eksik bir karo

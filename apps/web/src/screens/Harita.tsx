@@ -37,6 +37,7 @@ import { KarsiIpuclari } from '../components/KarsiIpuclari';
 import { SaldiriOnizleme } from '../components/SaldiriOnizleme';
 import { DizilimKatlanir } from '../components/DizilimIzgarasi';
 import { SavasRaporu } from '../components/SavasRaporu';
+import { BolgeSahnesi, sahneVarMi } from '../components/BolgeSahnesi';
 import {
   Bolum,
   Buton,
@@ -112,6 +113,31 @@ function BolgeAfisi({
   /** Görselin üstüne binen başlık: bölgenin adı ve gelişim aşaması. */
   ustyazi?: ReactNode;
 }) {
+  /*
+   * SAHNE varsa boyalı afiş yerine o çiziliyor (`BolgeSahnesi`).
+   *
+   * Afiş tür × seviye başına bir dosya istiyor: yeni bir bölge türü üç
+   * görsel üretimi demek, yani oyunun içeriği bir API anahtarına bağlı.
+   * Sahne aynı yeri boş bir zemin + yerleştirilmiş yapılardan kuruyor;
+   * tür artık sanat değil, `data/bolge-sahne.json` içinde bir liste.
+   *
+   * Görseli üretilmemiş tür eski afişe düşüyor — geçiş tür tür oluyor ve
+   * hiçbir adımda bölge kartı boş kalmıyor.
+   */
+  if (sahneVarMi(tip)) {
+    return (
+      <div className="relative">
+        <BolgeSahnesi tip={tip} seviye={seviye} ad={ad} />
+        {/* Eritme ve üst yazı afiş yolundakiyle AYNI: sahne başka bir
+            görsel değil, aynı yerin başka bir çizim yöntemi. İlk denemede
+            üst yazı sarmalayıcısız bırakılmıştı ve ad sahnenin altına,
+            kartın kenarına taşıyordu. */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-panel via-panel/80 to-transparent" />
+        {ustyazi && <div className="absolute inset-x-0 bottom-0 px-4 pb-3">{ustyazi}</div>}
+      </div>
+    );
+  }
+
   // Aşama görseli yoksa tabana düşülür; taban da yoksa afiş hiç görünmez.
   // Böylece "tarla_5.webp henüz çizilmedi" durumu bölgeyi görselsiz
   // bırakmaz, sadece gelişimi görünmez kılar.

@@ -1,6 +1,6 @@
 # Görsel İstemleri
 
-Oyunun ihtiyacı olan **140 görselin** kopyala-yapıştır istemleri.
+Oyunun ihtiyacı olan **146 görselin** kopyala-yapıştır istemleri.
 Her istem üç parçadan oluşur: **konu** + **kategori kompozisyonu** +
 **taban üslup**. Taban üslup hepsinde aynıdır; tutarlılık oradan gelir.
 
@@ -751,6 +751,76 @@ a small stone monument plaza with a laurel wreathed pillar and a low step ring, 
 
 ```
 an empty building plot marked out with rope and wooden stakes, a few cut stones and a shovel left on the bare earth, a single small building seen from a three-quarter aerial angle, isolated on a fully transparent background, the building fills the frame, strong readable silhouette, no ground plane, no shadow, no people, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+---
+
+## Bölge zeminleri — 1 görsel
+
+Bölge kartının sahnesi. Şehir ekranıyla AYNI yöntem: zemin boş, yapılar onun üstüne DOM olarak konuyor (`data/bolge-sahne.json`).
+
+**Kural: karede HİÇ yapı olmayacak.** Yerleşim zeminlerinde öğrenilen ders birebir geçerli — zeminin kendi boyalı binaları bizim sprite'larımızla yarışıyor ve ikisi farklı ışıkla çizildiği için sprite yapıştırılmış duruyor.
+
+3:2, çünkü bölge kartının kutusu `aspect-[3/2]`.
+
+Çıktı: `apps/web/public/gorseller/bolge_zemin/<ad>.webp` · 1152×768
+
+Kompozisyon (her istemde var):
+
+```
+an empty piece of open countryside seen from a high three-quarter aerial view, terrain filling the whole frame with a dirt track crossing it, ABSOLUTELY NO BUILDINGS anywhere in the image: no houses, barns, huts, mills, towers, walls, tents or ruins, only ground, track, vegetation, rocks and low fences, the terrain fills the entire frame edge to edge with no background colour and no magenta visible anywhere, no people, bright even daylight, 3:2 composition
+```
+
+### `bolge_zemin/tarla.webp`
+
+```
+rolling farmland of ploughed brown furrows and green crop strips divided by low hedgerows, a cart track curving through, a shallow irrigation ditch at one edge, an empty piece of open countryside seen from a high three-quarter aerial view, terrain filling the whole frame with a dirt track crossing it, ABSOLUTELY NO BUILDINGS anywhere in the image: no houses, barns, huts, mills, towers, walls, tents or ruins, only ground, track, vegetation, rocks and low fences, the terrain fills the entire frame edge to edge with no background colour and no magenta visible anywhere, no people, bright even daylight, 3:2 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+---
+
+## Bölge yapıları — 5 görsel
+
+Bölge sahnesine konan yapılar. Bina sprite'larıyla AYNI kurallar: saydam zemin, aynı üç-çeyrek hava açısı, tabana hizalanmış (`tools/sprite-hizala.py`).
+
+Bunlar yeni bölge TÜRÜNÜ görsel üretmeden kurmayı mümkün kılan parçalar: tür artık sanat değil, bir yerleşim listesi.
+
+Çıktı: `apps/web/public/gorseller/bolge_yapi/<ad>.webp` · 256×256
+
+Kompozisyon (her istemde var):
+
+```
+a single small structure seen from a three-quarter aerial angle, isolated on a fully transparent background, the structure fills the frame, strong readable silhouette, no ground plane, no shadow, no people, square 1:1 composition
+```
+
+### `bolge_yapi/ambar.webp`
+
+```
+a timber barn with a steep thatched roof and wide double doors, a single small structure seen from a three-quarter aerial angle, isolated on a fully transparent background, the structure fills the frame, strong readable silhouette, no ground plane, no shadow, no people, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `bolge_yapi/degirmen.webp`
+
+```
+a wooden windmill on a stone base with four cloth sails, a single small structure seen from a three-quarter aerial angle, isolated on a fully transparent background, the structure fills the frame, strong readable silhouette, no ground plane, no shadow, no people, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `bolge_yapi/tahil_ambari.webp`
+
+```
+a stone granary raised on staddle stones with a shingled roof and a loading hatch, a single small structure seen from a three-quarter aerial angle, isolated on a fully transparent background, the structure fills the frame, strong readable silhouette, no ground plane, no shadow, no people, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `bolge_yapi/saman.webp`
+
+```
+a round haystack capped with a thatched top and tied down with rope, a single small structure seen from a three-quarter aerial angle, isolated on a fully transparent background, the structure fills the frame, strong readable silhouette, no ground plane, no shadow, no people, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `bolge_yapi/okuz_arabasi.webp`
+
+```
+a loaded ox cart with tall spoked wheels, sacks of grain stacked under a cloth, a single small structure seen from a three-quarter aerial angle, isolated on a fully transparent background, the structure fills the frame, strong readable silhouette, no ground plane, no shadow, no people, square 1:1 composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
 ```
 
 ---
