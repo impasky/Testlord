@@ -9,84 +9,85 @@
         "1": [
           {
             "yapi": "ambar",
-            "x": 54,
-            "y": 72,
-            "olcek": 26
+            "x": 46,
+            "y": 76,
+            "olcek": 30
           },
           {
             "yapi": "saman",
-            "x": 27,
-            "y": 80,
-            "olcek": 13
+            "x": 22,
+            "y": 84,
+            "olcek": 15
           }
         ],
         "3": [
           {
-            "yapi": "ambar",
-            "x": 38,
-            "y": 70,
-            "olcek": 26
+            "yapi": "degirmen",
+            "x": 66,
+            "y": 54,
+            "olcek": 20
           },
           {
-            "yapi": "degirmen",
-            "x": 68,
-            "y": 62,
-            "olcek": 24
+            "yapi": "ambar",
+            "x": 40,
+            "y": 78,
+            "olcek": 30
           },
           {
             "yapi": "saman",
-            "x": 20,
-            "y": 82,
-            "olcek": 13
+            "x": 17,
+            "y": 86,
+            "olcek": 15
           },
           {
             "yapi": "okuz_arabasi",
-            "x": 58,
-            "y": 86,
-            "olcek": 17
+            "x": 63,
+            "y": 88,
+            "olcek": 15
           }
         ],
         "5": [
           {
-            "yapi": "tahil_ambari",
-            "x": 32,
-            "y": 66,
-            "olcek": 28
-          },
-          {
             "yapi": "degirmen",
-            "x": 60,
-            "y": 56,
-            "olcek": 24
+            "x": 72,
+            "y": 50,
+            "olcek": 19
           },
           {
             "yapi": "ambar",
-            "x": 78,
-            "y": 74,
-            "olcek": 24
+            "x": 30,
+            "y": 60,
+            "olcek": 22
+          },
+          {
+            "yapi": "tahil_ambari",
+            "x": 56,
+            "y": 76,
+            "olcek": 30
           },
           {
             "yapi": "saman",
             "x": 16,
-            "y": 84,
+            "y": 78,
             "olcek": 13
           },
           {
             "yapi": "saman",
-            "x": 46,
+            "x": 28,
             "y": 88,
-            "olcek": 12
+            "olcek": 16
           },
           {
             "yapi": "okuz_arabasi",
-            "x": 66,
+            "x": 74,
             "y": 90,
-            "olcek": 17
+            "olcek": 15
           }
         ]
       },
-      "etkin": false
+      "etkin": true
     }
   },
-  "_etkin": "Sahne, görseli ÜRETİLMİŞ türlerde açılıyor. `etkin: false` olan tür eski boyalı afişe düşüyor — yarım bir geçiş, bölge kartını boş bırakmaktan iyidir. Görsel gelince tek satır veri değişikliğiyle açılıyor, kod değişmiyor."
+  "_etkin": "Sahne, görseli ÜRETİLMİŞ türlerde açılıyor. `etkin: false` olan tür eski boyalı afişe düşüyor — yarım bir geçiş, bölge kartını boş bırakmaktan iyidir. Görsel gelince tek satır veri değişikliğiyle açılıyor, kod değişmiyor.",
+  "_yerlesim_ilkesi": "Yapılar DERİNLİĞE yayılıyor: y 48 ile 90 arası. İlk yerleşimde hepsi y>=70'teydi ve sahnenin üst %40'ı boş kalıyordu — kompozisyon alta yığılıyor, yapılar da tarlanın içinde değil kenarında duruyordu. Uzaktaki yapı KÜÇÜK olmalı (olcek düşer): aynı ölçekte iki yapı, biri yukarıda biri aşağıda durunca perspektif bozuluyor."
 }

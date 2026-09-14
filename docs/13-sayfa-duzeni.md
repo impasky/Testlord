@@ -245,15 +245,32 @@ aynı. Mekanizma **geçici sprite'larla** doğrulandı — malikâne ve pazar
 tezgâhı tarla zeminine kondu ve yapıştırılmış durmadı, çünkü ikisi de
 aynı plakadan geliyor.
 
-**Üretim bloke:** API anahtarı 401 dönüyor (iptal edilmiş). Tarla için
-gereken iki çağrı hazır bekliyor:
+### Pilot sonucu: geçti
 
-```
-python3 tools/gorsel-uret.py --sayfa bolge-zemin-tarla tarla-yapi
-```
+Tarla **iki çağrıyla** üretildi (bir zemin + beş yapının tek sayfası) ve
+açıldı. Sonuç dürüstçe:
 
-`etkin: false` olduğu sürece tarla eski boyalı afişine düşüyor; görsel
-gelince tek satır veri değişikliğiyle açılıyor, kod değişmiyor.
+**Tutan taraf.** Kompozisyon dağılmıyor — ambar, tahıl ambarı, değirmen,
+saman yığınları ve öküz arabası aynı kamerayı ve aynı güneşi taşıyor,
+zemine oturuyorlar, kolaj hissi yok. Ve asıl kazanç görünüyor:
+**seviye ilerlemesi ekranda okunuyor.** Sv1 bir ambar ve bir saman
+yığını; sv5'te tahıl ambarı, değirmen, ikinci ambar, iki saman ve bir
+araba. Boyalı afiş bunu asla yapamaz — üç seviye üç ayrı resimdi ve
+hiçbiri "şu an ne durumdayım" sorusunu cevaplamıyordu.
+
+**Boyalı afişin hâlâ kazandığı taraf.** `tarla_5` daha zengin bir RESİM:
+ırmak kıyısında surlu bir kasaba, teraslı tarlalar. Ama tam da bu yüzden
+konusu YANLIŞ — bir tarla bölgesi için kale-kasaba çiziyor. Güzel ama
+başka bir şeyin resmi.
+
+**İlk yerleşim düzeltildi.** Yapıların hepsi y≥70'teydi: sahnenin üst
+%40'ı boş kalıyor, yapılar tarlanın içinde değil kenarında duruyordu.
+Yerleşim derinliğe yayıldı (y 50–90) ve uzaktaki yapının ölçeği düşürüldü
+— aynı ölçekte iki yapı, biri uzakta biri yakında durunca perspektif
+bozuluyor. Bu düzeltme **veriyle** yapıldı, yeni çağrı harcanmadı; kurgunun
+asıl vaadi de buydu.
+
+`etkin` bayrağı duruyor: görseli olmayan tür eski afişine düşüyor.
 `gorsel-denetim.mjs` bayrağı iki yönde de tutuyor — etkin ama dosya yok,
 ya da dosya var ama etkin değil.
 
