@@ -1,8 +1,11 @@
 # Çeviri — Lordlar Çağı
 
-> Buradaki dosyalar **el yazısıyla doldurulmak için**. Tek yapman gereken
-> `1-once-bunlar.txt` dosyasını açıp her satırın Türkçesinin yerine
-> İngilizcesini yazmak.
+> **İngilizce çevirisi TAMAMLANDI** — 1597 satırın hepsi çevrildi ve
+> denetimden geçti. Bu dosya artık bir sonraki dil için, ya da oyuna yeni
+> metin eklendiğinde kalanları çıkarmak için duruyor.
+>
+> Yeni metin eklendiğinde: `pnpm ceviri-kalan` yalnız çevrilmemiş
+> satırları yazar.
 
 ## Önce şunu bil: hepsini çevirmen gerekmiyor
 

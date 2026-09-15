@@ -943,7 +943,7 @@
   "t6b527296": {
     "grup": "arayuz",
     "tr": "Akın",
-    "en": "",
+    "en": "Raid",
     "nerede": [
       "apps/api/src/routes/akin.ts:336",
       "apps/web/src/components/MobilKabuk.tsx:63",
@@ -1508,15 +1508,6 @@
       "apps/web/src/components/IttifakIncele.tsx:130"
     ]
   },
-  "t209831ca": {
-    "grup": "arayuz",
-    "tr": "Bearer {0}",
-    "en": "",
-    "nerede": [
-      "apps/api/src/services/eposta.ts:29",
-      "apps/web/src/api/client.ts:86"
-    ]
-  },
   "t6b91afa4": {
     "grup": "arayuz",
     "tr": "Bekle...",
@@ -1776,7 +1767,7 @@
   "t875a03d7": {
     "grup": "arayuz",
     "tr": "Bölge",
-    "en": "",
+    "en": "Region",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:729",
       "apps/api/src/routes/map.ts:1149",
@@ -3894,7 +3885,7 @@
   "t30c7d34d": {
     "grup": "arayuz",
     "tr": "HESABIMI SIL",
-    "en": "",
+    "en": "DELETE MY ACCOUNT",
     "nerede": [
       "apps/api/src/routes/me.ts:63",
       "apps/web/src/api/client.ts:888",
@@ -4174,7 +4165,7 @@
   "tdef74ba4": {
     "grup": "arayuz",
     "tr": "İttifak",
-    "en": "",
+    "en": "Alliance",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1299",
       "apps/api/src/routes/ittifak.ts:1481",
@@ -4808,7 +4799,7 @@
   "t8cd1d240": {
     "grup": "arayuz",
     "tr": "Kendi üyenizin bölgesi hedef olamaz.",
-    "en": "",
+    "en": "Your own member's region cannot be a target.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:738",
       "apps/web/src/screens/Harita.tsx:453"
@@ -5211,7 +5202,7 @@
   "t76d9061a": {
     "grup": "arayuz",
     "tr": "Lord",
-    "en": "",
+    "en": "Lord",
     "nerede": [
       "apps/api/src/routes/rankings.ts:265",
       "apps/api/src/routes/ticaret.ts:58",
@@ -5265,7 +5256,7 @@
   "tf479120b": {
     "grup": "arayuz",
     "tr": "Lordlar Çağı",
-    "en": "",
+    "en": "Age of Lords",
     "nerede": [
       "apps/api/src/routes/push.ts:82",
       "apps/web/src/components/MobilKabuk.tsx:313",
@@ -7140,7 +7131,7 @@
   "tc5837606": {
     "grup": "arayuz",
     "tr": "Şikâyet gönderilemedi.",
-    "en": "",
+    "en": "Report could not be sent.",
     "nerede": [
       "apps/api/src/routes/moderasyon.ts:96",
       "apps/api/src/routes/rankings.ts:257",
@@ -11260,7 +11251,7 @@
   "t00c5c118": {
     "grup": "sunucu",
     "tr": "(silinmiş)",
-    "en": "",
+    "en": "(deleted)",
     "nerede": [
       "apps/api/src/routes/moderasyon.ts:232",
       "apps/api/src/routes/moderasyon.ts:234"
@@ -11269,7 +11260,7 @@
   "te5671777": {
     "grup": "sunucu",
     "tr": "{0} (Sv{1}) ittifağınıza başvurdu.",
-    "en": "",
+    "en": "{0} (Lv{1}) applied to your alliance.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1006"
     ]
@@ -11285,7 +11276,7 @@
   "t46de1832": {
     "grup": "sunucu",
     "tr": "{0} {1} eğitimi tamamlandı.",
-    "en": "",
+    "en": "{0} {1} training completed.",
     "nerede": [
       "apps/api/src/services/queue.ts:239"
     ]
@@ -11293,7 +11284,7 @@
   "tc1fd3d51": {
     "grup": "sunucu",
     "tr": "{0} altın",
-    "en": "",
+    "en": "{0} gold",
     "nerede": [
       "apps/api/src/services/queue.ts:68"
     ]
@@ -11301,7 +11292,7 @@
   "t81376c92": {
     "grup": "sunucu",
     "tr": "{0} altın, {1} demir, {2} erzak.",
-    "en": "",
+    "en": "{0} gold, {1} iron, {2} supplies.",
     "nerede": [
       "apps/api/src/services/ticaret.ts:113"
     ]
@@ -11309,7 +11300,7 @@
   "t59caa33f": {
     "grup": "sunucu",
     "tr": "{0} altının var.",
-    "en": "",
+    "en": "You have {0} gold.",
     "nerede": [
       "apps/api/src/routes/generals.ts:67",
       "apps/api/src/routes/ittifak.ts:443"
@@ -11318,7 +11309,7 @@
   "t2b49968f": {
     "grup": "sunucu",
     "tr": "{0} araştırması tamamlandı.",
-    "en": "",
+    "en": "{0} research completed.",
     "nerede": [
       "apps/api/src/services/queue.ts:415"
     ]
@@ -11326,7 +11317,7 @@
   "t31d4a1cd": {
     "grup": "sunucu",
     "tr": "{0} artık başkentin. Şehrini burada kuracaksın.",
-    "en": "",
+    "en": "{0} is now your capital. You will build your city here.",
     "nerede": [
       "apps/api/src/services/march.ts:1044"
     ]
@@ -11334,7 +11325,7 @@
   "t8a415004": {
     "grup": "sunucu",
     "tr": "{0} ayrıldı; liderlik devredildi.",
-    "en": "",
+    "en": "{0} left; leadership transferred.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:582"
     ]
@@ -11342,7 +11333,7 @@
   "t81ae1cbb": {
     "grup": "sunucu",
     "tr": "{0} ayrıldı.",
-    "en": "",
+    "en": "{0} left.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:594"
     ]
@@ -11350,7 +11341,7 @@
   "tfc65d2a9": {
     "grup": "sunucu",
     "tr": "{0} bağış yaptı (+{1} XP).",
-    "en": "",
+    "en": "{0} donated (+{1} XP).",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1245"
     ]
@@ -11358,7 +11349,7 @@
   "t8a093e37": {
     "grup": "sunucu",
     "tr": "{0} başvurusu kabul edildi.",
-    "en": "",
+    "en": "{0}'s application accepted.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1254"
     ]
@@ -11366,7 +11357,7 @@
   "t03052597": {
     "grup": "sunucu",
     "tr": "{0} başvurusu kabul edilip katıldı.",
-    "en": "",
+    "en": "{0}'s application was accepted and they joined.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1157"
     ]
@@ -11374,7 +11365,7 @@
   "t847a8c87": {
     "grup": "sunucu",
     "tr": "{0} başvurusu reddedildi.",
-    "en": "",
+    "en": "{0}'s application rejected.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1255"
     ]
@@ -11382,7 +11373,7 @@
   "t4fe888ec": {
     "grup": "sunucu",
     "tr": "{0} bırakıldı.",
-    "en": "",
+    "en": "{0} abandoned.",
     "nerede": [
       "apps/api/src/routes/map.ts:1178"
     ]
@@ -11390,7 +11381,7 @@
   "t4990c659": {
     "grup": "sunucu",
     "tr": "{0} birim {1} savunmasına katıldı.",
-    "en": "",
+    "en": "{0} units joined the defense of {1}.",
     "nerede": [
       "apps/api/src/services/march.ts:511"
     ]
@@ -11398,7 +11389,7 @@
   "t8ecc5665": {
     "grup": "sunucu",
     "tr": "{0} bölgende {1} adına çalışan bir casus yakalandı.",
-    "en": "",
+    "en": "A spy working for {1} was caught in your region {0}.",
     "nerede": [
       "apps/api/src/services/queue.ts:466"
     ]
@@ -11406,7 +11397,7 @@
   "tcfaf9005": {
     "grup": "sunucu",
     "tr": "{0} bölgesine gönderdiğin casus yakalandı. Rapor gelmedi.",
-    "en": "",
+    "en": "Your spy sent to region {0} was caught. No report received.",
     "nerede": [
       "apps/api/src/services/queue.ts:456"
     ]
@@ -11414,7 +11405,7 @@
   "t4e3fd3e1": {
     "grup": "sunucu",
     "tr": "{0} bu arada başka bir ittifağa katılmış.",
-    "en": "",
+    "en": "{0} joined another alliance in the meantime.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1134"
     ]
@@ -11422,7 +11413,7 @@
   "t0f5e6bb4": {
     "grup": "sunucu",
     "tr": "{0} bu yerleşimde en fazla {1}. seviye olabilir. Daha büyük bir başkent gerekiyor.",
-    "en": "",
+    "en": "{0} can be at most level {1} in this settlement. A larger capital is required.",
     "nerede": [
       "apps/api/src/routes/sehir.ts:196"
     ]
@@ -11430,7 +11421,7 @@
   "t5f2e4445": {
     "grup": "sunucu",
     "tr": "{0} bulunamadı.",
-    "en": "",
+    "en": "{0} not found.",
     "nerede": [
       "apps/api/src/errors.ts:15"
     ]
@@ -11438,7 +11429,7 @@
   "t55705528": {
     "grup": "sunucu",
     "tr": "{0} Diyar",
-    "en": "",
+    "en": "{0} Realm",
     "nerede": [
       "apps/api/src/services/world.ts:27"
     ]
@@ -11446,7 +11437,7 @@
   "tfda5002c": {
     "grup": "sunucu",
     "tr": "{0} ele geçirildi!",
-    "en": "",
+    "en": "{0} captured!",
     "nerede": [
       "apps/api/src/services/march.ts:771"
     ]
@@ -11454,7 +11445,7 @@
   "td4d3eaa9": {
     "grup": "sunucu",
     "tr": "{0} elinden alındı",
-    "en": "",
+    "en": "{0} was taken from you",
     "nerede": [
       "apps/api/src/services/march.ts:960"
     ]
@@ -11462,7 +11453,7 @@
   "t692f5dcf": {
     "grup": "sunucu",
     "tr": "{0} elinden çıktı. Başkentin {1} oldu; binaların seninle taşındı.",
-    "en": "",
+    "en": "You lost {0}. Your capital became {1}; your buildings moved with you.",
     "nerede": [
       "apps/api/src/services/region.ts:232"
     ]
@@ -11470,7 +11461,7 @@
   "t5994cdf8": {
     "grup": "sunucu",
     "tr": "{0} elinden çıktı. Bir kampa çekildin — binaların duruyor, yeni bir yerleşim alınca kaldığın yerden devam edecek.",
-    "en": "",
+    "en": "You lost {0}. You retreated to a camp — your buildings remain, and will resume where you left off when you take a new settlement.",
     "nerede": [
       "apps/api/src/services/region.ts:233"
     ]
@@ -11478,7 +11469,7 @@
   "tc9d62be8": {
     "grup": "sunucu",
     "tr": "{0} henüz bitmedi ({1}/{2} {3}).",
-    "en": "",
+    "en": "{0} is not finished yet ({1}/{2} {3}).",
     "nerede": [
       "apps/api/src/routes/sefer.ts:124"
     ]
@@ -11494,7 +11485,7 @@
   "t232fd16e": {
     "grup": "sunucu",
     "tr": "{0} ile pakt feshedildi.",
-    "en": "",
+    "en": "Pact with {0} dissolved.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1263"
     ]
@@ -11502,7 +11493,7 @@
   "ta76946fb": {
     "grup": "sunucu",
     "tr": "{0} ile pakt kuruldu.",
-    "en": "",
+    "en": "Pact established with {0}.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1261"
     ]
@@ -11510,7 +11501,7 @@
   "teb26cc7c": {
     "grup": "sunucu",
     "tr": "{0} ile saldırmazlık paktı yürürlükte.",
-    "en": "",
+    "en": "Non-aggression pact with {0} is in effect.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:280"
     ]
@@ -11518,7 +11509,7 @@
   "t1c74170c": {
     "grup": "sunucu",
     "tr": "{0} ile saldırmazlık paktın var.",
-    "en": "",
+    "en": "You have a non-aggression pact with {0}.",
     "nerede": [
       "apps/api/src/routes/map.ts:152"
     ]
@@ -11526,7 +11517,7 @@
   "tb00be4bb": {
     "grup": "sunucu",
     "tr": "{0} inşa gerektirmiyor.",
-    "en": "",
+    "en": "{0} does not require construction.",
     "nerede": [
       "apps/api/src/routes/sehir.ts:171"
     ]
@@ -11534,7 +11525,7 @@
   "t23fa55c5": {
     "grup": "sunucu",
     "tr": "{0} ittifağı kurdu.",
-    "en": "",
+    "en": "Founded the {0} alliance.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:477"
     ]
@@ -11542,7 +11533,7 @@
   "t599e965f": {
     "grup": "sunucu",
     "tr": "{0} ittifakın hedefini {1} olarak işaretledi.",
-    "en": "",
+    "en": "{0} marked the alliance target as {1}.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:761"
     ]
@@ -11550,7 +11541,7 @@
   "t8ccb6e59": {
     "grup": "sunucu",
     "tr": "{0} ittifakına kabul edildin.",
-    "en": "",
+    "en": "You were accepted into the {0} alliance.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1168"
     ]
@@ -11558,7 +11549,7 @@
   "tb280b5d3": {
     "grup": "sunucu",
     "tr": "{0} ittifakına katıldı.",
-    "en": "",
+    "en": "Joined the {0} alliance.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:536"
     ]
@@ -11566,7 +11557,7 @@
   "t9669a6af": {
     "grup": "sunucu",
     "tr": "{0} ittifakından ayrıldı.",
-    "en": "",
+    "en": "Left the {0} alliance.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:598"
     ]
@@ -11574,7 +11565,7 @@
   "t94b1ad61": {
     "grup": "sunucu",
     "tr": "{0} ittifakından çıkarıldı.",
-    "en": "",
+    "en": "Kicked from the {0} alliance.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:804"
     ]
@@ -11582,7 +11573,7 @@
   "t9b853237": {
     "grup": "sunucu",
     "tr": "{0} ittifakının liderliği sana geçti.",
-    "en": "",
+    "en": "Leadership of the {0} alliance passed to you.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:588"
     ]
@@ -11590,7 +11581,7 @@
   "t95169f36": {
     "grup": "sunucu",
     "tr": "{0} ittifaktan çıkarıldı.",
-    "en": "",
+    "en": "{0} was kicked from the alliance.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:800"
     ]
@@ -11606,7 +11597,7 @@
   "tc84e1ceb": {
     "grup": "sunucu",
     "tr": "{0} katıldı.",
-    "en": "",
+    "en": "{0} joined.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:530"
     ]
@@ -11614,7 +11605,7 @@
   "t83307e55": {
     "grup": "sunucu",
     "tr": "{0} keşfedildi. Garnizonu ve deposu artık görünüyor.",
-    "en": "",
+    "en": "{0} scouted. Its garrison and storage are now visible.",
     "nerede": [
       "apps/api/src/services/queue.ts:530"
     ]
@@ -11622,7 +11613,7 @@
   "tf4bc7b6e": {
     "grup": "sunucu",
     "tr": "{0} limitine ulaştın.",
-    "en": "",
+    "en": "Reached {0} limit.",
     "nerede": [
       "apps/api/src/errors.ts:24"
     ]
@@ -11630,7 +11621,7 @@
   "ta229fd50": {
     "grup": "sunucu",
     "tr": "{0} pakt teklifini kapattı.",
-    "en": "",
+    "en": "{0} closed the pact offer.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1592"
     ]
@@ -11638,23 +11629,15 @@
   "t3d8681d2": {
     "grup": "sunucu",
     "tr": "{0} paktı feshetti. Pakt {1} saat sonra sona eriyor.",
-    "en": "",
+    "en": "{0} dissolved the pact. The pact expires in {1} hours.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1632"
-    ]
-  },
-  "td1064cc0": {
-    "grup": "sunucu",
-    "tr": "{0} rakip lord dünyaya eklendi (test dağıtımı).",
-    "en": "",
-    "nerede": [
-      "apps/api/src/services/demoWorld.ts:198"
     ]
   },
   "t7cff0ab1": {
     "grup": "sunucu",
     "tr": "{0} saldırıya uğradı",
-    "en": "",
+    "en": "{0} was attacked",
     "nerede": [
       "apps/api/src/services/march.ts:961"
     ]
@@ -11662,7 +11645,7 @@
   "t04eb1b24": {
     "grup": "sunucu",
     "tr": "{0} saldırıya uğradı ve kaybedildi.",
-    "en": "",
+    "en": "{0} was attacked and lost.",
     "nerede": [
       "apps/api/src/services/march.ts:841"
     ]
@@ -11670,7 +11653,7 @@
   "tca7ad6b6": {
     "grup": "sunucu",
     "tr": "{0} saldırmazlık paktı teklif etti.",
-    "en": "",
+    "en": "{0} offered a non-aggression pact.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1535"
     ]
@@ -11686,7 +11669,7 @@
   "te1119699": {
     "grup": "sunucu",
     "tr": "{0} savaşta yaralandı, {1} saat dinlenecek.",
-    "en": "",
+    "en": "{0} was wounded in battle, will rest for {1} hours.",
     "nerede": [
       "apps/api/src/services/march.ts:294"
     ]
@@ -11694,7 +11677,7 @@
   "t1e3984d0": {
     "grup": "sunucu",
     "tr": "{0} savunuldu. Saldırı püskürtüldü.",
-    "en": "",
+    "en": "{0} defended. Attack repelled.",
     "nerede": [
       "apps/api/src/services/march.ts:843"
     ]
@@ -11702,7 +11685,7 @@
   "te4374485": {
     "grup": "sunucu",
     "tr": "{0} seviye {1} oldu.",
-    "en": "",
+    "en": "{0} became level {1}.",
     "nerede": [
       "apps/api/src/services/queue.ts:315",
       "apps/api/src/services/queue.ts:357"
@@ -11711,7 +11694,7 @@
   "t0f8cb839": {
     "grup": "sunucu",
     "tr": "{0} seviye atladı: Sv {1} → Sv {2}. Pasifi artık %{3} daha güçlü.",
-    "en": "",
+    "en": "{0} leveled up: Lvl {1} → Lvl {2}. Its passive is now {3}% stronger.",
     "nerede": [
       "apps/api/src/services/march.ts:281"
     ]
@@ -11719,7 +11702,7 @@
   "t73cd9608": {
     "grup": "sunucu",
     "tr": "{0} üyesine saldıramazsın.",
-    "en": "",
+    "en": "You cannot attack a member of {0}.",
     "nerede": [
       "apps/api/src/routes/map.ts:143"
     ]
@@ -11727,7 +11710,7 @@
   "t4b5936be": {
     "grup": "sunucu",
     "tr": "{0} veya daha fazla seviye altındaki lorda saldıramazsın.",
-    "en": "",
+    "en": "You cannot attack a lord {0} or more levels below you.",
     "nerede": [
       "apps/api/src/routes/map.ts:177"
     ]
@@ -11735,7 +11718,7 @@
   "t66b1afbf": {
     "grup": "sunucu",
     "tr": "{0} yağmalandı ama elinde kaldı. Bölge {1} saat koruma altında — garnizonu bu arada tazele.",
-    "en": "",
+    "en": "{0} was looted but remains yours. The region is under protection for {1} hours — refresh the garrison in the meantime.",
     "nerede": [
       "apps/api/src/services/march.ts:842"
     ]
@@ -11743,7 +11726,7 @@
   "t23ccda34": {
     "grup": "sunucu",
     "tr": "{0} yaralı asker iyileşti, orduna katıldı.",
-    "en": "",
+    "en": "{0} wounded soldiers healed and joined your army.",
     "nerede": [
       "apps/api/src/services/queue.ts:388"
     ]
@@ -11751,7 +11734,7 @@
   "t218dfa73": {
     "grup": "sunucu",
     "tr": "{0} Yaşlı oldu.",
-    "en": "",
+    "en": "{0} became an Elder.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1851"
     ]
@@ -11759,7 +11742,7 @@
   "t4bbe2f22": {
     "grup": "sunucu",
     "tr": "{0} Yaşlı rütbesini kaybetti.",
-    "en": "",
+    "en": "{0} lost the Elder rank.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1851"
     ]
@@ -11767,7 +11750,7 @@
   "t12f9a857": {
     "grup": "sunucu",
     "tr": "{0}, {1} üzerine göz dikti.",
-    "en": "",
+    "en": "{0} set their sights on {1}.",
     "nerede": [
       "apps/api/src/routes/map.ts:1262"
     ]
@@ -11775,23 +11758,15 @@
   "tf6cc8850": {
     "grup": "sunucu",
     "tr": "{0}{1} bölgene {2} birim takviye geldi.",
-    "en": "",
+    "en": "{2} reinforcement units arrived at your {0}{1} region.",
     "nerede": [
       "apps/api/src/services/march.ts:520"
-    ]
-  },
-  "t983277c4": {
-    "grup": "sunucu",
-    "tr": "1 minute",
-    "en": "",
-    "nerede": [
-      "apps/api/src/routes/auth.ts:30"
     ]
   },
   "t6697ea49": {
     "grup": "sunucu",
     "tr": "Akın başarılı: {0} altın, {1} demir{2} getirdin.",
-    "en": "",
+    "en": "Raid successful: you brought {0} gold, {1} iron{2}.",
     "nerede": [
       "apps/api/src/services/akin.ts:229"
     ]
@@ -11799,7 +11774,7 @@
   "t727e50b0": {
     "grup": "sunucu",
     "tr": "Akın başarısız: grubu düşüremedin, kalan askerin döndü.",
-    "en": "",
+    "en": "Raid failed: you couldn't defeat the group, your remaining troops returned.",
     "nerede": [
       "apps/api/src/services/akin.ts:232"
     ]
@@ -11815,7 +11790,7 @@
   "tef24ea7b": {
     "grup": "sunucu",
     "tr": "Akın grubu",
-    "en": "",
+    "en": "Raid group",
     "nerede": [
       "apps/api/src/routes/akin.ts:186",
       "apps/api/src/routes/akin.ts:216"
@@ -11824,7 +11799,7 @@
   "t86efa41b": {
     "grup": "sunucu",
     "tr": "Akın haritası",
-    "en": "",
+    "en": "Raid map",
     "nerede": [
       "apps/api/src/routes/akin.ts:185",
       "apps/api/src/routes/akin.ts:215"
@@ -11833,7 +11808,7 @@
   "tbe1eee4b": {
     "grup": "sunucu",
     "tr": "Akın henüz sonuçlanmadı.",
-    "en": "",
+    "en": "Raid has not concluded yet.",
     "nerede": [
       "apps/api/src/routes/akin.ts:337"
     ]
@@ -11841,23 +11816,15 @@
   "tda37ec1b": {
     "grup": "sunucu",
     "tr": "Altıncı",
-    "en": "",
+    "en": "Sixth",
     "nerede": [
       "apps/api/src/services/world.ts:19"
-    ]
-  },
-  "t291432ef": {
-    "grup": "sunucu",
-    "tr": "Aybüke Hatun",
-    "en": "",
-    "nerede": [
-      "apps/api/src/services/demoWorld.ts:60"
     ]
   },
   "t64df9d10": {
     "grup": "sunucu",
     "tr": "Aynı anda en fazla {0} {1} kuyruğu",
-    "en": "",
+    "en": "Maximum of {0} {1} queues at once",
     "nerede": [
       "apps/api/src/services/queue.ts:204"
     ]
@@ -11865,7 +11832,7 @@
   "t969d2e54": {
     "grup": "sunucu",
     "tr": "Aynı anda en fazla {0} akın",
-    "en": "",
+    "en": "Maximum of {0} raids at once",
     "nerede": [
       "apps/api/src/routes/akin.ts:254"
     ]
@@ -11873,7 +11840,7 @@
   "t1e7abb3f": {
     "grup": "sunucu",
     "tr": "Aynı anda en fazla {0} takviye tutabilirsin. Elçiliğini yükselt.",
-    "en": "",
+    "en": "You can hold at most {0} reinforcements at once. Upgrade your embassy.",
     "nerede": [
       "apps/api/src/routes/map.ts:644"
     ]
@@ -11889,7 +11856,7 @@
   "t530e3bfe": {
     "grup": "sunucu",
     "tr": "Aynı harfi arka arkaya bu kadar tekrarlayamazsın.",
-    "en": "",
+    "en": "You cannot repeat the same letter in a row this many times.",
     "nerede": [
       "apps/api/src/services/adDenetimi.ts:120"
     ]
@@ -11897,7 +11864,7 @@
   "t4c97b297": {
     "grup": "sunucu",
     "tr": "Bağlantı geçersiz ya da süresi dolmuş. Yeniden sıfırlama iste.",
-    "en": "",
+    "en": "Link is invalid or expired. Request a reset again.",
     "nerede": [
       "apps/api/src/routes/auth.ts:243"
     ]
@@ -11905,7 +11872,7 @@
   "tf9754a95": {
     "grup": "sunucu",
     "tr": "Başkentin düştü",
-    "en": "",
+    "en": "Your capital fell",
     "nerede": [
       "apps/api/src/services/lord.ts:601"
     ]
@@ -11913,7 +11880,7 @@
   "ta3ff14a1": {
     "grup": "sunucu",
     "tr": "Başvuru",
-    "en": "",
+    "en": "Application",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1026",
       "apps/api/src/routes/ittifak.ts:1100"
@@ -11922,7 +11889,7 @@
   "t3e65b797": {
     "grup": "sunucu",
     "tr": "başvuruyla",
-    "en": "",
+    "en": "by application",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:909"
     ]
@@ -11930,7 +11897,7 @@
   "t5ac47aa2": {
     "grup": "sunucu",
     "tr": "Beşinci",
-    "en": "",
+    "en": "Fifth",
     "nerede": [
       "apps/api/src/services/world.ts:18"
     ]
@@ -11938,7 +11905,7 @@
   "t94c7db79": {
     "grup": "sunucu",
     "tr": "Bildirimler açık değil.",
-    "en": "",
+    "en": "Notifications are not turned on.",
     "nerede": [
       "apps/api/src/routes/push.ts:78"
     ]
@@ -11946,7 +11913,7 @@
   "t1f844892": {
     "grup": "sunucu",
     "tr": "Bildirimler açık. Ordun döndüğünde haberin olacak.",
-    "en": "",
+    "en": "Notifications are on. You will be notified when your army returns.",
     "nerede": [
       "apps/api/src/routes/push.ts:83"
     ]
@@ -11954,7 +11921,7 @@
   "t0db59094": {
     "grup": "sunucu",
     "tr": "Bildirimler bu sunucuda açık değil.",
-    "en": "",
+    "en": "Notifications are not enabled on this server.",
     "nerede": [
       "apps/api/src/routes/push.ts:47"
     ]
@@ -11962,7 +11929,7 @@
   "t63648729": {
     "grup": "sunucu",
     "tr": "Bilinmeyen bir lord",
-    "en": "",
+    "en": "An unknown lord",
     "nerede": [
       "apps/api/src/services/march.ts:957"
     ]
@@ -11970,7 +11937,7 @@
   "t1e4ee87b": {
     "grup": "sunucu",
     "tr": "bilinmeyen bölge",
-    "en": "",
+    "en": "unknown region",
     "nerede": [
       "apps/api/src/routes/dunya.ts:107"
     ]
@@ -11978,7 +11945,7 @@
   "tc9bf8e6b": {
     "grup": "sunucu",
     "tr": "bilinmeyen ittifak",
-    "en": "",
+    "en": "unknown alliance",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1258"
     ]
@@ -11986,7 +11953,7 @@
   "tb724b5e4": {
     "grup": "sunucu",
     "tr": "Bir ittifakta değilsin.",
-    "en": "",
+    "en": "You are not in an alliance.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1195",
       "apps/api/src/routes/ittifak.ts:1470",
@@ -12004,23 +11971,15 @@
   "t2ffdc779": {
     "grup": "sunucu",
     "tr": "Birinci",
-    "en": "",
+    "en": "First",
     "nerede": [
       "apps/api/src/services/world.ts:14"
-    ]
-  },
-  "t77d047ac": {
-    "grup": "sunucu",
-    "tr": "Boran Tigin",
-    "en": "",
-    "nerede": [
-      "apps/api/src/services/demoWorld.ts:51"
     ]
   },
   "tda607101": {
     "grup": "sunucu",
     "tr": "Boş mesaj gönderilemez.",
-    "en": "",
+    "en": "Empty message cannot be sent.",
     "nerede": [
       "apps/api/src/services/mesajDenetimi.ts:26"
     ]
@@ -12028,7 +11987,7 @@
   "td2eaf526": {
     "grup": "sunucu",
     "tr": "Bölge el değiştirdi.",
-    "en": "",
+    "en": "Region changed hands.",
     "nerede": [
       "apps/api/src/services/march.ts:970"
     ]
@@ -12036,7 +11995,7 @@
   "t78a330c7": {
     "grup": "sunucu",
     "tr": "Bölge ele geçirildi",
-    "en": "",
+    "en": "Region captured",
     "nerede": [
       "apps/api/src/services/lord.ts:603"
     ]
@@ -12044,7 +12003,7 @@
   "tb08bcfd6": {
     "grup": "sunucu",
     "tr": "Bölge limitin dolu ({0}/{1}). Kazansan bile bölgeyi alamazsın, sadece yağmalarsın.",
-    "en": "",
+    "en": "Your region limit is full ({0}/{1}). Even if you win, you cannot take the region, you will only loot it.",
     "nerede": [
       "apps/api/src/routes/map.ts:1073"
     ]
@@ -12052,7 +12011,7 @@
   "t68b70044": {
     "grup": "sunucu",
     "tr": "Bölge senin.",
-    "en": "",
+    "en": "The region is yours.",
     "nerede": [
       "apps/api/src/services/march.ts:904"
     ]
@@ -12060,7 +12019,7 @@
   "t6d29f03b": {
     "grup": "sunucu",
     "tr": "Bölge zaten en üst seviyede.",
-    "en": "",
+    "en": "The region is already at the max level.",
     "nerede": [
       "apps/api/src/routes/map.ts:511"
     ]
@@ -12068,7 +12027,7 @@
   "ta73cae87": {
     "grup": "sunucu",
     "tr": "Böyle bir araştırma yok.",
-    "en": "",
+    "en": "No such research exists.",
     "nerede": [
       "apps/api/src/routes/arastirma.ts:113",
       "apps/api/src/routes/arastirma.ts:84"
@@ -12077,7 +12036,7 @@
   "t13f570eb": {
     "grup": "sunucu",
     "tr": "Böyle bir bina yok.",
-    "en": "",
+    "en": "No such building exists.",
     "nerede": [
       "apps/api/src/routes/sehir.ts:169"
     ]
@@ -12085,7 +12044,7 @@
   "t9da35381": {
     "grup": "sunucu",
     "tr": "Böyle bir inşaat yok.",
-    "en": "",
+    "en": "No such construction exists.",
     "nerede": [
       "apps/api/src/routes/sehir.ts:266"
     ]
@@ -12093,7 +12052,7 @@
   "td480bfce": {
     "grup": "sunucu",
     "tr": "Bu ad ayrılmış. Başka bir ad seç.",
-    "en": "",
+    "en": "This name is reserved. Choose another name.",
     "nerede": [
       "apps/api/src/services/adDenetimi.ts:115"
     ]
@@ -12101,7 +12060,7 @@
   "ta8e4a826": {
     "grup": "sunucu",
     "tr": "Bu ad kullanılamaz.",
-    "en": "",
+    "en": "This name cannot be used.",
     "nerede": [
       "apps/api/src/routes/auth.ts:124",
       "apps/api/src/routes/ittifak.ts:427"
@@ -12110,7 +12069,7 @@
   "t4efc0763": {
     "grup": "sunucu",
     "tr": "Bu ad kullanılamaz. Başka bir ad seç.",
-    "en": "",
+    "en": "This name cannot be used. Choose another name.",
     "nerede": [
       "apps/api/src/services/adDenetimi.ts:110",
       "apps/api/src/services/adDenetimi.ts:99"
@@ -12119,7 +12078,7 @@
   "tf38c385e": {
     "grup": "sunucu",
     "tr": "Bu araştırma zaten tamamlandı.",
-    "en": "",
+    "en": "This research is already completed.",
     "nerede": [
       "apps/api/src/routes/arastirma.ts:86"
     ]
@@ -12127,7 +12086,7 @@
   "t4daafbf8": {
     "grup": "sunucu",
     "tr": "Bu başvuru zaten karara bağlanmış.",
-    "en": "",
+    "en": "This application has already been decided.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1102"
     ]
@@ -12135,7 +12094,7 @@
   "t285dc203": {
     "grup": "sunucu",
     "tr": "Bu bölge koruma altında ({0}).",
-    "en": "",
+    "en": "This region is under protection ({0}).",
     "nerede": [
       "apps/api/src/routes/map.ts:161"
     ]
@@ -12143,7 +12102,7 @@
   "t755a7406": {
     "grup": "sunucu",
     "tr": "Bu bölge senin değil.",
-    "en": "",
+    "en": "This region is not yours.",
     "nerede": [
       "apps/api/src/routes/dev.ts:263",
       "apps/api/src/routes/map.ts:1151"
@@ -12152,7 +12111,7 @@
   "t1fdaed47": {
     "grup": "sunucu",
     "tr": "Bu bölgede askerin yok.",
-    "en": "",
+    "en": "You have no troops in this region.",
     "nerede": [
       "apps/api/src/routes/map.ts:723"
     ]
@@ -12160,7 +12119,7 @@
   "teb7b0eae": {
     "grup": "sunucu",
     "tr": "Bu bölgeye {0} saat içinde tekrar saldıramazsın.",
-    "en": "",
+    "en": "You cannot attack this region again within {0} hours.",
     "nerede": [
       "apps/api/src/routes/map.ts:196"
     ]
@@ -12168,7 +12127,7 @@
   "t55f4b6a0": {
     "grup": "sunucu",
     "tr": "Bu e-posta zaten kayıtlı.",
-    "en": "",
+    "en": "This email is already registered.",
     "nerede": [
       "apps/api/src/routes/auth.ts:128"
     ]
@@ -12176,7 +12135,7 @@
   "t62da57e4": {
     "grup": "sunucu",
     "tr": "Bu eşya zaten en üst seviyede.",
-    "en": "",
+    "en": "This item is already at the max level.",
     "nerede": [
       "apps/api/src/routes/items.ts:147"
     ]
@@ -12184,7 +12143,7 @@
   "td9a29bc1": {
     "grup": "sunucu",
     "tr": "Bu etiket alınmış.",
-    "en": "",
+    "en": "This tag is taken.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:458"
     ]
@@ -12192,7 +12151,7 @@
   "t0f68c4b9": {
     "grup": "sunucu",
     "tr": "Bu general kadronda değil.",
-    "en": "",
+    "en": "This general is not in your roster.",
     "nerede": [
       "apps/api/src/routes/generals.ts:105"
     ]
@@ -12200,7 +12159,7 @@
   "t666ddb82": {
     "grup": "sunucu",
     "tr": "Bu general zaten kadronda.",
-    "en": "",
+    "en": "This general is already in your roster.",
     "nerede": [
       "apps/api/src/routes/generals.ts:61"
     ]
@@ -12208,7 +12167,7 @@
   "ta0762f35": {
     "grup": "sunucu",
     "tr": "Bu grup henüz toparlanmadı. Yenilenmesini bekle.",
-    "en": "",
+    "en": "This group has not recovered yet. Wait for it to replenish.",
     "nerede": [
       "apps/api/src/routes/akin.ts:264"
     ]
@@ -12216,7 +12175,7 @@
   "t13668100": {
     "grup": "sunucu",
     "tr": "Bu haftanın seferini zaten aldın.",
-    "en": "",
+    "en": "You already claimed this week's campaign.",
     "nerede": [
       "apps/api/src/routes/sefer.ts:118",
       "apps/api/src/routes/sefer.ts:162"
@@ -12225,7 +12184,7 @@
   "t6672b319": {
     "grup": "sunucu",
     "tr": "Bu hat zaten en üst seviyede.",
-    "en": "",
+    "en": "This line is already at the max level.",
     "nerede": [
       "apps/api/src/routes/army.ts:195"
     ]
@@ -12233,7 +12192,7 @@
   "t187b8da0": {
     "grup": "sunucu",
     "tr": "Bu isteği sen yapmadıysan hiçbir şey yapmana gerek yok; parolan değişmedi.",
-    "en": "",
+    "en": "If you didn't make this request, you don't need to do anything; your password hasn't changed.",
     "nerede": [
       "apps/api/src/routes/auth.ts:220"
     ]
@@ -12241,7 +12200,7 @@
   "t7841b178": {
     "grup": "sunucu",
     "tr": "Bu işlem için yetkin yok.",
-    "en": "",
+    "en": "You do not have permission for this action.",
     "nerede": [
       "apps/api/src/errors.ts:16"
     ]
@@ -12249,7 +12208,7 @@
   "t6a874cd5": {
     "grup": "sunucu",
     "tr": "Bu ittifak adı alınmış.",
-    "en": "",
+    "en": "This alliance name is taken.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:458"
     ]
@@ -12257,7 +12216,7 @@
   "tffc5910f": {
     "grup": "sunucu",
     "tr": "Bu ittifakla zaten paktın var.",
-    "en": "",
+    "en": "You already have a pact with this alliance.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1508"
     ]
@@ -12265,7 +12224,7 @@
   "t7c2cd60c": {
     "grup": "sunucu",
     "tr": "Bu lord adı alınmış.",
-    "en": "",
+    "en": "This lord name is taken.",
     "nerede": [
       "apps/api/src/routes/auth.ts:131"
     ]
@@ -12273,7 +12232,7 @@
   "t93fec181": {
     "grup": "sunucu",
     "tr": "Bu pakt zaten feshediliyor.",
-    "en": "",
+    "en": "This pact is already being dissolved.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1616"
     ]
@@ -12281,7 +12240,7 @@
   "t432b4daf": {
     "grup": "sunucu",
     "tr": "Bu şikâyet zaten karara bağlanmış.",
-    "en": "",
+    "en": "This report has already been decided.",
     "nerede": [
       "apps/api/src/routes/moderasyon.ts:275"
     ]
@@ -12289,7 +12248,7 @@
   "t1a13bc53": {
     "grup": "sunucu",
     "tr": "Bu teklif artık açık değil.",
-    "en": "",
+    "en": "This offer is no longer open.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1550",
       "apps/api/src/routes/ittifak.ts:1586"
@@ -12298,7 +12257,7 @@
   "t14d7d3bd": {
     "grup": "sunucu",
     "tr": "Bu yürüyüş zaten tamamlandı.",
-    "en": "",
+    "en": "This march is already completed.",
     "nerede": [
       "apps/api/src/routes/map.ts:1086"
     ]
@@ -12306,7 +12265,7 @@
   "t7d39deab": {
     "grup": "sunucu",
     "tr": "Bugünlük bağış hakkın bitti ({0}). Yarın tekrar.",
-    "en": "",
+    "en": "Your donation allowance for today is over ({0}). Try again tomorrow.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1704"
     ]
@@ -12314,7 +12273,7 @@
   "tea1021b9": {
     "grup": "sunucu",
     "tr": "Bugünün ödülünü zaten aldın.",
-    "en": "",
+    "en": "You already claimed today's reward.",
     "nerede": [
       "apps/api/src/routes/gunluk.ts:118",
       "apps/api/src/routes/gunluk.ts:181"
@@ -12323,7 +12282,7 @@
   "te3f87bb7": {
     "grup": "sunucu",
     "tr": "Bulunamadı.",
-    "en": "",
+    "en": "Not found.",
     "nerede": [
       "apps/api/src/services/moderasyon.ts:26"
     ]
@@ -12331,7 +12290,7 @@
   "t22a3a644": {
     "grup": "sunucu",
     "tr": "Burası bir yerleşim değil. Başkentin bir köy, şehir ya da kale olabilir.",
-    "en": "",
+    "en": "This is not a settlement. Your capital can be a village, city, or citadel.",
     "nerede": [
       "apps/api/src/routes/sehir.ts:237"
     ]
@@ -12339,7 +12298,7 @@
   "t969238b7": {
     "grup": "sunucu",
     "tr": "Burası senin bölgen; garnizonu garnizon ekranından düzenle.",
-    "en": "",
+    "en": "This is your region; manage the garrison from the garrison screen.",
     "nerede": [
       "apps/api/src/routes/map.ts:713"
     ]
@@ -12347,7 +12306,7 @@
   "t85b9c34d": {
     "grup": "sunucu",
     "tr": "Burası senin değil.",
-    "en": "",
+    "en": "This is not yours.",
     "nerede": [
       "apps/api/src/routes/sehir.ts:233"
     ]
@@ -12355,7 +12314,7 @@
   "t4f5adcbf": {
     "grup": "sunucu",
     "tr": "Çok hızlı şikâyet ediyorsun. {0} saniye bekle.",
-    "en": "",
+    "en": "You are reporting too fast. Wait {0} seconds.",
     "nerede": [
       "apps/api/src/routes/moderasyon.ts:127"
     ]
@@ -12363,7 +12322,7 @@
   "t07a010f1": {
     "grup": "sunucu",
     "tr": "Çok hızlı yazıyorsun. {0} saniye bekle.",
-    "en": "",
+    "en": "You are typing too fast. Wait {0} seconds.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:679"
     ]
@@ -12371,23 +12330,15 @@
   "t46b749aa": {
     "grup": "sunucu",
     "tr": "Dağıtılacak puan belirtmedin.",
-    "en": "",
+    "en": "You did not specify points to distribute.",
     "nerede": [
       "apps/api/src/routes/me.ts:195"
-    ]
-  },
-  "t5ee221c1": {
-    "grup": "sunucu",
-    "tr": "Demirhan Bey",
-    "en": "",
-    "nerede": [
-      "apps/api/src/services/demoWorld.ts:36"
     ]
   },
   "tde046dbf": {
     "grup": "sunucu",
     "tr": "Dizilim 16 kare olmalı.",
-    "en": "",
+    "en": "Formation must be 16 squares.",
     "nerede": [
       "apps/api/src/routes/akin.ts:52",
       "apps/api/src/routes/map.ts:70",
@@ -12397,7 +12348,7 @@
   "tbf2e9855": {
     "grup": "sunucu",
     "tr": "Dokuzuncu",
-    "en": "",
+    "en": "Ninth",
     "nerede": [
       "apps/api/src/services/world.ts:22"
     ]
@@ -12405,7 +12356,7 @@
   "t26879f91": {
     "grup": "sunucu",
     "tr": "Donanım hattı",
-    "en": "",
+    "en": "Gear line",
     "nerede": [
       "apps/api/src/routes/army.ts:192"
     ]
@@ -12413,7 +12364,7 @@
   "tab7705b1": {
     "grup": "sunucu",
     "tr": "Dönüş yürüyüşü geri çağrılamaz.",
-    "en": "",
+    "en": "A return march cannot be recalled.",
     "nerede": [
       "apps/api/src/routes/map.ts:1091"
     ]
@@ -12421,7 +12372,7 @@
   "teff33b64": {
     "grup": "sunucu",
     "tr": "Dördüncü",
-    "en": "",
+    "en": "Fourth",
     "nerede": [
       "apps/api/src/services/world.ts:17"
     ]
@@ -12429,7 +12380,7 @@
   "t8bad7b30": {
     "grup": "sunucu",
     "tr": "Duyuru güncellendi.",
-    "en": "",
+    "en": "Announcement updated.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1801"
     ]
@@ -12437,7 +12388,7 @@
   "tf7049390": {
     "grup": "sunucu",
     "tr": "Duyuru kaldırıldı.",
-    "en": "",
+    "en": "Announcement removed.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1801"
     ]
@@ -12445,7 +12396,7 @@
   "t075455aa": {
     "grup": "sunucu",
     "tr": "E-posta (log taşıyıcısı)",
-    "en": "",
+    "en": "Email (log carrier)",
     "nerede": [
       "apps/api/src/services/eposta.ts:61"
     ]
@@ -12453,7 +12404,7 @@
   "t1ae040d6": {
     "grup": "sunucu",
     "tr": "E-posta gönderildi",
-    "en": "",
+    "en": "Email sent",
     "nerede": [
       "apps/api/src/services/eposta.ts:56"
     ]
@@ -12461,7 +12412,7 @@
   "t44fe3ed5": {
     "grup": "sunucu",
     "tr": "E-posta gönderilemedi",
-    "en": "",
+    "en": "Email could not be sent",
     "nerede": [
       "apps/api/src/services/eposta.ts:63"
     ]
@@ -12469,7 +12420,7 @@
   "tc0e0b6c1": {
     "grup": "sunucu",
     "tr": "E-posta gönderilemedi ({0}): {1}",
-    "en": "",
+    "en": "Email could not be sent ({0}): {1}",
     "nerede": [
       "apps/api/src/services/eposta.ts:41"
     ]
@@ -12477,7 +12428,7 @@
   "tc88167e9": {
     "grup": "sunucu",
     "tr": "E-posta veya parola hatalı.",
-    "en": "",
+    "en": "Email or password incorrect.",
     "nerede": [
       "apps/api/src/routes/auth.ts:180"
     ]
@@ -12485,7 +12436,7 @@
   "t61d3205f": {
     "grup": "sunucu",
     "tr": "En fazla {0} yaşlı olabilir. Önce birinin rütbesini almalısın.",
-    "en": "",
+    "en": "There can be at most {0} elders. You must demote someone first.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1836"
     ]
@@ -12493,7 +12444,7 @@
   "t99f8a247": {
     "grup": "sunucu",
     "tr": "Eşya",
-    "en": "",
+    "en": "Item",
     "nerede": [
       "apps/api/src/routes/items.ts:115",
       "apps/api/src/routes/items.ts:145",
@@ -12503,7 +12454,7 @@
   "tc3dc0d24": {
     "grup": "sunucu",
     "tr": "Evde o kadar birimin yok.",
-    "en": "",
+    "en": "You don't have that many units at home.",
     "nerede": [
       "apps/api/src/routes/army.ts:153"
     ]
@@ -12511,25 +12462,17 @@
   "tb8839a3a": {
     "grup": "sunucu",
     "tr": "Evde yeterli {0} yok.",
-    "en": "",
+    "en": "Not enough {0} at home.",
     "nerede": [
       "apps/api/src/routes/akin.ts:88",
       "apps/api/src/routes/map.ts:793",
       "apps/api/src/routes/map.ts:98"
     ]
   },
-  "ta32fe0d7": {
-    "grup": "sunucu",
-    "tr": "GameError",
-    "en": "",
-    "nerede": [
-      "apps/api/src/errors.ts:9"
-    ]
-  },
   "te94bbc00": {
     "grup": "sunucu",
     "tr": "Geçerli bir e-posta gir.",
-    "en": "",
+    "en": "Enter a valid email.",
     "nerede": [
       "apps/api/src/routes/auth.ts:37"
     ]
@@ -12537,7 +12480,7 @@
   "tfe3021a2": {
     "grup": "sunucu",
     "tr": "Geçersiz anahtar.",
-    "en": "",
+    "en": "Invalid key.",
     "nerede": [
       "apps/api/src/routes/olcum.ts:39"
     ]
@@ -12545,7 +12488,7 @@
   "t5561fd0b": {
     "grup": "sunucu",
     "tr": "General",
-    "en": "",
+    "en": "General",
     "nerede": [
       "apps/api/src/routes/dev.ts:234",
       "apps/api/src/routes/generals.ts:54"
@@ -12554,7 +12497,7 @@
   "tf9f26e6c": {
     "grup": "sunucu",
     "tr": "Geri çağırma süresi doldu. Yürüyüşün ilk %25'inde geri çağırabilirsin.",
-    "en": "",
+    "en": "Recall time expired. You can recall during the first 25% of the march.",
     "nerede": [
       "apps/api/src/routes/map.ts:1095"
     ]
@@ -12562,7 +12505,7 @@
   "t4bd8515e": {
     "grup": "sunucu",
     "tr": "Giriş yapman gerekiyor.",
-    "en": "",
+    "en": "You need to log in.",
     "nerede": [
       "apps/api/src/auth.ts:24"
     ]
@@ -12570,7 +12513,7 @@
   "t771009c5": {
     "grup": "sunucu",
     "tr": "Gönderilemez.",
-    "en": "",
+    "en": "Cannot be sent.",
     "nerede": [
       "apps/api/src/routes/ticaret.ts:77"
     ]
@@ -12578,7 +12521,7 @@
   "t96080875": {
     "grup": "sunucu",
     "tr": "Günlük {0} saldırı",
-    "en": "",
+    "en": "Daily {0} attacks",
     "nerede": [
       "apps/api/src/routes/map.ts:124"
     ]
@@ -12586,7 +12529,7 @@
   "t31d845c5": {
     "grup": "sunucu",
     "tr": "Hedef koruma altında.",
-    "en": "",
+    "en": "Target is under protection.",
     "nerede": [
       "apps/api/src/errors.ts:23"
     ]
@@ -12594,7 +12537,7 @@
   "te14b30b4": {
     "grup": "sunucu",
     "tr": "Henüz açılmadı.",
-    "en": "",
+    "en": "Not unlocked yet.",
     "nerede": [
       "apps/api/src/routes/arastirma.ts:90"
     ]
@@ -12602,7 +12545,7 @@
   "ta53cdd1e": {
     "grup": "sunucu",
     "tr": "Henüz oyuncu yok.",
-    "en": "",
+    "en": "No players yet.",
     "nerede": [
       "apps/api/src/routes/olcum.ts:45"
     ]
@@ -12610,7 +12553,7 @@
   "ta305cce8": {
     "grup": "sunucu",
     "tr": "herkese açık",
-    "en": "",
+    "en": "open to everyone",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:909"
     ]
@@ -12618,7 +12561,7 @@
   "t94408dab": {
     "grup": "sunucu",
     "tr": "İkinci",
-    "en": "",
+    "en": "Second",
     "nerede": [
       "apps/api/src/services/world.ts:15"
     ]
@@ -12626,7 +12569,7 @@
   "td2d3a0a7": {
     "grup": "sunucu",
     "tr": "İşin bitti",
-    "en": "",
+    "en": "You're done",
     "nerede": [
       "apps/api/src/services/lord.ts:604"
     ]
@@ -12634,7 +12577,7 @@
   "t75da2234": {
     "grup": "sunucu",
     "tr": "İttifak arması değişti.",
-    "en": "",
+    "en": "Alliance crest changed.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:845"
     ]
@@ -12642,7 +12585,7 @@
   "td286be2a": {
     "grup": "sunucu",
     "tr": "İttifak başvurun kabul edilmedi.",
-    "en": "",
+    "en": "Your alliance application was not accepted.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1114"
     ]
@@ -12658,7 +12601,7 @@
   "tc4ef09fd": {
     "grup": "sunucu",
     "tr": "İttifak sohbetinde {0} susturuldun. Sebep: {1}",
-    "en": "",
+    "en": "You were muted in the alliance chat for {0}. Reason: {1}",
     "nerede": [
       "apps/api/src/routes/moderasyon.ts:302"
     ]
@@ -12666,7 +12609,7 @@
   "t52231a33": {
     "grup": "sunucu",
     "tr": "İttifakın",
-    "en": "",
+    "en": "Your alliance",
     "nerede": [
       "apps/api/src/routes/map.ts:143"
     ]
@@ -12674,7 +12617,7 @@
   "t476d36dc": {
     "grup": "sunucu",
     "tr": "İttifakında Yaşlı oldun.",
-    "en": "",
+    "en": "You became an Elder in your alliance.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1859"
     ]
@@ -12682,7 +12625,7 @@
   "taaa9a7ea": {
     "grup": "sunucu",
     "tr": "İttifakındaki Yaşlı rütben alındı.",
-    "en": "",
+    "en": "Your Elder rank in your alliance was revoked.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1859"
     ]
@@ -12699,7 +12642,7 @@
   "tb15d50e9": {
     "grup": "sunucu",
     "tr": "İttifaktan yeni ayrıldın. {0} saat sonra girebilirsin.",
-    "en": "",
+    "en": "You just left an alliance. You can join in {0} hours.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1339"
     ]
@@ -12707,7 +12650,7 @@
   "tdfb3274c": {
     "grup": "sunucu",
     "tr": "Karar uygulanamaz.",
-    "en": "",
+    "en": "Decision cannot be applied.",
     "nerede": [
       "apps/api/src/routes/moderasyon.ts:280"
     ]
@@ -12715,7 +12658,7 @@
   "t0bab1641": {
     "grup": "sunucu",
     "tr": "Karşı ittifak",
-    "en": "",
+    "en": "Opposing alliance",
     "nerede": [
       "apps/api/src/routes/map.ts:152"
     ]
@@ -12723,7 +12666,7 @@
   "tcf0147c8": {
     "grup": "sunucu",
     "tr": "Katılım: {0}",
-    "en": "",
+    "en": "Joining: {0}",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:909"
     ]
@@ -12731,7 +12674,7 @@
   "t8a322ea6": {
     "grup": "sunucu",
     "tr": "Kaynak yalnız ittifak üyelerine gönderilebilir.",
-    "en": "",
+    "en": "Resources can only be sent to alliance members.",
     "nerede": [
       "apps/api/src/routes/ticaret.ts:61"
     ]
@@ -12739,7 +12682,7 @@
   "tda2e5409": {
     "grup": "sunucu",
     "tr": "Kendi bölgene garnizon koy, takviye gönderme.",
-    "en": "",
+    "en": "Place a garrison in your own region, do not send reinforcements.",
     "nerede": [
       "apps/api/src/routes/map.ts:602"
     ]
@@ -12747,7 +12690,7 @@
   "t2846312f": {
     "grup": "sunucu",
     "tr": "Kendi bölgene saldıramazsın.",
-    "en": "",
+    "en": "You cannot attack your own region.",
     "nerede": [
       "apps/api/src/routes/map.ts:128"
     ]
@@ -12755,7 +12698,7 @@
   "tced00e51": {
     "grup": "sunucu",
     "tr": "Kendi bölgeni keşfetmene gerek yok.",
-    "en": "",
+    "en": "You don't need to scout your own region.",
     "nerede": [
       "apps/api/src/routes/map.ts:542"
     ]
@@ -12763,7 +12706,7 @@
   "t2151cf3f": {
     "grup": "sunucu",
     "tr": "Kendi mesajını şikâyet edemezsin.",
-    "en": "",
+    "en": "You cannot report your own message.",
     "nerede": [
       "apps/api/src/routes/moderasyon.ts:113"
     ]
@@ -12771,7 +12714,7 @@
   "tad9f0652": {
     "grup": "sunucu",
     "tr": "Kendi rütbeni değiştiremezsin.",
-    "en": "",
+    "en": "You cannot change your own rank.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1823"
     ]
@@ -12779,7 +12722,7 @@
   "t3adae11a": {
     "grup": "sunucu",
     "tr": "Kendi teklifini kabul edemezsin.",
-    "en": "",
+    "en": "You cannot accept your own offer.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1554"
     ]
@@ -12787,7 +12730,7 @@
   "ta36df99b": {
     "grup": "sunucu",
     "tr": "Kendine kaynak gönderemezsin.",
-    "en": "",
+    "en": "You cannot send resources to yourself.",
     "nerede": [
       "apps/api/src/routes/ticaret.ts:44"
     ]
@@ -12795,7 +12738,7 @@
   "tadc5eb20": {
     "grup": "sunucu",
     "tr": "Kendini çıkaramazsın; ayrılmak için \"Ayrıl\" kullan.",
-    "en": "",
+    "en": "You cannot kick yourself; use \"Leave\" to leave.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:786"
     ]
@@ -12803,7 +12746,7 @@
   "t4533a4b2": {
     "grup": "sunucu",
     "tr": "Kendini şikâyet edemezsin.",
-    "en": "",
+    "en": "You cannot report yourself.",
     "nerede": [
       "apps/api/src/routes/rankings.ts:262"
     ]
@@ -12814,14 +12757,6 @@
     "en": "",
     "nerede": [
       "apps/api/src/routes/dev.ts:230"
-    ]
-  },
-  "t97b65f24": {
-    "grup": "sunucu",
-    "tr": "Kılıçarslan",
-    "en": "",
-    "nerede": [
-      "apps/api/src/services/demoWorld.ts:45"
     ]
   },
   "td0561d24": {
@@ -12835,7 +12770,7 @@
   "t75541e19": {
     "grup": "sunucu",
     "tr": "Kuşandığın eşyayı satamazsın.",
-    "en": "",
+    "en": "You cannot sell an equipped item.",
     "nerede": [
       "apps/api/src/routes/items.ts:169"
     ]
@@ -12851,7 +12786,7 @@
   "t85c22d39": {
     "grup": "sunucu",
     "tr": "Liderlik statını artır ya da daha az birim eğit.",
-    "en": "",
+    "en": "Increase your Leadership stat or train fewer units.",
     "nerede": [
       "apps/api/src/routes/army.ts:102"
     ]
@@ -12859,7 +12794,7 @@
   "te3f42fc4": {
     "grup": "sunucu",
     "tr": "Lord adı en az 3 harf içermeli.",
-    "en": "",
+    "en": "Lord name must contain at least 3 letters.",
     "nerede": [
       "apps/api/src/services/adDenetimi.ts:95"
     ]
@@ -12867,7 +12802,7 @@
   "t1f39c212": {
     "grup": "sunucu",
     "tr": "Lord adı en az 3 karakter olmalı.",
-    "en": "",
+    "en": "Lord name must be at least 3 characters.",
     "nerede": [
       "apps/api/src/routes/auth.ts:41"
     ]
@@ -12875,7 +12810,7 @@
   "te600421c": {
     "grup": "sunucu",
     "tr": "Lord adı en fazla 20 karakter olabilir.",
-    "en": "",
+    "en": "Lord name can be at most 20 characters.",
     "nerede": [
       "apps/api/src/routes/auth.ts:42"
     ]
@@ -12883,7 +12818,7 @@
   "t902efbf7": {
     "grup": "sunucu",
     "tr": "Lord adında geçersiz karakter var.",
-    "en": "",
+    "en": "Lord name contains invalid characters.",
     "nerede": [
       "apps/api/src/routes/auth.ts:43"
     ]
@@ -12891,7 +12826,7 @@
   "t12a0a254": {
     "grup": "sunucu",
     "tr": "Lord bulunamadı: {0}",
-    "en": "",
+    "en": "Lord not found: {0}",
     "nerede": [
       "apps/api/src/services/march.ts:90"
     ]
@@ -12899,7 +12834,7 @@
   "t18e74291": {
     "grup": "sunucu",
     "tr": "Lordlar Çağı — {0}",
-    "en": "",
+    "en": "Age of Lords — {0}",
     "nerede": [
       "apps/api/src/services/march.ts:966"
     ]
@@ -12907,7 +12842,7 @@
   "t67e8558e": {
     "grup": "sunucu",
     "tr": "Lordlar Çağı — parola sıfırlama",
-    "en": "",
+    "en": "Age of Lords — password reset",
     "nerede": [
       "apps/api/src/routes/auth.ts:217"
     ]
@@ -12915,7 +12850,7 @@
   "t20970dae": {
     "grup": "sunucu",
     "tr": "Lordun yaralı. {0} tarihine kadar saldıramazsın.",
-    "en": "",
+    "en": "Your lord is wounded. You cannot attack until {0}.",
     "nerede": [
       "apps/api/src/errors.ts:19"
     ]
@@ -12923,7 +12858,7 @@
   "tfe3e1797": {
     "grup": "sunucu",
     "tr": "Mesaj",
-    "en": "",
+    "en": "Message",
     "nerede": [
       "apps/api/src/routes/moderasyon.ts:103",
       "apps/api/src/routes/moderasyon.ts:111"
@@ -12932,7 +12867,7 @@
   "t5e499c35": {
     "grup": "sunucu",
     "tr": "Mesaj gönderilemez.",
-    "en": "",
+    "en": "Message cannot be sent.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:659"
     ]
@@ -12940,7 +12875,7 @@
   "te3021106": {
     "grup": "sunucu",
     "tr": "Mesajın uygunsuz bir kelime içeriyor.",
-    "en": "",
+    "en": "Your message contains an inappropriate word.",
     "nerede": [
       "apps/api/src/services/mesajDenetimi.ts:34"
     ]
@@ -12948,7 +12883,7 @@
   "tce11ff0b": {
     "grup": "sunucu",
     "tr": "Mevcut parola hatalı.",
-    "en": "",
+    "en": "Current password incorrect.",
     "nerede": [
       "apps/api/src/routes/me.ts:318"
     ]
@@ -12956,7 +12891,7 @@
   "tb5017c4f": {
     "grup": "sunucu",
     "tr": "Mevcut parolanı gir.",
-    "en": "",
+    "en": "Enter your current password.",
     "nerede": [
       "apps/api/src/routes/me.ts:57"
     ]
@@ -12964,7 +12899,7 @@
   "t4a240541": {
     "grup": "sunucu",
     "tr": "miğfer",
-    "en": "",
+    "en": "helmet",
     "nerede": [
       "apps/api/src/services/akin.ts:53"
     ]
@@ -12980,7 +12915,7 @@
   "tb209b8d4": {
     "grup": "sunucu",
     "tr": "Onay metnini birebir yazman gerekiyor.",
-    "en": "",
+    "en": "You must type the confirmation text exactly.",
     "nerede": [
       "apps/api/src/routes/me.ts:64"
     ]
@@ -12988,7 +12923,7 @@
   "tc2bfa5ef": {
     "grup": "sunucu",
     "tr": "Onuncu",
-    "en": "",
+    "en": "Tenth",
     "nerede": [
       "apps/api/src/services/world.ts:23"
     ]
@@ -12996,7 +12931,7 @@
   "t36f7c30f": {
     "grup": "sunucu",
     "tr": "Ordu boş.",
-    "en": "",
+    "en": "Army is empty.",
     "nerede": [
       "apps/api/src/routes/map.ts:838",
       "apps/api/src/routes/map.ts:968"
@@ -13005,7 +12940,7 @@
   "tb12c7fd3": {
     "grup": "sunucu",
     "tr": "Ordu donanımı yükseldi: {0} seviye {1}.",
-    "en": "",
+    "en": "Army gear upgraded: {0} level {1}.",
     "nerede": [
       "apps/api/src/services/queue.ts:300"
     ]
@@ -13013,7 +12948,7 @@
   "t92a551d8": {
     "grup": "sunucu",
     "tr": "Ordularından biri dönene kadar bekle",
-    "en": "",
+    "en": "Wait until one of your armies returns",
     "nerede": [
       "apps/api/src/routes/map.ts:988"
     ]
@@ -13021,7 +12956,7 @@
   "te5856115": {
     "grup": "sunucu",
     "tr": "Ordun eve döndü",
-    "en": "",
+    "en": "Your army returned home",
     "nerede": [
       "apps/api/src/services/lord.ts:602"
     ]
@@ -13029,7 +12964,7 @@
   "t69d0d616": {
     "grup": "sunucu",
     "tr": "Ordun eve döndü ({0} birim){1}.",
-    "en": "",
+    "en": "Your army returned home ({0} units){1}.",
     "nerede": [
       "apps/api/src/services/march.ts:470"
     ]
@@ -13037,7 +12972,7 @@
   "t24ff2633": {
     "grup": "sunucu",
     "tr": "Ortak hedef kaldırıldı.",
-    "en": "",
+    "en": "Common target removed.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:724"
     ]
@@ -13045,7 +12980,7 @@
   "tc9991460": {
     "grup": "sunucu",
     "tr": "Ortak hedef: {0}.",
-    "en": "",
+    "en": "Common target: {0}.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:751"
     ]
@@ -13053,7 +12988,7 @@
   "t6540798f": {
     "grup": "sunucu",
     "tr": "Önce üç görevi de bitir ({0}/{1}).",
-    "en": "",
+    "en": "Finish all three quests first ({0}/{1}).",
     "nerede": [
       "apps/api/src/routes/gunluk.ts:136"
     ]
@@ -13061,7 +12996,7 @@
   "td91f64e5": {
     "grup": "sunucu",
     "tr": "Pakt",
-    "en": "",
+    "en": "Pact",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:241"
     ]
@@ -13069,7 +13004,7 @@
   "t0724dcdd": {
     "grup": "sunucu",
     "tr": "Parola en az 8 karakter olmalı.",
-    "en": "",
+    "en": "Password must be at least 8 characters.",
     "nerede": [
       "apps/api/src/routes/auth.ts:38",
       "apps/api/src/routes/auth.ts:54"
@@ -13078,7 +13013,7 @@
   "tdc156679": {
     "grup": "sunucu",
     "tr": "Parola hatalı.",
-    "en": "",
+    "en": "Password incorrect.",
     "nerede": [
       "apps/api/src/routes/me.ts:350"
     ]
@@ -13094,7 +13029,7 @@
   "t773c702a": {
     "grup": "sunucu",
     "tr": "Push gönderilemedi (lord {0}, durum {1}): {2}",
-    "en": "",
+    "en": "Push could not be sent (lord {0}, status {1}): {2}",
     "nerede": [
       "apps/api/src/services/push.ts:149"
     ]
@@ -13110,7 +13045,7 @@
   "tea8d3f85": {
     "grup": "sunucu",
     "tr": "Sadece {0} general slotun var. Liderlik statını artır ya da Karargâh'ı yükselt.",
-    "en": "",
+    "en": "You only have {0} general slots. Increase your Leadership stat or upgrade the Headquarters.",
     "nerede": [
       "apps/api/src/routes/generals.ts:115"
     ]
@@ -13118,7 +13053,7 @@
   "t32fe7d29": {
     "grup": "sunucu",
     "tr": "Sadece {0} stat puanın var, {1} dağıtmaya çalıştın.",
-    "en": "",
+    "en": "You only have {0} stat points, you tried to distribute {1}.",
     "nerede": [
       "apps/api/src/routes/me.ts:204"
     ]
@@ -13126,7 +13061,7 @@
   "tfb73485d": {
     "grup": "sunucu",
     "tr": "Sahipsiz bölgenin garnizonu zaten görünüyor; casusa gerek yok.",
-    "en": "",
+    "en": "Unowned region's garrison is already visible; no need for a spy.",
     "nerede": [
       "apps/api/src/routes/map.ts:549"
     ]
@@ -13134,7 +13069,7 @@
   "t8b1e59db": {
     "grup": "sunucu",
     "tr": "Sahipsiz bölgeye takviye gönderilemez.",
-    "en": "",
+    "en": "Reinforcements cannot be sent to an unowned region.",
     "nerede": [
       "apps/api/src/routes/map.ts:605"
     ]
@@ -13142,7 +13077,7 @@
   "t1458da19": {
     "grup": "sunucu",
     "tr": "Saldırı püskürtüldü ama bölgen yağmalandı.",
-    "en": "",
+    "en": "Attack repelled but your region was looted.",
     "nerede": [
       "apps/api/src/services/march.ts:970"
     ]
@@ -13150,7 +13085,7 @@
   "tb572b7f1": {
     "grup": "sunucu",
     "tr": "Savaş",
-    "en": "",
+    "en": "Battle",
     "nerede": [
       "apps/api/src/routes/map.ts:1219",
       "data/basarimlar.json:kumeler[1].ad"
@@ -13159,7 +13094,7 @@
   "t480c8d6f": {
     "grup": "sunucu",
     "tr": "Savaş kaybedildi",
-    "en": "",
+    "en": "Battle lost",
     "nerede": [
       "apps/api/src/services/lord.ts:600"
     ]
@@ -13167,7 +13102,7 @@
   "t668e46ee": {
     "grup": "sunucu",
     "tr": "Savunan ordusu tam biliniyor.",
-    "en": "",
+    "en": "Defending army is fully known.",
     "nerede": [
       "apps/api/src/routes/map.ts:960"
     ]
@@ -13175,7 +13110,7 @@
   "t704a90ad": {
     "grup": "sunucu",
     "tr": "Savunanın garnizonu bilinmiyor; tahmin eksik istihbarata dayanıyor. Casus Leyla tam bilgi verir.",
-    "en": "",
+    "en": "Defender's garrison is unknown; estimation relies on incomplete intel. Spy Leyla provides full info.",
     "nerede": [
       "apps/api/src/routes/map.ts:961"
     ]
@@ -13183,7 +13118,7 @@
   "t8f413a36": {
     "grup": "sunucu",
     "tr": "Sekizinci",
-    "en": "",
+    "en": "Eighth",
     "nerede": [
       "apps/api/src/services/world.ts:21"
     ]
@@ -13191,7 +13126,7 @@
   "t13abe10b": {
     "grup": "sunucu",
     "tr": "Silmek için parolanı gir.",
-    "en": "",
+    "en": "Enter your password to delete.",
     "nerede": [
       "apps/api/src/routes/me.ts:62"
     ]
@@ -13199,23 +13134,15 @@
   "t5aa871ff": {
     "grup": "sunucu",
     "tr": "Sohbette susturuldun.",
-    "en": "",
+    "en": "You were muted in chat.",
     "nerede": [
       "apps/api/src/services/moderasyon.ts:43"
-    ]
-  },
-  "te71c8e7d": {
-    "grup": "sunucu",
-    "tr": "Sungur Bey",
-    "en": "",
-    "nerede": [
-      "apps/api/src/services/demoWorld.ts:53"
     ]
   },
   "t7b130fb7": {
     "grup": "sunucu",
     "tr": "Susturman kaldırıldı. İttifak sohbetine yeniden yazabilirsin.",
-    "en": "",
+    "en": "Your mute has been lifted. You can write in the alliance chat again.",
     "nerede": [
       "apps/api/src/routes/moderasyon.ts:373"
     ]
@@ -13223,7 +13150,7 @@
   "t9bc99ae9": {
     "grup": "sunucu",
     "tr": "Şikâyet",
-    "en": "",
+    "en": "Report",
     "nerede": [
       "apps/api/src/routes/moderasyon.ts:273"
     ]
@@ -13231,7 +13158,7 @@
   "t5659abad": {
     "grup": "sunucu",
     "tr": "T{0} {1} üretildi: {2}.",
-    "en": "",
+    "en": "T{0} {1} forged: {2}.",
     "nerede": [
       "apps/api/src/services/queue.ts:256"
     ]
@@ -13239,7 +13166,7 @@
   "t7ebcbe7b": {
     "grup": "sunucu",
     "tr": "T{0} ekipman için {1}. seviye demirhane gerekiyor.",
-    "en": "",
+    "en": "T{0} equipment requires level {1} blacksmith.",
     "nerede": [
       "apps/api/src/routes/items.ts:96"
     ]
@@ -13247,7 +13174,7 @@
   "tab7f8132": {
     "grup": "sunucu",
     "tr": "T{0} ekipman için seviye {1} gerekiyor.",
-    "en": "",
+    "en": "T{0} equipment requires level {1}.",
     "nerede": [
       "apps/api/src/routes/items.ts:89"
     ]
@@ -13255,7 +13182,7 @@
   "tbb98e4ff": {
     "grup": "sunucu",
     "tr": "Taht Kalesi bırakılamaz. Elinden ancak savaşla alınır.",
-    "en": "",
+    "en": "Throne Citadel cannot be abandoned. It can only be taken from you by battle.",
     "nerede": [
       "apps/api/src/routes/map.ts:1155"
     ]
@@ -13263,7 +13190,7 @@
   "tae8e75b8": {
     "grup": "sunucu",
     "tr": "Takviye için birim seçmedin.",
-    "en": "",
+    "en": "You didn't select units for reinforcement.",
     "nerede": [
       "apps/api/src/routes/map.ts:594"
     ]
@@ -13271,7 +13198,7 @@
   "ta5f16350": {
     "grup": "sunucu",
     "tr": "Takviye yalnız ittifak üyelerine gönderilebilir.",
-    "en": "",
+    "en": "Reinforcements can only be sent to alliance members.",
     "nerede": [
       "apps/api/src/routes/map.ts:623"
     ]
@@ -13279,7 +13206,7 @@
   "ta6fb76b3": {
     "grup": "sunucu",
     "tr": "Takviyen kabul edilmedi (bölge el değiştirmiş olabilir); ordun dönüyor.",
-    "en": "",
+    "en": "Your reinforcements were not accepted (the region may have changed hands); your army is returning.",
     "nerede": [
       "apps/api/src/services/march.ts:565"
     ]
@@ -13287,7 +13214,7 @@
   "td1ca0ac5": {
     "grup": "sunucu",
     "tr": "Teklifin zaten gönderildi.",
-    "en": "",
+    "en": "Your offer is already sent.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1511"
     ]
@@ -13295,7 +13222,7 @@
   "tb739c118": {
     "grup": "sunucu",
     "tr": "Toprağın saldırı altında",
-    "en": "",
+    "en": "Your land is under attack",
     "nerede": [
       "apps/api/src/services/lord.ts:599"
     ]
@@ -13303,23 +13230,15 @@
   "t20afa09d": {
     "grup": "sunucu",
     "tr": "Üçüncü",
-    "en": "",
+    "en": "Third",
     "nerede": [
       "apps/api/src/services/world.ts:16"
-    ]
-  },
-  "t1793784a": {
-    "grup": "sunucu",
-    "tr": "Yaman Alp",
-    "en": "",
-    "nerede": [
-      "apps/api/src/services/demoWorld.ts:38"
     ]
   },
   "tfe038daa": {
     "grup": "sunucu",
     "tr": "Yedinci",
-    "en": "",
+    "en": "Seventh",
     "nerede": [
       "apps/api/src/services/world.ts:20"
     ]
@@ -13343,7 +13262,7 @@
   "t44a98c68": {
     "grup": "sunucu",
     "tr": "Yeni parola en az 8 karakter olmalı.",
-    "en": "",
+    "en": "New password must be at least 8 characters.",
     "nerede": [
       "apps/api/src/routes/me.ts:58"
     ]
@@ -13351,7 +13270,7 @@
   "tb7d384d8": {
     "grup": "sunucu",
     "tr": "Yeterli kaynağın yok.",
-    "en": "",
+    "en": "You don't have enough resources.",
     "nerede": [
       "apps/api/src/errors.ts:14"
     ]
@@ -13359,7 +13278,7 @@
   "t8bed41df": {
     "grup": "sunucu",
     "tr": "Yeterli kaynağın yok. Eksik: {0}.",
-    "en": "",
+    "en": "You don't have enough resources. Missing: {0}.",
     "nerede": [
       "apps/api/src/services/queue.ts:72"
     ]
@@ -13367,7 +13286,7 @@
   "te056a93d": {
     "grup": "sunucu",
     "tr": "Yükseltme başarılı: +{0}",
-    "en": "",
+    "en": "Upgrade successful: +{0}",
     "nerede": [
       "apps/api/src/services/queue.ts:279"
     ]
@@ -13375,7 +13294,7 @@
   "t2f4007a5": {
     "grup": "sunucu",
     "tr": "Yükseltme başarısız (şans %{0}). Malzeme kayboldu, eşya sağlam.",
-    "en": "",
+    "en": "Upgrade failed ({0}% chance). Materials lost, item intact.",
     "nerede": [
       "apps/api/src/services/queue.ts:280"
     ]
@@ -13383,7 +13302,7 @@
   "tb27f6e40": {
     "grup": "sunucu",
     "tr": "Yürürlükte olmayan pakt feshedilemez.",
-    "en": "",
+    "en": "A pact not in effect cannot be dissolved.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1617"
     ]
@@ -13391,7 +13310,7 @@
   "t4403a7f4": {
     "grup": "sunucu",
     "tr": "Yürüyüş",
-    "en": "",
+    "en": "March",
     "nerede": [
       "apps/api/src/routes/map.ts:1085"
     ]
@@ -13407,7 +13326,7 @@
   "te9b9c83f": {
     "grup": "sunucu",
     "tr": "yüzük",
-    "en": "",
+    "en": "ring",
     "nerede": [
       "apps/api/src/services/akin.ts:53"
     ]
@@ -13415,7 +13334,7 @@
   "tb57b7485": {
     "grup": "sunucu",
     "tr": "Zaten burada oturuyorsun.",
-    "en": "",
+    "en": "You already reside here.",
     "nerede": [
       "apps/api/src/routes/sehir.ts:243"
     ]

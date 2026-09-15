@@ -67,6 +67,12 @@ const OPERASYON = [
    * koşulda görmüyor; çeviri listesinde on yedi satır yer kaplıyorlardı.
    */
   'packages/shared/src/balance.ts',
+  /*
+   * Demo lordların adları ("Sungur Bey", "Aybüke Hatun") ve test
+   * dağıtımı çıktısı. Adlar ÖZEL AD — bölge adları gibi hiçbir dilde
+   * değişmiyor; dosyanın geri kalanı zaten geliştirici metni.
+   */
+  'apps/api/src/services/demoWorld.ts',
 ];
 
 function dosyalar(kok, uzantilar) {
@@ -112,6 +118,26 @@ const KOD_KOKUSU = [
   /^[A-Z0-9_]+$/, // SABIT_ADI
   /^\s*$/,
 ];
+
+/**
+ * Değeri AYAR ya da PROTOKOL olan nesne özellikleri.
+ *
+ * JSX niteliklerinin nesne karşılığı. `Authorization: \`Bearer ${x}\``
+ * bir HTTP başlığı, `timeWindow: '1 minute'` bir hız-sınırı ayarı;
+ * ikisi de çeviri listesine düşmüştü ve çevrilselerdi biri kimlik
+ * doğrulamayı, öteki sınırlamayı bozardı.
+ */
+const ATLANAN_OZELLIK = new Set([
+  'Authorization',
+  'timeWindow',
+  'method',
+  'rel',
+  'href',
+  'src',
+  'className',
+  'contentType',
+  'Content-Type',
+]);
 
 /** Sınıf/biçim taşıdığı için içeriği hiç okunmayan JSX nitelikleri. */
 const ATLANAN_NITELIK = new Set([
@@ -312,6 +338,22 @@ function atlanirMi(node) {
 
   // `case 'acik':` — yine kod değeri.
   if (ts.isCaseClause(p)) return true;
+
+  // Ayar ya da protokol taşıyan nesne özelliği: `timeWindow: '1 minute'`.
+  if (ts.isPropertyAssignment(p) && p.initializer === node) {
+    const ad = p.name.getText().replace(/['"]/g, '');
+    if (ATLANAN_OZELLIK.has(ad)) return true;
+  }
+
+  // `this.name = 'GameError'` — hata sınıfının kimliği, oyuncuya
+  // gösterilen bir metin değil.
+  if (
+    ts.isBinaryExpression(p) &&
+    p.operatorToken.kind === ts.SyntaxKind.EqualsToken &&
+    ts.isPropertyAccessExpression(p.left) &&
+    p.left.name.getText() === 'name'
+  )
+    return true;
 
   // Metot çağrısının ALICISI: `'aı'.includes(v)`. Dilbilgisi makinesi
   // (ekler.ts) sesli harf tablolarını böyle tutuyor; bunlar metin değil.
