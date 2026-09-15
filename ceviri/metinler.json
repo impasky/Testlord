@@ -326,7 +326,7 @@
   "t68a0a525": {
     "grup": "arayuz",
     "tr": "'a git",
-    "en": "",
+    "en": "Go to",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:964"
     ]
@@ -334,7 +334,7 @@
   "t243874a1": {
     "grup": "arayuz",
     "tr": "'de dövülür; ürettiğin parçayı buradan kuşanırsın.",
-    "en": "",
+    "en": "is forged at; you equip the crafted piece here.",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:481"
     ]
@@ -406,7 +406,7 @@
   "t87382ec3": {
     "grup": "arayuz",
     "tr": "{0} — {1} yapı",
-    "en": "",
+    "en": "{0} — {1} building",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:397"
     ]
@@ -448,7 +448,7 @@
   "t4d76c9d7": {
     "grup": "arayuz",
     "tr": "{0} {1} eğit",
-    "en": "",
+    "en": "Train {0} {1}",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:285"
     ]
@@ -505,7 +505,7 @@
   "tac7169d2": {
     "grup": "arayuz",
     "tr": "{0} dk",
-    "en": "",
+    "en": "{0} min",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:605"
     ]
@@ -521,7 +521,7 @@
   "t47ae593b": {
     "grup": "arayuz",
     "tr": "{0} dk sonra biter",
-    "en": "",
+    "en": "Finishes in {0} min",
     "nerede": [
       "apps/web/src/components/MobilKabuk.tsx:137"
     ]
@@ -537,7 +537,7 @@
   "t329856e2": {
     "grup": "arayuz",
     "tr": "{0} galibiyet · {1} yenilgi",
-    "en": "",
+    "en": "{0} victories · {1} defeats",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:571"
     ]
@@ -553,7 +553,7 @@
   "t39ffe83d": {
     "grup": "arayuz",
     "tr": "{0} için ordun henüz yetmiyor.",
-    "en": "",
+    "en": "Your army is not enough for {0} yet.",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:766"
     ]
@@ -577,7 +577,7 @@
   "t163d871e": {
     "grup": "arayuz",
     "tr": "{0} kapasiten dolsa bile alınmıyor. Liderlik statını yükseltmen gerek.",
-    "en": "",
+    "en": "It cannot be recruited even if your {0} capacity is full. You need to upgrade your Leadership stat.",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:751"
     ]
@@ -625,7 +625,7 @@
   "t75469fdf": {
     "grup": "arayuz",
     "tr": "{0} puanı dağıt",
-    "en": "",
+    "en": "Distribute {0} points",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:451"
     ]
@@ -633,7 +633,7 @@
   "t2a3b407a": {
     "grup": "arayuz",
     "tr": "{0} sa sonra biter",
-    "en": "",
+    "en": "Finishes in {0} hr",
     "nerede": [
       "apps/web/src/components/MobilKabuk.tsx:138"
     ]
@@ -641,7 +641,7 @@
   "t423b2a6e": {
     "grup": "arayuz",
     "tr": "{0} saat",
-    "en": "",
+    "en": "{0} hours",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:605"
     ]
@@ -649,7 +649,7 @@
   "tf1a6d8b4": {
     "grup": "arayuz",
     "tr": "{0} saat {1} dakika",
-    "en": "",
+    "en": "{0} hours {1} minutes",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:88"
     ]
@@ -665,7 +665,7 @@
   "t9fbcad0c": {
     "grup": "arayuz",
     "tr": "{0} saldır",
-    "en": "",
+    "en": "Attack {0}",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:651",
       "apps/web/src/components/Omurga.tsx:676",
@@ -743,7 +743,7 @@
   "t91ecc24f": {
     "grup": "arayuz",
     "tr": "{0} üzerine yürü",
-    "en": "",
+    "en": "March on {0}",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:795"
     ]
@@ -756,20 +756,10 @@
       "apps/web/src/screens/Harita.tsx:1151"
     ]
   },
-  "tee0863e9": {
-    "grup": "arayuz",
-    "tr": "{0}_t{1}",
-    "en": "",
-    "nerede": [
-      "apps/web/src/screens/Akin.tsx:234",
-      "apps/web/src/screens/Demirhane.tsx:227",
-      "apps/web/src/screens/LordEkrani.tsx:510"
-    ]
-  },
   "tc0aafdeb": {
     "grup": "arayuz",
     "tr": "{0}: {1} ({2}{3}/sa){4}",
-    "en": "",
+    "en": "{0}: {1} ({2}{3}/hr){4}",
     "nerede": [
       "apps/web/src/components/MobilKabuk.tsx:149"
     ]
@@ -777,7 +767,7 @@
   "t01f3bcfa": {
     "grup": "arayuz",
     "tr": "{0}dk {1}sn",
-    "en": "",
+    "en": "{0}m {1}s",
     "nerede": [
       "apps/web/src/components/ui.tsx:795"
     ]
@@ -785,7 +775,7 @@
   "t474d6d19": {
     "grup": "arayuz",
     "tr": "{0}g {1}sa",
-    "en": "",
+    "en": "{0}d {1}h",
     "nerede": [
       "apps/web/src/components/ui.tsx:793"
     ]
@@ -793,7 +783,7 @@
   "t756e7987": {
     "grup": "arayuz",
     "tr": "{0}sa {1}dk",
-    "en": "",
+    "en": "{0}h {1}m",
     "nerede": [
       "apps/web/src/components/ui.tsx:794",
       "apps/web/src/screens/Arastirma.tsx:44",
@@ -961,7 +951,7 @@
   "t230c7ce3": {
     "grup": "arayuz",
     "tr": "Adres kayıtlıysa sıfırlama bağlantısı gönderildi. Gelen kutunu kontrol et.",
-    "en": "",
+    "en": "If the address is registered, a reset link has been sent. Check your inbox.",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:22"
     ]
@@ -995,7 +985,7 @@
   "tba802375": {
     "grup": "arayuz",
     "tr": "Akına git",
-    "en": "",
+    "en": "Go on a raid",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:734"
     ]
@@ -1003,7 +993,7 @@
   "t1386e6f0": {
     "grup": "arayuz",
     "tr": "Akının sürüyor",
-    "en": "",
+    "en": "Your raid is ongoing",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:690"
     ]
@@ -1114,7 +1104,7 @@
   "t6631f86c": {
     "grup": "arayuz",
     "tr": "Araştırma kalıcıdır ve diyarını senin seçimlerinle şekillendirir — iki lord aynı seviyede aynı olmaz.",
-    "en": "",
+    "en": "Research is permanent and shapes your realm with your choices — two lords at the same level won't be identical.",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:908"
     ]
@@ -1130,7 +1120,7 @@
   "t827936f1": {
     "grup": "arayuz",
     "tr": "Araştırmaya git",
-    "en": "",
+    "en": "Go to research",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:848",
       "apps/web/src/components/Omurga.tsx:909"
@@ -1203,7 +1193,7 @@
   "t939bcef3": {
     "grup": "arayuz",
     "tr": "Asker eğitimi",
-    "en": "",
+    "en": "Troop training",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:61"
     ]
@@ -1211,7 +1201,7 @@
   "tc9c35393": {
     "grup": "arayuz",
     "tr": "Asker Eğitimi",
-    "en": "",
+    "en": "Troop Training",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:462"
     ]
@@ -1251,7 +1241,7 @@
   "tebbe0d76": {
     "grup": "arayuz",
     "tr": "Askerlerin eğitiliyor",
-    "en": "",
+    "en": "Your troops are training",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:644"
     ]
@@ -1317,7 +1307,7 @@
   "t74ab2913": {
     "grup": "arayuz",
     "tr": "Aynı anda en fazla {0} eğitim yapabilirsin. Kışlanı yükseltirsen artar.",
-    "en": "",
+    "en": "You can have a maximum of {0} trainings at once. Upgrading your Barracks increases this.",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:87"
     ]
@@ -1342,7 +1332,7 @@
   "t03f09d10": {
     "grup": "arayuz",
     "tr": "azalıyor",
-    "en": "",
+    "en": "decreasing",
     "nerede": [
       "apps/web/src/components/MobilKabuk.tsx:183"
     ]
@@ -1390,7 +1380,7 @@
   "t054a9074": {
     "grup": "arayuz",
     "tr": "Bağlantı kurulamadı.",
-    "en": "",
+    "en": "Connection failed.",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:46"
     ]
@@ -1406,7 +1396,7 @@
   "tb1ede623": {
     "grup": "arayuz",
     "tr": "Bakım",
-    "en": "",
+    "en": "Upkeep",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:324"
     ]
@@ -1430,7 +1420,7 @@
   "t28017778": {
     "grup": "arayuz",
     "tr": "Başkent taşınamadı.",
-    "en": "",
+    "en": "Capital could not be moved.",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:326"
     ]
@@ -1438,7 +1428,7 @@
   "t2947aef5": {
     "grup": "arayuz",
     "tr": "başkentin yok",
-    "en": "",
+    "en": "you have no capital",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:468"
     ]
@@ -1446,7 +1436,7 @@
   "tc727a7f6": {
     "grup": "arayuz",
     "tr": "Başkentini taşıyabilirsin",
-    "en": "",
+    "en": "You can move your capital",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:507"
     ]
@@ -1546,7 +1536,7 @@
   "t6b91afa4": {
     "grup": "arayuz",
     "tr": "Bekle...",
-    "en": "",
+    "en": "Wait...",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:127"
     ]
@@ -1642,7 +1632,7 @@
   "tc00bd592": {
     "grup": "arayuz",
     "tr": "Binaların bu yerleşimde en fazla",
-    "en": "",
+    "en": "Buildings in this settlement can at most",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:474"
     ]
@@ -1650,7 +1640,7 @@
   "te7b9c929": {
     "grup": "arayuz",
     "tr": "bir araştırma başlat",
-    "en": "",
+    "en": "start a research",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:898"
     ]
@@ -1658,7 +1648,7 @@
   "tb1bc8549": {
     "grup": "arayuz",
     "tr": "Bir araştırma başlat",
-    "en": "",
+    "en": "Start a research",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:906"
     ]
@@ -1674,7 +1664,7 @@
   "tb0690095": {
     "grup": "arayuz",
     "tr": "Bir bölgeyi sadece oraya bıraktığın garnizon savunur.",
-    "en": "",
+    "en": "A region is defended solely by the garrison you leave there.",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:527"
     ]
@@ -1698,7 +1688,7 @@
   "t1c2e9b97": {
     "grup": "arayuz",
     "tr": "Bir tarla bölgesi al ya da ordunu küçült.",
-    "en": "",
+    "en": "Take a farm region or reduce your army.",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:602"
     ]
@@ -1771,7 +1761,7 @@
   "t6e980c82": {
     "grup": "arayuz",
     "tr": "boş arsa",
-    "en": "",
+    "en": "vacant lot",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:713",
       "apps/web/src/screens/Sehir.tsx:716",
@@ -1781,7 +1771,7 @@
   "t0f1623db": {
     "grup": "arayuz",
     "tr": "Boş yer {0}, gereken {1}. Liderlik statını artır ya da daha az birim eğit.",
-    "en": "",
+    "en": "Vacant {0}, required {1}. Increase your Leadership stat or train fewer units.",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:94"
     ]
@@ -1852,7 +1842,7 @@
   "t2bc4f28b": {
     "grup": "arayuz",
     "tr": "Bölge kıt, rakip çok. Tahtı hak eden alır.",
-    "en": "",
+    "en": "Regions are scarce, rivals are many. Whoever deserves the throne takes it.",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:63"
     ]
@@ -1892,7 +1882,7 @@
   "tc9b5abfb": {
     "grup": "arayuz",
     "tr": "Bölge yükseltme",
-    "en": "",
+    "en": "Region upgrade",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:65"
     ]
@@ -1925,7 +1915,7 @@
   "tc94ced4d": {
     "grup": "arayuz",
     "tr": "Bölgeni geliştir",
-    "en": "",
+    "en": "Develop your region",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:891",
       "packages/shared/src/rehber.ts:179"
@@ -1934,7 +1924,7 @@
   "t43e2d800": {
     "grup": "arayuz",
     "tr": "bölgeni yükselt",
-    "en": "",
+    "en": "upgrade your region",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:810",
       "apps/web/src/components/Omurga.tsx:829",
@@ -1944,7 +1934,7 @@
   "t52203242": {
     "grup": "arayuz",
     "tr": "Bölgenin seviyesi geliri de savunmayı da büyütür. Yeni toprak almadan da güçlenebilirsin.",
-    "en": "",
+    "en": "Region level increases both income and defense. You can grow stronger without taking new land.",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:893"
     ]
@@ -1976,7 +1966,7 @@
   "t918b4e4d": {
     "grup": "arayuz",
     "tr": "Bölgeye git",
-    "en": "",
+    "en": "Go to region",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:894"
     ]
@@ -2145,7 +2135,7 @@
   "t8ae61b4b": {
     "grup": "arayuz",
     "tr": "Bu sürede ekipman üretebilir ya da bölgeni yükseltebilirsin.",
-    "en": "",
+    "en": "You can forge equipment or upgrade your region during this time.",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:666"
     ]
@@ -2153,7 +2143,7 @@
   "tb4911234": {
     "grup": "arayuz",
     "tr": "Bu sürede ordunu büyütebilir ya da ekipman üretebilirsin.",
-    "en": "",
+    "en": "You can grow your army or forge equipment during this time.",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:623"
     ]
@@ -2225,7 +2215,7 @@
   "t52fed105": {
     "grup": "arayuz",
     "tr": "Can",
-    "en": "",
+    "en": "Health",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:318"
     ]
@@ -2233,7 +2223,7 @@
   "ta06cea5b": {
     "grup": "arayuz",
     "tr": "Can +{0} · yaralanma −%{1}",
-    "en": "",
+    "en": "Health +{0} · wounding −{1}%",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:52"
     ]
@@ -2241,7 +2231,7 @@
   "t4fce4d37": {
     "grup": "arayuz",
     "tr": "Can +%{0}",
-    "en": "",
+    "en": "Health +{0}%",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:556"
     ]
@@ -2281,7 +2271,7 @@
   "tb3c8f1a0": {
     "grup": "arayuz",
     "tr": "Çaylak",
-    "en": "",
+    "en": "Rookie",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:129"
     ]
@@ -2313,7 +2303,7 @@
   "t12471f4a": {
     "grup": "arayuz",
     "tr": "Çıkış",
-    "en": "",
+    "en": "Logout",
     "nerede": [
       "apps/web/src/components/MobilKabuk.tsx:260"
     ]
@@ -2338,7 +2328,7 @@
   "tced17ccf": {
     "grup": "arayuz",
     "tr": "Daha büyük bir yerleşimin var. Taşınırsan binaların seninle gelir — hiçbir seviye kaybolmaz, yalnız tavan yükselir.",
-    "en": "",
+    "en": "You have a larger settlement. If you move, your buildings come with you — no levels are lost, only the cap increases.",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:509"
     ]
@@ -2354,7 +2344,7 @@
   "tfa0c522b": {
     "grup": "arayuz",
     "tr": "Dayanıklılık",
-    "en": "",
+    "en": "Endurance",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:50"
     ]
@@ -2443,7 +2433,7 @@
   "t5d00215f": {
     "grup": "arayuz",
     "tr": "Demirhanede ekipman üret",
-    "en": "",
+    "en": "Forge equipment in the Blacksmith",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:810"
     ]
@@ -2451,7 +2441,7 @@
   "t0bd85dea": {
     "grup": "arayuz",
     "tr": "Demirhaneye git",
-    "en": "",
+    "en": "Go to the Blacksmith",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:672",
       "apps/web/src/components/Omurga.tsx:825"
@@ -2484,7 +2474,7 @@
   "tfb4d7db3": {
     "grup": "arayuz",
     "tr": "depo dolu",
-    "en": "",
+    "en": "storage full",
     "nerede": [
       "apps/web/src/components/MobilKabuk.tsx:180"
     ]
@@ -2500,7 +2490,7 @@
   "t1d20a17b": {
     "grup": "arayuz",
     "tr": "Depon dolduğu için ürettiğin her şey boşa gidiyor. Ambarlar araştırması depoyu büyütür.",
-    "en": "",
+    "en": "Everything you produce is wasted because your storage is full. Granaries research expands the storage.",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:847"
     ]
@@ -2517,7 +2507,7 @@
   "td1158a3b": {
     "grup": "arayuz",
     "tr": "Deponun taşıyor",
-    "en": "",
+    "en": "Your storage is overflowing",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:845"
     ]
@@ -2533,7 +2523,7 @@
   "tc72ff960": {
     "grup": "arayuz",
     "tr": "DETAY",
-    "en": "",
+    "en": "DETAILS",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:309"
     ]
@@ -2541,7 +2531,7 @@
   "t37cf0867": {
     "grup": "arayuz",
     "tr": "DETAYI GİZLE",
-    "en": "",
+    "en": "HIDE DETAILS",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:309"
     ]
@@ -2565,7 +2555,7 @@
   "t144c260f": {
     "grup": "arayuz",
     "tr": "Dikili yapıya dokun: içine girersin. Boş arsaya dokun: bedelini söyler.",
-    "en": "",
+    "en": "Tap an erected structure: you enter it. Tap a vacant lot: it states the cost.",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:439"
     ]
@@ -2599,7 +2589,7 @@
   "tadebb397": {
     "grup": "arayuz",
     "tr": "Diyara Gir",
-    "en": "",
+    "en": "Enter Realm",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:127"
     ]
@@ -2623,7 +2613,7 @@
   "t1ffa6e79": {
     "grup": "arayuz",
     "tr": "Diyarda seni bu adla tanıyacaklar.",
-    "en": "",
+    "en": "You will be known by this name in the realm.",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:88"
     ]
@@ -2639,7 +2629,7 @@
   "t1693e09c": {
     "grup": "arayuz",
     "tr": "Diyarı büyüt",
-    "en": "",
+    "en": "Expand the realm",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:921"
     ]
@@ -2647,7 +2637,7 @@
   "t0ce7b20a": {
     "grup": "arayuz",
     "tr": "diyarı büyütmeye devam et",
-    "en": "",
+    "en": "keep expanding the realm",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:913"
     ]
@@ -2851,7 +2841,7 @@
   "t06db6bc3": {
     "grup": "arayuz",
     "tr": "Dünya",
-    "en": "",
+    "en": "World",
     "nerede": [
       "apps/web/src/components/MobilKabuk.tsx:64"
     ]
@@ -2924,7 +2914,7 @@
   "tddcec948": {
     "grup": "arayuz",
     "tr": "E-posta",
-    "en": "",
+    "en": "Email",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:99"
     ]
@@ -2932,7 +2922,7 @@
   "tee39ae8e": {
     "grup": "arayuz",
     "tr": "Efsanevi",
-    "en": "",
+    "en": "Legendary",
     "nerede": [
       "apps/web/src/components/ui.tsx:276",
       "apps/web/src/screens/LordEkrani.tsx:129"
@@ -2957,7 +2947,7 @@
   "tf81c1046": {
     "grup": "arayuz",
     "tr": "Eğitim kuyruğu dolu",
-    "en": "",
+    "en": "Training queue is full",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:86"
     ]
@@ -2965,7 +2955,7 @@
   "tc38ff08d": {
     "grup": "arayuz",
     "tr": "Eğitimde",
-    "en": "",
+    "en": "In Training",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:294"
     ]
@@ -2981,7 +2971,7 @@
   "t20c68228": {
     "grup": "arayuz",
     "tr": "Ekipman gücü",
-    "en": "",
+    "en": "Equipment power",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:550"
     ]
@@ -2989,7 +2979,7 @@
   "tf8c29599": {
     "grup": "arayuz",
     "tr": "Ekipman lordun savaş katkısını büyütür; aynı savaştan daha az kayıpla çıkarsın.",
-    "en": "",
+    "en": "Equipment increases the lord's battle contribution; you will emerge from the same battle with fewer losses.",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:819"
     ]
@@ -3005,7 +2995,7 @@
   "t0d91ed0c": {
     "grup": "arayuz",
     "tr": "Ekipman üretimi",
-    "en": "",
+    "en": "Equipment production",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:62"
     ]
@@ -3013,7 +3003,7 @@
   "t12fb0004": {
     "grup": "arayuz",
     "tr": "Ekipman yükseltme",
-    "en": "",
+    "en": "Equipment upgrade",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:63"
     ]
@@ -3071,7 +3061,7 @@
   "t67a6cb18": {
     "grup": "arayuz",
     "tr": "En az 8 karakter.",
-    "en": "",
+    "en": "At least 8 characters.",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:109"
     ]
@@ -3151,7 +3141,7 @@
   "tb647a1ab": {
     "grup": "arayuz",
     "tr": "Erzağın bitiyor",
-    "en": "",
+    "en": "Running out of supplies",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:599"
     ]
@@ -3178,7 +3168,7 @@
   "t0509e8aa": {
     "grup": "arayuz",
     "tr": "Erzak bitti, askerler saatte %5 firar ediyor. Tarla bölgesi al ya da ordunu küçült.",
-    "en": "",
+    "en": "Supplies are out, troops desert at 5% per hour. Take a farm region or reduce your army.",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:296"
     ]
@@ -3186,7 +3176,7 @@
   "t709594fe": {
     "grup": "arayuz",
     "tr": "Erzak bitti, askerlerin kaçıyor. Bir tarla bölgesi al ya da ordunu küçült.",
-    "en": "",
+    "en": "Supplies ran out, your troops are deserting. Take a farm region or reduce your army.",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:569"
     ]
@@ -3194,7 +3184,7 @@
   "t9d5a171d": {
     "grup": "arayuz",
     "tr": "erzak/sa",
-    "en": "",
+    "en": "supplies/hr",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:457"
     ]
@@ -3242,7 +3232,7 @@
   "t6aba0c15": {
     "grup": "arayuz",
     "tr": "Evde",
-    "en": "",
+    "en": "At Home",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:192",
       "apps/web/src/screens/Kisla.tsx:232"
@@ -3313,14 +3303,6 @@
       "apps/web/src/components/RehberIsigi.tsx:467"
     ]
   },
-  "t80e9a745": {
-    "grup": "arayuz",
-    "tr": "game-icons.net",
-    "en": "",
-    "nerede": [
-      "apps/web/src/screens/Giris.tsx:177"
-    ]
-  },
   "tc36274bf": {
     "grup": "arayuz",
     "tr": "Garnizon",
@@ -3334,7 +3316,7 @@
   "t7bd683bd": {
     "grup": "arayuz",
     "tr": "Garnizonlarda",
-    "en": "",
+    "en": "In Garrisons",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:506"
     ]
@@ -3407,7 +3389,7 @@
   "tc9e13052": {
     "grup": "arayuz",
     "tr": "General bütün ordunu birden güçlendirir — tek bir ekipmandan büyük fark yaratır.",
-    "en": "",
+    "en": "A general empowers your entire army at once — making a bigger difference than a single piece of equipment.",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:861"
     ]
@@ -3415,7 +3397,7 @@
   "tcdfb3203": {
     "grup": "arayuz",
     "tr": "general kirala",
-    "en": "",
+    "en": "hire general",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:829",
       "apps/web/src/components/Omurga.tsx:852"
@@ -3424,7 +3406,7 @@
   "t587175a3": {
     "grup": "arayuz",
     "tr": "General kirala",
-    "en": "",
+    "en": "Hire general",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:860",
       "packages/shared/src/rehber.ts:178"
@@ -3442,7 +3424,7 @@
   "tbf8d2b79": {
     "grup": "arayuz",
     "tr": "Generallere git",
-    "en": "",
+    "en": "Go to Generals",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:862"
     ]
@@ -3490,7 +3472,7 @@
   "t2de7bc19": {
     "grup": "arayuz",
     "tr": "Giriş",
-    "en": "",
+    "en": "Login",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:81"
     ]
@@ -3507,7 +3489,7 @@
   "te859868f": {
     "grup": "arayuz",
     "tr": "Giriş Yap",
-    "en": "",
+    "en": "Sign In",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:127"
     ]
@@ -3598,7 +3580,7 @@
   "t325b5031": {
     "grup": "arayuz",
     "tr": "Görünüş",
-    "en": "",
+    "en": "Appearance",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:373"
     ]
@@ -3631,7 +3613,7 @@
   "t269314eb": {
     "grup": "arayuz",
     "tr": "Güç",
-    "en": "",
+    "en": "Power",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:372",
       "apps/web/src/screens/LordEkrani.tsx:48"
@@ -3713,7 +3695,7 @@
   "ta565dc14": {
     "grup": "arayuz",
     "tr": "Harita",
-    "en": "",
+    "en": "Map",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:559"
     ]
@@ -3729,7 +3711,7 @@
   "t361bace9": {
     "grup": "arayuz",
     "tr": "Haritada tarla ara",
-    "en": "",
+    "en": "Search for a farm on the map",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:575",
       "apps/web/src/components/Omurga.tsx:611"
@@ -3746,7 +3728,7 @@
   "t923b4654": {
     "grup": "arayuz",
     "tr": "Haritaya bak",
-    "en": "",
+    "en": "Look at the map",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:110"
     ]
@@ -3798,7 +3780,7 @@
   "t39bc2f60": {
     "grup": "arayuz",
     "tr": "Hazır olunca {0} üzerine yürüyeceksin.",
-    "en": "",
+    "en": "When ready, you will march on {0}.",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:645"
     ]
@@ -3972,7 +3954,7 @@
   "t5a3adcd8": {
     "grup": "arayuz",
     "tr": "Hız",
-    "en": "",
+    "en": "Speed",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:319"
     ]
@@ -3988,7 +3970,7 @@
   "t778c4ebf": {
     "grup": "arayuz",
     "tr": "Hiçbir yuvan dolu değil. Ekipman",
-    "en": "",
+    "en": "None of your slots are full. Equipment",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:473"
     ]
@@ -4052,7 +4034,7 @@
   "taa027114": {
     "grup": "arayuz",
     "tr": "İkonlar",
-    "en": "",
+    "en": "Icons",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:170"
     ]
@@ -4068,7 +4050,7 @@
   "te4d7bc84": {
     "grup": "arayuz",
     "tr": "İlk akınına çık",
-    "en": "",
+    "en": "Go on your first raid",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:722",
       "packages/shared/src/rehber.ts:175"
@@ -4077,7 +4059,7 @@
   "tdd36eb75": {
     "grup": "arayuz",
     "tr": "ilk bölgeni al",
-    "en": "",
+    "en": "take your first region",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:697",
       "apps/web/src/components/Omurga.tsx:737"
@@ -4102,7 +4084,7 @@
   "t11e05dd1": {
     "grup": "arayuz",
     "tr": "inşa ediliyor",
-    "en": "",
+    "en": "under construction",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:485",
       "apps/web/src/screens/Sehir.tsx:631"
@@ -4111,7 +4093,7 @@
   "tff2e7684": {
     "grup": "arayuz",
     "tr": "İnşa et",
-    "en": "",
+    "en": "Construct",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:959"
     ]
@@ -4119,7 +4101,7 @@
   "t776ce02a": {
     "grup": "arayuz",
     "tr": "İnşaat",
-    "en": "",
+    "en": "Construction",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:60"
     ]
@@ -4127,7 +4109,7 @@
   "t22b61a98": {
     "grup": "arayuz",
     "tr": "İnşaat başlatılamadı.",
-    "en": "",
+    "en": "Construction could not be started.",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:310"
     ]
@@ -4383,7 +4365,7 @@
   "t3922a4ac": {
     "grup": "arayuz",
     "tr": "iyileşince saldır",
-    "en": "",
+    "en": "attack when healed",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:632"
     ]
@@ -4391,7 +4373,7 @@
   "tecfae1d8": {
     "grup": "arayuz",
     "tr": "İyileşmesine",
-    "en": "",
+    "en": "Until healed",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:308"
     ]
@@ -4423,7 +4405,7 @@
   "t01d420ed": {
     "grup": "arayuz",
     "tr": "Kadim",
-    "en": "",
+    "en": "Ancient",
     "nerede": [
       "apps/web/src/components/ui.tsx:282"
     ]
@@ -4482,7 +4464,7 @@
   "ta2c9f70e": {
     "grup": "arayuz",
     "tr": "Kale kırıcı. Tahkimata ×2, birime karşı ×0,5.",
-    "en": "",
+    "en": "Siege breaker. ×2 against fortifications, ×0.5 against units.",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:59"
     ]
@@ -4568,7 +4550,7 @@
   "t643a1b1c": {
     "grup": "arayuz",
     "tr": "Kara Yusuf",
-    "en": "",
+    "en": "Kara Yusuf",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:92"
     ]
@@ -4660,7 +4642,7 @@
   "t182c78f7": {
     "grup": "arayuz",
     "tr": "katkı",
-    "en": "",
+    "en": "contribution",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:822",
       "apps/web/src/screens/Ittifak.tsx:94"
@@ -4678,7 +4660,7 @@
   "tc0088b9a": {
     "grup": "arayuz",
     "tr": "Kaybedersen",
-    "en": "",
+    "en": "If you lose",
     "nerede": [
       "apps/web/src/components/ui.tsx:228"
     ]
@@ -4694,7 +4676,7 @@
   "tb4a70c1f": {
     "grup": "arayuz",
     "tr": "Kaydediliyor...",
-    "en": "",
+    "en": "Saving...",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:451"
     ]
@@ -4777,7 +4759,7 @@
   "t4f0b28d8": {
     "grup": "arayuz",
     "tr": "kaynak ve ekipman",
-    "en": "",
+    "en": "resources and equipment",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:728"
     ]
@@ -4922,7 +4904,7 @@
   "t4aa6e545": {
     "grup": "arayuz",
     "tr": "Kışlada {0} eğit",
-    "en": "",
+    "en": "Train {0} in the Barracks",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:784"
     ]
@@ -4930,7 +4912,7 @@
   "t28f07577": {
     "grup": "arayuz",
     "tr": "Kışlaya git",
-    "en": "",
+    "en": "Go to Barracks",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:629"
     ]
@@ -4987,7 +4969,7 @@
   "t48dcce40": {
     "grup": "arayuz",
     "tr": "Komuta {0} yer",
-    "en": "",
+    "en": "Command takes {0}",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:54"
     ]
@@ -4995,7 +4977,7 @@
   "tfd213fce": {
     "grup": "arayuz",
     "tr": "Komuta kapasiten yetmiyor",
-    "en": "",
+    "en": "Insufficient command capacity",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:747"
     ]
@@ -5003,7 +4985,7 @@
   "t6070c855": {
     "grup": "arayuz",
     "tr": "Komuta yeri",
-    "en": "",
+    "en": "Command space",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:320"
     ]
@@ -5011,7 +4993,7 @@
   "t42c135b1": {
     "grup": "arayuz",
     "tr": "Komuta yerin yetmiyor",
-    "en": "",
+    "en": "Not enough command space",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:93"
     ]
@@ -5044,7 +5026,7 @@
   "t5932d212": {
     "grup": "arayuz",
     "tr": "Kumandan",
-    "en": "",
+    "en": "Commander",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:129"
     ]
@@ -5069,7 +5051,7 @@
   "t41958ef2": {
     "grup": "arayuz",
     "tr": "Kurnazlık",
-    "en": "",
+    "en": "Cunning",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:56"
     ]
@@ -5085,7 +5067,7 @@
   "tabcbcfc8": {
     "grup": "arayuz",
     "tr": "Kuşam",
-    "en": "",
+    "en": "Loadout",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:267"
     ]
@@ -5109,7 +5091,7 @@
   "tec20dd70": {
     "grup": "arayuz",
     "tr": "Kuşanılan Ekipman",
-    "en": "",
+    "en": "Equipped Gear",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:467"
     ]
@@ -5165,7 +5147,7 @@
   "ta51165f2": {
     "grup": "arayuz",
     "tr": "Kuyruk",
-    "en": "",
+    "en": "Queue",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:469"
     ]
@@ -5173,7 +5155,7 @@
   "t24a14132": {
     "grup": "arayuz",
     "tr": "Kuyruk boş. Bir şeyler başlat.",
-    "en": "",
+    "en": "Queue is empty. Start something.",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:550"
     ]
@@ -5181,7 +5163,7 @@
   "t2b606a9d": {
     "grup": "arayuz",
     "tr": "Kuyruklar{0}",
-    "en": "",
+    "en": "Queues{0}",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:545"
     ]
@@ -5229,7 +5211,7 @@
   "te10f0d53": {
     "grup": "arayuz",
     "tr": "Liderlik",
-    "en": "",
+    "en": "Leadership",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:54"
     ]
@@ -5257,7 +5239,7 @@
   "t1703d35e": {
     "grup": "arayuz",
     "tr": "Lord adı",
-    "en": "",
+    "en": "Lord name",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:88"
     ]
@@ -5288,14 +5270,6 @@
       "apps/web/src/components/IttifakBagis.tsx:128"
     ]
   },
-  "tf583c1ab": {
-    "grup": "arayuz",
-    "tr": "lord_{0}",
-    "en": "",
-    "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:246"
-    ]
-  },
   "t3f61c37d": {
     "grup": "arayuz",
     "tr": "lorddan",
@@ -5318,7 +5292,7 @@
   "t084b456e": {
     "grup": "arayuz",
     "tr": "Lordlara karşı",
-    "en": "",
+    "en": "Against lords",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:571"
     ]
@@ -5334,7 +5308,7 @@
   "t752657eb": {
     "grup": "arayuz",
     "tr": "Lordun iyileşiyor",
-    "en": "",
+    "en": "Your lord is healing",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:622"
     ]
@@ -5351,7 +5325,7 @@
   "t3ce76409": {
     "grup": "arayuz",
     "tr": "Lorduna ekipman kuşan",
-    "en": "",
+    "en": "Equip your lord",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:818"
     ]
@@ -5419,7 +5393,7 @@
   "t79aa19c6": {
     "grup": "arayuz",
     "tr": "maliyet",
-    "en": "",
+    "en": "cost",
     "nerede": [
       "apps/web/src/components/ui.tsx:537"
     ]
@@ -5524,7 +5498,7 @@
   "tb1714ce7": {
     "grup": "arayuz",
     "tr": "Nadir",
-    "en": "",
+    "en": "Rare",
     "nerede": [
       "apps/web/src/components/ui.tsx:270"
     ]
@@ -5564,7 +5538,7 @@
   "t0a59e858": {
     "grup": "arayuz",
     "tr": "Nitelikler",
-    "en": "",
+    "en": "Stats",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:383"
     ]
@@ -5572,17 +5546,9 @@
   "t9465a68b": {
     "grup": "arayuz",
     "tr": "Niteliklere git",
-    "en": "",
+    "en": "Go to Stats",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:757"
-    ]
-  },
-  "tcadc5e67": {
-    "grup": "arayuz",
-    "tr": "noreferrer noopener",
-    "en": "",
-    "nerede": [
-      "apps/web/src/screens/Giris.tsx:174"
     ]
   },
   "t146a2866": {
@@ -5628,7 +5594,7 @@
   "tf2f98327": {
     "grup": "arayuz",
     "tr": "olabilir.",
-    "en": "",
+    "en": "can be.",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:475"
     ]
@@ -5636,7 +5602,7 @@
   "tfbfb89a6": {
     "grup": "arayuz",
     "tr": "olacaksın.",
-    "en": "",
+    "en": "you will be.",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:361"
     ]
@@ -5644,7 +5610,7 @@
   "t76b2da24": {
     "grup": "arayuz",
     "tr": "olay",
-    "en": "",
+    "en": "event",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:95"
     ]
@@ -5677,7 +5643,7 @@
   "te654b315": {
     "grup": "arayuz",
     "tr": "oldu.",
-    "en": "",
+    "en": "happened.",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:102"
     ]
@@ -5709,7 +5675,7 @@
   "t5f468c6f": {
     "grup": "arayuz",
     "tr": "Ordu",
-    "en": "",
+    "en": "Army",
     "nerede": [
       "apps/web/src/components/MobilKabuk.tsx:62",
       "data/arastirma.json:dallar[1].ad",
@@ -5743,7 +5709,7 @@
   "t9ee840a2": {
     "grup": "arayuz",
     "tr": "Ordu donanımı",
-    "en": "",
+    "en": "Army gear",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:553",
       "apps/web/src/screens/Sehir.tsx:64"
@@ -5816,7 +5782,7 @@
   "t2dd46a4d": {
     "grup": "arayuz",
     "tr": "Ordun aç",
-    "en": "",
+    "en": "Your army is starving",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:568",
       "apps/web/src/screens/LordEkrani.tsx:294"
@@ -5841,7 +5807,7 @@
   "t8acaa615": {
     "grup": "arayuz",
     "tr": "Ordun dönüyor",
-    "en": "",
+    "en": "Your army is returning",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:665"
     ]
@@ -5849,7 +5815,7 @@
   "t320993d2": {
     "grup": "arayuz",
     "tr": "Ordun henüz yetmiyor.",
-    "en": "",
+    "en": "Your army is not enough yet.",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:484"
     ]
@@ -5857,7 +5823,7 @@
   "t99fe05c3": {
     "grup": "arayuz",
     "tr": "Ordun kampa iniyor. Dönünce ganimeti ve raporu görürsün.",
-    "en": "",
+    "en": "Your army is arriving at the camp. You'll see the loot and report when they return.",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:691"
     ]
@@ -5905,7 +5871,7 @@
   "t0b0cefdc": {
     "grup": "arayuz",
     "tr": "Ordun yolda",
-    "en": "",
+    "en": "Your army is on the march",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:665",
       "apps/web/src/components/SaldiriOnizleme.tsx:186"
@@ -5930,7 +5896,7 @@
   "te65b1599": {
     "grup": "arayuz",
     "tr": "Ordunu burada büyütürsün",
-    "en": "",
+    "en": "You grow your army here",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:416"
     ]
@@ -5938,7 +5904,7 @@
   "td1115723": {
     "grup": "arayuz",
     "tr": "Ordunu büyüt",
-    "en": "",
+    "en": "Grow your army",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:765",
       "packages/shared/src/gunluk.ts:59"
@@ -5947,7 +5913,7 @@
   "te71ea72c": {
     "grup": "arayuz",
     "tr": "Ordunu kur",
-    "en": "",
+    "en": "Build your army",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:478",
       "apps/web/src/components/Omurga.tsx:765",
@@ -5957,7 +5923,7 @@
   "te801c243": {
     "grup": "arayuz",
     "tr": "Ordunu ne için kuruyorsun",
-    "en": "",
+    "en": "What are you building your army for",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:437"
     ]
@@ -5973,7 +5939,7 @@
   "t5db509a2": {
     "grup": "arayuz",
     "tr": "Ordunun Dağılımı",
-    "en": "",
+    "en": "Army Distribution",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:503"
     ]
@@ -6070,7 +6036,7 @@
   "t316fd603": {
     "grup": "arayuz",
     "tr": "Önce e-posta adresini yaz.",
-    "en": "",
+    "en": "Write your email address first.",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:155"
     ]
@@ -6158,7 +6124,7 @@
   "t1e55263e": {
     "grup": "arayuz",
     "tr": "Parola",
-    "en": "",
+    "en": "Password",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:109"
     ]
@@ -6182,7 +6148,7 @@
   "t4369fb1e": {
     "grup": "arayuz",
     "tr": "Parola sıfırlanamadı.",
-    "en": "",
+    "en": "Password could not be reset.",
     "nerede": [
       "apps/web/src/screens/ParolaSifirla.tsx:25"
     ]
@@ -6190,7 +6156,7 @@
   "t4ced05c4": {
     "grup": "arayuz",
     "tr": "parola, öğretici, çıkış",
-    "en": "",
+    "en": "password, tutorial, logout",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:600"
     ]
@@ -6198,7 +6164,7 @@
   "t53526980": {
     "grup": "arayuz",
     "tr": "Parolamı unuttum",
-    "en": "",
+    "en": "Forgot password",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:136"
     ]
@@ -6214,7 +6180,7 @@
   "t349238d8": {
     "grup": "arayuz",
     "tr": "Parolan değişti. Artık yeni parolanla giriş yapabilirsin.",
-    "en": "",
+    "en": "Password changed. You can now log in with your new password.",
     "nerede": [
       "apps/web/src/screens/ParolaSifirla.tsx:38"
     ]
@@ -6238,7 +6204,7 @@
   "tbb5ecdaf": {
     "grup": "arayuz",
     "tr": "Parolayı belirle",
-    "en": "",
+    "en": "Set password",
     "nerede": [
       "apps/web/src/screens/ParolaSifirla.tsx:62"
     ]
@@ -6254,7 +6220,7 @@
   "t794028aa": {
     "grup": "arayuz",
     "tr": "parti)",
-    "en": "",
+    "en": "party)",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:296"
     ]
@@ -6271,7 +6237,7 @@
   "t8d821289": {
     "grup": "arayuz",
     "tr": "PUAN",
-    "en": "",
+    "en": "POINTS",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:386"
     ]
@@ -6279,7 +6245,7 @@
   "tada147bf": {
     "grup": "arayuz",
     "tr": "Puan dağıtımı kalıcıdır. Liderlik ordunun büyüklüğünü ve general slotunu belirler.",
-    "en": "",
+    "en": "Point distribution is permanent. Leadership determines army size and general slots.",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:463"
     ]
@@ -6377,7 +6343,7 @@
   "t32bbc8e5": {
     "grup": "arayuz",
     "tr": "saatte %5 firar",
-    "en": "",
+    "en": "5% desertion per hour",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:572"
     ]
@@ -6451,7 +6417,7 @@
   "ta4a08165": {
     "grup": "arayuz",
     "tr": "saldırı",
-    "en": "",
+    "en": "attack",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:338",
       "data/seferler.json:seferler[0].birim"
@@ -6558,7 +6524,7 @@
   "tcd3f9e91": {
     "grup": "arayuz",
     "tr": "savaş",
-    "en": "",
+    "en": "battle",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:99"
     ]
@@ -6566,7 +6532,7 @@
   "ta64065bd": {
     "grup": "arayuz",
     "tr": "Savaş derecen",
-    "en": "",
+    "en": "Battle rating",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:572"
     ]
@@ -6574,7 +6540,7 @@
   "t951ee66f": {
     "grup": "arayuz",
     "tr": "Savaş Gücü",
-    "en": "",
+    "en": "Battle Power",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:541"
     ]
@@ -6582,7 +6548,7 @@
   "tc54d661e": {
     "grup": "arayuz",
     "tr": "Savaş katkısı +{0}",
-    "en": "",
+    "en": "Battle contribution +{0}",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:48"
     ]
@@ -6606,7 +6572,7 @@
   "t271491e0": {
     "grup": "arayuz",
     "tr": "Savaş raporlarını aşağıdaki olay akışından açabilirsin.",
-    "en": "",
+    "en": "You can open battle reports from the event feed below.",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:106"
     ]
@@ -6688,7 +6654,7 @@
   "td8820cb4": {
     "grup": "arayuz",
     "tr": "Savunma",
-    "en": "",
+    "en": "Defense",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:317"
     ]
@@ -6744,7 +6710,7 @@
   "t79b00022": {
     "grup": "arayuz",
     "tr": "Savunmanın omurgası. Süvariye karşı ×1,5.",
-    "en": "",
+    "en": "The backbone of defense. ×1.5 against Cavalry.",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:56"
     ]
@@ -6800,7 +6766,7 @@
   "tbfca2c2e": {
     "grup": "arayuz",
     "tr": "Sen yokken",
-    "en": "",
+    "en": "While you were away",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:92"
     ]
@@ -6850,7 +6816,7 @@
   "t006925f6": {
     "grup": "arayuz",
     "tr": "Seviye {0} / {1}",
-    "en": "",
+    "en": "Level {0} / {1}",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:921"
     ]
@@ -6858,7 +6824,7 @@
   "tc15fa5ea": {
     "grup": "arayuz",
     "tr": "Seviye {0} yap",
-    "en": "",
+    "en": "Upgrade to Level {0}",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:959"
     ]
@@ -6890,7 +6856,7 @@
   "te0d104c6": {
     "grup": "arayuz",
     "tr": "Seviye yükseltmek için buradan seç: haritadaki dokunuş yapının içine giriyor.",
-    "en": "",
+    "en": "Select here to upgrade level: tapping on the map enters the structure.",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:590"
     ]
@@ -6906,7 +6872,7 @@
   "t4cf27c11": {
     "grup": "arayuz",
     "tr": "Sıfırla",
-    "en": "",
+    "en": "Reset",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:458"
     ]
@@ -6914,7 +6880,7 @@
   "t481ea9d9": {
     "grup": "arayuz",
     "tr": "Sıfırlama bağlantısı gönder",
-    "en": "",
+    "en": "Send reset link",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:152"
     ]
@@ -6930,7 +6896,7 @@
   "t2301a99e": {
     "grup": "arayuz",
     "tr": "Sıradaki hedefin {0}.",
-    "en": "",
+    "en": "Your next target is {0}.",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:922"
     ]
@@ -6938,7 +6904,7 @@
   "t6652a5fb": {
     "grup": "arayuz",
     "tr": "Sıradan",
-    "en": "",
+    "en": "Common",
     "nerede": [
       "apps/web/src/components/ui.tsx:258"
     ]
@@ -7045,7 +7011,7 @@
   "t4f98c945": {
     "grup": "arayuz",
     "tr": "sonra: sıradaki adım",
-    "en": "",
+    "en": "next: the upcoming step",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:495"
     ]
@@ -7272,7 +7238,7 @@
   "t6ca53e00": {
     "grup": "arayuz",
     "tr": "Şimdi ne yapmalısın",
-    "en": "",
+    "en": "What you should do now",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:278",
       "apps/web/src/components/Omurga.tsx:474"
@@ -7336,7 +7302,7 @@
   "te63d6528": {
     "grup": "arayuz",
     "tr": "şu an",
-    "en": "",
+    "en": "currently",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:822"
     ]
@@ -7474,7 +7440,7 @@
   "t6257ef57": {
     "grup": "arayuz",
     "tr": "Taht Kalesi — diyarın tek sahibi olabilirsin",
-    "en": "",
+    "en": "Throne Citadel — you can be the sole owner of the realm",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:933"
     ]
@@ -7554,7 +7520,7 @@
   "t8d452854": {
     "grup": "arayuz",
     "tr": "Takviye gönder ({0} birim)",
-    "en": "",
+    "en": "Send reinforcements ({0} units)",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:383"
     ]
@@ -7570,7 +7536,7 @@
   "tbe467966": {
     "grup": "arayuz",
     "tr": "Takviyeyi geri çek",
-    "en": "",
+    "en": "Withdraw reinforcements",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:364"
     ]
@@ -7612,7 +7578,7 @@
   "t3c819dd0": {
     "grup": "arayuz",
     "tr": "Taşın",
-    "en": "",
+    "en": "Move",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:531"
     ]
@@ -7620,7 +7586,7 @@
   "tf3733180": {
     "grup": "arayuz",
     "tr": "taze · {0} önce",
-    "en": "",
+    "en": "fresh · {0} ago",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:502"
     ]
@@ -7628,7 +7594,7 @@
   "t82fd453f": {
     "grup": "arayuz",
     "tr": "Tecrübeli",
-    "en": "",
+    "en": "Veteran",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:129"
     ]
@@ -7684,7 +7650,7 @@
   "tbd670cd2": {
     "grup": "arayuz",
     "tr": "toprağın güvende",
-    "en": "",
+    "en": "your land is safe",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:694"
     ]
@@ -7692,7 +7658,7 @@
   "ta971096d": {
     "grup": "arayuz",
     "tr": "toprak riski yok",
-    "en": "",
+    "en": "no land risk",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:731"
     ]
@@ -7740,7 +7706,7 @@
   "t0468e99c": {
     "grup": "arayuz",
     "tr": "Ucuz et kalkanı. Kayıpları önce o üstlenir.",
-    "en": "",
+    "en": "Cheap meat shield. Absorbs casualties first.",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:55"
     ]
@@ -7748,7 +7714,7 @@
   "tbeb2b0c2": {
     "grup": "arayuz",
     "tr": "Ucuz hasar. Mızrakçıya karşı ×1,5.",
-    "en": "",
+    "en": "Cheap damage. ×1.5 against Spearmen.",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:57"
     ]
@@ -7756,7 +7722,7 @@
   "t89558a23": {
     "grup": "arayuz",
     "tr": "Unvan",
-    "en": "",
+    "en": "Title",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:275"
     ]
@@ -7764,7 +7730,7 @@
   "ta077015d": {
     "grup": "arayuz",
     "tr": "Usta işi",
-    "en": "",
+    "en": "Masterwork",
     "nerede": [
       "apps/web/src/components/ui.tsx:264",
       "apps/web/src/screens/LordEkrani.tsx:129"
@@ -7781,7 +7747,7 @@
   "tf29dea21": {
     "grup": "arayuz",
     "tr": "uzaktaydın. Bu sürede",
-    "en": "",
+    "en": "away. During this time",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:94"
     ]
@@ -7890,7 +7856,7 @@
   "teacb0314": {
     "grup": "arayuz",
     "tr": "Vazgeç, giriş ekranına dön",
-    "en": "",
+    "en": "Cancel, return to login screen",
     "nerede": [
       "apps/web/src/screens/ParolaSifirla.tsx:71"
     ]
@@ -7930,7 +7896,7 @@
   "tc0bd27c2": {
     "grup": "arayuz",
     "tr": "Vurucu güç ve hız. Okçuya karşı ×1,5.",
-    "en": "",
+    "en": "Striking power and speed. ×1.5 against Archers.",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:58"
     ]
@@ -7975,7 +7941,7 @@
   "tea3bde58": {
     "grup": "arayuz",
     "tr": "Yağma +%{0}",
-    "en": "",
+    "en": "Loot +{0}%",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:58"
     ]
@@ -7991,7 +7957,7 @@
   "ta24bd532": {
     "grup": "arayuz",
     "tr": "Yağmalanabilir depo",
-    "en": "",
+    "en": "Lootable storage",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1172"
     ]
@@ -8015,7 +7981,7 @@
   "tb27f14d4": {
     "grup": "arayuz",
     "tr": "yapı",
-    "en": "",
+    "en": "structure",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:921"
     ]
@@ -8023,7 +7989,7 @@
   "tdd99127b": {
     "grup": "arayuz",
     "tr": "Yapılar",
-    "en": "",
+    "en": "Structures",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:588"
     ]
@@ -8103,7 +8069,7 @@
   "t0dbf3afc": {
     "grup": "arayuz",
     "tr": "yeni bir hedef seç",
-    "en": "",
+    "en": "choose a new target",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:676"
     ]
@@ -8119,7 +8085,7 @@
   "tb04c6611": {
     "grup": "arayuz",
     "tr": "Yeni ele geçirilmiş ya da yeni oyuncuya ait bölgelere bir süre saldırılamaz.",
-    "en": "",
+    "en": "Newly captured regions or those belonging to new players cannot be attacked for a while.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:751"
     ]
@@ -8127,7 +8093,7 @@
   "t3b0cfa0d": {
     "grup": "arayuz",
     "tr": "Yeni Lord",
-    "en": "",
+    "en": "New Lord",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:81"
     ]
@@ -8143,7 +8109,7 @@
   "tf0f4d369": {
     "grup": "arayuz",
     "tr": "Yeni lordlar 72 saat saldırıya kapalıdır.",
-    "en": "",
+    "en": "New lords are immune to attacks for 72 hours.",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:165"
     ]
@@ -8176,7 +8142,7 @@
   "tf46d6ce7": {
     "grup": "arayuz",
     "tr": "Yeni parolanı belirle",
-    "en": "",
+    "en": "Set your new password",
     "nerede": [
       "apps/web/src/screens/ParolaSifirla.tsx:32"
     ]
@@ -8268,7 +8234,7 @@
   "t3244c60c": {
     "grup": "arayuz",
     "tr": "Yukarıdaki e-posta adresine sıfırlama bağlantısı gönderelim.",
-    "en": "",
+    "en": "Let us send a reset link to the email address above.",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:143"
     ]
@@ -8276,7 +8242,7 @@
   "tfab69aea": {
     "grup": "arayuz",
     "tr": "Yukarıdan kaç birim göndereceğini seç.",
-    "en": "",
+    "en": "Select how many units to send from above.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:757"
     ]
@@ -8360,7 +8326,7 @@
   "ta98e29bf": {
     "grup": "arayuz",
     "tr": "Yürüyüşler",
-    "en": "",
+    "en": "Marches",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:906"
     ]
@@ -8368,7 +8334,7 @@
   "t5753527f": {
     "grup": "arayuz",
     "tr": "Yürüyüşte",
-    "en": "",
+    "en": "Marching",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:507"
     ]
@@ -8604,7 +8570,7 @@
   "t9604528c": {
     "grup": "motor",
     "tr": "Aç ordu saatte %{0} firar verir. Tarla bölgesi almak, asker eğitmekten önce gelir.",
-    "en": "",
+    "en": "A starving army deserts at {0}% per hour. Taking a farm region comes before training troops.",
     "nerede": [
       "packages/shared/src/ipuclari.ts:42"
     ]
@@ -8628,7 +8594,7 @@
   "t8d064cc7": {
     "grup": "motor",
     "tr": "Adamlar kampa iniyor. Dönünce ne getirdiklerini birlikte sayarız.",
-    "en": "",
+    "en": "The men are arriving at the camp. We'll count what they brought back together when they return.",
     "nerede": [
       "packages/shared/src/rehber.ts:84"
     ]
@@ -8636,7 +8602,7 @@
   "t47b1cf51": {
     "grup": "motor",
     "tr": "Adamlar toplanıyor. Şuracıkta bekle, bittiğinde haber vereceğim.",
-    "en": "",
+    "en": "The men are gathering. Wait right here, I'll let you know when it's done.",
     "nerede": [
       "packages/shared/src/rehber.ts:68"
     ]
@@ -8740,7 +8706,7 @@
   "tf6ff5d9a": {
     "grup": "motor",
     "tr": "Araştırma başlat",
-    "en": "",
+    "en": "Start research",
     "nerede": [
       "packages/shared/src/rehber.ts:180"
     ]
@@ -8772,7 +8738,7 @@
   "t4e75a5e8": {
     "grup": "motor",
     "tr": "Araştırmanın girişi ana sayfada. Önce oraya dönelim lordum.",
-    "en": "",
+    "en": "The research entrance is on the homepage. Let's head back there first, my lord.",
     "nerede": [
       "packages/shared/src/rehber.ts:410"
     ]
@@ -8780,7 +8746,7 @@
   "t67406112": {
     "grup": "motor",
     "tr": "Artık bir general tutabilirsin. Onlar ordunun değil, ORDUNUN KURALLARININ gücüdür.",
-    "en": "",
+    "en": "You can now hire a general. They are the power of the ARMY'S RULES, not just the army.",
     "nerede": [
       "packages/shared/src/rehber.ts:100"
     ]
@@ -8820,7 +8786,7 @@
   "teeae7b24": {
     "grup": "motor",
     "tr": "Askerlerin eğitiliyor lordum. Şuracıkta bekle, bittiğinde haber vereceğim.",
-    "en": "",
+    "en": "Your troops are training, my lord. Wait right here, I'll let you know when it's done.",
     "nerede": [
       "packages/shared/src/rehber.ts:484"
     ]
@@ -9004,7 +8970,7 @@
   "tea2eacad": {
     "grup": "motor",
     "tr": "Bir bölgen oldu. Demirhanede kuşanacağın her parça, savaşa senin katkını büyütür.",
-    "en": "",
+    "en": "You now have a region. Every piece you equip in the Blacksmith increases your contribution to the battle.",
     "nerede": [
       "packages/shared/src/rehber.ts:96"
     ]
@@ -9028,7 +8994,7 @@
   "t95df1932": {
     "grup": "motor",
     "tr": "Bir ekipman parçası yalnız lorda etki eder; general bütün orduya. Yuvan varsa boş bırakma.",
-    "en": "",
+    "en": "A piece of equipment only affects the lord; a general affects the whole army. If you have a slot, don't leave it empty.",
     "nerede": [
       "packages/shared/src/ipuclari.ts:59"
     ]
@@ -9044,7 +9010,7 @@
   "t5ea923d4": {
     "grup": "motor",
     "tr": "Bir grup seç lordum. En üsttekiler en zayıfı; ilkiyle başlayalım.",
-    "en": "",
+    "en": "Select a group, my lord. The ones at the top are the weakest; let's start with the first one.",
     "nerede": [
       "packages/shared/src/rehber.ts:345"
     ]
@@ -9116,7 +9082,7 @@
   "tb35945df": {
     "grup": "motor",
     "tr": "Bölge seviyesi geliri büyütür",
-    "en": "",
+    "en": "Region level increases income",
     "nerede": [
       "packages/shared/src/ipuclari.ts:66"
     ]
@@ -9172,7 +9138,7 @@
   "t021ce3fd": {
     "grup": "motor",
     "tr": "Bölgeni haritadan açacağız; yol ana sayfadaki adımdan geçiyor.",
-    "en": "",
+    "en": "We will unlock your region from the map; the way goes through the step on the homepage.",
     "nerede": [
       "packages/shared/src/rehber.ts:396"
     ]
@@ -9397,7 +9363,7 @@
   "t675e8b7d": {
     "grup": "motor",
     "tr": "Demirhanenin girişi ana sayfada lordum. Önce oraya dönelim.",
-    "en": "",
+    "en": "The Blacksmith entrance is on the homepage, my lord. Let's return there first.",
     "nerede": [
       "packages/shared/src/rehber.ts:368"
     ]
@@ -9421,7 +9387,7 @@
   "t59cf9415": {
     "grup": "motor",
     "tr": "Depoyu büyütmeden biriktirmenin anlamı yok.",
-    "en": "",
+    "en": "There is no point in hoarding without expanding the storage.",
     "nerede": [
       "packages/shared/src/rehber.ts:106"
     ]
@@ -9517,7 +9483,7 @@
   "t7c42a3ab": {
     "grup": "motor",
     "tr": "Düşman kampları Akın sekmesinde ama yol ana sayfadan geçiyor lordum.",
-    "en": "",
+    "en": "Enemy camps are in the Raid tab, but the path goes through the homepage, my lord.",
     "nerede": [
       "packages/shared/src/rehber.ts:354"
     ]
@@ -9565,7 +9531,7 @@
   "t91b5b276": {
     "grup": "motor",
     "tr": "Ekipman kuşan",
-    "en": "",
+    "en": "Equip gear",
     "nerede": [
       "packages/shared/src/rehber.ts:177"
     ]
@@ -9597,7 +9563,7 @@
   "t9d099ea3": {
     "grup": "motor",
     "tr": "Ele geçirilen bölge {0} saat kalkan altında kalır — hem seninki hem düşmanınki.",
-    "en": "",
+    "en": "A captured region remains shielded for {0} hours — both yours and the enemy's.",
     "nerede": [
       "packages/shared/src/ipuclari.ts:46"
     ]
@@ -9677,7 +9643,7 @@
   "t86714050": {
     "grup": "motor",
     "tr": "Erzak eksiye düşerse ordu dağılır",
-    "en": "",
+    "en": "If supplies drop below zero, the army disperses",
     "nerede": [
       "packages/shared/src/ipuclari.ts:41"
     ]
@@ -9685,7 +9651,7 @@
   "t78c2ab74": {
     "grup": "motor",
     "tr": "Erzak eksiye düştü lordum. Aç ordu dağılır — önce burayı kapatalım.",
-    "en": "",
+    "en": "Supplies dropped below zero, my lord. A starving army disperses — let's cover this up first.",
     "nerede": [
       "packages/shared/src/rehber.ts:122"
     ]
@@ -9717,7 +9683,7 @@
   "t49b14698": {
     "grup": "motor",
     "tr": "Evdeki ordu bölgeni korumaz. Aldığın toprağa asker bırakmazsan ilk gelen geri alır.",
-    "en": "",
+    "en": "The army at home does not protect your region. If you don't leave troops on the land you took, the first to arrive will take it back.",
     "nerede": [
       "packages/shared/src/ipuclari.ts:50"
     ]
@@ -9757,7 +9723,7 @@
   "t0cd88fa1": {
     "grup": "motor",
     "tr": "Garnizon bölgeyi tek başına savunur",
-    "en": "",
+    "en": "The garrison defends the region alone",
     "nerede": [
       "packages/shared/src/ipuclari.ts:49"
     ]
@@ -9781,7 +9747,7 @@
   "t806d7bef": {
     "grup": "motor",
     "tr": "General ordunun tamamını çarpar",
-    "en": "",
+    "en": "A general multiplies the entire army",
     "nerede": [
       "packages/shared/src/ipuclari.ts:57"
     ]
@@ -9805,7 +9771,7 @@
   "t74e7277b": {
     "grup": "motor",
     "tr": "Generallerin listesi ana sayfada duruyor. Önce oraya dönelim lordum.",
-    "en": "",
+    "en": "The list of generals is on the homepage. Let's return there first, my lord.",
     "nerede": [
       "packages/shared/src/rehber.ts:382"
     ]
@@ -9829,7 +9795,7 @@
   "t2674e2d7": {
     "grup": "motor",
     "tr": "Görev Panosu",
-    "en": "",
+    "en": "Quest Board",
     "nerede": [
       "data/binalar.json:binalar[2].ad",
       "packages/shared/src/types.ts:302"
@@ -9854,7 +9820,7 @@
   "te9bf886c": {
     "grup": "motor",
     "tr": "Günde {0} saldırı yapabilirsin; Taht Kalesi bu limitten muaf. Hedefini seçerek harca.",
-    "en": "",
+    "en": "You can make {0} attacks a day; Throne Citadel is exempt from this limit. Spend it by picking your target.",
     "nerede": [
       "packages/shared/src/ipuclari.ts:54"
     ]
@@ -9894,7 +9860,7 @@
   "t42a2a869": {
     "grup": "motor",
     "tr": "Günlük saldırı hakkın sınırlı",
-    "en": "",
+    "en": "Your daily attack limit is capped",
     "nerede": [
       "packages/shared/src/ipuclari.ts:53"
     ]
@@ -10022,7 +9988,7 @@
   "td2fa6864": {
     "grup": "motor",
     "tr": "İlk {0} saat kimse sana saldıramaz. O süre kurulmak için — sonrası için hazırlan.",
-    "en": "",
+    "en": "Nobody can attack you for the first {0} hours. That time is for setting up — prepare for what comes after.",
     "nerede": [
       "packages/shared/src/ipuclari.ts:63"
     ]
@@ -10030,7 +9996,7 @@
   "ta17e3c1c": {
     "grup": "motor",
     "tr": "İlk bölgeni al",
-    "en": "",
+    "en": "Take your first region",
     "nerede": [
       "packages/shared/src/rehber.ts:176"
     ]
@@ -10078,7 +10044,7 @@
   "tb48a59f5": {
     "grup": "motor",
     "tr": "İttifak dolu ({0} üye).",
-    "en": "",
+    "en": "Alliance full ({0} members).",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1140",
       "packages/shared/src/ittifakBasvuru.ts:161",
@@ -10104,7 +10070,7 @@
   "tee6bbfef": {
     "grup": "motor",
     "tr": "Kâhya Sinan",
-    "en": "",
+    "en": "Steward Sinan",
     "nerede": [
       "data/generals.json:generaller[5].ad",
       "packages/shared/src/rehber.ts:38"
@@ -10377,7 +10343,7 @@
   "t41633d0d": {
     "grup": "motor",
     "tr": "Malikâne kâhyan",
-    "en": "",
+    "en": "Your manor steward",
     "nerede": [
       "packages/shared/src/rehber.ts:39"
     ]
@@ -10449,7 +10415,7 @@
   "tbc9706bc": {
     "grup": "motor",
     "tr": "Ordu büyüdükçe komuta gerekir. Liderlik statın kaç asker taşıyabileceğini söyler.",
-    "en": "",
+    "en": "Command is required as the army grows. Your Leadership stat dictates how many troops you can carry.",
     "nerede": [
       "packages/shared/src/rehber.ts:92"
     ]
@@ -10513,7 +10479,7 @@
   "t8b113621": {
     "grup": "motor",
     "tr": "Ordun yolda. İlk yürüyüşün {0} dakika sürer; sonucu bu oturumda görürsün.",
-    "en": "",
+    "en": "Your army is marching. Your first march will take {0} minutes; you will see the outcome in this session.",
     "nerede": [
       "packages/shared/src/rehber.ts:88"
     ]
@@ -10745,7 +10711,7 @@
   "tf742f69b": {
     "grup": "motor",
     "tr": "Sayı değil, eşleşme kazandırır",
-    "en": "",
+    "en": "Matchups win, not numbers",
     "nerede": [
       "packages/shared/src/ipuclari.ts:35"
     ]
@@ -10889,7 +10855,7 @@
   "tc4b4cc45": {
     "grup": "motor",
     "tr": "Şu diyara girelim. İçinde on kamp var, hepsi ayrı ayrı vurulabiliyor.",
-    "en": "",
+    "en": "Let's enter this realm. There are ten camps inside, each can be hit individually.",
     "nerede": [
       "packages/shared/src/rehber.ts:349"
     ]
@@ -11049,7 +11015,7 @@
   "tee23d259": {
     "grup": "motor",
     "tr": "Üye",
-    "en": "",
+    "en": "Member",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1830",
       "apps/api/src/routes/ittifak.ts:793",
@@ -11147,7 +11113,7 @@
   "tf6030ee3": {
     "grup": "motor",
     "tr": "Yapılacak iş ana sayfada yazılı. Önce oraya dönelim lordum.",
-    "en": "",
+    "en": "The task to be done is written on the homepage. Let's return there first, my lord.",
     "nerede": [
       "packages/shared/src/rehber.ts:308",
       "packages/shared/src/rehber.ts:430"
@@ -11172,7 +11138,7 @@
   "t590f82dd": {
     "grup": "motor",
     "tr": "Yaralısın. Dinlenmeden sefere çıkmak, orduyu iki kez kaybetmektir.",
-    "en": "",
+    "en": "You are wounded. Marching without resting is losing the army twice.",
     "nerede": [
       "packages/shared/src/rehber.ts:126"
     ]
@@ -11212,7 +11178,7 @@
   "t4fbb5fb4": {
     "grup": "motor",
     "tr": "Yeni bölge almak tek yol değil: elindekini yükseltmek de saatlik geliri artırır ve kimse onu senden alamaz.",
-    "en": "",
+    "en": "Taking a new region is not the only way: upgrading what you have also increases hourly income, and nobody can take it from you.",
     "nerede": [
       "packages/shared/src/ipuclari.ts:68"
     ]
@@ -11220,7 +11186,7 @@
   "tecf21881": {
     "grup": "motor",
     "tr": "Yeni bölge bir süre dokunulmaz",
-    "en": "",
+    "en": "A new region is untouchable for a while",
     "nerede": [
       "packages/shared/src/ipuclari.ts:45"
     ]
@@ -11228,7 +11194,7 @@
   "t3a96f43a": {
     "grup": "motor",
     "tr": "Yeni lordlar korumalı",
-    "en": "",
+    "en": "New lords are protected",
     "nerede": [
       "packages/shared/src/ipuclari.ts:62"
     ]
@@ -11284,7 +11250,7 @@
   "td125ae71": {
     "grup": "motor",
     "tr": "Zaten bir ittifaktasın.",
-    "en": "",
+    "en": "You are already in an alliance.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:435",
       "apps/api/src/routes/ittifak.ts:497",

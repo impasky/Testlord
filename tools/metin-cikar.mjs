@@ -95,6 +95,7 @@ const KOD_KOKUSU = [
   /^[a-z0-9]+([-:/][a-z0-9[\]().,%#-]+)+$/i, // tailwind: "text-[12px]", "hover:bg-panel"
   /^(var\(|#[0-9a-f]{3,8}$|rgba?\()/i, // renk
   /^[./]|^https?:|^mailto:/, // yol ve adres
+  /^[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,6}$/i, // çıplak alan adı: game-icons.net
   /^[a-z][a-zA-Z0-9]*$/, // camelCase tek sözcük -> anahtar
   /^[a-z0-9]+(_[a-z0-9]+)+$/, // snake_case -> anahtar
   /^[A-Z0-9_]+$/, // SABIT_ADI
@@ -113,6 +114,10 @@ const ATLANAN_NITELIK = new Set([
   'type',
   'role',
   'htmlFor',
+  /* `rel="noreferrer noopener"` bir tarayıcı yönergesi. Çeviri
+     listesine düşmüştü ve çevrilseydi bağlantı güvenliği bozulurdu. */
+  'rel',
+  'target',
   'name',
   'value',
   'renk',
@@ -167,6 +172,13 @@ function bicimListesiMi(s) {
 function metinKirintisi(s, jsx = false) {
   if (!s || !/[a-zA-ZçğıöşüÇĞİÖŞÜ]/.test(s)) return false;
   if (bicimListesiMi(s)) return false;
+  /*
+   * Çıplak alan adı JSX GÖVDESİNDE de eleniyor. `<a>game-icons.net</a>`
+   * bir bağlantı etiketi: ekranda görünüyor ama hiçbir dilde
+   * değişmiyor. jsx kipi şekil denetimini atladığı için buraya ayrıca
+   * yazmak gerekti.
+   */
+  if (/^[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,6}$/i.test(s.trim())) return false;
   // `jsx` kipinde yol denetimi YOK: JSX gövdesi hiçbir zaman bir yol değil
   // ve `{sayi}/10 grup hazır` gibi metinler `/` ile başladığı için
   // eleniyordu.
@@ -331,6 +343,7 @@ function atlanirMi(node) {
 const OGEYE_OZGU_ATLANAN = new Map([
   ['Zemin', new Set(['ad'])],
   ['TamZemin', new Set(['ad'])],
+  ['Gorsel', new Set(['ad'])],
 ]);
 
 /** Niteliğin üstündeki JSX öğesinin etiket adı. */
@@ -499,6 +512,22 @@ const GRUP_ADI = {
 };
 
 let toplam = 0;
+/**
+ * Var olan çeviriler — yeniden çıkarım onları silmesin diye.
+ *
+ * Anahtar, METNİN KENDİSİNDEN türeyen bir özet. Yani aynı anahtar aynı
+ * Türkçe demek ve o Türkçenin çevirisi hâlâ geçerli. Türkçe değişirse
+ * anahtar da değişiyor ve çeviri kendiliğinden düşüyor — istenen de bu:
+ * değişmiş bir cümlenin eski çevirisi yanlış çeviridir.
+ */
+const oncekiCeviri = new Map();
+try {
+  const eskisi = JSON.parse(readFileSync(join(CIKTI, 'metinler.json'), 'utf8'));
+  for (const [k, v] of Object.entries(eskisi)) if (v.en) oncekiCeviri.set(k, v.en);
+} catch {
+  // İlk koşuş: dosya yok. Sorun değil.
+}
+
 const sozluk = {};
 for (const grup of ['arayuz', 'motor', 'sunucu', 'veri', 'harita']) {
   const m = gruplar.get(grup);
@@ -510,7 +539,12 @@ for (const grup of ['arayuz', 'motor', 'sunucu', 'veri', 'harita']) {
       sozluk[k].nerede = [...new Set([...sozluk[k].nerede, ...konumlar])].sort();
       continue;
     }
-    sozluk[k] = { grup, tr: metin, en: '', nerede: [...konumlar].sort() };
+    // Var olan çeviri KORUNUYOR. Bu satır bir kez `en: ''` yazıyordu ve
+    // araç her koşuşunda bütün çevirileri sessizce siliyordu: oyun metni
+    // değişti diye çıkarımı yeniden koşmak, o güne kadar yapılmış her
+    // çeviriyi çöpe atmak demekti. Anahtar içerik özetinden türüyor, yani
+    // aynı anahtar aynı Türkçe demek — çeviri hâlâ geçerli.
+    sozluk[k] = { grup, tr: metin, en: oncekiCeviri.get(k) ?? '', nerede: [...konumlar].sort() };
     toplam++;
   }
 }
@@ -531,7 +565,7 @@ writeFileSync(join(CIKTI, 'metinler.json'), JSON.stringify(sozluk, null, 2) + '\
 const kacir = (s) => `"${String(s).replace(/"/g, '""')}"`;
 const csv = ['anahtar,grup,turkce,ingilizce,nerede'];
 for (const [k, v] of Object.entries(sozluk)) {
-  csv.push([k, v.grup, kacir(v.tr), '""', kacir(v.nerede.join(' | '))].join(','));
+  csv.push([k, v.grup, kacir(v.tr), kacir(v.en), kacir(v.nerede.join(' | '))].join(','));
 }
 writeFileSync(join(CIKTI, 'metinler.csv'), csv.join('\n') + '\n');
 
@@ -539,3 +573,22 @@ for (const [g, n] of Object.entries(sayim))
   console.log(`${g.padEnd(8)} ${String(n).padStart(5)}  ${GRUP_ADI[g]}`);
 console.log(`${'TOPLAM'.padEnd(8)} ${String(toplam).padStart(5)}`);
 console.log(`\nceviri/metinler.json ve ceviri/metinler.csv yazıldı.`);
+
+/*
+ * Çeviri sayısını HER KOŞUŞTA yaz.
+ *
+ * Bu araç bir kez bütün çevirileri sessizce silmişti ve fark edilmesi
+ * iki teslim sürdü: çıktı yalnız metin sayılarını yazıyordu, çeviri
+ * sayısını değil. Sessiz veri kaybı, gürültülü bir hatadan çok daha
+ * pahalı. Artık sayı her seferinde görünüyor ve azalırsa uyarı çıkıyor.
+ */
+const korunan = Object.values(sozluk).filter((v) => v.en).length;
+const kaybolan = oncekiCeviri.size - korunan;
+console.log(`Çeviri: ${korunan} korundu${kaybolan > 0 ? `, ${kaybolan} DÜŞTÜ` : ''}.`);
+if (kaybolan > 0) {
+  console.log(
+    'Düşenler, Türkçesi değişmiş metinlerdir: anahtar içerikten türüyor,\n' +
+      'cümle değişince eski çeviri de geçersiz oluyor. Beklemiyorsan\n' +
+      'ceviri/metinler.json dosyasını sürüm geçmişinden kontrol et.',
+  );
+}

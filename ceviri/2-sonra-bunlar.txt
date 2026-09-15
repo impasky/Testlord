@@ -3,7 +3,7 @@ LORDLAR ÇAĞI — ÇEVİRİ 2/3: DERINLIK  (KALANLAR)
 Savaş raporu, demirhane, generaller, araştırma, ittifak, akın — ve bina,
 general, araştırma, başarım içerikleri.
 
-Bu dosyada 859 satır var — çevrilmiş olanlar çıkarıldı.
+Bu dosyada 858 satır var — çevrilmiş olanlar çıkarıldı.
 
 NASIL ÇEVİRİLİR
   Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.
@@ -566,29 +566,6 @@ NASIL ÇEVİRİLİR
 870. Yeni bir pakt için önce birini feshetmen gerekiyor.
 875. YENİ PAKT TEKLİF ET
 
---- Akin (20) ---
-
-15. {0} · T{1}
-17. {0} adedi
-44. {0} savaşçı
-54. {0}_t{1}
-59. /10 grup hazır
-73. Akına çık · {0} asker
-74. Akına çıkılamadı.
-266. Diyarlar
-285. Düşman kamplarına in, kaynak ve ekipman getir
-326. Evde asker yok. Önce Kışla'da asker eğit.
-393. Henüz akına çıkmadın. Bir diyar seç, grubunu belirle, ordunu gönder.
-415. ihtimalle T
-503. Kazanma ihtimali
-625. Ordun sahada. Döndüğünde buradan akına çıkabilirsin.
-686. Sahadaki akınlar · {0}/{1}
-756. Son akınlar
-774. ŞEF
-793. T
-880. yenilgi
-902. zafer
-
 --- Siralama (20) ---
 
 18. {0} adlı lordu şikâyet et
@@ -611,6 +588,28 @@ NASIL ÇEVİRİLİR
 783. Şöhret
 845. Üyelerin şöhret toplamı. Lord sıralamasıyla aynı ölçü.
 893. Yükleniyor...
+
+--- Akin (19) ---
+
+15. {0} · T{1}
+17. {0} adedi
+44. {0} savaşçı
+59. /10 grup hazır
+73. Akına çık · {0} asker
+74. Akına çıkılamadı.
+266. Diyarlar
+285. Düşman kamplarına in, kaynak ve ekipman getir
+326. Evde asker yok. Önce Kışla'da asker eğit.
+393. Henüz akına çıkmadın. Bir diyar seç, grubunu belirle, ordunu gönder.
+415. ihtimalle T
+503. Kazanma ihtimali
+625. Ordun sahada. Döndüğünde buradan akına çıkabilirsin.
+686. Sahadaki akınlar · {0}/{1}
+756. Son akınlar
+774. ŞEF
+793. T
+880. yenilgi
+902. zafer
 
 --- IttifakBasvurular (19) ---
 

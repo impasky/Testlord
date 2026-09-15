@@ -100,10 +100,24 @@ for (const dosya of dosyalar) {
       continue;
     }
 
+    /*
+     * "=" — BİLEREK AYNI KALSIN.
+     *
+     * Bazı dizgeler hiçbir dilde değişmiyor: özel adlar ("Kara Yusuf"),
+     * marka ve alan adları, birim kısaltmaları. Çevirmen bunları Türkçe
+     * bırakınca araç "çevrilmemiş" diye reddediyordu ve satır sonsuza
+     * kadar kalanlar listesinde kalıyordu. "=" o satırı BİTTİ sayıyor.
+     */
+    if (t === '=' || t === '=' + kayit.tr) {
+      kabul.set(anahtar, kayit.tr);
+      continue;
+    }
+
     // Türkçe kalmışsa çeviri yapılmamış demektir. Kesin bir ölçüt yok;
-    // birebir aynı olması yeterince kesin.
+    // birebir aynı olması yeterince kesin. Bilerek aynı bırakılacaksa
+    // yukarıdaki "=" var.
     if (t === kayit.tr) {
-      sorun.push(`${yer} — ${no} çevrilmemiş (Türkçesiyle aynı)`);
+      sorun.push(`${yer} — ${no} çevrilmemiş (Türkçesiyle aynı). Bilerekse "=" yaz.`);
       continue;
     }
 

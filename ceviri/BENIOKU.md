@@ -62,6 +62,18 @@ ok koyabilirsin — ikisini de okuyorum:
 geçirmesi kolay oluyor. Okun sağındaki numara da denetleniyor; soldakiyle
 tutmazsa satır karışmış demektir ve araç yazmayı reddediyor.
 
+### Değişmeyecek satırlar için `=`
+
+Bazı şeyler hiçbir dilde değişmez: özel adlar, marka adları, kısaltmalar.
+Onları Türkçe bırakmak yerine `=` yaz — araç o satırı **bitti** sayar:
+
+```
+476. Kara Yusuf -> 476. =
+```
+
+Türkçesini olduğu gibi tekrar yazarsan araç "çevrilmemiş" diye reddeder
+ve satır kalanlar listesinde kalır.
+
 ### Üç kural
 
 **1. Numara değişmez.** Satırları silme, sıralarını değiştirmen sorun
