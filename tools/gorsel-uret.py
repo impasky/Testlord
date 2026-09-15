@@ -703,8 +703,19 @@ ISTEKLER: dict[str, dict[str, str]] = {
                  "thatch, a timber-framed mill on the stream, fenced pastures, "
                  "a market cross on the green",
         # Aşama 5: zirve
-        "tarla_5": "a vast breadbasket valley, terraced fields stretching to the horizon, "
-                   "great stone granaries and grain barges on a canal",
+        # "grain barges on a canal" BİR NEHİR, nehir de BİR KASABA getirdi:
+        # ilk üretim surlu bir kale-kasaba çizdi ve tarlalar arka plana
+        # düştü. Bölgenin türü "tarla"; afiş bunu söylemezse oyuncu
+        # haritada ne aldığını resme bakarak anlayamıyor. Yeni istem
+        # tarla_3'ü BÜYÜTÜYOR (daha çok tarla, daha çok değirmen, daha
+        # çok araba) ve yerleşim getiren her sözcüğü açıkça dışlıyor.
+        "tarla_5": "an immense harvest landscape at its peak, ordered strips of "
+                   "golden wheat and green crops filling the frame to the horizon, "
+                   "four windmills along a low ridge, long timber granaries and "
+                   "open threshing floors, rows of laden ox carts on the field "
+                   "lanes, stooked sheaves drying in the sun, "
+                   "farmland only, no castle, no fortress, no city walls, "
+                   "no stone towers, no harbour, no large town",
         "maden_5": "a monumental mining complex carved into a mountain, "
                    "aqueducts and ore lifts, glowing forges, cliffside walkways",
         "sehir_5": "a grand capital city seen from above, cathedral and palace domes, "
