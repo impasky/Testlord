@@ -6,7 +6,7 @@
 
 ## Önce şunu bil: hepsini çevirmen gerekmiyor
 
-Oyunda 2027 metin var ama çevirmen listesi **1628**. Aradaki 399'u
+Oyunda 2027 metin var ama çevirmen listesi **1613**. Aradaki 414'u
 bilerek çıkardım — `cevrilmeyecekler.txt` neyin neden çıkarıldığını
 yazıyor:
 
@@ -15,13 +15,13 @@ yazıyor:
 | Bölge ve vilayet adları | 127 | Özel ad. "Akçakavak Köyü" İngilizcede de öyle kalır     |
 | Cümle parçaları         | 272 | Tek başına çevrilemez; önce kodda birleştirilmesi gerek |
 
-1628 da tek oturuşta bitmez. Bu yüzden **üçe bölünmüş** ve sıra
+1613 de tek oturuşta bitmez. Bu yüzden **üçe bölünmüş** ve sıra
 oyuncunun onlarla karşılaşma sırası:
 
 | Dosya                 | Satır | Ne                                                        |
 | --------------------- | ----: | --------------------------------------------------------- |
-| `1-once-bunlar.txt`   |   502 | Gezinme, düğmeler, ilk saatin ekranları, öğretici         |
-| `2-sonra-bunlar.txt`  |   868 | Savaş raporu, demirhane, general, araştırma, ittifak      |
+| `1-once-bunlar.txt`   |   496 | Gezinme, düğmeler, ilk saatin ekranları, öğretici         |
+| `2-sonra-bunlar.txt`  |   859 | Savaş raporu, demirhane, general, araştırma, ittifak      |
 | `3-en-son-bunlar.txt` |   258 | Sunucu hataları — oyuncu ancak bir şey ters gidince görür |
 
 **Birincisi bitince oyun baştan sona İngilizce oynanabilir.** İkisi ve
@@ -48,6 +48,19 @@ Türkçenin yerine İngilizcesini yaz. **Numarayı ve noktayı bırak** —
 143. You can attack at most {0} times a day.
 144. Upgrade the region
 ```
+
+### İki yazım da olur
+
+Yukarıdaki gibi Türkçenin **yerine** yazabilirsin, ya da Türkçeyi bırakıp
+ok koyabilirsin — ikisini de okuyorum:
+
+```
+142. Ordun yetiyor. -> 142. Your army is enough.
+```
+
+İkincisi biraz daha iyi: kaynak çevirinin yanında kalıyor, gözden
+geçirmesi kolay oluyor. Okun sağındaki numara da denetleniyor; soldakiyle
+tutmazsa satır karışmış demektir ve araç yazmayı reddediyor.
 
 ### Üç kural
 
@@ -84,9 +97,21 @@ ya da Türkçe kalmış her satırı sayıyla söylüyor ve **`--uygula`
 demeden hiçbir şey yazmıyor.** Yarım çevrilmiş bir oyunun yayına
 çıkması böyle engelleniyor.
 
+## Parça parça gönderebilirsin
+
+Hepsini bir kerede bitirmen gerekmiyor. Ne kadar çevirdiysen onu gönder;
+ben içeri alır, **kalanları yeni bir dosya olarak** geri veririm:
+
+```bash
+pnpm ceviri-kalan   # çevrilmiş satırları çıkarır, dosyayı küçültür
+```
+
+Bitmiş satırları da içeren bir dosya geri göndermek, bitirdiğin işi
+ikinci kez okutmak olurdu.
+
 ## Makine çevirisi kullanacaksan
 
-Kullanabilirsin — 1628 satırı elle çevirmek günler sürer. Dosyalar
+Kullanabilirsin — 1613 satırı elle çevirmek günler sürer. Dosyalar
 düz metin ve satır yapısını koruyan her araç çalışır. Ama:
 
 - **Yer tutucuları kontrol et.** Çoğu araç `{0}`'ı bozar. `ceviri-al.mjs`
@@ -119,5 +144,5 @@ gitmiyor.
 
 Çeviri dosyası geri geldiğinde. O iş üç parça: Hesap ekranında dil
 seçimi, cihaz başına kayıt, ve metinlerin sözlükten okunması. Bir de
-yukarıdaki 272 cümle parçasının kodda birleştirilmesi — çeviri
+yukarıdaki 287 cümle parçasının kodda birleştirilmesi — çeviri
 listesine giremeyen o satırlar ancak öyle çevrilebilir hâle gelir.

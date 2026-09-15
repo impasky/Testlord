@@ -47,9 +47,28 @@ for (const dosya of dosyalar) {
     const m = /^\s*(\d+)\s*[.|\t]\s*(.*)$/.exec(ham);
     if (!m) continue;
     okunan++;
-    const [, no, ceviri] = m;
-    const anahtar = numaralar[no];
+    const [, no, kalan] = m;
     const yer = `${dosya}:${i + 1}`;
+
+    /*
+     * İki biçim de kabul ediliyor:
+     *
+     *   142. Your army is enough.                         (yerine yazma)
+     *   142. Ordun yetiyor. -> 142. Your army is enough.  (ok biçimi)
+     *
+     * İkincisi çevirmenin kendiliğinden ürettiği biçim ve aslında daha
+     * iyisi: kaynak çevirinin yanında duruyor, gözden geçirmek kolay.
+     * Okun sağındaki NUMARA da denetleniyor — tutmuyorsa satır
+     * karışmış demektir ve sessizce yanlış metne yazmak, hiç
+     * yazmamaktan kötü.
+     */
+    const ok = /^(.*?)\s*->\s*(\d+)\s*[.|\t]\s*(.+)$/.exec(kalan);
+    if (ok && ok[2] !== no) {
+      sorun.push(`${yer} — satır ${no} ile başlıyor ama okun sağı ${ok[2]}; satırlar karışmış`);
+      continue;
+    }
+    const ceviri = ok ? ok[3] : kalan;
+    const anahtar = numaralar[no];
 
     if (!anahtar) {
       sorun.push(`${yer} — ${no} numarası sözlükte yok (numara değiştirilmiş olabilir)`);

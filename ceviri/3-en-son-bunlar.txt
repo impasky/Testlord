@@ -1,9 +1,9 @@
-LORDLAR ÇAĞI — ÇEVİRİ 3/3: KUYRUK
+LORDLAR ÇAĞI — ÇEVİRİ 3/3: KUYRUK  (KALANLAR)
 
 Sunucu hataları ve bildirimleri. Oyuncu bunları ancak bir şey ters gidince
 görüyor; en sona bırakılabilir ama atlanamaz.
 
-Bu dosyada 258 satır var.
+Bu dosyada 258 satır var — çevrilmiş olanlar çıkarıldı.
 
 NASIL ÇEVİRİLİR
   Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.

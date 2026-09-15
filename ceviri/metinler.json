@@ -398,7 +398,7 @@
   "t8705bd8e": {
     "grup": "arayuz",
     "tr": "] HEDEF",
-    "en": "",
+    "en": "] TARGET",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:833"
     ]
@@ -609,7 +609,7 @@
   "t2088a96f": {
     "grup": "arayuz",
     "tr": "{0} oluyor",
-    "en": "",
+    "en": "Becoming {0}",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1156"
     ]
@@ -751,7 +751,7 @@
   "tc9199a6f": {
     "grup": "arayuz",
     "tr": "{0} yap",
-    "en": "",
+    "en": "Make {0}",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1151"
     ]
@@ -910,7 +910,7 @@
   "tc997d9ef": {
     "grup": "arayuz",
     "tr": "⛨ korumalı",
-    "en": "",
+    "en": "⛨ protected",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:873"
     ]
@@ -1227,7 +1227,7 @@
   "t9872375b": {
     "grup": "arayuz",
     "tr": "Asker senin kalır. Bölge el değiştirse bile evine döner.",
-    "en": "",
+    "en": "The troops remain yours. Even if the region changes hands, they return home.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:386"
     ]
@@ -1293,7 +1293,7 @@
   "t25d5f415": {
     "grup": "arayuz",
     "tr": "Aynı anda açabileceğin keşif sayısı ve altının sınırlı; biri bitince tekrar dene.",
-    "en": "",
+    "en": "The number of scouts you can deploy at once and your gold are limited; try again when one finishes.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:554"
     ]
@@ -1309,7 +1309,7 @@
   "t2624ec5a": {
     "grup": "arayuz",
     "tr": "Aynı anda en fazla {0} bölge geliştirilebilir. Biri bitmeden yenisi başlamaz.",
-    "en": "",
+    "en": "A maximum of {0} regions can be developed at once. A new one cannot start until one finishes.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1082"
     ]
@@ -1586,7 +1586,7 @@
   "tfc8bbaee": {
     "grup": "arayuz",
     "tr": "Bırakılıyor…",
-    "en": "",
+    "en": "Abandoning...",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1231"
     ]
@@ -1706,7 +1706,7 @@
   "t42301cb4": {
     "grup": "arayuz",
     "tr": "birim",
-    "en": "",
+    "en": "units",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:354"
     ]
@@ -1763,7 +1763,7 @@
   "t8bc83bb3": {
     "grup": "arayuz",
     "tr": "boş",
-    "en": "",
+    "en": "empty",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1306"
     ]
@@ -1844,7 +1844,7 @@
   "tdc110320": {
     "grup": "arayuz",
     "tr": "Bölge kalkan altında",
-    "en": "",
+    "en": "Region is under shield",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:750"
     ]
@@ -1876,7 +1876,7 @@
   "t1a50f32e": {
     "grup": "arayuz",
     "tr": "Bölge sahipsiz kalır, garnizondaki birlikler eve döner. Bakımı ağır gelen ya da savunamadığın bir bölgeden böyle kurtulabilirsin.",
-    "en": "",
+    "en": "The region becomes unowned, garrisoned troops return home. You can get rid of a region you can't maintain or defend this way.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1216"
     ]
@@ -1917,7 +1917,7 @@
   "tcbb3dc3b": {
     "grup": "arayuz",
     "tr": "Bölgen",
-    "en": "",
+    "en": "Your region",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:816"
     ]
@@ -2000,7 +2000,7 @@
   "tf94e359c": {
     "grup": "arayuz",
     "tr": "Bölgeyi bırak",
-    "en": "",
+    "en": "Abandon region",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1214"
     ]
@@ -2016,7 +2016,7 @@
   "td8d45f63": {
     "grup": "arayuz",
     "tr": "Bu bilgi eskidi; garnizon değişmiş olabilir. Tavsiyeler eski rapora göre verilmiyor.",
-    "en": "",
+    "en": "This info is outdated; the garrison might have changed. Advice is not given based on an old report.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:528"
     ]
@@ -2024,7 +2024,7 @@
   "t8f0d3d8f": {
     "grup": "arayuz",
     "tr": "Bu bölgede",
-    "en": "",
+    "en": "In this region",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:354"
     ]
@@ -2032,7 +2032,7 @@
   "t0bb9d20f": {
     "grup": "arayuz",
     "tr": "Bu Bölgedeki Savaşların",
-    "en": "",
+    "en": "Your Battles in this Region",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1343"
     ]
@@ -2048,7 +2048,7 @@
   "td847d73b": {
     "grup": "arayuz",
     "tr": "Bu bölgeyi bırak",
-    "en": "",
+    "en": "Abandon this region",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1231"
     ]
@@ -2056,7 +2056,7 @@
   "t82f1944e": {
     "grup": "arayuz",
     "tr": "Bu bölgeyi sadece buradaki garnizon savunur.",
-    "en": "",
+    "en": "Only the garrison here defends this region.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1206"
     ]
@@ -2249,7 +2249,7 @@
   "t25bfe7af": {
     "grup": "arayuz",
     "tr": "Casus gönder · {0} altın · {1}",
-    "en": "",
+    "en": "Send spy · {0} gold · {1}",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:547"
     ]
@@ -2257,7 +2257,7 @@
   "t324c016f": {
     "grup": "arayuz",
     "tr": "Casus gönderilemedi.",
-    "en": "",
+    "en": "Spy could not be sent.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:483"
     ]
@@ -2265,7 +2265,7 @@
   "td9552ee2": {
     "grup": "arayuz",
     "tr": "Casus yakalanabilir; Kurnazlık statın riski düşürür.",
-    "en": "",
+    "en": "The spy might be caught; your Cunning stat reduces the risk.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:558"
     ]
@@ -2273,7 +2273,7 @@
   "tcc2c2673": {
     "grup": "arayuz",
     "tr": "Casus yola çıkıyor…",
-    "en": "",
+    "en": "Spy is departing...",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:546"
     ]
@@ -2289,7 +2289,7 @@
   "tf0952fd6": {
     "grup": "arayuz",
     "tr": "Çekiliyor…",
-    "en": "",
+    "en": "Withdrawing...",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:364"
     ]
@@ -2631,7 +2631,7 @@
   "t84b2c8aa": {
     "grup": "arayuz",
     "tr": "Diyarda tek. Sahibi %",
-    "en": "",
+    "en": "Unique in the realm. Owner %",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1056"
     ]
@@ -2705,7 +2705,7 @@
   "tecde6250": {
     "grup": "arayuz",
     "tr": "Diyarın Lordu · {0}",
-    "en": "",
+    "en": "Lord of the Realm · {0}",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:984"
     ]
@@ -2818,7 +2818,7 @@
   "tb6842d76": {
     "grup": "arayuz",
     "tr": "Dönüş",
-    "en": "",
+    "en": "Return",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:916"
     ]
@@ -2859,7 +2859,7 @@
   "td4decb88": {
     "grup": "arayuz",
     "tr": "Dünya Haritası",
-    "en": "",
+    "en": "World Map",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:813"
     ]
@@ -2875,7 +2875,7 @@
   "t537fb85a": {
     "grup": "arayuz",
     "tr": "düşman",
-    "en": "",
+    "en": "enemy",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:868"
     ]
@@ -2883,7 +2883,7 @@
   "tcb8eae6b": {
     "grup": "arayuz",
     "tr": "Düşman garnizonu görünmüyor. Casus göndererek öğrenebilir ya da Casus Leyla'yı sahaya sürerek sürekli görebilirsin.",
-    "en": "",
+    "en": "Enemy garrison is not visible. You can learn by sending a spy or deploy Spy Leyla to see it constantly.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1326"
     ]
@@ -3159,7 +3159,7 @@
   "t97421dbc": {
     "grup": "arayuz",
     "tr": "erzak",
-    "en": "",
+    "en": "supplies",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1175",
       "apps/web/src/screens/Harita.tsx:514"
@@ -3202,7 +3202,7 @@
   "tae8a6ae3": {
     "grup": "arayuz",
     "tr": "eski bilgi · {0} önce",
-    "en": "",
+    "en": "old info · {0} ago",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:502"
     ]
@@ -3267,7 +3267,7 @@
   "t0552f64c": {
     "grup": "arayuz",
     "tr": "Evde asker yok. Saldırmak için önce ordu kurman gerekiyor.",
-    "en": "",
+    "en": "No troops at home. You must build an army to attack first.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:231"
     ]
@@ -3342,7 +3342,7 @@
   "t19ae54dc": {
     "grup": "arayuz",
     "tr": "Garnizonu ayarla",
-    "en": "",
+    "en": "Manage garrison",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1203"
     ]
@@ -3366,7 +3366,7 @@
   "t1e73a047": {
     "grup": "arayuz",
     "tr": "geçit",
-    "en": "",
+    "en": "pass",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:892"
     ]
@@ -3382,7 +3382,7 @@
   "t34dca95c": {
     "grup": "arayuz",
     "tr": "Geliştirme",
-    "en": "",
+    "en": "Development",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1100",
       "apps/web/src/screens/Harita.tsx:1163"
@@ -3391,7 +3391,7 @@
   "t3a40efac": {
     "grup": "arayuz",
     "tr": "Geliştirme kuyruğu dolu",
-    "en": "",
+    "en": "Development queue is full",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1081"
     ]
@@ -3466,7 +3466,7 @@
   "tbca6ece6": {
     "grup": "arayuz",
     "tr": "Geri çağır",
-    "en": "",
+    "en": "Recall",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:935"
     ]
@@ -3539,7 +3539,7 @@
   "t3d21f583": {
     "grup": "arayuz",
     "tr": "Gönderilecek takviye",
-    "en": "",
+    "en": "Reinforcements to send",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:373"
     ]
@@ -3681,7 +3681,7 @@
   "ta4e04755": {
     "grup": "arayuz",
     "tr": "Günde en fazla {0} saldırı yapabilirsin. Taht Kalesi bu limitten muaftır; yarın sıfırlanır.",
-    "en": "",
+    "en": "You can attack at most {0} times a day. The Throne Citadel is exempt from this limit; resets tomorrow.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:745"
     ]
@@ -3697,7 +3697,7 @@
   "tbba0a46f": {
     "grup": "arayuz",
     "tr": "Günlük saldırı hakkın bitti",
-    "en": "",
+    "en": "Daily attack limit reached",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:744"
     ]
@@ -3806,7 +3806,7 @@
   "t67fd13ec": {
     "grup": "arayuz",
     "tr": "Hedef işaretlenemedi.",
-    "en": "",
+    "en": "Target could not be marked.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:416"
     ]
@@ -3886,7 +3886,7 @@
   "t9148a36e": {
     "grup": "arayuz",
     "tr": "Hepsi",
-    "en": "",
+    "en": "All",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:222"
     ]
@@ -4169,7 +4169,7 @@
   "t65acff74": {
     "grup": "arayuz",
     "tr": "İşaretleniyor…",
-    "en": "",
+    "en": "Marking...",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:449"
     ]
@@ -4239,7 +4239,7 @@
   "t36263fef": {
     "grup": "arayuz",
     "tr": "İttifak hedefi yap",
-    "en": "",
+    "en": "Make alliance target",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:449"
     ]
@@ -4375,7 +4375,7 @@
   "tfdbdf073": {
     "grup": "arayuz",
     "tr": "İyileşene kadar saldıramazsın. Malikâne ekranında kalan süreyi görebilirsin.",
-    "en": "",
+    "en": "You cannot attack until healed. You can see the remaining time on the Manor screen.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:735"
     ]
@@ -4851,7 +4851,7 @@
   "tb766e201": {
     "grup": "arayuz",
     "tr": "Keşif",
-    "en": "",
+    "en": "Scouting",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:499",
       "apps/web/src/screens/Sehir.tsx:66",
@@ -4914,7 +4914,7 @@
   "t547d4428": {
     "grup": "arayuz",
     "tr": "Kışla'ya git",
-    "en": "",
+    "en": "Go to Barracks",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:234"
     ]
@@ -5205,7 +5205,7 @@
   "tc1f5208e": {
     "grup": "arayuz",
     "tr": "lider avı · +%",
-    "en": "",
+    "en": "leader hunt · +%",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1033"
     ]
@@ -5342,7 +5342,7 @@
   "t906de783": {
     "grup": "arayuz",
     "tr": "Lordun yaralı",
-    "en": "",
+    "en": "Your lord is wounded",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:734",
       "apps/web/src/screens/LordEkrani.tsx:306"
@@ -5792,7 +5792,7 @@
   "tfe40d1af": {
     "grup": "arayuz",
     "tr": "Ordu seçmedin",
-    "en": "",
+    "en": "You didn't select an army",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:756"
     ]
@@ -5800,7 +5800,7 @@
   "tb51bd036": {
     "grup": "arayuz",
     "tr": "Ordu yola çıktı. Varış {0} sonra.",
-    "en": "",
+    "en": "Army is on the move. Arrival in {0}.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:796"
     ]
@@ -5865,7 +5865,7 @@
   "tfa58b931": {
     "grup": "arayuz",
     "tr": "Ordun sahada. Döndüğünde bu bölgeye yollayabilirsin.",
-    "en": "",
+    "en": "Your army is in the field. You can send them to this region when they return.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:230"
     ]
@@ -5965,7 +5965,7 @@
   "tcdac426c": {
     "grup": "arayuz",
     "tr": "Ordunu ve ittifak durumunu gözden geçir.",
-    "en": "",
+    "en": "Review your army and alliance status.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:388"
     ]
@@ -5989,7 +5989,7 @@
   "t108c4ae6": {
     "grup": "arayuz",
     "tr": "Ortak hedef bir tanedir; işaretlemek öncekini değiştirir.",
-    "en": "",
+    "en": "There is only one common target; marking it will replace the previous one.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:446"
     ]
@@ -6369,7 +6369,7 @@
   "tb7be14e2": {
     "grup": "arayuz",
     "tr": "Saatlik şöhret",
-    "en": "",
+    "en": "Hourly fame",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1122"
     ]
@@ -6418,7 +6418,7 @@
   "tbf39f844": {
     "grup": "arayuz",
     "tr": "sahipsiz",
-    "en": "",
+    "en": "unowned",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:871"
     ]
@@ -6426,7 +6426,7 @@
   "t39eb2036": {
     "grup": "arayuz",
     "tr": "Saldır",
-    "en": "",
+    "en": "Attack",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1292"
     ]
@@ -6460,7 +6460,7 @@
   "t3424fe05": {
     "grup": "arayuz",
     "tr": "Saldırı",
-    "en": "",
+    "en": "Attack",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:916",
       "apps/web/src/screens/Kisla.tsx:316"
@@ -6485,7 +6485,7 @@
   "t293989d5": {
     "grup": "arayuz",
     "tr": "Saldırı başlatılamadı.",
-    "en": "",
+    "en": "Attack could not be initiated.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:803"
     ]
@@ -6493,7 +6493,7 @@
   "t09fe9781": {
     "grup": "arayuz",
     "tr": "Saldırı ordusu",
-    "en": "",
+    "en": "Attacking army",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1245"
     ]
@@ -6509,7 +6509,7 @@
   "tc79e6213": {
     "grup": "arayuz",
     "tr": "Saldırmadan önce garnizonu ve depoyu öğren. Casus ordu götürmez.",
-    "en": "",
+    "en": "Learn about the garrison and storage before attacking. A spy does not take an army.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:534"
     ]
@@ -6817,7 +6817,7 @@
   "tcef5c072": {
     "grup": "arayuz",
     "tr": "senin",
-    "en": "",
+    "en": "yours",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:864",
       "apps/web/src/screens/Harita.tsx:972"
@@ -7069,7 +7069,7 @@
   "t874aeac4": {
     "grup": "arayuz",
     "tr": "Sonuç hesaplanıyor…",
-    "en": "",
+    "en": "Calculating outcome...",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1265"
     ]
@@ -7093,7 +7093,7 @@
   "tcf24897a": {
     "grup": "arayuz",
     "tr": "surlu",
-    "en": "",
+    "en": "walled",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:883"
     ]
@@ -7301,7 +7301,7 @@
   "t00dd7131": {
     "grup": "arayuz",
     "tr": "şöhret bonusu alır, bölge limitine sayılmaz. Buraya saldırmak günlük hakkından düşmez ve el değiştirdikten sonra kalkanı yalnızca",
-    "en": "",
+    "en": "receives a fame bonus and does not count towards the region limit. Attacking here does not consume your daily allowance, and after changing hands, the shield only",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1057"
     ]
@@ -7397,7 +7397,7 @@
   "t462d10b0": {
     "grup": "arayuz",
     "tr": "tahkimat +%",
-    "en": "",
+    "en": "fortification +%",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1038"
     ]
@@ -7453,7 +7453,7 @@
   "t1319ad6a": {
     "grup": "arayuz",
     "tr": "taht boş",
-    "en": "",
+    "en": "throne is empty",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:984"
     ]
@@ -7546,7 +7546,7 @@
   "tfe6108b0": {
     "grup": "arayuz",
     "tr": "Takviye",
-    "en": "",
+    "en": "Reinforce",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:349"
     ]
@@ -8451,7 +8451,7 @@
   "t335dc8d5": {
     "grup": "motor",
     "tr": "\"Başka bir sebep\" seçtiysen en az {0} harfle açıkla.",
-    "en": "",
+    "en": "If you selected \"Another reason\", explain with at least {0} characters.",
     "nerede": [
       "packages/shared/src/moderasyon.ts:92"
     ]
@@ -8459,7 +8459,7 @@
   "tf4e6dc26": {
     "grup": "motor",
     "tr": "\"Şimdi ne yapmalısın\"",
-    "en": "",
+    "en": "\"What you should do now\"",
     "nerede": [
       "packages/shared/src/ogretici.ts:559"
     ]
@@ -8491,7 +8491,7 @@
   "te34dd32c": {
     "grup": "motor",
     "tr": "{0} bağış hakkın var.",
-    "en": "",
+    "en": "You have {0} donation attempts.",
     "nerede": [
       "packages/shared/src/ogretici.ts:530"
     ]
@@ -8499,7 +8499,7 @@
   "te7fef269": {
     "grup": "motor",
     "tr": "{0} birim daha ekler. Ordu istediğin kadar büyümez.",
-    "en": "",
+    "en": "Adds {0} more units. The army doesn't grow infinitely.",
     "nerede": [
       "packages/shared/src/ogretici.ts:245"
     ]
@@ -8507,7 +8507,7 @@
   "t12853735": {
     "grup": "motor",
     "tr": "{0} bölge",
-    "en": "",
+    "en": "{0} regions",
     "nerede": [
       "packages/shared/src/ogretici.ts:151"
     ]
@@ -8515,7 +8515,7 @@
   "t27b1f277": {
     "grup": "motor",
     "tr": "{0} dal, her dalda {1} kademe",
-    "en": "",
+    "en": "{0} branches, {1} tiers in each branch",
     "nerede": [
       "packages/shared/src/ogretici.ts:447"
     ]
@@ -8523,7 +8523,7 @@
   "tebc946e2": {
     "grup": "motor",
     "tr": "{0} gün",
-    "en": "",
+    "en": "{0} days",
     "nerede": [
       "packages/shared/src/moderasyon.ts:139",
       "packages/shared/src/moderasyon.ts:183"
@@ -8532,7 +8532,7 @@
   "t85178a8c": {
     "grup": "motor",
     "tr": "{0} için tavan. Daha büyük bir yerleşim gerekiyor.",
-    "en": "",
+    "en": "Cap for {0}. A larger settlement is required.",
     "nerede": [
       "packages/shared/src/bina.ts:248"
     ]
@@ -8540,7 +8540,7 @@
   "t62df812d": {
     "grup": "motor",
     "tr": "{0} kanatta konuşlandı: +{1} güç.",
-    "en": "",
+    "en": "Deployed on the {0} flank: +{1} power.",
     "nerede": [
       "packages/shared/src/duzen.ts:227"
     ]
@@ -8548,7 +8548,7 @@
   "tee4f2969": {
     "grup": "motor",
     "tr": "{0} saat yeni lord kalkanı",
-    "en": "",
+    "en": "{0} hour new lord shield",
     "nerede": [
       "packages/shared/src/ogretici.ts:480"
     ]
@@ -8556,7 +8556,7 @@
   "te67fe55b": {
     "grup": "motor",
     "tr": "{0}x{1} bir düzlükte orduyu sen yerleştirirsin, sonra bir taktik seçersin.",
-    "en": "",
+    "en": "You position the army on a {0}x{1} grid, then select a tactic.",
     "nerede": [
       "packages/shared/src/ogretici.ts:252"
     ]
@@ -8580,7 +8580,7 @@
   "tef56288e": {
     "grup": "motor",
     "tr": "%{0}'i geri gelir.",
-    "en": "",
+    "en": "{0}% of it returns.",
     "nerede": [
       "packages/shared/src/ogretici.ts:470"
     ]
@@ -8596,7 +8596,7 @@
   "t57858cd6": {
     "grup": "motor",
     "tr": "Acele etmene gerek yok.",
-    "en": "",
+    "en": "No need to rush.",
     "nerede": [
       "packages/shared/src/ogretici.ts:581"
     ]
@@ -8620,7 +8620,7 @@
   "tc2e13b6e": {
     "grup": "motor",
     "tr": "Açıklama en fazla {0} harf olabilir.",
-    "en": "",
+    "en": "Description can be up to {0} characters.",
     "nerede": [
       "packages/shared/src/moderasyon.ts:87"
     ]
@@ -8652,7 +8652,7 @@
   "tbedf3f62": {
     "grup": "motor",
     "tr": "Akın: toprak almadan savaşmak",
-    "en": "",
+    "en": "Raid: fighting without taking land",
     "nerede": [
       "packages/shared/src/ogretici.ts:374"
     ]
@@ -8660,7 +8660,7 @@
   "teeaa3109": {
     "grup": "motor",
     "tr": "Akına boş orduyla çıkılmaz.",
-    "en": "",
+    "en": "You cannot go on a raid with an empty army.",
     "nerede": [
       "packages/shared/src/akin.ts:294"
     ]
@@ -8684,7 +8684,7 @@
   "t82f0acb9": {
     "grup": "motor",
     "tr": "Altın ve demir",
-    "en": "",
+    "en": "Gold and iron",
     "nerede": [
       "packages/shared/src/ogretici.ts:191"
     ]
@@ -8692,7 +8692,7 @@
   "t23cd7cdc": {
     "grup": "motor",
     "tr": "Altın, demir, erzak biriktirirsin; şöhret sıralamandır.",
-    "en": "",
+    "en": "You hoard gold, iron, and supplies; fame is your ranking.",
     "nerede": [
       "packages/shared/src/ogretici.ts:188"
     ]
@@ -8708,7 +8708,7 @@
   "t0ff92876": {
     "grup": "motor",
     "tr": "Ambarlar bu tavanı büyütür.",
-    "en": "",
+    "en": "Granaries increase this cap.",
     "nerede": [
       "packages/shared/src/ogretici.ts:214"
     ]
@@ -8724,7 +8724,7 @@
   "t751ba972": {
     "grup": "motor",
     "tr": "Ana sayfan bir yerleşim haritası. Binalar kapasite verir.",
-    "en": "",
+    "en": "Your homepage is a settlement map. Buildings provide capacity.",
     "nerede": [
       "packages/shared/src/ogretici.ts:350"
     ]
@@ -8756,7 +8756,7 @@
   "t6eba3fbd": {
     "grup": "motor",
     "tr": "Araştırma oran, bina kapasite",
-    "en": "",
+    "en": "Research for rate, building for capacity",
     "nerede": [
       "packages/shared/src/ogretici.ts:359"
     ]
@@ -8764,7 +8764,7 @@
   "t5c430103": {
     "grup": "motor",
     "tr": "Araştırma: diyarını sen şekillendirirsin",
-    "en": "",
+    "en": "Research: you shape your realm",
     "nerede": [
       "packages/shared/src/ogretici.ts:443"
     ]
@@ -8788,7 +8788,7 @@
   "t73fc092c": {
     "grup": "motor",
     "tr": "Asker eğitimi +{0} hızlı",
-    "en": "",
+    "en": "Troop training +{0} faster",
     "nerede": [
       "packages/shared/src/arastirma.ts:164"
     ]
@@ -8796,7 +8796,7 @@
   "t356af316": {
     "grup": "motor",
     "tr": "Asker eğitimi başlat",
-    "en": "",
+    "en": "Start troop training",
     "nerede": [
       "packages/shared/src/gunluk.ts:59"
     ]
@@ -8804,7 +8804,7 @@
   "t5183aa53": {
     "grup": "motor",
     "tr": "Asker eğitmek, ekipman dövmek ve bölge geliştirmek bunlarla olur.",
-    "en": "",
+    "en": "Training troops, forging equipment, and developing regions require these.",
     "nerede": [
       "packages/shared/src/ogretici.ts:192"
     ]
@@ -8812,7 +8812,7 @@
   "t8b6663c9": {
     "grup": "motor",
     "tr": "Asker maliyeti −{0}",
-    "en": "",
+    "en": "Troop cost −{0}",
     "nerede": [
       "packages/shared/src/arastirma.ts:166"
     ]
@@ -8828,7 +8828,7 @@
   "t198149c0": {
     "grup": "motor",
     "tr": "Aynı anda {0} araştırma",
-    "en": "",
+    "en": "{0} researches at once",
     "nerede": [
       "packages/shared/src/ogretici.ts:466"
     ]
@@ -8852,7 +8852,7 @@
   "t7dc15b82": {
     "grup": "motor",
     "tr": "Aynı anda en fazla {0} başvurun olabilir. Birini geri çek.",
-    "en": "",
+    "en": "You can have a maximum of {0} applications at once. Withdraw one.",
     "nerede": [
       "packages/shared/src/ittifakBasvuru.ts:115"
     ]
@@ -8860,7 +8860,7 @@
   "t2868622a": {
     "grup": "motor",
     "tr": "Aynı anda tek araştırma",
-    "en": "",
+    "en": "Only one research at a time",
     "nerede": [
       "packages/shared/src/ogretici.ts:465"
     ]
@@ -8868,7 +8868,7 @@
   "t99a5b60d": {
     "grup": "motor",
     "tr": "Aynı kaynağı kendisiyle takas edemezsin.",
-    "en": "",
+    "en": "You cannot trade the same resource for itself.",
     "nerede": [
       "packages/shared/src/pazar.ts:130"
     ]
@@ -8884,7 +8884,7 @@
   "t0e7da755": {
     "grup": "motor",
     "tr": "Aynı vilayette topla",
-    "en": "",
+    "en": "Gather in the same province",
     "nerede": [
       "packages/shared/src/ogretici.ts:433"
     ]
@@ -8900,7 +8900,7 @@
   "te76587c7": {
     "grup": "motor",
     "tr": "Başarımlar",
-    "en": "",
+    "en": "Achievements",
     "nerede": [
       "packages/shared/src/ogretici.ts:571"
     ]
@@ -8908,7 +8908,7 @@
   "t61dd4ca7": {
     "grup": "motor",
     "tr": "Başka bir sebep",
-    "en": "",
+    "en": "Another reason",
     "nerede": [
       "packages/shared/src/moderasyon.ts:55"
     ]
@@ -8932,7 +8932,7 @@
   "t675e7549": {
     "grup": "motor",
     "tr": "Beş düşman diyarı, her birinde on kamp. Kaynak ve ekipman.",
-    "en": "",
+    "en": "Five enemy realms, ten camps in each. Resources and equipment.",
     "nerede": [
       "packages/shared/src/ogretici.ts:375"
     ]
@@ -8948,7 +8948,7 @@
   "t99ca54fc": {
     "grup": "motor",
     "tr": "Bilinmeyen birim: {0}",
-    "en": "",
+    "en": "Unknown unit: {0}",
     "nerede": [
       "packages/shared/src/progression.ts:149"
     ]
@@ -8956,7 +8956,7 @@
   "t8baee2f4": {
     "grup": "motor",
     "tr": "Bilinmeyen karar.",
-    "en": "",
+    "en": "Unknown decision.",
     "nerede": [
       "packages/shared/src/moderasyon.ts:203"
     ]
@@ -8972,7 +8972,7 @@
   "t25c219f6": {
     "grup": "motor",
     "tr": "Binalar seninle taşınır",
-    "en": "",
+    "en": "Buildings move with you",
     "nerede": [
       "packages/shared/src/ogretici.ts:365"
     ]
@@ -8980,7 +8980,7 @@
   "t2106fa1d": {
     "grup": "motor",
     "tr": "Bir akın",
-    "en": "",
+    "en": "A raid",
     "nerede": [
       "packages/shared/src/gunluk.ts:58"
     ]
@@ -8988,7 +8988,7 @@
   "t01bfb670": {
     "grup": "motor",
     "tr": "Bir ateş, birkaç çadır. Henüz toprağın yok.",
-    "en": "",
+    "en": "A fire, a few tents. You don't have land yet.",
     "nerede": [
       "packages/shared/src/bina.ts:65"
     ]
@@ -9012,7 +9012,7 @@
   "t0628661e": {
     "grup": "motor",
     "tr": "Bir bölgeye saldırı gönder",
-    "en": "",
+    "en": "Send an attack to a region",
     "nerede": [
       "packages/shared/src/gunluk.ts:58"
     ]
@@ -9052,7 +9052,7 @@
   "t8be1fc5a": {
     "grup": "motor",
     "tr": "Bir sebep seç.",
-    "en": "",
+    "en": "Select a reason.",
     "nerede": [
       "packages/shared/src/moderasyon.ts:83"
     ]
@@ -9060,7 +9060,7 @@
   "t83ca86e1": {
     "grup": "motor",
     "tr": "Bir şey başlat, kapat",
-    "en": "",
+    "en": "Start something, close it",
     "nerede": [
       "packages/shared/src/ogretici.ts:553"
     ]
@@ -9084,7 +9084,7 @@
   "t4a018316": {
     "grup": "motor",
     "tr": "Birimler birbirini kırar. Kimi göndereceğin, kaç kişi olduğundan önemli.",
-    "en": "",
+    "en": "Units counter each other. Who you send is more important than how many.",
     "nerede": [
       "packages/shared/src/ogretici.ts:229"
     ]
@@ -9092,7 +9092,7 @@
   "tdbe1a320": {
     "grup": "motor",
     "tr": "Bölge geliri +{0}",
-    "en": "",
+    "en": "Region income +{0}",
     "nerede": [
       "packages/shared/src/arastirma.ts:162"
     ]
@@ -9100,7 +9100,7 @@
   "t7938bab6": {
     "grup": "motor",
     "tr": "Bölge geliştir",
-    "en": "",
+    "en": "Develop region",
     "nerede": [
       "packages/shared/src/ogretici.ts:409"
     ]
@@ -9108,7 +9108,7 @@
   "tb2bd7b65": {
     "grup": "motor",
     "tr": "Bölge geliştirme +{0} hızlı",
-    "en": "",
+    "en": "Region development +{0} faster",
     "nerede": [
       "packages/shared/src/arastirma.ts:182"
     ]
@@ -9124,7 +9124,7 @@
   "tbe214511": {
     "grup": "motor",
     "tr": "Bölge sınırı",
-    "en": "",
+    "en": "Region limit",
     "nerede": [
       "packages/shared/src/ogretici.ts:427"
     ]
@@ -9132,7 +9132,7 @@
   "t7fb91026": {
     "grup": "motor",
     "tr": "Bölge tutmak, savaş kazanmak ve tahtı elinde tutmak şöhret kazandırır.",
-    "en": "",
+    "en": "Holding regions, winning battles, and keeping the throne yields fame.",
     "nerede": [
       "packages/shared/src/ogretici.ts:204"
     ]
@@ -9140,7 +9140,7 @@
   "t088fa673": {
     "grup": "motor",
     "tr": "Bölge, ekipman ve general. Üçü de aynı anda ilerler.",
-    "en": "",
+    "en": "Region, equipment, and general. All three progress simultaneously.",
     "nerede": [
       "packages/shared/src/ogretici.ts:406"
     ]
@@ -9148,7 +9148,7 @@
   "t7ce05441": {
     "grup": "motor",
     "tr": "Bölgeler bitmez ama çoğalmaz da — biri alırsa, bir başkası kaybeder.",
-    "en": "",
+    "en": "Regions don't run out, but they don't multiply either — if one takes, another loses.",
     "nerede": [
       "packages/shared/src/ogretici.ts:154"
     ]
@@ -9188,7 +9188,7 @@
   "t3cc043ca": {
     "grup": "motor",
     "tr": "Böyle bir kaynak yok.",
-    "en": "",
+    "en": "No such resource exists.",
     "nerede": [
       "packages/shared/src/pazar.ts:127"
     ]
@@ -9220,7 +9220,7 @@
   "tee4272d0": {
     "grup": "motor",
     "tr": "Bu ittifağa zaten başvurdun, cevap bekleniyor.",
-    "en": "",
+    "en": "You have already applied to this alliance, awaiting a response.",
     "nerede": [
       "packages/shared/src/ittifakBasvuru.ts:96"
     ]
@@ -9228,7 +9228,7 @@
   "t5874fc4f": {
     "grup": "motor",
     "tr": "Bu ittifak başvuru almıyor, doğrudan katılabilirsin.",
-    "en": "",
+    "en": "This alliance is not taking applications, you can join directly.",
     "nerede": [
       "packages/shared/src/ittifakBasvuru.ts:84"
     ]
@@ -9236,7 +9236,7 @@
   "tfcbe1de2": {
     "grup": "motor",
     "tr": "Bu ittifak başvurunu reddetti. {0} saat sonra yeniden başvurabilirsin.",
-    "en": "",
+    "en": "This alliance rejected your application. You can reapply in {0} hours.",
     "nerede": [
       "packages/shared/src/ittifakBasvuru.ts:104"
     ]
@@ -9244,7 +9244,7 @@
   "te8fc7ecc": {
     "grup": "motor",
     "tr": "Bu ittifak başvuruyla üye alıyor. Başvurup liderin onayını beklemelisin.",
-    "en": "",
+    "en": "This alliance recruits by application. You must apply and wait for the leader's approval.",
     "nerede": [
       "packages/shared/src/ittifakBasvuru.ts:154"
     ]
@@ -9252,7 +9252,7 @@
   "t0e5095cd": {
     "grup": "motor",
     "tr": "Bu ittifak en az Sv{0} istiyor. Sen Sv{1}'sin.",
-    "en": "",
+    "en": "This alliance requires at least Lv{0}. You are Lv{1}.",
     "nerede": [
       "packages/shared/src/ittifakBasvuru.ts:170",
       "packages/shared/src/ittifakBasvuru.ts:92"
@@ -9261,7 +9261,7 @@
   "tbd18938b": {
     "grup": "motor",
     "tr": "Bu oyun beklemeli. Günde birkaç dakika yeter.",
-    "en": "",
+    "en": "This is an idle game. A few minutes a day is enough.",
     "nerede": [
       "packages/shared/src/ogretici.ts:550"
     ]
@@ -9277,7 +9277,7 @@
   "t7d008c01": {
     "grup": "motor",
     "tr": "Bu şikâyette silinecek bir mesaj yok.",
-    "en": "",
+    "en": "There is no message to delete in this report.",
     "nerede": [
       "packages/shared/src/moderasyon.ts:206"
     ]
@@ -9285,7 +9285,7 @@
   "t438772cd": {
     "grup": "motor",
     "tr": "Bugün en fazla {0} {1} daha takas edebilirsin.",
-    "en": "",
+    "en": "You can trade at most {0} {1} more today.",
     "nerede": [
       "packages/shared/src/pazar.ts:150"
     ]
@@ -9293,7 +9293,7 @@
   "t6615c06c": {
     "grup": "motor",
     "tr": "Bugünkü pazar hakkın doldu. Yarın yenilenir.",
-    "en": "",
+    "en": "Your market limit for today is reached. It will reset tomorrow.",
     "nerede": [
       "packages/shared/src/pazar.ts:149"
     ]
@@ -9325,7 +9325,7 @@
   "t0ca004f7": {
     "grup": "motor",
     "tr": "Burası bir diyar, sen bir lordsun",
-    "en": "",
+    "en": "This is a realm, you are a lord",
     "nerede": [
       "packages/shared/src/ogretici.ts:147"
     ]
@@ -9341,7 +9341,7 @@
   "tc8dcc54d": {
     "grup": "motor",
     "tr": "Büyümenin üç yolu",
-    "en": "",
+    "en": "Three ways to grow",
     "nerede": [
       "packages/shared/src/ogretici.ts:405"
     ]
@@ -9349,7 +9349,7 @@
   "t91c31dd1": {
     "grup": "motor",
     "tr": "Casusluk −{0} ucuz",
-    "en": "",
+    "en": "Espionage −{0} cheaper",
     "nerede": [
       "packages/shared/src/arastirma.ts:184"
     ]
@@ -9357,7 +9357,7 @@
   "tfcce622f": {
     "grup": "motor",
     "tr": "Çamurlu bir yol, ahşap evler, bir palisad.",
-    "en": "",
+    "en": "A muddy road, wooden houses, a palisade.",
     "nerede": [
       "packages/shared/src/bina.ts:66"
     ]
@@ -9373,7 +9373,7 @@
   "te4647dbe": {
     "grup": "motor",
     "tr": "Dağınık üç bölge ile bitişik üç bölge aynı şey değil.",
-    "en": "",
+    "en": "Three scattered regions and three adjacent regions are not the same.",
     "nerede": [
       "packages/shared/src/ogretici.ts:437"
     ]
@@ -9405,7 +9405,7 @@
   "t1e10eb4e": {
     "grup": "motor",
     "tr": "Depo kapasitesi +{0}",
-    "en": "",
+    "en": "Storage capacity +{0}",
     "nerede": [
       "packages/shared/src/arastirma.ts:158"
     ]
@@ -9413,7 +9413,7 @@
   "t6185c54d": {
     "grup": "motor",
     "tr": "Deponun bir tavanı var",
-    "en": "",
+    "en": "Storage has a cap",
     "nerede": [
       "packages/shared/src/ogretici.ts:209"
     ]
@@ -9429,7 +9429,7 @@
   "tefcb3bb6": {
     "grup": "motor",
     "tr": "Dibe vurursun, silinmezsin",
-    "en": "",
+    "en": "You may hit rock bottom, but you won't be wiped out",
     "nerede": [
       "packages/shared/src/ogretici.ts:170"
     ]
@@ -9437,7 +9437,7 @@
   "t522a35da": {
     "grup": "motor",
     "tr": "Diyarın merkezi.",
-    "en": "",
+    "en": "The center of the realm.",
     "nerede": [
       "packages/shared/src/bina.ts:70"
     ]
@@ -9453,7 +9453,7 @@
   "tf2e5f70e": {
     "grup": "motor",
     "tr": "Diyarını imar et",
-    "en": "",
+    "en": "Build your realm",
     "nerede": [
       "packages/shared/src/gunluk.ts:60"
     ]
@@ -9493,7 +9493,7 @@
   "t30160b9f": {
     "grup": "motor",
     "tr": "Duvara karşı harika, insana karşı berbat — yanına muhafız al.",
-    "en": "",
+    "en": "Great against walls, terrible against humans — take guards with you.",
     "nerede": [
       "packages/shared/src/ogretici.ts:239"
     ]
@@ -9501,7 +9501,7 @@
   "t6e565082": {
     "grup": "motor",
     "tr": "Dünya kalıcı",
-    "en": "",
+    "en": "The world is persistent",
     "nerede": [
       "packages/shared/src/ogretici.ts:578"
     ]
@@ -9525,7 +9525,7 @@
   "te2440594": {
     "grup": "motor",
     "tr": "Düşmanda {0} yoktu; bu taktiğin asıl kozu boşa gitti.",
-    "en": "",
+    "en": "The enemy didn't have {0}; the main trump card of this tactic was wasted.",
     "nerede": [
       "packages/shared/src/duzen.ts:368"
     ]
@@ -9533,7 +9533,7 @@
   "t7292ddeb": {
     "grup": "motor",
     "tr": "Düşmanın {0}'i {1}ydı: +{2} saldırı.",
-    "en": "",
+    "en": "The enemy's {0} unit was {1}: +{2} attack.",
     "nerede": [
       "packages/shared/src/duzen.ts:375"
     ]
@@ -9557,7 +9557,7 @@
   "tddfb254c": {
     "grup": "motor",
     "tr": "Ekipman döv",
-    "en": "",
+    "en": "Forge equipment",
     "nerede": [
       "packages/shared/src/ogretici.ts:415"
     ]
@@ -9573,7 +9573,7 @@
   "tf8bef3dd": {
     "grup": "motor",
     "tr": "Ekipman üret ya da bölge geliştir",
-    "en": "",
+    "en": "Forge equipment or develop region",
     "nerede": [
       "packages/shared/src/gunluk.ts:60"
     ]
@@ -9589,7 +9589,7 @@
   "t5db224b7": {
     "grup": "motor",
     "tr": "Eksi miktar gönderilemez.",
-    "en": "",
+    "en": "Negative amounts cannot be sent.",
     "nerede": [
       "packages/shared/src/ticaret.ts:83"
     ]
@@ -9613,7 +9613,7 @@
   "t4324a9bb": {
     "grup": "motor",
     "tr": "Elinde bu kadar yok.",
-    "en": "",
+    "en": "You don't have this much.",
     "nerede": [
       "packages/shared/src/pazar.ts:139"
     ]
@@ -9629,7 +9629,7 @@
   "t67ba0fe8": {
     "grup": "motor",
     "tr": "En az {0} birim takas edebilirsin.",
-    "en": "",
+    "en": "You can trade at least {0} units.",
     "nerede": [
       "packages/shared/src/pazar.ts:135"
     ]
@@ -9637,7 +9637,7 @@
   "tf3acae08": {
     "grup": "motor",
     "tr": "En az {0} değerinde yük gönderilebilir.",
-    "en": "",
+    "en": "A load of at least {0} value can be sent.",
     "nerede": [
       "packages/shared/src/ticaret.ts:88"
     ]
@@ -9645,7 +9645,7 @@
   "t878c2032": {
     "grup": "motor",
     "tr": "En fazla {0} paktın olabilir. Yenisi için birini feshetmen gerekiyor.",
-    "en": "",
+    "en": "You can have a maximum of {0} pacts. You must break one for a new one.",
     "nerede": [
       "packages/shared/src/pakt.ts:102"
     ]
@@ -9653,7 +9653,7 @@
   "t6ab674b4": {
     "grup": "motor",
     "tr": "En fazla {0} üye",
-    "en": "",
+    "en": "Maximum {0} members",
     "nerede": [
       "packages/shared/src/ogretici.ts:505"
     ]
@@ -9661,7 +9661,7 @@
   "t76555f03": {
     "grup": "motor",
     "tr": "En yüksek seviyede.",
-    "en": "",
+    "en": "At maximum level.",
     "nerede": [
       "packages/shared/src/bina.ts:247"
     ]
@@ -9669,7 +9669,7 @@
   "tec1768f7": {
     "grup": "motor",
     "tr": "Erken oyunda az bölgeyi iyi tutmak, çok bölgeyi kötü tutmaktan iyidir.",
-    "en": "",
+    "en": "In the early game, holding a few regions well is better than holding many poorly.",
     "nerede": [
       "packages/shared/src/ogretici.ts:430"
     ]
@@ -9701,7 +9701,7 @@
   "t4cfb105e": {
     "grup": "motor",
     "tr": "Etiket {0}-{1} karakter olmalı.",
-    "en": "",
+    "en": "Tag must be {0}-{1} characters.",
     "nerede": [
       "packages/shared/src/ittifak.ts:56"
     ]
@@ -9709,7 +9709,7 @@
   "t643e59f8": {
     "grup": "motor",
     "tr": "Etiket yalnız harf ve rakam içerebilir.",
-    "en": "",
+    "en": "Tag can only contain letters and numbers.",
     "nerede": [
       "packages/shared/src/ittifak.ts:62"
     ]
@@ -9725,7 +9725,7 @@
   "t83a87ab5": {
     "grup": "motor",
     "tr": "Fethin karşılığı bu: T5 ekipman dövmek için gerçek bir şehir gerekiyor.",
-    "en": "",
+    "en": "This is the reward for conquest: you need a real city to forge T5 equipment.",
     "nerede": [
       "packages/shared/src/ogretici.ts:356"
     ]
@@ -9733,7 +9733,7 @@
   "t31725a07": {
     "grup": "motor",
     "tr": "Fetih sonrası {0} saat",
-    "en": "",
+    "en": "{0} hours after conquest",
     "nerede": [
       "packages/shared/src/ogretici.ts:492"
     ]
@@ -9741,7 +9741,7 @@
   "t91fd6882": {
     "grup": "motor",
     "tr": "Forum, su kemeri, tapınak. Artık bir şehirsin.",
-    "en": "",
+    "en": "Forum, aqueduct, temple. You are now a city.",
     "nerede": [
       "packages/shared/src/bina.ts:68"
     ]
@@ -9749,7 +9749,7 @@
   "t90ecb3ad": {
     "grup": "motor",
     "tr": "Ganimet ve fetih",
-    "en": "",
+    "en": "Loot and conquest",
     "nerede": [
       "packages/shared/src/ogretici.ts:333"
     ]
@@ -9773,7 +9773,7 @@
   "tb41d91b9": {
     "grup": "motor",
     "tr": "Geçersiz susturma süresi.",
-    "en": "",
+    "en": "Invalid mute duration.",
     "nerede": [
       "packages/shared/src/moderasyon.ts:211"
     ]
@@ -9789,7 +9789,7 @@
   "t3ad9ed5f": {
     "grup": "motor",
     "tr": "General topla",
-    "en": "",
+    "en": "Recruit general",
     "nerede": [
       "packages/shared/src/ogretici.ts:421"
     ]
@@ -9862,7 +9862,7 @@
   "t39a17db6": {
     "grup": "motor",
     "tr": "Günde +{0} saldırı hakkı",
-    "en": "",
+    "en": "+{0} attack limits per day",
     "nerede": [
       "packages/shared/src/arastirma.ts:186"
     ]
@@ -9870,7 +9870,7 @@
   "t590d8e92": {
     "grup": "motor",
     "tr": "Günlük gönderim tavanını aşıyor. Bugün {0} değerinde daha gönderebilirsin.",
-    "en": "",
+    "en": "Exceeds daily sending limit. You can send {0} more value today.",
     "nerede": [
       "packages/shared/src/ticaret.ts:96"
     ]
@@ -9878,7 +9878,7 @@
   "t5485d304": {
     "grup": "motor",
     "tr": "Günlük görevler ve haftalık sefer",
-    "en": "",
+    "en": "Daily quests and weekly campaign",
     "nerede": [
       "packages/shared/src/ogretici.ts:565"
     ]
@@ -9902,7 +9902,7 @@
   "t97c33115": {
     "grup": "motor",
     "tr": "Hakaret veya küfür",
-    "en": "",
+    "en": "Insult or profanity",
     "nerede": [
       "packages/shared/src/moderasyon.ts:50"
     ]
@@ -9966,7 +9966,7 @@
   "t7e372fb9": {
     "grup": "motor",
     "tr": "Her birimin bir yeri var",
-    "en": "",
+    "en": "Every unit has its place",
     "nerede": [
       "packages/shared/src/ogretici.ts:262"
     ]
@@ -10062,7 +10062,7 @@
   "t78f10e57": {
     "grup": "motor",
     "tr": "İttifak adı en az {0} harf olmalı.",
-    "en": "",
+    "en": "Alliance name must be at least {0} characters.",
     "nerede": [
       "packages/shared/src/ittifak.ts:42"
     ]
@@ -10070,7 +10070,7 @@
   "t61897022": {
     "grup": "motor",
     "tr": "İttifak adı en fazla {0} harf olabilir.",
-    "en": "",
+    "en": "Alliance name can be at most {0} characters.",
     "nerede": [
       "packages/shared/src/ittifak.ts:45"
     ]
@@ -10088,7 +10088,7 @@
   "tf8276237": {
     "grup": "motor",
     "tr": "İttifak seviyesi",
-    "en": "",
+    "en": "Alliance level",
     "nerede": [
       "packages/shared/src/ogretici.ts:526"
     ]
@@ -10096,7 +10096,7 @@
   "t827b1e17": {
     "grup": "motor",
     "tr": "İttifak; birbirine saldıramayan, birbirini besleyen bir grup.",
-    "en": "",
+    "en": "Alliance; a group that cannot attack each other and feeds each other.",
     "nerede": [
       "packages/shared/src/ogretici.ts:502"
     ]
@@ -10113,7 +10113,7 @@
   "tcf47b520": {
     "grup": "motor",
     "tr": "Kale-şehir",
-    "en": "",
+    "en": "Citadel-city",
     "nerede": [
       "packages/shared/src/bina.ts:60"
     ]
@@ -10129,7 +10129,7 @@
   "t980be71f": {
     "grup": "motor",
     "tr": "Kalıcı seçimler. İki lord aynı seviyede olsa bile aynı olmaz.",
-    "en": "",
+    "en": "Permanent choices. Even if two lords are the same level, they won't be identical.",
     "nerede": [
       "packages/shared/src/ogretici.ts:444"
     ]
@@ -10137,7 +10137,7 @@
   "t353c1322": {
     "grup": "motor",
     "tr": "Kalıcı ve geri alınmaz",
-    "en": "",
+    "en": "Permanent and irreversible",
     "nerede": [
       "packages/shared/src/ogretici.ts:456"
     ]
@@ -10145,7 +10145,7 @@
   "t98ac30ec": {
     "grup": "motor",
     "tr": "Kamp",
-    "en": "",
+    "en": "Camp",
     "nerede": [
       "packages/shared/src/bina.ts:56"
     ]
@@ -10161,7 +10161,7 @@
   "t9a45b6d2": {
     "grup": "motor",
     "tr": "Kamptan başlarsın",
-    "en": "",
+    "en": "You start from a camp",
     "nerede": [
       "packages/shared/src/ogretici.ts:177"
     ]
@@ -10169,7 +10169,7 @@
   "t87585a83": {
     "grup": "motor",
     "tr": "Kanatlar ve açık cephe",
-    "en": "",
+    "en": "Flanks and open front",
     "nerede": [
       "packages/shared/src/ogretici.ts:269"
     ]
@@ -10185,7 +10185,7 @@
   "td131a86c": {
     "grup": "motor",
     "tr": "Karşı ittifakın pakt kotası dolu ({0}).",
-    "en": "",
+    "en": "The opposing alliance's pact quota is full ({0}).",
     "nerede": [
       "packages/shared/src/pakt.ts:109"
     ]
@@ -10193,7 +10193,7 @@
   "t91a4454c": {
     "grup": "motor",
     "tr": "Kasaba",
-    "en": "",
+    "en": "Town",
     "nerede": [
       "packages/shared/src/bina.ts:58"
     ]
@@ -10201,7 +10201,7 @@
   "t33db6196": {
     "grup": "motor",
     "tr": "Kaybetmek ölüm değil",
-    "en": "",
+    "en": "Losing is not death",
     "nerede": [
       "packages/shared/src/ogretici.ts:320"
     ]
@@ -10217,7 +10217,7 @@
   "tb800b73a": {
     "grup": "motor",
     "tr": "Kaynak gönder",
-    "en": "",
+    "en": "Send resources",
     "nerede": [
       "packages/shared/src/ogretici.ts:540"
     ]
@@ -10233,7 +10233,7 @@
   "tc61d4e1a": {
     "grup": "motor",
     "tr": "Kaynak kesin, ekipman şans",
-    "en": "",
+    "en": "Resources are certain, equipment is luck",
     "nerede": [
       "packages/shared/src/ogretici.ts:390"
     ]
@@ -10257,7 +10257,7 @@
   "t2e190b39": {
     "grup": "motor",
     "tr": "Kendi ittifakınla pakt yapamazsın.",
-    "en": "",
+    "en": "You cannot make a pact with your own alliance.",
     "nerede": [
       "packages/shared/src/pakt.ts:95"
     ]
@@ -10273,7 +10273,7 @@
   "t8107bb49": {
     "grup": "motor",
     "tr": "Kimin nerede durduğu savaşın gücünü değiştirir.",
-    "en": "",
+    "en": "Who stands where changes the power of the battle.",
     "nerede": [
       "packages/shared/src/ogretici.ts:259"
     ]
@@ -10281,7 +10281,7 @@
   "t3481794b": {
     "grup": "motor",
     "tr": "Komuta kapasitesi +{0}",
-    "en": "",
+    "en": "Command capacity +{0}",
     "nerede": [
       "packages/shared/src/arastirma.ts:170"
     ]
@@ -10289,7 +10289,7 @@
   "t3927e06a": {
     "grup": "motor",
     "tr": "Komuta sınırı",
-    "en": "",
+    "en": "Command limit",
     "nerede": [
       "packages/shared/src/ogretici.ts:242"
     ]
@@ -10297,7 +10297,7 @@
   "t27d2957a": {
     "grup": "motor",
     "tr": "Koşul tutmuyor.",
-    "en": "",
+    "en": "Condition not met.",
     "nerede": [
       "packages/shared/src/duzen.ts:272"
     ]
@@ -10313,7 +10313,7 @@
   "t64a9f707": {
     "grup": "motor",
     "tr": "Kuşatma silahı",
-    "en": "",
+    "en": "Siege weapon",
     "nerede": [
       "packages/shared/src/ogretici.ts:236"
     ]
@@ -10321,7 +10321,7 @@
   "t04fed051": {
     "grup": "motor",
     "tr": "Lider",
-    "en": "",
+    "en": "Leader",
     "nerede": [
       "packages/shared/src/ittifakSeviye.ts:184"
     ]
@@ -10353,7 +10353,7 @@
   "tc5aa6c64": {
     "grup": "motor",
     "tr": "Lord seviyesi {0} gerekiyor.",
-    "en": "",
+    "en": "Requires Lord level {0}.",
     "nerede": [
       "packages/shared/src/arastirma.ts:230"
     ]
@@ -10369,7 +10369,7 @@
   "t8fea1e77": {
     "grup": "motor",
     "tr": "Malikâne geliri +{0}",
-    "en": "",
+    "en": "Manor income +{0}",
     "nerede": [
       "packages/shared/src/arastirma.ts:160"
     ]
@@ -10393,7 +10393,7 @@
   "t8df806ac": {
     "grup": "motor",
     "tr": "Mesaj kaldırıldı",
-    "en": "",
+    "en": "Message removed",
     "nerede": [
       "packages/shared/src/moderasyon.ts:223"
     ]
@@ -10401,7 +10401,7 @@
   "t72e21d0d": {
     "grup": "motor",
     "tr": "Metropol",
-    "en": "",
+    "en": "Metropolis",
     "nerede": [
       "packages/shared/src/bina.ts:61"
     ]
@@ -10417,7 +10417,7 @@
   "t0d3a343c": {
     "grup": "motor",
     "tr": "Nefret söylemi",
-    "en": "",
+    "en": "Hate speech",
     "nerede": [
       "packages/shared/src/moderasyon.ts:52"
     ]
@@ -10425,7 +10425,7 @@
   "t3d5e14ec": {
     "grup": "motor",
     "tr": "Not en fazla {0} harf olabilir.",
-    "en": "",
+    "en": "Note can be at most {0} characters.",
     "nerede": [
       "packages/shared/src/ittifakBasvuru.ts:195"
     ]
@@ -10441,7 +10441,7 @@
   "t530ab412": {
     "grup": "motor",
     "tr": "Ordu bakımı −{0}",
-    "en": "",
+    "en": "Army upkeep −{0}",
     "nerede": [
       "packages/shared/src/arastirma.ts:168"
     ]
@@ -10465,7 +10465,7 @@
   "tb2cfc172": {
     "grup": "motor",
     "tr": "Ordu saldırısı +{0}",
-    "en": "",
+    "en": "Army attack +{0}",
     "nerede": [
       "packages/shared/src/arastirma.ts:172"
     ]
@@ -10473,7 +10473,7 @@
   "t5d274e99": {
     "grup": "motor",
     "tr": "Ordu savunması +{0}",
-    "en": "",
+    "en": "Army defense +{0}",
     "nerede": [
       "packages/shared/src/arastirma.ts:174"
     ]
@@ -10481,7 +10481,7 @@
   "t8742141d": {
     "grup": "motor",
     "tr": "Ordu: kalabalık değil, doğru kalabalık",
-    "en": "",
+    "en": "Army: not a crowd, the right crowd",
     "nerede": [
       "packages/shared/src/ogretici.ts:228"
     ]
@@ -10537,7 +10537,7 @@
   "t377699da": {
     "grup": "motor",
     "tr": "Orduyu yollarsın, yol alır, çarpışır; sen izlersin.",
-    "en": "",
+    "en": "You send the army, it marches, it clashes; you watch.",
     "nerede": [
       "packages/shared/src/ogretici.ts:298"
     ]
@@ -10545,7 +10545,7 @@
   "t40087aa8": {
     "grup": "motor",
     "tr": "Oyunun ritmi",
-    "en": "",
+    "en": "The rhythm of the game",
     "nerede": [
       "packages/shared/src/ogretici.ts:549"
     ]
@@ -10561,7 +10561,7 @@
   "t65afe539": {
     "grup": "motor",
     "tr": "Ölü sayılanların bir bölümü yaralı olarak geri döner — hem savunmada hem saldırıda.",
-    "en": "",
+    "en": "A portion of the presumed dead return wounded — both in defense and offense.",
     "nerede": [
       "packages/shared/src/ogretici.ts:323"
     ]
@@ -10577,7 +10577,7 @@
   "t23446189": {
     "grup": "motor",
     "tr": "Ön hattın açıktı: milis ve mızrakçı arkada beklerken düşman doğrudan içeri girdi. {0} savunma kaybı.",
-    "en": "",
+    "en": "Your frontline was exposed: while the militia and spearmen waited in the back, the enemy pushed straight in. {0} defense lost.",
     "nerede": [
       "packages/shared/src/duzen.ts:238"
     ]
@@ -10593,7 +10593,7 @@
   "t475ee1c4": {
     "grup": "motor",
     "tr": "Önce {0} gerekiyor.",
-    "en": "",
+    "en": "Requires {0} first.",
     "nerede": [
       "packages/shared/src/arastirma.ts:228"
     ]
@@ -10601,7 +10601,7 @@
   "td58fd65f": {
     "grup": "motor",
     "tr": "Önce casus yolla",
-    "en": "",
+    "en": "Send a spy first",
     "nerede": [
       "packages/shared/src/ogretici.ts:313"
     ]
@@ -10625,7 +10625,7 @@
   "tffed5085": {
     "grup": "motor",
     "tr": "Önce önizleme",
-    "en": "",
+    "en": "Preview first",
     "nerede": [
       "packages/shared/src/ogretici.ts:301"
     ]
@@ -10641,7 +10641,7 @@
   "tbeace604": {
     "grup": "motor",
     "tr": "Pakt için bir ittifakın olması gerekiyor.",
-    "en": "",
+    "en": "You need an alliance for a pact.",
     "nerede": [
       "packages/shared/src/pakt.ts:92"
     ]
@@ -10649,7 +10649,7 @@
   "t172f1fb8": {
     "grup": "motor",
     "tr": "Pazarda takas",
-    "en": "",
+    "en": "Trade in the market",
     "nerede": [
       "packages/shared/src/ogretici.ts:217"
     ]
@@ -10673,7 +10673,7 @@
   "t0f6c0cea": {
     "grup": "motor",
     "tr": "Reklam veya bağlantı yağmuru",
-    "en": "",
+    "en": "Spam or link flooding",
     "nerede": [
       "packages/shared/src/moderasyon.ts:53"
     ]
@@ -10697,7 +10697,7 @@
   "t4b39f2fd": {
     "grup": "motor",
     "tr": "Saldırmazlık paktı",
-    "en": "",
+    "en": "Non-aggression pact",
     "nerede": [
       "packages/shared/src/ogretici.ts:533"
     ]
@@ -10713,7 +10713,7 @@
   "t4bcff1b8": {
     "grup": "motor",
     "tr": "Savaş gerçek",
-    "en": "",
+    "en": "War is real",
     "nerede": [
       "packages/shared/src/ogretici.ts:384"
     ]
@@ -10721,7 +10721,7 @@
   "t245190a9": {
     "grup": "motor",
     "tr": "Savaş kendiliğinden çözülür",
-    "en": "",
+    "en": "Battle resolves automatically",
     "nerede": [
       "packages/shared/src/ogretici.ts:297"
     ]
@@ -10737,7 +10737,7 @@
   "td3f44af5": {
     "grup": "motor",
     "tr": "Savaştan önce: dizilimin ve taktiğin",
-    "en": "",
+    "en": "Before battle: your formation and tactic",
     "nerede": [
       "packages/shared/src/ogretici.ts:251"
     ]
@@ -10753,7 +10753,7 @@
   "t6228723d": {
     "grup": "motor",
     "tr": "Seni koruyan kurallar",
-    "en": "",
+    "en": "Rules that protect you",
     "nerede": [
       "packages/shared/src/ogretici.ts:476"
     ]
@@ -10761,7 +10761,7 @@
   "ta5b1e298": {
     "grup": "motor",
     "tr": "Seviye eşiği en az 1 olmalı.",
-    "en": "",
+    "en": "Level threshold must be at least 1.",
     "nerede": [
       "packages/shared/src/ittifakBasvuru.ts:185"
     ]
@@ -10769,7 +10769,7 @@
   "tf693a3e4": {
     "grup": "motor",
     "tr": "Seviye eşiği en fazla {0} olabilir.",
-    "en": "",
+    "en": "Level threshold can be at most {0}.",
     "nerede": [
       "packages/shared/src/ittifakBasvuru.ts:188"
     ]
@@ -10809,7 +10809,7 @@
   "t6f40c54e": {
     "grup": "motor",
     "tr": "Sohbette susturuldu ({0})",
-    "en": "",
+    "en": "Muted in chat ({0})",
     "nerede": [
       "packages/shared/src/moderasyon.ts:225"
     ]
@@ -10817,7 +10817,7 @@
   "t82cf938f": {
     "grup": "motor",
     "tr": "Sohbette susturuldun — {0} kaldı.{1}",
-    "en": "",
+    "en": "You have been muted in chat — {0} left.{1}",
     "nerede": [
       "packages/shared/src/moderasyon.ts:174"
     ]
@@ -10825,7 +10825,7 @@
   "tebdafe82": {
     "grup": "motor",
     "tr": "Surlar hâkim. Askerî bir yerleşim.",
-    "en": "",
+    "en": "Walls dominate. A military settlement.",
     "nerede": [
       "packages/shared/src/bina.ts:69"
     ]
@@ -10833,7 +10833,7 @@
   "tc841a9ec": {
     "grup": "motor",
     "tr": "Susturma süresi seç.",
-    "en": "",
+    "en": "Select mute duration.",
     "nerede": [
       "packages/shared/src/moderasyon.ts:209"
     ]
@@ -10849,7 +10849,7 @@
   "t81af9968": {
     "grup": "motor",
     "tr": "Şehrin: her binanın bir işi var",
-    "en": "",
+    "en": "Your city: every building has a job",
     "nerede": [
       "packages/shared/src/ogretici.ts:349"
     ]
@@ -10857,7 +10857,7 @@
   "t9368b74f": {
     "grup": "motor",
     "tr": "Şikâyet Kuyruğu",
-    "en": "",
+    "en": "Report Queue",
     "nerede": [
       "packages/shared/src/types.ts:310"
     ]
@@ -10865,7 +10865,7 @@
   "t90215b3d": {
     "grup": "motor",
     "tr": "Şikâyet yok sayıldı",
-    "en": "",
+    "en": "Report ignored",
     "nerede": [
       "packages/shared/src/moderasyon.ts:221"
     ]
@@ -10881,7 +10881,7 @@
   "tb048e209": {
     "grup": "motor",
     "tr": "Şu an inşa ediliyor.",
-    "en": "",
+    "en": "Currently under construction.",
     "nerede": [
       "packages/shared/src/bina.ts:243"
     ]
@@ -10897,7 +10897,7 @@
   "tc0314923": {
     "grup": "motor",
     "tr": "Taciz veya tehdit",
-    "en": "",
+    "en": "Harassment or threat",
     "nerede": [
       "packages/shared/src/moderasyon.ts:51"
     ]
@@ -10905,7 +10905,7 @@
   "tf1703d7a": {
     "grup": "motor",
     "tr": "Tahkimat +{0} (savunmada)",
-    "en": "",
+    "en": "Fortification +{0} (in defense)",
     "nerede": [
       "packages/shared/src/arastirma.ts:180"
     ]
@@ -10913,7 +10913,7 @@
   "t39ab6f5f": {
     "grup": "motor",
     "tr": "Taht senin. Diyar seni tanıyor.",
-    "en": "",
+    "en": "The throne is yours. The realm recognizes you.",
     "nerede": [
       "packages/shared/src/kimlik.ts:126"
     ]
@@ -10921,7 +10921,7 @@
   "t75023d65": {
     "grup": "motor",
     "tr": "Takas boşluğu kapatır, üretimin yerini tutmaz.",
-    "en": "",
+    "en": "Trade closes the gap, it does not replace production.",
     "nerede": [
       "packages/shared/src/ogretici.ts:222"
     ]
@@ -10929,7 +10929,7 @@
   "t7135b66c": {
     "grup": "motor",
     "tr": "Takviye ve ortak hedef",
-    "en": "",
+    "en": "Reinforcement and common target",
     "nerede": [
       "packages/shared/src/ogretici.ts:520"
     ]
@@ -10937,7 +10937,7 @@
   "tbab76525": {
     "grup": "motor",
     "tr": "Taş bir meydan, ilk sur, bir çarşı.",
-    "en": "",
+    "en": "A stone square, the first wall, a bazaar.",
     "nerede": [
       "packages/shared/src/bina.ts:67"
     ]
@@ -10945,7 +10945,7 @@
   "te9c952fc": {
     "grup": "motor",
     "tr": "Taş-kağıt-makas",
-    "en": "",
+    "en": "Rock-paper-scissors",
     "nerede": [
       "packages/shared/src/ogretici.ts:232"
     ]
@@ -10961,7 +10961,7 @@
   "tff073313": {
     "grup": "motor",
     "tr": "Tavanı var, savaşı belirlemez",
-    "en": "",
+    "en": "Has a cap, does not determine the battle",
     "nerede": [
       "packages/shared/src/ogretici.ts:285"
     ]
@@ -10977,7 +10977,7 @@
   "t35610c10": {
     "grup": "motor",
     "tr": "Tek bir harita, üzerinde herkes. Sen de onlardan birisin.",
-    "en": "",
+    "en": "A single map, everyone on it. You are one of them.",
     "nerede": [
       "packages/shared/src/ogretici.ts:148"
     ]
@@ -11009,7 +11009,7 @@
   "t5c9bcae8": {
     "grup": "motor",
     "tr": "Toprak haritayı açar",
-    "en": "",
+    "en": "Land opens the map",
     "nerede": [
       "packages/shared/src/ogretici.ts:163"
     ]
@@ -11017,7 +11017,7 @@
   "t9cbf108d": {
     "grup": "motor",
     "tr": "Toprak riski yok",
-    "en": "",
+    "en": "No land risk",
     "nerede": [
       "packages/shared/src/ogretici.ts:378"
     ]
@@ -11025,7 +11025,7 @@
   "t41c5d512": {
     "grup": "motor",
     "tr": "Uygunsuz lord adı",
-    "en": "",
+    "en": "Inappropriate lord name",
     "nerede": [
       "packages/shared/src/moderasyon.ts:54"
     ]
@@ -11033,7 +11033,7 @@
   "t5b3f33e5": {
     "grup": "motor",
     "tr": "Uykudayken silinmezsin. Bu oyunda kalkanlar gerçekten var.",
-    "en": "",
+    "en": "You won't be wiped out while asleep. Shields are real in this game.",
     "nerede": [
       "packages/shared/src/ogretici.ts:477"
     ]
@@ -11041,7 +11041,7 @@
   "t8ea30de8": {
     "grup": "motor",
     "tr": "Üç kaynak, bir puan",
-    "en": "",
+    "en": "Three resources, one score",
     "nerede": [
       "packages/shared/src/ogretici.ts:187"
     ]
@@ -11099,7 +11099,7 @@
   "t442686cb": {
     "grup": "motor",
     "tr": "Vurulan kamp toparlanır",
-    "en": "",
+    "en": "A hit camp recovers",
     "nerede": [
       "packages/shared/src/ogretici.ts:396"
     ]
@@ -11115,7 +11115,7 @@
   "t848d4403": {
     "grup": "motor",
     "tr": "Yağma +{0}",
-    "en": "",
+    "en": "Loot +{0}",
     "nerede": [
       "packages/shared/src/arastirma.ts:178"
     ]
@@ -11123,7 +11123,7 @@
   "tf1cef8fa": {
     "grup": "motor",
     "tr": "Yağma sonrası {0} saat",
-    "en": "",
+    "en": "{0} hours after looting",
     "nerede": [
       "packages/shared/src/ogretici.ts:486"
     ]
@@ -11131,7 +11131,7 @@
   "t560fd39a": {
     "grup": "motor",
     "tr": "Yalnız oynamak zorunda değilsin",
-    "en": "",
+    "en": "You don't have to play alone",
     "nerede": [
       "packages/shared/src/ogretici.ts:501"
     ]
@@ -11156,7 +11156,7 @@
   "t65a57fd5": {
     "grup": "motor",
     "tr": "Yaralanırlarsa bir süre dinlenmeleri gerekir.",
-    "en": "",
+    "en": "If they get wounded, they need to rest for a while.",
     "nerede": [
       "packages/shared/src/ogretici.ts:424"
     ]
@@ -11180,7 +11180,7 @@
   "t0cba2b1f": {
     "grup": "motor",
     "tr": "Yaşlı",
-    "en": "",
+    "en": "Elder",
     "nerede": [
       "packages/shared/src/ittifakSeviye.ts:185"
     ]
@@ -11252,7 +11252,7 @@
   "t303c955e": {
     "grup": "motor",
     "tr": "Yerleşim bir TAVAN",
-    "en": "",
+    "en": "Settlement is a CAP",
     "nerede": [
       "packages/shared/src/ogretici.ts:353"
     ]
@@ -11268,7 +11268,7 @@
   "t4d50f31d": {
     "grup": "motor",
     "tr": "Yürüyüş +{0} hızlı",
-    "en": "",
+    "en": "March +{0} faster",
     "nerede": [
       "packages/shared/src/arastirma.ts:176"
     ]
@@ -11294,7 +11294,7 @@
   "ta8c1199f": {
     "grup": "motor",
     "tr": "Zaten bir ittifaktasın. Önce ayrılman gerekir.",
-    "en": "",
+    "en": "You are already in an alliance. You must leave first.",
     "nerede": [
       "packages/shared/src/ittifakBasvuru.ts:81"
     ]

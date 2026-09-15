@@ -36,7 +36,8 @@
     "simge": "python3 tools/simge-uret.py",
     "yonetici": "pnpm --filter @lordlar/api yonetici",
     "ceviri": "node tools/metin-cikar.mjs && node tools/ceviri-liste.mjs",
-    "ceviri-al": "node tools/ceviri-al.mjs"
+    "ceviri-al": "node tools/ceviri-al.mjs",
+    "ceviri-kalan": "node tools/metin-cikar.mjs && node tools/ceviri-liste.mjs --eksik"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

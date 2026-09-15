@@ -1,9 +1,9 @@
-LORDLAR ÇAĞI — ÇEVİRİ 2/3: DERINLIK
+LORDLAR ÇAĞI — ÇEVİRİ 2/3: DERINLIK  (KALANLAR)
 
 Savaş raporu, demirhane, generaller, araştırma, ittifak, akın — ve bina,
 general, araştırma, başarım içerikleri.
 
-Bu dosyada 868 satır var.
+Bu dosyada 859 satır var — çevrilmiş olanlar çıkarıldı.
 
 NASIL ÇEVİRİLİR
   Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.
@@ -459,9 +459,8 @@ NASIL ÇEVİRİLİR
 824. toplam şöhret
 864. YAŞLI YAP
 
---- SaldiriOnizleme (30) ---
+--- SaldiriOnizleme (28) ---
 
-9. ). Kazansan bile bölgeyi alamazsın, sadece yağmalarsın — gelir artışı olmaz.
 46. {0} sıra {1}
 79. altın
 98. aşağı
@@ -477,7 +476,6 @@ NASIL ÇEVİRİLİR
 501. Kazancın yalnızca yağma
 502. Kazanırsan
 504. Kazansan bile
-508. kıl payı — sonuç değişebilir
 555. Lord tecrübesi
 589. neredeyse kesin
 611. Ordu kaybın
@@ -492,9 +490,8 @@ NASIL ÇEVİRİLİR
 904. Zafer ihtimali
 905. zayıf ihtimal
 
---- Generaller (26) ---
+--- Generaller (24) ---
 
-8. ); karargâhın seviyesi bunun üstüne ekler.
 20. {0} altın eksik.
 81. Altının yetmiyor
 163. Bölge geliri
@@ -512,7 +509,6 @@ NASIL ÇEVİRİLİR
 608. Ordu bakım maliyeti
 613. Ordu saldırısı
 615. Ordu savunması
-674. puanda bir slot açar (en fazla
 685. Sahada general yok. Kiraladığın bir generali slota yerleştir.
 687. Sahadaki Generaller · {0}/{1}
 708. Savaş meclisin
@@ -638,7 +634,7 @@ NASIL ÇEVİRİLİR
 790. Şu an isteyen herkes doğrudan katılabiliyor.
 791. Şu an yalnız onayladığın lordlar katılıyor.
 
---- IttifakIncele (18) ---
+--- IttifakIncele (17) ---
 
 61. ← Listeye dön
 123. Başvur
@@ -647,7 +643,6 @@ NASIL ÇEVİRİLİR
 277. Durum bu arada değişmiş olabilir; sayfayı tazele.
 307. en az Sv
 402. Herkes katılabilir
-411. hızlı · keşif %
 484. Katıl
 485. Katılmak
 510. Kısa not (isteğe bağlı)
@@ -678,25 +673,6 @@ NASIL ÇEVİRİLİR
 767. SUSTURULMUŞ
 884. Yok say
 
---- Arastirma (16) ---
-
-21. {0} araştırma
-84. Araştırma
-85. Araştırma başlatılamadı.
-87. Araştırma kuyruğu dolu
-101. Aynı anda
-122. Başlat
-264. Diyarını kendi seçimlerinle büyüt
-419. İlerleme
-429. İptal
-430. İptal edersen harcadığının yarısı geri gelir.
-461. kademe {0}
-465. kaldı
-792. Şu anki tavanın {0} — bu araştırma {1} ekler.
-814. tamamlandı
-819. tek araştırma
-897. yürütebilirsin — kütüphaneni yükseltirsen artar. Sıra senin kararın: önce ekonomiyi mi büyütürsün, orduyu mu?
-
 --- DunyaSeridi (15) ---
 
 3. 'i bu hafta oynadı
@@ -714,6 +690,24 @@ NASIL ÇEVİRİLİR
 804. taht sahipsiz
 853. yağma
 856. yağma alır
+
+--- Arastirma (15) ---
+
+21. {0} araştırma
+84. Araştırma
+85. Araştırma başlatılamadı.
+87. Araştırma kuyruğu dolu
+101. Aynı anda
+122. Başlat
+264. Diyarını kendi seçimlerinle büyüt
+419. İlerleme
+429. İptal
+430. İptal edersen harcadığının yarısı geri gelir.
+461. kademe {0}
+465. kaldı
+792. Şu anki tavanın {0} — bu araştırma {1} ekler.
+814. tamamlandı
+819. tek araştırma
 
 --- DizilimIzgarasi (15) ---
 
@@ -750,22 +744,6 @@ NASIL ÇEVİRİLİR
 873. Yeni lord kalkanı
 886. YÖNET
 
---- BildirimKarti (13) ---
-
-69. Açılıyor…
-82. Ana Ekrana Ekle
-139. Bildirimler açık
-140. Bildirimler açılamadı. Birazdan tekrar dene.
-141. Bildirimler açıldı.
-142. Bildirimleri aç
-203. Bu tarayıcıda bildirimlere izin verilmemiş. Adres çubuğundaki kilit simgesinden izni açtıktan sonra tekrar dene.
-234. Deneme bildirimi gönderildi.
-235. Deneme bildirimi gönderilemedi.
-236. Deneme gönder
-358. Gönderilecek cihaz bulunamadı.
-428. iPhone ve iPad&apos;de bildirimler yalnızca ana ekrana eklenmiş uygulamada çalışır. Paylaş menüsünden
-620. Ordun döndüğünde, kuyruğun bittiğinde ve toprağına saldırıldığında haberin olsun. Bildirim yalnız bu cihaza gelir; istediğin zaman kapatabilirsin.
-
 --- ArmaSecici (13) ---
 
 89. Arman
@@ -796,6 +774,21 @@ NASIL ÇEVİRİLİR
 800. Taht Kalesi
 815. Tarla
 898. yürüyüş
+
+--- BildirimKarti (12) ---
+
+69. Açılıyor…
+82. Ana Ekrana Ekle
+139. Bildirimler açık
+140. Bildirimler açılamadı. Birazdan tekrar dene.
+141. Bildirimler açıldı.
+142. Bildirimleri aç
+203. Bu tarayıcıda bildirimlere izin verilmemiş. Adres çubuğundaki kilit simgesinden izni açtıktan sonra tekrar dene.
+234. Deneme bildirimi gönderildi.
+235. Deneme bildirimi gönderilemedi.
+236. Deneme gönder
+358. Gönderilecek cihaz bulunamadı.
+620. Ordun döndüğünde, kuyruğun bittiğinde ve toprağına saldırıldığında haberin olsun. Bildirim yalnız bu cihaza gelir; istediğin zaman kapatabilirsin.
 
 --- DiyarTanitimi (12) ---
 
@@ -863,18 +856,6 @@ NASIL ÇEVİRİLİR
 761. Sunucu uykudan uyanıyor olabilir. Bu ilk açılışta 30–60 saniye sürebilir.
 879. Yeniden dene
 
---- Pazar (9) ---
-
-77. ALACAĞIN
-302. Elinde biriken kaynağı eksiğine çevir. Tüccar payını alır — doğru bölgeyi almak hâlâ daha kârlı.
-303. En az {0}
-519. komisyon %
-671. Pazar
-806. Takas ediliyor…
-807. Takas et
-808. Takas yapılamadı.
-848. VERECEĞİN
-
 --- IttifakSohbet (8) ---
 
 14. {0} — mesaj şikâyeti
@@ -885,6 +866,17 @@ NASIL ÇEVİRİLİR
 576. Mesaj gönderilemedi.
 578. Mesajını gözden geçir ve tekrar dene.
 865. Yaz
+
+--- Pazar (8) ---
+
+77. ALACAĞIN
+302. Elinde biriken kaynağı eksiğine çevir. Tüccar payını alır — doğru bölgeyi almak hâlâ daha kârlı.
+303. En az {0}
+671. Pazar
+806. Takas ediliyor…
+807. Takas et
+808. Takas yapılamadı.
+848. VERECEĞİN
 
 --- IttifakDuyuru (8) ---
 
@@ -996,11 +988,6 @@ NASIL ÇEVİRİLİR
 63. ↑ düşman bu yönde
 414. İdeal dizilim
 
---- RehberIsigi (2) ---
-
-64. ↓ şimdi buna bas ↓
-332. fixed z-[55] bg-black/72 motion-safe:transition-all motion-safe:duration-200 motion-safe:ease-out
-
 --- BaglantiDurumu (2) ---
 
 115. Bağlantın yok. İnternete döndüğünde oyun kaldığı yerden devam eder.
@@ -1024,6 +1011,10 @@ NASIL ÇEVİRİLİR
 --- KapiPaneli (1) ---
 
 37. {0} panelini kapat
+
+--- RehberIsigi (1) ---
+
+64. ↓ şimdi buna bas ↓
 
 --- Rehber (1) ---
 

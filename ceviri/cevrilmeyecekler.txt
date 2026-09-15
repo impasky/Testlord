@@ -140,7 +140,7 @@ ve yer adları o dünyanın parçası.
   İskelebaşı
   Şahinkaya
 
---- Cümle parçaları (272) ---
+--- Cümle parçaları (287) ---
 
 Bunlar tek başına çevrilemez, çünkü tek başına bir anlamı yok: kodda başka
 metinlerle birleşerek cümle oluyorlar (" ve ", ", boş" gibi). Bir
@@ -245,6 +245,12 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
       apps/web/src/components/IttifakIncele.tsx:88
   "(%{0}), okçuyla mancınığa zarar verir. "
       packages/shared/src/ogretici.ts:272
+  "); karargâhın seviyesi bunun üstüne ekler."
+      apps/web/src/screens/Generaller.tsx:219
+  "). Kazansan bile bölgeyi alamazsın, sadece yağmalarsın — gelir artışı olmaz."
+      apps/web/src/components/SaldiriOnizleme.tsx:164
+  "] HEDEF"
+      apps/web/src/screens/Harita.tsx:833
   "{0} {1} bölgene saldırdı. "
       apps/api/src/services/march.ts:969
   "{0} altın. Bir kampa çekilirsin, binaların "
@@ -387,6 +393,8 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
       apps/web/src/screens/Harita.tsx:511
   "deyip oyunu oradan aç, sonra buraya dön."
       apps/web/src/components/BildirimKarti.tsx:75
+  "Diyarda tek. Sahibi %"
+      apps/web/src/screens/Harita.tsx:1056
   "diyarını başka lordlarınkinden ayıran tek katman odur."
       packages/shared/src/rehber.ts:405
   "Dizilimden gelen etki en çok +%{0} / "
@@ -417,8 +425,12 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
       apps/web/src/components/SavasRaporu.tsx:414
   "erzak yemez ve komuta yerini işgal etmezler. Yenilgi bir gecikmedir, silinme değil."
       packages/shared/src/ogretici.ts:330
+  "eski bilgi · {0} önce"
+      apps/web/src/screens/Harita.tsx:502
   "eşiğine ulaşmadı — bölge el değiştirmedi, yalnızca yağma alındı."
       apps/web/src/components/SavasRaporu.tsx:397
+  "fixed z-[55] bg-black/72 motion-safe:transition-all motion-safe:duration-200 motion-safe:ease-out"
+      apps/web/src/components/RehberIsigi.tsx:467
   "garnizonunu toplamaya vaktin olur."
       packages/shared/src/ogretici.ts:495
   "Generaller savaşa katıldıkça seviye atlar ve ordunun bonuslarını büyütür. "
@@ -453,6 +465,8 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
       packages/shared/src/ogretici.ts:567
   "Her kaynağı en çok {0} kadar biriktirebilirsin; "
       packages/shared/src/ogretici.ts:211
+  "hızlı · keşif %"
+      apps/web/src/components/IttifakIncele.tsx:89
   "hiçbir zaman aynı sayıya dokunmaz — hangisini yükselteceğin ayrı bir karar."
       packages/shared/src/ogretici.ts:362
   "Hiçbiri zorunlu değil — oyunu hiç görmediğin yerlerinden denemen için "
@@ -469,6 +483,8 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
       packages/shared/src/rehber.ts:425
   "inelim: kimseyle husumetimiz olmaz, ganimeti de biz alırız."
       packages/shared/src/rehber.ts:74
+  "iPhone ve iPad&apos;de bildirimler yalnızca ana ekrana eklenmiş uygulamada çalışır. Paylaş menüsünden"
+      apps/web/src/components/BildirimKarti.tsx:74
   "işaretlenir. Kurnazlık statın hem başarı şansını artırır hem yakalanma riskini düşürür."
       packages/shared/src/ogretici.ts:317
   "İttifak kurmak {0} altın tutuyor, "
@@ -503,10 +519,14 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
       packages/shared/src/ogretici.ts:271
   "key gerekli."
       apps/api/src/routes/dev.ts:230
+  "kıl payı — sonuç değişebilir"
+      apps/web/src/components/SaldiriOnizleme.tsx:46
   "Kilitli —"
       apps/web/src/screens/Arastirma.tsx:219
   "Kimi ittifaklara doğrudan girersin, çoğu başvuruyla üye alır — o zaman "
       packages/shared/src/ogretici.ts:515
+  "komisyon %"
+      apps/web/src/components/Pazar.tsx:101
   "Komuta kapasiten yetmiyor. Boş yer: {0}, gereken: {1}. "
       apps/api/src/routes/army.ts:101
   "koşulu tutmayan taktik seçilemez: yarım tutan bir taktiğe yarım bonus vermek, "
@@ -515,6 +535,8 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
       apps/web/src/screens/Ittifak.tsx:354
   "Kuyruk çözülemedi ({0}):"
       apps/api/src/services/queue.ts:574
+  "lider avı · +%"
+      apps/web/src/screens/Harita.tsx:1033
   "liderin onayını beklersin. Aynı anda {0} başvurun "
       packages/shared/src/ogretici.ts:516
   "Lord ekranında bir başarım listesi var: bölge, savaş, ekipman, general. "
@@ -569,6 +591,8 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
       apps/api/src/routes/auth.ts:219
   "pazarında birini diğerine çevirebilirsin — komisyon %{0}, "
       packages/shared/src/ogretici.ts:220
+  "puanda bir slot açar (en fazla"
+      apps/web/src/screens/Generaller.tsx:218
   "raporunda tek tek yazar."
       packages/shared/src/ogretici.ts:291
   "saat daha giremez."
@@ -617,6 +641,10 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
       apps/web/src/screens/Moderasyon.tsx:158
   "Şimdi diyarını kendine benzetme vakti. Araştırma kalıcıdır — iki lord aynı "
       packages/shared/src/rehber.ts:117
+  "şöhret bonusu alır, bölge limitine sayılmaz. Buraya saldırmak günlük hakkından düşmez ve el değiştirdikten sonra kalkanı yalnızca"
+      apps/web/src/screens/Harita.tsx:1057
+  "tahkimat +%"
+      apps/web/src/screens/Harita.tsx:1038
   "Tahkimat:"
       apps/web/src/screens/Harita.tsx:520
   "Tahmin:"
@@ -683,6 +711,8 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
       packages/shared/src/ogretici.ts:322
   "yeter, haritayı tek başına yutmaya yetmez."
       packages/shared/src/ogretici.ts:508
+  "yürütebilirsin — kütüphaneni yükseltirsen artar. Sıra senin kararın: önce ekonomiyi mi büyütürsün, orduyu mu?"
+      apps/web/src/screens/Arastirma.tsx:103
   "Yürüyüş çözülemedi ({0}):"
       apps/api/src/services/march.ts:1009
   "Yürüyüş süresi en yakın toprağından ölçülür, malikânenden değil. "

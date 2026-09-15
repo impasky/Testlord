@@ -56,6 +56,24 @@ function parcaMi(s) {
    */
   const t = s.trim();
   if (/\p{Ll}/u.test(t[0] ?? '') && /\s/.test(t) && /[.,;]$/.test(t)) return true;
+
+  // Ayraç ya da işaretle başlayan: `] HEDEF` bir satırın ikinci yarısı.
+  if (/^[\])}>]/.test(t)) return true;
+
+  // Sayı bekleyen kuyruk: `tahkimat +%`, `Sahibi %`. Yüzde işaretinden
+  // sonra kodda bir sayı yapışıyor; tek başına yarım bir etiket.
+  if (/[%+\u2212]$/.test(t)) return true;
+
+  /*
+   * Küçük harfle başlayan UZUN dizge. Noktalamayla bitmese bile cümle
+   * ortasıdır: "şöhret bonusu alır, … kalkanı yalnızca" satırı böyle
+   * kaçmıştı — sonu "yalnızca" ve ardından başka bir dizge geliyor.
+   *
+   * Eşik beş sözcük: `parola, öğretici, çıkış` (3) ve `lider avı` (2)
+   * gerçek etiket, onları eleme. Küçük harfle başlayıp beş sözcüğü
+   * geçen bir dizge ise bir cümlenin parçası olmadan var olamaz.
+   */
+  if (/\p{Ll}/u.test(t[0] ?? '') && t.split(/\s+/).length >= 5) return true;
   return false;
 }
 
@@ -162,8 +180,17 @@ writeFileSync(numaraYolu, JSON.stringify(numaralar, null, 0) + '\n');
 
 const DOSYA = { 1: '1-once-bunlar.txt', 2: '2-sonra-bunlar.txt', 3: '3-en-son-bunlar.txt' };
 
+/**
+ * `--eksik`: yalnız ÇEVRİLMEMİŞ satırları yaz.
+ *
+ * Çeviri parça parça geliyor. Biten satırları da içeren bir dosya geri
+ * göndermek, çevirmene bitirdiği işi ikinci kez okutuyor ve gerçekten
+ * kalanın ne olduğunu gizliyor. Bu kip dosyayı her seferinde küçültüyor.
+ */
+const yalnizEksik = process.argv.includes('--eksik');
+
 for (const p of PARTILER) {
-  const satirlar = cevrilecek.filter((c) => c.parti === p.no);
+  const satirlar = cevrilecek.filter((c) => c.parti === p.no).filter((c) => !yalnizEksik || !c.en);
   // Alana göre öbekle: aynı ekranın metinleri yan yana olunca çevirmen
   // bağlamı bir kez kuruyor. Alan içinde numara sırası korunuyor.
   const alanlar = new Map();
@@ -174,11 +201,13 @@ for (const p of PARTILER) {
   const sirali = [...alanlar.entries()].sort((a, b) => b[1].length - a[1].length);
 
   const govde = [
-    `LORDLAR ÇAĞI — ÇEVİRİ ${p.no}/3: ${p.ad.toUpperCase()}`,
+    `LORDLAR ÇAĞI — ÇEVİRİ ${p.no}/3: ${p.ad.toUpperCase()}` + (yalnizEksik ? '  (KALANLAR)' : ''),
     '',
     kir(p.aciklama, 74),
     '',
-    `Bu dosyada ${satirlar.length} satır var.`,
+    yalnizEksik
+      ? `Bu dosyada ${satirlar.length} satır var — çevrilmiş olanlar çıkarıldı.`
+      : `Bu dosyada ${satirlar.length} satır var.`,
     '',
     'NASIL ÇEVİRİLİR',
     '  Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.',
