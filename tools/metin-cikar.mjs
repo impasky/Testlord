@@ -96,6 +96,17 @@ const KOD_KOKUSU = [
   /^(var\(|#[0-9a-f]{3,8}$|rgba?\()/i, // renk
   /^[./]|^https?:|^mailto:/, // yol ve adres
   /^[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,6}$/i, // çıplak alan adı: game-icons.net
+  /*
+   * SVG yolu: "M50 4 L94 18 V52 Z".
+   *
+   * İki şart birden: M'den HEMEN SONRA bir sayı gelmeli VE dizgede
+   * yol komutlarıyla sayılardan başka hiçbir şey olmamalı. İlk hâli
+   * yalnız "M ile başla, sonra harf gelebilir" diyordu ve `Metropol`
+   * ile `Melik`i de eledi — iki gerçek çeviri böyle düştü. Bir süzgeç
+   * engellediğinden fazlasını engelliyorsa süzgeç değil hasardır.
+   */
+  /^[Mm]\s*-?[\d.][MmLlHhVvCcSsQqTtAaZz\d\s.,-]*$/,
+  /^\([^)]*:[^)]*\)$/, // CSS medya sorgusu: "(prefers-reduced-motion: reduce)"
   /^[a-z][a-zA-Z0-9]*$/, // camelCase tek sözcük -> anahtar
   /^[a-z0-9]+(_[a-z0-9]+)+$/, // snake_case -> anahtar
   /^[A-Z0-9_]+$/, // SABIT_ADI
@@ -291,6 +302,10 @@ function atlanirMi(node) {
       ts.SyntaxKind.ExclamationEqualsEqualsToken,
       ts.SyntaxKind.EqualsEqualsToken,
       ts.SyntaxKind.ExclamationEqualsToken,
+      // `'PushManager' in window` — tarayıcı yeteneği sorgusu. Soldaki
+      // dizge bir API adı; çevrilirse denetim hep başarısız olur ve
+      // bildirimler sessizce kapanır.
+      ts.SyntaxKind.InKeyword,
     ].includes(p.operatorToken.kind)
   )
     return true;

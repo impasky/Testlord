@@ -140,7 +140,7 @@ ve yer adları o dünyanın parçası.
   İskelebaşı
   Şahinkaya
 
---- Cümle parçaları (287) ---
+--- Cümle parçaları (291) ---
 
 Bunlar tek başına çevrilemez, çünkü tek başına bir anlamı yok: kodda başka
 metinlerle birleşerek cümle oluyorlar (" ve ", ", boş" gibi). Bir
@@ -251,6 +251,8 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
       apps/web/src/components/SaldiriOnizleme.tsx:164
   "] HEDEF"
       apps/web/src/screens/Harita.tsx:833
+  "{0} · T{1}"
+      apps/web/src/screens/Akin.tsx:230
   "{0} {1} bölgene saldırdı. "
       apps/api/src/services/march.ts:969
   "{0} altın. Bir kampa çekilirsin, binaların "
@@ -263,6 +265,8 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
       apps/api/src/routes/ittifak.ts:1145
   "{0} sana kaynak yolladı: "
       apps/api/src/services/ticaret.ts:112
+  "{0} T{1}"
+      apps/web/src/screens/Demirhane.tsx:228
   "&nbsp;"
       apps/web/src/components/GorevOzeti.tsx:41
   "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
@@ -409,6 +413,8 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
       packages/shared/src/ogretici.ts:483
   "Düşürdüğün grup birkaç saat sonra geri döner. O sürede gri durur ama "
       packages/shared/src/ogretici.ts:398
+  "e"
+      apps/web/src/components/KaynakGonder.tsx:112
   "Eğitim, yürüyüş ve imar zamanla biter. Uygulamayı açık tutman gerekmez; "
       packages/shared/src/ogretici.ts:555
   "ekipman düşer."
@@ -643,6 +649,8 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
       packages/shared/src/rehber.ts:117
   "şöhret bonusu alır, bölge limitine sayılmaz. Buraya saldırmak günlük hakkından düşmez ve el değiştirdikten sonra kalkanı yalnızca"
       apps/web/src/screens/Harita.tsx:1057
+  "T"
+      apps/web/src/screens/Akin.tsx:243
   "tahkimat +%"
       apps/web/src/screens/Harita.tsx:1038
   "Tahkimat:"

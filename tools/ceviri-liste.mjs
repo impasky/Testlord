@@ -57,6 +57,17 @@ function parcaMi(s) {
   const t = s.trim();
   if (/\p{Ll}/u.test(t[0] ?? '') && /\s/.test(t) && /[.,;]$/.test(t)) return true;
 
+  /*
+   * Saf BİÇİM dizgesi: yer tutucular çıkınca geriye çevrilecek bir şey
+   * kalmıyor. `{0} T{1}`, `{0} · T{1}` böyle — "T" bir kademe harfi,
+   * gerisi noktalama. Çevirmene sorulacak bir şey yok.
+   */
+  if (t.replace(/\{\d+\}/g, '').replace(/[^\p{L}]/gu, '').length <= 1) return true;
+
+  // Tek karakter: `a`, `d`, `e` gibi kaynak kısaltmaları. Bağlamı olan
+  // bir sayının yanına yapışıyorlar ve tek başlarına çevrilemezler.
+  if (t.length <= 1) return true;
+
   // Ayraç ya da işaretle başlayan: `] HEDEF` bir satırın ikinci yarısı.
   if (/^[\])}>]/.test(t)) return true;
 

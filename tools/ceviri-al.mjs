@@ -86,6 +86,23 @@ for (const dosya of dosyalar) {
     }
 
     /*
+     * "=" — BİLEREK AYNI KALSIN.
+     *
+     * Bazı dizgeler hiçbir dilde değişmiyor: özel adlar ("Kara Yusuf"),
+     * marka ve alan adları, birim kısaltmaları. Çevirmen bunları Türkçe
+     * bırakınca araç "çevrilmemiş" diye reddediyordu ve satır sonsuza
+     * kadar kalanlar listesinde kalıyordu. "=" o satırı BİTTİ sayıyor.
+     *
+     * Denetimlerin ÖNÜNDE duruyor: aşağıdaki yer tutucu denetimi "="
+     * işaretini boş bir çeviri sanıp reddediyordu — oysa "=" Türkçeyi
+     * olduğu gibi alıyor ve Türkçenin yer tutucuları zaten yerinde.
+     */
+    if (t === '=' || t === '=' + kayit.tr) {
+      kabul.set(anahtar, kayit.tr);
+      continue;
+    }
+
+    /*
      * Yer tutucu denetimi. `{0}` çeviride kaybolursa oyun o sayıyı
      * HİÇ göstermez ve cümle sessizce eksik kalır: "Günde en fazla
      * saldırı yapabilirsin." Sırası değişebilir, kendisi değişemez.
@@ -97,19 +114,6 @@ for (const dosya of dosyalar) {
         `${yer} — ${no} yer tutucu uyuşmuyor: beklenen ${bekle.join(' ') || '(yok)'}, ` +
           `bulunan ${var_.join(' ') || '(yok)'}`,
       );
-      continue;
-    }
-
-    /*
-     * "=" — BİLEREK AYNI KALSIN.
-     *
-     * Bazı dizgeler hiçbir dilde değişmiyor: özel adlar ("Kara Yusuf"),
-     * marka ve alan adları, birim kısaltmaları. Çevirmen bunları Türkçe
-     * bırakınca araç "çevrilmemiş" diye reddediyordu ve satır sonsuza
-     * kadar kalanlar listesinde kalıyordu. "=" o satırı BİTTİ sayıyor.
-     */
-    if (t === '=' || t === '=' + kayit.tr) {
-      kabul.set(anahtar, kayit.tr);
       continue;
     }
 

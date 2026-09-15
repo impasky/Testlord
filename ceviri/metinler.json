@@ -342,17 +342,9 @@
   "tea6f95f4": {
     "grup": "arayuz",
     "tr": "'i bu hafta oynadı",
-    "en": "",
+    "en": "played this week",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:39"
-    ]
-  },
-  "tbd8c1c4b": {
-    "grup": "arayuz",
-    "tr": "(display-mode: standalone)",
-    "en": "",
-    "nerede": [
-      "apps/web/src/lib/bildirim.ts:44"
     ]
   },
   "ta53c0918": {
@@ -369,14 +361,6 @@
     "en": "(removed)",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:165"
-    ]
-  },
-  "te6bfcf01": {
-    "grup": "arayuz",
-    "tr": "(prefers-reduced-motion: reduce)",
-    "en": "",
-    "nerede": [
-      "apps/web/src/components/OrduSahnesi.tsx:126"
     ]
   },
   "t4acb31a2": {
@@ -414,7 +398,7 @@
   "t00e6ccb6": {
     "grup": "arayuz",
     "tr": "{0} — {1}, seviye {2}, {3}, {4} adım{5}",
-    "en": "",
+    "en": "{0} — {1}, level {2}, {3}, {4} steps{5}",
     "nerede": [
       "apps/web/src/components/DunyaHaritasi.tsx:883",
       "apps/web/src/components/DunyaHaritasi.tsx:887"
@@ -423,7 +407,7 @@
   "tc3b64242": {
     "grup": "arayuz",
     "tr": "{0} — haritada göster",
-    "en": "",
+    "en": "{0} — show on map",
     "nerede": [
       "apps/web/src/components/DunyaHaritasi.tsx:724",
       "apps/web/src/components/DunyaHaritasi.tsx:725"
@@ -432,7 +416,7 @@
   "t63d3475f": {
     "grup": "arayuz",
     "tr": "{0} — mesaj şikâyeti",
-    "en": "",
+    "en": "{0} — message report",
     "nerede": [
       "apps/web/src/components/IttifakSohbet.tsx:152"
     ]
@@ -440,7 +424,7 @@
   "t80e8b78f": {
     "grup": "arayuz",
     "tr": "{0} · T{1}",
-    "en": "",
+    "en": "{0} · T{1}",
     "nerede": [
       "apps/web/src/screens/Akin.tsx:230"
     ]
@@ -473,7 +457,7 @@
   "t8dca1ff7": {
     "grup": "arayuz",
     "tr": "{0} adlı lordun mesajını şikâyet et",
-    "en": "",
+    "en": "Report message of the lord named {0}",
     "nerede": [
       "apps/web/src/components/IttifakSohbet.tsx:110"
     ]
@@ -489,7 +473,7 @@
   "t82bfd725": {
     "grup": "arayuz",
     "tr": "{0} araştırma",
-    "en": "",
+    "en": "{0} research",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:103"
     ]
@@ -513,7 +497,7 @@
   "t518c818a": {
     "grup": "arayuz",
     "tr": "{0} dk önce",
-    "en": "",
+    "en": "{0} mins ago",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:28"
     ]
@@ -529,7 +513,7 @@
   "t69140c6e": {
     "grup": "arayuz",
     "tr": "{0} elinde — bir kareye sürükle ya da dokun. Dolu kareye elin boşken dokunursan boşalır.",
-    "en": "",
+    "en": "{0} in hand — drag to a square or tap. Tapping a filled square while empty-handed clears it.",
     "nerede": [
       "apps/web/src/components/DizilimIzgarasi.tsx:291"
     ]
@@ -545,7 +529,7 @@
   "t9244b49a": {
     "grup": "arayuz",
     "tr": "{0} gün önce",
-    "en": "",
+    "en": "{0} days ago",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:31"
     ]
@@ -617,7 +601,7 @@
   "t50fdf262": {
     "grup": "arayuz",
     "tr": "{0} panelini kapat",
-    "en": "",
+    "en": "Close {0} panel",
     "nerede": [
       "apps/web/src/components/KapiPaneli.tsx:50"
     ]
@@ -657,7 +641,7 @@
   "t6717d6d6": {
     "grup": "arayuz",
     "tr": "{0} saat önce",
-    "en": "",
+    "en": "{0} hours ago",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:30"
     ]
@@ -734,7 +718,7 @@
   "tb1cd334c": {
     "grup": "arayuz",
     "tr": "{0} T{1}",
-    "en": "",
+    "en": "{0} T{1}",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:228",
       "apps/web/src/screens/LordEkrani.tsx:511"
@@ -801,7 +785,7 @@
   "tfa8f3f82": {
     "grup": "arayuz",
     "tr": "/sa",
-    "en": "",
+    "en": "/hr",
     "nerede": [
       "apps/web/src/components/HedefSeridi.tsx:38",
       "apps/web/src/components/HedefSeridi.tsx:43",
@@ -868,7 +852,7 @@
   "tb34af894": {
     "grup": "arayuz",
     "tr": "↑ düşman bu yönde",
-    "en": "",
+    "en": "↑ enemy in this direction",
     "nerede": [
       "apps/web/src/components/DizilimSemasi.tsx:34"
     ]
@@ -876,7 +860,7 @@
   "t5758e43d": {
     "grup": "arayuz",
     "tr": "↓ şimdi buna bas ↓",
-    "en": "",
+    "en": "↓ now press this ↓",
     "nerede": [
       "apps/web/src/components/RehberIsigi.tsx:638"
     ]
@@ -892,7 +876,7 @@
   "tee349f95": {
     "grup": "arayuz",
     "tr": "⚑ kanat — süvariye yarar, okçu ve mancınığa zarar.",
-    "en": "",
+    "en": "⚑ wing — benefits cavalry, harms archers and catapults.",
     "nerede": [
       "apps/web/src/components/DizilimIzgarasi.tsx:360"
     ]
@@ -917,7 +901,7 @@
   "tca25ca91": {
     "grup": "arayuz",
     "tr": "aç",
-    "en": "",
+    "en": "open",
     "nerede": [
       "apps/web/src/components/Basarimlar.tsx:77"
     ]
@@ -925,7 +909,7 @@
   "ta9d45351": {
     "grup": "arayuz",
     "tr": "AÇ",
-    "en": "",
+    "en": "OPEN",
     "nerede": [
       "apps/web/src/components/GorevOzeti.tsx:72"
     ]
@@ -933,7 +917,7 @@
   "tc2c0713b": {
     "grup": "arayuz",
     "tr": "Açılıyor…",
-    "en": "",
+    "en": "Turning on…",
     "nerede": [
       "apps/web/src/components/BildirimKarti.tsx:94",
       "apps/web/src/screens/Hesap.tsx:145"
@@ -942,7 +926,7 @@
   "t3ac1bfd2": {
     "grup": "arayuz",
     "tr": "adım",
-    "en": "",
+    "en": "step",
     "nerede": [
       "apps/web/src/components/Rehber.tsx:74",
       "apps/web/src/screens/Harita.tsx:987"
@@ -1001,7 +985,7 @@
   "t8c46e58c": {
     "grup": "arayuz",
     "tr": "ALACAĞIN",
-    "en": "",
+    "en": "YOU WILL RECEIVE",
     "nerede": [
       "apps/web/src/components/Pazar.tsx:141"
     ]
@@ -1009,7 +993,7 @@
   "t39e8631a": {
     "grup": "arayuz",
     "tr": "Alınıyor…",
-    "en": "",
+    "en": "Claiming…",
     "nerede": [
       "apps/web/src/components/GunlukKart.tsx:154",
       "apps/web/src/components/SeferKart.tsx:94"
@@ -1033,7 +1017,7 @@
   "td290d99b": {
     "grup": "arayuz",
     "tr": "Altın",
-    "en": "",
+    "en": "Gold",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:89",
       "apps/web/src/components/MobilKabuk.tsx:271",
@@ -1070,7 +1054,7 @@
   "t0324e9ae": {
     "grup": "arayuz",
     "tr": "Ana Ekrana Ekle",
-    "en": "",
+    "en": "Add to Home Screen",
     "nerede": [
       "apps/web/src/components/BildirimKarti.tsx:75"
     ]
@@ -1078,7 +1062,7 @@
   "t4f700cd1": {
     "grup": "arayuz",
     "tr": "ANLADIM",
-    "en": "",
+    "en": "GOT IT",
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:130",
       "apps/web/src/components/DiyarTanitimi.tsx:77"
@@ -1087,7 +1071,7 @@
   "t3e143637": {
     "grup": "arayuz",
     "tr": "Araştırma",
-    "en": "",
+    "en": "Research",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:92",
       "packages/shared/src/types.ts:304"
@@ -1096,7 +1080,7 @@
   "t0f317dd7": {
     "grup": "arayuz",
     "tr": "Araştırma başlatılamadı.",
-    "en": "",
+    "en": "Research could not be started.",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:62"
     ]
@@ -1112,7 +1096,7 @@
   "td71e7d01": {
     "grup": "arayuz",
     "tr": "Araştırma kuyruğu dolu",
-    "en": "",
+    "en": "Research queue is full",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:216"
     ]
@@ -1137,7 +1121,7 @@
   "t88a93d36": {
     "grup": "arayuz",
     "tr": "Arman",
-    "en": "",
+    "en": "Your crest",
     "nerede": [
       "apps/web/src/components/ArmaSecici.tsx:55"
     ]
@@ -1145,7 +1129,7 @@
   "tf0f416cc": {
     "grup": "arayuz",
     "tr": "Armanı değiştir",
-    "en": "",
+    "en": "Change your crest",
     "nerede": [
       "apps/web/src/components/ArmaSecici.tsx:57"
     ]
@@ -1153,7 +1137,7 @@
   "tce83d9f3": {
     "grup": "arayuz",
     "tr": "Armanı sıralamada, ittifak listende ve savaş raporlarında herkes görür.",
-    "en": "",
+    "en": "Everyone sees your crest in the ranking, alliance list, and battle reports.",
     "nerede": [
       "apps/web/src/components/ArmaSecici.tsx:56"
     ]
@@ -1169,7 +1153,7 @@
   "t5e9bbde6": {
     "grup": "arayuz",
     "tr": "Armayı kaydet",
-    "en": "",
+    "en": "Save the crest",
     "nerede": [
       "apps/web/src/components/ArmaSecici.tsx:189"
     ]
@@ -1267,7 +1251,7 @@
   "t091167b6": {
     "grup": "arayuz",
     "tr": "av sensin",
-    "en": "",
+    "en": "you are the prey",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:64"
     ]
@@ -1275,7 +1259,7 @@
   "t3302dcf6": {
     "grup": "arayuz",
     "tr": "Aynı anda",
-    "en": "",
+    "en": "Simultaneously",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:103"
     ]
@@ -1323,7 +1307,7 @@
   "tdce2261a": {
     "grup": "arayuz",
     "tr": "az önce",
-    "en": "",
+    "en": "just now",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:26",
       "apps/web/src/components/ui.tsx:780"
@@ -1388,7 +1372,7 @@
   "t71fcbee7": {
     "grup": "arayuz",
     "tr": "Bağlantın yok. İnternete döndüğünde oyun kaldığı yerden devam eder.",
-    "en": "",
+    "en": "No connection. The game will resume where it left off when you return to the internet.",
     "nerede": [
       "apps/web/src/components/BaglantiDurumu.tsx:41"
     ]
@@ -1412,7 +1396,7 @@
   "ta5948b20": {
     "grup": "arayuz",
     "tr": "Başarımlar · {0}/{1}",
-    "en": "",
+    "en": "Achievements · {0}/{1}",
     "nerede": [
       "apps/web/src/components/Basarimlar.tsx:52"
     ]
@@ -1444,7 +1428,7 @@
   "tea7af10a": {
     "grup": "arayuz",
     "tr": "Başlat",
-    "en": "",
+    "en": "Start",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:216"
     ]
@@ -1592,7 +1576,7 @@
   "t7bcd8a64": {
     "grup": "arayuz",
     "tr": "Bildirimler açık",
-    "en": "",
+    "en": "Notifications are on",
     "nerede": [
       "apps/web/src/components/BildirimKarti.tsx:101"
     ]
@@ -1600,7 +1584,7 @@
   "t80e752d3": {
     "grup": "arayuz",
     "tr": "Bildirimler açılamadı. Birazdan tekrar dene.",
-    "en": "",
+    "en": "Notifications could not be turned on. Try again later.",
     "nerede": [
       "apps/web/src/components/BildirimKarti.tsx:59"
     ]
@@ -1608,7 +1592,7 @@
   "tafbba83c": {
     "grup": "arayuz",
     "tr": "Bildirimler açıldı.",
-    "en": "",
+    "en": "Notifications are turned on.",
     "nerede": [
       "apps/web/src/components/BildirimKarti.tsx:92"
     ]
@@ -1616,7 +1600,7 @@
   "t5bbe9ba5": {
     "grup": "arayuz",
     "tr": "Bildirimleri aç",
-    "en": "",
+    "en": "Turn on notifications",
     "nerede": [
       "apps/web/src/components/BildirimKarti.tsx:94"
     ]
@@ -1624,7 +1608,7 @@
   "ta69b22b0": {
     "grup": "arayuz",
     "tr": "Bilinmeyen bir hata oluştu.",
-    "en": "",
+    "en": "An unknown error occurred.",
     "nerede": [
       "apps/web/src/api/client.ts:95"
     ]
@@ -1672,7 +1656,7 @@
   "t4dcb8fd1": {
     "grup": "arayuz",
     "tr": "Bir şey yaz…",
-    "en": "",
+    "en": "Type something…",
     "nerede": [
       "apps/web/src/components/IttifakSohbet.tsx:137"
     ]
@@ -1680,7 +1664,7 @@
   "t2d3fb36b": {
     "grup": "arayuz",
     "tr": "Bir şeyler ters gitti",
-    "en": "",
+    "en": "Something went wrong",
     "nerede": [
       "apps/web/src/components/HataSiniri.tsx:38"
     ]
@@ -1704,7 +1688,7 @@
   "t6ba9eca2": {
     "grup": "arayuz",
     "tr": "Birim eşleşmesi",
-    "en": "",
+    "en": "Unit matchup",
     "nerede": [
       "apps/web/src/components/KarsiIpuclari.tsx:45"
     ]
@@ -1779,7 +1763,7 @@
   "tceac3637": {
     "grup": "arayuz",
     "tr": "bölge",
-    "en": "",
+    "en": "region",
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:86",
       "apps/web/src/screens/LordEkrani.tsx:327",
@@ -1850,7 +1834,7 @@
   "t815f7c76": {
     "grup": "arayuz",
     "tr": "Bölge limitin dolu — kazansan bile alamazsın.",
-    "en": "",
+    "en": "Your region limit is full — you cannot take it even if you win.",
     "nerede": [
       "apps/web/src/components/HedefSeridi.tsx:106"
     ]
@@ -1950,7 +1934,7 @@
   "tcfabf448": {
     "grup": "arayuz",
     "tr": "bölgesini aldı",
-    "en": "",
+    "en": "took the region",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:109"
     ]
@@ -1958,7 +1942,7 @@
   "t642e404b": {
     "grup": "arayuz",
     "tr": "bölgesini yağmaladı",
-    "en": "",
+    "en": "looted the region",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:113"
     ]
@@ -2087,7 +2071,7 @@
   "t679caaa7": {
     "grup": "arayuz",
     "tr": "Bu Haftanın Seferi",
-    "en": "",
+    "en": "This Week's Campaign",
     "nerede": [
       "apps/web/src/components/SeferKart.tsx:34"
     ]
@@ -2095,7 +2079,7 @@
   "t55e2d1b0": {
     "grup": "arayuz",
     "tr": "Bu haftanın seferi tamamlandı ve ödülü alındı. Pazartesi yeni sefer açılır.",
-    "en": "",
+    "en": "This week's campaign is completed and the reward claimed. A new campaign opens on Monday.",
     "nerede": [
       "apps/web/src/components/SeferKart.tsx:83"
     ]
@@ -2119,7 +2103,7 @@
   "tb09ce6e8": {
     "grup": "arayuz",
     "tr": "Bu senin arman. Haritada ve sıralamada seni bu temsil ediyor.",
-    "en": "",
+    "en": "This is your crest. It represents you on the map and in the ranking.",
     "nerede": [
       "apps/web/src/components/Ogretici.tsx:181"
     ]
@@ -2159,7 +2143,7 @@
   "t4905a6f9": {
     "grup": "arayuz",
     "tr": "Bu tarayıcıda bildirimlere izin verilmemiş. Adres çubuğundaki kilit simgesinden izni açtıktan sonra tekrar dene.",
-    "en": "",
+    "en": "Notifications are not permitted in this browser. Allow permission from the lock icon in the address bar and try again.",
     "nerede": [
       "apps/web/src/components/BildirimKarti.tsx:82"
     ]
@@ -2167,7 +2151,7 @@
   "td31c801f": {
     "grup": "arayuz",
     "tr": "bugün",
-    "en": "",
+    "en": "today",
     "nerede": [
       "apps/web/src/components/GorevOzeti.tsx:62"
     ]
@@ -2175,7 +2159,7 @@
   "tda09d6e8": {
     "grup": "arayuz",
     "tr": "Bugün · {0}/{1}",
-    "en": "",
+    "en": "Today · {0}/{1}",
     "nerede": [
       "apps/web/src/components/GunlukKart.tsx:84"
     ]
@@ -2183,7 +2167,7 @@
   "ted442f61": {
     "grup": "arayuz",
     "tr": "Bugün, bu hafta ve kilometre taşları",
-    "en": "",
+    "en": "Today, this week and milestones",
     "nerede": [
       "apps/web/src/screens/Gorevler.tsx:31"
     ]
@@ -2207,7 +2191,7 @@
   "tfb4f5822": {
     "grup": "arayuz",
     "tr": "Bugünün ödülü alındı. Yarın seri",
-    "en": "",
+    "en": "Today's reward is claimed. Tomorrow's streak is",
     "nerede": [
       "apps/web/src/components/GunlukKart.tsx:143"
     ]
@@ -2320,7 +2304,7 @@
   "t00b84621": {
     "grup": "arayuz",
     "tr": "daha",
-    "en": "",
+    "en": "more",
     "nerede": [
       "apps/web/src/components/HedefSeridi.tsx:90"
     ]
@@ -2336,7 +2320,7 @@
   "t3116499d": {
     "grup": "arayuz",
     "tr": "daha.",
-    "en": "",
+    "en": "more.",
     "nerede": [
       "apps/web/src/components/SeferKart.tsx:104"
     ]
@@ -2352,7 +2336,7 @@
   "t050236e6": {
     "grup": "arayuz",
     "tr": "Defter henüz boş. Katılanlar, bağışlar, paktlar ve kararlar buraya yazılır.",
-    "en": "",
+    "en": "The ledger is empty yet. Joiners, donations, pacts, and decisions are written here.",
     "nerede": [
       "apps/web/src/components/IttifakKayit.tsx:50"
     ]
@@ -2376,7 +2360,7 @@
   "t56f6ebbc": {
     "grup": "arayuz",
     "tr": "Değişiklik yok",
-    "en": "",
+    "en": "No changes",
     "nerede": [
       "apps/web/src/components/ArmaSecici.tsx:189"
     ]
@@ -2393,7 +2377,7 @@
   "t9e99f30a": {
     "grup": "arayuz",
     "tr": "Demir",
-    "en": "",
+    "en": "Iron",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:90",
       "apps/web/src/components/MobilKabuk.tsx:279"
@@ -2450,7 +2434,7 @@
   "t88a73dfe": {
     "grup": "arayuz",
     "tr": "Deneme bildirimi gönderildi.",
-    "en": "",
+    "en": "Test notification sent.",
     "nerede": [
       "apps/web/src/components/BildirimKarti.tsx:117"
     ]
@@ -2458,7 +2442,7 @@
   "t3409142b": {
     "grup": "arayuz",
     "tr": "Deneme bildirimi gönderilemedi.",
-    "en": "",
+    "en": "Test notification could not be sent.",
     "nerede": [
       "apps/web/src/components/BildirimKarti.tsx:121"
     ]
@@ -2466,7 +2450,7 @@
   "t0cd9dbc7": {
     "grup": "arayuz",
     "tr": "Deneme gönder",
-    "en": "",
+    "en": "Send test",
     "nerede": [
       "apps/web/src/components/BildirimKarti.tsx:125"
     ]
@@ -2498,7 +2482,7 @@
   "t24cb06e6": {
     "grup": "arayuz",
     "tr": "Deponun bir kısmı doluydu; sığan kadarı verildi.",
-    "en": "",
+    "en": "Part of your storage was full; as much as could fit was given.",
     "nerede": [
       "apps/web/src/components/GunlukKart.tsx:158",
       "apps/web/src/components/SeferKart.tsx:98"
@@ -2515,7 +2499,7 @@
   "t7dc33a54": {
     "grup": "arayuz",
     "tr": "Desen",
-    "en": "",
+    "en": "Pattern",
     "nerede": [
       "apps/web/src/components/ArmaSecici.tsx:129"
     ]
@@ -2539,7 +2523,7 @@
   "ta6d41ede": {
     "grup": "arayuz",
     "tr": "Devam",
-    "en": "",
+    "en": "Continue",
     "nerede": [
       "apps/web/src/components/Ogretici.tsx:234"
     ]
@@ -2571,7 +2555,7 @@
   "t47bc99ea": {
     "grup": "arayuz",
     "tr": "Diyar",
-    "en": "",
+    "en": "Realm",
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:127",
       "data/arastirma.json:dallar[2].ad",
@@ -2581,7 +2565,7 @@
   "t2e0e6622": {
     "grup": "arayuz",
     "tr": "Diyar yükleniyor…",
-    "en": "",
+    "en": "Realm loading…",
     "nerede": [
       "apps/web/src/App.tsx:327"
     ]
@@ -2597,7 +2581,7 @@
   "t1c2cafbf": {
     "grup": "arayuz",
     "tr": "Diyarda henüz bir şey olmadı. Bir sefere çıkınca burada okursun.",
-    "en": "",
+    "en": "Nothing has happened in the realm yet. You will read it here when you go on a campaign.",
     "nerede": [
       "apps/web/src/screens/Malikane.tsx:260"
     ]
@@ -2605,7 +2589,7 @@
   "t72c3e02f": {
     "grup": "arayuz",
     "tr": "Diyarda neler oluyor",
-    "en": "",
+    "en": "What's happening in the realm",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:93"
     ]
@@ -2645,7 +2629,7 @@
   "t0824910b": {
     "grup": "arayuz",
     "tr": "Diyarıma dön",
-    "en": "",
+    "en": "Return to my realm",
     "nerede": [
       "apps/web/src/components/Ogretici.tsx:234"
     ]
@@ -2677,7 +2661,7 @@
   "te912c2d3": {
     "grup": "arayuz",
     "tr": "Diyarın Lordu",
-    "en": "",
+    "en": "Lord of the Realm",
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:94",
       "data/basarimlar.json:kumeler[0].basarimlar[3].ad",
@@ -2703,7 +2687,7 @@
   "t8adeae05": {
     "grup": "arayuz",
     "tr": "Diyarında ne oldu",
-    "en": "",
+    "en": "What happened in your realm",
     "nerede": [
       "apps/web/src/screens/Olaylar.tsx:76"
     ]
@@ -2711,7 +2695,7 @@
   "tf8838c3c": {
     "grup": "arayuz",
     "tr": "Diyarını kendi seçimlerinle büyüt",
-    "en": "",
+    "en": "Grow your realm with your own choices",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:92"
     ]
@@ -2719,7 +2703,7 @@
   "tecfbed87": {
     "grup": "arayuz",
     "tr": "Diyarının toprakları",
-    "en": "",
+    "en": "Lands of your realm",
     "nerede": [
       "apps/web/src/screens/Malikane.tsx:113"
     ]
@@ -2735,7 +2719,7 @@
   "t6c1f26e7": {
     "grup": "arayuz",
     "tr": "Dizilim",
-    "en": "",
+    "en": "Formation",
     "nerede": [
       "apps/web/src/components/DizilimIzgarasi.tsx:67"
     ]
@@ -2743,7 +2727,7 @@
   "t0c3eb82c": {
     "grup": "arayuz",
     "tr": "Dizilim ve taktik",
-    "en": "",
+    "en": "Formation and tactic",
     "nerede": [
       "apps/web/src/components/DizilimIzgarasi.tsx:439"
     ]
@@ -2759,7 +2743,7 @@
   "t1fc71cab": {
     "grup": "arayuz",
     "tr": "Dizilimi kapat",
-    "en": "",
+    "en": "Close formation",
     "nerede": [
       "apps/web/src/components/DizilimIzgarasi.tsx:439"
     ]
@@ -2767,7 +2751,7 @@
   "tdcafa5d5": {
     "grup": "arayuz",
     "tr": "Dizilimin etkisi",
-    "en": "",
+    "en": "Effect of the formation",
     "nerede": [
       "apps/web/src/components/DizilimIzgarasi.tsx:366"
     ]
@@ -2792,7 +2776,7 @@
   "t659903b0": {
     "grup": "arayuz",
     "tr": "Dönen ordun",
-    "en": "",
+    "en": "Your returning army",
     "nerede": [
       "apps/web/src/components/DunyaHaritasi.tsx:408"
     ]
@@ -2824,7 +2808,7 @@
   "t5c35d21d": {
     "grup": "arayuz",
     "tr": "DUYURU",
-    "en": "",
+    "en": "ANNOUNCEMENT",
     "nerede": [
       "apps/web/src/components/IttifakDuyuru.tsx:51",
       "apps/web/src/components/IttifakIncele.tsx:80"
@@ -2833,7 +2817,7 @@
   "t75b84b26": {
     "grup": "arayuz",
     "tr": "Duyuru kaydedilemedi.",
-    "en": "",
+    "en": "Announcement could not be saved.",
     "nerede": [
       "apps/web/src/components/IttifakDuyuru.tsx:40"
     ]
@@ -2857,7 +2841,7 @@
   "t92c998be": {
     "grup": "arayuz",
     "tr": "Dünya haritası, {0} bölge",
-    "en": "",
+    "en": "World map, {0} regions",
     "nerede": [
       "apps/web/src/components/DunyaHaritasi.tsx:504"
     ]
@@ -2889,7 +2873,7 @@
   "t4d81c255": {
     "grup": "arayuz",
     "tr": "Düzenle",
-    "en": "",
+    "en": "Edit",
     "nerede": [
       "apps/web/src/components/SavunmaDuzeni.tsx:69"
     ]
@@ -2897,7 +2881,7 @@
   "t51266a55": {
     "grup": "arayuz",
     "tr": "DÜZENLE",
-    "en": "",
+    "en": "EDIT",
     "nerede": [
       "apps/web/src/components/IttifakDuyuru.tsx:62"
     ]
@@ -2905,7 +2889,7 @@
   "te00c22e0": {
     "grup": "arayuz",
     "tr": "e",
-    "en": "",
+    "en": "e",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:112",
       "apps/web/src/components/KaynakGonder.tsx:123"
@@ -3011,7 +2995,7 @@
   "tcf58093a": {
     "grup": "arayuz",
     "tr": "Eklemek istediğin bir şey?",
-    "en": "",
+    "en": "Anything you want to add?",
     "nerede": [
       "apps/web/src/components/SikayetSayfasi.tsx:107"
     ]
@@ -3019,7 +3003,7 @@
   "t9322a83e": {
     "grup": "arayuz",
     "tr": "Ekran yüklenirken beklenmedik bir hata oluştu. Sayfayı yenilemek çoğu zaman yeterlidir; sürerse ilerlemen kaybolmadı, sunucuda duruyor.",
-    "en": "",
+    "en": "An unexpected error occurred while loading the screen. Refreshing the page is usually enough; if it persists, your progress is not lost, it remains on the server.",
     "nerede": [
       "apps/web/src/components/HataSiniri.tsx:40"
     ]
@@ -3027,7 +3011,7 @@
   "t530d9dd8": {
     "grup": "arayuz",
     "tr": "Elinde biriken kaynağı eksiğine çevir. Tüccar payını alır — doğru bölgeyi almak hâlâ daha kârlı.",
-    "en": "",
+    "en": "Convert your accumulated resources into what you lack. The merchant takes a cut — taking the right region is still more profitable.",
     "nerede": [
       "apps/web/src/components/Pazar.tsx:104"
     ]
@@ -3035,7 +3019,7 @@
   "tdf35d15b": {
     "grup": "arayuz",
     "tr": "En az {0}",
-    "en": "",
+    "en": "At least {0}",
     "nerede": [
       "apps/web/src/components/Pazar.tsx:162"
     ]
@@ -3158,7 +3142,7 @@
   "t693ca05c": {
     "grup": "arayuz",
     "tr": "Erzak",
-    "en": "",
+    "en": "Supplies",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:91",
       "apps/web/src/components/MobilKabuk.tsx:287",
@@ -3241,7 +3225,7 @@
   "ta56383d3": {
     "grup": "arayuz",
     "tr": "Evde asker yok. Kışla’da asker eğitince buradan savunma dizilimini kurabilirsin.",
-    "en": "",
+    "en": "No troops at home. Once you train troops in the Barracks, you can set up the defense formation here.",
     "nerede": [
       "apps/web/src/components/SavunmaDuzeni.tsx:61"
     ]
@@ -3265,7 +3249,7 @@
   "tac9a5137": {
     "grup": "arayuz",
     "tr": "Evde ordun yok — önce Kışla'da asker eğit.",
-    "en": "",
+    "en": "You have no army at home — train troops in the Barracks first.",
     "nerede": [
       "apps/web/src/components/DizilimIzgarasi.tsx:249"
     ]
@@ -3332,7 +3316,7 @@
   "t2adab535": {
     "grup": "arayuz",
     "tr": "Garnizonu görmüyorsun; eşleşme tahmini yapılamıyor.",
-    "en": "",
+    "en": "You don't see the garrison; matchup estimation cannot be made.",
     "nerede": [
       "apps/web/src/components/KarsiIpuclari.tsx:95"
     ]
@@ -3340,7 +3324,7 @@
   "t27e7a2ba": {
     "grup": "arayuz",
     "tr": "GEÇ",
-    "en": "",
+    "en": "SKIP",
     "nerede": [
       "apps/web/src/components/Ogretici.tsx:147"
     ]
@@ -3440,7 +3424,7 @@
   "t021302a8": {
     "grup": "arayuz",
     "tr": "Geri",
-    "en": "",
+    "en": "Back",
     "nerede": [
       "apps/web/src/components/Ogretici.tsx:227"
     ]
@@ -3480,7 +3464,7 @@
   "t010f9302": {
     "grup": "arayuz",
     "tr": "Giriş ekranına dön",
-    "en": "",
+    "en": "Return to login screen",
     "nerede": [
       "apps/web/src/App.tsx:316",
       "apps/web/src/screens/ParolaSifirla.tsx:41"
@@ -3497,7 +3481,7 @@
   "t542abc6b": {
     "grup": "arayuz",
     "tr": "git",
-    "en": "",
+    "en": "go",
     "nerede": [
       "apps/web/src/components/GunlukKart.tsx:123"
     ]
@@ -3505,7 +3489,7 @@
   "t5228efad": {
     "grup": "arayuz",
     "tr": "Gönder",
-    "en": "",
+    "en": "Send",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:95"
     ]
@@ -3513,7 +3497,7 @@
   "t3b8e7ae3": {
     "grup": "arayuz",
     "tr": "Gönderilecek cihaz bulunamadı.",
-    "en": "",
+    "en": "No device found to send to.",
     "nerede": [
       "apps/web/src/components/BildirimKarti.tsx:118"
     ]
@@ -3529,7 +3513,7 @@
   "t694ea4fc": {
     "grup": "arayuz",
     "tr": "Gönderilemedi.",
-    "en": "",
+    "en": "Could not be sent.",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:40"
     ]
@@ -3555,7 +3539,7 @@
   "t5b346f80": {
     "grup": "arayuz",
     "tr": "Görevler",
-    "en": "",
+    "en": "Quests",
     "nerede": [
       "apps/web/src/screens/Gorevler.tsx:31"
     ]
@@ -3563,7 +3547,7 @@
   "tcfc6fca0": {
     "grup": "arayuz",
     "tr": "GÖREVLER",
-    "en": "",
+    "en": "QUESTS",
     "nerede": [
       "apps/web/src/components/GorevOzeti.tsx:39",
       "apps/web/src/components/GorevOzeti.tsx:58"
@@ -3572,7 +3556,7 @@
   "t3e9ed452": {
     "grup": "arayuz",
     "tr": "Görevler yükleniyor",
-    "en": "",
+    "en": "Quests loading",
     "nerede": [
       "apps/web/src/components/GorevOzeti.tsx:45"
     ]
@@ -3647,7 +3631,7 @@
   "t3d83a1a0": {
     "grup": "arayuz",
     "tr": "gün",
-    "en": "",
+    "en": "days",
     "nerede": [
       "apps/web/src/components/GunlukKart.tsx:88"
     ]
@@ -3655,7 +3639,7 @@
   "t24d0f673": {
     "grup": "arayuz",
     "tr": "gün kaldı",
-    "en": "",
+    "en": "days left",
     "nerede": [
       "apps/web/src/components/SeferKart.tsx:39"
     ]
@@ -3687,7 +3671,7 @@
   "t13da7c2c": {
     "grup": "arayuz",
     "tr": "Günün ödülü",
-    "en": "",
+    "en": "Reward of the day",
     "nerede": [
       "apps/web/src/components/GunlukKart.tsx:130"
     ]
@@ -3736,7 +3720,7 @@
   "t3f5817ee": {
     "grup": "arayuz",
     "tr": "Haritaya git",
-    "en": "",
+    "en": "Go to map",
     "nerede": [
       "apps/web/src/screens/Malikane.tsx:165",
       "apps/web/src/screens/Olaylar.tsx:86",
@@ -3746,7 +3730,7 @@
   "tbb18b696": {
     "grup": "arayuz",
     "tr": "Haritayı aç",
-    "en": "",
+    "en": "Open the map",
     "nerede": [
       "apps/web/src/screens/Malikane.tsx:267"
     ]
@@ -3754,7 +3738,7 @@
   "ta2f0d896": {
     "grup": "arayuz",
     "tr": "Haritayı sığdır",
-    "en": "",
+    "en": "Fit the map",
     "nerede": [
       "apps/web/src/components/DunyaHaritasi.tsx:757"
     ]
@@ -3762,7 +3746,7 @@
   "t540f2dd6": {
     "grup": "arayuz",
     "tr": "hasar.",
-    "en": "",
+    "en": "damage.",
     "nerede": [
       "apps/web/src/components/KarsiCemberi.tsx:105"
     ]
@@ -3770,7 +3754,7 @@
   "t4888ec29": {
     "grup": "arayuz",
     "tr": "Hastane",
-    "en": "",
+    "en": "Hospital",
     "nerede": [
       "apps/web/src/components/Hastane.tsx:34",
       "data/binalar.json:binalar[4].ad",
@@ -3820,7 +3804,7 @@
   "t714210b8": {
     "grup": "arayuz",
     "tr": "Henüz bir şey olmadı. Bir saldırı yaptığında ya da bölgen geliştiğinde burada okursun.",
-    "en": "",
+    "en": "Nothing has happened yet. You will read it here when you make an attack or your region develops.",
     "nerede": [
       "apps/web/src/screens/Olaylar.tsx:84"
     ]
@@ -3828,7 +3812,7 @@
   "t56cda73a": {
     "grup": "arayuz",
     "tr": "Henüz duyuru yok. Üyelerin görmesi gereken bir kural varsa buraya yaz.",
-    "en": "",
+    "en": "No announcements yet. If there is a rule members need to see, write it here.",
     "nerede": [
       "apps/web/src/components/IttifakDuyuru.tsx:93"
     ]
@@ -3852,7 +3836,7 @@
   "t0f78ebc0": {
     "grup": "arayuz",
     "tr": "Henüz kimse yazmadı. İlk sözü sen söyle — bir hedef göster, yardım iste.",
-    "en": "",
+    "en": "Nobody has written yet. You say the first word — point out a target, ask for help.",
     "nerede": [
       "apps/web/src/components/IttifakSohbet.tsx:79"
     ]
@@ -3860,7 +3844,7 @@
   "t03b91b40": {
     "grup": "arayuz",
     "tr": "Henüz toprağın yok. Haritada bir bölge al, geliri buraya işlesin.",
-    "en": "",
+    "en": "You have no land yet. Take a region on the map, so its income registers here.",
     "nerede": [
       "apps/web/src/screens/Malikane.tsx:164"
     ]
@@ -3978,7 +3962,7 @@
   "t9cb9666b": {
     "grup": "arayuz",
     "tr": "için savaşıyor",
-    "en": "",
+    "en": "is fighting for",
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:87"
     ]
@@ -3994,7 +3978,7 @@
   "t76d5e47d": {
     "grup": "arayuz",
     "tr": "İdeal dizilim",
-    "en": "",
+    "en": "Ideal formation",
     "nerede": [
       "apps/web/src/components/DizilimSemasi.tsx:33"
     ]
@@ -4018,7 +4002,7 @@
   "t1458df25": {
     "grup": "arayuz",
     "tr": "İKİNCİ",
-    "en": "",
+    "en": "SECOND",
     "nerede": [
       "apps/web/src/components/DizilimIzgarasi.tsx:52"
     ]
@@ -4026,7 +4010,7 @@
   "td2bcae9f": {
     "grup": "arayuz",
     "tr": "İkinci renk",
-    "en": "",
+    "en": "Secondary color",
     "nerede": [
       "apps/web/src/components/ArmaSecici.tsx:147"
     ]
@@ -4042,7 +4026,7 @@
   "tb14deebf": {
     "grup": "arayuz",
     "tr": "İlerleme",
-    "en": "",
+    "en": "Progress",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:96"
     ]
@@ -4125,7 +4109,7 @@
   "t68d4eca6": {
     "grup": "arayuz",
     "tr": "İptal",
-    "en": "",
+    "en": "Cancel",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:122",
       "apps/web/src/screens/Sehir.tsx:491"
@@ -4134,7 +4118,7 @@
   "t8f6427be": {
     "grup": "arayuz",
     "tr": "İptal edersen harcadığının yarısı geri gelir.",
-    "en": "",
+    "en": "If you cancel, half of what you spent is refunded.",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:126",
       "apps/web/src/screens/Sehir.tsx:495"
@@ -4143,7 +4127,7 @@
   "t57dca8ac": {
     "grup": "arayuz",
     "tr": "İPUCU",
-    "en": "",
+    "en": "HINT",
     "nerede": [
       "apps/web/src/screens/Malikane.tsx:223"
     ]
@@ -4269,7 +4253,7 @@
   "t555488a0": {
     "grup": "arayuz",
     "tr": "İttifak Sohbeti",
-    "en": "",
+    "en": "Alliance Chat",
     "nerede": [
       "apps/web/src/components/IttifakSohbet.tsx:75"
     ]
@@ -4397,7 +4381,7 @@
   "ta6651066": {
     "grup": "arayuz",
     "tr": "kademe {0}",
-    "en": "",
+    "en": "tier {0}",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:164"
     ]
@@ -4429,7 +4413,7 @@
   "tc67d9cb8": {
     "grup": "arayuz",
     "tr": "kaldı",
-    "en": "",
+    "en": "remaining",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:118",
       "apps/web/src/screens/Sehir.tsx:487"
@@ -4454,7 +4438,7 @@
   "t89ae57e6": {
     "grup": "arayuz",
     "tr": "Kale",
-    "en": "",
+    "en": "Castle",
     "nerede": [
       "apps/web/src/components/HedefSeridi.tsx:22",
       "apps/web/src/screens/Harita.tsx:66",
@@ -4480,7 +4464,7 @@
   "t0f86f2e3": {
     "grup": "arayuz",
     "tr": "Kalkan",
-    "en": "",
+    "en": "Shield",
     "nerede": [
       "apps/web/src/components/ArmaSecici.tsx:113",
       "apps/web/src/screens/Demirhane.tsx:61",
@@ -4490,7 +4474,7 @@
   "t806485d0": {
     "grup": "arayuz",
     "tr": "kalkan altında",
-    "en": "",
+    "en": "under shield",
     "nerede": [
       "apps/web/src/screens/Malikane.tsx:203"
     ]
@@ -4498,7 +4482,7 @@
   "t821d31ab": {
     "grup": "arayuz",
     "tr": "Kampın",
-    "en": "",
+    "en": "Your camp",
     "nerede": [
       "apps/web/src/components/DunyaHaritasi.tsx:416",
       "apps/web/src/components/DunyaHaritasi.tsx:950"
@@ -4507,7 +4491,7 @@
   "t926ba486": {
     "grup": "arayuz",
     "tr": "kapat",
-    "en": "",
+    "en": "close",
     "nerede": [
       "apps/web/src/components/Basarimlar.tsx:77",
       "apps/web/src/components/Omurga.tsx:454"
@@ -4516,7 +4500,7 @@
   "t66e09026": {
     "grup": "arayuz",
     "tr": "Kapat",
-    "en": "",
+    "en": "Close",
     "nerede": [
       "apps/web/src/components/ArmaSecici.tsx:105",
       "apps/web/src/components/BildirimKarti.tsx:133",
@@ -4558,7 +4542,7 @@
   "t07d6d627": {
     "grup": "arayuz",
     "tr": "Karar uygulanamadı.",
-    "en": "",
+    "en": "Decision could not be applied.",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:44"
     ]
@@ -4566,7 +4550,7 @@
   "ta30ec875": {
     "grup": "arayuz",
     "tr": "Karara bağlanan",
-    "en": "",
+    "en": "Resolved",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:75"
     ]
@@ -4574,7 +4558,7 @@
   "t4e8e5eb4": {
     "grup": "arayuz",
     "tr": "kare",
-    "en": "",
+    "en": "square",
     "nerede": [
       "apps/web/src/components/DizilimIzgarasi.tsx:277"
     ]
@@ -4668,7 +4652,7 @@
   "t2a417817": {
     "grup": "arayuz",
     "tr": "Kaydedilemedi, tekrar dene.",
-    "en": "",
+    "en": "Could not save, try again.",
     "nerede": [
       "apps/web/src/components/SavunmaDuzeni.tsx:100"
     ]
@@ -4684,7 +4668,7 @@
   "t6e20f3cf": {
     "grup": "arayuz",
     "tr": "Kaydediliyor…",
-    "en": "",
+    "en": "Saving…",
     "nerede": [
       "apps/web/src/components/ArmaSecici.tsx:189",
       "apps/web/src/components/IttifakDuyuru.tsx:86",
@@ -4694,7 +4678,7 @@
   "t80a231d5": {
     "grup": "arayuz",
     "tr": "Kaydet",
-    "en": "",
+    "en": "Save",
     "nerede": [
       "apps/web/src/components/IttifakDuyuru.tsx:86"
     ]
@@ -4726,7 +4710,7 @@
   "t4b2bd8f8": {
     "grup": "arayuz",
     "tr": "Kayıt Defteri",
-    "en": "",
+    "en": "Logbook",
     "nerede": [
       "apps/web/src/components/IttifakKayit.tsx:47"
     ]
@@ -4743,7 +4727,7 @@
   "t9bec001a": {
     "grup": "arayuz",
     "tr": "Kaynak Gönder",
-    "en": "",
+    "en": "Send Resources",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:69"
     ]
@@ -4767,7 +4751,7 @@
   "t0b71fc53": {
     "grup": "arayuz",
     "tr": "Kaynak yolda vakit geçirir. Bugün",
-    "en": "",
+    "en": "Resources spend time on the way. Today",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:101"
     ]
@@ -4888,7 +4872,7 @@
   "tffaa3bd3": {
     "grup": "arayuz",
     "tr": "Kışla'da asker eğit, burası dolsun.",
-    "en": "",
+    "en": "Train troops in the Barracks, so this place fills up.",
     "nerede": [
       "apps/web/src/components/OrduSahnesi.tsx:190"
     ]
@@ -4928,7 +4912,7 @@
   "t75c58153": {
     "grup": "arayuz",
     "tr": "Kilitli — {0}",
-    "en": "",
+    "en": "Locked — {0}",
     "nerede": [
       "apps/web/src/components/DizilimIzgarasi.tsx:418"
     ]
@@ -4960,7 +4944,7 @@
   "ta3a2b822": {
     "grup": "arayuz",
     "tr": "komuta",
-    "en": "",
+    "en": "command",
     "nerede": [
       "apps/web/src/components/OrduSahnesi.tsx:259",
       "apps/web/src/screens/Kisla.tsx:450"
@@ -5001,7 +4985,7 @@
   "t44600e9f": {
     "grup": "arayuz",
     "tr": "Korumalı",
-    "en": "",
+    "en": "Protected",
     "nerede": [
       "apps/web/src/components/DunyaHaritasi.tsx:936"
     ]
@@ -5017,7 +5001,7 @@
   "tcbfde837": {
     "grup": "arayuz",
     "tr": "Köy",
-    "en": "",
+    "en": "Village",
     "nerede": [
       "apps/web/src/screens/Malikane.tsx:53",
       "packages/shared/src/bina.ts:57"
@@ -5059,7 +5043,7 @@
   "t46e558eb": {
     "grup": "arayuz",
     "tr": "Kurulmadı — ordun şimdilik önerilen düzende savaşıyor. Elle kurarsan daha iyisini yapabilirsin.",
-    "en": "",
+    "en": "Not set — your army fights in the recommended setup for now. You can do better if you set it manually.",
     "nerede": [
       "apps/web/src/components/SavunmaDuzeni.tsx:64"
     ]
@@ -5139,7 +5123,7 @@
   "t11d481cd": {
     "grup": "arayuz",
     "tr": "Kuyruğu tazeleyip tekrar dene.",
-    "en": "",
+    "en": "Refresh the queue and try again.",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:80"
     ]
@@ -5179,7 +5163,7 @@
   "t2af63733": {
     "grup": "arayuz",
     "tr": "lider avı",
-    "en": "",
+    "en": "leader hunt",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:72"
     ]
@@ -5219,7 +5203,7 @@
   "tf43250fa": {
     "grup": "arayuz",
     "tr": "lord",
-    "en": "",
+    "en": "lord",
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:85"
     ]
@@ -5273,7 +5257,7 @@
   "t3f61c37d": {
     "grup": "arayuz",
     "tr": "lorddan",
-    "en": "",
+    "en": "from lord",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:38"
     ]
@@ -5330,42 +5314,10 @@
       "apps/web/src/components/Omurga.tsx:818"
     ]
   },
-  "t8cc7e97f": {
-    "grup": "arayuz",
-    "tr": "M50 4 C78 4 94 14 94 14 V50 C94 78 74 94 50 98 C26 94 6 78 6 50 V14 C6 14 22 4 50 4 Z",
-    "en": "",
-    "nerede": [
-      "apps/web/src/components/Arma.tsx:18"
-    ]
-  },
-  "te20e742a": {
-    "grup": "arayuz",
-    "tr": "M50 4 L94 18 V52 C94 76 74 92 50 98 C26 92 6 76 6 52 V18 Z",
-    "en": "",
-    "nerede": [
-      "apps/web/src/components/Arma.tsx:17"
-    ]
-  },
-  "t5e4ad454": {
-    "grup": "arayuz",
-    "tr": "M50 4 L94 18 V60 L50 98 L6 60 V18 Z",
-    "en": "",
-    "nerede": [
-      "apps/web/src/components/Arma.tsx:20"
-    ]
-  },
-  "tf539c0f1": {
-    "grup": "arayuz",
-    "tr": "M8 6 H92 V78 C92 88 84 94 50 98 C16 94 8 88 8 78 Z",
-    "en": "",
-    "nerede": [
-      "apps/web/src/components/Arma.tsx:19"
-    ]
-  },
   "t21b3e1a2": {
     "grup": "arayuz",
     "tr": "Maden",
-    "en": "",
+    "en": "Mine",
     "nerede": [
       "apps/web/src/components/HedefSeridi.tsx:20",
       "apps/web/src/screens/Harita.tsx:64",
@@ -5383,7 +5335,7 @@
   "t5c2dce44": {
     "grup": "arayuz",
     "tr": "Malikâne",
-    "en": "",
+    "en": "Manor",
     "nerede": [
       "apps/web/src/screens/Malikane.tsx:113",
       "data/binalar.json:binalar[0].ad",
@@ -5409,7 +5361,7 @@
   "te474d5f1": {
     "grup": "arayuz",
     "tr": "Mancınık tahkimata karşı",
-    "en": "",
+    "en": "Catapults against fortification",
     "nerede": [
       "apps/web/src/components/KarsiIpuclari.tsx:76"
     ]
@@ -5425,7 +5377,7 @@
   "tf7042dec": {
     "grup": "arayuz",
     "tr": "Mesaj gönderilemedi.",
-    "en": "",
+    "en": "Message could not be sent.",
     "nerede": [
       "apps/web/src/components/IttifakSohbet.tsx:56"
     ]
@@ -5433,7 +5385,7 @@
   "t1910af19": {
     "grup": "arayuz",
     "tr": "Mesajı kaldır",
-    "en": "",
+    "en": "Remove message",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:201"
     ]
@@ -5441,7 +5393,7 @@
   "t7ff46615": {
     "grup": "arayuz",
     "tr": "Mesajını gözden geçir ve tekrar dene.",
-    "en": "",
+    "en": "Review your message and try again.",
     "nerede": [
       "apps/web/src/components/IttifakSohbet.tsx:146"
     ]
@@ -5490,7 +5442,7 @@
   "tb2517ac5": {
     "grup": "arayuz",
     "tr": "Miktarı ve alıcıyı gözden geçir.",
-    "en": "",
+    "en": "Review the amount and the recipient.",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:104"
     ]
@@ -5514,7 +5466,7 @@
   "t19e787fd": {
     "grup": "arayuz",
     "tr": "Ne olduğunu kısaca yaz (zorunlu)",
-    "en": "",
+    "en": "Briefly write what happened (required)",
     "nerede": [
       "apps/web/src/components/SikayetSayfasi.tsx:107"
     ]
@@ -5551,14 +5503,6 @@
       "apps/web/src/components/Omurga.tsx:757"
     ]
   },
-  "t146a2866": {
-    "grup": "arayuz",
-    "tr": "Notification",
-    "en": "",
-    "nerede": [
-      "apps/web/src/lib/bildirim.ts:50"
-    ]
-  },
   "t92152373": {
     "grup": "arayuz",
     "tr": "Ocak, örs ve kuşandıkların",
@@ -5570,7 +5514,7 @@
   "tbe3f1e16": {
     "grup": "arayuz",
     "tr": "Ok, kimin kimi kırdığını gösterir — her eşleşmede ×",
-    "en": "",
+    "en": "The arrow shows who breaks whom — in each matchup ×",
     "nerede": [
       "apps/web/src/components/KarsiCemberi.tsx:105"
     ]
@@ -5618,7 +5562,7 @@
   "t38e7530f": {
     "grup": "arayuz",
     "tr": "Olay Akışı{0}",
-    "en": "",
+    "en": "Event Feed{0}",
     "nerede": [
       "apps/web/src/screens/Olaylar.tsx:79"
     ]
@@ -5626,7 +5570,7 @@
   "tad5a2d0b": {
     "grup": "arayuz",
     "tr": "Olaylar",
-    "en": "",
+    "en": "Events",
     "nerede": [
       "apps/web/src/screens/Olaylar.tsx:76",
       "packages/shared/src/types.ts:307"
@@ -5635,7 +5579,7 @@
   "t5833840b": {
     "grup": "arayuz",
     "tr": "OLAYLAR",
-    "en": "",
+    "en": "EVENTS",
     "nerede": [
       "apps/web/src/screens/Malikane.tsx:244"
     ]
@@ -5774,7 +5718,7 @@
   "t7b119d9d": {
     "grup": "arayuz",
     "tr": "Ordun {0} yolunda",
-    "en": "",
+    "en": "Your army is on the way to {0}",
     "nerede": [
       "apps/web/src/components/DunyaHaritasi.tsx:408"
     ]
@@ -5799,7 +5743,7 @@
   "td35bcc13": {
     "grup": "arayuz",
     "tr": "Ordun döndüğünde, kuyruğun bittiğinde ve toprağına saldırıldığında haberin olsun. Bildirim yalnız bu cihaza gelir; istediğin zaman kapatabilirsin.",
-    "en": "",
+    "en": "Get notified when your army returns, your queue finishes, and your land is attacked. Notifications only come to this device; you can turn them off anytime.",
     "nerede": [
       "apps/web/src/components/BildirimKarti.tsx:68"
     ]
@@ -5847,7 +5791,7 @@
   "t437a0412": {
     "grup": "arayuz",
     "tr": "ordun yetiyor",
-    "en": "",
+    "en": "your army is enough",
     "nerede": [
       "apps/web/src/components/HedefSeridi.tsx:86"
     ]
@@ -5863,7 +5807,7 @@
   "tb34abcf2": {
     "grup": "arayuz",
     "tr": "Ordun yok",
-    "en": "",
+    "en": "You have no army",
     "nerede": [
       "apps/web/src/components/OrduSahnesi.tsx:189"
     ]
@@ -5888,7 +5832,7 @@
   "t1b13dd67": {
     "grup": "arayuz",
     "tr": "Ordun: {0}/{1} komuta yeri dolu",
-    "en": "",
+    "en": "Your army: {0}/{1} command space filled",
     "nerede": [
       "apps/web/src/components/OrduSahnesi.tsx:151"
     ]
@@ -5963,7 +5907,7 @@
   "t2302bad8": {
     "grup": "arayuz",
     "tr": "Otomatik bir ceza verilmez — şikâyetin bir yöneticinin önüne düşer, kararı insan verir.",
-    "en": "",
+    "en": "An automatic penalty is not given — your report falls before an admin, a human makes the decision.",
     "nerede": [
       "apps/web/src/components/SikayetSayfasi.tsx:74"
     ]
@@ -5971,7 +5915,7 @@
   "t07113420": {
     "grup": "arayuz",
     "tr": "Oturum açılamadı. Tekrar giriş yapman gerekiyor.",
-    "en": "",
+    "en": "Could not log in. You need to sign in again.",
     "nerede": [
       "apps/web/src/App.tsx:314"
     ]
@@ -5987,7 +5931,7 @@
   "t9bf3ffd3": {
     "grup": "arayuz",
     "tr": "ÖDÜL HAZIR",
-    "en": "",
+    "en": "REWARD READY",
     "nerede": [
       "apps/web/src/components/GorevOzeti.tsx:72"
     ]
@@ -5995,7 +5939,7 @@
   "t076e3c6e": {
     "grup": "arayuz",
     "tr": "Ödülü al",
-    "en": "",
+    "en": "Claim reward",
     "nerede": [
       "apps/web/src/components/GunlukKart.tsx:154"
     ]
@@ -6003,7 +5947,7 @@
   "t09015f38": {
     "grup": "arayuz",
     "tr": "Öğretici",
-    "en": "",
+    "en": "Tutorial",
     "nerede": [
       "apps/web/src/components/Ogretici.tsx:129",
       "apps/web/src/screens/Hesap.tsx:133"
@@ -6012,7 +5956,7 @@
   "t47d30263": {
     "grup": "arayuz",
     "tr": "Öğreticiyi geç",
-    "en": "",
+    "en": "Skip the tutorial",
     "nerede": [
       "apps/web/src/components/Ogretici.tsx:145"
     ]
@@ -6028,7 +5972,7 @@
   "t96de5998": {
     "grup": "arayuz",
     "tr": "ÖN HAT",
-    "en": "",
+    "en": "FRONT LINE",
     "nerede": [
       "apps/web/src/components/DizilimIzgarasi.tsx:51"
     ]
@@ -6044,7 +5988,7 @@
   "t2037d289": {
     "grup": "arayuz",
     "tr": "Önceki",
-    "en": "",
+    "en": "Previous",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:115"
     ]
@@ -6052,7 +5996,7 @@
   "tae2b3eb1": {
     "grup": "arayuz",
     "tr": "Önerilen düzen",
-    "en": "",
+    "en": "Recommended setup",
     "nerede": [
       "apps/web/src/components/DizilimIzgarasi.tsx:242"
     ]
@@ -6060,7 +6004,7 @@
   "t2249b0d8": {
     "grup": "arayuz",
     "tr": "önünde püskürtüldü",
-    "en": "",
+    "en": "repelled in front of",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:117"
     ]
@@ -6068,7 +6012,7 @@
   "tc96d4525": {
     "grup": "arayuz",
     "tr": "Örn. Günde 5 bağış yapın, cuma akşamı ortak hedefe gidiyoruz.",
-    "en": "",
+    "en": "E.g., Make 5 donations a day, Friday evening we go for the common target.",
     "nerede": [
       "apps/web/src/components/IttifakDuyuru.tsx:74"
     ]
@@ -6228,7 +6172,7 @@
   "tbc71d6a3": {
     "grup": "arayuz",
     "tr": "Pazar",
-    "en": "",
+    "en": "Market",
     "nerede": [
       "apps/web/src/components/Pazar.tsx:100",
       "data/binalar.json:binalar[5].ad"
@@ -6258,14 +6202,6 @@
       "apps/web/src/screens/Generaller.tsx:218"
     ]
   },
-  "t5d6a99b4": {
-    "grup": "arayuz",
-    "tr": "PushManager",
-    "en": "",
-    "nerede": [
-      "apps/web/src/lib/bildirim.ts:50"
-    ]
-  },
   "t8aa587ec": {
     "grup": "arayuz",
     "tr": "PvP derecesi. Bölgesiz bir lord da birinci olabilir.",
@@ -6285,7 +6221,7 @@
   "t0808f810": {
     "grup": "arayuz",
     "tr": "RAPORU AÇ",
-    "en": "",
+    "en": "OPEN REPORT",
     "nerede": [
       "apps/web/src/screens/Olaylar.tsx:121"
     ]
@@ -6499,7 +6435,7 @@
   "t9262f727": {
     "grup": "arayuz",
     "tr": "Sana saldırıldığında ordun bu düzende savaşacak.",
-    "en": "",
+    "en": "When you are attacked, your army will fight in this formation.",
     "nerede": [
       "apps/web/src/components/SavunmaDuzeni.tsx:63"
     ]
@@ -6588,7 +6524,7 @@
   "tbfc25419": {
     "grup": "arayuz",
     "tr": "Savaş raporunu aç",
-    "en": "",
+    "en": "Open battle report",
     "nerede": [
       "apps/web/src/screens/Olaylar.tsx:118"
     ]
@@ -6620,7 +6556,7 @@
   "t727bfcd5": {
     "grup": "arayuz",
     "tr": "savunan",
-    "en": "",
+    "en": "defender",
     "nerede": [
       "apps/web/src/components/HedefSeridi.tsx:100",
       "apps/web/src/components/Omurga.tsx:754"
@@ -6646,7 +6582,7 @@
   "t7b988d14": {
     "grup": "arayuz",
     "tr": "savunma",
-    "en": "",
+    "en": "defense",
     "nerede": [
       "apps/web/src/components/DizilimIzgarasi.tsx:372"
     ]
@@ -6670,7 +6606,7 @@
   "t739f8573": {
     "grup": "arayuz",
     "tr": "Savunma dizilimi",
-    "en": "",
+    "en": "Defense formation",
     "nerede": [
       "apps/web/src/components/SavunmaDuzeni.tsx:80"
     ]
@@ -6678,7 +6614,7 @@
   "t4ea614b8": {
     "grup": "arayuz",
     "tr": "Savunma Düzeni",
-    "en": "",
+    "en": "Defense Setup",
     "nerede": [
       "apps/web/src/components/SavunmaDuzeni.tsx:58"
     ]
@@ -6686,7 +6622,7 @@
   "t8724af57": {
     "grup": "arayuz",
     "tr": "Savunma düzenini kaydet",
-    "en": "",
+    "en": "Save the defense setup",
     "nerede": [
       "apps/web/src/components/SavunmaDuzeni.tsx:97"
     ]
@@ -6718,7 +6654,7 @@
   "t000a6979": {
     "grup": "arayuz",
     "tr": "Sayfayı yenile",
-    "en": "",
+    "en": "Refresh the page",
     "nerede": [
       "apps/web/src/components/HataSiniri.tsx:57"
     ]
@@ -6726,7 +6662,7 @@
   "tf15245fc": {
     "grup": "arayuz",
     "tr": "Sebebini gözden geçir ve tekrar dene.",
-    "en": "",
+    "en": "Review your reason and try again.",
     "nerede": [
       "apps/web/src/components/SikayetSayfasi.tsx:120"
     ]
@@ -6734,7 +6670,7 @@
   "t71db8912": {
     "grup": "arayuz",
     "tr": "sefer",
-    "en": "",
+    "en": "campaign",
     "nerede": [
       "apps/web/src/components/GorevOzeti.tsx:67"
     ]
@@ -6742,7 +6678,7 @@
   "t0dcc9ed8": {
     "grup": "arayuz",
     "tr": "Sefer ödülü",
-    "en": "",
+    "en": "Campaign reward",
     "nerede": [
       "apps/web/src/components/SeferKart.tsx:59"
     ]
@@ -6750,7 +6686,7 @@
   "ta6b14d03": {
     "grup": "arayuz",
     "tr": "Sefer ödülünü al",
-    "en": "",
+    "en": "Claim campaign reward",
     "nerede": [
       "apps/web/src/components/SeferKart.tsx:94"
     ]
@@ -6758,7 +6694,7 @@
   "t7115f0ed": {
     "grup": "arayuz",
     "tr": "Sembol",
-    "en": "",
+    "en": "Symbol",
     "nerede": [
       "apps/web/src/components/ArmaSecici.tsx:169"
     ]
@@ -6800,7 +6736,7 @@
   "t502b5051": {
     "grup": "arayuz",
     "tr": "seri ×",
-    "en": "",
+    "en": "streak ×",
     "nerede": [
       "apps/web/src/components/GunlukKart.tsx:133"
     ]
@@ -6888,7 +6824,7 @@
   "tee25d0bd": {
     "grup": "arayuz",
     "tr": "Sıradaki hedef",
-    "en": "",
+    "en": "Next target",
     "nerede": [
       "apps/web/src/components/HedefSeridi.tsx:52"
     ]
@@ -7019,7 +6955,7 @@
   "tc2bc7132": {
     "grup": "arayuz",
     "tr": "Sonraki",
-    "en": "",
+    "en": "Next",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:126"
     ]
@@ -7027,7 +6963,7 @@
   "t98b88a6d": {
     "grup": "arayuz",
     "tr": "SONRAKİ",
-    "en": "",
+    "en": "NEXT",
     "nerede": [
       "apps/web/src/screens/Malikane.tsx:231"
     ]
@@ -7043,7 +6979,7 @@
   "tb27f170d": {
     "grup": "arayuz",
     "tr": "Sunucu uykudan uyanıyor olabilir. Bu ilk açılışta 30–60 saniye sürebilir.",
-    "en": "",
+    "en": "The server might be waking up from sleep. This can take 30–60 seconds on the first launch.",
     "nerede": [
       "apps/web/src/App.tsx:330"
     ]
@@ -7051,7 +6987,7 @@
   "t0a0f8af7": {
     "grup": "arayuz",
     "tr": "Sunucuya ulaşılamıyor. Uykudaki sunucu uyanıyor olabilir, bu 30–60 saniye sürebilir.",
-    "en": "",
+    "en": "Server unreachable. The sleeping server might be waking up, this can take 30–60 seconds.",
     "nerede": [
       "apps/web/src/components/BaglantiDurumu.tsx:42"
     ]
@@ -7083,7 +7019,7 @@
   "t16aafb87": {
     "grup": "arayuz",
     "tr": "Susturma kaldırılamadı.",
-    "en": "",
+    "en": "Mute could not be lifted.",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:53"
     ]
@@ -7091,7 +7027,7 @@
   "ta6e05d38": {
     "grup": "arayuz",
     "tr": "Susturmayı kaldır",
-    "en": "",
+    "en": "Lift mute",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:233"
     ]
@@ -7099,7 +7035,7 @@
   "tededc44c": {
     "grup": "arayuz",
     "tr": "SUSTURULMUŞ",
-    "en": "",
+    "en": "MUTED",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:153"
     ]
@@ -7175,7 +7111,7 @@
   "t8a5a4437": {
     "grup": "arayuz",
     "tr": "Şehir",
-    "en": "",
+    "en": "City",
     "nerede": [
       "apps/web/src/components/HedefSeridi.tsx:21",
       "apps/web/src/components/MobilKabuk.tsx:61",
@@ -7187,7 +7123,7 @@
   "tfefb225a": {
     "grup": "arayuz",
     "tr": "Şikâyet et",
-    "en": "",
+    "en": "Report",
     "nerede": [
       "apps/web/src/components/SikayetSayfasi.tsx:117",
       "apps/web/src/screens/Siralama.tsx:112"
@@ -7222,7 +7158,7 @@
   "tca312c06": {
     "grup": "arayuz",
     "tr": "Şikâyetin alındı. Bir yönetici inceleyecek.",
-    "en": "",
+    "en": "Your report is received. An admin will review it.",
     "nerede": [
       "apps/web/src/components/SikayetSayfasi.tsx:49"
     ]
@@ -7247,7 +7183,7 @@
   "t6ef56307": {
     "grup": "arayuz",
     "tr": "şöhret",
-    "en": "",
+    "en": "fame",
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:96",
       "apps/web/src/components/IttifakIncele.tsx:73",
@@ -7310,7 +7246,7 @@
   "teb231933": {
     "grup": "arayuz",
     "tr": "Şu an",
-    "en": "",
+    "en": "Currently",
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:103"
     ]
@@ -7334,7 +7270,7 @@
   "t3e811117": {
     "grup": "arayuz",
     "tr": "Şu anki tavanın {0} — bu araştırma {1} ekler.",
-    "en": "",
+    "en": "Your current cap is {0} — this research adds {1}.",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:38"
     ]
@@ -7379,7 +7315,7 @@
   "te9b9ec08": {
     "grup": "arayuz",
     "tr": "Tahkimat yok — mancınık canlı orduya",
-    "en": "",
+    "en": "No fortification — catapults against live army",
     "nerede": [
       "apps/web/src/components/KarsiIpuclari.tsx:86"
     ]
@@ -7427,7 +7363,7 @@
   "tdb506b31": {
     "grup": "arayuz",
     "tr": "Taht Kalesi",
-    "en": "",
+    "en": "Throne Citadel",
     "nerede": [
       "apps/web/src/components/HedefSeridi.tsx:23",
       "apps/web/src/screens/Harita.tsx:1054",
@@ -7448,7 +7384,7 @@
   "t7f1d33d3": {
     "grup": "arayuz",
     "tr": "Taht Kalesi haritada altın çerçeveyle işaretli.",
-    "en": "",
+    "en": "Throne Citadel is marked with a gold frame on the map.",
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:111"
     ]
@@ -7456,7 +7392,7 @@
   "ta429b494": {
     "grup": "arayuz",
     "tr": "Taht Kalesi haritada işaretli.",
-    "en": "",
+    "en": "Throne Citadel is marked on the map.",
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:146"
     ]
@@ -7464,7 +7400,7 @@
   "tfdb3f0a7": {
     "grup": "arayuz",
     "tr": "taht sahipsiz",
-    "en": "",
+    "en": "throne is unowned",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:49"
     ]
@@ -7472,7 +7408,7 @@
   "tf4ea0a0b": {
     "grup": "arayuz",
     "tr": "Tahtı tutan",
-    "en": "",
+    "en": "Holding the throne",
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:93"
     ]
@@ -7480,7 +7416,7 @@
   "t54668018": {
     "grup": "arayuz",
     "tr": "Takas ediliyor…",
-    "en": "",
+    "en": "Trading…",
     "nerede": [
       "apps/web/src/components/Pazar.tsx:185"
     ]
@@ -7488,7 +7424,7 @@
   "t725359e0": {
     "grup": "arayuz",
     "tr": "Takas et",
-    "en": "",
+    "en": "Trade",
     "nerede": [
       "apps/web/src/components/Pazar.tsx:185"
     ]
@@ -7496,7 +7432,7 @@
   "tedbadbc0": {
     "grup": "arayuz",
     "tr": "Takas yapılamadı.",
-    "en": "",
+    "en": "Trade failed.",
     "nerede": [
       "apps/web/src/components/Pazar.tsx:76"
     ]
@@ -7504,7 +7440,7 @@
   "t655690a1": {
     "grup": "arayuz",
     "tr": "Taktik",
-    "en": "",
+    "en": "Tactic",
     "nerede": [
       "apps/web/src/components/DizilimIzgarasi.tsx:389"
     ]
@@ -7544,7 +7480,7 @@
   "tdc01c291": {
     "grup": "arayuz",
     "tr": "tamamlandı",
-    "en": "",
+    "en": "completed",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:164"
     ]
@@ -7568,7 +7504,7 @@
   "tc3531f23": {
     "grup": "arayuz",
     "tr": "Tarla",
-    "en": "",
+    "en": "Farm",
     "nerede": [
       "apps/web/src/components/HedefSeridi.tsx:19",
       "apps/web/src/screens/Harita.tsx:63",
@@ -7602,7 +7538,7 @@
   "t215646a3": {
     "grup": "arayuz",
     "tr": "tek araştırma",
-    "en": "",
+    "en": "single research",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:103"
     ]
@@ -7626,7 +7562,7 @@
   "t6140f977": {
     "grup": "arayuz",
     "tr": "Teknik ayrıntı",
-    "en": "",
+    "en": "Technical detail",
     "nerede": [
       "apps/web/src/components/HataSiniri.tsx:47"
     ]
@@ -7666,7 +7602,7 @@
   "tde533a1f": {
     "grup": "arayuz",
     "tr": "Topraklarım{0}",
-    "en": "",
+    "en": "My Lands{0}",
     "nerede": [
       "apps/web/src/screens/Malikane.tsx:157"
     ]
@@ -7739,7 +7675,7 @@
   "t9a9e52c9": {
     "grup": "arayuz",
     "tr": "Uzaklaştır",
-    "en": "",
+    "en": "Zoom out",
     "nerede": [
       "apps/web/src/components/DunyaHaritasi.tsx:751"
     ]
@@ -7755,7 +7691,7 @@
   "t34326fe0": {
     "grup": "arayuz",
     "tr": "Üç görevi de bitirince alınır (",
-    "en": "",
+    "en": "Claimed when all three quests are finished (",
     "nerede": [
       "apps/web/src/components/GunlukKart.tsx:164"
     ]
@@ -7763,7 +7699,7 @@
   "tf82e7a3d": {
     "grup": "arayuz",
     "tr": "ÜÇÜNCÜ",
-    "en": "",
+    "en": "THIRD",
     "nerede": [
       "apps/web/src/components/DizilimIzgarasi.tsx:53"
     ]
@@ -7846,7 +7782,7 @@
   "t5ad62e9f": {
     "grup": "arayuz",
     "tr": "Vazgeç",
-    "en": "",
+    "en": "Cancel",
     "nerede": [
       "apps/web/src/components/IttifakDuyuru.tsx:83",
       "apps/web/src/components/SikayetSayfasi.tsx:114",
@@ -7872,7 +7808,7 @@
   "t4e6aeb27": {
     "grup": "arayuz",
     "tr": "VERECEĞİN",
-    "en": "",
+    "en": "YOU WILL GIVE",
     "nerede": [
       "apps/web/src/components/Pazar.tsx:110"
     ]
@@ -7904,7 +7840,7 @@
   "te30b10c9": {
     "grup": "arayuz",
     "tr": "vuruyor",
-    "en": "",
+    "en": "hitting",
     "nerede": [
       "apps/web/src/components/KarsiIpuclari.tsx:87"
     ]
@@ -7922,7 +7858,7 @@
   "t48ccccf2": {
     "grup": "arayuz",
     "tr": "yağma",
-    "en": "",
+    "en": "loot",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:76",
       "apps/web/src/components/SavasRaporu.tsx:228",
@@ -7949,7 +7885,7 @@
   "t8e60ca24": {
     "grup": "arayuz",
     "tr": "yağma alır",
-    "en": "",
+    "en": "takes loot",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:68"
     ]
@@ -7965,7 +7901,7 @@
   "t88e04ff0": {
     "grup": "arayuz",
     "tr": "Yakınlaştır",
-    "en": "",
+    "en": "Zoom in",
     "nerede": [
       "apps/web/src/components/DunyaHaritasi.tsx:746"
     ]
@@ -8037,7 +7973,7 @@
   "tc4aede4f": {
     "grup": "arayuz",
     "tr": "Yaz",
-    "en": "",
+    "en": "Type",
     "nerede": [
       "apps/web/src/components/IttifakSohbet.tsx:142"
     ]
@@ -8045,7 +7981,7 @@
   "ta45efa0f": {
     "grup": "arayuz",
     "tr": "YAZ",
-    "en": "",
+    "en": "WRITE",
     "nerede": [
       "apps/web/src/components/IttifakDuyuru.tsx:62"
     ]
@@ -8061,7 +7997,7 @@
   "tc999bb1a": {
     "grup": "arayuz",
     "tr": "yeni",
-    "en": "",
+    "en": "new",
     "nerede": [
       "apps/web/src/components/Basarimlar.tsx:74"
     ]
@@ -8101,7 +8037,7 @@
   "t62db8630": {
     "grup": "arayuz",
     "tr": "Yeni lord kalkanı",
-    "en": "",
+    "en": "New lord shield",
     "nerede": [
       "apps/web/src/screens/Malikane.tsx:135"
     ]
@@ -8150,7 +8086,7 @@
   "t30cd1f85": {
     "grup": "arayuz",
     "tr": "Yeniden dene",
-    "en": "",
+    "en": "Try again",
     "nerede": [
       "apps/web/src/App.tsx:335"
     ]
@@ -8184,7 +8120,7 @@
   "t46b8c0de": {
     "grup": "arayuz",
     "tr": "yok",
-    "en": "",
+    "en": "none",
     "nerede": [
       "apps/web/src/components/ArmaSecici.tsx:179"
     ]
@@ -8192,7 +8128,7 @@
   "t15ceec85": {
     "grup": "arayuz",
     "tr": "Yok say",
-    "en": "",
+    "en": "Ignore",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:191"
     ]
@@ -8200,7 +8136,7 @@
   "tf0bd371a": {
     "grup": "arayuz",
     "tr": "Yola çıkıyor…",
-    "en": "",
+    "en": "Departing…",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:95",
       "apps/web/src/screens/Harita.tsx:383"
@@ -8209,7 +8145,7 @@
   "t60a8f3a9": {
     "grup": "arayuz",
     "tr": "YÖNET",
-    "en": "",
+    "en": "MANAGE",
     "nerede": [
       "apps/web/src/screens/Malikane.tsx:208"
     ]
@@ -8250,7 +8186,7 @@
   "tf966496b": {
     "grup": "arayuz",
     "tr": "Yükleniyor",
-    "en": "",
+    "en": "Loading",
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:124",
       "apps/web/src/components/Omurga.tsx:475",
@@ -8310,7 +8246,7 @@
   "ta72a3c94": {
     "grup": "arayuz",
     "tr": "yürüyüş",
-    "en": "",
+    "en": "march",
     "nerede": [
       "apps/web/src/components/HedefSeridi.tsx:71"
     ]
@@ -8384,7 +8320,7 @@
   "t9c828d99": {
     "grup": "arayuz",
     "tr": "Zemin rengi",
-    "en": "",
+    "en": "Background color",
     "nerede": [
       "apps/web/src/components/ArmaSecici.tsx:147"
     ]
