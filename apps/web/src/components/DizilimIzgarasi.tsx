@@ -273,9 +273,7 @@ export function DizilimIzgarasi({
               <span>{unitName(t)}</span>
               <span className="text-solgun">{ordu[t]}</span>
               {kareSayisi > 0 && (
-                <span className="rounded bg-altin/20 px-1 text-[10px] text-altin">
-                  {kareSayisi} kare
-                </span>
+                <span className="rounded bg-altin/20 px-1 text-[10px] text-altin">{`${kareSayisi} kare`}</span>
               )}
             </button>
           );
@@ -368,9 +366,7 @@ export function DizilimIzgarasi({
             className={
               etki.saldiri > 0 ? 'text-yesil' : etki.saldiri < 0 ? 'text-kirmizi' : 'text-solgun'
             }
-          >
-            {yuzde(etki.saldiri)} saldırı · {yuzde(etki.savunma)} savunma
-          </span>
+          >{`${yuzde(etki.saldiri)} saldırı · ${yuzde(etki.savunma)} savunma`}</span>
         </div>
         {etki.satirlar.length > 0 && (
           <ul className="mt-1.5 space-y-1 border-t border-cerceve/50 pt-1.5">

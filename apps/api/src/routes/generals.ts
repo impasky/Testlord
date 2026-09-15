@@ -63,8 +63,7 @@ export async function generalRoutes(app: FastifyInstance): Promise<void> {
       const state = await tickLord(lordId, new Date(), tx);
       if (state.resources.altin < def.maliyet_altin) {
         throw new GameError(
-          `${def.ad} için ${def.maliyet_altin.toLocaleString('tr-TR')} altın gerekiyor, ` +
-            `${Math.floor(state.resources.altin).toLocaleString('tr-TR')} altının var.`,
+          `${def.ad} için ${def.maliyet_altin.toLocaleString('tr-TR')} altın gerekiyor, ${Math.floor(state.resources.altin).toLocaleString('tr-TR')} altının var.`,
           400,
           'YETERSIZ_KAYNAK',
         );

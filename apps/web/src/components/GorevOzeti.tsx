@@ -58,14 +58,14 @@ export function GorevOzeti({ onGit }: { onGit: () => void }) {
         <span className="baslik shrink-0 text-[11px] text-solgun">GÖREVLER</span>
         <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
           {sayac && (
-            <Hap renk={sayac.tamam === sayac.toplam ? 'var(--color-yesil)' : undefined}>
-              bugün {sayac.tamam}/{sayac.toplam}
-            </Hap>
+            <Hap
+              renk={sayac.tamam === sayac.toplam ? 'var(--color-yesil)' : undefined}
+            >{`bugün ${sayac.tamam}/${sayac.toplam}`}</Hap>
           )}
           {s.data && (
-            <Hap renk={s.data.sefer.tamam ? 'var(--color-yesil)' : undefined}>
-              sefer {s.data.sefer.simdi}/{s.data.sefer.hedef}
-            </Hap>
+            <Hap
+              renk={s.data.sefer.tamam ? 'var(--color-yesil)' : undefined}
+            >{`sefer ${s.data.sefer.simdi}/${s.data.sefer.hedef}`}</Hap>
           )}
         </div>
         <span className="baslik shrink-0 text-[11px] text-altin">

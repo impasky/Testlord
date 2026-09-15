@@ -85,7 +85,7 @@ export function GunlukKart({
       <Kart className="p-3" vurgu={hepsi ? 'var(--color-yesil)' : undefined}>
         {seri > 1 && (
           <p className="mb-2 text-[12px] text-solgun">
-            <strong className="text-altin">{seri} gün</strong> üst üste giriyorsun.
+            <strong className="text-altin">{`${seri} gün`}</strong> üst üste giriyorsun.
           </p>
         )}
         <ul className="space-y-1.5">
@@ -129,9 +129,7 @@ export function GunlukKart({
           <div className="flex items-baseline justify-between gap-2">
             <span className="baslik text-[11px] text-solgun">Günün ödülü</span>
             {odul.seriCarpani > 1 && (
-              <span className="tabular text-[11px] text-altin">
-                seri ×{odul.seriCarpani.toFixed(1)}
-              </span>
+              <span className="tabular text-[11px] text-altin">{`seri ×${odul.seriCarpani.toFixed(1)}`}</span>
             )}
           </div>
           <div className="mt-1 text-[12px] text-parsomen">
@@ -139,9 +137,7 @@ export function GunlukKart({
           </div>
 
           {odul.alindi ? (
-            <p className="mt-2 text-[12px] text-yesil">
-              Bugünün ödülü alındı. Yarın seri {seri + 1} olur, ödül de büyür.
-            </p>
+            <p className="mt-2 text-[12px] text-yesil">{`Bugünün ödülü alındı. Yarın seri ${seri + 1} olur, ödül de büyür.`}</p>
           ) : odul.hakEdildi ? (
             <>
               <Buton
@@ -160,9 +156,7 @@ export function GunlukKart({
               )}
             </>
           ) : (
-            <p className="mt-2 text-[12px] text-sonuk">
-              Üç görevi de bitirince alınır ({tamam}/{toplam}).
-            </p>
+            <p className="mt-2 text-[12px] text-sonuk">{`Üç görevi de bitirince alınır (${tamam}/${toplam}).`}</p>
           )}
         </div>
       </Kart>

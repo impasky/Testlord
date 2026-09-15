@@ -73,6 +73,12 @@ const OPERASYON = [
    * değişmiyor; dosyanın geri kalanı zaten geliştirici metni.
    */
   'apps/api/src/services/demoWorld.ts',
+  /*
+   * Geliştirme rotaları. `index.ts` bunları yalnız NODE_ENV !== 'production'
+   * iken bağlıyor — üretimde kayıtlı bile değiller. Hata metinleri
+   * ("key gerekli.") testlere ve geliştiriciye çıkıyor.
+   */
+  'apps/api/src/routes/dev.ts',
 ];
 
 function dosyalar(kok, uzantilar) {

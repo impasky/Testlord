@@ -5,7 +5,7 @@
  * görmeli. Üretim ve yükseltme kuyrukları düğmelerin altında beliriyor,
  * yapılamayan işlemin düğmesi kapalı ve sebebi yazılı.
  */
-import { EQUIP_SLOTS, B, lordContribution, type EquippedItem } from '@lordlar/shared';
+import { EQUIP_SLOTS, B, etkiAdi, lordContribution, type EquippedItem } from '@lordlar/shared';
 import type { Sekme } from '../components/MobilKabuk';
 import { BosHal } from '../components/BosHal';
 import { Gorsel } from '../components/Gorsel';
@@ -77,10 +77,9 @@ function GucFarki({ fark }: { fark: number }) {
   }
   const iyi = fark > 0;
   return (
-    <span className={`tabular text-[11px] font-bold ${iyi ? 'text-yesil' : 'text-kirmizi'}`}>
-      {iyi ? '+' : ''}
-      {formatSayi(fark)} güç
-    </span>
+    <span
+      className={`tabular text-[11px] font-bold ${iyi ? 'text-yesil' : 'text-kirmizi'}`}
+    >{`${iyi ? '+' : ''}${formatSayi(fark)} güç`}</span>
   );
 }
 
@@ -148,16 +147,10 @@ function KusanmaSonucu({ etki, onKapat }: { etki: EkipmanEtkisiDto; onKapat: () 
           // Fark ölçülemiyorsa susmak, "ne işe yaradı" sorusunu yine
           // cevapsız bırakırdı. Dürüst cevap: bu parça tek başına savaşı
           // çevirmiyor.
-          <p className="mt-1.5 text-[12px] leading-snug text-solgun">
-            {eYonelme(etki.hedef.name)} saldırında kaybın değişmiyor ({etki.kayipSonrasi} birim).
-            Tek bir parça savaşı çevirmiyor; etkisini görmek için daha üst tier ekipman ya da daha
-            büyük bir ordu gerekiyor.
-          </p>
+          <p className="mt-1.5 text-[12px] leading-snug text-solgun">{`${eYonelme(etki.hedef.name)} saldırında kaybın değişmiyor (${etki.kayipSonrasi} birim). Tek bir parça savaşı çevirmiyor; etkisini görmek için daha üst tier ekipman ya da daha büyük bir ordu gerekiyor.`}</p>
         ))}
       {etki.hedef && !etki.kazanirOncesi && etki.kazanirSonrasi && (
-        <p className="mt-1.5 text-[12px] leading-snug text-yesil">
-          Bu ekipmanla {etki.hedef.name} artık kazanılabilir hâle geldi.
-        </p>
+        <p className="mt-1.5 text-[12px] leading-snug text-yesil">{`Bu ekipmanla ${etki.hedef.name} artık kazanılabilir hâle geldi.`}</p>
       )}
       {etki.hedef === null && etki.neden !== null && (
         <p className="mt-1.5 text-[11px] leading-snug text-solgun">
@@ -229,9 +222,7 @@ function EsyaKarti({
             boyut={56}
             className="h-full w-full"
             yedek={
-              <span className="baslik text-[15px]" style={{ color: renk }}>
-                T{item.tier}
-              </span>
+              <span className="baslik text-[15px]" style={{ color: renk }}>{`T${item.tier}`}</span>
             }
           />
         </div>
@@ -239,7 +230,7 @@ function EsyaKarti({
         <div className="min-w-0 flex-1">
           <h3 className="baslik truncate text-[13px]">
             {SLOT_ADI[item.slot]}
-            <span className="ml-1.5 text-solgun">T{item.tier}</span>
+            <span className="ml-1.5 text-solgun">{`T${item.tier}`}</span>
             {item.upgradeLevel > 0 && <span className="ml-1 text-altin">+{item.upgradeLevel}</span>}
           </h3>
           <Rozet renk={renk} className="mt-1">
@@ -289,21 +280,24 @@ function EsyaKarti({
           </Buton>
         )}
         {!item.equipped && (
-          <Buton tur="anahat" boy="kucuk" onClick={onSell} disabled={bekleyenEylem !== null}>
-            Sat {formatSayi(item.sellValue)}
-          </Buton>
+          <Buton
+            tur="anahat"
+            boy="kucuk"
+            onClick={onSell}
+            disabled={bekleyenEylem !== null}
+          >{`Sat ${formatSayi(item.sellValue)}`}</Buton>
         )}
       </div>
 
       {item.upgradeCost && (
         <p className="tabular mt-1.5 text-[11px] text-sonuk">
-          <span className={item.upgradeCost.altin > kaynaklar.altin ? 'text-kirmizi' : ''}>
-            {formatSayi(item.upgradeCost.altin)} altın
-          </span>
+          <span
+            className={item.upgradeCost.altin > kaynaklar.altin ? 'text-kirmizi' : ''}
+          >{`${formatSayi(item.upgradeCost.altin)} altın`}</span>
           {' · '}
-          <span className={item.upgradeCost.demir > kaynaklar.demir ? 'text-kirmizi' : ''}>
-            {formatSayi(item.upgradeCost.demir)} demir
-          </span>
+          <span
+            className={item.upgradeCost.demir > kaynaklar.demir ? 'text-kirmizi' : ''}
+          >{`${formatSayi(item.upgradeCost.demir)} demir`}</span>
           {(item.upgradeChance ?? 1) < 1 && ' · başarısızsa eşya sağlam kalır'}
         </p>
       )}
@@ -533,9 +527,7 @@ export function Demirhane({
                     <>
                       Üretimde
                       {uretimKuyrugu.length > 1 && (
-                        <span className="ml-1 font-normal text-solgun">
-                          ({uretimKuyrugu.length} parça)
-                        </span>
+                        <span className="ml-1 font-normal text-solgun">{`(${uretimKuyrugu.length} parça)`}</span>
                       )}
                     </>
                   }
@@ -620,7 +612,7 @@ export function Demirhane({
                       </span>
                     </div>
                     <p className="text-[11px] text-solgun">
-                      {g.etki.replace('ordu_', 'Ordu ')} +%{Math.round(g.bonus * 100)}
+                      {etkiAdi(g.etki)} +%{Math.round(g.bonus * 100)}
                     </p>
                   </div>
                 </div>
@@ -641,25 +633,19 @@ export function Demirhane({
                               mut.mutate({ anahtar, f: () => api.upgradeGear(g.line) })
                             }
                             disabled={gonderilen === anahtar || engel !== null}
-                          >
-                            Seviye {g.level + 1}
-                          </Buton>
+                          >{`Seviye ${g.level + 1}`}</Buton>
                           <span className="tabular text-[11px] text-sonuk">
                             <span
                               className={
                                 g.nextCost.altin > lord.resources.altin ? 'text-kirmizi' : ''
                               }
-                            >
-                              {formatSayi(g.nextCost.altin)} altın
-                            </span>
+                            >{`${formatSayi(g.nextCost.altin)} altın`}</span>
                             {' · '}
                             <span
                               className={
                                 g.nextCost.demir > lord.resources.demir ? 'text-kirmizi' : ''
                               }
-                            >
-                              {formatSayi(g.nextCost.demir)} demir
-                            </span>
+                            >{`${formatSayi(g.nextCost.demir)} demir`}</span>
                             {' · '}
                             {formatKalan(g.nextCost.sec * 1000)}
                           </span>

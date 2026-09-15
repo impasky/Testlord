@@ -26,6 +26,5 @@ console.log('\nVAPID anahtar çifti üretildi. Sunucunun ortamına ekle:\n');
 console.log(`VAPID_ACIK_ANAHTAR=${publicKey}`);
 console.log(`VAPID_GIZLI_ANAHTAR=${privateKey}`);
 console.log(
-  '\nGizli anahtarı depoya yazma. Anahtarı değiştirmek bütün abonelikleri\n' +
-    'geçersiz kılar — oyuncular izni yeniden vermek zorunda kalır.\n',
+  '\nGizli anahtarı depoya yazma. Anahtarı değiştirmek bütün abonelikleri\ngeçersiz kılar — oyuncular izni yeniden vermek zorunda kalır.\n',
 );

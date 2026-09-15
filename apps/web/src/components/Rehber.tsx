@@ -70,9 +70,7 @@ export function Rehber({
               bilmeyen bir şey olmadığını söylüyor. */}
           <div className="flex items-baseline justify-between gap-2">
             <span className="baslik text-[11px] text-mavi">{REHBER.ad}</span>
-            <span className="tabular shrink-0 text-[11px] text-sonuk">
-              {ilerleme.biten}/{ilerleme.toplam} adım
-            </span>
+            <span className="tabular shrink-0 text-[11px] text-sonuk">{`${ilerleme.biten}/${ilerleme.toplam} adım`}</span>
           </div>
           {/* Kâhyanın sözü EYLEMİ değil sebebi söyler; eylemin kendisi
               hemen altındaki omurga düğmesinde yazıyor. */}

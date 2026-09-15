@@ -34,8 +34,7 @@ export function ipuclari(): Ipucu[] {
     {
       baslik: 'Sayı değil, eşleşme kazandırır',
       metin:
-        'Mızrakçı süvariyi, süvari okçuyu, okçu mızrakçıyı yer. Karşıdakinin ne tuttuğunu ' +
-        'bilmek, iki katı asker toplamaktan ucuza gelir.',
+        'Mızrakçı süvariyi, süvari okçuyu, okçu mızrakçıyı yer. Karşıdakinin ne tuttuğunu bilmek, iki katı asker toplamaktan ucuza gelir.',
     },
     {
       baslik: 'Erzak eksiye düşerse ordu dağılır',

@@ -97,20 +97,14 @@ export function KaynakGonder({ uyeler, benimId }: { uyeler: IttifakUyesiDto[]; b
 
         {/* Frenler açıkça yazıyor: görünmeyen fren, reddedilen bir
             gönderimle karşılaşıp nedenini anlamamak demek. */}
-        <p className="mt-1.5 text-[11px] text-sonuk">
-          Kaynak yolda vakit geçirir. Bugün {formatSayi(kalanTavan)} / {formatSayi(gunlukTavan)}{' '}
-          değerinde daha gönderebilirsin.
-        </p>
+        <p className="mt-1.5 text-[11px] text-sonuk">{`Kaynak yolda vakit geçirir. Bugün ${formatSayi(kalanTavan)} / ${formatSayi(gunlukTavan)}${' '}değerinde daha gönderebilirsin.`}</p>
         {hata && <EngelNotu kisa={hata} uzun="Miktarı ve alıcıyı gözden geçir." />}
 
         {(giden.length > 0 || gelen.length > 0) && (
           <ul className="mt-2.5 space-y-1 border-t border-kenar/70 pt-2.5 text-[12px]">
             {giden.map((s) => (
               <li key={s.id} className="flex items-baseline justify-between gap-2">
-                <span className="min-w-0 truncate text-solgun">
-                  → {s.kime}: {formatSayi(s.yuk.altin)}a · {formatSayi(s.yuk.demir)}d ·{' '}
-                  {formatSayi(s.yuk.erzak)}e
-                </span>
+                <span className="min-w-0 truncate text-solgun">{`→ ${s.kime}: ${formatSayi(s.yuk.altin)}a · ${formatSayi(s.yuk.demir)}d ·${' '}${formatSayi(s.yuk.erzak)}e`}</span>
                 <span className="tabular shrink-0 text-sonuk">
                   {formatKalan(new Date(s.arriveAt).getTime() - Date.now())}
                 </span>
@@ -118,10 +112,7 @@ export function KaynakGonder({ uyeler, benimId }: { uyeler: IttifakUyesiDto[]; b
             ))}
             {gelen.map((s) => (
               <li key={s.id} className="flex items-baseline justify-between gap-2">
-                <span className="min-w-0 truncate text-yesil">
-                  ← {s.kimden}: {formatSayi(s.yuk.altin)}a · {formatSayi(s.yuk.demir)}d ·{' '}
-                  {formatSayi(s.yuk.erzak)}e
-                </span>
+                <span className="min-w-0 truncate text-yesil">{`← ${s.kimden}: ${formatSayi(s.yuk.altin)}a · ${formatSayi(s.yuk.demir)}d ·${' '}${formatSayi(s.yuk.erzak)}e`}</span>
                 <span className="tabular shrink-0 text-sonuk">
                   {formatKalan(new Date(s.arriveAt).getTime() - Date.now())}
                 </span>

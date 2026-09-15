@@ -79,16 +79,14 @@ export function IttifakBagis() {
     <Bolum
       baslik={`İttifak Seviyesi · ${d.seviye.seviye}`}
       yan={
-        <span className="tabular text-[11px] text-sonuk">
-          {d.kalanHak}/{d.gunlukHak} bağış hakkı
-        </span>
+        <span className="tabular text-[11px] text-sonuk">{`${d.kalanHak}/${d.gunlukHak} bağış hakkı`}</span>
       }
     >
       <Kart className="p-3" vurgu="var(--color-altin)">
         {/* Seviye çubuğu: ortak emeğin nerede olduğunu tek bakışta
             söylüyor. Azami seviyede eşik yok, çubuk dolu kalıyor. */}
         <div className="mb-1 flex items-baseline justify-between gap-2">
-          <span className="baslik text-[13px] text-altin">{d.seviye.seviye}. Seviye</span>
+          <span className="baslik text-[13px] text-altin">{`${d.seviye.seviye}. Seviye`}</span>
           <span className="tabular text-[11px] text-solgun">
             {d.seviye.sonrakiEsik === null
               ? 'en üst seviye'
@@ -124,8 +122,8 @@ export function IttifakBagis() {
             </Hap>
           </div>
           <p className="mb-2.5 text-[11.5px] text-solgun">
-            İttifaka <strong className="text-altin">+{formatSayi(d.kazandiracakXp)} XP</strong>,
-            sana <strong className="text-yesil">+{d.odul.xp} lord XP</strong>.
+            İttifaka <strong className="text-altin">{`+${formatSayi(d.kazandiracakXp)} XP`}</strong>
+            , sana <strong className="text-yesil">{`+${d.odul.xp} lord XP`}</strong>.
           </p>
 
           {engel ? (

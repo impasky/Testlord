@@ -121,7 +121,20 @@ export const METIN_NITELIGI = new Set([
  */
 export function bicimListesiMi(s) {
   const parcalar = s.trim().split(/\s+/);
-  return parcalar.length > 1 && parcalar.every((p) => /^[a-z0-9]+[-:/[][\S]*$/i.test(p));
+  if (parcalar.length < 2) return false;
+  /*
+   * Her parça ASCII küçük harfli bir belirteç olmalı — Türkçe harf ya da
+   * cümle noktalaması taşıyan bir parça listeyi metin yapar.
+   *
+   * Ama `fixed z-[55] bg-black/72 ...` listesinde `fixed`in ayracı yok.
+   * "HER parçada ayraç olsun" diyen ilk hâl bu yüzden tüm listeyi
+   * kaçırdı ve bir perde sınıfı çeviri listesine düştü. Ölçüt
+   * ÇOĞUNLUK: ayraçsız birkaç yardımcı sınıf olabilir, ayraçsız bir
+   * CÜMLE olamaz.
+   */
+  if (!parcalar.every((p) => /^[a-z0-9]+([-:/[][\S]*)?$/.test(p))) return false;
+  const ayracli = parcalar.filter((p) => /[-:/[]/.test(p)).length;
+  return ayracli * 2 >= parcalar.length;
 }
 
 /** Ekrana çizildiği kesin olanın tek şartı: içinde harf olsun, biçim olmasın. */
@@ -257,6 +270,21 @@ export function atlanirMi(node) {
 
   // `case 'acik':` — yine kod değeri.
   if (ts.isCaseClause(p)) return true;
+
+  /*
+   * `console.error(\`Yürüyüş çözülemedi (${id}):\`, e)` — SUNUCU GÜNLÜĞÜ.
+   *
+   * Worker'ın kendi kendine yazdığı satır; hiçbir oyuncu görmüyor.
+   * Çevrilseydi de zararı vardı: günlüğü okuyan kişi sunucunun dilini
+   * değil, son oyuncunun seçtiği dili okurdu.
+   */
+  if (
+    ts.isCallExpression(p) &&
+    p.arguments.includes(node) &&
+    ts.isPropertyAccessExpression(p.expression) &&
+    p.expression.expression.getText() === 'console'
+  )
+    return true;
 
   // Ayar ya da protokol taşıyan nesne özelliği: `timeWindow: '1 minute'`.
   if (ts.isPropertyAssignment(p) && p.initializer === node) {

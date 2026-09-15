@@ -99,11 +99,7 @@ export function Arastirma({ depoTavani }: { depoTavani: number }) {
           </span>
         </div>
         <Ilerleme deger={ilerleme.biten} max={Math.max(1, ilerleme.toplam)} />
-        <p className="mt-1.5 text-[11px] leading-snug text-solgun">
-          Aynı anda {esZamanli === 1 ? 'tek araştırma' : `${esZamanli} araştırma`} yürütebilirsin —
-          kütüphaneni yükseltirsen artar. Sıra senin kararın: önce ekonomiyi mi büyütürsün, orduyu
-          mu?
-        </p>
+        <p className="mt-1.5 text-[11px] leading-snug text-solgun">{`Aynı anda ${esZamanli === 1 ? 'tek araştırma' : `${esZamanli} araştırma`} yürütebilirsin — kütüphaneni yükseltirsen artar. Sıra senin kararın: önce ekonomiyi mi büyütürsün, orduyu mu?`}</p>
       </Kart>
 
       {/* Süren araştırmaların HEPSİ: kütüphane ikinciye izin veriyorsa
@@ -216,7 +212,7 @@ export function Arastirma({ depoTavani }: { depoTavani: number }) {
                             {kuyrukDolu ? 'Araştırma kuyruğu dolu' : 'Başlat'}
                           </Buton>
                         ) : (
-                          <p className="mt-2 text-[11px] text-solgun">Kilitli — {d.engel}</p>
+                          <p className="mt-2 text-[11px] text-solgun">{`Kilitli — ${d.engel}`}</p>
                         )}
                       </>
                     )}

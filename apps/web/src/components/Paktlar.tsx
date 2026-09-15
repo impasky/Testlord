@@ -126,11 +126,7 @@ export function Paktlar({ liste }: { liste: IttifakListesiDto[] }) {
               )}
             </Satir>
             {p.durum === 'feshediliyor' && p.kalanSn !== null && (
-              <p className="mt-1.5 text-[11px] text-turuncu">
-                {p.benMiFeshettim ? 'Feshettin' : 'Karşı taraf feshetti'} — pakt{' '}
-                {formatKalan(p.kalanSn * 1000)} sonra sona eriyor. O ana kadar iki taraf da
-                saldıramaz.
-              </p>
+              <p className="mt-1.5 text-[11px] text-turuncu">{`${p.benMiFeshettim ? 'Feshettin' : 'Karşı taraf feshetti'} — pakt${' '}${formatKalan(p.kalanSn * 1000)} sonra sona eriyor. O ana kadar iki taraf da saldıramaz.`}</p>
             )}
           </Kart>
         ))}
@@ -159,8 +155,8 @@ export function Paktlar({ liste }: { liste: IttifakListesiDto[] }) {
             <p className="baslik mb-2 text-[11px] text-solgun">YENİ PAKT TEKLİF ET</p>
             <p className="mb-2.5 text-[11.5px] leading-snug text-sonuk">
               Pakt iki tarafın da onayıyla kurulur. Feshetmek anında değil:{' '}
-              <strong className="text-turuncu">{d.ihbarSaat} saat</strong> ihbar süresi boyunca pakt
-              hâlâ korur — söz verdiğin an geri alınamıyor, o yüzden söz değerli.
+              <strong className="text-turuncu">{`${d.ihbarSaat} saat`}</strong> ihbar süresi boyunca
+              pakt hâlâ korur — söz verdiğin an geri alınamıyor, o yüzden söz değerli.
             </p>
             {kotaDoldu ? (
               <EngelNotu
@@ -179,9 +175,10 @@ export function Paktlar({ liste }: { liste: IttifakListesiDto[] }) {
                 >
                   <option value="">İttifak seç…</option>
                   {adaylar.map((a) => (
-                    <option key={a.id} value={a.id}>
-                      [{a.etiket}] {a.ad} · {a.uyeSayisi} üye
-                    </option>
+                    <option
+                      key={a.id}
+                      value={a.id}
+                    >{`[${a.etiket}] ${a.ad} · ${a.uyeSayisi} üye`}</option>
                   ))}
                 </select>
                 <Buton

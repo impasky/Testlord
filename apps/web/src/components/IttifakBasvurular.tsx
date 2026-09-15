@@ -146,7 +146,7 @@ export function IttifakBasvurular() {
                     <span className="min-w-0 flex-1 truncate text-[13px] font-bold">
                       {b.lord.ad}
                     </span>
-                    <Rozet>Sv {b.lord.seviye}</Rozet>
+                    <Rozet>{`Sv ${b.lord.seviye}`}</Rozet>
                     <span className="tabular shrink-0 text-[12px] text-solgun">
                       {formatSayi(b.lord.sohret)}
                     </span>

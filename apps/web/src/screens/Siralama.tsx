@@ -94,9 +94,7 @@ function Satir({
             <span className="truncate text-[13px] font-medium">{r.name}</span>
             {r.tahtSahibi && <Rozet renk="var(--color-altin)">DİYARIN LORDU</Rozet>}
           </div>
-          <div className="truncate text-[11px] text-sonuk">
-            {r.unvan} · Sv {r.level} · {r.bolgeSayisi} bölge
-          </div>
+          <div className="truncate text-[11px] text-sonuk">{`${r.unvan} · Sv ${r.level} · ${r.bolgeSayisi} bölge`}</div>
         </div>
         <span className="tabular shrink-0 text-[14px] font-bold" style={{ color: renk }}>
           {formatSayi(r.deger)}
@@ -137,16 +135,12 @@ function IttifakSatiri({ r, renk }: { r: IttifakSiralamaSatiri; renk: string }) 
         <span className="min-w-0 flex-1 truncate text-[13px] font-bold">
           {r.ad} <span className="text-solgun">[{r.etiket}]</span>
         </span>
-        <span className="baslik shrink-0 rounded-md bg-altin/15 px-1.5 py-0.5 text-[11px] text-altin">
-          Sv {r.seviye}
-        </span>
+        <span className="baslik shrink-0 rounded-md bg-altin/15 px-1.5 py-0.5 text-[11px] text-altin">{`Sv ${r.seviye}`}</span>
         <span className="tabular w-16 shrink-0 text-right text-[13px] font-bold">
           {formatSayi(r.toplamSohret)}
         </span>
       </div>
-      <div className="mt-1 pl-8 text-[11px] text-solgun">
-        {r.uyeSayisi} üye · {r.bolgeSayisi} bölge
-      </div>
+      <div className="mt-1 pl-8 text-[11px] text-solgun">{`${r.uyeSayisi} üye · ${r.bolgeSayisi} bölge`}</div>
     </Kart>
   );
 }

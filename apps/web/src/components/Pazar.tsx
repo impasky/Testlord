@@ -98,7 +98,7 @@ export function Pazar() {
             ekran okuyucu kullanıcısının başlıklarla gezinmesini
             bozuyordu (erisim-denetim.mjs yakaladı). */}
         <h2 className="baslik text-[11px] text-solgun">Pazar</h2>
-        <span className="text-[11px] text-sonuk">komisyon %{Math.round(komisyon * 100)}</span>
+        <span className="text-[11px] text-sonuk">{`komisyon %${Math.round(komisyon * 100)}`}</span>
       </div>
       <p className="mt-0.5 text-[12px] leading-snug text-solgun">
         Elinde biriken kaynağı eksiğine çevir. Tüccar payını alır — doğru bölgeyi almak hâlâ daha
@@ -189,10 +189,7 @@ export function Pazar() {
           <p className="text-[12px] text-kirmizi">{hata ?? engel?.mesaj}</p>
         )}
 
-        <p className="text-[11px] text-sonuk">
-          Bugünkü pazar hakkın: {formatSayi(gunluk.kalan)} / {formatSayi(gunluk.tavan)} altın
-          karşılığı.
-        </p>
+        <p className="text-[11px] text-sonuk">{`Bugünkü pazar hakkın: ${formatSayi(gunluk.kalan)} / ${formatSayi(gunluk.tavan)} altın karşılığı.`}</p>
       </div>
     </Kart>
   );

@@ -66,13 +66,11 @@ export function IttifakIncele({ id, onKapat }: { id: string; onKapat: () => void
       <Bolum baslik={`${a.ad} [${a.etiket}]`} yan={<Arma arma={a.arma} boyut={26} />}>
         <Kart className="p-3" vurgu="var(--color-altin)">
           <div className="flex flex-wrap gap-1.5">
-            <Hap>Sv {a.seviye.seviye}</Hap>
-            <Hap>
-              {a.uyeler.length}/{a.azamiUye} üye
-            </Hap>
-            <Hap>{formatSayi(a.toplamSohret)} şöhret</Hap>
+            <Hap>{`Sv ${a.seviye.seviye}`}</Hap>
+            <Hap>{`${a.uyeler.length}/${a.azamiUye} üye`}</Hap>
+            <Hap>{`${formatSayi(a.toplamSohret)} şöhret`}</Hap>
             <Hap>{a.katilim === 'acik' ? 'Herkes katılabilir' : 'Başvuru ile'}</Hap>
-            {a.asgariSeviye > 1 && <Hap>en az Sv{a.asgariSeviye}</Hap>}
+            {a.asgariSeviye > 1 && <Hap>{`en az Sv${a.asgariSeviye}`}</Hap>}
           </div>
 
           {a.duyuru && (
@@ -84,11 +82,7 @@ export function IttifakIncele({ id, onKapat }: { id: string; onKapat: () => void
 
           {/* Ayrıcalıklar dışarı açık: "bu ittifağa girersem ne kazanırım"
               sorusu katılma kararının yarısı. */}
-          <div className="mt-3 border-t border-kenar/60 pt-2.5 text-[11px] text-solgun">
-            Kaynak gönderme tavanı +{formatSayi(a.ayricaliklar.ticaretTavani)} · takviye %
-            {Math.round(a.ayricaliklar.takviyeHizi * 100)} hızlı · keşif %
-            {Math.round(a.ayricaliklar.kesifIndirimi * 100)} ucuz
-          </div>
+          <div className="mt-3 border-t border-kenar/60 pt-2.5 text-[11px] text-solgun">{`Kaynak gönderme tavanı +${formatSayi(a.ayricaliklar.ticaretTavani)} · takviye %${Math.round(a.ayricaliklar.takviyeHizi * 100)} hızlı · keşif %${Math.round(a.ayricaliklar.kesifIndirimi * 100)} ucuz`}</div>
         </Kart>
       </Bolum>
 
@@ -101,7 +95,7 @@ export function IttifakIncele({ id, onKapat }: { id: string; onKapat: () => void
                   <Arma arma={u.arma} boyut={24} />
                   <span className="min-w-0 flex-1 truncate text-[13px] font-bold">{u.ad}</span>
                   {u.rutbe !== 'uye' && <Rozet>{u.rutbe === 'lider' ? 'LİDER' : 'YAŞLI'}</Rozet>}
-                  <span className="tabular shrink-0 text-[12px] text-solgun">Sv {u.seviye}</span>
+                  <span className="tabular shrink-0 text-[12px] text-solgun">{`Sv ${u.seviye}`}</span>
                   <span className="tabular w-16 shrink-0 text-right text-[12px] font-bold">
                     {formatSayi(u.sohret)}
                   </span>

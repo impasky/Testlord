@@ -73,9 +73,7 @@ function UyeSatiri({
             </span>
           )}
         </span>
-        <span className="tabular w-10 shrink-0 text-right text-[11px] text-solgun">
-          Sv {uye.seviye}
-        </span>
+        <span className="tabular w-10 shrink-0 text-right text-[11px] text-solgun">{`Sv ${uye.seviye}`}</span>
         <span className="tabular flex w-20 shrink-0 items-center justify-end gap-1 font-bold">
           <span className="text-altin/70">
             <IkonSohret boyut={13} />
@@ -90,9 +88,7 @@ function UyeSatiri({
       <div className="mt-1 flex items-center gap-2 pl-[30px]">
         <span
           className={`tabular text-[11px] ${uye.haftalikKatki === 0 ? 'text-sonuk' : 'text-yesil'}`}
-        >
-          bu hafta {formatSayi(uye.haftalikKatki)} katkı
-        </span>
+        >{`bu hafta ${formatSayi(uye.haftalikKatki)} katkı`}</span>
         {/* Yönetim eylemleri METİN bağı, düğme değil. Düğme olduklarında
             satır iki katına çıkıyor ve ikincil bir işlem üye satırının
             kendisinden daha çok yer kaplıyordu. */}
@@ -238,9 +234,7 @@ export function Ittifak({ lordId }: { lordId: string }) {
             >
               <Kart className="p-3" vurgu="var(--color-altin)">
                 <div className="mb-2 flex items-baseline justify-between gap-2 text-[12px]">
-                  <span className="text-solgun">
-                    {ittifakim.uyeler.length}/{ittifakim.azamiUye} üye
-                  </span>
+                  <span className="text-solgun">{`${ittifakim.uyeler.length}/${ittifakim.azamiUye} üye`}</span>
                   <span className="tabular flex items-center gap-1">
                     <span className="text-altin/70">
                       <IkonSohret boyut={13} />
@@ -436,9 +430,7 @@ export function Ittifak({ lordId }: { lordId: string }) {
                       </span>
                       {/* Seviye: katılacağı ya da pakt yapacağı ittifağı
                           seçen oyuncunun baktığı ilk şey. */}
-                      <span className="baslik shrink-0 rounded-md bg-altin/15 px-1.5 py-0.5 text-[11px] text-altin">
-                        Sv {a.seviye}
-                      </span>
+                      <span className="baslik shrink-0 rounded-md bg-altin/15 px-1.5 py-0.5 text-[11px] text-altin">{`Sv ${a.seviye}`}</span>
                       <span className="tabular shrink-0 text-[11px] text-solgun">
                         {a.uyeSayisi}/{azamiUye}
                       </span>

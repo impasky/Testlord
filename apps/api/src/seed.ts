@@ -46,8 +46,7 @@ async function main(): Promise<void> {
       const lordSayisi = await prisma.lord.count({ where: { worldId: w.id } });
       await eskiHaritaliDunyayiKapat(w.id);
       console.log(
-        `${w.name}: ESKİ HARİTADA (${w.mapVersion}) — ${lordSayisi} oyuncu var, ` +
-          'dokunulmadı; yeni kayıtlara kapatıldı.',
+        `${w.name}: ESKİ HARİTADA (${w.mapVersion}) — ${lordSayisi} oyuncu var, dokunulmadı; yeni kayıtlara kapatıldı.`,
       );
       dokunulmayan++;
       continue;
@@ -69,8 +68,7 @@ async function main(): Promise<void> {
 
   if (dokunulmayan > 0) {
     console.log(
-      `\n${dokunulmayan} dünya eski haritada bırakıldı. Oyuncuları oynamaya ` +
-        'devam eder; yeni oyuncular bugünkü haritanın olduğu dünyalara düşer.',
+      `\n${dokunulmayan} dünya eski haritada bırakıldı. Oyuncuları oynamaya devam eder; yeni oyuncular bugünkü haritanın olduğu dünyalara düşer.`,
     );
   }
 }

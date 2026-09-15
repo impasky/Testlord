@@ -96,7 +96,7 @@ function YoklukKarti({ y, onGit }: { y: YoklukOzeti; onGit: (s: Sekme) => void }
         {y.savaslar > 0 && (
           <>
             {' '}
-            ve <span className="text-kirmizi">{y.savaslar} savaş</span>
+            ve <span className="text-kirmizi">{`${y.savaslar} savaş`}</span>
           </>
         )}{' '}
         oldu.
@@ -323,20 +323,18 @@ export function LordEkrani({
       */}
       {!ilkDongu && (
         <DurumSiridi>
-          <Hap ikon={<IkonKale boyut={13} />} renk="var(--color-altin)">
-            {lord.regionCount}/{lord.maxRegions} bölge
-            {lord.ownsThrone && ' +Taht'}
-          </Hap>
+          <Hap
+            ikon={<IkonKale boyut={13} />}
+            renk="var(--color-altin)"
+          >{`${lord.regionCount}/${lord.maxRegions} bölge${lord.ownsThrone ? ' +Taht' : ''}`}</Hap>
           {/* Komuta yeri BURADA YAZMIYOR: hemen yukarıdaki ordu sahnesi
             aynı sayıyı zaten söylüyor ("12/90 komuta"). Aynı bilgiyi tek
             ekranda iki kez göstermek, oyuncunun "her yerde bir şeyler
             yazıyor" şikâyetini büyütmekten başka işe yaramıyor. */}
-          <Hap ikon={<IkonSancak boyut={13} />} renk="var(--color-yesil)">
-            Sv {lord.level}
-          </Hap>
-          <Hap ikon={<IkonSure boyut={13} />}>
-            {lord.dailyAttacks}/{B.korumalar.gunluk_saldiri_limiti} saldırı
-          </Hap>
+          <Hap ikon={<IkonSancak boyut={13} />} renk="var(--color-yesil)">{`Sv ${lord.level}`}</Hap>
+          <Hap
+            ikon={<IkonSure boyut={13} />}
+          >{`${lord.dailyAttacks}/${B.korumalar.gunluk_saldiri_limiti} saldırı`}</Hap>
         </DurumSiridi>
       )}
 
@@ -355,9 +353,7 @@ export function LordEkrani({
       {lord.unvan.sonrakiAd && (
         <Kart className="p-3">
           <p className="text-[12px] text-solgun">
-            <span className="text-parsomen">
-              {formatSayi(lord.unvan.sonrakiEsik! - lord.fame)} şöhret
-            </span>{' '}
+            <span className="text-parsomen">{`${formatSayi(lord.unvan.sonrakiEsik! - lord.fame)} şöhret`}</span>{' '}
             sonra <span className="text-altin">{lord.unvan.sonrakiAd}</span> olacaksın.
           </p>
         </Kart>
@@ -383,7 +379,7 @@ export function LordEkrani({
             baslik="Nitelikler"
             yan={
               lord.statPoints > 0 ? (
-                <Rozet renk="var(--color-yesil)">{kalan} PUAN</Rozet>
+                <Rozet renk="var(--color-yesil)">{`${kalan} PUAN`}</Rozet>
               ) : undefined
             }
           >
@@ -515,9 +511,7 @@ export function LordEkrani({
                         <span
                           className="baslik flex h-full w-full items-center justify-center text-[20px]"
                           style={{ color: renk }}
-                        >
-                          T{it.tier}
-                        </span>
+                        >{`T${it.tier}`}</span>
                       }
                     />
                     {/* Şerit görselin üstüne biner; kare zaten küçük, altına
@@ -527,10 +521,7 @@ export function LordEkrani({
                       <span className="baslik truncate text-[11px] text-solgun">
                         {SLOT_ADI[slot]}
                       </span>
-                      <span className="baslik shrink-0 text-[12px] text-altin">
-                        T{it.tier}
-                        {it.upgradeLevel > 0 && `+${it.upgradeLevel}`}
-                      </span>
+                      <span className="baslik shrink-0 text-[12px] text-altin">{`T${it.tier}${it.upgradeLevel > 0 && `+${it.upgradeLevel}`}`}</span>
                     </div>
                   </Kart>
                 );
@@ -551,9 +542,7 @@ export function LordEkrani({
                 ['Lord savaş katkısı', formatSayi(lord.lordContribution)],
                 [
                   'Ordu donanımı',
-                  `Saldırı +%${Math.round(lord.gearBonus.saldiri * 100)} · ` +
-                    `Savunma +%${Math.round(lord.gearBonus.savunma * 100)} · ` +
-                    `Can +%${Math.round(lord.gearBonus.can * 100)}`,
+                  `Saldırı +%${Math.round(lord.gearBonus.saldiri * 100)} · Savunma +%${Math.round(lord.gearBonus.savunma * 100)} · Can +%${Math.round(lord.gearBonus.can * 100)}`,
                 ],
                 // Bu iki satır YALNIZCA bir oyuncuyla savaştıysan var.
                 //

@@ -439,8 +439,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
       const maliyet = kurmaMaliyeti();
       if (state.resources.altin < maliyet) {
         throw new GameError(
-          `İttifak kurmak ${maliyet.toLocaleString('tr-TR')} altın tutuyor, ` +
-            `${Math.floor(state.resources.altin).toLocaleString('tr-TR')} altının var.`,
+          `İttifak kurmak ${maliyet.toLocaleString('tr-TR')} altın tutuyor, ${Math.floor(state.resources.altin).toLocaleString('tr-TR')} altının var.`,
           400,
           'YETERSIZ_KAYNAK',
         );
@@ -499,8 +498,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
       const bekleme = ittifakaGirebilirMi(lord.allianceLeftAt, new Date());
       if (!bekleme.girebilir) {
         throw new GameError(
-          `İttifaktan yeni ayrıldın. ${Math.ceil(bekleme.kalanSn / 3600)} saat sonra ` +
-            'yeni bir ittifağa girebilirsin.',
+          `İttifaktan yeni ayrıldın. ${Math.ceil(bekleme.kalanSn / 3600)} saat sonra yeni bir ittifağa girebilirsin.`,
           400,
           'ITTIFAK_BEKLEME',
         );
@@ -957,8 +955,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
       const bekleme = ittifakaGirebilirMi(lord.allianceLeftAt, new Date());
       if (!bekleme.girebilir) {
         throw new GameError(
-          `İttifaktan yeni ayrıldın. ${Math.ceil(bekleme.kalanSn / 3600)} saat sonra ` +
-            'yeni bir ittifağa başvurabilirsin.',
+          `İttifaktan yeni ayrıldın. ${Math.ceil(bekleme.kalanSn / 3600)} saat sonra yeni bir ittifağa başvurabilirsin.`,
           400,
           'ITTIFAK_BEKLEME',
         );
@@ -1142,8 +1139,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
       const bekleme = ittifakaGirebilirMi(b.lord.allianceLeftAt, simdi);
       if (!bekleme.girebilir) {
         throw new GameError(
-          `${b.lord.name} ittifaktan yeni ayrılmış, ${Math.ceil(bekleme.kalanSn / 3600)} ` +
-            'saat daha giremez.',
+          `${b.lord.name} ittifaktan yeni ayrılmış, ${Math.ceil(bekleme.kalanSn / 3600)} saat daha giremez.`,
           400,
           'ITTIFAK_BEKLEME',
         );

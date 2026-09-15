@@ -984,8 +984,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       ]);
       if (aktifYuruyus >= B.yuruyus.es_zamanli_limit) {
         throw hata.limitAsildi(
-          `Aynı anda en fazla ${B.yuruyus.es_zamanli_limit} yürüyüş. ` +
-            'Ordularından biri dönene kadar bekle',
+          `Aynı anda en fazla ${B.yuruyus.es_zamanli_limit} yürüyüş. Ordularından biri dönene kadar bekle`,
         );
       }
 

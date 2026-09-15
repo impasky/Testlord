@@ -351,7 +351,7 @@ function TakviyeKarti({
       {bendekiler > 0 && (
         <div className="mb-2 rounded-lg border border-yesil/30 bg-yesil/10 p-2">
           <p className="text-[12px]">
-            Bu bölgede <span className="font-bold text-yesil">{bendekiler} birim</span> askerin
+            Bu bölgede <span className="font-bold text-yesil">{`${bendekiler} birim`}</span> askerin
             savunmada.
           </p>
           <Buton
@@ -437,9 +437,7 @@ function IttifakHedefiDugmesi({ bolge, lordId }: { bolge: RegionDetailDto; lordI
     <Kart className="p-3">
       <h3 className="baslik mb-1.5 text-[11px] text-solgun">İttifak</h3>
       {zatenHedef ? (
-        <p className="text-[12px] text-mavi">
-          {bolgeAdi} zaten ittifakın ortak hedefi. Haritada kesik çizgiyle işaretli.
-        </p>
+        <p className="text-[12px] text-mavi">{`${bolgeAdi} zaten ittifakın ortak hedefi. Haritada kesik çizgiyle işaretli.`}</p>
       ) : (
         <>
           <p className="mb-2 text-[12px] text-sonuk">
@@ -509,10 +507,7 @@ function KesifKarti({ bolge, muttefikMi }: { bolge: RegionDetailDto; muttefikMi:
           {bolge.kesif.store && (
             <p className="text-solgun">
               Depo:{' '}
-              <span className="tabular text-parsomen">
-                {formatSayi(bolge.kesif.store.altin)} altın · {formatSayi(bolge.kesif.store.demir)}{' '}
-                demir · {formatSayi(bolge.kesif.store.erzak)} erzak
-              </span>
+              <span className="tabular text-parsomen">{`${formatSayi(bolge.kesif.store.altin)} altın · ${formatSayi(bolge.kesif.store.demir)}${' '}demir · ${formatSayi(bolge.kesif.store.erzak)} erzak`}</span>
             </p>
           )}
           {bolge.kesif.tahkimatBonusu !== null && (
@@ -812,9 +807,7 @@ export function Harita({
       <Bolum
         baslik={dunya.data?.ad ?? 'Dünya Haritası'}
         yan={
-          <span className="text-[11px] text-solgun">
-            Bölgen {benimSayi}/{harita.data.maxRegions}
-          </span>
+          <span className="text-[11px] text-solgun">{`Bölgen ${benimSayi}/${harita.data.maxRegions}`}</span>
         }
       >
         {dunya.data && (
@@ -829,9 +822,7 @@ export function Harita({
               className="bas mb-2 flex w-full items-center gap-2 rounded-xl border border-mavi/40 bg-mavi/10 px-3 py-2 text-left"
               onClick={() => setSeciliId(harita.data!.ittifakHedefi!.regionId)}
             >
-              <span className="baslik shrink-0 text-[11px] text-mavi">
-                [{harita.data.ittifakHedefi.etiket}] HEDEF
-              </span>
+              <span className="baslik shrink-0 text-[11px] text-mavi">{`[${harita.data.ittifakHedefi.etiket}] HEDEF`}</span>
               <span className="min-w-0 flex-1 truncate text-[12px]">
                 {harita.data.regions.find((r) => r.id === harita.data!.ittifakHedefi!.regionId)
                   ?.name ?? 'Bölge'}
@@ -984,7 +975,7 @@ export function Harita({
                     {bolge.owner ? `Diyarın Lordu · ${bolge.owner.name}` : 'taht boş'}
                   </Hap>
                 )}
-                <Hap renk="var(--color-mavi)">{bolge.distance} adım</Hap>
+                <Hap renk="var(--color-mavi)">{`${bolge.distance} adım`}</Hap>
                 {/* Vilayet birliği, oyuncunun HİÇ göremediği bir mekanikti:
                     aynı vilayetteki her bölge diğerlerinin gelirini
                     artırıyor ama bunu ne harita ne bölge kartı söylüyordu —
@@ -1029,14 +1020,10 @@ export function Harita({
                 {dunya.data?.liderAvi &&
                   !dunya.data.liderAvi.benMiyim &&
                   bolge.owner?.id === dunya.data.liderAvi.lordId && (
-                    <Hap renk="var(--color-kirmizi)">
-                      lider avı · +%{Math.round(dunya.data.liderAvi.yagmaBonusu * 100)} yağma
-                    </Hap>
+                    <Hap renk="var(--color-kirmizi)">{`lider avı · +%${Math.round(dunya.data.liderAvi.yagmaBonusu * 100)} yağma`}</Hap>
                   )}
                 {bolge.fortressBonus > 0 && (
-                  <Hap renk="var(--color-kirmizi)">
-                    tahkimat +%{Math.round(bolge.fortressBonus * 100)}
-                  </Hap>
+                  <Hap renk="var(--color-kirmizi)">{`tahkimat +%${Math.round(bolge.fortressBonus * 100)}`}</Hap>
                 )}
               </div>
               <button
@@ -1052,12 +1039,7 @@ export function Harita({
               {bolge.type === 'taht' && (
                 <Kart className="p-3" vurgu="var(--color-altin)">
                   <h3 className="baslik mb-1 text-[11px] text-altin">Taht Kalesi</h3>
-                  <p className="text-[12px] text-solgun">
-                    Diyarda tek. Sahibi %{Math.round(B.taht_kalesi.unvan_sohret_bonusu * 100)}{' '}
-                    şöhret bonusu alır, bölge limitine sayılmaz. Buraya saldırmak günlük hakkından
-                    düşmez ve el değiştirdikten sonra kalkanı yalnızca{' '}
-                    {B.taht_kalesi.kaybetme_korumasi_saat} saat sürer.
-                  </p>
+                  <p className="text-[12px] text-solgun">{`Diyarda tek. Sahibi %${Math.round(B.taht_kalesi.unvan_sohret_bonusu * 100)}${' '}şöhret bonusu alır, bölge limitine sayılmaz. Buraya saldırmak günlük hakkından düşmez ve el değiştirdikten sonra kalkanı yalnızca${' '}${B.taht_kalesi.kaybetme_korumasi_saat} saat sürer.`}</p>
                 </Kart>
               )}
 
@@ -1161,19 +1143,14 @@ export function Harita({
                   ) : (
                     <Kart className="p-3">
                       <h3 className="baslik mb-1 text-[11px] text-solgun">Geliştirme</h3>
-                      <p className="text-[12px] text-solgun">
-                        {bolgeAsamaAdi(bolge.type, bolge.level)} — bu bölge en üst aşamada.
-                      </p>
+                      <p className="text-[12px] text-solgun">{`${bolgeAsamaAdi(bolge.type, bolge.level)} — bu bölge en üst aşamada.`}</p>
                     </Kart>
                   )}
 
                   {bolge.store && (
                     <Kart className="p-3">
                       <h3 className="baslik mb-1 text-[11px] text-solgun">Yağmalanabilir depo</h3>
-                      <p className="tabular text-[12px]">
-                        {formatSayi(bolge.store.altin)} altın · {formatSayi(bolge.store.demir)}{' '}
-                        demir · {formatSayi(bolge.store.erzak)} erzak
-                      </p>
+                      <p className="tabular text-[12px]">{`${formatSayi(bolge.store.altin)} altın · ${formatSayi(bolge.store.demir)}${' '}demir · ${formatSayi(bolge.store.erzak)} erzak`}</p>
                     </Kart>
                   )}
 

@@ -472,7 +472,7 @@ export function Sehir({
         {/* Kademe bir TAVAN: fetihin karşılığı bu, o yüzden görünür. */}
         <p className="mt-1.5 text-[12px] text-sonuk">
           Binaların bu yerleşimde en fazla{' '}
-          <strong className="text-parsomen">{yerlesim.binaTavani}. seviye</strong> olabilir.
+          <strong className="text-parsomen">{`${yerlesim.binaTavani}. seviye`}</strong> olabilir.
           {yerlesim.kademe !== 'metropol' && ' Daha büyük bir başkent daha yükseğine izin verir.'}
         </p>
       </Kart>
@@ -482,7 +482,7 @@ export function Sehir({
         <Kart key={i.id} className="border-altin/40 p-3">
           <div className="flex items-center justify-between gap-2">
             <div className="min-w-0">
-              <p className="text-[13px] font-semibold text-altin">{i.ad} inşa ediliyor</p>
+              <p className="text-[13px] font-semibold text-altin">{`${i.ad} inşa ediliyor`}</p>
               <p className="text-[12px] text-solgun">
                 <GeriSayim bitis={i.finishAt} /> kaldı
               </p>
@@ -518,9 +518,7 @@ export function Sehir({
               >
                 <div className="min-w-0">
                   <p className="truncate text-[13px] font-semibold text-parsomen">{t.ad}</p>
-                  <p className="text-[11.5px] text-solgun">
-                    {t.kademeAdi} · bina tavanı {t.binaTavani}
-                  </p>
+                  <p className="text-[11.5px] text-solgun">{`${t.kademeAdi} · bina tavanı ${t.binaTavani}`}</p>
                 </div>
                 <Buton
                   tur="altin"
@@ -960,9 +958,7 @@ function BinaKarti({
           </Buton>
         )}
         {girilebilir && (
-          <Buton tur="anahat" onClick={onGit} isaret="sehir-kapiya-git">
-            {b.ad}'a git
-          </Buton>
+          <Buton tur="anahat" onClick={onGit} isaret="sehir-kapiya-git">{`${b.ad}'a git`}</Buton>
         )}
       </div>
 

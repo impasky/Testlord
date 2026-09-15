@@ -82,8 +82,8 @@ export function DiyarTanitimi({ lord, queues }: { lord: LordState; queues: Queue
         <li className="flex items-center gap-2.5">
           <Sira>1</Sira>
           <span className="flex flex-wrap items-center gap-1.5">
-            <Hap>{formatSayi(d.lordSayisi)} lord</Hap>
-            <Hap>{formatSayi(d.bolgeSayisi)} bölge</Hap>
+            <Hap>{`${formatSayi(d.lordSayisi)} lord`}</Hap>
+            <Hap>{`${formatSayi(d.bolgeSayisi)} bölge`}</Hap>
             <span className="text-solgun">için savaşıyor</span>
           </span>
         </li>
@@ -92,16 +92,14 @@ export function DiyarTanitimi({ lord, queues }: { lord: LordState; queues: Queue
           <span className="flex flex-wrap items-center gap-1.5">
             <span className="text-solgun">Tahtı tutan</span>
             <strong className="text-altin">Diyarın Lordu</strong>
-            <Hap renk="var(--color-altin)">
-              +%{Math.round((d.taht?.sohretBonusu ?? 0) * 100)} şöhret
-            </Hap>
+            <Hap renk="var(--color-altin)">{`+%${Math.round((d.taht?.sohretBonusu ?? 0) * 100)} şöhret`}</Hap>
           </span>
         </li>
         <li className="flex items-center gap-2.5">
           <Sira>3</Sira>
           <span className="flex flex-wrap items-center gap-1.5">
             <span className="text-solgun">Şu an</span>
-            <Hap renk="var(--color-parsomen)">{d.benimSiram}. sıradasın</Hap>
+            <Hap renk="var(--color-parsomen)">{`${d.benimSiram}. sıradasın`}</Hap>
           </span>
         </li>
       </ol>

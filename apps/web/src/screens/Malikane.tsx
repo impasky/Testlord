@@ -113,20 +113,18 @@ export function Malikane({
       <Zemin ad="malikane" baslik="Malikâne" altyazi="Diyarının toprakları" />
 
       <DurumSiridi>
-        <Hap ikon={<IkonKale boyut={13} />} renk="var(--color-altin)">
-          {lord.regionCount}/{lord.maxRegions} bölge
-          {lord.ownsThrone && ' +Taht'}
-        </Hap>
-        <Hap ikon={<IkonAltin boyut={13} />} renk="var(--color-kaynak-altin)">
-          +{formatSayi(lord.hourlyIncome.altin)}/sa
-        </Hap>
+        <Hap
+          ikon={<IkonKale boyut={13} />}
+          renk="var(--color-altin)"
+        >{`${lord.regionCount}/${lord.maxRegions} bölge${lord.ownsThrone ? ' +Taht' : ''}`}</Hap>
+        <Hap
+          ikon={<IkonAltin boyut={13} />}
+          renk="var(--color-kaynak-altin)"
+        >{`+${formatSayi(lord.hourlyIncome.altin)}/sa`}</Hap>
         <Hap
           ikon={<IkonErzak boyut={13} />}
           renk={lord.netErzakPerHour < 0 ? 'var(--color-kirmizi)' : 'var(--color-kaynak-erzak)'}
-        >
-          {lord.netErzakPerHour >= 0 ? '+' : ''}
-          {formatSayi(lord.netErzakPerHour)}/sa
-        </Hap>
+        >{`${lord.netErzakPerHour >= 0 ? '+' : ''}${formatSayi(lord.netErzakPerHour)}/sa`}</Hap>
       </DurumSiridi>
 
       {korumali && (
@@ -178,25 +176,26 @@ export function Malikane({
                     <div className="min-w-0 flex-1">
                       <div className="flex items-baseline gap-2">
                         <span className="baslik truncate text-[14px]">{r.name}</span>
-                        <span className="shrink-0 text-[11px] text-sonuk">
-                          {TIP_ADI[r.type] ?? r.type} · Sv {r.level}
-                        </span>
+                        <span className="shrink-0 text-[11px] text-sonuk">{`${TIP_ADI[r.type] ?? r.type} · Sv ${r.level}`}</span>
                       </div>
                       <div className="mt-1.5 flex flex-wrap gap-1.5">
                         {g.altin > 0 && (
-                          <Hap ikon={<IkonAltin boyut={13} />} renk="var(--color-yesil)">
-                            +{formatSayi(g.altin)}/sa
-                          </Hap>
+                          <Hap
+                            ikon={<IkonAltin boyut={13} />}
+                            renk="var(--color-yesil)"
+                          >{`+${formatSayi(g.altin)}/sa`}</Hap>
                         )}
                         {g.demir > 0 && (
-                          <Hap ikon={<IkonDemir boyut={13} />} renk="var(--color-yesil)">
-                            +{formatSayi(g.demir)}/sa
-                          </Hap>
+                          <Hap
+                            ikon={<IkonDemir boyut={13} />}
+                            renk="var(--color-yesil)"
+                          >{`+${formatSayi(g.demir)}/sa`}</Hap>
                         )}
                         {g.erzak > 0 && (
-                          <Hap ikon={<IkonErzak boyut={13} />} renk="var(--color-yesil)">
-                            +{formatSayi(g.erzak)}/sa
-                          </Hap>
+                          <Hap
+                            ikon={<IkonErzak boyut={13} />}
+                            renk="var(--color-yesil)"
+                          >{`+${formatSayi(g.erzak)}/sa`}</Hap>
                         )}
                         {r.shielded && (
                           <Hap ikon={<IkonSure boyut={13} />} renk="var(--color-mavi)">
@@ -247,7 +246,7 @@ export function Malikane({
                 ? events[0]!.payload.mesaj
                 : events[0]!.kind}
             </p>
-            <span className="baslik shrink-0 text-[11px] text-altin">{events.length} · AÇ</span>
+            <span className="baslik shrink-0 text-[11px] text-altin">{`${events.length} · AÇ`}</span>
           </div>
         </Kart>
       )}

@@ -189,7 +189,7 @@ function BirimKarti({
         </span>
         <span className="min-w-0 flex-1">
           <span className="baslik block truncate text-[13.5px]">{unitName(tip)}</span>
-          <span className="block text-[11px] text-sonuk">Evde {formatSayi(evdeki)}</span>
+          <span className="block text-[11px] text-sonuk">{`Evde ${formatSayi(evdeki)}`}</span>
         </span>
         <Maliyet
           altin={u.maliyet.altin}
@@ -229,7 +229,7 @@ function BirimKarti({
         <div className="min-w-0 flex-1">
           <div className="flex items-center justify-between gap-2">
             <h3 className="baslik truncate text-[15px]">{unitName(tip)}</h3>
-            <Hap className="shrink-0">Evde {formatSayi(evdeki)}</Hap>
+            <Hap className="shrink-0">{`Evde ${formatSayi(evdeki)}`}</Hap>
           </div>
 
           {/* Fiyat TEK nesne, süre ayrı tür (bkz. `Maliyet`, `Sure`).
@@ -293,7 +293,7 @@ function BirimKarti({
           <>
             Eğitimde {formatSayi(kuyrukAdedi)}
             {kuyruklar.length > 1 && (
-              <span className="ml-1 font-normal text-solgun">({kuyruklar.length} parti)</span>
+              <span className="ml-1 font-normal text-solgun">{`(${kuyruklar.length} parti)`}</span>
             )}
           </>
         }
@@ -446,16 +446,11 @@ export function Kisla({
         <Hap
           ikon={<IkonYer boyut={13} />}
           renk={doluluk >= 1 ? 'var(--color-kirmizi)' : 'var(--color-mavi)'}
-        >
-          {formatSayi(a.usedSlots)}/{formatSayi(a.commandCapacity)} komuta
-        </Hap>
+        >{`${formatSayi(a.usedSlots)}/${formatSayi(a.commandCapacity)} komuta`}</Hap>
         <Hap
           ikon={<IkonErzak boyut={13} />}
           renk={a.netErzakPerHour < 0 ? 'var(--color-kirmizi)' : 'var(--color-kaynak-erzak)'}
-        >
-          {a.netErzakPerHour >= 0 ? '+' : ''}
-          {formatSayi(a.netErzakPerHour)} erzak/sa
-        </Hap>
+        >{`${a.netErzakPerHour >= 0 ? '+' : ''}${formatSayi(a.netErzakPerHour)} erzak/sa`}</Hap>
       </DurumSiridi>
 
       <Bolum
@@ -465,9 +460,7 @@ export function Kisla({
             className={`tabular text-[11px] ${
               egitimKuyruklari.length >= egitimLimiti ? 'text-kirmizi' : 'text-solgun'
             }`}
-          >
-            Kuyruk {egitimKuyruklari.length}/{egitimLimiti}
-          </span>
+          >{`Kuyruk ${egitimKuyruklari.length}/${egitimLimiti}`}</span>
         }
       >
         <div className="space-y-2">

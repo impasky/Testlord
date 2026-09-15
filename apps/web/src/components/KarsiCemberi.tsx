@@ -101,9 +101,7 @@ export function KarsiCemberi() {
         })}
       </div>
 
-      <p className="mt-1 text-center text-[11px] text-sonuk">
-        Ok, kimin kimi kırdığını gösterir — her eşleşmede ×{sirali[0]!.carpan} hasar.
-      </p>
+      <p className="mt-1 text-center text-[11px] text-sonuk">{`Ok, kimin kimi kırdığını gösterir — her eşleşmede ×${sirali[0]!.carpan} hasar.`}</p>
     </div>
   );
 }

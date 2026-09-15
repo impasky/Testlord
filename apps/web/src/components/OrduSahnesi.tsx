@@ -255,9 +255,7 @@ export function OrduSahnesi({ army, komutaTavani }: { army: Army; komutaTavani: 
               </span>
             ))}
           </div>
-          <span className="tabular shrink-0 text-[11px] text-solgun">
-            {kullanilan}/{komutaTavani} komuta
-          </span>
+          <span className="tabular shrink-0 text-[11px] text-solgun">{`${kullanilan}/${komutaTavani} komuta`}</span>
         </div>
       </div>
     </div>

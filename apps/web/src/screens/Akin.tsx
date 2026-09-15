@@ -239,17 +239,13 @@ export function Akin({ lord, onGuncelle }: { lord: LordState; onGuncelle: () => 
                         <span
                           className="baslik text-[11px]"
                           style={{ color: nadirlikRengi(s.dusenParca.rarity) }}
-                        >
-                          T{s.dusenParca.tier}
-                        </span>
+                        >{`T${s.dusenParca.tier}`}</span>
                       </span>
                     )}
                   </div>
                 )}
                 {orduSayisi(s.yarali) > 0 && (
-                  <p className="mt-0.5 text-[11.5px] text-turuncu">
-                    {formatSayi(orduSayisi(s.yarali))} yaralı hastaneye girdi.
-                  </p>
+                  <p className="mt-0.5 text-[11.5px] text-turuncu">{`${formatSayi(orduSayisi(s.yarali))} yaralı hastaneye girdi.`}</p>
                 )}
               </Kart>
             ))}
@@ -328,9 +324,9 @@ function HaritaKarti({
           <div className="flex items-baseline justify-between gap-2">
             <span className="baslik text-[14px] text-altin">{h.ad}</span>
             {kilitli ? (
-              <Hap renk="var(--color-sonuk)">Sv{h.gerekenSeviye}</Hap>
+              <Hap renk="var(--color-sonuk)">{`Sv${h.gerekenSeviye}`}</Hap>
             ) : (
-              <span className="tabular text-[11.5px] text-solgun">{h.acikGrup}/10 grup hazır</span>
+              <span className="tabular text-[11.5px] text-solgun">{`${h.acikGrup}/10 grup hazır`}</span>
             )}
           </div>
           <p className="mt-0.5 text-[12px] leading-snug text-solgun">{h.ozet}</p>
@@ -584,7 +580,7 @@ function SeferKarti({
 
       {/* Karşındaki ordu AÇIKÇA yazılı: taş-kağıt-makas ancak düşmanı
           görünce bir karar olur (docs/09 K1). */}
-      <p className="mt-1 text-[12px] text-solgun">Karşında: {orduYazisi(grup.garnizon)}</p>
+      <p className="mt-1 text-[12px] text-solgun">{`Karşında: ${orduYazisi(grup.garnizon)}`}</p>
 
       <div className="mt-2 space-y-1.5">
         {UNIT_TYPES.filter((u) => (lord.homeArmy[u] ?? 0) > 0).map((u) => (
@@ -643,9 +639,7 @@ function SeferKarti({
             <IkonDemir boyut={11} /> {formatSayi(grup.odul.demir)} · <IkonErzak boyut={11} />{' '}
             {formatSayi(grup.odul.erzak)}
           </p>
-          <p className="mt-0.5 text-[11.5px] text-sonuk">
-            %{Math.round(grup.ekipmanIhtimali * 100)} ihtimalle T{grup.ekipmanTier} ekipman düşer.
-          </p>
+          <p className="mt-0.5 text-[11.5px] text-sonuk">{`%${Math.round(grup.ekipmanIhtimali * 100)} ihtimalle T${grup.ekipmanTier} ekipman düşer.`}</p>
         </div>
       )}
 

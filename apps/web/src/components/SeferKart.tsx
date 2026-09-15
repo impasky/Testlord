@@ -35,9 +35,7 @@ export function SeferKart() {
       <Kart className="p-3" vurgu={sefer.tamam ? 'var(--color-yesil)' : 'var(--color-mavi)'}>
         <div className="flex items-baseline justify-between gap-2">
           <h3 className="baslik text-[13px] text-parsomen">{sefer.ad}</h3>
-          <span className="tabular shrink-0 text-[11px] text-solgun">
-            {sefer.kalanGun} gün kaldı
-          </span>
+          <span className="tabular shrink-0 text-[11px] text-solgun">{`${sefer.kalanGun} gün kaldı`}</span>
         </div>
         <p className="mt-0.5 text-[12px] leading-snug text-sonuk">{sefer.aciklama}</p>
 
@@ -100,9 +98,7 @@ export function SeferKart() {
               )}
             </>
           ) : (
-            <p className="mt-2 text-[12px] text-sonuk">
-              {sefer.hedef - sefer.simdi} {sefer.birim} daha.
-            </p>
+            <p className="mt-2 text-[12px] text-sonuk">{`${sefer.hedef - sefer.simdi} ${sefer.birim} daha.`}</p>
           )}
         </div>
       </Kart>

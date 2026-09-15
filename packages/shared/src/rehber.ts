@@ -59,9 +59,7 @@ export function rehberSozleri(): RehberSozu[] {
   return [
     {
       adim: 'ordu-kur',
-      soz:
-        'Lordum, elimizde bir çadır ve bir talimgahtan başka bir şey yok. Önce asker ' +
-        `yazdıralım — ilkini ${ilkEgitimSn} saniyede toplarım, beklemene gerek kalmaz.`,
+      soz: `Lordum, elimizde bir çadır ve bir talimgahtan başka bir şey yok. Önce asker yazdıralım — ilkini ${ilkEgitimSn} saniyede toplarım, beklemene gerek kalmaz.`,
     },
     {
       adim: 'egitim-bekle',
@@ -69,15 +67,11 @@ export function rehberSozleri(): RehberSozu[] {
     },
     {
       adim: 'akin',
-      soz:
-        'Ordun ayakta ama toprağa saldırmak için erken. Şu deniz haydutlarının kampına ' +
-        'inelim: kimseyle husumetimiz olmaz, ganimeti de biz alırız.',
+      soz: 'Ordun ayakta ama toprağa saldırmak için erken. Şu deniz haydutlarının kampına inelim: kimseyle husumetimiz olmaz, ganimeti de biz alırız.',
     },
     {
       adim: 'saldir',
-      soz:
-        'Ordun hazır. Karşıdakinin sayısı seninkinden çok olabilir — bakma sen ona, ' +
-        'önemli olan hangi askerin hangisini yediği. Aşağıda yazıyor.',
+      soz: 'Ordun hazır. Karşıdakinin sayısı seninkinden çok olabilir — bakma sen ona, önemli olan hangi askerin hangisini yediği. Aşağıda yazıyor.',
     },
     {
       adim: 'akin-yolda',
@@ -101,21 +95,15 @@ export function rehberSozleri(): RehberSozu[] {
     },
     {
       adim: 'depo',
-      soz:
-        'Ambarlar taştı lordum — bu saatten sonra ürettiğimiz her şey yere dökülüyor. ' +
-        'Depoyu büyütmeden biriktirmenin anlamı yok.',
+      soz: 'Ambarlar taştı lordum — bu saatten sonra ürettiğimiz her şey yere dökülüyor. Depoyu büyütmeden biriktirmenin anlamı yok.',
     },
     {
       adim: 'bolge-gelistir',
-      soz:
-        'Toprağı çoğaltmak tek yol değil. Elindekini yükselt: aynı bölge daha çok ' +
-        'verir, üstelik saldırana da daha pahalıya patlar.',
+      soz: 'Toprağı çoğaltmak tek yol değil. Elindekini yükselt: aynı bölge daha çok verir, üstelik saldırana da daha pahalıya patlar.',
     },
     {
       adim: 'arastirma',
-      soz:
-        'Şimdi diyarını kendine benzetme vakti. Araştırma kalıcıdır — iki lord aynı ' +
-        'seviyede olsa bile aynı olmaz.',
+      soz: 'Şimdi diyarını kendine benzetme vakti. Araştırma kalıcıdır — iki lord aynı seviyede olsa bile aynı olmaz.',
     },
     {
       adim: 'aclik',
@@ -299,8 +287,7 @@ export const REHBER_ISIKLARI: Record<string, RehberIsaret[]> = {
     {
       isaret: 'kisla-egit',
       sebep:
-        'Bu düğme askerleri kışlaya yazdırır. Sayıyı senin için hazır seçtim — ' +
-        'hedefi almaya yetecek kadarı bu.',
+        'Bu düğme askerleri kışlaya yazdırır. Sayıyı senin için hazır seçtim — hedefi almaya yetecek kadarı bu.',
     },
     { isaret: 'omurga-dugme', yol: true },
     {
@@ -328,8 +315,7 @@ export const REHBER_ISIKLARI: Record<string, RehberIsaret[]> = {
     {
       isaret: 'akina-cik',
       sebep:
-        'Ordunu bu kampın üstüne yolla. Kaybetsen bile toprağın gitmez — akın ' +
-        'toprak almaz, toprak da vermez; öğrenmenin en ucuz yeri burası.',
+        'Ordunu bu kampın üstüne yolla. Kaybetsen bile toprağın gitmez — akın toprak almaz, toprak da vermez; öğrenmenin en ucuz yeri burası.',
     },
     /*
      * Bu ikisi YOL DEĞİL, İŞ.
@@ -359,8 +345,7 @@ export const REHBER_ISIKLARI: Record<string, RehberIsaret[]> = {
     {
       isaret: 'demirhane-kusan',
       sebep:
-        'Bu parçayı kuşan. Ekipman ordunun sayısını değil, senin savaşa kattığın ' +
-        'gücü büyütür — aynı orduyla daha sert vurursun.',
+        'Bu parçayı kuşan. Ekipman ordunun sayısını değil, senin savaşa kattığın gücü büyütür — aynı orduyla daha sert vurursun.',
     },
     { isaret: 'omurga-dugme', yol: true },
     {
@@ -373,8 +358,7 @@ export const REHBER_ISIKLARI: Record<string, RehberIsaret[]> = {
     {
       isaret: 'general-kirala',
       sebep:
-        'Bunu kirala. General tek bir askeri değil ORDUNUN KURALLARINI değiştirir; ' +
-        'bir generalin etkisi bütün birliklerine birden işler.',
+        'Bunu kirala. General tek bir askeri değil ORDUNUN KURALLARINI değiştirir; bir generalin etkisi bütün birliklerine birden işler.',
     },
     { isaret: 'omurga-dugme', yol: true },
     {
@@ -387,8 +371,7 @@ export const REHBER_ISIKLARI: Record<string, RehberIsaret[]> = {
     {
       isaret: 'bolge-yukselt',
       sebep:
-        'Bölgeyi yükselt. Aynı toprak daha çok verir, üstelik savunması da artar — ' +
-        'yeni yer almadan güçlenmenin yolu bu.',
+        'Bölgeyi yükselt. Aynı toprak daha çok verir, üstelik savunması da artar — yeni yer almadan güçlenmenin yolu bu.',
     },
     { isaret: 'omurga-dugme', yol: true },
     {
@@ -401,8 +384,7 @@ export const REHBER_ISIKLARI: Record<string, RehberIsaret[]> = {
     {
       isaret: 'arastirma-baslat',
       sebep:
-        'Bunu başlat. Hangisini seçtiğin senin kararın — araştırma kalıcıdır ve ' +
-        'diyarını başka lordlarınkinden ayıran tek katman odur.',
+        'Bunu başlat. Hangisini seçtiğin senin kararın — araştırma kalıcıdır ve diyarını başka lordlarınkinden ayıran tek katman odur.',
     },
     { isaret: 'omurga-dugme', yol: true },
     {
@@ -415,14 +397,12 @@ export const REHBER_ISIKLARI: Record<string, RehberIsaret[]> = {
     {
       isaret: 'harita-saldir',
       sebep:
-        'Bu düğme orduyu yola çıkarır. Geri dönüşü yok — ama hesabı yaptım, ' +
-        'bu bölge senin olur.',
+        'Bu düğme orduyu yola çıkarır. Geri dönüşü yok — ama hesabı yaptım, bu bölge senin olur.',
     },
     {
       isaret: 'harita-hepsi',
       sebep:
-        'Önce kimi göndereceğini seç. "Hepsi" evdeki bütün askeri katar; ' +
-        'ilk seferde orduyu bölmenin bir faydası yok.',
+        'Önce kimi göndereceğini seç. "Hepsi" evdeki bütün askeri katar; ilk seferde orduyu bölmenin bir faydası yok.',
     },
     { isaret: 'omurga-dugme', yol: true },
     {

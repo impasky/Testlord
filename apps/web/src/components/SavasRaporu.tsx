@@ -11,6 +11,7 @@
  */
 import {
   UNIT_TYPES,
+  etkiAdi,
   savasSebepleri,
   unitName,
   type Army,
@@ -18,7 +19,7 @@ import {
   type UnitType,
 } from '@lordlar/shared';
 import { useQuery } from '@tanstack/react-query';
-import type { ReactNode } from 'react';
+import { Fragment, type ReactNode } from 'react';
 import {
   api,
   type BattleDto,
@@ -105,9 +106,7 @@ function SavasSonucu({ ozet }: { ozet: LordOzetiDto }) {
         </div>
       )}
       {oncesi.seviye !== sonrasi.seviye && (
-        <p className="mt-1.5 text-[12px] font-bold text-altin">
-          Seviye atladın: {oncesi.seviye} → {sonrasi.seviye}
-        </p>
+        <p className="mt-1.5 text-[12px] font-bold text-altin">{`Seviye atladın: ${oncesi.seviye} → ${sonrasi.seviye}`}</p>
       )}
     </Kart>
   );
@@ -126,7 +125,7 @@ function TurCubuklari({ turlar }: { turlar: BattleDto['log']['rounds'] }) {
         return (
           <div key={t.tur}>
             <div className="mb-1 flex items-baseline justify-between text-[11px] text-sonuk">
-              <span className="baslik">TUR {t.tur}</span>
+              <span className="baslik">{`TUR ${t.tur}`}</span>
               <span className="tabular">
                 {formatSayi(Math.round(t.saldiranGuc))} — {formatSayi(Math.round(t.savunanGuc))}
               </span>
@@ -204,32 +203,13 @@ function TarafKarti({
             ))}
           </ul>
           {yaraliSayi > 0 && (
-            <p className="mt-1.5 text-[11px] text-yesil">
-              {yaraliSayi} asker ölü sanılmıştı, yaralı olarak döndü. Kayıp sayısı bunu çıkardıktan
-              sonrası.
-            </p>
+            <p className="mt-1.5 text-[11px] text-yesil">{`${yaraliSayi} asker ölü sanılmıştı, yaralı olarak döndü. Kayıp sayısı bunu çıkardıktan sonrası.`}</p>
           )}
         </>
       )}
     </Kart>
   );
 }
-
-/** Pasif etkinin okunur adı. Ham anahtar ("ordu_saldiri") oyuncuya bir şey söylemez. */
-const ETKI_ADI: Record<string, string> = {
-  ordu_saldiri: 'ordu saldırısı',
-  ordu_savunma: 'ordu savunması',
-  ordu_can: 'ordu canı',
-  savunmada_ordu_savunma: 'savunmada ordu savunması',
-  okcu_saldiri: 'okçu saldırısı',
-  suvari_saldiri: 'süvari saldırısı',
-  mizrakci_savunma: 'mızrakçı savunması',
-  kusatma_tahkimat: 'kuşatma tahkimat hasarı',
-  yagma_bonusu: 'yağma',
-  bakim_indirimi: 'bakım indirimi',
-  egitim_hizi: 'eğitim hızı',
-  uretim_hizi: 'üretim hızı',
-};
 
 /**
  * Sahadaki generallerin savaşa ne kattığı.
@@ -252,7 +232,7 @@ function GeneralKatkilari({
 
   return (
     <Kart className="p-3">
-      <h3 className="baslik mb-2 text-[11px] text-solgun">{taraf} generalleri</h3>
+      <h3 className="baslik mb-2 text-[11px] text-solgun">{`${taraf} generalleri`}</h3>
       <ul className="space-y-2.5">
         {generaller.map((g) => {
           const renk = nadirlikRengi(g.nadirlik);
@@ -262,7 +242,7 @@ function GeneralKatkilari({
                 <span className="truncate text-[13px] font-bold" style={{ color: renk }}>
                   {g.ad}
                 </span>
-                <span className="tabular shrink-0 text-[11px] text-solgun">Sv{g.level}</span>
+                <span className="tabular shrink-0 text-[11px] text-solgun">{`Sv${g.level}`}</span>
               </div>
               {(() => {
                 // Seviye SAVAŞTAN ÖNCEKİ hâl; atladıysa yeni seviye burada.
@@ -272,14 +252,12 @@ function GeneralKatkilari({
                 const y = yukselen.get(g.key);
                 if (!y) return null;
                 return (
-                  <p className="mt-0.5 text-[11px] font-bold text-altin">
-                    Seviye atladı: Sv {y.onceki} → Sv {y.sonraki}
-                  </p>
+                  <p className="mt-0.5 text-[11px] font-bold text-altin">{`Seviye atladı: Sv ${y.onceki} → Sv ${y.sonraki}`}</p>
                 );
               })()}
               <p className="mt-0.5 text-[11px] text-solgun">
                 <span className="text-parsomen">{g.pasifAd}</span> — %
-                {Math.round(g.pasifDeger * 100)} {ETKI_ADI[g.pasifEtki] ?? g.pasifEtki}
+                {Math.round(g.pasifDeger * 100)} {etkiAdi(g.pasifEtki)}
               </p>
               {g.yetenekAd && (
                 <p className="mt-0.5 text-[11px] text-altin">
@@ -376,6 +354,28 @@ function topla(a: Army, b: Army): Army {
 }
 
 /**
+ * Tek şablon, içine vurgulu parçalar.
+ *
+ * Bu cümleler altı yedi JSX parçasına bölünmüştü ve her parça ayrı bir
+ * çeviri satırıydı. Parça tek başına anlamsız, hatta yanıltıcı:
+ * `Makas` bir birim adı sanılıp "Scissors" diye çevrilmişti — oysa
+ * buradaki makas "makas açıldı" deyimindeki makas, yani ARADAKİ FARK.
+ * Cümleyi bütün gören biri bu hatayı yapmaz; bölünmüş parçayı gören
+ * yapar. `güce karşı` da aynı sebeple "against power" olmuş, İngilizce
+ * cümlede sözcükler ters sıraya düşmüştü.
+ *
+ * `{0}`, `{1}` … `parcalar` dizisinden doluyor. Hangi parçanın kalın
+ * yazılacağına çağıran karar veriyor; şablon yalnız sırayı taşıyor ve
+ * o sıra başka dilde değişebiliyor.
+ */
+function sablonlu(sablon: string, parcalar: ReactNode[]): ReactNode {
+  return sablon.split(/(\{\d+\})/).map((p, i) => {
+    const y = /^\{(\d+)\}$/.exec(p);
+    return y ? <Fragment key={i}>{parcalar[Number(y[1])]}</Fragment> : p;
+  });
+}
+
+/**
  * Sebebi cümleye çevirir.
  *
  * Cümle burada, `packages/shared`da değil: aynı yapıyı önizlemede ve
@@ -384,19 +384,17 @@ function topla(a: Army, b: Army): Army {
  */
 function sebepCumlesi(s: SavasSebebi): ReactNode {
   const g = (x: string) => <strong className="text-parsomen">{x}</strong>;
+  const sayi = (n: number) => n.toLocaleString('tr-TR');
+  const yuzde = () => String(Math.round(s.deger! * 100));
   switch (s.tur) {
     case 'guc':
-      return s.lehte ? (
-        <>Gücün savunanın {g(`${s.deger!.toFixed(1)} katıydı`)}.</>
-      ) : (
-        <>Karşı taraf {g(`${(1 / s.deger!).toFixed(1)} kat`)} güçlüydü.</>
-      );
+      return s.lehte
+        ? sablonlu('Gücün savunanın {0} katıydı.', [g(s.deger!.toFixed(1))])
+        : sablonlu('Karşı taraf {0} kat güçlüydü.', [g((1 / s.deger!).toFixed(1))]);
     case 'dar_zafer':
-      return (
-        <>
-          Savaş kazanıldı ama güç payı {g(`%${Math.round(s.deger! * 100)}`)} eşiğine ulaşmadı —
-          bölge el değiştirmedi, yalnızca yağma alındı.
-        </>
+      return sablonlu(
+        'Savaş kazanıldı ama güç payı %{0} eşiğine ulaşmadı — bölge el değiştirmedi, yalnızca yağma alındı.',
+        [g(yuzde())],
       );
     case 'donum':
       /*
@@ -404,43 +402,34 @@ function sebepCumlesi(s: SavasSebebi): ReactNode {
        * turluk çubuk grafiğini tek cümleye çeviriyor — oyuncu grafiği
        * okumak zorunda kalmasın diye.
        */
-      return s.lehte ? (
-        <>
-          Makas {g(`${s.turNo}. turda`)} en çok açıldı: {g(s.guc!.benim.toLocaleString('tr-TR'))}{' '}
-          güce karşı {s.guc!.onun.toLocaleString('tr-TR')}.
-        </>
-      ) : (
-        <>
-          Karşı taraf {g(`${s.turNo}. turda`)} en çok öne geçti:{' '}
-          {g(s.guc!.onun.toLocaleString('tr-TR'))} güce karşı {s.guc!.benim.toLocaleString('tr-TR')}
-          .
-        </>
-      );
+      return s.lehte
+        ? sablonlu('Makas {0}. turda en çok açıldı: {1} güce karşı {2}.', [
+            g(String(s.turNo)),
+            g(sayi(s.guc!.benim)),
+            sayi(s.guc!.onun),
+          ])
+        : sablonlu('Karşı taraf {0}. turda en çok öne geçti: {1} güce karşı {2}.', [
+            g(String(s.turNo)),
+            g(sayi(s.guc!.onun)),
+            sayi(s.guc!.benim),
+          ]);
     case 'tahkimat':
-      return s.lehte ? (
-        <>Tahkimatın savunmaya {g(`+%${Math.round(s.deger! * 100)}`)} kattı.</>
-      ) : (
-        <>Hedefin tahkimatı savunmaya {g(`+%${Math.round(s.deger! * 100)}`)} kattı.</>
-      );
+      return s.lehte
+        ? sablonlu('Tahkimatın savunmaya +%{0} kattı.', [g(yuzde())])
+        : sablonlu('Hedefin tahkimatı savunmaya +%{0} kattı.', [g(yuzde())]);
     case 'karsi':
-      return s.lehte ? (
-        <>
-          {g(unitName(s.benim!))} birliklerin {g(unitName(s.onun!))} karşısında {g(`×${s.deger}`)}{' '}
-          vurdu.
-        </>
-      ) : (
-        <>
-          {g(unitName(s.benim!))} birliklerin {g(unitName(s.onun!))} karşısında {g(`×${s.deger}`)}{' '}
-          yedi.
-        </>
+      return sablonlu(
+        s.lehte
+          ? '{0} birliklerin {1} karşısında {2} vurdu.'
+          : '{0} birliklerin {1} karşısında {2} yedi.',
+        [g(unitName(s.benim!)), g(unitName(s.onun!)), g(`×${s.deger}`)],
       );
     case 'kusatma_iyi':
       return <>Mancınıklar tahkimata karşı iki katı iş yaptı.</>;
     case 'kusatma_bosa':
-      return (
-        <>
-          Tahkimat olmadığı için mancınıklar canlı orduya {g('yarım')} vurdu — o kaynak boşa gitti.
-        </>
+      return sablonlu(
+        'Tahkimat olmadığı için mancınıklar canlı orduya {0} vurdu — o kaynak boşa gitti.',
+        [g('yarım')],
       );
   }
 }
@@ -535,9 +524,7 @@ export function SavasRaporu({
               <NedenKarti savas={savas} saldiranBenim={saldiranBenim} />
 
               <Kart className="p-3">
-                <h3 className="baslik mb-2.5 text-[11px] text-solgun">
-                  Tur Tur Güç · {savas.log.rounds.length} tur
-                </h3>
+                <h3 className="baslik mb-2.5 text-[11px] text-solgun">{`Tur Tur Güç · ${savas.log.rounds.length} tur`}</h3>
                 <TurCubuklari turlar={savas.log.rounds} />
                 <p className="mt-2.5 text-[11px] text-sonuk">
                   Üstteki çubuk saldıran, alttaki savunan.
@@ -608,16 +595,13 @@ export function SavasRaporu({
                   nasıl gideceğini biliyor, savunan ise raporu okuyup
                   haritada bölgeyi elle aramak zorunda kalıyordu. */}
               {!saldiranBenim && onKarsiSaldiri && (
-                <Buton tam onClick={() => onKarsiSaldiri(savas.regionId)}>
-                  {savas.log.regionName} bölgesine karşı saldır
-                </Buton>
+                <Buton
+                  tam
+                  onClick={() => onKarsiSaldiri(savas.regionId)}
+                >{`${savas.log.regionName} bölgesine karşı saldır`}</Buton>
               )}
 
-              <p className="pb-1 text-center text-[11px] text-sonuk">
-                Toplam{' '}
-                {formatSayi(toplam(savas.log.attackerLosses) + toplam(savas.log.defenderLosses))}{' '}
-                birim öldü · tohum {savas.seed.slice(0, 12)}
-              </p>
+              <p className="pb-1 text-center text-[11px] text-sonuk">{`Toplam${' '}${formatSayi(toplam(savas.log.attackerLosses) + toplam(savas.log.defenderLosses))}${' '}birim öldü · tohum ${savas.seed.slice(0, 12)}`}</p>
             </>
           )}
         </div>

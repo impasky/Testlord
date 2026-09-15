@@ -39,10 +39,39 @@ const sozluk = JSON.parse(readFileSync(new URL('metinler.json', KOK), 'utf8'));
  * sözcük sırası değişince parça yanlış yere düşer.
  */
 function parcaMi(s) {
-  if (/^\s/.test(s) || /\s$/.test(s)) return true;
-  if (/^\s*[·—–,:;+|.]/.test(s)) return true;
-  if (/[·—–,:;+|]\s*$/.test(s)) return true;
-  if (/\b(ve|ile|veya|için|sonra|ama)\s*$/i.test(s.trim())) return true;
+  /*
+   * Baştaki/sondaki boşlukla baştaki ayraç JSX DİZİLİMİ, anlam değil.
+   *
+   * İlk kural "boşlukla başlıyorsa parçadır" diyordu. Doğru görünüyordu
+   * ama fazlasını eliyordu: `" +%{0} şöhret"`, `" · tek bölgen"`,
+   * `"Depo:"`, `"Tahkimat:"` hepsi TAM birer ibare — ekranda bir
+   * öncekinin yanına geliyorlar, ama İngilizcede de aynı yere, aynı
+   * bütünlükte düşüyorlar. Otuz küsur çevrilebilir satır bu yüzden
+   * listede hiç görünmedi ve oyun İngilizceyken Türkçe kaldı.
+   *
+   * Ölçüt boşluğun kendisi değil, ayraç atılınca geriye TAM bir ibare
+   * kalıp kalmadığı.
+   */
+  const t = s
+    .trim()
+    .replace(/^[·—–|]+\s*/, '')
+    .trim();
+  if (!t) return true;
+
+  /*
+   * Sonu ayraç: `asker ·`, `saatte +`, `&nbsp;` — devamı kodda yapışıyor.
+   * `:` ve `,` bu kümede YOK: `Depo:` gerçek bir etiket, yarım değil.
+   */
+  if (/[·—–+|;]\s*$/.test(t)) return true;
+  if (/\b(ve|ile|veya|için|sonra|ama|ya da)\s*$/i.test(t)) return true;
+
+  /*
+   * Virgülle başlayıp tek sözcükle biten ek: `, sana`, `, şef`, `, boş`.
+   * Bunlar bir önceki dizgenin kuyruğu; tek başlarına çevrilirse
+   * İngilizcede nereye takılacakları belirsiz. `, {0} sürüyor` gibi iki
+   * sözcüklüler ise kendi başına okunabiliyor.
+   */
+  if (/^,/.test(t) && t.replace(/^,\s*/, '').split(/\s+/).length <= 1) return true;
 
   /*
    * Küçük harfle başlayan, birden çok sözcüklü ve noktalamayla biten
@@ -54,7 +83,6 @@ function parcaMi(s) {
    * `parola, öğretici, çıkış` noktalamayla bitmiyor (gerçek alt başlık).
    * Üçünü birden sağlayan bir dizge cümle ortası demektir.
    */
-  const t = s.trim();
   if (/\p{Ll}/u.test(t[0] ?? '') && /\s/.test(t) && /[.,;]$/.test(t)) return true;
 
   /*
@@ -84,7 +112,11 @@ function parcaMi(s) {
    * gerçek etiket, onları eleme. Küçük harfle başlayıp beş sözcüğü
    * geçen bir dizge ise bir cümlenin parçası olmadan var olamaz.
    */
-  if (/\p{Ll}/u.test(t[0] ?? '') && t.split(/\s+/).length >= 5) return true;
+  // Ayraç SÖZCÜK SAYMIYOR: `eski bilgi · {0} önce` beş parçaya bölünüyor
+  // ama dört sözcük — ve tam bir ibare. Ayracı sayan ilk hâl onu da,
+  // `kıl payı — sonuç değişebilir`i de cümle ortası sanmıştı.
+  const sozcukler = t.split(/\s+/).filter((p) => /\p{L}|\d/u.test(p));
+  if (/\p{Ll}/u.test(t[0] ?? '') && sozcukler.length >= 5) return true;
   return false;
 }
 

@@ -1,5 +1,5 @@
 /** Generaller — 12 kişilik sabit kadro, kiralama, slot yerleşimi. */
-import { GENERAL_LEVEL, GENERAL_SLOT_RULE, generalLevelMultiplier } from '@lordlar/shared';
+import { GENERAL_LEVEL, GENERAL_SLOT_RULE, etkiAdi, generalLevelMultiplier } from '@lordlar/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ApiError, api, type GeneralDto } from '../api/client';
@@ -24,21 +24,6 @@ const NADIRLIK_RENGI: Record<string, string> = {
 };
 const NADIRLIK_ADI = { bronz: 'Bronz', gumus: 'Gümüş', altin: 'Altın' } as const;
 type Nadirlik = keyof typeof NADIRLIK_ADI;
-
-const ETKI_ADI: Record<string, string> = {
-  ordu_saldiri: 'Ordu saldırısı',
-  ordu_savunma: 'Ordu savunması',
-  savunmada_ordu_savunma: 'Savunmada ordu savunması',
-  okcu_saldiri: 'Okçu saldırısı',
-  mizrakci_savunma: 'Mızrakçı savunması',
-  kusatma_saldiri: 'Mancınık saldırısı',
-  lord_savas_katkisi: 'Lord savaş katkısı',
-  yagma: 'Yağma',
-  bolge_geliri: 'Bölge geliri',
-  ordu_bakim_maliyeti: 'Ordu bakım maliyeti',
-  yuruyus_suresi: 'Yürüyüş süresi',
-  kayip_geri_donus: 'Kayıpların geri dönüşü',
-};
 
 function GeneralKarti({
   g,
@@ -85,8 +70,7 @@ function GeneralKarti({
           </div>
 
           <p className="mt-1 text-[12px]">
-            <span className="text-solgun">{g.pasif.ad}:</span>{' '}
-            {ETKI_ADI[g.pasif.etki] ?? g.pasif.etki}{' '}
+            <span className="text-solgun">{g.pasif.ad}:</span> {etkiAdi(g.pasif.etki)}{' '}
             <span className="font-bold" style={{ color: renk }}>
               {yuzde >= 0 ? '+' : ''}%{yuzde}
             </span>
@@ -100,9 +84,7 @@ function GeneralKarti({
       {g.sahipMi ? (
         <div className="mt-2.5 border-t border-kenar/70 pt-2.5">
           <div className="mb-1.5 flex items-center gap-2">
-            <span className="tabular shrink-0 text-[11px] text-solgun">
-              Sv {g.level}/{GENERAL_LEVEL.max}
-            </span>
+            <span className="tabular shrink-0 text-[11px] text-solgun">{`Sv ${g.level}/${GENERAL_LEVEL.max}`}</span>
             <div className="min-w-0 flex-1">
               <Ilerleme deger={g.xp} max={g.xpForNext || 1} renk={renk} boy="ince" />
             </div>
@@ -113,15 +95,13 @@ function GeneralKarti({
           {g.level < GENERAL_LEVEL.max ? (
             <p className="mb-2 text-[11px] text-sonuk">
               Sv {g.level + 1}: <span className="text-parsomen">%{sonrakiYuzde}</span>{' '}
-              {ETKI_ADI[g.pasif.etki] ?? g.pasif.etki} — savaşa girdikçe büyür.
+              {etkiAdi(g.pasif.etki)} — savaşa girdikçe büyür.
             </p>
           ) : (
             <p className="mb-2 text-[11px] text-altin">En yüksek seviye.</p>
           )}
           {g.dinleniyor ? (
-            <p className="text-[11px] text-kirmizi">
-              Yaralı — {new Date(g.dinleniyor).toLocaleString('tr-TR')} tarihine kadar dinleniyor.
-            </p>
+            <p className="text-[11px] text-kirmizi">{`Yaralı — ${new Date(g.dinleniyor).toLocaleString('tr-TR')} tarihine kadar dinleniyor.`}</p>
           ) : (
             <div className="flex gap-1.5">
               {Array.from({ length: slots }, (_, i) => (
@@ -132,9 +112,7 @@ function GeneralKarti({
                   onClick={() => onAta(g.slotIndex === i ? null : i)}
                   disabled={bekliyor}
                   className="flex-1"
-                >
-                  Slot {i + 1}
-                </Buton>
+                >{`Slot ${i + 1}`}</Buton>
               ))}
             </div>
           )}
@@ -201,7 +179,7 @@ export function Generaller({ onGuncelle }: { onGuncelle: () => void }) {
                   key={g.key}
                   className="baslik rounded-lg border border-altin/50 bg-altin/10 px-2.5 py-1.5 text-[11px] text-altin"
                 >
-                  {g.ad} <span className="text-solgun">Sv{g.level}</span>
+                  {g.ad} <span className="text-solgun">{`Sv${g.level}`}</span>
                 </li>
               ))}
             </ul>
@@ -214,10 +192,7 @@ export function Generaller({ onGuncelle }: { onGuncelle: () => void }) {
             biri yalan söylüyordu — üstelik açığı kapatan şey bir fetihti,
             yani saklanan tam da oynanacak kısımdı.
           */}
-          <p className="mt-2.5 border-t border-kenar/70 pt-2 text-[11px] text-sonuk">
-            Slotun {q.data.slots}. Liderlik {GENERAL_SLOT_RULE.bolen} puanda bir slot açar (en fazla{' '}
-            {GENERAL_SLOT_RULE.max}); karargâhın seviyesi bunun üstüne ekler.
-          </p>
+          <p className="mt-2.5 border-t border-kenar/70 pt-2 text-[11px] text-sonuk">{`Slotun ${q.data.slots}. Liderlik ${GENERAL_SLOT_RULE.bolen} puanda bir slot açar (en fazla${' '}${GENERAL_SLOT_RULE.max}); karargâhın seviyesi bunun üstüne ekler.`}</p>
         </Kart>
         {hata && <p className="mt-2 text-[13px] text-kirmizi">{hata}</p>}
       </Bolum>

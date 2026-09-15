@@ -213,10 +213,9 @@ async function veritabaniniBekle(azamiSaniye = 120): Promise<void> {
       deneme++;
       if (Date.now() >= bitis) {
         console.error(
-          `Veritabanına ${azamiSaniye} saniyedir ulaşılamıyor.\n` +
-            'En sık sebep: veritabanı ile sunucu FARKLI BÖLGEDE. Render iç ağ\n' +
-            'adresi (dpg-xxxxx-a) yalnızca aynı bölgeden çözülür. render.yaml\n' +
-            'içinde databases[].region ile services[].region aynı olmalı.',
+          `Veritabanına ${azamiSaniye} saniyedir ulaşılamıyor.\nEn sık sebep: veritabanı ile sunucu FARKLI BÖLGEDE. Render iç ağ
+adresi (dpg-xxxxx-a) yalnızca aynı bölgeden çözülür. render.yaml
+içinde databases[].region ile services[].region aynı olmalı.`,
         );
         throw e;
       }

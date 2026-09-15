@@ -15,6 +15,7 @@ export * from './economy.js';
 export * from './progression.js';
 export * from './equipment.js';
 export * from './generals.js';
+export * from './etki-adi.js';
 export * from './combat.js';
 export * from './duzen.js';
 export * from './arastirma.js';

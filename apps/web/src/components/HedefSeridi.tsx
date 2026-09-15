@@ -34,14 +34,10 @@ export function HedefGeliri({ hedef }: { hedef: HedefOnerisiDto }) {
   return (
     <>
       {kalemler.map((k) => (
-        <Hap key={k.ad} ikon={k.ikon} renk="var(--color-yesil)">
-          +{formatSayi(k.v)}/sa
-        </Hap>
+        <Hap key={k.ad} ikon={k.ikon} renk="var(--color-yesil)">{`+${formatSayi(k.v)}/sa`}</Hap>
       ))}
       {g.sohret > 0 && (
-        <Hap ikon={<IkonSohret boyut={13} />} renk="var(--color-yesil)">
-          +{g.sohret}/sa
-        </Hap>
+        <Hap ikon={<IkonSohret boyut={13} />} renk="var(--color-yesil)">{`+${g.sohret}/sa`}</Hap>
       )}
     </>
   );
@@ -67,9 +63,7 @@ export function HedefSeridi({
         </span>
         <div className="min-w-0 flex-1">
           <div className="baslik truncate text-[16px] text-parsomen">{hedef.name}</div>
-          <div className="text-[11px] text-sonuk">
-            {TIP_ADI[hedef.type] ?? hedef.type} · {formatKalan(hedef.marchSec * 1000)} yürüyüş
-          </div>
+          <div className="text-[11px] text-sonuk">{`${TIP_ADI[hedef.type] ?? hedef.type} · ${formatKalan(hedef.marchSec * 1000)} yürüyüş`}</div>
         </div>
       </div>
 
@@ -86,9 +80,9 @@ export function HedefSeridi({
           <Hap renk="var(--color-yesil)">ordun yetiyor</Hap>
         ) : eksik ? (
           <>
-            <Hap renk={eksik.karsilanabilir ? 'var(--color-altin)' : 'var(--color-kirmizi)'}>
-              {eksik.adet} {unitName(eksik.birim as UnitType)} daha
-            </Hap>
+            <Hap
+              renk={eksik.karsilanabilir ? 'var(--color-altin)' : 'var(--color-kirmizi)'}
+            >{`${eksik.adet} ${unitName(eksik.birim as UnitType)} daha`}</Hap>
             <Hap
               ikon={<IkonAltin boyut={13} />}
               renk={eksik.karsilanabilir ? 'var(--color-kaynak-altin)' : 'var(--color-kirmizi)'}
@@ -97,7 +91,7 @@ export function HedefSeridi({
             </Hap>
           </>
         ) : (
-          <Hap renk="var(--color-turuncu)">{toplam(hedef.garrison)} savunan</Hap>
+          <Hap renk="var(--color-turuncu)">{`${toplam(hedef.garrison)} savunan`}</Hap>
         )}
       </div>
 
@@ -107,11 +101,7 @@ export function HedefSeridi({
         </p>
       )}
 
-      {onAc && (
-        <Buton className="mt-2.5" tam onClick={onAc}>
-          {hedef.name} · haritada aç
-        </Buton>
-      )}
+      {onAc && <Buton className="mt-2.5" tam onClick={onAc}>{`${hedef.name} · haritada aç`}</Buton>}
     </Kart>
   );
 }

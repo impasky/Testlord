@@ -51,8 +51,7 @@ export function BildirimKarti() {
       if (yeni.durum === 'acik') setBilgi(basarili);
       else if (yeni.durum === 'reddedildi') {
         setHata(
-          'Tarayıcı bildirimleri engelliyor. Adres çubuğundaki kilit simgesinden ' +
-            'bu siteye bildirim izni vermen gerekiyor.',
+          'Tarayıcı bildirimleri engelliyor. Adres çubuğundaki kilit simgesinden bu siteye bildirim izni vermen gerekiyor.',
         );
       }
     } catch {
@@ -97,10 +96,7 @@ export function BildirimKarti() {
 
       {hal.durum === 'acik' && (
         <div className="space-y-2">
-          <p className="text-[12px] text-yesil">
-            Bildirimler açık
-            {hal.cihazSayisi > 1 ? ` · ${hal.cihazSayisi} cihaz` : ''}
-          </p>
+          <p className="text-[12px] text-yesil">{`Bildirimler açık${hal.cihazSayisi > 1 ? ` · ${hal.cihazSayisi} cihaz` : ''}`}</p>
           <div className="flex gap-2">
             <Buton
               tur="anahat"

@@ -98,8 +98,7 @@ export async function armyRoutes(app: FastifyInstance): Promise<void> {
       if (state.usedSlots + kuyrukYeri + yeniYer > state.commandCapacity) {
         const bos = state.commandCapacity - state.usedSlots - kuyrukYeri;
         throw new GameError(
-          `Komuta kapasiten yetmiyor. Boş yer: ${Math.max(0, bos)}, gereken: ${yeniYer}. ` +
-            'Liderlik statını artır ya da daha az birim eğit.',
+          `Komuta kapasiten yetmiyor. Boş yer: ${Math.max(0, bos)}, gereken: ${yeniYer}. Liderlik statını artır ya da daha az birim eğit.`,
           400,
           'KAPASITE_YETERSIZ',
         );

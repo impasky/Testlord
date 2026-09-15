@@ -293,7 +293,7 @@ export function Omurga({
       )}
 
       {adim.sonraki && (
-        <p className="mt-2.5 text-[11px] leading-snug text-sonuk">sonra: {adim.sonraki}</p>
+        <p className="mt-2.5 text-[11px] leading-snug text-sonuk">{`sonra: ${adim.sonraki}`}</p>
       )}
     </Kart>
   );
@@ -429,9 +429,7 @@ export function OmurgaSeridi({
                 {adim.baslik}
               </span>
               {adim.sonraki && (
-                <span className="block truncate text-[11px] leading-tight text-sonuk">
-                  sonra: {adim.sonraki}
-                </span>
+                <span className="block truncate text-[11px] leading-tight text-sonuk">{`sonra: ${adim.sonraki}`}</span>
               )}
             </span>
           </button>
@@ -597,16 +595,16 @@ export function siradakiAdim(g: {
       return {
         anahtar: 'erzak-bitiyor',
         baslik: 'Erzağın bitiyor',
-        cumle:
-          `Bittiğinde ordun saatte %${Math.round(ERZAK_FIRAR_ORANI * 100)} firar verir. ` +
-          'Bir tarla bölgesi al ya da ordunu küçült.',
+        cumle: `Bittiğinde ordun saatte %${Math.round(ERZAK_FIRAR_ORANI * 100)} firar verir. Bir tarla bölgesi al ya da ordunu küçült.`,
         rozetler: [
           <Hap key="kalan" ikon={<IkonSure boyut={13} />} renk="var(--color-turuncu)">
             {kalan < 1 ? `${Math.max(1, Math.round(kalan * 60))} dk` : `${Math.round(kalan)} saat`}
           </Hap>,
-          <Hap key="akis" ikon={<IkonErzak boyut={13} />} renk="var(--color-kirmizi)">
-            {Math.round(lord.netErzakPerHour)}/sa
-          </Hap>,
+          <Hap
+            key="akis"
+            ikon={<IkonErzak boyut={13} />}
+            renk="var(--color-kirmizi)"
+          >{`${Math.round(lord.netErzakPerHour)}/sa`}</Hap>,
         ],
         dugme: 'Haritada tarla ara',
         git: () => g.onGit('harita'),
@@ -721,8 +719,7 @@ export function siradakiAdim(g: {
       anahtar: 'akin',
       baslik: 'İlk akınına çık',
       cumle:
-        'Ordun ayakta. Önce bir düşman kampına in: kaybetsen bile toprağın gitmez, ' +
-        'kazanırsan ilk demirini savaşarak alırsın.',
+        'Ordun ayakta. Önce bir düşman kampına in: kaybetsen bile toprağın gitmez, kazanırsan ilk demirini savaşarak alırsın.',
       rozetler: [
         <Hap key="ganimet" ikon={<IkonDemir boyut={13} />} renk="var(--color-altin)">
           kaynak ve ekipman
@@ -750,9 +747,11 @@ export function siradakiAdim(g: {
         // olan oyuncuya bulunduğu yeri tarif etmekti.
         cumle: `${oneri.name} kapasiten dolsa bile alınmıyor. Liderlik statını yükseltmen gerek.`,
         rozetler: [
-          <Hap key="sav" ikon={<IkonYer boyut={13} />} renk="var(--color-turuncu)">
-            {toplamBirim(oneri.garrison)} savunan
-          </Hap>,
+          <Hap
+            key="sav"
+            ikon={<IkonYer boyut={13} />}
+            renk="var(--color-turuncu)"
+          >{`${toplamBirim(oneri.garrison)} savunan`}</Hap>,
         ],
         dugme: 'Niteliklere git',
         git: () => g.onBolumeGit('nitelikler'),
@@ -818,9 +817,10 @@ export function siradakiAdim(g: {
       baslik: 'Lorduna ekipman kuşan',
       cumle: 'Ekipman lordun savaş katkısını büyütür; aynı savaştan daha az kayıpla çıkarsın.',
       rozetler: [
-        <Hap key="katki" ikon={<IkonSaldiri boyut={13} />}>
-          şu an {formatSayi(lord.lordContribution)} katkı
-        </Hap>,
+        <Hap
+          key="katki"
+          ikon={<IkonSaldiri boyut={13} />}
+        >{`şu an ${formatSayi(lord.lordContribution)} katkı`}</Hap>,
       ],
       dugme: 'Demirhaneye git',
       git: () => g.onKapiAc('demirhane'),
@@ -921,9 +921,7 @@ export function siradakiAdim(g: {
       baslik: 'Diyarı büyüt',
       cumle: `Sıradaki hedefin ${oneri.name}.`,
       rozetler: [
-        <Hap key="soh" ikon={<IkonSohret boyut={13} />}>
-          {formatSayi(lord.fame)} şöhret
-        </Hap>,
+        <Hap key="soh" ikon={<IkonSohret boyut={13} />}>{`${formatSayi(lord.fame)} şöhret`}</Hap>,
         ...gelirRozetleri(oneri),
       ],
       dugme: `${iBelirtme(oneri.name)} incele`,
@@ -949,9 +947,7 @@ function gelirRozetleri(hedef: HedefOnerisiDto): ReactNode[] {
   )
     .filter((k) => k.v > 0)
     .map((k) => (
-      <Hap key={k.ad} ikon={k.ikon} renk="var(--color-yesil)">
-        +{formatSayi(k.v)}/sa
-      </Hap>
+      <Hap key={k.ad} ikon={k.ikon} renk="var(--color-yesil)">{`+${formatSayi(k.v)}/sa`}</Hap>
     ));
 }
 

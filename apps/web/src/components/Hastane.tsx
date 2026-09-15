@@ -38,10 +38,7 @@ export function Hastane({ hastane, queues }: { hastane: Army; queues: QueueItem[
           </span>
         )}
       </div>
-      <p className="mt-0.5 text-[12px] leading-snug text-solgun">
-        {toplam} asker yaralı döndü. İyileşene kadar savaşa giremez, erzak yemez ve komuta yerini
-        kaplamaz.
-      </p>
+      <p className="mt-0.5 text-[12px] leading-snug text-solgun">{`${toplam} asker yaralı döndü. İyileşene kadar savaşa giremez, erzak yemez ve komuta yerini kaplamaz.`}</p>
       <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
         {(Object.entries(hastane) as [string, number][])
           .filter(([, n]) => n > 0)

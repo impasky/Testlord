@@ -115,7 +115,7 @@ export function SaldiriOnizleme({ onizleme }: { onizleme: PreviewDto }) {
                   <Kaynaklar r={tahmin.yagma} />
                 </SonucSatiri>
                 <SonucSatiri etiket="Lord tecrübesi">
-                  <span className="tabular text-yesil">+{formatSayi(odul.xp)} XP</span>
+                  <span className="tabular text-yesil">{`+${formatSayi(odul.xp)} XP`}</span>
                 </SonucSatiri>
               </div>
             </div>
@@ -157,13 +157,10 @@ export function SaldiriOnizleme({ onizleme }: { onizleme: PreviewDto }) {
                 <span className="ml-1 text-[11px] text-sonuk">/ {odul.bolgeLimiti}</span>
               </SonucSatiri>
               <SonucSatiri etiket="Lord tecrübesi">
-                <span className="tabular text-yesil">+{formatSayi(odul.xp)} XP</span>
+                <span className="tabular text-yesil">{`+${formatSayi(odul.xp)} XP`}</span>
               </SonucSatiri>
               {odul.limitDolu && (
-                <p className="mt-1.5 text-[11px] leading-snug text-turuncu">
-                  Bölge limitin dolu ({odul.bolgeOncesi}/{odul.bolgeLimiti}). Kazansan bile bölgeyi
-                  alamazsın, sadece yağmalarsın — gelir artışı olmaz.
-                </p>
+                <p className="mt-1.5 text-[11px] leading-snug text-turuncu">{`Bölge limitin dolu (${odul.bolgeOncesi}/${odul.bolgeLimiti}). Kazansan bile bölgeyi alamazsın, sadece yağmalarsın — gelir artışı olmaz.`}</p>
               )}
             </div>
           )
@@ -177,23 +174,15 @@ export function SaldiriOnizleme({ onizleme }: { onizleme: PreviewDto }) {
               <SonucSatiri etiket="Yerine koymak">
                 <span className="inline-flex flex-col items-end gap-0.5">
                   <Kaynaklar r={bedel.yenidenEgitim} />
-                  <span className="tabular text-[11px] text-sonuk">
-                    {formatKalan(bedel.yenidenEgitimSn * 1000)} eğitim
-                  </span>
+                  <span className="tabular text-[11px] text-sonuk">{`${formatKalan(bedel.yenidenEgitimSn * 1000)} eğitim`}</span>
                 </span>
               </SonucSatiri>
             )}
             <SonucSatiri etiket="Ordun yolda">
-              <span className="tabular">
-                {formatKalan(onizleme.marchSec * 1000)} gidiş ·{' '}
-                {formatKalan(onizleme.donusSec * 1000)} dönüş
-              </span>
+              <span className="tabular">{`${formatKalan(onizleme.marchSec * 1000)} gidiş ·${' '}${formatKalan(onizleme.donusSec * 1000)} dönüş`}</span>
             </SonucSatiri>
             {onizleme.ilkSaldiri && (
-              <p className="mt-1.5 text-[11px] leading-snug text-altin">
-                İlk saldırın hızlandırıldı: ordun {formatKalan(onizleme.marchSec * 1000)} içinde
-                varacak, sonucu bu oturumda göreceksin.
-              </p>
+              <p className="mt-1.5 text-[11px] leading-snug text-altin">{`İlk saldırın hızlandırıldı: ordun ${formatKalan(onizleme.marchSec * 1000)} içinde varacak, sonucu bu oturumda göreceksin.`}</p>
             )}
           </div>
         }

@@ -150,35 +150,26 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
         {
           vurgu: `${bolge.toplam} bölge`,
           metin:
-            'Haritadaki her işaret bir bölge. Kimi boş durur, kimini bir lord tutar. ' +
-            'Bölgeler bitmez ama çoğalmaz da — biri alırsa, bir başkası kaybeder.',
+            'Haritadaki her işaret bir bölge. Kimi boş durur, kimini bir lord tutar. Bölgeler bitmez ama çoğalmaz da — biri alırsa, bir başkası kaybeder.',
         },
         {
           vurgu: 'Taht Kalesi',
           metin:
-            'Haritanın ortasındaki altın çerçeveli bölge. Onu tutan Diyarın Lordu olur ' +
-            've şöhretini daha hızlı büyütür. Oyunun ucu burası.',
+            'Haritanın ortasındaki altın çerçeveli bölge. Onu tutan Diyarın Lordu olur ve şöhretini daha hızlı büyütür. Oyunun ucu burası.',
         },
         {
           vurgu: 'Toprak haritayı açar',
           metin:
-            'Yürüyüş süresi en yakın toprağından ölçülür, malikânenden değil. ' +
-            'Bir bölge aldığın anda onun çevresindeki her yer sana yaklaşır — ' +
-            'yayıldıkça daha uzağa uzanabilirsin.',
+            'Yürüyüş süresi en yakın toprağından ölçülür, malikânenden değil. Bir bölge aldığın anda onun çevresindeki her yer sana yaklaşır — yayıldıkça daha uzağa uzanabilirsin.',
         },
         {
           vurgu: 'Dibe vurursun, silinmezsin',
-          metin:
-            'Bütün bölgelerini kaybetsen bile taban gelirin akmaya devam eder: saatte ' +
-            `${kaynak.malikane_saatlik.altin} altın. Bir kampa çekilirsin, binaların ` +
-            'durur ve yeni bir yerleşim alınca kaldığın yerden devam edersin.',
+          metin: `Bütün bölgelerini kaybetsen bile taban gelirin akmaya devam eder: saatte ${kaynak.malikane_saatlik.altin} altın. Bir kampa çekilirsin, binaların durur ve yeni bir yerleşim alınca kaldığın yerden devam edersin.`,
         },
         {
           vurgu: 'Kamptan başlarsın',
           metin:
-            'Toprağın yok, ordun yok. İlk köyünü fethettiğinde orası başkentin olur ve ' +
-            'şehir sayfan bir kamptan bir köye döner. Sana hiçbir şey verilmiyor — ' +
-            'ordu da toprak da bina da kazanılıyor.',
+            'Toprağın yok, ordun yok. İlk köyünü fethettiğinde orası başkentin olur ve şehir sayfan bir kamptan bir köye döner. Sana hiçbir şey verilmiyor — ordu da toprak da bina da kazanılıyor.',
         },
       ],
     },
@@ -194,32 +185,22 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
         {
           vurgu: 'Erzak',
           metin:
-            'Ordun her saat erzak yer. Erzak biterse askerlerin açlıktan erimeye ' +
-            'başlar — büyük ordu kurmak yetmiyor, besleyebilmek gerekiyor.',
+            'Ordun her saat erzak yer. Erzak biterse askerlerin açlıktan erimeye başlar — büyük ordu kurmak yetmiyor, besleyebilmek gerekiyor.',
         },
         {
           vurgu: 'Şöhret',
           metin:
-            'Harcanmaz, biriktirilir. Sıralamadaki yerin ve unvanın buradan gelir. ' +
-            'Bölge tutmak, savaş kazanmak ve tahtı elinde tutmak şöhret kazandırır.',
+            'Harcanmaz, biriktirilir. Sıralamadaki yerin ve unvanın buradan gelir. Bölge tutmak, savaş kazanmak ve tahtı elinde tutmak şöhret kazandırır.',
         },
         {
           // Oyuncu testinde bu tavana çarpıldı ve fark edilmedi: altın
           // taşarken demir bitiyordu. Hiçbir ekranda yazmıyordu.
           vurgu: 'Deponun bir tavanı var',
-          metin:
-            `Her kaynağı en çok ${depo.taban.toLocaleString('tr-TR')} kadar biriktirebilirsin; ` +
-            `lord seviyen her arttığında tavan ${depo.lord_seviye_basina.toLocaleString('tr-TR')} büyür. ` +
-            'Tavana dayanan kaynak artık birikmez — üretilen boşa gider. Araştırmadaki ' +
-            'Ambarlar bu tavanı büyütür.',
+          metin: `Her kaynağı en çok ${depo.taban.toLocaleString('tr-TR')} kadar biriktirebilirsin; lord seviyen her arttığında tavan ${depo.lord_seviye_basina.toLocaleString('tr-TR')} büyür. Tavana dayanan kaynak artık birikmez — üretilen boşa gider. Araştırmadaki Ambarlar bu tavanı büyütür.`,
         },
         {
           vurgu: 'Pazarda takas',
-          metin:
-            'Bölgeler tek kaynak üretir: şehir altın, maden demir, tarla erzak. Malikâne ' +
-            `pazarında birini diğerine çevirebilirsin — komisyon %${Math.round(pazar.komisyon * 100)}, ` +
-            `günlük hacim ${pazar.gunluk_tavan_altin_karsiligi.toLocaleString('tr-TR')} altın karşılığıyla sınırlı. ` +
-            'Takas boşluğu kapatır, üretimin yerini tutmaz.',
+          metin: `Bölgeler tek kaynak üretir: şehir altın, maden demir, tarla erzak. Malikâne pazarında birini diğerine çevirebilirsin — komisyon %${Math.round(pazar.komisyon * 100)}, günlük hacim ${pazar.gunluk_tavan_altin_karsiligi.toLocaleString('tr-TR')} altın karşılığıyla sınırlı. Takas boşluğu kapatır, üretimin yerini tutmaz.`,
         },
       ],
     },
@@ -234,15 +215,11 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
         },
         {
           vurgu: 'Kuşatma silahı',
-          metin:
-            `Kaleye karşı ×${siegeVsFortress()}, canlı birime karşı ×${siegeVsUnit()}. ` +
-            'Duvara karşı harika, insana karşı berbat — yanına muhafız al.',
+          metin: `Kaleye karşı ×${siegeVsFortress()}, canlı birime karşı ×${siegeVsUnit()}. Duvara karşı harika, insana karşı berbat — yanına muhafız al.`,
         },
         {
           vurgu: 'Komuta sınırı',
-          metin:
-            `Aynı anda ${komuta.taban} birim komuta edebilirsin; Liderlik her puanda ` +
-            `${komuta.liderlik_carpani} birim daha ekler. Ordu istediğin kadar büyümez.`,
+          metin: `Aynı anda ${komuta.taban} birim komuta edebilirsin; Liderlik her puanda ${komuta.liderlik_carpani} birim daha ekler. Ordu istediğin kadar büyümez.`,
         },
       ],
     },
@@ -253,42 +230,24 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
       maddeler: [
         {
           vurgu: `${diz.satir * diz.sutun} kare`,
-          metin:
-            `Saldırıya çıkmadan önce ordunu ${diz.satir}x${diz.sutun} bir alana dizersin. ` +
-            `1. satır en ön (düşmanın ilk çarptığı yer), ${diz.satir}. satır en arka. ` +
-            'Kimin nerede durduğu savaşın gücünü değiştirir.',
+          metin: `Saldırıya çıkmadan önce ordunu ${diz.satir}x${diz.sutun} bir alana dizersin. 1. satır en ön (düşmanın ilk çarptığı yer), ${diz.satir}. satır en arka. Kimin nerede durduğu savaşın gücünü değiştirir.`,
         },
         {
           vurgu: 'Her birimin bir yeri var',
-          metin:
-            `İdeal satırlar: ${idealSatirlar}. İdealinden her satır sapma güç kaybettirir; ` +
-            `en ağır ceza mancınığındır (satır başına %${Math.round(kusatmaYer.satir_sapma_cezasi * 100)}) — ` +
-            'ön hatta duran mancınık ilk çarpışmada dağılır.',
+          metin: `İdeal satırlar: ${idealSatirlar}. İdealinden her satır sapma güç kaybettirir; en ağır ceza mancınığındır (satır başına %${Math.round(kusatmaYer.satir_sapma_cezasi * 100)}) — ön hatta duran mancınık ilk çarpışmada dağılır.`,
         },
         {
           vurgu: 'Kanatlar ve açık cephe',
-          metin:
-            `Kenar sütunlar (${diz.kanat_sutunlari.join(' ve ')}) süvariye yarar ` +
-            `(%${Math.round(suvariYer.kanat_carpani * 100)}), okçuyla mancınığa zarar verir. ` +
-            `Ön satırda hiç yakın dövüş birimi bırakmazsan savunmandan %${Math.round(diz.acik_cephe_cezasi * 100)} ` +
-            'gider: okçuyu öne koyup mızrakçıyı arkaya saklamak bedava değil.',
+          metin: `Kenar sütunlar (${diz.kanat_sutunlari.join(' ve ')}) süvariye yarar (%${Math.round(suvariYer.kanat_carpani * 100)}), okçuyla mancınığa zarar verir. Ön satırda hiç yakın dövüş birimi bırakmazsan savunmandan %${Math.round(diz.acik_cephe_cezasi * 100)} gider: okçuyu öne koyup mızrakçıyı arkaya saklamak bedava değil.`,
         },
         {
           vurgu: `${TAKTIKLER.length} taktik`,
           metin:
-            'Dizilimi yaptıktan sonra bir taktik seçersin — Hilal Düzeni süvarini kanattan ' +
-            'dolandırır, Kalkan Duvarı ön hattı kilitler. Her taktiğin bir koşulu var ve ' +
-            'koşulu tutmayan taktik seçilemez: yarım tutan bir taktiğe yarım bonus vermek, ' +
-            'sana neden az aldığını anlatmayı imkânsız kılardı.',
+            'Dizilimi yaptıktan sonra bir taktik seçersin — Hilal Düzeni süvarini kanattan dolandırır, Kalkan Duvarı ön hattı kilitler. Her taktiğin bir koşulu var ve koşulu tutmayan taktik seçilemez: yarım tutan bir taktiğe yarım bonus vermek, sana neden az aldığını anlatmayı imkânsız kılardı.',
         },
         {
           vurgu: 'Tavanı var, savaşı belirlemez',
-          metin:
-            `Dizilimden gelen etki en çok +%${Math.round(diz.azami_bonus * 100)} / ` +
-            `-%${Math.round(diz.azami_ceza * 100)}, taktikten gelen en çok ` +
-            `%${Math.round(taktikTavan.azami_etki * 100)}. İyi dizilim kötü orduyu kurtarmaz, ` +
-            'ama iki denk ordudan hangisinin kazanacağını söyler. Yaptığın hatalar savaş ' +
-            'raporunda tek tek yazar.',
+          metin: `Dizilimden gelen etki en çok +%${Math.round(diz.azami_bonus * 100)} / -%${Math.round(diz.azami_ceza * 100)}, taktikten gelen en çok %${Math.round(taktikTavan.azami_etki * 100)}. İyi dizilim kötü orduyu kurtarmaz, ama iki denk ordudan hangisinin kazanacağını söyler. Yaptığın hatalar savaş raporunda tek tek yazar.`,
         },
       ],
     },
@@ -300,40 +259,30 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
         {
           vurgu: 'Önce önizleme',
           metin:
-            'Saldırmadan önce kazanma ihtimalini, tahmini kaybını ve ganimetini ' +
-            'gösteriyoruz. Kör atış yok.',
+            'Saldırmadan önce kazanma ihtimalini, tahmini kaybını ve ganimetini gösteriyoruz. Kör atış yok.',
         },
         {
           vurgu: `${savas.tur_sayisi} tur`,
           metin:
-            'Savaş tur tur hesaplanır ve raporu okunabilir: neyi neden kazandığın ' +
-            'ya da kaybettiğin yazar. Rapordan doğrudan karşı saldırı açabilirsin.',
+            'Savaş tur tur hesaplanır ve raporu okunabilir: neyi neden kazandığın ya da kaybettiğin yazar. Rapordan doğrudan karşı saldırı açabilirsin.',
         },
         {
           vurgu: 'Önce casus yolla',
-          metin:
-            `${casus.maliyet_altin.toLocaleString('tr-TR')} altına bir bölgeye casus gönderip garnizonunu ` +
-            `öğrenebilirsin. Rapor bir fotoğraftır: ${casus.gecerlilik_saat} saat sonra "eski" diye ` +
-            'işaretlenir. Kurnazlık statın hem başarı şansını artırır hem yakalanma riskini düşürür.',
+          metin: `${casus.maliyet_altin.toLocaleString('tr-TR')} altına bir bölgeye casus gönderip garnizonunu öğrenebilirsin. Rapor bir fotoğraftır: ${casus.gecerlilik_saat} saat sonra "eski" diye işaretlenir. Kurnazlık statın hem başarı şansını artırır hem yakalanma riskini düşürür.`,
         },
         {
           vurgu: 'Kaybetmek ölüm değil',
           metin:
-            'Yenilirsen ordunun bir kısmını kaybedersin, hesabını değil. ' +
-            'Ölü sayılanların bir bölümü yaralı olarak geri döner — hem savunmada hem saldırıda.',
+            'Yenilirsen ordunun bir kısmını kaybedersin, hesabını değil. Ölü sayılanların bir bölümü yaralı olarak geri döner — hem savunmada hem saldırıda.',
         },
         {
           vurgu: 'Hastane',
-          metin:
-            'Yaralılar eve değil hastaneye girer ve tedavi bitene kadar savaşa katılamaz. ' +
-            `Tedavi en çok ${Math.round(hastane.azami_saniye / 3600)} saat sürer; o sürede ` +
-            'erzak yemez ve komuta yerini işgal etmezler. Yenilgi bir gecikmedir, silinme değil.',
+          metin: `Yaralılar eve değil hastaneye girer ve tedavi bitene kadar savaşa katılamaz. Tedavi en çok ${Math.round(hastane.azami_saniye / 3600)} saat sürer; o sürede erzak yemez ve komuta yerini işgal etmezler. Yenilgi bir gecikmedir, silinme değil.`,
         },
         {
           vurgu: 'Ganimet ve fetih',
           metin:
-            'Bir bölgeyi ezici bir üstünlükle alırsan bölge senin olur. Dar kazanırsan ' +
-            'yalnız yağmalarsın: kaynağı alır, bölgeyi bırakırsın.',
+            'Bir bölgeyi ezici bir üstünlükle alırsan bölge senin olur. Dar kazanırsan yalnız yağmalarsın: kaynağı alır, bölgeyi bırakırsın.',
         },
       ],
     },
@@ -352,20 +301,17 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
         {
           vurgu: 'Yerleşim bir TAVAN',
           metin:
-            'Kampta binalar 1. seviyeyi geçemez, köyde 2, kasabada 3, şehirde 4. ' +
-            'Fethin karşılığı bu: T5 ekipman dövmek için gerçek bir şehir gerekiyor.',
+            'Kampta binalar 1. seviyeyi geçemez, köyde 2, kasabada 3, şehirde 4. Fethin karşılığı bu: T5 ekipman dövmek için gerçek bir şehir gerekiyor.',
         },
         {
           vurgu: 'Araştırma oran, bina kapasite',
           metin:
-            'Araştırma "%15 daha hızlı" der, bina "aynı anda 2 eğitim" der. İkisi ' +
-            'hiçbir zaman aynı sayıya dokunmaz — hangisini yükselteceğin ayrı bir karar.',
+            'Araştırma "%15 daha hızlı" der, bina "aynı anda 2 eğitim" der. İkisi hiçbir zaman aynı sayıya dokunmaz — hangisini yükselteceğin ayrı bir karar.',
         },
         {
           vurgu: 'Binalar seninle taşınır',
           metin:
-            'Daha büyük bir yerleşim fethedip başkentini oraya taşırsan binaların ' +
-            'seviyeleriyle birlikte gelir. Taşınmak hiçbir şey kaybettirmez.',
+            'Daha büyük bir yerleşim fethedip başkentini oraya taşırsan binaların seviyeleriyle birlikte gelir. Taşınmak hiçbir şey kaybettirmez.',
         },
       ],
     },
@@ -377,26 +323,22 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
         {
           vurgu: 'Toprak riski yok',
           metin:
-            'Akın toprak vermez, toprak da almaz. Kaybetsen bile bölgen elinde kalır — ' +
-            'ordunu denemenin en ucuz yeri burası.',
+            'Akın toprak vermez, toprak da almaz. Kaybetsen bile bölgen elinde kalır — ordunu denemenin en ucuz yeri burası.',
         },
         {
           vurgu: 'Savaş gerçek',
           metin:
-            'Aynı savaş motoru, aynı dizilim, aynı taktik, aynı kayıp. Yaralıların ' +
-            'hastaneye girer. Burada öğrendiğin her şey karşındaki lorda karşı da geçerli.',
+            'Aynı savaş motoru, aynı dizilim, aynı taktik, aynı kayıp. Yaralıların hastaneye girer. Burada öğrendiğin her şey karşındaki lorda karşı da geçerli.',
         },
         {
           vurgu: 'Kaynak kesin, ekipman şans',
           metin:
-            'Kazanınca kaynağı mutlaka alırsın; ekipman ihtimale bağlı ve grup ' +
-            'zorlaştıkça hem ihtimal hem kademe büyür. Şefler en iyisini düşürür.',
+            'Kazanınca kaynağı mutlaka alırsın; ekipman ihtimale bağlı ve grup zorlaştıkça hem ihtimal hem kademe büyür. Şefler en iyisini düşürür.',
         },
         {
           vurgu: 'Vurulan kamp toparlanır',
           metin:
-            'Düşürdüğün grup birkaç saat sonra geri döner. O sürede gri durur ama ' +
-            'kaybolmaz — ne zaman döneceği ekranda yazılı.',
+            'Düşürdüğün grup birkaç saat sonra geri döner. O sürede gri durur ama kaybolmaz — ne zaman döneceği ekranda yazılı.',
         },
       ],
     },
@@ -408,33 +350,25 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
         {
           vurgu: 'Bölge geliştir',
           metin:
-            'Aldığın bölgeyi yükseltmek geliri ve savunmayı artırır. Yeni bölge almaktan ' +
-            'çoğu zaman daha kârlıdır — ve kimse elinden almaya kalkışmaz.',
+            'Aldığın bölgeyi yükseltmek geliri ve savunmayı artırır. Yeni bölge almaktan çoğu zaman daha kârlıdır — ve kimse elinden almaya kalkışmaz.',
         },
         {
           vurgu: 'Ekipman döv',
           metin:
-            'Demirhanede kuşandığın eşyalar ordunun saldırı ve savunmasına doğrudan ' +
-            'eklenir. Aynı orduyla daha güçlü savaşırsın.',
+            'Demirhanede kuşandığın eşyalar ordunun saldırı ve savunmasına doğrudan eklenir. Aynı orduyla daha güçlü savaşırsın.',
         },
         {
           vurgu: 'General topla',
           metin:
-            'Generaller savaşa katıldıkça seviye atlar ve ordunun bonuslarını büyütür. ' +
-            'Yaralanırlarsa bir süre dinlenmeleri gerekir.',
+            'Generaller savaşa katıldıkça seviye atlar ve ordunun bonuslarını büyütür. Yaralanırlarsa bir süre dinlenmeleri gerekir.',
         },
         {
           vurgu: 'Bölge sınırı',
-          metin:
-            `Her ${bolge.max_seviye_bolen} lord seviyesinde bir bölge daha tutabilirsin. ` +
-            'Erken oyunda az bölgeyi iyi tutmak, çok bölgeyi kötü tutmaktan iyidir.',
+          metin: `Her ${bolge.max_seviye_bolen} lord seviyesinde bir bölge daha tutabilirsin. Erken oyunda az bölgeyi iyi tutmak, çok bölgeyi kötü tutmaktan iyidir.`,
         },
         {
           vurgu: 'Aynı vilayette topla',
-          metin:
-            `Aynı vilayette tuttuğun her fazladan bölge, oradaki bütün bölgelerinin gelirini ` +
-            `%${Math.round(vilayet.bolge_basina * 100)} artırır (en çok %${Math.round(vilayet.azami * 100)}). ` +
-            'Dağınık üç bölge ile bitişik üç bölge aynı şey değil.',
+          metin: `Aynı vilayette tuttuğun her fazladan bölge, oradaki bütün bölgelerinin gelirini %${Math.round(vilayet.bolge_basina * 100)} artırır (en çok %${Math.round(vilayet.azami * 100)}). Dağınık üç bölge ile bitişik üç bölge aynı şey değil.`,
         },
       ],
     },
@@ -455,19 +389,14 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
         {
           vurgu: 'Kalıcı ve geri alınmaz',
           metin:
-            'Araştırma bittiğinde etkisi sonsuza kadar durur — ekipman gibi eskimez, ordu ' +
-            'gibi ölmez. Depo tavanı, eğitim hızı, ordu saldırısı, yürüyüş hızı: hepsi ' +
-            'buradan büyür.',
+            'Araştırma bittiğinde etkisi sonsuza kadar durur — ekipman gibi eskimez, ordu gibi ölmez. Depo tavanı, eğitim hızı, ordu saldırısı, yürüyüş hızı: hepsi buradan büyür.',
         },
         {
           vurgu:
             kuyruk.research === 1
               ? 'Aynı anda tek araştırma'
               : `Aynı anda ${kuyruk.research} araştırma`,
-          metin:
-            `Aynı anda ${kuyruk.research} araştırma yürütebilirsin, yani sıra senin kararın: ` +
-            'önce ekonomiyi mi büyütürsün, orduyu mu? Vazgeçersen harcadığının ' +
-            `%${Math.round(arastirma.iptal_iadesi * 100)}'i geri gelir.`,
+          metin: `Aynı anda ${kuyruk.research} araştırma yürütebilirsin, yani sıra senin kararın: önce ekonomiyi mi büyütürsün, orduyu mu? Vazgeçersen harcadığının %${Math.round(arastirma.iptal_iadesi * 100)}'i geri gelir.`,
         },
       ],
     },
@@ -479,20 +408,17 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
         {
           vurgu: `${koruma.yeni_oyuncu_saat} saat yeni lord kalkanı`,
           metin:
-            'Başlarken kimse sana saldıramaz. Kalkan, sen ilk saldırını yaptığında ' +
-            'düşer — hazır olduğuna kendin karar veriyorsun.',
+            'Başlarken kimse sana saldıramaz. Kalkan, sen ilk saldırını yaptığında düşer — hazır olduğuna kendin karar veriyorsun.',
         },
         {
           vurgu: `Yağma sonrası ${koruma.yagma_sonrasi_saat} saat`,
           metin:
-            'Bölgen yağmalandıysa kısa bir süre dokunulmaz olur. Farklı saldırganların ' +
-            'sırayla gelip seni bir gecede silmesi böyle engelleniyor.',
+            'Bölgen yağmalandıysa kısa bir süre dokunulmaz olur. Farklı saldırganların sırayla gelip seni bir gecede silmesi böyle engelleniyor.',
         },
         {
           vurgu: `Fetih sonrası ${koruma.bolge_ele_gecirme_sonrasi_saat} saat`,
           metin:
-            'Yeni aldığın bölge bir süre korunur. Aldığın anda elinden alınmaz, ' +
-            'garnizonunu toplamaya vaktin olur.',
+            'Yeni aldığın bölge bir süre korunur. Aldığın anda elinden alınmaz, garnizonunu toplamaya vaktin olur.',
         },
       ],
     },
@@ -504,43 +430,30 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
         {
           vurgu: `En fazla ${ittifak.azami_uye} üye`,
           metin:
-            'Üyeler birbirine saldıramaz. Küçük tutuldu: bir kaleyi birlikte kuşatmaya ' +
-            'yeter, haritayı tek başına yutmaya yetmez.',
+            'Üyeler birbirine saldıramaz. Küçük tutuldu: bir kaleyi birlikte kuşatmaya yeter, haritayı tek başına yutmaya yetmez.',
         },
         {
           // "Nasıl girerim" sorusu, "içeride ne yaparım"dan önce geliyor:
           // oyuncunun çarptığı ilk kapı bu.
           vurgu: 'Katılmak',
-          metin:
-            'Kimi ittifaklara doğrudan girersin, çoğu başvuruyla üye alır — o zaman ' +
-            `liderin onayını beklersin. Aynı anda ${basvuru.azami_bekleyen} başvurun ` +
-            'açık olabilir; kabul edilen biri gelince diğerleri kendiliğinden düşer.',
+          metin: `Kimi ittifaklara doğrudan girersin, çoğu başvuruyla üye alır — o zaman liderin onayını beklersin. Aynı anda ${basvuru.azami_bekleyen} başvurun açık olabilir; kabul edilen biri gelince diğerleri kendiliğinden düşer.`,
         },
         {
           vurgu: 'Takviye ve ortak hedef',
           metin:
-            'Bir üyenin bölgesine asker yollayıp savunmasını güçlendirebilir, lider ' +
-            'olarak haritada ortak bir hedef işaretleyebilirsin.',
+            'Bir üyenin bölgesine asker yollayıp savunmasını güçlendirebilir, lider olarak haritada ortak bir hedef işaretleyebilirsin.',
         },
         {
           vurgu: 'İttifak seviyesi',
-          metin:
-            'Üyeler bağış yaptıkça ittifak seviye atlar ve HERKES kazanır: daha çok ' +
-            'kaynak gönderme hakkı, daha hızlı takviye, daha ucuz keşif. Günde ' +
-            `${bagis.gunluk_hak} bağış hakkın var.`,
+          metin: `Üyeler bağış yaptıkça ittifak seviye atlar ve HERKES kazanır: daha çok kaynak gönderme hakkı, daha hızlı takviye, daha ucuz keşif. Günde ${bagis.gunluk_hak} bağış hakkın var.`,
         },
         {
           vurgu: 'Saldırmazlık paktı',
-          metin:
-            `İki ittifak birbirine saldırmamaya söz verebilir. En fazla ${pakt.azami} pakt, ` +
-            `ve fesih anında geçmiyor: ${pakt.fesih_ihbar_saat} saat ihbar süresi boyunca pakt ` +
-            'hâlâ koruyor. Verdiğin söz o yüzden bir şey ifade ediyor.',
+          metin: `İki ittifak birbirine saldırmamaya söz verebilir. En fazla ${pakt.azami} pakt, ve fesih anında geçmiyor: ${pakt.fesih_ihbar_saat} saat ihbar süresi boyunca pakt hâlâ koruyor. Verdiğin söz o yüzden bir şey ifade ediyor.`,
         },
         {
           vurgu: 'Kaynak gönder',
-          metin:
-            `Zorda kalan üyeye kaynak yollayabilirsin. Günde ${ticaret.gunluk_gonderim_tavani.toLocaleString('tr-TR')} ` +
-            'altın karşılığına kadar, ve kaynak da yol alır — anında gitmez.',
+          metin: `Zorda kalan üyeye kaynak yollayabilirsin. Günde ${ticaret.gunluk_gonderim_tavani.toLocaleString('tr-TR')} altın karşılığına kadar, ve kaynak da yol alır — anında gitmez.`,
         },
       ],
     },
@@ -552,33 +465,27 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
         {
           vurgu: 'Bir şey başlat, kapat',
           metin:
-            'Eğitim, yürüyüş ve imar zamanla biter. Uygulamayı açık tutman gerekmez; ' +
-            'kapalıyken de işler.',
+            'Eğitim, yürüyüş ve imar zamanla biter. Uygulamayı açık tutman gerekmez; kapalıyken de işler.',
         },
         {
           vurgu: '"Şimdi ne yapmalısın"',
           metin:
-            'Malikânede tek bir kart her zaman sıradaki adımı söyler. Ne yapacağını ' +
-            'bilemezsen oraya bak, gerisini düşünme.',
+            'Malikânede tek bir kart her zaman sıradaki adımı söyler. Ne yapacağını bilemezsen oraya bak, gerisini düşünme.',
         },
         {
           vurgu: 'Günlük görevler ve haftalık sefer',
           metin:
-            'Her gün üç küçük görev, her hafta bir sefer. Kısa bir girişte bile ' +
-            'elinde bir şeyle çıkarsın.',
+            'Her gün üç küçük görev, her hafta bir sefer. Kısa bir girişte bile elinde bir şeyle çıkarsın.',
         },
         {
           vurgu: 'Başarımlar',
           metin:
-            'Lord ekranında bir başarım listesi var: bölge, savaş, ekipman, general. ' +
-            'Hiçbiri zorunlu değil — oyunu hiç görmediğin yerlerinden denemen için ' +
-            'birer bahane.',
+            'Lord ekranında bir başarım listesi var: bölge, savaş, ekipman, general. Hiçbiri zorunlu değil — oyunu hiç görmediğin yerlerinden denemen için birer bahane.',
         },
         {
           vurgu: 'Dünya kalıcı',
           metin:
-            'Sezon yok, sıfırlama yok. Bugün kurduğun şey yarın da, seneye de duruyor. ' +
-            'Acele etmene gerek yok.',
+            'Sezon yok, sıfırlama yok. Bugün kurduğun şey yarın da, seneye de duruyor. Acele etmene gerek yok.',
         },
       ],
     },

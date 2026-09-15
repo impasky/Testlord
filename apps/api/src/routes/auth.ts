@@ -215,9 +215,7 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
         {
           kime: adres,
           konu: 'Lordlar Çağı — parola sıfırlama',
-          metin:
-            `Parolanı sıfırlamak için ${JETON_OMRU_DK} dakika içinde bu bağlantıyı aç:\n\n${bag}\n\n` +
-            'Bu isteği sen yapmadıysan hiçbir şey yapmana gerek yok; parolan değişmedi.',
+          metin: `Parolanı sıfırlamak için ${JETON_OMRU_DK} dakika içinde bu bağlantıyı aç:\n\n${bag}\n\nBu isteği sen yapmadıysan hiçbir şey yapmana gerek yok; parolan değişmedi.`,
         },
         app.log,
       );

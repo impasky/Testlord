@@ -67,7 +67,16 @@ for (const dosya of dosyalar) {
       sorun.push(`${yer} — satır ${no} ile başlıyor ama okun sağı ${ok[2]}; satırlar karışmış`);
       continue;
     }
-    const ceviri = ok ? ok[3] : kalan;
+    /*
+     * `\n` GERÇEK SATIR SONUNA çevriliyor.
+     *
+     * Dosya satır tabanlı: bir çeviri birden çok satır süremez. Ama
+     * kaynak metinlerin bir kısmında gerçek satır sonu var (parola
+     * sıfırlama e-postası gibi). Çevirmen `\n` yazıyor, araç onu
+     * yerine koyuyor. Arayüz metninde ters bölü + n dizisi başka
+     * hiçbir anlama gelmiyor, o yüzden karışma riski yok.
+     */
+    const ceviri = (ok ? ok[3] : kalan).replace(/\\n/g, '\n');
     const anahtar = numaralar[no];
 
     if (!anahtar) {
@@ -120,12 +129,25 @@ for (const dosya of dosyalar) {
     // Türkçe kalmışsa çeviri yapılmamış demektir. Kesin bir ölçüt yok;
     // birebir aynı olması yeterince kesin. Bilerek aynı bırakılacaksa
     // yukarıdaki "=" var.
-    if (t === kayit.tr) {
+    if (t === kayit.tr.trim()) {
       sorun.push(`${yer} — ${no} çevrilmemiş (Türkçesiyle aynı). Bilerekse "=" yaz.`);
       continue;
     }
 
-    kabul.set(anahtar, t);
+    /*
+     * Baştaki ve sondaki BOŞLUK kaynaktan geri konuyor.
+     *
+     * `" birim"`, `" kırıyor: "`, `"{0} sana kaynak yolladı: "` — bu
+     * boşluklar metnin parçası; kodda yanlarına başka bir dizge
+     * yapışıyor ve boşluk düşerse ekranda "5units" yazıyor. Ama düz
+     * metin dosyasında görünmüyorlar: çevirmen sondaki boşluğu ne
+     * görebiliyor ne de güvenilir biçimde yazabiliyor, çoğu düzenleyici
+     * kaydederken siliyor. O yüzden sorulmuyor — kaynaktakinin aynısı
+     * konuyor.
+     */
+    const bas = /^\s*/.exec(kayit.tr)[0];
+    const son = /\s*$/.exec(kayit.tr.slice(bas.length))[0];
+    kabul.set(anahtar, bas + t + son);
   }
 }
 

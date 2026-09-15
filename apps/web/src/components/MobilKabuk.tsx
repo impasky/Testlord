@@ -243,9 +243,7 @@ export function MobilKabuk({
           <div className="mb-2 flex items-center gap-2">
             <div className="flex min-w-0 flex-1 items-center gap-2">
               <span className="baslik truncate text-[13px]">{lord.name}</span>
-              <span className="baslik shrink-0 rounded-md bg-altin/20 px-1.5 py-0.5 text-[11px] text-altin">
-                Sv {lord.level}
-              </span>
+              <span className="baslik shrink-0 rounded-md bg-altin/20 px-1.5 py-0.5 text-[11px] text-altin">{`Sv ${lord.level}`}</span>
             </div>
             <div className="flex shrink-0 items-center gap-1 text-[11px] text-solgun">
               <span className="text-altin">
