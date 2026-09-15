@@ -298,13 +298,13 @@ alınamayan yanlış bir seçim oyuncuyu hesabını silmeye iter.
   okuyucu ve klavye erişilebilirliğini ölçüyor: sayfa dili, her düğmenin
   okunabilir adı, görsellerin alt metni, başlık yapısı, odak görünürlüğü
   ve WCAG 2.5.8 dokunma hedefleri. Denetim temiz ve `pnpm e2e` içinde.
-- **M13 — i18n. YARISI YAPILDI.** Oyundaki bütün metinler
-  `tools/metin-cikar.mjs` ile çıkarılıyor ve `ceviri/metinler.json` +
-  `.csv` olarak duruyor (2100+ kayıt, içerik özetinden türeyen kalıcı
-  anahtarlarla). Çeviri gelince yapılacak olan: Hesap ekranında dil
-  seçimi, cihaz başına kayıt, sözlükten okuma ve çıkarımın CI'a
-  bağlanması. Metinler hâlâ bileşenlerin içinde — çıkarım onları
-  taşımıyor, okuyor.
+- **M13 — i18n. YAPILDI** (docs/15). Dil ayarı Hesap ekranında,
+  cihaz başına kayıtlı. 1597 satır İngilizceye çevrildi. Anahtar
+  Türkçe metnin özeti olduğu için SUNUCUYA HİÇ DOKUNULMADI: API
+  Türkçe döndürüyor, istemci çeviriyor. Kaynak kodda `t()` çağrısı da
+  yok — derleme eklentisi çıkarıcının kurallarıyla sarıyor. Açık
+  kalan tek şey 291 cümle parçası; onlar çeviriyle değil kodla
+  çözülüyor.
 - **M14 — push bildirimi. YAPILDI** (docs/12 §17). Web Push + VAPID:
   anahtar yerel üretiliyor, dış servis yok. Service worker, cihaz başına
   abonelik, Hesap ekranında izin kartı ve altı olay türü bildirim

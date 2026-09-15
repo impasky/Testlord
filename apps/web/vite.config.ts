@@ -1,9 +1,13 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
+// @ts-expect-error — eklenti düz .mjs; tipi yok, davranışı testlerle ölçülüyor.
+import { ceviriEklentisi } from './vite-ceviri.mjs';
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  // Çeviri eklentisi react()'ten ÖNCE: JSX'i React dönüştürmeden
+  // sarmak gerekiyor, sonrasında JSX gövdesi diye bir şey kalmıyor.
+  plugins: [ceviriEklentisi(), react(), tailwindcss()],
   // host: true -> 0.0.0.0'a bağlanır. Aynı Wi-Fi'daki telefondan
   // http://<bilgisayarın-LAN-IP>:5173 ile açılabilsin diye.
   // host: true -> 0.0.0.0'a bağlanır, aynı Wi-Fi'daki telefondan

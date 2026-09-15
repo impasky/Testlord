@@ -1,3 +1,13 @@
+/*
+ * dil.js EN ÜSTTE ve bu sıra ÖNEMLİ.
+ *
+ * Derleme eklentisi metin taşıyan her modüle `t()` çağrısı koyuyor ve
+ * bazı modüllerde bu çağrı MODÜL DÜZEYİNDE çalışıyor (`const TABLAR =
+ * [{ ad: t('Şöhret') }]`). dil.js sonda olsaydı o çağrı, tuttuğu
+ * durum daha ilklenmeden yapılır ve "Cannot access before
+ * initialization" ile patlardı — gerçekten patladı.
+ */
+export * from './dil.js';
 export * from './types.js';
 export * from './balance.js';
 export * from './rng.js';

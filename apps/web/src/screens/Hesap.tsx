@@ -10,7 +10,8 @@ import { useState } from 'react';
 import { ApiError, api, type LordState } from '../api/client';
 import { Alan, Bolum, Buton, EngelNotu, Input, Kart } from '../components/ui';
 import { BildirimKarti } from '../components/BildirimKarti';
-import type { Kapi } from '@lordlar/shared';
+import { DILLER, type Kapi } from '@lordlar/shared';
+import { useDil } from '../lib/dil';
 
 export function Hesap({
   lord,
@@ -32,6 +33,8 @@ export function Hesap({
    * Susturulmuşsan sebebini burada da görüyorsun — sohbete girip
    * yazamadığını keşfetmen gerekmesin.
    */
+  const { dil, degistir } = useDil();
+
   const moderasyon = useQuery({
     queryKey: ['moderasyon-durum'],
     queryFn: api.moderasyonDurumu,
@@ -125,6 +128,29 @@ export function Hesap({
           </Kart>
         </Bolum>
       )}
+
+      <Bolum baslik="Dil">
+        <Kart className="p-3">
+          <div className="flex gap-1.5">
+            {DILLER.map((d) => (
+              <button
+                key={d.kod}
+                onClick={() => degistir(d.kod)}
+                aria-pressed={dil === d.kod}
+                lang={d.kod}
+                className={`bas flex-1 rounded-lg border px-3 py-2.5 text-[13px] ${
+                  dil === d.kod ? 'border-altin bg-altin/15 text-altin' : 'border-kenar text-solgun'
+                }`}
+              >
+                {d.ad}
+              </button>
+            ))}
+          </div>
+          <p className="mt-2 text-[12px] text-sonuk">
+            Seçim bu cihazda kalır, hesabına bağlı değil. Dil değişince oyun bir kez yenilenir.
+          </p>
+        </Kart>
+      </Bolum>
 
       <Bolum baslik="Bildirimler">
         <BildirimKarti />

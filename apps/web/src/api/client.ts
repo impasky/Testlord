@@ -1,3 +1,4 @@
+import { ts } from '../lib/dil';
 /** Tipli API istemcisi. Sunucu tek otoritedir; istemci hiçbir sayı yazmaz. */
 import type {
   AkinHaritaDurumu,
@@ -89,12 +90,46 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   });
 
   const text = await res.text();
-  const body = text ? JSON.parse(text) : null;
+  const body = text ? cevrilmis(JSON.parse(text)) : null;
 
   if (!res.ok) {
     throw new ApiError(body?.error ?? 'Bilinmeyen bir hata oluştu.', res.status, body?.code);
   }
   return body as T;
+}
+
+/**
+ * Sunucudan gelen METİNLERİ çevirir — API'ye hiç dokunmadan.
+ *
+ * ── Neden burada, neden sunucuda değil ──────────────────────────────
+ *
+ * Sunucu Türkçe üretiyor ve öyle kalıyor: dil bilgisini her isteğe
+ * eklemek, her uçta çeviri yapmak ve sunucuda ikinci bir sözlük
+ * taşımak gerekmiyor. Bunu mümkün kılan şey anahtarın Türkçe metnin
+ * ÖZETİ olması — istemci, gelen Türkçeyi kendi sözlüğünde
+ * bulabiliyor.
+ *
+ * ── Neden yanıtın tamamı taranıyor ──────────────────────────────────
+ *
+ * Sunucu metni tek bir alanda durmuyor: hata mesajı, olay akışı,
+ * yerleşim adı, savaş raporu satırları, ittifak günlüğü… Alan alan
+ * seçmek, her yeni uçta unutulacak bir liste demekti. Tarama
+ * güvenli, çünkü `ts()` YALNIZ sözlükte karşılığı olan metni
+ * değiştiriyor; lord adı, bölge adı, kimlik ve sayı olduğu gibi
+ * geçiyor.
+ *
+ * Türkçe oynarken sözlük boş ve `ts()` her metni olduğu gibi
+ * döndürüyor — bu yol o durumda yalnız bir nesne kopyası.
+ */
+function cevrilmis<T>(veri: T): T {
+  if (typeof veri === 'string') return ts(veri) as T;
+  if (Array.isArray(veri)) return veri.map(cevrilmis) as T;
+  if (veri && typeof veri === 'object') {
+    const sonuc: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(veri)) sonuc[k] = cevrilmis(v);
+    return sonuc as T;
+  }
+  return veri;
 }
 
 // Content-Type application/json gönderip gövdeyi boş bırakmak sunucuda 400

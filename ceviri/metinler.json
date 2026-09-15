@@ -303,7 +303,7 @@
     "tr": "· Seviye",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:97"
+      "apps/web/src/screens/Hesap.tsx:100"
     ]
   },
   "t5bedf9cf": {
@@ -712,7 +712,7 @@
     "tr": "{0} şikâyet karar bekliyor.",
     "en": "{0} reports are waiting for a decision.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:119"
+      "apps/web/src/screens/Hesap.tsx:122"
     ]
   },
   "tb1cd334c": {
@@ -920,7 +920,7 @@
     "en": "Turning on…",
     "nerede": [
       "apps/web/src/components/BildirimKarti.tsx:94",
-      "apps/web/src/screens/Hesap.tsx:145"
+      "apps/web/src/screens/Hesap.tsx:171"
     ]
   },
   "t3ac1bfd2": {
@@ -1537,7 +1537,7 @@
     "tr": "Bekleyen şikâyet yok.",
     "en": "No pending reports.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:120"
+      "apps/web/src/screens/Hesap.tsx:123"
     ]
   },
   "t225a2417": {
@@ -1561,7 +1561,7 @@
     "tr": "Bildirimler",
     "en": "Notifications",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:129"
+      "apps/web/src/screens/Hesap.tsx:155"
     ]
   },
   "t7bcd8a64": {
@@ -1601,7 +1601,7 @@
     "tr": "Bilinmeyen bir hata oluştu.",
     "en": "An unknown error occurred.",
     "nerede": [
-      "apps/web/src/api/client.ts:95"
+      "apps/web/src/api/client.ts:96"
     ]
   },
   "tc00bd592": {
@@ -1876,7 +1876,7 @@
     "tr": "Bölgelerin sahipsiz kalır ve başkaları tarafından yeniden fethedilebilir.",
     "en": "Your regions become unowned and can be reconquered by others.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:190"
+      "apps/web/src/screens/Hesap.tsx:216"
     ]
   },
   "tcbb3dc3b": {
@@ -2080,7 +2080,7 @@
     "tr": "Bu işlem geri alınamaz.",
     "en": "This action cannot be undone.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:190"
+      "apps/web/src/screens/Hesap.tsx:216"
     ]
   },
   "t48c066f2": {
@@ -2345,7 +2345,7 @@
     "tr": "Değişikliği doğrulamak için gerekiyor.",
     "en": "Required to verify the change.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:80"
+      "apps/web/src/screens/Hesap.tsx:83"
     ]
   },
   "t56f6ebbc": {
@@ -2533,6 +2533,14 @@
     "en": "Tap an erected structure: you enter it. Tap a vacant lot: it states the cost.",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:439"
+    ]
+  },
+  "t34691c46": {
+    "grup": "arayuz",
+    "tr": "Dil",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Hesap.tsx:132"
     ]
   },
   "taa9c8b99": {
@@ -3020,7 +3028,7 @@
     "tr": "En az 8 karakter",
     "en": "At least 8 characters",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:161",
+      "apps/web/src/screens/Hesap.tsx:187",
       "apps/web/src/screens/ParolaSifirla.tsx:46"
     ]
   },
@@ -3029,7 +3037,7 @@
     "tr": "En az 8 karakter olmalı.",
     "en": "Must be at least 8 characters.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:82",
+      "apps/web/src/screens/Hesap.tsx:85",
       "apps/web/src/screens/ParolaSifirla.tsx:66"
     ]
   },
@@ -3521,7 +3529,7 @@
       "apps/web/src/screens/Generaller.tsx:148",
       "apps/web/src/screens/Giris.tsx:152",
       "apps/web/src/screens/Harita.tsx:1151",
-      "apps/web/src/screens/Hesap.tsx:177",
+      "apps/web/src/screens/Hesap.tsx:203",
       "apps/web/src/screens/Kisla.tsx:285",
       "apps/web/src/screens/ParolaSifirla.tsx:62",
       "apps/web/src/screens/Sehir.tsx:959"
@@ -3879,7 +3887,7 @@
     "tr": "Hesabı Sil",
     "en": "Delete Account",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:186"
+      "apps/web/src/screens/Hesap.tsx:212"
     ]
   },
   "t30c7d34d": {
@@ -3888,8 +3896,8 @@
     "en": "DELETE MY ACCOUNT",
     "nerede": [
       "apps/api/src/routes/me.ts:63",
-      "apps/web/src/api/client.ts:888",
-      "apps/web/src/screens/Hesap.tsx:213"
+      "apps/web/src/api/client.ts:923",
+      "apps/web/src/screens/Hesap.tsx:239"
     ]
   },
   "te485c18d": {
@@ -3897,7 +3905,7 @@
     "tr": "Hesabımı silmek istiyorum",
     "en": "I want to delete my account",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:196"
+      "apps/web/src/screens/Hesap.tsx:222"
     ]
   },
   "t8b2fd54f": {
@@ -3905,7 +3913,7 @@
     "tr": "Hesabın, lordun, ordun ve ekipmanın kalıcı olarak silinir.",
     "en": "Your account, lord, army, and equipment will be permanently deleted.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:189"
+      "apps/web/src/screens/Hesap.tsx:215"
     ]
   },
   "t1c280cbe": {
@@ -3913,7 +3921,7 @@
     "tr": "Hesap",
     "en": "Account",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:94",
+      "apps/web/src/screens/Hesap.tsx:97",
       "apps/web/src/screens/LordEkrani.tsx:599",
       "packages/shared/src/types.ts:309"
     ]
@@ -3923,7 +3931,7 @@
     "tr": "Hesap silinemedi.",
     "en": "Account could not be deleted.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:75"
+      "apps/web/src/screens/Hesap.tsx:78"
     ]
   },
   "t5a3adcd8": {
@@ -4449,7 +4457,7 @@
     "tr": "Kalıcı olarak sil",
     "en": "Permanently delete",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:238"
+      "apps/web/src/screens/Hesap.tsx:264"
     ]
   },
   "t0f86f2e3": {
@@ -5100,7 +5108,7 @@
     "tr": "Kutuya birebir HESABIMI SIL yazman gerekiyor.",
     "en": "You need to type DELETE MY ACCOUNT exactly into the box.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:89"
+      "apps/web/src/screens/Hesap.tsx:92"
     ]
   },
   "ta64656fc": {
@@ -5108,7 +5116,7 @@
     "tr": "Kutuya HESABIMI SIL yaz",
     "en": "Type DELETE MY ACCOUNT in the box",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:209"
+      "apps/web/src/screens/Hesap.tsx:235"
     ]
   },
   "t11d481cd": {
@@ -5277,7 +5285,7 @@
     "tr": "Lordun",
     "en": "Your lord",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:97"
+      "apps/web/src/screens/Hesap.tsx:100"
     ]
   },
   "t752657eb": {
@@ -5394,7 +5402,7 @@
     "tr": "Mevcut parola",
     "en": "Current password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:152"
+      "apps/web/src/screens/Hesap.tsx:178"
     ]
   },
   "t180f3ffb": {
@@ -5402,7 +5410,7 @@
     "tr": "Mevcut parolanı gir",
     "en": "Enter your current password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:80"
+      "apps/web/src/screens/Hesap.tsx:83"
     ]
   },
   "tacecf5b8": {
@@ -5596,7 +5604,7 @@
     "tr": "Onay",
     "en": "Confirmation",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:209"
+      "apps/web/src/screens/Hesap.tsx:235"
     ]
   },
   "t280ff98c": {
@@ -5604,7 +5612,7 @@
     "tr": "Onay metnini yaz",
     "en": "Type the confirmation text",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:89"
+      "apps/web/src/screens/Hesap.tsx:92"
     ]
   },
   "t5f468c6f": {
@@ -5916,7 +5924,7 @@
     "tr": "Oyunun ne olduğunu, nasıl savaşıldığını ve seni koruyan kuralları baştan okumak istersen öğreticiyi tekrar açabilirsin.",
     "en": "If you want to read again what the game is, how to fight, and the rules that protect you, you can reopen the tutorial.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:136"
+      "apps/web/src/screens/Hesap.tsx:162"
     ]
   },
   "t9bf3ffd3": {
@@ -5941,7 +5949,7 @@
     "en": "Tutorial",
     "nerede": [
       "apps/web/src/components/Ogretici.tsx:129",
-      "apps/web/src/screens/Hesap.tsx:133"
+      "apps/web/src/screens/Hesap.tsx:159"
     ]
   },
   "t47d30263": {
@@ -5957,7 +5965,7 @@
     "tr": "Öğreticiyi tekrar oku",
     "en": "Reread the tutorial",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:145"
+      "apps/web/src/screens/Hesap.tsx:171"
     ]
   },
   "t96de5998": {
@@ -6069,7 +6077,7 @@
     "tr": "Parola Değiştir",
     "en": "Change Password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:150"
+      "apps/web/src/screens/Hesap.tsx:176"
     ]
   },
   "t0cb4198c": {
@@ -6077,7 +6085,7 @@
     "tr": "Parola değiştirilemedi.",
     "en": "Password could not be changed.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:60"
+      "apps/web/src/screens/Hesap.tsx:63"
     ]
   },
   "t4369fb1e": {
@@ -6109,7 +6117,7 @@
     "tr": "Parolan",
     "en": "Your password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:200"
+      "apps/web/src/screens/Hesap.tsx:226"
     ]
   },
   "t349238d8": {
@@ -6125,7 +6133,7 @@
     "tr": "Parolan değişti. Diğer cihazlarda yeniden giriş yapman gerekebilir.",
     "en": "Your password has changed. You may need to log in again on other devices.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:54"
+      "apps/web/src/screens/Hesap.tsx:57"
     ]
   },
   "ta02569d1": {
@@ -6133,7 +6141,7 @@
     "tr": "Parolanı gir",
     "en": "Enter your password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:87"
+      "apps/web/src/screens/Hesap.tsx:90"
     ]
   },
   "tbb5ecdaf": {
@@ -6149,7 +6157,7 @@
     "tr": "Parolayı değiştir",
     "en": "Change the password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:177"
+      "apps/web/src/screens/Hesap.tsx:203"
     ]
   },
   "t794028aa": {
@@ -6658,6 +6666,14 @@
       "apps/web/src/components/SikayetSayfasi.tsx:120"
     ]
   },
+  "tf14d430a": {
+    "grup": "arayuz",
+    "tr": "Seçim bu cihazda kalır, hesabına bağlı değil. Dil değişince oyun bir kez yenilenir.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Hesap.tsx:150"
+    ]
+  },
   "t71db8912": {
     "grup": "arayuz",
     "tr": "sefer",
@@ -6859,7 +6875,7 @@
     "tr": "Siliniyor…",
     "en": "Deleting…",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:238"
+      "apps/web/src/screens/Hesap.tsx:264"
     ]
   },
   "t51f40fea": {
@@ -6867,7 +6883,7 @@
     "tr": "Silme işlemini doğrulamak için gerekiyor.",
     "en": "Required to verify the deletion process.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:87"
+      "apps/web/src/screens/Hesap.tsx:90"
     ]
   },
   "tf0c19391": {
@@ -7004,7 +7020,7 @@
     "tr": "Susturma",
     "en": "Mute",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:104"
+      "apps/web/src/screens/Hesap.tsx:107"
     ]
   },
   "t16aafb87": {
@@ -7036,7 +7052,7 @@
     "tr": "Süre dolunca ittifak sohbetine yeniden yazabilirsin. Oyunun geri kalanı açık.",
     "en": "You can write in the alliance chat again when the time is up. The rest of the game is open.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:108"
+      "apps/web/src/screens/Hesap.tsx:111"
     ]
   },
   "t2453a2e0": {
@@ -7143,7 +7159,7 @@
     "tr": "Şikâyet kuyruğu",
     "en": "Report queue",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:123"
+      "apps/web/src/screens/Hesap.tsx:126"
     ]
   },
   "tca312c06": {
@@ -7777,7 +7793,7 @@
     "nerede": [
       "apps/web/src/components/IttifakDuyuru.tsx:83",
       "apps/web/src/components/SikayetSayfasi.tsx:114",
-      "apps/web/src/screens/Hesap.tsx:230"
+      "apps/web/src/screens/Hesap.tsx:256"
     ]
   },
   "teacb0314": {
@@ -8054,7 +8070,7 @@
     "tr": "Yeni parola",
     "en": "New password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:161",
+      "apps/web/src/screens/Hesap.tsx:187",
       "apps/web/src/screens/ParolaSifirla.tsx:46"
     ]
   },
@@ -8063,7 +8079,7 @@
     "tr": "Yeni parola çok kısa",
     "en": "New password is too short",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:82"
+      "apps/web/src/screens/Hesap.tsx:85"
     ]
   },
   "tf46d6ce7": {
@@ -8146,7 +8162,7 @@
     "tr": "Yönetim",
     "en": "Administration",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:115"
+      "apps/web/src/screens/Hesap.tsx:118"
     ]
   },
   "t10956f9e": {
@@ -9559,6 +9575,14 @@
       "packages/shared/src/bina.ts:247"
     ]
   },
+  "t1b9ae0bb": {
+    "grup": "motor",
+    "tr": "English",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/dil.ts:26"
+    ]
+  },
   "tec1768f7": {
     "grup": "motor",
     "tr": "Erken oyunda az bölgeyi iyi tutmak, çok bölgeyi kötü tutmaktan iyidir.",
@@ -10913,6 +10937,14 @@
     "en": "No land risk",
     "nerede": [
       "packages/shared/src/ogretici.ts:378"
+    ]
+  },
+  "tca98de7e": {
+    "grup": "motor",
+    "tr": "Türkçe",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/dil.ts:25"
     ]
   },
   "t41c5d512": {
