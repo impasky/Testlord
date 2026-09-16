@@ -28,6 +28,7 @@ import {
   ARASTIRMA_DALLARI,
   B,
   TAKTIKLER,
+  WORLD_MAP,
   counterMultiplier,
   siegeVsFortress,
   siegeVsUnit,
@@ -91,7 +92,7 @@ export function karsiHalkasi(): KarsiSatiri[] {
  * kim beni koruyor → yalnız mıyım → ne zaman geri geleyim.
  */
 export function ogreticiSayfalari(): OgreticiSayfa[] {
-  const bolge = B.bolgeler as { toplam: number; max_seviye_bolen: number };
+  const bolge = B.bolgeler as { max_seviye_bolen: number };
   const koruma = B.korumalar as {
     yeni_oyuncu_saat: number;
     yagma_sonrasi_saat: number;
@@ -148,7 +149,11 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
       ozet: 'Tek bir harita, üzerinde herkes. Sen de onlardan birisin.',
       maddeler: [
         {
-          vurgu: `${bolge.toplam} bölge`,
+          // Sayı HARİTADAN. `balance.json` içinde elle yazılmış bir kopya
+          // vardı ve 61'de kalmıştı: harita 121 bölgeye çıkınca kopya
+          // büyümedi ve öğreticinin İLK sayfası her yeni oyuncuya diyarı
+          // yarısı kadar tanıtıyordu. Kopya silindi.
+          vurgu: `${WORLD_MAP.region_count} bölge`,
           metin:
             'Haritadaki her işaret bir bölge. Kimi boş durur, kimini bir lord tutar. Bölgeler bitmez ama çoğalmaz da — biri alırsa, bir başkası kaybeder.',
         },

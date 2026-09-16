@@ -9,7 +9,7 @@
  *
  * Bu uç o üç cümlenin verisini veriyor. (docs/08 İ5, İ6)
  */
-import { B, liderAviGecerliMi, liderAviYagmaBonusu } from '@lordlar/shared';
+import { B, WORLD_MAP, liderAviGecerliMi, liderAviYagmaBonusu } from '@lordlar/shared';
 import type { FastifyInstance } from 'fastify';
 import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
@@ -75,7 +75,11 @@ export async function dunyaRoutes(app: FastifyInstance): Promise<void> {
       lordSayisi,
       aktifLord: aktif,
       aktifGun: AKTIF_GUN,
-      bolgeSayisi: B.bolgeler.toplam,
+      // Sayı HARİTADAN, dengeden değil. `balance.json` içinde elle yazılmış
+      // bir `bolgeler.toplam` vardı ve 61'de kalmıştı: harita 121 bölgeye
+      // çıkınca kopya sayı onunla birlikte büyümedi, diyar tanıtımı yeni
+      // oyuncuya dünyayı yarısı kadar gösteriyordu. Kopya silindi.
+      bolgeSayisi: WORLD_MAP.region_count,
       benimSiram: ustumde + 1,
       benimSohretim: ben.fame,
       taht: taht

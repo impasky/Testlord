@@ -316,7 +316,6 @@
     "ekipman_katsayi": 0.8
   },
   "bolgeler": {
-    "toplam": 61,
     "sahip_basina_max": "1 + floor(lord_seviyesi / 15)  -> Lv60'ta 5 bolge (Taht Kalesi bu limite dahil DEGIL)",
     "max_taban": 1,
     "max_seviye_bolen": 15,

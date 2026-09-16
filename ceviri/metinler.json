@@ -135,7 +135,7 @@
     "nerede": [
       "apps/web/src/components/DizilimSemasi.tsx:69",
       "packages/shared/src/bina.ts:254",
-      "packages/shared/src/ogretici.ts:241"
+      "packages/shared/src/ogretici.ts:246"
     ]
   },
   "tae835c20": {
@@ -159,7 +159,7 @@
     "tr": "— savaşa girdikçe büyür.",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:100"
+      "apps/web/src/screens/Generaller.tsx:98"
     ]
   },
   "tb5cd679c": {
@@ -485,7 +485,7 @@
     "tr": "{0} altın eksik.",
     "en": "{0} gold missing.",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:133"
+      "apps/web/src/screens/Generaller.tsx:131"
     ]
   },
   "t82bfd725": {
@@ -533,7 +533,7 @@
     "tr": "{0} birliklerin {1} karşısında {2} vurdu.",
     "en": "Your {0} troops hit {2} against {1}.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:424"
+      "apps/web/src/components/SavasRaporu.tsx:423"
     ]
   },
   "t0460d827": {
@@ -541,7 +541,7 @@
     "tr": "{0} birliklerin {1} karşısında {2} yedi.",
     "en": "Your {0} troops took {2} against {1}.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:425"
+      "apps/web/src/components/SavasRaporu.tsx:424"
     ]
   },
   "t12853735": {
@@ -550,7 +550,7 @@
     "en": "{0} regions",
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:86",
-      "packages/shared/src/ogretici.ts:151"
+      "packages/shared/src/ogretici.ts:156"
     ]
   },
   "t197e9a5d": {
@@ -558,7 +558,7 @@
     "tr": "{0} bölgesine karşı saldır",
     "en": "Counterattack region {0}",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:602"
+      "apps/web/src/components/SavasRaporu.tsx:601"
     ]
   },
   "t46dd1320": {
@@ -623,7 +623,7 @@
     "tr": "{0} generalleri",
     "en": "{0}'s generals",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:236"
+      "apps/web/src/components/SavasRaporu.tsx:235"
     ]
   },
   "t6f068ff0": {
@@ -1277,7 +1277,7 @@
     "tr": "Altının yetmiyor",
     "en": "Not enough gold",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:132",
+      "apps/web/src/screens/Generaller.tsx:130",
       "apps/web/src/screens/Ittifak.tsx:352"
     ]
   },
@@ -1915,7 +1915,7 @@
     "tr": "BÖLGE EL DEĞİŞTİRDİ",
     "en": "REGION CHANGED HANDS",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:503"
+      "apps/web/src/components/SavasRaporu.tsx:502"
     ]
   },
   "t8183ca19": {
@@ -2781,7 +2781,7 @@
     "tr": "Dizilim ve Taktik",
     "en": "Formation and Tactic",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:333"
+      "apps/web/src/components/SavasRaporu.tsx:332"
     ]
   },
   "t1fc71cab": {
@@ -3098,7 +3098,7 @@
     "tr": "En yüksek seviye.",
     "en": "Max level.",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:103"
+      "apps/web/src/screens/Generaller.tsx:101"
     ]
   },
   "tcccc0db6": {
@@ -3124,7 +3124,7 @@
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:91",
       "apps/web/src/components/MobilKabuk.tsx:285",
-      "packages/shared/src/ogretici.ts:186"
+      "packages/shared/src/ogretici.ts:191"
     ]
   },
   "t0509e8aa": {
@@ -3246,7 +3246,7 @@
     "tr": "Garnizon",
     "en": "Garrison",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:545",
+      "apps/web/src/components/SavasRaporu.tsx:544",
       "apps/web/src/screens/Harita.tsx:1167",
       "apps/web/src/screens/Harita.tsx:1280"
     ]
@@ -3355,7 +3355,7 @@
     "tr": "Generaller",
     "en": "Generals",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:170",
+      "apps/web/src/screens/Generaller.tsx:168",
       "packages/shared/src/types.ts:303"
     ]
   },
@@ -3465,7 +3465,7 @@
       "apps/web/src/components/SikayetSayfasi.tsx:117",
       "apps/web/src/screens/Akin.tsx:653",
       "apps/web/src/screens/Demirhane.tsx:519",
-      "apps/web/src/screens/Generaller.tsx:128",
+      "apps/web/src/screens/Generaller.tsx:126",
       "apps/web/src/screens/Giris.tsx:152",
       "apps/web/src/screens/Harita.tsx:1133",
       "apps/web/src/screens/Hesap.tsx:203",
@@ -3512,7 +3512,7 @@
     "tr": "Gücün savunanın {0} katıydı.",
     "en": "Your power was {0}× the defender's.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:393"
+      "apps/web/src/components/SavasRaporu.tsx:392"
     ]
   },
   "t269314eb": {
@@ -3647,7 +3647,7 @@
     "nerede": [
       "apps/web/src/components/Hastane.tsx:34",
       "data/binalar.json:binalar[4].ad",
-      "packages/shared/src/ogretici.ts:279"
+      "packages/shared/src/ogretici.ts:284"
     ]
   },
   "t39bc2f60": {
@@ -3679,7 +3679,7 @@
     "tr": "Hedefin tahkimatı savunmaya +%{0} kattı.",
     "en": "The target's fortification added +{0}% to defense.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:420"
+      "apps/web/src/components/SavasRaporu.tsx:419"
     ]
   },
   "t8910d1b9": {
@@ -4010,7 +4010,7 @@
     "en": "Operation failed.",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:360",
-      "apps/web/src/screens/Generaller.tsx:160",
+      "apps/web/src/screens/Generaller.tsx:158",
       "apps/web/src/screens/Harita.tsx:638",
       "apps/web/src/screens/Kisla.tsx:380",
       "apps/web/src/screens/LordEkrani.tsx:196"
@@ -4263,7 +4263,7 @@
     "tr": "Kadro çağrılıyor...",
     "en": "Roster is being summoned...",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:164"
+      "apps/web/src/screens/Generaller.tsx:162"
     ]
   },
   "t0f383914": {
@@ -4370,8 +4370,8 @@
       "apps/web/src/components/BildirimKarti.tsx:129",
       "apps/web/src/components/KapiPaneli.tsx:89",
       "apps/web/src/components/Omurga.tsx:363",
-      "apps/web/src/components/SavasRaporu.tsx:469",
-      "apps/web/src/components/SavasRaporu.tsx:492",
+      "apps/web/src/components/SavasRaporu.tsx:468",
+      "apps/web/src/components/SavasRaporu.tsx:491",
       "apps/web/src/components/SavunmaDuzeni.tsx:69",
       "apps/web/src/components/SikayetSayfasi.tsx:66",
       "apps/web/src/screens/Demirhane.tsx:125",
@@ -4424,7 +4424,7 @@
     "tr": "Karşı taraf {0} kat güçlüydü.",
     "en": "The opposing side was {0}× stronger.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:394"
+      "apps/web/src/components/SavasRaporu.tsx:393"
     ]
   },
   "tf40b4b94": {
@@ -4432,7 +4432,7 @@
     "tr": "Karşı taraf {0}. turda en çok öne geçti: {1} güce karşı {2}.",
     "en": "The opposing side pulled ahead the most in round {0}: {1} power against {2}.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:412"
+      "apps/web/src/components/SavasRaporu.tsx:411"
     ]
   },
   "tdd047557": {
@@ -4474,7 +4474,7 @@
     "en": "To join",
     "nerede": [
       "apps/web/src/components/IttifakIncele.tsx:110",
-      "packages/shared/src/ogretici.ts:438"
+      "packages/shared/src/ogretici.ts:443"
     ]
   },
   "tc0088b9a": {
@@ -4743,7 +4743,7 @@
     "tr": "Kirala · {0}",
     "en": "Hire · {0}",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:128"
+      "apps/web/src/screens/Generaller.tsx:126"
     ]
   },
   "te5a5abc7": {
@@ -5108,7 +5108,7 @@
     "tr": "Makas {0}. turda en çok açıldı: {1} güce karşı {2}.",
     "en": "The gap widened the most in round {0}: {1} power against {2}.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:407"
+      "apps/web/src/components/SavasRaporu.tsx:406"
     ]
   },
   "t5c2dce44": {
@@ -5142,7 +5142,7 @@
     "tr": "Mancınıklar tahkimata karşı iki katı iş yaptı.",
     "en": "Catapults did double work against the fortification.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:429"
+      "apps/web/src/components/SavasRaporu.tsx:428"
     ]
   },
   "tf7042dec": {
@@ -5231,7 +5231,7 @@
     "tr": "Neden Böyle Oldu",
     "en": "Why Did This Happen",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:316"
+      "apps/web/src/components/SavasRaporu.tsx:315"
     ]
   },
   "t73ac5603": {
@@ -5858,7 +5858,7 @@
     "tr": "Rapor açılamadı.",
     "en": "Report could not be opened.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:511"
+      "apps/web/src/components/SavasRaporu.tsx:510"
     ]
   },
   "t0808f810": {
@@ -5925,7 +5925,7 @@
     "tr": "Sahada general yok. Kiraladığın bir generali slota yerleştir.",
     "en": "No general on the field. Place a hired general in a slot.",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:175"
+      "apps/web/src/screens/Generaller.tsx:173"
     ]
   },
   "tde5de59c": {
@@ -5941,7 +5941,7 @@
     "tr": "Sahadaki Generaller · {0}/{1}",
     "en": "Generals on the Field · {0}/{1}",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:171"
+      "apps/web/src/screens/Generaller.tsx:169"
     ]
   },
   "tbf39f844": {
@@ -5965,7 +5965,7 @@
     "tr": "Saldıran",
     "en": "Attacker",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:555"
+      "apps/web/src/components/SavasRaporu.tsx:554"
     ]
   },
   "t87d8df09": {
@@ -5973,8 +5973,8 @@
     "tr": "SALDIRAN",
     "en": "ATTACKER",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:502",
-      "apps/web/src/components/SavasRaporu.tsx:536"
+      "apps/web/src/components/SavasRaporu.tsx:501",
+      "apps/web/src/components/SavasRaporu.tsx:535"
     ]
   },
   "t3424fe05": {
@@ -6088,7 +6088,7 @@
     "tr": "Savaş kazanıldı ama güç payı %{0} eşiğine ulaşmadı — bölge el değiştirmedi, yalnızca yağma alındı.",
     "en": "The battle was won but the power share did not reach the {0}% threshold — the region did not change hands, only loot was taken.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:397"
+      "apps/web/src/components/SavasRaporu.tsx:396"
     ]
   },
   "tbbc85c89": {
@@ -6096,7 +6096,7 @@
     "tr": "Savaş meclisin",
     "en": "Your war council",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:170"
+      "apps/web/src/screens/Generaller.tsx:168"
     ]
   },
   "t271491e0": {
@@ -6112,7 +6112,7 @@
     "tr": "Savaş Raporu",
     "en": "Battle Report",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:479"
+      "apps/web/src/components/SavasRaporu.tsx:478"
     ]
   },
   "tbfc25419": {
@@ -6152,7 +6152,7 @@
     "tr": "Savunan",
     "en": "Defender",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:560"
+      "apps/web/src/components/SavasRaporu.tsx:559"
     ]
   },
   "tf48cad35": {
@@ -6160,8 +6160,8 @@
     "tr": "SAVUNAN",
     "en": "DEFENDER",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:502",
-      "apps/web/src/components/SavasRaporu.tsx:544"
+      "apps/web/src/components/SavasRaporu.tsx:501",
+      "apps/web/src/components/SavasRaporu.tsx:543"
     ]
   },
   "td8820cb4": {
@@ -6331,7 +6331,7 @@
     "tr": "Seviye atladı: Sv {0} → Sv {1}",
     "en": "Leveled up: Lvl {0} → Lvl {1}",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:256"
+      "apps/web/src/components/SavasRaporu.tsx:255"
     ]
   },
   "tc22994f8": {
@@ -6445,7 +6445,7 @@
     "tr": "Slot {0}",
     "en": "Slot {0}",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:117"
+      "apps/web/src/screens/Generaller.tsx:115"
     ]
   },
   "tae7f3bd1": {
@@ -6461,7 +6461,7 @@
     "tr": "Slotun {0}. Liderlik {1} puanda bir slot açar (en fazla{2}{3}); karargâhın seviyesi bunun üstüne ekler.",
     "en": "You have {0} slots. Leadership opens a slot every {1} points (at most{2}{3}); your headquarters level adds on top of that.",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:197"
+      "apps/web/src/screens/Generaller.tsx:195"
     ]
   },
   "t1b462bb4": {
@@ -6606,7 +6606,7 @@
     "tr": "Sv",
     "en": "Lvl",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:99"
+      "apps/web/src/screens/Generaller.tsx:97"
     ]
   },
   "tc15d3f3e": {
@@ -6630,7 +6630,7 @@
     "tr": "Sv {0}/{1}",
     "en": "Lvl {0}/{1}",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:89"
+      "apps/web/src/screens/Generaller.tsx:87"
     ]
   },
   "tb95fd396": {
@@ -6638,10 +6638,10 @@
     "tr": "Sv{0}",
     "en": "Lvl{0}",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:246",
+      "apps/web/src/components/SavasRaporu.tsx:245",
       "apps/web/src/screens/Akin.tsx:327",
       "apps/web/src/screens/Demirhane.tsx:450",
-      "apps/web/src/screens/Generaller.tsx:184"
+      "apps/web/src/screens/Generaller.tsx:182"
     ]
   },
   "t9febed47": {
@@ -6738,7 +6738,7 @@
     "en": "Fame",
     "nerede": [
       "apps/web/src/screens/Siralama.tsx:19",
-      "packages/shared/src/ogretici.ts:191"
+      "packages/shared/src/ogretici.ts:196"
     ]
   },
   "t73998c3c": {
@@ -6856,7 +6856,7 @@
     "tr": "Tahkimat olmadığı için mancınıklar canlı orduya {0} vurdu — o kaynak boşa gitti.",
     "en": "With no fortification the catapults hit the living army at {0} — that resource went to waste.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:432"
+      "apps/web/src/components/SavasRaporu.tsx:431"
     ]
   },
   "te9b9ec08": {
@@ -6880,7 +6880,7 @@
     "tr": "Tahkimatın savunmaya +%{0} kattı.",
     "en": "Your fortification added +{0}% to defense.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:419"
+      "apps/web/src/components/SavasRaporu.tsx:418"
     ]
   },
   "tebef06ac": {
@@ -6917,7 +6917,7 @@
       "apps/web/src/screens/Harita.tsx:67",
       "apps/web/src/screens/Malikane.tsx:56",
       "data/world-map.json:regions[0].name",
-      "packages/shared/src/ogretici.ts:156"
+      "packages/shared/src/ogretici.ts:161"
     ]
   },
   "t6257ef57": {
@@ -7119,7 +7119,7 @@
     "tr": "Toplam{0}{1}{2}birim öldü · tohum {3}",
     "en": "Total{0}{1}{2}units died · seed {3}",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:605"
+      "apps/web/src/components/SavasRaporu.tsx:604"
     ]
   },
   "tbd670cd2": {
@@ -7159,7 +7159,7 @@
     "tr": "Tur Tur Güç · {0} tur",
     "en": "Power Round by Round · {0} rounds",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:528"
+      "apps/web/src/components/SavasRaporu.tsx:527"
     ]
   },
   "t0468e99c": {
@@ -7257,7 +7257,7 @@
     "tr": "Üstteki çubuk saldıran, alttaki savunan.",
     "en": "The top bar is the attacker, the bottom is the defender.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:531"
+      "apps/web/src/components/SavasRaporu.tsx:530"
     ]
   },
   "t911d6f24": {
@@ -7340,7 +7340,7 @@
     "tr": "Yağma",
     "en": "Loot",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:565"
+      "apps/web/src/components/SavasRaporu.tsx:564"
     ]
   },
   "tea3bde58": {
@@ -7404,7 +7404,7 @@
     "tr": "Yaralı — {0} tarihine kadar dinleniyor.",
     "en": "Wounded — resting until {0}.",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:106"
+      "apps/web/src/screens/Generaller.tsx:104"
     ]
   },
   "tc6d3b17d": {
@@ -7412,7 +7412,7 @@
     "tr": "yarım",
     "en": "half",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:433"
+      "apps/web/src/components/SavasRaporu.tsx:432"
     ]
   },
   "t786f173c": {
@@ -7558,7 +7558,7 @@
     "en": "DEFEAT",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:75",
-      "apps/web/src/components/SavasRaporu.tsx:500",
+      "apps/web/src/components/SavasRaporu.tsx:499",
       "apps/web/src/screens/Harita.tsx:1338"
     ]
   },
@@ -7651,7 +7651,7 @@
     "tr": "yükleniyor…",
     "en": "loading…",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:489"
+      "apps/web/src/components/SavasRaporu.tsx:488"
     ]
   },
   "tb65d2ef7": {
@@ -7718,7 +7718,7 @@
     "en": "VICTORY",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:75",
-      "apps/web/src/components/SavasRaporu.tsx:500",
+      "apps/web/src/components/SavasRaporu.tsx:499",
       "apps/web/src/screens/Harita.tsx:1338"
     ]
   },
@@ -7776,7 +7776,7 @@
     "tr": "\"Şimdi ne yapmalısın\"",
     "en": "\"What you should do now\"",
     "nerede": [
-      "packages/shared/src/ogretici.ts:471"
+      "packages/shared/src/ogretici.ts:476"
     ]
   },
   "t293e1f2d": {
@@ -7784,7 +7784,7 @@
     "tr": "{0} altına bir bölgeye casus gönderip garnizonunu öğrenebilirsin. Rapor bir fotoğraftır: {1} saat sonra \"eski\" diye işaretlenir. Kurnazlık statın hem başarı şansını artırır hem yakalanma riskini düşürür.",
     "en": "For {0} gold you can send a spy to a region and learn its garrison. A report is a snapshot: after {1} hours it is marked \"old\". Your Cunning stat both raises the chance of success and lowers the risk of being caught.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:271"
+      "packages/shared/src/ogretici.ts:276"
     ]
   },
   "t27b1f277": {
@@ -7792,7 +7792,7 @@
     "tr": "{0} dal, her dalda {1} kademe",
     "en": "{0} branches, {1} tiers in each branch",
     "nerede": [
-      "packages/shared/src/ogretici.ts:381"
+      "packages/shared/src/ogretici.ts:386"
     ]
   },
   "t85178a8c": {
@@ -7816,7 +7816,7 @@
     "tr": "{0} saat yeni lord kalkanı",
     "en": "{0} hour new lord shield",
     "nerede": [
-      "packages/shared/src/ogretici.ts:409"
+      "packages/shared/src/ogretici.ts:414"
     ]
   },
   "te67fe55b": {
@@ -7824,7 +7824,7 @@
     "tr": "{0}x{1} bir düzlükte orduyu sen yerleştirirsin, sonra bir taktik seçersin.",
     "en": "You position the army on a {0}x{1} grid, then select a tactic.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:229"
+      "packages/shared/src/ogretici.ts:234"
     ]
   },
   "t9604528c": {
@@ -7864,7 +7864,7 @@
     "tr": "Akın toprak vermez, toprak da almaz. Kaybetsen bile bölgen elinde kalır — ordunu denemenin en ucuz yeri burası.",
     "en": "A raid gives no land and takes none. Even if you lose, your region stays yours — this is the cheapest place to test your army.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:326"
+      "packages/shared/src/ogretici.ts:331"
     ]
   },
   "tbedf3f62": {
@@ -7872,7 +7872,7 @@
     "tr": "Akın: toprak almadan savaşmak",
     "en": "Raid: fighting without taking land",
     "nerede": [
-      "packages/shared/src/ogretici.ts:320"
+      "packages/shared/src/ogretici.ts:325"
     ]
   },
   "teeaa3109": {
@@ -7888,7 +7888,7 @@
     "tr": "Aldığın bölgeyi yükseltmek geliri ve savunmayı artırır. Yeni bölge almaktan çoğu zaman daha kârlıdır — ve kimse elinden almaya kalkışmaz.",
     "en": "Upgrading a region you already hold raises both income and defense. It is usually more profitable than taking a new region — and nobody tries to take it from you.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:353"
+      "packages/shared/src/ogretici.ts:358"
     ]
   },
   "t82f0acb9": {
@@ -7896,7 +7896,7 @@
     "tr": "Altın ve demir",
     "en": "Gold and iron",
     "nerede": [
-      "packages/shared/src/ogretici.ts:182"
+      "packages/shared/src/ogretici.ts:187"
     ]
   },
   "t23cd7cdc": {
@@ -7904,7 +7904,7 @@
     "tr": "Altın, demir, erzak biriktirirsin; şöhret sıralamandır.",
     "en": "You hoard gold, iron, and supplies; fame is your ranking.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:179"
+      "packages/shared/src/ogretici.ts:184"
     ]
   },
   "t2cd611e5": {
@@ -7920,7 +7920,7 @@
     "tr": "Ana sayfan bir yerleşim haritası. Binalar kapasite verir.",
     "en": "Your homepage is a settlement map. Buildings provide capacity.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:299"
+      "packages/shared/src/ogretici.ts:304"
     ]
   },
   "t635327a4": {
@@ -7928,7 +7928,7 @@
     "tr": "Araştırma \"%15 daha hızlı\" der, bina \"aynı anda 2 eğitim\" der. İkisi hiçbir zaman aynı sayıya dokunmaz — hangisini yükselteceğin ayrı bir karar.",
     "en": "Research says \"15% faster\", a building says \"2 trainings at once\". The two never touch the same number — which one to upgrade is a separate decision.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:309"
+      "packages/shared/src/ogretici.ts:314"
     ]
   },
   "tf6ff5d9a": {
@@ -7944,7 +7944,7 @@
     "tr": "Araştırma bittiğinde etkisi sonsuza kadar durur — ekipman gibi eskimez, ordu gibi ölmez. Depo tavanı, eğitim hızı, ordu saldırısı, yürüyüş hızı: hepsi buradan büyür.",
     "en": "Once a research finishes its effect lasts forever — it does not wear out like equipment, it does not die like an army. Storage cap, training speed, army attack, march speed: they all grow from here.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:392"
+      "packages/shared/src/ogretici.ts:397"
     ]
   },
   "t6eba3fbd": {
@@ -7952,7 +7952,7 @@
     "tr": "Araştırma oran, bina kapasite",
     "en": "Research for rate, building for capacity",
     "nerede": [
-      "packages/shared/src/ogretici.ts:307"
+      "packages/shared/src/ogretici.ts:312"
     ]
   },
   "t5c430103": {
@@ -7960,7 +7960,7 @@
     "tr": "Araştırma: diyarını sen şekillendirirsin",
     "en": "Research: you shape your realm",
     "nerede": [
-      "packages/shared/src/ogretici.ts:377"
+      "packages/shared/src/ogretici.ts:382"
     ]
   },
   "t4e75a5e8": {
@@ -8000,7 +8000,7 @@
     "tr": "Asker eğitmek, ekipman dövmek ve bölge geliştirmek bunlarla olur.",
     "en": "Training troops, forging equipment, and developing regions require these.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:183"
+      "packages/shared/src/ogretici.ts:188"
     ]
   },
   "t8b6663c9": {
@@ -8024,7 +8024,7 @@
     "tr": "Aynı anda {0} araştırma",
     "en": "{0} researches at once",
     "nerede": [
-      "packages/shared/src/ogretici.ts:398"
+      "packages/shared/src/ogretici.ts:403"
     ]
   },
   "t7009e0ca": {
@@ -8032,7 +8032,7 @@
     "tr": "Aynı anda {0} araştırma yürütebilirsin, yani sıra senin kararın: önce ekonomiyi mi büyütürsün, orduyu mu? Vazgeçersen harcadığının %{1}'i geri gelir.",
     "en": "You can run {0} researches at once, so the order is your decision: do you grow the economy first, or the army? If you cancel, {1}% of what you spent is refunded.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:399"
+      "packages/shared/src/ogretici.ts:404"
     ]
   },
   "tabbe5d66": {
@@ -8040,7 +8040,7 @@
     "tr": "Aynı anda {0} birim komuta edebilirsin; Liderlik her puanda {1} birim daha ekler. Ordu istediğin kadar büyümez.",
     "en": "You can command {0} units at once; Leadership adds {1} more units per point. The army does not grow as large as you like.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:222"
+      "packages/shared/src/ogretici.ts:227"
     ]
   },
   "t7dc15b82": {
@@ -8056,7 +8056,7 @@
     "tr": "Aynı anda tek araştırma",
     "en": "Only one research at a time",
     "nerede": [
-      "packages/shared/src/ogretici.ts:397"
+      "packages/shared/src/ogretici.ts:402"
     ]
   },
   "t99a5b60d": {
@@ -8072,7 +8072,7 @@
     "tr": "Aynı savaş motoru, aynı dizilim, aynı taktik, aynı kayıp. Yaralıların hastaneye girer. Burada öğrendiğin her şey karşındaki lorda karşı da geçerli.",
     "en": "The same battle engine, the same formation, the same tactic, the same losses. Your wounded go to the hospital. Everything you learn here also applies against a rival lord.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:331"
+      "packages/shared/src/ogretici.ts:336"
     ]
   },
   "t0e7da755": {
@@ -8080,7 +8080,7 @@
     "tr": "Aynı vilayette topla",
     "en": "Gather in the same province",
     "nerede": [
-      "packages/shared/src/ogretici.ts:370"
+      "packages/shared/src/ogretici.ts:375"
     ]
   },
   "tb91d22ec": {
@@ -8088,7 +8088,7 @@
     "tr": "Aynı vilayette tuttuğun her fazladan bölge, oradaki bütün bölgelerinin gelirini %{0} artırır (en çok %{1}). Dağınık üç bölge ile bitişik üç bölge aynı şey değil.",
     "en": "Every extra region you hold in the same province raises the income of all your regions there by {0}% (up to {1}%). Three scattered regions and three adjacent regions are not the same thing.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:371"
+      "packages/shared/src/ogretici.ts:376"
     ]
   },
   "te76587c7": {
@@ -8096,7 +8096,7 @@
     "tr": "Başarımlar",
     "en": "Achievements",
     "nerede": [
-      "packages/shared/src/ogretici.ts:481"
+      "packages/shared/src/ogretici.ts:486"
     ]
   },
   "t61dd4ca7": {
@@ -8112,7 +8112,7 @@
     "tr": "Başlarken kimse sana saldıramaz. Kalkan, sen ilk saldırını yaptığında düşer — hazır olduğuna kendin karar veriyorsun.",
     "en": "Nobody can attack you at the start. The shield drops when you make your first attack — you decide yourself when you are ready.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:411"
+      "packages/shared/src/ogretici.ts:416"
     ]
   },
   "t675e7549": {
@@ -8120,7 +8120,7 @@
     "tr": "Beş düşman diyarı, her birinde on kamp. Kaynak ve ekipman.",
     "en": "Five enemy realms, ten camps in each. Resources and equipment.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:321"
+      "packages/shared/src/ogretici.ts:326"
     ]
   },
   "t99ca54fc": {
@@ -8144,7 +8144,7 @@
     "tr": "Binalar seninle taşınır",
     "en": "Buildings move with you",
     "nerede": [
-      "packages/shared/src/ogretici.ts:312"
+      "packages/shared/src/ogretici.ts:317"
     ]
   },
   "t2106fa1d": {
@@ -8184,7 +8184,7 @@
     "tr": "Bir bölgeyi ezici bir üstünlükle alırsan bölge senin olur. Dar kazanırsan yalnız yağmalarsın: kaynağı alır, bölgeyi bırakırsın.",
     "en": "If you take a region with a crushing advantage, the region becomes yours. If you win narrowly you only loot: you take the resources and leave the region.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:285"
+      "packages/shared/src/ogretici.ts:290"
     ]
   },
   "t95df1932": {
@@ -8216,7 +8216,7 @@
     "tr": "Bir şey başlat, kapat",
     "en": "Start something, close it",
     "nerede": [
-      "packages/shared/src/ogretici.ts:466"
+      "packages/shared/src/ogretici.ts:471"
     ]
   },
   "te0c43c35": {
@@ -8224,7 +8224,7 @@
     "tr": "Bir üyenin bölgesine asker yollayıp savunmasını güçlendirebilir, lider olarak haritada ortak bir hedef işaretleyebilirsin.",
     "en": "You can send troops to a member's region to strengthen its defense, and as leader you can mark a common target on the map.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:444"
+      "packages/shared/src/ogretici.ts:449"
     ]
   },
   "t4a018316": {
@@ -8232,7 +8232,7 @@
     "tr": "Birimler birbirini kırar. Kimi göndereceğin, kaç kişi olduğundan önemli.",
     "en": "Units counter each other. Who you send is more important than how many.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:210"
+      "packages/shared/src/ogretici.ts:215"
     ]
   },
   "te9270bdb": {
@@ -8256,7 +8256,7 @@
     "tr": "Bölge geliştir",
     "en": "Develop region",
     "nerede": [
-      "packages/shared/src/ogretici.ts:351"
+      "packages/shared/src/ogretici.ts:356"
     ]
   },
   "tb2bd7b65": {
@@ -8280,7 +8280,7 @@
     "tr": "Bölge sınırı",
     "en": "Region limit",
     "nerede": [
-      "packages/shared/src/ogretici.ts:366"
+      "packages/shared/src/ogretici.ts:371"
     ]
   },
   "t088fa673": {
@@ -8288,7 +8288,7 @@
     "tr": "Bölge, ekipman ve general. Üçü de aynı anda ilerler.",
     "en": "Region, equipment, and general. All three progress simultaneously.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:348"
+      "packages/shared/src/ogretici.ts:353"
     ]
   },
   "t5029c76e": {
@@ -8296,7 +8296,7 @@
     "tr": "Bölgeler tek kaynak üretir: şehir altın, maden demir, tarla erzak. Malikâne pazarında birini diğerine çevirebilirsin — komisyon %{0}, günlük hacim {1} altın karşılığıyla sınırlı. Takas boşluğu kapatır, üretimin yerini tutmaz.",
     "en": "Regions produce a single resource: city gold, mine iron, farm supplies. In the manor market you can convert one into another — {0}% commission, daily volume limited to {1} gold worth. Trade closes a gap, it does not replace production.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:203"
+      "packages/shared/src/ogretici.ts:208"
     ]
   },
   "tc2a2bfe8": {
@@ -8304,7 +8304,7 @@
     "tr": "Bölgen yağmalandıysa kısa bir süre dokunulmaz olur. Farklı saldırganların sırayla gelip seni bir gecede silmesi böyle engelleniyor.",
     "en": "If your region has been looted it becomes untouchable for a short while. This is what stops different attackers coming one after another and wiping you out in a single night.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:416"
+      "packages/shared/src/ogretici.ts:421"
     ]
   },
   "t021ce3fd": {
@@ -8393,7 +8393,7 @@
     "tr": "Bu oyun beklemeli. Günde birkaç dakika yeter.",
     "en": "This is an idle game. A few minutes a day is enough.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:463"
+      "packages/shared/src/ogretici.ts:468"
     ]
   },
   "t2bfaec94": {
@@ -8449,7 +8449,7 @@
     "tr": "Burası bir diyar, sen bir lordsun",
     "en": "This is a realm, you are a lord",
     "nerede": [
-      "packages/shared/src/ogretici.ts:147"
+      "packages/shared/src/ogretici.ts:148"
     ]
   },
   "t80539337": {
@@ -8457,7 +8457,7 @@
     "tr": "Bütün bölgelerini kaybetsen bile taban gelirin akmaya devam eder: saatte {0} altın. Bir kampa çekilirsin, binaların durur ve yeni bir yerleşim alınca kaldığın yerden devam edersin.",
     "en": "Even if you lose all your regions your base income keeps flowing: {0} gold per hour. You fall back to a camp, your buildings pause, and when you take a new settlement you continue where you left off.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:167"
+      "packages/shared/src/ogretici.ts:172"
     ]
   },
   "tc8dcc54d": {
@@ -8465,7 +8465,7 @@
     "tr": "Büyümenin üç yolu",
     "en": "Three ways to grow",
     "nerede": [
-      "packages/shared/src/ogretici.ts:347"
+      "packages/shared/src/ogretici.ts:352"
     ]
   },
   "t91c31dd1": {
@@ -8489,7 +8489,7 @@
     "tr": "Daha büyük bir yerleşim fethedip başkentini oraya taşırsan binaların seviyeleriyle birlikte gelir. Taşınmak hiçbir şey kaybettirmez.",
     "en": "If you conquer a larger settlement and move your capital there, your buildings come with their levels. Moving costs you nothing.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:314"
+      "packages/shared/src/ogretici.ts:319"
     ]
   },
   "t899dea41": {
@@ -8497,7 +8497,7 @@
     "tr": "Demirhanede kuşandığın eşyalar ordunun saldırı ve savunmasına doğrudan eklenir. Aynı orduyla daha güçlü savaşırsın.",
     "en": "The items you equip in the blacksmith are added directly to your army's attack and defense. You fight harder with the same army.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:358"
+      "packages/shared/src/ogretici.ts:363"
     ]
   },
   "t675e8b7d": {
@@ -8521,7 +8521,7 @@
     "tr": "Deponun bir tavanı var",
     "en": "Storage has a cap",
     "nerede": [
-      "packages/shared/src/ogretici.ts:198"
+      "packages/shared/src/ogretici.ts:203"
     ]
   },
   "tefcb3bb6": {
@@ -8529,7 +8529,7 @@
     "tr": "Dibe vurursun, silinmezsin",
     "en": "You may hit rock bottom, but you won't be wiped out",
     "nerede": [
-      "packages/shared/src/ogretici.ts:166"
+      "packages/shared/src/ogretici.ts:171"
     ]
   },
   "t522a35da": {
@@ -8553,7 +8553,7 @@
     "tr": "Dizilimden gelen etki en çok +%{0} / -%{1}, taktikten gelen en çok %{2}. İyi dizilim kötü orduyu kurtarmaz, ama iki denk ordudan hangisinin kazanacağını söyler. Yaptığın hatalar savaş raporunda tek tek yazar.",
     "en": "The formation's effect is at most +{0}% / -{1}%, the tactic's at most {2}%. A good formation will not save a bad army, but it decides which of two equal armies wins. Every mistake you make is written out in the battle report.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:250"
+      "packages/shared/src/ogretici.ts:255"
     ]
   },
   "t20fbe206": {
@@ -8561,7 +8561,7 @@
     "tr": "Dizilimi yaptıktan sonra bir taktik seçersin — Hilal Düzeni süvarini kanattan dolandırır, Kalkan Duvarı ön hattı kilitler. Her taktiğin bir koşulu var ve koşulu tutmayan taktik seçilemez: yarım tutan bir taktiğe yarım bonus vermek, sana neden az aldığını anlatmayı imkânsız kılardı.",
     "en": "After setting your formation you pick a tactic — the Crescent Formation sweeps your cavalry around the flank, the Shield Wall locks the front line. Every tactic has a condition, and a tactic whose condition is not met cannot be chosen: giving half a bonus to a half-met tactic would make it impossible to explain why you got less.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:246"
+      "packages/shared/src/ogretici.ts:251"
     ]
   },
   "t6e565082": {
@@ -8569,7 +8569,7 @@
     "tr": "Dünya kalıcı",
     "en": "The world is persistent",
     "nerede": [
-      "packages/shared/src/ogretici.ts:486"
+      "packages/shared/src/ogretici.ts:491"
     ]
   },
   "t7c42a3ab": {
@@ -8601,7 +8601,7 @@
     "tr": "Düşürdüğün grup birkaç saat sonra geri döner. O sürede gri durur ama kaybolmaz — ne zaman döneceği ekranda yazılı.",
     "en": "A group you defeat comes back a few hours later. It stays grey during that time but does not disappear — the screen says when it returns.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:341"
+      "packages/shared/src/ogretici.ts:346"
     ]
   },
   "t7cf4a3a9": {
@@ -8609,7 +8609,7 @@
     "tr": "Eğitim, yürüyüş ve imar zamanla biter. Uygulamayı açık tutman gerekmez; kapalıyken de işler.",
     "en": "Training, marching and building finish over time. You do not need to keep the app open; it works while it is closed.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:468"
+      "packages/shared/src/ogretici.ts:473"
     ]
   },
   "tddfb254c": {
@@ -8617,7 +8617,7 @@
     "tr": "Ekipman döv",
     "en": "Forge equipment",
     "nerede": [
-      "packages/shared/src/ogretici.ts:356"
+      "packages/shared/src/ogretici.ts:361"
     ]
   },
   "t91b5b276": {
@@ -8689,7 +8689,7 @@
     "tr": "En fazla {0} üye",
     "en": "Maximum {0} members",
     "nerede": [
-      "packages/shared/src/ogretici.ts:431"
+      "packages/shared/src/ogretici.ts:436"
     ]
   },
   "t76555f03": {
@@ -8753,7 +8753,7 @@
     "tr": "Fetih sonrası {0} saat",
     "en": "{0} hours after conquest",
     "nerede": [
-      "packages/shared/src/ogretici.ts:419"
+      "packages/shared/src/ogretici.ts:424"
     ]
   },
   "t91fd6882": {
@@ -8769,7 +8769,7 @@
     "tr": "Ganimet ve fetih",
     "en": "Loot and conquest",
     "nerede": [
-      "packages/shared/src/ogretici.ts:283"
+      "packages/shared/src/ogretici.ts:288"
     ]
   },
   "t0cd88fa1": {
@@ -8801,7 +8801,7 @@
     "tr": "General topla",
     "en": "Recruit general",
     "nerede": [
-      "packages/shared/src/ogretici.ts:361"
+      "packages/shared/src/ogretici.ts:366"
     ]
   },
   "tafe8f656": {
@@ -8809,7 +8809,7 @@
     "tr": "Generaller savaşa katıldıkça seviye atlar ve ordunun bonuslarını büyütür. Yaralanırlarsa bir süre dinlenmeleri gerekir.",
     "en": "Generals level up as they take part in battles and grow the army's bonuses. If they get wounded they need to rest for a while.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:363"
+      "packages/shared/src/ogretici.ts:368"
     ]
   },
   "t74e7277b": {
@@ -8858,7 +8858,7 @@
     "tr": "Günlük görevler ve haftalık sefer",
     "en": "Daily quests and weekly campaign",
     "nerede": [
-      "packages/shared/src/ogretici.ts:476"
+      "packages/shared/src/ogretici.ts:481"
     ]
   },
   "t42a2a869": {
@@ -8882,7 +8882,7 @@
     "tr": "Harcanmaz, biriktirilir. Sıralamadaki yerin ve unvanın buradan gelir. Bölge tutmak, savaş kazanmak ve tahtı elinde tutmak şöhret kazandırır.",
     "en": "It is not spent, it accumulates. Your place in the ranking and your title come from here. Holding regions, winning battles and keeping the throne all earn fame.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:193"
+      "packages/shared/src/ogretici.ts:198"
     ]
   },
   "t0e43fb18": {
@@ -8890,7 +8890,7 @@
     "tr": "Haritadaki her işaret bir bölge. Kimi boş durur, kimini bir lord tutar. Bölgeler bitmez ama çoğalmaz da — biri alırsa, bir başkası kaybeder.",
     "en": "Every mark on the map is a region. Some sit empty, some are held by a lord. Regions never run out, but they never multiply either — if one takes, another loses.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:153"
+      "packages/shared/src/ogretici.ts:158"
     ]
   },
   "t628b00c1": {
@@ -8898,7 +8898,7 @@
     "tr": "Haritanın ortasındaki altın çerçeveli bölge. Onu tutan Diyarın Lordu olur ve şöhretini daha hızlı büyütür. Oyunun ucu burası.",
     "en": "The gold-framed region at the centre of the map. Whoever holds it becomes Lord of the Realm and grows their fame faster. This is the far end of the game.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:158"
+      "packages/shared/src/ogretici.ts:163"
     ]
   },
   "tca150eae": {
@@ -8906,7 +8906,7 @@
     "tr": "Her {0} lord seviyesinde bir bölge daha tutabilirsin. Erken oyunda az bölgeyi iyi tutmak, çok bölgeyi kötü tutmaktan iyidir.",
     "en": "Every {0} lord levels you can hold one more region. In the early game holding a few regions well is better than holding many poorly.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:367"
+      "packages/shared/src/ogretici.ts:372"
     ]
   },
   "t7e372fb9": {
@@ -8914,7 +8914,7 @@
     "tr": "Her birimin bir yeri var",
     "en": "Every unit has its place",
     "nerede": [
-      "packages/shared/src/ogretici.ts:236"
+      "packages/shared/src/ogretici.ts:241"
     ]
   },
   "tcef1436c": {
@@ -8922,7 +8922,7 @@
     "tr": "Her gün üç küçük görev, her hafta bir sefer. Kısa bir girişte bile elinde bir şeyle çıkarsın.",
     "en": "Three small quests every day, one campaign every week. Even in a short session you leave with something in hand.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:478"
+      "packages/shared/src/ogretici.ts:483"
     ]
   },
   "tbc1cd854": {
@@ -8930,7 +8930,7 @@
     "tr": "Her kaynağı en çok {0} kadar biriktirebilirsin; lord seviyen her arttığında tavan {1} büyür. Tavana dayanan kaynak artık birikmez — üretilen boşa gider. Araştırmadaki Ambarlar bu tavanı büyütür.",
     "en": "You can store at most {0} of each resource; every time your lord level rises the cap grows by {1}. A resource sitting at the cap stops accumulating — what you produce is wasted. Granaries in the research tree raise this cap.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:199"
+      "packages/shared/src/ogretici.ts:204"
     ]
   },
   "teb818bbe": {
@@ -8938,7 +8938,7 @@
     "tr": "İdeal satırlar: {0}. İdealinden her satır sapma güç kaybettirir; en ağır ceza mancınığındır (satır başına %{1}) — ön hatta duran mancınık ilk çarpışmada dağılır.",
     "en": "Ideal rows: {0}. Every row of deviation from the ideal costs power; the heaviest penalty is the catapult's ({1}% per row) — a catapult standing in the front line falls apart in the first clash.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:237"
+      "packages/shared/src/ogretici.ts:242"
     ]
   },
   "t391f2d9d": {
@@ -8946,7 +8946,7 @@
     "tr": "İki ittifak birbirine saldırmamaya söz verebilir. En fazla {0} pakt, ve fesih anında geçmiyor: {1} saat ihbar süresi boyunca pakt hâlâ koruyor. Verdiğin söz o yüzden bir şey ifade ediyor.",
     "en": "Two alliances can promise not to attack each other. At most {0} pacts, and breaking one is not instant: during the {1} hour notice period the pact still protects. That is why the promise you give means something.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:452"
+      "packages/shared/src/ogretici.ts:457"
     ]
   },
   "td2fa6864": {
@@ -8996,7 +8996,7 @@
     "tr": "İttifak seviyesi",
     "en": "Alliance level",
     "nerede": [
-      "packages/shared/src/ogretici.ts:447"
+      "packages/shared/src/ogretici.ts:452"
     ]
   },
   "t827b1e17": {
@@ -9004,7 +9004,7 @@
     "tr": "İttifak; birbirine saldıramayan, birbirini besleyen bir grup.",
     "en": "Alliance; a group that cannot attack each other and feeds each other.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:428"
+      "packages/shared/src/ogretici.ts:433"
     ]
   },
   "tee6bbfef": {
@@ -9029,7 +9029,7 @@
     "tr": "Kaleye karşı ×{0}, canlı birime karşı ×{1}. Duvara karşı harika, insana karşı berbat — yanına muhafız al.",
     "en": "×{0} against a castle, ×{1} against living units. Great against walls, terrible against people — take guards with you.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:218"
+      "packages/shared/src/ogretici.ts:223"
     ]
   },
   "t980be71f": {
@@ -9037,7 +9037,7 @@
     "tr": "Kalıcı seçimler. İki lord aynı seviyede olsa bile aynı olmaz.",
     "en": "Permanent choices. Even if two lords are the same level, they won't be identical.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:378"
+      "packages/shared/src/ogretici.ts:383"
     ]
   },
   "t353c1322": {
@@ -9045,7 +9045,7 @@
     "tr": "Kalıcı ve geri alınmaz",
     "en": "Permanent and irreversible",
     "nerede": [
-      "packages/shared/src/ogretici.ts:390"
+      "packages/shared/src/ogretici.ts:395"
     ]
   },
   "t98ac30ec": {
@@ -9061,7 +9061,7 @@
     "tr": "Kampta binalar 1. seviyeyi geçemez, köyde 2, kasabada 3, şehirde 4. Fethin karşılığı bu: T5 ekipman dövmek için gerçek bir şehir gerekiyor.",
     "en": "In a camp buildings cannot pass level 1, in a village 2, in a town 3, in a city 4. This is the reward for conquest: forging T5 equipment requires a real city.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:304"
+      "packages/shared/src/ogretici.ts:309"
     ]
   },
   "t9a45b6d2": {
@@ -9069,7 +9069,7 @@
     "tr": "Kamptan başlarsın",
     "en": "You start from a camp",
     "nerede": [
-      "packages/shared/src/ogretici.ts:170"
+      "packages/shared/src/ogretici.ts:175"
     ]
   },
   "t87585a83": {
@@ -9077,7 +9077,7 @@
     "tr": "Kanatlar ve açık cephe",
     "en": "Flanks and open front",
     "nerede": [
-      "packages/shared/src/ogretici.ts:240"
+      "packages/shared/src/ogretici.ts:245"
     ]
   },
   "td131a86c": {
@@ -9101,7 +9101,7 @@
     "tr": "Kaybetmek ölüm değil",
     "en": "Losing is not death",
     "nerede": [
-      "packages/shared/src/ogretici.ts:274"
+      "packages/shared/src/ogretici.ts:279"
     ]
   },
   "tda7dbccf": {
@@ -9117,7 +9117,7 @@
     "tr": "Kaynak gönder",
     "en": "Send resources",
     "nerede": [
-      "packages/shared/src/ogretici.ts:455"
+      "packages/shared/src/ogretici.ts:460"
     ]
   },
   "tc61d4e1a": {
@@ -9125,7 +9125,7 @@
     "tr": "Kaynak kesin, ekipman şans",
     "en": "Resources are certain, equipment is luck",
     "nerede": [
-      "packages/shared/src/ogretici.ts:334"
+      "packages/shared/src/ogretici.ts:339"
     ]
   },
   "tb0208e96": {
@@ -9133,7 +9133,7 @@
     "tr": "Kazanınca kaynağı mutlaka alırsın; ekipman ihtimale bağlı ve grup zorlaştıkça hem ihtimal hem kademe büyür. Şefler en iyisini düşürür.",
     "en": "When you win you always get the resources; equipment is a chance, and as the group gets harder both the chance and the tier grow. Chiefs drop the best.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:336"
+      "packages/shared/src/ogretici.ts:341"
     ]
   },
   "tec696a39": {
@@ -9141,7 +9141,7 @@
     "tr": "Kenar sütunlar ({0}) süvariye yarar (%{1}), okçuyla mancınığa zarar verir. Ön satırda hiç yakın dövüş birimi bırakmazsan savunmandan %{2} gider: okçuyu öne koyup mızrakçıyı arkaya saklamak bedava değil.",
     "en": "The wing columns ({0}) help cavalry ({1}%) and hurt archers and catapults. If you leave no melee unit in the front row, {2}% of your defense is gone: putting archers up front and hiding spearmen at the back is not free.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:241"
+      "packages/shared/src/ogretici.ts:246"
     ]
   },
   "t2e190b39": {
@@ -9157,7 +9157,7 @@
     "tr": "Kimi ittifaklara doğrudan girersin, çoğu başvuruyla üye alır — o zaman liderin onayını beklersin. Aynı anda {0} başvurun açık olabilir; kabul edilen biri gelince diğerleri kendiliğinden düşer.",
     "en": "Some alliances you join directly, most recruit by application — then you wait for the leader's approval. You can have {0} applications open at once; when one is accepted the others drop away on their own.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:439"
+      "packages/shared/src/ogretici.ts:444"
     ]
   },
   "t3481794b": {
@@ -9173,7 +9173,7 @@
     "tr": "Komuta sınırı",
     "en": "Command limit",
     "nerede": [
-      "packages/shared/src/ogretici.ts:221"
+      "packages/shared/src/ogretici.ts:226"
     ]
   },
   "t27d2957a": {
@@ -9189,7 +9189,7 @@
     "tr": "Kuşatma silahı",
     "en": "Siege weapon",
     "nerede": [
-      "packages/shared/src/ogretici.ts:217"
+      "packages/shared/src/ogretici.ts:222"
     ]
   },
   "t04fed051": {
@@ -9205,7 +9205,7 @@
     "tr": "Lord ekranında bir başarım listesi var: bölge, savaş, ekipman, general. Hiçbiri zorunlu değil — oyunu hiç görmediğin yerlerinden denemen için birer bahane.",
     "en": "There is an achievement list on the lord screen: region, battle, equipment, general. None of them are required — they are excuses to try the parts of the game you have never seen.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:483"
+      "packages/shared/src/ogretici.ts:488"
     ]
   },
   "tce3d381c": {
@@ -9253,7 +9253,7 @@
     "tr": "Malikânede tek bir kart her zaman sıradaki adımı söyler. Ne yapacağını bilemezsen oraya bak, gerisini düşünme.",
     "en": "In the manor a single card always tells you the next step. If you do not know what to do, look there and do not think about the rest.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:473"
+      "packages/shared/src/ogretici.ts:478"
     ]
   },
   "t52ce0a39": {
@@ -9389,7 +9389,7 @@
     "tr": "Ordu: kalabalık değil, doğru kalabalık",
     "en": "Army: not a crowd, the right crowd",
     "nerede": [
-      "packages/shared/src/ogretici.ts:209"
+      "packages/shared/src/ogretici.ts:214"
     ]
   },
   "td04d4144": {
@@ -9413,7 +9413,7 @@
     "tr": "Ordun her saat erzak yer. Erzak biterse askerlerin açlıktan erimeye başlar — büyük ordu kurmak yetmiyor, besleyebilmek gerekiyor.",
     "en": "Your army eats supplies every hour. If supplies run out your soldiers start melting away from hunger — building a big army is not enough, you have to be able to feed it.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:188"
+      "packages/shared/src/ogretici.ts:193"
     ]
   },
   "t8b113621": {
@@ -9437,7 +9437,7 @@
     "tr": "Orduyu yollarsın, yol alır, çarpışır; sen izlersin.",
     "en": "You send the army, it marches, it clashes; you watch.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:257"
+      "packages/shared/src/ogretici.ts:262"
     ]
   },
   "t40087aa8": {
@@ -9445,7 +9445,7 @@
     "tr": "Oyunun ritmi",
     "en": "The rhythm of the game",
     "nerede": [
-      "packages/shared/src/ogretici.ts:462"
+      "packages/shared/src/ogretici.ts:467"
     ]
   },
   "t23446189": {
@@ -9469,7 +9469,7 @@
     "tr": "Önce casus yolla",
     "en": "Send a spy first",
     "nerede": [
-      "packages/shared/src/ogretici.ts:270"
+      "packages/shared/src/ogretici.ts:275"
     ]
   },
   "t54860f6c": {
@@ -9485,7 +9485,7 @@
     "tr": "Önce önizleme",
     "en": "Preview first",
     "nerede": [
-      "packages/shared/src/ogretici.ts:260"
+      "packages/shared/src/ogretici.ts:265"
     ]
   },
   "tbeace604": {
@@ -9501,7 +9501,7 @@
     "tr": "Pazarda takas",
     "en": "Trade in the market",
     "nerede": [
-      "packages/shared/src/ogretici.ts:202"
+      "packages/shared/src/ogretici.ts:207"
     ]
   },
   "t0f6c0cea": {
@@ -9517,7 +9517,7 @@
     "tr": "Saldırıya çıkmadan önce ordunu {0}x{1} bir alana dizersin. 1. satır en ön (düşmanın ilk çarptığı yer), {2}. satır en arka. Kimin nerede durduğu savaşın gücünü değiştirir.",
     "en": "Before you attack you arrange your army on a {0}x{1} field. Row 1 is the front (where the enemy hits first), row {2} is the rear. Who stands where changes the power of the battle.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:233"
+      "packages/shared/src/ogretici.ts:238"
     ]
   },
   "t1c95cb65": {
@@ -9525,7 +9525,7 @@
     "tr": "Saldırmadan önce kazanma ihtimalini, tahmini kaybını ve ganimetini gösteriyoruz. Kör atış yok.",
     "en": "Before you attack we show your chance of winning, your estimated losses and your loot. No blind shots.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:262"
+      "packages/shared/src/ogretici.ts:267"
     ]
   },
   "t4b39f2fd": {
@@ -9533,7 +9533,7 @@
     "tr": "Saldırmazlık paktı",
     "en": "Non-aggression pact",
     "nerede": [
-      "packages/shared/src/ogretici.ts:451"
+      "packages/shared/src/ogretici.ts:456"
     ]
   },
   "t4bcff1b8": {
@@ -9541,7 +9541,7 @@
     "tr": "Savaş gerçek",
     "en": "War is real",
     "nerede": [
-      "packages/shared/src/ogretici.ts:329"
+      "packages/shared/src/ogretici.ts:334"
     ]
   },
   "t245190a9": {
@@ -9549,7 +9549,7 @@
     "tr": "Savaş kendiliğinden çözülür",
     "en": "Battle resolves automatically",
     "nerede": [
-      "packages/shared/src/ogretici.ts:256"
+      "packages/shared/src/ogretici.ts:261"
     ]
   },
   "td7b0398e": {
@@ -9557,7 +9557,7 @@
     "tr": "Savaş tur tur hesaplanır ve raporu okunabilir: neyi neden kazandığın ya da kaybettiğin yazar. Rapordan doğrudan karşı saldırı açabilirsin.",
     "en": "The battle is resolved round by round and the report is readable: it says what you won or lost and why. You can launch a counterattack straight from the report.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:267"
+      "packages/shared/src/ogretici.ts:272"
     ]
   },
   "td3f44af5": {
@@ -9565,7 +9565,7 @@
     "tr": "Savaştan önce: dizilimin ve taktiğin",
     "en": "Before battle: your formation and tactic",
     "nerede": [
-      "packages/shared/src/ogretici.ts:228"
+      "packages/shared/src/ogretici.ts:233"
     ]
   },
   "tbbd86850": {
@@ -9589,7 +9589,7 @@
     "tr": "Seni koruyan kurallar",
     "en": "Rules that protect you",
     "nerede": [
-      "packages/shared/src/ogretici.ts:405"
+      "packages/shared/src/ogretici.ts:410"
     ]
   },
   "ta5b1e298": {
@@ -9613,7 +9613,7 @@
     "tr": "Sezon yok, sıfırlama yok. Bugün kurduğun şey yarın da, seneye de duruyor. Acele etmene gerek yok.",
     "en": "No seasons, no resets. What you build today is still there tomorrow, and next year. There is no need to rush.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:488"
+      "packages/shared/src/ogretici.ts:493"
     ]
   },
   "t6f40c54e": {
@@ -9653,7 +9653,7 @@
     "tr": "Şehrin: her binanın bir işi var",
     "en": "Your city: every building has a job",
     "nerede": [
-      "packages/shared/src/ogretici.ts:298"
+      "packages/shared/src/ogretici.ts:303"
     ]
   },
   "t9368b74f": {
@@ -9725,7 +9725,7 @@
     "tr": "Takviye ve ortak hedef",
     "en": "Reinforcement and common target",
     "nerede": [
-      "packages/shared/src/ogretici.ts:442"
+      "packages/shared/src/ogretici.ts:447"
     ]
   },
   "tbab76525": {
@@ -9741,7 +9741,7 @@
     "tr": "Taş-kağıt-makas",
     "en": "Rock-paper-scissors",
     "nerede": [
-      "packages/shared/src/ogretici.ts:213"
+      "packages/shared/src/ogretici.ts:218"
     ]
   },
   "tff073313": {
@@ -9749,7 +9749,7 @@
     "tr": "Tavanı var, savaşı belirlemez",
     "en": "Has a cap, does not determine the battle",
     "nerede": [
-      "packages/shared/src/ogretici.ts:249"
+      "packages/shared/src/ogretici.ts:254"
     ]
   },
   "t35610c10": {
@@ -9757,7 +9757,7 @@
     "tr": "Tek bir harita, üzerinde herkes. Sen de onlardan birisin.",
     "en": "A single map, everyone on it. You are one of them.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:148"
+      "packages/shared/src/ogretici.ts:149"
     ]
   },
   "t783d224a": {
@@ -9773,7 +9773,7 @@
     "tr": "Toprağın yok, ordun yok. İlk köyünü fethettiğinde orası başkentin olur ve şehir sayfan bir kamptan bir köye döner. Sana hiçbir şey verilmiyor — ordu da toprak da bina da kazanılıyor.",
     "en": "You have no land and no army. When you conquer your first village it becomes your capital and your city page turns from a camp into a village. Nothing is given to you — army, land and buildings are all earned.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:172"
+      "packages/shared/src/ogretici.ts:177"
     ]
   },
   "t5c9bcae8": {
@@ -9781,7 +9781,7 @@
     "tr": "Toprak haritayı açar",
     "en": "Land opens the map",
     "nerede": [
-      "packages/shared/src/ogretici.ts:161"
+      "packages/shared/src/ogretici.ts:166"
     ]
   },
   "t9cbf108d": {
@@ -9789,7 +9789,7 @@
     "tr": "Toprak riski yok",
     "en": "No land risk",
     "nerede": [
-      "packages/shared/src/ogretici.ts:324"
+      "packages/shared/src/ogretici.ts:329"
     ]
   },
   "tca98de7e": {
@@ -9813,7 +9813,7 @@
     "tr": "Uykudayken silinmezsin. Bu oyunda kalkanlar gerçekten var.",
     "en": "You won't be wiped out while asleep. Shields are real in this game.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:406"
+      "packages/shared/src/ogretici.ts:411"
     ]
   },
   "t8ea30de8": {
@@ -9821,7 +9821,7 @@
     "tr": "Üç kaynak, bir puan",
     "en": "Three resources, one score",
     "nerede": [
-      "packages/shared/src/ogretici.ts:178"
+      "packages/shared/src/ogretici.ts:183"
     ]
   },
   "tee23d259": {
@@ -9839,7 +9839,7 @@
     "tr": "Üyeler bağış yaptıkça ittifak seviye atlar ve HERKES kazanır: daha çok kaynak gönderme hakkı, daha hızlı takviye, daha ucuz keşif. Günde {0} bağış hakkın var.",
     "en": "As members donate the alliance levels up and EVERYONE gains: a higher resource sending allowance, faster reinforcements, cheaper scouting. You have {0} donation allowances a day.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:448"
+      "packages/shared/src/ogretici.ts:453"
     ]
   },
   "tf6805d8a": {
@@ -9847,7 +9847,7 @@
     "tr": "Üyeler birbirine saldıramaz. Küçük tutuldu: bir kaleyi birlikte kuşatmaya yeter, haritayı tek başına yutmaya yetmez.",
     "en": "Members cannot attack each other. It is kept small on purpose: enough to besiege a castle together, not enough to swallow the map alone.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:433"
+      "packages/shared/src/ogretici.ts:438"
     ]
   },
   "t442686cb": {
@@ -9855,7 +9855,7 @@
     "tr": "Vurulan kamp toparlanır",
     "en": "A hit camp recovers",
     "nerede": [
-      "packages/shared/src/ogretici.ts:339"
+      "packages/shared/src/ogretici.ts:344"
     ]
   },
   "t848d4403": {
@@ -9871,7 +9871,7 @@
     "tr": "Yağma sonrası {0} saat",
     "en": "{0} hours after looting",
     "nerede": [
-      "packages/shared/src/ogretici.ts:414"
+      "packages/shared/src/ogretici.ts:419"
     ]
   },
   "t560fd39a": {
@@ -9879,7 +9879,7 @@
     "tr": "Yalnız oynamak zorunda değilsin",
     "en": "You don't have to play alone",
     "nerede": [
-      "packages/shared/src/ogretici.ts:427"
+      "packages/shared/src/ogretici.ts:432"
     ]
   },
   "tf6030ee3": {
@@ -9896,7 +9896,7 @@
     "tr": "Yaralılar eve değil hastaneye girer ve tedavi bitene kadar savaşa katılamaz. Tedavi en çok {0} saat sürer; o sürede erzak yemez ve komuta yerini işgal etmezler. Yenilgi bir gecikmedir, silinme değil.",
     "en": "The wounded go to the hospital rather than home and cannot fight until treatment ends. Treatment takes at most {0} hours; during that time they eat no supplies and take up no command space. A defeat is a delay, not a deletion.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:280"
+      "packages/shared/src/ogretici.ts:285"
     ]
   },
   "t590f82dd": {
@@ -9920,7 +9920,7 @@
     "tr": "Yeni aldığın bölge bir süre korunur. Aldığın anda elinden alınmaz, garnizonunu toplamaya vaktin olur.",
     "en": "A region you have just taken is protected for a while. It cannot be taken from you the moment you get it — you have time to gather its garrison.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:421"
+      "packages/shared/src/ogretici.ts:426"
     ]
   },
   "t4fbb5fb4": {
@@ -9952,7 +9952,7 @@
     "tr": "Yenilirsen ordunun bir kısmını kaybedersin, hesabını değil. Ölü sayılanların bir bölümü yaralı olarak geri döner — hem savunmada hem saldırıda.",
     "en": "If you lose you lose part of your army, not your account. A portion of those counted dead come back wounded — both in defense and in attack.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:276"
+      "packages/shared/src/ogretici.ts:281"
     ]
   },
   "t303c955e": {
@@ -9960,7 +9960,7 @@
     "tr": "Yerleşim bir TAVAN",
     "en": "Settlement is a CAP",
     "nerede": [
-      "packages/shared/src/ogretici.ts:302"
+      "packages/shared/src/ogretici.ts:307"
     ]
   },
   "t4d50f31d": {
@@ -9984,7 +9984,7 @@
     "tr": "Yürüyüş süresi en yakın toprağından ölçülür, malikânenden değil. Bir bölge aldığın anda onun çevresindeki her yer sana yaklaşır — yayıldıkça daha uzağa uzanabilirsin.",
     "en": "March time is measured from your nearest land, not from your manor. The moment you take a region everything around it comes closer to you — the more you spread, the further you can reach.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:163"
+      "packages/shared/src/ogretici.ts:168"
     ]
   },
   "td125ae71": {
@@ -10010,7 +10010,7 @@
     "tr": "Zorda kalan üyeye kaynak yollayabilirsin. Günde {0} altın karşılığına kadar, ve kaynak da yol alır — anında gitmez.",
     "en": "You can send resources to a member in trouble. Up to {0} gold worth a day, and resources travel too — they do not arrive instantly.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:456"
+      "packages/shared/src/ogretici.ts:461"
     ]
   },
   "t2fd78a43": {
@@ -10719,7 +10719,7 @@
     "tr": "bilinmeyen bölge",
     "en": "unknown region",
     "nerede": [
-      "apps/api/src/routes/dunya.ts:107"
+      "apps/api/src/routes/dunya.ts:111"
     ]
   },
   "tc9bf8e6b": {

@@ -1,7 +1,7 @@
 /**
  * Dünya (shard) yönetimi.
  *
- * Her dünya kendi 61 bölgesine sahiptir ve diğerlerinden tamamen bağımsızdır.
+ * Her dünya kendi bölgelerine (kanonik haritanın tamamına) sahiptir ve diğerlerinden tamamen bağımsızdır.
  * Kapasite dolduğunda yenisi AÇILIR — oyuncu asla "yer yok" duvarına çarpmaz.
  * (docs/00: "Shard başına 120 oyuncu. Dolunca yeni shard açılır.")
  */
