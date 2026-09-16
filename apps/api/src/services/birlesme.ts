@@ -47,7 +47,7 @@ export interface BirlesmeOzeti {
 /** Planlama için diyarların hâli. */
 async function adaylar(): Promise<BirlesmeAdayi[]> {
   const dunyalar = await prisma.world.findMany({
-    select: { id: true, name: true, openedAt: true, status: true },
+    select: { id: true, name: true, openedAt: true, status: true, playerCap: true },
   });
   if (dunyalar.length === 0) return [];
 
@@ -73,6 +73,7 @@ async function adaylar(): Promise<BirlesmeAdayi[]> {
     ad: d.name,
     openedAt: d.openedAt,
     durum: d.status,
+    kapasite: d.playerCap,
     lordSayisi: toplam.get(d.id) ?? 0,
     aktifLord: aktif.get(d.id) ?? 0,
     planliMi: planli.has(d.id),
@@ -216,9 +217,40 @@ export async function birlesmeyiUygula(
   mergeId: string,
   simdi = new Date(),
 ): Promise<BirlesmeOzeti> {
+  /*
+   * ÖNCE SAHİPLEN, sonra uygula.
+   *
+   * "Uygulandı mı diye bak, sonra uygula" yarışa açık ve bu yarış
+   * gerçek: Render'ın tek servisli dağıtımında worker API sürecinin
+   * İÇİNDE dönüyor (RUN_WORKER) ve yanına `pnpm worker` ile ikinci bir
+   * süreç de açılabiliyor. İkisi aynı anda aynı birleşmeyi okursa ikisi
+   * de "uygulanmamış" görür: lordlar iki kez taşınır, taht iki kez
+   * sıfırlanır.
+   *
+   * Koşullu `updateMany` damgayı ATOMİK alıyor — yalnız bir taraf 1
+   * satır güncelleyebiliyor, öteki 0 alıp çekiliyor.
+   */
+  const sahiplenme = await prisma.worldMerge.updateMany({
+    where: { id: mergeId, uygulandiAt: null },
+    data: { uygulandiAt: simdi },
+  });
+  if (sahiplenme.count === 0) throw new Error('Bu birleşme zaten uygulanmış.');
   const merge = await prisma.worldMerge.findUniqueOrThrow({ where: { id: mergeId } });
-  if (merge.uygulandiAt) throw new Error('Bu birleşme zaten uygulanmış.');
 
+  try {
+    return await birlesmeyiIsle(merge, simdi);
+  } catch (e) {
+    // Damgayı geri al: uygulanmamış bir birleşme "uygulandı" kalırsa bir
+    // sonraki tur onu hiç denemez ve iki diyar yarım kalır.
+    await prisma.worldMerge.updateMany({ where: { id: mergeId }, data: { uygulandiAt: null } });
+    throw e;
+  }
+}
+
+async function birlesmeyiIsle(
+  merge: { id: string; hostId: string; guestId: string },
+  simdi: Date,
+): Promise<BirlesmeOzeti> {
   return prisma.$transaction(
     async (tx) => {
       const ozet: BirlesmeOzeti = {
@@ -390,9 +422,10 @@ export async function birlesmeyiUygula(
 
       /* ── Kapanış ─────────────────────────────────────────────────── */
       await tx.world.update({ where: { id: merge.guestId }, data: { status: 'closed' } });
+      // `uygulandiAt` yukarıda, sahiplenmede kondu. Burada yalnız özet.
       await tx.worldMerge.update({
         where: { id: merge.id },
-        data: { uygulandiAt: simdi, ozet: ozet as unknown as object },
+        data: { ozet: ozet as unknown as object },
       });
 
       return ozet;

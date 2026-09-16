@@ -8,7 +8,7 @@ import { createHash, randomBytes } from 'node:crypto';
 import { env } from '../env.js';
 import { adiDenetle } from '../services/adDenetimi.js';
 import { postaGonder } from '../services/eposta.js';
-import { findOrOpenWorld } from '../services/world.js';
+import { AKTIF_GUN, diyarDoluMu, findOrOpenWorld } from '../services/world.js';
 
 /** Jetonun özeti saklanır; ham jeton yalnızca e-postada gider. */
 function ozet(jeton: string): string {
@@ -142,8 +142,19 @@ async function secilenDiyar(worldId: string): Promise<string> {
   if (!w || w.status === 'closed') {
     throw new GameError('Böyle bir diyar yok.', 404, 'DIYAR_YOK');
   }
-  const sayi = await prisma.lord.count({ where: { worldId: w.id } });
-  if (w.status === 'full' || sayi >= w.playerCap) {
+  /*
+   * Doluluk ölçütü `diyarDoluMu` — listeyi üreten kodla AYNI işlev.
+   * `status` damgasına bakmıyoruz: damga ucuz okuma için tutulan bir
+   * önbellek ve listeden bir tur geride kalabiliyor. Oyuncuyu, listede
+   * gördüğü bir diyara girerken eski bir damga yüzünden reddetmek en
+   * kötüsü olurdu.
+   */
+  const aktifSinir = new Date(Date.now() - AKTIF_GUN * 86_400_000);
+  const [sayi, aktif] = await Promise.all([
+    prisma.lord.count({ where: { worldId: w.id } }),
+    prisma.lord.count({ where: { worldId: w.id, lastSeenAt: { gte: aktifSinir } } }),
+  ]);
+  if (diyarDoluMu(sayi, aktif, w.playerCap)) {
     throw new GameError('O diyar doldu. Başka bir diyar seç.', 409, 'DIYAR_DOLU');
   }
   return w.id;

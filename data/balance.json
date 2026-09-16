@@ -495,6 +495,9 @@
     "dolunca": "Yeni dunya (shard) acilir. Siralamalar hem dunya bazli hem global tutulur.",
     "gelir_hesabi": "Lazy accrual: last_tick_at ile su an arasindaki fark hesaplanir. Cron gerekmez.",
     "worker_araligi_sn": 10,
+    "azami_kayit_carpani": 3,
+    "_kapasite_olcutu": "Diyar, AKTIF lord sayisi kapasiteye ulasinca doluyor; kayitli sayisi degil. Kayitliyi saymak, bir yil once birakmis oyuncular yuzunden diyari yeni gelene kapatiyordu: 142 kayitli / 6 aktif bir diyar 'dolu' gorunuyordu ve oyun kirk hayalet sehre bolunuyordu.",
+    "_azami_kayit_notu": "Tavan bir tasarim dugmesi degil, emniyet supabi: aktife bakan bir kapasite tek basina sinirsiz buyumeye acik olurdu. Kapasitenin uc kati kayitli lorda ulasan diyar, aktifi bos olsa da yeni kayit almiyor.",
     "birlesme": {
       "_aciklama": "Diyar birlesmesi. Kalici dunyada zaman tek yonlu isliyor: oyuncu birakiyor, kimse yerine gelmiyor cunku diyar 'dolu' gorunuyor. 60 gunluk bir diyar kendi yasitiyla birlesiyor.",
       "yas_gun": 60,

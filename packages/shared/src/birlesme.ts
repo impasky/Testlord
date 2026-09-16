@@ -32,6 +32,8 @@ export interface BirlesmeAdayi {
   id: string;
   ad: string;
   openedAt: Date;
+  /** Diyarın oyuncu kapasitesi. */
+  kapasite?: number;
   /** Son yedi günde oyuna girmiş lord sayısı. */
   aktifLord: number;
   /** Diyardaki toplam lord sayısı. */
@@ -116,6 +118,20 @@ export function birlesmeEsleri(adaylar: BirlesmeAdayi[], simdi: Date): BirlesmeE
       continue;
     }
     const [evSahibi, konuk] = evSahibiSec(a, b);
+    /*
+     * Birleşen diyar KAPASİTEYİ AŞMAMALI.
+     *
+     * İki diyarın aktif oyuncuları tek haritaya sığmıyorsa birleşme
+     * çözüm değil sorun: 121 bölgeye kapasitenin üstünde lord yığmak,
+     * kimsenin toprak tutamadığı bir diyar demek. Böyle bir çift
+     * eşlenmiyor ve ikisi de bir sonraki turu bekliyor — birleşmemek,
+     * yanlış birleşmekten iyi.
+     */
+    const tavan = evSahibi.kapasite ?? Infinity;
+    if (evSahibi.aktifLord + konuk.aktifLord > tavan) {
+      i += 1;
+      continue;
+    }
     esler.push({ evSahibi, konuk, yasFarkiGun: Math.round(fark) });
     i += 2;
   }

@@ -26,7 +26,7 @@ const UYGULA = process.argv.includes('--uygula');
 const simdi = new Date();
 
 const dunyalar = await prisma.world.findMany({
-  select: { id: true, name: true, openedAt: true, status: true },
+  select: { id: true, name: true, openedAt: true, status: true, playerCap: true },
 });
 const aktifSinir = new Date(simdi.getTime() - AKTIF_GUN * 86_400_000);
 const [hepsi, aktifler, planlilar] = await Promise.all([
@@ -47,6 +47,7 @@ const adaylar = dunyalar.map((d) => ({
   ad: d.name,
   openedAt: d.openedAt,
   durum: d.status,
+  kapasite: d.playerCap,
   lordSayisi: toplam.get(d.id) ?? 0,
   aktifLord: aktif.get(d.id) ?? 0,
   planliMi: planliDiyar.has(d.id),

@@ -257,6 +257,35 @@ try {
   );
   const ozet = sql(`SELECT ozet FROM "WorldMerge" WHERE "guestId" = '${konukId}';`);
   kontrol('Özet yazıldı', ozet.includes('gocenLord'), ozet.slice(0, 80));
+
+  /* -------------------------------------------------------------- */
+  /* Birleşme İKİ KEZ uygulanmıyor                                   */
+  /* -------------------------------------------------------------- */
+
+  // Tek servisli dağıtımda worker API sürecinin içinde dönüyor ve yanına
+  // ikinci bir süreç açılabiliyor. İkisi aynı birleşmeye girişirse
+  // lordlar iki kez taşınır, taht iki kez sıfırlanır.
+  const mergeId = sql(`SELECT id FROM "WorldMerge" WHERE "guestId" = '${konukId}';`);
+  sql(
+    `UPDATE "WorldMerge" SET "birlesmeAt" = now() - interval '1 minute' WHERE id = '${mergeId}';`,
+  );
+  const lordSayisiOnce = sql(`SELECT count(*) FROM "Lord" WHERE "worldId" = '${evId}';`);
+  execSync('pnpm --filter @lordlar/api diyar-birlestir --uygula', {
+    cwd: new URL('..', import.meta.url).pathname,
+  });
+  kontrol(
+    'İkinci kez uygulanmıyor — lord sayısı değişmedi',
+    sql(`SELECT count(*) FROM "Lord" WHERE "worldId" = '${evId}';`) === lordSayisiOnce,
+    `${lordSayisiOnce} lord`,
+  );
+  kontrol(
+    'Damga korundu',
+    Number(
+      sql(
+        `SELECT count(*) FROM "WorldMerge" WHERE id = '${mergeId}' AND "uygulandiAt" IS NOT NULL;`,
+      ),
+    ) === 1,
+  );
 } finally {
   geriAl();
   if (konukId) sql(`UPDATE "World" SET status = 'closed' WHERE id = '${konukId}';`);

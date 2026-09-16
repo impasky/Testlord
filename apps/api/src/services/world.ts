@@ -94,6 +94,24 @@ export async function createWorld(client: Tx = prisma): Promise<string> {
   return world.id;
 }
 
+/**
+ * Bu diyar DOLU mu — tek kural, iki çağıran.
+ *
+ * Kayıt ekranındaki liste (`acikDiyarlar`) ile kaydın kendisi
+ * (`routes/auth.ts`) bunu aynı yerden okuyor. İki ayrı koşul yazsaydı er
+ * ya da geç ayrışırlardı ve ayrıştıkları an oyuncuya listede duran ama
+ * kaydederken "dolu" diye reddedilen bir diyar gösterilirdi.
+ *
+ * Ölçüt AKTİF lord. Kayıtlıyı saymak, bir yıl önce bırakmış oyuncular
+ * yüzünden diyarı yeni gelene kapatıyordu. Kayıtlı sayısının tavanı yine
+ * de var ve emniyet supabı: aktife bakan bir kapasite tek başına
+ * sınırsız büyümeye açık olurdu.
+ */
+export function diyarDoluMu(lordSayisi: number, aktifLord: number, kapasite: number): boolean {
+  const carpan = (B.dunya as { azami_kayit_carpani: number }).azami_kayit_carpani;
+  return aktifLord >= kapasite || lordSayisi >= kapasite * carpan;
+}
+
 /** Katılmaya AÇIK bir diyar ve kaç kişi olduğu. */
 export interface AcikDiyar {
   id: string;
@@ -153,9 +171,27 @@ export async function acikDiyarlar(): Promise<AcikDiyar[]> {
   const doldu: string[] = [];
   const bosaldi: string[] = [];
 
+  /*
+   * DOLULUK AKTİF LORDA BAKIYOR, kayıtlıya değil.
+   *
+   * Kayıtlıyı saymak, bir yıl önce bırakmış oyuncular yüzünden diyarı
+   * yeni gelene kapatıyordu. Geliştirme veritabanı bunun ne demek
+   * olduğunu gösterdi: 142 kayıtlı / 6 aktif bir diyar "dolu", 125
+   * kayıtlı / 0 aktif bir başkası yine "dolu". Oyun kırk hayalet şehre
+   * bölünüyor ve her yeni oyuncu bomboş bir kırk birincisine düşüyordu.
+   *
+   * Bölge kıtlığı bundan etkilenmiyor: kıtlığı belirleyen şey lord
+   * SAYISI değil, lord başına bölge tavanı (Lv60'ta 5) ve haritanın 121
+   * bölgesi. Uyuyan bir lordun toprağı da alınabiliyor — kalıcı kalkanı
+   * yok.
+   *
+   * Tavan yine de var ve emniyet supabı: aktife bakan bir kapasite tek
+   * başına sınırsız büyümeye açık olurdu.
+   */
   for (const w of dunyalar) {
     const lordSayisi = toplam.get(w.id) ?? 0;
-    if (lordSayisi >= w.playerCap) {
+    const aktifLord = aktif.get(w.id) ?? 0;
+    if (diyarDoluMu(lordSayisi, aktifLord, w.playerCap)) {
       if (w.status === 'open') doldu.push(w.id);
       continue;
     }
@@ -165,7 +201,7 @@ export async function acikDiyarlar(): Promise<AcikDiyar[]> {
       ad: w.name,
       lordSayisi,
       kapasite: w.playerCap,
-      aktifLord: aktif.get(w.id) ?? 0,
+      aktifLord,
       openedAt: w.openedAt,
     });
   }

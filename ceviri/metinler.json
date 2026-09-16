@@ -10249,7 +10249,7 @@
     "tr": "{0} {1} ile birleşiyor. Lordun, ordun ve araştırman taşınıyor; bölgelerin ancak orada boşsa geliyor.",
     "en": "{0} is merging into {1}. Your lord, army and research move with you; your regions only come along if they are free there.",
     "nerede": [
-      "apps/api/src/services/birlesme.ts:117"
+      "apps/api/src/services/birlesme.ts:118"
     ]
   },
   "t81376c92": {
@@ -10393,7 +10393,7 @@
     "tr": "{0} diyarının lordları {1} diyarına geliyor. Taht sahipsiz kalacak.",
     "en": "The lords of {0} are coming to {1}. The throne will be left unowned.",
     "nerede": [
-      "apps/api/src/services/birlesme.ts:118"
+      "apps/api/src/services/birlesme.ts:119"
     ]
   },
   "tfda5002c": {
@@ -10820,7 +10820,7 @@
     "tr": "Bağlantı geçersiz ya da süresi dolmuş. Yeniden sıfırlama iste.",
     "en": "Link is invalid or expired. Request a reset again.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:278"
+      "apps/api/src/routes/auth.ts:289"
     ]
   },
   "tf9754a95": {
@@ -11024,7 +11024,7 @@
     "tr": "Bu ad kullanılamaz.",
     "en": "This name cannot be used.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:161",
+      "apps/api/src/routes/auth.ts:172",
       "apps/api/src/routes/ittifak.ts:427"
     ]
   },
@@ -11058,7 +11058,7 @@
     "tr": "Bu birleşme zaten uygulanmış.",
     "en": "This merge has already been applied.",
     "nerede": [
-      "apps/api/src/services/birlesme.ts:220"
+      "apps/api/src/services/birlesme.ts:237"
     ]
   },
   "t285dc203": {
@@ -11098,7 +11098,7 @@
     "tr": "Bu e-posta zaten kayıtlı.",
     "en": "This email is already registered.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:165"
+      "apps/api/src/routes/auth.ts:176"
     ]
   },
   "t62da57e4": {
@@ -11187,7 +11187,7 @@
     "tr": "Bu lord adı alınmış.",
     "en": "This lord name is taken.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:168"
+      "apps/api/src/routes/auth.ts:179"
     ]
   },
   "t93fec181": {
@@ -11301,7 +11301,7 @@
     "tr": "Diyarlar birleşti: {0} lord geldi. Taht sahipsiz — ilk alan Diyarın Lordu olur.",
     "en": "The realms have merged: {0} lords arrived. The throne is unowned — whoever takes it first becomes Lord of the Realm.",
     "nerede": [
-      "apps/api/src/services/birlesme.ts:418"
+      "apps/api/src/services/birlesme.ts:451"
     ]
   },
   "tde046dbf": {
@@ -11399,7 +11399,7 @@
     "tr": "E-posta veya parola hatalı.",
     "en": "Email or password incorrect.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:217"
+      "apps/api/src/routes/auth.ts:228"
     ]
   },
   "t61d3205f": {
@@ -11795,7 +11795,7 @@
     "tr": "Lordlar Çağı — parola sıfırlama",
     "en": "Age of Lords — password reset",
     "nerede": [
-      "apps/api/src/routes/auth.ts:254"
+      "apps/api/src/routes/auth.ts:265"
     ]
   },
   "t20970dae": {
@@ -11860,7 +11860,7 @@
     "tr": "O diyar doldu. Başka bir diyar seç.",
     "en": "That realm is full. Pick another one.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:147"
+      "apps/api/src/routes/auth.ts:158"
     ]
   },
   "tb209b8d4": {
@@ -11966,7 +11966,7 @@
     "tr": "Parolanı sıfırlamak için {0} dakika içinde bu bağlantıyı aç:\n\n{1}\n\nBu isteği sen yapmadıysan hiçbir şey yapmana gerek yok; parolan değişmedi.",
     "en": "To reset your password open this link within {0} minutes:\n\n{1}\n\nIf you did not make this request you need to do nothing; your password has not changed.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:255"
+      "apps/api/src/routes/auth.ts:266"
     ]
   },
   "tea8d3f85": {

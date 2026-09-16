@@ -59,7 +59,10 @@ kontrol(
       d.ad.length > 0 &&
       Number.isFinite(d.lordSayisi) &&
       Number.isFinite(d.aktifLord) &&
-      d.lordSayisi < d.kapasite,
+      // Listede duran diyarın AKTİFİ kapasitenin altında olmalı.
+      // Kayıtlısı aşabilir ve aşması doğru: bir yıl önce bırakmış
+      // oyuncular diyarı yeni gelene kapatmasın diye ölçüt değişti.
+      d.aktifLord < d.kapasite,
   ),
 );
 
@@ -80,8 +83,14 @@ kontrol(
 async function doluykenYap(worldId, is) {
   const kapasite = sql(`SELECT "playerCap" FROM "World" WHERE id = '${worldId}';`);
   const durum = sql(`SELECT status FROM "World" WHERE id = '${worldId}';`);
+  /*
+   * Kapasite AKTİF lord sayısına indiriliyor, kayıtlıya değil: doluluk
+   * ölçütü aktife bakıyor (services/world.ts → diyarDoluMu). Kayıtlıya
+   * göre ayarlayan ilk hâl, lordları uyuyan bir diyarı "dolu"
+   * yapamıyordu ve test kendi kurduğu durumu ölçemiyordu.
+   */
   sql(
-    `UPDATE "World" SET "playerCap" = (SELECT count(*) FROM "Lord" l WHERE l."worldId" = '${worldId}') WHERE id = '${worldId}';`,
+    `UPDATE "World" SET "playerCap" = GREATEST(1, (SELECT count(*) FROM "Lord" l WHERE l."worldId" = '${worldId}' AND l."lastSeenAt" > now() - interval '7 days')) WHERE id = '${worldId}';`,
   );
   try {
     return await is();
@@ -199,6 +208,57 @@ const liste3 = await doluykenYap(hedef.id, async () => {
   );
   return l;
 });
+
+/* ---------------------------------------------------------------- */
+/* 4b. Doluluk AKTİF lorda bakıyor, kayıtlıya değil                  */
+/* ---------------------------------------------------------------- */
+
+/*
+ * Kayıtlıyı saymak, bir yıl önce bırakmış oyuncular yüzünden diyarı yeni
+ * gelene kapatıyordu — oyunu kırk hayalet şehre bölen şey buydu.
+ *
+ * Ölçüt: kapasitesi kadar KAYITLI ama hepsi uyuyan bir diyar listede
+ * DURUYOR; aktifi kapasiteye ulaşan diyar düşüyor.
+ */
+{
+  const d = liste3.diyarlar[0] ?? liste2.diyarlar[0];
+  const kapasite = sql(`SELECT "playerCap" FROM "World" WHERE id = '${d.id}';`);
+  const kayitli = sql(`SELECT count(*) FROM "Lord" WHERE "worldId" = '${d.id}';`);
+
+  // Kayıtlı sayısı kapasiteye eşitlensin ama kimse aktif olmasın.
+  sql(`UPDATE "World" SET "playerCap" = ${kayitli} WHERE id = '${d.id}';`);
+  const uykuda = sql(`SELECT id FROM "Lord" WHERE "worldId" = '${d.id}';`)
+    .split('\n')
+    .filter(Boolean);
+  const eskiGorulme = sql(
+    `SELECT string_agg(id || '~' || "lastSeenAt"::text, '|') FROM "Lord" WHERE "worldId" = '${d.id}';`,
+  );
+  sql(`UPDATE "Lord" SET "lastSeenAt" = now() - interval '90 days' WHERE "worldId" = '${d.id}';`);
+
+  const uyku = await (await fetch(`${API}/api/diyarlar`)).json();
+  kontrol(
+    'Kayıtlısı dolu ama hepsi uyuyan diyar hâlâ açık',
+    uyku.diyarlar.some((x) => x.id === d.id),
+    `${kayitli}/${kayitli} kayıtlı, 0 aktif`,
+  );
+
+  // Şimdi hepsi aktif olsun: aynı diyar dolmalı.
+  sql(`UPDATE "Lord" SET "lastSeenAt" = now() WHERE "worldId" = '${d.id}';`);
+  const aktifHal = await (await fetch(`${API}/api/diyarlar`)).json();
+  kontrol(
+    'Aktifi kapasiteye ulaşan diyar doluyor',
+    !aktifHal.diyarlar.some((x) => x.id === d.id),
+    `${kayitli} aktif / ${kayitli} kapasite`,
+  );
+
+  // Geri al.
+  for (const parca of (eskiGorulme || '').split('|').filter(Boolean)) {
+    const [id, an] = parca.split('~');
+    sql(`UPDATE "Lord" SET "lastSeenAt" = '${an}' WHERE id = '${id}';`);
+  }
+  sql(`UPDATE "World" SET "playerCap" = ${kapasite}, status = 'open' WHERE id = '${d.id}';`);
+  void uykuda;
+}
 
 /* ---------------------------------------------------------------- */
 /* 5. Seçim yapmayan oyuncu için hiçbir şey değişmiyor               */

@@ -25,6 +25,7 @@ function diyar(ad: string, yasGun: number, aktif = 5, ek: Record<string, unknown
     openedAt: gunOnce(yasGun),
     aktifLord: aktif,
     lordSayisi: Math.max(aktif, 10),
+    kapasite: 240,
     durum: 'full',
     ...ek,
   };
@@ -127,5 +128,40 @@ describe('bölge kararı', () => {
     const bir = bolgeKarari({ mapId: 5, type: 'sehir', level: 1, incomeMult: 1 }, true);
     const bes = bolgeKarari({ mapId: 5, type: 'sehir', level: 5, incomeMult: 1 }, true);
     expect(bes.tazminat.altin).toBeGreaterThan(bir.tazminat.altin);
+  });
+});
+
+describe('kapasite koruması', () => {
+  it('birleşince kapasiteyi aşacak çift eşleşmiyor', () => {
+    // İki diyarın aktifleri tek haritaya sığmıyorsa birleşme çözüm değil
+    // sorun: 121 bölgeye kapasitenin üstünde lord yığmak, kimsenin toprak
+    // tutamadığı bir diyar demek.
+    const esler = birlesmeEsleri(
+      [diyar('A', 100, 200, { kapasite: 240 }), diyar('B', 98, 100, { kapasite: 240 })],
+      SIMDI,
+    );
+    expect(esler).toEqual([]);
+  });
+
+  it('sığan çift eşleşiyor', () => {
+    const esler = birlesmeEsleri(
+      [diyar('A', 100, 120, { kapasite: 240 }), diyar('B', 98, 100, { kapasite: 240 })],
+      SIMDI,
+    );
+    expect(esler).toHaveLength(1);
+  });
+
+  it('sığmayan çift bir sonrakini deniyor, kilitlenmiyor', () => {
+    // A ile B sığmıyor; B ile C sığıyor. A beklemeli, B+C eşleşmeli.
+    const esler = birlesmeEsleri(
+      [
+        diyar('A', 100, 200, { kapasite: 240 }),
+        diyar('B', 99, 100, { kapasite: 240 }),
+        diyar('C', 98, 50, { kapasite: 240 }),
+      ],
+      SIMDI,
+    );
+    expect(esler).toHaveLength(1);
+    expect([esler[0]!.evSahibi.ad, esler[0]!.konuk.ad].sort()).toEqual(['B', 'C']);
   });
 });

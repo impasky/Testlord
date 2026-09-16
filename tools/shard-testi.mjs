@@ -40,9 +40,35 @@ console.log('Lordlar Çağı — shard testi\n');
 
 const oncekiDunya = Number(sql('SELECT count(*) FROM "World";'));
 
-// Açık dünyaların kapasitesini mevcut lord sayısına indir: "dolu" durumu yarat
+/*
+ * Açık dünyaları yapay olarak doldur.
+ *
+ * Kapasite AKTİF lord sayısına iniyor, kayıtlıya değil: doluluk ölçütü
+ * aktife bakıyor (services/world.ts → diyarDoluMu). Kayıtlıya göre
+ * ayarlayan ilk hâl, lordları uyuyan bir dünyayı "dolu" yapamıyordu ve
+ * test kendi kurduğu durumu ölçemez hâle gelmişti.
+ *
+ * Eski kapasiteler SAKLANIP geri konuyor. `playerCap = 120` diye toptan
+ * yazan hâl, dokunmadığı dünyaların kapasitesini de değiştiriyor ve
+ * üstelik tasarımdaki değeri (240) elle yazılmış eski bir sayıyla
+ * eziyordu.
+ */
+const eskiKapasiteler = sql(
+  `SELECT id || '=' || "playerCap" FROM "World" WHERE status <> 'closed';`,
+)
+  .split('\n')
+  .filter(Boolean);
+/*
+ * `open` OLANLAR DEĞİL, kapanmamış HEPSİ dolduruluyor.
+ *
+ * `full` damgası iki yönlü: dolmuş bir diyar oyuncu kaybedince yeniden
+ * açılıyor. Yalnız `status = 'open'` olanları dolduran hâl, yer açılmış
+ * bir `full` diyarı gözden kaçırıyordu ve yeni oyuncu oraya düşüyordu —
+ * test "yeni dünya açılmadı" diye kalıyordu, oysa açılmasına gerek
+ * yoktu. Testin kurmak istediği durum "hiçbir diyarda yer yok".
+ */
 sql(
-  `UPDATE "World" w SET "playerCap" = GREATEST(1, (SELECT count(*) FROM "Lord" l WHERE l."worldId" = w.id)) WHERE w.status = 'open';`,
+  `UPDATE "World" w SET "playerCap" = GREATEST(1, (SELECT count(*) FROM "Lord" l WHERE l."worldId" = w.id AND l."lastSeenAt" > now() - interval '7 days')) WHERE w.status <> 'closed';`,
 );
 console.log('  Açık dünyalar yapay olarak dolduruldu.');
 
@@ -82,9 +108,12 @@ if (sonuc.ok) {
   );
 }
 
-// Kapasiteyi tasarımdaki değere geri al
-sql(`UPDATE "World" SET "playerCap" = 120;`);
-console.log("\n  Kapasiteler 120'ye geri alındı.");
+// Dokunulan dünyaların kapasitesi geri konuyor — yalnız onlarınki.
+for (const satir of eskiKapasiteler) {
+  const [id, kapasite] = satir.split('=');
+  sql(`UPDATE "World" SET "playerCap" = ${kapasite} WHERE id = '${id}';`);
+}
+console.log(`\n  ${eskiKapasiteler.length} dünyanın kapasitesi geri alındı.`);
 
 console.log(
   hata === 0 ? '\nSONUÇ: shard açılımı çalışıyor.' : `\nSONUÇ: ${hata} kontrol başarısız.`,
