@@ -428,6 +428,13 @@ export interface DiyarSecimiDto {
 
 export interface DunyaDto {
   ad: string;
+  /** İlan edilmiş diyar birleşmesi. Yoksa null. */
+  birlesme: {
+    karsiDiyar: string;
+    /** Bu diyar taşınan taraf mı, yoksa kalan taraf mı. */
+    konukMuyum: boolean;
+    birlesmeAt: string;
+  } | null;
   kapasite: number;
   lordSayisi: number;
   aktifLord: number;

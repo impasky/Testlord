@@ -5,7 +5,7 @@
  * harf başlıklar, parlak altın eylem butonları, nadirlik renk sistemi.
  * Masaüstü düzeni YOK — her şey tek sütun, dokunmatik hedefleri ≥44px.
  */
-import { useEffect, useState, type ReactNode } from 'react';
+import { Fragment, useEffect, useState, type ReactNode } from 'react';
 import { IkonAltin, IkonDemir, IkonErzak, IkonSure, IkonUyari } from './Ikonlar';
 
 /* ---------------- Geri sayım ---------------- */
@@ -832,4 +832,29 @@ export function IkonluDeger({
       <span className="sr-only">{baslik}</span>
     </span>
   );
+}
+
+/**
+ * Tek şablon, içine vurgulu parçalar.
+ *
+ * Burada duruyor çünkü İKİ yerde gerekti: savaş raporunun sebep cümleleri
+ * ve dünya şeridinin birleşme ilanı. İkisi de aynı biçimde bölünmüştü.
+ *
+ * Bu cümleler altı yedi JSX parçasına bölünmüştü ve her parça ayrı bir
+ * çeviri satırıydı. Parça tek başına anlamsız, hatta yanıltıcı:
+ * `Makas` bir birim adı sanılıp "Scissors" diye çevrilmişti — oysa
+ * buradaki makas "makas açıldı" deyimindeki makas, yani ARADAKİ FARK.
+ * Cümleyi bütün gören biri bu hatayı yapmaz; bölünmüş parçayı gören
+ * yapar. `güce karşı` da aynı sebeple "against power" olmuş, İngilizce
+ * cümlede sözcükler ters sıraya düşmüştü.
+ *
+ * `{0}`, `{1}` … `parcalar` dizisinden doluyor. Hangi parçanın kalın
+ * yazılacağına çağıran karar veriyor; şablon yalnız sırayı taşıyor ve
+ * o sıra başka dilde değişebiliyor.
+ */
+export function sablonlu(sablon: string, parcalar: ReactNode[]): ReactNode {
+  return sablon.split(/(\{\d+\})/).map((p, i) => {
+    const y = /^\{(\d+)\}$/.exec(p);
+    return y ? <Fragment key={i}>{parcalar[Number(y[1])]}</Fragment> : p;
+  });
 }

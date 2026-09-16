@@ -22,9 +22,21 @@ import { resolveAkin } from './services/akin.js';
 import { sevkiyatCoz } from './services/ticaret.js';
 import { accrueRegionStores } from './services/region.js';
 import { npcTuru } from './services/npc.js';
+import { bekleyenBirlesmeleriUygula, birlesmeyiPlanla } from './services/birlesme.js';
 
 const ARALIK_MS = 10_000;
 let calisiyor = false;
+
+/**
+ * Birleşme SAATTE BİR bakılıyor, her turda değil.
+ *
+ * Gün ölçeğinde bir karar: bir diyarın altmışıncı gününü on saniye
+ * içinde yakalamanın kimseye faydası yok, ama her on saniyede bütün
+ * diyarları taramanın maliyeti var. Saatlik bakış, en kötü ihtimalle
+ * bir saatlik gecikme demek ve ihbar süresi zaten üç gün.
+ */
+const BIRLESME_ARALIK_MS = 3_600_000;
+let sonBirlesmeBakisi = 0;
 
 export async function tur(): Promise<void> {
   if (calisiyor) return; // önceki tur bitmediyse üst üste binme
@@ -88,6 +100,20 @@ export async function tur(): Promise<void> {
     }
 
     await accrueRegionStores(now);
+
+    if (now.getTime() - sonBirlesmeBakisi >= BIRLESME_ARALIK_MS) {
+      sonBirlesmeBakisi = now.getTime();
+      try {
+        const ilan = await birlesmeyiPlanla(now);
+        const uygulanan = await bekleyenBirlesmeleriUygula(now);
+        if (ilan.length || uygulanan) {
+          console.log(`[worker] birleşme: ${ilan.length} ilan, ${uygulanan} uygulandı`);
+        }
+      } catch (e) {
+        // Birleşme patlarsa oyunun geri kalanı dönmeye devam etsin.
+        console.error('Birleşme turu başarısız:', e);
+      }
+    }
 
     // Rakip lordlar. Çoğu turda hiç kimsenin sırası gelmiyor ve tek bir
     // indeksli sorguya iniyor; sırası gelen olursa yürüyüşünü oyuncununkiyle

@@ -43,4 +43,5 @@ export * from './akin.js';
 export * from './bina.js';
 export * from './march.js';
 export * from './odul.js';
+export * from './birlesme.js';
 export * from './moderasyon.js';

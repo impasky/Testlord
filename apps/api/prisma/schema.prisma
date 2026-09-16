@@ -61,6 +61,38 @@ model World {
   regions    Region[]
   alliances  Alliance[]
   paktlar    Pakt[]
+  /// Bu diyarın ev sahibi olduğu birleşmeler.
+  evSahibiBirlesmeleri WorldMerge[] @relation("BirlesmeEvSahibi")
+  /// Bu diyarın konuk olduğu birleşme (en fazla bir tane: konuk kapanıyor).
+  konukBirlesmeleri    WorldMerge[] @relation("BirlesmeKonuk")
+}
+
+/// İki diyarın birleşmesi — ilan edildiği andan uygulandığı ana.
+///
+/// Kayıt olarak duruyor çünkü birleşme ÖNCE İLAN EDİLİYOR: oyuncu
+/// haritasının üç gün sonra değişeceğini biliyor. İlanı hesaplanabilir
+/// bir şey olarak tutmak (her istekte eşleri yeniden hesaplamak) demek,
+/// aynı oyuncuya her gün başka bir eş göstermek demekti.
+model WorldMerge {
+  id      String @id @default(cuid())
+  /// Kalan diyar. Haritası ve taht sahibi (birleşmede sıfırlanana kadar) burada.
+  hostId  String
+  /// Kapanan diyar. Lordları ev sahibine göçüyor.
+  guestId String
+
+  ilanAt      DateTime @default(now())
+  birlesmeAt  DateTime
+  uygulandiAt DateTime?
+
+  /// Uygulanınca yazılan özet: kaç lord göçtü, kaç bölge taşındı, kaç tanesi yeri dolu olduğu için düştü.
+  ozet Json?
+
+  host  World @relation("BirlesmeEvSahibi", fields: [hostId], references: [id], onDelete: Cascade)
+  guest World @relation("BirlesmeKonuk", fields: [guestId], references: [id], onDelete: Cascade)
+
+  @@index([birlesmeAt, uygulandiAt])
+  @@index([hostId])
+  @@index([guestId])
 }
 
 model Lord {

@@ -19,7 +19,7 @@ import {
   type UnitType,
 } from '@lordlar/shared';
 import { useQuery } from '@tanstack/react-query';
-import { Fragment, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import {
   api,
   type BattleDto,
@@ -28,7 +28,7 @@ import {
   type LordOzetiDto,
 } from '../api/client';
 import { BirimIkonu, IkonAltin, IkonDemir, IkonErzak, IkonKapali } from './Ikonlar';
-import { Buton, Fark, Kart, Rozet, SonucSatiri, formatSayi, nadirlikRengi } from './ui';
+import { Buton, Fark, Kart, Rozet, SonucSatiri, formatSayi, nadirlikRengi, sablonlu } from './ui';
 
 function toplam(a: Army | undefined): number {
   return UNIT_TYPES.reduce((t, u) => t + (a?.[u] ?? 0), 0);
@@ -351,28 +351,6 @@ function topla(a: Army, b: Army): Army {
     if (n > 0) t[k] = n;
   }
   return t;
-}
-
-/**
- * Tek şablon, içine vurgulu parçalar.
- *
- * Bu cümleler altı yedi JSX parçasına bölünmüştü ve her parça ayrı bir
- * çeviri satırıydı. Parça tek başına anlamsız, hatta yanıltıcı:
- * `Makas` bir birim adı sanılıp "Scissors" diye çevrilmişti — oysa
- * buradaki makas "makas açıldı" deyimindeki makas, yani ARADAKİ FARK.
- * Cümleyi bütün gören biri bu hatayı yapmaz; bölünmüş parçayı gören
- * yapar. `güce karşı` da aynı sebeple "against power" olmuş, İngilizce
- * cümlede sözcükler ters sıraya düşmüştü.
- *
- * `{0}`, `{1}` … `parcalar` dizisinden doluyor. Hangi parçanın kalın
- * yazılacağına çağıran karar veriyor; şablon yalnız sırayı taşıyor ve
- * o sıra başka dilde değişebiliyor.
- */
-function sablonlu(sablon: string, parcalar: ReactNode[]): ReactNode {
-  return sablon.split(/(\{\d+\})/).map((p, i) => {
-    const y = /^\{(\d+)\}$/.exec(p);
-    return y ? <Fragment key={i}>{parcalar[Number(y[1])]}</Fragment> : p;
-  });
 }
 
 /**

@@ -56,6 +56,32 @@ export async function dunyaRoutes(app: FastifyInstance): Promise<void> {
 
     const aktifSinir = new Date(Date.now() - AKTIF_GUN * 86_400_000);
 
+    const birlesmeKaydi = await prisma.worldMerge.findFirst({
+      where: {
+        uygulandiAt: null,
+        OR: [{ hostId: ben.worldId }, { guestId: ben.worldId }],
+      },
+      orderBy: { birlesmeAt: 'asc' },
+      select: {
+        hostId: true,
+        guestId: true,
+        birlesmeAt: true,
+        host: { select: { name: true } },
+        guest: { select: { name: true } },
+      },
+    });
+    const birlesme = birlesmeKaydi
+      ? {
+          guestId: birlesmeKaydi.guestId,
+          birlesmeAt: birlesmeKaydi.birlesmeAt,
+          // Oyuncuya KARŞI diyarın adı gösteriliyor, kendi diyarının değil.
+          karsiAd:
+            birlesmeKaydi.guestId === ben.worldId
+              ? birlesmeKaydi.host.name
+              : birlesmeKaydi.guest.name,
+        }
+      : null;
+
     const [dunya, lordSayisi, aktif, ustumde, taht, lider, sonSavaslar] = await Promise.all([
       prisma.world.findUniqueOrThrow({
         where: { id: ben.worldId },
@@ -108,6 +134,19 @@ export async function dunyaRoutes(app: FastifyInstance): Promise<void> {
       // çıkınca kopya sayı onunla birlikte büyümedi, diyar tanıtımı yeni
       // oyuncuya dünyayı yarısı kadar gösteriyordu. Kopya silindi.
       bolgeSayisi: WORLD_MAP.region_count,
+      /*
+       * İLAN EDİLMİŞ birleşme. Haritası bir sabah değişmiş oyuncu, oyunu
+       * bırakan oyuncudur; bu yüzden birleşme önce duyuruluyor ve duyuru
+       * dünya ekranında, yani "diyarım nasıl" sorusunun sorulduğu yerde
+       * duruyor.
+       */
+      birlesme: birlesme
+        ? {
+            karsiDiyar: birlesme.karsiAd,
+            konukMuyum: birlesme.guestId === ben.worldId,
+            birlesmeAt: birlesme.birlesmeAt.toISOString(),
+          }
+        : null,
       benimSiram: ustumde + 1,
       benimSohretim: ben.fame,
       taht: taht

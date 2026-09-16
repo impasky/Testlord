@@ -79,6 +79,12 @@ const OPERASYON = [
    * ("key gerekli.") testlere ve geliştiriciye çıkıyor.
    */
   'apps/api/src/routes/dev.ts',
+  /*
+   * Birleşme aracının konsol çıktısı. `dunya-temizle` ile aynı aile:
+   * yalnız komutu koşan geliştirici görüyor, oyuncu hiçbir koşulda
+   * görmüyor. Sekiz satır çeviri listesinde yer kaplıyordu.
+   */
+  'apps/api/src/diyar-birlestir.ts',
 ];
 
 function dosyalar(kok, uzantilar) {

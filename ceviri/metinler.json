@@ -151,7 +151,7 @@
     "tr": "— CC BY 3.0",
     "en": "— CC BY 3.0",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:290"
+      "apps/web/src/screens/Giris.tsx:305"
     ]
   },
   "td08a2005": {
@@ -223,7 +223,7 @@
     "tr": "· sana saldıran",
     "en": "· whoever attacks you",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:64"
+      "apps/web/src/components/DunyaSeridi.tsx:102"
     ]
   },
   "t5632acb5": {
@@ -247,7 +247,7 @@
     "tr": "'i bu hafta oynadı",
     "en": "played this week",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:39"
+      "apps/web/src/components/DunyaSeridi.tsx:77"
     ]
   },
   "t1b6bc363": {
@@ -533,7 +533,7 @@
     "tr": "{0} birliklerin {1} karşısında {2} vurdu.",
     "en": "Your {0} troops hit {2} against {1}.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:423"
+      "apps/web/src/components/SavasRaporu.tsx:401"
     ]
   },
   "t0460d827": {
@@ -541,7 +541,7 @@
     "tr": "{0} birliklerin {1} karşısında {2} yedi.",
     "en": "Your {0} troops took {2} against {1}.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:424"
+      "apps/web/src/components/SavasRaporu.tsx:402"
     ]
   },
   "t12853735": {
@@ -558,7 +558,7 @@
     "tr": "{0} bölgesine karşı saldır",
     "en": "Counterattack region {0}",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:601"
+      "apps/web/src/components/SavasRaporu.tsx:579"
     ]
   },
   "t46dd1320": {
@@ -639,6 +639,7 @@
     "tr": "{0} gün",
     "en": "{0} days",
     "nerede": [
+      "apps/web/src/components/DunyaSeridi.tsx:50",
       "apps/web/src/components/GunlukKart.tsx:88",
       "packages/shared/src/moderasyon.ts:139",
       "packages/shared/src/moderasyon.ts:183"
@@ -873,6 +874,22 @@
     "en": "{0} Ranking",
     "nerede": [
       "apps/web/src/screens/Siralama.tsx:207"
+    ]
+  },
+  "t1180d7c2": {
+    "grup": "arayuz",
+    "tr": "{0} sonra {1} diyarına taşınıyorsun. Lordun, ordun, araştırman ve binaların geliyor; bölgelerin ancak orada boşsa geliyor, gelmeyenin bir günlük geliri kasana yazılıyor.",
+    "en": "In {0} you move to the realm of {1}. Your lord, army, research and buildings come with you; your regions only come along if they are free there, and for any that do not you are credited a day of their income.",
+    "nerede": [
+      "apps/web/src/components/DunyaSeridi.tsx:62"
+    ]
+  },
+  "t32e77860": {
+    "grup": "arayuz",
+    "tr": "{0} sonra {1} diyarının lordları buraya geliyor. Taht sahipsiz kalacak — ilk alan Diyarın Lordu olur.",
+    "en": "In {0} the lords of {1} arrive here. The throne will be left unowned — whoever takes it first becomes Lord of the Realm.",
+    "nerede": [
+      "apps/web/src/components/DunyaSeridi.tsx:63"
     ]
   },
   "t705bb4d6": {
@@ -1582,7 +1599,7 @@
     "tr": "av sensin",
     "en": "you are the prey",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:64"
+      "apps/web/src/components/DunyaSeridi.tsx:102"
     ]
   },
   "t48913574": {
@@ -1687,7 +1704,7 @@
     "tr": "Bağlantı kurulamadı.",
     "en": "Connection failed.",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:139"
+      "apps/web/src/screens/Giris.tsx:154"
     ]
   },
   "t71fcbee7": {
@@ -1826,7 +1843,7 @@
     "tr": "Bekle...",
     "en": "Wait...",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:238"
+      "apps/web/src/screens/Giris.tsx:253"
     ]
   },
   "t4d534b42": {
@@ -2046,7 +2063,7 @@
     "tr": "BÖLGE EL DEĞİŞTİRDİ",
     "en": "REGION CHANGED HANDS",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:502"
+      "apps/web/src/components/SavasRaporu.tsx:480"
     ]
   },
   "t8183ca19": {
@@ -2070,7 +2087,7 @@
     "tr": "Bölge kıt, rakip çok. Tahtı hak eden alır.",
     "en": "Regions are scarce, rivals are many. Whoever deserves the throne takes it.",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:171"
+      "apps/web/src/screens/Giris.tsx:186"
     ]
   },
   "t815f7c76": {
@@ -2170,7 +2187,7 @@
     "tr": "bölgesini aldı",
     "en": "took the region",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:109"
+      "apps/web/src/components/DunyaSeridi.tsx:148"
     ]
   },
   "t642e404b": {
@@ -2178,7 +2195,7 @@
     "tr": "bölgesini yağmaladı",
     "en": "looted the region",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:113"
+      "apps/web/src/components/DunyaSeridi.tsx:152"
     ]
   },
   "t918b4e4d": {
@@ -2752,7 +2769,7 @@
     "tr": "Diyara Gir",
     "en": "Enter Realm",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:238"
+      "apps/web/src/screens/Giris.tsx:253"
     ]
   },
   "t1c2cafbf": {
@@ -2768,7 +2785,7 @@
     "tr": "Diyarda neler oluyor",
     "en": "What's happening in the realm",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:93"
+      "apps/web/src/components/DunyaSeridi.tsx:132"
     ]
   },
   "t1ffa6e79": {
@@ -2776,7 +2793,7 @@
     "tr": "Diyarda seni bu adla tanıyacaklar.",
     "en": "You will be known by this name in the realm.",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:196"
+      "apps/web/src/screens/Giris.tsx:211"
     ]
   },
   "td4a63263": {
@@ -3060,7 +3077,7 @@
     "tr": "E-posta",
     "en": "Email",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:210"
+      "apps/web/src/screens/Giris.tsx:225"
     ]
   },
   "tee39ae8e": {
@@ -3183,7 +3200,7 @@
     "tr": "En az 8 karakter.",
     "en": "At least 8 characters.",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:220"
+      "apps/web/src/screens/Giris.tsx:235"
     ]
   },
   "t24f71978": {
@@ -3379,7 +3396,7 @@
     "tr": "Garnizon",
     "en": "Garrison",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:544",
+      "apps/web/src/components/SavasRaporu.tsx:522",
       "apps/web/src/screens/Harita.tsx:1167",
       "apps/web/src/screens/Harita.tsx:1280"
     ]
@@ -3529,7 +3546,7 @@
     "tr": "Giriş",
     "en": "Login",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:189"
+      "apps/web/src/screens/Giris.tsx:204"
     ]
   },
   "t010f9302": {
@@ -3546,7 +3563,7 @@
     "tr": "Giriş Yap",
     "en": "Sign In",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:238"
+      "apps/web/src/screens/Giris.tsx:253"
     ]
   },
   "t542abc6b": {
@@ -3599,7 +3616,7 @@
       "apps/web/src/screens/Akin.tsx:653",
       "apps/web/src/screens/Demirhane.tsx:519",
       "apps/web/src/screens/Generaller.tsx:126",
-      "apps/web/src/screens/Giris.tsx:263",
+      "apps/web/src/screens/Giris.tsx:278",
       "apps/web/src/screens/Harita.tsx:1133",
       "apps/web/src/screens/Hesap.tsx:203",
       "apps/web/src/screens/Kisla.tsx:285",
@@ -3645,7 +3662,7 @@
     "tr": "Gücün savunanın {0} katıydı.",
     "en": "Your power was {0}× the defender's.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:392"
+      "apps/web/src/components/SavasRaporu.tsx:370"
     ]
   },
   "t269314eb": {
@@ -3812,7 +3829,7 @@
     "tr": "Hedefin tahkimatı savunmaya +%{0} kattı.",
     "en": "The target's fortification added +{0}% to defense.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:419"
+      "apps/web/src/components/SavasRaporu.tsx:397"
     ]
   },
   "t8910d1b9": {
@@ -3927,7 +3944,7 @@
     "en": "DELETE MY ACCOUNT",
     "nerede": [
       "apps/api/src/routes/me.ts:63",
-      "apps/web/src/api/client.ts:939",
+      "apps/web/src/api/client.ts:946",
       "apps/web/src/screens/Hesap.tsx:239"
     ]
   },
@@ -4026,7 +4043,7 @@
     "tr": "İkonlar",
     "en": "Icons",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:281"
+      "apps/web/src/screens/Giris.tsx:296"
     ]
   },
   "tb14deebf": {
@@ -4511,8 +4528,8 @@
       "apps/web/src/components/BildirimKarti.tsx:129",
       "apps/web/src/components/KapiPaneli.tsx:89",
       "apps/web/src/components/Omurga.tsx:363",
-      "apps/web/src/components/SavasRaporu.tsx:468",
-      "apps/web/src/components/SavasRaporu.tsx:491",
+      "apps/web/src/components/SavasRaporu.tsx:446",
+      "apps/web/src/components/SavasRaporu.tsx:469",
       "apps/web/src/components/SavunmaDuzeni.tsx:69",
       "apps/web/src/components/SikayetSayfasi.tsx:66",
       "apps/web/src/screens/Demirhane.tsx:125",
@@ -4541,7 +4558,7 @@
     "tr": "Kara Yusuf",
     "en": "Kara Yusuf",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:200"
+      "apps/web/src/screens/Giris.tsx:215"
     ]
   },
   "t07d6d627": {
@@ -4565,7 +4582,7 @@
     "tr": "Karşı taraf {0} kat güçlüydü.",
     "en": "The opposing side was {0}× stronger.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:393"
+      "apps/web/src/components/SavasRaporu.tsx:371"
     ]
   },
   "tf40b4b94": {
@@ -4573,7 +4590,7 @@
     "tr": "Karşı taraf {0}. turda en çok öne geçti: {1} güce karşı {2}.",
     "en": "The opposing side pulled ahead the most in round {0}: {1} power against {2}.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:411"
+      "apps/web/src/components/SavasRaporu.tsx:389"
     ]
   },
   "tdd047557": {
@@ -5102,7 +5119,7 @@
     "tr": "lider avı",
     "en": "leader hunt",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:72"
+      "apps/web/src/components/DunyaSeridi.tsx:110"
     ]
   },
   "t5a595361": {
@@ -5154,7 +5171,7 @@
     "tr": "Lord adı",
     "en": "Lord name",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:196"
+      "apps/web/src/screens/Giris.tsx:211"
     ]
   },
   "t168134fc": {
@@ -5179,7 +5196,7 @@
     "tr": "lorddan",
     "en": "from lord",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:38"
+      "apps/web/src/components/DunyaSeridi.tsx:76"
     ]
   },
   "tf479120b": {
@@ -5189,7 +5206,7 @@
     "nerede": [
       "apps/api/src/routes/push.ts:82",
       "apps/web/src/components/MobilKabuk.tsx:311",
-      "apps/web/src/screens/Giris.tsx:169",
+      "apps/web/src/screens/Giris.tsx:184",
       "apps/web/src/screens/ParolaSifirla.tsx:31"
     ]
   },
@@ -5249,7 +5266,7 @@
     "tr": "Makas {0}. turda en çok açıldı: {1} güce karşı {2}.",
     "en": "The gap widened the most in round {0}: {1} power against {2}.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:406"
+      "apps/web/src/components/SavasRaporu.tsx:384"
     ]
   },
   "t5c2dce44": {
@@ -5283,7 +5300,7 @@
     "tr": "Mancınıklar tahkimata karşı iki katı iş yaptı.",
     "en": "Catapults did double work against the fortification.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:428"
+      "apps/web/src/components/SavasRaporu.tsx:406"
     ]
   },
   "tf7042dec": {
@@ -5798,7 +5815,7 @@
     "tr": "Önce e-posta adresini yaz.",
     "en": "Write your email address first.",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:266"
+      "apps/web/src/screens/Giris.tsx:281"
     ]
   },
   "t2037d289": {
@@ -5822,7 +5839,7 @@
     "tr": "önünde püskürtüldü",
     "en": "repelled in front of",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:117"
+      "apps/web/src/components/DunyaSeridi.tsx:156"
     ]
   },
   "tc96d4525": {
@@ -5878,7 +5895,7 @@
     "tr": "Parola",
     "en": "Password",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:220"
+      "apps/web/src/screens/Giris.tsx:235"
     ]
   },
   "tb796121d": {
@@ -5918,7 +5935,7 @@
     "tr": "Parolamı unuttum",
     "en": "Forgot password",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:247"
+      "apps/web/src/screens/Giris.tsx:262"
     ]
   },
   "t100b4ff0": {
@@ -5999,7 +6016,7 @@
     "tr": "Rapor açılamadı.",
     "en": "Report could not be opened.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:510"
+      "apps/web/src/components/SavasRaporu.tsx:488"
     ]
   },
   "t0808f810": {
@@ -6106,7 +6123,7 @@
     "tr": "Saldıran",
     "en": "Attacker",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:554"
+      "apps/web/src/components/SavasRaporu.tsx:532"
     ]
   },
   "t87d8df09": {
@@ -6114,8 +6131,8 @@
     "tr": "SALDIRAN",
     "en": "ATTACKER",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:501",
-      "apps/web/src/components/SavasRaporu.tsx:535"
+      "apps/web/src/components/SavasRaporu.tsx:479",
+      "apps/web/src/components/SavasRaporu.tsx:513"
     ]
   },
   "t3424fe05": {
@@ -6229,7 +6246,7 @@
     "tr": "Savaş kazanıldı ama güç payı %{0} eşiğine ulaşmadı — bölge el değiştirmedi, yalnızca yağma alındı.",
     "en": "The battle was won but the power share did not reach the {0}% threshold — the region did not change hands, only loot was taken.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:396"
+      "apps/web/src/components/SavasRaporu.tsx:374"
     ]
   },
   "tbbc85c89": {
@@ -6253,7 +6270,7 @@
     "tr": "Savaş Raporu",
     "en": "Battle Report",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:478"
+      "apps/web/src/components/SavasRaporu.tsx:456"
     ]
   },
   "tbfc25419": {
@@ -6293,7 +6310,7 @@
     "tr": "Savunan",
     "en": "Defender",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:559"
+      "apps/web/src/components/SavasRaporu.tsx:537"
     ]
   },
   "tf48cad35": {
@@ -6301,8 +6318,8 @@
     "tr": "SAVUNAN",
     "en": "DEFENDER",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:501",
-      "apps/web/src/components/SavasRaporu.tsx:543"
+      "apps/web/src/components/SavasRaporu.tsx:479",
+      "apps/web/src/components/SavasRaporu.tsx:521"
     ]
   },
   "td8820cb4": {
@@ -6520,7 +6537,7 @@
     "tr": "Sıfırlama bağlantısı gönder",
     "en": "Send reset link",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:263"
+      "apps/web/src/screens/Giris.tsx:278"
     ]
   },
   "tee25d0bd": {
@@ -6997,7 +7014,7 @@
     "tr": "Tahkimat olmadığı için mancınıklar canlı orduya {0} vurdu — o kaynak boşa gitti.",
     "en": "With no fortification the catapults hit the living army at {0} — that resource went to waste.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:431"
+      "apps/web/src/components/SavasRaporu.tsx:409"
     ]
   },
   "te9b9ec08": {
@@ -7021,7 +7038,7 @@
     "tr": "Tahkimatın savunmaya +%{0} kattı.",
     "en": "Your fortification added +{0}% to defense.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:418"
+      "apps/web/src/components/SavasRaporu.tsx:396"
     ]
   },
   "tebef06ac": {
@@ -7090,7 +7107,7 @@
     "tr": "taht sahipsiz",
     "en": "throne is unowned",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:49"
+      "apps/web/src/components/DunyaSeridi.tsx:87"
     ]
   },
   "tf4ea0a0b": {
@@ -7260,7 +7277,7 @@
     "tr": "Toplam{0}{1}{2}birim öldü · tohum {3}",
     "en": "Total{0}{1}{2}units died · seed {3}",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:604"
+      "apps/web/src/components/SavasRaporu.tsx:582"
     ]
   },
   "tbd670cd2": {
@@ -7300,7 +7317,7 @@
     "tr": "Tur Tur Güç · {0} tur",
     "en": "Power Round by Round · {0} rounds",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:527"
+      "apps/web/src/components/SavasRaporu.tsx:505"
     ]
   },
   "t0468e99c": {
@@ -7398,7 +7415,7 @@
     "tr": "Üstteki çubuk saldıran, alttaki savunan.",
     "en": "The top bar is the attacker, the bottom is the defender.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:530"
+      "apps/web/src/components/SavasRaporu.tsx:508"
     ]
   },
   "t911d6f24": {
@@ -7472,7 +7489,7 @@
     "tr": "yağma",
     "en": "loot",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:76",
+      "apps/web/src/components/DunyaSeridi.tsx:114",
       "packages/shared/src/etki-adi.ts:31"
     ]
   },
@@ -7481,7 +7498,7 @@
     "tr": "Yağma",
     "en": "Loot",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:564"
+      "apps/web/src/components/SavasRaporu.tsx:542"
     ]
   },
   "tea3bde58": {
@@ -7497,7 +7514,7 @@
     "tr": "yağma alır",
     "en": "takes loot",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:68"
+      "apps/web/src/components/DunyaSeridi.tsx:106"
     ]
   },
   "ta24bd532": {
@@ -7553,7 +7570,7 @@
     "tr": "yarım",
     "en": "half",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:432"
+      "apps/web/src/components/SavasRaporu.tsx:410"
     ]
   },
   "t786f173c": {
@@ -7625,7 +7642,7 @@
     "tr": "Yeni Lord",
     "en": "New Lord",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:189"
+      "apps/web/src/screens/Giris.tsx:204"
     ]
   },
   "t62db8630": {
@@ -7641,7 +7658,7 @@
     "tr": "Yeni lordlar 72 saat saldırıya kapalıdır.",
     "en": "New lords are immune to attacks for 72 hours.",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:276"
+      "apps/web/src/screens/Giris.tsx:291"
     ]
   },
   "t6187848c": {
@@ -7699,7 +7716,7 @@
     "en": "DEFEAT",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:75",
-      "apps/web/src/components/SavasRaporu.tsx:499",
+      "apps/web/src/components/SavasRaporu.tsx:477",
       "apps/web/src/screens/Harita.tsx:1338"
     ]
   },
@@ -7766,7 +7783,7 @@
     "tr": "Yukarıdaki e-posta adresine sıfırlama bağlantısı gönderelim.",
     "en": "Let us send a reset link to the email address above.",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:254"
+      "apps/web/src/screens/Giris.tsx:269"
     ]
   },
   "tfab69aea": {
@@ -7792,7 +7809,7 @@
     "tr": "yükleniyor…",
     "en": "loading…",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:488"
+      "apps/web/src/components/SavasRaporu.tsx:466"
     ]
   },
   "tb65d2ef7": {
@@ -7859,7 +7876,7 @@
     "en": "VICTORY",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:75",
-      "apps/web/src/components/SavasRaporu.tsx:499",
+      "apps/web/src/components/SavasRaporu.tsx:477",
       "apps/web/src/screens/Harita.tsx:1338"
     ]
   },
@@ -10227,6 +10244,14 @@
       "apps/api/src/services/queue.ts:239"
     ]
   },
+  "t4f11c6d4": {
+    "grup": "sunucu",
+    "tr": "{0} {1} ile birleşiyor. Lordun, ordun ve araştırman taşınıyor; bölgelerin ancak orada boşsa geliyor.",
+    "en": "{0} is merging into {1}. Your lord, army and research move with you; your regions only come along if they are free there.",
+    "nerede": [
+      "apps/api/src/services/birlesme.ts:117"
+    ]
+  },
   "t81376c92": {
     "grup": "sunucu",
     "tr": "{0} altın, {1} demir, {2} erzak.",
@@ -10361,6 +10386,14 @@
     "en": "{0} Realm",
     "nerede": [
       "apps/api/src/services/world.ts:27"
+    ]
+  },
+  "t412bd6f8": {
+    "grup": "sunucu",
+    "tr": "{0} diyarının lordları {1} diyarına geliyor. Taht sahipsiz kalacak.",
+    "en": "The lords of {0} are coming to {1}. The throne will be left unowned.",
+    "nerede": [
+      "apps/api/src/services/birlesme.ts:118"
     ]
   },
   "tfda5002c": {
@@ -10860,7 +10893,7 @@
     "tr": "bilinmeyen bölge",
     "en": "unknown region",
     "nerede": [
-      "apps/api/src/routes/dunya.ts:139"
+      "apps/api/src/routes/dunya.ts:178"
     ]
   },
   "tc9bf8e6b": {
@@ -11018,6 +11051,14 @@
     "en": "This application has already been decided.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1099"
+    ]
+  },
+  "t79552d97": {
+    "grup": "sunucu",
+    "tr": "Bu birleşme zaten uygulanmış.",
+    "en": "This merge has already been applied.",
+    "nerede": [
+      "apps/api/src/services/birlesme.ts:220"
     ]
   },
   "t285dc203": {
@@ -11253,6 +11294,14 @@
     "en": "You did not specify points to distribute.",
     "nerede": [
       "apps/api/src/routes/me.ts:195"
+    ]
+  },
+  "t6d6945d3": {
+    "grup": "sunucu",
+    "tr": "Diyarlar birleşti: {0} lord geldi. Taht sahipsiz — ilk alan Diyarın Lordu olur.",
+    "en": "The realms have merged: {0} lords arrived. The throne is unowned — whoever takes it first becomes Lord of the Realm.",
+    "nerede": [
+      "apps/api/src/services/birlesme.ts:418"
     ]
   },
   "tde046dbf": {
