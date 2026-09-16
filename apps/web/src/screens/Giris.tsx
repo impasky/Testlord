@@ -1,8 +1,75 @@
-import { useState } from 'react';
-import { ApiError, api, setToken } from '../api/client';
+import { useEffect, useState } from 'react';
+import { ApiError, api, setToken, type DiyarSecimiDto } from '../api/client';
 import { IkonNavMalikane } from '../components/Ikonlar';
-import { Alan, Buton, Input, Kart } from '../components/ui';
+import { Alan, Buton, Input, Kart, formatSayi } from '../components/ui';
 import { TamZemin } from '../components/Zemin';
+
+/**
+ * Diyar (sunucu) seçimi.
+ *
+ * Eskiden yoktu: kayıt olan oyuncu en eski açık diyara konuyordu ve
+ * arkadaşıyla aynı haritada oynamak isteyen iki kişi bunu yapamıyordu.
+ * Bir strateji oyununda insanların oyuna girme sebeplerinden biri bu.
+ *
+ * TEK diyar varsa hiç görünmüyor. Seçeneği olmayan bir seçim, ekranda
+ * yalnızca gürültü ve yeni oyuncuya "burada bir karar vermem gerek" diye
+ * okunuyor.
+ *
+ * Satırda iki sayı var ve ikisi ayrı soruya cevap veriyor: KAYITLI lord
+ * diyarın ne kadar dolduğunu, AKTİF lord orada gerçekten oyun olup
+ * olmadığını söylüyor. Yüz kayıtlı ama üç aktif bir diyar, on aktif olandan
+ * daha ıssızdır.
+ */
+function DiyarSecimi({
+  liste,
+  secili,
+  onSec,
+}: {
+  liste: DiyarSecimiDto;
+  secili: string | null;
+  onSec: (id: string) => void;
+}) {
+  if (liste.diyarlar.length < 2) return null;
+  return (
+    <div>
+      <span className="baslik mb-1.5 block text-[11px] text-solgun">Diyar</span>
+      {/* Kaydırmalı: diyar sayısı zamanla artıyor ve liste kayıt
+          ekranını süpüremez. Dört satır görünüyor, gerisi kaydırmada. */}
+      <div role="radiogroup" aria-label="Diyar" className="max-h-56 space-y-1.5 overflow-y-auto">
+        {liste.diyarlar.map((d) => {
+          const bu = secili === d.id;
+          return (
+            <button
+              key={d.id}
+              type="button"
+              role="radio"
+              aria-checked={bu}
+              onClick={() => onSec(d.id)}
+              className={`bas block w-full rounded-xl border px-3 py-2.5 text-left ${
+                bu ? 'border-altin bg-altin/12' : 'border-kenar bg-yuzey'
+              }`}
+            >
+              <span className="flex items-baseline justify-between gap-2">
+                <span className={`baslik text-[13px] ${bu ? 'text-altin' : 'text-parsomen'}`}>
+                  {d.ad}
+                </span>
+                <span className="tabular shrink-0 text-[11px] text-solgun">{`${formatSayi(d.lordSayisi)}/${formatSayi(d.kapasite)} lord`}</span>
+              </span>
+              <span className="mt-0.5 block text-[11px] text-sonuk">
+                {d.aktifLord > 0
+                  ? `${formatSayi(d.aktifLord)} lord son ${liste.aktifGun} günde oynadı`
+                  : 'Henüz kimse oynamadı — yeni diyar'}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+      <span className="mt-1 block text-[11px] text-sonuk">
+        Arkadaşınla oynayacaksan onunla aynı diyarı seç. Diyarlar birbirinden bağımsız.
+      </span>
+    </div>
+  );
+}
 
 export function Giris({ onGiris }: { onGiris: () => void }) {
   const [mod, setMod] = useState<'giris' | 'kayit'>('kayit');
@@ -30,6 +97,47 @@ export function Giris({ onGiris }: { onGiris: () => void }) {
   const [lordAdi, setLordAdi] = useState('');
   const [hata, setHata] = useState<string | null>(null);
   const [bekliyor, setBekliyor] = useState(false);
+  const [diyarlar, setDiyarlar] = useState<DiyarSecimiDto | null>(null);
+  const [diyar, setDiyar] = useState<string | null>(null);
+
+  /*
+   * Liste kayıt kipinde çekiliyor, giriş kipinde değil: mevcut oyuncunun
+   * diyarı zaten belli ve gereksiz bir istek kayıt ekranını yavaşlatıyor.
+   *
+   * İstek başarısız olursa hiçbir şey gösterilmiyor ve kayıt eskisi gibi
+   * çalışıyor — seçim bir KOLAYLIK, kaydın ön şartı değil. Sunucu listeyi
+   * veremediği için kimsenin oyuna girememesi kabul edilemezdi.
+   */
+  useEffect(() => {
+    if (mod !== 'kayit') return;
+    let iptal = false;
+    /*
+     * Kısa bir gecikme, sonra istek.
+     *
+     * Ekran bir an için açılıp kapanabiliyor: elinde jeton olan oyuncunun
+     * açılışında, ya da sayfa hemen yenilendiğinde. İsteği montajda atan
+     * ilk hâl bu durumlarda yarıda kalan bir istek bırakıyordu — tarayıcı
+     * için zararsız ama "hiçbir istek düşmeyecek" kuralını bozuyor ve o
+     * kural gerçek hataları yakalıyor.
+     *
+     * Gecikme oyuncuya görünmüyor: kayıt formunu dolduran kimse ilk yarım
+     * saniyede diyar listesine bakmıyor.
+     */
+    const zamanlayici = window.setTimeout(() => {
+      void api
+        .diyarlar()
+        .then((d) => {
+          if (iptal) return;
+          setDiyarlar(d);
+          setDiyar((onceki) => onceki ?? d.onerilen);
+        })
+        .catch(() => {});
+    }, 400);
+    return () => {
+      iptal = true;
+      window.clearTimeout(zamanlayici);
+    };
+  }, [mod]);
 
   async function gonder(e: React.FormEvent) {
     e.preventDefault();
@@ -38,12 +146,27 @@ export function Giris({ onGiris }: { onGiris: () => void }) {
     try {
       const s =
         mod === 'kayit'
-          ? await api.register(email, parola, lordAdi)
+          ? await api.register(email, parola, lordAdi, diyar ?? undefined)
           : await api.login(email, parola);
       setToken(s.token);
       onGiris();
     } catch (err) {
       setHata(err instanceof ApiError ? err.message : 'Bağlantı kurulamadı.');
+      /*
+       * Seçilen diyar aradaki sürede dolmuş olabilir. Listeyi tazelemek,
+       * oyuncunun aynı dolu satıra ikinci kez basmasını engelliyor —
+       * hata mesajı "başka bir diyar seç" diyorsa ekranda güncel
+       * seçeneklerin durması gerekiyor.
+       */
+      if (err instanceof ApiError && err.code === 'DIYAR_DOLU') {
+        void api
+          .diyarlar()
+          .then((d) => {
+            setDiyarlar(d);
+            setDiyar(d.onerilen);
+          })
+          .catch(() => {});
+      }
     } finally {
       setBekliyor(false);
     }
@@ -95,6 +218,9 @@ export function Giris({ onGiris }: { onGiris: () => void }) {
                   maxLength={20}
                 />
               </Alan>
+            )}
+            {mod === 'kayit' && diyarlar && (
+              <DiyarSecimi liste={diyarlar} secili={diyar} onSec={setDiyar} />
             )}
             <Alan etiket="E-posta">
               <Input

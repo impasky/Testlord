@@ -154,7 +154,7 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
   " ve "
       apps/web/src/components/DizilimSemasi.tsx:69
   "— savaşa girdikçe büyür."
-      apps/web/src/screens/Generaller.tsx:100
+      apps/web/src/screens/Generaller.tsx:98
   ", boş"
       apps/web/src/components/DizilimIzgarasi.tsx:324
   ", sana"

@@ -14,11 +14,39 @@ import type { FastifyInstance } from 'fastify';
 import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { findLordByUser } from '../services/lord.js';
-
-/** "Aktif" sayılmak için son bu kadar gün içinde girmiş olmak gerekir. */
-const AKTIF_GUN = 7;
+import { AKTIF_GUN, acikDiyarlar } from '../services/world.js';
 
 export async function dunyaRoutes(app: FastifyInstance): Promise<void> {
+  /*
+   * Katılınabilir diyarların listesi — KİMLİK GEREKTİRMEZ.
+   *
+   * Kayıt ekranı bunu okuyor. Eskiden oyuncu hangi diyara düştüğünü
+   * seçemiyordu: sistem onu en eski açık diyara koyuyordu ve arkadaşıyla
+   * birlikte oynamak isteyen iki kişi bunu yapamıyordu. Bir strateji
+   * oyununda insanların oyuna girme sebeplerinden biri bu.
+   *
+   * Sızdırdığı tek şey diyar adları ve kaç kişi oldukları — kayıt
+   * ekranında zaten gösterilecek olan bilgi. Hız sınırı IP'ye düşüyor
+   * (bkz. index.ts: token yoksa anahtar `ip:`).
+   */
+  app.get('/diyarlar', async () => {
+    const diyarlar = await acikDiyarlar();
+    return {
+      // Öneri, seçim yapılmazsa kaydın gideceği yerin AYNISI: ikisi de
+      // `acikDiyarlar()` sırasının başını alıyor. Ayrı bir kural yazmak,
+      // "önerilen" ile "varsayılan"ın sessizce ayrılması demekti.
+      onerilen: diyarlar[0]?.id ?? null,
+      aktifGun: AKTIF_GUN,
+      diyarlar: diyarlar.map((d) => ({
+        id: d.id,
+        ad: d.ad,
+        lordSayisi: d.lordSayisi,
+        kapasite: d.kapasite,
+        aktifLord: d.aktifLord,
+      })),
+    };
+  });
+
   app.get('/dunya', { preHandler: requireAuth }, async (req) => {
     const lordId = await findLordByUser(req.user.userId);
     const ben = await prisma.lord.findUniqueOrThrow({

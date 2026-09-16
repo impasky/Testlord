@@ -159,3 +159,58 @@ export function kapida(page, secici) {
   // CSS ayrıştırıcısını kırıyor (text= bir Playwright motoru, CSS değil).
   return page.locator('[role="dialog"]').locator(secici);
 }
+
+/**
+ * Haritada bir bölgeye dokunur — OYUNCUNUN dokunabileceği bir bölgeye.
+ *
+ * Sığdırılmış haritada her işaretçi tıklanabilir değil ve bu bir hata
+ * değil: 121 bölge telefon genişliğine sığınca merkezleri ~26 piksel
+ * arayla düşüyor, dokunma hedefi ise 44 piksel olmak zorunda
+ * (erişilebilirlik alt sınırı, `gorsel-denetim.mjs` ölçüyor). Yarıçap 22,
+ * aralığın yarısından büyük; komşu daireler birbirinin merkezini örtüyor.
+ * Ölçüler 61 bölgeye göre seçilmişti, harita 121'e çıkınca aralık yarıya
+ * indi. Örtülene ulaşmanın yolu yakınlaştırmak — oyuncu da bunu yapıyor.
+ *
+ * Testler bunu bilmiyordu: `.first()` ile eşleşen ilk işaretçiye basıp,
+ * o işaretçi başlığın ya da bir komşusunun altında kaldığında otuz saniye
+ * bekleyip kalıyorlardı. Hangi işaretçinin örtüldüğü haritanın nereye
+ * ortalandığına, o da oyuncunun kamp yerine bağlı — yani kırılma, testin
+ * ölçtüğü şeyle hiç ilgisi olmayan bir sebeple ve rastgele geliyordu.
+ *
+ * Bu yardımcı eşleşenler arasından GERÇEKTEN dokunulabilir olanı seçiyor:
+ * merkezine bakınca tarayıcı o düğmeyi görüyor mu. Zorlamalı tıklama
+ * değil; zorlamak, oyuncunun yapamayacağı bir şeyi ölçmek olurdu.
+ *
+ * @returns dokunulan düğümün `data-bolge` değeri, hiçbiri uygun değilse null
+ */
+export async function bolgeyeDokun(page, secici) {
+  const sigdir = page.getByRole('button', { name: 'Haritayı sığdır' });
+  if (await sigdir.count()) {
+    await sigdir.click();
+    await page.waitForTimeout(500);
+  }
+  const aday = await page.locator(secici).evaluateAll((dugumler) => {
+    for (const d of dugumler) {
+      const r = d.getBoundingClientRect();
+      if (r.width === 0) continue;
+      const x = r.left + r.width / 2;
+      const y = r.top + r.height / 2;
+      const ust = document.elementFromPoint(x, y);
+      if (ust && (ust === d || d.contains(ust))) return { id: d.getAttribute('data-bolge'), x, y };
+    }
+    return null;
+  });
+  if (!aday) return null;
+  /*
+   * NOKTAYA dokunuluyor, düğüme değil.
+   *
+   * `locator.click()` önce "görünür alana kaydır" diyor ve o kaydırma
+   * işaretçiyi sabit başlığın altına sokabiliyor: az önce dokunulabilir
+   * olan nokta kaydırmadan sonra kapanıyor, tıklama otuz saniye deneyip
+   * kalıyor. Oyuncu haritayı kaydırmıyor, gördüğü yere basıyor — fare de
+   * tam olarak bunu yapıyor. Zorlama değil: o noktanın üstünde gerçekten
+   * bu düğüm var, yukarıda doğrulandı.
+   */
+  await page.mouse.click(aday.x, aday.y);
+  return aday.id;
+}

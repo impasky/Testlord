@@ -46,7 +46,10 @@ model PasswordReset {
 
 model World {
   id         String     @id @default(cuid())
-  name       String
+  /// Diyarın KİMLİĞİ: kayıt ekranında oyuncu arkadaşının diyarını
+  /// bundan buluyor. İki diyar aynı adı taşırsa seçim anlamsızlaşır,
+  /// o yüzden kısıt veritabanında.
+  name       String     @unique
   playerCap  Int        @default(120)
   status     String     @default("open") // open | full | closed
   openedAt   DateTime   @default(now())

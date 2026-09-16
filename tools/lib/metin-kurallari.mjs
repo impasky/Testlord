@@ -373,3 +373,40 @@ export function kapsayanNitelik(node) {
   }
   return null;
 }
+
+/**
+ * Bu düğümdeki metin çeviriye girer mi — TEK KARAR.
+ *
+ * `metin-cikar.mjs` ile `vite-ceviri.mjs` aynı soruyu soruyor: biri
+ * listeyi çıkarıyor, öteki `t()` ile sarmalıyor. Kurallar bu dosyada
+ * ortaktı ama KARAR iki yerde ayrı yazılmıştı — ve ikisi de aynı satırı
+ * yanlış yazmıştı, o yüzden birbirleriyle tutarlı görünüp birlikte
+ * yanılıyorlardı:
+ *
+ *   `{0}/{1} lord` -> yer tutucular çıkınca `/ lord` -> "yol" sanılıp
+ *   eleniyordu. Kaynakta yol yok; eğik çizgi iki sayının arasındaki
+ *   ayraç. JSX gövdesindeki her şey tanımı gereği ekrana çiziliyor ve
+ *   `metinKirintisi`in `jsx` bayrağı tam bunun için var; ikisi de
+ *   bayrağı geçirmiyordu.
+ *
+ * On dört sayaç böyle kaçtı: "12/90 komuta", "3/9 adım", "5/12 üye",
+ * "31. sıradasın". Hepsi ekranın en görünür yerlerinde ve oyun
+ * İngilizceyken Türkçe kalıyorlardı.
+ *
+ * Karar artık burada. İki araç da bunu çağırıyor; biri değişince öteki
+ * de değişiyor.
+ */
+export function metinKabul(node, metin) {
+  if (atlanirMi(node)) return false;
+  /*
+   * Yer tutucular YALNIZ şablonda söküllüyor: `{0} T{1}` içinde
+   * çevrilecek bir şey var mı diye bakarken `{0}` gürültü.
+   *
+   * Düz dizgede sökmek ZARARLI, çünkü kırpma da beraberinde geliyor ve
+   * kırpma cevabı değiştiriyor: `' birim'` boşluğu yüzünden metin
+   * sayılıyor, `'birim'` ise küçük harfli tek sözcük olduğu için
+   * anahtar sanılıp eleniyor. Baştaki boşluk o metnin parçası.
+   */
+  const ic = ts.isTemplateExpression(node) ? metin.replace(/\{\d+\}/g, '').trim() : metin;
+  return kesinMetin(node) ? metinKirintisi(ic, true) : metinMi(ic);
+}

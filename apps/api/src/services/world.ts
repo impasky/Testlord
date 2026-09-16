@@ -27,18 +27,52 @@ function dunyaAdi(sira: number): string {
   return `${ROMEN[sira] ?? `${sira + 1}.`} Diyar`;
 }
 
-/** Yeni bir dünya açar ve kanonik haritanın bölgelerini yazar. */
+/**
+ * BOŞ sıra numarası — kullanılmayan en küçüğü.
+ *
+ * Eskiden sıra `world.count()` idi ve bu, sayının tekrar etmesi demekti:
+ * bir diyar silinince sayım geriliyor ve bir sonraki diyar var olan bir
+ * adı alıyordu. Geliştirme veritabanında 23 tane "168. Diyar" böyle
+ * birikti. Kimse fark etmemişti çünkü adlar hiçbir yerde yan yana
+ * gelmiyordu — ta ki kayıt ekranına diyar seçimi gelene kadar. Orada ad
+ * diyarın KİMLİĞİ ve iki satırın aynı adı taşıması özelliği bozar.
+ */
+async function bosSira(client: Tx): Promise<number> {
+  const adlar = new Set(
+    (await client.world.findMany({ select: { name: true } })).map((w) => w.name),
+  );
+  for (let i = 0; ; i++) if (!adlar.has(dunyaAdi(i))) return i;
+}
+
+/**
+ * Yeni bir dünya açar ve kanonik haritanın bölgelerini yazar.
+ *
+ * Ad benzersiz (bkz. şema). İki kayıt aynı anda gelirse ikisi de aynı boş
+ * sırayı bulabiliyor ve biri kısıta çarpıyor — o yarışı kod değil ancak
+ * veritabanı kapatabilir. Çarpan taraf sırayı yeniden okuyup tekrar
+ * deniyor: bu arada öteki diyar yazılmış oluyor, yani ikinci deneme bir
+ * sonraki boş sırayı buluyor.
+ */
 export async function createWorld(client: Tx = prisma): Promise<string> {
-  const mevcut = await client.world.count();
-  const world = await client.world.create({
-    data: {
-      name: dunyaAdi(mevcut),
-      playerCap: B.dunya.oyuncu_kapasitesi,
-      // Dünya, açıldığı haritayı üstünde taşıyor. Kanonik harita sonra
-      // değişirse bu dünya kendi sürümünde kalıyor (bkz. tazelemeKarari).
-      mapVersion: HARITA_SURUMU,
-    },
-  });
+  let world: { id: string } | null = null;
+  for (let deneme = 0; deneme < 4 && !world; deneme++) {
+    try {
+      world = await client.world.create({
+        data: {
+          name: dunyaAdi(await bosSira(client)),
+          playerCap: B.dunya.oyuncu_kapasitesi,
+          // Dünya, açıldığı haritayı üstünde taşıyor. Kanonik harita sonra
+          // değişirse bu dünya kendi sürümünde kalıyor (bkz. tazelemeKarari).
+          mapVersion: HARITA_SURUMU,
+        },
+        select: { id: true },
+      });
+    } catch (e) {
+      // P2002: benzersizlik kısıtı. Başka her hata yukarı gitmeli.
+      if ((e as { code?: string }).code !== 'P2002' || deneme === 3) throw e;
+    }
+  }
+  if (!world) throw new Error('Yeni diyar açılamadı.');
 
   await client.region.createMany({
     data: WORLD_MAP.regions.map((r) => ({
@@ -60,23 +94,105 @@ export async function createWorld(client: Tx = prisma): Promise<string> {
   return world.id;
 }
 
+/** Katılmaya AÇIK bir diyar ve kaç kişi olduğu. */
+export interface AcikDiyar {
+  id: string;
+  ad: string;
+  lordSayisi: number;
+  kapasite: number;
+  aktifLord: number;
+  openedAt: Date;
+}
+
+/** "Aktif" sayılmak için son bu kadar gün içinde girmiş olmak gerekir. */
+export const AKTIF_GUN = 7;
+
+/**
+ * Katılınabilir diyarlar — yer olanlar, eskiden yeniye.
+ *
+ * Kayıt ekranındaki liste ile kaydın kendisi bu TEK işlevden okuyor.
+ * İkisi ayrı sorgu yazsaydı er ya da geç ayrışırlardı ve ayrıştıkları an
+ * oyuncuya seçemeyeceği bir diyar gösterilirdi: listede duran ama
+ * kaydederken "dolu" diye reddedilen bir satır.
+ *
+ * `full` İKİ YÖNLÜ bir damga. Eskiden tek yönlüydü: dolan diyar
+ * işaretleniyor ve bir daha hiç açılmıyordu. Bu, diyar seçimini anlamsız
+ * kılardı — yeni diyar ancak öncekiler dolunca açıldığı için her an
+ * YALNIZCA BİR diyar katılınabilir olurdu ve seçecek bir şey kalmazdı.
+ * Oysa dolmuş bir diyar oyuncu kaybedince gerçekten yer açıyor, üstelik
+ * oturmuş ve kalabalık: yeni gelen için en iyi diyar o.
+ *
+ * `closed` dışarıda kalıyor — o, bilerek kapatılmış diyar demek ve
+ * doluluktan bağımsız.
+ */
+export async function acikDiyarlar(): Promise<AcikDiyar[]> {
+  const dunyalar = await prisma.world.findMany({
+    where: { status: { in: ['open', 'full'] } },
+    orderBy: { openedAt: 'asc' },
+  });
+  if (dunyalar.length === 0) return [];
+
+  /*
+   * Sayımlar TEK sorguda. Diyar başına ayrı `count` atan ilk hâl, 245
+   * diyarlı geliştirme veritabanında 490 sorgu koşuyordu; üretimde de
+   * diyar sayısı arttıkça kayıt ekranı yavaşlardı.
+   */
+  const aktifSinir = new Date(Date.now() - AKTIF_GUN * 86_400_000);
+  const [hepsi, aktifler] = await Promise.all([
+    prisma.lord.groupBy({ by: ['worldId'], _count: { _all: true } }),
+    prisma.lord.groupBy({
+      by: ['worldId'],
+      _count: { _all: true },
+      where: { lastSeenAt: { gte: aktifSinir } },
+    }),
+  ]);
+  const toplam = new Map(hepsi.map((g) => [g.worldId, g._count._all]));
+  const aktif = new Map(aktifler.map((g) => [g.worldId, g._count._all]));
+
+  const sonuc: AcikDiyar[] = [];
+  const doldu: string[] = [];
+  const bosaldi: string[] = [];
+
+  for (const w of dunyalar) {
+    const lordSayisi = toplam.get(w.id) ?? 0;
+    if (lordSayisi >= w.playerCap) {
+      if (w.status === 'open') doldu.push(w.id);
+      continue;
+    }
+    if (w.status === 'full') bosaldi.push(w.id);
+    sonuc.push({
+      id: w.id,
+      ad: w.name,
+      lordSayisi,
+      kapasite: w.playerCap,
+      aktifLord: aktif.get(w.id) ?? 0,
+      openedAt: w.openedAt,
+    });
+  }
+
+  // Damgayı düzeltmek listeyi beklemiyor: liste zaten doğru, damga
+  // yalnızca başka kodun ucuza okuyabilmesi için tutuluyor.
+  if (doldu.length) {
+    await prisma.world.updateMany({ where: { id: { in: doldu } }, data: { status: 'full' } });
+  }
+  if (bosaldi.length) {
+    await prisma.world.updateMany({ where: { id: { in: bosaldi } }, data: { status: 'open' } });
+  }
+
+  return sonuc;
+}
+
 /**
  * Kayıt için bir dünya bulur. Açık dünya doluysa 'full' işaretler ve yenisini açar.
  * Bu yüzden hiçbir zaman "dünya yok" hatası dönmez.
+ *
+ * EN ESKİ açık diyarı seçiyor, yani genelde en KALABALIK olanı. Boş bir
+ * diyara koymak nazik görünürdü ama oyunu bozardı: kıtlık ve rakip bu
+ * oyunun gerilim kaynağı, kimsenin olmadığı bir haritada ikisi de yok.
  */
 export async function findOrOpenWorld(): Promise<string> {
-  const acik = await prisma.world.findMany({
-    where: { status: 'open' },
-    orderBy: { openedAt: 'asc' },
-  });
-
-  for (const w of acik) {
-    const sayi = await prisma.lord.count({ where: { worldId: w.id } });
-    if (sayi < w.playerCap) return w.id;
-    await prisma.world.update({ where: { id: w.id }, data: { status: 'full' } });
-  }
-
-  return createWorld();
+  const acik = await acikDiyarlar();
+  return acik[0]?.id ?? createWorld();
 }
 
 /**

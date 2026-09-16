@@ -7,7 +7,7 @@
  *
  * API ve arayüz ayakta olmalı. node tools/savas-raporu-testi.mjs
  */
-import { ekrana, rehberiSustur } from './lib/gezin.mjs';
+import { bolgeyeDokun, ekrana, rehberiSustur } from './lib/gezin.mjs';
 import { devices } from 'playwright';
 import { tarayiciAc } from './lib/tarayici.mjs';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
@@ -80,10 +80,15 @@ await page.waitForTimeout(1200);
 // Bölgeler artık gerçek <button>; türü erişilebilir isimde yazılı.
 // Görünür etiket yakınlık kademesine göre gizlenebiliyor, o yüzden
 // metne değil erişilebilir isme bakıyoruz.
-await page
-  .getByRole('button', { name: /— tarla,/ })
-  .first()
-  .click();
+//
+// `.first()` DEĞİL: sığdırılmış haritada ilk eşleşen işaretçi başlığın ya
+// da bir komşusunun altında kalabiliyor ve test otuz saniye bekleyip
+// ölçtüğü şeyle ilgisi olmayan bir sebeple kalıyordu (bkz. bolgeyeDokun).
+const dokunulan = await bolgeyeDokun(
+  page,
+  '[data-bolge][aria-label*="— tarla,"][aria-label*="sahipsiz"]',
+);
+kontrol('Haritada dokunulabilir bir tarla var', dokunulan !== null);
 // DOM metni "Saldırı Ordusu"; ekranda büyük harf görünmesi .baslik'ten geliyor.
 await page.waitForSelector('text=Saldırı Ordusu', { timeout: 8000 });
 await page.locator('button:has-text("Hepsi")').first().click();
@@ -122,13 +127,11 @@ await page.waitForSelector('nav button:has-text("Dünya")', { timeout: 15000 });
 await page.locator('nav button:has-text("Dünya")').click();
 await page.waitForSelector('[role=img][aria-label*="Dünya haritası"]', { timeout: 15000 });
 await page.waitForTimeout(1200);
-// Bölgeler artık gerçek <button>; türü erişilebilir isimde yazılı.
-// Görünür etiket yakınlık kademesine göre gizlenebiliyor, o yüzden
-// metne değil erişilebilir isme bakıyoruz.
-await page
-  .getByRole('button', { name: /— tarla,/ })
-  .first()
-  .click();
+// AYNI bölge: savaş listesi ancak burada savaş olduysa dolu. "İlk tarla"
+// diyen hâli rastgele bir bölgeye basıyordu ve listenin dolu çıkması
+// tesadüfe kalıyordu — üstelik bölge fethedilmişse etiketi de değişiyor,
+// o yüzden türe değil KİMLİĞE bakıyoruz.
+await bolgeyeDokun(page, `[data-bolge="${dokunulan}"]`);
 await page.waitForSelector('text=Bu Bölgedeki Savaşların', { timeout: 8000 });
 kontrol('Bölge alt sayfasında savaş listesi var', true);
 

@@ -68,7 +68,7 @@ export function benzersizAd(onek = 'Test') {
   return `${onek}${cikti}`;
 }
 
-export async function kayitOl(API, { email, password = 'parola1234', lordName }) {
+export async function kayitOl(API, { email, password = 'parola1234', lordName, worldId }) {
   let sonYanit = null;
   let ad = lordName;
   let adDenemesi = 0;
@@ -77,7 +77,7 @@ export async function kayitOl(API, { email, password = 'parola1234', lordName })
     const r = await fetch(`${API}/api/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, lordName: ad }),
+      body: JSON.stringify({ email, password, lordName: ad, worldId }),
     });
     const govde = await r.json().catch(() => null);
     if (govde?.token) return govde;

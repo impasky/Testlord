@@ -151,7 +151,7 @@
     "tr": "— CC BY 3.0",
     "en": "— CC BY 3.0",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:179"
+      "apps/web/src/screens/Giris.tsx:290"
     ]
   },
   "td08a2005": {
@@ -725,6 +725,14 @@
       "apps/web/src/screens/Siralama.tsx:212"
     ]
   },
+  "t7b299eff": {
+    "grup": "arayuz",
+    "tr": "{0} lord son {1} günde oynadı",
+    "en": "{0} lords played in the last {1} days",
+    "nerede": [
+      "apps/web/src/screens/Giris.tsx:60"
+    ]
+  },
   "t2088a96f": {
     "grup": "arayuz",
     "tr": "{0} oluyor",
@@ -959,6 +967,38 @@
       "apps/web/src/components/MobilKabuk.tsx:149"
     ]
   },
+  "t41f86786": {
+    "grup": "arayuz",
+    "tr": "{0}. satır, {1}. kare{2}",
+    "en": "row {0}, square {1}{2}",
+    "nerede": [
+      "apps/web/src/components/DizilimIzgarasi.tsx:324"
+    ]
+  },
+  "tf2f8ddbc": {
+    "grup": "arayuz",
+    "tr": "{0}. seviye",
+    "en": "level {0}",
+    "nerede": [
+      "apps/web/src/screens/Sehir.tsx:475"
+    ]
+  },
+  "tace5639c": {
+    "grup": "arayuz",
+    "tr": "{0}. Seviye",
+    "en": "Level {0}",
+    "nerede": [
+      "apps/web/src/components/IttifakBagis.tsx:89"
+    ]
+  },
+  "t46b61099": {
+    "grup": "arayuz",
+    "tr": "{0}. sıradasın",
+    "en": "you rank #{0}",
+    "nerede": [
+      "apps/web/src/components/DiyarTanitimi.tsx:102"
+    ]
+  },
   "tf952a101": {
     "grup": "arayuz",
     "tr": "{0}'a git",
@@ -981,6 +1021,89 @@
     "en": "{0}{1} power",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:82"
+    ]
+  },
+  "taa525da9": {
+    "grup": "arayuz",
+    "tr": "{0}{1}/sa",
+    "en": "{0}{1}/hr",
+    "nerede": [
+      "apps/web/src/screens/Malikane.tsx:127"
+    ]
+  },
+  "te44e09f0": {
+    "grup": "arayuz",
+    "tr": "{0}/{1} adım",
+    "en": "{0}/{1} steps",
+    "nerede": [
+      "apps/web/src/components/Rehber.tsx:73"
+    ]
+  },
+  "t1ae0b497": {
+    "grup": "arayuz",
+    "tr": "{0}/{1} bağış hakkı",
+    "en": "{0}/{1} donations left",
+    "nerede": [
+      "apps/web/src/components/IttifakBagis.tsx:82"
+    ]
+  },
+  "te8e87b2f": {
+    "grup": "arayuz",
+    "tr": "{0}/{1} bölge{2}",
+    "en": "{0}/{1} regions{2}",
+    "nerede": [
+      "apps/web/src/screens/LordEkrani.tsx:329",
+      "apps/web/src/screens/Malikane.tsx:119"
+    ]
+  },
+  "tebc82d20": {
+    "grup": "arayuz",
+    "tr": "{0}/{1} komuta",
+    "en": "{0}/{1} command",
+    "nerede": [
+      "apps/web/src/components/OrduSahnesi.tsx:258",
+      "apps/web/src/screens/Kisla.tsx:449"
+    ]
+  },
+  "t0faee630": {
+    "grup": "arayuz",
+    "tr": "{0}/{1} lord",
+    "en": "{0}/{1} lords",
+    "nerede": [
+      "apps/web/src/screens/Giris.tsx:56"
+    ]
+  },
+  "t3ce47fa7": {
+    "grup": "arayuz",
+    "tr": "{0}/{1} saldırı",
+    "en": "{0}/{1} attacks",
+    "nerede": [
+      "apps/web/src/screens/LordEkrani.tsx:337"
+    ]
+  },
+  "tca03ab23": {
+    "grup": "arayuz",
+    "tr": "{0}/{1} üye",
+    "en": "{0}/{1} members",
+    "nerede": [
+      "apps/web/src/components/IttifakIncele.tsx:70",
+      "apps/web/src/screens/Ittifak.tsx:237"
+    ]
+  },
+  "t503c6bf9": {
+    "grup": "arayuz",
+    "tr": "{0}/10 grup hazır",
+    "en": "{0}/10 groups ready",
+    "nerede": [
+      "apps/web/src/screens/Akin.tsx:329"
+    ]
+  },
+  "t58779ae6": {
+    "grup": "arayuz",
+    "tr": "{0}/sa",
+    "en": "{0}/hr",
+    "nerede": [
+      "apps/web/src/components/Omurga.tsx:607"
     ]
   },
   "t01f3bcfa": {
@@ -1186,7 +1309,7 @@
     "tr": "Adres kayıtlıysa sıfırlama bağlantısı gönderildi. Gelen kutunu kontrol et.",
     "en": "If the address is registered, a reset link has been sent. Check your inbox.",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:22"
+      "apps/web/src/screens/Giris.tsx:89"
     ]
   },
   "t6b527296": {
@@ -1338,6 +1461,14 @@
     "nerede": [
       "apps/web/src/components/Omurga.tsx:848",
       "apps/web/src/components/Omurga.tsx:909"
+    ]
+  },
+  "t97bf12c7": {
+    "grup": "arayuz",
+    "tr": "Arkadaşınla oynayacaksan onunla aynı diyarı seç. Diyarlar birbirinden bağımsız.",
+    "en": "If you are playing with a friend, pick the same realm. Realms are independent of one another.",
+    "nerede": [
+      "apps/web/src/screens/Giris.tsx:68"
     ]
   },
   "t88a93d36": {
@@ -1556,7 +1687,7 @@
     "tr": "Bağlantı kurulamadı.",
     "en": "Connection failed.",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:46"
+      "apps/web/src/screens/Giris.tsx:139"
     ]
   },
   "t71fcbee7": {
@@ -1695,7 +1826,7 @@
     "tr": "Bekle...",
     "en": "Wait...",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:127"
+      "apps/web/src/screens/Giris.tsx:238"
     ]
   },
   "t4d534b42": {
@@ -1939,7 +2070,7 @@
     "tr": "Bölge kıt, rakip çok. Tahtı hak eden alır.",
     "en": "Regions are scarce, rivals are many. Whoever deserves the throne takes it.",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:63"
+      "apps/web/src/screens/Giris.tsx:171"
     ]
   },
   "t815f7c76": {
@@ -2602,6 +2733,8 @@
     "en": "Realm",
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:125",
+      "apps/web/src/screens/Giris.tsx:35",
+      "apps/web/src/screens/Giris.tsx:38",
       "data/arastirma.json:dallar[2].ad",
       "data/basarimlar.json:kumeler[4].ad"
     ]
@@ -2619,7 +2752,7 @@
     "tr": "Diyara Gir",
     "en": "Enter Realm",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:127"
+      "apps/web/src/screens/Giris.tsx:238"
     ]
   },
   "t1c2cafbf": {
@@ -2643,7 +2776,7 @@
     "tr": "Diyarda seni bu adla tanıyacaklar.",
     "en": "You will be known by this name in the realm.",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:88"
+      "apps/web/src/screens/Giris.tsx:196"
     ]
   },
   "td4a63263": {
@@ -2927,7 +3060,7 @@
     "tr": "E-posta",
     "en": "Email",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:99"
+      "apps/web/src/screens/Giris.tsx:210"
     ]
   },
   "tee39ae8e": {
@@ -3050,7 +3183,7 @@
     "tr": "En az 8 karakter.",
     "en": "At least 8 characters.",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:109"
+      "apps/web/src/screens/Giris.tsx:220"
     ]
   },
   "t24f71978": {
@@ -3396,7 +3529,7 @@
     "tr": "Giriş",
     "en": "Login",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:81"
+      "apps/web/src/screens/Giris.tsx:189"
     ]
   },
   "t010f9302": {
@@ -3413,7 +3546,7 @@
     "tr": "Giriş Yap",
     "en": "Sign In",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:127"
+      "apps/web/src/screens/Giris.tsx:238"
     ]
   },
   "t542abc6b": {
@@ -3466,7 +3599,7 @@
       "apps/web/src/screens/Akin.tsx:653",
       "apps/web/src/screens/Demirhane.tsx:519",
       "apps/web/src/screens/Generaller.tsx:126",
-      "apps/web/src/screens/Giris.tsx:152",
+      "apps/web/src/screens/Giris.tsx:263",
       "apps/web/src/screens/Harita.tsx:1133",
       "apps/web/src/screens/Hesap.tsx:203",
       "apps/web/src/screens/Kisla.tsx:285",
@@ -3722,6 +3855,14 @@
       "apps/web/src/screens/Moderasyon.tsx:87"
     ]
   },
+  "tce75685f": {
+    "grup": "arayuz",
+    "tr": "Henüz kimse oynamadı — yeni diyar",
+    "en": "Nobody has played here yet — new realm",
+    "nerede": [
+      "apps/web/src/screens/Giris.tsx:61"
+    ]
+  },
   "t0f78ebc0": {
     "grup": "arayuz",
     "tr": "Henüz kimse yazmadı. İlk sözü sen söyle — bir hedef göster, yardım iste.",
@@ -3786,7 +3927,7 @@
     "en": "DELETE MY ACCOUNT",
     "nerede": [
       "apps/api/src/routes/me.ts:63",
-      "apps/web/src/api/client.ts:923",
+      "apps/web/src/api/client.ts:939",
       "apps/web/src/screens/Hesap.tsx:239"
     ]
   },
@@ -3885,7 +4026,7 @@
     "tr": "İkonlar",
     "en": "Icons",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:170"
+      "apps/web/src/screens/Giris.tsx:281"
     ]
   },
   "tb14deebf": {
@@ -4400,7 +4541,7 @@
     "tr": "Kara Yusuf",
     "en": "Kara Yusuf",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:92"
+      "apps/web/src/screens/Giris.tsx:200"
     ]
   },
   "t07d6d627": {
@@ -5013,7 +5154,7 @@
     "tr": "Lord adı",
     "en": "Lord name",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:88"
+      "apps/web/src/screens/Giris.tsx:196"
     ]
   },
   "t168134fc": {
@@ -5048,7 +5189,7 @@
     "nerede": [
       "apps/api/src/routes/push.ts:82",
       "apps/web/src/components/MobilKabuk.tsx:311",
-      "apps/web/src/screens/Giris.tsx:61",
+      "apps/web/src/screens/Giris.tsx:169",
       "apps/web/src/screens/ParolaSifirla.tsx:31"
     ]
   },
@@ -5657,7 +5798,7 @@
     "tr": "Önce e-posta adresini yaz.",
     "en": "Write your email address first.",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:155"
+      "apps/web/src/screens/Giris.tsx:266"
     ]
   },
   "t2037d289": {
@@ -5737,7 +5878,7 @@
     "tr": "Parola",
     "en": "Password",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:109"
+      "apps/web/src/screens/Giris.tsx:220"
     ]
   },
   "tb796121d": {
@@ -5777,7 +5918,7 @@
     "tr": "Parolamı unuttum",
     "en": "Forgot password",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:136"
+      "apps/web/src/screens/Giris.tsx:247"
     ]
   },
   "t100b4ff0": {
@@ -6379,7 +6520,7 @@
     "tr": "Sıfırlama bağlantısı gönder",
     "en": "Send reset link",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:152"
+      "apps/web/src/screens/Giris.tsx:263"
     ]
   },
   "tee25d0bd": {
@@ -7484,7 +7625,7 @@
     "tr": "Yeni Lord",
     "en": "New Lord",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:81"
+      "apps/web/src/screens/Giris.tsx:189"
     ]
   },
   "t62db8630": {
@@ -7500,7 +7641,7 @@
     "tr": "Yeni lordlar 72 saat saldırıya kapalıdır.",
     "en": "New lords are immune to attacks for 72 hours.",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:165"
+      "apps/web/src/screens/Giris.tsx:276"
     ]
   },
   "t6187848c": {
@@ -7625,7 +7766,7 @@
     "tr": "Yukarıdaki e-posta adresine sıfırlama bağlantısı gönderelim.",
     "en": "Let us send a reset link to the email address above.",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:143"
+      "apps/web/src/screens/Giris.tsx:254"
     ]
   },
   "tfab69aea": {
@@ -10646,7 +10787,7 @@
     "tr": "Bağlantı geçersiz ya da süresi dolmuş. Yeniden sıfırlama iste.",
     "en": "Link is invalid or expired. Request a reset again.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:241"
+      "apps/api/src/routes/auth.ts:278"
     ]
   },
   "tf9754a95": {
@@ -10719,7 +10860,7 @@
     "tr": "bilinmeyen bölge",
     "en": "unknown region",
     "nerede": [
-      "apps/api/src/routes/dunya.ts:111"
+      "apps/api/src/routes/dunya.ts:139"
     ]
   },
   "tc9bf8e6b": {
@@ -10821,6 +10962,14 @@
       "apps/api/src/routes/sehir.ts:169"
     ]
   },
+  "tcc614fc4": {
+    "grup": "sunucu",
+    "tr": "Böyle bir diyar yok.",
+    "en": "No such realm.",
+    "nerede": [
+      "apps/api/src/routes/auth.ts:143"
+    ]
+  },
   "t9da35381": {
     "grup": "sunucu",
     "tr": "Böyle bir inşaat yok.",
@@ -10842,7 +10991,7 @@
     "tr": "Bu ad kullanılamaz.",
     "en": "This name cannot be used.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:124",
+      "apps/api/src/routes/auth.ts:161",
       "apps/api/src/routes/ittifak.ts:427"
     ]
   },
@@ -10908,7 +11057,7 @@
     "tr": "Bu e-posta zaten kayıtlı.",
     "en": "This email is already registered.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:128"
+      "apps/api/src/routes/auth.ts:165"
     ]
   },
   "t62da57e4": {
@@ -10997,7 +11146,7 @@
     "tr": "Bu lord adı alınmış.",
     "en": "This lord name is taken.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:131"
+      "apps/api/src/routes/auth.ts:168"
     ]
   },
   "t93fec181": {
@@ -11201,7 +11350,7 @@
     "tr": "E-posta veya parola hatalı.",
     "en": "Email or password incorrect.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:180"
+      "apps/api/src/routes/auth.ts:217"
     ]
   },
   "t61d3205f": {
@@ -11597,7 +11746,7 @@
     "tr": "Lordlar Çağı — parola sıfırlama",
     "en": "Age of Lords — password reset",
     "nerede": [
-      "apps/api/src/routes/auth.ts:217"
+      "apps/api/src/routes/auth.ts:254"
     ]
   },
   "t20970dae": {
@@ -11655,6 +11804,14 @@
     "en": "helmet",
     "nerede": [
       "apps/api/src/services/akin.ts:53"
+    ]
+  },
+  "t92c99a9e": {
+    "grup": "sunucu",
+    "tr": "O diyar doldu. Başka bir diyar seç.",
+    "en": "That realm is full. Pick another one.",
+    "nerede": [
+      "apps/api/src/routes/auth.ts:147"
     ]
   },
   "tb209b8d4": {
@@ -11744,7 +11901,7 @@
     "en": "Password must be at least 8 characters.",
     "nerede": [
       "apps/api/src/routes/auth.ts:38",
-      "apps/api/src/routes/auth.ts:54"
+      "apps/api/src/routes/auth.ts:62"
     ]
   },
   "tdc156679": {
@@ -11760,7 +11917,7 @@
     "tr": "Parolanı sıfırlamak için {0} dakika içinde bu bağlantıyı aç:\n\n{1}\n\nBu isteği sen yapmadıysan hiçbir şey yapmana gerek yok; parolan değişmedi.",
     "en": "To reset your password open this link within {0} minutes:\n\n{1}\n\nIf you did not make this request you need to do nothing; your password has not changed.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:218"
+      "apps/api/src/routes/auth.ts:255"
     ]
   },
   "tea8d3f85": {
@@ -11962,6 +12119,14 @@
     "en": "Seventh",
     "nerede": [
       "apps/api/src/services/world.ts:20"
+    ]
+  },
+  "t3d174998": {
+    "grup": "sunucu",
+    "tr": "Yeni diyar açılamadı.",
+    "en": "Could not open a new realm.",
+    "nerede": [
+      "apps/api/src/services/world.ts:75"
     ]
   },
   "t44a98c68": {

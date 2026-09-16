@@ -412,6 +412,20 @@ export interface PreviewDto {
 }
 
 /** Dünya özeti: kaç lord var, taht kimde, ben kaçıncıyım. */
+/** Kayıt ekranındaki diyar listesi — kimlik gerektirmeyen tek uç. */
+export interface DiyarSecimiDto {
+  /** Seçim yapılmazsa kaydın gideceği diyar. Hiç diyar yoksa null. */
+  onerilen: string | null;
+  aktifGun: number;
+  diyarlar: {
+    id: string;
+    ad: string;
+    lordSayisi: number;
+    kapasite: number;
+    aktifLord: number;
+  }[];
+}
+
 export interface DunyaDto {
   ad: string;
   kapasite: number;
@@ -900,8 +914,10 @@ export interface GeneralKatkisiDto {
 }
 
 export const api = {
-  register: (email: string, password: string, lordName: string) =>
-    post<{ token: string }>('/auth/register', { email, password, lordName }),
+  register: (email: string, password: string, lordName: string, worldId?: string) =>
+    post<{ token: string }>('/auth/register', { email, password, lordName, worldId }),
+  /** Kayıt ekranı için; jeton istemiyor. */
+  diyarlar: () => request<DiyarSecimiDto>('/diyarlar'),
   login: (email: string, password: string) =>
     post<{ token: string }>('/auth/login', { email, password }),
   /**

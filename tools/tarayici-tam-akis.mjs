@@ -9,7 +9,7 @@
 import { devices } from 'playwright';
 import { tarayiciAc } from './lib/tarayici.mjs';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
-import { ekrana, kapida, rehberiSustur } from './lib/gezin.mjs';
+import { bolgeyeDokun, ekrana, kapida, rehberiSustur } from './lib/gezin.mjs';
 import { merkezUzakliklari } from './lib/harita.mjs';
 import { binalariDik, yerlesimAl } from './lib/koy.mjs';
 import { birimiAc } from './lib/birim.mjs';
@@ -226,21 +226,26 @@ const kenar = new Set(
 const hedef = harita.regions
   .filter((r) => kenar.has(r.id) && !r.owner && r.type !== 'kale')
   .sort((a, b) => a.distance - b.distance)[0];
-// Bölgeler artık SVG grubu değil gerçek <button>; kimliğiyle bulunuyor.
-// Ada göre aramıyoruz çünkü görünür etiket yakınlık kademesine göre
-// gizlenebiliyor — kimlik her ölçekte duruyor.
-//
-// ÖNCE "SIĞDIR": harita artık oyuncunun toprağına yakınlaşmış açılıyor
-// (docs/12 §11.6) ve uzaktaki bir bölge ekranın dışında kalıyor. Oyuncu
-// oraya kaydırarak gider; test tek dokunuşla bütün dünyayı getiriyor.
-// Zorlamalı tıklama DEĞİL: ekran dışındaki bir düğmeye basmak, oyuncunun
-// yapamayacağı bir şeyi ölçmek olurdu.
-const sigdir = page.getByRole('button', { name: 'Haritayı sığdır' });
-if (await sigdir.count()) {
-  await sigdir.click();
-  await page.waitForTimeout(500);
-}
-await page.locator(`[data-bolge="${hedef.id}"]`).click();
+/*
+ * ÖNCE "SIĞDIR", sonra dokunulabilir bir hedef: harita oyuncunun
+ * toprağına yakınlaşmış açılıyor (docs/12 §11.6) ve uzaktaki bölge ekran
+ * dışında kalıyor. Sığdırınca hepsi geliyor ama hepsi DOKUNULABİLİR
+ * olmuyor — sebebi `bolgeyeDokun`da yazıyor.
+ *
+ * Hedefin SAHİPSİZ olması şart: saldırı akışı ancak alınabilir bir bölge
+ * için açılıyor. Tür `hedef`ten geliyor, yani yukarıdaki ölçütü (tahttan
+ * uzak, sahipsiz, kale değil) sağlayan bölgenin türü.
+ */
+const hedefTipi = hedef?.type ?? 'koy';
+const dokunulan = await bolgeyeDokun(
+  page,
+  `[data-bolge][aria-label*="— ${hedefTipi},"][aria-label*="sahipsiz"]`,
+);
+kontrol(
+  'Sığdırılmış haritada dokunulabilir, sahipsiz bir hedef var',
+  dokunulan !== null,
+  hedefTipi,
+);
 await page.waitForTimeout(900);
 kontrol(
   'Bölge alt sayfası açıldı',

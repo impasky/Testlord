@@ -41,6 +41,14 @@ const registerSchema = z.object({
     .min(3, 'Lord adı en az 3 karakter olmalı.')
     .max(20, 'Lord adı en fazla 20 karakter olabilir.')
     .regex(/^[\p{L}\p{N} _-]+$/u, 'Lord adında geçersiz karakter var.'),
+  /*
+   * Hangi diyara girileceği. İSTEĞE BAĞLI: verilmezse eskisi gibi sistem
+   * seçiyor, yani seçim yapmayan oyuncu için hiçbir şey değişmiyor.
+   * Verilirse oyuncunun arkadaşıyla aynı haritada oynaması için tek yol
+   * bu, o yüzden sessizce başka bir diyara yönlendirme YOK: dolmuşsa
+   * hata dönüyor ve oyuncu bilerek başka bir diyar seçiyor.
+   */
+  worldId: z.string().min(1).optional(),
 });
 
 const loginSchema = z.object({
@@ -112,6 +120,35 @@ async function pickHomeAnchor(worldId: string): Promise<number> {
   return enIyi.mapId;
 }
 
+/**
+ * Oyuncunun SEÇTİĞİ diyarı doğrular.
+ *
+ * Kapalı, dolu ya da olmayan bir diyar için hata dönüyor — sessizce başka
+ * bir diyara koymuyor. Oyuncu bu alanı doldurduysa sebebi vardır
+ * (arkadaşı orada) ve "seni başka yere koydum" onun için kayıt hatasından
+ * daha kötü bir sonuç.
+ *
+ * Kapasite denetimi kılpayı yarışa açık: iki kayıt aynı anda son yeri
+ * alabilir. Kabul edilebilir — kapasite bölge/oyuncu oranını KABACA tutmak
+ * için var (0.50, `balance.test.ts` 0.75 tavanıyla koruyor) ve bir iki
+ * kişilik taşma o oranı kımıldatmıyor. Yanlış diyara düşmek ise kabul
+ * edilebilir değil; o yüzden yarışı burada değil, yönlendirmede kapattık.
+ */
+async function secilenDiyar(worldId: string): Promise<string> {
+  const w = await prisma.world.findUnique({
+    where: { id: worldId },
+    select: { id: true, status: true, playerCap: true },
+  });
+  if (!w || w.status === 'closed') {
+    throw new GameError('Böyle bir diyar yok.', 404, 'DIYAR_YOK');
+  }
+  const sayi = await prisma.lord.count({ where: { worldId: w.id } });
+  if (w.status === 'full' || sayi >= w.playerCap) {
+    throw new GameError('O diyar doldu. Başka bir diyar seç.', 409, 'DIYAR_DOLU');
+  }
+  return w.id;
+}
+
 export async function authRoutes(app: FastifyInstance): Promise<void> {
   app.post('/auth/register', kimlikSiniri, async (req, reply) => {
     const body = registerSchema.parse(req.body);
@@ -131,7 +168,7 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
       throw new GameError('Bu lord adı alınmış.', 409, 'AD_ALINMIS');
     }
 
-    const worldId = await findOrOpenWorld();
+    const worldId = body.worldId ? await secilenDiyar(body.worldId) : await findOrOpenWorld();
     const home = await pickHomeAnchor(worldId);
     const now = new Date();
     const start = B.lord.baslangic_kaynaklari;

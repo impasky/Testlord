@@ -29,13 +29,7 @@
  * kapalıyken de oyun aynı çalışıyor — yalnız dil seçimi çalışmıyor.
  */
 import ts from 'typescript';
-import {
-  atlanirMi,
-  kesinMetin,
-  metinKirintisi,
-  metinMi,
-  sablonMetni,
-} from '../../tools/lib/metin-kurallari.mjs';
+import { metinKabul, metinKirintisi, sablonMetni } from '../../tools/lib/metin-kurallari.mjs';
 
 /** Sarma işlevinin çağrıldığı ad; kaynak kodda geçmiyor, eklenti koyuyor. */
 const AD = '__t';
@@ -108,7 +102,7 @@ export function ceviriEklentisi() {
           }
         } else if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
           const metin = node.text;
-          if (!atlanirMi(node) && (kesinMetin(node) ? metinKirintisi(metin) : metinMi(metin))) {
+          if (metinKabul(node, metin)) {
             // JSX niteliğinde dizge doğrudan duruyorsa süslü parantez
             // gerekiyor: baslik="X" -> baslik={__t("X")}
             const nitelikte = node.parent && ts.isJsxAttribute(node.parent);
@@ -121,8 +115,7 @@ export function ceviriEklentisi() {
           }
         } else if (ts.isTemplateExpression(node)) {
           const kalip = sablonMetni(node);
-          const ic = kalip.replace(/\{\d+\}/g, '').trim();
-          if (!atlanirMi(node) && (kesinMetin(node) ? metinKirintisi(ic) : metinMi(ic))) {
+          if (metinKabul(node, kalip)) {
             const args = node.templateSpans.map((s) => s.expression.getText(sf));
             const nitelikte = node.parent && ts.isJsxAttribute(node.parent);
             const cagri = `${AD}(${[kacir(kalip), ...args].join(', ')})`;

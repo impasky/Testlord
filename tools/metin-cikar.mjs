@@ -113,6 +113,7 @@ import {
   metinMi,
   nitelikAdi,
   ogeAdi,
+  metinKabul,
   sablonMetni,
 } from './lib/metin-kurallari.mjs';
 
@@ -141,15 +142,12 @@ function dosyayiTara(yol, ekle) {
       if (metinKirintisi(t, true)) ekle(t, `${kisa}:${satir(node)}`);
     } else if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
       const t = node.text;
-      if (!atlanirMi(node) && (kesinMetin(node) ? metinKirintisi(t) : metinMi(t)))
-        ekle(t, `${kisa}:${satir(node)}`);
+      if (metinKabul(node, t)) ekle(t, `${kisa}:${satir(node)}`);
     } else if (ts.isTemplateExpression(node)) {
       // Nitelik denetimi ŞABLONA da uygulanıyor: `className={`baslik ${x}`}`
       // metin değil biçim; dizge sabitinde eleniyordu, şablonda elenmiyordu.
       const t = sablonMetni(node);
-      const ic = t.replace(/\{\d+\}/g, '').trim();
-      if (!atlanirMi(node) && (kesinMetin(node) ? metinKirintisi(ic) : metinMi(ic)))
-        ekle(t, `${kisa}:${satir(node)}`);
+      if (metinKabul(node, t)) ekle(t, `${kisa}:${satir(node)}`);
       // Şablonun içindeki ifadeler ayrıca geziliyor (iç içe dizgeler için).
       node.templateSpans.forEach((s) => gez(s.expression));
       return;
