@@ -172,7 +172,7 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
   "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
       apps/web/src/components/DiyarTanitimi.tsx:136
   "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-      apps/web/src/components/Omurga.tsx:486
+      apps/web/src/components/Omurga.tsx:494
   "asker ·"
       apps/web/src/screens/Akin.tsx:636
   "askerin savunmada."

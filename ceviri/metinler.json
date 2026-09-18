@@ -159,7 +159,7 @@
     "tr": ", {0} sürüyor",
     "en": ", {0} in progress",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:713"
+      "apps/web/src/screens/Sehir.tsx:725"
     ]
   },
   "tf674c3d7": {
@@ -567,7 +567,7 @@
     "tr": "{0} dk",
     "en": "{0} min",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:601"
+      "apps/web/src/components/Omurga.tsx:609"
     ]
   },
   "t518c818a": {
@@ -658,7 +658,7 @@
     "tr": "{0} için ordun henüz yetmiyor.",
     "en": "Your army is not enough for {0} yet.",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:765"
+      "apps/web/src/components/Omurga.tsx:773"
     ]
   },
   "tf8c9cd73": {
@@ -690,7 +690,7 @@
     "tr": "{0} kapasiten dolsa bile alınmıyor. Liderlik statını yükseltmen gerek.",
     "en": "It cannot be recruited even if your {0} capacity is full. You need to upgrade your Leadership stat.",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:748"
+      "apps/web/src/components/Omurga.tsx:756"
     ]
   },
   "tbcf13cf2": {
@@ -771,7 +771,7 @@
     "tr": "{0} saat",
     "en": "{0} hours",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:601",
+      "apps/web/src/components/Omurga.tsx:609",
       "apps/web/src/components/Paktlar.tsx:158"
     ]
   },
@@ -796,10 +796,10 @@
     "tr": "{0} saldır",
     "en": "Attack {0}",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:649",
-      "apps/web/src/components/Omurga.tsx:674",
-      "apps/web/src/components/Omurga.tsx:786",
-      "apps/web/src/components/Omurga.tsx:805"
+      "apps/web/src/components/Omurga.tsx:657",
+      "apps/web/src/components/Omurga.tsx:682",
+      "apps/web/src/components/Omurga.tsx:794",
+      "apps/web/src/components/Omurga.tsx:813"
     ]
   },
   "t330adaea": {
@@ -840,7 +840,7 @@
     "en": "{0} defending",
     "nerede": [
       "apps/web/src/components/HedefSeridi.tsx:86",
-      "apps/web/src/components/Omurga.tsx:754"
+      "apps/web/src/components/Omurga.tsx:762"
     ]
   },
   "tef6298d9": {
@@ -915,7 +915,7 @@
     "en": "{0} fame",
     "nerede": [
       "apps/web/src/components/IttifakIncele.tsx:71",
-      "apps/web/src/components/Omurga.tsx:924",
+      "apps/web/src/components/Omurga.tsx:932",
       "apps/web/src/screens/LordEkrani.tsx:356"
     ]
   },
@@ -941,7 +941,7 @@
     "tr": "{0} üzerine yürü",
     "en": "March on {0}",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:794"
+      "apps/web/src/components/Omurga.tsx:802"
     ]
   },
   "tc9199a6f": {
@@ -1013,7 +1013,7 @@
     "tr": "{0}'a git",
     "en": "Go to {0}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:961"
+      "apps/web/src/screens/Sehir.tsx:973"
     ]
   },
   "t0900053c": {
@@ -1112,7 +1112,7 @@
     "tr": "{0}/sa",
     "en": "{0}/hr",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:607"
+      "apps/web/src/components/Omurga.tsx:615"
     ]
   },
   "t01f3bcfa": {
@@ -1120,7 +1120,7 @@
     "tr": "{0}dk {1}sn",
     "en": "{0}m {1}s",
     "nerede": [
-      "apps/web/src/components/ui.tsx:795"
+      "apps/web/src/components/ui.tsx:836"
     ]
   },
   "t474d6d19": {
@@ -1128,7 +1128,7 @@
     "tr": "{0}g {1}sa",
     "en": "{0}d {1}h",
     "nerede": [
-      "apps/web/src/components/ui.tsx:793"
+      "apps/web/src/components/ui.tsx:834"
     ]
   },
   "t756e7987": {
@@ -1136,7 +1136,7 @@
     "tr": "{0}sa {1}dk",
     "en": "{0}h {1}m",
     "nerede": [
-      "apps/web/src/components/ui.tsx:794",
+      "apps/web/src/components/ui.tsx:835",
       "apps/web/src/screens/Arastirma.tsx:44",
       "apps/web/src/screens/Harita.tsx:273"
     ]
@@ -1148,7 +1148,7 @@
     "nerede": [
       "apps/web/src/components/GorevOzeti.tsx:41",
       "apps/web/src/components/GorevOzeti.tsx:43",
-      "apps/web/src/components/Omurga.tsx:490"
+      "apps/web/src/components/Omurga.tsx:498"
     ]
   },
   "teea047c7": {
@@ -1165,7 +1165,7 @@
     "en": "",
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:136",
-      "apps/web/src/components/Omurga.tsx:487"
+      "apps/web/src/components/Omurga.tsx:495"
     ]
   },
   "tec707e45": {
@@ -1173,7 +1173,7 @@
     "tr": "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
     "en": "",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:486"
+      "apps/web/src/components/Omurga.tsx:494"
     ]
   },
   "t0762338d": {
@@ -1257,7 +1257,7 @@
     "nerede": [
       "apps/web/src/components/HedefSeridi.tsx:29",
       "apps/web/src/components/HedefSeridi.tsx:32",
-      "apps/web/src/components/Omurga.tsx:950",
+      "apps/web/src/components/Omurga.tsx:958",
       "apps/web/src/screens/Malikane.tsx:112",
       "apps/web/src/screens/Malikane.tsx:175",
       "apps/web/src/screens/Malikane.tsx:181",
@@ -1360,7 +1360,7 @@
     "tr": "Akına git",
     "en": "Go on a raid",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:731"
+      "apps/web/src/components/Omurga.tsx:739"
     ]
   },
   "t1386e6f0": {
@@ -1368,7 +1368,7 @@
     "tr": "Akının sürüyor",
     "en": "Your raid is ongoing",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:688"
+      "apps/web/src/components/Omurga.tsx:696"
     ]
   },
   "t8c46e58c": {
@@ -1460,7 +1460,7 @@
     "tr": "Araştırma kalıcıdır ve diyarını senin seçimlerinle şekillendirir — iki lord aynı seviyede aynı olmaz.",
     "en": "Research is permanent and shapes your realm with your choices — two lords at the same level won't be identical.",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:908"
+      "apps/web/src/components/Omurga.tsx:916"
     ]
   },
   "td71e7d01": {
@@ -1476,8 +1476,8 @@
     "tr": "Araştırmaya git",
     "en": "Go to research",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:848",
-      "apps/web/src/components/Omurga.tsx:909"
+      "apps/web/src/components/Omurga.tsx:856",
+      "apps/web/src/components/Omurga.tsx:917"
     ]
   },
   "t97bf12c7": {
@@ -1573,7 +1573,7 @@
     "tr": "Askerlerin eğitiliyor",
     "en": "Your troops are training",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:642"
+      "apps/web/src/components/Omurga.tsx:650"
     ]
   },
   "tc9721fbc": {
@@ -1664,7 +1664,7 @@
     "en": "just now",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:26",
-      "apps/web/src/components/ui.tsx:780"
+      "apps/web/src/components/ui.tsx:821"
     ]
   },
   "t03f09d10": {
@@ -1972,7 +1972,7 @@
     "tr": "bir araştırma başlat",
     "en": "start a research",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:898"
+      "apps/web/src/components/Omurga.tsx:906"
     ]
   },
   "tb1bc8549": {
@@ -1980,7 +1980,7 @@
     "tr": "Bir araştırma başlat",
     "en": "Start a research",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:906"
+      "apps/web/src/components/Omurga.tsx:914"
     ]
   },
   "te3e4d049": {
@@ -2036,7 +2036,7 @@
     "tr": "Bittiğinde ordun saatte %{0} firar verir. Bir tarla bölgesi al ya da ordunu küçült.",
     "en": "When it runs out your army deserts at {0}% per hour. Take a farm region or reduce your army.",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:598"
+      "apps/web/src/components/Omurga.tsx:606"
     ]
   },
   "t8bc83bb3": {
@@ -2052,9 +2052,9 @@
     "tr": "boş arsa",
     "en": "vacant lot",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:711",
-      "apps/web/src/screens/Sehir.tsx:714",
-      "apps/web/src/screens/Sehir.tsx:919"
+      "apps/web/src/screens/Sehir.tsx:723",
+      "apps/web/src/screens/Sehir.tsx:726",
+      "apps/web/src/screens/Sehir.tsx:931"
     ]
   },
   "t0f1623db": {
@@ -2185,7 +2185,7 @@
     "tr": "Bölgeni geliştir",
     "en": "Develop your region",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:891",
+      "apps/web/src/components/Omurga.tsx:899",
       "packages/shared/src/rehber.ts:167"
     ]
   },
@@ -2194,9 +2194,9 @@
     "tr": "bölgeni yükselt",
     "en": "upgrade your region",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:809",
-      "apps/web/src/components/Omurga.tsx:829",
-      "apps/web/src/components/Omurga.tsx:866"
+      "apps/web/src/components/Omurga.tsx:817",
+      "apps/web/src/components/Omurga.tsx:837",
+      "apps/web/src/components/Omurga.tsx:874"
     ]
   },
   "t52203242": {
@@ -2204,7 +2204,7 @@
     "tr": "Bölgenin seviyesi geliri de savunmayı da büyütür. Yeni toprak almadan da güçlenebilirsin.",
     "en": "Region level increases both income and defense. You can grow stronger without taking new land.",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:893"
+      "apps/web/src/components/Omurga.tsx:901"
     ]
   },
   "tcfabf448": {
@@ -2228,7 +2228,7 @@
     "tr": "Bölgeye git",
     "en": "Go to region",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:894"
+      "apps/web/src/components/Omurga.tsx:902"
     ]
   },
   "t9a01f3ab": {
@@ -2397,7 +2397,7 @@
     "tr": "Bu sürede ekipman üretebilir ya da bölgeni yükseltebilirsin.",
     "en": "You can forge equipment or upgrade your region during this time.",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:664"
+      "apps/web/src/components/Omurga.tsx:672"
     ]
   },
   "tb4911234": {
@@ -2405,7 +2405,7 @@
     "tr": "Bu sürede ordunu büyütebilir ya da ekipman üretebilirsin.",
     "en": "You can grow your army or forge equipment during this time.",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:621"
+      "apps/web/src/components/Omurga.tsx:629"
     ]
   },
   "t0289e4af": {
@@ -2636,7 +2636,7 @@
     "tr": "Demirhanede ekipman üret",
     "en": "Forge equipment in the Blacksmith",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:809"
+      "apps/web/src/components/Omurga.tsx:817"
     ]
   },
   "t0bd85dea": {
@@ -2644,8 +2644,8 @@
     "tr": "Demirhaneye git",
     "en": "Go to the Blacksmith",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:670",
-      "apps/web/src/components/Omurga.tsx:825"
+      "apps/web/src/components/Omurga.tsx:678",
+      "apps/web/src/components/Omurga.tsx:833"
     ]
   },
   "t88a73dfe": {
@@ -2693,7 +2693,7 @@
     "tr": "Depon dolduğu için ürettiğin her şey boşa gidiyor. Ambarlar araştırması depoyu büyütür.",
     "en": "Everything you produce is wasted because your storage is full. Granaries research expands the storage.",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:847"
+      "apps/web/src/components/Omurga.tsx:855"
     ]
   },
   "t24cb06e6": {
@@ -2710,7 +2710,7 @@
     "tr": "Deponun taşıyor",
     "en": "Your storage is overflowing",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:845"
+      "apps/web/src/components/Omurga.tsx:853"
     ]
   },
   "t7dc33a54": {
@@ -2842,7 +2842,7 @@
     "tr": "Diyarı büyüt",
     "en": "Expand the realm",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:921"
+      "apps/web/src/components/Omurga.tsx:929"
     ]
   },
   "t0ce7b20a": {
@@ -2850,7 +2850,7 @@
     "tr": "diyarı büyütmeye devam et",
     "en": "keep expanding the realm",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:913"
+      "apps/web/src/components/Omurga.tsx:921"
     ]
   },
   "t0824910b": {
@@ -3175,7 +3175,7 @@
     "tr": "Ekipman lordun savaş katkısını büyütür; aynı savaştan daha az kayıpla çıkarsın.",
     "en": "Equipment increases the lord's battle contribution; you will emerge from the same battle with fewer losses.",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:818"
+      "apps/web/src/components/Omurga.tsx:826"
     ]
   },
   "tdc7c54cf": {
@@ -3321,7 +3321,7 @@
     "tr": "Erzağın bitiyor",
     "en": "Running out of supplies",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:597"
+      "apps/web/src/components/Omurga.tsx:605"
     ]
   },
   "t693ca05c": {
@@ -3347,7 +3347,7 @@
     "tr": "Erzak bitti, askerlerin kaçıyor. Bir tarla bölgesi al ya da ordunu küçült.",
     "en": "Supplies ran out, your troops are deserting. Take a farm region or reduce your army.",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:567"
+      "apps/web/src/components/Omurga.tsx:575"
     ]
   },
   "tae8a6ae3": {
@@ -3536,7 +3536,7 @@
     "tr": "General bütün ordunu birden güçlendirir — tek bir ekipmandan büyük fark yaratır.",
     "en": "A general empowers your entire army at once — making a bigger difference than a single piece of equipment.",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:861"
+      "apps/web/src/components/Omurga.tsx:869"
     ]
   },
   "tcdfb3203": {
@@ -3544,8 +3544,8 @@
     "tr": "general kirala",
     "en": "hire general",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:829",
-      "apps/web/src/components/Omurga.tsx:852"
+      "apps/web/src/components/Omurga.tsx:837",
+      "apps/web/src/components/Omurga.tsx:860"
     ]
   },
   "t587175a3": {
@@ -3553,7 +3553,7 @@
     "tr": "General kirala",
     "en": "Hire general",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:860",
+      "apps/web/src/components/Omurga.tsx:868",
       "packages/shared/src/rehber.ts:166"
     ]
   },
@@ -3571,7 +3571,7 @@
     "tr": "Generallere git",
     "en": "Go to Generals",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:862"
+      "apps/web/src/components/Omurga.tsx:870"
     ]
   },
   "t021302a8": {
@@ -3686,7 +3686,7 @@
       "apps/web/src/screens/Hesap.tsx:211",
       "apps/web/src/screens/Kisla.tsx:285",
       "apps/web/src/screens/ParolaSifirla.tsx:62",
-      "apps/web/src/screens/Sehir.tsx:957"
+      "apps/web/src/screens/Sehir.tsx:969"
     ]
   },
   "t5b346f80": {
@@ -3825,8 +3825,8 @@
     "tr": "Haritada tarla ara",
     "en": "Search for a farm on the map",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:573",
-      "apps/web/src/components/Omurga.tsx:609"
+      "apps/web/src/components/Omurga.tsx:581",
+      "apps/web/src/components/Omurga.tsx:617"
     ]
   },
   "t87727ea5": {
@@ -3886,7 +3886,7 @@
     "tr": "Hazır olunca {0} üzerine yürüyeceksin.",
     "en": "When ready, you will march on {0}.",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:643"
+      "apps/web/src/components/Omurga.tsx:651"
     ]
   },
   "t67fd13ec": {
@@ -4180,7 +4180,7 @@
     "tr": "İlk akınına çık",
     "en": "Go on your first raid",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:720",
+      "apps/web/src/components/Omurga.tsx:728",
       "packages/shared/src/rehber.ts:163"
     ]
   },
@@ -4189,8 +4189,8 @@
     "tr": "ilk bölgeni al",
     "en": "take your first region",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:695",
-      "apps/web/src/components/Omurga.tsx:734"
+      "apps/web/src/components/Omurga.tsx:703",
+      "apps/web/src/components/Omurga.tsx:742"
     ]
   },
   "t2266f08c": {
@@ -4214,7 +4214,7 @@
     "tr": "inşa ediliyor",
     "en": "under construction",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:629"
+      "apps/web/src/screens/Sehir.tsx:641"
     ]
   },
   "tff2e7684": {
@@ -4222,7 +4222,7 @@
     "tr": "İnşa et",
     "en": "Construct",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:957"
+      "apps/web/src/screens/Sehir.tsx:969"
     ]
   },
   "t776ce02a": {
@@ -4502,7 +4502,7 @@
     "tr": "iyileşince saldır",
     "en": "attack when healed",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:630"
+      "apps/web/src/components/Omurga.tsx:638"
     ]
   },
   "tecfae1d8": {
@@ -4635,7 +4635,7 @@
     "en": "close",
     "nerede": [
       "apps/web/src/components/Basarimlar.tsx:77",
-      "apps/web/src/components/Omurga.tsx:452"
+      "apps/web/src/components/Omurga.tsx:460"
     ]
   },
   "t66e09026": {
@@ -4850,7 +4850,7 @@
     "tr": "kaynak ve ekipman",
     "en": "resources and equipment",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:725"
+      "apps/web/src/components/Omurga.tsx:733"
     ]
   },
   "tb7993191": {
@@ -4987,7 +4987,7 @@
     "tr": "Kışlada {0} eğit",
     "en": "Train {0} in the Barracks",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:783"
+      "apps/web/src/components/Omurga.tsx:791"
     ]
   },
   "t28f07577": {
@@ -4995,7 +4995,7 @@
     "tr": "Kışlaya git",
     "en": "Go to Barracks",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:627"
+      "apps/web/src/components/Omurga.tsx:635"
     ]
   },
   "t75c58153": {
@@ -5052,7 +5052,7 @@
     "tr": "Komuta kapasiten yetmiyor",
     "en": "Insufficient command capacity",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:744"
+      "apps/web/src/components/Omurga.tsx:752"
     ]
   },
   "t6070c855": {
@@ -5358,7 +5358,7 @@
     "tr": "Lordun iyileşiyor",
     "en": "Your lord is healing",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:620"
+      "apps/web/src/components/Omurga.tsx:628"
     ]
   },
   "t906de783": {
@@ -5383,7 +5383,7 @@
     "tr": "Lorduna ekipman kuşan",
     "en": "Equip your lord",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:817"
+      "apps/web/src/components/Omurga.tsx:825"
     ]
   },
   "t496f8dba": {
@@ -5409,7 +5409,7 @@
     "tr": "maliyet",
     "en": "cost",
     "nerede": [
-      "apps/web/src/components/ui.tsx:537"
+      "apps/web/src/components/ui.tsx:578"
     ]
   },
   "te474d5f1": {
@@ -5570,7 +5570,7 @@
     "tr": "Niteliklere git",
     "en": "Go to Stats",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:756"
+      "apps/web/src/components/Omurga.tsx:764"
     ]
   },
   "t92152373": {
@@ -5718,7 +5718,7 @@
     "tr": "Ordun aç",
     "en": "Your army is starving",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:566",
+      "apps/web/src/components/Omurga.tsx:574",
       "apps/web/src/screens/LordEkrani.tsx:294"
     ]
   },
@@ -5727,7 +5727,7 @@
     "tr": "Ordun ayakta. Önce bir düşman kampına in: kaybetsen bile toprağın gitmez, kazanırsan ilk demirini savaşarak alırsın.",
     "en": "Your army is on its feet. Descend on an enemy camp first: even if you lose, your land is safe, and if you win you take your first iron by fighting for it.",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:722"
+      "apps/web/src/components/Omurga.tsx:730"
     ]
   },
   "td35bcc13": {
@@ -5743,7 +5743,7 @@
     "tr": "Ordun dönüyor",
     "en": "Your army is returning",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:663"
+      "apps/web/src/components/Omurga.tsx:671"
     ]
   },
   "t320993d2": {
@@ -5751,7 +5751,7 @@
     "tr": "Ordun henüz yetmiyor.",
     "en": "Your army is not enough yet.",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:482"
+      "apps/web/src/components/Omurga.tsx:490"
     ]
   },
   "t99fe05c3": {
@@ -5759,7 +5759,7 @@
     "tr": "Ordun kampa iniyor. Dönünce ganimeti ve raporu görürsün.",
     "en": "Your army is arriving at the camp. You'll see the loot and report when they return.",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:689"
+      "apps/web/src/components/Omurga.tsx:697"
     ]
   },
   "tfa58b931": {
@@ -5791,7 +5791,7 @@
     "tr": "Ordun yetiyor. Bölge senin olunca kazanacakların:",
     "en": "Your army is enough. What you gain once the region is yours:",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:795"
+      "apps/web/src/components/Omurga.tsx:803"
     ]
   },
   "tb34abcf2": {
@@ -5807,7 +5807,7 @@
     "tr": "Ordun yolda",
     "en": "Your army is on the march",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:663",
+      "apps/web/src/components/Omurga.tsx:671",
       "apps/web/src/components/SaldiriOnizleme.tsx:181"
     ]
   },
@@ -5840,7 +5840,7 @@
     "tr": "Ordunu büyüt",
     "en": "Grow your army",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:764",
+      "apps/web/src/components/Omurga.tsx:772",
       "packages/shared/src/gunluk.ts:59"
     ]
   },
@@ -5849,8 +5849,8 @@
     "tr": "Ordunu kur",
     "en": "Build your army",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:476",
-      "apps/web/src/components/Omurga.tsx:764",
+      "apps/web/src/components/Omurga.tsx:484",
+      "apps/web/src/components/Omurga.tsx:772",
       "packages/shared/src/rehber.ts:159"
     ]
   },
@@ -6271,7 +6271,7 @@
     "tr": "saatte %5 firar",
     "en": "5% desertion per hour",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:570"
+      "apps/web/src/components/Omurga.tsx:578"
     ]
   },
   "tbebb3ab2": {
@@ -6686,7 +6686,7 @@
     "tr": "Seviye {0} / {1}",
     "en": "Level {0} / {1}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:919"
+      "apps/web/src/screens/Sehir.tsx:931"
     ]
   },
   "tc15fa5ea": {
@@ -6694,7 +6694,7 @@
     "tr": "Seviye {0} yap",
     "en": "Upgrade to Level {0}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:957"
+      "apps/web/src/screens/Sehir.tsx:969"
     ]
   },
   "t939a055a": {
@@ -6726,7 +6726,7 @@
     "tr": "Seviye yükseltmek için buradan seç: haritadaki dokunuş yapının içine giriyor.",
     "en": "Select here to upgrade level: tapping on the map enters the structure.",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:588"
+      "apps/web/src/screens/Sehir.tsx:600"
     ]
   },
   "t2e677d3f": {
@@ -6766,7 +6766,7 @@
     "tr": "Sıradaki hedefin {0}.",
     "en": "Your next target is {0}.",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:922"
+      "apps/web/src/components/Omurga.tsx:930"
     ]
   },
   "t6652a5fb": {
@@ -6881,7 +6881,7 @@
     "en": "next: {0}",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:296",
-      "apps/web/src/components/Omurga.tsx:432"
+      "apps/web/src/components/Omurga.tsx:440"
     ]
   },
   "t4f98c945": {
@@ -6889,7 +6889,7 @@
     "tr": "sonra: sıradaki adım",
     "en": "next: the upcoming step",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:493"
+      "apps/web/src/components/Omurga.tsx:501"
     ]
   },
   "tc2bc7132": {
@@ -7114,7 +7114,7 @@
     "en": "What you should do now",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:278",
-      "apps/web/src/components/Omurga.tsx:472"
+      "apps/web/src/components/Omurga.tsx:480"
     ]
   },
   "tb961283e": {
@@ -7166,7 +7166,7 @@
     "tr": "şu an {0} katkı",
     "en": "currently {0} contribution",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:823"
+      "apps/web/src/components/Omurga.tsx:831"
     ]
   },
   "t7f1c341e": {
@@ -7308,7 +7308,7 @@
     "tr": "Taht Kalesi — diyarın tek sahibi olabilirsin",
     "en": "Throne Citadel — you can be the sole owner of the realm",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:931"
+      "apps/web/src/components/Omurga.tsx:939"
     ]
   },
   "t7f1d33d3": {
@@ -7500,7 +7500,7 @@
     "tr": "toprağın güvende",
     "en": "your land is safe",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:692"
+      "apps/web/src/components/Omurga.tsx:700"
     ]
   },
   "ta971096d": {
@@ -7508,7 +7508,7 @@
     "tr": "toprak riski yok",
     "en": "no land risk",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:728"
+      "apps/web/src/components/Omurga.tsx:736"
     ]
   },
   "tde533a1f": {
@@ -7769,7 +7769,7 @@
     "tr": "yapı",
     "en": "structure",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:919"
+      "apps/web/src/screens/Sehir.tsx:931"
     ]
   },
   "tdd99127b": {
@@ -7777,7 +7777,7 @@
     "tr": "Yapılar",
     "en": "Structures",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:586"
+      "apps/web/src/screens/Sehir.tsx:598"
     ]
   },
   "td55cc683": {
@@ -7841,7 +7841,7 @@
     "tr": "yeni bir hedef seç",
     "en": "choose a new target",
     "nerede": [
-      "apps/web/src/components/Omurga.tsx:674"
+      "apps/web/src/components/Omurga.tsx:682"
     ]
   },
   "td5185ac1": {
@@ -8024,7 +8024,7 @@
     "en": "Loading",
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:122",
-      "apps/web/src/components/Omurga.tsx:473",
+      "apps/web/src/components/Omurga.tsx:481",
       "apps/web/src/components/ui.tsx:44"
     ]
   },

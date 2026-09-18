@@ -358,6 +358,7 @@ export function Bolum({
   className = '',
   id,
   sakin = false,
+  katlanir = false,
 }: {
   baslik?: string;
   yan?: ReactNode;
@@ -372,22 +373,62 @@ export function Bolum({
    * başlıkları tarıyor. Sakin bölüm, gövdesine bakmadan atlanabilmeli.
    */
   sakin?: boolean;
+  /**
+   * Bölüm katlanabilir olsun ve KAPALI açılsın.
+   *
+   * Oyuncunun cümlesi: "butonlar ve görseller üstüme üstüme geliyor."
+   * Bir ekranın kalabalığı öge sayısıdır, piksel değil — Şehir'de 92
+   * kelimeye karşı 29 düğme ve 27 görsel vardı. Katlamak, o sayıyı
+   * bilgiyi SİLMEDEN düşürüyor: bakmak isteyen bir dokunuşla açıyor.
+   *
+   * Yalnız İKİNCİL bölümler katlanmalı. Ekranın asıl işini katlamak
+   * sadeleştirme değil saklamaktır.
+   */
+  katlanir?: boolean;
 }) {
+  const [acik, setAcik] = useState(false);
+  const katli = katlanir === true;
+
+  const basligiCiz = (icerik: ReactNode) => (
+    <h2
+      className={`plaka baslik px-3.5 py-1.5 text-[12px] ${
+        sakin ? 'plaka-sakin text-sonuk' : 'text-altin'
+      }`}
+    >
+      {icerik}
+    </h2>
+  );
+
   return (
     <section id={id} className={className}>
-      {baslik && (
-        <header className="mb-2.5 flex items-center justify-between gap-2">
-          <h2
-            className={`plaka baslik px-3.5 py-1.5 text-[12px] ${
-              sakin ? 'plaka-sakin text-sonuk' : 'text-altin'
-            }`}
-          >
-            {baslik}
-          </h2>
-          {yan}
-        </header>
-      )}
-      {children}
+      {baslik &&
+        (katli ? (
+          <header className="mb-2.5 flex items-center justify-between gap-2">
+            {/* Başlığın KENDİSİ düğme: ayrı bir ok simgesi eklemek,
+                kalabalığı azaltmak için açılan bölümün üstüne bir öge
+                daha koymak olurdu. */}
+            <button
+              type="button"
+              onClick={() => setAcik((a) => !a)}
+              aria-expanded={acik}
+              className="bas text-left"
+            >
+              {basligiCiz(
+                <>
+                  {baslik}
+                  <span className="ml-1.5 text-sonuk">{acik ? '▾' : '▸'}</span>
+                </>,
+              )}
+            </button>
+            {yan}
+          </header>
+        ) : (
+          <header className="mb-2.5 flex items-center justify-between gap-2">
+            {basligiCiz(baslik)}
+            {yan}
+          </header>
+        ))}
+      {(!katli || acik) && children}
     </section>
   );
 }

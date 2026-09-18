@@ -306,7 +306,9 @@ kontrol('Yerleşim haritasında yapılar çizili', yapiSayisi > 4, `${yapiSayisi
  * HEPSİNDE görünmesi.
  */
 {
-  const serit = page.locator('button[aria-expanded]').first();
+  // Omurga şeridi kimliğiyle bulunuyor; `aria-expanded` bir kimlik
+  // değil, her katlanır ögede bulunan bir durum.
+  const serit = page.locator('[data-omurga-serit]').first();
   const eksik = [];
   for (const [yol, ad] of [
     ['sehir', 'Şehir'],

@@ -583,7 +583,19 @@ export function Sehir({
           Izgara aynı bilgiyi (ad, seviye, inşa hâli) ~200 pikselde ve
           HEPSİ AYNI ANDA görünür şekilde veriyor. Özet, yapının kendi
           paneline taşındı: oraya zaten dokunuyorsun. */}
-      <Bolum baslik="Yapılar" id="yapilar">
+      {/* KATLI ve KAPALI açılıyor.
+          Ölçüldü: Şehir 1182px, 29 düğme, 27 görsel — 92 kelimeye karşı.
+          Bunun 433 pikseli ve 13 düğmesi bu ızgaraydı ve ızgara, hemen
+          yukarıdaki yerleşim haritasıyla AYNI 13 yapıyı gösteriyor.
+
+          Izgaranın gerekçesi ("hangi yapı kaçıncı seviyede, tek bakışta")
+          yazıldığı gün doğruydu; bugün değil, çünkü harita artık her
+          yapının seviye rozetini taşıyor. Geriye tek işlevi kalıyor:
+          yapıların ADLARINI söylemek — haritadaki çizimler etiketsiz.
+
+          O yüzden silinmedi, katlandı. Ada bakmak isteyen bir dokunuşla
+          açıyor; herkes için ekranın üçte biri geri geliyor. */}
+      <Bolum baslik="Yapılar" id="yapilar" katlanir>
         <p className="mb-2 text-[12px] text-sonuk">
           Seviye yükseltmek için buradan seç: haritadaki dokunuş yapının içine giriyor.
         </p>

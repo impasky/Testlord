@@ -60,7 +60,10 @@ const kucult = (m) => (m ?? '').toLocaleLowerCase('tr');
  * panel açılıyor.
  */
 async function seridiAc() {
-  const serit = page.locator('button[aria-expanded]').first();
+  // `data-omurga-serit`: `button[aria-expanded]` idi ve "sayfadaki ilk
+  // açılır düğme omurgadır" varsayıyordu. Şehir'e katlanabilir bir
+  // bölüm eklenince o varsayım kırıldı ve on dört kontrol birden düştü.
+  const serit = page.locator('[data-omurga-serit]').first();
   if (!(await serit.count())) return false;
   if ((await serit.getAttribute('aria-expanded')) !== 'true') {
     await serit.click();

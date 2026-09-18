@@ -155,7 +155,7 @@ kontrol(
   // Ölçüt bu yüzden başlık değil, şeridin KENDİSİ: bir adım varsa şerit
   // var, yoksa hiç çizilmiyor.
   const omurgaBasligi = await page
-    .locator('button[aria-expanded]')
+    .locator('[data-omurga-serit]')
     .first()
     .isVisible()
     .catch(() => false);
@@ -353,7 +353,7 @@ kontrol(
       // Omurga `main` dışına, alt şeride taşındı; onu gövdede aramak
       // gerekiyor. Gezinme adlarıyla karışmıyor çünkü aranan şey metin
       // değil, şeridin kendi düğmesi.
-      const omurgaSeridi = document.querySelector('button[aria-expanded]') ? 1 : 0;
+      const omurgaSeridi = document.querySelector('[data-omurga-serit]') ? 1 : 0;
       return {
         diyar: v('DİYAR'),
         omurga: omurgaSeridi,

@@ -415,8 +415,16 @@ export function OmurgaSeridi({
           {/* Şeridin GÖVDESİ paneli açıyor, düğme İŞİ yapıyor. İkisini tek
               dokunuşa bağlasaydık oyuncu ayrıntıya bakmak isterken
               istemeden ekran değiştirirdi. */}
+          {/* `data-omurga-serit` bir TEST TUTAMACI ve gerekli.
+              Testler şeridi `button[aria-expanded]` ile buluyordu, yani
+              "sayfadaki ilk açılır düğme omurgadır" varsayımıyla. O
+              varsayım Şehir'e katlanabilir bir bölüm eklenince kırıldı:
+              test yanlış düğmeyi tıkladı ve on dört kontrol birden
+              düştü. `aria-expanded` bir kimlik değil, bir erişilebilirlik
+              durumu — ve her yeni katlanır öge bu tuzağı yeniden kurardı. */}
           <button
             type="button"
+            data-omurga-serit=""
             onClick={() => setAcik((a) => !a)}
             aria-expanded={acik}
             className="bas flex min-w-0 flex-1 items-center gap-2 py-1 text-left"
