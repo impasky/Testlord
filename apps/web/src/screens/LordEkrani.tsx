@@ -160,7 +160,7 @@ export function LordEkrani({
   });
   const [hata, setHata] = useState<string | null>(null);
   const [bekliyor, setBekliyor] = useState(false);
-  const [sekme, setSekme] = useState<'guc' | 'gorunus'>('guc');
+  const [sekme, setSekme] = useState<'guc' | 'kusam' | 'gorunus'>('guc');
 
   /**
    * Omurganın işaret ettiği bölüme kaydır.
@@ -362,10 +362,17 @@ export function LordEkrani({
       {/* Arma KOZMETİK: hiçbir sayıya dokunmuyor (docs/10 §1.1). Güç
           kartlarıyla aynı sayfada durunca oyuncu onu da bir güç seçimi
           sanıyordu ve ekran dört ayrı işi taşıyordu. Sekme ikisini
-          ayırıyor. */}
+          ayırıyor.
+
+          DENEME: "Güç" sekmesi ikiye bölündü. Tek sekmede nitelikler,
+          ekipman ve savaş gücü alt alta duruyordu ve ekran 1877 piksele
+          (2,2 ekran boyu) çıkıyordu — oyuncu kendi ekipmanını görmek için
+          iki nitelik kartı boyu kaydırmak zorundaydı. İkisi ZATEN ayrı
+          iş: nitelik puan dağıtmak, kuşam parça takmak. */}
       <AltSekmeler
         sekmeler={[
-          { key: 'guc', ad: 'Güç' },
+          { key: 'guc', ad: 'Nitelik' },
+          { key: 'kusam', ad: 'Kuşam' },
           { key: 'gorunus', ad: 'Görünüş' },
         ]}
         etkin={sekme}
@@ -383,61 +390,62 @@ export function LordEkrani({
               ) : undefined
             }
           >
-            <div className="space-y-2">
+            {/* DENEME: dört ayrı kart yerine BÖLÜNMÜŞ tek kart.
+                Dört kart, dört kenarlık ve aralarında üç boşluk demekti:
+                aynı dört satır için 320 piksel. Dördü de aynı şeyin
+                ölçüsü — ayrı kaplar olmaları için bir sebep yok; hemen
+                aşağıdaki "Savaş Gücü" zaten bu deseni kullanıyor. */}
+            <Kart className="divide-y divide-kenar/70 p-0">
               {STAT_KEYS.map((k) => {
                 const Ikon = STAT_IKONU[k];
                 const bilgi = STAT[k];
                 const mevcut = lord.stats[k];
                 const eklenen = dagitim[k];
                 return (
-                  <Kart key={k} className="p-3">
-                    <div className="flex items-center gap-3">
-                      <span
-                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
-                        style={{
-                          background: `color-mix(in srgb, ${bilgi.renk} 20%, transparent)`,
-                          color: bilgi.renk,
-                        }}
-                      >
-                        <Ikon boyut={20} />
-                      </span>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-baseline gap-2">
-                          <span className="baslik text-[13px]">{bilgi.ad}</span>
-                          <span className="tabular text-lg leading-none font-bold">
-                            {mevcut}
-                            {eklenen > 0 && <span className="text-yesil"> +{eklenen}</span>}
-                          </span>
-                        </div>
-                        <p className="mt-0.5 text-[11px] text-solgun">
-                          {bilgi.etki(mevcut + eklenen)}
-                        </p>
+                  <div key={k} className="flex items-center gap-3 px-3 py-2">
+                    <span
+                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
+                      style={{
+                        background: `color-mix(in srgb, ${bilgi.renk} 20%, transparent)`,
+                        color: bilgi.renk,
+                      }}
+                    >
+                      <Ikon boyut={18} />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-baseline gap-2">
+                        <span className="baslik text-[13px]">{bilgi.ad}</span>
+                        <span className="tabular text-lg leading-none font-bold">
+                          {mevcut}
+                          {eklenen > 0 && <span className="text-yesil"> +{eklenen}</span>}
+                        </span>
                       </div>
-                      {lord.statPoints > 0 && (
-                        <div className="flex shrink-0 gap-1.5">
-                          <button
-                            onClick={() =>
-                              setDagitim((d) => ({ ...d, [k]: Math.max(0, d[k] - 1) }))
-                            }
-                            disabled={eklenen === 0}
-                            className="bas baslik h-9 w-9 rounded-lg border border-kenar text-solgun disabled:opacity-30"
-                          >
-                            −
-                          </button>
-                          <button
-                            onClick={() => setDagitim((d) => ({ ...d, [k]: d[k] + 1 }))}
-                            disabled={kalan <= 0}
-                            className="bas baslik h-9 w-9 rounded-lg bg-yesil-koyu text-white disabled:opacity-30"
-                          >
-                            +
-                          </button>
-                        </div>
-                      )}
+                      <p className="mt-0.5 text-[11px] text-solgun">
+                        {bilgi.etki(mevcut + eklenen)}
+                      </p>
                     </div>
-                  </Kart>
+                    {lord.statPoints > 0 && (
+                      <div className="flex shrink-0 gap-1.5">
+                        <button
+                          onClick={() => setDagitim((d) => ({ ...d, [k]: Math.max(0, d[k] - 1) }))}
+                          disabled={eklenen === 0}
+                          className="bas baslik h-9 w-9 rounded-lg border border-kenar text-solgun disabled:opacity-30"
+                        >
+                          −
+                        </button>
+                        <button
+                          onClick={() => setDagitim((d) => ({ ...d, [k]: d[k] + 1 }))}
+                          disabled={kalan <= 0}
+                          className="bas baslik h-9 w-9 rounded-lg bg-yesil-koyu text-white disabled:opacity-30"
+                        >
+                          +
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 );
               })}
-            </div>
+            </Kart>
 
             {hata && <p className="mt-2 text-[13px] text-kirmizi">{hata}</p>}
 
@@ -460,81 +468,6 @@ export function LordEkrani({
             </p>
           </Bolum>
 
-          <Bolum baslik="Kuşanılan Ekipman">
-            {kusanilan.size === 0 && (
-              /* Altı boş kutu ve hiçbirinde "nereden alınır" yok — denetimde
-                 çıkan hâl buydu. Yuvalar ekipmanın nerede üretildiğini
-                 söylemiyorsa, oyuncu onları hiç dolmayan bir süs sanıyor. */
-              <p className="mb-2 text-[12px] leading-snug text-solgun">
-                Hiçbir yuvan dolu değil. Ekipman{' '}
-                <button
-                  type="button"
-                  className="text-altin underline underline-offset-2"
-                  onClick={() => onKapiAc('demirhane')}
-                >
-                  Demirhane
-                </button>
-                'de dövülür; ürettiğin parçayı buradan kuşanırsın.
-              </p>
-            )}
-            <div className="grid grid-cols-3 gap-2">
-              {EQUIP_SLOTS.map((slot) => {
-                const it = kusanilan.get(slot);
-                if (!it) {
-                  return (
-                    <button
-                      key={slot}
-                      type="button"
-                      onClick={() => onKapiAc('demirhane')}
-                      className="bas flex aspect-square flex-col items-center justify-center rounded-2xl border-2 border-dashed border-kenar bg-yuzey/50 p-2"
-                    >
-                      <span className="baslik text-[11px] text-sonuk">{SLOT_ADI[slot]}</span>
-                      <span className="mt-1 text-[11px] text-altin/70">Demirhane</span>
-                    </button>
-                  );
-                }
-                const renk = nadirlikRengi(it.rarity);
-                return (
-                  // Dolu yuva bir VİTRİN: kuşandığın şey görünüyor, adı ve tier'ı
-                  // altındaki şeritte duruyor. Oyuncunun ilk oturumdaki
-                  // şikâyetlerinden biri buydu — "gücümü en yüksek olanı kuşan
-                  // dedim, gücüm arttı, eee ne oldu şimdi". Sayı arttığını
-                  // görmek, bir şey kuşandığını görmekle aynı şey değil.
-                  <Kart key={slot} className="relative aspect-square p-0" vurgu={renk}>
-                    <Gorsel
-                      tur="ekipman"
-                      ad={`${slot}_t${it.tier}`}
-                      alt={`${SLOT_ADI[slot]} T${it.tier}`}
-                      boyut={128}
-                      className="h-full w-full"
-                      yedek={
-                        <span
-                          className="baslik flex h-full w-full items-center justify-center text-[20px]"
-                          style={{ color: renk }}
-                        >{`T${it.tier}`}</span>
-                      }
-                    />
-                    {/* Şerit görselin üstüne biner; kare zaten küçük, altına
-                    ayrı bir satır koymak illüstrasyona kalan yeri yarıya
-                    indiriyordu. */}
-                    <div className="absolute inset-x-0 bottom-0 flex items-baseline justify-between gap-1 bg-gradient-to-t from-gece via-gece/85 to-transparent px-1.5 pt-3 pb-1">
-                      <span className="baslik truncate text-[11px] text-solgun">
-                        {SLOT_ADI[slot]}
-                      </span>
-                      {/* ÜÇLÜ, `&&` DEĞİL. Şablon dizesinin içinde `&&`
-                          yanlış tarafa düşünce `false` METNE çevriliyor ve
-                          yükseltilmemiş her parçada "T2false" yazıyordu —
-                          CSS büyütünce "T2FALSE". Yuva adlarını da o
-                          uydurma sözcük kırpıyordu ("Sİ…", "Mİ…").
-                          `+Taht` ile aynı tuzak, aynı sebep. */}
-                      <span className="baslik shrink-0 text-[12px] text-altin">{`T${it.tier}${it.upgradeLevel > 0 ? `+${it.upgradeLevel}` : ''}`}</span>
-                    </div>
-                  </Kart>
-                );
-              })}
-            </div>
-          </Bolum>
-
           <Bolum baslik="Savaş Gücü">
             <Kart className="divide-y divide-kenar/70 p-0">
               {/* Satır adları TÜRKÇE ve kısaltmasız.
@@ -546,10 +479,20 @@ export function LordEkrani({
               {[
                 ['Ekipman gücü', formatSayi(lord.equipmentPower)],
                 ['Lord savaş katkısı', formatSayi(lord.lordContribution)],
-                [
-                  'Ordu donanımı',
-                  `Saldırı +%${Math.round(lord.gearBonus.saldiri * 100)} · Savunma +%${Math.round(lord.gearBonus.savunma * 100)} · Can +%${Math.round(lord.gearBonus.can * 100)}`,
-                ],
+                // Üç sıfır bir satır değil, gürültü. Ordu donanımı
+                // demirhanedeki ASKER ekipmanından geliyor; lordun kendi
+                // kuşamı bu satıra dokunmuyor. Hiç asker donanımı
+                // basmamış oyuncuya "+%0 · +%0 · +%0" göstermek, aşağıdaki
+                // "lordlara karşı" satırının sıfırını gizlememizin tam
+                // olarak aynı sebebiyle yanlıştı.
+                ...(lord.gearBonus.saldiri + lord.gearBonus.savunma + lord.gearBonus.can > 0
+                  ? ([
+                      [
+                        'Ordu donanımı',
+                        `Saldırı +%${Math.round(lord.gearBonus.saldiri * 100)} · Savunma +%${Math.round(lord.gearBonus.savunma * 100)} · Can +%${Math.round(lord.gearBonus.can * 100)}`,
+                      ],
+                    ] as [string, string][])
+                  : []),
                 // Bu iki satır YALNIZCA bir oyuncuyla savaştıysan var.
                 //
                 // Geçen turda "ELO"yu "Düello" diye çevirmiştim; ortada
@@ -576,6 +519,83 @@ export function LordEkrani({
             </Kart>
           </Bolum>
         </>
+      )}
+
+      {sekme === 'kusam' && (
+        <Bolum baslik="Kuşanılan Ekipman">
+          {kusanilan.size === 0 && (
+            /* Altı boş kutu ve hiçbirinde "nereden alınır" yok — denetimde
+                 çıkan hâl buydu. Yuvalar ekipmanın nerede üretildiğini
+                 söylemiyorsa, oyuncu onları hiç dolmayan bir süs sanıyor. */
+            <p className="mb-2 text-[12px] leading-snug text-solgun">
+              Hiçbir yuvan dolu değil. Ekipman{' '}
+              <button
+                type="button"
+                className="text-altin underline underline-offset-2"
+                onClick={() => onKapiAc('demirhane')}
+              >
+                Demirhane
+              </button>
+              'de dövülür; ürettiğin parçayı buradan kuşanırsın.
+            </p>
+          )}
+          <div className="grid grid-cols-3 gap-2">
+            {EQUIP_SLOTS.map((slot) => {
+              const it = kusanilan.get(slot);
+              if (!it) {
+                return (
+                  <button
+                    key={slot}
+                    type="button"
+                    onClick={() => onKapiAc('demirhane')}
+                    className="bas flex aspect-square flex-col items-center justify-center rounded-2xl border-2 border-dashed border-kenar bg-yuzey/50 p-2"
+                  >
+                    <span className="baslik text-[11px] text-sonuk">{SLOT_ADI[slot]}</span>
+                    <span className="mt-1 text-[11px] text-altin/70">Demirhane</span>
+                  </button>
+                );
+              }
+              const renk = nadirlikRengi(it.rarity);
+              return (
+                // Dolu yuva bir VİTRİN: kuşandığın şey görünüyor, adı ve tier'ı
+                // altındaki şeritte duruyor. Oyuncunun ilk oturumdaki
+                // şikâyetlerinden biri buydu — "gücümü en yüksek olanı kuşan
+                // dedim, gücüm arttı, eee ne oldu şimdi". Sayı arttığını
+                // görmek, bir şey kuşandığını görmekle aynı şey değil.
+                <Kart key={slot} className="relative aspect-square p-0" vurgu={renk}>
+                  <Gorsel
+                    tur="ekipman"
+                    ad={`${slot}_t${it.tier}`}
+                    alt={`${SLOT_ADI[slot]} T${it.tier}`}
+                    boyut={128}
+                    className="h-full w-full"
+                    yedek={
+                      <span
+                        className="baslik flex h-full w-full items-center justify-center text-[20px]"
+                        style={{ color: renk }}
+                      >{`T${it.tier}`}</span>
+                    }
+                  />
+                  {/* Şerit görselin üstüne biner; kare zaten küçük, altına
+                    ayrı bir satır koymak illüstrasyona kalan yeri yarıya
+                    indiriyordu. */}
+                  <div className="absolute inset-x-0 bottom-0 flex items-baseline justify-between gap-1 bg-gradient-to-t from-gece via-gece/85 to-transparent px-1.5 pt-3 pb-1">
+                    <span className="baslik truncate text-[11px] text-solgun">
+                      {SLOT_ADI[slot]}
+                    </span>
+                    {/* ÜÇLÜ, `&&` DEĞİL. Şablon dizesinin içinde `&&`
+                          yanlış tarafa düşünce `false` METNE çevriliyor ve
+                          yükseltilmemiş her parçada "T2false" yazıyordu —
+                          CSS büyütünce "T2FALSE". Yuva adlarını da o
+                          uydurma sözcük kırpıyordu ("Sİ…", "Mİ…").
+                          `+Taht` ile aynı tuzak, aynı sebep. */}
+                    <span className="baslik shrink-0 text-[12px] text-altin">{`T${it.tier}${it.upgradeLevel > 0 ? `+${it.upgradeLevel}` : ''}`}</span>
+                  </div>
+                </Kart>
+              );
+            })}
+          </div>
+        </Bolum>
       )}
 
       {sekme === 'gorunus' && <ArmaSecici mevcut={lord.arma} />}

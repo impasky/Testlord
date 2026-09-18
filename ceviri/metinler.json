@@ -239,7 +239,7 @@
     "tr": "'de dövülür; ürettiğin parçayı buradan kuşanırsın.",
     "en": "is forged at; you equip the crafted piece here.",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:477"
+      "apps/web/src/screens/LordEkrani.tsx:539"
     ]
   },
   "tea6f95f4": {
@@ -615,7 +615,7 @@
     "tr": "{0} galibiyet · {1} yenilgi",
     "en": "{0} victories · {1} defeats",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:560"
+      "apps/web/src/screens/LordEkrani.tsx:509"
     ]
   },
   "td06a4e7f": {
@@ -755,7 +755,7 @@
     "tr": "{0} PUAN",
     "en": "{0} POINTS",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:382"
+      "apps/web/src/screens/LordEkrani.tsx:389"
     ]
   },
   "t75469fdf": {
@@ -763,7 +763,7 @@
     "tr": "{0} puanı dağıt",
     "en": "Distribute {0} points",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:447"
+      "apps/web/src/screens/LordEkrani.tsx:455"
     ]
   },
   "t2a3b407a": {
@@ -914,7 +914,7 @@
     "tr": "{0} şikâyet karar bekliyor.",
     "en": "{0} reports are waiting for a decision.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:128"
+      "apps/web/src/screens/Hesap.tsx:130"
     ]
   },
   "t38001c91": {
@@ -933,7 +933,7 @@
     "en": "{0} T{1}",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:221",
-      "apps/web/src/screens/LordEkrani.tsx:507"
+      "apps/web/src/screens/LordEkrani.tsx:569"
     ]
   },
   "t96cbf421": {
@@ -1318,7 +1318,7 @@
     "en": "Turning on…",
     "nerede": [
       "apps/web/src/components/BildirimKarti.tsx:93",
-      "apps/web/src/screens/Hesap.tsx:177"
+      "apps/web/src/screens/Hesap.tsx:179"
     ]
   },
   "tb440b86f": {
@@ -1883,7 +1883,7 @@
     "tr": "Bekleyen şikâyet yok.",
     "en": "No pending reports.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:129"
+      "apps/web/src/screens/Hesap.tsx:131"
     ]
   },
   "t225a2417": {
@@ -1916,7 +1916,7 @@
     "en": "Notifications",
     "nerede": [
       "apps/web/src/screens/Gizlilik.tsx:88",
-      "apps/web/src/screens/Hesap.tsx:161"
+      "apps/web/src/screens/Hesap.tsx:163"
     ]
   },
   "taa1c034e": {
@@ -2177,7 +2177,7 @@
     "tr": "Bölgelerin sahipsiz kalır ve başkaları tarafından yeniden fethedilebilir.",
     "en": "Your regions become unowned and can be reconquered by others.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:222"
+      "apps/web/src/screens/Hesap.tsx:224"
     ]
   },
   "tada95535": {
@@ -2373,7 +2373,7 @@
     "tr": "Bu işlem geri alınamaz.",
     "en": "This action cannot be undone.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:222"
+      "apps/web/src/screens/Hesap.tsx:224"
     ]
   },
   "te4cb2870": {
@@ -2623,8 +2623,8 @@
     "en": "Blacksmith",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:397",
-      "apps/web/src/screens/LordEkrani.tsx:475",
-      "apps/web/src/screens/LordEkrani.tsx:492",
+      "apps/web/src/screens/LordEkrani.tsx:537",
+      "apps/web/src/screens/LordEkrani.tsx:554",
       "apps/web/src/screens/Sehir.tsx:554",
       "data/basarimlar.json:kumeler[3].ad",
       "data/binalar.json:binalar[3].ad",
@@ -2774,7 +2774,7 @@
     "tr": "Dil",
     "en": "Language",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:138"
+      "apps/web/src/screens/Hesap.tsx:140"
     ]
   },
   "taa9c8b99": {
@@ -3175,7 +3175,7 @@
     "tr": "Ekipman gücü",
     "en": "Equipment power",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:541"
+      "apps/web/src/screens/LordEkrani.tsx:480"
     ]
   },
   "tf8c29599": {
@@ -3247,7 +3247,7 @@
     "tr": "En az 8 karakter",
     "en": "At least 8 characters",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:193",
+      "apps/web/src/screens/Hesap.tsx:195",
       "apps/web/src/screens/ParolaSifirla.tsx:46"
     ]
   },
@@ -3691,7 +3691,7 @@
       "apps/web/src/screens/Generaller.tsx:126",
       "apps/web/src/screens/Giris.tsx:289",
       "apps/web/src/screens/Harita.tsx:1133",
-      "apps/web/src/screens/Hesap.tsx:209",
+      "apps/web/src/screens/Hesap.tsx:211",
       "apps/web/src/screens/Kisla.tsx:285",
       "apps/web/src/screens/ParolaSifirla.tsx:62",
       "apps/web/src/screens/Sehir.tsx:957"
@@ -3727,7 +3727,7 @@
     "tr": "Görünüş",
     "en": "Appearance",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:369"
+      "apps/web/src/screens/LordEkrani.tsx:376"
     ]
   },
   "tec5ebccb": {
@@ -3743,7 +3743,6 @@
     "tr": "Güç",
     "en": "Power",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:368",
       "apps/web/src/screens/LordEkrani.tsx:48"
     ]
   },
@@ -3810,7 +3809,7 @@
     "en": "What data we keep",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:263",
-      "apps/web/src/screens/Hesap.tsx:108"
+      "apps/web/src/screens/Hesap.tsx:110"
     ]
   },
   "ta565dc14": {
@@ -4025,7 +4024,7 @@
     "tr": "Hesabı Sil",
     "en": "Delete Account",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:218"
+      "apps/web/src/screens/Hesap.tsx:220"
     ]
   },
   "t30c7d34d": {
@@ -4035,7 +4034,7 @@
     "nerede": [
       "apps/api/src/routes/me.ts:63",
       "apps/web/src/api/client.ts:946",
-      "apps/web/src/screens/Hesap.tsx:245"
+      "apps/web/src/screens/Hesap.tsx:247"
     ]
   },
   "te485c18d": {
@@ -4043,7 +4042,7 @@
     "tr": "Hesabımı silmek istiyorum",
     "en": "I want to delete my account",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:228"
+      "apps/web/src/screens/Hesap.tsx:230"
     ]
   },
   "t43e24e9f": {
@@ -4059,7 +4058,7 @@
     "tr": "Hesabın, lordun, ordun ve ekipmanın kalıcı olarak silinir.",
     "en": "Your account, lord, army, and equipment will be permanently deleted.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:221"
+      "apps/web/src/screens/Hesap.tsx:223"
     ]
   },
   "t970d9a25": {
@@ -4076,7 +4075,7 @@
     "en": "Account",
     "nerede": [
       "apps/web/src/screens/Hesap.tsx:97",
-      "apps/web/src/screens/LordEkrani.tsx:588",
+      "apps/web/src/screens/LordEkrani.tsx:614",
       "packages/shared/src/types.ts:309"
     ]
   },
@@ -4109,7 +4108,7 @@
     "tr": "Hiçbir yuvan dolu değil. Ekipman",
     "en": "None of your slots are full. Equipment",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:469"
+      "apps/web/src/screens/LordEkrani.tsx:531"
     ]
   },
   "tdca95e4b": {
@@ -4618,7 +4617,7 @@
     "tr": "Kalıcı olarak sil",
     "en": "Permanently delete",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:270"
+      "apps/web/src/screens/Hesap.tsx:272"
     ]
   },
   "t0f86f2e3": {
@@ -4794,7 +4793,7 @@
     "tr": "Kaydediliyor...",
     "en": "Saving...",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:447"
+      "apps/web/src/screens/LordEkrani.tsx:455"
     ]
   },
   "t6e20f3cf": {
@@ -5161,7 +5160,8 @@
     "tr": "Kuşam",
     "en": "Loadout",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:267"
+      "apps/web/src/screens/LordEkrani.tsx:267",
+      "apps/web/src/screens/LordEkrani.tsx:375"
     ]
   },
   "taecbd481": {
@@ -5185,7 +5185,7 @@
     "tr": "Kuşanılan Ekipman",
     "en": "Equipped Gear",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:463"
+      "apps/web/src/screens/LordEkrani.tsx:525"
     ]
   },
   "t43eafc33": {
@@ -5217,7 +5217,7 @@
     "tr": "Kutuya HESABIMI SIL yaz",
     "en": "Type DELETE MY ACCOUNT in the box",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:241"
+      "apps/web/src/screens/Hesap.tsx:243"
     ]
   },
   "t11d481cd": {
@@ -5325,7 +5325,7 @@
     "tr": "Lord savaş katkısı",
     "en": "Lord battle contribution",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:542"
+      "apps/web/src/screens/LordEkrani.tsx:481"
     ]
   },
   "t10934225": {
@@ -5369,7 +5369,7 @@
     "tr": "Lordlara karşı",
     "en": "Against lords",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:560"
+      "apps/web/src/screens/LordEkrani.tsx:509"
     ]
   },
   "tc8f2ac29": {
@@ -5494,7 +5494,7 @@
     "tr": "Mevcut parola",
     "en": "Current password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:184"
+      "apps/web/src/screens/Hesap.tsx:186"
     ]
   },
   "t180f3ffb": {
@@ -5586,12 +5586,20 @@
       "apps/web/src/components/SaldiriOnizleme.tsx:44"
     ]
   },
+  "tbe9d2415": {
+    "grup": "arayuz",
+    "tr": "Nitelik",
+    "en": "Attributes",
+    "nerede": [
+      "apps/web/src/screens/LordEkrani.tsx:374"
+    ]
+  },
   "t0a59e858": {
     "grup": "arayuz",
     "tr": "Nitelikler",
     "en": "Stats",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:379"
+      "apps/web/src/screens/LordEkrani.tsx:386"
     ]
   },
   "t9465a68b": {
@@ -5680,7 +5688,7 @@
     "tr": "Onay",
     "en": "Confirmation",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:241"
+      "apps/web/src/screens/Hesap.tsx:243"
     ]
   },
   "t280ff98c": {
@@ -5706,7 +5714,7 @@
     "tr": "Ordu donanımı",
     "en": "Army gear",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:544",
+      "apps/web/src/screens/LordEkrani.tsx:491",
       "apps/web/src/screens/Sehir.tsx:64"
     ]
   },
@@ -5960,7 +5968,7 @@
     "tr": "Oyunun ne olduğunu, nasıl savaşıldığını ve seni koruyan kuralları baştan okumak istersen öğreticiyi tekrar açabilirsin.",
     "en": "If you want to read again what the game is, how to fight, and the rules that protect you, you can reopen the tutorial.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:168"
+      "apps/web/src/screens/Hesap.tsx:170"
     ]
   },
   "t9bf3ffd3": {
@@ -5985,7 +5993,7 @@
     "en": "Tutorial",
     "nerede": [
       "apps/web/src/components/Ogretici.tsx:129",
-      "apps/web/src/screens/Hesap.tsx:165"
+      "apps/web/src/screens/Hesap.tsx:167"
     ]
   },
   "t47d30263": {
@@ -6001,7 +6009,7 @@
     "tr": "Öğreticiyi tekrar oku",
     "en": "Reread the tutorial",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:177"
+      "apps/web/src/screens/Hesap.tsx:179"
     ]
   },
   "t96de5998": {
@@ -6105,7 +6113,7 @@
     "tr": "Parola Değiştir",
     "en": "Change Password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:182"
+      "apps/web/src/screens/Hesap.tsx:184"
     ]
   },
   "t0cb4198c": {
@@ -6129,7 +6137,7 @@
     "tr": "parola, öğretici, çıkış",
     "en": "password, tutorial, logout",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:589"
+      "apps/web/src/screens/LordEkrani.tsx:615"
     ]
   },
   "t53526980": {
@@ -6145,7 +6153,7 @@
     "tr": "Parolan",
     "en": "Your password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:232"
+      "apps/web/src/screens/Hesap.tsx:234"
     ]
   },
   "t0fb7e6b4": {
@@ -6209,7 +6217,7 @@
     "tr": "Parolayı değiştir",
     "en": "Change the password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:209"
+      "apps/web/src/screens/Hesap.tsx:211"
     ]
   },
   "tbc71d6a3": {
@@ -6226,7 +6234,7 @@
     "tr": "Puan dağıtımı kalıcıdır. Liderlik ordunun büyüklüğünü ve general slotunu belirler.",
     "en": "Point distribution is permanent. Leadership determines army size and general slots.",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:459"
+      "apps/web/src/screens/LordEkrani.tsx:467"
     ]
   },
   "t8aa587ec": {
@@ -6383,7 +6391,7 @@
     "tr": "Saldırı +%{0} · Savunma +%{1} · Can +%{2}",
     "en": "Attack +{0}% · Defense +{1}% · Health +{2}%",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:545"
+      "apps/web/src/screens/LordEkrani.tsx:492"
     ]
   },
   "t293989d5": {
@@ -6456,7 +6464,7 @@
     "tr": "Savaş derecen",
     "en": "Battle rating",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:561"
+      "apps/web/src/screens/LordEkrani.tsx:510"
     ]
   },
   "t951ee66f": {
@@ -6464,7 +6472,7 @@
     "tr": "Savaş Gücü",
     "en": "Battle Power",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:532"
+      "apps/web/src/screens/LordEkrani.tsx:471"
     ]
   },
   "tc54d661e": {
@@ -6617,7 +6625,7 @@
     "tr": "Seçim bu cihazda kalır, hesabına bağlı değil. Dil değişince oyun bir kez yenilenir.",
     "en": "The choice stays on this device, it is not tied to your account. When the language changes the game reloads once.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:156"
+      "apps/web/src/screens/Hesap.tsx:158"
     ]
   },
   "tff019924": {
@@ -6771,7 +6779,7 @@
     "tr": "Sıfırla",
     "en": "Reset",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:454"
+      "apps/web/src/screens/LordEkrani.tsx:462"
     ]
   },
   "t481ea9d9": {
@@ -6829,7 +6837,7 @@
     "tr": "Siliniyor…",
     "en": "Deleting…",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:270"
+      "apps/web/src/screens/Hesap.tsx:272"
     ]
   },
   "t51f40fea": {
@@ -6982,7 +6990,7 @@
     "tr": "Susturma",
     "en": "Mute",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:113"
+      "apps/web/src/screens/Hesap.tsx:115"
     ]
   },
   "t16aafb87": {
@@ -7014,7 +7022,7 @@
     "tr": "Süre dolunca ittifak sohbetine yeniden yazabilirsin. Oyunun geri kalanı açık.",
     "en": "You can write in the alliance chat again when the time is up. The rest of the game is open.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:117"
+      "apps/web/src/screens/Hesap.tsx:119"
     ]
   },
   "t49026d3c": {
@@ -7120,7 +7128,7 @@
     "tr": "Şikâyet kuyruğu",
     "en": "Report queue",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:132"
+      "apps/web/src/screens/Hesap.tsx:134"
     ]
   },
   "tca312c06": {
@@ -7240,7 +7248,7 @@
       "apps/web/src/screens/Akin.tsx:242",
       "apps/web/src/screens/Demirhane.tsx:225",
       "apps/web/src/screens/Demirhane.tsx:233",
-      "apps/web/src/screens/LordEkrani.tsx:514"
+      "apps/web/src/screens/LordEkrani.tsx:576"
     ]
   },
   "t5170099f": {
@@ -7256,7 +7264,7 @@
     "tr": "T{0}{1}",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:524"
+      "apps/web/src/screens/LordEkrani.tsx:592"
     ]
   },
   "t4d7ae40a": {
@@ -7699,7 +7707,7 @@
     "nerede": [
       "apps/web/src/components/IttifakDuyuru.tsx:83",
       "apps/web/src/components/SikayetSayfasi.tsx:114",
-      "apps/web/src/screens/Hesap.tsx:262"
+      "apps/web/src/screens/Hesap.tsx:264"
     ]
   },
   "teacb0314": {
@@ -7940,7 +7948,7 @@
     "tr": "Yeni parola",
     "en": "New password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:193",
+      "apps/web/src/screens/Hesap.tsx:195",
       "apps/web/src/screens/ParolaSifirla.tsx:46"
     ]
   },
@@ -8033,7 +8041,7 @@
     "tr": "Yönetim",
     "en": "Administration",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:124"
+      "apps/web/src/screens/Hesap.tsx:126"
     ]
   },
   "t10956f9e": {

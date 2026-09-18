@@ -204,7 +204,7 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
   "T{0}"
       apps/web/src/screens/Akin.tsx:242
   "T{0}{1}"
-      apps/web/src/screens/LordEkrani.tsx:524
+      apps/web/src/screens/LordEkrani.tsx:592
   "üst üste giriyorsun."
       apps/web/src/components/GunlukKart.tsx:88
   "ve"
