@@ -948,5 +948,29 @@
     ],
     "cekismeli_vilayetler": ["gunbati", "aksu"],
     "taht_vilayeti": "taht"
+  },
+  "elmas": {
+    "_aciklama": "Oyun ICINDE KAZANILAN para birimi. Satin alinmiyor — magaza kapsam disi.",
+    "_kati_kural": "ELMAS GUC SATIN ALMAZ, yalniz ZAMAN kisaltir. Guc satan bir para birimi cok oynayani kalici olarak guclu yapar ve kartopu geri doner. Elmasla kisaltilan bir yuruyusun sonucu, beklenerek yapilaninkiyle AYNI.",
+    "akin_kisaltma": {
+      "dakika_basina": 2,
+      "asgari": 1,
+      "_formul": "maliyet = ceil(kalan_dakika * dakika_basina), en az asgari",
+      "_neden_dogrusal": "Sabit fiyat olsaydi uzun yuruyusu kisaltmak bedavaya gelirdi; katlanan fiyat ise kisa beklemeyi absurd pahali yapardi."
+    },
+    "kazanim": {
+      "gunluk_gorev_tamamlama": 5,
+      "akin_sef_grubu": 3,
+      "basarim": 10,
+      "_neden_bunlar": "Ucu de OYNAYARAK kazaniliyor ve ucu de tekrar edilebilir degil (gunluk bir kez, sef grubu haritada bir kez, basarim bir kez). Siniran bir musluk, elmasi degerli tutuyor."
+    }
+  },
+  "yeni_oyuncu": {
+    "_aciklama": "Kayittan sonraki ilk 24 saat. Kalici avantaj DEGIL — ilk oturumu akici kilan gecici bir destek. Bittiginde oyuncu herkesle ayni sartlarda.",
+    "sure_saat": 24,
+    "egitim_hizlandirma": 0.25,
+    "yuruyus_hizlandirma": 0.15,
+    "baslangic_elmasi": 15,
+    "_neden_kucuk": "Buyuk bir bonus, bittiginde oyunu yavaslamis gibi gosterir ve birakma sebebi olur. Kucuk bir bonus hizlandirir ama beklentiyi bozmaz."
   }
 }

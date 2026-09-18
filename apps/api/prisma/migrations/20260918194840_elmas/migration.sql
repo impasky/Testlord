@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Lord" ADD COLUMN     "elmas" INTEGER NOT NULL DEFAULT 0;

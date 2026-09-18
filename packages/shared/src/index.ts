@@ -16,6 +16,7 @@ export * from './progression.js';
 export * from './equipment.js';
 export * from './generals.js';
 export * from './bolge-adi.js';
+export * from './elmas.js';
 export * from './etki-adi.js';
 export * from './medeniyet.js';
 export * from './combat.js';

@@ -1334,7 +1334,7 @@
     "tr": "Akın",
     "en": "Raid",
     "nerede": [
-      "apps/api/src/routes/akin.ts:355",
+      "apps/api/src/routes/akin.ts:370",
       "apps/web/src/components/MobilKabuk.tsx:63",
       "apps/web/src/screens/Akin.tsx:108"
     ]
@@ -5280,8 +5280,8 @@
     "nerede": [
       "apps/api/src/routes/rankings.ts:265",
       "apps/api/src/routes/ticaret.ts:58",
-      "apps/api/src/services/lord.ts:295",
-      "apps/api/src/services/lord.ts:536",
+      "apps/api/src/services/lord.ts:308",
+      "apps/api/src/services/lord.ts:554",
       "apps/web/src/components/MobilKabuk.tsx:65"
     ]
   },
@@ -11084,8 +11084,8 @@
     "tr": "Akın grubu",
     "en": "Raid group",
     "nerede": [
-      "apps/api/src/routes/akin.ts:186",
-      "apps/api/src/routes/akin.ts:216"
+      "apps/api/src/routes/akin.ts:189",
+      "apps/api/src/routes/akin.ts:219"
     ]
   },
   "t86efa41b": {
@@ -11093,8 +11093,8 @@
     "tr": "Akın haritası",
     "en": "Raid map",
     "nerede": [
-      "apps/api/src/routes/akin.ts:185",
-      "apps/api/src/routes/akin.ts:215"
+      "apps/api/src/routes/akin.ts:188",
+      "apps/api/src/routes/akin.ts:218"
     ]
   },
   "tbe1eee4b": {
@@ -11102,7 +11102,7 @@
     "tr": "Akın henüz sonuçlanmadı.",
     "en": "Raid has not concluded yet.",
     "nerede": [
-      "apps/api/src/routes/akin.ts:356"
+      "apps/api/src/routes/akin.ts:371"
     ]
   },
   "tda37ec1b": {
@@ -11126,7 +11126,7 @@
     "tr": "Aynı anda en fazla {0} akın",
     "en": "Maximum of {0} raids at once",
     "nerede": [
-      "apps/api/src/routes/akin.ts:254"
+      "apps/api/src/routes/akin.ts:257"
     ]
   },
   "t1e7abb3f": {
@@ -11158,7 +11158,7 @@
     "tr": "Bağlantı geçersiz ya da süresi dolmuş. Yeniden sıfırlama iste.",
     "en": "Link is invalid or expired. Request a reset again.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:289"
+      "apps/api/src/routes/auth.ts:293"
     ]
   },
   "tf9754a95": {
@@ -11166,7 +11166,7 @@
     "tr": "Başkentin düştü",
     "en": "Your capital fell",
     "nerede": [
-      "apps/api/src/services/lord.ts:601"
+      "apps/api/src/services/lord.ts:619"
     ]
   },
   "ta3ff14a1": {
@@ -11289,7 +11289,7 @@
     "tr": "Bölge ele geçirildi",
     "en": "Region captured",
     "nerede": [
-      "apps/api/src/services/lord.ts:603"
+      "apps/api/src/services/lord.ts:621"
     ]
   },
   "tb08bcfd6": {
@@ -11314,6 +11314,14 @@
     "en": "The region is already at the max level.",
     "nerede": [
       "apps/api/src/routes/map.ts:511"
+    ]
+  },
+  "t901ec29a": {
+    "grup": "sunucu",
+    "tr": "Böyle bir akın yok.",
+    "en": "No such raid.",
+    "nerede": [
+      "apps/api/src/routes/akin.ts:415"
     ]
   },
   "ta73cae87": {
@@ -11373,6 +11381,30 @@
     "nerede": [
       "apps/api/src/services/adDenetimi.ts:110",
       "apps/api/src/services/adDenetimi.ts:99"
+    ]
+  },
+  "t0a2ef68f": {
+    "grup": "sunucu",
+    "tr": "Bu akın çoktan bitti.",
+    "en": "This raid has already ended.",
+    "nerede": [
+      "apps/api/src/routes/akin.ts:416"
+    ]
+  },
+  "td2f98d0e": {
+    "grup": "sunucu",
+    "tr": "Bu akın zaten varmış, çözülmesini bekle.",
+    "en": "This raid has already arrived — wait for it to resolve.",
+    "nerede": [
+      "apps/api/src/routes/akin.ts:421"
+    ]
+  },
+  "tdf04e28b": {
+    "grup": "sunucu",
+    "tr": "Bu akını erkene almak {0} elmas. Sende {1} var.",
+    "en": "Rushing this raid costs {0} diamonds. You have {1}.",
+    "nerede": [
+      "apps/api/src/routes/akin.ts:431"
     ]
   },
   "tf38c385e": {
@@ -11476,7 +11508,7 @@
     "tr": "Bu grup henüz toparlanmadı. Yenilenmesini bekle.",
     "en": "This group has not recovered yet. Wait for it to replenish.",
     "nerede": [
-      "apps/api/src/routes/akin.ts:283"
+      "apps/api/src/routes/akin.ts:286"
     ]
   },
   "t13668100": {
@@ -11493,7 +11525,7 @@
     "tr": "Bu harita henüz açık değil.",
     "en": "This map is not open yet.",
     "nerede": [
-      "apps/api/src/routes/akin.ts:273"
+      "apps/api/src/routes/akin.ts:276"
     ]
   },
   "t6672b319": {
@@ -11655,7 +11687,7 @@
     "tr": "Dizilim 16 kare olmalı.",
     "en": "Formation must be 16 squares.",
     "nerede": [
-      "apps/api/src/routes/akin.ts:52",
+      "apps/api/src/routes/akin.ts:55",
       "apps/api/src/routes/map.ts:70",
       "apps/api/src/routes/me.ts:38"
     ]
@@ -11745,7 +11777,7 @@
     "tr": "E-posta veya parola hatalı.",
     "en": "Email or password incorrect.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:228"
+      "apps/api/src/routes/auth.ts:232"
     ]
   },
   "t61d3205f": {
@@ -11779,7 +11811,7 @@
     "tr": "Evde yeterli {0} yok.",
     "en": "Not enough {0} at home.",
     "nerede": [
-      "apps/api/src/routes/akin.ts:88",
+      "apps/api/src/routes/akin.ts:91",
       "apps/api/src/routes/map.ts:793",
       "apps/api/src/routes/map.ts:98"
     ]
@@ -11885,7 +11917,7 @@
     "tr": "İşin bitti",
     "en": "You're done",
     "nerede": [
-      "apps/api/src/services/lord.ts:604"
+      "apps/api/src/services/lord.ts:622"
     ]
   },
   "t75da2234": {
@@ -12141,7 +12173,7 @@
     "tr": "Lordlar Çağı — parola sıfırlama",
     "en": "Age of Lords — password reset",
     "nerede": [
-      "apps/api/src/routes/auth.ts:265"
+      "apps/api/src/routes/auth.ts:269"
     ]
   },
   "t20970dae": {
@@ -12247,7 +12279,7 @@
     "tr": "Ordun eve döndü",
     "en": "Your army returned home",
     "nerede": [
-      "apps/api/src/services/lord.ts:602"
+      "apps/api/src/services/lord.ts:620"
     ]
   },
   "t69d0d616": {
@@ -12312,7 +12344,7 @@
     "tr": "Parolanı sıfırlamak için {0} dakika içinde bu bağlantıyı aç:\n\n{1}\n\nBu isteği sen yapmadıysan hiçbir şey yapmana gerek yok; parolan değişmedi.",
     "en": "To reset your password open this link within {0} minutes:\n\n{1}\n\nIf you did not make this request you need to do nothing; your password has not changed.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:266"
+      "apps/api/src/routes/auth.ts:270"
     ]
   },
   "tea8d3f85": {
@@ -12369,7 +12401,7 @@
     "tr": "Savaş kaybedildi",
     "en": "Battle lost",
     "nerede": [
-      "apps/api/src/services/lord.ts:600"
+      "apps/api/src/services/lord.ts:618"
     ]
   },
   "t668e46ee": {
@@ -12497,7 +12529,7 @@
     "tr": "Toprağın saldırı altında",
     "en": "Your land is under attack",
     "nerede": [
-      "apps/api/src/services/lord.ts:599"
+      "apps/api/src/services/lord.ts:617"
     ]
   },
   "t20afa09d": {

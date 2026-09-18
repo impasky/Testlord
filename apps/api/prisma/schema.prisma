@@ -111,6 +111,9 @@ model Lord {
   statPoints   Int @default(0)
 
   altin Int @default(0)
+  /// Elmas: oyun ICINDE kazanilan para birimi, satin alinmiyor.
+  /// Yalniz ZAMAN kisaltir, guc satmaz (packages/shared/src/elmas.ts).
+  elmas Int @default(0)
   demir Int @default(0)
   erzak Int @default(0)
 

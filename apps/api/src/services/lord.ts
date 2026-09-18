@@ -43,6 +43,7 @@ import {
   type EquippedItem,
   type GearLineKey,
   type GeneralBonus,
+  yeniOyuncuDurumu,
   type Rarity,
   type Resources,
   type UnitType,
@@ -69,6 +70,18 @@ export interface LordState {
   stats: { guc: number; dayaniklilik: number; liderlik: number; kurnazlik: number };
   statPoints: number;
   resources: Resources;
+  /**
+   * Elmas — kaynaklardan AYRI tutuluyor, `Resources` içine konmadı.
+   *
+   * `Resources` altın/demir/erzak demek ve depo kapasitesi, gelir,
+   * yağma, ticaret, üretim hep o üçlü üzerinden çalışıyor. Elması
+   * oraya katmak, onu yağmalanabilir ve depo sınırına takılan bir
+   * şeye çevirirdi; oysa elmas oynayarak kazanılıyor ve kimse
+   * kimsenin elmasını alamıyor.
+   */
+  elmas: number;
+  /** İlk 24 saatlik yeni oyuncu bonusu — bittiyse etkin false. */
+  yeniOyuncu: { etkin: boolean; kalanSaniye: number };
   storageCapacity: number;
   /** Bina seviyeleri: arayüz kapasiteleri sunucuyla aynı yerden hesaplasın. */
   binalar: Record<string, number>;
@@ -418,6 +431,11 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
     },
     statPoints: lord.statPoints,
     resources: result.resources,
+    elmas: lord.elmas,
+    yeniOyuncu: (() => {
+      const d = yeniOyuncuDurumu(lord.createdAt);
+      return { etkin: d.etkin, kalanSaniye: d.kalanSaniye };
+    })(),
     storageCapacity: storageCapacity(lord.level, arastirmaBonusuOku(lord), binalariOku(lord)),
     /*
      * Bina seviyeleri arayüze de gidiyor.

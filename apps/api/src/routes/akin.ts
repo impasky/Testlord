@@ -20,8 +20,11 @@ import {
   akinHaritasi,
   akinOrdusuEngeli,
   akinSuresiSn,
+  bonusluSure,
   dizilimGecerliMi,
+  kisaltmaBedeli,
   varsayilanDizilim,
+  yeniOyuncuDurumu,
   type Army,
   type UnitType,
 } from '@lordlar/shared';
@@ -222,7 +225,7 @@ export async function akinRoutes(app: FastifyInstance): Promise<void> {
     return prisma.$transaction(async (tx) => {
       const lord = await tx.lord.findUniqueOrThrow({
         where: { id: lordId },
-        select: { worldId: true, level: true, woundedUntil: true },
+        select: { worldId: true, level: true, woundedUntil: true, createdAt: true },
       });
 
       const simdi = new Date();
@@ -301,7 +304,19 @@ export async function akinRoutes(app: FastifyInstance): Promise<void> {
         else await tx.armyUnit.update({ where: { id: row.id }, data: { count: kalan } });
       }
 
-      const sureSn = akinSuresiSn(body.haritaKey, body.grupNo);
+      /*
+       * Yeni oyuncu bonusu yürüyüşü kısaltıyor (ilk 24 saat).
+       *
+       * Bonus HIZLANDIRIYOR, GÜÇLENDİRMİYOR: akının sonucu, garnizonu
+       * ve ödülü aynı — yalnız daha erken geliyor. Güç veren bir açılış
+       * bonusu bittiğinde oyuncu zayıflamış hisseder; süre veren bonus
+       * yalnız ilk oturumu akıcı kılar.
+       */
+      const yeni = yeniOyuncuDurumu(lord.createdAt, simdi);
+      const sureSn = bonusluSure(
+        akinSuresiSn(body.haritaKey, body.grupNo),
+        yeni.yuruyusHizlandirma,
+      );
       const akin = await tx.akin.create({
         data: {
           worldId: lord.worldId,
@@ -371,5 +386,57 @@ export async function akinRoutes(app: FastifyInstance): Promise<void> {
       departAt: akin.departAt,
       arriveAt: akin.arriveAt,
     };
+  });
+
+  /**
+   * Akını ELMASLA erkene al.
+   *
+   * ELMAS GÜÇ SATIN ALMIYOR, ZAMAN SATIN ALIYOR. Bu ucun yaptığı tek şey
+   * `arriveAt`i şimdiye çekmek: savaş aynı motorla, aynı garnizona karşı,
+   * aynı orduyla çözülüyor ve ödül de aynı. Oyuncu beklemeyi atlıyor,
+   * sonucu değiştirmiyor.
+   *
+   * Bedel SUNUCUDA hesaplanıyor. İstemcinin gönderdiği bir fiyata
+   * güvenmek, elmasları bedavaya çeviren tek satır olurdu.
+   *
+   * Çözümü worker yapıyor, bu uç değil: `arriveAt` geçmişe çekiliyor ve
+   * bir sonraki turda normal akışla çözülüyor. Burada çözseydik akın
+   * çözümünün iki ayrı kopyası olurdu ve ikisi er ya da geç ayrışırdı.
+   */
+  app.post('/akin/:id/kisalt', { preHandler: requireAuth }, async (req) => {
+    const lordId = await findLordByUser(req.user.userId);
+    const { id } = z.object({ id: z.string().min(1) }).parse(req.params);
+
+    return prisma.$transaction(async (tx) => {
+      const akin = await tx.akin.findFirst({
+        where: { id, lordId },
+        select: { id: true, arriveAt: true, resolved: true },
+      });
+      if (!akin) throw new GameError('Böyle bir akın yok.', 404, 'AKIN_YOK');
+      if (akin.resolved) throw new GameError('Bu akın çoktan bitti.', 400, 'AKIN_BITTI');
+
+      const simdi = new Date();
+      const kalanSn = Math.ceil((akin.arriveAt.getTime() - simdi.getTime()) / 1000);
+      if (kalanSn <= 0) {
+        throw new GameError('Bu akın zaten varmış, çözülmesini bekle.', 400, 'BEKLEME_YOK');
+      }
+
+      const bedel = kisaltmaBedeli(kalanSn);
+      const lord = await tx.lord.findUniqueOrThrow({
+        where: { id: lordId },
+        select: { elmas: true },
+      });
+      if (lord.elmas < bedel) {
+        throw new GameError(
+          `Bu akını erkene almak ${bedel} elmas. Sende ${lord.elmas} var.`,
+          400,
+          'YETERSIZ_ELMAS',
+        );
+      }
+
+      await tx.lord.update({ where: { id: lordId }, data: { elmas: { decrement: bedel } } });
+      await tx.akin.update({ where: { id: akin.id }, data: { arriveAt: simdi } });
+      return { harcanan: bedel, kalanElmas: lord.elmas - bedel, kisaltilanSaniye: kalanSn };
+    });
   });
 }

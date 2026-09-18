@@ -1,4 +1,4 @@
-import { B, GEAR_LINES, WORLD_MAP } from '@lordlar/shared';
+import { B, BASLANGIC_ELMASI, GEAR_LINES, WORLD_MAP } from '@lordlar/shared';
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { hashPassword, verifyPassword } from '../auth.js';
@@ -201,6 +201,10 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
           altin: start.altin,
           demir: start.demir,
           erzak: start.erzak,
+          // Küçük bir elmas kesesi. Para biriminin ne işe yaradığını
+          // ANLATMAK yerine bir kez KULLANDIRMAK, onu öğretmenin tek
+          // işe yarayan yolu; cüzdanı boş oyuncu düğmeye hiç basmaz.
+          elmas: BASLANGIC_ELMASI,
           homeBolgeId: home,
           // Kamp bir yokluk değil, küçük bir başlangıç: bir çadır ve bir
           // talimgah. Sıfırdan başlasaydı öğreticinin ilk cümlesi ("asker
