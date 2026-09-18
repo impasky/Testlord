@@ -876,5 +876,69 @@
     "_susturma_sureleri": "Yoneticinin secebilecegi sureler: bir saat (kafa dinlendir), bir gun (bugun olmaz), bir hafta (ciddi). Kalici susturma YOK ve bilerek: kalici susturma hesabi silmenin sessiz hali, oyuncuya da neden konusamadigini hic soylemeyen bir cezadir. Tekrarlayani atmak ittifak liderinin isi, susturmak yoneticinin.",
     "susturma_gecmis_sayisi": 10,
     "_susturma_gecmisi": "Yonetici kuyrukta bir lorda bakarken son bu kadar moderasyon kaydini gorur. Karar gecmise bakmadan verilemez: ilk kez mi, besinci kez mi ayni sey."
+  },
+  "medeniyetler": {
+    "_aciklama": "Dort medeniyet: harita katmani (docs/16). Kimlikler UYDURULMADI, vilayetin kendi bolge karisimindan turedi: demirvadi 4 kale+3 maden+1 tarla (demirci, ac), kuzeymark 4 kale (sinir muhafizi), karaorman 6 koy+1 kale (orman halki), tasgecit 8 sehir (tuccar).",
+    "_cekirdek_notu": "cekirdek_bolge_id listeleri world-map.json vilayet merkezine en yakin bes bolgeden HESAPLANDI (tools/medeniyet-cekirdek.py). Harita degisirse yeniden uretilir; elle duzenlenmez.",
+    "yurt_basina_cekirdek": 5,
+    "cekirdek_yatirim": {
+      "taban_maliyet": {
+        "altin": 4000,
+        "demir": 2500,
+        "erzak": 1500
+      },
+      "seviye_carpani": 2.0,
+      "azami_seviye": 10,
+      "_formul": "seviye_maliyeti = taban * seviye_carpani^(N-1) * aktif_uye  (docs/16 §7)",
+      "_neden_uye_ile": "Sabit maliyet olsaydi kalabalik medeniyet cekirdegi hizli buyutur, daha cok kazanir, daha cok oyuncu ceker: kartopu fraksiyon olceginde. Uyeyle olceklenen maliyet buyuk medeniyeti daha hizli degil sadece daha kalabalik yapiyor."
+    },
+    "garnizon_payi": {
+      "_formul": "pay_i = bolge_geliri * (yer_i / toplam_yer)  (docs/16 §6)",
+      "_neden_tavansiz": "Tavan \"kim once doldurursa\" yarisi yaratir. Oransal bolusum kendi kendini dengeliyor: kalabalik bolgede yer basina kazanc dusuyor, oyuncu bos bolgeye kayiyor.",
+      "asgari_yer": 1
+    },
+    "fayda_puani": {
+      "garnizon_saat_basina_yer_basina": 0.5,
+      "fetihe_katilim": 25,
+      "savunmaya_katilim": 15,
+      "cekirdek_bagis_bin_kaynak_basina": 10,
+      "_kati_kural": "FAYDA PUANI GUC SATIN ALMAZ (docs/16 §9). Kimlik, kolaylik ve icerik erisimi alir. Guc yalniz cekirdek yatirimindan gelir ve herkese esit isler."
+    },
+    "liste": [
+      {
+        "id": "demirocagi",
+        "ad": "Demir Ocağı",
+        "yurt": "demirvadi",
+        "renk": "#c2703a",
+        "ozet": "Kalelerin ve madenlerin halkı; toprağı kıt, çeliği bol.",
+        "cekirdek_bolge_id": [68, 58, 18, 105, 48]
+      },
+      {
+        "id": "kuzeyuc",
+        "ad": "Kuzey Ucu",
+        "yurt": "kuzeymark",
+        "renk": "#5b8fc9",
+        "ozet": "Sınır muhafızları; dört kaleyle kuzeyin kapısını tutarlar.",
+        "cekirdek_bolge_id": [76, 26, 33, 70, 56]
+      },
+      {
+        "id": "karaorman",
+        "ad": "Kara Orman",
+        "yurt": "karaorman",
+        "renk": "#4f8a55",
+        "ozet": "Köyleri kalabalık, surları alçak; ormanın içinden vururlar.",
+        "cekirdek_bolge_id": [17, 77, 40, 55, 117]
+      },
+      {
+        "id": "tasgecit",
+        "ad": "Taş Geçit",
+        "yurt": "tasgecit",
+        "renk": "#a97fc4",
+        "ozet": "Sekiz şehrin tüccarları; kılıçtan çok kese taşırlar.",
+        "cekirdek_bolge_id": [38, 62, 93, 102, 99]
+      }
+    ],
+    "cekismeli_vilayetler": ["gunbati", "aksu"],
+    "taht_vilayeti": "taht"
   }
 }
