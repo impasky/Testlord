@@ -521,7 +521,13 @@ export function LordEkrani({
                       <span className="baslik truncate text-[11px] text-solgun">
                         {SLOT_ADI[slot]}
                       </span>
-                      <span className="baslik shrink-0 text-[12px] text-altin">{`T${it.tier}${it.upgradeLevel > 0 && `+${it.upgradeLevel}`}`}</span>
+                      {/* ÜÇLÜ, `&&` DEĞİL. Şablon dizesinin içinde `&&`
+                          yanlış tarafa düşünce `false` METNE çevriliyor ve
+                          yükseltilmemiş her parçada "T2false" yazıyordu —
+                          CSS büyütünce "T2FALSE". Yuva adlarını da o
+                          uydurma sözcük kırpıyordu ("Sİ…", "Mİ…").
+                          `+Taht` ile aynı tuzak, aynı sebep. */}
+                      <span className="baslik shrink-0 text-[12px] text-altin">{`T${it.tier}${it.upgradeLevel > 0 ? `+${it.upgradeLevel}` : ''}`}</span>
                     </div>
                   </Kart>
                 );
