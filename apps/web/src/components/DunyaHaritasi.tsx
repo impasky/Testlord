@@ -116,6 +116,10 @@ const ZEMIN_KAROLARI = [0, 1, 2].flatMap((r) => [0, 1, 2].map((c) => ({ c, r }))
 
 const EN_AZ = 1;
 const EN_COK = 3.2;
+/** Sığdırılmış görünümde yatay parmak bu kadar piksel sonra sayılıyor. */
+const SURUKLE_ESIGI = 20;
+/** O hareketin götürdüğü yakınlık — kaydıracak yer açacak kadar. */
+const SURUKLE_OLCEGI = 1.8;
 /*
  * Açılış ölçeği. ×2,4'te dünyanın kenar uzunluğunun ~%42'si, alanının
  * ~%17'si görünüyor: 121 bölgenin yaklaşık 20'si. Eski haritada ×1'de 61
@@ -208,7 +212,7 @@ export function DunyaHaritasi({
     return () => cancelAnimationFrame(kare);
   });
   const isaretciler = useRef(new Map<number, { x: number; y: number }>());
-  const surukleme = useRef({ mesafe: 0, ilkAralik: 0, ilkOlcek: 1 });
+  const surukleme = useRef({ mesafe: 0, yatay: 0, dikey: 0, ilkAralik: 0, ilkOlcek: 1 });
 
   /**
    * Kaydırmayı çerçevenin içinde tutar.
@@ -306,6 +310,8 @@ export function DunyaHaritasi({
   function isaretciIndi(e: React.PointerEvent) {
     isaretciler.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
     surukleme.current.mesafe = 0;
+    surukleme.current.yatay = 0;
+    surukleme.current.dikey = 0;
     if (isaretciler.current.size === 2) {
       const [a, b] = [...isaretciler.current.values()];
       surukleme.current.ilkAralik = Math.hypot(a!.x - b!.x, a!.y - b!.y);
@@ -326,13 +332,59 @@ export function DunyaHaritasi({
       setGorunum((g) => sinirla({ ...g, olcek: surukleme.current.ilkOlcek * oran }));
       return;
     }
+    surukleme.current.yatay += Math.abs(e.clientX - onceki.x);
+    surukleme.current.dikey += Math.abs(e.clientY - onceki.y);
+
     // Tek parmakla kaydırma yalnız YAKINLAŞMIŞKEN: tam görünümde sayfanın
     // kendi kaydırması engellenmemeli.
     if (gorunum.olcek > 1) {
       setGorunum((g) =>
         sinirla({ ...g, dx: g.dx + (e.clientX - onceki.x), dy: g.dy + (e.clientY - onceki.y) }),
       );
+      return;
     }
+
+    /*
+     * "HARİTAYI SIĞDIR" SONRASI YATAY PARMAK ÖLÜYDÜ — donma buydu.
+     *
+     * Oyuncu: "haritada sağa sola çekerek kaydırmada çok donuyor,
+     * haritayı sığdır dedikten sonra oluyor, telefonda Chrome."
+     *
+     * Telefonda dokunma olaylarıyla yeniden üretildi. Sığdır görünümü
+     * ölçeği 1'e döndürüyor ve orada İKİ ŞEY birden yatayı yutuyordu:
+     *
+     *   - Kabın `touch-action: pan-y` değeri: tarayıcı yalnız DİKEY
+     *     kaydırıyor, yatay hareketi kendisi kullanmıyor.
+     *   - Yukarıdaki `olcek > 1` kapısı: uygulama da kullanmıyor.
+     *
+     * Sonuç: yatay parmakta ne sayfa kayıyor ne harita oynuyor. Ekran
+     * tamamen hareketsiz — ve hareketsiz bir ekran, donmuş bir ekrandan
+     * ayırt edilemez. Ölçüm de bunu doğruladı: kare hızı 60, çünkü
+     * gerçekten hiçbir şey OLMUYORDU.
+     *
+     * Ölçek 1'de kaydıracak yer zaten yok (harita tam sığıyor, `sinirla`
+     * payı sıfıra kırpıyor). O yüzden yatay parmak artık YAKINLAŞTIRIYOR:
+     * oyuncunun istediği şey zaten daha yakından bakmaktı ve yakınlaşınca
+     * normal kaydırma da açılıyor.
+     *
+     * DİKEY parmağa DOKUNULMUYOR — o sayfanın kaydırması ve öyle kalmalı;
+     * ele geçirmek oyuncuyu haritaya hapsederdi. Bu yüzden yalnız BASKIN
+     * biçimde yatay hareketler sayılıyor.
+     */
+    const { yatay, dikey } = surukleme.current;
+    if (yatay < SURUKLE_ESIGI || yatay < dikey * 1.5) return;
+    const kutu = kutuRef.current;
+    if (!kutu) return;
+    const r = kutu.getBoundingClientRect();
+    // Parmağın bastığı nokta merkeze gelsin: oyuncu neye baktıysa ona
+    // yakınlaşsın, haritanın ortasına değil.
+    setGorunum(
+      ortala(
+        ((e.clientX - r.left) / kutu.clientWidth) * 100,
+        ((e.clientY - r.top) / kutu.clientHeight) * 100,
+        SURUKLE_OLCEGI,
+      ),
+    );
   }
 
   function isaretciKalkti(e: React.PointerEvent) {

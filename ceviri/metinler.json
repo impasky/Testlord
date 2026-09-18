@@ -191,7 +191,7 @@
     "tr": ", tahkimat +%{0}",
     "en": ", fortification +{0}%",
     "nerede": [
-      "apps/web/src/components/DunyaHaritasi.tsx:822"
+      "apps/web/src/components/DunyaHaritasi.tsx:874"
     ]
   },
   "ta0f4c75c": {
@@ -303,8 +303,8 @@
     "tr": "{0} — {1}, seviye {2}, {3}, {4} adım{5}",
     "en": "{0} — {1}, level {2}, {3}, {4} steps{5}",
     "nerede": [
-      "apps/web/src/components/DunyaHaritasi.tsx:883",
-      "apps/web/src/components/DunyaHaritasi.tsx:887"
+      "apps/web/src/components/DunyaHaritasi.tsx:935",
+      "apps/web/src/components/DunyaHaritasi.tsx:939"
     ]
   },
   "t89ee47d6": {
@@ -320,8 +320,8 @@
     "tr": "{0} — haritada göster",
     "en": "{0} — show on map",
     "nerede": [
-      "apps/web/src/components/DunyaHaritasi.tsx:724",
-      "apps/web/src/components/DunyaHaritasi.tsx:725"
+      "apps/web/src/components/DunyaHaritasi.tsx:776",
+      "apps/web/src/components/DunyaHaritasi.tsx:777"
     ]
   },
   "t63d3475f": {
@@ -3005,7 +3005,7 @@
     "tr": "Dönen ordun",
     "en": "Your returning army",
     "nerede": [
-      "apps/web/src/components/DunyaHaritasi.tsx:408"
+      "apps/web/src/components/DunyaHaritasi.tsx:460"
     ]
   },
   "tb6842d76": {
@@ -3062,7 +3062,7 @@
     "tr": "Dünya haritası, {0} bölge",
     "en": "World map, {0} regions",
     "nerede": [
-      "apps/web/src/components/DunyaHaritasi.tsx:504"
+      "apps/web/src/components/DunyaHaritasi.tsx:556"
     ]
   },
   "t537fb85a": {
@@ -3868,7 +3868,7 @@
     "tr": "Haritayı sığdır",
     "en": "Fit the map",
     "nerede": [
-      "apps/web/src/components/DunyaHaritasi.tsx:757"
+      "apps/web/src/components/DunyaHaritasi.tsx:809"
     ]
   },
   "t4888ec29": {
@@ -4625,8 +4625,8 @@
     "tr": "Kampın",
     "en": "Your camp",
     "nerede": [
-      "apps/web/src/components/DunyaHaritasi.tsx:416",
-      "apps/web/src/components/DunyaHaritasi.tsx:950"
+      "apps/web/src/components/DunyaHaritasi.tsx:1002",
+      "apps/web/src/components/DunyaHaritasi.tsx:468"
     ]
   },
   "t926ba486": {
@@ -5076,7 +5076,7 @@
     "tr": "Korumalı",
     "en": "Protected",
     "nerede": [
-      "apps/web/src/components/DunyaHaritasi.tsx:936"
+      "apps/web/src/components/DunyaHaritasi.tsx:988"
     ]
   },
   "t0d0d93bf": {
@@ -5710,7 +5710,7 @@
     "tr": "Ordun {0} yolunda",
     "en": "Your army is on the way to {0}",
     "nerede": [
-      "apps/web/src/components/DunyaHaritasi.tsx:408"
+      "apps/web/src/components/DunyaHaritasi.tsx:460"
     ]
   },
   "t2dd46a4d": {
@@ -7573,7 +7573,7 @@
     "tr": "Uzaklaştır",
     "en": "Zoom out",
     "nerede": [
-      "apps/web/src/components/DunyaHaritasi.tsx:751"
+      "apps/web/src/components/DunyaHaritasi.tsx:803"
     ]
   },
   "tf29dea21": {
@@ -7753,7 +7753,7 @@
     "tr": "Yakınlaştır",
     "en": "Zoom in",
     "nerede": [
-      "apps/web/src/components/DunyaHaritasi.tsx:746"
+      "apps/web/src/components/DunyaHaritasi.tsx:798"
     ]
   },
   "t7eadadf4": {
