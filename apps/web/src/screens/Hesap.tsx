@@ -101,6 +101,14 @@ export function Hesap({
             {lord.level}
           </p>
         </Kart>
+        <a
+          href="#/gizlilik"
+          // py-2: dokunma hedefi 24px'in altına düşmesin (WCAG 2.5.8 AA,
+          // tools/erisim-denetim.mjs ölçüyor). Yalın bir bağlantı 18px.
+          className="bas mt-1 block py-2 text-[12px] text-sonuk underline decoration-dotted underline-offset-2"
+        >
+          Hangi veriyi tutuyoruz
+        </a>
       </Bolum>
 
       {moderasyon.data?.susturulmus && (

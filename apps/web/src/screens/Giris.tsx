@@ -253,6 +253,17 @@ export function Giris({ onGiris }: { onGiris: () => void }) {
               {bekliyor ? 'Bekle...' : mod === 'kayit' ? 'Diyara Gir' : 'Giriş Yap'}
             </Buton>
 
+            {/* Aydınlatma metni KAYIT kipinde, düğmenin hemen altında:
+                okunacağı an, e-posta ve parolanın verileceği an. */}
+            {mod === 'kayit' && (
+              <a
+                href="#/gizlilik"
+                className="bas block w-full py-2 text-center text-[12px] text-sonuk underline decoration-dotted underline-offset-2"
+              >
+                Hangi veriyi tutuyoruz
+              </a>
+            )}
+
             {mod === 'giris' && !sifirlamaAcik && (
               <button
                 type="button"

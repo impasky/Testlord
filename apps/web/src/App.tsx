@@ -11,6 +11,7 @@ import { RehberIsigi } from './components/RehberIsigi';
 import { Buton } from './components/ui';
 import { Demirhane } from './screens/Demirhane';
 import { Generaller } from './screens/Generaller';
+import { Gizlilik } from './screens/Gizlilik';
 import { Giris } from './screens/Giris';
 import { Hesap } from './screens/Hesap';
 import { Moderasyon } from './screens/Moderasyon';
@@ -40,13 +41,29 @@ function hashJetonu(): string | null {
   return new URLSearchParams(h.slice(h.indexOf('?') + 1)).get('jeton');
 }
 
+/**
+ * Aydınlatma metni de hash ile açılıyor, kapı değil.
+ *
+ * GİRİŞ EKRANINDAN da açılabilmesi gerekiyor — metnin asıl okunacağı an
+ * kayıt olmadan hemen önce — ve giriş ekranında henüz kapı yok. Sıfırlama
+ * bağlantısıyla aynı desen, aynı sebep: tek bir sayfa için yönlendirici
+ * eklemeye değmiyor.
+ */
+function gizlilikAcikMi(): boolean {
+  return window.location.hash.startsWith('#/gizlilik');
+}
+
 export function App() {
   const [sifirlamaJetonu, setSifirlamaJetonu] = useState<string | null>(hashJetonu);
+  const [gizlilik, setGizlilik] = useState(gizlilikAcikMi);
 
   // Hash yalnızca açılışta okunursa, uygulama zaten açıkken tıklanan bağlantı
   // hiçbir şey yapmaz: tarayıcı hash değişimini sayfa yüklemesi saymaz.
   useEffect(() => {
-    const dinle = () => setSifirlamaJetonu(hashJetonu());
+    const dinle = () => {
+      setSifirlamaJetonu(hashJetonu());
+      setGizlilik(gizlilikAcikMi());
+    };
     window.addEventListener('hashchange', dinle);
     return () => window.removeEventListener('hashchange', dinle);
   }, []);
@@ -281,6 +298,18 @@ export function App() {
     // Yeni lord kendi damgasını kendi hak etsin.
     rehberDamgalandi.current = false;
     setGirisli(false);
+  }
+
+  // Aydınlatma metni her şeyin ÜSTÜNDE: girişli de girişsiz de açılabilmeli.
+  if (gizlilik) {
+    return (
+      <Gizlilik
+        onKapat={() => {
+          window.location.hash = '';
+          setGizlilik(false);
+        }}
+      />
+    );
   }
 
   if (sifirlamaJetonu) {

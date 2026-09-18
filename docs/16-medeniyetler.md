@@ -329,3 +329,65 @@ göç ameliyatı.** Karar verilecekse şimdi verilmeli.
    garnizona mı?
 5. Taht Kalesi'ni tutan medeniyet ne kazanır?
 6. Mevcut shard'lar ne olur — kapanır mı, "eski diyarlar" olarak kalır mı?
+
+---
+
+## 14. KARAR: veri gelene kadar park
+
+`2026-09-18` — öneri yazıldıktan sonra veritabanına bakıldı. Sonuç
+öneriyi de, ondan önceki iki mimariyi de askıya alıyor.
+
+| Ölçüm                            | Sayı                                                                                     |
+| -------------------------------- | ---------------------------------------------------------------------------------------- |
+| Kayıtlı hesap                    | 14.465                                                                                   |
+| Bunların **gerçek** oyuncu olanı | **0** (hepsi `@lordlar.dev`, `@l.dev`, `@test.local`, `@ornek.test`, `@t.dev`, `@x.dev`) |
+| Oyuncu lordu                     | 14.433                                                                                   |
+| **Ertesi gün geri dönen**        | **1**                                                                                    |
+| En uzun giriş serisi             | **1 gün**                                                                                |
+
+Bir günden uzun oynamış tek bir insan yok. Bu, şu ana kadar verilen
+bütün mimari tartışmalarının — shard, birleşme, tek dünya, medeniyet —
+**tamamen tahmin** üzerine kurulduğu anlamına geliyor.
+
+Projenin kendi kodu bunu zaten söylüyor. `routes/olcum.ts` başlığı:
+
+> _"bugüne kadarki bütün analizler tahmindi ve ilk gerçek oyuncu testi
+> hepsini yanlışladı."_
+
+Ders bir kez öğrenilmiş; ikinci kez öğrenmeye gerek yok.
+
+### Neden şimdi yapmak YANLIŞ olur
+
+- Bu öneri **10.000 oyuncu** için tasarlandı. 10 oyuncuda dört medeniyet,
+  taraf başına 2-3 kişi demek — bugünkünden kötü.
+- Birleşme **çürüyen diyar** için tasarlandı. Hiçbir diyar gerçek
+  oyuncuyla çürümedi.
+- §6'daki garnizon payı sayıları `balance.json`dan türetildi,
+  DAVRANIŞTAN değil. "20 altın/saat doğru mu" sorusunun cevabı ancak
+  gerçek bir oyuncunun garnizon bırakıp bırakmadığına bakarak verilir.
+
+Yanlış olan fikir değil, **sırası**. Oyunun tür değiştirmesi geri
+alınamaz bir karar ve onu sıfır veriyle vermek, bugüne kadarki en pahalı
+tahmin olurdu.
+
+### Kararı hangi sayı verecek
+
+Öneri, aşağıdakilerden biri gerçekleşince yeniden açılır:
+
+| Eşik                                      | Ne yapılır                                                                            |
+| ----------------------------------------- | ------------------------------------------------------------------------------------- |
+| Aynı anda **< 50** aktif oyuncu           | Hiçbir şey. Mevcut shard + diyar seçimi yeter; harita zaten bir kişiye bol.           |
+| **50-200** aktif                          | Tek dünyaya geç, toprak bireysel kalsın. 121 bölge bu sayıya yetiyor (oran 0.60-2.4). |
+| **200+** aktif ve bölge/oyuncu **< 0.30** | Medeniyet önerisi açılır — bireysel mülkiyet gerçekten tıkanmış demektir.             |
+| Ertesi gün dönüş **< %20**                | Mimari değil, İLK OTURUM sorunu var. `/olcum` hangi ekranda bırakıldığını söylüyor.   |
+
+Ölçüm altyapısı zaten yazılı (`/api/olcum`, `OLCUM_ANAHTARI` ile
+korumalı): kayıttan ilk savaş raporuna süre, ilk oturumdaki eylem
+sayısı, bırakılan ekran, ertesi gün dönüş oranı.
+
+### Bunun yerine yapılan
+
+Gerçek oyuncunun önündeki **yasal engel** kaldırıldı: veri toplanan bir
+oyunu Türkiye'de yayına almak için aydınlatma metni zorunlu ve yoktu
+(bkz. `apps/web/src/screens/Gizlilik.tsx`). Oyuncu olmadan veri yok,
+veri olmadan bu belgedeki hiçbir sayı sınanamaz.

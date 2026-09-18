@@ -151,7 +151,7 @@
     "tr": "— CC BY 3.0",
     "en": "— CC BY 3.0",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:305"
+      "apps/web/src/screens/Giris.tsx:316"
     ]
   },
   "td08a2005": {
@@ -914,7 +914,7 @@
     "tr": "{0} şikâyet karar bekliyor.",
     "en": "{0} reports are waiting for a decision.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:122"
+      "apps/web/src/screens/Hesap.tsx:128"
     ]
   },
   "t38001c91": {
@@ -1318,7 +1318,15 @@
     "en": "Turning on…",
     "nerede": [
       "apps/web/src/components/BildirimKarti.tsx:93",
-      "apps/web/src/screens/Hesap.tsx:171"
+      "apps/web/src/screens/Hesap.tsx:177"
+    ]
+  },
+  "tb440b86f": {
+    "grup": "arayuz",
+    "tr": "Adın, yaşın, konumun, telefonun, cihaz kimliğin sorulmuyor ve tutulmuyor. Lord adını sen seçiyorsun ve gerçek adın olmak zorunda değil.",
+    "en": "Your name, age, location, phone and device identifier are never asked for or stored. You choose your lord name, and it does not have to be your real name.",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:79"
     ]
   },
   "t230c7ce3": {
@@ -1602,6 +1610,14 @@
       "apps/web/src/components/DunyaSeridi.tsx:102"
     ]
   },
+  "t0fcc273e": {
+    "grup": "arayuz",
+    "tr": "Aydınlatma Metni",
+    "en": "Privacy Notice",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:40"
+    ]
+  },
   "t48913574": {
     "grup": "arayuz",
     "tr": "Aynı anda {0} yürütebilirsin — kütüphaneni yükseltirsen artar. Sıra senin kararın: önce ekonomiyi mi büyütürsün, orduyu mu?",
@@ -1867,7 +1883,7 @@
     "tr": "Bekleyen şikâyet yok.",
     "en": "No pending reports.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:123"
+      "apps/web/src/screens/Hesap.tsx:129"
     ]
   },
   "t225a2417": {
@@ -1886,12 +1902,21 @@
       "apps/web/src/screens/Harita.tsx:1208"
     ]
   },
+  "tf502a21b": {
+    "grup": "arayuz",
+    "tr": "Bildirim, tarayıcının kendi bildirim servisi üzerinden gidiyor — bu, cihazının üreticisine ait bir hizmet.",
+    "en": "Notifications travel through your browser's own notification service — a service run by your device's maker.",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:96"
+    ]
+  },
   "t341083b0": {
     "grup": "arayuz",
     "tr": "Bildirimler",
     "en": "Notifications",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:155"
+      "apps/web/src/screens/Gizlilik.tsx:88",
+      "apps/web/src/screens/Hesap.tsx:161"
     ]
   },
   "taa1c034e": {
@@ -1916,6 +1941,14 @@
     "en": "Notifications are turned on.",
     "nerede": [
       "apps/web/src/components/BildirimKarti.tsx:91"
+    ]
+  },
+  "tc89c7361": {
+    "grup": "arayuz",
+    "tr": "Bildirimleri {0} tarayıcının ürettiği abonelik bilgisi (adres ve şifreleme anahtarları) ile cihazını ayırt etmeye yarayan kısa bir etiket saklanıyor. Kapattığında silinir.",
+    "en": "Notifications: if {0}, the subscription details your browser generates (address and encryption keys) are stored, along with a short label that tells your devices apart. They are deleted when you turn notifications off.",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:91"
     ]
   },
   "t5bbe9ba5": {
@@ -2144,7 +2177,7 @@
     "tr": "Bölgelerin sahipsiz kalır ve başkaları tarafından yeniden fethedilebilir.",
     "en": "Your regions become unowned and can be reconquered by others.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:216"
+      "apps/web/src/screens/Hesap.tsx:222"
     ]
   },
   "tada95535": {
@@ -2340,7 +2373,15 @@
     "tr": "Bu işlem geri alınamaz.",
     "en": "This action cannot be undone.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:216"
+      "apps/web/src/screens/Hesap.tsx:222"
+    ]
+  },
+  "te4cb2870": {
+    "grup": "arayuz",
+    "tr": "Bu metin oyunun gerçekten tuttuğu veriyi anlatır. Yeni bir alan eklendiğinde metin de güncellenir.",
+    "en": "This notice describes the data the game actually keeps. When a new field is added, the notice is updated too.",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:136"
     ]
   },
   "t48c066f2": {
@@ -2733,7 +2774,7 @@
     "tr": "Dil",
     "en": "Language",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:132"
+      "apps/web/src/screens/Hesap.tsx:138"
     ]
   },
   "taa9c8b99": {
@@ -2761,7 +2802,7 @@
     "tr": "Diyar yükleniyor…",
     "en": "Realm loading…",
     "nerede": [
-      "apps/web/src/App.tsx:327"
+      "apps/web/src/App.tsx:356"
     ]
   },
   "tadebb397": {
@@ -3056,6 +3097,14 @@
       "apps/web/src/screens/Akin.tsx:108"
     ]
   },
+  "t4c53b814": {
+    "grup": "arayuz",
+    "tr": "Düzeltme:",
+    "en": "Correction:",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:126"
+    ]
+  },
   "t4d81c255": {
     "grup": "arayuz",
     "tr": "Düzenle",
@@ -3078,6 +3127,22 @@
     "en": "Email",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:225"
+    ]
+  },
+  "t2909af14": {
+    "grup": "arayuz",
+    "tr": "E-posta adresin.",
+    "en": "Your email address.",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:49"
+    ]
+  },
+  "t50e21afc": {
+    "grup": "arayuz",
+    "tr": "E-posta göndermek için (parola sıfırlama, savaş bildirimi) bir e-posta sağlayıcısı kullanılıyor; o sağlayıcı yalnızca adresini ve gönderilen iletinin metnini görüyor.",
+    "en": "To send email (password reset, battle notifications) an email provider is used; that provider sees only your address and the text of the message sent.",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:104"
     ]
   },
   "tee39ae8e": {
@@ -3182,7 +3247,7 @@
     "tr": "En az 8 karakter",
     "en": "At least 8 characters",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:187",
+      "apps/web/src/screens/Hesap.tsx:193",
       "apps/web/src/screens/ParolaSifirla.tsx:46"
     ]
   },
@@ -3541,6 +3606,14 @@
       "apps/web/src/components/Paktlar.tsx:145"
     ]
   },
+  "t09bffe98": {
+    "grup": "arayuz",
+    "tr": "Geri dön",
+    "en": "Go back",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:141"
+    ]
+  },
   "t2de7bc19": {
     "grup": "arayuz",
     "tr": "Giriş",
@@ -3554,7 +3627,7 @@
     "tr": "Giriş ekranına dön",
     "en": "Return to login screen",
     "nerede": [
-      "apps/web/src/App.tsx:316",
+      "apps/web/src/App.tsx:345",
       "apps/web/src/screens/ParolaSifirla.tsx:41"
     ]
   },
@@ -3616,9 +3689,9 @@
       "apps/web/src/screens/Akin.tsx:653",
       "apps/web/src/screens/Demirhane.tsx:519",
       "apps/web/src/screens/Generaller.tsx:126",
-      "apps/web/src/screens/Giris.tsx:278",
+      "apps/web/src/screens/Giris.tsx:289",
       "apps/web/src/screens/Harita.tsx:1133",
-      "apps/web/src/screens/Hesap.tsx:203",
+      "apps/web/src/screens/Hesap.tsx:209",
       "apps/web/src/screens/Kisla.tsx:285",
       "apps/web/src/screens/ParolaSifirla.tsx:62",
       "apps/web/src/screens/Sehir.tsx:957"
@@ -3721,6 +3794,23 @@
     "en": "Reward of the day",
     "nerede": [
       "apps/web/src/components/GunlukKart.tsx:130"
+    ]
+  },
+  "t03749a55": {
+    "grup": "arayuz",
+    "tr": "Haklarını nasıl kullanırsın",
+    "en": "How to exercise your rights",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:120"
+    ]
+  },
+  "tc93b345b": {
+    "grup": "arayuz",
+    "tr": "Hangi veriyi tutuyoruz",
+    "en": "What data we keep",
+    "nerede": [
+      "apps/web/src/screens/Giris.tsx:263",
+      "apps/web/src/screens/Hesap.tsx:108"
     ]
   },
   "ta565dc14": {
@@ -3935,7 +4025,7 @@
     "tr": "Hesabı Sil",
     "en": "Delete Account",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:212"
+      "apps/web/src/screens/Hesap.tsx:218"
     ]
   },
   "t30c7d34d": {
@@ -3945,7 +4035,7 @@
     "nerede": [
       "apps/api/src/routes/me.ts:63",
       "apps/web/src/api/client.ts:946",
-      "apps/web/src/screens/Hesap.tsx:239"
+      "apps/web/src/screens/Hesap.tsx:245"
     ]
   },
   "te485c18d": {
@@ -3953,7 +4043,15 @@
     "tr": "Hesabımı silmek istiyorum",
     "en": "I want to delete my account",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:222"
+      "apps/web/src/screens/Hesap.tsx:228"
+    ]
+  },
+  "t43e24e9f": {
+    "grup": "arayuz",
+    "tr": "Hesabın açık kaldığı sürece. Hesabını silersen lordun, ordun, ekipmanın ve bildirim aboneliğin birlikte silinir.",
+    "en": "For as long as your account exists. If you delete your account, your lord, army, equipment and notification subscription are deleted with it.",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:115"
     ]
   },
   "t8b2fd54f": {
@@ -3961,7 +4059,15 @@
     "tr": "Hesabın, lordun, ordun ve ekipmanın kalıcı olarak silinir.",
     "en": "Your account, lord, army, and equipment will be permanently deleted.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:215"
+      "apps/web/src/screens/Hesap.tsx:221"
+    ]
+  },
+  "t970d9a25": {
+    "grup": "arayuz",
+    "tr": "Hesabını tanımak ve parolanı sıfırlaman için. Başka hiçbir amaçla kullanılmıyor.",
+    "en": "To identify your account and let you reset your password. It is used for nothing else.",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:49"
     ]
   },
   "t1c280cbe": {
@@ -3972,6 +4078,14 @@
       "apps/web/src/screens/Hesap.tsx:97",
       "apps/web/src/screens/LordEkrani.tsx:588",
       "packages/shared/src/types.ts:309"
+    ]
+  },
+  "t47c218fc": {
+    "grup": "arayuz",
+    "tr": "Hesap ekranındaki “Hesabı Sil” bölümünden, parolanı girerek. İşlem geri alınamaz ve aracı gerektirmez.",
+    "en": "From the \"Delete Account\" section of the Account screen, by entering your password. It cannot be undone and needs no intermediary.",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:122"
     ]
   },
   "t571cff1d": {
@@ -3998,6 +4112,14 @@
       "apps/web/src/screens/LordEkrani.tsx:469"
     ]
   },
+  "tdca95e4b": {
+    "grup": "arayuz",
+    "tr": "IP adresin veritabanına yazılmıyor. Yalnızca kayıt ve giriş denemelerini sınırlamak için, istek anında ve geçici olarak kullanılıyor.",
+    "en": "Your IP address is never written to the database. It is used only at the moment of a request, and only to limit sign-up and sign-in attempts.",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:83"
+    ]
+  },
   "t9cb9666b": {
     "grup": "arayuz",
     "tr": "için savaşıyor",
@@ -4022,6 +4144,14 @@
       "apps/web/src/components/Paktlar.tsx:158"
     ]
   },
+  "tee5870c4": {
+    "grup": "arayuz",
+    "tr": "İki iş için: sen yokken ne olduğunu özetlemek, ve oyuncuların oyunu nerede bıraktığını toplam olarak görmek. İkincisinde kimin hangi ekranda olduğu değil, yalnızca sayılar okunuyor.",
+    "en": "For two things: to summarise what happened while you were away, and to see in aggregate where players leave the game. For the second, only totals are read — never who was on which screen.",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:62"
+    ]
+  },
   "t1458df25": {
     "grup": "arayuz",
     "tr": "İKİNCİ",
@@ -4043,7 +4173,7 @@
     "tr": "İkonlar",
     "en": "Icons",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:296"
+      "apps/web/src/screens/Giris.tsx:307"
     ]
   },
   "tb14deebf": {
@@ -4280,6 +4410,14 @@
       "apps/web/src/components/IttifakSohbet.tsx:75"
     ]
   },
+  "t3214552e": {
+    "grup": "arayuz",
+    "tr": "İttifak sohbetinde yazdıkların ittifakındaki diğer oyunculara açık. Şikâyet edilen bir mesaj, kararı verecek yöneticiye görünür.",
+    "en": "What you write in alliance chat is visible to the other players in your alliance. A reported message is visible to the moderator who will decide on it.",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:108"
+    ]
+  },
   "tad6b90ff": {
     "grup": "arayuz",
     "tr": "İttifak üyelerine saldıramazsın, onlar da sana saldıramaz.",
@@ -4480,7 +4618,7 @@
     "tr": "Kalıcı olarak sil",
     "en": "Permanently delete",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:264"
+      "apps/web/src/screens/Hesap.tsx:270"
     ]
   },
   "t0f86f2e3": {
@@ -4896,6 +5034,14 @@
       "apps/web/src/screens/Ittifak.tsx:205"
     ]
   },
+  "tfc983ae0": {
+    "grup": "arayuz",
+    "tr": "Kimlerle paylaşılıyor",
+    "en": "Who it is shared with",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:101"
+    ]
+  },
   "t0c8cef8c": {
     "grup": "arayuz",
     "tr": "Kirala · {0}",
@@ -5071,7 +5217,7 @@
     "tr": "Kutuya HESABIMI SIL yaz",
     "en": "Type DELETE MY ACCOUNT in the box",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:235"
+      "apps/web/src/screens/Hesap.tsx:241"
     ]
   },
   "t11d481cd": {
@@ -5210,6 +5356,14 @@
       "apps/web/src/screens/ParolaSifirla.tsx:31"
     ]
   },
+  "t8efe9043": {
+    "grup": "arayuz",
+    "tr": "Lordlar Çağı hangi veriyi neden tutuyor — ve neyi tutmuyor.",
+    "en": "What data Lordlar Çağı keeps and why — and what it does not keep.",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:42"
+    ]
+  },
   "t084b456e": {
     "grup": "arayuz",
     "tr": "Lordlara karşı",
@@ -5241,6 +5395,14 @@
     "nerede": [
       "apps/web/src/screens/Harita.tsx:729",
       "apps/web/src/screens/LordEkrani.tsx:306"
+    ]
+  },
+  "td275369f": {
+    "grup": "arayuz",
+    "tr": "Lordun, ordun, bölgelerin, savaş raporların, ittifakın, sohbet mesajların. Oyunun kendisi bu.",
+    "en": "Your lord, army, regions, battle reports, alliance and chat messages. This is the game itself.",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:58"
     ]
   },
   "t3ce76409": {
@@ -5332,7 +5494,7 @@
     "tr": "Mevcut parola",
     "en": "Current password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:178"
+      "apps/web/src/screens/Hesap.tsx:184"
     ]
   },
   "t180f3ffb": {
@@ -5376,12 +5538,36 @@
       "apps/web/src/screens/Demirhane.tsx:509"
     ]
   },
+  "t7db547ab": {
+    "grup": "arayuz",
+    "tr": "Ne kadar süre",
+    "en": "How long",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:113"
+    ]
+  },
   "t19e787fd": {
     "grup": "arayuz",
     "tr": "Ne olduğunu kısaca yaz (zorunlu)",
     "en": "Briefly write what happened (required)",
     "nerede": [
       "apps/web/src/components/SikayetSayfasi.tsx:107"
+    ]
+  },
+  "t8c17d1b7": {
+    "grup": "arayuz",
+    "tr": "Ne toplamıyoruz",
+    "en": "What we do not collect",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:69"
+    ]
+  },
+  "t06674569": {
+    "grup": "arayuz",
+    "tr": "Ne topluyoruz",
+    "en": "What we collect",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:47"
     ]
   },
   "t9f6b9fa1": {
@@ -5494,7 +5680,7 @@
     "tr": "Onay",
     "en": "Confirmation",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:235"
+      "apps/web/src/screens/Hesap.tsx:241"
     ]
   },
   "t280ff98c": {
@@ -5750,7 +5936,23 @@
     "tr": "Oturum açılamadı. Tekrar giriş yapman gerekiyor.",
     "en": "Could not log in. You need to sign in again.",
     "nerede": [
-      "apps/web/src/App.tsx:314"
+      "apps/web/src/App.tsx:343"
+    ]
+  },
+  "t63341816": {
+    "grup": "arayuz",
+    "tr": "Oyun durumun.",
+    "en": "Your game state.",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:58"
+    ]
+  },
+  "t636e2e5d": {
+    "grup": "arayuz",
+    "tr": "Oyun verisi kimseyle paylaşılmıyor, satılmıyor.",
+    "en": "Game data is never shared with anyone, and never sold.",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:102"
     ]
   },
   "t5d44ffda": {
@@ -5758,7 +5960,7 @@
     "tr": "Oyunun ne olduğunu, nasıl savaşıldığını ve seni koruyan kuralları baştan okumak istersen öğreticiyi tekrar açabilirsin.",
     "en": "If you want to read again what the game is, how to fight, and the rules that protect you, you can reopen the tutorial.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:162"
+      "apps/web/src/screens/Hesap.tsx:168"
     ]
   },
   "t9bf3ffd3": {
@@ -5783,7 +5985,7 @@
     "en": "Tutorial",
     "nerede": [
       "apps/web/src/components/Ogretici.tsx:129",
-      "apps/web/src/screens/Hesap.tsx:159"
+      "apps/web/src/screens/Hesap.tsx:165"
     ]
   },
   "t47d30263": {
@@ -5799,7 +6001,7 @@
     "tr": "Öğreticiyi tekrar oku",
     "en": "Reread the tutorial",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:171"
+      "apps/web/src/screens/Hesap.tsx:177"
     ]
   },
   "t96de5998": {
@@ -5815,7 +6017,7 @@
     "tr": "Önce e-posta adresini yaz.",
     "en": "Write your email address first.",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:281"
+      "apps/web/src/screens/Giris.tsx:292"
     ]
   },
   "t2037d289": {
@@ -5903,7 +6105,7 @@
     "tr": "Parola Değiştir",
     "en": "Change Password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:176"
+      "apps/web/src/screens/Hesap.tsx:182"
     ]
   },
   "t0cb4198c": {
@@ -5935,7 +6137,7 @@
     "tr": "Parolamı unuttum",
     "en": "Forgot password",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:262"
+      "apps/web/src/screens/Giris.tsx:273"
     ]
   },
   "t100b4ff0": {
@@ -5943,7 +6145,15 @@
     "tr": "Parolan",
     "en": "Your password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:226"
+      "apps/web/src/screens/Hesap.tsx:232"
+    ]
+  },
+  "t0fb7e6b4": {
+    "grup": "arayuz",
+    "tr": "Parolan — şifrelenmiş hâliyle.",
+    "en": "Your password — in encrypted form.",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:53"
     ]
   },
   "t349238d8": {
@@ -5970,6 +6180,22 @@
       "apps/web/src/screens/Hesap.tsx:90"
     ]
   },
+  "tac35c883": {
+    "grup": "arayuz",
+    "tr": "Parolanı Hesap ekranından değiştirebilirsin.",
+    "en": "You can change your password from the Account screen.",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:126"
+    ]
+  },
+  "tfec6626c": {
+    "grup": "arayuz",
+    "tr": "Parolanın kendisi hiçbir yerde saklanmıyor; yalnızca geri çevrilemez bir özeti (argon2id) tutuluyor. Parolanı unutursan biz de bilemeyiz, sıfırlaman gerekir.",
+    "en": "Your password itself is stored nowhere; only an irreversible digest of it (argon2id) is kept. If you forget your password, we cannot know it either — you have to reset it.",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:53"
+    ]
+  },
   "tbb5ecdaf": {
     "grup": "arayuz",
     "tr": "Parolayı belirle",
@@ -5983,7 +6209,7 @@
     "tr": "Parolayı değiştir",
     "en": "Change the password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:203"
+      "apps/web/src/screens/Hesap.tsx:209"
     ]
   },
   "tbc71d6a3": {
@@ -6034,6 +6260,14 @@
     "nerede": [
       "apps/web/src/components/IttifakBasvurular.tsx:172",
       "apps/web/src/components/Paktlar.tsx:103"
+    ]
+  },
+  "tab953532": {
+    "grup": "arayuz",
+    "tr": "Reklam ağı, izleme çerezi, analitik kütüphanesi {0}. Sayfada hiçbir üçüncü taraf betiği çalışmıyor.",
+    "en": "Ad networks, tracking cookies, analytics libraries: {0}. No third-party script runs on this page.",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:74"
     ]
   },
   "t50ab46f6": {
@@ -6383,7 +6617,7 @@
     "tr": "Seçim bu cihazda kalır, hesabına bağlı değil. Dil değişince oyun bir kez yenilenir.",
     "en": "The choice stays on this device, it is not tied to your account. When the language changes the game reloads once.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:150"
+      "apps/web/src/screens/Hesap.tsx:156"
     ]
   },
   "tff019924": {
@@ -6416,6 +6650,14 @@
     "en": "Symbol",
     "nerede": [
       "apps/web/src/components/ArmaSecici.tsx:169"
+    ]
+  },
+  "tb0994bfe": {
+    "grup": "arayuz",
+    "tr": "sen açarsan",
+    "en": "you turn them on",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:92"
     ]
   },
   "tbfca2c2e": {
@@ -6537,7 +6779,7 @@
     "tr": "Sıfırlama bağlantısı gönder",
     "en": "Send reset link",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:278"
+      "apps/web/src/screens/Giris.tsx:289"
     ]
   },
   "tee25d0bd": {
@@ -6587,7 +6829,7 @@
     "tr": "Siliniyor…",
     "en": "Deleting…",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:264"
+      "apps/web/src/screens/Hesap.tsx:270"
     ]
   },
   "t51f40fea": {
@@ -6596,6 +6838,14 @@
     "en": "Required to verify the deletion process.",
     "nerede": [
       "apps/web/src/screens/Hesap.tsx:90"
+    ]
+  },
+  "tf7e83981": {
+    "grup": "arayuz",
+    "tr": "Silme:",
+    "en": "Deletion:",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:122"
     ]
   },
   "ta5d9b6cf": {
@@ -6636,6 +6886,14 @@
     "en": "Recent raids",
     "nerede": [
       "apps/web/src/screens/Akin.tsx:176"
+    ]
+  },
+  "t7777e141": {
+    "grup": "arayuz",
+    "tr": "Son giriş anın ve son gördüğün ekran.",
+    "en": "Your last sign-in time and the last screen you saw.",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:62"
     ]
   },
   "tb6f8487e": {
@@ -6692,7 +6950,7 @@
     "tr": "Sunucu uykudan uyanıyor olabilir. Bu ilk açılışta 30–60 saniye sürebilir.",
     "en": "The server might be waking up from sleep. This can take 30–60 seconds on the first launch.",
     "nerede": [
-      "apps/web/src/App.tsx:330"
+      "apps/web/src/App.tsx:359"
     ]
   },
   "t0a0f8af7": {
@@ -6724,7 +6982,7 @@
     "tr": "Susturma",
     "en": "Mute",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:107"
+      "apps/web/src/screens/Hesap.tsx:113"
     ]
   },
   "t16aafb87": {
@@ -6756,7 +7014,7 @@
     "tr": "Süre dolunca ittifak sohbetine yeniden yazabilirsin. Oyunun geri kalanı açık.",
     "en": "You can write in the alliance chat again when the time is up. The rest of the game is open.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:111"
+      "apps/web/src/screens/Hesap.tsx:117"
     ]
   },
   "t49026d3c": {
@@ -6862,7 +7120,7 @@
     "tr": "Şikâyet kuyruğu",
     "en": "Report queue",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:126"
+      "apps/web/src/screens/Hesap.tsx:132"
     ]
   },
   "tca312c06": {
@@ -7441,7 +7699,7 @@
     "nerede": [
       "apps/web/src/components/IttifakDuyuru.tsx:83",
       "apps/web/src/components/SikayetSayfasi.tsx:114",
-      "apps/web/src/screens/Hesap.tsx:256"
+      "apps/web/src/screens/Hesap.tsx:262"
     ]
   },
   "teacb0314": {
@@ -7466,6 +7724,14 @@
     "en": "YOU WILL GIVE",
     "nerede": [
       "apps/web/src/components/Pazar.tsx:110"
+    ]
+  },
+  "t425f7eef": {
+    "grup": "arayuz",
+    "tr": "Verilerine erişmek ya da başka bir talepte bulunmak istersen kayıt olduğun e-posta adresinden bize yazman yeterli.",
+    "en": "If you want to access your data or make any other request, writing to us from the email address you signed up with is enough.",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:130"
     ]
   },
   "tc0bd27c2": {
@@ -7658,7 +7924,7 @@
     "tr": "Yeni lordlar 72 saat saldırıya kapalıdır.",
     "en": "New lords are immune to attacks for 72 hours.",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:291"
+      "apps/web/src/screens/Giris.tsx:302"
     ]
   },
   "t6187848c": {
@@ -7674,7 +7940,7 @@
     "tr": "Yeni parola",
     "en": "New password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:187",
+      "apps/web/src/screens/Hesap.tsx:193",
       "apps/web/src/screens/ParolaSifirla.tsx:46"
     ]
   },
@@ -7699,7 +7965,7 @@
     "tr": "Yeniden dene",
     "en": "Try again",
     "nerede": [
-      "apps/web/src/App.tsx:335"
+      "apps/web/src/App.tsx:364"
     ]
   },
   "t56d9b3e2": {
@@ -7733,7 +7999,8 @@
     "tr": "yok",
     "en": "none",
     "nerede": [
-      "apps/web/src/components/ArmaSecici.tsx:179"
+      "apps/web/src/components/ArmaSecici.tsx:179",
+      "apps/web/src/screens/Gizlilik.tsx:75"
     ]
   },
   "t15ceec85": {
@@ -7766,7 +8033,7 @@
     "tr": "Yönetim",
     "en": "Administration",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:118"
+      "apps/web/src/screens/Hesap.tsx:124"
     ]
   },
   "t10956f9e": {
@@ -7783,7 +8050,7 @@
     "tr": "Yukarıdaki e-posta adresine sıfırlama bağlantısı gönderelim.",
     "en": "Let us send a reset link to the email address above.",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:269"
+      "apps/web/src/screens/Giris.tsx:280"
     ]
   },
   "tfab69aea": {
