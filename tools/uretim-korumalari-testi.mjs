@@ -1,0 +1,158 @@
+/**
+ * ÜRETİM KORUMALARI: yayına çıkarken delik kalmasın.
+ *
+ * `docs/05` §6 kontrol listesinin iki maddesi kodla korunuyor:
+ *
+ *   - `NODE_ENV=production` ise `/api/test/*` uçları HİÇ yüklenmez
+ *     (index.ts). O uçlar saati ileri alıyor, kaynak veriyor, yönetici
+ *     atıyor — üretimde açık kalırsa oyun kimliksiz bir kişi tarafından
+ *     baştan sona bozulabilir.
+ *   - `JWT_SECRET` 32 karakterden kısaysa sunucu HİÇ açılmaz (env.ts).
+ *
+ * İkisi de vardı ve ikisi de çalışıyordu — ama HİÇBİR TESTİ YOKTU.
+ * `tools/uretim-testi.mjs` var, o da ne `pnpm e2e` zincirinde ne CI'da;
+ * elle üretim sunucusu kaldırmayı gerektiriyor, yani pratikte hiç
+ * koşmuyor. Yani biri `if (env.NODE_ENV !== 'production')` satırını
+ * silseydi 551 birim testi ve 1060 e2e kontrolü yeşil kalır, delik
+ * yayına çıkardı. Bu dosya o sessizliği kapatıyor.
+ *
+ * Uçlar ELLE SAYILMIYOR: `dev.ts` okunup içindeki bütün rotalar
+ * çıkarılıyor. Yarın oraya yeni bir uç eklenirse bu test onu da
+ * kendiliğinden kapsar — elle yazılmış bir liste ise eklenen ucu hiç
+ * görmezdi ve tam da korumaya çalıştığımız şey kaçardı.
+ *
+ * Sunucuyu `tsx src/index.ts` ile kaldırıyor, `dist` ile değil: CI'nın
+ * uçtan uca işi derleme yapmıyor ve koruma zaten kaynakta.
+ */
+import { spawn } from 'node:child_process';
+import { readFileSync } from 'node:fs';
+
+const PORT = Number(process.env.KORUMA_PORT ?? 3210);
+const KOK = new URL('..', import.meta.url).pathname;
+let hata = 0;
+const k = (ad, kosul, detay = '') => {
+  console.log(`  ${kosul ? '[GEÇTİ]' : '[KALDI]'} ${ad}${detay ? ` — ${detay}` : ''}`);
+  if (!kosul) hata++;
+};
+
+/** dev.ts içindeki bütün rota yolları — elle liste tutmuyoruz. */
+function devUclari() {
+  const kaynak = readFileSync(`${KOK}apps/api/src/routes/dev.ts`, 'utf8');
+  const yollar = [...kaynak.matchAll(/app\.(?:post|get|put|delete)\(\s*'([^']+)'/g)].map(
+    (m) => m[1],
+  );
+  return [...new Set(yollar)];
+}
+
+/** Sunucuyu verilen ortamla kaldırır; {surec, cikti} döner. */
+function sunucuBaslat(ek) {
+  const surec = spawn('pnpm', ['--filter', '@lordlar/api', 'exec', 'tsx', 'src/index.ts'], {
+    cwd: KOK,
+    env: { ...process.env, ...ek },
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  let cikti = '';
+  surec.stdout.on('data', (d) => (cikti += d));
+  surec.stderr.on('data', (d) => (cikti += d));
+  return { surec, oku: () => cikti };
+}
+
+async function ayagaKalkmasiniBekle(url, saniye = 60) {
+  for (let i = 0; i < saniye * 2; i++) {
+    try {
+      const y = await fetch(url, { signal: AbortSignal.timeout(1500) });
+      if (y.ok) return true;
+    } catch {
+      /* henüz açılmadı */
+    }
+    await new Promise((r) => setTimeout(r, 500));
+  }
+  return false;
+}
+
+console.log('Lordlar Çağı — üretim korumaları\n');
+
+/* ---------------------------------------------------------------- */
+/* 1. NODE_ENV=production -> /api/test/* kapalı                      */
+/* ---------------------------------------------------------------- */
+const uclar = devUclari();
+k('dev.ts uçları okunabildi', uclar.length > 0, `${uclar.length} uç`);
+
+const { surec, oku } = sunucuBaslat({
+  NODE_ENV: 'production',
+  PORT: String(PORT),
+  SERVE_WEB: 'false',
+  RUN_WORKER: 'false',
+  AUTO_MIGRATE: 'false',
+  SEED_DEMO_LORDS: 'false',
+});
+
+try {
+  const kalkti = await ayagaKalkmasiniBekle(`http://127.0.0.1:${PORT}/health`);
+  k('üretim modunda sunucu açıldı', kalkti, kalkti ? `port ${PORT}` : oku().slice(-300));
+
+  if (kalkti) {
+    let acikKalan = [];
+    for (const yol of uclar) {
+      const y = await fetch(`http://127.0.0.1:${PORT}/api${yol}`, { method: 'POST' });
+      // 404 = rota hiç yüklenmemiş (istediğimiz). Başka her şey — 401, 400,
+      // 500 — rotanın VAR olduğu anlamına gelir.
+      if (y.status !== 404) acikKalan.push(`${yol} -> ${y.status}`);
+    }
+    k(
+      `üretimde ${uclar.length} test ucunun hepsi kapalı`,
+      acikKalan.length === 0,
+      acikKalan.length ? `AÇIK KALAN: ${acikKalan.join(', ')}` : 'hepsi 404',
+    );
+
+    // Uyarı yalnız geliştirmede basılmalı; üretim log'unda görünmesi
+    // uçların yüklendiğinin ikinci bir işareti olurdu.
+    k('üretim log’unda "test uçları açık" uyarısı yok', !/test uçları açık/i.test(oku()));
+
+    const saglik = await fetch(`http://127.0.0.1:${PORT}/health`).then((r) => r.json());
+    k('/health izleme durumunu bildiriyor', typeof saglik.izleme === 'string', `${saglik.izleme}`);
+  }
+} finally {
+  surec.kill('SIGTERM');
+  await new Promise((r) => setTimeout(r, 1200));
+  if (!surec.killed) surec.kill('SIGKILL');
+}
+
+/* ---------------------------------------------------------------- */
+/* 2. Kısa JWT_SECRET -> sunucu hiç açılmaz                          */
+/* ---------------------------------------------------------------- */
+const kisa = sunucuBaslat({
+  NODE_ENV: 'production',
+  PORT: String(PORT + 1),
+  JWT_SECRET: 'kisa',
+  SERVE_WEB: 'false',
+  RUN_WORKER: 'false',
+  AUTO_MIGRATE: 'false',
+});
+const cikisKodu = await new Promise((r) => {
+  const zamanasimi = setTimeout(() => {
+    kisa.surec.kill('SIGKILL');
+    r('açık kaldı');
+  }, 45_000);
+  kisa.surec.on('exit', (c) => {
+    clearTimeout(zamanasimi);
+    r(c);
+  });
+});
+k(
+  'kısa JWT_SECRET ile sunucu açılmıyor',
+  cikisKodu !== 0 && cikisKodu !== 'açık kaldı',
+  `çıkış ${cikisKodu}`,
+);
+k(
+  'sebebi söylüyor (sessizce ölmüyor)',
+  /JWT_SECRET/.test(kisa.oku()),
+  kisa
+    .oku()
+    .split('\n')
+    .find((l) => /JWT_SECRET/.test(l))
+    ?.trim() ?? 'JWT_SECRET geçmiyor',
+);
+
+console.log(hata === 0 ? '\nÜRETİM KORUMALARI TEMİZ\n' : `\n${hata} KORUMA KALDI\n`);
+process.exit(hata === 0 ? 0 : 1);

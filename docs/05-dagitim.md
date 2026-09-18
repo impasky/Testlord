@@ -131,10 +131,20 @@ pnpm e2e                                      # tarayıcı akışları (API + we
 pnpm yuk-testi                                # 120 oyuncu
 ```
 
-Ayrıca:
+İlk iki madde artık **otomatik denetleniyor**:
+`tools/uretim-korumalari-testi.mjs` `pnpm e2e` zincirinde koşuyor, ayrı bir
+sunucuyu `NODE_ENV=production` ile kaldırıp `dev.ts`teki bütün uçların 404
+döndüğünü ve kısa bir `JWT_SECRET` ile sunucunun hiç açılmadığını
+doğruluyor. Uç listesi elle tutulmuyor, `dev.ts`ten okunuyor — oraya yeni
+bir uç eklenirse kendiliğinden kapsanır.
 
-- [ ] `JWT_SECRET` üretimde rastgele ve en az 32 karakter
-- [ ] `NODE_ENV=production` (yoksa `/api/test/*` uçları açık kalır)
+Onay kutusu yine de duruyor, çünkü test KODUN doğru davrandığını gösteriyor;
+üretim ORTAMINDA değişkenin gerçekten öyle ayarlandığını göstermiyor.
+
+- [ ] `JWT_SECRET` üretimde rastgele ve en az 32 karakter _(kod tarafı test
+      ediliyor; kalan iş: değeri gerçekten rastgele üretmek)_
+- [ ] `NODE_ENV=production` (yoksa `/api/test/*` uçları açık kalır) _(kod
+      tarafı test ediliyor; kalan iş: değişkeni sunucuda ayarlamak)_
 - [ ] `SEED_DEMO_LORDS=false` (gerçek oyuncular gelecekse)
 - [ ] **En az bir yönetici hesabı atandı** (`pnpm yonetici ver <eposta>`) —
       yoksa şikâyetler kuyrukta birikir ve kimse bakamaz (docs/14)
