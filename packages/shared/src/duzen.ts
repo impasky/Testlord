@@ -253,6 +253,16 @@ export interface TaktikDurumu {
   uygun: boolean;
   /** Uygun değilse hangi koşulun tutmadığı; uygunsa boş. */
   engel: string | null;
+  /**
+   * Taktiğin SAYISAL etkisi, okunur cümlelerle.
+   *
+   * Oyuncunun şikâyeti: "seçilen taktiğin ne işe yaradığı yazmıyor."
+   * Haklıydı — kart yalnız ad, özet ve düzyazı açıklama gösteriyordu.
+   * Oysa etkiler ZATEN VARDI ve savaşa giriyordu (`taktikler.json` →
+   * `etki`); görünmüyorlardı. Oyuncu bir seçimin karşılığını
+   * göremiyorsa o seçim ona rastgele görünür.
+   */
+  etkiler: string[];
 }
 
 function birimOrani(ordu: Army, birim: string): number {
@@ -300,6 +310,56 @@ function kosulEngeli(
   }
 }
 
+/**
+ * `+%15` / `−%8`.
+ *
+ * Yüzdeyi yukarıdaki `yuzde` hesaplıyor; burası yalnız işaret ekliyor.
+ * İkinci bir yüzde fonksiyonu yazmak, aynı yuvarlamanın iki kopyası
+ * demekti. Eksi işareti Türkçe "−" (U+2212), tire değil: tire
+ * rakamların yanında çizgi gibi okunuyor.
+ */
+function isaretliYuzde(x: number): string {
+  return `${x >= 0 ? '+' : '−'}${yuzde(x)}`;
+}
+
+/**
+ * Taktiğin etkisini okunur cümlelere çevirir.
+ *
+ * Sayılar `taktikler.json` → `etki` alanından geliyor, burada
+ * TÜRETİLMİYOR: bir sayının ikinci kopyası er ya da geç motordan sapar
+ * ve o zaman ekran, savaşın gerçekte kullandığından başka bir şey
+ * söyler — hiç göstermemekten kötü.
+ *
+ * Eksi etkiler de yazılıyor. Taktiğin bedelini gizlemek, oyuncuya
+ * bedava bir seçim sunuyormuş gibi yapmak olurdu; oysa her taktik bir
+ * takas ve seçimi anlamlı kılan şey tam da o.
+ */
+export function taktikEtkileri(etki: Record<string, number | Record<string, number>>): string[] {
+  const satirlar: string[] = [];
+  const sayi = (k: string): number | null =>
+    typeof etki[k] === 'number' ? (etki[k] as number) : null;
+
+  const s = sayi('saldiri');
+  if (s !== null) satirlar.push(`Saldırı ${isaretliYuzde(s)}`);
+  const sv = sayi('savunma');
+  if (sv !== null) satirlar.push(`Savunma ${isaretliYuzde(sv)}`);
+  const ilk = sayi('ilk_tur_saldiri');
+  if (ilk !== null) satirlar.push(`İlk turda saldırı ${isaretliYuzde(ilk)}`);
+  const kale = sayi('kale_delme');
+  // Kale delme savunanın TAHKİMATINDAN düşülüyor: oyuncu için bu bir
+  // artı, ama sayı bir azaltma. "Sur etkisi −%25" ikisini birden
+  // doğru söylüyor.
+  if (kale !== null) satirlar.push(`Sur etkisi ${isaretliYuzde(-kale)}`);
+
+  const karsi = etki['karsi_birim'];
+  if (karsi && typeof karsi === 'object') {
+    for (const [birim, deger] of Object.entries(karsi)) {
+      satirlar.push(`${unitName(birim as UnitType)}'a karşı ${isaretliYuzde(deger)}`);
+    }
+  }
+  return satirlar;
+}
+
 /** Bütün taktiklerin bu ordu + dizilim için uygunluk durumu. */
 export function taktikDurumlari(ordu: Army, dizilim: Dizilim): TaktikDurumu[] {
   return TAKTIKLER.map((t) => {
@@ -313,6 +373,7 @@ export function taktikDurumlari(ordu: Army, dizilim: Dizilim): TaktikDurumu[] {
       aciklama: t.aciklama,
       uygun: engel === null,
       engel,
+      etkiler: taktikEtkileri(t.etki),
     };
   });
 }

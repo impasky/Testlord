@@ -39,14 +39,6 @@
       "apps/web/src/components/BildirimKarti.tsx:99"
     ]
   },
-  "tbff0294e": {
-    "grup": "arayuz",
-    "tr": " · {0} seviye daha gerekiyor",
-    "en": " · {0} more levels needed",
-    "nerede": [
-      "apps/web/src/screens/Akin.tsx:335"
-    ]
-  },
   "t5fc25c41": {
     "grup": "arayuz",
     "tr": " · alırsan birlik {0}",
@@ -191,7 +183,7 @@
     "tr": ", şef",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:489"
+      "apps/web/src/screens/Akin.tsx:491"
     ]
   },
   "t9627bb6e": {
@@ -401,7 +393,7 @@
     "tr": "{0} · T{1}",
     "en": "{0} · T{1}",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:230"
+      "apps/web/src/screens/Akin.tsx:229"
     ]
   },
   "t9f6f97fa": {
@@ -433,7 +425,7 @@
     "tr": "{0} adedi",
     "en": "{0} quantity",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:682",
+      "apps/web/src/screens/Akin.tsx:684",
       "apps/web/src/screens/Kisla.tsx:270"
     ]
   },
@@ -815,7 +807,7 @@
     "tr": "{0} saldırı · {1} savunma",
     "en": "{0} attack · {1} defense",
     "nerede": [
-      "apps/web/src/components/DizilimIzgarasi.tsx:369"
+      "apps/web/src/components/DizilimIzgarasi.tsx:381"
     ]
   },
   "t8a46fd94": {
@@ -839,7 +831,7 @@
     "tr": "{0} savaşçı",
     "en": "{0} warriors",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:490"
+      "apps/web/src/screens/Akin.tsx:492"
     ]
   },
   "t76f8b84f": {
@@ -965,7 +957,7 @@
     "tr": "{0} yaralı hastaneye girdi.",
     "en": "{0} wounded went into the hospital.",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:248"
+      "apps/web/src/screens/Akin.tsx:247"
     ]
   },
   "t99f9e3ea": {
@@ -1112,7 +1104,7 @@
     "tr": "{0}/10 grup hazır",
     "en": "{0}/10 groups ready",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:329"
+      "apps/web/src/screens/Akin.tsx:326"
     ]
   },
   "t58779ae6": {
@@ -1189,7 +1181,7 @@
     "tr": "%{0} ihtimalle T{1} ekipman düşer.",
     "en": "{0}% chance to drop T{1} equipment.",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:642"
+      "apps/web/src/screens/Akin.tsx:644"
     ]
   },
   "t1827a8a3": {
@@ -1285,7 +1277,7 @@
     "tr": "⚑ kanat — süvariye yarar, okçu ve mancınığa zarar.",
     "en": "⚑ wing — benefits cavalry, harms archers and catapults.",
     "nerede": [
-      "apps/web/src/components/DizilimIzgarasi.tsx:358"
+      "apps/web/src/components/DizilimIzgarasi.tsx:370"
     ]
   },
   "tc997d9ef": {
@@ -1342,7 +1334,7 @@
     "tr": "Akın",
     "en": "Raid",
     "nerede": [
-      "apps/api/src/routes/akin.ts:336",
+      "apps/api/src/routes/akin.ts:355",
       "apps/web/src/components/MobilKabuk.tsx:63",
       "apps/web/src/screens/Akin.tsx:108"
     ]
@@ -1352,7 +1344,7 @@
     "tr": "Akına çık · {0} asker",
     "en": "Go on a raid · {0} troops",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:653"
+      "apps/web/src/screens/Akin.tsx:655"
     ]
   },
   "t82148189": {
@@ -1541,7 +1533,7 @@
     "tr": "asker ·",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:634"
+      "apps/web/src/screens/Akin.tsx:636"
     ]
   },
   "t939bcef3": {
@@ -2964,7 +2956,7 @@
     "tr": "Dizilim ve taktik",
     "en": "Formation and tactic",
     "nerede": [
-      "apps/web/src/components/DizilimIzgarasi.tsx:435"
+      "apps/web/src/components/DizilimIzgarasi.tsx:467"
     ]
   },
   "t99ec2d0c": {
@@ -2980,7 +2972,7 @@
     "tr": "Dizilimi kapat",
     "en": "Close formation",
     "nerede": [
-      "apps/web/src/components/DizilimIzgarasi.tsx:435"
+      "apps/web/src/components/DizilimIzgarasi.tsx:467"
     ]
   },
   "tdcafa5d5": {
@@ -2988,7 +2980,7 @@
     "tr": "Dizilimin etkisi",
     "en": "Effect of the formation",
     "nerede": [
-      "apps/web/src/components/DizilimIzgarasi.tsx:364"
+      "apps/web/src/components/DizilimIzgarasi.tsx:376"
     ]
   },
   "t99cead47": {
@@ -3412,7 +3404,7 @@
     "tr": "Evde asker yok. Önce Kışla'da asker eğit.",
     "en": "No troops at home. Train troops in the Barracks first.",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:609"
+      "apps/web/src/screens/Akin.tsx:611"
     ]
   },
   "t0552f64c": {
@@ -3686,7 +3678,7 @@
     "nerede": [
       "apps/web/src/components/Paktlar.tsx:189",
       "apps/web/src/components/SikayetSayfasi.tsx:117",
-      "apps/web/src/screens/Akin.tsx:653",
+      "apps/web/src/screens/Akin.tsx:655",
       "apps/web/src/screens/Demirhane.tsx:519",
       "apps/web/src/screens/Generaller.tsx:126",
       "apps/web/src/screens/Giris.tsx:289",
@@ -3926,7 +3918,7 @@
     "tr": "Henüz akına çıkmadın. Bir diyar seç, grubunu belirle, ordunu gönder.",
     "en": "You haven't gone on a raid yet. Choose a realm, set your group, send your army.",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:179"
+      "apps/web/src/screens/Akin.tsx:178"
     ]
   },
   "t714210b8": {
@@ -4741,7 +4733,7 @@
     "tr": "Karşında: {0}",
     "en": "Against you: {0}",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:583"
+      "apps/web/src/screens/Akin.tsx:585"
     ]
   },
   "t14306832": {
@@ -4891,7 +4883,7 @@
     "tr": "Kazanırsan:",
     "en": "If you win:",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:638"
+      "apps/web/src/screens/Akin.tsx:640"
     ]
   },
   "tcf60c0c7": {
@@ -4899,7 +4891,7 @@
     "tr": "Kazanma ihtimali",
     "en": "Chance of winning",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:617"
+      "apps/web/src/screens/Akin.tsx:619"
     ]
   },
   "t9ab780a2": {
@@ -5011,7 +5003,7 @@
     "tr": "Kilitli — {0}",
     "en": "Locked — {0}",
     "nerede": [
-      "apps/web/src/components/DizilimIzgarasi.tsx:414",
+      "apps/web/src/components/DizilimIzgarasi.tsx:426",
       "apps/web/src/screens/Arastirma.tsx:215"
     ]
   },
@@ -5783,7 +5775,7 @@
     "tr": "Ordun sahada. Döndüğünde buradan akına çıkabilirsin.",
     "en": "Your army is on the field. When it returns, you can go on a raid from here.",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:606"
+      "apps/web/src/screens/Akin.tsx:608"
     ]
   },
   "t437a0412": {
@@ -6864,7 +6856,7 @@
     "tr": "Son akınlar",
     "en": "Recent raids",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:176"
+      "apps/web/src/screens/Akin.tsx:175"
     ]
   },
   "t7777e141": {
@@ -7034,7 +7026,7 @@
     "en": "Lvl{0}",
     "nerede": [
       "apps/web/src/components/SavasRaporu.tsx:245",
-      "apps/web/src/screens/Akin.tsx:327",
+      "apps/web/src/screens/Akin.tsx:324",
       "apps/web/src/screens/Demirhane.tsx:450",
       "apps/web/src/screens/Generaller.tsx:182"
     ]
@@ -7052,7 +7044,7 @@
     "tr": "ŞEF",
     "en": "CHIEF",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:537"
+      "apps/web/src/screens/Akin.tsx:539"
     ]
   },
   "t8a5a4437": {
@@ -7214,7 +7206,7 @@
     "tr": "T{0}",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:242",
+      "apps/web/src/screens/Akin.tsx:241",
       "apps/web/src/screens/Demirhane.tsx:225",
       "apps/web/src/screens/Demirhane.tsx:233",
       "apps/web/src/screens/LordEkrani.tsx:576"
@@ -7289,7 +7281,7 @@
     "tr": "Tahmini kayıp:",
     "en": "Estimated losses:",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:634"
+      "apps/web/src/screens/Akin.tsx:636"
     ]
   },
   "t1319ad6a": {
@@ -7380,7 +7372,7 @@
     "tr": "Taktik",
     "en": "Tactic",
     "nerede": [
-      "apps/web/src/components/DizilimIzgarasi.tsx:385"
+      "apps/web/src/components/DizilimIzgarasi.tsx:397"
     ]
   },
   "tfe6108b0": {
@@ -7938,7 +7930,7 @@
     "tr": "yenilgi",
     "en": "defeat",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:190"
+      "apps/web/src/screens/Akin.tsx:189"
     ]
   },
   "t1ff6091c": {
@@ -8099,7 +8091,7 @@
     "tr": "zafer",
     "en": "victory",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:190"
+      "apps/web/src/screens/Akin.tsx:189"
     ]
   },
   "tc31c9cb1": {
@@ -8209,6 +8201,22 @@
       "packages/shared/src/ogretici.ts:414"
     ]
   },
+  "tb4bd9bd1": {
+    "grup": "motor",
+    "tr": "{0} seviye daha gerekiyor.",
+    "en": "{0} more level(s) required.",
+    "nerede": [
+      "packages/shared/src/akin.ts:287"
+    ]
+  },
+  "t06bb2684": {
+    "grup": "motor",
+    "tr": "{0}'a karşı {1}",
+    "en": "{0} vs. {1}",
+    "nerede": [
+      "packages/shared/src/duzen.ts:357"
+    ]
+  },
   "te67fe55b": {
     "grup": "motor",
     "tr": "{0}x{1} bir düzlükte orduyu sen yerleştirirsin, sonra bir taktik seçersin.",
@@ -8270,7 +8278,7 @@
     "tr": "Akına boş orduyla çıkılmaz.",
     "en": "You cannot go on a raid with an empty army.",
     "nerede": [
-      "packages/shared/src/akin.ts:294"
+      "packages/shared/src/akin.ts:341"
     ]
   },
   "t201598e4": {
@@ -8518,7 +8526,7 @@
     "tr": "Bilinmeyen birim: {0}",
     "en": "Unknown unit: {0}",
     "nerede": [
-      "packages/shared/src/progression.ts:149"
+      "packages/shared/src/progression.ts:164"
     ]
   },
   "t8baee2f4": {
@@ -8630,7 +8638,8 @@
     "tr": "bölge geliri",
     "en": "region income",
     "nerede": [
-      "packages/shared/src/etki-adi.ts:32"
+      "packages/shared/src/etki-adi.ts:32",
+      "packages/shared/src/medeniyet.ts:198"
     ]
   },
   "tdbe1a320": {
@@ -8898,6 +8907,14 @@
       "packages/shared/src/rehber.ts:353"
     ]
   },
+  "t8785711d": {
+    "grup": "motor",
+    "tr": "depo kapasitesi",
+    "en": "storage capacity",
+    "nerede": [
+      "packages/shared/src/medeniyet.ts:195"
+    ]
+  },
   "t1e10eb4e": {
     "grup": "motor",
     "tr": "Depo kapasitesi +{0}",
@@ -8975,7 +8992,7 @@
     "tr": "Düşmanda {0} yoktu; bu taktiğin asıl kozu boşa gitti.",
     "en": "The enemy didn't have {0}; the main trump card of this tactic was wasted.",
     "nerede": [
-      "packages/shared/src/duzen.ts:368"
+      "packages/shared/src/duzen.ts:429"
     ]
   },
   "t7292ddeb": {
@@ -8983,7 +9000,7 @@
     "tr": "Düşmanın {0}'i {1}ydı: +{2} saldırı.",
     "en": "The enemy's {0} unit was {1}: +{2} attack.",
     "nerede": [
-      "packages/shared/src/duzen.ts:375"
+      "packages/shared/src/duzen.ts:436"
     ]
   },
   "tcf7e17f3": {
@@ -8992,6 +9009,14 @@
     "en": "A group you defeat comes back a few hours later. It stays grey during that time but does not disappear — the screen says when it returns.",
     "nerede": [
       "packages/shared/src/ogretici.ts:346"
+    ]
+  },
+  "t7005d978": {
+    "grup": "motor",
+    "tr": "eğitim hızı",
+    "en": "training speed",
+    "nerede": [
+      "packages/shared/src/medeniyet.ts:196"
     ]
   },
   "t7cf4a3a9": {
@@ -9168,6 +9193,14 @@
     "en": "The garrison defends the region alone",
     "nerede": [
       "packages/shared/src/ipuclari.ts:48"
+    ]
+  },
+  "tf105b0d4": {
+    "grup": "motor",
+    "tr": "garnizon savunması",
+    "en": "garrison defence",
+    "nerede": [
+      "packages/shared/src/medeniyet.ts:197"
     ]
   },
   "tb41d91b9": {
@@ -9353,6 +9386,14 @@
     "en": "Take your first region",
     "nerede": [
       "packages/shared/src/rehber.ts:164"
+    ]
+  },
+  "tfb8e4e56": {
+    "grup": "motor",
+    "tr": "İlk turda saldırı {0}",
+    "en": "First round attack {0}",
+    "nerede": [
+      "packages/shared/src/duzen.ts:347"
     ]
   },
   "t78f10e57": {
@@ -9579,7 +9620,7 @@
     "tr": "Koşul tutmuyor.",
     "en": "Condition not met.",
     "nerede": [
-      "packages/shared/src/duzen.ts:272"
+      "packages/shared/src/duzen.ts:282"
     ]
   },
   "tcbfde837": {
@@ -9879,6 +9920,14 @@
       "packages/shared/src/arastirma.ts:228"
     ]
   },
+  "te511b4c1": {
+    "grup": "motor",
+    "tr": "Önce {0} haritasını bitir.",
+    "en": "Finish {0} first.",
+    "nerede": [
+      "packages/shared/src/akin.ts:286"
+    ]
+  },
   "td58fd65f": {
     "grup": "motor",
     "tr": "Önce casus yolla",
@@ -9925,6 +9974,14 @@
     "en": "Spam or link flooding",
     "nerede": [
       "packages/shared/src/moderasyon.ts:53"
+    ]
+  },
+  "tbf53c72b": {
+    "grup": "motor",
+    "tr": "Saldırı {0}",
+    "en": "Attack {0}",
+    "nerede": [
+      "packages/shared/src/duzen.ts:343"
     ]
   },
   "t4be1aaad": {
@@ -9981,6 +10038,14 @@
     "en": "Before battle: your formation and tactic",
     "nerede": [
       "packages/shared/src/ogretici.ts:233"
+    ]
+  },
+  "tcf31b1d6": {
+    "grup": "motor",
+    "tr": "Savunma {0}",
+    "en": "Defence {0}",
+    "nerede": [
+      "packages/shared/src/duzen.ts:345"
     ]
   },
   "tbbd86850": {
@@ -10045,6 +10110,14 @@
     "en": "You have been muted in chat — {0} left.{1}",
     "nerede": [
       "packages/shared/src/moderasyon.ts:174"
+    ]
+  },
+  "tf7055aec": {
+    "grup": "motor",
+    "tr": "Sur etkisi {0}",
+    "en": "Wall effect {0}",
+    "nerede": [
+      "packages/shared/src/duzen.ts:352"
     ]
   },
   "tebdafe82": {
@@ -11029,7 +11102,7 @@
     "tr": "Akın henüz sonuçlanmadı.",
     "en": "Raid has not concluded yet.",
     "nerede": [
-      "apps/api/src/routes/akin.ts:337"
+      "apps/api/src/routes/akin.ts:356"
     ]
   },
   "tda37ec1b": {
@@ -11403,7 +11476,7 @@
     "tr": "Bu grup henüz toparlanmadı. Yenilenmesini bekle.",
     "en": "This group has not recovered yet. Wait for it to replenish.",
     "nerede": [
-      "apps/api/src/routes/akin.ts:264"
+      "apps/api/src/routes/akin.ts:283"
     ]
   },
   "t13668100": {
@@ -11413,6 +11486,14 @@
     "nerede": [
       "apps/api/src/routes/sefer.ts:118",
       "apps/api/src/routes/sefer.ts:162"
+    ]
+  },
+  "td08231b1": {
+    "grup": "sunucu",
+    "tr": "Bu harita henüz açık değil.",
+    "en": "This map is not open yet.",
+    "nerede": [
+      "apps/api/src/routes/akin.ts:273"
     ]
   },
   "t6672b319": {

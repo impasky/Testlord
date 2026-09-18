@@ -267,8 +267,8 @@ export function DizilimIzgarasi({
                 tur="birimler"
                 ad={t}
                 alt={unitName(t)}
-                boyut={20}
-                yedek={<BirimIkonu tip={t} boyut={20} />}
+                boyut={26}
+                yedek={<BirimIkonu tip={t} boyut={26} />}
               />
               <span>{unitName(t)}</span>
               <span className="text-solgun">{ordu[t]}</span>
@@ -328,14 +328,26 @@ export function DizilimIzgarasi({
                 )}
                 {birim ? (
                   <>
+                    {/* Görsel KAREYLE BİRLİKTE ölçekleniyor, sabit 22px
+                        değil. Telefonda kare ~85px geliyordu ve içine
+                        22px'lik bir asker konuyordu: karenin dörtte
+                        biri, gerisi boşluk. Oyuncunun "asker görselleri
+                        çok küçük, insanın gözünü kısması gerekiyor"
+                        şikâyeti tam olarak buydu.
+
+                        `boyut` yalnız kaynak çözünürlüğü; yerleşimi
+                        `className` yapıyor. Yüzde kullanılıyor ki
+                        ızgara dar ekranda daralınca görsel de daralsın
+                        ve taşmasın. */}
                     <Gorsel
                       tur="birimler"
                       ad={birim}
                       alt={unitName(birim)}
-                      boyut={22}
-                      yedek={<BirimIkonu tip={birim} boyut={22} />}
+                      boyut={64}
+                      className="h-[62%] w-auto object-contain"
+                      yedek={<BirimIkonu tip={birim} boyut={40} />}
                     />
-                    <span className="mt-0.5 leading-none text-solgun">
+                    <span className="mt-0.5 text-[11px] leading-none font-semibold text-parsomen">
                       {/* Artan baştaki karelere dağıtılıyor: 17 okçu iki
                           kareye bölününce 9 + 8 yazıyor, 8 + 8 değil.
                           Eski hâli 17. askeri ekrandan siliyordu. */}
@@ -413,6 +425,26 @@ export function DizilimIzgarasi({
               <p className="mt-0.5 text-[11px] leading-snug text-solgun">
                 {t.uygun ? t.aciklama : `Kilitli — ${t.engel}`}
               </p>
+              {/* SAYILAR düzyazının altında, rozet olarak.
+                  Oyuncu "seçilen taktiğin ne işe yaradığı yazmıyor"
+                  dedi. Etkiler zaten vardı ve savaşa giriyordu; yalnız
+                  ekranda yoktu. Artı yeşil, eksi kırmızı: takasın iki
+                  yanı da bir bakışta görünüyor — taktiğin bedelini
+                  gizlemek onu bedava bir seçim gibi gösterirdi. */}
+              {t.etkiler.length > 0 && (
+                <div className="mt-1.5 flex flex-wrap gap-1">
+                  {t.etkiler.map((e) => (
+                    <span
+                      key={e}
+                      className={`tabular rounded px-1.5 py-0.5 text-[10px] ${
+                        e.includes('−') ? 'bg-kirmizi/15 text-kirmizi' : 'bg-yesil/15 text-yesil'
+                      }`}
+                    >
+                      {e}
+                    </span>
+                  ))}
+                </div>
+              )}
             </button>
           );
         })}

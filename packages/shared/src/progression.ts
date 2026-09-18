@@ -130,15 +130,30 @@ export function updateElo(myElo: number, oppElo: number, won: boolean): number {
 
 /** Savaştan kazanılan XP. */
 export function battleXp(opponentLevel: number, won: boolean): number {
-  return Math.round((won ? 80 : 20) * Math.max(1, opponentLevel));
+  const o = B.lord.xp_odulleri;
+  return Math.round((won ? o.savas_galibiyet : o.savas_maglubiyet) * Math.max(1, opponentLevel));
 }
 
+/**
+ * Bölge fethinden kazanılan XP.
+ *
+ * TABAN 1500'DEN 250'YE İNDİ. Ölçüldü: tek bölge fethi lordu 1.
+ * seviyeden 4.'ye çıkarıyordu (+15 nitelik puanı). Sebep basit — seviye
+ * 1→2 eşiği 120, fetih ise 1500 veriyordu: eşiğin 12,5 katı. Öğretici
+ * oyuncuyu ilk fethe götürdüğü için HERKES oyunun ilk dakikasında üç
+ * seviye atlıyordu ve seviye atlamak hiçbir şey ifade etmiyordu.
+ *
+ * Bilinen sınır: ödül `incomeMult` ile ölçekleniyor ama seviye eşiği
+ * n^1.55 ile büyüyor, yani fetih XP'si oyun ilerledikçe önemsizleşiyor.
+ * Bu ayrı bir mesele ve oyuncunun şikâyeti değildi; gerçek oyuncu
+ * verisi olmadan eğriyi yeniden şekillendirmek yine tahmin olurdu.
+ */
 export function captureXp(ringMultiplier: number): number {
-  return Math.round(1500 * ringMultiplier);
+  return Math.round(B.lord.xp_odulleri.fetih_taban * ringMultiplier);
 }
 
 export function npcClearXp(npcUnits: number): number {
-  return Math.round(4 * npcUnits);
+  return Math.round(B.lord.xp_odulleri.npc_birim_basina * npcUnits);
 }
 
 export function statTotal(stats: LordStats): number {

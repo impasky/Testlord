@@ -209,10 +209,20 @@ export interface AkinGrupDurumu {
 }
 
 export interface AkinHaritaDurumu extends AkinHarita {
-  /** Lordun seviyesi haritayı açtı mı. */
+  /** Harita şu an girilebilir mi. */
   acik: boolean;
   /** Kapalıysa kaç seviye gerekiyor. */
   gerekenSeviye: number;
+  /**
+   * Kapalıysa NEDEN — oyuncunun okuyacağı cümle, açıksa null.
+   *
+   * İki ayrı kilit var (seviye ve önceki harita) ve ekranda tek bir
+   * "kilitli" rozeti vardı. Oyuncu hangi şartı tutturamadığını
+   * bilmiyorsa kilit bir hedef değil, bir duvar.
+   */
+  engel: string | null;
+  /** Bu haritanın on grubunun hepsi en az bir kez düşürüldü mü. */
+  temiz: boolean;
   gruplar: AkinGrupDurumu[];
   /** Şu an vurulabilir grup sayısı — kart tek bakışta bunu gösteriyor. */
   acikGrup: number;
@@ -223,6 +233,23 @@ export type AkinVuruslari = Record<string, Date | string>;
 
 function vurusAnahtari(haritaKey: string, grupNo: number): string {
   return `${haritaKey}:${grupNo}`;
+}
+
+/**
+ * Bu haritanın BÜTÜN grupları en az bir kez düşürüldü mü.
+ *
+ * "En az bir kez" — şu an dolu olup olmadıkları değil. Gruplar
+ * yenilenme süresiyle geri doluyor; temizliği anlık doluluğa bağlamak,
+ * oyuncunun bitirdiği bir haritayı birkaç saat sonra yeniden "bitmemiş"
+ * yapardı ve bir sonraki harita kapanıp açılırdı.
+ *
+ * `vuruslar` tablosunda bir anahtarın VARLIĞI o grubun düşürüldüğünü
+ * söylüyor; zamanı yalnız yenilenme için okunuyor.
+ */
+export function haritaTemizMi(haritaKey: string, vuruslar: AkinVuruslari): boolean {
+  const h = akinHaritasi(haritaKey);
+  if (!h) return false;
+  return h.gruplar.every((_, i) => vurusAnahtari(haritaKey, i + 1) in vuruslar);
 }
 
 /**
@@ -238,8 +265,26 @@ export function akinDurumlari(
   vuruslar: AkinVuruslari,
   simdi: Date = new Date(),
 ): AkinHaritaDurumu[] {
-  return AKIN_HARITALARI.map((h) => {
-    const haritaAcik = lordSeviyesi >= h.acilis_seviyesi;
+  return AKIN_HARITALARI.map((h, hi) => {
+    /*
+     * İKİ KAPI: seviye VE önceki haritanın temizlenmiş olması.
+     *
+     * Oyuncunun isteği: "bir harita boşunu kesmeden diğer haritaya
+     * geçilemesin." Önceden yalnız seviye kapısı vardı, yani seviye
+     * atlayan oyuncu ilk haritayı yarım bırakıp ikinciye atlayabiliyordu
+     * — akınlar bir ilerleme değil, bir liste oluyordu.
+     *
+     * İlk haritanın öncesi yok, o yüzden yalnız seviyeye bakıyor.
+     */
+    const onceki = hi > 0 ? AKIN_HARITALARI[hi - 1]! : null;
+    const oncekiTemiz = onceki === null || haritaTemizMi(onceki.key, vuruslar);
+    const seviyeYeter = lordSeviyesi >= h.acilis_seviyesi;
+    const haritaAcik = seviyeYeter && oncekiTemiz;
+    const engel = seviyeYeter
+      ? oncekiTemiz
+        ? null
+        : `Önce ${onceki!.ad} haritasını bitir.`
+      : `${h.acilis_seviyesi - lordSeviyesi} seviye daha gerekiyor.`;
     const gruplar: AkinGrupDurumu[] = h.gruplar.map((ad, i) => {
       const grupNo = i + 1;
       const ham = vuruslar[vurusAnahtari(h.key, grupNo)];
@@ -276,6 +321,8 @@ export function akinDurumlari(
       azamiTier: h.azami_tier,
       acik: haritaAcik,
       gerekenSeviye: h.acilis_seviyesi,
+      engel,
+      temiz: haritaTemizMi(h.key, vuruslar),
       gruplar,
       acikGrup: gruplar.filter((g) => g.acik).length,
     };

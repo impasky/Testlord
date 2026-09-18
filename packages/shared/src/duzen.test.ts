@@ -10,6 +10,7 @@ import {
   kareSatiri,
   kareSutunu,
   taktikDurumlari,
+  taktikEtkileri,
   taktikEtkisi,
   varsayilanDizilim,
 } from './duzen.js';
@@ -334,5 +335,38 @@ describe('duzenEtkisi iki katmanı toplar', () => {
       kaleDelme: 0,
       satirlar: [],
     });
+  });
+});
+
+describe('taktikEtkileri', () => {
+  it('her taktiğin en az bir okunur etki satırı var', () => {
+    // Oyuncunun şikâyeti "taktiğin ne işe yaradığı yazmıyor"dı. Etkisiz
+    // görünen bir taktik, o şikâyetin aynısını geri getirir.
+    for (const t of TAKTIKLER) {
+      expect(taktikEtkileri(t.etki).length, t.key).toBeGreaterThan(0);
+    }
+  });
+
+  it('artı ve eksi ayrı işaretle yazılıyor — takas görünür', () => {
+    const hilal = TAKTIKLER.find((t) => t.key === 'hilal')!;
+    const s = taktikEtkileri(hilal.etki);
+    expect(s).toContain('Saldırı +%15');
+    expect(s).toContain('Savunma −%8');
+    expect(s.some((x) => /Okçu.*\+%20/.test(x))).toBe(true);
+  });
+
+  it('kale delme oyuncunun gördüğü yönde yazılıyor', () => {
+    // Sayı savunanın tahkimatından DÜŞÜLÜYOR; ekranda "Sur etkisi −%25".
+    const k = TAKTIKLER.find((t) => t.key === 'kusatma_duzeni')!;
+    expect(taktikEtkileri(k.etki)).toContain('Sur etkisi −%25');
+  });
+
+  it('taktikDurumlari etkileri taşıyor', () => {
+    const d = taktikDurumlari(
+      { mizrakci: 40, okcu: 20, suvari: 10 },
+      varsayilanDizilim({ mizrakci: 40, okcu: 20, suvari: 10 }),
+    );
+    expect(d.length).toBeGreaterThan(0);
+    for (const t of d) expect(Array.isArray(t.etkiler)).toBe(true);
   });
 });

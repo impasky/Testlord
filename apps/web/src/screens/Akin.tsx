@@ -140,7 +140,6 @@ export function Akin({ lord, onGuncelle }: { lord: LordState; onGuncelle: () => 
             <HaritaKarti
               key={h.key}
               h={h}
-              lordSeviyesi={lord.level}
               acikMi={secili?.harita === h.key}
               seciliGrup={secili?.harita === h.key ? secili.grup : null}
               onAc={() =>
@@ -259,7 +258,6 @@ export function Akin({ lord, onGuncelle }: { lord: LordState; onGuncelle: () => 
 /** Bir diyar: başlık, kilit durumu ve açılınca on grup. */
 function HaritaKarti({
   h,
-  lordSeviyesi,
   acikMi,
   seciliGrup,
   onAc,
@@ -268,7 +266,6 @@ function HaritaKarti({
   children,
 }: {
   h: AkinHaritaDurumu;
-  lordSeviyesi: number;
   /** Rehber ışığının hedefi olan ilk açık diyar mı. */
   ilkAcikMi?: boolean;
   acikMi: boolean;
@@ -332,7 +329,12 @@ function HaritaKarti({
           <p className="mt-0.5 text-[12px] leading-snug text-solgun">{h.ozet}</p>
           <p className="mt-1 text-[11.5px] text-sonuk">
             {h.dusman}
-            {kilitli && ` · ${h.gerekenSeviye - lordSeviyesi} seviye daha gerekiyor`}
+            {/* Kilidin SEBEBİ sunucudan geliyor, burada hesaplanmıyor.
+                İki ayrı kapı var — seviye ve önceki haritanın
+                bitmemesi — ve ekran eskiden ikisini de "seviye
+                gerekiyor" diye yazıyordu: haritayı yarım bırakmış
+                oyuncu, beklemekle açılacak sanıp bekliyordu. */}
+            {kilitli && h.engel && ` · ${h.engel}`}
           </p>
         </div>
       </button>

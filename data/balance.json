@@ -61,7 +61,15 @@
       "kaybedilen_savasta_saat": 4,
       "aciklama": "Lord yaraliyken saldiri yapamaz, savunmada lord katkisi %50 duser. Bolgeler ve gelir etkilenmez."
     },
-    "hedef_tempo": "Aktif oyuncu (gunde ~6 savas) icin Lv60 ~ 110-130 gun. Casual oyuncu Lv30 ~ 45 gun."
+    "hedef_tempo": "Aktif oyuncu (gunde ~6 savas) icin Lv60 ~ 110-130 gun. Casual oyuncu Lv30 ~ 45 gun.",
+    "xp_odulleri": {
+      "_aciklama": "XP odulleri. Uc sayi da progression.ts icinde gomuluydu; bir sayinin kodda yasamasi onu ayarlanamaz yapiyor.",
+      "fetih_taban": 250,
+      "_fetih_notu": "ONCEDEN 1500 IDI VE COK BUYUKTU. Olculdu: tek bolge fethi lordu 1. seviyeden 4.ye cikariyordu (+15 nitelik puani). Sebep basit — seviye 1->2 esigi 120, fetih ise 1500 veriyordu, yani esigin 12,5 kati. Ogretici oyuncuyu ilk fethe goturdugu icin herkes oyunun ilk dakikasinda ucuncu seviyeyi atliyordu. 250 ile ilk fetih bir seviye atlatiyor ve ikinciye yaklastiriyor: odul hissi duruyor, ucu ucuna ucurulan iki seviye gidiyor.",
+      "savas_galibiyet": 80,
+      "savas_maglubiyet": 20,
+      "npc_birim_basina": 4
+    }
   },
   "komuta": {
     "kapasite_formulu": "50 + liderlik * 8 + general_bonuslari",

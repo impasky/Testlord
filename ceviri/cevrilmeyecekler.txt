@@ -160,9 +160,9 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
   ", sana"
       apps/web/src/components/IttifakBagis.tsx:126
   ", şef"
-      apps/web/src/screens/Akin.tsx:489
+      apps/web/src/screens/Akin.tsx:491
   "{0} · T{1}"
-      apps/web/src/screens/Akin.tsx:230
+      apps/web/src/screens/Akin.tsx:229
   "{0} T{1}"
       apps/web/src/screens/Demirhane.tsx:221
   "&nbsp;"
@@ -174,7 +174,7 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
   "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
       apps/web/src/components/Omurga.tsx:486
   "asker ·"
-      apps/web/src/screens/Akin.tsx:634
+      apps/web/src/screens/Akin.tsx:636
   "askerin savunmada."
       apps/web/src/screens/Harita.tsx:347
   "Başvuru ile"
@@ -202,7 +202,7 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
   "T"
       apps/web/src/screens/Demirhane.tsx:443
   "T{0}"
-      apps/web/src/screens/Akin.tsx:242
+      apps/web/src/screens/Akin.tsx:241
   "T{0}{1}"
       apps/web/src/screens/LordEkrani.tsx:592
   "üst üste giriyorsun."

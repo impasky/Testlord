@@ -254,11 +254,30 @@ export async function akinRoutes(app: FastifyInstance): Promise<void> {
         throw hata.limitAsildi(`Aynı anda en fazla ${B.akin.es_zamanli} akın`);
       }
 
-      // Grup dolu mu: en son kazanılmış akının üstünden yenilenme geçti mi.
       const vuruslar = await akinVuruslari(lordId, tx);
-      const durum = akinDurumlari(lord.level, vuruslar, simdi)
-        .find((h) => h.key === body.haritaKey)
-        ?.gruplar.find((g) => g.grupNo === body.grupNo);
+      const haritaDurumu = akinDurumlari(lord.level, vuruslar, simdi).find(
+        (h) => h.key === body.haritaKey,
+      );
+
+      /*
+       * HARİTA KAPISI önce sınanıyor, grup kapısından ayrı.
+       *
+       * İkisi de `acik` alanını düşürüyor ve tek bir mesajla
+       * karşılanırsa sebep yanlış söylenir: önceki haritayı bitirmemiş
+       * oyuncuya "bu grup henüz toparlanmadı" demek, bekleyerek
+       * çözülecek bir sorun varmış gibi göstermek olurdu. Oysa
+       * beklemekle açılmıyor.
+       */
+      if (haritaDurumu && !haritaDurumu.acik) {
+        throw new GameError(
+          haritaDurumu.engel ?? 'Bu harita henüz açık değil.',
+          400,
+          'HARITA_KAPALI',
+        );
+      }
+
+      // Grup dolu mu: en son kazanılmış akının üstünden yenilenme geçti mi.
+      const durum = haritaDurumu?.gruplar.find((g) => g.grupNo === body.grupNo);
       if (!durum?.acik) {
         throw new GameError(
           'Bu grup henüz toparlanmadı. Yenilenmesini bekle.',

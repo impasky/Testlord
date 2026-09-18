@@ -24,6 +24,7 @@ import {
   akinXp,
   akinYenilenmeSn,
   sefMi,
+  type AkinVuruslari,
 } from './akin.js';
 import { UNIT_TYPES } from './types.js';
 
@@ -276,9 +277,26 @@ describe('seviye kapısı', () => {
     expect(kapali.acikGrup).toBe(0);
   });
 
-  it('yeterli seviyede hepsi açılıyor', () => {
+  it('yeterli seviye TEK BAŞINA yetmiyor — harita zinciri de var', () => {
+    // Bu sınama eskiden "yeterli seviyede hepsi açılıyor" diyordu ve
+    // doğruydu: tek kapı seviyeydi. Artık ikinci bir kapı var (önceki
+    // haritayı bitirmek), o yüzden 99. seviyede bile yalnız ilki açık.
+    // Kural değişti, sınama de onunla değişti — silinmedi.
     const durum = akinDurumlari(99, {});
-    expect(durum.every((h) => h.acik)).toBe(true);
+    expect(durum[0]!.acik).toBe(true);
+    expect(durum.slice(1).every((h) => !h.acik)).toBe(true);
+  });
+
+  it('seviye yetmezse zincir tamamlansa bile açılmıyor', () => {
+    // İki kapı BİRLİKTE çalışıyor: biri diğerini geçersiz kılmıyor.
+    const hepsiTemiz: AkinVuruslari = {};
+    for (const h of AKIN_HARITALARI) {
+      for (let i = 1; i <= 10; i++) hepsiTemiz[`${h.key}:${i}`] = new Date('2020-01-01');
+    }
+    const durum = akinDurumlari(1, hepsiTemiz);
+    const seviyeliler = durum.filter((h) => h.gerekenSeviye > 1);
+    expect(seviyeliler.length).toBeGreaterThan(0);
+    expect(seviyeliler.every((h) => !h.acik)).toBe(true);
   });
 });
 
@@ -290,5 +308,55 @@ describe('ordu doğrulaması', () => {
 
   it('dolu ordu geçiyor', () => {
     expect(akinOrdusuEngeli({ milis: 3 })).toBeNull();
+  });
+});
+
+describe('harita kapısı — önceki bitmeden sonraki açılmaz', () => {
+  const yuksekSeviye = 99;
+  const hepsiVurulmus = (key: string): AkinVuruslari =>
+    Object.fromEntries(
+      Array.from({ length: 10 }, (_, i) => [`${key}:${i + 1}`, new Date('2020-01-01')]),
+    );
+
+  it('ilk harita hiçbir şey gerektirmiyor — öncesi yok', () => {
+    const d = akinDurumlari(yuksekSeviye, {});
+    expect(d[0]!.acik).toBe(true);
+    expect(d[0]!.engel).toBeNull();
+  });
+
+  it('seviye yetse bile ikinci harita kapalı: önceki bitmemiş', () => {
+    const d = akinDurumlari(yuksekSeviye, {});
+    expect(d[1]!.acik).toBe(false);
+    expect(d[1]!.engel).toContain(d[0]!.ad);
+  });
+
+  it('ilk harita bitince ikincisi açılıyor', () => {
+    const d = akinDurumlari(yuksekSeviye, hepsiVurulmus(AKIN_HARITALARI[0]!.key));
+    expect(d[0]!.temiz).toBe(true);
+    expect(d[1]!.acik).toBe(true);
+    // ama ÜÇÜNCÜSÜ hâlâ kapalı: zincir atlanmıyor.
+    expect(d[2]!.acik).toBe(false);
+  });
+
+  it('dokuz grup yetmiyor, onu da gerekiyor', () => {
+    const eksik = hepsiVurulmus(AKIN_HARITALARI[0]!.key);
+    delete eksik[`${AKIN_HARITALARI[0]!.key}:10`];
+    const d = akinDurumlari(yuksekSeviye, eksik);
+    expect(d[0]!.temiz).toBe(false);
+    expect(d[1]!.acik).toBe(false);
+  });
+
+  it('temizlik KALICI: gruplar yenilense de harita bitmiş sayılıyor', () => {
+    // Vuruş zamanları çok eski, yani gruplar çoktan yenilendi. Yine de
+    // sonraki harita açık kalmalı — yoksa bitirilen harita birkaç saat
+    // sonra "bitmemiş" olur ve sonraki kapanırdı.
+    const d = akinDurumlari(yuksekSeviye, hepsiVurulmus(AKIN_HARITALARI[0]!.key));
+    expect(d[0]!.gruplar.every((g) => g.acik)).toBe(true);
+    expect(d[1]!.acik).toBe(true);
+  });
+
+  it('seviye yetmiyorsa engel seviyeyi söylüyor, haritayı değil', () => {
+    const d = akinDurumlari(1, hepsiVurulmus(AKIN_HARITALARI[0]!.key));
+    expect(d[1]!.engel).toMatch(/seviye/i);
   });
 });
