@@ -37,8 +37,24 @@ for (const dil of DILLER) {
     // Yer tutucusuz olanlar doğrudan özetle bulunuyor, kaynak gerekmiyor.
     if (/\{\d+\}/.test(v.tr)) kaliplar[anahtar] = v.tr;
   }
-  writeFileSync(new URL(`${dil}.json`, cikti), JSON.stringify(paket) + '\n');
-  writeFileSync(new URL(`${dil}-kaliplar.json`, cikti), JSON.stringify(kaliplar) + '\n');
+  // GİRİNTİLİ yazılıyor, sıkıştırılmış değil. İki sebep:
+  //
+  // 1. Sıkıştırmak PAKETE hiçbir şey kazandırmıyor. Bu iki dosya
+  //    `dil.tsx`te `import()` ile yükleniyor, yani Vite onları derleme
+  //    sırasında zaten küçültüyor. Kaynakta sıkıştırmak yalnız depoyu
+  //    etkiliyor.
+  // 2. Depoda bedeli ağır. Tek satırlık bir JSON'da tek çeviri eklemek
+  //    diff'te "1756 satır silindi, 1 satır eklendi" diye görünüyordu;
+  //    ne gözden geçirilebilir ne de neyin değiştiği okunabilir.
+  //
+  // Ayrıca CI `prettier --check .` koşuyor ve bu iki dosya
+  // `.prettierignore`da DEĞİL. Sıkıştırılmış yazıldıklarında her
+  // `pnpm ceviri` koşusu CI'ı kırıyordu; ardından `pnpm format`
+  // çağırmayı hatırlamak bir kurala değil, insan hafızasına bağlıydı.
+  // Girinti prettier'ınkiyle aynı (2 boşluk + son satırsonu), yani
+  // üreteç ile biçimlendirici artık aynı şeyi yazıyor.
+  writeFileSync(new URL(`${dil}.json`, cikti), JSON.stringify(paket, null, 2) + '\n');
+  writeFileSync(new URL(`${dil}-kaliplar.json`, cikti), JSON.stringify(kaliplar, null, 2) + '\n');
   const kb = (n) => (n / 1024).toFixed(0) + ' KB';
   console.log(
     `${dil}.json          ${String(sayi).padStart(5)} çeviri  ${kb(JSON.stringify(paket).length)}`,

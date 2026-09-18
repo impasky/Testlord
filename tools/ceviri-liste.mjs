@@ -215,7 +215,11 @@ for (const [anahtar, v] of Object.entries(sozluk)) {
   cevrilecek.push({ n, anahtar, tr: v.tr, parti: partiNo(v), alan: alanAdi(v), en: v.en });
 }
 
-writeFileSync(numaraYolu, JSON.stringify(numaralar, null, 0) + '\n');
+// Girinti 0 DEĞİL 2: bu dosya `.prettierignore`da olmadığı için CI'daki
+// `prettier --check .` onu okuyor ve sıkıştırılmış hâli her `pnpm ceviri`
+// koşusunda CI'ı kırıyordu. Üstelik sıkıştırmanın karşılığı da yok —
+// numaralar.json depoda kalan, tarayıcıya hiç gitmeyen bir eşleme.
+writeFileSync(numaraYolu, JSON.stringify(numaralar, null, 2) + '\n');
 
 /* ---------------------------------------------------------------- */
 /* 4. Dosyaları yaz                                                  */
