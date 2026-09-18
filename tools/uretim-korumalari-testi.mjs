@@ -111,6 +111,53 @@ try {
 
     const saglik = await fetch(`http://127.0.0.1:${PORT}/health`).then((r) => r.json());
     k('/health izleme durumunu bildiriyor', typeof saglik.izleme === 'string', `${saglik.izleme}`);
+
+    /*
+     * SIKIŞTIRMA — sessizce kaybolursa kimse fark etmez.
+     *
+     * Uzun süre kapalıydı ve hiçbir test bakmıyordu: ana paket 409.610
+     * baytın tamamıyla gidiyordu, oysa sıkıştırılmış hâli 135.064.
+     * Yavaş bir bağlantıda oyuncunun boş ekrana bakma süresi 8,8
+     * saniyeden 3,1 saniyeye ancak sıkıştırma açılınca indi.
+     *
+     * Bu tür bir gerileme görünmez: uygulama çalışmaya devam eder,
+     * yalnız yavaşlar. O yüzden burada nöbetçi duruyor.
+     */
+    /*
+     * BÜYÜK bir yanıt üzerinden sınanıyor, `/health` üzerinden değil.
+     *
+     * `@fastify/compress` bir eşiğin (1 kB) altındaki yanıtları bilerek
+     * sıkıştırmıyor — 60 baytlık bir JSON'u sıkıştırmak onu büyütür.
+     * İlk yazdığımda `/health`e bakıyordum ve test "sıkıştırma kapalı"
+     * diyordu; kapalı olan sıkıştırma değil, benim ölçütümdü.
+     *
+     * Harita ucu 121 bölge döndürüyor, yani eşiğin çok üstünde.
+     */
+    const ad = `koruma${Date.now().toString(36)}`;
+    const kayit = await fetch(`http://127.0.0.1:${PORT}/api/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: `${ad}@lordlar.dev`,
+        password: 'parola1234',
+        lordName: `Krm${Date.now().toString(36).slice(-4)}`,
+      }),
+    }).then((r) => r.json());
+
+    if (!kayit?.token) {
+      k('sıkıştırma sınanabildi (kayıt gerekiyor)', false, JSON.stringify(kayit).slice(0, 120));
+    } else {
+      const harita = await fetch(`http://127.0.0.1:${PORT}/api/map`, {
+        headers: { Authorization: `Bearer ${kayit.token}`, 'Accept-Encoding': 'gzip' },
+      });
+      const kodlama = harita.headers.get('content-encoding');
+      const boyut = (await harita.arrayBuffer()).byteLength;
+      k(
+        'sunucu büyük yanıtları sıkıştırıyor',
+        kodlama !== null && /br|gzip|deflate/.test(kodlama),
+        kodlama ? `${kodlama} · ${boyut} bayt` : 'Content-Encoding YOK — sıkıştırma kapalı',
+      );
+    }
   }
 } finally {
   surec.kill('SIGTERM');

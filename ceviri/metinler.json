@@ -2794,7 +2794,7 @@
     "tr": "Diyar yükleniyor…",
     "en": "Realm loading…",
     "nerede": [
-      "apps/web/src/App.tsx:356"
+      "apps/web/src/App.tsx:388"
     ]
   },
   "tadebb397": {
@@ -3619,7 +3619,7 @@
     "tr": "Giriş ekranına dön",
     "en": "Return to login screen",
     "nerede": [
-      "apps/web/src/App.tsx:345",
+      "apps/web/src/App.tsx:377",
       "apps/web/src/screens/ParolaSifirla.tsx:41"
     ]
   },
@@ -5907,7 +5907,7 @@
     "tr": "Oturum açılamadı. Tekrar giriş yapman gerekiyor.",
     "en": "Could not log in. You need to sign in again.",
     "nerede": [
-      "apps/web/src/App.tsx:343"
+      "apps/web/src/App.tsx:375"
     ]
   },
   "t63341816": {
@@ -6921,7 +6921,7 @@
     "tr": "Sunucu uykudan uyanıyor olabilir. Bu ilk açılışta 30–60 saniye sürebilir.",
     "en": "The server might be waking up from sleep. This can take 30–60 seconds on the first launch.",
     "nerede": [
-      "apps/web/src/App.tsx:359"
+      "apps/web/src/App.tsx:391"
     ]
   },
   "t0a0f8af7": {
@@ -7922,7 +7922,7 @@
     "tr": "Yeniden dene",
     "en": "Try again",
     "nerede": [
-      "apps/web/src/App.tsx:364"
+      "apps/web/src/App.tsx:396"
     ]
   },
   "t56d9b3e2": {

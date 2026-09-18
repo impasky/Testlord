@@ -1,6 +1,7 @@
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
 import rateLimit from '@fastify/rate-limit';
+import compress from '@fastify/compress';
 import fastifyStatic from '@fastify/static';
 import { execFileSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
@@ -81,6 +82,25 @@ export async function buildServer() {
    * korumaz. Geliştirme modunda zaten /api/test/* uçları açık, dolayısıyla
    * geliştirme sunucusu güvenilmeyen bir ağa açılmamalı — bu CORS'tan bağımsız.
    */
+  /*
+   * SIKIŞTIRMA — soğuk açılışın en pahalı kalemi buydu.
+   *
+   * Oyuncu: "sayfalar geç yükleniyor, uygulamayı ilk açtığımda oluyor."
+   * Üretim derlemesi telefon koşullarında ölçüldü ve sunucunun yanıtları
+   * HİÇ SIKIŞTIRMADIĞI çıktı: `Accept-Encoding: gzip` istense bile
+   * `Content-Encoding` başlığı yok ve ana paket 409.610 baytın tamamıyla
+   * gidiyordu. Vite derleme çıktısında "gzip: 194 kB" yazıyor ama o
+   * sayı hiçbir zaman gerçekleşmiyordu — kimse sıkıştırmıyordu.
+   *
+   * Yavaş bir bağlantıda bu, oyuncunun boş ekrana bakma süresinin üç
+   * katı demek. Eklenti tek satır; kazanç kodun tamamını bölmekten
+   * büyük.
+   *
+   * `global: true`: yalnız statik dosyalar değil API yanıtları da
+   * sıkıştırılıyor. Harita ve sıralama uçları yüzlerce satırlık JSON
+   * döndürüyor ve onlar da aynı bağlantıdan geçiyor.
+   */
+  await app.register(compress, { global: true, encodings: ['br', 'gzip', 'deflate'] });
   await app.register(cors, {
     origin: env.NODE_ENV === 'production' ? env.webOrigins : true,
     credentials: true,

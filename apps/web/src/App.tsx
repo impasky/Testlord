@@ -1,33 +1,21 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react';
 import { ApiError, api, getToken, setToken, type MeResponse } from './api/client';
 import { BaglantiDurumu } from './components/BaglantiDurumu';
 import { MobilKabuk } from './components/MobilKabuk';
 import { KapiPaneli } from './components/KapiPaneli';
-import { Arastirma } from './screens/Arastirma';
+
 import { ANA_SEKME, KAPI_ADI, rehberGorunsunMu, type AltSekme, type Kapi } from '@lordlar/shared';
 import { Ogretici } from './components/Ogretici';
 import { RehberIsigi } from './components/RehberIsigi';
-import { Buton } from './components/ui';
-import { Demirhane } from './screens/Demirhane';
-import { Generaller } from './screens/Generaller';
-import { Gizlilik } from './screens/Gizlilik';
+import { Buton, Iskelet } from './components/ui';
+
 import { Giris } from './screens/Giris';
-import { Hesap } from './screens/Hesap';
-import { Moderasyon } from './screens/Moderasyon';
-import { Harita } from './screens/Harita';
-import { Kisla } from './screens/Kisla';
-import { LordEkrani } from './screens/LordEkrani';
+
 import { OmurgaSeridi, useOmurgaAdimi } from './components/Omurga';
 import { useRehberDurumu } from './rehberDurumu';
-import { Malikane } from './screens/Malikane';
+
 import { Sehir } from './screens/Sehir';
-import { Akin } from './screens/Akin';
-import { Gorevler } from './screens/Gorevler';
-import { Olaylar } from './screens/Olaylar';
-import { ParolaSifirla } from './screens/ParolaSifirla';
-import { Siralama } from './screens/Siralama';
-import { Ittifak } from './screens/Ittifak';
 
 /**
  * E-postadaki sıfırlama bağlantısının jetonu.
@@ -35,6 +23,50 @@ import { Ittifak } from './screens/Ittifak';
  * Yönlendirici yok; tek bir bağlantı için kütüphane eklemek yerine hash
  * okunuyor. Açılışta bir kez bakılıyor, sonra state üzerinden yürüyor.
  */
+/*
+ * EKRANLAR TEMBEL YÜKLENİYOR — soğuk açılışın bedeli buydu.
+ *
+ * Oyuncu: "sayfalar genel olarak geç yükleniyor, uygulamayı ilk
+ * açtığımda oluyor." Üretim derlemesi telefon koşullarında ölçüldü:
+ *
+ *     4G       oynanabilir 2.317 ms · ilk boya 1.856 ms · 611 kB JS
+ *     yavaş 3G oynanabilir 8.843 ms · ilk boya 8.040 ms · 611 kB JS
+ *
+ * Yavaş bağlantıda dokuz saniye boyunca EKRAN BOŞ. Sebep tek parça
+ * paket: on sekiz ekranın hepsi ilk boyadan önce indiriliyor ve
+ * ayrıştırılıyordu — oyuncu Şehir'e bakarken Moderasyon, Sıralama,
+ * Demirhane, dünya haritası da yüklenmiş oluyordu. Vite'ın kendisi
+ * uyarıyordu ("chunks larger than 500 kB").
+ *
+ * Şehir ve Giriş EAGER kalıyor: biri açılışta görülen ekran, öteki
+ * oturumu olmayanın gördüğü ilk şey. İkisini tembelleştirmek, ilk
+ * boyaya bir gidiş-dönüş daha eklerdi.
+ */
+const Arastirma = lazy(() => import('./screens/Arastirma').then((m) => ({ default: m.Arastirma })));
+const Demirhane = lazy(() => import('./screens/Demirhane').then((m) => ({ default: m.Demirhane })));
+const Generaller = lazy(() =>
+  import('./screens/Generaller').then((m) => ({ default: m.Generaller })),
+);
+const Gizlilik = lazy(() => import('./screens/Gizlilik').then((m) => ({ default: m.Gizlilik })));
+const Hesap = lazy(() => import('./screens/Hesap').then((m) => ({ default: m.Hesap })));
+const Moderasyon = lazy(() =>
+  import('./screens/Moderasyon').then((m) => ({ default: m.Moderasyon })),
+);
+const Harita = lazy(() => import('./screens/Harita').then((m) => ({ default: m.Harita })));
+const Kisla = lazy(() => import('./screens/Kisla').then((m) => ({ default: m.Kisla })));
+const LordEkrani = lazy(() =>
+  import('./screens/LordEkrani').then((m) => ({ default: m.LordEkrani })),
+);
+const Malikane = lazy(() => import('./screens/Malikane').then((m) => ({ default: m.Malikane })));
+const Akin = lazy(() => import('./screens/Akin').then((m) => ({ default: m.Akin })));
+const Gorevler = lazy(() => import('./screens/Gorevler').then((m) => ({ default: m.Gorevler })));
+const Olaylar = lazy(() => import('./screens/Olaylar').then((m) => ({ default: m.Olaylar })));
+const ParolaSifirla = lazy(() =>
+  import('./screens/ParolaSifirla').then((m) => ({ default: m.ParolaSifirla })),
+);
+const Siralama = lazy(() => import('./screens/Siralama').then((m) => ({ default: m.Siralama })));
+const Ittifak = lazy(() => import('./screens/Ittifak').then((m) => ({ default: m.Ittifak })));
+
 function hashJetonu(): string | null {
   const h = window.location.hash;
   if (!h.startsWith('#/parola-sifirla')) return null;
@@ -416,48 +448,53 @@ export function App() {
         bekleyisBitis={egitimBitisi}
         acik={lord.ogreticiGorundu || ogreticiKapandi}
       />
-      {sekme === 'sehir' && (
-        <Sehir
-          lord={lord}
-          queues={queues}
-          onGit={setSekme}
-          onKapiAc={kapiAc}
-          onBolumeGit={bolumeGit}
-        />
-      )}
-      {sekme === 'kisla' && (
-        <Kisla
-          lord={lord}
-          queues={queues}
-          onGuncelle={tazele}
-          onHaritayaGit={(bolgeId) => {
-            setHedefBolge(bolgeId);
-            setSekme('harita');
-          }}
-        />
-      )}
-      {sekme === 'harita' && (
-        <Harita
-          lord={lord}
-          queues={queues}
-          baslangicBolge={hedefBolge}
-          onBaslangicIslendi={() => setHedefBolge(null)}
-          onGuncelle={tazele}
-          onGit={setSekme}
-        />
-      )}
-      {sekme === 'akin' && <Akin lord={lord} onGuncelle={tazele} />}
-      {sekme === 'lord' && (
-        <LordEkrani
-          lord={lord}
-          hedefBolum={hedefBolum}
-          onBolumIslendi={() => setHedefBolum(null)}
-          yokluk={yokluk}
-          onGuncelle={tazele}
-          onGit={setSekme}
-          onKapiAc={kapiAc}
-        />
-      )}
+      {/* Tembel ekranlar bir Suspense olmadan çöker. Yedek olarak
+          iskelet: boş ekran yerine "bir şey geliyor" demek, bekleyişi
+          kısaltmıyor ama anlamlı kılıyor. */}
+      <Suspense fallback={<Iskelet satir={4} />}>
+        {sekme === 'sehir' && (
+          <Sehir
+            lord={lord}
+            queues={queues}
+            onGit={setSekme}
+            onKapiAc={kapiAc}
+            onBolumeGit={bolumeGit}
+          />
+        )}
+        {sekme === 'kisla' && (
+          <Kisla
+            lord={lord}
+            queues={queues}
+            onGuncelle={tazele}
+            onHaritayaGit={(bolgeId) => {
+              setHedefBolge(bolgeId);
+              setSekme('harita');
+            }}
+          />
+        )}
+        {sekme === 'harita' && (
+          <Harita
+            lord={lord}
+            queues={queues}
+            baslangicBolge={hedefBolge}
+            onBaslangicIslendi={() => setHedefBolge(null)}
+            onGuncelle={tazele}
+            onGit={setSekme}
+          />
+        )}
+        {sekme === 'akin' && <Akin lord={lord} onGuncelle={tazele} />}
+        {sekme === 'lord' && (
+          <LordEkrani
+            lord={lord}
+            hedefBolum={hedefBolum}
+            onBolumIslendi={() => setHedefBolum(null)}
+            yokluk={yokluk}
+            onGuncelle={tazele}
+            onGit={setSekme}
+            onKapiAc={kapiAc}
+          />
+        )}
+      </Suspense>
 
       {/* ---- Kapılar ----
           Beş sekme dışındaki her şey burada, konusunun içinde açılıyor.
@@ -465,89 +502,91 @@ export function App() {
           kendini (packages/shared/src/types.ts, KAPI_EVI). */}
       {kapi !== null && (
         <KapiPaneli baslik={KAPI_ADI[kapi]} onKapat={() => setKapi(null)}>
-          {kapi === 'olaylar' && (
-            <Olaylar
-              lord={lord}
-              events={events}
-              onGit={(s) => {
-                setKapi(null);
-                setSekme(s);
-              }}
-              onBolgeyiAc={(bolgeId) => {
-                setKapi(null);
-                setHedefBolge(bolgeId);
-                setSekme('harita');
-              }}
-            />
-          )}
-          {/* Malikâne artık bir SEKME değil, şehirdeki binadan açılan
+          <Suspense fallback={<Iskelet satir={3} />}>
+            {kapi === 'olaylar' && (
+              <Olaylar
+                lord={lord}
+                events={events}
+                onGit={(s) => {
+                  setKapi(null);
+                  setSekme(s);
+                }}
+                onBolgeyiAc={(bolgeId) => {
+                  setKapi(null);
+                  setHedefBolge(bolgeId);
+                  setSekme('harita');
+                }}
+              />
+            )}
+            {/* Malikâne artık bir SEKME değil, şehirdeki binadan açılan
               kapı: diyarın toprakları, gelirleri, savunma düzeni. */}
-          {kapi === 'malikane' && (
-            <Malikane
-              lord={lord}
-              events={events}
-              onBolgeyiAc={(bolgeId) => {
-                setKapi(null);
-                setHedefBolge(bolgeId);
-                setSekme('harita');
-              }}
-              onGit={(s) => {
-                setKapi(null);
-                setSekme(s);
-              }}
-              onKapiAc={kapiAc}
-            />
-          )}
-          {/* Görevler ÇUBUKTAN kapıya taşındı (docs/12 §7): günlük görev
+            {kapi === 'malikane' && (
+              <Malikane
+                lord={lord}
+                events={events}
+                onBolgeyiAc={(bolgeId) => {
+                  setKapi(null);
+                  setHedefBolge(bolgeId);
+                  setSekme('harita');
+                }}
+                onGit={(s) => {
+                  setKapi(null);
+                  setSekme(s);
+                }}
+                onKapiAc={kapiAc}
+              />
+            )}
+            {/* Görevler ÇUBUKTAN kapıya taşındı (docs/12 §7): günlük görev
               bir sayfa dolduracak kadar iş değil ve yeri belli —
               şehirdeki görev panosu. Yerine akın sekmesi geldi. */}
-          {kapi === 'gorevler' && (
-            <Gorevler
-              lord={lord}
-              onGit={(s) => {
-                setKapi(null);
-                setSekme(s);
-              }}
-              onKapiAc={kapiAc}
-            />
-          )}
-          {kapi === 'arastirma' && <Arastirma depoTavani={lord.storageCapacity} />}
-          {kapi === 'ittifak' && <Ittifak lordId={lord.id} />}
-          {kapi === 'generaller' && <Generaller onGuncelle={tazele} />}
-          {kapi === 'demirhane' && (
-            <Demirhane
-              lord={lord}
-              queues={queues}
-              onGuncelle={tazele}
-              onGit={(s) => {
-                setKapi(null);
-                setSekme(s);
-              }}
-            />
-          )}
-          {kapi === 'siralama' && (
-            <Siralama
-              lordId={lord.id}
-              onKapiAc={kapiAc}
-              onGit={(s) => {
-                setKapi(null);
-                setSekme(s);
-              }}
-            />
-          )}
-          {kapi === 'moderasyon' && <Moderasyon />}
-          {kapi === 'hesap' && (
-            <Hesap
-              lord={lord}
-              onCikis={cikis}
-              onKapiAc={kapiAc}
-              onOgreticiyiAc={() => {
-                setKapi(null);
-                setOgreticiKapandi(false);
-                tazele();
-              }}
-            />
-          )}
+            {kapi === 'gorevler' && (
+              <Gorevler
+                lord={lord}
+                onGit={(s) => {
+                  setKapi(null);
+                  setSekme(s);
+                }}
+                onKapiAc={kapiAc}
+              />
+            )}
+            {kapi === 'arastirma' && <Arastirma depoTavani={lord.storageCapacity} />}
+            {kapi === 'ittifak' && <Ittifak lordId={lord.id} />}
+            {kapi === 'generaller' && <Generaller onGuncelle={tazele} />}
+            {kapi === 'demirhane' && (
+              <Demirhane
+                lord={lord}
+                queues={queues}
+                onGuncelle={tazele}
+                onGit={(s) => {
+                  setKapi(null);
+                  setSekme(s);
+                }}
+              />
+            )}
+            {kapi === 'siralama' && (
+              <Siralama
+                lordId={lord.id}
+                onKapiAc={kapiAc}
+                onGit={(s) => {
+                  setKapi(null);
+                  setSekme(s);
+                }}
+              />
+            )}
+            {kapi === 'moderasyon' && <Moderasyon />}
+            {kapi === 'hesap' && (
+              <Hesap
+                lord={lord}
+                onCikis={cikis}
+                onKapiAc={kapiAc}
+                onOgreticiyiAc={() => {
+                  setKapi(null);
+                  setOgreticiKapandi(false);
+                  tazele();
+                }}
+              />
+            )}
+          </Suspense>
         </KapiPaneli>
       )}
     </MobilKabuk>
