@@ -176,7 +176,7 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
   "asker ·"
       apps/web/src/screens/Akin.tsx:634
   "askerin savunmada."
-      apps/web/src/screens/Harita.tsx:354
+      apps/web/src/screens/Harita.tsx:347
   "Başvuru ile"
       apps/web/src/components/IttifakBasvurular.tsx:87
   "bölge el değiştirmez."
@@ -190,7 +190,7 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
   "kaldı. Bu sürede saldıramazsın."
       apps/web/src/screens/LordEkrani.tsx:308
   "kaldı. İlk saldırında kalkan düşer."
-      apps/web/src/screens/Malikane.tsx:134
+      apps/web/src/screens/Malikane.tsx:123
   "Kur ·"
       apps/web/src/screens/Ittifak.tsx:348
   "saatte +"

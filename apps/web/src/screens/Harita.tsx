@@ -7,6 +7,7 @@ import {
   formatArmy,
   regionIncome,
   unitName,
+  bolgeAdi,
   vilayetCarpani,
   vilayetCarpanlari,
   VILAYET_ADI,
@@ -58,14 +59,6 @@ import {
 const BOLGE_LIMITI = B.kuyruklar.es_zamanli.upgrade_region;
 
 const GELIR_ADI = { altin: 'altın', demir: 'demir', erzak: 'erzak' } as const;
-
-const TIP_ADI: Record<string, string> = {
-  tarla: 'Tarla',
-  maden: 'Maden',
-  sehir: 'Şehir',
-  kale: 'Kale',
-  taht: 'Taht Kalesi',
-};
 
 /**
  * Bölge alt sayfasının tepesindeki manzara afişi.
@@ -399,7 +392,11 @@ function TakviyeKarti({
  */
 function IttifakHedefiDugmesi({ bolge, lordId }: { bolge: RegionDetailDto; lordId: string }) {
   const bolgeId = bolge.id;
-  const bolgeAdi = bolge.name;
+  // `bolgeninAdi`, `bolgeAdi` DEĞİL: `bolgeAdi` artık shared'den gelen
+  // TÜR ADI fonksiyonu (koy -> Köy). İkisi aynı dosyada aynı adı
+  // taşıyınca biri ötekini gölgeliyor ve buradaki dize, orada
+  // çağrılan fonksiyonla karışıyordu.
+  const bolgeninAdi = bolge.name;
   const qc = useQueryClient();
   const durum = useQuery({ queryKey: ['ittifak'], queryFn: api.ittifak, staleTime: 30_000 });
   const [hata, setHata] = useState<string | null>(null);
@@ -437,7 +434,7 @@ function IttifakHedefiDugmesi({ bolge, lordId }: { bolge: RegionDetailDto; lordI
     <Kart className="p-3">
       <h3 className="baslik mb-1.5 text-[11px] text-solgun">İttifak</h3>
       {zatenHedef ? (
-        <p className="text-[12px] text-mavi">{`${bolgeAdi} zaten ittifakın ortak hedefi. Haritada kesik çizgiyle işaretli.`}</p>
+        <p className="text-[12px] text-mavi">{`${bolgeninAdi} zaten ittifakın ortak hedefi. Haritada kesik çizgiyle işaretli.`}</p>
       ) : (
         <>
           <p className="mb-2 text-[12px] text-sonuk">
@@ -943,7 +940,7 @@ export function Harita({
             <BolgeAfisi
               tip={bolge.type}
               seviye={bolge.level}
-              ad={TIP_ADI[bolge.type] ?? bolge.type}
+              ad={bolgeAdi(bolge.type)}
               ustyazi={
                 <>
                   <h2

@@ -17,7 +17,7 @@
  * Toprak listesi yeni: oyunda "bölgelerim" diye bir yer hiç yoktu, sahip
  * olduklarını görmek için haritada tek tek aramak gerekiyordu.
  */
-import { ipucuSec, regionIncome, vilayetCarpanlari, type Kapi } from '@lordlar/shared';
+import { bolgeAdi, ipucuSec, regionIncome, vilayetCarpanlari, type Kapi } from '@lordlar/shared';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { api, type GameEvent, type LordState } from '../api/client';
@@ -44,17 +44,6 @@ import {
   formatSayi,
 } from '../components/ui';
 import type { Sekme } from '../components/MobilKabuk';
-
-const TIP_ADI: Record<string, string> = {
-  tarla: 'Tarla',
-  maden: 'Maden',
-  // Köy haritanın 24 bölgesi ve oyuncunun İLK fethi; listede yoktu, yani
-  // ekranda ham anahtarıyla ("koy") görünüyordu.
-  koy: 'Köy',
-  sehir: 'Şehir',
-  kale: 'Kale',
-  taht: 'Taht Kalesi',
-};
 
 /**
  * Bölgenin saatlik geliri — VİLAYET BİRLİĞİ dahil.
@@ -176,7 +165,7 @@ export function Malikane({
                     <div className="min-w-0 flex-1">
                       <div className="flex items-baseline gap-2">
                         <span className="baslik truncate text-[14px]">{r.name}</span>
-                        <span className="shrink-0 text-[11px] text-sonuk">{`${TIP_ADI[r.type] ?? r.type} · Sv ${r.level}`}</span>
+                        <span className="shrink-0 text-[11px] text-sonuk">{`${bolgeAdi(r.type)} · Sv ${r.level}`}</span>
                       </div>
                       <div className="mt-1.5 flex flex-wrap gap-1.5">
                         {g.altin > 0 && (

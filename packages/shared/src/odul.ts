@@ -12,7 +12,7 @@
  */
 import { B, unit } from './balance.js';
 import { upkeepPerHour } from './economy.js';
-import { calculateFame, armySlots } from './progression.js';
+import { calculateFame, armySlots, captureXp } from './progression.js';
 import type { Army, GeneralBonus, Resources } from './types.js';
 import { UNIT_TYPES } from './types.js';
 
@@ -74,7 +74,20 @@ export function fetihKazanci(g: FetihKazanciGirdi): FetihKazanci {
     sohretOncesi: oncesi,
     sohretSonrasi: sonrasi,
     sohretFarki: sonrasi - oncesi,
-    xp: Math.round(1500 * g.hedef.incomeMult),
+    /*
+     * XP FORMÜLÜ BURADA DEĞİL, `captureXp`te.
+     *
+     * Burası oyuncuya saldırı ÖNCESİ gösterilen önizleme; gerçekte
+     * verilen XP `march.ts`te `captureXp(region.incomeMult)` ile
+     * hesaplanıyor. İkisi `Math.round(1500 * incomeMult)`u ayrı ayrı
+     * yazıyordu: aynı formülün iki kopyası, biri vitrin biri kasa.
+     *
+     * Hemen yukarıdaki nota bak — `saatlikGelir` alanı tam olarak bu
+     * yüzden kaldırılmıştı ("gelir hesabı tek yerde kalsın") ve `xp`
+     * satırı o temizliğin dışında kalmış. Biri ayarlanıp öteki
+     * unutulursa önizleme oyuncuya yalan söyler.
+     */
+    xp: captureXp(g.hedef.incomeMult),
   };
 }
 

@@ -10,18 +10,10 @@
  * Hedef sunucudan gelir ve gerçek savaş simülasyonuyla seçilir — burada
  * ikinci bir sezgisel kural yok.
  */
-import { unitName, type UnitType } from '@lordlar/shared';
+import { bolgeAdi, unitName, type UnitType } from '@lordlar/shared';
 import type { HedefOnerisiDto } from '../api/client';
 import { BolgeIkonu, IkonAltin, IkonDemir, IkonErzak, IkonSohret } from './Ikonlar';
 import { Buton, Hap, Kart, formatKalan, formatSayi } from './ui';
-
-const TIP_ADI: Record<string, string> = {
-  tarla: 'Tarla',
-  maden: 'Maden',
-  sehir: 'Şehir',
-  kale: 'Kale',
-  taht: 'Taht Kalesi',
-};
 
 export function HedefGeliri({ hedef }: { hedef: HedefOnerisiDto }) {
   const g = hedef.saatlikGelir;
@@ -63,7 +55,7 @@ export function HedefSeridi({
         </span>
         <div className="min-w-0 flex-1">
           <div className="baslik truncate text-[16px] text-parsomen">{hedef.name}</div>
-          <div className="text-[11px] text-sonuk">{`${TIP_ADI[hedef.type] ?? hedef.type} · ${formatKalan(hedef.marchSec * 1000)} yürüyüş`}</div>
+          <div className="text-[11px] text-sonuk">{`${bolgeAdi(hedef.type)} · ${formatKalan(hedef.marchSec * 1000)} yürüyüş`}</div>
         </div>
       </div>
 

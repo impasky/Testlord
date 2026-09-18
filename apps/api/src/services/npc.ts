@@ -369,6 +369,62 @@ async function oyuncuHedefiSec(
     now.getTime() - B.korumalar.ayni_saldirgan_tekrar_saldiri_saat * 3_600_000,
   );
 
+  /*
+   * ÜÇ TOPLU SORGU, ADAY BAŞINA ÜÇ SORGU DEĞİL.
+   *
+   * Bu döngü her aday için ayrı ayrı `region.count`, `battle.findFirst`
+   * ve `armyUnit.findMany` çağırıyordu. Aday sayısı oyuncu sayısıyla
+   * büyüyor (dünyadaki kalkansız oyuncu bölgelerinin tamamı), yani
+   * 50 adaylı bir diyarda 150 gidiş-dönüş demekti.
+   *
+   * Asıl sorun sayı değil NEREDE olduğu: `oyuncuHedefiSec` bir
+   * `$transaction` İÇİNDE çalışıyor (`lordOynasin`). Sıralı yüz elli
+   * gidiş-dönüş, işlemi ve tuttuğu kilitleri o kadar süre açık
+   * bırakıyor; worker her on saniyede bir dönüyor ve bu kilitler
+   * oyuncunun kendi isteğiyle yarışıyor.
+   *
+   * Filtre SIRASI sonucu değiştirmiyor — hepsi aynı kümeyi eleyen
+   * süzgeçler ve sonuç "hepsini geçenlerin en yakını". O yüzden
+   * tembel sorguları öne almak davranışı değiştirmiyor, yalnız
+   * üç sorguya indiriyor.
+   */
+  const adayIdleri = adaylar.map((r) => r.id);
+  const sahipIdleri = [
+    ...new Set(adaylar.map((r) => r.ownerLordId).filter((x): x is string => !!x)),
+  ];
+
+  const [bolgeSayilari, sonSaldirilar, garnizonRows] = await Promise.all([
+    tx.region.groupBy({
+      by: ['ownerLordId'],
+      where: { ownerLordId: { in: sahipIdleri } },
+      _count: { _all: true },
+    }),
+    tx.battle.findMany({
+      where: {
+        attackerLordId: lord.id,
+        regionId: { in: adayIdleri },
+        createdAt: { gte: tekrarEsigi },
+      },
+      select: { regionId: true },
+    }),
+    tx.armyUnit.findMany({
+      where: { locationType: 'region', locationId: { in: adayIdleri.map(String) } },
+    }),
+  ]);
+
+  const bolgeSayisiIle = new Map(bolgeSayilari.map((g) => [g.ownerLordId, g._count._all]));
+  const yakindaSaldirilan = new Set(sonSaldirilar.map((b) => b.regionId));
+  const garnizonIle = new Map<string, Army>();
+  for (const g of garnizonRows) {
+    // `locationId` şemada nullable: evdeki birimlerde null. Sorgu zaten
+    // `locationType: 'region'` süzüyor, yani buraya null düşmemeli — ama
+    // tür bunu bilmiyor ve varsayım yapmak yerine atlıyoruz.
+    if (g.locationId === null) continue;
+    const a = garnizonIle.get(g.locationId) ?? {};
+    a[g.unitType as UnitType] = (a[g.unitType as UnitType] ?? 0) + g.count;
+    garnizonIle.set(g.locationId, a);
+  }
+
   let enIyi: Hedef | null = null;
   for (const r of adaylar) {
     const sahip = r.owner;
@@ -381,24 +437,13 @@ async function oyuncuHedefiSec(
     if (mesafe > N.oyuncuya_saldiri_en_cok_adim) continue;
 
     // Oyuncunun TEK bölgesini almak yok.
-    const sahipBolgeSayisi = await tx.region.count({ where: { ownerLordId: sahip.id } });
-    if (sahipBolgeSayisi < N.oyuncuya_saldiri_en_az_bolge) continue;
+    if ((bolgeSayisiIle.get(sahip.id) ?? 0) < N.oyuncuya_saldiri_en_az_bolge) continue;
 
     // Aynı saldırgan aynı bölgeye 12 saatte bir.
-    const sonSaldiri = await tx.battle.findFirst({
-      where: { attackerLordId: lord.id, regionId: r.id, createdAt: { gte: tekrarEsigi } },
-      select: { id: true },
-    });
-    if (sonSaldiri) continue;
+    if (yakindaSaldirilan.has(r.id)) continue;
 
     // Garnizon + surlar: kaybedecek savaşa girilmiyor.
-    const garnizonRows = await tx.armyUnit.findMany({
-      where: { locationType: 'region', locationId: String(r.id) },
-    });
-    const garnizon: Army = {};
-    for (const g of garnizonRows) {
-      garnizon[g.unitType as UnitType] = (garnizon[g.unitType as UnitType] ?? 0) + g.count;
-    }
+    const garnizon: Army = garnizonIle.get(String(r.id)) ?? {};
     if (!yeterMi(ordu, garnizon, bolgeTahkimati(r, sahip))) continue;
 
     if (!enIyi || mesafe < enIyi.mesafe) enIyi = { id: r.id, mesafe };
