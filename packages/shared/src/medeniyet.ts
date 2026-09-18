@@ -199,6 +199,33 @@ export const CEKIRDEK_BONUSU: Record<CekirdekBonus, string> = {
 };
 
 /**
+ * Bir çekirdek bölgenin TAŞIDIĞI bonus.
+ *
+ * Eşleme veritabanında DEĞİL, burada: `balance.json`daki çekirdek
+ * listesinin sırasına göre türüyor. Sütun olsaydı veri ile kod
+ * ayrışabilirdi — bir bölgenin bonusu iki yerde yazılı olurdu ve
+ * biri diğerinden habersiz değişirdi.
+ *
+ * Beş çekirdeğin DÖRDÜ bonus taşıyor; beşincisi medeniyetin başkenti
+ * (docs/16 §7-8) ve bonus yerine kimlik taşıyor. `null` dönmesi
+ * "burada yatırım yok" değil, "burası başkent" demek.
+ */
+export function cekirdekBonusu(mapId: number): CekirdekBonus | null {
+  const m = MEDENIYETLER.find((x) => x.cekirdekBolgeler.includes(mapId));
+  if (!m) return null;
+  const sira = m.cekirdekBolgeler.indexOf(mapId);
+  const bonuslar: CekirdekBonus[] = ['ambar', 'talimgah', 'sur', 'ocak'];
+  return bonuslar[sira] ?? null;
+}
+
+/** Bu medeniyetin BAŞKENTİ olan çekirdek — bonus taşımayan beşincisi. */
+export function baskentCekirdegi(id: MedeniyetId): number | null {
+  const m = medeniyet(id);
+  if (!m) return null;
+  return m.cekirdekBolgeler[4] ?? null;
+}
+
+/**
  * Bir sonraki çekirdek seviyesinin bedeli.
  *
  * MALİYET ÜYE SAYISIYLA ÖLÇEKLENİYOR — önerinin en önemli tek satırı.
@@ -246,3 +273,54 @@ export function bagisFaydaPuani(toplamKaynak: number): number {
 
 export const FAYDA_FETIH = M.fayda_puani.fetihe_katilim;
 export const FAYDA_SAVUNMA = M.fayda_puani.savunmaya_katilim;
+
+/* ------------------------------------------------------------------ */
+/* Nüfus dengesi (docs/16 §10, birinci risk)                           */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Yurdun bütün bölgeleri — kampın kurulabileceği yer burası.
+ *
+ * `docs/16` §8: oyuncunun başkenti KENDİ medeniyetinin yurdunda.
+ * Kampın dokunulmazlığı zaten vardı; değişen tek şey nerede doğduğu.
+ */
+export function yurtBolgeleri(id: MedeniyetId): number[] {
+  const m = medeniyet(id);
+  if (!m) return [];
+  return WORLD_MAP.regions.filter((r) => r.province === m.yurt).map((r) => r.id);
+}
+
+/**
+ * Kayda AÇIK medeniyetler: aktif nüfusu ortalamanın üstünde olan kapalı.
+ *
+ * `docs/16` §10'un birinci riski "herkes kazanan tarafa yazılır". Serbest
+ * seçim bu riski kesin gerçekleştirir: bir medeniyet öne geçtiği an
+ * yenileri oraya akar ve fark kendi kendini büyütür.
+ *
+ * Kural bilerek ORTALAMAYA bakıyor, en aza değil. En az nüfuslu tek
+ * medeniyeti açık tutmak, dört seçenekli bir oyunu tek seçeneğe
+ * indirirdi — oyuncu hep aynı yere düşerdi. Ortalama ölçütü genelde
+ * ikisini üçünü açık bırakıyor, yani seçim var ama kartopu yok.
+ *
+ * Liste ASLA boş dönmez: en az bir sayı her zaman ortalamanın altında
+ * ya da ona eşittir. Hepsi eşitse (ilk gün) dördü de açık.
+ */
+export function acikMedeniyetler(nufus: Readonly<Record<MedeniyetId, number>>): MedeniyetId[] {
+  const sayilar = MEDENIYETLER.map((m) => nufus[m.id] ?? 0);
+  const ortalama = sayilar.reduce((s, n) => s + n, 0) / MEDENIYETLER.length;
+  return MEDENIYETLER.filter((m) => (nufus[m.id] ?? 0) <= ortalama).map((m) => m.id);
+}
+
+/**
+ * Yeni oyuncuya atanacak medeniyet: açık olanların EN AZ nüfuslusu.
+ *
+ * Eşitlikte `balance.json` sırası belirliyor — rastgelelik değil. Aynı
+ * girdi aynı sonucu versin ki test edilebilsin; dengeyi zaten sayım
+ * sağlıyor, zar atmaya gerek yok.
+ */
+export function atanacakMedeniyet(nufus: Readonly<Record<MedeniyetId, number>>): MedeniyetId {
+  const acik = acikMedeniyetler(nufus);
+  let secilen = acik[0]!;
+  for (const id of acik) if ((nufus[id] ?? 0) < (nufus[secilen] ?? 0)) secilen = id;
+  return secilen;
+}

@@ -1,4 +1,4 @@
-import { B, BASLANGIC_ELMASI, GEAR_LINES, WORLD_MAP } from '@lordlar/shared';
+import { B, BASLANGIC_ELMASI, GEAR_LINES, WORLD_MAP, yurtBolgeleri } from '@lordlar/shared';
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { hashPassword, verifyPassword } from '../auth.js';
@@ -8,6 +8,7 @@ import { createHash, randomBytes } from 'node:crypto';
 import { env } from '../env.js';
 import { adiDenetle } from '../services/adDenetimi.js';
 import { postaGonder } from '../services/eposta.js';
+import { medeniyetAta } from '../services/medeniyet.js';
 import { AKTIF_GUN, diyarDoluMu, findOrOpenWorld } from '../services/world.js';
 
 /** Jetonun özeti saklanır; ham jeton yalnızca e-postada gider. */
@@ -63,7 +64,7 @@ const sifirlamaYapSchema = z.object({
 });
 
 /**
- * Yeni lordun kampına çıpa verir: en az lord barındıran KÖY.
+ * Yeni lordun kampına çıpa verir: KENDİ YURDUNDA, en az lord barındıran KÖY.
  *
  * Köyler haritanın kenarına dağılmış (world-map.json) ve oyunun ilk fethi
  * hep bir köy. Kampı bir köyün yanına kurmak, o köyü ilk hedef hâline
@@ -73,8 +74,14 @@ const sifirlamaYapSchema = z.object({
  * Eskiden ölçüt haritanın dış halkasıydı; halka kavramı altıgenle birlikte
  * kalktı ve yerini bölge TÜRÜ aldı — daha okunur bir ölçüt, çünkü "kenar"
  * geometrik bir tesadüftü, "köy" ise tasarımın kendisi.
+ *
+ * `yurt` medeniyetle geldi (docs/16 §8): oyuncunun kampı kendi
+ * medeniyetinin toprağında kurulur. Yoksa dört medeniyete bölünmüş bir
+ * haritada oyuncu rastgele birinin yurdunda doğar ve daha ilk gün
+ * "buranın neresi benim" diye sorar. Boş dizi "sınırlama yok" demek ve
+ * medeniyetsiz eski diyarlarda eski davranışı aynen koruyor.
  */
-async function pickHomeAnchor(worldId: string): Promise<number> {
+async function pickHomeAnchor(worldId: string, yurt: number[]): Promise<number> {
   /*
    * Adaylar DÜNYANIN KENDİ bölgelerinden okunuyor, kanonik dosyadan değil.
    *
@@ -86,21 +93,33 @@ async function pickHomeAnchor(worldId: string): Promise<number> {
    * unutulabilir olmaktan çıkarıyor.
    */
   const koyler = await prisma.region.findMany({
-    where: { worldId, type: 'koy' },
+    where: { worldId, type: 'koy', ...(yurt.length > 0 ? { mapId: { in: yurt } } : {}) },
     select: { mapId: true },
     orderBy: { mapId: 'asc' },
   });
-  // Köy yoksa (henüz tazelenmemiş eski bir dünya) haritanın tamamına
-  // düşüyoruz: kayıt hiçbir koşulda çökmemeli.
+  /*
+   * Köy yoksa geri çekiliyoruz: önce yurdun tamamına, sonra diyarın
+   * tamamına. Kayıt hiçbir koşulda çökmemeli — ne henüz tazelenmemiş
+   * eski bir dünyada, ne de yurdunda köy kalmamış bir medeniyette.
+   * (Bugünkü haritada her yurtta köy var ve `medeniyet.test.ts` bunu
+   * sınıyor; bu dallar o sınama bir gün kalırsa diye duruyor.)
+   */
   const adaylar =
     koyler.length > 0
       ? koyler
       : await prisma.region.findMany({
-          where: { worldId },
+          where: { worldId, ...(yurt.length > 0 ? { mapId: { in: yurt } } : {}) },
           select: { mapId: true },
           orderBy: { mapId: 'asc' },
         });
-  if (adaylar.length === 0) return WORLD_MAP.regions[0]!.id;
+  if (adaylar.length === 0) {
+    const hepsi = await prisma.region.findMany({
+      where: { worldId },
+      select: { mapId: true },
+      orderBy: { mapId: 'asc' },
+    });
+    return hepsi[0]?.mapId ?? WORLD_MAP.regions[0]!.id;
+  }
 
   const mevcut = await prisma.lord.groupBy({
     by: ['homeBolgeId'],
@@ -180,7 +199,20 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
     }
 
     const worldId = body.worldId ? await secilenDiyar(body.worldId) : await findOrOpenWorld();
-    const home = await pickHomeAnchor(worldId);
+    /*
+     * MEDENİYET KAYITTA ATANIYOR, SEÇİLMİYOR (docs/16 §10).
+     *
+     * Serbest seçim, dört fraksiyonlu bir oyunun en bilinen çöküş yolu:
+     * öne geçen medeniyet yeni oyuncu çeker, daha da öne geçer ve harita
+     * üç ay sonra tek renge boyanır. Sayım bunu kendiliğinden kapatıyor —
+     * aktif nüfusu ortalamanın üstünde olan medeniyet kayda kapalı.
+     *
+     * Kural saf katmanda (`atanacakMedeniyet`), burada yalnız uygulaması
+     * var. İki kayıt aynı anda gelip aynı medeniyeti alabilir; denge
+     * yaklaşık tutulduğu için bu kabul edilebilir bir yarış.
+     */
+    const med = await medeniyetAta(worldId);
+    const home = await pickHomeAnchor(worldId, yurtBolgeleri(med.key));
     const now = new Date();
     const start = B.lord.baslangic_kaynaklari;
     const stats = B.lord.baslangic_statlari;
@@ -193,6 +225,7 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
         data: {
           userId: u.id,
           worldId,
+          medeniyetId: med.id,
           name: body.lordName,
           guc: stats.guc,
           dayaniklilik: stats.dayaniklilik,

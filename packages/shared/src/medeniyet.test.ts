@@ -11,6 +11,10 @@ import { describe, expect, it } from 'vitest';
 import { WORLD_MAP } from './balance.js';
 import {
   CEKIRDEK_AZAMI_SEVIYE,
+  acikMedeniyetler,
+  atanacakMedeniyet,
+  baskentCekirdegi,
+  cekirdekBonusu,
   MEDENIYETLER,
   baslangicSahibi,
   cekirdekMaliyeti,
@@ -22,6 +26,7 @@ import {
   orduYeri,
   payMiktari,
   tahtMi,
+  yurtBolgeleri,
 } from './medeniyet.js';
 
 describe('medeniyetler', () => {
@@ -195,5 +200,135 @@ describe('medeniyet(id)', () => {
   it('bilinen kimliği buluyor, bilinmeyene undefined', () => {
     expect(medeniyet(MEDENIYETLER[0]!.id)?.ad).toBe(MEDENIYETLER[0]!.ad);
     expect(medeniyet('yok-boyle-bir-sey')).toBeUndefined();
+  });
+});
+
+describe('çekirdek bonusları', () => {
+  it('her medeniyette dört bonus çekirdeği ve bir başkent var', () => {
+    for (const m of MEDENIYETLER) {
+      const bonuslu = m.cekirdekBolgeler.filter((id) => cekirdekBonusu(id) !== null);
+      expect(bonuslu, m.ad).toHaveLength(4);
+      // Beşincisi başkent: bonus taşımıyor ama YOK değil.
+      expect(baskentCekirdegi(m.id), m.ad).toBe(m.cekirdekBolgeler[4]);
+      expect(cekirdekBonusu(baskentCekirdegi(m.id)!)).toBeNull();
+    }
+  });
+
+  it('dört bonusun dördü de her medeniyette bir kez geçiyor', () => {
+    // Bir medeniyette iki "ambar" olsaydı, ötekinin hiç eğitim hızı
+    // bonusu olmazdı ve dört taraf eşit başlamazdı.
+    for (const m of MEDENIYETLER) {
+      const bonuslar = m.cekirdekBolgeler.map(cekirdekBonusu).filter((b) => b !== null);
+      expect(new Set(bonuslar).size, m.ad).toBe(4);
+    }
+  });
+
+  it('çekirdek olmayan bölge bonus taşımıyor', () => {
+    const cekismeli = WORLD_MAP.regions.find((r) => cekismeliMi(r.id))!;
+    expect(cekirdekBonusu(cekismeli.id)).toBeNull();
+  });
+});
+
+describe('nüfus dengesi', () => {
+  const bos = () => Object.fromEntries(MEDENIYETLER.map((m) => [m.id, 0]));
+
+  it('ilk gün hepsi açık — hiçbiri ortalamanın üstünde değil', () => {
+    expect(acikMedeniyetler(bos())).toHaveLength(MEDENIYETLER.length);
+  });
+
+  it('öne geçen medeniyet kayda kapanıyor', () => {
+    const n = { ...bos(), [MEDENIYETLER[0]!.id]: 500 };
+    const acik = acikMedeniyetler(n);
+    expect(acik).not.toContain(MEDENIYETLER[0]!.id);
+    expect(acik).toHaveLength(MEDENIYETLER.length - 1);
+  });
+
+  it('liste hiçbir dağılımda boş kalmıyor', () => {
+    // Rastgele yüz dağılım: en az bir sayı her zaman ortalamanın altında
+    // ya da ona eşit olmak zorunda. Boş liste dönseydi kayıt kapanırdı.
+    for (let i = 0; i < 100; i++) {
+      const n = Object.fromEntries(
+        MEDENIYETLER.map((m) => [m.id, Math.floor(Math.random() * 1000)]),
+      );
+      expect(acikMedeniyetler(n).length).toBeGreaterThan(0);
+    }
+  });
+
+  it('atama en az nüfusluya gidiyor', () => {
+    const n = bos();
+    n[MEDENIYETLER[0]!.id] = 90;
+    n[MEDENIYETLER[1]!.id] = 80;
+    n[MEDENIYETLER[2]!.id] = 70;
+    n[MEDENIYETLER[3]!.id] = 60;
+    expect(atanacakMedeniyet(n)).toBe(MEDENIYETLER[3]!.id);
+  });
+
+  it('eşitlikte deterministik: aynı girdi aynı sonuç', () => {
+    expect(atanacakMedeniyet(bos())).toBe(MEDENIYETLER[0]!.id);
+    expect(atanacakMedeniyet(bos())).toBe(atanacakMedeniyet(bos()));
+  });
+
+  /*
+   * ASIL İDDİA: `docs/16` §10'un birinci riski — "herkes kazanan tarafa
+   * yazılır" — kendini düzeltiyor mu? Sınama bunu davranışla ölçüyor,
+   * "fonksiyon bir şey döndürdü" ile değil.
+   *
+   * Öndeki medeniyetin mevcut üyeleri GERİ ALINAMAZ; düzelme ancak
+   * seyreltmeyle olur. İlk yazdığımda 400 yeni oyuncudan sonra farkın
+   * kapanmasını bekliyordum ve sınama kaldı — haklı olarak: 200 kişilik
+   * baş, 400 kişiyle kapanmaz. Yanlış olan kod değil iddiaydı. Doğrusu
+   * iki cümle: önde olan yeni oyuncu ALMAZ, ve yeterince oyuncu
+   * geldiğinde fark SIFIRLANIR.
+   */
+  it('önde olan medeniyet yeni oyuncu almıyor', () => {
+    const n = bos();
+    const onde = MEDENIYETLER[0]!.id;
+    n[onde] = 200;
+    for (let i = 0; i < 400; i++) n[atanacakMedeniyet(n)]!++;
+    expect(n[onde]).toBe(200);
+    const kalanlar = MEDENIYETLER.slice(1).map((m) => n[m.id]!);
+    expect(Math.max(...kalanlar) - Math.min(...kalanlar)).toBeLessThanOrEqual(1);
+  });
+
+  it('yeterince oyuncu gelince baş tamamen erir', () => {
+    const n = bos();
+    n[MEDENIYETLER[0]!.id] = 200;
+    for (let i = 0; i < 4000; i++) n[atanacakMedeniyet(n)]!++;
+    const sayilar = MEDENIYETLER.map((m) => n[m.id]!);
+    expect(Math.max(...sayilar) - Math.min(...sayilar)).toBeLessThanOrEqual(1);
+  });
+});
+
+describe('yurt bölgeleri', () => {
+  it('her medeniyetin yurdu dolu ve çekirdeklerini kapsıyor', () => {
+    for (const m of MEDENIYETLER) {
+      const yurt = yurtBolgeleri(m.id);
+      expect(yurt.length).toBeGreaterThan(0);
+      for (const c of m.cekirdekBolgeler) expect(yurt).toContain(c);
+    }
+  });
+
+  it('yurtlar çakışmıyor — bir bölge iki medeniyetin olamaz', () => {
+    const gorulen = new Set<number>();
+    for (const m of MEDENIYETLER) {
+      for (const id of yurtBolgeleri(m.id)) {
+        expect(gorulen.has(id)).toBe(false);
+        gorulen.add(id);
+      }
+    }
+  });
+
+  /*
+   * KAMP BİR KÖYÜN YANINA KURULUYOR (`pickHomeAnchor`) ve artık oyuncunun
+   * KENDİ yurdunda kurulmak zorunda (docs/16 §8). Yurdunda hiç köy
+   * olmayan bir medeniyet o kuralı sessizce bozar: kayıt ya çöker ya da
+   * oyuncuyu başka birinin toprağına doğurur. Harita değişince bu sınama
+   * onu haber verir.
+   */
+  it('her yurtta en az bir köy var — kamp oraya kurulacak', () => {
+    for (const m of MEDENIYETLER) {
+      const koyler = WORLD_MAP.regions.filter((r) => r.province === m.yurt && r.type === 'koy');
+      expect(koyler.length, `${m.ad} yurdunda köy yok`).toBeGreaterThan(0);
+    }
   });
 });

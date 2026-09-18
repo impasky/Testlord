@@ -391,3 +391,34 @@ Gerçek oyuncunun önündeki **yasal engel** kaldırıldı: veri toplanan bir
 oyunu Türkiye'de yayına almak için aydınlatma metni zorunlu ve yoktu
 (bkz. `apps/web/src/screens/Gizlilik.tsx`). Oyuncu olmadan veri yok,
 veri olmadan bu belgedeki hiçbir sayı sınanamaz.
+
+---
+
+## 15. KARAR DEĞİŞTİ: yapılıyor
+
+`2026-09-18` — §14 yazıldıktan sonra sahibi kararı tersine çevirdi:
+_"Irk sistemini yap."_ Karar onun ve uygulanıyor. Bu bölüm §14'ü
+silmiyor; oradaki ölçümler doğru ve gerekçe hâlâ okunmaya değer. Değişen
+tek şey, sırayı kimin belirlediği.
+
+§14'ün itirazı **"fikir yanlış"** değil, **"sırası yanlış"**tı. O
+itirazın bugün hangi kısmı geçerli:
+
+| §14'ün endişesi                                     | Bugünkü durum                                                                                                                                       |
+| --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| "10 oyuncuda dört medeniyet, taraf başına 2-3 kişi" | Geçerli. Az oyuncuyla dört fraksiyon seyrek görünecek. Karşılığı: harita ilk günden anlamlı — boş bir dünya yerine dört yurt ve çekişmeli bir orta. |
+| "Garnizon payı sayıları davranıştan değil"          | Geçerli. Sayılar `balance.json`da ve tek yerde: veri gelince kod değil o dosya değişecek.                                                           |
+| "Geri alınamaz karar"                               | **Bugün geçerli değil.** Gerçek oyuncu yok, dolayısıyla göç de yok. §12'nin dediği gibi: bugün temiz bir kesme, yayından sonra ameliyat.            |
+
+Üçüncü satır kararı taşıyan satır. §14 "veri gelene kadar bekle"
+diyordu; ama beklemenin kendisi de bedelsiz değil — geçen her gün bu
+değişikliği daha pahalı yapıyor. Sıfır oyuncuyla yapılan kesme bir
+`deleteMany`; bin oyuncuyla yapılan kesme bir göç planı.
+
+### Ölçüm sözü duruyor
+
+§14'ün eşik tablosu iptal edilmiyor, **yönü değişiyor**: artık "yapılsın
+mı" sorusunu değil, "yapılan işe ne kadar yaklaşıldı" sorusunu ölçüyor.
+Aynı `/api/olcum` altyapısı, aynı sayılar. Medeniyet sistemi gerçek
+oyuncuyla yanlışlanırsa geri alınır; §14'ün asıl dersi buydu ve o ders
+duruyor.

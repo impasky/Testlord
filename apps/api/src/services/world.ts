@@ -8,6 +8,7 @@
 import { B, HARITA_SURUMU, WORLD_MAP } from '@lordlar/shared';
 import type { Prisma } from '@prisma/client';
 import { prisma, type Tx } from '../db.js';
+import { medeniyetleriKur } from './medeniyet.js';
 import { grafigiUnut } from './mesafe.js';
 
 const ROMEN = [
@@ -90,6 +91,16 @@ export async function createWorld(client: Tx = prisma): Promise<string> {
       npcTaban: r.npc_garrison,
     })),
   });
+
+  /*
+   * Diyar medeniyetleriyle birlikte doğuyor (docs/16 §5).
+   *
+   * Bölgeler yazıldıktan SONRA: sahiplik damgası var olmayan satıra
+   * vurulamaz. Ayrı bir kurulum adımı olarak bırakılmadı çünkü
+   * "medeniyetsiz diyar" diye bir durum yok — harita ilk günden dört
+   * yurt artı ortada boşluk olarak açılıyor.
+   */
+  await medeniyetleriKur(world.id, client);
 
   return world.id;
 }

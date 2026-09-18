@@ -15,6 +15,7 @@
  */
 import { HARITA_SURUMU, validateBalance } from '@lordlar/shared';
 import { prisma } from './db.js';
+import { medeniyetleriKur } from './services/medeniyet.js';
 import {
   createWorld,
   eskiHaritaliDunyayiKapat,
@@ -53,6 +54,15 @@ async function main(): Promise<void> {
     }
 
     const n = await refreshWorldRegions(w.id);
+    /*
+     * Medeniyetler burada da kuruluyor — yalnız `createWorld`da değil.
+     *
+     * Sürümden ÖNCE açılmış diyarlarda medeniyet satırı yok; bunlara
+     * dokunmadan bırakmak, kaydın "medeniyet bulunamadı" ile çökmesi
+     * demekti. İşlev tekrar çalıştırılabilir ve sahipliği yalnız
+     * sahipsiz bölgelere yazıyor, yani her açılışta koşması zararsız.
+     */
+    const med = await medeniyetleriKur(w.id);
     const toplam = await prisma.region.count({ where: { worldId: w.id } });
     const etiket =
       karar === 'ilk-damga'
@@ -60,9 +70,14 @@ async function main(): Promise<void> {
         : karar === 'bos-dunya'
           ? ' (oyuncusuz, yeni haritaya taşındı)'
           : '';
+    const medEtiket =
+      med.eklenenMedeniyet > 0 || med.sahiplenenBolge > 0
+        ? ` ${med.eklenenMedeniyet} medeniyet kuruldu, ${med.sahiplenenBolge} bölge sahiplendi.`
+        : '';
     console.log(
       `${w.name}: ${toplam} bölge${etiket}` +
-        (n > 0 ? `, ${n} tanesinin statik alanları tazelendi.` : '.'),
+        (n > 0 ? `, ${n} tanesinin statik alanları tazelendi.` : '.') +
+        medEtiket,
     );
   }
 

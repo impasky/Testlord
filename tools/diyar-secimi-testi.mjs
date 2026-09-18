@@ -135,16 +135,35 @@ kontrol('Lord SEÇTİĞİ diyarda', dunyaA.ad === hedef.ad, `${dunyaA.ad} (isten
 
 const adB = benzersizAd('Dostu');
 const b = await kayitOl(API, { email: `${adB}@lordlar.dev`, lordName: adB, worldId: hedef.id });
-// Sıralama DİYARA ÖZEL (`basitSiralama(me.worldId, ...)`): A'nın adı
-// B'nin sıralamasında görünüyorsa ikisi gerçekten aynı haritada.
-const siralama = await (
-  await fetch(`${API}/api/rankings/fame`, { headers: { Authorization: `Bearer ${b.token}` } })
-).json();
-const adlar = (siralama.satirlar ?? []).map((x) => x.ad ?? x.name);
+/*
+ * Sıralama DİYARA ÖZEL (`basitSiralama(me.worldId, ...)`): A'nın adı
+ * B'nin sıralamasında görünüyorsa ikisi gerçekten aynı haritada.
+ *
+ * SAYFALARIN HEPSİ okunuyor, yalnız ilki değil. Uç sayfalı
+ * (`satirlar: tum.slice(page * SAYFA, ...)`) ve iki taze lordun şöhreti
+ * sıfır, yani ikisi de listenin SONUNDA. Diyarda yirmi beşten fazla
+ * lord olduğu an ilk sayfa onları hiç içermiyor ve sınama, ölçtüğü şey
+ * doğruyken kalıyordu — bir kez tam olarak bu oldu. Kalabalık bir
+ * diyar bu sınamayı bozmamalı; ölçülen şey nüfus değil, AYNI diyarda
+ * olmak.
+ */
+const adlar = [];
+let toplam = 0;
+for (let sayfa = 0; sayfa < 40; sayfa++) {
+  const y = await (
+    await fetch(`${API}/api/rankings/fame?page=${sayfa}`, {
+      headers: { Authorization: `Bearer ${b.token}` },
+    })
+  ).json();
+  toplam = y.toplam ?? 0;
+  const satirlar = y.satirlar ?? [];
+  adlar.push(...satirlar.map((x) => x.ad ?? x.name));
+  if (satirlar.length === 0 || adlar.length >= toplam) break;
+}
 kontrol(
   'İki lord da aynı diyarın sıralamasında',
   adlar.includes(adA) && adlar.includes(adB),
-  `${siralama.toplam} lord: ${adlar.join(', ')}`,
+  `${toplam} lord, ${adlar.length} satır okundu`,
 );
 
 /* ---------------------------------------------------------------- */

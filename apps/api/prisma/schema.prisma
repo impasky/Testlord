@@ -45,22 +45,23 @@ model PasswordReset {
 }
 
 model World {
-  id         String     @id @default(cuid())
+  id                   String       @id @default(cuid())
   /// Diyarın KİMLİĞİ: kayıt ekranında oyuncu arkadaşının diyarını
   /// bundan buluyor. İki diyar aynı adı taşırsa seçim anlamsızlaşır,
   /// o yüzden kısıt veritabanında.
-  name       String     @unique
-  playerCap  Int        @default(120)
-  status     String     @default("open") // open | full | closed
-  openedAt   DateTime   @default(now())
+  name                 String       @unique
+  playerCap            Int          @default(120)
+  status               String       @default("open") // open | full | closed
+  openedAt             DateTime     @default(now())
   /// Açıldığı harita sürümü (HARITA_SURUMU). Kanonik harita değişince
   /// oyunculu dünyalar yeniden yazılmasın diye var: yeni harita yalnız
   /// yeni dünyalara uygulanır. Sürümlemeden önce açılmış dünyalarda null.
-  mapVersion String?
-  lords      Lord[]
-  regions    Region[]
-  alliances  Alliance[]
-  paktlar    Pakt[]
+  mapVersion           String?
+  lords                Lord[]
+  regions              Region[]
+  alliances            Alliance[]
+  paktlar              Pakt[]
+  medeniyetler         Medeniyet[]
   /// Bu diyarın ev sahibi olduğu birleşmeler.
   evSahibiBirlesmeleri WorldMerge[] @relation("BirlesmeEvSahibi")
   /// Bu diyarın konuk olduğu birleşme (en fazla bir tane: konuk kapanıyor).
@@ -80,7 +81,7 @@ model WorldMerge {
   /// Kapanan diyar. Lordları ev sahibine göçüyor.
   guestId String
 
-  ilanAt      DateTime @default(now())
+  ilanAt      DateTime  @default(now())
   birlesmeAt  DateTime
   uygulandiAt DateTime?
 
@@ -110,12 +111,20 @@ model Lord {
   kurnazlik    Int @default(5)
   statPoints   Int @default(0)
 
-  altin Int @default(0)
+  altin       Int        @default(0)
   /// Elmas: oyun ICINDE kazanilan para birimi, satin alinmiyor.
   /// Yalniz ZAMAN kisaltir, guc satmaz (packages/shared/src/elmas.ts).
-  elmas Int @default(0)
-  demir Int @default(0)
-  erzak Int @default(0)
+  elmas       Int        @default(0)
+  /// Lordun medeniyeti (docs/16). Kayıtta atanıyor, değiştirilemiyor.
+  /// Null = medeniyet sisteminden ÖNCE açılmış lord; geçiş bitene kadar
+  /// ikisi bir arada yaşıyor.
+  medeniyetId String?
+  medeniyet   Medeniyet? @relation(fields: [medeniyetId], references: [id], onDelete: SetNull)
+  /// Fayda puanı: kolektif eylemin kişisel karşılığı (docs/16 §9).
+  /// GÜÇ SATIN ALMAZ — kimlik, kolaylık ve içerik erişimi alır.
+  faydaPuani  Int        @default(0)
+  demir       Int        @default(0)
+  erzak       Int        @default(0)
 
   fame                Int @default(0)
   fortressFameAccrued Int @default(0)
@@ -279,6 +288,8 @@ model Lord {
   moderasyonKayitlari ModerasyonKaydi[]
 
   @@unique([userId, worldId])
+  /// Her kayıtta nüfus sayımı bu sütundan geçiyor (`medeniyetAta`).
+  @@index([worldId, medeniyetId])
   @@index([isNpc, npcSonTur])
   @@index([allianceId])
   @@index([worldId, fame])
@@ -356,14 +367,23 @@ model Region {
   komsular Json
   level    Int    @default(1)
 
-  ownerLordId String?
-  npcGarrison Json
+  ownerLordId      String?
+  /// Bölgeyi tutan MEDENİYET (docs/16 §2: toprak medeniyetin, pay lordun).
+  ///
+  /// `ownerLordId` bilerek DURUYOR: fetih ve gelir mantığı henüz tek lord
+  /// üzerinden çalışıyor (docs/16 §12 adım 3-4). İkisi bir arada yaşıyor
+  /// ve geçiş bitince eski sütun ayrı bir göçle kalkacak. Şemayı ve
+  /// mantığı aynı anda değiştirmek, çalışan bir oyunu tek hamlede
+  /// kırmak olurdu.
+  ownerMedeniyetId String?
+  ownerMedeniyet   Medeniyet? @relation(fields: [ownerMedeniyetId], references: [id], onDelete: SetNull)
+  npcGarrison      Json
   /// Bu bölgenin KANONİK NPC garnizonu — yıpranan garnizon buna doğru
   /// toparlanır. Dünya kendi tabanını taşıyor ki harita sürümü değişince
   /// eski dünya yeni haritanın garnizonuna doğru yenilenmesin (docs/12 §14).
   /// Sürümlemeden önce yazılmış satırlarda null; seed dolduruyor.
-  npcTaban    Json?
-  incomeMult  Float   @default(1)
+  npcTaban         Json?
+  incomeMult       Float      @default(1)
 
   storeAltin Int @default(0)
   storeDemir Int @default(0)
@@ -379,6 +399,10 @@ model Region {
 
   @@unique([worldId, mapId])
   @@index([worldId, ownerLordId])
+  /// Gelir dağıtımı (docs/16 §12 adım 3) bölgeleri MEDENİYETE göre
+  /// tarayacak; sayımlar da bu sütundan geçiyor. 121 satırda fark
+  /// etmiyor, diyar sayısı arttıkça ediyor.
+  @@index([worldId, ownerMedeniyetId])
 }
 
 model March {
@@ -868,4 +892,43 @@ model PushAbonesi {
   lord Lord @relation(fields: [lordId], references: [id], onDelete: Cascade)
 
   @@index([lordId])
+}
+
+/// Bir diyardaki medeniyet ÖRNEĞİ (docs/16).
+///
+/// Kimliğin kendisi (ad, renk, yurt, çekirdek bölgeler) `balance.json`
+/// → `medeniyetler` altında ve veritabanında TEKRARLANMIYOR: bir sayının
+/// ya da adın ikinci kopyası er ya da geç motordan sapar. Burada yalnız
+/// o medeniyetin bu diyardaki DURUMU duruyor.
+model Medeniyet {
+  id        String   @id @default(cuid())
+  worldId   String
+  /// balance.json'daki medeniyet anahtarı: demirocagi | kuzeyuc | karaorman | tasgecit
+  key       String
+  createdAt DateTime @default(now())
+
+  world      World             @relation(fields: [worldId], references: [id], onDelete: Cascade)
+  lordlar    Lord[]
+  bolgeler   Region[]
+  yatirimlar CekirdekYatirim[]
+
+  /// Bir diyarda aynı medeniyet iki kez açılamaz.
+  @@unique([worldId, key])
+}
+
+/// Bir çekirdek bölgeye yapılan ortak yatırım (docs/16 §7).
+///
+/// Bonus TÜRÜ saklanmıyor: hangi çekirdeğin hangi bonusu taşıdığı
+/// `packages/shared/src/medeniyet.ts` içinde haritadan türüyor. Sütun
+/// olsaydı veriyle kod ayrışabilirdi.
+model CekirdekYatirim {
+  id          String @id @default(cuid())
+  medeniyetId String
+  /// world-map.json'daki bölge numarası.
+  mapId       Int
+  seviye      Int    @default(0)
+
+  medeniyet Medeniyet @relation(fields: [medeniyetId], references: [id], onDelete: Cascade)
+
+  @@unique([medeniyetId, mapId])
 }

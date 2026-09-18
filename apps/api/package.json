@@ -11,6 +11,7 @@
     "build": "tsup",
     "seed": "tsx src/seed.ts",
     "dunya-temizle": "tsx src/dunya-temizle.ts",
+    "temiz-kesme": "tsx src/temiz-kesme.ts",
     "push-anahtari": "tsx src/push-anahtari.ts",
     "typecheck": "tsc --noEmit",
     "prisma": "prisma",

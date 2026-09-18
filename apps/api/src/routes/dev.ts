@@ -319,4 +319,46 @@ export async function devRoutes(app: FastifyInstance): Promise<void> {
       select: { altin: true, demir: true, erzak: true },
     });
   });
+
+  /**
+   * Bu lordun diyarındaki medeniyet tablosu (docs/16 §12 adım 2).
+   *
+   * Nüfus dengesi, yurt sahipliği ve çekirdek satırları HTTP üzerinden
+   * başka türlü görünmüyor: `/me` yalnız bir lordu anlatıyor, `/api/map`
+   * ise medeniyet sütununu henüz taşımıyor (o, arayüz adımının işi).
+   * Sınamanın veritabanına doğrudan bakması ise onu API'nin değil şemanın
+   * sınaması hâline getirirdi — şema değişince sınama de değişirdi ve
+   * korumaya çalıştığı şey kaçardı.
+   *
+   * Yalnız OKUYOR. Geliştirme ucu olmasının tek sebebi, oyuncuya bu kadar
+   * ayrıntılı bir sayımın gerekmemesi.
+   */
+  app.post('/test/medeniyet-durumu', { preHandler: requireAuth }, async (req) => {
+    const lordId = await findLordByUser(req.user.userId);
+    const { worldId } = await prisma.lord.findUniqueOrThrow({
+      where: { id: lordId },
+      select: { worldId: true },
+    });
+    const satirlar = await prisma.medeniyet.findMany({
+      where: { worldId },
+      select: {
+        id: true,
+        key: true,
+        _count: { select: { lordlar: true, bolgeler: true, yatirimlar: true } },
+      },
+      orderBy: { key: 'asc' },
+    });
+    const sahipsiz = await prisma.region.count({
+      where: { worldId, ownerMedeniyetId: null },
+    });
+    return {
+      medeniyetler: satirlar.map((m) => ({
+        key: m.key,
+        lord: m._count.lordlar,
+        bolge: m._count.bolgeler,
+        cekirdek: m._count.yatirimlar,
+      })),
+      sahipsizBolge: sahipsiz,
+    };
+  });
 }

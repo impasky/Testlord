@@ -47,6 +47,7 @@ import {
   type Rarity,
   type Resources,
   type UnitType,
+  medeniyet as medeniyetTanimi,
 } from '@lordlar/shared';
 import type { Prisma } from '@prisma/client';
 import { prisma, type Tx } from '../db.js';
@@ -82,6 +83,16 @@ export interface LordState {
   elmas: number;
   /** İlk 24 saatlik yeni oyuncu bonusu — bittiyse etkin false. */
   yeniOyuncu: { etkin: boolean; kalanSaniye: number };
+  /**
+   * Lordun medeniyeti (docs/16). Kayıtta atanıyor ve değişmiyor.
+   *
+   * `null` = medeniyet sisteminden ÖNCE açılmış lord. Geçiş bitene kadar
+   * ikisi bir arada yaşıyor; arayüz bu alanı boş görürse medeniyet
+   * bölümünü hiç çizmiyor.
+   */
+  medeniyet: { id: string; ad: string; renk: string; ozet: string } | null;
+  /** Kolektif eylemin kişisel karşılığı (docs/16 §9). Güç satın almaz. */
+  faydaPuani: number;
   storageCapacity: number;
   /** Bina seviyeleri: arayüz kapasiteleri sunucuyla aynı yerden hesaplasın. */
   binalar: Record<string, number>;
@@ -140,17 +151,27 @@ export interface LordState {
   basarimOlcutleri: BasarimOlcutleri;
 }
 
-type LordWithRelations = Prisma.LordGetPayload<{
-  include: { regions: true; units: true; items: true; gearLines: true; generals: true };
-}>;
-
 const lordInclude = {
   regions: true,
   units: true,
   items: true,
   gearLines: true,
   generals: true,
+  // Yalnız anahtar: ad, renk ve özet `balance.json`dan geliyor. Satırdan
+  // okusaydık aynı metin iki yerde durur ve biri diğerinden habersiz
+  // değişirdi.
+  medeniyet: { select: { key: true } },
 } as const;
+
+/*
+ * Tip LİSTEDEN türüyor, ikinci bir liste yazılmıyor.
+ *
+ * Eskiden ilişki listesi iki yerde duruyordu: bir `lordInclude` sabitinde,
+ * bir de bu tipin içinde. `medeniyet`i yalnız sabite eklemek yetmedi —
+ * derleyici "böyle bir alan yok" dedi, çünkü tip hâlâ eski listeyi
+ * anlatıyordu. Aynı şeyin iki kopyası, klasik biçimiyle.
+ */
+type LordWithRelations = Prisma.LordGetPayload<{ include: typeof lordInclude }>;
 
 /** Bir lordun tüm birimlerini (ev + garnizon + yürüyüş) tek orduya toplar. */
 function collectAllUnits(units: { unitType: string; count: number }[]): Army {
@@ -436,6 +457,12 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
       const d = yeniOyuncuDurumu(lord.createdAt);
       return { etkin: d.etkin, kalanSaniye: d.kalanSaniye };
     })(),
+    medeniyet: (() => {
+      const key = lord.medeniyet?.key;
+      const m = key ? medeniyetTanimi(key) : undefined;
+      return m ? { id: m.id, ad: m.ad, renk: m.renk, ozet: m.ozet } : null;
+    })(),
+    faydaPuani: lord.faydaPuani,
     storageCapacity: storageCapacity(lord.level, arastirmaBonusuOku(lord), binalariOku(lord)),
     /*
      * Bina seviyeleri arayüze de gidiyor.
