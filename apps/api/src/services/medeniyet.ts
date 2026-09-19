@@ -19,6 +19,9 @@ import {
   cekirdekMaliyeti,
   medeniyetBonusu,
   yurtBolgeleri,
+  KARTOPU_FRENI,
+  kartopuLideri,
+  kartopuPayi,
   type CekirdekBonus,
   type MedeniyetBonusu,
   type MedeniyetId,
@@ -276,6 +279,49 @@ export async function medeniyetBonuslari(
   const cikti = new Map<string, MedeniyetBonusu>();
   for (const [id, m] of seviyeler) cikti.set(id, medeniyetBonusu(m));
   return cikti;
+}
+
+/**
+ * KARTOPU FRENİ — bu diyarda önde giden medeniyet hangisi (docs/16 §10).
+ *
+ * Tek `groupBy` ile bölge sayımı yapıyor; kararı saf katman veriyor
+ * (`kartopuLideri`). Eşik ve bonus `balance.json`da, burada bir kopyası
+ * yok.
+ *
+ * TEK YERDEN OKUNUYOR ve bu bilinçli: savaş çözümü, savaş önizlemesi ve
+ * dünya şeridi aynı cevabı vermek zorunda. Üçü ayrı sayım yapsaydı er ya
+ * da geç biri unutulur ve önizleme ile savaş farklı yağma gösterirdi —
+ * bu projenin en çok tekrarlayan hatası (docs/16 §18).
+ */
+export interface KartopuDurumu {
+  /** Önde giden medeniyetin satır kimliği. */
+  medeniyetId: string;
+  /** O medeniyetin tutulan topraktaki payı (0-1). */
+  pay: number;
+  /** Bölgelerinden yağmaya eklenen oran. */
+  yagmaBonusu: number;
+}
+
+export async function kartopuDurumu(
+  worldId: string,
+  client: Tx = prisma,
+): Promise<KartopuDurumu | null> {
+  const sayimlar = await client.region.groupBy({
+    by: ['ownerMedeniyetId'],
+    where: { worldId, ownerMedeniyetId: { not: null } },
+    _count: { _all: true },
+  });
+  const sayilar: Record<string, number> = {};
+  for (const s of sayimlar) {
+    if (s.ownerMedeniyetId) sayilar[s.ownerMedeniyetId] = s._count._all;
+  }
+  const ondeki = kartopuLideri(sayilar);
+  if (!ondeki) return null;
+  return {
+    medeniyetId: ondeki,
+    pay: kartopuPayi(sayilar) ?? 0,
+    yagmaBonusu: KARTOPU_FRENI.yagmaBonusu,
+  };
 }
 
 /** Bir bölgeyi tutan medeniyetin SUR oranı — tutan yoksa 0. */

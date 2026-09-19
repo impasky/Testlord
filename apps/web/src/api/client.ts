@@ -501,6 +501,23 @@ export interface DunyaDto {
     /** Lider bensem işaret farklı okunmalı: av benim üstümde. */
     benMiyim: boolean;
   } | null;
+  /**
+   * Fraksiyon lider avı (docs/16 §10) — önde giden medeniyet yoksa null.
+   *
+   * Bireysel lider avından AYRI bir alan: biri bir lordu, öbürü bir
+   * tarafı işaret ediyor ve ikisi üst üste binebiliyor.
+   */
+  medeniyetAvi: {
+    /** Denge anahtarı ("demirocagi") — bölge kartındaki `medeniyet.id` ile aynı. */
+    medeniyetId: string;
+    ad: string | null;
+    renk: string | null;
+    /** Tutulan topraktaki payı (0-1). */
+    pay: number;
+    yagmaBonusu: number;
+    /** Önde giden benim medeniyetimse cümle tersine dönüyor. */
+    benimMi: boolean;
+  } | null;
   olaylar: {
     id: string;
     zaman: string;

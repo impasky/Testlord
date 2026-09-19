@@ -29,7 +29,13 @@ import { prisma, type Tx } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { gecikmisleriKapat } from '../services/gecikmis.js';
 import { garnizonPayGirdileri } from '../services/gelir.js';
-import { medeniyetBilgileri, medeniyetBonuslari, surOrani } from '../services/medeniyet.js';
+import {
+  kartopuDurumu,
+  medeniyetBilgileri,
+  medeniyetBonuslari,
+  surOrani,
+} from '../services/medeniyet.js';
+import { liderAviGecerli } from '../services/march.js';
 import { arastirmaBonusuOku, binalariOku, findLordByUser, pushEvent } from '../services/lord.js';
 import { dunyaGrafigi, mesafeOlcer, mesafeOlcerHazir } from '../services/mesafe.js';
 import { paktVarMi, paktliIttifaklar } from '../services/pakt.js';
@@ -1046,6 +1052,23 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       },
       attackerCunning: 0,
       canCapture: true,
+      /*
+       * YAĞMA BONUSLARI ÖNİZLEMEYE DE GİRİYOR.
+       *
+       * İkisi de uzun süre buradan EKSİKTİ: önizleme lider avını da
+       * fraksiyon lider avını da saymıyor, oyuncuya vaat edilenden
+       * fazla ganimet çıkıyordu. Fazlası az olmasından daha az zararlı
+       * ama sorun sayı değil: iki bonus da "şu bölgeye saldır" diye
+       * kurulmuş bir teşvik ve oyuncunun kararı verdiği ekranda
+       * görünmüyorlarsa hiç yok sayılırlar.
+       *
+       * İkisi de savaş çözümüyle AYNI işlevlerden okunuyor; ikinci bir
+       * kopya yazmak aynı hatayı bir kez daha kurardı.
+       */
+      liderAvi: await liderAviGecerli(region.worldId, region.ownerLordId, lordId, prisma),
+      medeniyetAvi:
+        region.ownerMedeniyetId !== null &&
+        (await kartopuDurumu(region.worldId))?.medeniyetId === region.ownerMedeniyetId,
       // Yaralı dönüş savunanın kaybını değiştiriyor; önizleme aynı
       // bayrağı geçirmezse oyuncuya gösterilen "savunanın kaybı"
       // gerçekleşenden farklı çıkardı.

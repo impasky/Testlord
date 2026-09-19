@@ -28,6 +28,7 @@ import { prisma } from '../db.js';
 import { env } from '../env.js';
 import { GameError } from '../errors.js';
 import { AKTIF_GUN } from '../services/world.js';
+import { KARTOPU_FRENI } from '@lordlar/shared';
 
 /** İlk oturum sayılan pencere. */
 const ILK_OTURUM_DK = 30;
@@ -151,6 +152,18 @@ async function medeniyetOlcusu(lordlar: OlcumLordu[]): Promise<unknown> {
       enGenisToprakPayi: enBuyukPay(liste.map((t) => t.bolge)),
       tutulanBolge: liste.reduce((t, x) => t + x.bolge, 0),
       toplamBolge,
+      /*
+       * Frenin eşiği ve durumu (docs/16 §10).
+       *
+       * `frenAcikMi` BÜTÜN DİYARLARI toplayarak bakıyor; gerçek fren
+       * diyar başına açılıp kapanıyor (`kartopuDurumu`). Tek dünyalı
+       * tasarımda ikisi aynı sayı, çok diyarlı bir veritabanında ise bu
+       * satır "ortalama olarak fren bölgesindeyiz" demek. Eşiği yanına
+       * yazıyoruz ki okuyan kendi kararını verebilsin.
+       */
+      frenEsigi: KARTOPU_FRENI.esik,
+      frenAcikMi: (enBuyukPay(liste.map((t) => t.bolge)) ?? 0) > KARTOPU_FRENI.esik,
+      frenYagmaBonusu: KARTOPU_FRENI.yagmaBonusu,
     },
 
     bedavacilik: {
@@ -227,12 +240,31 @@ export async function olcumRoutes(app: FastifyInstance): Promise<void> {
       if (sn <= ILK_OTURUM_DK * 60) ilkOturumdaSavasan++;
     }
 
-    // Geri dönüş: kayıttan en az 24 saat sonra tekrar görülmüş olmak.
-    // Yalnızca 24 saatten eski hesaplar paydaya giriyor; dün kaydolmuş
-    // birinin "dönmedi" sayılması ölçümü yalancı çıkarırdı.
+    /*
+     * Geri dönüş: kayıttan en az N gün sonra tekrar görülmüş olmak.
+     * Yalnızca N günden eski hesaplar paydaya giriyor; dün kaydolmuş
+     * birinin "dönmedi" sayılması ölçümü yalancı çıkarırdı.
+     *
+     * İKİ EŞİK: ertesi gün ve 7. gün. `docs/07` başarı kriterlerinin en
+     * önemlisi olarak 7. gün tutundurmasını işaretlemişti ("v2'nin işe
+     * yarayıp yaramadığını tahminle değil sayıyla bilmemiz gerekiyor")
+     * ve uzun süre yalnız ertesi gün ölçülüyordu. Ertesi gün ilk
+     * oturumun, yedinci gün OYUNUN sınavı: bir oyuncu bir hafta sonra
+     * hâlâ dönüyorsa oyun tutmuş demektir.
+     */
     const gun = 86_400_000;
-    const olgun = lordlar.filter((l) => Date.now() - l.createdAt.getTime() >= gun);
-    const donen = olgun.filter((l) => l.lastSeenAt.getTime() - l.createdAt.getTime() >= gun);
+    const donusOrani = (esikGun: number) => {
+      const esik = esikGun * gun;
+      const olgunlar = lordlar.filter((l) => Date.now() - l.createdAt.getTime() >= esik);
+      const donenler = olgunlar.filter(
+        (l) => l.lastSeenAt.getTime() - l.createdAt.getTime() >= esik,
+      );
+      return {
+        olgunLordSayisi: olgunlar.length,
+        donen: donenler.length,
+        oran: olgunlar.length === 0 ? null : donenler.length / olgunlar.length,
+      };
+    };
 
     const medeniyet = await medeniyetOlcusu(lordlar);
 
@@ -264,11 +296,9 @@ export async function olcumRoutes(app: FastifyInstance): Promise<void> {
 
       birakilanEkran: Object.fromEntries([...ekranlar.entries()].sort((a, b) => b[1] - a[1])),
 
-      ertesiGunDonus: {
-        olgunLordSayisi: olgun.length,
-        donen: donen.length,
-        oran: olgun.length === 0 ? null : donen.length / olgun.length,
-      },
+      ertesiGunDonus: donusOrani(1),
+      /** 7. gün tutundurma — docs/07'nin en önemli başarı ölçütü. */
+      yedinciGunDonus: donusOrani(7),
 
       /** Medeniyet katmanı; sistem hiç kurulmamışsa null (docs/16 §15). */
       medeniyet,

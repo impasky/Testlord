@@ -15,6 +15,7 @@ import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { findLordByUser } from '../services/lord.js';
 import { AKTIF_GUN, acikDiyarlar } from '../services/world.js';
+import { kartopuDurumu, medeniyetBilgileri } from '../services/medeniyet.js';
 
 export async function dunyaRoutes(app: FastifyInstance): Promise<void> {
   /*
@@ -51,7 +52,7 @@ export async function dunyaRoutes(app: FastifyInstance): Promise<void> {
     const lordId = await findLordByUser(req.user.userId);
     const ben = await prisma.lord.findUniqueOrThrow({
       where: { id: lordId },
-      select: { worldId: true, fame: true, name: true },
+      select: { worldId: true, fame: true, name: true, medeniyetId: true },
     });
 
     const aktifSinir = new Date(Date.now() - AKTIF_GUN * 86_400_000);
@@ -81,6 +82,11 @@ export async function dunyaRoutes(app: FastifyInstance): Promise<void> {
               : birlesmeKaydi.guest.name,
         }
       : null;
+
+    const [kartopu, medeniyetler] = await Promise.all([
+      kartopuDurumu(ben.worldId),
+      medeniyetBilgileri(ben.worldId),
+    ]);
 
     const [dunya, lordSayisi, aktif, ustumde, taht, lider, sonSavaslar] = await Promise.all([
       prisma.world.findUniqueOrThrow({
@@ -169,6 +175,33 @@ export async function dunyaRoutes(app: FastifyInstance): Promise<void> {
               benMiyim: lider.id === lordId,
             }
           : null,
+      /*
+       * FRAKSİYON LİDER AVI (docs/16 §10).
+       *
+       * Bireysel lider avının yanında duruyor ve ikisi ayrı satır:
+       * biri bir LORDU, öbürü bir TARAFI işaret ediyor. Aynı kutuya
+       * koysaydık oyuncu hangisine saldırdığında hangi bonusu
+       * alacağını bilemezdi — ikisi üst üste binebiliyor.
+       */
+      medeniyetAvi: kartopu
+        ? {
+            /*
+             * DENGE ANAHTARI, satır kimliği DEĞİL ("demirocagi").
+             *
+             * Bölge kartı da medeniyeti anahtarla taşıyor
+             * (`medeniyetBilgileri`), ve harita "bu bölge önde gidenin
+             * mi" sorusunu ikisini karşılaştırarak cevaplıyor. Satır
+             * kimliğini gönderseydik karşılaştırma HİÇBİR ZAMAN
+             * tutmaz, hap hiç görünmez, hiçbir hata da çıkmazdı.
+             */
+            medeniyetId: medeniyetler.get(kartopu.medeniyetId)?.id ?? kartopu.medeniyetId,
+            ad: medeniyetler.get(kartopu.medeniyetId)?.ad ?? null,
+            renk: medeniyetler.get(kartopu.medeniyetId)?.renk ?? null,
+            pay: kartopu.pay,
+            yagmaBonusu: kartopu.yagmaBonusu,
+            benimMi: kartopu.medeniyetId === ben.medeniyetId,
+          }
+        : null,
       olaylar: sonSavaslar.map((b) => {
         const log = b.log as { regionName?: string } | null;
         return {

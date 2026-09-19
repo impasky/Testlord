@@ -14,6 +14,7 @@ import { findLordByUser, grantXp, tickLord } from '../services/lord.js';
 import { resolveMarch } from '../services/march.js';
 import { resolveAkin } from '../services/akin.js';
 import { transferRegion } from '../services/region.js';
+import { medeniyetleriKur } from '../services/medeniyet.js';
 import { resolveQueueItem } from '../services/queue.js';
 import { sevkiyatCoz } from '../services/ticaret.js';
 import { npcTuru, npcYap } from '../services/npc.js';
@@ -333,6 +334,92 @@ export async function devRoutes(app: FastifyInstance): Promise<void> {
    * Yalnız OKUYOR. Geliştirme ucu olmasının tek sebebi, oyuncuya bu kadar
    * ayrıntılı bir sayımın gerekmemesi.
    */
+  /**
+   * Bir medeniyete TOPRAK ve DEPO verir — kartopu frenini sınamak için.
+   *
+   * Fren ancak bir medeniyet toprağın belli bir payını geçince açılıyor
+   * (docs/16 §10) ve oraya oynayarak gelmek yüzlerce fetih demek. Uç
+   * yalnız KURULUMU yapıyor, kuralı değil: hangi payın freni açtığına
+   * `balance.json` karar veriyor, buraya bir eşik kopyası girmiyor.
+   *
+   * `depo` o medeniyetin bölgelerine yağmalanabilir kaynak koyuyor;
+   * yağma bonusunun ölçülebilmesi için depoda kaynak olması şart, yoksa
+   * bonus sıfırın üstüne biniyor ve hiçbir şey görünmüyor.
+   */
+  app.post('/test/medeniyet-toprak-ver', { preHandler: requireAuth }, async (req) => {
+    const { key, adet, depo, sifirla } = z
+      .object({
+        key: z.string(),
+        adet: z.number().int().min(0).max(200).default(0),
+        depo: z.number().int().min(0).max(1_000_000).default(0),
+        /** Önce haritayı DOĞDUĞU güne döndür (yurtlar sahibinde, orta boş). */
+        sifirla: z.boolean().default(false),
+      })
+      .parse(req.body ?? {});
+
+    const lordId = await findLordByUser(req.user.userId);
+    const { worldId } = await prisma.lord.findUniqueOrThrow({
+      where: { id: lordId },
+      select: { worldId: true },
+    });
+    const medeniyet = await prisma.medeniyet.findFirst({
+      where: { worldId, key },
+      select: { id: true },
+    });
+    if (!medeniyet) throw new GameError('Medeniyet yok.', 400, 'MEDENIYET_YOK');
+
+    /*
+     * SIFIRLA: haritayı doğduğu güne döndürür.
+     *
+     * Uçtan uca sınamalar aynı diyarı paylaşıyor ve toprak veren bir
+     * sınama kendinden sonrakini bozar: bir sonraki lord kendi
+     * medeniyetinin yuttuğu bir haritaya doğar ve "yoldaşına saldıramazsın"
+     * kuralı onun ilk hedefini kapatır. Sınama açarken de kapatırken de
+     * burayı çağırıyor.
+     *
+     * Lordun tuttuğu bölgeye dokunulmuyor: orada oyunun ürettiği bir
+     * durum var.
+     */
+    let sifirlanan = 0;
+    if (sifirla) {
+      const sonuc = await prisma.region.updateMany({
+        where: { worldId, ownerLordId: null },
+        data: { ownerMedeniyetId: null },
+      });
+      sifirlanan = sonuc.count;
+      // Yurtlar yeniden sahibine yazılıyor — açılış dağılımı bu.
+      await medeniyetleriKur(worldId);
+    }
+
+    // Yalnız GERÇEKTEN sahipsiz bölgeler: bir lordun toprağını elinden
+    // almak testin ölçtüğü şeyi değiştirirdi.
+    let verilen = 0;
+    if (adet > 0) {
+      const adaylar = await prisma.region.findMany({
+        where: { worldId, ownerMedeniyetId: null, ownerLordId: null, type: { not: 'taht' } },
+        select: { id: true },
+        take: adet,
+      });
+      const sonuc = await prisma.region.updateMany({
+        where: { id: { in: adaylar.map((a) => a.id) } },
+        data: { ownerMedeniyetId: medeniyet.id },
+      });
+      verilen = sonuc.count;
+    }
+
+    let depolanan = 0;
+    if (depo > 0) {
+      const sonuc = await prisma.region.updateMany({
+        where: { worldId, ownerMedeniyetId: medeniyet.id },
+        data: { storeAltin: depo, storeDemir: depo, storeErzak: depo },
+      });
+      depolanan = sonuc.count;
+    }
+
+    const bolge = await prisma.region.count({ where: { ownerMedeniyetId: medeniyet.id } });
+    return { sifirlanan, verilen, depolanan, bolge };
+  });
+
   app.post('/test/medeniyet-durumu', { preHandler: requireAuth }, async (req) => {
     const lordId = await findLordByUser(req.user.userId);
     const { worldId } = await prisma.lord.findUniqueOrThrow({

@@ -59,7 +59,7 @@ import {
 } from './lord.js';
 import { addUnitsHome, addUnitsRegion, hastaneyeYatir } from './queue.js';
 import { garnizonPayGirdileri } from './gelir.js';
-import { medeniyetBonuslari, surOrani } from './medeniyet.js';
+import { kartopuDurumu, medeniyetBonuslari, surOrani } from './medeniyet.js';
 import { bolgeTahkimati, transferRegion } from './region.js';
 
 function toArmy(value: unknown): Army {
@@ -388,8 +388,15 @@ function yagmaKalkani(
  *
  * Sorgu savaş çözümünde bir kez çalışıyor. Şöhreti sıralamak zaten
  * indeksli ve tek satır dönüyor.
+ *
+ * DIŞA AÇIK, çünkü iki çağıranı var: savaşın kendisi ve savaş
+ * önizlemesi. Önizleme uzun süre bu bayrağı HİÇ geçirmiyordu ve
+ * lidere saldıran oyuncuya vaat edilenden fazla yağma çıkıyordu —
+ * aynı sayının iki yerde hesaplanması değil, bir yerde HİÇ
+ * hesaplanmaması. İkinci bir kopya yazmak yerine aynı işlev
+ * paylaşılıyor.
  */
-async function liderAviGecerli(
+export async function liderAviGecerli(
   worldId: string,
   defenderLordId: string | null,
   attackerLordId: string,
@@ -635,6 +642,12 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
         ).kurnazlik,
         canCapture: true,
         liderAvi: await liderAviGecerli(march.worldId, defenderLordId, march.lordId, tx),
+        // Fraksiyon lider avı (docs/16 §10): hedef bölgeyi önde giden
+        // medeniyet tutuyorsa yağma artıyor. Önizleme AYNI kararı aynı
+        // işlevden okuyor.
+        medeniyetAvi:
+          (await kartopuDurumu(march.worldId, tx))?.medeniyetId === region.ownerMedeniyetId &&
+          region.ownerMedeniyetId !== null,
         // Yaralı dönüş yalnız oyuncu savunmasında (docs/09 §3.6).
         savunanOyuncu: defenderLordId !== null,
       });

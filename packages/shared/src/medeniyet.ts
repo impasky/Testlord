@@ -31,6 +31,7 @@ const M = B.medeniyetler as unknown as {
     seviye_basina: Record<CekirdekBonus, number>;
   };
   garnizon_payi: { asgari_yer: number };
+  kartopu_freni: { onde_esik: number; yagma_bonusu: number; en_az_tutulan_bolge: number };
   fayda_puani: {
     garnizon_saat_basina_yer_basina: number;
     fetihe_katilim: number;
@@ -274,6 +275,93 @@ export function bagisFaydaPuani(toplamKaynak: number): number {
 
 export const FAYDA_FETIH = M.fayda_puani.fetihe_katilim;
 export const FAYDA_SAVUNMA = M.fayda_puani.savunmaya_katilim;
+
+/* ------------------------------------------------------------------ */
+/* Kartopu freni (docs/16 §10, dördüncü risk)                          */
+/* ------------------------------------------------------------------ */
+
+/**
+ * FRAKSİYON LİDER AVI — bireysel frenin medeniyet ölçeğindeki karşılığı.
+ *
+ * `docs/16` §10 dördüncü riskin panzehirini iki parça olarak yazmıştı:
+ * üyeyle ölçeklenen çekirdek maliyeti (§7) VE "mevcut liderAvi freninin
+ * fraksiyon sürümü: en çok bölge tutan medeniyet yağmalanırken daha çok
+ * verir". Birinci parça büyümeyi yavaşlatıyor, ikincisi büyüyeni HEDEF
+ * yapıyor. Yalnız birincisi varken ölçüm kartopunu görebiliyor ama
+ * hiçbir şey frene basmıyordu.
+ *
+ * Ölçüt ŞÖHRET DEĞİL TOPRAK PAYI, çünkü medeniyet ölçeğinde kartopu
+ * "bir lord zirvede" değil "bir taraf haritayı yutuyor" demek. Bireysel
+ * lider avı (balance.json → lider_avi) olduğu gibi duruyor; ikisi üst
+ * üste binebiliyor ve binmesi isteniyor.
+ *
+ * Bonus YALNIZ YAĞMA. Önde giden medeniyetin savaş gücüne dokunmuyoruz:
+ * nerf, zirveye çıkmayı anlamsızlaştırır ve oyuncuyu cezalandırır. Ödül
+ * ise herkese bir hedef verir — önde giden taraf da bunu bilerek savunma
+ * kurar.
+ */
+export const KARTOPU_FRENI = {
+  /** Toprak payı bu oranı geçince fren açılıyor. */
+  esik: M.kartopu_freni.onde_esik,
+  /** Fren açıkken o medeniyetin bölgelerinden yağma bu oranda artıyor. */
+  yagmaBonusu: M.kartopu_freni.yagma_bonusu,
+  /** Bu kadar bölge tutulmadan "önde giden" anlamsız. */
+  enAzTutulan: M.kartopu_freni.en_az_tutulan_bolge,
+} as const;
+
+/**
+ * Freni açık olan medeniyet — yoksa null.
+ *
+ * Girdi: medeniyet başına TUTULAN bölge sayısı. Anahtarların ne olduğu
+ * önemsiz (denge anahtarı da olur, veritabanı satır kimliği de);
+ * karşılaştırılan tek şey payların birbirine oranı.
+ *
+ * Beraberlikte fren AÇILMIYOR: iki taraf eşit öndeyse ortada bir
+ * kartopu değil bir denge var ve ikisini birden hedef göstermek
+ * "önde gideni avla" cümlesini anlamsızlaştırırdı.
+ */
+export function kartopuLideri(sayilar: Readonly<Record<string, number>>): string | null {
+  const girdiler = Object.entries(sayilar).filter(([, n]) => n > 0);
+  const toplam = girdiler.reduce((t, [, n]) => t + n, 0);
+  if (toplam < KARTOPU_FRENI.enAzTutulan) return null;
+
+  let ondeki: string | null = null;
+  let enCok = -1;
+  let berabere = false;
+  for (const [id, n] of girdiler) {
+    if (n > enCok) {
+      enCok = n;
+      ondeki = id;
+      berabere = false;
+    } else if (n === enCok) {
+      berabere = true;
+    }
+  }
+  if (!ondeki || berabere) return null;
+  return enCok / toplam > KARTOPU_FRENI.esik ? ondeki : null;
+}
+
+/** Fren açıkken önde gidenin payı — arayüz "şu an %38 tutuyor" desin diye. */
+export function kartopuPayi(sayilar: Readonly<Record<string, number>>): number | null {
+  const ondeki = kartopuLideri(sayilar);
+  if (!ondeki) return null;
+  const toplam = Object.values(sayilar).reduce((t, n) => t + n, 0);
+  return toplam > 0 ? (sayilar[ondeki] ?? 0) / toplam : null;
+}
+
+/**
+ * Bu bölgeyi tutan medeniyet önde giden mi — yağma bonusu ne kadar?
+ *
+ * Sahipsiz (çekişmeli) bölge bonus vermiyor: orada yutulan bir şey yok,
+ * kavganın zaten olduğu yer orası.
+ */
+export function kartopuYagmaBonusu(
+  sayilar: Readonly<Record<string, number>>,
+  bolgeninMedeniyeti: string | null,
+): number {
+  if (!bolgeninMedeniyeti) return 0;
+  return kartopuLideri(sayilar) === bolgeninMedeniyeti ? KARTOPU_FRENI.yagmaBonusu : 0;
+}
 
 /* ------------------------------------------------------------------ */
 /* Nüfus dengesi (docs/16 §10, birinci risk)                           */

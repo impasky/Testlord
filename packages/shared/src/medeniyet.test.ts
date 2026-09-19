@@ -11,6 +11,10 @@ import { describe, expect, it } from 'vitest';
 import { WORLD_MAP } from './balance.js';
 import {
   CEKIRDEK_AZAMI_SEVIYE,
+  KARTOPU_FRENI,
+  kartopuLideri,
+  kartopuPayi,
+  kartopuYagmaBonusu,
   acikMedeniyetler,
   atanacakMedeniyet,
   baskentCekirdegi,
@@ -381,5 +385,74 @@ describe('çekirdek bonusları — yatırımın karşılığı', () => {
     for (const oran of [b.ambar, b.talimgah, b.sur, b.ocak]) {
       expect(oran).toBeGreaterThan(0);
     }
+  });
+});
+
+/**
+ * KARTOPU FRENİ (docs/16 §10, dördüncü risk).
+ *
+ * Buradaki sınamalar tasarım iddialarını ölçüyor, işlevin çalışıp
+ * çalışmadığını değil: fren ilk gün kapalı mı, beraberlikte susuyor mu,
+ * çekişmeli toprak bonus vermiyor mu. Üçü de sessizce bozulabilir —
+ * hiçbiri hata vermez, yalnız oyunun dengesi kayar.
+ */
+describe('kartopu freni', () => {
+  /** Haritanın açılış dağılımı: her medeniyet kendi yurdunu tutuyor. */
+  const acilis = () => {
+    const sayilar: Record<string, number> = {};
+    for (const m of MEDENIYETLER) {
+      sayilar[m.id] = WORLD_MAP.regions.filter((r) => r.province === m.yurt).length;
+    }
+    return sayilar;
+  };
+
+  it('harita doğduğu gün fren KAPALI', () => {
+    // Asıl iddia bu: yurtlar eşit büyüklükte değil (17-18-21-21) ve
+    // eşik onların üstünde seçildi. Fren ilk gün açık olsaydı, hiçbir
+    // şey yapmamış bir medeniyet doğuştan hedef olurdu.
+    expect(kartopuLideri(acilis())).toBeNull();
+  });
+
+  it('eşiği geçen medeniyet hedef oluyor', () => {
+    const sayilar = acilis();
+    const kurban = MEDENIYETLER[0]!.id;
+    // Payı eşiğin üstüne çıkar: toplamın yarısını tek tarafa ver.
+    const digerleri = Object.entries(sayilar).reduce(
+      (t, [id, n]) => (id === kurban ? t : t + n),
+      0,
+    );
+    sayilar[kurban] = digerleri;
+    expect(kartopuLideri(sayilar)).toBe(kurban);
+    expect(kartopuPayi(sayilar)).toBeGreaterThan(KARTOPU_FRENI.esik);
+  });
+
+  it('beraberlikte fren açılmıyor', () => {
+    // İki taraf eşit öndeyse ortada kartopu değil denge var. İkisini
+    // birden avlanacak ilan etmek "önde gideni avla" cümlesini
+    // anlamsızlaştırırdı.
+    const esit = { a: 40, b: 40, c: 10, d: 10 };
+    expect(kartopuLideri(esit)).toBeNull();
+  });
+
+  it('neredeyse boş haritada "önde giden" yok', () => {
+    const azicik = { a: KARTOPU_FRENI.enAzTutulan - 1, b: 0, c: 0, d: 0 };
+    expect(kartopuLideri(azicik)).toBeNull();
+  });
+
+  it('bonus yalnız önde gidenin toprağında geçerli', () => {
+    const sayilar = { a: 60, b: 20, c: 10, d: 10 };
+    expect(kartopuLideri(sayilar)).toBe('a');
+    expect(kartopuYagmaBonusu(sayilar, 'a')).toBe(KARTOPU_FRENI.yagmaBonusu);
+    expect(kartopuYagmaBonusu(sayilar, 'b')).toBe(0);
+  });
+
+  it('sahipsiz (çekişmeli) bölge bonus vermiyor', () => {
+    // Orada yutulan bir şey yok; kavganın zaten olduğu yer orası.
+    expect(kartopuYagmaBonusu({ a: 60, b: 20, c: 10, d: 10 }, null)).toBe(0);
+  });
+
+  it('fren kapalıyken hiçbir toprak bonus vermiyor', () => {
+    const sayilar = acilis();
+    for (const m of MEDENIYETLER) expect(kartopuYagmaBonusu(sayilar, m.id)).toBe(0);
   });
 });

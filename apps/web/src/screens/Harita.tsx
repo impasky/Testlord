@@ -1084,6 +1084,16 @@ export function Harita({
                   bolge.owner?.id === dunya.data.liderAvi.lordId && (
                     <Hap renk="var(--color-kirmizi)">{`lider avı · +%${Math.round(dunya.data.liderAvi.yagmaBonusu * 100)} yağma`}</Hap>
                   )}
+                {/* Fraksiyon lider avı (docs/16 §10): bu toprağı önde
+                    giden medeniyet tutuyorsa yağma bonuslu. Aynı
+                    gerekçe — teşvik, oyuncunun kararı verdiği yerde
+                    yazmalı. İki hap aynı anda görünebilir ve bu doğru:
+                    iki bonus da alınıyor. */}
+                {dunya.data?.medeniyetAvi &&
+                  !dunya.data.medeniyetAvi.benimMi &&
+                  bolge.medeniyet?.id === dunya.data.medeniyetAvi.medeniyetId && (
+                    <Hap renk="var(--color-kirmizi)">{`${dunya.data.medeniyetAvi.ad ?? 'medeniyet'} önde · +%${Math.round(dunya.data.medeniyetAvi.yagmaBonusu * 100)} yağma`}</Hap>
+                  )}
                 {bolge.fortressBonus > 0 && (
                   <Hap renk="var(--color-kirmizi)">{`tahkimat +%${Math.round(bolge.fortressBonus * 100)}`}</Hap>
                 )}

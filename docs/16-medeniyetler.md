@@ -656,3 +656,86 @@ bir savaş raporu kontrolü).
 
 Uç `OLCUM_ANAHTARI` ile korunuyor; anahtar yoksa sınama kendini
 atlıyor, çünkü anahtarsız sunucuda uç hiç yüklenmiyor.
+
+---
+
+## 21. Uygulama notu: kartopu freni (§10'un eksik yarısı)
+
+`2026-09-19` — §10 fraksiyon kartopunun panzehirini **iki parça** olarak
+yazmıştı:
+
+> §7 üyeyle ölçeklenen maliyet + mevcut `liderAvi` freninin fraksiyon
+> sürümü: en çok bölge tutan medeniyet yağmalanırken daha çok verir
+
+Birinci parça §12 adım 5'te yazıldı. **İkincisi hiç yazılmamıştı** ve bu
+sessiz bir eksiklikti: §20'nin ölçümü kartopunu görüyor
+(`enGenisToprakPayi`) ama hiçbir şey frene basmıyordu. Bir riskin
+panzehiri belgede duruyor olması, kodda durduğu anlamına gelmiyor.
+
+### Ölçüt şöhret değil TOPRAK PAYI
+
+Bireysel lider avı tek bir lorda bakıyor: diyarın en şöhretlisi. Medeniyet
+ölçeğinde kartopu "bir lord zirvede" değil **"bir taraf haritayı
+yutuyor"** demek, ve onu şöhret değil toprak gösteriyor.
+
+| Sayı            | Değer | Neden                                                                     |
+| --------------- | ----- | ------------------------------------------------------------------------- |
+| `onde_esik`     | 0,35  | Dört eşit taraf 0,25; açılışta en büyük yurdun payı **0,273** (21 bölge)  |
+| `yagma_bonusu`  | 0,30  | Bireysel avdan (0,5) küçük — ikisi üst üste binebiliyor                   |
+| `en_az_tutulan` | 20    | İki bölgenin birini tutan taraf %50 pay gösterir; o "önde giden" değildir |
+
+Eşik açılış dağılımının üstünde seçildi ve bu tesadüf değil: **fren ilk
+gün kapalı başlamalı.** Açık başlasaydı hiçbir şey yapmamış bir medeniyet
+doğuştan hedef olurdu. Sınama bunu ayrıca ölçüyor.
+
+Beraberlikte fren **açılmıyor**: iki taraf eşit öndeyse ortada kartopu
+değil denge var.
+
+### Bonus yalnız yağma, asla güç
+
+Önde giden medeniyetin savaş gücüne dokunulmuyor. Nerf zirveye çıkmayı
+anlamsızlaştırır ve oyuncuyu cezalandırır; ödül ise herkese bir hedef
+verir — önde giden taraf da bunu bilerek savunma kurar. Bireysel lider
+avının gerekçesinin aynısı (`docs/09` §3.4), fraksiyon ölçeğinde.
+
+### Bu adımda çıkan gerçek hata: önizleme yağma bonuslarını HİÇ saymıyordu
+
+`/battle/preview` savaş bağlamını kurarken `liderAvi` bayrağını
+geçirmiyordu — yani **lidere saldıran oyuncuya vaat edilenden fazla
+ganimet çıkıyordu.** Fazlası az olmasından daha az zararlı ama sorun sayı
+değil: lider avı "şu bölgeye saldır" diye kurulmuş bir teşvik ve oyuncunun
+kararı verdiği ekranda görünmüyorsa hiç yok sayılır.
+
+İkisi de artık aynı işlevlerden okunuyor (`liderAviGecerli`,
+`kartopuDurumu`); önizleme için ikinci bir kopya yazmak aynı hatayı bir
+kez daha kurardı. `kartopuDurumu` altı çağrı noktasının tamamına tek
+yerden cevap veriyor — `surOrani` ile aynı gerekçe (§18).
+
+### Anahtar mı, satır kimliği mi
+
+Harita "bu bölge önde gidenin mi" sorusunu bölge kartındaki
+`medeniyet.id` ile karşılaştırarak cevaplıyor ve o alan **denge
+anahtarını** taşıyor (`demirocagi`). `/dunya` ilk hâlinde satır kimliğini
+gönderiyordu: karşılaştırma hiçbir zaman tutmaz, hap hiç görünmez,
+hiçbir hata da çıkmazdı. Uç artık anahtarı gönderiyor.
+
+### Ölçüm ve sınama
+
+`/api/olcum` artık frenin eşiğini ve durumunu da yazıyor. Uçtan uca
+sınama (`tools/kartopu-testi.mjs`) dört şeyi ölçüyor: doğuşta fren
+kapalı, eşik geçilince açılıyor, **önizleme bonusu tam olarak
+`×1,3` büyütüyor**, ve gerçek savaş önizlemeyle aynı yağmayı veriyor.
+
+Sınama haritayı **doğduğu güne döndürerek** başlıyor ve bitirirken
+temizliyor: uçtan uca araçlar aynı diyarı paylaşıyor ve toprak veren bir
+sınama, kendinden sonraki lordu kendi medeniyetinin yuttuğu bir haritaya
+doğururdu — "yoldaşına saldıramazsın" kuralı onun ilk hedefini kapatır ve
+ilk oturum sözü (`docs/08` İ3) oradan kırılırdı.
+
+### Yanında giden küçük iş: 7. gün tutundurması
+
+`docs/07` başarı kriterlerinin **en önemlisi** olarak 7. gün
+tutundurmasını işaretlemişti ("v2'nin işe yarayıp yaramadığını tahminle
+değil sayıyla bilmemiz gerekiyor") ve `/olcum` uzun süre yalnız ertesi
+günü ölçüyordu. İkisi artık yan yana: **ertesi gün ilk oturumun sınavı,
+yedinci gün oyunun.**

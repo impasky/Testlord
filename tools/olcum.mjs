@@ -54,15 +54,21 @@ for (const [ekran, adet] of Object.entries(o.birakilanEkran)) {
   satir(ekran, adet, yuzde(adet / toplam));
 }
 
-console.log('\nERTESİ GÜN GERİ DÖNÜŞ');
-if (o.ertesiGunDonus.olgunLordSayisi === 0) {
-  console.log('  Henüz 24 saati dolmuş oyuncu yok.');
-} else {
-  satir(
-    'geri dönen',
-    `${o.ertesiGunDonus.donen}/${o.ertesiGunDonus.olgunLordSayisi}`,
-    yuzde(o.ertesiGunDonus.oran),
-  );
+console.log('\nTUTUNDURMA');
+/*
+ * İKİ EŞİK. Ertesi gün İLK OTURUMUN sınavı; yedinci gün OYUNUN.
+ * docs/07 ikincisini başarı kriterlerinin en önemlisi diye işaretlemişti
+ * ve uzun süre yalnız birincisi ölçülüyordu.
+ */
+for (const [ad, d] of [
+  ['ertesi gün dönen', o.ertesiGunDonus],
+  ['7. gün dönen', o.yedinciGunDonus],
+]) {
+  if (!d || d.olgunLordSayisi === 0) {
+    satir(ad, '—', 'yeterince olgun hesap yok');
+  } else {
+    satir(ad, `${d.donen}/${d.olgunLordSayisi}`, yuzde(d.oran));
+  }
 }
 
 /*
@@ -95,6 +101,14 @@ if (o.medeniyet) {
     'en geniş tarafın toprak payı',
     yuzde(m.kartopu.enGenisToprakPayi),
     `${m.kartopu.tutulanBolge}/${m.kartopu.toplamBolge} bölge tutuluyor · denge ${yuzde(esitPay)}`,
+  );
+  // Kartopu freni (docs/16 §10): eşiği geçen medeniyetin toprağından
+  // yağma artıyor. Sayının yanında eşiği de yazıyoruz — "bu iyi mi kötü
+  // mü" diye sordurmayan ölçüm, okunan ölçümdür.
+  satir(
+    'kartopu freni',
+    m.kartopu.frenAcikMi ? 'AÇIK' : 'kapalı',
+    `eşik ${yuzde(m.kartopu.frenEsigi)} · açıkken +${yuzde(m.kartopu.frenYagmaBonusu)} yağma`,
   );
   satir(
     'fayda puanı kazanmış lord',

@@ -117,6 +117,42 @@ export function DunyaBasligi({ dunya }: { dunya: DunyaDto }) {
             </span>
           </>
         )}
+
+        {/* Fraksiyon lider avı: bireyselin yanında AYRI bir satır.
+          Biri bir lordu işaret ediyor, öbürü bir tarafı; ikisi üst üste
+          binebildiği için aynı cümleye sıkıştırmak oyuncuya hangi
+          bonusu ne zaman aldığını sorduracaktı. Rengi medeniyetin
+          kendi rengi — haritadaki çerçeveyle aynı işaret. */}
+        {dunya.medeniyetAvi && (
+          <>
+            <span aria-hidden>·</span>
+            <span className="inline-flex items-center gap-1">
+              <span
+                className="h-2 w-2 shrink-0 rounded-full border border-gece"
+                style={{ background: dunya.medeniyetAvi.renk ?? 'var(--color-kirmizi)' }}
+                aria-hidden
+              />
+              {dunya.medeniyetAvi.benimMi ? (
+                <span>
+                  <strong className="text-kirmizi">medeniyetin önde</strong> · toprağına saldıran{' '}
+                  <strong className="text-parsomen">
+                    +%{Math.round(dunya.medeniyetAvi.yagmaBonusu * 100)}
+                  </strong>{' '}
+                  yağma alır
+                </span>
+              ) : (
+                <span>
+                  <strong className="text-parsomen">{dunya.medeniyetAvi.ad}</strong> önde (%
+                  {Math.round(dunya.medeniyetAvi.pay * 100)}) ·{' '}
+                  <strong className="text-kirmizi">
+                    +%{Math.round(dunya.medeniyetAvi.yagmaBonusu * 100)}
+                  </strong>{' '}
+                  yağma
+                </span>
+              )}
+            </span>
+          </>
+        )}
       </div>
     </>
   );

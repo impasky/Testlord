@@ -919,6 +919,15 @@
       "cekirdek_bagis_bin_kaynak_basina": 10,
       "_kati_kural": "FAYDA PUANI GUC SATIN ALMAZ (docs/16 §9). Kimlik, kolaylik ve icerik erisimi alir. Guc yalniz cekirdek yatirimindan gelir ve herkese esit isler."
     },
+    "kartopu_freni": {
+      "_aciklama": "Lider avinin FRAKSIYON surumu (docs/16 §10). Bireysel lider avi tek lorda bakiyor; medeniyet olceginde kartopu bir tarafin haritayi yutmasi demek ve onu bir lordun sohreti degil TOPRAK PAYI gosteriyor. Cozum yine ayni: onde gideni zayiflatmak degil, ona saldirmayi karli kilmak.",
+      "onde_esik": 0.35,
+      "_neden_esik": "Dort medeniyetin esit payi 0,25; harita dogdugunda en buyuk yurdun payi 0,273 (karaorman/tasgecit 21 bolge). Esik 0,35 olunca fren ilk gun KAPALI basliyor ve ancak gercek bir onculuk kuruldugunda aciliyor. Daha dusuk bir esik freni surekli acik tutar ve gurultuye donusur; daha yuksek olani oyun karara baglandiktan sonra acilir.",
+      "yagma_bonusu": 0.3,
+      "_neden_bonus": "Bireysel lider avindan (0,5) kucuk ve bilerek: ikisi ust uste binebiliyor. Onde giden medeniyetin en sohretli lorduna saldiran her iki bonusu birden aliyor ve tam olarak istenen davranis bu. Bonus YALNIZ YAGMA: savas gucune dokunmuyor, yani onde giden taraf cezalandirilmiyor, sadece hedef haline geliyor.",
+      "en_az_tutulan_bolge": 20,
+      "_neden_en_az": "Hicbir seyin tutulmadigi bir haritada 'onde giden' anlamsiz: iki bolgenin birini tutan taraf %50 pay gosterir. Esik, dort yurdun acilista tuttugu 77 bolgenin cok altinda, yani gercek bir diyarda hep saglaniyor."
+    },
     "liste": [
       {
         "id": "demirocagi",

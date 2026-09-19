@@ -15,6 +15,7 @@ import {
   unit,
 } from './balance.js';
 import { duzenEtkisi } from './duzen.js';
+import { KARTOPU_FRENI } from './medeniyet.js';
 import { createRng } from './rng.js';
 import type { Army, BattleResult, Resources, RoundLog, Side, UnitType } from './types.js';
 import { UNIT_TYPES } from './types.js';
@@ -35,6 +36,18 @@ export interface BattleContext {
    * saldıran bölgede olmayan kaynağı kazanır.
    */
   liderAvi?: boolean;
+  /**
+   * Fraksiyon lider avı: hedef bölgeyi ÖNDE GİDEN medeniyet mi tutuyor?
+   *
+   * Bireysel lider avının medeniyet ölçeğindeki karşılığı (docs/16 §10).
+   * İkisi üst üste binebiliyor ve binmesi isteniyor: önde giden
+   * medeniyetin en şöhretli lorduna saldıran her iki bonusu da alıyor.
+   *
+   * Hangi medeniyetin önde olduğunu burası BİLMİYOR; çağıran karar
+   * veriyor (`kartopuYagmaBonusu`). Motorun bölge sayımı yapması, saf
+   * katmana veritabanı sokmak olurdu.
+   */
+  medeniyetAvi?: boolean;
   /**
    * Savunan bir OYUNCU mu (NPC garnizonu değil)?
    *
@@ -380,7 +393,8 @@ export function simulateBattle(
           ctx.attackerCunning,
           attacker.generalBonus.yagma +
             (attacker.arastirma?.yagma ?? 0) +
-            (ctx.liderAvi ? liderAviYagmaBonusu() : 0),
+            (ctx.liderAvi ? liderAviYagmaBonusu() : 0) +
+            (ctx.medeniyetAvi ? KARTOPU_FRENI.yagmaBonusu : 0),
         )
       : { altin: 0, demir: 0, erzak: 0 };
 
