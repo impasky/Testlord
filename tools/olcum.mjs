@@ -1,5 +1,5 @@
 /**
- * İlk oturum ölçümünü okunur biçimde yazdırır.
+ * İlk oturum ve medeniyet ölçümünü okunur biçimde yazdırır.
  *
  * Bugüne kadarki bütün analizler tahmindi ve ilk gerçek oyuncu testi
  * hepsini yanlışladı. Bu dört sayı olmadan bir sonraki iyileştirme de
@@ -63,5 +63,65 @@ if (o.ertesiGunDonus.olgunLordSayisi === 0) {
     `${o.ertesiGunDonus.donen}/${o.ertesiGunDonus.olgunLordSayisi}`,
     yuzde(o.ertesiGunDonus.oran),
   );
+}
+
+/*
+ * MEDENİYET KATMANI (docs/16 §10 + §15).
+ *
+ * Her sayının yanında HEDEFİ yazıyor: ölçüm okuyana "bu iyi mi kötü mü"
+ * diye sordurmamalı. Dört eşit taraf %25 eder; ideal sayı tabloda
+ * duruyor ki sapma bir bakışta görünsün.
+ */
+if (o.medeniyet) {
+  const m = o.medeniyet;
+  const esitPay = m.taraflar.length > 0 ? 1 / m.taraflar.length : null;
+
+  console.log('\nMEDENİYET — TARAFLAR');
+  for (const t of m.taraflar) {
+    satir(
+      t.key,
+      `${t.aktifLord} lord`,
+      `${t.bolge} bölge · çekirdek toplamı ${t.cekirdekSeviyesi}`,
+    );
+  }
+
+  console.log('\nMEDENİYET — DÖRT RİSK');
+  satir(
+    'en kalabalık tarafın payı',
+    yuzde(m.nufusDengesizligi.enKalabalikAktifPay),
+    `${m.nufusDengesizligi.enKalabalik} · denge ${yuzde(esitPay)}`,
+  );
+  satir(
+    'en geniş tarafın toprak payı',
+    yuzde(m.kartopu.enGenisToprakPayi),
+    `${m.kartopu.tutulanBolge}/${m.kartopu.toplamBolge} bölge tutuluyor · denge ${yuzde(esitPay)}`,
+  );
+  satir(
+    'fayda puanı kazanmış lord',
+    yuzde(m.bedavacilik.puanliLordOrani),
+    `üst ondalık puanın ${yuzde(m.bedavacilik.ustOndalikPayi)}'ini tutuyor`,
+  );
+  satir(
+    'garnizon tutan lord',
+    yuzde(m.garnizonKatilimi.garnizonTutanLordOrani),
+    `ortanca ${m.garnizonKatilimi.ortancaBolge ?? 0} bölge`,
+  );
+
+  /*
+   * Sistemin kendi yanlışlanma ölçütü. "Bölge bölünemez, bölgedeki PAY
+   * bölünür" cümlesi ancak paylaşılan bölge varsa doğru; sıfırsa
+   * garnizon payı hiç çalışmıyor demektir ve bunu başka hiçbir sayı
+   * söylemiyor.
+   */
+  console.log('\nMEDENİYET — PAY GERÇEKTEN BÖLÜNÜYOR MU');
+  satir('garnizonlu bölge', m.garnizonKatilimi.garnizonluBolge);
+  satir(
+    'iki ve daha çok lordun durduğu',
+    m.garnizonKatilimi.paylasilanBolge,
+    yuzde(m.garnizonKatilimi.paylasilanBolgeOrani),
+  );
+  if (m.garnizonKatilimi.paylasilanBolge === 0) {
+    console.log('  UYARI: hiçbir bölgede iki lord birden durmuyor — pay bölünmüyor.');
+  }
 }
 console.log();

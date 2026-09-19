@@ -604,3 +604,55 @@ arayan dokuz kontrolü birden düşürdü. Ad kendi etiketinde kaldı.
 
 Ders tanıdık: bir metni "sadece biraz" zenginleştirmek, o metni **kimlik
 olarak kullanan** her yeri kırar.
+
+---
+
+## 20. Uygulama notu: ölçüm (§15'in sözü)
+
+`2026-09-19` — §14 mimariyi parklarken bir söz vermişti: karar sayıyla
+verilecek. §15 kararı değiştirirken sözü iptal etmedi, **yönünü**
+değiştirdi — artık "yapılsın mı" değil "yapılan iş tutuyor mu"
+sorusunu ölçüyor. Söz bugün yerine geldi: `/api/olcum` medeniyet
+katmanını da ölçüyor.
+
+### Dört risk, dört sayı
+
+§10'un tablosu artık ölçülebilir:
+
+| Risk               | Sayı                                        | Denge |
+| ------------------ | ------------------------------------------- | ----- |
+| Nüfus dengesizliği | en kalabalık tarafın **aktif nüfus payı**   | %25   |
+| Fraksiyon kartopu  | en geniş tarafın **toprak payı**            | %25   |
+| Bedavacılık        | puanlı lord oranı + üst ondalığın puan payı | —     |
+| Etkisizlik hissi   | garnizon tutan lord oranı                   | —     |
+
+İlk iki satırın dengesi matematikten geliyor: dört eşit taraf %25 eder.
+Sapma tek bakışta görünsün diye `tools/olcum.mjs` hedefi sayının yanına
+yazıyor; "bu iyi mi kötü mü" diye sordurmayan bir ölçüm, okunan bir
+ölçümdür.
+
+### Beşinci sayı: sistem kendini yanlışlayabiliyor mu
+
+`paylasilanBolge` — **iki ya da daha çok lordun aynı anda garnizon
+tuttuğu bölge sayısı.** Sistemin tek cümlesi "bölge bölünemez, bölgedeki
+PAY bölünür" ve bu sayı sıfırsa o cümle sahada yaşanmıyor demektir:
+garnizon payı çalışıyor ama kimse paylaşmıyorsa mekanik tiyatrodur.
+Başka hiçbir sayı bunu söylemiyor — gelir doğru bölünür, harita renk
+değiştirir, testler geçer.
+
+Bugünkü geliştirme veritabanında bu sayı **0**, ve bu doğru: her uçtan
+uca sınama kendi diyarında kendi lordlarıyla koşuyor, kimse kimseyle
+aynı bölgede durmuyor. Sayının işi bugün cevap vermek değil, gerçek
+oyuncu geldiğinde cevabı hazır tutmak.
+
+### Ölçümün kendisi ölçülüyor
+
+`tools/olcum-testi.mjs` alanları okumakla yetinmiyor: aynı medeniyetten
+iki lord kuruyor, biri bir bölge fethediyor, öbürü oraya takviye
+gönderiyor ve `paylasilanBolge`'nin **arttığını** görüyor (0 → 1).
+Sabit sıfır dönen ölü bir alan da "geçer" görünürdü — bu projede aynı
+tuzağa bir kez düşüldü (`kontrol(..., true)` yazan, hiçbir şey ölçmeyen
+bir savaş raporu kontrolü).
+
+Uç `OLCUM_ANAHTARI` ile korunuyor; anahtar yoksa sınama kendini
+atlıyor, çünkü anahtarsız sunucuda uç hiç yüklenmiyor.
