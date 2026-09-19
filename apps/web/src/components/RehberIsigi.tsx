@@ -465,6 +465,28 @@ export function RehberIsigi({
    */
   const perde =
     'fixed z-[55] bg-black/72 motion-safe:transition-all motion-safe:duration-200 motion-safe:ease-out';
+  /*
+   * TAM EKRAN perde AYRI bir sınıf ve AYRI bir `key` taşıyor. İkisi de
+   * aynı hatanın iki yarısı.
+   *
+   * Delikli hâl dört parça çiziyor, bekleme hâli tek parça. React
+   * çocukları SIRAYA göre eşliyor: anahtar verilmeyince tek parça,
+   * dörtlünün BİRİNCİSİNİN DOM düğümünü devralıyor — yani `height: u`
+   * olan üst şeridin. `transition-all` da onu 200 ms boyunca `inset: 0`a
+   * doğru büyütüyor. O 200 ms içinde ekranın ALTI açık kalıyor ve alt
+   * çubuk basılabilir oluyor: oyuncu tam "bekle" denen anda kendini ana
+   * sayfaya atabiliyor.
+   *
+   * Ölçülen hâli: geçiş sırasında bir karede `nav-ana` perdenin üstünde
+   * görünüyordu (`rehber-isigi-testi`, yavaş şebeke bölümü). Kod bölme
+   * (`lazy`) bunu her ilk geçişte tetikler hâle getirdi — önce ekran
+   * anında çizildiği için bekleme hâline hiç girilmiyordu.
+   *
+   * Anahtar, dörtlüyle eşlemeyi kesiyor; geçişin kalkması da taze
+   * düğümün yanlışlıkla bir yerden büyümesini imkânsız kılıyor. Delikli
+   * hâlin kayma animasyonu duruyor — oyuncunun istediği akıcılık oydu.
+   */
+  const perdeTam = 'fixed z-[55] bg-black/72';
   const dokun = () => {
     setItiraz(true);
     window.setTimeout(() => setItiraz(false), 450);
@@ -480,7 +502,7 @@ export function RehberIsigi({
   if (tutuluyor && bekleyis && bekleyisBitis) {
     return (
       <>
-        <div className={perde} style={{ inset: 0 }} onClick={dokun} />
+        <div key="perde-tam" className={perdeTam} style={{ inset: 0 }} onClick={dokun} />
         <div
           role="status"
           className="pointer-events-none fixed inset-x-0 top-1/2 z-[56] flex -translate-y-1/2 justify-center px-3"
@@ -531,7 +553,7 @@ export function RehberIsigi({
     if (!bekleme) return null;
     return (
       <>
-        <div className={perde} style={{ inset: 0 }} onClick={dokun} />
+        <div key="perde-tam" className={perdeTam} style={{ inset: 0 }} onClick={dokun} />
         <div
           role="status"
           className="pointer-events-none fixed inset-x-0 top-1/2 z-[56] flex -translate-y-1/2 justify-center px-3"
@@ -582,10 +604,30 @@ export function RehberIsigi({
 
   return (
     <>
-      <div className={perde} style={{ top: 0, left: 0, right: 0, height: u }} onClick={dokun} />
-      <div className={perde} style={{ top: a, left: 0, right: 0, bottom: 0 }} onClick={dokun} />
-      <div className={perde} style={{ top: u, left: 0, width: s, height: a - u }} onClick={dokun} />
-      <div className={perde} style={{ top: u, left: g, right: 0, height: a - u }} onClick={dokun} />
+      <div
+        key="perde-ust"
+        className={perde}
+        style={{ top: 0, left: 0, right: 0, height: u }}
+        onClick={dokun}
+      />
+      <div
+        key="perde-alt"
+        className={perde}
+        style={{ top: a, left: 0, right: 0, bottom: 0 }}
+        onClick={dokun}
+      />
+      <div
+        key="perde-sol"
+        className={perde}
+        style={{ top: u, left: 0, width: s, height: a - u }}
+        onClick={dokun}
+      />
+      <div
+        key="perde-sag"
+        className={perde}
+        style={{ top: u, left: g, right: 0, height: a - u }}
+        onClick={dokun}
+      />
 
       {/* Halka ve kart tıklamayı geçirir: deliğin üstünde duran hiçbir şey
           düğmeye giden parmağı yakalamamalı. */}

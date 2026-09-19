@@ -859,6 +859,106 @@ await page.waitForTimeout(2500);
   await ctx4.close();
 }
 
+/**
+ * EKRAN PARÇASI yavaş gelirken perde alt çubuğu kapatıyor mu?
+ *
+ * Yukarıdaki bölüm yalnız API'yi yavaşlatıyor; ekranın KENDİ JavaScript
+ * parçası anında geliyor. Kod bölmeden (`lazy`) sonra asıl boşluk orada
+ * açıldı ve hata tam oraya yerleşti: ışık "bekle" hâline geçerken
+ * delikli perdenin dört parçası tek parçaya iniyor, React tek parçayı
+ * dörtlünün BİRİNCİSİYLE eşliyor ve `transition-all` onu 200 ms boyunca
+ * büyütüyor. O sürede ekranın altı açık kalıyor: oyuncu tam "bekle"
+ * denen anda alt çubuğa basıp ana sayfaya kaçabiliyor.
+ *
+ * Yukarıdaki bölüm bunu ancak Vite'ın soğuk olduğu koşuşlarda
+ * yakalıyordu — yani çoğu zaman yeşil kalıyordu ve hata öyle geçti.
+ * Burada parçanın kendisi yavaşlatılıyor: boşluk artık tesadüfe değil
+ * teste bağlı ve iki saniye sürüyor.
+ */
+{
+  const ctx5 = await b.newContext({ ...devices['iPhone 13'] });
+  const s5 = await ctx5.newPage();
+  // Ekran parçası: geliştirmede `/src/screens/Kisla.tsx`, yayında
+  // `/assets/Kisla-<özet>.js`. İkisini de yakalayan tek desen.
+  await s5.route('**/Kisla*', async (route) => {
+    await new Promise((r) => setTimeout(r, 2000));
+    await route.continue();
+  });
+
+  const d8 = Date.now();
+  const { token: t8 } = await kayitOl(API, {
+    email: `isik${d8}_z@lordlar.dev`,
+    lordName: `Isikzp ${d8.toString(36).slice(-4)}`,
+  });
+  await fetch(`${API}/api/me/ogretici-bitti`, {
+    method: 'POST',
+    headers: { authorization: `Bearer ${t8}`, 'content-type': 'application/json' },
+    body: '{}',
+  });
+  await s5.goto(WEB, { waitUntil: 'domcontentloaded' });
+  await s5.evaluate((t) => localStorage.setItem('lordlar_token', t), t8);
+  await s5.reload({ waitUntil: 'domcontentloaded' });
+  await s5.waitForSelector('[data-rehber="omurga-dugme"]', { timeout: 30000 });
+  await s5.waitForTimeout(2500);
+
+  /*
+   * GEÇİŞLER YAVAŞLATILIYOR — ürünü değiştirmeden hatayı görünür kılmak
+   * için.
+   *
+   * Sızıntı, perdenin CSS geçişi kadar sürüyor: 200 ms. 60 ms'de bir
+   * bakan bir sınama onu bazen üç karede yakalıyor, bazen hiç — ilk
+   * yazdığımda düzeltmeyi geri aldığım hâlde bir koşuş "geçti" dedi ve
+   * sınama boş çıktı. Süreyi 1,5 saniyeye çekince ölçülen şey değişmiyor,
+   * yalnız tesadüf denklemden çıkıyor: perde bekleme hâlinde GEOMETRİSİNİ
+   * OYNATIYORSA açıkta kalan kare kaçınılmaz olur. Düzeltilmiş hâlde
+   * oynatacak bir şey yok, süre ne olursa olsun sızıntı da yok.
+   */
+  await s5.addStyleTag({
+    content: '*, *::before, *::after { transition-duration: 1500ms !important; }',
+  });
+
+  await s5.evaluate(() => {
+    const w = window;
+    w.__iz2 = [];
+    const oku = () => {
+      const perde = [...document.querySelectorAll('div')].filter(
+        (x) => typeof x.className === 'string' && x.className.includes('z-[55]'),
+      ).length;
+      // Alt çubuğun ana sayfa düğmesi perdenin ÜSTÜNDEN erişilebilir mi?
+      const nav = document.querySelector('[data-rehber="nav-ana"]');
+      let acikta = false;
+      if (nav) {
+        const r = nav.getBoundingClientRect();
+        const u = document.elementFromPoint(
+          Math.round(r.left + r.width / 2),
+          Math.round(r.top + r.height / 2),
+        );
+        acikta = Boolean(u && (nav === u || nav.contains(u)));
+      }
+      w.__iz2.push({ perde, acikta });
+      if (w.__iz2.length < 60) setTimeout(oku, 60);
+    };
+    oku();
+  });
+  await s5.locator('[data-rehber="omurga-dugme"]').click();
+  await s5.waitForTimeout(4200);
+
+  const iz2 = await s5.evaluate(() => window.__iz2);
+  const sizan = iz2.filter((x) => x.perde > 0 && x.acikta).length;
+  const perdesiz2 = iz2.filter((x) => x.perde === 0).length;
+  kontrol(
+    'Ekran parçası yavaşken perde alt çubuğu HİÇ açıkta bırakmıyor',
+    sizan === 0,
+    `${sizan}/${iz2.length} kare açıkta`,
+  );
+  kontrol(
+    'Ekran parçası yavaşken perde hiç düşmüyor',
+    perdesiz2 === 0,
+    `${perdesiz2} kare perdesiz`,
+  );
+  await ctx5.close();
+}
+
 kontrol('Konsol hatası yok', konsol.length === 0, konsol.slice(0, 3).join(' | '));
 await b.close();
 console.log(hata === 0 ? '\nTÜM KONTROLLER GEÇTİ' : `\n${hata} KONTROL BAŞARISIZ`);
