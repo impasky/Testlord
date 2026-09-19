@@ -18,6 +18,8 @@ import {
   armySlots,
   bosGeneralBonus,
   calculateFame,
+  faydaRutbesi,
+  type FaydaRutbesi,
   commandCapacity,
   generalSlots,
   statPointsForLevelUp,
@@ -96,6 +98,14 @@ export interface LordState {
   medeniyet: { id: string; ad: string; renk: string; ozet: string } | null;
   /** Kolektif eylemin kişisel karşılığı (docs/16 §9). Güç satın almaz. */
   faydaPuani: number;
+  /**
+   * Fayda puanından TÜREYEN rütbe (docs/16 §9).
+   *
+   * Puan harcanmıyor, birikiyor: karşılığı "ne aldın" değil "ne
+   * yaptın". Unvan şöhretten nasıl türüyorsa rütbe de puandan türüyor —
+   * ikinci bir sayaç yok.
+   */
+  faydaRutbesi: FaydaRutbesi;
   /** Çekirdek yatırımlarının kattığı oranlar (docs/16 §7). */
   medeniyetBonusu: MedeniyetBonusu;
   storageCapacity: number;
@@ -508,6 +518,7 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
      */
     medeniyetBonusu: medBonus,
     faydaPuani: lord.faydaPuani,
+    faydaRutbesi: faydaRutbesi(lord.faydaPuani),
     storageCapacity: storageCapacity(
       lord.level,
       arastirmaBonusuOku(lord),

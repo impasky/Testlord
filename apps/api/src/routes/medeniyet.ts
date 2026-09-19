@@ -9,14 +9,28 @@
  * kısıtlayarak değil fayda puanıyla çözüyoruz (§9): bonus herkese,
  * puan yalnız katkı verene.
  */
-import { CEKIRDEK_AZAMI_SEVIYE, bagisFaydaPuani, cekirdekMaliyeti } from '@lordlar/shared';
+import {
+  CEKIRDEK_AZAMI_SEVIYE,
+  DEGISIMDE_FAYDA_SIFIRLANIR,
+  DEGISIM_BEKLEME_GUN,
+  MEDENIYETLER,
+  bagisFaydaPuani,
+  cekirdekMaliyeti,
+  degisimDurumu,
+  faydaRutbesi,
+} from '@lordlar/shared';
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { findLordByUser, tickLord } from '../services/lord.js';
-import { cekirdekDurumlari, medeniyetBilgileri } from '../services/medeniyet.js';
+import {
+  cekirdekDurumlari,
+  medeniyetBilgileri,
+  medeniyetDegistir,
+  medeniyetNufuslari,
+} from '../services/medeniyet.js';
 import { AKTIF_GUN } from '../services/world.js';
 
 const bagisSchema = z.object({
@@ -33,13 +47,22 @@ export async function medeniyetRoutes(app: FastifyInstance): Promise<void> {
     const lordId = await findLordByUser(req.user.userId);
     const lord = await prisma.lord.findUniqueOrThrow({
       where: { id: lordId },
-      select: { worldId: true, medeniyetId: true, faydaPuani: true },
+      select: {
+        worldId: true,
+        medeniyetId: true,
+        faydaPuani: true,
+        medeniyetDegisimAt: true,
+      },
     });
     if (!lord.medeniyetId) return { medeniyet: null };
 
     const bilgiler = await medeniyetBilgileri(lord.worldId);
     const bilgi = bilgiler.get(lord.medeniyetId);
     if (!bilgi) return { medeniyet: null };
+
+    const { nufus, satirlar } = await medeniyetNufuslari(lord.worldId);
+    const simdikiKey = satirlar.find((x) => x.id === lord.medeniyetId)?.key ?? null;
+    const degisim = degisimDurumu(simdikiKey, null, nufus, lord.medeniyetDegisimAt, new Date());
 
     const [uye, bolge, cekirdekler, hepsi] = await Promise.all([
       prisma.lord.count({ where: { medeniyetId: lord.medeniyetId } }),
@@ -60,6 +83,28 @@ export async function medeniyetRoutes(app: FastifyInstance): Promise<void> {
         uyeSayisi: uye,
         bolgeSayisi: bolge,
         faydaPuanim: lord.faydaPuani,
+        /*
+         * RÜTBE: puanın karşılığı. Puan harcanmıyor, birikiyor ve
+         * rütbeye dönüşüyor (docs/16 §9) — biriken ama hiçbir şey
+         * yapmayan bir sayı, zamanla oyuncunun güvenini yiyor.
+         */
+        rutbe: faydaRutbesi(lord.faydaPuani),
+        /*
+         * DEĞİŞİM: kural artık AÇIK. Önce mekanizma hiç yoktu ve oyuncuya
+         * da söylenmiyordu; sessiz bir hayır, "belki vardır"ı sonsuza
+         * kadar yaşatıyor (docs/16 §13 soru 3).
+         */
+        degisim: {
+          kalanGun: degisim.kalanGun,
+          faydaSifirlanir: DEGISIMDE_FAYDA_SIFIRLANIR,
+          beklemeGun: DEGISIM_BEKLEME_GUN,
+          secenekler: degisim.secenekler
+            .map((id) => {
+              const m = MEDENIYETLER.find((x) => x.id === id);
+              return m ? { id: m.id, ad: m.ad, renk: m.renk, ozet: m.ozet } : null;
+            })
+            .filter((x): x is { id: string; ad: string; renk: string; ozet: string } => x !== null),
+        },
         cekirdekler,
         // Sıralama: en çok toprak tutan önde.
         siralama: hepsi
@@ -70,6 +115,22 @@ export async function medeniyetRoutes(app: FastifyInstance): Promise<void> {
           .sort((a, b) => b.bolge - a.bolge),
       },
     };
+  });
+
+  /**
+   * TARAF DEĞİŞTİR (docs/16 §13 soru 3).
+   *
+   * Kural üç kapılı ve üçü de aynı tasarımdan: yalnız nüfusu
+   * ortalamanın ALTINDAKİ bir medeniyete geçilebiliyor (kazanan tarafa
+   * geçiş imkânsız), bekleme süresi var (kimlik kararı, taktik değil) ve
+   * fayda puanı sıfırlanıyor (puan eski tarafa verilen hizmetin kaydı).
+   *
+   * Karar saf katmanda, yazma serviste: uç yalnız ikisini birleştiriyor.
+   */
+  app.post('/medeniyet/degis', { preHandler: requireAuth }, async (req) => {
+    const { key } = z.object({ key: z.string().min(1) }).parse(req.body ?? {});
+    const lordId = await findLordByUser(req.user.userId);
+    return medeniyetDegistir(lordId, key);
   });
 
   /**

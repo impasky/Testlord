@@ -37,7 +37,9 @@ const M = B.medeniyetler as unknown as {
     fetihe_katilim: number;
     savunmaya_katilim: number;
     cekirdek_bagis_bin_kaynak_basina: number;
+    rutbeler: { esik: number; ad: string; aciklama: string }[];
   };
+  degisim: { bekleme_gun: number; fayda_sifirlanir: boolean };
   liste: {
     id: string;
     ad: string;
@@ -275,6 +277,112 @@ export function bagisFaydaPuani(toplamKaynak: number): number {
 
 export const FAYDA_FETIH = M.fayda_puani.fetihe_katilim;
 export const FAYDA_SAVUNMA = M.fayda_puani.savunmaya_katilim;
+
+/**
+ * Fayda puanından TÜREYEN medeniyet rütbesi.
+ *
+ * Puan harcanmıyor, birikiyor. Bir dükkân açsaydık puanın karşılığı "ne
+ * aldın" olurdu; böyle "ne yaptın" oluyor — ve §9'un katı kuralı
+ * kendiliğinden korunuyor: rütbe hiçbir sayıya dokunmuyor.
+ *
+ * Yapı bilerek `unvan()`ın aynısı (kimlik.ts): şöhret nasıl unvana
+ * dönüşüyorsa fayda puanı da rütbeye dönüşüyor. İkinci bir sayaç,
+ * ikinci bir tablo yok.
+ */
+export interface FaydaRutbesi {
+  ad: string;
+  aciklama: string;
+  /** Bir sonraki rütbenin eşiği — en üsttekinde null. */
+  sonrakiEsik: number | null;
+  sonrakiAd: string | null;
+}
+
+export function faydaRutbesi(puan: number): FaydaRutbesi {
+  const k = M.fayda_puani.rutbeler;
+  let i = 0;
+  for (let n = 0; n < k.length; n++) if (puan >= k[n]!.esik) i = n;
+  const sonraki = k[i + 1] ?? null;
+  return {
+    ad: k[i]!.ad,
+    aciklama: k[i]!.aciklama,
+    sonrakiEsik: sonraki?.esik ?? null,
+    sonrakiAd: sonraki?.ad ?? null,
+  };
+}
+
+/* ------------------------------------------------------------------ */
+/* Medeniyet değişimi (docs/16 §13 soru 3)                             */
+/* ------------------------------------------------------------------ */
+
+export const DEGISIM_BEKLEME_GUN = M.degisim.bekleme_gun;
+export const DEGISIMDE_FAYDA_SIFIRLANIR = M.degisim.fayda_sifirlanir;
+
+/**
+ * Taraf değiştirilebilir mi — değiştirilemiyorsa NEDEN?
+ *
+ * Önce mekanizma hiç yoktu ve oyuncuya da söylenmiyordu: sessiz bir
+ * hayırdı. Sessiz kural, oyuncunun kafasında "belki vardır"ı sonsuza
+ * kadar yaşatıyor.
+ *
+ * Üç kapı var ve üçü de aynı tasarımdan çıkıyor:
+ *
+ *  1. HEDEF AÇIK OLMALI — yani nüfusu ortalamanın altında. Kayıttaki
+ *     kuralın aynısı (`acikMedeniyetler`). Kazanan tarafa geçiş böylece
+ *     imkânsız: değişim kartopunu büyütemez, ancak dengeler.
+ *  2. BEKLEME — taraf değiştirmek kimlik kararı, taktik değil. Süre
+ *     olmasaydı savaş öncesi güçlüye, savaş sonrası kazanana geçilirdi.
+ *  3. FAYDA SIFIRLANIR — puan ESKİ tarafa verilen hizmetin kaydı.
+ *     Taşınsaydı, hiç katkı vermemiş biri üstüne rütbe giyerek gelirdi.
+ *
+ * Sebep dizesi kullanıcıya gösterilmek için: "olmaz" demek yetmiyor,
+ * neden olmadığını söylemek gerekiyor.
+ */
+export interface DegisimDurumu {
+  olur: boolean;
+  sebep: string | null;
+  /** Şu an geçilebilecek medeniyetler. */
+  secenekler: MedeniyetId[];
+  /** Beklemenin bitmesine kalan gün (0 ise bekleme yok). */
+  kalanGun: number;
+}
+
+export function degisimDurumu(
+  simdikiId: MedeniyetId | null,
+  hedefId: MedeniyetId | null,
+  nufus: Readonly<Record<MedeniyetId, number>>,
+  sonDegisim: Date | null,
+  simdi: Date,
+): DegisimDurumu {
+  // Kendi medeniyeti seçeneklerden düşüyor: "geçebileceğin yerler"
+  // listesinde zaten olduğun yerin bulunması anlamsız.
+  const secenekler = acikMedeniyetler(nufus).filter((id) => id !== simdikiId);
+  const gecenGun = sonDegisim
+    ? (simdi.getTime() - sonDegisim.getTime()) / 86_400_000
+    : Number.POSITIVE_INFINITY;
+  const kalanGun = Math.max(0, Math.ceil(DEGISIM_BEKLEME_GUN - gecenGun));
+
+  const temel = { secenekler, kalanGun };
+  if (kalanGun > 0) {
+    return {
+      ...temel,
+      olur: false,
+      sebep: `Taraf değiştirmek için ${kalanGun} gün daha beklemelisin.`,
+    };
+  }
+  if (!hedefId) return { ...temel, olur: false, sebep: null };
+  if (hedefId === simdikiId) {
+    return { ...temel, olur: false, sebep: 'Zaten bu medeniyettensin.' };
+  }
+  if (!medeniyet(hedefId)) return { ...temel, olur: false, sebep: 'Böyle bir medeniyet yok.' };
+  if (!secenekler.includes(hedefId)) {
+    return {
+      ...temel,
+      olur: false,
+      sebep: 'O medeniyet kalabalık. Yalnız nüfusu ortalamanın altındaki bir tarafa geçebilirsin.',
+    };
+  }
+  return { ...temel, olur: true, sebep: null };
+}
 
 /* ------------------------------------------------------------------ */
 /* Kartopu freni (docs/16 §10, dördüncü risk)                          */

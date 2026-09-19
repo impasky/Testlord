@@ -175,6 +175,13 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
     (m) => `${m.ad}: ${m.ozet.toLocaleLowerCase('tr').replace(/\.$/, '')}`,
   ).join(' · ');
   const cekirdekBonuslari = Object.values(CEKIRDEK_BONUSU).join(', ');
+  // Rütbe merdiveni de dengeden: bir kademe eklenirse cümle kendiliğinden
+  // büyür.
+  const faydaRutbeleri = (
+    B.medeniyetler as unknown as { fayda_puani: { rutbeler: { ad: string }[] } }
+  ).fayda_puani.rutbeler
+    .map((r) => r.ad)
+    .join(' → ');
   // Fayda puanı örneği de motordan: on yerlik bir garnizonun bir saatte
   // kazandığı puan. "Saatte yarım puan" demek yerine oyuncunun ekranda
   // göreceği sayıyı yazıyoruz.
@@ -183,6 +190,8 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
   // Taht iki ayrı şöhret çarpanı veriyor: tutana ve tutanın medeniyetine
   // (docs/16 §13 soru 5). İkisi de dengeden.
   const taht = B.taht_kalesi as { unvan_sohret_bonusu: number; medeniyet_sohret_bonusu: number };
+  const degisimBekleme = (B.medeniyetler as unknown as { degisim: { bekleme_gun: number } }).degisim
+    .bekleme_gun;
   const tahtUnvanBonusu = Math.round(taht.unvan_sohret_bonusu * 100);
   const tahtMedeniyetBonusu = Math.round(taht.medeniyet_sohret_bonusu * 100);
 
@@ -245,6 +254,13 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
             'Kayıt olurken en az kalabalık medeniyete yazılırsın ve kampın onun yurdunda kurulur. Seçim serbest olsaydı herkes kazanan tarafa geçerdi ve fark kendi kendini büyütürdü — tarafları kura değil sayım dengeliyor.',
         },
         {
+          // Kural ÖNCE sessizdi: mekanizma yoktu ve oyuncuya da
+          // söylenmiyordu. Söylenmeyen kural, oyuncunun kafasında
+          // "belki vardır"ı sonsuza kadar yaşatıyor (docs/16 §13 s.3).
+          vurgu: 'Taraf değiştirebilirsin — ama bedeli var',
+          metin: `Yalnız nüfusu ortalamanın ALTINDA olan bir medeniyete geçebilirsin; kazanan tarafa geçiş yok. Geçersen fayda puanın sıfırlanır ve ${degisimBekleme} gün yeniden değiştiremezsin. Toprağın ve kampın seninle gelir.`,
+        },
+        {
           vurgu: 'Toprak medeniyetin, pay senin',
           metin:
             'Bir bölgenin geliri kâğıt üstündeki sahibine değil, ORADA DURAN garnizonlara gider — bıraktıkları komuta yeri oranında. Askerini çekersen bölge medeniyetinden gitmez ama senin gelirin durur. Bölge bölünemez; bölgedeki pay bölünür.',
@@ -259,7 +275,7 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
         },
         {
           vurgu: 'Fayda puanı güç satın almaz',
-          metin: `Garnizon tutmak (${ornekGarnizonYeri} yerlik garnizon saatte ${ornekFaydaPuani} puan), fetihe katılmak (${FAYDA_FETIH}), savunmaya katılmak (${FAYDA_SAVUNMA}) ve bağış yapmak fayda puanı kazandırır. Puan unvan, arma ve sancak alır; güç almaz. Güç yalnız çekirdekten gelir ve o da herkese eşit işler.`,
+          metin: `Garnizon tutmak (${ornekGarnizonYeri} yerlik garnizon saatte ${ornekFaydaPuani} puan), fetihe katılmak (${FAYDA_FETIH}), savunmaya katılmak (${FAYDA_SAVUNMA}) ve bağış yapmak fayda puanı kazandırır. Puan HARCANMIYOR: birikiyor ve medeniyetindeki rütbene dönüşüyor (${faydaRutbeleri}). Güç yalnız çekirdekten gelir ve o da herkese eşit işler.`,
         },
       ],
     },

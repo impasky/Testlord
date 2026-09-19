@@ -159,6 +159,8 @@ export interface LordState {
   medeniyet: { id: string; ad: string; renk: string; ozet: string } | null;
   /** Kolektif eylemin kişisel karşılığı (docs/16 §9). Güç satın almaz. */
   faydaPuani: number;
+  /** Fayda puanından türeyen rütbe (docs/16 §9). */
+  faydaRutbesi: FaydaRutbeDto;
   hourlyIncome: Resources;
   upkeepPerHour: number;
   netErzakPerHour: number;
@@ -347,8 +349,25 @@ export interface MedeniyetDto {
   uyeSayisi: number;
   bolgeSayisi: number;
   faydaPuanim: number;
+  /** Puandan türeyen rütbe — puan harcanmıyor, birikiyor (docs/16 §9). */
+  rutbe: FaydaRutbeDto;
+  /** Taraf değiştirme kuralları ve şu an geçilebilecek medeniyetler. */
+  degisim: {
+    kalanGun: number;
+    faydaSifirlanir: boolean;
+    beklemeGun: number;
+    secenekler: { id: string; ad: string; renk: string; ozet: string }[];
+  };
   cekirdekler: CekirdekDto[];
   siralama: { id: string; ad: string; renk: string; bolge: number }[];
+}
+
+/** Fayda puanından türeyen rütbe (docs/16 §9). */
+export interface FaydaRutbeDto {
+  ad: string;
+  aciklama: string;
+  sonrakiEsik: number | null;
+  sonrakiAd: string | null;
 }
 
 /** Bir paktın oyuncuya görünen hâli. */
@@ -1047,6 +1066,13 @@ export const api = {
   map: () => request<MapDto>('/map'),
   region: (id: number) => request<RegionDetailDto>(`/map/${id}`),
   medeniyet: () => request<{ medeniyet: MedeniyetDto | null }>('/medeniyet'),
+  /** Taraf değiştir (docs/16 §13 soru 3). Fayda puanı sıfırlanır. */
+  medeniyetDegistir: (key: string) =>
+    post<{
+      medeniyet: { id: string; ad: string; renk: string };
+      faydaPuani: number;
+      tasinanBolge: number;
+    }>('/medeniyet/degis', { key }),
   cekirdegeBagisla: (mapId: number, kaynak: { altin: number; demir: number; erzak: number }) =>
     post<{ seviye: number; atladi: boolean; faydaPuani: number }>(
       `/medeniyet/cekirdek/${mapId}/bagis`,

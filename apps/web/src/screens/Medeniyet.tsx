@@ -47,11 +47,35 @@ export function Medeniyet({ onGit }: { onGit?: (ekran: string) => void }) {
   const qc = useQueryClient();
   const sorgu = useQuery({ queryKey: ['medeniyet'], queryFn: api.medeniyet });
   const [acik, setAcik] = useState<number | null>(null);
+  /** Taraf değiştirmede onay bekleyen medeniyet — geri dönüşü yok. */
+  const [onay, setOnay] = useState<string | null>(null);
   const [altin, setAltin] = useState('');
   const [demir, setDemir] = useState('');
   const [erzak, setErzak] = useState('');
   const [hata, setHata] = useState<string | null>(null);
   const [bilgi, setBilgi] = useState<string | null>(null);
+
+  /*
+   * TARAF DEĞİŞTİR (docs/16 §13 soru 3).
+   *
+   * Başarınca sayfanın TAMAMI tazeleniyor: medeniyet, harita rengi,
+   * lord durumu ve fayda puanı hep birden değişiyor. Yalnız medeniyet
+   * sorgusunu tazelemek, haritayı eski tarafın renginde bırakırdı.
+   */
+  const tarafDegistir = useMutation({
+    mutationFn: (key: string) => api.medeniyetDegistir(key),
+    onSuccess: (s) => {
+      hisOnay();
+      setOnay(null);
+      setHata(null);
+      setBilgi(`${s.medeniyet.ad} tarafına geçtin. ${s.tasinanBolge} bölgen seninle geldi.`);
+      void qc.invalidateQueries();
+    },
+    onError: (e: Error) => {
+      setOnay(null);
+      setHata(e.message);
+    },
+  });
 
   const bagis = useMutation({
     mutationFn: (p: { mapId: number; altin: number; demir: number; erzak: number }) =>
@@ -114,7 +138,34 @@ export function Medeniyet({ onGit }: { onGit?: (ekran: string) => void }) {
           ikon={<IkonSohret boyut={13} />}
           renk="var(--color-altin)"
         >{`${formatSayi(m.faydaPuanim)} fayda`}</Hap>
+        <Hap renk="var(--color-parsomen)">{m.rutbe.ad}</Hap>
       </DurumSiridi>
+
+      {/*
+        RÜTBE: fayda puanının karşılığı (docs/16 §9).
+
+        Puan harcanmıyor, birikiyor ve rütbeye dönüşüyor. Bir dükkân
+        açsaydık puanın karşılığı "ne aldın" olurdu; böyle "ne yaptın"
+        oluyor — ve §9'un katı kuralı ("güç satın almaz") kendiliğinden
+        korunuyor, çünkü rütbenin dokunacağı bir sayı yok.
+      */}
+      <Kart className="p-3">
+        <div className="flex items-baseline justify-between gap-2">
+          <span className="baslik text-[13px] text-altin">{m.rutbe.ad}</span>
+          <span className="tabular shrink-0 text-[11px] text-sonuk">
+            {`${formatSayi(m.faydaPuanim)} fayda puanı`}
+          </span>
+        </div>
+        <p className="mt-0.5 text-[11.5px] leading-snug text-solgun">{m.rutbe.aciklama}</p>
+        {m.rutbe.sonrakiAd && (
+          <p className="mt-1 text-[11px] text-sonuk">
+            <span className="text-parsomen">
+              {`${formatSayi(m.rutbe.sonrakiEsik! - m.faydaPuanim)} puan`}
+            </span>{' '}
+            sonra <span className="text-altin">{m.rutbe.sonrakiAd}</span> olacaksın.
+          </p>
+        )}
+      </Kart>
 
       {/*
         DÖRT TARAFIN SIRALAMASI. Oyuncu kendi medeniyetinin nerede
@@ -140,6 +191,77 @@ export function Medeniyet({ onGit }: { onGit?: (ekran: string) => void }) {
             </div>
           ))}
         </div>
+      </Bolum>
+
+      {/*
+        TARAF DEĞİŞTİRME (docs/16 §13 soru 3).
+
+        Önce mekanizma HİÇ yoktu ve oyuncuya da söylenmiyordu: sessiz bir
+        hayırdı, yani oyuncunun kafasında "belki vardır" sonsuza kadar
+        yaşıyordu. Kural artık açık ve bedeli de açık.
+
+        Seçenek listesi YALNIZ nüfusu ortalamanın altındaki medeniyetleri
+        taşıyor: kazanan tarafa geçilemiyor, yani değişim kartopunu
+        büyütemez.
+      */}
+      <Bolum baslik="Taraf değiştirmek" id="degisim">
+        <p className="mb-2 text-[12px] leading-snug text-sonuk">
+          Yalnız <span className="text-parsomen">nüfusu az</span> bir medeniyete geçebilirsin —
+          kazanan tarafa geçiş yok. Geçersen{' '}
+          <span className="text-parsomen">fayda puanın sıfırlanır</span> (puan eski tarafa verdiğin
+          hizmetin kaydı) ve {m.degisim.beklemeGun} gün boyunca yeniden değiştiremezsin. Toprağın ve
+          kampın seninle gelir.
+        </p>
+
+        {m.degisim.kalanGun > 0 ? (
+          <EngelNotu
+            kisa="Bekleme sürüyor"
+            uzun={`${m.degisim.kalanGun} gün sonra yeniden taraf değiştirebilirsin.`}
+          />
+        ) : m.degisim.secenekler.length === 0 ? (
+          <EngelNotu
+            kisa="Şu an geçilebilecek taraf yok"
+            uzun="Dört medeniyetin de nüfusu ortalamanın üstünde ya da eşit."
+          />
+        ) : (
+          <div className="space-y-1.5">
+            {m.degisim.secenekler.map((s) => (
+              <div key={s.id} className="oyuk flex items-center gap-2.5 rounded-xl p-2.5">
+                <span
+                  className="h-3 w-3 shrink-0 rounded-full border border-gece"
+                  style={{ background: s.renk }}
+                  aria-hidden
+                />
+                <span className="min-w-0 flex-1">
+                  <span className="baslik block truncate text-[12.5px] text-parsomen">{s.ad}</span>
+                  <span className="block text-[11px] leading-snug text-sonuk">{s.ozet}</span>
+                </span>
+                <Buton
+                  tur="anahat"
+                  onClick={() => setOnay(onay === s.id ? null : s.id)}
+                  disabled={tarafDegistir.isPending}
+                >
+                  {onay === s.id ? 'Vazgeç' : 'Geç'}
+                </Buton>
+              </div>
+            ))}
+            {/* Geri dönüşü olmayan karar iki dokunuş istiyor: fayda
+                puanı sıfırlanıyor ve otuz gün kilitleniyor. */}
+            {onay && (
+              <Kart className="p-3" vurgu="var(--color-kirmizi)">
+                <p className="mb-2 text-[12px] leading-snug text-parsomen">
+                  {`${m.degisim.secenekler.find((x) => x.id === onay)?.ad} tarafına geçiyorsun. ${formatSayi(m.faydaPuanim)} fayda puanın silinecek ve ${m.degisim.beklemeGun} gün boyunca geri dönemeyeceksin.`}
+                </p>
+                <Buton
+                  onClick={() => tarafDegistir.mutate(onay)}
+                  disabled={tarafDegistir.isPending}
+                >
+                  Evet, taraf değiştir
+                </Buton>
+              </Kart>
+            )}
+          </div>
+        )}
       </Bolum>
 
       <Bolum baslik="Çekirdekler" id="cekirdekler">

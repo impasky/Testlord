@@ -10,6 +10,7 @@
  * geçmişi, görünüş. Bir kapı ızgarası değil, bir karakter sayfası.
  */
 import { B, EQUIP_SLOTS, STAT_KEYS, type Kapi, type StatKey } from '@lordlar/shared';
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { ApiError, api, type LordState } from '../api/client';
 import {
@@ -152,6 +153,12 @@ export function LordEkrani({
   hedefBolum?: string | null;
   onBolumIslendi?: () => void;
 }) {
+  /*
+   * Dünya durumu: sıralamadaki yer ve lider avı. Aynı anahtar Dünya
+   * ekranında da kullanılıyor, yani önbellek sıcaksa ikinci bir istek
+   * çıkmıyor.
+   */
+  const dunya = useQuery({ queryKey: ['dunya'], queryFn: api.dunya });
   const [dagitim, setDagitim] = useState<Record<StatKey, number>>({
     guc: 0,
     dayaniklilik: 0,
@@ -276,6 +283,21 @@ export function LordEkrani({
               <span className="baslik text-altin">{lord.unvan.ad}</span>
             </div>
             <p className="mt-0.5 text-[11px] leading-snug text-solgun">{lord.unvan.aciklama}</p>
+            {/* RÜTBE: unvanın yanında ama ondan AYRI bir şey ölçüyor.
+                Unvan şöhretten (ne kadar büyüksün), rütbe fayda
+                puanından (medeniyetine ne verdin) türüyor. Yukarıdaki
+                "Kuşam" rozetinin dersi burada da geçerli: iki rütbe
+                sözcüğü yan yana duracaksa ikisinin de neyin karşılığı
+                olduğu yazmalı, yoksa oyuncu çelişki sanıyor. */}
+            {lord.medeniyet && (
+              <div className="mt-1 text-[13px]">
+                <span className="baslik text-sonuk">Rütbe</span>{' '}
+                <span className="baslik" style={{ color: lord.medeniyet.renk }}>
+                  {lord.faydaRutbesi.ad}
+                </span>{' '}
+                <span className="text-[11px] text-sonuk">{`· ${lord.medeniyet.ad}`}</span>
+              </div>
+            )}
           </div>
         </div>
       </Kart>
@@ -350,14 +372,49 @@ export function LordEkrani({
       {/* Unvanın KENDİSİ yukarıdaki lord kartında; burada yalnız
           "sıradaki ne" kalıyor. Aynı bilgiyi iki kez göstermek, sayfayı
           uzatmaktan başka bir işe yaramıyordu. */}
-      {lord.unvan.sonrakiAd && (
-        <Kart className="p-3">
-          <p className="text-[12px] text-solgun">
+      {/*
+        ŞÖHRET NE İŞE YARIYOR.
+
+        Kart eskiden yalnız "sıradaki unvan"ı söylüyordu ve oyuncunun
+        haklı sorusu cevapsız kalıyordu: "şöhretim arttı, eee?". Şöhret
+        aslında üç şey yapıyor — unvanını belirliyor, sıralamadaki yerini
+        belirliyor ve diyarın en şöhretlisiyse seni HEDEF yapıyor. Üçü de
+        oyunda vardı, üçü de burada yazmıyordu.
+      */}
+      <Kart className="p-3">
+        <p className="baslik mb-1 text-[11px] text-sonuk">ŞÖHRETİN NE YAPIYOR</p>
+        {lord.unvan.sonrakiAd ? (
+          <p className="text-[12px] leading-snug text-solgun">
             <span className="text-parsomen">{`${formatSayi(lord.unvan.sonrakiEsik! - lord.fame)} şöhret`}</span>{' '}
             sonra <span className="text-altin">{lord.unvan.sonrakiAd}</span> olacaksın.
           </p>
-        </Kart>
-      )}
+        ) : (
+          <p className="text-[12px] leading-snug text-solgun">
+            En üst unvandasın: <span className="text-altin">{lord.unvan.ad}</span>.
+          </p>
+        )}
+        {dunya.data && (
+          <p className="mt-1 text-[12px] leading-snug text-solgun">
+            Diyarda{' '}
+            <span className="text-parsomen">{`${formatSayi(dunya.data.benimSiram)}. sıradasın`}</span>
+            {dunya.data.liderAvi?.benMiyim ? (
+              <>
+                {' '}
+                — ve en şöhretli lord sensin:{' '}
+                <span className="text-kirmizi">
+                  {`sana saldıran +%${Math.round(dunya.data.liderAvi.yagmaBonusu * 100)} yağma alır`}
+                </span>
+                .
+              </>
+            ) : (
+              '.'
+            )}
+          </p>
+        )}
+        {/* Şöhret HARCANMIYOR: oyuncu bunu bilmezse biriktirmeyi bir
+            kaynak sanıp bekliyor. */}
+        <p className="mt-1 text-[11px] leading-snug text-sonuk">Şöhret harcanmaz, biriktirilir.</p>
+      </Kart>
 
       {/* Arma KOZMETİK: hiçbir sayıya dokunmuyor (docs/10 §1.1). Güç
           kartlarıyla aynı sayfada durunca oyuncu onu da bir güç seçimi

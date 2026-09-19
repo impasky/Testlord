@@ -123,6 +123,10 @@ model Lord {
   /// Fayda puanı: kolektif eylemin kişisel karşılığı (docs/16 §9).
   /// GÜÇ SATIN ALMAZ — kimlik, kolaylık ve içerik erişimi alır.
   faydaPuani  Int        @default(0)
+  /// Son medeniyet değişimi (docs/16 §13 soru 3). Null: hiç değiştirmedi.
+  /// Bekleme süresi buradan ölçülüyor; taraf değiştirmek kimlik kararı
+  /// olsun diye var, savaş öncesi taktik değil.
+  medeniyetDegisimAt DateTime?
   demir       Int        @default(0)
   erzak       Int        @default(0)
 

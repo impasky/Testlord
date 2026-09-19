@@ -12,6 +12,9 @@ import { B, WORLD_MAP } from './balance.js';
 import { calculateFame } from './progression.js';
 import {
   CEKIRDEK_AZAMI_SEVIYE,
+  DEGISIM_BEKLEME_GUN,
+  degisimDurumu,
+  faydaRutbesi,
   KARTOPU_FRENI,
   kartopuLideri,
   kartopuPayi,
@@ -495,5 +498,100 @@ describe('tahtı tutan medeniyetin şöhreti', () => {
     const beklenen =
       (1 + B.taht_kalesi.unvan_sohret_bonusu) * (1 + B.taht_kalesi.medeniyet_sohret_bonusu);
     expect(ikisi / yok).toBeCloseTo(beklenen, 3);
+  });
+});
+
+/**
+ * FAYDA RÜTBESİ (docs/16 §9).
+ *
+ * Puanın karşılığı bir dükkân değil bir RÜTBE: harcanmıyor, birikiyor.
+ * Böylece §9'un katı kuralı ("güç satın almaz") kendiliğinden korunuyor —
+ * rütbenin dokunacağı bir sayı yok.
+ */
+describe('fayda rütbesi', () => {
+  it('sıfır puanlı yeni üyenin de bir rütbesi var', () => {
+    const r = faydaRutbesi(0);
+    expect(r.ad.length).toBeGreaterThan(2);
+    // Rütbesiz görünmek "bu sistem bana kapalı" demek olurdu.
+    expect(r.sonrakiAd).toBeTruthy();
+  });
+
+  it('puan arttıkça rütbe yükseliyor ve eşikler artan sırada', () => {
+    const esikler: number[] = [];
+    let onceki = faydaRutbesi(0);
+    for (const puan of [0, 250, 1000, 3000, 8000, 50_000]) {
+      const r = faydaRutbesi(puan);
+      if (r.sonrakiEsik !== null) esikler.push(r.sonrakiEsik);
+      expect(puan >= 0).toBe(true);
+      onceki = r;
+    }
+    expect(onceki.sonrakiEsik).toBeNull(); // en üst rütbede sonraki yok
+    expect([...esikler].sort((a, b) => a - b)).toEqual(esikler);
+  });
+
+  it('sonraki eşik her zaman şu anki puanın üstünde', () => {
+    for (const puan of [0, 100, 999, 2999, 7999]) {
+      const r = faydaRutbesi(puan);
+      if (r.sonrakiEsik !== null) expect(r.sonrakiEsik).toBeGreaterThan(puan);
+    }
+  });
+});
+
+/**
+ * MEDENİYET DEĞİŞİMİ (docs/16 §13 soru 3).
+ *
+ * Buradaki asıl sınama birincisi: değişim KAZANAN tarafa geçmeye izin
+ * vermemeli. Verseydi, nüfus dengesini kuran bütün kural (§10 birinci
+ * risk) tek bir düğmeyle çürürdü.
+ */
+describe('medeniyet değişimi', () => {
+  const simdi = new Date('2026-09-19T12:00:00Z');
+  /** Biri açık ara önde, biri açık ara geride. */
+  const nufus = () => {
+    const n: Record<string, number> = {};
+    MEDENIYETLER.forEach((m, i) => (n[m.id] = [400, 100, 90, 80][i] ?? 0));
+    return n;
+  };
+
+  it('KALABALIK medeniyete geçilemiyor', () => {
+    const kalabalik = MEDENIYETLER[0]!.id;
+    const d = degisimDurumu(MEDENIYETLER[3]!.id, kalabalik, nufus(), null, simdi);
+    expect(d.olur).toBe(false);
+    expect(d.sebep).toContain('kalabalık');
+    expect(d.secenekler).not.toContain(kalabalik);
+  });
+
+  it('nüfusu ortalamanın altındaki medeniyete geçilebiliyor', () => {
+    const d = degisimDurumu(MEDENIYETLER[0]!.id, MEDENIYETLER[3]!.id, nufus(), null, simdi);
+    expect(d.olur).toBe(true);
+    expect(d.sebep).toBeNull();
+  });
+
+  it('kendi medeniyetin seçeneklerde görünmüyor', () => {
+    const benim = MEDENIYETLER[3]!.id;
+    const d = degisimDurumu(benim, null, nufus(), null, simdi);
+    expect(d.secenekler).not.toContain(benim);
+  });
+
+  it('bekleme süresi dolmadan geçilemiyor ve kaç gün kaldığı söyleniyor', () => {
+    const dun = new Date(simdi.getTime() - 86_400_000);
+    const d = degisimDurumu(MEDENIYETLER[0]!.id, MEDENIYETLER[3]!.id, nufus(), dun, simdi);
+    expect(d.olur).toBe(false);
+    expect(d.kalanGun).toBe(DEGISIM_BEKLEME_GUN - 1);
+    expect(d.sebep).toContain(String(DEGISIM_BEKLEME_GUN - 1));
+  });
+
+  it('bekleme dolunca yeniden açılıyor', () => {
+    const eski = new Date(simdi.getTime() - (DEGISIM_BEKLEME_GUN + 1) * 86_400_000);
+    const d = degisimDurumu(MEDENIYETLER[0]!.id, MEDENIYETLER[3]!.id, nufus(), eski, simdi);
+    expect(d.kalanGun).toBe(0);
+    expect(d.olur).toBe(true);
+  });
+
+  it('hiç medeniyeti olmayan lord da geçebiliyor', () => {
+    // Sistemden önce açılmış hesaplar: kapıyı onlara kapatmak, düzeltmesi
+    // olmayan bir hâlde bırakmak olurdu.
+    const d = degisimDurumu(null, MEDENIYETLER[3]!.id, nufus(), null, simdi);
+    expect(d.olur).toBe(true);
   });
 });

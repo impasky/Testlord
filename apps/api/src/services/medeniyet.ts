@@ -19,7 +19,9 @@ import {
   cekirdekMaliyeti,
   medeniyetBonusu,
   yurtBolgeleri,
+  DEGISIMDE_FAYDA_SIFIRLANIR,
   KARTOPU_FRENI,
+  degisimDurumu,
   kartopuLideri,
   kartopuPayi,
   type CekirdekBonus,
@@ -27,6 +29,7 @@ import {
   type MedeniyetId,
 } from '@lordlar/shared';
 import { prisma, type Tx } from '../db.js';
+import { GameError } from '../errors.js';
 import { AKTIF_GUN } from './world.js';
 
 /**
@@ -322,6 +325,125 @@ export async function kartopuDurumu(
     pay: kartopuPayi(sayilar) ?? 0,
     yagmaBonusu: KARTOPU_FRENI.yagmaBonusu,
   };
+}
+
+/**
+ * Diyardaki medeniyet NÜFUSLARI — anahtara göre.
+ *
+ * Hem atama hem değişim aynı sayıyı okumak zorunda: kayıt en az
+ * kalabalığa yazıyor, değişim de yalnız ortalamanın altındakine izin
+ * veriyor. İkisi ayrı sayardı ve biri diğerinden habersiz değişirdi.
+ */
+export async function medeniyetNufuslari(
+  worldId: string,
+  client: Tx = prisma,
+): Promise<{ nufus: Record<MedeniyetId, number>; satirlar: { id: string; key: string }[] }> {
+  const satirlar = await client.medeniyet.findMany({
+    where: { worldId },
+    select: { id: true, key: true },
+  });
+  const sayim = await client.lord.groupBy({
+    by: ['medeniyetId'],
+    where: { worldId, medeniyetId: { not: null } },
+    _count: { _all: true },
+  });
+  const satirBasina = new Map(sayim.map((x) => [x.medeniyetId!, x._count._all]));
+  const nufus: Record<MedeniyetId, number> = {};
+  for (const m of MEDENIYETLER) {
+    const satir = satirlar.find((x) => x.key === m.id);
+    nufus[m.id] = satir ? (satirBasina.get(satir.id) ?? 0) : 0;
+  }
+  return { nufus, satirlar };
+}
+
+/**
+ * MEDENİYET DEĞİŞTİR (docs/16 §13 soru 3).
+ *
+ * Kararı saf katman veriyor (`degisimDurumu`); burası yalnız yazıyor.
+ * Dört şey aynı işlemde oluyor ve dördü de bilerek:
+ *
+ *  1. Lordun medeniyeti değişiyor, damga atılıyor (bekleme buradan).
+ *  2. FAYDA PUANI SIFIRLANIYOR — puan eski tarafa verilen hizmetin
+ *     kaydı; taşınsaydı hiç katkı vermemiş biri üstüne rütbe giyerek
+ *     gelirdi.
+ *  3. TUTTUĞU TOPRAKLAR da yeni medeniyete yazılıyor. Yazılmasaydı lord
+ *     kendi bölgesinden pay alamaz (`payAlabilir` bölgenin medeniyetine
+ *     bakıyor) ve kendi toprağına saldıramazdı: düzeltmesi olmayan bir
+ *     hâl. Kartopu riski yok, çünkü yalnız NÜFUSU AZ tarafa geçilebiliyor
+ *     — toprak da büyükten küçüğe akıyor.
+ *  4. KAMP yeni yurda taşınıyor: §8 "başkent kendi medeniyetinin
+ *     yurdunda" diyor ve kamp çıpası mesafe hesabının başlangıcı.
+ *
+ * Yürüyüşü havadayken değiştirmek yasak: kamp taşınınca mesafeler
+ * değişiyor ve yoldaki ordunun dönüşü anlamsızlaşırdı.
+ */
+export async function medeniyetDegistir(
+  lordId: string,
+  hedefKey: MedeniyetId,
+): Promise<{ medeniyet: MedeniyetBilgisi; faydaPuani: number; tasinanBolge: number }> {
+  return prisma.$transaction(async (tx) => {
+    const lord = await tx.lord.findUniqueOrThrow({
+      where: { id: lordId },
+      select: {
+        worldId: true,
+        medeniyetId: true,
+        medeniyetDegisimAt: true,
+        faydaPuani: true,
+      },
+    });
+
+    const yoldaki = await tx.march.count({ where: { lordId, resolved: false } });
+    if (yoldaki > 0) {
+      throw new GameError(
+        'Yoldaki ordun varken taraf değiştiremezsin. Önce dönmesini bekle.',
+        400,
+        'ORDU_YOLDA',
+      );
+    }
+
+    const { nufus, satirlar } = await medeniyetNufuslari(lord.worldId, tx);
+    const simdikiKey = satirlar.find((x) => x.id === lord.medeniyetId)?.key ?? null;
+    const durum = degisimDurumu(simdikiKey, hedefKey, nufus, lord.medeniyetDegisimAt, new Date());
+    if (!durum.olur) {
+      throw new GameError(durum.sebep ?? 'Şimdi taraf değiştiremezsin.', 400, 'DEGISIM_OLMAZ');
+    }
+
+    const hedefSatir = satirlar.find((x) => x.key === hedefKey);
+    if (!hedefSatir) throw new GameError('Medeniyet bulunamadı.', 400, 'MEDENIYET_YOK');
+
+    // Toprak da taşınıyor (yukarıdaki 3. madde).
+    const tasinan = await tx.region.updateMany({
+      where: { worldId: lord.worldId, ownerLordId: lordId },
+      data: { ownerMedeniyetId: hedefSatir.id },
+    });
+
+    // Kamp yeni yurda (4. madde): kayıttaki çıpa seçimiyle aynı ölçüt —
+    // yurdun en az kalabalık köyü.
+    const yurt = yurtBolgeleri(hedefKey);
+    const koyler = await tx.region.findMany({
+      where: { worldId: lord.worldId, type: 'koy', mapId: { in: yurt } },
+      select: { mapId: true },
+      orderBy: { mapId: 'asc' },
+    });
+    const yeniKamp = koyler[0]?.mapId;
+
+    await tx.lord.update({
+      where: { id: lordId },
+      data: {
+        medeniyetId: hedefSatir.id,
+        medeniyetDegisimAt: new Date(),
+        ...(DEGISIMDE_FAYDA_SIFIRLANIR ? { faydaPuani: 0 } : {}),
+        ...(yeniKamp !== undefined ? { homeBolgeId: yeniKamp } : {}),
+      },
+    });
+
+    const m = MEDENIYETLER.find((x) => x.id === hedefKey)!;
+    return {
+      medeniyet: { id: m.id, ad: m.ad, renk: m.renk },
+      faydaPuani: DEGISIMDE_FAYDA_SIFIRLANIR ? 0 : lord.faydaPuani,
+      tasinanBolge: tasinan.count,
+    };
+  });
 }
 
 /**

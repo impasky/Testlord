@@ -806,3 +806,64 @@ Oyuncu haritanın en büyük ödülünü olduğu gibi görüyor.
 Soru 3 (medeniyet değiştirilebilir mi) hâlâ açık ve bugünkü cevap
 "hayır" — ama **sessiz** bir hayır: mekanizma yok, oyuncuya da hiçbir
 yerde söylenmiyor. Bilinçli bir karara bağlanması gerekiyor.
+
+---
+
+## 23. KARAR: medeniyet değiştirme (§13 soru 3) ve fayda puanının karşılığı
+
+`2026-09-19` — oyunun SSS'i yazılırken üç boşluk çıktı ve üçü de aynı
+cinstendi: mekanik vardı ama oyuncuya söylenmiyordu, ya da sayı vardı ama
+karşılığı yoktu.
+
+### Taraf değiştirme: sessiz hayır yerine açık kural
+
+§13 soru 3'ün cevabı "hayır"dı ama **sessiz** bir hayırdı: mekanizma
+yoktu, oyuncuya da hiçbir yerde söylenmiyordu. Söylenmeyen kural,
+oyuncunun kafasında "belki vardır"ı sonsuza kadar yaşatır.
+
+Karar: **değiştirilebilir, üç kapıdan geçerek.**
+
+| Kapı                        | Neden                                                                    |
+| --------------------------- | ------------------------------------------------------------------------ |
+| Yalnız **nüfusu az** tarafa | Kazanan tarafa geçiş imkânsız — değişim kartopunu büyütemez, dengeler    |
+| **30 gün** bekleme          | Taraf değiştirmek kimlik kararı, taktik değil                            |
+| **Fayda puanı sıfırlanır**  | Puan eski tarafa verilen hizmetin kaydı; taşınsaydı rütbe bedavaya gelir |
+
+Birinci kapı en önemlisi ve kayıttaki kuralın **aynısı**
+(`acikMedeniyetler`): serbest seçimi engelleyen mantık, serbest geçişi de
+engelliyor. İkinci bir kural yazmadık — aynı işlevi iki yerden çağırdık.
+
+**Toprak ve kamp lordla birlikte taşınıyor.** Taşınmasaydı lord kendi
+bölgesinden pay alamaz (`payAlabilir` bölgenin medeniyetine bakıyor) ve
+kendi toprağına saldıramazdı: düzeltmesi olmayan bir hâl. Toprağın büyük
+taraftan küçüğe akması da kartopuna karşı çalışıyor.
+
+**Yoldaki ordu varken değişim yok:** kamp taşınınca mesafeler değişiyor
+ve yoldaki ordunun dönüşü anlamsızlaşırdı.
+
+### Fayda puanı: dükkân değil RÜTBE
+
+Puan birikiyordu ama hiçbir şey yapmıyordu — biriken ve işe yaramayan bir
+sayı, zamanla oyuncunun güvenini yiyor.
+
+Bir dükkân açmadık. Puan **harcanmıyor**, birikiyor ve rütbeye dönüşüyor:
+Yeminli → Nöbetçi → Sancaktar → Ocak Ustası → Medeniyetin Kılıcı. Böylece
+§9'un katı kuralı ("fayda puanı güç satın almaz") kendiliğinden
+korunuyor, çünkü **rütbenin dokunacağı bir sayı yok.** Karşılık "ne
+aldın" değil "ne yaptın".
+
+Yapı bilerek `unvan()`ın aynısı: şöhret nasıl unvana dönüşüyorsa fayda
+puanı da rütbeye dönüşüyor. İkinci bir sayaç, ikinci bir tablo yok.
+
+Arma bu listede YOK ve olmamalı: `arma.json` "kimlik satılmaz, arma
+bedavadır" diye yazıyor. Rütbe kazanılıyor, arma herkesin.
+
+### Şöhret: ne işe yaradığı artık yazıyor
+
+Şöhret üç şey yapıyordu — unvanı belirliyor, sıralamadaki yeri
+belirliyor, diyarın en şöhretlisini **hedef** yapıyor (lider avı) — ve
+Lord ekranı bunlardan yalnız birincisini söylüyordu. Oyuncunun haklı
+sorusu ("şöhretim arttı, eee?") cevapsızdı.
+
+Kart artık üçünü de söylüyor, "şöhret harcanmaz, biriktirilir" satırı
+dahil. Yeni mekanik eklemedik: var olanı görünür yaptık.
