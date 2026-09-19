@@ -48,10 +48,12 @@ import {
   type Resources,
   type UnitType,
   medeniyet as medeniyetTanimi,
+  type MedeniyetBonusu,
 } from '@lordlar/shared';
 import type { Prisma } from '@prisma/client';
 import { prisma, type Tx } from '../db.js';
 import { garnizonPayGirdileri } from './gelir.js';
+import { lordunMedeniyetBonusu } from './medeniyet.js';
 import { B } from '@lordlar/shared';
 
 import { bildirimGonder } from './push.js';
@@ -94,6 +96,8 @@ export interface LordState {
   medeniyet: { id: string; ad: string; renk: string; ozet: string } | null;
   /** Kolektif eylemin kişisel karşılığı (docs/16 §9). Güç satın almaz. */
   faydaPuani: number;
+  /** Çekirdek yatırımlarının kattığı oranlar (docs/16 §7). */
+  medeniyetBonusu: MedeniyetBonusu;
   storageCapacity: number;
   /** Bina seviyeleri: arayüz kapasiteleri sunucuyla aynı yerden hesaplasın. */
   binalar: Record<string, number>;
@@ -291,6 +295,7 @@ export function calcHourlyIncome(
   paylar: { type: string; level: number; incomeMult: number; province: string; oran: number }[],
   bonus: GeneralBonus,
   arastirma?: ArastirmaBonusu,
+  medeniyet?: MedeniyetBonusu,
 ): { income: Resources; famePerHour: number } {
   const income = malikaneIncome(level, arastirma);
   let famePerHour = 0;
@@ -300,7 +305,7 @@ export function calcHourlyIncome(
   const vilayet = vilayetSayilari(paylar);
   for (const r of paylar) {
     const birlik = vilayetCarpani(vilayet[r.province] ?? 1);
-    const ri = regionIncome(r.type, r.level, r.incomeMult * birlik, bonus, arastirma);
+    const ri = regionIncome(r.type, r.level, r.incomeMult * birlik, bonus, arastirma, medeniyet);
     income.altin += ri.altin * r.oran;
     income.demir += ri.demir * r.oran;
     income.erzak += ri.erzak * r.oran;
@@ -351,11 +356,20 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
   const generals = equippedGenerals(lord.generals, now);
   const bonus = generals.length > 0 ? aggregateGeneralBonus(generals) : bosGeneralBonus();
 
+  /*
+   * MEDENİYET BONUSU bir kez okunuyor ve üç yere gidiyor: bölge geliri
+   * (ocak), depo tavanı (ambar) ve arayüze gösterilmek üzere durumun
+   * kendisi. Çağrı başına ayrı ayrı okumak, `tickLord` her `/me`
+   * isteğinde koştuğu için üç sorgu demekti.
+   */
+  const medBonus = await lordunMedeniyetBonusu(lordId, client);
+
   const { income, famePerHour } = calcHourlyIncome(
     lord.level,
     await garnizonPayGirdileri(lordId, client),
     bonus,
     arastirmaBonusuOku(lord),
+    medBonus,
   );
 
   // Bakım: tüm birimler. Meryem yürüyüştekini, Sarya garnizondakini muaf tutar.
@@ -477,8 +491,19 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
       const m = key ? medeniyetTanimi(key) : undefined;
       return m ? { id: m.id, ad: m.ad, renk: m.renk, ozet: m.ozet } : null;
     })(),
+    /*
+     * Bonus oranları arayüze de gidiyor: Malikâne bölge gelirini kendi
+     * hesaplıyor ve `ocak` bonusunu saymazsa oyuncuya ALDIĞINDAN AZINI
+     * yazar — bu projenin defalarca düzelttiği hata.
+     */
+    medeniyetBonusu: medBonus,
     faydaPuani: lord.faydaPuani,
-    storageCapacity: storageCapacity(lord.level, arastirmaBonusuOku(lord), binalariOku(lord)),
+    storageCapacity: storageCapacity(
+      lord.level,
+      arastirmaBonusuOku(lord),
+      binalariOku(lord),
+      medBonus,
+    ),
     /*
      * Bina seviyeleri arayüze de gidiyor.
      *

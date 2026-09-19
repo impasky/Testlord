@@ -16,6 +16,8 @@ import {
   battleXp,
   bosGeneralBonus,
   captureXp,
+  FAYDA_FETIH,
+  FAYDA_SAVUNMA,
   createRng,
   generalDef,
   generalKatkilari,
@@ -57,6 +59,7 @@ import {
 } from './lord.js';
 import { addUnitsHome, addUnitsRegion, hastaneyeYatir } from './queue.js';
 import { garnizonPayGirdileri } from './gelir.js';
+import { medeniyetBonuslari, surOrani } from './medeniyet.js';
 import { bolgeTahkimati, transferRegion } from './region.js';
 
 function toArmy(value: unknown): Army {
@@ -577,7 +580,11 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
             select: { binalar: true, baskentBolgeId: true },
           })
         : null;
-      const fortress = bolgeTahkimati(region, savunanSahip);
+      const fortress = bolgeTahkimati(
+        region,
+        savunanSahip,
+        surOrani(await medeniyetBonuslari(region.worldId, tx), region.ownerMedeniyetId),
+      );
       const generalKeys = (march.generalIds as string[]) ?? [];
 
       const { side: attacker, generaller: saldiranGeneraller } = await buildSide(
@@ -757,6 +764,27 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
           `${seed}-npc`,
           tx,
         );
+      }
+
+      /*
+       * FAYDA PUANI (docs/16 §9): kolektif eylemin kişisel karşılığı.
+       *
+       * Fetihe katılan kazanıyor, saldırıyı püskürten de. Puan GÜÇ SATIN
+       * ALMIYOR — kimlik, kolaylık ve içerik erişimi alıyor. Kural katı
+       * çünkü puanla güç satılsaydı çok oynayan daha güçlü olur, daha
+       * çok puan kazanır ve kartopu bireysel ölçekte freni olmadan geri
+       * dönerdi.
+       */
+      if (result.captured) {
+        await tx.lord.update({
+          where: { id: march.lordId },
+          data: { faydaPuani: { increment: FAYDA_FETIH } },
+        });
+      } else if (defenderLordId && !attackerWon) {
+        await tx.lord.update({
+          where: { id: defenderLordId },
+          data: { faydaPuani: { increment: FAYDA_SAVUNMA } },
+        });
       }
 
       if (result.captured) {

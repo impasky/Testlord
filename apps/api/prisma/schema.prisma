@@ -928,6 +928,15 @@ model CekirdekYatirim {
   mapId       Int
   seviye      Int    @default(0)
 
+  /// Bir sonraki seviye için BİRİKEN bağış.
+  ///
+  /// Seviye atlayınca maliyeti kadarı düşülüyor, artanı duruyor: bağış
+  /// hiçbir koşulda yanmıyor. Yanan bağış, ortak bir kasaya para atmayı
+  /// kumara çevirirdi — "bir saniye geç kaldım, param gitti".
+  birikenAltin Int @default(0)
+  birikenDemir Int @default(0)
+  birikenErzak Int @default(0)
+
   medeniyet Medeniyet @relation(fields: [medeniyetId], references: [id], onDelete: Cascade)
 
   @@unique([medeniyetId, mapId])

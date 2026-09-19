@@ -14,6 +14,7 @@ import {
   varsayilanDizilim,
   type Army,
   type Dizilim,
+  type Kapi,
   type SavasDuzeni,
   type UnitType,
 } from '@lordlar/shared';
@@ -560,6 +561,7 @@ export function Harita({
   onBaslangicIslendi,
   onGuncelle,
   onGit,
+  onKapiAc,
 }: {
   lord: LordState;
   queues: QueueItem[];
@@ -569,6 +571,8 @@ export function Harita({
   onGuncelle: () => void;
   /** Boş hâllerden çıkış yolu — hiçbir ekran çıkmaz sokak olmamalı. */
   onGit: (s: Sekme) => void;
+  /** Medeniyet panelini açar (docs/16) — kapı ana ızgarada değil, burada. */
+  onKapiAc: (k: Kapi) => void;
 }) {
   const lordId = lord.id;
   const qc = useQueryClient();
@@ -841,6 +845,36 @@ export function Harita({
             <DunyaBasligi dunya={dunya.data} />
           </div>
         )}
+        {/*
+          MEDENİYET ŞERİDİ (docs/16 §12.5).
+          Oyuncunun tarafına açılan kapı burada, ana ızgarada değil:
+          kapı sayısının tavanı dokuz ve medeniyetin anlamı zaten bu
+          ekranda — haritanın rengi onun rengi. Şerit hem panele
+          götürüyor hem de rengi bir kez adıyla açıklıyor; renk tek
+          başına hangi tarafın hangisi olduğunu söylemiyor.
+        */}
+        {lord.medeniyet && (
+          <button
+            type="button"
+            className="bas mb-2 flex w-full items-center gap-2 rounded-xl border border-kenar bg-yuzey px-3 py-2 text-left"
+            onClick={() => onKapiAc('medeniyet')}
+            data-rehber="medeniyet-serit"
+          >
+            <span
+              className="h-3.5 w-3.5 shrink-0 rounded-full border border-gece"
+              style={{ background: lord.medeniyet.renk }}
+              aria-hidden
+            />
+            <span className="min-w-0 flex-1 truncate text-[12px]">
+              <span className="baslik text-parsomen">{lord.medeniyet.ad}</span>
+              <span className="text-solgun"> — medeniyetin</span>
+            </span>
+            <span className="shrink-0 text-[11px] text-altin">
+              {`${formatSayi(lord.faydaPuani)} fayda ›`}
+            </span>
+          </button>
+        )}
+
         <Kart className="p-2">
           {harita.data.ittifakHedefi && (
             <button

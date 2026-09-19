@@ -402,19 +402,22 @@ describe('arayüz mimarisi — ana sayfa ve kapılar', () => {
    * Tavan dokuz: üçe üçlük ızgara hâlâ TEK BAKIŞTA taranıyor, kuralın
    * asıl amacı o. Dokuzdan sonrası duvar olur.
    *
-   * Sayılan küme OYUNCU_KAPILARI, KAPILAR değil: yönetici kapısı
-   * (şikâyet kuyruğu) hiçbir ızgarada çizilmiyor ve duvara taş
-   * koymuyor. Kuralı "görünen kapı" üzerinden okumak, kuralın amacını
-   * koruyor; sayıyı büyütmek korumazdı.
+   * Sayılan küme OYUNCU_KAPILARI, KAPILAR değil: ızgarada çizilmeyen
+   * kapı duvara taş koymuyor. İkisi dışarıda — şikâyet kuyruğu (Hesap
+   * ekranından, yalnız yöneticiye) ve medeniyet paneli (Dünya
+   * ekranından). Kuralı "görünen kapı" üzerinden okumak amacını
+   * koruyor; medeniyet geldiğinde sayıyı ona büyütmek korumazdı.
    */
   it('kapı sayısı taranabilir sınırda', () => {
     expect(OYUNCU_KAPILARI.length).toBeLessThanOrEqual(9);
   });
 
-  /** Yönetici kapısı oyuncunun gördüğü kümede OLMAMALI. */
-  it('şikâyet kuyruğu oyuncu kapısı değil', () => {
-    expect(OYUNCU_KAPILARI).not.toContain('moderasyon' as never);
-    expect(KAPILAR).toContain('moderasyon');
+  /** Izgarada çizilmeyen kapılar oyuncunun gördüğü kümede OLMAMALI. */
+  it('şikâyet kuyruğu ve medeniyet ana ızgarada değil', () => {
+    for (const k of ['moderasyon', 'medeniyet'] as const) {
+      expect(OYUNCU_KAPILARI).not.toContain(k as never);
+      expect(KAPILAR).toContain(k);
+    }
   });
 });
 

@@ -495,3 +495,53 @@ bilerek duruyor. Başkent (`docs/12` §2.3), bölge tavanı (`maxRegions`),
 yaşıyor: **toprak medeniyetin, kayıt lordun.** Sütunun kalkması arayüz
 adımıyla (§12.5) birlikte, o ekranlar medeniyet üzerinden yeniden
 kurulduğunda anlamlı olur.
+
+---
+
+## 18. Uygulama notu: çekirdek yatırımı ve arayüz (§12 adım 5)
+
+`2026-09-19` — dört bonus artık gerçekten işliyor:
+
+| Çekirdek | Ne yapıyor         | Nerede uygulanıyor         |
+| -------- | ------------------ | -------------------------- |
+| Ambar    | Depo tavanı        | `storageCapacity`          |
+| Talimgâh | Eğitim hızı        | `egitimSuresiSn`           |
+| Sur      | Garnizon savunması | `bolgeTahkimati` (6 çağrı) |
+| Ocak     | Bölge geliri       | `regionIncome`             |
+
+Her seviye +%5, azami 10 seviye → tam geliştirilmiş çekirdek +%50.
+Sayılar `balance.json` → `medeniyetler.cekirdek_yatirim.seviye_basina`.
+
+Sur oranı `medeniyetBonuslari(worldId)` ile TEK yerden okunuyor. Altı
+çağrı noktası var (harita listesi, bölge kartı, savaş önizlemesi, akın
+çözümü, savaşın kendisi, NPC değerlendirmesi) ve her biri kendi
+sorgusunu atsaydı er ya da geç biri unutulur, **önizleme ile savaş ayrı
+sayı gösterirdi** — bu projenin en çok tekrarlayan hatası.
+
+### Bağış: kasa biriktiriyor, hiçbir şey yanmıyor
+
+Seviye atlaması ayrı bir "yükselt" düğmesinde değil, bağışın kendisinde:
+ortak bir kasada "son vuruşu kim yapacak" yarışı yaratmak bağışı kumara
+çevirirdi. Artan bağış kasada duruyor.
+
+Maliyet üye sayısıyla ölçeklendiği için **tek kişi tek hamlede çekirdek
+büyütemiyor** ve büyütmemeli: on üyeli bir medeniyette ilk seviye 40.000
+altın, bir lordun depo tavanı ise o mertebede değil. Kasadaki birikim
+tam olarak bunun için var.
+
+### Medeniyet paneli Dünya ekranında
+
+Ana sayfa kapılarının tavanı dokuz ve bu bir sayı değil bir kural: ızgara
+tek bakışta taranabilmeli. Medeniyet paneli onuncu taş olmak yerine
+Dünya ekranından açılıyor — zaten anlamı orada, haritanın rengi onun
+rengi.
+
+Harita halkası artık üç şeyi sırayla söylüyor: senin bölgen (altın), bir
+lordun (kırmızı), hangi medeniyetin (o medeniyetin rengi). Çekirdek ayrı
+bir işaret taşıyor — renk körü için renkten bağımsız.
+
+### Okunurluk denetiminin yakaladığı
+
+Çekirdek işaretini önce 9 piksellik bir glifle yapmıştım; denetim yirmi
+metni birden yakaladı (11px tabanı). Kural haklıydı — rozetin işi
+okunmak değil "farklı" demek. Glif yerine çizilmiş bir eşkenar dörtgen.

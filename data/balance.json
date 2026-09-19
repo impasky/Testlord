@@ -898,7 +898,14 @@
       "seviye_carpani": 2.0,
       "azami_seviye": 10,
       "_formul": "seviye_maliyeti = taban * seviye_carpani^(N-1) * aktif_uye  (docs/16 §7)",
-      "_neden_uye_ile": "Sabit maliyet olsaydi kalabalik medeniyet cekirdegi hizli buyutur, daha cok kazanir, daha cok oyuncu ceker: kartopu fraksiyon olceginde. Uyeyle olceklenen maliyet buyuk medeniyeti daha hizli degil sadece daha kalabalik yapiyor."
+      "_neden_uye_ile": "Sabit maliyet olsaydi kalabalik medeniyet cekirdegi hizli buyutur, daha cok kazanir, daha cok oyuncu ceker: kartopu fraksiyon olceginde. Uyeyle olceklenen maliyet buyuk medeniyeti daha hizli degil sadece daha kalabalik yapiyor.",
+      "_bonus_notu": "Her seviye bonusu SEVIYE_BASINA kadar artiriyor; azami seviye 10, yani tam gelistirilmis bir cekirdek +%50. Bonus o medeniyetteki HERKESE isliyor (docs/16 §7) ve yatirim yapmayan da yararlaniyor: bedavaciligi fayda puani cozuyor, bonusu kisitlayarak degil.",
+      "seviye_basina": {
+        "ambar": 0.05,
+        "talimgah": 0.05,
+        "sur": 0.05,
+        "ocak": 0.05
+      }
     },
     "garnizon_payi": {
       "_formul": "pay_i = bolge_geliri * (yer_i / toplam_yer)  (docs/16 §6)",

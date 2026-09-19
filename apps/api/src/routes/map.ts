@@ -29,7 +29,7 @@ import { prisma, type Tx } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { gecikmisleriKapat } from '../services/gecikmis.js';
 import { garnizonPayGirdileri } from '../services/gelir.js';
-import { medeniyetBilgileri } from '../services/medeniyet.js';
+import { medeniyetBilgileri, medeniyetBonuslari, surOrani } from '../services/medeniyet.js';
 import { arastirmaBonusuOku, binalariOku, findLordByUser, pushEvent } from '../services/lord.js';
 import { dunyaGrafigi, mesafeOlcer, mesafeOlcerHazir } from '../services/mesafe.js';
 import { paktVarMi, paktliIttifaklar } from '../services/pakt.js';
@@ -358,6 +358,9 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
      * tahmininden değil.
      */
     const medeniyetler = await medeniyetBilgileri(me.worldId);
+    // Sur oranı: önizleme ile savaşın aynı sayıyı görmesi için TEK
+    // kaynaktan (bkz. `medeniyetBonuslari` yorumu).
+    const surlar = await medeniyetBonuslari(me.worldId);
     const medeniyetBilgisi = (id: string | null) => (id ? (medeniyetler.get(id) ?? null) : null);
 
     const paylar = new Map(
@@ -414,7 +417,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
         // Pakt: saldırılamaz ama müttefik de değil. Haritada ayrı bir
         // işaret alıyor, yoksa oyuncu saldırıya kalkışıp reddediliyor.
         paktli: r.owner ? paktlilar.has(sahipIttifaki.get(r.owner.id) ?? '') : false,
-        fortressBonus: bolgeTahkimati(r, r.owner),
+        fortressBonus: bolgeTahkimati(r, r.owner, surOrani(surlar, r.ownerMedeniyetId)),
       })),
     };
   });
@@ -551,6 +554,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
     void gozDikildi(lordId, region, benim, muttefik);
 
     const bolgeMedeniyetleri = await medeniyetBilgileri(region.worldId);
+    const bolgeSurlari = await medeniyetBonuslari(region.worldId);
     const medeniyetBilgisi = (id: string | null) =>
       id ? (bolgeMedeniyetleri.get(id) ?? null) : null;
 
@@ -611,7 +615,11 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
         kesifMaliyetiAltin() * (1 - (await lordunAyricaligi(lordId)).kesifIndirimi),
       ),
       kesifSuresiSn: kesifSuresiSn(olc(region.mapId)),
-      fortressBonus: bolgeTahkimati(region, region.owner),
+      fortressBonus: bolgeTahkimati(
+        region,
+        region.owner,
+        surOrani(bolgeSurlari, region.ownerMedeniyetId),
+      ),
       upgradeCost:
         region.level < B.bolgeler.max_bolge_seviyesi ? regionUpgradeCost(region.level) : null,
       store: benim
@@ -968,7 +976,11 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
     // kareyi oynatınca kazanma ihtimalinin değişmesi, dizilimin işe
     // yaradığını gösteren tek şey.
     const attacker = await lordSide(lordId, army, body.generalIds, prisma, body.duzen ?? undefined);
-    const fortress = bolgeTahkimati(region, region.owner);
+    const fortress = bolgeTahkimati(
+      region,
+      region.owner,
+      surOrani(await medeniyetBonuslari(region.worldId), region.ownerMedeniyetId),
+    );
 
     const yuruyusSayisi = await prisma.march.count({ where: { lordId } });
     const dist = (await mesafeOlcer(lordId))(region.mapId);

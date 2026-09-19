@@ -66,6 +66,7 @@ const ParolaSifirla = lazy(() =>
 );
 const Siralama = lazy(() => import('./screens/Siralama').then((m) => ({ default: m.Siralama })));
 const Ittifak = lazy(() => import('./screens/Ittifak').then((m) => ({ default: m.Ittifak })));
+const Medeniyet = lazy(() => import('./screens/Medeniyet').then((m) => ({ default: m.Medeniyet })));
 
 function hashJetonu(): string | null {
   const h = window.location.hash;
@@ -480,6 +481,7 @@ export function App() {
             onBaslangicIslendi={() => setHedefBolge(null)}
             onGuncelle={tazele}
             onGit={setSekme}
+            onKapiAc={kapiAc}
           />
         )}
         {sekme === 'akin' && <Akin lord={lord} onGuncelle={tazele} />}
@@ -551,6 +553,7 @@ export function App() {
             )}
             {kapi === 'arastirma' && <Arastirma depoTavani={lord.storageCapacity} />}
             {kapi === 'ittifak' && <Ittifak lordId={lord.id} />}
+            {kapi === 'medeniyet' && <Medeniyet onGit={(e) => setSekme(e as typeof sekme)} />}
             {kapi === 'generaller' && <Generaller onGuncelle={tazele} />}
             {kapi === 'demirhane' && (
               <Demirhane

@@ -55,10 +55,18 @@ export function regionFortressBonus(type: string, level: number): number {
 export function bolgeTahkimati(
   region: { type: string; level: number; mapId: number },
   sahip: { binalar?: unknown; baskentBolgeId?: number | null } | null | undefined,
+  /**
+   * Bölgeyi tutan medeniyetin SUR çekirdeği oranı (docs/16 §7).
+   *
+   * Oran tahkimatın TAMAMINI büyütüyor — taban + başkent suru. Surun
+   * anlamı "bu toprağı savunmak daha zor" ve medeniyetin sur yatırımı
+   * tam olarak bunu yapıyor.
+   */
+  surOrani = 0,
 ): number {
   const taban = fortressBonus(region.type, region.level);
-  if (!sahip || sahip.baskentBolgeId !== region.mapId) return taban;
-  return taban + tahkimatEki(binalariOku(sahip));
+  const bina = sahip && sahip.baskentBolgeId === region.mapId ? tahkimatEki(binalariOku(sahip)) : 0;
+  return (taban + bina) * (1 + surOrani);
 }
 
 /**

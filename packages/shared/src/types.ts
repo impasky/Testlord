@@ -205,6 +205,8 @@ export const EKRANLAR = [
   'arastirma',
   'hesap',
   'moderasyon',
+  /** Medeniyet paneli (docs/16) — Dünya ekranından açılıyor. */
+  'medeniyet',
 ] as const;
 
 export type Ekran = (typeof EKRANLAR)[number];
@@ -282,6 +284,17 @@ export const KAPILAR = [
    * oldukları ekrandan açılıyor.
    */
   'moderasyon',
+  /**
+   * Medeniyet paneli (docs/16). `moderasyon` gibi ana sayfa ızgarasında
+   * ÇİZİLMİYOR: kapı sayısının tavanı dokuz ve o tavan bir sayı değil
+   * bir kural — "ana sayfa tek bakışta taranabilsin".
+   *
+   * Yeri Dünya ekranı, çünkü medeniyetin anlamı orada: haritanın rengi,
+   * tuttuğun toprak ve çekirdekler. Ana sayfaya bir onuncu taş koymak
+   * kuralı bozmak olurdu; oysa panel, ait olduğu ekranın içinden
+   * açılınca hem bulunur hem duvar büyümez.
+   */
+  'medeniyet',
 ] as const;
 export type Kapi = (typeof KAPILAR)[number];
 
@@ -289,12 +302,12 @@ export type Kapi = (typeof KAPILAR)[number];
  * Oyuncuya görünen kapılar — taranabilirlik kuralının uygulandığı küme.
  *
  * `KAPILAR` yönlendirilebilir HER kapıyı sayıyor; bu liste oyuncunun
- * ana sayfada görebildiklerini. Aradaki tek fark `moderasyon`: yalnız
- * yönetici hesapları Hesap ekranından açabiliyor, hiçbir ızgarada
- * çizilmiyor. Tavan kuralının amacı "ana sayfa simge duvarına dönmesin"
- * ve görünmeyen bir kapı o duvara bir taş koymuyor.
+ * ana sayfada görebildiklerini. İki kapı dışarıda: `moderasyon` yalnız
+ * yönetici hesaplarına açık ve Hesap ekranından, `medeniyet` ise Dünya
+ * ekranından açılıyor. Tavan kuralının amacı "ana sayfa simge duvarına
+ * dönmesin" ve ızgarada çizilmeyen bir kapı o duvara taş koymuyor.
  */
-export const OYUNCU_KAPILARI = KAPILAR.filter((k) => k !== 'moderasyon');
+export const OYUNCU_KAPILARI = KAPILAR.filter((k) => k !== 'moderasyon' && k !== 'medeniyet');
 
 /** Kapının başlığı — hem panelde hem onu açan düğmede aynı ad. */
 export const KAPI_ADI: Record<Kapi, string> = {
@@ -308,6 +321,7 @@ export const KAPI_ADI: Record<Kapi, string> = {
   siralama: 'Sıralama',
   hesap: 'Hesap',
   moderasyon: 'Şikâyet Kuyruğu',
+  medeniyet: 'Medeniyet',
 };
 export interface GeneralDef {
   key: string;

@@ -8,8 +8,23 @@
  * geçirme işi var. Kural buraya sızarsa er ya da geç saf katmandan
  * ayrışır ve sunucu ile istemci farklı sayı üretmeye başlar.
  */
-import { MEDENIYETLER, atanacakMedeniyet, yurtBolgeleri, type MedeniyetId } from '@lordlar/shared';
+import {
+  BOS_MEDENIYET_BONUSU,
+  CEKIRDEK_AZAMI_SEVIYE,
+  CEKIRDEK_BONUSU,
+  MEDENIYETLER,
+  WORLD_MAP,
+  atanacakMedeniyet,
+  cekirdekBonusu,
+  cekirdekMaliyeti,
+  medeniyetBonusu,
+  yurtBolgeleri,
+  type CekirdekBonus,
+  type MedeniyetBonusu,
+  type MedeniyetId,
+} from '@lordlar/shared';
 import { prisma, type Tx } from '../db.js';
+import { AKTIF_GUN } from './world.js';
 
 /**
  * Bir diyarın medeniyetlerini kurar. TEKRAR ÇALIŞTIRILABİLİR.
@@ -157,4 +172,116 @@ export async function medeniyetBilgileri(
     if (m) harita.set(s.id, { id: m.id, ad: m.ad, renk: m.renk });
   }
   return harita;
+}
+
+/* ------------------------------------------------------------------ */
+/* Çekirdek yatırımı (docs/16 §7)                                      */
+/* ------------------------------------------------------------------ */
+
+/** Bir çekirdeğin oyuncuya gösterilen hâli. */
+export interface CekirdekDurumu {
+  mapId: number;
+  ad: string;
+  /** Taşıdığı bonus — başkent çekirdeğinde null. */
+  bonus: CekirdekBonus | null;
+  bonusAdi: string | null;
+  seviye: number;
+  azamiSeviye: number;
+  /** Bir sonraki seviyenin bedeli — tavandaysa null. */
+  maliyet: { altin: number; demir: number; erzak: number } | null;
+  biriken: { altin: number; demir: number; erzak: number };
+}
+
+/** Bu medeniyetin AKTİF üye sayısı — maliyet bununla ölçekleniyor. */
+async function aktifUyeSayisi(medeniyetId: string, client: Tx): Promise<number> {
+  const sinir = new Date(Date.now() - AKTIF_GUN * 86_400_000);
+  return client.lord.count({ where: { medeniyetId, lastSeenAt: { gte: sinir } } });
+}
+
+/**
+ * Bir medeniyetin beş çekirdeğinin durumu.
+ *
+ * Ad kanonik haritadan, bonus `cekirdekBonusu`den geliyor: ikisi de
+ * veritabanında saklanmıyor. Saklansaydı harita değiştiğinde satırlar
+ * eski adı taşımaya devam ederdi.
+ */
+export async function cekirdekDurumlari(
+  medeniyetId: string,
+  client: Tx = prisma,
+): Promise<CekirdekDurumu[]> {
+  const [satirlar, uye] = await Promise.all([
+    client.cekirdekYatirim.findMany({ where: { medeniyetId }, orderBy: { mapId: 'asc' } }),
+    aktifUyeSayisi(medeniyetId, client),
+  ]);
+  return satirlar.map((y) => {
+    const bonus = cekirdekBonusu(y.mapId);
+    return {
+      mapId: y.mapId,
+      ad: WORLD_MAP.regions.find((r) => r.id === y.mapId)?.name ?? `Bölge ${y.mapId}`,
+      bonus,
+      bonusAdi: bonus ? CEKIRDEK_BONUSU[bonus] : null,
+      seviye: y.seviye,
+      azamiSeviye: CEKIRDEK_AZAMI_SEVIYE,
+      maliyet: cekirdekMaliyeti(y.seviye, uye),
+      biriken: { altin: y.birikenAltin, demir: y.birikenDemir, erzak: y.birikenErzak },
+    };
+  });
+}
+
+/**
+ * Bu lordun medeniyetinden gelen bonus oranları.
+ *
+ * Medeniyeti olmayan lord (sistemden önceki kayıtlar) boş bonus alıyor —
+ * hata değil, geçiş hâli.
+ */
+export async function lordunMedeniyetBonusu(
+  lordId: string,
+  client: Tx = prisma,
+): Promise<MedeniyetBonusu> {
+  const lord = await client.lord.findUnique({
+    where: { id: lordId },
+    select: { medeniyetId: true },
+  });
+  if (!lord?.medeniyetId) return BOS_MEDENIYET_BONUSU;
+  const satirlar = await client.cekirdekYatirim.findMany({
+    where: { medeniyetId: lord.medeniyetId },
+    select: { mapId: true, seviye: true },
+  });
+  return medeniyetBonusu(Object.fromEntries(satirlar.map((y) => [y.mapId, y.seviye])));
+}
+
+/**
+ * Diyardaki BÜTÜN medeniyetlerin bonus oranları — tek sorguda.
+ *
+ * Savunma bonusu (`sur`) altı ayrı yerde okunuyor: harita listesi, bölge
+ * kartı, savaş önizlemesi, akın çözümü, savaşın kendisi ve NPC'nin hedef
+ * değerlendirmesi. Her biri kendi sorgusunu atsaydı hem pahalı olurdu
+ * hem de er ya da geç biri unutulur, önizleme ile savaş AYRI sayı
+ * gösterirdi — bu projenin en çok tekrarlayan hatası.
+ */
+export async function medeniyetBonuslari(
+  worldId: string,
+  client: Tx = prisma,
+): Promise<Map<string, MedeniyetBonusu>> {
+  const satirlar = await client.cekirdekYatirim.findMany({
+    where: { medeniyet: { worldId } },
+    select: { medeniyetId: true, mapId: true, seviye: true },
+  });
+  const seviyeler = new Map<string, Record<number, number>>();
+  for (const y of satirlar) {
+    const m = seviyeler.get(y.medeniyetId) ?? {};
+    m[y.mapId] = y.seviye;
+    seviyeler.set(y.medeniyetId, m);
+  }
+  const cikti = new Map<string, MedeniyetBonusu>();
+  for (const [id, m] of seviyeler) cikti.set(id, medeniyetBonusu(m));
+  return cikti;
+}
+
+/** Bir bölgeyi tutan medeniyetin SUR oranı — tutan yoksa 0. */
+export function surOrani(
+  bonuslar: Map<string, MedeniyetBonusu>,
+  ownerMedeniyetId: string | null,
+): number {
+  return ownerMedeniyetId ? (bonuslar.get(ownerMedeniyetId)?.sur ?? 0) : 0;
 }

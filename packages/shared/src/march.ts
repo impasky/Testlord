@@ -72,12 +72,15 @@ export function egitimSuresiSn(
   adet: number,
   ilkMi = false,
   arastirma?: ArastirmaBonusu,
+  /** Medeniyetin TALİMGÂH çekirdeği (docs/16 §7). */
+  medeniyet?: { talimgah: number },
 ): number {
   if (ilkMi) return B.ilk_egitim.saniye;
   // Hız bonusu SÜREYİ bölüyor: +%20 hız, süreyi %20 kısaltmak değil
   // 1/1.2 = %17 kısaltmak demek. Çarpanla yazsaydık +%100 hız süreyi
   // sıfırlardı.
-  return Math.round((birimEgitimSn * adet) / (1 + (arastirma?.egitimHizi ?? 0)));
+  const hiz = 1 + (arastirma?.egitimHizi ?? 0) + (medeniyet?.talimgah ?? 0);
+  return Math.round((birimEgitimSn * adet) / hiz);
 }
 
 /**

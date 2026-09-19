@@ -28,6 +28,7 @@ const M = B.medeniyetler as unknown as {
     taban_maliyet: { altin: number; demir: number; erzak: number };
     seviye_carpani: number;
     azami_seviye: number;
+    seviye_basina: Record<CekirdekBonus, number>;
   };
   garnizon_payi: { asgari_yer: number };
   fayda_puani: {
@@ -323,4 +324,47 @@ export function atanacakMedeniyet(nufus: Readonly<Record<MedeniyetId, number>>):
   let secilen = acik[0]!;
   for (const id of acik) if ((nufus[id] ?? 0) < (nufus[secilen] ?? 0)) secilen = id;
   return secilen;
+}
+
+/**
+ * Çekirdek yatırımlarının medeniyete kattığı bonuslar.
+ *
+ * Dört çekirdek dört ayrı şeyi büyütüyor ve HEPSİ o medeniyetteki
+ * herkese işliyor (docs/16 §7) — yatırım yapmayan da yararlanıyor.
+ * Bedavacılığı bonusu kısıtlayarak değil FAYDA PUANIYLA çözüyoruz
+ * (§9): bonus herkese, puan yalnız katkı verene.
+ */
+export interface MedeniyetBonusu {
+  /** Depo kapasitesi oranı (0.15 = +%15). */
+  ambar: number;
+  /** Eğitim hızı oranı. */
+  talimgah: number;
+  /** Garnizon savunması oranı. */
+  sur: number;
+  /** Bölge geliri oranı. */
+  ocak: number;
+}
+
+export const BOS_MEDENIYET_BONUSU: MedeniyetBonusu = { ambar: 0, talimgah: 0, sur: 0, ocak: 0 };
+
+/**
+ * Yatırım seviyelerinden bonus oranlarına.
+ *
+ * Girdi `mapId -> seviye`: hangi çekirdeğin kaçıncı seviyede olduğu.
+ * Bonus TÜRÜ veritabanında değil, `cekirdekBonusu(mapId)` ile haritadan
+ * türüyor — sütun olsaydı bir bölgenin bonusu iki yerde yazılı olurdu.
+ *
+ * Başkent çekirdeği (beşincisi) bonus taşımıyor; ona yapılan yatırım
+ * hiçbir orana eklenmiyor ve bu bilerek: başkent kimlik taşıyor.
+ */
+export function medeniyetBonusu(seviyeler: Readonly<Record<number, number>>): MedeniyetBonusu {
+  const b: MedeniyetBonusu = { ...BOS_MEDENIYET_BONUSU };
+  const basina = M.cekirdek_yatirim.seviye_basina;
+  for (const [ham, seviye] of Object.entries(seviyeler)) {
+    const tur = cekirdekBonusu(Number(ham));
+    if (!tur) continue;
+    const kademe = Math.max(0, Math.min(M.cekirdek_yatirim.azami_seviye, Math.floor(seviye)));
+    b[tur] += basina[tur] * kademe;
+  }
+  return b;
 }

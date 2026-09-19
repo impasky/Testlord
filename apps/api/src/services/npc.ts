@@ -58,6 +58,7 @@ import {
   cekirdekMi,
 } from '@lordlar/shared';
 import { prisma, type Tx } from '../db.js';
+import { medeniyetBonuslari, surOrani } from './medeniyet.js';
 import { dunyaGrafigi } from './mesafe.js';
 import { enqueue, evdenCikar, spendResources } from './queue.js';
 import { bolgeTahkimati, regionFortressBonus } from './region.js';
@@ -442,6 +443,8 @@ async function oyuncuHedefiSec(
     await tx.lord.findUnique({ where: { id: lord.id }, select: { medeniyetId: true } })
   )?.medeniyetId;
 
+  const surlar = await medeniyetBonuslari(lord.worldId, tx);
+
   let enIyi: Hedef | null = null;
   for (const r of adaylar) {
     const sahip = r.owner;
@@ -467,7 +470,8 @@ async function oyuncuHedefiSec(
 
     // Garnizon + surlar: kaybedecek savaşa girilmiyor.
     const garnizon: Army = garnizonIle.get(String(r.id)) ?? {};
-    if (!yeterMi(ordu, garnizon, bolgeTahkimati(r, sahip))) continue;
+    if (!yeterMi(ordu, garnizon, bolgeTahkimati(r, sahip, surOrani(surlar, r.ownerMedeniyetId))))
+      continue;
 
     if (!enIyi || mesafe < enIyi.mesafe) enIyi = { id: r.id, mesafe };
   }

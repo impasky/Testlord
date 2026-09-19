@@ -325,6 +325,32 @@ export interface RegionDto {
   fortressBonus: number;
 }
 
+/** Bir çekirdek bölgenin yatırım durumu (docs/16 §7). */
+export interface CekirdekDto {
+  mapId: number;
+  ad: string;
+  /** Taşıdığı bonus — başkent çekirdeğinde null. */
+  bonus: 'ambar' | 'talimgah' | 'sur' | 'ocak' | null;
+  bonusAdi: string | null;
+  seviye: number;
+  azamiSeviye: number;
+  /** Bir sonraki seviyenin bedeli — tavandaysa null. */
+  maliyet: { altin: number; demir: number; erzak: number } | null;
+  biriken: { altin: number; demir: number; erzak: number };
+}
+
+/** Lordun medeniyeti ve o medeniyetin durumu (docs/16). */
+export interface MedeniyetDto {
+  id: string;
+  ad: string;
+  renk: string;
+  uyeSayisi: number;
+  bolgeSayisi: number;
+  faydaPuanim: number;
+  cekirdekler: CekirdekDto[];
+  siralama: { id: string; ad: string; renk: string; bolge: number }[];
+}
+
 /** Bir paktın oyuncuya görünen hâli. */
 export interface PaktSatiriDto {
   id: string;
@@ -997,6 +1023,12 @@ export const api = {
 
   map: () => request<MapDto>('/map'),
   region: (id: number) => request<RegionDetailDto>(`/map/${id}`),
+  medeniyet: () => request<{ medeniyet: MedeniyetDto | null }>('/medeniyet'),
+  cekirdegeBagisla: (mapId: number, kaynak: { altin: number; demir: number; erzak: number }) =>
+    post<{ seviye: number; atladi: boolean; faydaPuani: number }>(
+      `/medeniyet/cekirdek/${mapId}/bagis`,
+      kaynak,
+    ),
   upgradeRegion: (id: number) => post(`/map/${id}/upgrade`),
   setGarrison: (id: number, army: Army) => post(`/map/${id}/garrison`, { army }),
   preview: (

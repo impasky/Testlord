@@ -5,6 +5,7 @@
  * node tools/oyun-dongusu-testi.mjs
  */
 import { benzersizAd, kayitOl } from './lib/kayit.mjs';
+import { fethedilebilirMi } from './lib/hedef.mjs';
 import { BOLGE_SAYISI, merkezUzakliklari } from './lib/harita.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 let token = null;
@@ -115,7 +116,7 @@ const kenar = new Set(
   [...merkezUzakliklari(harita.regions)].filter(([, d]) => d >= 4).map(([id]) => id),
 );
 const adaylar = harita.regions
-  .filter((r) => kenar.has(r.id) && !r.owner && r.type !== 'kale')
+  .filter((r) => kenar.has(r.id) && fethedilebilirMi(r) && r.type !== 'kale')
   .sort((a, b) => a.distance - b.distance)
   .slice(0, 8);
 
@@ -153,7 +154,11 @@ kontrol(
     : `${adaylar.length} aday denendi, hiçbiri alınamıyor`,
 );
 
-const kale = harita.regions.find((r) => kenar.has(r.id) && !r.owner && r.type === 'kale');
+// Çekirdek kaleye SALDIRILAMIYOR (docs/16 §5) ve bu sınamanın ölçtüğü
+// şey zorluk farkı, dokunulmazlık değil: süzgeç çekirdeği eliyor.
+const kale = harita.regions.find(
+  (r) => kenar.has(r.id) && fethedilebilirMi(r) && r.type === 'kale',
+);
 const kaleOnizleme = await post('/battle/preview', {
   toRegionId: kale.id,
   army: { mizrakci: 20, okcu: 15 },

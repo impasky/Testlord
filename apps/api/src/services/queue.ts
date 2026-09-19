@@ -24,6 +24,7 @@ import {
   type UnitType,
 } from '@lordlar/shared';
 import { prisma, type Tx } from '../db.js';
+import { medeniyetBonuslari, surOrani } from './medeniyet.js';
 import { GameError, hata } from '../errors.js';
 import { binalariOku, grantXp, okuArastirmalar, pushEvent, tickLord } from './lord.js';
 import { bolgeTahkimati } from './region.js';
@@ -501,7 +502,11 @@ async function kesfiCoz(row: QueueRow, p: Record<string, unknown>, tx: Tx): Prom
   const snapshot = {
     garrison,
     store: { altin: region.storeAltin, demir: region.storeDemir, erzak: region.storeErzak },
-    tahkimatBonusu: bolgeTahkimati(region, sahip),
+    tahkimatBonusu: bolgeTahkimati(
+      region,
+      sahip,
+      surOrani(await medeniyetBonuslari(region.worldId, tx), region.ownerMedeniyetId),
+    ),
     bolgeSeviyesi: region.level,
     sahipAdi: sahip?.name ?? null,
   };

@@ -872,13 +872,25 @@ function BolgeIsareti({
   const sur = r.fortressBonus ?? 0;
   const surKalinligi = sur <= 0 ? 0 : sur < 0.2 ? 2 : sur < 0.35 ? 3 : 4;
   const surYazisi = sur > 0 ? `, tahkimat +%${Math.round(sur * 100)}` : '';
+  /*
+   * HALKA ÜÇ ŞEYİ BİRDEN SÖYLÜYOR ve sırası önemli (docs/16 §5).
+   *
+   *   1. Senin bölgen mi — altın. Oyuncunun ilk sorusu bu.
+   *   2. Bir lordun mu — kırmızı. İkinci soru: saldırabilir miyim.
+   *   3. Hangi medeniyetin — o medeniyetin rengi.
+   *
+   * Sahipsiz ama bir medeniyetin elindeki bölge artık boz değil, o
+   * medeniyetin rengiyle çevrili: harita ilk bakışta dört tarafa
+   * bölünmüş görünüyor ve fraksiyon savaşı görünür oluyor. Önce
+   * medeniyet rengini en üste koymuştum; o zaman kendi bölgen ile
+   * yoldaşının bölgesi aynı renge düşüyor ve "hangisi benim" sorusu
+   * cevapsız kalıyordu.
+   */
   const halka = r.isMine
     ? '#f5b731'
     : r.owner
       ? '#e8524d'
-      : taht
-        ? '#f5b731'
-        : 'rgba(240,225,200,0.45)';
+      : (r.medeniyet?.renk ?? (taht ? '#f5b731' : 'rgba(240,225,200,0.45)'));
   return (
     <button
       type="button"
@@ -934,6 +946,8 @@ function BolgeIsareti({
        */
       aria-label={`${r.name} — ${r.type}, seviye ${r.level}, ${
         r.owner ? `sahibi ${r.owner.name}` : 'sahipsiz'
+      }${r.medeniyet ? `, ${r.medeniyet.ad}` : ''}${
+        r.cekirdek ? ', çekirdek — ele geçirilemez' : ''
       }, ${r.distance} adım${surYazisi}`}
       data-bolge={r.id}
       title={`${r.name} — ${r.type}, seviye ${r.level}, ${
@@ -978,6 +992,31 @@ function BolgeIsareti({
           rozetin arkası ne olacağı belli değil; tek çözüm rozetin kendi
           zeminini taşıması.
         */}
+        {/*
+          ÇEKİRDEK: ele geçirilemez bölge (docs/16 §5).
+
+          Renk körü için renkten AYRI bir işaret — medeniyet rengi tek
+          başına "buraya saldıramazsın"ı anlatmıyor. Oyuncu bunu bölgeye
+          dokunmadan ÖNCE görmeli, yoksa ordusunu seçip düğmeye basıyor
+          ve ancak orada reddediliyor.
+        */}
+        {r.cekirdek && (
+          /*
+           * İşaret bir GLİF değil, ÇİZİLMİŞ bir eşkenar dörtgen.
+           *
+           * Önce 9 piksellik bir ✦ koymuştum; okunurluk denetimi yirmi
+           * metni birden yakaladı (11px tabanı). Kural haklı: 9 piksel
+           * hiçbir telefonda okunmaz. Rozetin işi zaten okunmak değil
+           * "bu bölge ötekilerden farklı" demek — döndürülmüş bir kare
+           * bunu metin olmadan, renk körü için de ayırt edilir biçimde
+           * yapıyor.
+           */
+          <span
+            className="absolute -top-1 -left-1 h-2.5 w-2.5 rotate-45 border border-gece bg-parsomen"
+            title="Çekirdek — ele geçirilemez"
+            aria-hidden
+          />
+        )}
         {/* Düşman bölgesi: renk körü için renkten AYRI bir işaret. */}
         {r.owner && !r.isMine && (
           <span className="absolute -bottom-1 -left-1 h-3 w-3 rounded-full border-2 border-gece bg-kirmizi" />

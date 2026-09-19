@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "CekirdekYatirim" ADD COLUMN     "birikenAltin" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "birikenDemir" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "birikenErzak" INTEGER NOT NULL DEFAULT 0;

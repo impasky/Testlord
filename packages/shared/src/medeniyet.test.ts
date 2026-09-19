@@ -20,6 +20,8 @@ import {
   cekirdekMaliyeti,
   cekirdekMi,
   cekirdekSahibi,
+  medeniyetBonusu,
+  BOS_MEDENIYET_BONUSU,
   cekismeliMi,
   garnizonPaylari,
   medeniyet,
@@ -329,6 +331,55 @@ describe('yurt bölgeleri', () => {
     for (const m of MEDENIYETLER) {
       const koyler = WORLD_MAP.regions.filter((r) => r.province === m.yurt && r.type === 'koy');
       expect(koyler.length, `${m.ad} yurdunda köy yok`).toBeGreaterThan(0);
+    }
+  });
+});
+
+describe('çekirdek bonusları — yatırımın karşılığı', () => {
+  const m = MEDENIYETLER[0]!;
+
+  it('yatırım yoksa bonus yok', () => {
+    expect(medeniyetBonusu({})).toEqual(BOS_MEDENIYET_BONUSU);
+  });
+
+  it('her çekirdek yalnız KENDİ bonusunu büyütüyor', () => {
+    // İlk çekirdek 'ambar' taşıyor (bkz. cekirdekBonusu).
+    const b = medeniyetBonusu({ [m.cekirdekBolgeler[0]!]: 4 });
+    expect(b.ambar).toBeGreaterThan(0);
+    expect(b.talimgah).toBe(0);
+    expect(b.sur).toBe(0);
+    expect(b.ocak).toBe(0);
+  });
+
+  it('bonus seviyeyle DOĞRUSAL büyüyor', () => {
+    const bir = medeniyetBonusu({ [m.cekirdekBolgeler[0]!]: 1 }).ambar;
+    const uc = medeniyetBonusu({ [m.cekirdekBolgeler[0]!]: 3 }).ambar;
+    expect(uc).toBeCloseTo(bir * 3, 10);
+  });
+
+  it('azami seviyenin üstü sayılmıyor', () => {
+    const tavan = medeniyetBonusu({ [m.cekirdekBolgeler[0]!]: CEKIRDEK_AZAMI_SEVIYE });
+    const asiri = medeniyetBonusu({ [m.cekirdekBolgeler[0]!]: CEKIRDEK_AZAMI_SEVIYE + 50 });
+    expect(asiri).toEqual(tavan);
+  });
+
+  /*
+   * BAŞKENT ÇEKİRDEĞİ BONUS TAŞIMIYOR (docs/16 §7-8) ve bu sessizce
+   * kaybolabilecek bir kural: beşinci çekirdeğe yatırım yapan oyuncu
+   * hiçbir oran görmeyecek. Yanlışlıkla bonus taşımaya başlarsa bir
+   * medeniyet diğerlerinden fazla bonus biriktirebilirdi.
+   */
+  it('başkent çekirdeğine yatırım hiçbir oranı büyütmüyor', () => {
+    const baskent = baskentCekirdegi(m.id)!;
+    expect(medeniyetBonusu({ [baskent]: CEKIRDEK_AZAMI_SEVIYE })).toEqual(BOS_MEDENIYET_BONUSU);
+  });
+
+  it('tam geliştirilmiş dört çekirdek dört oranı da tavana çıkarıyor', () => {
+    const hepsi: Record<number, number> = {};
+    for (const id of m.cekirdekBolgeler) hepsi[id] = CEKIRDEK_AZAMI_SEVIYE;
+    const b = medeniyetBonusu(hepsi);
+    for (const oran of [b.ambar, b.talimgah, b.sur, b.ocak]) {
+      expect(oran).toBeGreaterThan(0);
     }
   });
 });

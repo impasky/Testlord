@@ -15,6 +15,7 @@ import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
+import { lordunMedeniyetBonusu } from '../services/medeniyet.js';
 import { GameError, hata } from '../errors.js';
 import { gecikmisleriKapat } from '../services/gecikmis.js';
 import { arastirmaBonusuOku, collectAllUnits, findLordByUser, tickLord } from '../services/lord.js';
@@ -133,7 +134,13 @@ export async function armyRoutes(app: FastifyInstance): Promise<void> {
         lordId,
         'train',
         { unitType, count },
-        egitimSuresiSn(u.egitim_sn, count, ilkMi, arastirma),
+        egitimSuresiSn(
+          u.egitim_sn,
+          count,
+          ilkMi,
+          arastirma,
+          await lordunMedeniyetBonusu(lordId, tx),
+        ),
         tx,
       );
       return { queued: true, finishAt: q.finishAt, ilkEgitim: ilkMi };
