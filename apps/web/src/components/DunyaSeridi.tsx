@@ -88,6 +88,31 @@ export function DunyaBasligi({ dunya }: { dunya: DunyaDto }) {
           )}
         </span>
 
+        {/* Tahtı tutan MEDENİYET (docs/16 §13 soru 5). Taht artık bir
+            lordun unvanı değil bir tarafın kazancı: tutan medeniyetin
+            her üyesi şöhret çarpanı alıyor. Kolektif hedefin ekranda bir
+            karşılığı olmalı. */}
+        {dunya.taht?.medeniyet && (
+          <>
+            <span aria-hidden>·</span>
+            <span className="inline-flex items-center gap-1">
+              <span
+                className="h-2 w-2 shrink-0 rounded-full border border-gece"
+                style={{ background: dunya.taht.medeniyet.renk }}
+                aria-hidden
+              />
+              <span>
+                <strong className="text-parsomen">{dunya.taht.medeniyet.ad}</strong>
+                {dunya.taht.benimMedeniyetimde ? ' — medeniyetinin tahtı · ' : ' tahtta · '}
+                <strong className="text-altin">
+                  +%{Math.round(dunya.taht.medeniyetSohretBonusu * 100)}
+                </strong>{' '}
+                şöhret
+              </span>
+            </span>
+          </>
+        )}
+
         {/* Lider avı: oyuncunun kimin peşine düşeceğini bilmesi gerekiyor.
           Lider bensem cümle tersine dönüyor — av benim üstümde. */}
         {dunya.liderAvi && (

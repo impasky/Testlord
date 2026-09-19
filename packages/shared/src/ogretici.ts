@@ -180,6 +180,11 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
   // göreceği sayıyı yazıyoruz.
   const ornekGarnizonYeri = 10;
   const ornekFaydaPuani = garnizonFaydaPuani(ornekGarnizonYeri, 1);
+  // Taht iki ayrı şöhret çarpanı veriyor: tutana ve tutanın medeniyetine
+  // (docs/16 §13 soru 5). İkisi de dengeden.
+  const taht = B.taht_kalesi as { unvan_sohret_bonusu: number; medeniyet_sohret_bonusu: number };
+  const tahtUnvanBonusu = Math.round(taht.unvan_sohret_bonusu * 100);
+  const tahtMedeniyetBonusu = Math.round(taht.medeniyet_sohret_bonusu * 100);
 
   return [
     {
@@ -198,8 +203,7 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
         },
         {
           vurgu: 'Taht Kalesi',
-          metin:
-            'Haritanın ortasındaki altın çerçeveli bölge. Onu tutan Diyarın Lordu olur ve şöhretini daha hızlı büyütür. Oyunun ucu burası.',
+          metin: `Haritanın ortasındaki altın çerçeveli bölge. Onu tutan Diyarın Lordu olur ve şöhreti %${tahtUnvanBonusu} büyür; tahtı tutan MEDENİYETİN her üyesi de %${tahtMedeniyetBonusu} alır. Oyunun ucu burası — ve tek başına değil, tarafınla kazanılıyor.`,
         },
         {
           vurgu: 'Toprak haritayı açar',

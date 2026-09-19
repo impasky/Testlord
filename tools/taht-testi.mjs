@@ -12,6 +12,9 @@
  * SADECE GELİŞTİRME. node tools/taht-testi.mjs
  */
 import { benzersizAd, kayitOl } from './lib/kayit.mjs';
+import { readFileSync } from 'node:fs';
+// Sayılar dengeden: ucun kendi kopyasını yazmadığını sınamak için.
+const DENGE = JSON.parse(readFileSync(new URL('../data/balance.json', import.meta.url), 'utf8'));
 const API = process.env.API_URL ?? 'http://localhost:3000';
 
 let hata = 0;
@@ -97,6 +100,32 @@ kontrol('Diyarın Lordu şöhret bonusu aldı', me.lord.fame > 0, `şöhret ${me
 const siralama = await G('/rankings/fame?page=0');
 const benim = siralama.benim ?? siralama.satirlar.find((r) => r.lordId === me.lord.id);
 kontrol('Sıralamada Diyarın Lordu işareti var', benim?.tahtSahibi === true);
+
+/* --- Taht artık MEDENİYETE de yazıyor (docs/16 §13 soru 5) ---
+ *
+ * Taht bir lordun unvanı olmaktan çıkıp bir tarafın kazancı oldu: tutan
+ * medeniyetin her üyesi küçük bir şöhret çarpanı alıyor. Uç bunu
+ * söylemezse kolektif hedef oyuncuya hiç görünmez.
+ */
+{
+  const dunya = await G('/dunya');
+  kontrol(
+    'Dünya, tahtı TUTAN MEDENİYETİ söylüyor',
+    Boolean(dunya.taht?.medeniyet?.ad),
+    dunya.taht?.medeniyet?.ad ?? 'yok',
+  );
+  kontrol(
+    'Taht benim medeniyetimde işaretli',
+    dunya.taht?.benimMedeniyetimde === true,
+    `benimMedeniyetimde=${dunya.taht?.benimMedeniyetimde}`,
+  );
+  // Sayı dengeden geliyor; uç kendi kopyasını yazmıyor.
+  kontrol(
+    'Medeniyet şöhret payı dengeyle aynı',
+    dunya.taht?.medeniyetSohretBonusu === DENGE.taht_kalesi.medeniyet_sohret_bonusu,
+    String(dunya.taht?.medeniyetSohretBonusu),
+  );
+}
 
 console.log(hata === 0 ? '\nTÜM KONTROLLER GEÇTİ' : `\n${hata} KONTROL BAŞARISIZ`);
 process.exit(hata === 0 ? 0 : 1);

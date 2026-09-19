@@ -739,3 +739,70 @@ tutundurmasını işaretlemişti ("v2'nin işe yarayıp yaramadığını tahminl
 değil sayıyla bilmemiz gerekiyor") ve `/olcum` uzun süre yalnız ertesi
 günü ölçüyordu. İkisi artık yan yana: **ertesi gün ilk oturumun sınavı,
 yedinci gün oyunun.**
+
+---
+
+## 22. KARAR: tahtı tutan medeniyet ne kazanır (§13 soru 5)
+
+`2026-09-19` — §13'ün beşinci sorusu açık kalmıştı ve boşluk gerçekti:
+oyun fraksiyon oyununa döndü, ama haritanın en çok kavga edilen karesi
+hâlâ yalnız bir LORDA bir şey veriyordu. Tahtı alan taraf için taht,
+sıradan bir bölgeden farksızdı.
+
+### Karar: ŞÖHRET, güç değil
+
+Tahtı tutan medeniyetin **her üyesi** küçük bir şöhret çarpanı alıyor.
+
+| Kim                      | Çarpan | Kaç kişiye      |
+| ------------------------ | ------ | --------------- |
+| Tahtı tutan lord (unvan) | +%20   | bir kişiye      |
+| O lordun medeniyeti      | +%5    | binlerce kişiye |
+
+İkisi üst üste biniyor ve binmesi doğru: tahtı bizzat tutan lord hem
+Diyarın Lordu, hem de tahtı tutan medeniyetin üyesi.
+
+**Neden güç değil.** Tahtın üstüne bir de güç (gelir, savunma, eğitim
+hızı) koymak §10'un dördüncü riskini beslerdi: önde giden taraf daha çok
+kazanır, daha çok kazandığı için daha çok önde gider. Taht zaten
+haritanın ödülü; ödülün üstüne bir de hızlandırıcı koymak kartopunu
+büyütmek olurdu. Fraksiyon gücünün tek kaynağı çekirdek yatırımı olarak
+kalıyor ve o dört tarafa da açık.
+
+**Neden bu kadar küçük.** %5, bireysel unvanın dörtte biri. Sebep
+ölçek: bu çarpan bir kişiye değil, o medeniyetteki herkese birden
+işliyor. Büyük olsaydı sıralamayı topluca kaydırır, "tahtı alan tarafın
+tamamı listenin başına çıkar" gibi bir sonuç doğururdu.
+
+### Kendi kendini dengeleyen taraf
+
+Üyelerin şöhreti artınca, o medeniyetten birinin **diyarın en şöhretli
+lordu** olma ihtimali de artıyor — yani bireysel lider avı (`lider_avi`)
+tahtı tutan tarafı hedef gösteriyor. Taht seni görünür yapıyor,
+dokunulmaz değil. Fren eklemedik; zaten duruyordu.
+
+### Zorunlu alan, isteğe bağlı değil
+
+`FameInput.medeniyetTahti` **zorunlu** yazıldı. Şöhret beş ayrı yerde
+hesaplanıyor: `tickLord`, iki fetih önizlemesi, ekipman önizlemesi ve
+demo tohumu. İsteğe bağlı bir alan bunların birinde sessizce `false`
+kalırdı ve önizleme ile gerçek ayrışırdı — bu projenin en çok
+tekrarlayan hatası, bir önceki bölümde (§21) tam olarak bu şekilde
+yakalanmıştı. Alan zorunlu olunca derleyici beş çağıranı da tek tek
+gösterdi.
+
+Yan kazanç: tahtı ALMAK artık önizlemede iki çarpanı birden açıyor.
+Oyuncu haritanın en büyük ödülünü olduğu gibi görüyor.
+
+### Nerede görünüyor
+
+- **Dünya şeridi:** tahtı tutan medeniyetin adı, rengi ve payı.
+- **Öğretici (`diyar` sayfası):** "Oyunun ucu burası — ve tek başına
+  değil, tarafınla kazanılıyor."
+- **`taht-testi`:** ucun tahtı tutan medeniyeti söylediğini ve sayının
+  dengeden geldiğini sınıyor.
+
+### §13'ün kalan sorusu
+
+Soru 3 (medeniyet değiştirilebilir mi) hâlâ açık ve bugünkü cevap
+"hayır" — ama **sessiz** bir hayır: mekanizma yok, oyuncuya da hiçbir
+yerde söylenmiyor. Bilinçli bir karara bağlanması gerekiyor.

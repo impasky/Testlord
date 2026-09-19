@@ -100,7 +100,12 @@ export async function dunyaRoutes(app: FastifyInstance): Promise<void> {
       }),
       prisma.region.findFirst({
         where: { worldId: ben.worldId, type: 'taht' },
-        select: { id: true, name: true, owner: { select: { id: true, name: true } } },
+        select: {
+          id: true,
+          name: true,
+          ownerMedeniyetId: true,
+          owner: { select: { id: true, name: true } },
+        },
       }),
       // Lider avı: diyarın en yüksek şöhretli lordu. Kartopu freni buna
       // bağlı ve oyuncunun kimin peşine düşeceğini bilmesi gerekiyor.
@@ -161,6 +166,21 @@ export async function dunyaRoutes(app: FastifyInstance): Promise<void> {
             name: taht.name,
             sahip: taht.owner ? { id: taht.owner.id, name: taht.owner.name } : null,
             sohretBonusu: B.taht_kalesi.unvan_sohret_bonusu,
+            /*
+             * TAHTI TUTAN MEDENİYET (docs/16 §13 soru 5).
+             *
+             * Taht artık yalnız bir lordun unvanı değil, bir TARAFIN
+             * kazancı: tutan medeniyetin her üyesi küçük bir şöhret
+             * çarpanı alıyor. Kim tuttuğu görünmezse kolektif hedef de
+             * görünmez — "bizim tarafın tahtı" cümlesinin ekranda bir
+             * karşılığı olmalı.
+             */
+            medeniyet: taht.ownerMedeniyetId
+              ? (medeniyetler.get(taht.ownerMedeniyetId) ?? null)
+              : null,
+            medeniyetSohretBonusu: B.taht_kalesi.medeniyet_sohret_bonusu,
+            benimMedeniyetimde:
+              taht.ownerMedeniyetId !== null && taht.ownerMedeniyetId === ben.medeniyetId,
           }
         : null,
       // Lider tek başınaysa (ya da dünya çok küçükse) av yok: iki kişilik

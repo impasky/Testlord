@@ -55,6 +55,7 @@ import { prisma, type Tx } from '../db.js';
 import { arastirmaBonusuOku, equippedGenerals, gearBonusFrom } from './lord.js';
 import { regionFortressBonus } from './region.js';
 import { dunyaGrafigi, mesafeOlcerHazir } from './mesafe.js';
+import { tahtiTutanMedeniyet } from './medeniyet.js';
 
 /** Lordun savaş tarafını kurar (ekipman, donanım, generaller dahil). */
 export async function lordSide(
@@ -194,6 +195,9 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
     where: { id: lordId },
     include: { regions: true, items: true },
   });
+  // Şöhret farkı `hedefKur` içinde hesaplanıyor ve orası eşzamanlı:
+  // çarpanı önceden okuyoruz.
+  const medTahti = await medeniyetTahtiMi(lord);
 
   const evRows = await prisma.armyUnit.findMany({
     where: { lordId, locationType: 'home', locationId: null },
@@ -430,6 +434,7 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
       pvpWins: lord.pvpWins,
       fortressFameAccrued: lord.fortressFameAccrued,
       ownsThrone: lord.regions.some((x) => x.type === 'taht'),
+      medeniyetTahti: medTahti,
     }).sohretFarki,
     limitDolu,
   });
@@ -688,6 +693,21 @@ export interface FetihOdulu {
  * listeye eklenmiş hâliyle ikinci kez çalıştırılır, sıra da dünyadaki
  * gerçek şöhret listesine bakılarak bulunur.
  */
+/**
+ * Tahtı tutan medeniyet BENİMKİ mi (docs/16 §13 soru 5).
+ *
+ * Üç önizleme de (öneri şeridi, fetih ödülü, ekipman etkisi) şöhreti
+ * kendi hesaplıyor ve üçü de bu çarpanı saymak zorunda: biri saymazsa
+ * oyuncuya gösterilen şöhret, `tickLord`un yazdığından farklı çıkar.
+ */
+async function medeniyetTahtiMi(lord: {
+  worldId: string;
+  medeniyetId: string | null;
+}): Promise<boolean> {
+  if (!lord.medeniyetId) return false;
+  return (await tahtiTutanMedeniyet(lord.worldId)) === lord.medeniyetId;
+}
+
 export async function fetihOdulu(
   lordId: string,
   region: { type: string; level: number; incomeMult: number; province: string },
@@ -717,6 +737,7 @@ export async function fetihOdulu(
     lordLevel: lord.level,
     regions: lord.regions.map((r) => ({ type: r.type, level: r.level })),
     hedef: region,
+    medeniyetTahti: await medeniyetTahtiMi(lord),
     totalEquipmentPower: ekipman,
     army: ordu,
     pvpWins: lord.pvpWins,
@@ -872,6 +893,7 @@ export async function ekipmanEtkisi(
     where: { id: lordId },
     include: { regions: true, units: true, gearLines: true, generals: true },
   });
+  const medTahti = await medeniyetTahtiMi(lord);
 
   const onceki = kusanik(oncekiEsyalar);
   const sonraki = kusanik(sonrakiEsyalar);
@@ -894,6 +916,7 @@ export async function ekipmanEtkisi(
       pvpWins: lord.pvpWins,
       fortressFameAccrued: lord.fortressFameAccrued,
       ownsThrone: lord.regions.some((r) => r.type === 'taht'),
+      medeniyetTahti: medTahti,
     });
 
   const temel: EkipmanEtkisi = {

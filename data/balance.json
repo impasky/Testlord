@@ -394,6 +394,9 @@
     "ad": "Taht Kalesi",
     "aciklama": "Dunyada tek. Sahibi 'Diyarin Lordu' unvanini alir.",
     "unvan_sohret_bonusu": 0.2,
+    "medeniyet_sohret_bonusu": 0.05,
+    "_medeniyet_notu": "Tahti TUTAN MEDENIYETIN her uyesi bu orani aliyor (docs/16 §13 soru 5). SOHRET, GUC DEGIL: tahtin ustune bir de guc vermek, onde giden tarafi daha da hizlandirirdi (§10 dorduncu risk) — oysa taht zaten haritanin odulu. Fraksiyon gucunun tek kaynagi cekirdek yatirimi ve o dort tarafa da acik. Sayi bireysel unvandan (0,2) kucuk ve bilerek: bu carpan binlerce uyeye birden isliyor, buyuk olsaydi siralamayi topluca kaydirirdi.",
+    "_kendi_kendini_dengeleyen": "Uyelerin sohreti artinca o medeniyetten birinin diyarin en sohretlisi olma ihtimali de artiyor — yani BIREYSEL lider avi tahti tutan tarafi hedef gosteriyor. Taht seni gorunur yapiyor, dokunulmaz degil.",
     "bolge_limitine_sayilmaz": true,
     "kaybetme_korumasi_saat": 2,
     "_not": "Herkese haritada gorunur ve gunluk saldiri limiti bu bolgeye islemez. Endgame rekabetinin odagi."

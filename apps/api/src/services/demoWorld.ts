@@ -194,6 +194,9 @@ export async function seedDemoLords(worldId: string): Promise<number> {
           pvpWins: 0,
           fortressFameAccrued: 0,
           ownsThrone: false,
+          // Demo lordları tohumlanırken taht daima sahipsiz: hiçbir
+          // medeniyet onu tutmuyor.
+          medeniyetTahti: false,
         }),
       },
     });

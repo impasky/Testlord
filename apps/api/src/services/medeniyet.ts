@@ -324,6 +324,33 @@ export async function kartopuDurumu(
   };
 }
 
+/**
+ * TAHTI TUTAN MEDENİYET — docs/16 §13 soru 5'in cevabı.
+ *
+ * Tahtı tutan lordun medeniyeti, o diyardaki BÜTÜN üyelerine küçük bir
+ * şöhret çarpanı kazandırıyor (`balance.json` → `taht_kalesi`). Şöhret,
+ * güç değil: tahtın üstüne bir de güç vermek önde gideni daha da
+ * hızlandırırdı (§10 dördüncü risk).
+ *
+ * Bölgenin KENDİ `ownerMedeniyetId`'sine bakıyor, tutan lordun
+ * medeniyetine değil: fetih toprağı zaten medeniyete yazıyor (§17) ve
+ * iki alan ayrışırsa haritanın söylediğiyle sıralamanın söylediği
+ * farklı olurdu.
+ */
+export async function tahtiTutanMedeniyet(
+  worldId: string,
+  client: Tx = prisma,
+): Promise<string | null> {
+  const taht = await client.region.findFirst({
+    where: { worldId, type: 'taht' },
+    select: { ownerMedeniyetId: true, ownerLordId: true },
+  });
+  // Sahipsiz taht kimseye yazmıyor: NPC garnizonu tutuyorsa ortada
+  // kazanılmış bir şey yok.
+  if (!taht?.ownerLordId) return null;
+  return taht.ownerMedeniyetId;
+}
+
 /** Bir bölgeyi tutan medeniyetin SUR oranı — tutan yoksa 0. */
 export function surOrani(
   bonuslar: Map<string, MedeniyetBonusu>,

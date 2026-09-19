@@ -491,6 +491,12 @@ export interface DunyaDto {
     name: string;
     sahip: { id: string; name: string } | null;
     sohretBonusu: number;
+    /** Tahtı TUTAN medeniyet (docs/16 §13 soru 5) — sahipsizse null. */
+    medeniyet: { id: string; ad: string; renk: string } | null;
+    /** O medeniyetin her üyesine işleyen şöhret çarpanı. */
+    medeniyetSohretBonusu: number;
+    /** Taht benim medeniyetimde mi. */
+    benimMedeniyetimde: boolean;
   } | null;
   /** Lider avı — kartopu freni. Dünya çok küçükse null. */
   liderAvi: {

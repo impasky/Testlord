@@ -53,7 +53,7 @@ import {
 import type { Prisma } from '@prisma/client';
 import { prisma, type Tx } from '../db.js';
 import { garnizonPayGirdileri } from './gelir.js';
-import { lordunMedeniyetBonusu } from './medeniyet.js';
+import { lordunMedeniyetBonusu, tahtiTutanMedeniyet } from './medeniyet.js';
 import { B } from '@lordlar/shared';
 
 import { bildirimGonder } from './push.js';
@@ -362,7 +362,16 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
    * kendisi. Çağrı başına ayrı ayrı okumak, `tickLord` her `/me`
    * isteğinde koştuğu için üç sorgu demekti.
    */
-  const medBonus = await lordunMedeniyetBonusu(lordId, client);
+  /*
+   * Tahtı tutan medeniyet benimki mi (docs/16 §13 soru 5). Bonusla
+   * PARALEL okunuyor: ikisi de medeniyet katmanından geliyor ve sırayla
+   * beklemek `tickLord`u her `/me` isteğinde iki tur yavaşlatırdı.
+   */
+  const [medBonus, tahtMedeniyeti] = await Promise.all([
+    lordunMedeniyetBonusu(lordId, client),
+    tahtiTutanMedeniyet(lord.worldId, client),
+  ]);
+  const medeniyetTahti = tahtMedeniyeti !== null && tahtMedeniyeti === lord.medeniyetId;
 
   const { income, famePerHour } = calcHourlyIncome(
     lord.level,
@@ -443,6 +452,7 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
     pvpWins: lord.pvpWins,
     fortressFameAccrued: accruedFame,
     ownsThrone,
+    medeniyetTahti,
   });
 
   // Günlük saldırı sayacını sıfırla

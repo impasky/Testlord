@@ -1621,6 +1621,15 @@ describe('öğretici (docs/09 — ilk giriş)', () => {
     expect(metin).toContain('medeniyetine yazılır');
   });
 
+  it('öğretici tahtın İKİ şöhret payını da söylüyor', () => {
+    // Taht artık yalnız bir lordun unvanı değil, bir tarafın kazancı
+    // (docs/16 §13 soru 5). Öğretici ikincisini yazmazsa oyuncu
+    // haritanın en büyük ödülünü eksik öğrenir.
+    const metin = sayfalar.flatMap((s) => s.maddeler.map((m) => `${m.vurgu} ${m.metin}`)).join(' ');
+    expect(metin).toContain(`%${Math.round(B.taht_kalesi.unvan_sohret_bonusu * 100)}`);
+    expect(metin).toContain(`%${Math.round(B.taht_kalesi.medeniyet_sohret_bonusu * 100)}`);
+  });
+
   it('öğretici sezon vaat etmiyor — dünya kalıcı (docs/09 §2.2)', () => {
     const tumMetin = sayfalar
       .flatMap((s) => [s.baslik, s.ozet, ...s.maddeler.map((m) => `${m.vurgu} ${m.metin}`)])

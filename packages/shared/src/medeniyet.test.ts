@@ -8,7 +8,8 @@
  * ölçüyor, yalnız "fonksiyon çalışıyor mu"yu değil.
  */
 import { describe, expect, it } from 'vitest';
-import { WORLD_MAP } from './balance.js';
+import { B, WORLD_MAP } from './balance.js';
+import { calculateFame } from './progression.js';
 import {
   CEKIRDEK_AZAMI_SEVIYE,
   KARTOPU_FRENI,
@@ -454,5 +455,45 @@ describe('kartopu freni', () => {
   it('fren kapalıyken hiçbir toprak bonus vermiyor', () => {
     const sayilar = acilis();
     for (const m of MEDENIYETLER) expect(kartopuYagmaBonusu(sayilar, m.id)).toBe(0);
+  });
+});
+
+/**
+ * TAHTIN MEDENİYETE YAZAN PAYI (docs/16 §13 soru 5).
+ *
+ * Kararın kendisi burada kilitleniyor: taht bir TARAFA şöhret veriyor,
+ * GÜÇ değil. Bir gün buraya güç eklenmek istenirse bu sınama düşecek ve
+ * düşerken kararı hatırlatacak — tahtın üstüne güç koymak, önde gideni
+ * daha da hızlandırmak demek (§10 dördüncü risk).
+ */
+describe('tahtı tutan medeniyetin şöhreti', () => {
+  const taban = {
+    lordLevel: 20,
+    regions: [{ type: 'sehir', level: 3 }],
+    totalEquipmentPower: 500,
+    army: { mizrakci: 100 },
+    pvpWins: 3,
+    fortressFameAccrued: 0,
+  };
+
+  it('medeniyetin tahtı üyenin şöhretini büyütüyor', () => {
+    const yok = calculateFame({ ...taban, ownsThrone: false, medeniyetTahti: false });
+    const var_ = calculateFame({ ...taban, ownsThrone: false, medeniyetTahti: true });
+    expect(var_).toBeGreaterThan(yok);
+    expect(var_ / yok).toBeCloseTo(1 + B.taht_kalesi.medeniyet_sohret_bonusu, 3);
+  });
+
+  it('medeniyet payı ŞAHSİ unvandan küçük', () => {
+    // Biri bir kişiye, öbürü binlerce kişiye işliyor. Medeniyet payı
+    // büyük olsaydı sıralamayı topluca kaydırırdı.
+    expect(B.taht_kalesi.medeniyet_sohret_bonusu).toBeLessThan(B.taht_kalesi.unvan_sohret_bonusu);
+  });
+
+  it('tahtı bizzat tutan lord İKİ çarpanı birden alıyor', () => {
+    const yok = calculateFame({ ...taban, ownsThrone: false, medeniyetTahti: false });
+    const ikisi = calculateFame({ ...taban, ownsThrone: true, medeniyetTahti: true });
+    const beklenen =
+      (1 + B.taht_kalesi.unvan_sohret_bonusu) * (1 + B.taht_kalesi.medeniyet_sohret_bonusu);
+    expect(ikisi / yok).toBeCloseTo(beklenen, 3);
   });
 });
