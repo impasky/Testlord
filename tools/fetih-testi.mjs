@@ -16,6 +16,7 @@
  */
 import { kayitOl } from './lib/kayit.mjs';
 import { readFileSync } from 'node:fs';
+import { fethedilebilirMi } from './lib/hedef.mjs';
 
 const API = process.env.API_URL ?? 'http://localhost:3000';
 const KOK = new URL('..', import.meta.url).pathname;
@@ -108,7 +109,7 @@ k(
  * sınaması bunu ölçüp kaldı.
  */
 const sahipsizYurt = harita.regions.find(
-  (r) => r.medeniyet?.id === benimMedeniyetim && !r.cekirdek && r.type !== 'taht' && !r.owner,
+  (r) => r.medeniyet?.id === benimMedeniyetim && fethedilebilirMi(r),
 );
 k('Yurtta sahipsiz bölge var', Boolean(sahipsizYurt), sahipsizYurt?.name ?? 'yok');
 if (sahipsizYurt) {

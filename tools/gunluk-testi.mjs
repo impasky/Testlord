@@ -10,6 +10,7 @@
  * API ayakta olmalı. node tools/gunluk-testi.mjs
  */
 import { kayitOl } from './lib/kayit.mjs';
+import { fethedilebilirMi } from './lib/hedef.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 
 let hata = 0;
@@ -54,9 +55,7 @@ await post('/test/kuyruklari-bitir');
 await post('/test/kalkanlari-kaldir');
 
 const harita = await get('/map');
-const aday = harita.regions
-  .filter((x) => !x.owner && x.type !== 'taht')
-  .sort((a, b) => a.distance - b.distance)[0];
+const aday = harita.regions.filter(fethedilebilirMi).sort((a, b) => a.distance - b.distance)[0];
 const ordu = (await get('/army')).home;
 await post('/march', { toRegionId: aday.id, army: ordu });
 await post('/test/yuruyusleri-bitir');

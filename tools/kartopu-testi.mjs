@@ -22,6 +22,7 @@
  */
 import { readFileSync } from 'node:fs';
 import { kayitOl } from './lib/kayit.mjs';
+import { fethedilebilirMi } from './lib/hedef.mjs';
 
 // Sayılar DENGEDEN, kopyasından değil: eşik ya da bonus değişirse bu
 // sınama kendiliğinden yeni sayıyla ölçer (öbür uçtan uca araçların
@@ -90,12 +91,7 @@ k('Rakip medeniyet seçildi', Boolean(rakip), `benim: ${benim ?? 'yok'} · rakip
 /* --- Hedef: rakibin, hiçbir lordun tutmadığı bir bölgesi --- */
 const hedefBul = async () => {
   const harita = await get('/map');
-  return (
-    harita.regions.find(
-      (r) =>
-        r.medeniyet?.id === rakip && !r.owner && !r.cekirdek && !r.shielded && r.type !== 'taht',
-    ) ?? null
-  );
+  return harita.regions.find((r) => r.medeniyet?.id === rakip && fethedilebilirMi(r)) ?? null;
 };
 
 // Önce yalnız DEPO: fren hâlâ kapalı, ölçümün taban çizgisi bu.

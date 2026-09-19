@@ -15,6 +15,7 @@ import { ogreticiyiGec } from './lib/ogretici.mjs';
 import { rehberiSustur } from './lib/gezin.mjs';
 import { merkezUzakliklari } from './lib/harita.mjs';
 import { yerlesimAl } from './lib/koy.mjs';
+import { fethedilebilirMi } from './lib/hedef.mjs';
 
 const API = process.env.API_URL ?? 'http://localhost:3000';
 const WEB = process.env.WEB_URL ?? 'http://127.0.0.1:5173';
@@ -76,7 +77,7 @@ const harita = await get('/map');
 const kenar = new Set(
   [...merkezUzakliklari(harita.regions)].filter(([, d]) => d >= 4).map(([id]) => id),
 );
-const koy = harita.regions.find((r) => r.type === 'koy' && !r.owner && kenar.has(r.id));
+const koy = harita.regions.find((r) => r.type === 'koy' && fethedilebilirMi(r) && kenar.has(r.id));
 kontrol('Haritada alınabilir bir köy var', Boolean(koy), koy?.name ?? 'yok');
 
 const oneri = harita.oneri;

@@ -12,6 +12,7 @@ import { devices } from 'playwright';
 import { tarayiciAc } from './lib/tarayici.mjs';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
 import { birimiAc } from './lib/birim.mjs';
+import { fethedilebilirMi } from './lib/hedef.mjs';
 
 const WEB = process.env.WEB_URL ?? 'http://127.0.0.1:5173';
 const API = process.env.API_URL ?? 'http://localhost:3000';
@@ -90,9 +91,7 @@ await page.waitForTimeout(1200);
  * çekirdek olmayan bir tarla seçiliyor ve işaretçiye ondan gidiliyor.
  */
 const haritaVerisi = await (await fetch(`${API}/api/map`, { headers: h })).json();
-const uygunTarlalar = haritaVerisi.regions.filter(
-  (r) => r.type === 'tarla' && !r.owner && !r.cekirdek && !r.shielded,
-);
+const uygunTarlalar = haritaVerisi.regions.filter((r) => r.type === 'tarla' && fethedilebilirMi(r));
 // HEPSİ tek seçicide: yardımcı, üstü kapalı olmayan ilkini seçiyor.
 // Tek bir kimlik versem o işaretçi bir komşusunun altında kalabilir ve
 // `bolgeyeDokun` null döner (bkz. yardımcının kendi yorumu).

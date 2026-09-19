@@ -14,6 +14,7 @@
  */
 import { kayitOl } from './lib/kayit.mjs';
 import { merkezUzakliklari } from './lib/harita.mjs';
+import { fethedilebilirMi } from './lib/hedef.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 const ADET = Number(process.env.DEMO_ADET ?? 6);
 
@@ -77,9 +78,7 @@ async function lordKur(tanim, sira) {
   // Merkeze uzaklık: eski `ring` alanının karşılığı (docs/12 §1).
   const uzaklik = merkezUzakliklari(harita.regions);
   const hedef = harita.regions
-    .filter(
-      (r) => !r.owner && (uzaklik.get(r.id) ?? 0) >= 3 && r.type !== 'kale' && r.type !== 'taht',
-    )
+    .filter((r) => fethedilebilirMi(r) && (uzaklik.get(r.id) ?? 0) >= 3 && r.type !== 'kale')
     .sort((a, b) => a.distance - b.distance)[0];
 
   let bolge = null;

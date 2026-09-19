@@ -13,6 +13,7 @@ import { bolgeyeDokun, ekrana, kapida, rehberiSustur } from './lib/gezin.mjs';
 import { merkezUzakliklari } from './lib/harita.mjs';
 import { binalariDik, yerlesimAl } from './lib/koy.mjs';
 import { birimiAc } from './lib/birim.mjs';
+import { fethedilebilirMi } from './lib/hedef.mjs';
 
 const WEB = process.env.WEB_URL ?? 'http://127.0.0.1:5173';
 const API = process.env.API_URL ?? 'http://localhost:3000';
@@ -224,7 +225,7 @@ const kenar = new Set(
   [...merkezUzakliklari(harita.regions)].filter(([, d]) => d >= 4).map(([id]) => id),
 );
 const hedef = harita.regions
-  .filter((r) => kenar.has(r.id) && !r.owner && r.type !== 'kale')
+  .filter((r) => kenar.has(r.id) && fethedilebilirMi(r) && r.type !== 'kale')
   .sort((a, b) => a.distance - b.distance)[0];
 /*
  * ÖNCE "SIĞDIR", sonra dokunulabilir bir hedef: harita oyuncunun
