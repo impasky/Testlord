@@ -13,6 +13,7 @@
  * API ayakta olmalı. node tools/ittifak-testi.mjs
  */
 import { kayitOl } from './lib/kayit.mjs';
+import { fethedilebilirMi } from './lib/hedef.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 
 let hata = 0;
@@ -325,7 +326,7 @@ kontrol('Eksi miktar gönderilemiyor', Boolean(eksi?.code), eksi?.code ?? 'gönd
 const hedefsiz = (await a.get('/ittifak')).ittifakim?.hedef;
 kontrol('Başlangıçta ortak hedef yok', hedefsiz === null, JSON.stringify(hedefsiz));
 
-const sahipsizBolge = (await a.get('/map')).regions.find((r) => !r.owner && r.type !== 'taht');
+const sahipsizBolge = (await a.get('/map')).regions.find((r) => fethedilebilirMi(r));
 const isaret = await a.post('/ittifak/hedef', { regionId: sahipsizBolge.id, not: 'cuma akşamı' });
 kontrol(
   'Lider ortak hedef işaretleyebiliyor',

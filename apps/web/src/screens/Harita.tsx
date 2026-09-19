@@ -737,6 +737,29 @@ export function Harita({
         uzun: `Günde en fazla ${B.korumalar.gunluk_saldiri_limiti} saldırı yapabilirsin. Taht Kalesi bu limitten muaftır; yarın sıfırlanır.`,
       };
     }
+    /*
+     * Medeniyet kuralları (docs/16 §5). Sunucu ikisini de reddediyor;
+     * buradaki iş, oyuncunun sebebi ordusunu yola çıkarmadan ÖNCE
+     * görmesi. Çekirdek işaretçisi haritada da duruyor ama kart açıkken
+     * "neden saldıramıyorum" sorusunun cevabı burada olmalı.
+     */
+    if (bolge.cekirdek) {
+      return {
+        kisa: 'Çekirdek bölge — ele geçirilemez',
+        uzun: `${bolge.medeniyet?.ad ?? 'Bir medeniyetin'} çekirdeği. Kaybeden medeniyet ölmesin diye çekirdekler dokunulmaz; yalnız kendi üyeleri geliştirebilir.`,
+      };
+    }
+    if (
+      bolge.owner &&
+      bolge.medeniyet &&
+      lord.medeniyet &&
+      bolge.medeniyet.id === lord.medeniyet.id
+    ) {
+      return {
+        kisa: 'Yoldaşının toprağı',
+        uzun: `${bolge.owner.name} seninle aynı medeniyetten (${bolge.medeniyet.ad}). Kendi medeniyetinin lorduna saldıramazsın.`,
+      };
+    }
     if (bolge.shielded) {
       return {
         kisa: 'Bölge kalkan altında',

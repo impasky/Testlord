@@ -128,3 +128,33 @@ export async function medeniyetAta(
   if (!satir) throw new Error(`Medeniyet satırı bulunamadı: ${secilen}`);
   return { id: satir.id, key: secilen };
 }
+
+/** Bir medeniyetin arayüze giden hâli: kimlik, ad, renk. */
+export interface MedeniyetBilgisi {
+  id: MedeniyetId;
+  ad: string;
+  renk: string;
+}
+
+/**
+ * Diyardaki medeniyet SATIRLARININ kimliğinden tanımına.
+ *
+ * Veritabanı yalnız hangi medeniyet olduğunu saklıyor (`key`); ad ve
+ * renk `balance.json`da. İkinci bir kopya olsaydı bir medeniyetin rengi
+ * iki yerde yaşar ve biri diğerinden habersiz değişirdi.
+ */
+export async function medeniyetBilgileri(
+  worldId: string,
+  client: Tx = prisma,
+): Promise<Map<string, MedeniyetBilgisi>> {
+  const satirlar = await client.medeniyet.findMany({
+    where: { worldId },
+    select: { id: true, key: true },
+  });
+  const harita = new Map<string, MedeniyetBilgisi>();
+  for (const s of satirlar) {
+    const m = MEDENIYETLER.find((x) => x.id === s.key);
+    if (m) harita.set(s.id, { id: m.id, ad: m.ad, renk: m.renk });
+  }
+  return harita;
+}

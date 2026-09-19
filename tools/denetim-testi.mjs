@@ -6,6 +6,7 @@
  *
  * SADECE GELİŞTİRME. node tools/denetim-testi.mjs
  */
+import { fethedilebilirMi } from './lib/hedef.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 
 let hata = 0;
@@ -90,7 +91,7 @@ await P('/test/kalkanlari-kaldir');
 // Beş kişilik yürüyüşler garnizonu geçemez, o yüzden ayrı bir sefer.
 const harita = await G('/map');
 const adaylar = harita.regions
-  .filter((r) => !r.owner && r.type !== 'taht')
+  .filter((r) => fethedilebilirMi(r))
   .sort((a, b) => a.distance - b.distance)
   .slice(0, 8);
 let alinan = null;
@@ -118,7 +119,7 @@ kontrol('Bırakma testi için bölge alındı', Boolean(alinan), alinan?.name ??
  */
 await P('/army/train', { unitType: 'mizrakci', count: 60 });
 await P('/test/kuyruklari-bitir');
-const hedefler = (await G('/map')).regions.filter((r) => !r.owner && r.type !== 'taht').slice(0, 8);
+const hedefler = (await G('/map')).regions.filter((r) => fethedilebilirMi(r)).slice(0, 8);
 let gonderilen = 0;
 let sonDurum = 0;
 for (const hedef of hedefler) {

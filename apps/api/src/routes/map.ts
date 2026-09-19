@@ -3,6 +3,7 @@ import {
   B,
   UNIT_TYPES,
   armyCount,
+  cekirdekMi,
   bosGeneralBonus,
   canRecallMarch,
   ayniIttifaktaMi,
@@ -28,6 +29,7 @@ import { prisma, type Tx } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { gecikmisleriKapat } from '../services/gecikmis.js';
 import { garnizonPayGirdileri } from '../services/gelir.js';
+import { medeniyetBilgileri } from '../services/medeniyet.js';
 import { arastirmaBonusuOku, binalariOku, findLordByUser, pushEvent } from '../services/lord.js';
 import { dunyaGrafigi, mesafeOlcer, mesafeOlcerHazir } from '../services/mesafe.js';
 import { paktVarMi, paktliIttifaklar } from '../services/pakt.js';
@@ -101,10 +103,17 @@ async function assertHomeUnits(lordId: string, army: Army, tx: Tx): Promise<void
   }
 }
 
-/** Saldırıyı engelleyen tüm koruma kurallarını uygular (docs/01 §7). */
+/** Saldırıyı engelleyen tüm koruma kurallarını uygular (docs/01 §7, docs/16 §5). */
 async function assertCanAttack(
   attackerId: string,
-  region: { id: number; type: string; ownerLordId: string | null; shieldUntil: Date | null },
+  region: {
+    id: number;
+    mapId: number;
+    type: string;
+    ownerLordId: string | null;
+    ownerMedeniyetId: string | null;
+    shieldUntil: Date | null;
+  },
   tx: Tx,
 ): Promise<void> {
   const now = new Date();
@@ -112,8 +121,33 @@ async function assertCanAttack(
 
   const attacker = await tx.lord.findUniqueOrThrow({
     where: { id: attackerId },
-    select: { level: true, woundedUntil: true, dailyAttacks: true, arastirmalar: true },
+    select: {
+      level: true,
+      woundedUntil: true,
+      dailyAttacks: true,
+      arastirmalar: true,
+      medeniyetId: true,
+    },
   });
+
+  /*
+   * ÇEKİRDEK ELE GEÇİRİLEMEZ (docs/16 §5).
+   *
+   * Sebebi `docs/09` kural 6'nın fraksiyon ölçeğindeki karşılığı:
+   * kaybeden medeniyet ÖLMEZ, evine çekilir ve geri döner. Çekirdeği
+   * alınabilen bir medeniyet haritadan silinebilirdi ve o medeniyetin
+   * bütün oyuncuları oyundan silinmiş olurdu.
+   *
+   * 121 bölgenin yalnız 20'si çekirdek: harita doğduğu gün karara
+   * bağlanmasın diye küçük tutuldu, ama dokunulmazlık mutlak.
+   */
+  if (cekirdekMi(region.mapId)) {
+    throw new GameError(
+      'Burası bir medeniyetin çekirdeği — ele geçirilemez.',
+      400,
+      'CEKIRDEK_DOKUNULMAZ',
+    );
+  }
 
   if (attacker.woundedUntil && attacker.woundedUntil > now)
     throw hata.yarali(attacker.woundedUntil);
@@ -127,6 +161,40 @@ async function assertCanAttack(
 
   if (region.ownerLordId === attackerId) {
     throw new GameError('Kendi bölgene saldıramazsın.', 400, 'KENDI_BOLGEN');
+  }
+
+  /*
+   * YOLDAŞININ TOPRAĞINA SALDIRAMAZSIN — ama kendi yurdunu ŞENLENDİREBİLİRSİN.
+   *
+   * Kural iki yarıdan oluşuyor ve ikinci yarı ilk yazdığımda yoktu:
+   *
+   *   - Aynı medeniyetten BİR LORDUN tuttuğu bölgeye saldırı yok. Bu,
+   *     ittifak içi saldırı yasağının fraksiyon ölçeğindeki karşılığı:
+   *     medeniyet seçilmiyor, ATANIYOR ve iç savaş çıkarabilmek atanmış
+   *     bir tarafta olmayı cezaya çevirirdi.
+   *   - Medeniyetin tuttuğu ama HİÇBİR LORDUN almadığı bölge serbest.
+   *     Orada karşındaki yoldaşın değil, bölgenin NPC garnizonu; yurdunu
+   *     şenlendirmek fetihle oluyor.
+   *
+   * SIRA ÖNEMLİ: bu kontrol "kendi bölgen" kontrolünden SONRA geliyor.
+   * Önce koyduğumda kendi bölgesine saldıran oyuncuya "aynı medeniyetten
+   * bir lordun toprağı" deniyordu — doğru ama işe yaramaz bir cevap.
+   * Özel olan genelin önünde durmalı.
+   *
+   * İkinci yarı olmadan oyunun en önemli sözü kırılıyordu: kamp kendi
+   * yurdunda kuruluyor (docs/16 §8), yani yeni oyuncunun ÇEVRESİNDEKİ
+   * her şey kendi medeniyetinin. Hepsi kapalı olunca ilk hedef 5-8 adım
+   * öteye kayıyor ve "ilk saldırı dakikalar içinde biter" sözü (docs/08
+   * İ3) 2 dakikadan 1,6 saate çıkıyordu. Uçtan uca sınama tam olarak
+   * bunu ölçtü ve kaldı.
+   */
+  if (
+    region.ownerMedeniyetId !== null &&
+    region.ownerLordId !== null &&
+    attacker.medeniyetId !== null &&
+    region.ownerMedeniyetId === attacker.medeniyetId
+  ) {
+    throw new GameError('Burası aynı medeniyetten bir lordun toprağı.', 400, 'KENDI_MEDENIYETIN');
   }
 
   // İttifak içi saldırı yok. İttifağın tek zorunlu kuralı bu ve tek
@@ -289,6 +357,9 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
      * yerde ayrı hesaplanması. Ekran payı sunucudan okuyor, kendi
      * tahmininden değil.
      */
+    const medeniyetler = await medeniyetBilgileri(me.worldId);
+    const medeniyetBilgisi = (id: string | null) => (id ? (medeniyetler.get(id) ?? null) : null);
+
     const paylar = new Map(
       (await garnizonPayGirdileri(lordId)).map((p) => [
         p.regionId,
@@ -327,6 +398,17 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
         isMine: r.ownerLordId === lordId,
         /** Bu bölgenin gelirinden bana düşen pay — garnizonum yoksa null. */
         pay: paylar.get(r.id) ?? null,
+        /**
+         * Bölgeyi TUTAN medeniyet (docs/16 §2) — sahipsiz çekişmeli
+         * bölgelerde null.
+         *
+         * Anahtar, ad ve renk `balance.json`dan geliyor: veritabanı
+         * yalnız hangi medeniyet olduğunu saklıyor, nasıl göründüğünü
+         * değil. İkinci bir kopya olsaydı renk iki yerde yaşardı.
+         */
+        medeniyet: medeniyetBilgisi(r.ownerMedeniyetId),
+        /** Ele geçirilemeyen çekirdek mi (docs/16 §5). */
+        cekirdek: cekirdekMi(r.mapId),
         shielded: r.shieldUntil ? r.shieldUntil > new Date() : false,
         distance: olc(r.mapId),
         // Pakt: saldırılamaz ama müttefik de değil. Haritada ayrı bir
@@ -468,6 +550,10 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
      */
     void gozDikildi(lordId, region, benim, muttefik);
 
+    const bolgeMedeniyetleri = await medeniyetBilgileri(region.worldId);
+    const medeniyetBilgisi = (id: string | null) =>
+      id ? (bolgeMedeniyetleri.get(id) ?? null) : null;
+
     const payim =
       (await garnizonPayGirdileri(lordId)).find((x) => x.regionId === region.id) ?? null;
 
@@ -484,6 +570,8 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
        * arayüz ikisinden de aynı şekli bekliyor.
        */
       pay: payim ? { oran: payim.oran, yer: payim.yer, toplamYer: payim.toplamYer } : null,
+      medeniyet: medeniyetBilgisi(region.ownerMedeniyetId),
+      cekirdek: cekirdekMi(region.mapId),
       // Liste ucuyla aynı türetilmiş alanlar; arayüz iki uçtan da aynı şekli bekler.
       distance: olc(region.mapId),
       shielded: region.shieldUntil ? region.shieldUntil > new Date() : false,

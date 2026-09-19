@@ -53,8 +53,15 @@ export async function yerlesimAl(api, token, tur = 'sehir') {
    * bölgeyi seçen araç "saldırı reddedildi — koruma altında" diye
    * düşüyordu ve düşme sebebi ölçtüğü şeyle ilgisizdi.
    */
+  /*
+   * ÇEKİRDEK ELENİYOR (docs/16 §5). Çekirdekler de sahipsiz görünüyor
+   * ama ele geçirilemiyor: seçen araç "saldırı reddedildi — burası bir
+   * medeniyetin çekirdeği" diye düşüyordu ve düşme sebebi ölçtüğü şeyle
+   * ilgisizdi. Aynı sınıf hata `shielded` için de bir kez yaşanmıştı;
+   * süzgeç o yüzden burada, tek yerde duruyor.
+   */
   const hedef = harita.regions
-    .filter((r) => r.type === tur && !r.owner && !r.shielded)
+    .filter((r) => r.type === tur && !r.owner && !r.shielded && !r.cekirdek)
     .sort((a, b) => a.distance - b.distance)[0];
   if (!hedef) throw new Error(`yerlesimAl: saldırılabilir "${tur}" bölgesi kalmamış`);
 

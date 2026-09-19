@@ -155,6 +155,10 @@ export interface LordState {
   binalar: Record<string, number>;
   /** Hastanede tedavi bekleyenler. Orduya ve komuta kapasitesine dahil değil. */
   hastane: Army;
+  /** Lordun medeniyeti (docs/16) — sistemden önceki lordlarda null. */
+  medeniyet: { id: string; ad: string; renk: string; ozet: string } | null;
+  /** Kolektif eylemin kişisel karşılığı (docs/16 §9). Güç satın almaz. */
+  faydaPuani: number;
   hourlyIncome: Resources;
   upkeepPerHour: number;
   netErzakPerHour: number;
@@ -310,6 +314,10 @@ export interface RegionDto {
    * %8-30 az gelir yazıyordu.
    */
   pay: { oran: number; yer: number; toplamYer: number } | null;
+  /** Bölgeyi TUTAN medeniyet (docs/16 §2) — çekişmeli bölgelerde null. */
+  medeniyet: { id: string; ad: string; renk: string } | null;
+  /** Ele geçirilemeyen çekirdek mi (docs/16 §5). */
+  cekirdek: boolean;
   shielded: boolean;
   distance: number;
   /** Sahibinin ittifakıyla saldırmazlık paktım var mı (docs/09 B1d). */

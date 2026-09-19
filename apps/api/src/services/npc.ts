@@ -55,6 +55,7 @@ import {
   varsayilanDizilim,
   type Army,
   type UnitType,
+  cekirdekMi,
 } from '@lordlar/shared';
 import { prisma, type Tx } from '../db.js';
 import { dunyaGrafigi } from './mesafe.js';
@@ -322,6 +323,18 @@ async function sahipsizHedefSec(
 
   let enIyi: Hedef | null = null;
   for (const r of adaylar) {
+    /*
+     * ÇEKİRDEK NPC'YE DE KAPALI (docs/16 §5).
+     *
+     * Kural oyuncunun ucunda (`assertCanAttack`) duruyor ama NPC
+     * yürüyüşü o uçtan geçmiyor — kendi kaydını doğrudan yazıyor.
+     * Burada tekrar edilmeseydi medeniyetlerin çekirdeklerini bir gece
+     * içinde NPC'ler alırdı ve kimse nasıl olduğunu göremezdi.
+     *
+     * Burası SAHİPSİZ bölgeleri tarıyor: yoldaş toprağı yasağı burada
+     * anlamsız (sahibi yok), o yüzden yalnız çekirdek süzülüyor.
+     */
+    if (cekirdekMi(r.mapId)) continue;
     if (!yeterMi(ordu, r.npcGarrison as Army, regionFortressBonus(r.type, r.level))) continue;
     const mesafe = olc(r.mapId);
     if (!enIyi || mesafe < enIyi.mesafe) enIyi = { id: r.id, mesafe };
@@ -425,10 +438,20 @@ async function oyuncuHedefiSec(
     garnizonIle.set(g.locationId, a);
   }
 
+  const benimMedeniyetim = (
+    await tx.lord.findUnique({ where: { id: lord.id }, select: { medeniyetId: true } })
+  )?.medeniyetId;
+
   let enIyi: Hedef | null = null;
   for (const r of adaylar) {
     const sahip = r.owner;
     if (!sahip) continue;
+
+    // Çekirdek dokunulmaz; aynı medeniyetten bir lordun toprağı da
+    // (docs/16 §5). Sahipsiz yurt bölgesi serbest: orada yoldaş değil
+    // NPC garnizonu var.
+    if (cekirdekMi(r.mapId)) continue;
+    if (r.ownerMedeniyetId && r.ownerMedeniyetId === benimMedeniyetim) continue;
 
     // Seviye farkı kilidi: çok altındakine saldırılmaz.
     if (lord.level - sahip.level >= B.korumalar.seviye_farki_kilidi) continue;

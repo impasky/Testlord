@@ -165,13 +165,33 @@ export async function transferRegion(
 
   const onceki = await tx.region.findUniqueOrThrow({
     where: { id: regionId },
-    select: { ownerLordId: true, mapId: true, name: true },
+    select: { ownerLordId: true, ownerMedeniyetId: true, mapId: true, name: true },
   });
+
+  /*
+   * TOPRAK MEDENİYETİN OLUYOR (docs/16 §2).
+   *
+   * Fetih artık iki şey birden yapıyor: bölge fatihin bookkeeping
+   * sahipliğine geçiyor (başkent, bölge tavanı, şöhret hâlâ oradan
+   * okunuyor) ve BÖLGEYİ TUTAN MEDENİYET fatihin medeniyeti oluyor.
+   * İkincisi haritanın rengini ve gelir payını belirliyor: aynı
+   * medeniyetten bir yoldaşın oraya garnizon bırakırsa o da pay alıyor.
+   *
+   * Bölge BIRAKILDIĞINDA (`newOwnerId = null`) medeniyet damgası
+   * DURUYOR. Toprağı bırakan bir lord onu kimseye iade etmiş olmuyor;
+   * medeniyet o toprağı başka bir medeniyet alana kadar tutuyor.
+   * Sahipsiz ama bir medeniyetin elinde olan bölge tam olarak
+   * `docs/16` §5'in tarif ettiği hâl.
+   */
+  const fatih = newOwnerId
+    ? await tx.lord.findUnique({ where: { id: newOwnerId }, select: { medeniyetId: true } })
+    : null;
 
   await tx.region.update({
     where: { id: regionId },
     data: {
       ownerLordId: newOwnerId,
+      ...(fatih?.medeniyetId ? { ownerMedeniyetId: fatih.medeniyetId } : {}),
       npcGarrison: {},
       shieldUntil: new Date(Date.now() + saat * 3_600_000),
     },

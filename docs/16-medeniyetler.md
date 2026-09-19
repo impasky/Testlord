@@ -456,3 +456,42 @@ tek başına oynanabilir bir oyun bırakmıyordu.
    eklenmişti; kart verisini detay ucundan (`/map/:id`) alıyor ve payı
    0 sanıp iki bölgesi olan oyuncuya "tek bölgen" yazıyordu. Aynı
    türetilmiş alan iki uçta da bulunmalı.
+
+---
+
+## 17. Uygulama notu: fetih kuralları (§12 adım 4)
+
+`2026-09-19` — üç kural koda girdi:
+
+1. **Çekirdek ele geçirilemez.** 20 çekirdeğin hiçbirine saldırılamıyor;
+   oyuncu ucunda da (`assertCanAttack`), NPC hedef seçiminde de, öneri
+   motorunda da. Üçü ayrı yerde çünkü NPC ve öneri o uçtan geçmiyor.
+2. **Yoldaşının toprağına saldıramazsın.** Aynı medeniyetten bir lordun
+   tuttuğu bölgeye saldırı yok — ittifak içi saldırı yasağının fraksiyon
+   ölçeğindeki karşılığı.
+3. **Fetih toprağı medeniyete yazıyor.** Alınan bölgenin
+   `ownerMedeniyetId`'si fatihin medeniyeti oluyor; harita böylece renk
+   değiştiriyor ve aynı medeniyetten yoldaşlar orada pay alabiliyor.
+
+### Kuralın ikinci yarısı: sahipsiz yurt SERBEST
+
+İlk hâlde kural "kendi medeniyetinin toprağına saldıramazsın"dı ve
+oyunun en önemli sözünü kırdı. Kamp kendi yurdunda kuruluyor (§8), yani
+yeni oyuncunun **çevresindeki her şey kendi medeniyetinin**. Hepsi
+kapalı olunca ilk hedef 5-8 adım öteye kaydı ve "ilk saldırı dakikalar
+içinde biter" sözü (`docs/08` İ3) **2 dakikadan 1,6 saate** çıktı.
+`ilk-oturum-testi` bunu ölçüp kaldı.
+
+Doğrusu: medeniyetin tuttuğu ama **hiçbir lordun almadığı** bölge
+serbest. Orada karşındaki yoldaşın değil, bölgenin NPC garnizonu;
+yurdunu şenlendirmek fetihle oluyor. Ölçülen sonuç: ilk saldırı yine
+**120 saniye**.
+
+### Ertelenen: `Region.ownerLordId`
+
+§12 adım 4 "sahiplik medeniyete geçsin" diyordu; sütun hâlâ duruyor ve
+bilerek duruyor. Başkent (`docs/12` §2.3), bölge tavanı (`maxRegions`),
+şöhret ve bölge bırakma hep o sütundan okuyor. İkisi bir arada
+yaşıyor: **toprak medeniyetin, kayıt lordun.** Sütunun kalkması arayüz
+adımıyla (§12.5) birlikte, o ekranlar medeniyet üzerinden yeniden
+kurulduğunda anlamlı olur.

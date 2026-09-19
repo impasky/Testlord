@@ -10,6 +10,7 @@
  * savaşı kendi döngüsünde çözmesini bekler. Hiçbir test ucu çağırmaz.
  */
 import { benzersizAd, kayitOl } from './lib/kayit.mjs';
+import { fethedilebilirMi } from './lib/hedef.mjs';
 import { merkezUzakliklari } from './lib/harita.mjs';
 
 const API = process.env.API_URL ?? 'http://localhost:3000';
@@ -37,7 +38,7 @@ const kenar = new Set(
   [...merkezUzakliklari(harita.regions)].filter(([, d]) => d >= 4).map(([id]) => id),
 );
 const hedef = harita.regions
-  .filter((r) => kenar.has(r.id) && !r.owner && r.type !== 'kale')
+  .filter((r) => kenar.has(r.id) && fethedilebilirMi(r) && r.type !== 'kale')
   .sort((a, b) => a.distance - b.distance)[0];
 const y = await P('/march', { toRegionId: hedef.id, army: { mizrakci: 20, okcu: 15 } });
 console.log('Yuruyus basladi:', hedef.name, '| varis', y.arriveAt);

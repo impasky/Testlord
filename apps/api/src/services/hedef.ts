@@ -46,7 +46,11 @@ import {
   type SavasOrneklemesi,
   type TaramaSonucu,
   type UnitType,
+  MEDENIYETLER,
 } from '@lordlar/shared';
+
+/** Bütün çekirdek bölgelerin harita numaraları — öneri bunları atlıyor. */
+const CEKIRDEK_IDLER = MEDENIYETLER.flatMap((m) => m.cekirdekBolgeler);
 import { prisma, type Tx } from '../db.js';
 import { arastirmaBonusuOku, equippedGenerals, gearBonusFrom } from './lord.js';
 import { regionFortressBonus } from './region.js';
@@ -213,6 +217,17 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
         ownerLordId: null,
         type: { not: 'taht' },
         OR: [{ shieldUntil: null }, { shieldUntil: { lte: new Date() } }],
+        /*
+         * Çekirdek bölgeler ÖNERİLMİYOR (docs/16 §5): ele geçirilemez
+         * bir yeri hedef göstermek, omurganın oyuncuyu reddedilecek bir
+         * saldırıya yollaması olurdu — "şuna saldır" deyip sonra
+         * "buraya saldıramazsın" demek.
+         *
+         * Liste `balance.json`dan geliyor, elle yazılmış bir dizi
+         * değil: harita ya da çekirdekler değişirse öneri de kendiliğinden
+         * uyum sağlıyor.
+         */
+        mapId: { notIn: CEKIRDEK_IDLER },
       },
     }),
     dunyaGrafigi(lord.worldId),

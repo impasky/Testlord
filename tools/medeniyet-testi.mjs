@@ -104,20 +104,21 @@ k(
 );
 
 if (durum.medeniyetler?.length === MEDENIYETLER.length) {
-  // Yurt bölge sayısı kanonik haritadan hesaplanıyor: elle yazılmış bir
-  // sayı harita değişince sessizce yanlışa düşerdi.
-  const beklenen = Object.fromEntries(
-    MEDENIYETLER.map((m) => [m.id, HARITA.regions.filter((r) => r.province === m.yurt).length]),
-  );
-  const yanlis = durum.medeniyetler.filter((m) => m.bolge !== beklenen[m.key]);
-  k(
-    'her medeniyet kendi yurdunun tamamını tutuyor',
-    yanlis.length === 0,
-    yanlis.length
-      ? yanlis.map((m) => `${m.key}: ${m.bolge} ≠ ${beklenen[m.key]}`).join(', ')
-      : durum.medeniyetler.map((m) => `${m.key} ${m.bolge}`).join(' · '),
-  );
-
+  /*
+   * ÖLÇÜLEN ŞEY DEĞİŞTİ: "açılış dağılımı" değil, "değişmeyen kural".
+   *
+   * Bu sınama önce "her medeniyet yurdunun TAMAMINI tutuyor" diyordu ve
+   * taze bir diyarda doğruydu. Fetih medeniyete yazmaya başlayınca
+   * (docs/16 §12 adım 4) toprak el değiştirmeye başladı ve sayım
+   * kaydı — haklı olarak: 24 ≠ 21. Yanlış olan kod değil, bir AÇILIŞ
+   * durumunu değişmezmiş gibi ölçmekti. Zaten toprağın el değiştirmesi
+   * bu sistemin bütün amacı.
+   *
+   * Değişmeyen üç şey ölçülüyor:
+   *   - Her medeniyetin beş çekirdek satırı var.
+   *   - Çekirdekler HİÇ el değiştirmiyor (docs/16 §5).
+   *   - Sahiplik defteri tutuyor: tutulan + sahipsiz = 121.
+   */
   const cekirdekYanlis = durum.medeniyetler.filter(
     (m) => m.cekirdek !== DENGE.medeniyetler.yurt_basina_cekirdek,
   );
@@ -127,11 +128,31 @@ if (durum.medeniyetler?.length === MEDENIYETLER.length) {
     cekirdekYanlis.map((m) => `${m.key}: ${m.cekirdek}`).join(', ') || 'hepsi 5',
   );
 
-  const yurtToplam = Object.values(beklenen).reduce((s, n) => s + n, 0);
+  const tutulan = durum.medeniyetler.reduce((t, m) => t + m.bolge, 0);
   k(
-    'orta çekişmeli: yurtların dışı sahipsiz başlıyor',
-    durum.sahipsizBolge === HARITA.regions.length - yurtToplam,
-    `${durum.sahipsizBolge} sahipsiz / ${HARITA.regions.length} bölge`,
+    'sahiplik defteri tutuyor: tutulan + sahipsiz = harita',
+    tutulan + durum.sahipsizBolge === HARITA.regions.length,
+    `${tutulan} + ${durum.sahipsizBolge} = ${tutulan + durum.sahipsizBolge} / ${HARITA.regions.length}`,
+  );
+
+  // Çekirdekler haritadan okunuyor: her biri HÂLÂ kendi medeniyetinde mi?
+  const haritaBolgeleri = (await get('/map')).regions;
+  const cekirdekSapmasi = MEDENIYETLER.flatMap((m) =>
+    m.cekirdek_bolge_id
+      .map((mapId) => {
+        const kanonik = HARITA.regions.find((r) => r.id === mapId);
+        const bolge = haritaBolgeleri.find((r) => r.name === kanonik?.name);
+        if (!bolge) return null;
+        return bolge.medeniyet?.id === m.id
+          ? null
+          : `${bolge.name}: ${bolge.medeniyet?.id ?? 'sahipsiz'} ≠ ${m.id}`;
+      })
+      .filter(Boolean),
+  );
+  k(
+    'çekirdekler hiç el değiştirmiyor',
+    cekirdekSapmasi.length === 0,
+    cekirdekSapmasi.slice(0, 3).join(', ') || `${MEDENIYETLER.length * 5} çekirdek yerinde`,
   );
 }
 

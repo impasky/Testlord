@@ -23,6 +23,7 @@ import {
 } from '@lordlar/shared';
 import { hashPassword } from '../auth.js';
 import { prisma } from '../db.js';
+import { medeniyetAta } from './medeniyet.js';
 
 interface DemoTanim {
   ad: string;
@@ -109,6 +110,11 @@ export async function seedDemoLords(worldId: string): Promise<number> {
           },
         },
         world: { connect: { id: worldId } },
+        // Demo lord da bir medeniyete yazılıyor (docs/16). Medeniyetsiz
+        // bir lord haritada renksiz duruyor, kendi medeniyetinin
+        // toprağına saldırabiliyor ve fethettiği yerin rengini
+        // değiştirmiyor — yani dünyayı tutarsız bırakıyor.
+        medeniyet: { connect: { id: (await medeniyetAta(worldId)).id } },
         name: d.ad,
         level: d.seviye,
         xp: 0,

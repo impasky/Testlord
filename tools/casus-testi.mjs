@@ -13,6 +13,7 @@
  * API ayakta olmalı. node tools/casus-testi.mjs
  */
 import { kayitOl } from './lib/kayit.mjs';
+import { fethedilebilirMi } from './lib/hedef.mjs';
 import { garnizonaEkle } from './lib/garnizon.mjs';
 import { merkezUzakliklari } from './lib/harita.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
@@ -67,7 +68,7 @@ const kenar = new Set(
   [...merkezUzakliklari(harita.regions)].filter(([, d]) => d >= 4).map(([id]) => id),
 );
 for (const aday of harita.regions
-  .filter((r) => kenar.has(r.id) && !r.owner && r.type !== 'taht')
+  .filter((r) => kenar.has(r.id) && fethedilebilirMi(r))
   .sort((a, b) => a.distance - b.distance)
   .slice(0, 10)) {
   const ordu = (await savunan.get('/army')).home;
@@ -165,7 +166,7 @@ if (yakalanma > 0) {
 }
 
 // --- Sahipsiz bölgeye casus göndermek anlamsız: garnizonu zaten açık
-const sahipsiz = (await casus.get('/map')).regions.find((r) => !r.owner && r.type !== 'taht');
+const sahipsiz = (await casus.get('/map')).regions.find((r) => fethedilebilirMi(r));
 const bos = await casus.post(`/map/${sahipsiz.id}/kesif`);
 kontrol('Sahipsiz bölgeye casus gönderilemiyor', bos?.code === 'SAHIPSIZ_BOLGE', bos?.code ?? '-');
 

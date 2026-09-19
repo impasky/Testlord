@@ -11,6 +11,7 @@
  * SADECE GELİŞTİRME. node tools/hesap-testi.mjs
  */
 import { kayitOl } from './lib/kayit.mjs';
+import { fethedilebilirMi } from './lib/hedef.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 
 let hata = 0;
@@ -102,7 +103,7 @@ for (const [t, n] of [
 await POST('/test/kuyruklari-bitir', {}, h2);
 const harita = await (await fetch(`${API}/api/map`, { headers: h2 })).json();
 const adaylar = harita.regions
-  .filter((r) => !r.owner && r.type !== 'taht')
+  .filter((r) => fethedilebilirMi(r))
   .sort((a, b) => a.distance - b.distance)
   .slice(0, 8);
 let alinan = null;

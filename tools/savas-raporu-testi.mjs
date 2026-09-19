@@ -84,10 +84,22 @@ await page.waitForTimeout(1200);
 // `.first()` DEĞİL: sığdırılmış haritada ilk eşleşen işaretçi başlığın ya
 // da bir komşusunun altında kalabiliyor ve test otuz saniye bekleyip
 // ölçtüğü şeyle ilgisi olmayan bir sebeple kalıyordu (bkz. bolgeyeDokun).
-const dokunulan = await bolgeyeDokun(
-  page,
-  '[data-bolge][aria-label*="— tarla,"][aria-label*="sahipsiz"]',
+/*
+ * Hedef ÇEKİRDEK OLMAMALI (docs/16 §5): çekirdekler de sahipsiz
+ * görünüyor ama ele geçirilemiyor. Sunucudan alınan listeden
+ * çekirdek olmayan bir tarla seçiliyor ve işaretçiye ondan gidiliyor.
+ */
+const haritaVerisi = await (await fetch(`${API}/api/map`, { headers: h })).json();
+const uygunTarlalar = haritaVerisi.regions.filter(
+  (r) => r.type === 'tarla' && !r.owner && !r.cekirdek && !r.shielded,
 );
+// HEPSİ tek seçicide: yardımcı, üstü kapalı olmayan ilkini seçiyor.
+// Tek bir kimlik versem o işaretçi bir komşusunun altında kalabilir ve
+// `bolgeyeDokun` null döner (bkz. yardımcının kendi yorumu).
+const secici = uygunTarlalar.length
+  ? uygunTarlalar.map((r) => `[data-bolge="${r.id}"]`).join(',')
+  : '[data-bolge][aria-label*="— tarla,"][aria-label*="sahipsiz"]';
+const dokunulan = await bolgeyeDokun(page, secici);
 kontrol('Haritada dokunulabilir bir tarla var', dokunulan !== null);
 // DOM metni "Saldırı Ordusu"; ekranda büyük harf görünmesi .baslik'ten geliyor.
 await page.waitForSelector('text=Saldırı Ordusu', { timeout: 8000 });
@@ -96,7 +108,17 @@ await page.waitForTimeout(500);
 await page.locator('button:has-text("Saldır")').first().click();
 await page.waitForTimeout(1500);
 await post('/test/yuruyusleri-bitir');
-kontrol('Saldırı yapıldı ve yürüyüş çözüldü', true);
+/*
+ * Saldırının GERÇEKTEN olduğu doğrulanıyor.
+ *
+ * Bu satır eskiden `kontrol(..., true)` idi — yani hiçbir şey ölçmüyordu.
+ * Çekirdek dokunulmazlığı gelince (docs/16 §5) seçilen bölge bazen
+ * reddediliyor ve test bunu fark etmeden ilerliyor, sonra "rapor bağı
+ * yok" diye alâkasız bir yerde kalıyordu. Asıl sebep otuz satır
+ * yukarıdaydı ve hiç görünmüyordu.
+ */
+const savasSayisi = (await (await fetch(`${API}/api/battles`, { headers: h })).json())?.length ?? 0;
+kontrol('Saldırı yapıldı ve yürüyüş çözüldü', savasSayisi > 0, `${savasSayisi} savaş`);
 
 // --- 1. giriş: Malikâne olay akışı ---
 await page.reload({ waitUntil: 'networkidle' });

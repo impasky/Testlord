@@ -19,6 +19,7 @@
  * API ayakta olmalı. node tools/kalkan-testi.mjs
  */
 import { kayitOl } from './lib/kayit.mjs';
+import { fethedilebilirMi } from './lib/hedef.mjs';
 import { garnizonaEkle } from './lib/garnizon.mjs';
 import { merkezUzakliklari } from './lib/harita.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
@@ -67,7 +68,7 @@ async function bolgeAl(l) {
     [...merkezUzakliklari(harita.regions)].filter(([, d]) => d >= 4).map(([id]) => id),
   );
   const adaylar = harita.regions
-    .filter((r) => kenar.has(r.id) && !r.owner && r.type !== 'taht')
+    .filter((r) => kenar.has(r.id) && fethedilebilirMi(r))
     .sort((a, b) => a.distance - b.distance)
     .slice(0, 10);
   for (const aday of adaylar) {
