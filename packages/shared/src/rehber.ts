@@ -86,8 +86,12 @@ export function rehberSozleri(): RehberSozu[] {
       soz: 'Ordu büyüdükçe komuta gerekir. Liderlik statın kaç asker taşıyabileceğini söyler.',
     },
     {
+      // "Bir bölgen oldu" cümlesi artık doğru değil: toprak medeniyetin,
+      // pay senin (docs/16 §6). Kâhya bunu ilk fethin hemen ardından
+      // söylüyor — oyuncunun ordusunun neden orada kaldığını ve gelirin
+      // nereden geldiğini öğreneceği tek an bu.
       adim: 'ekipman',
-      soz: 'Bir bölgen oldu. Demirhanede kuşanacağın her parça, savaşa senin katkını büyütür.',
+      soz: 'İlk toprağını medeniyetine kattın; ordun orada kaldı ve payın o garnizondan geliyor. Demirhanede kuşanacağın her parça, savaşa senin katkını büyütür.',
     },
     {
       adim: 'general',
@@ -99,7 +103,7 @@ export function rehberSozleri(): RehberSozu[] {
     },
     {
       adim: 'bolge-gelistir',
-      soz: 'Toprağı çoğaltmak tek yol değil. Elindekini yükselt: aynı bölge daha çok verir, üstelik saldırana da daha pahalıya patlar.',
+      soz: 'Toprağı çoğaltmak tek yol değil. Elindekini yükselt: bölge daha çok verir, garnizonunun payı da onunla büyür.',
     },
     {
       adim: 'arastirma',
@@ -397,7 +401,7 @@ export const REHBER_ISIKLARI: Record<string, RehberIsaret[]> = {
     {
       isaret: 'harita-saldir',
       sebep:
-        'Bu düğme orduyu yola çıkarır. Geri dönüşü yok — ama hesabı yaptım, bu bölge senin olur.',
+        'Bu düğme orduyu yola çıkarır. Geri dönüşü yok — ama hesabı yaptım: bu bölge medeniyetine yazılır, ordun orada kalır ve gelirin o günden sonra oradan akar.',
     },
     {
       isaret: 'harita-hepsi',

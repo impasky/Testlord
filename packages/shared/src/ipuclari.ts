@@ -45,8 +45,9 @@ export function ipuclari(): Ipucu[] {
       metin: `Ele geçirilen bölge ${fetihKalkan} saat kalkan altında kalır — hem seninki hem düşmanınki.`,
     },
     {
-      baslik: 'Garnizon bölgeyi tek başına savunur',
-      metin: 'Evdeki ordu bölgeni korumaz. Aldığın toprağa asker bırakmazsan ilk gelen geri alır.',
+      baslik: 'Garnizon hem savunur hem kazandırır',
+      metin:
+        'Evdeki ordu ne toprağı korur ne gelir getirir. Bölgenin geliri üstünde duran garnizonlara, bıraktıkları yer oranında dağılır: asker bırakmazsan payın da olmaz, toprağın da.',
     },
     {
       baslik: 'Günlük saldırı hakkın sınırlı',
@@ -64,7 +65,12 @@ export function ipuclari(): Ipucu[] {
     {
       baslik: 'Bölge seviyesi geliri büyütür',
       metin:
-        'Yeni bölge almak tek yol değil: elindekini yükseltmek de saatlik geliri artırır ve kimse onu senden alamaz.',
+        'Yeni bölge almak tek yol değil: elindekini yükseltmek o bölgenin saatlik gelirini büyütür, garnizonunun payı da onunla birlikte büyür.',
+    },
+    {
+      baslik: 'Çekirdeğe bağış herkese yarar',
+      metin:
+        'Medeniyetinin çekirdeklerini büyütmek depoyu, eğitimi, savunmayı ve geliri o medeniyetteki HERKES için artırır. Senin karşılığın fayda puanı olarak döner.',
     },
   ];
 }

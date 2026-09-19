@@ -28,6 +28,7 @@ import {
   IkonNavHarita,
   IkonNavKisla,
   IkonNavAkin,
+  IkonNavLord,
   IkonNavMalikane,
   IkonKurnaz,
   IkonSancak,
@@ -45,6 +46,7 @@ import { Buton } from './ui';
     metne ihtiyacı var, ikona yok. */
 const SIMGELER: Record<string, typeof IkonNavMalikane> = {
   diyar: IkonNavHarita,
+  medeniyet: IkonSancak,
   kaynak: IkonSohret,
   ordu: IkonNavKisla,
   duzen: IkonSavunma,
@@ -54,7 +56,7 @@ const SIMGELER: Record<string, typeof IkonNavMalikane> = {
   buyume: IkonNavDemirhane,
   arastirma: IkonKurnaz,
   koruma: IkonKale,
-  ittifak: IkonSancak,
+  ittifak: IkonNavLord,
   ritim: IkonSure,
 };
 
@@ -179,6 +181,31 @@ export function Ogretici({
               <p className="text-[11px] text-solgun">{lord.unvan.ad}</p>
               <p className="mt-0.5 text-[11px] text-sonuk">
                 Bu senin arman. Haritada ve sıralamada seni bu temsil ediyor.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Medeniyet sayfasında oyuncunun KENDİ tarafı. Sayfa dört
+            medeniyeti anlatıyor; oyuncunun öğrenmesi gereken ilk şey
+            hangisinden olduğu ve bunu metin değil, rengiyle duran bu
+            kart söylüyor. Medeniyeti olmayan lord (sistemden önceki
+            kayıtlar) kartı görmüyor — sayfanın kalanı yine doğru. */}
+        {sayfa.anahtar === 'medeniyet' && lord.medeniyet && (
+          <div
+            className="oyuk mb-3 flex items-center gap-3 rounded-xl p-3"
+            style={{ borderLeft: `3px solid ${lord.medeniyet.renk}` }}
+          >
+            <span
+              className="h-9 w-9 shrink-0 rounded-lg border border-gece"
+              style={{ background: lord.medeniyet.renk }}
+              aria-hidden
+            />
+            <div className="min-w-0">
+              <p className="baslik truncate text-[13px] text-parsomen">{lord.medeniyet.ad}</p>
+              <p className="text-[11px] text-solgun">{lord.medeniyet.ozet}</p>
+              <p className="mt-0.5 text-[11px] text-sonuk">
+                Senin medeniyetin bu. Haritada bu rengi gördüğün her yer yoldaşlarının.
               </p>
             </div>
           </div>

@@ -47,6 +47,13 @@ import {
   vilayetSayilari,
   karsiHalkasi,
   ogreticiSayfalari,
+  CEKIRDEK_AZAMI_SEVIYE,
+  CEKIRDEK_BONUSU,
+  FAYDA_FETIH,
+  FAYDA_SAVUNMA,
+  MEDENIYETLER,
+  garnizonFaydaPuani,
+  medeniyetBonusu,
   orduDus,
   GENERAL_LEVEL,
   generalLevelFromXp,
@@ -1475,6 +1482,13 @@ describe('öğretici (docs/09 — ilk giriş)', () => {
       'casus',
       'başarım',
       'depo',
+      // Medeniyet katmanı (docs/16): oyunun türünü değiştiren sistem.
+      // Öğreticide yazmazsa yeni oyuncu haritadaki renkleri, bir bölgeye
+      // neden saldıramadığını ve gelirinin neden akmadığını anlamaz.
+      'medeniyet',
+      'garnizon',
+      'çekirdek',
+      'fayda puanı',
     ]) {
       expect(metin, konu).toContain(konu);
     }
@@ -1541,6 +1555,70 @@ describe('öğretici (docs/09 — ilk giriş)', () => {
     expect(metin).toContain(`${Math.round(B.hastane.azami_saniye / 3600)} saat`);
     expect(metin).toContain(B.casusluk.maliyet_altin.toLocaleString('tr-TR'));
     expect(metin).toContain(`${B.casusluk.gecerlilik_saat} saat`);
+  });
+
+  /**
+   * MEDENİYET SAYFASI (docs/16 §12.6).
+   *
+   * Sayfanın her sayısı motordan türüyor; bu kontrol o bağı kilitliyor.
+   * Dengede bir çekirdek bonusu değişirse öğretici de değişmeli, yoksa
+   * yeni oyuncuya olmayan bir oyunu anlatır.
+   */
+  it('öğretici medeniyet sayılarını motordan alıyor', () => {
+    const m = sayfalar.find((s) => s.anahtar === 'medeniyet');
+    expect(m, 'medeniyet sayfası yok').toBeTruthy();
+    const metin = [m!.baslik, m!.ozet, ...m!.maddeler.map((x) => `${x.vurgu} ${x.metin}`)].join(
+      ' ',
+    );
+
+    // Dört medeniyetin DÖRDÜ de adıyla geçiyor: oyuncu kendi tarafını
+    // listede bulamazsa sayfa onu tanıtmamış olur.
+    for (const med of MEDENIYETLER) expect(metin, med.id).toContain(med.ad);
+    expect(metin).toContain(`${MEDENIYETLER.length} medeniyet`);
+
+    // Çekirdek sayısı listelerin kendisinden sayılıyor.
+    const toplam = MEDENIYETLER.reduce((t, x) => t + x.cekirdekBolgeler.length, 0);
+    expect(metin).toContain(`${toplam} çekirdek`);
+
+    // "Her yurdun N çekirdeği" cümlesi ancak listeler EŞİT uzunluktaysa
+    // doğru — araştırma dallarındaki kuralın aynısı.
+    const uzunluklar = new Set(MEDENIYETLER.map((x) => x.cekirdekBolgeler.length));
+    expect(uzunluklar.size).toBe(1);
+    expect(metin).toContain(`Her yurdun ${[...uzunluklar][0]} çekirdek bölgesi`);
+
+    // Bonus oranları motorun kendi işlevinden.
+    const seviyeler = (n: number): Record<number, number> =>
+      Object.fromEntries(MEDENIYETLER[0]!.cekirdekBolgeler.map((id) => [id, n]));
+    const bir = medeniyetBonusu(seviyeler(1));
+    const tam = medeniyetBonusu(seviyeler(CEKIRDEK_AZAMI_SEVIYE));
+    // Tek bir "+%5" cümlesi ancak dört bonus da aynı hızda büyüyorsa
+    // doğru; biri ayrılırsa cümle sessizce yalan olur.
+    expect(new Set(Object.values(bir)).size).toBe(1);
+    expect(metin).toContain(`+%${Math.round(bir.ambar * 100)}`);
+    expect(metin).toContain(`+%${Math.round(tam.ambar * 100)}`);
+    expect(metin).toContain(`en çok ${CEKIRDEK_AZAMI_SEVIYE} seviye`);
+    for (const ad of Object.values(CEKIRDEK_BONUSU)) expect(metin, ad).toContain(ad);
+
+    // Fayda puanı sayıları da motordan.
+    expect(metin).toContain(`(${FAYDA_FETIH})`);
+    expect(metin).toContain(`(${FAYDA_SAVUNMA})`);
+    expect(metin).toContain(`saatte ${garnizonFaydaPuani(10, 1)} puan`);
+  });
+
+  /**
+   * Gelirin kaynağı değişti (docs/16 §6) ve öğreticinin bunu söylemesi
+   * ŞART: oyuncu ilk bölgesini alıp ordusunu eve çağırırsa gelirinin
+   * neden durduğunu hiçbir yerden öğrenemez.
+   */
+  it('öğretici geliri sahipliğe değil garnizona bağlıyor', () => {
+    const metin = sayfalar
+      .flatMap((s) => s.maddeler.map((m) => `${m.vurgu} ${m.metin}`))
+      .join(' ')
+      .toLocaleLowerCase('tr');
+    expect(metin).toContain('gelir garnizondan gelir');
+    expect(metin).toContain('asker bırakmazsan');
+    // Fethin karşılığı: toprak medeniyete yazılıyor, ordu orada kalıyor.
+    expect(metin).toContain('medeniyetine yazılır');
   });
 
   it('öğretici sezon vaat etmiyor — dünya kalıcı (docs/09 §2.2)', () => {

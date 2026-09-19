@@ -34,6 +34,15 @@ import {
   siegeVsUnit,
   unitName,
 } from './balance.js';
+import {
+  CEKIRDEK_AZAMI_SEVIYE,
+  CEKIRDEK_BONUSU,
+  FAYDA_FETIH,
+  FAYDA_SAVUNMA,
+  MEDENIYETLER,
+  garnizonFaydaPuani,
+  medeniyetBonusu,
+} from './medeniyet.js';
 import { UNIT_TYPES, type UnitType } from './types.js';
 
 /** Sayfadaki tek bir madde. Cümleyi arayüz değil, burası kuruyor. */
@@ -142,6 +151,36 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
     .map((k) => `${unitName(k.saldiran)} → ${unitName(k.hedef)} ×${k.carpan}`)
     .join(', ');
 
+  /*
+   * Medeniyet sayfasının sayıları da motordan (docs/16 §12.6).
+   *
+   * Çekirdek sayısı `balance.json`daki listelerin kendisinden SAYILIYOR,
+   * elle yazılmış bir toplamdan değil. Bu dosyada tam olarak o hata bir
+   * kez yapıldı: bölge sayısı elle yazılmıştı, harita 121'e çıkınca kopya
+   * 61'de kaldı ve öğreticinin ilk sayfası diyarı yarısı kadar tanıttı.
+   *
+   * Bonus oranı da öyle: `medeniyetBonusu` motorun kendi işlevi, öğretici
+   * onu bir kez çağırıp cümleye koyuyor. Denge dosyasındaki `seviye_basina`
+   * değişirse cümle kendiliğinden değişir.
+   */
+  const cekirdekBasina = MEDENIYETLER[0]!.cekirdekBolgeler.length;
+  const cekirdekSayisi = MEDENIYETLER.reduce((t, m) => t + m.cekirdekBolgeler.length, 0);
+  const cekirdekSeviyeleri = (n: number): Record<number, number> =>
+    Object.fromEntries(MEDENIYETLER[0]!.cekirdekBolgeler.map((id) => [id, n]));
+  const cekirdekBirSeviye = Math.round(medeniyetBonusu(cekirdekSeviyeleri(1)).ambar * 100);
+  const cekirdekTam = Math.round(
+    medeniyetBonusu(cekirdekSeviyeleri(CEKIRDEK_AZAMI_SEVIYE)).ambar * 100,
+  );
+  const medeniyetTanitimi = MEDENIYETLER.map(
+    (m) => `${m.ad}: ${m.ozet.toLocaleLowerCase('tr').replace(/\.$/, '')}`,
+  ).join(' · ');
+  const cekirdekBonuslari = Object.values(CEKIRDEK_BONUSU).join(', ');
+  // Fayda puanı örneği de motordan: on yerlik bir garnizonun bir saatte
+  // kazandığı puan. "Saatte yarım puan" demek yerine oyuncunun ekranda
+  // göreceği sayıyı yazıyoruz.
+  const ornekGarnizonYeri = 10;
+  const ornekFaydaPuani = garnizonFaydaPuani(ornekGarnizonYeri, 1);
+
   return [
     {
       anahtar: 'diyar',
@@ -155,7 +194,7 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
           // yarısı kadar tanıtıyordu. Kopya silindi.
           vurgu: `${WORLD_MAP.region_count} bölge`,
           metin:
-            'Haritadaki her işaret bir bölge. Kimi boş durur, kimini bir lord tutar. Bölgeler bitmez ama çoğalmaz da — biri alırsa, bir başkası kaybeder.',
+            'Haritadaki her işaret bir bölge. Bir bölgeyi tutan medeniyet varsa çerçevesi onun rengini taşır; ortadaki çekişmeli topraklar henüz kimsenin değil. Bölgeler bitmez ama çoğalmaz da — biri alırsa, bir başkası kaybeder.',
         },
         {
           vurgu: 'Taht Kalesi',
@@ -174,7 +213,49 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
         {
           vurgu: 'Kamptan başlarsın',
           metin:
-            'Toprağın yok, ordun yok. İlk köyünü fethettiğinde orası başkentin olur ve şehir sayfan bir kamptan bir köye döner. Sana hiçbir şey verilmiyor — ordu da toprak da bina da kazanılıyor.',
+            'Kampın kendi medeniyetinin yurdunda kurulur; toprağın yok, ordun yok. İlk köyünü fethettiğinde orası başkentin olur ve şehir sayfan bir kamptan bir köye döner. Sana hiçbir şey verilmiyor — ordu da toprak da bina da kazanılıyor.',
+        },
+      ],
+    },
+    /*
+     * MEDENİYET — oyunun türünü söyleyen sayfa (docs/16 §12.6).
+     *
+     * İkinci sırada ve bilerek: oyuncu "neredeyim"i okudu, şimdi "kimim"
+     * sorusunun sırası. Bu sayfa olmadan yeni oyuncu haritada renkleri
+     * görüyor, bir bölgeye saldıramadığını fark ediyor, aldığı toprağın
+     * gelirini alamadığını anlamıyor — üçünün de tek bir açıklaması var
+     * ve o açıklama burada.
+     */
+    {
+      anahtar: 'medeniyet',
+      baslik: 'Dört medeniyet, sen birinin lordusun',
+      ozet: 'Haritadaki dört renk dört taraf. Tek başına değil, bir tarafla oynuyorsun.',
+      maddeler: [
+        {
+          vurgu: `${MEDENIYETLER.length} medeniyet`,
+          metin: `${medeniyetTanitimi}. Her birinin kendi yurdu ve kendi rengi var; haritada bir bölgenin çerçevesi onu tutan medeniyetin rengini taşır.`,
+        },
+        {
+          vurgu: 'Seçmiyorsun, yazılıyorsun',
+          metin:
+            'Kayıt olurken en az kalabalık medeniyete yazılırsın ve kampın onun yurdunda kurulur. Seçim serbest olsaydı herkes kazanan tarafa geçerdi ve fark kendi kendini büyütürdü — tarafları kura değil sayım dengeliyor.',
+        },
+        {
+          vurgu: 'Toprak medeniyetin, pay senin',
+          metin:
+            'Bir bölgenin geliri kâğıt üstündeki sahibine değil, ORADA DURAN garnizonlara gider — bıraktıkları komuta yeri oranında. Askerini çekersen bölge medeniyetinden gitmez ama senin gelirin durur. Bölge bölünemez; bölgedeki pay bölünür.',
+        },
+        {
+          vurgu: `${cekirdekSayisi} çekirdek ele geçirilemez`,
+          metin: `Her yurdun ${cekirdekBasina} çekirdek bölgesi var ve hiçbirine saldırılamaz. Bir medeniyet yenilebilir ama silinemez: evine çekilir, toparlanır ve geri döner. Beşincisi medeniyetin başkenti — bonus değil kimlik taşır.`,
+        },
+        {
+          vurgu: 'Çekirdek bonusu HERKESE işler',
+          metin: `Dört çekirdeğe bağış yaparak medeniyetinin ${cekirdekBonuslari} oranlarını büyütürsün: her seviye +%${cekirdekBirSeviye}, en çok ${CEKIRDEK_AZAMI_SEVIYE} seviye, yani tam geliştirilmiş bir çekirdek +%${cekirdekTam}. Bonus o medeniyetteki herkese işler — bir kuruş vermeyene de.`,
+        },
+        {
+          vurgu: 'Fayda puanı güç satın almaz',
+          metin: `Garnizon tutmak (${ornekGarnizonYeri} yerlik garnizon saatte ${ornekFaydaPuani} puan), fetihe katılmak (${FAYDA_FETIH}), savunmaya katılmak (${FAYDA_SAVUNMA}) ve bağış yapmak fayda puanı kazandırır. Puan unvan, arma ve sancak alır; güç almaz. Güç yalnız çekirdekten gelir ve o da herkese eşit işler.`,
         },
       ],
     },
@@ -191,6 +272,14 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
           vurgu: 'Erzak',
           metin:
             'Ordun her saat erzak yer. Erzak biterse askerlerin açlıktan erimeye başlar — büyük ordu kurmak yetmiyor, besleyebilmek gerekiyor.',
+        },
+        {
+          // Gelirin kaynağı değişti (docs/16 §6) ve bu sayfa onu
+          // söylemeseydi oyuncu ilk bölgesini alıp gelirinin neden
+          // artmadığını anlamazdı: ordusunu eve çağırmış olurdu.
+          vurgu: 'Gelir garnizondan gelir',
+          metin:
+            'Kaynak iki yerden akar: malikânenin taban geliri ve bölgelerdeki garnizonların payı. Bir bölge, üstünde askeri olanlara öder. Aldığın toprağa asker bırakmazsan oradan tek altın almazsın.',
         },
         {
           vurgu: 'Şöhret',
@@ -287,7 +376,12 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
         {
           vurgu: 'Ganimet ve fetih',
           metin:
-            'Bir bölgeyi ezici bir üstünlükle alırsan bölge senin olur. Dar kazanırsan yalnız yağmalarsın: kaynağı alır, bölgeyi bırakırsın.',
+            'Bir bölgeyi ezici bir üstünlükle alırsan bölge medeniyetine yazılır ve sağ kalan askerlerin orada garnizon olarak kalır — payını o andan itibaren almaya başlarsın. Yaralılar ve ganimet eve döner. Dar kazanırsan yalnız yağmalarsın: kaynağı alır, bölgeyi bırakırsın.',
+        },
+        {
+          vurgu: 'Yoldaşına kılıç çekilmez',
+          metin:
+            'Kendi medeniyetinden bir lordun tuttuğu bölgeye saldıramazsın, çekirdeklere ise kimse saldıramaz. Yurdunda henüz hiçbir lordun almadığı bölgeler serbest: oradaki garnizon bir yoldaşın değil, bölgenin kendi muhafızlarıdır — ilk fethin büyük ihtimalle orada olacak.',
         },
       ],
     },
@@ -355,7 +449,7 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
         {
           vurgu: 'Bölge geliştir',
           metin:
-            'Aldığın bölgeyi yükseltmek geliri ve savunmayı artırır. Yeni bölge almaktan çoğu zaman daha kârlıdır — ve kimse elinden almaya kalkışmaz.',
+            'Bir bölgeyi yükseltmek onun gelirini ve savunmasını artırır; oradaki garnizonunun payı da aynı oranda büyür. Yeni bölge almaktan çoğu zaman daha kârlıdır.',
         },
         {
           vurgu: 'Ekipman döv',

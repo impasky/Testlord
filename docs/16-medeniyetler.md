@@ -545,3 +545,62 @@ bir işaret taşıyor — renk körü için renkten bağımsız.
 Çekirdek işaretini önce 9 piksellik bir glifle yapmıştım; denetim yirmi
 metni birden yakaladı (11px tabanı). Kural haklıydı — rozetin işi
 okunmak değil "farklı" demek. Glif yerine çizilmiş bir eşkenar dörtgen.
+
+---
+
+## 19. Uygulama notu: öğretici ve rehber (§12 adım 6)
+
+`2026-09-19` — sistemin son adımı, ve en sessiz tehlikelisi: mekanik
+bitti ama oyuncu hâlâ eski oyunu anlatan bir metin okuyorsa, sistem
+onun için yok demektir. Daha kötüsü, öğretici **yanlış** bir plan
+kurdurur: "bölge al, geliri aksın" diyen bir cümle artık yalan.
+
+### Öğreticiye bir sayfa girdi, üç sayfa düzeldi
+
+Yeni sayfa **ikinci sırada** (`medeniyet`): oyuncu "neredeyim"i okuduktan
+hemen sonra "kimim"i okuyor. Altı madde — dört medeniyetin tanıtımı,
+atamanın neden seçim olmadığı, garnizon payı, çekirdeklerin
+dokunulmazlığı, dört bonusun herkese işlemesi ve fayda puanının güç
+satın almaması.
+
+Düzelen üç cümle:
+
+| Sayfa    | Eskiden                              | Şimdi                                                          |
+| -------- | ------------------------------------ | -------------------------------------------------------------- |
+| `kaynak` | (gelirin nereden geldiği yazmıyordu) | "Gelir garnizondan gelir" — asker bırakmayan pay almaz         |
+| `savas`  | "bölge senin olur"                   | "bölge medeniyetine yazılır, sağ kalanlar orada garnizon olur" |
+| `buyume` | "kimse elinden almaya kalkışmaz"     | "garnizonunun payı da aynı oranda büyür"                       |
+
+Sayfanın her sayısı motordan: medeniyet sayısı `MEDENIYETLER`den,
+çekirdek sayısı listelerin kendisinden sayılıyor, bonus oranları
+`medeniyetBonusu()` çağrılarak, fayda puanı `garnizonFaydaPuani()`
+çağrılarak. `balance.test.ts` bağı kilitliyor ve iki şeyi ayrıca
+sınıyor: dört çekirdek listesinin **eşit uzunlukta** olduğunu ("her
+yurdun beş çekirdeği" cümlesi ancak öyleyse doğru) ve dört bonusun
+**aynı hızda** büyüdüğünü (tek bir "+%5" cümlesi ancak öyleyse doğru).
+
+### Öğretici geçilebilir, rehber geçilemez
+
+Bu ayrım burada önem kazandı: tarafını yalnız öğretici söyleseydi,
+"Öğreticiyi geç"e basan oyuncu hangi medeniyetten olduğunu hiç
+öğrenmeden oynardı. Bu yüzden medeniyetin adı artık **kâhyanın
+kartında**, ilerleme sayacının yanında duruyor — zorunlu turun her
+adımında ekranda.
+
+Ad rengiyle değil, yanındaki **nokta** rengiyle işaretli. İki sebep:
+haritadaki medeniyet şeridiyle aynı biçim, ve dört medeniyet renginin
+dördünün birden koyu zeminde AA kontrastı tutturması gerekmiyor.
+
+Kâhyanın iki sözü de değişti: ilk fethin ardından "bir bölgen oldu"
+yerine "ilk toprağını medeniyetine kattın; ordun orada kaldı ve payın o
+garnizondan geliyor", saldırı düğmesinin gerekçesinde de "bu bölge senin
+olur" yerine aynı doğru.
+
+### Ölçümün yakaladığı: kart kendi adını kaybetti
+
+Medeniyet adını kâhyanın adıyla **aynı etikete** koymuştum. Kartın
+metni "Kâhya Sinan · Demir Ocağı" oldu ve `rehber-testi` kartı adıyla
+arayan dokuz kontrolü birden düşürdü. Ad kendi etiketinde kaldı.
+
+Ders tanıdık: bir metni "sadece biraz" zenginleştirmek, o metni **kimlik
+olarak kullanan** her yeri kırar.

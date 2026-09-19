@@ -379,6 +379,7 @@ export function Sehir({
         adim={rehberAdimi?.anahtar ?? null}
         durum={rehberDurumu}
         gorundu={lord.rehberGorundu}
+        medeniyet={lord.medeniyet}
       />
 
       {/* --- Yerleşim haritası ---
