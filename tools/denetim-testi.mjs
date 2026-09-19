@@ -108,7 +108,16 @@ for (const aday of adaylar) {
 }
 kontrol('Bırakma testi için bölge alındı', Boolean(alinan), alinan?.name ?? 'alınamadı');
 
-// Şimdi sınır: küçük ordularla üst üste yürüyüş gönder.
+/*
+ * Şimdi sınır: küçük ordularla üst üste yürüyüş gönder.
+ *
+ * ÖNCE EVE ASKER: fetihten sağ çıkan ordu artık bölgede kalıyor
+ * (docs/16 §6), yani yukarıdaki fetihten sonra ev neredeyse boş. Asker
+ * yetişmeyince döngü ilk turda kırılıyor ve sınama ölçmek istediği
+ * şeye — eş zamanlı yürüyüş tavanına — hiç gelemiyordu.
+ */
+await P('/army/train', { unitType: 'mizrakci', count: 60 });
+await P('/test/kuyruklari-bitir');
 const hedefler = (await G('/map')).regions.filter((r) => !r.owner && r.type !== 'taht').slice(0, 8);
 let gonderilen = 0;
 let sonDurum = 0;

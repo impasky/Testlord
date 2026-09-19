@@ -12,6 +12,7 @@
  */
 import { kayitOl } from './lib/kayit.mjs';
 import { merkezUzakliklari } from './lib/harita.mjs';
+import { garnizonaEkle } from './lib/garnizon.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 
 let hata = 0;
@@ -73,8 +74,9 @@ async function bolgeAl(l) {
     if (o?.tahmin?.eleGecirir !== true) continue;
     await l.post('/march', { toRegionId: aday.id, army: ordu });
     await l.post('/test/yuruyusleri-bitir');
-    // İkinci kez: fetihten sağ çıkanlar dönüş yürüyüşünde. Bu çözülmeden
-    // evdeki ordu boş görünür ve garnizon kurulamaz.
+    // İkinci kez: fetihten sonra YARALILAR ve yağma dönüş yürüyüşünde.
+    // Sağlam asker artık bölgede kalıyor (docs/16 §6), o yüzden eve
+    // dönen kafile küçük — ama yine de çözülmeli.
     await l.post('/test/yuruyusleri-bitir');
     const me = await l.get('/me');
     if (me.lord.regionCount > 0) return aday;
@@ -100,9 +102,19 @@ await orduKur(savunan, { mizrakci: 300, okcu: 200 });
 const bolge = await bolgeAl(savunan);
 kontrol('Savunan bir bölge ele geçirdi', Boolean(bolge), bolge?.name ?? 'bölge alınamadı');
 
-// Savunan bölgeye garnizon koyar: boş bölgeyi almak PvP'yi sınamaz.
-const savunanOrdu = (await savunan.get('/army')).home;
-await savunan.post(`/map/${bolge.id}/garrison`, { army: savunanOrdu });
+/*
+ * Savunanın garnizonu: boş bölgeyi almak PvP'yi sınamaz.
+ *
+ * FETİH ARTIK GARNİZONU KENDİ BIRAKIYOR (docs/16 §6): sağ kalan ordu
+ * aldığı bölgede kalıyor. Eskiden hepsi eve dönüyordu ve bu satırlar
+ * orduyu evden bölgeye taşıyordu; gelir garnizona bağlanınca o davranış
+ * değişti ve `home` boş kaldı. Boş orduyla çağrılan `/garrison` hedefi
+ * MUTLAK olarak yazdığı için garnizonu sıfırlıyordu — sınama "0 birim"
+ * diyordu ve haklıydı: onu boşaltan sınamanın kendisiydi.
+ *
+ * Artık evde kalan varsa garnizonun ÜSTÜNE ekleniyor.
+ */
+await garnizonaEkle(savunan, bolge.id);
 const garnizon = (await savunan.get(`/map/${bolge.id}`)).garrison;
 const garnizonAdedi = Object.values(garnizon ?? {}).reduce((t, n) => t + Number(n || 0), 0);
 kontrol('Savunan bölgeye garnizon yerleştirdi', garnizonAdedi > 0, `${garnizonAdedi} birim`);

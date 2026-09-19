@@ -422,3 +422,37 @@ mı" sorusunu değil, "yapılan işe ne kadar yaklaşıldı" sorusunu ölçüyor
 Aynı `/api/olcum` altyapısı, aynı sayılar. Medeniyet sistemi gerçek
 oyuncuyla yanlışlanırsa geri alınır; §14'ün asıl dersi buydu ve o ders
 duruyor.
+
+---
+
+## 16. Uygulama notu: fetih garnizonu bırakıyor
+
+`2026-09-19` — §12 adım 3 (gelir dağıtımı) yazılırken çıkan ve sahibin
+karara bağladığı tek soru: gelir "garnizon bırakmak" karşılığı olunca,
+fetihten sonra sağ kalan ordu ne yapsın?
+
+**Karar: bölgede kalır.** Sağlam asker fethettiği bölgenin garnizonu
+oluyor; yaralılar ve yağma eve dönüyor (yaralının yeri hastane,
+yağmanın yeri hazine). Ordusunu geri isteyen oyuncu `/map/:id/garrison`
+ile anında çekiyor.
+
+Alternatif — ordu eve döner, garnizonu oyuncu ayrıca koyar — tasarım
+olarak daha saf bir "varlık = gelir" kuralıydı ama her fetihten sonra
+ikinci bir işlem gerektiriyordu ve öğreticiyi bugünden yeniden yazmayı
+zorunlu kılıyordu.
+
+Bu, §12'nin 4. adımının ("fetih: hedef bölge değil garnizon") yarısını 3. adıma taşıyor. Sebebi basit: gelir garnizona bağlandığı an, ordusu
+eve dönen bir fatih aldığı yerden hiçbir şey kazanmaz — yani 3. adım
+tek başına oynanabilir bir oyun bırakmıyordu.
+
+### Bu adımda çıkan iki gerçek hata
+
+1. **Kuşatan asker payı seyreltiyordu.** İlk hâlde bölünme o bölgedeki
+   BÜTÜN garnizonlara bakıyordu. Rakip medeniyetten bir lord takviye
+   gönderince sahibin payı yarıya düşüyor, gönderen de pay alamıyordu:
+   gelirin yarısı kimseye gitmeden yok oluyordu. Payda artık yalnız pay
+   ALABİLENLERDEN oluşuyor.
+2. **Bölge kartı payı görmüyordu.** `pay` yalnız liste ucuna (`/map`)
+   eklenmişti; kart verisini detay ucundan (`/map/:id`) alıyor ve payı
+   0 sanıp iki bölgesi olan oyuncuya "tek bölgen" yazıyordu. Aynı
+   türetilmiş alan iki uçta da bulunmalı.

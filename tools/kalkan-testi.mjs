@@ -19,6 +19,7 @@
  * API ayakta olmalı. node tools/kalkan-testi.mjs
  */
 import { kayitOl } from './lib/kayit.mjs';
+import { garnizonaEkle } from './lib/garnizon.mjs';
 import { merkezUzakliklari } from './lib/harita.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 
@@ -99,8 +100,8 @@ await orduKur(savunan, { mizrakci: 400, okcu: 250 });
 const bolge = await bolgeAl(savunan);
 kontrol('Savunan bir bölge ele geçirdi', Boolean(bolge), bolge?.name ?? 'bölge alınamadı');
 
-const savunanOrdu = (await savunan.get('/army')).home;
-await savunan.post(`/map/${bolge.id}/garrison`, { army: savunanOrdu });
+// Fetih artık garnizonu kendi bırakıyor; evde kalan varsa üstüne eklenir.
+await garnizonaEkle(savunan, bolge.id);
 const garnizon = (await savunan.get(`/map/${bolge.id}`)).garrison;
 const garnizonAdedi = Object.values(garnizon ?? {}).reduce((t, n) => t + Number(n || 0), 0);
 kontrol('Savunan garnizon kurdu', garnizonAdedi > 0, `${garnizonAdedi} birim`);

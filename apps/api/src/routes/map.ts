@@ -27,6 +27,7 @@ import { requireAuth } from '../auth.js';
 import { prisma, type Tx } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { gecikmisleriKapat } from '../services/gecikmis.js';
+import { garnizonPayGirdileri } from '../services/gelir.js';
 import { arastirmaBonusuOku, binalariOku, findLordByUser, pushEvent } from '../services/lord.js';
 import { dunyaGrafigi, mesafeOlcer, mesafeOlcerHazir } from '../services/mesafe.js';
 import { paktVarMi, paktliIttifaklar } from '../services/pakt.js';
@@ -279,6 +280,22 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
      * listedeki hiçbir bölgeyle eşleşmezdi. İlk denemede tam olarak bu
      * oldu ve haritada hiçbir aday bulunamadı.
      */
+    /*
+     * GARNİZON PAYLARI: gelir artık sahiplikten değil buradan geliyor
+     * (docs/16 §6). Arayüz bölge kartındaki geliri kendisi hesaplıyor;
+     * payı göndermezsek oyuncuya ALMADIĞI bir sayı yazardı.
+     *
+     * Bu projenin tekrar eden hatası tam olarak bu: aynı sayının iki
+     * yerde ayrı hesaplanması. Ekran payı sunucudan okuyor, kendi
+     * tahmininden değil.
+     */
+    const paylar = new Map(
+      (await garnizonPayGirdileri(lordId)).map((p) => [
+        p.regionId,
+        { oran: p.oran, yer: p.yer, toplamYer: p.toplamYer },
+      ]),
+    );
+
     const mapIdToId = new Map(regions.map((r) => [r.mapId, r.id]));
     const cevir = (ham: unknown): number[] =>
       (Array.isArray(ham) ? ham : [])
@@ -308,6 +325,8 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
         incomeMult: r.incomeMult,
         owner: r.owner ? { id: r.owner.id, name: r.owner.name, level: r.owner.level } : null,
         isMine: r.ownerLordId === lordId,
+        /** Bu bölgenin gelirinden bana düşen pay — garnizonum yoksa null. */
+        pay: paylar.get(r.id) ?? null,
         shielded: r.shieldUntil ? r.shieldUntil > new Date() : false,
         distance: olc(r.mapId),
         // Pakt: saldırılamaz ama müttefik de değil. Haritada ayrı bir
@@ -449,9 +468,22 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
      */
     void gozDikildi(lordId, region, benim, muttefik);
 
+    const payim =
+      (await garnizonPayGirdileri(lordId)).find((x) => x.regionId === region.id) ?? null;
+
     return {
       ...region,
       isMine: benim,
+      /*
+       * GARNİZON PAYI burada da dönüyor — liste ucunda da var.
+       *
+       * Bölge kartı verisini bu uçtan alıyor ve vilayet birliği rozetini
+       * `pay` üzerinden çiziyor. Yalnız listeye eklediğimde kart alanı
+       * hiç göremiyor, payı 0 sanıyor ve iki bölgesi olan oyuncuya "tek
+       * bölgen" yazıyordu. Aynı türetilmiş alan iki uçta da bulunmalı —
+       * arayüz ikisinden de aynı şekli bekliyor.
+       */
+      pay: payim ? { oran: payim.oran, yer: payim.yer, toplamYer: payim.toplamYer } : null,
       // Liste ucuyla aynı türetilmiş alanlar; arayüz iki uçtan da aynı şekli bekler.
       distance: olc(region.mapId),
       shielded: region.shieldUntil ? region.shieldUntil > new Date() : false,

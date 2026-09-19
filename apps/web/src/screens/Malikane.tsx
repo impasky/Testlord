@@ -58,12 +58,20 @@ import type { Sekme } from '../components/MobilKabuk';
  * çubuktaki gerçek gelirin hemen altında. Aynı fonksiyonu çağırmak
  * yetmiyor; AYNI girdiyle çağırmak gerekiyor.
  */
-function gelir(tip: string, seviye: number, carpan: number, birlik: number) {
+/**
+ * Bu bölgeden BANA düşen saatlik gelir.
+ *
+ * `oran` garnizon payı (docs/16 §6): bölge geliri orada asker tutan
+ * lordlar arasında yer oranında bölünüyor. Sahip olduğun ama garnizon
+ * bırakmadığın bölgede oran 0 ve gelir de 0 — kart bunu saklamıyor,
+ * çünkü oyuncunun öğrenmesi gereken yeni kural tam olarak bu.
+ */
+function gelir(tip: string, seviye: number, carpan: number, birlik: number, oran: number) {
   const g = regionIncome(tip, seviye, carpan * birlik);
   return {
-    altin: Math.round(g.altin),
-    demir: Math.round(g.demir),
-    erzak: Math.round(g.erzak),
+    altin: Math.round(g.altin * oran),
+    demir: Math.round(g.demir * oran),
+    erzak: Math.round(g.erzak * oran),
   };
 }
 
@@ -93,9 +101,15 @@ export function Malikane({
   const ipucu = ipucuSec(ipucuSayac);
 
   const benim = (harita.data?.regions ?? []).filter((r) => r.isMine);
-  // Vilayet birliği çarpanı lordun BÜTÜN bölgelerinden çıkıyor —
-  // sunucunun saydığı kümenin aynısı.
-  const birlikler = vilayetCarpanlari(benim);
+  /*
+   * Vilayet birliği çarpanı GELİR ALDIĞIM bölgelerden çıkıyor —
+   * sunucunun saydığı kümenin aynısı (`calcHourlyIncome`).
+   *
+   * Eskiden sahip olunan bölgelerdi. Gelir sahiplikten garnizona
+   * geçince o küme de değişti; ekran eski kümeyi saymaya devam etseydi
+   * oyuncuya yine almadığı bir sayı yazardı.
+   */
+  const birlikler = vilayetCarpanlari((harita.data?.regions ?? []).filter((r) => r.pay));
 
   return (
     <div className="space-y-4">
@@ -155,7 +169,7 @@ export function Malikane({
           <div className="space-y-2">
             {benim.map((r) => {
               const birlik = birlikler[r.province] ?? 1;
-              const g = gelir(r.type, r.level, r.incomeMult, birlik);
+              const g = gelir(r.type, r.level, r.incomeMult, birlik, r.pay?.oran ?? 0);
               return (
                 <Kart key={r.id} className="p-3" onClick={() => onBolgeyiAc(r.id)}>
                   <div className="flex items-center gap-3">
@@ -185,6 +199,19 @@ export function Malikane({
                             ikon={<IkonErzak boyut={13} />}
                             renk="var(--color-yesil)"
                           >{`+${formatSayi(g.erzak)}/sa`}</Hap>
+                        )}
+                        {/* Garnizonsuz bölge sessizce sıfır gelir yazmasın:
+                            oyuncunun öğrenmesi gereken yeni kural bu
+                            (docs/16 §6). Toprak duruyor, gelir gitmiş. */}
+                        {!r.pay && (
+                          <Hap ikon={<IkonKale boyut={13} />} renk="var(--color-kirmizi)">
+                            garnizon yok — gelir yok
+                          </Hap>
+                        )}
+                        {r.pay && r.pay.oran < 1 && (
+                          <Hap ikon={<IkonKale boyut={13} />} renk="var(--color-solgun)">
+                            {`payın ${r.pay.yer}/${r.pay.toplamYer} yer`}
+                          </Hap>
                         )}
                         {r.shielded && (
                           <Hap ikon={<IkonSure boyut={13} />} renk="var(--color-mavi)">

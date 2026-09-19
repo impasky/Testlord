@@ -13,6 +13,7 @@
  * SADECE GELİŞTİRME. node tools/takviye-testi.mjs
  */
 import { kayitOl } from './lib/kayit.mjs';
+import { garnizonaEkle } from './lib/garnizon.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 
 let hata = 0;
@@ -95,7 +96,7 @@ kontrol('Savunan bir bölge aldı', Boolean(bolge), bolge?.name ?? 'alınamadı'
 // Savunan kendi garnizonunu koyuyor
 await savunan.post('/army/train', { unitType: 'mizrakci', count: 100 });
 await savunan.post('/test/kuyruklari-bitir');
-await savunan.post(`/map/${bolge.id}/garrison`, { army: (await savunan.get('/army')).home });
+await garnizonaEkle(savunan, bolge.id);
 const kendiGarnizon = say((await savunan.get(`/map/${bolge.id}`)).garrison);
 
 // Dost takviye gönderiyor

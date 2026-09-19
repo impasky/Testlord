@@ -51,6 +51,7 @@ import {
 } from '@lordlar/shared';
 import type { Prisma } from '@prisma/client';
 import { prisma, type Tx } from '../db.js';
+import { garnizonPayGirdileri } from './gelir.js';
 import { B } from '@lordlar/shared';
 
 import { bildirimGonder } from './push.js';
@@ -264,12 +265,30 @@ export function binalariOku(lord: { binalar?: unknown }): Record<string, number>
 }
 
 /**
- * Lordun saatlik brüt geliri: malikâne + sahip olunan bölgeler.
+ * Lordun saatlik brüt geliri: malikâne + GARNİZON PAYLARI (docs/16 §6).
+ *
+ * Eskiden ikinci terim "sahip olunan bölgeler"di. Artık sahiplik değil
+ * VARLIK ödüllendiriliyor: bölgenin geliri orada asker tutan lordlar
+ * arasında yer oranında bölünüyor ve `oran` o payı taşıyor. Ordusunu eve
+ * çeken lord bölgeyi kaybetmiyor, gelirini kaybediyor.
+ *
+ * Tek sahipli bir bölgede `oran` 1 ve hesap eskisiyle birebir aynı —
+ * yani kural genelleşti, değişmedi.
+ *
+ * Malikâne geliri KİŞİSEL kalıyor ve bölünmüyor: oyuncunun tartışmasız
+ * kendine ait olanı güçlü kalmalı (docs/16 §8).
+ *
+ * VİLAYET BİRLİĞİ lordun GARNİZON tuttuğu bölgeler üzerinden sayılıyor,
+ * sahip olduğu bölgeler üzerinden değil. Tutanın (medeniyetin) vilayet
+ * sayısına bakmak daha "doğru" görünürdü ama yurdundaki 17-21 bölge her
+ * çekirdeğe kalıcı olarak tavan bonusu verirdi: sessiz bir küresel gelir
+ * zammı. Kural yerinde duruyor, yalnız ölçtüğü liste değişti.
+ *
  * Bölgelerin kendi depoları ayrı işler (yağmalanabilir kısım orada birikir).
  */
 export function calcHourlyIncome(
   level: number,
-  regions: { type: string; level: number; incomeMult: number; province: string }[],
+  paylar: { type: string; level: number; incomeMult: number; province: string; oran: number }[],
   bonus: GeneralBonus,
   arastirma?: ArastirmaBonusu,
 ): { income: Resources; famePerHour: number } {
@@ -278,14 +297,15 @@ export function calcHourlyIncome(
   // Vilayet birliği: aynı vilayetteki her bölge diğerlerini besliyor
   // (docs/11 §1.2 H2). Sayımı döngünün DIŞINDA yapıyoruz, yoksa her bölge
   // için bütün listeyi baştan tararız.
-  const vilayet = vilayetSayilari(regions);
-  for (const r of regions) {
+  const vilayet = vilayetSayilari(paylar);
+  for (const r of paylar) {
     const birlik = vilayetCarpani(vilayet[r.province] ?? 1);
     const ri = regionIncome(r.type, r.level, r.incomeMult * birlik, bonus, arastirma);
-    income.altin += ri.altin;
-    income.demir += ri.demir;
-    income.erzak += ri.erzak;
-    famePerHour += ri.sohret;
+    income.altin += ri.altin * r.oran;
+    income.demir += ri.demir * r.oran;
+    income.erzak += ri.erzak * r.oran;
+    // Şöhret de payla geliyor: kalenin şerefi orada duran askerin.
+    famePerHour += ri.sohret * r.oran;
   }
   return { income, famePerHour };
 }
@@ -333,12 +353,7 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
 
   const { income, famePerHour } = calcHourlyIncome(
     lord.level,
-    lord.regions.map((r) => ({
-      type: r.type,
-      level: r.level,
-      incomeMult: r.incomeMult,
-      province: r.province,
-    })),
+    await garnizonPayGirdileri(lordId, client),
     bonus,
     arastirmaBonusuOku(lord),
   );

@@ -300,6 +300,16 @@ export interface RegionDto {
   incomeMult: number;
   owner: { id: string; name: string; level: number } | null;
   isMine: boolean;
+  /**
+   * Bu bölgenin gelirinden bana düşen pay (docs/16 §6) — garnizonum
+   * yoksa null.
+   *
+   * Sunucudan geliyor, ekranda HESAPLANMIYOR. Bu projenin tekrar eden
+   * hatası aynı sayının iki yerde ayrı hesaplanması: bölge kartı bir
+   * zamanlar vilayet birliğini saymadığı için oyuncuya aldığından
+   * %8-30 az gelir yazıyordu.
+   */
+  pay: { oran: number; yer: number; toplamYer: number } | null;
   shielded: boolean;
   distance: number;
   /** Sahibinin ittifakıyla saldırmazlık paktım var mı (docs/09 B1d). */

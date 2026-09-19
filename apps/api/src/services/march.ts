@@ -56,6 +56,7 @@ import {
   arastirmaBonusuOku,
 } from './lord.js';
 import { addUnitsHome, addUnitsRegion, hastaneyeYatir } from './queue.js';
+import { garnizonPayGirdileri } from './gelir.js';
 import { bolgeTahkimati, transferRegion } from './region.js';
 
 function toArmy(value: unknown): Army {
@@ -316,16 +317,11 @@ async function lordOzeti(lordId: string, tx: Tx) {
   });
   const sahada = equippedGenerals(lord.generals, new Date());
   const bonus = sahada.length ? aggregateGeneralBonus(sahada) : bosGeneralBonus();
-  const { income } = calcHourlyIncome(
-    lord.level,
-    lord.regions.map((r) => ({
-      type: r.type,
-      level: r.level,
-      incomeMult: r.incomeMult,
-      province: r.province,
-    })),
-    bonus,
-  );
+  // Gelir SAHİPLİKTEN değil garnizondan (docs/16 §6). Rapordaki
+  // "öncesi/sonrası" bu yüzden `tickLord` ile aynı kaynaktan okumalı:
+  // iki ayrı hesap, oyuncuya raporda bir sayı üst çubukta başka bir sayı
+  // gösterirdi.
+  const { income } = calcHourlyIncome(lord.level, await garnizonPayGirdileri(lordId, tx), bonus);
   // Sıra: kendisinden yüksek şöhretli kaç lord var. Dünya başına 120 satır,
   // [worldId, fame] indeksli — savaş işleminin içinde taşınabilir bir maliyet.
   const ustunde = await tx.lord.count({
@@ -848,8 +844,69 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
         );
       }
 
-      // Sağ kalanlar eve döner
-      const survivors = result.attackerSurvivors;
+      /*
+       * FETHEDİLEN BÖLGEDE SAĞLAM ASKER KALIYOR (docs/16 §6).
+       *
+       * Gelir artık sahiplikten değil garnizondan geliyor. Ordusu eve
+       * dönen bir fatih, aldığı bölgeden hiçbir şey kazanmazdı ve her
+       * fetihten sonra ikinci bir "garnizon koy" işlemi gerekirdi.
+       * Aldığın yeri tuttuğun ordu ile elinde tutmak zaten savaşın
+       * kendi mantığı.
+       *
+       * YARALILAR VE YAĞMA yine eve dönüyor: yaralının yeri hastane,
+       * yağmanın yeri hazine. Yani dönüş yürüyüşü kayboluyor değil,
+       * taşıdığı şey değişiyor. Sağlam asker kalmazsa (hepsi yaralı)
+       * garnizon kurulmuyor ve bölge savunmasız kalıyor — bu da
+       * doğru: o savaştan çıkan güç gerçekten kalmadı.
+       *
+       * Orduyu geri almak tek dokunuş: `/map/:id/garrison` garnizonu
+       * anında eve çekiyor.
+       */
+      const saglamKalan = result.captured
+        ? orduDus(result.attackerSurvivors, result.yaraliDonen.saldiran)
+        : {};
+      if (result.captured && armyCount(saglamKalan) > 0) {
+        for (const t of UNIT_TYPES) {
+          const c = saglamKalan[t] ?? 0;
+          if (c > 0) await addUnitsRegion(march.lordId, region.id, t, c, tx);
+        }
+        await pushEvent(
+          march.lordId,
+          'garnizon_kuruldu',
+          {
+            mesaj: `${armyCount(saglamKalan)} birim ${region.name} garnizonunda kaldı.`,
+            regionId: region.id,
+          },
+          tx,
+        );
+      }
+
+      /*
+       * YAĞMA: dönen kafile varsa onunla, yoksa doğrudan hazineye.
+       *
+       * Dönüş yürüyüşü yağmayı varışta işliyor. Fetihte sağlam askerin
+       * tamamı bölgede kaldığında geri dönen kimse olmayabiliyor ve
+       * yağma o kayıtla birlikte yok oluyordu — sessizce, hiçbir hata
+       * vermeden. Kimse dönmüyorsa depo zaten fethedilen bölgenin
+       * içinde: doğrudan yazılıyor.
+       */
+      const survivors = result.captured
+        ? orduDus(result.attackerSurvivors, saglamKalan)
+        : result.attackerSurvivors;
+      const yagmaToplami =
+        Math.round(result.loot.altin) +
+        Math.round(result.loot.demir) +
+        Math.round(result.loot.erzak);
+      if (armyCount(survivors) === 0 && yagmaToplami > 0) {
+        await tx.lord.update({
+          where: { id: march.lordId },
+          data: {
+            altin: { increment: Math.round(result.loot.altin) },
+            demir: { increment: Math.round(result.loot.demir) },
+            erzak: { increment: Math.round(result.loot.erzak) },
+          },
+        });
+      }
       if (armyCount(survivors) > 0) {
         // Mesafe yürüyüş kaydından okunur. Eskiden gidiş süresinden geri
         // türetiliyordu; ilk saldırının süresi kısaltılabilir olunca o

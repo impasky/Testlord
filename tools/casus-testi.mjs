@@ -13,6 +13,7 @@
  * API ayakta olmalı. node tools/casus-testi.mjs
  */
 import { kayitOl } from './lib/kayit.mjs';
+import { garnizonaEkle } from './lib/garnizon.mjs';
 import { merkezUzakliklari } from './lib/harita.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 
@@ -81,8 +82,8 @@ for (const aday of harita.regions
   }
 }
 kontrol('Savunan bir bölge aldı', Boolean(bolge), bolge?.name ?? 'alınamadı');
-const savunanOrdu = (await savunan.get('/army')).home;
-await savunan.post(`/map/${bolge.id}/garrison`, { army: savunanOrdu });
+// Fetih artık garnizonu kendi bırakıyor; evde kalan varsa üstüne eklenir.
+await garnizonaEkle(savunan, bolge.id);
 const gercekGarnizon = (await savunan.get(`/map/${bolge.id}`)).garrison;
 const gercekAdet = Object.values(gercekGarnizon ?? {}).reduce((t, n) => t + Number(n || 0), 0);
 kontrol('Savunan garnizon kurdu', gercekAdet > 0, `${gercekAdet} birim`);

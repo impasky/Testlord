@@ -763,7 +763,13 @@ export function Harita({
    * az gelir yazıyordu. Sayım lordun BÜTÜN bölgelerinden — sunucunun
    * saydığı kümenin aynısı.
    */
-  const bolgelerim = harita.data.regions.filter((r) => r.isMine);
+  /*
+   * Gelir sahiplikten GARNİZONA geçti (docs/16 §6): vilayet birliğini
+   * sunucu da gelir aldığım bölgeler üzerinden sayıyor. Ekran sahip
+   * olduğum bölgeleri saymaya devam etseydi iki hesap yine ayrışırdı —
+   * bu dosyadaki yorumun anlattığı hatanın aynısı, yeni kuralla.
+   */
+  const bolgelerim = harita.data.regions.filter((r) => r.pay);
   const birlikler = vilayetCarpanlari(bolgelerim);
 
   function kapat() {
@@ -989,7 +995,9 @@ export function Harita({
                   const oradaki = bolgelerim.filter(
                     (r) => r.province === bolge.province && r.id !== bolge.id,
                   ).length;
-                  const simdiki = vilayetCarpani(oradaki + (bolge.isMine ? 1 : 0));
+                  // Sayılan küme `bolgelerim` ile AYNI olmalı: o küme
+                  // artık gelir aldığım (garnizonlu) bölgeler.
+                  const simdiki = vilayetCarpani(oradaki + (bolge.pay ? 1 : 0));
                   const alirsan = vilayetCarpani(oradaki + 1);
                   const yuzde = (c: number) => `×${c.toFixed(2).replace('.', ',')}`;
                   if (bolge.isMine) {

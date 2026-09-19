@@ -269,7 +269,30 @@ kontrol('Haritadan bölge seçilebiliyor', /garnizon|Garnizon|SALDIR|Seviye|GEL�
   ).bolgeler;
   const beklenen = (adet) => (adet <= 1 ? 1 : 1 + Math.min(vb.azami, (adet - 1) * vb.bolge_basina));
 
-  const benimler = (await G('/map')).regions.filter((r) => r.isMine);
+  /*
+   * Sayılan küme GELİR ALDIĞIM bölgeler, sahip olduklarım değil.
+   *
+   * Gelir sahiplikten garnizona geçti (docs/16 §6) ve birlik çarpanını
+   * motor da bu küme üzerinden sayıyor. Sınama sahipliğe bakmaya devam
+   * edince ekranın yazdığı ×1,08'i "yanlış" sanıyordu — yanlış olan
+   * sınamanın saydığı kümeydi.
+   */
+  /*
+   * SAYFA TAZELENİYOR: tarayıcı ile API aynı durumu görmeli.
+   *
+   * Bölgeler sayfa açıldıktan SONRA, doğrudan uçlarla fethedildi;
+   * tarayıcının önbelleğindeki harita o fetihleri bilmiyor. Eskiden bu
+   * fark görünmüyordu çünkü ölçülen şey de aynı eski veriden geliyordu.
+   * Garnizon payı gelince ekran yeni bir alana (`pay`) bakmaya başladı
+   * ve iki taraf ayrıştı: sınama 2 bölge sayarken kart "tek bölgen"
+   * diyordu.
+   */
+  await sayfa.reload({ waitUntil: 'domcontentloaded' });
+  await sayfa.click('nav button:has-text("Dünya")');
+  await sayfa.waitForSelector('[data-bolge]', { timeout: 30000 });
+  await sayfa.waitForTimeout(900);
+
+  const benimler = (await G('/map')).regions.filter((r) => r.pay);
   const sayac = {};
   for (const r of benimler) sayac[r.province] = (sayac[r.province] ?? 0) + 1;
 
@@ -278,11 +301,20 @@ kontrol('Haritadan bölge seçilebiliyor', /garnizon|Garnizon|SALDIR|Seviye|GEL�
   if (!hedef) {
     kontrol('Vilayet birliği rozeti ölçülebildi', false, 'taht dışı bölgesi olmayan lord');
   } else {
-    // Önceki bölge kartı hâlâ açık ve perdesi tıklamayı yutuyor.
-    // Perde düğmesi kartın ARKASINDA duruyor (oyuncu için "dışarı dokun,
-    // kapansın"), o yüzden kartın kendi kapatma düğmesi seçiliyor.
-    await sayfa.getByRole('button', { name: 'Kapat' }).last().click();
-    await sayfa.waitForTimeout(600);
+    /*
+     * Önceki bölge kartı açıksa perdesi tıklamayı yutuyor; kartın kendi
+     * kapatma düğmesine basılıyor (perde düğmesi kartın ARKASINDA:
+     * oyuncu için "dışarı dokun, kapansın").
+     *
+     * KOŞULLU: yukarıdaki tazeleme sayfayı sıfırladığı için kart açık
+     * olmayabiliyor. Koşulsuz beklemek, hiç açılmayacak bir düğme için
+     * 30 saniye bekleyip sınamayı düşürüyordu.
+     */
+    const kapat = sayfa.getByRole('button', { name: 'Kapat' });
+    if ((await kapat.count()) > 0) {
+      await kapat.last().click();
+      await sayfa.waitForTimeout(600);
+    }
     /*
      * Tıklama DOM üzerinden gönderiliyor, fare ile değil.
      *
@@ -295,7 +327,17 @@ kontrol('Haritadan bölge seçilebiliyor', /garnizon|Garnizon|SALDIR|Seviye|GEL�
      * üstteki işaretçi yer ve YANLIŞ bölge açılır.
      */
     await sayfa.locator(`[data-bolge="${hedef.id}"]`).dispatchEvent('click');
-    await sayfa.waitForTimeout(900);
+    /*
+     * Kartın AÇILMASI bekleniyor, sabit bir süre değil.
+     *
+     * Sabit 900 ms, sayfa tazelendikten sonra yetmiyordu: harita verisi
+     * yeniden çekiliyor ve kart geç açılıyor. Kart hiç açılmayınca
+     * `body` metninde haritanın kendi listesi kalıyor ve sınama orada
+     * geçen "tek bölgen" ifadesini kartın cevabı sanıyordu — ölçtüğü
+     * şeyi hiç görmeden.
+     */
+    await sayfa.getByRole('button', { name: 'Kapat' }).first().waitFor({ timeout: 15000 });
+    await sayfa.waitForTimeout(300);
     const kart = await sayfa.locator('body').innerText();
     const carpan = beklenen(sayac[hedef.province]);
     const yazi = `×${carpan.toFixed(2).replace('.', ',')}`;
@@ -328,6 +370,13 @@ kontrol('Haritadan bölge seçilebiliyor', /garnizon|Garnizon|SALDIR|Seviye|GEL�
    * sayı olmalı — biri kendi vilayetinde, öteki hiç bölgen olmayan bir
    * vilayette olsa bile.
    */
+  /*
+   * Önizleme için EVDE asker gerekiyor. Fetihten sağ çıkan ordu artık
+   * bölgede kalıyor (docs/16 §6), yani bu noktada ev boş olabiliyor ve
+   * sınama "ordu 0" diye ölçemeden kalıyordu.
+   */
+  await P('/army/train', { unitType: 'mizrakci', count: 30 });
+  await P('/test/kuyruklari-bitir');
   const ordu = await G('/army');
   const evOrdusu = Object.fromEntries(
     Object.entries(ordu.home ?? {}).filter(([, n]) => (n ?? 0) > 0),
