@@ -259,6 +259,24 @@ kontrol(
    * kaldı ve doğru olan testti, ürün değil.
    */
   {
+    /*
+     * ÖNCE GARNİZONU EVE ÇAĞIR.
+     *
+     * Fetih artık sağ kalan orduyu bölgede BIRAKIYOR (docs/16 §16), yani
+     * bir bölge aldıktan sonra "evdeki ordu" neredeyse boş oluyor.
+     * Garnizondaki asker komuta yerini de doldurduğu için `bosYer` küçük
+     * kalıyor ve yeni asker de yazdırılamıyor: akın bir avuç mızrakçıyla
+     * yapılıyor, kaybediliyor ve `ilkAkinAt` damgası hiç konmuyor.
+     * Kâhya o zaman haklı olarak konuşmaya devam ediyor — sınama
+     * "aşamalar bitti" diyor ama aslında bitmiyor.
+     *
+     * Bu yüzden akından önce toprakta duran ordu eve çekiliyor. Bölge
+     * elden gitmiyor (sahiplik sürüyor, yalnız gelir payı duruyor), ama
+     * akına gidecek gerçek bir ordu oluyor.
+     */
+    for (const r of (await get('/map')).regions.filter((x) => x.isMine)) {
+      await post(`/map/${r.id}/garrison`, { army: {} });
+    }
     const durum = await get('/me');
     const bosYer = Math.max(0, durum.lord.commandCapacity - durum.lord.usedSlots);
     if (bosYer > 4) {
