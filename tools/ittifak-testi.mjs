@@ -12,7 +12,7 @@
  * SADECE GELİŞTİRME. /api/test/* uçlarını kullanır.
  * API ayakta olmalı. node tools/ittifak-testi.mjs
  */
-import { kayitOl } from './lib/kayit.mjs';
+import { kayitOl, onerilenDiyar } from './lib/kayit.mjs';
 import { fethedilebilirMi } from './lib/hedef.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 
@@ -27,6 +27,9 @@ async function lordKur(etiket) {
   const { token } = await kayitOl(API, {
     email: `itt${damga}_${etiket}@lordlar.dev`,
     lordName: `Itt${damga.toString(36).slice(-3) + Math.random().toString(36).slice(2, 4)}${etiket}`,
+    // Hepsi AYNI diyarda: ayrı dünyalardaki iki lord birbirinin
+    // ittifakını göremez (bkz. lib/kayit.mjs → onerilenDiyar).
+    worldId: await onerilenDiyar(API),
   });
   const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
   return {

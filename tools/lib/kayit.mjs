@@ -68,6 +68,30 @@ export function benzersizAd(onek = 'Test') {
   return `${onek}${cikti}`;
 }
 
+/**
+ * Bu KOŞUDAKİ bütün lordların gideceği diyar.
+ *
+ * Kayıt, diyar seçilmezse açık diyarların ilkine gidiyor. Bir diyar
+ * zincir boyunca DOLARSA sıradaki lord başkasına düşüyor ve birbiriyle
+ * konuşması gereken iki lord ayrı dünyalarda kalıyor: ittifak "bulunamadı"
+ * diyor, takviye gidemiyor, pakt kurulamıyor. Sınama o zaman ölçtüğü
+ * şeyle hiç ilgisi olmayan bir sebeple düşüyor — `ittifak-basvuru-testi`
+ * zincirde tam olarak böyle kaldı.
+ *
+ * Değer süreç başına BİR KEZ çözülüyor: aynı koşudaki her lord aynı
+ * diyara yazılıyor. Diyar sınırlarını KASTEN sınayan araçlar (shard,
+ * birleşme, diyar seçimi) bunu çağırmıyor, kendi dünyasını kendisi
+ * veriyor.
+ */
+let _diyarSozu = null;
+export function onerilenDiyar(API) {
+  _diyarSozu ??= fetch(`${API}/api/diyarlar`)
+    .then((r) => r.json())
+    .then((d) => d.onerilen ?? undefined)
+    .catch(() => undefined);
+  return _diyarSozu;
+}
+
 export async function kayitOl(API, { email, password = 'parola1234', lordName, worldId }) {
   let sonYanit = null;
   let ad = lordName;

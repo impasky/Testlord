@@ -11,7 +11,7 @@
  *
  * SADECE GELİŞTİRME. API ayakta olmalı. node tools/ittifak-basvuru-testi.mjs
  */
-import { kayitOl } from './lib/kayit.mjs';
+import { kayitOl, onerilenDiyar } from './lib/kayit.mjs';
 
 const API = process.env.API_URL ?? 'http://localhost:3000';
 
@@ -22,10 +22,22 @@ function kontrol(ad, kosul, detay = '') {
 }
 
 const damga = Date.now();
+/*
+ * BÜTÜN LORDLAR AYNI DİYARDA.
+ *
+ * İttifak bir diyara ait: başka diyardaki bir ittifağa başvuru
+ * "İttifak bulunamadı" diye düşüyor. Kayıt, diyar seçilmezse açık
+ * diyarların ilkine gidiyor — ama bir diyar zincir boyunca dolarsa
+ * sıradaki lord BAŞKA diyara düşüyor ve sınama, ölçtüğü şeyle hiç
+ * ilgisi olmayan bir sebeple kalıyor. Zincire her yeni araç eklendiğinde
+ * bu ihtimal büyüyor; o yüzden diyar bir kez seçiliyor ve herkes oraya
+ * yazılıyor.
+ */
 async function lordKur(etiket) {
   const { token } = await kayitOl(API, {
     email: `bsv${damga}_${etiket}@lordlar.dev`,
     lordName: `Bsv ${damga.toString(36).slice(-3) + Math.random().toString(36).slice(2, 4)}${etiket}`,
+    worldId: await onerilenDiyar(API),
   });
   const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
   return {
