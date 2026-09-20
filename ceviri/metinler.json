@@ -512,7 +512,7 @@
   "tcc16d07e": {
     "grup": "arayuz",
     "tr": "{0} asker ölü sanılmıştı, yaralı olarak döndü. Kayıp sayısı bunu çıkardıktan sonrası.",
-    "en": "{0} soldiers were presumed dead and came back wounded. The casualty count is what remains after subtracting them.",
+    "en": "{0} [soldier was|soldiers were] presumed dead and came back wounded. The casualty count is what remains after subtracting them.",
     "nerede": [
       "apps/web/src/components/SavasRaporu.tsx:206"
     ]
@@ -520,7 +520,7 @@
   "t2eadcc70": {
     "grup": "arayuz",
     "tr": "{0} asker yaralı döndü. İyileşene kadar savaşa giremez, erzak yemez ve komuta yerini kaplamaz.",
-    "en": "{0} soldiers came back wounded. They cannot fight until they heal, they eat no supplies and take up no command space.",
+    "en": "{0} [soldier|soldiers] came back wounded. They cannot fight until they heal, they eat no supplies and take up no command space.",
     "nerede": [
       "apps/web/src/components/Hastane.tsx:41"
     ]
@@ -711,7 +711,7 @@
   "t0d71a05d": {
     "grup": "arayuz",
     "tr": "{0} gün sonra yeniden taraf değiştirebilirsin.",
-    "en": "You can change factions again in {0} days.",
+    "en": "You can change factions again in {0} [day|days].",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:228"
     ]
@@ -841,7 +841,7 @@
   "t75469fdf": {
     "grup": "arayuz",
     "tr": "{0} puanı dağıt",
-    "en": "Distribute {0} points",
+    "en": "Distribute {0} [point|points]",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:536"
     ]
@@ -866,7 +866,7 @@
   "tf1a6d8b4": {
     "grup": "arayuz",
     "tr": "{0} saat {1} dakika",
-    "en": "{0} hours {1} minutes",
+    "en": "{0} [hour|hours] {1} [minute|minutes]",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:90"
     ]
@@ -1009,7 +1009,7 @@
   "tcccb2184": {
     "grup": "arayuz",
     "tr": "{0} şikâyet karar bekliyor.",
-    "en": "{0} reports are waiting for a decision.",
+    "en": "{0} [report is|reports are] waiting for a decision.",
     "nerede": [
       "apps/web/src/screens/Hesap.tsx:130"
     ]
@@ -1765,7 +1765,7 @@
   "t2624ec5a": {
     "grup": "arayuz",
     "tr": "Aynı anda en fazla {0} bölge geliştirilebilir. Biri bitmeden yenisi başlamaz.",
-    "en": "A maximum of {0} regions can be developed at once. A new one cannot start until one finishes.",
+    "en": "A maximum of {0} [region|regions] can be developed at once. A new one cannot start until one finishes.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1139"
     ]
@@ -1773,7 +1773,7 @@
   "t74ab2913": {
     "grup": "arayuz",
     "tr": "Aynı anda en fazla {0} eğitim yapabilirsin. Kışlanı yükseltirsen artar.",
-    "en": "You can have a maximum of {0} trainings at once. Upgrading your Barracks increases this.",
+    "en": "You can have a maximum of {0} [training|trainings] at once. Upgrading your Barracks increases this.",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:87"
     ]
@@ -4068,7 +4068,7 @@
   "ta4e04755": {
     "grup": "arayuz",
     "tr": "Günde en fazla {0} saldırı yapabilirsin. Taht Kalesi bu limitten muaftır; yarın sıfırlanır.",
-    "en": "You can attack at most {0} times a day. The Throne Citadel is exempt from this limit; resets tomorrow.",
+    "en": "You can attack at most {0} [time|times] a day. The Throne Citadel is exempt from this limit; resets tomorrow.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:744"
     ]
@@ -7243,7 +7243,7 @@
   "tc4cf533f": {
     "grup": "arayuz",
     "tr": "Slotun {0}. Liderlik {1} puanda bir slot açar (en fazla{2}{3}); karargâhın seviyesi bunun üstüne ekler.",
-    "en": "You have {0} slots. Leadership opens a slot every {1} points (at most{2}{3}); your headquarters level adds on top of that.",
+    "en": "You have {0} [slot|slots]. Leadership opens a slot every {1} [point|points] (at most{2}{3}); your headquarters level adds on top of that.",
     "nerede": [
       "apps/web/src/screens/Generaller.tsx:202"
     ]
@@ -8576,7 +8576,7 @@
   "t335dc8d5": {
     "grup": "motor",
     "tr": "\"Başka bir sebep\" seçtiysen en az {0} harfle açıkla.",
-    "en": "If you selected \"Another reason\", explain with at least {0} characters.",
+    "en": "If you selected \"Another reason\", explain with at least {0} [character|characters].",
     "nerede": [
       "packages/shared/src/moderasyon.ts:92"
     ]
@@ -8672,7 +8672,7 @@
   "tc2e13b6e": {
     "grup": "motor",
     "tr": "Açıklama en fazla {0} harf olabilir.",
-    "en": "Description can be up to {0} characters.",
+    "en": "Description can be up to {0} [character|characters].",
     "nerede": [
       "packages/shared/src/moderasyon.ts:87"
     ]
@@ -8864,7 +8864,7 @@
   "t7009e0ca": {
     "grup": "motor",
     "tr": "Aynı anda {0} araştırma yürütebilirsin, yani sıra senin kararın: önce ekonomiyi mi büyütürsün, orduyu mu? Vazgeçersen harcadığının %{1}'i geri gelir.",
-    "en": "You can run {0} researches at once, so the order is your decision: do you grow the economy first, or the army? If you cancel, {1}% of what you spent is refunded.",
+    "en": "You can run {0} [research|researches] at once, so the order is your decision: do you grow the economy first, or the army? If you cancel, {1}% of what you spent is refunded.",
     "nerede": [
       "packages/shared/src/ogretici.ts:519"
     ]
@@ -8872,7 +8872,7 @@
   "tabbe5d66": {
     "grup": "motor",
     "tr": "Aynı anda {0} birim komuta edebilirsin; Liderlik her puanda {1} birim daha ekler. Ordu istediğin kadar büyümez.",
-    "en": "You can command {0} units at once; Leadership adds {1} more units per point. The army does not grow as large as you like.",
+    "en": "You can command {0} [unit|units] at once; Leadership adds {1} more [unit|units] per point. The army does not grow as large as you like.",
     "nerede": [
       "packages/shared/src/ogretici.ts:337"
     ]
@@ -8880,7 +8880,7 @@
   "t7dc15b82": {
     "grup": "motor",
     "tr": "Aynı anda en fazla {0} başvurun olabilir. Birini geri çek.",
-    "en": "You can have a maximum of {0} applications at once. Withdraw one.",
+    "en": "You can have a maximum of {0} [application|applications] at once. Withdraw one.",
     "nerede": [
       "packages/shared/src/ittifakBasvuru.ts:115"
     ]
@@ -9225,7 +9225,7 @@
   "tfcbe1de2": {
     "grup": "motor",
     "tr": "Bu ittifak başvurunu reddetti. {0} saat sonra yeniden başvurabilirsin.",
-    "en": "This alliance rejected your application. You can reapply in {0} hours.",
+    "en": "This alliance rejected your application. You can reapply in {0} [hour|hours].",
     "nerede": [
       "packages/shared/src/ittifakBasvuru.ts:104"
     ]
@@ -9652,7 +9652,7 @@
   "t9d099ea3": {
     "grup": "motor",
     "tr": "Ele geçirilen bölge {0} saat kalkan altında kalır — hem seninki hem düşmanınki.",
-    "en": "A captured region remains shielded for {0} hours — both yours and the enemy's.",
+    "en": "A captured region remains shielded for {0} [hour|hours] — both yours and the enemy's.",
     "nerede": [
       "packages/shared/src/ipuclari.ts:45"
     ]
@@ -9684,7 +9684,7 @@
   "t878c2032": {
     "grup": "motor",
     "tr": "En fazla {0} paktın olabilir. Yenisi için birini feshetmen gerekiyor.",
-    "en": "You can have a maximum of {0} pacts. You must break one for a new one.",
+    "en": "You can have a maximum of {0} [pact|pacts]. You must break one for a new one.",
     "nerede": [
       "packages/shared/src/pakt.ts:102"
     ]
@@ -9764,7 +9764,7 @@
   "t31725a07": {
     "grup": "motor",
     "tr": "Fetih sonrası {0} saat",
-    "en": "{0} hours after conquest",
+    "en": "{0} [hour|hours] after conquest",
     "nerede": [
       "packages/shared/src/ogretici.ts:539"
     ]
@@ -9885,7 +9885,7 @@
   "te9bf886c": {
     "grup": "motor",
     "tr": "Günde {0} saldırı yapabilirsin; Taht Kalesi bu limitten muaf. Hedefini seçerek harca.",
-    "en": "You can make {0} attacks a day; Throne Citadel is exempt from this limit. Spend it by picking your target.",
+    "en": "You can make {0} [attack|attacks] a day; Throne Citadel is exempt from this limit. Spend it by picking your target.",
     "nerede": [
       "packages/shared/src/ipuclari.ts:54"
     ]
@@ -10021,7 +10021,7 @@
   "t391f2d9d": {
     "grup": "motor",
     "tr": "İki ittifak birbirine saldırmamaya söz verebilir. En fazla {0} pakt, ve fesih anında geçmiyor: {1} saat ihbar süresi boyunca pakt hâlâ koruyor. Verdiğin söz o yüzden bir şey ifade ediyor.",
-    "en": "Two alliances can promise not to attack each other. At most {0} pacts, and breaking one is not instant: during the {1} hour notice period the pact still protects. That is why the promise you give means something.",
+    "en": "Two alliances can promise not to attack each other. At most {0} [pact|pacts], and breaking one is not instant: during the {1} hour notice period the pact still protects. That is why the promise you give means something.",
     "nerede": [
       "packages/shared/src/ogretici.ts:572"
     ]
@@ -10029,7 +10029,7 @@
   "td2fa6864": {
     "grup": "motor",
     "tr": "İlk {0} saat kimse sana saldıramaz. O süre kurulmak için — sonrası için hazırlan.",
-    "en": "Nobody can attack you for the first {0} hours. That time is for setting up — prepare for what comes after.",
+    "en": "Nobody can attack you for the first {0} [hour|hours]. That time is for setting up — prepare for what comes after.",
     "nerede": [
       "packages/shared/src/ipuclari.ts:63"
     ]
@@ -10061,7 +10061,7 @@
   "t78f10e57": {
     "grup": "motor",
     "tr": "İttifak adı en az {0} harf olmalı.",
-    "en": "Alliance name must be at least {0} characters.",
+    "en": "Alliance name must be at least {0} [character|characters].",
     "nerede": [
       "packages/shared/src/ittifak.ts:42"
     ]
@@ -10069,7 +10069,7 @@
   "t61897022": {
     "grup": "motor",
     "tr": "İttifak adı en fazla {0} harf olabilir.",
-    "en": "Alliance name can be at most {0} characters.",
+    "en": "Alliance name can be at most {0} [character|characters].",
     "nerede": [
       "packages/shared/src/ittifak.ts:45"
     ]
@@ -10572,7 +10572,7 @@
   "t3d5e14ec": {
     "grup": "motor",
     "tr": "Not en fazla {0} harf olabilir.",
-    "en": "Note can be at most {0} characters.",
+    "en": "Note can be at most {0} [character|characters].",
     "nerede": [
       "packages/shared/src/ittifakBasvuru.ts:195"
     ]
@@ -10716,7 +10716,7 @@
   "t8b113621": {
     "grup": "motor",
     "tr": "Ordun yolda. İlk yürüyüşün {0} dakika sürer; sonucu bu oturumda görürsün.",
-    "en": "Your army is marching. Your first march will take {0} minutes; you will see the outcome in this session.",
+    "en": "Your army is marching. Your first march will take {0} [minute|minutes]; you will see the outcome in this session.",
     "nerede": [
       "packages/shared/src/rehber.ts:82"
     ]
@@ -11327,7 +11327,7 @@
   "tf1cef8fa": {
     "grup": "motor",
     "tr": "Yağma sonrası {0} saat",
-    "en": "{0} hours after looting",
+    "en": "{0} [hour|hours] after looting",
     "nerede": [
       "packages/shared/src/ogretici.ts:534"
     ]
@@ -11514,7 +11514,7 @@
   "t71b538d7": {
     "grup": "sunucu",
     "tr": "\n{0} diyar ve {1} hesap silindi.\n",
-    "en": "\n{0} realms and {1} accounts deleted.\n",
+    "en": "\n{0} [realm|realms] and {1} [account|accounts] deleted.\n",
     "nerede": [
       "apps/api/src/temiz-kesme.ts:114"
     ]
@@ -11755,7 +11755,7 @@
   "t0c5f1de4": {
     "grup": "sunucu",
     "tr": "{0} çekirdek yatırım satırı.\n",
-    "en": "{0} core investment rows.\n",
+    "en": "{0} core investment [row|rows].\n",
     "nerede": [
       "apps/api/src/temiz-kesme.ts:118"
     ]
@@ -11931,7 +11931,7 @@
   "t1fbe3442": {
     "grup": "sunucu",
     "tr": "{0} ittifaktan yeni ayrılmış, {1} saat daha giremez.",
-    "en": "{0} has just left an alliance and cannot join for another {1} hours.",
+    "en": "{0} has just left an alliance and cannot join for another {1} [hour|hours].",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1142"
     ]
@@ -11971,7 +11971,7 @@
   "t3d8681d2": {
     "grup": "sunucu",
     "tr": "{0} paktı feshetti. Pakt {1} saat sonra sona eriyor.",
-    "en": "{0} dissolved the pact. The pact expires in {1} hours.",
+    "en": "{0} dissolved the pact. The pact expires in {1} [hour|hours].",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1628"
     ]
@@ -12060,7 +12060,7 @@
   "t66b1afbf": {
     "grup": "sunucu",
     "tr": "{0} yağmalandı ama elinde kaldı. Bölge {1} saat koruma altında — garnizonu bu arada tazele.",
-    "en": "{0} was looted but remains yours. The region is under protection for {1} hours — refresh the garrison in the meantime.",
+    "en": "{0} was looted but remains yours. The region is under protection for {1} [hour|hours] — refresh the garrison in the meantime.",
     "nerede": [
       "apps/api/src/services/march.ts:879"
     ]
@@ -12174,7 +12174,7 @@
   "t1e7abb3f": {
     "grup": "sunucu",
     "tr": "Aynı anda en fazla {0} takviye tutabilirsin. Elçiliğini yükselt.",
-    "en": "You can hold at most {0} reinforcements at once. Upgrade your embassy.",
+    "en": "You can hold at most {0} [reinforcement|reinforcements] at once. Upgrade your embassy.",
     "nerede": [
       "apps/api/src/routes/map.ts:778"
     ]
@@ -12182,7 +12182,7 @@
   "t33676df1": {
     "grup": "sunucu",
     "tr": "Aynı anda en fazla {0} yürüyüş. Ordularından biri dönene kadar bekle",
-    "en": "At most {0} marches at once. Wait until one of your armies returns",
+    "en": "At most {0} [march|marches] at once. Wait until one of your armies returns",
     "nerede": [
       "apps/api/src/routes/map.ts:1142"
     ]
@@ -12767,7 +12767,7 @@
   "t6d6945d3": {
     "grup": "sunucu",
     "tr": "Diyarlar birleşti: {0} lord geldi. Taht sahipsiz — ilk alan Diyarın Lordu olur.",
-    "en": "The realms have merged: {0} lords arrived. The throne is unowned — whoever takes it first becomes Lord of the Realm.",
+    "en": "The realms have merged: {0} [lord|lords] arrived. The throne is unowned — whoever takes it first becomes Lord of the Realm.",
     "nerede": [
       "apps/api/src/services/birlesme.ts:451"
     ]
@@ -12873,7 +12873,7 @@
   "t61d3205f": {
     "grup": "sunucu",
     "tr": "En fazla {0} yaşlı olabilir. Önce birinin rütbesini almalısın.",
-    "en": "There can be at most {0} elders. You must demote someone first.",
+    "en": "There can be at most {0} [elder|elders]. You must demote someone first.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1832"
     ]
@@ -13069,7 +13069,7 @@
   "tb15d50e9": {
     "grup": "sunucu",
     "tr": "İttifaktan yeni ayrıldın. {0} saat sonra girebilirsin.",
-    "en": "You just left an alliance. You can join in {0} hours.",
+    "en": "You just left an alliance. You can join in {0} [hour|hours].",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1335"
     ]
@@ -13077,7 +13077,7 @@
   "t8f1e61bf": {
     "grup": "sunucu",
     "tr": "İttifaktan yeni ayrıldın. {0} saat sonra yeni bir ittifağa başvurabilirsin.",
-    "en": "You have just left an alliance. You can apply to a new one in {0} hours.",
+    "en": "You have just left an alliance. You can apply to a new one in {0} [hour|hours].",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:958"
     ]
@@ -13085,7 +13085,7 @@
   "t96bb795c": {
     "grup": "sunucu",
     "tr": "İttifaktan yeni ayrıldın. {0} saat sonra yeni bir ittifağa girebilirsin.",
-    "en": "You have just left an alliance. You can join a new one in {0} hours.",
+    "en": "You have just left an alliance. You can join a new one in {0} [hour|hours].",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:501"
     ]
@@ -13464,7 +13464,7 @@
   "t1f48c059": {
     "grup": "sunucu",
     "tr": "Parolanı sıfırlamak için {0} dakika içinde bu bağlantıyı aç:\n\n{1}\n\nBu isteği sen yapmadıysan hiçbir şey yapmana gerek yok; parolan değişmedi.",
-    "en": "To reset your password open this link within {0} minutes:\n\n{1}\n\nIf you did not make this request you need to do nothing; your password has not changed.",
+    "en": "To reset your password open this link within {0} [minute|minutes]:\n\n{1}\n\nIf you did not make this request you need to do nothing; your password has not changed.",
     "nerede": [
       "apps/api/src/routes/auth.ts:303"
     ]

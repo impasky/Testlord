@@ -229,6 +229,17 @@ describe('cogulSec — köşeli gruplar', () => {
     expect(cogulSec('Maximum [pact|pacts]: {0}', [1], 'en')).toBe('Maximum pacts: {0}');
   });
 
+  it('METİNDEKİ köşeli parantez grup sanılmıyor', () => {
+    // İttifak etiketi köşeli parantezle yazılıyor: "[KRT] Kartallar · 3 üye".
+    // İçinde boru işareti olmadığı için grup değil; olduğu gibi kalmalı.
+    expect(cogulSec('[{0}] {1} · {2} [member|members]', ['KRT', 'Kartallar', 1], 'en')).toBe(
+      '[{0}] {1} · {2} member',
+    );
+    expect(cogulSec('[{0}] {1} · {2} [member|members]', ['KRT', 'Kartallar', 9], 'en')).toBe(
+      '[{0}] {1} · {2} members',
+    );
+  });
+
   it('köşeli grup yokken eski davranış sürüyor', () => {
     expect(cogulSec('{0} battle|{0} battles', [1], 'en')).toBe('{0} battle');
   });
