@@ -41,7 +41,25 @@ let okunan = 0;
 
 for (const dosya of dosyalar) {
   const metin = readFileSync(dosya, 'utf8');
-  for (const [i, ham] of metin.split('\n').entries()) {
+  /*
+   * BAŞLIK BLOĞU ATLANIYOR — `===` ayracına kadar olan her şey.
+   *
+   * Başlıktaki "nasıl çevrilir" açıklaması ÖRNEK bir satır taşıyor:
+   *
+   *     12. Ordun yetiyor.        ->   12. Your army is enough.
+   *
+   * Bu satır biçim olarak gerçek bir çeviri satırından ayırt edilemiyor
+   * ve dosyayı olduğu gibi geri veren çevirmen — ki talimat tam olarak
+   * bunu söylüyor — 12 numaralı metnin çevirisini "Your army is
+   * enough." yapıyordu. Burada yakalandı çünkü 12 numaralı metnin altı
+   * yer tutucusu var ve denetim uyuşmazlığı gördü; yer tutucusuz bir
+   * metne denk gelseydi SESSİZCE yanlış çeviri yazılacaktı.
+   */
+  const ayrac = metin.indexOf('\n====');
+  const govde = ayrac === -1 ? metin : metin.slice(ayrac + 1);
+  const kayma = ayrac === -1 ? 0 : metin.slice(0, ayrac + 1).split('\n').length - 1;
+  for (const [n, ham] of govde.split('\n').entries()) {
+    const i = n + kayma;
     // Başlık, açıklama ve ayraç satırları atlanıyor: yalnız
     // "123. ..." biçimindekiler çeviri satırı.
     const m = /^\s*(\d+)\s*[.|\t]\s*(.*)$/.exec(ham);

@@ -923,11 +923,11 @@
       "_kati_kural": "FAYDA PUANI GUC SATIN ALMAZ (docs/16 §9). Kimlik, kolaylik ve icerik erisimi alir. Guc yalniz cekirdek yatirimindan gelir ve herkese esit isler.",
       "_rutbe_notu": "Puan HARCANMIYOR, birikiyor ve rutbeye donusuyor. Bir dukkan acsaydik puanin karsiligi 'ne aldin' olurdu; boyle 'ne yaptin' oluyor. Unvanin sohretten turedigi gibi (unvanlar.json) rutbe de puandan turuyor: ikinci bir sayac, ikinci bir tablo yok.",
       "rutbeler": [
-        { "esik": 0, "ad": "Yeminli", "aciklama": "Medeniyetine yazildin." },
-        { "esik": 250, "ad": "Nöbetçi", "aciklama": "Toprakta durdun, payini aldin." },
-        { "esik": 1000, "ad": "Sancaktar", "aciklama": "Fetihte ve savunmada oradaydin." },
-        { "esik": 3000, "ad": "Ocak Ustası", "aciklama": "Cekirdekleri sen buyuttun." },
-        { "esik": 8000, "ad": "Medeniyetin Kılıcı", "aciklama": "Taraf senin adini biliyor." }
+        { "esik": 0, "ad": "Yeminli", "aciklama": "Medeniyetine yazıldın." },
+        { "esik": 250, "ad": "Nöbetçi", "aciklama": "Toprakta durdun, payını aldın." },
+        { "esik": 1000, "ad": "Sancaktar", "aciklama": "Fetihte ve savunmada oradaydın." },
+        { "esik": 3000, "ad": "Ocak Ustası", "aciklama": "Çekirdekleri sen büyüttün." },
+        { "esik": 8000, "ad": "Medeniyetin Kılıcı", "aciklama": "Taraf senin adını biliyor." }
       ]
     },
     "degisim": {

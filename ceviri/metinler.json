@@ -173,7 +173,7 @@
   "t56d6722a": {
     "grup": "arayuz",
     "tr": "— medeniyetin",
-    "en": "",
+    "en": "— civilization's",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:870"
     ]
@@ -629,7 +629,7 @@
   "ta244e3f2": {
     "grup": "arayuz",
     "tr": "{0} çekirdeği. Kaybeden medeniyet ölmesin diye çekirdekler dokunulmaz; yalnız kendi üyeleri geliştirebilir.",
-    "en": "",
+    "en": "{0} core. Cores are untouchable so the losing civilization doesn't die; only its own members can upgrade them.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:753"
     ]
@@ -694,7 +694,7 @@
   "t75a1fe6c": {
     "grup": "arayuz",
     "tr": "{0} fayda ›",
-    "en": "",
+    "en": "{0} merit ›",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:873"
     ]
@@ -851,7 +851,7 @@
   "t5ae157ef": {
     "grup": "arayuz",
     "tr": "{0} önde · +%{1} yağma",
-    "en": "",
+    "en": "{0} in the lead · +{1}% loot",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1095"
     ]
@@ -984,7 +984,7 @@
   "t62296129": {
     "grup": "arayuz",
     "tr": "{0} seninle aynı medeniyetten ({1}). Kendi medeniyetinin lorduna saldıramazsın.",
-    "en": "",
+    "en": "{0} is from the same civilization as you ({1}). You cannot attack a lord of your own civilization.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:764"
     ]
@@ -2216,7 +2216,7 @@
   "tc483baeb": {
     "grup": "arayuz",
     "tr": "Bir medeniyetin",
-    "en": "",
+    "en": "A civilization's",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:753"
     ]
@@ -2777,7 +2777,7 @@
   "te591a291": {
     "grup": "arayuz",
     "tr": "Çekirdek bölge — ele geçirilemez",
-    "en": "",
+    "en": "Core region — cannot be captured",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:752"
     ]
@@ -3079,7 +3079,7 @@
   "tf5a53ff1": {
     "grup": "arayuz",
     "tr": "Diyarda",
-    "en": "",
+    "en": "In the realm",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:398"
     ]
@@ -3598,7 +3598,7 @@
   "t0bbfe6de": {
     "grup": "arayuz",
     "tr": "En üst unvandasın:",
-    "en": "",
+    "en": "You are at the highest title:",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:393"
     ]
@@ -6713,7 +6713,7 @@
   "t078f1e48": {
     "grup": "arayuz",
     "tr": "Rütbe",
-    "en": "",
+    "en": "Rank",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:294"
     ]
@@ -7632,7 +7632,7 @@
   "tba303025": {
     "grup": "arayuz",
     "tr": "Şöhret harcanmaz, biriktirilir.",
-    "en": "",
+    "en": "Renown is not spent, it is accumulated.",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:416"
     ]
@@ -7667,7 +7667,7 @@
   "t61a99a60": {
     "grup": "arayuz",
     "tr": "ŞÖHRETİN NE YAPIYOR",
-    "en": "",
+    "en": "WHAT YOUR RENOWN DOES",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:385"
     ]
@@ -7825,6 +7825,12 @@
     "en": "Throne Citadel",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1113",
+      "data/balance.json:bolgeler.gelisim_adlari.taht[0]",
+      "data/balance.json:bolgeler.gelisim_adlari.taht[1]",
+      "data/balance.json:bolgeler.gelisim_adlari.taht[2]",
+      "data/balance.json:bolgeler.gelisim_adlari.taht[3]",
+      "data/balance.json:bolgeler.gelisim_adlari.taht[4]",
+      "data/balance.json:taht_kalesi.ad",
       "data/world-map.json:regions[0].name",
       "packages/shared/src/bolge-adi.ts:36",
       "packages/shared/src/ogretici.ts:214"
@@ -8534,7 +8540,7 @@
   "tb51532c7": {
     "grup": "arayuz",
     "tr": "Yoldaşının toprağı",
-    "en": "",
+    "en": "Your comrade's land",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:763"
     ]
@@ -8734,7 +8740,7 @@
   "t3d0386c3": {
     "grup": "motor",
     "tr": "{0} çekirdek ele geçirilemez",
-    "en": "",
+    "en": "{0} core cannot be captured",
     "nerede": [
       "packages/shared/src/ogretici.ts:269"
     ]
@@ -8979,6 +8985,14 @@
       "packages/shared/src/rehber.ts:468"
     ]
   },
+  "t6b1fe63f": {
+    "grup": "motor",
+    "tr": "Aşılmaz Kale",
+    "en": "",
+    "nerede": [
+      "data/balance.json:bolgeler.gelisim_adlari.kale[4]"
+    ]
+  },
   "t198149c0": {
     "grup": "motor",
     "tr": "Aynı anda {0} araştırma",
@@ -9075,6 +9089,14 @@
       "packages/shared/src/ogretici.ts:530"
     ]
   },
+  "t35fda0e7": {
+    "grup": "motor",
+    "tr": "Bereketli Tarlalar",
+    "en": "",
+    "nerede": [
+      "data/balance.json:bolgeler.gelisim_adlari.tarla[2]"
+    ]
+  },
   "t675e7549": {
     "grup": "motor",
     "tr": "Beş düşman diyarı, her birinde on kamp. Kaynak ve ekipman.",
@@ -9126,7 +9148,7 @@
   "td5f45734": {
     "grup": "motor",
     "tr": "Bir bölgenin geliri kâğıt üstündeki sahibine değil, ORADA DURAN garnizonlara gider — bıraktıkları komuta yeri oranında. Askerini çekersen bölge medeniyetinden gitmez ama senin gelirin durur. Bölge bölünemez; bölgedeki pay bölünür.",
-    "en": "",
+    "en": "A region's income goes to the garrisons STATIONED THERE, not to its owner on paper — in proportion to the command capacity they leave. If you withdraw your troops, the region is not lost from your civilization, but your income stops. A region cannot be divided; the share in the region is divided.",
     "nerede": [
       "packages/shared/src/ogretici.ts:266"
     ]
@@ -9142,7 +9164,7 @@
   "tea6d7940": {
     "grup": "motor",
     "tr": "Bir bölgeyi ezici bir üstünlükle alırsan bölge medeniyetine yazılır ve sağ kalan askerlerin orada garnizon olarak kalır — payını o andan itibaren almaya başlarsın. Yaralılar ve ganimet eve döner. Dar kazanırsan yalnız yağmalarsın: kaynağı alır, bölgeyi bırakırsın.",
-    "en": "",
+    "en": "If you take a region with overwhelming superiority, the region is added to your civilization and your surviving soldiers remain there as a garrison — you start receiving your share from that moment on. The wounded and the loot return home. If you win narrowly, you only pillage: you take the resources and leave the region.",
     "nerede": [
       "packages/shared/src/ogretici.ts:399"
     ]
@@ -9150,7 +9172,7 @@
   "t0704a055": {
     "grup": "motor",
     "tr": "Bir bölgeyi yükseltmek onun gelirini ve savunmasını artırır; oradaki garnizonunun payı da aynı oranda büyür. Yeni bölge almaktan çoğu zaman daha kârlıdır.",
-    "en": "",
+    "en": "Upgrading a region increases its income and defense; your garrison's share there grows at the same rate. It is often more profitable than taking a new region.",
     "nerede": [
       "packages/shared/src/ogretici.ts:472"
     ]
@@ -9303,7 +9325,7 @@
   "t7a969da9": {
     "grup": "motor",
     "tr": "Böyle bir medeniyet yok.",
-    "en": "",
+    "en": "There is no such civilization.",
     "nerede": [
       "packages/shared/src/medeniyet.ts:376"
     ]
@@ -9319,7 +9341,7 @@
   "t7236f103": {
     "grup": "motor",
     "tr": "Bu düğme orduyu yola çıkarır. Geri dönüşü yok — ama hesabı yaptım: bu bölge medeniyetine yazılır, ordun orada kalır ve gelirin o günden sonra oradan akar.",
-    "en": "",
+    "en": "This button sends the army on its way. There is no turning back — but I did the math: this region will be added to your civilization, your army will stay there, and your income will flow from there from that day on.",
     "nerede": [
       "packages/shared/src/rehber.ts:404"
     ]
@@ -9389,6 +9411,14 @@
       "packages/shared/src/moderasyon.ts:206"
     ]
   },
+  "t0c9714e9": {
+    "grup": "motor",
+    "tr": "Bucak",
+    "en": "",
+    "nerede": [
+      "data/balance.json:bolgeler.gelisim_adlari.koy[2]"
+    ]
+  },
   "t438772cd": {
     "grup": "motor",
     "tr": "Bugün en fazla {0} {1} daha takas edebilirsin.",
@@ -9437,6 +9467,30 @@
       "packages/shared/src/ogretici.ts:224"
     ]
   },
+  "t5ccb766e": {
+    "grup": "motor",
+    "tr": "Büyük Kale",
+    "en": "",
+    "nerede": [
+      "data/balance.json:bolgeler.gelisim_adlari.kale[3]"
+    ]
+  },
+  "t3fc4db8f": {
+    "grup": "motor",
+    "tr": "Büyük Köy",
+    "en": "",
+    "nerede": [
+      "data/balance.json:bolgeler.gelisim_adlari.koy[1]"
+    ]
+  },
+  "te8aa31ff": {
+    "grup": "motor",
+    "tr": "Büyük Şehir",
+    "en": "",
+    "nerede": [
+      "data/balance.json:bolgeler.gelisim_adlari.sehir[3]"
+    ]
+  },
   "tc8dcc54d": {
     "grup": "motor",
     "tr": "Büyümenin üç yolu",
@@ -9453,6 +9507,14 @@
       "packages/shared/src/arastirma.ts:184"
     ]
   },
+  "tf5d64bd5": {
+    "grup": "motor",
+    "tr": "Cevher Yatağı",
+    "en": "",
+    "nerede": [
+      "data/balance.json:bolgeler.gelisim_adlari.maden[3]"
+    ]
+  },
   "tfcce622f": {
     "grup": "motor",
     "tr": "Çamurlu bir yol, ahşap evler, bir palisad.",
@@ -9464,7 +9526,7 @@
   "t37b4cd38": {
     "grup": "motor",
     "tr": "Çekirdeğe bağış herkese yarar",
-    "en": "",
+    "en": "Donating to the core benefits everyone",
     "nerede": [
       "packages/shared/src/ipuclari.ts:71"
     ]
@@ -9472,9 +9534,17 @@
   "td0844313": {
     "grup": "motor",
     "tr": "Çekirdek bonusu HERKESE işler",
-    "en": "",
+    "en": "The core bonus applies to EVERYONE",
     "nerede": [
       "packages/shared/src/ogretici.ts:273"
+    ]
+  },
+  "ta0721e62": {
+    "grup": "motor",
+    "tr": "Çekirdekleri sen büyüttün.",
+    "en": "",
+    "nerede": [
+      "data/balance.json:medeniyetler.fayda_puani.rutbeler[3].aciklama"
     ]
   },
   "t47ab5fd7": {
@@ -9483,6 +9553,22 @@
     "en": "If you conquer a larger settlement and move your capital there, your buildings come with their levels. Moving costs you nothing.",
     "nerede": [
       "packages/shared/src/ogretici.ts:433"
+    ]
+  },
+  "t700fa11a": {
+    "grup": "motor",
+    "tr": "Demir Madeni",
+    "en": "",
+    "nerede": [
+      "data/balance.json:bolgeler.gelisim_adlari.maden[1]"
+    ]
+  },
+  "t15e2ef0f": {
+    "grup": "motor",
+    "tr": "Demir Ocağı",
+    "en": "",
+    "nerede": [
+      "data/balance.json:medeniyetler.liste[0].ad"
     ]
   },
   "t899dea41": {
@@ -9525,12 +9611,37 @@
       "packages/shared/src/ogretici.ts:312"
     ]
   },
+  "t9dd91313": {
+    "grup": "motor",
+    "tr": "Derin Ocak",
+    "en": "",
+    "nerede": [
+      "data/balance.json:bolgeler.gelisim_adlari.maden[2]"
+    ]
+  },
   "tefcb3bb6": {
     "grup": "motor",
     "tr": "Dibe vurursun, silinmezsin",
     "en": "You may hit rock bottom, but you won't be wiped out",
     "nerede": [
       "packages/shared/src/ogretici.ts:223"
+    ]
+  },
+  "t2ab91378": {
+    "grup": "motor",
+    "tr": "Diyarın Başkenti",
+    "en": "",
+    "nerede": [
+      "data/balance.json:bolgeler.gelisim_adlari.sehir[4]"
+    ]
+  },
+  "tcd1d4189": {
+    "grup": "motor",
+    "tr": "Diyarın Kileri",
+    "en": "The Realm's Pantry",
+    "nerede": [
+      "data/balance.json:bolgeler.gelisim_adlari.tarla[4]",
+      "data/basarimlar.json:kumeler[4].basarimlar[3].ad"
     ]
   },
   "t522a35da": {
@@ -9568,7 +9679,7 @@
   "tee8f76d1": {
     "grup": "motor",
     "tr": "Dört çekirdeğe bağış yaparak medeniyetinin {0} oranlarını büyütürsün: her seviye +%{1}, en çok {2} seviye, yani tam geliştirilmiş bir çekirdek +%{3}. Bonus o medeniyetteki herkese işler — bir kuruş vermeyene de.",
-    "en": "",
+    "en": "By donating to the four cores, you increase your civilization's {0} rates: each level is +{1}%, up to {2} levels, meaning a fully upgraded core is +{3}%. The bonus applies to everyone in that civilization — even to those who don't give a dime.",
     "nerede": [
       "packages/shared/src/ogretici.ts:274"
     ]
@@ -9576,7 +9687,7 @@
   "td8ce2faa": {
     "grup": "motor",
     "tr": "Dört medeniyet, sen birinin lordusun",
-    "en": "",
+    "en": "Four civilizations, you are a lord of one",
     "nerede": [
       "packages/shared/src/ogretici.ts:244"
     ]
@@ -9635,6 +9746,15 @@
     "en": "Training, marching and building finish over time. You do not need to keep the app open; it works while it is closed.",
     "nerede": [
       "packages/shared/src/ogretici.ts:587"
+    ]
+  },
+  "t12e5d746": {
+    "grup": "motor",
+    "tr": "Ekinlik",
+    "en": "",
+    "nerede": [
+      "data/balance.json:bolgeler.gelisim_adlari.tarla[1]",
+      "data/world-map.json:regions[48].name"
     ]
   },
   "tddfb254c": {
@@ -9768,7 +9888,7 @@
   "t63b146c8": {
     "grup": "motor",
     "tr": "Evdeki ordu ne toprağı korur ne gelir getirir. Bölgenin geliri üstünde duran garnizonlara, bıraktıkları yer oranında dağılır: asker bırakmazsan payın da olmaz, toprağın da.",
-    "en": "",
+    "en": "The army at home neither protects the land nor brings income. The income of the region is distributed to the garrisons stationed on it, in proportion to the space they leave: if you don't leave soldiers, you will have neither a share nor land.",
     "nerede": [
       "packages/shared/src/ipuclari.ts:50"
     ]
@@ -9776,7 +9896,7 @@
   "t14125827": {
     "grup": "motor",
     "tr": "Fayda puanı güç satın almaz",
-    "en": "",
+    "en": "Merit points do not buy power",
     "nerede": [
       "packages/shared/src/ogretici.ts:277"
     ]
@@ -9787,6 +9907,14 @@
     "en": "{0} hours after conquest",
     "nerede": [
       "packages/shared/src/ogretici.ts:538"
+    ]
+  },
+  "t97809e78": {
+    "grup": "motor",
+    "tr": "Fetihte ve savunmada oradaydın.",
+    "en": "",
+    "nerede": [
+      "data/balance.json:medeniyetler.fayda_puani.rutbeler[2].aciklama"
     ]
   },
   "t91fd6882": {
@@ -9808,7 +9936,7 @@
   "t34ad4af8": {
     "grup": "motor",
     "tr": "Garnizon hem savunur hem kazandırır",
-    "en": "",
+    "en": "A garrison both defends and earns",
     "nerede": [
       "packages/shared/src/ipuclari.ts:48"
     ]
@@ -9824,7 +9952,7 @@
   "t34c3395e": {
     "grup": "motor",
     "tr": "Garnizon tutmak ({0} yerlik garnizon saatte {1} puan), fetihe katılmak ({2}), savunmaya katılmak ({3}) ve bağış yapmak fayda puanı kazandırır. Puan HARCANMIYOR: birikiyor ve medeniyetindeki rütbene dönüşüyor ({4}). Güç yalnız çekirdekten gelir ve o da herkese eşit işler.",
-    "en": "",
+    "en": "Keeping a garrison ({0}-slot garrison gives {1} points per hour), participating in conquest ({2}), participating in defense ({3}), and donating earn merit points. Points are NOT SPENT: they accumulate and turn into your rank in your civilization ({4}). Power only comes from the core and applies equally to everyone.",
     "nerede": [
       "packages/shared/src/ogretici.ts:278"
     ]
@@ -9840,7 +9968,7 @@
   "tc44db606": {
     "grup": "motor",
     "tr": "Gelir garnizondan gelir",
-    "en": "",
+    "en": "Income comes from the garrison",
     "nerede": [
       "packages/shared/src/ogretici.ts:300"
     ]
@@ -9884,6 +10012,14 @@
     "nerede": [
       "data/binalar.json:binalar[2].ad",
       "packages/shared/src/types.ts:315"
+    ]
+  },
+  "tba8eccfc": {
+    "grup": "motor",
+    "tr": "Gözcü Kulesi",
+    "en": "",
+    "nerede": [
+      "data/balance.json:bolgeler.gelisim_adlari.kale[0]"
     ]
   },
   "te9bf886c": {
@@ -9945,7 +10081,7 @@
   "tfb091feb": {
     "grup": "motor",
     "tr": "Haritadaki dört renk dört taraf. Tek başına değil, bir tarafla oynuyorsun.",
-    "en": "",
+    "en": "The four colors on the map are the four factions. You are playing with a faction, not alone.",
     "nerede": [
       "packages/shared/src/ogretici.ts:245"
     ]
@@ -9953,7 +10089,7 @@
   "t28396521": {
     "grup": "motor",
     "tr": "Haritadaki her işaret bir bölge. Bir bölgeyi tutan medeniyet varsa çerçevesi onun rengini taşır; ortadaki çekişmeli topraklar henüz kimsenin değil. Bölgeler bitmez ama çoğalmaz da — biri alırsa, bir başkası kaybeder.",
-    "en": "",
+    "en": "Every mark on the map is a region. If a civilization holds a region, its frame bears their color; the contested lands in the middle belong to no one yet. Regions do not run out, but they do not multiply either — if someone takes one, someone else loses it.",
     "nerede": [
       "packages/shared/src/ogretici.ts:211"
     ]
@@ -9961,7 +10097,7 @@
   "tc80763d4": {
     "grup": "motor",
     "tr": "Haritanın ortasındaki altın çerçeveli bölge. Onu tutan Diyarın Lordu olur ve şöhreti %{0} büyür; tahtı tutan MEDENİYETİN her üyesi de %{1} alır. Oyunun ucu burası — ve tek başına değil, tarafınla kazanılıyor.",
-    "en": "",
+    "en": "The gold-framed region in the middle of the map. Whoever holds it becomes the Lord of the Realm and their renown grows by {0}%; every member of the CIVILIZATION holding the throne also receives {1}%. This is the endgame — and it is won with your faction, not alone.",
     "nerede": [
       "packages/shared/src/ogretici.ts:215"
     ]
@@ -10001,9 +10137,17 @@
   "t11440021": {
     "grup": "motor",
     "tr": "Her yurdun {0} çekirdek bölgesi var ve hiçbirine saldırılamaz. Bir medeniyet yenilebilir ama silinemez: evine çekilir, toparlanır ve geri döner. Beşincisi medeniyetin başkenti — bonus değil kimlik taşır.",
-    "en": "",
+    "en": "Each homeland has {0} core regions and none can be attacked. A civilization can be defeated but cannot be erased: it retreats home, recovers, and returns. The fifth is the civilization's capital — it carries identity, not a bonus.",
     "nerede": [
       "packages/shared/src/ogretici.ts:270"
+    ]
+  },
+  "t14ab6624": {
+    "grup": "motor",
+    "tr": "Hisar",
+    "en": "",
+    "nerede": [
+      "data/balance.json:bolgeler.gelisim_adlari.kale[1]"
     ]
   },
   "teb818bbe": {
@@ -10041,7 +10185,7 @@
   "t6db98c87": {
     "grup": "motor",
     "tr": "İlk toprağını medeniyetine kattın; ordun orada kaldı ve payın o garnizondan geliyor. Demirhanede kuşanacağın her parça, savaşa senin katkını büyütür.",
-    "en": "",
+    "en": "You added your first land to your civilization; your army stayed there and your share comes from that garrison. Every piece you equip in the forge increases your contribution to the war.",
     "nerede": [
       "packages/shared/src/rehber.ts:94"
     ]
@@ -10096,6 +10240,14 @@
       "packages/shared/src/ogretici.ts:547"
     ]
   },
+  "t5a7af248": {
+    "grup": "motor",
+    "tr": "Kadim Damar",
+    "en": "",
+    "nerede": [
+      "data/balance.json:bolgeler.gelisim_adlari.maden[4]"
+    ]
+  },
   "tee6bbfef": {
     "grup": "motor",
     "tr": "Kâhya Sinan",
@@ -10110,6 +10262,7 @@
     "tr": "Kale",
     "en": "Castle",
     "nerede": [
+      "data/balance.json:bolgeler.gelisim_adlari.kale[2]",
       "packages/shared/src/bolge-adi.ts:35"
     ]
   },
@@ -10119,6 +10272,14 @@
     "en": "Citadel-city",
     "nerede": [
       "packages/shared/src/bina.ts:60"
+    ]
+  },
+  "t6b8a82ae": {
+    "grup": "motor",
+    "tr": "Kalelerin ve madenlerin halkı; toprağı kıt, çeliği bol.",
+    "en": "",
+    "nerede": [
+      "data/balance.json:medeniyetler.liste[0].ozet"
     ]
   },
   "ta0e49426": {
@@ -10156,7 +10317,7 @@
   "tefd7a107": {
     "grup": "motor",
     "tr": "Kampın kendi medeniyetinin yurdunda kurulur; toprağın yok, ordun yok. İlk köyünü fethettiğinde orası başkentin olur ve şehir sayfan bir kamptan bir köye döner. Sana hiçbir şey verilmiyor — ordu da toprak da bina da kazanılıyor.",
-    "en": "",
+    "en": "Your camp is set up in your civilization's homeland; you have no land, no army. When you conquer your first village, it becomes your capital, and your city page changes from a camp to a village. You are given nothing — army, land, and buildings are all earned.",
     "nerede": [
       "packages/shared/src/ogretici.ts:229"
     ]
@@ -10185,6 +10346,14 @@
       "packages/shared/src/ogretici.ts:354"
     ]
   },
+  "t6fe206cf": {
+    "grup": "motor",
+    "tr": "Kara Orman",
+    "en": "",
+    "nerede": [
+      "data/balance.json:medeniyetler.liste[2].ad"
+    ]
+  },
   "td131a86c": {
     "grup": "motor",
     "tr": "Karşı ittifakın pakt kotası dolu ({0}).",
@@ -10198,7 +10367,16 @@
     "tr": "Kasaba",
     "en": "Town",
     "nerede": [
+      "data/balance.json:bolgeler.gelisim_adlari.sehir[0]",
       "packages/shared/src/bina.ts:58"
+    ]
+  },
+  "tf2672797": {
+    "grup": "motor",
+    "tr": "Kasaba Kapısı",
+    "en": "",
+    "nerede": [
+      "data/balance.json:bolgeler.gelisim_adlari.koy[4]"
     ]
   },
   "t33db6196": {
@@ -10220,7 +10398,7 @@
   "t33d9e5e1": {
     "grup": "motor",
     "tr": "Kayıt olurken en az kalabalık medeniyete yazılırsın ve kampın onun yurdunda kurulur. Seçim serbest olsaydı herkes kazanan tarafa geçerdi ve fark kendi kendini büyütürdü — tarafları kura değil sayım dengeliyor.",
-    "en": "",
+    "en": "When registering, you are enlisted in the least crowded civilization and your camp is set up in its homeland. If the choice were free, everyone would join the winning faction and the gap would widen itself — census, not chance, balances the factions.",
     "nerede": [
       "packages/shared/src/ogretici.ts:254"
     ]
@@ -10236,7 +10414,7 @@
   "ta0acb85f": {
     "grup": "motor",
     "tr": "Kaynak iki yerden akar: malikânenin taban geliri ve bölgelerdeki garnizonların payı. Bir bölge, üstünde askeri olanlara öder. Aldığın toprağa asker bırakmazsan oradan tek altın almazsın.",
-    "en": "",
+    "en": "Resources flow from two places: the base income of the manor and the share of the garrisons in the regions. A region pays those who have troops on it. If you do not leave soldiers on the land you have taken, you will not get a single gold from it.",
     "nerede": [
       "packages/shared/src/ogretici.ts:302"
     ]
@@ -10276,7 +10454,7 @@
   "t9981ba6e": {
     "grup": "motor",
     "tr": "Kendi medeniyetinden bir lordun tuttuğu bölgeye saldıramazsın, çekirdeklere ise kimse saldıramaz. Yurdunda henüz hiçbir lordun almadığı bölgeler serbest: oradaki garnizon bir yoldaşın değil, bölgenin kendi muhafızlarıdır — ilk fethin büyük ihtimalle orada olacak.",
-    "en": "",
+    "en": "You cannot attack a region held by a lord of your own civilization, and no one can attack the cores. The regions in your homeland that no lord has taken yet are free: the garrison there is not a comrade's, but the region's own guards — your first conquest will likely be there.",
     "nerede": [
       "packages/shared/src/ogretici.ts:404"
     ]
@@ -10318,8 +10496,33 @@
     "tr": "Köy",
     "en": "Village",
     "nerede": [
+      "data/balance.json:bolgeler.gelisim_adlari.koy[0]",
       "packages/shared/src/bina.ts:57",
       "packages/shared/src/bolge-adi.ts:31"
+    ]
+  },
+  "t067d9963": {
+    "grup": "motor",
+    "tr": "Köy Tarlası",
+    "en": "",
+    "nerede": [
+      "data/balance.json:bolgeler.gelisim_adlari.tarla[0]"
+    ]
+  },
+  "t536f95d7": {
+    "grup": "motor",
+    "tr": "Köyleri kalabalık, surları alçak; ormanın içinden vururlar.",
+    "en": "",
+    "nerede": [
+      "data/balance.json:medeniyetler.liste[2].ozet"
+    ]
+  },
+  "t7cd3659d": {
+    "grup": "motor",
+    "tr": "Köylü Milis",
+    "en": "",
+    "nerede": [
+      "data/balance.json:birimler.milis.ad"
     ]
   },
   "t64a9f707": {
@@ -10328,6 +10531,14 @@
     "en": "Siege weapon",
     "nerede": [
       "packages/shared/src/ogretici.ts:331"
+    ]
+  },
+  "t36a62d98": {
+    "grup": "motor",
+    "tr": "Kuzey Ucu",
+    "en": "",
+    "nerede": [
+      "data/balance.json:medeniyetler.liste[1].ad"
     ]
   },
   "t04fed051": {
@@ -10402,6 +10613,14 @@
       "packages/shared/src/ogretici.ts:592"
     ]
   },
+  "t6ccbc497": {
+    "grup": "motor",
+    "tr": "Mancınık",
+    "en": "",
+    "nerede": [
+      "data/balance.json:birimler.kusatma.ad"
+    ]
+  },
   "t52ce0a39": {
     "grup": "motor",
     "tr": "mancınık saldırısı",
@@ -10410,10 +10629,26 @@
       "packages/shared/src/etki-adi.ts:29"
     ]
   },
+  "t87399dd1": {
+    "grup": "motor",
+    "tr": "Medeniyetin Kılıcı",
+    "en": "",
+    "nerede": [
+      "data/balance.json:medeniyetler.fayda_puani.rutbeler[4].ad"
+    ]
+  },
+  "t3f460d6f": {
+    "grup": "motor",
+    "tr": "Medeniyetine yazıldın.",
+    "en": "",
+    "nerede": [
+      "data/balance.json:medeniyetler.fayda_puani.rutbeler[0].aciklama"
+    ]
+  },
   "td8b29545": {
     "grup": "motor",
     "tr": "Medeniyetinin çekirdeklerini büyütmek depoyu, eğitimi, savunmayı ve geliri o medeniyetteki HERKES için artırır. Senin karşılığın fayda puanı olarak döner.",
-    "en": "",
+    "en": "Upgrading your civilization's cores increases storage, training, defense, and income for EVERYONE in that civilization. Your reward returns as merit points.",
     "nerede": [
       "packages/shared/src/ipuclari.ts:73"
     ]
@@ -10434,6 +10669,14 @@
       "packages/shared/src/bina.ts:61"
     ]
   },
+  "ta863acb3": {
+    "grup": "motor",
+    "tr": "Mızrakçı",
+    "en": "",
+    "nerede": [
+      "data/balance.json:birimler.mizrakci.ad"
+    ]
+  },
   "tacecf5b8": {
     "grup": "motor",
     "tr": "mızrakçı savunması",
@@ -10448,6 +10691,14 @@
     "en": "Spearmen eat cavalry, cavalry eats archers, archers eat spearmen. Knowing what the other side holds comes cheaper than gathering twice the soldiers.",
     "nerede": [
       "packages/shared/src/ipuclari.ts:37"
+    ]
+  },
+  "t436bf761": {
+    "grup": "motor",
+    "tr": "Nahiye",
+    "en": "",
+    "nerede": [
+      "data/balance.json:bolgeler.gelisim_adlari.koy[3]"
     ]
   },
   "t0d3a343c": {
@@ -10466,12 +10717,36 @@
       "packages/shared/src/ittifakBasvuru.ts:195"
     ]
   },
+  "tb1711c78": {
+    "grup": "motor",
+    "tr": "Nöbetçi",
+    "en": "",
+    "nerede": [
+      "data/balance.json:medeniyetler.fayda_puani.rutbeler[1].ad"
+    ]
+  },
   "tb7ef3e7f": {
     "grup": "motor",
     "tr": "O medeniyet kalabalık. Yalnız nüfusu ortalamanın altındaki bir tarafa geçebilirsin.",
-    "en": "",
+    "en": "That civilization is crowded. You can only switch to a faction whose population is below the average.",
     "nerede": [
       "packages/shared/src/medeniyet.ts:381"
+    ]
+  },
+  "t56e7c9f2": {
+    "grup": "motor",
+    "tr": "Ocak Ustası",
+    "en": "",
+    "nerede": [
+      "data/balance.json:medeniyetler.fayda_puani.rutbeler[3].ad"
+    ]
+  },
+  "t417f04f7": {
+    "grup": "motor",
+    "tr": "Okçu",
+    "en": "",
+    "nerede": [
+      "data/balance.json:birimler.okcu.ad"
     ]
   },
   "t5fbae299": {
@@ -10666,6 +10941,14 @@
       "packages/shared/src/pakt.ts:92"
     ]
   },
+  "tfa811875": {
+    "grup": "motor",
+    "tr": "Pazar Şehri",
+    "en": "",
+    "nerede": [
+      "data/balance.json:bolgeler.gelisim_adlari.sehir[1]"
+    ]
+  },
   "t172f1fb8": {
     "grup": "motor",
     "tr": "Pazarda takas",
@@ -10712,6 +10995,15 @@
     "en": "Non-aggression pact",
     "nerede": [
       "packages/shared/src/ogretici.ts:570"
+    ]
+  },
+  "t94ed2bb5": {
+    "grup": "motor",
+    "tr": "Sancaktar",
+    "en": "Standard Bearer",
+    "nerede": [
+      "data/balance.json:medeniyetler.fayda_puani.rutbeler[2].ad",
+      "data/generals.json:generaller[8].pasif.ad"
     ]
   },
   "t4bcff1b8": {
@@ -10773,9 +11065,17 @@
   "t72fb3044": {
     "grup": "motor",
     "tr": "Seçmiyorsun, yazılıyorsun",
-    "en": "",
+    "en": "You don't choose, you are enlisted",
     "nerede": [
       "packages/shared/src/ogretici.ts:252"
+    ]
+  },
+  "t7215dd9a": {
+    "grup": "motor",
+    "tr": "Sekiz şehrin tüccarları; kılıçtan çok kese taşırlar.",
+    "en": "",
+    "nerede": [
+      "data/balance.json:medeniyetler.liste[3].ozet"
     ]
   },
   "t6228723d": {
@@ -10808,6 +11108,14 @@
     "en": "No seasons, no resets. What you build today is still there tomorrow, and next year. There is no need to rush.",
     "nerede": [
       "packages/shared/src/ogretici.ts:607"
+    ]
+  },
+  "tdc5a061e": {
+    "grup": "motor",
+    "tr": "Sınır muhafızları; dört kaleyle kuzeyin kapısını tutarlar.",
+    "en": "",
+    "nerede": [
+      "data/balance.json:medeniyetler.liste[1].ozet"
     ]
   },
   "t6f40c54e": {
@@ -10848,6 +11156,14 @@
     "en": "Select mute duration.",
     "nerede": [
       "packages/shared/src/moderasyon.ts:209"
+    ]
+  },
+  "tbe6c021a": {
+    "grup": "motor",
+    "tr": "Süvari",
+    "en": "",
+    "nerede": [
+      "data/balance.json:birimler.suvari.ad"
     ]
   },
   "t81af9968": {
@@ -10906,6 +11222,14 @@
       "packages/shared/src/moderasyon.ts:51"
     ]
   },
+  "te218a867": {
+    "grup": "motor",
+    "tr": "Tahıl Ambarı",
+    "en": "",
+    "nerede": [
+      "data/balance.json:bolgeler.gelisim_adlari.tarla[3]"
+    ]
+  },
   "tf1703d7a": {
     "grup": "motor",
     "tr": "Tahkimat +{0} (savunmada)",
@@ -10933,7 +11257,7 @@
   "t1d96808e": {
     "grup": "motor",
     "tr": "Taraf değiştirebilirsin — ama bedeli var",
-    "en": "",
+    "en": "You can change factions — but there is a price",
     "nerede": [
       "packages/shared/src/ogretici.ts:260"
     ]
@@ -10941,9 +11265,17 @@
   "t189df523": {
     "grup": "motor",
     "tr": "Taraf değiştirmek için {0} gün daha beklemelisin.",
-    "en": "",
+    "en": "You must wait {0} more days to change factions.",
     "nerede": [
       "packages/shared/src/medeniyet.ts:369"
+    ]
+  },
+  "t30fcb1ef": {
+    "grup": "motor",
+    "tr": "Taraf senin adını biliyor.",
+    "en": "",
+    "nerede": [
+      "data/balance.json:medeniyetler.fayda_puani.rutbeler[4].aciklama"
     ]
   },
   "tc3531f23": {
@@ -10960,6 +11292,22 @@
     "en": "A stone square, the first wall, a bazaar.",
     "nerede": [
       "packages/shared/src/bina.ts:67"
+    ]
+  },
+  "t65730abb": {
+    "grup": "motor",
+    "tr": "Taş Geçit",
+    "en": "",
+    "nerede": [
+      "data/balance.json:medeniyetler.liste[3].ad"
+    ]
+  },
+  "t81635ca6": {
+    "grup": "motor",
+    "tr": "Taş Ocağı",
+    "en": "",
+    "nerede": [
+      "data/balance.json:bolgeler.gelisim_adlari.maden[0]"
     ]
   },
   "te9c952fc": {
@@ -10986,10 +11334,18 @@
       "packages/shared/src/ogretici.ts:202"
     ]
   },
+  "t434a5793": {
+    "grup": "motor",
+    "tr": "Ticaret Şehri",
+    "en": "",
+    "nerede": [
+      "data/balance.json:bolgeler.gelisim_adlari.sehir[2]"
+    ]
+  },
   "t17063400": {
     "grup": "motor",
     "tr": "Toprağı çoğaltmak tek yol değil. Elindekini yükselt: bölge daha çok verir, garnizonunun payı da onunla büyür.",
-    "en": "",
+    "en": "Multiplying land is not the only way. Upgrade what you have: the region gives more, and your garrison's share grows with it.",
     "nerede": [
       "packages/shared/src/rehber.ts:106"
     ]
@@ -11005,7 +11361,7 @@
   "t06999f06": {
     "grup": "motor",
     "tr": "Toprak medeniyetin, pay senin",
-    "en": "",
+    "en": "The land belongs to the civilization, the share is yours",
     "nerede": [
       "packages/shared/src/ogretici.ts:264"
     ]
@@ -11016,6 +11372,14 @@
     "en": "No land risk",
     "nerede": [
       "packages/shared/src/ogretici.ts:443"
+    ]
+  },
+  "t1a1c6c5d": {
+    "grup": "motor",
+    "tr": "Toprakta durdun, payını aldın.",
+    "en": "",
+    "nerede": [
+      "data/balance.json:medeniyetler.fayda_puani.rutbeler[1].aciklama"
     ]
   },
   "tca98de7e": {
@@ -11103,7 +11467,7 @@
   "t419e7da9": {
     "grup": "motor",
     "tr": "Yalnız nüfusu ortalamanın ALTINDA olan bir medeniyete geçebilirsin; kazanan tarafa geçiş yok. Geçersen fayda puanın sıfırlanır ve {0} gün yeniden değiştiremezsin. Toprağın ve kampın seninle gelir.",
-    "en": "",
+    "en": "You can only switch to a civilization whose population is BELOW the average; there is no switching to the winning faction. If you switch, your merit points will be reset to zero and you cannot change again for {0} days. Your land and camp come with you.",
     "nerede": [
       "packages/shared/src/ogretici.ts:261"
     ]
@@ -11149,6 +11513,14 @@
       "packages/shared/src/ittifakSeviye.ts:185"
     ]
   },
+  "t0ee42256": {
+    "grup": "motor",
+    "tr": "Yeminli",
+    "en": "",
+    "nerede": [
+      "data/balance.json:medeniyetler.fayda_puani.rutbeler[0].ad"
+    ]
+  },
   "tee2eace9": {
     "grup": "motor",
     "tr": "Yeni aldığın bölge bir süre korunur. Aldığın anda elinden alınmaz, garnizonunu toplamaya vaktin olur.",
@@ -11160,7 +11532,7 @@
   "t399a819f": {
     "grup": "motor",
     "tr": "Yeni bölge almak tek yol değil: elindekini yükseltmek o bölgenin saatlik gelirini büyütür, garnizonunun payı da onunla birlikte büyür.",
-    "en": "",
+    "en": "Taking a new region is not the only way: upgrading what you have increases the region's hourly income, and your garrison's share grows along with it.",
     "nerede": [
       "packages/shared/src/ipuclari.ts:68"
     ]
@@ -11200,7 +11572,7 @@
   "t692f28bb": {
     "grup": "motor",
     "tr": "Yoldaşına kılıç çekilmez",
-    "en": "",
+    "en": "Swords are not drawn against a comrade",
     "nerede": [
       "packages/shared/src/ogretici.ts:402"
     ]
@@ -11250,7 +11622,7 @@
   "tb3ebb67d": {
     "grup": "motor",
     "tr": "Zaten bu medeniyettensin.",
-    "en": "",
+    "en": "You are already from this civilization.",
     "nerede": [
       "packages/shared/src/medeniyet.ts:374"
     ]
@@ -14062,14 +14434,6 @@
       "data/binalar.json:binalar[0].aciklama"
     ]
   },
-  "tcd1d4189": {
-    "grup": "veri",
-    "tr": "Diyarın Kileri",
-    "en": "The Realm's Pantry",
-    "nerede": [
-      "data/basarimlar.json:kumeler[4].basarimlar[3].ad"
-    ]
-  },
   "t738e234c": {
     "grup": "veri",
     "tr": "Diyarın lordları burada anılır.",
@@ -15071,14 +15435,6 @@
       "data/arastirma.json:dallar[1].dugumler[3].ad"
     ]
   },
-  "t94ed2bb5": {
-    "grup": "veri",
-    "tr": "Sancaktar",
-    "en": "Standard Bearer",
-    "nerede": [
-      "data/generals.json:generaller[8].pasif.ad"
-    ]
-  },
   "tc0e16e44": {
     "grup": "veri",
     "tr": "Savaş başında düşmana ordu saldırısının %5'i kadar ön hasar verir.",
@@ -15941,14 +16297,6 @@
     "en": "",
     "nerede": [
       "data/world-map.json:regions[13].name"
-    ]
-  },
-  "t12e5d746": {
-    "grup": "harita",
-    "tr": "Ekinlik",
-    "en": "",
-    "nerede": [
-      "data/world-map.json:regions[48].name"
     ]
   },
   "t0e972ed4": {

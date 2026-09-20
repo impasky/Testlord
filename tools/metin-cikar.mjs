@@ -196,18 +196,35 @@ const VERI_ALANI = new Set([
   'kisa',
 ]);
 
-function jsonTara(yol, ekle) {
+/**
+ * Bir JSON veri dosyasındaki oyuncu metinlerini toplar.
+ *
+ * `yollar` verilmezse ölçüt ALAN ADI (`VERI_ALANI`) — `data/*.json`
+ * böyle taranıyor. Verilirse ölçüt YOL: yalnız listedeki desenlere uyan
+ * yollar alınıyor ve alan adına bakılmıyor. İkinci kip `balance.json`
+ * için var: orada `aciklama` alanlarının çoğu geliştirici notu, ama
+ * birkaç yol gerçekten oyuncuya gidiyor.
+ */
+function jsonTara(yol, ekle, yollar = null) {
   const kisa = relative(KOK, yol);
   const veri = JSON.parse(readFileSync(yol, 'utf8'));
+  // Dizi indeksi yol desenlerinde SAYISIZ: `liste[3].ad` yerine
+  // `liste[].ad`. Yoksa her medeniyet için ayrı desen gerekirdi.
+  const desen = (iz) => iz.replace(/\[\d+\]/g, '[]');
   (function gez(dugum, iz) {
     if (Array.isArray(dugum)) return dugum.forEach((d, i) => gez(d, `${iz}[${i}]`));
     if (dugum && typeof dugum === 'object') {
       for (const [k, v] of Object.entries(dugum)) {
         if (k.startsWith('_')) continue; // geliştirici notu, oyuncu görmüyor
-        if (typeof v === 'string' && VERI_ALANI.has(k)) {
-          if (metinMi(v)) ekle(v, `${kisa}:${iz ? iz + '.' : ''}${k}`);
-        } else gez(v, iz ? `${iz}.${k}` : k);
+        const tamIz = iz ? `${iz}.${k}` : k;
+        const uygun = yollar ? yollar.some((r) => r.test(desen(tamIz))) : VERI_ALANI.has(k);
+        if (typeof v === 'string' && uygun) {
+          if (metinMi(v)) ekle(v, `${kisa}:${tamIz}`);
+        } else gez(v, tamIz);
       }
+    } else if (typeof dugum === 'string' && yollar?.some((r) => r.test(desen(iz)))) {
+      // Dizi elemanının kendisi metin: `gelisim_adlari.koy[]`.
+      if (metinMi(dugum)) ekle(dugum, `${kisa}:${iz}`);
     }
   })(veri, '');
 }
@@ -239,11 +256,29 @@ for (const { grup, kok, uzanti } of KAYNAKLAR) {
 }
 
 /*
- * balance.json DIŞARIDA: sayı ayarları dosyası ve içindeki `aciklama`
- * alanları oyuncuya değil bize yazılmış ("Sahipsiz bolgelerin NPC
- * garnizonu ... saatte tabana dogru toparlanir"). Oyuncunun gördüğü her
- * metin öteki dosyalarda.
+ * balance.json ALAN ADIYLA taranamıyor: sayı ayarları dosyası ve
+ * içindeki `aciklama` alanlarının çoğu oyuncuya değil BİZE yazılmış
+ * ("Sahipsiz bolgelerin NPC garnizonu ... saatte tabana dogru
+ * toparlanir"). O yüzden uzun süre tamamen dışarıdaydı.
+ *
+ * Ama içinde oyuncunun GÖRDÜĞÜ adlar da var ve dışarıda kalınca hiç
+ * çevrilmediler: İngilizce oynayan biri "Mızrakçı" yazan bir birim
+ * listesi görüyordu. `metin-kapsam` bunu yeni rütbe adıyla ("Yeminli")
+ * yakaladı; eskisi (birim adları, yerleşim kademeleri) yıllardır
+ * oradaydı ve kimse fark etmemişti.
+ *
+ * Çözüm alan adı değil YOL listesi: hangi yolun oyuncuya gittiği tek tek
+ * karara bağlandı. Yeni bir oyuncu metni eklenirse yolu buraya da
+ * yazılmalı — `metin-kapsam` yazılmadığını söyler.
  */
+const BALANCE_YOLLARI = [
+  /^birimler\.[a-z]+\.ad$/, // Mızrakçı, Okçu, Süvari…
+  /^bolgeler\.gelisim_adlari\.[a-z]+\[\]$/, // Köy, Bucak, Kasaba Kapısı…
+  /^medeniyetler\.liste\[\]\.(ad|ozet)$/, // Demir Ocağı ve tanıtımı
+  /^medeniyetler\.fayda_puani\.rutbeler\[\]\.(ad|aciklama)$/, // Yeminli, Nöbetçi…
+  /^taht_kalesi\.ad$/,
+];
+
 const VERI_DOSYALARI = readdirSync(join(KOK, 'data'))
   .filter((f) => f.endsWith('.json') && f !== 'balance.json')
   .sort();
@@ -251,6 +286,7 @@ for (const f of VERI_DOSYALARI) {
   const grup = f === 'world-map.json' ? 'harita' : 'veri';
   jsonTara(join(KOK, 'data', f), ekleyici(grup));
 }
+jsonTara(join(KOK, 'data', 'balance.json'), ekleyici('motor'), BALANCE_YOLLARI);
 
 /* ── Yaz ───────────────────────────────────────────────────────────── */
 const GRUP_ADI = {

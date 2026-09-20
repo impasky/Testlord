@@ -6,7 +6,7 @@ görebilesin diye yazılıyor.
 
 ==========================================================================
 
---- Bölge ve vilayet adları (127) ---
+--- Bölge ve vilayet adları (126) ---
 
 Bunlar ÖZEL AD. "Akçakavak Köyü" İngilizce oynayan biri için de Akçakavak
 Köyü; Londra'nın Fransızcada Londra kalması gibi. Oyun Anadolu'da geçiyor
@@ -50,7 +50,6 @@ ve yer adları o dünyanın parçası.
   Dörtburç
   Dörtyol
   Ekinbaşı
-  Ekinlik
   Eğrigürgen Köyü
   Fenerbaşı
   Gedikkale
