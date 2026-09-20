@@ -269,6 +269,9 @@ for (const p of PARTILER) {
     '  {0} ve {1} birer yer tutucu; oyun onların yerine sayı ya da ad',
     '  koyuyor. Sırası değişebilir, kendisi silinemez.',
     '',
+    '  \\n bir satır sonu demek. Bir çeviri tek satırda durmalı; metnin',
+    '  içinde satır sonu varsa \\n olarak yazılı kalsın.',
+    '',
     '  Bitince dosyayı olduğu gibi geri ver; gerisini ben hallederim.',
     '',
     '='.repeat(74),
@@ -278,7 +281,17 @@ for (const p of PARTILER) {
   for (const [alan, kayitlar] of sirali) {
     govde.push(`--- ${alan} (${kayitlar.length}) ---`, '');
     for (const c of kayitlar.sort((a, b) => a.n - b.n)) {
-      govde.push(`${c.n}. ${c.en || c.tr}`);
+      /*
+       * SATIR SONU `\n` olarak yazılıyor.
+       *
+       * Dosya satır tabanlı: bir çeviri = bir satır. Gerçek satır sonu
+       * taşıyan metinler (parola e-postası, yönetici özetleri) olduğu
+       * gibi yazıldığında iki satıra bölünüyordu; `ceviri-al.mjs` ikinci
+       * satırı numarasız görüp SESSİZCE atıyor, ilkini de "boş
+       * bırakılmış" sayıyordu. `ceviri-al.mjs` zaten `\n`i gerçek satır
+       * sonuna çeviriyor — dönüşümün bu yakası eksikti.
+       */
+      govde.push(`${c.n}. ${(c.en || c.tr).replace(/\n/g, '\\n')}`);
     }
     govde.push('');
   }

@@ -14,6 +14,9 @@ NASIL ÇEVİRİLİR
   {0} ve {1} birer yer tutucu; oyun onların yerine sayı ya da ad
   koyuyor. Sırası değişebilir, kendisi silinemez.
 
+  \n bir satır sonu demek. Bir çeviri tek satırda durmalı; metnin
+  içinde satır sonu varsa \n olarak yazılı kalsın.
+
   Bitince dosyayı olduğu gibi geri ver; gerisini ben hallederim.
 
 ==========================================================================

@@ -14,21 +14,21 @@ NASIL ÇEVİRİLİR
   {0} ve {1} birer yer tutucu; oyun onların yerine sayı ya da ad
   koyuyor. Sırası değişebilir, kendisi silinemez.
 
+  \n bir satır sonu demek. Bir çeviri tek satırda durmalı; metnin
+  içinde satır sonu varsa \n olarak yazılı kalsın.
+
   Bitince dosyayı olduğu gibi geri ver; gerisini ben hallederim.
 
 ==========================================================================
 
 --- Sunucu mesajları (19) ---
 
-2058. 
-{0} diyar ve {1} hesap silindi.
-
+2058. \n{0} diyar ve {1} hesap silindi.\n
 2059.  (yöneticiler dahil)
 2060. {0} açıldı: {1} bölge, {2} medeniyet 
 2061. {0} birim {1} garnizonunda kaldı.
 2062. {0} bölge yurt sahipli, {1} çekişmeli, 
-2063. {0} çekirdek yatırım satırı.
-
+2063. {0} çekirdek yatırım satırı.\n
 2064. Bağış için kaynak seç.
 2065. Bölge {0}
 2066. Bu çekirdek azami seviyede.
