@@ -100,6 +100,8 @@ kontrol(
   paket[bolgeAnahtari] === '{0} region|{0} regions',
   paket[bolgeAnahtari],
 );
+const koseli = Object.values(paket).filter((v) => /\[[^[\]|]*\|[^[\]|]*\]/.test(v));
+kontrol('İki sayılı cümleler köşeli biçimde', koseli.length >= 10, `${koseli.length} kayıt`);
 
 // --- Türkçe (varsayılan)
 const tr = await ekran('tr');

@@ -189,8 +189,28 @@ Arapçada altı biçim var ve elle yazılan kural o dillerde yanlış olur.
 
 Sayı ARGÜMANLARDAN okunuyor ve çoğu yerde biçimlenmiş bir dizge olarak
 geliyor (`formatSayi(1234)` -> `"1.234"`), o yüzden rakam dışındaki her
-şey atılıyor. `<Cumle>` de parçalarından sayı arıyor — parça bir React
-düğümüyse sayı bulunamıyor ve genel hâl (çoğul) seçiliyor.
+şey atılıyor. `<Cumle>` parçalarının İÇİNE de bakıyor: vurgulanan
+sözcük çoğu zaman bir düğümün içinde duruyor
+(`<strong>{`3 gün`}</strong>`) ve sayı orada.
+
+### İki sayılı cümle
+
+Bir cümlede iki sayı varsa tek bir tekil/çoğul seçimi ikisine birden
+yetmiyor — biri 1 iken öteki 5 olabiliyor. O zaman seçenek sözcüğün
+yanında duruyor ve SOLUNDAKİ en yakın yer tutucuya bağlanıyor:
+
+```
+{0} lord son {1} günde oynadı
+  ->  {0} [lord|lords] played in the last {1} [day|days]
+```
+
+Hangi sayının hangi ismi yönettiği cümlenin kendi sırasından
+okunuyor; çevirmenin ayrıca numara yazmasına gerek yok. Fiil de
+gruba girebiliyor: `{0} [soldier was|soldiers were] presumed dead`.
+
+`ceviri-al.mjs` iki OKUMAYI birden denetliyor (hep tekil, hep çoğul):
+yer tutucu bir okumada varken ötekinde yoksa oyuncu sayıyı bazen
+görüp bazen görmezdi.
 
 Boru işareti YALNIZ çeviriye uygulanıyor; Türkçe kaynak hiç
 bölünmüyor, yoksa içinde `|` geçen bir cümle sessizce ikiye kırılırdı.

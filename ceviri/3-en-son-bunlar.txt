@@ -25,6 +25,12 @@ NASIL ÇEVİRİLİR
   Türkçede gerekmiyor ("1 savaş", "3 savaş"), İngilizcede
   gerekiyor; yazmazsan tek biçim kullanılır ve "1 battles" olur.
 
+  Cümlede İKİ sayı varsa köşeli parantez kullan; her grup
+  SOLUNDAKİ sayıya bağlanır:
+
+      {0} lord son {1} günde oynadı
+        ->  {0} [lord|lords] played in the last {1} [day|days]
+
   Bitince dosyayı olduğu gibi geri ver; gerisini ben hallederim.
 
 ==========================================================================

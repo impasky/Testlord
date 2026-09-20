@@ -34,7 +34,33 @@
  * öteki React düğümü taşıdığı için işlev ayrı, dil aynı.
  */
 import { cogulSec } from '@lordlar/shared';
-import { Fragment, type ReactNode } from 'react';
+import { Fragment, isValidElement, type ReactNode } from 'react';
+
+/**
+ * Parçanın İÇİNDEKİ sayı.
+ *
+ * Vurgulanan sözcük çoğu zaman bir düğümün içinde duruyor
+ * (`<strong>{`3 gün`}</strong>`); motor argüman olarak düğümü görüyor
+ * ve sayıyı bulamıyordu, yani çoğul her zaman genel hâle düşüyordu.
+ * Burada düğümün çocukları taranıyor ve ilk metin/sayı geri veriliyor.
+ * Bulunamazsa düğümün kendisi dönüyor — motor onu da sayı sayamaz ve
+ * yine genel hâle düşer, yani davranış kötüleşmiyor.
+ */
+function sayiAra(d: ReactNode): unknown {
+  if (typeof d === 'number' || typeof d === 'string') return d;
+  if (Array.isArray(d)) {
+    for (const c of d) {
+      const b = sayiAra(c);
+      if (typeof b === 'number' || typeof b === 'string') return b;
+    }
+    return d;
+  }
+  if (isValidElement(d)) {
+    const cocuk = (d.props as { children?: ReactNode }).children;
+    if (cocuk !== undefined) return sayiAra(cocuk);
+  }
+  return d;
+}
 
 export function Cumle({ metin, parca }: { metin: string; parca: readonly ReactNode[] }) {
   /*
@@ -44,7 +70,7 @@ export function Cumle({ metin, parca }: { metin: string; parca: readonly ReactNo
    * okunuyor (`parca={[3]}` gibi). Parça bir React düğümüyse sayı
    * bulunamıyor ve çoğul biçim seçiliyor — İngilizcede genel hâl.
    */
-  const kalip = cogulSec(metin, parca as readonly unknown[]);
+  const kalip = cogulSec(metin, parca.map(sayiAra));
   /*
    * Yer tutucusu OLMAYAN metin de geçerli: koşullu bir cümlenin bir
    * kolu vurgusuz olabiliyor. Bölme zaten tek parça döndürüyor.

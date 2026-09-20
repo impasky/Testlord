@@ -227,7 +227,7 @@
   "tcacb4d27": {
     "grup": "arayuz",
     "tr": "[{0}] {1} · {2} üye",
-    "en": "[{0}] {1} · {2} members",
+    "en": "[{0}] {1} · {2} [member|members]",
     "nerede": [
       "apps/web/src/components/Paktlar.tsx:183"
     ]
@@ -396,7 +396,7 @@
   "t6fea5493": {
     "grup": "arayuz",
     "tr": "{0} · Sv {1} · {2} bölge",
-    "en": "{0} · Lvl {1} · {2} regions",
+    "en": "{0} · Lvl {1} · {2} [region|regions]",
     "nerede": [
       "apps/web/src/screens/Siralama.tsx:97"
     ]
@@ -660,7 +660,7 @@
   "t329856e2": {
     "grup": "arayuz",
     "tr": "{0} galibiyet · {1} yenilgi",
-    "en": "{0} victories · {1} defeats",
+    "en": "{0} [victory|victories] · {1} [defeat|defeats]",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:590"
     ]
@@ -785,7 +785,7 @@
   "t7b299eff": {
     "grup": "arayuz",
     "tr": "{0} lord son {1} günde oynadı",
-    "en": "{0} lords played in the last {1} days",
+    "en": "{0} [lord|lords] played in the last {1} [day|days]",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:60"
     ]
@@ -1052,7 +1052,7 @@
   "t56851a6b": {
     "grup": "arayuz",
     "tr": "{0} tarafına geçtin. {1} bölgen seninle geldi.",
-    "en": "You joined the {0} faction. Your {1} regions came with you.",
+    "en": "You joined the {0} faction. Your {1} [region|regions] came with you.",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:72"
     ]
@@ -1060,7 +1060,7 @@
   "tf4e3c05f": {
     "grup": "arayuz",
     "tr": "{0} uzaktaydın. Bu sürede {1} olay oldu.",
-    "en": "You were away for {0}. During this time, {1} events occurred.",
+    "en": "You were away for {0}. During this time, {1} [event|events] occurred.",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:107"
     ]
@@ -1068,7 +1068,7 @@
   "t57412f14": {
     "grup": "arayuz",
     "tr": "{0} uzaktaydın. Bu sürede {1} olay ve {2} oldu.",
-    "en": "You were away for {0}. During this time, {1} events and {2} occurred.",
+    "en": "You were away for {0}. During this time, {1} [event|events] and {2} occurred.",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:98"
     ]
@@ -1084,7 +1084,7 @@
   "t96cbf421": {
     "grup": "arayuz",
     "tr": "{0} üye · {1} bölge",
-    "en": "{0} members · {1} regions",
+    "en": "{0} [member|members] · {1} [region|regions]",
     "nerede": [
       "apps/web/src/screens/Siralama.tsx:143"
     ]
@@ -7974,7 +7974,7 @@
   "te2ee684f": {
     "grup": "arayuz",
     "tr": "Tur Tur Güç · {0} tur",
-    "en": "Power Round by Round · {0} rounds",
+    "en": "Power Round by Round · {0} [round|rounds]",
     "nerede": [
       "apps/web/src/components/SavasRaporu.tsx:505"
     ]
@@ -8608,7 +8608,7 @@
   "t27b1f277": {
     "grup": "motor",
     "tr": "{0} dal, her dalda {1} kademe",
-    "en": "{0} branches, {1} tiers in each branch",
+    "en": "{0} [branch|branches], {1} [tier|tiers] in each branch",
     "nerede": [
       "packages/shared/src/ogretici.ts:501"
     ]
@@ -8856,7 +8856,7 @@
   "t198149c0": {
     "grup": "motor",
     "tr": "Aynı anda {0} araştırma",
-    "en": "{0} researches at once",
+    "en": "{0} [research|researches] at once",
     "nerede": [
       "packages/shared/src/ogretici.ts:518"
     ]
@@ -9668,7 +9668,7 @@
   "t67ba0fe8": {
     "grup": "motor",
     "tr": "En az {0} birim takas edebilirsin.",
-    "en": "You can trade at least {0} units.",
+    "en": "You can trade at least {0} [unit|units].",
     "nerede": [
       "packages/shared/src/pazar.ts:135"
     ]
@@ -9692,7 +9692,7 @@
   "t6ab674b4": {
     "grup": "motor",
     "tr": "En fazla {0} üye",
-    "en": "Maximum {0} members",
+    "en": "Maximum {0} [member|members]",
     "nerede": [
       "packages/shared/src/ogretici.ts:551"
     ]
@@ -9893,7 +9893,7 @@
   "t39a17db6": {
     "grup": "motor",
     "tr": "Günde +{0} saldırı hakkı",
-    "en": "+{0} attack limits per day",
+    "en": "+{0} attack [limit|limits] per day",
     "nerede": [
       "packages/shared/src/arastirma.ts:186"
     ]
@@ -10077,7 +10077,7 @@
   "tb48a59f5": {
     "grup": "motor",
     "tr": "İttifak dolu ({0} üye).",
-    "en": "Alliance full ({0} members).",
+    "en": "Alliance full ({0} [member|members]).",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1137",
       "packages/shared/src/ittifakBasvuru.ts:161",
@@ -11603,7 +11603,7 @@
   "tc2e29174": {
     "grup": "sunucu",
     "tr": "{0} açıldı: {1} bölge, {2} medeniyet ",
-    "en": "{0} opened: {1} regions, {2} civilizations ",
+    "en": "{0} opened: {1} [region|regions], {2} [civilization|civilizations] ",
     "nerede": [
       "apps/api/src/temiz-kesme.ts:115"
     ]
@@ -11707,7 +11707,7 @@
   "t158e3cb4": {
     "grup": "sunucu",
     "tr": "{0} bölge yurt sahipli, {1} çekişmeli, ",
-    "en": "{0} regions claimed, {1} contested, ",
+    "en": "{0} [region|regions] claimed, {1} contested, ",
     "nerede": [
       "apps/api/src/temiz-kesme.ts:117"
     ]
@@ -12011,7 +12011,7 @@
   "te1119699": {
     "grup": "sunucu",
     "tr": "{0} savaşta yaralandı, {1} saat dinlenecek.",
-    "en": "{0} was wounded in battle, will rest for {1} hours.",
+    "en": "{0} was wounded in battle, will rest for {1} [hour|hours].",
     "nerede": [
       "apps/api/src/services/march.ts:298"
     ]
@@ -12166,7 +12166,7 @@
   "t969d2e54": {
     "grup": "sunucu",
     "tr": "Aynı anda en fazla {0} akın",
-    "en": "Maximum of {0} raids at once",
+    "en": "Maximum of {0} [raid|raids] at once",
     "nerede": [
       "apps/api/src/routes/akin.ts:257"
     ]
@@ -12460,7 +12460,7 @@
   "tdf04e28b": {
     "grup": "sunucu",
     "tr": "Bu akını erkene almak {0} elmas. Sende {1} var.",
-    "en": "Rushing this raid costs {0} diamonds. You have {1}.",
+    "en": "Rushing this raid costs {0} [diamond|diamonds]. You have {1}.",
     "nerede": [
       "apps/api/src/routes/akin.ts:431"
     ]
@@ -12516,7 +12516,7 @@
   "teb7b0eae": {
     "grup": "sunucu",
     "tr": "Bu bölgeye {0} saat içinde tekrar saldıramazsın.",
-    "en": "You cannot attack this region again within {0} hours.",
+    "en": "You cannot attack this region again within {0} [hour|hours].",
     "nerede": [
       "apps/api/src/routes/map.ts:271"
     ]
@@ -12957,7 +12957,7 @@
   "t96080875": {
     "grup": "sunucu",
     "tr": "Günlük {0} saldırı",
-    "en": "Daily {0} attacks",
+    "en": "Daily {0} [attack|attacks]",
     "nerede": [
       "apps/api/src/routes/map.ts:165"
     ]

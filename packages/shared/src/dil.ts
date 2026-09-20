@@ -108,16 +108,49 @@ function pluralKurali(dil: DilKodu): Intl.PluralRules {
   return k;
 }
 
+/** Tek bir argümandan sayı; okunamıyorsa null. */
+function sayiCoz(a: unknown): number | null {
+  if (typeof a === 'number' && Number.isFinite(a)) return a;
+  if (typeof a === 'string') {
+    const rakamlar = a.replace(/[^\d]/g, '');
+    if (rakamlar) return Number(rakamlar);
+  }
+  return null;
+}
+
 /** İlk SAYIYA çevrilebilen argüman; yoksa null. */
 function ilkSayi(args: readonly unknown[]): number | null {
   for (const a of args) {
-    if (typeof a === 'number' && Number.isFinite(a)) return a;
-    if (typeof a === 'string') {
-      const rakamlar = a.replace(/[^\d]/g, '');
-      if (rakamlar) return Number(rakamlar);
-    }
+    const n = sayiCoz(a);
+    if (n !== null) return n;
   }
   return null;
+}
+
+/**
+ * İKİ SAYILI CÜMLE — `"{0} [lord|lords] played in the last {1} [day|days]"`.
+ *
+ * Cümlenin tamamını tekil/çoğul diye ikiye ayırmak burada yetmiyor:
+ * iki ayrı sayı var ve biri 1 iken öteki 5 olabiliyor. Köşeli parantez
+ * içindeki seçenek, SOLUNDAKİ en yakın yer tutucuya bağlanıyor — yani
+ * hangi sayının hangi ismi yönettiği cümlenin kendi sırasından
+ * okunuyor, çevirmenin ayrıca numara yazmasına gerek kalmıyor.
+ *
+ * Solunda yer tutucu olmayan bir grup genel hâle (çoğula) düşüyor.
+ */
+const KOSELI = /\{(\d+)\}|\[([^[\]|]*)\|([^[\]|]*)\]/g;
+
+function koseliCogul(kalip: string, args: readonly unknown[], dil: DilKodu): string {
+  let sonIndeks: number | null = null;
+  return kalip.replace(KOSELI, (tam, idx: string | undefined, tekil: string, cogul: string) => {
+    if (idx !== undefined) {
+      sonIndeks = Number(idx);
+      return tam;
+    }
+    const n = sonIndeks === null ? null : sayiCoz(args[sonIndeks]);
+    if (n === null) return cogul;
+    return pluralKurali(dil).select(n) === 'one' ? tekil : cogul;
+  });
 }
 
 export function cogulSec(
@@ -126,13 +159,17 @@ export function cogulSec(
   dil: DilKodu = aktifDilKodu,
 ): string {
   if (!kalip.includes('|')) return kalip;
-  const formlar = kalip.split('|');
+  // Önce köşeli gruplar çözülüyor; geriye boru işareti kalırsa cümlenin
+  // TAMAMI iki biçimli demektir.
+  const cozulmus = kalip.includes('[') ? koseliCogul(kalip, args, dil) : kalip;
+  if (!cozulmus.includes('|')) return cozulmus;
+  const formlar = cozulmus.split('|');
   const n = ilkSayi(args);
   // Sayı bulunamadıysa çoğul: "0 results" gibi genel hâl, "1 result"
   // gibi özel hâlden daha güvenli.
-  if (n === null) return formlar[formlar.length - 1] ?? kalip;
+  if (n === null) return formlar[formlar.length - 1] ?? cozulmus;
   const secim = pluralKurali(dil).select(n);
-  return (secim === 'one' ? formlar[0] : formlar[1]) ?? formlar[0] ?? kalip;
+  return (secim === 'one' ? formlar[0] : formlar[1]) ?? formlar[0] ?? cozulmus;
 }
 
 /* ------------------------------------------------------------------ */

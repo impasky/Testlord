@@ -209,3 +209,40 @@ describe('cevirSunucu — çoğul', () => {
     );
   });
 });
+
+describe('cogulSec — köşeli gruplar', () => {
+  const k = '{0} [lord|lords] played in the last {1} [day|days]';
+
+  it('her grup KENDİ sayısına bağlanıyor', () => {
+    expect(cogulSec(k, [1, 7], 'en')).toBe('{0} lord played in the last {1} days');
+    expect(cogulSec(k, [9, 1], 'en')).toBe('{0} lords played in the last {1} day');
+    expect(cogulSec(k, [1, 1], 'en')).toBe('{0} lord played in the last {1} day');
+    expect(cogulSec(k, [4, 7], 'en')).toBe('{0} lords played in the last {1} days');
+  });
+
+  it('argüman eksikse genel hâl (çoğul)', () => {
+    expect(cogulSec(k, [1], 'en')).toBe('{0} lord played in the last {1} days');
+    expect(cogulSec(k, [], 'en')).toBe('{0} lords played in the last {1} days');
+  });
+
+  it('solunda yer tutucu olmayan grup çoğula düşüyor', () => {
+    expect(cogulSec('Maximum [pact|pacts]: {0}', [1], 'en')).toBe('Maximum pacts: {0}');
+  });
+
+  it('köşeli grup yokken eski davranış sürüyor', () => {
+    expect(cogulSec('{0} battle|{0} battles', [1], 'en')).toBe('{0} battle');
+  });
+
+  it('cevir() içinden uçtan uca', () => {
+    const sozluk: Sozluk = {
+      [anahtar('{0} lord son {1} günde oynadı')]:
+        '{0} [lord|lords] played in the last {1} [day|days]',
+    };
+    expect(cevir(sozluk, '{0} lord son {1} günde oynadı', 1, 7)).toBe(
+      '1 lord played in the last 7 days',
+    );
+    expect(cevir(sozluk, '{0} lord son {1} günde oynadı', 12, 1)).toBe(
+      '12 lords played in the last 1 day',
+    );
+  });
+});

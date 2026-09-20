@@ -137,17 +137,36 @@ for (const dosya of dosyalar) {
      * Her biçim AYRI AYRI denetleniyor: yer tutucu birinde varken
      * ötekinde yoksa oyuncu sayıyı bazen görüp bazen görmezdi.
      */
-    const formlar = t.split('|');
-    if (formlar.length > 2) {
+    /*
+     * İki yazım da geçerli:
+     *
+     *   {0} battle|{0} battles                       (cümlenin tamamı)
+     *   {0} [lord|lords] played in {1} [day|days]    (sözcük sözcük)
+     *
+     * İkincisi iki sayılı cümleler için: biri 1 iken öteki 5 olabiliyor
+     * ve tek bir tekil/çoğul seçimi ikisine birden yetmiyor.
+     */
+    const KOSELI = /\[([^[\]|]*)\|([^[\]|]*)\]/g;
+    const koseliVar = KOSELI.test(t);
+    KOSELI.lastIndex = 0;
+    // Köşeli gruplar çözülünce iki OKUMA kalıyor: hep tekil, hep çoğul.
+    // İkisi de ayrı ayrı denetleniyor.
+    const okumalar = koseliVar ? [t.replace(KOSELI, '$1'), t.replace(KOSELI, '$2')] : [t];
+    const formlar = okumalar.flatMap((o) => o.split('|'));
+    if (okumalar.some((o) => o.split('|').length > 2)) {
       sorun.push(`${yer} — ${no} en çok iki çoğul biçimi olabilir (tekil|çoğul)`);
       continue;
     }
-    if (formlar.length === 2 && !/\{\d+\}/.test(kayit.tr)) {
+    if ((koseliVar || formlar.length > 1) && !/\{\d+\}/.test(kayit.tr)) {
       sorun.push(`${yer} — ${no} sayı taşımıyor; çoğul biçimi seçilemez`);
       continue;
     }
     if (formlar.some((f) => !f.trim())) {
       sorun.push(`${yer} — ${no} çoğul biçimlerinden biri boş`);
+      continue;
+    }
+    if ((t.match(/\[/g) ?? []).length !== (t.match(/\]/g) ?? []).length) {
+      sorun.push(`${yer} — ${no} köşeli parantezler eşleşmiyor`);
       continue;
     }
 
@@ -189,7 +208,16 @@ for (const dosya of dosyalar) {
     const son = /\s*$/.exec(kayit.tr.slice(bas.length))[0];
     // Boşluk HER BİÇİME ayrı konuyor: çoğul seçildikten sonra ekrana
     // çıkan tek bir biçim ve o da kendi boşluğunu taşımalı.
-    kabul.set(anahtar, formlar.map((f) => bas + f.trim() + son).join('|'));
+    // Boşluk HER BİÇİME ayrı konuyor: çoğul seçildikten sonra ekrana
+    // çıkan tek bir biçim ve o da kendi boşluğunu taşımalı. Köşeli
+    // gruplar cümlenin İÇİNDE kaldığı için onlara dokunulmuyor.
+    kabul.set(
+      anahtar,
+      t
+        .split('|')
+        .map((f) => bas + f.trim() + son)
+        .join('|'),
+    );
   }
 }
 
