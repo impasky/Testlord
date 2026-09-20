@@ -157,6 +157,46 @@ ile` bir düğme yazısı, cümle ortası değil.
 
 ---
 
+## Sayı, tarih ve çoğul
+
+Çeviri yalnız SÖZCÜKLERİ değiştirmiyor; sayının yazılışı da dile bağlı
+ve yanlış yazılan sayı okunmaz değil, YANLIŞ okunuyor.
+
+| Ne            | Türkçe   | İngilizce | Nerede                       |
+| ------------- | -------- | --------- | ---------------------------- |
+| Binlik ayracı | `5.000`  | `5,000`   | `formatSayi()`               |
+| Kısaltma      | `65,1B`  | `65.1K`   | `kisaSayi()` — B bin, K kilo |
+| Tarih         | `20.09.` | `09/20`   | `toLocaleString(yerel())`    |
+
+`yerel()` (motorda, `dil.ts`) etkin dilin BCP-47 etiketini veriyor ve
+sözlükle BİRLİKTE kuruluyor: sözlük yerine oturmadan arayüz Türkçe
+çiziliyor, sayı da Türkçe olmalı. İkisini ayrı kaynaktan okumak
+"İngilizce metin + Türkçe sayı" gibi yarım bir ekran üretirdi.
+
+### Çoğul
+
+Türkçede sayıdan sonra çoğul eki yok — "1 savaş" da "3 savaş" da
+doğru. İngilizcede yok: "1 battles" yazan bir ekran özensiz görünüyor.
+Çeviri iki biçimi birden verebiliyor, boru işaretiyle ayrılmış:
+
+```
+{0} savaş   ->   {0} battle|{0} battles
+```
+
+Seçimi `Intl.PluralRules` yapıyor, "1 ise tekil" diye elle yazılmış bir
+kural değil: İngilizce için ikisi aynı sonucu verir ama Rusçada üç,
+Arapçada altı biçim var ve elle yazılan kural o dillerde yanlış olur.
+
+Sayı ARGÜMANLARDAN okunuyor ve çoğu yerde biçimlenmiş bir dizge olarak
+geliyor (`formatSayi(1234)` -> `"1.234"`), o yüzden rakam dışındaki her
+şey atılıyor. `<Cumle>` de parçalarından sayı arıyor — parça bir React
+düğümüyse sayı bulunamıyor ve genel hâl (çoğul) seçiliyor.
+
+Boru işareti YALNIZ çeviriye uygulanıyor; Türkçe kaynak hiç
+bölünmüyor, yoksa içinde `|` geçen bir cümle sessizce ikiye kırılırdı.
+
+---
+
 ## Kod nerede
 
 | Katman                                              | Dosya                                                    |
@@ -164,6 +204,8 @@ ile` bir düğme yazısı, cümle ortası değil.
 | Çözücü, anahtar, sunucu kalıpları, eşzamanlı açılış | `packages/shared/src/dil.ts`                             |
 | Dil seçimi, paket indirme                           | `apps/web/src/lib/dil.tsx`                               |
 | Vurgulu cümle (parça birleştirme)                   | `apps/web/src/components/Cumle.tsx`                      |
+| Sayı ve kısaltma biçimi                             | `apps/web/src/components/ui.tsx`                         |
+| Liste birleştirme (`{0} ve {1}`)                    | `packages/shared/src/liste.ts`                           |
 | Derleme eklentisi                                   | `apps/web/vite-ceviri.mjs`                               |
 | Paylaşılan metin kuralları                          | `tools/lib/metin-kurallari.mjs`                          |
 | Sunucu metni taraması                               | `apps/web/src/api/client.ts`                             |

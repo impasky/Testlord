@@ -10,6 +10,7 @@
  * Kendi sayfasına çıkınca akış uzun olabiliyor — bir geçmiş kaydı uzun
  * OLMALI. Kural uzunluk değil: bir sayfa bir iş.
  */
+import { yerel } from '@lordlar/shared';
 import { useState } from 'react';
 import type { GameEvent, LordState } from '../api/client';
 import type { Sekme } from '../components/MobilKabuk';
@@ -100,7 +101,7 @@ export function Olaylar({
                     {typeof e.payload.mesaj === 'string' ? e.payload.mesaj : e.kind}
                   </p>
                   <time className="shrink-0 text-[11px] text-sonuk">
-                    {new Date(e.createdAt).toLocaleString('tr-TR', {
+                    {new Date(e.createdAt).toLocaleString(yerel(), {
                       day: '2-digit',
                       month: '2-digit',
                       hour: '2-digit',

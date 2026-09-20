@@ -17,6 +17,7 @@ import {
   type Kapi,
   type SavasDuzeni,
   type UnitType,
+  yerel,
 } from '@lordlar/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState, type ReactNode } from 'react';
@@ -1418,7 +1419,7 @@ export function Harita({
                                 : `← ${b.attacker.name}`}
                             </span>
                             <time className="shrink-0 text-[11px] text-sonuk">
-                              {new Date(b.createdAt).toLocaleString('tr-TR', {
+                              {new Date(b.createdAt).toLocaleString(yerel(), {
                                 day: '2-digit',
                                 month: '2-digit',
                                 hour: '2-digit',

@@ -81,6 +81,26 @@ async function ekran(dil) {
 
 kontrol('Sözlükte çeviri var', cevrilen > 1000, `${cevrilen} satır`);
 
+/*
+ * ÇOĞUL BİÇİMLERİ PAKETE GİRİYOR MU.
+ *
+ * Seçimin kendisi birim testte ölçülüyor (`dil.test.ts`); burada
+ * ölçülen, iki biçimin ARAYÜZE GİDEN pakette durup durmadığı. Sözlükte
+ * olup pakette olmaması sessiz bir kayıp olurdu: oyun tek biçim görür
+ * ve "1 battles" yazardı.
+ */
+const paket = JSON.parse(
+  readFileSync(new URL('../apps/web/src/ceviri/en.json', import.meta.url), 'utf8'),
+);
+const cogullu = Object.values(paket).filter((v) => v.includes('|'));
+kontrol('Çoğul biçimleri pakette', cogullu.length >= 20, `${cogullu.length} kayıt`);
+const bolgeAnahtari = Object.entries(sozluk).find(([, v]) => v.tr === '{0} bölge')?.[0];
+kontrol(
+  'Tekil ve çoğul biçim ayrı',
+  paket[bolgeAnahtari] === '{0} region|{0} regions',
+  paket[bolgeAnahtari],
+);
+
 // --- Türkçe (varsayılan)
 const tr = await ekran('tr');
 const trNav = (await tr.locator('nav').innerText()).replace(/\s+/g, ' ').trim();

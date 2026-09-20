@@ -130,16 +130,38 @@ for (const dosya of dosyalar) {
     }
 
     /*
+     * ÇOĞUL BİÇİMLERİ: `{0} battle|{0} battles` — solda tekil, sağda
+     * çoğul. Türkçe kaynak tek biçim taşıyor (sayıdan sonra çoğul eki
+     * yok), İngilizcede iki biçim gerekiyor.
+     *
+     * Her biçim AYRI AYRI denetleniyor: yer tutucu birinde varken
+     * ötekinde yoksa oyuncu sayıyı bazen görüp bazen görmezdi.
+     */
+    const formlar = t.split('|');
+    if (formlar.length > 2) {
+      sorun.push(`${yer} — ${no} en çok iki çoğul biçimi olabilir (tekil|çoğul)`);
+      continue;
+    }
+    if (formlar.length === 2 && !/\{\d+\}/.test(kayit.tr)) {
+      sorun.push(`${yer} — ${no} sayı taşımıyor; çoğul biçimi seçilemez`);
+      continue;
+    }
+    if (formlar.some((f) => !f.trim())) {
+      sorun.push(`${yer} — ${no} çoğul biçimlerinden biri boş`);
+      continue;
+    }
+
+    /*
      * Yer tutucu denetimi. `{0}` çeviride kaybolursa oyun o sayıyı
      * HİÇ göstermez ve cümle sessizce eksik kalır: "Günde en fazla
      * saldırı yapabilirsin." Sırası değişebilir, kendisi değişemez.
      */
     const bekle = (kayit.tr.match(/\{\d+\}/g) ?? []).sort();
-    const var_ = (t.match(/\{\d+\}/g) ?? []).sort();
-    if (bekle.join() !== var_.join()) {
+    const bozuk = formlar.find((f) => (f.match(/\{\d+\}/g) ?? []).sort().join() !== bekle.join());
+    if (bozuk !== undefined) {
       sorun.push(
         `${yer} — ${no} yer tutucu uyuşmuyor: beklenen ${bekle.join(' ') || '(yok)'}, ` +
-          `bulunan ${var_.join(' ') || '(yok)'}`,
+          `bulunan ${(bozuk.match(/\{\d+\}/g) ?? []).join(' ') || '(yok)'}`,
       );
       continue;
     }
@@ -165,7 +187,9 @@ for (const dosya of dosyalar) {
      */
     const bas = /^\s*/.exec(kayit.tr)[0];
     const son = /\s*$/.exec(kayit.tr.slice(bas.length))[0];
-    kabul.set(anahtar, bas + t + son);
+    // Boşluk HER BİÇİME ayrı konuyor: çoğul seçildikten sonra ekrana
+    // çıkan tek bir biçim ve o da kendi boşluğunu taşımalı.
+    kabul.set(anahtar, formlar.map((f) => bas + f.trim() + son).join('|'));
   }
 }
 

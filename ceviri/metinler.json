@@ -18,7 +18,7 @@
   "teaf79905": {
     "grup": "arayuz",
     "tr": " · {0} cihaz",
-    "en": " · {0} devices",
+    "en": " · {0} device| · {0} devices",
     "nerede": [
       "apps/web/src/components/BildirimKarti.tsx:101"
     ]
@@ -195,7 +195,7 @@
   "t1b6bc363": {
     "grup": "arayuz",
     "tr": "({0} parça)",
-    "en": "({0} pieces)",
+    "en": "({0} piece)|({0} pieces)",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:530"
     ]
@@ -453,7 +453,7 @@
   "t8ed22750": {
     "grup": "arayuz",
     "tr": "{0} adım",
-    "en": "{0} steps",
+    "en": "{0} step|{0} steps",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1041"
     ]
@@ -536,7 +536,7 @@
   "tb3195ad6": {
     "grup": "arayuz",
     "tr": "{0} birim",
-    "en": "{0} units",
+    "en": "{0} unit|{0} units",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:351"
     ]
@@ -560,7 +560,7 @@
   "t12853735": {
     "grup": "arayuz",
     "tr": "{0} bölge",
-    "en": "{0} regions",
+    "en": "{0} region|{0} regions",
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:86",
       "apps/web/src/screens/Medeniyet.tsx:136",
@@ -604,7 +604,7 @@
   "t518c818a": {
     "grup": "arayuz",
     "tr": "{0} dk önce",
-    "en": "{0} mins ago",
+    "en": "{0} min ago|{0} mins ago",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:29"
     ]
@@ -636,7 +636,7 @@
   "t3c2e09ca": {
     "grup": "arayuz",
     "tr": "{0} fayda",
-    "en": "{0} contribution",
+    "en": "{0} contribution|{0} contributions",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:141"
     ]
@@ -652,7 +652,7 @@
   "tf3ba9e7d": {
     "grup": "arayuz",
     "tr": "{0} fayda puanı",
-    "en": "{0} contribution points",
+    "en": "{0} contribution point|{0} contribution points",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:157"
     ]
@@ -684,7 +684,7 @@
   "tebc946e2": {
     "grup": "arayuz",
     "tr": "{0} gün",
-    "en": "{0} days",
+    "en": "{0} day|{0} days",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:51",
       "apps/web/src/components/GunlukKart.tsx:91",
@@ -695,7 +695,7 @@
   "ta7e8eb41": {
     "grup": "arayuz",
     "tr": "{0} gün kaldı",
-    "en": "{0} days left",
+    "en": "{0} day left|{0} days left",
     "nerede": [
       "apps/web/src/components/SeferKart.tsx:38"
     ]
@@ -703,7 +703,7 @@
   "t9244b49a": {
     "grup": "arayuz",
     "tr": "{0} gün önce",
-    "en": "{0} days ago",
+    "en": "{0} day ago|{0} days ago",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:32"
     ]
@@ -735,7 +735,7 @@
   "t4438dd01": {
     "grup": "arayuz",
     "tr": "{0} ittifak",
-    "en": "{0} alliances",
+    "en": "{0} alliance|{0} alliances",
     "nerede": [
       "apps/web/src/screens/Siralama.tsx:215"
     ]
@@ -759,7 +759,7 @@
   "tbcf13cf2": {
     "grup": "arayuz",
     "tr": "{0} kare",
-    "en": "{0} squares",
+    "en": "{0} square|{0} squares",
     "nerede": [
       "apps/web/src/components/DizilimIzgarasi.tsx:276"
     ]
@@ -775,7 +775,7 @@
   "ta2238310": {
     "grup": "arayuz",
     "tr": "{0} lord",
-    "en": "{0} lords",
+    "en": "{0} lord|{0} lords",
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:85",
       "apps/web/src/screens/Medeniyet.tsx:137",
@@ -825,7 +825,7 @@
   "t120b571b": {
     "grup": "arayuz",
     "tr": "{0} puan",
-    "en": "{0} points",
+    "en": "{0} point|{0} points",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:167"
     ]
@@ -857,7 +857,7 @@
   "t423b2a6e": {
     "grup": "arayuz",
     "tr": "{0} saat",
-    "en": "{0} hours",
+    "en": "{0} hour|{0} hours",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:613",
       "apps/web/src/components/Paktlar.tsx:160"
@@ -874,7 +874,7 @@
   "t6717d6d6": {
     "grup": "arayuz",
     "tr": "{0} saat önce",
-    "en": "{0} hours ago",
+    "en": "{0} hour ago|{0} hours ago",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:31"
     ]
@@ -909,7 +909,7 @@
   "tec4e9b47": {
     "grup": "arayuz",
     "tr": "{0} savaş",
-    "en": "{0} battles",
+    "en": "{0} battle|{0} battles",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:102"
     ]
@@ -917,7 +917,7 @@
   "t4aa99003": {
     "grup": "arayuz",
     "tr": "{0} savaşçı",
-    "en": "{0} warriors",
+    "en": "{0} warrior|{0} warriors",
     "nerede": [
       "apps/web/src/screens/Akin.tsx:490"
     ]
@@ -1000,7 +1000,7 @@
   "t2b400840": {
     "grup": "arayuz",
     "tr": "{0} şikâyet",
-    "en": "{0} reports",
+    "en": "{0} report|{0} reports",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:91",
       "apps/web/src/screens/Siralama.tsx:289"
@@ -7701,7 +7701,7 @@
   "t06f4f937": {
     "grup": "arayuz",
     "tr": "Tahmini kayıp: {0} asker",
-    "en": "Estimated loss: {0} soldiers",
+    "en": "Estimated loss: {0} soldier|Estimated loss: {0} soldiers",
     "nerede": [
       "apps/web/src/screens/Akin.tsx:650"
     ]
@@ -7814,7 +7814,7 @@
   "t8d452854": {
     "grup": "arayuz",
     "tr": "Takviye gönder ({0} birim)",
-    "en": "Send reinforcements ({0} units)",
+    "en": "Send reinforcements ({0} unit)|Send reinforcements ({0} units)",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:380"
     ]
@@ -11691,7 +11691,7 @@
   "tc6359540": {
     "grup": "sunucu",
     "tr": "{0} birim {1} garnizonunda kaldı.",
-    "en": "{0} units remained in the {1} garrison.",
+    "en": "{0} unit remained in the {1} garrison.|{0} units remained in the {1} garrison.",
     "nerede": [
       "apps/api/src/services/march.ts:918"
     ]
@@ -11699,7 +11699,7 @@
   "t4990c659": {
     "grup": "sunucu",
     "tr": "{0} birim {1} savunmasına katıldı.",
-    "en": "{0} units joined the defense of {1}.",
+    "en": "{0} unit joined the defense of {1}.|{0} units joined the defense of {1}.",
     "nerede": [
       "apps/api/src/services/march.ts:517"
     ]
@@ -12743,7 +12743,7 @@
   "t4f5adcbf": {
     "grup": "sunucu",
     "tr": "Çok hızlı şikâyet ediyorsun. {0} saniye bekle.",
-    "en": "You are reporting too fast. Wait {0} seconds.",
+    "en": "You are reporting too fast. Wait {0} second.|You are reporting too fast. Wait {0} seconds.",
     "nerede": [
       "apps/api/src/routes/moderasyon.ts:127"
     ]
@@ -12751,7 +12751,7 @@
   "t07a010f1": {
     "grup": "sunucu",
     "tr": "Çok hızlı yazıyorsun. {0} saniye bekle.",
-    "en": "You are typing too fast. Wait {0} seconds.",
+    "en": "You are typing too fast. Wait {0} second.|You are typing too fast. Wait {0} seconds.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:677"
     ]
@@ -13407,7 +13407,7 @@
   "t69d0d616": {
     "grup": "sunucu",
     "tr": "Ordun eve döndü ({0} birim){1}.",
-    "en": "Your army returned home ({0} units){1}.",
+    "en": "Your army returned home ({0} unit){1}.|Your army returned home ({0} units){1}.",
     "nerede": [
       "apps/api/src/services/march.ts:476"
     ]

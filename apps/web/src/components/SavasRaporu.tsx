@@ -17,6 +17,7 @@ import {
   type Army,
   type SavasSebebi,
   type UnitType,
+  yerel,
 } from '@lordlar/shared';
 import { useQuery } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
@@ -362,7 +363,7 @@ function topla(a: Army, b: Army): Army {
  */
 function sebepCumlesi(s: SavasSebebi): ReactNode {
   const g = (x: string) => <strong className="text-parsomen">{x}</strong>;
-  const sayi = (n: number) => n.toLocaleString('tr-TR');
+  const sayi = (n: number) => n.toLocaleString(yerel());
   const yuzde = () => String(Math.round(s.deger! * 100));
   switch (s.tur) {
     case 'guc':
@@ -457,7 +458,7 @@ export function SavasRaporu({
               </h2>
               <p className="text-[11px] text-solgun">
                 {savas
-                  ? new Date(savas.createdAt).toLocaleString('tr-TR', {
+                  ? new Date(savas.createdAt).toLocaleString(yerel(), {
                       day: '2-digit',
                       month: '2-digit',
                       hour: '2-digit',

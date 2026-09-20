@@ -5,6 +5,7 @@ import {
   anahtar,
   cevir,
   cevirSunucu,
+  cogulSec,
   dilGecerli,
   sunucuKaliplari,
   yerlestir,
@@ -139,6 +140,72 @@ describe('sunucu mesajı', () => {
     const kl = sunucuKaliplari(s2, k2);
     expect(cevirSunucu(s2, kl, 'Bölge limitin dolu (3/5).')).toBe(
       'Your region limit is full (3/5).',
+    );
+  });
+});
+
+describe('cogulSec', () => {
+  it('İngilizcede 1 tekil, gerisi çoğul', () => {
+    const k = '{0} battle|{0} battles';
+    expect(cogulSec(k, [1], 'en')).toBe('{0} battle');
+    expect(cogulSec(k, [0], 'en')).toBe('{0} battles');
+    expect(cogulSec(k, [2], 'en')).toBe('{0} battles');
+  });
+
+  it('BİÇİMLENMİŞ dizgeden de sayıyı okuyor', () => {
+    // Çağıranların çoğu `formatSayi()` çıktısını veriyor: "1.234".
+    expect(cogulSec('{0} unit|{0} units', ['1'], 'en')).toBe('{0} unit');
+    expect(cogulSec('{0} unit|{0} units', ['1.234'], 'en')).toBe('{0} units');
+  });
+
+  it('boru işareti yoksa kalıp olduğu gibi dönüyor', () => {
+    expect(cogulSec('{0} savaş', [1], 'tr')).toBe('{0} savaş');
+  });
+
+  it('sayı yoksa çoğula düşüyor', () => {
+    expect(cogulSec('{0} battle|{0} battles', [], 'en')).toBe('{0} battles');
+    expect(cogulSec('{0} battle|{0} battles', ['Kara Yusuf'], 'en')).toBe('{0} battles');
+  });
+
+  it('Türkçede tek biçim: iki biçim verilse bile 1 tekili seçiyor', () => {
+    // Türkçe kaynakta boru işareti hiç yok; yine de kural tutarlı olmalı.
+    expect(cogulSec('{0} gün|{0} gün', [3], 'tr')).toBe('{0} gün');
+  });
+});
+
+describe('cevir — çoğul', () => {
+  const sozluk: Sozluk = {
+    [anahtar('{0} savaş')]: '{0} battle|{0} battles',
+    [anahtar('{0} gün')]: '{0} day|{0} days',
+  };
+
+  it('tekil ve çoğul doğru yerleşiyor', () => {
+    expect(cevir(sozluk, '{0} savaş', 1)).toBe('1 battle');
+    expect(cevir(sozluk, '{0} savaş', 5)).toBe('5 battles');
+  });
+
+  it('çeviri yokken TÜRKÇE bölünmüyor', () => {
+    // Kaynakta boru işareti geçseydi ikiye kırılmamalı.
+    expect(cevir(null, 'Şehir | Ordu | Akın', 1)).toBe('Şehir | Ordu | Akın');
+  });
+});
+
+describe('cevirSunucu — çoğul', () => {
+  const kaynaklar = {
+    [anahtar('{0} birim {1} garnizonunda kaldı.')]: '{0} birim {1} garnizonunda kaldı.',
+  };
+  const sozluk: Sozluk = {
+    [anahtar('{0} birim {1} garnizonunda kaldı.')]:
+      '{0} unit remained in the {1} garrison.|{0} units remained in the {1} garrison.',
+  };
+  const kaliplar = sunucuKaliplari(sozluk, kaynaklar);
+
+  it('sunucudan gelen YERLEŞTİRİLMİŞ mesajda da tekil seçiliyor', () => {
+    expect(cevirSunucu(sozluk, kaliplar, '1 birim Akpazar garnizonunda kaldı.')).toBe(
+      '1 unit remained in the Akpazar garrison.',
+    );
+    expect(cevirSunucu(sozluk, kaliplar, '7 birim Akpazar garnizonunda kaldı.')).toBe(
+      '7 units remained in the Akpazar garrison.',
     );
   });
 });

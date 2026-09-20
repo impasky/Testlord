@@ -63,8 +63,76 @@ export function yerlestir(kalip: string, args: readonly unknown[]): string {
  * İngilizce.
  */
 export function cevir(sozluk: Sozluk | null, tr: string, ...args: unknown[]): string {
-  const kalip = sozluk?.[anahtar(tr)] ?? tr;
-  return yerlestir(kalip, args);
+  /*
+   * ÇOĞUL YALNIZ ÇEVİRİYE UYGULANIYOR, Türkçeye değil.
+   *
+   * Türkçede sayıdan sonra çoğul eki yok ("3 savaş", "1 savaş"), o
+   * yüzden kaynak metinde hiç `|` bulunmuyor. Geri düşüşte Türkçeyi
+   * bölmeye kalkmak, içinde boru işareti geçen bir cümleyi sessizce
+   * ikiye kırardı.
+   */
+  const kayit = sozluk?.[anahtar(tr)];
+  return yerlestir(kayit === undefined ? tr : cogulSec(kayit, args), args);
+}
+
+/* ------------------------------------------------------------------ */
+/* Çoğul                                                               */
+/* ------------------------------------------------------------------ */
+
+/**
+ * ÇOĞUL — `"{0} battle|{0} battles"`.
+ *
+ * Türkçe kaynak tek biçim taşıyor ve taşımalı: "1 savaş" da "3 savaş"
+ * da doğru. İngilizce öyle değil — "1 battles" yazan bir ekran özensiz
+ * görünüyor ve oyuncunun gözüne ilk çarpan şey oluyor. Çeviri iki
+ * biçimi birden verebilsin diye boru işareti ayırıyor: SOLDA tekil,
+ * SAĞDA çoğul.
+ *
+ * Hangi biçim seçilecek `Intl.PluralRules`e soruluyor; "1 ise tekil"
+ * diye elle yazmak İngilizce için tesadüfen doğru, başka diller için
+ * yanlış olurdu (Rusçada üç, Arapçada altı biçim var).
+ *
+ * Sayı ARGÜMANLARDAN okunuyor. Çoğu yerde sayı zaten biçimlenmiş bir
+ * dizge olarak geliyor (`formatSayi(1234)` -> "1.234"), o yüzden
+ * rakam dışındaki her şey atılıyor: "1.234" -> 1234, "1" -> 1.
+ */
+const PLURAL_ONBELLEK = new Map<string, Intl.PluralRules>();
+
+function pluralKurali(dil: DilKodu): Intl.PluralRules {
+  const y = YEREL[dil];
+  let k = PLURAL_ONBELLEK.get(y);
+  if (!k) {
+    k = new Intl.PluralRules(y);
+    PLURAL_ONBELLEK.set(y, k);
+  }
+  return k;
+}
+
+/** İlk SAYIYA çevrilebilen argüman; yoksa null. */
+function ilkSayi(args: readonly unknown[]): number | null {
+  for (const a of args) {
+    if (typeof a === 'number' && Number.isFinite(a)) return a;
+    if (typeof a === 'string') {
+      const rakamlar = a.replace(/[^\d]/g, '');
+      if (rakamlar) return Number(rakamlar);
+    }
+  }
+  return null;
+}
+
+export function cogulSec(
+  kalip: string,
+  args: readonly unknown[],
+  dil: DilKodu = aktifDilKodu,
+): string {
+  if (!kalip.includes('|')) return kalip;
+  const formlar = kalip.split('|');
+  const n = ilkSayi(args);
+  // Sayı bulunamadıysa çoğul: "0 results" gibi genel hâl, "1 result"
+  // gibi özel hâlden daha güvenli.
+  if (n === null) return formlar[formlar.length - 1] ?? kalip;
+  const secim = pluralKurali(dil).select(n);
+  return (secim === 'one' ? formlar[0] : formlar[1]) ?? formlar[0] ?? kalip;
 }
 
 /* ------------------------------------------------------------------ */
@@ -126,11 +194,15 @@ export function cevirSunucu(
 ): string {
   if (!sozluk || !metin) return metin;
   const dogrudan = sozluk[anahtar(metin)];
-  if (dogrudan) return dogrudan;
+  if (dogrudan) return cogulSec(dogrudan, []);
 
   for (const k of kaliplar) {
     const m = k.desen.exec(metin);
-    if (m) return yerlestir(sozluk[k.anahtar] ?? metin, m.slice(1));
+    if (m) {
+      const kalip = sozluk[k.anahtar];
+      const gruplar = m.slice(1);
+      return yerlestir(kalip === undefined ? metin : cogulSec(kalip, gruplar), gruplar);
+    }
   }
   return metin;
 }
@@ -153,11 +225,42 @@ export function cevirSunucu(
  */
 let aktifSozluk: Sozluk | null = null;
 let aktifKaliplar: readonly SunucuKalibi[] = [];
+let aktifDilKodu: DilKodu = VARSAYILAN_DIL;
 
 /** Sözlüğü yerine koyar. Yalnız dil sağlayıcısı çağırıyor. */
-export function sozlukKur(sozluk: Sozluk | null, kaliplar: readonly SunucuKalibi[] = []): void {
+export function sozlukKur(
+  sozluk: Sozluk | null,
+  kaliplar: readonly SunucuKalibi[] = [],
+  dil: DilKodu = VARSAYILAN_DIL,
+): void {
   aktifSozluk = sozluk;
   aktifKaliplar = kaliplar;
+  aktifDilKodu = dil;
+}
+
+/**
+ * Ekranın ŞU AN hangi dilde olduğu.
+ *
+ * Sözlükle birlikte kuruluyor, ayrı okunmuyor: sözlük yerine
+ * oturmadan arayüz Türkçe çiziliyor ve sayı biçimi de Türkçe olmalı.
+ * İkisini ayrı kaynaklardan okumak, "İngilizce metin + Türkçe sayı"
+ * gibi yarım bir ekran üretirdi.
+ */
+export function aktifDil(): DilKodu {
+  return aktifDilKodu;
+}
+
+/**
+ * `Intl` için BCP-47 etiketi — sayı, tarih ve çoğul kuralları buradan.
+ *
+ * Ayrı bir tablo, çünkü dil kodu (`tr`) ile yerel kod (`tr-TR`) aynı
+ * şey değil: biri hangi dilde yazdığımızı, öteki sayıyı hangi ülkenin
+ * âdetine göre yazdığımızı söylüyor.
+ */
+const YEREL: Record<DilKodu, string> = { tr: 'tr-TR', en: 'en-US' };
+
+export function yerel(): string {
+  return YEREL[aktifDilKodu];
 }
 
 export function aktifSozlukVar(): boolean {
@@ -219,7 +322,7 @@ function acilistaKur(): void {
     const sozluk = JSON.parse(ham) as Sozluk;
     const kalipHam = localStorage.getItem(`${KALIP_ANAHTARI}_${dil}`);
     const kaynaklar = kalipHam ? (JSON.parse(kalipHam) as Record<string, string>) : {};
-    sozlukKur(sozluk, sunucuKaliplari(sozluk, kaynaklar));
+    sozlukKur(sozluk, sunucuKaliplari(sozluk, kaynaklar), dil);
   } catch {
     // Bozuk kayıt, dolu depo, gizli sekme: oyun Türkçe açılıyor.
   }

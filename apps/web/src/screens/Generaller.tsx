@@ -1,5 +1,11 @@
 /** Generaller — 12 kişilik sabit kadro, kiralama, slot yerleşimi. */
-import { GENERAL_LEVEL, GENERAL_SLOT_RULE, etkiAdi, generalLevelMultiplier } from '@lordlar/shared';
+import {
+  GENERAL_LEVEL,
+  GENERAL_SLOT_RULE,
+  etkiAdi,
+  generalLevelMultiplier,
+  yerel,
+} from '@lordlar/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ApiError, api, type GeneralDto } from '../api/client';
@@ -108,7 +114,7 @@ function GeneralKarti({
             <p className="mb-2 text-[11px] text-altin">En yüksek seviye.</p>
           )}
           {g.dinleniyor ? (
-            <p className="text-[11px] text-kirmizi">{`Yaralı — ${new Date(g.dinleniyor).toLocaleString('tr-TR')} tarihine kadar dinleniyor.`}</p>
+            <p className="text-[11px] text-kirmizi">{`Yaralı — ${new Date(g.dinleniyor).toLocaleString(yerel())} tarihine kadar dinleniyor.`}</p>
           ) : (
             <div className="flex gap-1.5">
               {Array.from({ length: slots }, (_, i) => (

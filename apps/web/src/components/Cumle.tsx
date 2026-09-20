@@ -33,9 +33,18 @@
  * Yer tutucu `t()`nin kullandığıyla aynı (`{0}`, `{1}`): biri sayı,
  * öteki React düğümü taşıdığı için işlev ayrı, dil aynı.
  */
+import { cogulSec } from '@lordlar/shared';
 import { Fragment, type ReactNode } from 'react';
 
 export function Cumle({ metin, parca }: { metin: string; parca: readonly ReactNode[] }) {
+  /*
+   * ÇOĞUL: eklenti `metin`i `__t("…")` ile sarıyor ama ARGÜMANSIZ
+   * çağırıyor, yani motor hangi sayıdan söz edildiğini göremiyor.
+   * Sayı burada, parçaların içinde: doğrudan sayı verilmiş parçalardan
+   * okunuyor (`parca={[3]}` gibi). Parça bir React düğümüyse sayı
+   * bulunamıyor ve çoğul biçim seçiliyor — İngilizcede genel hâl.
+   */
+  const kalip = cogulSec(metin, parca as readonly unknown[]);
   /*
    * Yer tutucusu OLMAYAN metin de geçerli: koşullu bir cümlenin bir
    * kolu vurgusuz olabiliyor. Bölme zaten tek parça döndürüyor.
@@ -46,7 +55,7 @@ export function Cumle({ metin, parca }: { metin: string; parca: readonly ReactNo
    */
   return (
     <>
-      {metin.split(/(\{\d+\})/).map((p, i) => {
+      {kalip.split(/(\{\d+\})/).map((p, i) => {
         const y = /^\{(\d+)\}$/.exec(p);
         if (!y) return <Fragment key={i}>{p}</Fragment>;
         const d = parca[Number(y[1])];

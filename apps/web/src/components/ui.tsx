@@ -5,6 +5,7 @@
  * harf başlıklar, parlak altın eylem butonları, nadirlik renk sistemi.
  * Masaüstü düzeni YOK — her şey tek sütun, dokunmatik hedefleri ≥44px.
  */
+import { aktifDil, yerel, type DilKodu } from '@lordlar/shared';
 import { Fragment, useEffect, useState, type ReactNode } from 'react';
 import { IkonAltin, IkonDemir, IkonErzak, IkonSure, IkonUyari } from './Ikonlar';
 
@@ -797,17 +798,39 @@ export function DegerKarti({
 
 /* ---------------- Yardımcılar ---------------- */
 
+/*
+ * SAYI BİÇİMİ DİLE BAĞLI.
+ *
+ * `toLocaleString('tr-TR')` her yerde sabitti: oyun İngilizceyken de
+ * "5.000" yazıyordu ve İngilizce okuyan biri için bu beş bin değil BEŞ.
+ * Binlik ayracı ile ondalık ayracı iki dilde tam TERS; yanlış ayraç
+ * sayıyı okunmaz değil, YANLIŞ yapıyor.
+ */
 export function formatSayi(n: number): string {
-  return Math.floor(n).toLocaleString('tr-TR');
+  return Math.floor(n).toLocaleString(yerel());
 }
 
-/** Büyük sayıları kısaltır: 65.081 -> 65,1B. Üst barda yer dar. */
+/**
+ * Kısaltma harfi de dile bağlı: Türkçede bin "B", İngilizcede "K".
+ *
+ * "65,1B" bir İngiliz için 65,1 milyar (billion) demek — kısaltma
+ * çevrilmezse sayı bin kat yanlış okunuyor.
+ */
+const KISALTMA: Record<DilKodu, { bin: string; milyon: string }> = {
+  tr: { bin: 'B', milyon: 'M' },
+  en: { bin: 'K', milyon: 'M' },
+};
+
+/** Büyük sayıları kısaltır: 65.081 -> 65,1B (en: 65.1K). Üst barda yer dar. */
 export function kisaSayi(n: number): string {
   const a = Math.floor(Math.abs(n));
   const isaret = n < 0 ? '-' : '';
-  if (a >= 1_000_000) return `${isaret}${(a / 1_000_000).toFixed(1).replace('.', ',')}M`;
-  if (a >= 10_000) return `${isaret}${(a / 1000).toFixed(1).replace('.', ',')}B`;
-  return `${isaret}${a.toLocaleString('tr-TR')}`;
+  const k = KISALTMA[aktifDil()];
+  const ondalikli = (x: number) =>
+    x.toLocaleString(yerel(), { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  if (a >= 1_000_000) return `${isaret}${ondalikli(a / 1_000_000)}${k.milyon}`;
+  if (a >= 10_000) return `${isaret}${ondalikli(a / 1000)}${k.bin}`;
+  return `${isaret}${a.toLocaleString(yerel())}`;
 }
 
 /**
