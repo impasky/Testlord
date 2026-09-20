@@ -8988,7 +8988,7 @@
   "t6b1fe63f": {
     "grup": "motor",
     "tr": "Aşılmaz Kale",
-    "en": "",
+    "en": "Impenetrable Fortress",
     "nerede": [
       "data/balance.json:bolgeler.gelisim_adlari.kale[4]"
     ]
@@ -9092,7 +9092,7 @@
   "t35fda0e7": {
     "grup": "motor",
     "tr": "Bereketli Tarlalar",
-    "en": "",
+    "en": "Fertile Fields",
     "nerede": [
       "data/balance.json:bolgeler.gelisim_adlari.tarla[2]"
     ]
@@ -9414,7 +9414,7 @@
   "t0c9714e9": {
     "grup": "motor",
     "tr": "Bucak",
-    "en": "",
+    "en": "Hamlet",
     "nerede": [
       "data/balance.json:bolgeler.gelisim_adlari.koy[2]"
     ]
@@ -9470,7 +9470,7 @@
   "t5ccb766e": {
     "grup": "motor",
     "tr": "Büyük Kale",
-    "en": "",
+    "en": "Great Castle",
     "nerede": [
       "data/balance.json:bolgeler.gelisim_adlari.kale[3]"
     ]
@@ -9478,7 +9478,7 @@
   "t3fc4db8f": {
     "grup": "motor",
     "tr": "Büyük Köy",
-    "en": "",
+    "en": "Large Village",
     "nerede": [
       "data/balance.json:bolgeler.gelisim_adlari.koy[1]"
     ]
@@ -9486,7 +9486,7 @@
   "te8aa31ff": {
     "grup": "motor",
     "tr": "Büyük Şehir",
-    "en": "",
+    "en": "Great City",
     "nerede": [
       "data/balance.json:bolgeler.gelisim_adlari.sehir[3]"
     ]
@@ -9510,7 +9510,7 @@
   "tf5d64bd5": {
     "grup": "motor",
     "tr": "Cevher Yatağı",
-    "en": "",
+    "en": "Ore Vein",
     "nerede": [
       "data/balance.json:bolgeler.gelisim_adlari.maden[3]"
     ]
@@ -9542,7 +9542,7 @@
   "ta0721e62": {
     "grup": "motor",
     "tr": "Çekirdekleri sen büyüttün.",
-    "en": "",
+    "en": "You nurtured the seeds.",
     "nerede": [
       "data/balance.json:medeniyetler.fayda_puani.rutbeler[3].aciklama"
     ]
@@ -9558,7 +9558,7 @@
   "t700fa11a": {
     "grup": "motor",
     "tr": "Demir Madeni",
-    "en": "",
+    "en": "Iron Mine",
     "nerede": [
       "data/balance.json:bolgeler.gelisim_adlari.maden[1]"
     ]
@@ -9566,7 +9566,7 @@
   "t15e2ef0f": {
     "grup": "motor",
     "tr": "Demir Ocağı",
-    "en": "",
+    "en": "Iron Forge",
     "nerede": [
       "data/balance.json:medeniyetler.liste[0].ad"
     ]
@@ -9614,7 +9614,7 @@
   "t9dd91313": {
     "grup": "motor",
     "tr": "Derin Ocak",
-    "en": "",
+    "en": "Deep Forge",
     "nerede": [
       "data/balance.json:bolgeler.gelisim_adlari.maden[2]"
     ]
@@ -9630,7 +9630,7 @@
   "t2ab91378": {
     "grup": "motor",
     "tr": "Diyarın Başkenti",
-    "en": "",
+    "en": "Capital of the Realm",
     "nerede": [
       "data/balance.json:bolgeler.gelisim_adlari.sehir[4]"
     ]
@@ -9751,7 +9751,7 @@
   "t12e5d746": {
     "grup": "motor",
     "tr": "Ekinlik",
-    "en": "",
+    "en": "Farmland",
     "nerede": [
       "data/balance.json:bolgeler.gelisim_adlari.tarla[1]",
       "data/world-map.json:regions[48].name"
@@ -9912,7 +9912,7 @@
   "t97809e78": {
     "grup": "motor",
     "tr": "Fetihte ve savunmada oradaydın.",
-    "en": "",
+    "en": "You were there in conquest and defense.",
     "nerede": [
       "data/balance.json:medeniyetler.fayda_puani.rutbeler[2].aciklama"
     ]
@@ -10017,7 +10017,7 @@
   "tba8eccfc": {
     "grup": "motor",
     "tr": "Gözcü Kulesi",
-    "en": "",
+    "en": "Watchtower",
     "nerede": [
       "data/balance.json:bolgeler.gelisim_adlari.kale[0]"
     ]
@@ -10145,7 +10145,7 @@
   "t14ab6624": {
     "grup": "motor",
     "tr": "Hisar",
-    "en": "",
+    "en": "Citadel",
     "nerede": [
       "data/balance.json:bolgeler.gelisim_adlari.kale[1]"
     ]
@@ -10243,7 +10243,7 @@
   "t5a7af248": {
     "grup": "motor",
     "tr": "Kadim Damar",
-    "en": "",
+    "en": "Ancient Vein",
     "nerede": [
       "data/balance.json:bolgeler.gelisim_adlari.maden[4]"
     ]
@@ -10277,7 +10277,7 @@
   "t6b8a82ae": {
     "grup": "motor",
     "tr": "Kalelerin ve madenlerin halkı; toprağı kıt, çeliği bol.",
-    "en": "",
+    "en": "People of castles and mines; their land is scarce, their steel is abundant.",
     "nerede": [
       "data/balance.json:medeniyetler.liste[0].ozet"
     ]
@@ -10349,7 +10349,7 @@
   "t6fe206cf": {
     "grup": "motor",
     "tr": "Kara Orman",
-    "en": "",
+    "en": "Black Forest",
     "nerede": [
       "data/balance.json:medeniyetler.liste[2].ad"
     ]
@@ -10374,7 +10374,7 @@
   "tf2672797": {
     "grup": "motor",
     "tr": "Kasaba Kapısı",
-    "en": "",
+    "en": "Town Gate",
     "nerede": [
       "data/balance.json:bolgeler.gelisim_adlari.koy[4]"
     ]
@@ -10504,7 +10504,7 @@
   "t067d9963": {
     "grup": "motor",
     "tr": "Köy Tarlası",
-    "en": "",
+    "en": "Village Field",
     "nerede": [
       "data/balance.json:bolgeler.gelisim_adlari.tarla[0]"
     ]
@@ -10512,7 +10512,7 @@
   "t536f95d7": {
     "grup": "motor",
     "tr": "Köyleri kalabalık, surları alçak; ormanın içinden vururlar.",
-    "en": "",
+    "en": "Their villages are crowded, their walls are low; they strike from within the forest.",
     "nerede": [
       "data/balance.json:medeniyetler.liste[2].ozet"
     ]
@@ -10520,7 +10520,7 @@
   "t7cd3659d": {
     "grup": "motor",
     "tr": "Köylü Milis",
-    "en": "",
+    "en": "Peasant Militia",
     "nerede": [
       "data/balance.json:birimler.milis.ad"
     ]
@@ -10536,7 +10536,7 @@
   "t36a62d98": {
     "grup": "motor",
     "tr": "Kuzey Ucu",
-    "en": "",
+    "en": "Northern Edge",
     "nerede": [
       "data/balance.json:medeniyetler.liste[1].ad"
     ]
@@ -10616,7 +10616,7 @@
   "t6ccbc497": {
     "grup": "motor",
     "tr": "Mancınık",
-    "en": "",
+    "en": "Catapult",
     "nerede": [
       "data/balance.json:birimler.kusatma.ad"
     ]
@@ -10632,7 +10632,7 @@
   "t87399dd1": {
     "grup": "motor",
     "tr": "Medeniyetin Kılıcı",
-    "en": "",
+    "en": "Sword of Civilization",
     "nerede": [
       "data/balance.json:medeniyetler.fayda_puani.rutbeler[4].ad"
     ]
@@ -10640,7 +10640,7 @@
   "t3f460d6f": {
     "grup": "motor",
     "tr": "Medeniyetine yazıldın.",
-    "en": "",
+    "en": "You are inscribed in your civilization's history.",
     "nerede": [
       "data/balance.json:medeniyetler.fayda_puani.rutbeler[0].aciklama"
     ]
@@ -10672,7 +10672,7 @@
   "ta863acb3": {
     "grup": "motor",
     "tr": "Mızrakçı",
-    "en": "",
+    "en": "Spearman",
     "nerede": [
       "data/balance.json:birimler.mizrakci.ad"
     ]
@@ -10696,7 +10696,7 @@
   "t436bf761": {
     "grup": "motor",
     "tr": "Nahiye",
-    "en": "",
+    "en": "Township",
     "nerede": [
       "data/balance.json:bolgeler.gelisim_adlari.koy[3]"
     ]
@@ -10720,7 +10720,7 @@
   "tb1711c78": {
     "grup": "motor",
     "tr": "Nöbetçi",
-    "en": "",
+    "en": "Sentinel",
     "nerede": [
       "data/balance.json:medeniyetler.fayda_puani.rutbeler[1].ad"
     ]
@@ -10736,7 +10736,7 @@
   "t56e7c9f2": {
     "grup": "motor",
     "tr": "Ocak Ustası",
-    "en": "",
+    "en": "Forge Master",
     "nerede": [
       "data/balance.json:medeniyetler.fayda_puani.rutbeler[3].ad"
     ]
@@ -10744,7 +10744,7 @@
   "t417f04f7": {
     "grup": "motor",
     "tr": "Okçu",
-    "en": "",
+    "en": "Archer",
     "nerede": [
       "data/balance.json:birimler.okcu.ad"
     ]
@@ -10944,7 +10944,7 @@
   "tfa811875": {
     "grup": "motor",
     "tr": "Pazar Şehri",
-    "en": "",
+    "en": "Market City",
     "nerede": [
       "data/balance.json:bolgeler.gelisim_adlari.sehir[1]"
     ]
@@ -11073,7 +11073,7 @@
   "t7215dd9a": {
     "grup": "motor",
     "tr": "Sekiz şehrin tüccarları; kılıçtan çok kese taşırlar.",
-    "en": "",
+    "en": "Merchants of the eight cities; they carry coin pouches more than swords.",
     "nerede": [
       "data/balance.json:medeniyetler.liste[3].ozet"
     ]
@@ -11113,7 +11113,7 @@
   "tdc5a061e": {
     "grup": "motor",
     "tr": "Sınır muhafızları; dört kaleyle kuzeyin kapısını tutarlar.",
-    "en": "",
+    "en": "Border guards; they hold the gate of the north with four castles.",
     "nerede": [
       "data/balance.json:medeniyetler.liste[1].ozet"
     ]
@@ -11161,7 +11161,7 @@
   "tbe6c021a": {
     "grup": "motor",
     "tr": "Süvari",
-    "en": "",
+    "en": "Cavalry",
     "nerede": [
       "data/balance.json:birimler.suvari.ad"
     ]
@@ -11225,7 +11225,7 @@
   "te218a867": {
     "grup": "motor",
     "tr": "Tahıl Ambarı",
-    "en": "",
+    "en": "Granary",
     "nerede": [
       "data/balance.json:bolgeler.gelisim_adlari.tarla[3]"
     ]
@@ -11273,7 +11273,7 @@
   "t30fcb1ef": {
     "grup": "motor",
     "tr": "Taraf senin adını biliyor.",
-    "en": "",
+    "en": "The faction knows your name.",
     "nerede": [
       "data/balance.json:medeniyetler.fayda_puani.rutbeler[4].aciklama"
     ]
@@ -11297,7 +11297,7 @@
   "t65730abb": {
     "grup": "motor",
     "tr": "Taş Geçit",
-    "en": "",
+    "en": "Stone Pass",
     "nerede": [
       "data/balance.json:medeniyetler.liste[3].ad"
     ]
@@ -11305,7 +11305,7 @@
   "t81635ca6": {
     "grup": "motor",
     "tr": "Taş Ocağı",
-    "en": "",
+    "en": "Quarry",
     "nerede": [
       "data/balance.json:bolgeler.gelisim_adlari.maden[0]"
     ]
@@ -11337,7 +11337,7 @@
   "t434a5793": {
     "grup": "motor",
     "tr": "Ticaret Şehri",
-    "en": "",
+    "en": "Trade City",
     "nerede": [
       "data/balance.json:bolgeler.gelisim_adlari.sehir[2]"
     ]
@@ -11377,7 +11377,7 @@
   "t1a1c6c5d": {
     "grup": "motor",
     "tr": "Toprakta durdun, payını aldın.",
-    "en": "",
+    "en": "You stood your ground, you took your share.",
     "nerede": [
       "data/balance.json:medeniyetler.fayda_puani.rutbeler[1].aciklama"
     ]
@@ -11516,7 +11516,7 @@
   "t0ee42256": {
     "grup": "motor",
     "tr": "Yeminli",
-    "en": "",
+    "en": "Oathbound",
     "nerede": [
       "data/balance.json:medeniyetler.fayda_puani.rutbeler[0].ad"
     ]

@@ -3,7 +3,7 @@ LORDLAR ÇAĞI — ÇEVİRİ 1/3: OYUNU OYNANIR KILAN  (KALANLAR)
 Gezinme, düğmeler, kaynak ve birim adları, ilk saatin ekranları ve
 öğretici. Bu parti bitince oyun baştan sona oynanabilir.
 
-Bu dosyada 43 satır var — çevrilmiş olanlar çıkarıldı.
+Bu dosyada 0 satır var — çevrilmiş olanlar çıkarıldı.
 
 NASIL ÇEVİRİLİR
   Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.
@@ -20,49 +20,3 @@ NASIL ÇEVİRİLİR
   Bitince dosyayı olduğu gibi geri ver; gerisini ben hallederim.
 
 ==========================================================================
-
---- Adlar (birim, yerleşim, medeniyet, rütbe) (43) ---
-
-2077. Aşılmaz Kale
-2078. Bereketli Tarlalar
-2079. Bucak
-2080. Büyük Kale
-2081. Büyük Köy
-2082. Büyük Şehir
-2084. Cevher Yatağı
-2085. Demir Madeni
-2086. Demir Ocağı
-2087. Derin Ocak
-2088. Diyarın Başkenti
-2089. Ekinlik
-2091. Gözcü Kulesi
-2092. Hisar
-2093. Kadim Damar
-2094. Kalelerin ve madenlerin halkı; toprağı kıt, çeliği bol.
-2095. Kara Orman
-2096. Kasaba Kapısı
-2097. Köy Tarlası
-2098. Köyleri kalabalık, surları alçak; ormanın içinden vururlar.
-2099. Köylü Milis
-2100. Kuzey Ucu
-2101. Mancınık
-2102. Medeniyetin Kılıcı
-2104. Mızrakçı
-2105. Nahiye
-2106. Nöbetçi
-2107. Ocak Ustası
-2108. Okçu
-2109. Pazar Şehri
-2110. Sekiz şehrin tüccarları; kılıçtan çok kese taşırlar.
-2111. Sınır muhafızları; dört kaleyle kuzeyin kapısını tutarlar.
-2112. Süvari
-2113. Tahıl Ambarı
-2115. Taş Geçit
-2116. Taş Ocağı
-2117. Ticaret Şehri
-2119. Yeminli
-2120. Çekirdekleri sen büyüttün.
-2121. Fetihte ve savunmada oradaydın.
-2122. Medeniyetine yazıldın.
-2123. Taraf senin adını biliyor.
-2124. Toprakta durdun, payını aldın.
