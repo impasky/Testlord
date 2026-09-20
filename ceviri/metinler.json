@@ -243,7 +243,7 @@
   "tcbc6d485": {
     "grup": "arayuz",
     "tr": "{0} — {1} kaldı. İlk saldırında kalkan düşer.",
-    "en": "",
+    "en": "{0} — {1} remaining. The shield drops on your first attack.",
     "nerede": [
       "apps/web/src/screens/Malikane.tsx:138"
     ]
@@ -275,7 +275,7 @@
   "t14eabbb8": {
     "grup": "arayuz",
     "tr": "{0} — {1}, sonra ordu saatte %{2} firar verir",
-    "en": "",
+    "en": "{0} — {1}, then the army deserts at {2}% per hour",
     "nerede": [
       "apps/web/src/components/MobilKabuk.tsx:153"
     ]
@@ -291,7 +291,7 @@
   "td592a5b8": {
     "grup": "arayuz",
     "tr": "{0} — depo dolu, üretim boşa gidiyor",
-    "en": "",
+    "en": "{0} — storage is full, production is wasted",
     "nerede": [
       "apps/web/src/components/MobilKabuk.tsx:156"
     ]
@@ -299,7 +299,7 @@
   "t3cf4481e": {
     "grup": "arayuz",
     "tr": "{0} — eksiye gidiyor",
-    "en": "",
+    "en": "{0} — going into the negative",
     "nerede": [
       "apps/web/src/components/MobilKabuk.tsx:154"
     ]
@@ -446,7 +446,7 @@
     "tr": "{0} adedi",
     "en": "{0} quantity",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:693",
+      "apps/web/src/screens/Akin.tsx:698",
       "apps/web/src/screens/Kisla.tsx:270"
     ]
   },
@@ -919,7 +919,7 @@
     "tr": "{0} savaşçı",
     "en": "{0} warriors",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:485"
+      "apps/web/src/screens/Akin.tsx:490"
     ]
   },
   "t76f8b84f": {
@@ -1076,7 +1076,7 @@
   "te5fdd209": {
     "grup": "arayuz",
     "tr": "{0} üst üste giriyorsun.",
-    "en": "",
+    "en": "You are logging in {0} in a row.",
     "nerede": [
       "apps/web/src/components/GunlukKart.tsx:90"
     ]
@@ -1124,7 +1124,7 @@
   "te08cc1e3": {
     "grup": "arayuz",
     "tr": "{0}: {1} ({2}{3}/sa)",
-    "en": "",
+    "en": "{0}: {1} ({2}{3}/hr)",
     "nerede": [
       "apps/web/src/components/MobilKabuk.tsx:149"
     ]
@@ -1132,15 +1132,15 @@
   "t61650100": {
     "grup": "arayuz",
     "tr": "{0}. {1}, şef — {2}",
-    "en": "",
+    "en": "{0}. {1}, chief — {2}",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:500"
+      "apps/web/src/screens/Akin.tsx:505"
     ]
   },
   "tda52089a": {
     "grup": "arayuz",
     "tr": "{0}. satır, {1}. kare, {2}",
-    "en": "",
+    "en": "Row {0}, tile {1}, {2}",
     "nerede": [
       "apps/web/src/components/DizilimIzgarasi.tsx:324"
     ]
@@ -1308,7 +1308,7 @@
     "tr": "%{0} ihtimalle T{1} ekipman düşer.",
     "en": "{0}% chance to drop T{1} equipment.",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:653"
+      "apps/web/src/screens/Akin.tsx:658"
     ]
   },
   "t1827a8a3": {
@@ -1479,7 +1479,7 @@
     "tr": "Akına çık · {0} asker",
     "en": "Go on a raid · {0} troops",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:664"
+      "apps/web/src/screens/Akin.tsx:669"
     ]
   },
   "t82148189": {
@@ -1945,7 +1945,7 @@
   "t24ca3219": {
     "grup": "arayuz",
     "tr": "Başvuru ile",
-    "en": "",
+    "en": "By application",
     "nerede": [
       "apps/web/src/components/IttifakBasvurular.tsx:87",
       "apps/web/src/components/IttifakIncele.tsx:72",
@@ -2100,7 +2100,7 @@
   "tf1309d33": {
     "grup": "arayuz",
     "tr": "Bildirimler iPhone ve iPad'de yalnızca ana ekrana eklenmiş uygulamada çalışır. Paylaş menüsünden {0} deyip oyunu oradan aç, sonra buraya dön.",
-    "en": "",
+    "en": "Notifications on iPhone and iPad only work when the app is added to the home screen. Select {0} from the share menu, open the game from there, then return here.",
     "nerede": [
       "apps/web/src/components/BildirimKarti.tsx:75"
     ]
@@ -2453,7 +2453,7 @@
   "t9577a02a": {
     "grup": "arayuz",
     "tr": "Bu bölgede {0} askerin savunmada.",
-    "en": "",
+    "en": "{0} of your soldiers are defending in this region.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:350"
     ]
@@ -3673,7 +3673,7 @@
     "tr": "Evde asker yok. Önce Kışla'da asker eğit.",
     "en": "No troops at home. Train troops in the Barracks first.",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:620"
+      "apps/web/src/screens/Akin.tsx:625"
     ]
   },
   "t0552f64c": {
@@ -3731,6 +3731,14 @@
     "nerede": [
       "apps/web/src/screens/Siralama.tsx:25",
       "data/basarimlar.json:kumeler[0].ad"
+    ]
+  },
+  "t1fcef09f": {
+    "grup": "arayuz",
+    "tr": "garnizon",
+    "en": "garrison",
+    "nerede": [
+      "apps/web/src/screens/Harita.tsx:1417"
     ]
   },
   "tc36274bf": {
@@ -3980,7 +3988,7 @@
     "nerede": [
       "apps/web/src/components/Paktlar.tsx:191",
       "apps/web/src/components/SikayetSayfasi.tsx:117",
-      "apps/web/src/screens/Akin.tsx:664",
+      "apps/web/src/screens/Akin.tsx:669",
       "apps/web/src/screens/Demirhane.tsx:519",
       "apps/web/src/screens/Generaller.tsx:133",
       "apps/web/src/screens/Giris.tsx:289",
@@ -4707,7 +4715,7 @@
   "t9205c30f": {
     "grup": "arayuz",
     "tr": "İttifaka {0}, sana {1}.",
-    "en": "",
+    "en": "{0} to the alliance, {1} to you.",
     "nerede": [
       "apps/web/src/components/IttifakBagis.tsx:127"
     ]
@@ -5005,7 +5013,7 @@
     "tr": "Karşında: {0}",
     "en": "Against you: {0}",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:594"
+      "apps/web/src/screens/Akin.tsx:599"
     ]
   },
   "t14306832": {
@@ -5163,7 +5171,7 @@
     "tr": "Kazanırsan:",
     "en": "If you win:",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:649"
+      "apps/web/src/screens/Akin.tsx:654"
     ]
   },
   "tcf60c0c7": {
@@ -5171,7 +5179,7 @@
     "tr": "Kazanma ihtimali",
     "en": "Chance of winning",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:628"
+      "apps/web/src/screens/Akin.tsx:633"
     ]
   },
   "t9ab780a2": {
@@ -5278,6 +5286,14 @@
       "apps/web/src/components/Omurga.tsx:639"
     ]
   },
+  "t06e71ba9": {
+    "grup": "arayuz",
+    "tr": "Kilitli",
+    "en": "Locked",
+    "nerede": [
+      "apps/web/src/screens/Akin.tsx:493"
+    ]
+  },
   "t75c58153": {
     "grup": "arayuz",
     "tr": "Kilitli — {0}",
@@ -5378,7 +5394,7 @@
   "t92d6525a": {
     "grup": "arayuz",
     "tr": "Kur · {0}",
-    "en": "",
+    "en": "Establish · {0}",
     "nerede": [
       "apps/web/src/screens/Ittifak.tsx:348"
     ]
@@ -5706,6 +5722,14 @@
     "en": "Catapults did double work against the fortification.",
     "nerede": [
       "apps/web/src/components/SavasRaporu.tsx:406"
+    ]
+  },
+  "t6b688af5": {
+    "grup": "arayuz",
+    "tr": "medeniyet",
+    "en": "civilization",
+    "nerede": [
+      "apps/web/src/screens/Harita.tsx:1098"
     ]
   },
   "t474cfa95": {
@@ -6112,7 +6136,7 @@
     "tr": "Ordun sahada. Döndüğünde buradan akına çıkabilirsin.",
     "en": "Your army is on the field. When it returns, you can go on a raid from here.",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:617"
+      "apps/web/src/screens/Akin.tsx:622"
     ]
   },
   "t437a0412": {
@@ -6371,7 +6395,7 @@
   "t849978e4": {
     "grup": "arayuz",
     "tr": "Pakt iki tarafın da onayıyla kurulur. Feshetmek anında değil: {0} ihbar süresi boyunca pakt hâlâ korur — söz verdiğin an geri alınamıyor, o yüzden söz değerli.",
-    "en": "",
+    "en": "A pact is established with the approval of both parties. Dissolving it is not instant: the pact still protects during the {0} notice period — once given, your word cannot be taken back, which is why promises are valuable.",
     "nerede": [
       "apps/web/src/components/Paktlar.tsx:159"
     ]
@@ -6660,11 +6684,22 @@
       "apps/web/src/screens/Generaller.tsx:176"
     ]
   },
+  "tdbd47db9": {
+    "grup": "arayuz",
+    "tr": "sahibi {0}",
+    "en": "owned by {0}",
+    "nerede": [
+      "apps/web/src/components/DunyaHaritasi.tsx:948",
+      "apps/web/src/components/DunyaHaritasi.tsx:954"
+    ]
+  },
   "tbf39f844": {
     "grup": "arayuz",
     "tr": "sahipsiz",
     "en": "unowned",
     "nerede": [
+      "apps/web/src/components/DunyaHaritasi.tsx:948",
+      "apps/web/src/components/DunyaHaritasi.tsx:954",
       "apps/web/src/screens/Harita.tsx:925"
     ]
   },
@@ -7034,6 +7069,15 @@
       "apps/web/src/components/GunlukKart.tsx:136"
     ]
   },
+  "tc2cee430": {
+    "grup": "arayuz",
+    "tr": "seviye {0}",
+    "en": "level {0}",
+    "nerede": [
+      "apps/web/src/screens/Sehir.tsx:724",
+      "apps/web/src/screens/Sehir.tsx:727"
+    ]
+  },
   "tc36d65d0": {
     "grup": "arayuz",
     "tr": "Seviye {0}",
@@ -7360,7 +7404,7 @@
   "t20f49a9a": {
     "grup": "arayuz",
     "tr": "Sv {0}: %{1} {2} — savaşa girdikçe büyür.",
-    "en": "",
+    "en": "Lvl {0}: {1}% {2} — grows as you enter battles.",
     "nerede": [
       "apps/web/src/screens/Generaller.tsx:99"
     ]
@@ -7398,7 +7442,7 @@
     "tr": "ŞEF",
     "en": "CHIEF",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:548"
+      "apps/web/src/screens/Akin.tsx:553"
     ]
   },
   "t8a5a4437": {
@@ -7657,9 +7701,9 @@
   "t06f4f937": {
     "grup": "arayuz",
     "tr": "Tahmini kayıp: {0} asker",
-    "en": "",
+    "en": "Estimated loss: {0} soldiers",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:645"
+      "apps/web/src/screens/Akin.tsx:650"
     ]
   },
   "t1319ad6a": {
@@ -8291,6 +8335,14 @@
     "en": "Try again",
     "nerede": [
       "apps/web/src/App.tsx:397"
+    ]
+  },
+  "t2579f562": {
+    "grup": "arayuz",
+    "tr": "Yenileniyor",
+    "en": "Resetting",
+    "nerede": [
+      "apps/web/src/screens/Akin.tsx:492"
     ]
   },
   "t56d9b3e2": {

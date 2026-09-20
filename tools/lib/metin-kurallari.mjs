@@ -208,11 +208,22 @@ export function kesinMetin(node) {
     ts.SyntaxKind.BarBarToken,
     ts.SyntaxKind.AmpersandAmpersandToken,
   ]);
+  /*
+   * ŞABLON İÇİNDEN de yürünüyor.
+   *
+   * `aria-label={`${g.ad} — ${acik ? 'yenileniyor' : 'kilitli'}`}` —
+   * iki sözcük de ekrana (ekran okuyucuya) çıkıyor ama ikisi de küçük
+   * harfli tek sözcük olduğu için şekil süzgeci onları ANAHTAR sanıp
+   * eliyordu. Şablonun kendisi zaten metin niteliğinde duruyor; içine
+   * konan dizge de metin demektir.
+   */
   let n = node;
   while (
     n.parent &&
     (ts.isConditionalExpression(n.parent) ||
       ts.isParenthesizedExpression(n.parent) ||
+      ts.isTemplateSpan(n.parent) ||
+      ts.isTemplateExpression(n.parent) ||
       (ts.isBinaryExpression(n.parent) && DEGER_ISLECI.has(n.parent.operatorToken.kind)))
   )
     n = n.parent;

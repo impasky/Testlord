@@ -481,11 +481,16 @@ function KampIsareti({
 }) {
   const bekliyor = !g.acik && g.yenilenirAt !== null;
   const ad = g.sef ? `${dusmanKey}_sef` : dusmanKey;
+  /*
+   * DURUM SÖZCÜKLERİ BÜYÜK HARFLE. Ekran okuyucu etiketinin sonunda
+   * tek başlarına duruyorlar; küçük harfli tek sözcük şekil
+   * süzgecinde "anahtar" sayılıp çeviriye hiç girmiyordu.
+   */
   const durumYazisi = g.acik
     ? `${formatSayi(g.garnizonSayisi)} savaşçı`
     : bekliyor
-      ? 'yenileniyor'
-      : 'kilitli';
+      ? 'Yenileniyor'
+      : 'Kilitli';
   return (
     <button
       type="button"
