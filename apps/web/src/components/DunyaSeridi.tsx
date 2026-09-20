@@ -106,13 +106,17 @@ export function DunyaBasligi({ dunya }: { dunya: DunyaDto }) {
                 <Cumle
                   metin={
                     dunya.taht.benimMedeniyetimde
-                      ? '{0} — medeniyetinin tahtı · {1} şöhret'
-                      : '{0} tahtta · {1} şöhret'
+                      ? '{0} — medeniyetinin tahtı · +%{1} şöhret'
+                      : '{0} tahtta · +%{1} şöhret'
                   }
+                  /* YÜZDE İŞARETİ CÜMLEDE, vurguda değil. Türkçe "%5"
+                     yazıyor, İngilizce "5%" — işaret kalın yazının
+                     içinde kalsaydı harfsiz bir dizge olur, çeviriye
+                     hiç girmez ve İngilizcede de "+%5" yazardı. */
                   parca={[
                     <strong className="text-parsomen">{dunya.taht.medeniyet.ad}</strong>,
                     <strong className="text-altin">
-                      {`+%${Math.round(dunya.taht.medeniyetSohretBonusu * 100)}`}
+                      {Math.round(dunya.taht.medeniyetSohretBonusu * 100)}
                     </strong>,
                   ]}
                 />
@@ -130,23 +134,31 @@ export function DunyaBasligi({ dunya }: { dunya: DunyaDto }) {
               <span className="text-kirmizi">
                 <IkonSaldiri boyut={11} />
               </span>
-              {dunya.liderAvi.benMiyim ? (
-                <span>
-                  <strong className="text-kirmizi">av sensin</strong> · sana saldıran{' '}
-                  <strong className="text-parsomen">
-                    +%{Math.round(dunya.liderAvi.yagmaBonusu * 100)}
-                  </strong>{' '}
-                  yağma alır
-                </span>
-              ) : (
-                <span>
-                  lider avı <strong className="text-parsomen">{dunya.liderAvi.ad}</strong> ·{' '}
-                  <strong className="text-kirmizi">
-                    +%{Math.round(dunya.liderAvi.yagmaBonusu * 100)}
-                  </strong>{' '}
-                  yağma
-                </span>
-              )}
+              {/* "lider avı" ETİKET olarak ayrı duruyor: cümleye
+                  katılsaydı küçük harfle başlayıp beş sözcüğü geçer ve
+                  `parcaMi()` onu cümle ortası sayıp listeden atardı.
+                  Etiketin kendisi tek başına çevrilebilir bir ibare,
+                  arkasından gelen ad da iki dilde aynı yere düşüyor. */}
+              <span>
+                {!dunya.liderAvi.benMiyim && <>lider avı </>}
+                <Cumle
+                  metin={
+                    dunya.liderAvi.benMiyim
+                      ? '{0} · sana saldıran +%{1} yağma alır'
+                      : '{0} · +%{1} yağma'
+                  }
+                  parca={[
+                    dunya.liderAvi.benMiyim ? (
+                      <strong className="text-kirmizi">av sensin</strong>
+                    ) : (
+                      <strong className="text-parsomen">{dunya.liderAvi.ad}</strong>
+                    ),
+                    <strong className={dunya.liderAvi.benMiyim ? 'text-parsomen' : 'text-kirmizi'}>
+                      {Math.round(dunya.liderAvi.yagmaBonusu * 100)}
+                    </strong>,
+                  ]}
+                />
+              </span>
             </span>
           </>
         )}
@@ -168,11 +180,11 @@ export function DunyaBasligi({ dunya }: { dunya: DunyaDto }) {
               {dunya.medeniyetAvi.benimMi ? (
                 <span>
                   <Cumle
-                    metin="{0} · toprağına saldıran {1} yağma alır"
+                    metin="{0} · toprağına saldıran +%{1} yağma alır"
                     parca={[
                       <strong className="text-kirmizi">medeniyetin önde</strong>,
                       <strong className="text-parsomen">
-                        {`+%${Math.round(dunya.medeniyetAvi.yagmaBonusu * 100)}`}
+                        {Math.round(dunya.medeniyetAvi.yagmaBonusu * 100)}
                       </strong>,
                     ]}
                   />
@@ -180,12 +192,12 @@ export function DunyaBasligi({ dunya }: { dunya: DunyaDto }) {
               ) : (
                 <span>
                   <Cumle
-                    metin="{0} önde (%{1}) · {2} yağma"
+                    metin="{0} önde (%{1}) · +%{2} yağma"
                     parca={[
                       <strong className="text-parsomen">{dunya.medeniyetAvi.ad}</strong>,
                       Math.round(dunya.medeniyetAvi.pay * 100),
                       <strong className="text-kirmizi">
-                        {`+%${Math.round(dunya.medeniyetAvi.yagmaBonusu * 100)}`}
+                        {Math.round(dunya.medeniyetAvi.yagmaBonusu * 100)}
                       </strong>,
                     ]}
                   />

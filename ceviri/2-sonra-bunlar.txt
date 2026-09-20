@@ -3,7 +3,7 @@ LORDLAR ÇAĞI — ÇEVİRİ 2/3: DERINLIK  (KALANLAR)
 Savaş raporu, demirhane, generaller, araştırma, ittifak, akın — ve bina,
 general, araştırma, başarım içerikleri.
 
-Bu dosyada 9 satır var — çevrilmiş olanlar çıkarıldı.
+Bu dosyada 0 satır var — çevrilmiş olanlar çıkarıldı.
 
 NASIL ÇEVİRİLİR
   Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.
@@ -20,21 +20,3 @@ NASIL ÇEVİRİLİR
   Bitince dosyayı olduğu gibi geri ver; gerisini ben hallederim.
 
 ==========================================================================
-
---- DunyaSeridi (4) ---
-
-2125. {0} — medeniyetinin tahtı · {1} şöhret
-2126. {0} · toprağına saldıran {1} yağma alır
-2127. {0} önde (%{1}) · {2} yağma
-2129. {0} tahtta · {1} şöhret
-
---- SaldiriOnizleme (3) ---
-
-2132. bölge el değiştirmez
-2137. saatte +{0}
-2138. Savaşı kazanırsın ama {0}. Bölgeyi almak için savunanın kabaca 1,5 katı güce ihtiyacın var; daha büyük bir orduyla gel.
-
---- Medeniyet (2) ---
-
-2133. Çekirdekler ele geçirilemez; yalnız geliştirilir. Bonus {0} işliyor — bağış yapmayana da. Bağışın karşılığı fayda puanı.
-2139. Yalnız {0} bir medeniyete geçebilirsin — kazanan tarafa geçiş yok. Geçersen {1} (puan eski tarafa verdiğin hizmetin kaydı) ve {2} gün boyunca yeniden değiştiremezsin. Toprağın ve kampın seninle gelir.

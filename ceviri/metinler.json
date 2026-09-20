@@ -234,14 +234,6 @@
       "apps/web/src/screens/Harita.tsx:1026"
     ]
   },
-  "t94297445": {
-    "grup": "arayuz",
-    "tr": "· sana saldıran",
-    "en": "· whoever attacks you",
-    "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:135"
-    ]
-  },
   "t5632acb5": {
     "grup": "arayuz",
     "tr": "· Seviye",
@@ -355,10 +347,10 @@
       "apps/web/src/components/DunyaHaritasi.tsx:777"
     ]
   },
-  "t2e981aa7": {
+  "ta28d78fb": {
     "grup": "arayuz",
-    "tr": "{0} — medeniyetinin tahtı · {1} şöhret",
-    "en": "",
+    "tr": "{0} — medeniyetinin tahtı · +%{1} şöhret",
+    "en": "{0} — the throne of your civilization · +{1}% fame",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:109"
     ]
@@ -387,6 +379,14 @@
       "apps/web/src/components/HedefSeridi.tsx:58"
     ]
   },
+  "t89eb3d42": {
+    "grup": "arayuz",
+    "tr": "{0} · +%{1} yağma",
+    "en": "{0} · +{1}% loot",
+    "nerede": [
+      "apps/web/src/components/DunyaSeridi.tsx:148"
+    ]
+  },
   "t5eef9690": {
     "grup": "arayuz",
     "tr": "{0} · AÇ",
@@ -409,6 +409,14 @@
     "en": "{0} · show on map",
     "nerede": [
       "apps/web/src/components/HedefSeridi.tsx:96"
+    ]
+  },
+  "tc49d2fb1": {
+    "grup": "arayuz",
+    "tr": "{0} · sana saldıran +%{1} yağma alır",
+    "en": "{0} · whoever attacks you takes +{1}% loot",
+    "nerede": [
+      "apps/web/src/components/DunyaSeridi.tsx:147"
     ]
   },
   "tf14a9d22": {
@@ -435,12 +443,12 @@
       "apps/web/src/screens/Akin.tsx:229"
     ]
   },
-  "t32235a43": {
+  "tfc8f58f7": {
     "grup": "arayuz",
-    "tr": "{0} · toprağına saldıran {1} yağma alır",
-    "en": "",
+    "tr": "{0} · toprağına saldıran +%{1} yağma alır",
+    "en": "{0} · whoever attacks your land takes +{1}% loot",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:171"
+      "apps/web/src/components/DunyaSeridi.tsx:183"
     ]
   },
   "t9f6f97fa": {
@@ -832,12 +840,12 @@
       "apps/web/src/screens/Harita.tsx:1095"
     ]
   },
-  "tf5148d55": {
+  "tabd67e51": {
     "grup": "arayuz",
-    "tr": "{0} önde (%{1}) · {2} yağma",
-    "en": "",
+    "tr": "{0} önde (%{1}) · +%{2} yağma",
+    "en": "{0} is leading ({1}%) · +{2}% loot",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:183"
+      "apps/web/src/components/DunyaSeridi.tsx:195"
     ]
   },
   "t50fdf262": {
@@ -1009,7 +1017,7 @@
   "t160d470e": {
     "grup": "arayuz",
     "tr": "{0} sonra {1} olacaksın.",
-    "en": "",
+    "en": "You will become {1} after {0}.",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:402",
       "apps/web/src/screens/Medeniyet.tsx:164"
@@ -1059,10 +1067,10 @@
       "apps/web/src/screens/LordEkrani.tsx:650"
     ]
   },
-  "t4370d911": {
+  "t9c4493d9": {
     "grup": "arayuz",
-    "tr": "{0} tahtta · {1} şöhret",
-    "en": "",
+    "tr": "{0} tahtta · +%{1} şöhret",
+    "en": "{0} is on the throne · +{1}% fame",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:110"
     ]
@@ -1086,7 +1094,7 @@
   "tf4e3c05f": {
     "grup": "arayuz",
     "tr": "{0} uzaktaydın. Bu sürede {1} olay oldu.",
-    "en": "",
+    "en": "You were away for {0}. During this time, {1} events occurred.",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:107"
     ]
@@ -1094,7 +1102,7 @@
   "t57412f14": {
     "grup": "arayuz",
     "tr": "{0} uzaktaydın. Bu sürede {1} olay ve {2} oldu.",
-    "en": "",
+    "en": "You were away for {0}. During this time, {1} events and {2} occurred.",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:98"
     ]
@@ -1174,7 +1182,7 @@
   "t46b61099": {
     "grup": "arayuz",
     "tr": "{0}. sıradasın",
-    "en": "you rank #{0}",
+    "en": "You rank #{0}",
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:102",
       "apps/web/src/screens/LordEkrani.tsx:425"
@@ -1447,7 +1455,7 @@
   "tf2da5d60": {
     "grup": "arayuz",
     "tr": "+%{0} yağma",
-    "en": "",
+    "en": "+{0}% loot",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:431"
     ]
@@ -1788,7 +1796,7 @@
     "tr": "av sensin",
     "en": "you are the prey",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:135"
+      "apps/web/src/components/DunyaSeridi.tsx:152"
     ]
   },
   "t0fcc273e": {
@@ -2333,7 +2341,7 @@
   "tc0b6010d": {
     "grup": "arayuz",
     "tr": "bölge el değiştirmez",
-    "en": "",
+    "en": "region does not change hands",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:112"
     ]
@@ -2451,7 +2459,7 @@
     "tr": "bölgesini aldı",
     "en": "took the region",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:225"
+      "apps/web/src/components/DunyaSeridi.tsx:237"
     ]
   },
   "t642e404b": {
@@ -2459,7 +2467,7 @@
     "tr": "bölgesini yağmaladı",
     "en": "looted the region",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:229"
+      "apps/web/src/components/DunyaSeridi.tsx:241"
     ]
   },
   "t918b4e4d": {
@@ -2802,7 +2810,7 @@
   "t84aef821": {
     "grup": "arayuz",
     "tr": "Çekirdekler ele geçirilemez; yalnız geliştirilir. Bonus {0} işliyor — bağış yapmayana da. Bağışın karşılığı fayda puanı.",
-    "en": "",
+    "en": "Cores cannot be captured; they are only upgraded. The bonus applies {0} — even to those who do not donate. The reward for donation is contribution points.",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:279"
     ]
@@ -3088,7 +3096,7 @@
   "t5ff06009": {
     "grup": "arayuz",
     "tr": "Diyarda {0} — ve en şöhretli lord sensin: sana saldıran {1} alır.",
-    "en": "",
+    "en": "{0} in the realm — and you are the most renowned lord: whoever attacks you takes {1}.",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:421"
     ]
@@ -3096,7 +3104,7 @@
   "t6fc50793": {
     "grup": "arayuz",
     "tr": "Diyarda {0}.",
-    "en": "",
+    "en": "{0} in the realm.",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:422"
     ]
@@ -3114,7 +3122,7 @@
     "tr": "Diyarda neler oluyor",
     "en": "What's happening in the realm",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:209"
+      "apps/web/src/components/DunyaSeridi.tsx:221"
     ]
   },
   "t1ffa6e79": {
@@ -4871,7 +4879,7 @@
   "t846f337f": {
     "grup": "arayuz",
     "tr": "İyileşmesine {0} kaldı. Bu sürede saldıramazsın.",
-    "en": "",
+    "en": "{0} left until recovery. You cannot attack during this time.",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:341"
     ]
@@ -5846,7 +5854,7 @@
     "tr": "medeniyetin önde",
     "en": "civilization is leading",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:173"
+      "apps/web/src/components/DunyaSeridi.tsx:185"
     ]
   },
   "t642dd9f4": {
@@ -6433,7 +6441,7 @@
     "tr": "önünde püskürtüldü",
     "en": "repelled in front of",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:233"
+      "apps/web/src/components/DunyaSeridi.tsx:245"
     ]
   },
   "tc96d4525": {
@@ -6714,7 +6722,7 @@
   "te4631574": {
     "grup": "arayuz",
     "tr": "saatte +{0}",
-    "en": "",
+    "en": "+{0} per hour",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:129",
       "apps/web/src/components/SaldiriOnizleme.tsx:137"
@@ -6934,7 +6942,7 @@
   "t645b91d7": {
     "grup": "arayuz",
     "tr": "Savaşı kazanırsın ama {0}. Bölgeyi almak için savunanın kabaca 1,5 katı güce ihtiyacın var; daha büyük bir orduyla gel.",
-    "en": "",
+    "en": "You win the battle but {0}. To capture the region, you need roughly 1.5 times the power of the defender; come with a larger army.",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:111"
     ]
@@ -8176,15 +8184,6 @@
       "apps/web/src/components/KarsiIpuclari.tsx:87"
     ]
   },
-  "t48ccccf2": {
-    "grup": "arayuz",
-    "tr": "yağma",
-    "en": "loot",
-    "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:147",
-      "packages/shared/src/etki-adi.ts:31"
-    ]
-  },
   "t884b8a52": {
     "grup": "arayuz",
     "tr": "Yağma",
@@ -8199,14 +8198,6 @@
     "en": "Loot +{0}%",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:60"
-    ]
-  },
-  "t8e60ca24": {
-    "grup": "arayuz",
-    "tr": "yağma alır",
-    "en": "takes loot",
-    "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:139"
     ]
   },
   "ta24bd532": {
@@ -8228,7 +8219,7 @@
   "te07ec6d1": {
     "grup": "arayuz",
     "tr": "Yalnız {0} bir medeniyete geçebilirsin — kazanan tarafa geçiş yok. Geçersen {1} (puan eski tarafa verdiğin hizmetin kaydı) ve {2} gün boyunca yeniden değiştiremezsin. Toprağın ve kampın seninle gelir.",
-    "en": "",
+    "en": "You can only switch to a {0} civilization — no switching to the winning faction. If you switch, {1} (points are a record of your service to the old faction) and you cannot switch again for {2} days. Your land and camp come with you.",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:216"
     ]
@@ -11363,6 +11354,14 @@
     "en": "A hit camp recovers",
     "nerede": [
       "packages/shared/src/ogretici.ts:458"
+    ]
+  },
+  "t48ccccf2": {
+    "grup": "motor",
+    "tr": "yağma",
+    "en": "loot",
+    "nerede": [
+      "packages/shared/src/etki-adi.ts:31"
     ]
   },
   "t848d4403": {
