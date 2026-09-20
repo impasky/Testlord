@@ -11646,7 +11646,7 @@
   "t71b538d7": {
     "grup": "sunucu",
     "tr": "\n{0} diyar ve {1} hesap silindi.\n",
-    "en": "",
+    "en": "\n{0} realms and {1} accounts deleted.\n",
     "nerede": [
       "apps/api/src/temiz-kesme.ts:114"
     ]
@@ -11654,7 +11654,7 @@
   "t38725816": {
     "grup": "sunucu",
     "tr": " (yöneticiler dahil)",
-    "en": "",
+    "en": " (including admins)",
     "nerede": [
       "apps/api/src/temiz-kesme.ts:60"
     ]
@@ -11735,7 +11735,7 @@
   "tc2e29174": {
     "grup": "sunucu",
     "tr": "{0} açıldı: {1} bölge, {2} medeniyet ",
-    "en": "",
+    "en": "{0} opened: {1} regions, {2} civilizations ",
     "nerede": [
       "apps/api/src/temiz-kesme.ts:115"
     ]
@@ -11823,7 +11823,7 @@
   "tc6359540": {
     "grup": "sunucu",
     "tr": "{0} birim {1} garnizonunda kaldı.",
-    "en": "",
+    "en": "{0} units remained in the {1} garrison.",
     "nerede": [
       "apps/api/src/services/march.ts:918"
     ]
@@ -11839,7 +11839,7 @@
   "t158e3cb4": {
     "grup": "sunucu",
     "tr": "{0} bölge yurt sahipli, {1} çekişmeli, ",
-    "en": "",
+    "en": "{0} regions claimed, {1} contested, ",
     "nerede": [
       "apps/api/src/temiz-kesme.ts:117"
     ]
@@ -11887,7 +11887,7 @@
   "t0c5f1de4": {
     "grup": "sunucu",
     "tr": "{0} çekirdek yatırım satırı.\n",
-    "en": "",
+    "en": "{0} core investment rows.\n",
     "nerede": [
       "apps/api/src/temiz-kesme.ts:118"
     ]
@@ -12330,7 +12330,7 @@
   "t6572aba8": {
     "grup": "sunucu",
     "tr": "Bağış için kaynak seç.",
-    "en": "",
+    "en": "Select a resource for donation.",
     "nerede": [
       "apps/api/src/routes/medeniyet.ts:147"
     ]
@@ -12461,7 +12461,7 @@
   "t321b4fa9": {
     "grup": "sunucu",
     "tr": "Bölge {0}",
-    "en": "",
+    "en": "Region {0}",
     "nerede": [
       "apps/api/src/services/medeniyet.ts:226"
     ]
@@ -12656,7 +12656,7 @@
   "t31fd3808": {
     "grup": "sunucu",
     "tr": "Bu çekirdek azami seviyede.",
-    "en": "",
+    "en": "This core is at maximum level.",
     "nerede": [
       "apps/api/src/routes/medeniyet.ts:171"
     ]
@@ -12827,7 +12827,7 @@
   "t9888fef8": {
     "grup": "sunucu",
     "tr": "Burası aynı medeniyetten bir lordun toprağı.",
-    "en": "",
+    "en": "This land belongs to a lord from the same civilization.",
     "nerede": [
       "apps/api/src/routes/map.ts:203"
     ]
@@ -12835,7 +12835,7 @@
   "t0739893c": {
     "grup": "sunucu",
     "tr": "Burası bir medeniyetin çekirdeği — ele geçirilemez.",
-    "en": "",
+    "en": "This is a civilization's core — it cannot be captured.",
     "nerede": [
       "apps/api/src/routes/map.ts:152"
     ]
@@ -12867,7 +12867,7 @@
   "t15078913": {
     "grup": "sunucu",
     "tr": "Çekirdek",
-    "en": "",
+    "en": "Core",
     "nerede": [
       "apps/api/src/routes/medeniyet.ts:167"
     ]
@@ -13249,7 +13249,7 @@
   "te9e345c9": {
     "grup": "sunucu",
     "tr": "Kaynağın yetmiyor.",
-    "en": "",
+    "en": "Not enough resources.",
     "nerede": [
       "apps/api/src/routes/medeniyet.ts:161"
     ]
@@ -13417,7 +13417,7 @@
   "t038c1bd9": {
     "grup": "sunucu",
     "tr": "Medeniyet bulunamadı.",
-    "en": "",
+    "en": "Civilization not found.",
     "nerede": [
       "apps/api/src/services/medeniyet.ts:412"
     ]
@@ -13425,7 +13425,7 @@
   "t0bcab1db": {
     "grup": "sunucu",
     "tr": "Medeniyet satırı bulunamadı: {0}",
-    "en": "",
+    "en": "Civilization row not found: {0}",
     "nerede": [
       "apps/api/src/services/medeniyet.ts:149"
     ]
@@ -13433,7 +13433,7 @@
   "t9926804f": {
     "grup": "sunucu",
     "tr": "Medeniyetin yok.",
-    "en": "",
+    "en": "You do not belong to a civilization.",
     "nerede": [
       "apps/api/src/routes/medeniyet.ts:159"
     ]
@@ -13685,7 +13685,7 @@
   "t00661074": {
     "grup": "sunucu",
     "tr": "SİLİNECEK",
-    "en": "",
+    "en": "TO BE DELETED",
     "nerede": [
       "apps/api/src/temiz-kesme.ts:64"
     ]
@@ -13725,7 +13725,7 @@
   "t98be9bae": {
     "grup": "sunucu",
     "tr": "Şimdi taraf değiştiremezsin.",
-    "en": "",
+    "en": "You cannot change factions right now.",
     "nerede": [
       "apps/api/src/services/medeniyet.ts:408"
     ]
@@ -13853,7 +13853,7 @@
   "taa63a479": {
     "grup": "sunucu",
     "tr": "Yoldaki ordun varken taraf değiştiremezsin. Önce dönmesini bekle.",
-    "en": "",
+    "en": "You cannot change factions while your army is on the march. Wait for them to return first.",
     "nerede": [
       "apps/api/src/services/medeniyet.ts:398"
     ]
