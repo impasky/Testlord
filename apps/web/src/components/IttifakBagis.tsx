@@ -18,6 +18,7 @@ import { useState } from 'react';
 import { ApiError, api, type IttifakAyricalikDto } from '../api/client';
 import { IkonAltin, IkonDemir, IkonErzak } from './Ikonlar';
 import { hisOnay, hisRet } from './hisGeriBildirimi';
+import { Cumle } from './Cumle';
 import { Bolum, Buton, EngelNotu, Hap, Ilerleme, Kart, formatSayi } from './ui';
 
 /** Ayrıcalıkları okunur satırlara çeviriyor. */
@@ -122,8 +123,13 @@ export function IttifakBagis() {
             </Hap>
           </div>
           <p className="mb-2.5 text-[11.5px] text-solgun">
-            İttifaka <strong className="text-altin">{`+${formatSayi(d.kazandiracakXp)} XP`}</strong>
-            , sana <strong className="text-yesil">{`+${d.odul.xp} lord XP`}</strong>.
+            <Cumle
+              metin="İttifaka {0}, sana {1}."
+              parca={[
+                <strong className="text-altin">{`+${formatSayi(d.kazandiracakXp)} XP`}</strong>,
+                <strong className="text-yesil">{`+${d.odul.xp} lord XP`}</strong>,
+              ]}
+            />
           </p>
 
           {engel ? (

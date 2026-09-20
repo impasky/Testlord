@@ -12,6 +12,7 @@
  * bunu söylüyor, tarayıcı reddettiyse nereden açılacağını tarif ediyor.
  */
 import { useEffect, useState } from 'react';
+import { Cumle } from './Cumle';
 import { Buton, Kart } from './ui';
 import { api } from '../api/client';
 import { bildirimAc, bildirimHali, bildirimKapat, type BildirimHali } from '../lib/bildirim';
@@ -70,9 +71,10 @@ export function BildirimKarti() {
 
       {hal.durum === 'ios-ana-ekran' && (
         <p className="text-[12px] leading-snug text-altin">
-          iPhone ve iPad&apos;de bildirimler yalnızca ana ekrana eklenmiş uygulamada çalışır. Paylaş
-          menüsünden <span className="font-bold">Ana Ekrana Ekle</span> deyip oyunu oradan aç, sonra
-          buraya dön.
+          <Cumle
+            metin="Bildirimler iPhone ve iPad'de yalnızca ana ekrana eklenmiş uygulamada çalışır. Paylaş menüsünden {0} deyip oyunu oradan aç, sonra buraya dön."
+            parca={[<span className="font-bold">Ana Ekrana Ekle</span>]}
+          />
         </p>
       )}
 

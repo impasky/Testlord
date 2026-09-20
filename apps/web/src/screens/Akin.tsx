@@ -481,6 +481,11 @@ function KampIsareti({
 }) {
   const bekliyor = !g.acik && g.yenilenirAt !== null;
   const ad = g.sef ? `${dusmanKey}_sef` : dusmanKey;
+  const durumYazisi = g.acik
+    ? `${formatSayi(g.garnizonSayisi)} savaşçı`
+    : bekliyor
+      ? 'yenileniyor'
+      : 'kilitli';
   return (
     <button
       type="button"
@@ -488,9 +493,13 @@ function KampIsareti({
       disabled={!g.acik}
       data-akin-grup={g.grupNo}
       data-rehber={isikta ? 'akin-grup' : undefined}
-      aria-label={`${g.grupNo}. ${g.ad}${g.sef ? ', şef' : ''} — ${
-        g.acik ? `${formatSayi(g.garnizonSayisi)} savaşçı` : bekliyor ? 'yenileniyor' : 'kilitli'
-      }`}
+      aria-label={
+        /* İKİ TAM CÜMLE, biri ötekinin kuyruğu değil: `, şef` tek
+           başına çevrilemeyen bir parçaydı. */
+        g.sef
+          ? `${g.grupNo}. ${g.ad}, şef — ${durumYazisi}`
+          : `${g.grupNo}. ${g.ad} — ${durumYazisi}`
+      }
       className="absolute aspect-square"
       style={{
         left: `${yer.x}%`,
@@ -633,7 +642,7 @@ function SeferKarti({
             </span>
           </div>
           <p className="mt-1 text-[11.5px] text-solgun">
-            Tahmini kayıp: {formatSayi(orduSayisi(onizleme.data.tahminiKayip))} asker ·{' '}
+            {`Tahmini kayıp: ${formatSayi(orduSayisi(onizleme.data.tahminiKayip))} asker`} ·{' '}
             <IkonSure boyut={11} /> {formatKalan(onizleme.data.sureSn * 1000)}
           </p>
           <p className="mt-1 text-[11.5px] text-solgun">

@@ -31,6 +31,7 @@
  * bir şehir gerekiyor.
  */
 import { B, BINALAR } from './balance.js';
+import { veListesi } from './liste.js';
 import type { RegionType, Resources } from './types.js';
 
 /** Yerleşim kademeleri, küçükten büyüğe. */
@@ -251,7 +252,7 @@ export function binaDurumlari(
       if (kaynak.altin < maliyet.altin) eksik.push('altın');
       if (kaynak.demir < maliyet.demir) eksik.push('demir');
       if (kaynak.erzak < maliyet.erzak) eksik.push('erzak');
-      if (eksik.length > 0) engel = `${eksik.join(' ve ')} yetmiyor.`;
+      if (eksik.length > 0) engel = `${veListesi(eksik)} yetmiyor.`;
     }
 
     return {

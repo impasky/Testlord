@@ -63,7 +63,17 @@ function parcaMi(s) {
    * `:` ve `,` bu kümede YOK: `Depo:` gerçek bir etiket, yarım değil.
    */
   if (/[·—–+|;]\s*$/.test(t)) return true;
-  if (/\b(ve|ile|veya|için|sonra|ama|ya da)\s*$/i.test(t)) return true;
+  /*
+   * Sonu bağlaç: `x ve`, `bunun için` — devamı kodda yapışıyor.
+   *
+   * BÜYÜK HARFLE BAŞLAYANLAR MUAF. `Başvuru ile` bir düğme yazısı ve
+   * tam bir ibare; "ile" ile bittiği için parça sanılıyor, listeye
+   * hiç girmiyor ve İngilizce arayüzde Türkçe kalıyordu. Cümle
+   * ORTASINDAN kesilmiş bir parça küçük harfle başlar; büyük harfle
+   * başlayan dizge kendi başına duruyor demektir.
+   */
+  if (/\p{Ll}/u.test(t[0] ?? '') && /\b(ve|ile|veya|için|sonra|ama|ya da)\s*$/i.test(t))
+    return true;
 
   /*
    * Virgülle başlayıp tek sözcükle biten ek: `, sana`, `, şef`, `, boş`.

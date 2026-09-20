@@ -321,7 +321,7 @@ export function DizilimIzgarasi({
                       ? 'border-cerceve bg-koyu2'
                       : 'border-dashed border-cerceve/60 bg-koyu/40'
                 }`}
-                aria-label={`${kareSatiri(i)}. satır, ${i + 1}. kare${birim ? `, ${unitName(birim)}` : ', boş'}`}
+                aria-label={`${kareSatiri(i)}. satır, ${i + 1}. kare, ${birim ? unitName(birim) : 'boş'}`}
               >
                 {kanat && (
                   <span className="absolute right-0.5 top-0.5 text-[8px] text-solgun">⚑</span>

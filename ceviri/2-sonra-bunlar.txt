@@ -3,7 +3,7 @@ LORDLAR ÇAĞI — ÇEVİRİ 2/3: DERINLIK  (KALANLAR)
 Savaş raporu, demirhane, generaller, araştırma, ittifak, akın — ve bina,
 general, araştırma, başarım içerikleri.
 
-Bu dosyada 0 satır var — çevrilmiş olanlar çıkarıldı.
+Bu dosyada 11 satır var — çevrilmiş olanlar çıkarıldı.
 
 NASIL ÇEVİRİLİR
   Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.
@@ -20,3 +20,44 @@ NASIL ÇEVİRİLİR
   Bitince dosyayı olduğu gibi geri ver; gerisini ben hallederim.
 
 ==========================================================================
+
+--- Akin (2) ---
+
+2154. {0}. {1}, şef — {2}
+2162. Tahmini kayıp: {0} asker
+
+--- Malikane (1) ---
+
+2148. {0} — {1} kaldı. İlk saldırında kalkan düşer.
+
+--- GunlukKart (1) ---
+
+2152. {0} üst üste giriyorsun.
+
+--- DizilimIzgarasi (1) ---
+
+2155. {0}. satır, {1}. kare, {2}
+
+--- IttifakBasvurular (1) ---
+
+2156. Başvuru ile
+
+--- BildirimKarti (1) ---
+
+2163. Bildirimler iPhone ve iPad'de yalnızca ana ekrana eklenmiş uygulamada çalışır. Paylaş menüsünden {0} deyip oyunu oradan aç, sonra buraya dön.
+
+--- IttifakBagis (1) ---
+
+2158. İttifaka {0}, sana {1}.
+
+--- Ittifak (1) ---
+
+2159. Kur · {0}
+
+--- Paktlar (1) ---
+
+2160. Pakt iki tarafın da onayıyla kurulur. Feshetmek anında değil: {0} ihbar süresi boyunca pakt hâlâ korur — söz verdiğin an geri alınamıyor, o yüzden söz değerli.
+
+--- Generaller (1) ---
+
+2161. Sv {0}: %{1} {2} — savaşa girdikçe büyür.

@@ -18,6 +18,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ApiError, api, type IttifakListesiDto, type PaktSatiriDto } from '../api/client';
 import { hisOnay, hisRet } from './hisGeriBildirimi';
+import { Cumle } from './Cumle';
 import { Bolum, Buton, EngelNotu, Hap, Kart, formatKalan } from './ui';
 
 export function Paktlar({ liste }: { liste: IttifakListesiDto[] }) {
@@ -154,9 +155,10 @@ export function Paktlar({ liste }: { liste: IttifakListesiDto[] }) {
           <Kart className="p-3">
             <p className="baslik mb-2 text-[11px] text-solgun">YENİ PAKT TEKLİF ET</p>
             <p className="mb-2.5 text-[11.5px] leading-snug text-sonuk">
-              Pakt iki tarafın da onayıyla kurulur. Feshetmek anında değil:{' '}
-              <strong className="text-turuncu">{`${d.ihbarSaat} saat`}</strong> ihbar süresi boyunca
-              pakt hâlâ korur — söz verdiğin an geri alınamıyor, o yüzden söz değerli.
+              <Cumle
+                metin="Pakt iki tarafın da onayıyla kurulur. Feshetmek anında değil: {0} ihbar süresi boyunca pakt hâlâ korur — söz verdiğin an geri alınamıyor, o yüzden söz değerli."
+                parca={[<strong className="text-turuncu">{`${d.ihbarSaat} saat`}</strong>]}
+              />
             </p>
             {kotaDoldu ? (
               <EngelNotu

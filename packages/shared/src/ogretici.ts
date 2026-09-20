@@ -43,6 +43,7 @@ import {
   garnizonFaydaPuani,
   medeniyetBonusu,
 } from './medeniyet.js';
+import { veListesi } from './liste.js';
 import { UNIT_TYPES, type UnitType } from './types.js';
 
 /** Sayfadaki tek bir madde. Cümleyi arayüz değil, burası kuruyor. */
@@ -352,7 +353,7 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
         },
         {
           vurgu: 'Kanatlar ve açık cephe',
-          metin: `Kenar sütunlar (${diz.kanat_sutunlari.join(' ve ')}) süvariye yarar (%${Math.round(suvariYer.kanat_carpani * 100)}), okçuyla mancınığa zarar verir. Ön satırda hiç yakın dövüş birimi bırakmazsan savunmandan %${Math.round(diz.acik_cephe_cezasi * 100)} gider: okçuyu öne koyup mızrakçıyı arkaya saklamak bedava değil.`,
+          metin: `Kenar sütunlar (${veListesi(diz.kanat_sutunlari)}) süvariye yarar (%${Math.round(suvariYer.kanat_carpani * 100)}), okçuyla mancınığa zarar verir. Ön satırda hiç yakın dövüş birimi bırakmazsan savunmandan %${Math.round(diz.acik_cephe_cezasi * 100)} gider: okçuyu öne koyup mızrakçıyı arkaya saklamak bedava değil.`,
         },
         {
           vurgu: `${TAKTIKLER.length} taktik`,

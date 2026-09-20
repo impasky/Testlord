@@ -30,6 +30,7 @@ import {
 } from '../api/client';
 import { DunyaHaritasi } from '../components/DunyaHaritasi';
 import { BirimIkonu, IkonKapali, IkonSure } from '../components/Ikonlar';
+import { Cumle } from '../components/Cumle';
 import { bolgeGorselAdi } from '../components/Gorsel';
 import { hisAgir, hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { DunyaBasligi, OlaySeridi } from '../components/DunyaSeridi';
@@ -345,8 +346,10 @@ function TakviyeKarti({
       {bendekiler > 0 && (
         <div className="mb-2 rounded-lg border border-yesil/30 bg-yesil/10 p-2">
           <p className="text-[12px]">
-            Bu bölgede <span className="font-bold text-yesil">{`${bendekiler} birim`}</span> askerin
-            savunmada.
+            <Cumle
+              metin="Bu bölgede {0} askerin savunmada."
+              parca={[<span className="font-bold text-yesil">{`${bendekiler} birim`}</span>]}
+            />
           </p>
           <Buton
             tur="sessiz"

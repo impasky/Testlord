@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { ApiError, api, type GeneralDto } from '../api/client';
 import { Gorsel } from '../components/Gorsel';
 import { IkonAltin, IkonNavGeneraller } from '../components/Ikonlar';
+import { Cumle } from '../components/Cumle';
 import {
   AltSekmeler,
   Bolum,
@@ -94,8 +95,14 @@ function GeneralKarti({
               hissini somutlaştırıyor (docs/09 §2.3). */}
           {g.level < GENERAL_LEVEL.max ? (
             <p className="mb-2 text-[11px] text-sonuk">
-              Sv {g.level + 1}: <span className="text-parsomen">%{sonrakiYuzde}</span>{' '}
-              {etkiAdi(g.pasif.etki)} — savaşa girdikçe büyür.
+              <Cumle
+                metin="Sv {0}: %{1} {2} — savaşa girdikçe büyür."
+                parca={[
+                  g.level + 1,
+                  <span className="text-parsomen">{sonrakiYuzde}</span>,
+                  etkiAdi(g.pasif.etki),
+                ]}
+              />
             </p>
           ) : (
             <p className="mb-2 text-[11px] text-altin">En yüksek seviye.</p>

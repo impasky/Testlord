@@ -491,11 +491,15 @@ function OmurgaIskeleti() {
         </p>
         {/* Rozet sırası ve birincil düğme: yüksekliği veren asıl parçalar. */}
         <div className="mt-2 flex flex-wrap gap-1.5">
-          <Hap>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Hap>
-          <Hap>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Hap>
+          {/* İSKELET GENİŞLİĞİ, metin değil. `&nbsp;` varlığı JSX
+              metnidir; çeviri eklentisi onu sarınca ekrana altı harflik
+              "&nbsp;" dizisi yazılıyordu. Bölünmez boşluk KARAKTERİ
+              harf taşımadığı için çeviriye hiç girmiyor. */}
+          <Hap>{'\u00A0'.repeat(8)}</Hap>
+          <Hap>{'\u00A0'.repeat(6)}</Hap>
         </div>
         <Buton className="mt-3" boy="buyuk" tam disabled>
-          &nbsp;
+          {'\u00A0'}
         </Buton>
         <p className="mt-2.5 text-[11px] leading-snug text-transparent">
           <span className="oyuk rounded">sonra: sıradaki adım</span>

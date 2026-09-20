@@ -20,6 +20,7 @@ import { gunlukSayaci } from '@lordlar/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../api/client';
 import { IkonAltin, IkonDemir, IkonErzak } from './Ikonlar';
+import { Cumle } from './Cumle';
 import { Bolum, Buton, Kart, formatSayi } from './ui';
 
 /** Ödülün üç kaynağı tek satırda. */
@@ -85,7 +86,10 @@ export function GunlukKart({
       <Kart className="p-3" vurgu={hepsi ? 'var(--color-yesil)' : undefined}>
         {seri > 1 && (
           <p className="mb-2 text-[12px] text-solgun">
-            <strong className="text-altin">{`${seri} gün`}</strong> üst üste giriyorsun.
+            <Cumle
+              metin="{0} üst üste giriyorsun."
+              parca={[<strong className="text-altin">{`${seri} gün`}</strong>]}
+            />
           </p>
         )}
         <ul className="space-y-1.5">

@@ -137,6 +137,25 @@ function KaynakSayaci({
         ? `${Math.max(1, Math.round(kalanSaat * 60))} dk sonra biter`
         : `${Math.round(kalanSaat)} sa sonra biter`;
 
+  /*
+   * İPUCU TEK CÜMLE olarak kuruluyor, kuyruk eklenerek değil.
+   *
+   * Önceki hâlde baş kısma " — depo dolu, üretim boşa gidiyor" gibi
+   * bir kuyruk yapışıyordu; o kuyruk tek başına çevrilemeyen bir
+   * parçaydı (küçük harfle başlayıp beş sözcüğü geçiyor) ve
+   * İngilizce arayüzde Türkçe kalıyordu. Her durum artık kendi tam
+   * cümlesi; yer tutucular baştaki sayıları taşıyor.
+   */
+  const bas = `${ad}: ${Math.floor(canli)} (${saatlik >= 0 ? '+' : ''}${Math.round(saatlik)}/sa)`;
+  const ipucu =
+    durum === 'kritik'
+      ? bitisYazisi
+        ? `${bas} — ${bitisYazisi}, sonra ordu saatte %${Math.round(ERZAK_FIRAR_ORANI * 100)} firar verir`
+        : `${bas} — eksiye gidiyor`
+      : durum === 'israf'
+        ? `${bas} — depo dolu, üretim boşa gidiyor`
+        : bas;
+
   return (
     <div
       className={`-mx-0.5 min-w-0 flex-1 rounded-lg px-1 py-0.5 ${
@@ -146,15 +165,7 @@ function KaynakSayaci({
             ? 'bg-turuncu/12 ring-1 ring-turuncu/30'
             : ''
       }`}
-      title={`${ad}: ${Math.floor(canli)} (${saatlik >= 0 ? '+' : ''}${Math.round(saatlik)}/sa)${
-        durum === 'kritik'
-          ? bitisYazisi
-            ? ` — ${bitisYazisi}, sonra ordu saatte %${Math.round(ERZAK_FIRAR_ORANI * 100)} firar verir`
-            : ' — eksiye gidiyor'
-          : durum === 'israf'
-            ? ' — depo dolu, üretim boşa gidiyor'
-            : ''
-      }`}
+      title={ipucu}
     >
       <div className="flex items-center gap-1">
         <span className="shrink-0" style={{ color: renk }}>

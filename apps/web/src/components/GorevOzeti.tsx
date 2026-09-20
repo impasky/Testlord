@@ -38,9 +38,9 @@ export function GorevOzeti({ onGit }: { onGit: () => void }) {
         <div className="flex items-center gap-2" aria-hidden>
           <span className="baslik shrink-0 text-[11px] text-solgun">GÖREVLER</span>
           <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
-            <Hap>&nbsp;</Hap>
+            <Hap>{'\u00A0'}</Hap>
           </div>
-          <span className="baslik shrink-0 text-[11px] text-altin">&nbsp;</span>
+          <span className="baslik shrink-0 text-[11px] text-altin">{'\u00A0'}</span>
         </div>
         <span className="sr-only">Görevler yükleniyor</span>
       </Kart>

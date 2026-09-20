@@ -29,6 +29,7 @@ import {
   IkonKale,
   IkonSure,
 } from '../components/Ikonlar';
+import { Cumle } from '../components/Cumle';
 import { Zemin } from '../components/Zemin';
 import { SavunmaDuzeni } from '../components/SavunmaDuzeni';
 import { Pazar } from '../components/Pazar';
@@ -133,8 +134,13 @@ export function Malikane({
       {korumali && (
         <Kart className="border-yesil/40 p-3">
           <p className="text-[12px] text-solgun">
-            <span className="baslik text-yesil">Yeni lord kalkanı</span> —{' '}
-            <GeriSayim bitis={lord.protectionUntil!} /> kaldı. İlk saldırında kalkan düşer.
+            <Cumle
+              metin="{0} — {1} kaldı. İlk saldırında kalkan düşer."
+              parca={[
+                <span className="baslik text-yesil">Yeni lord kalkanı</span>,
+                <GeriSayim bitis={lord.protectionUntil!} />,
+              ]}
+            />
           </p>
         </Kart>
       )}

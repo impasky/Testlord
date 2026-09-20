@@ -345,7 +345,7 @@ export function Ittifak({ lordId }: { lordId: string }) {
                   <span className="mr-1.5 inline-block align-[-2px]">
                     <IkonAltin boyut={14} />
                   </span>
-                  Kur · {formatSayi(kurmaMaliyeti)}
+                  {`Kur · ${formatSayi(kurmaMaliyeti)}`}
                 </Buton>
                 {altin < kurmaMaliyeti && (
                   <EngelNotu

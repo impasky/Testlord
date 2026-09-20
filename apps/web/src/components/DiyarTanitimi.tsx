@@ -133,8 +133,8 @@ function TanitimIskeleti() {
             <li key={n} className="flex items-center gap-2.5">
               <Sira>{n}</Sira>
               <span className="flex flex-wrap items-center gap-1.5">
-                <Hap>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Hap>
-                <Hap>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Hap>
+                <Hap>{'\u00A0'.repeat(6)}</Hap>
+                <Hap>{'\u00A0'.repeat(5)}</Hap>
               </span>
             </li>
           ))}

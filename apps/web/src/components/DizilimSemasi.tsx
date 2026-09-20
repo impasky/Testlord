@@ -13,7 +13,7 @@
  * KarsiCemberi gibi saf çizim: görsel dosya yok, tıklanmıyor, durum
  * tutmuyor. Gerçek dizilim ekranı DizilimIzgarasi; burası yalnız resim.
  */
-import { B, unitName, type UnitType } from '@lordlar/shared';
+import { B, unitName, veListesi, type UnitType } from '@lordlar/shared';
 import { BirimIkonu } from './Ikonlar';
 
 const D = B.dizilim;
@@ -66,7 +66,7 @@ export function DizilimSemasi() {
         {satirlar
           .map((satir) => {
             const b = satirBirimleri(satir);
-            return b.length > 0 ? `${satir}. ${b.map(unitName).join(' ve ')}` : null;
+            return b.length > 0 ? `${satir}. ${veListesi(b.map(unitName))}` : null;
           })
           .filter(Boolean)
           .join(' · ')}

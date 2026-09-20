@@ -101,7 +101,7 @@ sıraya göre** yerleşiyor:
 | Ne                      | Kaç | Neden                                              |
 | ----------------------- | --: | -------------------------------------------------- |
 | Bölge ve vilayet adları | 126 | Özel ad                                            |
-| Cümle parçaları         |  24 | Kodda birleşiyorlar; çeviriyle değil KODLA çözülür |
+| Cümle parçaları         |   5 | Kodda birleşiyorlar; çeviriyle değil KODLA çözülür |
 
 ### Cümle parçası nedir, nasıl eridi
 
@@ -135,10 +135,25 @@ niteliği `METIN_NITELIGI` listesinde: kısa bir cümle şekil süzgecine
 takılıp anahtar sanılmasın diye.
 
 Sayı 291'le başlamıştı; önceki temizliklerle 39'a, `<Cumle>` ile dört
-dosyada (LordEkrani, Medeniyet, SaldiriOnizleme, DunyaSeridi) 24'e
-indi. Kalanın bir kısmı gerçekten çevrilemez (`T{0}`, `&nbsp;`),
-gerisi aynı yöntemle kapatılacak — `ceviri/cevrilmeyecekler.txt`
-hepsini kaynağıyla listeliyor.
+dosyada 24'e, kalan yirmi dosyada da 5'e indi. Kalan beşi kademe
+harfi (`T{0}`, `{0} · T{1}`) — "T2" her dilde T2.
+
+Son turda üç şey daha çıktı:
+
+- **`&nbsp;` ekrana YAZILIYORDU.** İskelet bileşenlerinde genişlik
+  vermek için kullanılan `&nbsp;` bir JSX metnidir; eklenti onu
+  sarınca `{__t("&nbsp;")}` oluyor ve React bunu bölünmez boşluk
+  değil ALTI HARF olarak çiziyor. Yerine gerçek karakter kondu
+  (`{'\u00A0'.repeat(8)}`) — harf taşımadığı için çeviriye de
+  girmiyor.
+- **`join(' ve ')` ayracı** artık `veListesi()` (bkz.
+  `packages/shared/src/liste.ts`): ayraç değil `{0} ve {1}` şablonu
+  çevriliyor, İngilizcede `{0} and {1}` oluyor.
+- **`parcaMi()` iki yerde fazla eliyordu.** Sonu bağlaçla biten kural
+  artık yalnız küçük harfle başlayan dizgelerde çalışıyor; `Başvuru
+ile` bir düğme yazısı, cümle ortası değil.
+
+`ceviri/cevrilmeyecekler.txt` kalanları kaynağıyla listeliyor.
 
 ---
 

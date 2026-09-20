@@ -139,7 +139,7 @@ ve yer adları o dünyanın parçası.
   İskelebaşı
   Şahinkaya
 
---- Cümle parçaları (24) ---
+--- Cümle parçaları (5) ---
 
 Bunlar tek başına çevrilemez, çünkü tek başına bir anlamı yok: kodda başka
 metinlerle birleşerek cümle oluyorlar (" ve ", ", boş" gibi). Bir
@@ -148,51 +148,13 @@ bilmeden çeviremez, üstelik İngilizcede sözcük sırası değişince parça
 yanlış yere düşer. Bunların çözümü çeviri değil KOD: birleştirmelerin tek
 bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
 
-  " — depo dolu, üretim boşa gidiyor"
-      apps/web/src/components/MobilKabuk.tsx:155
-  " ve "
-      apps/web/src/components/DizilimSemasi.tsx:69
-  "— savaşa girdikçe büyür."
-      apps/web/src/screens/Generaller.tsx:98
-  ", boş"
-      apps/web/src/components/DizilimIzgarasi.tsx:324
-  ", sana"
-      apps/web/src/components/IttifakBagis.tsx:126
-  ", şef"
-      apps/web/src/screens/Akin.tsx:491
   "{0} · T{1}"
       apps/web/src/screens/Akin.tsx:229
   "{0} T{1}"
       apps/web/src/screens/Demirhane.tsx:221
-  "&nbsp;"
-      apps/web/src/components/GorevOzeti.tsx:41
-  "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-      apps/web/src/components/DiyarTanitimi.tsx:137
-  "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-      apps/web/src/components/DiyarTanitimi.tsx:136
-  "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-      apps/web/src/components/Omurga.tsx:494
-  "asker ·"
-      apps/web/src/screens/Akin.tsx:636
-  "askerin savunmada."
-      apps/web/src/screens/Harita.tsx:348
-  "Başvuru ile"
-      apps/web/src/components/IttifakBasvurular.tsx:87
-  "deyip oyunu oradan aç, sonra buraya dön."
-      apps/web/src/components/BildirimKarti.tsx:74
-  "ihbar süresi boyunca pakt hâlâ korur — söz verdiğin an geri alınamıyor, o yüzden söz değerli."
-      apps/web/src/components/Paktlar.tsx:158
-  "iPhone ve iPad&apos;de bildirimler yalnızca ana ekrana eklenmiş uygulamada çalışır. Paylaş menüsünden"
-      apps/web/src/components/BildirimKarti.tsx:73
-  "kaldı. İlk saldırında kalkan düşer."
-      apps/web/src/screens/Malikane.tsx:137
-  "Kur ·"
-      apps/web/src/screens/Ittifak.tsx:348
   "T"
       apps/web/src/screens/Demirhane.tsx:443
   "T{0}"
       apps/web/src/screens/Akin.tsx:241
   "T{0}{1}"
       apps/web/src/screens/LordEkrani.tsx:673
-  "üst üste giriyorsun."
-      apps/web/src/components/GunlukKart.tsx:88
