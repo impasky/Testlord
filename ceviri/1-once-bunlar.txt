@@ -3,7 +3,7 @@ LORDLAR ÇAĞI — ÇEVİRİ 1/3: OYUNU OYNANIR KILAN  (KALANLAR)
 Gezinme, düğmeler, kaynak ve birim adları, ilk saatin ekranları ve
 öğretici. Bu parti bitince oyun baştan sona oynanabilir.
 
-Bu dosyada 0 satır var — çevrilmiş olanlar çıkarıldı.
+Bu dosyada 48 satır var — çevrilmiş olanlar çıkarıldı.
 
 NASIL ÇEVİRİLİR
   Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.
@@ -17,3 +17,66 @@ NASIL ÇEVİRİLİR
   Bitince dosyayı olduğu gibi geri ver; gerisini ben hallederim.
 
 ==========================================================================
+
+--- Öğretici (23) ---
+
+2023. {0} çekirdek ele geçirilemez
+2024. Bir bölgenin geliri kâğıt üstündeki sahibine değil, ORADA DURAN garnizonlara gider — bıraktıkları komuta yeri oranında. Askerini çekersen bölge medeniyetinden gitmez ama senin gelirin durur. Bölge bölünemez; bölgedeki pay bölünür.
+2025. Bir bölgeyi ezici bir üstünlükle alırsan bölge medeniyetine yazılır ve sağ kalan askerlerin orada garnizon olarak kalır — payını o andan itibaren almaya başlarsın. Yaralılar ve ganimet eve döner. Dar kazanırsan yalnız yağmalarsın: kaynağı alır, bölgeyi bırakırsın.
+2026. Bir bölgeyi yükseltmek onun gelirini ve savunmasını artırır; oradaki garnizonunun payı da aynı oranda büyür. Yeni bölge almaktan çoğu zaman daha kârlıdır.
+2030. Çekirdek bonusu HERKESE işler
+2031. Dört çekirdeğe bağış yaparak medeniyetinin {0} oranlarını büyütürsün: her seviye +%{1}, en çok {2} seviye, yani tam geliştirilmiş bir çekirdek +%{3}. Bonus o medeniyetteki herkese işler — bir kuruş vermeyene de.
+2032. Dört medeniyet, sen birinin lordusun
+2034. Fayda puanı güç satın almaz
+2036. Garnizon tutmak ({0} yerlik garnizon saatte {1} puan), fetihe katılmak ({2}), savunmaya katılmak ({3}) ve bağış yapmak fayda puanı kazandırır. Puan HARCANMIYOR: birikiyor ve medeniyetindeki rütbene dönüşüyor ({4}). Güç yalnız çekirdekten gelir ve o da herkese eşit işler.
+2037. Gelir garnizondan gelir
+2038. Haritadaki dört renk dört taraf. Tek başına değil, bir tarafla oynuyorsun.
+2039. Haritadaki her işaret bir bölge. Bir bölgeyi tutan medeniyet varsa çerçevesi onun rengini taşır; ortadaki çekişmeli topraklar henüz kimsenin değil. Bölgeler bitmez ama çoğalmaz da — biri alırsa, bir başkası kaybeder.
+2040. Haritanın ortasındaki altın çerçeveli bölge. Onu tutan Diyarın Lordu olur ve şöhreti %{0} büyür; tahtı tutan MEDENİYETİN her üyesi de %{1} alır. Oyunun ucu burası — ve tek başına değil, tarafınla kazanılıyor.
+2041. Her yurdun {0} çekirdek bölgesi var ve hiçbirine saldırılamaz. Bir medeniyet yenilebilir ama silinemez: evine çekilir, toparlanır ve geri döner. Beşincisi medeniyetin başkenti — bonus değil kimlik taşır.
+2043. Kampın kendi medeniyetinin yurdunda kurulur; toprağın yok, ordun yok. İlk köyünü fethettiğinde orası başkentin olur ve şehir sayfan bir kamptan bir köye döner. Sana hiçbir şey verilmiyor — ordu da toprak da bina da kazanılıyor.
+2044. Kayıt olurken en az kalabalık medeniyete yazılırsın ve kampın onun yurdunda kurulur. Seçim serbest olsaydı herkes kazanan tarafa geçerdi ve fark kendi kendini büyütürdü — tarafları kura değil sayım dengeliyor.
+2045. Kaynak iki yerden akar: malikânenin taban geliri ve bölgelerdeki garnizonların payı. Bir bölge, üstünde askeri olanlara öder. Aldığın toprağa asker bırakmazsan oradan tek altın almazsın.
+2046. Kendi medeniyetinden bir lordun tuttuğu bölgeye saldıramazsın, çekirdeklere ise kimse saldıramaz. Yurdunda henüz hiçbir lordun almadığı bölgeler serbest: oradaki garnizon bir yoldaşın değil, bölgenin kendi muhafızlarıdır — ilk fethin büyük ihtimalle orada olacak.
+2049. Seçmiyorsun, yazılıyorsun
+2050. Taraf değiştirebilirsin — ama bedeli var
+2053. Toprak medeniyetin, pay senin
+2054. Yalnız nüfusu ortalamanın ALTINDA olan bir medeniyete geçebilirsin; kazanan tarafa geçiş yok. Geçersen fayda puanın sıfırlanır ve {0} gün yeniden değiştiremezsin. Toprağın ve kampın seninle gelir.
+2056. Yoldaşına kılıç çekilmez
+
+--- Harita (8) ---
+
+1966. — medeniyetin
+1970. {0} çekirdeği. Kaybeden medeniyet ölmesin diye çekirdekler dokunulmaz; yalnız kendi üyeleri geliştirebilir.
+1972. {0} fayda ›
+1975. {0} önde · +%{1} yağma
+1977. {0} seninle aynı medeniyetten ({1}). Kendi medeniyetinin lorduna saldıramazsın.
+1986. Bir medeniyetin
+1989. Çekirdek bölge — ele geçirilemez
+2022. Yoldaşının toprağı
+
+--- Rehber ve ipuçları (8) ---
+
+2028. Bu düğme orduyu yola çıkarır. Geri dönüşü yok — ama hesabı yaptım: bu bölge medeniyetine yazılır, ordun orada kalır ve gelirin o günden sonra oradan akar.
+2029. Çekirdeğe bağış herkese yarar
+2033. Evdeki ordu ne toprağı korur ne gelir getirir. Bölgenin geliri üstünde duran garnizonlara, bıraktıkları yer oranında dağılır: asker bırakmazsan payın da olmaz, toprağın da.
+2035. Garnizon hem savunur hem kazandırır
+2042. İlk toprağını medeniyetine kattın; ordun orada kaldı ve payın o garnizondan geliyor. Demirhanede kuşanacağın her parça, savaşa senin katkını büyütür.
+2047. Medeniyetinin çekirdeklerini büyütmek depoyu, eğitimi, savunmayı ve geliri o medeniyetteki HERKES için artırır. Senin karşılığın fayda puanı olarak döner.
+2052. Toprağı çoğaltmak tek yol değil. Elindekini yükselt: bölge daha çok verir, garnizonunun payı da onunla büyür.
+2055. Yeni bölge almak tek yol değil: elindekini yükseltmek o bölgenin saatlik gelirini büyütür, garnizonunun payı da onunla birlikte büyür.
+
+--- LordEkrani (5) ---
+
+1993. Diyarda
+1996. En üst unvandasın:
+2014. Rütbe
+2016. Şöhret harcanmaz, biriktirilir.
+2017. ŞÖHRETİN NE YAPIYOR
+
+--- Oyun motoru (4) ---
+
+2027. Böyle bir medeniyet yok.
+2048. O medeniyet kalabalık. Yalnız nüfusu ortalamanın altındaki bir tarafa geçebilirsin.
+2051. Taraf değiştirmek için {0} gün daha beklemelisin.
+2057. Zaten bu medeniyettensin.

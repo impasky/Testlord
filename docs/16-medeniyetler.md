@@ -496,6 +496,10 @@ yaşıyor: **toprak medeniyetin, kayıt lordun.** Sütunun kalkması arayüz
 adımıyla (§12.5) birlikte, o ekranlar medeniyet üzerinden yeniden
 kurulduğunda anlamlı olur.
 
+> **Sonradan karara bağlandı (§24): sütun KALIYOR.** Garnizon payı
+> geldikten sonra "bu bölgeyi kim tutuyor" sorusunun garnizondan türeyen
+> bir cevabı kalmadı — aynı bölgede beş lordun askeri durabiliyor.
+
 ---
 
 ## 18. Uygulama notu: çekirdek yatırımı ve arayüz (§12 adım 5)
@@ -867,3 +871,53 @@ sorusu ("şöhretim arttı, eee?") cevapsızdı.
 
 Kart artık üçünü de söylüyor, "şöhret harcanmaz, biriktirilir" satırı
 dahil. Yeni mekanik eklemedik: var olanı görünür yaptık.
+
+---
+
+## 24. İki karar: çekişmeli fetih ve `Region.ownerLordId`
+
+`2026-09-20` — §13'ün son açık sorusu kapandı, bir de uzun süredir
+"ertelendi" diye duran bir madde karara bağlandı.
+
+### §13 soru 4: çekişmeli bölge fethi HERKESE açık
+
+Karar sahibin: **herkese açık kalıyor.** Yakınlık şartı yok.
+
+Bugün zaten böyle çalışıyordu ama bir karar olarak yazılı değildi — ve
+yazılı olmayan kural, bir sonraki okuyucunun "acaba kısıtlamalı mıydı"
+diye geri dönmesi demek.
+
+Freni mesafe zaten koyuyor: yürüyüş süresi adım başına hesaplanıyor
+(`yuruyus.dakika_adim_basina`), yani uzaktaki bir bölgeye saldırmak
+saatler sürüyor ve ordu o süre boyunca evde değil. Buna kalkanlar,
+günlük saldırı limiti ve seviye farkı kilidi ekleniyor. "Yalnız yakındaki
+garnizon" kuralı bunların üstüne bir kural daha koyardı ve haritanın
+ortasını — oyunun kavga etmesi için tasarlanmış 43 bölgesini — yalnız
+komşularına açardı.
+
+### `Region.ownerLordId` KALIYOR — erteleme değil, karar
+
+§17 bu sütunu "ertelendi" diye bırakmıştı: sahiplik medeniyete geçtiğine
+göre lord sütunu bir gün kalkacaktı. **Kalkmıyor, ve sebebi garnizon
+payının kendisi.**
+
+Garnizon payı geldikten sonra "bu bölgeyi kim tutuyor" sorusunun
+garnizondan türeyen bir cevabı YOK: aynı bölgede beş lordun askeri
+durabiliyor ve hiçbiri ötekinden daha "sahip" değil. Oysa oyunun dört
+ayrı yeri bu soruya kesin bir cevap istiyor:
+
+| Nerede           | Ne soruyor                             |
+| ---------------- | -------------------------------------- |
+| Başkent          | "bu bölge senin mi" (docs/12 §2.3)     |
+| Bölge tavanı     | "kaç bölgen var" (`maxRegions`)        |
+| Şöhret           | hangi bölgeler şöhretine sayılıyor     |
+| Bölge bırakma    | kim bırakabilir                        |
+| Taraf değiştirme | hangi topraklar lordla taşınacak (§23) |
+
+Sütunu kaldırmak bu cevabı bir sezgiyle (en çok askeri olan? ilk gelen?)
+değiştirmek olurdu — kesin bir olguyu bir tahminle takas etmek. İki
+katman bir arada yaşıyor ve ikisi ayrı şey soruyor:
+
+> **Toprak medeniyetin, kayıt lordun.**
+
+Bu cümle artık geçici bir hâlin tarifi değil, tasarımın kendisi.

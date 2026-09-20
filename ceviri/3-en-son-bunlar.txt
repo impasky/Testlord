@@ -3,7 +3,7 @@ LORDLAR ÇAĞI — ÇEVİRİ 3/3: KUYRUK  (KALANLAR)
 Sunucu hataları ve bildirimleri. Oyuncu bunları ancak bir şey ters gidince
 görüyor; en sona bırakılabilir ama atlanamaz.
 
-Bu dosyada 0 satır var — çevrilmiş olanlar çıkarıldı.
+Bu dosyada 19 satır var — çevrilmiş olanlar çıkarıldı.
 
 NASIL ÇEVİRİLİR
   Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.
@@ -17,3 +17,28 @@ NASIL ÇEVİRİLİR
   Bitince dosyayı olduğu gibi geri ver; gerisini ben hallederim.
 
 ==========================================================================
+
+--- Sunucu mesajları (19) ---
+
+2058. 
+{0} diyar ve {1} hesap silindi.
+
+2059.  (yöneticiler dahil)
+2060. {0} açıldı: {1} bölge, {2} medeniyet 
+2061. {0} birim {1} garnizonunda kaldı.
+2062. {0} bölge yurt sahipli, {1} çekişmeli, 
+2063. {0} çekirdek yatırım satırı.
+
+2064. Bağış için kaynak seç.
+2065. Bölge {0}
+2066. Bu çekirdek azami seviyede.
+2067. Burası aynı medeniyetten bir lordun toprağı.
+2068. Burası bir medeniyetin çekirdeği — ele geçirilemez.
+2069. Çekirdek
+2070. Kaynağın yetmiyor.
+2071. Medeniyet bulunamadı.
+2072. Medeniyet satırı bulunamadı: {0}
+2073. Medeniyetin yok.
+2074. SİLİNECEK
+2075. Şimdi taraf değiştiremezsin.
+2076. Yoldaki ordun varken taraf değiştiremezsin. Önce dönmesini bekle.
