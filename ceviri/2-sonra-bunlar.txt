@@ -3,7 +3,7 @@ LORDLAR ÇAĞI — ÇEVİRİ 2/3: DERINLIK  (KALANLAR)
 Savaş raporu, demirhane, generaller, araştırma, ittifak, akın — ve bina,
 general, araştırma, başarım içerikleri.
 
-Bu dosyada 46 satır var — çevrilmiş olanlar çıkarıldı.
+Bu dosyada 0 satır var — çevrilmiş olanlar çıkarıldı.
 
 NASIL ÇEVİRİLİR
   Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.
@@ -20,64 +20,3 @@ NASIL ÇEVİRİLİR
   Bitince dosyayı olduğu gibi geri ver; gerisini ben hallederim.
 
 ==========================================================================
-
---- Medeniyet (37) ---
-
-1965.  — senin
-1971. {0} fayda
-1973. {0} fayda puanı
-1974. {0} gün sonra yeniden taraf değiştirebilirsin.
-1976. {0} puan
-1978. {0} tarafına geçiyorsun. {1} fayda puanın silinecek ve {2} gün boyunca geri dönemeyeceksin.
-1979. {0} tarafına geçtin. {1} bölgen seninle geldi.
-1980. Altın bağışı
-1981. Azami seviyede — daha fazlası yok.
-1982. Bağış için kaynak gir.
-1983. Bağışın kasaya girdi. +{0} fayda puanı.
-1984. Bekleme sürüyor
-1985. Bir medeniyete bağlı değilsin. Yeni açılan lordlar kayıtta bir medeniyete yazılıyor.
-1988. Çekirdek {0}. seviyeye çıktı. +{1} fayda puanı.
-1990. Çekirdekler
-1991. Çekirdekler ele geçirilemez; yalnız geliştirilir. Bonus
-1992. Demir bağışı
-1994. Diyarın hâli
-1995. Dört medeniyetin de nüfusu ortalamanın üstünde ya da eşit.
-1997. Erzak bağışı
-1998. Evet, taraf değiştir
-1999. fayda puanın sıfırlanır
-2001. Geç
-2002. Kaynağını ve bağış miktarını kontrol et.
-2003. Medeniyet
-2004. Medeniyetin
-2005. Medeniyetin başkenti — bonus taşımıyor, kimlik taşıyor.
-2006. Medeniyetin herkesi askerini daha hızlı eğitiyor.
-2007. medeniyetin herkesine
-2008. Medeniyetin herkesinin depo tavanı büyüyor.
-2010. Medeniyetin tuttuğu bölgeler daha çok üretiyor.
-2011. Medeniyetin tuttuğu bölgeler daha zor alınıyor.
-2012. nüfusu az
-2018. Şu an geçilebilecek taraf yok
-2019. Taraf değiştirmek
-2020. Tarafın
-2021. Yalnız
-
---- DunyaHaritasi (3) ---
-
-1967. , çekirdek — ele geçirilemez
-1969. {0} — {1}, seviye {2}, {3}{4}{5}, {6} adım{7}
-1987. Çekirdek — ele geçirilemez
-
---- DunyaSeridi (3) ---
-
-782. şöhret
-1968. · toprağına saldıran
-2009. medeniyetin önde
-
---- Malikane (2) ---
-
-2000. garnizon yok — gelir yok
-2013. payın {0}/{1} yer
-
---- Ogretici (1) ---
-
-2015. Senin medeniyetin bu. Haritada bu rengi gördüğün her yer yoldaşlarının.

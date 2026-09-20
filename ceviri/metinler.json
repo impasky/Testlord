@@ -34,7 +34,7 @@
   "t88b01120": {
     "grup": "arayuz",
     "tr": " — senin",
-    "en": "",
+    "en": " — yours",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:188"
     ]
@@ -213,7 +213,7 @@
   "t8ac7e285": {
     "grup": "arayuz",
     "tr": ", çekirdek — ele geçirilemez",
-    "en": "",
+    "en": ", core — cannot be captured",
     "nerede": [
       "apps/web/src/components/DunyaHaritasi.tsx:950"
     ]
@@ -277,7 +277,7 @@
   "t4639fbbb": {
     "grup": "arayuz",
     "tr": "· toprağına saldıran",
-    "en": "",
+    "en": "· attacking your land",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:162"
     ]
@@ -373,7 +373,7 @@
   "te4dc80c9": {
     "grup": "arayuz",
     "tr": "{0} — {1}, seviye {2}, {3}{4}{5}, {6} adım{7}",
-    "en": "",
+    "en": "{0} — {1}, level {2}, {3}{4}{5}, {6} steps{7}",
     "nerede": [
       "apps/web/src/components/DunyaHaritasi.tsx:947"
     ]
@@ -686,7 +686,7 @@
   "t3c2e09ca": {
     "grup": "arayuz",
     "tr": "{0} fayda",
-    "en": "",
+    "en": "{0} contribution",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:140"
     ]
@@ -694,7 +694,7 @@
   "t75a1fe6c": {
     "grup": "arayuz",
     "tr": "{0} fayda ›",
-    "en": "{0} merit ›",
+    "en": "{0} contribution ›",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:873"
     ]
@@ -702,7 +702,7 @@
   "tf3ba9e7d": {
     "grup": "arayuz",
     "tr": "{0} fayda puanı",
-    "en": "",
+    "en": "{0} contribution points",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:156"
     ]
@@ -761,7 +761,7 @@
   "t0d71a05d": {
     "grup": "arayuz",
     "tr": "{0} gün sonra yeniden taraf değiştirebilirsin.",
-    "en": "",
+    "en": "You can change factions again in {0} days.",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:219"
     ]
@@ -867,7 +867,7 @@
   "t120b571b": {
     "grup": "arayuz",
     "tr": "{0} puan",
-    "en": "",
+    "en": "{0} points",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:163"
     ]
@@ -1069,7 +1069,7 @@
   "te476c505": {
     "grup": "arayuz",
     "tr": "{0} tarafına geçiyorsun. {1} fayda puanın silinecek ve {2} gün boyunca geri dönemeyeceksin.",
-    "en": "",
+    "en": "You are defecting to the {0} faction. Your {1} contribution points will be wiped, and you will not be able to return for {2} days.",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:253"
     ]
@@ -1077,7 +1077,7 @@
   "t56851a6b": {
     "grup": "arayuz",
     "tr": "{0} tarafına geçtin. {1} bölgen seninle geldi.",
-    "en": "",
+    "en": "You joined the {0} faction. Your {1} regions came with you.",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:71"
     ]
@@ -1571,7 +1571,7 @@
   "t88e69408": {
     "grup": "arayuz",
     "tr": "Altın bağışı",
-    "en": "",
+    "en": "Gold donation",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:326"
     ]
@@ -1842,7 +1842,7 @@
   "t41939cf2": {
     "grup": "arayuz",
     "tr": "Azami seviyede — daha fazlası yok.",
-    "en": "",
+    "en": "At maximum level — no more.",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:317"
     ]
@@ -1858,7 +1858,7 @@
   "tedc40399": {
     "grup": "arayuz",
     "tr": "Bağış için kaynak gir.",
-    "en": "",
+    "en": "Enter resources for donation.",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:124"
     ]
@@ -1884,7 +1884,7 @@
   "t9e48a8c0": {
     "grup": "arayuz",
     "tr": "Bağışın kasaya girdi. +{0} fayda puanı.",
-    "en": "",
+    "en": "Your donation entered the vault. +{0} contribution points.",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:89"
     ]
@@ -2047,7 +2047,7 @@
   "tc1c16b79": {
     "grup": "arayuz",
     "tr": "Bekleme sürüyor",
-    "en": "",
+    "en": "Cooldown active",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:218"
     ]
@@ -2200,7 +2200,7 @@
   "t6c671869": {
     "grup": "arayuz",
     "tr": "Bir medeniyete bağlı değilsin. Yeni açılan lordlar kayıtta bir medeniyete yazılıyor.",
-    "en": "",
+    "en": "You are not affiliated with a civilization. Newly created lords are assigned to a civilization upon registration.",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:112"
     ]
@@ -2761,7 +2761,7 @@
   "t4aee0ab1": {
     "grup": "arayuz",
     "tr": "Çekirdek — ele geçirilemez",
-    "en": "",
+    "en": "Core — cannot be captured",
     "nerede": [
       "apps/web/src/components/DunyaHaritasi.tsx:1016"
     ]
@@ -2769,7 +2769,7 @@
   "t53904c10": {
     "grup": "arayuz",
     "tr": "Çekirdek {0}. seviyeye çıktı. +{1} fayda puanı.",
-    "en": "",
+    "en": "Core reached level {0}. +{1} contribution points.",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:88"
     ]
@@ -2785,7 +2785,7 @@
   "t0b794ade": {
     "grup": "arayuz",
     "tr": "Çekirdekler",
-    "en": "",
+    "en": "Cores",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:267"
     ]
@@ -2793,7 +2793,7 @@
   "tcc7988b6": {
     "grup": "arayuz",
     "tr": "Çekirdekler ele geçirilemez; yalnız geliştirilir. Bonus",
-    "en": "",
+    "en": "Cores cannot be captured; they are only upgraded. Bonus",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:269"
     ]
@@ -2875,7 +2875,7 @@
   "tf60f934f": {
     "grup": "arayuz",
     "tr": "Demir bağışı",
-    "en": "",
+    "en": "Iron donation",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:334"
     ]
@@ -3143,7 +3143,7 @@
   "t3651780e": {
     "grup": "arayuz",
     "tr": "Diyarın hâli",
-    "en": "",
+    "en": "State of the realm",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:175"
     ]
@@ -3306,7 +3306,7 @@
   "te41adb3c": {
     "grup": "arayuz",
     "tr": "Dört medeniyetin de nüfusu ortalamanın üstünde ya da eşit.",
-    "en": "",
+    "en": "The population of all four civilizations is above or equal to the average.",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:224"
     ]
@@ -3641,7 +3641,7 @@
   "t8a47a8f9": {
     "grup": "arayuz",
     "tr": "Erzak bağışı",
-    "en": "",
+    "en": "Supply donation",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:342"
     ]
@@ -3738,7 +3738,7 @@
   "t67f6ac68": {
     "grup": "arayuz",
     "tr": "Evet, taraf değiştir",
-    "en": "",
+    "en": "Yes, change factions",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:259"
     ]
@@ -3746,7 +3746,7 @@
   "t0944f9b2": {
     "grup": "arayuz",
     "tr": "fayda puanın sıfırlanır",
-    "en": "",
+    "en": "your contribution points will be reset",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:211"
     ]
@@ -3789,7 +3789,7 @@
   "t31bf9958": {
     "grup": "arayuz",
     "tr": "garnizon yok — gelir yok",
-    "en": "",
+    "en": "no garrison — no income",
     "nerede": [
       "apps/web/src/screens/Malikane.tsx:208"
     ]
@@ -3821,7 +3821,7 @@
   "t4796903a": {
     "grup": "arayuz",
     "tr": "Geç",
-    "en": "",
+    "en": "Switch",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:244"
     ]
@@ -5195,7 +5195,7 @@
   "t9f18d90b": {
     "grup": "arayuz",
     "tr": "Kaynağını ve bağış miktarını kontrol et.",
-    "en": "",
+    "en": "Check your resources and donation amount.",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:352"
     ]
@@ -5802,7 +5802,7 @@
   "t474cfa95": {
     "grup": "arayuz",
     "tr": "Medeniyet",
-    "en": "",
+    "en": "Civilization",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:110",
       "packages/shared/src/types.ts:324"
@@ -5811,7 +5811,7 @@
   "t7227452e": {
     "grup": "arayuz",
     "tr": "Medeniyetin",
-    "en": "",
+    "en": "Your civilization",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:132"
     ]
@@ -5819,7 +5819,7 @@
   "ta604cfa5": {
     "grup": "arayuz",
     "tr": "Medeniyetin başkenti — bonus taşımıyor, kimlik taşıyor.",
-    "en": "",
+    "en": "Civilization's capital — carries no bonus, carries identity.",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:285"
     ]
@@ -5827,7 +5827,7 @@
   "t4d13f325": {
     "grup": "arayuz",
     "tr": "Medeniyetin herkesi askerini daha hızlı eğitiyor.",
-    "en": "",
+    "en": "Everyone in the civilization trains soldiers faster.",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:41"
     ]
@@ -5835,7 +5835,7 @@
   "t00013904": {
     "grup": "arayuz",
     "tr": "medeniyetin herkesine",
-    "en": "",
+    "en": "to everyone in the civilization",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:270"
     ]
@@ -5843,7 +5843,7 @@
   "te32f5646": {
     "grup": "arayuz",
     "tr": "Medeniyetin herkesinin depo tavanı büyüyor.",
-    "en": "",
+    "en": "The storage capacity of everyone in the civilization increases.",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:40"
     ]
@@ -5851,7 +5851,7 @@
   "t087a3361": {
     "grup": "arayuz",
     "tr": "medeniyetin önde",
-    "en": "",
+    "en": "civilization is leading",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:162"
     ]
@@ -5859,7 +5859,7 @@
   "t642dd9f4": {
     "grup": "arayuz",
     "tr": "Medeniyetin tuttuğu bölgeler daha çok üretiyor.",
-    "en": "",
+    "en": "Regions held by the civilization produce more.",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:43"
     ]
@@ -5867,7 +5867,7 @@
   "t2f9b9c67": {
     "grup": "arayuz",
     "tr": "Medeniyetin tuttuğu bölgeler daha zor alınıyor.",
-    "en": "",
+    "en": "Regions held by the civilization are harder to capture.",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:42"
     ]
@@ -6020,7 +6020,7 @@
   "tc4156ded": {
     "grup": "arayuz",
     "tr": "nüfusu az",
-    "en": "",
+    "en": "low population",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:209"
     ]
@@ -6647,7 +6647,7 @@
   "tf68e5744": {
     "grup": "arayuz",
     "tr": "payın {0}/{1} yer",
-    "en": "",
+    "en": "your share {0}/{1} spaces",
     "nerede": [
       "apps/web/src/screens/Malikane.tsx:213"
     ]
@@ -7145,7 +7145,7 @@
   "t614f2f56": {
     "grup": "arayuz",
     "tr": "Senin medeniyetin bu. Haritada bu rengi gördüğün her yer yoldaşlarının.",
-    "en": "",
+    "en": "This is your civilization. Everywhere you see this color on the map belongs to your comrades.",
     "nerede": [
       "apps/web/src/components/Ogretici.tsx:208"
     ]
@@ -7615,7 +7615,7 @@
   "t6ef56307": {
     "grup": "arayuz",
     "tr": "şöhret",
-    "en": "",
+    "en": "fame",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:110"
     ]
@@ -7691,7 +7691,7 @@
   "tcf903b10": {
     "grup": "arayuz",
     "tr": "Şu an geçilebilecek taraf yok",
-    "en": "",
+    "en": "There is no faction to switch to right now",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:223"
     ]
@@ -7951,7 +7951,7 @@
   "t57e93c11": {
     "grup": "arayuz",
     "tr": "Taraf değiştirmek",
-    "en": "",
+    "en": "Changing factions",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:207"
     ]
@@ -7959,7 +7959,7 @@
   "tdd305518": {
     "grup": "arayuz",
     "tr": "Tarafın",
-    "en": "",
+    "en": "Your faction",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:110"
     ]
@@ -8311,7 +8311,7 @@
   "tb03a2482": {
     "grup": "arayuz",
     "tr": "Yalnız",
-    "en": "",
+    "en": "Only",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:209"
     ]
@@ -9414,7 +9414,7 @@
   "t0c9714e9": {
     "grup": "motor",
     "tr": "Bucak",
-    "en": "Hamlet",
+    "en": "Parish",
     "nerede": [
       "data/balance.json:bolgeler.gelisim_adlari.koy[2]"
     ]
@@ -9542,7 +9542,7 @@
   "ta0721e62": {
     "grup": "motor",
     "tr": "Çekirdekleri sen büyüttün.",
-    "en": "You nurtured the seeds.",
+    "en": "You grew the cores.",
     "nerede": [
       "data/balance.json:medeniyetler.fayda_puani.rutbeler[3].aciklama"
     ]
@@ -9614,7 +9614,7 @@
   "t9dd91313": {
     "grup": "motor",
     "tr": "Derin Ocak",
-    "en": "Deep Forge",
+    "en": "Deep Shaft",
     "nerede": [
       "data/balance.json:bolgeler.gelisim_adlari.maden[2]"
     ]
@@ -9896,7 +9896,7 @@
   "t14125827": {
     "grup": "motor",
     "tr": "Fayda puanı güç satın almaz",
-    "en": "Merit points do not buy power",
+    "en": "Contribution points do not buy power",
     "nerede": [
       "packages/shared/src/ogretici.ts:277"
     ]
@@ -9952,7 +9952,7 @@
   "t34c3395e": {
     "grup": "motor",
     "tr": "Garnizon tutmak ({0} yerlik garnizon saatte {1} puan), fetihe katılmak ({2}), savunmaya katılmak ({3}) ve bağış yapmak fayda puanı kazandırır. Puan HARCANMIYOR: birikiyor ve medeniyetindeki rütbene dönüşüyor ({4}). Güç yalnız çekirdekten gelir ve o da herkese eşit işler.",
-    "en": "Keeping a garrison ({0}-slot garrison gives {1} points per hour), participating in conquest ({2}), participating in defense ({3}), and donating earn merit points. Points are NOT SPENT: they accumulate and turn into your rank in your civilization ({4}). Power only comes from the core and applies equally to everyone.",
+    "en": "Keeping a garrison ({0}-slot garrison gives {1} points per hour), participating in conquest ({2}), participating in defense ({3}), and donating earn contribution points. Points are NOT SPENT: they accumulate and turn into your rank in your civilization ({4}). Power only comes from the core and applies equally to everyone.",
     "nerede": [
       "packages/shared/src/ogretici.ts:278"
     ]
@@ -10648,7 +10648,7 @@
   "td8b29545": {
     "grup": "motor",
     "tr": "Medeniyetinin çekirdeklerini büyütmek depoyu, eğitimi, savunmayı ve geliri o medeniyetteki HERKES için artırır. Senin karşılığın fayda puanı olarak döner.",
-    "en": "Upgrading your civilization's cores increases storage, training, defense, and income for EVERYONE in that civilization. Your reward returns as merit points.",
+    "en": "Upgrading your civilization's cores increases storage, training, defense, and income for EVERYONE in that civilization. Your reward returns as contribution points.",
     "nerede": [
       "packages/shared/src/ipuclari.ts:73"
     ]
@@ -11467,7 +11467,7 @@
   "t419e7da9": {
     "grup": "motor",
     "tr": "Yalnız nüfusu ortalamanın ALTINDA olan bir medeniyete geçebilirsin; kazanan tarafa geçiş yok. Geçersen fayda puanın sıfırlanır ve {0} gün yeniden değiştiremezsin. Toprağın ve kampın seninle gelir.",
-    "en": "You can only switch to a civilization whose population is BELOW the average; there is no switching to the winning faction. If you switch, your merit points will be reset to zero and you cannot change again for {0} days. Your land and camp come with you.",
+    "en": "You can only switch to a civilization whose population is BELOW the average; there is no switching to the winning faction. If you switch, your contribution points will be reset to zero and you cannot change again for {0} days. Your land and camp come with you.",
     "nerede": [
       "packages/shared/src/ogretici.ts:261"
     ]
