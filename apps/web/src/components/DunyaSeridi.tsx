@@ -18,6 +18,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { api, type DunyaDto } from '../api/client';
 import { IkonSaldiri, IkonTaht } from './Ikonlar';
+import { Cumle } from './Cumle';
 import { Kart, formatSayi, sablonlu } from './ui';
 
 /** "2 saat önce", "az önce". */
@@ -102,12 +103,19 @@ export function DunyaBasligi({ dunya }: { dunya: DunyaDto }) {
                 aria-hidden
               />
               <span>
-                <strong className="text-parsomen">{dunya.taht.medeniyet.ad}</strong>
-                {dunya.taht.benimMedeniyetimde ? ' — medeniyetinin tahtı · ' : ' tahtta · '}
-                <strong className="text-altin">
-                  +%{Math.round(dunya.taht.medeniyetSohretBonusu * 100)}
-                </strong>{' '}
-                şöhret
+                <Cumle
+                  metin={
+                    dunya.taht.benimMedeniyetimde
+                      ? '{0} — medeniyetinin tahtı · {1} şöhret'
+                      : '{0} tahtta · {1} şöhret'
+                  }
+                  parca={[
+                    <strong className="text-parsomen">{dunya.taht.medeniyet.ad}</strong>,
+                    <strong className="text-altin">
+                      {`+%${Math.round(dunya.taht.medeniyetSohretBonusu * 100)}`}
+                    </strong>,
+                  ]}
+                />
               </span>
             </span>
           </>
@@ -159,20 +167,28 @@ export function DunyaBasligi({ dunya }: { dunya: DunyaDto }) {
               />
               {dunya.medeniyetAvi.benimMi ? (
                 <span>
-                  <strong className="text-kirmizi">medeniyetin önde</strong> · toprağına saldıran{' '}
-                  <strong className="text-parsomen">
-                    +%{Math.round(dunya.medeniyetAvi.yagmaBonusu * 100)}
-                  </strong>{' '}
-                  yağma alır
+                  <Cumle
+                    metin="{0} · toprağına saldıran {1} yağma alır"
+                    parca={[
+                      <strong className="text-kirmizi">medeniyetin önde</strong>,
+                      <strong className="text-parsomen">
+                        {`+%${Math.round(dunya.medeniyetAvi.yagmaBonusu * 100)}`}
+                      </strong>,
+                    ]}
+                  />
                 </span>
               ) : (
                 <span>
-                  <strong className="text-parsomen">{dunya.medeniyetAvi.ad}</strong> önde (%
-                  {Math.round(dunya.medeniyetAvi.pay * 100)}) ·{' '}
-                  <strong className="text-kirmizi">
-                    +%{Math.round(dunya.medeniyetAvi.yagmaBonusu * 100)}
-                  </strong>{' '}
-                  yağma
+                  <Cumle
+                    metin="{0} önde (%{1}) · {2} yağma"
+                    parca={[
+                      <strong className="text-parsomen">{dunya.medeniyetAvi.ad}</strong>,
+                      Math.round(dunya.medeniyetAvi.pay * 100),
+                      <strong className="text-kirmizi">
+                        {`+%${Math.round(dunya.medeniyetAvi.yagmaBonusu * 100)}`}
+                      </strong>,
+                    ]}
+                  />
                 </span>
               )}
             </span>

@@ -23,20 +23,12 @@
       "apps/web/src/components/MobilKabuk.tsx:153"
     ]
   },
-  "tca32a31c": {
-    "grup": "arayuz",
-    "tr": " — medeniyetinin tahtı · ",
-    "en": "",
-    "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:106"
-    ]
-  },
   "t88b01120": {
     "grup": "arayuz",
     "tr": " — senin",
     "en": " — yours",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:188"
+      "apps/web/src/screens/Medeniyet.tsx:194"
     ]
   },
   "te04af9d4": {
@@ -100,7 +92,7 @@
     "tr": " +Taht",
     "en": " +Throne",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:351",
+      "apps/web/src/screens/LordEkrani.tsx:364",
       "apps/web/src/screens/Malikane.tsx:122"
     ]
   },
@@ -134,14 +126,6 @@
     "en": " beats: ",
     "nerede": [
       "apps/web/src/components/KarsiIpuclari.tsx:60"
-    ]
-  },
-  "tb7db834e": {
-    "grup": "arayuz",
-    "tr": " tahtta · ",
-    "en": "",
-    "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:106"
     ]
   },
   "ta51e215e": {
@@ -184,14 +168,6 @@
     "en": "",
     "nerede": [
       "apps/web/src/screens/Generaller.tsx:98"
-    ]
-  },
-  "t8c04828d": {
-    "grup": "arayuz",
-    "tr": "— ve en şöhretli lord sensin:",
-    "en": "",
-    "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:403"
     ]
   },
   "tb5cd679c": {
@@ -247,7 +223,7 @@
     "tr": "· BÖLGE ELE GEÇER",
     "en": "· REGION CHANGES HANDS",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:77"
+      "apps/web/src/components/SaldiriOnizleme.tsx:78"
     ]
   },
   "tc9b206eb": {
@@ -263,7 +239,7 @@
     "tr": "· sana saldıran",
     "en": "· whoever attacks you",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:127"
+      "apps/web/src/components/DunyaSeridi.tsx:135"
     ]
   },
   "t5632acb5": {
@@ -274,20 +250,12 @@
       "apps/web/src/screens/Hesap.tsx:100"
     ]
   },
-  "t4639fbbb": {
-    "grup": "arayuz",
-    "tr": "· toprağına saldıran",
-    "en": "· attacking your land",
-    "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:162"
-    ]
-  },
   "t243874a1": {
     "grup": "arayuz",
     "tr": "'de dövülür; ürettiğin parçayı buradan kuşanırsın.",
     "en": "is forged at; you equip the crafted piece here.",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:596"
+      "apps/web/src/screens/LordEkrani.tsx:620"
     ]
   },
   "tea6f95f4": {
@@ -295,7 +263,7 @@
     "tr": "'i bu hafta oynadı",
     "en": "played this week",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:77"
+      "apps/web/src/components/DunyaSeridi.tsx:78"
     ]
   },
   "t1b6bc363": {
@@ -328,14 +296,6 @@
     "en": "(removed)",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:165"
-    ]
-  },
-  "t758b7c84": {
-    "grup": "arayuz",
-    "tr": "(puan eski tarafa verdiğin hizmetin kaydı) ve",
-    "en": "",
-    "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:211"
     ]
   },
   "tcacb4d27": {
@@ -393,6 +353,14 @@
     "nerede": [
       "apps/web/src/components/DunyaHaritasi.tsx:776",
       "apps/web/src/components/DunyaHaritasi.tsx:777"
+    ]
+  },
+  "t2e981aa7": {
+    "grup": "arayuz",
+    "tr": "{0} — medeniyetinin tahtı · {1} şöhret",
+    "en": "",
+    "nerede": [
+      "apps/web/src/components/DunyaSeridi.tsx:109"
     ]
   },
   "t63d3475f": {
@@ -465,6 +433,14 @@
     "en": "{0} · T{1}",
     "nerede": [
       "apps/web/src/screens/Akin.tsx:229"
+    ]
+  },
+  "t32235a43": {
+    "grup": "arayuz",
+    "tr": "{0} · toprağına saldıran {1} yağma alır",
+    "en": "",
+    "nerede": [
+      "apps/web/src/components/DunyaSeridi.tsx:171"
     ]
   },
   "t9f6f97fa": {
@@ -613,8 +589,8 @@
     "en": "{0} regions",
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:86",
-      "apps/web/src/screens/Medeniyet.tsx:135",
-      "apps/web/src/screens/Medeniyet.tsx:190",
+      "apps/web/src/screens/Medeniyet.tsx:136",
+      "apps/web/src/screens/Medeniyet.tsx:196",
       "packages/shared/src/ogretici.ts:209"
     ]
   },
@@ -656,7 +632,7 @@
     "tr": "{0} dk önce",
     "en": "{0} mins ago",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:28"
+      "apps/web/src/components/DunyaSeridi.tsx:29"
     ]
   },
   "t47ae593b": {
@@ -672,7 +648,7 @@
     "tr": "{0} eğitim",
     "en": "{0} training",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:177"
+      "apps/web/src/components/SaldiriOnizleme.tsx:180"
     ]
   },
   "t69140c6e": {
@@ -688,7 +664,7 @@
     "tr": "{0} fayda",
     "en": "{0} contribution",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:140"
+      "apps/web/src/screens/Medeniyet.tsx:141"
     ]
   },
   "t75a1fe6c": {
@@ -704,7 +680,7 @@
     "tr": "{0} fayda puanı",
     "en": "{0} contribution points",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:156"
+      "apps/web/src/screens/Medeniyet.tsx:157"
     ]
   },
   "t329856e2": {
@@ -712,7 +688,7 @@
     "tr": "{0} galibiyet · {1} yenilgi",
     "en": "{0} victories · {1} defeats",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:566"
+      "apps/web/src/screens/LordEkrani.tsx:590"
     ]
   },
   "td06a4e7f": {
@@ -728,7 +704,7 @@
     "tr": "{0} gidiş ·{1}{2} dönüş",
     "en": "{0} outbound ·{1}{2} return",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:182"
+      "apps/web/src/components/SaldiriOnizleme.tsx:185"
     ]
   },
   "tebc946e2": {
@@ -736,7 +712,7 @@
     "tr": "{0} gün",
     "en": "{0} days",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:50",
+      "apps/web/src/components/DunyaSeridi.tsx:51",
       "apps/web/src/components/GunlukKart.tsx:88",
       "packages/shared/src/moderasyon.ts:139",
       "packages/shared/src/moderasyon.ts:183"
@@ -755,7 +731,7 @@
     "tr": "{0} gün önce",
     "en": "{0} days ago",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:31"
+      "apps/web/src/components/DunyaSeridi.tsx:32"
     ]
   },
   "t0d71a05d": {
@@ -763,7 +739,7 @@
     "tr": "{0} gün sonra yeniden taraf değiştirebilirsin.",
     "en": "You can change factions again in {0} days.",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:219"
+      "apps/web/src/screens/Medeniyet.tsx:228"
     ]
   },
   "t39ffe83d": {
@@ -828,7 +804,7 @@
     "en": "{0} lords",
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:85",
-      "apps/web/src/screens/Medeniyet.tsx:136",
+      "apps/web/src/screens/Medeniyet.tsx:137",
       "apps/web/src/screens/Siralama.tsx:212"
     ]
   },
@@ -856,6 +832,14 @@
       "apps/web/src/screens/Harita.tsx:1095"
     ]
   },
+  "tf5148d55": {
+    "grup": "arayuz",
+    "tr": "{0} önde (%{1}) · {2} yağma",
+    "en": "",
+    "nerede": [
+      "apps/web/src/components/DunyaSeridi.tsx:183"
+    ]
+  },
   "t50fdf262": {
     "grup": "arayuz",
     "tr": "{0} panelini kapat",
@@ -869,7 +853,7 @@
     "tr": "{0} puan",
     "en": "{0} points",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:163"
+      "apps/web/src/screens/Medeniyet.tsx:167"
     ]
   },
   "t0d27f6db": {
@@ -877,7 +861,7 @@
     "tr": "{0} PUAN",
     "en": "{0} POINTS",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:446"
+      "apps/web/src/screens/LordEkrani.tsx:470"
     ]
   },
   "t75469fdf": {
@@ -885,7 +869,7 @@
     "tr": "{0} puanı dağıt",
     "en": "Distribute {0} points",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:512"
+      "apps/web/src/screens/LordEkrani.tsx:536"
     ]
   },
   "t2a3b407a": {
@@ -910,7 +894,7 @@
     "tr": "{0} saat {1} dakika",
     "en": "{0} hours {1} minutes",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:89"
+      "apps/web/src/screens/LordEkrani.tsx:90"
     ]
   },
   "t6717d6d6": {
@@ -918,7 +902,7 @@
     "tr": "{0} saat önce",
     "en": "{0} hours ago",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:30"
+      "apps/web/src/components/DunyaSeridi.tsx:31"
     ]
   },
   "t9fbcad0c": {
@@ -953,7 +937,7 @@
     "tr": "{0} savaş",
     "en": "{0} battles",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:100"
+      "apps/web/src/screens/LordEkrani.tsx:102"
     ]
   },
   "t4aa99003": {
@@ -994,7 +978,7 @@
     "tr": "{0} sıra {1}",
     "en": "{0} rank {1}",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:148",
+      "apps/web/src/components/SaldiriOnizleme.tsx:151",
       "apps/web/src/components/SavasRaporu.tsx:85"
     ]
   },
@@ -1011,7 +995,7 @@
     "tr": "{0} sonra {1} diyarına taşınıyorsun. Lordun, ordun, araştırman ve binaların geliyor; bölgelerin ancak orada boşsa geliyor, gelmeyenin bir günlük geliri kasana yazılıyor.",
     "en": "In {0} you move to the realm of {1}. Your lord, army, research and buildings come with you; your regions only come along if they are free there, and for any that do not you are credited a day of their income.",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:62"
+      "apps/web/src/components/DunyaSeridi.tsx:63"
     ]
   },
   "t32e77860": {
@@ -1019,7 +1003,16 @@
     "tr": "{0} sonra {1} diyarının lordları buraya geliyor. Taht sahipsiz kalacak — ilk alan Diyarın Lordu olur.",
     "en": "In {0} the lords of {1} arrive here. The throne will be left unowned — whoever takes it first becomes Lord of the Realm.",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:63"
+      "apps/web/src/components/DunyaSeridi.tsx:64"
+    ]
+  },
+  "t160d470e": {
+    "grup": "arayuz",
+    "tr": "{0} sonra {1} olacaksın.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/LordEkrani.tsx:402",
+      "apps/web/src/screens/Medeniyet.tsx:164"
     ]
   },
   "t705bb4d6": {
@@ -1054,7 +1047,7 @@
     "nerede": [
       "apps/web/src/components/IttifakIncele.tsx:71",
       "apps/web/src/components/Omurga.tsx:932",
-      "apps/web/src/screens/LordEkrani.tsx:388"
+      "apps/web/src/screens/LordEkrani.tsx:404"
     ]
   },
   "tb1cd334c": {
@@ -1063,7 +1056,15 @@
     "en": "{0} T{1}",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:221",
-      "apps/web/src/screens/LordEkrani.tsx:626"
+      "apps/web/src/screens/LordEkrani.tsx:650"
+    ]
+  },
+  "t4370d911": {
+    "grup": "arayuz",
+    "tr": "{0} tahtta · {1} şöhret",
+    "en": "",
+    "nerede": [
+      "apps/web/src/components/DunyaSeridi.tsx:110"
     ]
   },
   "te476c505": {
@@ -1071,7 +1072,7 @@
     "tr": "{0} tarafına geçiyorsun. {1} fayda puanın silinecek ve {2} gün boyunca geri dönemeyeceksin.",
     "en": "You are defecting to the {0} faction. Your {1} contribution points will be wiped, and you will not be able to return for {2} days.",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:253"
+      "apps/web/src/screens/Medeniyet.tsx:262"
     ]
   },
   "t56851a6b": {
@@ -1079,7 +1080,23 @@
     "tr": "{0} tarafına geçtin. {1} bölgen seninle geldi.",
     "en": "You joined the {0} faction. Your {1} regions came with you.",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:71"
+      "apps/web/src/screens/Medeniyet.tsx:72"
+    ]
+  },
+  "tf4e3c05f": {
+    "grup": "arayuz",
+    "tr": "{0} uzaktaydın. Bu sürede {1} olay oldu.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/LordEkrani.tsx:107"
+    ]
+  },
+  "t57412f14": {
+    "grup": "arayuz",
+    "tr": "{0} uzaktaydın. Bu sürede {1} olay ve {2} oldu.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/LordEkrani.tsx:98"
     ]
   },
   "t96cbf421": {
@@ -1160,7 +1177,7 @@
     "en": "you rank #{0}",
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:102",
-      "apps/web/src/screens/LordEkrani.tsx:399"
+      "apps/web/src/screens/LordEkrani.tsx:425"
     ]
   },
   "tf952a101": {
@@ -1216,7 +1233,7 @@
     "tr": "{0}/{1} bölge{2}",
     "en": "{0}/{1} regions{2}",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:351",
+      "apps/web/src/screens/LordEkrani.tsx:364",
       "apps/web/src/screens/Malikane.tsx:122"
     ]
   },
@@ -1242,7 +1259,7 @@
     "tr": "{0}/{1} saldırı",
     "en": "{0}/{1} attacks",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:359"
+      "apps/web/src/screens/LordEkrani.tsx:372"
     ]
   },
   "tca03ab23": {
@@ -1401,8 +1418,8 @@
     "en": "+{0} XP",
     "nerede": [
       "apps/web/src/components/IttifakBagis.tsx:125",
-      "apps/web/src/components/SaldiriOnizleme.tsx:118",
-      "apps/web/src/components/SaldiriOnizleme.tsx:160"
+      "apps/web/src/components/SaldiriOnizleme.tsx:120",
+      "apps/web/src/components/SaldiriOnizleme.tsx:163"
     ]
   },
   "t937e2c3d": {
@@ -1425,6 +1442,14 @@
     "en": "+{0}% fame",
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:95"
+    ]
+  },
+  "tf2da5d60": {
+    "grup": "arayuz",
+    "tr": "+%{0} yağma",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/LordEkrani.tsx:431"
     ]
   },
   "tee349f95": {
@@ -1548,7 +1573,7 @@
     "tr": "altın",
     "en": "gold",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:20",
+      "apps/web/src/components/SaldiriOnizleme.tsx:21",
       "apps/web/src/components/SavasRaporu.tsx:115",
       "apps/web/src/components/ui.tsx:132",
       "apps/web/src/screens/Harita.tsx:62",
@@ -1564,7 +1589,7 @@
       "apps/web/src/components/KaynakGonder.tsx:89",
       "apps/web/src/components/MobilKabuk.tsx:269",
       "apps/web/src/screens/Generaller.tsx:25",
-      "apps/web/src/screens/Medeniyet.tsx:327",
+      "apps/web/src/screens/Medeniyet.tsx:337",
       "data/arma.json:renkler[5].ad"
     ]
   },
@@ -1573,7 +1598,7 @@
     "tr": "Altın bağışı",
     "en": "Gold donation",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:326"
+      "apps/web/src/screens/Medeniyet.tsx:336"
     ]
   },
   "t636ac62e": {
@@ -1745,7 +1770,7 @@
     "tr": "aşağı",
     "en": "down",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:148",
+      "apps/web/src/components/SaldiriOnizleme.tsx:151",
       "apps/web/src/components/SavasRaporu.tsx:85"
     ]
   },
@@ -1755,7 +1780,7 @@
     "en": "Mount",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:64",
-      "apps/web/src/screens/LordEkrani.tsx:75"
+      "apps/web/src/screens/LordEkrani.tsx:76"
     ]
   },
   "t091167b6": {
@@ -1763,7 +1788,7 @@
     "tr": "av sensin",
     "en": "you are the prey",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:127"
+      "apps/web/src/components/DunyaSeridi.tsx:135"
     ]
   },
   "t0fcc273e": {
@@ -1827,7 +1852,7 @@
     "tr": "az önce",
     "en": "just now",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:26",
+      "apps/web/src/components/DunyaSeridi.tsx:27",
       "apps/web/src/components/ui.tsx:821"
     ]
   },
@@ -1844,7 +1869,7 @@
     "tr": "Azami seviyede — daha fazlası yok.",
     "en": "At maximum level — no more.",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:317"
+      "apps/web/src/screens/Medeniyet.tsx:327"
     ]
   },
   "td4faffaa": {
@@ -1860,7 +1885,7 @@
     "tr": "Bağış için kaynak gir.",
     "en": "Enter resources for donation.",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:124"
+      "apps/web/src/screens/Medeniyet.tsx:125"
     ]
   },
   "t27caeaeb": {
@@ -1869,7 +1894,7 @@
     "en": "Donate",
     "nerede": [
       "apps/web/src/components/IttifakBagis.tsx:133",
-      "apps/web/src/screens/Medeniyet.tsx:310"
+      "apps/web/src/screens/Medeniyet.tsx:320"
     ]
   },
   "t48eb280e": {
@@ -1878,7 +1903,7 @@
     "en": "Donation failed.",
     "nerede": [
       "apps/web/src/components/IttifakBagis.tsx:57",
-      "apps/web/src/screens/Medeniyet.tsx:100"
+      "apps/web/src/screens/Medeniyet.tsx:101"
     ]
   },
   "t9e48a8c0": {
@@ -1886,7 +1911,7 @@
     "tr": "Bağışın kasaya girdi. +{0} fayda puanı.",
     "en": "Your donation entered the vault. +{0} contribution points.",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:89"
+      "apps/web/src/screens/Medeniyet.tsx:90"
     ]
   },
   "t8786570f": {
@@ -2049,7 +2074,7 @@
     "tr": "Bekleme sürüyor",
     "en": "Cooldown active",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:218"
+      "apps/web/src/screens/Medeniyet.tsx:227"
     ]
   },
   "t4d534b42": {
@@ -2202,15 +2227,7 @@
     "tr": "Bir medeniyete bağlı değilsin. Yeni açılan lordlar kayıtta bir medeniyete yazılıyor.",
     "en": "You are not affiliated with a civilization. Newly created lords are assigned to a civilization upon registration.",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:112"
-    ]
-  },
-  "t8933fad2": {
-    "grup": "arayuz",
-    "tr": "bir medeniyete geçebilirsin — kazanan tarafa geçiş yok. Geçersen",
-    "en": "",
-    "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:209"
+      "apps/web/src/screens/Medeniyet.tsx:113"
     ]
   },
   "tc483baeb": {
@@ -2313,12 +2330,12 @@
       "apps/web/src/components/SavasRaporu.tsx:480"
     ]
   },
-  "t8183ca19": {
+  "tc0b6010d": {
     "grup": "arayuz",
-    "tr": "bölge el değiştirmez.",
+    "tr": "bölge el değiştirmez",
     "en": "",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:109"
+      "apps/web/src/components/SaldiriOnizleme.tsx:112"
     ]
   },
   "tdc110320": {
@@ -2350,7 +2367,7 @@
     "tr": "Bölge limitin dolu ({0}/{1}). Kazansan bile bölgeyi alamazsın, sadece yağmalarsın — gelir artışı olmaz.",
     "en": "Your region limit is full ({0}/{1}). Even if you win you cannot take the region, you will only loot it — there is no income increase.",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:163"
+      "apps/web/src/components/SaldiriOnizleme.tsx:166"
     ]
   },
   "t1a50f32e": {
@@ -2382,7 +2399,7 @@
     "tr": "Bölgelerin",
     "en": "Your regions",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:151",
+      "apps/web/src/components/SaldiriOnizleme.tsx:154",
       "apps/web/src/components/SavasRaporu.tsx:89"
     ]
   },
@@ -2434,7 +2451,7 @@
     "tr": "bölgesini aldı",
     "en": "took the region",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:209"
+      "apps/web/src/components/DunyaSeridi.tsx:225"
     ]
   },
   "t642e404b": {
@@ -2442,7 +2459,7 @@
     "tr": "bölgesini yağmaladı",
     "en": "looted the region",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:213"
+      "apps/web/src/components/DunyaSeridi.tsx:229"
     ]
   },
   "t918b4e4d": {
@@ -2458,15 +2475,7 @@
     "tr": "bölgeyi alma ihtimali",
     "en": "chance of taking the region",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:89"
-    ]
-  },
-  "t6be27a57": {
-    "grup": "arayuz",
-    "tr": "Bölgeyi almak için savunanın kabaca 1,5 katı güce ihtiyacın var; daha büyük bir orduyla gel.",
-    "en": "To take the region, you need roughly 1.5 times the defender's power; come with a larger army.",
-    "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:110"
+      "apps/web/src/components/SaldiriOnizleme.tsx:90"
     ]
   },
   "tf94e359c": {
@@ -2514,7 +2523,7 @@
     "tr": "Bu bölgenin geliri",
     "en": "The income of this region",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:125"
+      "apps/web/src/components/SaldiriOnizleme.tsx:127"
     ]
   },
   "td847d73b": {
@@ -2707,7 +2716,7 @@
     "tr": "Can +{0} · yaralanma −%{1}",
     "en": "Health +{0} · wounding −{1}%",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:53"
+      "apps/web/src/screens/LordEkrani.tsx:54"
     ]
   },
   "t25bfe7af": {
@@ -2747,7 +2756,7 @@
     "tr": "Çaylak",
     "en": "Rookie",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:130"
+      "apps/web/src/screens/LordEkrani.tsx:140"
     ]
   },
   "tf0952fd6": {
@@ -2771,7 +2780,7 @@
     "tr": "Çekirdek {0}. seviyeye çıktı. +{1} fayda puanı.",
     "en": "Core reached level {0}. +{1} contribution points.",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:88"
+      "apps/web/src/screens/Medeniyet.tsx:89"
     ]
   },
   "te591a291": {
@@ -2787,15 +2796,15 @@
     "tr": "Çekirdekler",
     "en": "Cores",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:267"
+      "apps/web/src/screens/Medeniyet.tsx:276"
     ]
   },
-  "tcc7988b6": {
+  "t84aef821": {
     "grup": "arayuz",
-    "tr": "Çekirdekler ele geçirilemez; yalnız geliştirilir. Bonus",
-    "en": "Cores cannot be captured; they are only upgraded. Bonus",
+    "tr": "Çekirdekler ele geçirilemez; yalnız geliştirilir. Bonus {0} işliyor — bağış yapmayana da. Bağışın karşılığı fayda puanı.",
+    "en": "",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:269"
+      "apps/web/src/screens/Medeniyet.tsx:279"
     ]
   },
   "t24548309": {
@@ -2835,7 +2844,7 @@
     "tr": "Dayanıklılık",
     "en": "Endurance",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:51"
+      "apps/web/src/screens/LordEkrani.tsx:52"
     ]
   },
   "t050236e6": {
@@ -2869,7 +2878,7 @@
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:90",
       "apps/web/src/components/MobilKabuk.tsx:277",
-      "apps/web/src/screens/Medeniyet.tsx:335"
+      "apps/web/src/screens/Medeniyet.tsx:345"
     ]
   },
   "tf60f934f": {
@@ -2877,7 +2886,7 @@
     "tr": "Demir bağışı",
     "en": "Iron donation",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:334"
+      "apps/web/src/screens/Medeniyet.tsx:344"
     ]
   },
   "tc8275adc": {
@@ -2886,8 +2895,8 @@
     "en": "Blacksmith",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:397",
-      "apps/web/src/screens/LordEkrani.tsx:594",
-      "apps/web/src/screens/LordEkrani.tsx:611",
+      "apps/web/src/screens/LordEkrani.tsx:618",
+      "apps/web/src/screens/LordEkrani.tsx:635",
       "apps/web/src/screens/Sehir.tsx:555",
       "data/basarimlar.json:kumeler[3].ad",
       "data/binalar.json:binalar[3].ad",
@@ -3076,12 +3085,20 @@
       "apps/web/src/screens/Giris.tsx:253"
     ]
   },
-  "tf5a53ff1": {
+  "t5ff06009": {
     "grup": "arayuz",
-    "tr": "Diyarda",
-    "en": "In the realm",
+    "tr": "Diyarda {0} — ve en şöhretli lord sensin: sana saldıran {1} alır.",
+    "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:398"
+      "apps/web/src/screens/LordEkrani.tsx:421"
+    ]
+  },
+  "t6fc50793": {
+    "grup": "arayuz",
+    "tr": "Diyarda {0}.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/LordEkrani.tsx:422"
     ]
   },
   "t1c2cafbf": {
@@ -3097,7 +3114,7 @@
     "tr": "Diyarda neler oluyor",
     "en": "What's happening in the realm",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:193"
+      "apps/web/src/components/DunyaSeridi.tsx:209"
     ]
   },
   "t1ffa6e79": {
@@ -3145,7 +3162,7 @@
     "tr": "Diyarın hâli",
     "en": "State of the realm",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:175"
+      "apps/web/src/screens/Medeniyet.tsx:181"
     ]
   },
   "tf29f8017": {
@@ -3308,7 +3325,7 @@
     "tr": "Dört medeniyetin de nüfusu ortalamanın üstünde ya da eşit.",
     "en": "The population of all four civilizations is above or equal to the average.",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:224"
+      "apps/web/src/screens/Medeniyet.tsx:233"
     ]
   },
   "t5b30f3b7": {
@@ -3438,7 +3455,7 @@
     "en": "Legendary",
     "nerede": [
       "apps/web/src/components/ui.tsx:276",
-      "apps/web/src/screens/LordEkrani.tsx:130"
+      "apps/web/src/screens/LordEkrani.tsx:140"
     ]
   },
   "tf81c1046": {
@@ -3462,7 +3479,7 @@
     "tr": "Ekipman gücü",
     "en": "Equipment power",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:537"
+      "apps/web/src/screens/LordEkrani.tsx:561"
     ]
   },
   "tf8c29599": {
@@ -3600,7 +3617,7 @@
     "tr": "En üst unvandasın:",
     "en": "You are at the highest title:",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:393"
+      "apps/web/src/screens/LordEkrani.tsx:411"
     ]
   },
   "ta47d707e": {
@@ -3634,7 +3651,7 @@
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:91",
       "apps/web/src/components/MobilKabuk.tsx:285",
-      "apps/web/src/screens/Medeniyet.tsx:343",
+      "apps/web/src/screens/Medeniyet.tsx:353",
       "packages/shared/src/ogretici.ts:292"
     ]
   },
@@ -3643,7 +3660,7 @@
     "tr": "Erzak bağışı",
     "en": "Supply donation",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:342"
+      "apps/web/src/screens/Medeniyet.tsx:352"
     ]
   },
   "t0509e8aa": {
@@ -3651,7 +3668,7 @@
     "tr": "Erzak bitti, askerler saatte %5 firar ediyor. Tarla bölgesi al ya da ordunu küçült.",
     "en": "Supplies are out, troops desert at 5% per hour. Take a farm region or reduce your army.",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:318"
+      "apps/web/src/screens/LordEkrani.tsx:328"
     ]
   },
   "t709594fe": {
@@ -3740,7 +3757,7 @@
     "tr": "Evet, taraf değiştir",
     "en": "Yes, change factions",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:259"
+      "apps/web/src/screens/Medeniyet.tsx:268"
     ]
   },
   "t0944f9b2": {
@@ -3748,7 +3765,7 @@
     "tr": "fayda puanın sıfırlanır",
     "en": "your contribution points will be reset",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:211"
+      "apps/web/src/screens/Medeniyet.tsx:219"
     ]
   },
   "t301d1406": {
@@ -3823,7 +3840,7 @@
     "tr": "Geç",
     "en": "Switch",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:244"
+      "apps/web/src/screens/Medeniyet.tsx:253"
     ]
   },
   "t27e7a2ba": {
@@ -3989,7 +4006,7 @@
     "en": "Send",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:95",
-      "apps/web/src/screens/Medeniyet.tsx:349"
+      "apps/web/src/screens/Medeniyet.tsx:359"
     ]
   },
   "t3b8e7ae3": {
@@ -4064,7 +4081,7 @@
     "tr": "Görünüş",
     "en": "Appearance",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:433"
+      "apps/web/src/screens/LordEkrani.tsx:457"
     ]
   },
   "tec5ebccb": {
@@ -4080,7 +4097,7 @@
     "tr": "Güç",
     "en": "Power",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:49"
+      "apps/web/src/screens/LordEkrani.tsx:50"
     ]
   },
   "t06e4276b": {
@@ -4098,14 +4115,6 @@
     "nerede": [
       "apps/web/src/screens/Generaller.tsx:25",
       "data/arma.json:renkler[6].ad"
-    ]
-  },
-  "t90746d55": {
-    "grup": "arayuz",
-    "tr": "gün boyunca yeniden değiştiremezsin. Toprağın ve kampın seninle gelir.",
-    "en": "",
-    "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:212"
     ]
   },
   "ta4e04755": {
@@ -4195,7 +4204,7 @@
     "tr": "Haritaya bak",
     "en": "Look at the map",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:111"
+      "apps/web/src/screens/LordEkrani.tsx:121"
     ]
   },
   "t3f5817ee": {
@@ -4204,7 +4213,7 @@
     "en": "Go to map",
     "nerede": [
       "apps/web/src/screens/Malikane.tsx:166",
-      "apps/web/src/screens/Medeniyet.tsx:113",
+      "apps/web/src/screens/Medeniyet.tsx:114",
       "apps/web/src/screens/Olaylar.tsx:86",
       "apps/web/src/screens/Siralama.tsx:279"
     ]
@@ -4421,7 +4430,7 @@
     "en": "Account",
     "nerede": [
       "apps/web/src/screens/Hesap.tsx:97",
-      "apps/web/src/screens/LordEkrani.tsx:671",
+      "apps/web/src/screens/LordEkrani.tsx:695",
       "packages/shared/src/types.ts:322"
     ]
   },
@@ -4454,7 +4463,7 @@
     "tr": "Hiçbir yuvan dolu değil. Ekipman",
     "en": "None of your slots are full. Equipment",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:588"
+      "apps/web/src/screens/LordEkrani.tsx:612"
     ]
   },
   "tdca95e4b": {
@@ -4552,7 +4561,7 @@
     "tr": "İlk saldırın hızlandırıldı: ordun {0} içinde varacak, sonucu bu oturumda göreceksin.",
     "en": "Your first attack is sped up: your army will arrive in {0}, and you will see the outcome in this session.",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:185"
+      "apps/web/src/components/SaldiriOnizleme.tsx:188"
     ]
   },
   "t2153024e": {
@@ -4560,7 +4569,7 @@
     "tr": "imkânsız",
     "en": "impossible",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:48"
+      "apps/web/src/components/SaldiriOnizleme.tsx:49"
     ]
   },
   "t11e05dd1": {
@@ -4646,7 +4655,7 @@
       "apps/web/src/screens/Generaller.tsx:158",
       "apps/web/src/screens/Harita.tsx:639",
       "apps/web/src/screens/Kisla.tsx:380",
-      "apps/web/src/screens/LordEkrani.tsx:203"
+      "apps/web/src/screens/LordEkrani.tsx:213"
     ]
   },
   "tce89a581": {
@@ -4666,14 +4675,6 @@
       "apps/web/src/components/IttifakIncele.tsx:44",
       "apps/web/src/screens/Harita.tsx:310",
       "apps/web/src/screens/Ittifak.tsx:134"
-    ]
-  },
-  "t4c73a838": {
-    "grup": "arayuz",
-    "tr": "işliyor — bağış yapmayana da. Bağışın karşılığı fayda puanı.",
-    "en": "",
-    "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:270"
     ]
   },
   "tdef74ba4": {
@@ -4867,12 +4868,12 @@
       "apps/web/src/components/Omurga.tsx:638"
     ]
   },
-  "tecfae1d8": {
+  "t846f337f": {
     "grup": "arayuz",
-    "tr": "İyileşmesine",
-    "en": "Until healed",
+    "tr": "İyileşmesine {0} kaldı. Bu sürede saldıramazsın.",
+    "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:330"
+      "apps/web/src/screens/LordEkrani.tsx:341"
     ]
   },
   "t217040e8": {
@@ -4932,14 +4933,6 @@
       "apps/web/src/screens/Sehir.tsx:488"
     ]
   },
-  "ta26a9886": {
-    "grup": "arayuz",
-    "tr": "kaldı. Bu sürede saldıramazsın.",
-    "en": "",
-    "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:330"
-    ]
-  },
   "t8a4e1a1c": {
     "grup": "arayuz",
     "tr": "kaldı. İlk saldırında kalkan düşer.",
@@ -4971,7 +4964,7 @@
     "nerede": [
       "apps/web/src/components/ArmaSecici.tsx:113",
       "apps/web/src/screens/Demirhane.tsx:61",
-      "apps/web/src/screens/LordEkrani.tsx:72"
+      "apps/web/src/screens/LordEkrani.tsx:73"
     ]
   },
   "t806485d0": {
@@ -5016,7 +5009,7 @@
       "apps/web/src/screens/Demirhane.tsx:125",
       "apps/web/src/screens/Harita.tsx:1104",
       "apps/web/src/screens/Harita.tsx:998",
-      "apps/web/src/screens/Medeniyet.tsx:310"
+      "apps/web/src/screens/Medeniyet.tsx:320"
     ]
   },
   "t0ffc6da6": {
@@ -5138,7 +5131,7 @@
     "tr": "Kaydediliyor...",
     "en": "Saving...",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:512"
+      "apps/web/src/screens/LordEkrani.tsx:536"
     ]
   },
   "t6e20f3cf": {
@@ -5197,7 +5190,7 @@
     "tr": "Kaynağını ve bağış miktarını kontrol et.",
     "en": "Check your resources and donation amount.",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:352"
+      "apps/web/src/screens/Medeniyet.tsx:362"
     ]
   },
   "t9bec001a": {
@@ -5237,7 +5230,7 @@
     "tr": "Kazancın yalnızca yağma",
     "en": "Your gain is only loot",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:114"
+      "apps/web/src/components/SaldiriOnizleme.tsx:116"
     ]
   },
   "t1e9d2119": {
@@ -5245,7 +5238,7 @@
     "tr": "Kazanırsan",
     "en": "If you win",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:100",
+      "apps/web/src/components/SaldiriOnizleme.tsx:101",
       "apps/web/src/components/ui.tsx:227"
     ]
   },
@@ -5270,7 +5263,7 @@
     "tr": "Kazansan bile",
     "en": "Even if you win",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:100"
+      "apps/web/src/components/SaldiriOnizleme.tsx:101"
     ]
   },
   "t8cd1d240": {
@@ -5305,7 +5298,7 @@
     "tr": "kıl payı — sonuç değişebilir",
     "en": "too close to call — the outcome may change",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:46"
+      "apps/web/src/components/SaldiriOnizleme.tsx:47"
     ]
   },
   "t1f31dd4f": {
@@ -5415,7 +5408,7 @@
     "tr": "Komuta {0} yer",
     "en": "Command takes {0}",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:55"
+      "apps/web/src/screens/LordEkrani.tsx:56"
     ]
   },
   "tfd213fce": {
@@ -5463,7 +5456,7 @@
     "tr": "Kumandan",
     "en": "Commander",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:130"
+      "apps/web/src/screens/LordEkrani.tsx:140"
     ]
   },
   "ta75ebbe0": {
@@ -5488,7 +5481,7 @@
     "tr": "Kurnazlık",
     "en": "Cunning",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:57"
+      "apps/web/src/screens/LordEkrani.tsx:58"
     ]
   },
   "t46e558eb": {
@@ -5504,8 +5497,8 @@
     "tr": "Kuşam",
     "en": "Loadout",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:274",
-      "apps/web/src/screens/LordEkrani.tsx:432"
+      "apps/web/src/screens/LordEkrani.tsx:284",
+      "apps/web/src/screens/LordEkrani.tsx:456"
     ]
   },
   "taecbd481": {
@@ -5529,7 +5522,7 @@
     "tr": "Kuşanılan Ekipman",
     "en": "Equipped Gear",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:582"
+      "apps/web/src/screens/LordEkrani.tsx:606"
     ]
   },
   "t43eafc33": {
@@ -5609,7 +5602,7 @@
     "tr": "lider avı",
     "en": "leader hunt",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:135"
+      "apps/web/src/components/DunyaSeridi.tsx:143"
     ]
   },
   "t5a595361": {
@@ -5641,7 +5634,7 @@
     "tr": "Liderlik",
     "en": "Leadership",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:55"
+      "apps/web/src/screens/LordEkrani.tsx:56"
     ]
   },
   "t76d9061a": {
@@ -5669,7 +5662,7 @@
     "tr": "Lord savaş katkısı",
     "en": "Lord battle contribution",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:538"
+      "apps/web/src/screens/LordEkrani.tsx:562"
     ]
   },
   "t10934225": {
@@ -5677,8 +5670,8 @@
     "tr": "Lord tecrübesi",
     "en": "Lord experience",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:117",
-      "apps/web/src/components/SaldiriOnizleme.tsx:159"
+      "apps/web/src/components/SaldiriOnizleme.tsx:119",
+      "apps/web/src/components/SaldiriOnizleme.tsx:162"
     ]
   },
   "t3f61c37d": {
@@ -5686,7 +5679,7 @@
     "tr": "lorddan",
     "en": "from lord",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:76"
+      "apps/web/src/components/DunyaSeridi.tsx:77"
     ]
   },
   "tf479120b": {
@@ -5713,7 +5706,7 @@
     "tr": "Lordlara karşı",
     "en": "Against lords",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:566"
+      "apps/web/src/screens/LordEkrani.tsx:590"
     ]
   },
   "tc8f2ac29": {
@@ -5738,7 +5731,7 @@
     "en": "Your lord is wounded",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:730",
-      "apps/web/src/screens/LordEkrani.tsx:328"
+      "apps/web/src/screens/LordEkrani.tsx:338"
     ]
   },
   "td275369f": {
@@ -5804,7 +5797,7 @@
     "tr": "Medeniyet",
     "en": "Civilization",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:110",
+      "apps/web/src/screens/Medeniyet.tsx:111",
       "packages/shared/src/types.ts:324"
     ]
   },
@@ -5813,7 +5806,7 @@
     "tr": "Medeniyetin",
     "en": "Your civilization",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:132"
+      "apps/web/src/screens/Medeniyet.tsx:133"
     ]
   },
   "ta604cfa5": {
@@ -5821,7 +5814,7 @@
     "tr": "Medeniyetin başkenti — bonus taşımıyor, kimlik taşıyor.",
     "en": "Civilization's capital — carries no bonus, carries identity.",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:285"
+      "apps/web/src/screens/Medeniyet.tsx:295"
     ]
   },
   "t4d13f325": {
@@ -5829,7 +5822,7 @@
     "tr": "Medeniyetin herkesi askerini daha hızlı eğitiyor.",
     "en": "Everyone in the civilization trains soldiers faster.",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:41"
+      "apps/web/src/screens/Medeniyet.tsx:42"
     ]
   },
   "t00013904": {
@@ -5837,7 +5830,7 @@
     "tr": "medeniyetin herkesine",
     "en": "to everyone in the civilization",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:270"
+      "apps/web/src/screens/Medeniyet.tsx:280"
     ]
   },
   "te32f5646": {
@@ -5845,7 +5838,7 @@
     "tr": "Medeniyetin herkesinin depo tavanı büyüyor.",
     "en": "The storage capacity of everyone in the civilization increases.",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:40"
+      "apps/web/src/screens/Medeniyet.tsx:41"
     ]
   },
   "t087a3361": {
@@ -5853,7 +5846,7 @@
     "tr": "medeniyetin önde",
     "en": "civilization is leading",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:162"
+      "apps/web/src/components/DunyaSeridi.tsx:173"
     ]
   },
   "t642dd9f4": {
@@ -5861,7 +5854,7 @@
     "tr": "Medeniyetin tuttuğu bölgeler daha çok üretiyor.",
     "en": "Regions held by the civilization produce more.",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:43"
+      "apps/web/src/screens/Medeniyet.tsx:44"
     ]
   },
   "t2f9b9c67": {
@@ -5869,7 +5862,7 @@
     "tr": "Medeniyetin tuttuğu bölgeler daha zor alınıyor.",
     "en": "Regions held by the civilization are harder to capture.",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:42"
+      "apps/web/src/screens/Medeniyet.tsx:43"
     ]
   },
   "tf7042dec": {
@@ -5918,7 +5911,7 @@
     "en": "Helmet",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:63",
-      "apps/web/src/screens/LordEkrani.tsx:74"
+      "apps/web/src/screens/LordEkrani.tsx:75"
     ]
   },
   "tb2517ac5": {
@@ -5990,7 +5983,7 @@
     "tr": "neredeyse kesin",
     "en": "almost certain",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:44"
+      "apps/web/src/components/SaldiriOnizleme.tsx:45"
     ]
   },
   "tbe9d2415": {
@@ -5998,7 +5991,7 @@
     "tr": "Nitelik",
     "en": "Attributes",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:431"
+      "apps/web/src/screens/LordEkrani.tsx:455"
     ]
   },
   "t0a59e858": {
@@ -6006,7 +5999,7 @@
     "tr": "Nitelikler",
     "en": "Stats",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:443"
+      "apps/web/src/screens/LordEkrani.tsx:467"
     ]
   },
   "t9465a68b": {
@@ -6022,7 +6015,7 @@
     "tr": "nüfusu az",
     "en": "low population",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:209"
+      "apps/web/src/screens/Medeniyet.tsx:218"
     ]
   },
   "t92152373": {
@@ -6049,23 +6042,6 @@
       "apps/web/src/screens/Sehir.tsx:476"
     ]
   },
-  "tfbfb89a6": {
-    "grup": "arayuz",
-    "tr": "olacaksın.",
-    "en": "you will be.",
-    "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:389",
-      "apps/web/src/screens/Medeniyet.tsx:165"
-    ]
-  },
-  "t76b2da24": {
-    "grup": "arayuz",
-    "tr": "olay",
-    "en": "event",
-    "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:96"
-    ]
-  },
   "t38e7530f": {
     "grup": "arayuz",
     "tr": "Olay Akışı{0}",
@@ -6089,14 +6065,6 @@
     "en": "EVENTS",
     "nerede": [
       "apps/web/src/screens/Malikane.tsx:259"
-    ]
-  },
-  "te654b315": {
-    "grup": "arayuz",
-    "tr": "oldu.",
-    "en": "happened.",
-    "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:103"
     ]
   },
   "t19b08c4e": {
@@ -6130,7 +6098,7 @@
     "tr": "Ordu donanımı",
     "en": "Army gear",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:548",
+      "apps/web/src/screens/LordEkrani.tsx:572",
       "apps/web/src/screens/Sehir.tsx:64"
     ]
   },
@@ -6139,7 +6107,7 @@
     "tr": "Ordu kaybın",
     "en": "Your army loss",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:170"
+      "apps/web/src/components/SaldiriOnizleme.tsx:173"
     ]
   },
   "tfe40d1af": {
@@ -6172,7 +6140,7 @@
     "en": "Your army is starving",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:574",
-      "apps/web/src/screens/LordEkrani.tsx:316"
+      "apps/web/src/screens/LordEkrani.tsx:326"
     ]
   },
   "t287cf37e": {
@@ -6261,7 +6229,7 @@
     "en": "Your army is on the march",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:671",
-      "apps/web/src/components/SaldiriOnizleme.tsx:181"
+      "apps/web/src/components/SaldiriOnizleme.tsx:184"
     ]
   },
   "t77c935a8": {
@@ -6452,14 +6420,6 @@
       "apps/web/src/screens/Moderasyon.tsx:115"
     ]
   },
-  "t040e409d": {
-    "grup": "arayuz",
-    "tr": "önde (%",
-    "en": "",
-    "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:170"
-    ]
-  },
   "tae2b3eb1": {
     "grup": "arayuz",
     "tr": "Önerilen düzen",
@@ -6473,7 +6433,7 @@
     "tr": "önünde püskürtüldü",
     "en": "repelled in front of",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:217"
+      "apps/web/src/components/DunyaSeridi.tsx:233"
     ]
   },
   "tc96d4525": {
@@ -6561,7 +6521,7 @@
     "tr": "parola, öğretici, çıkış",
     "en": "password, tutorial, logout",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:672"
+      "apps/web/src/screens/LordEkrani.tsx:696"
     ]
   },
   "t53526980": {
@@ -6666,7 +6626,7 @@
     "tr": "Puan dağıtımı kalıcıdır. Liderlik ordunun büyüklüğünü ve general slotunu belirler.",
     "en": "Point distribution is permanent. Leadership determines army size and general slots.",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:524"
+      "apps/web/src/screens/LordEkrani.tsx:548"
     ]
   },
   "t8aa587ec": {
@@ -6715,7 +6675,7 @@
     "tr": "Rütbe",
     "en": "Rank",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:294"
+      "apps/web/src/screens/LordEkrani.tsx:304"
     ]
   },
   "t50ab46f6": {
@@ -6751,13 +6711,13 @@
       "apps/web/src/components/Omurga.tsx:578"
     ]
   },
-  "tbebb3ab2": {
+  "te4631574": {
     "grup": "arayuz",
-    "tr": "saatte +",
+    "tr": "saatte +{0}",
     "en": "",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:127",
-      "apps/web/src/components/SaldiriOnizleme.tsx:134"
+      "apps/web/src/components/SaldiriOnizleme.tsx:129",
+      "apps/web/src/components/SaldiriOnizleme.tsx:137"
     ]
   },
   "t4197b301": {
@@ -6831,7 +6791,7 @@
     "tr": "Saldırı +%{0} · Savunma +%{1} · Can +%{2}",
     "en": "Attack +{0}% · Defense +{1}% · Health +{2}%",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:549"
+      "apps/web/src/screens/LordEkrani.tsx:573"
     ]
   },
   "t293989d5": {
@@ -6871,15 +6831,7 @@
     "tr": "Sana maliyeti",
     "en": "Cost to you",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:99"
-    ]
-  },
-  "t35dda20b": {
-    "grup": "arayuz",
-    "tr": "sana saldıran +%{0} yağma alır",
-    "en": "",
-    "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:405"
+      "apps/web/src/components/SaldiriOnizleme.tsx:100"
     ]
   },
   "t9262f727": {
@@ -6896,7 +6848,7 @@
     "en": "Banner",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:65",
-      "apps/web/src/screens/LordEkrani.tsx:76"
+      "apps/web/src/screens/LordEkrani.tsx:77"
     ]
   },
   "t141ddec9": {
@@ -6912,7 +6864,7 @@
     "tr": "Savaş derecen",
     "en": "Battle rating",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:567"
+      "apps/web/src/screens/LordEkrani.tsx:591"
     ]
   },
   "t951ee66f": {
@@ -6920,7 +6872,7 @@
     "tr": "Savaş Gücü",
     "en": "Battle Power",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:528"
+      "apps/web/src/screens/LordEkrani.tsx:552"
     ]
   },
   "tc54d661e": {
@@ -6928,7 +6880,7 @@
     "tr": "Savaş katkısı +{0}",
     "en": "Battle contribution +{0}",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:49"
+      "apps/web/src/screens/LordEkrani.tsx:50"
     ]
   },
   "tb63ef965": {
@@ -6952,7 +6904,7 @@
     "tr": "Savaş raporlarını aşağıdaki olay akışından açabilirsin.",
     "en": "You can open battle reports from the event feed below.",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:107"
+      "apps/web/src/screens/LordEkrani.tsx:117"
     ]
   },
   "t1f9d183e": {
@@ -6979,12 +6931,12 @@
       "apps/web/src/screens/Demirhane.tsx:129"
     ]
   },
-  "t3c0be84d": {
+  "t645b91d7": {
     "grup": "arayuz",
-    "tr": "Savaşı kazanırsın ama",
+    "tr": "Savaşı kazanırsın ama {0}. Bölgeyi almak için savunanın kabaca 1,5 katı güce ihtiyacın var; daha büyük bir orduyla gel.",
     "en": "",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:109"
+      "apps/web/src/components/SaldiriOnizleme.tsx:111"
     ]
   },
   "t2646e16c": {
@@ -7121,7 +7073,7 @@
     "tr": "Sen yokken",
     "en": "While you were away",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:93"
+      "apps/web/src/screens/LordEkrani.tsx:94"
     ]
   },
   "t46e6f684": {
@@ -7235,7 +7187,7 @@
     "tr": "Sıfırla",
     "en": "Reset",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:519"
+      "apps/web/src/screens/LordEkrani.tsx:543"
     ]
   },
   "t481ea9d9": {
@@ -7285,7 +7237,7 @@
     "en": "Weapon",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:60",
-      "apps/web/src/screens/LordEkrani.tsx:71"
+      "apps/web/src/screens/LordEkrani.tsx:72"
     ]
   },
   "tfe650c0b": {
@@ -7358,15 +7310,6 @@
     "en": "Your last sign-in time and the last screen you saw.",
     "nerede": [
       "apps/web/src/screens/Gizlilik.tsx:62"
-    ]
-  },
-  "tb6f8487e": {
-    "grup": "arayuz",
-    "tr": "sonra",
-    "en": "",
-    "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:389",
-      "apps/web/src/screens/Medeniyet.tsx:165"
     ]
   },
   "t9564f32e": {
@@ -7502,7 +7445,7 @@
       "apps/web/src/components/MobilKabuk.tsx:246",
       "apps/web/src/screens/Ittifak.tsx:433",
       "apps/web/src/screens/Ittifak.tsx:76",
-      "apps/web/src/screens/LordEkrani.tsx:356",
+      "apps/web/src/screens/LordEkrani.tsx:369",
       "apps/web/src/screens/Siralama.tsx:138"
     ]
   },
@@ -7512,7 +7455,7 @@
     "en": "Lvl {0}/{1}",
     "nerede": [
       "apps/web/src/screens/Generaller.tsx:87",
-      "apps/web/src/screens/Medeniyet.tsx:279"
+      "apps/web/src/screens/Medeniyet.tsx:289"
     ]
   },
   "tb95fd396": {
@@ -7612,14 +7555,6 @@
       "apps/web/src/components/Omurga.tsx:480"
     ]
   },
-  "t6ef56307": {
-    "grup": "arayuz",
-    "tr": "şöhret",
-    "en": "fame",
-    "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:110"
-    ]
-  },
   "tb961283e": {
     "grup": "arayuz",
     "tr": "Şöhret",
@@ -7634,7 +7569,7 @@
     "tr": "Şöhret harcanmaz, biriktirilir.",
     "en": "Renown is not spent, it is accumulated.",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:416"
+      "apps/web/src/screens/LordEkrani.tsx:440"
     ]
   },
   "t73998c3c": {
@@ -7642,7 +7577,7 @@
     "tr": "Şöhret sıralaman",
     "en": "Your fame ranking",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:141",
+      "apps/web/src/components/SaldiriOnizleme.tsx:144",
       "apps/web/src/components/SavasRaporu.tsx:78"
     ]
   },
@@ -7651,7 +7586,7 @@
     "tr": "Şöhret üretimi",
     "en": "Fame production",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:132"
+      "apps/web/src/components/SaldiriOnizleme.tsx:134"
     ]
   },
   "t36c07401": {
@@ -7659,7 +7594,7 @@
     "tr": "Şöhretin",
     "en": "Your fame",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:138",
+      "apps/web/src/components/SaldiriOnizleme.tsx:141",
       "apps/web/src/components/SavasRaporu.tsx:75",
       "apps/web/src/screens/Demirhane.tsx:132"
     ]
@@ -7669,7 +7604,7 @@
     "tr": "ŞÖHRETİN NE YAPIYOR",
     "en": "WHAT YOUR RENOWN DOES",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:385"
+      "apps/web/src/screens/LordEkrani.tsx:398"
     ]
   },
   "teb231933": {
@@ -7693,7 +7628,7 @@
     "tr": "Şu an geçilebilecek taraf yok",
     "en": "There is no faction to switch to right now",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:223"
+      "apps/web/src/screens/Medeniyet.tsx:232"
     ]
   },
   "t7f1c341e": {
@@ -7736,7 +7671,7 @@
       "apps/web/src/screens/Akin.tsx:241",
       "apps/web/src/screens/Demirhane.tsx:225",
       "apps/web/src/screens/Demirhane.tsx:233",
-      "apps/web/src/screens/LordEkrani.tsx:633"
+      "apps/web/src/screens/LordEkrani.tsx:657"
     ]
   },
   "t5170099f": {
@@ -7752,7 +7687,7 @@
     "tr": "T{0}{1}",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:649"
+      "apps/web/src/screens/LordEkrani.tsx:673"
     ]
   },
   "t4d7ae40a": {
@@ -7800,7 +7735,7 @@
     "tr": "Tahmin:",
     "en": "Forecast:",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:73"
+      "apps/web/src/components/SaldiriOnizleme.tsx:74"
     ]
   },
   "tea717a9b": {
@@ -7865,7 +7800,7 @@
     "tr": "taht sahipsiz",
     "en": "throne is unowned",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:87"
+      "apps/web/src/components/DunyaSeridi.tsx:88"
     ]
   },
   "tf4ea0a0b": {
@@ -7953,7 +7888,7 @@
     "tr": "Taraf değiştirmek",
     "en": "Changing factions",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:207"
+      "apps/web/src/screens/Medeniyet.tsx:213"
     ]
   },
   "tdd305518": {
@@ -7961,7 +7896,7 @@
     "tr": "Tarafın",
     "en": "Your faction",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:110"
+      "apps/web/src/screens/Medeniyet.tsx:111"
     ]
   },
   "t05eeb3c7": {
@@ -7993,7 +7928,7 @@
     "tr": "Tecrübeli",
     "en": "Veteran",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:130"
+      "apps/web/src/screens/LordEkrani.tsx:140"
     ]
   },
   "t215646a3": {
@@ -8105,7 +8040,7 @@
     "tr": "Unvan",
     "en": "Title",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:282"
+      "apps/web/src/screens/LordEkrani.tsx:292"
     ]
   },
   "ta077015d": {
@@ -8114,7 +8049,7 @@
     "en": "Masterwork",
     "nerede": [
       "apps/web/src/components/ui.tsx:264",
-      "apps/web/src/screens/LordEkrani.tsx:130"
+      "apps/web/src/screens/LordEkrani.tsx:140"
     ]
   },
   "t9a9e52c9": {
@@ -8123,14 +8058,6 @@
     "en": "Zoom out",
     "nerede": [
       "apps/web/src/components/DunyaHaritasi.tsx:803"
-    ]
-  },
-  "tf29dea21": {
-    "grup": "arayuz",
-    "tr": "uzaktaydın. Bu sürede",
-    "en": "away. During this time",
-    "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:95"
     ]
   },
   "tf8038d21": {
@@ -8206,7 +8133,7 @@
       "apps/web/src/components/IttifakDuyuru.tsx:83",
       "apps/web/src/components/SikayetSayfasi.tsx:114",
       "apps/web/src/screens/Hesap.tsx:264",
-      "apps/web/src/screens/Medeniyet.tsx:244"
+      "apps/web/src/screens/Medeniyet.tsx:253"
     ]
   },
   "teacb0314": {
@@ -8215,14 +8142,6 @@
     "en": "Cancel, return to login screen",
     "nerede": [
       "apps/web/src/screens/ParolaSifirla.tsx:71"
-    ]
-  },
-  "t4849cec4": {
-    "grup": "arayuz",
-    "tr": "ve",
-    "en": "",
-    "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:100"
     ]
   },
   "t4e6aeb27": {
@@ -8262,8 +8181,7 @@
     "tr": "yağma",
     "en": "loot",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:139",
-      "apps/web/src/components/DunyaSeridi.tsx:175",
+      "apps/web/src/components/DunyaSeridi.tsx:147",
       "packages/shared/src/etki-adi.ts:31"
     ]
   },
@@ -8280,7 +8198,7 @@
     "tr": "Yağma +%{0}",
     "en": "Loot +{0}%",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:59"
+      "apps/web/src/screens/LordEkrani.tsx:60"
     ]
   },
   "t8e60ca24": {
@@ -8288,8 +8206,7 @@
     "tr": "yağma alır",
     "en": "takes loot",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:131",
-      "apps/web/src/components/DunyaSeridi.tsx:166"
+      "apps/web/src/components/DunyaSeridi.tsx:139"
     ]
   },
   "ta24bd532": {
@@ -8308,12 +8225,12 @@
       "apps/web/src/components/DunyaHaritasi.tsx:798"
     ]
   },
-  "tb03a2482": {
+  "te07ec6d1": {
     "grup": "arayuz",
-    "tr": "Yalnız",
-    "en": "Only",
+    "tr": "Yalnız {0} bir medeniyete geçebilirsin — kazanan tarafa geçiş yok. Geçersen {1} (puan eski tarafa verdiğin hizmetin kaydı) ve {2} gün boyunca yeniden değiştiremezsin. Toprağın ve kampın seninle gelir.",
+    "en": "",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:209"
+      "apps/web/src/screens/Medeniyet.tsx:216"
     ]
   },
   "t7eadadf4": {
@@ -8498,7 +8415,7 @@
     "tr": "YENİLGİ",
     "en": "DEFEAT",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:75",
+      "apps/web/src/components/SaldiriOnizleme.tsx:76",
       "apps/web/src/components/SavasRaporu.tsx:477",
       "apps/web/src/screens/Harita.tsx:1410"
     ]
@@ -8508,7 +8425,7 @@
     "tr": "Yerine koymak",
     "en": "To replace",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:174"
+      "apps/web/src/components/SaldiriOnizleme.tsx:177"
     ]
   },
   "t46b8c0de": {
@@ -8566,7 +8483,7 @@
     "tr": "yukarı",
     "en": "up",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:148",
+      "apps/web/src/components/SaldiriOnizleme.tsx:151",
       "apps/web/src/components/SavasRaporu.tsx:85"
     ]
   },
@@ -8667,7 +8584,7 @@
     "tr": "ZAFER",
     "en": "VICTORY",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:75",
+      "apps/web/src/components/SaldiriOnizleme.tsx:76",
       "apps/web/src/components/SavasRaporu.tsx:477",
       "apps/web/src/screens/Harita.tsx:1410"
     ]
@@ -8677,7 +8594,7 @@
     "tr": "Zafer ihtimali",
     "en": "Chance of victory",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:83"
+      "apps/web/src/components/SaldiriOnizleme.tsx:84"
     ]
   },
   "t7626de64": {
@@ -8685,7 +8602,7 @@
     "tr": "zayıf ihtimal",
     "en": "slim chance",
     "nerede": [
-      "apps/web/src/components/SaldiriOnizleme.tsx:47"
+      "apps/web/src/components/SaldiriOnizleme.tsx:48"
     ]
   },
   "t9c828d99": {
@@ -8702,7 +8619,7 @@
     "en": "Armor",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:62",
-      "apps/web/src/screens/LordEkrani.tsx:73"
+      "apps/web/src/screens/LordEkrani.tsx:74"
     ]
   },
   "t154e9396": {

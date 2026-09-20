@@ -21,6 +21,7 @@ import { useState } from 'react';
 import { ApiError, api, type CekirdekDto } from '../api/client';
 import { Zemin } from '../components/Zemin';
 import { BosHal } from '../components/BosHal';
+import { Cumle } from '../components/Cumle';
 import { hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { IkonAltin, IkonDemir, IkonErzak, IkonKale, IkonSohret } from '../components/Ikonlar';
 import {
@@ -159,10 +160,15 @@ export function Medeniyet({ onGit }: { onGit?: (ekran: string) => void }) {
         <p className="mt-0.5 text-[11.5px] leading-snug text-solgun">{m.rutbe.aciklama}</p>
         {m.rutbe.sonrakiAd && (
           <p className="mt-1 text-[11px] text-sonuk">
-            <span className="text-parsomen">
-              {`${formatSayi(m.rutbe.sonrakiEsik! - m.faydaPuanim)} puan`}
-            </span>{' '}
-            sonra <span className="text-altin">{m.rutbe.sonrakiAd}</span> olacaksın.
+            <Cumle
+              metin="{0} sonra {1} olacaksın."
+              parca={[
+                <span className="text-parsomen">
+                  {`${formatSayi(m.rutbe.sonrakiEsik! - m.faydaPuanim)} puan`}
+                </span>,
+                <span className="text-altin">{m.rutbe.sonrakiAd}</span>,
+              ]}
+            />
           </p>
         )}
       </Kart>
@@ -206,11 +212,14 @@ export function Medeniyet({ onGit }: { onGit?: (ekran: string) => void }) {
       */}
       <Bolum baslik="Taraf değiştirmek" id="degisim">
         <p className="mb-2 text-[12px] leading-snug text-sonuk">
-          Yalnız <span className="text-parsomen">nüfusu az</span> bir medeniyete geçebilirsin —
-          kazanan tarafa geçiş yok. Geçersen{' '}
-          <span className="text-parsomen">fayda puanın sıfırlanır</span> (puan eski tarafa verdiğin
-          hizmetin kaydı) ve {m.degisim.beklemeGun} gün boyunca yeniden değiştiremezsin. Toprağın ve
-          kampın seninle gelir.
+          <Cumle
+            metin="Yalnız {0} bir medeniyete geçebilirsin — kazanan tarafa geçiş yok. Geçersen {1} (puan eski tarafa verdiğin hizmetin kaydı) ve {2} gün boyunca yeniden değiştiremezsin. Toprağın ve kampın seninle gelir."
+            parca={[
+              <span className="text-parsomen">nüfusu az</span>,
+              <span className="text-parsomen">fayda puanın sıfırlanır</span>,
+              m.degisim.beklemeGun,
+            ]}
+          />
         </p>
 
         {m.degisim.kalanGun > 0 ? (
@@ -266,9 +275,10 @@ export function Medeniyet({ onGit }: { onGit?: (ekran: string) => void }) {
 
       <Bolum baslik="Çekirdekler" id="cekirdekler">
         <p className="mb-2 text-[12px] leading-snug text-sonuk">
-          Çekirdekler ele geçirilemez; yalnız geliştirilir. Bonus{' '}
-          <span className="text-parsomen">medeniyetin herkesine</span> işliyor — bağış yapmayana da.
-          Bağışın karşılığı fayda puanı.
+          <Cumle
+            metin="Çekirdekler ele geçirilemez; yalnız geliştirilir. Bonus {0} işliyor — bağış yapmayana da. Bağışın karşılığı fayda puanı."
+            parca={[<span className="text-parsomen">medeniyetin herkesine</span>]}
+          />
         </p>
         <div className="space-y-2">
           {m.cekirdekler.map((c) => (

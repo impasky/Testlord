@@ -100,12 +100,45 @@ sıraya göre** yerleşiyor:
 
 | Ne                      | Kaç | Neden                                              |
 | ----------------------- | --: | -------------------------------------------------- |
-| Bölge ve vilayet adları | 127 | Özel ad                                            |
-| Cümle parçaları         | 291 | Kodda birleşiyorlar; çeviriyle değil KODLA çözülür |
+| Bölge ve vilayet adları | 126 | Özel ad                                            |
+| Cümle parçaları         |  24 | Kodda birleşiyorlar; çeviriyle değil KODLA çözülür |
 
-İkincisi hâlâ açık: `"31. sıradasın"` gibi satırlar ekranda Türkçe
-kalıyor. Birleşen dizgelerin tek bir şablona dönmesi gerekiyor —
-`ceviri/cevrilmeyecekler.txt` hepsini kaynağıyla listeliyor.
+### Cümle parçası nedir, nasıl eridi
+
+JSX'te bir cümlenin ortasına renk koymak onu üçe bölüyor:
+
+```tsx
+<p>
+  Yalnız <span className="text-parsomen">nüfusu az</span> bir medeniyete geçebilirsin — kazanan
+  tarafa geçiş yok.
+</p>
+```
+
+Eklenti her JSX metnini ayrı sarıyor; çevirmene `"Yalnız"` ile `"bir
+medeniyete geçebilirsin — kazanan tarafa geçiş yok."` diye iki satır
+gidiyor. İkisi de tek başına çevrilemez — bağlam yok ve İngilizcede
+sözcük sırası değişince parça yanlış yere düşer. `parcaMi()` bu yüzden
+onları listeye hiç koymuyordu ve satır ekranda Türkçe kalıyordu.
+
+Çözüm `<Cumle>`: cümle TEK dizge, vurgulu sözcük `{0}` yer tutucusunda.
+
+```tsx
+<Cumle
+  metin="Yalnız {0} bir medeniyete geçebilirsin — kazanan tarafa geçiş yok."
+  parca={[<span className="text-parsomen">nüfusu az</span>]}
+/>
+```
+
+Çevirmen cümlenin tamamını görüyor, `{0}` çeviride İSTEDİĞİ YERE
+gidiyor, vurgulanan ibare ayrıca kendi başına çevriliyor. `metin`
+niteliği `METIN_NITELIGI` listesinde: kısa bir cümle şekil süzgecine
+takılıp anahtar sanılmasın diye.
+
+Sayı 291'le başlamıştı; önceki temizliklerle 39'a, `<Cumle>` ile dört
+dosyada (LordEkrani, Medeniyet, SaldiriOnizleme, DunyaSeridi) 24'e
+indi. Kalanın bir kısmı gerçekten çevrilemez (`T{0}`, `&nbsp;`),
+gerisi aynı yöntemle kapatılacak — `ceviri/cevrilmeyecekler.txt`
+hepsini kaynağıyla listeliyor.
 
 ---
 
@@ -115,6 +148,7 @@ kalıyor. Birleşen dizgelerin tek bir şablona dönmesi gerekiyor —
 | --------------------------------------------------- | -------------------------------------------------------- |
 | Çözücü, anahtar, sunucu kalıpları, eşzamanlı açılış | `packages/shared/src/dil.ts`                             |
 | Dil seçimi, paket indirme                           | `apps/web/src/lib/dil.tsx`                               |
+| Vurgulu cümle (parça birleştirme)                   | `apps/web/src/components/Cumle.tsx`                      |
 | Derleme eklentisi                                   | `apps/web/vite-ceviri.mjs`                               |
 | Paylaşılan metin kuralları                          | `tools/lib/metin-kurallari.mjs`                          |
 | Sunucu metni taraması                               | `apps/web/src/api/client.ts`                             |

@@ -3,7 +3,7 @@ LORDLAR ÇAĞI — ÇEVİRİ 1/3: OYUNU OYNANIR KILAN  (KALANLAR)
 Gezinme, düğmeler, kaynak ve birim adları, ilk saatin ekranları ve
 öğretici. Bu parti bitince oyun baştan sona oynanabilir.
 
-Bu dosyada 0 satır var — çevrilmiş olanlar çıkarıldı.
+Bu dosyada 7 satır var — çevrilmiş olanlar çıkarıldı.
 
 NASIL ÇEVİRİLİR
   Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.
@@ -20,3 +20,13 @@ NASIL ÇEVİRİLİR
   Bitince dosyayı olduğu gibi geri ver; gerisini ben hallederim.
 
 ==========================================================================
+
+--- LordEkrani (7) ---
+
+2128. {0} sonra {1} olacaksın.
+2130. {0} uzaktaydın. Bu sürede {1} olay oldu.
+2131. {0} uzaktaydın. Bu sürede {1} olay ve {2} oldu.
+2135. Diyarda {0}.
+2136. İyileşmesine {0} kaldı. Bu sürede saldıramazsın.
+2140. +%{0} yağma
+2141. Diyarda {0} — ve en şöhretli lord sensin: sana saldıran {1} alır.

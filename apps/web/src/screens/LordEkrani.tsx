@@ -36,6 +36,7 @@ import {
   formatSayi,
   nadirlikRengi,
 } from '../components/ui';
+import { Cumle } from '../components/Cumle';
 import { Gorsel } from '../components/Gorsel';
 import { kusamSeviyesi } from '@lordlar/shared';
 import { OrduSahnesi } from '../components/OrduSahnesi';
@@ -92,15 +93,24 @@ function YoklukKarti({ y, onGit }: { y: YoklukOzeti; onGit: (s: Sekme) => void }
     <Kart className="p-3" vurgu="var(--color-mavi)">
       <h3 className="baslik mb-1 text-[12px] text-mavi">Sen yokken</h3>
       <p className="text-[13px] text-solgun">
-        <span className="text-parsomen">{sure}</span> uzaktaydın. Bu sürede{' '}
-        <span className="text-parsomen">{y.olaylar}</span> olay
-        {y.savaslar > 0 && (
-          <>
-            {' '}
-            ve <span className="text-kirmizi">{`${y.savaslar} savaş`}</span>
-          </>
-        )}{' '}
-        oldu.
+        {y.savaslar > 0 ? (
+          <Cumle
+            metin="{0} uzaktaydın. Bu sürede {1} olay ve {2} oldu."
+            parca={[
+              <span className="text-parsomen">{sure}</span>,
+              <span className="text-parsomen">{y.olaylar}</span>,
+              <span className="text-kirmizi">{`${y.savaslar} savaş`}</span>,
+            ]}
+          />
+        ) : (
+          <Cumle
+            metin="{0} uzaktaydın. Bu sürede {1} olay oldu."
+            parca={[
+              <span className="text-parsomen">{sure}</span>,
+              <span className="text-parsomen">{y.olaylar}</span>,
+            ]}
+          />
+        )}
       </p>
       {y.savaslar > 0 && (
         <p className="mt-1 text-[11px] text-sonuk">
@@ -327,7 +337,10 @@ export function LordEkrani({
           <div className="text-[13px]">
             <strong className="baslik text-turuncu">Lordun yaralı</strong>
             <p className="mt-0.5 text-solgun">
-              İyileşmesine <GeriSayim bitis={lord.woundedUntil!} /> kaldı. Bu sürede saldıramazsın.
+              <Cumle
+                metin="İyileşmesine {0} kaldı. Bu sürede saldıramazsın."
+                parca={[<GeriSayim bitis={lord.woundedUntil!} />]}
+              />
             </p>
           </div>
         </Kart>
@@ -385,8 +398,13 @@ export function LordEkrani({
         <p className="baslik mb-1 text-[11px] text-sonuk">ŞÖHRETİN NE YAPIYOR</p>
         {lord.unvan.sonrakiAd ? (
           <p className="text-[12px] leading-snug text-solgun">
-            <span className="text-parsomen">{`${formatSayi(lord.unvan.sonrakiEsik! - lord.fame)} şöhret`}</span>{' '}
-            sonra <span className="text-altin">{lord.unvan.sonrakiAd}</span> olacaksın.
+            <Cumle
+              metin="{0} sonra {1} olacaksın."
+              parca={[
+                <span className="text-parsomen">{`${formatSayi(lord.unvan.sonrakiEsik! - lord.fame)} şöhret`}</span>,
+                <span className="text-altin">{lord.unvan.sonrakiAd}</span>,
+              ]}
+            />
           </p>
         ) : (
           <p className="text-[12px] leading-snug text-solgun">
@@ -395,20 +413,26 @@ export function LordEkrani({
         )}
         {dunya.data && (
           <p className="mt-1 text-[12px] leading-snug text-solgun">
-            Diyarda{' '}
-            <span className="text-parsomen">{`${formatSayi(dunya.data.benimSiram)}. sıradasın`}</span>
-            {dunya.data.liderAvi?.benMiyim ? (
-              <>
-                {' '}
-                — ve en şöhretli lord sensin:{' '}
-                <span className="text-kirmizi">
-                  {`sana saldıran +%${Math.round(dunya.data.liderAvi.yagmaBonusu * 100)} yağma alır`}
-                </span>
-                .
-              </>
-            ) : (
-              '.'
-            )}
+            {/* Lider bensem cümle UZUYOR, parçalanmıyor: iki ayrı tam
+                cümle, aynı iki parça. */}
+            <Cumle
+              metin={
+                dunya.data.liderAvi?.benMiyim
+                  ? 'Diyarda {0} — ve en şöhretli lord sensin: sana saldıran {1} alır.'
+                  : 'Diyarda {0}.'
+              }
+              parca={[
+                <span className="text-parsomen">{`${formatSayi(dunya.data.benimSiram)}. sıradasın`}</span>,
+                /* Kırmızı YALNIZ oranın üstünde: cümlenin gerisi
+                   şablona girdi, yoksa "sana saldıran … alır" tek
+                   başına çevrilemeyen bir parça olarak kalıyordu. */
+                dunya.data.liderAvi && (
+                  <span className="text-kirmizi">
+                    {`+%${Math.round(dunya.data.liderAvi.yagmaBonusu * 100)} yağma`}
+                  </span>
+                ),
+              ]}
+            />
           </p>
         )}
         {/* Şöhret HARCANMIYOR: oyuncu bunu bilmezse biriktirmeyi bir

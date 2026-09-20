@@ -96,6 +96,11 @@ export const ATLANAN_NITELIK = new Set([
 /** Okunması GEREKEN nitelikler — geri kalanı da okunuyor, bu liste belge. */
 export const METIN_NITELIGI = new Set([
   'baslik',
+  // `<Cumle metin="… {0} …">` — vurgulu sözcük taşıyan cümlenin TAMAMI.
+  // Bu nitelik yüzünden cümle tek parça kalıyor; şekil süzgecine
+  // bırakılırsa kısa bir cümle ("{0} sonra {1} olacaksın.") anahtar
+  // sanılıp elenebilir.
+  'metin',
   'altyazi',
   'mesaj',
   'etiket',

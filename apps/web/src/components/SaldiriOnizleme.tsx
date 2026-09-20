@@ -13,6 +13,7 @@ import { formatArmy } from '@lordlar/shared';
 import { useEffect, useRef } from 'react';
 import type { PreviewDto } from '../api/client';
 import { IkonAltin, IkonDemir, IkonErzak, IkonSohret } from './Ikonlar';
+import { Cumle } from './Cumle';
 import { Fark, SonucSatiri, KazanKaybet, formatKalan, formatSayi } from './ui';
 
 function Kaynaklar({ r }: { r: { altin: number; demir: number; erzak: number } }) {
@@ -106,9 +107,10 @@ export function SaldiriOnizleme({ onizleme }: { onizleme: PreviewDto }) {
             // düzeltmeye çalıştığımız hayal kırıklığının aynısı.
             <div>
               <p className="text-[12px] leading-snug text-turuncu">
-                Savaşı kazanırsın ama <strong className="font-bold">bölge el değiştirmez.</strong>{' '}
-                Bölgeyi almak için savunanın kabaca 1,5 katı güce ihtiyacın var; daha büyük bir
-                orduyla gel.
+                <Cumle
+                  metin="Savaşı kazanırsın ama {0}. Bölgeyi almak için savunanın kabaca 1,5 katı güce ihtiyacın var; daha büyük bir orduyla gel."
+                  parca={[<strong className="font-bold">bölge el değiştirmez</strong>]}
+                />
               </p>
               <div className="mt-1.5">
                 <SonucSatiri etiket="Kazancın yalnızca yağma" vurgu>
@@ -124,14 +126,15 @@ export function SaldiriOnizleme({ onizleme }: { onizleme: PreviewDto }) {
               {gelirVar && (
                 <SonucSatiri etiket="Bu bölgenin geliri" vurgu>
                   <span className="text-yesil">
-                    saatte +<Kaynaklar r={odul.saatlikGelir} />
+                    <Cumle metin="saatte +{0}" parca={[<Kaynaklar r={odul.saatlikGelir} />]} />
                   </span>
                 </SonucSatiri>
               )}
               {odul.saatlikGelir.sohret > 0 && (
                 <SonucSatiri etiket="Şöhret üretimi">
                   <span className="tabular inline-flex items-center gap-1 text-yesil">
-                    <IkonSohret boyut={11} /> saatte +{odul.saatlikGelir.sohret}
+                    <IkonSohret boyut={11} />{' '}
+                    <Cumle metin="saatte +{0}" parca={[odul.saatlikGelir.sohret]} />
                   </span>
                 </SonucSatiri>
               )}

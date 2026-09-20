@@ -139,7 +139,7 @@ ve yer adları o dünyanın parçası.
   İskelebaşı
   Şahinkaya
 
---- Cümle parçaları (39) ---
+--- Cümle parçaları (24) ---
 
 Bunlar tek başına çevrilemez, çünkü tek başına bir anlamı yok: kodda başka
 metinlerle birleşerek cümle oluyorlar (" ve ", ", boş" gibi). Bir
@@ -150,24 +150,16 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
 
   " — depo dolu, üretim boşa gidiyor"
       apps/web/src/components/MobilKabuk.tsx:155
-  " — medeniyetinin tahtı · "
-      apps/web/src/components/DunyaSeridi.tsx:106
-  " tahtta · "
-      apps/web/src/components/DunyaSeridi.tsx:106
   " ve "
       apps/web/src/components/DizilimSemasi.tsx:69
   "— savaşa girdikçe büyür."
       apps/web/src/screens/Generaller.tsx:98
-  "— ve en şöhretli lord sensin:"
-      apps/web/src/screens/LordEkrani.tsx:403
   ", boş"
       apps/web/src/components/DizilimIzgarasi.tsx:324
   ", sana"
       apps/web/src/components/IttifakBagis.tsx:126
   ", şef"
       apps/web/src/screens/Akin.tsx:491
-  "(puan eski tarafa verdiğin hizmetin kaydı) ve"
-      apps/web/src/screens/Medeniyet.tsx:211
   "{0} · T{1}"
       apps/web/src/screens/Akin.tsx:229
   "{0} T{1}"
@@ -186,43 +178,21 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
       apps/web/src/screens/Harita.tsx:348
   "Başvuru ile"
       apps/web/src/components/IttifakBasvurular.tsx:87
-  "bir medeniyete geçebilirsin — kazanan tarafa geçiş yok. Geçersen"
-      apps/web/src/screens/Medeniyet.tsx:209
-  "bölge el değiştirmez."
-      apps/web/src/components/SaldiriOnizleme.tsx:109
   "deyip oyunu oradan aç, sonra buraya dön."
       apps/web/src/components/BildirimKarti.tsx:74
-  "gün boyunca yeniden değiştiremezsin. Toprağın ve kampın seninle gelir."
-      apps/web/src/screens/Medeniyet.tsx:212
   "ihbar süresi boyunca pakt hâlâ korur — söz verdiğin an geri alınamıyor, o yüzden söz değerli."
       apps/web/src/components/Paktlar.tsx:158
   "iPhone ve iPad&apos;de bildirimler yalnızca ana ekrana eklenmiş uygulamada çalışır. Paylaş menüsünden"
       apps/web/src/components/BildirimKarti.tsx:73
-  "işliyor — bağış yapmayana da. Bağışın karşılığı fayda puanı."
-      apps/web/src/screens/Medeniyet.tsx:270
-  "kaldı. Bu sürede saldıramazsın."
-      apps/web/src/screens/LordEkrani.tsx:330
   "kaldı. İlk saldırında kalkan düşer."
       apps/web/src/screens/Malikane.tsx:137
   "Kur ·"
       apps/web/src/screens/Ittifak.tsx:348
-  "önde (%"
-      apps/web/src/components/DunyaSeridi.tsx:170
-  "saatte +"
-      apps/web/src/components/SaldiriOnizleme.tsx:127
-  "sana saldıran +%{0} yağma alır"
-      apps/web/src/screens/LordEkrani.tsx:405
-  "Savaşı kazanırsın ama"
-      apps/web/src/components/SaldiriOnizleme.tsx:109
-  "sonra"
-      apps/web/src/screens/LordEkrani.tsx:389
   "T"
       apps/web/src/screens/Demirhane.tsx:443
   "T{0}"
       apps/web/src/screens/Akin.tsx:241
   "T{0}{1}"
-      apps/web/src/screens/LordEkrani.tsx:649
+      apps/web/src/screens/LordEkrani.tsx:673
   "üst üste giriyorsun."
       apps/web/src/components/GunlukKart.tsx:88
-  "ve"
-      apps/web/src/screens/LordEkrani.tsx:100
