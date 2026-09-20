@@ -54,8 +54,17 @@ oyuncuya hiç söylenmeyen hâlidir. Süreler `balance.json`da (1 saat,
 1 gün, 7 gün). Tekrarlayan birini oyundan çıkarmak ittifak liderinin
 (atma) işi, susturmak yöneticinin.
 
-**Hesap silme, ban, kaynak alma yok.** Moderasyon aracı sohbete
-dokunuyor, oyuna değil.
+**Hesap silme ve kaynak alma yok.** Moderasyon aracı içeriğe dokunuyor,
+oyunun kendisine değil.
+
+> **Karar değişti — hesap yasağı eklendi.** Bu belge başta "ban yok"
+> diyordu ve gerekçesi doğruydu: kötü bir söz için hesabı kapatmak
+> ölçüsüz. Ama o gerekçe bir soruyu cevapsız bırakıyordu — bot hesabı,
+> hile, aynı kişinin açtığı yirmi hesap. Bunların karşılığı susturma
+> değil; susturmak onları yalnız sessizleştirirdi, oynamaya devam
+> ederlerdi. Yasak bu yüzden var ve susturmadan AYRI: susturma sohbete,
+> yasak oyuna dokunuyor. İkisi de geri alınabiliyor, ikisi de sebebini
+> oyuncuya söylüyor ve ikisi de kayda geçiyor.
 
 ### Yumuşak silme — neden metin duruyor
 
@@ -72,6 +81,54 @@ gizlemek, gizlemek değildir — ağı dinleyen herkes metni görürdü.
 Karar anında olay kaydı düşüyor, sohbet kutusunun yerini sebep ve kalan
 süre alıyor, Hesap ekranında da yazıyor. Sebebini bilmeyen oyuncu
 davranışını değiştiremez.
+
+---
+
+## Yönetici paneli — şikâyet beklemeden
+
+Kuyruk bir SIRA: kim şikâyet edildiyse o görünüyor. Uzun süre yetti,
+yetmediği yer şurası: **bot hesabını kimse şikâyet etmiyor.** Hile de,
+aynı kişinin açtığı yirmi hesap da kuyrukta hiç görünmüyor.
+
+Panel bir ARAMA: lord adını yazıp oyuncuyu buluyorsun ve dosyası
+açılıyor. Dosya karar için gerekeni yan yana koyuyor — hesabın öteki
+lordları (aynı kişi mi), moderasyon geçmişi (bu kaçıncı), son mesajlar
+(bağlam). Üçü ayrı ekranda olsaydı karar anında üç kez beklemek
+gerekirdi.
+
+| İşlem             | Neye dokunur | Süre                            |
+| ----------------- | ------------ | ------------------------------- |
+| Sustur            | Sohbete      | 1 saat · 1 gün · 7 gün          |
+| Hesabı yasakla    | Oyuna        | 1 gün · 7 gün · 30 gün · kalıcı |
+| Mesajı kaldır     | Tek mesaja   | —                               |
+| Kaldır (ikisi de) | —            | —                               |
+
+Kurallar kuyruktakiyle aynı ve üçü de bilinçli:
+
+- **Sebep zorunlu** (yasakta). Neden giremediğini bilmeyen oyuncu
+  davranışını değiştiremez; sebep hem oyuncuya gösteriliyor hem kayda
+  giriyor.
+- **Kalıcı yasak iki dokunuş istiyor.** Geri alınabilir olması,
+  yanlışlıkla basılabilir olmasını mazur göstermiyor.
+- **Yönetici kendini yasaklayamıyor.** Tek yöneticili bir oyunda
+  panelin kendini kilitlemesi, kurtarılması sunucuya girmeyi gerektiren
+  bir hata olurdu.
+
+### Yasak neye bağlı, nasıl işliyor
+
+Yasak **kullanıcıya** yazılıyor (`User.yasakli`), lorda değil: yeni bir
+lord açarak yasaktan kaçılamaz — `yonetici` ile aynı gerekçe.
+
+İşlemesi iki yerde: girişte jeton hiç verilmiyor, ve `requireAuth` her
+istekte veritabanından okuyor. İkincisi olmasaydı yasak ancak elindeki
+jeton ölünce (yedi gün) başlardı — yasak değil, temenni olurdu.
+
+### E-posta maskeli
+
+Panel `yun***@gmail.com` gösteriyor. Yöneticinin hesapları eşleştirmesi
+için bir tutamak gerekiyor ama adresin tamamı gerekmiyor; panel bir
+kimlik defteri değil. Tam adres yalnız sunucudaki `pnpm yonetici`
+aracında.
 
 ---
 
@@ -150,7 +207,15 @@ seferinde tarihe bakılarak cevaplanıyor. Geçmişi silmek, yöneticinin
 | Otomatik süzgeç (ad / mesaj)               | `apps/api/src/services/adDenetimi.ts`, `mesajDenetimi.ts`              |
 | Şikâyet kutusu (iki yerden tek kutu)       | `apps/web/src/components/SikayetSayfasi.tsx`                           |
 | Kuyruk ekranı                              | `apps/web/src/screens/Moderasyon.tsx`                                  |
+| Yönetici paneli (uçlar)                    | `apps/api/src/routes/yonetici.ts`                                      |
+| Yönetici paneli (ekran)                    | `apps/web/src/screens/YoneticiPaneli.tsx`                              |
+| Yasağın uygulanması                        | `apps/api/src/auth.ts`, `apps/api/src/routes/auth.ts`                  |
 | Test                                       | `packages/shared/src/moderasyon.test.ts`, `tools/moderasyon-testi.mjs` |
+
+`tools/yonetici-testi.mjs` panelin zincirini ölçüyor: ara → bul →
+yasakla → oyuncu gerçekten giremiyor (hem giriş hem ESKİ JETON) →
+kaldır → yeniden girebiliyor; üstüne yetki sınırını ve arayüzden
+verilen yasağın sunucuya işlediğini.
 
 `tools/moderasyon-testi.mjs` zincirin tamamını ölçüyor: şikâyet →
 kuyrukta görünüyor → karar → gerçekten etkisi var; üstüne yetki sınırını

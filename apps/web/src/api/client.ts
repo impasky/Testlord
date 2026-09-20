@@ -970,6 +970,45 @@ export interface KuyrukSatiriDto {
   gecmis: { ozet: string; an: string }[];
 }
 
+/* ---------------- Yönetici paneli ---------------- */
+
+export interface YoneticiAyarlariDto {
+  susturmaSureleri: { saat: number; metin: string }[];
+  yasakSureleri: { saat: number; metin: string }[];
+  kaliciYasak: boolean;
+}
+
+export interface AramaSonucuDto {
+  lordId: string;
+  ad: string;
+  seviye: number;
+  diyar: string;
+  sonGorulme: string;
+  susturulmus: boolean;
+  yasakli: boolean;
+}
+
+export interface YoneticiOyuncuDto {
+  lordId: string;
+  ad: string;
+  seviye: number;
+  sohret: number;
+  diyar: string;
+  katildi: string;
+  sonGorulme: string;
+  hesap: {
+    id: string;
+    eposta: string;
+    katildi: string;
+    yonetici: boolean;
+    lordlar: { id: string; ad: string; seviye: number; diyar: string }[];
+  };
+  susturma: { aktif: boolean; bitis: string | null; sebep: string | null };
+  yasak: { aktif: boolean; kalici: boolean; bitis: string | null; sebep: string | null };
+  gecmis: { ozet: string; an: string }[];
+  mesajlar: { id: string; metin: string; an: string; silinmis: boolean; gizli: boolean }[];
+}
+
 export interface KuyrukDto {
   toplam: number;
   sayfa: number;
@@ -1331,6 +1370,20 @@ export const api = {
     post<{ tamam: boolean; karar: string }>('/moderasyon/karar', { raporId, karar, saat }),
   susturmaKaldir: (lordId: string) =>
     post<{ tamam: boolean }>('/moderasyon/susturma-kaldir', { lordId }),
+  yoneticiAyarlari: () => request<YoneticiAyarlariDto>('/yonetici/ayarlar'),
+  yoneticiAra: (q: string) =>
+    request<{ sonuclar: AramaSonucuDto[] }>(`/yonetici/ara?q=${encodeURIComponent(q)}`),
+  yoneticiOyuncu: (lordId: string) => request<YoneticiOyuncuDto>(`/yonetici/oyuncu/${lordId}`),
+  yoneticiSustur: (lordId: string, saat: number, sebep: string) =>
+    post<{ tamam: boolean; ozet: string }>(`/yonetici/oyuncu/${lordId}/sustur`, { saat, sebep }),
+  yoneticiSusturmaKaldir: (lordId: string) =>
+    post<{ tamam: boolean; ozet: string }>(`/yonetici/oyuncu/${lordId}/susturma-kaldir`, {}),
+  yoneticiYasakla: (lordId: string, saat: number | null, sebep: string) =>
+    post<{ tamam: boolean; ozet: string }>(`/yonetici/oyuncu/${lordId}/yasakla`, { saat, sebep }),
+  yoneticiYasakKaldir: (lordId: string) =>
+    post<{ tamam: boolean; ozet: string }>(`/yonetici/oyuncu/${lordId}/yasak-kaldir`, {}),
+  yoneticiMesajKaldir: (mesajId: string) =>
+    post<{ tamam: boolean; ozet: string }>(`/yonetici/mesaj/${mesajId}/kaldir`, {}),
   bolgeyiBirak: (id: number) =>
     post<{ birakildi: boolean; donenBirlik: number }>(`/map/${id}/birak`),
 };

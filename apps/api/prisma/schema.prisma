@@ -22,6 +22,19 @@ model User {
   /// `pnpm yonetici <eposta>` ile açılır, elle veritabanından değil.
   yonetici Boolean @default(false)
 
+  /// HESAP YASAĞI — susturmanın oyuna bakan hâli (docs/14).
+  ///
+  /// Yasak KULLANICIYA bağlı, lorda değil: yeni bir lord açarak yasaktan
+  /// kaçılamaz. Süresi geçmiş kayıt TEMİZLENMİYOR; "aktif mi" sorusu her
+  /// seferinde tarihe bakılarak cevaplanıyor (shared `yasakDurumu`), çünkü
+  /// geçmişi silmek "bu kaçıncı" sorusunu cevapsız bırakırdı.
+  yasakli    Boolean   @default(false)
+  /// Kalıcı yasaksa null, süreliyse bitiş anı.
+  yasakBitis DateTime?
+  /// Oyuncuya gösterilen sebep. Neden giremediğini söylemeyen bir ceza,
+  /// oyuncuya davranışını değiştirme şansı vermiyor.
+  yasakSebebi String?
+
   lords  Lord[]
   resets PasswordReset[]
 }

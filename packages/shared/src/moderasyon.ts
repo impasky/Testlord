@@ -26,8 +26,18 @@ const M = B.moderasyon;
 /** Şikâyetin neye açıldığı. Lord = adı/davranışı, mesaj = tek bir söz. */
 export type SikayetTuru = 'lord' | 'mesaj';
 
-/** Yöneticinin verebileceği karar. */
+/** Yöneticinin bir ŞİKÂYETE verebileceği karar. */
 export type ModerasyonKarari = 'yok_say' | 'mesaj_sil' | 'sustur';
+
+/**
+ * Yönetici panelinden yapılabilen işlem.
+ *
+ * Şikâyet kararlarının üstüne üç tane daha var ve üçü de şikâyetsiz
+ * yapılabiliyor: kuyruk ŞİKÂYET EDİLENİ gösteriyor, ama bot hesabı da
+ * hile de kimse şikâyet etmeden durabiliyor. Panel oyuncuyu aramaya
+ * yarıyor, kuyruk beklemeye.
+ */
+export type YoneticiIslemi = ModerasyonKarari | 'yasakla' | 'yasak_kaldir' | 'susturma_kaldir';
 
 export interface Denetim {
   uygun: boolean;
@@ -133,10 +143,15 @@ export function susturmaSuresiGecerli(saat: number): boolean {
 }
 
 /** Süreyi insanın okuduğu hâle çevirir: 1 → "1 saat", 168 → "7 gün". */
-export function susturmaSuresiMetni(saat: number): string {
+export function saatMetni(saat: number): string {
   if (saat < 24) return `${saat} saat`;
   const gun = saat / 24;
   return Number.isInteger(gun) ? `${gun} gün` : `${saat} saat`;
+}
+
+/** Susturma süresinin okunur hâli. Yasakla aynı ölçü, ayrı ad. */
+export function susturmaSuresiMetni(saat: number): string {
+  return saatMetni(saat);
 }
 
 export function susturmaBitisi(saat: number, simdi: Date): Date {
@@ -215,15 +230,115 @@ export function karariDenetle(
 }
 
 /** Moderasyon kaydına yazılan satır — yöneticinin geçmişte okuyacağı şey. */
-export function kararMetni(karar: ModerasyonKarari, susturmaSaati?: number | null): string {
-  switch (karar) {
+export function islemMetni(islem: YoneticiIslemi, saat?: number | null): string {
+  switch (islem) {
     case 'yok_say':
       return 'Şikâyet yok sayıldı';
     case 'mesaj_sil':
       return 'Mesaj kaldırıldı';
     case 'sustur':
-      return `Sohbette susturuldu (${susturmaSuresiMetni(susturmaSaati ?? 0)})`;
+      return `Sohbette susturuldu (${saatMetni(saat ?? 0)})`;
+    case 'yasakla':
+      return saat == null
+        ? 'Hesap KALICI olarak yasaklandı'
+        : `Hesap yasaklandı (${saatMetni(saat)})`;
+    case 'yasak_kaldir':
+      return 'Yasak kaldırıldı';
+    case 'susturma_kaldir':
+      return 'Susturma kaldırıldı';
   }
+}
+
+export function kararMetni(karar: ModerasyonKarari, susturmaSaati?: number | null): string {
+  return islemMetni(karar, susturmaSaati);
+}
+
+/* ------------------------------------------------------------------ */
+/* Yasak                                                               */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Hesap yasağı — susturmanın oyuna bakan hâli.
+ *
+ * Susturma SOHBETE dokunuyor, yasak OYUNA: yasaklı hesap hiç giremiyor.
+ * İkisi ayrı, çünkü ölçüleri ayrı — kötü bir söz için hesabı kapatmak da,
+ * bot hesabını yalnız susturmak da yanlış olurdu.
+ *
+ * Yasak KULLANICIYA bağlı, lorda değil (`yonetici` gibi): yeni bir lord
+ * açarak yasaktan kaçılamaz.
+ *
+ * KALICI YASAK VAR ve susturmadan farkı bu. Susturmada kalıcı yok çünkü
+ * sohbete hiç sokmamak, oyuncuya söylenmeyen bir hesap silme olurdu;
+ * yasakta ise bot ve hile hesaplarının karşılığı başka bir şey değil.
+ * Her yasak geri alınabiliyor ve sebebi oyuncuya söyleniyor.
+ */
+export const YASAK_SURELERI: readonly number[] = M.yasak_sureleri_sa;
+export const KALICI_YASAK_ACIK: boolean = M.kalici_yasak_acik;
+export const YASAK_SEBEP_EN_AZ = M.yasak_sebep_en_az_harf;
+export const ARAMA_SONUC_SAYISI = M.arama_sonuc_sayisi;
+export const OYUNCU_MESAJ_SAYISI = M.oyuncu_mesaj_sayisi;
+
+/** `saat === null` kalıcı demek. */
+export function yasakSuresiGecerli(saat: number | null): boolean {
+  if (saat === null) return KALICI_YASAK_ACIK;
+  return YASAK_SURELERI.includes(saat);
+}
+
+export function yasagiDenetle(saat: number | null, sebep: string): Denetim {
+  if (!yasakSuresiGecerli(saat)) return { uygun: false, sebep: 'Geçersiz yasak süresi.' };
+  const t = sebep.trim();
+  if (t.length < YASAK_SEBEP_EN_AZ) {
+    return { uygun: false, sebep: `Yasak sebebini en az ${YASAK_SEBEP_EN_AZ} harfle yaz.` };
+  }
+  if (t.length > M.sebep_en_fazla_harf) {
+    return { uygun: false, sebep: `Sebep en fazla ${M.sebep_en_fazla_harf} harf olabilir.` };
+  }
+  return { uygun: true };
+}
+
+export function yasakBitisi(saat: number, simdi: Date): Date {
+  return new Date(simdi.getTime() + saat * 3600_000);
+}
+
+export interface YasakDurumu {
+  yasakli: boolean;
+  kalici: boolean;
+  bitis: Date | null;
+  /** Oyuncuya gösterilecek tek satır. Yasaklı değilse null. */
+  metin: string | null;
+}
+
+/**
+ * Yasak hâlâ sürüyor mu.
+ *
+ * Susturmadaki kuralın aynısı: süresi geçmiş kayıt TEMİZLENMİYOR, "aktif
+ * mi" sorusu her seferinde tarihe bakılarak cevaplanıyor. Geçmişi silmek,
+ * "bu kaçıncı" sorusunu cevapsız bırakırdı.
+ */
+export function yasakDurumu(
+  kalici: boolean,
+  bitis: Date | null | undefined,
+  sebep: string | null | undefined,
+  simdi: Date,
+): YasakDurumu {
+  const kuyruk = sebep ? ` Sebep: ${sebep}` : '';
+  if (kalici) {
+    return {
+      yasakli: true,
+      kalici: true,
+      bitis: null,
+      metin: `Hesabın kalıcı olarak yasaklandı.${kuyruk}`,
+    };
+  }
+  if (!bitis || bitis.getTime() <= simdi.getTime()) {
+    return { yasakli: false, kalici: false, bitis: null, metin: null };
+  }
+  return {
+    yasakli: true,
+    kalici: false,
+    bitis,
+    metin: `Hesabın yasaklı — ${kalanMetni(bitis.getTime() - simdi.getTime())} kaldı.${kuyruk}`,
+  };
 }
 
 /** Silinmiş mesajın yerine ne yazıyor. Metin silinmiyor, gizleniyor. */

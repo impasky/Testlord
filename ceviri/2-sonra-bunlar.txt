@@ -3,7 +3,7 @@ LORDLAR ÇAĞI — ÇEVİRİ 2/3: DERINLIK  (KALANLAR)
 Savaş raporu, demirhane, generaller, araştırma, ittifak, akın — ve bina,
 general, araştırma, başarım içerikleri.
 
-Bu dosyada 0 satır var — çevrilmiş olanlar çıkarıldı.
+Bu dosyada 39 satır var — çevrilmiş olanlar çıkarıldı.
 
 NASIL ÇEVİRİLİR
   Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.
@@ -34,3 +34,48 @@ NASIL ÇEVİRİLİR
   Bitince dosyayı olduğu gibi geri ver; gerisini ben hallederim.
 
 ==========================================================================
+
+--- YoneticiPaneli (38) ---
+
+2170.  · yönetici
+2171. ‹ Aramaya dön
+2172. Ada göre aranıyor; en az iki harf. Panel bir adres defteri değil, e-postayla arama yok.
+2173. Ara
+2174. Aynı hesapta {0} lord: {1}
+2175. Evet, kalıcı yasakla
+2176. GİZLİ
+2177. HESABI YASAKLA
+2178. Hesabı yasakla — {0}
+2179. Hesap: {0}{1}
+2180. Hiç mesaj yazmamış.
+2181. İşlem uygulanmadı; sayfayı tazeleyip tekrar dene.
+2182. KALDIRILDI
+2183. Kalıcı
+2184. Kalıcı yasak — {0}
+2185. Karar
+2186. Kayıt yok — bu ilk.
+2187. Kimse bulunamadı. Adın tamamını değil, bir parçasını yaz.
+2188. Mesaj kaldırılamadı.
+2189. Moderasyon geçmişi
+2190. Oyuncu ara
+2191. Sebep
+2192. Sebep (oyuncuya gösterilir)
+2193. sebep yok
+2194. SOHBETTE SUSTUR
+2195. Sohbette sustur — {0}
+2196. Son görülme: {0}
+2197. Son mesajları
+2198. Sonuçlar
+2199. Susturma sohbete, yasak oyuna dokunur. Yasak için sebep zorunlu; ikisi de geri alınabilir ve ikisi de kayda geçer.
+2200. Susturulamadı.
+2201. Sv {0} · {1}
+2202. Sv {0} · {1} · son görülme {2}
+2203. Yasağı kaldır
+2204. Yasak {0} tarihine kadar — {1}
+2205. Yasak kaldırılamadı.
+2206. Yasaklanamadı.
+2207. YASAKLI
+
+--- Hesap (1) ---
+
+2208. Yönetici paneli

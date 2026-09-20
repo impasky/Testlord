@@ -52,6 +52,9 @@ const Hesap = lazy(() => import('./screens/Hesap').then((m) => ({ default: m.Hes
 const Moderasyon = lazy(() =>
   import('./screens/Moderasyon').then((m) => ({ default: m.Moderasyon })),
 );
+const YoneticiPaneli = lazy(() =>
+  import('./screens/YoneticiPaneli').then((m) => ({ default: m.YoneticiPaneli })),
+);
 const Harita = lazy(() => import('./screens/Harita').then((m) => ({ default: m.Harita })));
 const Kisla = lazy(() => import('./screens/Kisla').then((m) => ({ default: m.Kisla })));
 const LordEkrani = lazy(() =>
@@ -577,6 +580,7 @@ export function App() {
               />
             )}
             {kapi === 'moderasyon' && <Moderasyon />}
+            {kapi === 'yoneticiPaneli' && <YoneticiPaneli />}
             {kapi === 'hesap' && (
               <Hesap
                 lord={lord}

@@ -35,6 +35,7 @@ import { meRoutes } from './routes/me.js';
 import { olcumRoutes } from './routes/olcum.js';
 import { rankingRoutes } from './routes/rankings.js';
 import { moderasyonRoutes } from './routes/moderasyon.js';
+import { yoneticiRoutes } from './routes/yonetici.js';
 import { seedDemoLords } from './services/demoWorld.js';
 import { createWorld } from './services/world.js';
 import { startWorker } from './worker.js';
@@ -202,6 +203,7 @@ export async function buildServer() {
   await app.register(sehirRoutes, { prefix: '/api' });
   await app.register(akinRoutes, { prefix: '/api' });
   await app.register(moderasyonRoutes, { prefix: '/api' });
+  await app.register(yoneticiRoutes, { prefix: '/api' });
 
   // Ölçüm ucu yalnızca anahtar tanımlıysa var olur: tanımsızken uç hiç
   // yoktur, yanlış yapılandırma ile açıkta kalamaz.

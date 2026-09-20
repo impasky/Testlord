@@ -3,6 +3,8 @@ import {
   GIZLEME_ESIGI,
   SIKAYET_SEBEPLERI,
   SUSTURMA_SURELERI,
+  YASAK_SURELERI,
+  islemMetni,
   kararMetni,
   karariDenetle,
   otomatikGizlenir,
@@ -13,6 +15,9 @@ import {
   susturmaDurumu,
   susturmaSuresiGecerli,
   susturmaSuresiMetni,
+  yasagiDenetle,
+  yasakDurumu,
+  yasakSuresiGecerli,
 } from './moderasyon.js';
 
 const AN = new Date('2026-09-14T12:00:00Z');
@@ -151,3 +156,58 @@ describe('karar denetimi', () => {
     expect(kararMetni('yok_say')).toContain('yok sayıldı');
   });
 });
+
+/* ------------------------------------------------------------------ */
+/* Hesap yasağı (docs/14 — yönetici paneli)                            */
+/* ------------------------------------------------------------------ */
+
+describe('yasak', () => {
+  const simdi = new Date('2026-09-20T12:00:00Z');
+
+  it('kalıcı yasak süre beklemiyor', () => {
+    const y = yasakDurumu(true, null, 'bot hesabı', simdi);
+    expect(y.yasakli).toBe(true);
+    expect(y.kalici).toBe(true);
+    expect(y.metin).toContain('kalıcı');
+    expect(y.metin).toContain('bot hesabı');
+  });
+
+  it('süreli yasak bitince KENDİLİĞİNDEN düşüyor', () => {
+    const bitis = new Date(simdi.getTime() + 3600_000);
+    expect(yasakDurumu(false, bitis, 'küfür', simdi).yasakli).toBe(true);
+    // Kayıt duruyor ama süre geçti: "aktif mi" sorusu tarihe bakıyor.
+    const sonra = new Date(bitis.getTime() + 1000);
+    expect(yasakDurumu(false, bitis, 'küfür', sonra).yasakli).toBe(false);
+  });
+
+  it('yasağı olmayan hesap yasaklı değil', () => {
+    expect(yasakDurumu(false, null, null, simdi).yasakli).toBe(false);
+    expect(yasakDurumu(false, null, null, simdi).metin).toBeNull();
+  });
+
+  it('sebep ZORUNLU — sebepsiz yasak oyuncuya hiçbir şey söylemiyor', () => {
+    expect(yagiDenetleKisa(YASAK_SURELERI[0] ?? 24, '')).toBe(false);
+    expect(yagiDenetleKisa(YASAK_SURELERI[0] ?? 24, 'ab')).toBe(false);
+    expect(yagiDenetleKisa(YASAK_SURELERI[0] ?? 24, 'bot')).toBe(true);
+  });
+
+  it('süre dengeden geliyor; uydurma süre geçmiyor', () => {
+    expect(yasakSuresiGecerli(YASAK_SURELERI[0] ?? 24)).toBe(true);
+    expect(yasakSuresiGecerli(7)).toBe(false);
+    // null = kalıcı, ve kalıcı yasak açık.
+    expect(yasakSuresiGecerli(null)).toBe(true);
+  });
+
+  it('işlem metni kayda ne yazacağını söylüyor', () => {
+    expect(islemMetni('yasakla', null)).toContain('KALICI');
+    expect(islemMetni('yasakla', 24)).toContain('1 gün');
+    expect(islemMetni('yasak_kaldir')).toBe('Yasak kaldırıldı');
+    expect(islemMetni('susturma_kaldir')).toBe('Susturma kaldırıldı');
+    // Eski ad yeni işlevi çağırıyor: kuyruk kararları aynı satırı yazıyor.
+    expect(kararMetni('sustur', 1)).toBe(islemMetni('sustur', 1));
+  });
+});
+
+function yagiDenetleKisa(saat: number | null, sebep: string): boolean {
+  return yasagiDenetle(saat, sebep).uygun;
+}

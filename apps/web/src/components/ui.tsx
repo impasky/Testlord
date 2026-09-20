@@ -634,6 +634,7 @@ export function Buton({
   type = 'button',
   className = '',
   isaret,
+  etiket,
 }: {
   children: ReactNode;
   onClick?: () => void;
@@ -642,6 +643,15 @@ export function Buton({
   boy?: 'kucuk' | 'orta' | 'buyuk';
   /** Tam genişlik — ana eylemler için. */
   tam?: boolean;
+  /**
+   * Ekran okuyucunun söyleyeceği ad — yazısı tek başına yetmiyorsa.
+   *
+   * "1 gün" yazan iki düğme yan yana durabiliyor (sustur / yasakla) ve
+   * gözle bakan hangisinin hangisi olduğunu üstteki başlıktan anlıyor;
+   * ekran okuyucu ise düğmeleri tek tek okuyor ve ikisini ayırt
+   * edemiyordu.
+   */
+  etiket?: string;
   type?: 'button' | 'submit';
   className?: string;
   /**
@@ -667,6 +677,7 @@ export function Buton({
       type={type}
       onClick={onClick}
       disabled={disabled}
+      aria-label={etiket}
       data-rehber={isaret}
       className={`bas baslik dugme-3d border-2 disabled:pointer-events-none disabled:opacity-40 disabled:shadow-none ${BUTON_SINIFI[tur]} ${boySinifi} ${
         tam ? 'w-full' : ''

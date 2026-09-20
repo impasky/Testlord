@@ -130,9 +130,17 @@ export function Hesap({
                 ? `${moderasyon.data.bekleyen} şikâyet karar bekliyor.`
                 : 'Bekleyen şikâyet yok.'}
             </p>
-            <Buton tur="anahat" boy="kucuk" onClick={() => onKapiAc('moderasyon')}>
-              Şikâyet kuyruğu
-            </Buton>
+            {/* İKİ KAPI, iki ayrı iş: kuyruk şikâyet edileni sıraya
+                diziyor, panel oyuncuyu arıyor. Bot hesabını kimse
+                şikâyet etmiyor ve kuyrukta hiç görünmüyor. */}
+            <div className="flex flex-wrap gap-1.5">
+              <Buton tur="anahat" boy="kucuk" onClick={() => onKapiAc('moderasyon')}>
+                Şikâyet kuyruğu
+              </Buton>
+              <Buton tur="anahat" boy="kucuk" onClick={() => onKapiAc('yoneticiPaneli')}>
+                Yönetici paneli
+              </Buton>
+            </div>
           </Kart>
         </Bolum>
       )}

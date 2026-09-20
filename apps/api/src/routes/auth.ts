@@ -1,4 +1,11 @@
-import { B, BASLANGIC_ELMASI, GEAR_LINES, WORLD_MAP, yurtBolgeleri } from '@lordlar/shared';
+import {
+  B,
+  BASLANGIC_ELMASI,
+  GEAR_LINES,
+  WORLD_MAP,
+  yasakDurumu,
+  yurtBolgeleri,
+} from '@lordlar/shared';
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { hashPassword, verifyPassword } from '../auth.js';
@@ -264,6 +271,16 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
     if (!user || !(await verifyPassword(user.passwordHash, body.password))) {
       throw new GameError('E-posta veya parola hatalı.', 401, 'GIRIS_BASARISIZ');
     }
+    /*
+     * Yasak GİRİŞTE de söyleniyor.
+     *
+     * `requireAuth` zaten her isteği kesiyor; buradaki denetim jetonu hiç
+     * vermemek için. Jeton verip her istekte reddetmek, oyuncuya "giriş
+     * yaptın ama hiçbir şey çalışmıyor" gibi görünürdü — sebebini
+     * söylemeyen bir ceza davranışı değiştirmiyor.
+     */
+    const y = yasakDurumu(user.yasakli, user.yasakBitis, user.yasakSebebi, new Date());
+    if (y.yasakli) throw new GameError(y.metin ?? 'Hesabın yasaklı.', 403, 'YASAKLI');
     return { token: app.jwt.sign({ userId: user.id, email }) };
   });
 

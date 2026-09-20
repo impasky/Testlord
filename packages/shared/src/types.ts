@@ -207,6 +207,8 @@ export const EKRANLAR = [
   'moderasyon',
   /** Medeniyet paneli (docs/16) — Dünya ekranından açılıyor. */
   'medeniyet',
+  /** Yönetici paneli (docs/14) — yalnız yöneticide, Hesap ekranından. */
+  'yoneticiPaneli',
 ] as const;
 
 export type Ekran = (typeof EKRANLAR)[number];
@@ -295,6 +297,16 @@ export const KAPILAR = [
    * açılınca hem bulunur hem duvar büyümez.
    */
   'medeniyet',
+  /**
+   * Yönetici paneli (docs/14). `moderasyon` gibi YALNIZ yöneticilere
+   * açık ve ana sayfada çizilmiyor; ikisi de Hesap ekranından açılıyor.
+   *
+   * Kuyruktan ayrı bir kapı, çünkü ayrı bir iş: kuyruk ŞİKÂYET EDİLENİ
+   * sıraya diziyor, panel oyuncuyu ARIYOR. Aynı ekrana sıkıştırmak,
+   * "sıradaki şikâyete bak" ile "şu oyuncuyu bul" işlerini tek başlık
+   * altında karıştırmak olurdu.
+   */
+  'yoneticiPaneli',
 ] as const;
 export type Kapi = (typeof KAPILAR)[number];
 
@@ -307,7 +319,9 @@ export type Kapi = (typeof KAPILAR)[number];
  * ekranından açılıyor. Tavan kuralının amacı "ana sayfa simge duvarına
  * dönmesin" ve ızgarada çizilmeyen bir kapı o duvara taş koymuyor.
  */
-export const OYUNCU_KAPILARI = KAPILAR.filter((k) => k !== 'moderasyon' && k !== 'medeniyet');
+export const OYUNCU_KAPILARI = KAPILAR.filter(
+  (k) => k !== 'moderasyon' && k !== 'medeniyet' && k !== 'yoneticiPaneli',
+);
 
 /** Kapının başlığı — hem panelde hem onu açan düğmede aynı ad. */
 export const KAPI_ADI: Record<Kapi, string> = {
@@ -322,6 +336,7 @@ export const KAPI_ADI: Record<Kapi, string> = {
   hesap: 'Hesap',
   moderasyon: 'Şikâyet Kuyruğu',
   medeniyet: 'Medeniyet',
+  yoneticiPaneli: 'Yönetici Paneli',
 };
 export interface GeneralDef {
   key: string;
