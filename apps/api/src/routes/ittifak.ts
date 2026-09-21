@@ -54,6 +54,7 @@ import { z } from 'zod';
 import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError, hata } from '../errors.js';
+import { dogrulamaKontrol } from '../services/epostaDogrulama.js';
 import { adiDenetle } from '../services/adDenetimi.js';
 import { mesajDenetle } from '../services/mesajDenetimi.js';
 import { susturmaKontrol } from '../services/moderasyon.js';
@@ -645,6 +646,9 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
     const k = B.ittifak.sohbet;
     const body = z.object({ metin: z.string().min(1).max(k.mesaj_en_fazla_harf) }).parse(req.body);
     const metin = body.metin.trim();
+    // Doğrulama kapısı EN ÖNDE: sohbet başka oyuncuya dokunan bir eylem
+    // ve doğrulanmamış hesaba kapalı (docs/17).
+    await dogrulamaKontrol(req.user.userId, 'ittifak_sohbet');
     const lordId = await findLordByUser(req.user.userId);
 
     // Susturma denetimi süzgeçten ÖNCE: susturulmuş bir oyuncuya önce

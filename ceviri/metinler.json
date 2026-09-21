@@ -181,7 +181,7 @@
     "tr": "· Seviye",
     "en": "· Level",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:100"
+      "apps/web/src/screens/Hesap.tsx:101"
     ]
   },
   "t243874a1": {
@@ -1027,7 +1027,7 @@
     "tr": "{0} şikâyet karar bekliyor.",
     "en": "{0} [report is|reports are] waiting for a decision.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:130"
+      "apps/web/src/screens/Hesap.tsx:162"
     ]
   },
   "t38001c91": {
@@ -1461,7 +1461,7 @@
     "en": "Turning on…",
     "nerede": [
       "apps/web/src/components/BildirimKarti.tsx:95",
-      "apps/web/src/screens/Hesap.tsx:187"
+      "apps/web/src/screens/Hesap.tsx:219"
     ]
   },
   "t9b280d99": {
@@ -2077,7 +2077,7 @@
     "tr": "Bekleyen şikâyet yok.",
     "en": "No pending reports.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:131"
+      "apps/web/src/screens/Hesap.tsx:163"
     ]
   },
   "t225a2417": {
@@ -2110,7 +2110,7 @@
     "en": "Notifications",
     "nerede": [
       "apps/web/src/screens/Gizlilik.tsx:88",
-      "apps/web/src/screens/Hesap.tsx:171"
+      "apps/web/src/screens/Hesap.tsx:203"
     ]
   },
   "taa1c034e": {
@@ -2297,7 +2297,7 @@
     "tr": "Bölge",
     "en": "Region",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:727",
+      "apps/api/src/routes/ittifak.ts:731",
       "apps/api/src/routes/map.ts:1130",
       "apps/api/src/routes/map.ts:1303",
       "apps/api/src/routes/map.ts:453",
@@ -2396,7 +2396,7 @@
     "tr": "Bölgelerin sahipsiz kalır ve başkaları tarafından yeniden fethedilebilir.",
     "en": "Your regions become unowned and can be reconquered by others.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:232"
+      "apps/web/src/screens/Hesap.tsx:264"
     ]
   },
   "tada95535": {
@@ -2584,7 +2584,7 @@
     "tr": "Bu işlem geri alınamaz.",
     "en": "This action cannot be undone.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:232"
+      "apps/web/src/screens/Hesap.tsx:264"
     ]
   },
   "te4cb2870": {
@@ -2848,7 +2848,7 @@
     "tr": "Değişikliği doğrulamak için gerekiyor.",
     "en": "Required to verify the change.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:83"
+      "apps/web/src/screens/Hesap.tsx:84"
     ]
   },
   "t56f6ebbc": {
@@ -3026,7 +3026,7 @@
     "tr": "Dil",
     "en": "Language",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:148"
+      "apps/web/src/screens/Hesap.tsx:180"
     ]
   },
   "taa9c8b99": {
@@ -3054,7 +3054,7 @@
     "tr": "Diyar yükleniyor…",
     "en": "Realm loading…",
     "nerede": [
-      "apps/web/src/App.tsx:392"
+      "apps/web/src/App.tsx:415"
     ]
   },
   "tadebb397": {
@@ -3267,6 +3267,38 @@
       "apps/web/src/components/DizilimIzgarasi.tsx:376"
     ]
   },
+  "t718835db": {
+    "grup": "arayuz",
+    "tr": "Doğrulama bağlantısı gönder",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Hesap.tsx:146"
+    ]
+  },
+  "t5bbae6d0": {
+    "grup": "arayuz",
+    "tr": "Doğrulanamadı. Hesap ekranından yeni bir bağlantı iste.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EpostaDogrula.tsx:50"
+    ]
+  },
+  "t569fd942": {
+    "grup": "arayuz",
+    "tr": "Doğrulanıyor…",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EpostaDogrula.tsx:42"
+    ]
+  },
+  "tca0ab25d": {
+    "grup": "arayuz",
+    "tr": "Doğrulanmadan ittifak sohbetine yazamaz ve kaynak gönderemezsin. Postayı bulamıyorsan spam klasörüne bak.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Hesap.tsx:136"
+    ]
+  },
   "t99cead47": {
     "grup": "arayuz",
     "tr": "Dolu",
@@ -3410,7 +3442,8 @@
     "tr": "E-posta",
     "en": "Email",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:225"
+      "apps/web/src/screens/Giris.tsx:225",
+      "apps/web/src/screens/Hesap.tsx:132"
     ]
   },
   "t2909af14": {
@@ -3421,12 +3454,28 @@
       "apps/web/src/screens/Gizlilik.tsx:49"
     ]
   },
+  "t7a2e7ae2": {
+    "grup": "arayuz",
+    "tr": "E-posta doğrulama",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EpostaDogrula.tsx:39"
+    ]
+  },
   "t50e21afc": {
     "grup": "arayuz",
     "tr": "E-posta göndermek için (parola sıfırlama, savaş bildirimi) bir e-posta sağlayıcısı kullanılıyor; o sağlayıcı yalnızca adresini ve gönderilen iletinin metnini görüyor.",
     "en": "To send email (password reset, battle notifications) an email provider is used; that provider sees only your address and the text of the message sent.",
     "nerede": [
       "apps/web/src/screens/Gizlilik.tsx:104"
+    ]
+  },
+  "t8bcc1657": {
+    "grup": "arayuz",
+    "tr": "E-postan doğrulandı. Artık ittifak sohbetine yazabilir ve kaynak gönderebilirsin.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EpostaDogrula.tsx:45"
     ]
   },
   "tee39ae8e": {
@@ -3531,7 +3580,7 @@
     "tr": "En az 8 karakter",
     "en": "At least 8 characters",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:203",
+      "apps/web/src/screens/Hesap.tsx:235",
       "apps/web/src/screens/ParolaSifirla.tsx:46"
     ]
   },
@@ -3540,7 +3589,7 @@
     "tr": "En az 8 karakter olmalı.",
     "en": "Must be at least 8 characters.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:85",
+      "apps/web/src/screens/Hesap.tsx:86",
       "apps/web/src/screens/ParolaSifirla.tsx:66"
     ]
   },
@@ -3976,7 +4025,7 @@
     "tr": "Giriş ekranına dön",
     "en": "Return to login screen",
     "nerede": [
-      "apps/web/src/App.tsx:381",
+      "apps/web/src/App.tsx:404",
       "apps/web/src/screens/ParolaSifirla.tsx:41"
     ]
   },
@@ -4013,6 +4062,14 @@
       "apps/web/src/screens/Medeniyet.tsx:359"
     ]
   },
+  "t5275bf7f": {
+    "grup": "arayuz",
+    "tr": "Gönderildi",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Hesap.tsx:146"
+    ]
+  },
   "t3b8e7ae3": {
     "grup": "arayuz",
     "tr": "Gönderilecek cihaz bulunamadı.",
@@ -4034,7 +4091,8 @@
     "tr": "Gönderilemedi.",
     "en": "Could not be sent.",
     "nerede": [
-      "apps/web/src/components/KaynakGonder.tsx:40"
+      "apps/web/src/components/KaynakGonder.tsx:40",
+      "apps/web/src/screens/Hesap.tsx:150"
     ]
   },
   "tc4320737": {
@@ -4049,7 +4107,7 @@
       "apps/web/src/screens/Generaller.tsx:139",
       "apps/web/src/screens/Giris.tsx:289",
       "apps/web/src/screens/Harita.tsx:1209",
-      "apps/web/src/screens/Hesap.tsx:219",
+      "apps/web/src/screens/Hesap.tsx:251",
       "apps/web/src/screens/Kisla.tsx:285",
       "apps/web/src/screens/ParolaSifirla.tsx:62",
       "apps/web/src/screens/Sehir.tsx:970"
@@ -4167,7 +4225,7 @@
     "en": "What data we keep",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:263",
-      "apps/web/src/screens/Hesap.tsx:110"
+      "apps/web/src/screens/Hesap.tsx:111"
     ]
   },
   "ta565dc14": {
@@ -4383,7 +4441,7 @@
     "tr": "Hesabı Sil",
     "en": "Delete Account",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:228"
+      "apps/web/src/screens/Hesap.tsx:260"
     ]
   },
   "t67e3a2c7": {
@@ -4408,8 +4466,8 @@
     "en": "DELETE MY ACCOUNT",
     "nerede": [
       "apps/api/src/routes/me.ts:63",
-      "apps/web/src/api/client.ts:1071",
-      "apps/web/src/screens/Hesap.tsx:255"
+      "apps/web/src/api/client.ts:1075",
+      "apps/web/src/screens/Hesap.tsx:287"
     ]
   },
   "te485c18d": {
@@ -4417,7 +4475,7 @@
     "tr": "Hesabımı silmek istiyorum",
     "en": "I want to delete my account",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:238"
+      "apps/web/src/screens/Hesap.tsx:270"
     ]
   },
   "t43e24e9f": {
@@ -4433,7 +4491,7 @@
     "tr": "Hesabın, lordun, ordun ve ekipmanın kalıcı olarak silinir.",
     "en": "Your account, lord, army, and equipment will be permanently deleted.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:231"
+      "apps/web/src/screens/Hesap.tsx:263"
     ]
   },
   "t970d9a25": {
@@ -4449,7 +4507,7 @@
     "tr": "Hesap",
     "en": "Account",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:97",
+      "apps/web/src/screens/Hesap.tsx:98",
       "apps/web/src/screens/LordEkrani.tsx:695",
       "packages/shared/src/types.ts:336"
     ]
@@ -4467,7 +4525,7 @@
     "tr": "Hesap silinemedi.",
     "en": "Account could not be deleted.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:78"
+      "apps/web/src/screens/Hesap.tsx:79"
     ]
   },
   "td9498625": {
@@ -4710,10 +4768,10 @@
     "tr": "İttifak",
     "en": "Alliance",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1295",
-      "apps/api/src/routes/ittifak.ts:1477",
-      "apps/api/src/routes/ittifak.ts:511",
-      "apps/api/src/routes/ittifak.ts:947",
+      "apps/api/src/routes/ittifak.ts:1299",
+      "apps/api/src/routes/ittifak.ts:1481",
+      "apps/api/src/routes/ittifak.ts:512",
+      "apps/api/src/routes/ittifak.ts:951",
       "apps/web/src/screens/Harita.tsx:440",
       "apps/web/src/screens/Ittifak.tsx:205",
       "apps/web/src/screens/Siralama.tsx:37",
@@ -4990,7 +5048,7 @@
     "tr": "Kalıcı olarak sil",
     "en": "Permanently delete",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:280"
+      "apps/web/src/screens/Hesap.tsx:312"
     ]
   },
   "t454fce83": {
@@ -5331,7 +5389,7 @@
     "tr": "Kendi üyenizin bölgesi hedef olamaz.",
     "en": "Your own member's region cannot be a target.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:736",
+      "apps/api/src/routes/ittifak.ts:740",
       "apps/web/src/screens/Harita.tsx:453"
     ]
   },
@@ -5622,7 +5680,7 @@
     "tr": "Kutuya birebir HESABIMI SIL yazman gerekiyor.",
     "en": "You need to type DELETE MY ACCOUNT exactly into the box.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:92"
+      "apps/web/src/screens/Hesap.tsx:93"
     ]
   },
   "ta64656fc": {
@@ -5630,7 +5688,7 @@
     "tr": "Kutuya HESABIMI SIL yaz",
     "en": "Type DELETE MY ACCOUNT in the box",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:251"
+      "apps/web/src/screens/Hesap.tsx:283"
     ]
   },
   "t11d481cd": {
@@ -5719,7 +5777,7 @@
     "en": "Lord",
     "nerede": [
       "apps/api/src/routes/rankings.ts:265",
-      "apps/api/src/routes/ticaret.ts:58",
+      "apps/api/src/routes/ticaret.ts:62",
       "apps/api/src/services/lord.ts:364",
       "apps/api/src/services/lord.ts:642",
       "apps/web/src/components/MobilKabuk.tsx:65"
@@ -5767,6 +5825,7 @@
     "nerede": [
       "apps/api/src/routes/push.ts:82",
       "apps/web/src/components/MobilKabuk.tsx:322",
+      "apps/web/src/screens/EpostaDogrula.tsx:38",
       "apps/web/src/screens/Giris.tsx:184",
       "apps/web/src/screens/ParolaSifirla.tsx:31"
     ]
@@ -5792,7 +5851,7 @@
     "tr": "Lordun",
     "en": "Your lord",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:100"
+      "apps/web/src/screens/Hesap.tsx:101"
     ]
   },
   "t752657eb": {
@@ -5989,7 +6048,7 @@
     "tr": "Mevcut parola",
     "en": "Current password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:194"
+      "apps/web/src/screens/Hesap.tsx:226"
     ]
   },
   "t180f3ffb": {
@@ -5997,7 +6056,7 @@
     "tr": "Mevcut parolanı gir",
     "en": "Enter your current password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:83"
+      "apps/web/src/screens/Hesap.tsx:84"
     ]
   },
   "t8fa4cc21": {
@@ -6175,7 +6234,7 @@
     "tr": "Onay",
     "en": "Confirmation",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:251"
+      "apps/web/src/screens/Hesap.tsx:283"
     ]
   },
   "t280ff98c": {
@@ -6183,7 +6242,7 @@
     "tr": "Onay metnini yaz",
     "en": "Type the confirmation text",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:92"
+      "apps/web/src/screens/Hesap.tsx:93"
     ]
   },
   "t5f468c6f": {
@@ -6431,7 +6490,7 @@
     "tr": "Oturum açılamadı. Tekrar giriş yapman gerekiyor.",
     "en": "Could not log in. You need to sign in again.",
     "nerede": [
-      "apps/web/src/App.tsx:379"
+      "apps/web/src/App.tsx:402"
     ]
   },
   "t63341816": {
@@ -6450,6 +6509,14 @@
       "apps/web/src/screens/Gizlilik.tsx:102"
     ]
   },
+  "t86766a95": {
+    "grup": "arayuz",
+    "tr": "Oyuna dön",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EpostaDogrula.tsx:54"
+    ]
+  },
   "tc2acb004": {
     "grup": "arayuz",
     "tr": "Oyuncu ara",
@@ -6463,7 +6530,7 @@
     "tr": "Oyunun ne olduğunu, nasıl savaşıldığını ve seni koruyan kuralları baştan okumak istersen öğreticiyi tekrar açabilirsin.",
     "en": "If you want to read again what the game is, how to fight, and the rules that protect you, you can reopen the tutorial.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:178"
+      "apps/web/src/screens/Hesap.tsx:210"
     ]
   },
   "t9bf3ffd3": {
@@ -6488,7 +6555,7 @@
     "en": "Tutorial",
     "nerede": [
       "apps/web/src/components/Ogretici.tsx:131",
-      "apps/web/src/screens/Hesap.tsx:175"
+      "apps/web/src/screens/Hesap.tsx:207"
     ]
   },
   "t47d30263": {
@@ -6504,7 +6571,7 @@
     "tr": "Öğreticiyi tekrar oku",
     "en": "Reread the tutorial",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:187"
+      "apps/web/src/screens/Hesap.tsx:219"
     ]
   },
   "t96de5998": {
@@ -6608,7 +6675,7 @@
     "tr": "Parola Değiştir",
     "en": "Change Password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:192"
+      "apps/web/src/screens/Hesap.tsx:224"
     ]
   },
   "t0cb4198c": {
@@ -6616,7 +6683,7 @@
     "tr": "Parola değiştirilemedi.",
     "en": "Password could not be changed.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:63"
+      "apps/web/src/screens/Hesap.tsx:64"
     ]
   },
   "t4369fb1e": {
@@ -6648,7 +6715,7 @@
     "tr": "Parolan",
     "en": "Your password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:242"
+      "apps/web/src/screens/Hesap.tsx:274"
     ]
   },
   "t0fb7e6b4": {
@@ -6672,7 +6739,7 @@
     "tr": "Parolan değişti. Diğer cihazlarda yeniden giriş yapman gerekebilir.",
     "en": "Your password has changed. You may need to log in again on other devices.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:57"
+      "apps/web/src/screens/Hesap.tsx:58"
     ]
   },
   "ta02569d1": {
@@ -6680,7 +6747,7 @@
     "tr": "Parolanı gir",
     "en": "Enter your password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:90"
+      "apps/web/src/screens/Hesap.tsx:91"
     ]
   },
   "tac35c883": {
@@ -6712,7 +6779,7 @@
     "tr": "Parolayı değiştir",
     "en": "Change the password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:219"
+      "apps/web/src/screens/Hesap.tsx:251"
     ]
   },
   "tf68e5744": {
@@ -7172,7 +7239,7 @@
     "tr": "Seçim bu cihazda kalır, hesabına bağlı değil. Dil değişince oyun bir kez yenilenir.",
     "en": "The choice stays on this device, it is not tied to your account. When the language changes the game reloads once.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:166"
+      "apps/web/src/screens/Hesap.tsx:198"
     ]
   },
   "tff019924": {
@@ -7401,7 +7468,7 @@
     "tr": "Siliniyor…",
     "en": "Deleting…",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:280"
+      "apps/web/src/screens/Hesap.tsx:312"
     ]
   },
   "t51f40fea": {
@@ -7409,7 +7476,7 @@
     "tr": "Silme işlemini doğrulamak için gerekiyor.",
     "en": "Required to verify the deletion process.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:90"
+      "apps/web/src/screens/Hesap.tsx:91"
     ]
   },
   "tf7e83981": {
@@ -7554,7 +7621,7 @@
     "tr": "Sunucu uykudan uyanıyor olabilir. Bu ilk açılışta 30–60 saniye sürebilir.",
     "en": "The server might be waking up from sleep. This can take 30–60 seconds on the first launch.",
     "nerede": [
-      "apps/web/src/App.tsx:395"
+      "apps/web/src/App.tsx:418"
     ]
   },
   "t0a0f8af7": {
@@ -7586,7 +7653,7 @@
     "tr": "Susturma",
     "en": "Mute",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:115"
+      "apps/web/src/screens/Hesap.tsx:116"
     ]
   },
   "t16aafb87": {
@@ -7638,7 +7705,7 @@
     "tr": "Süre dolunca ittifak sohbetine yeniden yazabilirsin. Oyunun geri kalanı açık.",
     "en": "You can write in the alliance chat again when the time is up. The rest of the game is open.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:119"
+      "apps/web/src/screens/Hesap.tsx:120"
     ]
   },
   "tc15d3f3e": {
@@ -7749,7 +7816,7 @@
     "tr": "Şikâyet gönderilemedi.",
     "en": "Report could not be sent.",
     "nerede": [
-      "apps/api/src/routes/moderasyon.ts:96",
+      "apps/api/src/routes/moderasyon.ts:111",
       "apps/api/src/routes/rankings.ts:257",
       "apps/web/src/components/SikayetSayfasi.tsx:54"
     ]
@@ -7759,7 +7826,7 @@
     "tr": "Şikâyet kuyruğu",
     "en": "Report queue",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:138"
+      "apps/web/src/screens/Hesap.tsx:170"
     ]
   },
   "tca312c06": {
@@ -8356,7 +8423,7 @@
     "nerede": [
       "apps/web/src/components/IttifakDuyuru.tsx:83",
       "apps/web/src/components/SikayetSayfasi.tsx:114",
-      "apps/web/src/screens/Hesap.tsx:272",
+      "apps/web/src/screens/Hesap.tsx:304",
       "apps/web/src/screens/Medeniyet.tsx:253"
     ]
   },
@@ -8622,7 +8689,7 @@
     "tr": "Yeni parola",
     "en": "New password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:203",
+      "apps/web/src/screens/Hesap.tsx:235",
       "apps/web/src/screens/ParolaSifirla.tsx:46"
     ]
   },
@@ -8631,7 +8698,7 @@
     "tr": "Yeni parola çok kısa",
     "en": "New password is too short",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:85"
+      "apps/web/src/screens/Hesap.tsx:86"
     ]
   },
   "tf46d6ce7": {
@@ -8647,7 +8714,7 @@
     "tr": "Yeniden dene",
     "en": "Try again",
     "nerede": [
-      "apps/web/src/App.tsx:400"
+      "apps/web/src/App.tsx:423"
     ]
   },
   "t2579f562": {
@@ -8731,7 +8798,7 @@
     "tr": "Yönetici paneli",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:141"
+      "apps/web/src/screens/Hesap.tsx:173"
     ]
   },
   "tfb3f07d7": {
@@ -8739,7 +8806,7 @@
     "tr": "Yönetim",
     "en": "Administration",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:126"
+      "apps/web/src/screens/Hesap.tsx:158"
     ]
   },
   "t10956f9e": {
@@ -9617,6 +9684,14 @@
       "packages/shared/src/pazar.ts:149"
     ]
   },
+  "t75e2014e": {
+    "grup": "motor",
+    "tr": "Bugünlük gönderim hakkın doldu. Yarın tekrar dene.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/epostaDogrulama.ts:101"
+    ]
+  },
   "tcea5d93d": {
     "grup": "motor",
     "tr": "Bunu başlat. Hangisini seçtiğin senin kararın — araştırma kalıcıdır ve diyarını başka lordlarınkinden ayıran tek katman odur.",
@@ -9727,6 +9802,14 @@
     "en": "You grew the cores.",
     "nerede": [
       "data/balance.json:medeniyetler.fayda_puani.rutbeler[3].aciklama"
+    ]
+  },
+  "tc8a79c24": {
+    "grup": "motor",
+    "tr": "Çok hızlı. {0} saniye bekle.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/epostaDogrulama.ts:107"
     ]
   },
   "t47ab5fd7": {
@@ -9912,6 +9995,22 @@
     "en": "A group you defeat comes back a few hours later. It stays grey during that time but does not disappear — the screen says when it returns.",
     "nerede": [
       "packages/shared/src/ogretici.ts:461"
+    ]
+  },
+  "t8e1ff3a2": {
+    "grup": "motor",
+    "tr": "E-postan doğrulanmadı — {0} gün sonra giriş için gerekecek.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/epostaDogrulama.ts:83"
+    ]
+  },
+  "t81e08c1f": {
+    "grup": "motor",
+    "tr": "E-postanı doğrulaman gerekiyor. Yeni bir bağlantı isteyebilirsin.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/epostaDogrulama.ts:76"
     ]
   },
   "t7005d978": {
@@ -10144,7 +10243,7 @@
     "tr": "Geçersiz susturma süresi.",
     "en": "Invalid mute duration.",
     "nerede": [
-      "apps/api/src/routes/yonetici.ts:234",
+      "apps/api/src/routes/yonetici.ts:237",
       "packages/shared/src/moderasyon.ts:226"
     ]
   },
@@ -10442,7 +10541,7 @@
     "tr": "İttifak dolu ({0} üye).",
     "en": "Alliance full ({0} [member|members]).",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1137",
+      "apps/api/src/routes/ittifak.ts:1141",
       "packages/shared/src/ittifakBasvuru.ts:161",
       "packages/shared/src/ittifakBasvuru.ts:87"
     ]
@@ -10453,6 +10552,14 @@
     "en": "Alliance level",
     "nerede": [
       "packages/shared/src/ogretici.ts:567"
+    ]
+  },
+  "t45d18dbc": {
+    "grup": "motor",
+    "tr": "İttifak sohbetine yazmak",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/epostaDogrulama.ts:36"
     ]
   },
   "t827b1e17": {
@@ -10632,6 +10739,14 @@
     "en": "Send resources",
     "nerede": [
       "packages/shared/src/ogretici.ts:575"
+    ]
+  },
+  "t5e9783c1": {
+    "grup": "motor",
+    "tr": "Kaynak göndermek",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/epostaDogrulama.ts:37"
     ]
   },
   "ta0acb85f": {
@@ -11658,8 +11773,8 @@
     "tr": "Üye",
     "en": "Member",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1826",
-      "apps/api/src/routes/ittifak.ts:791",
+      "apps/api/src/routes/ittifak.ts:1830",
+      "apps/api/src/routes/ittifak.ts:795",
       "packages/shared/src/ittifakSeviye.ts:186"
     ]
   },
@@ -11877,8 +11992,8 @@
     "tr": "Zaten bir ittifaktasın.",
     "en": "You are already in an alliance.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:435",
-      "apps/api/src/routes/ittifak.ts:496",
+      "apps/api/src/routes/ittifak.ts:436",
+      "apps/api/src/routes/ittifak.ts:497",
       "packages/shared/src/ittifakBasvuru.ts:148"
     ]
   },
@@ -11951,7 +12066,7 @@
     "tr": ", en az Sv{0}",
     "en": ", at least Lvl{0}",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:908"
+      "apps/api/src/routes/ittifak.ts:912"
     ]
   },
   "tb6bc6cea": {
@@ -11967,8 +12082,8 @@
     "tr": "(silinmiş)",
     "en": "(deleted)",
     "nerede": [
-      "apps/api/src/routes/moderasyon.ts:232",
-      "apps/api/src/routes/moderasyon.ts:234"
+      "apps/api/src/routes/moderasyon.ts:247",
+      "apps/api/src/routes/moderasyon.ts:249"
     ]
   },
   "te5671777": {
@@ -11976,7 +12091,7 @@
     "tr": "{0} (Sv{1}) ittifağınıza başvurdu.",
     "en": "{0} (Lv{1}) applied to your alliance.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1003"
+      "apps/api/src/routes/ittifak.ts:1007"
     ]
   },
   "tf684dd4f": {
@@ -12040,7 +12155,7 @@
     "tr": "{0} ayrıldı; liderlik devredildi.",
     "en": "{0} left; leadership transferred.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:580"
+      "apps/api/src/routes/ittifak.ts:581"
     ]
   },
   "t81ae1cbb": {
@@ -12048,7 +12163,7 @@
     "tr": "{0} ayrıldı.",
     "en": "{0} left.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:592"
+      "apps/api/src/routes/ittifak.ts:593"
     ]
   },
   "tfc65d2a9": {
@@ -12056,7 +12171,7 @@
     "tr": "{0} bağış yaptı (+{1} XP).",
     "en": "{0} donated (+{1} XP).",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1241"
+      "apps/api/src/routes/ittifak.ts:1245"
     ]
   },
   "t8a093e37": {
@@ -12064,7 +12179,7 @@
     "tr": "{0} başvurusu kabul edildi.",
     "en": "{0}'s application accepted.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1250"
+      "apps/api/src/routes/ittifak.ts:1254"
     ]
   },
   "t03052597": {
@@ -12072,7 +12187,7 @@
     "tr": "{0} başvurusu kabul edilip katıldı.",
     "en": "{0}'s application was accepted and they joined.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1153"
+      "apps/api/src/routes/ittifak.ts:1157"
     ]
   },
   "t847a8c87": {
@@ -12080,7 +12195,7 @@
     "tr": "{0} başvurusu reddedildi.",
     "en": "{0}'s application rejected.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1251"
+      "apps/api/src/routes/ittifak.ts:1255"
     ]
   },
   "t4fe888ec": {
@@ -12136,7 +12251,7 @@
     "tr": "{0} bu arada başka bir ittifağa katılmış.",
     "en": "{0} joined another alliance in the meantime.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1131"
+      "apps/api/src/routes/ittifak.ts:1135"
     ]
   },
   "t0f5e6bb4": {
@@ -12227,12 +12342,20 @@
       "apps/api/src/routes/generals.ts:66"
     ]
   },
+  "t8b6b2b9f": {
+    "grup": "sunucu",
+    "tr": "{0} için e-postanı doğrulaman gerekiyor. Hesap ekranından yeni bağlantı isteyebilirsin.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/services/epostaDogrulama.ts:97"
+    ]
+  },
   "t232fd16e": {
     "grup": "sunucu",
     "tr": "{0} ile pakt feshedildi.",
     "en": "Pact with {0} dissolved.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1259"
+      "apps/api/src/routes/ittifak.ts:1263"
     ]
   },
   "ta76946fb": {
@@ -12240,7 +12363,7 @@
     "tr": "{0} ile pakt kuruldu.",
     "en": "Pact established with {0}.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1257"
+      "apps/api/src/routes/ittifak.ts:1261"
     ]
   },
   "teb26cc7c": {
@@ -12248,7 +12371,7 @@
     "tr": "{0} ile saldırmazlık paktı yürürlükte.",
     "en": "Non-aggression pact with {0} is in effect.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:280"
+      "apps/api/src/routes/ittifak.ts:281"
     ]
   },
   "t1c74170c": {
@@ -12272,7 +12395,7 @@
     "tr": "{0} ittifağı kurdu.",
     "en": "Founded the {0} alliance.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:476"
+      "apps/api/src/routes/ittifak.ts:477"
     ]
   },
   "t599e965f": {
@@ -12280,7 +12403,7 @@
     "tr": "{0} ittifakın hedefini {1} olarak işaretledi.",
     "en": "{0} marked the alliance target as {1}.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:759"
+      "apps/api/src/routes/ittifak.ts:763"
     ]
   },
   "t8ccb6e59": {
@@ -12288,7 +12411,7 @@
     "tr": "{0} ittifakına kabul edildin.",
     "en": "You were accepted into the {0} alliance.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1164"
+      "apps/api/src/routes/ittifak.ts:1168"
     ]
   },
   "tb280b5d3": {
@@ -12296,7 +12419,7 @@
     "tr": "{0} ittifakına katıldı.",
     "en": "Joined the {0} alliance.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:534"
+      "apps/api/src/routes/ittifak.ts:535"
     ]
   },
   "t9669a6af": {
@@ -12304,7 +12427,7 @@
     "tr": "{0} ittifakından ayrıldı.",
     "en": "Left the {0} alliance.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:596"
+      "apps/api/src/routes/ittifak.ts:597"
     ]
   },
   "t94b1ad61": {
@@ -12312,7 +12435,7 @@
     "tr": "{0} ittifakından çıkarıldı.",
     "en": "Kicked from the {0} alliance.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:802"
+      "apps/api/src/routes/ittifak.ts:806"
     ]
   },
   "t9b853237": {
@@ -12320,7 +12443,7 @@
     "tr": "{0} ittifakının liderliği sana geçti.",
     "en": "Leadership of the {0} alliance passed to you.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:586"
+      "apps/api/src/routes/ittifak.ts:587"
     ]
   },
   "t95169f36": {
@@ -12328,7 +12451,7 @@
     "tr": "{0} ittifaktan çıkarıldı.",
     "en": "{0} was kicked from the alliance.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:798"
+      "apps/api/src/routes/ittifak.ts:802"
     ]
   },
   "t1fbe3442": {
@@ -12336,7 +12459,7 @@
     "tr": "{0} ittifaktan yeni ayrılmış, {1} saat daha giremez.",
     "en": "{0} has just left an alliance and cannot join for another {1} [hour|hours].",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1142"
+      "apps/api/src/routes/ittifak.ts:1146"
     ]
   },
   "tc84e1ceb": {
@@ -12344,7 +12467,7 @@
     "tr": "{0} katıldı.",
     "en": "{0} joined.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:528"
+      "apps/api/src/routes/ittifak.ts:529"
     ]
   },
   "t83307e55": {
@@ -12368,7 +12491,7 @@
     "tr": "{0} pakt teklifini kapattı.",
     "en": "{0} closed the pact offer.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1588"
+      "apps/api/src/routes/ittifak.ts:1592"
     ]
   },
   "t3d8681d2": {
@@ -12376,7 +12499,7 @@
     "tr": "{0} paktı feshetti. Pakt {1} saat sonra sona eriyor.",
     "en": "{0} dissolved the pact. The pact expires in {1} [hour|hours].",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1628"
+      "apps/api/src/routes/ittifak.ts:1632"
     ]
   },
   "t7cff0ab1": {
@@ -12400,7 +12523,7 @@
     "tr": "{0} saldırmazlık paktı teklif etti.",
     "en": "{0} offered a non-aggression pact.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1531"
+      "apps/api/src/routes/ittifak.ts:1535"
     ]
   },
   "t024a1acb": {
@@ -12481,7 +12604,7 @@
     "tr": "{0} Yaşlı oldu.",
     "en": "{0} became an Elder.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1847"
+      "apps/api/src/routes/ittifak.ts:1851"
     ]
   },
   "t4bbe2f22": {
@@ -12489,7 +12612,7 @@
     "tr": "{0} Yaşlı rütbesini kaybetti.",
     "en": "{0} lost the Elder rank.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1847"
+      "apps/api/src/routes/ittifak.ts:1851"
     ]
   },
   "t12f9a857": {
@@ -12606,12 +12729,20 @@
       "apps/api/src/routes/medeniyet.ts:147"
     ]
   },
+  "t3d49ff31": {
+    "grup": "sunucu",
+    "tr": "Bağlantı geçersiz ya da süresi dolmuş. Yeni bir tane iste.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/routes/auth.ts:321"
+    ]
+  },
   "t4c97b297": {
     "grup": "sunucu",
     "tr": "Bağlantı geçersiz ya da süresi dolmuş. Yeniden sıfırlama iste.",
     "en": "Link is invalid or expired. Request a reset again.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:343"
+      "apps/api/src/routes/auth.ts:423"
     ]
   },
   "tf9754a95": {
@@ -12627,8 +12758,8 @@
     "tr": "Başvuru",
     "en": "Application",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1023",
-      "apps/api/src/routes/ittifak.ts:1097"
+      "apps/api/src/routes/ittifak.ts:1027",
+      "apps/api/src/routes/ittifak.ts:1101"
     ]
   },
   "t3e65b797": {
@@ -12636,7 +12767,7 @@
     "tr": "başvuruyla",
     "en": "by application",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:907"
+      "apps/api/src/routes/ittifak.ts:911"
     ]
   },
   "t5ac47aa2": {
@@ -12692,7 +12823,7 @@
     "tr": "bilinmeyen ittifak",
     "en": "unknown alliance",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1254"
+      "apps/api/src/routes/ittifak.ts:1258"
     ]
   },
   "tb724b5e4": {
@@ -12700,17 +12831,17 @@
     "tr": "Bir ittifakta değilsin.",
     "en": "You are not in an alliance.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1191",
-      "apps/api/src/routes/ittifak.ts:1466",
-      "apps/api/src/routes/ittifak.ts:1648",
-      "apps/api/src/routes/ittifak.ts:1693",
-      "apps/api/src/routes/ittifak.ts:232",
-      "apps/api/src/routes/ittifak.ts:305",
-      "apps/api/src/routes/ittifak.ts:549",
-      "apps/api/src/routes/ittifak.ts:616",
-      "apps/api/src/routes/ittifak.ts:664",
-      "apps/api/src/routes/ittifak.ts:709",
-      "apps/api/src/routes/ittifak.ts:779"
+      "apps/api/src/routes/ittifak.ts:1195",
+      "apps/api/src/routes/ittifak.ts:1470",
+      "apps/api/src/routes/ittifak.ts:1652",
+      "apps/api/src/routes/ittifak.ts:1697",
+      "apps/api/src/routes/ittifak.ts:233",
+      "apps/api/src/routes/ittifak.ts:306",
+      "apps/api/src/routes/ittifak.ts:550",
+      "apps/api/src/routes/ittifak.ts:617",
+      "apps/api/src/routes/ittifak.ts:668",
+      "apps/api/src/routes/ittifak.ts:713",
+      "apps/api/src/routes/ittifak.ts:783"
     ]
   },
   "t2ffdc779": {
@@ -12807,7 +12938,7 @@
     "tr": "Böyle bir diyar yok.",
     "en": "No such realm.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:169"
+      "apps/api/src/routes/auth.ts:172"
     ]
   },
   "t9da35381": {
@@ -12831,8 +12962,8 @@
     "tr": "Bu ad kullanılamaz.",
     "en": "This name cannot be used.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:198",
-      "apps/api/src/routes/ittifak.ts:427"
+      "apps/api/src/routes/auth.ts:201",
+      "apps/api/src/routes/ittifak.ts:428"
     ]
   },
   "t4efc0763": {
@@ -12881,7 +13012,7 @@
     "tr": "Bu başvuru zaten karara bağlanmış.",
     "en": "This application has already been decided.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1099"
+      "apps/api/src/routes/ittifak.ts:1103"
     ]
   },
   "t79552d97": {
@@ -12937,7 +13068,7 @@
     "tr": "Bu e-posta zaten kayıtlı.",
     "en": "This email is already registered.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:202"
+      "apps/api/src/routes/auth.ts:205"
     ]
   },
   "t62da57e4": {
@@ -12953,7 +13084,15 @@
     "tr": "Bu etiket alınmış.",
     "en": "This tag is taken.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:457"
+      "apps/api/src/routes/ittifak.ts:458"
+    ]
+  },
+  "t76160130": {
+    "grup": "sunucu",
+    "tr": "Bu eylem",
+    "en": "",
+    "nerede": [
+      "apps/api/src/services/epostaDogrulama.ts:95"
     ]
   },
   "t0f68c4b9": {
@@ -13018,7 +13157,7 @@
     "tr": "Bu ittifak adı alınmış.",
     "en": "This alliance name is taken.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:457"
+      "apps/api/src/routes/ittifak.ts:458"
     ]
   },
   "tffc5910f": {
@@ -13026,7 +13165,7 @@
     "tr": "Bu ittifakla zaten paktın var.",
     "en": "You already have a pact with this alliance.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1504"
+      "apps/api/src/routes/ittifak.ts:1508"
     ]
   },
   "t7c2cd60c": {
@@ -13034,7 +13173,7 @@
     "tr": "Bu lord adı alınmış.",
     "en": "This lord name is taken.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:205"
+      "apps/api/src/routes/auth.ts:208"
     ]
   },
   "t93fec181": {
@@ -13042,7 +13181,7 @@
     "tr": "Bu pakt zaten feshediliyor.",
     "en": "This pact is already being dissolved.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1612"
+      "apps/api/src/routes/ittifak.ts:1616"
     ]
   },
   "t432b4daf": {
@@ -13050,7 +13189,7 @@
     "tr": "Bu şikâyet zaten karara bağlanmış.",
     "en": "This report has already been decided.",
     "nerede": [
-      "apps/api/src/routes/moderasyon.ts:275"
+      "apps/api/src/routes/moderasyon.ts:290"
     ]
   },
   "t1a13bc53": {
@@ -13058,8 +13197,8 @@
     "tr": "Bu teklif artık açık değil.",
     "en": "This offer is no longer open.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1546",
-      "apps/api/src/routes/ittifak.ts:1582"
+      "apps/api/src/routes/ittifak.ts:1550",
+      "apps/api/src/routes/ittifak.ts:1586"
     ]
   },
   "t14d7d3bd": {
@@ -13075,7 +13214,7 @@
     "tr": "Bugünlük bağış hakkın bitti ({0}). Yarın tekrar.",
     "en": "Your donation allowance for today is over ({0}). Try again tomorrow.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1700"
+      "apps/api/src/routes/ittifak.ts:1704"
     ]
   },
   "tea1021b9": {
@@ -13092,12 +13231,13 @@
     "tr": "Bulunamadı.",
     "en": "Not found.",
     "nerede": [
-      "apps/api/src/routes/yonetici.ts:153",
-      "apps/api/src/routes/yonetici.ts:237",
-      "apps/api/src/routes/yonetici.ts:250",
-      "apps/api/src/routes/yonetici.ts:286",
-      "apps/api/src/routes/yonetici.ts:309",
-      "apps/api/src/routes/yonetici.ts:331",
+      "apps/api/src/routes/auth.ts:297",
+      "apps/api/src/routes/yonetici.ts:154",
+      "apps/api/src/routes/yonetici.ts:240",
+      "apps/api/src/routes/yonetici.ts:253",
+      "apps/api/src/routes/yonetici.ts:289",
+      "apps/api/src/routes/yonetici.ts:312",
+      "apps/api/src/routes/yonetici.ts:334",
       "apps/api/src/services/moderasyon.ts:26"
     ]
   },
@@ -13154,7 +13294,7 @@
     "tr": "Çok hızlı şikâyet ediyorsun. {0} saniye bekle.",
     "en": "You are reporting too fast. Wait {0} second.|You are reporting too fast. Wait {0} seconds.",
     "nerede": [
-      "apps/api/src/routes/moderasyon.ts:127"
+      "apps/api/src/routes/moderasyon.ts:142"
     ]
   },
   "t07a010f1": {
@@ -13162,7 +13302,7 @@
     "tr": "Çok hızlı yazıyorsun. {0} saniye bekle.",
     "en": "You are typing too fast. Wait {0} second.|You are typing too fast. Wait {0} seconds.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:677"
+      "apps/api/src/routes/ittifak.ts:681"
     ]
   },
   "t46b749aa": {
@@ -13228,7 +13368,7 @@
     "tr": "Duyuru güncellendi.",
     "en": "Announcement updated.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1797"
+      "apps/api/src/routes/ittifak.ts:1801"
     ]
   },
   "tf7049390": {
@@ -13236,7 +13376,7 @@
     "tr": "Duyuru kaldırıldı.",
     "en": "Announcement removed.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1797"
+      "apps/api/src/routes/ittifak.ts:1801"
     ]
   },
   "t075455aa": {
@@ -13276,7 +13416,16 @@
     "tr": "E-posta veya parola hatalı.",
     "en": "Email or password incorrect.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:272"
+      "apps/api/src/routes/auth.ts:339"
+    ]
+  },
+  "tc33fbc55": {
+    "grup": "sunucu",
+    "tr": "E-postanı doğrula.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/auth.ts:74",
+      "apps/api/src/routes/auth.ts:362"
     ]
   },
   "t61d3205f": {
@@ -13284,7 +13433,7 @@
     "tr": "En fazla {0} yaşlı olabilir. Önce birinin rütbesini almalısın.",
     "en": "There can be at most {0} [elder|elders]. You must demote someone first.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1832"
+      "apps/api/src/routes/ittifak.ts:1836"
     ]
   },
   "t99f8a247": {
@@ -13320,7 +13469,7 @@
     "tr": "Geçerli bir e-posta gir.",
     "en": "Enter a valid email.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:45"
+      "apps/api/src/routes/auth.ts:48"
     ]
   },
   "tfe3021a2": {
@@ -13336,7 +13485,7 @@
     "tr": "Geçersiz yasak.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/yonetici.ts:280"
+      "apps/api/src/routes/yonetici.ts:283"
     ]
   },
   "t5561fd0b": {
@@ -13360,8 +13509,8 @@
     "tr": "Giriş yapman gerekiyor.",
     "en": "You need to log in.",
     "nerede": [
-      "apps/api/src/auth.ts:34",
-      "apps/api/src/auth.ts:40"
+      "apps/api/src/auth.ts:47",
+      "apps/api/src/auth.ts:59"
     ]
   },
   "t771009c5": {
@@ -13369,7 +13518,7 @@
     "tr": "Gönderilemez.",
     "en": "Cannot be sent.",
     "nerede": [
-      "apps/api/src/routes/ticaret.ts:77"
+      "apps/api/src/routes/ticaret.ts:81"
     ]
   },
   "t96080875": {
@@ -13409,7 +13558,7 @@
     "tr": "herkese açık",
     "en": "open to everyone",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:907"
+      "apps/api/src/routes/ittifak.ts:911"
     ]
   },
   "t367d59af": {
@@ -13417,8 +13566,16 @@
     "tr": "Hesabın yasaklı.",
     "en": "",
     "nerede": [
-      "apps/api/src/auth.ts:42",
-      "apps/api/src/routes/auth.ts:283"
+      "apps/api/src/auth.ts:62",
+      "apps/api/src/routes/auth.ts:351"
+    ]
+  },
+  "t9b52960a": {
+    "grup": "sunucu",
+    "tr": "Hesabını doğrulamak için {0} saat içinde bu bağlantıyı aç:\n\n{1}\n\nBu hesabı sen açmadıysan hiçbir şey yapmana gerek yok.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/services/epostaDogrulama.ts:75"
     ]
   },
   "t94408dab": {
@@ -13442,7 +13599,7 @@
     "tr": "İttifak arması değişti.",
     "en": "Alliance crest changed.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:843"
+      "apps/api/src/routes/ittifak.ts:847"
     ]
   },
   "td286be2a": {
@@ -13450,7 +13607,7 @@
     "tr": "İttifak başvurun kabul edilmedi.",
     "en": "Your alliance application was not accepted.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1111"
+      "apps/api/src/routes/ittifak.ts:1115"
     ]
   },
   "tfb810908": {
@@ -13458,7 +13615,7 @@
     "tr": "İttifak kurmak {0} altın tutuyor, {1} altının var.",
     "en": "Founding an alliance costs {0} gold, you have {1} gold.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:442"
+      "apps/api/src/routes/ittifak.ts:443"
     ]
   },
   "tc4ef09fd": {
@@ -13466,7 +13623,7 @@
     "tr": "İttifak sohbetinde {0} susturuldun. Sebep: {1}",
     "en": "You were muted in the alliance chat for {0}. Reason: {1}",
     "nerede": [
-      "apps/api/src/routes/moderasyon.ts:302"
+      "apps/api/src/routes/moderasyon.ts:317"
     ]
   },
   "t52231a33": {
@@ -13482,7 +13639,7 @@
     "tr": "İttifakında Yaşlı oldun.",
     "en": "You became an Elder in your alliance.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1855"
+      "apps/api/src/routes/ittifak.ts:1859"
     ]
   },
   "taaa9a7ea": {
@@ -13490,7 +13647,7 @@
     "tr": "İttifakındaki Yaşlı rütben alındı.",
     "en": "Your Elder rank in your alliance was revoked.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1855"
+      "apps/api/src/routes/ittifak.ts:1859"
     ]
   },
   "tb15d50e9": {
@@ -13498,7 +13655,7 @@
     "tr": "İttifaktan yeni ayrıldın. {0} saat sonra girebilirsin.",
     "en": "You just left an alliance. You can join in {0} [hour|hours].",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1335"
+      "apps/api/src/routes/ittifak.ts:1339"
     ]
   },
   "t8f1e61bf": {
@@ -13506,7 +13663,7 @@
     "tr": "İttifaktan yeni ayrıldın. {0} saat sonra yeni bir ittifağa başvurabilirsin.",
     "en": "You have just left an alliance. You can apply to a new one in {0} [hour|hours].",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:958"
+      "apps/api/src/routes/ittifak.ts:962"
     ]
   },
   "t96bb795c": {
@@ -13514,7 +13671,7 @@
     "tr": "İttifaktan yeni ayrıldın. {0} saat sonra yeni bir ittifağa girebilirsin.",
     "en": "You have just left an alliance. You can join a new one in {0} [hour|hours].",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:501"
+      "apps/api/src/routes/ittifak.ts:502"
     ]
   },
   "tdfb3274c": {
@@ -13522,7 +13679,7 @@
     "tr": "Karar uygulanamaz.",
     "en": "Decision cannot be applied.",
     "nerede": [
-      "apps/api/src/routes/moderasyon.ts:280"
+      "apps/api/src/routes/moderasyon.ts:295"
     ]
   },
   "t0bab1641": {
@@ -13538,7 +13695,7 @@
     "tr": "Katılım: {0}",
     "en": "Joining: {0}",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:907"
+      "apps/api/src/routes/ittifak.ts:911"
     ]
   },
   "te9e345c9": {
@@ -13554,7 +13711,7 @@
     "tr": "Kaynak yalnız ittifak üyelerine gönderilebilir.",
     "en": "Resources can only be sent to alliance members.",
     "nerede": [
-      "apps/api/src/routes/ticaret.ts:61"
+      "apps/api/src/routes/ticaret.ts:65"
     ]
   },
   "tda2e5409": {
@@ -13586,7 +13743,7 @@
     "tr": "Kendi hesabını yasaklayamazsın.",
     "en": "",
     "nerede": [
-      "apps/api/src/routes/yonetici.ts:288"
+      "apps/api/src/routes/yonetici.ts:291"
     ]
   },
   "t2151cf3f": {
@@ -13594,7 +13751,7 @@
     "tr": "Kendi mesajını şikâyet edemezsin.",
     "en": "You cannot report your own message.",
     "nerede": [
-      "apps/api/src/routes/moderasyon.ts:113"
+      "apps/api/src/routes/moderasyon.ts:128"
     ]
   },
   "tad9f0652": {
@@ -13602,7 +13759,7 @@
     "tr": "Kendi rütbeni değiştiremezsin.",
     "en": "You cannot change your own rank.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1819"
+      "apps/api/src/routes/ittifak.ts:1823"
     ]
   },
   "t3adae11a": {
@@ -13610,7 +13767,7 @@
     "tr": "Kendi teklifini kabul edemezsin.",
     "en": "You cannot accept your own offer.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1550"
+      "apps/api/src/routes/ittifak.ts:1554"
     ]
   },
   "ta36df99b": {
@@ -13618,7 +13775,7 @@
     "tr": "Kendine kaynak gönderemezsin.",
     "en": "You cannot send resources to yourself.",
     "nerede": [
-      "apps/api/src/routes/ticaret.ts:44"
+      "apps/api/src/routes/ticaret.ts:48"
     ]
   },
   "tadc5eb20": {
@@ -13626,7 +13783,7 @@
     "tr": "Kendini çıkaramazsın; ayrılmak için \"Ayrıl\" kullan.",
     "en": "You cannot kick yourself; use \"Leave\" to leave.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:784"
+      "apps/api/src/routes/ittifak.ts:788"
     ]
   },
   "t4533a4b2": {
@@ -13666,7 +13823,7 @@
     "tr": "Lord adı en az 3 karakter olmalı.",
     "en": "Lord name must be at least 3 characters.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:49"
+      "apps/api/src/routes/auth.ts:52"
     ]
   },
   "te600421c": {
@@ -13674,7 +13831,7 @@
     "tr": "Lord adı en fazla 20 karakter olabilir.",
     "en": "Lord name can be at most 20 characters.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:50"
+      "apps/api/src/routes/auth.ts:53"
     ]
   },
   "t902efbf7": {
@@ -13682,7 +13839,7 @@
     "tr": "Lord adında geçersiz karakter var.",
     "en": "Lord name contains invalid characters.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:51"
+      "apps/api/src/routes/auth.ts:54"
     ]
   },
   "t12a0a254": {
@@ -13701,12 +13858,20 @@
       "apps/api/src/services/march.ts:1064"
     ]
   },
+  "t4b15ec11": {
+    "grup": "sunucu",
+    "tr": "Lordlar Çağı — e-postanı doğrula",
+    "en": "",
+    "nerede": [
+      "apps/api/src/services/epostaDogrulama.ts:74"
+    ]
+  },
   "t67e8558e": {
     "grup": "sunucu",
     "tr": "Lordlar Çağı — parola sıfırlama",
     "en": "Age of Lords — password reset",
     "nerede": [
-      "apps/api/src/routes/auth.ts:319"
+      "apps/api/src/routes/auth.ts:399"
     ]
   },
   "t20970dae": {
@@ -13746,8 +13911,8 @@
     "tr": "Mesaj",
     "en": "Message",
     "nerede": [
-      "apps/api/src/routes/moderasyon.ts:103",
-      "apps/api/src/routes/moderasyon.ts:111"
+      "apps/api/src/routes/moderasyon.ts:118",
+      "apps/api/src/routes/moderasyon.ts:126"
     ]
   },
   "t5e499c35": {
@@ -13755,7 +13920,7 @@
     "tr": "Mesaj gönderilemez.",
     "en": "Message cannot be sent.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:657"
+      "apps/api/src/routes/ittifak.ts:661"
     ]
   },
   "te3021106": {
@@ -13795,7 +13960,7 @@
     "tr": "O diyar doldu. Başka bir diyar seç.",
     "en": "That realm is full. Pick another one.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:184"
+      "apps/api/src/routes/auth.ts:187"
     ]
   },
   "tb209b8d4": {
@@ -13852,7 +14017,7 @@
     "tr": "Ortak hedef kaldırıldı.",
     "en": "Common target removed.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:722"
+      "apps/api/src/routes/ittifak.ts:726"
     ]
   },
   "tc9991460": {
@@ -13860,7 +14025,7 @@
     "tr": "Ortak hedef: {0}.",
     "en": "Common target: {0}.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:749"
+      "apps/api/src/routes/ittifak.ts:753"
     ]
   },
   "t6540798f": {
@@ -13876,7 +14041,7 @@
     "tr": "Pakt",
     "en": "Pact",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:241"
+      "apps/api/src/routes/ittifak.ts:242"
     ]
   },
   "t0724dcdd": {
@@ -13884,8 +14049,8 @@
     "tr": "Parola en az 8 karakter olmalı.",
     "en": "Password must be at least 8 characters.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:46",
-      "apps/api/src/routes/auth.ts:70"
+      "apps/api/src/routes/auth.ts:49",
+      "apps/api/src/routes/auth.ts:73"
     ]
   },
   "tdc156679": {
@@ -13901,7 +14066,7 @@
     "tr": "Parolanı sıfırlamak için {0} dakika içinde bu bağlantıyı aç:\n\n{1}\n\nBu isteği sen yapmadıysan hiçbir şey yapmana gerek yok; parolan değişmedi.",
     "en": "To reset your password open this link within {0} [minute|minutes]:\n\n{1}\n\nIf you did not make this request you need to do nothing; your password has not changed.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:320"
+      "apps/api/src/routes/auth.ts:400"
     ]
   },
   "tea8d3f85": {
@@ -14014,7 +14179,7 @@
     "tr": "Susturman kaldırıldı. İttifak sohbetine yeniden yazabilirsin.",
     "en": "Your mute has been lifted. You can write in the alliance chat again.",
     "nerede": [
-      "apps/api/src/routes/moderasyon.ts:373"
+      "apps/api/src/routes/moderasyon.ts:388"
     ]
   },
   "t9bc99ae9": {
@@ -14022,7 +14187,15 @@
     "tr": "Şikâyet",
     "en": "Report",
     "nerede": [
-      "apps/api/src/routes/moderasyon.ts:273"
+      "apps/api/src/routes/moderasyon.ts:288"
+    ]
+  },
+  "tc9f20736": {
+    "grup": "sunucu",
+    "tr": "Şimdi gönderilemez.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/services/epostaDogrulama.ts:50"
     ]
   },
   "t98be9bae": {
@@ -14094,7 +14267,7 @@
     "tr": "Teklifin zaten gönderildi.",
     "en": "Your offer is already sent.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1507"
+      "apps/api/src/routes/ittifak.ts:1511"
     ]
   },
   "tb739c118": {
@@ -14182,7 +14355,7 @@
     "tr": "Yürürlükte olmayan pakt feshedilemez.",
     "en": "A pact not in effect cannot be dissolved.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1613"
+      "apps/api/src/routes/ittifak.ts:1617"
     ]
   },
   "t4403a7f4": {

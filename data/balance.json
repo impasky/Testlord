@@ -874,6 +874,18 @@
     "_oyuncuya_saldiri": "NPC turunun bu orani oyuncu bolgesine gider, kalani sahipsiz bolgeye. Oyuncuya saldiri oyunun KORUMA kurallarinin tamamindan gecer (yeni oyuncu kalkani, bolge kalkani, seviye farki, 12 saat tekrar sinirlamasi) ve ustune iki kural daha: hedef en cok birkac adim uzakta olmali (haritanin obur ucundan gelen saldiri anlamsiz) ve oyuncunun TEK bolgesi olmamali -- birini oyundan silmek NPC'nin isi degil.",
     "_guvenli_fetih_payi": "NPC ancak savunanin gucunun bu kati kadar ordusu varsa saldirir. Kaybetmeyi goze alan bir NPC, oyuncuya bedava zafer dagitan bir NPC'dir."
   },
+  "eposta_dogrulama": {
+    "_aciklama": "Kayit sirasinda verilen adresin gercekten o kisiye ait oldugunu olcmek. Iki kazanc: (1) parolasini unutan oyuncu hesabini geri alabiliyor -- bugun yanlis yazilmis bir adres hesabi KALICI olarak kaybettiriyor, sifirlama postasi var olmayan bir kutuya gidiyor; (2) bot hesabina ve yasak kacagina surtunme. Kapi KADEMELI: ilk oturum tamamen serbest.",
+    "jeton_omru_saat": 24,
+    "_jeton_omru": "Dogrulama baglantisinin omru. Parola sifirlamadan (30 dk) uzun, cunku aciliyeti yok: oyuncu postayi aksam acabilir. Sonsuz da degil -- ele gecirilmis bir posta kutusu eski bir baglantiyi sonsuza kadar kullanamamali.",
+    "yeniden_gonder_bekleme_sn": 60,
+    "gunluk_gonderim_tavani": 5,
+    "_gonderim_freni": "Yeniden gonderme dugmesi frensiz birakilirsa bir posta kutusu bombalama aracina doner: saldirgan baskasinin adresini yazip dugmeye basar durur. Bir dakika gercek bir oyuncuyu hic engellemiyor; gunde bes, postayi hic alamayan icin bile yeterli.",
+    "serbest_gun": 7,
+    "_serbest_gun": "Dogrulamadan once bu kadar gun serbestce oynanabiliyor. 'Ilk saldiri dakikalarda bitsin' kuralini bozmamak icin kayitta hicbir sey sorulmuyor; yedi gun sonra giris dogrulanana kadar kapali. Yedi gun, postayi spam klasorunde bulmaya da adres degistirmek icin destege yazmaya da yeter.",
+    "kisitli_eylemler": ["ittifak_sohbet", "kaynak_gonder"],
+    "_kisitli_eylemler": "Dogrulanmadan kapali olan iki kapi. Ikisi de BASKA OYUNCUYA dokunan eylemler: kotuye kullanimin gectigi yer burasi. Oyunun kendisine (fetih, insa, arastirma) hic dokunulmuyor -- oynamayi engellemek dogrulama degil, ceza olurdu."
+  },
   "moderasyon": {
     "_aciklama": "Sikayet edilen icerigin insana tasinmasi. Otomatik suzgec (adDenetimi/mesajDenetimi) bariz olani zaten kesiyor; buradaki sayilar KACANI bir yoneticinin onune koyan yolu olcuyor. Tasarim kurali: otomatik ceza YOK. Kalabalik birini oyundan atamaz, yalnizca bir insanin bakmasini isteyebilir.",
     "sebep_en_az_harf": 3,

@@ -19,6 +19,7 @@ import {
   SILINMIS_MESAJ,
   SUSTURMA_GECMIS_SAYISI,
   SUSTURMA_SURELERI,
+  dogrulamaDurumu,
   otomatikGizlenir,
   kararMetni,
   karariDenetle,
@@ -55,7 +56,10 @@ export async function moderasyonRoutes(app: FastifyInstance): Promise<void> {
    */
   app.get('/moderasyon/durum', { preHandler: requireAuth }, async (req) => {
     const [u, lordId] = await Promise.all([
-      prisma.user.findUnique({ where: { id: req.user.userId }, select: { yonetici: true } }),
+      prisma.user.findUnique({
+        where: { id: req.user.userId },
+        select: { yonetici: true, epostaDogrulandi: true, createdAt: true },
+      }),
       findLordByUser(req.user.userId),
     ]);
     const l = await prisma.lord.findUniqueOrThrow({
@@ -67,11 +71,22 @@ export async function moderasyonRoutes(app: FastifyInstance): Promise<void> {
     // Bekleyen sayısı yalnız yöneticiye: sayı da bir bilgi.
     const bekleyen = u?.yonetici ? await prisma.report.count({ where: { durum: 'acik' } }) : 0;
 
+    /*
+     * Doğrulama hâli BU UÇTA, ayrı bir uçta değil.
+     *
+     * Hesap ekranı zaten bunu çağırıyor; doğrulama için ikinci bir istek
+     * açmak aynı ekranda iki bekleme demekti.
+     */
+    const d = dogrulamaDurumu(u?.epostaDogrulandi, u?.createdAt ?? new Date(), new Date());
+
     return {
       yonetici: u?.yonetici === true,
       bekleyen,
       susturulmus: s.susturulmus,
       susturmaMetni: s.metin,
+      epostaDogrulandi: d.dogrulandi,
+      dogrulamaMetni: d.metin,
+      dogrulamaKalanGun: d.kalanGun,
     };
   });
 

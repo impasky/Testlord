@@ -67,6 +67,9 @@ const Olaylar = lazy(() => import('./screens/Olaylar').then((m) => ({ default: m
 const ParolaSifirla = lazy(() =>
   import('./screens/ParolaSifirla').then((m) => ({ default: m.ParolaSifirla })),
 );
+const EpostaDogrula = lazy(() =>
+  import('./screens/EpostaDogrula').then((m) => ({ default: m.EpostaDogrula })),
+);
 const Siralama = lazy(() => import('./screens/Siralama').then((m) => ({ default: m.Siralama })));
 const Ittifak = lazy(() => import('./screens/Ittifak').then((m) => ({ default: m.Ittifak })));
 const Medeniyet = lazy(() => import('./screens/Medeniyet').then((m) => ({ default: m.Medeniyet })));
@@ -74,6 +77,13 @@ const Medeniyet = lazy(() => import('./screens/Medeniyet').then((m) => ({ defaul
 function hashJetonu(): string | null {
   const h = window.location.hash;
   if (!h.startsWith('#/parola-sifirla')) return null;
+  return new URLSearchParams(h.slice(h.indexOf('?') + 1)).get('jeton');
+}
+
+/** Doğrulama bağlantısı — sıfırlamayla aynı desen, ayrı hash. */
+function dogrulamaJetonu(): string | null {
+  const h = window.location.hash;
+  if (!h.startsWith('#/eposta-dogrula')) return null;
   return new URLSearchParams(h.slice(h.indexOf('?') + 1)).get('jeton');
 }
 
@@ -91,6 +101,7 @@ function gizlilikAcikMi(): boolean {
 
 export function App() {
   const [sifirlamaJetonu, setSifirlamaJetonu] = useState<string | null>(hashJetonu);
+  const [dogrulama, setDogrulama] = useState<string | null>(dogrulamaJetonu);
   const [gizlilik, setGizlilik] = useState(gizlilikAcikMi);
 
   // Hash yalnızca açılışta okunursa, uygulama zaten açıkken tıklanan bağlantı
@@ -343,6 +354,18 @@ export function App() {
         onKapat={() => {
           window.location.hash = '';
           setGizlilik(false);
+        }}
+      />
+    );
+  }
+
+  if (dogrulama) {
+    return (
+      <EpostaDogrula
+        jeton={dogrulama}
+        onBitti={() => {
+          window.location.hash = '';
+          setDogrulama(null);
         }}
       />
     );

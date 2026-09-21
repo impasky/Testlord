@@ -35,6 +35,7 @@ export function Hesap({
    */
   const { dil, degistir } = useDil();
 
+  const gonder = useMutation({ mutationFn: api.dogrulamaGonder });
   const moderasyon = useQuery({
     queryKey: ['moderasyon-durum'],
     queryFn: api.moderasyonDurumu,
@@ -118,6 +119,37 @@ export function Hesap({
             <p className="mt-1 text-[12px] text-sonuk">
               Süre dolunca ittifak sohbetine yeniden yazabilirsin. Oyunun geri kalanı açık.
             </p>
+          </Kart>
+        </Bolum>
+      )}
+
+      {/*
+        E-POSTA DOĞRULAMA — doğrulanmışsa hiçbir şey çizilmiyor.
+        Doğrulanmış bir hesaba "doğrulandı" yazmak, ekranı hiç
+        okunmayacak bir satırla uzatmak olurdu.
+      */}
+      {moderasyon.data && !moderasyon.data.epostaDogrulandi && (
+        <Bolum baslik="E-posta">
+          <Kart className="p-3" vurgu="var(--color-turuncu)">
+            <p className="text-[13px] text-turuncu">{moderasyon.data.dogrulamaMetni}</p>
+            <p className="mt-1 text-[11.5px] leading-snug text-sonuk">
+              Doğrulanmadan ittifak sohbetine yazamaz ve kaynak gönderemezsin. Postayı bulamıyorsan
+              spam klasörüne bak.
+            </p>
+            <Buton
+              className="mt-2"
+              tur="anahat"
+              boy="kucuk"
+              disabled={gonder.isPending}
+              onClick={() => gonder.mutate()}
+            >
+              {gonder.isSuccess ? 'Gönderildi' : 'Doğrulama bağlantısı gönder'}
+            </Buton>
+            {gonder.isError && (
+              <p className="mt-1.5 text-[11.5px] text-kirmizi">
+                {gonder.error instanceof ApiError ? gonder.error.message : 'Gönderilemedi.'}
+              </p>
+            )}
           </Kart>
         </Bolum>
       )}

@@ -3,18 +3,21 @@ import {
   BASLANGIC_ELMASI,
   GEAR_LINES,
   WORLD_MAP,
+  dogrulamaDurumu,
+  jetonGecerli,
   yasakDurumu,
   yurtBolgeleri,
 } from '@lordlar/shared';
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
-import { hashPassword, verifyPassword } from '../auth.js';
+import { hashPassword, requireAuth, verifyPassword } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError } from '../errors.js';
 import { createHash, randomBytes } from 'node:crypto';
 import { env } from '../env.js';
 import { adiDenetle } from '../services/adDenetimi.js';
 import { postaGonder } from '../services/eposta.js';
+import { dogrulamaGonder, ozet as dogrulamaOzeti } from '../services/epostaDogrulama.js';
 import { medeniyetAta } from '../services/medeniyet.js';
 import { AKTIF_GUN, diyarDoluMu, findOrOpenWorld } from '../services/world.js';
 
@@ -260,8 +263,72 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
       return u;
     });
 
+    /*
+     * DOĞRULAMA POSTASI KAYITTA ÇIKIYOR ama hiçbir kapı kapatmıyor.
+     *
+     * Oyuncu jetonu beklemeden oynamaya başlıyor: "ilk saldırı
+     * dakikalarda bitsin" (docs/08) kuralı, yeni oyuncuyu posta
+     * kutusuna göndermeyi yasaklıyor. Posta çıkmazsa kayıt yine de
+     * tamamlanıyor — `postaGonder` hata fırlatmıyor ve fren de
+     * atlanıyor: ilk gönderim oyuncunun eylemi değil, bizim borcumuz.
+     */
+    await dogrulamaGonder(user.id, email, req.log, false);
+
     const token = app.jwt.sign({ userId: user.id, email });
     return reply.code(201).send({ token });
+  });
+
+  /* ---------------------------------------------------------------- */
+  /* E-posta doğrulama                                                 */
+  /* ---------------------------------------------------------------- */
+
+  /**
+   * Yeniden gönder.
+   *
+   * Girişli bir uç: adres gövdeden DEĞİL jetondan okunuyor. Adresi
+   * gövdeden alsaydı, herkesin adresine doğrulama postası yollayan bir
+   * araç olurdu.
+   */
+  app.post('/auth/dogrulama-gonder', { preHandler: requireAuth }, async (req) => {
+    const u = await prisma.user.findUnique({
+      where: { id: req.user.userId },
+      select: { id: true, email: true, epostaDogrulandi: true },
+    });
+    if (!u) throw new GameError('Bulunamadı.', 404, 'BULUNAMADI');
+    if (u.epostaDogrulandi) return { gonderildi: false, zatenDogrulandi: true };
+
+    await dogrulamaGonder(u.id, u.email, req.log);
+    return { gonderildi: true, zatenDogrulandi: false };
+  });
+
+  /**
+   * Jetonu damgaya çevirir.
+   *
+   * GİRİŞ GEREKTİRMİYOR: posta başka bir cihazda açılabilir ve oradaki
+   * tarayıcıda oturum olmayabilir. Jetonun kendisi zaten kimliğin
+   * kanıtı; üstüne giriş istemek, doğrulamayı en çok ihtiyaç duyulan
+   * durumda (parolasını unutmuş oyuncu) imkânsız kılardı.
+   */
+  app.post('/auth/dogrula', kimlikSiniri, async (req) => {
+    const { jeton } = z.object({ jeton: z.string().min(10) }).parse(req.body);
+    const kayit = await prisma.epostaDogrulama.findUnique({
+      where: { tokenHash: dogrulamaOzeti(jeton) },
+      select: { id: true, userId: true, expiresAt: true, usedAt: true },
+    });
+    const simdi = new Date();
+    if (!kayit || !jetonGecerli(kayit.expiresAt, kayit.usedAt, simdi)) {
+      throw new GameError(
+        'Bağlantı geçersiz ya da süresi dolmuş. Yeni bir tane iste.',
+        400,
+        'JETON_GECERSIZ',
+      );
+    }
+
+    await prisma.$transaction([
+      prisma.epostaDogrulama.update({ where: { id: kayit.id }, data: { usedAt: simdi } }),
+      prisma.user.update({ where: { id: kayit.userId }, data: { epostaDogrulandi: simdi } }),
+    ]);
+    return { dogrulandi: true };
   });
 
   app.post('/auth/login', kimlikSiniri, async (req) => {
@@ -279,8 +346,21 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
      * yaptın ama hiçbir şey çalışmıyor" gibi görünürdü — sebebini
      * söylemeyen bir ceza davranışı değiştirmiyor.
      */
-    const y = yasakDurumu(user.yasakli, user.yasakBitis, user.yasakSebebi, new Date());
+    const simdi = new Date();
+    const y = yasakDurumu(user.yasakli, user.yasakBitis, user.yasakSebebi, simdi);
     if (y.yasakli) throw new GameError(y.metin ?? 'Hesabın yasaklı.', 403, 'YASAKLI');
+
+    /*
+     * Serbest süre dolduysa giriş doğrulama istiyor.
+     *
+     * Kapanmasaydı doğrulama bir temenni olurdu: kimse doğrulamaz,
+     * parolasını unutan da hesabını yine kaybederdi. Kapı burada
+     * kapanıyor ama oyuncu ilk yedi günü hiç görmeden oynadı.
+     */
+    const d = dogrulamaDurumu(user.epostaDogrulandi, user.createdAt, simdi);
+    if (d.girisKapali) {
+      throw new GameError(d.metin ?? 'E-postanı doğrula.', 403, 'DOGRULANMADI');
+    }
     return { token: app.jwt.sign({ userId: user.id, email }) };
   });
 

@@ -953,6 +953,9 @@ export interface ModerasyonDurumuDto {
   bekleyen: number;
   susturulmus: boolean;
   susturmaMetni: string | null;
+  epostaDogrulandi: boolean;
+  dogrulamaMetni: string | null;
+  dogrulamaKalanGun: number | null;
 }
 
 export interface KuyrukSatiriDto {
@@ -1001,6 +1004,7 @@ export interface YoneticiOyuncuDto {
     eposta: string;
     katildi: string;
     yonetici: boolean;
+    epostaDogrulandi: boolean;
     lordlar: { id: string; ad: string; seviye: number; diyar: string }[];
   };
   susturma: { aktif: boolean; bitis: string | null; sebep: string | null };
@@ -1370,6 +1374,9 @@ export const api = {
     post<{ tamam: boolean; karar: string }>('/moderasyon/karar', { raporId, karar, saat }),
   susturmaKaldir: (lordId: string) =>
     post<{ tamam: boolean }>('/moderasyon/susturma-kaldir', { lordId }),
+  epostaDogrula: (jeton: string) => post<{ dogrulandi: boolean }>('/auth/dogrula', { jeton }),
+  dogrulamaGonder: () =>
+    post<{ gonderildi: boolean; zatenDogrulandi: boolean }>('/auth/dogrulama-gonder', {}),
   yoneticiAyarlari: () => request<YoneticiAyarlariDto>('/yonetici/ayarlar'),
   yoneticiAra: (q: string) =>
     request<{ sonuclar: AramaSonucuDto[] }>(`/yonetici/ara?q=${encodeURIComponent(q)}`),

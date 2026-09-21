@@ -35,8 +35,42 @@ model User {
   /// oyuncuya davranışını değiştirme şansı vermiyor.
   yasakSebebi String?
 
-  lords  Lord[]
-  resets PasswordReset[]
+  /// E-POSTA DOĞRULAMA damgası (docs/17). Null ise doğrulanmamış.
+  ///
+  /// Kapı kademeli: kayıtta hiçbir şey sorulmuyor, doğrulanmadan yalnız
+  /// BAŞKA OYUNCUYA dokunan iki eylem kapalı (ittifak sohbeti, kaynak
+  /// gönderme), ve serbest süre dolunca giriş doğrulama istiyor.
+  /// Serbest sürenin ölçüsü `createdAt` — son gönderim değil; son
+  /// gönderime bağlamak, düğmeye basarak süreyi sonsuza uzatmayı
+  /// mümkün kılardı.
+  epostaDogrulandi DateTime?
+
+  lords        Lord[]
+  resets       PasswordReset[]
+  dogrulamalar EpostaDogrulama[]
+}
+
+/// E-posta doğrulama jetonu.
+///
+/// `PasswordReset` ile aynı desen ve aynı gerekçe: jetonun KENDİSİ değil,
+/// SHA-256 özeti saklanıyor — veritabanı sızarsa jetonlarla hesap
+/// doğrulanamasın. Ham jeton yalnızca üretildiği anda, e-postaya giderken
+/// var oluyor.
+///
+/// Ayrı tablo, çünkü ömrü (24 saat) ve amacı parola jetonundan farklı;
+/// tek tabloda "tür" sütunuyla tutmak iki akışı birbirine bağlardı.
+model EpostaDogrulama {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// Gönderim freni bu indeksten okunuyor: son gönderim ve bugünkü sayı.
+  @@index([userId, createdAt])
 }
 
 /// Parola sıfırlama jetonu.

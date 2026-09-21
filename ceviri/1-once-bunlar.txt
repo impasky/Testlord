@@ -3,7 +3,7 @@ LORDLAR ÇAĞI — ÇEVİRİ 1/3: OYUNU OYNANIR KILAN  (KALANLAR)
 Gezinme, düğmeler, kaynak ve birim adları, ilk saatin ekranları ve
 öğretici. Bu parti bitince oyun baştan sona oynanabilir.
 
-Bu dosyada 10 satır var — çevrilmiş olanlar çıkarıldı.
+Bu dosyada 16 satır var — çevrilmiş olanlar çıkarıldı.
 
 NASIL ÇEVİRİLİR
   Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.
@@ -35,7 +35,7 @@ NASIL ÇEVİRİLİR
 
 ==========================================================================
 
---- Oyun motoru (10) ---
+--- Oyun motoru (16) ---
 
 2209. Geçersiz yasak süresi.
 2210. Hesabın kalıcı olarak yasaklandı.{0}
@@ -47,3 +47,9 @@ NASIL ÇEVİRİLİR
 2216. Yasak kaldırıldı
 2217. Yasak sebebini en az {0} harfle yaz.
 2218. Yönetici Paneli
+2230. Bugünlük gönderim hakkın doldu. Yarın tekrar dene.
+2231. Çok hızlı. {0} saniye bekle.
+2232. E-postan doğrulanmadı — {0} gün sonra giriş için gerekecek.
+2233. E-postanı doğrulaman gerekiyor. Yeni bir bağlantı isteyebilirsin.
+2234. İttifak sohbetine yazmak
+2235. Kaynak göndermek

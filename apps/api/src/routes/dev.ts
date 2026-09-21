@@ -4,7 +4,8 @@
  * iken bağlar. Oyuncuya avantaj sağlayan hiçbir şey yapmaz, sadece bekleme
  * sürelerini atlar; testlerin dakikalarca beklememesi için.
  */
-import { WORLD_MAP } from '@lordlar/shared';
+import { WORLD_MAP, jetonBitisi } from '@lordlar/shared';
+import { createHash, randomBytes } from 'node:crypto';
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { requireAuth } from '../auth.js';
@@ -138,6 +139,63 @@ export async function devRoutes(app: FastifyInstance): Promise<void> {
   app.post('/test/yonetici-yap', { preHandler: requireAuth }, async (req) => {
     await prisma.user.update({ where: { id: req.user.userId }, data: { yonetici: true } });
     return { yonetici: true };
+  });
+
+  /**
+   * Doğrulama jetonunu HAM hâliyle verir — yalnız test için.
+   *
+   * Gerçek akışta ham jeton yalnız e-postada var; veritabanında özeti
+   * duruyor ve geri çevrilemiyor. Test postayı okuyamadığı için jetonu
+   * buradan alıyor. Bu dosyanın tamamı gibi ÜRETİMDE HİÇ YÜKLENMİYOR.
+   */
+  app.post('/test/dogrulama-jetonu', { preHandler: requireAuth }, async (req) => {
+    const u = await prisma.user.findUniqueOrThrow({
+      where: { id: req.user.userId },
+      select: { email: true, epostaDogrulandi: true },
+    });
+    // Kayıtta bir jeton çoktan üretildi mi — akışın ilk halkası.
+    const oncekiVar =
+      (await prisma.epostaDogrulama.count({ where: { userId: req.user.userId } })) > 0;
+
+    const jeton = randomBytes(32).toString('base64url');
+    await prisma.epostaDogrulama.updateMany({
+      where: { userId: req.user.userId, usedAt: null },
+      data: { usedAt: new Date() },
+    });
+    await prisma.epostaDogrulama.create({
+      data: {
+        userId: req.user.userId,
+        tokenHash: createHash('sha256').update(jeton).digest('hex'),
+        expiresAt: jetonBitisi(new Date()),
+      },
+    });
+    return { jeton, oncekiVar, dogrulandi: u.epostaDogrulandi !== null, eposta: u.email };
+  });
+
+  /**
+   * Hesabı doğrulanmış yapar — test kurulumu için.
+   *
+   * Testlerin çoğu doğrulamayı ÖLÇMÜYOR; sohbeti, ticareti, ittifakı
+   * ölçüyor ve o kapılar doğrulanmış hesap istiyor. Her aracın kendi
+   * jetonunu üretip doğrulaması, ölçtüğü şeyle ilgisi olmayan on satır
+   * demekti. `kayit.mjs` bunu kayıttan hemen sonra çağırıyor.
+   */
+  app.post('/test/dogrulanmis-yap', { preHandler: requireAuth }, async (req) => {
+    await prisma.user.update({
+      where: { id: req.user.userId },
+      data: { epostaDogrulandi: new Date() },
+    });
+    return { dogrulandi: true };
+  });
+
+  /** Hesabın açılışını geriye alır: serbest sürenin dolmasını taklit eder. */
+  app.post('/test/hesabi-eskit', { preHandler: requireAuth }, async (req) => {
+    const { gun } = z.object({ gun: z.coerce.number().int().positive() }).parse(req.body);
+    await prisma.user.update({
+      where: { id: req.user.userId },
+      data: { createdAt: new Date(Date.now() - gun * 86_400_000) },
+    });
+    return { eskitildi: gun };
   });
 
   /** Bir NPC turu koşturur ve ne yapıldığını söyler. */

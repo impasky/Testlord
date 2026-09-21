@@ -92,7 +92,10 @@ export function onerilenDiyar(API) {
   return _diyarSozu;
 }
 
-export async function kayitOl(API, { email, password = 'parola1234', lordName, worldId }) {
+export async function kayitOl(
+  API,
+  { email, password = 'parola1234', lordName, worldId, dogrula = true },
+) {
   let sonYanit = null;
   let ad = lordName;
   let adDenemesi = 0;
@@ -104,7 +107,29 @@ export async function kayitOl(API, { email, password = 'parola1234', lordName, w
       body: JSON.stringify({ email, password, lordName: ad, worldId }),
     });
     const govde = await r.json().catch(() => null);
-    if (govde?.token) return govde;
+    if (govde?.token) {
+      /*
+       * HESAP DOĞRULANMIŞ AÇILIYOR — `dogrula: false` denmedikçe.
+       *
+       * E-posta doğrulaması (docs/17) ittifak sohbetini ve kaynak
+       * göndermeyi doğrulanmamış hesaba kapatıyor. Testlerin çoğu bunu
+       * ölçmüyor; sohbeti, ticareti, ittifakı ölçüyor ve o kapıya
+       * çarpınca ölçtükleri şeyle ilgisi olmayan bir sebeple kalıyorlar.
+       * Kurulum burada bir kez yapılıyor; doğrulamanın KENDİSİNİ ölçen
+       * araç `dogrula: false` diyor.
+       */
+      if (dogrula) {
+        await fetch(`${API}/api/test/dogrulanmis-yap`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${govde.token}`,
+          },
+          body: '{}',
+        }).catch(() => null);
+      }
+      return govde;
+    }
     sonYanit = { status: r.status, govde, ad };
 
     if (govde?.code === 'AD_UYGUNSUZ' && adDenemesi < 3) {

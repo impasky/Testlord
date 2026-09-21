@@ -19,6 +19,7 @@ import { z } from 'zod';
 import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError, hata } from '../errors.js';
+import { dogrulamaKontrol } from '../services/epostaDogrulama.js';
 import { binalariOku, findLordByUser, tickLord } from '../services/lord.js';
 import { lordlarArasiMesafe } from '../services/mesafe.js';
 import { bugunGonderilen, sevkiyatOzeti } from '../services/ticaret.js';
@@ -39,6 +40,9 @@ export async function ticaretRoutes(app: FastifyInstance): Promise<void> {
 
   app.post('/ticaret/gonder', { preHandler: requireAuth }, async (req) => {
     const body = z.object({ lordId: z.string().min(1), yuk: yukSemasi }).parse(req.body);
+    // Kaynak göndermek de başka oyuncuya dokunuyor: doğrulanmamış hesap
+    // bir bot ağına kaynak akıtamasın (docs/17).
+    await dogrulamaKontrol(req.user.userId, 'kaynak_gonder');
     const lordId = await findLordByUser(req.user.userId);
     if (body.lordId === lordId) {
       throw new GameError('Kendine kaynak gönderemezsin.', 400, 'KENDINE');

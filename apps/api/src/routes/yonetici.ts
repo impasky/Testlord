@@ -139,6 +139,7 @@ export async function yoneticiRoutes(app: FastifyInstance): Promise<void> {
             id: true,
             email: true,
             createdAt: true,
+            epostaDogrulandi: true,
             yasakli: true,
             yasakBitis: true,
             yasakSebebi: true,
@@ -183,6 +184,8 @@ export async function yoneticiRoutes(app: FastifyInstance): Promise<void> {
         eposta: maskeli(lord.user.email),
         katildi: lord.user.createdAt,
         yonetici: lord.user.yonetici,
+        // Doğrulanmamış hesap, bot avında ilk bakılacak yer (docs/17).
+        epostaDogrulandi: lord.user.epostaDogrulandi !== null,
         lordlar: lord.user.lords.map((l) => ({
           id: l.id,
           ad: l.name,
