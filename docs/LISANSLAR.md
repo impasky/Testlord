@@ -44,10 +44,16 @@ karşılığında tek elden çıkmış, tutarlı ve gerçekten çizilmiş 4134 g
 Elle çizilen çizgi ikonlar birimin ne olduğunu anlatıyordu ama oyunu oyun gibi
 hissettirmiyordu.
 
-## Yazı tipi — Cinzel
+## Yazı tipi — Rubik
 
-Başlıklarda kullanılır. [SIL Open Font License 1.1](https://openfontlicense.org/),
-Google Fonts üzerinden yüklenir. Künye şartı yoktur.
+Bütün arayüzde kullanılır. [SIL Open Font License 1.1](https://openfontlicense.org/),
+© The Rubik Project Authors. Künye şartı yoktur; yazı tipini tek başına
+satmak yasak, bir oyunla birlikte dağıtmak serbest.
+
+Google Fonts'tan ÇEKİLMİYOR: `@fontsource-variable/rubik` paketiyle oyunun
+kendi dosyalarına gömülü (`apps/web/src/main.tsx`). Oyuncunun IP'si her
+açılışta üçüncü bir tarafa gitmesin diye — sebebi `apps/web/src/styles.css`
+başında.
 
 ## Üretilen görseller
 

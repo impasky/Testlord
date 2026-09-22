@@ -4,6 +4,8 @@ import { createRoot } from 'react-dom/client';
 import { App } from './App';
 import { HataSiniri } from './components/HataSiniri';
 import { DilSaglayici } from './lib/dil';
+// Yazı tipi oyunla paketleniyor, dışarıdan çekilmiyor (bkz. styles.css başı).
+import '@fontsource-variable/rubik/wght.css';
 import './styles.css';
 
 /*

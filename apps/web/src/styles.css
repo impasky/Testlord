@@ -1,7 +1,29 @@
 @import 'tailwindcss';
 
-/* Mobil oyun arayüzü için kalın, yuvarlak bir sans. Türkçe karakter desteği tam. */
-@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap');
+/*
+ * YAZI TİPİ (Rubik) main.tsx'te içe aktarılıyor, burada DEĞİL — ve oyunla
+ * birlikte PAKETLENİYOR, Google Fonts'tan çekilmiyor.
+ *
+ * Burada `@import url(...)` olarak duruyordu ve HİÇ YÜKLENMİYORDU:
+ * `@import 'tailwindcss'` yerinde binlerce kurala açılıyor, ikinci
+ * `@import` onların ARKASINA düşüyor ve CSS kuralına göre başta olmayan
+ * bir `@import` geçersiz sayılıp atılıyor. Tarayıcı Google Fonts'a tek
+ * istek bile atmıyordu; oyun baştan beri sistem yazı tipiyle çiziliyordu.
+ * Derleme bunu bir uyarıyla söylüyordu ("@import rules must precede all
+ * rules") ve uyarı kimsenin görmediği bir satırda duruyordu.
+ *
+ * Neden paket (`@fontsource-variable/rubik`), neden Google'dan değil:
+ *   - Oyuncunun IP'si her açılışta üçüncü bir tarafa gitmiyor. KVKK/GDPR
+ *     açısından Google Fonts'u sunucudan çekmek tartışmalı; kendi
+ *     sunucumuzdan sunmak tartışmasız.
+ *   - Başka bir alan adına bağlantı (DNS + TLS) kurulmuyor; yazı tipi
+ *     oyunun kendi dosyalarıyla aynı yerden, aynı önbellekle iniyor.
+ *   - Tek dosya bütün kalınlıkları taşıyor (değişken yazı tipi, 300–900)
+ *     ve tarayıcı yalnız gereken dilimi indiriyor: Türkçe için latin +
+ *     latin-ext, ~50 KB.
+ * Aile adı bu yüzden `Rubik Variable`; `Rubik` yedekte, cihazda kurulu
+ * olursa diye.
+ */
 
 /**
  * Lordlar Çağı — mobil görsel dil.
@@ -78,7 +100,7 @@
   --color-nadir-efsanevi: #b57fff;
   --color-nadir-kadim: #f5b731;
 
-  --font-baslik: Rubik, system-ui, -apple-system, sans-serif;
+  --font-baslik: 'Rubik Variable', Rubik, system-ui, -apple-system, sans-serif;
 
   /*
    * Sabit çubukların yüksekliği — içerik dolgusu bunlara bağlı.
@@ -114,6 +136,7 @@ body {
   background: var(--color-gece);
   color: var(--color-parsomen);
   font-family:
+    'Rubik Variable',
     Rubik,
     system-ui,
     -apple-system,
