@@ -19,6 +19,7 @@ import { medeniyetleriKur } from '../services/medeniyet.js';
 import { resolveQueueItem } from '../services/queue.js';
 import { sevkiyatCoz } from '../services/ticaret.js';
 import { npcTuru, npcYap } from '../services/npc.js';
+import { kuyruklariCek, tabanlariGuncelle } from '../services/esyaPazari.js';
 
 export async function devRoutes(app: FastifyInstance): Promise<void> {
   /** Bekleyen tüm kuyrukları hemen bitirir. */
@@ -201,6 +202,16 @@ export async function devRoutes(app: FastifyInstance): Promise<void> {
   /** Bir NPC turu koşturur ve ne yapıldığını söyler. */
   app.post('/test/npc-turu', { preHandler: requireAuth }, async () => {
     return npcTuru(new Date());
+  });
+
+  /**
+   * Eşya pazarının işçi turunu HEMEN koşturur: kayıt kuyruğu kurası ve
+   * saatlik taban (docs/19). Test on saniyelik işçiyi beklemesin; işçi de
+   * aynı anda koşarsa kilitler ikisini sıraya diziyor, sonuç değişmiyor.
+   */
+  app.post('/test/pazar-turu', { preHandler: requireAuth }, async () => {
+    const simdi = new Date();
+    return { kura: await kuyruklariCek(simdi), taban: await tabanlariGuncelle(simdi) };
   });
 
   /** XP verir: seviye bağımlı sistemleri test etmek için. */

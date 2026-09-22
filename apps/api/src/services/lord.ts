@@ -721,6 +721,11 @@ const BILDIRIM_KONULARI: Record<string, { baslik: string; yol: string; etiket: s
   ordu_dondu: { baslik: 'Ordun eve döndü', yol: '/ordu', etiket: 'ordu' },
   bolge_aldin: { baslik: 'Bölge ele geçirildi', yol: '/dunya', etiket: 'fetih' },
   kuyruk_bitti: { baslik: 'İşin bitti', yol: '/sehir', etiket: 'kuyruk' },
+  // Eşya pazarı (docs/19): karşı taraf çoğu zaman oyunda değil — satışını
+  // ya da alımını ancak bildirimle öğreniyor.
+  esya_satildi: { baslik: 'Eşyan satıldı', yol: '/sehir', etiket: 'pazar' },
+  esya_alindi: { baslik: 'Ön siparişin karşılandı', yol: '/sehir', etiket: 'pazar' },
+  pazar_bant_disi: { baslik: 'Pazar emrin eşleşmiyor', yol: '/sehir', etiket: 'pazar' },
 };
 
 /**

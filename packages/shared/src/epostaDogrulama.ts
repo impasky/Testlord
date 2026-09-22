@@ -12,8 +12,8 @@
  *
  * Kayıtta hiçbir şey sorulmuyor: "ilk saldırı dakikalarda bitsin"
  * (docs/08) kuralı, yeni oyuncuyu posta kutusuna göndermeyi yasaklıyor.
- * Doğrulamadan kapalı olan iki kapı var ve ikisi de BAŞKA OYUNCUYA
- * dokunuyor — ittifak sohbeti ve kaynak gönderme. Oyunun kendisine
+ * Doğrulamadan kapalı olan üç kapı var ve üçü de BAŞKA OYUNCUYA
+ * dokunuyor — ittifak sohbeti, kaynak gönderme ve eşya pazarı. Oyunun kendisine
  * (fetih, inşa, araştırma) hiç dokunulmuyor; oynamayı engellemek
  * doğrulama değil, ceza olurdu.
  *
@@ -35,6 +35,7 @@ export const SERBEST_GUN = E.serbest_gun;
 export const KISITLI_EYLEM_ADI: Record<string, string> = {
   ittifak_sohbet: 'İttifak sohbetine yazmak',
   kaynak_gonder: 'Kaynak göndermek',
+  esya_pazari: 'Eşya pazarında alım satım',
 };
 
 export function jetonBitisi(simdi: Date): Date {

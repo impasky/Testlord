@@ -151,6 +151,15 @@ export function Malikane({
           ekonomisini yönettiği yer. */}
       <Pazar />
 
+      {/* Eşya pazarının asıl kapısı şehirdeki Pazar binası; bina köyde
+          açılıyor. Kamptaki lord pazarı buradan buluyor (docs/19). */}
+      <Kart className="px-3 py-2.5" kapi="pazar" onClick={() => onKapiAc('pazar')}>
+        <div className="flex items-center justify-between gap-2">
+          <span className="baslik text-[13px]">Eşya pazarı</span>
+          <span className="text-[12px] text-solgun">Diyarındaki oyuncularla al, sat →</span>
+        </div>
+      </Kart>
+
       {/* Savunma düzeni: saldırıya uğradığında ordunun nasıl duracağı.
           Malikâne'de çünkü burası oyuncunun kendi diyarını yönettiği yer;
           saldırı kararları Harita'da veriliyor. */}

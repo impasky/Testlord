@@ -81,8 +81,9 @@ export async function dogrulamaGonder(
 /**
  * Doğrulanmadan yapılamayan eylemler için kapı.
  *
- * İki yerde çağrılıyor: ittifak sohbeti ve kaynak gönderme. İkisi de
- * BAŞKA OYUNCUYA dokunuyor — kötüye kullanımın geçtiği yer burası.
+ * Üç yerde çağrılıyor: ittifak sohbeti, kaynak gönderme ve eşya pazarı
+ * (ilan ve ön sipariş). Üçü de BAŞKA OYUNCUYA dokunuyor — kötüye
+ * kullanımın geçtiği yer burası.
  * Oyunun kendisine (fetih, inşa, araştırma) dokunulmuyor: oynamayı
  * engellemek doğrulama değil, ceza olurdu.
  */

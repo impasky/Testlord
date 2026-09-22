@@ -3,7 +3,7 @@ LORDLAR ÇAĞI — ÇEVİRİ 1/3: OYUNU OYNANIR KILAN  (KALANLAR)
 Gezinme, düğmeler, kaynak ve birim adları, ilk saatin ekranları ve
 öğretici. Bu parti bitince oyun baştan sona oynanabilir.
 
-Bu dosyada 3 satır var — çevrilmiş olanlar çıkarıldı.
+Bu dosyada 18 satır var — çevrilmiş olanlar çıkarıldı.
 
 NASIL ÇEVİRİLİR
   Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.
@@ -35,8 +35,26 @@ NASIL ÇEVİRİLİR
 
 ==========================================================================
 
---- Oyun motoru (3) ---
+--- Oyun motoru (17) ---
 
 2249. Deponda {0} için yeterli yer yok. Önce biraz harca ya da Malikâne'yi yükselt.
 2250. Deponda yalnız {0} {1} yeri var. En fazla {2} {3} takas edebilirsin.
 2251. Miktar tam sayı olmalı.
+2330. {0} altın gerekiyor; kasanda ve deponda {1} var.
+2331. {0} ile {1} altın
+2332. Aynı anda en fazla {0} ilan açabilirsin.
+2333. Aynı anda en fazla {0} ön sipariş verebilirsin.
+2334. Aynı ürünü hem satıp hem alamazsın. Önce öteki emrini geri çek.
+2335. Bu eşya demirhanede yükseltiliyor. İş bitince satabilirsin.
+2336. Bu eşya zaten pazarda.
+2337. Bu ürüne zaten bir ön siparişin var. Fiyatını güncelleyebilirsin.
+2338. Bu ürünün zaten bir ilanın var. Önce o satılsın ya da geri çek.
+2339. Bugün en fazla {0} yeni emir verebilirsin. Yarın yenilenir.
+2340. Eşya pazarında alım satım
+2341. Fiyat {0} arasında olmalı.
+2342. Kuşandığın eşyayı satamazsın. Önce çıkar.
+2343. Ön siparişlerde bekleyen altın depo tavanını aşamaz. En fazla {0} altın daha bağlayabilirsin.
+
+--- Öğretici (1) ---
+
+2373. İşine yaramayan eşyayı diyarındaki öteki lordlara satabilir, aradığını onlardan alabilirsin. Kimin sattığı görünmez; fiyat dar bir bantta oynar, satıştan %{0} vergi kesilir. Pazar binasından ya da Malikâne'den girilir.

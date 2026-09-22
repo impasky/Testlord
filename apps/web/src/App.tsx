@@ -73,6 +73,9 @@ const EpostaDogrula = lazy(() =>
 const Siralama = lazy(() => import('./screens/Siralama').then((m) => ({ default: m.Siralama })));
 const Ittifak = lazy(() => import('./screens/Ittifak').then((m) => ({ default: m.Ittifak })));
 const Medeniyet = lazy(() => import('./screens/Medeniyet').then((m) => ({ default: m.Medeniyet })));
+const EsyaPazari = lazy(() =>
+  import('./screens/EsyaPazari').then((m) => ({ default: m.EsyaPazari })),
+);
 
 function hashJetonu(): string | null {
   const h = window.location.hash;
@@ -602,6 +605,9 @@ export function App() {
                 }}
               />
             )}
+            {/* Pazar (docs/19): şehirdeki Pazar binasının kapısı — eşya
+              pazarı ve kaynak takası. */}
+            {kapi === 'pazar' && <EsyaPazari lordSeviyesi={lord.level} />}
             {kapi === 'moderasyon' && <Moderasyon />}
             {kapi === 'yoneticiPaneli' && <YoneticiPaneli />}
             {kapi === 'hesap' && (

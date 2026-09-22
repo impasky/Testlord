@@ -79,10 +79,9 @@
     {
       "key": "pazar",
       "ad": "Pazar",
-      "ozet": "Kaynak takası.",
-      "aciklama": "Günlük takas hacmini pazarın büyüklüğü belirler.",
-      "kapi": "malikane",
-      "bolum": "pazar",
+      "ozet": "Eşya ve kaynak ticareti.",
+      "aciklama": "Oyuncularla eşya alıp sattığın, kaynak takas ettiğin yer. Günlük takas hacmini pazarın büyüklüğü belirler.",
+      "kapi": "pazar",
       "x": 52,
       "y": 96,
       "seviyeli": true,

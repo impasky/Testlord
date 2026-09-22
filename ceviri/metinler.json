@@ -374,7 +374,7 @@
     "tr": "{0} · AÇ",
     "en": "{0} · OPEN",
     "nerede": [
-      "apps/web/src/screens/Malikane.tsx:271"
+      "apps/web/src/screens/Malikane.tsx:280"
     ]
   },
   "t56145914": {
@@ -393,6 +393,14 @@
       "apps/web/src/components/HedefSeridi.tsx:96"
     ]
   },
+  "t381449cb": {
+    "grup": "arayuz",
+    "tr": "{0} · kurayla",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:410"
+    ]
+  },
   "tc49d2fb1": {
     "grup": "arayuz",
     "tr": "{0} · sana saldıran +%{1} yağma alır",
@@ -406,7 +414,7 @@
     "tr": "{0} · Sv {1}",
     "en": "{0} · Lvl {1}",
     "nerede": [
-      "apps/web/src/screens/Malikane.tsx:188"
+      "apps/web/src/screens/Malikane.tsx:197"
     ]
   },
   "t6fea5493": {
@@ -490,6 +498,14 @@
       "apps/web/src/components/IttifakSohbet.tsx:110"
     ]
   },
+  "tb2c59732": {
+    "grup": "arayuz",
+    "tr": "{0} alıcı bekliyor · en yüksek {1} altın",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:569"
+    ]
+  },
   "tc1fd3d51": {
     "grup": "arayuz",
     "tr": "{0} altın",
@@ -497,7 +513,10 @@
     "nerede": [
       "apps/api/src/services/queue.ts:69",
       "apps/web/src/screens/Demirhane.tsx:296",
-      "apps/web/src/screens/Demirhane.tsx:642"
+      "apps/web/src/screens/Demirhane.tsx:642",
+      "apps/web/src/screens/EsyaPazari.tsx:104",
+      "apps/web/src/screens/EsyaPazari.tsx:413",
+      "apps/web/src/screens/EsyaPazari.tsx:694"
     ]
   },
   "t37c580c9": {
@@ -515,6 +534,38 @@
     "en": "{0} gold missing.",
     "nerede": [
       "apps/web/src/screens/Generaller.tsx:144"
+    ]
+  },
+  "te3dc4ecc": {
+    "grup": "arayuz",
+    "tr": "{0} altın emanette",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:693"
+    ]
+  },
+  "t6b3f5f72": {
+    "grup": "arayuz",
+    "tr": "{0} altına güncelle",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:785"
+    ]
+  },
+  "t88daeb31": {
+    "grup": "arayuz",
+    "tr": "{0} altına kadar · {1}",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:588"
+    ]
+  },
+  "t90d251aa": {
+    "grup": "arayuz",
+    "tr": "{0} altından · {1}",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:155"
     ]
   },
   "t82bfd725": {
@@ -581,7 +632,7 @@
       "apps/web/src/components/DiyarTanitimi.tsx:86",
       "apps/web/src/screens/Medeniyet.tsx:136",
       "apps/web/src/screens/Medeniyet.tsx:196",
-      "packages/shared/src/ogretici.ts:210"
+      "packages/shared/src/ogretici.ts:211"
     ]
   },
   "t197e9a5d": {
@@ -738,6 +789,14 @@
     "en": "Your army is not enough for {0} yet.",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:777"
+    ]
+  },
+  "t44d91aca": {
+    "grup": "arayuz",
+    "tr": "{0} ilan kayıt kuyruğunda; ilk kura {1} sonra.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:379"
     ]
   },
   "tf8c9cd73": {
@@ -1335,6 +1394,14 @@
       "apps/web/src/components/KaynakGonder.tsx:115"
     ]
   },
+  "t0e14de70": {
+    "grup": "arayuz",
+    "tr": "← Geri",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:362"
+    ]
+  },
   "tcdcc1386": {
     "grup": "arayuz",
     "tr": "← Listeye dön",
@@ -1402,9 +1469,9 @@
       "apps/web/src/components/HedefSeridi.tsx:32",
       "apps/web/src/components/Omurga.tsx:962",
       "apps/web/src/screens/Malikane.tsx:127",
-      "apps/web/src/screens/Malikane.tsx:195",
-      "apps/web/src/screens/Malikane.tsx:201",
-      "apps/web/src/screens/Malikane.tsx:207"
+      "apps/web/src/screens/Malikane.tsx:204",
+      "apps/web/src/screens/Malikane.tsx:210",
+      "apps/web/src/screens/Malikane.tsx:216"
     ]
   },
   "t0ec7b9a9": {
@@ -1530,6 +1597,15 @@
       "apps/web/src/components/Omurga.tsx:700"
     ]
   },
+  "t3ed53de0": {
+    "grup": "arayuz",
+    "tr": "Al",
+    "en": "Crimson",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:59",
+      "data/arma.json:renkler[0].ad"
+    ]
+  },
   "t8c46e58c": {
     "grup": "arayuz",
     "tr": "ALACAĞIN",
@@ -1538,13 +1614,38 @@
       "apps/web/src/components/Pazar.tsx:146"
     ]
   },
+  "tb47d7727": {
+    "grup": "arayuz",
+    "tr": "ALAN",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:488"
+    ]
+  },
+  "t3922bff6": {
+    "grup": "arayuz",
+    "tr": "Alıcı çıkana kadar ilanda bekler; eşya o sırada kullanılamaz.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:464"
+    ]
+  },
+  "ta19dfbf9": {
+    "grup": "arayuz",
+    "tr": "Alındı: {0} altın ödendi. Eşya envanterinde.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:335"
+    ]
+  },
   "t39e8631a": {
     "grup": "arayuz",
     "tr": "Alınıyor…",
     "en": "Claiming…",
     "nerede": [
       "apps/web/src/components/GunlukKart.tsx:154",
-      "apps/web/src/components/SeferKart.tsx:92"
+      "apps/web/src/components/SeferKart.tsx:92",
+      "apps/web/src/screens/EsyaPazari.tsx:112"
     ]
   },
   "t31ca39fb": {
@@ -1614,13 +1715,21 @@
       "apps/web/src/screens/YoneticiPaneli.tsx:68"
     ]
   },
+  "t1d831981": {
+    "grup": "arayuz",
+    "tr": "Aranan ürünler",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:580"
+    ]
+  },
   "t3e143637": {
     "grup": "arayuz",
     "tr": "Araştırma",
     "en": "Research",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:92",
-      "packages/shared/src/types.ts:331"
+      "packages/shared/src/types.ts:341"
     ]
   },
   "t0f317dd7": {
@@ -1751,7 +1860,8 @@
     "en": "Mount",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:64",
-      "apps/web/src/screens/LordEkrani.tsx:76"
+      "apps/web/src/screens/LordEkrani.tsx:76",
+      "packages/shared/src/esyaPazari.ts:61"
     ]
   },
   "t091167b6": {
@@ -1808,6 +1918,14 @@
     "en": "You can have a maximum of {0} [training|trainings] at once. Upgrading your Barracks increases this.",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:87"
+    ]
+  },
+  "t98950e8c": {
+    "grup": "arayuz",
+    "tr": "Aynı anda en fazla {0} ilan ve {1} ön sipariş. Bugün {2}/{3} yeni emir verdin. Emirlerin süresi dolmaz.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:606"
     ]
   },
   "t6fe8b93e": {
@@ -1923,6 +2041,22 @@
     "en": "Upkeep",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:324"
+    ]
+  },
+  "tfb644c22": {
+    "grup": "arayuz",
+    "tr": "Banda al",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:726"
+    ]
+  },
+  "td4f45a59": {
+    "grup": "arayuz",
+    "tr": "bant dışı",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:700"
     ]
   },
   "ta5948b20": {
@@ -2072,6 +2206,22 @@
       "apps/web/src/components/IttifakBasvurular.tsx:135"
     ]
   },
+  "t58a03b5a": {
+    "grup": "arayuz",
+    "tr": "Bekleyen bir alıcı {0} altın veriyor: hemen satılır.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:463"
+    ]
+  },
+  "t3e9a662e": {
+    "grup": "arayuz",
+    "tr": "Bekleyen emrin yok.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:610"
+    ]
+  },
   "td806f1f4": {
     "grup": "arayuz",
     "tr": "Bekleyen şikâyet yok.",
@@ -2086,6 +2236,14 @@
     "en": "No pending reports. Chat and lord names look clean — when a new report comes, it will appear here.",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:86"
+    ]
+  },
+  "t79822a60": {
+    "grup": "arayuz",
+    "tr": "bekliyor",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:702"
     ]
   },
   "tfc8bbaee": {
@@ -2207,6 +2365,14 @@
     "en": "A region is defended solely by the garrison you leave there.",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:520"
+    ]
+  },
+  "t32f39dc2": {
+    "grup": "arayuz",
+    "tr": "Bir fiyat seç",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:785"
     ]
   },
   "t6c671869": {
@@ -2843,6 +3009,22 @@
       "apps/web/src/components/IttifakKayit.tsx:50"
     ]
   },
+  "t41d9ad86": {
+    "grup": "arayuz",
+    "tr": "Defteri aç",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:214"
+    ]
+  },
+  "tea3bfb0b": {
+    "grup": "arayuz",
+    "tr": "Değerli eşya: ilana girince {0} dakika kayıt kuyruğunda bekler, sonra en yüksek fiyatı veren alıcılar arasında kura çekilir.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:373"
+    ]
+  },
   "taf285067": {
     "grup": "arayuz",
     "tr": "Değişikliği doğrulamak için gerekiyor.",
@@ -2888,7 +3070,7 @@
       "apps/web/src/screens/Sehir.tsx:555",
       "data/basarimlar.json:kumeler[3].ad",
       "data/binalar.json:binalar[3].ad",
-      "packages/shared/src/types.ts:332"
+      "packages/shared/src/types.ts:342"
     ]
   },
   "tb2ce20de": {
@@ -2899,12 +3081,28 @@
       "apps/web/src/screens/Demirhane.tsx:450"
     ]
   },
+  "t509e13e8": {
+    "grup": "arayuz",
+    "tr": "Demirhane {0} altın verir",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:570"
+    ]
+  },
   "t5d00215f": {
     "grup": "arayuz",
     "tr": "Demirhanede ekipman üret",
     "en": "Forge equipment in the Blacksmith",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:821"
+    ]
+  },
+  "te3cd6e48": {
+    "grup": "arayuz",
+    "tr": "Demirhanede yükseltiliyor — iş bitince satabilirsin.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:567"
     ]
   },
   "t0bd85dea": {
@@ -2972,6 +3170,22 @@
       "apps/web/src/components/Pazar.tsx:186"
     ]
   },
+  "tb1a19084": {
+    "grup": "arayuz",
+    "tr": "Deponda {0} altın yeri var. Emanette {1} altın.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:118"
+    ]
+  },
+  "ta56d2f4e": {
+    "grup": "arayuz",
+    "tr": "Deponda altın için yer yok. Kasadaki altın bekler, kaybolmaz.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:117"
+    ]
+  },
   "t24cb06e6": {
     "grup": "arayuz",
     "tr": "Deponun bir kısmı doluydu; sığan kadarı verildi.",
@@ -2987,6 +3201,14 @@
     "en": "Your storage is overflowing",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:857"
+    ]
+  },
+  "t45c33182": {
+    "grup": "arayuz",
+    "tr": "Depoya al",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:112"
     ]
   },
   "t7dc33a54": {
@@ -3062,7 +3284,7 @@
     "tr": "Diyar yükleniyor…",
     "en": "Realm loading…",
     "nerede": [
-      "apps/web/src/App.tsx:415"
+      "apps/web/src/App.tsx:418"
     ]
   },
   "tadebb397": {
@@ -3094,7 +3316,7 @@
     "tr": "Diyarda henüz bir şey olmadı. Bir sefere çıkınca burada okursun.",
     "en": "Nothing has happened in the realm yet. You will read it here when you go on a campaign.",
     "nerede": [
-      "apps/web/src/screens/Malikane.tsx:281"
+      "apps/web/src/screens/Malikane.tsx:290"
     ]
   },
   "t72c3e02f": {
@@ -3209,6 +3431,22 @@
     "en": "What happened in your realm",
     "nerede": [
       "apps/web/src/screens/Olaylar.tsx:77"
+    ]
+  },
+  "tbcee7396": {
+    "grup": "arayuz",
+    "tr": "Diyarında şu an satışta eşya yok. Aşağıdan istediğin ürüne ön sipariş verebilirsin; biri o fiyata sattığında eşya senin olur.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:143"
+    ]
+  },
+  "tb93a9a42": {
+    "grup": "arayuz",
+    "tr": "Diyarındaki oyuncularla al, sat →",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Malikane.tsx:159"
     ]
   },
   "tf8838c3c": {
@@ -3492,7 +3730,8 @@
     "en": "Legendary",
     "nerede": [
       "apps/web/src/components/ui.tsx:277",
-      "apps/web/src/screens/LordEkrani.tsx:140"
+      "apps/web/src/screens/LordEkrani.tsx:140",
+      "packages/shared/src/esyaPazari.ts:69"
     ]
   },
   "tf81c1046": {
@@ -3575,6 +3814,30 @@
       "apps/web/src/components/Pazar.tsx:109"
     ]
   },
+  "tb5e8373e": {
+    "grup": "arayuz",
+    "tr": "Emir kaldırılamadı.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:673"
+    ]
+  },
+  "tbd2facdc": {
+    "grup": "arayuz",
+    "tr": "Emir verilemedi.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:349"
+    ]
+  },
+  "t44a0fab1": {
+    "grup": "arayuz",
+    "tr": "Emirlerim",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:61"
+    ]
+  },
   "tdf35d15b": {
     "grup": "arayuz",
     "tr": "En az {0}",
@@ -3633,6 +3896,14 @@
       "apps/web/src/components/IttifakBasvurular.tsx:118"
     ]
   },
+  "tb448a1f1": {
+    "grup": "arayuz",
+    "tr": "En ucuz ilan {0} altın: yazdığından azını ödersin, eşya hemen senin.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:452"
+    ]
+  },
   "t704faa78": {
     "grup": "arayuz",
     "tr": "en üst seviye",
@@ -3689,7 +3960,7 @@
       "apps/web/src/components/KaynakGonder.tsx:91",
       "apps/web/src/components/MobilKabuk.tsx:296",
       "apps/web/src/screens/Medeniyet.tsx:353",
-      "packages/shared/src/ogretici.ts:293"
+      "packages/shared/src/ogretici.ts:294"
     ]
   },
   "t8a47a8f9": {
@@ -3738,6 +4009,23 @@
     "en": "no threshold",
     "nerede": [
       "apps/web/src/components/IttifakBasvurular.tsx:107"
+    ]
+  },
+  "t8e267f96": {
+    "grup": "arayuz",
+    "tr": "Eşya pazarı",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Malikane.tsx:158",
+      "packages/shared/src/ogretici.ts:325"
+    ]
+  },
+  "t6105b341": {
+    "grup": "arayuz",
+    "tr": "Eşyaların",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:538"
     ]
   },
   "t16a76c19": {
@@ -3838,6 +4126,55 @@
       "data/basarimlar.json:kumeler[0].ad"
     ]
   },
+  "te9c54ad3": {
+    "grup": "arayuz",
+    "tr": "FİYAT",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:486"
+    ]
+  },
+  "tcc88552a": {
+    "grup": "arayuz",
+    "tr": "Fiyat bandı kaydı ({0}–{1} altın); bu hâliyle eşleşmez.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:715"
+    ]
+  },
+  "t877ce53a": {
+    "grup": "arayuz",
+    "tr": "Fiyat güncellenemedi.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:661"
+    ]
+  },
+  "td23d6297": {
+    "grup": "arayuz",
+    "tr": "Fiyat seç",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:490"
+    ]
+  },
+  "t010920bb": {
+    "grup": "arayuz",
+    "tr": "Fiyat seçilmedi.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/routes/esyaPazari.ts:64",
+      "apps/web/src/screens/EsyaPazari.tsx:322"
+    ]
+  },
+  "tf22d01f4": {
+    "grup": "arayuz",
+    "tr": "Fiyatı değiştir",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:730"
+    ]
+  },
   "t1fcef09f": {
     "grup": "arayuz",
     "tr": "garnizon",
@@ -3861,7 +4198,7 @@
     "tr": "garnizon yok — gelir yok",
     "en": "no garrison — no income",
     "nerede": [
-      "apps/web/src/screens/Malikane.tsx:214"
+      "apps/web/src/screens/Malikane.tsx:223"
     ]
   },
   "t7bd683bd": {
@@ -3977,7 +4314,7 @@
     "en": "Generals",
     "nerede": [
       "apps/web/src/screens/Generaller.tsx:181",
-      "packages/shared/src/types.ts:330"
+      "packages/shared/src/types.ts:340"
     ]
   },
   "tbf8d2b79": {
@@ -4009,7 +4346,8 @@
     "tr": "Geri çek",
     "en": "Withdraw",
     "nerede": [
-      "apps/web/src/components/Paktlar.tsx:146"
+      "apps/web/src/components/Paktlar.tsx:146",
+      "apps/web/src/screens/EsyaPazari.tsx:738"
     ]
   },
   "t09bffe98": {
@@ -4033,7 +4371,7 @@
     "tr": "Giriş ekranına dön",
     "en": "Return to login screen",
     "nerede": [
-      "apps/web/src/App.tsx:404",
+      "apps/web/src/App.tsx:407",
       "apps/web/src/screens/ParolaSifirla.tsx:41"
     ]
   },
@@ -4112,6 +4450,7 @@
       "apps/web/src/components/SikayetSayfasi.tsx:117",
       "apps/web/src/screens/Akin.tsx:669",
       "apps/web/src/screens/Demirhane.tsx:519",
+      "apps/web/src/screens/EsyaPazari.tsx:396",
       "apps/web/src/screens/Generaller.tsx:139",
       "apps/web/src/screens/Giris.tsx:289",
       "apps/web/src/screens/Harita.tsx:1209",
@@ -4176,6 +4515,22 @@
     "en": "POWER",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:241"
+    ]
+  },
+  "t6d8136d5": {
+    "grup": "arayuz",
+    "tr": "güç {0}",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:563"
+    ]
+  },
+  "td93e9c43": {
+    "grup": "arayuz",
+    "tr": "Güç {0} · taban {1} altın · demirhane {2} verir",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:369"
     ]
   },
   "t56b42f80": {
@@ -4282,7 +4637,7 @@
     "tr": "Haritaya git",
     "en": "Go to map",
     "nerede": [
-      "apps/web/src/screens/Malikane.tsx:172",
+      "apps/web/src/screens/Malikane.tsx:181",
       "apps/web/src/screens/Medeniyet.tsx:114",
       "apps/web/src/screens/Olaylar.tsx:87",
       "apps/web/src/screens/Siralama.tsx:279"
@@ -4293,7 +4648,7 @@
     "tr": "Haritayı aç",
     "en": "Open the map",
     "nerede": [
-      "apps/web/src/screens/Malikane.tsx:288"
+      "apps/web/src/screens/Malikane.tsx:297"
     ]
   },
   "ta2f0d896": {
@@ -4311,7 +4666,7 @@
     "nerede": [
       "apps/web/src/components/Hastane.tsx:34",
       "data/binalar.json:binalar[4].ad",
-      "packages/shared/src/ogretici.ts:394"
+      "packages/shared/src/ogretici.ts:402"
     ]
   },
   "t39bc2f60": {
@@ -4344,6 +4699,22 @@
     "en": "The target's fortification added +{0}% to defense.",
     "nerede": [
       "apps/web/src/components/SavasRaporu.tsx:398"
+    ]
+  },
+  "t1f235445": {
+    "grup": "arayuz",
+    "tr": "Hemen al — {0} altın",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:427"
+    ]
+  },
+  "t1af21558": {
+    "grup": "arayuz",
+    "tr": "Hemen sat — {0} altın",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:432"
     ]
   },
   "t8910d1b9": {
@@ -4407,7 +4778,7 @@
     "tr": "Henüz toprağın yok. Haritada bir bölge al, geliri buraya işlesin.",
     "en": "You have no land yet. Take a region on the map, so its income registers here.",
     "nerede": [
-      "apps/web/src/screens/Malikane.tsx:171"
+      "apps/web/src/screens/Malikane.tsx:180"
     ]
   },
   "t9148a36e": {
@@ -4474,7 +4845,7 @@
     "en": "DELETE MY ACCOUNT",
     "nerede": [
       "apps/api/src/routes/me.ts:64",
-      "apps/web/src/api/client.ts:1079",
+      "apps/web/src/api/client.ts:1187",
       "apps/web/src/screens/Hesap.tsx:287"
     ]
   },
@@ -4517,7 +4888,7 @@
     "nerede": [
       "apps/web/src/screens/Hesap.tsx:98",
       "apps/web/src/screens/LordEkrani.tsx:695",
-      "packages/shared/src/types.ts:336"
+      "packages/shared/src/types.ts:346"
     ]
   },
   "t47c218fc": {
@@ -4624,6 +4995,30 @@
       "apps/web/src/screens/Giris.tsx:307"
     ]
   },
+  "t528f9a89": {
+    "grup": "arayuz",
+    "tr": "İlana kondu: {0} altın. Alıcı çıkınca kasana düşer.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:331"
+    ]
+  },
+  "tdb508fb6": {
+    "grup": "arayuz",
+    "tr": "İlana koy — {0} altın",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:433"
+    ]
+  },
+  "t2abd8ebf": {
+    "grup": "arayuz",
+    "tr": "İlanlarım",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:614"
+    ]
+  },
   "tb14deebf": {
     "grup": "arayuz",
     "tr": "İlerleme",
@@ -4716,12 +5111,20 @@
       "apps/web/src/screens/Sehir.tsx:496"
     ]
   },
+  "t15458cd3": {
+    "grup": "arayuz",
+    "tr": "İptal et",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:738"
+    ]
+  },
   "t57dca8ac": {
     "grup": "arayuz",
     "tr": "İPUCU",
     "en": "HINT",
     "nerede": [
-      "apps/web/src/screens/Malikane.tsx:244"
+      "apps/web/src/screens/Malikane.tsx:253"
     ]
   },
   "t65acff74": {
@@ -4783,7 +5186,7 @@
       "apps/web/src/screens/Harita.tsx:440",
       "apps/web/src/screens/Ittifak.tsx:205",
       "apps/web/src/screens/Siralama.tsx:37",
-      "packages/shared/src/types.ts:333"
+      "packages/shared/src/types.ts:343"
     ]
   },
   "t1d6a6fe8": {
@@ -4986,6 +5389,14 @@
       "apps/web/src/components/IttifakBasvurular.tsx:163"
     ]
   },
+  "tb28ea824": {
+    "grup": "arayuz",
+    "tr": "KADEME",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:174"
+    ]
+  },
   "ta6651066": {
     "grup": "arayuz",
     "tr": "kademe {0}",
@@ -4999,7 +5410,8 @@
     "tr": "Kadim",
     "en": "Ancient",
     "nerede": [
-      "apps/web/src/components/ui.tsx:283"
+      "apps/web/src/components/ui.tsx:283",
+      "packages/shared/src/esyaPazari.ts:70"
     ]
   },
   "tb768a553": {
@@ -5074,7 +5486,8 @@
     "nerede": [
       "apps/web/src/components/ArmaSecici.tsx:113",
       "apps/web/src/screens/Demirhane.tsx:61",
-      "apps/web/src/screens/LordEkrani.tsx:73"
+      "apps/web/src/screens/LordEkrani.tsx:73",
+      "packages/shared/src/esyaPazari.ts:58"
     ]
   },
   "t806485d0": {
@@ -5082,7 +5495,7 @@
     "tr": "kalkan altında",
     "en": "under shield",
     "nerede": [
-      "apps/web/src/screens/Malikane.tsx:224"
+      "apps/web/src/screens/Malikane.tsx:233"
     ]
   },
   "t821d31ab": {
@@ -5210,6 +5623,14 @@
       "apps/web/src/screens/Akin.tsx:599"
     ]
   },
+  "t9481412e": {
+    "grup": "arayuz",
+    "tr": "Kasadan alınamadı.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:94"
+    ]
+  },
   "t14306832": {
     "grup": "arayuz",
     "tr": "Katıl",
@@ -5225,7 +5646,7 @@
     "en": "To join",
     "nerede": [
       "apps/web/src/components/IttifakIncele.tsx:110",
-      "packages/shared/src/ogretici.ts:558"
+      "packages/shared/src/ogretici.ts:566"
     ]
   },
   "tc0088b9a": {
@@ -5292,6 +5713,38 @@
     "en": "Logbook",
     "nerede": [
       "apps/web/src/components/IttifakKayit.tsx:47"
+    ]
+  },
+  "ta5d4e053": {
+    "grup": "arayuz",
+    "tr": "kayıt kuyruğu",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:698"
+    ]
+  },
+  "t7d3b26d1": {
+    "grup": "arayuz",
+    "tr": "Kayıt kuyruğuna koy — {0} altın",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:430"
+    ]
+  },
+  "t03599a03": {
+    "grup": "arayuz",
+    "tr": "kayıt kuyruğunda · {0}",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:156"
+    ]
+  },
+  "tbc30e5a9": {
+    "grup": "arayuz",
+    "tr": "Kayıt kuyruğunda. Süre bitince bekleyen alıcılar arasında kura çekilir.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:329"
     ]
   },
   "tc7851033": {
@@ -5609,6 +6062,14 @@
       "apps/web/src/screens/Ittifak.tsx:348"
     ]
   },
+  "t5ecbd01c": {
+    "grup": "arayuz",
+    "tr": "Kura {0} sonra. Kuyruktayken geri çekilemez.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:708"
+    ]
+  },
   "t863206b4": {
     "grup": "arayuz",
     "tr": "Kuralları sağladığından emin ol ve tekrar dene.",
@@ -5910,7 +6371,7 @@
     "nerede": [
       "apps/web/src/screens/Malikane.tsx:117",
       "data/binalar.json:binalar[0].ad",
-      "packages/shared/src/types.ts:328"
+      "packages/shared/src/types.ts:338"
     ]
   },
   "t79aa19c6": {
@@ -5951,7 +6412,7 @@
     "en": "Civilization",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:111",
-      "packages/shared/src/types.ts:338"
+      "packages/shared/src/types.ts:348"
     ]
   },
   "t7227452e": {
@@ -6073,7 +6534,8 @@
     "en": "Helmet",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:63",
-      "apps/web/src/screens/LordEkrani.tsx:75"
+      "apps/web/src/screens/LordEkrani.tsx:75",
+      "packages/shared/src/esyaPazari.ts:60"
     ]
   },
   "tb2517ac5": {
@@ -6097,7 +6559,16 @@
     "tr": "Nadir",
     "en": "Rare",
     "nerede": [
-      "apps/web/src/components/ui.tsx:271"
+      "apps/web/src/components/ui.tsx:271",
+      "packages/shared/src/esyaPazari.ts:68"
+    ]
+  },
+  "t8d0f423f": {
+    "grup": "arayuz",
+    "tr": "NADİRLİK",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:180"
     ]
   },
   "t81fbdc14": {
@@ -6226,7 +6697,7 @@
     "en": "Events",
     "nerede": [
       "apps/web/src/screens/Olaylar.tsx:77",
-      "packages/shared/src/types.ts:334"
+      "packages/shared/src/types.ts:344"
     ]
   },
   "t5833840b": {
@@ -6234,7 +6705,7 @@
     "tr": "OLAYLAR",
     "en": "EVENTS",
     "nerede": [
-      "apps/web/src/screens/Malikane.tsx:265"
+      "apps/web/src/screens/Malikane.tsx:274"
     ]
   },
   "t19b08c4e": {
@@ -6498,7 +6969,7 @@
     "tr": "Oturum açılamadı. Tekrar giriş yapman gerekiyor.",
     "en": "Could not log in. You need to sign in again.",
     "nerede": [
-      "apps/web/src/App.tsx:402"
+      "apps/web/src/App.tsx:405"
     ]
   },
   "t63341816": {
@@ -6588,6 +7059,30 @@
     "en": "FRONT LINE",
     "nerede": [
       "apps/web/src/components/DizilimIzgarasi.tsx:51"
+    ]
+  },
+  "td7cd18cd": {
+    "grup": "arayuz",
+    "tr": "Ön sipariş ver — {0} altın",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:428"
+    ]
+  },
+  "tde606a86": {
+    "grup": "arayuz",
+    "tr": "Ön sipariş verildi: {0} altın emanette. Satan çıkınca eşya senin.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:336"
+    ]
+  },
+  "t16116443": {
+    "grup": "arayuz",
+    "tr": "Ön siparişlerim",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:623"
     ]
   },
   "t316fd603": {
@@ -6795,7 +7290,7 @@
     "tr": "payın {0}/{1} yer",
     "en": "your share {0}/{1} spaces",
     "nerede": [
-      "apps/web/src/screens/Malikane.tsx:219"
+      "apps/web/src/screens/Malikane.tsx:228"
     ]
   },
   "tbc71d6a3": {
@@ -6804,7 +7299,24 @@
     "en": "Market",
     "nerede": [
       "apps/web/src/components/Pazar.tsx:105",
-      "data/binalar.json:binalar[5].ad"
+      "data/binalar.json:binalar[5].ad",
+      "packages/shared/src/types.ts:350"
+    ]
+  },
+  "t8cc8386d": {
+    "grup": "arayuz",
+    "tr": "Pazar kasası",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:102"
+    ]
+  },
+  "t03621ed5": {
+    "grup": "arayuz",
+    "tr": "Pazardan yalnız seviyenin açtığı kademeyi alabilirsin — dövebildiğin kadarını.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:218"
     ]
   },
   "tada147bf": {
@@ -7045,7 +7557,16 @@
     "en": "Banner",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:65",
-      "apps/web/src/screens/LordEkrani.tsx:77"
+      "apps/web/src/screens/LordEkrani.tsx:77",
+      "packages/shared/src/esyaPazari.ts:62"
+    ]
+  },
+  "t38a72a77": {
+    "grup": "arayuz",
+    "tr": "Sat",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:60"
     ]
   },
   "t141ddec9": {
@@ -7054,6 +7575,46 @@
     "en": "Sell {0}",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:288"
+    ]
+  },
+  "t6b78cc24": {
+    "grup": "arayuz",
+    "tr": "SATAN",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:487"
+    ]
+  },
+  "t3fa7d1d1": {
+    "grup": "arayuz",
+    "tr": "Satan yok. {0} altın emanete alınır; biri bu fiyata ya da altına satınca eşya senin olur. İptal edersen kesintisiz geri döner.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:453"
+    ]
+  },
+  "t05cbc787": {
+    "grup": "arayuz",
+    "tr": "Satılabilecek eşyan yok. Kuşandığın eşyayı satmak için önce çıkarman gerekiyor.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:541"
+    ]
+  },
+  "t6df255fd": {
+    "grup": "arayuz",
+    "tr": "Satıldı: {0} altın. Vergi {1}, kasana {2} altın girdi.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:326"
+    ]
+  },
+  "tf6fc4428": {
+    "grup": "arayuz",
+    "tr": "Satışta",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:140"
     ]
   },
   "ta64065bd": {
@@ -7450,7 +8011,8 @@
     "tr": "Sıradan",
     "en": "Common",
     "nerede": [
-      "apps/web/src/components/ui.tsx:259"
+      "apps/web/src/components/ui.tsx:259",
+      "packages/shared/src/esyaPazari.ts:66"
     ]
   },
   "t3daaae35": {
@@ -7459,7 +8021,7 @@
     "en": "Ranking",
     "nerede": [
       "apps/web/src/screens/Siralama.tsx:188",
-      "packages/shared/src/types.ts:335"
+      "packages/shared/src/types.ts:345"
     ]
   },
   "t7b72734e": {
@@ -7468,7 +8030,8 @@
     "en": "Weapon",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:60",
-      "apps/web/src/screens/LordEkrani.tsx:72"
+      "apps/web/src/screens/LordEkrani.tsx:72",
+      "packages/shared/src/esyaPazari.ts:57"
     ]
   },
   "tfe650c0b": {
@@ -7567,6 +8130,14 @@
       "apps/web/src/screens/YoneticiPaneli.tsx:99"
     ]
   },
+  "tfe819188": {
+    "grup": "arayuz",
+    "tr": "Son işlemler",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:404"
+    ]
+  },
   "tb3a85361": {
     "grup": "arayuz",
     "tr": "Son mesajları",
@@ -7605,7 +8176,7 @@
     "tr": "SONRAKİ",
     "en": "NEXT",
     "nerede": [
-      "apps/web/src/screens/Malikane.tsx:252"
+      "apps/web/src/screens/Malikane.tsx:261"
     ]
   },
   "t874aeac4": {
@@ -7629,7 +8200,7 @@
     "tr": "Sunucu uykudan uyanıyor olabilir. Bu ilk açılışta 30–60 saniye sürebilir.",
     "en": "The server might be waking up from sleep. This can take 30–60 seconds on the first launch.",
     "nerede": [
-      "apps/web/src/App.tsx:418"
+      "apps/web/src/App.tsx:421"
     ]
   },
   "t0a0f8af7": {
@@ -7868,7 +8439,7 @@
     "en": "Fame",
     "nerede": [
       "apps/web/src/screens/Siralama.tsx:19",
-      "packages/shared/src/ogretici.ts:306"
+      "packages/shared/src/ogretici.ts:307"
     ]
   },
   "tba303025": {
@@ -7989,12 +8560,29 @@
       "apps/web/src/screens/Demirhane.tsx:519"
     ]
   },
+  "td3621a41": {
+    "grup": "arayuz",
+    "tr": "T{0} eşya almak için {1}. seviye gerekiyor.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:392",
+      "packages/shared/src/esyaPazari.ts:501"
+    ]
+  },
   "t2beeaffe": {
     "grup": "arayuz",
     "tr": "T{0}{1}",
     "en": "",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:673"
+    ]
+  },
+  "t75bd333b": {
+    "grup": "arayuz",
+    "tr": "taban",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:504"
     ]
   },
   "t4d7ae40a": {
@@ -8075,7 +8663,7 @@
       "data/balance.json:taht_kalesi.ad",
       "data/world-map.json:regions[0].name",
       "packages/shared/src/bolge-adi.ts:36",
-      "packages/shared/src/ogretici.ts:215"
+      "packages/shared/src/ogretici.ts:216"
     ]
   },
   "t6257ef57": {
@@ -8116,6 +8704,14 @@
     "en": "Holding the throne",
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:93"
+    ]
+  },
+  "tbb1f90a3": {
+    "grup": "arayuz",
+    "tr": "Takas",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:62"
     ]
   },
   "t54668018": {
@@ -8307,7 +8903,7 @@
     "tr": "Topraklarım{0}",
     "en": "My Lands{0}",
     "nerede": [
-      "apps/web/src/screens/Malikane.tsx:164"
+      "apps/web/src/screens/Malikane.tsx:173"
     ]
   },
   "tf96873aa": {
@@ -8356,7 +8952,8 @@
     "en": "Masterwork",
     "nerede": [
       "apps/web/src/components/ui.tsx:265",
-      "apps/web/src/screens/LordEkrani.tsx:140"
+      "apps/web/src/screens/LordEkrani.tsx:140",
+      "packages/shared/src/esyaPazari.ts:67"
     ]
   },
   "t9a9e52c9": {
@@ -8398,6 +8995,14 @@
     "en": "In Production",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:528"
+    ]
+  },
+  "t0ab623a8": {
+    "grup": "arayuz",
+    "tr": "Ürün seç",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:165"
     ]
   },
   "tf2c62d23": {
@@ -8449,6 +9054,14 @@
     "en": "YOU WILL GIVE",
     "nerede": [
       "apps/web/src/components/Pazar.tsx:115"
+    ]
+  },
+  "t262b6ab9": {
+    "grup": "arayuz",
+    "tr": "Vergi %{0} — kasana {1} altın.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:465"
     ]
   },
   "t425f7eef": {
@@ -8722,7 +9335,7 @@
     "tr": "Yeniden dene",
     "en": "Try again",
     "nerede": [
-      "apps/web/src/App.tsx:423"
+      "apps/web/src/App.tsx:426"
     ]
   },
   "t2579f562": {
@@ -8798,7 +9411,7 @@
     "tr": "YÖNET",
     "en": "MANAGE",
     "nerede": [
-      "apps/web/src/screens/Malikane.tsx:229"
+      "apps/web/src/screens/Malikane.tsx:238"
     ]
   },
   "t192adc95": {
@@ -8840,6 +9453,14 @@
     "en": "Select how many units to send from above.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:780"
+    ]
+  },
+  "tad4bad3a": {
+    "grup": "arayuz",
+    "tr": "YUVA",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:168"
     ]
   },
   "tf966496b": {
@@ -8886,12 +9507,36 @@
       "apps/web/src/screens/Demirhane.tsx:203"
     ]
   },
+  "t31d6ffeb": {
+    "grup": "arayuz",
+    "tr": "YÜKSELTME",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:190"
+    ]
+  },
   "td74150f4": {
     "grup": "arayuz",
     "tr": "Yükseltme sonuna geldi",
     "en": "Reached the end of upgrade",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:202"
+    ]
+  },
+  "t55791cef": {
+    "grup": "arayuz",
+    "tr": "Yükseltmeyi artır",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:205"
+    ]
+  },
+  "t574004c3": {
+    "grup": "arayuz",
+    "tr": "Yükseltmeyi azalt",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/EsyaPazari.tsx:195"
     ]
   },
   "ta98e29bf": {
@@ -8958,7 +9603,8 @@
     "en": "Armor",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:62",
-      "apps/web/src/screens/LordEkrani.tsx:74"
+      "apps/web/src/screens/LordEkrani.tsx:74",
+      "packages/shared/src/esyaPazari.ts:59"
     ]
   },
   "t154e9396": {
@@ -8983,7 +9629,15 @@
     "tr": "\"Şimdi ne yapmalısın\"",
     "en": "\"What you should do now\"",
     "nerede": [
-      "packages/shared/src/ogretici.ts:591"
+      "packages/shared/src/ogretici.ts:599"
+    ]
+  },
+  "t96008bbe": {
+    "grup": "motor",
+    "tr": "{0} altın gerekiyor; kasanda ve deponda {1} var.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/esyaPazari.ts:546"
     ]
   },
   "t293e1f2d": {
@@ -8991,7 +9645,7 @@
     "tr": "{0} altına bir bölgeye casus gönderip garnizonunu öğrenebilirsin. Rapor bir fotoğraftır: {1} saat sonra \"eski\" diye işaretlenir. Kurnazlık statın hem başarı şansını artırır hem yakalanma riskini düşürür.",
     "en": "For {0} gold you can send a spy to a region and learn its garrison. A report is a snapshot: after {1} hours it is marked \"old\". Your Cunning stat both raises the chance of success and lowers the risk of being caught.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:386"
+      "packages/shared/src/ogretici.ts:394"
     ]
   },
   "t3d0386c3": {
@@ -8999,7 +9653,7 @@
     "tr": "{0} çekirdek ele geçirilemez",
     "en": "{0} core cannot be captured",
     "nerede": [
-      "packages/shared/src/ogretici.ts:270"
+      "packages/shared/src/ogretici.ts:271"
     ]
   },
   "t27b1f277": {
@@ -9007,7 +9661,7 @@
     "tr": "{0} dal, her dalda {1} kademe",
     "en": "{0} [branch|branches], {1} [tier|tiers] in each branch",
     "nerede": [
-      "packages/shared/src/ogretici.ts:501"
+      "packages/shared/src/ogretici.ts:509"
     ]
   },
   "t85178a8c": {
@@ -9016,6 +9670,14 @@
     "en": "Cap for {0}. A larger settlement is required.",
     "nerede": [
       "packages/shared/src/bina.ts:249"
+    ]
+  },
+  "tedb5ebbe": {
+    "grup": "motor",
+    "tr": "{0} ile {1} altın",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/esyaPazari.ts:395"
     ]
   },
   "t62df812d": {
@@ -9031,7 +9693,7 @@
     "tr": "{0} saat yeni lord kalkanı",
     "en": "{0} hour new lord shield",
     "nerede": [
-      "packages/shared/src/ogretici.ts:529"
+      "packages/shared/src/ogretici.ts:537"
     ]
   },
   "tb4bd9bd1": {
@@ -9055,7 +9717,7 @@
     "tr": "{0}x{1} bir düzlükte orduyu sen yerleştirirsin, sonra bir taktik seçersin.",
     "en": "You position the army on a {0}x{1} grid, then select a tactic.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:344"
+      "packages/shared/src/ogretici.ts:352"
     ]
   },
   "t9604528c": {
@@ -9095,7 +9757,7 @@
     "tr": "Akın toprak vermez, toprak da almaz. Kaybetsen bile bölgen elinde kalır — ordunu denemenin en ucuz yeri burası.",
     "en": "A raid gives no land and takes none. Even if you lose, your region stays yours — this is the cheapest place to test your army.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:446"
+      "packages/shared/src/ogretici.ts:454"
     ]
   },
   "tbedf3f62": {
@@ -9103,7 +9765,7 @@
     "tr": "Akın: toprak almadan savaşmak",
     "en": "Raid: fighting without taking land",
     "nerede": [
-      "packages/shared/src/ogretici.ts:440"
+      "packages/shared/src/ogretici.ts:448"
     ]
   },
   "teeaa3109": {
@@ -9119,7 +9781,7 @@
     "tr": "Altın ve demir",
     "en": "Gold and iron",
     "nerede": [
-      "packages/shared/src/ogretici.ts:289"
+      "packages/shared/src/ogretici.ts:290"
     ]
   },
   "t23cd7cdc": {
@@ -9127,7 +9789,7 @@
     "tr": "Altın, demir, erzak biriktirirsin; şöhret sıralamandır.",
     "en": "You hoard gold, iron, and supplies; fame is your ranking.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:286"
+      "packages/shared/src/ogretici.ts:287"
     ]
   },
   "t2cd611e5": {
@@ -9143,7 +9805,7 @@
     "tr": "Ana sayfan bir yerleşim haritası. Binalar kapasite verir.",
     "en": "Your homepage is a settlement map. Buildings provide capacity.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:419"
+      "packages/shared/src/ogretici.ts:427"
     ]
   },
   "t635327a4": {
@@ -9151,7 +9813,7 @@
     "tr": "Araştırma \"%15 daha hızlı\" der, bina \"aynı anda 2 eğitim\" der. İkisi hiçbir zaman aynı sayıya dokunmaz — hangisini yükselteceğin ayrı bir karar.",
     "en": "Research says \"15% faster\", a building says \"2 trainings at once\". The two never touch the same number — which one to upgrade is a separate decision.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:429"
+      "packages/shared/src/ogretici.ts:437"
     ]
   },
   "tf6ff5d9a": {
@@ -9167,7 +9829,7 @@
     "tr": "Araştırma bittiğinde etkisi sonsuza kadar durur — ekipman gibi eskimez, ordu gibi ölmez. Depo tavanı, eğitim hızı, ordu saldırısı, yürüyüş hızı: hepsi buradan büyür.",
     "en": "Once a research finishes its effect lasts forever — it does not wear out like equipment, it does not die like an army. Storage cap, training speed, army attack, march speed: they all grow from here.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:512"
+      "packages/shared/src/ogretici.ts:520"
     ]
   },
   "t6eba3fbd": {
@@ -9175,7 +9837,7 @@
     "tr": "Araştırma oran, bina kapasite",
     "en": "Research for rate, building for capacity",
     "nerede": [
-      "packages/shared/src/ogretici.ts:427"
+      "packages/shared/src/ogretici.ts:435"
     ]
   },
   "t5c430103": {
@@ -9183,7 +9845,7 @@
     "tr": "Araştırma: diyarını sen şekillendirirsin",
     "en": "Research: you shape your realm",
     "nerede": [
-      "packages/shared/src/ogretici.ts:497"
+      "packages/shared/src/ogretici.ts:505"
     ]
   },
   "t4e75a5e8": {
@@ -9223,7 +9885,7 @@
     "tr": "Asker eğitmek, ekipman dövmek ve bölge geliştirmek bunlarla olur.",
     "en": "Training troops, forging equipment, and developing regions require these.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:290"
+      "packages/shared/src/ogretici.ts:291"
     ]
   },
   "t8b6663c9": {
@@ -9255,7 +9917,7 @@
     "tr": "Aynı anda {0} araştırma",
     "en": "{0} [research|researches] at once",
     "nerede": [
-      "packages/shared/src/ogretici.ts:518"
+      "packages/shared/src/ogretici.ts:526"
     ]
   },
   "t7009e0ca": {
@@ -9263,7 +9925,7 @@
     "tr": "Aynı anda {0} araştırma yürütebilirsin, yani sıra senin kararın: önce ekonomiyi mi büyütürsün, orduyu mu? Vazgeçersen harcadığının %{1}'i geri gelir.",
     "en": "You can run {0} [research|researches] at once, so the order is your decision: do you grow the economy first, or the army? If you cancel, {1}% of what you spent is refunded.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:519"
+      "packages/shared/src/ogretici.ts:527"
     ]
   },
   "tabbe5d66": {
@@ -9271,7 +9933,7 @@
     "tr": "Aynı anda {0} birim komuta edebilirsin; Liderlik her puanda {1} birim daha ekler. Ordu istediğin kadar büyümez.",
     "en": "You can command {0} [unit|units] at once; Leadership adds {1} more [unit|units] per point. The army does not grow as large as you like.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:337"
+      "packages/shared/src/ogretici.ts:345"
     ]
   },
   "t7dc15b82": {
@@ -9282,12 +9944,28 @@
       "packages/shared/src/ittifakBasvuru.ts:115"
     ]
   },
+  "t6161a17e": {
+    "grup": "motor",
+    "tr": "Aynı anda en fazla {0} ilan açabilirsin.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/esyaPazari.ts:467"
+    ]
+  },
+  "t72374924": {
+    "grup": "motor",
+    "tr": "Aynı anda en fazla {0} ön sipariş verebilirsin.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/esyaPazari.ts:515"
+    ]
+  },
   "t2868622a": {
     "grup": "motor",
     "tr": "Aynı anda tek araştırma",
     "en": "Only one research at a time",
     "nerede": [
-      "packages/shared/src/ogretici.ts:517"
+      "packages/shared/src/ogretici.ts:525"
     ]
   },
   "t99a5b60d": {
@@ -9303,7 +9981,15 @@
     "tr": "Aynı savaş motoru, aynı dizilim, aynı taktik, aynı kayıp. Yaralıların hastaneye girer. Burada öğrendiğin her şey karşındaki lorda karşı da geçerli.",
     "en": "The same battle engine, the same formation, the same tactic, the same losses. Your wounded go to the hospital. Everything you learn here also applies against a rival lord.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:451"
+      "packages/shared/src/ogretici.ts:459"
+    ]
+  },
+  "te33d8b42": {
+    "grup": "motor",
+    "tr": "Aynı ürünü hem satıp hem alamazsın. Önce öteki emrini geri çek.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/esyaPazari.ts:419"
     ]
   },
   "t0e7da755": {
@@ -9311,7 +9997,7 @@
     "tr": "Aynı vilayette topla",
     "en": "Gather in the same province",
     "nerede": [
-      "packages/shared/src/ogretici.ts:490"
+      "packages/shared/src/ogretici.ts:498"
     ]
   },
   "tb91d22ec": {
@@ -9319,7 +10005,7 @@
     "tr": "Aynı vilayette tuttuğun her fazladan bölge, oradaki bütün bölgelerinin gelirini %{0} artırır (en çok %{1}). Dağınık üç bölge ile bitişik üç bölge aynı şey değil.",
     "en": "Every extra region you hold in the same province raises the income of all your regions there by {0}% (up to {1}%). Three scattered regions and three adjacent regions are not the same thing.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:491"
+      "packages/shared/src/ogretici.ts:499"
     ]
   },
   "te76587c7": {
@@ -9327,7 +10013,7 @@
     "tr": "Başarımlar",
     "en": "Achievements",
     "nerede": [
-      "packages/shared/src/ogretici.ts:601"
+      "packages/shared/src/ogretici.ts:609"
     ]
   },
   "t61dd4ca7": {
@@ -9343,7 +10029,7 @@
     "tr": "Başlarken kimse sana saldıramaz. Kalkan, sen ilk saldırını yaptığında düşer — hazır olduğuna kendin karar veriyorsun.",
     "en": "Nobody can attack you at the start. The shield drops when you make your first attack — you decide yourself when you are ready.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:531"
+      "packages/shared/src/ogretici.ts:539"
     ]
   },
   "t35fda0e7": {
@@ -9359,7 +10045,7 @@
     "tr": "Beş düşman diyarı, her birinde on kamp. Kaynak ve ekipman.",
     "en": "Five enemy realms, ten camps in each. Resources and equipment.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:441"
+      "packages/shared/src/ogretici.ts:449"
     ]
   },
   "t99ca54fc": {
@@ -9383,7 +10069,7 @@
     "tr": "Binalar seninle taşınır",
     "en": "Buildings move with you",
     "nerede": [
-      "packages/shared/src/ogretici.ts:432"
+      "packages/shared/src/ogretici.ts:440"
     ]
   },
   "t2106fa1d": {
@@ -9407,7 +10093,7 @@
     "tr": "Bir bölgenin geliri kâğıt üstündeki sahibine değil, ORADA DURAN garnizonlara gider — bıraktıkları komuta yeri oranında. Askerini çekersen bölge medeniyetinden gitmez ama senin gelirin durur. Bölge bölünemez; bölgedeki pay bölünür.",
     "en": "A region's income goes to the garrisons STATIONED THERE, not to its owner on paper — in proportion to the command capacity they leave. If you withdraw your troops, the region is not lost from your civilization, but your income stops. A region cannot be divided; the share in the region is divided.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:267"
+      "packages/shared/src/ogretici.ts:268"
     ]
   },
   "t0628661e": {
@@ -9423,7 +10109,7 @@
     "tr": "Bir bölgeyi ezici bir üstünlükle alırsan bölge medeniyetine yazılır ve sağ kalan askerlerin orada garnizon olarak kalır — payını o andan itibaren almaya başlarsın. Yaralılar ve ganimet eve döner. Dar kazanırsan yalnız yağmalarsın: kaynağı alır, bölgeyi bırakırsın.",
     "en": "If you take a region with overwhelming superiority, the region is added to your civilization and your surviving soldiers remain there as a garrison — you start receiving your share from that moment on. The wounded and the loot return home. If you win narrowly, you only pillage: you take the resources and leave the region.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:400"
+      "packages/shared/src/ogretici.ts:408"
     ]
   },
   "t0704a055": {
@@ -9431,7 +10117,7 @@
     "tr": "Bir bölgeyi yükseltmek onun gelirini ve savunmasını artırır; oradaki garnizonunun payı da aynı oranda büyür. Yeni bölge almaktan çoğu zaman daha kârlıdır.",
     "en": "Upgrading a region increases its income and defense; your garrison's share there grows at the same rate. It is often more profitable than taking a new region.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:473"
+      "packages/shared/src/ogretici.ts:481"
     ]
   },
   "t95df1932": {
@@ -9463,7 +10149,7 @@
     "tr": "Bir şey başlat, kapat",
     "en": "Start something, close it",
     "nerede": [
-      "packages/shared/src/ogretici.ts:586"
+      "packages/shared/src/ogretici.ts:594"
     ]
   },
   "te0c43c35": {
@@ -9471,7 +10157,7 @@
     "tr": "Bir üyenin bölgesine asker yollayıp savunmasını güçlendirebilir, lider olarak haritada ortak bir hedef işaretleyebilirsin.",
     "en": "You can send troops to a member's region to strengthen its defense, and as leader you can mark a common target on the map.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:564"
+      "packages/shared/src/ogretici.ts:572"
     ]
   },
   "t4a018316": {
@@ -9479,7 +10165,7 @@
     "tr": "Birimler birbirini kırar. Kimi göndereceğin, kaç kişi olduğundan önemli.",
     "en": "Units counter each other. Who you send is more important than how many.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:325"
+      "packages/shared/src/ogretici.ts:333"
     ]
   },
   "te9270bdb": {
@@ -9504,7 +10190,7 @@
     "tr": "Bölge geliştir",
     "en": "Develop region",
     "nerede": [
-      "packages/shared/src/ogretici.ts:471"
+      "packages/shared/src/ogretici.ts:479"
     ]
   },
   "tb2bd7b65": {
@@ -9528,7 +10214,7 @@
     "tr": "Bölge sınırı",
     "en": "Region limit",
     "nerede": [
-      "packages/shared/src/ogretici.ts:486"
+      "packages/shared/src/ogretici.ts:494"
     ]
   },
   "t088fa673": {
@@ -9536,7 +10222,7 @@
     "tr": "Bölge, ekipman ve general. Üçü de aynı anda ilerler.",
     "en": "Region, equipment, and general. All three progress simultaneously.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:468"
+      "packages/shared/src/ogretici.ts:476"
     ]
   },
   "t5029c76e": {
@@ -9544,7 +10230,7 @@
     "tr": "Bölgeler tek kaynak üretir: şehir altın, maden demir, tarla erzak. Malikâne pazarında birini diğerine çevirebilirsin — komisyon %{0}, günlük hacim {1} altın karşılığıyla sınırlı. Takas boşluğu kapatır, üretimin yerini tutmaz.",
     "en": "Regions produce a single resource: city gold, mine iron, farm supplies. In the manor market you can convert one into another — {0}% commission, daily volume limited to {1} gold worth. Trade closes a gap, it does not replace production.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:318"
+      "packages/shared/src/ogretici.ts:319"
     ]
   },
   "tc2a2bfe8": {
@@ -9552,7 +10238,7 @@
     "tr": "Bölgen yağmalandıysa kısa bir süre dokunulmaz olur. Farklı saldırganların sırayla gelip seni bir gecede silmesi böyle engelleniyor.",
     "en": "If your region has been looted it becomes untouchable for a short while. This is what stops different attackers coming one after another and wiping you out in a single night.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:536"
+      "packages/shared/src/ogretici.ts:544"
     ]
   },
   "t021ce3fd": {
@@ -9603,6 +10289,22 @@
       "packages/shared/src/rehber.ts:404"
     ]
   },
+  "t60b7aa6c": {
+    "grup": "motor",
+    "tr": "Bu eşya demirhanede yükseltiliyor. İş bitince satabilirsin.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/esyaPazari.ts:455"
+    ]
+  },
+  "t124db891": {
+    "grup": "motor",
+    "tr": "Bu eşya zaten pazarda.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/esyaPazari.ts:448"
+    ]
+  },
   "tee4272d0": {
     "grup": "motor",
     "tr": "Bu ittifağa zaten başvurdun, cevap bekleniyor.",
@@ -9649,7 +10351,7 @@
     "tr": "Bu oyun beklemeli. Günde birkaç dakika yeter.",
     "en": "This is an idle game. A few minutes a day is enough.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:583"
+      "packages/shared/src/ogretici.ts:591"
     ]
   },
   "t2bfaec94": {
@@ -9668,6 +10370,22 @@
       "packages/shared/src/moderasyon.ts:221"
     ]
   },
+  "te95f4a34": {
+    "grup": "motor",
+    "tr": "Bu ürüne zaten bir ön siparişin var. Fiyatını güncelleyebilirsin.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/esyaPazari.ts:507"
+    ]
+  },
+  "td68bbd54": {
+    "grup": "motor",
+    "tr": "Bu ürünün zaten bir ilanın var. Önce o satılsın ya da geri çek.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/esyaPazari.ts:461"
+    ]
+  },
   "t0c9714e9": {
     "grup": "motor",
     "tr": "Bucak",
@@ -9684,6 +10402,14 @@
       "packages/shared/src/pazar.ts:166"
     ]
   },
+  "t4e24627a": {
+    "grup": "motor",
+    "tr": "Bugün en fazla {0} yeni emir verebilirsin. Yarın yenilenir.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/esyaPazari.ts:425"
+    ]
+  },
   "t6615c06c": {
     "grup": "motor",
     "tr": "Bugünkü pazar hakkın doldu. Yarın yenilenir.",
@@ -9697,7 +10423,7 @@
     "tr": "Bugünlük gönderim hakkın doldu. Yarın tekrar dene.",
     "en": "Your daily sending limit is reached. Try again tomorrow.",
     "nerede": [
-      "packages/shared/src/epostaDogrulama.ts:101"
+      "packages/shared/src/epostaDogrulama.ts:102"
     ]
   },
   "tcea5d93d": {
@@ -9721,7 +10447,7 @@
     "tr": "Burası bir diyar, sen bir lordsun",
     "en": "This is a realm, you are a lord",
     "nerede": [
-      "packages/shared/src/ogretici.ts:202"
+      "packages/shared/src/ogretici.ts:203"
     ]
   },
   "t80539337": {
@@ -9729,7 +10455,7 @@
     "tr": "Bütün bölgelerini kaybetsen bile taban gelirin akmaya devam eder: saatte {0} altın. Bir kampa çekilirsin, binaların durur ve yeni bir yerleşim alınca kaldığın yerden devam edersin.",
     "en": "Even if you lose all your regions your base income keeps flowing: {0} gold per hour. You fall back to a camp, your buildings pause, and when you take a new settlement you continue where you left off.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:225"
+      "packages/shared/src/ogretici.ts:226"
     ]
   },
   "t5ccb766e": {
@@ -9761,7 +10487,7 @@
     "tr": "Büyümenin üç yolu",
     "en": "Three ways to grow",
     "nerede": [
-      "packages/shared/src/ogretici.ts:467"
+      "packages/shared/src/ogretici.ts:475"
     ]
   },
   "t91c31dd1": {
@@ -9801,7 +10527,7 @@
     "tr": "Çekirdek bonusu HERKESE işler",
     "en": "The core bonus applies to EVERYONE",
     "nerede": [
-      "packages/shared/src/ogretici.ts:274"
+      "packages/shared/src/ogretici.ts:275"
     ]
   },
   "ta0721e62": {
@@ -9817,7 +10543,7 @@
     "tr": "Çok hızlı. {0} saniye bekle.",
     "en": "Too fast. Wait {0} seconds.",
     "nerede": [
-      "packages/shared/src/epostaDogrulama.ts:107"
+      "packages/shared/src/epostaDogrulama.ts:108"
     ]
   },
   "t47ab5fd7": {
@@ -9825,7 +10551,7 @@
     "tr": "Daha büyük bir yerleşim fethedip başkentini oraya taşırsan binaların seviyeleriyle birlikte gelir. Taşınmak hiçbir şey kaybettirmez.",
     "en": "If you conquer a larger settlement and move your capital there, your buildings come with their levels. Moving costs you nothing.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:434"
+      "packages/shared/src/ogretici.ts:442"
     ]
   },
   "t700fa11a": {
@@ -9849,7 +10575,7 @@
     "tr": "Demirhanede kuşandığın eşyalar ordunun saldırı ve savunmasına doğrudan eklenir. Aynı orduyla daha güçlü savaşırsın.",
     "en": "The items you equip in the blacksmith are added directly to your army's attack and defense. You fight harder with the same army.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:478"
+      "packages/shared/src/ogretici.ts:486"
     ]
   },
   "t675e8b7d": {
@@ -9897,7 +10623,7 @@
     "tr": "Deponun bir tavanı var",
     "en": "Storage has a cap",
     "nerede": [
-      "packages/shared/src/ogretici.ts:313"
+      "packages/shared/src/ogretici.ts:314"
     ]
   },
   "t9dd91313": {
@@ -9913,7 +10639,7 @@
     "tr": "Dibe vurursun, silinmezsin",
     "en": "You may hit rock bottom, but you won't be wiped out",
     "nerede": [
-      "packages/shared/src/ogretici.ts:224"
+      "packages/shared/src/ogretici.ts:225"
     ]
   },
   "t2ab91378": {
@@ -9954,7 +10680,7 @@
     "tr": "Dizilimden gelen etki en çok +%{0} / -%{1}, taktikten gelen en çok %{2}. İyi dizilim kötü orduyu kurtarmaz, ama iki denk ordudan hangisinin kazanacağını söyler. Yaptığın hatalar savaş raporunda tek tek yazar.",
     "en": "The formation's effect is at most +{0}% / -{1}%, the tactic's at most {2}%. A good formation will not save a bad army, but it decides which of two equal armies wins. Every mistake you make is written out in the battle report.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:365"
+      "packages/shared/src/ogretici.ts:373"
     ]
   },
   "t20fbe206": {
@@ -9962,7 +10688,7 @@
     "tr": "Dizilimi yaptıktan sonra bir taktik seçersin — Hilal Düzeni süvarini kanattan dolandırır, Kalkan Duvarı ön hattı kilitler. Her taktiğin bir koşulu var ve koşulu tutmayan taktik seçilemez: yarım tutan bir taktiğe yarım bonus vermek, sana neden az aldığını anlatmayı imkânsız kılardı.",
     "en": "After setting your formation you pick a tactic — the Crescent Formation sweeps your cavalry around the flank, the Shield Wall locks the front line. Every tactic has a condition, and a tactic whose condition is not met cannot be chosen: giving half a bonus to a half-met tactic would make it impossible to explain why you got less.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:361"
+      "packages/shared/src/ogretici.ts:369"
     ]
   },
   "tee8f76d1": {
@@ -9970,7 +10696,7 @@
     "tr": "Dört çekirdeğe bağış yaparak medeniyetinin {0} oranlarını büyütürsün: her seviye +%{1}, en çok {2} seviye, yani tam geliştirilmiş bir çekirdek +%{3}. Bonus o medeniyetteki herkese işler — bir kuruş vermeyene de.",
     "en": "By donating to the four cores, you increase your civilization's {0} rates: each level is +{1}%, up to {2} levels, meaning a fully upgraded core is +{3}%. The bonus applies to everyone in that civilization — even to those who don't give a dime.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:275"
+      "packages/shared/src/ogretici.ts:276"
     ]
   },
   "td8ce2faa": {
@@ -9978,7 +10704,7 @@
     "tr": "Dört medeniyet, sen birinin lordusun",
     "en": "Four civilizations, you are a lord of one",
     "nerede": [
-      "packages/shared/src/ogretici.ts:245"
+      "packages/shared/src/ogretici.ts:246"
     ]
   },
   "t6e565082": {
@@ -9986,7 +10712,7 @@
     "tr": "Dünya kalıcı",
     "en": "The world is persistent",
     "nerede": [
-      "packages/shared/src/ogretici.ts:606"
+      "packages/shared/src/ogretici.ts:614"
     ]
   },
   "t7c42a3ab": {
@@ -10018,7 +10744,7 @@
     "tr": "Düşürdüğün grup birkaç saat sonra geri döner. O sürede gri durur ama kaybolmaz — ne zaman döneceği ekranda yazılı.",
     "en": "A group you defeat comes back a few hours later. It stays grey during that time but does not disappear — the screen says when it returns.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:461"
+      "packages/shared/src/ogretici.ts:469"
     ]
   },
   "t8e1ff3a2": {
@@ -10026,7 +10752,7 @@
     "tr": "E-postan doğrulanmadı — {0} gün sonra giriş için gerekecek.",
     "en": "Your email is not verified — it will be required to log in after {0} days.",
     "nerede": [
-      "packages/shared/src/epostaDogrulama.ts:83"
+      "packages/shared/src/epostaDogrulama.ts:84"
     ]
   },
   "t81e08c1f": {
@@ -10034,7 +10760,7 @@
     "tr": "E-postanı doğrulaman gerekiyor. Yeni bir bağlantı isteyebilirsin.",
     "en": "You need to verify your email. You can request a new link.",
     "nerede": [
-      "packages/shared/src/epostaDogrulama.ts:76"
+      "packages/shared/src/epostaDogrulama.ts:77"
     ]
   },
   "t7005d978": {
@@ -10050,7 +10776,7 @@
     "tr": "Eğitim, yürüyüş ve imar zamanla biter. Uygulamayı açık tutman gerekmez; kapalıyken de işler.",
     "en": "Training, marching and building finish over time. You do not need to keep the app open; it works while it is closed.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:588"
+      "packages/shared/src/ogretici.ts:596"
     ]
   },
   "t12e5d746": {
@@ -10067,7 +10793,7 @@
     "tr": "Ekipman döv",
     "en": "Forge equipment",
     "nerede": [
-      "packages/shared/src/ogretici.ts:476"
+      "packages/shared/src/ogretici.ts:484"
     ]
   },
   "t91b5b276": {
@@ -10139,7 +10865,7 @@
     "tr": "En fazla {0} üye",
     "en": "Maximum {0} [member|members]",
     "nerede": [
-      "packages/shared/src/ogretici.ts:551"
+      "packages/shared/src/ogretici.ts:559"
     ]
   },
   "t76555f03": {
@@ -10174,6 +10900,14 @@
       "packages/shared/src/rehber.ts:114"
     ]
   },
+  "t884143c4": {
+    "grup": "motor",
+    "tr": "Eşya pazarında alım satım",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/epostaDogrulama.ts:38"
+    ]
+  },
   "t4cfb105e": {
     "grup": "motor",
     "tr": "Etiket {0}-{1} karakter olmalı.",
@@ -10203,7 +10937,7 @@
     "tr": "Fayda puanı güç satın almaz",
     "en": "Contribution points do not buy power",
     "nerede": [
-      "packages/shared/src/ogretici.ts:278"
+      "packages/shared/src/ogretici.ts:279"
     ]
   },
   "t31725a07": {
@@ -10211,7 +10945,7 @@
     "tr": "Fetih sonrası {0} saat",
     "en": "{0} [hour|hours] after conquest",
     "nerede": [
-      "packages/shared/src/ogretici.ts:539"
+      "packages/shared/src/ogretici.ts:547"
     ]
   },
   "t97809e78": {
@@ -10220,6 +10954,14 @@
     "en": "You were there in conquest and defense.",
     "nerede": [
       "data/balance.json:medeniyetler.fayda_puani.rutbeler[2].aciklama"
+    ]
+  },
+  "tfbdc787b": {
+    "grup": "motor",
+    "tr": "Fiyat {0} arasında olmalı.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/esyaPazari.ts:401"
     ]
   },
   "t91fd6882": {
@@ -10235,7 +10977,7 @@
     "tr": "Ganimet ve fetih",
     "en": "Loot and conquest",
     "nerede": [
-      "packages/shared/src/ogretici.ts:398"
+      "packages/shared/src/ogretici.ts:406"
     ]
   },
   "t34ad4af8": {
@@ -10259,7 +11001,7 @@
     "tr": "Garnizon tutmak ({0} yerlik garnizon saatte {1} puan), fetihe katılmak ({2}), savunmaya katılmak ({3}) ve bağış yapmak fayda puanı kazandırır. Puan HARCANMIYOR: birikiyor ve medeniyetindeki rütbene dönüşüyor ({4}). Güç yalnız çekirdekten gelir ve o da herkese eşit işler.",
     "en": "Keeping a garrison ({0}-slot garrison gives {1} points per hour), participating in conquest ({2}), participating in defense ({3}), and donating earn contribution points. Points are NOT SPENT: they accumulate and turn into your rank in your civilization ({4}). Power only comes from the core and applies equally to everyone.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:279"
+      "packages/shared/src/ogretici.ts:280"
     ]
   },
   "tb41d91b9": {
@@ -10284,7 +11026,7 @@
     "tr": "Gelir garnizondan gelir",
     "en": "Income comes from the garrison",
     "nerede": [
-      "packages/shared/src/ogretici.ts:301"
+      "packages/shared/src/ogretici.ts:302"
     ]
   },
   "t806d7bef": {
@@ -10300,7 +11042,7 @@
     "tr": "General topla",
     "en": "Recruit general",
     "nerede": [
-      "packages/shared/src/ogretici.ts:481"
+      "packages/shared/src/ogretici.ts:489"
     ]
   },
   "tafe8f656": {
@@ -10308,7 +11050,7 @@
     "tr": "Generaller savaşa katıldıkça seviye atlar ve ordunun bonuslarını büyütür. Yaralanırlarsa bir süre dinlenmeleri gerekir.",
     "en": "Generals level up as they take part in battles and grow the army's bonuses. If they get wounded they need to rest for a while.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:483"
+      "packages/shared/src/ogretici.ts:491"
     ]
   },
   "t74e7277b": {
@@ -10325,7 +11067,7 @@
     "en": "Quest Board",
     "nerede": [
       "data/binalar.json:binalar[2].ad",
-      "packages/shared/src/types.ts:329"
+      "packages/shared/src/types.ts:339"
     ]
   },
   "tba8eccfc": {
@@ -10365,7 +11107,7 @@
     "tr": "Günlük görevler ve haftalık sefer",
     "en": "Daily quests and weekly campaign",
     "nerede": [
-      "packages/shared/src/ogretici.ts:596"
+      "packages/shared/src/ogretici.ts:604"
     ]
   },
   "t42a2a869": {
@@ -10389,7 +11131,7 @@
     "tr": "Harcanmaz, biriktirilir. Sıralamadaki yerin ve unvanın buradan gelir. Bölge tutmak, savaş kazanmak ve tahtı elinde tutmak şöhret kazandırır.",
     "en": "It is not spent, it accumulates. Your place in the ranking and your title come from here. Holding regions, winning battles and keeping the throne all earn fame.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:308"
+      "packages/shared/src/ogretici.ts:309"
     ]
   },
   "tfb091feb": {
@@ -10397,7 +11139,7 @@
     "tr": "Haritadaki dört renk dört taraf. Tek başına değil, bir tarafla oynuyorsun.",
     "en": "The four colors on the map are the four factions. You are playing with a faction, not alone.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:246"
+      "packages/shared/src/ogretici.ts:247"
     ]
   },
   "t28396521": {
@@ -10405,7 +11147,7 @@
     "tr": "Haritadaki her işaret bir bölge. Bir bölgeyi tutan medeniyet varsa çerçevesi onun rengini taşır; ortadaki çekişmeli topraklar henüz kimsenin değil. Bölgeler bitmez ama çoğalmaz da — biri alırsa, bir başkası kaybeder.",
     "en": "Every mark on the map is a region. If a civilization holds a region, its frame bears their color; the contested lands in the middle belong to no one yet. Regions do not run out, but they do not multiply either — if someone takes one, someone else loses it.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:212"
+      "packages/shared/src/ogretici.ts:213"
     ]
   },
   "tc80763d4": {
@@ -10413,7 +11155,7 @@
     "tr": "Haritanın ortasındaki altın çerçeveli bölge. Onu tutan Diyarın Lordu olur ve şöhreti %{0} büyür; tahtı tutan MEDENİYETİN her üyesi de %{1} alır. Oyunun ucu burası — ve tek başına değil, tarafınla kazanılıyor.",
     "en": "The gold-framed region in the middle of the map. Whoever holds it becomes the Lord of the Realm and their renown grows by {0}%; every member of the CIVILIZATION holding the throne also receives {1}%. This is the endgame — and it is won with your faction, not alone.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:216"
+      "packages/shared/src/ogretici.ts:217"
     ]
   },
   "tca150eae": {
@@ -10421,7 +11163,7 @@
     "tr": "Her {0} lord seviyesinde bir bölge daha tutabilirsin. Erken oyunda az bölgeyi iyi tutmak, çok bölgeyi kötü tutmaktan iyidir.",
     "en": "Every {0} lord levels you can hold one more region. In the early game holding a few regions well is better than holding many poorly.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:487"
+      "packages/shared/src/ogretici.ts:495"
     ]
   },
   "t7e372fb9": {
@@ -10429,7 +11171,7 @@
     "tr": "Her birimin bir yeri var",
     "en": "Every unit has its place",
     "nerede": [
-      "packages/shared/src/ogretici.ts:351"
+      "packages/shared/src/ogretici.ts:359"
     ]
   },
   "tcef1436c": {
@@ -10437,7 +11179,7 @@
     "tr": "Her gün üç küçük görev, her hafta bir sefer. Kısa bir girişte bile elinde bir şeyle çıkarsın.",
     "en": "Three small quests every day, one campaign every week. Even in a short session you leave with something in hand.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:598"
+      "packages/shared/src/ogretici.ts:606"
     ]
   },
   "tbc1cd854": {
@@ -10445,7 +11187,7 @@
     "tr": "Her kaynağı en çok {0} kadar biriktirebilirsin; lord seviyen her arttığında tavan {1} büyür. Tavana dayanan kaynak artık birikmez — üretilen boşa gider. Araştırmadaki Ambarlar bu tavanı büyütür.",
     "en": "You can store at most {0} of each resource; every time your lord level rises the cap grows by {1}. A resource sitting at the cap stops accumulating — what you produce is wasted. Granaries in the research tree raise this cap.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:314"
+      "packages/shared/src/ogretici.ts:315"
     ]
   },
   "t11440021": {
@@ -10453,7 +11195,7 @@
     "tr": "Her yurdun {0} çekirdek bölgesi var ve hiçbirine saldırılamaz. Bir medeniyet yenilebilir ama silinemez: evine çekilir, toparlanır ve geri döner. Beşincisi medeniyetin başkenti — bonus değil kimlik taşır.",
     "en": "Each homeland has {0} core regions and none can be attacked. A civilization can be defeated but cannot be erased: it retreats home, recovers, and returns. The fifth is the civilization's capital — it carries identity, not a bonus.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:271"
+      "packages/shared/src/ogretici.ts:272"
     ]
   },
   "t7ecb1927": {
@@ -10501,7 +11243,7 @@
     "tr": "İdeal satırlar: {0}. İdealinden her satır sapma güç kaybettirir; en ağır ceza mancınığındır (satır başına %{1}) — ön hatta duran mancınık ilk çarpışmada dağılır.",
     "en": "Ideal rows: {0}. Every row of deviation from the ideal costs power; the heaviest penalty is the catapult's ({1}% per row) — a catapult standing in the front line falls apart in the first clash.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:352"
+      "packages/shared/src/ogretici.ts:360"
     ]
   },
   "t391f2d9d": {
@@ -10509,7 +11251,7 @@
     "tr": "İki ittifak birbirine saldırmamaya söz verebilir. En fazla {0} pakt, ve fesih anında geçmiyor: {1} saat ihbar süresi boyunca pakt hâlâ koruyor. Verdiğin söz o yüzden bir şey ifade ediyor.",
     "en": "Two alliances can promise not to attack each other. At most {0} [pact|pacts], and breaking one is not instant: during the {1} hour notice period the pact still protects. That is why the promise you give means something.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:572"
+      "packages/shared/src/ogretici.ts:580"
     ]
   },
   "td2fa6864": {
@@ -10544,6 +11286,14 @@
       "packages/shared/src/duzen.ts:347"
     ]
   },
+  "t65946fc8": {
+    "grup": "motor",
+    "tr": "İşine yaramayan eşyayı diyarındaki öteki lordlara satabilir, aradığını onlardan alabilirsin. Kimin sattığı görünmez; fiyat dar bir bantta oynar, satıştan %{0} vergi kesilir. Pazar binasından ya da Malikâne'den girilir.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/ogretici.ts:326"
+    ]
+  },
   "t78f10e57": {
     "grup": "motor",
     "tr": "İttifak adı en az {0} harf olmalı.",
@@ -10575,7 +11325,7 @@
     "tr": "İttifak seviyesi",
     "en": "Alliance level",
     "nerede": [
-      "packages/shared/src/ogretici.ts:567"
+      "packages/shared/src/ogretici.ts:575"
     ]
   },
   "t45d18dbc": {
@@ -10591,7 +11341,7 @@
     "tr": "İttifak; birbirine saldıramayan, birbirini besleyen bir grup.",
     "en": "Alliance; a group that cannot attack each other and feeds each other.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:548"
+      "packages/shared/src/ogretici.ts:556"
     ]
   },
   "t5a7af248": {
@@ -10641,7 +11391,7 @@
     "tr": "Kaleye karşı ×{0}, canlı birime karşı ×{1}. Duvara karşı harika, insana karşı berbat — yanına muhafız al.",
     "en": "×{0} against a castle, ×{1} against living units. Great against walls, terrible against people — take guards with you.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:333"
+      "packages/shared/src/ogretici.ts:341"
     ]
   },
   "t980be71f": {
@@ -10649,7 +11399,7 @@
     "tr": "Kalıcı seçimler. İki lord aynı seviyede olsa bile aynı olmaz.",
     "en": "Permanent choices. Even if two lords are the same level, they won't be identical.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:498"
+      "packages/shared/src/ogretici.ts:506"
     ]
   },
   "t353c1322": {
@@ -10657,7 +11407,7 @@
     "tr": "Kalıcı ve geri alınmaz",
     "en": "Permanent and irreversible",
     "nerede": [
-      "packages/shared/src/ogretici.ts:510"
+      "packages/shared/src/ogretici.ts:518"
     ]
   },
   "t98ac30ec": {
@@ -10673,7 +11423,7 @@
     "tr": "Kampın kendi medeniyetinin yurdunda kurulur; toprağın yok, ordun yok. İlk köyünü fethettiğinde orası başkentin olur ve şehir sayfan bir kamptan bir köye döner. Sana hiçbir şey verilmiyor — ordu da toprak da bina da kazanılıyor.",
     "en": "Your camp is set up in your civilization's homeland; you have no land, no army. When you conquer your first village, it becomes your capital, and your city page changes from a camp to a village. You are given nothing — army, land, and buildings are all earned.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:230"
+      "packages/shared/src/ogretici.ts:231"
     ]
   },
   "tf7e83ade": {
@@ -10681,7 +11431,7 @@
     "tr": "Kampta binalar 1. seviyeyi geçemez, köyde 2, kasabada 3, şehirde 4. Fethin karşılığı bu: T5 ekipman dövmek için gerçek bir şehir gerekiyor.",
     "en": "In a camp buildings cannot pass level 1, in a village 2, in a town 3, in a city 4. This is the reward for conquest: forging T5 equipment requires a real city.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:424"
+      "packages/shared/src/ogretici.ts:432"
     ]
   },
   "t9a45b6d2": {
@@ -10689,7 +11439,7 @@
     "tr": "Kamptan başlarsın",
     "en": "You start from a camp",
     "nerede": [
-      "packages/shared/src/ogretici.ts:228"
+      "packages/shared/src/ogretici.ts:229"
     ]
   },
   "t87585a83": {
@@ -10697,7 +11447,7 @@
     "tr": "Kanatlar ve açık cephe",
     "en": "Flanks and open front",
     "nerede": [
-      "packages/shared/src/ogretici.ts:355"
+      "packages/shared/src/ogretici.ts:363"
     ]
   },
   "t6fe206cf": {
@@ -10738,7 +11488,7 @@
     "tr": "Kaybetmek ölüm değil",
     "en": "Losing is not death",
     "nerede": [
-      "packages/shared/src/ogretici.ts:389"
+      "packages/shared/src/ogretici.ts:397"
     ]
   },
   "tda7dbccf": {
@@ -10754,7 +11504,7 @@
     "tr": "Kayıt olurken en az kalabalık medeniyete yazılırsın ve kampın onun yurdunda kurulur. Seçim serbest olsaydı herkes kazanan tarafa geçerdi ve fark kendi kendini büyütürdü — tarafları kura değil sayım dengeliyor.",
     "en": "When registering, you are enlisted in the least crowded civilization and your camp is set up in its homeland. If the choice were free, everyone would join the winning faction and the gap would widen itself — census, not chance, balances the factions.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:255"
+      "packages/shared/src/ogretici.ts:256"
     ]
   },
   "tb800b73a": {
@@ -10762,7 +11512,7 @@
     "tr": "Kaynak gönder",
     "en": "Send resources",
     "nerede": [
-      "packages/shared/src/ogretici.ts:575"
+      "packages/shared/src/ogretici.ts:583"
     ]
   },
   "t5e9783c1": {
@@ -10778,7 +11528,7 @@
     "tr": "Kaynak iki yerden akar: malikânenin taban geliri ve bölgelerdeki garnizonların payı. Bir bölge, üstünde askeri olanlara öder. Aldığın toprağa asker bırakmazsan oradan tek altın almazsın.",
     "en": "Resources flow from two places: the base income of the manor and the share of the garrisons in the regions. A region pays those who have troops on it. If you do not leave soldiers on the land you have taken, you will not get a single gold from it.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:303"
+      "packages/shared/src/ogretici.ts:304"
     ]
   },
   "tc61d4e1a": {
@@ -10786,7 +11536,7 @@
     "tr": "Kaynak kesin, ekipman şans",
     "en": "Resources are certain, equipment is luck",
     "nerede": [
-      "packages/shared/src/ogretici.ts:454"
+      "packages/shared/src/ogretici.ts:462"
     ]
   },
   "tb0208e96": {
@@ -10794,7 +11544,7 @@
     "tr": "Kazanınca kaynağı mutlaka alırsın; ekipman ihtimale bağlı ve grup zorlaştıkça hem ihtimal hem kademe büyür. Şefler en iyisini düşürür.",
     "en": "When you win you always get the resources; equipment is a chance, and as the group gets harder both the chance and the tier grow. Chiefs drop the best.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:456"
+      "packages/shared/src/ogretici.ts:464"
     ]
   },
   "tec696a39": {
@@ -10802,7 +11552,7 @@
     "tr": "Kenar sütunlar ({0}) süvariye yarar (%{1}), okçuyla mancınığa zarar verir. Ön satırda hiç yakın dövüş birimi bırakmazsan savunmandan %{2} gider: okçuyu öne koyup mızrakçıyı arkaya saklamak bedava değil.",
     "en": "The wing columns ({0}) help cavalry ({1}%) and hurt archers and catapults. If you leave no melee unit in the front row, {2}% of your defense is gone: putting archers up front and hiding spearmen at the back is not free.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:356"
+      "packages/shared/src/ogretici.ts:364"
     ]
   },
   "t2e190b39": {
@@ -10818,7 +11568,7 @@
     "tr": "Kendi medeniyetinden bir lordun tuttuğu bölgeye saldıramazsın, çekirdeklere ise kimse saldıramaz. Yurdunda henüz hiçbir lordun almadığı bölgeler serbest: oradaki garnizon bir yoldaşın değil, bölgenin kendi muhafızlarıdır — ilk fethin büyük ihtimalle orada olacak.",
     "en": "You cannot attack a region held by a lord of your own civilization, and no one can attack the cores. The regions in your homeland that no lord has taken yet are free: the garrison there is not a comrade's, but the region's own guards — your first conquest will likely be there.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:405"
+      "packages/shared/src/ogretici.ts:413"
     ]
   },
   "t4cccf7a8": {
@@ -10826,7 +11576,7 @@
     "tr": "Kimi ittifaklara doğrudan girersin, çoğu başvuruyla üye alır — o zaman liderin onayını beklersin. Aynı anda {0} başvurun açık olabilir; kabul edilen biri gelince diğerleri kendiliğinden düşer.",
     "en": "Some alliances you join directly, most recruit by application — then you wait for the leader's approval. You can have {0} applications open at once; when one is accepted the others drop away on their own.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:559"
+      "packages/shared/src/ogretici.ts:567"
     ]
   },
   "t3481794b": {
@@ -10842,7 +11592,7 @@
     "tr": "Komuta sınırı",
     "en": "Command limit",
     "nerede": [
-      "packages/shared/src/ogretici.ts:336"
+      "packages/shared/src/ogretici.ts:344"
     ]
   },
   "t27d2957a": {
@@ -10887,12 +11637,20 @@
       "data/balance.json:birimler.milis.ad"
     ]
   },
+  "t7d531255": {
+    "grup": "motor",
+    "tr": "Kuşandığın eşyayı satamazsın. Önce çıkar.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/esyaPazari.ts:450"
+    ]
+  },
   "t64a9f707": {
     "grup": "motor",
     "tr": "Kuşatma silahı",
     "en": "Siege weapon",
     "nerede": [
-      "packages/shared/src/ogretici.ts:332"
+      "packages/shared/src/ogretici.ts:340"
     ]
   },
   "t36a62d98": {
@@ -10916,7 +11674,7 @@
     "tr": "Lord ekranında bir başarım listesi var: bölge, savaş, ekipman, general. Hiçbiri zorunlu değil — oyunu hiç görmediğin yerlerinden denemen için birer bahane.",
     "en": "There is an achievement list on the lord screen: region, battle, equipment, general. None of them are required — they are excuses to try the parts of the game you have never seen.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:603"
+      "packages/shared/src/ogretici.ts:611"
     ]
   },
   "tce3d381c": {
@@ -10972,7 +11730,7 @@
     "tr": "Malikânede tek bir kart her zaman sıradaki adımı söyler. Ne yapacağını bilemezsen oraya bak, gerisini düşünme.",
     "en": "In the manor a single card always tells you the next step. If you do not know what to do, look there and do not think about the rest.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:593"
+      "packages/shared/src/ogretici.ts:601"
     ]
   },
   "t6ccbc497": {
@@ -11196,7 +11954,7 @@
     "tr": "Ordu: kalabalık değil, doğru kalabalık",
     "en": "Army: not a crowd, the right crowd",
     "nerede": [
-      "packages/shared/src/ogretici.ts:324"
+      "packages/shared/src/ogretici.ts:332"
     ]
   },
   "td04d4144": {
@@ -11220,7 +11978,7 @@
     "tr": "Ordun her saat erzak yer. Erzak biterse askerlerin açlıktan erimeye başlar — büyük ordu kurmak yetmiyor, besleyebilmek gerekiyor.",
     "en": "Your army eats supplies every hour. If supplies run out your soldiers start melting away from hunger — building a big army is not enough, you have to be able to feed it.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:295"
+      "packages/shared/src/ogretici.ts:296"
     ]
   },
   "t8b113621": {
@@ -11244,7 +12002,7 @@
     "tr": "Orduyu yollarsın, yol alır, çarpışır; sen izlersin.",
     "en": "You send the army, it marches, it clashes; you watch.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:372"
+      "packages/shared/src/ogretici.ts:380"
     ]
   },
   "t40087aa8": {
@@ -11252,7 +12010,7 @@
     "tr": "Oyunun ritmi",
     "en": "The rhythm of the game",
     "nerede": [
-      "packages/shared/src/ogretici.ts:582"
+      "packages/shared/src/ogretici.ts:590"
     ]
   },
   "t23446189": {
@@ -11261,6 +12019,14 @@
     "en": "Your frontline was exposed: while the militia and spearmen waited in the back, the enemy pushed straight in. {0} defense lost.",
     "nerede": [
       "packages/shared/src/duzen.ts:238"
+    ]
+  },
+  "tb865f866": {
+    "grup": "motor",
+    "tr": "Ön siparişlerde bekleyen altın depo tavanını aşamaz. En fazla {0} altın daha bağlayabilirsin.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/esyaPazari.ts:540"
     ]
   },
   "t475ee1c4": {
@@ -11284,7 +12050,7 @@
     "tr": "Önce casus yolla",
     "en": "Send a spy first",
     "nerede": [
-      "packages/shared/src/ogretici.ts:385"
+      "packages/shared/src/ogretici.ts:393"
     ]
   },
   "t54860f6c": {
@@ -11300,7 +12066,7 @@
     "tr": "Önce önizleme",
     "en": "Preview first",
     "nerede": [
-      "packages/shared/src/ogretici.ts:375"
+      "packages/shared/src/ogretici.ts:383"
     ]
   },
   "tbeace604": {
@@ -11324,7 +12090,7 @@
     "tr": "Pazarda takas",
     "en": "Trade in the market",
     "nerede": [
-      "packages/shared/src/ogretici.ts:317"
+      "packages/shared/src/ogretici.ts:318"
     ]
   },
   "t0f6c0cea": {
@@ -11348,7 +12114,7 @@
     "tr": "Saldırıya çıkmadan önce ordunu {0}x{1} bir alana dizersin. 1. satır en ön (düşmanın ilk çarptığı yer), {2}. satır en arka. Kimin nerede durduğu savaşın gücünü değiştirir.",
     "en": "Before you attack you arrange your army on a {0}x{1} field. Row 1 is the front (where the enemy hits first), row {2} is the rear. Who stands where changes the power of the battle.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:348"
+      "packages/shared/src/ogretici.ts:356"
     ]
   },
   "t1c95cb65": {
@@ -11356,7 +12122,7 @@
     "tr": "Saldırmadan önce kazanma ihtimalini, tahmini kaybını ve ganimetini gösteriyoruz. Kör atış yok.",
     "en": "Before you attack we show your chance of winning, your estimated losses and your loot. No blind shots.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:377"
+      "packages/shared/src/ogretici.ts:385"
     ]
   },
   "t4b39f2fd": {
@@ -11364,7 +12130,7 @@
     "tr": "Saldırmazlık paktı",
     "en": "Non-aggression pact",
     "nerede": [
-      "packages/shared/src/ogretici.ts:571"
+      "packages/shared/src/ogretici.ts:579"
     ]
   },
   "t94ed2bb5": {
@@ -11381,7 +12147,7 @@
     "tr": "Savaş gerçek",
     "en": "War is real",
     "nerede": [
-      "packages/shared/src/ogretici.ts:449"
+      "packages/shared/src/ogretici.ts:457"
     ]
   },
   "t245190a9": {
@@ -11389,7 +12155,7 @@
     "tr": "Savaş kendiliğinden çözülür",
     "en": "Battle resolves automatically",
     "nerede": [
-      "packages/shared/src/ogretici.ts:371"
+      "packages/shared/src/ogretici.ts:379"
     ]
   },
   "td7b0398e": {
@@ -11397,7 +12163,7 @@
     "tr": "Savaş tur tur hesaplanır ve raporu okunabilir: neyi neden kazandığın ya da kaybettiğin yazar. Rapordan doğrudan karşı saldırı açabilirsin.",
     "en": "The battle is resolved round by round and the report is readable: it says what you won or lost and why. You can launch a counterattack straight from the report.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:382"
+      "packages/shared/src/ogretici.ts:390"
     ]
   },
   "td3f44af5": {
@@ -11405,7 +12171,7 @@
     "tr": "Savaştan önce: dizilimin ve taktiğin",
     "en": "Before battle: your formation and tactic",
     "nerede": [
-      "packages/shared/src/ogretici.ts:343"
+      "packages/shared/src/ogretici.ts:351"
     ]
   },
   "tcf31b1d6": {
@@ -11445,7 +12211,7 @@
     "tr": "Seçmiyorsun, yazılıyorsun",
     "en": "You don't choose, you are enlisted",
     "nerede": [
-      "packages/shared/src/ogretici.ts:253"
+      "packages/shared/src/ogretici.ts:254"
     ]
   },
   "t7215dd9a": {
@@ -11461,7 +12227,7 @@
     "tr": "Seni koruyan kurallar",
     "en": "Rules that protect you",
     "nerede": [
-      "packages/shared/src/ogretici.ts:525"
+      "packages/shared/src/ogretici.ts:533"
     ]
   },
   "ta5b1e298": {
@@ -11485,7 +12251,7 @@
     "tr": "Sezon yok, sıfırlama yok. Bugün kurduğun şey yarın da, seneye de duruyor. Acele etmene gerek yok.",
     "en": "No seasons, no resets. What you build today is still there tomorrow, and next year. There is no need to rush.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:608"
+      "packages/shared/src/ogretici.ts:616"
     ]
   },
   "tdc5a061e": {
@@ -11557,7 +12323,7 @@
     "tr": "Şehrin: her binanın bir işi var",
     "en": "Your city: every building has a job",
     "nerede": [
-      "packages/shared/src/ogretici.ts:418"
+      "packages/shared/src/ogretici.ts:426"
     ]
   },
   "t9368b74f": {
@@ -11565,7 +12331,7 @@
     "tr": "Şikâyet Kuyruğu",
     "en": "Report Queue",
     "nerede": [
-      "packages/shared/src/types.ts:337"
+      "packages/shared/src/types.ts:347"
     ]
   },
   "t90215b3d": {
@@ -11637,7 +12403,7 @@
     "tr": "Takviye ve ortak hedef",
     "en": "Reinforcement and common target",
     "nerede": [
-      "packages/shared/src/ogretici.ts:562"
+      "packages/shared/src/ogretici.ts:570"
     ]
   },
   "t1d96808e": {
@@ -11645,7 +12411,7 @@
     "tr": "Taraf değiştirebilirsin — ama bedeli var",
     "en": "You can change factions — but there is a price",
     "nerede": [
-      "packages/shared/src/ogretici.ts:261"
+      "packages/shared/src/ogretici.ts:262"
     ]
   },
   "t189df523": {
@@ -11701,7 +12467,7 @@
     "tr": "Taş-kağıt-makas",
     "en": "Rock-paper-scissors",
     "nerede": [
-      "packages/shared/src/ogretici.ts:328"
+      "packages/shared/src/ogretici.ts:336"
     ]
   },
   "tff073313": {
@@ -11709,7 +12475,7 @@
     "tr": "Tavanı var, savaşı belirlemez",
     "en": "Has a cap, does not determine the battle",
     "nerede": [
-      "packages/shared/src/ogretici.ts:364"
+      "packages/shared/src/ogretici.ts:372"
     ]
   },
   "t35610c10": {
@@ -11717,7 +12483,7 @@
     "tr": "Tek bir harita, üzerinde herkes. Sen de onlardan birisin.",
     "en": "A single map, everyone on it. You are one of them.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:203"
+      "packages/shared/src/ogretici.ts:204"
     ]
   },
   "t434a5793": {
@@ -11741,7 +12507,7 @@
     "tr": "Toprak haritayı açar",
     "en": "Land opens the map",
     "nerede": [
-      "packages/shared/src/ogretici.ts:219"
+      "packages/shared/src/ogretici.ts:220"
     ]
   },
   "t06999f06": {
@@ -11749,7 +12515,7 @@
     "tr": "Toprak medeniyetin, pay senin",
     "en": "The land belongs to the civilization, the share is yours",
     "nerede": [
-      "packages/shared/src/ogretici.ts:265"
+      "packages/shared/src/ogretici.ts:266"
     ]
   },
   "t9cbf108d": {
@@ -11757,7 +12523,7 @@
     "tr": "Toprak riski yok",
     "en": "No land risk",
     "nerede": [
-      "packages/shared/src/ogretici.ts:444"
+      "packages/shared/src/ogretici.ts:452"
     ]
   },
   "t1a1c6c5d": {
@@ -11789,7 +12555,7 @@
     "tr": "Uykudayken silinmezsin. Bu oyunda kalkanlar gerçekten var.",
     "en": "You won't be wiped out while asleep. Shields are real in this game.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:526"
+      "packages/shared/src/ogretici.ts:534"
     ]
   },
   "t8ea30de8": {
@@ -11797,7 +12563,7 @@
     "tr": "Üç kaynak, bir puan",
     "en": "Three resources, one score",
     "nerede": [
-      "packages/shared/src/ogretici.ts:285"
+      "packages/shared/src/ogretici.ts:286"
     ]
   },
   "tee23d259": {
@@ -11815,7 +12581,7 @@
     "tr": "Üyeler bağış yaptıkça ittifak seviye atlar ve HERKES kazanır: daha çok kaynak gönderme hakkı, daha hızlı takviye, daha ucuz keşif. Günde {0} bağış hakkın var.",
     "en": "As members donate the alliance levels up and EVERYONE gains: a higher resource sending allowance, faster reinforcements, cheaper scouting. You have {0} donation allowances a day.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:568"
+      "packages/shared/src/ogretici.ts:576"
     ]
   },
   "tf6805d8a": {
@@ -11823,7 +12589,7 @@
     "tr": "Üyeler birbirine saldıramaz. Küçük tutuldu: bir kaleyi birlikte kuşatmaya yeter, haritayı tek başına yutmaya yetmez.",
     "en": "Members cannot attack each other. It is kept small on purpose: enough to besiege a castle together, not enough to swallow the map alone.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:553"
+      "packages/shared/src/ogretici.ts:561"
     ]
   },
   "t442686cb": {
@@ -11831,7 +12597,7 @@
     "tr": "Vurulan kamp toparlanır",
     "en": "A hit camp recovers",
     "nerede": [
-      "packages/shared/src/ogretici.ts:459"
+      "packages/shared/src/ogretici.ts:467"
     ]
   },
   "t48ccccf2": {
@@ -11855,7 +12621,7 @@
     "tr": "Yağma sonrası {0} saat",
     "en": "{0} [hour|hours] after looting",
     "nerede": [
-      "packages/shared/src/ogretici.ts:534"
+      "packages/shared/src/ogretici.ts:542"
     ]
   },
   "t419e7da9": {
@@ -11863,7 +12629,7 @@
     "tr": "Yalnız nüfusu ortalamanın ALTINDA olan bir medeniyete geçebilirsin; kazanan tarafa geçiş yok. Geçersen fayda puanın sıfırlanır ve {0} gün yeniden değiştiremezsin. Toprağın ve kampın seninle gelir.",
     "en": "You can only switch to a civilization whose population is BELOW the average; there is no switching to the winning faction. If you switch, your contribution points will be reset to zero and you cannot change again for {0} days. Your land and camp come with you.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:262"
+      "packages/shared/src/ogretici.ts:263"
     ]
   },
   "t560fd39a": {
@@ -11871,7 +12637,7 @@
     "tr": "Yalnız oynamak zorunda değilsin",
     "en": "You don't have to play alone",
     "nerede": [
-      "packages/shared/src/ogretici.ts:547"
+      "packages/shared/src/ogretici.ts:555"
     ]
   },
   "tf6030ee3": {
@@ -11888,7 +12654,7 @@
     "tr": "Yaralılar eve değil hastaneye girer ve tedavi bitene kadar savaşa katılamaz. Tedavi en çok {0} saat sürer; o sürede erzak yemez ve komuta yerini işgal etmezler. Yenilgi bir gecikmedir, silinme değil.",
     "en": "The wounded go to the hospital rather than home and cannot fight until treatment ends. Treatment takes at most {0} hours; during that time they eat no supplies and take up no command space. A defeat is a delay, not a deletion.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:395"
+      "packages/shared/src/ogretici.ts:403"
     ]
   },
   "t590f82dd": {
@@ -11936,7 +12702,7 @@
     "tr": "Yeni aldığın bölge bir süre korunur. Aldığın anda elinden alınmaz, garnizonunu toplamaya vaktin olur.",
     "en": "A region you have just taken is protected for a while. It cannot be taken from you the moment you get it — you have time to gather its garrison.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:541"
+      "packages/shared/src/ogretici.ts:549"
     ]
   },
   "t399a819f": {
@@ -11968,7 +12734,7 @@
     "tr": "Yenilirsen ordunun bir kısmını kaybedersin, hesabını değil. Ölü sayılanların bir bölümü yaralı olarak geri döner — hem savunmada hem saldırıda.",
     "en": "If you lose you lose part of your army, not your account. A portion of those counted dead come back wounded — both in defense and in attack.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:391"
+      "packages/shared/src/ogretici.ts:399"
     ]
   },
   "t303c955e": {
@@ -11976,7 +12742,7 @@
     "tr": "Yerleşim bir TAVAN",
     "en": "Settlement is a CAP",
     "nerede": [
-      "packages/shared/src/ogretici.ts:422"
+      "packages/shared/src/ogretici.ts:430"
     ]
   },
   "t692f28bb": {
@@ -11984,7 +12750,7 @@
     "tr": "Yoldaşına kılıç çekilmez",
     "en": "Swords are not drawn against a comrade",
     "nerede": [
-      "packages/shared/src/ogretici.ts:403"
+      "packages/shared/src/ogretici.ts:411"
     ]
   },
   "t068619b5": {
@@ -11992,7 +12758,7 @@
     "tr": "Yönetici Paneli",
     "en": "Admin Panel",
     "nerede": [
-      "packages/shared/src/types.ts:339"
+      "packages/shared/src/types.ts:349"
     ]
   },
   "t4d50f31d": {
@@ -12016,7 +12782,7 @@
     "tr": "Yürüyüş süresi en yakın toprağından ölçülür, malikânenden değil. Bir bölge aldığın anda onun çevresindeki her yer sana yaklaşır — yayıldıkça daha uzağa uzanabilirsin.",
     "en": "March time is measured from your nearest land, not from your manor. The moment you take a region everything around it comes closer to you — the more you spread, the further you can reach.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:221"
+      "packages/shared/src/ogretici.ts:222"
     ]
   },
   "td125ae71": {
@@ -12050,7 +12816,7 @@
     "tr": "Zorda kalan üyeye kaynak yollayabilirsin. Günde {0} altın karşılığına kadar, ve kaynak da yol alır — anında gitmez.",
     "en": "You can send resources to a member in trouble. Up to {0} gold worth a day, and resources travel too — they do not arrive instantly.",
     "nerede": [
-      "packages/shared/src/ogretici.ts:576"
+      "packages/shared/src/ogretici.ts:584"
     ]
   },
   "t2fd78a43": {
@@ -12147,7 +12913,7 @@
     "tr": "{0} {1} ile birleşiyor. Lordun, ordun ve araştırman taşınıyor; bölgelerin ancak orada boşsa geliyor.",
     "en": "{0} is merging into {1}. Your lord, army and research move with you; your regions only come along if they are free there.",
     "nerede": [
-      "apps/api/src/services/birlesme.ts:118"
+      "apps/api/src/services/birlesme.ts:119"
     ]
   },
   "tc2e29174": {
@@ -12323,7 +13089,7 @@
     "tr": "{0} diyarının lordları {1} diyarına geliyor. Taht sahipsiz kalacak.",
     "en": "The lords of {0} are coming to {1}. The throne will be left unowned.",
     "nerede": [
-      "apps/api/src/services/birlesme.ts:119"
+      "apps/api/src/services/birlesme.ts:120"
     ]
   },
   "tfda5002c": {
@@ -12379,7 +13145,15 @@
     "tr": "{0} için e-postanı doğrulaman gerekiyor. Hesap ekranından yeni bağlantı isteyebilirsin.",
     "en": "You need to verify your email for {0}. You can request a new link from the account screen.",
     "nerede": [
-      "apps/api/src/services/epostaDogrulama.ts:97"
+      "apps/api/src/services/epostaDogrulama.ts:98"
+    ]
+  },
+  "t4fb585df": {
+    "grup": "sunucu",
+    "tr": "{0} ilanın fiyat bandının dışında kaldı; bu hâliyle satılmaz. Pazardan fiyatını güncelleyebilirsin.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/services/esyaPazari.ts:327"
     ]
   },
   "t232fd16e": {
@@ -12518,6 +13292,14 @@
       "apps/api/src/errors.ts:24"
     ]
   },
+  "t89ee9791": {
+    "grup": "sunucu",
+    "tr": "{0} ön siparişin fiyat bandının dışında kaldı; bu hâliyle eşleşmez. Pazardan fiyatını güncelleyebilirsin.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/services/esyaPazari.ts:328"
+    ]
+  },
   "ta229fd50": {
     "grup": "sunucu",
     "tr": "{0} pakt teklifini kapattı.",
@@ -12566,6 +13348,14 @@
       "apps/api/src/services/ticaret.ts:112"
     ]
   },
+  "ta2dbd978": {
+    "grup": "sunucu",
+    "tr": "{0} satıldı: {1} altın. Vergi {2}, kasana {3} altın girdi.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/services/esyaPazari.ts:260"
+    ]
+  },
   "te1119699": {
     "grup": "sunucu",
     "tr": "{0} savaşta yaralandı, {1} saat dinlenecek.",
@@ -12580,6 +13370,14 @@
     "en": "{0} defended. Attack repelled.",
     "nerede": [
       "apps/api/src/services/march.ts:880"
+    ]
+  },
+  "t4855a1a5": {
+    "grup": "sunucu",
+    "tr": "{0} senin. {1} altın ödendi.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/services/esyaPazari.ts:274"
     ]
   },
   "te4374485": {
@@ -12982,6 +13780,14 @@
       "apps/api/src/routes/sehir.ts:267"
     ]
   },
+  "t723570af": {
+    "grup": "sunucu",
+    "tr": "Böyle bir ürün yok.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/routes/esyaPazari.ts:76"
+    ]
+  },
   "td480bfce": {
     "grup": "sunucu",
     "tr": "Bu ad ayrılmış. Başka bir ad seç.",
@@ -13061,7 +13867,7 @@
     "tr": "Bu birleşme zaten uygulanmış.",
     "en": "This merge has already been applied.",
     "nerede": [
-      "apps/api/src/services/birlesme.ts:237"
+      "apps/api/src/services/birlesme.ts:238"
     ]
   },
   "t285dc203": {
@@ -13112,12 +13918,20 @@
       "apps/api/src/routes/auth.ts:207"
     ]
   },
+  "t26a1c540": {
+    "grup": "sunucu",
+    "tr": "Bu eşya pazarda. Önce ilanı geri çek.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/routes/items.ts:38"
+    ]
+  },
   "t62da57e4": {
     "grup": "sunucu",
     "tr": "Bu eşya zaten en üst seviyede.",
     "en": "This item is already at the max level.",
     "nerede": [
-      "apps/api/src/routes/items.ts:148"
+      "apps/api/src/routes/items.ts:168"
     ]
   },
   "td9a29bc1": {
@@ -13133,7 +13947,7 @@
     "tr": "Bu eylem",
     "en": "this action",
     "nerede": [
-      "apps/api/src/services/epostaDogrulama.ts:95"
+      "apps/api/src/services/epostaDogrulama.ts:96"
     ]
   },
   "t0f68c4b9": {
@@ -13362,12 +14176,20 @@
       "apps/api/src/routes/me.ts:196"
     ]
   },
+  "tb5e007e8": {
+    "grup": "sunucu",
+    "tr": "Deponda altın için yer yok. Önce biraz harca ya da Malikâne'yi yükselt.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/routes/esyaPazari.ts:801"
+    ]
+  },
   "t6d6945d3": {
     "grup": "sunucu",
     "tr": "Diyarlar birleşti: {0} lord geldi. Taht sahipsiz — ilk alan Diyarın Lordu olur.",
     "en": "The realms have merged: {0} [lord|lords] arrived. The throne is unowned — whoever takes it first becomes Lord of the Realm.",
     "nerede": [
-      "apps/api/src/services/birlesme.ts:451"
+      "apps/api/src/services/birlesme.ts:455"
     ]
   },
   "tde046dbf": {
@@ -13490,9 +14312,27 @@
     "tr": "Eşya",
     "en": "Item",
     "nerede": [
-      "apps/api/src/routes/items.ts:116",
-      "apps/api/src/routes/items.ts:146",
-      "apps/api/src/routes/items.ts:169"
+      "apps/api/src/routes/esyaPazari.ts:381",
+      "apps/api/src/routes/esyaPazari.ts:408",
+      "apps/api/src/routes/items.ts:134",
+      "apps/api/src/routes/items.ts:165",
+      "apps/api/src/routes/items.ts:189"
+    ]
+  },
+  "t5fbab666": {
+    "grup": "sunucu",
+    "tr": "Eşya pazarı: fiyat satırı açılamadı.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/services/esyaPazari.ts:117"
+    ]
+  },
+  "ta27c4c3d": {
+    "grup": "sunucu",
+    "tr": "Eşyan satıldı",
+    "en": "",
+    "nerede": [
+      "apps/api/src/services/lord.ts:726"
     ]
   },
   "tc3dc0d24": {
@@ -13511,6 +14351,23 @@
       "apps/api/src/routes/akin.ts:92",
       "apps/api/src/routes/map.ts:108",
       "apps/api/src/routes/map.ts:942"
+    ]
+  },
+  "t20646d48": {
+    "grup": "sunucu",
+    "tr": "Fiyat sayı olmalı.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/routes/esyaPazari.ts:65"
+    ]
+  },
+  "t8a0b8787": {
+    "grup": "sunucu",
+    "tr": "Fiyat zaten bu.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/routes/esyaPazari.ts:517",
+      "apps/api/src/routes/esyaPazari.ts:694"
     ]
   },
   "te94bbc00": {
@@ -13635,6 +14492,17 @@
       "apps/api/src/services/world.ts:16"
     ]
   },
+  "t88b821d2": {
+    "grup": "sunucu",
+    "tr": "İlan",
+    "en": "",
+    "nerede": [
+      "apps/api/src/routes/esyaPazari.ts:500",
+      "apps/api/src/routes/esyaPazari.ts:507",
+      "apps/api/src/routes/esyaPazari.ts:567",
+      "apps/api/src/routes/esyaPazari.ts:572"
+    ]
+  },
   "td2d3a0a7": {
     "grup": "sunucu",
     "tr": "İşin bitti",
@@ -13739,12 +14607,36 @@
       "apps/api/src/routes/map.ts:228"
     ]
   },
+  "tf39e43ad": {
+    "grup": "sunucu",
+    "tr": "Kasan boş.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/routes/esyaPazari.ts:796"
+    ]
+  },
   "tcf0147c8": {
     "grup": "sunucu",
     "tr": "Katılım: {0}",
     "en": "Joining: {0}",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:912"
+    ]
+  },
+  "td7c0e87f": {
+    "grup": "sunucu",
+    "tr": "Kayıt kuyruğundaki ilan kura bitene kadar geri çekilemez.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/routes/esyaPazari.ts:580"
+    ]
+  },
+  "t14ef3fc2": {
+    "grup": "sunucu",
+    "tr": "Kayıt kuyruğundaki ilanın fiyatı değişmez. Kura bitince güncelleyebilirsin.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/routes/esyaPazari.ts:510"
     ]
   },
   "te9e345c9": {
@@ -13851,12 +14743,20 @@
       "apps/api/src/routes/army.ts:103"
     ]
   },
+  "t52913184": {
+    "grup": "sunucu",
+    "tr": "Kurayı kazandın: {0} senin. {1} altın ödendi.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/services/esyaPazari.ts:273"
+    ]
+  },
   "t75541e19": {
     "grup": "sunucu",
     "tr": "Kuşandığın eşyayı satamazsın.",
     "en": "You cannot sell an equipped item.",
     "nerede": [
-      "apps/api/src/routes/items.ts:170"
+      "apps/api/src/routes/items.ts:191"
     ]
   },
   "te3f42fc4": {
@@ -14093,6 +14993,25 @@
       "apps/api/src/auth.ts:73"
     ]
   },
+  "t92270202": {
+    "grup": "sunucu",
+    "tr": "Ön sipariş",
+    "en": "",
+    "nerede": [
+      "apps/api/src/routes/esyaPazari.ts:683",
+      "apps/api/src/routes/esyaPazari.ts:690",
+      "apps/api/src/routes/esyaPazari.ts:764",
+      "apps/api/src/routes/esyaPazari.ts:769"
+    ]
+  },
+  "t70eb4185": {
+    "grup": "sunucu",
+    "tr": "Ön siparişin karşılandı",
+    "en": "",
+    "nerede": [
+      "apps/api/src/services/lord.ts:727"
+    ]
+  },
   "t6540798f": {
     "grup": "sunucu",
     "tr": "Önce üç görevi de bitir ({0}/{1}).",
@@ -14132,6 +15051,22 @@
     "en": "To reset your password open this link within {0} [minute|minutes]:\n\n{1}\n\nIf you did not make this request you need to do nothing; your password has not changed.",
     "nerede": [
       "apps/api/src/routes/auth.ts:445"
+    ]
+  },
+  "t2695daea": {
+    "grup": "sunucu",
+    "tr": "Pazar bu arada değişti. Yeniden dene.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/services/esyaPazari.ts:153"
+    ]
+  },
+  "tca6a35d4": {
+    "grup": "sunucu",
+    "tr": "Pazar emrin eşleşmiyor",
+    "en": "",
+    "nerede": [
+      "apps/api/src/services/lord.ts:728"
     ]
   },
   "tea8d3f85": {
@@ -14284,7 +15219,7 @@
     "tr": "T{0} ekipman için {1}. seviye demirhane gerekiyor.",
     "en": "T{0} equipment requires level {1} blacksmith.",
     "nerede": [
-      "apps/api/src/routes/items.ts:97"
+      "apps/api/src/routes/items.ts:115"
     ]
   },
   "tab7f8132": {
@@ -14292,7 +15227,7 @@
     "tr": "T{0} ekipman için seviye {1} gerekiyor.",
     "en": "T{0} equipment requires level {1}.",
     "nerede": [
-      "apps/api/src/routes/items.ts:90"
+      "apps/api/src/routes/items.ts:108"
     ]
   },
   "tbb98e4ff": {
@@ -14477,14 +15412,6 @@
     "en": "Raid Week",
     "nerede": [
       "data/seferler.json:seferler[0].ad"
-    ]
-  },
-  "t3ed53de0": {
-    "grup": "veri",
-    "tr": "Al",
-    "en": "Crimson",
-    "nerede": [
-      "data/arma.json:renkler[0].ad"
     ]
   },
   "tc515bf3b": {
@@ -15111,6 +16038,14 @@
       "data/binalar.json:binalar[1].etki_metni"
     ]
   },
+  "t9d11d0f2": {
+    "grup": "veri",
+    "tr": "Eşya ve kaynak ticareti.",
+    "en": "",
+    "nerede": [
+      "data/binalar.json:binalar[5].ozet"
+    ]
+  },
   "t89aa0fd5": {
     "grup": "veri",
     "tr": "Fetih Haftası",
@@ -15221,14 +16156,6 @@
     "en": "Daily shipment cap",
     "nerede": [
       "data/binalar.json:binalar[10].etki_metni"
-    ]
-  },
-  "te9685b81": {
-    "grup": "veri",
-    "tr": "Günlük takas hacmini pazarın büyüklüğü belirler.",
-    "en": "The market size determines the daily trade volume.",
-    "nerede": [
-      "data/binalar.json:binalar[5].aciklama"
     ]
   },
   "t3ed8ff6c": {
@@ -15445,14 +16372,6 @@
     "en": "Eagle",
     "nerede": [
       "data/arma.json:semboller[3].ad"
-    ]
-  },
-  "t150f6395": {
-    "grup": "veri",
-    "tr": "Kaynak takası.",
-    "en": "Resource trade.",
-    "nerede": [
-      "data/binalar.json:binalar[5].ozet"
     ]
   },
   "t8ea12fea": {
@@ -15886,6 +16805,14 @@
     "en": "At least 40% of the army must be militia or spearmen.",
     "nerede": [
       "data/taktikler.json:taktikler[1].kosul.metin"
+    ]
+  },
+  "tc1c97be2": {
+    "grup": "veri",
+    "tr": "Oyuncularla eşya alıp sattığın, kaynak takas ettiğin yer. Günlük takas hacmini pazarın büyüklüğü belirler.",
+    "en": "",
+    "nerede": [
+      "data/binalar.json:binalar[5].aciklama"
     ]
   },
   "t90f3e758": {

@@ -34,6 +34,7 @@ import {
 import { prisma, type Tx } from '../db.js';
 import { pushEvent } from './lord.js';
 import { addUnitsHome } from './queue.js';
+import { konukPazariniKapat } from './esyaPazari.js';
 import { AKTIF_GUN } from './world.js';
 
 export interface BirlesmeOzeti {
@@ -262,6 +263,9 @@ async function birlesmeyiIsle(
       };
 
       ozet.iadeEdilenYuruyus = await yoldakileriIadeEt(merge.guestId, tx);
+      // Eşya pazarı da "yolda olan" sayılıyor: emanetteki eşya ve altın
+      // oyuncuya geri dönüyor (docs/19 §10).
+      ozet.iadeEdilenYuruyus += await konukPazariniKapat(tx, merge.guestId, merge.hostId);
 
       /* ── Toprak ──────────────────────────────────────────────────── */
       const konukBolgeler = await tx.region.findMany({

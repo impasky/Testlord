@@ -58,7 +58,9 @@ Yani oyuncuların yarısı bölgesiz. Bu bir hata değil, tasarımın motoru:
 
 **Ekonomi**
 
-- Oyuncular arası ticaret, pazar yeri, açık artırma
+- ~~Oyuncular arası ticaret, pazar yeri~~ → **kapsama alındı, dar hâliyle**
+  ([`docs/19`](19-esya-pazari.md)): yalnız eşya, diyar içi, anonim emir
+  defteri, dar fiyat bandı. Oyuncunun açık isteği. Açık artırma hâlâ yok.
 - Kaynak takası, hediye gönderme
 - Mikro ödeme, premium para birimi, battle pass
 - Dördüncü kaynak (taş, odun, kereste vb.)

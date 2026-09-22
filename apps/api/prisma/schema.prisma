@@ -47,8 +47,8 @@ model User {
   /// E-POSTA DOĞRULAMA damgası (docs/17). Null ise doğrulanmamış.
   ///
   /// Kapı kademeli: kayıtta hiçbir şey sorulmuyor, doğrulanmadan yalnız
-  /// BAŞKA OYUNCUYA dokunan iki eylem kapalı (ittifak sohbeti, kaynak
-  /// gönderme), ve serbest süre dolunca giriş doğrulama istiyor.
+  /// BAŞKA OYUNCUYA dokunan üç eylem kapalı (ittifak sohbeti, kaynak
+  /// gönderme, eşya pazarı), ve serbest süre dolunca giriş doğrulama istiyor.
   /// Serbest sürenin ölçüsü `createdAt` — son gönderim değil; son
   /// gönderime bağlamak, düğmeye basarak süreyi sonsuza uzatmayı
   /// mümkün kılardı.
@@ -118,6 +118,10 @@ model World {
   alliances            Alliance[]
   paktlar              Pakt[]
   medeniyetler         Medeniyet[]
+  /// Eşya pazarının fiyat grupları (docs/19). Pazar diyar içi: iki
+  /// diyarın fiyatı birbirinden habersiz.
+  esyaFiyatlari        EsyaFiyati[]
+  esyaIslemleri        EsyaIslemi[]
   /// Bu diyarın ev sahibi olduğu birleşmeler.
   evSahibiBirlesmeleri WorldMerge[] @relation("BirlesmeEvSahibi")
   /// Bu diyarın konuk olduğu birleşme (en fazla bir tane: konuk kapanıyor).
@@ -271,6 +275,21 @@ model Lord {
   pazarHacmi Int       @default(0)
   pazarGunu  DateTime?
 
+  /// EŞYA PAZARI KASASI (docs/19): satıştan gelen ve iptal edilen ön
+  /// siparişten dönen altın, oyuncu alana kadar burada bekliyor.
+  ///
+  /// Doğrudan depoya yazılsaydı dolu depoda SESSİZCE silinirdi — pazar
+  /// takasının depo taşması hatasının aynısı (docs/18). Kasa depo tavanına
+  /// bağlı değil; oyuncu boş yer açınca alıyor. Yağmalanmıyor: pazarda
+  /// bekleyen eşya da yağmalanmıyordu, satılınca parası da öyle.
+  pazarKasasi Int @default(0)
+
+  /// Bugün verilen YENİ pazar emri sayısı ve hangi gün (fiyat güncellemesi
+  /// sayılmıyor). Türetilemiyor: eşleşen emir silindiği için sayılacak bir
+  /// kayıt kalmıyor.
+  pazarEmirSayisi Int       @default(0)
+  pazarEmirGunu   DateTime?
+
   /// Tamamlanan araştırmalar: düğüm anahtarlarının listesi.
   ///
   /// Türetilemiyor — araştırmanın bitmesi başka hiçbir kayda iz
@@ -346,6 +365,8 @@ model Lord {
   susturmaSebebi      String?
   pushAbonelikleri    PushAbonesi[]
   moderasyonKayitlari ModerasyonKaydi[]
+  esyaIlanlari        EsyaIlani[]
+  onSiparisler        OnSiparis[]
 
   @@unique([userId, worldId])
   /// Her kayıtta nüfus sayımı bu sütundan geçiyor (`medeniyetAta`).
@@ -366,7 +387,10 @@ model Item {
   equipped     Boolean  @default(false)
   createdAt    DateTime @default(now())
 
-  lord Lord @relation(fields: [lordId], references: [id], onDelete: Cascade)
+  lord Lord       @relation(fields: [lordId], references: [id], onDelete: Cascade)
+  /// Pazardaysa ilanı. Pazardaki eşya satıcının envanterinde görünmüyor,
+  /// kuşanılamıyor, yükseltilemiyor, demirhaneye satılamıyor.
+  ilan EsyaIlani?
 
   @@index([lordId, equipped])
 }
@@ -1000,4 +1024,115 @@ model CekirdekYatirim {
   medeniyet Medeniyet @relation(fields: [medeniyetId], references: [id], onDelete: Cascade)
 
   @@unique([medeniyetId, mapId])
+}
+
+/// EŞYA PAZARI — fiyat grubu (docs/19).
+///
+/// Bir diyarda bir (kademe, nadirlik, yükseltme) üçlüsünün TABANI. Yuva
+/// burada yok: altı yuva aynı güçte, aynı tabanı paylaşıyor.
+///
+/// Satır ilk emirde açılıyor ve taban formül değerinden başlıyor. Bu satır
+/// aynı zamanda grubun KİLİDİ: eşleşme, iptal ve taban güncellemesi önce
+/// bunu `FOR UPDATE` ile kilitliyor, sonra lordları (docs/18 §1).
+model EsyaFiyati {
+  id           String    @id @default(cuid())
+  worldId      String
+  tier         Int
+  rarity       String
+  upgradeLevel Int
+  /// Taban BASAMAĞI: fiyat = 1,01^taban (shared `basamakFiyati`).
+  taban        Int
+  /// Son işlemin anı; çapa bundan ölçülüyor. Hiç işlem yoksa null.
+  sonIslemAt   DateTime?
+  /// Saatlik defter baskısının en son değerlendirildiği an.
+  sonBaskiAt   DateTime  @default(now())
+  /// Çapanın en son adım attığı an.
+  sonCapaAt    DateTime?
+  createdAt    DateTime  @default(now())
+
+  world World @relation(fields: [worldId], references: [id], onDelete: Cascade)
+
+  @@unique([worldId, tier, rarity, upgradeLevel])
+  @@index([sonBaskiAt])
+}
+
+/// Satış ilanı. Eşya ilanda EMANETTE: satıcının kaydı olarak kalıyor ama
+/// hiçbir iş göremiyor; satılınca sahibi değişiyor, geri çekilince açılıyor.
+model EsyaIlani {
+  id                 String    @id @default(cuid())
+  worldId            String
+  lordId             String
+  itemId             String    @unique
+  slot               String
+  tier               Int
+  rarity             String
+  upgradeLevel       Int
+  basamak            Int
+  fiyat              Int
+  /// Sıraya girdiği an. Fiyat güncellenince yenileniyor: fiyatını
+  /// değiştiren, eşit fiyatta bekleyenin önüne geçemesin.
+  sira               DateTime  @default(now())
+  /// Kayıt kuyruğunun bitişi (değerli eşya). Doluyken ilan eşleşmiyor,
+  /// geri de çekilemiyor; süre bitince kura çekiliyor.
+  kuyrukBitis        DateTime?
+  /// Bant dışına düştüğü haber verildi mi — her kaymada bir kez.
+  bantDisiBildirildi Boolean   @default(false)
+  createdAt          DateTime  @default(now())
+
+  lord Lord @relation(fields: [lordId], references: [id], onDelete: Cascade)
+  item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@index([worldId, tier, rarity, upgradeLevel, slot])
+  @@index([lordId])
+  @@index([kuyrukBitis])
+}
+
+/// Ön sipariş: "bu ürünü bu fiyata alırım". Altını verildiği anda
+/// düşülüyor (emanet); iptal edilince kasaya dönüyor.
+model OnSiparis {
+  id                 String   @id @default(cuid())
+  worldId            String
+  lordId             String
+  slot               String
+  tier               Int
+  rarity             String
+  upgradeLevel       Int
+  basamak            Int
+  /// Emanetteki altın — basamağın fiyatı, verildiği anda.
+  fiyat              Int
+  sira               DateTime @default(now())
+  bantDisiBildirildi Boolean  @default(false)
+  createdAt          DateTime @default(now())
+
+  lord Lord @relation(fields: [lordId], references: [id], onDelete: Cascade)
+
+  @@index([worldId, tier, rarity, upgradeLevel, slot])
+  @@index([lordId])
+}
+
+/// Gerçekleşen işlem. Son işlemler listesi ve ölçüm bundan okunuyor.
+///
+/// Taraflar düz kimlik, ilişki değil: hesap silinse de fiyat geçmişi
+/// yerinde kalsın. Ekranda kimseye gösterilmiyor — pazar anonim. Diyar
+/// ise ilişki: diyar silinince geçmişi de gidiyor, sahipsiz satır kalmıyor.
+model EsyaIslemi {
+  id           String   @id @default(cuid())
+  worldId      String
+  slot         String
+  tier         Int
+  rarity       String
+  upgradeLevel Int
+  basamak      Int
+  fiyat        Int
+  vergi        Int
+  saticiId     String
+  aliciId      String
+  /// Kayıt kuyruğunun kurasıyla mı satıldı.
+  kura         Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  world World @relation(fields: [worldId], references: [id], onDelete: Cascade)
+
+  @@index([worldId, tier, rarity, upgradeLevel, createdAt])
+  @@index([createdAt])
 }

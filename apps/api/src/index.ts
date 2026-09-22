@@ -25,6 +25,7 @@ import { arastirmaRoutes } from './routes/arastirma.js';
 import { akinRoutes } from './routes/akin.js';
 import { sehirRoutes } from './routes/sehir.js';
 import { pazarRoutes } from './routes/pazar.js';
+import { esyaPazariRoutes } from './routes/esyaPazari.js';
 import { ticaretRoutes } from './routes/ticaret.js';
 import { generalRoutes } from './routes/generals.js';
 import { itemRoutes } from './routes/items.js';
@@ -282,6 +283,7 @@ export async function buildServer() {
   await app.register(ticaretRoutes, { prefix: '/api' });
   await app.register(arastirmaRoutes, { prefix: '/api' });
   await app.register(pazarRoutes, { prefix: '/api' });
+  await app.register(esyaPazariRoutes, { prefix: '/api' });
   await app.register(sehirRoutes, { prefix: '/api' });
   await app.register(akinRoutes, { prefix: '/api' });
   await app.register(moderasyonRoutes, { prefix: '/api' });

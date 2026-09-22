@@ -3,7 +3,7 @@ LORDLAR ÇAĞI — ÇEVİRİ 3/3: KUYRUK  (KALANLAR)
 Sunucu hataları ve bildirimleri. Oyuncu bunları ancak bir şey ters gidince
 görüyor; en sona bırakılabilir ama atlanamaz.
 
-Bu dosyada 4 satır var — çevrilmiş olanlar çıkarıldı.
+Bu dosyada 25 satır var — çevrilmiş olanlar çıkarıldı.
 
 NASIL ÇEVİRİLİR
   Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.
@@ -35,9 +35,30 @@ NASIL ÇEVİRİLİR
 
 ==========================================================================
 
---- Sunucu mesajları (4) ---
+--- Sunucu mesajları (25) ---
 
 2243. Bu bildirim adresi desteklenmiyor.
 2244. Çok fazla hatalı deneme. {0} dakika sonra yeniden dene ya da parolanı sıfırla.
 2245. Oturumun sona erdi. Yeniden giriş yap.
 2252. Miktar sayı olmalı.
+2292. Fiyat seçilmedi.
+2345. {0} satıldı: {1} altın. Vergi {2}, kasana {3} altın girdi.
+2346. {0} senin. {1} altın ödendi.
+2347. Böyle bir ürün yok.
+2348. Bu eşya pazarda. Önce ilanı geri çek.
+2349. Deponda altın için yer yok. Önce biraz harca ya da Malikâne'yi yükselt.
+2350. Eşya pazarı: fiyat satırı açılamadı.
+2351. Eşyan satıldı
+2352. Fiyat sayı olmalı.
+2353. Fiyat zaten bu.
+2354. İlan
+2356. Kasan boş.
+2357. Kayıt kuyruğundaki ilan kura bitene kadar geri çekilemez.
+2358. Kayıt kuyruğundaki ilanın fiyatı değişmez. Kura bitince güncelleyebilirsin.
+2359. Kurayı kazandın: {0} senin. {1} altın ödendi.
+2360. Ön sipariş
+2362. Ön siparişin karşılandı
+2363. Pazar bu arada değişti. Yeniden dene.
+2364. Pazar emrin eşleşmiyor
+2371. {0} ilanın fiyat bandının dışında kaldı; bu hâliyle satılmaz. Pazardan fiyatını güncelleyebilirsin.
+2372. {0} ön siparişin fiyat bandının dışında kaldı; bu hâliyle eşleşmez. Pazardan fiyatını güncelleyebilirsin.

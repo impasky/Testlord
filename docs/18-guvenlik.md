@@ -56,6 +56,12 @@ yeniden deneme döngüsü gerekirdi. Kilit bekletiyor, öldürmüyor — eşzama
 `tickLord` kendini kilitliyor: işlem verilirse onun içinde, verilmezse kendi
 kısa işlemini açarak. Kilitsiz bir `/me` okuması da harcamayı ezebiliyordu.
 
+> **Kural.** İKİ lorda dokunan işlem (eşya pazarı) lordları **kimlik
+> sırasıyla** kilitler (`lordlariKilitle`), "önce ben, sonra karşı taraf"
+> diye değil — yoksa A ile B aynı anda birbirine satarken ikisi birbirini
+> bekler. Pazarda bundan da önce grubun fiyat satırı kilitleniyor; ayrıntı
+> ve eşzamanlılık ölçümleri [`docs/19 §9`](19-esya-pazari.md).
+
 Test: `tools/yaris-testi.mjs` (e2e zincirinde). Düzeltme geri alınınca dört
 kontrolü kalıyor — test açığı gerçekten görüyor.
 
@@ -149,11 +155,12 @@ abonelik — sınırsızken tek bildirim binlerce isteğe çevrilebiliyordu.
 
 ## Kod nerede
 
-| Konu                    | Dosya                                                    |
-| ----------------------- | -------------------------------------------------------- |
-| Satır kilidi            | `apps/api/src/services/kilit.ts`, `services/lord.ts`     |
-| Oturum sürümü           | `apps/api/src/auth.ts`, `routes/auth.ts`, `routes/me.ts` |
-| Giriş freni             | `apps/api/src/services/girisFreni.ts` (+ birim testi)    |
-| Push adres kuralı       | `apps/api/src/services/pushPolitika.ts` (+ birim testi)  |
-| Başlıklar, günlük, kova | `apps/api/src/index.ts`                                  |
-| Testler                 | `tools/yaris-testi.mjs`, `tools/guvenlik-testi.mjs`      |
+| Konu                    | Dosya                                                                              |
+| ----------------------- | ---------------------------------------------------------------------------------- |
+| Satır kilidi            | `apps/api/src/services/kilit.ts`, `services/lord.ts`                               |
+| İki lordlu kilit sırası | `apps/api/src/services/esyaPazari.ts`                                              |
+| Oturum sürümü           | `apps/api/src/auth.ts`, `routes/auth.ts`, `routes/me.ts`                           |
+| Giriş freni             | `apps/api/src/services/girisFreni.ts` (+ birim testi)                              |
+| Push adres kuralı       | `apps/api/src/services/pushPolitika.ts` (+ birim testi)                            |
+| Başlıklar, günlük, kova | `apps/api/src/index.ts`                                                            |
+| Testler                 | `tools/yaris-testi.mjs`, `tools/guvenlik-testi.mjs`, `tools/esya-pazari-testi.mjs` |

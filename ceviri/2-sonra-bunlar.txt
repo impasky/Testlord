@@ -3,7 +3,7 @@ LORDLAR ÇAĞI — ÇEVİRİ 2/3: DERINLIK  (KALANLAR)
 Savaş raporu, demirhane, generaller, araştırma, ittifak, akın — ve bina,
 general, araştırma, başarım içerikleri.
 
-Bu dosyada 1 satır var — çevrilmiş olanlar çıkarıldı.
+Bu dosyada 79 satır var — çevrilmiş olanlar çıkarıldı.
 
 NASIL ÇEVİRİLİR
   Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.
@@ -34,6 +34,93 @@ NASIL ÇEVİRİLİR
   Bitince dosyayı olduğu gibi geri ver; gerisini ben hallederim.
 
 ==========================================================================
+
+--- EsyaPazari (74) ---
+
+702. Sat
+2255. {0} alıcı bekliyor · en yüksek {1} altın
+2257. {0} altına güncelle
+2258. {0} altına kadar · {1}
+2259. {0} altından · {1}
+2261. ← Geri
+2262. ALAN
+2263. Alıcı çıkana kadar ilanda bekler; eşya o sırada kullanılamaz.
+2264. Alındı: {0} altın ödendi. Eşya envanterinde.
+2265. Aranan ürünler
+2266. Aynı anda en fazla {0} ilan ve {1} ön sipariş. Bugün {2}/{3} yeni emir verdin. Emirlerin süresi dolmaz.
+2267. Banda al
+2268. bant dışı
+2269. Bekleyen bir alıcı {0} altın veriyor: hemen satılır.
+2270. Bekleyen emrin yok.
+2271. bekliyor
+2272. Bir fiyat seç
+2273. Defteri aç
+2274. Değerli eşya: ilana girince {0} dakika kayıt kuyruğunda bekler, sonra en yüksek fiyatı veren alıcılar arasında kura çekilir.
+2275. Demirhane {0} altın verir
+2276. Demirhanede yükseltiliyor — iş bitince satabilirsin.
+2277. Deponda {0} altın yeri var. Emanette {1} altın.
+2278. Deponda altın için yer yok. Kasadaki altın bekler, kaybolmaz.
+2279. Depoya al
+2280. Diyarında şu an satışta eşya yok. Aşağıdan istediğin ürüne ön sipariş verebilirsin; biri o fiyata sattığında eşya senin olur.
+2282. Emir kaldırılamadı.
+2283. Emir verilemedi.
+2284. Emirlerim
+2285. En ucuz ilan {0} altın: yazdığından azını ödersin, eşya hemen senin.
+2287. Eşyaların
+2288. FİYAT
+2289. Fiyat bandı kaydı ({0}–{1} altın); bu hâliyle eşleşmez.
+2290. Fiyat güncellenemedi.
+2291. Fiyat seç
+2293. Fiyatı değiştir
+2294. güç {0}
+2295. Güç {0} · taban {1} altın · demirhane {2} verir
+2296. Hemen al — {0} altın
+2297. Hemen sat — {0} altın
+2298. İlana kondu: {0} altın. Alıcı çıkınca kasana düşer.
+2299. İlana koy — {0} altın
+2300. İlanlarım
+2301. İptal et
+2302. KADEME
+2303. Kasadan alınamadı.
+2304. kayıt kuyruğu
+2305. Kayıt kuyruğuna koy — {0} altın
+2306. kayıt kuyruğunda · {0}
+2307. Kayıt kuyruğunda. Süre bitince bekleyen alıcılar arasında kura çekilir.
+2309. NADİRLİK
+2310. Ön sipariş ver — {0} altın
+2311. Ön sipariş verildi: {0} altın emanette. Satan çıkınca eşya senin.
+2312. Ön siparişlerim
+2313. Pazar kasası
+2314. Pazardan yalnız seviyenin açtığı kademeyi alabilirsin — dövebildiğin kadarını.
+2315. SATAN
+2316. Satan yok. {0} altın emanete alınır; biri bu fiyata ya da altına satınca eşya senin olur. İptal edersen kesintisiz geri döner.
+2317. Satılabilecek eşyan yok. Kuşandığın eşyayı satmak için önce çıkarman gerekiyor.
+2318. Satıldı: {0} altın. Vergi {1}, kasana {2} altın girdi.
+2319. Satışta
+2320. Son işlemler
+2321. T{0} eşya almak için {1}. seviye gerekiyor.
+2322. taban
+2323. Takas
+2324. Ürün seç
+2325. Vergi %{0} — kasana {1} altın.
+2326. YUVA
+2327. YÜKSELTME
+2328. Yükseltmeyi artır
+2329. Yükseltmeyi azalt
+2367. {0} ilan kayıt kuyruğunda; ilk kura {1} sonra.
+2368. Kura {0} sonra. Kuyruktayken geri çekilemez.
+2369. {0} · kurayla
+2370. {0} altın emanette
+
+--- Malikane (2) ---
+
+2281. Diyarındaki oyuncularla al, sat →
+2286. Eşya pazarı
+
+--- İçerik (bina, general, araştırma, başarım) (2) ---
+
+2365. Eşya ve kaynak ticareti.
+2366. Oyuncularla eşya alıp sattığın, kaynak takas ettiğin yer. Günlük takas hacmini pazarın büyüklüğü belirler.
 
 --- Pazar (1) ---
 

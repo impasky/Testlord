@@ -131,6 +131,7 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
   const taktikTavan = B.taktik as { azami_etki: number };
   const arastirma = B.arastirma as { iptal_iadesi: number };
   const pazar = B.pazar as { komisyon: number; gunluk_tavan_altin_karsiligi: number };
+  const esyaPazari = B.esya_pazari as { vergi: number };
   const hastane = B.hastane as { azami_saniye: number; bakim_alir: boolean };
   const casus = B.casusluk as { maliyet_altin: number; gecerlilik_saat: number };
   const depo = B.kaynaklar.depo_kapasitesi as {
@@ -316,6 +317,13 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
         {
           vurgu: 'Pazarda takas',
           metin: `Bölgeler tek kaynak üretir: şehir altın, maden demir, tarla erzak. Malikâne pazarında birini diğerine çevirebilirsin — komisyon %${Math.round(pazar.komisyon * 100)}, günlük hacim ${pazar.gunluk_tavan_altin_karsiligi.toLocaleString('tr-TR')} altın karşılığıyla sınırlı. Takas boşluğu kapatır, üretimin yerini tutmaz.`,
+        },
+        {
+          // Eşya pazarı (docs/19): dövme zarının attığı fazla eşya
+          // demirhanede birkaç altına gidiyordu; artık başka bir lordun işine
+          // yarayabiliyor.
+          vurgu: 'Eşya pazarı',
+          metin: `İşine yaramayan eşyayı diyarındaki öteki lordlara satabilir, aradığını onlardan alabilirsin. Kimin sattığı görünmez; fiyat dar bir bantta oynar, satıştan %${Math.round(esyaPazari.vergi * 100)} vergi kesilir. Pazar binasından ya da Malikâne'den girilir.`,
         },
       ],
     },

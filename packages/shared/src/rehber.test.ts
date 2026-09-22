@@ -412,9 +412,15 @@ describe('arayüz mimarisi — ana sayfa ve kapılar', () => {
     expect(OYUNCU_KAPILARI.length).toBeLessThanOrEqual(9);
   });
 
-  /** Izgarada çizilmeyen kapılar oyuncunun gördüğü kümede OLMAMALI. */
-  it('şikâyet kuyruğu ve medeniyet ana ızgarada değil', () => {
-    for (const k of ['moderasyon', 'medeniyet'] as const) {
+  /**
+   * Izgarada çizilmeyen kapılar oyuncunun gördüğü kümede OLMAMALI.
+   *
+   * Pazar da dışarıda: ona şehirdeki Pazar binasından giriliyor. Bina
+   * eşya pazarından önce de haritadaydı (Malikâne'yi açıyordu), yani
+   * kapı ana sayfaya yeni bir taş koymadı.
+   */
+  it('şikâyet kuyruğu, medeniyet ve pazar ana ızgarada değil', () => {
+    for (const k of ['moderasyon', 'medeniyet', 'pazar'] as const) {
       expect(OYUNCU_KAPILARI).not.toContain(k as never);
       expect(KAPILAR).toContain(k);
     }

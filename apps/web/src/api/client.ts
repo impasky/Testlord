@@ -241,6 +241,114 @@ export interface ItemDto {
   sellValue: number;
 }
 
+/* ---------------- Eşya pazarı (docs/19) ---------------- */
+
+/** Alınıp satılan şey: yuva + kademe + nadirlik + yükseltme. */
+export interface UrunDto {
+  slot: string;
+  tier: number;
+  rarity: string;
+  upgradeLevel: number;
+}
+
+export interface PazarBandiDto {
+  alt: number;
+  ust: number;
+  altFiyat: number;
+  ustFiyat: number;
+}
+
+export interface PazarEmriDto {
+  id: string;
+  urun: UrunDto;
+  ad: string;
+  basamak: number;
+  fiyat: number;
+  /** Bant dışına düşmüş emir eşleşmiyor; fiyatını güncellemek gerekiyor. */
+  bantta: boolean;
+  bant: PazarBandiDto;
+  /** Yalnız ilanda: kayıt kuyruğunun bitişi. */
+  kuyrukBitis?: string | null;
+}
+
+export interface EsyaPazariDto {
+  kasa: number;
+  altin: number;
+  depoTavani: number;
+  depoBos: number;
+  vergi: number;
+  tavan: { ilan: number; siparis: number; gunluk: number; bugun: number };
+  ilanlarim: PazarEmriDto[];
+  siparislerim: PazarEmriDto[];
+  emanette: number;
+  esyalarim: {
+    id: string;
+    urun: UrunDto;
+    ad: string;
+    guc: number;
+    npcDegeri: number;
+    yukseltiliyor: boolean;
+  }[];
+  vitrin: {
+    urun: UrunDto;
+    ad: string;
+    adet: number;
+    kuyrukta: number;
+    enUcuz: number | null;
+    guc: number;
+  }[];
+  aranan: { urun: UrunDto; ad: string; adet: number; enYuksek: number; guc: number }[];
+}
+
+export interface DefterSatiriDto {
+  basamak: number;
+  fiyat: number;
+  satici: number;
+  alici: number;
+  taban: boolean;
+}
+
+export interface UrunDefteriDto {
+  urun: UrunDto;
+  ad: string;
+  guc: number;
+  formul: number;
+  npcDegeri: number;
+  taban: { basamak: number; fiyat: number };
+  bant: PazarBandiDto;
+  defter: DefterSatiriDto[];
+  kuyrukta: { adet: number; enErken: string | null };
+  kayitKuyrugu: boolean;
+  kuyrukSuresiDk: number;
+  enUcuzIlan: { basamak: number; fiyat: number } | null;
+  enYuksekSiparis: { basamak: number; fiyat: number } | null;
+  sonIslemler: { fiyat: number; createdAt: string; slot: string; kura: boolean }[];
+  benimIlan: {
+    id: string;
+    basamak: number;
+    fiyat: number;
+    kuyrukBitis: string | null;
+    bantta: boolean;
+  } | null;
+  benimSiparis: { id: string; basamak: number; fiyat: number; bantta: boolean } | null;
+  kilit: { gerekenSeviye: number } | null;
+  vergi: number;
+}
+
+export interface IlanSonucuDto {
+  durum: 'satildi' | 'listede' | 'kuyrukta';
+  fiyat: number;
+  vergi?: number;
+  net?: number;
+  kuyrukBitis?: string | null;
+}
+
+export interface SiparisSonucuDto {
+  durum: 'alindi' | 'bekliyor';
+  fiyat: number;
+  itemId?: string;
+}
+
 export interface TierDto {
   tier: number;
   unlockLevel: number;
@@ -1159,6 +1267,26 @@ export const api = {
       alan,
       miktar,
     }),
+
+  /** Eşya pazarı (docs/19): kasa, emirlerim, satılabilir eşyalar, vitrin. */
+  esyaPazari: () => request<EsyaPazariDto>('/esya-pazari'),
+  esyaPazariUrun: (u: UrunDto) =>
+    request<UrunDefteriDto>(
+      `/esya-pazari/urun?slot=${u.slot}&tier=${u.tier}&rarity=${u.rarity}&upgradeLevel=${u.upgradeLevel}`,
+    ),
+  esyaIlanVer: (itemId: string, basamak: number) =>
+    post<IlanSonucuDto>('/esya-pazari/ilan', { itemId, basamak }),
+  esyaIlanFiyat: (id: string, basamak: number) =>
+    post<IlanSonucuDto>(`/esya-pazari/ilan/${id}/fiyat`, { basamak }),
+  esyaIlanGeriCek: (id: string) =>
+    post<{ geriCekildi: boolean }>(`/esya-pazari/ilan/${id}/geri-cek`),
+  esyaSiparisVer: (u: UrunDto, basamak: number) =>
+    post<SiparisSonucuDto>('/esya-pazari/siparis', { ...u, basamak }),
+  esyaSiparisFiyat: (id: string, basamak: number) =>
+    post<SiparisSonucuDto>(`/esya-pazari/siparis/${id}/fiyat`, { basamak }),
+  esyaSiparisIptal: (id: string) =>
+    post<{ iptal: boolean; iade: number }>(`/esya-pazari/siparis/${id}/iptal`),
+  esyaKasaAl: () => post<{ alinan: number; kalan: number }>('/esya-pazari/kasa/al'),
 
   /** Araştırma ağacı: düğüm durumları, ilerleme, süren araştırma. */
   arastirma: () =>

@@ -198,6 +198,49 @@ function anahtarUyar(verilen: string | undefined, gercek: string): boolean {
   return timingSafeEqual(a, b);
 }
 
+/**
+ * Eşya pazarı (docs/19 §13): kullanılıyor mu, ve kötüye kullanılıyor mu?
+ *
+ * `enSikCiftPayi` altın taşımanın izi: pazar anonim ve eşleşmeyi kural
+ * yapıyor, yani aynı satıcı-alıcı çiftinin işlemlerin büyük payını
+ * tutması kendiliğinden olmaz. Kasadaki altın da izleniyor: kasa depo
+ * tavanına bağlı değil ve yağmalanmıyor — büyürse bir banka olmuş demektir.
+ */
+async function esyaPazariOlcusu(): Promise<unknown> {
+  const simdi = Date.now();
+  const hafta = new Date(simdi - 7 * 86_400_000);
+  const dun = new Date(simdi - 86_400_000);
+  const [acikIlan, siparis, islemler, kasa] = await Promise.all([
+    prisma.esyaIlani.count(),
+    prisma.onSiparis.aggregate({ _count: { _all: true }, _sum: { fiyat: true } }),
+    prisma.esyaIslemi.findMany({
+      where: { createdAt: { gte: hafta } },
+      select: { saticiId: true, aliciId: true, vergi: true, kura: true, createdAt: true },
+    }),
+    prisma.lord.aggregate({ _sum: { pazarKasasi: true } }),
+  ]);
+  const ciftler = new Map<string, number>();
+  const tuccarlar = new Set<string>();
+  for (const i of islemler) {
+    const k = `${i.saticiId}>${i.aliciId}`;
+    ciftler.set(k, (ciftler.get(k) ?? 0) + 1);
+    tuccarlar.add(i.saticiId).add(i.aliciId);
+  }
+  const enSik = Math.max(0, ...ciftler.values());
+  return {
+    acikIlan,
+    acikSiparis: siparis._count._all,
+    emanettekiAltin: siparis._sum.fiyat ?? 0,
+    kasadakiAltin: kasa._sum.pazarKasasi ?? 0,
+    islemSon24Saat: islemler.filter((i) => i.createdAt >= dun).length,
+    islemSon7Gun: islemler.length,
+    kuraSon7Gun: islemler.filter((i) => i.kura).length,
+    vergiSon7Gun: islemler.reduce((t, i) => t + i.vergi, 0),
+    tuccarSon7Gun: tuccarlar.size,
+    enSikCiftPayi: islemler.length === 0 ? null : enSik / islemler.length,
+  };
+}
+
 export async function olcumRoutes(app: FastifyInstance): Promise<void> {
   app.get('/olcum', async (req) => {
     const { anahtar } = z.object({ anahtar: z.string().optional() }).parse(req.query);
@@ -315,6 +358,9 @@ export async function olcumRoutes(app: FastifyInstance): Promise<void> {
 
       /** Medeniyet katmanı; sistem hiç kurulmamışsa null (docs/16 §15). */
       medeniyet,
+
+      /** Eşya pazarı: kullanım ve kötüye kullanım izi (docs/19 §13). */
+      esyaPazari: await esyaPazariOlcusu(),
     };
   });
 }

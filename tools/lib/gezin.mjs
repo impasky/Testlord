@@ -41,6 +41,9 @@ export const KAPILAR = [
   'olaylar',
   'siralama',
   'hesap',
+  // Pazar (docs/19): binası köyde açılıyor, bu yüzden aşağıda Malikâne'deki
+  // bağlantıdan giriliyor.
+  'pazar',
 ];
 
 /** Denetlenen bütün ekranlar: önce sekmeler, sonra kapılar. */
@@ -75,6 +78,19 @@ export async function ekrana(page, ad, bekle = 1200) {
     await page.click('nav button:has-text("Lord")');
     await page.waitForTimeout(500);
     await page.locator('[data-kapi="hesap"]').first().click();
+    await page.waitForTimeout(bekle);
+    return;
+  }
+
+  /*
+   * PAZAR'ın binası köyde açılıyor, testlerin yeni lordu ise kampta: bina
+   * haritada ama dikili değil, dokununca kapı değil inşa kartı çıkıyor.
+   * Kamptaki oyuncunun yolu Malikâne'deki bağlantı — test de oradan
+   * giriyor.
+   */
+  if (ad === 'pazar') {
+    await ekrana(page, 'malikane', 600);
+    await page.locator('[role="dialog"] [data-kapi="pazar"]').first().click();
     await page.waitForTimeout(bekle);
     return;
   }

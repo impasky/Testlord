@@ -752,6 +752,33 @@
     "_tavan_notu": "Gunluk hacim tavani, altin karsiligi cinsinden. Tavansiz pazar depoyu tasiran oyuncuyu sinirsiz cevirmeye birakir ve kaynak kitligi diye bir sey kalmaz. Seviyeyle buyuyor: buyuyen ekonomi buyuyen bir pazar istiyor.",
     "en_az_miktar": 100
   },
+  "esya_pazari": {
+    "_aciklama": "Oyuncular arasi ESYA pazari (docs/19). Diyar ici, anonim, yalniz ekipman. Satici ilan acar, alici on siparis verir; ikisi fiyatta bulusunca sunucu eslestirir. Fiyat serbest degil: her urunun bir TABAN fiyati var ve emirler tabanin etrafindaki dar bir bantta verilir.",
+    "adim_orani": 0.01,
+    "_adim_notu": "Fiyat basamagi yuzde 1. Fiyatlar 1.01^k dizisinin basamaklari; taban da bir basamak. Taban bir adim oynayinca butun emirler yine basamakta kalir, emir defteri kaymaz.",
+    "bant_adimi": 7,
+    "_bant_notu": "Emir tabanin 7 basamak alti ile 7 basamak ustu arasinda verilebilir (yaklasik yuzde 7). Dar bant fiyat sicramasini, sisirilmis fiyatla altin tasimayi ve tek bir oyuncunun defteri bosaltip fiyati birden yikmasini engelliyor.",
+    "ust_sinir_carpani": 3.0,
+    "en_dusuk_fiyat": 100,
+    "_sinir_notu": "Tabanin inip cikabilecegi SERT sinirlar. Ust sinir formul degerinin 3 kati: kitlik fiyati yukari itebilsin ama bir urun sonsuza uçmasin. Alt sinir NPC satis degeri: oraya dusen esyayi pazarda satmanin anlami yok, demirhane ayni parayi veriyor. 100 altindan asagi da inmiyor -- orada yuzde 1 bir altindan kucuk ve iki komsu basamak ayni fiyata yuvarlaniyordu.",
+    "vergi": 0.2,
+    "_vergi_notu": "Saticinin eline gecenden kesilir, alici liste fiyatini oder. Vergi olmasa ayni iki oyuncu esyayi birbirine satip tabani bedavaya kaydirabilirdi; her el degistirme bedelin besinde birini yakiyor. Bina indirimi YOK: binalar kapasite verir, oran vermez (binalar._ilke).",
+    "baski_bekleme_dk": 60,
+    "baski_araligi_dk": 60,
+    "_baski_notu": "Saatlik defter baskisi. Bantta bekleyen ve en az bir saattir fiyati degismemis bir on siparis tabanin ustundeyse ve bantta hic ilan yoksa taban bir basamak cikar; tersi icin iner. Bekleme, fiyati durmadan degistirerek tabani surukleyen emri sayilmaz kiliyor.",
+    "capa_kuraklik_gun": 3,
+    "capa_araligi_saat": 24,
+    "_capa_notu": "Uc gun hic islem gormeyen urunun tabani gunde bir basamak formul degerine doner. Olu bir defterde bir kez yanlis kurulmus fiyat sonsuza kadar kalmasin.",
+    "kuyruk_suresi_dk": 10,
+    "kuyruk_nadirlikleri": ["efsanevi", "kadim"],
+    "kuyruk_esik_degeri": 100000,
+    "_kuyruk_notu": "Degerli esya ilana girince hemen satilmaz, on dakika KAYIT KUYRUGUNDA bekler; sure bitince en yuksek fiyatli on siparisler arasindan KURA ile biri alir. Kuyruk olmasa en hizli dokunan (ya da ilan acildigi anda siparis veren bot) her seferinde kazanirdi.",
+    "azami_ilan": 5,
+    "azami_siparis": 5,
+    "gunluk_yeni_emir": 20,
+    "_tavan_notu": "Lord basina ayni anda 5 ilan ve 5 on siparis; gunde en fazla 20 YENI emir (fiyat guncellemesi sayilmaz). Ayni urune ayni lordun ikinci emri yok: tek satici FIFO sirasini kendi ilanlariyla dolduramasin.",
+    "son_islem_sayisi": 8
+  },
   "hastane": {
     "_aciklama": "Savastan yarali donen askerler eve degil hastaneye giriyor; tedavi bitene kadar orduya katilmiyorlar.",
     "_neden": "Yarali donus sistemi (K6b) olu sayilan askerin bir kismini geri veriyordu ama asker aninda savasa hazir oluyordu. Kaybin bir agirligi kalmiyordu: yenilen oyuncu bir dakika sonra ayni orduyla tekrar saldirabiliyordu. Hastane kaybi ZAMANA ceviriyor -- asker olmuyor ama hemen de kullanilamiyor.",
@@ -883,8 +910,8 @@
     "_gonderim_freni": "Yeniden gonderme dugmesi frensiz birakilirsa bir posta kutusu bombalama aracina doner: saldirgan baskasinin adresini yazip dugmeye basar durur. Bir dakika gercek bir oyuncuyu hic engellemiyor; gunde bes, postayi hic alamayan icin bile yeterli.",
     "serbest_gun": 7,
     "_serbest_gun": "Dogrulamadan once bu kadar gun serbestce oynanabiliyor. 'Ilk saldiri dakikalarda bitsin' kuralini bozmamak icin kayitta hicbir sey sorulmuyor; yedi gun sonra giris dogrulanana kadar kapali. Yedi gun, postayi spam klasorunde bulmaya da adres degistirmek icin destege yazmaya da yeter.",
-    "kisitli_eylemler": ["ittifak_sohbet", "kaynak_gonder"],
-    "_kisitli_eylemler": "Dogrulanmadan kapali olan iki kapi. Ikisi de BASKA OYUNCUYA dokunan eylemler: kotuye kullanimin gectigi yer burasi. Oyunun kendisine (fetih, insa, arastirma) hic dokunulmuyor -- oynamayi engellemek dogrulama degil, ceza olurdu."
+    "kisitli_eylemler": ["ittifak_sohbet", "kaynak_gonder", "esya_pazari"],
+    "_kisitli_eylemler": "Dogrulanmadan kapali olan uc kapi. Ucu de BASKA OYUNCUYA dokunan eylemler (esya pazari: satilan esyanin ve odenen altinin karsisinda baska bir oyuncu var): kotuye kullanimin gectigi yer burasi. Oyunun kendisine (fetih, insa, arastirma) hic dokunulmuyor -- oynamayi engellemek dogrulama degil, ceza olurdu."
   },
   "moderasyon": {
     "_aciklama": "Sikayet edilen icerigin insana tasinmasi. Otomatik suzgec (adDenetimi/mesajDenetimi) bariz olani zaten kesiyor; buradaki sayilar KACANI bir yoneticinin onune koyan yolu olcuyor. Tasarim kurali: otomatik ceza YOK. Kalabalik birini oyundan atamaz, yalnizca bir insanin bakmasini isteyebilir.",

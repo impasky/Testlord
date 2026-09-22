@@ -66,6 +66,14 @@ const olcumAl = async () => {
 /* --- 2. Medeniyet bölümü tutarlı mı --- */
 const once = await olcumAl();
 k('Ölçüm medeniyet bölümünü taşıyor', Boolean(once.medeniyet));
+// Eşya pazarı (docs/19 §13): kasadaki altın ve en sık çiftin payı — pazar
+// bir bankaya ya da altın taşıma yoluna dönüşürse ilk burada görünür.
+k(
+  'Ölçüm eşya pazarı bölümünü taşıyor',
+  typeof once.esyaPazari?.kasadakiAltin === 'number' &&
+    typeof once.esyaPazari?.islemSon7Gun === 'number',
+  JSON.stringify(once.esyaPazari ?? null).slice(0, 120),
+);
 if (!once.medeniyet) {
   console.log('\n1 KONTROL KALDI\n');
   process.exit(1);

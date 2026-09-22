@@ -9,6 +9,7 @@
  *   3. Biten kuyrukları çözer (eğitim, üretim, yükseltme)
  *   4. Bölge depolarını biriktirir
  *   5. Sırası gelen RAKİP LORDLARA sıra verir (services/npc.ts)
+ *   6. Eşya pazarı: kayıt kuyruklarının kurası, saatlik taban (docs/19)
  *
  * Her adım tek transaction içinde ve idempotenttir: `resolved` bayrağı
  * koşullu updateMany ile alındığı için worker iki kez çalışsa bile iş
@@ -23,6 +24,7 @@ import { sevkiyatCoz } from './services/ticaret.js';
 import { accrueRegionStores } from './services/region.js';
 import { npcTuru } from './services/npc.js';
 import { bekleyenBirlesmeleriUygula, birlesmeyiPlanla } from './services/birlesme.js';
+import { kuyruklariCek, tabanlariGuncelle } from './services/esyaPazari.js';
 
 const ARALIK_MS = 10_000;
 let calisiyor = false;
@@ -101,6 +103,17 @@ export async function tur(): Promise<void> {
 
     await accrueRegionStores(now);
 
+    // Eşya pazarı (docs/19). Kendi hatasını kendi yutuyor: pazardaki bir
+    // grubun takılması savaşların çözülmesini durdurmasın.
+    let kura = 0;
+    let taban = 0;
+    try {
+      kura = await kuyruklariCek(now);
+      taban = await tabanlariGuncelle(now);
+    } catch (e) {
+      console.error('Eşya pazarı turu başarısız:', e);
+    }
+
     if (now.getTime() - sonBirlesmeBakisi >= BIRLESME_ARALIK_MS) {
       sonBirlesmeBakisi = now.getTime();
       try {
@@ -120,12 +133,21 @@ export async function tur(): Promise<void> {
     // AYNI boru hattından başlatıyor ve bir sonraki turda aynı kod çözüyor.
     const npc = await npcTuru(now);
 
-    if (marches.length || akinlar.length || queues.length || sevkiyatlar.length || npc.oynayan) {
+    if (
+      marches.length ||
+      akinlar.length ||
+      queues.length ||
+      sevkiyatlar.length ||
+      npc.oynayan ||
+      kura ||
+      taban
+    ) {
       const npcOzet = npc.oynayan
         ? `, ${npc.oynayan} NPC oynadı (${npc.isler['sahipsiz-fetih']} fetih, ${npc.isler['oyuncuya-saldiri']} saldırı, ${npc.isler.egitim} eğitim)`
         : '';
+      const pazarOzet = kura || taban ? `, pazar: ${kura} kura, ${taban} taban` : '';
       console.log(
-        `[worker] ${new Date().toISOString()} — ${marches.length} yürüyüş, ${akinlar.length} akın, ${queues.length} kuyruk, ${sevkiyatlar.length} sevkiyat çözüldü${npcOzet}`,
+        `[worker] ${new Date().toISOString()} — ${marches.length} yürüyüş, ${akinlar.length} akın, ${queues.length} kuyruk, ${sevkiyatlar.length} sevkiyat çözüldü${npcOzet}${pazarOzet}`,
       );
     }
   } catch (e) {

@@ -209,6 +209,8 @@ export const EKRANLAR = [
   'medeniyet',
   /** Yönetici paneli (docs/14) — yalnız yöneticide, Hesap ekranından. */
   'yoneticiPaneli',
+  /** Pazar (docs/19) — şehirdeki Pazar binasından ve Malikâne'den. */
+  'pazar',
 ] as const;
 
 export type Ekran = (typeof EKRANLAR)[number];
@@ -307,6 +309,13 @@ export const KAPILAR = [
    * altında karıştırmak olurdu.
    */
   'yoneticiPaneli',
+  /**
+   * Pazar (docs/19): eşya pazarı ve kaynak takası. Şehirdeki PAZAR
+   * BİNASINDAN açılıyor — bina zaten haritadaydı ve Malikâne'yi açıyordu;
+   * kapı yeni bir taş eklemiyor, var olan taşın gerçek kapısı oluyor.
+   * Pazar binası henüz dikilmemiş lord için Malikâne'de bir bağlantı var.
+   */
+  'pazar',
 ] as const;
 export type Kapi = (typeof KAPILAR)[number];
 
@@ -314,13 +323,14 @@ export type Kapi = (typeof KAPILAR)[number];
  * Oyuncuya görünen kapılar — taranabilirlik kuralının uygulandığı küme.
  *
  * `KAPILAR` yönlendirilebilir HER kapıyı sayıyor; bu liste oyuncunun
- * ana sayfada görebildiklerini. İki kapı dışarıda: `moderasyon` yalnız
- * yönetici hesaplarına açık ve Hesap ekranından, `medeniyet` ise Dünya
- * ekranından açılıyor. Tavan kuralının amacı "ana sayfa simge duvarına
+ * ana sayfada görebildiklerini. Dışarıdakiler: `moderasyon` ve
+ * `yoneticiPaneli` yalnız yönetici hesaplarına açık ve Hesap ekranından,
+ * `medeniyet` Dünya ekranından, `pazar` ise zaten haritada duran Pazar
+ * binasından açılıyor. Tavan kuralının amacı "ana sayfa simge duvarına
  * dönmesin" ve ızgarada çizilmeyen bir kapı o duvara taş koymuyor.
  */
 export const OYUNCU_KAPILARI = KAPILAR.filter(
-  (k) => k !== 'moderasyon' && k !== 'medeniyet' && k !== 'yoneticiPaneli',
+  (k) => k !== 'moderasyon' && k !== 'medeniyet' && k !== 'yoneticiPaneli' && k !== 'pazar',
 );
 
 /** Kapının başlığı — hem panelde hem onu açan düğmede aynı ad. */
@@ -337,6 +347,7 @@ export const KAPI_ADI: Record<Kapi, string> = {
   moderasyon: 'Şikâyet Kuyruğu',
   medeniyet: 'Medeniyet',
   yoneticiPaneli: 'Yönetici Paneli',
+  pazar: 'Pazar',
 };
 export interface GeneralDef {
   key: string;

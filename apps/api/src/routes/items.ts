@@ -25,6 +25,19 @@ import { binalariOku, findLordByUser, tickLord } from '../services/lord.js';
 import { lordIslemi } from '../services/kilit.js';
 import { assertQueueSlot, enqueue, spendResources } from '../services/queue.js';
 
+/**
+ * Pazardaki eşyaya dokunulamıyor: satılırsa alıcıya kuşanılmış, yarı
+ * yükseltilmiş ya da demirhaneye satılmış bir eşya giderdi. Satıcı önce
+ * ilanı geri çekiyor (docs/19).
+ *
+ * Kilit sırası: bu uçlar yalnız lordu kilitliyor, pazar ise ÖNCE grubu
+ * sonra lordu. Kilitlenme yok — ilan satırı lord kilidi altında okunuyor
+ * ve ilan açmak da aynı lord kilidini bekliyor.
+ */
+function pazarda(): GameError {
+  return new GameError('Bu eşya pazarda. Önce ilanı geri çek.', 400, 'PAZARDA');
+}
+
 const craftSchema = z.object({
   tier: z.number().int().min(1).max(5),
   slot: z.enum(EQUIP_SLOTS as unknown as [EquipSlot, ...EquipSlot[]]),
@@ -34,7 +47,12 @@ export async function itemRoutes(app: FastifyInstance): Promise<void> {
   app.get('/items', { preHandler: requireAuth }, async (req) => {
     const lordId = await findLordByUser(req.user.userId);
     const [items, lord] = await Promise.all([
-      prisma.item.findMany({ where: { lordId }, orderBy: { createdAt: 'desc' } }),
+      // Pazardaki eşya envanterde yok: satılmayı bekliyor, iş göremiyor
+      // (docs/19). Pazar ekranı onu "ilanlarım" altında gösteriyor.
+      prisma.item.findMany({
+        where: { lordId, ilan: { is: null } },
+        orderBy: { createdAt: 'desc' },
+      }),
       prisma.lord.findUniqueOrThrow({
         where: { id: lordId },
         select: { level: true, binalar: true },
@@ -112,8 +130,9 @@ export async function itemRoutes(app: FastifyInstance): Promise<void> {
     const lordId = await findLordByUser(req.user.userId);
 
     const { equipped, onceki } = await lordIslemi(lordId, async (tx) => {
-      const item = await tx.item.findUnique({ where: { id } });
+      const item = await tx.item.findUnique({ where: { id }, include: { ilan: true } });
       if (!item || item.lordId !== lordId) throw hata.bulunamadi('Eşya');
+      if (item.ilan) throw pazarda();
       // Değişiklikten ÖNCEKİ dizilim: karşılaştırma bunun üstünden yapılır.
       const oncekiEsyalar = await tx.item.findMany({ where: { lordId } });
 
@@ -142,8 +161,9 @@ export async function itemRoutes(app: FastifyInstance): Promise<void> {
     const lordId = await findLordByUser(req.user.userId);
 
     return lordIslemi(lordId, async (tx) => {
-      const item = await tx.item.findUnique({ where: { id } });
+      const item = await tx.item.findUnique({ where: { id }, include: { ilan: true } });
       if (!item || item.lordId !== lordId) throw hata.bulunamadi('Eşya');
+      if (item.ilan) throw pazarda();
       if (!canUpgrade(item.upgradeLevel)) {
         throw new GameError('Bu eşya zaten en üst seviyede.', 400, 'MAKS_SEVIYE');
       }
@@ -165,8 +185,9 @@ export async function itemRoutes(app: FastifyInstance): Promise<void> {
     const lordId = await findLordByUser(req.user.userId);
 
     return lordIslemi(lordId, async (tx) => {
-      const item = await tx.item.findUnique({ where: { id } });
+      const item = await tx.item.findUnique({ where: { id }, include: { ilan: true } });
       if (!item || item.lordId !== lordId) throw hata.bulunamadi('Eşya');
+      if (item.ilan) throw pazarda();
       if (item.equipped) throw new GameError('Kuşandığın eşyayı satamazsın.', 400, 'KUSANIK');
       const value = sellValue({
         slot: item.slot as EquipSlot,
