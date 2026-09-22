@@ -105,8 +105,15 @@ for (let i = 0; i < OYUNCU; i++) {
   // parasını ödedi ama askeri henüz almadı, yani kesesi tanım gereği boş.
   // "Karşılanabilir hedefi tercih et" kuralı bu ana da uygulanırsa oyuncu
   // TAM DA söyleneni yaptığı için hedefini kaybediyor.
+  //
+  // Birim de sabit kalmalı: milis eğiten oyuncuya yarı yolda "okçu" demek
+  // aynı hedefe bambaşka bir talimat vermek. Gereken ordu komuta
+  // kapasitesinin üçte ikisini aşınca (73 milis / 90) tam olarak bu
+  // oluyordu; hedef seçimi kuyruğun yerini sayıp gücünü saymıyordu.
   const kuyruktayken = (await o.get('/map')).oneri;
-  if (kuyruktayken?.regionId !== ilk.regionId) planKaydi++;
+  if (kuyruktayken?.regionId !== ilk.regionId || kuyruktayken?.eksik?.birim !== ilk.eksik.birim) {
+    planKaydi++;
+  }
 
   await o.post('/test/kuyruklari-bitir');
 
@@ -147,7 +154,7 @@ kontrol(
 );
 
 kontrol(
-  'Eğitim sürerken hedef DEĞİŞMİYOR',
+  'Eğitim sürerken hedef ve birim DEĞİŞMİYOR',
   planKaydi === 0,
   `${planKaydi}/${OYUNCU} oyuncuda plan uygulanırken hedef kaydı`,
 );

@@ -467,20 +467,29 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
         return a;
       }, {}),
     );
-    // Eğitim kuyruğu hem YER hem PARA tutuyor. İkisi de sayılmazsa öneri
-    // oyuncunun gerçekte yapamayacağı bir plan tarif ediyor:
-    //  - Yer: army.ts eğitim verirken kuyruktakileri kapasiteye sayıyor
-    //    (orada yıllardır öyle), burası saymıyordu; öneri "40 okçu daha"
-    //    diyebiliyordu, kışla ise kapasite yok diye reddediyordu.
-    //  - Para: asker eğitimine başlayan oyuncunun kesesi tanım gereği boş.
-    //    Harcanmış parayı yok sayınca oyuncu TAM DA söyleneni yaptığı için
-    //    hedefi "karşılanamaz" oluyor ve altından kayıyordu (omurga
-    //    testinin yakaladığı hâl). Kuyruktaki para hâlâ o planın parası.
+    // Eğitim kuyruğu plan hesabına İKİ AŞAMADA giriyor.
+    //
+    // 1. HEDEF, eğitim başlamadan önceki duruma göre seçiliyor: kuyruktaki
+    //    askerin yeri boş, parası kesede sayılıyor, kendisi orduda yok.
+    //    Oyuncu söyleneni yapıp eğitimi başlattığında bu durum değişmiyor,
+    //    dolayısıyla seçilen hedef de değişmiyor. Kuyruğu seçime katmanın
+    //    iki yolu da denendi, ikisi de hedefi kaydırdı:
+    //     - Yalnız YERİ saymak (kuyruğun gücünü saymadan): gereken ordu
+    //       kapasitenin üçte ikisini aşınca (kapasite 90, gereken 73 milis)
+    //       yarısını eğiten oyuncunun milis planı "sığmaz" oluyor, öneri
+    //       "21 okçu"ya, CI'da bir kez de başka bir bölgeye kayıyordu.
+    //     - Kuyruğu orduya da saymak: bu kez sıralamada daha üstteki bir
+    //       hedef "kuyruktaki 18 milis + 27 okçu" ile karşılanabilir oluyor
+    //       ve öneri oyuncunun eğittiği hedeften oraya atlıyordu.
+    // 2. KALAN, seçilen hedef için kuyruk sayılarak hesaplanıyor: kuyruktaki
+    //    asker orduda, yeri dolu, parası harcanmış. Oyuncu "74 milis" için
+    //    37'sini eğitirken ekran 74'ü değil KALANI söylüyor.
     const kuyruktakiler = await prisma.queue.findMany({
       where: { lordId, kind: 'train', resolved: false },
     });
     let kuyrukYeri = 0;
     const kuyrukMaliyeti: Resources = { altin: 0, demir: 0, erzak: 0 };
+    const planOrdusu: Army = { ...evOrdusu };
     for (const q of kuyruktakiler) {
       const p = q.payload as { unitType?: string; count?: number };
       const t = p.unitType as UnitType | undefined;
@@ -491,13 +500,12 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
       kuyrukMaliyeti.altin += u.maliyet.altin * adet;
       kuyrukMaliyeti.demir += u.maliyet.demir * adet;
       kuyrukMaliyeti.erzak += u.maliyet.erzak * adet;
+      planOrdusu[t] = (planOrdusu[t] ?? 0) + adet;
     }
 
-    const bosYer = Math.max(
-      0,
-      commandCapacity(lord.liderlik, saldiran.generalBonus) - kullanilan - kuyrukYeri,
-    );
-
+    const kapasite = commandCapacity(lord.liderlik, saldiran.generalBonus);
+    // Seçim: eğitim başlamadan önceki hâl.
+    const bosYer = Math.max(0, kapasite - kullanilan);
     const kaynak = {
       altin: lord.altin + kuyrukMaliyeti.altin,
       demir: lord.demir + kuyrukMaliyeti.demir,
@@ -539,10 +547,10 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
     // Eski not hedefin oyuncunun altından kaymasından korkuyordu: oyun bir
     // hedef gösterir, oyuncu asker eğitir, altını azalır, oyun başka bir
     // hedef gösterir. Korku HAKLIYDI — ama sebebi tercih kuralı değil,
-    // kuyruğun görünmemesiydi. Kuyruktaki para ve yer yukarıda hesaba
-    // katıldıktan sonra oyuncu söyleneni yaparken hedefi sabit kalıyor;
-    // tools/ilk-hedef-testi.mjs "eğitim sürerken hedef DEĞİŞMİYOR" diye
-    // ayrıca ölçüyor.
+    // kuyruğun hesaba yanlış girmesiydi (yukarıdaki iki aşama). Seçim
+    // eğitim öncesi hâle göre yapıldığından oyuncu söyleneni yaparken
+    // hedefi sabit kalıyor; tools/ilk-hedef-testi.mjs "eğitim sürerken
+    // hedef DEĞİŞMİYOR" diye ayrıca ölçüyor.
     //
     // Denenip ELENEN yol: "eğitim varsa tercihi kapat" freni. İşe
     // yaramadı, çünkü frenin kendisi kural değiştiriyordu — plan
@@ -554,7 +562,23 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
     // kırılıyor, listeye kuyruktan aday eklemek ilki değiştirmiyor. Sorun
     // aday sayısı değil, sıralamadaki tercih kuralıydı.
     const secilen = ilkKarsilanabilir ?? ilkUlasilabilir;
-    if (secilen) enIyi = secilen;
+    if (secilen) {
+      // Kalan: kuyruk orduda, yeri dolu, parası harcanmış. Aynı birim tercih
+      // ediliyor — milis eğiten oyuncuya yarı yolda "okçu" denmesin.
+      const kalan =
+        kuyrukYeri > 0
+          ? eksikOrdu(
+              (ordu) => ({ ...saldiran, units: ordu }),
+              planOrdusu,
+              npcDefender(secilen.garrison, secilen.type, secilen.level),
+              onizlemeTohumu(lordId, secilen.regionId),
+              Math.max(0, kapasite - kullanilan - kuyrukYeri),
+              { altin: lord.altin, demir: lord.demir, erzak: lord.erzak },
+              secilen.eksik?.birim,
+            )
+          : null;
+      enIyi = kalan ? { ...secilen, eksik: kalan } : secilen;
+    }
   }
 
   return enIyi;
@@ -604,6 +628,8 @@ function eksikOrdu(
   seed: string,
   bosYer: number,
   kaynak: Resources,
+  /** Bu birim bir seçenek üretiyorsa o dönüyor (plan yarıda birim değiştirmesin). */
+  tercih?: UnitType,
 ): EksikOrdu | null {
   const baglam = {
     defenderStore: { altin: 0, demir: 0, erzak: 0 },
@@ -658,6 +684,8 @@ function eksikOrdu(
   }
 
   if (adaylar.length === 0) return null;
+  const tercihEdilen = tercih ? adaylar.find((a) => a.birim === tercih) : undefined;
+  if (tercihEdilen) return tercihEdilen;
 
   // Önce karşılanabilenler, sonra en ucuz. Karşılanabilir hiçbiri yoksa en
   // ucuzu dönüyor ve arayüz eksik kaynağı söylüyor — sessizce vazgeçmiyor.

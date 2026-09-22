@@ -156,19 +156,28 @@ export async function esyaPazariRoutes(app: FastifyInstance): Promise<void> {
       select: { worldId: true, pazarKasasi: true, pazarEmirSayisi: true, pazarEmirGunu: true },
     });
     const worldId = lord.worldId;
-    const [fiyatlar, ilanlar, siparisler, esyalar, yukseltmeler] = await Promise.all([
-      prisma.esyaFiyati.findMany({ where: { worldId } }),
-      prisma.esyaIlani.findMany({ where: { worldId } }),
-      prisma.onSiparis.findMany({ where: { worldId } }),
-      prisma.item.findMany({
-        where: { lordId, equipped: false, ilan: { is: null } },
-        orderBy: [{ tier: 'desc' }, { createdAt: 'desc' }],
-      }),
-      prisma.queue.findMany({
-        where: { lordId, kind: 'upgrade_item', resolved: false },
-        select: { payload: true },
-      }),
-    ]);
+    /*
+     * Emirlerim LORDA göre, pazar DİYARA göre okunuyor. İkisi çoğu zaman
+     * aynı küme ama birleşme anında ayrışabiliyor: diyarı kapanırken
+     * verilmiş bir emir eski diyarda kalır; diyara göre okunsaydı sahibi
+     * onu hiç göremez ve emanetteki altınını geri alamazdı.
+     */
+    const [fiyatlar, ilanlar, siparisler, benimIlanlar, benimSiparisler, esyalar, yukseltmeler] =
+      await Promise.all([
+        prisma.esyaFiyati.findMany({ where: { worldId } }),
+        prisma.esyaIlani.findMany({ where: { worldId } }),
+        prisma.onSiparis.findMany({ where: { worldId } }),
+        prisma.esyaIlani.findMany({ where: { lordId } }),
+        prisma.onSiparis.findMany({ where: { lordId } }),
+        prisma.item.findMany({
+          where: { lordId, equipped: false, ilan: { is: null } },
+          orderBy: [{ tier: 'desc' }, { createdAt: 'desc' }],
+        }),
+        prisma.queue.findMany({
+          where: { lordId, kind: 'upgrade_item', resolved: false },
+          select: { payload: true },
+        }),
+      ]);
 
     const tabanlar = new Map(
       fiyatlar.map((f) => [`${f.tier}:${f.rarity}:${f.upgradeLevel}`, f.taban]),
@@ -252,11 +261,9 @@ export async function esyaPazariRoutes(app: FastifyInstance): Promise<void> {
         gunluk: P.gunluk_yeni_emir,
         bugun: bugunku(lord.pazarEmirSayisi, lord.pazarEmirGunu, simdi),
       },
-      ilanlarim: ilanlar
-        .filter((i) => i.lordId === lordId)
-        .map((i) => ({ ...emirOzeti(i), kuyrukBitis: i.kuyrukBitis })),
-      siparislerim: siparisler.filter((s) => s.lordId === lordId).map(emirOzeti),
-      emanette: siparisler.filter((s) => s.lordId === lordId).reduce((t, s) => t + s.fiyat, 0),
+      ilanlarim: benimIlanlar.map((i) => ({ ...emirOzeti(i), kuyrukBitis: i.kuyrukBitis })),
+      siparislerim: benimSiparisler.map(emirOzeti),
+      emanette: benimSiparisler.reduce((t, s) => t + s.fiyat, 0),
       esyalarim: esyalar.map((i) => ({
         id: i.id,
         urun: urunu(i),
