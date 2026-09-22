@@ -138,6 +138,13 @@ döndüğünü ve kısa bir `JWT_SECRET` ile sunucunun hiç açılmadığını
 doğruluyor. Uç listesi elle tutulmuyor, `dev.ts`ten okunuyor — oraya yeni
 bir uç eklenirse kendiliğinden kapsanır.
 
+Derlenmiş tek servis de CI'da her itişte sınanıyor (`denetim.yml` →
+`uretim` işi): boş bir veritabanına karşı `pnpm build`, bu belgedeki
+değişkenlerle `node apps/api/dist/index.js` (migration'ı sunucunun kendisi
+kuruyor), ardından `tools/uretim-testi.mjs` telefon boyutunda kayıt olup
+oynuyor. Render'a giden yolun ta kendisi; yerelde denemek için komutlar o
+dosyanın başında.
+
 Onay kutusu yine de duruyor, çünkü test KODUN doğru davrandığını gösteriyor;
 üretim ORTAMINDA değişkenin gerçekten öyle ayarlandığını göstermiyor.
 

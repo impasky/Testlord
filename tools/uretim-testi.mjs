@@ -1,9 +1,13 @@
 /**
  * Üretim modu testi: tek servisli dağıtımın telefonda çalıştığını doğrular.
  *
- * Dağıtımdan önce yerelde koşturulur — Render'a gitmeden önce kırığı burada
- * yakalarsın. Bu test API adresi hatasını yakaladı: üretimde arayüz API'yi
- * ayrı bir portta arıyordu, oysa tek serviste aynı origin'de.
+ * Bu test API adresi hatasını yakaladı: üretimde arayüz API'yi ayrı bir
+ * portta arıyordu, oysa tek serviste aynı origin'de.
+ *
+ * CI'da her itişte koşuyor (denetim.yml → `uretim` işi, boş veritabanında).
+ * Önceden yalnız elle koşuyordu ve etrafındaki değişikliklerle üç yerden
+ * sessizce eskimişti; kimse koşturmadığı için kimse görmemişti. Yerelde
+ * aynısı:
  *
  *   pnpm build
  *   DATABASE_URL=... JWT_SECRET=... NODE_ENV=production PORT=3200 \

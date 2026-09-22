@@ -5,13 +5,15 @@
 # testtir: unutulan bir koşu iki hafta sonra "ne zaman bozuldu bu" sorusuna
 # dönüşür.
 #
-# İKİ İŞ, çünkü ikisinin maliyeti çok farklı:
+# ÜÇ İŞ, çünkü maliyetleri ve ölçtükleri çok farklı:
 #
 #   hizli   Veritabanı istemiyor, bir dakikada biter. Tip denetimi, lint,
 #           biçim, birim testleri, denge aritmetiği ve ÜRETİLEN DOSYALARIN
 #           hâlâ üretilebildiği. Her itişte koşar.
 #   e2e     Postgres, API, worker, arayüz ve tarayıcı gerekiyor. Dakikalar
 #           sürüyor; yine de her itişte koşar, çünkü asıl yakalayan o.
+#   uretim  Derlenmiş tek servis, boş veritabanında, telefon boyutunda.
+#           e2e geliştirme sunucularını ölçüyor; oyuncuya giden ise bu.
 #
 # Yük testi bilerek DIŞARIDA: eşiği makinenin hızına bağlı ve paylaşılan
 # koşucuda dalgalanır. Yanlış alarm veren bir kontrol, bir süre sonra
@@ -159,4 +161,96 @@ jobs:
         with:
           name: ekran-goruntuleri
           path: /tmp/*.png
+          if-no-files-found: ignore
+
+  # ── Üretim modu ──────────────────────────────────────────────────────
+  #
+  # e2e işi geliştirme sunucularını (tsx + vite) ölçüyor; oyuncuya giden
+  # şey ise DERLENMİŞ tek servis: `node apps/api/dist/index.js` API'yi,
+  # arayüzü ve worker'ı aynı süreçte, aynı adresten sunuyor. Bu iş onu
+  # Render'daki gibi kaldırıp telefon boyutunda oynuyor.
+  #
+  # Veritabanı bilerek BOŞ bırakılıyor (migrate/seed adımı yok): ilk
+  # dağıtımda tabloları sunucunun kendisi kuruyor (AUTO_MIGRATE) ve o yol
+  # başka hiçbir yerde sınanmıyor.
+  #
+  # NEDEN AYRI İŞ: tools/uretim-testi.mjs önceden yalnız elle koşuyordu ve
+  # etrafındaki değişikliklerle üç yerden sessizce eskimişti — kimse
+  # koşturmadığı için kimse görmemişti.
+  uretim:
+    name: Üretim modu
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: lordlar
+          POSTGRES_USER: lordlar
+          POSTGRES_DB: lordlar_cagi
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U lordlar"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      DATABASE_URL: postgresql://lordlar:lordlar@127.0.0.1:5432/lordlar_cagi
+      JWT_SECRET: ci-icin-otuz-iki-karakterden-uzun-bir-anahtar
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Prisma istemcisi
+        run: pnpm --filter @lordlar/api exec prisma generate
+
+      - name: Derleme
+        run: pnpm build
+
+      - name: Tarayıcı
+        run: npx playwright install --with-deps chromium
+
+      # Değişkenler docs/05'teki tek servisli kurulumla aynı.
+      - name: Üretim sunucusu
+        env:
+          NODE_ENV: production
+          PORT: '3200'
+          AUTO_MIGRATE: 'true'
+          SERVE_WEB: 'true'
+          RUN_WORKER: 'true'
+          SEED_DEMO_LORDS: 'true'
+        run: |
+          (node apps/api/dist/index.js > /tmp/uretim.log 2>&1 &)
+          # Migration boş veritabanında sürüyor; 120 sn bol bol yetiyor.
+          for i in $(seq 1 120); do
+            curl -s -o /dev/null http://127.0.0.1:3200/api/me && break
+            sleep 1
+          done
+          curl -s -o /dev/null http://127.0.0.1:3200/api/me || {
+            echo 'Üretim sunucusu açılmadı'; tail -80 /tmp/uretim.log; exit 1;
+          }
+
+      - name: Telefonda üretim akışı
+        env:
+          URETIM_URL: http://127.0.0.1:3200
+          SMOKE_OUT: /tmp/uretim-ekran
+        run: node tools/uretim-testi.mjs
+
+      - name: Günlük (kalırsa)
+        if: failure()
+        run: tail -150 /tmp/uretim.log || true
+
+      - name: Ekran görüntüleri (kalırsa)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: uretim-ekran-goruntuleri
+          path: /tmp/uretim-ekran/
           if-no-files-found: ignore

@@ -10,9 +10,9 @@
  *   - `JWT_SECRET` 32 karakterden kısaysa sunucu HİÇ açılmaz (env.ts).
  *
  * İkisi de vardı ve ikisi de çalışıyordu — ama HİÇBİR TESTİ YOKTU.
- * `tools/uretim-testi.mjs` var, o da ne `pnpm e2e` zincirinde ne CI'da;
- * elle üretim sunucusu kaldırmayı gerektiriyor, yani pratikte hiç
- * koşmuyor. Yani biri `if (env.NODE_ENV !== 'production')` satırını
+ * `tools/uretim-testi.mjs` vardı ama o sırada ne `pnpm e2e` zincirinde ne
+ * CI'daydı (artık CI'da ayrı bir iş) — üstelik o da `/api/test/*`
+ * uçlarına hiç bakmıyor, oyunu oynuyor. Yani biri `if (env.NODE_ENV !== 'production')` satırını
  * silseydi 551 birim testi ve 1060 e2e kontrolü yeşil kalır, delik
  * yayına çıkardı. Bu dosya o sessizliği kapatıyor.
  *
