@@ -133,19 +133,57 @@ const RAHAT_ZAFER = 0.9;
 const tamOrdu = (await birinci.get('/army')).home;
 let akin = null;
 let enIyi = null;
-for (const oran of [0.16, 0.2, 0.25, 0.3, 0.36, 0.42, 0.5, 0.6, 0.7, 0.8]) {
-  const ordu = Object.fromEntries(
+const orduOrani = (oran) =>
+  Object.fromEntries(
     Object.entries(tamOrdu).map(([t, n]) => [t, Math.max(1, Math.floor(n * oran))]),
   );
+/*
+ * Aday: dokuz örneğin HİÇBİRİ ele geçirmiyor (`fetihOrani === 0`). Eski
+ * şart `eleGecirir === false`tı ve o yalnız "dokuzun HEPSİ ele geçirmiyor
+ * değil" demek: sekizi fetihle biten bir ordu da aday oluyordu ve gerçek
+ * savaş yine yazı-tura atıyordu.
+ */
+async function dene(oran) {
+  const ordu = orduOrani(oran);
   const t = (await birinci.post('/battle/preview', { toRegionId: bolge.id, army: ordu }))?.tahmin;
-  if (!t || t.eleGecirir !== false) continue;
-  if (!enIyi || (t.kazanmaOrani ?? 0) > enIyi.kazanmaOrani) {
-    enIyi = { ordu, oran, kazanmaOrani: t.kazanmaOrani ?? 0 };
+  if (!t) return { oran, ordu, fetih: 1, kazanma: 0 };
+  const sonuc = { oran, ordu, fetih: t.fetihOrani ?? 1, kazanma: t.kazanmaOrani ?? 0 };
+  if (sonuc.fetih === 0 && (!enIyi || sonuc.kazanma > enIyi.kazanmaOrani)) {
+    enIyi = { ordu, oran, kazanmaOrani: sonuc.kazanma };
   }
-  if ((t.kazanmaOrani ?? 0) >= RAHAT_ZAFER) {
-    akin = { ordu, oran, kazanmaOrani: t.kazanmaOrani ?? 0 };
+  if (sonuc.fetih === 0 && sonuc.kazanma >= RAHAT_ZAFER) {
+    akin = { ordu, oran, kazanmaOrani: sonuc.kazanma };
+  }
+  return sonuc;
+}
+/*
+ * Önce kaba tarama, sonra İKİYE BÖLME.
+ *
+ * "Kazanır ama ele geçirmez" penceresi dar: ele geçirme güç payı 0,6'yı
+ * geçince oluyor (balance.json → bolge_ele_gecirme), zafer ise ~0,5'te
+ * başlıyor. Tahkimatlı bir kalede bu pencere kaba ızgaranın iki adımı
+ * ARASINA düşebiliyor — CI'da savunan 634 birimlik bir kaleye düştüğünde
+ * oldu: %78 kazanan aday ile bir sonraki, ele geçiren adım arasında
+ * aranmıyordu. Savunanın hangi bölgeye düşeceği önceki testlerin kaç
+ * lord açtığına bağlı, yani ızgaraya güvenmek test sırasına güvenmekti.
+ */
+let alt = 0;
+let ust = 1;
+for (const oran of [0.16, 0.2, 0.25, 0.3, 0.36, 0.42, 0.5, 0.6, 0.7, 0.8]) {
+  const r = await dene(oran);
+  if (akin) break;
+  if (r.fetih === 0) alt = oran;
+  else {
+    ust = oran;
     break;
   }
+}
+// Pencere [alt, ust) içinde; en iyi aday ele geçirmeyen EN BÜYÜK oranda.
+for (let i = 0; i < 10 && !akin && ust - alt > 0.004; i++) {
+  const orta = (alt + ust) / 2;
+  const r = await dene(orta);
+  if (r.fetih === 0) alt = orta;
+  else ust = orta;
 }
 kontrol(
   'Rahat zafer (kazanır, ele geçirmez) ordusu bulundu',
