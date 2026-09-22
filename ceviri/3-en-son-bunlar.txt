@@ -3,7 +3,7 @@ LORDLAR ÇAĞI — ÇEVİRİ 3/3: KUYRUK  (KALANLAR)
 Sunucu hataları ve bildirimleri. Oyuncu bunları ancak bir şey ters gidince
 görüyor; en sona bırakılabilir ama atlanamaz.
 
-Bu dosyada 10 satır var — çevrilmiş olanlar çıkarıldı.
+Bu dosyada 0 satır var — çevrilmiş olanlar çıkarıldı.
 
 NASIL ÇEVİRİLİR
   Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.
@@ -34,16 +34,3 @@ NASIL ÇEVİRİLİR
   Bitince dosyayı olduğu gibi geri ver; gerisini ben hallederim.
 
 ==========================================================================
-
---- Sunucu mesajları (10) ---
-
-2219. Geçersiz yasak.
-2220. Hesabın yasaklı.
-2221. Kendi hesabını yasaklayamazsın.
-2236. {0} için e-postanı doğrulaman gerekiyor. Hesap ekranından yeni bağlantı isteyebilirsin.
-2237. Bağlantı geçersiz ya da süresi dolmuş. Yeni bir tane iste.
-2238. Bu eylem
-2239. E-postanı doğrula.
-2240. Hesabını doğrulamak için {0} saat içinde bu bağlantıyı aç:\n\n{1}\n\nBu hesabı sen açmadıysan hiçbir şey yapmana gerek yok.
-2241. Lordlar Çağı — e-postanı doğrula
-2242. Şimdi gönderilemez.

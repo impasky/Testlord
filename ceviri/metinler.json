@@ -66,7 +66,7 @@
   "tdcefd02d": {
     "grup": "arayuz",
     "tr": " · yönetici",
-    "en": "",
+    "en": " · admin",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:198"
     ]
@@ -203,7 +203,7 @@
   "t111b2872": {
     "grup": "arayuz",
     "tr": "‹ Aramaya dön",
-    "en": "",
+    "en": "‹ Back to search",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:185"
     ]
@@ -1467,7 +1467,7 @@
   "t9b280d99": {
     "grup": "arayuz",
     "tr": "Ada göre aranıyor; en az iki harf. Panel bir adres defteri değil, e-postayla arama yok.",
-    "en": "",
+    "en": "Searching by name; at least two characters. The panel is not an address book, there is no email search.",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:72"
     ]
@@ -1609,7 +1609,7 @@
   "t9efb58a1": {
     "grup": "arayuz",
     "tr": "Ara",
-    "en": "",
+    "en": "Search",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:68"
     ]
@@ -1813,7 +1813,7 @@
   "t6fe8b93e": {
     "grup": "arayuz",
     "tr": "Aynı hesapta {0} lord: {1}",
-    "en": "",
+    "en": "{0} lords on the same account: {1}",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:202"
     ]
@@ -3270,7 +3270,7 @@
   "t718835db": {
     "grup": "arayuz",
     "tr": "Doğrulama bağlantısı gönder",
-    "en": "",
+    "en": "Send verification link",
     "nerede": [
       "apps/web/src/screens/Hesap.tsx:146"
     ]
@@ -3278,7 +3278,7 @@
   "t5bbae6d0": {
     "grup": "arayuz",
     "tr": "Doğrulanamadı. Hesap ekranından yeni bir bağlantı iste.",
-    "en": "",
+    "en": "Could not be verified. Request a new link from the account screen.",
     "nerede": [
       "apps/web/src/screens/EpostaDogrula.tsx:50"
     ]
@@ -3286,7 +3286,7 @@
   "t569fd942": {
     "grup": "arayuz",
     "tr": "Doğrulanıyor…",
-    "en": "",
+    "en": "Verifying…",
     "nerede": [
       "apps/web/src/screens/EpostaDogrula.tsx:42"
     ]
@@ -3294,7 +3294,7 @@
   "tca0ab25d": {
     "grup": "arayuz",
     "tr": "Doğrulanmadan ittifak sohbetine yazamaz ve kaynak gönderemezsin. Postayı bulamıyorsan spam klasörüne bak.",
-    "en": "",
+    "en": "You cannot write in alliance chat and send resources without verification. If you cannot find the mail, check your spam folder.",
     "nerede": [
       "apps/web/src/screens/Hesap.tsx:136"
     ]
@@ -3457,7 +3457,7 @@
   "t7a2e7ae2": {
     "grup": "arayuz",
     "tr": "E-posta doğrulama",
-    "en": "",
+    "en": "Email verification",
     "nerede": [
       "apps/web/src/screens/EpostaDogrula.tsx:39"
     ]
@@ -3473,7 +3473,7 @@
   "t8bcc1657": {
     "grup": "arayuz",
     "tr": "E-postan doğrulandı. Artık ittifak sohbetine yazabilir ve kaynak gönderebilirsin.",
-    "en": "",
+    "en": "Your email is verified. You can now write in alliance chat and send resources.",
     "nerede": [
       "apps/web/src/screens/EpostaDogrula.tsx:45"
     ]
@@ -3784,7 +3784,7 @@
   "t581fa11c": {
     "grup": "arayuz",
     "tr": "Evet, kalıcı yasakla",
-    "en": "",
+    "en": "Yes, ban permanently",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:279"
     ]
@@ -4048,7 +4048,7 @@
   "t5e1f3714": {
     "grup": "arayuz",
     "tr": "GİZLİ",
-    "en": "",
+    "en": "HIDDEN",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:330"
     ]
@@ -4065,7 +4065,7 @@
   "t5275bf7f": {
     "grup": "arayuz",
     "tr": "Gönderildi",
-    "en": "",
+    "en": "Sent",
     "nerede": [
       "apps/web/src/screens/Hesap.tsx:146"
     ]
@@ -4447,7 +4447,7 @@
   "t67e3a2c7": {
     "grup": "arayuz",
     "tr": "HESABI YASAKLA",
-    "en": "",
+    "en": "BAN ACCOUNT",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:251"
     ]
@@ -4455,7 +4455,7 @@
   "t0f414ea5": {
     "grup": "arayuz",
     "tr": "Hesabı yasakla — {0}",
-    "en": "",
+    "en": "Ban account — {0}",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:258"
     ]
@@ -4531,7 +4531,7 @@
   "td9498625": {
     "grup": "arayuz",
     "tr": "Hesap: {0}{1}",
-    "en": "",
+    "en": "Account: {0}{1}",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:198"
     ]
@@ -4547,7 +4547,7 @@
   "tf120ff46": {
     "grup": "arayuz",
     "tr": "Hiç mesaj yazmamış.",
-    "en": "",
+    "en": "Has never written a message.",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:315"
     ]
@@ -4747,7 +4747,7 @@
   "t9f9f854f": {
     "grup": "arayuz",
     "tr": "İşlem uygulanmadı; sayfayı tazeleyip tekrar dene.",
-    "en": "",
+    "en": "Action not applied; refresh the page and try again.",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:216"
     ]
@@ -5022,7 +5022,7 @@
   "tbee327a4": {
     "grup": "arayuz",
     "tr": "KALDIRILDI",
-    "en": "",
+    "en": "REMOVED",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:324"
     ]
@@ -5038,7 +5038,7 @@
   "t228ca0c6": {
     "grup": "arayuz",
     "tr": "Kalıcı",
-    "en": "",
+    "en": "Permanent",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:279"
     ]
@@ -5054,7 +5054,7 @@
   "t454fce83": {
     "grup": "arayuz",
     "tr": "Kalıcı yasak — {0}",
-    "en": "",
+    "en": "Permanent ban — {0}",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:210"
     ]
@@ -5141,7 +5141,7 @@
   "t4a10c68e": {
     "grup": "arayuz",
     "tr": "Karar",
-    "en": "",
+    "en": "Decision",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:218"
     ]
@@ -5289,7 +5289,7 @@
   "tc7851033": {
     "grup": "arayuz",
     "tr": "Kayıt yok — bu ilk.",
-    "en": "",
+    "en": "No record — this is the first.",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:300"
     ]
@@ -5516,7 +5516,7 @@
   "t392ba242": {
     "grup": "arayuz",
     "tr": "Kimse bulunamadı. Adın tamamını değil, bir parçasını yaz.",
-    "en": "",
+    "en": "Nobody found. Type a part of the name, not the whole name.",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:81"
     ]
@@ -6021,7 +6021,7 @@
   "ta2fe57cb": {
     "grup": "arayuz",
     "tr": "Mesaj kaldırılamadı.",
-    "en": "",
+    "en": "Message could not be removed.",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:174"
     ]
@@ -6079,7 +6079,7 @@
   "tf9ebf6e9": {
     "grup": "arayuz",
     "tr": "Moderasyon geçmişi",
-    "en": "",
+    "en": "Moderation history",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:298"
     ]
@@ -6512,7 +6512,7 @@
   "t86766a95": {
     "grup": "arayuz",
     "tr": "Oyuna dön",
-    "en": "",
+    "en": "Return to game",
     "nerede": [
       "apps/web/src/screens/EpostaDogrula.tsx:54"
     ]
@@ -6520,7 +6520,7 @@
   "tc2acb004": {
     "grup": "arayuz",
     "tr": "Oyuncu ara",
-    "en": "",
+    "en": "Search player",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:50"
     ]
@@ -7212,7 +7212,7 @@
   "tc1bd22d0": {
     "grup": "arayuz",
     "tr": "Sebep",
-    "en": "",
+    "en": "Reason",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:223"
     ]
@@ -7220,7 +7220,7 @@
   "tc0ae04ff": {
     "grup": "arayuz",
     "tr": "Sebep (oyuncuya gösterilir)",
-    "en": "",
+    "en": "Reason (shown to the player)",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:222"
     ]
@@ -7228,7 +7228,7 @@
   "tc2aff6e5": {
     "grup": "arayuz",
     "tr": "sebep yok",
-    "en": "",
+    "en": "no reason",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:210",
       "apps/web/src/screens/YoneticiPaneli.tsx:211"
@@ -7522,7 +7522,7 @@
   "t2b285f7d": {
     "grup": "arayuz",
     "tr": "SOHBETTE SUSTUR",
-    "en": "",
+    "en": "MUTE IN CHAT",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:227"
     ]
@@ -7530,7 +7530,7 @@
   "t70032e07": {
     "grup": "arayuz",
     "tr": "Sohbette sustur — {0}",
-    "en": "",
+    "en": "Mute in chat — {0}",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:234"
     ]
@@ -7554,7 +7554,7 @@
   "tc0ede74c": {
     "grup": "arayuz",
     "tr": "Son görülme: {0}",
-    "en": "",
+    "en": "Last seen: {0}",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:99"
     ]
@@ -7562,7 +7562,7 @@
   "tb3a85361": {
     "grup": "arayuz",
     "tr": "Son mesajları",
-    "en": "",
+    "en": "Latest messages",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:313"
     ]
@@ -7611,7 +7611,7 @@
   "t5d49e7d6": {
     "grup": "arayuz",
     "tr": "Sonuçlar",
-    "en": "",
+    "en": "Results",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:77"
     ]
@@ -7668,7 +7668,7 @@
   "t222bf466": {
     "grup": "arayuz",
     "tr": "Susturma sohbete, yasak oyuna dokunur. Yasak için sebep zorunlu; ikisi de geri alınabilir ve ikisi de kayda geçer.",
-    "en": "",
+    "en": "A mute affects the chat, a ban affects the game. A reason is mandatory for a ban; both can be revoked and both go on record.",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:293"
     ]
@@ -7685,7 +7685,7 @@
   "tb183d188": {
     "grup": "arayuz",
     "tr": "Susturulamadı.",
-    "en": "",
+    "en": "Could not be muted.",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:150"
     ]
@@ -7727,7 +7727,7 @@
   "t1de99694": {
     "grup": "arayuz",
     "tr": "Sv {0} · {1}",
-    "en": "",
+    "en": "Lvl {0} · {1}",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:95"
     ]
@@ -7735,7 +7735,7 @@
   "te69cb05e": {
     "grup": "arayuz",
     "tr": "Sv {0} · {1} · son görülme {2}",
-    "en": "",
+    "en": "Lvl {0} · {1} · last seen {2}",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:195"
     ]
@@ -8550,7 +8550,7 @@
   "t8165b4a2": {
     "grup": "arayuz",
     "tr": "Yasağı kaldır",
-    "en": "",
+    "en": "Lift ban",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:288"
     ]
@@ -8558,7 +8558,7 @@
   "t01f1b0ca": {
     "grup": "arayuz",
     "tr": "Yasak {0} tarihine kadar — {1}",
-    "en": "",
+    "en": "Banned until {0} — {1}",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:211"
     ]
@@ -8566,7 +8566,7 @@
   "t8639ff2a": {
     "grup": "arayuz",
     "tr": "Yasak kaldırılamadı.",
-    "en": "",
+    "en": "Ban could not be lifted.",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:168"
     ]
@@ -8574,7 +8574,7 @@
   "tf3dfe837": {
     "grup": "arayuz",
     "tr": "Yasaklanamadı.",
-    "en": "",
+    "en": "Could not be banned.",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:162"
     ]
@@ -8582,7 +8582,7 @@
   "td0e8da6b": {
     "grup": "arayuz",
     "tr": "YASAKLI",
-    "en": "",
+    "en": "BANNED",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:191",
       "apps/web/src/screens/YoneticiPaneli.tsx:92"
@@ -8796,7 +8796,7 @@
   "t192adc95": {
     "grup": "arayuz",
     "tr": "Yönetici paneli",
-    "en": "",
+    "en": "Admin panel",
     "nerede": [
       "apps/web/src/screens/Hesap.tsx:173"
     ]
@@ -9687,7 +9687,7 @@
   "t75e2014e": {
     "grup": "motor",
     "tr": "Bugünlük gönderim hakkın doldu. Yarın tekrar dene.",
-    "en": "",
+    "en": "Your daily sending limit is reached. Try again tomorrow.",
     "nerede": [
       "packages/shared/src/epostaDogrulama.ts:101"
     ]
@@ -9807,7 +9807,7 @@
   "tc8a79c24": {
     "grup": "motor",
     "tr": "Çok hızlı. {0} saniye bekle.",
-    "en": "",
+    "en": "Too fast. Wait {0} seconds.",
     "nerede": [
       "packages/shared/src/epostaDogrulama.ts:107"
     ]
@@ -10000,7 +10000,7 @@
   "t8e1ff3a2": {
     "grup": "motor",
     "tr": "E-postan doğrulanmadı — {0} gün sonra giriş için gerekecek.",
-    "en": "",
+    "en": "Your email is not verified — it will be required to log in after {0} days.",
     "nerede": [
       "packages/shared/src/epostaDogrulama.ts:83"
     ]
@@ -10008,7 +10008,7 @@
   "t81e08c1f": {
     "grup": "motor",
     "tr": "E-postanı doğrulaman gerekiyor. Yeni bir bağlantı isteyebilirsin.",
-    "en": "",
+    "en": "You need to verify your email. You can request a new link.",
     "nerede": [
       "packages/shared/src/epostaDogrulama.ts:76"
     ]
@@ -10250,7 +10250,7 @@
   "t4a0f4742": {
     "grup": "motor",
     "tr": "Geçersiz yasak süresi.",
-    "en": "",
+    "en": "Invalid ban duration.",
     "nerede": [
       "packages/shared/src/moderasyon.ts:288"
     ]
@@ -10435,7 +10435,7 @@
   "t7ecb1927": {
     "grup": "motor",
     "tr": "Hesabın kalıcı olarak yasaklandı.{0}",
-    "en": "",
+    "en": "Your account has been permanently banned.{0}",
     "nerede": [
       "packages/shared/src/moderasyon.ts:330"
     ]
@@ -10443,7 +10443,7 @@
   "tbb4a221f": {
     "grup": "motor",
     "tr": "Hesabın yasaklı — {0} kaldı.{1}",
-    "en": "",
+    "en": "Your account is banned — {0} remaining.{1}",
     "nerede": [
       "packages/shared/src/moderasyon.ts:340"
     ]
@@ -10451,7 +10451,7 @@
   "tde5c8550": {
     "grup": "motor",
     "tr": "Hesap KALICI olarak yasaklandı",
-    "en": "",
+    "en": "Account is PERMANENTLY banned",
     "nerede": [
       "packages/shared/src/moderasyon.ts:243"
     ]
@@ -10459,7 +10459,7 @@
   "t9025f062": {
     "grup": "motor",
     "tr": "Hesap yasaklandı ({0})",
-    "en": "",
+    "en": "Account banned ({0})",
     "nerede": [
       "packages/shared/src/moderasyon.ts:244"
     ]
@@ -10557,7 +10557,7 @@
   "t45d18dbc": {
     "grup": "motor",
     "tr": "İttifak sohbetine yazmak",
-    "en": "",
+    "en": "writing in alliance chat",
     "nerede": [
       "packages/shared/src/epostaDogrulama.ts:36"
     ]
@@ -10744,7 +10744,7 @@
   "t5e9783c1": {
     "grup": "motor",
     "tr": "Kaynak göndermek",
-    "en": "",
+    "en": "sending resources",
     "nerede": [
       "packages/shared/src/epostaDogrulama.ts:37"
     ]
@@ -11403,7 +11403,7 @@
   "t0e6ee1ea": {
     "grup": "motor",
     "tr": "Sebep en fazla {0} harf olabilir.",
-    "en": "",
+    "en": "The reason can be a maximum of {0} characters.",
     "nerede": [
       "packages/shared/src/moderasyon.ts:294"
     ]
@@ -11499,7 +11499,7 @@
   "t24631d88": {
     "grup": "motor",
     "tr": "Susturma kaldırıldı",
-    "en": "",
+    "en": "Mute lifted",
     "nerede": [
       "packages/shared/src/moderasyon.ts:248"
     ]
@@ -11870,7 +11870,7 @@
   "t10bb3b61": {
     "grup": "motor",
     "tr": "Yasak kaldırıldı",
-    "en": "",
+    "en": "Ban lifted",
     "nerede": [
       "packages/shared/src/moderasyon.ts:246"
     ]
@@ -11878,7 +11878,7 @@
   "t65e8fab7": {
     "grup": "motor",
     "tr": "Yasak sebebini en az {0} harfle yaz.",
-    "en": "",
+    "en": "Write the ban reason using at least {0} characters.",
     "nerede": [
       "packages/shared/src/moderasyon.ts:291"
     ]
@@ -11958,7 +11958,7 @@
   "t068619b5": {
     "grup": "motor",
     "tr": "Yönetici Paneli",
-    "en": "",
+    "en": "Admin Panel",
     "nerede": [
       "packages/shared/src/types.ts:339"
     ]
@@ -12345,7 +12345,7 @@
   "t8b6b2b9f": {
     "grup": "sunucu",
     "tr": "{0} için e-postanı doğrulaman gerekiyor. Hesap ekranından yeni bağlantı isteyebilirsin.",
-    "en": "",
+    "en": "You need to verify your email for {0}. You can request a new link from the account screen.",
     "nerede": [
       "apps/api/src/services/epostaDogrulama.ts:97"
     ]
@@ -12732,7 +12732,7 @@
   "t3d49ff31": {
     "grup": "sunucu",
     "tr": "Bağlantı geçersiz ya da süresi dolmuş. Yeni bir tane iste.",
-    "en": "",
+    "en": "The link is invalid or expired. Request a new one.",
     "nerede": [
       "apps/api/src/routes/auth.ts:321"
     ]
@@ -13090,7 +13090,7 @@
   "t76160130": {
     "grup": "sunucu",
     "tr": "Bu eylem",
-    "en": "",
+    "en": "this action",
     "nerede": [
       "apps/api/src/services/epostaDogrulama.ts:95"
     ]
@@ -13422,7 +13422,7 @@
   "tc33fbc55": {
     "grup": "sunucu",
     "tr": "E-postanı doğrula.",
-    "en": "",
+    "en": "Verify your email.",
     "nerede": [
       "apps/api/src/auth.ts:74",
       "apps/api/src/routes/auth.ts:362"
@@ -13483,7 +13483,7 @@
   "t7c4b14f8": {
     "grup": "sunucu",
     "tr": "Geçersiz yasak.",
-    "en": "",
+    "en": "Invalid ban.",
     "nerede": [
       "apps/api/src/routes/yonetici.ts:283"
     ]
@@ -13564,7 +13564,7 @@
   "t367d59af": {
     "grup": "sunucu",
     "tr": "Hesabın yasaklı.",
-    "en": "",
+    "en": "Your account is banned.",
     "nerede": [
       "apps/api/src/auth.ts:62",
       "apps/api/src/routes/auth.ts:351"
@@ -13573,7 +13573,7 @@
   "t9b52960a": {
     "grup": "sunucu",
     "tr": "Hesabını doğrulamak için {0} saat içinde bu bağlantıyı aç:\n\n{1}\n\nBu hesabı sen açmadıysan hiçbir şey yapmana gerek yok.",
-    "en": "",
+    "en": "Open this link within {0} hours to verify your account:\n\n{1}\n\nIf you did not create this account, you do not need to do anything.",
     "nerede": [
       "apps/api/src/services/epostaDogrulama.ts:75"
     ]
@@ -13741,7 +13741,7 @@
   "t15616869": {
     "grup": "sunucu",
     "tr": "Kendi hesabını yasaklayamazsın.",
-    "en": "",
+    "en": "You cannot ban your own account.",
     "nerede": [
       "apps/api/src/routes/yonetici.ts:291"
     ]
@@ -13861,7 +13861,7 @@
   "t4b15ec11": {
     "grup": "sunucu",
     "tr": "Lordlar Çağı — e-postanı doğrula",
-    "en": "",
+    "en": "Age of Lords — verify your email",
     "nerede": [
       "apps/api/src/services/epostaDogrulama.ts:74"
     ]
@@ -14193,7 +14193,7 @@
   "tc9f20736": {
     "grup": "sunucu",
     "tr": "Şimdi gönderilemez.",
-    "en": "",
+    "en": "Cannot be sent right now.",
     "nerede": [
       "apps/api/src/services/epostaDogrulama.ts:50"
     ]
