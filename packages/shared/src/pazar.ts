@@ -121,6 +121,16 @@ export function takasEngeli(g: {
    * verdiği takası kapatmasına yol açıyordu.
    */
   gunlukTavan: number;
+  /**
+   * Depo tavanı — alınan kaynağın sığacağı yer.
+   *
+   * Takas buna bakmıyordu ve taşan kısım bir sonraki gelir işlemesinde
+   * SESSİZCE siliniyordu. Ölçüldü: erzağı tavana 2.000 kalan oyuncu 8.000
+   * altını erzağa çevirdi, "10.000 erzak alındı" dendi ve 8.000'i yok
+   * oldu — ödenen altının %80'i. Oyuncu kendi kaynağını kaybetti ve
+   * ekranda bunu söyleyen hiçbir şey yoktu.
+   */
+  depoTavani: number;
 }): TakasEngeli | null {
   const gecerli = (x: string): x is KaynakTuru => (KAYNAK_TURLERI as readonly string[]).includes(x);
   if (!gecerli(g.veren) || !gecerli(g.alan)) {
@@ -128,6 +138,12 @@ export function takasEngeli(g: {
   }
   if (g.veren === g.alan) {
     return { kod: 'AYNI_KAYNAK', mesaj: 'Aynı kaynağı kendisiyle takas edemezsin.' };
+  }
+  // Ondalık miktar: sunucu yalnız tam birim düşüyor. Burada söylenmezse
+  // arayüz düğmeyi açık bırakıyor ve oyuncu doğrulama kütüphanesinin
+  // İngilizce iletisini ("Expected integer, received float") görüyordu.
+  if (Number.isFinite(g.miktar) && !Number.isInteger(g.miktar)) {
+    return { kod: 'TAM_SAYI', mesaj: 'Miktar tam sayı olmalı.' };
   }
   if (!Number.isFinite(g.miktar) || g.miktar < B.pazar.en_az_miktar) {
     return {
@@ -150,5 +166,42 @@ export function takasEngeli(g: {
           : `Bugün en fazla ${Math.floor(kalan / birimKuru(g.veren))} ${KAYNAK_ADI[g.veren]} daha takas edebilirsin.`,
     };
   }
+  /*
+   * Depo EN SONDA: önce kalıcı sınırlar (elde olan, günlük hak) söylensin.
+   * Reddediyoruz, kırpmıyoruz — kırpmak, oyuncunun yazdığından farklı bir
+   * miktarı sessizce ödetmek olurdu. Onun yerine sığan en büyük miktarı
+   * söylüyoruz; oyuncu tek dokunuşla düzeltebilsin.
+   */
+  const bos = depoBosYer(g.alan, g.eldeki, g.depoTavani);
+  if (takasHesapla(g.veren, g.alan, g.miktar).alinan > bos) {
+    const sigan = siganEnFazla(g.veren, g.alan, bos);
+    return {
+      kod: 'DEPO_DOLU',
+      mesaj:
+        sigan < B.pazar.en_az_miktar
+          ? `Deponda ${KAYNAK_ADI[g.alan]} için yeterli yer yok. Önce biraz harca ya da Malikâne'yi yükselt.`
+          : `Deponda yalnız ${bos} ${KAYNAK_ADI[g.alan]} yeri var. En fazla ${sigan} ${KAYNAK_ADI[g.veren]} takas edebilirsin.`,
+    };
+  }
   return null;
+}
+
+/** Depoda o kaynağa kalan yer (tam birim, eksiye inmez). */
+export function depoBosYer(tur: KaynakTuru, eldeki: Resources, depoTavani: number): number {
+  return Math.max(0, Math.floor(depoTavani - (eldeki[tur] ?? 0)));
+}
+
+/**
+ * Alınacak kaynak `bos` yere sığacak şekilde verilebilecek en büyük miktar.
+ *
+ * Kapalı formül yuvarlama yüzünden bir birim şaşabiliyor; en fazla birkaç
+ * adımlık düzeltme döngüsü bunu kesinleştiriyor. Söylenen sayı yazılınca
+ * geçmeli — "en fazla 3.199" deyip 3.199'u reddetmek en kötüsü olurdu.
+ */
+export function siganEnFazla(veren: KaynakTuru, alan: KaynakTuru, bos: number): number {
+  const oran = (birimKuru(veren) * (1 - B.pazar.komisyon)) / birimKuru(alan);
+  let m = Math.floor((bos + 1) / oran);
+  while (m > 0 && takasHesapla(veren, alan, m).alinan > bos) m--;
+  while (takasHesapla(veren, alan, m + 1).alinan <= bos) m++;
+  return m;
 }

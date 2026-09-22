@@ -92,6 +92,75 @@ kontrol('çok küçük takas reddedildi', az.s === 400, az.b?.error ?? '');
 const yok = await post('/pazar/takas', { veren: 'erzak', alan: 'altin', miktar: 999999 });
 kontrol('elde olmayan kaynak reddedildi', yok.s === 400, yok.b?.error ?? '');
 
+/* --- Depo taşması ve ondalık miktar ---
+ *
+ * Ölçülen iki hata. Takas depoya bakmıyordu: erzağı tavana 2.000 kalan
+ * oyuncu 8.000 altını erzağa çevirdi, "10.000 erzak alındı" dendi ve
+ * 8.000'i bir sonraki gelir işlemesinde sessizce silindi. Ondalık miktar
+ * ise oyuncuya İngilizce bir doğrulama iletisi gösteriyordu.
+ *
+ * Ayrı bir lordla: yukarıdaki takaslar günlük hakkın bir kısmını yedi.
+ */
+{
+  const d2 = Date.now();
+  const { token: j2 } = await fetch(`${API}/api/auth/register`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      email: `pzd${d2}@lordlar.dev`,
+      password: 'parola1234',
+      lordName: `Depocu ${d2.toString(36).slice(-4) + Math.random().toString(36).slice(2, 4)}`,
+    }),
+  }).then((r) => r.json());
+  const b2 = { authorization: `Bearer ${j2}`, 'content-type': 'application/json' };
+  const al2 = (y) => fetch(`${API}/api${y}`, { headers: b2 }).then((r) => r.json());
+  const post2 = (y, g = {}) =>
+    fetch(`${API}/api${y}`, { method: 'POST', headers: b2, body: JSON.stringify(g) }).then(
+      async (r) => ({ s: r.status, b: await r.json().catch(() => ({})) }),
+    );
+
+  const p0 = await al2('/pazar');
+  kontrol('depo tavanı bildiriliyor', p0.depoTavani > 0, `tavan ${p0.depoTavani}`);
+  const tavan = p0.depoTavani;
+  // Erzak tavana 2.000 kalsın, altın bol olsun (ölçülen vakanın aynısı).
+  await post2('/test/kaynak-ver', {
+    altin: 9000 - Math.floor(p0.kaynaklar.altin),
+    demir: 0,
+    erzak: tavan - 2000 - Math.floor(p0.kaynaklar.erzak),
+  });
+  const once2 = (await al2('/pazar')).kaynaklar;
+
+  const tasan = await post2('/pazar/takas', { veren: 'altin', alan: 'erzak', miktar: 8000 });
+  const sonra2 = (await al2('/pazar')).kaynaklar;
+  kontrol(
+    'depoyu taşıracak takas reddediliyor',
+    tasan.s === 400 && tasan.b?.code === 'DEPO_DOLU',
+    `HTTP ${tasan.s} ${tasan.b?.error ?? ''}`,
+  );
+  kontrol(
+    'reddedilen takas hiçbir şey düşürmüyor',
+    Math.floor(sonra2.altin) >= Math.floor(once2.altin),
+    `${Math.floor(once2.altin)} -> ${Math.floor(sonra2.altin)}`,
+  );
+
+  // Reddin söylediği miktar GEÇMELİ ve hiçbir şey kaybolmamalı.
+  const sigan = Number((tasan.b?.error ?? '').match(/En fazla (\d+) altın/)?.[1] ?? 0);
+  const t2 = await post2('/pazar/takas', { veren: 'altin', alan: 'erzak', miktar: sigan });
+  const son2 = (await al2('/pazar')).kaynaklar;
+  kontrol(
+    'söylenen en fazla miktar geçiyor ve aldığı kaybolmuyor',
+    t2.s === 200 && Math.floor(son2.erzak) === Math.floor(once2.erzak) + t2.b.alinan,
+    `${sigan} altın -> ${t2.b?.alinan} erzak, erzak ${Math.floor(once2.erzak)} -> ${Math.floor(son2.erzak)} (tavan ${tavan})`,
+  );
+
+  const ondalik = await post2('/pazar/takas', { veren: 'demir', alan: 'altin', miktar: 150.5 });
+  kontrol(
+    'ondalık miktar Türkçe bir sebeple reddediliyor',
+    ondalik.s === 400 && ondalik.b?.error === 'Miktar tam sayı olmalı.',
+    `HTTP ${ondalik.s} ${ondalik.b?.error ?? ''}`,
+  );
+}
+
 /* --- Günlük tavan --- */
 await post('/test/kaynak-ver', { altin: 5000000, demir: 0, erzak: 0 });
 const d = await al('/pazar');

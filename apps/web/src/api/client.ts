@@ -1150,6 +1150,8 @@ export const api = {
       enAzMiktar: number;
       kurlar: Record<string, number>;
       gunluk: { kullanilan: number; tavan: number; kalan: number };
+      /** Depo tavanı: takasın alınan kaynağı sığacak mı. */
+      depoTavani: number;
     }>('/pazar'),
   pazarTakas: (veren: string, alan: string, miktar: number) =>
     post<{ verilen: number; alinan: number; kaynaklar: Resources }>('/pazar/takas', {

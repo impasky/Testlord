@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { KAYNAK_TURLERI, birimKuru, pazarGunlukTavan, takasEngeli, takasHesapla } from './pazar.js';
+import {
+  KAYNAK_TURLERI,
+  birimKuru,
+  depoBosYer,
+  pazarGunlukTavan,
+  siganEnFazla,
+  takasEngeli,
+  takasHesapla,
+} from './pazar.js';
 import { B } from './balance.js';
 import type { Resources } from './types.js';
 
@@ -13,6 +21,7 @@ function engel(ek: Partial<Parameters<typeof takasEngeli>[0]> = {}) {
     eldeki: bol,
     bugunkuHacim: 0,
     gunlukTavan: 100000,
+    depoTavani: 1000000,
     ...ek,
   });
 }
@@ -90,12 +99,60 @@ describe('takas engelleri sebebini söylüyor', () => {
     expect(engel({ veren: 'ejderha' })?.kod).toBe('KAYNAK_YOK');
   });
 
+  it('ondalık miktar Türkçe bir sebeple reddediliyor', () => {
+    const e = engel({ miktar: 150.5 });
+    expect(e?.kod).toBe('TAM_SAYI');
+    expect(e?.mesaj).toBe('Miktar tam sayı olmalı.');
+  });
+
+  it('alınan kaynak depoya sığmıyorsa reddediliyor ve sığan en büyük miktar söyleniyor', () => {
+    // Ölçülen vaka: erzağı tavana 2.000 kalan oyuncu 8.000 altın verdi.
+    const eldeki = { altin: 9000, demir: 0, erzak: 36000 };
+    const e = engel({ veren: 'altin', alan: 'erzak', miktar: 8000, eldeki, depoTavani: 38000 });
+    expect(e?.kod).toBe('DEPO_DOLU');
+    const sigan = siganEnFazla('altin', 'erzak', 2000);
+    expect(e?.mesaj).toContain(`${sigan} altın`);
+    // Söylenen sayı GEÇMELİ, bir fazlası geçmemeli.
+    expect(
+      engel({ veren: 'altin', alan: 'erzak', miktar: sigan, eldeki, depoTavani: 38000 }),
+    ).toBeNull();
+    expect(
+      engel({ veren: 'altin', alan: 'erzak', miktar: sigan + 1, eldeki, depoTavani: 38000 })?.kod,
+    ).toBe('DEPO_DOLU');
+  });
+
+  it('sığan en büyük miktar her kur çiftinde tam', () => {
+    for (const v of KAYNAK_TURLERI) {
+      for (const a of KAYNAK_TURLERI) {
+        if (v === a) continue;
+        for (const bos of [0, 1, 99, 1234, 50000]) {
+          const m = siganEnFazla(v, a, bos);
+          expect(takasHesapla(v, a, m).alinan).toBeLessThanOrEqual(bos);
+          expect(takasHesapla(v, a, m + 1).alinan).toBeGreaterThan(bos);
+        }
+      }
+    }
+  });
+
+  it('depo doluysa en az miktar bile sığmıyor ve bunu söylüyor', () => {
+    const e = engel({
+      alan: 'demir',
+      eldeki: { altin: 5000, demir: 38000, erzak: 0 },
+      depoTavani: 38000,
+    });
+    expect(e?.kod).toBe('DEPO_DOLU');
+    expect(e?.mesaj).toContain('yeterli yer yok');
+    expect(depoBosYer('demir', { altin: 0, demir: 40000, erzak: 0 }, 38000)).toBe(0);
+  });
+
   it('her engelin okunur bir mesajı var', () => {
     const durumlar = [
       engel({ alan: 'altin' }),
       engel({ miktar: 1 }),
+      engel({ miktar: 150.5 }),
       engel({ eldeki: { altin: 0, demir: 0, erzak: 0 } }),
       engel({ bugunkuHacim: 100000, gunlukTavan: 100000 }),
+      engel({ depoTavani: 0 }),
     ];
     for (const e of durumlar) expect((e?.mesaj ?? '').length).toBeGreaterThan(10);
   });

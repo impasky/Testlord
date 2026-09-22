@@ -26,7 +26,13 @@ import { lordIslemi } from '../services/kilit.js';
 const takasSchema = z.object({
   veren: z.enum(KAYNAK_TURLERI as unknown as [KaynakTuru, ...KaynakTuru[]]),
   alan: z.enum(KAYNAK_TURLERI as unknown as [KaynakTuru, ...KaynakTuru[]]),
-  miktar: z.number().int().positive(),
+  /*
+   * Yalnız "sayı mı" burada. Tam sayı ve alt sınır MOTORDA (`takasEngeli`):
+   * burada `.int()` dururken ondalık miktar doğrulama kütüphanesinin
+   * İngilizce iletisiyle ("Expected integer, received float") dönüyordu ve
+   * arayüzün gördüğü cümleyle sunucununki ayrışıyordu.
+   */
+  miktar: z.number({ invalid_type_error: 'Miktar sayı olmalı.' }),
 });
 
 /** Gün değiştiyse sayaç sıfır sayılır. Yazma yok: okuma anında karar. */
@@ -52,6 +58,9 @@ export async function pazarRoutes(app: FastifyInstance) {
       enAzMiktar: B.pazar.en_az_miktar,
       kurlar: Object.fromEntries(KAYNAK_TURLERI.map((k) => [k, birimKuru(k)])),
       gunluk: { kullanilan, tavan, kalan: Math.max(0, tavan - kullanilan) },
+      // Arayüz "deponda X yer var" diyebilsin ve taşıracak takası daha
+      // düğmeye basılmadan kapatabilsin.
+      depoTavani: durum.storageCapacity,
     };
   });
 
@@ -76,6 +85,7 @@ export async function pazarRoutes(app: FastifyInstance) {
         eldeki: durum.resources,
         bugunkuHacim: kullanilan,
         gunlukTavan: pazarGunlukTavan(lord.level, binalariOku(lord)),
+        depoTavani: durum.storageCapacity,
       });
       if (engel) throw new GameError(engel.mesaj, 400, engel.kod);
 

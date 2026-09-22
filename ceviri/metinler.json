@@ -1535,7 +1535,7 @@
     "tr": "ALACAĞIN",
     "en": "YOU WILL RECEIVE",
     "nerede": [
-      "apps/web/src/components/Pazar.tsx:141"
+      "apps/web/src/components/Pazar.tsx:146"
     ]
   },
   "t39e8631a": {
@@ -2672,7 +2672,7 @@
     "tr": "Bugünkü pazar hakkın: {0} / {1} altın karşılığı.",
     "en": "Your market allowance for today: {0} / {1} gold worth.",
     "nerede": [
-      "apps/web/src/components/Pazar.tsx:192"
+      "apps/web/src/components/Pazar.tsx:200"
     ]
   },
   "tab346258": {
@@ -2962,6 +2962,14 @@
     "en": "Everything you produce is wasted because your storage is full. Granaries research expands the storage.",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:859"
+    ]
+  },
+  "t44b25c99": {
+    "grup": "arayuz",
+    "tr": "Deponda {0} {1} yeri var.",
+    "en": "",
+    "nerede": [
+      "apps/web/src/components/Pazar.tsx:186"
     ]
   },
   "t24cb06e6": {
@@ -3564,7 +3572,7 @@
     "tr": "Elinde biriken kaynağı eksiğine çevir. Tüccar payını alır — doğru bölgeyi almak hâlâ daha kârlı.",
     "en": "Convert your accumulated resources into what you lack. The merchant takes a cut — taking the right region is still more profitable.",
     "nerede": [
-      "apps/web/src/components/Pazar.tsx:104"
+      "apps/web/src/components/Pazar.tsx:109"
     ]
   },
   "tdf35d15b": {
@@ -3572,7 +3580,7 @@
     "tr": "En az {0}",
     "en": "At least {0}",
     "nerede": [
-      "apps/web/src/components/Pazar.tsx:162"
+      "apps/web/src/components/Pazar.tsx:168"
     ]
   },
   "tca8f57a6": {
@@ -5534,7 +5542,7 @@
     "tr": "komisyon %{0}",
     "en": "commission {0}%",
     "nerede": [
-      "apps/web/src/components/Pazar.tsx:101"
+      "apps/web/src/components/Pazar.tsx:106"
     ]
   },
   "t48dcce40": {
@@ -6795,7 +6803,7 @@
     "tr": "Pazar",
     "en": "Market",
     "nerede": [
-      "apps/web/src/components/Pazar.tsx:100",
+      "apps/web/src/components/Pazar.tsx:105",
       "data/binalar.json:binalar[5].ad"
     ]
   },
@@ -8115,7 +8123,7 @@
     "tr": "Takas ediliyor…",
     "en": "Trading…",
     "nerede": [
-      "apps/web/src/components/Pazar.tsx:185"
+      "apps/web/src/components/Pazar.tsx:193"
     ]
   },
   "t725359e0": {
@@ -8123,7 +8131,7 @@
     "tr": "Takas et",
     "en": "Trade",
     "nerede": [
-      "apps/web/src/components/Pazar.tsx:185"
+      "apps/web/src/components/Pazar.tsx:193"
     ]
   },
   "tedbadbc0": {
@@ -8131,7 +8139,7 @@
     "tr": "Takas yapılamadı.",
     "en": "Trade failed.",
     "nerede": [
-      "apps/web/src/components/Pazar.tsx:76"
+      "apps/web/src/components/Pazar.tsx:78"
     ]
   },
   "t655690a1": {
@@ -8440,7 +8448,7 @@
     "tr": "VERECEĞİN",
     "en": "YOU WILL GIVE",
     "nerede": [
-      "apps/web/src/components/Pazar.tsx:110"
+      "apps/web/src/components/Pazar.tsx:115"
     ]
   },
   "t425f7eef": {
@@ -9287,7 +9295,7 @@
     "tr": "Aynı kaynağı kendisiyle takas edemezsin.",
     "en": "You cannot trade the same resource for itself.",
     "nerede": [
-      "packages/shared/src/pazar.ts:130"
+      "packages/shared/src/pazar.ts:140"
     ]
   },
   "t28880c8b": {
@@ -9568,7 +9576,7 @@
     "tr": "Böyle bir kaynak yok.",
     "en": "No such resource exists.",
     "nerede": [
-      "packages/shared/src/pazar.ts:127"
+      "packages/shared/src/pazar.ts:137"
     ]
   },
   "t7a969da9": {
@@ -9673,7 +9681,7 @@
     "tr": "Bugün en fazla {0} {1} daha takas edebilirsin.",
     "en": "You can trade at most {0} {1} more today.",
     "nerede": [
-      "packages/shared/src/pazar.ts:150"
+      "packages/shared/src/pazar.ts:166"
     ]
   },
   "t6615c06c": {
@@ -9681,7 +9689,7 @@
     "tr": "Bugünkü pazar hakkın doldu. Yarın yenilenir.",
     "en": "Your market limit for today is reached. It will reset tomorrow.",
     "nerede": [
-      "packages/shared/src/pazar.ts:149"
+      "packages/shared/src/pazar.ts:165"
     ]
   },
   "t75e2014e": {
@@ -9866,6 +9874,22 @@
     "en": "Storage capacity +{0}",
     "nerede": [
       "packages/shared/src/arastirma.ts:158"
+    ]
+  },
+  "tc9bf1bd8": {
+    "grup": "motor",
+    "tr": "Deponda {0} için yeterli yer yok. Önce biraz harca ya da Malikâne'yi yükselt.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/pazar.ts:182"
+    ]
+  },
+  "t81a100c6": {
+    "grup": "motor",
+    "tr": "Deponda yalnız {0} {1} yeri var. En fazla {2} {3} takas edebilirsin.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/pazar.ts:183"
     ]
   },
   "t6185c54d": {
@@ -10083,7 +10107,7 @@
     "tr": "Elinde bu kadar yok.",
     "en": "You don't have this much.",
     "nerede": [
-      "packages/shared/src/pazar.ts:139"
+      "packages/shared/src/pazar.ts:155"
     ]
   },
   "t67ba0fe8": {
@@ -10091,7 +10115,7 @@
     "tr": "En az {0} birim takas edebilirsin.",
     "en": "You can trade at least {0} [unit|units].",
     "nerede": [
-      "packages/shared/src/pazar.ts:135"
+      "packages/shared/src/pazar.ts:151"
     ]
   },
   "tf3acae08": {
@@ -11029,6 +11053,14 @@
     "en": "Spearmen eat cavalry, cavalry eats archers, archers eat spearmen. Knowing what the other side holds comes cheaper than gathering twice the soldiers.",
     "nerede": [
       "packages/shared/src/ipuclari.ts:37"
+    ]
+  },
+  "t66aebbe9": {
+    "grup": "motor",
+    "tr": "Miktar tam sayı olmalı.",
+    "en": "",
+    "nerede": [
+      "packages/shared/src/pazar.ts:146"
     ]
   },
   "t436bf761": {
@@ -12743,7 +12775,7 @@
     "en": "Link is invalid or expired. Request a reset again.",
     "nerede": [
       "apps/api/src/routes/auth.ts:468",
-      "apps/api/src/routes/auth.ts:486"
+      "apps/api/src/routes/auth.ts:489"
     ]
   },
   "tf9754a95": {
@@ -13970,6 +14002,14 @@
     "en": "helmet",
     "nerede": [
       "apps/api/src/services/akin.ts:53"
+    ]
+  },
+  "t464c2de7": {
+    "grup": "sunucu",
+    "tr": "Miktar sayı olmalı.",
+    "en": "",
+    "nerede": [
+      "apps/api/src/routes/pazar.ts:35"
     ]
   },
   "t92c99a9e": {

@@ -14,6 +14,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   KAYNAK_ADI,
   KAYNAK_TURLERI,
+  depoBosYer,
   takasEngeli,
   takasHesapla,
   type KaynakTuru,
@@ -59,6 +60,7 @@ export function Pazar() {
         bugunkuHacim: durum.data.gunluk.kullanilan,
         // Tavan SUNUCUDAN geliyor; arayüz onu yeniden hesaplamıyor.
         gunlukTavan: durum.data.gunluk.tavan,
+        depoTavani: durum.data.depoTavani,
       })
     : null;
 
@@ -79,6 +81,9 @@ export function Pazar() {
 
   if (!durum.data) return null;
   const { kaynaklar, gunluk, komisyon } = durum.data;
+  // Alınacak kaynağa depoda kalan yer. Takas taşıracaksa motor zaten
+  // reddediyor; bu satır oyuncunun miktarı YAZMADAN önce bilmesi için.
+  const bos = depoBosYer(alan, kaynaklar, durum.data.depoTavani);
 
   /** Karşı tarafı da değiştiren seçim: aynı kaynak ikisinde birden duramaz. */
   function verenSec(t: KaynakTuru) {
@@ -159,6 +164,7 @@ export function Pazar() {
         <Input
           type="number"
           inputMode="numeric"
+          step={1}
           placeholder={`En az ${durum.data.enAzMiktar}`}
           value={miktar}
           onChange={(e) => setMiktar(e.target.value)}
@@ -176,6 +182,8 @@ export function Pazar() {
             </span>
           </p>
         )}
+
+        <p className="text-[11px] text-sonuk">{`Deponda ${formatSayi(bos)} ${KAYNAK_ADI[alan]} yeri var.`}</p>
 
         <Buton
           tam
