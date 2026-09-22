@@ -22,6 +22,7 @@
  * Erişim OLCUM_ANAHTARI ortam değişkeniyle korunuyor; değişken boşsa uç hiç
  * yüklenmiyor. Oyuncu verisi dönmüyor, yalnızca toplamlar.
  */
+import { createHash, timingSafeEqual } from 'node:crypto';
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { prisma } from '../db.js';
@@ -185,10 +186,22 @@ async function medeniyetOlcusu(lordlar: OlcumLordu[]): Promise<unknown> {
   };
 }
 
+/**
+ * Anahtar SABİT SÜREDE karşılaştırılıyor. Düz `!==` ilk farklı karakterde
+ * dönüyor ve yanıt süresi, anahtarın baştan kaç karakterinin tuttuğunu
+ * ölçmeye izin veriyor. Özetler karşılaştırılıyor ki uzunluk da sızmasın.
+ */
+function anahtarUyar(verilen: string | undefined, gercek: string): boolean {
+  if (!verilen) return false;
+  const a = createHash('sha256').update(verilen).digest();
+  const b = createHash('sha256').update(gercek).digest();
+  return timingSafeEqual(a, b);
+}
+
 export async function olcumRoutes(app: FastifyInstance): Promise<void> {
   app.get('/olcum', async (req) => {
     const { anahtar } = z.object({ anahtar: z.string().optional() }).parse(req.query);
-    if (!env.olcumAnahtari || anahtar !== env.olcumAnahtari) {
+    if (!env.olcumAnahtari || !anahtarUyar(anahtar, env.olcumAnahtari)) {
       throw new GameError('Geçersiz anahtar.', 403, 'YETKISIZ');
     }
 

@@ -37,6 +37,7 @@ import { akinVuruslari, sahadakiAkinlar } from '../services/akin.js';
 import { savasOrneklemesi, lordSide } from '../services/hedef.js';
 import { npcSide } from '../services/march.js';
 import { findLordByUser, tickLord } from '../services/lord.js';
+import { lordIslemi } from '../services/kilit.js';
 import { gecikmisleriKapat } from '../services/gecikmis.js';
 
 const armySchema = z.record(z.string(), z.number().int().min(0));
@@ -222,7 +223,7 @@ export async function akinRoutes(app: FastifyInstance): Promise<void> {
     const orduEngeli = akinOrdusuEngeli(army);
     if (orduEngeli) throw new GameError(orduEngeli, 400, 'ORDU_BOS');
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const lord = await tx.lord.findUniqueOrThrow({
         where: { id: lordId },
         select: { worldId: true, level: true, woundedUntil: true, createdAt: true },
@@ -407,7 +408,7 @@ export async function akinRoutes(app: FastifyInstance): Promise<void> {
     const lordId = await findLordByUser(req.user.userId);
     const { id } = z.object({ id: z.string().min(1) }).parse(req.params);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const akin = await tx.akin.findFirst({
         where: { id, lordId },
         select: { id: true, arriveAt: true, resolved: true },

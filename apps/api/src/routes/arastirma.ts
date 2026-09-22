@@ -21,6 +21,7 @@ import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError } from '../errors.js';
 import { binalariOku, findLordByUser, okuArastirmalar, tickLord } from '../services/lord.js';
+import { lordIslemi } from '../services/kilit.js';
 import { gecikmisleriKapat } from '../services/gecikmis.js';
 import { assertQueueSlot, enqueue, spendResources } from '../services/queue.js';
 
@@ -74,7 +75,7 @@ export async function arastirmaRoutes(app: FastifyInstance) {
     const lordId = await findLordByUser(req.user.userId);
     await gecikmisleriKapat(lordId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const lord = await tx.lord.findUniqueOrThrow({
         where: { id: lordId },
         select: { level: true, arastirmalar: true },
@@ -107,7 +108,7 @@ export async function arastirmaRoutes(app: FastifyInstance) {
     const { id } = z.object({ id: z.string() }).parse(req.params);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const satir = await tx.queue.findUnique({ where: { id } });
       if (!satir || satir.lordId !== lordId || satir.kind !== 'research' || satir.resolved)
         throw new GameError('Böyle bir araştırma yok.', 404, 'ARASTIRMA_YOK');

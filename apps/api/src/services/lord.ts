@@ -54,6 +54,7 @@ import {
 } from '@lordlar/shared';
 import type { Prisma } from '@prisma/client';
 import { prisma, type Tx } from '../db.js';
+import { lordKilitle } from './kilit.js';
 import { garnizonPayGirdileri } from './gelir.js';
 import { lordunMedeniyetBonusu, tahtiTutanMedeniyet } from './medeniyet.js';
 import { B } from '@lordlar/shared';
@@ -326,10 +327,6 @@ export function calcHourlyIncome(
 }
 
 /**
- * Lorda tick uygular ve tam durumunu döner.
- * Aynı transaction içinde çağrılabilir; çağrılmazsa kendi transaction'ını açar.
- */
-/**
  * Bir lordun arması: kayıtlıysa o, değilse ADINDAN türetilmiş olan.
  *
  * Yeni oyuncunun arması boş kalmıyor. Herkesin aynı kırmızı kalkanla
@@ -355,8 +352,22 @@ export function lordArmasi(lord: {
   });
 }
 
+/**
+ * Lorda tick uygular ve tam durumunu döner.
+ *
+ * LORDUN SATIRINI KİLİTLEYEREK okuyor (services/kilit.ts). Kaynağı
+ * MUTLAK değer olarak geri yazıyor; kilitsiz okusaydı, aynı anda işleyen
+ * başka bir işlemin düşümünü eski bakiyeyle ezerdi — ölçülmüş çift
+ * harcamanın kökü buydu.
+ *
+ * Transaction verilirse onun içinde kilitliyor (kilit işlem bitene kadar
+ * sürer). Verilmezse kendi kısa işlemini açıyor: kilitsiz bir `/me`
+ * okuması da aynı ezmeyi yapabiliyordu.
+ */
 export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promise<LordState> {
-  const client = tx ?? prisma;
+  if (!tx) return prisma.$transaction((t) => tickLord(lordId, now, t));
+  await lordKilitle(tx, lordId);
+  const client = tx;
   const lord = (await client.lord.findUnique({
     where: { id: lordId },
     include: lordInclude,
@@ -476,7 +487,9 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
       erzak: result.resources.erzak,
       fortressFameAccrued: accruedFame,
       fame,
-      lastTickAt: now,
+      // Kilidi beklerken `now` öncekinin yazdığı damganın gerisinde
+      // kalabilir; damga geri gitmesin, yoksa o aralık iki kez sayılır.
+      lastTickAt: now > lord.lastTickAt ? now : lord.lastTickAt,
       ...(dailyReset ? { dailyAttacks: 0, dailyResetAt: now } : {}),
     },
   });

@@ -19,6 +19,7 @@ import { lordunMedeniyetBonusu } from '../services/medeniyet.js';
 import { GameError, hata } from '../errors.js';
 import { gecikmisleriKapat } from '../services/gecikmis.js';
 import { arastirmaBonusuOku, collectAllUnits, findLordByUser, tickLord } from '../services/lord.js';
+import { lordIslemi } from '../services/kilit.js';
 import { addUnitsHome, assertQueueSlot, enqueue, spendResources } from '../services/queue.js';
 
 const trainSchema = z.object({
@@ -76,7 +77,7 @@ export async function armyRoutes(app: FastifyInstance): Promise<void> {
     const lordId = await findLordByUser(req.user.userId);
     const u = unit(unitType);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const state = await tickLord(lordId, new Date(), tx);
       const arastirma = arastirmaBonusuOku(
         await tx.lord.findUniqueOrThrow({
@@ -151,7 +152,7 @@ export async function armyRoutes(app: FastifyInstance): Promise<void> {
     const { unitType, count } = disbandSchema.parse(req.body);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const row = await tx.armyUnit.findFirst({
         where: { lordId, unitType, locationType: 'home', locationId: null },
       });
@@ -193,7 +194,7 @@ export async function armyRoutes(app: FastifyInstance): Promise<void> {
       .parse(req.params);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const gl = await tx.gearLine.findUnique({ where: { lordId_line: { lordId, line } } });
       if (!gl) throw hata.bulunamadi('Donanım hattı');
       const max = (B.ordu_donanimi.hatlar as Record<string, { max_seviye: number }>)[line]!

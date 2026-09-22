@@ -17,10 +17,10 @@ import {
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { requireAuth } from '../auth.js';
-import { prisma } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { dogrulamaKontrol } from '../services/epostaDogrulama.js';
 import { binalariOku, findLordByUser, tickLord } from '../services/lord.js';
+import { lordIslemi } from '../services/kilit.js';
 import { lordlarArasiMesafe } from '../services/mesafe.js';
 import { bugunGonderilen, sevkiyatOzeti } from '../services/ticaret.js';
 import { lordunAyricaligi } from '../services/ittifakSeviye.js';
@@ -48,7 +48,7 @@ export async function ticaretRoutes(app: FastifyInstance): Promise<void> {
       throw new GameError('Kendine kaynak gönderemezsin.', 400, 'KENDINE');
     }
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const [ben, o] = await Promise.all([
         tx.lord.findUniqueOrThrow({
           where: { id: lordId },

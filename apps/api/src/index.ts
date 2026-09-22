@@ -47,6 +47,11 @@ validateBalance();
 // kütüphaneler yüklenmeden önce başlatılmayı bekler.
 izlemeBaslat();
 
+/** Adresin sorgu dizgisiz hâli: günlüğe ve hata izlemeye giden tek biçim. */
+function yolYalniz(url: string): string {
+  return url.split('?')[0] ?? url;
+}
+
 export async function buildServer() {
   const app = Fastify({
     logger:
@@ -64,6 +69,19 @@ export async function buildServer() {
                 'res.headers["set-cookie"]',
               ],
               censor: '[gizlendi]',
+            },
+            /*
+             * İstek satırı SORGU DİZGİSİZ yazılıyor. Varsayılan serileştirici
+             * tam adresi basıyordu ve `/api/olcum?anahtar=…` her çağrıda
+             * anahtarı günlüğe düşürüyordu. Günlük toplanır, aktarılır,
+             * yedeklenir; sızan satır geri alınamaz.
+             */
+            serializers: {
+              req: (req: { method: string; url: string; ip?: string }) => ({
+                method: req.method,
+                url: yolYalniz(req.url),
+                remoteAddress: req.ip,
+              }),
             },
           },
   });
@@ -115,10 +133,71 @@ export async function buildServer() {
   // Anahtar için token'ın kendisi yeterli: burada yetkilendirme yapmıyoruz,
   // sadece kararlı bir kova anahtarı arıyoruz. Doğrulama zaten preHandler'da.
   // (rateLimit onRequest'te çalışır, yani req.user henüz dolmamıştır.)
+  /*
+   * Kova anahtarı DOĞRULANMIŞ jetonun kullanıcısı, jetonun metni değil.
+   *
+   * Eskiden başlığın ham metni anahtardı: her istekte uydurma bir
+   * `Authorization` gönderen, her seferinde yeni ve boş bir kova açıp IP
+   * sınırından tamamen kaçıyordu. Aynı kişinin birkaç geçerli jetonu da
+   * birkaç ayrı kova demekti. Doğrulama ucuz (HMAC) ve geçersiz jeton IP
+   * kovasına düşüyor.
+   */
   await app.register(rateLimit, {
     max: env.RATE_LIMIT_MAX,
     timeWindow: '1 minute',
-    keyGenerator: (req) => req.headers.authorization ?? `ip:${req.ip}`,
+    keyGenerator: (req) => {
+      const b = req.headers.authorization;
+      if (b?.startsWith('Bearer ')) {
+        try {
+          return `u:${app.jwt.verify<{ userId: string }>(b.slice(7)).userId}`;
+        } catch {
+          /* geçersiz jeton: IP kovasına düşsün */
+        }
+      }
+      return `ip:${req.ip}`;
+    },
+  });
+
+  /*
+   * GÜVENLİK BAŞLIKLARI — önceden hiçbiri yoktu.
+   *
+   * Oturum jetonu tarayıcı deposunda duruyor; oraya uzanabilen tek şey
+   * sayfada çalışan bir betik. CSP yalnız kendi adresimizden betik
+   * çalıştırıyor: bir gün bir metin kaçışı unutulsa bile enjekte edilen
+   * betik çalışmaz. Yazı tipi de artık paketin içinde (styles.css başı),
+   * o yüzden hiçbir dış adrese izin gerekmiyor.
+   *
+   * `style-src 'unsafe-inline'`: ikonlar SVG metni olarak basılıyor ve
+   * içlerinde `style` öznitelikleri var. Stil enjeksiyonu betik
+   * çalıştırmıyor; bedeli düşük.
+   *
+   * `frame-ancestors 'none'` + `X-Frame-Options`: oyun başka bir sayfanın
+   * çerçevesine gömülüp oyuncuya görünmez tıklatılamasın.
+   */
+  const CSP = [
+    "default-src 'self'",
+    "script-src 'self'",
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: blob:",
+    "font-src 'self'",
+    "connect-src 'self'",
+    "manifest-src 'self'",
+    "worker-src 'self'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+  ].join('; ');
+  app.addHook('onSend', async (_req, reply, payload) => {
+    reply.header('Content-Security-Policy', CSP);
+    reply.header('X-Content-Type-Options', 'nosniff');
+    reply.header('X-Frame-Options', 'DENY');
+    // Parola sıfırlama jetonu adresin # kısmında; yine de hiçbir adres dışarı sızmasın.
+    reply.header('Referrer-Policy', 'no-referrer');
+    if (env.NODE_ENV === 'production') {
+      reply.header('Strict-Transport-Security', 'max-age=15552000; includeSubDomains');
+    }
+    return payload;
   });
 
   app.setErrorHandler((err, _req, reply) => {
@@ -140,9 +219,12 @@ export async function buildServer() {
     }
     // Buraya düşen her şey gerçek bir sunucu hatası: yukarıdaki dallar
     // oyunun kendi kurallarını (4xx) çoktan ayıkladı.
-    app.log.error({ err, yol: _req.url, yontem: _req.method, istekId: _req.id }, 'Sunucu hatası');
+    app.log.error(
+      { err, yol: yolYalniz(_req.url), yontem: _req.method, istekId: _req.id },
+      'Sunucu hatası',
+    );
     hataBildir(err, {
-      yol: _req.url,
+      yol: yolYalniz(_req.url),
       yontem: _req.method,
       istekId: String(_req.id),
       lordId: (_req as { user?: { userId?: string } }).user?.userId,

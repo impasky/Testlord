@@ -16,6 +16,15 @@ model User {
   passwordHash String
   createdAt    DateTime @default(now())
 
+  /// OTURUM SÜRÜMÜ — parola değişince eski jetonları öldürmek için.
+  ///
+  /// Jeton yedi gün geçerli ve kendi başına geri alınamıyor. Parolası
+  /// çalınan oyuncu parolasını sıfırlasa bile saldırganın elindeki jeton
+  /// yedi gün daha çalışıyordu — sıfırlamanın tek amacı boşa çıkıyordu.
+  /// Her jeton bu sayıyı taşıyor (`sv`); parola sıfırlanınca ya da
+  /// değişince sayı artıyor ve eskiler `requireAuth`ta düşüyor.
+  oturumSurumu Int @default(0)
+
   /// Şikâyet kuyruğunu görebilen ve karar verebilen hesap.
   /// LORDA değil KULLANICIYA bağlı: yetki oyundaki karaktere değil,
   /// arkasındaki insana verilir ve dünya değişince kaybolmaz.
@@ -28,9 +37,9 @@ model User {
   /// kaçılamaz. Süresi geçmiş kayıt TEMİZLENMİYOR; "aktif mi" sorusu her
   /// seferinde tarihe bakılarak cevaplanıyor (shared `yasakDurumu`), çünkü
   /// geçmişi silmek "bu kaçıncı" sorusunu cevapsız bırakırdı.
-  yasakli    Boolean   @default(false)
+  yasakli     Boolean   @default(false)
   /// Kalıcı yasaksa null, süreliyse bitiş anı.
-  yasakBitis DateTime?
+  yasakBitis  DateTime?
   /// Oyuncuya gösterilen sebep. Neden giremediğini söylemeyen bir ceza,
   /// oyuncuya davranışını değiştirme şansı vermiyor.
   yasakSebebi String?
@@ -158,24 +167,24 @@ model Lord {
   kurnazlik    Int @default(5)
   statPoints   Int @default(0)
 
-  altin       Int        @default(0)
+  altin              Int        @default(0)
   /// Elmas: oyun ICINDE kazanilan para birimi, satin alinmiyor.
   /// Yalniz ZAMAN kisaltir, guc satmaz (packages/shared/src/elmas.ts).
-  elmas       Int        @default(0)
+  elmas              Int        @default(0)
   /// Lordun medeniyeti (docs/16). Kayıtta atanıyor, değiştirilemiyor.
   /// Null = medeniyet sisteminden ÖNCE açılmış lord; geçiş bitene kadar
   /// ikisi bir arada yaşıyor.
-  medeniyetId String?
-  medeniyet   Medeniyet? @relation(fields: [medeniyetId], references: [id], onDelete: SetNull)
+  medeniyetId        String?
+  medeniyet          Medeniyet? @relation(fields: [medeniyetId], references: [id], onDelete: SetNull)
   /// Fayda puanı: kolektif eylemin kişisel karşılığı (docs/16 §9).
   /// GÜÇ SATIN ALMAZ — kimlik, kolaylık ve içerik erişimi alır.
-  faydaPuani  Int        @default(0)
+  faydaPuani         Int        @default(0)
   /// Son medeniyet değişimi (docs/16 §13 soru 3). Null: hiç değiştirmedi.
   /// Bekleme süresi buradan ölçülüyor; taraf değiştirmek kimlik kararı
   /// olsun diye var, savaş öncesi taktik değil.
   medeniyetDegisimAt DateTime?
-  demir       Int        @default(0)
-  erzak       Int        @default(0)
+  demir              Int        @default(0)
+  erzak              Int        @default(0)
 
   fame                Int @default(0)
   fortressFameAccrued Int @default(0)

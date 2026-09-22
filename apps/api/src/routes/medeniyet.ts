@@ -25,6 +25,7 @@ import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { findLordByUser, tickLord } from '../services/lord.js';
+import { lordIslemi } from '../services/kilit.js';
 import {
   cekirdekDurumlari,
   medeniyetBilgileri,
@@ -151,7 +152,7 @@ export async function medeniyetRoutes(app: FastifyInstance): Promise<void> {
     // saydığı aynı olsun.
     await tickLord(lordId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const lord = await tx.lord.findUniqueOrThrow({
         where: { id: lordId },
         select: { medeniyetId: true, altin: true, demir: true, erzak: true },
@@ -161,8 +162,17 @@ export async function medeniyetRoutes(app: FastifyInstance): Promise<void> {
         throw new GameError('Kaynağın yetmiyor.', 400, 'KAYNAK_YETERSIZ');
       }
 
-      const yatirim = await tx.cekirdekYatirim.findFirst({
-        where: { medeniyetId: lord.medeniyetId, mapId },
+      /*
+       * Çekirdek satırı ORTAK ve o da kilitleniyor.
+       *
+       * Lordun kilidi yalnız KENDİ bakiyesini koruyor; aynı medeniyetten
+       * iki lord aynı anda bağış yapınca ikisi de eski birikimi okuyup
+       * aşağıda MUTLAK değer yazıyordu: ikisi de ödüyor, birinin bağışı
+       * çekirdekten kayboluyordu. Kilitten sonraki okuma tazeyi görür.
+       */
+      await tx.$queryRaw`SELECT 1 FROM "CekirdekYatirim" WHERE "medeniyetId" = ${lord.medeniyetId} AND "mapId" = ${mapId} FOR UPDATE`;
+      const yatirim = await tx.cekirdekYatirim.findUnique({
+        where: { medeniyetId_mapId: { medeniyetId: lord.medeniyetId, mapId } },
       });
       if (!yatirim) throw hata.bulunamadi('Çekirdek');
 

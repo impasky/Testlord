@@ -10,6 +10,8 @@ import {
   bildirimGonder,
   cihazSayisi,
 } from '../services/push.js';
+import { pushAdresiGecerli } from '../services/pushPolitika.js';
+import { env } from '../env.js';
 
 /**
  * Tarayıcının `PushSubscription.toJSON()` çıktısı.
@@ -49,6 +51,14 @@ export async function pushRoutes(app: FastifyInstance): Promise<void> {
       });
     }
     const b = abonelikSemasi.parse(req.body);
+    // Sunucu bu adrese POST atacak: iç ağa değil, yalnız push servislerine
+    // (pushPolitika.ts → pushAdresiGecerli).
+    if (!pushAdresiGecerli(b.endpoint, env.NODE_ENV === 'production')) {
+      return reply.code(400).send({
+        error: 'Bu bildirim adresi desteklenmiyor.',
+        code: 'PUSH_ADRES',
+      });
+    }
     const lordId = await findLordByUser(req.user.userId);
     await aboneOl(lordId, {
       endpoint: b.endpoint,

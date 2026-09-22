@@ -22,6 +22,7 @@ import { prisma } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { ekipmanEtkisi } from '../services/hedef.js';
 import { binalariOku, findLordByUser, tickLord } from '../services/lord.js';
+import { lordIslemi } from '../services/kilit.js';
 import { assertQueueSlot, enqueue, spendResources } from '../services/queue.js';
 
 const craftSchema = z.object({
@@ -79,7 +80,7 @@ export async function itemRoutes(app: FastifyInstance): Promise<void> {
     const { tier, slot } = craftSchema.parse(req.body);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const lord = await tx.lord.findUniqueOrThrow({
         where: { id: lordId },
         select: { level: true, binalar: true },
@@ -110,7 +111,7 @@ export async function itemRoutes(app: FastifyInstance): Promise<void> {
     const { id } = z.object({ id: z.string() }).parse(req.params);
     const lordId = await findLordByUser(req.user.userId);
 
-    const { equipped, onceki } = await prisma.$transaction(async (tx) => {
+    const { equipped, onceki } = await lordIslemi(lordId, async (tx) => {
       const item = await tx.item.findUnique({ where: { id } });
       if (!item || item.lordId !== lordId) throw hata.bulunamadi('Eşya');
       // Değişiklikten ÖNCEKİ dizilim: karşılaştırma bunun üstünden yapılır.
@@ -140,7 +141,7 @@ export async function itemRoutes(app: FastifyInstance): Promise<void> {
     const { id } = z.object({ id: z.string() }).parse(req.params);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const item = await tx.item.findUnique({ where: { id } });
       if (!item || item.lordId !== lordId) throw hata.bulunamadi('Eşya');
       if (!canUpgrade(item.upgradeLevel)) {
@@ -163,7 +164,7 @@ export async function itemRoutes(app: FastifyInstance): Promise<void> {
     const { id } = z.object({ id: z.string() }).parse(req.params);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const item = await tx.item.findUnique({ where: { id } });
       if (!item || item.lordId !== lordId) throw hata.bulunamadi('Eşya');
       if (item.equipped) throw new GameError('Kuşandığın eşyayı satamazsın.', 400, 'KUSANIK');

@@ -40,6 +40,21 @@ const degistir = await (
 ).json();
 kontrol('Parola değiştirildi', degistir.degistirildi === true);
 
+/*
+ * Parola değişince ESKİ JETON ÖLÜYOR, bu cihaz yeni jetonla kalıyor.
+ * Önceden eski jeton yedi gün daha çalışıyordu: parolası çalınan oyuncu
+ * parolasını değiştirse bile saldırgan içeride kalıyordu.
+ */
+kontrol(
+  'Parola değişince eski jeton geçersiz',
+  (await fetch(`${API}/api/me`, { headers: h })).status === 401,
+);
+const hYeni = { ...JS, Authorization: `Bearer ${degistir.token}` };
+kontrol(
+  'Parolayı değiştiren cihaz yeni jetonla oturumda kalıyor',
+  (await fetch(`${API}/api/me`, { headers: hYeni })).ok,
+);
+
 kontrol(
   'Yeni parolayla giriş yapılıyor',
   (await POST('/auth/login', { email: eposta, password: 'yeniparola99' })).ok,
@@ -50,7 +65,7 @@ kontrol(
 );
 kontrol(
   'Yanlış mevcut parolayla değiştirilemiyor',
-  (await POST('/me/parola', { mevcut: 'yanlis', yeni: 'baskasi123' }, h)).status === 400,
+  (await POST('/me/parola', { mevcut: 'yanlis', yeni: 'baskasi123' }, hYeni)).status === 400,
 );
 
 // --- 2. Parola sıfırlama ---

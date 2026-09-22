@@ -37,6 +37,7 @@ import {
 } from '../services/medeniyet.js';
 import { liderAviGecerli } from '../services/march.js';
 import { arastirmaBonusuOku, binalariOku, findLordByUser, pushEvent } from '../services/lord.js';
+import { lordIslemi } from '../services/kilit.js';
 import { dunyaGrafigi, mesafeOlcer, mesafeOlcerHazir } from '../services/mesafe.js';
 import { paktVarMi, paktliIttifaklar } from '../services/pakt.js';
 import { lordunAyricaligi } from '../services/ittifakSeviye.js';
@@ -276,6 +277,15 @@ async function assertCanAttack(
   }
 }
 
+/** Lordun diyarı — bölge uçlarının diyar denetimi için. */
+async function lordunDiyari(lordId: string): Promise<string> {
+  const l = await prisma.lord.findUniqueOrThrow({
+    where: { id: lordId },
+    select: { worldId: true },
+  });
+  return l.worldId;
+}
+
 export async function mapRoutes(app: FastifyInstance): Promise<void> {
   app.get('/map', { preHandler: requireAuth }, async (req) => {
     const lordId = await findLordByUser(req.user.userId);
@@ -450,7 +460,12 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       // toprakları kendi okuyor.
       mesafeOlcer(lordId),
     ]);
-    if (!region) throw hata.bulunamadi('Bölge');
+    // Başka bir diyarın bölgesi "yok": numara genel, diyar değil. Denetimsiz
+    // uç, oyuncunun hiç giremeyeceği haritaların sahibini ve garnizon
+    // görünürlüğünü okutuyordu.
+    if (!region || region.worldId !== (await lordunDiyari(lordId))) {
+      throw hata.bulunamadi('Bölge');
+    }
 
     const benim = region.ownerLordId === lordId;
     // Bölge sahibi ittifak arkadaşım mı? Üç yerde lazım: garnizon
@@ -638,7 +653,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
     const { id } = z.object({ id: z.coerce.number().int() }).parse(req.params);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const region = await tx.region.findUnique({ where: { id } });
       if (!region || region.ownerLordId !== lordId) throw hata.yetkisiz();
       if (region.level >= B.bolgeler.max_bolge_seviyesi) {
@@ -669,7 +684,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
     const { id } = z.object({ id: z.coerce.number().int() }).parse(req.params);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const region = await tx.region.findUnique({ where: { id } });
       if (!region) throw hata.bulunamadi('Bölge');
       if (region.ownerLordId === lordId) {
@@ -729,7 +744,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
     }
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const region = await tx.region.findUnique({ where: { id } });
       if (!region) throw hata.bulunamadi('Bölge');
       if (region.ownerLordId === lordId) {
@@ -839,7 +854,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
     const { id } = z.object({ id: z.coerce.number().int() }).parse(req.params);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const region = await tx.region.findUnique({ where: { id } });
       if (!region) throw hata.bulunamadi('Bölge');
       if (region.ownerLordId === lordId) {
@@ -903,7 +918,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
     const hedef = normalizeArmy(body.army);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const region = await tx.region.findUnique({ where: { id } });
       if (!region || region.ownerLordId !== lordId) throw hata.yetkisiz();
 
@@ -976,7 +991,11 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       where: { id: body.toRegionId },
       include: { owner: { select: { binalar: true, baskentBolgeId: true } } },
     });
-    if (!region) throw hata.bulunamadi('Bölge');
+    // Önizleme savaşı simüle ediyor: başka diyarın garnizon gücünü
+    // ölçtürmesin (asıl yürüyüş ucu da aynı denetimi yapıyor).
+    if (!region || region.worldId !== (await lordunDiyari(lordId))) {
+      throw hata.bulunamadi('Bölge');
+    }
 
     // Önizleme oyuncunun SEÇTİĞİ düzeni kullanıyor: dizilim ekranında
     // kareyi oynatınca kazanma ihtimalinin değişmesi, dizilimin işe
@@ -1124,7 +1143,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
 
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const lord = await tx.lord.findUniqueOrThrow({ where: { id: lordId } });
       const region = await tx.region.findUnique({ where: { id: body.toRegionId } });
       if (!region || region.worldId !== lord.worldId) throw hata.bulunamadi('Bölge');
@@ -1234,7 +1253,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
     const { id } = z.object({ id: z.string() }).parse(req.params);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const march = await tx.march.findUnique({ where: { id } });
       if (!march || march.lordId !== lordId) throw hata.bulunamadi('Yürüyüş');
       if (march.resolved) throw new GameError('Bu yürüyüş zaten tamamlandı.', 400, 'COZULDU');
@@ -1298,7 +1317,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
     const { id } = z.object({ id: z.coerce.number().int() }).parse(req.params);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const region = await tx.region.findUnique({ where: { id } });
       if (!region) throw hata.bulunamadi('Bölge');
       if (region.ownerLordId !== lordId) {

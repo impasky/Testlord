@@ -21,6 +21,7 @@ import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError } from '../errors.js';
 import { binalariOku, findLordByUser, tickLord } from '../services/lord.js';
+import { lordIslemi } from '../services/kilit.js';
 
 const takasSchema = z.object({
   veren: z.enum(KAYNAK_TURLERI as unknown as [KaynakTuru, ...KaynakTuru[]]),
@@ -58,7 +59,7 @@ export async function pazarRoutes(app: FastifyInstance) {
     const govde = takasSchema.parse(req.body);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       // Önce tick: takas edilecek kaynak birikmiş geliri de içersin.
       const durum = await tickLord(lordId, new Date(), tx);
       const lord = await tx.lord.findUniqueOrThrow({

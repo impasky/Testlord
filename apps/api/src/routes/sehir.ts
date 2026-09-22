@@ -26,6 +26,7 @@ import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError } from '../errors.js';
 import { findLordByUser, tickLord } from '../services/lord.js';
+import { lordIslemi } from '../services/kilit.js';
 import { gecikmisleriKapat } from '../services/gecikmis.js';
 import { assertQueueSlot, enqueue, spendResources } from '../services/queue.js';
 
@@ -171,7 +172,7 @@ export async function sehirRoutes(app: FastifyInstance) {
       throw new GameError(`${tanim.ad} inşa gerektirmiyor.`, 400, 'BINA_SEVIYESIZ');
     }
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       await assertQueueSlot(lordId, 'bina', tx);
       const lord = await tx.lord.findUniqueOrThrow({
         where: { id: lordId },
@@ -259,7 +260,7 @@ export async function sehirRoutes(app: FastifyInstance) {
     const { id } = z.object({ id: z.string() }).parse(req.params);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const q = await tx.queue.findFirst({
         where: { id, lordId, kind: 'bina', resolved: false },
       });

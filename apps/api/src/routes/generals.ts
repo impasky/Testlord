@@ -14,6 +14,7 @@ import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { binalariOku, equippedGenerals, findLordByUser, tickLord } from '../services/lord.js';
+import { lordIslemi } from '../services/kilit.js';
 
 export async function generalRoutes(app: FastifyInstance): Promise<void> {
   app.get('/generals', { preHandler: requireAuth }, async (req) => {
@@ -54,7 +55,7 @@ export async function generalRoutes(app: FastifyInstance): Promise<void> {
     if (!def) throw hata.bulunamadi('General');
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const zaten = await tx.lordGeneral.findUnique({
         where: { lordId_generalKey: { lordId, generalKey: key } },
       });
@@ -93,7 +94,7 @@ export async function generalRoutes(app: FastifyInstance): Promise<void> {
       .parse(req.body);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const lord = await tx.lord.findUniqueOrThrow({
         where: { id: lordId },
         select: { liderlik: true, binalar: true },

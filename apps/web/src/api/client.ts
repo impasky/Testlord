@@ -1067,8 +1067,12 @@ export const api = {
     post<{ gonderildi: boolean; jeton?: string }>('/auth/sifirlama-iste', { email }),
   sifirlamaYap: (token: string, password: string) =>
     post<{ degistirildi: boolean }>('/auth/sifirlama-yap', { token, password }),
-  parolaDegistir: (mevcut: string, yeni: string) =>
-    post<{ degistirildi: boolean }>('/me/parola', { mevcut, yeni }),
+  // Sunucu öteki cihazların oturumunu düşürüyor; bu cihaz yeni jetonla kalıyor.
+  parolaDegistir: async (mevcut: string, yeni: string) => {
+    const y = await post<{ degistirildi: boolean; token: string }>('/me/parola', { mevcut, yeni });
+    setToken(y.token);
+    return y;
+  },
   hesabiSil: (parola: string) =>
     request<{ silindi: boolean }>('/me', {
       method: 'DELETE',

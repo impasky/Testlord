@@ -288,6 +288,15 @@ export function atlanirMi(node) {
   if (ts.isCaseClause(p)) return true;
 
   /*
+   * Etiketli şablon: `` tx.$queryRaw`SELECT 1 FROM "Lord" …` ``.
+   *
+   * Şablonun sahibi etiket işlevi, ekran değil: burada SQL. Çevrilseydi
+   * sorgu bozulurdu; listelenseydi çevirmene "SELECT 1 FROM…" satırları
+   * düşerdi — satır kilidi (services/kilit.ts) gelince tam öyle oldu.
+   */
+  if (ts.isTaggedTemplateExpression(p) && p.template === node) return true;
+
+  /*
    * `console.error(\`Yürüyüş çözülemedi (${id}):\`, e)` — SUNUCU GÜNLÜĞÜ.
    *
    * Worker'ın kendi kendine yazdığı satır; hiçbir oyuncu görmüyor.

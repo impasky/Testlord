@@ -4,6 +4,7 @@ import {
   GEAR_LINES,
   WORLD_MAP,
   dogrulamaDurumu,
+  gonderilebilirMi,
   jetonGecerli,
   yasakDurumu,
   yurtBolgeleri,
@@ -17,6 +18,7 @@ import { createHash, randomBytes } from 'node:crypto';
 import { env } from '../env.js';
 import { adiDenetle } from '../services/adDenetimi.js';
 import { postaGonder } from '../services/eposta.js';
+import { girisFreni } from '../services/girisFreni.js';
 import { dogrulamaGonder, ozet as dogrulamaOzeti } from '../services/epostaDogrulama.js';
 import { medeniyetAta } from '../services/medeniyet.js';
 import { AKTIF_GUN, diyarDoluMu, findOrOpenWorld } from '../services/world.js';
@@ -274,7 +276,7 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
      */
     await dogrulamaGonder(user.id, email, req.log, false);
 
-    const token = app.jwt.sign({ userId: user.id, email });
+    const token = app.jwt.sign({ userId: user.id, email, sv: user.oturumSurumu });
     return reply.code(201).send({ token });
   });
 
@@ -334,10 +336,22 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
   app.post('/auth/login', kimlikSiniri, async (req) => {
     const body = loginSchema.parse(req.body);
     const email = body.email.toLowerCase().trim();
+    // Hesap başına fren (services/girisFreni.ts): IP freni tek başına
+    // tek hesaba günde on binlerce tahmine izin veriyordu.
+    const fren = girisFreni.durum(email);
+    if (fren.kilitli) {
+      throw new GameError(
+        `Çok fazla hatalı deneme. ${fren.kalanDk} dakika sonra yeniden dene ya da parolanı sıfırla.`,
+        429,
+        'GIRIS_KILITLI',
+      );
+    }
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user || !(await verifyPassword(user.passwordHash, body.password))) {
+      girisFreni.hata(email);
       throw new GameError('E-posta veya parola hatalı.', 401, 'GIRIS_BASARISIZ');
     }
+    girisFreni.temizle(email);
     /*
      * Yasak GİRİŞTE de söyleniyor.
      *
@@ -361,7 +375,7 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
     if (d.girisKapali) {
       throw new GameError(d.metin ?? 'E-postanı doğrula.', 403, 'DOGRULANMADI');
     }
-    return { token: app.jwt.sign({ userId: user.id, email }) };
+    return { token: app.jwt.sign({ userId: user.id, email, sv: user.oturumSurumu }) };
   });
 
   /**
@@ -375,7 +389,38 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
     const adres = email.toLowerCase().trim();
     const user = await prisma.user.findUnique({ where: { email: adres } });
 
-    if (user) {
+    /*
+     * GÖNDERİM FRENİ — doğrulama postasıyla aynı kural (`gonderilebilirMi`).
+     *
+     * Frensiz bu uç, herhangi birinin adresine dakikada onlarca posta
+     * yağdıran bir araçtı: adresi bilmek yetiyordu, giriş gerekmiyordu.
+     * Tek fren IP başınaydı ve IP değiştirmek ucuz. Ayrıca her posta
+     * sağlayıcının kotasından ve alan adının itibarından yiyor.
+     *
+     * Frene takılınca cevap DEĞİŞMİYOR: "çok hızlı" demek, o adresin
+     * kayıtlı olduğunu söylemek olurdu.
+     */
+    const frenli = user
+      ? await (async () => {
+          const simdi = new Date();
+          const [son, bugunku] = await Promise.all([
+            prisma.passwordReset.findFirst({
+              where: { userId: user.id },
+              orderBy: { createdAt: 'desc' },
+              select: { createdAt: true },
+            }),
+            prisma.passwordReset.count({
+              where: {
+                userId: user.id,
+                createdAt: { gte: new Date(simdi.getTime() - 86_400_000) },
+              },
+            }),
+          ]);
+          return !gonderilebilirMi(son?.createdAt ?? null, bugunku, simdi).uygun;
+        })()
+      : false;
+
+    if (user && !frenli) {
       // Eski jetonları geçersiz kıl: aynı anda birden fazla açık jeton,
       // saldırganın deneyeceği yüzeyi büyütür.
       await prisma.passwordReset.updateMany({
@@ -426,13 +471,33 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
       );
     }
 
-    await prisma.$transaction([
-      prisma.user.update({
+    /*
+     * Jeton TEK KULLANIMLIK ve bu koşullu yazmayla gerçekten öyle: aynı
+     * bağlantıya iki kez aynı anda basılınca yukarıdaki okuma ikisinde de
+     * "kullanılmamış" diyordu. `usedAt: null` şartı yalnız birine izin
+     * veriyor.
+     */
+    // Özet işlemden ÖNCE: argon2 bilerek yavaş, işlemi o kadar açık tutmayalım.
+    const passwordHash = await hashPassword(password);
+    await prisma.$transaction(async (tx) => {
+      const yakalandi = await tx.passwordReset.updateMany({
+        where: { id: kayit.id, usedAt: null },
+        data: { usedAt: new Date() },
+      });
+      if (yakalandi.count === 0) {
+        throw new GameError(
+          'Bağlantı geçersiz ya da süresi dolmuş. Yeniden sıfırlama iste.',
+          400,
+          'JETON_GECERSIZ',
+        );
+      }
+      // Oturum sürümü artıyor: parolayı sıfırlamanın sebebi çoğu zaman
+      // birinin hesaba girmiş olması, ve onun jetonu da burada ölüyor.
+      await tx.user.update({
         where: { id: kayit.userId },
-        data: { passwordHash: await hashPassword(password) },
-      }),
-      prisma.passwordReset.update({ where: { id: kayit.id }, data: { usedAt: new Date() } }),
-    ]);
+        data: { passwordHash, oturumSurumu: { increment: 1 } },
+      });
+    });
 
     return { degistirildi: true };
   });

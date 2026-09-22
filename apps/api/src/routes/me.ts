@@ -21,6 +21,7 @@ import { hashPassword, requireAuth, verifyPassword } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError } from '../errors.js';
 import { findLordByUser, tickLord } from '../services/lord.js';
+import { lordIslemi } from '../services/kilit.js';
 import { gecikmisleriKapat } from '../services/gecikmis.js';
 
 /**
@@ -194,7 +195,7 @@ export async function meRoutes(app: FastifyInstance): Promise<void> {
     const spend = STAT_KEYS.reduce((s, k) => s + body[k], 0);
     if (spend <= 0) throw new GameError('Dağıtılacak puan belirtmedin.', 400, 'GECERSIZ_ISTEK');
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const lord = await tx.lord.findUniqueOrThrow({
         where: { id: lordId },
         select: { statPoints: true },
@@ -318,10 +319,14 @@ export async function meRoutes(app: FastifyInstance): Promise<void> {
       throw new GameError('Mevcut parola hatalı.', 400, 'PAROLA_HATALI');
     }
 
-    await prisma.$transaction([
+    const [guncel] = await prisma.$transaction([
+      // Oturum sürümü artıyor: öteki cihazlardaki jetonlar düşüyor.
+      // Arayüz oyuncuya zaten "diğer cihazlarda yeniden giriş yapman
+      // gerekebilir" diyordu ama sunucu bunu hiç yapmıyordu.
       prisma.user.update({
         where: { id: user.id },
-        data: { passwordHash: await hashPassword(yeni) },
+        data: { passwordHash: await hashPassword(yeni), oturumSurumu: { increment: 1 } },
+        select: { oturumSurumu: true },
       }),
       // Açık sıfırlama jetonları da düşsün: parolayı bilerek değiştiren
       // biri, daha önce istediği sıfırlama bağlantısının hâlâ çalışmasını
@@ -332,7 +337,11 @@ export async function meRoutes(app: FastifyInstance): Promise<void> {
       }),
     ]);
 
-    return { degistirildi: true };
+    // Bu cihaz oturumda kalıyor: yeni sürümle yeni jeton.
+    return {
+      degistirildi: true,
+      token: app.jwt.sign({ userId: user.id, email: user.email, sv: guncel.oturumSurumu }),
+    };
   });
 
   /**

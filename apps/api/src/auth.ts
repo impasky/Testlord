@@ -7,6 +7,12 @@ import { GameError } from './errors.js';
 export interface JwtPayload {
   userId: string;
   email: string;
+  /**
+   * Oturum sürümü (`User.oturumSurumu`). Parola değişince artıyor ve
+   * eski jetonlar düşüyor. Alanı olmayan eski jetonlar 0 sayılıyor: bu
+   * alan eklendiğinde kimse oturumdan atılmasın diye.
+   */
+  sv?: number;
 }
 
 /** argon2id — docs/03 §7 */
@@ -54,9 +60,18 @@ export async function requireAuth(req: FastifyRequest, _reply: FastifyReply): Pr
       yasakSebebi: true,
       epostaDogrulandi: true,
       createdAt: true,
+      oturumSurumu: true,
     },
   });
   if (!u) throw new GameError('Giriş yapman gerekiyor.', 401, 'YETKISIZ');
+  /*
+   * Parola değiştiyse bu jeton artık geçersiz. Burada — her istekte —
+   * çünkü jetonun kendisi yedi gün geçerli ve geri alınamıyor; parolası
+   * çalınan oyuncunun sıfırlaması saldırganı ancak böyle dışarıda bırakır.
+   */
+  if ((req.user.sv ?? 0) !== u.oturumSurumu) {
+    throw new GameError('Oturumun sona erdi. Yeniden giriş yap.', 401, 'OTURUM_BITTI');
+  }
   const simdi = new Date();
   const y = yasakDurumu(u.yasakli, u.yasakBitis, u.yasakSebebi, simdi);
   if (y.yasakli) throw new GameError(y.metin ?? 'Hesabın yasaklı.', 403, 'YASAKLI');

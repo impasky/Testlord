@@ -32,7 +32,7 @@
 import webpush from 'web-push';
 import { prisma } from '../db.js';
 import { env } from '../env.js';
-import { gonderimKarari } from './pushPolitika.js';
+import { AZAMI_ABONELIK, gonderimKarari } from './pushPolitika.js';
 
 let kuruldu = false;
 
@@ -79,6 +79,16 @@ export async function aboneOl(lordId: string, a: Abonelik): Promise<void> {
     // bildirim ESKİ lorda gitmeye devam etmemeli.
     update: { lordId, p256dh: a.p256dh, auth: a.auth, cihaz: a.cihaz ?? null },
   });
+  // Tavanı aşan en eski abonelikler düşüyor (pushPolitika.ts → AZAMI_ABONELIK).
+  const fazla = await prisma.pushAbonesi.findMany({
+    where: { lordId },
+    orderBy: { createdAt: 'desc' },
+    skip: AZAMI_ABONELIK,
+    select: { id: true },
+  });
+  if (fazla.length > 0) {
+    await prisma.pushAbonesi.deleteMany({ where: { id: { in: fazla.map((f) => f.id) } } });
+  }
 }
 
 export async function abonelikBirak(lordId: string, endpoint: string): Promise<number> {

@@ -59,6 +59,7 @@ import { adiDenetle } from '../services/adDenetimi.js';
 import { mesajDenetle } from '../services/mesajDenetimi.js';
 import { susturmaKontrol } from '../services/moderasyon.js';
 import { findLordByUser, grantXp, lordArmasi, pushEvent, tickLord } from '../services/lord.js';
+import { lordIslemi } from '../services/kilit.js';
 import { spendResources } from '../services/queue.js';
 import { yururlukteMi } from '../services/pakt.js';
 import { ittifakAyricaligi } from '../services/ittifakSeviye.js';
@@ -427,7 +428,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
     if (!icerik.uygun)
       throw new GameError(icerik.sebep ?? 'Bu ad kullanılamaz.', 400, 'AD_UYGUNSUZ');
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const lord = await tx.lord.findUniqueOrThrow({
         where: { id: lordId },
         select: { worldId: true, allianceId: true, name: true },
@@ -483,7 +484,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
     const { id } = z.object({ id: z.string() }).parse(req.params);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const lord = await tx.lord.findUniqueOrThrow({
         where: { id: lordId },
         select: {
@@ -542,7 +543,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
   app.post('/ittifak/ayril', { preHandler: requireAuth }, async (req) => {
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const lord = await tx.lord.findUniqueOrThrow({
         where: { id: lordId },
         select: { allianceId: true, name: true },
@@ -705,7 +706,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
       .parse(req.body);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const lord = await tx.lord.findUniqueOrThrow({
         where: { id: lordId },
         select: { allianceId: true, worldId: true, name: true },
@@ -775,7 +776,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
     const body = z.object({ lordId: z.string() }).parse(req.body);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const lord = await tx.lord.findUniqueOrThrow({
         where: { id: lordId },
         select: { allianceId: true },
@@ -829,7 +830,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
       .parse(req.body);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const { allianceId, lider } = await rutbemi(tx, lordId);
       if (!lider) throw hata.yetkisiz();
 
@@ -872,7 +873,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
       .parse(req.body);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const { allianceId, lider } = await rutbemi(tx, lordId);
       if (!lider) throw hata.yetkisiz();
 
@@ -932,7 +933,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
       if (!t.uygun) throw new GameError(t.sebep!, 400, 'NOT_UYGUNSUZ');
     }
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const lord = await tx.lord.findUniqueOrThrow({
         where: { id: lordId },
         select: {
@@ -1086,7 +1087,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
     const { kabul } = z.object({ kabul: z.boolean() }).parse(req.body);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const { allianceId, rutbe } = await rutbemi(tx, lordId);
       if (!yonetebilirMi(rutbe)) throw hata.yetkisiz();
 
@@ -1462,7 +1463,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
     const { ittifakId } = z.object({ ittifakId: z.string().min(1) }).parse(req.body);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const lord = await tx.lord.findUniqueOrThrow({
         where: { id: lordId },
         select: { allianceId: true, worldId: true },
@@ -1544,7 +1545,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
     const { id } = z.object({ id: z.string().min(1) }).parse(req.params);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const { pakt, benim, oteki } = await paktTaraflariniOku(tx, id, lordId);
       if (pakt.durum !== 'teklif') {
         throw new GameError('Bu teklif artık açık değil.', 400, 'TEKLIF_YOK');
@@ -1580,7 +1581,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
     const { id } = z.object({ id: z.string().min(1) }).parse(req.params);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const { pakt, benim, oteki } = await paktTaraflariniOku(tx, id, lordId);
       if (pakt.durum !== 'teklif') {
         throw new GameError('Bu teklif artık açık değil.', 400, 'TEKLIF_YOK');
@@ -1608,7 +1609,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
     const { id } = z.object({ id: z.string().min(1) }).parse(req.params);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const { pakt, benim, oteki } = await paktTaraflariniOku(tx, id, lordId);
       if (pakt.durum !== 'yururlukte') {
         throw new GameError(
@@ -1689,7 +1690,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
   app.post('/ittifak/bagis', { preHandler: requireAuth }, async (req) => {
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const lord = await tx.lord.findUniqueOrThrow({
         where: { id: lordId },
         select: { allianceId: true, level: true, name: true },
@@ -1781,7 +1782,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
     const { metin } = z.object({ metin: z.string().max(duyuruEnFazlaHarf()) }).parse(req.body);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const { rutbe, allianceId } = await rutbemi(tx, lordId);
       if (!yonetebilirMi(rutbe)) throw hata.yetkisiz();
 
@@ -1816,7 +1817,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
       .parse(req.body);
     const lordId = await findLordByUser(req.user.userId);
 
-    return prisma.$transaction(async (tx) => {
+    return lordIslemi(lordId, async (tx) => {
       const { allianceId, lider } = await rutbemi(tx, lordId);
       if (!lider) throw hata.yetkisiz();
       if (hedefId === lordId) {
