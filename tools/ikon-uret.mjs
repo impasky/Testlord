@@ -101,6 +101,14 @@ const KULLANILAN = {
   artı: 'heart-plus',
   sancak: 'vertical-banner',
   kurnaz: 'hood',
+
+  // Araştırma ağacının etki rozetleri (Arastirma.tsx): kutunun ne
+  // verdiğini okumadan söyleyen simgeler.
+  depo: 'chest',
+  kitap: 'open-book',
+  cekic: 'hammer-nails',
+  yagma: 'swap-bag',
+  taktik: 'chess-knight',
 };
 
 const W = set.width ?? 512;

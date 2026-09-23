@@ -149,13 +149,13 @@ yanlış yere düşer. Bunların çözümü çeviri değil KOD: birleştirmeleri
 bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
 
   " ve "
-      apps/web/src/screens/Arastirma.tsx:816
+      apps/web/src/screens/Arastirma.tsx:937
   "{0} · T{1}"
       apps/web/src/screens/Akin.tsx:238
   "{0} T{1}"
       apps/web/src/screens/Demirhane.tsx:224
   "Araştırılıyor —"
-      apps/web/src/screens/Arastirma.tsx:784
+      apps/web/src/screens/Arastirma.tsx:905
   "T"
       apps/web/src/screens/Demirhane.tsx:446
   "T{0}"

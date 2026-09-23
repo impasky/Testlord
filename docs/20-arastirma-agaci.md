@@ -186,14 +186,17 @@ lordlar için doldurulacak bir şey yok (`20260923091427_arastirma_yol_degisim`)
 
 Telefon genişliğinde HOI4 ekranı (`apps/web/src/screens/Arastirma.tsx`):
 
-- **Yuva çubuğu** üstte: her yuva ya süren araştırmayı (ad, `startedAt`
-  → `finishAt` ilerlemesi, kalan süre, İptal) ya "Boş yuva"yı gösteriyor.
-  Altında yuvaların kaynağı: "kütüphaneden N, araştırmadan M".
+- **Yuva çubuğu** üstte, ilerleme çubuğuyla aynı kartta: yuvalar yan
+  yana ÇİP. Süren çip adı, kalan süreyi ve alt kenarında `startedAt` →
+  `finishAt` ilerlemesini taşıyor; dokununca düğümün sayfası açılıyor ve
+  İptal orada. Boş yuva kesikli çip. Altında tek satır: yuvaların kaynağı
+  ("kütüphaneden N, araştırmadan M") ve nereden artar.
 - **Sekmeler** altında: İmar · Ordu · Doktrin · Diyar; her sekmede o an
   başlatılabilir düğüm sayısı. Varsayılan sekme süren araştırmanınki,
   yoksa ilk açık düğümünki.
 - **Tuval**: solda çağ oluğu (I-VI ve seviye kapısı), üstte sütun (hat)
-  başlıkları. Düğümler 64 px'lik kutular; aralarında SVG çizgiler.
+  başlıkları, onların da üstünde lejant. Düğümler 72 px'lik kutular;
+  aralarında SVG çizgiler.
   Çizgi üç türlü: ebeveyn tamamlandıysa dolu altın, ebeveyn açıksa ya da
   sürüyorsa soluk, kilitliyse kesikli. Çocuğun ucunda küçük bir nokta
   yönü söylüyor.
@@ -207,7 +210,16 @@ Telefon genişliğinde HOI4 ekranı (`apps/web/src/screens/Arastirma.tsx`):
   (Önce seçenekler arasına kesikli bir bağ düşünülmüştü; kutular arası 6
   piksellik boşlukta görünmüyordu.)
 - **Lordun çağı** vurgulu: satır boyu hafif altın şerit, oluktaki rakam
-  altın. HOI4'teki "bugünün yılı" çizgisi.
+  altın ve altında "şimdi". HOI4'teki "bugünün yılı" çizgisi.
+- **Seviyesi yetmeyen çağ** (erken araştırma penceresinin de ötesinde,
+  o satırda hiçbir kutu başlatılamaz): satır taralı, oluğunda kilit.
+  Yalnız görünüş; hangi kutunun açık olduğunu yine sunucu söylüyor.
+- **Etki rozeti** her kutunun altında: simge + sayı (kalkan "+%10", sancak "+40").
+  Birim etkisinde birimin simgesi, köşesinde küçük kılıç ya da kalkan.
+  Kutu yalnız İLK etkiyi taşıyor; hepsi detay sayfasında. Eşleme
+  `components/arastirmaRozeti.ts` içinde ve bir test her düğümün bir
+  rozeti olduğunu, simgesinin ikon setinde bulunduğunu denetliyor —
+  yeni bir etki anahtarı eklenip eşlemesi unutulursa test düşüyor.
 - Düğüme dokununca **alttan detay** (sabit yükseklik — kısa içerikte
   Başlat alt çubuğun hizasına, rehber ışığının güvenli şeridinin dışına
   düşerdi): etkiler, bedel ve süre (erken/geride notuyla), grup uyarısı,
@@ -215,8 +227,10 @@ Telefon genişliğinde HOI4 ekranı (`apps/web/src/screens/Arastirma.tsx`):
 - Bir grubun seçeneğini başlatmak **iki dokunuş**: ilki "Bu yolu seç",
   uyarı kırmızılaşıyor ("Bunu seçersen Menzil ve Kale kapanır…, %50,
   3 gün"), ikincisi "Eminim — … seçilsin".
-- Grubu olan sekmenin başında **seçim kartı**: seçili yol, "Yolu bırak"
-  ya da beklemenin kalan süresi. Kapalı bir yolun düğümünden de aynı
+- Grubu olan sekmede ağacın ALTINDA **seçim kartı**: grubun adı, tek
+  cümle açıklaması, seçili yol, "Yolu bırak" ya da beklemenin kalan
+  süresi. Ağacın üstündeyken ilk ekranı kaplıyordu; seçenekleri zaten
+  ağaçtaki kırmızı çerçeve gösteriyor. Kapalı bir yolun düğümünden de aynı
   bırakma sayfasına kısayol var: oyuncu kapalı yolu tam o düğümde merak
   ediyor.
 - **Bırakma sayfası** silinecek düğümleri, geri gelecek kaynağı ve
@@ -224,11 +238,22 @@ Telefon genişliğinde HOI4 ekranı (`apps/web/src/screens/Arastirma.tsx`):
   çıkıyor: taşan kısım bir sonraki hesapta kırpılıyor (iptalle aynı
   kural) ve oyuncu bunu SONRA değil ŞİMDİ öğrenmeli.
 
-Durum rengi: tamamlandı yeşil + tik, sürüyor altın çerçeve + kum saati,
-açık parşömen ve altın kenar, erken turuncu kum saati, kilitli koyu zemin
+Durum dili:
 
-- kilit, kapalı (seçilmeyen yol) kesikli kırmızı kenar + çarpı. Opaklık
-  YOK — denetim opak metni kontrast hatası sayıyor.
+| Hâl            | Kutu                              | Köşe simgesi            | Rozet |
+| -------------- | --------------------------------- | ----------------------- | ----- |
+| tamamlandı     | yeşil zemin                       | tik                     | yeşil |
+| sürüyor        | altın kenar, alt kenarda ilerleme | kum saati               | altın |
+| başlatılabilir | KALIN altın kenar + parıltı       | yanıp sönen altın nokta | altın |
+| erken          | başlatılabilir gibi               | turuncu kum saati       | altın |
+| kilitli        | koyu zemin, ince kenar            | kilit                   | soluk |
+| kapalı         | kesikli kırmızı kenar             | çarpı                   | sönük |
+
+"Başlatılabilir" ile "kilitli" eskiden yalnız kenar tonuyla ayrılıyordu
+(ikisi de koyu zemin, ikisi de ince kenar) ve ekran görüntüsünde ayırt
+edilmiyordu; oyuncunun şimdi yapabileceği tek şey başlatılabilir kutu,
+en çok o bağırmalı. Opaklık YOK — denetim opak metni kontrast hatası
+sayıyor.
 
 Kutu adları telefonda ~60 piksele sığmıyor ("Değirmenler",
 "Mühendisliği"). Tarayıcının `hyphens: auto`'su Türkçe sözlük taşımıyor

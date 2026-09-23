@@ -16,21 +16,30 @@ import { IKONLAR, type IkonAnahtari } from './ikon-verisi';
 
 type IkonProps = Omit<SVGProps<SVGSVGElement>, 'children'> & { boyut?: number };
 
+/**
+ * Adıyla çizilen ikon — anahtarın VERİDEN geldiği yerler için
+ * (araştırma kutusunun etki rozeti: hangi simge olduğu düğüme bağlı).
+ * Sabit ikonlar aşağıdaki adlı bileşenleri kullanıyor.
+ */
+export function Ikon({ ad, boyut = 20, ...rest }: { ad: IkonAnahtari } & IkonProps) {
+  const v = IKONLAR[ad];
+  return (
+    <svg
+      width={boyut}
+      height={boyut}
+      viewBox={`0 0 ${v.w} ${v.h}`}
+      fill="currentColor"
+      aria-hidden="true"
+      focusable="false"
+      {...rest}
+      dangerouslySetInnerHTML={{ __html: v.body }}
+    />
+  );
+}
+
 function yap(anahtar: IkonAnahtari) {
-  const v = IKONLAR[anahtar];
-  return function IkonBileseni({ boyut = 20, ...rest }: IkonProps) {
-    return (
-      <svg
-        width={boyut}
-        height={boyut}
-        viewBox={`0 0 ${v.w} ${v.h}`}
-        fill="currentColor"
-        aria-hidden="true"
-        focusable="false"
-        {...rest}
-        dangerouslySetInnerHTML={{ __html: v.body }}
-      />
-    );
+  return function IkonBileseni(props: IkonProps) {
+    return <Ikon ad={anahtar} {...props} />;
   };
 }
 
@@ -93,6 +102,11 @@ export const IkonKilit = yap('kilit');
 export const IkonGoz = yap('goz');
 export const IkonSancak = yap('sancak');
 export const IkonKurnaz = yap('kurnaz');
+export const IkonDepo = yap('depo');
+export const IkonKitap = yap('kitap');
+export const IkonCekic = yap('cekic');
+export const IkonYagma = yap('yagma');
+export const IkonTaktik = yap('taktik');
 
 const BOLGE_IKONU = {
   tarla: IkonTarla,

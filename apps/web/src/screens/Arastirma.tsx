@@ -21,7 +21,9 @@ import { api, ApiError, type ArastirmaGrubuDto, type SurenArastirma } from '../a
 import { Zemin } from '../components/Zemin';
 import { heceTireli } from '../components/ekler';
 import { hisOnay, hisRet } from '../components/hisGeriBildirimi';
+import { etkiRozeti, type EtkiRozeti } from '../components/arastirmaRozeti';
 import {
+  Ikon,
   IkonAltin,
   IkonDemir,
   IkonErzak,
@@ -44,8 +46,12 @@ type Kaynak = { altin: number; demir: number; erzak: number };
 
 /* ---------------- Yerleşim ölçüleri ---------------- */
 
-/** Kutunun yüksekliği: üç satır ad + durum simgesi, 44 px dokunma hedefinin üstünde. */
-const KUTU = 64;
+/**
+ * Kutunun yüksekliği: üç satır ad + etki/durum satırı. 64'tü; etki
+ * rozeti gelince üç satırlık adlar ("Değirmen-/ler", "Ticaret Yol-/ları")
+ * rozetle çakışıyordu. 72, 44 px dokunma hedefinin de rahat üstünde.
+ */
+const KUTU = 72;
 /** Çağ satırları arasındaki boşluk; çizgilerin yatay kolları burada. */
 const ARA = 26;
 const SATIR = KUTU + ARA;
@@ -126,13 +132,18 @@ function hal(d: ArastirmaDurumu): Hal {
  * Durum RENKLE söyleniyor, saydamlıkla değil. Eski ekran kilitli kartı
  * %60 opaklığa indiriyordu: metin zeminle karışıyor, okunurluk denetimi
  * kontrastı ölçemiyordu. Her hâlin kendi zemini ve kenarı var.
+ *
+ * "Başlatılabilir" ağacın en önemli hâli — oyuncunun şimdi yapabileceği
+ * tek şey o. İnce altın kenarla kilitli kutudan ayırt edilmiyordu (ikisi
+ * de koyu zemin, ikisi de ince kenar); şimdi kalın kenar, parıltı ve
+ * yanıp sönen nokta taşıyor.
  */
 const HAL_SINIFI: Record<Hal, string> = {
-  bitti: 'border-yesil/70 bg-yesil-koyu/35 text-parsomen',
-  suruyor: 'border-altin bg-altin/15 text-parsomen',
-  acik: 'border-altin/70 bg-yuzey text-parsomen shadow-[0_0_0_1px_rgba(245,183,49,0.25)]',
-  kapali: 'border-dashed border-kirmizi/60 bg-oyuk text-sonuk',
-  kilitli: 'border-kenar bg-derin text-solgun',
+  bitti: 'border border-yesil/70 bg-yesil-koyu/35 text-parsomen',
+  suruyor: 'border border-altin bg-altin/15 text-parsomen',
+  acik: 'border-2 border-altin bg-yuzey text-parsomen shadow-[0_0_10px_rgba(245,183,49,0.4)]',
+  kapali: 'border border-dashed border-kirmizi/60 bg-oyuk text-sonuk',
+  kilitli: 'border border-kenar bg-derin text-solgun',
 };
 
 const HAL_ADI: Record<Hal, string> = {
@@ -144,12 +155,74 @@ const HAL_ADI: Record<Hal, string> = {
 };
 
 function HalSimgesi({ h, erken }: { h: Hal; erken: boolean }) {
-  if (h === 'bitti') return <IkonOnay boyut={13} className="text-yesil" />;
+  if (h === 'bitti') return <IkonOnay boyut={12} className="shrink-0 text-yesil" />;
   if (h === 'suruyor')
-    return <IkonSure boyut={13} className="text-altin motion-safe:animate-pulse" />;
-  if (h === 'kapali') return <IkonKapali boyut={12} className="text-kirmizi" />;
-  if (h === 'kilitli') return <IkonKilit boyut={12} className="text-sonuk" />;
-  return erken ? <IkonSure boyut={12} className="text-turuncu" /> : null;
+    return <IkonSure boyut={12} className="shrink-0 text-altin motion-safe:animate-pulse" />;
+  if (h === 'kapali') return <IkonKapali boyut={12} className="shrink-0 text-kirmizi" />;
+  if (h === 'kilitli') return <IkonKilit boyut={12} className="shrink-0 text-sonuk" />;
+  return erken ? (
+    <IkonSure boyut={12} className="shrink-0 text-turuncu" />
+  ) : (
+    <span className="h-2 w-2 shrink-0 rounded-full bg-altin motion-safe:animate-pulse" />
+  );
+}
+
+/** Rozetin rengi kutunun hâline uyuyor: alınmış yeşil, alınabilir altın. */
+const ROZET_RENGI: Record<Hal, string> = {
+  bitti: 'text-yesil',
+  suruyor: 'text-altin',
+  acik: 'text-altin',
+  kapali: 'text-sonuk',
+  kilitli: 'text-solgun',
+};
+
+/**
+ * Kutunun ne verdiği: simge + sayı ("🛡 +%10"). Birim etkisinde birimin
+ * simgesi, köşesinde küçük kılıç ya da kalkan — okçu SALDIRISI mı okçu
+ * SAVUNMASI mı. Kalan etkiler detay sayfasında; kutu yalnız ilkini
+ * taşıyor, çünkü 76 piksele ikinci bir sayı sığmıyor.
+ */
+function Rozet({ r, h }: { r: EtkiRozeti; h: Hal }) {
+  const isaret = r.isaret < 0 ? '−' : '+';
+  const metin = r.tur === 'yuzde' ? `${isaret}%${r.deger}` : `${isaret}${r.deger}`;
+  return (
+    <span className={`flex min-w-0 items-center gap-0.5 ${ROZET_RENGI[h]}`}>
+      <span className={`relative shrink-0 ${r.yon ? 'mr-1' : ''}`}>
+        <Ikon ad={r.ikon} boyut={12} />
+        {r.yon && (
+          <Ikon
+            ad={r.yon}
+            boyut={8}
+            className="absolute -right-1 -bottom-0.5 drop-shadow-[0_0_1px_rgba(0,0,0,1)]"
+          />
+        )}
+      </span>
+      <span className="truncate text-[11px] leading-none font-semibold">{metin}</span>
+    </span>
+  );
+}
+
+/**
+ * Süren araştırmanın ilerlemesi, kutunun alt kenarında. Kendi saatiyle
+ * işliyor: bütün ağacı saniyede bir yeniden çizmek yerine yalnız çubuk.
+ */
+function SurenCubugu({ bas, bit }: { bas: string; bit: string }) {
+  const [, setTik] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setTik((t) => t + 1), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const b = new Date(bas).getTime();
+  const son = new Date(bit).getTime();
+  const oran = Math.min(1, Math.max(0, (Date.now() - b) / Math.max(1, son - b)));
+  return (
+    <span aria-hidden className="absolute inset-x-0 bottom-0 h-1 bg-altin/20">
+      <span
+        className="block h-full bg-altin transition-[width] duration-1000"
+        style={{ width: `${oran * 100}%` }}
+      />
+    </span>
+  );
 }
 
 /* ---------------- Yardımcılar ---------------- */
@@ -264,30 +337,23 @@ function AltSayfa({
  * Boş yuva da çiziliyor: "bir yuvam boşta" bilgisi oyuncunun en sık
  * kaçırdığı şey. Yuvanın nereden geldiği altta yazıyor — "bir yuva daha
  * nasıl açılır" sorusunun cevabı ekranda.
+ *
+ * Yuvalar yan yana ÇİP: eskiden her biri İptal düğmeli tam genişlik bir
+ * karttı ve üç satırlık açıklamayla birlikte ağacı ilk ekranın altına
+ * itiyordu. Süren çipe dokununca düğümün sayfası açılıyor; iptal orada.
  */
 function Yuvalar({
   surenler,
   esZamanli,
   yuva,
-  onIptal,
-  iptalde,
+  onAc,
 }: {
   surenler: SurenArastirma[];
   esZamanli: number;
   yuva: { kutuphane: number; arastirma: number };
-  onIptal: (id: string) => void;
-  iptalde: boolean;
+  onAc: (key: string) => void;
 }) {
   const qc = useQueryClient();
-  const [, setTik] = useState(0);
-  const suruyor = surenler.length > 0;
-
-  // Çubuklar saniyede bir ilerlesin; süren yoksa saat çalışmasın.
-  useEffect(() => {
-    if (!suruyor) return;
-    const id = setInterval(() => setTik((t) => t + 1), 1000);
-    return () => clearInterval(id);
-  }, [suruyor]);
 
   // İlk biten araştırma bitince ağacı tazele: sunucu GET'te gecikmişleri
   // kapatıyor, yani düğüm "tamamlandı"ya kendiliğinden geçiyor.
@@ -299,43 +365,45 @@ function Yuvalar({
     return () => clearTimeout(id);
   }, [ilkBitis, qc]);
 
-  const simdi = Date.now();
+  const adet = Math.max(esZamanli, surenler.length);
   return (
     <div className="space-y-1.5">
-      {Array.from({ length: Math.max(esZamanli, surenler.length) }, (_, i) => {
-        const s = surenler[i];
-        if (!s)
-          return (
-            <div
-              key={`bos-${i}`}
-              className="rounded-xl border border-dashed border-kenar-acik px-3 py-2.5 text-[12px] text-solgun"
-            >
-              Boş yuva — ağaçtan bir düğüm seç.
-            </div>
-          );
-        const bas = new Date(s.startedAt).getTime();
-        const bit = new Date(s.finishAt).getTime();
-        return (
-          <div key={s.id} className="rounded-xl border border-altin/50 bg-altin/10 px-3 py-2">
-            <div className="flex items-center justify-between gap-2">
-              <div className="min-w-0">
-                <p className="truncate text-[13px] font-semibold text-altin">{s.ad}</p>
-                <p className="text-[12px] text-solgun">
-                  <GeriSayim bitis={s.finishAt} /> kaldı
-                </p>
+      <div
+        className="grid gap-1.5"
+        style={{ gridTemplateColumns: `repeat(${Math.min(2, adet)}, minmax(0, 1fr))` }}
+      >
+        {Array.from({ length: adet }, (_, i) => {
+          const s = surenler[i];
+          if (!s)
+            return (
+              <div
+                key={`bos-${i}`}
+                className="flex min-h-11 items-center rounded-xl border border-dashed border-kenar-acik px-2.5 py-1.5 text-[12px] leading-snug text-solgun"
+              >
+                Boş yuva — ağaçtan bir düğüm seç.
               </div>
-              <Buton tur="anahat" boy="kucuk" disabled={iptalde} onClick={() => onIptal(s.id)}>
-                İptal
-              </Buton>
-            </div>
-            <div className="mt-1.5">
-              <Ilerleme deger={simdi - bas} max={Math.max(1, bit - bas)} boy="ince" />
-            </div>
-          </div>
-        );
-      })}
+            );
+          return (
+            <button
+              key={s.id}
+              type="button"
+              // Anahtarsız süren kayıt (eski ağaçtan kalma) açılacak bir düğüm taşımıyor.
+              disabled={!s.key}
+              onClick={() => s.key && onAc(s.key)}
+              className="bas relative flex min-h-11 min-w-0 flex-col justify-center overflow-hidden rounded-xl border border-altin/50 bg-altin/10 px-2.5 pt-1 pb-2 text-left"
+            >
+              <span className="truncate text-[12px] font-semibold text-altin">{s.ad}</span>
+              <span className="flex items-center gap-1 text-[11px] text-solgun">
+                <IkonSure boyut={11} className="shrink-0" />
+                <GeriSayim bitis={s.finishAt} />
+              </span>
+              <SurenCubugu bas={s.startedAt} bit={s.finishAt} />
+            </button>
+          );
+        })}
+      </div>
       <p className="text-[11px] leading-snug text-solgun">
-        {`Yuvalar: kütüphaneden ${yuva.kutuphane}${yuva.arastirma > 0 ? `, araştırmadan ${yuva.arastirma}` : ''}. Kütüphaneyi yükselt ya da Medrese ve Beytülhikme'yi araştır, yuva artsın. İptal edersen harcadığının yarısı geri gelir.`}
+        {`Yuvalar: kütüphaneden ${yuva.kutuphane}${yuva.arastirma > 0 ? `, araştırmadan ${yuva.arastirma}` : ''}. Kütüphane, Medrese ve Beytülhikme yuva ekler.`}
       </p>
     </div>
   );
@@ -349,6 +417,8 @@ function Tuval({
   caglar,
   cagNo,
   gruplar,
+  surenler,
+  lordSeviyesi,
   isaretli,
   onSec,
 }: {
@@ -357,6 +427,8 @@ function Tuval({
   caglar: { no: number; ad: string; seviye: number }[];
   cagNo: number;
   gruplar: ArastirmaGrubuDto[];
+  surenler: SurenArastirma[];
+  lordSeviyesi: number;
   /** Rehber ışığının göstereceği düğüm (sekmedeki ilk açık düğüm). */
   isaretli: string | null;
   onSec: (key: string) => void;
@@ -365,6 +437,16 @@ function Tuval({
   const yukseklik = UST * 2 + caglar.length * SATIR - ARA;
   const dolu = new Set(dugumler.map((d) => `${d.kademe}:${d.sutun}`));
   const bul = new Map(dugumler.map((d) => [d.key, d]));
+  const suren = new Map(surenler.map((s) => [s.key, s]));
+  /*
+   * Seviyesi henüz yetmeyen çağlar: erken araştırma penceresinin de
+   * ötesinde, yani o satırdaki HİÇBİR kutu başlatılamaz. Oyuncu bunu
+   * kutu kutu kilit simgesinden çıkarmak zorundaydı; şimdi satırın
+   * kendisi taralı ve oluğunda kilit var. Yalnız GÖRÜNÜŞ: hangi kutunun
+   * açık olduğunu yine sunucu söylüyor.
+   */
+  const pencere = B.arastirma.erken_pencere_seviye;
+  const uzakCag = (c: { seviye: number }) => lordSeviyesi < c.seviye - pencere;
 
   const cizgiler = dugumler.flatMap((c) =>
     c.onkosul
@@ -400,9 +482,41 @@ function Tuval({
 
   return (
     <div>
+      {/*
+       * Lejant AĞACIN ÜSTÜNDE: altındayken oyuncu renk dilini ancak
+       * altmış kutuyu geçtikten sonra öğreniyordu.
+       */}
+      <div className="mb-2 flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-solgun">
+        <span className="flex items-center gap-1">
+          <span className="flex h-3 w-4 items-center justify-center rounded-sm border-2 border-altin bg-yuzey">
+            <span className="h-1 w-1 rounded-full bg-altin" />
+          </span>
+          başlatılabilir
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="relative h-3 w-4 overflow-hidden rounded-sm border border-altin bg-altin/15">
+            <span className="absolute bottom-0 left-0 h-0.5 w-2 bg-altin" />
+          </span>
+          araştırılıyor
+        </span>
+        <span className="flex items-center gap-1">
+          <IkonOnay boyut={11} className="text-yesil" /> tamam
+        </span>
+        <span className="flex items-center gap-1">
+          <IkonSure boyut={11} className="text-turuncu" /> erken (uzun sürer)
+        </span>
+        <span className="flex items-center gap-1">
+          <IkonKilit boyut={11} className="text-sonuk" /> kilitli
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="inline-block h-2.5 w-4 rounded-sm border border-dashed border-kirmizi/80" />
+          yalnız biri
+        </span>
+      </div>
+
       {/* Sütun başlıkları: HOI4'teki hat adları. */}
       <div className="flex pb-1">
-        <span className="w-9 shrink-0" />
+        <span className="w-8 shrink-0" />
         <div
           className="grid flex-1"
           style={{ gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))` }}
@@ -428,8 +542,18 @@ function Tuval({
             />
           ))}
 
+        {/* Seviyesi yetmeyen çağlar: taralı şerit (kutuların arkasında). */}
+        {caglar.filter(uzakCag).map((c) => (
+          <div
+            key={`uzak-${c.no}`}
+            aria-hidden
+            className="absolute inset-x-0 rounded-lg bg-[repeating-linear-gradient(135deg,rgba(0,0,0,0.22)_0_6px,transparent_6px_12px)]"
+            style={{ top: ustY(c.no) - ARA / 2 + 2, height: SATIR - 4 }}
+          />
+        ))}
+
         {/* Çağ oluğu: Roma rakamı ve seviye kapısı. */}
-        <div className="relative w-9 shrink-0">
+        <div className="relative w-8 shrink-0">
           {caglar.map((c) => (
             <div
               key={c.no}
@@ -437,6 +561,7 @@ function Tuval({
               style={{ top: ustY(c.no), height: KUTU }}
               title={`${c.ad} çağı`}
             >
+              {uzakCag(c) && <IkonKilit boyut={11} className="text-sonuk" />}
               <span
                 className={`baslik text-[13px] ${c.no === cagNo ? 'text-altin' : 'text-solgun'}`}
               >
@@ -445,6 +570,7 @@ function Tuval({
               <span className={`text-[11px] ${c.no === cagNo ? 'text-altin' : 'text-sonuk'}`}>
                 {`Sv${c.seviye}`}
               </span>
+              {c.no === cagNo && <span className="text-[11px] leading-3 text-altin">şimdi</span>}
             </div>
           ))}
         </div>
@@ -499,6 +625,8 @@ function Tuval({
 
           {dugumler.map((d) => {
             const h = hal(d);
+            const r = etkiRozeti(d.etki);
+            const s = suren.get(d.key);
             return (
               <button
                 key={d.key}
@@ -506,10 +634,10 @@ function Tuval({
                 onClick={() => onSec(d.key)}
                 aria-label={`${d.ad}, ${HAL_ADI[h]}`}
                 data-rehber={d.key === isaretli ? 'arastirma-dugum' : undefined}
-                className={`bas absolute flex flex-col justify-between rounded-lg border p-1.5 text-left ${HAL_SINIFI[h]}`}
+                className={`bas absolute flex flex-col justify-between overflow-hidden rounded-lg px-[5px] py-1.5 text-left ${HAL_SINIFI[h]}`}
                 style={{
-                  left: `calc(${(d.sutun * 100) / n}% + 3px)`,
-                  width: `calc(${100 / n}% - 6px)`,
+                  left: `calc(${(d.sutun * 100) / n}% + 2px)`,
+                  width: `calc(${100 / n}% - 4px)`,
                   top: ustY(d.kademe),
                   height: KUTU,
                 }}
@@ -517,34 +645,15 @@ function Tuval({
                 <span className="line-clamp-3 text-[11px] leading-[13px] font-semibold break-words">
                   {heceTireli(d.ad)}
                 </span>
-                <span className="flex h-3.5 items-center justify-end">
+                <span className="flex h-3.5 items-center justify-between gap-1">
+                  {r ? <Rozet r={r} h={h} /> : <span />}
                   <HalSimgesi h={h} erken={d.erken} />
                 </span>
+                {s && <SurenCubugu bas={s.startedAt} bit={s.finishAt} />}
               </button>
             );
           })}
         </div>
-      </div>
-
-      {/* Lejant: renk ve çizgi dili bir kez söyleniyor. */}
-      <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-solgun">
-        <span className="flex items-center gap-1">
-          <IkonOnay boyut={11} className="text-yesil" /> tamam
-        </span>
-        <span className="flex items-center gap-1">
-          <span className="inline-block h-2.5 w-2.5 rounded-sm border border-altin/70 bg-yuzey" />
-          açık
-        </span>
-        <span className="flex items-center gap-1">
-          <IkonSure boyut={11} className="text-turuncu" /> erken (uzun sürer)
-        </span>
-        <span className="flex items-center gap-1">
-          <IkonKilit boyut={11} className="text-sonuk" /> kilitli
-        </span>
-        <span className="flex items-center gap-1">
-          <span className="inline-block h-2.5 w-4 rounded-sm border border-dashed border-kirmizi/80" />
-          yalnız biri
-        </span>
       </div>
     </div>
   );
@@ -552,33 +661,32 @@ function Tuval({
 
 /* ---------------- Büyük seçim kartı ---------------- */
 
+/*
+ * Seçim kartı KISA: ad, "yalnız biri", tek cümle açıklama. Eskiden
+ * seçenekleri bir de cümleyle sayıyordu ("Henüz seçmedin: ..."); onlar
+ * zaten hemen aşağıda, ağaçta kırmızı kesikli çerçevenin içinde.
+ */
 function SecimKarti({ g, onBirak }: { g: ArastirmaGrubuDto; onBirak: () => void }) {
-  const digerleri = g.secenekler.map((s) => s.ad).join(', ');
   return (
-    <Kart className="border-kirmizi/40 p-3">
-      <div className="flex items-baseline justify-between gap-2">
+    <Kart className="border-kirmizi/40 px-3 py-2">
+      <div className="flex items-baseline gap-2">
         <span className="baslik text-[13px] text-parsomen">{g.ad}</span>
         <span className="shrink-0 text-[11px] text-kirmizi">yalnız biri</span>
+        {g.secili && (
+          <span className="ml-auto min-w-0 truncate text-[12px] text-parsomen">
+            Seçimin: <span className="font-semibold text-altin">{g.seciliAd}</span>
+          </span>
+        )}
       </div>
       <p className="mt-0.5 text-[12px] leading-snug text-solgun">{g.aciklama}</p>
-      {g.secili ? (
-        <>
-          <p className="mt-1.5 text-[12px] text-parsomen">
-            Seçimin: <span className="font-semibold text-altin">{g.seciliAd}</span>
-          </p>
-          {g.birakma?.acik ? (
-            <Buton className="mt-2" tur="kirmizi" boy="kucuk" onClick={onBirak}>
-              Yolu bırak
-            </Buton>
-          ) : (
-            g.birakma?.engel && <p className="mt-1.5 text-[12px] text-solgun">{g.birakma.engel}</p>
-          )}
-        </>
-      ) : (
-        <p className="mt-1.5 text-[12px] leading-snug text-solgun">
-          {`Henüz seçmedin: ${digerleri}. Birini araştırınca ötekiler kapanır.`}
-        </p>
-      )}
+      {g.secili &&
+        (g.birakma?.acik ? (
+          <Buton className="mt-1.5" tur="kirmizi" boy="kucuk" onClick={onBirak}>
+            Yolu bırak
+          </Buton>
+        ) : (
+          g.birakma?.engel && <p className="mt-1 text-[12px] text-solgun">{g.birakma.engel}</p>
+        ))}
     </Kart>
   );
 }
@@ -692,19 +800,26 @@ export function Arastirma({ depoTavani, kaynak }: { depoTavani: number; kaynak?:
       <Zemin ad="arastirma" baslik="Araştırma" altyazi="Diyarını kendi seçimlerinle büyüt" />
 
       <Kart className="space-y-2 p-3">
-        <div className="flex items-baseline justify-between">
-          <span className="baslik text-[11px] text-solgun">İlerleme</span>
-          <span className="text-[12px] text-parsomen">
+        <div className="flex items-center gap-2">
+          <span className="baslik shrink-0 text-[11px] text-solgun">İlerleme</span>
+          <div className="flex-1">
+            <Ilerleme deger={ilerleme.biten} max={Math.max(1, ilerleme.toplam)} boy="ince" />
+          </div>
+          <span className="tabular shrink-0 text-[12px] text-parsomen">
             {ilerleme.biten} / {ilerleme.toplam}
           </span>
         </div>
-        <Ilerleme deger={ilerleme.biten} max={Math.max(1, ilerleme.toplam)} />
         <Yuvalar
           surenler={surenler}
           esZamanli={esZamanli}
           yuva={yuva}
-          onIptal={(id) => iptal.mutate(id)}
-          iptalde={iptal.isPending}
+          onAc={(key) => {
+            const dal = dallar.find((x) => x.key === key)?.dal;
+            if (dal) setSekme(dal);
+            setSecili(key);
+            setOnayli(null);
+            setHata(null);
+          }}
         />
       </Kart>
 
@@ -732,10 +847,6 @@ export function Arastirma({ depoTavani, kaynak }: { depoTavani: number; kaynak?:
         <p className="-mt-2 text-[12px] leading-snug text-solgun">{etkinSekme.ozet}</p>
       )}
 
-      {sekmeGruplari.map((g) => (
-        <SecimKarti key={g.key} g={g} onBirak={() => setBirakilacak(g.key)} />
-      ))}
-
       {etkinSekme && (
         <Tuval
           dugumler={sekmeDugumleri}
@@ -743,6 +854,8 @@ export function Arastirma({ depoTavani, kaynak }: { depoTavani: number; kaynak?:
           caglar={caglar}
           cagNo={cagNo}
           gruplar={sekmeGruplari}
+          surenler={surenler}
+          lordSeviyesi={lordSeviyesi}
           isaretli={isaretli}
           onSec={(k) => {
             setSecili(k);
@@ -751,6 +864,14 @@ export function Arastirma({ depoTavani, kaynak }: { depoTavani: number; kaynak?:
           }}
         />
       )}
+
+      {/*
+       * Seçim kartları AĞACIN ALTINDA: ağaçtaki kırmızı çerçevenin
+       * dipnotu onlar. Üstteyken ağacı ilk ekranın dışına itiyorlardı.
+       */}
+      {sekmeGruplari.map((g) => (
+        <SecimKarti key={g.key} g={g} onBirak={() => setBirakilacak(g.key)} />
+      ))}
 
       {d && (
         <AltSayfa baslik={d.ad} onKapat={() => setSecili(null)}>

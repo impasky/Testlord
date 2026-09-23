@@ -117,7 +117,7 @@
     "tr": " ve ",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:816"
+      "apps/web/src/screens/Arastirma.tsx:937"
     ]
   },
   "tae835c20": {
@@ -157,7 +157,7 @@
     "tr": ", araştırmadan {0}",
     "en": ", {0} from research",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:338"
+      "apps/web/src/screens/Arastirma.tsx:406"
     ]
   },
   "t8ac7e285": {
@@ -605,7 +605,7 @@
     "tr": "{0} başladı.",
     "en": "{0} started.",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:611"
+      "apps/web/src/screens/Arastirma.tsx:719"
     ]
   },
   "t5ed13e1b": {
@@ -664,7 +664,7 @@
     "tr": "{0} çağı",
     "en": "{0} era",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:438"
+      "apps/web/src/screens/Arastirma.tsx:562"
     ]
   },
   "ta244e3f2": {
@@ -680,7 +680,7 @@
     "tr": "{0} değişecek. Bu yolun araştırmaları silinir ve bedellerinin %{1}'si geri gelir. Sonra {2} gün bu seçimi yeniden değiştiremezsin.",
     "en": "{0} will change. This path's research is deleted and {1}% of its costs come back. Then you can't change this choice again for {2} [day|days].",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:904"
+      "apps/web/src/screens/Arastirma.tsx:1025"
     ]
   },
   "t46dd1320": {
@@ -1226,8 +1226,8 @@
     "tr": "{0} yolunu bırak",
     "en": "Leave the {0} path",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:857",
-      "apps/web/src/screens/Arastirma.tsx:902"
+      "apps/web/src/screens/Arastirma.tsx:1023",
+      "apps/web/src/screens/Arastirma.tsx:978"
     ]
   },
   "t99f9e3ea": {
@@ -1251,7 +1251,7 @@
     "tr": "{0}: yalnız biri. Bunu seçersen {1} kapanır. Sonra değiştirmek istersen bu yolun araştırmaları silinir, bedellerinin %{2}'si geri gelir ve {3} gün yeniden değiştiremezsin.",
     "en": "{0}: only one. If you choose this, {1} closes. If you want to change later, this path's research is deleted, {2}% of its costs come back and you can't change again for {3} [day|days].",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:812"
+      "apps/web/src/screens/Arastirma.tsx:933"
     ]
   },
   "t61650100": {
@@ -1267,7 +1267,7 @@
     "tr": "{0}. çağ · {1}",
     "en": "Era {0} · {1}",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:758"
+      "apps/web/src/screens/Arastirma.tsx:879"
     ]
   },
   "tda52089a": {
@@ -1432,7 +1432,7 @@
     "en": "{0}h {1}m",
     "nerede": [
       "apps/web/src/components/ui.tsx:887",
-      "apps/web/src/screens/Arastirma.tsx:173",
+      "apps/web/src/screens/Arastirma.tsx:246",
       "apps/web/src/screens/Harita.tsx:276"
     ]
   },
@@ -1578,14 +1578,6 @@
     "en": "OPEN",
     "nerede": [
       "apps/web/src/components/GorevOzeti.tsx:72"
-    ]
-  },
-  "teeca3ed1": {
-    "grup": "arayuz",
-    "tr": "açık",
-    "en": "open",
-    "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:536"
     ]
   },
   "tc2c0713b": {
@@ -1794,7 +1786,8 @@
     "tr": "araştırılıyor",
     "en": "researching",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:140"
+      "apps/web/src/screens/Arastirma.tsx:151",
+      "apps/web/src/screens/Arastirma.tsx:500"
     ]
   },
   "t58124603": {
@@ -1802,7 +1795,7 @@
     "tr": "Araştırılıyor —",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:784"
+      "apps/web/src/screens/Arastirma.tsx:905"
     ]
   },
   "t3e143637": {
@@ -1810,7 +1803,7 @@
     "tr": "Araştırma",
     "en": "Research",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:692",
+      "apps/web/src/screens/Arastirma.tsx:800",
       "packages/shared/src/types.ts:346"
     ]
   },
@@ -1819,7 +1812,7 @@
     "tr": "Araştırma başlatılamadı.",
     "en": "Research could not be started.",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:616"
+      "apps/web/src/screens/Arastirma.tsx:724"
     ]
   },
   "t6631f86c": {
@@ -2170,7 +2163,7 @@
     "tr": "Başlat",
     "en": "Start",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:840"
+      "apps/web/src/screens/Arastirma.tsx:961"
     ]
   },
   "t29e3e302": {
@@ -2178,7 +2171,8 @@
     "tr": "başlatılabilir",
     "en": "can start",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:141"
+      "apps/web/src/screens/Arastirma.tsx:152",
+      "apps/web/src/screens/Arastirma.tsx:494"
     ]
   },
   "tf408410e": {
@@ -2545,7 +2539,7 @@
     "tr": "Boş yuva — ağaçtan bir düğüm seç.",
     "en": "Empty slot — pick a node from the tree.",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:313"
+      "apps/web/src/screens/Arastirma.tsx:383"
     ]
   },
   "t875a03d7": {
@@ -2904,7 +2898,7 @@
     "tr": "bu yol kapalı",
     "en": "this path is closed",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:142"
+      "apps/web/src/screens/Arastirma.tsx:153"
     ]
   },
   "t79e69f4e": {
@@ -2912,7 +2906,7 @@
     "tr": "Bu yolu seç",
     "en": "Choose this path",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:839"
+      "apps/web/src/screens/Arastirma.tsx:960"
     ]
   },
   "tda09d6e8": {
@@ -2968,7 +2962,7 @@
     "tr": "Bütün yuvalar dolu",
     "en": "All slots are full",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:835"
+      "apps/web/src/screens/Arastirma.tsx:956"
     ]
   },
   "t52fed105": {
@@ -3281,7 +3275,7 @@
     "tr": "Depon dolu: iadenin bir kısmı tavanı ({0}) aşıyor ve taşan kısım kaybolur. Önce harcayıp yer açabilirsin.",
     "en": "Your storage is full: part of the refund exceeds the cap ({0}) and the overflow is lost. You can spend first to make room.",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:932"
+      "apps/web/src/screens/Arastirma.tsx:1053"
     ]
   },
   "t44b25c99": {
@@ -3362,8 +3356,8 @@
     "tr": "Detayı kapat",
     "en": "Close details",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:227",
-      "apps/web/src/screens/Arastirma.tsx:245"
+      "apps/web/src/screens/Arastirma.tsx:300",
+      "apps/web/src/screens/Arastirma.tsx:318"
     ]
   },
   "ta6d41ede": {
@@ -3585,7 +3579,7 @@
     "tr": "Diyarını kendi seçimlerinle büyüt",
     "en": "Grow your realm with your own choices",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:692"
+      "apps/web/src/screens/Arastirma.tsx:800"
     ]
   },
   "tecfbed87": {
@@ -3950,7 +3944,7 @@
     "tr": "Eminim — {0} seçilsin",
     "en": "I'm sure — choose {0}",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:838"
+      "apps/web/src/screens/Arastirma.tsx:959"
     ]
   },
   "tb5e8373e": {
@@ -4088,7 +4082,7 @@
     "tr": "erken (uzun sürer)",
     "en": "early (takes longer)",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:539"
+      "apps/web/src/screens/Arastirma.tsx:506"
     ]
   },
   "tb647a1ab": {
@@ -4510,7 +4504,7 @@
     "tr": "Geri gelecek",
     "en": "Comes back",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:917"
+      "apps/web/src/screens/Arastirma.tsx:1038"
     ]
   },
   "t2de7bc19": {
@@ -4928,14 +4922,6 @@
       "apps/web/src/components/IttifakSohbet.tsx:79"
     ]
   },
-  "t4d7ccc8c": {
-    "grup": "arayuz",
-    "tr": "Henüz seçmedin: {0}. Birini araştırınca ötekiler kapanır.",
-    "en": "Not chosen yet: {0}. Researching one closes the others.",
-    "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:579"
-    ]
-  },
   "t03b91b40": {
     "grup": "arayuz",
     "tr": "Henüz toprağın yok. Haritada bir bölge al, geliri buraya işlesin.",
@@ -5187,7 +5173,7 @@
     "tr": "İlerleme",
     "en": "Progress",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:696"
+      "apps/web/src/screens/Arastirma.tsx:804"
     ]
   },
   "te4d7bc84": {
@@ -5261,7 +5247,6 @@
     "tr": "İptal",
     "en": "Cancel",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:328",
       "apps/web/src/screens/Sehir.tsx:492"
     ]
   },
@@ -5278,7 +5263,7 @@
     "tr": "İptal edilemedi.",
     "en": "Couldn't cancel.",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:629"
+      "apps/web/src/screens/Arastirma.tsx:737"
     ]
   },
   "t15458cd3": {
@@ -5294,7 +5279,7 @@
     "tr": "İptal et (yarısı geri gelir)",
     "en": "Cancel (half comes back)",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:792"
+      "apps/web/src/screens/Arastirma.tsx:913"
     ]
   },
   "t57dca8ac": {
@@ -5605,8 +5590,7 @@
     "tr": "kaldı",
     "en": "remaining",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:324",
-      "apps/web/src/screens/Arastirma.tsx:784",
+      "apps/web/src/screens/Arastirma.tsx:905",
       "apps/web/src/screens/Sehir.tsx:488"
     ]
   },
@@ -6117,7 +6101,7 @@
     "tr": "kilitli",
     "en": "locked",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:542"
+      "apps/web/src/screens/Arastirma.tsx:509"
     ]
   },
   "t06e71ba9": {
@@ -7292,7 +7276,7 @@
     "tr": "Önkoşul",
     "en": "Prerequisite",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:881"
+      "apps/web/src/screens/Arastirma.tsx:1002"
     ]
   },
   "t2249b0d8": {
@@ -7996,7 +7980,7 @@
     "tr": "Seçili",
     "en": "Selected",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:857"
+      "apps/web/src/screens/Arastirma.tsx:978"
     ]
   },
   "tf14d430a": {
@@ -8012,7 +7996,7 @@
     "tr": "Seçimin:",
     "en": "Your choice:",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:567"
+      "apps/web/src/screens/Arastirma.tsx:677"
     ]
   },
   "tff019924": {
@@ -8252,7 +8236,7 @@
     "tr": "Silinecek",
     "en": "Will be deleted",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:907"
+      "apps/web/src/screens/Arastirma.tsx:1028"
     ]
   },
   "tfe650c0b": {
@@ -8564,7 +8548,7 @@
     "nerede": [
       "apps/web/src/components/SavasRaporu.tsx:246",
       "apps/web/src/screens/Akin.tsx:319",
-      "apps/web/src/screens/Arastirma.tsx:446",
+      "apps/web/src/screens/Arastirma.tsx:571",
       "apps/web/src/screens/Demirhane.tsx:453",
       "apps/web/src/screens/Generaller.tsx:195"
     ]
@@ -8636,6 +8620,14 @@
     "en": "Your report is received. An admin will review it.",
     "nerede": [
       "apps/web/src/components/SikayetSayfasi.tsx:49"
+    ]
+  },
+  "tdf730807": {
+    "grup": "arayuz",
+    "tr": "şimdi",
+    "en": "now",
+    "nerede": [
+      "apps/web/src/screens/Arastirma.tsx:573"
     ]
   },
   "t75144a38": {
@@ -8744,7 +8736,7 @@
     "tr": "Şu anki tavanın {0} — bu araştırma {1} ekler.",
     "en": "Your current cap is {0} — this research adds {1}.",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:167"
+      "apps/web/src/screens/Arastirma.tsx:240"
     ]
   },
   "td10c0b43": {
@@ -8998,7 +8990,7 @@
     "tr": "tamam",
     "en": "done",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:532"
+      "apps/web/src/screens/Arastirma.tsx:503"
     ]
   },
   "tdc01c291": {
@@ -9006,7 +8998,7 @@
     "tr": "tamamlandı",
     "en": "completed",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:139"
+      "apps/web/src/screens/Arastirma.tsx:150"
     ]
   },
   "tbac6a59f": {
@@ -9014,7 +9006,7 @@
     "tr": "Tamamlandı — etkisi sürüyor.",
     "en": "Completed — its effect continues.",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:779"
+      "apps/web/src/screens/Arastirma.tsx:900"
     ]
   },
   "t57e93c11": {
@@ -9267,7 +9259,7 @@
     "nerede": [
       "apps/web/src/components/IttifakDuyuru.tsx:83",
       "apps/web/src/components/SikayetSayfasi.tsx:114",
-      "apps/web/src/screens/Arastirma.tsx:938",
+      "apps/web/src/screens/Arastirma.tsx:1059",
       "apps/web/src/screens/Hesap.tsx:304",
       "apps/web/src/screens/Medeniyet.tsx:253"
     ]
@@ -9365,9 +9357,9 @@
     "tr": "yalnız biri",
     "en": "only one",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:495",
-      "apps/web/src/screens/Arastirma.tsx:546",
-      "apps/web/src/screens/Arastirma.tsx:561"
+      "apps/web/src/screens/Arastirma.tsx:513",
+      "apps/web/src/screens/Arastirma.tsx:621",
+      "apps/web/src/screens/Arastirma.tsx:674"
     ]
   },
   "t7eadadf4": {
@@ -9636,7 +9628,7 @@
     "tr": "Yol bırakılamadı.",
     "en": "Couldn't leave the path.",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:647"
+      "apps/web/src/screens/Arastirma.tsx:755"
     ]
   },
   "t1901f55f": {
@@ -9644,7 +9636,7 @@
     "tr": "Yol bırakıldı: {0} araştırma silindi, {1} altın geri geldi.",
     "en": "Path left: {0} research [node|nodes] deleted, {1} gold refunded.",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:640"
+      "apps/web/src/screens/Arastirma.tsx:748"
     ]
   },
   "tf0bd371a": {
@@ -9669,8 +9661,8 @@
     "tr": "Yolu bırak",
     "en": "Leave path",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:571",
-      "apps/web/src/screens/Arastirma.tsx:946"
+      "apps/web/src/screens/Arastirma.tsx:1067",
+      "apps/web/src/screens/Arastirma.tsx:685"
     ]
   },
   "t60a8f3a9": {
@@ -9731,12 +9723,12 @@
       "apps/web/src/screens/EsyaPazari.tsx:171"
     ]
   },
-  "t032e5b76": {
+  "t4efcfcf7": {
     "grup": "arayuz",
-    "tr": "Yuvalar: kütüphaneden {0}{1}. Kütüphaneyi yükselt ya da Medrese ve Beytülhikme'yi araştır, yuva artsın. İptal edersen harcadığının yarısı geri gelir.",
-    "en": "Slots: {0} from the library{1}. Upgrade the library or research Madrasa and House of Wisdom to add slots. If you cancel, half of what you spent comes back.",
+    "tr": "Yuvalar: kütüphaneden {0}{1}. Kütüphane, Medrese ve Beytülhikme yuva ekler.",
+    "en": "Slots: {0} from the library{1}. The Library, Madrasa and House of Wisdom add slots.",
     "nerede": [
-      "apps/web/src/screens/Arastirma.tsx:338"
+      "apps/web/src/screens/Arastirma.tsx:406"
     ]
   },
   "tf966496b": {
