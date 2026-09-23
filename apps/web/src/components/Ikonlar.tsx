@@ -89,6 +89,7 @@ export const IkonNavSiralama = yap('navSiralama');
 export const IkonSohret = yap('sohret');
 export const IkonKapali = yap('kapali');
 export const IkonOnay = yap('onay');
+export const IkonKilit = yap('kilit');
 export const IkonGoz = yap('goz');
 export const IkonSancak = yap('sancak');
 export const IkonKurnaz = yap('kurnaz');

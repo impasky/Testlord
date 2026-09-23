@@ -139,7 +139,7 @@ ve yer adları o dünyanın parçası.
   İskelebaşı
   Şahinkaya
 
---- Cümle parçaları (5) ---
+--- Cümle parçaları (7) ---
 
 Bunlar tek başına çevrilemez, çünkü tek başına bir anlamı yok: kodda başka
 metinlerle birleşerek cümle oluyorlar (" ve ", ", boş" gibi). Bir
@@ -148,10 +148,14 @@ bilmeden çeviremez, üstelik İngilizcede sözcük sırası değişince parça
 yanlış yere düşer. Bunların çözümü çeviri değil KOD: birleştirmelerin tek
 bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
 
+  " ve "
+      apps/web/src/screens/Arastirma.tsx:816
   "{0} · T{1}"
       apps/web/src/screens/Akin.tsx:229
   "{0} T{1}"
       apps/web/src/screens/Demirhane.tsx:221
+  "Araştırılıyor —"
+      apps/web/src/screens/Arastirma.tsx:784
   "T"
       apps/web/src/screens/Demirhane.tsx:443
   "T{0}"

@@ -390,6 +390,16 @@ export const REHBER_ISIKLARI: Record<string, RehberIsaret[]> = {
       sebep:
         'Bunu başlat. Hangisini seçtiğin senin kararın — araştırma kalıcıdır ve diyarını başka lordlarınkinden ayıran tek katman odur.',
     },
+    /*
+     * Ağaç tuvalinde Başlat düğmesi düğümün sayfasında, sayfa da düğüme
+     * dokununca açılıyor. Işık önce parlak (açık) düğümü gösteriyor;
+     * sayfa açılınca daha derindeki Başlat'a geçiyor.
+     */
+    {
+      isaret: 'arastirma-dugum',
+      sebep:
+        'Parlak kutular şimdi başlatabileceklerin. Birine dokun: ne kazandırdığını, bedelini ve süresini gör.',
+    },
     { isaret: 'omurga-dugme', yol: true },
     {
       isaret: 'nav-ana',

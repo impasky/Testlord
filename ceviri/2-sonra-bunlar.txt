@@ -3,7 +3,7 @@ LORDLAR ÇAĞI — ÇEVİRİ 2/3: DERINLIK  (KALANLAR)
 Savaş raporu, demirhane, generaller, araştırma, ittifak, akın — ve bina,
 general, araştırma, başarım içerikleri.
 
-Bu dosyada 79 satır var — çevrilmiş olanlar çıkarıldı.
+Bu dosyada 218 satır var — çevrilmiş olanlar çıkarıldı.
 
 NASIL ÇEVİRİLİR
   Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.
@@ -34,6 +34,116 @@ NASIL ÇEVİRİLİR
   Bitince dosyayı olduğu gibi geri ver; gerisini ben hallederim.
 
 ==========================================================================
+
+--- İçerik (bina, general, araştırma, başarım) (107) ---
+
+2365. Eşya ve kaynak ticareti.
+2366. Oyuncularla eşya alıp sattığın, kaynak takas ettiğin yer. Günlük takas hacmini pazarın büyüklüğü belirler.
+2452. Ağır Süvari
+2453. Akıncı Öğretisi
+2454. Akıncıların düşman ambarını ondan önce bulur. Akından her seferinde daha dolu dönersin.
+2455. Âlimleri malikânene davet edersin. Aynı anda bir araştırma daha yürütebilirsin.
+2456. Ambarlar, üretim, âlimler, ustalar.
+2457. Arbalet
+2458. Askeri hasattan sonra evine göndermezsin; maaşlı bir ordu kurarsın. Daha büyük ve daha ucuz.
+2459. Atış Hattı
+2460. Atlılara ve atlarına zırh giydirirsin. Süvari hücumdan sağ döner, ikinci kez vurur.
+2461. Atlıların ayağına üzengi taktırırsın. Mızrak darbesi atın bütün ağırlığıyla iner.
+2462. Atlılarına baştan aşağı levha zırh dövdürürsün. Hücumları bir duvarın yürümesi gibidir.
+2463. Bereketli Topraklar
+2464. Beylik
+2465. Beytülhikme
+2466. Bileşik Yay
+2467. Boynuz, ağaç ve sinirden yay yaptırırsın. Okçunun oku daha uzağa, daha sert gider.
+2468. Bölgelerini merkezden mi, uçlardaki beylerle mi yöneteceğin.
+2469. Bütün bölgeler tek bir divandan yönetilir. Vergi eksiksiz toplanır, imar düzenli yürür.
+2470. Bütün ordu tek bir işaretle vurur. Düşman ne zaman vurulacağını bilmez, ama vurulur.
+2471. Casuslarını birbirini tanımayan hücrelere ayırırsın. Biri yakalansa bile ağ çözülmez.
+2472. Cihan
+2473. Cihan Divanı
+2474. Çelik Sur
+2475. Daimî Ordu
+2476. Darphane
+2477. Derin Madenler
+2478. Dev karşı ağırlıklı mancınıklar kurdurursun. Hiçbir sur ikinci atıştan sonra aynı kalmaz.
+2479. Devlet
+2480. Divanın artık yalnız diyarını değil, komşularını da tartışıyor. Her bölge bir planın parçası.
+2481. Diyarın bütün âlimlerini tek bir çatı altında toplarsın. Aynı anda bir araştırma daha yürür.
+2482. Diyarının hangi kaynakla büyüyeceği. Fazlasını pazarda satabilirsin.
+2483. Doktrin
+2484. Düşman ordunun geldiğini duyduğunda sen çoktan kapısındasın. Hız artık bir silah.
+2485. Düşman sana ulaşmadan savaşı bitir. Ordunu okçu ve mancınığın çevresinde kurarsın.
+2486. Ekonomi
+2487. Eski seferlerin defterlerini okutursun. Neyin işe yaradığını artık biliyorsun; sıra bir öğreti seçmekte.
+2488. Gizli Teşkilat
+2489. Hazine Mahzenleri
+2490. Her köyden en iyi yiğitleri seçip ayrı bir ocakta yetiştirirsin. Piyaden ordunun belkemiği olur.
+2491. Hız her şeydir: vur, dağıt, geri çekil. Ordunu süvarinin çevresinde kurarsın.
+2492. Hilal Ustalığı
+2493. Kale Öğretisi
+2494. Kalkan Duvarı Ustalığı
+2495. Kalkanlar tek bir duvar gibi kilitlenir. Kalkan Duvarı daha sağlam durur, saldırın daha az düşer.
+2496. Kalkanlı Piyade
+2497. Kanatların sarmayı gözü kapalı yapar. Hilal Düzeni daha sert sarar, merkez daha az zayıflar.
+2498. Kargı Ustaları
+2499. Karşı Ağırlıklı Mancınık
+2500. Kâtipler
+2501. Kayaya oyulmuş mahzenler kazdırırsın. Diyarın büyüdükçe ambarın da onunla büyür.
+2502. Kendi sikkeni bastırırsın. Malikânenin çarşısı sikkene güvenir, alışveriş hızlanır.
+2503. Kendi taş ocağını açarsın. Duvarlar taş beklemeden yükselir, binalar daha çabuk biter.
+2504. Kervan yollarına han açtırırsın. Geçen her yük kesene bir akçe bırakır; diyarın altınla büyür.
+2505. Köylü Talimi
+2506. Köylülere kargı tutmayı ve saf bozmamayı öğretirsin. Milis ilk hücumda dağılmaz.
+2507. Kuruluş
+2508. Kuşat ve Vur
+2509. Kuşatma artık bir sanat. Kuşatma Düzeni surları daha derin deler, saldırın daha az zayıflar.
+2510. Kuşatma Ustalığı
+2511. Madenlere destek kirişi ve su çarkı koydurursun. Damar derinden çıkar; diyarın demirle büyür.
+2512. Malikânede kâtip tutarsın. Her deneyin notu kaybolmadan bir sonrakine aktarılır; araştırma hızlanır.
+2513. Mancınık kurmayı bilen ustaları ordunda tutarsın. Taşlar surun zayıf yerine iner.
+2514. Mancınık Ustaları
+2515. Medrese
+2516. Menzil Öğretisi
+2517. Menzilhaneler
+2518. Merkezî Divan
+2519. Mızrak seti atlının geleceği yere önceden kurulur. Süvari hücumu setin önünde erir.
+2520. Mızrak Seti Ustalığı
+2521. Mızrakçılara uzun kargı ve demir uç verirsin. Atlı hücumu kargının ucunda kırılır.
+2522. Mimar Ocağı
+2523. Ok Yağmuru Ustalığı
+2524. Okçulara arbalet ve siper kalkanı verirsin. Uzaktan vurur, yakından da kolay düşmez.
+2525. Okçuların tek bir el gibi atar. Ok Yağmuru ilk turda daha sert iner, savunmayı daha az açar.
+2526. Okçuların üç sıra hâlinde nöbetleşe atar. Ok yağmuru bir an bile dinmez.
+2527. Ordun her adımı tartarak atar. Temkinli İlerleyiş daha az kayıpla daha çok toprak tutar.
+2528. Ordunu hangi fikrin çevresinde kuracağın. Üçünden yalnız biri.
+2529. Piyadeye boy kalkanı verirsin. Saf ok yağmurunda bile yerinde durur ve ileri yürür.
+2530. Rasathane
+2531. Savaş öğretisi
+2532. Savaş Sanatı
+2533. Seçme Piyade
+2534. Sınır bölgelerini kendi beylerine bırakırsın. Uçlar hem sağlam durur hem düşmanı yağmalar.
+2535. Sur Mühendisliği
+2536. Surlar, yollar, divan, casuslar.
+2537. Surlara burç ve hendek ekletirsin. Saldıran, surun dibine varmadan kayıp verir.
+2538. Surların taşı gibi ordun da yerinden oynamaz. Sana saldıran kendi kapısında yenilir.
+2539. Sürat Akınları
+2540. Süvari düşmanı iki yandan kuşatıp arkadan vurur. Kaçan düşman bile atlının elinden kurtulamaz.
+2541. Talim, piyade, okçu ve kuşatma, atlılar.
+2542. Tarlaları nöbetleşe ektirirsin. Toprak dinlenir, ambar dolar; diyarın erzakla büyür.
+2543. Taş Ocakları
+2544. Temkin Ustalığı
+2545. Ticaret Yolları
+2546. Toplu Atış
+2547. Toprağını tutan savaşı kazanır. Ordunu surların ve mızrak setinin çevresinde kurarsın.
+2548. Uç Beylikleri
+2549. Ustaları tek bir ocakta toplarsın. Her yapı aynı elden çıkar, iskele bir yapıdan ötekine taşınır.
+2550. Üç savaş öğretisinden biri.
+2551. Üzengi
+2552. Yıldırım Seferi
+2553. Yıldızları gözleyen bir kule diktirirsin. Hesap bilen adamlar her araştırmayı kısaltır.
+2554. Yol boyuna taze at bekleten menziller kurarsın. Ordun ve haberlerin daha çabuk varır.
+2555. Yükseliş
+2556. Zırhlı Atlılar
 
 --- EsyaPazari (74) ---
 
@@ -112,15 +222,47 @@ NASIL ÇEVİRİLİR
 2369. {0} · kurayla
 2370. {0} altın emanette
 
+--- Arastirma (34) ---
+
+2374. , araştırmadan {0}
+2375. {0} başladı.
+2376. {0} çağı
+2377. {0} değişecek. Bu yolun araştırmaları silinir ve bedellerinin %{1}'si geri gelir. Sonra {2} gün bu seçimi yeniden değiştiremezsin.
+2378. {0} yolunu bırak
+2379. {0}: yalnız biri. Bunu seçersen {1} kapanır. Sonra değiştirmek istersen bu yolun araştırmaları silinir, bedellerinin %{2}'si geri gelir ve {3} gün yeniden değiştiremezsin.
+2380. {0}. çağ · {1}
+2381. açık
+2382. araştırılıyor
+2383. başlatılabilir
+2384. Boş yuva — ağaçtan bir düğüm seç.
+2385. bu yol kapalı
+2386. Bu yolu seç
+2387. Bütün yuvalar dolu
+2388. Depon dolu: iadenin bir kısmı tavanı ({0}) aşıyor ve taşan kısım kaybolur. Önce harcayıp yer açabilirsin.
+2389. Detayı kapat
+2390. Eminim — {0} seçilsin
+2391. erken (uzun sürer)
+2392. Geri gelecek
+2393. Henüz seçmedin: {0}. Birini araştırınca ötekiler kapanır.
+2394. İptal edilemedi.
+2395. İptal et (yarısı geri gelir)
+2396. kilitli
+2397. Önkoşul
+2398. Seçili
+2399. Seçimin:
+2400. Silinecek
+2401. tamam
+2402. Tamamlandı — etkisi sürüyor.
+2403. yalnız biri
+2404. Yol bırakılamadı.
+2405. Yol bırakıldı: {0} araştırma silindi, {1} altın geri geldi.
+2406. Yolu bırak
+2407. Yuvalar: kütüphaneden {0}{1}. Kütüphaneyi yükselt ya da Medrese ve Beytülhikme'yi araştır, yuva artsın. İptal edersen harcadığının yarısı geri gelir.
+
 --- Malikane (2) ---
 
 2281. Diyarındaki oyuncularla al, sat →
 2286. Eşya pazarı
-
---- İçerik (bina, general, araştırma, başarım) (2) ---
-
-2365. Eşya ve kaynak ticareti.
-2366. Oyuncularla eşya alıp sattığın, kaynak takas ettiğin yer. Günlük takas hacmini pazarın büyüklüğü belirler.
 
 --- Pazar (1) ---
 

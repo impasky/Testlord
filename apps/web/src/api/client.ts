@@ -2,6 +2,7 @@ import { ts } from '../lib/dil';
 /** Tipli API istemcisi. Sunucu tek otoritedir; istemci hiçbir sayı yazmaz. */
 import type {
   AkinHaritaDurumu,
+  ArastirmaCagi,
   ArastirmaDurumu,
   Army,
   BasarimOlcutleri,
@@ -1157,6 +1158,33 @@ export interface GeneralKatkisiDto {
   yetenekAciklama: string | null;
 }
 
+/** Süren bir araştırma; `startedAt` yuva çubuğunun ilerlemesi için. */
+export interface SurenArastirma {
+  id: string;
+  key: string | null;
+  ad: string;
+  startedAt: string;
+  finishAt: string;
+}
+
+/** Dışlayan bir seçim (öğreti, ekonomi, yönetim) ve bırakmanın bedeli. */
+export interface ArastirmaGrubuDto {
+  key: string;
+  ad: string;
+  aciklama: string;
+  secenekler: { key: string; ad: string; yol: string }[];
+  /** Tamamlanmış seçeneğin yolu; süren seçenek sayılmaz. */
+  secili: string | null;
+  seciliAd: string | null;
+  birakma: {
+    acik: boolean;
+    engel: string | null;
+    sonrakiDegisim: string | null;
+    silinecek: { key: string; ad: string }[];
+    iade: { altin: number; demir: number; erzak: number };
+  } | null;
+}
+
 export const api = {
   register: (email: string, password: string, lordName: string, worldId?: string) =>
     post<{ token: string }>('/auth/register', { email, password, lordName, worldId }),
@@ -1288,21 +1316,37 @@ export const api = {
     post<{ iptal: boolean; iade: number }>(`/esya-pazari/siparis/${id}/iptal`),
   esyaKasaAl: () => post<{ alinan: number; kalan: number }>('/esya-pazari/kasa/al'),
 
-  /** Araştırma ağacı: düğüm durumları, ilerleme, süren araştırma. */
+  /** Araştırma ağacı: sekmeler, çağlar, büyük seçimler, düğüm durumları, yuvalar. */
   arastirma: () =>
     request<{
       dallar: ArastirmaDurumu[];
+      /** Sekme = dal. `sutunlar` sütun başlıkları; düğümün `sutun`u buraya indis. */
+      sekmeler: { key: string; ad: string; ozet: string; sutunlar: string[] }[];
+      caglar: ArastirmaCagi[];
+      gruplar: ArastirmaGrubuDto[];
       tamamlanan: string[];
       ilerleme: { biten: number; toplam: number };
+      lordSeviyesi: number;
       esZamanli: number;
-      /** Süren araştırmaların hepsi — kütüphane birden çoğuna izin veriyor. */
-      surenler: { id: string; key: string | null; ad: string; finishAt: string }[];
-      suren: { id: string; key: string | null; ad: string; finishAt: string } | null;
+      /** Yuvaların kaynağı: kütüphane seviyesi ve araştırmadan gelen. */
+      yuva: { kutuphane: number; arastirma: number };
+      /** Süren araştırmaların hepsi, en erken biteni önce. */
+      surenler: SurenArastirma[];
+      suren: SurenArastirma | null;
     }>('/arastirma'),
   arastirmaBaslat: (key: string) =>
-    post<{ id: string; finishAt: string; ad: string }>('/arastirma', { key }),
+    post<{ id: string; finishAt: string; ad: string; erken: boolean }>('/arastirma', { key }),
   arastirmaIptal: (id: string) =>
     request<{ iptal: boolean; iade: number }>(`/arastirma/${id}`, { method: 'DELETE' }),
+  /** Dışlayan bir seçimi bırakır: yolun düğümleri silinir, yarısı geri gelir. */
+  arastirmaYolBirak: (grup: string) =>
+    post<{
+      grup: string;
+      yol: string;
+      silinen: string[];
+      iade: { altin: number; demir: number; erzak: number };
+      sonrakiDegisim: string;
+    }>('/arastirma/yol-birak', { grup }),
 
   /** Akın: beş NPC haritası, on grup, sahadaki ordular ve son sonuçlar. */
   akin: () =>

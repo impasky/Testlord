@@ -580,7 +580,9 @@ export function App() {
                 onKapiAc={kapiAc}
               />
             )}
-            {kapi === 'arastirma' && <Arastirma depoTavani={lord.storageCapacity} />}
+            {kapi === 'arastirma' && (
+              <Arastirma depoTavani={lord.storageCapacity} kaynak={lord.resources} />
+            )}
             {kapi === 'ittifak' && <Ittifak lordId={lord.id} />}
             {kapi === 'medeniyet' && <Medeniyet onGit={(e) => setSekme(e as typeof sekme)} />}
             {kapi === 'generaller' && <Generaller onGuncelle={tazele} />}

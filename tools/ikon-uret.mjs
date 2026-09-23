@@ -61,6 +61,7 @@ const KULLANILAN = {
   sohret: 'laurel-crown',
   kapali: 'cross-mark',
   onay: 'check-mark',
+  kilit: 'padlock',
   goz: 'all-seeing-eye',
   artı: 'heart-plus',
   sancak: 'vertical-banner',

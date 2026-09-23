@@ -3,7 +3,7 @@ LORDLAR ÇAĞI — ÇEVİRİ 3/3: KUYRUK  (KALANLAR)
 Sunucu hataları ve bildirimleri. Oyuncu bunları ancak bir şey ters gidince
 görüyor; en sona bırakılabilir ama atlanamaz.
 
-Bu dosyada 25 satır var — çevrilmiş olanlar çıkarıldı.
+Bu dosyada 30 satır var — çevrilmiş olanlar çıkarıldı.
 
 NASIL ÇEVİRİLİR
   Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.
@@ -35,7 +35,7 @@ NASIL ÇEVİRİLİR
 
 ==========================================================================
 
---- Sunucu mesajları (25) ---
+--- Sunucu mesajları (30) ---
 
 2243. Bu bildirim adresi desteklenmiyor.
 2244. Çok fazla hatalı deneme. {0} dakika sonra yeniden dene ya da parolanı sıfırla.
@@ -62,3 +62,8 @@ NASIL ÇEVİRİLİR
 2364. Pazar emrin eşleşmiyor
 2371. {0} ilanın fiyat bandının dışında kaldı; bu hâliyle satılmaz. Pazardan fiyatını güncelleyebilirsin.
 2372. {0} ön siparişin fiyat bandının dışında kaldı; bu hâliyle eşleşmez. Pazardan fiyatını güncelleyebilirsin.
+2447. {0} gün {1} saat
+2448. Böyle bir seçim yok.
+2449. Bu seçimde bıraktığın bir yol yok.
+2450. Bu seçimi {0} sonra değiştirebilirsin.
+2451. Önce süren {0} araştırmasını bitir ya da iptal et.
