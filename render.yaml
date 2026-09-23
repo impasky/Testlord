@@ -85,6 +85,17 @@ services:
       - key: EPOSTA_GONDEREN
         sync: false
 
+      # Push bildirimi (docs/05). Yerelde `pnpm push-anahtari` ile bir çift
+      # üret, iki yarıyı Render panelinde gir. Boş kalırsa bildirim kapalıdır
+      # ve arayüzde düğme hiç çıkmaz. Gizli yarıyı depoya yazma; değiştirmek
+      # bütün abonelikleri geçersiz kılar.
+      - key: VAPID_ACIK_ANAHTAR
+        sync: false
+      - key: VAPID_GIZLI_ANAHTAR
+        sync: false
+      - key: VAPID_ILETISIM
+        sync: false
+
       # UYGULAMA_URL verilmezse Render'ın kendi dış adresi kullanılır;
       # kendi alan adını bağladığında burayı onunla doldur.
       - key: UYGULAMA_URL

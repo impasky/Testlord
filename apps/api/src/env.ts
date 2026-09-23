@@ -66,7 +66,19 @@ const schema = z.object({
   VAPID_ILETISIM: z.string().default('mailto:bildirim@lordlarcagi.local'),
 });
 
-const parsed = schema.safeParse(process.env);
+/*
+ * BOŞ değer = verilmemiş.
+ *
+ * Barındırma panelleri boş bırakılan alanı çoğu zaman "" olarak geçiriyor
+ * (render.yaml'daki `sync: false` alanları gibi). Zod'un varsayılanı yalnız
+ * `undefined`'da devreye giriyor; "" ise varsayılanı ezip geçiyordu:
+ * `UYGULAMA_URL ?? RENDER_EXTERNAL_URL` boş dizeyi seçip parola sıfırlama
+ * bağlantılarını kırıyor, boş `VAPID_ILETISIM` push'u açılışta düşürüyordu.
+ */
+const verilenler = Object.fromEntries(
+  Object.entries(process.env).filter(([, deger]) => deger !== undefined && deger.trim() !== ''),
+);
+const parsed = schema.safeParse(verilenler);
 if (!parsed.success) {
   console.error('Ortam değişkenleri geçersiz:');
   for (const issue of parsed.error.issues) {
