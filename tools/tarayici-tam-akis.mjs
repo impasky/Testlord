@@ -236,11 +236,22 @@ const hedef = harita.regions
  * Hedefin SAHİPSİZ olması şart: saldırı akışı ancak alınabilir bir bölge
  * için açılıyor. Tür `hedef`ten geliyor, yani yukarıdaki ölçütü (tahttan
  * uzak, sahipsiz, kale değil) sağlayan bölgenin türü.
+ *
+ * Aday işaretçiler SUNUCUNUN listesinden, `fethedilebilirMi`yi geçen bu
+ * türdeki her bölge (savas-raporu-testi'nin yolu). Önce haritadan
+ * "sahipsiz" diye süzülüyordu; çekirdekler de sahipsiz görünüyor, yani
+ * lordun doğduğu yere göre ilk dokunulabilir şehir bir çekirdek
+ * çıkabiliyordu. O zaman Saldır kapalı ve test yürüyüş isteğini on beş
+ * saniye bekleyip kalıyordu — yerelde Karaorman'ın çekirdek şehirlerinde
+ * böyle oldu. tools/lib/hedef.mjs'deki dersin gözden kaçan bir kopyası.
  */
 const hedefTipi = hedef?.type ?? 'koy';
+const uygunlar = harita.regions.filter((r) => r.type === hedefTipi && fethedilebilirMi(r));
 const dokunulan = await bolgeyeDokun(
   page,
-  `[data-bolge][aria-label*="— ${hedefTipi},"][aria-label*="sahipsiz"]`,
+  uygunlar.length
+    ? uygunlar.map((r) => `[data-bolge="${r.id}"]`).join(',')
+    : `[data-bolge][aria-label*="— ${hedefTipi},"][aria-label*="sahipsiz"]`,
 );
 kontrol(
   'Sığdırılmış haritada dokunulabilir, sahipsiz bir hedef var',
