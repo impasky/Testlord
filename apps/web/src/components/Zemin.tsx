@@ -43,6 +43,15 @@ const ZEMINI_OLAN = new Set([
   'arastirma',
   'akin',
   'ittifak',
+  /*
+   * Pazar'ın kendi resmi henüz üretilmedi; şerit o gelene kadar mevcut
+   * sanattan kesildi: `bolgeler/sehir_3`teki çarşı meydanı, öteki kapı
+   * şeritleri gibi biraz karartılmış. Kapı eskiden başlıksız açılıyordu —
+   * Demirhane'den Pazar'a geçen oyuncu bir mekândan boş bir forma
+   * düşüyordu. Asıl görsel gelince `gorsel-koy.py zeminler pazar=...`
+   * aynı dosyanın üstüne yazıyor, kod değişmiyor.
+   */
+  'pazar',
 ]);
 
 export function Zemin({

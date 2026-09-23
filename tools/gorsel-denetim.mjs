@@ -34,6 +34,16 @@ function iyi(ekran, ne) {
   console.log(`  [TEMİZ] ${ekran}: ${ne}`);
 }
 
+/**
+ * Kaynaktaki bir `new Set([...])` listesinin tırnaklı öğeleri. Yorumlar
+ * önce ayıklanıyor: listedeki bir notun kesme işareti ("Pazar'ın")
+ * tırnak sayılıyor ve sahte öğeler üretiyordu.
+ */
+function listeOgeleri(blok) {
+  const yorumsuz = blok.replace(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, '');
+  return new Set([...yorumsuz.matchAll(/'([^']+)'/g)].map((m) => m[1]));
+}
+
 const damga = Date.now();
 const { token } = await kayitOl(API, {
   email: `gd${damga}@lordlar.dev`,
@@ -400,7 +410,7 @@ if (yeniToken) {
   );
   const kaynak = readFileSync('apps/web/src/components/Zemin.tsx', 'utf8');
   const blok = kaynak.match(/const ZEMINI_OLAN = new Set\(\[([^\]]*)\]/s)?.[1] ?? '';
-  const liste = new Set([...blok.matchAll(/'([^']+)'/g)].map((m) => m[1]));
+  const liste = listeOgeleri(blok);
   // 'giris' tam ekran zemin (TamZemin) ve şerit listesinde olmamalı.
   klasor.delete('giris');
 
@@ -444,7 +454,7 @@ if (yeniToken) {
   );
   const kaynak = readFileSync('apps/web/src/screens/Harita.tsx', 'utf8');
   const blok = kaynak.match(/const AFISI_OLAN = new Set\(\[([^\]]*)\]/s)?.[1] ?? '';
-  const liste = new Set([...blok.matchAll(/'([^']+)'/g)].map((m) => m[1]));
+  const liste = listeOgeleri(blok);
 
   const eksik = [...turler].filter((k) => !liste.has(k));
   const fazla = [...liste].filter((k) => !turler.has(k));
@@ -487,7 +497,7 @@ if (yeniToken) {
   );
   const kaynak = readFileSync('apps/web/src/screens/Sehir.tsx', 'utf8');
   const blok = kaynak.match(/const SPRITE_OLAN = new Set<string>\(\[([^\]]*)\]/s)?.[1] ?? '';
-  const liste = new Set([...blok.matchAll(/'([^']+)'/g)].map((m) => m[1]));
+  const liste = listeOgeleri(blok);
 
   const eksik = [...klasor].filter((k) => !liste.has(k));
   const fazla = [...liste].filter((k) => !klasor.has(k));

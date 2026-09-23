@@ -72,7 +72,7 @@ export function SavunmaDuzeni() {
       </div>
 
       {acik && asker > 0 && (
-        <div className="mt-3 border-t border-cerceve/50 pt-3">
+        <div className="mt-3 border-t border-kenar/50 pt-3">
           <DizilimIzgarasi
             ordu={garnizon}
             dizilim={dizilim}

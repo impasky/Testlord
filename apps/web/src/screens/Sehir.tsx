@@ -514,7 +514,7 @@ export function Sehir({
             {tasinabilir.map((t) => (
               <div
                 key={t.bolgeId}
-                className="flex items-center justify-between gap-2 rounded-lg border border-kenar bg-siyah/20 p-2"
+                className="flex items-center justify-between gap-2 rounded-lg border border-kenar bg-black/20 p-2"
                 data-tasinabilir={t.bolgeId}
               >
                 <div className="min-w-0">

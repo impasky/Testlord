@@ -251,37 +251,44 @@ export function KazanKaybet({
 
 export type Nadirlik = 'siradan' | 'usta' | 'nadir' | 'efsanevi' | 'kadim';
 
+/*
+ * Renkler CSS token'larından (`--color-nadir-*`) okunuyor, burada ikinci
+ * kez yazılmıyor. Önce ayrı hex değerleriydi ve ayrışmışlardı: erişim
+ * denetiminde token'lar kontrast için açıldı (efsanevi #b57fff), buradaki
+ * kopya eski koyu tonda kaldı (#a76bff) — aynı nadirlik rozette bir,
+ * sınıfla boyanan metinde başka renkteydi.
+ */
 export const NADIRLIK: Record<
   Nadirlik,
   { ad: string; renk: string; sinif: string; kenar: string }
 > = {
   siradan: {
     ad: 'Sıradan',
-    renk: '#9aa0a6',
+    renk: 'var(--color-nadir-siradan)',
     sinif: 'text-nadir-siradan',
     kenar: 'border-nadir-siradan/50',
   },
   usta: {
     ad: 'Usta işi',
-    renk: '#3ddc84',
+    renk: 'var(--color-nadir-usta)',
     sinif: 'text-nadir-usta',
     kenar: 'border-nadir-usta/50',
   },
   nadir: {
     ad: 'Nadir',
-    renk: '#4a9eff',
+    renk: 'var(--color-nadir-nadir)',
     sinif: 'text-nadir-nadir',
     kenar: 'border-nadir-nadir/50',
   },
   efsanevi: {
     ad: 'Efsanevi',
-    renk: '#a76bff',
+    renk: 'var(--color-nadir-efsanevi)',
     sinif: 'text-nadir-efsanevi',
     kenar: 'border-nadir-efsanevi/50',
   },
   kadim: {
     ad: 'Kadim',
-    renk: '#f5b731',
+    renk: 'var(--color-nadir-kadim)',
     sinif: 'text-nadir-kadim',
     kenar: 'border-nadir-kadim/50',
   },
@@ -289,6 +296,17 @@ export const NADIRLIK: Record<
 
 export function nadirlikRengi(n: string): string {
   return NADIRLIK[n as Nadirlik]?.renk ?? NADIRLIK.siradan.renk;
+}
+
+/**
+ * Nadirliğin çerçeve parıltısı (`styles.css` → `.parilti-*`): yalnız
+ * efsanevi ve kadim. Ötekiler boş döner — parıltı herkesteyse kimseyi
+ * ayırmaz.
+ */
+export function nadirlikParlamasi(n: string): string {
+  if (n === 'efsanevi') return 'parilti-efsanevi';
+  if (n === 'kadim') return 'parilti-kadim';
+  return '';
 }
 
 /* ---------------- Kart ---------------- */

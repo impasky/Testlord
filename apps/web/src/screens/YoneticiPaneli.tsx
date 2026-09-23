@@ -60,7 +60,7 @@ export function YoneticiPaneli() {
             onChange={(e) => setTerim(e.target.value)}
             placeholder="Lord adı"
             aria-label="Lord adı"
-            className="min-w-0 flex-1 rounded-lg border border-kenar bg-koyu2 px-3 py-2 text-[13px]"
+            className="min-w-0 flex-1 rounded-lg border border-kenar oyuk px-3 py-2 text-[13px]"
           />
           {/* `type="submit"`: Buton varsayılanı "button" ve o hâliyle
               formu göndermiyor — Enter çalışıyor, düğme çalışmıyordu. */}
@@ -221,7 +221,7 @@ function OyuncuDosyasi({
           onChange={(e) => setSebep(e.target.value)}
           placeholder="Sebep (oyuncuya gösterilir)"
           aria-label="Sebep"
-          className="w-full rounded-lg border border-kenar bg-koyu2 px-3 py-2 text-[13px]"
+          className="w-full rounded-lg border border-kenar oyuk px-3 py-2 text-[13px]"
         />
 
         <p className="mt-2.5 mb-1 text-[11px] text-sonuk">SOHBETTE SUSTUR</p>

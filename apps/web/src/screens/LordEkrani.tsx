@@ -34,6 +34,7 @@ import {
   Kart,
   Rozet,
   formatSayi,
+  nadirlikParlamasi,
   nadirlikRengi,
 } from '../components/ui';
 import { Cumle } from '../components/Cumle';
@@ -643,7 +644,11 @@ export function LordEkrani({
                 // şikâyetlerinden biri buydu — "gücümü en yüksek olanı kuşan
                 // dedim, gücüm arttı, eee ne oldu şimdi". Sayı arttığını
                 // görmek, bir şey kuşandığını görmekle aynı şey değil.
-                <Kart key={slot} className="relative aspect-square p-0" vurgu={renk}>
+                <Kart
+                  key={slot}
+                  className={`relative aspect-square p-0 ${nadirlikParlamasi(it.rarity)}`}
+                  vurgu={renk}
+                >
                   <Gorsel
                     tur="ekipman"
                     ad={`${slot}_t${it.tier}`}

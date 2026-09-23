@@ -21,7 +21,7 @@ import {
 } from '../api/client';
 import { eYonelme, inIlgi } from '../components/ekler';
 import { hisOnay, hisRet } from '../components/hisGeriBildirimi';
-import { IkonAltin, IkonDemir, IkonSure, IkonNavDemirhane } from '../components/Ikonlar';
+import { IkonNavDemirhane } from '../components/Ikonlar';
 import {
   AltSekmeler,
   Bolum,
@@ -32,12 +32,15 @@ import {
   Iskelet,
   Kart,
   KuyrukSeridi,
+  Maliyet,
   NADIRLIK,
   Rozet,
   SonucSatiri,
+  Sure,
   formatKalan,
   formatSayi,
   kaynakEngeli,
+  nadirlikParlamasi,
   nadirlikRengi,
   type Nadirlik,
 } from '../components/ui';
@@ -212,7 +215,7 @@ function EsyaKarti({
             kalır; envanter yine okunur. Demirhane bugüne kadar tamamen
             sayıdan ibaretti. */}
         <div
-          className="oyuk flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border-2"
+          className={`oyuk flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 ${nadirlikParlamasi(item.rarity)}`}
           style={{ borderColor: `color-mix(in srgb, ${renk} 55%, transparent)` }}
         >
           <Gorsel
@@ -472,42 +475,48 @@ export function Demirhane({
 
             {secili && (
               <>
-                <div className="oyuk mb-3 rounded-xl p-3">
-                  <div className="tabular mb-2 flex flex-wrap gap-x-3 gap-y-1 text-[12px] text-solgun">
-                    <span
-                      className={
-                        secili.cost.altin > lord.resources.altin
-                          ? 'text-kirmizi'
-                          : 'text-kaynak-altin'
-                      }
-                    >
-                      <IkonAltin boyut={13} /> {formatSayi(secili.cost.altin)}
-                    </span>
-                    <span
-                      className={
-                        secili.cost.demir > lord.resources.demir
-                          ? 'text-kirmizi'
-                          : 'text-kaynak-demir'
-                      }
-                    >
-                      <IkonDemir boyut={13} /> {formatSayi(secili.cost.demir)}
-                    </span>
-                    <span>
-                      <IkonSure boyut={13} /> {formatKalan(secili.durationSec * 1000)}
-                    </span>
+                <div className="oyuk mb-3 flex gap-3 rounded-xl p-3">
+                  {/* Ne dövüleceği: seçilen yuva ve kademenin resmi. Kutu
+                      önce yalnız sayıydı; "T3 Kalkan" oyuncunun kafasında
+                      bir şeye dönüşmüyordu, oysa aynı resim envanterde
+                      zaten duruyordu. Nadirlik henüz belli değil, o yüzden
+                      çerçeve nötr. */}
+                  <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-kenar-acik bg-gece">
+                    <Gorsel
+                      tur="ekipman"
+                      ad={`${slot}_t${tier}`}
+                      alt={`${SLOT_ADI[slot]} T${tier}`}
+                      boyut={64}
+                      className="h-full w-full"
+                      yedek={<span className="baslik text-[15px] text-solgun">{`T${tier}`}</span>}
+                    />
                   </div>
-                  <div className="flex flex-wrap gap-x-2.5 gap-y-1 text-[11px]">
-                    {Object.entries(secili.rarityTable)
-                      .filter(([, p]) => p > 0)
-                      .map(([r, p]) => (
-                        <span key={r} style={{ color: nadirlikRengi(r) }}>
-                          {NADIRLIK[r as Nadirlik]?.ad} %{Math.round(p * 100)}
-                        </span>
-                      ))}
+                  <div className="min-w-0 flex-1">
+                    {/* Ortak fiyat etiketi ve süre (Kışla, Şehir de böyle).
+                        Elle yazılmış satırda simge BLOK çiziliyordu (svg
+                        taban stili) ve her simge sayısının üstünde,
+                        ayrı satırda duruyordu. */}
+                    <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                      <Maliyet
+                        altin={secili.cost.altin}
+                        demir={secili.cost.demir}
+                        kaynaklar={lord.resources}
+                      />
+                      <Sure>{formatKalan(secili.durationSec * 1000)}</Sure>
+                    </div>
+                    <div className="flex flex-wrap gap-x-2.5 gap-y-1 text-[11px]">
+                      {Object.entries(secili.rarityTable)
+                        .filter(([, p]) => p > 0)
+                        .map(([r, p]) => (
+                          <span key={r} style={{ color: nadirlikRengi(r) }}>
+                            {NADIRLIK[r as Nadirlik]?.ad} %{Math.round(p * 100)}
+                          </span>
+                        ))}
+                    </div>
+                    <p className="mt-2 text-[11px] text-sonuk">
+                      Nadirlik üretim anında rastgele belirlenir.
+                    </p>
                   </div>
-                  <p className="mt-2 text-[11px] text-sonuk">
-                    Nadirlik üretim anında rastgele belirlenir.
-                  </p>
                 </div>
 
                 <Buton

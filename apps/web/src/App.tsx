@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react';
 import { ApiError, api, getToken, setToken, type MeResponse } from './api/client';
 import { BaglantiDurumu } from './components/BaglantiDurumu';
+import { SeviyeKutlamasi } from './components/SeviyeKutlamasi';
 import { MobilKabuk } from './components/MobilKabuk';
 import { KapiPaneli } from './components/KapiPaneli';
 
@@ -455,6 +456,7 @@ export function App() {
       }
     >
       <BaglantiDurumu sunucuyaUlasilamiyor={isFetching && failureCount > 0} />
+      <SeviyeKutlamasi seviye={lord.level} />
       {/* Öğretici her şeyin üstünde: ilk giren oyuncu önce oyunun ne
           olduğunu okuyor, sonra ekranı görüyor. */}
       <Ogretici

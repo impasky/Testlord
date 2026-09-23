@@ -65,6 +65,56 @@ const CUBUK: { key: AltSekme; ad: string; Ikon: typeof IkonNavMalikane }[] = [
   { key: 'lord', ad: 'Lord', Ikon: IkonNavLord },
 ];
 
+/** Sayma animasyonunun süresi. Ödülün "geldiğini" görmeye yetecek kadar, beklemeyecek kadar kısa. */
+const SAYMA_MS = 700;
+
+function hareketAzaltilmis(): boolean {
+  return (
+    typeof window !== 'undefined' &&
+    !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+  );
+}
+
+/**
+ * Sayıyı SIÇRAMALARDA sayarak gösterir.
+ *
+ * Ödül alındığında kaynak sayısı bir karede 3.080 artıyordu; göz onu
+ * kaçırıyor, oyuncu ödülün geldiğini ancak rakamı hatırlıyorsa fark
+ * ediyordu. Artık sıçrama 0,7 saniyede sayılıyor ve artarken yeşil.
+ * Eşiğin altındaki değişim (saniyelik gelir) doğrudan yazılıyor — her
+ * saniye sayan bir çubuk gürültü olurdu. Hareket azaltılmışsa hiç
+ * saymıyor.
+ */
+function useSayan(hedef: number, esik: number): { deger: number; yon: -1 | 0 | 1 } {
+  const [gosterilen, setGosterilen] = useState(hedef);
+  const [yon, setYon] = useState<-1 | 0 | 1>(0);
+  const simdiki = useRef(hedef);
+  useEffect(() => {
+    const bas = simdiki.current;
+    const fark = hedef - bas;
+    if (Math.abs(fark) < esik || hareketAzaltilmis()) {
+      simdiki.current = hedef;
+      setGosterilen(hedef);
+      setYon(0);
+      return;
+    }
+    setYon(fark > 0 ? 1 : -1);
+    const t0 = performance.now();
+    let id = 0;
+    const adim = (t: number) => {
+      const k = Math.min(1, Math.max(0, (t - t0) / SAYMA_MS));
+      const v = bas + fark * (1 - Math.pow(1 - k, 3));
+      simdiki.current = v;
+      setGosterilen(v);
+      if (k < 1) id = requestAnimationFrame(adim);
+      else setYon(0);
+    };
+    id = requestAnimationFrame(adim);
+    return () => cancelAnimationFrame(id);
+  }, [hedef, esik]);
+  return { deger: gosterilen, yon };
+}
+
 /** Kaynak sayacı: sunucu değerinden itibaren saniye saniye ilerler. */
 /**
  * Doluluk çubuğunun görünmeye başladığı oran.
@@ -90,14 +140,29 @@ function KaynakSayaci({
   ad: string;
 }) {
   const [, tik] = useState(0);
-  const [baslangic] = useState(() => Date.now());
+  /*
+   * Canlı sayacın TABANI: sunucu değerinin ve ALINDIĞI anın ikilisi.
+   *
+   * Önce taban yalnız bileşenin ilk açıldığı andı. Oysa `/me` 30 saniyede
+   * bir yenileniyor ve sunucu değeri o ana kadarki geliri zaten içeriyor:
+   * sayaç o geliri İKİNCİ kez ekliyordu. Hata oturum boyunca büyüyordu —
+   * ölçüldü, saatte 610 altın gelirli lordda 95 saniyede +16, bir saatte
+   * +610. Oyuncu kesesinde olmayan altını görüp "yetmiyor" uyarısına
+   * şaşırırdı. Yeni değer gelince taban da yeni değer oluyor (render
+   * sırasında: efektle yapsak bir kare boyunca eski taban görünürdü).
+   */
+  const [taban, setTaban] = useState(() => ({ deger, zaman: Date.now() }));
+  if (taban.deger !== deger) setTaban({ deger, zaman: Date.now() });
   useEffect(() => {
     const id = setInterval(() => tik((t) => t + 1), 1000);
     return () => clearInterval(id);
   }, []);
 
-  const gecen = (Date.now() - baslangic) / 3_600_000;
+  const gecen = (Date.now() - taban.zaman) / 3_600_000;
   const canli = Math.min(tavan, Math.max(0, deger + saatlik * gecen));
+  // Sıçramalar (ödül, harcama, ganimet) sayılarak gösteriliyor; saniyelik
+  // akış olduğu gibi. Eşik: bir dakikalık gelirden büyük değişim.
+  const sayan = useSayan(canli, Math.max(20, Math.abs(saatlik) / 60));
   const dolu = canli >= tavan;
   /**
    * Kaynak sütununun DURUMU.
@@ -171,7 +236,13 @@ function KaynakSayaci({
         <span className="shrink-0" style={{ color: renk }}>
           {ikon}
         </span>
-        <span className="tabular truncate text-[13px] font-bold">{kisaSayi(canli)}</span>
+        <span
+          className={`tabular truncate text-[13px] font-bold transition-colors duration-300 ${
+            sayan.yon > 0 ? 'text-yesil' : ''
+          }`}
+        >
+          {kisaSayi(sayan.deger)}
+        </span>
       </div>
       <div className="mt-1 flex items-center gap-1">
         {cubukGerek && (

@@ -23,6 +23,7 @@ import {
 import { Cumle } from '../components/Cumle';
 import { hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { Pazar } from '../components/Pazar';
+import { Zemin } from '../components/Zemin';
 import {
   AltSekmeler,
   Bolum,
@@ -32,6 +33,7 @@ import {
   Kart,
   Rozet,
   formatSayi,
+  nadirlikParlamasi,
   nadirlikRengi,
 } from '../components/ui';
 
@@ -53,6 +55,7 @@ export function EsyaPazari({ lordSeviyesi }: { lordSeviyesi: number }) {
 
   return (
     <div className="space-y-4">
+      <Zemin ad="pazar" baslik="Pazar" altyazi="Tezgâhlar, tüccarlar ve kasan" />
       <Kasa d={d} />
       <AltSekmeler
         sekmeler={[
@@ -246,7 +249,7 @@ function Secici({
             onClick={() => onSec(s.key)}
             aria-pressed={deger === s.key}
             className={`min-h-10 min-w-10 rounded-lg border px-2.5 py-1.5 text-[12px] ${
-              deger === s.key ? 'border-altin bg-altin/15 text-altin' : 'border-cerceve text-metin'
+              deger === s.key ? 'border-altin bg-altin/15 text-altin' : 'border-kenar text-parsomen'
             }`}
             style={deger !== s.key && s.renk ? { color: s.renk } : undefined}
           >
@@ -270,7 +273,11 @@ function UrunSatiri({
   onSec: () => void;
 }) {
   return (
-    <Kart className="px-3 py-2.5" vurgu={nadirlikRengi(urun.rarity)} onClick={onSec}>
+    <Kart
+      className={`px-3 py-2.5 ${nadirlikParlamasi(urun.rarity)}`}
+      vurgu={nadirlikRengi(urun.rarity)}
+      onClick={onSec}
+    >
       <div className="flex items-center justify-between gap-2">
         <span className="baslik truncate text-[13px]" style={{ color: nadirlikRengi(urun.rarity) }}>
           {ad}

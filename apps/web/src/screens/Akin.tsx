@@ -27,7 +27,15 @@ import {
   type AkinHaritaDurumu,
   type LordState,
 } from '../api/client';
-import { AKIN_YOLU, UNIT_TYPES, unitName, type Army, type UnitType } from '@lordlar/shared';
+import {
+  AKIN_YOLU,
+  UNIT_TYPES,
+  YUVA_ADI,
+  unitName,
+  type Army,
+  type EquipSlot,
+  type UnitType,
+} from '@lordlar/shared';
 import {
   Bolum,
   Buton,
@@ -37,6 +45,7 @@ import {
   Kart,
   formatKalan,
   formatSayi,
+  nadirlikParlamasi,
   nadirlikRengi,
 } from '../components/ui';
 import { Gorsel } from '../components/Gorsel';
@@ -221,12 +230,12 @@ export function Akin({ lord, onGuncelle }: { lord: LordState; onGuncelle: () => 
                     />
                     {s.dusenParca && (
                       <span
-                        className="flex items-center gap-1.5 rounded-lg border px-1.5 py-1"
+                        className={`flex items-center gap-1.5 rounded-lg border px-1.5 py-1 ${nadirlikParlamasi(s.dusenParca.rarity)}`}
                         style={{
                           borderColor: nadirlikRengi(s.dusenParca.rarity),
                           background: 'rgba(0,0,0,0.25)',
                         }}
-                        title={`${s.dusenParca.slot} · T${s.dusenParca.tier}`}
+                        title={`${YUVA_ADI[s.dusenParca.slot as EquipSlot] ?? s.dusenParca.slot} · T${s.dusenParca.tier}`}
                       >
                         <Gorsel
                           tur="ekipman"

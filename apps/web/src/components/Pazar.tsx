@@ -127,7 +127,7 @@ export function Pazar() {
                   diye yarım yazıyordu.
                 */
                 className={`flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-lg border px-1.5 py-1.5 text-[12px] ${
-                  veren === t ? 'border-altin bg-altin/15 text-altin' : 'border-cerceve text-metin'
+                  veren === t ? 'border-altin bg-altin/15 text-altin' : 'border-kenar text-parsomen'
                 }`}
               >
                 <span className="flex items-center gap-1">
@@ -151,7 +151,7 @@ export function Pazar() {
                 type="button"
                 onClick={() => alanSec(t)}
                 className={`flex flex-1 items-center justify-center gap-1 rounded-lg border px-2 py-1.5 text-[12px] ${
-                  alan === t ? 'border-yesil bg-yesil/15 text-yesil' : 'border-cerceve text-metin'
+                  alan === t ? 'border-yesil bg-yesil/15 text-yesil' : 'border-kenar text-parsomen'
                 }`}
               >
                 <KaynakIkonu tur={t} />

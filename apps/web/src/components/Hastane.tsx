@@ -43,7 +43,7 @@ export function Hastane({ hastane, queues }: { hastane: Army; queues: QueueItem[
         {(Object.entries(hastane) as [string, number][])
           .filter(([, n]) => n > 0)
           .map(([tur, n]) => (
-            <span key={tur} className="flex items-center gap-1 text-[12px] text-metin">
+            <span key={tur} className="flex items-center gap-1 text-[12px] text-parsomen">
               <BirimIkonu tip={tur} boyut={14} />
               {unitName(tur as never)} <span className="text-solgun">{n}</span>
             </span>

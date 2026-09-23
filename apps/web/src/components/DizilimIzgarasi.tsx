@@ -260,7 +260,7 @@ export function DizilimIzgarasi({
               className={`flex touch-none items-center gap-1.5 rounded-lg border px-2 py-1.5 text-[12px] transition ${
                 secili
                   ? 'border-altin bg-altin/15 text-altin'
-                  : 'border-cerceve bg-koyu2 text-metin'
+                  : 'border-kenar bg-derin text-parsomen'
               }`}
             >
               <Gorsel
@@ -318,8 +318,8 @@ export function DizilimIzgarasi({
                   vurgu
                     ? 'border-altin bg-altin/20'
                     : birim
-                      ? 'border-cerceve bg-koyu2'
-                      : 'border-dashed border-cerceve/60 bg-koyu/40'
+                      ? 'border-kenar bg-derin'
+                      : 'border-dashed border-kenar/60 bg-oyuk/40'
                 }`}
                 aria-label={`${kareSatiri(i)}. satır, ${i + 1}. kare, ${birim ? unitName(birim) : 'boş'}`}
               >
@@ -381,7 +381,7 @@ export function DizilimIzgarasi({
           >{`${yuzde(etki.saldiri)} saldırı · ${yuzde(etki.savunma)} savunma`}</span>
         </div>
         {etki.satirlar.length > 0 && (
-          <ul className="mt-1.5 space-y-1 border-t border-cerceve/50 pt-1.5">
+          <ul className="mt-1.5 space-y-1 border-t border-kenar/50 pt-1.5">
             {etki.satirlar.map((s) => (
               <li key={s} className="text-[11px] leading-snug text-solgun">
                 {s}
@@ -410,13 +410,13 @@ export function DizilimIzgarasi({
                 secili
                   ? 'border-altin bg-altin/10'
                   : t.uygun
-                    ? 'border-cerceve bg-koyu2'
-                    : 'border-cerceve/40 bg-koyu/40 opacity-60'
+                    ? 'border-kenar bg-derin'
+                    : 'border-kenar/40 bg-oyuk/40 opacity-60'
               }`}
             >
               <div className="flex items-baseline justify-between gap-2">
                 <span
-                  className={`text-[13px] font-semibold ${secili ? 'text-altin' : 'text-metin'}`}
+                  className={`text-[13px] font-semibold ${secili ? 'text-altin' : 'text-parsomen'}`}
                 >
                   {t.ad}
                 </span>

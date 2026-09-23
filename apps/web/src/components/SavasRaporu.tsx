@@ -329,7 +329,7 @@ function NedenKarti({ savas, saldiranBenim }: { savas: BattleDto; saldiranBenim:
       </ul>
 
       {(duzen ?? []).length > 0 && (
-        <div className="mt-2.5 border-t border-cerceve/50 pt-2.5">
+        <div className="mt-2.5 border-t border-kenar/50 pt-2.5">
           <h4 className="baslik mb-1.5 text-[10px] text-solgun">Dizilim ve Taktik</h4>
           <ul className="space-y-1">
             {duzen!.map((satir, i) => (

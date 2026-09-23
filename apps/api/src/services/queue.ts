@@ -15,6 +15,9 @@ import {
   esZamanliLimit,
   kesifGecerlilikSn,
   rollCraftRarity,
+  unitName,
+  urunAdi,
+  B,
   rollUpgrade,
   upgradeCost,
   yakalanmaIhtimali,
@@ -35,6 +38,11 @@ import {
   tickLord,
 } from './lord.js';
 import { bolgeTahkimati } from './region.js';
+
+/** Donanım hattının oyuncuya görünen adı ("Silahlık"); bilinmeyen anahtar kendisi. */
+function hatAdi(line: string): string {
+  return (B.ordu_donanimi.hatlar as Record<string, { ad: string } | undefined>)[line]?.ad ?? line;
+}
 
 export type QueueKind =
   | 'train'
@@ -246,7 +254,8 @@ export async function resolveQueueItem(row: QueueRow): Promise<boolean> {
         await pushEvent(
           row.lordId,
           'kuyruk_bitti',
-          { mesaj: `${count} ${unitType} eğitimi tamamlandı.` },
+          // Ekranda ANAHTAR değil ad: "120 mizrakci" diye yazıyordu.
+          { mesaj: `${count} ${unitName(unitType)} eğitimi tamamlandı.` },
           tx,
         );
         break;
@@ -263,7 +272,8 @@ export async function resolveQueueItem(row: QueueRow): Promise<boolean> {
         await pushEvent(
           row.lordId,
           'kuyruk_bitti',
-          { mesaj: `T${tier} ${slot} üretildi: ${rarity}.` },
+          // Pazarla AYNI ad ("T2 Usta işi Silah"); önce "T2 silah üretildi: usta" idi.
+          { mesaj: `${urunAdi({ slot, tier, rarity, upgradeLevel: 0 })} üretildi.` },
           tx,
         );
         break;
@@ -307,7 +317,7 @@ export async function resolveQueueItem(row: QueueRow): Promise<boolean> {
         await pushEvent(
           row.lordId,
           'kuyruk_bitti',
-          { mesaj: `Ordu donanımı yükseldi: ${line} seviye ${gl.level + 1}.` },
+          { mesaj: `Ordu donanımı yükseldi: ${hatAdi(line)} seviye ${gl.level + 1}.` },
           tx,
         );
         break;

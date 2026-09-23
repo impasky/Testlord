@@ -254,6 +254,69 @@ her ekranda `buffered: true` ile kurunca on bir ekranın hepsi aynı sayıyı
 
 ---
 
+### 2.5 Cila turu: ham anahtar, eksik mekân, sessiz ödül
+
+Son dokunuş için bütün ekranlar yeniden gezildi — önce ekran görüntüleri,
+sonra kaynak. Yeni özellik yok; bulunanların hepsi var olan şeylerin
+yarım kalmış yerleri.
+
+**Ham anahtarlar ekrana sızıyordu.** Kuyruk bitince düşen bildirim
+"12 mizrakci eğitimi tamamlandı", "T1 silah üretildi: siradan", "Ordu
+donanımı yükseldi: silahlik" diyordu — ekranda veri anahtarı. Artık
+"12 Mızrakçı", "T1 Sıradan Silah üretildi" (Pazar'daki adla aynı) ve
+"Silahlık". `balance.json`'daki hat adları da Türkçe harfsizdi
+("Silahlik", "Zirhhane"); düzeltildi.
+
+**İki kapı mekânsızdı.** Manzara şeridi (§2.1) oyunun en güçlü parçası
+ama Pazar'da yoktu: Demirhane'nin ocağından çıkan oyuncu başlıksız bir
+forma düşüyordu. Pazar'ın kendi resmi üretilene kadar şerit mevcut
+sanattan kesildi (`bolgeler/sehir_3`teki çarşı meydanı); asıl görsel
+gelince `gorsel-koy.py zeminler pazar=…` aynı dosyanın üstüne yazıyor,
+kod değişmiyor. Demirhane'nin üretim kutusu da yalnız sayıydı; artık
+dövülecek parçanın resmini gösteriyor. Çerçevesi nötr, çünkü nadirlik
+dövülünce belli oluyor — nadirlik rengine boyamak tutulmayacak bir söz
+vermek olurdu. Fiyatı da artık Kışla'daki ortak fiyat etiketi yazıyor;
+elle yazılmış satırda her simge sayısının üstünde, ayrı satırda
+duruyordu.
+
+**Tanımsız renkler sessizce kayboluyordu.** Tailwind tanımadığı bir renk
+adına hata vermiyor, sınıfı hiç üretmiyor. `border-cerceve`, `text-metin`,
+`bg-koyu2` gibi karşılığı olmayan 25 sınıf sekiz dosyadaydı: Pazar'ın
+seçim düğmeleri metin renginde çerçeveyle çiziliyor, dizilim ızgarasının
+hücreleri zeminsiz kalıyordu. Okunurluk denetimi bunu göremezdi —
+kontrastı ölçüyor, kenarlığın hangi renkte olduğunu değil. Artık bir
+sınama (`apps/web/test/renkler.test.ts`) her renk sınıfını `styles.css`
+içindeki token'larla karşılaştırıyor.
+
+**Nadirlik rengi iki yerdeydi ve ayrışmıştı.** Erişim denetimi nadirlik
+token'larını kontrast için açmıştı (efsanevi `#b57fff`), `ui.tsx`
+içindeki kopya eski tonda kalmıştı (`#a76bff`): aynı eşya rozette bir,
+adında başka renkteydi. Artık tek kaynak CSS token'ı. Efsanevi ve kadim
+eşyanın çerçevesi ayrıca parlıyor, kadim olanı yavaşça "nefes alıyor":
+Demirhane envanteri, Lord'un kuşandıkları, Pazar satırları, akın
+ganimeti. Parıltı yalnız bu ikisinde — herkeste olsa kimseyi ayırmazdı.
+
+**Kaynak sayacı olmayan altını gösteriyordu.** Üst çubuktaki canlı sayaç
+geliri bileşenin ilk açıldığı andan itibaren ekliyordu; `/me` her 30
+saniyede yenilenip o ana kadarki geliri zaten içerdiği için aynı gelir iki
+kez sayılıyordu. Ölçüldü: saatte 610 altın gelirli lordda 95 saniyede +16,
+bir saatte +610. Oyuncu kesesinde olmayan altını görüyor, sonra "yetmiyor"
+uyarısına şaşırıyordu. Düzeltmeden sonra kayma 0.
+
+**Ödül sessizdi.** Ödül alınca kaynak bir karede binlerce artıyordu; göz
+kaçırıyordu. Artık sıçrama 0,7 saniyede sayılıyor ve sayarken yeşil —
+saniyelik gelir sayılmıyor, o gürültü olurdu. Seviye atlamayı da yalnız
+savaş raporu söylüyordu; görevden ya da akından atlayan oyuncu bunu üst
+çubuktaki rozetin sessizce değişmesinden anlıyordu. Artık üstte üç
+saniyelik bir kutlama beliriyor: dokunmayı engellemiyor ve seviyeyle açılan
+araştırma çağını söylüyor ("Araştırmada yeni çağ açıldı: …").
+
+Hareket azaltılmışsa (`prefers-reduced-motion`) sayı sayılmıyor, parıltı
+nefes almıyor, kutlama kıpırdamadan duruyor; bilgi aynı, yalnız hareket
+yok.
+
+---
+
 ## 3. Ölçüt
 
 Bir sonraki turda "daha iyi oldu mu" sorusunun cevabı şunlar:

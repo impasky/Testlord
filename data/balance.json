@@ -183,13 +183,13 @@
     "_aciklama": "Demirhane'de 3 hat, her biri 0-10 seviye. Ordu geneline yuzde bonus.",
     "hatlar": {
       "silahlik": {
-        "ad": "Silahlik",
+        "ad": "Silahlık",
         "etki": "ordu_saldiri",
         "seviye_basina": 0.03,
         "max_seviye": 10
       },
       "zirhhane": {
-        "ad": "Zirhhane",
+        "ad": "Zırhhane",
         "etki": "ordu_savunma",
         "seviye_basina": 0.03,
         "max_seviye": 10

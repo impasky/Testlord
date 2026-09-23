@@ -413,3 +413,80 @@ svg g[role='button']:focus-visible > path:first-of-type {
     transform: scale(1.045);
   }
 }
+
+/*
+ * Nadirlik parıltısı (docs/11 G4'ün eşya yüzü).
+ *
+ * Efsanevi ve kadim eşya envanterde, kuşam yuvasında, akın ganimetinde ve
+ * pazarda ötekilerle AYNI kutudaydı; farkı yalnız ince bir renk şeridi ve
+ * rozetteki yazı taşıyordu. Oysa bu iki nadirlik oyunun en seyrek anı
+ * (efsanevi %1, kadim yalnız yükseltmeyle): göz onları okumadan bulmalı.
+ *
+ * Efsanevi: sabit mor hale. Kadim: altın hale, yavaşça nefes alıyor —
+ * tek hareketli nadirlik o, hareket de ona ait bir işaret. Hareket
+ * azaltılmışsa hale durur, parıltı kalır.
+ */
+.parilti-efsanevi {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-nadir-efsanevi) 60%, transparent),
+    0 0 14px -2px color-mix(in srgb, var(--color-nadir-efsanevi) 55%, transparent);
+}
+.parilti-kadim {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-nadir-kadim) 70%, transparent),
+    0 0 16px -1px color-mix(in srgb, var(--color-nadir-kadim) 55%, transparent);
+  animation: kadim-nefes 3.2s ease-in-out infinite;
+}
+@keyframes kadim-nefes {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--color-nadir-kadim) 70%, transparent),
+      0 0 16px -1px color-mix(in srgb, var(--color-nadir-kadim) 55%, transparent);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--color-nadir-kadim) 90%, transparent),
+      0 0 22px 1px color-mix(in srgb, var(--color-nadir-kadim) 70%, transparent);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .parilti-kadim {
+    animation: none;
+  }
+}
+
+/*
+ * Seviye kutlaması (`SeviyeKutlamasi`): yukarıdan iner, durur, söner.
+ * Görünür hâl TABAN stilde; animasyon yalnız giriş ve çıkışı çiziyor.
+ * Hareket azaltılmışsa animasyon tamamen kalkıyor ve bildirim düz
+ * görünüp üç saniye sonra bileşenle birlikte gidiyor — genel kural
+ * yalnız süreyi kısaltsaydı son kare (saydam) hemen gelir ve bildirim
+ * hiç görülmezdi.
+ */
+.seviye-kutlama {
+  animation: seviye-kutlama 3.2s ease-out both;
+}
+@keyframes seviye-kutlama {
+  0% {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.96);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  85% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-6px) scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .seviye-kutlama {
+    animation: none;
+  }
+}
