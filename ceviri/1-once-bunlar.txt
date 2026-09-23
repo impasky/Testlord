@@ -3,7 +3,7 @@ LORDLAR ÇAĞI — ÇEVİRİ 1/3: OYUNU OYNANIR KILAN  (KALANLAR)
 Gezinme, düğmeler, kaynak ve birim adları, ilk saatin ekranları ve
 öğretici. Bu parti bitince oyun baştan sona oynanabilir.
 
-Bu dosyada 57 satır var — çevrilmiş olanlar çıkarıldı.
+Bu dosyada 0 satır var — çevrilmiş olanlar çıkarıldı.
 
 NASIL ÇEVİRİLİR
   Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.
@@ -34,69 +34,3 @@ NASIL ÇEVİRİLİR
   Bitince dosyayı olduğu gibi geri ver; gerisini ben hallederim.
 
 ==========================================================================
-
---- Oyun motoru (50) ---
-
-2249. Deponda {0} için yeterli yer yok. Önce biraz harca ya da Malikâne'yi yükselt.
-2250. Deponda yalnız {0} {1} yeri var. En fazla {2} {3} takas edebilirsin.
-2251. Miktar tam sayı olmalı.
-2330. {0} altın gerekiyor; kasanda ve deponda {1} var.
-2331. {0} ile {1} altın
-2332. Aynı anda en fazla {0} ilan açabilirsin.
-2333. Aynı anda en fazla {0} ön sipariş verebilirsin.
-2334. Aynı ürünü hem satıp hem alamazsın. Önce öteki emrini geri çek.
-2335. Bu eşya demirhanede yükseltiliyor. İş bitince satabilirsin.
-2336. Bu eşya zaten pazarda.
-2337. Bu ürüne zaten bir ön siparişin var. Fiyatını güncelleyebilirsin.
-2338. Bu ürünün zaten bir ilanın var. Önce o satılsın ya da geri çek.
-2339. Bugün en fazla {0} yeni emir verebilirsin. Yarın yenilenir.
-2340. Eşya pazarında alım satım
-2341. Fiyat {0} arasında olmalı.
-2342. Kuşandığın eşyayı satamazsın. Önce çıkar.
-2343. Ön siparişlerde bekleyen altın depo tavanını aşamaz. En fazla {0} altın daha bağlayabilirsin.
-2411. {0} ustalığı +{1}
-2412. {0} ustalığı: kozu {1} güçlü, bedeli {2} hafif.
-2413. {0}: {1} hücresinde başka düğüm var
-2414. {0}: {1} motora bağlı değil
-2415. {0}: {1} seçili. Bu yol kapalı.
-2416. {0}: anahtar iki kez
-2417. {0}: başka bir yolun düğümüne ({1}) bağlı
-2418. {0}: çağ {1} yok
-2419. {0}: grup {1} tanımsız
-2420. {0}: kapısı ({1}) çağının seviyesinden ({2}) önce
-2421. {0}: önkoşul {1} yok
-2422. {0}: önkoşulu {1} daha geç bir çağda
-2423. {0}: önkoşulu {1} daha yüksek kapılı
-2424. {0}: seçenek ama yolu yok
-2425. {0}: sütun {1} yok
-2426. {0}: yolu {1} hiçbir grubun seçeneği değil
-2427. +{0} araştırma yuvası
-2428. Altın üretimi +{0}
-2429. Araştırılıyor.
-2430. Araştırma +{0} hızlı
-2431. başka bir yol
-2433. Bina yapımı +{0} hızlı
-2434. Bu seçim
-2435. Çağından {0} seviye erken: süre +{1}
-2436. Çağının gerisindesin: süre −{0}
-2437. Demir üretimi +{0}
-2438. döngü: {0}
-2439. Erzak üretimi +{0}
-2440. Kuşatma
-2441. Lord seviyesi {0} gerekiyor. Erken araştırma seviye {1} ile açılır.
-2442. Milis
-2444. saldırısı
-2445. savunması
-
---- Öğretici (6) ---
-
-2373. İşine yaramayan eşyayı diyarındaki öteki lordlara satabilir, aradığını onlardan alabilirsin. Kimin sattığı görünmez; fiyat dar bir bantta oynar, satıştan %{0} vergi kesilir. Pazar binasından ya da Malikâne'den girilir.
-2408. : her birinden yalnız bir yol seçebilirsin. Sonradan değiştirebilirsin ama o yolun araştırmaları silinir, bedellerinin %{0}'i geri gelir ve aynı seçimi {1} gün değiştiremezsin.
-2409. {0} büyük seçim
-2410. {0} sekme, {1} çağ
-2432. Başta aynı anda {0} araştırma yürütebilirsin; Kütüphane ve bazı araştırmalar yuva ekler. Sıra senin kararın: önce ekonomiyi mi büyütürsün, orduyu mu? Vazgeçersen harcadığının %{1}'i geri gelir.
-2446. Seçimlerin seni öbür lordlardan ayırır. İki lord aynı seviyede olsa bile aynı olmaz.
-
---- Rehber ve ipuçları (1) ---
-
-2443. Parlak kutular şimdi başlatabileceklerin. Birine dokun: ne kazandırdığını, bedelini ve süresini gör.

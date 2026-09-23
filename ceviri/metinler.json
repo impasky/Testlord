@@ -155,7 +155,7 @@
   "tfc687484": {
     "grup": "arayuz",
     "tr": ", araştırmadan {0}",
-    "en": "",
+    "en": ", {0} from research",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:338"
     ]
@@ -412,7 +412,7 @@
   "t381449cb": {
     "grup": "arayuz",
     "tr": "{0} · kurayla",
-    "en": "",
+    "en": "{0} · by lot",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:417"
     ]
@@ -517,7 +517,7 @@
   "tb2c59732": {
     "grup": "arayuz",
     "tr": "{0} alıcı bekliyor · en yüksek {1} altın",
-    "en": "",
+    "en": "{0} [buyer|buyers] waiting · highest {1} gold",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:576"
     ]
@@ -555,7 +555,7 @@
   "te3dc4ecc": {
     "grup": "arayuz",
     "tr": "{0} altın emanette",
-    "en": "",
+    "en": "{0} gold in escrow",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:700"
     ]
@@ -563,7 +563,7 @@
   "t6b3f5f72": {
     "grup": "arayuz",
     "tr": "{0} altına güncelle",
-    "en": "",
+    "en": "Update to {0} gold",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:792"
     ]
@@ -571,7 +571,7 @@
   "t88daeb31": {
     "grup": "arayuz",
     "tr": "{0} altına kadar · {1}",
-    "en": "",
+    "en": "up to {0} gold · {1}",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:595"
     ]
@@ -579,7 +579,7 @@
   "t90d251aa": {
     "grup": "arayuz",
     "tr": "{0} altından · {1}",
-    "en": "",
+    "en": "from {0} gold · {1}",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:158"
     ]
@@ -603,7 +603,7 @@
   "t690eb6a7": {
     "grup": "arayuz",
     "tr": "{0} başladı.",
-    "en": "",
+    "en": "{0} started.",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:611"
     ]
@@ -662,7 +662,7 @@
   "t64000673": {
     "grup": "arayuz",
     "tr": "{0} çağı",
-    "en": "",
+    "en": "{0} era",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:438"
     ]
@@ -678,7 +678,7 @@
   "ta012b2a3": {
     "grup": "arayuz",
     "tr": "{0} değişecek. Bu yolun araştırmaları silinir ve bedellerinin %{1}'si geri gelir. Sonra {2} gün bu seçimi yeniden değiştiremezsin.",
-    "en": "",
+    "en": "{0} will change. This path's research is deleted and {1}% of its costs come back. Then you can't change this choice again for {2} [day|days].",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:904"
     ]
@@ -826,7 +826,7 @@
   "t44d91aca": {
     "grup": "arayuz",
     "tr": "{0} ilan kayıt kuyruğunda; ilk kura {1} sonra.",
-    "en": "",
+    "en": "{0} [listing|listings] in the registration queue; first draw in {1}.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:386"
     ]
@@ -1224,7 +1224,7 @@
   "t271a5a20": {
     "grup": "arayuz",
     "tr": "{0} yolunu bırak",
-    "en": "",
+    "en": "Leave the {0} path",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:857",
       "apps/web/src/screens/Arastirma.tsx:902"
@@ -1249,7 +1249,7 @@
   "tb55f393b": {
     "grup": "arayuz",
     "tr": "{0}: yalnız biri. Bunu seçersen {1} kapanır. Sonra değiştirmek istersen bu yolun araştırmaları silinir, bedellerinin %{2}'si geri gelir ve {3} gün yeniden değiştiremezsin.",
-    "en": "",
+    "en": "{0}: only one. If you choose this, {1} closes. If you want to change later, this path's research is deleted, {2}% of its costs come back and you can't change again for {3} [day|days].",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:812"
     ]
@@ -1265,7 +1265,7 @@
   "t2b67876a": {
     "grup": "arayuz",
     "tr": "{0}. çağ · {1}",
-    "en": "",
+    "en": "Era {0} · {1}",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:758"
     ]
@@ -1455,7 +1455,7 @@
   "t0e14de70": {
     "grup": "arayuz",
     "tr": "← Geri",
-    "en": "",
+    "en": "← Back",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:369"
     ]
@@ -1583,7 +1583,7 @@
   "teeca3ed1": {
     "grup": "arayuz",
     "tr": "açık",
-    "en": "",
+    "en": "open",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:536"
     ]
@@ -1683,7 +1683,7 @@
   "tb47d7727": {
     "grup": "arayuz",
     "tr": "ALAN",
-    "en": "",
+    "en": "BUYER",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:495"
     ]
@@ -1691,7 +1691,7 @@
   "t3922bff6": {
     "grup": "arayuz",
     "tr": "Alıcı çıkana kadar ilanda bekler; eşya o sırada kullanılamaz.",
-    "en": "",
+    "en": "It stays listed until a buyer comes; the item can't be used meanwhile.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:471"
     ]
@@ -1699,7 +1699,7 @@
   "ta19dfbf9": {
     "grup": "arayuz",
     "tr": "Alındı: {0} altın ödendi. Eşya envanterinde.",
-    "en": "",
+    "en": "Bought: {0} gold paid. The item is in your inventory.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:342"
     ]
@@ -1784,7 +1784,7 @@
   "t1d831981": {
     "grup": "arayuz",
     "tr": "Aranan ürünler",
-    "en": "",
+    "en": "Wanted items",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:587"
     ]
@@ -1792,7 +1792,7 @@
   "t16ddb987": {
     "grup": "arayuz",
     "tr": "araştırılıyor",
-    "en": "",
+    "en": "researching",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:140"
     ]
@@ -1833,7 +1833,7 @@
   "t3850a4cc": {
     "grup": "arayuz",
     "tr": "Araştırmada yeni çağ açıldı: {0}",
-    "en": "",
+    "en": "New research era unlocked: {0}",
     "nerede": [
       "apps/web/src/components/SeviyeKutlamasi.tsx:37"
     ]
@@ -1997,7 +1997,7 @@
   "t98950e8c": {
     "grup": "arayuz",
     "tr": "Aynı anda en fazla {0} ilan ve {1} ön sipariş. Bugün {2}/{3} yeni emir verdin. Emirlerin süresi dolmaz.",
-    "en": "",
+    "en": "At most {0} [listing|listings] and {1} buy [order|orders] at once. Today you placed {2}/{3} new orders. Orders don't expire.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:613"
     ]
@@ -2120,7 +2120,7 @@
   "tfb644c22": {
     "grup": "arayuz",
     "tr": "Banda al",
-    "en": "",
+    "en": "Bring into band",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:733"
     ]
@@ -2128,7 +2128,7 @@
   "td4f45a59": {
     "grup": "arayuz",
     "tr": "bant dışı",
-    "en": "",
+    "en": "out of band",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:707"
     ]
@@ -2176,7 +2176,7 @@
   "t29e3e302": {
     "grup": "arayuz",
     "tr": "başlatılabilir",
-    "en": "",
+    "en": "can start",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:141"
     ]
@@ -2291,7 +2291,7 @@
   "t58a03b5a": {
     "grup": "arayuz",
     "tr": "Bekleyen bir alıcı {0} altın veriyor: hemen satılır.",
-    "en": "",
+    "en": "A waiting buyer offers {0} gold: sells instantly.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:470"
     ]
@@ -2299,7 +2299,7 @@
   "t3e9a662e": {
     "grup": "arayuz",
     "tr": "Bekleyen emrin yok.",
-    "en": "",
+    "en": "You have no pending orders.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:617"
     ]
@@ -2323,7 +2323,7 @@
   "t79822a60": {
     "grup": "arayuz",
     "tr": "bekliyor",
-    "en": "",
+    "en": "waiting",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:709"
     ]
@@ -2452,7 +2452,7 @@
   "t32f39dc2": {
     "grup": "arayuz",
     "tr": "Bir fiyat seç",
-    "en": "",
+    "en": "Pick a price",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:792"
     ]
@@ -2543,7 +2543,7 @@
   "tdd8bd1b3": {
     "grup": "arayuz",
     "tr": "Boş yuva — ağaçtan bir düğüm seç.",
-    "en": "",
+    "en": "Empty slot — pick a node from the tree.",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:313"
     ]
@@ -2902,7 +2902,7 @@
   "t5027f5f4": {
     "grup": "arayuz",
     "tr": "bu yol kapalı",
-    "en": "",
+    "en": "this path is closed",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:142"
     ]
@@ -2910,7 +2910,7 @@
   "t79e69f4e": {
     "grup": "arayuz",
     "tr": "Bu yolu seç",
-    "en": "",
+    "en": "Choose this path",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:839"
     ]
@@ -2966,7 +2966,7 @@
   "t90535eb9": {
     "grup": "arayuz",
     "tr": "Bütün yuvalar dolu",
-    "en": "",
+    "en": "All slots are full",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:835"
     ]
@@ -3126,7 +3126,7 @@
   "t41d9ad86": {
     "grup": "arayuz",
     "tr": "Defteri aç",
-    "en": "",
+    "en": "Open the book",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:217"
     ]
@@ -3134,7 +3134,7 @@
   "tea3bfb0b": {
     "grup": "arayuz",
     "tr": "Değerli eşya: ilana girince {0} dakika kayıt kuyruğunda bekler, sonra en yüksek fiyatı veren alıcılar arasında kura çekilir.",
-    "en": "",
+    "en": "Valuable item: once listed it waits {0} [minute|minutes] in the registration queue, then a lot is drawn among the buyers offering the highest price.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:380"
     ]
@@ -3198,7 +3198,7 @@
   "t509e13e8": {
     "grup": "arayuz",
     "tr": "Demirhane {0} altın verir",
-    "en": "",
+    "en": "Blacksmith pays {0} gold",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:577"
     ]
@@ -3214,7 +3214,7 @@
   "te3cd6e48": {
     "grup": "arayuz",
     "tr": "Demirhanede yükseltiliyor — iş bitince satabilirsin.",
-    "en": "",
+    "en": "Being upgraded at the Blacksmith — you can sell it when it's done.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:574"
     ]
@@ -3279,7 +3279,7 @@
   "t53a77590": {
     "grup": "arayuz",
     "tr": "Depon dolu: iadenin bir kısmı tavanı ({0}) aşıyor ve taşan kısım kaybolur. Önce harcayıp yer açabilirsin.",
-    "en": "",
+    "en": "Your storage is full: part of the refund exceeds the cap ({0}) and the overflow is lost. You can spend first to make room.",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:932"
     ]
@@ -3287,7 +3287,7 @@
   "t44b25c99": {
     "grup": "arayuz",
     "tr": "Deponda {0} {1} yeri var.",
-    "en": "",
+    "en": "Your storage has room for {0} {1}.",
     "nerede": [
       "apps/web/src/components/Pazar.tsx:186"
     ]
@@ -3295,7 +3295,7 @@
   "tb1a19084": {
     "grup": "arayuz",
     "tr": "Deponda {0} altın yeri var. Emanette {1} altın.",
-    "en": "",
+    "en": "Your storage has room for {0} gold. {1} gold in escrow.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:121"
     ]
@@ -3303,7 +3303,7 @@
   "ta56d2f4e": {
     "grup": "arayuz",
     "tr": "Deponda altın için yer yok. Kasadaki altın bekler, kaybolmaz.",
-    "en": "",
+    "en": "No room for gold in your storage. The gold in the purse waits; it isn't lost.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:120"
     ]
@@ -3328,7 +3328,7 @@
   "t45c33182": {
     "grup": "arayuz",
     "tr": "Depoya al",
-    "en": "",
+    "en": "Move to storage",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:115"
     ]
@@ -3360,7 +3360,7 @@
   "t0f10796a": {
     "grup": "arayuz",
     "tr": "Detayı kapat",
-    "en": "",
+    "en": "Close details",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:227",
       "apps/web/src/screens/Arastirma.tsx:245"
@@ -3567,7 +3567,7 @@
   "tbcee7396": {
     "grup": "arayuz",
     "tr": "Diyarında şu an satışta eşya yok. Aşağıdan istediğin ürüne ön sipariş verebilirsin; biri o fiyata sattığında eşya senin olur.",
-    "en": "",
+    "en": "Nothing is for sale in your realm right now. Below you can place a buy order for the item you want; when someone sells at that price, it's yours.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:146"
     ]
@@ -3575,7 +3575,7 @@
   "tb93a9a42": {
     "grup": "arayuz",
     "tr": "Diyarındaki oyuncularla al, sat →",
-    "en": "",
+    "en": "Buy and sell with players in your realm →",
     "nerede": [
       "apps/web/src/screens/Malikane.tsx:159"
     ]
@@ -3948,7 +3948,7 @@
   "t25298bf6": {
     "grup": "arayuz",
     "tr": "Eminim — {0} seçilsin",
-    "en": "",
+    "en": "I'm sure — choose {0}",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:838"
     ]
@@ -3956,7 +3956,7 @@
   "tb5e8373e": {
     "grup": "arayuz",
     "tr": "Emir kaldırılamadı.",
-    "en": "",
+    "en": "Couldn't cancel the order.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:680"
     ]
@@ -3964,7 +3964,7 @@
   "tbd2facdc": {
     "grup": "arayuz",
     "tr": "Emir verilemedi.",
-    "en": "",
+    "en": "Couldn't place the order.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:356"
     ]
@@ -3972,7 +3972,7 @@
   "t44a0fab1": {
     "grup": "arayuz",
     "tr": "Emirlerim",
-    "en": "",
+    "en": "My orders",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:64"
     ]
@@ -4038,7 +4038,7 @@
   "tb448a1f1": {
     "grup": "arayuz",
     "tr": "En ucuz ilan {0} altın: yazdığından azını ödersin, eşya hemen senin.",
-    "en": "",
+    "en": "Cheapest listing is {0} gold: you pay less than you offered and the item is yours now.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:459"
     ]
@@ -4086,7 +4086,7 @@
   "tcbc055af": {
     "grup": "arayuz",
     "tr": "erken (uzun sürer)",
-    "en": "",
+    "en": "early (takes longer)",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:539"
     ]
@@ -4161,7 +4161,7 @@
   "t8e267f96": {
     "grup": "arayuz",
     "tr": "Eşya pazarı",
-    "en": "",
+    "en": "Item market",
     "nerede": [
       "apps/web/src/screens/Malikane.tsx:158",
       "packages/shared/src/ogretici.ts:331"
@@ -4170,7 +4170,7 @@
   "t6105b341": {
     "grup": "arayuz",
     "tr": "Eşyaların",
-    "en": "",
+    "en": "Your items",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:545"
     ]
@@ -4276,7 +4276,7 @@
   "te9c54ad3": {
     "grup": "arayuz",
     "tr": "FİYAT",
-    "en": "",
+    "en": "PRICE",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:493"
     ]
@@ -4284,7 +4284,7 @@
   "tcc88552a": {
     "grup": "arayuz",
     "tr": "Fiyat bandı kaydı ({0}–{1} altın); bu hâliyle eşleşmez.",
-    "en": "",
+    "en": "Price band shifted ({0}–{1} gold); it won't match as is.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:722"
     ]
@@ -4292,7 +4292,7 @@
   "t877ce53a": {
     "grup": "arayuz",
     "tr": "Fiyat güncellenemedi.",
-    "en": "",
+    "en": "Couldn't update the price.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:668"
     ]
@@ -4300,7 +4300,7 @@
   "td23d6297": {
     "grup": "arayuz",
     "tr": "Fiyat seç",
-    "en": "",
+    "en": "Choose price",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:497"
     ]
@@ -4308,7 +4308,7 @@
   "t010920bb": {
     "grup": "arayuz",
     "tr": "Fiyat seçilmedi.",
-    "en": "",
+    "en": "No price selected.",
     "nerede": [
       "apps/api/src/routes/esyaPazari.ts:64",
       "apps/web/src/screens/EsyaPazari.tsx:329"
@@ -4317,7 +4317,7 @@
   "tf22d01f4": {
     "grup": "arayuz",
     "tr": "Fiyatı değiştir",
-    "en": "",
+    "en": "Change price",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:737"
     ]
@@ -4508,7 +4508,7 @@
   "t440fa8f4": {
     "grup": "arayuz",
     "tr": "Geri gelecek",
-    "en": "",
+    "en": "Comes back",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:917"
     ]
@@ -4675,7 +4675,7 @@
   "t6d8136d5": {
     "grup": "arayuz",
     "tr": "güç {0}",
-    "en": "",
+    "en": "power {0}",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:570"
     ]
@@ -4683,7 +4683,7 @@
   "td93e9c43": {
     "grup": "arayuz",
     "tr": "Güç {0} · taban {1} altın · demirhane {2} verir",
-    "en": "",
+    "en": "Power {0} · base {1} gold · Blacksmith pays {2}",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:376"
     ]
@@ -4859,7 +4859,7 @@
   "t1f235445": {
     "grup": "arayuz",
     "tr": "Hemen al — {0} altın",
-    "en": "",
+    "en": "Buy now — {0} gold",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:434"
     ]
@@ -4867,7 +4867,7 @@
   "t1af21558": {
     "grup": "arayuz",
     "tr": "Hemen sat — {0} altın",
-    "en": "",
+    "en": "Sell now — {0} gold",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:439"
     ]
@@ -4931,7 +4931,7 @@
   "t4d7ccc8c": {
     "grup": "arayuz",
     "tr": "Henüz seçmedin: {0}. Birini araştırınca ötekiler kapanır.",
-    "en": "",
+    "en": "Not chosen yet: {0}. Researching one closes the others.",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:579"
     ]
@@ -5161,7 +5161,7 @@
   "t528f9a89": {
     "grup": "arayuz",
     "tr": "İlana kondu: {0} altın. Alıcı çıkınca kasana düşer.",
-    "en": "",
+    "en": "Listed: {0} gold. When a buyer comes, it goes to your purse.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:338"
     ]
@@ -5169,7 +5169,7 @@
   "tdb508fb6": {
     "grup": "arayuz",
     "tr": "İlana koy — {0} altın",
-    "en": "",
+    "en": "List it — {0} gold",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:440"
     ]
@@ -5177,7 +5177,7 @@
   "t2abd8ebf": {
     "grup": "arayuz",
     "tr": "İlanlarım",
-    "en": "",
+    "en": "My listings",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:621"
     ]
@@ -5276,7 +5276,7 @@
   "tbf6e4d16": {
     "grup": "arayuz",
     "tr": "İptal edilemedi.",
-    "en": "",
+    "en": "Couldn't cancel.",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:629"
     ]
@@ -5284,7 +5284,7 @@
   "t15458cd3": {
     "grup": "arayuz",
     "tr": "İptal et",
-    "en": "",
+    "en": "Cancel",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:745"
     ]
@@ -5292,7 +5292,7 @@
   "t79ad1871": {
     "grup": "arayuz",
     "tr": "İptal et (yarısı geri gelir)",
-    "en": "",
+    "en": "Cancel (half comes back)",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:792"
     ]
@@ -5570,7 +5570,7 @@
   "tb28ea824": {
     "grup": "arayuz",
     "tr": "KADEME",
-    "en": "",
+    "en": "TIER",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:177"
     ]
@@ -5797,7 +5797,7 @@
   "t9481412e": {
     "grup": "arayuz",
     "tr": "Kasadan alınamadı.",
-    "en": "",
+    "en": "Couldn't withdraw from the purse.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:97"
     ]
@@ -5889,7 +5889,7 @@
   "ta5d4e053": {
     "grup": "arayuz",
     "tr": "kayıt kuyruğu",
-    "en": "",
+    "en": "registration queue",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:705"
     ]
@@ -5897,7 +5897,7 @@
   "t7d3b26d1": {
     "grup": "arayuz",
     "tr": "Kayıt kuyruğuna koy — {0} altın",
-    "en": "",
+    "en": "Queue for registration — {0} gold",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:437"
     ]
@@ -5905,7 +5905,7 @@
   "t03599a03": {
     "grup": "arayuz",
     "tr": "kayıt kuyruğunda · {0}",
-    "en": "",
+    "en": "in registration queue · {0}",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:159"
     ]
@@ -5913,7 +5913,7 @@
   "tbc30e5a9": {
     "grup": "arayuz",
     "tr": "Kayıt kuyruğunda. Süre bitince bekleyen alıcılar arasında kura çekilir.",
-    "en": "",
+    "en": "In the registration queue. When time is up, a lot is drawn among the waiting buyers.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:336"
     ]
@@ -6115,7 +6115,7 @@
   "t80464709": {
     "grup": "arayuz",
     "tr": "kilitli",
-    "en": "",
+    "en": "locked",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:542"
     ]
@@ -6243,7 +6243,7 @@
   "t5ecbd01c": {
     "grup": "arayuz",
     "tr": "Kura {0} sonra. Kuyruktayken geri çekilemez.",
-    "en": "",
+    "en": "Draw in {0}. Can't be withdrawn while queued.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:715"
     ]
@@ -6744,7 +6744,7 @@
   "t8d0f423f": {
     "grup": "arayuz",
     "tr": "NADİRLİK",
-    "en": "",
+    "en": "RARITY",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:183"
     ]
@@ -7242,7 +7242,7 @@
   "td7cd18cd": {
     "grup": "arayuz",
     "tr": "Ön sipariş ver — {0} altın",
-    "en": "",
+    "en": "Place buy order — {0} gold",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:435"
     ]
@@ -7250,7 +7250,7 @@
   "tde606a86": {
     "grup": "arayuz",
     "tr": "Ön sipariş verildi: {0} altın emanette. Satan çıkınca eşya senin.",
-    "en": "",
+    "en": "Buy order placed: {0} gold in escrow. When a seller comes, the item is yours.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:343"
     ]
@@ -7258,7 +7258,7 @@
   "t16116443": {
     "grup": "arayuz",
     "tr": "Ön siparişlerim",
-    "en": "",
+    "en": "My buy orders",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:630"
     ]
@@ -7290,7 +7290,7 @@
   "tad827939": {
     "grup": "arayuz",
     "tr": "Önkoşul",
-    "en": "",
+    "en": "Prerequisite",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:881"
     ]
@@ -7493,7 +7493,7 @@
   "t8cc8386d": {
     "grup": "arayuz",
     "tr": "Pazar kasası",
-    "en": "",
+    "en": "Market purse",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:105"
     ]
@@ -7501,7 +7501,7 @@
   "t03621ed5": {
     "grup": "arayuz",
     "tr": "Pazardan yalnız seviyenin açtığı kademeyi alabilirsin — dövebildiğin kadarını.",
-    "en": "",
+    "en": "You can buy only the tiers your level unlocks — as many as you can forge.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:221"
     ]
@@ -7752,7 +7752,7 @@
   "t38a72a77": {
     "grup": "arayuz",
     "tr": "Sat",
-    "en": "",
+    "en": "Sell",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:63"
     ]
@@ -7768,7 +7768,7 @@
   "t6b78cc24": {
     "grup": "arayuz",
     "tr": "SATAN",
-    "en": "",
+    "en": "SELLER",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:494"
     ]
@@ -7776,7 +7776,7 @@
   "t3fa7d1d1": {
     "grup": "arayuz",
     "tr": "Satan yok. {0} altın emanete alınır; biri bu fiyata ya da altına satınca eşya senin olur. İptal edersen kesintisiz geri döner.",
-    "en": "",
+    "en": "No sellers. {0} gold goes into escrow; when someone sells at or below this price, the item is yours. Cancel and it all comes back.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:460"
     ]
@@ -7784,7 +7784,7 @@
   "t05cbc787": {
     "grup": "arayuz",
     "tr": "Satılabilecek eşyan yok. Kuşandığın eşyayı satmak için önce çıkarman gerekiyor.",
-    "en": "",
+    "en": "You have no items to sell. To sell an equipped item, unequip it first.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:548"
     ]
@@ -7792,7 +7792,7 @@
   "t6df255fd": {
     "grup": "arayuz",
     "tr": "Satıldı: {0} altın. Vergi {1}, kasana {2} altın girdi.",
-    "en": "",
+    "en": "Sold: {0} gold. Tax {1}, {2} gold went into your purse.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:333"
     ]
@@ -7800,7 +7800,7 @@
   "tf6fc4428": {
     "grup": "arayuz",
     "tr": "Satışta",
-    "en": "",
+    "en": "For sale",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:143"
     ]
@@ -7994,7 +7994,7 @@
   "t8181f45e": {
     "grup": "arayuz",
     "tr": "Seçili",
-    "en": "",
+    "en": "Selected",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:857"
     ]
@@ -8010,7 +8010,7 @@
   "t2bba614f": {
     "grup": "arayuz",
     "tr": "Seçimin:",
-    "en": "",
+    "en": "Your choice:",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:567"
     ]
@@ -8150,7 +8150,7 @@
   "t8eb45bb8": {
     "grup": "arayuz",
     "tr": "Seviye atladın, lordum.",
-    "en": "",
+    "en": "You leveled up, my lord.",
     "nerede": [
       "apps/web/src/components/SeviyeKutlamasi.tsx:55"
     ]
@@ -8250,7 +8250,7 @@
   "tf1376164": {
     "grup": "arayuz",
     "tr": "Silinecek",
-    "en": "",
+    "en": "Will be deleted",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:907"
     ]
@@ -8354,7 +8354,7 @@
   "tfe819188": {
     "grup": "arayuz",
     "tr": "Son işlemler",
-    "en": "",
+    "en": "Recent trades",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:411"
     ]
@@ -8786,7 +8786,7 @@
   "td3621a41": {
     "grup": "arayuz",
     "tr": "T{0} eşya almak için {1}. seviye gerekiyor.",
-    "en": "",
+    "en": "T{0} items need level {1}.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:399",
       "packages/shared/src/esyaPazari.ts:501"
@@ -8803,7 +8803,7 @@
   "t75bd333b": {
     "grup": "arayuz",
     "tr": "taban",
-    "en": "",
+    "en": "base",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:511"
     ]
@@ -8932,7 +8932,7 @@
   "tbb1f90a3": {
     "grup": "arayuz",
     "tr": "Takas",
-    "en": "",
+    "en": "Trade",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:65"
     ]
@@ -9004,7 +9004,7 @@
   "t6d080047": {
     "grup": "arayuz",
     "tr": "tamam",
-    "en": "",
+    "en": "done",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:532"
     ]
@@ -9020,7 +9020,7 @@
   "tbac6a59f": {
     "grup": "arayuz",
     "tr": "Tamamlandı — etkisi sürüyor.",
-    "en": "",
+    "en": "Completed — its effect continues.",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:779"
     ]
@@ -9100,7 +9100,7 @@
   "tf613c281": {
     "grup": "arayuz",
     "tr": "Tezgâhlar, tüccarlar ve kasan",
-    "en": "",
+    "en": "Stalls, merchants and your purse",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:58"
     ]
@@ -9239,7 +9239,7 @@
   "t0ab623a8": {
     "grup": "arayuz",
     "tr": "Ürün seç",
-    "en": "",
+    "en": "Choose item",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:168"
     ]
@@ -9299,7 +9299,7 @@
   "t262b6ab9": {
     "grup": "arayuz",
     "tr": "Vergi %{0} — kasana {1} altın.",
-    "en": "",
+    "en": "Tax {0}% — {1} gold to your purse.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:472"
     ]
@@ -9371,7 +9371,7 @@
   "t744ef97a": {
     "grup": "arayuz",
     "tr": "yalnız biri",
-    "en": "",
+    "en": "only one",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:495",
       "apps/web/src/screens/Arastirma.tsx:546",
@@ -9642,7 +9642,7 @@
   "tf9c4663b": {
     "grup": "arayuz",
     "tr": "Yol bırakılamadı.",
-    "en": "",
+    "en": "Couldn't leave the path.",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:647"
     ]
@@ -9650,7 +9650,7 @@
   "t1901f55f": {
     "grup": "arayuz",
     "tr": "Yol bırakıldı: {0} araştırma silindi, {1} altın geri geldi.",
-    "en": "",
+    "en": "Path left: {0} research [node|nodes] deleted, {1} gold refunded.",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:640"
     ]
@@ -9675,7 +9675,7 @@
   "td2b85187": {
     "grup": "arayuz",
     "tr": "Yolu bırak",
-    "en": "",
+    "en": "Leave path",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:571",
       "apps/web/src/screens/Arastirma.tsx:946"
@@ -9734,7 +9734,7 @@
   "tad4bad3a": {
     "grup": "arayuz",
     "tr": "YUVA",
-    "en": "",
+    "en": "SLOT",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:171"
     ]
@@ -9742,7 +9742,7 @@
   "t032e5b76": {
     "grup": "arayuz",
     "tr": "Yuvalar: kütüphaneden {0}{1}. Kütüphaneyi yükselt ya da Medrese ve Beytülhikme'yi araştır, yuva artsın. İptal edersen harcadığının yarısı geri gelir.",
-    "en": "",
+    "en": "Slots: {0} from the library{1}. Upgrade the library or research Madrasa and House of Wisdom to add slots. If you cancel, half of what you spent comes back.",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:338"
     ]
@@ -9794,7 +9794,7 @@
   "t31d6ffeb": {
     "grup": "arayuz",
     "tr": "YÜKSELTME",
-    "en": "",
+    "en": "UPGRADE",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:193"
     ]
@@ -9810,7 +9810,7 @@
   "t55791cef": {
     "grup": "arayuz",
     "tr": "Yükseltmeyi artır",
-    "en": "",
+    "en": "Increase upgrade",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:208"
     ]
@@ -9818,7 +9818,7 @@
   "t574004c3": {
     "grup": "arayuz",
     "tr": "Yükseltmeyi azalt",
-    "en": "",
+    "en": "Decrease upgrade",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:198"
     ]
@@ -9903,7 +9903,7 @@
   "tb688992a": {
     "grup": "motor",
     "tr": ": her birinden yalnız bir yol seçebilirsin. Sonradan değiştirebilirsin ama o yolun araştırmaları silinir, bedellerinin %{0}'i geri gelir ve aynı seçimi {1} gün değiştiremezsin.",
-    "en": "",
+    "en": ": you can pick only one path from each. You can change it later, but that path's research is deleted, {0}% of its costs come back and you can't change the same choice again for {1} [day|days].",
     "nerede": [
       "packages/shared/src/ogretici.ts:528"
     ]
@@ -9927,7 +9927,7 @@
   "t96008bbe": {
     "grup": "motor",
     "tr": "{0} altın gerekiyor; kasanda ve deponda {1} var.",
-    "en": "",
+    "en": "{0} gold needed; you have {1} in your purse and storage.",
     "nerede": [
       "packages/shared/src/esyaPazari.ts:546"
     ]
@@ -9943,7 +9943,7 @@
   "t62cf41e2": {
     "grup": "motor",
     "tr": "{0} büyük seçim",
-    "en": "",
+    "en": "{0} major [choice|choices]",
     "nerede": [
       "packages/shared/src/ogretici.ts:525"
     ]
@@ -9967,7 +9967,7 @@
   "tedb5ebbe": {
     "grup": "motor",
     "tr": "{0} ile {1} altın",
-    "en": "",
+    "en": "{0} to {1} gold",
     "nerede": [
       "packages/shared/src/esyaPazari.ts:395"
     ]
@@ -9991,7 +9991,7 @@
   "t00c85cc4": {
     "grup": "motor",
     "tr": "{0} sekme, {1} çağ",
-    "en": "",
+    "en": "{0} [tab|tabs], {1} [era|eras]",
     "nerede": [
       "packages/shared/src/ogretici.ts:515"
     ]
@@ -10007,7 +10007,7 @@
   "t59bfa4d1": {
     "grup": "motor",
     "tr": "{0} ustalığı +{1}",
-    "en": "",
+    "en": "{0} mastery +{1}",
     "nerede": [
       "packages/shared/src/arastirma.ts:331"
     ]
@@ -10015,7 +10015,7 @@
   "tca69ed3a": {
     "grup": "motor",
     "tr": "{0} ustalığı: kozu {1} güçlü, bedeli {2} hafif.",
-    "en": "",
+    "en": "{0} mastery: its edge is {1} stronger, its cost {2} lighter.",
     "nerede": [
       "packages/shared/src/duzen.ts:429"
     ]
@@ -10023,7 +10023,7 @@
   "tc4441e36": {
     "grup": "motor",
     "tr": "{0}: {1} hücresinde başka düğüm var",
-    "en": "",
+    "en": "{0}: another node is in cell {1}",
     "nerede": [
       "packages/shared/src/arastirma.ts:595"
     ]
@@ -10031,7 +10031,7 @@
   "t9489d66a": {
     "grup": "motor",
     "tr": "{0}: {1} motora bağlı değil",
-    "en": "",
+    "en": "{0}: {1} is not wired to the engine",
     "nerede": [
       "packages/shared/src/arastirma.ts:617"
     ]
@@ -10039,7 +10039,7 @@
   "t70727634": {
     "grup": "motor",
     "tr": "{0}: {1} seçili. Bu yol kapalı.",
-    "en": "",
+    "en": "{0}: {1} is chosen. This path is closed.",
     "nerede": [
       "packages/shared/src/arastirma.ts:436"
     ]
@@ -10047,7 +10047,7 @@
   "t572a8a09": {
     "grup": "motor",
     "tr": "{0}: anahtar iki kez",
-    "en": "",
+    "en": "{0}: duplicate key",
     "nerede": [
       "packages/shared/src/arastirma.ts:591"
     ]
@@ -10055,7 +10055,7 @@
   "t249f780f": {
     "grup": "motor",
     "tr": "{0}: başka bir yolun düğümüne ({1}) bağlı",
-    "en": "",
+    "en": "{0}: linked to a node of another path ({1})",
     "nerede": [
       "packages/shared/src/arastirma.ts:614"
     ]
@@ -10063,7 +10063,7 @@
   "tb64f17fe": {
     "grup": "motor",
     "tr": "{0}: çağ {1} yok",
-    "en": "",
+    "en": "{0}: era {1} does not exist",
     "nerede": [
       "packages/shared/src/arastirma.ts:600"
     ]
@@ -10071,7 +10071,7 @@
   "tf9fd3ad1": {
     "grup": "motor",
     "tr": "{0}: grup {1} tanımsız",
-    "en": "",
+    "en": "{0}: group {1} is undefined",
     "nerede": [
       "packages/shared/src/arastirma.ts:619"
     ]
@@ -10079,7 +10079,7 @@
   "tbe764f2c": {
     "grup": "motor",
     "tr": "{0}: kapısı ({1}) çağının seviyesinden ({2}) önce",
-    "en": "",
+    "en": "{0}: its gate ({1}) is below its era's level ({2})",
     "nerede": [
       "packages/shared/src/arastirma.ts:602"
     ]
@@ -10087,7 +10087,7 @@
   "t98b71269": {
     "grup": "motor",
     "tr": "{0}: önkoşul {1} yok",
-    "en": "",
+    "en": "{0}: prerequisite {1} does not exist",
     "nerede": [
       "packages/shared/src/arastirma.ts:607"
     ]
@@ -10095,7 +10095,7 @@
   "t475efdc5": {
     "grup": "motor",
     "tr": "{0}: önkoşulu {1} daha geç bir çağda",
-    "en": "",
+    "en": "{0}: prerequisite {1} is in a later era",
     "nerede": [
       "packages/shared/src/arastirma.ts:610"
     ]
@@ -10103,7 +10103,7 @@
   "t094e6dea": {
     "grup": "motor",
     "tr": "{0}: önkoşulu {1} daha yüksek kapılı",
-    "en": "",
+    "en": "{0}: prerequisite {1} has a higher gate",
     "nerede": [
       "packages/shared/src/arastirma.ts:611"
     ]
@@ -10111,7 +10111,7 @@
   "t2326db28": {
     "grup": "motor",
     "tr": "{0}: seçenek ama yolu yok",
-    "en": "",
+    "en": "{0}: an option without a path",
     "nerede": [
       "packages/shared/src/arastirma.ts:620"
     ]
@@ -10119,7 +10119,7 @@
   "tb3df81b5": {
     "grup": "motor",
     "tr": "{0}: sütun {1} yok",
-    "en": "",
+    "en": "{0}: column {1} does not exist",
     "nerede": [
       "packages/shared/src/arastirma.ts:597"
     ]
@@ -10127,7 +10127,7 @@
   "t28149093": {
     "grup": "motor",
     "tr": "{0}: yolu {1} hiçbir grubun seçeneği değil",
-    "en": "",
+    "en": "{0}: path {1} is not an option of any group",
     "nerede": [
       "packages/shared/src/arastirma.ts:625"
     ]
@@ -10151,7 +10151,7 @@
   "tf167a577": {
     "grup": "motor",
     "tr": "+{0} araştırma yuvası",
-    "en": "",
+    "en": "+{0} research [slot|slots]",
     "nerede": [
       "packages/shared/src/arastirma.ts:313"
     ]
@@ -10215,7 +10215,7 @@
   "t50cee5b8": {
     "grup": "motor",
     "tr": "Altın üretimi +{0}",
-    "en": "",
+    "en": "Gold production +{0}",
     "nerede": [
       "packages/shared/src/arastirma.ts:317"
     ]
@@ -10255,7 +10255,7 @@
   "t787d12eb": {
     "grup": "motor",
     "tr": "Araştırılıyor.",
-    "en": "",
+    "en": "Researching.",
     "nerede": [
       "packages/shared/src/arastirma.ts:432"
     ]
@@ -10271,7 +10271,7 @@
   "t555fc398": {
     "grup": "motor",
     "tr": "Araştırma +{0} hızlı",
-    "en": "",
+    "en": "Research +{0} faster",
     "nerede": [
       "packages/shared/src/arastirma.ts:311"
     ]
@@ -10391,7 +10391,7 @@
   "t6161a17e": {
     "grup": "motor",
     "tr": "Aynı anda en fazla {0} ilan açabilirsin.",
-    "en": "",
+    "en": "You can have at most {0} [listing|listings] open at once.",
     "nerede": [
       "packages/shared/src/esyaPazari.ts:467"
     ]
@@ -10399,7 +10399,7 @@
   "t72374924": {
     "grup": "motor",
     "tr": "Aynı anda en fazla {0} ön sipariş verebilirsin.",
-    "en": "",
+    "en": "You can place at most {0} buy [order|orders] at once.",
     "nerede": [
       "packages/shared/src/esyaPazari.ts:515"
     ]
@@ -10431,7 +10431,7 @@
   "te33d8b42": {
     "grup": "motor",
     "tr": "Aynı ürünü hem satıp hem alamazsın. Önce öteki emrini geri çek.",
-    "en": "",
+    "en": "You can't sell and buy the same item. Withdraw your other order first.",
     "nerede": [
       "packages/shared/src/esyaPazari.ts:419"
     ]
@@ -10471,7 +10471,7 @@
   "t3e383ca8": {
     "grup": "motor",
     "tr": "başka bir yol",
-    "en": "",
+    "en": "another path",
     "nerede": [
       "packages/shared/src/arastirma.ts:436"
     ]
@@ -10487,7 +10487,7 @@
   "te4f863b8": {
     "grup": "motor",
     "tr": "Başta aynı anda {0} araştırma yürütebilirsin; Kütüphane ve bazı araştırmalar yuva ekler. Sıra senin kararın: önce ekonomiyi mi büyütürsün, orduyu mu? Vazgeçersen harcadığının %{1}'i geri gelir.",
-    "en": "",
+    "en": "At first you can run {0} research [project|projects] at once; the Library and some research add slots. The order is your call: grow the economy first, or the army? If you cancel, {1}% of what you spent comes back.",
     "nerede": [
       "packages/shared/src/ogretici.ts:535"
     ]
@@ -10527,7 +10527,7 @@
   "tceb91dd1": {
     "grup": "motor",
     "tr": "Bina yapımı +{0} hızlı",
-    "en": "",
+    "en": "Construction +{0} faster",
     "nerede": [
       "packages/shared/src/arastirma.ts:315"
     ]
@@ -10760,7 +10760,7 @@
   "t60b7aa6c": {
     "grup": "motor",
     "tr": "Bu eşya demirhanede yükseltiliyor. İş bitince satabilirsin.",
-    "en": "",
+    "en": "This item is being upgraded at the Blacksmith. You can sell it when the work is done.",
     "nerede": [
       "packages/shared/src/esyaPazari.ts:455"
     ]
@@ -10768,7 +10768,7 @@
   "t124db891": {
     "grup": "motor",
     "tr": "Bu eşya zaten pazarda.",
-    "en": "",
+    "en": "This item is already on the market.",
     "nerede": [
       "packages/shared/src/esyaPazari.ts:448"
     ]
@@ -10833,7 +10833,7 @@
   "t803cfbd7": {
     "grup": "motor",
     "tr": "Bu seçim",
-    "en": "",
+    "en": "This choice",
     "nerede": [
       "packages/shared/src/arastirma.ts:436"
     ]
@@ -10849,7 +10849,7 @@
   "te95f4a34": {
     "grup": "motor",
     "tr": "Bu ürüne zaten bir ön siparişin var. Fiyatını güncelleyebilirsin.",
-    "en": "",
+    "en": "You already have a buy order for this item. You can update its price.",
     "nerede": [
       "packages/shared/src/esyaPazari.ts:507"
     ]
@@ -10857,7 +10857,7 @@
   "td68bbd54": {
     "grup": "motor",
     "tr": "Bu ürünün zaten bir ilanın var. Önce o satılsın ya da geri çek.",
-    "en": "",
+    "en": "You already have a listing for this item. Let it sell or withdraw it first.",
     "nerede": [
       "packages/shared/src/esyaPazari.ts:461"
     ]
@@ -10881,7 +10881,7 @@
   "t4e24627a": {
     "grup": "motor",
     "tr": "Bugün en fazla {0} yeni emir verebilirsin. Yarın yenilenir.",
-    "en": "",
+    "en": "You can place at most {0} new [order|orders] today. Resets tomorrow.",
     "nerede": [
       "packages/shared/src/esyaPazari.ts:425"
     ]
@@ -10985,7 +10985,7 @@
   "t17bbe9f2": {
     "grup": "motor",
     "tr": "Çağından {0} seviye erken: süre +{1}",
-    "en": "",
+    "en": "{0} [level|levels] early for your era: time +{1}",
     "nerede": [
       "packages/shared/src/arastirma.ts:444"
     ]
@@ -10993,7 +10993,7 @@
   "t24b4c0ce": {
     "grup": "motor",
     "tr": "Çağının gerisindesin: süre −{0}",
-    "en": "",
+    "en": "You are behind your era: time −{0}",
     "nerede": [
       "packages/shared/src/arastirma.ts:446"
     ]
@@ -11065,7 +11065,7 @@
   "t2f1dbf2f": {
     "grup": "motor",
     "tr": "Demir üretimi +{0}",
-    "en": "",
+    "en": "Iron production +{0}",
     "nerede": [
       "packages/shared/src/arastirma.ts:319"
     ]
@@ -11105,7 +11105,7 @@
   "tc9bf1bd8": {
     "grup": "motor",
     "tr": "Deponda {0} için yeterli yer yok. Önce biraz harca ya da Malikâne'yi yükselt.",
-    "en": "",
+    "en": "Not enough room in your storage for {0}. Spend some first or upgrade the Manor.",
     "nerede": [
       "packages/shared/src/pazar.ts:182"
     ]
@@ -11113,7 +11113,7 @@
   "t81a100c6": {
     "grup": "motor",
     "tr": "Deponda yalnız {0} {1} yeri var. En fazla {2} {3} takas edebilirsin.",
-    "en": "",
+    "en": "Your storage has room for only {0} {1}. You can trade at most {2} {3}.",
     "nerede": [
       "packages/shared/src/pazar.ts:183"
     ]
@@ -11194,7 +11194,7 @@
   "t7414bccc": {
     "grup": "motor",
     "tr": "döngü: {0}",
-    "en": "",
+    "en": "cycle: {0}",
     "nerede": [
       "packages/shared/src/arastirma.ts:634"
     ]
@@ -11411,7 +11411,7 @@
   "tf0ab37c1": {
     "grup": "motor",
     "tr": "Erzak üretimi +{0}",
-    "en": "",
+    "en": "Supplies production +{0}",
     "nerede": [
       "packages/shared/src/arastirma.ts:321"
     ]
@@ -11419,7 +11419,7 @@
   "t884143c4": {
     "grup": "motor",
     "tr": "Eşya pazarında alım satım",
-    "en": "",
+    "en": "Trading on the item market",
     "nerede": [
       "packages/shared/src/epostaDogrulama.ts:38"
     ]
@@ -11475,7 +11475,7 @@
   "tfbdc787b": {
     "grup": "motor",
     "tr": "Fiyat {0} arasında olmalı.",
-    "en": "",
+    "en": "The price must be within {0}.",
     "nerede": [
       "packages/shared/src/esyaPazari.ts:401"
     ]
@@ -11805,7 +11805,7 @@
   "t65946fc8": {
     "grup": "motor",
     "tr": "İşine yaramayan eşyayı diyarındaki öteki lordlara satabilir, aradığını onlardan alabilirsin. Kimin sattığı görünmez; fiyat dar bir bantta oynar, satıştan %{0} vergi kesilir. Pazar binasından ya da Malikâne'den girilir.",
-    "en": "",
+    "en": "You can sell items you don't need to other lords in your realm and buy what you're looking for from them. Sellers stay anonymous; prices move in a narrow band and {0}% tax is taken from each sale. Enter from the Market building or the Manor.",
     "nerede": [
       "packages/shared/src/ogretici.ts:332"
     ]
@@ -12140,7 +12140,7 @@
   "t7d531255": {
     "grup": "motor",
     "tr": "Kuşandığın eşyayı satamazsın. Önce çıkar.",
-    "en": "",
+    "en": "You can't sell an equipped item. Unequip it first.",
     "nerede": [
       "packages/shared/src/esyaPazari.ts:450"
     ]
@@ -12148,7 +12148,7 @@
   "t047c6661": {
     "grup": "motor",
     "tr": "Kuşatma",
-    "en": "",
+    "en": "Siege",
     "nerede": [
       "packages/shared/src/arastirma.ts:347"
     ]
@@ -12196,7 +12196,7 @@
   "t7cbdb351": {
     "grup": "motor",
     "tr": "Lord seviyesi {0} gerekiyor. Erken araştırma seviye {1} ile açılır.",
-    "en": "",
+    "en": "Requires lord level {0}. Early research opens at level {1}.",
     "nerede": [
       "packages/shared/src/arastirma.ts:440"
     ]
@@ -12325,7 +12325,7 @@
   "t66aebbe9": {
     "grup": "motor",
     "tr": "Miktar tam sayı olmalı.",
-    "en": "",
+    "en": "The amount must be a whole number.",
     "nerede": [
       "packages/shared/src/pazar.ts:146"
     ]
@@ -12333,7 +12333,7 @@
   "tb5bbeb3d": {
     "grup": "motor",
     "tr": "Milis",
-    "en": "",
+    "en": "Militia",
     "nerede": [
       "packages/shared/src/arastirma.ts:343"
     ]
@@ -12542,7 +12542,7 @@
   "tb865f866": {
     "grup": "motor",
     "tr": "Ön siparişlerde bekleyen altın depo tavanını aşamaz. En fazla {0} altın daha bağlayabilirsin.",
-    "en": "",
+    "en": "Gold held in buy orders can't exceed your storage cap. You can commit at most {0} more gold.",
     "nerede": [
       "packages/shared/src/esyaPazari.ts:540"
     ]
@@ -12598,7 +12598,7 @@
   "t0160e277": {
     "grup": "motor",
     "tr": "Parlak kutular şimdi başlatabileceklerin. Birine dokun: ne kazandırdığını, bedelini ve süresini gör.",
-    "en": "",
+    "en": "Bright boxes are what you can start now. Tap one to see what it gives, what it costs and how long it takes.",
     "nerede": [
       "packages/shared/src/rehber.ts:401"
     ]
@@ -12638,7 +12638,7 @@
   "t3a83c369": {
     "grup": "motor",
     "tr": "saldırısı",
-    "en": "",
+    "en": "attack",
     "nerede": [
       "packages/shared/src/arastirma.ts:326"
     ]
@@ -12727,7 +12727,7 @@
   "tb8c1677c": {
     "grup": "motor",
     "tr": "savunması",
-    "en": "",
+    "en": "defense",
     "nerede": [
       "packages/shared/src/arastirma.ts:326"
     ]
@@ -12751,7 +12751,7 @@
   "t4c0a65f3": {
     "grup": "motor",
     "tr": "Seçimlerin seni öbür lordlardan ayırır. İki lord aynı seviyede olsa bile aynı olmaz.",
-    "en": "",
+    "en": "Your choices set you apart from other lords. Two lords of the same level are never the same.",
     "nerede": [
       "packages/shared/src/ogretici.ts:512"
     ]
@@ -13678,7 +13678,7 @@
   "tf9de5322": {
     "grup": "sunucu",
     "tr": "{0} gün {1} saat",
-    "en": "",
+    "en": "{0} [day|days] {1} [hour|hours]",
     "nerede": [
       "apps/api/src/routes/arastirma.ts:52"
     ]
@@ -13710,7 +13710,7 @@
   "t4fb585df": {
     "grup": "sunucu",
     "tr": "{0} ilanın fiyat bandının dışında kaldı; bu hâliyle satılmaz. Pazardan fiyatını güncelleyebilirsin.",
-    "en": "",
+    "en": "Your {0} listing fell outside the price band; it won't sell as is. You can update its price in the Market.",
     "nerede": [
       "apps/api/src/services/esyaPazari.ts:327"
     ]
@@ -13854,7 +13854,7 @@
   "t89ee9791": {
     "grup": "sunucu",
     "tr": "{0} ön siparişin fiyat bandının dışında kaldı; bu hâliyle eşleşmez. Pazardan fiyatını güncelleyebilirsin.",
-    "en": "",
+    "en": "Your {0} buy order fell outside the price band; it won't match as is. You can update its price in the Market.",
     "nerede": [
       "apps/api/src/services/esyaPazari.ts:328"
     ]
@@ -13910,7 +13910,7 @@
   "ta2dbd978": {
     "grup": "sunucu",
     "tr": "{0} satıldı: {1} altın. Vergi {2}, kasana {3} altın girdi.",
-    "en": "",
+    "en": "{0} sold: {1} gold. Tax {2}, {3} gold went into your purse.",
     "nerede": [
       "apps/api/src/services/esyaPazari.ts:260"
     ]
@@ -13934,7 +13934,7 @@
   "t4855a1a5": {
     "grup": "sunucu",
     "tr": "{0} senin. {1} altın ödendi.",
-    "en": "",
+    "en": "{0} is yours. {1} gold paid.",
     "nerede": [
       "apps/api/src/services/esyaPazari.ts:274"
     ]
@@ -13959,7 +13959,7 @@
   "t357052dc": {
     "grup": "sunucu",
     "tr": "{0} üretildi.",
-    "en": "",
+    "en": "{0} forged.",
     "nerede": [
       "apps/api/src/services/queue.ts:276"
     ]
@@ -14350,7 +14350,7 @@
   "t461a1fae": {
     "grup": "sunucu",
     "tr": "Böyle bir seçim yok.",
-    "en": "",
+    "en": "No such choice.",
     "nerede": [
       "apps/api/src/routes/arastirma.ts:233"
     ]
@@ -14358,7 +14358,7 @@
   "t723570af": {
     "grup": "sunucu",
     "tr": "Böyle bir ürün yok.",
-    "en": "",
+    "en": "No such item.",
     "nerede": [
       "apps/api/src/routes/esyaPazari.ts:76"
     ]
@@ -14432,7 +14432,7 @@
   "t879fbc69": {
     "grup": "sunucu",
     "tr": "Bu bildirim adresi desteklenmiyor.",
-    "en": "",
+    "en": "This notification address isn't supported.",
     "nerede": [
       "apps/api/src/routes/push.ts:58"
     ]
@@ -14496,7 +14496,7 @@
   "t26a1c540": {
     "grup": "sunucu",
     "tr": "Bu eşya pazarda. Önce ilanı geri çek.",
-    "en": "",
+    "en": "This item is on the market. Withdraw the listing first.",
     "nerede": [
       "apps/api/src/routes/items.ts:38"
     ]
@@ -14617,7 +14617,7 @@
   "t62953e56": {
     "grup": "sunucu",
     "tr": "Bu seçimde bıraktığın bir yol yok.",
-    "en": "",
+    "en": "You have no path to leave in this choice.",
     "nerede": [
       "apps/api/src/routes/arastirma.ts:242"
     ]
@@ -14625,7 +14625,7 @@
   "t7b4041ed": {
     "grup": "sunucu",
     "tr": "Bu seçimi {0} sonra değiştirebilirsin.",
-    "en": "",
+    "en": "You can change this choice in {0}.",
     "nerede": [
       "apps/api/src/routes/arastirma.ts:112",
       "apps/api/src/routes/arastirma.ts:249"
@@ -14739,7 +14739,7 @@
   "t8e3e3c34": {
     "grup": "sunucu",
     "tr": "Çok fazla hatalı deneme. {0} dakika sonra yeniden dene ya da parolanı sıfırla.",
-    "en": "",
+    "en": "Too many failed attempts. Try again in {0} [minute|minutes] or reset your password.",
     "nerede": [
       "apps/api/src/routes/auth.ts:344"
     ]
@@ -14771,7 +14771,7 @@
   "tb5e007e8": {
     "grup": "sunucu",
     "tr": "Deponda altın için yer yok. Önce biraz harca ya da Malikâne'yi yükselt.",
-    "en": "",
+    "en": "No room for gold in your storage. Spend some first or upgrade the Manor.",
     "nerede": [
       "apps/api/src/routes/esyaPazari.ts:808"
     ]
@@ -14914,7 +14914,7 @@
   "t5fbab666": {
     "grup": "sunucu",
     "tr": "Eşya pazarı: fiyat satırı açılamadı.",
-    "en": "",
+    "en": "Item market: couldn't open the price row.",
     "nerede": [
       "apps/api/src/services/esyaPazari.ts:117"
     ]
@@ -14922,7 +14922,7 @@
   "ta27c4c3d": {
     "grup": "sunucu",
     "tr": "Eşyan satıldı",
-    "en": "",
+    "en": "Your item sold",
     "nerede": [
       "apps/api/src/services/lord.ts:726"
     ]
@@ -14948,7 +14948,7 @@
   "t20646d48": {
     "grup": "sunucu",
     "tr": "Fiyat sayı olmalı.",
-    "en": "",
+    "en": "The price must be a number.",
     "nerede": [
       "apps/api/src/routes/esyaPazari.ts:65"
     ]
@@ -14956,7 +14956,7 @@
   "t8a0b8787": {
     "grup": "sunucu",
     "tr": "Fiyat zaten bu.",
-    "en": "",
+    "en": "That's already the price.",
     "nerede": [
       "apps/api/src/routes/esyaPazari.ts:524",
       "apps/api/src/routes/esyaPazari.ts:701"
@@ -15087,7 +15087,7 @@
   "t88b821d2": {
     "grup": "sunucu",
     "tr": "İlan",
-    "en": "",
+    "en": "Listing",
     "nerede": [
       "apps/api/src/routes/esyaPazari.ts:507",
       "apps/api/src/routes/esyaPazari.ts:514",
@@ -15202,7 +15202,7 @@
   "tf39e43ad": {
     "grup": "sunucu",
     "tr": "Kasan boş.",
-    "en": "",
+    "en": "Your purse is empty.",
     "nerede": [
       "apps/api/src/routes/esyaPazari.ts:803"
     ]
@@ -15218,7 +15218,7 @@
   "td7c0e87f": {
     "grup": "sunucu",
     "tr": "Kayıt kuyruğundaki ilan kura bitene kadar geri çekilemez.",
-    "en": "",
+    "en": "A listing in the registration queue can't be withdrawn until the draw ends.",
     "nerede": [
       "apps/api/src/routes/esyaPazari.ts:587"
     ]
@@ -15226,7 +15226,7 @@
   "t14ef3fc2": {
     "grup": "sunucu",
     "tr": "Kayıt kuyruğundaki ilanın fiyatı değişmez. Kura bitince güncelleyebilirsin.",
-    "en": "",
+    "en": "A queued listing's price can't change. You can update it after the draw.",
     "nerede": [
       "apps/api/src/routes/esyaPazari.ts:517"
     ]
@@ -15338,7 +15338,7 @@
   "t52913184": {
     "grup": "sunucu",
     "tr": "Kurayı kazandın: {0} senin. {1} altın ödendi.",
-    "en": "",
+    "en": "You won the draw: {0} is yours. {1} gold paid.",
     "nerede": [
       "apps/api/src/services/esyaPazari.ts:273"
     ]
@@ -15499,7 +15499,7 @@
   "t464c2de7": {
     "grup": "sunucu",
     "tr": "Miktar sayı olmalı.",
-    "en": "",
+    "en": "The amount must be a number.",
     "nerede": [
       "apps/api/src/routes/pazar.ts:35"
     ]
@@ -15580,7 +15580,7 @@
   "t1265fa4b": {
     "grup": "sunucu",
     "tr": "Oturumun sona erdi. Yeniden giriş yap.",
-    "en": "",
+    "en": "Your session has expired. Please sign in again.",
     "nerede": [
       "apps/api/src/auth.ts:73"
     ]
@@ -15588,7 +15588,7 @@
   "t92270202": {
     "grup": "sunucu",
     "tr": "Ön sipariş",
-    "en": "",
+    "en": "Buy order",
     "nerede": [
       "apps/api/src/routes/esyaPazari.ts:690",
       "apps/api/src/routes/esyaPazari.ts:697",
@@ -15599,7 +15599,7 @@
   "t70eb4185": {
     "grup": "sunucu",
     "tr": "Ön siparişin karşılandı",
-    "en": "",
+    "en": "Your buy order was filled",
     "nerede": [
       "apps/api/src/services/lord.ts:727"
     ]
@@ -15607,7 +15607,7 @@
   "t57668250": {
     "grup": "sunucu",
     "tr": "Önce süren {0} araştırmasını bitir ya da iptal et.",
-    "en": "",
+    "en": "Finish or cancel your ongoing {0} research first.",
     "nerede": [
       "apps/api/src/routes/arastirma.ts:114",
       "apps/api/src/routes/arastirma.ts:261"
@@ -15657,7 +15657,7 @@
   "t2695daea": {
     "grup": "sunucu",
     "tr": "Pazar bu arada değişti. Yeniden dene.",
-    "en": "",
+    "en": "The market changed in the meantime. Try again.",
     "nerede": [
       "apps/api/src/services/esyaPazari.ts:153"
     ]
@@ -15665,7 +15665,7 @@
   "tca6a35d4": {
     "grup": "sunucu",
     "tr": "Pazar emrin eşleşmiyor",
-    "en": "",
+    "en": "Your market order doesn't match",
     "nerede": [
       "apps/api/src/services/lord.ts:728"
     ]
@@ -16002,7 +16002,7 @@
   "t8c409db5": {
     "grup": "veri",
     "tr": "Ağır Süvari",
-    "en": "",
+    "en": "Heavy Cavalry",
     "nerede": [
       "data/arastirma.json:dallar[1].dugumler[10].ad"
     ]
@@ -16018,7 +16018,7 @@
   "ta2d2c6c7": {
     "grup": "veri",
     "tr": "Akıncı Öğretisi",
-    "en": "",
+    "en": "Raider Doctrine",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[1].ad"
     ]
@@ -16026,7 +16026,7 @@
   "t60249213": {
     "grup": "veri",
     "tr": "Akıncıların düşman ambarını ondan önce bulur. Akından her seferinde daha dolu dönersin.",
-    "en": "",
+    "en": "Your raiders find the enemy's granary before he does. You come back fuller from every raid.",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[3].aciklama"
     ]
@@ -16034,7 +16034,7 @@
   "t15de6109": {
     "grup": "veri",
     "tr": "Âlimleri malikânene davet edersin. Aynı anda bir araştırma daha yürütebilirsin.",
-    "en": "",
+    "en": "You invite scholars to your manor. You can run one more research at a time.",
     "nerede": [
       "data/arastirma.json:dallar[0].dugumler[5].aciklama"
     ]
@@ -16058,7 +16058,7 @@
   "t6d180251": {
     "grup": "veri",
     "tr": "Ambarlar, üretim, âlimler, ustalar.",
-    "en": "",
+    "en": "Granaries, production, scholars, craftsmen.",
     "nerede": [
       "data/arastirma.json:dallar[0].ozet"
     ]
@@ -16082,7 +16082,7 @@
   "t77aab67c": {
     "grup": "veri",
     "tr": "Arbalet",
-    "en": "",
+    "en": "Crossbow",
     "nerede": [
       "data/arastirma.json:dallar[1].dugumler[14].ad"
     ]
@@ -16106,7 +16106,7 @@
   "ta477fcda": {
     "grup": "veri",
     "tr": "Askeri hasattan sonra evine göndermezsin; maaşlı bir ordu kurarsın. Daha büyük ve daha ucuz.",
-    "en": "",
+    "en": "You no longer send soldiers home after the harvest; you raise a paid army. Bigger and cheaper.",
     "nerede": [
       "data/arastirma.json:dallar[1].dugumler[15].aciklama"
     ]
@@ -16130,7 +16130,7 @@
   "t505e6e2a": {
     "grup": "veri",
     "tr": "Atış Hattı",
-    "en": "",
+    "en": "Firing Line",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[9].ad"
     ]
@@ -16138,7 +16138,7 @@
   "te470b124": {
     "grup": "veri",
     "tr": "Atlılara ve atlarına zırh giydirirsin. Süvari hücumdan sağ döner, ikinci kez vurur.",
-    "en": "",
+    "en": "You armor riders and their horses. Cavalry comes back alive from the charge and strikes a second time.",
     "nerede": [
       "data/arastirma.json:dallar[1].dugumler[10].aciklama"
     ]
@@ -16146,7 +16146,7 @@
   "te7740bde": {
     "grup": "veri",
     "tr": "Atlıların ayağına üzengi taktırırsın. Mızrak darbesi atın bütün ağırlığıyla iner.",
-    "en": "",
+    "en": "You fit stirrups for your riders. The lance lands with the full weight of the horse.",
     "nerede": [
       "data/arastirma.json:dallar[1].dugumler[4].aciklama"
     ]
@@ -16154,7 +16154,7 @@
   "t7ff3e6c6": {
     "grup": "veri",
     "tr": "Atlılarına baştan aşağı levha zırh dövdürürsün. Hücumları bir duvarın yürümesi gibidir.",
-    "en": "",
+    "en": "You forge plate armor for your riders from head to toe. Their charge is a wall on the move.",
     "nerede": [
       "data/arastirma.json:dallar[1].dugumler[16].aciklama"
     ]
@@ -16274,7 +16274,7 @@
   "t9f23ea36": {
     "grup": "veri",
     "tr": "Bereketli Topraklar",
-    "en": "",
+    "en": "Fertile Lands",
     "nerede": [
       "data/arastirma.json:dallar[0].dugumler[7].ad"
     ]
@@ -16306,7 +16306,7 @@
   "te99ffb4d": {
     "grup": "veri",
     "tr": "Beylik",
-    "en": "",
+    "en": "Principality",
     "nerede": [
       "data/arastirma.json:caglar[2].ad"
     ]
@@ -16314,7 +16314,7 @@
   "t31ff92d5": {
     "grup": "veri",
     "tr": "Beytülhikme",
-    "en": "",
+    "en": "House of Wisdom",
     "nerede": [
       "data/arastirma.json:dallar[0].dugumler[15].ad"
     ]
@@ -16322,7 +16322,7 @@
   "t6325e55d": {
     "grup": "veri",
     "tr": "Bileşik Yay",
-    "en": "",
+    "en": "Composite Bow",
     "nerede": [
       "data/arastirma.json:dallar[1].dugumler[8].ad"
     ]
@@ -16386,7 +16386,7 @@
   "td19a088b": {
     "grup": "veri",
     "tr": "Boynuz, ağaç ve sinirden yay yaptırırsın. Okçunun oku daha uzağa, daha sert gider.",
-    "en": "",
+    "en": "You have bows made of horn, wood and sinew. Your archers' arrows fly farther and hit harder.",
     "nerede": [
       "data/arastirma.json:dallar[1].dugumler[8].aciklama"
     ]
@@ -16410,7 +16410,7 @@
   "t2ff1fd72": {
     "grup": "veri",
     "tr": "Bölgelerini merkezden mi, uçlardaki beylerle mi yöneteceğin.",
-    "en": "",
+    "en": "Whether you rule your regions from the center or through the lords of the marches.",
     "nerede": [
       "data/arastirma.json:gruplar[2].aciklama"
     ]
@@ -16442,7 +16442,7 @@
   "tb7fdf667": {
     "grup": "veri",
     "tr": "Bütün bölgeler tek bir divandan yönetilir. Vergi eksiksiz toplanır, imar düzenli yürür.",
-    "en": "",
+    "en": "Every region is ruled from a single council. Taxes come in full, building runs in order.",
     "nerede": [
       "data/arastirma.json:dallar[3].dugumler[7].aciklama"
     ]
@@ -16458,7 +16458,7 @@
   "t25dd87c1": {
     "grup": "veri",
     "tr": "Bütün ordu tek bir işaretle vurur. Düşman ne zaman vurulacağını bilmez, ama vurulur.",
-    "en": "",
+    "en": "The whole army strikes on a single signal. The enemy doesn't know when the blow will come, but it comes.",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[10].aciklama"
     ]
@@ -16490,7 +16490,7 @@
   "tb247429d": {
     "grup": "veri",
     "tr": "Casuslarını birbirini tanımayan hücrelere ayırırsın. Biri yakalansa bile ağ çözülmez.",
-    "en": "",
+    "en": "You split your spies into cells that don't know each other. Even if one is caught, the network holds.",
     "nerede": [
       "data/arastirma.json:dallar[3].dugumler[8].aciklama"
     ]
@@ -16498,7 +16498,7 @@
   "t69444850": {
     "grup": "veri",
     "tr": "Cihan",
-    "en": "",
+    "en": "Empire",
     "nerede": [
       "data/arastirma.json:caglar[5].ad"
     ]
@@ -16506,7 +16506,7 @@
   "t348d96a3": {
     "grup": "veri",
     "tr": "Cihan Divanı",
-    "en": "",
+    "en": "Imperial Council",
     "nerede": [
       "data/arastirma.json:dallar[3].dugumler[10].ad"
     ]
@@ -16546,7 +16546,7 @@
   "ted4e73f1": {
     "grup": "veri",
     "tr": "Çelik Sur",
-    "en": "",
+    "en": "Steel Wall",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[15].ad"
     ]
@@ -16562,7 +16562,7 @@
   "tbf95c950": {
     "grup": "veri",
     "tr": "Daimî Ordu",
-    "en": "",
+    "en": "Standing Army",
     "nerede": [
       "data/arastirma.json:dallar[1].dugumler[15].ad"
     ]
@@ -16570,7 +16570,7 @@
   "t46557402": {
     "grup": "veri",
     "tr": "Darphane",
-    "en": "",
+    "en": "Mint",
     "nerede": [
       "data/arastirma.json:dallar[0].dugumler[14].ad"
     ]
@@ -16634,7 +16634,7 @@
   "tb121ad25": {
     "grup": "veri",
     "tr": "Derin Madenler",
-    "en": "",
+    "en": "Deep Mines",
     "nerede": [
       "data/arastirma.json:dallar[0].dugumler[8].ad"
     ]
@@ -16642,7 +16642,7 @@
   "t687ffd6f": {
     "grup": "veri",
     "tr": "Dev karşı ağırlıklı mancınıklar kurdurursun. Hiçbir sur ikinci atıştan sonra aynı kalmaz.",
-    "en": "",
+    "en": "You have giant counterweight trebuchets built. No wall is the same after the second shot.",
     "nerede": [
       "data/arastirma.json:dallar[1].dugumler[12].aciklama"
     ]
@@ -16650,7 +16650,7 @@
   "tc43ab6c1": {
     "grup": "veri",
     "tr": "Devlet",
-    "en": "",
+    "en": "State",
     "nerede": [
       "data/arastirma.json:caglar[4].ad"
     ]
@@ -16674,7 +16674,7 @@
   "t037c5d30": {
     "grup": "veri",
     "tr": "Divanın artık yalnız diyarını değil, komşularını da tartışıyor. Her bölge bir planın parçası.",
-    "en": "",
+    "en": "Your council now debates not only your realm but its neighbors too. Every region is part of a plan.",
     "nerede": [
       "data/arastirma.json:dallar[3].dugumler[10].aciklama"
     ]
@@ -16714,7 +16714,7 @@
   "t7d017b70": {
     "grup": "veri",
     "tr": "Diyarın bütün âlimlerini tek bir çatı altında toplarsın. Aynı anda bir araştırma daha yürür.",
-    "en": "",
+    "en": "You gather all the scholars of your realm under one roof. One more research runs at a time.",
     "nerede": [
       "data/arastirma.json:dallar[0].dugumler[15].aciklama"
     ]
@@ -16746,7 +16746,7 @@
   "t6ef0ccaf": {
     "grup": "veri",
     "tr": "Diyarının hangi kaynakla büyüyeceği. Fazlasını pazarda satabilirsin.",
-    "en": "",
+    "en": "Which resource your realm grows with. You can sell the surplus on the market.",
     "nerede": [
       "data/arastirma.json:gruplar[1].aciklama"
     ]
@@ -16754,7 +16754,7 @@
   "t9900bb98": {
     "grup": "veri",
     "tr": "Doktrin",
-    "en": "",
+    "en": "Doctrine",
     "nerede": [
       "data/arastirma.json:dallar[2].ad"
     ]
@@ -16786,7 +16786,7 @@
   "t0a01795f": {
     "grup": "veri",
     "tr": "Düşman ordunun geldiğini duyduğunda sen çoktan kapısındasın. Hız artık bir silah.",
-    "en": "",
+    "en": "By the time the enemy hears your army coming, you're already at their gate. Speed is now a weapon.",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[5].aciklama"
     ]
@@ -16794,7 +16794,7 @@
   "t87104b7e": {
     "grup": "veri",
     "tr": "Düşman sana ulaşmadan savaşı bitir. Ordunu okçu ve mancınığın çevresinde kurarsın.",
-    "en": "",
+    "en": "End the battle before the enemy reaches you. You build your army around archers and siege engines.",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[6].aciklama"
     ]
@@ -16834,7 +16834,7 @@
   "te156c5ff": {
     "grup": "veri",
     "tr": "Ekonomi",
-    "en": "",
+    "en": "Economy",
     "nerede": [
       "data/arastirma.json:gruplar[1].ad"
     ]
@@ -16890,7 +16890,7 @@
   "tb008a350": {
     "grup": "veri",
     "tr": "Eski seferlerin defterlerini okutursun. Neyin işe yaradığını artık biliyorsun; sıra bir öğreti seçmekte.",
-    "en": "",
+    "en": "You have the ledgers of old campaigns read. You now know what works; time to choose a doctrine.",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[0].aciklama"
     ]
@@ -16914,7 +16914,7 @@
   "t9d11d0f2": {
     "grup": "veri",
     "tr": "Eşya ve kaynak ticareti.",
-    "en": "",
+    "en": "Item and resource trading.",
     "nerede": [
       "data/binalar.json:binalar[5].ozet"
     ]
@@ -16978,7 +16978,7 @@
   "tde5123cf": {
     "grup": "veri",
     "tr": "Gizli Teşkilat",
-    "en": "",
+    "en": "Secret Service",
     "nerede": [
       "data/arastirma.json:dallar[3].dugumler[8].ad"
     ]
@@ -17074,7 +17074,7 @@
   "t414156f7": {
     "grup": "veri",
     "tr": "Hazine Mahzenleri",
-    "en": "",
+    "en": "Treasury Vaults",
     "nerede": [
       "data/arastirma.json:dallar[0].dugumler[13].ad"
     ]
@@ -17098,7 +17098,7 @@
   "t6ee79476": {
     "grup": "veri",
     "tr": "Her köyden en iyi yiğitleri seçip ayrı bir ocakta yetiştirirsin. Piyaden ordunun belkemiği olur.",
-    "en": "",
+    "en": "You pick the best young men of every village and train them in a corps of their own. Your infantry becomes the army's backbone.",
     "nerede": [
       "data/arastirma.json:dallar[1].dugumler[11].aciklama"
     ]
@@ -17114,7 +17114,7 @@
   "t73e6fb98": {
     "grup": "veri",
     "tr": "Hız her şeydir: vur, dağıt, geri çekil. Ordunu süvarinin çevresinde kurarsın.",
-    "en": "",
+    "en": "Speed is everything: strike, scatter, fall back. You build your army around cavalry.",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[1].aciklama"
     ]
@@ -17138,7 +17138,7 @@
   "tfe3195c9": {
     "grup": "veri",
     "tr": "Hilal Ustalığı",
-    "en": "",
+    "en": "Crescent Mastery",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[2].ad"
     ]
@@ -17234,7 +17234,7 @@
   "t700e2b6b": {
     "grup": "veri",
     "tr": "Kale Öğretisi",
-    "en": "",
+    "en": "Fortress Doctrine",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[11].ad"
     ]
@@ -17250,7 +17250,7 @@
   "t4a72508a": {
     "grup": "veri",
     "tr": "Kalkan Duvarı Ustalığı",
-    "en": "",
+    "en": "Shield Wall Mastery",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[12].ad"
     ]
@@ -17266,7 +17266,7 @@
   "t25ba2434": {
     "grup": "veri",
     "tr": "Kalkanlar tek bir duvar gibi kilitlenir. Kalkan Duvarı daha sağlam durur, saldırın daha az düşer.",
-    "en": "",
+    "en": "The shields lock like a single wall. Shield Wall holds firmer and your attack drops less.",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[12].aciklama"
     ]
@@ -17274,7 +17274,7 @@
   "t3f20e2ee": {
     "grup": "veri",
     "tr": "Kalkanlı Piyade",
-    "en": "",
+    "en": "Shield Infantry",
     "nerede": [
       "data/arastirma.json:dallar[1].dugumler[7].ad"
     ]
@@ -17290,7 +17290,7 @@
   "t4f982032": {
     "grup": "veri",
     "tr": "Kanatların sarmayı gözü kapalı yapar. Hilal Düzeni daha sert sarar, merkez daha az zayıflar.",
-    "en": "",
+    "en": "Your wings encircle with their eyes closed. Crescent Formation wraps harder and the center weakens less.",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[2].aciklama"
     ]
@@ -17322,7 +17322,7 @@
   "t4a83e196": {
     "grup": "veri",
     "tr": "Kargı Ustaları",
-    "en": "",
+    "en": "Pike Masters",
     "nerede": [
       "data/arastirma.json:dallar[1].dugumler[2].ad"
     ]
@@ -17330,7 +17330,7 @@
   "t6c5929c7": {
     "grup": "veri",
     "tr": "Karşı Ağırlıklı Mancınık",
-    "en": "",
+    "en": "Counterweight Trebuchet",
     "nerede": [
       "data/arastirma.json:dallar[1].dugumler[12].ad"
     ]
@@ -17346,7 +17346,7 @@
   "ta29f7988": {
     "grup": "veri",
     "tr": "Kâtipler",
-    "en": "",
+    "en": "Scribes",
     "nerede": [
       "data/arastirma.json:dallar[0].dugumler[1].ad"
     ]
@@ -17354,7 +17354,7 @@
   "tc148d030": {
     "grup": "veri",
     "tr": "Kayaya oyulmuş mahzenler kazdırırsın. Diyarın büyüdükçe ambarın da onunla büyür.",
-    "en": "",
+    "en": "You have vaults carved into the rock. As your realm grows, your granary grows with it.",
     "nerede": [
       "data/arastirma.json:dallar[0].dugumler[13].aciklama"
     ]
@@ -17378,7 +17378,7 @@
   "t6843c962": {
     "grup": "veri",
     "tr": "Kendi sikkeni bastırırsın. Malikânenin çarşısı sikkene güvenir, alışveriş hızlanır.",
-    "en": "",
+    "en": "You strike your own coin. Your manor's bazaar trusts it and trade speeds up.",
     "nerede": [
       "data/arastirma.json:dallar[0].dugumler[14].aciklama"
     ]
@@ -17386,7 +17386,7 @@
   "t1d23456e": {
     "grup": "veri",
     "tr": "Kendi taş ocağını açarsın. Duvarlar taş beklemeden yükselir, binalar daha çabuk biter.",
-    "en": "",
+    "en": "You open your own quarry. Walls rise without waiting for stone and buildings finish sooner.",
     "nerede": [
       "data/arastirma.json:dallar[0].dugumler[3].aciklama"
     ]
@@ -17394,7 +17394,7 @@
   "tbd9c6e90": {
     "grup": "veri",
     "tr": "Kervan yollarına han açtırırsın. Geçen her yük kesene bir akçe bırakır; diyarın altınla büyür.",
-    "en": "",
+    "en": "You open inns along the caravan roads. Every passing load leaves a coin in your purse; your realm grows with gold.",
     "nerede": [
       "data/arastirma.json:dallar[0].dugumler[9].aciklama"
     ]
@@ -17490,7 +17490,7 @@
   "t963af673": {
     "grup": "veri",
     "tr": "Köylü Talimi",
-    "en": "",
+    "en": "Peasant Drill",
     "nerede": [
       "data/arastirma.json:dallar[1].dugumler[1].ad"
     ]
@@ -17498,7 +17498,7 @@
   "te671ebc6": {
     "grup": "veri",
     "tr": "Köylülere kargı tutmayı ve saf bozmamayı öğretirsin. Milis ilk hücumda dağılmaz.",
-    "en": "",
+    "en": "You teach peasants to hold a pike and keep the line. The militia doesn't break at the first charge.",
     "nerede": [
       "data/arastirma.json:dallar[1].dugumler[1].aciklama"
     ]
@@ -17538,7 +17538,7 @@
   "tf9cc6c2c": {
     "grup": "veri",
     "tr": "Kuruluş",
-    "en": "",
+    "en": "Founding",
     "nerede": [
       "data/arastirma.json:caglar[0].ad"
     ]
@@ -17554,7 +17554,7 @@
   "t709ec75d": {
     "grup": "veri",
     "tr": "Kuşat ve Vur",
-    "en": "",
+    "en": "Encircle and Strike",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[4].ad"
     ]
@@ -17562,7 +17562,7 @@
   "taab9265f": {
     "grup": "veri",
     "tr": "Kuşatma artık bir sanat. Kuşatma Düzeni surları daha derin deler, saldırın daha az zayıflar.",
-    "en": "",
+    "en": "Siege is now an art. Siege Formation breaches walls deeper and your attack weakens less.",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[8].aciklama"
     ]
@@ -17578,7 +17578,7 @@
   "t5e91007f": {
     "grup": "veri",
     "tr": "Kuşatma Ustalığı",
-    "en": "",
+    "en": "Siege Mastery",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[8].ad"
     ]
@@ -17642,7 +17642,7 @@
   "t59c928e3": {
     "grup": "veri",
     "tr": "Madenlere destek kirişi ve su çarkı koydurursun. Damar derinden çıkar; diyarın demirle büyür.",
-    "en": "",
+    "en": "You fit the mines with support beams and waterwheels. Ore comes up from deeper; your realm grows with iron.",
     "nerede": [
       "data/arastirma.json:dallar[0].dugumler[8].aciklama"
     ]
@@ -17650,7 +17650,7 @@
   "td96305a9": {
     "grup": "veri",
     "tr": "Malikânede kâtip tutarsın. Her deneyin notu kaybolmadan bir sonrakine aktarılır; araştırma hızlanır.",
-    "en": "",
+    "en": "You keep scribes at the manor. Every experiment's notes pass to the next without loss; research speeds up.",
     "nerede": [
       "data/arastirma.json:dallar[0].dugumler[1].aciklama"
     ]
@@ -17666,7 +17666,7 @@
   "t2927ff58": {
     "grup": "veri",
     "tr": "Mancınık kurmayı bilen ustaları ordunda tutarsın. Taşlar surun zayıf yerine iner.",
-    "en": "",
+    "en": "You keep craftsmen who know how to build trebuchets. The stones land on the weak spot of the wall.",
     "nerede": [
       "data/arastirma.json:dallar[1].dugumler[5].aciklama"
     ]
@@ -17674,7 +17674,7 @@
   "tfd762888": {
     "grup": "veri",
     "tr": "Mancınık Ustaları",
-    "en": "",
+    "en": "Trebuchet Masters",
     "nerede": [
       "data/arastirma.json:dallar[1].dugumler[5].ad"
     ]
@@ -17690,7 +17690,7 @@
   "t6c8793e8": {
     "grup": "veri",
     "tr": "Medrese",
-    "en": "",
+    "en": "Madrasa",
     "nerede": [
       "data/arastirma.json:dallar[0].dugumler[5].ad"
     ]
@@ -17706,7 +17706,7 @@
   "t59258a9b": {
     "grup": "veri",
     "tr": "Menzil Öğretisi",
-    "en": "",
+    "en": "Range Doctrine",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[6].ad"
     ]
@@ -17714,7 +17714,7 @@
   "t632e3c7b": {
     "grup": "veri",
     "tr": "Menzilhaneler",
-    "en": "",
+    "en": "Relay Stations",
     "nerede": [
       "data/arastirma.json:dallar[3].dugumler[3].ad"
     ]
@@ -17722,7 +17722,7 @@
   "tca07090f": {
     "grup": "veri",
     "tr": "Merkezî Divan",
-    "en": "",
+    "en": "Central Council",
     "nerede": [
       "data/arastirma.json:dallar[3].dugumler[7].ad"
     ]
@@ -17770,7 +17770,7 @@
   "t9a3605fd": {
     "grup": "veri",
     "tr": "Mızrak seti atlının geleceği yere önceden kurulur. Süvari hücumu setin önünde erir.",
-    "en": "",
+    "en": "The spear barrier is set where the rider will come. The cavalry charge melts before it.",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[13].aciklama"
     ]
@@ -17778,7 +17778,7 @@
   "t1ad96b82": {
     "grup": "veri",
     "tr": "Mızrak Seti Ustalığı",
-    "en": "",
+    "en": "Spear Barrier Mastery",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[13].ad"
     ]
@@ -17802,7 +17802,7 @@
   "td8fbce4c": {
     "grup": "veri",
     "tr": "Mızrakçılara uzun kargı ve demir uç verirsin. Atlı hücumu kargının ucunda kırılır.",
-    "en": "",
+    "en": "You give spearmen long pikes with iron tips. The mounted charge breaks on the pike's point.",
     "nerede": [
       "data/arastirma.json:dallar[1].dugumler[2].aciklama"
     ]
@@ -17818,7 +17818,7 @@
   "t87e8b9d0": {
     "grup": "veri",
     "tr": "Mimar Ocağı",
-    "en": "",
+    "en": "Builders' Guild",
     "nerede": [
       "data/arastirma.json:dallar[0].dugumler[12].ad"
     ]
@@ -17867,7 +17867,7 @@
   "t909d9ad5": {
     "grup": "veri",
     "tr": "Ok Yağmuru Ustalığı",
-    "en": "",
+    "en": "Arrow Rain Mastery",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[7].ad"
     ]
@@ -17891,7 +17891,7 @@
   "t0c26888c": {
     "grup": "veri",
     "tr": "Okçulara arbalet ve siper kalkanı verirsin. Uzaktan vurur, yakından da kolay düşmez.",
-    "en": "",
+    "en": "You give archers crossbows and pavise shields. They strike from afar and don't fall easily up close.",
     "nerede": [
       "data/arastirma.json:dallar[1].dugumler[14].aciklama"
     ]
@@ -17899,7 +17899,7 @@
   "tb09e20a1": {
     "grup": "veri",
     "tr": "Okçuların tek bir el gibi atar. Ok Yağmuru ilk turda daha sert iner, savunmayı daha az açar.",
-    "en": "",
+    "en": "Your archers loose as one hand. Arrow Rain lands harder in the first round and opens your defense less.",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[7].aciklama"
     ]
@@ -17907,7 +17907,7 @@
   "ta9e57326": {
     "grup": "veri",
     "tr": "Okçuların üç sıra hâlinde nöbetleşe atar. Ok yağmuru bir an bile dinmez.",
-    "en": "",
+    "en": "Your archers shoot in three ranks, taking turns. The arrow rain never stops for a moment.",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[9].aciklama"
     ]
@@ -17955,7 +17955,7 @@
   "td22b06bc": {
     "grup": "veri",
     "tr": "Ordun her adımı tartarak atar. Temkinli İlerleyiş daha az kayıpla daha çok toprak tutar.",
-    "en": "",
+    "en": "Your army weighs every step. Cautious Advance holds more ground with fewer losses.",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[14].aciklama"
     ]
@@ -17971,7 +17971,7 @@
   "td46a6914": {
     "grup": "veri",
     "tr": "Ordunu hangi fikrin çevresinde kuracağın. Üçünden yalnız biri.",
-    "en": "",
+    "en": "Which idea you build your army around. Only one of three.",
     "nerede": [
       "data/arastirma.json:gruplar[0].aciklama"
     ]
@@ -18011,7 +18011,7 @@
   "tc1c97be2": {
     "grup": "veri",
     "tr": "Oyuncularla eşya alıp sattığın, kaynak takas ettiğin yer. Günlük takas hacmini pazarın büyüklüğü belirler.",
-    "en": "",
+    "en": "Where you buy and sell items with players and trade resources. The market's size sets your daily trade volume.",
     "nerede": [
       "data/binalar.json:binalar[5].aciklama"
     ]
@@ -18043,7 +18043,7 @@
   "t7a0c6d6a": {
     "grup": "veri",
     "tr": "Piyadeye boy kalkanı verirsin. Saf ok yağmurunda bile yerinde durur ve ileri yürür.",
-    "en": "",
+    "en": "You give infantry tall shields. The line holds even under arrow rain and marches forward.",
     "nerede": [
       "data/arastirma.json:dallar[1].dugumler[7].aciklama"
     ]
@@ -18051,7 +18051,7 @@
   "t99a7b57e": {
     "grup": "veri",
     "tr": "Rasathane",
-    "en": "",
+    "en": "Observatory",
     "nerede": [
       "data/arastirma.json:dallar[0].dugumler[11].ad"
     ]
@@ -18139,7 +18139,7 @@
   "te7161846": {
     "grup": "veri",
     "tr": "Savaş öğretisi",
-    "en": "",
+    "en": "War doctrine",
     "nerede": [
       "data/arastirma.json:gruplar[0].ad"
     ]
@@ -18147,7 +18147,7 @@
   "tb64d1a09": {
     "grup": "veri",
     "tr": "Savaş Sanatı",
-    "en": "",
+    "en": "Art of War",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[0].ad"
     ]
@@ -18179,7 +18179,7 @@
   "td1342296": {
     "grup": "veri",
     "tr": "Seçme Piyade",
-    "en": "",
+    "en": "Elite Infantry",
     "nerede": [
       "data/arastirma.json:dallar[1].dugumler[11].ad"
     ]
@@ -18251,7 +18251,7 @@
   "t7b842dcb": {
     "grup": "veri",
     "tr": "Sınır bölgelerini kendi beylerine bırakırsın. Uçlar hem sağlam durur hem düşmanı yağmalar.",
-    "en": "",
+    "en": "You leave the border regions to your own lords. The marches hold firm and raid the enemy.",
     "nerede": [
       "data/arastirma.json:dallar[3].dugumler[6].aciklama"
     ]
@@ -18307,7 +18307,7 @@
   "t8e611b20": {
     "grup": "veri",
     "tr": "Sur Mühendisliği",
-    "en": "",
+    "en": "Wall Engineering",
     "nerede": [
       "data/arastirma.json:dallar[3].dugumler[4].ad"
     ]
@@ -18347,7 +18347,7 @@
   "t05fcbb61": {
     "grup": "veri",
     "tr": "Surlar, yollar, divan, casuslar.",
-    "en": "",
+    "en": "Walls, roads, council, spies.",
     "nerede": [
       "data/arastirma.json:dallar[3].ozet"
     ]
@@ -18355,7 +18355,7 @@
   "te7bf6131": {
     "grup": "veri",
     "tr": "Surlara burç ve hendek ekletirsin. Saldıran, surun dibine varmadan kayıp verir.",
-    "en": "",
+    "en": "You add towers and moats to your walls. Attackers take losses before reaching the foot of the wall.",
     "nerede": [
       "data/arastirma.json:dallar[3].dugumler[4].aciklama"
     ]
@@ -18363,7 +18363,7 @@
   "tc630d887": {
     "grup": "veri",
     "tr": "Surların taşı gibi ordun da yerinden oynamaz. Sana saldıran kendi kapısında yenilir.",
-    "en": "",
+    "en": "Like the stones of your walls, your army doesn't budge. Whoever attacks you is beaten at your own gate.",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[15].aciklama"
     ]
@@ -18371,7 +18371,7 @@
   "t8d124642": {
     "grup": "veri",
     "tr": "Sürat Akınları",
-    "en": "",
+    "en": "Swift Raids",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[3].ad"
     ]
@@ -18379,7 +18379,7 @@
   "t88c3ba7c": {
     "grup": "veri",
     "tr": "Süvari düşmanı iki yandan kuşatıp arkadan vurur. Kaçan düşman bile atlının elinden kurtulamaz.",
-    "en": "",
+    "en": "Cavalry flanks the enemy from both sides and strikes from behind. Even a fleeing enemy can't escape the rider.",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[4].aciklama"
     ]
@@ -18499,7 +18499,7 @@
   "tb449e8f2": {
     "grup": "veri",
     "tr": "Talim, piyade, okçu ve kuşatma, atlılar.",
-    "en": "",
+    "en": "Drill, infantry, archers and siege, horsemen.",
     "nerede": [
       "data/arastirma.json:dallar[1].ozet"
     ]
@@ -18523,7 +18523,7 @@
   "t6c1eb8ca": {
     "grup": "veri",
     "tr": "Tarlaları nöbetleşe ektirirsin. Toprak dinlenir, ambar dolar; diyarın erzakla büyür.",
-    "en": "",
+    "en": "You rotate your fields. The soil rests, the granary fills; your realm grows with supplies.",
     "nerede": [
       "data/arastirma.json:dallar[0].dugumler[7].aciklama"
     ]
@@ -18531,7 +18531,7 @@
   "t471341cd": {
     "grup": "veri",
     "tr": "Taş Ocakları",
-    "en": "",
+    "en": "Quarries",
     "nerede": [
       "data/arastirma.json:dallar[0].dugumler[3].ad"
     ]
@@ -18539,7 +18539,7 @@
   "t519d39c3": {
     "grup": "veri",
     "tr": "Temkin Ustalığı",
-    "en": "",
+    "en": "Caution Mastery",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[14].ad"
     ]
@@ -18563,7 +18563,7 @@
   "t45127147": {
     "grup": "veri",
     "tr": "Ticaret Yolları",
-    "en": "",
+    "en": "Trade Routes",
     "nerede": [
       "data/arastirma.json:dallar[0].dugumler[9].ad"
     ]
@@ -18571,7 +18571,7 @@
   "tacaca1e4": {
     "grup": "veri",
     "tr": "Toplu Atış",
-    "en": "",
+    "en": "Massed Volley",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[10].ad"
     ]
@@ -18579,7 +18579,7 @@
   "t3e9ceabc": {
     "grup": "veri",
     "tr": "Toprağını tutan savaşı kazanır. Ordunu surların ve mızrak setinin çevresinde kurarsın.",
-    "en": "",
+    "en": "Whoever holds their ground wins the battle. You build your army around walls and the spear barrier.",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[11].aciklama"
     ]
@@ -18603,7 +18603,7 @@
   "t2c337f21": {
     "grup": "veri",
     "tr": "Uç Beylikleri",
-    "en": "",
+    "en": "March Lordships",
     "nerede": [
       "data/arastirma.json:dallar[3].dugumler[6].ad"
     ]
@@ -18619,7 +18619,7 @@
   "t1967855b": {
     "grup": "veri",
     "tr": "Ustaları tek bir ocakta toplarsın. Her yapı aynı elden çıkar, iskele bir yapıdan ötekine taşınır.",
-    "en": "",
+    "en": "You gather craftsmen into one guild. Every building comes from the same hand; scaffolding moves from one building to the next.",
     "nerede": [
       "data/arastirma.json:dallar[0].dugumler[12].aciklama"
     ]
@@ -18627,7 +18627,7 @@
   "tccd0c4d0": {
     "grup": "veri",
     "tr": "Üç savaş öğretisinden biri.",
-    "en": "",
+    "en": "One of three war doctrines.",
     "nerede": [
       "data/arastirma.json:dallar[2].ozet"
     ]
@@ -18643,7 +18643,7 @@
   "t56e158b0": {
     "grup": "veri",
     "tr": "Üzengi",
-    "en": "",
+    "en": "Stirrup",
     "nerede": [
       "data/arastirma.json:dallar[1].dugumler[4].ad"
     ]
@@ -18715,7 +18715,7 @@
   "t402e658a": {
     "grup": "veri",
     "tr": "Yıldırım Seferi",
-    "en": "",
+    "en": "Lightning Campaign",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[5].ad"
     ]
@@ -18731,7 +18731,7 @@
   "t8f4c39f5": {
     "grup": "veri",
     "tr": "Yıldızları gözleyen bir kule diktirirsin. Hesap bilen adamlar her araştırmayı kısaltır.",
-    "en": "",
+    "en": "You raise a tower to watch the stars. Men who know numbers shorten every research.",
     "nerede": [
       "data/arastirma.json:dallar[0].dugumler[11].aciklama"
     ]
@@ -18747,7 +18747,7 @@
   "te7a16138": {
     "grup": "veri",
     "tr": "Yol boyuna taze at bekleten menziller kurarsın. Ordun ve haberlerin daha çabuk varır.",
-    "en": "",
+    "en": "You set up relay stations with fresh horses along the roads. Your army and your news arrive faster.",
     "nerede": [
       "data/arastirma.json:dallar[3].dugumler[3].aciklama"
     ]
@@ -18763,7 +18763,7 @@
   "t7eca0b6f": {
     "grup": "veri",
     "tr": "Yükseliş",
-    "en": "",
+    "en": "Rise",
     "nerede": [
       "data/arastirma.json:caglar[1].ad"
     ]
@@ -18803,7 +18803,7 @@
   "tfc889618": {
     "grup": "veri",
     "tr": "Zırhlı Atlılar",
-    "en": "",
+    "en": "Armored Riders",
     "nerede": [
       "data/arastirma.json:dallar[1].dugumler[16].ad"
     ]
