@@ -350,11 +350,13 @@ Tek ölçüt var ve `docs/07`'ninkinden farklı:
 
 Yan koşullar:
 
-- [ ] Hiçbir onay butonu, sonucunu söylemeden basılabilir değil
-- [ ] Hiçbir sonuç ekranı çıplak sayı göstermiyor; hepsi öncesi/sonrası
-- [ ] Ekipman gücü, haritadaki gerçek bir hedefe bağlı olarak açıklanıyor
-- [ ] Haritada en az bir başka lordun adı ve en az bir olay görünüyor
-- [ ] Oyuncu "kazanmak ne demek" sorusunun cevabını ilk 30 saniyede duyuyor
+- [x] Hiçbir onay butonu, sonucunu söylemeden basılabilir değil _(İ1)_
+- [x] Hiçbir sonuç ekranı çıplak sayı göstermiyor; hepsi öncesi/sonrası _(İ2)_
+- [x] Ekipman gücü, haritadaki gerçek bir hedefe bağlı olarak açıklanıyor
+      _(Demirhane: güç farkı, şöhret ve gerçek bir hedefte beklenen kayıp)_
+- [x] Haritada en az bir başka lordun adı ve en az bir olay görünüyor _(İ5)_
+- [x] Oyuncu "kazanmak ne demek" sorusunun cevabını ilk 30 saniyede duyuyor
+      _(İ6; öğretici şöhreti ve tahtı ilk sayfalarda anlatıyor)_
 
 ---
 

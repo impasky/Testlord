@@ -231,7 +231,9 @@ Bunu bir başarısızlık gibi yazmak yanlış olur, çünkü teknik taraf tuttu
 
 Not: `tarla_5` afişi konusu bakımından hâlâ tuhaf — bir tarla bölgesi
 için ırmak kıyısında surlu bir kasaba çiziyor. Bu ayrı bir iş ve çözümü
-sahne değil, o afişin yeniden üretilmesi.
+sahne değil, o afişin yeniden üretilmesi. İstem artık düzeltilmiş durumda
+(`farmland only, no castle, no city walls…`, `docs/GORSEL-ISTEMLERI.md`);
+kalan tek iş görseli o istemle yeniden üretip `gorsel-koy.py` ile koymak.
 
 ### Geriye ne kaldı
 

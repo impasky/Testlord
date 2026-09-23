@@ -223,12 +223,19 @@ oyun ilk sezonun sonunda ölür. Kalanlar ertelenebilir.
 
 v1'in kriteri "oyun çalışıyor mu" idi. v2'ninki farklı olmalı:
 
-- [ ] Bir oyuncu, ittifakındaki birinin bölgesini takviyeyle kurtarabiliyor
-- [ ] Bölgesi olmayan bir oyuncunun ittifakına katkı verecek bir rolü var
-- [ ] Sezon sonunda harita sıfırlanıyor ve yeni gelen boş haritaya giriyor
-- [ ] Oyuncu savaşı kaybettiğinde şansı değil planını suçlayabiliyor
-- [ ] Oyun dışındayken saldırıya uğradığını telefonundan öğreniyor
-- [ ] 7. gün tutundurma ölçülebiliyor (şu an ölçüm bile yok)
+- [x] Bir oyuncu, ittifakındaki birinin bölgesini takviyeyle kurtarabiliyor
+      _(takviye savunan garnizona katılıyor — `tools/takviye-testi.mjs`)_
+- [x] Bölgesi olmayan bir oyuncunun ittifakına katkı verecek bir rolü var
+      _(bağış, haftalık katkı ve fayda rütbesi — `/ittifak/bagis`)_
+- ~~Sezon sonunda harita sıfırlanıyor ve yeni gelen boş haritaya giriyor~~
+  — **iptal:** dünya kalıcı kaldı (B2 kararı). Geç gelen oyuncuyu
+  sıfırlama değil yeni lord kalkanı, 24 saatlik başlangıç bonusu ve dolan
+  diyarın yerine açılan yeni diyar koruyor
+- [x] Oyuncu savaşı kaybettiğinde şansı değil planını suçlayabiliyor
+      _(savaş raporu neden kazandığını ve kaybettiğini tur tur söylüyor)_
+- [x] Oyun dışındayken saldırıya uğradığını telefonundan öğreniyor
+      _(push: `saldiriya_ugradin`, `savas_kaybettin`, `baskent_dustu`)_
+- [x] 7. gün tutundurma ölçülebiliyor _(`/api/olcum`, docs/08 İ7)_
 
 Son madde en önemlisi: **v2'nin işe yarayıp yaramadığını tahminle değil
 sayıyla bilmemiz gerekiyor.** Ölçüm olmadan bir sonraki eleştiri de tahmin
