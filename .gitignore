@@ -28,3 +28,7 @@ __pycache__/
 # sürece her test koşusu 20 MB'lık ikili dosyayı "değişti" diye işaretliyor ve
 # her commit geçmişi kalıcı olarak şişiriyor.
 ekran-goruntuleri/
+
+# ComfyUI adayları (tools/comfy-uret.py). Ham üretim, seçilmeden oyuna
+# girmiyor; seçilen `--koy` ile WebP olarak public/ altına yazılıyor.
+tools/comfy-aday/

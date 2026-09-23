@@ -954,6 +954,15 @@ ISTEKLER: dict[str, dict[str, str]] = {
         "ittifak": "a great hall where the banners of several allied houses hang "
                    "together along the walls, a long oath table with sealed pacts "
                    "and cups, firelight",
+        # Pazar kapısı hem kaynak takası hem eşya pazarı (docs/19). İkisini
+        # birden taşıyan bir sahne: tartılan tahıl ve demir çubuklar bir
+        # yanda, zırhçı tezgâhındaki kılıç ve kalkanlar öbür yanda. Sarraf
+        # masası "fiyat burada konuşuluyor" hissini veriyor.
+        "pazar": "a medieval market square inside a walled town, merchant stalls "
+                 "under faded striped awnings, an armourer's stall with swords, "
+                 "shields and helmets on racks, sacks of grain and stacked iron "
+                 "bars on carts, a money-changer's table with brass scales and "
+                 "coin purses, late afternoon light",
         "giris": "a lord in a dark cloak standing on a ridge at dawn overlooking "
                  "a wide valley of fields, towns and a distant citadel",
     },

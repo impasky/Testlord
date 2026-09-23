@@ -1,6 +1,6 @@
 # Görsel İstemleri
 
-Oyunun ihtiyacı olan **140 görselin** kopyala-yapıştır istemleri.
+Oyunun ihtiyacı olan **141 görselin** kopyala-yapıştır istemleri.
 Her istem üç parçadan oluşur: **konu** + **kategori kompozisyonu** +
 **taban üslup**. Taban üslup hepsinde aynıdır; tutarlılık oradan gelir.
 
@@ -1001,7 +1001,7 @@ the SAME MAN as the first figure on this page, older and scarred, same face, sam
 
 ---
 
-## Ekran zeminleri — 11 görsel
+## Ekran zeminleri — 12 görsel
 
 Her ekranın tepesinde geniş bir şerit olarak durur ve alt kenarı arayüze eritilir. Oyunun "gösterge paneli" değil bir yer gibi hissettirmesi büyük ölçüde buna bağlı.
 
@@ -1071,6 +1071,12 @@ a master builder's workshop, architectural drawings on vellum, wooden scale mode
 
 ```
 a great hall where the banners of several allied houses hang together along the walls, a long oath table with sealed pacts and cups, firelight, wide establishing shot, cinematic composition with the focal subject slightly above center, deep atmospheric perspective, empty darker area along the bottom third where interface will overlay, 16:10 landscape composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
+```
+
+### `zeminler/pazar.webp`
+
+```
+a medieval market square inside a walled town, merchant stalls under faded striped awnings, an armourer's stall with swords, shields and helmets on racks, sacks of grain and stacked iron bars on carts, a money-changer's table with brass scales and coin purses, late afternoon light, wide establishing shot, cinematic composition with the focal subject slightly above center, deep atmospheric perspective, empty darker area along the bottom third where interface will overlay, 16:10 landscape composition, medieval fantasy game asset, painted semi-realistic illustration, warm cel-shaded rendering with soft airbrushed volume, dark muted palette of deep browns and parchment cream with warm gold accents and crimson highlights, dramatic side lighting from the upper left, weathered and grounded, not glossy, not cartoonish, no text, no watermark, no border, no frame, no UI elements
 ```
 
 ### `zeminler/giris.webp`

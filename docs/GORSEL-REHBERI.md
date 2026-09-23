@@ -2,8 +2,9 @@
 
 Oyunun 77 görseli var: 5 birim, 12 general, 13 bölge sahnesi (5 taban +
 8 gelişim aşaması), 30 ekipman (6 yuva × 5 tier), 6 harita karosu, 6 ekran zemini ve
-5 lord figürü. Üç yoldan eklenebilir. **Birincisi tercih edilendir:
-Claude hepsini kendisi üretir.**
+5 lord figürü. Dört yoldan eklenebilir. **Birincisi en az emek isteyendir:
+Claude hepsini kendisi üretir** — ama ücretli. Bedava olanlar Yol 2 (elle)
+ve Yol 3 (kendi bilgisayarında, ComfyUI).
 
 Sayılar burada da tutuluyor ama tek kaynak `tools/gorsel-uret.py`;
 güncel dökümü `python3 tools/gorsel-uret.py --liste` verir.
@@ -122,7 +123,97 @@ O dosya elle yazılmaz, buradan üretilir:
 python3 tools/gorsel-uret.py --istemler > docs/GORSEL-ISTEMLERI.md
 ```
 
-## Yol 3 — Hazır paket satın al
+## Yol 3 — Kendi bilgisayarında üret: ComfyUI (bedava)
+
+Ekran kartın varsa görseller hiçbir servise para ödemeden, kendi
+bilgisayarında üretilebilir. `tools/comfy-uret.py` açık bir ComfyUI'ye
+bağlanır ve **aynı istemleri** (`gorsel-uret.py`) **aynı işlemeden**
+(magenta anahtarı, saydam kesim, tabana hizalama, WebP) geçirir. Yani
+yerelde üretilen kılıç, Gemini'nin ürettiği kılıçla aynı kalıptan çıkar.
+
+Bu yolun Claude'un ortamında çalışmadığını bil: oradan senin bilgisayarına
+erişim yok. Script senin bilgisayarında, ComfyUI açıkken çalışır.
+
+### Kurulum (tek seferlik)
+
+1. **ComfyUI** kur ve aç. Masaüstü uygulaması da olur, taşınabilir sürüm de;
+   script ikisini de kendisi bulur (8188 ve 8000 portları).
+2. **Deponun bir kopyası** bilgisayarında olsun (GitHub Desktop ile
+   "Clone" ya da `git clone`).
+3. **Python** (python.org, kurarken "Add to PATH" işaretli) ve kütüphaneler:
+   ```bash
+   pip install pillow numpy scipy
+   ```
+4. **Model**: ne indireceğini ekran kartına bakıp script söyler:
+   ```bash
+   python tools/comfy-uret.py --durum
+   ```
+   İndirdiğin dosyayı `ComfyUI/models/checkpoints/` içine koy, ComfyUI'yi yenile.
+
+| Ekran kartı belleği | Model                                                                         | Lisans                                 |
+| ------------------- | ----------------------------------------------------------------------------- | -------------------------------------- |
+| 12 GB ve üstü       | **FLUX.1 schnell** — `Comfy-Org/flux1-schnell` → `flux1-schnell-fp8` (~17 GB) | Apache-2.0, ticari kullanım serbest    |
+| 6–12 GB             | **SDXL 1.0** — `stabilityai/stable-diffusion-xl-base-1.0` (~7 GB)             | Open RAIL++-M, ticari kullanım serbest |
+| 8 GB + 32 GB RAM    | FLUX.1 schnell yine denenebilir: daha yavaş, genelde daha iyi                 |                                        |
+| 6 GB altı           | Pratik değil; önemli görseller için Yol 2                                     |                                        |
+
+**FLUX.1 dev kullanma**: lisansı ticari kullanımı yasaklıyor ve bu ticari
+bir oyun. İnternetteki "ince ayarlı" modellerin (Juggernaut vb.) lisansı da
+tek tek farklı; indirdiğin sayfadan ticari kullanıma izin verdiğini doğrula.
+
+### Kullanım
+
+```bash
+python tools/comfy-uret.py zeminler/pazar            # 4 aday üretir
+python tools/comfy-uret.py ekipman/silah_t3 --aday 8 # daha çok aday
+python tools/comfy-uret.py ekipman-silah             # beş kılıç tek karede (sayfa)
+python tools/comfy-uret.py birimler/okcu --rotus     # oyundakini üstünden yeniden boya
+python tools/comfy-uret.py --liste                   # ne üretilebilir
+```
+
+Script **aday** üretir, oyuna dokunmaz. Adaylar `tools/comfy-aday/` altına
+yazılır (depoya girmez) ve yanlarına numaralı bir kontak sayfası konur
+(`_zeminler__pazar.jpg`). Yerel modelin isabeti Gemini'ninkinden düşük ama
+üretmek bedava, o yüzden doğru iş akışı "dört üret, en iyisini seç".
+
+**Beğendiğini Claude'a ulaştır** — dosyayı olduğu gibi `gorsel-gelen`
+dalının `gelen/` klasörüne yükle ([GORSEL-TESLIM.md](GORSEL-TESLIM.md)).
+Dosya adı (`zeminler__pazar__3.png`) neyin ne olduğunu zaten söylüyor;
+Claude şunu çalıştırıp oyuna koyar:
+
+```bash
+python3 tools/comfy-uret.py --koy gelen/zeminler__pazar__3.png
+```
+
+İstersen `--koy`'u kendin de çalıştırabilirsin; ama o zaman çalışma dalına
+senin bilgisayarından da yazılır ve iki taraf aynı dala yazarken çakışma
+çıkabilir. Yüklemek daha sade.
+
+### Hangi yol, ne zaman
+
+Script adı görünce işleme yolunu kendisi seçer:
+
+- **Ekran zemini, yerleşim, akın, harita** gibi sahneler olduğu gibi kırpılır.
+- **Bina, birim, ekipman, general, lord** gibi sprite'lar magenta zeminde
+  tek figür olarak çizdirilir ve saydam 512×512'ye kesilir. **Bir tanesini**
+  yeniliyorsan tek başına üretim (`ekipman/silah_t3`) her zaman temiz
+  bölünür. **Bir aileyi** birden yeniliyorsan sayfa (`ekipman-silah`) beşini
+  aynı karede çizdirir ve birbirinin akrabası yapar; ama yerel modeller
+  "tam beş ayrı nesne" talimatını her seferinde tutturamıyor, tutturamazsa
+  bölücü hiçbir şey yazmaz, başka adayı dene. Sayfa işi için FLUX, SDXL'den
+  belirgin iyi.
+- **Bölge afişleri** (`bolgeler/tarla`) 1152×768 tek sahne olarak üretilir.
+
+`--rotus` oyundaki görseli girdi alır ve **kompozisyonunu koruyarak**
+yeniden boyar; `--guc` (0–1, varsayılan 0.45) ne kadar uzaklaşacağını
+söyler. Duruşu beğenip işçiliğini beğenmediğin bir görsel için doğru araç.
+Aynı `--tohum` aynı resmi verir; beğendiğin bir adayın tohumunu çıktıdan
+okuyup ayarla oynayabilirsin.
+
+ComfyUI arayüzünde elle çalışmak istersen akışı dosyaya yazdır ve pencereye
+sürükle: `python tools/comfy-uret.py zeminler/pazar --akis > akis.json`
+
+## Yol 4 — Hazır paket satın al
 
 Aşağıdaki "Hazır paket alıyorsan" bölümüne bak.
 

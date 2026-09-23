@@ -66,6 +66,20 @@ Hazır paketten görsel eklersen paketin adını, kaynağını ve lisansını bu
 yaz — hem ticari kullanıma hem yeniden dağıtıma izin verdiğini önceden
 doğrula.
 
+### Yerel üretim (ComfyUI)
+
+`tools/comfy-uret.py` ile proje sahibinin kendi bilgisayarında üretilen
+görsellerde belirleyici olan, **kullanılan modelin lisansı**: ticari bir
+oyunda yalnız ticari kullanıma izin veren modeller kullanılır. FLUX.1
+schnell (Apache-2.0) ve SDXL 1.0 tabanı (CreativeML Open RAIL++-M) izin
+veriyor; FLUX.1 dev vermiyor. İnce ayarlı topluluk modellerinin lisansı tek
+tek farklı. Script her üretimde modelin lisansını basıyor.
+
+Yerel üretilen her görsel, üretildiği modelle birlikte buraya eklenir:
+
+| Dosya | Model | Lisans |
+| ----- | ----- | ------ |
+
 ## Oyunun kendi içeriği
 
 Harita, denge verisi, general kadrosu, metinler ve kod bu projeye aittir.

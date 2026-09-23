@@ -22,6 +22,14 @@ Dosya adlarını oyunun beklediği adla verirsen (`kalkan_t1.png`,
 `migfer_t3.png`, `tarla_5.png`…) iş tek komuta iner. Bilmiyorsan sohbette
 ne olduklarını yaz, eşleştirilir. Tam liste: `docs/GORSEL-ISTEMLERI.md`.
 
+**ComfyUI adaylarını** (`tools/comfy-uret.py`, GORSEL-REHBERI Yol 3)
+yeniden adlandırma: `zeminler__pazar__3.png` adı hedefi zaten taşıyor.
+Hangi modelle üretildiğini sohbette söyle ki künyeye yazılsın.
+
+```bash
+python3 tools/comfy-uret.py --koy gelen/zeminler__pazar__3.png
+```
+
 Sonrası Claude'da:
 
 ```bash
