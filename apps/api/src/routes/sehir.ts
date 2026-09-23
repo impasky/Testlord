@@ -25,7 +25,7 @@ import { z } from 'zod';
 import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError } from '../errors.js';
-import { findLordByUser, tickLord } from '../services/lord.js';
+import { arastirmaBonusuOku, findLordByUser, tickLord } from '../services/lord.js';
 import { lordIslemi } from '../services/kilit.js';
 import { gecikmisleriKapat } from '../services/gecikmis.js';
 import { assertQueueSlot, enqueue, spendResources } from '../services/queue.js';
@@ -49,6 +49,7 @@ async function yerlesimOku(lordId: string) {
       worldId: true,
       baskentBolgeId: true,
       binalar: true,
+      arastirmalar: true,
       altin: true,
       demir: true,
       erzak: true,
@@ -113,6 +114,8 @@ export async function sehirRoutes(app: FastifyInstance) {
         kademe,
         { altin: lord.altin, demir: lord.demir, erzak: lord.erzak },
         insaattakiler,
+        // Bina hızı (docs/20 §4): ekrandaki süre kuyruktaki süreyle aynı.
+        arastirmaBonusuOku(lord),
       ),
       /*
        * Taşınabileceğin yerleşimler.
@@ -176,7 +179,7 @@ export async function sehirRoutes(app: FastifyInstance) {
       await assertQueueSlot(lordId, 'bina', tx);
       const lord = await tx.lord.findUniqueOrThrow({
         where: { id: lordId },
-        select: { worldId: true, baskentBolgeId: true, binalar: true },
+        select: { worldId: true, baskentBolgeId: true, binalar: true, arastirmalar: true },
       });
       const baskent = lord.baskentBolgeId
         ? await tx.region.findFirst({
@@ -201,7 +204,13 @@ export async function sehirRoutes(app: FastifyInstance) {
       }
 
       await spendResources(lordId, binaMaliyeti(key, hedef), tx);
-      const q = await enqueue(lordId, 'bina', { key }, binaSuresiSn(hedef), tx);
+      const q = await enqueue(
+        lordId,
+        'bina',
+        { key },
+        binaSuresiSn(hedef, arastirmaBonusuOku(lord)),
+        tx,
+      );
       return { queued: true, key, hedefSeviye: hedef, finishAt: q.finishAt };
     });
   });

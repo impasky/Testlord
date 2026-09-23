@@ -29,7 +29,14 @@ import { prisma } from '../db.js';
 import { env } from '../env.js';
 import { GameError } from '../errors.js';
 import { AKTIF_GUN } from '../services/world.js';
-import { KARTOPU_FRENI } from '@lordlar/shared';
+import { okuArastirmalar } from '../services/lord.js';
+import {
+  GRUPLAR,
+  KARTOPU_FRENI,
+  arastirmaIlerlemesi,
+  grupSecenekleri,
+  grupSecimi,
+} from '@lordlar/shared';
 
 /** İlk oturum sayılan pencere. */
 const ILK_OTURUM_DK = 30;
@@ -206,6 +213,50 @@ function anahtarUyar(verilen: string | undefined, gercek: string): boolean {
  * tutması kendiliğinden olmaz. Kasadaki altın da izleniyor: kasa depo
  * tavanına bağlı değil ve yağmalanmıyor — büyürse bir banka olmuş demektir.
  */
+/**
+ * Araştırma ağacının büyük seçimleri (docs/20 §8): her yolu kaç lord
+ * seçmiş, en çok seçilenin payı ne ve son 7 günde kaç lord bırakmış.
+ * Bir öğreti herkesi topluyorsa denge bozuk demektir; `enCokSecilenPayi`
+ * onu ilk gösteren sayı.
+ *
+ * `arastirmaDegisim` grup başına yalnız SON bırakma anını tutuyor: aynı
+ * lord bir haftada iki kez bıraktıysa bir sayılıyor. Alanın adı o yüzden
+ * "değiştiren lord", "değişim sayısı" değil.
+ */
+function arastirmaOlcusu(lordlar: { arastirmalar: unknown; arastirmaDegisim: unknown }[]) {
+  const yediGunOnce = Date.now() - 7 * 86_400_000;
+  const tamamlananlar = lordlar.map((l) => okuArastirmalar(l.arastirmalar));
+  const gruplar = GRUPLAR.map((g) => {
+    const yollar: Record<string, number> = Object.fromEntries(
+      grupSecenekleri(g.key).map((d) => [d.yol!, 0]),
+    );
+    let secmeyen = 0;
+    let son7GunDegistiren = 0;
+    lordlar.forEach((l, i) => {
+      const yol = grupSecimi(tamamlananlar[i]!, g.key);
+      if (yol) yollar[yol] = (yollar[yol] ?? 0) + 1;
+      else secmeyen++;
+      const degisim = l.arastirmaDegisim as Record<string, unknown> | null;
+      const son = degisim && typeof degisim === 'object' ? degisim[g.key] : undefined;
+      if (typeof son === 'string' && new Date(son).getTime() >= yediGunOnce) son7GunDegistiren++;
+    });
+    const secen = lordlar.length - secmeyen;
+    return [
+      g.key,
+      {
+        yollar,
+        secmeyen,
+        enCokSecilenPayi: secen === 0 ? null : Math.max(...Object.values(yollar)) / secen,
+        son7GunDegistiren,
+      },
+    ] as const;
+  });
+  return {
+    ortancaBiten: ortanca(tamamlananlar.map((t) => arastirmaIlerlemesi(t).biten)),
+    gruplar: Object.fromEntries(gruplar),
+  };
+}
+
 async function esyaPazariOlcusu(): Promise<unknown> {
   const simdi = Date.now();
   const hafta = new Date(simdi - 7 * 86_400_000);
@@ -258,6 +309,8 @@ export async function olcumRoutes(app: FastifyInstance): Promise<void> {
         // aynı lordları ikinci kez çekerdi.
         medeniyetId: true,
         faydaPuani: true,
+        arastirmalar: true,
+        arastirmaDegisim: true,
       },
     });
     if (lordlar.length === 0) return { lordSayisi: 0, not: 'Henüz oyuncu yok.' };
@@ -361,6 +414,9 @@ export async function olcumRoutes(app: FastifyInstance): Promise<void> {
 
       /** Eşya pazarı: kullanım ve kötüye kullanım izi (docs/19 §13). */
       esyaPazari: await esyaPazariOlcusu(),
+
+      /** Araştırma: büyük seçimlerin dağılımı ve yol bırakma (docs/20 §8). */
+      arastirma: arastirmaOlcusu(lordlar),
     };
   });
 }

@@ -37,11 +37,13 @@ export function kaynakCarp(a: Resources, k: number): Resources {
 export function malikaneIncome(lordLevel: number, arastirma?: ArastirmaBonusu): Resources {
   const t = B.kaynaklar.malikane_saatlik;
   const b = B.kaynaklar.malikane_seviye_bonusu_saatlik;
+  // Kaynağa özel araştırma (Ekonomi grubu, docs/20 §1) malikâne bonusuyla
+  // TOPLANIYOR: aynı dosyanın "bonuslar toplanır" kuralı.
   const k = 1 + (arastirma?.malikaneGeliri ?? 0);
   return {
-    altin: Math.round((t.altin + b.altin * lordLevel) * k),
-    demir: Math.round((t.demir + b.demir * lordLevel) * k),
-    erzak: Math.round((t.erzak + b.erzak * lordLevel) * k),
+    altin: Math.round((t.altin + b.altin * lordLevel) * (k + (arastirma?.altinGeliri ?? 0))),
+    demir: Math.round((t.demir + b.demir * lordLevel) * (k + (arastirma?.demirGeliri ?? 0))),
+    erzak: Math.round((t.erzak + b.erzak * lordLevel) * (k + (arastirma?.erzakGeliri ?? 0))),
   };
 }
 
@@ -62,11 +64,11 @@ export function regionIncome(
   // oyuncuya gösterilen "+%20" gerçekte +%38 oluyordu.
   const bonus =
     1 + (generalBonus?.bolgeGeliri ?? 0) + (arastirma?.bolgeGeliri ?? 0) + (medeniyet?.ocak ?? 0);
-  const f = incomeMult * levelMult * bonus;
+  const f = incomeMult * levelMult;
   return {
-    altin: (base.altin ?? 0) * f,
-    demir: (base.demir ?? 0) * f,
-    erzak: (base.erzak ?? 0) * f,
+    altin: (base.altin ?? 0) * f * (bonus + (arastirma?.altinGeliri ?? 0)),
+    demir: (base.demir ?? 0) * f * (bonus + (arastirma?.demirGeliri ?? 0)),
+    erzak: (base.erzak ?? 0) * f * (bonus + (arastirma?.erzakGeliri ?? 0)),
     sohret: (base.sohret_saat ?? 0) * levelMult,
   };
 }

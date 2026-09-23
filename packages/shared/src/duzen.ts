@@ -395,6 +395,8 @@ export function taktikEtkisi(
   ordu: Army,
   dizilim: Dizilim,
   dusmanOrdu: Army,
+  /** Araştırmadan gelen taktik ustalığı (docs/20 §4), taktik anahtarına göre. */
+  ustalik?: Record<string, number>,
 ): DuzenEtkisi {
   const bos: DuzenEtkisi = {
     saldiri: 0,
@@ -415,9 +417,16 @@ export function taktikEtkisi(
   const e = t.etki as Record<string, number | Record<string, number>>;
   const tavan = B.taktik.azami_etki;
   const kis = (x: number) => Math.max(-tavan, Math.min(tavan, x));
+  // USTALIK kozu büyütüyor VE bedeli küçültüyor. Yalnız artıları büyütmek
+  // tavana çarpıp boşa giderdi (Ok Yağmuru'nun ilk tur saldırısı zaten
+  // %28). Tavan yine en son uygulanıyor: ustalık tavanı delemiyor.
+  const u = Math.max(0, ustalik?.[t.key] ?? 0);
+  const us = (x: number) => (x > 0 ? x * (1 + u) : x * (1 - u));
+  const sayi = (k: string) => us(Number(e[k] ?? 0));
 
-  let saldiri = Number(e.saldiri ?? 0);
+  let saldiri = sayi('saldiri');
   const satirlar: string[] = [`${t.ad}: ${t.ozet}`];
+  if (u > 0) satirlar.push(`${t.ad} ustalığı: kozu ${yuzde(u)} güçlü, bedeli ${yuzde(u)} hafif.`);
 
   const karsi = (e.karsi_birim ?? {}) as Record<string, number>;
   const dusmanToplam = orduToplami(dusmanOrdu);
@@ -430,7 +439,7 @@ export function taktikEtkisi(
       );
       continue;
     }
-    const ek = deger * pay;
+    const ek = us(deger) * pay;
     saldiri += ek;
     satirlar.push(
       `Düşmanın ${yuzde(pay)}'i ${unitName(birim as UnitType).toLocaleLowerCase('tr')}ydı: +${yuzde(ek)} saldırı.`,
@@ -439,9 +448,9 @@ export function taktikEtkisi(
 
   return {
     saldiri: kis(saldiri),
-    savunma: kis(Number(e.savunma ?? 0)),
-    ilkTurSaldiri: kis(Number(e.ilk_tur_saldiri ?? 0)),
-    kaleDelme: Math.max(0, Math.min(tavan, Number(e.kale_delme ?? 0))),
+    savunma: kis(sayi('savunma')),
+    ilkTurSaldiri: kis(sayi('ilk_tur_saldiri')),
+    kaleDelme: Math.max(0, Math.min(tavan, sayi('kale_delme'))),
     satirlar,
   };
 }
@@ -456,10 +465,11 @@ export function duzenEtkisi(
   duzen: SavasDuzeni | null | undefined,
   ordu: Army,
   dusmanOrdu: Army,
+  taktikUstaligi?: Record<string, number>,
 ): DuzenEtkisi {
   if (!duzen) return { saldiri: 0, savunma: 0, ilkTurSaldiri: 0, kaleDelme: 0, satirlar: [] };
   const d = dizilimEtkisi(duzen.dizilim, ordu);
-  const t = taktikEtkisi(duzen.taktik, ordu, duzen.dizilim, dusmanOrdu);
+  const t = taktikEtkisi(duzen.taktik, ordu, duzen.dizilim, dusmanOrdu, taktikUstaligi);
   return {
     saldiri: d.saldiri + t.saldiri,
     savunma: d.savunma + t.savunma,

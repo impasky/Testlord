@@ -101,7 +101,10 @@ function attackPower(side: Side, enemy: Side, duzen: number): number {
       }
     }
 
-    const unitBonus = 1 + (side.generalBonus.birimSaldiri[t] ?? 0);
+    // General ve araştırma birim bonusu TOPLANIYOR (docs/20 §4): çarpılsaydı
+    // Okçubaşı Elif ile Bileşik Yay birlikte yazılandan fazla büyürdü.
+    const unitBonus =
+      1 + (side.generalBonus.birimSaldiri[t] ?? 0) + (side.arastirma?.birimSaldiri?.[t] ?? 0);
     total += count * u.saldiri * mult * unitBonus;
   }
 
@@ -136,7 +139,8 @@ function defensePower(side: Side, enemy: Side, duzen: number, kaleDelme: number)
       mult = weighted;
     }
 
-    const unitBonus = 1 + (side.generalBonus.birimSavunma[t] ?? 0);
+    const unitBonus =
+      1 + (side.generalBonus.birimSavunma[t] ?? 0) + (side.arastirma?.birimSavunma?.[t] ?? 0);
     total += count * u.savunma * mult * unitBonus;
   }
 
@@ -290,8 +294,18 @@ export function simulateBattle(
   // Düzen etkileri savaştan ÖNCE, tek seferde. Her iki taraf da kendi
   // dizilimini ve taktiğini getiriyor; savunanın düzeni saldırıya
   // uğradığı anda kayıtlı olan "savunma düzeni".
-  const atkDuzen = duzenEtkisi(attacker.duzen, attacker.units, defender.units);
-  const defDuzen = duzenEtkisi(defender.duzen, defender.units, attacker.units);
+  const atkDuzen = duzenEtkisi(
+    attacker.duzen,
+    attacker.units,
+    defender.units,
+    attacker.arastirma?.taktikUstaligi,
+  );
+  const defDuzen = duzenEtkisi(
+    defender.duzen,
+    defender.units,
+    attacker.units,
+    defender.arastirma?.taktikUstaligi,
+  );
 
   const baseAtk = attackPower(attacker, defender, atkDuzen.saldiri);
   const baseDef = defensePower(defender, attacker, defDuzen.savunma, atkDuzen.kaleDelme);

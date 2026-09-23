@@ -25,7 +25,9 @@
  * olmalı; yoksa oyuncu için o mekanik yok demektir.
  */
 import {
+  ARASTIRMA_CAGLARI,
   ARASTIRMA_DALLARI,
+  ARASTIRMA_GRUPLARI,
   B,
   TAKTIKLER,
   WORLD_MAP,
@@ -129,7 +131,12 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
   const kusatmaYer = diz.birim_yerlesimi.kusatma;
   const suvariYer = diz.birim_yerlesimi.suvari;
   const taktikTavan = B.taktik as { azami_etki: number };
-  const arastirma = B.arastirma as { iptal_iadesi: number };
+  const arastirma = B.arastirma as {
+    iptal_iadesi: number;
+    erken_pencere_seviye: number;
+    yol_degisim_iadesi: number;
+    yol_degisim_bekleme_saat: number;
+  };
   const pazar = B.pazar as { komisyon: number; gunluk_tavan_altin_karsiligi: number };
   const esyaPazari = B.esya_pazari as { vergi: number };
   const hastane = B.hastane as { azami_saniye: number; bakim_alir: boolean };
@@ -141,7 +148,6 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
   const kuyruk = B.kuyruklar.es_zamanli as Record<string, number>;
   // Dal başına kademe sayısı: en uzun daldan okunuyor. Dallar veri
   // dosyasında eşit uzunlukta ve bir test bunu kilitliyor.
-  const kademeSayisi = Math.max(...ARASTIRMA_DALLARI.map((d) => d.dugumler.length));
 
   // İdeal satırlar veriden okunuyor: "mızrakçı önde, mancınık arkada"
   // cümlesi denge dosyası değişince kendiliğinden değişsin.
@@ -503,28 +509,30 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
     {
       anahtar: 'arastirma',
       baslik: 'Araştırma: diyarını sen şekillendirirsin',
-      ozet: 'Kalıcı seçimler. İki lord aynı seviyede olsa bile aynı olmaz.',
+      ozet: 'Seçimlerin seni öbür lordlardan ayırır. İki lord aynı seviyede olsa bile aynı olmaz.',
       maddeler: [
         {
-          vurgu: `${ARASTIRMA_DALLARI.length} dal, her dalda ${kademeSayisi} kademe`,
+          vurgu: `${ARASTIRMA_DALLARI.length} sekme, ${ARASTIRMA_CAGLARI.length} çağ`,
           metin:
             // Dal özetleri veri dosyasında noktayla bitiyor; parantez
-            // içine alırken kırpılıyor, yoksa "vergi defteri.)" oluyor.
+            // içine alırken kırpılıyor, yoksa "divan, casuslar.)" oluyor.
             ARASTIRMA_DALLARI.map(
               (d) => `${d.ad} (${d.ozet.toLocaleLowerCase('tr').replace(/\.$/, '')})`,
-            ).join(' · ') + '. Bir dalda ilerlemek için önce alt kademesini bitirmen gerekir.',
+            ).join(' · ') +
+            `. Bir araştırma, okla bağlı olduklarının hepsi bitince açılır. Çağından ${arastirma.erken_pencere_seviye} seviye önce de başlatabilirsin; daha uzun sürer.`,
         },
         {
-          vurgu: 'Kalıcı ve geri alınmaz',
+          vurgu: `${ARASTIRMA_GRUPLARI.length} büyük seçim`,
           metin:
-            'Araştırma bittiğinde etkisi sonsuza kadar durur — ekipman gibi eskimez, ordu gibi ölmez. Depo tavanı, eğitim hızı, ordu saldırısı, yürüyüş hızı: hepsi buradan büyür.',
+            ARASTIRMA_GRUPLARI.map((g) => g.ad).join(', ') +
+            `: her birinden yalnız bir yol seçebilirsin. Sonradan değiştirebilirsin ama o yolun araştırmaları silinir, bedellerinin %${Math.round(arastirma.yol_degisim_iadesi * 100)}'i geri gelir ve aynı seçimi ${Math.round(arastirma.yol_degisim_bekleme_saat / 24)} gün değiştiremezsin.`,
         },
         {
           vurgu:
             kuyruk.research === 1
               ? 'Aynı anda tek araştırma'
               : `Aynı anda ${kuyruk.research} araştırma`,
-          metin: `Aynı anda ${kuyruk.research} araştırma yürütebilirsin, yani sıra senin kararın: önce ekonomiyi mi büyütürsün, orduyu mu? Vazgeçersen harcadığının %${Math.round(arastirma.iptal_iadesi * 100)}'i geri gelir.`,
+          metin: `Başta aynı anda ${kuyruk.research} araştırma yürütebilirsin; Kütüphane ve bazı araştırmalar yuva ekler. Sıra senin kararın: önce ekonomiyi mi büyütürsün, orduyu mu? Vazgeçersen harcadığının %${Math.round(arastirma.iptal_iadesi * 100)}'i geri gelir.`,
         },
       ],
     },

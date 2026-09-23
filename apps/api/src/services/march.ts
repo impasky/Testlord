@@ -44,6 +44,7 @@ import {
   type Rarity,
   type Side,
   type UnitType,
+  savasArastirmasi,
 } from '@lordlar/shared';
 import { prisma, type Tx } from '../db.js';
 import { env } from '../env.js';
@@ -126,12 +127,7 @@ export async function buildSide(
       // asimetri yaratırdı: saldıran her seferinde dizilim yapıyor,
       // savunan uykuda. İkisi de aynı taban dizilimden başlasın.
       duzen: duzen ?? { dizilim: varsayilanDizilim(units), taktik: null },
-      arastirma: {
-        orduSaldiri: ar.orduSaldiri,
-        orduSavunma: ar.orduSavunma,
-        kaleSavunmasi: ar.kaleSavunmasi,
-        yagma: ar.yagma,
-      },
+      arastirma: savasArastirmasi(ar),
       abilities: {
         on_hasar_orani: abilityValue(sahada, 'on_hasar_orani'),
         ilk_tur_saldiri: abilityValue(sahada, 'ilk_tur_saldiri'),

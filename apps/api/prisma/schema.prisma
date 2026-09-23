@@ -295,8 +295,14 @@ model Lord {
   /// Türetilemiyor — araştırmanın bitmesi başka hiçbir kayda iz
   /// bırakmıyor; etkileri hesaplanarak uygulanıyor, saklanmıyor.
   /// Ayrı tabloya bölünmedi: en fazla on beş kısa anahtar, hiç
-  /// sorgulanmıyor, yalnız bütün hâlinde okunuyor.
+  /// sorgulanmıyor, yalnız bütün hâlinde okunuyor. (docs/20'den sonra
+  /// en fazla 47.)
   arastirmalar Json?
+
+  /// Dışlayan araştırma gruplarının son değişim anı: { doktrin: ISO, ... }
+  /// (docs/20 §5). Türetilemiyor — yol bırakılınca düğümleri siliniyor ve
+  /// geride "ne zaman bırakıldı" izi kalmıyor; bekleme süresi bunu soruyor.
+  arastirmaDegisim Json?
 
   /// Savunma düzeni: saldırıya uğradığında kullanılacak 4x4 dizilim ve
   /// taktik. Türetilemiyor — bu bir KARAR, oyun durumunun sonucu değil.

@@ -127,6 +127,11 @@ export interface Side {
     orduSavunma: number;
     kaleSavunmasi: number;
     yagma: number;
+    /** Birime özel (docs/20 §4); generallerin birim bonusuyla toplanıyor. */
+    birimSaldiri?: Partial<Record<UnitType, number>>;
+    birimSavunma?: Partial<Record<UnitType, number>>;
+    /** Taktik anahtarı → ustalık: artılar ×(1+x), eksiler ×(1−x). */
+    taktikUstaligi?: Record<string, number>;
   } | null;
 }
 

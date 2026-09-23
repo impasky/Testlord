@@ -129,11 +129,16 @@ export function binaMaliyeti(binaKey: string, hedefSeviye: number): Resources {
   };
 }
 
-/** Bir binayı N. seviyeye çıkarmanın süresi (saniye). */
-export function binaSuresiSn(hedefSeviye: number): number {
+/**
+ * Bir binayı N. seviyeye çıkarmanın süresi (saniye).
+ *
+ * Bina hızı (Taş Ocakları, Mimar Ocağı — docs/20 §4) süreyi BÖLÜYOR:
+ * +%100 hız süreyi yarıya indirir, sıfıra değil (eğitim hızıyla aynı kural).
+ */
+export function binaSuresiSn(hedefSeviye: number, arastirma?: { binaHizi: number }): number {
   const dk =
     B.binalar.sure_taban_dakika * Math.pow(B.binalar.sure_us, Math.max(0, hedefSeviye - 1));
-  return Math.round(dk * 60);
+  return Math.round((dk * 60) / (1 + (arastirma?.binaHizi ?? 0)));
 }
 
 /** Kayıtlı bina seviyeleri; bilinmeyen bina 0 (dikilmemiş). */
@@ -197,6 +202,8 @@ export function binaDurumlari(
   kademe: Kademe,
   kaynak: Resources,
   insaattakiler: readonly string[] = [],
+  /** Bina hızı: ekrandaki süre kuyruğa girecek süreyle aynı olsun. */
+  arastirma?: { binaHizi: number },
 ): BinaDurumu[] {
   return BINALAR.filter((b) => kademedeGorunur(kademe, b.acilis_kademesi)).map((b) => {
     /*
@@ -269,7 +276,7 @@ export function binaDurumlari(
       yukseltilebilir: engel === null,
       engel,
       maliyet,
-      sureSn: maliyet ? binaSuresiSn(hedef) : null,
+      sureSn: maliyet ? binaSuresiSn(hedef, arastirma) : null,
       etkiMetni: b.etki_metni ?? null,
       etkiSimdi: etkiDegeri(b.key, seviye),
       etkiSonra: hedef <= tavan ? etkiDegeri(b.key, hedef) : null,
@@ -440,8 +447,13 @@ export const tahkimatEki = (binalar: Record<string, number>): number =>
  * arayüz de bu tek fonksiyonu çağırıyor: sayıyı iki yerde tutmak,
  * dolu kuyrukta düğmenin açık kalması demekti.
  */
-export function esZamanliLimit(kind: string, binalar: Record<string, number>): number {
+export function esZamanliLimit(
+  kind: string,
+  binalar: Record<string, number>,
+  /** Araştırmadan gelen yuvalar (Medrese, Beytülhikme — docs/20 §3). */
+  arastirma?: { arastirmaYuvasi: number },
+): number {
   if (kind === 'train') return egitimKuyrugu(binalar);
-  if (kind === 'research') return arastirmaKuyrugu(binalar);
+  if (kind === 'research') return arastirmaKuyrugu(binalar) + (arastirma?.arastirmaYuvasi ?? 0);
   return (B.kuyruklar.es_zamanli as unknown as Record<string, number>)[kind] ?? 1;
 }

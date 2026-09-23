@@ -33,8 +33,14 @@
 function adiYenile(ad) {
   // Önek = baştaki harfler (ilk rakam ya da boşluğa kadar). Testin
   // günlükte tanıdığı ad böylece okunur kalıyor.
+  //
+  // Önek EN ÇOK DÖRT harf. On harfken iki kez yanıldı: ad tümüyle
+  // harften oluşunca ("Arfwnazim…", zaman damgası rakamsız düşmüş) önek
+  // rastgele kısmı da yutuyor, yasak parçayı ("nazi") yeni ada taşıyordu;
+  // üstüne 10 + 12 harf sunucunun 20 harf sınırını aşıyordu. Dört harf
+  // tanınmaya yetiyor ("Olc", "Gd", "Arf") ve yasak parçaların çoğundan kısa.
   const onek = /^[A-Za-zÇĞİÖŞÜçğıöşü]+/.exec(ad)?.[0] ?? 'Lord';
-  return benzersizAd(onek.slice(0, 10));
+  return benzersizAd(onek.slice(0, 4)).slice(0, 20);
 }
 
 /**

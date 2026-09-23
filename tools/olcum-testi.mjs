@@ -227,5 +227,52 @@ k(
   `${once.medeniyet.bedavacilik.puanliLord} -> ${ikiKisi.medeniyet.bedavacilik.puanliLord}`,
 );
 
+/*
+ * --- 4. Araştırma seçimi sayılıyor mu (docs/20 §8) ---
+ * Bir öğreti seçen lord o yolun sayısını, yolu bırakan lord "son 7 günde
+ * değiştiren" sayısını bir ARTIRMALI. Hep sıfır dönen bir alan da
+ * aralık kontrolünden geçerdi.
+ */
+{
+  const dk = (o) => o.arastirma?.gruplar?.doktrin;
+  k(
+    'Ölçüm araştırma bölümünü taşıyor',
+    Boolean(dk(once)) && Object.keys(dk(once).yollar).length === 3,
+    JSON.stringify(once.arastirma ?? null).slice(0, 120),
+  );
+  const ar = await lordKur('ar');
+  // Öğretinin ilk düğümü 10. seviye kapılı; 5. seviye erken penceresinin
+  // alt ucu. Tam o seviyeye çık: fazlası testi hızlandırmaz.
+  for (let i = 0; i < 20; i++) {
+    const l = (await ar.get('/me')).lord;
+    if (l.level >= 5) break;
+    await ar.post('/test/xp-ver', { miktar: l.xpForNext - l.xp });
+  }
+  await ar.post('/test/kaynak-ver', { altin: 200000, demir: 100000, erzak: 100000 });
+  for (const key of ['savas_sanati', 'kale_ogretisi']) {
+    await ar.post('/arastirma', { key });
+    await ar.post('/test/kuyruklari-bitir');
+  }
+  const secti = await olcumAl();
+  k(
+    'Öğreti seçen lord o yolun sayısını artırdı',
+    dk(secti).yollar.kale === dk(once).yollar.kale + 1,
+    `${dk(once).yollar.kale} -> ${dk(secti).yollar.kale}`,
+  );
+  k(
+    'En çok seçilen yolun payı 1/3 ile 1 arasında',
+    dk(secti).enCokSecilenPayi >= 1 / 3 - 1e-9 && dk(secti).enCokSecilenPayi <= 1,
+    String(dk(secti).enCokSecilenPayi),
+  );
+  await ar.post('/arastirma/yol-birak', { grup: 'doktrin' });
+  const birakti = await olcumAl();
+  k(
+    'Yolu bırakan lord "son 7 günde değiştiren" sayısını artırdı',
+    dk(birakti).son7GunDegistiren === dk(secti).son7GunDegistiren + 1 &&
+      dk(birakti).yollar.kale === dk(secti).yollar.kale - 1,
+    `${dk(secti).son7GunDegistiren} -> ${dk(birakti).son7GunDegistiren}`,
+  );
+}
+
 console.log(hata === 0 ? '\nÖLÇÜM TEMİZ\n' : `\n${hata} KONTROL KALDI\n`);
 process.exit(hata === 0 ? 0 : 1);

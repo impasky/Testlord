@@ -1,28 +1,99 @@
 {
-  "_aciklama": "Arastirma agaci. Uc dal, her dalda bes kademe. Kademe n icin onkosul ayni daldaki n-1. Etki anahtarlari kodda TEK bir yere baglanir (packages/shared/arastirma.ts); yeni bir dugum eklemek cogu zaman koda dokunmadan buraya bir kayit.",
-  "_neden": "Ayni seviyedeki iki lord bugun birebir ayni. Arastirma, oyuncunun diyarini KENDI secimleriyle sekillendirdigi tek katman: sirasi ve vurgusu farkli olan iki lord farkli oynuyor.",
+  "_aciklama": "Arastirma agaci (docs/20). Sekme = dal, sutun = HOI4'teki hat. kademe = cag (1-6): bedeli ve sureyi o belirliyor (balance.json -> arastirma). Onkosul listesi HEPSI gereken dugumler. grup = birbirini dislayan secim; yol = o secimin kolu. Etki anahtarlari kodda TEK bir yere baglanir (packages/shared/arastirma.ts); yeni bir dugum eklemek cogu zaman koda dokunmadan buraya bir kayit.",
+  "_neden": "Ayni seviyedeki iki lord bugun birebir ayni. Arastirma, oyuncunun diyarini KENDI secimleriyle sekillendirdigi tek katman: sirasi, vurgusu ve sectigi ogreti farkli olan iki lord farkli oynuyor.",
   "gecerli_etkiler": [
-    "depo_carpani",
-    "malikane_geliri",
-    "bolge_geliri",
-    "egitim_hizi",
-    "egitim_maliyeti",
+    "altin_geliri",
+    "arastirma_hizi",
+    "arastirma_yuvasi",
     "bakim_indirimi",
-    "komuta_kapasitesi",
-    "ordu_saldiri",
-    "ordu_savunma",
-    "yuruyus_hizi",
-    "yagma",
-    "kale_savunmasi",
+    "bina_hizi",
+    "bolge_geliri",
     "bolge_yukseltme_hizi",
     "casus_maliyeti",
-    "gunluk_saldiri"
+    "demir_geliri",
+    "depo_carpani",
+    "egitim_hizi",
+    "egitim_maliyeti",
+    "erzak_geliri",
+    "gunluk_saldiri",
+    "kale_savunmasi",
+    "komuta_kapasitesi",
+    "kusatma_saldiri",
+    "malikane_geliri",
+    "milis_saldiri",
+    "milis_savunma",
+    "mizrakci_saldiri",
+    "mizrakci_savunma",
+    "okcu_saldiri",
+    "okcu_savunma",
+    "ordu_saldiri",
+    "ordu_savunma",
+    "suvari_saldiri",
+    "suvari_savunma",
+    "taktik_hilal",
+    "taktik_kalkan_duvari",
+    "taktik_kusatma_duzeni",
+    "taktik_mizrak_seti",
+    "taktik_ok_yagmuru",
+    "taktik_temkinli_ilerleyis",
+    "yagma",
+    "yuruyus_hizi"
+  ],
+  "caglar": [
+    {
+      "no": 1,
+      "ad": "Kuruluş",
+      "seviye": 1
+    },
+    {
+      "no": 2,
+      "ad": "Yükseliş",
+      "seviye": 8
+    },
+    {
+      "no": 3,
+      "ad": "Beylik",
+      "seviye": 15
+    },
+    {
+      "no": 4,
+      "ad": "Sancak",
+      "seviye": 24
+    },
+    {
+      "no": 5,
+      "ad": "Devlet",
+      "seviye": 34
+    },
+    {
+      "no": 6,
+      "ad": "Cihan",
+      "seviye": 45
+    }
+  ],
+  "gruplar": [
+    {
+      "key": "doktrin",
+      "ad": "Savaş öğretisi",
+      "aciklama": "Ordunu hangi fikrin çevresinde kuracağın. Üçünden yalnız biri."
+    },
+    {
+      "key": "ekonomi",
+      "ad": "Ekonomi",
+      "aciklama": "Diyarının hangi kaynakla büyüyeceği. Fazlasını pazarda satabilirsin."
+    },
+    {
+      "key": "yonetim",
+      "ad": "Yönetim",
+      "aciklama": "Bölgelerini merkezden mi, uçlardaki beylerle mi yöneteceğin."
+    }
   ],
   "dallar": [
     {
       "key": "imar",
       "ad": "İmar",
-      "ozet": "Ambarlar, değirmenler, vergi defteri.",
+      "ozet": "Ambarlar, üretim, âlimler, ustalar.",
+      "sutunlar": ["Ambar", "Üretim", "Bilgi", "Zanaat"],
       "dugumler": [
         {
           "key": "ambarlar",
@@ -30,7 +101,23 @@
           "aciklama": "Malikânenin altına taş ambarlar kazdırırsın. Deponun taşmadığı gün, kazandığın her şey senindir.",
           "kademe": 1,
           "lord_seviyesi": 3,
-          "etki": { "depo_carpani": 0.5 }
+          "sutun": 0,
+          "onkosul": [],
+          "etki": {
+            "depo_carpani": 0.5
+          }
+        },
+        {
+          "key": "katipler",
+          "ad": "Kâtipler",
+          "aciklama": "Malikânede kâtip tutarsın. Her deneyin notu kaybolmadan bir sonrakine aktarılır; araştırma hızlanır.",
+          "kademe": 1,
+          "lord_seviyesi": 5,
+          "sutun": 2,
+          "onkosul": [],
+          "etki": {
+            "arastirma_hizi": 0.1
+          }
         },
         {
           "key": "degirmenler",
@@ -38,7 +125,23 @@
           "aciklama": "Dere boyuna değirmen kurdurursun. Malikâne kendi başına daha çok üretir.",
           "kademe": 2,
           "lord_seviyesi": 8,
-          "etki": { "malikane_geliri": 0.15 }
+          "sutun": 1,
+          "onkosul": ["ambarlar"],
+          "etki": {
+            "malikane_geliri": 0.15
+          }
+        },
+        {
+          "key": "tas_ocaklari",
+          "ad": "Taş Ocakları",
+          "aciklama": "Kendi taş ocağını açarsın. Duvarlar taş beklemeden yükselir, binalar daha çabuk biter.",
+          "kademe": 2,
+          "lord_seviyesi": 10,
+          "sutun": 3,
+          "onkosul": ["ambarlar"],
+          "etki": {
+            "bina_hizi": 0.15
+          }
         },
         {
           "key": "lonca_duzeni",
@@ -46,7 +149,23 @@
           "aciklama": "Zanaatkârları loncalara bağlarsın. Asker donatmak ucuzlar.",
           "kademe": 3,
           "lord_seviyesi": 15,
-          "etki": { "egitim_maliyeti": -0.12 }
+          "sutun": 3,
+          "onkosul": ["degirmenler", "tas_ocaklari"],
+          "etki": {
+            "egitim_maliyeti": -0.12
+          }
+        },
+        {
+          "key": "medrese",
+          "ad": "Medrese",
+          "aciklama": "Âlimleri malikânene davet edersin. Aynı anda bir araştırma daha yürütebilirsin.",
+          "kademe": 3,
+          "lord_seviyesi": 18,
+          "sutun": 2,
+          "onkosul": ["katipler", "degirmenler"],
+          "etki": {
+            "arastirma_yuvasi": 1
+          }
         },
         {
           "key": "tahil_ambarlari",
@@ -54,7 +173,54 @@
           "aciklama": "Kışlık tahılı doğru saklamayı öğrenirsin. Hem depon büyür hem ordun daha az yer.",
           "kademe": 4,
           "lord_seviyesi": 24,
-          "etki": { "depo_carpani": 0.5, "bakim_indirimi": 0.15 }
+          "sutun": 0,
+          "onkosul": ["ambarlar"],
+          "etki": {
+            "depo_carpani": 0.5,
+            "bakim_indirimi": 0.15
+          }
+        },
+        {
+          "key": "bereketli_topraklar",
+          "ad": "Bereketli Topraklar",
+          "aciklama": "Tarlaları nöbetleşe ektirirsin. Toprak dinlenir, ambar dolar; diyarın erzakla büyür.",
+          "kademe": 4,
+          "lord_seviyesi": 26,
+          "sutun": 1,
+          "onkosul": ["degirmenler"],
+          "grup": "ekonomi",
+          "yol": "bereketli_topraklar",
+          "etki": {
+            "erzak_geliri": 0.2
+          }
+        },
+        {
+          "key": "derin_madenler",
+          "ad": "Derin Madenler",
+          "aciklama": "Madenlere destek kirişi ve su çarkı koydurursun. Damar derinden çıkar; diyarın demirle büyür.",
+          "kademe": 4,
+          "lord_seviyesi": 26,
+          "sutun": 2,
+          "onkosul": ["degirmenler"],
+          "grup": "ekonomi",
+          "yol": "derin_madenler",
+          "etki": {
+            "demir_geliri": 0.2
+          }
+        },
+        {
+          "key": "ticaret_yollari",
+          "ad": "Ticaret Yolları",
+          "aciklama": "Kervan yollarına han açtırırsın. Geçen her yük kesene bir akçe bırakır; diyarın altınla büyür.",
+          "kademe": 4,
+          "lord_seviyesi": 26,
+          "sutun": 3,
+          "onkosul": ["degirmenler"],
+          "grup": "ekonomi",
+          "yol": "ticaret_yollari",
+          "etki": {
+            "altin_geliri": 0.2
+          }
         },
         {
           "key": "vergi_defteri",
@@ -62,14 +228,79 @@
           "aciklama": "Her köyün ne verdiğini yazdırırsın. Kaçak azalır, hazine dolar.",
           "kademe": 5,
           "lord_seviyesi": 34,
-          "etki": { "bolge_geliri": 0.2 }
+          "sutun": 1,
+          "onkosul": ["tahil_ambarlari"],
+          "etki": {
+            "bolge_geliri": 0.2
+          }
+        },
+        {
+          "key": "rasathane",
+          "ad": "Rasathane",
+          "aciklama": "Yıldızları gözleyen bir kule diktirirsin. Hesap bilen adamlar her araştırmayı kısaltır.",
+          "kademe": 5,
+          "lord_seviyesi": 36,
+          "sutun": 2,
+          "onkosul": ["medrese"],
+          "etki": {
+            "arastirma_hizi": 0.15
+          }
+        },
+        {
+          "key": "mimar_ocagi",
+          "ad": "Mimar Ocağı",
+          "aciklama": "Ustaları tek bir ocakta toplarsın. Her yapı aynı elden çıkar, iskele bir yapıdan ötekine taşınır.",
+          "kademe": 5,
+          "lord_seviyesi": 38,
+          "sutun": 3,
+          "onkosul": ["lonca_duzeni"],
+          "etki": {
+            "bina_hizi": 0.2
+          }
+        },
+        {
+          "key": "hazine_mahzenleri",
+          "ad": "Hazine Mahzenleri",
+          "aciklama": "Kayaya oyulmuş mahzenler kazdırırsın. Diyarın büyüdükçe ambarın da onunla büyür.",
+          "kademe": 6,
+          "lord_seviyesi": 45,
+          "sutun": 0,
+          "onkosul": ["tahil_ambarlari"],
+          "etki": {
+            "depo_carpani": 0.3
+          }
+        },
+        {
+          "key": "darphane",
+          "ad": "Darphane",
+          "aciklama": "Kendi sikkeni bastırırsın. Malikânenin çarşısı sikkene güvenir, alışveriş hızlanır.",
+          "kademe": 6,
+          "lord_seviyesi": 47,
+          "sutun": 1,
+          "onkosul": ["vergi_defteri"],
+          "etki": {
+            "malikane_geliri": 0.15
+          }
+        },
+        {
+          "key": "beytulhikme",
+          "ad": "Beytülhikme",
+          "aciklama": "Diyarın bütün âlimlerini tek bir çatı altında toplarsın. Aynı anda bir araştırma daha yürür.",
+          "kademe": 6,
+          "lord_seviyesi": 50,
+          "sutun": 2,
+          "onkosul": ["rasathane"],
+          "etki": {
+            "arastirma_yuvasi": 1
+          }
         }
       ]
     },
     {
       "key": "ordu",
       "ad": "Ordu",
-      "ozet": "Talim, zırh, sancak.",
+      "ozet": "Talim, piyade, okçu ve kuşatma, atlılar.",
+      "sutunlar": ["Talim", "Piyade", "Menzil", "Atlı"],
       "dugumler": [
         {
           "key": "talim_meydani",
@@ -77,7 +308,36 @@
           "aciklama": "Kışlanın yanına talim meydanı açarsın. Asker daha çabuk yetişir.",
           "kademe": 1,
           "lord_seviyesi": 3,
-          "etki": { "egitim_hizi": 0.2 }
+          "sutun": 0,
+          "onkosul": [],
+          "etki": {
+            "egitim_hizi": 0.2
+          }
+        },
+        {
+          "key": "koylu_talimi",
+          "ad": "Köylü Talimi",
+          "aciklama": "Köylülere kargı tutmayı ve saf bozmamayı öğretirsin. Milis ilk hücumda dağılmaz.",
+          "kademe": 1,
+          "lord_seviyesi": 5,
+          "sutun": 1,
+          "onkosul": ["talim_meydani"],
+          "etki": {
+            "milis_savunma": 0.12
+          }
+        },
+        {
+          "key": "kargi_ustalari",
+          "ad": "Kargı Ustaları",
+          "aciklama": "Mızrakçılara uzun kargı ve demir uç verirsin. Atlı hücumu kargının ucunda kırılır.",
+          "kademe": 2,
+          "lord_seviyesi": 9,
+          "sutun": 1,
+          "onkosul": ["koylu_talimi"],
+          "etki": {
+            "mizrakci_saldiri": 0.1,
+            "mizrakci_savunma": 0.06
+          }
         },
         {
           "key": "zirh_atolyesi",
@@ -85,7 +345,35 @@
           "aciklama": "Demirhanede zırh dövdürürsün. Ordun daha az kayıp verir.",
           "kademe": 2,
           "lord_seviyesi": 10,
-          "etki": { "ordu_savunma": 0.08 }
+          "sutun": 0,
+          "onkosul": ["talim_meydani"],
+          "etki": {
+            "ordu_savunma": 0.08
+          }
+        },
+        {
+          "key": "uzengi",
+          "ad": "Üzengi",
+          "aciklama": "Atlıların ayağına üzengi taktırırsın. Mızrak darbesi atın bütün ağırlığıyla iner.",
+          "kademe": 2,
+          "lord_seviyesi": 11,
+          "sutun": 3,
+          "onkosul": ["talim_meydani"],
+          "etki": {
+            "suvari_saldiri": 0.1
+          }
+        },
+        {
+          "key": "mancinik_ustalari",
+          "ad": "Mancınık Ustaları",
+          "aciklama": "Mancınık kurmayı bilen ustaları ordunda tutarsın. Taşlar surun zayıf yerine iner.",
+          "kademe": 2,
+          "lord_seviyesi": 12,
+          "sutun": 2,
+          "onkosul": ["talim_meydani"],
+          "etki": {
+            "kusatma_saldiri": 0.12
+          }
         },
         {
           "key": "ok_atolyesi",
@@ -93,7 +381,36 @@
           "aciklama": "Ok ve mızrak uçlarını kendi atölyende yaptırırsın. Vuruşun sertleşir.",
           "kademe": 3,
           "lord_seviyesi": 18,
-          "etki": { "ordu_saldiri": 0.08 }
+          "sutun": 2,
+          "onkosul": ["zirh_atolyesi"],
+          "etki": {
+            "ordu_saldiri": 0.08
+          }
+        },
+        {
+          "key": "kalkanli_piyade",
+          "ad": "Kalkanlı Piyade",
+          "aciklama": "Piyadeye boy kalkanı verirsin. Saf ok yağmurunda bile yerinde durur ve ileri yürür.",
+          "kademe": 3,
+          "lord_seviyesi": 20,
+          "sutun": 1,
+          "onkosul": ["kargi_ustalari"],
+          "etki": {
+            "mizrakci_savunma": 0.1,
+            "milis_saldiri": 0.08
+          }
+        },
+        {
+          "key": "bilesik_yay",
+          "ad": "Bileşik Yay",
+          "aciklama": "Boynuz, ağaç ve sinirden yay yaptırırsın. Okçunun oku daha uzağa, daha sert gider.",
+          "kademe": 4,
+          "lord_seviyesi": 26,
+          "sutun": 2,
+          "onkosul": ["ok_atolyesi"],
+          "etki": {
+            "okcu_saldiri": 0.12
+          }
         },
         {
           "key": "sancak_beyligi",
@@ -101,7 +418,49 @@
           "aciklama": "Sancak beyleri atarsın. Tek seferde daha kalabalık bir ordu yönetirsin.",
           "kademe": 4,
           "lord_seviyesi": 27,
-          "etki": { "komuta_kapasitesi": 40 }
+          "sutun": 0,
+          "onkosul": ["zirh_atolyesi"],
+          "etki": {
+            "komuta_kapasitesi": 40
+          }
+        },
+        {
+          "key": "agir_suvari",
+          "ad": "Ağır Süvari",
+          "aciklama": "Atlılara ve atlarına zırh giydirirsin. Süvari hücumdan sağ döner, ikinci kez vurur.",
+          "kademe": 4,
+          "lord_seviyesi": 28,
+          "sutun": 3,
+          "onkosul": ["uzengi"],
+          "etki": {
+            "suvari_savunma": 0.12,
+            "suvari_saldiri": 0.05
+          }
+        },
+        {
+          "key": "secme_piyade",
+          "ad": "Seçme Piyade",
+          "aciklama": "Her köyden en iyi yiğitleri seçip ayrı bir ocakta yetiştirirsin. Piyaden ordunun belkemiği olur.",
+          "kademe": 5,
+          "lord_seviyesi": 36,
+          "sutun": 1,
+          "onkosul": ["kalkanli_piyade"],
+          "etki": {
+            "mizrakci_saldiri": 0.1,
+            "milis_savunma": 0.08
+          }
+        },
+        {
+          "key": "karsi_agirlikli_mancinik",
+          "ad": "Karşı Ağırlıklı Mancınık",
+          "aciklama": "Dev karşı ağırlıklı mancınıklar kurdurursun. Hiçbir sur ikinci atıştan sonra aynı kalmaz.",
+          "kademe": 5,
+          "lord_seviyesi": 37,
+          "sutun": 2,
+          "onkosul": ["mancinik_ustalari", "bilesik_yay"],
+          "etki": {
+            "kusatma_saldiri": 0.15
+          }
         },
         {
           "key": "seferi_ordu",
@@ -109,14 +468,287 @@
           "aciklama": "Ordun yükünü hafifletir, yolda konaklamayı öğretirsin. Yürüyüş kısalır.",
           "kademe": 5,
           "lord_seviyesi": 38,
-          "etki": { "yuruyus_hizi": 0.2 }
+          "sutun": 0,
+          "onkosul": ["sancak_beyligi"],
+          "etki": {
+            "yuruyus_hizi": 0.2
+          }
+        },
+        {
+          "key": "arbalet",
+          "ad": "Arbalet",
+          "aciklama": "Okçulara arbalet ve siper kalkanı verirsin. Uzaktan vurur, yakından da kolay düşmez.",
+          "kademe": 6,
+          "lord_seviyesi": 46,
+          "sutun": 2,
+          "onkosul": ["bilesik_yay"],
+          "etki": {
+            "okcu_saldiri": 0.08,
+            "okcu_savunma": 0.08
+          }
+        },
+        {
+          "key": "daimi_ordu",
+          "ad": "Daimî Ordu",
+          "aciklama": "Askeri hasattan sonra evine göndermezsin; maaşlı bir ordu kurarsın. Daha büyük ve daha ucuz.",
+          "kademe": 6,
+          "lord_seviyesi": 48,
+          "sutun": 0,
+          "onkosul": ["seferi_ordu"],
+          "etki": {
+            "komuta_kapasitesi": 40,
+            "bakim_indirimi": 0.1
+          }
+        },
+        {
+          "key": "zirhli_atlilar",
+          "ad": "Zırhlı Atlılar",
+          "aciklama": "Atlılarına baştan aşağı levha zırh dövdürürsün. Hücumları bir duvarın yürümesi gibidir.",
+          "kademe": 6,
+          "lord_seviyesi": 50,
+          "sutun": 3,
+          "onkosul": ["agir_suvari"],
+          "etki": {
+            "suvari_saldiri": 0.08,
+            "suvari_savunma": 0.06
+          }
+        }
+      ]
+    },
+    {
+      "key": "doktrin",
+      "ad": "Doktrin",
+      "ozet": "Üç savaş öğretisinden biri.",
+      "sutunlar": ["Akıncı", "Menzil", "Kale"],
+      "dugumler": [
+        {
+          "key": "savas_sanati",
+          "ad": "Savaş Sanatı",
+          "aciklama": "Eski seferlerin defterlerini okutursun. Neyin işe yaradığını artık biliyorsun; sıra bir öğreti seçmekte.",
+          "kademe": 1,
+          "lord_seviyesi": 6,
+          "sutun": 1,
+          "onkosul": [],
+          "etki": {
+            "ordu_saldiri": 0.03,
+            "ordu_savunma": 0.03
+          }
+        },
+        {
+          "key": "akinci_ogretisi",
+          "ad": "Akıncı Öğretisi",
+          "aciklama": "Hız her şeydir: vur, dağıt, geri çekil. Ordunu süvarinin çevresinde kurarsın.",
+          "kademe": 2,
+          "lord_seviyesi": 10,
+          "sutun": 0,
+          "onkosul": ["savas_sanati"],
+          "grup": "doktrin",
+          "yol": "akinci",
+          "etki": {
+            "suvari_saldiri": 0.08,
+            "yuruyus_hizi": 0.06
+          }
+        },
+        {
+          "key": "hilal_ustaligi",
+          "ad": "Hilal Ustalığı",
+          "aciklama": "Kanatların sarmayı gözü kapalı yapar. Hilal Düzeni daha sert sarar, merkez daha az zayıflar.",
+          "kademe": 3,
+          "lord_seviyesi": 18,
+          "sutun": 0,
+          "onkosul": ["akinci_ogretisi"],
+          "yol": "akinci",
+          "etki": {
+            "taktik_hilal": 0.3
+          }
+        },
+        {
+          "key": "surat_akinlari",
+          "ad": "Sürat Akınları",
+          "aciklama": "Akıncıların düşman ambarını ondan önce bulur. Akından her seferinde daha dolu dönersin.",
+          "kademe": 4,
+          "lord_seviyesi": 26,
+          "sutun": 0,
+          "onkosul": ["hilal_ustaligi"],
+          "yol": "akinci",
+          "etki": {
+            "yagma": 0.15
+          }
+        },
+        {
+          "key": "kusatip_vur",
+          "ad": "Kuşat ve Vur",
+          "aciklama": "Süvari düşmanı iki yandan kuşatıp arkadan vurur. Kaçan düşman bile atlının elinden kurtulamaz.",
+          "kademe": 5,
+          "lord_seviyesi": 36,
+          "sutun": 0,
+          "onkosul": ["surat_akinlari"],
+          "yol": "akinci",
+          "etki": {
+            "suvari_saldiri": 0.1,
+            "suvari_savunma": 0.06
+          }
+        },
+        {
+          "key": "yildirim_seferi",
+          "ad": "Yıldırım Seferi",
+          "aciklama": "Düşman ordunun geldiğini duyduğunda sen çoktan kapısındasın. Hız artık bir silah.",
+          "kademe": 6,
+          "lord_seviyesi": 46,
+          "sutun": 0,
+          "onkosul": ["kusatip_vur"],
+          "yol": "akinci",
+          "etki": {
+            "ordu_saldiri": 0.05,
+            "yuruyus_hizi": 0.06
+          }
+        },
+        {
+          "key": "menzil_ogretisi",
+          "ad": "Menzil Öğretisi",
+          "aciklama": "Düşman sana ulaşmadan savaşı bitir. Ordunu okçu ve mancınığın çevresinde kurarsın.",
+          "kademe": 2,
+          "lord_seviyesi": 10,
+          "sutun": 1,
+          "onkosul": ["savas_sanati"],
+          "grup": "doktrin",
+          "yol": "menzil",
+          "etki": {
+            "okcu_saldiri": 0.08,
+            "kusatma_saldiri": 0.05
+          }
+        },
+        {
+          "key": "ok_yagmuru_ustaligi",
+          "ad": "Ok Yağmuru Ustalığı",
+          "aciklama": "Okçuların tek bir el gibi atar. Ok Yağmuru ilk turda daha sert iner, savunmayı daha az açar.",
+          "kademe": 3,
+          "lord_seviyesi": 18,
+          "sutun": 1,
+          "onkosul": ["menzil_ogretisi"],
+          "yol": "menzil",
+          "etki": {
+            "taktik_ok_yagmuru": 0.3
+          }
+        },
+        {
+          "key": "kusatma_ustaligi",
+          "ad": "Kuşatma Ustalığı",
+          "aciklama": "Kuşatma artık bir sanat. Kuşatma Düzeni surları daha derin deler, saldırın daha az zayıflar.",
+          "kademe": 4,
+          "lord_seviyesi": 26,
+          "sutun": 1,
+          "onkosul": ["ok_yagmuru_ustaligi"],
+          "yol": "menzil",
+          "etki": {
+            "taktik_kusatma_duzeni": 0.3,
+            "kusatma_saldiri": 0.08
+          }
+        },
+        {
+          "key": "atis_hatti",
+          "ad": "Atış Hattı",
+          "aciklama": "Okçuların üç sıra hâlinde nöbetleşe atar. Ok yağmuru bir an bile dinmez.",
+          "kademe": 5,
+          "lord_seviyesi": 36,
+          "sutun": 1,
+          "onkosul": ["kusatma_ustaligi"],
+          "yol": "menzil",
+          "etki": {
+            "okcu_saldiri": 0.1,
+            "okcu_savunma": 0.06
+          }
+        },
+        {
+          "key": "toplu_atis",
+          "ad": "Toplu Atış",
+          "aciklama": "Bütün ordu tek bir işaretle vurur. Düşman ne zaman vurulacağını bilmez, ama vurulur.",
+          "kademe": 6,
+          "lord_seviyesi": 46,
+          "sutun": 1,
+          "onkosul": ["atis_hatti"],
+          "yol": "menzil",
+          "etki": {
+            "ordu_saldiri": 0.06
+          }
+        },
+        {
+          "key": "kale_ogretisi",
+          "ad": "Kale Öğretisi",
+          "aciklama": "Toprağını tutan savaşı kazanır. Ordunu surların ve mızrak setinin çevresinde kurarsın.",
+          "kademe": 2,
+          "lord_seviyesi": 10,
+          "sutun": 2,
+          "onkosul": ["savas_sanati"],
+          "grup": "doktrin",
+          "yol": "kale",
+          "etki": {
+            "kale_savunmasi": 0.08,
+            "ordu_savunma": 0.04
+          }
+        },
+        {
+          "key": "kalkan_duvari_ustaligi",
+          "ad": "Kalkan Duvarı Ustalığı",
+          "aciklama": "Kalkanlar tek bir duvar gibi kilitlenir. Kalkan Duvarı daha sağlam durur, saldırın daha az düşer.",
+          "kademe": 3,
+          "lord_seviyesi": 18,
+          "sutun": 2,
+          "onkosul": ["kale_ogretisi"],
+          "yol": "kale",
+          "etki": {
+            "taktik_kalkan_duvari": 0.3
+          }
+        },
+        {
+          "key": "mizrak_seti_ustaligi",
+          "ad": "Mızrak Seti Ustalığı",
+          "aciklama": "Mızrak seti atlının geleceği yere önceden kurulur. Süvari hücumu setin önünde erir.",
+          "kademe": 4,
+          "lord_seviyesi": 26,
+          "sutun": 2,
+          "onkosul": ["kalkan_duvari_ustaligi"],
+          "yol": "kale",
+          "etki": {
+            "taktik_mizrak_seti": 0.3,
+            "mizrakci_savunma": 0.08
+          }
+        },
+        {
+          "key": "temkin_ustaligi",
+          "ad": "Temkin Ustalığı",
+          "aciklama": "Ordun her adımı tartarak atar. Temkinli İlerleyiş daha az kayıpla daha çok toprak tutar.",
+          "kademe": 5,
+          "lord_seviyesi": 36,
+          "sutun": 2,
+          "onkosul": ["mizrak_seti_ustaligi"],
+          "yol": "kale",
+          "etki": {
+            "taktik_temkinli_ilerleyis": 0.3,
+            "ordu_savunma": 0.04
+          }
+        },
+        {
+          "key": "celik_sur",
+          "ad": "Çelik Sur",
+          "aciklama": "Surların taşı gibi ordun da yerinden oynamaz. Sana saldıran kendi kapısında yenilir.",
+          "kademe": 6,
+          "lord_seviyesi": 46,
+          "sutun": 2,
+          "onkosul": ["temkin_ustaligi"],
+          "yol": "kale",
+          "etki": {
+            "kale_savunmasi": 0.1,
+            "ordu_savunma": 0.05
+          }
         }
       ]
     },
     {
       "key": "diyar",
       "ad": "Diyar",
-      "ozet": "Surlar, casuslar, divan.",
+      "ozet": "Surlar, yollar, divan, casuslar.",
+      "sutunlar": ["Sur", "Yol", "Divan", "Gölge"],
       "dugumler": [
         {
           "key": "sur_ustaligi",
@@ -124,7 +756,11 @@
           "aciklama": "Bölgelerinin surlarını ustalara yaptırırsın. Savunurken tahkimatın daha çok işe yarar.",
           "kademe": 1,
           "lord_seviyesi": 5,
-          "etki": { "kale_savunmasi": 0.15 }
+          "sutun": 0,
+          "onkosul": [],
+          "etki": {
+            "kale_savunmasi": 0.15
+          }
         },
         {
           "key": "yagma_yollari",
@@ -132,7 +768,11 @@
           "aciklama": "Hangi yoldan ne taşınacağını bilirsin. Akından daha dolu dönersin.",
           "kademe": 2,
           "lord_seviyesi": 12,
-          "etki": { "yagma": 0.2 }
+          "sutun": 1,
+          "onkosul": ["sur_ustaligi"],
+          "etki": {
+            "yagma": 0.2
+          }
         },
         {
           "key": "casus_agi",
@@ -140,7 +780,35 @@
           "aciklama": "Diyara kendi adamlarını yayarsın. Casusluk ucuzlar, adamların daha az yakalanır.",
           "kademe": 3,
           "lord_seviyesi": 20,
-          "etki": { "casus_maliyeti": -0.3 }
+          "sutun": 3,
+          "onkosul": ["yagma_yollari"],
+          "etki": {
+            "casus_maliyeti": -0.3
+          }
+        },
+        {
+          "key": "menzilhaneler",
+          "ad": "Menzilhaneler",
+          "aciklama": "Yol boyuna taze at bekleten menziller kurarsın. Ordun ve haberlerin daha çabuk varır.",
+          "kademe": 3,
+          "lord_seviyesi": 22,
+          "sutun": 1,
+          "onkosul": ["yagma_yollari"],
+          "etki": {
+            "yuruyus_hizi": 0.08
+          }
+        },
+        {
+          "key": "sur_muhendisligi",
+          "ad": "Sur Mühendisliği",
+          "aciklama": "Surlara burç ve hendek ekletirsin. Saldıran, surun dibine varmadan kayıp verir.",
+          "kademe": 4,
+          "lord_seviyesi": 25,
+          "sutun": 0,
+          "onkosul": ["sur_ustaligi"],
+          "etki": {
+            "kale_savunmasi": 0.1
+          }
         },
         {
           "key": "imar_ustalari",
@@ -148,7 +816,53 @@
           "aciklama": "Gezici usta takımları kurarsın. Bölge geliştirmek hızlanır.",
           "kademe": 4,
           "lord_seviyesi": 29,
-          "etki": { "bolge_yukseltme_hizi": 0.25 }
+          "sutun": 2,
+          "onkosul": ["yagma_yollari"],
+          "etki": {
+            "bolge_yukseltme_hizi": 0.25
+          }
+        },
+        {
+          "key": "uc_beylikleri",
+          "ad": "Uç Beylikleri",
+          "aciklama": "Sınır bölgelerini kendi beylerine bırakırsın. Uçlar hem sağlam durur hem düşmanı yağmalar.",
+          "kademe": 5,
+          "lord_seviyesi": 35,
+          "sutun": 0,
+          "onkosul": ["sur_muhendisligi"],
+          "grup": "yonetim",
+          "yol": "uc_beylikleri",
+          "etki": {
+            "kale_savunmasi": 0.1,
+            "yagma": 0.1
+          }
+        },
+        {
+          "key": "merkezi_divan",
+          "ad": "Merkezî Divan",
+          "aciklama": "Bütün bölgeler tek bir divandan yönetilir. Vergi eksiksiz toplanır, imar düzenli yürür.",
+          "kademe": 5,
+          "lord_seviyesi": 35,
+          "sutun": 1,
+          "onkosul": ["imar_ustalari"],
+          "grup": "yonetim",
+          "yol": "merkezi_divan",
+          "etki": {
+            "bolge_geliri": 0.08,
+            "bolge_yukseltme_hizi": 0.15
+          }
+        },
+        {
+          "key": "gizli_teskilat",
+          "ad": "Gizli Teşkilat",
+          "aciklama": "Casuslarını birbirini tanımayan hücrelere ayırırsın. Biri yakalansa bile ağ çözülmez.",
+          "kademe": 5,
+          "lord_seviyesi": 37,
+          "sutun": 3,
+          "onkosul": ["casus_agi"],
+          "etki": {
+            "casus_maliyeti": -0.2
+          }
         },
         {
           "key": "divan",
@@ -156,7 +870,24 @@
           "aciklama": "Bir divan toplarsın; sefer kararları artık tek başına verilmiyor. Günde bir akın hakkın daha olur.",
           "kademe": 5,
           "lord_seviyesi": 40,
-          "etki": { "gunluk_saldiri": 1 }
+          "sutun": 2,
+          "onkosul": ["imar_ustalari"],
+          "etki": {
+            "gunluk_saldiri": 1
+          }
+        },
+        {
+          "key": "cihan_divani",
+          "ad": "Cihan Divanı",
+          "aciklama": "Divanın artık yalnız diyarını değil, komşularını da tartışıyor. Her bölge bir planın parçası.",
+          "kademe": 6,
+          "lord_seviyesi": 50,
+          "sutun": 2,
+          "onkosul": ["divan"],
+          "etki": {
+            "bolge_geliri": 0.05,
+            "bolge_yukseltme_hizi": 0.1
+          }
         }
       ]
     }

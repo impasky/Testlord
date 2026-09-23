@@ -26,7 +26,14 @@ import {
 import { prisma, type Tx } from '../db.js';
 import { medeniyetBonuslari, surOrani } from './medeniyet.js';
 import { GameError, hata } from '../errors.js';
-import { binalariOku, grantXp, okuArastirmalar, pushEvent, tickLord } from './lord.js';
+import {
+  arastirmaBonusuOku,
+  binalariOku,
+  grantXp,
+  okuArastirmalar,
+  pushEvent,
+  tickLord,
+} from './lord.js';
 import { bolgeTahkimati } from './region.js';
 
 export type QueueKind =
@@ -198,9 +205,11 @@ export async function enqueue(
 export async function assertQueueSlot(lordId: string, kind: QueueKind, tx: Tx): Promise<void> {
   const [aktif, lord] = await Promise.all([
     tx.queue.count({ where: { lordId, kind, resolved: false } }),
-    tx.lord.findUnique({ where: { id: lordId }, select: { binalar: true } }),
+    tx.lord.findUnique({ where: { id: lordId }, select: { binalar: true, arastirmalar: true } }),
   ]);
-  const limit = esZamanliLimit(kind, binalariOku(lord ?? {}));
+  // Araştırma yuvaları kütüphaneden VE araştırmadan geliyor (docs/20 §3);
+  // ekran da aynı fonksiyonu aynı girdiyle çağırıyor.
+  const limit = esZamanliLimit(kind, binalariOku(lord ?? {}), arastirmaBonusuOku(lord ?? {}));
   if (aktif >= limit) {
     throw hata.limitAsildi(`Aynı anda en fazla ${limit} ${kind} kuyruğu`);
   }

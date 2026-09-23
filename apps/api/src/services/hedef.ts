@@ -47,6 +47,7 @@ import {
   type TaramaSonucu,
   type UnitType,
   MEDENIYETLER,
+  savasArastirmasi,
 } from '@lordlar/shared';
 
 /** Bütün çekirdek bölgelerin harita numaraları — öneri bunları atlıyor. */
@@ -83,12 +84,7 @@ export async function lordSide(
   const ar = arastirmaBonusuOku(lord);
   return {
     units: army,
-    arastirma: {
-      orduSaldiri: ar.orduSaldiri,
-      orduSavunma: ar.orduSavunma,
-      kaleSavunmasi: ar.kaleSavunmasi,
-      yagma: ar.yagma,
-    },
+    arastirma: savasArastirmasi(ar),
     // Önizleme ile gerçek savaşın AYNI düzeni kullanması şart: oyuncuya
     // gösterilen kazanma ihtimali, dizilimi hesaba katmayan bir sayı
     // olsaydı dizilim ekranı oyuncuya yalan söylemiş olurdu.

@@ -7,7 +7,9 @@
  */
 import { describe, expect, it } from 'vitest';
 import {
+  ARASTIRMA_CAGLARI,
   ARASTIRMA_DALLARI,
+  ARASTIRMA_GRUPLARI,
   B,
   EKRANLAR,
   TAKTIKLER,
@@ -1536,14 +1538,17 @@ describe('öğretici (docs/09 — ilk giriş)', () => {
       .find((s) => s.anahtar === 'arastirma')!
       .maddeler.map((m) => `${m.vurgu} ${m.metin}`)
       .join(' ');
-    expect(metin).toContain(`${ARASTIRMA_DALLARI.length} dal`);
-    // Dallar eşit uzunlukta: "her dalda N kademe" cümlesi ancak öyleyse
-    // doğru. Bir dal kısalırsa cümle yalan olur.
-    const uzunluklar = new Set(ARASTIRMA_DALLARI.map((d) => d.dugumler.length));
-    expect(uzunluklar.size).toBe(1);
-    expect(metin).toContain(`her dalda ${[...uzunluklar][0]} kademe`);
+    expect(metin).toContain(`${ARASTIRMA_DALLARI.length} sekme`);
+    expect(metin).toContain(`${ARASTIRMA_CAGLARI.length} çağ`);
+    for (const d of ARASTIRMA_DALLARI) expect(metin).toContain(d.ad);
+    for (const g of ARASTIRMA_GRUPLARI) expect(metin).toContain(g.ad);
+    expect(metin).toContain(`${B.arastirma.erken_pencere_seviye} seviye önce`);
+    expect(metin).toContain(`%${Math.round(B.arastirma.yol_degisim_iadesi * 100)}`);
+    expect(metin).toContain(`${Math.round(B.arastirma.yol_degisim_bekleme_saat / 24)} gün`);
     expect(metin).toContain(`${B.kuyruklar.es_zamanli.research} araştırma`);
     expect(metin).toContain(`%${Math.round(B.arastirma.iptal_iadesi * 100)}`);
+    // Seçimler geri alınabiliyor; "geri alınmaz" demek artık yalan.
+    expect(metin).not.toContain('geri alınmaz');
   });
 
   it('öğreticideki depo, pazar ve hastane sayıları dengeyle aynı', () => {

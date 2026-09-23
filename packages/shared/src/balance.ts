@@ -63,14 +63,33 @@ export const ARASTIRMA_DALLARI = arastirmaJson.dallar as unknown as {
   key: string;
   ad: string;
   ozet: string;
+  sutunlar: string[];
   dugumler: {
     key: string;
     ad: string;
     aciklama: string;
     kademe: number;
     lord_seviyesi: number;
+    sutun: number;
+    onkosul: string[];
+    grup?: string;
+    yol?: string;
     etki: Record<string, number>;
   }[];
+}[];
+
+/** Çağlar: HOI4'teki yıllar (docs/20 §1). */
+export const ARASTIRMA_CAGLARI = arastirmaJson.caglar as {
+  no: number;
+  ad: string;
+  seviye: number;
+}[];
+
+/** Dışlayan seçim grupları (docs/20 §1). */
+export const ARASTIRMA_GRUPLARI = arastirmaJson.gruplar as {
+  key: string;
+  ad: string;
+  aciklama: string;
 }[];
 
 export const TAKTIKLER = taktiklerJson.taktikler as unknown as {
