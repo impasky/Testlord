@@ -55,9 +55,40 @@ function adiYenile(ad) {
  *
  * Burada tekrarlar kırılıyor: aynı karakter üst üste ikiden fazla
  * gelmiyor.
+ *
+ * ── Tekrar kırmak yetmedi: süzgeç RAKAMI HARF okuyor ─────────────────
+ *
+ * Süzgeç adı önce sadeleştiriyor (`normalize`): 3→e, 0→o, 1→i, 4→a,
+ * 5→s, 7→t, geri kalan rakamlar siliniyor. Kırpılmış ham ad onun gözünde
+ * başka bir ad: CI'da "Yokdi" + "mue6e3e2…" → "yokdimueeeee…" beş e,
+ * reddedildi (diyar-secimi-testi, AD_UYGUNSUZ). O saatlerde damga e ve
+ * 3'le doluydu; bazı milisaniyelerde her on yedi addan biri kalıyordu.
+ * Aynı yol yasak sözcük de kuruyordu: "n4z1" → "nazi".
+ *
+ * Artık rastgele kısım yalnız ÜNSÜZLERDEN: damga 20 ünsüzlük tabanda,
+ * ardından dört rastgele ünsüz. Ünsüz sadeleşmede değişmiyor, ünlü hiç
+ * yok; yasak parçaların hepsi ünlü içerdiğinden bu kısımda hiçbiri
+ * oluşamıyor, tekrar sınırı da ham adda neyse süzgeçte o. Uzunluk eskisi
+ * gibi 12: "Bildirim" öneki sunucunun 20 harf sınırına tam sığıyor.
  */
+const UNSUZ = 'bcdfghjklmnpqrstvwxz';
+
+function unsuzle(sayi, basamak) {
+  let s = '';
+  for (let i = 0; i < basamak; i++) {
+    s = UNSUZ[sayi % UNSUZ.length] + s;
+    sayi = Math.floor(sayi / UNSUZ.length);
+  }
+  return s;
+}
+
 export function benzersizAd(onek = 'Test') {
-  const ham = `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+  // Sekiz basamak 20^8 ms ≈ 296 günde bir başa sarıyor; o kadar eski bir
+  // adla çakışmak için dört rastgele ünsüzün de (160.000 ihtimal) tutması
+  // gerek. Aynı milisaniyedeki iki kaydı da o dört ünsüz ayırıyor.
+  const ham =
+    unsuzle(Date.now() % UNSUZ.length ** 8, 8) +
+    unsuzle(Math.floor(Math.random() * UNSUZ.length ** 4), 4);
   let cikti = '';
   let oncekiKarakter = '';
   let tekrar = 0;
