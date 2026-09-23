@@ -66,6 +66,7 @@ let araAdimKarsilanamayan = 0;
 let kazanamayan = 0;
 let kayan = 0;
 let planKaydi = 0;
+const kaymalar = [];
 const enPahali = { altin: 0, ad: '' };
 
 for (let i = 0; i < OYUNCU; i++) {
@@ -113,6 +114,13 @@ for (let i = 0; i < OYUNCU; i++) {
   const kuyruktayken = (await o.get('/map')).oneri;
   if (kuyruktayken?.regionId !== ilk.regionId || kuyruktayken?.eksik?.birim !== ilk.eksik.birim) {
     planKaydi++;
+    // Kalan tek başına "1/24" diyordu ve CI'da iki kez kaldı; neyin neye
+    // döndüğünü görmeden sebebi yerelde aramak gerekti. Artık kayıtta.
+    const ozet = (x) =>
+      x
+        ? `${x.name}#${x.regionId} ${x.eksik ? `${x.eksik.adet} ${x.eksik.birim}${x.eksik.karsilanabilir ? '' : ' (karşılanamaz)'}` : x.kazanir ? 'kazanır' : 'eksiksiz'}`
+        : 'öneri yok';
+    kaymalar.push(`${ozet(ilk)} → ${ozet(kuyruktayken)} (eğitilen ${yari} ${ilk.eksik.birim})`);
   }
 
   await o.post('/test/kuyruklari-bitir');
@@ -158,6 +166,7 @@ kontrol(
   planKaydi === 0,
   `${planKaydi}/${OYUNCU} oyuncuda plan uygulanırken hedef kaydı`,
 );
+for (const k of kaymalar) console.log(`         ${k}`);
 
 // Kayma hata değil, ölçü: oyuncu güçlendikçe daha iyi hedefler açılıyor.
 // Yine de hepsinin kayması, hedefin oyuncunun altından kaydığı anlamına
