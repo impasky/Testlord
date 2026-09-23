@@ -53,6 +53,7 @@ import {
 /** Bütün çekirdek bölgelerin harita numaraları — öneri bunları atlıyor. */
 const CEKIRDEK_IDLER = MEDENIYETLER.flatMap((m) => m.cekirdekBolgeler);
 import { prisma, type Tx } from '../db.js';
+import { puanaGore } from './adaySirasi.js';
 import { arastirmaBonusuOku, equippedGenerals, gearBonusFrom } from './lord.js';
 import { regionFortressBonus } from './region.js';
 import { dunyaGrafigi, mesafeOlcerHazir } from './mesafe.js';
@@ -354,7 +355,7 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
     };
   });
 
-  liste.sort((a, b) => b.puanUst - a.puanUst);
+  liste.sort(puanaGore((a) => a.puanUst));
 
   let enIyiPuan = Number.NEGATIVE_INFINITY;
   for (const a of liste) {
@@ -398,7 +399,10 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
     if (a.puan > enIyiPuan) enIyiPuan = a.puan;
   }
 
-  liste.sort((a, b) => b.puan - a.puan);
+  // Eşit puanda son söz haritadaki kimlik: satır sırası tanımsız ve işçi
+  // her turda değiştiriyor, ikiz bölgeler arasında hedef atlıyordu
+  // (adaySirasi.ts).
+  liste.sort(puanaGore((a) => a.puan));
 
   /** Aday satırından arayüzün beklediği öneri nesnesi. */
   const hedefKur = (a: Aday): HedefOnerisi => ({
