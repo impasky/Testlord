@@ -199,6 +199,18 @@ tutan şey 190 piksellik portre kartı ve boş ordu sahnesi; Akın'da beş
 diyar kapağı. İkisi de aynı ilkeyle küçültülebilir — tek karar, tek kart —
 ama ikisinde de asıl soru "kaç piksel" değil, "bu ekranın tek işi ne".
 
+**Sonra (iPhone 13, yerleşmiş lord):**
+
+| Ekran | Önce    | Sonra   | Ne değişti                                                                             |
+| ----- | ------- | ------- | -------------------------------------------------------------------------------------- |
+| Akın  | 1808 px | 1119 px | Kilitli diyar tam kapak değil tek satır: küçük gri pencere, ad, seviye, kilidin sebebi |
+| Lord  | 1649 px | 1611 px | "Şöhretin ne yapıyor" kartı lord kartına, unvanın altına taşındı                       |
+
+Akın'ın tek işi açık diyarı seçmek; dört kilitli kapak o kararı iki ekran
+aşağıya itiyordu. Lord'da kalan boy portre (190 px) ve ordu sahnesi: ikisi
+de bilinçli (ekipmanın görünür karşılığı ve "ordum nerede"). Daha kısası
+ordu sahnesini bu ekrandan çıkarmayı gerektirir; o bir tasarım kararı.
+
 ## 13.12 Bölge sahnesi denendi ve GERİ ALINDI
 
 Oyuncunun sorusu: _"şehir köy vs görsellerini stok kullanmak yerine

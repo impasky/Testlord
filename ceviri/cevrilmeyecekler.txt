@@ -161,4 +161,4 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
   "T{0}"
       apps/web/src/screens/Akin.tsx:250
   "T{0}{1}"
-      apps/web/src/screens/LordEkrani.tsx:678
+      apps/web/src/screens/LordEkrani.tsx:671

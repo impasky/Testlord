@@ -294,6 +294,55 @@ export function LordEkrani({
               <span className="baslik text-altin">{lord.unvan.ad}</span>
             </div>
             <p className="mt-0.5 text-[11px] leading-snug text-solgun">{lord.unvan.aciklama}</p>
+            {/* ŞÖHRETİN NE YAPTIĞI unvanın hemen altında: ayrı bir kart
+                olarak iki kart aşağıdaydı ve "unvan neyin karşılığı" sorusunun
+                cevabı sorunun kendisinden uzakta duruyordu (docs/13 §13.11). */}
+            <div className="mt-1.5">
+              {lord.unvan.sonrakiAd ? (
+                <p className="text-[12px] leading-snug text-solgun">
+                  <Cumle
+                    metin="{0} sonra {1} olacaksın."
+                    parca={[
+                      <span className="text-parsomen">{`${formatSayi(lord.unvan.sonrakiEsik! - lord.fame)} şöhret`}</span>,
+                      <span className="text-altin">{lord.unvan.sonrakiAd}</span>,
+                    ]}
+                  />
+                </p>
+              ) : (
+                <p className="text-[12px] leading-snug text-solgun">
+                  En üst unvandasın: <span className="text-altin">{lord.unvan.ad}</span>.
+                </p>
+              )}
+              {dunya.data && (
+                <p className="mt-1 text-[12px] leading-snug text-solgun">
+                  {/* Lider bensem cümle UZUYOR, parçalanmıyor: iki ayrı tam
+                    cümle, aynı iki parça. */}
+                  <Cumle
+                    metin={
+                      dunya.data.liderAvi?.benMiyim
+                        ? 'Diyarda {0} — ve en şöhretli lord sensin: sana saldıran {1} alır.'
+                        : 'Diyarda {0}.'
+                    }
+                    parca={[
+                      <span className="text-parsomen">{`${formatSayi(dunya.data.benimSiram)}. sıradasın`}</span>,
+                      /* Kırmızı YALNIZ oranın üstünde: cümlenin gerisi
+                       şablona girdi, yoksa "sana saldıran … alır" tek
+                       başına çevrilemeyen bir parça olarak kalıyordu. */
+                      dunya.data.liderAvi && (
+                        <span className="text-kirmizi">
+                          {`+%${Math.round(dunya.data.liderAvi.yagmaBonusu * 100)} yağma`}
+                        </span>
+                      ),
+                    ]}
+                  />
+                </p>
+              )}
+              {/* Şöhret HARCANMIYOR: oyuncu bunu bilmezse biriktirmeyi bir
+                kaynak sanıp bekliyor. */}
+              <p className="mt-1 text-[11px] leading-snug text-sonuk">
+                Şöhret harcanmaz, biriktirilir.
+              </p>
+            </div>
             {/* RÜTBE: unvanın yanında ama ondan AYRI bir şey ölçüyor.
                 Unvan şöhretten (ne kadar büyüksün), rütbe fayda
                 puanından (medeniyetine ne verdin) türüyor. Yukarıdaki
@@ -381,65 +430,9 @@ export function LordEkrani({
           (docs/12 §7); şerit de oraya götürüyor. */}
       {!ilkDongu && <GorevOzeti onGit={() => onKapiAc('gorevler')} />}
 
-      {/* Unvan: şöhretten türüyor, yeni sayaç yok (docs/10 §2.2). Taht
-          sahibinin unvanını "Diyarın Lordu" eziyor. */}
-      {/* Unvanın KENDİSİ yukarıdaki lord kartında; burada yalnız
-          "sıradaki ne" kalıyor. Aynı bilgiyi iki kez göstermek, sayfayı
-          uzatmaktan başka bir işe yaramıyordu. */}
-      {/*
-        ŞÖHRET NE İŞE YARIYOR.
-
-        Kart eskiden yalnız "sıradaki unvan"ı söylüyordu ve oyuncunun
-        haklı sorusu cevapsız kalıyordu: "şöhretim arttı, eee?". Şöhret
-        aslında üç şey yapıyor — unvanını belirliyor, sıralamadaki yerini
-        belirliyor ve diyarın en şöhretlisiyse seni HEDEF yapıyor. Üçü de
-        oyunda vardı, üçü de burada yazmıyordu.
-      */}
-      <Kart className="p-3">
-        <p className="baslik mb-1 text-[11px] text-sonuk">ŞÖHRETİN NE YAPIYOR</p>
-        {lord.unvan.sonrakiAd ? (
-          <p className="text-[12px] leading-snug text-solgun">
-            <Cumle
-              metin="{0} sonra {1} olacaksın."
-              parca={[
-                <span className="text-parsomen">{`${formatSayi(lord.unvan.sonrakiEsik! - lord.fame)} şöhret`}</span>,
-                <span className="text-altin">{lord.unvan.sonrakiAd}</span>,
-              ]}
-            />
-          </p>
-        ) : (
-          <p className="text-[12px] leading-snug text-solgun">
-            En üst unvandasın: <span className="text-altin">{lord.unvan.ad}</span>.
-          </p>
-        )}
-        {dunya.data && (
-          <p className="mt-1 text-[12px] leading-snug text-solgun">
-            {/* Lider bensem cümle UZUYOR, parçalanmıyor: iki ayrı tam
-                cümle, aynı iki parça. */}
-            <Cumle
-              metin={
-                dunya.data.liderAvi?.benMiyim
-                  ? 'Diyarda {0} — ve en şöhretli lord sensin: sana saldıran {1} alır.'
-                  : 'Diyarda {0}.'
-              }
-              parca={[
-                <span className="text-parsomen">{`${formatSayi(dunya.data.benimSiram)}. sıradasın`}</span>,
-                /* Kırmızı YALNIZ oranın üstünde: cümlenin gerisi
-                   şablona girdi, yoksa "sana saldıran … alır" tek
-                   başına çevrilemeyen bir parça olarak kalıyordu. */
-                dunya.data.liderAvi && (
-                  <span className="text-kirmizi">
-                    {`+%${Math.round(dunya.data.liderAvi.yagmaBonusu * 100)} yağma`}
-                  </span>
-                ),
-              ]}
-            />
-          </p>
-        )}
-        {/* Şöhret HARCANMIYOR: oyuncu bunu bilmezse biriktirmeyi bir
-            kaynak sanıp bekliyor. */}
-        <p className="mt-1 text-[11px] leading-snug text-sonuk">Şöhret harcanmaz, biriktirilir.</p>
-      </Kart>
+      {/* Şöhretin ne yaptığı (unvan, sıra, lider avı) artık yukarıda, lord
+          kartında unvanın altında. Ayrı kart iken "şöhretim arttı, eee?"
+          sorusunun cevabı sorudan iki kart uzakta duruyordu. */}
 
       {/* Arma KOZMETİK: hiçbir sayıya dokunmuyor (docs/10 §1.1). Güç
           kartlarıyla aynı sayfada durunca oyuncu onu da bir güç seçimi

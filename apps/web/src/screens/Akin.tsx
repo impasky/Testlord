@@ -285,8 +285,54 @@ function HaritaKarti({
   children?: ReactNode;
 }) {
   const kilitli = !h.acik;
+  /*
+   * KİLİTLİ diyar tek satır.
+   *
+   * Beş diyarın dördü çoğu oyuncu için kilitli ve her biri tam kapaklı bir
+   * kart olarak ~260 piksel tutuyordu: ekran iki boydan uzundu ve asıl
+   * karar (açık diyarı seçmek) ilk kartta bitiyordu, gerisi kaydırılan
+   * gri resimdi (docs/13 §13.11). Kilitli diyar artık küçük gri bir
+   * pencere, adı, seviyesi ve kilidin sebebi: neyin beklediğini söylüyor,
+   * yer kaplamıyor. Açılınca tam kapağına kavuşuyor.
+   */
+  if (kilitli) {
+    return (
+      <Kart className="p-0 opacity-80">
+        <button
+          type="button"
+          data-akin-harita={h.key}
+          disabled
+          className="bas flex w-full items-center gap-3 p-2 text-left"
+        >
+          <span className="relative h-11 w-16 shrink-0 overflow-hidden rounded-lg grayscale">
+            <img
+              src={`/gorseller/akin/${h.key}.webp`}
+              alt=""
+              aria-hidden="true"
+              className="h-full w-full object-cover"
+              loading="lazy"
+            />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="flex items-baseline justify-between gap-2">
+              <span className="baslik truncate text-[13px] text-altin">{h.ad}</span>
+              <Hap renk="var(--color-sonuk)">{`Sv${h.gerekenSeviye}`}</Hap>
+            </span>
+            {/* Kilidin SEBEBİ sunucudan geliyor, burada hesaplanmıyor. İki
+                ayrı kapı var — seviye ve önceki haritanın bitmemesi — ve
+                ekran eskiden ikisini de "seviye gerekiyor" diye yazıyordu:
+                haritayı yarım bırakmış oyuncu beklemekle açılacak sanıyordu. */}
+            <span className="mt-0.5 block text-[11.5px] leading-snug text-sonuk">
+              {h.dusman}
+              {h.engel && ` · ${h.engel}`}
+            </span>
+          </span>
+        </button>
+      </Kart>
+    );
+  }
   return (
-    <Kart className={`p-0 ${kilitli ? 'opacity-70' : ''}`}>
+    <Kart className="p-0">
       {/* İmza DÜĞMENİN üstünde, kartın değil: araçlar zaten buna
           dokunuyor ve `Kart` fazladan öznitelik geçirmiyor (bilerek —
           imzalar açık bir prop olarak veriliyor, sessizce sızmıyor). */}
@@ -298,7 +344,6 @@ function HaritaKarti({
            birden açık bırakmak seçim değil kararsızlık üretirdi. */
         data-rehber={ilkAcikMi ? 'akin-harita' : undefined}
         onClick={onAc}
-        disabled={kilitli}
         className="bas w-full text-left"
         aria-expanded={acikMi}
       >
@@ -306,15 +351,10 @@ function HaritaKarti({
             Beş diyarın tek ayırt edici işareti yazıydı; oyuncu "burası
             neresi" sorusunu ancak okuyarak cevaplayabiliyordu. Boy SABİT
             (aspect-[16/6]) — görsel yüklenirken kart zıplamasın diye,
-            `Zemin.tsx`teki gerekçenin aynısı.
-
-            Kilitli diyarda gri: kilidin sebebi seviye, ve renkli bir
-            kapak "gir" diye bağırıp kapıyı kapatıyordu. */}
-        <div
-          className={`relative w-full overflow-hidden rounded-t-[18px] aspect-[16/6] ${
-            kilitli ? 'grayscale' : ''
-          }`}
-        >
+            `Zemin.tsx`teki gerekçenin aynısı. (Kilitli diyar yukarıda,
+            küçük ve gri: renkli bir kapak "gir" diye bağırıp kapıyı
+            kapatıyordu.) */}
+        <div className="relative aspect-[16/6] w-full overflow-hidden rounded-t-[18px]">
           <img
             src={`/gorseller/akin/${h.key}.webp`}
             alt=""
@@ -329,26 +369,14 @@ function HaritaKarti({
         <div className="px-3 pb-2.5 pt-2">
           <div className="flex items-baseline justify-between gap-2">
             <span className="baslik text-[14px] text-altin">{h.ad}</span>
-            {kilitli ? (
-              <Hap renk="var(--color-sonuk)">{`Sv${h.gerekenSeviye}`}</Hap>
-            ) : (
-              <span className="tabular text-[11.5px] text-solgun">{`${h.acikGrup}/10 grup hazır`}</span>
-            )}
+            <span className="tabular text-[11.5px] text-solgun">{`${h.acikGrup}/10 grup hazır`}</span>
           </div>
           <p className="mt-0.5 text-[12px] leading-snug text-solgun">{h.ozet}</p>
-          <p className="mt-1 text-[11.5px] text-sonuk">
-            {h.dusman}
-            {/* Kilidin SEBEBİ sunucudan geliyor, burada hesaplanmıyor.
-                İki ayrı kapı var — seviye ve önceki haritanın
-                bitmemesi — ve ekran eskiden ikisini de "seviye
-                gerekiyor" diye yazıyordu: haritayı yarım bırakmış
-                oyuncu, beklemekle açılacak sanıp bekliyordu. */}
-            {kilitli && h.engel && ` · ${h.engel}`}
-          </p>
+          <p className="mt-1 text-[11.5px] text-sonuk">{h.dusman}</p>
         </div>
       </button>
 
-      {acikMi && !kilitli && (
+      {acikMi && (
         <div className="border-t border-kenar px-3 py-2.5">
           <DiyarHaritasi
             h={h}
