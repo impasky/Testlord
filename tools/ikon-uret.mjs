@@ -8,16 +8,49 @@
  *
  * Yeni ikon eklemek: aşağıdaki KULLANILAN listesine adını yaz, sonra
  *   node tools/ikon-uret.mjs
+ * Çıktı Prettier'dan geçmiş olarak yazılıyor; üretim sonrası fark
+ * yalnız gerçekten değişen ikonlar.
  *
  * Lisans: game-icons.net — CC BY 3.0. Künye docs/LISANSLAR.md içinde.
  */
 import { readFileSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
+import * as prettier from 'prettier';
 
 const require = createRequire(import.meta.url);
 const set = require('@iconify-json/game-icons/icons.json');
 
-/** Oyunda kullanılan ikonlar: anahtar -> game-icons adı */
+/*
+ * Elle çizilmiş ikonlar: paketteki karşılıkları bir komşuyla karışıyor
+ * (köy ↔ şehrin "village"ı, akın ↔ kışlanın çapraz kılıçları). `ad`
+ * esinlendikleri game-icons ikonu, künye için.
+ *
+ * Gövdeleri BURADA duruyor, çıktı dosyasında değil: çıktı her üretimde
+ * baştan yazılıyor ve oraya elle eklenen ikon bir sonraki üretimde
+ * sessizce siliniyordu — `kilit` eklenirken `koy` ile `navAkin` böyle
+ * gitmişti.
+ */
+const OZEL = {
+  koy: {
+    ad: 'village',
+    body: '<path fill="currentColor" d="M188 92 60 208v20h28v168h200V228h28v-20zm0 44 78 72H110zm-42 116h84v40h-84zm0 72h84v72h-84z"/><path fill="currentColor" d="M360 176 268 260v14h20v122h140V274h20v-14zm0 34 56 50H304zm-32 82h64v30h-64zm0 58h64v52h-64z"/><path fill="currentColor" d="M24 420h464v24H24z"/><path fill="currentColor" d="M56 396h12v28H56zm44 0h12v28h-12zm44 0h12v28h-12zm44 0h12v28h-12zm44 0h12v28h-12zm44 0h12v28h-12zm44 0h12v28h-12zm44 0h12v28h-12zm44 0h12v28h-12z"/>',
+  },
+  navAkin: {
+    ad: 'sword-clash',
+    not: [
+      'Akın sekmesinin simgesi: kılıç darbesi.',
+      '',
+      'Kışla (çapraz kılıçlar) orduyu KURDUĞUN yer, akın onu KULLANDIĞIN',
+      'yer. İkisi de kılıç ama biri duran biri vuran: çubuktaki iki',
+      'komşunun aynı görünmemesi, 44 piksellik bir hedefte adı okumadan',
+      'ayırt edebilmek demek.',
+    ],
+    body: '<path fill="currentColor" d="M20.28 20.28v81.44l122.19 122.19l81.44-81.44L101.72 20.28zm389.72 0L287.81 142.47l40.72 40.72L491.72 101.72V20.28zm-183.5 183.5l-40.72 40.72l122.19 122.19l40.72-40.72zM101.72 288.28L20.28 369.72v122.19h81.44l122.19-122.19zm308.56 20.28l-81.44 81.44l101.72 101.72h81.16v-81.44z"/>',
+  },
+};
+
+/** Oyunda kullanılan ikonlar: anahtar -> game-icons adı (ya da OZEL'den biri) */
 const KULLANILAN = {
   // Birimler
   milis: 'pitchfork',
@@ -41,6 +74,7 @@ const KULLANILAN = {
   uyari: 'hazard-sign',
 
   // Bölge tipleri
+  koy: OZEL.koy,
   tarla: 'wheat',
   maden: 'gold-mine',
   sehir: 'village',
@@ -52,6 +86,7 @@ const KULLANILAN = {
   navKisla: 'crossed-swords',
   navHarita: 'treasure-map',
   navDemirhane: 'anvil',
+  navAkin: OZEL.navAkin,
   navMenu: 'hamburger-menu',
   navLord: 'character',
   navGeneraller: 'crested-helmet',
@@ -74,14 +109,20 @@ const H = set.height ?? 512;
 const satirlar = [];
 const eksik = [];
 
-for (const [anahtar, ad] of Object.entries(KULLANILAN)) {
-  const i = set.icons[ad];
+for (const [anahtar, kaynak] of Object.entries(KULLANILAN)) {
+  const ozel = typeof kaynak === 'object';
+  const ad = ozel ? kaynak.ad : kaynak;
+  const i = ozel ? { body: kaynak.body } : set.icons[ad];
   if (!i) {
     eksik.push(`${anahtar} -> ${ad}`);
     continue;
   }
+  const not =
+    ozel && kaynak.not
+      ? `  /*\n${kaynak.not.map((s) => `   * ${s}`.trimEnd()).join('\n')}\n   */\n`
+      : '';
   satirlar.push(
-    `  ${anahtar}: { ad: ${JSON.stringify(ad)}, w: ${i.width ?? W}, h: ${i.height ?? H}, body: ${JSON.stringify(i.body)} },`,
+    `${not}  ${anahtar}: { ad: ${JSON.stringify(ad)}, w: ${i.width ?? W}, h: ${i.height ?? H}, body: ${JSON.stringify(i.body)} },`,
   );
 }
 
@@ -113,8 +154,9 @@ ${satirlar.join('\n')}
 export type IkonAnahtari = keyof typeof IKONLAR;
 `;
 
-const yol = new URL('../apps/web/src/components/ikon-verisi.ts', import.meta.url);
-writeFileSync(yol, cikti);
+const yol = fileURLToPath(new URL('../apps/web/src/components/ikon-verisi.ts', import.meta.url));
+const ayar = (await prettier.resolveConfig(yol)) ?? {};
+writeFileSync(yol, await prettier.format(cikti, { ...ayar, filepath: yol }));
 
 const boyut = readFileSync(yol).length;
 console.log(
