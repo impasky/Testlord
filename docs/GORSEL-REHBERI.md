@@ -144,18 +144,32 @@ erişim yok. Script senin bilgisayarında, ComfyUI açıkken çalışır.
    ```bash
    pip install pillow numpy scipy
    ```
-4. **Model**: ne indireceğini ekran kartına bakıp script söyler:
+4. **Model**: en kolayı masaüstü uygulamasının **Z-Image Turbo** şablonu.
+   Şablonu açınca kırmızı çerçeveli düğümler eksik dosyaları gösterir;
+   "Detayları görüntüle"den indirilir ve doğru klasöre kendiliğinden gider
+   (difüzyon modeli, metin kodlayıcı `qwen_3_4b`, VAE `ae`). **VAE Yükle**
+   düğümünde `pixel_space` yazıyorsa `ae.safetensors` seç: `pixel_space`
+   ComfyUI'nin her zaman listelediği yedek seçenek, bu model için yanlış.
+   Başka bir model için script ekran kartına bakıp öneriyor:
    ```bash
    python tools/comfy-uret.py --durum
    ```
-   İndirdiğin dosyayı `ComfyUI/models/checkpoints/` içine koy, ComfyUI'yi yenile.
 
 | Ekran kartı belleği | Model                                                                         | Lisans                                 |
 | ------------------- | ----------------------------------------------------------------------------- | -------------------------------------- |
+| 8 GB ve üstü        | **Z-Image Turbo** — masaüstü şablonu (~20 GB); 12 GB altında yavaşlar         | Apache-2.0, ticari kullanım serbest    |
 | 12 GB ve üstü       | **FLUX.1 schnell** — `Comfy-Org/flux1-schnell` → `flux1-schnell-fp8` (~17 GB) | Apache-2.0, ticari kullanım serbest    |
 | 6–12 GB             | **SDXL 1.0** — `stabilityai/stable-diffusion-xl-base-1.0` (~7 GB)             | Open RAIL++-M, ticari kullanım serbest |
-| 8 GB + 32 GB RAM    | FLUX.1 schnell yine denenebilir: daha yavaş, genelde daha iyi                 |                                        |
 | 6 GB altı           | Pratik değil; önemli görseller için Yol 2                                     |                                        |
+
+Tek dosyalık modeller `ComfyUI/models/checkpoints/` içine, parçalı olanlar
+(Z-Image gibi) `diffusion_models/`, `text_encoders/` ve `vae/` içine gider.
+
+**Script'e hiç dokunmadan** de üretilebilir: şablonun üstteki istem
+kutusuna `docs/GORSEL-ISTEMLERI.md`'deki istemi yapıştır, boyutu ayarla,
+Çalıştır. Birkaç aday için "oluşturduktan sonra kontrol et" ayarını
+`randomize` yap (`fixed` iken her seferinde aynı resim çıkar) ve
+Çalıştır'ın yanındaki sayıyı 4 yap.
 
 **FLUX.1 dev kullanma**: lisansı ticari kullanımı yasaklıyor ve bu ticari
 bir oyun. İnternetteki "ince ayarlı" modellerin (Juggernaut vb.) lisansı da

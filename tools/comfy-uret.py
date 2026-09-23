@@ -18,8 +18,9 @@ senin bilgisayarına erişim yok; orada bu script ComfyUI'yi bulamaz.
 
 KURULUM (tek seferlik) — ayrıntı docs/GORSEL-REHBERI.md, Yol 3:
   1. ComfyUI'yi kur ve aç
-  2. Bir model indir, ComfyUI/models/checkpoints/ klasörüne koy
-     (hangisi: `--durum` ekran kartına bakıp söyler)
+  2. Bir model indir. En kolayı masaüstü uygulamasının Z-Image Turbo
+     şablonu: eksik dosyaları kendisi indirir. Başka bir model içinse
+     `--durum` ekran kartına bakıp önerir.
   3. pip install pillow numpy scipy
 
 KULLANIM:
@@ -34,7 +35,7 @@ KULLANIM:
   Seçenekler:
     --aday N        kaç aday (varsayılan 4)
     --tohum N       ilk adayın tohumu; sonrakiler +1 (aynı tohum = aynı resim)
-    --model AD      hangi checkpoint (varsayılan: kurulu olanların en iyisi)
+    --model AD      hangi model dosyası (varsayılan: kullanılabilirlerin en iyisi)
     --adim N        örnekleme adımı (varsayılan: model ailesine göre)
     --cfg X         istem bağlılığı (varsayılan: model ailesine göre)
     --rotus         oyundaki mevcut görseli girdi al, üstünden yeniden boya
@@ -148,37 +149,53 @@ class Aile:
     negatif: bool
     lisans: str
     oncelik: int  # kendiliğinden seçimde sıra: küçük olan önce
+    # 16 kanallı gizli uzay (FLUX, SD3, Z-Image) için SD3 düğümü. ComfyUI
+    # 4 kanallı boş gizli görüntüyü de düzeltiyor ama resmî şablonlar bunu
+    # kullanıyor; şablonla aynı akış, şablonla aynı sonuç.
+    gizli: str = "EmptyLatentImage"
+    # Akış eşleştirmeli modellerin kaydırması (ModelSamplingAuraFlow).
+    kaydirma: float | None = None
 
 
 AILELER = {
+    # ComfyUI masaüstünün kendi şablonu: ayarlar oradan (8 adım, cfg 1,
+    # res_multistep, kaydırma 3). Turbo, yani cfg 1'de negatif yok.
+    "z-image": Aile(
+        "Z-Image Turbo", 8, 1.0, "res_multistep", "simple", 1024 * 1024, False,
+        "Apache-2.0 — ticari kullanım serbest", 0,
+        gizli="EmptySD3LatentImage", kaydirma=3.0,
+    ),
     "flux-schnell": Aile(
         "FLUX.1 schnell", 4, 1.0, "euler", "simple", 1024 * 1024, False,
-        "Apache-2.0 — ticari kullanım serbest", 0,
+        "Apache-2.0 — ticari kullanım serbest", 1, gizli="EmptySD3LatentImage",
     ),
     "sdxl": Aile(
         "SDXL", 30, 6.0, "dpmpp_2m", "karras", 1024 * 1024, True,
         "SDXL 1.0 tabanı CreativeML Open RAIL++-M (ticari serbest); ince "
-        "ayarlı bir modelse lisansı AYRI, indirdiğin sayfadan doğrula", 1,
+        "ayarlı bir modelse lisansı AYRI, indirdiğin sayfadan doğrula", 2,
     ),
     "sd3": Aile(
         "SD 3.x", 28, 4.5, "euler", "sgm_uniform", 1024 * 1024, True,
         "Stability AI Community License — yıllık geliri 1 milyon doları "
-        "aşmayan için ücretsiz; şartları sayfasından doğrula", 2,
+        "aşmayan için ücretsiz; şartları sayfasından doğrula", 3,
+        gizli="EmptySD3LatentImage",
     ),
     "sd15": Aile(
         "SD 1.5", 30, 7.0, "dpmpp_2m", "karras", 512 * 512, True,
-        "CreativeML Open RAIL-M; ince ayarlı bir modelse lisansı AYRI", 3,
+        "CreativeML Open RAIL-M; ince ayarlı bir modelse lisansı AYRI", 4,
     ),
     "flux-dev": Aile(
         "FLUX.1 dev", 20, 1.0, "euler", "simple", 1024 * 1024, False,
         "FLUX.1 [dev] Non-Commercial License — ticari bir oyunda KULLANMA, "
-        "yerine schnell", 9,
+        "yerine schnell", 9, gizli="EmptySD3LatentImage",
     ),
 }
 
 
 def aile_bul(ckpt: str) -> str:
     k = ckpt.lower()
+    if "z_image" in k or "z-image" in k or "zimage" in k:
+        return "z-image"
     if "flux" in k:
         return "flux-schnell" if "schnell" in k else "flux-dev"
     if "sd3" in k or "sd_3" in k or "stable-diffusion-3" in k:
@@ -186,6 +203,68 @@ def aile_bul(ckpt: str) -> str:
     if "xl" in k or "pony" in k or "illustrious" in k:
         return "sdxl"
     return "sd15"
+
+
+# --- Kurulum: hangi dosyalar yüklenecek ---
+#
+# İki biçim var. Eski modeller TEK dosya (checkpoints/): model, metin
+# kodlayıcı ve VAE içinde. Yeni modeller PARÇALI: difüzyon modeli, metin
+# kodlayıcı ve VAE ayrı klasörlerde ayrı dosyalar. ComfyUI masaüstünün
+# Z-Image Turbo şablonu ikincisi; yalnız tek dosyayı tanıyan bir araç
+# oyuncunun elindeki modeli hiç görmezdi.
+@dataclass(frozen=True)
+class Kurulum:
+    ad: str  # gösterilen ad ve --model değeri (ana dosyanın adı)
+    aile: str
+    ckpt: str | None = None
+    unet: str | None = None
+    metin: str | None = None  # metin kodlayıcı (text_encoders/)
+    metin_turu: str | None = None  # CLIPLoader'ın "type" girdisi
+    vae: str | None = None
+
+
+# Parçalı modellerin tamamlayıcı dosyaları: (metin kodlayıcı adında
+# aranan, CLIPLoader türü, VAE adında aranan). Adlar ComfyUI şablonundaki
+# dosya adları; kullanıcı dosyayı yeniden adlandırdıysa --durum eksik der.
+PARCALI = {
+    "z-image": ("qwen_3_4b", "lumina2", "ae"),
+}
+
+# --akis ComfyUI'ye bağlanmadan yazılıyor; o zaman masaüstü şablonunun
+# kurulumu varsayılıyor, akış sürükleyip bırakınca doğrudan çalışsın.
+VARSAYILAN_KURULUM = Kurulum(
+    "z_image_turbo_bf16.safetensors", "z-image",
+    unet="z_image_turbo_bf16.safetensors", metin="qwen_3_4b.safetensors",
+    metin_turu="lumina2", vae="ae.safetensors",
+)
+
+
+def kurulumlari_bul(c: "Comfy") -> tuple[list[Kurulum], list[str]]:
+    """Kullanılabilir kurulumlar ve eksik parça uyarıları."""
+    hazir = [Kurulum(m, aile_bul(m), ckpt=m) for m in c.modeller("checkpoints")]
+    uyarilar: list[str] = []
+    metinler = c.modeller("text_encoders")
+    vaeler = c.modeller("vae")
+    for unet in c.modeller("diffusion_models"):
+        aile = aile_bul(unet)
+        if aile not in PARCALI:
+            uyarilar.append(f"{unet}: bu araç henüz tanımıyor (diffusion_models/)")
+            continue
+        metin_ara, tur, vae_ara = PARCALI[aile]
+        metin = next((m for m in metinler if metin_ara in m.lower()), None)
+        # VAE adı kısa ("ae") — içinde geçmesi değil, adın kendisi olması
+        # aranıyor; yoksa "sdxl_vae" gibi ilgisiz bir dosya eşleşirdi.
+        vae = next((v for v in vaeler if Path(v).stem.lower() == vae_ara), None)
+        if metin and vae:
+            hazir.append(Kurulum(unet, aile, unet=unet, metin=metin, metin_turu=tur, vae=vae))
+        else:
+            eksik = []
+            if not metin:
+                eksik.append(f"text_encoders/{metin_ara}…")
+            if not vae:
+                eksik.append(f"vae/{vae_ara}.safetensors")
+            uyarilar.append(f"{unet}: eksik parça — {', '.join(eksik)}")
+    return hazir, uyarilar
 
 
 # --- Yardımcı modüller ---
@@ -390,8 +469,12 @@ class Comfy:
         govde = json.dumps(veri).encode()
         return json.loads(self._istek(yol, govde, {"Content-Type": "application/json"}))
 
-    def modeller(self) -> list[str]:
-        return self.json("/models/checkpoints")
+    def modeller(self, klasor: str) -> list[str]:
+        """models/<klasor> içindeki dosyalar (server.py: GET /models/{folder})."""
+        try:
+            return self.json(f"/models/{klasor}")
+        except ComfyHatasi:
+            return []  # klasör tanımsız (eski ComfyUI): o biçimde model yok
 
     def yukle(self, png: bytes, ad: str) -> str:
         """Girdi görselini ComfyUI'nin input/ klasörüne yükler; LoadImage adı döner."""
@@ -509,32 +592,48 @@ def comfy_bul() -> Comfy:
 # --- Akış ---
 #
 # Yalnız ÇEKİRDEK düğümler: özel düğüm kurdurmak, kurulumu kırılgan yapar.
-# Düğüm ve girdi adları ComfyUI kaynağından (nodes.py) doğrulandı.
-#
-# EmptyLatentImage her aile için: FLUX 16 kanallı gizli uzay bekliyor ama
-# ComfyUI boş gizli görüntünün kanal sayısını modele göre kendisi
-# düzeltiyor (comfy/sample.py, fix_empty_latent_channels).
+# Düğüm ve girdi adları ComfyUI kaynağından (nodes.py,
+# comfy_extras/nodes_model_advanced.py, nodes_sd3.py) doğrulandı.
 
 
 def akis_kur(
-    ckpt: str, aile: Aile, hedef: Hedef, gen: int, yuk: int, tohum: int,
+    kurulum: Kurulum, aile: Aile, hedef: Hedef, gen: int, yuk: int, tohum: int,
     adim: int, cfg: float, girdi_adi: str | None, guc: float,
 ) -> dict:
-    a: dict = {
-        "1": {"class_type": "CheckpointLoaderSimple", "inputs": {"ckpt_name": ckpt}},
-        "2": {"class_type": "CLIPTextEncode", "inputs": {"text": hedef.istem, "clip": ["1", 1]}},
-        "3": {
-            "class_type": "CLIPTextEncode",
-            "inputs": {"text": hedef.negatif if aile.negatif else "", "clip": ["1", 1]},
-        },
+    a: dict = {}
+    if kurulum.ckpt:
+        a["1"] = {"class_type": "CheckpointLoaderSimple", "inputs": {"ckpt_name": kurulum.ckpt}}
+        model, clip, vae = ["1", 0], ["1", 1], ["1", 2]
+    else:
+        a["1"] = {
+            "class_type": "UNETLoader",
+            "inputs": {"unet_name": kurulum.unet, "weight_dtype": "default"},
+        }
+        a["12"] = {
+            "class_type": "CLIPLoader",
+            "inputs": {"clip_name": kurulum.metin, "type": kurulum.metin_turu, "device": "default"},
+        }
+        a["13"] = {"class_type": "VAELoader", "inputs": {"vae_name": kurulum.vae}}
+        model, clip, vae = ["1", 0], ["12", 0], ["13", 0]
+    if aile.kaydirma is not None:
+        a["11"] = {
+            "class_type": "ModelSamplingAuraFlow",
+            "inputs": {"model": model, "shift": aile.kaydirma},
+        }
+        model = ["11", 0]
+
+    a["2"] = {"class_type": "CLIPTextEncode", "inputs": {"text": hedef.istem, "clip": clip}}
+    a["3"] = {
+        "class_type": "CLIPTextEncode",
+        "inputs": {"text": hedef.negatif if aile.negatif else "", "clip": clip},
     }
     if girdi_adi:
         a["4"] = {"class_type": "LoadImage", "inputs": {"image": girdi_adi}}
-        a["5"] = {"class_type": "VAEEncode", "inputs": {"pixels": ["4", 0], "vae": ["1", 2]}}
+        a["5"] = {"class_type": "VAEEncode", "inputs": {"pixels": ["4", 0], "vae": vae}}
         gizli = ["5", 0]
     else:
         a["4"] = {
-            "class_type": "EmptyLatentImage",
+            "class_type": aile.gizli,
             "inputs": {"width": gen, "height": yuk, "batch_size": 1},
         }
         gizli = ["4", 0]
@@ -547,13 +646,13 @@ def akis_kur(
             "sampler_name": aile.ornekleyici,
             "scheduler": aile.zamanlayici,
             "denoise": guc if girdi_adi else 1.0,
-            "model": ["1", 0],
+            "model": model,
             "positive": ["2", 0],
             "negative": ["3", 0],
             "latent_image": gizli,
         },
     }
-    a["7"] = {"class_type": "VAEDecode", "inputs": {"samples": ["6", 0], "vae": ["1", 2]}}
+    a["7"] = {"class_type": "VAEDecode", "inputs": {"samples": ["6", 0], "vae": vae}}
     a["8"] = {
         "class_type": "SaveImage",
         "inputs": {"filename_prefix": f"lordlar-cagi/{hedef.anahtar}", "images": ["7", 0]},
@@ -726,27 +825,33 @@ def durum() -> int:
         print(f"  Aygıt: {d.get('name')}  ({gb:.1f} GB)")
     print(f"  Bellek (RAM): {ram:.0f} GB")
 
-    modeller = c.modeller()
-    print(f"\nKurulu modeller ({len(modeller)}):")
-    for m in modeller:
-        a = AILELER[aile_bul(m)]
-        print(f"  {m}\n      {a.ad} · {a.lisans}")
-    if not modeller:
-        print("  (yok — models/checkpoints/ boş)")
+    kurulumlar, uyarilar = kurulumlari_bul(c)
+    print(f"\nKullanılabilir modeller ({len(kurulumlar)}):")
+    for k in kurulumlar:
+        a = AILELER[k.aile]
+        print(f"  {k.ad}\n      {a.ad} · {a.lisans}")
+    if not kurulumlar:
+        print("  (yok)")
+    for u in uyarilar:
+        print(f"  ! {u}")
 
     print("\nÖneri:")
-    aileler = {aile_bul(m) for m in modeller}
-    if "flux-schnell" in aileler or (vram < 12 and "sdxl" in aileler):
-        secilen = min(modeller, key=lambda m: AILELER[aile_bul(m)].oncelik)
+    iyiler = [k for k in kurulumlar if k.aile in ("z-image", "flux-schnell", "sdxl")]
+    if iyiler:
+        secilen = min(iyiler, key=lambda k: AILELER[k.aile].oncelik)
         print(
-            f"  Hazırsın: {secilen} kendiliğinden kullanılacak.\n"
+            f"  Hazırsın: {secilen.ad} kendiliğinden kullanılacak.\n"
             "  İlk deneme: python tools/comfy-uret.py zeminler/pazar"
         )
         return 0
-    if vram >= 12:
+    if vram >= 8:
+        # Masaüstü uygulamasının hazır şablonu; indirme düğmesi şablonun
+        # içinde, dosyaları doğru klasöre kendisi koyuyor.
         print(
-            "  FLUX.1 schnell — bu ekran kartı taşır, en iyi sonuç ve Apache-2.0.\n"
-            "  Hugging Face: Comfy-Org/flux1-schnell -> flux1-schnell-fp8.safetensors (~17 GB)"
+            "  Z-Image Turbo — ComfyUI'de Şablonlar > Z-Image Turbo'yu aç, eksik\n"
+            "  modelleri oradan indir (~20 GB). Apache-2.0, 8 adımda iyi sonuç.\n"
+            "  12 GB altı kartta ComfyUI modelin bir kısmını RAM'e taşır: çalışır,\n"
+            "  yavaşlar."
         )
     elif vram >= 6:
         print(
@@ -766,7 +871,10 @@ def durum() -> int:
         )
     else:
         print("  Ekran kartı görünmüyor (CPU). Yerel üretim pratikte çok yavaş olur.")
-    print("\nİndirdiğin dosyayı ComfyUI/models/checkpoints/ içine koy, ComfyUI'yi yenile.")
+    print(
+        "\nTek dosyalık model ComfyUI/models/checkpoints/ içine gider; parçalı\n"
+        "modelin dosyaları diffusion_models/, text_encoders/ ve vae/ içine."
+    )
     return 0
 
 
@@ -788,25 +896,27 @@ def uret(hedefler: list[Hedef], secenek: dict) -> int:
     akis_modu = secenek["akis"]
     c = None if akis_modu else comfy_bul()
 
-    if secenek["model"]:
-        ckpt = secenek["model"]
-        if c and ckpt not in c.modeller():
-            raise SystemExit(f"'{ckpt}' kurulu değil. Kurulu olanlar: --durum")
-    elif c:
-        kurulu = c.modeller()
-        if not kurulu:
-            raise SystemExit("Kurulu model yok. Hangisini indireceğini --durum söyler.")
-        ckpt = min(kurulu, key=lambda m: AILELER[aile_bul(m)].oncelik)
+    if c:
+        kurulumlar, uyarilar = kurulumlari_bul(c)
+        if secenek["model"]:
+            kurulum = next((k for k in kurulumlar if k.ad == secenek["model"]), None)
+            if kurulum is None:
+                raise SystemExit(f"'{secenek['model']}' kullanılabilir değil. Durum: --durum")
+        elif kurulumlar:
+            kurulum = min(kurulumlar, key=lambda k: AILELER[k.aile].oncelik)
+        else:
+            ek = "".join(f"\n  ! {u}" for u in uyarilar)
+            raise SystemExit(f"Kullanılabilir model yok. Hangisini indireceğini --durum söyler.{ek}")
     else:
-        ckpt = "flux1-schnell-fp8.safetensors"
+        kurulum = VARSAYILAN_KURULUM
 
-    aile = AILELER[aile_bul(ckpt)]
+    aile = AILELER[kurulum.aile]
     adim = secenek["adim"] or aile.adim
     cfg = secenek["cfg"] if secenek["cfg"] is not None else aile.cfg
     if not akis_modu:
-        print(f"Model: {ckpt}  ({aile.ad}, {adim} adım, cfg {cfg})")
+        print(f"Model: {kurulum.ad}  ({aile.ad}, {adim} adım, cfg {cfg})")
         print(f"Lisans: {aile.lisans}")
-        if aile_bul(ckpt) == "flux-dev":
+        if kurulum.aile == "flux-dev":
             print("  !! Bu modelin lisansı ticari kullanımı yasaklıyor. Oyunda kullanma.")
 
     ADAY.mkdir(parents=True, exist_ok=True)
@@ -828,7 +938,7 @@ def uret(hedefler: list[Hedef], secenek: dict) -> int:
                     "Load Image düğümünden görseli kendin seç.",
                     file=sys.stderr,
                 )
-            akis = akis_kur(ckpt, aile, hedef, gen, yuk, kok_tohum, adim, cfg, ad, secenek["guc"])
+            akis = akis_kur(kurulum, aile, hedef, gen, yuk, kok_tohum, adim, cfg, ad, secenek["guc"])
             # ensure_ascii: Windows konsolunda yönlendirme cp1254/cp1252 ile
             # yazıyor; Türkçe karakter olmadığından emin olmak dosyayı her
             # yerde açılır tutuyor.
@@ -847,7 +957,7 @@ def uret(hedefler: list[Hedef], secenek: dict) -> int:
         isler = []
         for i in range(secenek["aday"]):
             tohum = (kok_tohum + i) % 2**32
-            akis = akis_kur(ckpt, aile, hedef, gen, yuk, tohum, adim, cfg, girdi_adi, secenek["guc"])
+            akis = akis_kur(kurulum, aile, hedef, gen, yuk, tohum, adim, cfg, girdi_adi, secenek["guc"])
             try:
                 isler.append((ilk + i, tohum, c.kuyruga(akis)))
             except ComfyHatasi as e:
