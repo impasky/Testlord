@@ -110,13 +110,14 @@ describe('garnizon', () => {
 });
 
 describe('süre', () => {
-  it('grupla ve haritayla uzuyor', () => {
-    expect(akinSuresiSn(ILK, 10)).toBeGreaterThan(akinSuresiSn(ILK, 1));
-    expect(akinSuresiSn(SON, 1)).toBeGreaterThan(akinSuresiSn(ILK, 1));
-  });
-
-  it('ilk grup KISA — akın PvP yürüyüşünden hızlı olmalı', () => {
-    expect(akinSuresiSn(ILK, 1)).toBeLessThanOrEqual(10 * 60);
+  it('her akın bir dakika — harita ve grup fark etmiyor', () => {
+    // Oyuncu kararı: akın oturum içinde tekrar tekrar yapılan bir eylem.
+    for (const h of AKIN_ANAHTARLARI) {
+      for (let g = 1; g <= B.akin.grup_sayisi; g++) {
+        expect(akinSuresiSn(h, g), `${h}/${g}`).toBe(60);
+      }
+    }
+    expect(akinSuresiSn(SON, 10)).toBe(akinSuresiSn(ILK, 1));
   });
 });
 

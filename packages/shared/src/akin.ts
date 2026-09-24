@@ -116,15 +116,15 @@ export function akinGarnizonSayisi(haritaKey: string, grupNo: number): number {
  * değiştiriyor ve arada bir şey oluyor. Akında bölge el değiştirmiyor;
  * iki aşama yapmak oyuncuya iki bekleyiş ve iki bildirim verip hiçbir
  * karar kazandırmazdı.
+ *
+ * Her akın AYNI süre (`sure_sn`, bir dakika). Önce grup, harita gücü ve
+ * şefle uzuyordu (4 dk – ~30 dk); oyuncunun kararı akını oturum içinde
+ * tekrar tekrar yapılan bir eylem yaptı. Parametreler imzada kalıyor:
+ * çağıranlar harita ve grup veriyor, süre bir gün yeniden onlara
+ * bağlanırsa hiçbir çağıran değişmez.
  */
-export function akinSuresiSn(haritaKey: string, grupNo: number): number {
-  const h = akinHaritasi(haritaKey);
-  if (!h || !akinGrubuGecerliMi(grupNo)) return B.akin.sure_taban_sn;
-  const A = B.akin;
-  let sn = A.sure_taban_sn + A.sure_grup_basina_sn * (grupNo - 1);
-  sn *= h.guc_carpani;
-  if (sefMi(grupNo)) sn *= A.sef_sure_carpani;
-  return Math.round(sn);
+export function akinSuresiSn(_haritaKey: string, _grupNo: number): number {
+  return B.akin.sure_sn;
 }
 
 /** Vurulan grubun yeniden dolması: normal 4 saat, şef 12. */

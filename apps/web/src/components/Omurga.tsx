@@ -118,6 +118,15 @@ const BOS_ISLEMLER: OmurgaIslemleri = {
   onBolumeGit: () => {},
 };
 
+/** En ucuz kiralanabilir generale eksik altın; veri yoksa null. */
+function generalEksigi(
+  d: { altin: number; kadro: { sahipMi: boolean; maliyet_altin: number }[] } | undefined,
+): number | null {
+  const alinabilir = (d?.kadro ?? []).filter((x) => !x.sahipMi);
+  if (!d || alinabilir.length === 0) return null;
+  return Math.max(0, Math.min(...alinabilir.map((x) => x.maliyet_altin)) - d.altin);
+}
+
 export function useOmurgaAdimi(
   // Lord henüz yüklenmemiş olabilir: hook'lar erken dönüşten önce
   // çağrılmak zorunda, bu yüzden eksik durumu burada karşılanıyor.
@@ -185,6 +194,7 @@ export function useOmurgaAdimi(
     egitimde: queues.filter((q) => q.kind === 'train'),
     uretimde: queues.filter((q) => q.kind === 'craft'),
     gelistirmeSuruyor: queues.some((q) => q.kind === 'upgrade_region'),
+    generalEksikAltin: generalEksigi(generaller.data),
     generalVar: (generaller.data?.kadro ?? []).some((x) => x.sahipMi),
     yarali: lord.woundedUntil ? new Date(lord.woundedUntil) > new Date() : false,
     yoldaki: yuruyusler.data ?? [],
@@ -255,6 +265,7 @@ export function Omurga({
     egitimde,
     uretimde,
     gelistirmeSuruyor: queues.some((q) => q.kind === 'upgrade_region'),
+    generalEksikAltin: generalEksigi(generaller.data),
     generalVar,
     yarali,
     yoldaki: yuruyusler.data ?? [],
@@ -580,6 +591,11 @@ export function siradakiAdim(g: {
    * aynı düğmeyi gösterip oyuncuya ikinci bir geliştirme başlattırıyordu.
    */
   gelistirmeSuruyor?: boolean;
+  /**
+   * En ucuz kiralanabilir generale kaç altın eksik (0: yetiyor, null:
+   * bilinmiyor). Zorunlu tur generale ancak parası yetince götürüyor.
+   */
+  generalEksikAltin?: number | null;
   /** Hiç araştırma başlatmış ya da bitirmiş mi. */
   arastirmaBasladi: boolean;
   onGit: (s: Sekme) => void;
@@ -746,7 +762,8 @@ export function siradakiAdim(g: {
           toprağın güvende
         </Hap>,
       ],
-      sonraki: 'ilk bölgeni al',
+      // Tur bölge aldırmıyor (`turAdimi`); tur sürerken sıradaki iş ekipman.
+      sonraki: lord.rehberGorundu ? 'ilk bölgeni al' : 'lorduna ekipman kuşan',
     };
   }
 
@@ -785,32 +802,35 @@ export function siradakiAdim(g: {
       dugme: 'Akına git',
       git: () => g.onGit('akin'),
       hedefSekme: 'akin',
-      sonraki: 'ilk bölgeni al',
+      // Tur bölge aldırmıyor (`turAdimi`); tur sürerken sıradaki iş ekipman.
+      sonraki: lord.rehberGorundu ? 'ilk bölgeni al' : 'lorduna ekipman kuşan',
     };
   }
 
   /*
-   * TUR SIRASI: zorunlu rehber sürerken, ilk bölgeden sonra turun kalan
-   * aşamaları SALDIRIDAN ÖNCE.
+   * TUR SIRASI: zorunlu rehber sürerken, ilk AKINDAN sonra turun kalan
+   * aşamaları (`turAdimi`). Aşağıdaki "ordunu kur / saldır" adımları
+   * dünya haritasına götürüyor ve tur sürerken hiç gelmiyor.
    *
-   * Bildirilen hata: "zorunlu eğitimde takılıp kalıyoruz." Tur yedi
-   * aşama sayıyor (ordu → akın → bölge → ekipman → general → geliştir →
-   * araştırma) ve hepsi bitmeden kapanmıyor. Omurga ise ekipmanı ve
-   * ötekileri ancak alınacak bir hedef KALMAYINCA gösteriyordu —
-   * hedeflerin hep bir sonrakisi olduğu için hiç göstermiyordu. Oyuncu
-   * perdenin altında "eğit → saldır" döngüsüne kilitleniyor, bölge
-   * tavanına çarpınca da "Komuta kapasiten yetmiyor" adımında (ışığı
-   * yok) turu bitirmeden kalıyordu. Ölçüm: ışığı izleyen oyuncu üç
-   * bölge aldı, tur yedide üçte kaldı.
+   * Önceki hâli bu bloğu ilk BÖLGEDEN sonraya koyuyordu ve bir düzeltmeydi:
+   * omurga ekipmanı ve ötekileri ancak alınacak hedef kalmayınca
+   * gösteriyordu, tur "eğit → saldır" döngüsüne kilitleniyordu. Artık tur
+   * bölge hiç almıyor (oyuncunun kararı, `turAdimi`); ilk akın turun
+   * savaş dersi.
    *
-   * Tur bitince (`rehberGorundu`) sıra eskisine dönüyor: kıdemli oyuncu
-   * için hedef alınabiliyorken geliştirmeye yollamak oyunun asıl anını
-   * geciktirmek olurdu. Depo adımı burada yok — o bir aşama değil,
-   * turun bitmesini bekleyebilir.
+   * Tur bitince (`rehberGorundu`) sıra eskisine dönüyor.
    */
-  if (!lord.rehberGorundu && lord.regionCount > 0) {
-    const tur = ilkKezAdimi(g, false);
-    if (tur) return tur;
+  if (!lord.rehberGorundu && lord.akinYapti) {
+    return (
+      turAdimi(g) ?? {
+        anahtar: 'akin-devam',
+        baslik: 'Akına devam et',
+        cumle: 'Her akın bir dakika; ganimeti ve ekipmanı sen alırsın.',
+        dugme: 'Akına git',
+        git: () => g.onGit('akin'),
+        hedefSekme: 'akin',
+      }
+    );
   }
 
   // 5. Ordu yok ya da yetmiyor: oyunun somut cevabı var, onu söyle.
@@ -861,7 +881,10 @@ export function siradakiAdim(g: {
       dugme: `Kışlada ${unitName(eksik.birim as UnitType)} eğit`,
       git: () => g.onGit('kisla'),
       hedefSekme: 'kisla',
-      sonraki: `${eYonelme(oneri.name)} saldır`,
+      sonraki:
+        !lord.rehberGorundu && !lord.akinYapti
+          ? 'ilk akınına çık'
+          : `${eYonelme(oneri.name)} saldır`,
     };
   }
 
@@ -888,7 +911,7 @@ export function siradakiAdim(g: {
     };
   }
 
-  const ilkKez = ilkKezAdimi(g, true);
+  const ilkKez = ilkKezAdimi(g);
   if (ilkKez) return ilkKez;
 
   // 9. Döngü kurulmuş: oyuncu artık kendi hedefini seçiyor.
@@ -912,124 +935,182 @@ export function siradakiAdim(g: {
   return null;
 }
 
-/** Bölgenin saatlik gelirini rozetlere çevirir; sıfır olanlar atlanır. */
-/**
- * Oyuncunun HENÜZ HİÇ yapmadığı dört iş: ekipman, general, bölge
- * geliştirme, araştırma (arada depo taşması). İlk uygun olanı döner.
- *
- * İki yerden çağrılıyor ve iki çağrının ayrı sebebi var: omurganın
- * olağan sırasında saldırıdan SONRA (aşağıda), zorunlu tur sürerken ise
- * saldırıdan ÖNCE (`siradakiAdim` içinde, "TUR SIRASI").
+type OmurgaGirdisi = Parameters<typeof siradakiAdim>[0];
+
+/*
+ * "İLK KEZ" adımları: oyuncunun HENÜZ HİÇ yapmadığı işler. Her biri
+ * ayrı bir kurucu, çünkü iki farklı SIRAYLA çağrılıyorlar:
+ * omurganın olağan sırası (`ilkKezAdimi`, saldırıdan sonra) ve zorunlu
+ * turun sırası (`turAdimi`, akından sonra).
  */
-function ilkKezAdimi(g: Parameters<typeof siradakiAdim>[0], depoDahil: boolean): Adim | null {
-  const { lord, uretimde, generalVar } = g;
-  // 7. Bölge var, ekipman yok: lordun savaş katkısı büyütülebilir.
-  if (lord.equippedItems.length === 0 && uretimde.length === 0) {
-    return {
-      anahtar: 'ekipman',
-      baslik: 'Lorduna ekipman kuşan',
-      cumle: 'Ekipman lordun savaş katkısını büyütür; aynı savaştan daha az kayıpla çıkarsın.',
-      rozetler: [
-        <Hap
-          key="katki"
-          ikon={<IkonSaldiri boyut={13} />}
-        >{`şu an ${formatSayi(lord.lordContribution)} katkı`}</Hap>,
-      ],
-      dugme: 'Demirhaneye git',
-      git: () => g.onKapiAc('demirhane'),
-      hedefSekme: 'lord',
-      hedefKapi: 'demirhane',
-      sonraki: generalVar ? 'bölgeni yükselt' : 'general kirala',
-    };
-  }
 
-  // 7b. Depo dolu: üretilen her şey buharlaşıyor.
-  //
-  // Denetimde çıkan çıkmaz sokak buydu: ekranda üç kırmızı "depo dolu"
-  // uyarısı yanıyor ve hiçbirinin altında oyuncunun basabileceği bir şey
-  // yok. Araştırma ağacındaki Ambarlar o uyarının cevabı — omurga artık
-  // oraya yolluyor.
-  //
-  // Generalden ÖNCE, çünkü depo doluyken biriktirilen her saat boşa
-  // gidiyor; general kiralamak beklenebilir, kaynak israfı beklemiyor.
-  if (depoDahil && g.depoDolu) {
-    return {
-      anahtar: 'depo',
-      baslik: 'Deponun taşıyor',
-      cumle:
-        'Depon dolduğu için ürettiğin her şey boşa gidiyor. Ambarlar araştırması depoyu büyütür.',
-      dugme: 'Araştırmaya git',
-      git: () => g.onKapiAc('arastirma'),
-      hedefSekme: 'lord',
-      hedefKapi: 'arastirma',
-      sonraki: 'general kirala',
-    };
-  }
-
-  // 8. General: ordunun tamamına çarpan etkisi.
-  if (!generalVar) {
-    return {
-      anahtar: 'general',
-      baslik: 'General kirala',
-      cumle: 'General bütün ordunu birden güçlendirir — tek bir ekipmandan büyük fark yaratır.',
-      dugme: 'Generallere git',
-      git: () => g.onKapiAc('generaller'),
-      hedefSekme: 'lord',
-      hedefKapi: 'generaller',
-      sonraki: 'bölgeni yükselt',
-    };
-  }
-
-  /*
-   * 8b/8c — İLK KEZ adımları.
-   *
-   * Bu ikisi omurgada yoktu ve bu bir boşluktu: zorunlu rehber omurganın
-   * ÜSTÜNE biniyor, yani omurganın uğramadığı bir mekaniği rehber de
-   * öğretemiyor. Bölge geliştirme ve araştırma, oyuncunun kendi başına
-   * bulması gereken iki büyük sistemdi.
-   *
-   * "İlk kez" olmaları kasıtlı: koşul bir kez yapılınca sonsuza kadar
-   * kapanıyor. Kıdemli oyuncuya her oturumda "bölgeni geliştir" demek
-   * omurgayı bir hatırlatıcıya çevirirdi; omurganın işi SIRADAKİ adımı
-   * söylemek, yapılabilecek her şeyi listelemek değil.
-   *
-   * Saldırıdan SONRA duruyorlar: hedef alınabiliyorken oyuncuyu
-   * geliştirmeye yollamak, oyunun asıl anını geciktirmek olurdu.
-   */
-
-  // 8b. Hiç bölge geliştirmemiş: gelir seviyeyle büyüyor ve bunu kimse söylemiyor.
-  if (g.gelistirilebilirBolge && !g.gelismisBolgeVar && !g.gelistirmeSuruyor) {
-    return {
-      anahtar: 'bolge-gelistir',
-      baslik: 'Bölgeni geliştir',
-      cumle:
-        'Bölgenin seviyesi geliri de savunmayı da büyütür. Yeni toprak almadan da güçlenebilirsin.',
-      dugme: 'Bölgeye git',
-      git: () => g.onHedefeGit(g.gelistirilebilirBolge!),
-      hedefSekme: 'harita',
-      hedefBolge: g.gelistirilebilirBolge,
-      sonraki: 'bir araştırma başlat',
-    };
-  }
-
-  // 8c. Hiç araştırma yapmamış: diyarını şekillendiren tek katman.
-  if (!g.arastirmaBasladi) {
-    return {
-      anahtar: 'arastirma',
-      baslik: 'Bir araştırma başlat',
-      cumle:
-        'Araştırma kalıcıdır ve diyarını senin seçimlerinle şekillendirir — iki lord aynı seviyede aynı olmaz.',
-      dugme: 'Araştırmaya git',
-      git: () => g.onKapiAc('arastirma'),
-      hedefSekme: 'lord',
-      hedefKapi: 'arastirma',
-      sonraki: 'diyarı büyütmeye devam et',
-    };
-  }
-
-  return null;
+// Ekipman yok: lordun savaş katkısı büyütülebilir.
+function ekipmanAdimi(g: OmurgaGirdisi, sonraki: string): Adim | null {
+  const { lord } = g;
+  if (lord.equippedItems.length > 0 || g.uretimde.length > 0) return null;
+  return {
+    anahtar: 'ekipman',
+    baslik: 'Lorduna ekipman kuşan',
+    cumle: 'Ekipman lordun savaş katkısını büyütür; aynı savaştan daha az kayıpla çıkarsın.',
+    rozetler: [
+      <Hap
+        key="katki"
+        ikon={<IkonSaldiri boyut={13} />}
+      >{`şu an ${formatSayi(lord.lordContribution)} katkı`}</Hap>,
+    ],
+    dugme: 'Demirhaneye git',
+    git: () => g.onKapiAc('demirhane'),
+    hedefSekme: 'lord',
+    hedefKapi: 'demirhane',
+    sonraki,
+  };
 }
 
+// Depo dolu: üretilen her şey buharlaşıyor.
+//
+// Denetimde çıkan çıkmaz sokak buydu: ekranda üç kırmızı "depo dolu"
+// uyarısı yanıyor ve hiçbirinin altında oyuncunun basabileceği bir şey
+// yok. Araştırma ağacındaki Ambarlar o uyarının cevabı — omurga artık
+// oraya yolluyor.
+function depoAdimi(g: OmurgaGirdisi): Adim | null {
+  if (!g.depoDolu) return null;
+  return {
+    anahtar: 'depo',
+    baslik: 'Deponun taşıyor',
+    cumle:
+      'Depon dolduğu için ürettiğin her şey boşa gidiyor. Ambarlar araştırması depoyu büyütür.',
+    dugme: 'Araştırmaya git',
+    git: () => g.onKapiAc('arastirma'),
+    hedefSekme: 'lord',
+    hedefKapi: 'arastirma',
+    sonraki: 'general kirala',
+  };
+}
+
+// General: ordunun tamamına çarpan etkisi.
+function generalAdimi(g: OmurgaGirdisi, sonraki: string): Adim | null {
+  if (g.generalVar) return null;
+  return {
+    anahtar: 'general',
+    baslik: 'General kirala',
+    cumle: 'General bütün ordunu birden güçlendirir — tek bir ekipmandan büyük fark yaratır.',
+    dugme: 'Generallere git',
+    git: () => g.onKapiAc('generaller'),
+    hedefSekme: 'lord',
+    hedefKapi: 'generaller',
+    sonraki,
+  };
+}
+
+/*
+ * Bölge geliştirme ve araştırma omurgada yoktu ve bu bir boşluktu:
+ * zorunlu rehber omurganın ÜSTÜNE biniyor, yani omurganın uğramadığı bir
+ * mekaniği rehber de öğretemiyor.
+ *
+ * "İlk kez" olmaları kasıtlı: koşul bir kez yapılınca sonsuza kadar
+ * kapanıyor. Kıdemli oyuncuya her oturumda "bölgeni geliştir" demek
+ * omurgayı bir hatırlatıcıya çevirirdi.
+ */
+
+// Hiç bölge geliştirmemiş: gelir seviyeyle büyüyor ve bunu kimse söylemiyor.
+function gelistirAdimi(g: OmurgaGirdisi): Adim | null {
+  if (!g.gelistirilebilirBolge || g.gelismisBolgeVar || g.gelistirmeSuruyor) return null;
+  return {
+    anahtar: 'bolge-gelistir',
+    baslik: 'Bölgeni geliştir',
+    cumle:
+      'Bölgenin seviyesi geliri de savunmayı da büyütür. Yeni toprak almadan da güçlenebilirsin.',
+    dugme: 'Bölgeye git',
+    git: () => g.onHedefeGit(g.gelistirilebilirBolge!),
+    hedefSekme: 'harita',
+    hedefBolge: g.gelistirilebilirBolge,
+    sonraki: 'bir araştırma başlat',
+  };
+}
+
+// Hiç araştırma yapmamış: diyarını şekillendiren tek katman.
+function arastirmaAdimi(g: OmurgaGirdisi, sonraki: string): Adim | null {
+  if (g.arastirmaBasladi) return null;
+  return {
+    anahtar: 'arastirma',
+    baslik: 'Bir araştırma başlat',
+    cumle:
+      'Araştırma kalıcıdır ve diyarını senin seçimlerinle şekillendirir — iki lord aynı seviyede aynı olmaz.',
+    dugme: 'Araştırmaya git',
+    git: () => g.onKapiAc('arastirma'),
+    hedefSekme: 'lord',
+    hedefKapi: 'arastirma',
+    sonraki,
+  };
+}
+
+/**
+ * Omurganın OLAĞAN sırasında saldırıdan sonra: ekipman, depo, general,
+ * bölge geliştirme, araştırma. Saldırıdan SONRA duruyorlar: hedef
+ * alınabiliyorken oyuncuyu geliştirmeye yollamak, oyunun asıl anını
+ * geciktirmek olurdu. Depo generalden ÖNCE: depo doluyken biriktirilen
+ * her saat boşa gidiyor, general kiralamak beklenebilir.
+ */
+function ilkKezAdimi(g: OmurgaGirdisi): Adim | null {
+  return (
+    ekipmanAdimi(g, g.generalVar ? 'bölgeni yükselt' : 'general kirala') ??
+    depoAdimi(g) ??
+    generalAdimi(g, 'bölgeni yükselt') ??
+    gelistirAdimi(g) ??
+    arastirmaAdimi(g, 'diyarı büyütmeye devam et')
+  );
+}
+
+/**
+ * ZORUNLU TURUN sırası, ilk akından sonra: ekipman → araştırma → general.
+ *
+ * Tur dünya haritasına HİÇ götürmüyor. Oyuncunun kararı: "oyuncu zorunlu
+ * öğreticide direkt dünya haritasından bölge almamalı, akın yapmalı."
+ * Bölge aşaması turdan çıktı, bölge gerektiren geliştirme aşaması da.
+ *
+ * General en sonda ve PARASI YETİYORSA: en ucuz general 5.000 altın, yeni
+ * lord ilk eğitimden sonra ~3.150 altınla kalıyor. Yetmiyorsa adım
+ * "akına devam et" — perdesiz bir öneri. Oyuncuyu perdeyle yedi sekiz
+ * akına zorlamak onu yine kilitlemek olurdu; akın ise bir dakika sürüyor
+ * ve açığı ganimetle kapatıyor.
+ */
+function turAdimi(g: OmurgaGirdisi): Adim | null {
+  const once = ekipmanAdimi(g, 'bir araştırma başlat') ?? arastirmaAdimi(g, 'general kirala');
+  if (once) return once;
+  if (g.generalVar) return null;
+  const eksik = g.generalEksikAltin ?? 0;
+  if (eksik <= 0) return generalAdimi(g, 'diyarı büyüt');
+  const { lord } = g;
+  const rozet = (
+    <Hap key="eksik" ikon={<IkonAltin boyut={13} />} renk="var(--color-kaynak-altin)">
+      {`${formatSayi(eksik)} eksik`}
+    </Hap>
+  );
+  if (lord.usedSlots === 0) {
+    return {
+      anahtar: 'akin-devam',
+      baslik: 'Akın için asker yazdır',
+      cumle: 'Generale altının yetmiyor; açığı akın ganimeti kapatır. Önce ordun olmalı.',
+      rozetler: [rozet],
+      dugme: 'Kışlaya git',
+      git: () => g.onGit('kisla'),
+      hedefSekme: 'kisla',
+      sonraki: 'akına çık',
+    };
+  }
+  return {
+    anahtar: 'akin-devam',
+    baslik: 'Akına devam et',
+    cumle: 'Generale altının yetmiyor. Her akın bir dakika; ganimeti ve ekipmanı sen alırsın.',
+    rozetler: [rozet],
+    dugme: 'Akına git',
+    git: () => g.onGit('akin'),
+    hedefSekme: 'akin',
+    sonraki: 'general kirala',
+  };
+}
+
+/** Bölgenin saatlik gelirini rozetlere çevirir; sıfır olanlar atlanır. */
 function gelirRozetleri(hedef: HedefOnerisiDto): ReactNode[] {
   const g = hedef.saatlikGelir;
   return (

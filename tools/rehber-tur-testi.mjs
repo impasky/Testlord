@@ -19,6 +19,8 @@
  *  - eğitim kuyruktayken ışık aynı "eğit"e bastırmaya devam ediyordu,
  *  - panelde iş bitince ışık sönüp oyuncuyu içeride bırakıyordu,
  *  - Generaller'de yeni oyuncunun alamayacağı generali gösteriyordu,
+ *  - tur oyuncuyu dünya haritasına saldırtıyordu (oyuncu kararı: tur
+ *    bölge aldırmaz, akın yaptırır),
  *  - paneldeki düğme ekranın kenarında yarım kalıyor, kaydırılmıyordu.
  *
  * SADECE GELİŞTİRME. node tools/rehber-tur-testi.mjs
@@ -161,17 +163,15 @@ for (let t = 0; t < 150 && !kilit; t++) {
 
 if (kilit) await page.screenshot({ path: '/tmp/rehber-tur-kilit.png' });
 kontrol('Tur hiçbir yerde kilitlenmedi', kilit === null, kilit ?? `${basilan.length} dokunuş`);
-kontrol('Tur BİTTİ (yedi aşama)', turBitti);
+kontrol('Tur BİTTİ (beş aşama)', turBitti);
 
 // Her aşamanın İŞ düğmesine ışık gerçekten götürdü mü.
 const beklenen = {
   'asker eğitimi': ['kisla-egit'],
   akın: ['akina-cik'],
-  'ilk bölge': ['harita-saldir'],
   ekipman: ['demirhane-kusan'],
-  general: ['general-kirala'],
-  'bölge geliştirme': ['bolge-yukselt'],
   araştırma: ['arastirma-baslat'],
+  general: ['general-kirala'],
 };
 for (const [asama, isaretler] of Object.entries(beklenen)) {
   kontrol(
@@ -184,6 +184,19 @@ kontrol(
   'Işık hiçbir düğmeyi arka arkaya iki kez göstermedi (boşa bastırma yok)',
   basilan.every((x, i) => i === 0 || x !== basilan[i - 1] || x === 'kapi-kapat'),
   basilan.join(' → '),
+);
+// Oyuncunun kararı: zorunlu tur dünya haritasından bölge aldırmıyor.
+const haritaIsaretleri = ['harita-hepsi', 'harita-saldir', 'bolge-yukselt'];
+kontrol(
+  'Tur dünya haritasına götürmedi (bölge saldırısı, bölge geliştirme yok)',
+  !basilan.some((x) => haritaIsaretleri.includes(x)),
+  basilan.filter((x) => haritaIsaretleri.includes(x)).join(', ') || 'yok',
+);
+const lordSon = await ben();
+kontrol(
+  'Tur bittiğinde oyuncunun hiç bölgesi yok',
+  lordSon?.regionCount === 0,
+  `${lordSon?.regionCount} bölge`,
 );
 kontrol('Konsolda hata yok', konsol.length === 0, konsol.slice(0, 2).join(' | '));
 

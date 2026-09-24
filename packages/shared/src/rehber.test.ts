@@ -61,10 +61,8 @@ describe('rehberin sözü', () => {
 const yeniLord: RehberDurumu = {
   orduVar: false,
   akinYapti: false,
-  bolgeSayisi: 0,
   kusanilanEkipman: 0,
   generalVar: false,
-  gelismisBolgeVar: false,
   arastirmaBasladi: false,
 };
 
@@ -72,10 +70,8 @@ const yeniLord: RehberDurumu = {
 const bitiren: RehberDurumu = {
   orduVar: true,
   akinYapti: true,
-  bolgeSayisi: 1,
   kusanilanEkipman: 1,
   generalVar: true,
-  gelismisBolgeVar: true,
   arastirmaBasladi: true,
 };
 
@@ -88,12 +84,20 @@ describe('rehberin kapsadığı aşamalar', () => {
 
   it('oyunun ana mekaniklerini kapsıyor', () => {
     // Eskiden tek aşama vardı (ilk bölge) ve tur oyunun altıda birini
-    // gösterip bitiyordu. Dizilim saldırı aşamasının içinde öğretiliyor,
-    // o yüzden ayrı bir aşama değil.
+    // gösterip bitiyordu. Dizilim akının içinde öğretiliyor, o yüzden
+    // ayrı bir aşama değil.
     const anahtarlar = REHBER_ASAMALARI.map((a) => a.key);
-    for (const beklenen of ['ordu', 'bolge', 'ekipman', 'general', 'gelistir', 'arastirma']) {
+    for (const beklenen of ['ordu', 'akin', 'ekipman', 'arastirma', 'general']) {
       expect(anahtarlar).toContain(beklenen);
     }
+  });
+
+  it('tur dünya haritasına GÖTÜRMÜYOR: bölge almak ve geliştirmek aşama değil', () => {
+    // Oyuncunun kararı: zorunlu turda bölge alınmıyor, akın yapılıyor.
+    const adimlar = REHBER_ASAMALARI.map((a) => a.adim);
+    expect(adimlar).not.toContain('saldir');
+    expect(adimlar).not.toContain('bolge-gelistir');
+    expect(adimlar.indexOf('akin')).toBeLessThan(adimlar.indexOf('ekipman'));
   });
 
   it('yeni lordda hiçbir aşama bitmemiş', () => {
@@ -107,7 +111,6 @@ describe('rehberin kapsadığı aşamalar', () => {
       ['orduVar', 'ordu'],
       ['kusanilanEkipman', 'ekipman'],
       ['generalVar', 'general'],
-      ['gelismisBolgeVar', 'gelistir'],
       ['arastirmaBasladi', 'arastirma'],
     ];
     for (const [alan, asama] of tekil) {
@@ -115,8 +118,8 @@ describe('rehberin kapsadığı aşamalar', () => {
       const biten = rehberAsamaDurumu(durum).filter((a) => a.bitti);
       expect(biten.map((a) => a.key)).toEqual([asama]);
     }
-    const bolgeli = rehberAsamaDurumu({ ...yeniLord, bolgeSayisi: 1 }).filter((a) => a.bitti);
-    expect(bolgeli.map((a) => a.key)).toEqual(['bolge']);
+    const akinli = rehberAsamaDurumu({ ...yeniLord, akinYapti: true }).filter((a) => a.bitti);
+    expect(akinli.map((a) => a.key)).toEqual(['akin']);
   });
 });
 
@@ -129,8 +132,8 @@ describe('rehber ne zaman susar', () => {
    * Eskiden ilk bölge alınınca susuyordu ve oyunun geri kalanı oyuncunun
    * kendi başına bulmasına kalıyordu — bulunmuyordu.
    */
-  it('ilk bölge alınınca SUSMUYOR: tur daha bitmedi', () => {
-    expect(rehberGorunsunMu({ ...yeniLord, orduVar: true, bolgeSayisi: 1 }, false)).toBe(true);
+  it('ilk akından sonra SUSMUYOR: tur daha bitmedi', () => {
+    expect(rehberGorunsunMu({ ...yeniLord, orduVar: true, akinYapti: true }, false)).toBe(true);
   });
 
   it('bütün aşamalar bitince susar', () => {

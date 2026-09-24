@@ -164,15 +164,9 @@ describe('omurga — zorunlu turun her aşamasına uğruyor', () => {
       lord: lord({ regionCount: 0, equippedItems: [], akinYapti: false, usedSlots: 20 }),
       oneri: alinabilirHedef,
     },
-    // Akın yapılmış, ordu yetiyor: sıra bölgeye geldi.
-    bolge: {
-      lord: lord({ regionCount: 0, equippedItems: [], akinYapti: true }),
-      oneri: alinabilirHedef,
-    },
     // Bölge var, hedef yok, ekipman yok.
     ekipman: { lord: lord({ equippedItems: [] }) },
     general: { generalVar: false },
-    gelistir: { gelistirilebilirBolge: 7, gelismisBolgeVar: false, arastirmaBasladi: false },
     arastirma: { gelismisBolgeVar: true, arastirmaBasladi: false },
   };
 
@@ -214,20 +208,58 @@ describe('omurga — tur sürerken', () => {
   const turda = (ek: Record<string, unknown> = {}) =>
     lord({ rehberGorundu: false, equippedItems: [], ...ek });
 
-  it('ilk bölgeden sonra turun aşamaları saldırıdan ÖNCE geliyor', () => {
+  it('ilk akından sonra tur sırası: ekipman → araştırma → general', () => {
     // Önce: hedef hep bir sonrakiydi, ekipman adımı hiç gelmiyordu.
     expect(siradakiAdim(girdi({ lord: turda(), oneri: hedef, generalVar: false }))?.anahtar).toBe(
       'ekipman',
     );
+    const kusanmis = turda({ equippedItems: [{ slot: 'silah' }] });
+    expect(
+      siradakiAdim(girdi({ lord: kusanmis, oneri: yetmeyen, generalVar: false }))?.anahtar,
+    ).toBe('arastirma');
     expect(
       siradakiAdim(
         girdi({
-          lord: turda({ equippedItems: [{ slot: 'silah' }] }),
-          oneri: yetmeyen,
+          lord: kusanmis,
+          oneri: hedef,
           generalVar: false,
+          arastirmaBasladi: true,
+          generalEksikAltin: 0,
         }),
       )?.anahtar,
     ).toBe('general');
+  });
+
+  it('tur sürerken dünya haritasına GÖTÜRMÜYOR: bölge alınabilir olsa da', () => {
+    // Oyuncunun kararı: zorunlu turda bölge alınmıyor, akın yapılıyor.
+    const lordu = turda({ equippedItems: [{ slot: 'silah' }], regionCount: 0 });
+    for (const oneri of [hedef, yetmeyen]) {
+      const adim = siradakiAdim(
+        girdi({
+          lord: lordu,
+          oneri,
+          generalVar: false,
+          arastirmaBasladi: true,
+          generalEksikAltin: 2000,
+        }),
+      );
+      expect(adim?.anahtar).toBe('akin-devam');
+      expect(adim?.hedefSekme).toBe('akin');
+    }
+  });
+
+  it('generale para yetmiyorsa ve ordu yoksa: önce asker, sonra akın', () => {
+    const adim = siradakiAdim(
+      girdi({
+        lord: turda({ equippedItems: [{ slot: 'silah' }], usedSlots: 0 }),
+        oneri: yetmeyen,
+        generalVar: false,
+        arastirmaBasladi: true,
+        generalEksikAltin: 2000,
+      }),
+    );
+    expect(adim?.anahtar).toBe('akin-devam');
+    expect(adim?.hedefSekme).toBe('kisla');
   });
 
   it('tur bitince sıra eskisine dönüyor: hedef varken saldır', () => {
@@ -236,10 +268,11 @@ describe('omurga — tur sürerken', () => {
     );
   });
 
-  it('ilk bölgeden ÖNCE tur sırası devreye girmiyor', () => {
-    expect(siradakiAdim(girdi({ lord: turda({ regionCount: 0 }), oneri: hedef }))?.anahtar).toBe(
-      'saldir',
-    );
+  it('ilk akından ÖNCE akına yolluyor, bölgeye değil', () => {
+    expect(
+      siradakiAdim(girdi({ lord: turda({ regionCount: 0, akinYapti: false }), oneri: hedef }))
+        ?.anahtar,
+    ).toBe('akin');
   });
 
   it('eğitim sürerken ordusu yetmeyen BEKLİYOR — "eğit"e ikinci kez bastırılmıyor', () => {
@@ -252,8 +285,9 @@ describe('omurga — tur sürerken', () => {
   });
 
   it('geliştirme sürerken geliştirme adımı tekrar gelmiyor', () => {
+    // Olağan sıra (tur bitmiş lord): bölge geliştirme turun aşaması değil.
     const ortak = {
-      lord: turda({ equippedItems: [{ slot: 'silah' }] }),
+      lord: lord(),
       gelistirilebilirBolge: 7,
       gelismisBolgeVar: false,
       arastirmaBasladi: false,

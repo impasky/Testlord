@@ -18,10 +18,8 @@ import { api, type LordState } from './api/client';
 const BOS: RehberDurumu = {
   orduVar: false,
   akinYapti: false,
-  bolgeSayisi: 0,
   kusanilanEkipman: 0,
   generalVar: false,
-  gelismisBolgeVar: false,
   arastirmaBasladi: false,
 };
 
@@ -50,13 +48,10 @@ export function useRehberDurumu(lord: LordState | undefined): RehberDurumu {
     // kaybeden kıdemli lord kendini "ilk akınına çık" aşamasında
     // bulmasın.
     akinYapti: lord.akinYapti,
-    bolgeSayisi: lord.regionCount,
     kusanilanEkipman: lord.equippedItems.length,
     // Sahiplik ölçütü, sahada olma ölçütü değil: dinlenen general de
     // kiralanmış generaldir. Omurga da aynı ölçüte bakıyor.
     generalVar: (generaller.data?.kadro ?? []).some((g) => g.sahipMi),
-    // Taht Kalesi hariç en yüksek bölge seviyesi — /me içinde hazır.
-    gelismisBolgeVar: lord.basarimOlcutleri.en_yuksek_bolge_seviyesi > 1,
     // "Başlamış" sayılıyorsa: ya biri bitmiş ya biri sürüyor.
     arastirmaBasladi:
       (arastirma.data?.ilerleme.biten ?? 0) > 0 || (arastirma.data?.surenler?.length ?? 0) > 0,

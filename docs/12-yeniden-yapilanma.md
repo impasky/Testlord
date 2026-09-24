@@ -543,8 +543,14 @@ garnizonu ağır, ödülü büyük, yenilenmesi uzun.
 - **Tek aşama**: gidiş, savaş ve dönüş tek `arriveAt`. PvP iki aşamalı
   çünkü bölge el değiştiriyor; akında değişmiyor ve iki bekleyiş
   vermek hiçbir karar kazandırmazdı.
-- Vurulan grup **yenilenme süresi** sonunda geri döner (normal 4 saat,
-  şef 12 saat). O sürede hedef gri durur ama **görünür kalır**.
+- **Her akın bir dakika** (`akin.sure_sn`), harita ve grup fark etmez.
+  Önce grupla, harita gücüyle ve şefte uzuyordu (4 dk – ~30 dk). Oyuncu
+  kararı: "oyuncuyu sürekli oyunda tutabilmeliyiz" — akın bir bekleyiş
+  değil, oturum içinde tekrar tekrar yapılan bir eylem. Ekonomiyi
+  sınırlayan süre değil yenilenme: her grup günde yine en çok üç kez
+  vurulabiliyor, günlük tavan değişmedi.
+- Vurulan grup **yenilenme süresi** sonunda geri döner (normal 8 saat,
+  şef 24 saat). O sürede hedef gri durur ama **görünür kalır**.
 - Ödül: kaynak **kesin**, ekipman **şansa bağlı**. Zar akının
   tohumundan atılıyor — aynı akın iki kez çözülürse aynı sonucu
   veriyor, yoksa rapor ile envanter bir gün ayrışırdı.
@@ -636,6 +642,27 @@ ilk KAZANILAN akında konuyor ve bir daha dönmüyor.
 Sahadayken ayrı bir bekleme adımı var (`akin-yolda`), tıpkı
 `ordu-yolda` gibi: olmasaydı omurga oyuncuyu zaten çıktığı akına tekrar
 yollar, rehber ışığı da onu Akın sekmesinde kilitlerdi.
+
+### 8.1b Zorunlu tur bölge aldırmıyor
+
+Oyuncu kararı: "oyuncu zorunlu öğreticide direkt dünya haritasından bölge
+almamalı, akın yapmalı." Turun savaş dersi artık yalnız akın; §8.1'in
+merhameti turun tamamına yayıldı. Aşamalar: **ordu → akın → ekipman →
+araştırma → general** (`REHBER_ASAMALARI`). "İlk bölgeni al" çıktı;
+bölge gerektiren "Bölgeni geliştir" de onunla gitti.
+
+Omurga tur sürerken ilk akından sonra `turAdimi`'na geçiyor ve "ordunu
+kur / saldır" (dünya haritası) adımlarına hiç inmiyor. General en sonda:
+en ucuz general 5.000 altın, yeni lord ilk eğitimden sonra ~3.150 altınla
+kalıyor ve ilk haritanın on grubunun TAMAMI 5.231 altın veriyor. Parası
+yetmiyorsa adım `akin-devam` ("Akına devam et · X eksik") — perdesiz bir
+öneri, çünkü oyuncuyu perdeyle yedi sekiz akına zorlamak onu yine
+kilitlemek olurdu. Ordusu kalmadıysa aynı adım önce kışlaya götürüyor.
+
+Tur bitince (`rehberGorundu`) omurganın olağan sırası döner ve dünya
+haritası açılır. Ölçüm (`rehber-tur-testi`): tur 20 dokunuşta bitiyor,
+ışık dünya haritasının hiçbir düğmesini göstermiyor, tur bittiğinde
+oyuncunun bölgesi yok.
 
 ### 8.2 Rehber ışığı zinciri: iki tuzak
 

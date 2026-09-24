@@ -86,12 +86,15 @@ export function rehberSozleri(): RehberSozu[] {
       soz: 'Ordu büyüdükçe komuta gerekir. Liderlik statın kaç asker taşıyabileceğini söyler.',
     },
     {
-      // "Bir bölgen oldu" cümlesi artık doğru değil: toprak medeniyetin,
-      // pay senin (docs/16 §6). Kâhya bunu ilk fethin hemen ardından
-      // söylüyor — oyuncunun ordusunun neden orada kaldığını ve gelirin
-      // nereden geldiğini öğreneceği tek an bu.
+      // Tur artık bölge aldırmıyor: ekipman adımı ilk AKINDAN sonra
+      // geliyor. Eski cümle ("İlk toprağını medeniyetine kattın") o yüzden
+      // yanlış bir anı anlatıyordu.
       adim: 'ekipman',
-      soz: 'İlk toprağını medeniyetine kattın; ordun orada kaldı ve payın o garnizondan geliyor. Demirhanede kuşanacağın her parça, savaşa senin katkını büyütür.',
+      soz: 'İlk akından döndük lordum. Demirhanede kuşanacağın her parça, savaşa senin katkını büyütür — aynı orduyla daha az kayıp verirsin.',
+    },
+    {
+      adim: 'akin-devam',
+      soz: 'Kesemiz generale yetmiyor lordum. Birkaç akın daha: her biri bir dakika sürer, ganimeti de biz alırız.',
     },
     {
       adim: 'general',
@@ -159,17 +162,23 @@ export interface RehberAsamasi {
   adim: string;
 }
 
+/*
+ * Tur DÜNYA HARİTASINA GÖTÜRMÜYOR. Oyuncunun kararı: "oyuncu zorunlu
+ * öğreticide direkt dünya haritasından bölge almamalı, akın yapmalı."
+ * "İlk bölgeni al" aşaması çıktı; bölge gerektiren "Bölgeni geliştir"
+ * de onunla gitti. Turun savaş dersi akın: kimsenin toprağını almadan,
+ * bir dakikada, ganimetle (docs/12 §8).
+ *
+ * General en sonda: en ucuz general 5.000 altın ve yeni lord ilk
+ * eğitimden sonra bunun altında kalıyor. Arada akın ganimeti açığı
+ * kapatıyor (omurga "akına devam et" diyor, perdesiz).
+ */
 export const REHBER_ASAMALARI: RehberAsamasi[] = [
   { key: 'ordu', ad: 'Ordunu kur', adim: 'ordu-kur' },
-  // Akın, bölgeden ÖNCE: ilk savaş kimsenin toprağını almadan
-  // öğrenilmeli. Yeni oyuncunun ilk yenilgisi bir komşuyla husumet
-  // değil, bir kamptan dönen yaralılar olsun (docs/12 §8).
   { key: 'akin', ad: 'İlk akınına çık', adim: 'akin' },
-  { key: 'bolge', ad: 'İlk bölgeni al', adim: 'saldir' },
   { key: 'ekipman', ad: 'Ekipman kuşan', adim: 'ekipman' },
-  { key: 'general', ad: 'General kirala', adim: 'general' },
-  { key: 'gelistir', ad: 'Bölgeni geliştir', adim: 'bolge-gelistir' },
   { key: 'arastirma', ad: 'Araştırma başlat', adim: 'arastirma' },
+  { key: 'general', ad: 'General kirala', adim: 'general' },
 ];
 
 /** Rehberin bitip bitmediğini belirleyen oyun durumu. */
@@ -178,11 +187,8 @@ export interface RehberDurumu {
   orduVar: boolean;
   /** İlk akınını kazandı mı (`Lord.ilkAkinAt` damgası). */
   akinYapti: boolean;
-  bolgeSayisi: number;
   kusanilanEkipman: number;
   generalVar: boolean;
-  /** Herhangi bir bölgesi 1. seviyenin üstünde mi. */
-  gelismisBolgeVar: boolean;
   /** Bir araştırma bitmiş ya da sürüyor mu. */
   arastirmaBasladi: boolean;
 }
@@ -192,10 +198,8 @@ export function rehberAsamaDurumu(d: RehberDurumu): { key: string; ad: string; b
   const bitti: Record<string, boolean> = {
     ordu: d.orduVar,
     akin: d.akinYapti,
-    bolge: d.bolgeSayisi > 0,
     ekipman: d.kusanilanEkipman > 0,
     general: d.generalVar,
-    gelistir: d.gelismisBolgeVar,
     arastirma: d.arastirmaBasladi,
   };
   return REHBER_ASAMALARI.map((a) => ({ ...a, bitti: bitti[a.key] === true }));
