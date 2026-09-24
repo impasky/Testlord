@@ -9,6 +9,7 @@ import type { LordState } from '../api/client';
 import {
   IkonAltin,
   IkonDemir,
+  IkonElmas,
   IkonErzak,
   IkonNavAkin,
   IkonNavHarita,
@@ -332,6 +333,19 @@ export function MobilKabuk({
                 <IkonSohret boyut={13} />
               </span>
               <span className="tabular">{kisaSayi(lord.fame)}</span>
+            </div>
+            {/* Elmas: oyuncunun isteği ("üst headere elmas da ekle"). Hastanede
+                taburcu için harcanıyor; kesede ne olduğu harcanacağı ekrana
+                gitmeden görünmeli. */}
+            <div
+              className="flex shrink-0 items-center gap-1 text-[11px] text-solgun"
+              title="Elmas"
+              data-ust-elmas
+            >
+              <span style={{ color: 'var(--color-elmas)' }}>
+                <IkonElmas boyut={13} />
+              </span>
+              <span className="tabular">{kisaSayi(lord.elmas ?? 0)}</span>
             </div>
             <button
               onClick={onCikis}

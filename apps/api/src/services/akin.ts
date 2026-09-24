@@ -13,6 +13,7 @@
  * olmalı.
  */
 import {
+  B,
   UNIT_TYPES,
   akinEkipmanSansi,
   akinGarnizonu,
@@ -110,6 +111,8 @@ export async function resolveAkin(akinId: string): Promise<boolean> {
         // Akın TOPRAK VERMEZ (docs/12 §6): burası kaynak ve ekipman
         // kapısı. Fetih açık olsaydı PvP'nin tek sebebi kalmazdı.
         canCapture: false,
+        // Akında asker ÖLMÜYOR (oyuncu kararı): bütün kayıp yaralı döner.
+        saldiranYaraliOrani: B.akin.yarali_donus,
       });
 
       const kazanildi = sonuc.winner === 'attacker';

@@ -7,7 +7,7 @@
  * bozulabilecek şeyler; testler o gün patlasın diye burada.
  */
 import { describe, expect, it } from 'vitest';
-import { AKIN_HARITALARI, B, unit } from './balance.js';
+import { AKIN_HARITALARI, B } from './balance.js';
 import { simulateBattle } from './combat.js';
 import { varsayilanDizilim } from './duzen.js';
 import { altinKarsiligi } from './odul.js';
@@ -179,19 +179,15 @@ describe('denge', () => {
     }
   });
 
-  it('sınırsız normal grup SAĞMAL DEĞİL: ezici orduyla bile ölen asker ödülden pahalı', () => {
+  it('akında ÖLÜM YOK: kaybın tamamı yaralı döner, ama her akın hastaneye birini yollar', () => {
     /*
-     * Akından sınırsız kaynak çıkması toprak tutmanın sebebini yok eder.
-     * Eskiden bunu yenilenme süresi tutuyordu (8 saat: grup günde üç
-     * kez). Oyuncunun kararıyla normal grup artık hiç beklemiyor; aynı
-     * sözü tutan şey KAYIP. Garnizonun iki ve sekiz katı orduyla, beş
-     * haritanın bütün normal gruplarında ölen askerin bedeli kaynak
-     * ödülünü aşmalı — aşmazsa en kolay grup bir musluk olur.
-     *
-     * Eski ölçüt "akın kaybını ÖDESİN"di ve %5 kayıp varsayıyordu; motor
-     * gerçekte %10-25 kaybettiriyor, yani söz hiç tutmamıştı. Oyuncunun
-     * ödülü düşürme kararıyla (%20) açık açık bırakıldı: akının kaynağı
-     * kaybın bir KISMINI karşılar, kazancı XP ve ekipman.
+     * Oyuncunun kararı: "akında asker ölmesin, yaralı sayısı artsın."
+     * Normal gruplar da sınırsız; akının freni artık tamamen ZAMAN —
+     * hastane (en az on dakika) ve eş zamanlı akın sınırı. Bu sınama o
+     * frenin var olduğunu tutuyor: garnizonun iki ve sekiz katı orduyla,
+     * beş haritanın bütün normal gruplarında kazanılan akın kimseyi
+     * öldürmüyor ama en az bir askeri hastaneye yolluyor. Ezici orduyla
+     * sıfır yaralı çıksaydı akın bedava bir musluk olurdu.
      */
     const taraf = (units: Record<string, number>, savunan: boolean) => ({
       units,
@@ -203,28 +199,66 @@ describe('denge', () => {
       fortressBonus: 0,
       isDefender: savunan,
     });
-    const orduDegeri = (a: Record<string, number | undefined>) =>
-      UNIT_TYPES.reduce((t, u) => t + (a[u] ?? 0) * altinKarsiligi(unit(u).maliyet), 0);
+    const say = (a: Record<string, number | undefined>) =>
+      UNIT_TYPES.reduce((t, u) => t + (a[u] ?? 0), 0);
+    expect(B.akin.yarali_donus).toBe(1);
     for (const kat of [2, 8]) {
       for (const h of AKIN_ANAHTARLARI) {
         for (let g = 1; g < B.akin.grup_sayisi; g++) {
           const garnizon = akinGarnizonu(h, g);
           const ordu: Record<string, number> = {};
           for (const u of UNIT_TYPES) if (garnizon[u]) ordu[u] = garnizon[u]! * kat;
-          const r = simulateBattle(taraf(ordu, false), taraf(garnizon, true), `sagmal-${h}-${g}`, {
+          const r = simulateBattle(taraf(ordu, false), taraf(garnizon, true), `olumsuz-${h}-${g}`, {
             defenderStore: { altin: 0, demir: 0, erzak: 0 },
             attackerCunning: 0,
             canCapture: false,
+            saldiranYaraliOrani: B.akin.yarali_donus,
           });
-          const olu = orduDegeri(r.attackerLosses);
-          const odul = deger(akinOdulu(h, g));
-          expect(r.winner, `${h} ${g}. grup, ${kat} kat`).toBe('attacker');
-          expect(olu, `${h} ${g}. grup, ${kat} kat`).toBeGreaterThan(odul);
-          // Ama ödül bir SÜS de değil: kaybın anlamlı bir kısmını karşılıyor.
-          expect(odul, `${h} ${g}. grup, ${kat} kat`).toBeGreaterThan(olu * 0.05);
+          const ad = `${h} ${g}. grup, ${kat} kat`;
+          expect(r.winner, ad).toBe('attacker');
+          expect(say(r.attackerLosses), ad).toBe(0);
+          expect(say(r.yaraliDonen.saldiran), ad).toBeGreaterThan(0);
+          // Giden = dönen: kimse yolda kalmıyor, yaralılar dönenlerin içinde.
+          expect(say(r.attackerSurvivors), ad).toBe(say(ordu));
         }
       }
     }
+  });
+
+  it('yenilgide de ölüm yok: ordu yaralı olarak döner', () => {
+    const garnizon = akinGarnizonu(SON, 10);
+    const r = simulateBattle(
+      {
+        units: { milis: 5 },
+        duzen: { dizilim: varsayilanDizilim({ milis: 5 }), taktik: null },
+        gearBonus: { saldiri: 0, savunma: 0, can: 0 },
+        generalBonus: bosGeneralBonus(),
+        lordContribution: 0,
+        leadership: 0,
+        fortressBonus: 0,
+        isDefender: false,
+      },
+      {
+        units: garnizon,
+        duzen: { dizilim: varsayilanDizilim(garnizon), taktik: null },
+        gearBonus: { saldiri: 0, savunma: 0, can: 0 },
+        generalBonus: bosGeneralBonus(),
+        lordContribution: 0,
+        leadership: 0,
+        fortressBonus: 0,
+        isDefender: true,
+      },
+      'olumsuz-yenilgi',
+      {
+        defenderStore: { altin: 0, demir: 0, erzak: 0 },
+        attackerCunning: 0,
+        canCapture: false,
+        saldiranYaraliOrani: B.akin.yarali_donus,
+      },
+    );
+    expect(r.winner).toBe('defender');
+    expect(r.attackerLosses).toEqual({});
+    expect(r.yaraliDonen.saldiran.milis ?? 0).toBeGreaterThan(0);
   });
 });
 

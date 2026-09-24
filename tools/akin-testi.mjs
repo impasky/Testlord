@@ -122,6 +122,11 @@ kontrol(
 );
 kontrol('Önizleme karşı garnizonu gösteriyor', orduSayisi(onizleme.garnizon) > 0);
 kontrol('Önizleme süreyi söylüyor', onizleme.sureSn > 0, `${Math.round(onizleme.sureSn / 60)} dk`);
+kontrol(
+  'Önizleme ölüm göstermiyor, yaralıyı söylüyor',
+  orduSayisi(onizleme.tahminiKayip) === 0 && typeof onizleme.tahminiYarali === 'object',
+  `${orduSayisi(onizleme.tahminiYarali)} tahmini yaralı`,
+);
 
 const bosRed = await post('/akin/onizleme', { haritaKey: ilk.key, grupNo: 1, army: {} });
 kontrol('Boş orduyla önizleme REDDEDİLİYOR', bosRed.code === 'ORDU_BOS', bosRed.error ?? '');
@@ -175,12 +180,20 @@ kontrol(
   orduSayisi(evdeDonus) > orduSayisi(evdeSefer),
   `${orduSayisi(evdeSefer)} -> ${orduSayisi(evdeDonus)}`,
 );
+// Oyuncunun kararı: "akında asker ölmesin, yaralı sayısı artsın." Savaş
+// yine gerçek (kayıp var) ama kaybın tamamı hastaneye yatıyor.
 kontrol(
-  'Kayıp verildi — savaş gerçek',
-  orduSayisi(evdeDonus) + orduSayisi(meSonra.lord.hastane ?? {}) < orduSayisi(ordu),
-  `giden ${orduSayisi(ordu)}, dönen ${orduSayisi(evdeDonus)}, hastanede ${orduSayisi(
+  'Akında asker ÖLMEDİ — giden = evde + hastanede',
+  orduSayisi(evdeDonus) - orduSayisi(evdeSefer) + orduSayisi(meSonra.lord.hastane ?? {}) ===
+    orduSayisi(ordu),
+  `giden ${orduSayisi(ordu)}, dönen ${orduSayisi(evdeDonus) - orduSayisi(evdeSefer)}, hastanede ${orduSayisi(
     meSonra.lord.hastane ?? {},
   )}`,
+);
+kontrol(
+  'Kayıp YARALI olarak hastanede — savaş gerçek',
+  orduSayisi(meSonra.lord.hastane ?? {}) > 0,
+  `${orduSayisi(meSonra.lord.hastane ?? {})} yaralı`,
 );
 
 // --- 6. Yenilenme: normal grup beklemiyor (oyuncu kararı) ---

@@ -552,17 +552,22 @@ hiç beklemiyor, aşağıda).
   vurulabiliyor (`akin.yenilenme_saat: 0`). Oyuncu kararı: "normal
   gruplarda limiti kaldıralım." Yalnız **şef** 24 saat yenileniyor; o
   sürede gri durur ama **görünür kalır**. Önce 8/24 saatti.
-- **Freni kayıp ve hastane.** Sınırsız vuruş sınırsız kaynak değil:
-  motor gerçekte %10-25 kaybettiriyor ve garnizonun iki ile sekiz katı
-  orduyla bile bir normal grupta ölen askerin bedeli, kaynak ödülünün
-  4-11 katı (beş haritanın hepsi; `akin.test.ts` "sağmal değil"). Akının
-  kazancı XP ve ekipman; bedeli asker ve hastanede geçen zaman. Yaralı
-  artık en az on dakika yatıyor (§6.3).
+- **Akında asker ölmüyor** (`akin.yarali_donus: 1`). Oyuncu kararı:
+  "akında asker ölmesin, yaralı sayısı artsın." Kayıp aynı motorla
+  hesaplanıyor ama hamının tamamı yaralı dönüp hastaneye yatıyor —
+  yenilgide de. PvP'de ölüm savaşın bedeli olarak kalıyor (%30 yaralı,
+  tavan %50). Önizleme "tahmini yaralı" gösteriyor.
+- **Freni ZAMAN.** Sınırsız normal grup ve ölümsüz akın birlikte, frenin
+  tamamen hastane ile eş zamanlı akın sınırı (3) olması demek. Ezici
+  orduyla kazanılan akın bile en az bir askeri hastaneye yolluyor
+  (`akin.test.ts` "ölüm yok"); yaralı en az on dakika yatıyor (§6.3),
+  bekleyemeyen elmasla taburcu ediyor. Bu kararla akın kaynak açısından
+  kârlı: önce ölen askerin bedeli ödülün 4-11 katıydı.
 - **Ödüller %20 düştü** (`odul_taban` 75/40/30 → 60/32/24). Oyuncu
   kararı: "akın gelirlerini bir miktar düşürelim." Eski ölçüt "ödül
   kaybı ödesin"di ve %5 kayıp varsayıyordu; motor bunu hiç
-  tutturmamıştı. Bu kararla açıkça bırakıldı: kaynak kaybın bir
-  KISMINI karşılar (≥ %5), tamamını değil.
+  tutturmamıştı. Ölümsüz akınla ölçüt anlamını yitirdi: ödülün bedeli
+  asker değil hastanede geçen zaman.
 - **İlk zafer kesin ekipman.** Ömürde bir kez (`ilkAkinAt` damgası
   konduğu akın) parça şansa bırakılmıyor: zorunlu turun sıradaki aşaması
   "ekipman kuşan" ve dövmeye (T1 400 altın) ilk eğitimden sonra kese

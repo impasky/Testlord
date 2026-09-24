@@ -57,6 +57,17 @@ export interface BattleContext {
    * gösterilen "savunanın kaybı" gerçekleşenden farklı çıkar.
    */
   savunanOyuncu?: boolean;
+  /**
+   * Saldıranın ham kaybının YARALI dönen payı — verilirse olağan oranı
+   * (`saldirida_yarali_donus` + general) ve tavanı geçersiz kılar.
+   *
+   * Akın 1 veriyor (`akin.yarali_donus`): oyuncunun kararı "akında asker
+   * ölmesin, yaralı sayısı artsın". Kayıp yine hesaplanıyor ve aynı
+   * dağıtımla, ama hepsi hastaneye gidiyor. PvP'de verilmiyor; orada
+   * ölüm savaşın bedeli. Önizleme de aynı bayrağı geçirmek zorunda, yoksa
+   * oyuncuya gösterilen kayıp gerçekleşenden farklı çıkar.
+   */
+  saldiranYaraliOrani?: number;
 }
 
 export function armyCount(army: Army): number {
@@ -367,7 +378,11 @@ export function simulateBattle(
   // eskiden alamıyordu ve bu doğruydu — anında dönen yaralı, saldırmanın
   // bedelini sıfırlardı.
   const saldiranDonus =
-    B.savas.kayip.saldirida_yarali_donus + (attackerWins ? generalDonusu(attacker) : 0);
+    ctx.saldiranYaraliOrani ??
+    Math.min(
+      tavan,
+      B.savas.kayip.saldirida_yarali_donus + (attackerWins ? generalDonusu(attacker) : 0),
+    );
   const savunanDonus =
     (attackerWins ? 0 : generalDonusu(defender)) +
     (ctx.savunanOyuncu ? B.savas.kayip.savunmada_yarali_donus : 0);
@@ -375,7 +390,7 @@ export function simulateBattle(
   const saldiranHamKayip = attackerLosses;
   const savunanHamKayip = defenderLosses;
   if (saldiranDonus > 0) {
-    attackerLosses = scaleArmy(attackerLosses, 1 - Math.min(tavan, saldiranDonus));
+    attackerLosses = scaleArmy(attackerLosses, 1 - Math.min(1, saldiranDonus));
   }
   if (savunanDonus > 0) {
     defenderLosses = scaleArmy(defenderLosses, 1 - Math.min(tavan, savunanDonus));

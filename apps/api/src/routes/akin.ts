@@ -201,6 +201,8 @@ export async function akinRoutes(app: FastifyInstance): Promise<void> {
       defenderStore: { altin: 0, demir: 0, erzak: 0 },
       attackerCunning: 0,
       canCapture: false,
+      // Çözümle AYNI bayrak: akında ölüm yok, kayıp yaralı dönüyor.
+      saldiranYaraliOrani: B.akin.yarali_donus,
     });
 
     return {
@@ -208,7 +210,9 @@ export async function akinRoutes(app: FastifyInstance): Promise<void> {
       garnizon,
       sureSn: akinSuresiSn(body.haritaKey, body.grupNo),
       // Ortanca senaryonun kaybı: "kaç asker gider" sorusunun cevabı.
+      // Akında ölüm olmadığı için boş; gidenler hastaneye (`tahminiYarali`).
       tahminiKayip: ornek.ortanca.attackerLosses,
+      tahminiYarali: ornek.ortanca.yaraliDonen.saldiran,
       tahminiKalan: ornek.ortanca.attackerSurvivors,
     };
   });

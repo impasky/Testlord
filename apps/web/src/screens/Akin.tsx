@@ -12,7 +12,7 @@
  *    seviyede açılır"). Elli grubu tek listede göstermek, oyuncunun
  *    şikâyet ettiği "her şey üstüme geliyor" duygusunun ta kendisi.
  * 2. **Gitmeden önce ne olacağını söyle.** Grup seçilince önizleme
- *    çağrılıyor: kazanma ihtimali, tahmini kayıp, süre (docs/09 İ1).
+ *    çağrılıyor: kazanma ihtimali, tahmini yaralı, süre (docs/09 İ1).
  *    Bedeli olan bir kararı karşılığını bilmeden vermek olmaz.
  * 3. **Vurulan şef GRİ ama görünür.** Kaybolmuyor, ne zaman
  *    yenileneceğini yazıyor: "burada bir şey vardı, ne zaman dönecek"
@@ -692,8 +692,9 @@ function SeferKarti({
             </span>
           </div>
           <p className="mt-1 text-[11.5px] text-solgun">
-            {`Tahmini kayıp: ${formatSayi(orduSayisi(onizleme.data.tahminiKayip))} asker`} ·{' '}
-            <IkonSure boyut={11} /> {formatKalan(onizleme.data.sureSn * 1000)}
+            {/* Akında ölüm yok (oyuncu kararı): kayıp hastaneye yatan yaralı. */}
+            {`Tahmini yaralı: ${formatSayi(orduSayisi(onizleme.data.tahminiYarali))} asker, ölen olmaz`}{' '}
+            · <IkonSure boyut={11} /> {formatKalan(onizleme.data.sureSn * 1000)}
           </p>
           <p className="mt-1 text-[11.5px] text-solgun">
             Kazanırsan: <IkonAltin boyut={11} /> {formatSayi(grup.odul.altin)} ·{' '}

@@ -300,7 +300,7 @@
     "tr": "{0} — {1}, sonra ordu saatte %{2} firar verir",
     "en": "{0} — {1}, then the army deserts at {2}% per hour",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:218"
+      "apps/web/src/components/MobilKabuk.tsx:219"
     ]
   },
   "t89ee47d6": {
@@ -316,7 +316,7 @@
     "tr": "{0} — depo dolu, üretim boşa gidiyor",
     "en": "{0} — storage is full, production is wasted",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:221"
+      "apps/web/src/components/MobilKabuk.tsx:222"
     ]
   },
   "t3cf4481e": {
@@ -324,7 +324,7 @@
     "tr": "{0} — eksiye gidiyor",
     "en": "{0} — going into the negative",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:219"
+      "apps/web/src/components/MobilKabuk.tsx:220"
     ]
   },
   "tc3b64242": {
@@ -477,7 +477,7 @@
     "tr": "{0} adedi",
     "en": "{0} quantity",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:743",
+      "apps/web/src/screens/Akin.tsx:744",
       "apps/web/src/screens/Kisla.tsx:270"
     ]
   },
@@ -704,7 +704,7 @@
     "tr": "{0} dk sonra biter",
     "en": "Finishes in {0} min",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:202"
+      "apps/web/src/components/MobilKabuk.tsx:203"
     ]
   },
   "td8423f34": {
@@ -965,7 +965,7 @@
     "tr": "{0} sa sonra biter",
     "en": "Finishes in {0} hr",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:203"
+      "apps/web/src/components/MobilKabuk.tsx:204"
     ]
   },
   "t423b2a6e": {
@@ -1250,7 +1250,7 @@
     "tr": "{0}: {1} ({2}{3}/sa)",
     "en": "{0}: {1} ({2}{3}/hr)",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:214"
+      "apps/web/src/components/MobilKabuk.tsx:215"
     ]
   },
   "tc31d749f": {
@@ -1456,7 +1456,7 @@
     "tr": "%{0} ihtimalle T{1} ekipman düşer.",
     "en": "{0}% chance to drop T{1} equipment.",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:703"
+      "apps/web/src/screens/Akin.tsx:704"
     ]
   },
   "t1827a8a3": {
@@ -1633,8 +1633,8 @@
     "tr": "Akın",
     "en": "Raid",
     "nerede": [
-      "apps/api/src/routes/akin.ts:373",
-      "apps/web/src/components/MobilKabuk.tsx:63",
+      "apps/api/src/routes/akin.ts:377",
+      "apps/web/src/components/MobilKabuk.tsx:64",
       "apps/web/src/screens/Akin.tsx:119"
     ]
   },
@@ -1659,7 +1659,7 @@
     "tr": "Akına çık · {0} asker",
     "en": "Go on a raid · {0} troops",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:714"
+      "apps/web/src/screens/Akin.tsx:715"
     ]
   },
   "t82148189": {
@@ -1767,7 +1767,7 @@
     "en": "Gold",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:89",
-      "apps/web/src/components/MobilKabuk.tsx:351",
+      "apps/web/src/components/MobilKabuk.tsx:365",
       "apps/web/src/screens/Generaller.tsx:32",
       "apps/web/src/screens/Medeniyet.tsx:337",
       "data/arma.json:renkler[5].ad"
@@ -2075,7 +2075,7 @@
     "tr": "azalıyor",
     "en": "decreasing",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:265"
+      "apps/web/src/components/MobilKabuk.tsx:266"
     ]
   },
   "t41939cf2": {
@@ -3148,7 +3148,7 @@
     "tr": "Çıkış",
     "en": "Logout",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:340"
+      "apps/web/src/components/MobilKabuk.tsx:354"
     ]
   },
   "tced17ccf": {
@@ -3213,7 +3213,7 @@
     "en": "Iron",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:90",
-      "apps/web/src/components/MobilKabuk.tsx:359",
+      "apps/web/src/components/MobilKabuk.tsx:373",
       "apps/web/src/screens/Medeniyet.tsx:345"
     ]
   },
@@ -3309,7 +3309,7 @@
     "tr": "depo dolu",
     "en": "storage full",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:262"
+      "apps/web/src/components/MobilKabuk.tsx:263"
     ]
   },
   "t98a9b4f3": {
@@ -3815,7 +3815,7 @@
     "tr": "Dünya",
     "en": "World",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:64"
+      "apps/web/src/components/MobilKabuk.tsx:65"
     ]
   },
   "td4decb88": {
@@ -4021,6 +4021,14 @@
       "apps/web/src/components/Pazar.tsx:109"
     ]
   },
+  "t13588517": {
+    "grup": "arayuz",
+    "tr": "Elmas",
+    "en": "Gems",
+    "nerede": [
+      "apps/web/src/components/MobilKabuk.tsx:342"
+    ]
+  },
   "t25298bf6": {
     "grup": "arayuz",
     "tr": "Eminim — {0} seçilsin",
@@ -4181,7 +4189,7 @@
     "en": "Supplies",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:91",
-      "apps/web/src/components/MobilKabuk.tsx:367",
+      "apps/web/src/components/MobilKabuk.tsx:381",
       "apps/web/src/screens/Medeniyet.tsx:353",
       "packages/shared/src/ogretici.ts:300"
     ]
@@ -4689,7 +4697,7 @@
     "nerede": [
       "apps/web/src/components/Paktlar.tsx:191",
       "apps/web/src/components/SikayetSayfasi.tsx:117",
-      "apps/web/src/screens/Akin.tsx:714",
+      "apps/web/src/screens/Akin.tsx:715",
       "apps/web/src/screens/Demirhane.tsx:577",
       "apps/web/src/screens/EsyaPazari.tsx:411",
       "apps/web/src/screens/Generaller.tsx:149",
@@ -5035,7 +5043,7 @@
     "tr": "Hepsini şimdi iyileştir",
     "en": "Heal them all now",
     "nerede": [
-      "apps/web/src/components/Hastane.tsx:111"
+      "apps/web/src/components/Hastane.tsx:106"
     ]
   },
   "t8edfaba9": {
@@ -6096,7 +6104,7 @@
     "tr": "Kazanırsan:",
     "en": "If you win:",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:699"
+      "apps/web/src/screens/Akin.tsx:700"
     ]
   },
   "tcf60c0c7": {
@@ -6137,7 +6145,7 @@
     "tr": "Kesende {0} elmas; {1} eksik. Elmas günlük görevlerden, şef kamplarından ve başarımlardan gelir.",
     "en": "You have {0} [gem|gems]; {1} short. Gems come from daily quests, chief camps and achievements.",
     "nerede": [
-      "apps/web/src/components/Hastane.tsx:121"
+      "apps/web/src/components/Hastane.tsx:116"
     ]
   },
   "t8b06b35b": {
@@ -6145,7 +6153,7 @@
     "tr": "Kesende {0} elmas. Elmas yalnız zamanı kısaltır; taburcu olan asker beklenerek iyileşenle aynı.",
     "en": "You have {0} [gem|gems]. Gems only shorten time; a soldier released early is the same as one who waited.",
     "nerede": [
-      "apps/web/src/components/Hastane.tsx:120"
+      "apps/web/src/components/Hastane.tsx:115"
     ]
   },
   "tb766e201": {
@@ -6551,7 +6559,7 @@
       "apps/api/src/routes/ticaret.ts:62",
       "apps/api/src/services/lord.ts:375",
       "apps/api/src/services/lord.ts:655",
-      "apps/web/src/components/MobilKabuk.tsx:65"
+      "apps/web/src/components/MobilKabuk.tsx:66"
     ]
   },
   "t1703d35e": {
@@ -6595,7 +6603,7 @@
     "en": "Age of Lords",
     "nerede": [
       "apps/api/src/routes/push.ts:92",
-      "apps/web/src/components/MobilKabuk.tsx:393",
+      "apps/web/src/components/MobilKabuk.tsx:407",
       "apps/web/src/screens/EpostaDogrula.tsx:38",
       "apps/web/src/screens/Giris.tsx:200",
       "apps/web/src/screens/ParolaSifirla.tsx:31"
@@ -7032,7 +7040,7 @@
     "tr": "Ordu",
     "en": "Army",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:62",
+      "apps/web/src/components/MobilKabuk.tsx:63",
       "data/arastirma.json:dallar[1].ad",
       "data/basarimlar.json:kumeler[2].ad"
     ]
@@ -8642,7 +8650,7 @@
       "apps/web/src/components/IttifakBasvurular.tsx:149",
       "apps/web/src/components/IttifakIncele.tsx:69",
       "apps/web/src/components/IttifakIncele.tsx:98",
-      "apps/web/src/components/MobilKabuk.tsx:328",
+      "apps/web/src/components/MobilKabuk.tsx:329",
       "apps/web/src/screens/Ittifak.tsx:460",
       "apps/web/src/screens/Ittifak.tsx:76",
       "apps/web/src/screens/LordEkrani.tsx:420",
@@ -8716,7 +8724,7 @@
     "tr": "Şehir",
     "en": "City",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:61",
+      "apps/web/src/components/MobilKabuk.tsx:62",
       "packages/shared/src/bina.ts:60",
       "packages/shared/src/bolge-adi.ts:34"
     ]
@@ -8965,7 +8973,7 @@
     "tr": "Taburcu ediliyor…",
     "en": "Releasing…",
     "nerede": [
-      "apps/web/src/components/Hastane.tsx:111"
+      "apps/web/src/components/Hastane.tsx:106"
     ]
   },
   "t4d7ae40a": {
@@ -9016,12 +9024,12 @@
       "apps/web/src/components/SaldiriOnizleme.tsx:74"
     ]
   },
-  "t06f4f937": {
+  "t5aa9de4b": {
     "grup": "arayuz",
-    "tr": "Tahmini kayıp: {0} asker",
-    "en": "Estimated loss: {0} soldier|Estimated loss: {0} soldiers",
+    "tr": "Tahmini yaralı: {0} asker, ölen olmaz",
+    "en": "Estimated wounded: {0} [soldier|soldiers], none will die",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:695"
+      "apps/web/src/screens/Akin.tsx:696"
     ]
   },
   "t1319ad6a": {
@@ -13607,7 +13615,7 @@
     "tr": " ve bir ekipman",
     "en": " and one piece of equipment",
     "nerede": [
-      "apps/api/src/services/akin.ts:243"
+      "apps/api/src/services/akin.ts:246"
     ]
   },
   "t18dcaa3c": {
@@ -14233,7 +14241,7 @@
     "tr": "Akın başarılı: {0} altın, {1} demir{2} getirdin.",
     "en": "Raid successful: you brought {0} gold, {1} iron{2}.",
     "nerede": [
-      "apps/api/src/services/akin.ts:242"
+      "apps/api/src/services/akin.ts:245"
     ]
   },
   "t727e50b0": {
@@ -14241,7 +14249,7 @@
     "tr": "Akın başarısız: grubu düşüremedin, kalan askerin döndü.",
     "en": "Raid failed: you couldn't defeat the group, your remaining troops returned.",
     "nerede": [
-      "apps/api/src/services/akin.ts:245"
+      "apps/api/src/services/akin.ts:248"
     ]
   },
   "tef24ea7b": {
@@ -14250,7 +14258,7 @@
     "en": "Raid group",
     "nerede": [
       "apps/api/src/routes/akin.ts:192",
-      "apps/api/src/routes/akin.ts:222"
+      "apps/api/src/routes/akin.ts:226"
     ]
   },
   "t86efa41b": {
@@ -14259,7 +14267,7 @@
     "en": "Raid map",
     "nerede": [
       "apps/api/src/routes/akin.ts:191",
-      "apps/api/src/routes/akin.ts:221"
+      "apps/api/src/routes/akin.ts:225"
     ]
   },
   "tbe1eee4b": {
@@ -14267,7 +14275,7 @@
     "tr": "Akın henüz sonuçlanmadı.",
     "en": "Raid has not concluded yet.",
     "nerede": [
-      "apps/api/src/routes/akin.ts:374"
+      "apps/api/src/routes/akin.ts:378"
     ]
   },
   "tda37ec1b": {
@@ -14291,7 +14299,7 @@
     "tr": "Aynı anda en fazla {0} akın",
     "en": "Maximum of {0} [raid|raids] at once",
     "nerede": [
-      "apps/api/src/routes/akin.ts:260"
+      "apps/api/src/routes/akin.ts:264"
     ]
   },
   "t1e7abb3f": {
@@ -14511,7 +14519,7 @@
     "tr": "Böyle bir akın yok.",
     "en": "No such raid.",
     "nerede": [
-      "apps/api/src/routes/akin.ts:418"
+      "apps/api/src/routes/akin.ts:422"
     ]
   },
   "ta73cae87": {
@@ -14594,7 +14602,7 @@
     "tr": "Bu akın çoktan bitti.",
     "en": "This raid has already ended.",
     "nerede": [
-      "apps/api/src/routes/akin.ts:419"
+      "apps/api/src/routes/akin.ts:423"
     ]
   },
   "td2f98d0e": {
@@ -14602,7 +14610,7 @@
     "tr": "Bu akın zaten varmış, çözülmesini bekle.",
     "en": "This raid has already arrived — wait for it to resolve.",
     "nerede": [
-      "apps/api/src/routes/akin.ts:424"
+      "apps/api/src/routes/akin.ts:428"
     ]
   },
   "tdf04e28b": {
@@ -14610,7 +14618,7 @@
     "tr": "Bu akını erkene almak {0} elmas. Sende {1} var.",
     "en": "Rushing this raid costs {0} [diamond|diamonds]. You have {1}.",
     "nerede": [
-      "apps/api/src/routes/akin.ts:434"
+      "apps/api/src/routes/akin.ts:438"
     ]
   },
   "tf38c385e": {
@@ -14746,7 +14754,7 @@
     "tr": "Bu grup henüz toparlanmadı. Yenilenmesini bekle.",
     "en": "This group has not recovered yet. Wait for it to replenish.",
     "nerede": [
-      "apps/api/src/routes/akin.ts:289"
+      "apps/api/src/routes/akin.ts:293"
     ]
   },
   "t13668100": {
@@ -14763,7 +14771,7 @@
     "tr": "Bu harita henüz açık değil.",
     "en": "This map is not open yet.",
     "nerede": [
-      "apps/api/src/routes/akin.ts:279"
+      "apps/api/src/routes/akin.ts:283"
     ]
   },
   "t6672b319": {
@@ -15701,7 +15709,7 @@
     "tr": "miğfer",
     "en": "helmet",
     "nerede": [
-      "apps/api/src/services/akin.ts:53"
+      "apps/api/src/services/akin.ts:54"
     ]
   },
   "t464c2de7": {
@@ -16180,7 +16188,7 @@
     "tr": "yüzük",
     "en": "ring",
     "nerede": [
-      "apps/api/src/services/akin.ts:53"
+      "apps/api/src/services/akin.ts:54"
     ]
   },
   "tb57b7485": {

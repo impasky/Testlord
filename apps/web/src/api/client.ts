@@ -1392,6 +1392,8 @@ export const api = {
       garnizon: Army;
       sureSn: number;
       tahminiKayip: Army;
+      /** Akında ölüm yok: kaybın tamamı hastaneye yatacak yaralı. */
+      tahminiYarali: Army;
       tahminiKalan: Army;
     }>('/akin/onizleme', g),
   /** Hastanedeki bütün yaralıları elmasla şimdi taburcu et; bedel sunucuda. */
