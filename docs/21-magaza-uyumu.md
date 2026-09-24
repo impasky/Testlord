@@ -32,6 +32,13 @@ yönetici yetkisi. Aynı işi yapan düğmelerden (121 bölge, on akın grubu)
 en çok üçüne basılıyor. Geri dönüşsüzler (ayrıl, sil, çıkar, iptal) her
 yerin sonuna bırakılıyor; çıkış ve hesap silme `hesap-testi`nin işi.
 
+**Son koşu (düzeltmelerden sonra): 18 yer, 230 basış, 0 hata.** Kalan
+iki uyarı Pazar'daki yükseltme düğmeleri (−/+): değer +0…+10 arasında
+değişiyor ama bot geri sayımlar gürültü yapmasın diye sayıları imzadan
+atıyor, +0→+1'i göremiyor — düğme çalışıyor. İki 4xx bilgi satırı oyun
+kuralı: ittifaktayken ikinci ittifak kurulamıyor, medeniyet değişimi
+bekleme süresinde reddediliyor.
+
 ### Bulunan ve düzeltilen hatalar
 
 | Hata                                                                                                                | Kök neden                                                                                                 | Düzeltme                                                                                                                                                        |

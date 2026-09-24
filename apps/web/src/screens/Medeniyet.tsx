@@ -227,6 +227,11 @@ export function Medeniyet({ onGit }: { onGit?: (ekran: string) => void }) {
             kisa="Bekleme sürüyor"
             uzun={`${m.degisim.kalanGun} gün sonra yeniden taraf değiştirebilirsin.`}
           />
+        ) : m.degisim.secenekler.length > 0 && m.degisim.orduYolda ? (
+          <EngelNotu
+            kisa="Ordun yolda"
+            uzun="Yoldaki ordun varken taraf değiştiremezsin. Önce dönmesini bekle."
+          />
         ) : m.degisim.secenekler.length === 0 ? (
           <EngelNotu
             kisa="Şu an geçilebilecek taraf yok"

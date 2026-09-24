@@ -349,7 +349,7 @@
     "tr": "{0} — mesaj şikâyeti",
     "en": "{0} — message report",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:201"
+      "apps/web/src/components/IttifakSohbet.tsx:203"
     ]
   },
   "tc84264da": {
@@ -494,7 +494,7 @@
     "tr": "{0} adlı lordu engelle",
     "en": "Block {0}",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:159"
+      "apps/web/src/components/IttifakSohbet.tsx:161"
     ]
   },
   "te723bf3b": {
@@ -510,7 +510,7 @@
     "tr": "{0} adlı lordun mesajını şikâyet et",
     "en": "Report message of the lord named {0}",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:150"
+      "apps/web/src/components/IttifakSohbet.tsx:152"
     ]
   },
   "tb2c59732": {
@@ -744,7 +744,7 @@
     "tr": "{0} engellendi. Mesajlarını artık görmeyeceksin; Hesap ekranından kaldırabilirsin.",
     "en": "{0} blocked. You won't see their messages anymore; you can undo this from the Account screen.",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:76"
+      "apps/web/src/components/IttifakSohbet.tsx:77"
     ]
   },
   "t1cc458b9": {
@@ -752,7 +752,7 @@
     "tr": "{0} engellensin mi? Mesajlarını bir daha görmezsin; o bundan haberdar olmaz.",
     "en": "Block {0}? You won't see their messages again; they won't be notified.",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:102"
+      "apps/web/src/components/IttifakSohbet.tsx:104"
     ]
   },
   "t3c2e09ca": {
@@ -1185,7 +1185,7 @@
     "tr": "{0} tarafına geçiyorsun. {1} fayda puanın silinecek ve {2} gün boyunca geri dönemeyeceksin.",
     "en": "You are defecting to the {0} faction. Your {1} contribution points will be wiped, and you will not be able to return for {2} days.",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:262"
+      "apps/web/src/screens/Medeniyet.tsx:267"
     ]
   },
   "t56851a6b": {
@@ -1347,7 +1347,7 @@
     "tr": "{0}'a git",
     "en": "Go to {0}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:1002"
+      "apps/web/src/screens/Sehir.tsx:998"
     ]
   },
   "t0900053c": {
@@ -1801,7 +1801,7 @@
       "apps/web/src/components/KaynakGonder.tsx:89",
       "apps/web/src/components/MobilKabuk.tsx:377",
       "apps/web/src/screens/Generaller.tsx:32",
-      "apps/web/src/screens/Medeniyet.tsx:337",
+      "apps/web/src/screens/Medeniyet.tsx:342",
       "data/arma.json:renkler[5].ad"
     ]
   },
@@ -1810,7 +1810,7 @@
     "tr": "Altın bağışı",
     "en": "Gold donation",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:336"
+      "apps/web/src/screens/Medeniyet.tsx:341"
     ]
   },
   "t636ac62e": {
@@ -2115,7 +2115,7 @@
     "tr": "Azami seviyede — daha fazlası yok.",
     "en": "At maximum level — no more.",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:327"
+      "apps/web/src/screens/Medeniyet.tsx:332"
     ]
   },
   "td4faffaa": {
@@ -2140,7 +2140,7 @@
     "en": "Donate",
     "nerede": [
       "apps/web/src/components/IttifakBagis.tsx:139",
-      "apps/web/src/screens/Medeniyet.tsx:320"
+      "apps/web/src/screens/Medeniyet.tsx:325"
     ]
   },
   "t48eb280e": {
@@ -2563,7 +2563,7 @@
     "tr": "Bir şey yaz…",
     "en": "Type something…",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:186"
+      "apps/web/src/components/IttifakSohbet.tsx:188"
     ]
   },
   "t2d3fb36b": {
@@ -2614,7 +2614,7 @@
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:732",
       "apps/web/src/screens/Sehir.tsx:735",
-      "apps/web/src/screens/Sehir.tsx:960"
+      "apps/web/src/screens/Sehir.tsx:956"
     ]
   },
   "t0f1623db": {
@@ -3156,7 +3156,7 @@
     "tr": "Çekirdekler",
     "en": "Cores",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:276"
+      "apps/web/src/screens/Medeniyet.tsx:281"
     ]
   },
   "t84aef821": {
@@ -3164,7 +3164,7 @@
     "tr": "Çekirdekler ele geçirilemez; yalnız geliştirilir. Bonus {0} işliyor — bağış yapmayana da. Bağışın karşılığı fayda puanı.",
     "en": "Cores cannot be captured; they are only upgraded. The bonus applies {0} — even to those who do not donate. The reward for donation is contribution points.",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:279"
+      "apps/web/src/screens/Medeniyet.tsx:284"
     ]
   },
   "t24548309": {
@@ -3254,7 +3254,7 @@
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:90",
       "apps/web/src/components/MobilKabuk.tsx:385",
-      "apps/web/src/screens/Medeniyet.tsx:345"
+      "apps/web/src/screens/Medeniyet.tsx:350"
     ]
   },
   "tf60f934f": {
@@ -3262,7 +3262,7 @@
     "tr": "Demir bağışı",
     "en": "Iron donation",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:344"
+      "apps/web/src/screens/Medeniyet.tsx:349"
     ]
   },
   "tc8275adc": {
@@ -3830,7 +3830,7 @@
     "tr": "Dört medeniyetin de nüfusu ortalamanın üstünde ya da eşit.",
     "en": "The population of all four civilizations is above or equal to the average.",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:233"
+      "apps/web/src/screens/Medeniyet.tsx:238"
     ]
   },
   "t5b30f3b7": {
@@ -4244,7 +4244,7 @@
     "tr": "Engelle",
     "en": "Block",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:112"
+      "apps/web/src/components/IttifakSohbet.tsx:114"
     ]
   },
   "t6ff6f321": {
@@ -4260,7 +4260,7 @@
     "tr": "Engellenemedi.",
     "en": "Could not block.",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:82"
+      "apps/web/src/components/IttifakSohbet.tsx:84"
     ]
   },
   "tcccc0db6": {
@@ -4294,7 +4294,7 @@
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:91",
       "apps/web/src/components/MobilKabuk.tsx:393",
-      "apps/web/src/screens/Medeniyet.tsx:353",
+      "apps/web/src/screens/Medeniyet.tsx:358",
       "packages/shared/src/ogretici.ts:300"
     ]
   },
@@ -4303,7 +4303,7 @@
     "tr": "Erzak bağışı",
     "en": "Supply donation",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:352"
+      "apps/web/src/screens/Medeniyet.tsx:357"
     ]
   },
   "t0509e8aa": {
@@ -4425,7 +4425,7 @@
     "tr": "Evet, taraf değiştir",
     "en": "Yes, change factions",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:268"
+      "apps/web/src/screens/Medeniyet.tsx:273"
     ]
   },
   "t0944f9b2": {
@@ -4565,7 +4565,7 @@
     "tr": "Geç",
     "en": "Switch",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:253"
+      "apps/web/src/screens/Medeniyet.tsx:258"
     ]
   },
   "t27e7a2ba": {
@@ -4759,7 +4759,7 @@
     "en": "Send",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:95",
-      "apps/web/src/screens/Medeniyet.tsx:359"
+      "apps/web/src/screens/Medeniyet.tsx:364"
     ]
   },
   "t5275bf7f": {
@@ -4811,7 +4811,7 @@
       "apps/web/src/screens/Hesap.tsx:259",
       "apps/web/src/screens/Kisla.tsx:286",
       "apps/web/src/screens/ParolaSifirla.tsx:62",
-      "apps/web/src/screens/Sehir.tsx:998"
+      "apps/web/src/screens/Sehir.tsx:994"
     ]
   },
   "t5b346f80": {
@@ -5124,7 +5124,7 @@
     "tr": "Henüz kimse yazmadı. İlk sözü sen söyle — bir hedef göster, yardım iste.",
     "en": "Nobody has written yet. You say the first word — point out a target, ask for help.",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:119"
+      "apps/web/src/components/IttifakSohbet.tsx:121"
     ]
   },
   "t03b91b40": {
@@ -5215,7 +5215,7 @@
     "en": "DELETE MY ACCOUNT",
     "nerede": [
       "apps/api/src/routes/me.ts:64",
-      "apps/web/src/api/client.ts:1219",
+      "apps/web/src/api/client.ts:1221",
       "apps/web/src/screens/Hesap.tsx:297"
     ]
   },
@@ -5475,7 +5475,7 @@
     "tr": "İnşa et",
     "en": "Construct",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:998"
+      "apps/web/src/screens/Sehir.tsx:994"
     ]
   },
   "t776ce02a": {
@@ -5673,7 +5673,7 @@
     "tr": "İttifak Sohbeti",
     "en": "Alliance Chat",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:98"
+      "apps/web/src/components/IttifakSohbet.tsx:100"
     ]
   },
   "t3214552e": {
@@ -5939,7 +5939,7 @@
       "apps/web/src/screens/Demirhane.tsx:128",
       "apps/web/src/screens/Harita.tsx:1002",
       "apps/web/src/screens/Harita.tsx:1108",
-      "apps/web/src/screens/Medeniyet.tsx:320"
+      "apps/web/src/screens/Medeniyet.tsx:325"
     ]
   },
   "t0ffc6da6": {
@@ -6176,7 +6176,7 @@
     "tr": "Kaynağını ve bağış miktarını kontrol et.",
     "en": "Check your resources and donation amount.",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:362"
+      "apps/web/src/screens/Medeniyet.tsx:367"
     ]
   },
   "t9bec001a": {
@@ -6910,7 +6910,7 @@
     "tr": "Medeniyetin başkenti — bonus taşımıyor, kimlik taşıyor.",
     "en": "Civilization's capital — carries no bonus, carries identity.",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:295"
+      "apps/web/src/screens/Medeniyet.tsx:300"
     ]
   },
   "t4d13f325": {
@@ -6926,7 +6926,7 @@
     "tr": "medeniyetin herkesine",
     "en": "to everyone in the civilization",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:280"
+      "apps/web/src/screens/Medeniyet.tsx:285"
     ]
   },
   "te32f5646": {
@@ -6991,7 +6991,7 @@
     "tr": "Mesajını gözden geçir ve tekrar dene.",
     "en": "Review your message and try again.",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:195"
+      "apps/web/src/components/IttifakSohbet.tsx:197"
     ]
   },
   "t05e52e04": {
@@ -7344,7 +7344,8 @@
     "en": "Your army is on the march",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:818",
-      "apps/web/src/components/SaldiriOnizleme.tsx:184"
+      "apps/web/src/components/SaldiriOnizleme.tsx:184",
+      "apps/web/src/screens/Medeniyet.tsx:232"
     ]
   },
   "t77c935a8": {
@@ -8448,7 +8449,7 @@
     "tr": "Seviye {0} / {1}",
     "en": "Level {0} / {1}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:960"
+      "apps/web/src/screens/Sehir.tsx:956"
     ]
   },
   "tc15fa5ea": {
@@ -8456,7 +8457,7 @@
     "tr": "Seviye {0} yap",
     "en": "Upgrade to Level {0}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:998"
+      "apps/web/src/screens/Sehir.tsx:994"
     ]
   },
   "t939a055a": {
@@ -8898,7 +8899,7 @@
     "en": "Lvl {0}/{1}",
     "nerede": [
       "apps/web/src/screens/Generaller.tsx:94",
-      "apps/web/src/screens/Medeniyet.tsx:289"
+      "apps/web/src/screens/Medeniyet.tsx:294"
     ]
   },
   "tb95fd396": {
@@ -9089,7 +9090,7 @@
     "tr": "Şu an geçilebilecek taraf yok",
     "en": "There is no faction to switch to right now",
     "nerede": [
-      "apps/web/src/screens/Medeniyet.tsx:232"
+      "apps/web/src/screens/Medeniyet.tsx:237"
     ]
   },
   "t7f1c341e": {
@@ -9685,11 +9686,11 @@
     "en": "Cancel",
     "nerede": [
       "apps/web/src/components/IttifakDuyuru.tsx:83",
-      "apps/web/src/components/IttifakSohbet.tsx:105",
+      "apps/web/src/components/IttifakSohbet.tsx:107",
       "apps/web/src/components/SikayetSayfasi.tsx:114",
       "apps/web/src/screens/Arastirma.tsx:1059",
       "apps/web/src/screens/Hesap.tsx:314",
-      "apps/web/src/screens/Medeniyet.tsx:253"
+      "apps/web/src/screens/Medeniyet.tsx:258"
     ]
   },
   "teacb0314": {
@@ -9803,7 +9804,7 @@
     "tr": "yapı",
     "en": "structure",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:960"
+      "apps/web/src/screens/Sehir.tsx:956"
     ]
   },
   "tdd99127b": {
@@ -9892,7 +9893,7 @@
     "tr": "Yaz",
     "en": "Type",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:191"
+      "apps/web/src/components/IttifakSohbet.tsx:193"
     ]
   },
   "ta45efa0f": {
@@ -10074,6 +10075,15 @@
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:95",
       "apps/web/src/screens/Harita.tsx:381"
+    ]
+  },
+  "taa63a479": {
+    "grup": "arayuz",
+    "tr": "Yoldaki ordun varken taraf değiştiremezsin. Önce dönmesini bekle.",
+    "en": "You cannot change factions while your army is on the march. Wait for them to return first.",
+    "nerede": [
+      "apps/api/src/services/medeniyet.ts:398",
+      "apps/web/src/screens/Medeniyet.tsx:233"
     ]
   },
   "tb51532c7": {
@@ -14575,7 +14585,7 @@
     "tr": "Bağış için kaynak seç.",
     "en": "Select a resource for donation.",
     "nerede": [
-      "apps/api/src/routes/medeniyet.ts:148"
+      "apps/api/src/routes/medeniyet.ts:156"
     ]
   },
   "t3d49ff31": {
@@ -14934,7 +14944,7 @@
     "tr": "Bu çekirdek azami seviyede.",
     "en": "This core is at maximum level.",
     "nerede": [
-      "apps/api/src/routes/medeniyet.ts:181"
+      "apps/api/src/routes/medeniyet.ts:189"
     ]
   },
   "t55f4b6a0": {
@@ -15185,7 +15195,7 @@
     "tr": "Çekirdek",
     "en": "Core",
     "nerede": [
-      "apps/api/src/routes/medeniyet.ts:177"
+      "apps/api/src/routes/medeniyet.ts:185"
     ]
   },
   "t8e3e3c34": {
@@ -15696,7 +15706,7 @@
     "tr": "Kaynağın yetmiyor.",
     "en": "Not enough resources.",
     "nerede": [
-      "apps/api/src/routes/medeniyet.ts:162"
+      "apps/api/src/routes/medeniyet.ts:170"
     ]
   },
   "t8a322ea6": {
@@ -15912,7 +15922,7 @@
     "tr": "Medeniyetin yok.",
     "en": "You do not belong to a civilization.",
     "nerede": [
-      "apps/api/src/routes/medeniyet.ts:160"
+      "apps/api/src/routes/medeniyet.ts:168"
     ]
   },
   "tfe3e1797": {
@@ -16393,14 +16403,6 @@
     "en": "You don't have enough resources. Missing: {0}.",
     "nerede": [
       "apps/api/src/services/queue.ts:88"
-    ]
-  },
-  "taa63a479": {
-    "grup": "sunucu",
-    "tr": "Yoldaki ordun varken taraf değiştiremezsin. Önce dönmesini bekle.",
-    "en": "You cannot change factions while your army is on the march. Wait for them to return first.",
-    "nerede": [
-      "apps/api/src/services/medeniyet.ts:398"
     ]
   },
   "te056a93d": {

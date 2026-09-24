@@ -169,13 +169,21 @@ if (!hedef) {
   const ordu = (await get('/army')).home ?? {};
   if (hedefBolge && Object.keys(ordu).length > 0) {
     await post('/march', { toRegionId: hedefBolge.id, army: ordu });
+    const yolda = (await get('/medeniyet')).medeniyet.degisim;
+    k('Panel ordunun yolda olduğunu ÖNCEDEN söylüyor', yolda.orduYolda === true);
     const r = await post('/medeniyet/degis', { key: MEDENIYETLER[0].id });
     k(
       'Yoldaki ordu varken değişim yok',
       r?.code === 'ORDU_YOLDA' || r?.code === 'DEGISIM_OLMAZ',
       r?.error ?? r?.code ?? '',
     );
-    await post('/test/yuruyusleri-bitir');
+    // Saldırı çözülünce ordu DÖNÜŞ yürüyüşüne çıkıyor; o da bitsin.
+    let donunce = null;
+    for (let i = 0; i < 3 && donunce?.orduYolda !== false; i++) {
+      await post('/test/yuruyusleri-bitir');
+      donunce = (await get('/medeniyet')).medeniyet.degisim;
+    }
+    k('Ordu dönünce engel kalkıyor', donunce?.orduYolda === false);
   } else {
     console.log('  [ATLANDI] Yürüyüş kurulamadı (ordu ya da hedef yok)');
   }

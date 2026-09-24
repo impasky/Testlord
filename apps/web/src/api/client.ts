@@ -465,6 +465,8 @@ export interface MedeniyetDto {
   /** Taraf değiştirme kuralları ve şu an geçilebilecek medeniyetler. */
   degisim: {
     kalanGun: number;
+    /** Yoldaki ordu varken değişim reddediliyor — önceden söylensin. */
+    orduYolda: boolean;
     faydaSifirlanir: boolean;
     beklemeGun: number;
     secenekler: { id: string; ad: string; renk: string; ozet: string }[];

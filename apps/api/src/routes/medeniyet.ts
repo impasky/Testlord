@@ -65,7 +65,7 @@ export async function medeniyetRoutes(app: FastifyInstance): Promise<void> {
     const simdikiKey = satirlar.find((x) => x.id === lord.medeniyetId)?.key ?? null;
     const degisim = degisimDurumu(simdikiKey, null, nufus, lord.medeniyetDegisimAt, new Date());
 
-    const [uye, bolge, cekirdekler, hepsi] = await Promise.all([
+    const [uye, bolge, cekirdekler, hepsi, yoldaki] = await Promise.all([
       prisma.lord.count({ where: { medeniyetId: lord.medeniyetId } }),
       prisma.region.count({ where: { ownerMedeniyetId: lord.medeniyetId } }),
       cekirdekDurumlari(lord.medeniyetId),
@@ -76,6 +76,8 @@ export async function medeniyetRoutes(app: FastifyInstance): Promise<void> {
         where: { worldId: lord.worldId, ownerMedeniyetId: { not: null } },
         _count: { _all: true },
       }),
+      // Taraf değiştirmenin öteki engeli (medeniyetDegistir → ORDU_YOLDA).
+      prisma.march.count({ where: { lordId, resolved: false } }),
     ]);
 
     return {
@@ -97,6 +99,12 @@ export async function medeniyetRoutes(app: FastifyInstance): Promise<void> {
          */
         degisim: {
           kalanGun: degisim.kalanGun,
+          /*
+           * Ordu yoldayken sunucu değişimi reddediyor. Önceden söylenmezse
+           * oyuncu "Geç" ve "Evet" dedikten SONRA öğreniyordu — bütün
+           * düğmeleri deneyen bot buldu.
+           */
+          orduYolda: yoldaki > 0,
           faydaSifirlanir: DEGISIMDE_FAYDA_SIFIRLANIR,
           beklemeGun: DEGISIM_BEKLEME_GUN,
           secenekler: degisim.secenekler
