@@ -206,29 +206,54 @@ a,
 }
 
 /*
- * Plaka: bölüm başlığı. Referanstaki ahşap tabelaların karşılığı.
- * Küçük gri büyük harf etiketler ekranı "form" gibi gösteriyordu;
- * plaka her bölümün nerede başladığını tek bakışta söylüyor.
+ * Plaka: bölüm başlığı — SÜSLÜ BÖLÜM ÇİZGİSİ.
+ *
+ * Küçük gri büyük harf etiketler ekranı "form" gibi gösteriyordu; ilk
+ * çare çerçeveli bir hap oldu (referanstaki ahşap tabela). Ekran ekran
+ * bakınca ters çıktı: hap, `Buton tur="anahat"` ile AYNI biçimdi —
+ * yuvarlak, 2 px kenar, alt gölge — ve her ekranda basılabilir görünen
+ * ama basılmayan bir öge vardı. Şehir'de "KUYRUKLAR" hapının hemen
+ * altında gerçek "KIŞLA" düğmesi duruyordu; ikisini ayıran tek şey
+ * kesikli kenardı.
+ *
+ * Başlığın işi bölümün nerede başladığını söylemek, dokunulacak bir şey
+ * gibi durmak değil. Şimdi el yazmasının bölüm çizgisi: baklava süs,
+ * altın yazı, sağa uzanıp solan çizgi. Göz bölümleri yine tek bakışta
+ * sayıyor; parmak ona uzanmıyor.
  */
-.plaka {
-  background: linear-gradient(180deg, var(--color-yuzey) 0%, var(--color-panel) 100%);
-  border: 2px solid var(--color-kenar-acik);
-  border-radius: 999px;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 2px 0 rgba(0, 0, 0, 0.4);
+.plaka-susu {
+  width: 7px;
+  height: 7px;
+  flex-shrink: 0;
+  transform: rotate(45deg);
+  background: var(--color-altin);
+  box-shadow: 0 0 0 2px rgba(245, 183, 49, 0.18);
+}
+
+.plaka-cizgi {
+  flex: 1;
+  min-width: 12px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(245, 183, 49, 0.5), rgba(245, 183, 49, 0));
 }
 
 /*
  * Sakin plaka: içi boş bölümün başlığı.
  *
  * Fark BAŞLIKTA olmak zorunda: oyuncu ekranı kaydırırken içeriği değil
- * başlıkları tarıyor. Sakin bölüm gövdesine bakmadan atlanabilmeli.
+ * başlıkları tarıyor. Sakin bölüm gövdesine bakmadan atlanabilmeli —
+ * içi boş süs, kesikli çizgi.
  */
-.plaka-sakin {
+.plaka-sakin .plaka-susu {
   background: transparent;
-  border: 2px dashed var(--color-kenar);
+  border: 1.5px solid var(--color-kenar-acik);
   box-shadow: none;
+}
+
+.plaka-sakin .plaka-cizgi {
+  height: 0;
+  background: none;
+  border-top: 1px dashed var(--color-kenar-acik);
 }
 
 /*

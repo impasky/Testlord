@@ -6,7 +6,7 @@
  * Masaüstü düzeni YOK — her şey tek sütun, dokunmatik hedefleri ≥44px.
  */
 import { aktifDil, yerel, type DilKodu } from '@lordlar/shared';
-import { Fragment, useEffect, useState, type ReactNode } from 'react';
+import { Children, Fragment, useEffect, useState, type ReactNode } from 'react';
 import { IkonAltin, IkonDemir, IkonErzak, IkonSure, IkonUyari } from './Ikonlar';
 
 /* ---------------- Geri sayım ---------------- */
@@ -362,13 +362,12 @@ export function Kart({
   );
 }
 
-/** Başlıklı bölüm. Mobilde panel yerine bölüm başlığı + kart kullanılır. */
 /**
  * Başlıklı bölüm.
  *
- * Başlık artık küçük gri bir etiket değil, bir plaka. Referans oyunlarda
- * her bölüm ahşap bir tabelayla başlıyor ve göz bölümleri saymak zorunda
- * kalmıyor; küçük etiketler on kartı tek bir duvar hâline getiriyordu.
+ * Başlık küçük gri bir etiket değil, bir plaka: süs + altın yazı + solan
+ * çizgi (biçimin gerekçesi `styles.css` → `.plaka-susu`). Küçük
+ * etiketler on kartı tek bir duvar hâline getiriyordu.
  */
 export function Bolum({
   baslik,
@@ -407,43 +406,44 @@ export function Bolum({
 }) {
   const [acik, setAcik] = useState(false);
   const katli = katlanir === true;
-
-  const basligiCiz = (icerik: ReactNode) => (
-    <h2
-      className={`plaka baslik px-3.5 py-1.5 text-[12px] ${
-        sakin ? 'plaka-sakin text-sonuk' : 'text-altin'
-      }`}
-    >
-      {icerik}
-    </h2>
-  );
+  const yazi = `baslik shrink-0 text-[13px] ${sakin ? 'text-sonuk' : 'text-altin'}`;
 
   return (
     <section id={id} className={className}>
       {baslik &&
         (katli ? (
-          <header className="mb-2.5 flex items-center justify-between gap-2">
-            {/* Başlığın KENDİSİ düğme: ayrı bir ok simgesi eklemek,
-                kalabalığı azaltmak için açılan bölümün üstüne bir öge
-                daha koymak olurdu. */}
-            <button
-              type="button"
-              onClick={() => setAcik((a) => !a)}
-              aria-expanded={acik}
-              className="bas text-left"
-            >
-              {basligiCiz(
-                <>
-                  {baslik}
-                  <span className="ml-1.5 text-sonuk">{acik ? '▾' : '▸'}</span>
-                </>,
-              )}
-            </button>
+          <header className={`plaka mb-2 flex items-center gap-2 ${sakin ? 'plaka-sakin' : ''}`}>
+            {/*
+             * Başlığın KENDİSİ düğme, bütün satır boyunca: ayrı bir ok
+             * düğmesi eklemek, kalabalığı azaltmak için açılan bölümün
+             * üstüne bir öge daha koymak olurdu. Düğme başlığın İÇİNDE
+             * (h2 > button): tersi geçersiz HTML, ekran okuyucu da
+             * başlık listesinde bölümü bulamıyor.
+             */}
+            <h2 className="min-w-0 flex-1">
+              <button
+                type="button"
+                onClick={() => setAcik((a) => !a)}
+                aria-expanded={acik}
+                className="bas flex min-h-10 w-full items-center gap-2 text-left"
+              >
+                <span aria-hidden className="plaka-susu" />
+                <span className={yazi}>{baslik}</span>
+                <span aria-hidden className="plaka-cizgi" />
+                <span aria-hidden className="text-[12px] text-sonuk">
+                  {acik ? '▾' : '▸'}
+                </span>
+              </button>
+            </h2>
             {yan}
           </header>
         ) : (
-          <header className="mb-2.5 flex items-center justify-between gap-2">
-            {basligiCiz(baslik)}
+          <header
+            className={`plaka mb-2 flex min-h-7 items-center gap-2 ${sakin ? 'plaka-sakin' : ''}`}
+          >
+            <span aria-hidden className="plaka-susu" />
+            <h2 className={yazi}>{baslik}</h2>
+            <span aria-hidden className="plaka-cizgi" />
             {yan}
           </header>
         ))}
@@ -510,7 +510,22 @@ export function AltSekmeler<T extends string>({
 }
 
 export function DurumSiridi({ children }: { children: ReactNode }) {
-  return <div className="grid grid-cols-2 gap-1.5 [&>*]:w-full">{children}</div>;
+  /*
+   * ÜÇ hap tek satır. İki sütunlu ızgara dört hapta satırları dolduruyor
+   * ama üçte üçüncüsünü yine tek başına bırakıyordu (Lord: bölge, seviye,
+   * saldırı; Malikâne: bölge, altın, erzak) — ızgaranın bitirmek için
+   * geldiği tırtıklı kenarın aynısı.
+   */
+  const uc = Children.toArray(children).length === 3;
+  return (
+    <div
+      className={`grid gap-1.5 [&>*]:w-full ${
+        uc ? 'grid-cols-3 [&>*]:justify-center [&>*]:px-1.5' : 'grid-cols-2'
+      }`}
+    >
+      {children}
+    </div>
+  );
 }
 
 /**

@@ -27,6 +27,7 @@ import {
   IkonDemir,
   IkonErzak,
   IkonKale,
+  IkonTaht,
   IkonSure,
 } from '../components/Ikonlar';
 import { Cumle } from '../components/Cumle';
@@ -118,9 +119,9 @@ export function Malikane({
 
       <DurumSiridi>
         <Hap
-          ikon={<IkonKale boyut={13} />}
+          ikon={lord.ownsThrone ? <IkonTaht boyut={13} /> : <IkonKale boyut={13} />}
           renk="var(--color-altin)"
-        >{`${lord.regionCount}/${lord.maxRegions} bölge${lord.ownsThrone ? ' +Taht' : ''}`}</Hap>
+        >{`${lord.regionCount}/${lord.maxRegions} bölge`}</Hap>
         <Hap
           ikon={<IkonAltin boyut={13} />}
           renk="var(--color-kaynak-altin)"

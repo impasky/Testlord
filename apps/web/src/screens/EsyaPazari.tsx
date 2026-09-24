@@ -241,14 +241,22 @@ function Secici({
   return (
     <div>
       <span className="baslik text-[10px] text-sonuk">{etiket}</span>
-      <div className="mt-1 flex flex-wrap gap-1.5">
+      {/* Izgara, sarma değil: altı yuva flex-wrap'te 5 + 1 diziliyordu
+          (Sancak tek başına ikinci satırda). Beşe kadar tek satır,
+          altı seçenek üçerli iki satır. */}
+      <div
+        className="mt-1 grid gap-1.5"
+        style={{
+          gridTemplateColumns: `repeat(${secenekler.length <= 5 ? secenekler.length : 3}, minmax(0, 1fr))`,
+        }}
+      >
         {secenekler.map((s) => (
           <button
             key={s.key}
             type="button"
             onClick={() => onSec(s.key)}
             aria-pressed={deger === s.key}
-            className={`min-h-10 min-w-10 rounded-lg border px-2.5 py-1.5 text-[12px] ${
+            className={`min-h-10 rounded-lg border px-1 py-1.5 text-center text-[12px] ${
               deger === s.key ? 'border-altin bg-altin/15 text-altin' : 'border-kenar text-parsomen'
             }`}
             style={deger !== s.key && s.renk ? { color: s.renk } : undefined}

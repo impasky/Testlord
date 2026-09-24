@@ -57,6 +57,16 @@ interface Adim {
   git?: () => void;
   /** Döngüyü görünür kılan tek satır. */
   sonraki?: string;
+  /**
+   * BEKLEYİŞ adımlarında şeridin alt satırı: düğmenin neden orada
+   * olduğu. "Ordun dönüyor" başlığının altında "sonra: saldır" yazıp
+   * düğmede "Demirhaneye git" demek, üç parçayı birbirine bağlamadan
+   * yan yana koymaktı; oyuncu demirhanenin dönüşle ne ilgisi olduğunu
+   * soruyordu. "beklerken: ekipman üret" bağı kuruyor.
+   */
+  ara?: string;
+  /** Beklenen anın zamanı: şeritte başlığın yanında geri sayım. */
+  bitis?: string;
   /** Eylemin götürdüğü sekme; alt çubukta işaretlemek için. */
   hedefSekme?: Sekme;
   /**
@@ -433,11 +443,24 @@ export function OmurgaSeridi({
               <IkonYer boyut={16} />
             </span>
             <span className="min-w-0">
-              <span className="baslik block truncate text-[13px] leading-tight text-altin">
-                {adim.baslik}
+              <span className="flex items-baseline gap-1.5">
+                <span className="baslik truncate text-[13px] leading-tight text-altin">
+                  {adim.baslik}
+                </span>
+                {adim.bitis && (
+                  <span className="shrink-0 text-[11px] leading-tight text-parsomen">
+                    <GeriSayim bitis={adim.bitis} kisa />
+                  </span>
+                )}
               </span>
-              {adim.sonraki && (
-                <span className="block truncate text-[11px] leading-tight text-sonuk">{`sonra: ${adim.sonraki}`}</span>
+              {adim.ara ? (
+                <span className="block truncate text-[11px] leading-tight text-sonuk">
+                  {adim.ara}
+                </span>
+              ) : (
+                adim.sonraki && (
+                  <span className="block truncate text-[11px] leading-tight text-sonuk">{`sonra: ${adim.sonraki}`}</span>
+                )
               )}
             </span>
           </button>
@@ -653,6 +676,7 @@ export function siradakiAdim(g: {
       anahtar: 'egitim-bekle',
       baslik: 'Askerlerin eğitiliyor',
       cumle: oneri ? `Hazır olunca ${oneri.name} üzerine yürüyeceksin.` : undefined,
+      bitis: ilk.finishAt,
       rozetler: [
         <Hap key="sure" ikon={<IkonSure boyut={13} />} renk="var(--color-altin)">
           <GeriSayim bitis={ilk.finishAt} />
@@ -674,6 +698,8 @@ export function siradakiAdim(g: {
       anahtar: 'ordu-yolda',
       baslik: donus ? 'Ordun dönüyor' : 'Ordun yolda',
       cumle: 'Bu sürede ekipman üretebilir ya da bölgeni yükseltebilirsin.',
+      ara: 'beklerken: ekipman üret',
+      bitis: ilk.arriveAt,
       rozetler: [
         <Hap key="sure" ikon={<IkonSure boyut={13} />} renk="var(--color-altin)">
           <GeriSayim bitis={ilk.arriveAt} />

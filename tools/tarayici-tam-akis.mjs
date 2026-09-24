@@ -115,7 +115,9 @@ await page.screenshot({ path: `${CIKTI}/mob-1-malikane.png` });
 
 // --- Lord: stat dağıtımı (menüden) ---
 await sekme('Lord');
-await page.waitForSelector('text=Nitelikler', { timeout: 8000 });
+// Bölümün KİMLİĞİ, başlık metni değil: "Nitelikler" başlığı sekme adını
+// tekrarladığı için kaldırıldı ve metne bağlı bekleyiş boşa düştü.
+await page.waitForSelector('#nitelikler', { timeout: 8000 });
 const artilar = page.locator('button:has-text("+")');
 for (let i = 0; i < 10; i++) await artilar.nth(2).click();
 await tiklaVeBekle(page, 'button:has-text("puanı dağıt")', '/me/stats');

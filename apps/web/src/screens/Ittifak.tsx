@@ -196,8 +196,10 @@ export function Ittifak({ lordId }: { lordId: string }) {
   const { ittifakim, liste, altin, kurmaMaliyeti, azamiUye, bekleme, basvuru } = q.data;
   const liderMiyim = ittifakim?.liderId === lordId;
 
+  // Öteki kapılar gibi `space-y-4`: parça (<>) iken bölümler kapının
+  // kabının aralığına kalıyordu ve ilk başlık afişe yapışıyordu.
   return (
-    <>
+    <div className="space-y-4">
       {/* Oyunun üç direğinden biri (şehir · ordu · ittifak) ve tek zeminsiz
           olan buydu: dokuz ekranın dokuzunda manzara şeridi vardı, burada
           yoktu. Şerit ekranı bir mekâna oturtuyor — müttefik sancaklarının
@@ -409,95 +411,114 @@ export function Ittifak({ lordId }: { lordId: string }) {
           {liste.length === 0 ? (
             <BosHal mesaj="Bu diyarda henüz ittifak yok. İlkini sen kurabilirsin." eylemler={[]} />
           ) : (
-            <ul className="space-y-2">
-              {liste.map((a, i) => (
-                <li key={a.id}>
-                  <Kart className="p-3" vurgu={a.benimki ? 'var(--color-altin)' : undefined}>
-                    {/* Satırın tamamı tıklanabilir: "incele" diye ayrı bir
-                        düğme koymak, listeyi düğme tarlasına çevirirdi. */}
-                    <button
-                      type="button"
-                      className="bas flex w-full items-center gap-2 py-1 text-left"
-                      onClick={() => setInceleId(a.id)}
-                      aria-label={`${a.ad} ittifakını incele`}
+            <>
+              {/*
+               * Katılmayı toptan kapatan durumlar listenin ÜSTÜNDE bir kez:
+               * önce her satırın düğmesine yazılıyordu ve sekiz satır aynı
+               * "3sa sonra katılabilirsin" cümlesini tekrarlıyordu.
+               */}
+              {!ittifakim && (bekleme || basvuru.acik >= basvuru.azami) && (
+                <p className="mb-2 text-[12px] leading-snug text-turuncu">
+                  {bekleme
+                    ? `${formatKalan(bekleme.kalanSn * 1000)} sonra katılabilirsin`
+                    : `${basvuru.azami} başvuru hakkın dolu`}
+                </p>
+              )}
+              {/*
+               * Liste TEK kart, ittifaklar satır. Önce her ittifak kendi
+               * kartıydı ve altında tam genişlik bir Başvur düğmesi vardı:
+               * sekiz ittifak üç buçuk ekran, ekranın yarısı aynı düğme.
+               * Düğme artık satırın sağında küçük; satırın geri kalanı
+               * incelemeyi açıyor.
+               */}
+              <Kart className="p-0">
+                <ul className="divide-y divide-kenar">
+                  {liste.map((a, i) => (
+                    <li
+                      key={a.id}
+                      className={`flex items-center gap-2 px-3 py-2.5 ${a.benimki ? 'bg-altin/10' : ''}`}
                     >
-                      <span className="tabular w-5 shrink-0 text-[12px] text-solgun">{i + 1}.</span>
-                      {/* Arma adın SOLUNDA: listede gezen oyuncu ittifakları
-                          okumadan önce ayırt edebilmeli. */}
-                      <Arma arma={a.arma} boyut={22} />
-                      <span className="min-w-0 flex-1 truncate text-[13px] font-bold">
-                        {a.ad} <span className="text-solgun">[{a.etiket}]</span>
-                      </span>
-                      {/* Seviye: katılacağı ya da pakt yapacağı ittifağı
-                          seçen oyuncunun baktığı ilk şey. */}
-                      <span className="baslik shrink-0 rounded-md bg-altin/15 px-1.5 py-0.5 text-[11px] text-altin">{`Sv ${a.seviye}`}</span>
-                      <span className="tabular shrink-0 text-[11px] text-solgun">
-                        {a.uyeSayisi}/{azamiUye}
-                      </span>
-                      <span className="tabular flex w-20 shrink-0 items-center justify-end gap-1 text-[13px] font-bold">
-                        <span className="text-altin/70">
-                          <IkonSohret boyut={13} />
+                      {/* Satırın tamamı tıklanabilir: "incele" diye ayrı bir
+                          düğme koymak, listeyi düğme tarlasına çevirirdi. */}
+                      <button
+                        type="button"
+                        className="bas flex min-w-0 flex-1 items-center gap-2 text-left"
+                        onClick={() => setInceleId(a.id)}
+                        aria-label={`${a.ad} ittifakını incele`}
+                      >
+                        <span className="tabular w-5 shrink-0 text-[12px] text-solgun">{`${i + 1}.`}</span>
+                        {/* Arma adın SOLUNDA: listede gezen oyuncu ittifakları
+                            okumadan önce ayırt edebilmeli. */}
+                        <Arma arma={a.arma} boyut={26} />
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-[13px] font-bold">
+                            {a.ad} <span className="text-solgun">[{a.etiket}]</span>
+                          </span>
+                          <span className="mt-0.5 flex items-center gap-1.5 text-[11px] text-solgun">
+                            {/* Seviye: katılacağı ya da pakt yapacağı ittifağı
+                                seçen oyuncunun baktığı ilk şey. */}
+                            <span className="baslik rounded bg-altin/15 px-1 text-altin">{`Sv ${a.seviye}`}</span>
+                            <span className="tabular">{`${a.uyeSayisi}/${azamiUye}`}</span>
+                            <span className="flex items-center gap-0.5">
+                              <IkonSohret boyut={11} className="text-altin/70" />
+                              <span className="tabular">{formatSayi(a.toplamSohret)}</span>
+                            </span>
+                          </span>
+                          {/* Kapının hâli satırda yazıyor: oyuncu "Katıl"a basıp
+                              reddedilerek öğrenmemeli. Eşik varsa da burada. */}
+                          {!ittifakim && (a.katilim === 'basvuru' || a.asgariSeviye > 1) && (
+                            <span className="mt-0.5 block truncate text-[11px] text-sonuk">
+                              {a.katilim === 'basvuru'
+                                ? 'Başvuru ile üye alıyor'
+                                : 'Herkes katılabilir'}
+                              {a.asgariSeviye > 1 && ` · en az Sv${a.asgariSeviye}`}
+                            </span>
+                          )}
                         </span>
-                        {formatSayi(a.toplamSohret)}
-                      </span>
-                    </button>
+                      </button>
 
-                    {/* Kapının hâli satırda yazıyor: oyuncu "Katıl"a basıp
-                        reddedilerek öğrenmemeli. Eşik varsa da burada. */}
-                    {!ittifakim && (a.katilim === 'basvuru' || a.asgariSeviye > 1) && (
-                      <p className="mt-1.5 text-[11px] text-solgun">
-                        {a.katilim === 'basvuru' ? 'Başvuru ile üye alıyor' : 'Herkes katılabilir'}
-                        {a.asgariSeviye > 1 && ` · en az Sv${a.asgariSeviye}`}
-                      </p>
-                    )}
-
-                    {!ittifakim && a.basvurumId && (
-                      <Buton
-                        tur="anahat"
-                        boy="kucuk"
-                        tam
-                        className="mt-2"
-                        onClick={() => basvuruGeriCek.mutate(a.basvurumId!)}
-                        disabled={bekliyor}
-                      >
-                        Başvuruldu · geri çek
-                      </Buton>
-                    )}
-
-                    {!ittifakim && !a.basvurumId && (
-                      <Buton
-                        tur="sessiz"
-                        boy="kucuk"
-                        tam
-                        className="mt-2"
-                        onClick={() =>
-                          a.katilim === 'basvuru' ? basvur.mutate(a.id) : katil.mutate(a.id)
-                        }
-                        disabled={
-                          bekliyor ||
-                          a.uyeSayisi >= azamiUye ||
-                          bekleme !== null ||
-                          (a.katilim === 'basvuru' && basvuru.acik >= basvuru.azami)
-                        }
-                      >
-                        {a.uyeSayisi >= azamiUye
-                          ? 'Dolu'
-                          : bekleme
-                            ? `${formatKalan(bekleme.kalanSn * 1000)} sonra katılabilirsin`
-                            : a.katilim === 'basvuru'
-                              ? basvuru.acik >= basvuru.azami
-                                ? `${basvuru.azami} başvuru hakkın dolu`
-                                : 'Başvur'
-                              : 'Katıl'}
-                      </Buton>
-                    )}
-                  </Kart>
-                </li>
-              ))}
-            </ul>
+                      {!ittifakim &&
+                        (a.basvurumId ? (
+                          <Buton
+                            tur="anahat"
+                            boy="kucuk"
+                            className="shrink-0"
+                            etiket={`${a.ad}: başvuruyu geri çek`}
+                            onClick={() => basvuruGeriCek.mutate(a.basvurumId!)}
+                            disabled={bekliyor}
+                          >
+                            Geri çek
+                          </Buton>
+                        ) : (
+                          <Buton
+                            tur="sessiz"
+                            boy="kucuk"
+                            className="shrink-0"
+                            onClick={() =>
+                              a.katilim === 'basvuru' ? basvur.mutate(a.id) : katil.mutate(a.id)
+                            }
+                            disabled={
+                              bekliyor ||
+                              a.uyeSayisi >= azamiUye ||
+                              bekleme !== null ||
+                              (a.katilim === 'basvuru' && basvuru.acik >= basvuru.azami)
+                            }
+                          >
+                            {a.uyeSayisi >= azamiUye
+                              ? 'Dolu'
+                              : a.katilim === 'basvuru'
+                                ? 'Başvur'
+                                : 'Katıl'}
+                          </Buton>
+                        ))}
+                    </li>
+                  ))}
+                </ul>
+              </Kart>
+            </>
           )}
         </Bolum>
       )}
-    </>
+    </div>
   );
 }

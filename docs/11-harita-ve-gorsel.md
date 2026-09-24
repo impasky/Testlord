@@ -315,6 +315,58 @@ Hareket azaltılmışsa (`prefers-reduced-motion`) sayı sayılmıyor, parıltı
 nefes almıyor, kutlama kıpırdamadan duruyor; bilgi aynı, yalnız hareket
 yok.
 
+### 2.6 İkinci cila turu: sahte düğme, tırtıklı ızgara, kart yığını
+
+On altı ekran (giriş, beş sekme, on kapı) tam boy yeniden çekildi.
+Kurallar §2.3'teki gibi: yeni özellik yok, yalnız okunuş.
+
+**Bölüm başlığı düğmeye benziyordu.** §2.3'ün plakası çerçeveli bir
+haptı ve `Buton tur="anahat"` ile aynı biçimdeydi — yuvarlak, 2 px
+kenar, alt gölge. On altı ekranın hepsinde basılabilir görünen ama
+basılmayan öge vardı; Şehir'de "KUYRUKLAR" plakasının hemen altında
+gerçek "KIŞLA" düğmesi duruyordu. Plaka artık el yazmasının bölüm
+çizgisi: baklava süs, altın yazı, sağa uzanıp solan çizgi. Sakin bölümde
+süs içi boş, çizgi kesikli; katlanır bölümde bütün satır düğme ve
+sonunda ok var. Başlığın işi bölümü ayırmak — göz yine sayıyor, parmak
+uzanmıyor.
+
+**Seçim çipleri tırtıklı sarıyordu.** Demirhane'de beş kademe ile altı
+yuva, Pazar'da yuva/kademe/nadirlik `flex-wrap` ile diziliyordu: "T3
+Demirhane 2" iki hücre kaplıyor, Sancak ikinci satırda tek kalıyordu.
+Hepsi ızgara (beş kademe beş sütun, altı yuva üçerli iki satır). Kilitli
+kademenin sebebi hücrede kısaltılmış (örs simgesi + 2, kilit + Sv36),
+açılımı altında tek cümle: "T3 için Demirhane 2. seviye olmalı."
+Aynı kusur `DurumSiridi`'nde de vardı: üç hap iki sütunda üçüncüsünü
+tek bırakıyordu (Lord, Malikâne). Üç hap artık tek satır; taht sahibinin
+"+Taht" eki yerine bölge hapının simgesi taht oluyor ki satıra sığsın.
+
+**Liste ekranları kart yığınıydı.** Olaylar'da her olay, İttifak'ta her
+ittifak ayrı kabartmalı karttı; İttifak'ta ayrıca her kartın altında
+tam genişlik "BAŞVUR" vardı. Sekiz ittifak üç buçuk ekran, on dokuz olay
+üç ekran. İkisi de artık tek kart içinde bölücülü satırlar. Olaylar
+güne göre gruplu ("Bugün", "Dün", tarih) ve satırda yalnız saat var —
+aynı "24/09" on dokuz kez yazmıyor; tür rengi kartın üst şeridinden
+satırın sol çizgisine geçti. İttifak'ta düğme satırın sağında küçük;
+"3sa sonra katılabilirsin" gibi hepsini kapatan durum listenin üstünde
+bir kez yazıyor, sekiz düğmede değil.
+
+**Aynı söz iki kez.** "NİTELİK" sekmesinin altında "NİTELİKLER" başlığı,
+"Hesap" panelinin içinde "HESAP" bölümü vardı; ikisi de kalktı.
+
+**Omurga şeridi üç parçayı bağlamıyordu.** "Ordun dönüyor / sonra:
+saldır / DEMİRHANEYE GİT": düğmenin dönüşle ne ilgisi olduğu yazmıyordu.
+Bekleyiş adımlarında şerit artık geri sayımı başlığın yanında gösteriyor
+ve alt satırda düğmenin sebebini söylüyor: "beklerken: ekipman üret".
+
+**Küçük olanlar.** Görev özeti kartında iki hap başlıkla aynı satıra
+sığmaya çalışıp alt alta sarıyordu; artık simge + başlık + düz sayaç
+satırı + "ÖDÜL HAZIR" rozeti. Giriş ekranındaki diyar listesi kaydırmalı
+ama dördüncü kart kenarda yarım kesiliyor ve hata gibi duruyordu;
+altında devamı varken alt kenar soluyor.
+
+Ölçü (iPhone 13 genişliği, yerleşmiş lord, tam boy ekran görüntüsü): İttifak 1818 →
+1310 px, Olaylar 1606 → 1285 px, Lord 1651 → 1537 px.
+
 ---
 
 ## 3. Ölçüt

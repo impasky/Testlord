@@ -59,6 +59,31 @@ export const OLAY_RENGI: Record<string, string> = {
   pakt_reddedildi: 'var(--color-solgun)',
 };
 
+/**
+ * Olayları güne göre ayırır: "Bugün", "Dün", sonra tarih. Sıra korunuyor
+ * (sunucu yeniden eskiye veriyor).
+ */
+function gunlereBol(olaylar: GameEvent[]): { gun: string; olaylar: GameEvent[] }[] {
+  const gunAnahtari = (d: Date) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+  const bugun = new Date();
+  const dun = new Date(bugun.getTime() - 86_400_000);
+  const out: { gun: string; olaylar: GameEvent[] }[] = [];
+  for (const e of olaylar) {
+    const d = new Date(e.createdAt);
+    const k = gunAnahtari(d);
+    const gun =
+      k === gunAnahtari(bugun)
+        ? 'Bugün'
+        : k === gunAnahtari(dun)
+          ? 'Dün'
+          : d.toLocaleDateString(yerel(), { day: 'numeric', month: 'long' });
+    const son = out[out.length - 1];
+    if (son?.gun === gun) son.olaylar.push(e);
+    else out.push({ gun, olaylar: [e] });
+  }
+  return out;
+}
+
 export function Olaylar({
   lord,
   events,
@@ -89,44 +114,70 @@ export function Olaylar({
             ]}
           />
         ) : (
-          <div className="space-y-2">
-            {events.map((e) => {
-              // Savaş olayları raporu taşır; taşımayanlar düz kart kalır.
-              // Tıklanamayan bir kartı tıklanabilir göstermek, olay
-              // akışında her satırı denemeye davet ederdi.
-              const raporId = typeof e.payload.battleId === 'string' ? e.payload.battleId : null;
-              const govde = (
-                <div className="flex items-baseline justify-between gap-2">
-                  <p className="min-w-0 flex-1 text-[13px]">
-                    {typeof e.payload.mesaj === 'string' ? e.payload.mesaj : e.kind}
-                  </p>
-                  <time className="shrink-0 text-[11px] text-sonuk">
-                    {new Date(e.createdAt).toLocaleString(yerel(), {
-                      day: '2-digit',
-                      month: '2-digit',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </time>
-                </div>
-              );
-              return (
-                <Kart key={e.id} className="p-3" vurgu={OLAY_RENGI[e.kind]}>
-                  {raporId ? (
-                    <button
-                      className="bas w-full text-left"
-                      onClick={() => setRapor(raporId)}
-                      aria-label="Savaş raporunu aç"
-                    >
-                      {govde}
-                      <span className="baslik mt-1 block text-[11px] text-altin">RAPORU AÇ</span>
-                    </button>
-                  ) : (
-                    govde
-                  )}
+          <div className="space-y-3">
+            {gunlereBol(events).map(({ gun, olaylar }) => (
+              <div key={gun}>
+                <p className="baslik mb-1.5 text-[11px] text-sonuk">{gun}</p>
+                {/*
+                 * Bir gün TEK kart, olaylar satır. Önce her olay kendi
+                 * kartıydı: on dokuz olay on dokuz kabartmalı kutu, üç
+                 * ekran boyu, ve her kutuda aynı "24/09" tekrar ediyordu.
+                 * Geçmiş kaydı bir defter gibi okunmalı; tür rengi kartın
+                 * üst şeridinden satırın sol çizgisine taşındı.
+                 */}
+                <Kart className="divide-y divide-kenar p-0">
+                  {olaylar.map((e) => {
+                    // Savaş olayları raporu taşır; taşımayanlar düz satır
+                    // kalır. Tıklanamayan bir satırı tıklanabilir göstermek,
+                    // akışta her satırı denemeye davet ederdi.
+                    const raporId =
+                      typeof e.payload.battleId === 'string' ? e.payload.battleId : null;
+                    const govde = (
+                      <>
+                        <span
+                          aria-hidden
+                          className="w-[3px] shrink-0 self-stretch rounded-full"
+                          style={{ background: OLAY_RENGI[e.kind] ?? 'var(--color-kenar)' }}
+                        />
+                        <span className="min-w-0 flex-1">
+                          <span className="block text-[13px] leading-snug">
+                            {typeof e.payload.mesaj === 'string' ? e.payload.mesaj : e.kind}
+                          </span>
+                          {raporId && (
+                            <span className="baslik mt-0.5 block text-[11px] text-altin">
+                              RAPORU AÇ
+                            </span>
+                          )}
+                        </span>
+                        <time
+                          dateTime={e.createdAt}
+                          className="tabular shrink-0 pt-0.5 text-[11px] text-sonuk"
+                        >
+                          {new Date(e.createdAt).toLocaleTimeString(yerel(), {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </time>
+                      </>
+                    );
+                    return raporId ? (
+                      <button
+                        key={e.id}
+                        className="bas flex min-h-11 w-full gap-2.5 px-3 py-2.5 text-left"
+                        onClick={() => setRapor(raporId)}
+                        aria-label="Savaş raporunu aç"
+                      >
+                        {govde}
+                      </button>
+                    ) : (
+                      <div key={e.id} className="flex gap-2.5 px-3 py-2.5">
+                        {govde}
+                      </div>
+                    );
+                  })}
                 </Kart>
-              );
-            })}
+              </div>
+            ))}
           </div>
         )}
       </Bolum>

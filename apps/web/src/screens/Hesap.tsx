@@ -95,7 +95,9 @@ export function Hesap({
 
   return (
     <div className="space-y-4 pt-3">
-      <Bolum baslik="Hesap">
+      {/* Başlıksız: panelin kendi adı zaten "Hesap"; içinde bir de
+          "HESAP" bölümü aynı sözün tekrarıydı. */}
+      <Bolum>
         <Kart className="p-3">
           <p className="text-[13px] text-solgun">
             Lordun <span className="font-bold text-parsomen">{lord.name}</span> · Seviye{' '}

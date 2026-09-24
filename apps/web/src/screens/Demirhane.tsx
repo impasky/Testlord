@@ -21,7 +21,7 @@ import {
 } from '../api/client';
 import { eYonelme, inIlgi } from '../components/ekler';
 import { hisOnay, hisRet } from '../components/hisGeriBildirimi';
-import { IkonNavDemirhane } from '../components/Ikonlar';
+import { IkonKilit, IkonNavDemirhane } from '../components/Ikonlar';
 import {
   AltSekmeler,
   Bolum,
@@ -423,46 +423,73 @@ export function Demirhane({
       {sekme === 'uretim' && (
         <Bolum id="ekipman-uretimi">
           <Kart className="p-3">
-            {/* Şeritler SARMALANIYOR, yatay kaymıyor.
-              Önce overflow-x-auto idi: altı slot 390 piksele sığmıyor ve
-              sonuncusu (Sancak) ekranın dışında kalıyordu. Kaydırma çubuğu
-              da gizli olduğu için orada bir şey olduğu belli değildi —
-              oyuncu bir slotu hiç görmeden oynayabilirdi. Sarmalayınca
-              hepsi görünüyor ve düğmeler parmağa uygun büyüklükte. */}
-            <div className="mb-2 flex flex-wrap gap-1.5">
+            {/*
+             * Seçimler IZGARA: önce flex-wrap ile sarıyordu (yatay kaydırma
+             * altıncı yuvayı ekranın dışında bırakıyordu) ve sarma noktası
+             * etiket uzunluğuna bağlıydı — "T3 Demirhane 2" iki hücre
+             * kaplıyor, Sancak ikinci satırda tek başına kalıyordu.
+             * Beş kademe beş sütun, altı yuva üç sütun: satırlar hep dolu.
+             */}
+            <div className="mb-1.5 grid grid-cols-5 gap-1.5">
               {items.data?.tiers.map((t) => (
                 <button
                   key={t.tier}
                   onClick={() => t.unlocked && setTier(t.tier)}
                   disabled={!t.unlocked}
-                  className={`bas baslik min-h-11 shrink-0 rounded-lg border px-3 py-2 text-[12px] ${
+                  aria-label={
+                    t.unlocked
+                      ? `T${t.tier}`
+                      : `T${t.tier}, kilitli: ${t.seviyeYetiyor ? `Demirhane ${t.gerekenDemirhane}` : `Sv${t.unlockLevel}`}`
+                  }
+                  className={`bas flex min-h-11 flex-col items-center justify-center rounded-lg border px-1 py-1 ${
                     tier === t.tier
                       ? 'border-altin/60 bg-altin/15 text-altin'
                       : t.unlocked
                         ? 'border-kenar text-solgun'
-                        : 'border-kenar/50 text-sonuk/50'
+                        : 'border-dashed border-kenar text-sonuk'
                   }`}
                 >
-                  T{t.tier}
-                  {/* Kilidin SEBEBİ yazıyor. "Sv50" tek başına yanıltıcıydı:
+                  <span className="baslik text-[13px] leading-4">{`T${t.tier}`}</span>
+                  {/* Kilidin SEBEBİ hücrede: "Sv50" mi, demirhane mi?
                       50. seviye lord demirhanesi küçük olduğu için hâlâ
-                      dövemiyorsa, ekranda düzeltebileceği bir şey
-                      görmeli (docs/09 İ1). */}
+                      dövemiyorsa düzeltebileceği şeyi görmeli (docs/09 İ1). */}
                   {!t.unlocked && (
-                    <span className="ml-1 text-[11px]">
-                      {t.seviyeYetiyor ? `Demirhane ${t.gerekenDemirhane}` : `Sv${t.unlockLevel}`}
+                    <span className="flex items-center gap-0.5 text-[11px] leading-4">
+                      {t.seviyeYetiyor ? (
+                        <>
+                          <IkonNavDemirhane boyut={11} />
+                          {t.gerekenDemirhane}
+                        </>
+                      ) : (
+                        <>
+                          <IkonKilit boyut={10} />
+                          {`Sv${t.unlockLevel}`}
+                        </>
+                      )}
                     </span>
                   )}
                 </button>
               ))}
             </div>
+            {(() => {
+              // Sıradaki kilidin tam cümlesi: hücredeki kısaltmanın açılımı.
+              const sonraki = items.data?.tiers.find((t) => !t.unlocked);
+              if (!sonraki) return null;
+              return (
+                <p className="mb-2.5 text-[11px] leading-snug text-sonuk">
+                  {sonraki.seviyeYetiyor
+                    ? `T${sonraki.tier} için Demirhane ${sonraki.gerekenDemirhane}. seviye olmalı.`
+                    : `T${sonraki.tier} lord seviyesi ${sonraki.unlockLevel} ile açılır.`}
+                </p>
+              );
+            })()}
 
-            <div className="mb-3 flex flex-wrap gap-1.5">
+            <div className="mb-3 grid grid-cols-3 gap-1.5">
               {EQUIP_SLOTS.map((s) => (
                 <button
                   key={s}
                   onClick={() => setSlot(s)}
-                  className={`bas baslik min-h-11 shrink-0 rounded-lg border px-3 py-2 text-[12px] ${
+                  className={`bas baslik min-h-11 rounded-lg border px-1 py-2 text-[12px] ${
                     slot === s
                       ? 'border-altin/60 bg-altin/15 text-altin'
                       : 'border-kenar text-solgun'

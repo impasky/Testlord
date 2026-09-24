@@ -16,6 +16,7 @@ import { ApiError, api, type LordState } from '../api/client';
 import {
   IkonCan,
   IkonKale,
+  IkonTaht,
   IkonKurnaz,
   IkonNavLord,
   IkonSaldiri,
@@ -409,9 +410,9 @@ export function LordEkrani({
       {!ilkDongu && (
         <DurumSiridi>
           <Hap
-            ikon={<IkonKale boyut={13} />}
+            ikon={lord.ownsThrone ? <IkonTaht boyut={13} /> : <IkonKale boyut={13} />}
             renk="var(--color-altin)"
-          >{`${lord.regionCount}/${lord.maxRegions} bölge${lord.ownsThrone ? ' +Taht' : ''}`}</Hap>
+          >{`${lord.regionCount}/${lord.maxRegions} bölge`}</Hap>
           {/* Komuta yeri BURADA YAZMIYOR: hemen yukarıdaki ordu sahnesi
             aynı sayıyı zaten söylüyor ("12/90 komuta"). Aynı bilgiyi tek
             ekranda iki kez göstermek, oyuncunun "her yerde bir şeyler
@@ -456,15 +457,17 @@ export function LordEkrani({
 
       {sekme === 'guc' && (
         <>
-          <Bolum
-            id="nitelikler"
-            baslik="Nitelikler"
-            yan={
-              lord.statPoints > 0 ? (
+          {/*
+           * Başlıksız: hemen üstündeki sekme zaten "Nitelik" diyor ve
+           * "NİTELİK" sekmesinin altında "NİTELİKLER" başlığı aynı sözü
+           * iki kez söylüyordu. Dağıtılacak puan varsa rozeti kalıyor.
+           */}
+          <Bolum id="nitelikler">
+            {lord.statPoints > 0 && (
+              <div className="mb-2 flex justify-end">
                 <Rozet renk="var(--color-yesil)">{`${kalan} PUAN`}</Rozet>
-              ) : undefined
-            }
-          >
+              </div>
+            )}
             {/* DENEME: dört ayrı kart yerine BÖLÜNMÜŞ tek kart.
                 Dört kart, dört kenarlık ve aralarında üç boşluk demekti:
                 aynı dört satır için 320 piksel. Dördü de aynı şeyin

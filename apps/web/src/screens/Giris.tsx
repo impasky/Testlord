@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ApiError, api, setToken, type DiyarSecimiDto } from '../api/client';
 import { IkonNavMalikane } from '../components/Ikonlar';
 import { Alan, Buton, Input, Kart, formatSayi } from '../components/ui';
@@ -29,13 +29,29 @@ function DiyarSecimi({
   secili: string | null;
   onSec: (id: string) => void;
 }) {
+  // Listenin altında daha diyar var mı: varsa alt kenar soluyor.
+  const [devami, setDevami] = useState(false);
+  const olc = useCallback((el: HTMLDivElement | null) => {
+    if (el) setDevami(el.scrollTop + el.clientHeight < el.scrollHeight - 4);
+  }, []);
   if (liste.diyarlar.length < 2) return null;
   return (
     <div>
       <span className="baslik mb-1.5 block text-[11px] text-solgun">Diyar</span>
       {/* Kaydırmalı: diyar sayısı zamanla artıyor ve liste kayıt
-          ekranını süpüremez. Dört satır görünüyor, gerisi kaydırmada. */}
-      <div role="radiogroup" aria-label="Diyar" className="max-h-56 space-y-1.5 overflow-y-auto">
+          ekranını süpüremez. Dört satır görünüyor, gerisi kaydırmada.
+          Kaydığı belli olmalı: dördüncü kart kenarda yarım kesiliyor ve
+          kesik bir hata gibi duruyordu. Altında devamı varken alt kenar
+          soluyor; en alta inince solma kalkıyor. */}
+      <div
+        ref={olc}
+        onScroll={(e) => olc(e.currentTarget)}
+        role="radiogroup"
+        aria-label="Diyar"
+        className={`max-h-56 space-y-1.5 overflow-y-auto ${
+          devami ? '[mask-image:linear-gradient(to_bottom,black_75%,transparent)]' : ''
+        }`}
+      >
         {liste.diyarlar.map((d) => {
           const bu = secili === d.id;
           return (

@@ -14,6 +14,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { gunlukSayaci } from '@lordlar/shared';
 import { api } from '../api/client';
+import { IkonKitap } from './Ikonlar';
 import { Hap, Kart } from './ui';
 
 export function GorevOzeti({ onGit }: { onGit: () => void }) {
@@ -52,25 +53,42 @@ export function GorevOzeti({ onGit }: { onGit: () => void }) {
   const seferHazir = Boolean(s.data?.sefer.tamam && !s.data.odul.alindi);
   const odulVar = gunlukHazir || seferHazir;
 
+  /*
+   * Başlık solda ÜST satırda, sayaçlar altında düz yazı. Önce başlık,
+   * iki hap ve "ÖDÜL HAZIR" tek satıra sığmaya çalışıyordu: haplar alt
+   * alta sarıyor, kart üç parçalı dağınık bir satıra dönüyordu.
+   */
   return (
     <Kart className="p-3" onClick={onGit} vurgu={odulVar ? 'var(--color-yesil)' : undefined}>
-      <div className="flex items-center gap-2">
-        <span className="baslik shrink-0 text-[11px] text-solgun">GÖREVLER</span>
-        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
-          {sayac && (
-            <Hap
-              renk={sayac.tamam === sayac.toplam ? 'var(--color-yesil)' : undefined}
-            >{`bugün ${sayac.tamam}/${sayac.toplam}`}</Hap>
-          )}
-          {s.data && (
-            <Hap
-              renk={s.data.sefer.tamam ? 'var(--color-yesil)' : undefined}
-            >{`sefer ${s.data.sefer.simdi}/${s.data.sefer.hedef}`}</Hap>
-          )}
-        </div>
-        <span className="baslik shrink-0 text-[11px] text-altin">
-          {odulVar ? 'ÖDÜL HAZIR' : 'AÇ'}
+      <div className="flex items-center gap-3">
+        <span
+          aria-hidden
+          className="oyuk flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-altin"
+        >
+          <IkonKitap boyut={20} />
         </span>
+        <span className="min-w-0 flex-1">
+          <span className="baslik block text-[12px] text-parsomen">GÖREVLER</span>
+          <span className="mt-0.5 flex flex-wrap gap-x-2 text-[12px] text-solgun">
+            {sayac && (
+              <span
+                className={`tabular ${sayac.tamam === sayac.toplam ? 'text-yesil' : ''}`}
+              >{`bugün ${sayac.tamam}/${sayac.toplam}`}</span>
+            )}
+            {s.data && (
+              <span
+                className={`tabular ${s.data.sefer.tamam ? 'text-yesil' : ''}`}
+              >{`sefer ${s.data.sefer.simdi}/${s.data.sefer.hedef}`}</span>
+            )}
+          </span>
+        </span>
+        {odulVar ? (
+          <span className="baslik shrink-0 rounded-full bg-yesil/15 px-2.5 py-1 text-[11px] text-yesil">
+            ÖDÜL HAZIR
+          </span>
+        ) : (
+          <span className="baslik shrink-0 text-[11px] text-altin">AÇ</span>
+        )}
       </div>
     </Kart>
   );

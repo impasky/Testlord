@@ -106,7 +106,9 @@ kontrol('Kaynak çubuğu saatlik geliri gösteriyor', /\+\d+\/sa/.test(altin ?? 
 
 // Lord menüden çıkıp alt çubuğa yerleşti: artık beş sekmeden biri.
 await page.locator('nav button:has-text("Lord")').click();
-await page.waitForSelector('text=Nitelikler', { timeout: 8000 });
+// Bölümün KİMLİĞİ, başlık metni değil: "Nitelikler" başlığı sekme adını
+// tekrarladığı için kaldırıldı ve metne bağlı bekleyiş boşa düştü.
+await page.waitForSelector('#nitelikler', { timeout: 8000 });
 await page.screenshot({ path: `${CIKTI}/03-lord.png` });
 kontrol('Lord ekranı açıldı', await page.locator('text=Liderlik').first().isVisible());
 
