@@ -183,17 +183,22 @@ kontrol(
   )}`,
 );
 
-// --- 6. Yenilenme: vurulan grup gri kalıyor ---
+// --- 6. Yenilenme: normal grup beklemiyor (oyuncu kararı) ---
+// "Normal gruplarda limiti kaldıralım": vurulan normal grup hemen tekrar
+// vurulabiliyor; bekleyen yalnız şef (birim testi: akin.test.ts).
 akin = await get('/akin');
 const vurulan = akin.haritalar.find((x) => x.key === ilk.key).gruplar[0];
-kontrol('Vurulan grup KAPALI', vurulan.acik === false);
-kontrol('Ne zaman yenileneceği yazılı', Boolean(vurulan.yenilenirAt), vurulan.yenilenirAt ?? '');
-const tekrarRed = await post('/akin', { haritaKey: ilk.key, grupNo: 1, army: { mizrakci: 1 } });
+kontrol('Vurulan NORMAL grup açık kalıyor', vurulan.acik === true && !vurulan.yenilenirAt);
+const evdekiTur = Object.entries(evdeDonus).find(([, n]) => n > 0)?.[0];
+const tekrar = evdekiTur
+  ? await post('/akin', { haritaKey: ilk.key, grupNo: 1, army: { [evdekiTur]: 1 } })
+  : { code: 'BIRIM_YOK' };
 kontrol(
-  'Yenilenmemiş gruba akın REDDEDİLİYOR',
-  tekrarRed.code === 'GRUP_YENILENIYOR' || tekrarRed.code === 'BIRIM_YOK',
-  tekrarRed.error ?? '',
+  'Aynı normal gruba hemen yeniden akın KABUL ediliyor',
+  Boolean(tekrar.id),
+  tekrar.id ? `${evdekiTur} ile` : (tekrar.error ?? tekrar.code ?? ''),
 );
+await post('/test/akinlari-bitir');
 
 // --- 7. Rapor ---
 const rapor = await get(`/akin/${sonuc.id}`);

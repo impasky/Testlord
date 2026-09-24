@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { kafileTedaviSuresiSn, tedaviSuresiSn, yaraliVarMi } from './hastane.js';
-import { B, unit } from './balance.js';
+import { B } from './balance.js';
 import { UNIT_TYPES } from './types.js';
 
 describe('tedavi süresi', () => {
@@ -9,16 +9,21 @@ describe('tedavi süresi', () => {
     expect(kafileTedaviSuresiSn({})).toBe(0);
   });
 
-  it('tedavi HİÇBİR durumda sıfırdan eğitmekten uzun değil', () => {
-    // Bu bir ayar değil garanti: uzun olsaydı yaralıyı beklemek yerine
-    // yenisini eğitmek her zaman daha mantıklı olur ve hastane ölü bir
-    // ekran olarak kalırdı. İlk hesapta 5 milis için tedavi 7,3 dakika,
-    // eğitim 3,8 dakika çıkmıştı — kural sessizce çiğneniyordu.
+  it('tek yaralı bile TABAN kadar yatıyor — akından dönen asker hemen çıkmıyor', () => {
+    // Oyuncunun kararı: "askerlere iyileşme süresini uzatalım." Akın bir
+    // dakika ve normal gruplar sınırsız; aynı ordunun art arda kaç akın
+    // yapabileceğini hastane belirliyor. Eskiden 2 milis 90 sn yatıyordu.
     for (const t of UNIT_TYPES) {
-      for (const adet of [1, 3, 5, 17, 50, 200, 1000]) {
-        expect(tedaviSuresiSn(t, adet)).toBeLessThanOrEqual(unit(t).egitim_sn * adet);
-      }
+      expect(tedaviSuresiSn(t, 1)).toBeGreaterThanOrEqual(B.hastane.saniye_taban);
     }
+    expect(tedaviSuresiSn('milis', 2)).toBeGreaterThanOrEqual(10 * 60);
+  });
+
+  it('küçük bir akın kafilesi saatlerce yatmıyor', () => {
+    // Uzun ama oyundan koparan değil: bir akının tipik yaralısı (birkaç
+    // ile yirmi arası) yarım saat civarında dönüyor.
+    expect(kafileTedaviSuresiSn({ okcu: 8 })).toBeLessThan(30 * 60);
+    expect(kafileTedaviSuresiSn({ mizrakci: 18 })).toBeLessThan(45 * 60);
   });
 
   it('tavanı aşmıyor: büyük yenilgi oyuncuyu günlerce dışarıda bırakmıyor', () => {

@@ -21,15 +21,24 @@
  * ordusu kırılan lord yeniden "ordunu kur" adımını görür — kusur değil, o an
  * gerçekten yapması gereken şey odur.
  */
-import { B, ERZAK_FIRAR_ORANI, erzakTukenmesiSaat, unitName, type UnitType } from '@lordlar/shared';
+import {
+  B,
+  ERZAK_FIRAR_ORANI,
+  erzakTukenmesiSaat,
+  unitName,
+  type Resources,
+  type UnitType,
+} from '@lordlar/shared';
 import { useQuery } from '@tanstack/react-query';
 import { useState, type ReactNode } from 'react';
 import {
   api,
   type HedefOnerisiDto,
+  type ItemDto,
   type LordState,
   type MarchDto,
   type QueueItem,
+  type TierDto,
 } from '../api/client';
 import { eYonelme, iBelirtme } from './ekler';
 import {
@@ -118,13 +127,78 @@ const BOS_ISLEMLER: OmurgaIslemleri = {
   onBolumeGit: () => {},
 };
 
-/** En ucuz kiralanabilir generale eksik altın; veri yoksa null. */
+/**
+ * En ucuz kiralanabilir generale eksik altın; veri yoksa null.
+ *
+ * Kese LORDDAN okunuyor, generaller cevabındaki `altin`dan değil: o
+ * cevap akından dönen ganimeti görmüyordu ve adım "eksik" demeye devam
+ * ediyordu.
+ */
 function generalEksigi(
-  d: { altin: number; kadro: { sahipMi: boolean; maliyet_altin: number }[] } | undefined,
+  d: { kadro: { sahipMi: boolean; maliyet_altin: number }[] } | undefined,
+  eldeki: Resources,
 ): number | null {
   const alinabilir = (d?.kadro ?? []).filter((x) => !x.sahipMi);
   if (!d || alinabilir.length === 0) return null;
-  return Math.max(0, Math.min(...alinabilir.map((x) => x.maliyet_altin)) - d.altin);
+  return Math.max(0, Math.ceil(Math.min(...alinabilir.map((x) => x.maliyet_altin)) - eldeki.altin));
+}
+
+/** Maliyete ne kadar eksik; hepsi yetiyorsa null. */
+function kaynakEksigi(maliyet: Resources, eldeki: Resources): Resources | null {
+  const e = {
+    altin: Math.max(0, Math.ceil(maliyet.altin - eldeki.altin)),
+    demir: Math.max(0, Math.ceil(maliyet.demir - eldeki.demir)),
+    erzak: Math.max(0, Math.ceil(maliyet.erzak - eldeki.erzak)),
+  };
+  return e.altin + e.demir + e.erzak > 0 ? e : null;
+}
+
+/** Seçeneklerden biri yetiyorsa null; hiçbiri yetmiyorsa açığı en küçüğü. */
+function enAzEksik(eksikler: (Resources | null)[]): Resources | null {
+  let enAz: Resources | null = null;
+  for (const e of eksikler) {
+    if (e === null) return null;
+    if (!enAz || e.altin + e.demir + e.erzak < enAz.altin + enAz.demir + enAz.erzak) enAz = e;
+  }
+  return enAz;
+}
+
+/*
+ * Ekipman ve araştırma aşamalarına NE EKSİK — yapılabiliyorsa null.
+ *
+ * Oyuncu bildirdi: "Demirhaneye yönlendirdi, üretim yapamıyorum.
+ * Envantere tıkladım, burada işimiz bitti dedi ama ekipman
+ * kuşanmamıştım." Tur oyuncuyu kesesine bakmadan Demirhane'ye
+ * yolluyordu: kuşanacak parçası yok, T1 dövmeye 400 altın gerekiyor,
+ * elinde 289. Işık basılabilir bir düğme bulamayınca "paneli kapat"a
+ * düşüyor, omurga aynı adımı yeniden söylüyor, oyuncu döngüde kalıyordu.
+ * Araştırmanın ilk kademesi (4.000 altın) aynı tuzağın büyüğüydü.
+ *
+ * Veri henüz gelmediyse null ("yapılabilir"): bilinmeyeni engel saymak,
+ * sorgu gelene kadar adımı yanlış yere çevirirdi.
+ */
+function ekipmanEksigi(
+  d: { items: ItemDto[]; tiers: TierDto[] } | undefined,
+  eldeki: Resources,
+): Resources | null {
+  if (!d) return null;
+  // Kuşanılmamış bir parça varsa iş parasız: yalnız kuşanmak.
+  if (d.items.some((i) => !i.equipped)) return null;
+  const acik = d.tiers.filter((t) => t.unlocked);
+  if (acik.length === 0) return null;
+  return enAzEksik(acik.map((t) => kaynakEksigi(t.cost, eldeki)));
+}
+
+function arastirmaEksigi(
+  d:
+    | { dallar: { acik: boolean; tamamlandi: boolean; suruyor: boolean; maliyet: Resources }[] }
+    | undefined,
+  eldeki: Resources,
+): Resources | null {
+  if (!d) return null;
+  const adaylar = d.dallar.filter((x) => x.acik && !x.tamamlandi && !x.suruyor);
+  if (adaylar.length === 0) return null;
+  return enAzEksik(adaylar.map((x) => kaynakEksigi(x.maliyet, eldeki)));
 }
 
 export function useOmurgaAdimi(
@@ -161,6 +235,7 @@ export function useOmurgaAdimi(
     queryFn: api.arastirma,
     enabled: Boolean(lord),
   });
+  const esyalar = useQuery({ queryKey: ['items'], queryFn: api.items, enabled: Boolean(lord) });
 
   if (!lord) return null;
   // Bölge geliştirme durumu: haritadan türetiliyor, yeni bir alan yok.
@@ -194,7 +269,9 @@ export function useOmurgaAdimi(
     egitimde: queues.filter((q) => q.kind === 'train'),
     uretimde: queues.filter((q) => q.kind === 'craft'),
     gelistirmeSuruyor: queues.some((q) => q.kind === 'upgrade_region'),
-    generalEksikAltin: generalEksigi(generaller.data),
+    generalEksikAltin: generalEksigi(generaller.data, lord.resources),
+    ekipmanEksik: ekipmanEksigi(esyalar.data, lord.resources),
+    arastirmaEksik: arastirmaEksigi(arastirma.data, lord.resources),
     generalVar: (generaller.data?.kadro ?? []).some((x) => x.sahipMi),
     yarali: lord.woundedUntil ? new Date(lord.woundedUntil) > new Date() : false,
     yoldaki: yuruyusler.data ?? [],
@@ -225,6 +302,7 @@ export function Omurga({
   // Generaller /me içinde dönmüyor; yalnızca gerekince çekiliyor.
   const generaller = useQuery({ queryKey: ['generals'], queryFn: api.generals });
   const arastirma = useQuery({ queryKey: ['arastirma'], queryFn: api.arastirma });
+  const esyalar = useQuery({ queryKey: ['items'], queryFn: api.items });
 
   const oneri = harita.data?.oneri ?? null;
   const egitimde = queues.filter((q) => q.kind === 'train');
@@ -265,7 +343,9 @@ export function Omurga({
     egitimde,
     uretimde,
     gelistirmeSuruyor: queues.some((q) => q.kind === 'upgrade_region'),
-    generalEksikAltin: generalEksigi(generaller.data),
+    generalEksikAltin: generalEksigi(generaller.data, lord.resources),
+    ekipmanEksik: ekipmanEksigi(esyalar.data, lord.resources),
+    arastirmaEksik: arastirmaEksigi(arastirma.data, lord.resources),
     generalVar,
     yarali,
     yoldaki: yuruyusler.data ?? [],
@@ -596,6 +676,13 @@ export function siradakiAdim(g: {
    * bilinmiyor). Zorunlu tur generale ancak parası yetince götürüyor.
    */
   generalEksikAltin?: number | null;
+  /**
+   * Ekipman aşamasına ne eksik: kuşanılmamış parça yok VE hiçbir açık
+   * kademeyi dövmeye kaynak yetmiyor. null: yapılabilir ya da bilinmiyor.
+   */
+  ekipmanEksik?: Resources | null;
+  /** İlk araştırmaya ne eksik (en ucuz açık düğüm). null: yapılabilir. */
+  arastirmaEksik?: Resources | null;
   /** Hiç araştırma başlatmış ya da bitirmiş mi. */
   arastirmaBasladi: boolean;
   onGit: (s: Sekme) => void;
@@ -1052,13 +1139,14 @@ function arastirmaAdimi(g: OmurgaGirdisi, sonraki: string): Adim | null {
  * her saat boşa gidiyor, general kiralamak beklenebilir.
  */
 function ilkKezAdimi(g: OmurgaGirdisi): Adim | null {
-  return (
-    ekipmanAdimi(g, g.generalVar ? 'bölgeni yükselt' : 'general kirala') ??
-    depoAdimi(g) ??
-    generalAdimi(g, 'bölgeni yükselt') ??
-    gelistirAdimi(g) ??
-    arastirmaAdimi(g, 'diyarı büyütmeye devam et')
-  );
+  // Kesesi yetmeyen adım atlanıyor: oyuncuyu hiçbir şey yapamayacağı bir
+  // ekrana yollamak bir öneri değil, çıkmaz sokak (`ekipmanEksigi`).
+  const ekipman = g.ekipmanEksik
+    ? null
+    : ekipmanAdimi(g, g.generalVar ? 'bölgeni yükselt' : 'general kirala');
+  const general = (g.generalEksikAltin ?? 0) > 0 ? null : generalAdimi(g, 'bölgeni yükselt');
+  const arastirma = g.arastirmaEksik ? null : arastirmaAdimi(g, 'diyarı büyütmeye devam et');
+  return ekipman ?? depoAdimi(g) ?? general ?? gelistirAdimi(g) ?? arastirma;
 }
 
 /**
@@ -1068,30 +1156,48 @@ function ilkKezAdimi(g: OmurgaGirdisi): Adim | null {
  * öğreticide direkt dünya haritasından bölge almamalı, akın yapmalı."
  * Bölge aşaması turdan çıktı, bölge gerektiren geliştirme aşaması da.
  *
- * General en sonda ve PARASI YETİYORSA: en ucuz general 5.000 altın, yeni
- * lord ilk eğitimden sonra ~3.150 altınla kalıyor. Yetmiyorsa adım
- * "akına devam et" — perdesiz bir öneri. Oyuncuyu perdeyle yedi sekiz
- * akına zorlamak onu yine kilitlemek olurdu; akın ise bir dakika sürüyor
- * ve açığı ganimetle kapatıyor.
+ * KESESİ YETEN İLK AŞAMA seçiliyor. Önce yalnız general parasına
+ * bakılıyordu; ekipman ve araştırma kesesiz de gösteriliyordu ve oyuncu
+ * Demirhane'de basamadığı bir "üret" düğmesiyle baş başa kalıyordu
+ * (`ekipmanEksigi`). Hiçbiri yetmiyorsa adım "akına devam et" —
+ * perdesiz bir öneri. Oyuncuyu perdeyle yedi sekiz akına zorlamak onu
+ * yine kilitlemek olurdu; akın ise bir dakika sürüyor ve açığı
+ * ganimetle kapatıyor.
  */
 function turAdimi(g: OmurgaGirdisi): Adim | null {
-  const once = ekipmanAdimi(g, 'bir araştırma başlat') ?? arastirmaAdimi(g, 'general kirala');
-  if (once) return once;
-  if (g.generalVar) return null;
-  const eksik = g.generalEksikAltin ?? 0;
-  if (eksik <= 0) return generalAdimi(g, 'diyarı büyüt');
-  const { lord } = g;
-  const rozet = (
-    <Hap key="eksik" ikon={<IkonAltin boyut={13} />} renk="var(--color-kaynak-altin)">
-      {`${formatSayi(eksik)} eksik`}
-    </Hap>
-  );
-  if (lord.usedSlots === 0) {
+  const generalAcigi = g.generalEksikAltin ?? 0;
+  const kalan: { adim: Adim | null; eksik: Resources | null; cumle: string }[] = [
+    {
+      adim: ekipmanAdimi(g, 'bir araştırma başlat'),
+      eksik: g.ekipmanEksik ?? null,
+      cumle:
+        'Ekipman dövmeye kesen yetmiyor. Her akın bir dakika; ganimet de düşen parça da senin.',
+    },
+    {
+      adim: arastirmaAdimi(g, 'general kirala'),
+      eksik: g.arastirmaEksik ?? null,
+      cumle: 'Araştırmaya kesen yetmiyor. Her akın bir dakika; ganimeti ve ekipmanı sen alırsın.',
+    },
+    {
+      adim: g.generalVar ? null : generalAdimi(g, 'diyarı büyüt'),
+      eksik: generalAcigi > 0 ? { altin: generalAcigi, demir: 0, erzak: 0 } : null,
+      cumle: 'Generale altının yetmiyor. Her akın bir dakika; ganimeti ve ekipmanı sen alırsın.',
+    },
+  ].filter((k) => k.adim !== null);
+
+  const yapilabilir = kalan.find((k) => k.eksik === null);
+  if (yapilabilir) return yapilabilir.adim;
+  const ilk = kalan[0];
+  if (!ilk?.adim || !ilk.eksik) return null;
+
+  const rozetler = eksikRozetleri(ilk.eksik);
+  const sonraki = ilk.adim.baslik.charAt(0).toLocaleLowerCase('tr') + ilk.adim.baslik.slice(1);
+  if (g.lord.usedSlots === 0) {
     return {
       anahtar: 'akin-devam',
       baslik: 'Akın için asker yazdır',
-      cumle: 'Generale altının yetmiyor; açığı akın ganimeti kapatır. Önce ordun olmalı.',
-      rozetler: [rozet],
+      cumle: 'Kesen yetmiyor; açığı akın ganimeti kapatır. Önce ordun olmalı.',
+      rozetler,
       dugme: 'Kışlaya git',
       git: () => g.onGit('kisla'),
       hedefSekme: 'kisla',
@@ -1101,13 +1207,41 @@ function turAdimi(g: OmurgaGirdisi): Adim | null {
   return {
     anahtar: 'akin-devam',
     baslik: 'Akına devam et',
-    cumle: 'Generale altının yetmiyor. Her akın bir dakika; ganimeti ve ekipmanı sen alırsın.',
-    rozetler: [rozet],
+    cumle: ilk.cumle,
+    rozetler,
     dugme: 'Akına git',
     git: () => g.onGit('akin'),
     hedefSekme: 'akin',
-    sonraki: 'general kirala',
+    sonraki,
   };
+}
+
+/** Eksik kaynakları rozetlere çevirir; yeten kaynak yazılmıyor. */
+function eksikRozetleri(e: Resources): ReactNode[] {
+  return (
+    [
+      {
+        v: e.altin,
+        ikon: <IkonAltin boyut={13} />,
+        renk: 'var(--color-kaynak-altin)',
+        ad: 'altin',
+      },
+      {
+        v: e.demir,
+        ikon: <IkonDemir boyut={13} />,
+        renk: 'var(--color-kaynak-demir)',
+        ad: 'demir',
+      },
+      {
+        v: e.erzak,
+        ikon: <IkonErzak boyut={13} />,
+        renk: 'var(--color-kaynak-erzak)',
+        ad: 'erzak',
+      },
+    ] as const
+  )
+    .filter((k) => k.v > 0)
+    .map((k) => <Hap key={k.ad} ikon={k.ikon} renk={k.renk}>{`${formatSayi(k.v)} eksik`}</Hap>);
 }
 
 /** Bölgenin saatlik gelirini rozetlere çevirir; sıfır olanlar atlanır. */

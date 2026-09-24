@@ -63,6 +63,7 @@ export const IkonDemir = yap('demir');
 export const IkonErzak = yap('erzak');
 export const IkonSure = yap('sure');
 export const IkonUyari = yap('uyari');
+export const IkonElmas = yap('elmas');
 
 /* Bölge tipleri */
 export const IkonKoy = yap('koy');

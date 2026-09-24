@@ -151,12 +151,12 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
   " ve "
       apps/web/src/screens/Arastirma.tsx:937
   "{0} · T{1}"
-      apps/web/src/screens/Akin.tsx:238
+      apps/web/src/screens/Akin.tsx:246
   "{0} T{1}"
       apps/web/src/screens/Demirhane.tsx:224
   "Araştırılıyor —"
       apps/web/src/screens/Arastirma.tsx:905
   "T{0}"
-      apps/web/src/screens/Akin.tsx:250
+      apps/web/src/screens/Akin.tsx:258
   "T{0}{1}"
       apps/web/src/screens/LordEkrani.tsx:674

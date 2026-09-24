@@ -14,9 +14,10 @@
  * 2. **Gitmeden önce ne olacağını söyle.** Grup seçilince önizleme
  *    çağrılıyor: kazanma ihtimali, tahmini kayıp, süre (docs/09 İ1).
  *    Bedeli olan bir kararı karşılığını bilmeden vermek olmaz.
- * 3. **Vurulan grup GRİ ama görünür.** Kaybolmuyor, ne zaman
+ * 3. **Vurulan şef GRİ ama görünür.** Kaybolmuyor, ne zaman
  *    yenileneceğini yazıyor: "burada bir şey vardı, ne zaman dönecek"
- *    sorusu ekranda cevaplanmalı.
+ *    sorusu ekranda cevaplanmalı. Normal gruplar hiç kapanmıyor
+ *    (oyuncunun kararı, `akinYenilenmeSn`).
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
@@ -43,6 +44,7 @@ import {
   Hap,
   Iskelet,
   Kart,
+  SureCubugu,
   formatKalan,
   formatSayi,
   nadirlikParlamasi,
@@ -133,6 +135,12 @@ export function Akin({ lord, onGuncelle }: { lord: LordState; onGuncelle: () => 
                   <span className="tabular shrink-0 text-[12px] text-parsomen">
                     <GeriSayim bitis={a.arriveAt} />
                   </span>
+                </div>
+                {/* Oyuncunun isteği: süre zamanla azalan bir çubukla da
+                    görünsün — geri sayım kaç saniye kaldığını, çubuk
+                    yolun ne kadarının geçtiğini söylüyor. */}
+                <div className="mt-2">
+                  <SureCubugu baslangic={a.departAt} bitis={a.arriveAt} />
                 </div>
               </Kart>
             ))}

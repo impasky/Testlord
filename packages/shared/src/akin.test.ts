@@ -7,7 +7,9 @@
  * bozulabilecek şeyler; testler o gün patlasın diye burada.
  */
 import { describe, expect, it } from 'vitest';
-import { AKIN_HARITALARI, B, regionBaseIncome, unit } from './balance.js';
+import { AKIN_HARITALARI, B, unit } from './balance.js';
+import { simulateBattle } from './combat.js';
+import { varsayilanDizilim } from './duzen.js';
 import { altinKarsiligi } from './odul.js';
 import {
   AKINLAR,
@@ -26,7 +28,7 @@ import {
   sefMi,
   type AkinVuruslari,
 } from './akin.js';
-import { UNIT_TYPES } from './types.js';
+import { UNIT_TYPES, bosGeneralBonus } from './types.js';
 
 const ILK = AKIN_ANAHTARLARI[0]!;
 const SON = AKIN_ANAHTARLARI[AKIN_ANAHTARLARI.length - 1]!;
@@ -177,36 +179,52 @@ describe('denge', () => {
     }
   });
 
-  it('akın bir GELİR KAYNAĞI değil: günlük tavan toprak gelirini yüzlerce kat aşmıyor', () => {
+  it('sınırsız normal grup SAĞMAL DEĞİL: ezici orduyla bile ölen asker ödülden pahalı', () => {
     /*
-     * Akından toprak çıkması PvP'nin sebebini nasıl yok ederse, akından
-     * sınırsız kaynak çıkması da toprak tutmanın sebebini yok eder.
-     * İlk sayılarla bu oran 158 katı geçiyordu.
+     * Akından sınırsız kaynak çıkması toprak tutmanın sebebini yok eder.
+     * Eskiden bunu yenilenme süresi tutuyordu (8 saat: grup günde üç
+     * kez). Oyuncunun kararıyla normal grup artık hiç beklemiyor; aynı
+     * sözü tutan şey KAYIP. Garnizonun iki ve sekiz katı orduyla, beş
+     * haritanın bütün normal gruplarında ölen askerin bedeli kaynak
+     * ödülünü aşmalı — aşmazsa en kolay grup bir musluk olur.
+     *
+     * Eski ölçüt "akın kaybını ÖDESİN"di ve %5 kayıp varsayıyordu; motor
+     * gerçekte %10-25 kaybettiriyor, yani söz hiç tutmamıştı. Oyuncunun
+     * ödülü düşürme kararıyla (%20) açık açık bırakıldı: akının kaynağı
+     * kaybın bir KISMINI karşılar, kazancı XP ve ekipman.
      */
-    let tavan = 0;
-    for (const h of AKIN_ANAHTARLARI) {
-      for (let g = 1; g <= B.akin.grup_sayisi; g++) {
-        const kez = sefMi(g) ? 24 / B.akin.sef_yenilenme_saat : 24 / B.akin.yenilenme_saat;
-        tavan += deger(akinOdulu(h, g)) * kez;
+    const taraf = (units: Record<string, number>, savunan: boolean) => ({
+      units,
+      duzen: { dizilim: varsayilanDizilim(units), taktik: null },
+      gearBonus: { saldiri: 0, savunma: 0, can: 0 },
+      generalBonus: bosGeneralBonus(),
+      lordContribution: 0,
+      leadership: 0,
+      fortressBonus: 0,
+      isDefender: savunan,
+    });
+    const orduDegeri = (a: Record<string, number | undefined>) =>
+      UNIT_TYPES.reduce((t, u) => t + (a[u] ?? 0) * altinKarsiligi(unit(u).maliyet), 0);
+    for (const kat of [2, 8]) {
+      for (const h of AKIN_ANAHTARLARI) {
+        for (let g = 1; g < B.akin.grup_sayisi; g++) {
+          const garnizon = akinGarnizonu(h, g);
+          const ordu: Record<string, number> = {};
+          for (const u of UNIT_TYPES) if (garnizon[u]) ordu[u] = garnizon[u]! * kat;
+          const r = simulateBattle(taraf(ordu, false), taraf(garnizon, true), `sagmal-${h}-${g}`, {
+            defenderStore: { altin: 0, demir: 0, erzak: 0 },
+            attackerCunning: 0,
+            canCapture: false,
+          });
+          const olu = orduDegeri(r.attackerLosses);
+          const odul = deger(akinOdulu(h, g));
+          expect(r.winner, `${h} ${g}. grup, ${kat} kat`).toBe('attacker');
+          expect(olu, `${h} ${g}. grup, ${kat} kat`).toBeGreaterThan(odul);
+          // Ama ödül bir SÜS de değil: kaybın anlamlı bir kısmını karşılıyor.
+          expect(odul, `${h} ${g}. grup, ${kat} kat`).toBeGreaterThan(olu * 0.05);
+        }
       }
     }
-    const besKoy = 5 * (regionBaseIncome('koy').altin ?? 0) * 24;
-    expect(tavan / besKoy).toBeLessThan(80);
-  });
-
-  it('bir akın gönderdiği ordunun kaybını ÖDÜYOR ama zengin etmiyor', () => {
-    // İlk haritanın orta grubu: oraya gidecek ordu kabaca garnizon
-    // kadar; kaybı %5 varsayarsak ödül o kaybın 1-5 katı olmalı.
-    const g = 3;
-    const garnizon = akinGarnizonu(AKIN_ANAHTARLARI[0]!, g);
-    const ordununBedeli = UNIT_TYPES.reduce(
-      (t, u) => t + (garnizon[u] ?? 0) * altinKarsiligi(unit(u).maliyet),
-      0,
-    );
-    const kayip = ordununBedeli * 0.05;
-    const odul = deger(akinOdulu(AKIN_ANAHTARLARI[0]!, g));
-    expect(odul).toBeGreaterThan(kayip);
-    expect(odul).toBeLessThan(kayip * 8);
   });
 });
 
@@ -236,26 +254,40 @@ describe('yenilenme', () => {
     expect(akinYenilenmeSn(10)).toBeGreaterThan(akinYenilenmeSn(1));
   });
 
-  it('vurulan grup kapalı, süre dolunca açılıyor', () => {
+  it('NORMAL GRUP vurulunca kapanmıyor (oyuncu kararı: "limiti kaldıralım")', () => {
     const simdi = new Date('2026-01-01T12:00:00Z');
-    const azOnce = new Date(simdi.getTime() - 60_000);
-    const cokOnce = new Date(simdi.getTime() - (akinYenilenmeSn(1) + 60) * 1000);
-
-    const taze = akinDurumlari(99, { [`${ILK}:1`]: azOnce }, simdi)[0]!;
-    expect(taze.gruplar[0]!.acik).toBe(false);
-    expect(taze.gruplar[0]!.yenilenirAt).not.toBeNull();
-
-    const eski = akinDurumlari(99, { [`${ILK}:1`]: cokOnce }, simdi)[0]!;
-    expect(eski.gruplar[0]!.acik).toBe(true);
-    expect(eski.gruplar[0]!.yenilenirAt).toBeNull();
+    const h = akinDurumlari(99, { [`${ILK}:1`]: simdi }, simdi)[0]!;
+    for (let g = 1; g < B.akin.grup_sayisi; g++) expect(akinYenilenmeSn(g)).toBe(0);
+    expect(h.gruplar[0]!.acik).toBe(true);
+    expect(h.gruplar[0]!.yenilenirAt).toBeNull();
   });
 
-  it('bir grubun vurulması ötekini etkilemiyor', () => {
+  it('vurulan ŞEF kapalı, süre dolunca açılıyor', () => {
     const simdi = new Date('2026-01-01T12:00:00Z');
-    const h = akinDurumlari(99, { [`${ILK}:1`]: new Date(simdi.getTime() - 60_000) }, simdi)[0]!;
-    expect(h.gruplar[0]!.acik).toBe(false);
-    expect(h.gruplar[1]!.acik).toBe(true);
-    expect(h.acikGrup).toBe(9);
+    const sef = B.akin.grup_sayisi;
+    const azOnce = new Date(simdi.getTime() - 60_000);
+    const cokOnce = new Date(simdi.getTime() - (akinYenilenmeSn(sef) + 60) * 1000);
+
+    const taze = akinDurumlari(99, { [`${ILK}:${sef}`]: azOnce }, simdi)[0]!;
+    expect(taze.gruplar[sef - 1]!.acik).toBe(false);
+    expect(taze.gruplar[sef - 1]!.yenilenirAt).not.toBeNull();
+
+    const eski = akinDurumlari(99, { [`${ILK}:${sef}`]: cokOnce }, simdi)[0]!;
+    expect(eski.gruplar[sef - 1]!.acik).toBe(true);
+    expect(eski.gruplar[sef - 1]!.yenilenirAt).toBeNull();
+  });
+
+  it('şefin vurulması ötekileri etkilemiyor', () => {
+    const simdi = new Date('2026-01-01T12:00:00Z');
+    const sef = B.akin.grup_sayisi;
+    const h = akinDurumlari(
+      99,
+      { [`${ILK}:${sef}`]: new Date(simdi.getTime() - 60_000) },
+      simdi,
+    )[0]!;
+    expect(h.gruplar[sef - 1]!.acik).toBe(false);
+    expect(h.gruplar[0]!.acik).toBe(true);
+    expect(h.acikGrup).toBe(sef - 1);
   });
 
   it('bozuk zaman damgası grubu kilitlemiyor', () => {

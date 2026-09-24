@@ -123,6 +123,8 @@ export async function akinRoutes(app: FastifyInstance): Promise<void> {
         grupNo: a.grupNo,
         grupAdi: akinHaritasi(a.haritaKey)?.gruplar[a.grupNo - 1] ?? `${a.grupNo}. grup`,
         army: a.army,
+        // Kalan süre ÇUBUĞU için: çubuk yola çıkıştan varışa doğru azalıyor.
+        departAt: a.departAt,
         arriveAt: a.arriveAt,
       })),
       /** Son çözülmüş akınlar — "ne oldu" sorusunun cevabı. */

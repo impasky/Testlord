@@ -15,9 +15,9 @@
  * 2. **Savaş GERÇEK.** Aynı motor, aynı dizilim, aynı taktik, aynı
  *    kayıp ve aynı hastane. "Kolay mod" bir savaş simülasyonu değil,
  *    oyuncunun ordusunu öğrendiği yer.
- * 3. **Yenilenme oyuncuya özel.** Vurulan grup o oyuncu için gri kalır,
+ * 3. **Yenilenme oyuncuya özel.** Vurulan şef o oyuncu için gri kalır,
  *    başkası için durur. Ortak olsaydı kalabalık bir dünyada harita hep
- *    boş görünürdü.
+ *    boş görünürdü. Normal gruplar hiç kapanmıyor (`akinYenilenmeSn`).
  *
  * SAF: burada veritabanı yok. Hangi grubun açık olduğu, çağıranın
  * verdiği "son vuruş" listesinden TÜRETİLİYOR.
@@ -127,7 +127,14 @@ export function akinSuresiSn(_haritaKey: string, _grupNo: number): number {
   return B.akin.sure_sn;
 }
 
-/** Vurulan grubun yeniden dolması: normal 4 saat, şef 12. */
+/**
+ * Vurulan grubun yeniden dolması: normal grup HİÇ beklemiyor, şef 24 saat.
+ *
+ * Oyuncunun kararı: "normal gruplarda limiti kaldıralım." Sınırsız vuruş
+ * sınırsız kaynak değil — ezici orduyla bile ölen askerin bedeli ödülü
+ * birkaç kat aşıyor (akin.test.ts "sağmal değil"); freni asker kaybı ve
+ * hastane. Şef haritanın sonundaki duvar olarak kalıyor.
+ */
 export function akinYenilenmeSn(grupNo: number): number {
   return (sefMi(grupNo) ? B.akin.sef_yenilenme_saat : B.akin.yenilenme_saat) * 3600;
 }

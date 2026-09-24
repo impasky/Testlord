@@ -9,20 +9,59 @@
  * Kışla'da duruyor çünkü ordunun yaşadığı yer orası. Boşken hiç
  * görünmüyor: yaralısı olmayan oyuncuya sürekli boş bir hastane
  * göstermek, ekranı hiçbir şey söylemeyen bir kartla doldurmak olurdu.
+ *
+ * Oyuncunun isteği: "iyileşme süresini uzatalım, oyuncular isterse elmas
+ * harcayarak kısaltabilsin." Kart bu yüzden iki şey daha söylüyor: süre
+ * çubuğu (ne kadarı geçti) ve "şimdi taburcu et" — bedeli ve kesedeki
+ * elmasla birlikte, basmadan önce.
  */
-import { armyCount, unitName, type Army } from '@lordlar/shared';
-import { BirimIkonu } from './Ikonlar';
-import { GeriSayim, Kart } from './ui';
-import type { QueueItem } from '../api/client';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import { armyCount, tedaviKisaltmaBedeli, unitName, type Army } from '@lordlar/shared';
+import { BirimIkonu, IkonElmas } from './Ikonlar';
+import { Buton, GeriSayim, Kart, SureCubugu } from './ui';
+import { hisOnay, hisRet } from './hisGeriBildirimi';
+import { ApiError, api, type QueueItem } from '../api/client';
 
-export function Hastane({ hastane, queues }: { hastane: Army; queues: QueueItem[] }) {
+export function Hastane({
+  hastane,
+  queues,
+  elmas,
+  onGuncelle,
+}: {
+  hastane: Army;
+  queues: QueueItem[];
+  elmas: number;
+  onGuncelle: () => void;
+}) {
+  const qc = useQueryClient();
+  const [hata, setHata] = useState<string | null>(null);
+  const taburcu = useMutation({
+    mutationFn: api.hastaneKisalt,
+    onSuccess: () => {
+      setHata(null);
+      hisOnay();
+      void qc.invalidateQueries({ queryKey: ['army'] });
+      onGuncelle();
+    },
+    onError: (e) => {
+      hisRet();
+      setHata(e instanceof ApiError ? e.message : 'Taburcu edilemedi.');
+    },
+  });
+
   const toplam = armyCount(hastane);
   if (toplam === 0) return null;
 
-  // Tedavi kuyruğu: en erken bitecek olan gösteriliyor.
-  const tedavi = queues
+  // Kafileler paralel iyileşiyor: ilk biten sayaçta, en uzun süren bedelde.
+  const kafileler = queues
     .filter((q) => q.kind === 'iyilestir')
-    .sort((a, b) => new Date(a.finishAt).getTime() - new Date(b.finishAt).getTime())[0];
+    .sort((a, b) => new Date(a.finishAt).getTime() - new Date(b.finishAt).getTime());
+  const ilk = kafileler[0];
+  const son = kafileler[kafileler.length - 1];
+  const kalanSn = son ? (new Date(son.finishAt).getTime() - Date.now()) / 1000 : 0;
+  const bedel = tedaviKisaltmaBedeli(kalanSn);
+  const yetiyor = elmas >= bedel;
 
   return (
     <Kart className="border-kirmizi/30 p-3">
@@ -32,9 +71,9 @@ export function Hastane({ hastane, queues }: { hastane: Army; queues: QueueItem[
             ekran okuyucu kullanıcısının başlıklarla gezinmesini
             bozuyordu (erisim-denetim.mjs yakaladı). */}
         <h2 className="baslik text-[11px] text-solgun">Hastane</h2>
-        {tedavi && (
+        {ilk && (
           <span className="tabular text-[12px] text-altin">
-            <GeriSayim bitis={tedavi.finishAt} />
+            <GeriSayim bitis={ilk.finishAt} />
           </span>
         )}
       </div>
@@ -49,6 +88,36 @@ export function Hastane({ hastane, queues }: { hastane: Army; queues: QueueItem[
             </span>
           ))}
       </div>
+      {ilk && (
+        <div className="mt-2.5">
+          <SureCubugu baslangic={ilk.startedAt} bitis={ilk.finishAt} renk="var(--color-kirmizi)" />
+          {kafileler.length > 1 && son && (
+            <p className="tabular mt-1 text-[11px] text-sonuk">
+              {`${kafileler.length} kafile · hepsi `}
+              <GeriSayim bitis={son.finishAt} />
+            </p>
+          )}
+        </div>
+      )}
+      {son && bedel > 0 && (
+        <div className="mt-2.5">
+          <Buton onClick={() => taburcu.mutate()} disabled={taburcu.isPending || !yetiyor} tam>
+            <span className="flex items-center justify-center gap-1.5">
+              {taburcu.isPending ? 'Taburcu ediliyor…' : 'Hepsini şimdi iyileştir'}
+              <span className="flex items-center gap-0.5" style={{ color: 'var(--color-elmas)' }}>
+                <IkonElmas boyut={14} />
+                <span className="tabular">{bedel}</span>
+              </span>
+            </span>
+          </Buton>
+          <p className="mt-1 text-[11px] text-sonuk">
+            {yetiyor
+              ? `Kesende ${elmas} elmas. Elmas yalnız zamanı kısaltır; taburcu olan asker beklenerek iyileşenle aynı.`
+              : `Kesende ${elmas} elmas; ${bedel - elmas} eksik. Elmas günlük görevlerden, şef kamplarından ve başarımlardan gelir.`}
+          </p>
+        </div>
+      )}
+      {hata && <p className="mt-1.5 text-[12px] text-kirmizi">{hata}</p>}
     </Kart>
   );
 }

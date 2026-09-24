@@ -20,19 +20,21 @@ import { UNIT_TYPES } from './types.js';
 /**
  * Bir yaralı yığınının tedavi süresi (saniye).
  *
- * ÜÇ SINIR birden uygulanıyor ve sırası önemli:
  *  1. Hesap: taban + adet başına sabit + birimin eğitim süresinin bir payı.
- *     Mancınık, milisten uzun iyileşiyor.
- *  2. Sıfırdan eğitim süresi: tedavi bundan UZUN OLAMAZ. Olsaydı, yaralıyı
- *     beklemek yerine yenisini eğitmek her zaman daha mantıklı olur ve
- *     hastane ölü bir ekran olarak kalırdı. Bu bir ayar değil garanti —
- *     ilk hesapta 5 milis için tedavi 7,3 dakika, eğitim 3,8 dakika
- *     çıkmıştı ve kural sessizce çiğneniyordu.
- *  3. Tavan: büyük bir yenilgide yüzlerce yaralı döner; ceza zamanla
+ *     Mancınık, milisten uzun iyileşiyor. Taban tek yaralıyı bile on
+ *     dakika yatırıyor: akın bir dakika ve normal gruplar sınırsız, yani
+ *     aynı ordunun art arda kaç akın yapabileceğini hastane belirliyor.
+ *  2. Tavan: büyük bir yenilgide yüzlerce yaralı döner; ceza zamanla
  *     artmalı ama oyuncuyu oyundan kopartmamalı. HASTANE BİNASI bu
  *     tavanı indiriyor (docs/12 §4): hastanesiz lord 6 saatlik tavanı
- *     görüyor, 5. seviye hastanesi olan 1 saatlik. Küçük kafileler zaten
- *     tavana çarpmıyor — bina yalnız kötü günü kısaltıyor.
+ *     görüyor, 5. seviye hastanesi olan 1 saatlik.
+ *
+ * Eskiden bir üçüncü sınır vardı: tedavi, birimi SIFIRDAN EĞİTMEKTEN uzun
+ * olamazdı ve küçük kafileler bu yüzden bir iki dakikada çıkıyordu.
+ * Oyuncunun kararıyla kalktı ("iyileşme süresini uzatalım, isteyen
+ * elmasla kısaltsın"): eğitim kaynak istiyor, tedavi bedava — yaralıyı
+ * beklemek, yenisini eğitmekten uzun sürse de bedava olduğu için anlamlı.
+ * Beklemek istemeyen elmasla bitiriyor (`tedaviKisaltmaBedeli`).
  */
 export function tedaviSuresiSn(
   tur: UnitType,
@@ -44,9 +46,8 @@ export function tedaviSuresiSn(
   const H = B.hastane;
   const hesap =
     H.saniye_taban + H.saniye_birim_basina * adet + u.egitim_sn * adet * H.egitim_suresi_carpani;
-  const sifirdanEgitim = u.egitim_sn * adet;
   const tavan = binalar ? azamiTedaviSn(binalar) : H.azami_saniye;
-  return Math.round(Math.min(hesap, sifirdanEgitim, tavan));
+  return Math.round(Math.min(hesap, tavan));
 }
 
 /**

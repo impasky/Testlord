@@ -20,8 +20,14 @@
  */
 import { B } from './balance.js';
 
+interface Tarife {
+  dakika_basina: number;
+  asgari: number;
+}
+
 const E = B.elmas as unknown as {
-  akin_kisaltma: { dakika_basina: number; asgari: number };
+  akin_kisaltma: Tarife;
+  tedavi_kisaltma: Tarife;
   kazanim: { gunluk_gorev_tamamlama: number; akin_sef_grubu: number; basarim: number };
 };
 const Y = B.yeni_oyuncu as unknown as {
@@ -44,10 +50,26 @@ const Y = B.yeni_oyuncu as unknown as {
  *
  * Süre dolmuşsa bedel yok — ödenecek bir bekleme kalmamış demektir.
  */
-export function kisaltmaBedeli(kalanSaniye: number): number {
+function tarifeBedeli(kalanSaniye: number, t: Tarife): number {
   if (kalanSaniye <= 0) return 0;
   const dakika = kalanSaniye / 60;
-  return Math.max(E.akin_kisaltma.asgari, Math.ceil(dakika * E.akin_kisaltma.dakika_basina));
+  return Math.max(t.asgari, Math.ceil(dakika * t.dakika_basina));
+}
+
+export function kisaltmaBedeli(kalanSaniye: number): number {
+  return tarifeBedeli(kalanSaniye, E.akin_kisaltma);
+}
+
+/**
+ * Hastanedeki yaralıları ŞİMDİ taburcu etmenin bedeli.
+ *
+ * `kalanSaniye` EN UZUN kalan kafilenin süresi: kafileler paralel
+ * iyileşiyor, oyuncunun satın aldığı şey "hepsi dönene kadar" bekleyiş.
+ * Dakika fiyatı akınınkinden düşük çünkü tedavi onlarca dakika sürüyor
+ * (`balance.json` → `elmas.tedavi_kisaltma._neden`).
+ */
+export function tedaviKisaltmaBedeli(kalanSaniye: number): number {
+  return tarifeBedeli(kalanSaniye, E.tedavi_kisaltma);
 }
 
 /** Bu kadar elmasla kısaltılabilir mi. */

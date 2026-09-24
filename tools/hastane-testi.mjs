@@ -102,6 +102,10 @@ if (topla(hastane) > 0) {
   const liste = (await al('/me')).queues ?? [];
   const tedavi = liste.find((q) => q.kind === 'iyilestir');
   kontrol('tedavi kuyruğu açıldı', Boolean(tedavi), tedavi ? `bitiş ${tedavi.finishAt}` : 'yok');
+  // Oyuncunun kararı: "iyileşme süresini uzatalım." Tek yaralı bile
+  // taban kadar yatıyor (balance.json → hastane.saniye_taban, 10 dk).
+  const yatisSn = tedavi ? (new Date(tedavi.finishAt).getTime() - Date.now()) / 1000 : 0;
+  kontrol('tedavi en az on dakika sürüyor', yatisSn >= 590, `${Math.round(yatisSn / 60)} dk`);
 
   /* --- Tedavi bitince orduya katılıyor --- */
   const evdeOnce = topla((await al('/army')).home ?? {});
@@ -110,6 +114,54 @@ if (topla(hastane) > 0) {
   const evdeSonra = topla((await al('/army')).home ?? {});
   kontrol('tedavi bitince hastane boşaldı', topla(sonrasi.lord.hastane ?? {}) === 0);
   kontrol('iyileşenler orduya KATILDI', evdeSonra > evdeOnce, `${evdeOnce} -> ${evdeSonra}`);
+
+  /* --- Elmasla hemen taburcu (oyuncunun isteği) --- */
+  // İkinci bir savaş: ilk kafile az önce doğal yolla taburcu oldu.
+  const ordu2 = (await al('/army')).home ?? {};
+  const hedef2 = (await al('/map')).oneri;
+  if (hedef2) {
+    await post('/march', { toRegionId: hedef2.regionId, army: ordu2, generalIds: [] });
+    await post('/test/yuruyusleri-bitir');
+    await post('/test/yuruyusleri-bitir');
+  }
+  const yarali2 = topla((await al('/me')).lord.hastane ?? {});
+  kontrol('ikinci savaş da yaralı üretti', yarali2 > 0, `${yarali2} yaralı`);
+
+  // Kese boş: istek REDDEDİLMELİ ve hiçbir şey değişmemeli.
+  const kese = (await al('/me')).lord.elmas;
+  await post('/test/kaynak-ver', { elmas: -kese });
+  const bosKese = await post('/army/hastane/kisalt');
+  const hastaneHala = topla((await al('/me')).lord.hastane ?? {});
+  kontrol(
+    'elması yetmeyen taburcu edemiyor',
+    bosKese.s === 400 && bosKese.b.code === 'YETERSIZ_ELMAS' && hastaneHala === yarali2,
+    `HTTP ${bosKese.s} ${bosKese.b.error ?? ''}`,
+  );
+
+  // Kese dolu: bedel SUNUCUDA hesaplanıp düşülüyor, yaralı hemen eve.
+  await post('/test/kaynak-ver', { elmas: 500 });
+  const evdeOnce2 = topla((await al('/army')).home ?? {});
+  const taburcu = await post('/army/hastane/kisalt');
+  const sonra2 = await al('/me');
+  const evdeSonra2 = topla((await al('/army')).home ?? {});
+  kontrol(
+    'elmasla hemen taburcu oldu',
+    taburcu.s === 200 && topla(sonra2.lord.hastane ?? {}) === 0 && evdeSonra2 > evdeOnce2,
+    taburcu.s === 200
+      ? `${taburcu.b.harcanan} elmas, ${evdeOnce2} -> ${evdeSonra2} evde`
+      : `HTTP ${taburcu.s} ${taburcu.b.error ?? ''}`,
+  );
+  kontrol(
+    'harcanan elmas keseden düştü',
+    taburcu.s === 200 && taburcu.b.harcanan > 0 && sonra2.lord.elmas === 500 - taburcu.b.harcanan,
+    `kese ${sonra2.lord.elmas}`,
+  );
+  const ikinci = await post('/army/hastane/kisalt');
+  kontrol(
+    'boş hastane için elmas alınmıyor',
+    ikinci.s === 400 && ikinci.b.code === 'BEKLEME_YOK',
+    `HTTP ${ikinci.s}`,
+  );
 } else {
   kontrol('hastanedeki askerle saldırılamıyor', false, 'yaralı üretilmedi');
   kontrol('hastanedeki komuta yeri kaplamıyor', false);

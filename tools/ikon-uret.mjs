@@ -72,6 +72,7 @@ const KULLANILAN = {
   erzak: 'wheat',
   sure: 'hourglass',
   uyari: 'hazard-sign',
+  elmas: 'cut-diamond',
 
   // Bölge tipleri
   koy: OZEL.koy,

@@ -90,11 +90,11 @@ export function rehberSozleri(): RehberSozu[] {
       // geliyor. Eski cümle ("İlk toprağını medeniyetine kattın") o yüzden
       // yanlış bir anı anlatıyordu.
       adim: 'ekipman',
-      soz: 'İlk akından döndük lordum. Demirhanede kuşanacağın her parça, savaşa senin katkını büyütür — aynı orduyla daha az kayıp verirsin.',
+      soz: 'Akından döndük lordum. Ganimetten de ocaktan da çıksa, kuşandığın her parça savaşa senin katkını büyütür — aynı orduyla daha az kayıp verirsin.',
     },
     {
       adim: 'akin-devam',
-      soz: 'Kesemiz generale yetmiyor lordum. Birkaç akın daha: her biri bir dakika sürer, ganimeti de biz alırız.',
+      soz: 'Kesemiz sıradaki işe yetmiyor lordum. Birkaç akın daha: her biri bir dakika sürer, ganimeti de biz alırız.',
     },
     {
       adim: 'general',
@@ -354,7 +354,10 @@ export const REHBER_ISIKLARI: Record<string, RehberIsaret[]> = {
    * olmayan oyuncu (akından ganimet düşmediyse) Demirhane'ye geliyor,
    * ışık hiçbir şey bulamıyor ve perde kalkıyordu; parça Envanter
    * sekmesindeyse de Üretim sekmesinde açılan ekranda "kuşan" yoktu.
-   * Sıra: parça varsa kuşan → Envanter sekmesi → yoksa üret.
+   * Sıra: parça varsa kuşan → Envanter sekmesi → yoksa üret → Üretim
+   * sekmesi. Sonuncusu bir oyuncunun "Envanter'e bastım, burada işimiz
+   * bitti dedi ama ekipman kuşanmamıştım" şikâyetinin cevabı: boş
+   * Envanter'de ışık başka bir şey bulamayıp paneli kapattırıyordu.
    */
   ekipman: [
     {
@@ -370,6 +373,10 @@ export const REHBER_ISIKLARI: Record<string, RehberIsaret[]> = {
       isaret: 'demirhane-uret',
       sebep:
         "Önce bir parça dövelim lordum. Dövülen parça lorduna kuşanılır; bitince Envanter'den kuşanırsın.",
+    },
+    {
+      isaret: 'demirhane-uretim',
+      sebep: 'Kuşanacak parçamız yok lordum; ocağa dönüp bir tane dövelim.',
     },
     { isaret: 'omurga-dugme', yol: true },
     {

@@ -13,8 +13,10 @@ import {
   bonusluSure,
   kisaltilabilirMi,
   kisaltmaBedeli,
+  tedaviKisaltmaBedeli,
   yeniOyuncuDurumu,
 } from './elmas.js';
+import { kafileTedaviSuresiSn } from './hastane.js';
 
 describe('kisaltmaBedeli', () => {
   it('uzun bekleme daha pahalı — doğrusal', () => {
@@ -48,6 +50,26 @@ describe('kisaltmaBedeli', () => {
       // değersizleştirir ve kısaltmayı bedavaya çevirir.
       expect(n, ad).toBeLessThanOrEqual(25);
     }
+  });
+});
+
+describe('tedaviKisaltmaBedeli', () => {
+  it('doğrusal ve bitmiş tedavi bedava', () => {
+    expect(tedaviKisaltmaBedeli(40 * 60)).toBe(tedaviKisaltmaBedeli(20 * 60) * 2);
+    expect(tedaviKisaltmaBedeli(0)).toBe(0);
+    expect(tedaviKisaltmaBedeli(3)).toBeGreaterThanOrEqual(1);
+  });
+
+  it('dakikası akınınkinden ucuz — tedavi onlarca dakika sürüyor', () => {
+    expect(tedaviKisaltmaBedeli(60 * 60)).toBeLessThan(kisaltmaBedeli(60 * 60));
+  });
+
+  it('başlangıç kesesi tipik bir akın kafilesine yetiyor, sınırsız değil', () => {
+    // Oyuncu elması ilk günden kullanabilmeli; ama birkaç kafile sonra
+    // beklemeye dönmeli — yoksa hastane bir ekran olmaktan çıkar.
+    const tipik = kafileTedaviSuresiSn({ okcu: 8 });
+    expect(BASLANGIC_ELMASI).toBeGreaterThanOrEqual(tedaviKisaltmaBedeli(tipik));
+    expect(BASLANGIC_ELMASI).toBeLessThan(tedaviKisaltmaBedeli(tipik) * 4);
   });
 });
 

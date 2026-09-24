@@ -230,7 +230,9 @@ export function App() {
        * emniyet — soğuk açılışta sorgular yine paralel çıkıyor.
        */
       void qc.refetchQueries({ queryKey: ['me'] }).then(() => {
-        for (const anahtar of [['army'], ['map'], ['marches']]) {
+        // `items`: biten üretim envantere bir parça koyuyor; omurga
+        // "kuşan" adımını ancak onu görünce söyleyebiliyor.
+        for (const anahtar of [['army'], ['map'], ['marches'], ['items']]) {
           void qc.invalidateQueries({ queryKey: anahtar });
         }
       });
@@ -249,6 +251,10 @@ export function App() {
    * dönüyordu — rehber ışığı da o an panelin arkasında kalan bir düğmeyi
    * gösterip turu kilitliyordu. Ordunun sayısı, yeri ya da bölge sayısı
    * değiştiği an öneri yeniden soruluyor.
+   *
+   * Envanter de: akından dönen ordu ganimetle bir parça getirmiş
+   * olabilir (ilk zaferde kesin). Tazelenmezse omurga eski boş envanteri
+   * görüp oyuncuyu kuşanmak yerine "akına devam et"e yolluyordu.
    */
   const orduImzasi = data?.lord
     ? `${data.lord.usedSlots}|${data.lord.akindaOrduVar}|${data.lord.regionCount}`
@@ -260,7 +266,9 @@ export function App() {
     oncekiOrdu.current = orduImzasi;
     // İlk okuma bir değişiklik değil: sorgular zaten yeni açılıyor.
     if (onceki === null || onceki === orduImzasi) return;
-    for (const anahtar of [['map'], ['army']]) void qc.invalidateQueries({ queryKey: anahtar });
+    for (const anahtar of [['map'], ['army'], ['items']]) {
+      void qc.invalidateQueries({ queryKey: anahtar });
+    }
   }, [orduImzasi, qc]);
 
   /**

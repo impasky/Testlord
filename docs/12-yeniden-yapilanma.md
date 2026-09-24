@@ -535,7 +535,8 @@ yiyordu.
 | Unutulmuş Nekropol | Mezar kültü       | Dengeli        | sv. 20 | T5            |
 
 Her haritada **10 grup**, 1'den 10'a zorlaşır. Onuncu grup **şef**:
-garnizonu ağır, ödülü büyük, yenilenmesi uzun.
+garnizonu ağır, ödülü büyük, yenilenmesi uzun (24 saat; normal gruplar
+hiç beklemiyor, aşağıda).
 
 - Akın **gerçek**: aynı savaş motoru, aynı dizilim, aynı taktik, aynı
   kayıp, aynı hastane. "Kolay mod" ayrı bir hesap değil — akın,
@@ -546,11 +547,29 @@ garnizonu ağır, ödülü büyük, yenilenmesi uzun.
 - **Her akın bir dakika** (`akin.sure_sn`), harita ve grup fark etmez.
   Önce grupla, harita gücüyle ve şefte uzuyordu (4 dk – ~30 dk). Oyuncu
   kararı: "oyuncuyu sürekli oyunda tutabilmeliyiz" — akın bir bekleyiş
-  değil, oturum içinde tekrar tekrar yapılan bir eylem. Ekonomiyi
-  sınırlayan süre değil yenilenme: her grup günde yine en çok üç kez
-  vurulabiliyor, günlük tavan değişmedi.
-- Vurulan grup **yenilenme süresi** sonunda geri döner (normal 8 saat,
-  şef 24 saat). O sürede hedef gri durur ama **görünür kalır**.
+  değil, oturum içinde tekrar tekrar yapılan bir eylem.
+- **Normal gruplar sınırsız**: vurulan normal grup beklemeden tekrar
+  vurulabiliyor (`akin.yenilenme_saat: 0`). Oyuncu kararı: "normal
+  gruplarda limiti kaldıralım." Yalnız **şef** 24 saat yenileniyor; o
+  sürede gri durur ama **görünür kalır**. Önce 8/24 saatti.
+- **Freni kayıp ve hastane.** Sınırsız vuruş sınırsız kaynak değil:
+  motor gerçekte %10-25 kaybettiriyor ve garnizonun iki ile sekiz katı
+  orduyla bile bir normal grupta ölen askerin bedeli, kaynak ödülünün
+  4-11 katı (beş haritanın hepsi; `akin.test.ts` "sağmal değil"). Akının
+  kazancı XP ve ekipman; bedeli asker ve hastanede geçen zaman. Yaralı
+  artık en az on dakika yatıyor (§6.3).
+- **Ödüller %20 düştü** (`odul_taban` 75/40/30 → 60/32/24). Oyuncu
+  kararı: "akın gelirlerini bir miktar düşürelim." Eski ölçüt "ödül
+  kaybı ödesin"di ve %5 kayıp varsayıyordu; motor bunu hiç
+  tutturmamıştı. Bu kararla açıkça bırakıldı: kaynak kaybın bir
+  KISMINI karşılar (≥ %5), tamamını değil.
+- **İlk zafer kesin ekipman.** Ömürde bir kez (`ilkAkinAt` damgası
+  konduğu akın) parça şansa bırakılmıyor: zorunlu turun sıradaki aşaması
+  "ekipman kuşan" ve dövmeye (T1 400 altın) ilk eğitimden sonra kese
+  yetmiyordu (§8.1c).
+- Sahadaki akın kartında geri sayımın altında **zamanla azalan bir
+  çubuk** (`SureCubugu`) — oyuncunun isteği: "sefer süresine bir bar
+  ekleyelim, zamanla azalsın."
 - Ödül: kaynak **kesin**, ekipman **şansa bağlı**. Zar akının
   tohumundan atılıyor — aynı akın iki kez çözülürse aynı sonucu
   veriyor, yoksa rapor ile envanter bir gün ayrışırdı.
@@ -582,6 +601,29 @@ güncellemek gerekir ve biri mutlaka atlanırdı.
 Her haritanın karışımı **farklı** — taş-kağıt-makas (docs/09 K1) ancak
 düşman değişince bir karar olur. Kırık Sahil okçu ağırlıklı, Kuzey
 Buzulu süvari ağırlıklı: tek bir "en iyi ordu" olmasın diye.
+
+### 6.3 Hastane: uzun tedavi, elmasla taburcu
+
+Oyuncu kararı: "askerlere iyileşme süresini uzatalım; oyuncular isterse
+elmas harcayarak kısaltabilsin." Akın bir dakika ve normal gruplar
+sınırsız olunca aynı ordunun art arda kaç akın yapabileceğini hastane
+belirliyor.
+
+- **Taban on dakika** (`hastane.saniye_taban` 180 → 600, adet başına
+  12 → 30 sn, eğitim payı 0,35 → 0,5). 2 milis ~12 dk (önce 1,5 dk),
+  8 okçu ~21 dk (önce ~10 dk), 100 mızrakçı ~2,3 saat; tavan hastane
+  binasınınki (6 saat → binayla 1 saat).
+- **"Tedavi sıfırdan eğitimden uzun olamaz" garantisi kalktı.** Küçük
+  kafileleri bir iki dakikaya indiren oydu. Gerekçesi artık tutmuyor:
+  eğitim kaynak istiyor, tedavi bedava.
+- **Elmasla taburcu** (`POST /army/hastane/kisalt`): hastanedeki BÜTÜN
+  kafileler birden. Bedel en uzun kalan kafileden, dakika başına 0,5
+  elmas (`elmas.tedavi_kisaltma`) — akınınkinin dörtte biri, çünkü
+  tedavi onlarca dakika sürüyor. Başlangıç kesesi (15) tipik bir akın
+  kafilesine yetiyor, sınırsız değil. Bedel sunucuda; taburcu işini
+  kuyruğun kendi çözümü yapıyor (bitiş şimdiye çekiliyor).
+- Hastane kartı süre çubuğunu, bedeli ve kesedeki elması basmadan önce
+  gösteriyor. Elmas bu kartla ilk kez arayüzde göründü.
 
 ## 7. Gezinme
 
@@ -663,6 +705,34 @@ Tur bitince (`rehberGorundu`) omurganın olağan sırası döner ve dünya
 haritası açılır. Ölçüm (`rehber-tur-testi`): tur 20 dokunuşta bitiyor,
 ışık dünya haritasının hiçbir düğmesini göstermiyor, tur bittiğinde
 oyuncunun bölgesi yok.
+
+### 8.1c Kesesi yetmeyen aşama: "burada işimiz bitti" döngüsü
+
+Oyuncu bildirdi: "Demirhaneye yönlendirdi, üretim yapamıyorum.
+Envantere tıkladım, burada işimiz bitti dedi ama ekipman
+kuşanmamıştım." Tur kesesine bakmıyordu: kuşanacak parça yok, T1
+dövmek 400 altın, elde 289. Işık basılabilir bir düğme bulamayınca
+"paneli kapat"a düşüyor, omurga aynı adımı yeniden söylüyordu. Aynı
+tuzağın büyüğü araştırmada bekliyordu (ilk kademe 4.000 altın).
+
+- **İlk zafer kesin parça** düşürüyor (§6): ekipman aşaması parasız,
+  yalnız kuşanmak.
+- Tur **kesesi yeten ilk aşamayı** seçiyor (`turAdimi`: ekipman →
+  araştırma → general). Hiçbiri yetmiyorsa perdesiz "Akına devam et" ve
+  SIRADAKİ aşamanın açığı ("111 altın eksik"). Tur bitmiş lordu da
+  kesesi yetmeyen işe yollamıyor (`ilkKezAdimi`).
+- Demirhane'de parçası olmayana **Üretim sekmesi** işareti
+  (`demirhane-uretim`); boş Envanter'de ışık artık paneli kapattırmıyor.
+- Envanter (`['items']`) akından dönüşte ve biten kuyrukta tazeleniyor;
+  yoksa omurga eski boş envanteri görüp kuşan yerine akına yolluyordu.
+- Generale eksik altın, generaller cevabından değil LORDDAN okunuyor: o
+  cevap akın ganimetini görmüyordu.
+
+Ölçüm (`rehber-tur-testi`) iki kural kazandı: bot kaynağı yalnız omurga
+"akına devam et" dediğinde alıyor (önce her beklemede bol kaynak alıyor
+ve bu kilidi örtüyordu), ve "paneli kapat"tan sonra panele GİRİLEN
+adımla geri yollanmak kilit sayılıyor. Tur 17 dokunuşta bitiyor;
+ekipman ilk akının parçasıyla, kaynak verilmeden kuşanılıyor.
 
 ### 8.2 Rehber ışığı zinciri: iki tuzak
 

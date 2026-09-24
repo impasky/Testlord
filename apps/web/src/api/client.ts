@@ -156,6 +156,8 @@ export interface LordState {
   binalar: Record<string, number>;
   /** Hastanede tedavi bekleyenler. Orduya ve komuta kapasitesine dahil değil. */
   hastane: Army;
+  /** Oyunda kazanılan para birimi; yalnız ZAMAN kısaltıyor (docs/12 §6). */
+  elmas: number;
   /** Lordun medeniyeti (docs/16) — sistemden önceki lordlarda null. */
   medeniyet: { id: string; ad: string; renk: string; ozet: string } | null;
   /** Kolektif eylemin kişisel karşılığı (docs/16 §9). Güç satın almaz. */
@@ -1360,6 +1362,7 @@ export const api = {
         grupNo: number;
         grupAdi: string;
         army: Army;
+        departAt: string;
         arriveAt: string;
       }[];
       sonuclar: {
@@ -1391,6 +1394,12 @@ export const api = {
       tahminiKayip: Army;
       tahminiKalan: Army;
     }>('/akin/onizleme', g),
+  /** Hastanedeki bütün yaralıları elmasla şimdi taburcu et; bedel sunucuda. */
+  hastaneKisalt: () =>
+    post<{ harcanan: number; kalanElmas: number; kafile: number; kisaltilanSaniye: number }>(
+      '/army/hastane/kisalt',
+      {},
+    ),
   akinaCik: (g: {
     haritaKey: string;
     grupNo: number;

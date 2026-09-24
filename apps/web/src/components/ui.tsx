@@ -28,6 +28,52 @@ export function GeriSayim({ bitis, kisa = false }: { bitis: string; kisa?: boole
   return <span className="tabular">{kisa ? formatKisaKalan(kalan) : formatKalan(kalan)}</span>;
 }
 
+/**
+ * Zamanla AZALAN süre çubuğu: yola çıkışta dolu, varışta boş.
+ *
+ * Oyuncunun isteği: "sefer süresine bir bar ekleyelim, zamanla azalsın."
+ * Geri sayım ne kadar kaldığını YAZIYOR; çubuk ne kadarının geçtiğini
+ * bir bakışta gösteriyor. Saniyede bir tazeleniyor ve genişlik doğrusal
+ * kayıyor — bir dakikalık akında adım adım zıplamasın diye.
+ *
+ * Süs sayılıyor (aria-hidden): aynı bilgi yanındaki geri sayımda metin
+ * olarak duruyor; ekran okuyucuya iki kez okutmanın faydası yok.
+ */
+export function SureCubugu({
+  baslangic,
+  bitis,
+  renk = 'var(--color-altin)',
+}: {
+  baslangic: string;
+  bitis: string;
+  renk?: string;
+}) {
+  const [simdi, setSimdi] = useState(() => Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setSimdi(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const bas = new Date(baslangic).getTime();
+  const bit = new Date(bitis).getTime();
+  const kalan = bit > bas ? Math.max(0, Math.min(1, (bit - simdi) / (bit - bas))) : 0;
+  return (
+    <div
+      className="oyuk h-1.5 w-full overflow-hidden rounded-full"
+      aria-hidden="true"
+      data-sure-cubugu
+    >
+      <div
+        className="h-full rounded-full motion-safe:transition-[width] motion-safe:duration-1000 motion-safe:ease-linear"
+        style={{
+          width: `${kalan * 100}%`,
+          background: renk,
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.3)',
+        }}
+      />
+    </div>
+  );
+}
+
 /* ---------------- Yükleniyor ---------------- */
 
 /**

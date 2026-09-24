@@ -831,11 +831,12 @@
   "hastane": {
     "_aciklama": "Savastan yarali donen askerler eve degil hastaneye giriyor; tedavi bitene kadar orduya katilmiyorlar.",
     "_neden": "Yarali donus sistemi (K6b) olu sayilan askerin bir kismini geri veriyordu ama asker aninda savasa hazir oluyordu. Kaybin bir agirligi kalmiyordu: yenilen oyuncu bir dakika sonra ayni orduyla tekrar saldirabiliyordu. Hastane kaybi ZAMANA ceviriyor -- asker olmuyor ama hemen de kullanilamiyor.",
-    "saniye_taban": 180,
-    "saniye_birim_basina": 12,
+    "saniye_taban": 600,
+    "saniye_birim_basina": 30,
     "_sure_formulu": "taban + birim_basina * yarali_sayisi, birim egitim suresine gore olceklenir",
-    "egitim_suresi_carpani": 0.35,
-    "_carpan_notu": "Tedavi, o birimi sifirdan egitmekten UZUN SUREMEZ ve bu bir ayar degil, motorda GARANTI: hesap egitim suresini asarsa egitim suresine kirpiliyor. Ayarla saglansaydi, tabani buyuten bir denge degisikligi kucuk yigmlarda kurali sessizce bozardi -- ilk hesapta tam bu oldu (5 milis: tedavi 7,3dk, sifirdan egitim 3,8dk).",
+    "egitim_suresi_carpani": 0.5,
+    "_carpan_notu": "Eskiden tedavi o birimi sifirdan egitmekten UZUN SUREMEZDI (motorda garanti) ve kucuk kafileler bu yuzden bir-iki dakikada cikiyordu: 2 milis 90 sn. Oyuncu karari: 'askerlere iyilesme suresini uzatalim; isteyen elmasla kisaltsin.' Garanti KALDIRILDI. Gerekcesi artik tutmuyor: egitim KAYNAK istiyor, tedavi bedava -- yaraliyi beklemek pahali olmadigi surece mantikli; beklemek istemeyen de elmasla bitiriyor (elmas.tedavi_kisaltma). Akinlar bir dakika ve normal gruplar sinirsiz oldugu icin hastane akinin asil freni: ayni ordu art arda kac akin yapabilir.",
+    "_sure_ornekleri": "2 milis ~12 dk (once 1,5 dk) · 8 okcu ~21 dk (once ~10 dk) · 18 mizrakci ~33 dk (once ~16 dk) · 100 mizrakci ~2,3 saat · tavan hastane binasinin (6 saat, binayla 1 saate iner).",
     "azami_saniye": 21600,
     "_azami_notu": "Alti saat tavan. Buyuk bir yenilgide yuzlerce yarali doner ve tavansiz sure gunlere cikardi; ceza zamanla artmali ama oyuncuyu oyundan kopartmamali.",
     "bakim_alir": false,
@@ -851,15 +852,17 @@
     "sef_carpani": 1.5,
     "_sef_notu": "Onuncu grup SEF: garnizonu agir, ekipman ihtimali yuksek, yenilenmesi uzun. Haritanin sonu bir duvar olmali; yoksa on grup tek oturusta suprulur ve harita bir gunde biter.",
     "sure_sn": 60,
-    "_sure_notu": "Her akin -- harita ve grup fark etmez -- TEK DAKIKA. Gidis-donus tek sure: ordu ciktigi anda gider, savasir ve doner; oyuncuya tek bir bekleyis, tek bir rapor. Once 240 sn taban + grup basina 45 sn, harita gucuyle ve sefte 1.5 ile carpiliyordu (ilk grup 4 dk, son haritanin sefi ~30 dk). Oyuncu karari: 'oyuncuyu surekli oyunda tutabilmeliyiz' -- akin bir bekleyis degil, oturum icinde tekrar tekrar yapilan bir eylem olmali. Ekonomiyi sinirlayan sure degil YENILENME (asagida): her grup yine gunde en cok 3 kez vurulabiliyor, yani gunluk tavan degismedi.",
-    "yenilenme_saat": 8,
+    "_sure_notu": "Her akin -- harita ve grup fark etmez -- TEK DAKIKA. Gidis-donus tek sure: ordu ciktigi anda gider, savasir ve doner; oyuncuya tek bir bekleyis, tek bir rapor. Once 240 sn taban + grup basina 45 sn, harita gucuyle ve sefte 1.5 ile carpiliyordu (ilk grup 4 dk, son haritanin sefi ~30 dk). Oyuncu karari: 'oyuncuyu surekli oyunda tutabilmeliyiz' -- akin bir bekleyis degil, oturum icinde tekrar tekrar yapilan bir eylem olmali. Normal gruplarin yenilenmesi de kalkti (asagida); akinin freni artik sure degil ASKER KAYBI ve HASTANE.",
+    "yenilenme_saat": 0,
     "sef_yenilenme_saat": 24,
+    "_yenilenme_notu_2": "Oyuncu karari: 'normal gruplarda limiti kaldiralim.' Normal grup vurulunca BEKLEMEDEN tekrar vurulabiliyor; sef 24 saat kaliyor -- haritanin sonu yine bir duvar, sefin yuksek ekipman ihtimali gunde bir kez. Neden guvenli: ezici orduyla bile bir normal grupta olen askerin bedeli, grubun kaynak odulunun 4-11 kati (bes harita, garnizonun 2-8 kati ordu; akin.test.ts 'sagmal degil'). Yani sinirsiz vurus sinirsiz kaynak DEGIL; kazanc XP ve ekipman, bedeli asker ve hastanede gecen zaman (hastane.saniye_taban). Asagidaki not 8/24 saatlik eski duzenin gerekcesi; tavan hesabi artik kayiptan geliyor.",
     "_yenilenme_notu": "Vurulan grup bu sure sonunda geri geliyor ve yenilenme OYUNCUYA OZEL: bir baskasinin vurdugu kamp senin haritanda duruyor. Ortak olsaydi kalabalik dunyada harita hep gri gorunurdu.\n\nOnce 4/12 saatti. Kuramsal gunluk tavan bir 20. seviye lordun bes koyunun 158 KATINA cikiyordu -- toprak tutmanin kaynak tarafindaki anlami kalmiyordu. Akin bir GELIR KAYNAGI degil, bir MASRAF KARSILAMA yeri: kaybettigin askeri odemeli ve ekipman dusurmeli, toprak gelirinin yerine gecmemeli. 8/24 saat ceilingi yariya indiriyor ve akini bir gunluk ritme ceviriyor: 'yarin yine gel', 'butun gun ogut' degil.",
     "odul_taban": {
-      "altin": 75,
-      "demir": 40,
-      "erzak": 30
+      "altin": 60,
+      "demir": 32,
+      "erzak": 24
     },
+    "_odul_notu_2": "Oyuncu karari: 'akin gelirlerini bir miktar dusurelim.' Taban %20 dustu (75/40/30 -> 60/32/24): normal gruplar sinirsiz vurulabildigi icin tek akinin kaynagi bir gunluk tavan degil, bir oturumun ritmi. Ekipman ihtimali ve XP degismedi; akinin asil odulu onlar. Asagidaki eski olcut ('odul kaybi odesin') %5 kayip varsayiyordu; motor gercekte %10-25 kaybettiriyor ve olen askerin bedeli oduldan zaten 3-9 kat buyuktu. Bu kararla acikca birakildi: kaynak kaybin bir KISMINI karsilar (akin.test.ts 'sagmal degil').",
     "odul_us": 1.27,
     "_odul_formulu": "kaynak = odul_taban[k] * harita.odul_agirligi[k] * harita.odul_carpani * odul_us^(grup-1); sefte ayrica sef_carpani",
     "_odul_notu": "Ilk yazista odul bes kat buyuktu ve harita carpani hic girmiyordu. Iki sonucu vardi: (1) ilk grup 4 dakikada 1020 altin veriyordu -- bir koyun 17 saatlik geliri, yani toprak tutmanin bir anlami kalmiyordu; (2) EN KOLAY harita saatlik en cok altini veriyordu, cunku sure guc_carpani ile uzarken odul uzamiyordu.\n\nILKE: akin bir GELIR KAYNAGI degil, bir MASRAF KARSILAMA yeri. Isi, kaybettigin askeri odemek ve ekipman dusurmek; toprak gelirinin yerine gecmek degil. Akindan toprak cikmasi PvP'nin sebebini nasil yok ederse, akindan sinirsiz kaynak cikmasi da toprak tutmanin sebebini yok eder -- odul da bir kapi.\n\nOlcut: bir akinin degeri, o akinda kaybedilen askerin bedelini odesin ve uzerine mutevazi bir pay biraksin. Ilk haritanin ucuncu grubu ~590 altin degeri veriyor; oraya gonderilen ~40 kisilik ordunun %5 kaybi ~250 altin. Ekipman dususu asil odul.",
@@ -1088,6 +1091,12 @@
       "asgari": 1,
       "_formul": "maliyet = ceil(kalan_dakika * dakika_basina), en az asgari",
       "_neden_dogrusal": "Sabit fiyat olsaydi uzun yuruyusu kisaltmak bedavaya gelirdi; katlanan fiyat ise kisa beklemeyi absurd pahali yapardi."
+    },
+    "tedavi_kisaltma": {
+      "dakika_basina": 0.5,
+      "asgari": 1,
+      "_formul": "maliyet = ceil(en_uzun_kalan_dakika * dakika_basina), en az asgari. Hastanedeki BUTUN kafileler birden taburcu oluyor; bedeli en uzun kalan kafile belirliyor, cunku kafileler paralel iyilesiyor ve satin alinan sey o bekleyis.",
+      "_neden": "Oyuncu karari: 'oyuncular isterse elmas harcayarak iyilesme suresini kisaltabilsin.' Dakika fiyati akin kisaltmanin dortte biri: tedavi dakikalarca degil onlarca dakika suruyor; akinin fiyatiyla tipik bir akin kafilesi (~20 dk) 40 elmas ederdi, yani oyuncunun iki haftalik gunluk gorev kazanci. 0,5 ile ~10 elmas: baslangic kesesi (15) bir-iki kafileye yetiyor, sinirsiz degil. Elmas GUC SATIN ALMIYOR: taburcu olan asker beklenerek taburcu olanla ayni."
     },
     "kazanim": {
       "gunluk_gorev_tamamlama": 5,

@@ -377,7 +377,12 @@ export async function devRoutes(app: FastifyInstance): Promise<void> {
   /** Kaynak verir: pahalı sistemleri test etmek için. */
   app.post('/test/kaynak-ver', { preHandler: requireAuth }, async (req) => {
     const lordId = await findLordByUser(req.user.userId);
-    const b = (req.body ?? {}) as { altin?: number; demir?: number; erzak?: number };
+    const b = (req.body ?? {}) as {
+      altin?: number;
+      demir?: number;
+      erzak?: number;
+      elmas?: number;
+    };
     await tickLord(lordId);
     return prisma.lord.update({
       where: { id: lordId },
@@ -385,8 +390,10 @@ export async function devRoutes(app: FastifyInstance): Promise<void> {
         altin: { increment: Math.round(b.altin ?? 0) },
         demir: { increment: Math.round(b.demir ?? 0) },
         erzak: { increment: Math.round(b.erzak ?? 0) },
+        // Elmasla kısaltmanın iki yolu da (yeter / yetmez) sınanabilsin.
+        elmas: { increment: Math.round(b.elmas ?? 0) },
       },
-      select: { altin: true, demir: true, erzak: true },
+      select: { altin: true, demir: true, erzak: true, elmas: true },
     });
   });
 

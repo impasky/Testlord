@@ -21,7 +21,12 @@
  *  - Generaller'de yeni oyuncunun alamayacağı generali gösteriyordu,
  *  - tur oyuncuyu dünya haritasına saldırtıyordu (oyuncu kararı: tur
  *    bölge aldırmaz, akın yaptırır),
- *  - paneldeki düğme ekranın kenarında yarım kalıyor, kaydırılmıyordu.
+ *  - paneldeki düğme ekranın kenarında yarım kalıyor, kaydırılmıyordu,
+ *  - tur kesesi yetmeyen oyuncuyu Demirhane'ye yolluyordu; üretemeyen
+ *    oyuncuya ışık "burada işimiz bitti" deyip paneli kapattırıyor,
+ *    omurga onu aynı adıma geri gönderiyordu (oyuncu bildirdi). Bu yüzden
+ *    bot artık KAYNAĞI yalnız oyun "akına devam et" dediğinde alıyor —
+ *    her beklemede bol kaynak vermek o kilidi örtüyordu.
  *
  * SADECE GELİŞTİRME. node tools/rehber-tur-testi.mjs
  */
@@ -100,12 +105,23 @@ const isik = () =>
     };
   });
 
-/** Zaman geçsin: kuyruklar, yürüyüşler, akınlar, biraz da gelir. */
-const zamanGecsin = async (gelir) => {
+/**
+ * Zaman geçsin: kuyruklar, yürüyüşler, akınlar.
+ *
+ * GELİR yalnız omurga "akına devam et" / "akın için asker yazdır"
+ * diyorsa: oyun oyuncuya "kesen yetmiyor, akınla kazan" demiş, oyuncu da
+ * bir süre akın yapıp dönmüş sayılıyor. Önceden her beklemede veriliyordu
+ * ve kesesi yetmeyen oyuncunun takıldığı yeri örtüyordu.
+ */
+let gelirVerildi = 0;
+const zamanGecsin = async (omurga) => {
   await uc('/test/kuyruklari-bitir');
   await uc('/test/yuruyusleri-bitir');
   await uc('/test/akinlari-bitir');
-  if (gelir) await uc('/test/kaynak-ver', { altin: 30000, demir: 15000, erzak: 15000 });
+  if (/Akına devam et|Akın için asker yazdır/.test(omurga ?? '')) {
+    gelirVerildi++;
+    await uc('/test/kaynak-ver', { altin: 30000, demir: 15000, erzak: 15000 });
+  }
   // Sekmeye dönülmüş gibi: bayat sorgular tazelenir (oyuncu en çok 30 sn bekler).
   await page.evaluate(() => window.dispatchEvent(new Event('visibilitychange')));
   await page.waitForTimeout(3500);
@@ -118,6 +134,12 @@ let isiksiz = 0;
 let onceki = '';
 let kilit = null;
 let turBitti = false;
+/** Kaynak ilk verildiğinde kaçıncı dokunuştaydık (kesesiz geçilen kısım). */
+let gelirOncesiDokunus = null;
+/** Panele omurga düğmesiyle girilirken omurga ne diyordu. */
+let girerkenOmurga = null;
+/** "Paneli kapat"a basıldıysa: o panele girilirken omurga ne diyordu. */
+let kapatilanGiris = null;
 
 for (let t = 0; t < 150 && !kilit; t++) {
   const d = await isik();
@@ -131,7 +153,10 @@ for (let t = 0; t < 150 && !kilit; t++) {
     // Perde yok ama tur bitmedi: bir bekleyiş (akın, yürüyüş, kaynak).
     isiksiz++;
     if (isiksiz > 8) kilit = `perde ${isiksiz} bekleyişte geri gelmedi · omurga="${d.omurga}"`;
-    await zamanGecsin(isiksiz > 1);
+    if (gelirOncesiDokunus === null && /Akına devam et|asker yazdır/.test(d.omurga)) {
+      gelirOncesiDokunus = basilan.length;
+    }
+    await zamanGecsin(d.omurga);
     continue;
   }
   isiksiz = 0;
@@ -140,7 +165,7 @@ for (let t = 0; t < 150 && !kilit; t++) {
     // sürerse oyuncu hiçbir yere basamıyor demektir.
     deliksiz++;
     if (deliksiz > 10) kilit = `perde var, delik yok · omurga="${d.omurga}"`;
-    await zamanGecsin(false);
+    await zamanGecsin(null);
     continue;
   }
   deliksiz = 0;
@@ -156,13 +181,30 @@ for (let t = 0; t < 150 && !kilit; t++) {
     kilit = `"${d.isaret}" (${d.metin}) üç kez basıldı, hiçbir şey değişmedi`;
     break;
   }
+  /*
+   * "Burada işimiz bitti" dedikten sonra ışık oyuncuyu panele GİRDİĞİ
+   * adımla geri yolluyorsa iş bitmemiş demektir: oyuncu döngüde. Paneli
+   * kapat halkası yalnız adım panelin içindeyken DEĞİŞTİĞİNDE doğru
+   * (kuşandın → sıra araştırmada); oyuncunun bildirdiği hata, adım
+   * değişmeden "işimiz bitti" denmesiydi.
+   */
+  if (kapatilanGiris !== null && d.isaret === 'omurga-dugme' && d.omurga === kapatilanGiris) {
+    kilit = `"burada işimiz bitti" dedi ama adım değişmedi · omurga="${d.omurga}"`;
+    break;
+  }
+  if (d.isaret === 'omurga-dugme') girerkenOmurga = d.omurga;
+  kapatilanGiris = d.isaret === 'kapi-kapat' ? girerkenOmurga : null;
   basilan.push(d.isaret);
   await page.mouse.click(d.x, d.y);
   await page.waitForTimeout(1600);
 }
 
 if (kilit) await page.screenshot({ path: '/tmp/rehber-tur-kilit.png' });
-kontrol('Tur hiçbir yerde kilitlenmedi', kilit === null, kilit ?? `${basilan.length} dokunuş`);
+kontrol(
+  'Tur hiçbir yerde kilitlenmedi',
+  kilit === null,
+  kilit ?? `${basilan.length} dokunuş, ${gelirVerildi} kez "akınla kazan" beklemesi`,
+);
 kontrol('Tur BİTTİ (beş aşama)', turBitti);
 
 // Her aşamanın İŞ düğmesine ışık gerçekten götürdü mü.
@@ -180,6 +222,27 @@ for (const [asama, isaretler] of Object.entries(beklenen)) {
     isaretler.join(' / '),
   );
 }
+/*
+ * İlk zafer kesin parça düşürüyor: ekipman aşaması DÖVMEDEN, kuşanarak
+ * geçilmeli — ve kaynak verilmeden önce. Oyuncunun takıldığı yer tam
+ * burasıydı: kuşanacak parça yok, dövmeye kese yok.
+ */
+const kusanAn = basilan.indexOf('demirhane-kusan');
+kontrol(
+  'Ekipman aşaması ilk akının parçasıyla, dövmeden geçildi',
+  kusanAn >= 0 && !basilan.slice(0, kusanAn + 1).includes('demirhane-uret'),
+  basilan
+    .slice(0, kusanAn + 1)
+    .filter((x) => x.startsWith('demirhane'))
+    .join(' → '),
+);
+kontrol(
+  'Kuşanmak için kaynak gerekmedi',
+  kusanAn >= 0 && (gelirOncesiDokunus === null || kusanAn < gelirOncesiDokunus),
+  gelirOncesiDokunus === null
+    ? `kaynak hiç verilmedi`
+    : `kaynak ${gelirOncesiDokunus}. dokunuşta, kuşan ${kusanAn + 1}.`,
+);
 kontrol(
   'Işık hiçbir düğmeyi arka arkaya iki kez göstermedi (boşa bastırma yok)',
   basilan.every((x, i) => i === 0 || x !== basilan[i - 1] || x === 'kapi-kapat'),

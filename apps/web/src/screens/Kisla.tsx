@@ -416,7 +416,12 @@ export function Kisla({
       <Zemin ad="kisla" baslik="Kışla" altyazi="Ordunu burada büyütürsün" />
 
       {/* Hastane: yaralı dönenler. Yaralısı yoksa hiç çizilmiyor. */}
-      <Hastane hastane={lord.hastane ?? {}} queues={queues} />
+      <Hastane
+        hastane={lord.hastane ?? {}}
+        queues={queues}
+        elmas={lord.elmas ?? 0}
+        onGuncelle={onGuncelle}
+      />
       {hata && (
         <Kart className="border-kirmizi/50 p-3">
           <p className="flex gap-2 text-[13px] text-kirmizi">

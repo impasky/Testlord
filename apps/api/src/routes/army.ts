@@ -7,6 +7,7 @@ import {
   commandCapacity,
   egitimSuresiSn,
   ilkEgitimMi,
+  tedaviKisaltmaBedeli,
   unit,
   type GearLineKey,
   type UnitType,
@@ -20,7 +21,13 @@ import { GameError, hata } from '../errors.js';
 import { gecikmisleriKapat } from '../services/gecikmis.js';
 import { arastirmaBonusuOku, collectAllUnits, findLordByUser, tickLord } from '../services/lord.js';
 import { lordIslemi } from '../services/kilit.js';
-import { addUnitsHome, assertQueueSlot, enqueue, spendResources } from '../services/queue.js';
+import {
+  addUnitsHome,
+  assertQueueSlot,
+  enqueue,
+  gecikmisIsleriCoz,
+  spendResources,
+} from '../services/queue.js';
 
 const trainSchema = z.object({
   unitType: z.enum(UNIT_TYPES as unknown as [UnitType, ...UnitType[]]),
@@ -162,6 +169,64 @@ export async function armyRoutes(app: FastifyInstance): Promise<void> {
       await addUnitsHome(lordId, unitType, -count, tx);
       return { disbanded: count };
     });
+  });
+
+  /**
+   * Hastanedeki BÜTÜN yaralıları elmasla şimdi taburcu et.
+   *
+   * Oyuncunun isteği: "oyuncular isterse elmas harcayarak iyileşme
+   * süresini kısaltabilsin." ELMAS GÜÇ SATIN ALMIYOR, ZAMAN SATIN ALIYOR:
+   * taburcu olan asker, beklenerek taburcu olanla birebir aynı.
+   *
+   * Bedel SUNUCUDA ve EN UZUN kalan kafileden hesaplanıyor: kafileler
+   * paralel iyileşiyor, satın alınan şey "hepsi dönene kadar" bekleyiş.
+   * İstemcinin gönderdiği bir fiyata güvenmek elması bedavaya çevirirdi.
+   *
+   * Taburcu işini kuyruğun kendi çözümü yapıyor: bitiş şimdiye çekiliyor
+   * ve kilit bırakılınca `gecikmisIsleriCoz` askerleri eve katıyor.
+   * Burada ayrıca eve yazsaydık tedavi bitişinin iki kopyası olurdu.
+   */
+  app.post('/army/hastane/kisalt', { preHandler: requireAuth }, async (req) => {
+    const lordId = await findLordByUser(req.user.userId);
+    const sonuc = await lordIslemi(lordId, async (tx) => {
+      const simdi = new Date();
+      const kafileler = await tx.queue.findMany({
+        where: { lordId, kind: 'iyilestir', resolved: false, finishAt: { gt: simdi } },
+        select: { id: true, finishAt: true },
+      });
+      if (kafileler.length === 0) {
+        throw new GameError('Hastanede bekleyen yaralın yok.', 400, 'BEKLEME_YOK');
+      }
+      const enUzunSn = Math.max(
+        ...kafileler.map((k) => Math.ceil((k.finishAt.getTime() - simdi.getTime()) / 1000)),
+      );
+      const bedel = tedaviKisaltmaBedeli(enUzunSn);
+      const lord = await tx.lord.findUniqueOrThrow({
+        where: { id: lordId },
+        select: { elmas: true },
+      });
+      if (lord.elmas < bedel) {
+        throw new GameError(
+          `Yaralıları şimdi taburcu etmek ${bedel} elmas. Sende ${lord.elmas} var.`,
+          400,
+          'YETERSIZ_ELMAS',
+        );
+      }
+      await tx.lord.update({ where: { id: lordId }, data: { elmas: { decrement: bedel } } });
+      await tx.queue.updateMany({
+        where: { id: { in: kafileler.map((k) => k.id) }, resolved: false },
+        data: { finishAt: simdi },
+      });
+      return {
+        harcanan: bedel,
+        kalanElmas: lord.elmas - bedel,
+        kafile: kafileler.length,
+        kisaltilanSaniye: enUzunSn,
+      };
+    });
+    // Kilit bırakıldı: kuyruğun kendi çözümü askerleri eve katıyor.
+    await gecikmisIsleriCoz(lordId);
+    return sonuc;
   });
 
   app.get('/gear', { preHandler: requireAuth }, async (req) => {

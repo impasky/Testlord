@@ -262,6 +262,83 @@ describe('omurga — tur sürerken', () => {
     expect(adim?.hedefSekme).toBe('kisla');
   });
 
+  /*
+   * Oyuncu bildirdi: "Demirhaneye yönlendirdi, üretim yapamıyorum.
+   * Envantere tıkladım, burada işimiz bitti dedi ama ekipman
+   * kuşanmamıştım." Tur kesesine bakmadan Demirhane'ye yolluyordu.
+   */
+  describe('kesesi yetmeyen aşama', () => {
+    const t1Yetmiyor = { altin: 111, demir: 0, erzak: 0 };
+    const arastirmaYetmiyor = { altin: 3711, demir: 0, erzak: 0 };
+
+    it('parçası yok, dövmeye parası yok: Demirhane değil, akın', () => {
+      const adim = siradakiAdim(
+        girdi({
+          lord: turda(),
+          oneri: yetmeyen,
+          generalVar: false,
+          ekipmanEksik: t1Yetmiyor,
+          arastirmaEksik: arastirmaYetmiyor,
+          generalEksikAltin: 4711,
+        }),
+      );
+      expect(adim?.anahtar).toBe('akin-devam');
+      expect(adim?.hedefSekme).toBe('akin');
+      expect(adim?.hedefKapi).toBeUndefined();
+      // Açık, SIRADAKİ aşamanınki: önce ekipman.
+      expect(adim?.sonraki).toBe('lorduna ekipman kuşan');
+    });
+
+    it('ekipmana yetmiyor ama araştırmaya yetiyor: araştırma öne geçiyor', () => {
+      const adim = siradakiAdim(
+        girdi({
+          lord: turda(),
+          oneri: yetmeyen,
+          generalVar: false,
+          ekipmanEksik: t1Yetmiyor,
+          arastirmaEksik: null,
+          generalEksikAltin: 4711,
+        }),
+      );
+      expect(adim?.anahtar).toBe('arastirma');
+    });
+
+    it('araştırmaya yetmiyor, generale yetiyor: general', () => {
+      const adim = siradakiAdim(
+        girdi({
+          lord: turda({ equippedItems: [{ slot: 'silah' }] }),
+          oneri: yetmeyen,
+          generalVar: false,
+          arastirmaEksik: arastirmaYetmiyor,
+          generalEksikAltin: 0,
+        }),
+      );
+      expect(adim?.anahtar).toBe('general');
+    });
+
+    it("kuşanılmamış parçası olan fakir oyuncu Demirhane'ye gidiyor (kuşanmak bedava)", () => {
+      // `ekipmanEksik` parça varken null: kuşanmanın bedeli yok.
+      const adim = siradakiAdim(
+        girdi({ lord: turda(), oneri: yetmeyen, generalVar: false, ekipmanEksik: null }),
+      );
+      expect(adim?.anahtar).toBe('ekipman');
+    });
+
+    it('tur bitmiş lordu da kesesi yetmeyen işe yollamıyor', () => {
+      const adim = siradakiAdim(
+        girdi({
+          lord: lord({ equippedItems: [] }),
+          generalVar: false,
+          ekipmanEksik: t1Yetmiyor,
+          generalEksikAltin: 3000,
+          arastirmaBasladi: true,
+        }),
+      );
+      expect(adim?.anahtar).not.toBe('ekipman');
+      expect(adim?.anahtar).not.toBe('general');
+    });
+  });
+
   it('tur bitince sıra eskisine dönüyor: hedef varken saldır', () => {
     expect(siradakiAdim(girdi({ lord: lord({ equippedItems: [] }), oneri: hedef }))?.anahtar).toBe(
       'saldir',

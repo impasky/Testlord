@@ -410,7 +410,18 @@ export function Demirhane({
           ayırıyor (docs/11 §2.3 G1). */}
       <AltSekmeler
         sekmeler={[
-          { key: 'uretim', ad: 'Üretim' },
+          {
+            key: 'uretim',
+            ad: 'Üretim',
+            // Kuşanacak parçası olmayan oyuncu için işin yeri burası. İşaret
+            // olmasaydı Envanter'deki oyuncuya ışık gösterecek bir şey
+            // bulamıyor ve "burada işimiz bitti" deyip paneli kapattırıyordu
+            // — adım bitmemişti, omurga onu Demirhane'ye geri yolluyordu.
+            isaret:
+              sekme !== 'uretim' && !(items.data?.items ?? []).some((i) => !i.equipped)
+                ? 'demirhane-uretim'
+                : undefined,
+          },
           {
             key: 'envanter',
             ad: 'Envanter',

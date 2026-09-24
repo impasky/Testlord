@@ -167,7 +167,7 @@ export async function resolveAkin(akinId: string): Promise<boolean> {
          * kaybedip sıfıra dönse bile kendini o aşamada bulmasın
          * (`rehberBittiAt` ile aynı gerekçe).
          */
-        await tx.lord.updateMany({
+        const ilkZafer = await tx.lord.updateMany({
           where: { id: akin.lordId, ilkAkinAt: null },
           data: { ilkAkinAt: new Date() },
         });
@@ -180,9 +180,22 @@ export async function resolveAkin(akinId: string): Promise<boolean> {
          * rapor ile envanter bir gün ayrışırdı ve hangisinin doğru
          * olduğu belli olmazdı.
          */
+        /*
+         * İLK ZAFER KESİN parça düşürüyor.
+         *
+         * Zorunlu turun akından sonraki aşaması "ekipman kuşan" ve
+         * turun kendisi bu parçaya dayanıyor. Şansa bıraktığımızda
+         * %90 ihtimalle parça çıkmıyordu; oyuncu Demirhane'ye geliyor,
+         * dövmeye kesesi yetmiyordu (T1 400 altın, ilk eğitimden sonra
+         * elde ~300) ve tur orada takılıyordu — bir oyuncu tam bunu
+         * bildirdi. Damga (`ilkAkinAt`) yalnız bir kez konduğu için bu
+         * da ömürde bir kez; zar yine atılıyor ki parçanın yuvası ve
+         * nadirliği aynı tohumdan gelsin.
+         */
         const sans = akinEkipmanSansi(akin.haritaKey, akin.grupNo);
         const rng = createRng(`akin-odul-${akin.id}`);
-        if (rng.next() < sans.ihtimal) {
+        const zar = rng.next();
+        if (ilkZafer.count > 0 || zar < sans.ihtimal) {
           const slot = SLOTLAR[Math.floor(rng.next() * SLOTLAR.length)] ?? 'silah';
           const item = await tx.item.create({
             data: {
