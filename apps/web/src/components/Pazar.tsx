@@ -119,6 +119,7 @@ export function Pazar() {
                 key={t}
                 type="button"
                 onClick={() => verenSec(t)}
+                aria-pressed={veren === t}
                 /*
                   Miktar KENDİ SATIRINDA ve kutu daralabiliyor (`min-w-0`).
                   Tek satırdayken üç kutu 390 pikseli aşıyordu: stok altı
@@ -150,6 +151,7 @@ export function Pazar() {
                 key={t}
                 type="button"
                 onClick={() => alanSec(t)}
+                aria-pressed={alan === t}
                 className={`flex flex-1 items-center justify-center gap-1 rounded-lg border px-2 py-1.5 text-[12px] ${
                   alan === t ? 'border-yesil bg-yesil/15 text-yesil' : 'border-kenar text-parsomen'
                 }`}

@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { StrictMode } from 'react';
+import { StrictMode, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
 import { HataSiniri } from './components/HataSiniri';
@@ -30,7 +30,18 @@ createRoot(document.getElementById('root')!).render(
           yakalasın ama yenile düğmesi her durumda çizilebilsin. */}
       <QueryClientProvider client={queryClient}>
         <HataSiniri>
-          <App />
+          {/*
+            EN DIŞTAKİ Suspense: App'in ilk dönüşlerindeki tembel sayfalar
+            (Aydınlatma Metni, Kullanım Koşulları, parola sıfırlama, e-posta
+            doğrulama) içerideki sınırların DIŞINDA çiziliyordu. Oyunun
+            içinden "Hangi veriyi tutuyoruz"a basan oyuncu çökme ekranı
+            görüyordu ("A component suspended while responding to
+            synchronous input") — tüm düğmeleri deneyen bot yakaladı. Boş
+            yedek: sayfa yüklenirken tek bir kare boş kalıyor, o kadar.
+          */}
+          <Suspense fallback={null}>
+            <App />
+          </Suspense>
         </HataSiniri>
       </QueryClientProvider>
     </DilSaglayici>

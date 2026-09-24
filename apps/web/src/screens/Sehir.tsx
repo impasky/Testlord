@@ -137,6 +137,14 @@ function binadakiIsler(queues: QueueItem[]): Map<string, { bitis: string; ad: st
  */
 const TABAN_BOY = 22;
 
+/**
+ * Binanın dokunulan alanı, kutusunun yüzdesi olarak: sprite'ın gövdesi.
+ * Tabandan çakılı sprite'larda üst %30 çoğunlukla boş; yanlardan da pay.
+ * Bu şemayla hiçbir binanın ortası önündekinin alanına düşmüyor (ölçüldü:
+ * `data/binalar.json` konumlarıyla on üç binanın hepsi).
+ */
+const BINA_DOKUNMA = { left: '18%', right: '18%', top: '30%', bottom: '4%' } as const;
+
 /** Bina anahtarı → ikon. Anahtarlar veride, ikonlar burada. */
 const BINA_IKONU: Record<string, keyof typeof IKONLAR> = {
   malikane: 'navMalikane',
@@ -725,7 +733,8 @@ function BinaIsareti({
         girilebilir ? b.ozet : b.aciklama
       }${mesgul ? `, ${mesgul.ad} sürüyor` : ''}`}
       title={`${b.ad} — ${dikili ? `seviye ${b.seviye}` : 'boş arsa'}`}
-      className="absolute aspect-square"
+      // Dokunma KUTUDAN değil aşağıdaki gövde alanından (`BINA_DOKUNMA`).
+      className="pointer-events-none absolute aspect-square"
       style={{
         left: `${b.x}%`,
         top: `${b.y}%`,
@@ -745,6 +754,21 @@ function BinaIsareti({
           sahnesinde de yapılıyor ve iki kopya, bir gün birinin düzelip
           ötekinin düzelmemesi demek (`ZemineGolgesi`). */}
       <ZemineGolgesi />
+
+      {/*
+        DOKUNMA ALANI — kutunun tamamı değil, sprite'ın GÖVDESİ.
+
+        Sıralar bilerek çakışıyor (yukarıda, 3.) ve dokunma bütün kare
+        kutudaydı: öndeki binanın kutusunun ÜST kısmı çoğunlukla boş gökyüzü,
+        ama arkadakinin üstüne biniyordu. Tüm düğmeleri deneyen bot
+        (tools/tum-dugmeler-testi.mjs) yakaladı: Elçilik'in ortası
+        Malikâne'nin kutusunun altında kalıyordu, Elçilik'e dokunan oyuncu
+        Malikâne'ye giriyordu. Düğmenin kendisi dokunulmaz, yalnız bu alan
+        dokunulur; çocuklar `pointer-events`i düğmeden devraldığı için başka
+        hiçbir parça dokunmayı yutmuyor. Klavye ve ekran okuyucu için düğme
+        aynen duruyor.
+      */}
+      <span aria-hidden="true" className="pointer-events-auto absolute z-20" style={BINA_DOKUNMA} />
 
       {/*
         İSKELE — kuyruktaki bina inşa hâlinde görünsün.

@@ -20,6 +20,7 @@
  * yayına almadan önce bir hukukçuya okutulmalı.
  */
 import { Buton, Kart, sablonlu } from '../components/ui';
+import { DestekSatiri } from '../components/DestekSatiri';
 import { TamZemin } from '../components/Zemin';
 
 function Madde({ baslik, children }: { baslik: string; children: React.ReactNode }) {
@@ -56,7 +57,8 @@ export function Gizlilik({ onKapat }: { onKapat: () => void }) {
             </p>
             <p>
               <strong className="text-parsomen">Oyun durumun.</strong> Lordun, ordun, bölgelerin,
-              savaş raporların, ittifakın, sohbet mesajların. Oyunun kendisi bu.
+              savaş raporların, ittifakın, sohbet mesajların ve engellediğin lordlar. Oyunun kendisi
+              bu.
             </p>
             <p>
               <strong className="text-parsomen">Son giriş anın ve son gördüğün ekran.</strong> İki
@@ -108,6 +110,11 @@ export function Gizlilik({ onKapat }: { onKapat: () => void }) {
               İttifak sohbetinde yazdıkların ittifakındaki diğer oyunculara açık. Şikâyet edilen bir
               mesaj, kararı verecek yöneticiye görünür.
             </p>
+            <p>
+              Sunucuda bir hata olursa teknik ayrıntısı bir hata izleme hizmetine gidebilir; oraya
+              e-posta adresin ve parolan gönderilmez, yalnız hatanın kendisi ve lordunun kimlik
+              numarası.
+            </p>
           </Madde>
 
           <Madde baslik="Ne kadar süre">
@@ -130,6 +137,7 @@ export function Gizlilik({ onKapat }: { onKapat: () => void }) {
               Verilerine erişmek ya da başka bir talepte bulunmak istersen kayıt olduğun e-posta
               adresinden bize yazman yeterli.
             </p>
+            <DestekSatiri />
           </Madde>
 
           <p className="mt-5 border-t border-kenar pt-3 text-[11px] text-sonuk">

@@ -37,6 +37,15 @@ const schema = z.object({
   /** Gönderen adresi. Alan adının doğrulanmış olması gerekir. */
   EPOSTA_GONDEREN: z.string().default('Lordlar Çağı <bildirim@localhost>'),
   /**
+   * Oyuncunun ulaşabileceği destek adresi — Kullanım Koşulları ve
+   * Aydınlatma Metni'nde yayınlanıyor.
+   *
+   * Mağazalar (App Store 1.2, Google Play geliştirici iletişimi) herkese
+   * açık bir iletişim yolu istiyor. Koda gömülmedi: adresi yalnız hesabın
+   * sahibi seçebilir. Boşsa sayfalar iletişim satırını çizmiyor.
+   */
+  DESTEK_EPOSTA: z.string().email().optional(),
+  /**
    * Parola sıfırlama bağlantısının tabanı (arayüzün herkese açık adresi).
    *
    * Verilmezse Render'ın kendi verdiği dış adres kullanılır. Bu yedek

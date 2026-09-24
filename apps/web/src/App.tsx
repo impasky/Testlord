@@ -49,6 +49,7 @@ const Generaller = lazy(() =>
   import('./screens/Generaller').then((m) => ({ default: m.Generaller })),
 );
 const Gizlilik = lazy(() => import('./screens/Gizlilik').then((m) => ({ default: m.Gizlilik })));
+const Kosullar = lazy(() => import('./screens/Kosullar').then((m) => ({ default: m.Kosullar })));
 const Hesap = lazy(() => import('./screens/Hesap').then((m) => ({ default: m.Hesap })));
 const Moderasyon = lazy(() =>
   import('./screens/Moderasyon').then((m) => ({ default: m.Moderasyon })),
@@ -103,10 +104,16 @@ function gizlilikAcikMi(): boolean {
   return window.location.hash.startsWith('#/gizlilik');
 }
 
+/** Kullanım Koşulları: aydınlatma metniyle aynı desen, aynı sebep. */
+function kosullarAcikMi(): boolean {
+  return window.location.hash.startsWith('#/kosullar');
+}
+
 export function App() {
   const [sifirlamaJetonu, setSifirlamaJetonu] = useState<string | null>(hashJetonu);
   const [dogrulama, setDogrulama] = useState<string | null>(dogrulamaJetonu);
   const [gizlilik, setGizlilik] = useState(gizlilikAcikMi);
+  const [kosullar, setKosullar] = useState(kosullarAcikMi);
 
   // Hash yalnızca açılışta okunursa, uygulama zaten açıkken tıklanan bağlantı
   // hiçbir şey yapmaz: tarayıcı hash değişimini sayfa yüklemesi saymaz.
@@ -114,6 +121,7 @@ export function App() {
     const dinle = () => {
       setSifirlamaJetonu(hashJetonu());
       setGizlilik(gizlilikAcikMi());
+      setKosullar(kosullarAcikMi());
     };
     window.addEventListener('hashchange', dinle);
     return () => window.removeEventListener('hashchange', dinle);
@@ -384,7 +392,18 @@ export function App() {
     setGirisli(false);
   }
 
-  // Aydınlatma metni her şeyin ÜSTÜNDE: girişli de girişsiz de açılabilmeli.
+  // Kullanım Koşulları ve aydınlatma metni her şeyin ÜSTÜNDE: girişli de
+  // girişsiz de açılabilmeli.
+  if (kosullar) {
+    return (
+      <Kosullar
+        onKapat={() => {
+          window.location.hash = '';
+          setKosullar(false);
+        }}
+      />
+    );
+  }
   if (gizlilik) {
     return (
       <Gizlilik

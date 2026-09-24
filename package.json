@@ -30,6 +30,7 @@
     "uretim-testi": "node tools/uretim-testi.mjs",
     "okunurluk": "node tools/okunurluk-denetim.mjs",
     "erisim": "node tools/erisim-denetim.mjs",
+    "dugmeler": "node tools/tum-dugmeler-testi.mjs",
     "gorsel": "python3 tools/gorsel-uret.py",
     "yuk-testi": "node tools/yuk-testi.mjs",
     "yedekle": "bash tools/yedekle.sh",

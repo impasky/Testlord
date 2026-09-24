@@ -125,6 +125,16 @@ export async function buildServer() {
   await app.register(cors, {
     origin: env.NODE_ENV === 'production' ? env.webOrigins : true,
     credentials: true,
+    /*
+     * YÖNTEMLER açıkça yazılı. @fastify/cors'un varsayılanı yalnız
+     * GET, HEAD, POST ve arayüz DELETE (hesap silme, araştırma ve inşa
+     * iptali, geri çağırma, engel kaldırma) ile PUT (savunma düzeni)
+     * kullanıyor. Arayüz ile API ayrı kökenden konuşunca (geliştirme,
+     * mağaza kabuğu) tarayıcı bu istekleri ön denetimde düşürüyordu ve
+     * düğme sessizce hiçbir şey yapmıyordu — tüm düğmeleri deneyen bot
+     * yakaladı. Tek kökenli dağıtımda (SERVE_WEB) görünmüyordu.
+     */
+    methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'],
   });
   await app.register(jwt, { secret: env.JWT_SECRET, sign: { expiresIn: '7d' } });
   // Sınır IP'ye değil oturuma bağlı. Mobil oyuncuların çoğu operatör NAT'ı

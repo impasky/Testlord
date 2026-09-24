@@ -253,6 +253,7 @@ function BirimKarti({
           <button
             key={a}
             onClick={() => setAdet(a)}
+            aria-pressed={adet === a}
             className={`bas baslik flex-1 rounded-xl border-2 py-2 text-[12px] ${
               adet === a ? 'border-altin/70 bg-altin/15 text-altin' : 'border-kenar text-solgun'
             }`}

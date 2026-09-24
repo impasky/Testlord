@@ -25,6 +25,9 @@ export function IttifakSohbet({ lordId }: { lordId: string }) {
   const [hata, setHata] = useState<string | null>(null);
   const [sikayet, setSikayet] = useState<{ id: string; ad: string; metin: string } | null>(null);
   const [bilgi, setBilgi] = useState<string | null>(null);
+  // Engel onayı: tek dokunuşla birini engellemek fazla kolay, ama ayrı bir
+  // sayfa da fazla ağır — sohbetin üstünde tek satırlık bir soru.
+  const [engelSor, setEngelSor] = useState<{ lordId: string; ad: string } | null>(null);
   const dip = useRef<HTMLDivElement | null>(null);
 
   /**
@@ -60,6 +63,28 @@ export function IttifakSohbet({ lordId }: { lordId: string }) {
     },
   });
 
+  /*
+   * Engelle: kötüye kullanan oyuncunun mesajları bu oyuncuya bir daha
+   * gelmiyor (App Store 1.2 / Google Play UGC: süzgeç, şikâyet ve
+   * ENGEL). Engel Hesap ekranından kaldırılabiliyor.
+   */
+  const engelle = useMutation({
+    mutationFn: (h: { lordId: string; ad: string }) => api.engelle(h.lordId),
+    onSuccess: (_, h) => {
+      setEngelSor(null);
+      setHata(null);
+      setBilgi(
+        `${h.ad} engellendi. Mesajlarını artık görmeyeceksin; Hesap ekranından kaldırabilirsin.`,
+      );
+      void qc.invalidateQueries({ queryKey: ['ittifak-sohbet'] });
+      void qc.invalidateQueries({ queryKey: ['engeller'] });
+    },
+    onError: (e: unknown) => {
+      hisRet();
+      setHata(e instanceof ApiError ? e.message : 'Engellenemedi.');
+    },
+  });
+
   const sayi = q.data?.mesajlar.length ?? 0;
   // Yeni mesaj gelince dibe kaydır. Sohbet aşağı doğru akıyor; okuyanın
   // her seferinde elle kaydırması gerekmemeli.
@@ -74,6 +99,23 @@ export function IttifakSohbet({ lordId }: { lordId: string }) {
   return (
     <Bolum baslik="İttifak Sohbeti">
       <Kart className="p-3">
+        {engelSor && (
+          <div className="mb-2.5 rounded-xl border border-kirmizi/40 bg-kirmizi/10 p-2.5">
+            <p className="text-[12px] leading-snug text-parsomen">{`${engelSor.ad} engellensin mi? Mesajlarını bir daha görmezsin; o bundan haberdar olmaz.`}</p>
+            <div className="mt-2 flex gap-2">
+              <Buton tur="anahat" boy="kucuk" onClick={() => setEngelSor(null)}>
+                Vazgeç
+              </Buton>
+              <Buton
+                boy="kucuk"
+                onClick={() => engelle.mutate(engelSor)}
+                disabled={engelle.isPending}
+              >
+                Engelle
+              </Buton>
+            </div>
+          </div>
+        )}
         {mesajlar.length === 0 ? (
           <p className="text-[12px] text-sonuk">
             Henüz kimse yazmadı. İlk sözü sen söyle — bir hedef göster, yardım iste.
@@ -111,6 +153,15 @@ export function IttifakSohbet({ lordId }: { lordId: string }) {
                         className="bas -my-1 flex h-7 w-7 shrink-0 items-center justify-center rounded text-[13px] text-sonuk"
                       >
                         ⚑
+                      </button>
+                    )}
+                    {!benim && (
+                      <button
+                        onClick={() => setEngelSor({ lordId: m.lordId, ad: m.ad })}
+                        aria-label={`${m.ad} adlı lordu engelle`}
+                        className="bas -my-1 flex h-7 w-7 shrink-0 items-center justify-center rounded text-[14px] text-sonuk"
+                      >
+                        ⊘
                       </button>
                     )}
                   </div>

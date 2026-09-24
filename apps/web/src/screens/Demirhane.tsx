@@ -457,6 +457,7 @@ export function Demirhane({
                   key={t.tier}
                   onClick={() => t.unlocked && setTier(t.tier)}
                   disabled={!t.unlocked}
+                  aria-pressed={tier === t.tier}
                   aria-label={
                     t.unlocked
                       ? `T${t.tier}`
@@ -510,6 +511,7 @@ export function Demirhane({
                 <button
                   key={s}
                   onClick={() => setSlot(s)}
+                  aria-pressed={slot === s}
                   className={`bas baslik min-h-11 rounded-lg border px-1 py-2 text-[12px] ${
                     slot === s
                       ? 'border-altin/60 bg-altin/15 text-altin'

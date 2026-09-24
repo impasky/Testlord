@@ -5,7 +5,7 @@
  * işlem ve yanlışlıkla tetiklenmemeli. Parola ve birebir yazılan bir onay
  * metni isteniyor; tek dokunuşla silinen bir hesap, kaza demek.
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ApiError, api, type LordState } from '../api/client';
 import { Alan, Bolum, Buton, EngelNotu, Input, Kart } from '../components/ui';
@@ -111,6 +111,12 @@ export function Hesap({
           className="bas mt-1 block py-2 text-[12px] text-sonuk underline decoration-dotted underline-offset-2"
         >
           Hangi veriyi tutuyoruz
+        </a>
+        <a
+          href="#/kosullar"
+          className="bas block py-2 text-[12px] text-sonuk underline decoration-dotted underline-offset-2"
+        >
+          Kullanım koşulları
         </a>
       </Bolum>
 
@@ -259,6 +265,8 @@ export function Hesap({
         </Kart>
       </Bolum>
 
+      <Engelliler />
+
       <Bolum baslik="Hesabı Sil">
         <Kart className="border-kirmizi/40 p-3">
           <p className="text-[12px] text-solgun">
@@ -322,5 +330,52 @@ export function Hesap({
         </Kart>
       </Bolum>
     </div>
+  );
+}
+
+/**
+ * Engellediğin lordlar ve engeli kaldırma.
+ *
+ * Engel sohbetten konuluyor (⊘); kaldırmanın yeri burası. Kaldıramadığın
+ * bir engel, yanlışlıkla basılmış bir düğmenin kalıcı cezası olurdu.
+ */
+function Engelliler() {
+  const qc = useQueryClient();
+  const q = useQuery({ queryKey: ['engeller'], queryFn: api.engeller });
+  const kaldir = useMutation({
+    mutationFn: (lordId: string) => api.engelKaldir(lordId),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ['engeller'] });
+      void qc.invalidateQueries({ queryKey: ['ittifak-sohbet'] });
+    },
+  });
+  const liste = q.data?.engelliler ?? [];
+  return (
+    <Bolum baslik="Engellediklerin" sakin={liste.length === 0}>
+      <Kart className="p-3">
+        {liste.length === 0 ? (
+          <p className="text-[12px] text-solgun">
+            Kimseyi engellemedin. Sohbette bir mesajın yanındaki ⊘ ile o lordun mesajlarını
+            görmemeyi seçebilirsin.
+          </p>
+        ) : (
+          <ul className="space-y-1.5">
+            {liste.map((e) => (
+              <li key={e.lordId} className="flex items-center justify-between gap-2">
+                <span className="min-w-0 truncate text-[13px] text-parsomen">{e.ad}</span>
+                <Buton
+                  tur="anahat"
+                  boy="kucuk"
+                  onClick={() => kaldir.mutate(e.lordId)}
+                  disabled={kaldir.isPending}
+                >
+                  Engeli kaldır
+                </Buton>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Kart>
+    </Bolum>
   );
 }

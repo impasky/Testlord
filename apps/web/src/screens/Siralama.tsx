@@ -193,6 +193,7 @@ export function Siralama({
           <button
             key={t.key}
             onClick={() => setBoard(t.key)}
+            aria-pressed={board === t.key}
             className={`bas baslik flex-1 rounded-lg py-2.5 text-[12px] ${
               board === t.key ? 'text-gece' : 'text-solgun'
             }`}

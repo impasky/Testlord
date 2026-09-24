@@ -84,7 +84,7 @@
     "tr": " Daha büyük bir başkent daha yükseğine izin verir.",
     "en": " A larger capital allows a higher one.",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:477"
+      "apps/web/src/screens/Sehir.tsx:485"
     ]
   },
   "t8c81192e": {
@@ -124,7 +124,7 @@
     "tr": "— CC BY 3.0",
     "en": "— CC BY 3.0",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:332"
+      "apps/web/src/screens/Giris.tsx:346"
     ]
   },
   "t56d6722a": {
@@ -140,7 +140,7 @@
     "tr": ", {0} sürüyor",
     "en": ", {0} in progress",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:726"
+      "apps/web/src/screens/Sehir.tsx:734"
     ]
   },
   "tfc687484": {
@@ -220,7 +220,7 @@
     "tr": "({0} parça)",
     "en": "({0} piece)|({0} pieces)",
     "nerede": [
-      "apps/web/src/screens/Demirhane.tsx:588"
+      "apps/web/src/screens/Demirhane.tsx:590"
     ]
   },
   "tdd204506": {
@@ -228,7 +228,7 @@
     "tr": "({0} parti)",
     "en": "({0} party)",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:296"
+      "apps/web/src/screens/Kisla.tsx:297"
     ]
   },
   "ta53c0918": {
@@ -276,7 +276,7 @@
     "tr": "{0} — {1} yapı",
     "en": "{0} — {1} building",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:398"
+      "apps/web/src/screens/Sehir.tsx:406"
     ]
   },
   "t00e6ccb6": {
@@ -300,7 +300,7 @@
     "tr": "{0} — {1}, sonra ordu saatte %{2} firar verir",
     "en": "{0} — {1}, then the army deserts at {2}% per hour",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:219"
+      "apps/web/src/components/MobilKabuk.tsx:231"
     ]
   },
   "t89ee47d6": {
@@ -316,7 +316,7 @@
     "tr": "{0} — depo dolu, üretim boşa gidiyor",
     "en": "{0} — storage is full, production is wasted",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:222"
+      "apps/web/src/components/MobilKabuk.tsx:234"
     ]
   },
   "t3cf4481e": {
@@ -324,7 +324,7 @@
     "tr": "{0} — eksiye gidiyor",
     "en": "{0} — going into the negative",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:220"
+      "apps/web/src/components/MobilKabuk.tsx:232"
     ]
   },
   "tc3b64242": {
@@ -349,7 +349,7 @@
     "tr": "{0} — mesaj şikâyeti",
     "en": "{0} — message report",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:152"
+      "apps/web/src/components/IttifakSohbet.tsx:201"
     ]
   },
   "tc84264da": {
@@ -389,7 +389,7 @@
     "tr": "{0} · bina tavanı {1}",
     "en": "{0} · building cap {1}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:522"
+      "apps/web/src/screens/Sehir.tsx:530"
     ]
   },
   "t48aeb4d6": {
@@ -469,7 +469,7 @@
     "tr": "{0} {1} eğit",
     "en": "Train {0} {1}",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:285"
+      "apps/web/src/screens/Kisla.tsx:286"
     ]
   },
   "t53f178e2": {
@@ -478,7 +478,7 @@
     "en": "{0} quantity",
     "nerede": [
       "apps/web/src/screens/Akin.tsx:744",
-      "apps/web/src/screens/Kisla.tsx:270"
+      "apps/web/src/screens/Kisla.tsx:271"
     ]
   },
   "t8ed22750": {
@@ -487,6 +487,14 @@
     "en": "{0} step|{0} steps",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:1042"
+    ]
+  },
+  "t43b851b5": {
+    "grup": "arayuz",
+    "tr": "{0} adlı lordu engelle",
+    "en": "Block {0}",
+    "nerede": [
+      "apps/web/src/components/IttifakSohbet.tsx:159"
     ]
   },
   "te723bf3b": {
@@ -502,7 +510,7 @@
     "tr": "{0} adlı lordun mesajını şikâyet et",
     "en": "Report message of the lord named {0}",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:110"
+      "apps/web/src/components/IttifakSohbet.tsx:150"
     ]
   },
   "tb2c59732": {
@@ -520,7 +528,7 @@
     "nerede": [
       "apps/api/src/services/queue.ts:84",
       "apps/web/src/screens/Demirhane.tsx:299",
-      "apps/web/src/screens/Demirhane.tsx:700",
+      "apps/web/src/screens/Demirhane.tsx:702",
       "apps/web/src/screens/EsyaPazari.tsx:107",
       "apps/web/src/screens/EsyaPazari.tsx:428",
       "apps/web/src/screens/EsyaPazari.tsx:709"
@@ -680,7 +688,7 @@
     "en": "{0} iron",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:303",
-      "apps/web/src/screens/Demirhane.tsx:706"
+      "apps/web/src/screens/Demirhane.tsx:708"
     ]
   },
   "tac7169d2": {
@@ -704,7 +712,7 @@
     "tr": "{0} dk sonra biter",
     "en": "Finishes in {0} min",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:203"
+      "apps/web/src/components/MobilKabuk.tsx:215"
     ]
   },
   "td8423f34": {
@@ -729,6 +737,22 @@
     "en": "{0} in hand — drag to a square or tap. Tapping a filled square while empty-handed clears it.",
     "nerede": [
       "apps/web/src/components/DizilimIzgarasi.tsx:289"
+    ]
+  },
+  "t43946085": {
+    "grup": "arayuz",
+    "tr": "{0} engellendi. Mesajlarını artık görmeyeceksin; Hesap ekranından kaldırabilirsin.",
+    "en": "{0} blocked. You won't see their messages anymore; you can undo this from the Account screen.",
+    "nerede": [
+      "apps/web/src/components/IttifakSohbet.tsx:76"
+    ]
+  },
+  "t1cc458b9": {
+    "grup": "arayuz",
+    "tr": "{0} engellensin mi? Mesajlarını bir daha görmezsin; o bundan haberdar olmaz.",
+    "en": "Block {0}? You won't see their messages again; they won't be notified.",
+    "nerede": [
+      "apps/web/src/components/IttifakSohbet.tsx:102"
     ]
   },
   "t3c2e09ca": {
@@ -835,7 +859,7 @@
     "tr": "{0} inşa ediliyor",
     "en": "{0} under construction",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:486"
+      "apps/web/src/screens/Sehir.tsx:494"
     ]
   },
   "t4438dd01": {
@@ -843,7 +867,7 @@
     "tr": "{0} ittifak",
     "en": "{0} alliance|{0} alliances",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:215"
+      "apps/web/src/screens/Siralama.tsx:216"
     ]
   },
   "td16ad5e7": {
@@ -893,7 +917,7 @@
     "nerede": [
       "apps/web/src/components/DiyarTanitimi.tsx:85",
       "apps/web/src/screens/Medeniyet.tsx:137",
-      "apps/web/src/screens/Siralama.tsx:212"
+      "apps/web/src/screens/Siralama.tsx:213"
     ]
   },
   "t7b299eff": {
@@ -965,7 +989,7 @@
     "tr": "{0} sa sonra biter",
     "en": "Finishes in {0} hr",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:204"
+      "apps/web/src/components/MobilKabuk.tsx:216"
     ]
   },
   "t423b2a6e": {
@@ -1075,7 +1099,7 @@
     "tr": "{0} Sıralaması",
     "en": "{0} Ranking",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:207"
+      "apps/web/src/screens/Siralama.tsx:208"
     ]
   },
   "t1180d7c2": {
@@ -1117,7 +1141,7 @@
     "en": "{0} report|{0} reports",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:91",
-      "apps/web/src/screens/Siralama.tsx:289"
+      "apps/web/src/screens/Siralama.tsx:290"
     ]
   },
   "tcccb2184": {
@@ -1125,7 +1149,7 @@
     "tr": "{0} şikâyet karar bekliyor.",
     "en": "{0} [report is|reports are] waiting for a decision.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:164"
+      "apps/web/src/screens/Hesap.tsx:170"
     ]
   },
   "t38001c91": {
@@ -1144,7 +1168,7 @@
     "en": "{0} T{1}",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:224",
-      "apps/web/src/screens/Demirhane.tsx:536",
+      "apps/web/src/screens/Demirhane.tsx:538",
       "apps/web/src/screens/LordEkrani.tsx:651"
     ]
   },
@@ -1250,7 +1274,7 @@
     "tr": "{0}: {1} ({2}{3}/sa)",
     "en": "{0}: {1} ({2}{3}/hr)",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:215"
+      "apps/web/src/components/MobilKabuk.tsx:227"
     ]
   },
   "tc31d749f": {
@@ -1298,7 +1322,7 @@
     "tr": "{0}. seviye",
     "en": "level {0}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:476"
+      "apps/web/src/screens/Sehir.tsx:484"
     ]
   },
   "tace5639c": {
@@ -1323,7 +1347,7 @@
     "tr": "{0}'a git",
     "en": "Go to {0}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:974"
+      "apps/web/src/screens/Sehir.tsx:1002"
     ]
   },
   "t0900053c": {
@@ -1331,7 +1355,7 @@
     "tr": "{0}{1} erzak/sa",
     "en": "{0}{1} supplies/hr",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:458"
+      "apps/web/src/screens/Kisla.tsx:459"
     ]
   },
   "t59b5ca1c": {
@@ -1381,7 +1405,7 @@
     "en": "{0}/{1} command",
     "nerede": [
       "apps/web/src/components/OrduSahnesi.tsx:258",
-      "apps/web/src/screens/Kisla.tsx:454"
+      "apps/web/src/screens/Kisla.tsx:455"
     ]
   },
   "t0faee630": {
@@ -1601,7 +1625,7 @@
     "en": "Turning on…",
     "nerede": [
       "apps/web/src/components/BildirimKarti.tsx:95",
-      "apps/web/src/screens/Hesap.tsx:221"
+      "apps/web/src/screens/Hesap.tsx:227"
     ]
   },
   "t9b280d99": {
@@ -1617,7 +1641,15 @@
     "tr": "Adın, yaşın, konumun, telefonun, cihaz kimliğin sorulmuyor ve tutulmuyor. Lord adını sen seçiyorsun ve gerçek adın olmak zorunda değil.",
     "en": "Your name, age, location, phone and device identifier are never asked for or stored. You choose your lord name, and it does not have to be your real name.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:79"
+      "apps/web/src/screens/Gizlilik.tsx:81"
+    ]
+  },
+  "tc54f73d4": {
+    "grup": "arayuz",
+    "tr": "Adil oyun",
+    "en": "Fair play",
+    "nerede": [
+      "apps/web/src/screens/Kosullar.tsx:67"
     ]
   },
   "t230c7ce3": {
@@ -1711,7 +1743,7 @@
     "tr": "ALACAĞIN",
     "en": "YOU WILL RECEIVE",
     "nerede": [
-      "apps/web/src/components/Pazar.tsx:146"
+      "apps/web/src/components/Pazar.tsx:147"
     ]
   },
   "tb47d7727": {
@@ -1767,7 +1799,7 @@
     "en": "Gold",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:89",
-      "apps/web/src/components/MobilKabuk.tsx:365",
+      "apps/web/src/components/MobilKabuk.tsx:377",
       "apps/web/src/screens/Generaller.tsx:32",
       "apps/web/src/screens/Medeniyet.tsx:337",
       "data/arma.json:renkler[5].ad"
@@ -1951,7 +1983,7 @@
     "tr": "Asker Eğitimi",
     "en": "Troop Training",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:462"
+      "apps/web/src/screens/Kisla.tsx:463"
     ]
   },
   "t9872375b": {
@@ -2002,7 +2034,7 @@
     "tr": "Aydınlatma Metni",
     "en": "Privacy Notice",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:40"
+      "apps/web/src/screens/Gizlilik.tsx:41"
     ]
   },
   "t25d5f415": {
@@ -2075,7 +2107,7 @@
     "tr": "azalıyor",
     "en": "decreasing",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:266"
+      "apps/web/src/components/MobilKabuk.tsx:278"
     ]
   },
   "t41939cf2": {
@@ -2157,7 +2189,7 @@
     "tr": "Bakım",
     "en": "Upkeep",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:324"
+      "apps/web/src/screens/Kisla.tsx:325"
     ]
   },
   "tfb644c22": {
@@ -2189,7 +2221,7 @@
     "tr": "Başkent taşınamadı.",
     "en": "Capital could not be moved.",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:326"
+      "apps/web/src/screens/Sehir.tsx:334"
     ]
   },
   "t2947aef5": {
@@ -2197,7 +2229,7 @@
     "tr": "başkentin yok",
     "en": "you have no capital",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:469"
+      "apps/web/src/screens/Sehir.tsx:477"
     ]
   },
   "tc727a7f6": {
@@ -2205,7 +2237,7 @@
     "tr": "Başkentini taşıyabilirsin",
     "en": "You can move your capital",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:508"
+      "apps/web/src/screens/Sehir.tsx:516"
     ]
   },
   "tea7af10a": {
@@ -2353,7 +2385,7 @@
     "tr": "Bekleyen şikâyet yok.",
     "en": "No pending reports.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:165"
+      "apps/web/src/screens/Hesap.tsx:171"
     ]
   },
   "t225a2417": {
@@ -2385,7 +2417,7 @@
     "tr": "Bildirim, tarayıcının kendi bildirim servisi üzerinden gidiyor — bu, cihazının üreticisine ait bir hizmet.",
     "en": "Notifications travel through your browser's own notification service — a service run by your device's maker.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:96"
+      "apps/web/src/screens/Gizlilik.tsx:98"
     ]
   },
   "t341083b0": {
@@ -2393,8 +2425,8 @@
     "tr": "Bildirimler",
     "en": "Notifications",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:88",
-      "apps/web/src/screens/Hesap.tsx:205"
+      "apps/web/src/screens/Gizlilik.tsx:90",
+      "apps/web/src/screens/Hesap.tsx:211"
     ]
   },
   "taa1c034e": {
@@ -2434,7 +2466,7 @@
     "tr": "Bildirimleri {0} tarayıcının ürettiği abonelik bilgisi (adres ve şifreleme anahtarları) ile cihazını ayırt etmeye yarayan kısa bir etiket saklanıyor. Kapattığında silinir.",
     "en": "Notifications: if {0}, the subscription details your browser generates (address and encryption keys) are stored, along with a short label that tells your devices apart. They are deleted when you turn notifications off.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:91"
+      "apps/web/src/screens/Gizlilik.tsx:93"
     ]
   },
   "t5bbe9ba5": {
@@ -2458,7 +2490,7 @@
     "tr": "Binaların bu yerleşimde en fazla",
     "en": "Buildings in this settlement can at most",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:475"
+      "apps/web/src/screens/Sehir.tsx:483"
     ]
   },
   "te7b9c929": {
@@ -2491,7 +2523,7 @@
     "tr": "Bir bölgeyi sadece oraya bıraktığın garnizon savunur.",
     "en": "A region is defended solely by the garrison you leave there.",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:525"
+      "apps/web/src/screens/Kisla.tsx:526"
     ]
   },
   "t32f39dc2": {
@@ -2518,12 +2550,20 @@
       "apps/web/src/screens/Harita.tsx:757"
     ]
   },
+  "tb8821114": {
+    "grup": "arayuz",
+    "tr": "Bir sorun ya da talebin için oyun içindeki şikâyet düğmesini kullanabilirsin.",
+    "en": "For any problem or request, you can use the report button in the game.",
+    "nerede": [
+      "apps/web/src/components/DestekSatiri.tsx:16"
+    ]
+  },
   "t4dcb8fd1": {
     "grup": "arayuz",
     "tr": "Bir şey yaz…",
     "en": "Type something…",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:137"
+      "apps/web/src/components/IttifakSohbet.tsx:186"
     ]
   },
   "t2d3fb36b": {
@@ -2572,9 +2612,9 @@
     "tr": "boş arsa",
     "en": "vacant lot",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:724",
-      "apps/web/src/screens/Sehir.tsx:727",
-      "apps/web/src/screens/Sehir.tsx:932"
+      "apps/web/src/screens/Sehir.tsx:732",
+      "apps/web/src/screens/Sehir.tsx:735",
+      "apps/web/src/screens/Sehir.tsx:960"
     ]
   },
   "t0f1623db": {
@@ -2598,7 +2638,7 @@
     "tr": "Bölge",
     "en": "Region",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:732",
+      "apps/api/src/routes/ittifak.ts:740",
       "apps/api/src/routes/map.ts:1149",
       "apps/api/src/routes/map.ts:1322",
       "apps/api/src/routes/map.ts:467",
@@ -2697,7 +2737,7 @@
     "tr": "Bölgelerin sahipsiz kalır ve başkaları tarafından yeniden fethedilebilir.",
     "en": "Your regions become unowned and can be reconquered by others.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:266"
+      "apps/web/src/screens/Hesap.tsx:274"
     ]
   },
   "tada95535": {
@@ -2836,7 +2876,7 @@
     "en": "There are no alliances in this realm yet. You can found the first one.",
     "nerede": [
       "apps/web/src/screens/Ittifak.tsx:412",
-      "apps/web/src/screens/Siralama.tsx:230"
+      "apps/web/src/screens/Siralama.tsx:231"
     ]
   },
   "t1abc5eae": {
@@ -2884,7 +2924,7 @@
     "tr": "Bu işlem geri alınamaz.",
     "en": "This action cannot be undone.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:266"
+      "apps/web/src/screens/Hesap.tsx:274"
     ]
   },
   "te4cb2870": {
@@ -2892,7 +2932,7 @@
     "tr": "Bu metin oyunun gerçekten tuttuğu veriyi anlatır. Yeni bir alan eklendiğinde metin de güncellenir.",
     "en": "This notice describes the data the game actually keeps. When a new field is added, the notice is updated too.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:136"
+      "apps/web/src/screens/Gizlilik.tsx:144"
     ]
   },
   "t48c066f2": {
@@ -2932,7 +2972,7 @@
     "tr": "Bu tabloda henüz kimse yok. Sıralamaya girmenin yolu bölge almaktan geçiyor.",
     "en": "There is no one on this board yet. The way to enter the ranking is by taking a region.",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:278"
+      "apps/web/src/screens/Siralama.tsx:279"
     ]
   },
   "t4905a6f9": {
@@ -2996,7 +3036,7 @@
     "tr": "Bugünkü pazar hakkın: {0} / {1} altın karşılığı.",
     "en": "Your market allowance for today: {0} / {1} gold worth.",
     "nerede": [
-      "apps/web/src/components/Pazar.tsx:200"
+      "apps/web/src/components/Pazar.tsx:202"
     ]
   },
   "tab346258": {
@@ -3028,7 +3068,7 @@
     "tr": "Can",
     "en": "Health",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:318"
+      "apps/web/src/screens/Kisla.tsx:319"
     ]
   },
   "ta06cea5b": {
@@ -3148,7 +3188,7 @@
     "tr": "Çıkış",
     "en": "Logout",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:354"
+      "apps/web/src/components/MobilKabuk.tsx:366"
     ]
   },
   "tced17ccf": {
@@ -3156,7 +3196,7 @@
     "tr": "Daha büyük bir yerleşimin var. Taşınırsan binaların seninle gelir — hiçbir seviye kaybolmaz, yalnız tavan yükselir.",
     "en": "You have a larger settlement. If you move, your buildings come with you — no levels are lost, only the cap increases.",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:510"
+      "apps/web/src/screens/Sehir.tsx:518"
     ]
   },
   "tfa0c522b": {
@@ -3213,7 +3253,7 @@
     "en": "Iron",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:90",
-      "apps/web/src/components/MobilKabuk.tsx:373",
+      "apps/web/src/components/MobilKabuk.tsx:385",
       "apps/web/src/screens/Medeniyet.tsx:345"
     ]
   },
@@ -3233,7 +3273,7 @@
       "apps/web/src/screens/Demirhane.tsx:400",
       "apps/web/src/screens/LordEkrani.tsx:615",
       "apps/web/src/screens/LordEkrani.tsx:632",
-      "apps/web/src/screens/Sehir.tsx:555",
+      "apps/web/src/screens/Sehir.tsx:563",
       "data/basarimlar.json:kumeler[3].ad",
       "data/binalar.json:binalar[3].ad",
       "packages/shared/src/types.ts:347"
@@ -3244,7 +3284,7 @@
     "tr": "Demirhane {0}",
     "en": "Blacksmith {0}",
     "nerede": [
-      "apps/web/src/screens/Demirhane.tsx:463"
+      "apps/web/src/screens/Demirhane.tsx:464"
     ]
   },
   "t509e13e8": {
@@ -3309,7 +3349,7 @@
     "tr": "depo dolu",
     "en": "storage full",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:263"
+      "apps/web/src/components/MobilKabuk.tsx:275"
     ]
   },
   "t98a9b4f3": {
@@ -3341,7 +3381,7 @@
     "tr": "Deponda {0} {1} yeri var.",
     "en": "Your storage has room for {0} {1}.",
     "nerede": [
-      "apps/web/src/components/Pazar.tsx:186"
+      "apps/web/src/components/Pazar.tsx:188"
     ]
   },
   "tb1a19084": {
@@ -3398,7 +3438,7 @@
     "tr": "DETAY",
     "en": "DETAILS",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:309"
+      "apps/web/src/screens/Kisla.tsx:310"
     ]
   },
   "t37cf0867": {
@@ -3406,7 +3446,7 @@
     "tr": "DETAYI GİZLE",
     "en": "HIDE DETAILS",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:309"
+      "apps/web/src/screens/Kisla.tsx:310"
     ]
   },
   "t0f10796a": {
@@ -3431,7 +3471,7 @@
     "tr": "Dikili yapıya dokun: içine girersin. Boş arsaya dokun: bedelini söyler.",
     "en": "Tap an erected structure: you enter it. Tap a vacant lot: it states the cost.",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:440"
+      "apps/web/src/screens/Sehir.tsx:448"
     ]
   },
   "t34691c46": {
@@ -3439,7 +3479,7 @@
     "tr": "Dil",
     "en": "Language",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:182"
+      "apps/web/src/screens/Hesap.tsx:188"
     ]
   },
   "taa9c8b99": {
@@ -3467,7 +3507,7 @@
     "tr": "Diyar yükleniyor…",
     "en": "Realm loading…",
     "nerede": [
-      "apps/web/src/App.tsx:452"
+      "apps/web/src/App.tsx:471"
     ]
   },
   "tadebb397": {
@@ -3476,6 +3516,22 @@
     "en": "Enter Realm",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:269"
+    ]
+  },
+  "td8b70f12": {
+    "grup": "arayuz",
+    "tr": "Diyara girerek bu koşulları kabul etmiş olursun.",
+    "en": "By entering the realm you accept these terms.",
+    "nerede": [
+      "apps/web/src/screens/Kosullar.tsx:39"
+    ]
+  },
+  "te36a00ec": {
+    "grup": "arayuz",
+    "tr": "Diyara girerek Kullanım Koşulları'nı kabul etmiş olursun.",
+    "en": "By entering the realm you accept the Terms of Use.",
+    "nerede": [
+      "apps/web/src/screens/Giris.tsx:279"
     ]
   },
   "t5ff06009": {
@@ -3709,7 +3765,7 @@
     "tr": "Doğrulama bağlantısı gönder",
     "en": "Send verification link",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:148"
+      "apps/web/src/screens/Hesap.tsx:154"
     ]
   },
   "t5bbae6d0": {
@@ -3733,7 +3789,7 @@
     "tr": "Doğrulanmadan ittifak sohbetine yazamaz ve kaynak gönderemezsin. Postayı bulamıyorsan spam klasörüne bak.",
     "en": "You cannot write in alliance chat and send resources without verification. If you cannot find the mail, check your spam folder.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:138"
+      "apps/web/src/screens/Hesap.tsx:144"
     ]
   },
   "t99cead47": {
@@ -3750,7 +3806,7 @@
     "en": "Gear",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:436",
-      "apps/web/src/screens/Demirhane.tsx:681"
+      "apps/web/src/screens/Demirhane.tsx:683"
     ]
   },
   "t659903b0": {
@@ -3863,7 +3919,7 @@
     "tr": "Düzeltme:",
     "en": "Correction:",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:126"
+      "apps/web/src/screens/Gizlilik.tsx:133"
     ]
   },
   "t4d81c255": {
@@ -3888,7 +3944,7 @@
     "en": "Email",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:241",
-      "apps/web/src/screens/Hesap.tsx:134"
+      "apps/web/src/screens/Hesap.tsx:140"
     ]
   },
   "t2909af14": {
@@ -3896,7 +3952,7 @@
     "tr": "E-posta adresin.",
     "en": "Your email address.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:49"
+      "apps/web/src/screens/Gizlilik.tsx:50"
     ]
   },
   "t7a2e7ae2": {
@@ -3912,7 +3968,7 @@
     "tr": "E-posta göndermek için (parola sıfırlama, savaş bildirimi) bir e-posta sağlayıcısı kullanılıyor; o sağlayıcı yalnızca adresini ve gönderilen iletinin metnini görüyor.",
     "en": "To send email (password reset, battle notifications) an email provider is used; that provider sees only your address and the text of the message sent.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:104"
+      "apps/web/src/screens/Gizlilik.tsx:106"
     ]
   },
   "t8bcc1657": {
@@ -3946,7 +4002,7 @@
     "tr": "Eğitimde",
     "en": "In Training",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:294"
+      "apps/web/src/screens/Kisla.tsx:295"
     ]
   },
   "t54fd1832": {
@@ -3978,7 +4034,7 @@
     "tr": "Ekipman üret",
     "en": "Forge equipment",
     "nerede": [
-      "apps/web/src/screens/Demirhane.tsx:610"
+      "apps/web/src/screens/Demirhane.tsx:612"
     ]
   },
   "t0d91ed0c": {
@@ -4026,7 +4082,23 @@
     "tr": "Elmas",
     "en": "Gems",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:342"
+      "apps/web/src/components/MobilKabuk.tsx:354"
+    ]
+  },
+  "t059e37f2": {
+    "grup": "arayuz",
+    "tr": "Elmas ve oyun içi değerler",
+    "en": "Gems and in-game items",
+    "nerede": [
+      "apps/web/src/screens/Kosullar.tsx:75"
+    ]
+  },
+  "t5271dc28": {
+    "grup": "arayuz",
+    "tr": "Elmas, kaynaklar ve ekipman yalnız oyun içinde oynayarak kazanılır; gerçek parayla satılmaz, gerçek bir değeri yoktur, başka bir hesaba ya da kişiye devredilemez.",
+    "en": "Gems, resources and equipment are earned only by playing; they are not sold for real money, have no real-world value and cannot be transferred to another account or person.",
+    "nerede": [
+      "apps/web/src/screens/Kosullar.tsx:77"
     ]
   },
   "t25298bf6": {
@@ -4066,7 +4138,7 @@
     "tr": "En az {0}",
     "en": "At least {0}",
     "nerede": [
-      "apps/web/src/components/Pazar.tsx:168"
+      "apps/web/src/components/Pazar.tsx:170"
     ]
   },
   "tca8f57a6": {
@@ -4074,7 +4146,7 @@
     "tr": "En az 8 karakter",
     "en": "At least 8 characters",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:237",
+      "apps/web/src/screens/Hesap.tsx:243",
       "apps/web/src/screens/ParolaSifirla.tsx:46"
     ]
   },
@@ -4140,7 +4212,7 @@
     "tr": "En üst seviye",
     "en": "Max level",
     "nerede": [
-      "apps/web/src/screens/Demirhane.tsx:720"
+      "apps/web/src/screens/Demirhane.tsx:722"
     ]
   },
   "t0bbfe6de": {
@@ -4157,6 +4229,38 @@
     "en": "Max level.",
     "nerede": [
       "apps/web/src/screens/Generaller.tsx:114"
+    ]
+  },
+  "tc5926bb8": {
+    "grup": "arayuz",
+    "tr": "Engeli kaldır",
+    "en": "Unblock",
+    "nerede": [
+      "apps/web/src/screens/Hesap.tsx:372"
+    ]
+  },
+  "t9d906c99": {
+    "grup": "arayuz",
+    "tr": "Engelle",
+    "en": "Block",
+    "nerede": [
+      "apps/web/src/components/IttifakSohbet.tsx:112"
+    ]
+  },
+  "t6ff6f321": {
+    "grup": "arayuz",
+    "tr": "Engellediklerin",
+    "en": "Blocked lords",
+    "nerede": [
+      "apps/web/src/screens/Hesap.tsx:354"
+    ]
+  },
+  "tcadd6129": {
+    "grup": "arayuz",
+    "tr": "Engellenemedi.",
+    "en": "Could not block.",
+    "nerede": [
+      "apps/web/src/components/IttifakSohbet.tsx:82"
     ]
   },
   "tcccc0db6": {
@@ -4189,7 +4293,7 @@
     "en": "Supplies",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:91",
-      "apps/web/src/components/MobilKabuk.tsx:381",
+      "apps/web/src/components/MobilKabuk.tsx:393",
       "apps/web/src/screens/Medeniyet.tsx:353",
       "packages/shared/src/ogretici.ts:300"
     ]
@@ -4437,7 +4541,7 @@
     "tr": "Garnizonlarda",
     "en": "In Garrisons",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:504"
+      "apps/web/src/screens/Kisla.tsx:505"
     ]
   },
   "t19ae54dc": {
@@ -4596,7 +4700,8 @@
     "tr": "Geri dön",
     "en": "Go back",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:141"
+      "apps/web/src/screens/Gizlilik.tsx:149",
+      "apps/web/src/screens/Kosullar.tsx:101"
     ]
   },
   "t440fa8f4": {
@@ -4620,7 +4725,7 @@
     "tr": "Giriş ekranına dön",
     "en": "Return to login screen",
     "nerede": [
-      "apps/web/src/App.tsx:441",
+      "apps/web/src/App.tsx:460",
       "apps/web/src/screens/ParolaSifirla.tsx:41"
     ]
   },
@@ -4662,7 +4767,7 @@
     "tr": "Gönderildi",
     "en": "Sent",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:148"
+      "apps/web/src/screens/Hesap.tsx:154"
     ]
   },
   "t3b8e7ae3": {
@@ -4687,7 +4792,7 @@
     "en": "Could not be sent.",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:40",
-      "apps/web/src/screens/Hesap.tsx:152"
+      "apps/web/src/screens/Hesap.tsx:158"
     ]
   },
   "tc4320737": {
@@ -4698,15 +4803,15 @@
       "apps/web/src/components/Paktlar.tsx:191",
       "apps/web/src/components/SikayetSayfasi.tsx:117",
       "apps/web/src/screens/Akin.tsx:715",
-      "apps/web/src/screens/Demirhane.tsx:577",
+      "apps/web/src/screens/Demirhane.tsx:579",
       "apps/web/src/screens/EsyaPazari.tsx:411",
       "apps/web/src/screens/Generaller.tsx:149",
-      "apps/web/src/screens/Giris.tsx:305",
+      "apps/web/src/screens/Giris.tsx:319",
       "apps/web/src/screens/Harita.tsx:1210",
-      "apps/web/src/screens/Hesap.tsx:253",
-      "apps/web/src/screens/Kisla.tsx:285",
+      "apps/web/src/screens/Hesap.tsx:259",
+      "apps/web/src/screens/Kisla.tsx:286",
       "apps/web/src/screens/ParolaSifirla.tsx:62",
-      "apps/web/src/screens/Sehir.tsx:970"
+      "apps/web/src/screens/Sehir.tsx:998"
     ]
   },
   "t5b346f80": {
@@ -4828,7 +4933,7 @@
     "tr": "Haklarını nasıl kullanırsın",
     "en": "How to exercise your rights",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:120"
+      "apps/web/src/screens/Gizlilik.tsx:127"
     ]
   },
   "tc93b345b": {
@@ -4836,7 +4941,7 @@
     "tr": "Hangi veriyi tutuyoruz",
     "en": "What data we keep",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:279",
+      "apps/web/src/screens/Giris.tsx:291",
       "apps/web/src/screens/Hesap.tsx:113"
     ]
   },
@@ -4845,7 +4950,7 @@
     "tr": "Harita",
     "en": "Map",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:558"
+      "apps/web/src/screens/Sehir.tsx:566"
     ]
   },
   "t811aa7b9": {
@@ -4889,7 +4994,7 @@
       "apps/web/src/screens/Malikane.tsx:182",
       "apps/web/src/screens/Medeniyet.tsx:114",
       "apps/web/src/screens/Olaylar.tsx:112",
-      "apps/web/src/screens/Siralama.tsx:279"
+      "apps/web/src/screens/Siralama.tsx:280"
     ]
   },
   "tbb18b696": {
@@ -4995,7 +5100,7 @@
     "tr": "Henüz ekipmanın yok. İlk parçanı üretmek ordunun gücünü doğrudan artırır.",
     "en": "You have no equipment yet. Forging your first piece directly increases the power of your army.",
     "nerede": [
-      "apps/web/src/screens/Demirhane.tsx:607"
+      "apps/web/src/screens/Demirhane.tsx:609"
     ]
   },
   "t2a444b53": {
@@ -5019,7 +5124,7 @@
     "tr": "Henüz kimse yazmadı. İlk sözü sen söyle — bir hedef göster, yardım iste.",
     "en": "Nobody has written yet. You say the first word — point out a target, ask for help.",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:79"
+      "apps/web/src/components/IttifakSohbet.tsx:119"
     ]
   },
   "t03b91b40": {
@@ -5085,7 +5190,7 @@
     "tr": "Hesabı Sil",
     "en": "Delete Account",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:262"
+      "apps/web/src/screens/Hesap.tsx:270"
     ]
   },
   "t67e3a2c7": {
@@ -5110,8 +5215,8 @@
     "en": "DELETE MY ACCOUNT",
     "nerede": [
       "apps/api/src/routes/me.ts:64",
-      "apps/web/src/api/client.ts:1217",
-      "apps/web/src/screens/Hesap.tsx:289"
+      "apps/web/src/api/client.ts:1219",
+      "apps/web/src/screens/Hesap.tsx:297"
     ]
   },
   "te485c18d": {
@@ -5119,7 +5224,15 @@
     "tr": "Hesabımı silmek istiyorum",
     "en": "I want to delete my account",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:272"
+      "apps/web/src/screens/Hesap.tsx:280"
+    ]
+  },
+  "t438cca8f": {
+    "grup": "arayuz",
+    "tr": "Hesabın",
+    "en": "Your account",
+    "nerede": [
+      "apps/web/src/screens/Kosullar.tsx:82"
     ]
   },
   "t43e24e9f": {
@@ -5127,7 +5240,7 @@
     "tr": "Hesabın açık kaldığı sürece. Hesabını silersen lordun, ordun, ekipmanın ve bildirim aboneliğin birlikte silinir.",
     "en": "For as long as your account exists. If you delete your account, your lord, army, equipment and notification subscription are deleted with it.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:115"
+      "apps/web/src/screens/Gizlilik.tsx:122"
     ]
   },
   "t8b2fd54f": {
@@ -5135,7 +5248,7 @@
     "tr": "Hesabın, lordun, ordun ve ekipmanın kalıcı olarak silinir.",
     "en": "Your account, lord, army, and equipment will be permanently deleted.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:265"
+      "apps/web/src/screens/Hesap.tsx:273"
     ]
   },
   "t970d9a25": {
@@ -5143,7 +5256,7 @@
     "tr": "Hesabını tanımak ve parolanı sıfırlaman için. Başka hiçbir amaçla kullanılmıyor.",
     "en": "To identify your account and let you reset your password. It is used for nothing else.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:49"
+      "apps/web/src/screens/Gizlilik.tsx:50"
     ]
   },
   "t1c280cbe": {
@@ -5160,7 +5273,15 @@
     "tr": "Hesap ekranındaki “Hesabı Sil” bölümünden, parolanı girerek. İşlem geri alınamaz ve aracı gerektirmez.",
     "en": "From the \"Delete Account\" section of the Account screen, by entering your password. It cannot be undone and needs no intermediary.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:122"
+      "apps/web/src/screens/Gizlilik.tsx:129"
+    ]
+  },
+  "t6f440138": {
+    "grup": "arayuz",
+    "tr": "Hesap kişiseldir; parolanın güvenliği senin sorumluluğundadır. Hesabını dilediğin an Hesap ekranından silebilirsin — silme geri alınamaz.",
+    "en": "Your account is personal; keeping your password safe is your responsibility. You can delete your account at any time from the Account screen — deletion cannot be undone.",
+    "nerede": [
+      "apps/web/src/screens/Kosullar.tsx:84"
     ]
   },
   "t571cff1d": {
@@ -5184,7 +5305,7 @@
     "tr": "Hız",
     "en": "Speed",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:319"
+      "apps/web/src/screens/Kisla.tsx:320"
     ]
   },
   "tf120ff46": {
@@ -5208,7 +5329,7 @@
     "tr": "IP adresin veritabanına yazılmıyor. Yalnızca kayıt ve giriş denemelerini sınırlamak için, istek anında ve geçici olarak kullanılıyor.",
     "en": "Your IP address is never written to the database. It is used only at the moment of a request, and only to limit sign-up and sign-in attempts.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:83"
+      "apps/web/src/screens/Gizlilik.tsx:85"
     ]
   },
   "t9cb9666b": {
@@ -5232,7 +5353,7 @@
     "tr": "İki iş için: sen yokken ne olduğunu özetlemek, ve oyuncuların oyunu nerede bıraktığını toplam olarak görmek. İkincisinde kimin hangi ekranda olduğu değil, yalnızca sayılar okunuyor.",
     "en": "For two things: to summarise what happened while you were away, and to see in aggregate where players leave the game. For the second, only totals are read — never who was on which screen.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:62"
+      "apps/web/src/screens/Gizlilik.tsx:64"
     ]
   },
   "t1458df25": {
@@ -5256,7 +5377,7 @@
     "tr": "İkonlar",
     "en": "Icons",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:323"
+      "apps/web/src/screens/Giris.tsx:337"
     ]
   },
   "t528f9a89": {
@@ -5289,6 +5410,14 @@
     "en": "Progress",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:804"
+    ]
+  },
+  "t24b530a6": {
+    "grup": "arayuz",
+    "tr": "İletişim",
+    "en": "Contact",
+    "nerede": [
+      "apps/web/src/screens/Kosullar.tsx:96"
     ]
   },
   "tde5a44fb": {
@@ -5338,7 +5467,7 @@
     "tr": "inşa ediliyor",
     "en": "under construction",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:642"
+      "apps/web/src/screens/Sehir.tsx:650"
     ]
   },
   "tff2e7684": {
@@ -5346,7 +5475,7 @@
     "tr": "İnşa et",
     "en": "Construct",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:970"
+      "apps/web/src/screens/Sehir.tsx:998"
     ]
   },
   "t776ce02a": {
@@ -5362,7 +5491,7 @@
     "tr": "İnşaat başlatılamadı.",
     "en": "Construction could not be started.",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:310"
+      "apps/web/src/screens/Sehir.tsx:318"
     ]
   },
   "t68d4eca6": {
@@ -5370,7 +5499,7 @@
     "tr": "İptal",
     "en": "Cancel",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:492"
+      "apps/web/src/screens/Sehir.tsx:500"
     ]
   },
   "t8f6427be": {
@@ -5378,7 +5507,7 @@
     "tr": "İptal edersen harcadığının yarısı geri gelir.",
     "en": "If you cancel, half of what you spent is refunded.",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:496"
+      "apps/web/src/screens/Sehir.tsx:504"
     ]
   },
   "tbf6e4d16": {
@@ -5429,7 +5558,7 @@
       "apps/web/src/screens/Demirhane.tsx:363",
       "apps/web/src/screens/Generaller.tsx:181",
       "apps/web/src/screens/Harita.tsx:643",
-      "apps/web/src/screens/Kisla.tsx:380",
+      "apps/web/src/screens/Kisla.tsx:381",
       "apps/web/src/screens/LordEkrani.tsx:215"
     ]
   },
@@ -5465,10 +5594,10 @@
     "tr": "İttifak",
     "en": "Alliance",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1300",
-      "apps/api/src/routes/ittifak.ts:1482",
+      "apps/api/src/routes/ittifak.ts:1308",
+      "apps/api/src/routes/ittifak.ts:1490",
       "apps/api/src/routes/ittifak.ts:513",
-      "apps/api/src/routes/ittifak.ts:952",
+      "apps/api/src/routes/ittifak.ts:960",
       "apps/web/src/screens/Harita.tsx:440",
       "apps/web/src/screens/Ittifak.tsx:207",
       "apps/web/src/screens/Siralama.tsx:37",
@@ -5544,7 +5673,7 @@
     "tr": "İttifak Sohbeti",
     "en": "Alliance Chat",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:75"
+      "apps/web/src/components/IttifakSohbet.tsx:98"
     ]
   },
   "t3214552e": {
@@ -5552,7 +5681,7 @@
     "tr": "İttifak sohbetinde yazdıkların ittifakındaki diğer oyunculara açık. Şikâyet edilen bir mesaj, kararı verecek yöneticiye görünür.",
     "en": "What you write in alliance chat is visible to the other players in your alliance. A reported message is visible to the moderator who will decide on it.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:108"
+      "apps/web/src/screens/Gizlilik.tsx:110"
     ]
   },
   "tad6b90ff": {
@@ -5576,7 +5705,7 @@
     "tr": "İttifaka git",
     "en": "Go to alliance",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:231"
+      "apps/web/src/screens/Siralama.tsx:232"
     ]
   },
   "t53231bc6": {
@@ -5624,7 +5753,7 @@
     "tr": "İttifakının sırası",
     "en": "Your alliance's rank",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:242"
+      "apps/web/src/screens/Siralama.tsx:243"
     ]
   },
   "t22f750ba": {
@@ -5714,7 +5843,7 @@
     "en": "remaining",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:905",
-      "apps/web/src/screens/Sehir.tsx:488"
+      "apps/web/src/screens/Sehir.tsx:496"
     ]
   },
   "tbee327a4": {
@@ -5746,7 +5875,7 @@
     "tr": "Kalıcı olarak sil",
     "en": "Permanently delete",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:314"
+      "apps/web/src/screens/Hesap.tsx:322"
     ]
   },
   "t454fce83": {
@@ -6128,7 +6257,7 @@
     "tr": "Kendi üyenizin bölgesi hedef olamaz.",
     "en": "Your own member's region cannot be a target.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:741",
+      "apps/api/src/routes/ittifak.ts:749",
       "apps/web/src/screens/Harita.tsx:453"
     ]
   },
@@ -6204,10 +6333,10 @@
     "tr": "Kışla",
     "en": "Barracks",
     "nerede": [
-      "apps/web/src/screens/Demirhane.tsx:616",
-      "apps/web/src/screens/Kisla.tsx:416",
+      "apps/web/src/screens/Demirhane.tsx:618",
+      "apps/web/src/screens/Kisla.tsx:417",
       "apps/web/src/screens/Olaylar.tsx:113",
-      "apps/web/src/screens/Sehir.tsx:552",
+      "apps/web/src/screens/Sehir.tsx:560",
       "data/binalar.json:binalar[1].ad"
     ]
   },
@@ -6281,7 +6410,7 @@
     "tr": "Kimlerle paylaşılıyor",
     "en": "Who it is shared with",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:101"
+      "apps/web/src/screens/Gizlilik.tsx:103"
     ]
   },
   "t392ba242": {
@@ -6290,6 +6419,14 @@
     "en": "Nobody found. Type a part of the name, not the whole name.",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:81"
+    ]
+  },
+  "tcb16054a": {
+    "grup": "arayuz",
+    "tr": "Kimseyi engellemedin. Sohbette bir mesajın yanındaki ⊘ ile o lordun mesajlarını görmemeyi seçebilirsin.",
+    "en": "You haven't blocked anyone. Tap ⊘ next to a chat message to stop seeing that lord's messages.",
+    "nerede": [
+      "apps/web/src/screens/Hesap.tsx:358"
     ]
   },
   "t0c8cef8c": {
@@ -6329,7 +6466,7 @@
     "tr": "Komuta yeri",
     "en": "Command space",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:320"
+      "apps/web/src/screens/Kisla.tsx:321"
     ]
   },
   "t42c135b1": {
@@ -6354,6 +6491,23 @@
     "en": "The button will enable automatically when the condition changes.",
     "nerede": [
       "apps/web/src/components/IttifakIncele.tsx:173"
+    ]
+  },
+  "td7c1c774": {
+    "grup": "arayuz",
+    "tr": "Kullanım koşulları",
+    "en": "Terms of use",
+    "nerede": [
+      "apps/web/src/screens/Giris.tsx:285",
+      "apps/web/src/screens/Hesap.tsx:119"
+    ]
+  },
+  "ta55f9054": {
+    "grup": "arayuz",
+    "tr": "Kullanım Koşulları",
+    "en": "Terms of Use",
+    "nerede": [
+      "apps/web/src/screens/Kosullar.tsx:37"
     ]
   },
   "t5932d212": {
@@ -6467,7 +6621,7 @@
     "tr": "Kutuya HESABIMI SIL yaz",
     "en": "Type DELETE MY ACCOUNT in the box",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:285"
+      "apps/web/src/screens/Hesap.tsx:293"
     ]
   },
   "t11d481cd": {
@@ -6483,7 +6637,7 @@
     "tr": "Kuyruk {0}/{1}",
     "en": "Queue {0}/{1}",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:468"
+      "apps/web/src/screens/Kisla.tsx:469"
     ]
   },
   "t24a14132": {
@@ -6491,7 +6645,7 @@
     "tr": "Kuyruk boş. Bir şeyler başlat.",
     "en": "Queue is empty. Start something.",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:549"
+      "apps/web/src/screens/Sehir.tsx:557"
     ]
   },
   "t2b606a9d": {
@@ -6499,7 +6653,7 @@
     "tr": "Kuyruklar{0}",
     "en": "Queues{0}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:544"
+      "apps/web/src/screens/Sehir.tsx:552"
     ]
   },
   "t72316f34": {
@@ -6555,6 +6709,7 @@
     "tr": "Lord",
     "en": "Lord",
     "nerede": [
+      "apps/api/src/routes/moderasyon.ts:72",
       "apps/api/src/routes/rankings.ts:265",
       "apps/api/src/routes/ticaret.ts:62",
       "apps/api/src/services/lord.ts:375",
@@ -6570,6 +6725,14 @@
       "apps/web/src/screens/Giris.tsx:227",
       "apps/web/src/screens/YoneticiPaneli.tsx:61",
       "apps/web/src/screens/YoneticiPaneli.tsx:62"
+    ]
+  },
+  "ta935488e": {
+    "grup": "arayuz",
+    "tr": "Lord adında, ittifak adında ve sohbette küfür, hakaret, nefret söylemi, taciz, tehdit, cinsel içerik, başkasının kişisel bilgisini paylaşmak ve dolandırıcılık yasaktır.",
+    "en": "Profanity, insults, hate speech, harassment, threats, sexual content, sharing someone else's personal information and fraud are forbidden in lord names, alliance names and chat.",
+    "nerede": [
+      "apps/web/src/screens/Kosullar.tsx:46"
     ]
   },
   "t168134fc": {
@@ -6603,7 +6766,7 @@
     "en": "Age of Lords",
     "nerede": [
       "apps/api/src/routes/push.ts:92",
-      "apps/web/src/components/MobilKabuk.tsx:407",
+      "apps/web/src/components/MobilKabuk.tsx:419",
       "apps/web/src/screens/EpostaDogrula.tsx:38",
       "apps/web/src/screens/Giris.tsx:200",
       "apps/web/src/screens/ParolaSifirla.tsx:31"
@@ -6614,7 +6777,7 @@
     "tr": "Lordlar Çağı hangi veriyi neden tutuyor — ve neyi tutmuyor.",
     "en": "What data Lordlar Çağı keeps and why — and what it does not keep.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:42"
+      "apps/web/src/screens/Gizlilik.tsx:43"
     ]
   },
   "t084b456e": {
@@ -6650,12 +6813,12 @@
       "apps/web/src/screens/LordEkrani.tsx:389"
     ]
   },
-  "td275369f": {
+  "tda0d5c1f": {
     "grup": "arayuz",
-    "tr": "Lordun, ordun, bölgelerin, savaş raporların, ittifakın, sohbet mesajların. Oyunun kendisi bu.",
-    "en": "Your lord, army, regions, battle reports, alliance and chat messages. This is the game itself.",
+    "tr": "Lordun, ordun, bölgelerin, savaş raporların, ittifakın, sohbet mesajların ve engellediğin lordlar. Oyunun kendisi bu.",
+    "en": "Your lord, army, regions, battle reports, alliance, chat messages and the lords you blocked. This is the game itself.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:58"
+      "apps/web/src/screens/Gizlilik.tsx:59"
     ]
   },
   "tbe00b129": {
@@ -6803,7 +6966,7 @@
     "tr": "Mesaj gönderilemedi.",
     "en": "Message could not be sent.",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:56"
+      "apps/web/src/components/IttifakSohbet.tsx:59"
     ]
   },
   "ta2fe57cb": {
@@ -6828,7 +6991,7 @@
     "tr": "Mesajını gözden geçir ve tekrar dene.",
     "en": "Review your message and try again.",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:146"
+      "apps/web/src/components/IttifakSohbet.tsx:195"
     ]
   },
   "t05e52e04": {
@@ -6836,7 +6999,7 @@
     "tr": "Mevcut parola",
     "en": "Current password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:228"
+      "apps/web/src/screens/Hesap.tsx:234"
     ]
   },
   "t180f3ffb": {
@@ -6895,7 +7058,7 @@
     "tr": "Nadirlik üretim anında rastgele belirlenir.",
     "en": "Rarity is determined randomly at the moment of forging.",
     "nerede": [
-      "apps/web/src/screens/Demirhane.tsx:565"
+      "apps/web/src/screens/Demirhane.tsx:567"
     ]
   },
   "t7db547ab": {
@@ -6903,7 +7066,7 @@
     "tr": "Ne kadar süre",
     "en": "How long",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:113"
+      "apps/web/src/screens/Gizlilik.tsx:120"
     ]
   },
   "t19e787fd": {
@@ -6919,7 +7082,7 @@
     "tr": "Ne toplamıyoruz",
     "en": "What we do not collect",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:69"
+      "apps/web/src/screens/Gizlilik.tsx:71"
     ]
   },
   "t06674569": {
@@ -6927,7 +7090,7 @@
     "tr": "Ne topluyoruz",
     "en": "What we collect",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:47"
+      "apps/web/src/screens/Gizlilik.tsx:48"
     ]
   },
   "t9f6b9fa1": {
@@ -6991,7 +7154,7 @@
     "tr": "olabilir.",
     "en": "can be.",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:476"
+      "apps/web/src/screens/Sehir.tsx:484"
     ]
   },
   "t38e7530f": {
@@ -7024,7 +7187,7 @@
     "tr": "Onay",
     "en": "Confirmation",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:285"
+      "apps/web/src/screens/Hesap.tsx:293"
     ]
   },
   "t280ff98c": {
@@ -7205,7 +7368,7 @@
     "tr": "Ordunu burada büyütürsün",
     "en": "You grow your army here",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:416"
+      "apps/web/src/screens/Kisla.tsx:417"
     ]
   },
   "td1115723": {
@@ -7232,7 +7395,7 @@
     "tr": "Ordunu ne için kuruyorsun",
     "en": "What are you building your army for",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:442"
+      "apps/web/src/screens/Kisla.tsx:443"
     ]
   },
   "tcdac426c": {
@@ -7248,7 +7411,7 @@
     "tr": "Ordunun Dağılımı",
     "en": "Army Distribution",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:501"
+      "apps/web/src/screens/Kisla.tsx:502"
     ]
   },
   "t5d7d275e": {
@@ -7280,7 +7443,7 @@
     "tr": "Oturum açılamadı. Tekrar giriş yapman gerekiyor.",
     "en": "Could not log in. You need to sign in again.",
     "nerede": [
-      "apps/web/src/App.tsx:439"
+      "apps/web/src/App.tsx:458"
     ]
   },
   "t63341816": {
@@ -7288,7 +7451,15 @@
     "tr": "Oyun durumun.",
     "en": "Your game state.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:58"
+      "apps/web/src/screens/Gizlilik.tsx:59"
+    ]
+  },
+  "tacd576a8": {
+    "grup": "arayuz",
+    "tr": "Oyun geliştirilmeye devam ediyor: sayılar, dengeler ve kurallar değişebilir; bakım için kısa kesintiler olabilir. Önemli değişiklikler oyun içinde duyurulur.",
+    "en": "The game is still being developed: numbers, balance and rules may change; short outages for maintenance may occur. Major changes are announced in the game.",
+    "nerede": [
+      "apps/web/src/screens/Kosullar.tsx:91"
     ]
   },
   "t636e2e5d": {
@@ -7296,7 +7467,7 @@
     "tr": "Oyun verisi kimseyle paylaşılmıyor, satılmıyor.",
     "en": "Game data is never shared with anyone, and never sold.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:102"
+      "apps/web/src/screens/Gizlilik.tsx:104"
     ]
   },
   "t86766a95": {
@@ -7315,12 +7486,28 @@
       "apps/web/src/screens/YoneticiPaneli.tsx:50"
     ]
   },
+  "t173eaf6d": {
+    "grup": "arayuz",
+    "tr": "Oyunu otomatikleştiren yazılımlar, birden çok hesapla kendine kaynak aktarmak ve bir hatayı bilerek istismar etmek yasaktır. Bulduğun hatayı bildirmen oyunu herkes için iyileştirir.",
+    "en": "Software that automates the game, funnelling resources to yourself through multiple accounts and knowingly exploiting a bug are forbidden. Reporting a bug you find makes the game better for everyone.",
+    "nerede": [
+      "apps/web/src/screens/Kosullar.tsx:69"
+    ]
+  },
+  "t6977e35b": {
+    "grup": "arayuz",
+    "tr": "Oyunun değişmesi",
+    "en": "Changes to the game",
+    "nerede": [
+      "apps/web/src/screens/Kosullar.tsx:89"
+    ]
+  },
   "t5d44ffda": {
     "grup": "arayuz",
     "tr": "Oyunun ne olduğunu, nasıl savaşıldığını ve seni koruyan kuralları baştan okumak istersen öğreticiyi tekrar açabilirsin.",
     "en": "If you want to read again what the game is, how to fight, and the rules that protect you, you can reopen the tutorial.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:212"
+      "apps/web/src/screens/Hesap.tsx:218"
     ]
   },
   "t9bf3ffd3": {
@@ -7345,7 +7532,7 @@
     "en": "Tutorial",
     "nerede": [
       "apps/web/src/components/Ogretici.tsx:131",
-      "apps/web/src/screens/Hesap.tsx:209"
+      "apps/web/src/screens/Hesap.tsx:215"
     ]
   },
   "t47d30263": {
@@ -7361,7 +7548,7 @@
     "tr": "Öğreticiyi tekrar oku",
     "en": "Reread the tutorial",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:221"
+      "apps/web/src/screens/Hesap.tsx:227"
     ]
   },
   "t96de5998": {
@@ -7401,7 +7588,7 @@
     "tr": "Önce e-posta adresini yaz.",
     "en": "Write your email address first.",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:308"
+      "apps/web/src/screens/Giris.tsx:322"
     ]
   },
   "t2037d289": {
@@ -7497,7 +7684,7 @@
     "tr": "Parola Değiştir",
     "en": "Change Password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:226"
+      "apps/web/src/screens/Hesap.tsx:232"
     ]
   },
   "t0cb4198c": {
@@ -7529,7 +7716,7 @@
     "tr": "Parolamı unuttum",
     "en": "Forgot password",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:289"
+      "apps/web/src/screens/Giris.tsx:303"
     ]
   },
   "t100b4ff0": {
@@ -7537,7 +7724,7 @@
     "tr": "Parolan",
     "en": "Your password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:276"
+      "apps/web/src/screens/Hesap.tsx:284"
     ]
   },
   "t0fb7e6b4": {
@@ -7545,7 +7732,7 @@
     "tr": "Parolan — şifrelenmiş hâliyle.",
     "en": "Your password — in encrypted form.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:53"
+      "apps/web/src/screens/Gizlilik.tsx:54"
     ]
   },
   "t349238d8": {
@@ -7577,7 +7764,7 @@
     "tr": "Parolanı Hesap ekranından değiştirebilirsin.",
     "en": "You can change your password from the Account screen.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:126"
+      "apps/web/src/screens/Gizlilik.tsx:133"
     ]
   },
   "tfec6626c": {
@@ -7585,7 +7772,7 @@
     "tr": "Parolanın kendisi hiçbir yerde saklanmıyor; yalnızca geri çevrilemez bir özeti (argon2id) tutuluyor. Parolanı unutursan biz de bilemeyiz, sıfırlaman gerekir.",
     "en": "Your password itself is stored nowhere; only an irreversible digest of it (argon2id) is kept. If you forget your password, we cannot know it either — you have to reset it.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:53"
+      "apps/web/src/screens/Gizlilik.tsx:54"
     ]
   },
   "tbb5ecdaf": {
@@ -7601,7 +7788,7 @@
     "tr": "Parolayı değiştir",
     "en": "Change the password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:253"
+      "apps/web/src/screens/Hesap.tsx:259"
     ]
   },
   "tf68e5744": {
@@ -7685,7 +7872,7 @@
     "tr": "Reklam ağı, izleme çerezi, analitik kütüphanesi {0}. Sayfada hiçbir üçüncü taraf betiği çalışmıyor.",
     "en": "Ad networks, tracking cookies, analytics libraries: {0}. No third-party script runs on this page.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:74"
+      "apps/web/src/screens/Gizlilik.tsx:76"
     ]
   },
   "t078f1e48": {
@@ -7812,7 +7999,7 @@
     "en": "Attack",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:971",
-      "apps/web/src/screens/Kisla.tsx:316"
+      "apps/web/src/screens/Kisla.tsx:317"
     ]
   },
   "tf84af079": {
@@ -8048,7 +8235,7 @@
     "tr": "Savunma",
     "en": "Defense",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:317"
+      "apps/web/src/screens/Kisla.tsx:318"
     ]
   },
   "t739f8573": {
@@ -8137,7 +8324,7 @@
     "tr": "Seçim bu cihazda kalır, hesabına bağlı değil. Dil değişince oyun bir kez yenilenir.",
     "en": "The choice stays on this device, it is not tied to your account. When the language changes the game reloads once.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:200"
+      "apps/web/src/screens/Hesap.tsx:206"
     ]
   },
   "t2bba614f": {
@@ -8185,7 +8372,7 @@
     "tr": "sen açarsan",
     "en": "you turn them on",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:92"
+      "apps/web/src/screens/Gizlilik.tsx:94"
     ]
   },
   "tbfca2c2e": {
@@ -8227,7 +8414,7 @@
     "tr": "Senin sıran",
     "en": "Your rank",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:268"
+      "apps/web/src/screens/Siralama.tsx:269"
     ]
   },
   "t04a0fe35": {
@@ -8243,8 +8430,8 @@
     "tr": "seviye {0}",
     "en": "level {0}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:724",
-      "apps/web/src/screens/Sehir.tsx:727"
+      "apps/web/src/screens/Sehir.tsx:732",
+      "apps/web/src/screens/Sehir.tsx:735"
     ]
   },
   "tc36d65d0": {
@@ -8253,7 +8440,7 @@
     "en": "Level {0}",
     "nerede": [
       "apps/web/src/components/SeviyeKutlamasi.tsx:54",
-      "apps/web/src/screens/Demirhane.tsx:694"
+      "apps/web/src/screens/Demirhane.tsx:696"
     ]
   },
   "t006925f6": {
@@ -8261,7 +8448,7 @@
     "tr": "Seviye {0} / {1}",
     "en": "Level {0} / {1}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:932"
+      "apps/web/src/screens/Sehir.tsx:960"
     ]
   },
   "tc15fa5ea": {
@@ -8269,7 +8456,7 @@
     "tr": "Seviye {0} yap",
     "en": "Upgrade to Level {0}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:970"
+      "apps/web/src/screens/Sehir.tsx:998"
     ]
   },
   "t939a055a": {
@@ -8309,7 +8496,7 @@
     "tr": "Seviye yükseltmek için buradan seç: haritadaki dokunuş yapının içine giriyor.",
     "en": "Select here to upgrade level: tapping on the map enters the structure.",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:601"
+      "apps/web/src/screens/Sehir.tsx:609"
     ]
   },
   "t2e677d3f": {
@@ -8333,7 +8520,7 @@
     "tr": "Sıfırlama bağlantısı gönder",
     "en": "Send reset link",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:305"
+      "apps/web/src/screens/Giris.tsx:319"
     ]
   },
   "tee25d0bd": {
@@ -8393,7 +8580,7 @@
     "tr": "Siliniyor…",
     "en": "Deleting…",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:314"
+      "apps/web/src/screens/Hesap.tsx:322"
     ]
   },
   "t51f40fea": {
@@ -8409,7 +8596,7 @@
     "tr": "Silme:",
     "en": "Deletion:",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:122"
+      "apps/web/src/screens/Gizlilik.tsx:129"
     ]
   },
   "ta5d9b6cf": {
@@ -8444,6 +8631,14 @@
       "apps/web/src/screens/Ittifak.tsx:222"
     ]
   },
+  "te0284d4f": {
+    "grup": "arayuz",
+    "tr": "Sohbette bir mesajın yanındaki ⚑ ile şikâyet edebilir, ⊘ ile o lordu engelleyebilirsin. Engellediğin lordun mesajlarını bir daha görmezsin; engeli Hesap ekranından kaldırabilirsin.",
+    "en": "In chat, tap ⚑ next to a message to report it, or ⊘ to block that lord. You will no longer see messages from a lord you blocked; you can lift the block from the Account screen.",
+    "nerede": [
+      "apps/web/src/screens/Kosullar.tsx:57"
+    ]
+  },
   "t2b285f7d": {
     "grup": "arayuz",
     "tr": "SOHBETTE SUSTUR",
@@ -8473,7 +8668,7 @@
     "tr": "Son giriş anın ve son gördüğün ekran.",
     "en": "Your last sign-in time and the last screen you saw.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:62"
+      "apps/web/src/screens/Gizlilik.tsx:64"
     ]
   },
   "tc0ede74c": {
@@ -8549,12 +8744,28 @@
       "apps/web/src/screens/YoneticiPaneli.tsx:77"
     ]
   },
+  "t997d2a2b": {
+    "grup": "arayuz",
+    "tr": "Soru, talep ve itirazların için:",
+    "en": "For questions, requests and appeals:",
+    "nerede": [
+      "apps/web/src/components/DestekSatiri.tsx:20"
+    ]
+  },
   "tb27f170d": {
     "grup": "arayuz",
     "tr": "Sunucu uykudan uyanıyor olabilir. Bu ilk açılışta 30–60 saniye sürebilir.",
     "en": "The server might be waking up from sleep. This can take 30–60 seconds on the first launch.",
     "nerede": [
-      "apps/web/src/App.tsx:455"
+      "apps/web/src/App.tsx:474"
+    ]
+  },
+  "tf5b5351e": {
+    "grup": "arayuz",
+    "tr": "Sunucuda bir hata olursa teknik ayrıntısı bir hata izleme hizmetine gidebilir; oraya e-posta adresin ve parolan gönderilmez, yalnız hatanın kendisi ve lordunun kimlik numarası.",
+    "en": "If an error occurs on the server, its technical details may be sent to an error-monitoring service; your email and password are not sent — only the error itself and your lord's ID number.",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:114"
     ]
   },
   "t0a0f8af7": {
@@ -8586,7 +8797,7 @@
     "tr": "Susturma",
     "en": "Mute",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:118"
+      "apps/web/src/screens/Hesap.tsx:124"
     ]
   },
   "t16aafb87": {
@@ -8638,7 +8849,7 @@
     "tr": "Süre dolunca ittifak sohbetine yeniden yazabilirsin. Oyunun geri kalanı açık.",
     "en": "You can write in the alliance chat again when the time is up. The rest of the game is open.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:122"
+      "apps/web/src/screens/Hesap.tsx:128"
     ]
   },
   "tc15d3f3e": {
@@ -8650,7 +8861,7 @@
       "apps/web/src/components/IttifakBasvurular.tsx:149",
       "apps/web/src/components/IttifakIncele.tsx:69",
       "apps/web/src/components/IttifakIncele.tsx:98",
-      "apps/web/src/components/MobilKabuk.tsx:329",
+      "apps/web/src/components/MobilKabuk.tsx:341",
       "apps/web/src/screens/Ittifak.tsx:460",
       "apps/web/src/screens/Ittifak.tsx:76",
       "apps/web/src/screens/LordEkrani.tsx:420",
@@ -8698,8 +8909,8 @@
       "apps/web/src/components/SavasRaporu.tsx:246",
       "apps/web/src/screens/Akin.tsx:327",
       "apps/web/src/screens/Arastirma.tsx:571",
-      "apps/web/src/screens/Demirhane.tsx:463",
-      "apps/web/src/screens/Demirhane.tsx:487",
+      "apps/web/src/screens/Demirhane.tsx:464",
+      "apps/web/src/screens/Demirhane.tsx:488",
       "apps/web/src/screens/Generaller.tsx:208"
     ]
   },
@@ -8751,7 +8962,7 @@
     "tr": "Şikâyet gönderilemedi.",
     "en": "Report could not be sent.",
     "nerede": [
-      "apps/api/src/routes/moderasyon.ts:111",
+      "apps/api/src/routes/moderasyon.ts:157",
       "apps/api/src/routes/rankings.ts:257",
       "apps/web/src/components/SikayetSayfasi.tsx:54"
     ]
@@ -8761,7 +8972,15 @@
     "tr": "Şikâyet kuyruğu",
     "en": "Report queue",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:172"
+      "apps/web/src/screens/Hesap.tsx:178"
+    ]
+  },
+  "tb7ef16a6": {
+    "grup": "arayuz",
+    "tr": "Şikâyet ve engelleme",
+    "en": "Reporting and blocking",
+    "nerede": [
+      "apps/web/src/screens/Kosullar.tsx:55"
     ]
   },
   "tca312c06": {
@@ -8770,6 +8989,14 @@
     "en": "Your report is received. An admin will review it.",
     "nerede": [
       "apps/web/src/components/SikayetSayfasi.tsx:49"
+    ]
+  },
+  "te5b720e6": {
+    "grup": "arayuz",
+    "tr": "Şikâyetler en geç 24 saat içinde incelenir. Kuralı çiğneyen içerik kaldırılır; yazan susturulur, tekrarında hesabı kapatılır.",
+    "en": "Reports are reviewed within 24 hours. Content that breaks the rules is removed; the author is muted, and repeat offenders have their account closed.",
+    "nerede": [
+      "apps/web/src/screens/Kosullar.tsx:62"
     ]
   },
   "tdf730807": {
@@ -8897,9 +9124,9 @@
       "apps/web/src/screens/Akin.tsx:258",
       "apps/web/src/screens/Demirhane.tsx:228",
       "apps/web/src/screens/Demirhane.tsx:236",
-      "apps/web/src/screens/Demirhane.tsx:462",
-      "apps/web/src/screens/Demirhane.tsx:473",
-      "apps/web/src/screens/Demirhane.tsx:539",
+      "apps/web/src/screens/Demirhane.tsx:463",
+      "apps/web/src/screens/Demirhane.tsx:474",
+      "apps/web/src/screens/Demirhane.tsx:541",
       "apps/web/src/screens/LordEkrani.tsx:658"
     ]
   },
@@ -8908,7 +9135,7 @@
     "tr": "T{0} {1} üret",
     "en": "Forge T{0} {1}",
     "nerede": [
-      "apps/web/src/screens/Demirhane.tsx:577"
+      "apps/web/src/screens/Demirhane.tsx:579"
     ]
   },
   "td3621a41": {
@@ -8925,7 +9152,7 @@
     "tr": "T{0} için Demirhane {1}. seviye olmalı.",
     "en": "T{0} needs Blacksmith level {1}.",
     "nerede": [
-      "apps/web/src/screens/Demirhane.tsx:502"
+      "apps/web/src/screens/Demirhane.tsx:503"
     ]
   },
   "tf92aff6a": {
@@ -8933,7 +9160,7 @@
     "tr": "T{0} lord seviyesi {1} ile açılır.",
     "en": "T{0} unlocks at lord level {1}.",
     "nerede": [
-      "apps/web/src/screens/Demirhane.tsx:503"
+      "apps/web/src/screens/Demirhane.tsx:504"
     ]
   },
   "t5a044714": {
@@ -8941,7 +9168,7 @@
     "tr": "T{0}, kilitli: {1}",
     "en": "T{0}, locked: {1}",
     "nerede": [
-      "apps/web/src/screens/Demirhane.tsx:463"
+      "apps/web/src/screens/Demirhane.tsx:464"
     ]
   },
   "t2beeaffe": {
@@ -9110,7 +9337,7 @@
     "tr": "Takas ediliyor…",
     "en": "Trading…",
     "nerede": [
-      "apps/web/src/components/Pazar.tsx:193"
+      "apps/web/src/components/Pazar.tsx:195"
     ]
   },
   "t725359e0": {
@@ -9118,7 +9345,7 @@
     "tr": "Takas et",
     "en": "Trade",
     "nerede": [
-      "apps/web/src/components/Pazar.tsx:193"
+      "apps/web/src/components/Pazar.tsx:195"
     ]
   },
   "tedbadbc0": {
@@ -9222,7 +9449,7 @@
     "tr": "Taşın",
     "en": "Move",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:530"
+      "apps/web/src/screens/Sehir.tsx:538"
     ]
   },
   "tf3733180": {
@@ -9363,6 +9590,22 @@
       "packages/shared/src/esyaPazari.ts:67"
     ]
   },
+  "t8a02ea56": {
+    "grup": "arayuz",
+    "tr": "Uygunsuz adlar ve mesajlar otomatik bir süzgeçten geçer; süzgeçten kaçan içerik şikâyet edildiğinde bir yönetici tarafından incelenir.",
+    "en": "Inappropriate names and messages pass through an automatic filter; content that slips through is reviewed by a moderator once reported.",
+    "nerede": [
+      "apps/web/src/screens/Kosullar.tsx:50"
+    ]
+  },
+  "t5cbad7d0": {
+    "grup": "arayuz",
+    "tr": "Uygunsuz içeriğe sıfır tolerans",
+    "en": "Zero tolerance for objectionable content",
+    "nerede": [
+      "apps/web/src/screens/Kosullar.tsx:44"
+    ]
+  },
   "t9a9e52c9": {
     "grup": "arayuz",
     "tr": "Uzaklaştır",
@@ -9401,7 +9644,7 @@
     "tr": "Üretimde",
     "en": "In Production",
     "nerede": [
-      "apps/web/src/screens/Demirhane.tsx:586"
+      "apps/web/src/screens/Demirhane.tsx:588"
     ]
   },
   "t0ab623a8": {
@@ -9442,9 +9685,10 @@
     "en": "Cancel",
     "nerede": [
       "apps/web/src/components/IttifakDuyuru.tsx:83",
+      "apps/web/src/components/IttifakSohbet.tsx:105",
       "apps/web/src/components/SikayetSayfasi.tsx:114",
       "apps/web/src/screens/Arastirma.tsx:1059",
-      "apps/web/src/screens/Hesap.tsx:306",
+      "apps/web/src/screens/Hesap.tsx:314",
       "apps/web/src/screens/Medeniyet.tsx:253"
     ]
   },
@@ -9477,7 +9721,7 @@
     "tr": "Verilerine erişmek ya da başka bir talepte bulunmak istersen kayıt olduğun e-posta adresinden bize yazman yeterli.",
     "en": "If you want to access your data or make any other request, writing to us from the email address you signed up with is enough.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:130"
+      "apps/web/src/screens/Gizlilik.tsx:137"
     ]
   },
   "tc0bd27c2": {
@@ -9559,7 +9803,7 @@
     "tr": "yapı",
     "en": "structure",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:932"
+      "apps/web/src/screens/Sehir.tsx:960"
     ]
   },
   "tdd99127b": {
@@ -9567,7 +9811,7 @@
     "tr": "Yapılar",
     "en": "Structures",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:599"
+      "apps/web/src/screens/Sehir.tsx:607"
     ]
   },
   "td55cc683": {
@@ -9648,7 +9892,7 @@
     "tr": "Yaz",
     "en": "Type",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:142"
+      "apps/web/src/components/IttifakSohbet.tsx:191"
     ]
   },
   "ta45efa0f": {
@@ -9712,7 +9956,7 @@
     "tr": "Yeni lordlar 72 saat saldırıya kapalıdır.",
     "en": "New lords are immune to attacks for 72 hours.",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:318"
+      "apps/web/src/screens/Giris.tsx:332"
     ]
   },
   "t6187848c": {
@@ -9728,7 +9972,7 @@
     "tr": "Yeni parola",
     "en": "New password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:237",
+      "apps/web/src/screens/Hesap.tsx:243",
       "apps/web/src/screens/ParolaSifirla.tsx:46"
     ]
   },
@@ -9753,7 +9997,7 @@
     "tr": "Yeniden dene",
     "en": "Try again",
     "nerede": [
-      "apps/web/src/App.tsx:460"
+      "apps/web/src/App.tsx:479"
     ]
   },
   "t2579f562": {
@@ -9796,7 +10040,7 @@
     "en": "none",
     "nerede": [
       "apps/web/src/components/ArmaSecici.tsx:179",
-      "apps/web/src/screens/Gizlilik.tsx:75"
+      "apps/web/src/screens/Gizlilik.tsx:77"
     ]
   },
   "t15ceec85": {
@@ -9862,7 +10106,7 @@
     "tr": "Yönetici paneli",
     "en": "Admin panel",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:175"
+      "apps/web/src/screens/Hesap.tsx:181"
     ]
   },
   "tfb3f07d7": {
@@ -9870,7 +10114,7 @@
     "tr": "Yönetim",
     "en": "Administration",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:160",
+      "apps/web/src/screens/Hesap.tsx:166",
       "data/arastirma.json:gruplar[2].ad"
     ]
   },
@@ -9888,7 +10132,7 @@
     "tr": "Yukarıdaki e-posta adresine sıfırlama bağlantısı gönderelim.",
     "en": "Let us send a reset link to the email address above.",
     "nerede": [
-      "apps/web/src/screens/Giris.tsx:296"
+      "apps/web/src/screens/Giris.tsx:310"
     ]
   },
   "tfab69aea": {
@@ -9938,8 +10182,8 @@
     "tr": "Yükleniyor...",
     "en": "Loading...",
     "nerede": [
-      "apps/web/src/screens/Siralama.tsx:225",
-      "apps/web/src/screens/Siralama.tsx:250"
+      "apps/web/src/screens/Siralama.tsx:226",
+      "apps/web/src/screens/Siralama.tsx:251"
     ]
   },
   "t727a3377": {
@@ -9948,7 +10192,7 @@
     "en": "Upgrading",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:314",
-      "apps/web/src/screens/Demirhane.tsx:714"
+      "apps/web/src/screens/Demirhane.tsx:716"
     ]
   },
   "tc133bd6b": {
@@ -10004,7 +10248,7 @@
     "tr": "Yürüyüşte",
     "en": "Marching",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:505"
+      "apps/web/src/screens/Kisla.tsx:506"
     ]
   },
   "tdd948d11": {
@@ -12015,7 +12259,7 @@
     "tr": "İttifak dolu ({0} üye).",
     "en": "Alliance full ({0} [member|members]).",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1142",
+      "apps/api/src/routes/ittifak.ts:1150",
       "packages/shared/src/ittifakBasvuru.ts:161",
       "packages/shared/src/ittifakBasvuru.ts:87"
     ]
@@ -13330,8 +13574,8 @@
     "tr": "Üye",
     "en": "Member",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1831",
-      "apps/api/src/routes/ittifak.ts:796",
+      "apps/api/src/routes/ittifak.ts:1839",
+      "apps/api/src/routes/ittifak.ts:804",
       "packages/shared/src/ittifakSeviye.ts:186"
     ]
   },
@@ -13623,7 +13867,7 @@
     "tr": ", en az Sv{0}",
     "en": ", at least Lvl{0}",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:913"
+      "apps/api/src/routes/ittifak.ts:921"
     ]
   },
   "tb6bc6cea": {
@@ -13639,8 +13883,8 @@
     "tr": "(silinmiş)",
     "en": "(deleted)",
     "nerede": [
-      "apps/api/src/routes/moderasyon.ts:247",
-      "apps/api/src/routes/moderasyon.ts:249"
+      "apps/api/src/routes/moderasyon.ts:293",
+      "apps/api/src/routes/moderasyon.ts:295"
     ]
   },
   "te5671777": {
@@ -13648,7 +13892,7 @@
     "tr": "{0} (Sv{1}) ittifağınıza başvurdu.",
     "en": "{0} (Lv{1}) applied to your alliance.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1008"
+      "apps/api/src/routes/ittifak.ts:1016"
     ]
   },
   "tf684dd4f": {
@@ -13728,7 +13972,7 @@
     "tr": "{0} bağış yaptı (+{1} XP).",
     "en": "{0} donated (+{1} XP).",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1246"
+      "apps/api/src/routes/ittifak.ts:1254"
     ]
   },
   "t8a093e37": {
@@ -13736,7 +13980,7 @@
     "tr": "{0} başvurusu kabul edildi.",
     "en": "{0}'s application accepted.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1255"
+      "apps/api/src/routes/ittifak.ts:1263"
     ]
   },
   "t03052597": {
@@ -13744,7 +13988,7 @@
     "tr": "{0} başvurusu kabul edilip katıldı.",
     "en": "{0}'s application was accepted and they joined.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1158"
+      "apps/api/src/routes/ittifak.ts:1166"
     ]
   },
   "t847a8c87": {
@@ -13752,7 +13996,7 @@
     "tr": "{0} başvurusu reddedildi.",
     "en": "{0}'s application rejected.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1256"
+      "apps/api/src/routes/ittifak.ts:1264"
     ]
   },
   "t4fe888ec": {
@@ -13808,7 +14052,7 @@
     "tr": "{0} bu arada başka bir ittifağa katılmış.",
     "en": "{0} joined another alliance in the meantime.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1136"
+      "apps/api/src/routes/ittifak.ts:1144"
     ]
   },
   "t0f5e6bb4": {
@@ -13928,7 +14172,7 @@
     "tr": "{0} ile pakt feshedildi.",
     "en": "Pact with {0} dissolved.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1264"
+      "apps/api/src/routes/ittifak.ts:1272"
     ]
   },
   "ta76946fb": {
@@ -13936,7 +14180,7 @@
     "tr": "{0} ile pakt kuruldu.",
     "en": "Pact established with {0}.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1262"
+      "apps/api/src/routes/ittifak.ts:1270"
     ]
   },
   "teb26cc7c": {
@@ -13976,7 +14220,7 @@
     "tr": "{0} ittifakın hedefini {1} olarak işaretledi.",
     "en": "{0} marked the alliance target as {1}.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:764"
+      "apps/api/src/routes/ittifak.ts:772"
     ]
   },
   "t8ccb6e59": {
@@ -13984,7 +14228,7 @@
     "tr": "{0} ittifakına kabul edildin.",
     "en": "You were accepted into the {0} alliance.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1169"
+      "apps/api/src/routes/ittifak.ts:1177"
     ]
   },
   "tb280b5d3": {
@@ -14008,7 +14252,7 @@
     "tr": "{0} ittifakından çıkarıldı.",
     "en": "Kicked from the {0} alliance.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:807"
+      "apps/api/src/routes/ittifak.ts:815"
     ]
   },
   "t9b853237": {
@@ -14024,7 +14268,7 @@
     "tr": "{0} ittifaktan çıkarıldı.",
     "en": "{0} was kicked from the alliance.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:803"
+      "apps/api/src/routes/ittifak.ts:811"
     ]
   },
   "t1fbe3442": {
@@ -14032,7 +14276,7 @@
     "tr": "{0} ittifaktan yeni ayrılmış, {1} saat daha giremez.",
     "en": "{0} has just left an alliance and cannot join for another {1} [hour|hours].",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1147"
+      "apps/api/src/routes/ittifak.ts:1155"
     ]
   },
   "tc84e1ceb": {
@@ -14072,7 +14316,7 @@
     "tr": "{0} pakt teklifini kapattı.",
     "en": "{0} closed the pact offer.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1593"
+      "apps/api/src/routes/ittifak.ts:1601"
     ]
   },
   "t3d8681d2": {
@@ -14080,7 +14324,7 @@
     "tr": "{0} paktı feshetti. Pakt {1} saat sonra sona eriyor.",
     "en": "{0} dissolved the pact. The pact expires in {1} [hour|hours].",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1633"
+      "apps/api/src/routes/ittifak.ts:1641"
     ]
   },
   "t7cff0ab1": {
@@ -14104,7 +14348,7 @@
     "tr": "{0} saldırmazlık paktı teklif etti.",
     "en": "{0} offered a non-aggression pact.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1536"
+      "apps/api/src/routes/ittifak.ts:1544"
     ]
   },
   "t024a1acb": {
@@ -14209,7 +14453,7 @@
     "tr": "{0} Yaşlı oldu.",
     "en": "{0} became an Elder.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1852"
+      "apps/api/src/routes/ittifak.ts:1860"
     ]
   },
   "t4bbe2f22": {
@@ -14217,7 +14461,7 @@
     "tr": "{0} Yaşlı rütbesini kaybetti.",
     "en": "{0} lost the Elder rank.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1852"
+      "apps/api/src/routes/ittifak.ts:1860"
     ]
   },
   "t12f9a857": {
@@ -14364,8 +14608,8 @@
     "tr": "Başvuru",
     "en": "Application",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1028",
-      "apps/api/src/routes/ittifak.ts:1102"
+      "apps/api/src/routes/ittifak.ts:1036",
+      "apps/api/src/routes/ittifak.ts:1110"
     ]
   },
   "t3e65b797": {
@@ -14373,7 +14617,7 @@
     "tr": "başvuruyla",
     "en": "by application",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:912"
+      "apps/api/src/routes/ittifak.ts:920"
     ]
   },
   "t5ac47aa2": {
@@ -14421,7 +14665,7 @@
     "tr": "bilinmeyen bölge",
     "en": "unknown region",
     "nerede": [
-      "apps/api/src/routes/dunya.ts:231"
+      "apps/api/src/routes/dunya.ts:241"
     ]
   },
   "tc9bf8e6b": {
@@ -14429,7 +14673,7 @@
     "tr": "bilinmeyen ittifak",
     "en": "unknown alliance",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1259"
+      "apps/api/src/routes/ittifak.ts:1267"
     ]
   },
   "tb724b5e4": {
@@ -14437,17 +14681,17 @@
     "tr": "Bir ittifakta değilsin.",
     "en": "You are not in an alliance.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1196",
-      "apps/api/src/routes/ittifak.ts:1471",
-      "apps/api/src/routes/ittifak.ts:1653",
-      "apps/api/src/routes/ittifak.ts:1698",
+      "apps/api/src/routes/ittifak.ts:1204",
+      "apps/api/src/routes/ittifak.ts:1479",
+      "apps/api/src/routes/ittifak.ts:1661",
+      "apps/api/src/routes/ittifak.ts:1706",
       "apps/api/src/routes/ittifak.ts:234",
       "apps/api/src/routes/ittifak.ts:307",
       "apps/api/src/routes/ittifak.ts:551",
       "apps/api/src/routes/ittifak.ts:618",
-      "apps/api/src/routes/ittifak.ts:669",
-      "apps/api/src/routes/ittifak.ts:714",
-      "apps/api/src/routes/ittifak.ts:784"
+      "apps/api/src/routes/ittifak.ts:677",
+      "apps/api/src/routes/ittifak.ts:722",
+      "apps/api/src/routes/ittifak.ts:792"
     ]
   },
   "t2ffdc779": {
@@ -14634,7 +14878,7 @@
     "tr": "Bu başvuru zaten karara bağlanmış.",
     "en": "This application has already been decided.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1104"
+      "apps/api/src/routes/ittifak.ts:1112"
     ]
   },
   "t879fbc69": {
@@ -14803,7 +15047,7 @@
     "tr": "Bu ittifakla zaten paktın var.",
     "en": "You already have a pact with this alliance.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1509"
+      "apps/api/src/routes/ittifak.ts:1517"
     ]
   },
   "t7c2cd60c": {
@@ -14819,7 +15063,7 @@
     "tr": "Bu pakt zaten feshediliyor.",
     "en": "This pact is already being dissolved.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1617"
+      "apps/api/src/routes/ittifak.ts:1625"
     ]
   },
   "t62953e56": {
@@ -14844,7 +15088,7 @@
     "tr": "Bu şikâyet zaten karara bağlanmış.",
     "en": "This report has already been decided.",
     "nerede": [
-      "apps/api/src/routes/moderasyon.ts:290"
+      "apps/api/src/routes/moderasyon.ts:336"
     ]
   },
   "t1a13bc53": {
@@ -14852,8 +15096,8 @@
     "tr": "Bu teklif artık açık değil.",
     "en": "This offer is no longer open.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1551",
-      "apps/api/src/routes/ittifak.ts:1587"
+      "apps/api/src/routes/ittifak.ts:1559",
+      "apps/api/src/routes/ittifak.ts:1595"
     ]
   },
   "t14d7d3bd": {
@@ -14869,7 +15113,7 @@
     "tr": "Bugünlük bağış hakkın bitti ({0}). Yarın tekrar.",
     "en": "Your donation allowance for today is over ({0}). Try again tomorrow.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1705"
+      "apps/api/src/routes/ittifak.ts:1713"
     ]
   },
   "tea1021b9": {
@@ -14957,7 +15201,7 @@
     "tr": "Çok hızlı şikâyet ediyorsun. {0} saniye bekle.",
     "en": "You are reporting too fast. Wait {0} second.|You are reporting too fast. Wait {0} seconds.",
     "nerede": [
-      "apps/api/src/routes/moderasyon.ts:142"
+      "apps/api/src/routes/moderasyon.ts:188"
     ]
   },
   "t07a010f1": {
@@ -14965,7 +15209,7 @@
     "tr": "Çok hızlı yazıyorsun. {0} saniye bekle.",
     "en": "You are typing too fast. Wait {0} second.|You are typing too fast. Wait {0} seconds.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:682"
+      "apps/api/src/routes/ittifak.ts:690"
     ]
   },
   "t46b749aa": {
@@ -15039,7 +15283,7 @@
     "tr": "Duyuru güncellendi.",
     "en": "Announcement updated.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1802"
+      "apps/api/src/routes/ittifak.ts:1810"
     ]
   },
   "tf7049390": {
@@ -15047,7 +15291,7 @@
     "tr": "Duyuru kaldırıldı.",
     "en": "Announcement removed.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1802"
+      "apps/api/src/routes/ittifak.ts:1810"
     ]
   },
   "t075455aa": {
@@ -15104,7 +15348,7 @@
     "tr": "En fazla {0} yaşlı olabilir. Önce birinin rütbesini almalısın.",
     "en": "There can be at most {0} [elder|elders]. You must demote someone first.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1837"
+      "apps/api/src/routes/ittifak.ts:1845"
     ]
   },
   "t99f8a247": {
@@ -15272,7 +15516,7 @@
     "tr": "herkese açık",
     "en": "open to everyone",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:912"
+      "apps/api/src/routes/ittifak.ts:920"
     ]
   },
   "t367d59af": {
@@ -15324,7 +15568,7 @@
     "tr": "İttifak arması değişti.",
     "en": "Alliance crest changed.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:848"
+      "apps/api/src/routes/ittifak.ts:856"
     ]
   },
   "td286be2a": {
@@ -15332,7 +15576,7 @@
     "tr": "İttifak başvurun kabul edilmedi.",
     "en": "Your alliance application was not accepted.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1116"
+      "apps/api/src/routes/ittifak.ts:1124"
     ]
   },
   "tfb810908": {
@@ -15348,7 +15592,7 @@
     "tr": "İttifak sohbetinde {0} susturuldun. Sebep: {1}",
     "en": "You were muted in the alliance chat for {0}. Reason: {1}",
     "nerede": [
-      "apps/api/src/routes/moderasyon.ts:317"
+      "apps/api/src/routes/moderasyon.ts:363"
     ]
   },
   "t52231a33": {
@@ -15364,7 +15608,7 @@
     "tr": "İttifakında Yaşlı oldun.",
     "en": "You became an Elder in your alliance.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1860"
+      "apps/api/src/routes/ittifak.ts:1868"
     ]
   },
   "taaa9a7ea": {
@@ -15372,7 +15616,7 @@
     "tr": "İttifakındaki Yaşlı rütben alındı.",
     "en": "Your Elder rank in your alliance was revoked.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1860"
+      "apps/api/src/routes/ittifak.ts:1868"
     ]
   },
   "tb15d50e9": {
@@ -15380,7 +15624,7 @@
     "tr": "İttifaktan yeni ayrıldın. {0} saat sonra girebilirsin.",
     "en": "You just left an alliance. You can join in {0} [hour|hours].",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1340"
+      "apps/api/src/routes/ittifak.ts:1348"
     ]
   },
   "t8f1e61bf": {
@@ -15388,7 +15632,7 @@
     "tr": "İttifaktan yeni ayrıldın. {0} saat sonra yeni bir ittifağa başvurabilirsin.",
     "en": "You have just left an alliance. You can apply to a new one in {0} [hour|hours].",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:963"
+      "apps/api/src/routes/ittifak.ts:971"
     ]
   },
   "t96bb795c": {
@@ -15404,7 +15648,7 @@
     "tr": "Karar uygulanamaz.",
     "en": "Decision cannot be applied.",
     "nerede": [
-      "apps/api/src/routes/moderasyon.ts:295"
+      "apps/api/src/routes/moderasyon.ts:341"
     ]
   },
   "t0bab1641": {
@@ -15428,7 +15672,7 @@
     "tr": "Katılım: {0}",
     "en": "Joining: {0}",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:912"
+      "apps/api/src/routes/ittifak.ts:920"
     ]
   },
   "td7c0e87f": {
@@ -15500,7 +15744,7 @@
     "tr": "Kendi mesajını şikâyet edemezsin.",
     "en": "You cannot report your own message.",
     "nerede": [
-      "apps/api/src/routes/moderasyon.ts:128"
+      "apps/api/src/routes/moderasyon.ts:174"
     ]
   },
   "tad9f0652": {
@@ -15508,7 +15752,7 @@
     "tr": "Kendi rütbeni değiştiremezsin.",
     "en": "You cannot change your own rank.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1824"
+      "apps/api/src/routes/ittifak.ts:1832"
     ]
   },
   "t3adae11a": {
@@ -15516,7 +15760,7 @@
     "tr": "Kendi teklifini kabul edemezsin.",
     "en": "You cannot accept your own offer.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1555"
+      "apps/api/src/routes/ittifak.ts:1563"
     ]
   },
   "ta36df99b": {
@@ -15532,7 +15776,15 @@
     "tr": "Kendini çıkaramazsın; ayrılmak için \"Ayrıl\" kullan.",
     "en": "You cannot kick yourself; use \"Leave\" to leave.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:789"
+      "apps/api/src/routes/ittifak.ts:797"
+    ]
+  },
+  "t90b95e55": {
+    "grup": "sunucu",
+    "tr": "Kendini engelleyemezsin.",
+    "en": "You cannot block yourself.",
+    "nerede": [
+      "apps/api/src/routes/moderasyon.ts:70"
     ]
   },
   "t4533a4b2": {
@@ -15668,8 +15920,8 @@
     "tr": "Mesaj",
     "en": "Message",
     "nerede": [
-      "apps/api/src/routes/moderasyon.ts:118",
-      "apps/api/src/routes/moderasyon.ts:126"
+      "apps/api/src/routes/moderasyon.ts:164",
+      "apps/api/src/routes/moderasyon.ts:172"
     ]
   },
   "t5e499c35": {
@@ -15677,7 +15929,7 @@
     "tr": "Mesaj gönderilemez.",
     "en": "Message cannot be sent.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:662"
+      "apps/api/src/routes/ittifak.ts:670"
     ]
   },
   "te3021106": {
@@ -15782,7 +16034,7 @@
     "tr": "Ortak hedef kaldırıldı.",
     "en": "Common target removed.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:727"
+      "apps/api/src/routes/ittifak.ts:735"
     ]
   },
   "tc9991460": {
@@ -15790,7 +16042,7 @@
     "tr": "Ortak hedef: {0}.",
     "en": "Common target: {0}.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:754"
+      "apps/api/src/routes/ittifak.ts:762"
     ]
   },
   "t1265fa4b": {
@@ -15996,7 +16248,7 @@
     "tr": "Susturman kaldırıldı. İttifak sohbetine yeniden yazabilirsin.",
     "en": "Your mute has been lifted. You can write in the alliance chat again.",
     "nerede": [
-      "apps/api/src/routes/moderasyon.ts:388"
+      "apps/api/src/routes/moderasyon.ts:434"
     ]
   },
   "t9bc99ae9": {
@@ -16004,7 +16256,7 @@
     "tr": "Şikâyet",
     "en": "Report",
     "nerede": [
-      "apps/api/src/routes/moderasyon.ts:288"
+      "apps/api/src/routes/moderasyon.ts:334"
     ]
   },
   "tc9f20736": {
@@ -16076,7 +16328,7 @@
     "tr": "Teklifin zaten gönderildi.",
     "en": "Your offer is already sent.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1512"
+      "apps/api/src/routes/ittifak.ts:1520"
     ]
   },
   "tb739c118": {
@@ -16172,7 +16424,7 @@
     "tr": "Yürürlükte olmayan pakt feshedilemez.",
     "en": "A pact not in effect cannot be dissolved.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1618"
+      "apps/api/src/routes/ittifak.ts:1626"
     ]
   },
   "t4403a7f4": {

@@ -618,8 +618,16 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
     if (!lord.allianceId) throw new GameError('Bir ittifakta değilsin.', 400, 'ITTIFAK_YOK');
 
     const k = B.ittifak.sohbet;
+    // Engellediği lordların mesajları bu oyuncuya HİÇ gelmiyor — metni
+    // gönderip arayüzde gizlemek, gizlemek olmazdı (moderasyon.ts → engel).
+    const engelliler = (
+      await prisma.lordEngel.findMany({ where: { lordId }, select: { engellenenId: true } })
+    ).map((e) => e.engellenenId);
     const satirlar = await prisma.allianceMessage.findMany({
-      where: { allianceId: lord.allianceId },
+      where: {
+        allianceId: lord.allianceId,
+        ...(engelliler.length ? { lordId: { notIn: engelliler } } : {}),
+      },
       orderBy: { createdAt: 'desc' },
       take: k.gosterilen_mesaj,
       include: { lord: { select: { id: true, name: true } } },

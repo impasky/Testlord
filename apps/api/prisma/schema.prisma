@@ -373,6 +373,8 @@ model Lord {
   moderasyonKayitlari ModerasyonKaydi[]
   esyaIlanlari        EsyaIlani[]
   onSiparisler        OnSiparis[]
+  engelledikleri      LordEngel[]       @relation("Engelleyen")
+  engelleyenler       LordEngel[]       @relation("Engellenen")
 
   @@unique([userId, worldId])
   /// Her kayıtta nüfus sayımı bu sütundan geçiyor (`medeniyetAta`).
@@ -830,6 +832,29 @@ model Shipment {
 
 /// İttifak sohbeti mesajı.
 ///
+/// Engel: bir lordun başka bir lordun mesajlarını artık GÖRMEMEYİ seçmesi.
+///
+/// Kullanıcı içeriği olan uygulamada mağazaların istediği üç şeyin
+/// üçüncüsü (App Store 1.2, Google Play UGC politikası): süzgeç
+/// (mesajDenetimi), şikâyet (Moderasyon) ve KÖTÜYE KULLANANI ENGELLEME.
+/// Şikâyet bir yöneticinin kararını bekliyor; engel oyuncunun kendi
+/// elinde ve anında.
+///
+/// Tek yönlü ve sessiz: engellenen haberdar olmuyor, yalnız engelleyen
+/// onun sohbet mesajlarını görmüyor. İki taraftan biri silinince engel de
+/// gidiyor.
+model LordEngel {
+  id           String   @id @default(cuid())
+  lordId       String
+  engellenenId String
+  createdAt    DateTime @default(now())
+
+  lord       Lord @relation("Engelleyen", fields: [lordId], references: [id], onDelete: Cascade)
+  engellenen Lord @relation("Engellenen", fields: [engellenenId], references: [id], onDelete: Cascade)
+
+  @@unique([lordId, engellenenId])
+}
+
 /// İttifak silinince mesajlar da gidiyor: sohbet ittifakın kendisi kadar
 /// yaşıyor, dağılmış bir topluluğun konuşmalarını saklamanın karşılığı yok.
 model AllianceMessage {

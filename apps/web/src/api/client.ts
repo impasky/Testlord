@@ -1192,6 +1192,8 @@ export const api = {
     post<{ token: string }>('/auth/register', { email, password, lordName, worldId }),
   /** Kayıt ekranı için; jeton istemiyor. */
   diyarlar: () => request<DiyarSecimiDto>('/diyarlar'),
+  /** Destek adresi (Kullanım Koşulları, Aydınlatma Metni); jeton istemiyor. */
+  destek: () => request<{ eposta: string | null }>('/destek'),
   login: (email: string, password: string) =>
     post<{ token: string }>('/auth/login', { email, password }),
   /**
@@ -1552,6 +1554,11 @@ export const api = {
   rankings: (board: string, page = 0) => request<RankingDto>(`/rankings/${board}?page=${page}`),
   raporEt: (lordId: string, sebep: string, aciklama: string) =>
     post<{ alindi: boolean }>(`/rapor/${lordId}`, { sebep, aciklama }),
+  /** Engellenen lordlar: sohbette mesajları bu oyuncuya hiç gelmiyor. */
+  engeller: () => request<{ engelliler: { lordId: string; ad: string; an: string }[] }>('/engel'),
+  engelle: (lordId: string) => post<{ engellendi: boolean; ad: string }>(`/engel/${lordId}`),
+  engelKaldir: (lordId: string) =>
+    request<{ kaldirildi: boolean }>(`/engel/${lordId}`, { method: 'DELETE' }),
   mesajRaporEt: (mesajId: string, sebep: string, aciklama: string) =>
     post<{ alindi: boolean; gizlendi: boolean }>(`/rapor/mesaj/${mesajId}`, { sebep, aciklama }),
   sikayetSebepleri: () =>

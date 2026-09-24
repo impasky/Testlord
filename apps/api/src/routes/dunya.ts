@@ -13,6 +13,7 @@ import { B, WORLD_MAP, liderAviGecerliMi, liderAviYagmaBonusu } from '@lordlar/s
 import type { FastifyInstance } from 'fastify';
 import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
+import { env } from '../env.js';
 import { findLordByUser } from '../services/lord.js';
 import { AKTIF_GUN, acikDiyarlar } from '../services/world.js';
 import { kartopuDurumu, medeniyetBilgileri } from '../services/medeniyet.js';
@@ -30,6 +31,15 @@ export async function dunyaRoutes(app: FastifyInstance): Promise<void> {
    * ekranında zaten gösterilecek olan bilgi. Hız sınırı IP'ye düşüyor
    * (bkz. index.ts: token yoksa anahtar `ip:`).
    */
+  /**
+   * Destek adresi — herkese açık, giriş istemiyor.
+   *
+   * Kullanım Koşulları ve Aydınlatma Metni giriş ekranından da açılıyor;
+   * oradaki oyuncunun jetonu yok. Adres ortam değişkeninden
+   * (`DESTEK_EPOSTA`) geliyor, koda gömülü değil.
+   */
+  app.get('/destek', async () => ({ eposta: env.DESTEK_EPOSTA ?? null }));
+
   app.get('/diyarlar', async () => {
     const diyarlar = await acikDiyarlar();
     return {

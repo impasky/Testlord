@@ -140,7 +140,17 @@ function KaynakSayaci({
   renk: string;
   ad: string;
 }) {
-  const [, tik] = useState(0);
+  /*
+   * Saat STATE'te, render'da okunmuyor.
+   *
+   * Önce `canli` her render'da `Date.now()` ile hesaplanıyordu: her render
+   * yeni bir değer, `useSayan`'ın efekti yeni değeri state'e yazıyor, o da
+   * yeni bir render — render bir milisaniyeden uzun sürdükçe (yavaş
+   * telefon, görselli Akın ekranı) döngü dönüp duruyordu. Tüm düğmeleri
+   * deneyen bot "Maximum update depth exceeded" olarak yakaladı. Artık
+   * değer yalnız saniyelik tıkta ya da sunucu değeri gelince değişiyor.
+   */
+  const [simdi, setSimdi] = useState(() => Date.now());
   /*
    * Canlı sayacın TABANI: sunucu değerinin ve ALINDIĞI anın ikilisi.
    *
@@ -155,11 +165,13 @@ function KaynakSayaci({
   const [taban, setTaban] = useState(() => ({ deger, zaman: Date.now() }));
   if (taban.deger !== deger) setTaban({ deger, zaman: Date.now() });
   useEffect(() => {
-    const id = setInterval(() => tik((t) => t + 1), 1000);
+    const id = setInterval(() => setSimdi(Date.now()), 1000);
     return () => clearInterval(id);
   }, []);
 
-  const gecen = (Date.now() - taban.zaman) / 3_600_000;
+  // Taban tıktan SONRA kurulmuş olabilir (sunucu değeri yeni geldi): o
+  // zaman geçen süre sıfır, eksi değil.
+  const gecen = Math.max(0, simdi - taban.zaman) / 3_600_000;
   const canli = Math.min(tavan, Math.max(0, deger + saatlik * gecen));
   // Sıçramalar (ödül, harcama, ganimet) sayılarak gösteriliyor; saniyelik
   // akış olduğu gibi. Eşik: bir dakikalık gelirden büyük değişim.

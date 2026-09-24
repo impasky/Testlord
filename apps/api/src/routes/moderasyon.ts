@@ -40,6 +40,52 @@ import { findLordByUser, pushEvent } from '../services/lord.js';
 import { kararKaydet, requireYonetici } from '../services/moderasyon.js';
 
 export async function moderasyonRoutes(app: FastifyInstance): Promise<void> {
+  /*
+   * ENGEL — kötüye kullanan oyuncuyu kendi ekranından silmek.
+   *
+   * Mağazaların kullanıcı içeriği için istediği üç şeyin üçüncüsü (App
+   * Store 1.2, Google Play UGC): süzgeç ve şikâyet vardı, engel yoktu.
+   * Şikâyet bir yöneticinin kararını bekliyor; engel oyuncunun elinde ve
+   * anında. Tek yönlü ve sessiz: engellenen haberdar olmuyor.
+   */
+  app.get('/engel', { preHandler: requireAuth }, async (req) => {
+    const lordId = await findLordByUser(req.user.userId);
+    const satirlar = await prisma.lordEngel.findMany({
+      where: { lordId },
+      orderBy: { createdAt: 'desc' },
+      include: { engellenen: { select: { id: true, name: true } } },
+    });
+    return {
+      engelliler: satirlar.map((e) => ({
+        lordId: e.engellenen.id,
+        ad: e.engellenen.name,
+        an: e.createdAt,
+      })),
+    };
+  });
+
+  app.post('/engel/:lordId', { preHandler: requireAuth }, async (req) => {
+    const { lordId: hedefId } = z.object({ lordId: z.string().min(1) }).parse(req.params);
+    const lordId = await findLordByUser(req.user.userId);
+    if (hedefId === lordId) throw new GameError('Kendini engelleyemezsin.', 400, 'KENDINI_ENGEL');
+    const hedef = await prisma.lord.findUnique({ where: { id: hedefId }, select: { name: true } });
+    if (!hedef) throw hata.bulunamadi('Lord');
+    // Aynı lordu iki kez engellemek hata değil: düğmeye iki kez basılabilir.
+    await prisma.lordEngel.upsert({
+      where: { lordId_engellenenId: { lordId, engellenenId: hedefId } },
+      create: { lordId, engellenenId: hedefId },
+      update: {},
+    });
+    return { engellendi: true, ad: hedef.name };
+  });
+
+  app.delete('/engel/:lordId', { preHandler: requireAuth }, async (req) => {
+    const { lordId: hedefId } = z.object({ lordId: z.string().min(1) }).parse(req.params);
+    const lordId = await findLordByUser(req.user.userId);
+    await prisma.lordEngel.deleteMany({ where: { lordId, engellenenId: hedefId } });
+    return { kaldirildi: true };
+  });
+
   /**
    * Şikâyet formunun içeriği. Sebepleri arayüze gömmek yerine buradan
    * vermek, listeyi tek yerde tutuyor.

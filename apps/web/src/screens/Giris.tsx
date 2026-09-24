@@ -272,12 +272,26 @@ export function Giris({ onGiris }: { onGiris: () => void }) {
             {/* Aydınlatma metni KAYIT kipinde, düğmenin hemen altında:
                 okunacağı an, e-posta ve parolanın verileceği an. */}
             {mod === 'kayit' && (
-              <a
-                href="#/gizlilik"
-                className="bas block w-full py-2 text-center text-[12px] text-sonuk underline decoration-dotted underline-offset-2"
-              >
-                Hangi veriyi tutuyoruz
-              </a>
+              <div className="text-center text-[12px] text-sonuk">
+                {/* Kullanım Koşulları da burada: kullanıcı içeriği olan bir
+                    oyunda mağazalar koşulların KAYITTA kabul edilmesini
+                    istiyor (App Store 1.2). */}
+                <p>{"Diyara girerek Kullanım Koşulları'nı kabul etmiş olursun."}</p>
+                <div className="flex justify-center gap-4">
+                  <a
+                    href="#/kosullar"
+                    className="bas block py-2 underline decoration-dotted underline-offset-2"
+                  >
+                    Kullanım koşulları
+                  </a>
+                  <a
+                    href="#/gizlilik"
+                    className="bas block py-2 underline decoration-dotted underline-offset-2"
+                  >
+                    Hangi veriyi tutuyoruz
+                  </a>
+                </div>
+              </div>
             )}
 
             {mod === 'giris' && !sifirlamaAcik && (

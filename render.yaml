@@ -56,6 +56,12 @@ services:
 
       # İlk açılışta 6 rakip lord ekle. Tek başına boş bir dünyada sıralama,
       # PvP ve düşman garnizonu denenemez. Kendi dünyanı kurduğunda "false" yap.
+      # Oyuncuların ulaşacağı destek adresi (Kullanım Koşulları ve
+      # Aydınlatma Metni'nde yayınlanır). Mağazalar herkese açık bir
+      # iletişim yolu istiyor. Render panelinden elle gir.
+      - key: DESTEK_EPOSTA
+        sync: false
+
       - key: SEED_DEMO_LORDS
         value: 'true'
 

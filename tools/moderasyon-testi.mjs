@@ -41,7 +41,7 @@ async function lordKur(etiket) {
     const c = await fetch(`${API}/api${yol}`, {
       method: yontem,
       headers: h,
-      ...(yontem === 'POST' ? { body: JSON.stringify(govde ?? {}) } : {}),
+      ...(yontem !== 'GET' ? { body: JSON.stringify(govde ?? {}) } : {}),
     });
     return { kod: c.status, govde: await c.json().catch(() => null) };
   };
@@ -54,6 +54,7 @@ async function lordKur(etiket) {
     postHam: (yol, govde) => cagir(yol, 'POST', govde),
     get: (yol) => cagir(yol, 'GET').then((r) => r.govde),
     getHam: (yol) => cagir(yol, 'GET'),
+    sil: (yol) => cagir(yol, 'DELETE').then((r) => r.govde),
   };
 }
 
@@ -126,6 +127,27 @@ kontrol('"Diğer" açıklamasız reddediliyor', bosDiger.kod === 400, `HTTP ${bo
 const ilk = await lider.post(`/rapor/mesaj/${mesaj.id}`, { sebep: 'hakaret', aciklama: '' });
 kontrol('Şikâyet alındı', ilk?.alindi === true, JSON.stringify(ilk));
 kontrol('Tek şikâyet mesajı gizlemiyor', ilk?.gizlendi === false, JSON.stringify(ilk));
+
+// --- ENGEL: kötüye kullananı kendi ekranından silmek (App Store 1.2) ---
+// Tek yönlü ve sessiz: engelleyen görmüyor, öteki herkes görüyor.
+const uyeId = (await uye.get('/me')).lord.id;
+const gorunuyorMu = async (u) =>
+  ((await u.get('/ittifak/sohbet'))?.mesajlar ?? []).some((m) => m.id === mesaj.id);
+kontrol('Engelden önce mesaj görünüyor', await gorunuyorMu(uye2));
+const engel = await uye2.post(`/engel/${uyeId}`);
+kontrol('Engellendi', engel?.engellendi === true, JSON.stringify(engel));
+kontrol('Engelleyen o lordun mesajını artık GÖRMÜYOR', !(await gorunuyorMu(uye2)));
+kontrol('Başkaları görmeye devam ediyor (engel tek yönlü)', await gorunuyorMu(lider));
+const liste = await uye2.get('/engel');
+kontrol(
+  'Engel listesinde görünüyor',
+  (liste?.engelliler ?? []).some((e) => e.lordId === uyeId),
+  JSON.stringify(liste).slice(0, 80),
+);
+const kendini = await uye2.postHam(`/engel/${(await uye2.get('/me')).lord.id}`);
+kontrol('Kendini engelleyemiyor', kendini.kod === 400, `HTTP ${kendini.kod}`);
+await uye2.sil(`/engel/${uyeId}`);
+kontrol('Engel kaldırılınca mesaj yeniden görünüyor', await gorunuyorMu(uye2));
 
 // --- Yetki sınırı: yönetici olmayan kuyruğu göremiyor
 const yetkisiz = await lider.getHam('/moderasyon/kuyruk');
