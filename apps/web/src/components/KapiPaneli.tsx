@@ -87,6 +87,9 @@ export function KapiPaneli({
             type="button"
             onClick={onKapat}
             aria-label="Kapat"
+            // Rehber ışığının son çaresi: panelde yapılacak iş kalmadıysa
+            // oyuncuyu buradan çıkarır (`packages/shared/src/rehber.ts`).
+            data-rehber="kapi-kapat"
             className="bas -mr-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-solgun"
           >
             <IkonKapali boyut={20} />

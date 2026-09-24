@@ -1106,6 +1106,7 @@ export function Harita({
                 onClick={kapat}
                 className="bas -my-2 -mr-2 flex h-11 w-11 shrink-0 items-center justify-center text-solgun"
                 aria-label="Kapat"
+                data-rehber="kapi-kapat"
               >
                 <IkonKapali boyut={20} />
               </button>

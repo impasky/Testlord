@@ -46,6 +46,10 @@ function lord(ek: Record<string, unknown> = {}) {
     // birinde ayrıca yazmak gürültü olurdu.
     akinYapti: true,
     usedSlots: 20,
+    // Varsayılan: zorunlu turu bitirmiş lord. Tur sürerken omurganın
+    // sırası değişiyor (aşağıda "tur sürerken"); öteki senaryolar
+    // yerleşmiş oyuncunun sırasını ölçüyor.
+    rehberGorundu: true,
     ...ek,
   } as never;
 }
@@ -179,4 +183,82 @@ describe('omurga — zorunlu turun her aşamasına uğruyor', () => {
       expect(siradakiAdim(girdi(ek))?.anahtar).toBe(asama.adim);
     });
   }
+});
+
+/*
+ * Zorunlu tur sürerken sıra: oyuncunun bildirdiği "zorunlu eğitimde
+ * takılıp kalıyoruz" hatasının üç kökü (tools/rehber-tur-testi.mjs ile
+ * tarayıcıda da ölçülüyor).
+ */
+describe('omurga — tur sürerken', () => {
+  const hedef = {
+    regionId: 1,
+    name: 'Demirkapı',
+    kazanir: true,
+    eleGecirir: true,
+    orduVar: true,
+    saatlikGelir: { altin: 10, demir: 5, erzak: 5 },
+    sohretFarki: 3,
+    marchSec: 600,
+  };
+  const yetmeyen = {
+    ...hedef,
+    kazanir: false,
+    eksik: {
+      birim: 'milis',
+      adet: 4,
+      maliyet: { altin: 100, demir: 0, erzak: 50 },
+      karsilanabilir: true,
+    },
+  };
+  const turda = (ek: Record<string, unknown> = {}) =>
+    lord({ rehberGorundu: false, equippedItems: [], ...ek });
+
+  it('ilk bölgeden sonra turun aşamaları saldırıdan ÖNCE geliyor', () => {
+    // Önce: hedef hep bir sonrakiydi, ekipman adımı hiç gelmiyordu.
+    expect(siradakiAdim(girdi({ lord: turda(), oneri: hedef, generalVar: false }))?.anahtar).toBe(
+      'ekipman',
+    );
+    expect(
+      siradakiAdim(
+        girdi({
+          lord: turda({ equippedItems: [{ slot: 'silah' }] }),
+          oneri: yetmeyen,
+          generalVar: false,
+        }),
+      )?.anahtar,
+    ).toBe('general');
+  });
+
+  it('tur bitince sıra eskisine dönüyor: hedef varken saldır', () => {
+    expect(siradakiAdim(girdi({ lord: lord({ equippedItems: [] }), oneri: hedef }))?.anahtar).toBe(
+      'saldir',
+    );
+  });
+
+  it('ilk bölgeden ÖNCE tur sırası devreye girmiyor', () => {
+    expect(siradakiAdim(girdi({ lord: turda({ regionCount: 0 }), oneri: hedef }))?.anahtar).toBe(
+      'saldir',
+    );
+  });
+
+  it('eğitim sürerken ordusu yetmeyen BEKLİYOR — "eğit"e ikinci kez bastırılmıyor', () => {
+    const egitim = [
+      { id: 'q', kind: 'train', finishAt: new Date(Date.now() + 60_000).toISOString() },
+    ];
+    expect(siradakiAdim(girdi({ lord: lord(), oneri: yetmeyen, egitimde: egitim }))?.anahtar).toBe(
+      'egitim-bekle',
+    );
+  });
+
+  it('geliştirme sürerken geliştirme adımı tekrar gelmiyor', () => {
+    const ortak = {
+      lord: turda({ equippedItems: [{ slot: 'silah' }] }),
+      gelistirilebilirBolge: 7,
+      gelismisBolgeVar: false,
+      arastirmaBasladi: false,
+    };
+    expect(siradakiAdim(girdi(ortak))?.anahtar).toBe('bolge-gelistir');
+    expect(siradakiAdim(girdi({ ...ortak, gelistirmeSuruyor: true }))?.anahtar).toBe('arastirma');
+  });
 });

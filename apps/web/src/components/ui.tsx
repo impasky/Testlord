@@ -482,7 +482,12 @@ export function AltSekmeler<T extends string>({
   etkin,
   onSec,
 }: {
-  sekmeler: { key: T; ad: string; sayi?: number }[];
+  /**
+   * `isaret`: rehber ışığının imzası (`data-rehber`). Işık bazen oyuncuyu
+   * bir SEKMEYE götürmek zorunda — ör. kuşanılacak eşya Envanter'de ama
+   * Demirhane Üretim'le açılıyor.
+   */
+  sekmeler: { key: T; ad: string; sayi?: number; isaret?: string }[];
   etkin: T;
   onSec: (k: T) => void;
 }) {
@@ -491,6 +496,7 @@ export function AltSekmeler<T extends string>({
       {sekmeler.map((s) => (
         <button
           key={s.key}
+          data-rehber={s.isaret}
           onClick={() => onSec(s.key)}
           aria-current={etkin === s.key ? 'page' : undefined}
           className={`bas baslik flex-1 rounded-lg py-2.5 text-[12px] ${

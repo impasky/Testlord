@@ -140,7 +140,21 @@ interface Kutu {
  */
 function sabitKatmandaMi(e: HTMLElement): boolean {
   for (let n: HTMLElement | null = e; n && n !== document.body; n = n.parentElement) {
-    if (getComputedStyle(n).position === 'fixed') return true;
+    const st = getComputedStyle(n);
+    /*
+     * Sabit bir PANELİN İÇİNDE kayan içerik sabit değil.
+     *
+     * Kapılar ve bölge paneli `position: fixed` kutular, içleri ise
+     * kaydırılıyor. Önce yalnız sabit ata aranıyordu: paneldeki her düğme
+     * "alt çubuk gibi" sayılıyor, ekranın alt kenarında yarısı görünen
+     * "Kirala" güvenli sayılıp hiç kaydırılmıyordu — ışık oyuncuya
+     * görünmeyen bir düğmeyi gösteriyordu. Kaydırılabilen bir kap
+     * sabit atadan ÖNCE geliyorsa öğe kaydırılan içeriktir.
+     */
+    if (n !== e && /(auto|scroll)/.test(st.overflowY) && n.scrollHeight > n.clientHeight) {
+      return false;
+    }
+    if (st.position === 'fixed') return true;
   }
   return false;
 }
@@ -149,6 +163,49 @@ function basilabilirMi(e: HTMLElement): boolean {
   if (e.hasAttribute('disabled') || e.getAttribute('aria-disabled') === 'true') return false;
   const r = e.getBoundingClientRect();
   return r.width >= 4 && r.height >= 4;
+}
+
+/**
+ * Hedef ÖNDE mi, yoksa üstünü başka bir katman mı örtüyor?
+ *
+ * Bildirilen kilit buydu: "öğretici olmayan düğmelere tıklamamızı
+ * istiyor, zorunlu eğitimde takılıp kalıyoruz." Akından dönen ordu
+ * küçülünce adım "saldır"dan "ordunu kur"a dönüyor ve ışık omurga
+ * düğmesini arıyordu. Düğme DOM'daydı, kapalı değildi — ama haritada
+ * açık duran bölge panelinin (z-50) ALTINDA kalıyordu (şerit z-30).
+ * Delik panelin üstüne açılıyor, parmak paneldeki başka bir düğmeye
+ * basıyor; perde de paneli kapatmayı engellediği için oyuncu sonsuza
+ * kadar kilitli kalıyordu.
+ *
+ * Artık örtülü düğme BULUNMAMIŞ sayılıyor: ışık zincirde bir sonrakine
+ * (alt çubuktaki ana sayfa sekmesi) geçiyor, o da yoksa birkaç yoklama
+ * sonra perde kalkıyor.
+ *
+ * Ölçü tarayıcının kendi cevabı: merkez noktada, perdenin kendi
+ * parçaları atlanınca en üstteki öge hedefin kendisi ya da içindeki bir
+ * öge mi? Ekranın dışındaki hedef için karar verilmiyor — onu zaten
+ * kaydırma getiriyor ve kaydırmadan önce "örtülü" demek zinciri erken
+ * kırardı.
+ */
+function ondeMi(e: HTMLElement): boolean {
+  const r = e.getBoundingClientRect();
+  const x = r.left + r.width / 2;
+  const y = r.top + r.height / 2;
+  if (x < 0 || y < 0 || x >= window.innerWidth || y >= window.innerHeight) return true;
+  /*
+   * KAYDIRILAN içerikte ekranın kenarındaki düğme örtülü değil, henüz
+   * getirilmemiş: bölge panelinde "Büyük Köy yap" alt çubuğun arkasında
+   * başlıyor ve kaydırma onu ortaya çıkarıyor. Bunu da örtülü saymak
+   * geliştirme adımını ışıksız bırakıyordu. Yalnız SABİT katmandaki
+   * düğme (omurga şeridi, alt çubuk) kaydırmayla kurtulamaz; asıl ölçü
+   * onlar için.
+   */
+  if (!sabitKatmandaMi(e) && (y < UST_PAY || y > window.innerHeight - altPay())) return true;
+  for (const ust of document.elementsFromPoint(x, y)) {
+    if (ust instanceof HTMLElement && ust.closest('[data-rehber-perde]')) continue;
+    return ust === e || e.contains(ust);
+  }
+  return true;
 }
 
 /**
@@ -178,8 +235,17 @@ function hedefBul(
     // Oyuncu zaten doğru ekrandaysa yol düğmesi aranmaz: "Malikâne'ye dön"
     // demek ona geldiği yönü göstermek olurdu.
     if (yol && yolYasak) continue;
-    const e = document.querySelector<HTMLElement>(`[data-rehber="${isaret}"]`);
-    if (!e) continue;
+    // Aynı imza birden çok öğede olabilir (her kuşanılmamış parçanın
+    // "kuşan"ı): önde duranların ilk BASILABİLİR olanı seçiliyor. Yalnız
+    // ilkine bakmak, ilki kapalıyken açık bir ikinciyi görmemekti.
+    // Örtülü öğe yok sayılıyor — ne aday ne "kapalı iş düğmesi"
+    // (`ondeMi`): kapalı sayılsaydı perde üç saniye sonra kalkardı; yok
+    // sayılınca ışık doğrudan zincirin sonraki halkasına geçiyor.
+    const adaylar = [...document.querySelectorAll<HTMLElement>(`[data-rehber="${isaret}"]`)].filter(
+      ondeMi,
+    );
+    if (adaylar.length === 0) continue;
+    const e = adaylar.find(basilabilirMi) ?? adaylar[0]!;
     const acik = basilabilirMi(e);
     if (!yol) {
       isVar = true;
@@ -502,7 +568,13 @@ export function RehberIsigi({
   if (tutuluyor && bekleyis && bekleyisBitis) {
     return (
       <>
-        <div key="perde-tam" className={perdeTam} style={{ inset: 0 }} onClick={dokun} />
+        <div
+          key="perde-tam"
+          data-rehber-perde=""
+          className={perdeTam}
+          style={{ inset: 0 }}
+          onClick={dokun}
+        />
         <div
           role="status"
           className="pointer-events-none fixed inset-x-0 top-1/2 z-[56] flex -translate-y-1/2 justify-center px-3"
@@ -553,7 +625,13 @@ export function RehberIsigi({
     if (!bekleme) return null;
     return (
       <>
-        <div key="perde-tam" className={perdeTam} style={{ inset: 0 }} onClick={dokun} />
+        <div
+          key="perde-tam"
+          data-rehber-perde=""
+          className={perdeTam}
+          style={{ inset: 0 }}
+          onClick={dokun}
+        />
         <div
           role="status"
           className="pointer-events-none fixed inset-x-0 top-1/2 z-[56] flex -translate-y-1/2 justify-center px-3"
@@ -606,24 +684,28 @@ export function RehberIsigi({
     <>
       <div
         key="perde-ust"
+        data-rehber-perde=""
         className={perde}
         style={{ top: 0, left: 0, right: 0, height: u }}
         onClick={dokun}
       />
       <div
         key="perde-alt"
+        data-rehber-perde=""
         className={perde}
         style={{ top: a, left: 0, right: 0, bottom: 0 }}
         onClick={dokun}
       />
       <div
         key="perde-sol"
+        data-rehber-perde=""
         className={perde}
         style={{ top: u, left: 0, width: s, height: a - u }}
         onClick={dokun}
       />
       <div
         key="perde-sag"
+        data-rehber-perde=""
         className={perde}
         style={{ top: u, left: g, right: 0, height: a - u }}
         onClick={dokun}

@@ -132,7 +132,17 @@ function GeneralKarti({
         </div>
       ) : (
         <div className="mt-2.5 border-t border-kenar/70 pt-2.5">
-          <Buton onClick={onKirala} disabled={bekliyor || !yeterli} tam isaret="general-kirala">
+          {/* Işık yalnız PARASI YETEN generali gösterir. Her kartta aynı
+              imza vardı ve ışık ilkini, yani yeni oyuncunun alamayacağı
+              100.000 altınlık generali seçiyordu: düğme kapalı, perde üç
+              saniye sonra hiçbir şey göstermeden kalkıyor, tur o aşamada
+              kalıyordu. */}
+          <Buton
+            onClick={onKirala}
+            disabled={bekliyor || !yeterli}
+            tam
+            isaret={yeterli ? 'general-kirala' : undefined}
+          >
             <span className="mr-1.5 inline-block align-[-2px]">
               <IkonAltin boyut={14} />
             </span>
@@ -175,6 +185,9 @@ export function Generaller({ onGuncelle }: { onGuncelle: () => void }) {
     return <p className="pt-6 text-center text-solgun">Kadro çağrılıyor...</p>;
   }
   const sahada = q.data.kadro.filter((g) => g.slotIndex !== null);
+  const alinabilir = (nad: Nadirlik) =>
+    q.data.kadro.some((g) => g.nadirlik === nad && !g.sahipMi && q.data.altin >= g.maliyet_altin);
+  const alinabilirRaf = (['altin', 'gumus', 'bronz'] as const).find(alinabilir) ?? null;
 
   return (
     <div className="space-y-4">
@@ -219,6 +232,10 @@ export function Generaller({ onGuncelle }: { onGuncelle: () => void }) {
           key: nad,
           ad: NADIRLIK_ADI[nad],
           sayi: q.data.kadro.filter((g) => g.nadirlik === nad && g.sahipMi).length,
+          // Açık raf alınabilecek bir general taşımıyorsa ışık, parası
+          // yeten ilk rafın sekmesini gösterir (raf varsayılanı Altın ve
+          // yeni oyuncunun altını oraya yetmiyor).
+          isaret: nad === alinabilirRaf && raf !== alinabilirRaf ? 'general-raf' : undefined,
         }))}
         etkin={raf}
         onSec={setRaf}

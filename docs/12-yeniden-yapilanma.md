@@ -649,6 +649,53 @@ bitirmeyi denedim; eğitim bittikten sonra ışık omurgaya geri dönemedi,
 çünkü omurga düğmesi yalnız ana sayfada duruyor. Zincir şöyle:
 `akina-cik` → `akin-grup` → `akin-harita` → `omurga-dugme` → `nav-ana`.
 
+### 8.2b Turu baştan sona ışığa basarak oynamak: altı kilit
+
+Oyuncu bildirdi: "öğretici olmayan düğmelere tıklamamızı istiyor ve
+zorunlu eğiticide takılıp kalıyoruz." `rehber-isigi-testi` ışığın dilini
+ölçüyor ama turu ilk akından sonra API ile ilerletiyordu; kilitlerin
+hepsi o atlanan kısımdaydı. Artık `tools/rehber-tur-testi.mjs` turu
+gerçek oyuncu gibi oynuyor — yalnız deliğe basıyor, sunucudan yalnız
+ZAMANI istiyor — ve `pnpm e2e` içinde. Bulunanlar:
+
+1. **Işık örtülü düğmeyi gösteriyordu.** Akından dönen ordu küçülünce
+   adım "saldır"dan "ordunu kur"a dönüyor, ışık omurga düğmesini
+   arıyordu. Düğme DOM'daydı ama açık bölge panelinin (z-50) arkasında
+   (şerit z-30). Delik panelin üstüne açılıyor, perde paneli kapatmayı da
+   engellediği için oyuncu sonsuza kadar kilitli kalıyordu. Hedef artık
+   tarayıcının kendi cevabıyla seçiliyor (`elementsFromPoint`, perde
+   parçaları hariç): örtülü düğme bulunmamış sayılıyor. Sabit katmanda
+   olmayan, yalnız ekranın kenarına kaymış düğme ise örtülü değil —
+   kaydırılıyor.
+2. **Tur saldırı döngüsüne kilitleniyordu.** Omurga ekipman, general,
+   geliştirme ve araştırmayı ancak alınacak hedef kalmayınca gösteriyordu;
+   hedefin hep bir sonrakisi vardı. Tur sürerken (`rehberGorundu` yok)
+   ilk bölgeden sonra bu dört aşama saldırıdan ÖNCE geliyor; tur bitince
+   sıra eskisine dönüyor.
+3. **Eğitim kuyruktayken ışık aynı "eğit"i gösteriyordu.** Ordusu olan
+   ama hedefe yetmeyen oyuncu "Ordunu büyüt" adımında kalıyordu; her
+   basış bir parti daha yazdırdı (ölçüm: dört). Eğitim sürerken bu oyuncu
+   da bekliyor. Bölge geliştirmede aynısı vardı (ikinci geliştirme
+   başlatılıyordu); geliştirme sürerken adım bir sonrakine geçiyor.
+4. **Panelde iş bitince oyuncu içeride kalıyordu.** Demirhane'de kuşanınca
+   sıra generale geçiyor, yeni zincirin düğmeleri panelin arkasında.
+   Her zincirin son halkası artık paneli kapatmak (`kapi-kapat`).
+5. **Generaller'de alınamayan general gösteriliyordu.** Her kartta aynı
+   imza vardı, ışık ilkini — 100.000 altınlık Altın rafını — seçiyordu.
+   İmza yalnız parası yeten kartta; açık rafta yoksa ışık parası yeten
+   rafın sekmesini gösteriyor. Aynı imza birden çok öğedeyse önde duran
+   ilk basılabilir olanı seçiliyor.
+6. **Ekipman zinciri yalnız "kuşan"ı arıyordu.** Parçası olmayan oyuncu
+   Demirhane'de ışıksız kalıyordu. Zincir: kuşan → Envanter sekmesi (yalnız
+   kuşanılmamış parça varken) → üret.
+
+Ayrıca: haritanın önerisi eski orduyla hesaplanmış kalıyordu (akın dönüşü
+bir kuyruk değil). Ordunun sayısı, yeri ya da bölge sayısı değişince öneri
+yeniden soruluyor.
+
+Ölçüm: tur 27 dokunuşta bitiyor; hiçbir düğme arka arkaya iki kez
+gösterilmiyor; yedi aşamanın her birinde ışık asıl iş düğmesine götürüyor.
+
 ### 8.3 Başkent düşerse (§2.3'ün uygulanması)
 
 `transferRegion` tek geçit: bölge el değiştirdiğinde kaybedenin başkenti

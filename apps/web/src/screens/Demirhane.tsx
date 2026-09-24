@@ -411,7 +411,17 @@ export function Demirhane({
       <AltSekmeler
         sekmeler={[
           { key: 'uretim', ad: 'Üretim' },
-          { key: 'envanter', ad: 'Envanter', sayi: items.data?.items.length ?? 0 },
+          {
+            key: 'envanter',
+            ad: 'Envanter',
+            sayi: items.data?.items.length ?? 0,
+            // Kuşanılmamış bir parça varken ışık oyuncuyu buraya getirir;
+            // yokken bu sekme bir çıkmaz olurdu (boş raf, kuşan düğmesi yok).
+            isaret:
+              sekme !== 'envanter' && (items.data?.items ?? []).some((i) => !i.equipped)
+                ? 'demirhane-envanter'
+                : undefined,
+          },
           { key: 'donanim', ad: 'Donanım' },
         ]}
         etkin={sekme}
@@ -551,6 +561,7 @@ export function Demirhane({
                   disabled={gonderilen === 'craft' || uretimEngeli !== null}
                   tam
                   boy="buyuk"
+                  isaret="demirhane-uret"
                 >
                   {gonderilen === 'craft' ? 'Gönderiliyor…' : `T${tier} ${SLOT_ADI[slot]} üret`}
                 </Buton>

@@ -345,11 +345,27 @@ export const REHBER_ISIKLARI: Record<string, RehberIsaret[]> = {
       yol: true,
     },
   ],
+  /*
+   * Ekipman zinciri önce yalnız "kuşan"ı arıyordu. Kuşanılacak parçası
+   * olmayan oyuncu (akından ganimet düşmediyse) Demirhane'ye geliyor,
+   * ışık hiçbir şey bulamıyor ve perde kalkıyordu; parça Envanter
+   * sekmesindeyse de Üretim sekmesinde açılan ekranda "kuşan" yoktu.
+   * Sıra: parça varsa kuşan → Envanter sekmesi → yoksa üret.
+   */
   ekipman: [
     {
       isaret: 'demirhane-kusan',
       sebep:
         'Bu parçayı kuşan. Ekipman ordunun sayısını değil, senin savaşa kattığın gücü büyütür — aynı orduyla daha sert vurursun.',
+    },
+    {
+      isaret: 'demirhane-envanter',
+      sebep: 'Elinde kuşanılmamış bir parça var lordum. Envantere bakalım.',
+    },
+    {
+      isaret: 'demirhane-uret',
+      sebep:
+        "Önce bir parça dövelim lordum. Dövülen parça lorduna kuşanılır; bitince Envanter'den kuşanırsın.",
     },
     { isaret: 'omurga-dugme', yol: true },
     {
@@ -363,6 +379,10 @@ export const REHBER_ISIKLARI: Record<string, RehberIsaret[]> = {
       isaret: 'general-kirala',
       sebep:
         'Bunu kirala. General tek bir askeri değil ORDUNUN KURALLARINI değiştirir; bir generalin etkisi bütün birliklerine birden işler.',
+    },
+    {
+      isaret: 'general-raf',
+      sebep: 'Bu raftakilere kesemiz yetiyor lordum. Oradan başlayalım.',
     },
     { isaret: 'omurga-dugme', yol: true },
     {
@@ -427,10 +447,27 @@ export const REHBER_ISIKLARI: Record<string, RehberIsaret[]> = {
   ],
 };
 
+/**
+ * Her zincirin SON halkası: açık paneli kapatmak.
+ *
+ * Adım bir panelin içindeyken değişebiliyor — Demirhane'de parçayı
+ * kuşanınca sıra generale geçiyor. Yeni zincirin düğmeleri panelin
+ * ARKASINDA kalıyor (omurga düğmesi, alt çubuk) ve ışık onları artık
+ * örtülü sayıyor; oyuncuya da paneli kapatması gerektiğini söyleyen kimse
+ * yoktu, ışık sönüp onu panelin içinde yalnız bırakıyordu. Bu halka
+ * yalnız başka hiçbir şey bulunamayınca yanıyor.
+ */
+export const KAPI_KAPAT: RehberIsaret = {
+  isaret: 'kapi-kapat',
+  sebep: 'Burada işimiz bitti lordum. Paneli kapatalım, sıradaki iş dışarıda.',
+  yol: true,
+};
+
 /** Bir omurga adımında ışığın arayacağı işaretler; yoksa boş dizi. */
 export function rehberIsigi(adim: string | null | undefined): RehberIsaret[] {
   if (!adim) return [];
-  return REHBER_ISIKLARI[adim] ?? [];
+  const zincir = REHBER_ISIKLARI[adim];
+  return zincir ? [...zincir, KAPI_KAPAT] : [];
 }
 
 /**

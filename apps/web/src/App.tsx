@@ -238,6 +238,31 @@ export function App() {
     return () => window.clearTimeout(id);
   }, [girisli, enYakinBitis, qc]);
 
+  /*
+   * Ordu değişince hedef önerisi de değişir — kuyruk bitmese bile.
+   *
+   * Yukarıdaki zamanlayıcı yalnız KUYRUKLARI izliyor. Akından dönen ordu
+   * ise bir kuyruk değil: `/me` otuz saniyelik yoklamada küçülmüş orduyu
+   * görüyor ama haritanın önerisi (`['map']`) eski orduyla hesaplanmış
+   * kalıyordu. Omurga "Ihlamurlu Köyü'ye saldır" diyor, oyuncu basıp
+   * bölge panelini açınca öneri tazeleniyor ve adım "ordunu kur"a
+   * dönüyordu — rehber ışığı da o an panelin arkasında kalan bir düğmeyi
+   * gösterip turu kilitliyordu. Ordunun sayısı, yeri ya da bölge sayısı
+   * değiştiği an öneri yeniden soruluyor.
+   */
+  const orduImzasi = data?.lord
+    ? `${data.lord.usedSlots}|${data.lord.akindaOrduVar}|${data.lord.regionCount}`
+    : null;
+  const oncekiOrdu = useRef<string | null>(null);
+  useEffect(() => {
+    if (orduImzasi === null) return;
+    const onceki = oncekiOrdu.current;
+    oncekiOrdu.current = orduImzasi;
+    // İlk okuma bir değişiklik değil: sorgular zaten yeni açılıyor.
+    if (onceki === null || onceki === orduImzasi) return;
+    for (const anahtar of [['map'], ['army']]) void qc.invalidateQueries({ queryKey: anahtar });
+  }, [orduImzasi, qc]);
+
   /**
    * Rehberin beklettiği işin bitiş anı.
    *

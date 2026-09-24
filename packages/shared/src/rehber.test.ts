@@ -299,7 +299,32 @@ describe('rehber ışığı', () => {
       'harita-hepsi',
       'omurga-dugme',
       'nav-ana',
+      'kapi-kapat',
     ]);
+  });
+
+  /*
+   * Işığı izleyen oyuncu (tools: rehberi yalnız ışığa basarak oynayan
+   * bot) üç yerde kilitlendi; bu üç sınama o kilitlerin kapısı.
+   */
+  it('her zincirin son halkası paneli kapatmak — panelde iş kalmayınca oyuncu içeride kalmaz', () => {
+    for (const adim of Object.keys(REHBER_ISIKLARI)) {
+      const zincir = rehberIsigi(adim);
+      expect(zincir.at(-1)?.isaret, adim).toBe('kapi-kapat');
+      expect(zincir.at(-1)?.yol, adim).toBe(true);
+    }
+  });
+
+  it('ekipman zinciri parçası olmayanı üretmeye, parçası olanı envantere götürür', () => {
+    const sira = rehberIsigi('ekipman').map((x) => x.isaret);
+    expect(sira.indexOf('demirhane-kusan')).toBeLessThan(sira.indexOf('demirhane-envanter'));
+    expect(sira.indexOf('demirhane-envanter')).toBeLessThan(sira.indexOf('demirhane-uret'));
+    expect(rehberIsigi('ekipman').find((x) => x.isaret === 'demirhane-uret')?.yol).toBeUndefined();
+  });
+
+  it('general zinciri parası yeten rafa geçebilir', () => {
+    const sira = rehberIsigi('general').map((x) => x.isaret);
+    expect(sira.indexOf('general-kirala')).toBeLessThan(sira.indexOf('general-raf'));
   });
 });
 

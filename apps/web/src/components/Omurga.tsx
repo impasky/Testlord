@@ -184,6 +184,7 @@ export function useOmurgaAdimi(
     oneri: harita.data?.oneri ?? null,
     egitimde: queues.filter((q) => q.kind === 'train'),
     uretimde: queues.filter((q) => q.kind === 'craft'),
+    gelistirmeSuruyor: queues.some((q) => q.kind === 'upgrade_region'),
     generalVar: (generaller.data?.kadro ?? []).some((x) => x.sahipMi),
     yarali: lord.woundedUntil ? new Date(lord.woundedUntil) > new Date() : false,
     yoldaki: yuruyusler.data ?? [],
@@ -253,6 +254,7 @@ export function Omurga({
     oneri,
     egitimde,
     uretimde,
+    gelistirmeSuruyor: queues.some((q) => q.kind === 'upgrade_region'),
     generalVar,
     yarali,
     yoldaki: yuruyusler.data ?? [],
@@ -570,6 +572,14 @@ export function siradakiAdim(g: {
   gelistirilebilirBolge: number | null;
   /** Hiç bölge geliştirmiş mi (herhangi biri 1. seviyenin üstünde). */
   gelismisBolgeVar: boolean;
+  /**
+   * Bir bölge geliştirmesi kuyrukta mı.
+   *
+   * Geliştirme bitene kadar "geliştirilmiş bölge" yok; bu bayrak olmadan
+   * adım geliştirme sürerken de "Bölgeni geliştir" diyor, rehber ışığı
+   * aynı düğmeyi gösterip oyuncuya ikinci bir geliştirme başlattırıyordu.
+   */
+  gelistirmeSuruyor?: boolean;
   /** Hiç araştırma başlatmış ya da bitirmiş mi. */
   arastirmaBasladi: boolean;
   onGit: (s: Sekme) => void;
@@ -586,7 +596,7 @@ export function siradakiAdim(g: {
    */
   onBolumeGit: (bolumId: string) => void;
 }): Adim | null {
-  const { lord, oneri, egitimde, uretimde, generalVar, yarali, yoldaki } = g;
+  const { lord, oneri, egitimde, yarali, yoldaki } = g;
 
   // 0. Açlık ve yara oyun durumundan doğrudan okunuyor; onlar için harita
   //    cevabını beklemeye gerek yok. Gerisi hedefe bağlı, o yüzden öneri
@@ -668,7 +678,13 @@ export function siradakiAdim(g: {
 
   // 3. Eğitim sürüyorsa yapılacak şey beklemek — üstüne bir iş daha
   //    yığmak "her şey iç içe" duygusunu büyütür.
-  if (egitimde.length > 0 && lord.usedSlots === 0) {
+  //
+  //    Ordusu OLAN ama hedefe yetmeyen oyuncu da burada bekliyor. Önce
+  //    yalnız ordusuz oyuncu bekliyordu; öteki "Ordunu büyüt" adımında
+  //    kalıyor, rehber ışığı da eğitim kuyruktayken aynı "eğit" düğmesini
+  //    göstermeye devam ediyordu. Oyuncu her basışta bir parti daha
+  //    yazdırıyor, kaynağını boşa harcıyordu (ölçüm: dört basış).
+  if (egitimde.length > 0 && (lord.usedSlots === 0 || (oneri !== null && !oneri.kazanir))) {
     const ilk = [...egitimde].sort(
       (a, b) => new Date(a.finishAt).getTime() - new Date(b.finishAt).getTime(),
     )[0]!;
@@ -773,6 +789,30 @@ export function siradakiAdim(g: {
     };
   }
 
+  /*
+   * TUR SIRASI: zorunlu rehber sürerken, ilk bölgeden sonra turun kalan
+   * aşamaları SALDIRIDAN ÖNCE.
+   *
+   * Bildirilen hata: "zorunlu eğitimde takılıp kalıyoruz." Tur yedi
+   * aşama sayıyor (ordu → akın → bölge → ekipman → general → geliştir →
+   * araştırma) ve hepsi bitmeden kapanmıyor. Omurga ise ekipmanı ve
+   * ötekileri ancak alınacak bir hedef KALMAYINCA gösteriyordu —
+   * hedeflerin hep bir sonrakisi olduğu için hiç göstermiyordu. Oyuncu
+   * perdenin altında "eğit → saldır" döngüsüne kilitleniyor, bölge
+   * tavanına çarpınca da "Komuta kapasiten yetmiyor" adımında (ışığı
+   * yok) turu bitirmeden kalıyordu. Ölçüm: ışığı izleyen oyuncu üç
+   * bölge aldı, tur yedide üçte kaldı.
+   *
+   * Tur bitince (`rehberGorundu`) sıra eskisine dönüyor: kıdemli oyuncu
+   * için hedef alınabiliyorken geliştirmeye yollamak oyunun asıl anını
+   * geciktirmek olurdu. Depo adımı burada yok — o bir aşama değil,
+   * turun bitmesini bekleyebilir.
+   */
+  if (!lord.rehberGorundu && lord.regionCount > 0) {
+    const tur = ilkKezAdimi(g, false);
+    if (tur) return tur;
+  }
+
   // 5. Ordu yok ya da yetmiyor: oyunun somut cevabı var, onu söyle.
   if (oneri && !oneri.kazanir) {
     const eksik = oneri.eksik;
@@ -848,6 +888,41 @@ export function siradakiAdim(g: {
     };
   }
 
+  const ilkKez = ilkKezAdimi(g, true);
+  if (ilkKez) return ilkKez;
+
+  // 9. Döngü kurulmuş: oyuncu artık kendi hedefini seçiyor.
+  if (oneri) {
+    return {
+      anahtar: 'devam',
+      baslik: 'Diyarı büyüt',
+      cumle: `Sıradaki hedefin ${oneri.name}.`,
+      rozetler: [
+        <Hap key="soh" ikon={<IkonSohret boyut={13} />}>{`${formatSayi(lord.fame)} şöhret`}</Hap>,
+        ...gelirRozetleri(oneri),
+      ],
+      dugme: `${iBelirtme(oneri.name)} incele`,
+      git: () => g.onHedefeGit(oneri.regionId),
+      hedefSekme: 'harita',
+      hedefBolge: oneri.regionId,
+      sonraki: 'Taht Kalesi — diyarın tek sahibi olabilirsin',
+    };
+  }
+
+  return null;
+}
+
+/** Bölgenin saatlik gelirini rozetlere çevirir; sıfır olanlar atlanır. */
+/**
+ * Oyuncunun HENÜZ HİÇ yapmadığı dört iş: ekipman, general, bölge
+ * geliştirme, araştırma (arada depo taşması). İlk uygun olanı döner.
+ *
+ * İki yerden çağrılıyor ve iki çağrının ayrı sebebi var: omurganın
+ * olağan sırasında saldırıdan SONRA (aşağıda), zorunlu tur sürerken ise
+ * saldırıdan ÖNCE (`siradakiAdim` içinde, "TUR SIRASI").
+ */
+function ilkKezAdimi(g: Parameters<typeof siradakiAdim>[0], depoDahil: boolean): Adim | null {
+  const { lord, uretimde, generalVar } = g;
   // 7. Bölge var, ekipman yok: lordun savaş katkısı büyütülebilir.
   if (lord.equippedItems.length === 0 && uretimde.length === 0) {
     return {
@@ -877,7 +952,7 @@ export function siradakiAdim(g: {
   //
   // Generalden ÖNCE, çünkü depo doluyken biriktirilen her saat boşa
   // gidiyor; general kiralamak beklenebilir, kaynak israfı beklemiyor.
-  if (g.depoDolu) {
+  if (depoDahil && g.depoDolu) {
     return {
       anahtar: 'depo',
       baslik: 'Deponun taşıyor',
@@ -923,7 +998,7 @@ export function siradakiAdim(g: {
    */
 
   // 8b. Hiç bölge geliştirmemiş: gelir seviyeyle büyüyor ve bunu kimse söylemiyor.
-  if (g.gelistirilebilirBolge && !g.gelismisBolgeVar) {
+  if (g.gelistirilebilirBolge && !g.gelismisBolgeVar && !g.gelistirmeSuruyor) {
     return {
       anahtar: 'bolge-gelistir',
       baslik: 'Bölgeni geliştir',
@@ -952,28 +1027,9 @@ export function siradakiAdim(g: {
     };
   }
 
-  // 9. Döngü kurulmuş: oyuncu artık kendi hedefini seçiyor.
-  if (oneri) {
-    return {
-      anahtar: 'devam',
-      baslik: 'Diyarı büyüt',
-      cumle: `Sıradaki hedefin ${oneri.name}.`,
-      rozetler: [
-        <Hap key="soh" ikon={<IkonSohret boyut={13} />}>{`${formatSayi(lord.fame)} şöhret`}</Hap>,
-        ...gelirRozetleri(oneri),
-      ],
-      dugme: `${iBelirtme(oneri.name)} incele`,
-      git: () => g.onHedefeGit(oneri.regionId),
-      hedefSekme: 'harita',
-      hedefBolge: oneri.regionId,
-      sonraki: 'Taht Kalesi — diyarın tek sahibi olabilirsin',
-    };
-  }
-
   return null;
 }
 
-/** Bölgenin saatlik gelirini rozetlere çevirir; sıfır olanlar atlanır. */
 function gelirRozetleri(hedef: HedefOnerisiDto): ReactNode[] {
   const g = hedef.saatlikGelir;
   return (
