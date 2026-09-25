@@ -4,8 +4,12 @@
  * Masaüstü düzeni yok. Tüm ekranlar tek sütun, dokunmatik hedefleri ≥44px,
  * içerik sabit çubukların altında kalmayacak şekilde dolgulu.
  */
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import type { LordState } from '../api/client';
+import { api, type LordState } from '../api/client';
+import { okunduOku } from '../lib/sohbetOkundu';
+import { ProfilGorseli } from './ProfilGorseli';
+import { UygulamaKasasi, type KasaHedefi } from './UygulamaKasasi';
 import {
   IkonAltin,
   IkonDemir,
@@ -16,9 +20,17 @@ import {
   IkonNavKisla,
   IkonNavLord,
   IkonNavMalikane,
+  IkonKasa,
+  IkonSohbet,
   IkonSohret,
 } from './Ikonlar';
-import { ANA_SEKME, ERZAK_FIRAR_ORANI, erzakTukenmesiSaat, type AltSekme } from '@lordlar/shared';
+import {
+  ANA_SEKME,
+  ERZAK_FIRAR_ORANI,
+  erzakTukenmesiSaat,
+  type AltSekme,
+  type Kapi,
+} from '@lordlar/shared';
 import { Ilerleme, kisaSayi } from './ui';
 
 /**
@@ -282,10 +294,33 @@ function KaynakSayaci({
   );
 }
 
+/** Çubuğu bu kadar piksel yukarı çekmek kasayı açıyor. */
+const KASA_ESIGI = 36;
+
+/**
+ * Genel sohbette okunmamış mesaj var mı.
+ *
+ * Yalnız son mesajın ANI soruluyor (tek tarih, liste değil) ve sohbet
+ * açıkken hiç sorulmuyor — açık sohbet zaten okunmuş sohbettir.
+ */
+function useGenelOkunmamis(sohbetAcik: boolean): boolean {
+  const q = useQuery({
+    queryKey: ['genel-sohbet-son'],
+    queryFn: api.genelSohbetSon,
+    refetchInterval: 30_000,
+    enabled: !sohbetAcik,
+  });
+  if (sohbetAcik || !q.data?.son) return false;
+  const okundu = okunduOku();
+  return !okundu || new Date(q.data.son).getTime() > new Date(okundu).getTime();
+}
+
 export function MobilKabuk({
   lord,
   sekme,
   setSekme,
+  kapi,
+  onKapiAc,
   onCikis,
   isaretli,
   omurga,
@@ -294,6 +329,10 @@ export function MobilKabuk({
   lord: LordState;
   sekme: AltSekme;
   setSekme: (s: AltSekme) => void;
+  /** Açık kapı — genel sohbet açıkken okunmamış noktası sönük kalsın diye. */
+  kapi: Kapi | null;
+  /** Kapı aç: üst çubuktaki sohbet düğmesi ve uygulama kasası. */
+  onKapiAc: (k: Kapi) => void;
   onCikis: () => void;
   /** Omurganın işaret ettiği sekme; altın nokta oraya konur. */
   isaretli?: AltSekme | null;
@@ -327,6 +366,48 @@ export function MobilKabuk({
     return () => gozcu.disconnect();
   }, []);
 
+  const okunmamis = useGenelOkunmamis(kapi === 'sohbet');
+  const yonetici =
+    useQuery({ queryKey: ['moderasyon-durum'], queryFn: api.moderasyonDurumu, staleTime: 60_000 })
+      .data?.yonetici === true;
+
+  /*
+   * UYGULAMA KASASI: alt çubuk yukarı çekilince açılıyor (oyuncunun
+   * istediği hareket) ya da tutamağa dokununca (sürükleyemeyen için).
+   * Sürükleme bir sekme düğmesinin üstünde başlarsa o düğmeye basılmış
+   * sayılmamalı — `cekildi` ilk tıklamayı yutuyor.
+   */
+  const [kasa, setKasa] = useState(false);
+  const cekildi = useRef(false);
+  /*
+   * Hareket PENCEREDEN dinleniyor, çubuktan değil: parmak (ya da fare)
+   * yukarı çekilince çubuğun dışına çıkıyor ve olaylar artık çubuğa
+   * gelmiyor. Çubuğa işaretçi yakalamak (pointer capture) da olmazdı —
+   * bırakma çubuğa düşer, sekme düğmesine basılmamış sayılırdı.
+   */
+  const cekmeyeBasla = (y0: number) => {
+    cekildi.current = false;
+    const hareket = (m: PointerEvent) => {
+      if (!cekildi.current && y0 - m.clientY > KASA_ESIGI) {
+        cekildi.current = true;
+        setKasa(true);
+      }
+    };
+    const bitir = () => {
+      window.removeEventListener('pointermove', hareket);
+      window.removeEventListener('pointerup', bitir);
+      window.removeEventListener('pointercancel', bitir);
+    };
+    window.addEventListener('pointermove', hareket);
+    window.addEventListener('pointerup', bitir);
+    window.addEventListener('pointercancel', bitir);
+  };
+  const kasadanGit = (h: KasaHedefi) => {
+    setKasa(false);
+    if (h.tur === 'sekme') setSekme(h.key);
+    else onKapiAc(h.key);
+  };
+
   return (
     <div className="min-h-dvh">
       {/* ---- Üst durum çubuğu ---- */}
@@ -337,6 +418,7 @@ export function MobilKabuk({
         <div className="mx-auto max-w-lg px-3 pt-2 pb-2">
           <div className="mb-2 flex items-center gap-2">
             <div className="flex min-w-0 flex-1 items-center gap-2">
+              <ProfilGorseli resim={lord.resim} arma={lord.arma} boyut={24} />
               <span className="baslik truncate text-[13px]">{lord.name}</span>
               <span className="baslik shrink-0 rounded-md bg-altin/20 px-1.5 py-0.5 text-[11px] text-altin">{`Sv ${lord.level}`}</span>
             </div>
@@ -359,6 +441,25 @@ export function MobilKabuk({
               </span>
               <span className="tabular">{kisaSayi(lord.elmas ?? 0)}</span>
             </div>
+            {/* Genel sohbet HER EKRANDAN: üst çubuk her sekmede duruyor
+                (oyuncunun isteği "her sayfadan erişilebilsin"). */}
+            <button
+              type="button"
+              onClick={() => onKapiAc('sohbet')}
+              aria-label={okunmamis ? 'Genel sohbet — yeni mesaj var' : 'Genel sohbet'}
+              data-ust-sohbet
+              // 44px dokunma hedefi; negatif dikey boşluk başlık satırını
+              // büyütmüyor.
+              className="bas relative -my-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-kenar text-solgun"
+            >
+              <IkonSohbet boyut={18} />
+              {okunmamis && (
+                <span
+                  className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border border-gece bg-altin"
+                  aria-hidden
+                />
+              )}
+            </button>
             <button
               onClick={onCikis}
               className="bas baslik shrink-0 rounded-lg border border-kenar px-2 py-1 text-[11px] text-solgun"
@@ -425,8 +526,29 @@ export function MobilKabuk({
       {/* ---- Alt gezinme ---- */}
       <nav
         className="fixed inset-x-0 bottom-0 z-50 border-t border-kenar bg-derin/95 backdrop-blur"
-        style={{ height: 'var(--alt-bar)' }}
+        // touch-none: çubuk yukarı çekilirken tarayıcı sayfayı kaydırmasın.
+        style={{ height: 'var(--alt-bar)', touchAction: 'none' }}
+        onPointerDown={(e) => cekmeyeBasla(e.clientY)}
+        onClickCapture={(e) => {
+          if (cekildi.current) {
+            e.stopPropagation();
+            e.preventDefault();
+            cekildi.current = false;
+          }
+        }}
       >
+        {/* Tutamak: çubuğun çekilebildiğini söyleyen görsel ipucu ve
+            sürükleyemeyenin kapısı. */}
+        <button
+          type="button"
+          onClick={() => setKasa(true)}
+          aria-label="Tüm sayfalar"
+          aria-expanded={kasa}
+          data-kasa-tutamak
+          className="bas absolute top-0 left-1/2 flex h-6 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-kenar bg-derin text-sonuk"
+        >
+          <IkonKasa boyut={13} />
+        </button>
         <ul className="mx-auto flex h-full max-w-lg items-stretch px-1">
           {CUBUK.map(({ key, ad, Ikon }) => {
             const etkin = sekme === key;
@@ -463,6 +585,14 @@ export function MobilKabuk({
           })}
         </ul>
       </nav>
+
+      <UygulamaKasasi
+        acik={kasa}
+        sekme={sekme}
+        yonetici={yonetici}
+        onKapat={() => setKasa(false)}
+        onGit={kasadanGit}
+      />
     </div>
   );
 }

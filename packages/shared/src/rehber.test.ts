@@ -447,8 +447,10 @@ describe('arayüz mimarisi — ana sayfa ve kapılar', () => {
    * eşya pazarından önce de haritadaydı (Malikâne'yi açıyordu), yani
    * kapı ana sayfaya yeni bir taş koymadı.
    */
-  it('şikâyet kuyruğu, medeniyet ve pazar ana ızgarada değil', () => {
-    for (const k of ['moderasyon', 'medeniyet', 'pazar'] as const) {
+  it('şikâyet kuyruğu, medeniyet, pazar ve genel sohbet ana ızgarada değil', () => {
+    // Genel sohbetin girişi üst çubukta: her ekrandan açılıyor, ızgaraya
+    // taş koymasına gerek yok.
+    for (const k of ['moderasyon', 'medeniyet', 'pazar', 'sohbet'] as const) {
       expect(OYUNCU_KAPILARI).not.toContain(k as never);
       expect(KAPILAR).toContain(k);
     }

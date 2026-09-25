@@ -13,7 +13,6 @@
 import {
   GIZLI_MESAJ,
   KUYRUK_SAYFA_BOYU,
-  SIKAYET_ARASI_SN,
   SIKAYET_SEBEPLERI,
   SIKAYET_SEBEP_ANAHTARLARI as SEBEP_ANAHTARLARI,
   SILINMIS_MESAJ,
@@ -23,8 +22,8 @@ import {
   otomatikGizlenir,
   kararMetni,
   karariDenetle,
-  sikayetSatiri,
-  sikayetiDenetle,
+  mesajSikayetiMi,
+  profilResmiCoz,
   susturmaBitisi,
   susturmaDurumu,
   susturmaSuresiMetni,
@@ -37,7 +36,19 @@ import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { findLordByUser, pushEvent } from '../services/lord.js';
-import { kararKaydet, requireYonetici } from '../services/moderasyon.js';
+import { kararKaydet, requireYonetici, sikayetKaydet } from '../services/moderasyon.js';
+import { resmiKaldir, resmiOnayla } from '../services/profil.js';
+
+/** Üç şikâyet ucunun ortak gövdesi: hazır sebep + isteğe bağlı açıklama. */
+const sikayetGovdesi = z.object({
+  sebep: z.enum(SEBEP_ANAHTARLARI),
+  aciklama: z.string().max(1000).default(''),
+});
+
+/** Moderasyon ekranında resmi göstermek için — yalnız yöneticiye gider. */
+function resimAdresi(veri: Uint8Array | null | undefined): string | null {
+  return veri ? `data:image/webp;base64,${Buffer.from(veri).toString('base64')}` : null;
+}
 
 export async function moderasyonRoutes(app: FastifyInstance): Promise<void> {
   /*
@@ -115,7 +126,12 @@ export async function moderasyonRoutes(app: FastifyInstance): Promise<void> {
     const s = susturmaDurumu(l.susturmaBitis, l.susturmaSebebi, new Date());
 
     // Bekleyen sayısı yalnız yöneticiye: sayı da bir bilgi.
-    const bekleyen = u?.yonetici ? await prisma.report.count({ where: { durum: 'acik' } }) : 0;
+    // Onay bekleyen profil resimleri de "bekleyen iş": kuyruk düğmesindeki
+    // sayı yöneticiyi ikisine birden çağırıyor.
+    const bekleyen = u?.yonetici
+      ? (await prisma.report.count({ where: { durum: 'acik' } })) +
+        (await prisma.profilResmi.count({ where: { durum: 'inceleme' } }))
+      : 0;
 
     /*
      * Doğrulama hâli BU UÇTA, ayrı bir uçta değil.
@@ -145,16 +161,7 @@ export async function moderasyonRoutes(app: FastifyInstance): Promise<void> {
    */
   app.post('/rapor/mesaj/:mesajId', { preHandler: requireAuth }, async (req) => {
     const { mesajId } = z.object({ mesajId: z.string().min(1) }).parse(req.params);
-    const { sebep, aciklama } = z
-      .object({
-        sebep: z.enum(SEBEP_ANAHTARLARI),
-        aciklama: z.string().max(1000).default(''),
-      })
-      .parse(req.body);
-
-    const denetim = sikayetiDenetle(sebep, aciklama);
-    if (!denetim.uygun)
-      throw new GameError(denetim.sebep ?? 'Şikâyet gönderilemedi.', 400, 'GECERSIZ_ISTEK');
+    const { sebep, aciklama } = sikayetGovdesi.parse(req.body);
 
     const benim = await findLordByUser(req.user.userId);
     const mesaj = await prisma.allianceMessage.findUnique({
@@ -174,45 +181,91 @@ export async function moderasyonRoutes(app: FastifyInstance): Promise<void> {
       throw new GameError('Kendi mesajını şikâyet edemezsin.', 400, 'GECERSIZ_ISTEK');
     }
 
-    // Şikâyet de spam edilebilir. Fren, kuyruğu bir kişinin tek başına
-    // doldurmasını engelliyor; gerçek bir şikâyeti hiç engellemiyor.
-    const sonuncu = await prisma.report.findFirst({
-      where: { reporterId: benim },
-      orderBy: { createdAt: 'desc' },
-      select: { createdAt: true },
+    const farkli = await sikayetKaydet({
+      benim,
+      hedefId: mesaj.lordId,
+      icerikId: mesajId,
+      tur: 'mesaj',
+      sebep,
+      aciklama,
     });
-    if (sonuncu) {
-      const gecen = (Date.now() - sonuncu.createdAt.getTime()) / 1000;
-      if (gecen < SIKAYET_ARASI_SN) {
-        throw new GameError(
-          `Çok hızlı şikâyet ediyorsun. ${Math.ceil(SIKAYET_ARASI_SN - gecen)} saniye bekle.`,
-          400,
-          'COK_HIZLI',
-        );
-      }
-    }
-
-    await prisma.report.upsert({
-      where: {
-        reporterId_targetId_mesajId: { reporterId: benim, targetId: mesaj.lordId, mesajId },
-      },
-      create: {
-        reporterId: benim,
-        targetId: mesaj.lordId,
-        mesajId,
-        tur: 'mesaj',
-        reason: sikayetSatiri(sebep, aciklama),
-      },
-      update: { reason: sikayetSatiri(sebep, aciklama), durum: 'acik', createdAt: new Date() },
-    });
-
-    // Eşiği FARKLI şikâyetçi sayısı belirliyor: aynı kişinin beş kez
-    // basması bir mesajı gizlemeye yetmemeli.
-    const farkli = await prisma.report.count({ where: { mesajId } });
     if (otomatikGizlenir(farkli)) {
       await prisma.allianceMessage.update({ where: { id: mesajId }, data: { gizli: true } });
     }
+    return { alindi: true, gizlendi: otomatikGizlenir(farkli) };
+  });
 
+  /**
+   * Genel sohbette bir mesajı şikâyet eder — ittifak mesajıyla aynı
+   * kurallar, aynı eşik. Genel sohbeti herkes görüyor, o yüzden "görmediğin
+   * mesaj" denetimine gerek yok; kendi mesajın yine şikâyet edilemiyor.
+   */
+  app.post('/rapor/genel/:mesajId', { preHandler: requireAuth }, async (req) => {
+    const { mesajId } = z.object({ mesajId: z.string().min(1) }).parse(req.params);
+    const { sebep, aciklama } = sikayetGovdesi.parse(req.body);
+    const benim = await findLordByUser(req.user.userId);
+    const mesaj = await prisma.genelMesaj.findUnique({
+      where: { id: mesajId },
+      select: { id: true, lordId: true },
+    });
+    if (!mesaj) throw hata.bulunamadi('Mesaj');
+    if (mesaj.lordId === benim) {
+      throw new GameError('Kendi mesajını şikâyet edemezsin.', 400, 'GECERSIZ_ISTEK');
+    }
+    const farkli = await sikayetKaydet({
+      benim,
+      hedefId: mesaj.lordId,
+      icerikId: mesajId,
+      tur: 'genel',
+      sebep,
+      aciklama,
+    });
+    if (otomatikGizlenir(farkli)) {
+      await prisma.genelMesaj.update({ where: { id: mesajId }, data: { gizli: true } });
+    }
+    return { alindi: true, gizlendi: otomatikGizlenir(farkli) };
+  });
+
+  /**
+   * Bir lordun YÜKLEDİĞİ profil resmini şikâyet eder.
+   *
+   * Hazır portre şikâyet edilemiyor — onları biz çizdik. Eşiği aşan resim
+   * yönetici bakana kadar kalkıyor ve lord armasıyla görünüyor; mesajdaki
+   * gizleme gibi CEZA DEĞİL, yönetici "yok say" derse geri geliyor.
+   */
+  app.post('/rapor/resim/:lordId', { preHandler: requireAuth }, async (req) => {
+    const { lordId: hedefId } = z.object({ lordId: z.string().min(1) }).parse(req.params);
+    const { sebep, aciklama } = sikayetGovdesi.parse(req.body);
+    const benim = await findLordByUser(req.user.userId);
+    if (benim === hedefId) {
+      throw new GameError('Kendi resmini şikâyet edemezsin.', 400, 'GECERSIZ_ISTEK');
+    }
+    const hedef = await prisma.lord.findUnique({
+      where: { id: hedefId },
+      select: { profilResmi: true },
+    });
+    if (!hedef) throw hata.bulunamadi('Lord');
+    const r = profilResmiCoz(hedef.profilResmi);
+    if (r.tur !== 'yuklenen') {
+      throw new GameError('Bu lordun yüklediği bir resim yok.', 400, 'GECERSIZ_ISTEK');
+    }
+    const farkli = await sikayetKaydet({
+      benim,
+      hedefId,
+      icerikId: r.id,
+      tur: 'resim',
+      sebep,
+      aciklama,
+    });
+    if (otomatikGizlenir(farkli)) {
+      await prisma.$transaction([
+        prisma.profilResmi.update({ where: { id: r.id }, data: { durum: 'inceleme' } }),
+        prisma.lord.updateMany({
+          where: { id: hedefId, profilResmi: `yuklenen:${r.id}` },
+          data: { profilResmi: null },
+        }),
+      ]);
+    }
     return { alindi: true, gizlendi: otomatikGizlenir(farkli) };
   });
 
@@ -249,17 +302,37 @@ export async function moderasyonRoutes(app: FastifyInstance): Promise<void> {
     // Lordlar ve mesajlar tek seferde çekiliyor: satır başına sorgu
     // atmak otuz satırlık bir sayfada altmış sorgu demekti.
     const lordIdleri = [...new Set(satirlar.flatMap((r) => [r.reporterId, r.targetId]))];
-    const mesajIdleri = satirlar.map((r) => r.mesajId).filter(Boolean);
+    const idler = (tur: string) =>
+      satirlar.filter((r) => r.tur === tur && r.mesajId).map((r) => r.mesajId);
+    const ittifakIdleri = idler('mesaj');
+    const genelIdleri = idler('genel');
+    const resimIdleri = idler('resim');
+    const mesajSec = {
+      id: true,
+      text: true,
+      createdAt: true,
+      silindiAn: true,
+      gizli: true,
+    } as const;
 
-    const [lordlar, mesajlar, gecmis] = await Promise.all([
+    const [lordlar, ittifakMesajlari, genelMesajlar, resimler, gecmis] = await Promise.all([
       prisma.lord.findMany({
         where: { id: { in: lordIdleri } },
         select: { id: true, name: true, susturmaBitis: true, susturmaSebebi: true },
       }),
-      mesajIdleri.length
+      ittifakIdleri.length
         ? prisma.allianceMessage.findMany({
-            where: { id: { in: mesajIdleri } },
-            select: { id: true, text: true, createdAt: true, silindiAn: true, gizli: true },
+            where: { id: { in: ittifakIdleri } },
+            select: mesajSec,
+          })
+        : Promise.resolve([]),
+      genelIdleri.length
+        ? prisma.genelMesaj.findMany({ where: { id: { in: genelIdleri } }, select: mesajSec })
+        : Promise.resolve([]),
+      resimIdleri.length
+        ? prisma.profilResmi.findMany({
+            where: { id: { in: resimIdleri } },
+            select: { id: true, veri: true, durum: true },
           })
         : Promise.resolve([]),
       prisma.moderasyonKaydi.findMany({
@@ -271,7 +344,8 @@ export async function moderasyonRoutes(app: FastifyInstance): Promise<void> {
     ]);
 
     const lordHarita = new Map(lordlar.map((l) => [l.id, l]));
-    const mesajHarita = new Map(mesajlar.map((m) => [m.id, m]));
+    const mesajHarita = new Map([...ittifakMesajlari, ...genelMesajlar].map((m) => [m.id, m]));
+    const resimHarita = new Map(resimler.map((r) => [r.id, r]));
     const simdi = new Date();
 
     return {
@@ -281,7 +355,11 @@ export async function moderasyonRoutes(app: FastifyInstance): Promise<void> {
       sureler: SUSTURMA_SURELERI.map((s) => ({ saat: s, metin: susturmaSuresiMetni(s) })),
       satirlar: satirlar.map((r) => {
         const hedef = lordHarita.get(r.targetId);
-        const mesaj = r.mesajId ? mesajHarita.get(r.mesajId) : undefined;
+        const mesaj =
+          r.mesajId && mesajSikayetiMi(r.tur as SikayetTuru)
+            ? mesajHarita.get(r.mesajId)
+            : undefined;
+        const resim = r.tur === 'resim' ? resimHarita.get(r.mesajId) : undefined;
         const s = susturmaDurumu(hedef?.susturmaBitis, hedef?.susturmaSebebi, simdi);
         return {
           id: r.id,
@@ -302,6 +380,11 @@ export async function moderasyonRoutes(app: FastifyInstance): Promise<void> {
                 silinmis: mesaj.silindiAn !== null,
                 gizli: mesaj.gizli,
               }
+            : null,
+          // Resim şikâyeti: yönetici neye karar verdiğini GÖRMELİ. Kaldırılmış
+          // resmin baytları yok (bkz. şema) — o zaman adres de yok.
+          resim: resim
+            ? { id: resim.id, adres: resimAdresi(resim.veri), durum: resim.durum }
             : null,
           // "Bu kaçıncı" — karar geçmişe bakmadan verilemez.
           gecmis: gecmis
@@ -325,7 +408,7 @@ export async function moderasyonRoutes(app: FastifyInstance): Promise<void> {
     const { raporId, karar, saat } = z
       .object({
         raporId: z.string().min(1),
-        karar: z.enum(['yok_say', 'mesaj_sil', 'sustur']),
+        karar: z.enum(['yok_say', 'mesaj_sil', 'sustur', 'resim_kaldir']),
         saat: z.coerce.number().int().positive().nullable().default(null),
       })
       .parse(req.body);
@@ -345,12 +428,17 @@ export async function moderasyonRoutes(app: FastifyInstance): Promise<void> {
 
     if (k === 'mesaj_sil') {
       // Yumuşak silme: metin kalıyor, görünürlük gidiyor. Silinen
-      // metin, şikâyeti sonradan inceleyenin tek kanıtı.
-      await prisma.allianceMessage.update({
-        where: { id: rapor.mesajId },
-        data: { silindiAn: simdi, silenId: req.user.userId, gizli: false },
-      });
+      // metin, şikâyeti sonradan inceleyenin tek kanıtı. updateMany:
+      // mesaj bu arada hesabıyla birlikte silinmiş olabilir.
+      const veri = { silindiAn: simdi, silenId: req.user.userId, gizli: false };
+      if (tur === 'genel') {
+        await prisma.genelMesaj.updateMany({ where: { id: rapor.mesajId }, data: veri });
+      } else {
+        await prisma.allianceMessage.updateMany({ where: { id: rapor.mesajId }, data: veri });
+      }
     }
+
+    if (k === 'resim_kaldir') await resmiKaldir(rapor.mesajId, req.user.userId);
 
     if (k === 'sustur') {
       await prisma.lord.update({
@@ -360,17 +448,20 @@ export async function moderasyonRoutes(app: FastifyInstance): Promise<void> {
       // Susturulan oyuncu bunu sohbete yazmaya çalışınca değil, HEMEN
       // öğrenmeli: sebebini bilmeyen davranışını değiştiremez.
       await pushEvent(rapor.targetId, 'moderasyon', {
-        mesaj: `İttifak sohbetinde ${susturmaSuresiMetni(saat ?? 0)} susturuldun. Sebep: ${rapor.reason}`,
+        mesaj: `Sohbette ${susturmaSuresiMetni(saat ?? 0)} susturuldun. Sebep: ${rapor.reason}`,
       });
     }
 
     if (k === 'yok_say' && rapor.mesajId) {
       // Yok sayma gizlemeyi de kaldırıyor: eşiği aşan şikâyet haksızsa
-      // mesaj geri gelmeli, yoksa gizleme sessiz bir cezaya dönüşür.
-      await prisma.allianceMessage.updateMany({
-        where: { id: rapor.mesajId, silindiAn: null },
-        data: { gizli: false },
-      });
+      // içerik geri gelmeli, yoksa gizleme sessiz bir cezaya dönüşür.
+      if (tur === 'resim') {
+        await resmiOnayla(rapor.mesajId, req.user.userId, { sessiz: true });
+      } else {
+        const geriGetir = { where: { id: rapor.mesajId, silindiAn: null }, data: { gizli: false } };
+        if (tur === 'genel') await prisma.genelMesaj.updateMany(geriGetir);
+        else await prisma.allianceMessage.updateMany(geriGetir);
+      }
     }
 
     await prisma.report.update({
@@ -409,6 +500,73 @@ export async function moderasyonRoutes(app: FastifyInstance): Promise<void> {
   });
 
   /**
+   * Onay bekleyen profil resimleri.
+   *
+   * İki yoldan düşüyorlar: sınıflandırıcı emin olamadı ("inceleme") ya da
+   * yeterince oyuncu şikâyet etti ve resim yönetici bakana kadar kalktı.
+   * İkisinde de karar aynı: onayla ya da kaldır. Sınıflandırıcının
+   * sayıları yanında — yönetici neden buraya düştüğünü görsün.
+   */
+  app.get('/moderasyon/resimler', { preHandler: [requireAuth, requireYonetici] }, async () => {
+    const satirlar = await prisma.profilResmi.findMany({
+      where: { durum: 'inceleme' },
+      orderBy: { createdAt: 'asc' },
+      take: KUYRUK_SAYFA_BOYU,
+      include: { lord: { select: { id: true, name: true } } },
+    });
+    const sikayetler = await prisma.report.groupBy({
+      by: ['mesajId'],
+      where: { mesajId: { in: satirlar.map((r) => r.id) }, durum: 'acik' },
+      _count: { _all: true },
+    });
+    const sikayetSayisi = new Map(sikayetler.map((g) => [g.mesajId, g._count._all]));
+    return {
+      toplam: await prisma.profilResmi.count({ where: { durum: 'inceleme' } }),
+      resimler: satirlar.map((r) => ({
+        id: r.id,
+        lordId: r.lord.id,
+        ad: r.lord.name,
+        an: r.createdAt,
+        adres: resimAdresi(r.veri),
+        tahmin: r.tahmin,
+        sikayet: sikayetSayisi.get(r.id) ?? 0,
+      })),
+    };
+  });
+
+  app.post('/moderasyon/resim/:id', { preHandler: [requireAuth, requireYonetici] }, async (req) => {
+    const { id } = z.object({ id: z.string().min(1) }).parse(req.params);
+    const { karar } = z.object({ karar: z.enum(['onayla', 'kaldir']) }).parse(req.body);
+    const r = await prisma.profilResmi.findUnique({
+      where: { id },
+      select: { lordId: true, durum: true },
+    });
+    if (!r) throw hata.bulunamadi('Resim');
+    if (r.durum !== 'inceleme') {
+      throw new GameError('Bu resim zaten karara bağlanmış.', 400, 'GECERSIZ_ISTEK');
+    }
+    const k: ModerasyonKarari = karar === 'onayla' ? 'yok_say' : 'resim_kaldir';
+    if (karar === 'onayla') await resmiOnayla(id, req.user.userId);
+    else await resmiKaldir(id, req.user.userId);
+
+    // Bu resme açılmış şikâyetler de kapanıyor: aynı resim iki listede
+    // iki kez karara bağlanmasın.
+    const simdi = new Date();
+    await prisma.report.updateMany({
+      where: { mesajId: id, durum: 'acik' },
+      data: { durum: 'kapali', karar: kararMetni(k), bakanId: req.user.userId, bakildiAn: simdi },
+    });
+    await kararKaydet({
+      lordId: r.lordId,
+      yoneticiId: req.user.userId,
+      raporId: null,
+      karar: k,
+      saat: null,
+    });
+    return { tamam: true };
+  });
+
+  /**
    * Bir lordun susturmasını erken kaldırır.
    *
    * Yanlış karar geri alınabilmeli. Alınamayan bir karar, yöneticiyi
@@ -431,7 +589,7 @@ export async function moderasyonRoutes(app: FastifyInstance): Promise<void> {
         saat: null,
       });
       await pushEvent(lordId, 'moderasyon', {
-        mesaj: 'Susturman kaldırıldı. İttifak sohbetine yeniden yazabilirsin.',
+        mesaj: 'Susturman kaldırıldı. Sohbete yeniden yazabilirsin.',
       });
       return { tamam: true };
     },

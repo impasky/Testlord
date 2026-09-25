@@ -153,7 +153,7 @@ export async function yoneticiRoutes(app: FastifyInstance): Promise<void> {
     });
     if (!lord) throw new GameError('Bulunamadı.', 404, 'BULUNAMADI');
 
-    const [gecmis, mesajlar] = await Promise.all([
+    const [gecmis, ittifakMesajlari, genelMesajlar] = await Promise.all([
       prisma.moderasyonKaydi.findMany({
         where: { lordId: { in: lord.user.lords.map((l) => l.id) } },
         orderBy: { createdAt: 'desc' },
@@ -166,7 +166,21 @@ export async function yoneticiRoutes(app: FastifyInstance): Promise<void> {
         take: OYUNCU_MESAJ_SAYISI,
         select: { id: true, text: true, createdAt: true, silindiAn: true, gizli: true },
       }),
+      prisma.genelMesaj.findMany({
+        where: { lordId: lord.id },
+        orderBy: { createdAt: 'desc' },
+        take: OYUNCU_MESAJ_SAYISI,
+        select: { id: true, text: true, createdAt: true, silindiAn: true, gizli: true },
+      }),
     ]);
+    // İki kanal TEK akışta: karar için konuşmanın akışı gerekiyor, hangi
+    // kanalda yazıldığı ise yanında yazıyor.
+    const mesajlar = [
+      ...ittifakMesajlari.map((m) => ({ ...m, kanal: 'ittifak' as const })),
+      ...genelMesajlar.map((m) => ({ ...m, kanal: 'genel' as const })),
+    ]
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .slice(0, OYUNCU_MESAJ_SAYISI);
 
     const simdi = new Date();
     const s = susturmaDurumu(lord.susturmaBitis, lord.susturmaSebebi, simdi);
@@ -202,6 +216,7 @@ export async function yoneticiRoutes(app: FastifyInstance): Promise<void> {
         an: m.createdAt,
         silinmis: m.silindiAn !== null,
         gizli: m.gizli,
+        kanal: m.kanal,
       })),
     };
   });
@@ -327,17 +342,20 @@ export async function yoneticiRoutes(app: FastifyInstance): Promise<void> {
    */
   app.post('/yonetici/mesaj/:mesajId/kaldir', koruma, async (req) => {
     const { mesajId } = z.object({ mesajId: z.string().min(1) }).parse(req.params);
-    const mesaj = await prisma.allianceMessage.findUnique({
+    // Kimlikler iki tabloda da cuid, çakışmıyor: önce ittifak, sonra genel.
+    const sec = { id: true, lordId: true, silindiAn: true } as const;
+    const ittifakta = await prisma.allianceMessage.findUnique({
       where: { id: mesajId },
-      select: { id: true, lordId: true, silindiAn: true },
+      select: sec,
     });
+    const mesaj =
+      ittifakta ?? (await prisma.genelMesaj.findUnique({ where: { id: mesajId }, select: sec }));
     if (!mesaj) throw new GameError('Bulunamadı.', 404, 'BULUNAMADI');
     if (mesaj.silindiAn) return { tamam: true, ozet: islemMetni('mesaj_sil') };
 
-    await prisma.allianceMessage.update({
-      where: { id: mesajId },
-      data: { silindiAn: new Date(), silenId: req.user.userId, gizli: false },
-    });
+    const veri = { silindiAn: new Date(), silenId: req.user.userId, gizli: false };
+    if (ittifakta) await prisma.allianceMessage.update({ where: { id: mesajId }, data: veri });
+    else await prisma.genelMesaj.update({ where: { id: mesajId }, data: veri });
     await kaydet(mesaj.lordId, req.user.userId, 'mesaj_sil', null);
     return { tamam: true, ozet: islemMetni('mesaj_sil') };
   });

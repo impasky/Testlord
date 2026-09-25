@@ -51,6 +51,8 @@ import {
   type UnitType,
   medeniyet as medeniyetTanimi,
   type MedeniyetBonusu,
+  profilResmiCoz,
+  type ProfilResmi,
 } from '@lordlar/shared';
 import type { Prisma } from '@prisma/client';
 import { prisma, type Tx } from '../db.js';
@@ -67,6 +69,8 @@ const MAX_LORD_LEVEL = B.lord.max_seviye;
 export interface LordState {
   /** Heraldik kimlik ve unvan — ikisi de saf görünüş (docs/10). */
   arma: Arma;
+  /** Profil resmi (shared `profilResmiCoz`). */
+  resim: ProfilResmi;
   unvan: Unvan;
   id: string;
   worldId: string;
@@ -555,6 +559,7 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
     // Kimlik: arma ve unvan (docs/10). İkisi de saf görünüş, hiçbir sayıya
     // dokunmuyorlar. Unvan şöhretten TÜRETİLİYOR — yeni sayaç yok.
     arma: lordArmasi(lord),
+    resim: profilResmiCoz(lord.profilResmi),
     unvan: unvan(fame, ownsThrone),
     elo: lord.elo,
     pvpWins: lord.pvpWins,

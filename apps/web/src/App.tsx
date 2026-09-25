@@ -78,6 +78,9 @@ const Medeniyet = lazy(() => import('./screens/Medeniyet').then((m) => ({ defaul
 const EsyaPazari = lazy(() =>
   import('./screens/EsyaPazari').then((m) => ({ default: m.EsyaPazari })),
 );
+const GenelSohbet = lazy(() =>
+  import('./screens/GenelSohbet').then((m) => ({ default: m.GenelSohbet })),
+);
 
 function hashJetonu(): string | null {
   const h = window.location.hash;
@@ -490,7 +493,13 @@ export function App() {
     <MobilKabuk
       lord={lord}
       sekme={sekme}
-      setSekme={setSekme}
+      setSekme={(s) => {
+        // Kasadan bir sekmeye gidiliyorsa açık kapı arkada kalmasın.
+        setKapi(null);
+        setSekme(s);
+      }}
+      kapi={kapi}
+      onKapiAc={kapiAc}
       onCikis={cikis}
       isaretli={omurgaAdimi?.hedefSekme ?? null}
       omurga={
@@ -664,6 +673,7 @@ export function App() {
             {/* Pazar (docs/19): şehirdeki Pazar binasının kapısı — eşya
               pazarı ve kaynak takası. */}
             {kapi === 'pazar' && <EsyaPazari lordSeviyesi={lord.level} />}
+            {kapi === 'sohbet' && <GenelSohbet lordId={lord.id} />}
             {kapi === 'moderasyon' && <Moderasyon />}
             {kapi === 'yoneticiPaneli' && <YoneticiPaneli />}
             {kapi === 'hesap' && (

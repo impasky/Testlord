@@ -57,8 +57,8 @@ const { token } = await kayitOl(API, {
   lordName: benzersizAd('Dugme'),
 });
 const bas = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
-const post = (y, g, b = bas) =>
-  fetch(`${API}/api${y}`, { method: 'POST', headers: b, body: JSON.stringify(g ?? {}) })
+const post = (y, g, b = bas, yontem = 'POST') =>
+  fetch(`${API}/api${y}`, { method: yontem, headers: b, body: JSON.stringify(g ?? {}) })
     .then((r) => r.json())
     .catch(() => ({}));
 const get = (y, b = bas) =>
@@ -111,6 +111,10 @@ if (ittifakId) {
   await post('/test/dogrulanmis-yap', {}, b2);
   await post(`/ittifak/${ittifakId}/katil`, {}, b2);
   await post('/ittifak/sohbet', { metin: 'Selam lordum, kuzeyden akın geliyor.' }, b2);
+  // Genel sohbette de bir yabancı söz: profil kartı, şikâyet ve engel
+  // yalnız başkasının mesajında çıkıyor.
+  await post('/profil/resim', { tur: 'hazir', key: 'casus_leyla' }, b2, 'PUT');
+  await post('/sohbet/genel', { metin: 'Diyarın bütün lordlarına selam!' }, b2);
 }
 
 /* ------------------------------------------------------------------ */
@@ -235,6 +239,29 @@ const YERLER = [
       await page.waitForTimeout(900);
     },
     burada: panelAcikMi,
+  },
+  {
+    // Genel sohbet: girişi üst çubukta, her ekranda.
+    ad: 'kapi:sohbet',
+    git: async () => {
+      await kurtar();
+      await page.click('[data-ust-sohbet]');
+      await page.waitForTimeout(900);
+    },
+    burada: panelAcikMi,
+  },
+  {
+    // Uygulama kasası: alt çubuğun tutamağından (çekme hareketini
+    // genel-sohbet-testi sınıyor). Her karo bir yere götürüyor; bot
+    // her birinden sonra kasayı yeniden açıyor.
+    ad: 'kasa',
+    git: async () => {
+      await kurtar();
+      await page.click('[data-kasa-tutamak]');
+      await page.waitForTimeout(600);
+    },
+    burada: async () =>
+      (await page.locator('[role="dialog"][aria-label="Tüm sayfalar"]').count()) > 0,
   },
   ...['Şikâyet kuyruğu', 'Yönetici paneli'].map((yazi) => ({
     ad: `kapi:${yazi}`,

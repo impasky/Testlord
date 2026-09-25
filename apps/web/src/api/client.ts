@@ -10,6 +10,7 @@ import type {
   Dizilim,
   Kademe,
   GunlukGorev,
+  ProfilResmi,
   GearLineKey,
   Resources,
   SavasDuzeni,
@@ -142,6 +143,8 @@ const post = <T>(path: string, body?: unknown): Promise<T> =>
 export interface LordState {
   /** Heraldik kimlik ve unvan — ikisi de saf görünüş (docs/10). */
   arma: ArmaDto;
+  /** Profil resmi: arma, hazır portre ya da onaylanmış yüklenen resim. */
+  resim: ProfilResmi;
   unvan: { ad: string; aciklama: string; sonrakiEsik: number | null; sonrakiAd: string | null };
   id: string;
   name: string;
@@ -1047,17 +1050,80 @@ export interface BasvurularDto {
   }[];
 }
 
+/** Bir mesajın yazarı — adı, resmi ve arması (resim yoksa arma çizilir). */
+export interface YazarDto {
+  lordId: string;
+  ad: string;
+  resim: ProfilResmi;
+  arma: ArmaDto;
+}
+
+export interface SohbetMesajiDto extends YazarDto {
+  id: string;
+  metin: string;
+  /** Yönetici kaldırdı ya da şikâyet eşiği aştı: metin yerine bir not var. */
+  kaldirildi: boolean;
+  an: string;
+}
+
 export interface SohbetDto {
-  mesajlar: {
-    id: string;
-    lordId: string;
-    ad: string;
-    metin: string;
-    /** Yönetici kaldırdı ya da şikâyet eşiği aştı: metin yerine bir not var. */
-    kaldirildi: boolean;
-    an: string;
-  }[];
+  mesajlar: SohbetMesajiDto[];
   enFazlaHarf: number;
+}
+
+export interface GenelSohbetDto {
+  mesajlar: (SohbetMesajiDto & { ittifak: string | null; benim: boolean })[];
+  enFazlaHarf: number;
+  ikiMesajArasiSn: number;
+}
+
+/**
+ * Profil kartı: ada ya da resme dokununca. Yalnız oyunun zaten herkese
+ * gösterdiği şeyler — kaynak, ordu, e-posta, son görülme YOK.
+ */
+export interface ProfilKartiDto extends YazarDto {
+  seviye: number;
+  sohret: number;
+  unvan: string;
+  medeniyet: { ad: string; renk: string } | null;
+  faydaRutbesi: string | null;
+  ittifak: { ad: string; etiket: string; rutbe: 'lider' | 'yasli' | 'uye' | null } | null;
+  bolgeSayisi: number;
+  diyar: string;
+  katildi: string;
+  rakip: boolean;
+  benim: boolean;
+  engelledin: boolean;
+}
+
+export interface ProfilResmimDto {
+  secili: ProfilResmi;
+  yuklemeler: { id: string; durum: 'onayli' | 'inceleme'; an: string; adres: string }[];
+  kalanYukleme: number;
+}
+
+export interface ResimYuklemeDto {
+  id: string | null;
+  durum: 'onay' | 'inceleme' | 'red';
+  metin: string;
+}
+
+export interface OnayBekleyenResimDto {
+  id: string;
+  lordId: string;
+  ad: string;
+  an: string;
+  adres: string | null;
+  tahmin: Record<string, number> | null;
+  sikayet: number;
+}
+
+/**
+ * Yüklenmiş bir profil resminin adresi. Herkese açık uç: `<img>` jeton
+ * gönderemiyor ve onaylı resim zaten herkese görünen bir içerik.
+ */
+export function profilResmiAdresi(id: string): string {
+  return `${BASE}/api/profil-resmi/${id}`;
 }
 
 export interface ModerasyonDurumuDto {
@@ -1073,7 +1139,7 @@ export interface ModerasyonDurumuDto {
 
 export interface KuyrukSatiriDto {
   id: string;
-  tur: 'lord' | 'mesaj';
+  tur: 'lord' | 'mesaj' | 'genel' | 'resim';
   an: string;
   sebep: string;
   durum: string;
@@ -1083,6 +1149,8 @@ export interface KuyrukSatiriDto {
   hedef: string;
   hedefSusturulmus: boolean;
   mesaj: { id: string; metin: string; an: string; silinmis: boolean; gizli: boolean } | null;
+  /** Resim şikâyetinde resmin kendisi — kaldırılmışsa adres boş. */
+  resim: { id: string; adres: string | null; durum: string } | null;
   gecmis: { ozet: string; an: string }[];
 }
 
@@ -1123,7 +1191,14 @@ export interface YoneticiOyuncuDto {
   susturma: { aktif: boolean; bitis: string | null; sebep: string | null };
   yasak: { aktif: boolean; kalici: boolean; bitis: string | null; sebep: string | null };
   gecmis: { ozet: string; an: string }[];
-  mesajlar: { id: string; metin: string; an: string; silinmis: boolean; gizli: boolean }[];
+  mesajlar: {
+    id: string;
+    metin: string;
+    an: string;
+    silinmis: boolean;
+    gizli: boolean;
+    kanal: 'ittifak' | 'genel';
+  }[];
 }
 
 export interface KuyrukDto {
@@ -1563,6 +1638,25 @@ export const api = {
     request<{ kaldirildi: boolean }>(`/engel/${lordId}`, { method: 'DELETE' }),
   mesajRaporEt: (mesajId: string, sebep: string, aciklama: string) =>
     post<{ alindi: boolean; gizlendi: boolean }>(`/rapor/mesaj/${mesajId}`, { sebep, aciklama }),
+  genelSohbet: () => request<GenelSohbetDto>('/sohbet/genel'),
+  genelSohbetSon: () => request<{ son: string | null }>('/sohbet/genel/son'),
+  genelYaz: (metin: string) => post<{ id: string; an: string }>('/sohbet/genel', { metin }),
+  genelRaporEt: (mesajId: string, sebep: string, aciklama: string) =>
+    post<{ alindi: boolean; gizlendi: boolean }>(`/rapor/genel/${mesajId}`, { sebep, aciklama }),
+  resimRaporEt: (lordId: string, sebep: string, aciklama: string) =>
+    post<{ alindi: boolean; gizlendi: boolean }>(`/rapor/resim/${lordId}`, { sebep, aciklama }),
+  profilKarti: (lordId: string) => request<ProfilKartiDto>(`/lord/${lordId}/profil`),
+  profilResmim: () => request<ProfilResmimDto>('/profil/resim'),
+  profilResmiSec: (secim: ProfilResmi) =>
+    request<{ secili: ProfilResmi }>('/profil/resim', {
+      method: 'PUT',
+      body: JSON.stringify(secim),
+    }),
+  profilResmiYukle: (veri: string) => post<ResimYuklemeDto>('/profil/resim/yukle', { veri }),
+  onayBekleyenResimler: () =>
+    request<{ toplam: number; resimler: OnayBekleyenResimDto[] }>('/moderasyon/resimler'),
+  resimKarari: (id: string, karar: 'onayla' | 'kaldir') =>
+    post<{ tamam: boolean }>(`/moderasyon/resim/${id}`, { karar }),
   sikayetSebepleri: () =>
     request<{ sebepler: { anahtar: string; metin: string }[] }>('/moderasyon/sebepler'),
   moderasyonDurumu: () => request<ModerasyonDurumuDto>('/moderasyon/durum'),

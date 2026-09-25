@@ -23,11 +23,23 @@ import { B } from './balance.js';
 
 const M = B.moderasyon;
 
-/** Şikâyetin neye açıldığı. Lord = adı/davranışı, mesaj = tek bir söz. */
-export type SikayetTuru = 'lord' | 'mesaj';
+/**
+ * Şikâyetin neye açıldığı.
+ *
+ * lord = adı/davranışı · mesaj = ittifak sohbetinde tek bir söz ·
+ * genel = genel sohbette tek bir söz · resim = yüklenmiş profil resmi.
+ * İki sohbet ayrı tür çünkü mesajlar ayrı tablolarda; kararın kendisi
+ * (sil, sustur, yok say) ikisinde de aynı.
+ */
+export type SikayetTuru = 'lord' | 'mesaj' | 'genel' | 'resim';
+
+/** Bir mesaja açılmış şikâyet mi (ittifak ya da genel sohbet). */
+export function mesajSikayetiMi(tur: SikayetTuru): boolean {
+  return tur === 'mesaj' || tur === 'genel';
+}
 
 /** Yöneticinin bir ŞİKÂYETE verebileceği karar. */
-export type ModerasyonKarari = 'yok_say' | 'mesaj_sil' | 'sustur';
+export type ModerasyonKarari = 'yok_say' | 'mesaj_sil' | 'sustur' | 'resim_kaldir';
 
 /**
  * Yönetici panelinden yapılabilen işlem.
@@ -214,11 +226,19 @@ export function karariDenetle(
   tur: SikayetTuru,
   susturmaSaati: number | null | undefined,
 ): Denetim {
-  if (karar !== 'yok_say' && karar !== 'mesaj_sil' && karar !== 'sustur') {
+  if (
+    karar !== 'yok_say' &&
+    karar !== 'mesaj_sil' &&
+    karar !== 'sustur' &&
+    karar !== 'resim_kaldir'
+  ) {
     return { uygun: false, sebep: 'Bilinmeyen karar.' };
   }
-  if (karar === 'mesaj_sil' && tur !== 'mesaj') {
+  if (karar === 'mesaj_sil' && !mesajSikayetiMi(tur)) {
     return { uygun: false, sebep: 'Bu şikâyette silinecek bir mesaj yok.' };
+  }
+  if (karar === 'resim_kaldir' && tur !== 'resim') {
+    return { uygun: false, sebep: 'Bu şikâyette kaldırılacak bir resim yok.' };
   }
   if (karar === 'sustur') {
     if (susturmaSaati == null) return { uygun: false, sebep: 'Susturma süresi seç.' };
@@ -236,6 +256,8 @@ export function islemMetni(islem: YoneticiIslemi, saat?: number | null): string 
       return 'Şikâyet yok sayıldı';
     case 'mesaj_sil':
       return 'Mesaj kaldırıldı';
+    case 'resim_kaldir':
+      return 'Profil resmi kaldırıldı';
     case 'sustur':
       return `Sohbette susturuldu (${saatMetni(saat ?? 0)})`;
     case 'yasakla':

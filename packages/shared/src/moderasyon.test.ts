@@ -128,8 +128,22 @@ describe('karar denetimi', () => {
     expect(s.sebep).toContain('silinecek bir mesaj yok');
   });
 
-  it('mesaj şikâyetinde mesaj silinebiliyor', () => {
+  it('mesaj şikâyetinde mesaj silinebiliyor — ittifak da genel sohbet de', () => {
     expect(karariDenetle('mesaj_sil', 'mesaj', null).uygun).toBe(true);
+    expect(karariDenetle('mesaj_sil', 'genel', null).uygun).toBe(true);
+  });
+
+  it('resim şikâyetinde mesaj silinemiyor, resim kaldırılabiliyor', () => {
+    expect(karariDenetle('mesaj_sil', 'resim', null).uygun).toBe(false);
+    expect(karariDenetle('resim_kaldir', 'resim', null).uygun).toBe(true);
+  });
+
+  it('resim kaldırma yalnız resim şikâyetinde', () => {
+    for (const tur of ['lord', 'mesaj', 'genel'] as const) {
+      const s = karariDenetle('resim_kaldir', tur, null);
+      expect(s.uygun).toBe(false);
+      expect(s.sebep).toContain('resim yok');
+    }
   });
 
   it('susturma süresiz kabul edilmiyor', () => {
@@ -154,6 +168,7 @@ describe('karar denetimi', () => {
   it('karar metni süreyi içeriyor', () => {
     expect(kararMetni('sustur', 24)).toContain('1 gün');
     expect(kararMetni('yok_say')).toContain('yok sayıldı');
+    expect(kararMetni('resim_kaldir')).toContain('Profil resmi');
   });
 });
 

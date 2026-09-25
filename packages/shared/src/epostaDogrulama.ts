@@ -36,6 +36,8 @@ export const KISITLI_EYLEM_ADI: Record<string, string> = {
   ittifak_sohbet: 'İttifak sohbetine yazmak',
   kaynak_gonder: 'Kaynak göndermek',
   esya_pazari: 'Eşya pazarında alım satım',
+  genel_sohbet: 'Genel sohbete yazmak',
+  profil_resmi: 'Profil resmi yüklemek',
 };
 
 export function jetonBitisi(simdi: Date): Date {

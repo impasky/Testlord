@@ -61,6 +61,14 @@ export function Gizlilik({ onKapat }: { onKapat: () => void }) {
               bu.
             </p>
             <p>
+              <strong className="text-parsomen">Profil resmin — yüklersen.</strong> Resim
+              sunucumuzda küçültülüp yeniden kaydediliyor; bu sırada konum, cihaz ve tarih gibi
+              gizli bilgileri (EXIF) siliniyor. Uygunsuz içeriğe karşı bir görüntü
+              sınıflandırıcısından geçiyor — sınıflandırıcı kendi sunucumuzda çalışıyor, resim
+              hiçbir dış hizmete gönderilmiyor. Sınıflandırıcının emin olamadığı resme bir yönetici
+              bakıyor. Reddedilen resim saklanmıyor.
+            </p>
+            <p>
               <strong className="text-parsomen">Son giriş anın ve son gördüğün ekran.</strong> İki
               iş için: sen yokken ne olduğunu özetlemek, ve oyuncuların oyunu nerede bıraktığını
               toplam olarak görmek. İkincisinde kimin hangi ekranda olduğu değil, yalnızca sayılar
@@ -107,8 +115,14 @@ export function Gizlilik({ onKapat }: { onKapat: () => void }) {
               kullanılıyor; o sağlayıcı yalnızca adresini ve gönderilen iletinin metnini görüyor.
             </p>
             <p>
-              İttifak sohbetinde yazdıkların ittifakındaki diğer oyunculara açık. Şikâyet edilen bir
-              mesaj, kararı verecek yöneticiye görünür.
+              İttifak sohbetinde yazdıkların ittifakındaki diğer oyunculara, genel sohbette
+              yazdıkların bütün oyunculara açık. Şikâyet edilen bir mesaj ya da resim, kararı
+              verecek yöneticiye görünür.
+            </p>
+            <p>
+              Profil kartında başkaları yalnızca lord adını, profil resmini, armanı, seviyeni,
+              unvanını, şöhretini, medeniyetini, ittifakını, bölge sayını, diyarını ve katıldığın
+              ayı görür. Kaynakların, ordun, e-postan ve son giriş anın kimseye gösterilmez.
             </p>
             <p>
               Sunucuda bir hata olursa teknik ayrıntısı bir hata izleme hizmetine gidebilir; oraya
@@ -119,8 +133,8 @@ export function Gizlilik({ onKapat }: { onKapat: () => void }) {
 
           <Madde baslik="Ne kadar süre">
             <p>
-              Hesabın açık kaldığı sürece. Hesabını silersen lordun, ordun, ekipmanın ve bildirim
-              aboneliğin birlikte silinir.
+              Hesabın açık kaldığı sürece. Hesabını silersen lordun, ordun, ekipmanın, sohbet
+              mesajların, yüklediğin resimler ve bildirim aboneliğin birlikte silinir.
             </p>
           </Madde>
 

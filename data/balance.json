@@ -989,6 +989,29 @@
     "susturma_gecmis_sayisi": 10,
     "_susturma_gecmisi": "Yonetici kuyrukta bir lorda bakarken son bu kadar moderasyon kaydini gorur. Karar gecmise bakmadan verilemez: ilk kez mi, besinci kez mi ayni sey."
   },
+  "genel_sohbet": {
+    "_aciklama": "Butun oyuncularin yazdigi tek kanal (oyuncunun istegi: 'tum oyuncularin sohbet edebilecegi genel sohbet'). Ittifak sohbetinden farki zarar yuzeyi: yazan kime yazdigini bilmiyor. Bu yuzden frenler daha siki: mesaj daha kisa, iki mesaj arasi daha uzun, ayni sozu ust uste yazmak reddediliyor. Suzgec, sikayet, engel ve susturma ittifak sohbetiyle ORTAK -- iki kanal iki ayri kural dili konusmamali.",
+    "mesaj_en_fazla_harf": 200,
+    "gosterilen_mesaj": 60,
+    "iki_mesaj_arasi_sn": 5,
+    "ayni_mesaj_tekrar_sn": 60,
+    "_ayni_mesaj": "Ayni metni bu kadar saniye icinde tekrar yazmak reddediliyor. Yavas mod tek basina reklam/tasma akitmayi durdurmuyor: bes saniyede bir ayni satir da kanali kullanilmaz hale getirir.",
+    "yoklama_sn": 5,
+    "_yoklama": "Sohbet acikken yeni mesajlar bu aralikla soruluyor. Websocket yok (IttifakSohbet ile ayni gerekce): oyunun geri kalani yoklamayla calisiyor, ikinci bir altyapi bakimi ikiye katlardi."
+  },
+  "profil_resmi": {
+    "_aciklama": "Oyuncunun profil resmi: hazir portrelerden biri ya da kendi yukledigi resim. Yuklenen resim IKI denetimden geciyor: sunucudaki goruntu siniflandirici (+18 icerik) ve gerektiginde bir yonetici. Resim kucultulup yeniden kodlaniyor -- konum dahil butun ustveri siliniyor.",
+    "boyut_px": 256,
+    "en_fazla_kb": 4096,
+    "_en_fazla_kb": "Telefon kamerasinin ham fotografi 3-4 MB; istemci yuklemeden once kucultuyor, bu tavan kucultmeyen istemciye karsi.",
+    "gunluk_yukleme": 5,
+    "_gunluk_yukleme": "Bir gunde en fazla bu kadar yukleme. Her yukleme siniflandiriciyi iki saniye calistiriyor ve reddedilen her resim yonetici kuyruguna iz birakiyor.",
+    "red_esigi": 0.7,
+    "_red_esigi": "Porn + Hentai olasiligi bu esigi gecerse resim ANINDA reddediliyor, kimse gormuyor.",
+    "sexy_red_esigi": 0.85,
+    "onay_esigi": 0.15,
+    "_onay_esigi": "Porn + Hentai + Sexy bu esigin ALTINDAYSA resim hemen gorunur. Arada kalan (siniflandirici emin degil) resim yonetici onayina dusuyor; o zamana kadar baskalari eski resmi goruyor. Esikler temkinli: oyunun kendi cizimlerinden biri (okcubasi portresi) Hentai 0.46 aldi -- cizim sanati siniflandiriciyi yaniltabiliyor, o yuzden gri bolge insana gidiyor."
+  },
   "medeniyetler": {
     "_aciklama": "Dort medeniyet: harita katmani (docs/16). Kimlikler UYDURULMADI, vilayetin kendi bolge karisimindan turedi: demirvadi 4 kale+3 maden+1 tarla (demirci, ac), kuzeymark 4 kale (sinir muhafizi), karaorman 6 koy+1 kale (orman halki), tasgecit 8 sehir (tuccar).",
     "_cekirdek_notu": "cekirdek_bolge_id listeleri world-map.json vilayet merkezine en yakin bes bolgeden HESAPLANDI (tools/medeniyet-cekirdek.py). Harita degisirse yeniden uretilir; elle duzenlenmez.",

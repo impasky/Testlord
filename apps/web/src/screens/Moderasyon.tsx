@@ -13,11 +13,16 @@
  * ve aynı davranışa ilk seferki cezayı vermek zorunda kalırsın.
  *
  * Üç karar var, üçü de iz bırakıyor ve hiçbiri hesabı silmiyor:
- * yok say · mesajı kaldır · sohbette sustur.
+ * yok say · mesajı kaldır · sohbette sustur. Profil resmi şikâyetinde
+ * dördüncüsü: resmi kaldır.
+ *
+ * Üstte ayrıca ONAY BEKLEYEN PROFİL RESİMLERİ: sınıflandırıcının emin
+ * olamadığı ya da yeterince oyuncunun şikâyet ettiği resimler. Kimse
+ * şikâyet etmeden de bekliyorlar, o yüzden kuyruktan ayrı bir bölüm.
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { ApiError, api, type KuyrukSatiriDto } from '../api/client';
+import { ApiError, api, type KuyrukSatiriDto, type OnayBekleyenResimDto } from '../api/client';
 import { BosHal } from '../components/BosHal';
 import { Bolum, Buton, EngelNotu, Iskelet, Kart, Rozet, formatGecen } from '../components/ui';
 
@@ -59,6 +64,8 @@ export function Moderasyon() {
 
   return (
     <div className="space-y-3">
+      <OnayBekleyenResimler />
+
       <div className="flex gap-1.5">
         {(['acik', 'kapali'] as const).map((d) => (
           <button
@@ -158,6 +165,33 @@ function Satir({
         <span className="text-sonuk">{r.sikayetEden}</span> şikâyet etti: {r.sebep}
       </p>
 
+      {/* Hangi kanal: genel sohbeti herkes görüyor, ittifak sohbetini
+          yalnız sekiz kişi — aynı söz iki yerde aynı ağırlıkta değil. */}
+      {r.tur !== 'lord' && (
+        <p className="mt-1 text-[11px] text-sonuk">
+          {r.tur === 'genel'
+            ? 'Genel sohbet mesajı'
+            : r.tur === 'mesaj'
+              ? 'İttifak sohbeti mesajı'
+              : 'Profil resmi'}
+        </p>
+      )}
+
+      {/* Şikâyet edilen resim: kararı görmeden vermek mümkün değil. */}
+      {r.resim && (
+        <div className="mt-2 flex items-center gap-2.5">
+          {r.resim.adres ? (
+            <img
+              src={r.resim.adres}
+              alt="Şikâyet edilen profil resmi"
+              className="h-20 w-20 rounded-xl border border-kenar object-cover"
+            />
+          ) : (
+            <span className="text-[12px] text-sonuk">(resim kaldırılmış)</span>
+          )}
+        </div>
+      )}
+
       {/* Şikâyet edilen metin. Kararı metni görmeden vermek mümkün değil. */}
       {r.mesaj && (
         <p className="oyuk mt-2 whitespace-pre-wrap break-words rounded-lg px-3 py-2 text-[12px] text-parsomen">
@@ -190,7 +224,7 @@ function Satir({
             >
               Yok say
             </Buton>
-            {r.tur === 'mesaj' && (
+            {(r.tur === 'mesaj' || r.tur === 'genel') && (
               <Buton
                 tur="anahat"
                 boy="kucuk"
@@ -199,6 +233,17 @@ function Satir({
                 onClick={() => onKarar('mesaj_sil', null)}
               >
                 Mesajı kaldır
+              </Buton>
+            )}
+            {r.tur === 'resim' && (
+              <Buton
+                tur="anahat"
+                boy="kucuk"
+                className="flex-1"
+                disabled={calisiyor}
+                onClick={() => onKarar('resim_kaldir', null)}
+              >
+                Resmi kaldır
               </Buton>
             )}
           </div>
@@ -235,6 +280,109 @@ function Satir({
           )}
         </div>
       )}
+    </Kart>
+  );
+}
+
+/**
+ * Onay bekleyen profil resimleri.
+ *
+ * Sınıflandırıcının sayıları yanında: yönetici resmin NEDEN buraya
+ * düştüğünü görsün — "çizim sanatı yanılttı" ile "gerçekten açık" aynı
+ * karar değil.
+ */
+function OnayBekleyenResimler() {
+  const qc = useQueryClient();
+  const [hata, setHata] = useState<string | null>(null);
+  const q = useQuery({
+    queryKey: ['onay-bekleyen-resimler'],
+    queryFn: api.onayBekleyenResimler,
+    staleTime: 10_000,
+  });
+  const karar = useMutation({
+    mutationFn: (v: { id: string; karar: 'onayla' | 'kaldir' }) => api.resimKarari(v.id, v.karar),
+    onSuccess: () => {
+      setHata(null);
+      void qc.invalidateQueries({ queryKey: ['onay-bekleyen-resimler'] });
+      void qc.invalidateQueries({ queryKey: ['moderasyon-kuyruk'] });
+      void qc.invalidateQueries({ queryKey: ['moderasyon-durum'] });
+    },
+    onError: (e: unknown) => setHata(e instanceof ApiError ? e.message : 'Karar uygulanamadı.'),
+  });
+
+  const resimler = q.data?.resimler ?? [];
+  if (resimler.length === 0) return null;
+
+  return (
+    <Bolum baslik={`${q.data!.toplam} profil resmi onay bekliyor`}>
+      {hata && <EngelNotu kisa={hata} uzun="Listeyi tazeleyip tekrar dene." />}
+      <div className="space-y-2" data-onay-bekleyen-resimler>
+        {resimler.map((r) => (
+          <ResimSatiri
+            key={r.id}
+            r={r}
+            calisiyor={karar.isPending}
+            onKarar={(k) => karar.mutate({ id: r.id, karar: k })}
+          />
+        ))}
+      </div>
+    </Bolum>
+  );
+}
+
+function ResimSatiri({
+  r,
+  calisiyor,
+  onKarar,
+}: {
+  r: OnayBekleyenResimDto;
+  calisiyor: boolean;
+  onKarar: (k: 'onayla' | 'kaldir') => void;
+}) {
+  const t = r.tahmin;
+  const yuzde = (x: number | undefined) => `%${Math.round((x ?? 0) * 100)}`;
+  return (
+    <Kart className="flex gap-3 p-3">
+      {r.adres ? (
+        <img
+          src={r.adres}
+          alt={`${r.ad} adlı lordun yüklediği resim`}
+          className="h-24 w-24 shrink-0 rounded-xl border border-kenar object-cover"
+        />
+      ) : (
+        <span className="text-[12px] text-sonuk">(resim yok)</span>
+      )}
+      <div className="min-w-0 flex-1">
+        <div className="flex items-baseline gap-2">
+          <span className="min-w-0 truncate text-[13px] font-bold text-parsomen">{r.ad}</span>
+          <span className="ml-auto shrink-0 text-[11px] text-sonuk">{formatGecen(r.an)}</span>
+        </div>
+        <p className="mt-0.5 text-[11px] leading-snug text-sonuk">
+          {t
+            ? `Açık ${yuzde((t.Porn ?? 0) + (t.Hentai ?? 0))} · Müstehcen ${yuzde(t.Sexy)} · Temiz ${yuzde((t.Neutral ?? 0) + (t.Drawing ?? 0))}`
+            : 'Otomatik denetim yapılamadı.'}
+          {r.sikayet > 0 && <span className="text-turuncu">{` · ${r.sikayet} şikâyet`}</span>}
+        </p>
+        <div className="mt-2 flex gap-1.5">
+          <Buton
+            boy="kucuk"
+            className="flex-1"
+            disabled={calisiyor}
+            onClick={() => onKarar('onayla')}
+          >
+            Onayla
+          </Buton>
+          <Buton
+            tur="anahat"
+            boy="kucuk"
+            className="flex-1"
+            disabled={calisiyor}
+            onClick={() => onKarar('kaldir')}
+          >
+            Resmi kaldır
+          </Buton>
+        </div>
+      </div>
     </Kart>
   );
 }

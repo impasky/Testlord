@@ -516,3 +516,28 @@ svg g[role='button']:focus-visible > path:first-of-type {
     animation: none;
   }
 }
+
+/*
+ * Uygulama kasası: alttan yukarı kayarak açılıyor — oyuncunun parmağıyla
+ * çektiği yönde. Hareket azaltılmışsa doğrudan yerinde.
+ */
+.kasa-acilis {
+  /* `backwards`: bittikten sonra dönüşümü bırakıyor — aşağı sürüklerken
+     kasa parmağı izleyebilsin (satır içi translateY). */
+  animation: kasa-acilis 0.22s ease-out backwards;
+}
+@keyframes kasa-acilis {
+  from {
+    transform: translateY(40%);
+    opacity: 0.4;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kasa-acilis {
+    animation: none;
+  }
+}

@@ -43,8 +43,9 @@ export function Kosullar({ onKapat }: { onKapat: () => void }) {
         <Kart className="p-4">
           <Madde baslik="Uygunsuz içeriğe sıfır tolerans">
             <p>
-              Lord adında, ittifak adında ve sohbette küfür, hakaret, nefret söylemi, taciz, tehdit,
-              cinsel içerik, başkasının kişisel bilgisini paylaşmak ve dolandırıcılık yasaktır.
+              Lord adında, ittifak adında, genel ve ittifak sohbetinde ve profil resminde küfür,
+              hakaret, nefret söylemi, taciz, tehdit, cinsel içerik, başkasının kişisel bilgisini
+              paylaşmak ve dolandırıcılık yasaktır.
             </p>
             <p>
               Uygunsuz adlar ve mesajlar otomatik bir süzgeçten geçer; süzgeçten kaçan içerik
@@ -52,11 +53,25 @@ export function Kosullar({ onKapat }: { onKapat: () => void }) {
             </p>
           </Madde>
 
+          <Madde baslik="Profil resmi">
+            <p>
+              Yalnız hakkına sahip olduğun ve herkese göstermekte sakınca görmediğin bir resim
+              yükle. Çıplaklık, cinsel içerik, şiddet, kan, nefret sembolleri, başkasının fotoğrafı
+              ve kişisel bilgi (telefon, adres) içeren resimler yasaktır.
+            </p>
+            <p>
+              Yüklenen her resim otomatik denetimden geçer; açık içerik anında reddedilir, emin
+              olunamayan resim bir yöneticinin onayından sonra görünür. Oyuncular resmi şikâyet
+              edebilir. Kuralı çiğneyen resim kaldırılır, tekrarında hesap kısıtlanır.
+            </p>
+          </Madde>
+
           <Madde baslik="Şikâyet ve engelleme">
             <p>
               Sohbette bir mesajın yanındaki ⚑ ile şikâyet edebilir, ⊘ ile o lordu
-              engelleyebilirsin. Engellediğin lordun mesajlarını bir daha görmezsin; engeli Hesap
-              ekranından kaldırabilirsin.
+              engelleyebilirsin; aynısını lordun adına ya da resmine dokununca açılan profil
+              kartından da yapabilirsin. Engellediğin lordun mesajlarını hiçbir sohbette bir daha
+              görmezsin; engeli Hesap ekranından kaldırabilirsin.
             </p>
             <p>
               Şikâyetler en geç 24 saat içinde incelenir. Kuralı çiğneyen içerik kaldırılır; yazan

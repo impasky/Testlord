@@ -55,6 +55,13 @@ const schema = z.object({
   UYGULAMA_URL: z.string().optional(),
   /** Render otomatik olarak veriyor; başka ortamlarda boştur. */
   RENDER_EXTERNAL_URL: z.string().optional(),
+  /**
+   * Profil resmi sınıflandırıcısı (+18 denetimi). `kapali` ise yüklenen
+   * her resim doğrudan yönetici onayına gidiyor — sınıflandırıcı ~100 MB
+   * bellek istiyor ve çok küçük bir sunucuda kapatmak gerekebilir. Kapalı
+   * olması resmi ONAYLAMAZ, yalnız kararı insana bırakır.
+   */
+  RESIM_SINIFLANDIRICI: z.enum(['acik', 'kapali']).default('acik'),
   /** pino seviyesi: fatal|error|warn|info|debug|trace */
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
 

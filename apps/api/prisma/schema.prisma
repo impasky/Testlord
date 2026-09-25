@@ -375,6 +375,14 @@ model Lord {
   onSiparisler        OnSiparis[]
   engelledikleri      LordEngel[]       @relation("Engelleyen")
   engelleyenler       LordEngel[]       @relation("Engellenen")
+  genelMesajlar       GenelMesaj[]
+  profilResimleri     ProfilResmi[]
+
+  /// Profil resmi: "hazir:<portre>" | "yuklenen:<ProfilResmi.id>" | null
+  /// (arma). Çözümü shared `profilResmiCoz`. YALNIZ onaylı yüklenen resim
+  /// buraya yazılıyor — incelemedeki resim, onaylanana kadar eskisinin
+  /// yerini almıyor.
+  profilResmi String?
 
   @@unique([userId, worldId])
   /// Her kayıtta nüfus sayımı bu sütundan geçiyor (`medeniyetAta`).
@@ -878,6 +886,56 @@ model AllianceMessage {
 
   @@index([allianceId, createdAt])
   @@index([lordId, createdAt])
+}
+
+/// Genel sohbet: bütün oyuncuların tek kanalı.
+///
+/// İttifak mesajından AYRI tablo: ittifak silinince onun sohbeti de
+/// gidiyor, genel sohbetin ise bağlı olduğu bir topluluk yok. Silme ve
+/// gizleme alanları ittifak mesajınınkiyle aynı anlamda (bkz.
+/// AllianceMessage) — moderasyon iki kanala aynı dille bakıyor.
+model GenelMesaj {
+  id        String    @id @default(cuid())
+  lordId    String
+  text      String
+  createdAt DateTime  @default(now())
+  silindiAn DateTime?
+  silenId   String?
+  gizli     Boolean   @default(false)
+
+  lord Lord @relation(fields: [lordId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@index([lordId, createdAt])
+}
+
+/// Yüklenmiş bir profil resmi.
+///
+/// Resim VERİTABANINDA: 256 piksellik webp 10-25 KB ve Render'ın diski
+/// her dağıtımda siliniyor. Ayrı bir depolama hizmeti, bu boyda bir iş
+/// için bir hesap, bir anahtar ve bir fatura daha demekti.
+///
+/// Reddedilen resmin BAYTLARI TUTULMUYOR (`veri` boş): uygunsuz bir
+/// görüntüyü "kanıt" diye saklamak, onu dağıtmanın bir başka yolu olurdu.
+/// Satır kalıyor — günlük yükleme sınırı ve yöneticinin "bu kaçıncı"
+/// sorusu için.
+model ProfilResmi {
+  id        String    @id @default(cuid())
+  lordId    String
+  /// Yeniden kodlanmış webp. Reddedilince ya da kaldırılınca boşalıyor.
+  veri      Bytes?
+  /// "onayli" | "inceleme" | "red" | "kaldirildi"
+  durum     String
+  /// Sınıflandırıcının tahmini — yönetici kararında görsün diye.
+  tahmin    Json?
+  createdAt DateTime  @default(now())
+  bakanId   String?
+  bakildiAn DateTime?
+
+  lord Lord @relation(fields: [lordId], references: [id], onDelete: Cascade)
+
+  @@index([lordId, createdAt])
+  @@index([durum, createdAt])
 }
 
 /// Bir keşif raporu: bir lordun bir bölge hakkındaki istihbaratı.

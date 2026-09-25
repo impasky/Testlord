@@ -65,6 +65,11 @@ export const IkonSure = yap('sure');
 export const IkonUyari = yap('uyari');
 export const IkonElmas = yap('elmas');
 
+/* Sohbet, profil ve uygulama kasası */
+export const IkonSohbet = yap('sohbet');
+export const IkonFotograf = yap('fotograf');
+export const IkonKasa = yap('kasa');
+
 /* Bölge tipleri */
 export const IkonKoy = yap('koy');
 export const IkonTarla = yap('tarla');

@@ -216,6 +216,8 @@ export const EKRANLAR = [
   'yoneticiPaneli',
   /** Pazar (docs/19) — şehirdeki Pazar binasından ve Malikâne'den. */
   'pazar',
+  /** Genel sohbet — üst çubuktan, her ekrandan. */
+  'sohbet',
 ] as const;
 
 export type Ekran = (typeof EKRANLAR)[number];
@@ -321,6 +323,12 @@ export const KAPILAR = [
    * Pazar binası henüz dikilmemiş lord için Malikâne'de bir bağlantı var.
    */
   'pazar',
+  /**
+   * Genel sohbet: bütün oyuncuların tek kanalı. Oyuncunun isteği "her
+   * sayfadan erişilebilsin" — girişi bir binada değil, ÜST ÇUBUKTA ve
+   * uygulama kasasında. Ana sayfa ızgarasına taş koymuyor.
+   */
+  'sohbet',
 ] as const;
 export type Kapi = (typeof KAPILAR)[number];
 
@@ -335,7 +343,12 @@ export type Kapi = (typeof KAPILAR)[number];
  * dönmesin" ve ızgarada çizilmeyen bir kapı o duvara taş koymuyor.
  */
 export const OYUNCU_KAPILARI = KAPILAR.filter(
-  (k) => k !== 'moderasyon' && k !== 'medeniyet' && k !== 'yoneticiPaneli' && k !== 'pazar',
+  (k) =>
+    k !== 'moderasyon' &&
+    k !== 'medeniyet' &&
+    k !== 'yoneticiPaneli' &&
+    k !== 'pazar' &&
+    k !== 'sohbet',
 );
 
 /** Kapının başlığı — hem panelde hem onu açan düğmede aynı ad. */
@@ -353,6 +366,7 @@ export const KAPI_ADI: Record<Kapi, string> = {
   medeniyet: 'Medeniyet',
   yoneticiPaneli: 'Yönetici Paneli',
   pazar: 'Pazar',
+  sohbet: 'Genel Sohbet',
 };
 export interface GeneralDef {
   key: string;

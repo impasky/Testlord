@@ -20,6 +20,7 @@ import { resolveQueueItem } from '../services/queue.js';
 import { sevkiyatCoz } from '../services/ticaret.js';
 import { npcTuru, npcYap } from '../services/npc.js';
 import { kuyruklariCek, tabanlariGuncelle } from '../services/esyaPazari.js';
+import { testTahminiKoy } from '../services/resimDenetimi.js';
 
 export async function devRoutes(app: FastifyInstance): Promise<void> {
   /** Bekleyen tüm kuyrukları hemen bitirir. */
@@ -187,6 +188,35 @@ export async function devRoutes(app: FastifyInstance): Promise<void> {
       data: { epostaDogrulandi: new Date() },
     });
     return { dogrulandi: true };
+  });
+
+  /**
+   * Bir sonraki profil resmi yüklemesinde sınıflandırıcının cevabını
+   * taklit eder. Depoya uygunsuz bir resim koyamayız; reddin ve
+   * incelemenin yolunu sınamanın dürüst yolu cevabı taklit etmek.
+   */
+  app.post('/test/resim-tahmini', { preHandler: requireAuth }, async (req) => {
+    const t = z
+      .object({
+        Porn: z.number(),
+        Hentai: z.number(),
+        Sexy: z.number(),
+        Neutral: z.number(),
+        Drawing: z.number(),
+      })
+      .parse(req.body);
+    testTahminiKoy(await findLordByUser(req.user.userId), t);
+    return { tamam: true };
+  });
+
+  /** Yükleme günlük sınırını sıfırlar: testler aynı lordla birkaç kez yükleyebilsin. */
+  app.post('/test/yuklemeleri-eskit', { preHandler: requireAuth }, async (req) => {
+    const lordId = await findLordByUser(req.user.userId);
+    await prisma.profilResmi.updateMany({
+      where: { lordId },
+      data: { createdAt: new Date(Date.now() - 2 * 24 * 3600_000) },
+    });
+    return { tamam: true };
   });
 
   /** Hesabın açılışını geriye alır: serbest sürenin dolmasını taklit eder. */

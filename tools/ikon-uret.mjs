@@ -36,6 +36,15 @@ const OZEL = {
     ad: 'village',
     body: '<path fill="currentColor" d="M188 92 60 208v20h28v168h200V228h28v-20zm0 44 78 72H110zm-42 116h84v40h-84zm0 72h84v72h-84z"/><path fill="currentColor" d="M360 176 268 260v14h20v122h140V274h20v-14zm0 34 56 50H304zm-32 82h64v30h-64zm0 58h64v52h-64z"/><path fill="currentColor" d="M24 420h464v24H24z"/><path fill="currentColor" d="M56 396h12v28H56zm44 0h12v28h-12zm44 0h12v28h-12zm44 0h12v28h-12zm44 0h12v28h-12zm44 0h12v28h-12zm44 0h12v28h-12zm44 0h12v28h-12zm44 0h12v28h-12z"/>',
   },
+  kasa: {
+    ad: 'app-grid',
+    not: [
+      'Uygulama kasası tutamağı: dokuz nokta. Oyuncunun istediği',
+      '"Samsung uygulama kasası" — telefonlarda bütün uygulamaların',
+      'ızgarası bu simgeyle açılıyor, oyuncu onu tanıyor.',
+    ],
+    body: '<path fill="currentColor" d="M72 72h88v88H72zm140 0h88v88h-88zm140 0h88v88h-88zM72 212h88v88H72zm140 0h88v88h-88zm140 0h88v88h-88zM72 352h88v88H72zm140 0h88v88h-88zm140 0h88v88h-88z"/>',
+  },
   navAkin: {
     ad: 'sword-clash',
     not: [
@@ -73,6 +82,10 @@ const KULLANILAN = {
   sure: 'hourglass',
   uyari: 'hazard-sign',
   elmas: 'cut-diamond',
+  // Genel sohbet ve profil resmi
+  sohbet: 'conversation',
+  fotograf: 'photo-camera',
+  kasa: OZEL.kasa,
 
   // Bölge tipleri
   koy: OZEL.koy,

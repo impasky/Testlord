@@ -319,7 +319,9 @@ function OyuncuDosyasi({
               <Kart key={m.id} className="p-2.5">
                 <p className="text-[12.5px] leading-snug text-parsomen">{m.metin}</p>
                 <div className="mt-1 flex items-center gap-2">
-                  <span className="text-[11px] text-sonuk">{formatGecen(m.an)}</span>
+                  <span className="text-[11px] text-sonuk">
+                    {`${m.kanal === 'genel' ? 'Genel' : 'İttifak'} · ${formatGecen(m.an)}`}
+                  </span>
                   {m.silinmis ? (
                     <Rozet renk="var(--color-sonuk)">KALDIRILDI</Rozet>
                   ) : (

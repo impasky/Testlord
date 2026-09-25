@@ -59,6 +59,7 @@ import { adiDenetle } from '../services/adDenetimi.js';
 import { mesajDenetle } from '../services/mesajDenetimi.js';
 import { susturmaKontrol } from '../services/moderasyon.js';
 import { findLordByUser, grantXp, lordArmasi, pushEvent, tickLord } from '../services/lord.js';
+import { YAZAR_SEC, yazarGorunumu } from '../services/profil.js';
 import { lordIslemi } from '../services/kilit.js';
 import { spendResources } from '../services/queue.js';
 import { yururlukteMi } from '../services/pakt.js';
@@ -630,7 +631,7 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
       },
       orderBy: { createdAt: 'desc' },
       take: k.gosterilen_mesaj,
-      include: { lord: { select: { id: true, name: true } } },
+      include: { lord: { select: YAZAR_SEC } },
     });
 
     // Sunucu en yeniden eskiye çekiyor (indeks o yönde), arayüz eskiden
@@ -638,8 +639,8 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
     return {
       mesajlar: satirlar.reverse().map((m) => ({
         id: m.id,
-        lordId: m.lord.id,
-        ad: m.lord.name,
+        // Genel sohbetle aynı yazar görünümü: resim, arma, profil kartı.
+        ...yazarGorunumu(m.lord),
         // Kaldırılan ya da şikâyet eşiğini aşan mesajın METNİ SUNUCUDAN
         // HİÇ ÇIKMIYOR. Gönderip arayüzde gizlemek, gizlemek değil:
         // ağı dinleyen herkes metni görürdü.

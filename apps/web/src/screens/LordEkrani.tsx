@@ -24,6 +24,7 @@ import {
   IkonSure,
   IkonUyari,
   IkonYer,
+  IkonFotograf,
 } from '../components/Ikonlar';
 import {
   AltSekmeler,
@@ -44,6 +45,8 @@ import { kusamSeviyesi } from '@lordlar/shared';
 import { OrduSahnesi } from '../components/OrduSahnesi';
 import { Arma } from '../components/Arma';
 import { ArmaSecici } from '../components/ArmaSecici';
+import { ProfilGorseli } from '../components/ProfilGorseli';
+import { ProfilResmiSecici } from '../components/ProfilResmiSecici';
 import { GorevOzeti } from '../components/GorevOzeti';
 import type { YoklukOzeti } from '../api/client';
 import type { Sekme } from '../components/MobilKabuk';
@@ -180,6 +183,8 @@ export function LordEkrani({
   const [hata, setHata] = useState<string | null>(null);
   const [bekliyor, setBekliyor] = useState(false);
   const [sekme, setSekme] = useState<'guc' | 'kusam' | 'gorunus'>('guc');
+  // Profil resmi seçici: sohbette ve profil kartında görünen resim.
+  const [resimSecici, setResimSecici] = useState(false);
 
   /**
    * Omurganın işaret ettiği bölüme kaydır.
@@ -240,6 +245,7 @@ export function LordEkrani({
 
   return (
     <div className="space-y-4">
+      {resimSecici && <ProfilResmiSecici arma={lord.arma} onKapat={() => setResimSecici(false)} />}
       {/* ---- Lordun kendisi ----
           Denetimin en büyük bulgusu buydu: oyunun adı "Lordlar Çağı" ve
           ana sayfada lord YOKTU. Ekranda tek bir görsel bile
@@ -288,7 +294,28 @@ export function LordEkrani({
             </span>
           </div>
           <div className="p-3">
-            <div className="baslik truncate text-[16px] text-parsomen">{lord.name}</div>
+            {/* Profil resmi adın yanında: sohbette oyuncuyu temsil eden yüz
+                bu, figür değil. Dokununca seçici açılıyor. */}
+            <div className="flex items-center gap-2.5">
+              <button
+                type="button"
+                onClick={() => setResimSecici(true)}
+                aria-label="Profil resmini değiştir"
+                data-profil-resmi-degistir
+                className="bas relative shrink-0 rounded-full"
+              >
+                <ProfilGorseli resim={lord.resim} arma={lord.arma} boyut={44} />
+                <span
+                  className="absolute -right-1 -bottom-1 flex h-5 w-5 items-center justify-center rounded-full border border-kenar bg-derin text-altin"
+                  aria-hidden
+                >
+                  <IkonFotograf boyut={11} />
+                </span>
+              </button>
+              <div className="baslik min-w-0 flex-1 truncate text-[16px] text-parsomen">
+                {lord.name}
+              </div>
+            </div>
             {/* Unvan da neyin karşılığı olduğunu söylüyor: şöhretin. */}
             <div className="text-[13px]">
               <span className="baslik text-sonuk">Unvan</span>{' '}
