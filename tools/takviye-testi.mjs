@@ -233,7 +233,21 @@ for (const adet of [400, 700, 1000, 1400, 1800]) {
   const t = (await ikinciSaldiran.post('/battle/preview', { toRegionId: bolge.id, army: ordu }))
     ?.tahmin;
   if (t?.eleGecirir === true) {
-    fetihOrdusu = ordu;
+    /*
+     * PAY BIRAK. Önizleme dokuz tohumlu savaşın HEPSİ fethederse "alırsın"
+     * diyor; gerçek savaş kendi tohumuyla dönüyor. Döngü önizlemenin
+     * "evet" dediği EN KÜÇÜK orduda durduğu için ordu fetih eşiğinin
+     * (R ≥ 0,60) tam üstünde kalıyordu ve gerçek savaş arada bir dar
+     * zaferle bitiyordu: yağma var, fetih yok — test "bölge el
+     * değiştirmedi" diye düşüyordu (CI #100). Bu test takviyenin geri
+     * dönüşünü ölçüyor, fethin eşiğini değil: yarısı kadar asker daha.
+     */
+    await ikinciSaldiran.post('/army/train', {
+      unitType: 'mizrakci',
+      count: Math.ceil(say(ordu) / 2),
+    });
+    await ikinciSaldiran.post('/test/kuyruklari-bitir');
+    fetihOrdusu = (await ikinciSaldiran.get('/army')).home;
     break;
   }
 }
