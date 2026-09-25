@@ -16,8 +16,8 @@ gerçekten yaptığını anlatıyor; yayından önce bir hukukçuya okutulmalı.
 ## 1. Bütün düğmeler (`pnpm dugmeler`, `tools/tum-dugmeler-testi.mjs`)
 
 Öteki uçtan uca testler bir AKIŞI sınıyor. Bu bot akış bilmiyor: beş
-sekmeye, on bir kapıya ve iki yönetici paneline gidiyor, orada basılabilir
-ne varsa basıyor, basınca açılanlara da basıyor (derinlemesine: sekmeye
+sekmeye, on iki kapıya, uygulama kasasına ve iki yönetici paneline
+gidiyor, orada basılabilir ne varsa basıyor, basınca açılanlara da basıyor (derinlemesine: sekmeye
 basınca önce sekmenin içi). Aradığı:
 
 - basınca konsola hata düşen ya da ekranı çökerten düğme,
@@ -34,12 +34,11 @@ yerin sonuna bırakılıyor; çıkış ve hesap silme `hesap-testi`nin işi,
 bölge bırakmanın son onayı ("Evet, bırak") `harita-testi` ile
 `denetim-testi`nin — bot onu açan düğmeye ve Vazgeç'e basıyor.
 
-**Son koşu (düzeltmelerden sonra): 18 yer, 230 basış, 0 hata.** Kalan
-iki uyarı Pazar'daki yükseltme düğmeleri (−/+): değer +0…+10 arasında
-değişiyor ama bot geri sayımlar gürültü yapmasın diye sayıları imzadan
-atıyor, +0→+1'i göremiyor — düğme çalışıyor. İki 4xx bilgi satırı oyun
-kuralı: ittifaktayken ikinci ittifak kurulamıyor, medeniyet değişimi
-bekleme süresinde reddediliyor.
+**Son koşu (düzeltmelerden sonra): 20 yer, 264 basış, 0 hata.** Tek bilgi
+satırı oyun kuralı: ittifaktayken ikinci ittifak kurulamıyor. Bir önceki
+koşuda bot başkenti bırakmış, dört kapıya ulaşamamıştı (aşağıdaki
+tabloda "Bu bölgeyi bırak" satırı); onay adımından sonra yirmi yerin
+hepsi açılıyor.
 
 ### Bulunan ve düzeltilen hatalar
 
