@@ -140,6 +140,17 @@ kontrol(
 await P('/test/yuruyusleri-bitir');
 await P('/test/yuruyusleri-bitir');
 if (alinan) {
+  // Ayrıntı ucu sahibi `...region` ile olduğu gibi döndürüyordu: bölgeye
+  // bakan herkes sahibin bütün bina seviyelerini ve başkentini okuyordu.
+  const detay = await G(`/map/${alinan.id}`);
+  const sahipAlanlari = Object.keys(detay.owner ?? {})
+    .sort()
+    .join(',');
+  kontrol(
+    'Bölge ayrıntısı sahibin binalarını ve başkentini sızdırmıyor',
+    sahipAlanlari === 'id,level,name',
+    sahipAlanlari,
+  );
   const birak = await P(`/map/${alinan.id}/birak`);
   kontrol('Bölge bırakıldı', birak.ok, `HTTP ${birak.status}`);
   const sonra = await G(`/map/${alinan.id}`);

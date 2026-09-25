@@ -227,7 +227,7 @@ export async function transferRegion(
  * bölge kimliği kalırdı ve o bölgeyi geri alan biri, eski sahibinin
  * başkentini de geri vermiş olurdu.
  */
-async function baskentiDusur(
+export async function baskentiDusur(
   lordId: string,
   kaybedilenMapId: number,
   kaybedilenAd: string,

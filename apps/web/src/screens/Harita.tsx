@@ -584,6 +584,8 @@ export function Harita({
   const [rapor, setRapor] = useState<string | null>(null);
   // Tek bayrak alt sayfadaki bütün düğmeleri birden söndürüyordu.
   const [gonderilen, setGonderilen] = useState<string | null>(null);
+  /** Bırakma onayı açık olan bölge — ilk dokunuş sorar, ikincisi bırakır. */
+  const [birakSor, setBirakSor] = useState<number | null>(null);
   const [saldiriOrdusu, setSaldiriOrdusu] = useState<Army>({});
   const [garnizon, setGarnizon] = useState<Army>({});
   const [onizleme, setOnizleme] = useState<PreviewDto | null>(null);
@@ -805,6 +807,7 @@ export function Harita({
 
   function kapat() {
     setSeciliId(null);
+    setBirakSor(null);
     setSaldiriOrdusu({});
     setDizilim(bosDizilim());
     setTaktik(null);
@@ -1270,20 +1273,53 @@ export function Harita({
                         Bölge sahipsiz kalır, garnizondaki birlikler eve döner. Bakımı ağır gelen ya
                         da savunamadığın bir bölgeden böyle kurtulabilirsin.
                       </p>
-                      <Buton
-                        tur="kirmizi"
-                        boy="kucuk"
-                        className="mt-2.5"
-                        onClick={() =>
-                          mut.mutate({
-                            anahtar: `birak:${bolge.id}`,
-                            f: () => api.bolgeyiBirak(bolge.id),
-                          })
-                        }
-                        disabled={gonderilen === `birak:${bolge.id}`}
-                      >
-                        {gonderilen === `birak:${bolge.id}` ? 'Bırakılıyor…' : 'Bu bölgeyi bırak'}
-                      </Buton>
+                      {/* Geri dönüşü olmayan karar iki dokunuş istiyor (hesap
+                          silme, taraf değiştirme gibi): bırakılan bölge ancak
+                          yeniden savaşla geri alınıyor. Tek dokunuşta
+                          çalışırken başkent bile yanlışlıkla gidebiliyordu. */}
+                      {birakSor === bolge.id ? (
+                        <>
+                          <p className="mt-2.5 text-[12px] leading-snug text-parsomen">
+                            {bolge.baskentim
+                              ? `${bolge.name} başkentin. Bırakırsan elindeki en iyi yerleşime taşınırsın; hiç yerleşimin kalmadıysa kampa çekilirsin. Geri almak için yeniden savaşman gerekir.`
+                              : `${bolge.name} sahipsiz kalacak. Geri almak için yeniden savaşman gerekir.`}
+                          </p>
+                          <div className="mt-2.5 flex gap-2">
+                            <Buton
+                              tur="anahat"
+                              boy="kucuk"
+                              className="flex-1"
+                              onClick={() => setBirakSor(null)}
+                              disabled={gonderilen === `birak:${bolge.id}`}
+                            >
+                              Vazgeç
+                            </Buton>
+                            <Buton
+                              tur="kirmizi"
+                              boy="kucuk"
+                              className="flex-1"
+                              onClick={() =>
+                                mut.mutate({
+                                  anahtar: `birak:${bolge.id}`,
+                                  f: () => api.bolgeyiBirak(bolge.id),
+                                })
+                              }
+                              disabled={gonderilen === `birak:${bolge.id}`}
+                            >
+                              {gonderilen === `birak:${bolge.id}` ? 'Bırakılıyor…' : 'Evet, bırak'}
+                            </Buton>
+                          </div>
+                        </>
+                      ) : (
+                        <Buton
+                          tur="kirmizi"
+                          boy="kucuk"
+                          className="mt-2.5"
+                          onClick={() => setBirakSor(bolge.id)}
+                        >
+                          Bu bölgeyi bırak
+                        </Buton>
+                      )}
                     </Kart>
                   )}
                 </>

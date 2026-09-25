@@ -519,6 +519,8 @@ export interface MapDto {
 }
 
 export interface RegionDetailDto extends RegionDto {
+  /** Bölge benim başkentim mi. */
+  baskentim: boolean;
   garrison: Army;
   /** Bu bölgede duran KENDİ askerin — takviye gönderdiysen dolu. */
   kendiGarnizonum: Army;

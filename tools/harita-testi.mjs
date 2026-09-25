@@ -415,6 +415,43 @@ kontrol('Haritadan bölge seçilebiliyor', /garnizon|Garnizon|SALDIR|Seviye|GEL�
         `vs ${dis.name} ${y.toFixed(2)}`,
     );
   }
+
+  /*
+   * BÖLGE BIRAKMA İKİ DOKUNUŞ İSTİYOR.
+   *
+   * Tek dokunuşta çalışıyordu: düğmeleri deneyen bot başkenti bir
+   * dokunuşla bıraktı ve şehir kademesi düştü. Geri dönüşü olmayan her
+   * karar gibi (hesap silme, taraf değiştirme) ilk dokunuş SORMALI.
+   */
+  if (hedef) {
+    const kapatB = sayfa.getByRole('button', { name: 'Kapat' });
+    if ((await kapatB.count()) > 0) {
+      await kapatB.last().click();
+      await sayfa.waitForTimeout(600);
+    }
+    await sayfa.locator(`[data-bolge="${hedef.id}"]`).dispatchEvent('click');
+    const birakDugmesi = sayfa.getByRole('button', { name: 'Bu bölgeyi bırak' });
+    await birakDugmesi.waitFor({ timeout: 15000 });
+    await birakDugmesi.click();
+    const evet = sayfa.getByRole('button', { name: 'Evet, bırak' });
+    await evet.waitFor({ timeout: 5000 });
+    const hala = (await G('/map')).regions.find((r) => r.id === hedef.id);
+    kontrol(
+      'İlk dokunuş bırakmıyor, soruyor',
+      hala?.isMine === true && (await sayfa.getByRole('button', { name: 'Vazgeç' }).count()) > 0,
+      hedef.name,
+    );
+    await sayfa.getByRole('button', { name: 'Vazgeç' }).click();
+    kontrol(
+      'Vazgeç onayı kapatıyor',
+      (await evet.count()) === 0 && (await birakDugmesi.count()) === 1,
+    );
+    await birakDugmesi.click();
+    await evet.click();
+    await sayfa.waitForTimeout(1500);
+    const sonra = (await G('/map')).regions.find((r) => r.id === hedef.id);
+    kontrol('"Evet, bırak" bölgeyi bırakıyor', sonra?.isMine === false, hedef.name);
+  }
 }
 
 kontrol('Konsol hatası yok', konsol.length === 0, konsol[0] ?? '');

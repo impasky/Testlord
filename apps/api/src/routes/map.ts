@@ -55,7 +55,7 @@ import {
   evdenCikar,
   spendResources,
 } from '../services/queue.js';
-import { bolgeTahkimati, regionUpgradeCost } from '../services/region.js';
+import { baskentiDusur, bolgeTahkimati, regionUpgradeCost } from '../services/region.js';
 
 const armySchema = z.record(
   z.enum(UNIT_TYPES as unknown as [UnitType, ...UnitType[]]),
@@ -584,7 +584,19 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
 
     return {
       ...region,
+      /*
+       * Sahibin BİNALARI ve BAŞKENTİ yanıta girmiyor. Sorguda duruyorlar
+       * çünkü sur payı (`bolgeTahkimati`) onlardan hesaplanıyor; ama
+       * `...region` ile olduğu gibi dönünce, bölgesine bakan HERKES
+       * düşmanın bütün bina seviyelerini ve başkentinin yerini bedavaya
+       * okuyordu. O bilgi oyunda keşifle, bir bedelle alınıyor.
+       */
+      owner: region.owner
+        ? { id: region.owner.id, name: region.owner.name, level: region.owner.level }
+        : null,
       isMine: benim,
+      /** Bölge benim BAŞKENTİM mi — bırakırken arayüz bunu ayrıca söylüyor. */
+      baskentim: benim && region.owner?.baskentBolgeId === region.mapId,
       /*
        * GARNİZON PAYI burada da dönüyor — liste ucunda da var.
        *
@@ -1349,6 +1361,13 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       });
 
       await pushEvent(lordId, 'bolge_birakildi', { mesaj: `${region.name} bırakıldı.` }, tx);
+
+      // Bırakılan BAŞKENTSE lord elindeki en iyi yerleşime taşınıyor —
+      // fetihte kaybedilen başkentle aynı yol (docs/12 §2.3). Bu çağrı
+      // yokken lordun kaydında sahipsiz bir bölgenin kimliği kalıyordu:
+      // elinde köy olsa bile kampa düşüyor, sonraki fetihler de başkent
+      // olmuyordu (`ilkBaskentiAta` başkenti dolu sanıyor).
+      await baskentiDusur(lordId, region.mapId, region.name, tx);
 
       return { birakildi: true, donenBirlik: garnizon.reduce((t, g) => t + g.count, 0) };
     });
