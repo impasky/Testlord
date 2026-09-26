@@ -433,6 +433,12 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
         // Pakt: saldırılamaz ama müttefik de değil. Haritada ayrı bir
         // işaret alıyor, yoksa oyuncu saldırıya kalkışıp reddediliyor.
         paktli: r.owner ? paktlilar.has(sahipIttifaki.get(r.owner.id) ?? '') : false,
+        // İttifak arkadaşı: saldırılamaz, takviye gönderilebilir. Ayrıntı
+        // ucunda vardı; haritanın Hedefler merceği bunu bölgeye dokunmadan
+        // bilmeli (docs/23).
+        muttefik: r.owner
+          ? ayniIttifaktaMi(me.allianceId, sahipIttifaki.get(r.owner.id) || null)
+          : false,
         fortressBonus: bolgeTahkimati(r, r.owner, surOrani(surlar, r.ownerMedeniyetId)),
       })),
     };

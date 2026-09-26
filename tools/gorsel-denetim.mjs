@@ -611,8 +611,18 @@ if (yeniToken) {
    *
    * Gizlenen etiket de ÖLÇÜLMÜYOR: `visibility:hidden` kutusunu koruyor,
    * yani hepsini saymak seyreltmeyi hiç yapılmamış gibi gösterirdi.
+   *
+   * Toprak haritasında (docs/23) bölge adları yalnız YAKIN kademede
+   * çıkıyor; açılış ölçeğinde ölçmek "0 ad, çakışma yok" diyip hiçbir
+   * şeyi sınamıyordu. Önce yakın kademeye iniliyor ve en az bir ad
+   * görünmesi şart koşuluyor.
    */
   await ekrana(page, 'harita', 900);
+  for (let i = 0; i < 2; i++) {
+    await page.getByRole('button', { name: 'Yakınlaştır' }).click();
+    await page.waitForTimeout(450);
+  }
+  await page.waitForTimeout(400);
   const etiketOlcum = await page.evaluate(() => {
     const e = [...document.querySelectorAll('[data-bolge-ad]')]
       .filter((x) => getComputedStyle(x).visibility !== 'hidden')
@@ -626,7 +636,9 @@ if (yeniToken) {
       }
     return { adet: e.length, cakisan };
   });
-  if (etiketOlcum.cakisan > 0) {
+  if (etiketOlcum.adet === 0) {
+    sorun('harita-etiket', 'Yakın kademede hiç bölge adı yok', 'ölçülecek etiket bulunamadı');
+  } else if (etiketOlcum.cakisan > 0) {
     sorun(
       'harita-etiket',
       'Bölge adları üst üste biniyor',

@@ -1,25 +1,22 @@
 /**
- * HARİTA DOKUNMA JESTLERİ — "donuyor" şikâyetinin nöbetçisi.
+ * HARİTA DOKUNMA JESTLERİ — gerçek parmakla (docs/23).
  *
- * Oyuncu: "haritada sağa sola çekerek kaydırmada çok donuyor, haritayı
- * sığdır dedikten sonra oluyor, telefonda Chrome."
+ * Oyuncu bir zamanlar "haritada sağa sola çekerken çok donuyor" dedi.
+ * Donma yoktu; ÖLÜ JEST vardı: "sığdır"dan sonra kayacak yer kalmıyordu
+ * ve parmak gidince ekranda hiçbir şey olmuyordu — hareketsiz bir ekran
+ * donmuş bir ekrandan ayırt edilemez.
  *
- * Donma yoktu; ÖLÜ JEST vardı. Sığdır görünümü ölçeği 1'e döndürüyor ve
- * orada iki şey birden yatay parmağı yutuyordu: kabın
- * `touch-action: pan-y` değeri (tarayıcı yalnız dikey kaydırır) ve
- * `olcek > 1` kapısı (uygulama da kullanmaz). Sonuç: parmak gidiyor,
- * ekranda hiçbir şey olmuyor — ve hareketsiz bir ekran donmuş bir
- * ekrandan ayırt edilemez.
+ * Harita artık tam ekran bir TOPRAK haritası. Sayfa arkada kaymıyor;
+ * parmağın her yönü haritanın. Bu test beş şeyi koruyor:
+ *   1. Tek parmak haritayı kaydırıyor (yatay da dikey de).
+ *   2. "Sığdır"da ölü jest yok: harita parmağı dirençle izliyor ve
+ *      bırakınca yerine yaylanıyor.
+ *   3. İki parmak yakınlaştırıyor.
+ *   4. Kısa dokunuş toprağı SEÇİYOR, haritayı oynatmıyor.
+ *   5. Sayfa arkada kaymıyor — haritanın altında içerik yok.
  *
- * BU TEST FARE İLE YAZILAMAZ. `touch-action` fare girdisine
- * uygulanmıyor; masaüstü ölçümlerinin hepsi "60 kare, sorun yok"
- * diyordu çünkü ölçülen şey hiç olmuyordu. CDP
- * `Input.dispatchTouchEvent` gerçek parmak gönderiyor.
- *
- * Üç şeyi birden koruyor:
- *   1. Yatay parmak haritayı oynatıyor (yakınlaştırarak).
- *   2. Dikey parmak hâlâ SAYFAYI kaydırıyor — haritaya hapsolmuyoruz.
- *   3. Eşiğin altındaki kısa dokunuş kazara yakınlaştırmıyor.
+ * BU TEST FARE İLE YAZILAMAZ: `touch-action` fare girdisine uygulanmıyor.
+ * CDP `Input.dispatchTouchEvent` gerçek parmak gönderiyor.
  */
 import { tarayiciAc } from './lib/tarayici.mjs';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
@@ -47,77 +44,159 @@ await s.goto(WEB, { waitUntil: 'networkidle' });
 await ogreticiyiGec(s);
 await rehberiSustur(s).catch(() => {});
 await s.click('nav button:has-text("Dünya")', { force: true });
-await s.waitForTimeout(2500);
+await s.waitForSelector('[data-bolge]', { timeout: 20000 });
+await s.waitForTimeout(1500);
 
-const durum = () =>
-  s.evaluate(() => {
-    const t = document.querySelector('[data-harita-tuval]');
-    return {
-      stil: t?.getAttribute('style') ?? 'YOK',
-      touchAction: t?.parentElement ? getComputedStyle(t.parentElement).touchAction : '?',
-      sayfaY: window.scrollY,
-    };
-  });
+const donusum = () =>
+  s.evaluate(() => document.querySelector('[data-harita-tuval]')?.style.transform ?? 'YOK');
+const olcek = (t) => Number(/scale\(([\d.]+)\)/.exec(t)?.[1] ?? 'NaN');
+const sayfaY = () => s.evaluate(() => window.scrollY);
 
-async function parmakSurukle(dx, dy, etiket) {
-  const kutu = await s.locator('[data-harita-tuval]').boundingBox();
-  const x0 = kutu.x + kutu.width * 0.75,
-    y0 = kutu.y + kutu.height * 0.5;
-  const once = await durum();
-  await cdp.send('Input.dispatchTouchEvent', {
-    type: 'touchStart',
-    touchPoints: [{ x: x0, y: y0 }],
+/** Harita kutusunun ortasına yakın bir başlangıç noktası. */
+async function orta() {
+  return s.evaluate(() => {
+    const r = document.querySelector('[data-harita-sayfasi]').getBoundingClientRect();
+    return { x: r.left + r.width / 2, y: r.top + r.height * 0.45 };
   });
+}
+
+/**
+ * Parmakla sürükler. `ortada` hareketin ortasında (parmak henüz kalkmadan)
+ * dönüşümü okur: esneme ancak o an görünüyor, bırakınca yaylanıyor.
+ */
+async function surukle(dx, dy) {
+  const { x, y } = await orta();
+  const once = await donusum();
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] });
+  let ortada = once;
   for (let i = 1; i <= 18; i++) {
     await cdp.send('Input.dispatchTouchEvent', {
       type: 'touchMove',
-      touchPoints: [{ x: x0 + (dx * i) / 18, y: y0 + (dy * i) / 18 }],
+      touchPoints: [{ x: x + (dx * i) / 18, y: y + (dy * i) / 18 }],
+    });
+    await s.waitForTimeout(16);
+    if (i === 12) ortada = await donusum();
+  }
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  await s.waitForTimeout(600);
+  return { once, ortada, sonra: await donusum() };
+}
+
+let hata = 0;
+const k = (ad, kosul, detay = '') => {
+  console.log(`  ${kosul ? '[GEÇTİ]' : '[KALDI]'} ${ad}${detay ? ` — ${detay}` : ''}`);
+  if (!kosul) hata++;
+};
+
+/**
+ * Kaymaya YER OLAN yön. Açılış oyuncunun toprağına ortalanıyor; toprak
+ * dünyanın kenarındaysa harita o kenara dayalı açılır ve kenarın ötesine
+ * çekilen parmak doğru olarak esneyip geri yaylanır. "Kaydırıyor" ancak
+ * haritanın ortasına doğru çekilince ölçülebilir.
+ */
+async function bosYon() {
+  return s.evaluate(() => {
+    const t = document.querySelector('[data-harita-tuval]').style.transform;
+    const [, x, y, k] = /translate3d\((-?[\d.]+)px, (-?[\d.]+)px.*scale\(([\d.]+)\)/.exec(t);
+    const r = document.querySelector('[data-harita-sayfasi]').getBoundingClientRect();
+    const D = r.width * Number(k);
+    return {
+      dx: Number(x) < (r.width - D) / 2 ? 1 : -1,
+      dy: Number(y) < (r.height - D) / 2 ? 1 : -1,
+    };
+  });
+}
+
+console.log('=== Açılış (yakın) ===');
+const y0 = await sayfaY();
+const yon = await bosYon();
+const yatay = await surukle(140 * yon.dx, 0);
+k(
+  'yatay parmak haritayı kaydırıyor',
+  yatay.sonra !== yatay.once,
+  `${yatay.once} -> ${yatay.sonra}`,
+);
+const dikey = await surukle(0, 120 * yon.dy);
+k(
+  'dikey parmak da haritayı kaydırıyor',
+  dikey.sonra !== dikey.once,
+  `${dikey.once} -> ${dikey.sonra}`,
+);
+k('sayfa arkada kaymıyor', (await sayfaY()) === y0, `scrollY ${await sayfaY()}`);
+
+console.log('=== İki parmak ===');
+{
+  const { x, y } = await orta();
+  const once = olcek(await donusum());
+  await cdp.send('Input.dispatchTouchEvent', {
+    type: 'touchStart',
+    touchPoints: [
+      { x: x - 30, y, id: 1 },
+      { x: x + 30, y, id: 2 },
+    ],
+  });
+  for (let i = 1; i <= 12; i++) {
+    await cdp.send('Input.dispatchTouchEvent', {
+      type: 'touchMove',
+      touchPoints: [
+        { x: x - 30 - i * 6, y, id: 1 },
+        { x: x + 30 + i * 6, y, id: 2 },
+      ],
     });
     await s.waitForTimeout(16);
   }
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
   await s.waitForTimeout(500);
-  const sonra = await durum();
-  const haritaOynadi = once.stil !== sonra.stil;
-  const sayfaKaydi = once.sayfaY !== sonra.sayfaY;
-  console.log(
-    `  ${etiket.padEnd(34)} harita:${haritaOynadi ? 'OYNADI' : 'ölü  '} sayfa:${sayfaKaydi ? 'kaydı' : 'ölü  '}`,
+  const sonra = olcek(await donusum());
+  k('iki parmak açılınca harita yakınlaşıyor', sonra > once + 0.2, `${once} -> ${sonra}`);
+}
+
+console.log('=== "Haritayı sığdır" sonrası ===');
+await s.getByRole('button', { name: 'Haritayı sığdır' }).click();
+await s.waitForTimeout(700);
+const sigdir = await surukle(-150, 0);
+k("sığdır'da ÖLÜ JEST YOK: harita parmağı izliyor", sigdir.ortada !== sigdir.once, sigdir.ortada);
+k('bırakınca yerine yaylanıyor', sigdir.sonra === sigdir.once, sigdir.sonra);
+
+console.log('=== Kısa dokunuş ===');
+{
+  // Bir toprağın kendi noktasına dokun: haritanın ortasına en yakın,
+  // dokunulabilir (üstünde düğme olmayan) bölge.
+  const hedef = await s.evaluate(() => {
+    const kutu = document.querySelector('[data-harita-sayfasi]').getBoundingClientRect();
+    const svg = document.querySelector('[data-toprak-katmani]').getBoundingClientRect();
+    let en = null;
+    for (const p of document.querySelectorAll('path[data-bolge]')) {
+      const x = svg.left + (Number(p.dataset.x) / 100) * svg.width;
+      const y = svg.top + (Number(p.dataset.y) / 100) * svg.height;
+      if (document.elementFromPoint(x, y) !== p) continue;
+      const d = Math.hypot(x - (kutu.left + kutu.width / 2), y - (kutu.top + kutu.height * 0.4));
+      if (!en || d < en.d) en = { x, y, d, id: p.dataset.bolge };
+    }
+    return en;
+  });
+  const once = await donusum();
+  await cdp.send('Input.dispatchTouchEvent', {
+    type: 'touchStart',
+    touchPoints: [{ x: hedef.x, y: hedef.y }],
+  });
+  await cdp.send('Input.dispatchTouchEvent', {
+    type: 'touchMove',
+    touchPoints: [{ x: hedef.x + 3, y: hedef.y }],
+  });
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  await s.waitForTimeout(1200);
+  const kart = await s.locator('[data-bolge-sayfasi]').count();
+  k('kısa dokunuş toprağı seçiyor — bölge kartı açıldı', kart === 1, `bölge ${hedef.id}`);
+  const sonra = await donusum();
+  // Seçim görünür alandaysa harita kıpırdamamalı; kart açılınca görünen
+  // alan küçüldüğü için yalnız ÖLÇEK karşılaştırılıyor.
+  k(
+    'kısa dokunuş haritayı yakınlaştırmıyor',
+    olcek(sonra) <= olcek(once) + 0.01,
+    `${once} -> ${sonra}`,
   );
-  return { haritaOynadi, sayfaKaydi };
 }
-
-console.log('=== "Haritayı sığdır" SONRASI (ölçek 1) ===');
-const sigdir = s.locator('button:has-text("sığdır"), button[title*="sığdır"]').first();
-if (await sigdir.count()) {
-  await sigdir.click({ force: true });
-  await s.waitForTimeout(800);
-  console.log('  (sığdır basıldı)');
-}
-async function sigdirBas() {
-  const d = s.locator('button:has-text("sığdır"), button[title*="sığdır"]').first();
-  if (await d.count()) {
-    await d.click({ force: true });
-    await s.waitForTimeout(700);
-  }
-}
-let hata = 0;
-const k = (ad, kosul) => {
-  console.log(`  ${kosul ? '[GEÇTİ]' : '[KALDI]'} ${ad}`);
-  if (!kosul) hata++;
-};
-
-await sigdirBas();
-const yatay = await parmakSurukle(-170, 0, 'YATAY parmak (sığdır sonrası)');
-k('yatay parmak haritayı oynatıyor — ölü jest yok', yatay.haritaOynadi);
-
-await sigdirBas();
-const dikey = await parmakSurukle(0, -140, 'DİKEY parmak (sığdır sonrası)');
-k('dikey parmak hâlâ SAYFAYI kaydırıyor', dikey.sayfaKaydi);
-k('dikey parmak haritayı ele geçirmiyor', !dikey.haritaOynadi);
-
-await sigdirBas();
-const kisa = await parmakSurukle(-12, 0, 'ÇOK KISA yatay (eşik altı)');
-k('eşik altı dokunuş kazara yakınlaştırmıyor', !kisa.haritaOynadi);
 
 console.log(hata === 0 ? '\nHARİTA JESTLERİ TEMİZ\n' : `\n${hata} JEST KALDI\n`);
 await b.close();

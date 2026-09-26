@@ -541,3 +541,27 @@ svg g[role='button']:focus-visible > path:first-of-type {
     animation: none;
   }
 }
+
+/*
+ * Seçili toprak (docs/23): kenarı yavaşça nefes alıyor. Toprak haritasında
+ * seçim bir sınır; sabit bir çizgi komşu sınırlarla karışabiliyordu.
+ */
+@keyframes toprak-nefes {
+  0%,
+  100% {
+    stroke-opacity: 1;
+  }
+  50% {
+    stroke-opacity: 0.45;
+  }
+}
+
+.secili-toprak {
+  animation: toprak-nefes 1.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .secili-toprak {
+    animation: none;
+  }
+}

@@ -440,6 +440,8 @@ export interface RegionDto {
   distance: number;
   /** Sahibinin ittifakıyla saldırmazlık paktım var mı (docs/09 B1d). */
   paktli?: boolean;
+  /** Sahibi ittifak arkadaşım mı — saldırılamaz, takviye gönderilebilir. */
+  muttefik?: boolean;
   fortressBonus: number;
 }
 

@@ -12,7 +12,7 @@
  *
  * API ve web ayakta olmalı. node tools/harita-testi.mjs
  */
-import { rehberiSustur } from './lib/gezin.mjs';
+import { bolgeyeDokun, rehberiSustur } from './lib/gezin.mjs';
 import { tarayiciAc } from './lib/tarayici.mjs';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
 import { kayitOl } from './lib/kayit.mjs';
@@ -159,8 +159,9 @@ await sayfa.click('nav button:has-text("Dünya")');
 await sayfa.waitForTimeout(2000);
 
 /*
- * Harita artık SVG altıgen değil: resimli bir zemin ve üstünde HTML
- * işaretçiler (docs/12 §5). Ölçümler de oraya taşındı.
+ * Harita bir TOPRAK haritası (docs/23): resimli zemin, üstünde her
+ * bölgenin karaya kırpılmış toprağı (SVG yolu, `data-bolge`) ve ters
+ * ölçekli etiketler.
  */
 const tuval = sayfa.locator('[data-harita-tuval]');
 const bolgeSayisi = await sayfa.locator('[data-bolge]').count();
@@ -182,6 +183,9 @@ await sayfa.screenshot({ path: `${CIKTI}/harita-0-acilis.png` });
 await sayfa.getByRole('button', { name: 'Haritayı sığdır' }).click();
 await sayfa.waitForTimeout(600);
 
+// Vilayet adları KAYNAKLAR merceğinde: vilayet birliği bir gelir kuralı.
+await sayfa.click('[data-mercek="kaynak"]');
+await sayfa.waitForTimeout(400);
 const uzakMetin = await govdeMetni();
 kontrol(
   'Vilayet adları haritada yazıyor',
@@ -189,6 +193,99 @@ kontrol(
   (uzakMetin.match(/[A-ZÇĞİÖŞÜ]{4,}(?: [A-ZÇĞİÖŞÜ]+)*/g) ?? []).slice(0, 3).join(' / '),
 );
 await sayfa.screenshot({ path: `${CIKTI}/harita-1-genel.png` });
+
+/*
+ * TOPRAK HARİTASI (docs/23): her bölgenin bir toprağı var ve kendi
+ * noktasına basan parmak KENDİ bölgesini seçiyor — komşusunu değil.
+ * Eski madalyon haritasında 121 işaretçi üst üste biniyor ve "yanlış
+ * bölge açıldı" oluyordu.
+ */
+{
+  const d = await sayfa.evaluate(() => {
+    const svg = document.querySelector('[data-toprak-katmani]').getBoundingClientRect();
+    let dogru = 0;
+    let ortulu = 0;
+    const yanlis = [];
+    for (const p of document.querySelectorAll('path[data-bolge]')) {
+      const x = svg.left + (Number(p.dataset.x) / 100) * svg.width;
+      const y = svg.top + (Number(p.dataset.y) / 100) * svg.height;
+      const ust = document.elementFromPoint(x, y);
+      if (ust === p) dogru++;
+      else if (ust?.matches?.('path[data-bolge]'))
+        yanlis.push(`${p.dataset.bolge}→${ust.dataset.bolge}`);
+      else ortulu++; // üstünde düğme ya da çekmece: kaydırınca açılıyor
+    }
+    const bos = [...document.querySelectorAll('path[data-bolge]')].filter(
+      (p) => !p.getAttribute('d'),
+    ).length;
+    return { dogru, ortulu, yanlis, bos };
+  });
+  kontrol('Her bölgenin toprağı çiziliyor', d.bos === 0, `${d.bos} boş`);
+  kontrol(
+    'Bölgenin noktasına basmak KENDİ toprağını seçiyor, komşusunu değil',
+    d.yanlis.length === 0 && d.dogru > 60,
+    `${d.dogru} doğru, ${d.ortulu} düğme altında, yanlış: ${d.yanlis.slice(0, 3).join(', ') || 'yok'}`,
+  );
+}
+
+/*
+ * MERCEKLER: tek soru, tek boyama. Çipler basılı durumunu söylüyor,
+ * boyama gerçekten değişiyor.
+ */
+{
+  const benimId = (await G('/map')).regions.find((r) => r.isMine)?.id;
+  const dolgu = () =>
+    sayfa.evaluate((id) => {
+      const p = document.querySelector(`path[data-bolge="${id}"]`);
+      return `${p?.getAttribute('fill')}@${p?.getAttribute('fill-opacity')}`;
+    }, benimId);
+  await sayfa.click('[data-mercek="siyasi"]');
+  await sayfa.waitForTimeout(300);
+  const siyasi = await dolgu();
+  kontrol('Kim nerede: benim toprağım ALTIN', siyasi.startsWith('#f5b731'), siyasi);
+  await sayfa.click('[data-mercek="kaynak"]');
+  await sayfa.waitForTimeout(300);
+  const kaynak = await dolgu();
+  kontrol('Kaynaklar merceği boyamayı türe çeviriyor', kaynak !== siyasi, `${siyasi} -> ${kaynak}`);
+  const basili = await sayfa
+    .locator('[data-mercek][aria-pressed="true"]')
+    .getAttribute('data-mercek');
+  kontrol('Basılı çip seçili merceği söylüyor', basili === 'kaynak', basili ?? 'yok');
+
+  /*
+   * HEDEFLER sunucunun kurallarıyla aynı: çekirdek, kendi medeniyetinin
+   * lordu, kalkanlı bölge karanlık; benim toprağım altın.
+   */
+  await sayfa.click('[data-mercek="hedef"]');
+  await sayfa.waitForTimeout(300);
+  const harita = await G('/map');
+  const benMed = (await G('/me')).lord.medeniyet?.id ?? null;
+  const yasakOlmali = harita.regions.filter(
+    (r) =>
+      !r.isMine &&
+      (r.cekirdek ||
+        r.shielded ||
+        (r.owner && r.muttefik) ||
+        (r.owner && r.paktli) ||
+        (r.owner && r.medeniyet && r.medeniyet.id === benMed)),
+  );
+  const karanliklar = await sayfa.evaluate(
+    (idler) => {
+      return idler.filter(
+        (id) =>
+          document.querySelector(`path[data-bolge="${id}"]`)?.getAttribute('fill') === '#0b0806',
+      ).length;
+    },
+    yasakOlmali.map((r) => r.id),
+  );
+  kontrol(
+    'Hedefler: saldırılamayan her bölge karanlık',
+    karanliklar === yasakOlmali.length && yasakOlmali.length > 0,
+    `${karanliklar} / ${yasakOlmali.length}`,
+  );
+  await sayfa.click('[data-mercek="siyasi"]');
+  await sayfa.waitForTimeout(300);
+}
 
 /*
  * ETİKET KADEMESİ. Uzak ölçekte adların hepsi yazılamaz — telefon
@@ -203,8 +300,13 @@ kontrol(
   `${uzakAd} / ${bolgeSayisi} ad`,
 );
 
-// Üç adım: ×1 → 1,5 → 2,25 → 3,375. "Yakın" kademesinin eşiği 2,8.
+// Üç adım: ×1 → 1,5 → 2,25 → 3,375. "Orta" 1,5'ten, "yakın" 2,6'dan.
+// Simge boyu ORTADA ölçülüyor: uzakta simge yok, yalnız toprak.
+const simgeBoyu = async () =>
+  (await sayfa.locator('[data-bolge-simge]').first().boundingBox())?.width ?? 0;
 await sayfa.getByRole('button', { name: 'Yakınlaştır' }).click();
+await sayfa.waitForTimeout(500);
+const ortaSimge = await simgeBoyu();
 await sayfa.getByRole('button', { name: 'Yakınlaştır' }).click();
 await sayfa.getByRole('button', { name: 'Yakınlaştır' }).click();
 await sayfa.waitForTimeout(600);
@@ -225,27 +327,24 @@ kontrol(
 );
 
 /*
- * İŞARETÇİ SABİT BOYUTTA KALIYOR. Harita pinlerinin kuralı: zemin
- * büyür, pin büyümez. İlk denemede büyüyordu ve yakınlaştırmak haritayı
- * okunur değil OKUNMAZ yapıyordu — madalyonlar devleşip adlar birbirine
- * giriyordu.
+ * SİMGE SABİT BOYUTTA KALIYOR. Harita pinlerinin kuralı: toprak büyür,
+ * simge ve yazı büyümez. İlk madalyon haritasında büyüyordu ve
+ * yakınlaştırmak haritayı okunur değil OKUNMAZ yapıyordu.
  */
-const pinBoyu = async () => (await sayfa.locator('[data-bolge]').first().boundingBox())?.width ?? 0;
-const yakinPin = await pinBoyu();
+const yakinSimge = await simgeBoyu();
+kontrol(
+  'Yakınlaşınca simge büyümüyor',
+  ortaSimge > 0 && Math.abs(yakinSimge - ortaSimge) < 4,
+  `${ortaSimge.toFixed(0)}px -> ${yakinSimge.toFixed(0)}px`,
+);
 await sayfa.getByRole('button', { name: 'Haritayı sığdır' }).click();
 await sayfa.waitForTimeout(500);
-const uzakPin = await pinBoyu();
-kontrol(
-  'Yakınlaşınca işaretçi büyümüyor',
-  Math.abs(yakinPin - uzakPin) < 4,
-  `${uzakPin.toFixed(0)}px -> ${yakinPin.toFixed(0)}px`,
-);
 
 const geri = await tuval.evaluate((el) => el.style.transform);
 kontrol('Sığdır düğmesi haritayı geri alıyor', /scale\(1\)/.test(geri), geri);
 
 // Bölge seçmek hâlâ çalışıyor: yakınlaştırma dokunmayı bozmamalı.
-await sayfa.locator('[data-bolge]').nth(20).click();
+await bolgeyeDokun(sayfa, '[data-bolge]');
 await sayfa.waitForTimeout(900);
 const govde = await sayfa.locator('body').innerText();
 kontrol('Haritadan bölge seçilebiliyor', /garnizon|Garnizon|SALDIR|Seviye|GELİR/i.test(govde));

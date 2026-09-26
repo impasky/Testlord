@@ -7,8 +7,9 @@ Oyuncunun cümlesi:
 > ve en yüksek verimliliği nasıl alırız?"
 
 Bu belge önce sorunu **ölçüyor**, sonra sıfırdan bir tasarım öneriyor ve
-onu gerçek veriyle çizilmiş bir **taslakla** gösteriyor. Kod henüz
-yazılmadı. Karar oyuncunun.
+onu gerçek veriyle çizilmiş bir **taslakla** gösteriyor. Oyuncu "haritayı
+sıfırdan yapmak istiyorum" dedi; öneri uygulandı — ne yapıldığı, neyin
+değiştiği ve neyin ölçüldüğü **§7**'de.
 
 ## 1. Bugün ne görülüyor
 
@@ -203,7 +204,7 @@ kalır.
 - Bölgeler, komşuluk grafiği, geçitler, vilayetler, harita sürümü: motor
   aynı kalıyor. Bu yalnız bir **gösterim** değişikliği.
 - Zemin sanatı ve dokuz karo.
-- `/map` ve `/map/:id` uçları.
+- `/map` ve `/map/:id` uçları (listeye yalnız `muttefik` alanı eklendi, §7.1).
 - Ekran dışı okları, seçileni ekrana getirme, etiket önceliği: aynen
   taşınıyor.
 
@@ -217,3 +218,60 @@ kalır.
    oyuncunun asıl sorularını cevaplıyor.
 3. **Zemin:** bugünkü resim, rengi kısılmış olarak (öneri, maliyetsiz)
    ya da daha sade yeni bir parşömen zemin (görsel üretimi gerekir).
+
+Oyuncu bu soruları açık bırakıp "sıfırdan yap" dedi; üçünde de öneri
+uygulandı: medeniyet rengi + altın sen + ittifaka beyaz kesik sınır,
+dört mercek, rengi kısılmış bugünkü zemin.
+
+## 7. Uygulandı
+
+### 7.1 Dosyalar
+
+| Dosya                                                | Ne                                                                                                                                                            |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/shared/src/toprak.ts` (+ 16 test)          | Voronoi hücreleri, ortak kenarlar, sınır türü, sahip kümeleri, `hedefDurumu` (sunucunun saldırı kurallarının haritadaki eşi)                                  |
+| `tools/harita-kara.py` → `components/harita/kara.ts` | Zeminin arazi maskesinden kara çizgisi: büyük su = deniz, küçük adacıklar atılıyor, kontur Douglas–Peucker ile sadeleştiriliyor                               |
+| `apps/web/src/components/harita/DunyaHaritasi.tsx`   | Harita bileşeni sıfırdan: zemin, toprak katmanı, sınırlar, etiketler, mercekler, küçük harita, gösterge, jestler. Eski `components/DunyaHaritasi.tsx` silindi |
+| `apps/web/src/screens/Harita.tsx`                    | Tam ekran düzen: alt çekmece (diyar özeti, medeniyetler, ittifak hedefi, olaylar, yürüyüşler) ve yarım/tam bölge sayfası                                      |
+| `apps/api/src/routes/map.ts`                         | `/map` listesine tek alan: `muttefik` (bölgenin sahibi benim ittifakımda mı). Hedefler merceği ve beyaz kesik sınır bunu okuyor                               |
+
+### 7.2 Öneriden sapmalar ve kararlar
+
+- **Toprak şekilleri oyuncuda hesaplanıyor**, §3.1'deki statik dosyada
+  değil. 121 bölgenin Voronoi'si ve sınır kenarları yarım düzlem
+  kırpmasıyla ~7 ms tutuyor (geliştirme makinesinde, Node; 200 tekrarın
+  ortalaması). Bu hesap açılışta bir kez yapılıyor, sonra yalnız
+  bölgelerin YERİ değişince tekrarlanıyor (sahiplik değişince yalnız
+  boyama değişiyor).
+  Böylece harita sürümüyle (`HARITA_SURUMU`) eşleşmesi gereken bir dosya
+  yok; şekiller her zaman o dünyanın x/y'sinden geliyor.
+- **Kara kırpması:** topraklar kara çizgisiyle kırpılıyor, ayrıca her
+  bölgenin kendi noktasına küçük bir daire ekleniyor. Kıyıdaki bir bölge
+  hiçbir zaman denizde kaybolmuyor, her zaman dokunulabilir kalıyor.
+- **Hedefler merceği mesafeye göre**, yalnız komşuya göre değil: sunucu
+  yürüyüşü komşuyla sınırlamıyor. Kapalı nedenleri sunucuyla aynı
+  sırada: çekirdek, aynı medeniyetten bir lord (yoldaş), ittifak üyesi,
+  pakt, kalkan.
+- **Kaynaklar merceğinde vilayet sınırları orta kalınlıkta** ve uzak ve
+  orta ölçekte vilayet adları çıkıyor. Vilayet birliği bonusu (G4) bu
+  mercekte okunuyor.
+- **Esneme:** harita sınırında (ve "sığdır"da, hiç kayacak yer yokken)
+  parmak ölü bir jest yapmıyor. Harita parmağı dirençle izliyor, parmak
+  kalkınca yerine yaylanıyor.
+- **Çekmecenin kapalı hâli boş değil:** diyar adı, "Bölgen x/y", bu hafta
+  oynayan lord sayısı ve tahtın sahibi (docs/08 İ5 "harita insanlı
+  görünsün" burada yaşıyor).
+- **Liste görünümü yapılmadı** (Faz 3). Her toprak klavyeyle
+  odaklanabilen, adı, sahibi ve medeniyeti okunan bir düğme; ekran
+  okuyucu için ayrı bir listeye şimdilik gerek görülmedi.
+
+### 7.3 Ölçülen
+
+| Ölçüt                              | Sonuç                                                                                           |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Dokunma = toprak                   | 121 bölgenin 118'i kendi noktasından seçiliyor, 3'ünün üstünde düğme var, **yanlış bölge 0**    |
+| Etiket çakışması (yakın ölçekte)   | 116 bölge adı görünür, çakışan çift 0 (`gorsel-denetim` artık önce yakın ölçeğe iniyor)         |
+| Haritanın ekrandaki payı (390×844) | %33 → **%72**. Kalan pay uygulamanın üst çubuğu, alt gezinme ve omurga şeridi                   |
+| Hedefler merceği ↔ sunucu          | Saldırılamaz her bölge karanlık (20/20)                                                         |
+| Jestler (`harita-dokunma-testi`)   | Yatay/dikey kaydırma, iki parmak, sığdır'da esneme, kısa dokunuş seçiyor; sayfa arkada kaymıyor |
+| Kare hızı                          | Ölçülmedi. Kaydırma yalnız tuvalin `transform`'unu değiştiriyor, katmanlar `memo`               |

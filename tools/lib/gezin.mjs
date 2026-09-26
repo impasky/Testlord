@@ -207,10 +207,25 @@ export async function bolgeyeDokun(page, secici) {
   }
   const aday = await page.locator(secici).evaluateAll((dugumler) => {
     for (const d of dugumler) {
-      const r = d.getBoundingClientRect();
-      if (r.width === 0) continue;
-      const x = r.left + r.width / 2;
-      const y = r.top + r.height / 2;
+      /*
+       * Harita artık TOPRAK haritası (docs/23): `data-bolge` bir SVG
+       * yolunda ve kutusunun ortası kıyıda denize, dışbükey olmayan
+       * yerde komşuya düşebiliyor. Bölgenin kendi noktası (x/y) ise
+       * tanım gereği kendi toprağının içinde — oyuncunun da basacağı yer.
+       */
+      let x;
+      let y;
+      if (d.ownerSVGElement && d.dataset.x !== undefined) {
+        const s = d.ownerSVGElement.getBoundingClientRect();
+        x = s.left + (Number(d.dataset.x) / 100) * s.width;
+        y = s.top + (Number(d.dataset.y) / 100) * s.height;
+      } else {
+        const r = d.getBoundingClientRect();
+        if (r.width === 0) continue;
+        x = r.left + r.width / 2;
+        y = r.top + r.height / 2;
+      }
+      if (x < 0 || y < 0 || x > innerWidth || y > innerHeight) continue;
       const ust = document.elementFromPoint(x, y);
       if (ust && (ust === d || d.contains(ust))) return { id: d.getAttribute('data-bolge'), x, y };
     }

@@ -12,7 +12,7 @@
     "tr": " · {0} bölgen",
     "en": " · {0} yours here",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1081"
+      "apps/web/src/screens/Harita.tsx:1180"
     ]
   },
   "teaf79905": {
@@ -36,7 +36,7 @@
     "tr": " · alırsan birlik {0}",
     "en": " · take it for unity {0}",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1079"
+      "apps/web/src/screens/Harita.tsx:1178"
     ]
   },
   "tf308233e": {
@@ -52,7 +52,7 @@
     "tr": " · birlik {0}",
     "en": " · unity {0}",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1071"
+      "apps/web/src/screens/Harita.tsx:1170"
     ]
   },
   "t64fe69d3": {
@@ -68,7 +68,7 @@
     "tr": " · tek bölgen",
     "en": " · your only one here",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1071"
+      "apps/web/src/screens/Harita.tsx:1170"
     ]
   },
   "tdcefd02d": {
@@ -140,7 +140,7 @@
     "tr": "— medeniyetin",
     "en": "— civilization's",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:877"
+      "apps/web/src/screens/Harita.tsx:991"
     ]
   },
   "tb5cd679c": {
@@ -164,7 +164,7 @@
     "tr": ", çekirdek — ele geçirilemez",
     "en": ", core — cannot be captured",
     "nerede": [
-      "apps/web/src/components/DunyaHaritasi.tsx:950"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:832"
     ]
   },
   "t9627bb6e": {
@@ -172,7 +172,7 @@
     "tr": ", tahkimat +%{0}",
     "en": ", fortification +{0}%",
     "nerede": [
-      "apps/web/src/components/DunyaHaritasi.tsx:874"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:828"
     ]
   },
   "ta0f4c75c": {
@@ -188,7 +188,7 @@
     "tr": "· sahipsiz",
     "en": "· unowned",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1033"
+      "apps/web/src/screens/Harita.tsx:1132"
     ]
   },
   "t5632acb5": {
@@ -212,7 +212,8 @@
     "tr": "'i bu hafta oynadı",
     "en": "played this week",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:78"
+      "apps/web/src/components/DunyaSeridi.tsx:78",
+      "apps/web/src/screens/Harita.tsx:956"
     ]
   },
   "t111b2872": {
@@ -279,12 +280,20 @@
       "apps/web/src/components/Paktlar.tsx:183"
     ]
   },
+  "tad423c79": {
+    "grup": "arayuz",
+    "tr": "[{0}] hedef",
+    "en": "[{0}] target",
+    "nerede": [
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1365"
+    ]
+  },
   "t07b8fe99": {
     "grup": "arayuz",
     "tr": "[{0}] HEDEF",
     "en": "[{0}] TARGET",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:892"
+      "apps/web/src/screens/Harita.tsx:1004"
     ]
   },
   "tcbc6d485": {
@@ -303,20 +312,12 @@
       "apps/web/src/screens/Sehir.tsx:406"
     ]
   },
-  "t00e6ccb6": {
-    "grup": "arayuz",
-    "tr": "{0} — {1}, seviye {2}, {3}, {4} adım{5}",
-    "en": "{0} — {1}, level {2}, {3}, {4} steps{5}",
-    "nerede": [
-      "apps/web/src/components/DunyaHaritasi.tsx:953"
-    ]
-  },
   "te4dc80c9": {
     "grup": "arayuz",
     "tr": "{0} — {1}, seviye {2}, {3}{4}{5}, {6} adım{7}",
     "en": "{0} — {1}, level {2}, {3}{4}{5}, {6} steps{7}",
     "nerede": [
-      "apps/web/src/components/DunyaHaritasi.tsx:947"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:829"
     ]
   },
   "t14eabbb8": {
@@ -332,7 +333,7 @@
     "tr": "{0} — bu bölge en üst aşamada.",
     "en": "{0} — this region is at its highest stage.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1226"
+      "apps/web/src/screens/Harita.tsx:1326"
     ]
   },
   "td592a5b8": {
@@ -356,8 +357,8 @@
     "tr": "{0} — haritada göster",
     "en": "{0} — show on map",
     "nerede": [
-      "apps/web/src/components/DunyaHaritasi.tsx:776",
-      "apps/web/src/components/DunyaHaritasi.tsx:777"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:753",
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:754"
     ]
   },
   "ta28d78fb": {
@@ -535,7 +536,7 @@
     "tr": "{0} adım",
     "en": "{0} step|{0} steps",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1045"
+      "apps/web/src/screens/Harita.tsx:1144"
     ]
   },
   "t43b851b5": {
@@ -596,8 +597,8 @@
     "tr": "{0} altın · {1}{2}demir · {3} erzak",
     "en": "{0} gold · {1}{2}iron · {3} supplies",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1233",
-      "apps/web/src/screens/Harita.tsx:512"
+      "apps/web/src/screens/Harita.tsx:1335",
+      "apps/web/src/screens/Harita.tsx:517"
     ]
   },
   "te89bff62": {
@@ -701,7 +702,7 @@
     "tr": "{0} başkentin. Bırakırsan elindeki en iyi yerleşime taşınırsın; hiç yerleşimin kalmadıysa kampa çekilirsin. Geri almak için yeniden savaşman gerekir.",
     "en": "{0} is your capital. If you abandon it, you move to your best remaining settlement; if you have none left, you fall back to a camp. Getting it back means fighting for it again.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1284"
+      "apps/web/src/screens/Harita.tsx:1386"
     ]
   },
   "t690eb6a7": {
@@ -725,7 +726,7 @@
     "tr": "{0} birim",
     "en": "{0} unit|{0} units",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:352"
+      "apps/web/src/screens/Harita.tsx:357"
     ]
   },
   "td3ec6d82": {
@@ -777,7 +778,7 @@
     "tr": "{0} çekirdeği. Kaybeden medeniyet ölmesin diye çekirdekler dokunulmaz; yalnız kendi üyeleri geliştirebilir.",
     "en": "{0} core. Cores are untouchable so the losing civilization doesn't die; only its own members can upgrade them.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:759"
+      "apps/web/src/screens/Harita.tsx:790"
     ]
   },
   "ta012b2a3": {
@@ -876,7 +877,7 @@
     "tr": "{0} fayda ›",
     "en": "{0} contribution ›",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:880"
+      "apps/web/src/screens/Harita.tsx:994"
     ]
   },
   "tf3ba9e7d": {
@@ -1036,12 +1037,28 @@
       "apps/web/src/screens/Giris.tsx:76"
     ]
   },
+  "tdeb1ebb9": {
+    "grup": "arayuz",
+    "tr": "{0} merceği. Görünen alan {1}%.",
+    "en": "{0} lens. Visible area {1}%.",
+    "nerede": [
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:779"
+    ]
+  },
   "t2088a96f": {
     "grup": "arayuz",
     "tr": "{0} oluyor",
     "en": "Becoming {0}",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1218"
+      "apps/web/src/screens/Harita.tsx:1318"
+    ]
+  },
+  "t79bb7e82": {
+    "grup": "arayuz",
+    "tr": "{0} ordu yolda",
+    "en": "{0} army on the march|{0} armies on the march",
+    "nerede": [
+      "apps/web/src/screens/Harita.tsx:966"
     ]
   },
   "t5ae157ef": {
@@ -1049,7 +1066,7 @@
     "tr": "{0} önde · +%{1} yağma",
     "en": "{0} in the lead · +{1}% loot",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1102"
+      "apps/web/src/screens/Harita.tsx:1201"
     ]
   },
   "tabd67e51": {
@@ -1146,7 +1163,7 @@
     "tr": "{0} sahipsiz kalacak. Geri almak için yeniden savaşman gerekir.",
     "en": "{0} will be left without an owner. Getting it back means fighting for it again.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1285"
+      "apps/web/src/screens/Harita.tsx:1387"
     ]
   },
   "t9fbcad0c": {
@@ -1214,7 +1231,7 @@
     "tr": "{0} seninle aynı medeniyetten ({1}). Kendi medeniyetinin lorduna saldıramazsın.",
     "en": "{0} is from the same civilization as you ({1}). You cannot attack a lord of your own civilization.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:770"
+      "apps/web/src/screens/Harita.tsx:801"
     ]
   },
   "t32c1e431": {
@@ -1373,7 +1390,7 @@
     "tr": "{0} yap",
     "en": "Make {0}",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1213"
+      "apps/web/src/screens/Harita.tsx:1311"
     ]
   },
   "t2a854ffc": {
@@ -1398,7 +1415,7 @@
     "tr": "{0} zaten ittifakın ortak hedefi. Haritada kesik çizgiyle işaretli.",
     "en": "{0} is already the alliance's common target. Marked with a dashed line on the map.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:442"
+      "apps/web/src/screens/Harita.tsx:447"
     ]
   },
   "te08cc1e3": {
@@ -1604,7 +1621,7 @@
     "nerede": [
       "apps/web/src/components/ui.tsx:954",
       "apps/web/src/screens/Arastirma.tsx:246",
-      "apps/web/src/screens/Harita.tsx:276"
+      "apps/web/src/screens/Harita.tsx:281"
     ]
   },
   "t0762338d": {
@@ -1741,14 +1758,6 @@
     "en": "⚑ Report",
     "nerede": [
       "apps/web/src/components/ProfilKarti.tsx:181"
-    ]
-  },
-  "tc997d9ef": {
-    "grup": "arayuz",
-    "tr": "⛨ korumalı",
-    "en": "⛨ protected",
-    "nerede": [
-      "apps/web/src/screens/Harita.tsx:931"
     ]
   },
   "tca25ca91": {
@@ -2156,7 +2165,7 @@
     "tr": "Asker senin kalır. Bölge el değiştirse bile evine döner.",
     "en": "The troops remain yours. Even if the region changes hands, they return home.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:384"
+      "apps/web/src/screens/Harita.tsx:389"
     ]
   },
   "tebbe0d76": {
@@ -2207,7 +2216,7 @@
     "tr": "Aynı anda açabileceğin keşif sayısı ve altının sınırlı; biri bitince tekrar dene.",
     "en": "The number of scouts you can deploy at once and your gold are limited; try again when one finishes.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:551"
+      "apps/web/src/screens/Harita.tsx:556"
     ]
   },
   "t44f73d61": {
@@ -2223,7 +2232,7 @@
     "tr": "Aynı anda en fazla {0} bölge geliştirilebilir. Biri bitmeden yenisi başlamaz.",
     "en": "A maximum of {0} [region|regions] can be developed at once. A new one cannot start until one finishes.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1144"
+      "apps/web/src/screens/Harita.tsx:1242"
     ]
   },
   "t74ab2913": {
@@ -2574,7 +2583,7 @@
     "tr": "Bırakılıyor…",
     "en": "Abandoning...",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1309"
+      "apps/web/src/screens/Harita.tsx:1412"
     ]
   },
   "tf502a21b": {
@@ -2712,7 +2721,7 @@
     "tr": "Bir medeniyetin",
     "en": "A civilization's",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:759"
+      "apps/web/src/screens/Harita.tsx:790"
     ]
   },
   "tb8821114": {
@@ -2778,7 +2787,7 @@
     "en": "empty",
     "nerede": [
       "apps/web/src/components/DizilimIzgarasi.tsx:324",
-      "apps/web/src/screens/Harita.tsx:1396"
+      "apps/web/src/screens/Harita.tsx:1500"
     ]
   },
   "t6e980c82": {
@@ -2813,16 +2822,17 @@
     "en": "Region",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:741",
-      "apps/api/src/routes/map.ts:1009",
-      "apps/api/src/routes/map.ts:1161",
-      "apps/api/src/routes/map.ts:1334",
-      "apps/api/src/routes/map.ts:467",
-      "apps/api/src/routes/map.ts:701",
-      "apps/api/src/routes/map.ts:720",
-      "apps/api/src/routes/map.ts:761",
-      "apps/api/src/routes/map.ts:779",
-      "apps/api/src/routes/map.ts:871",
-      "apps/web/src/screens/Harita.tsx:895"
+      "apps/api/src/routes/map.ts:1015",
+      "apps/api/src/routes/map.ts:1167",
+      "apps/api/src/routes/map.ts:1340",
+      "apps/api/src/routes/map.ts:473",
+      "apps/api/src/routes/map.ts:707",
+      "apps/api/src/routes/map.ts:726",
+      "apps/api/src/routes/map.ts:767",
+      "apps/api/src/routes/map.ts:785",
+      "apps/api/src/routes/map.ts:877",
+      "apps/web/src/screens/Harita.tsx:1008",
+      "apps/web/src/screens/Harita.tsx:1067"
     ]
   },
   "t8e157175": {
@@ -2846,7 +2856,7 @@
     "tr": "Bölge kalkan altında",
     "en": "Region is under shield",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:775"
+      "apps/web/src/screens/Harita.tsx:806"
     ]
   },
   "t2bc4f28b": {
@@ -2878,7 +2888,7 @@
     "tr": "Bölge sahipsiz kalır, garnizondaki birlikler eve döner. Bakımı ağır gelen ya da savunamadığın bir bölgeden böyle kurtulabilirsin.",
     "en": "The region becomes unowned, garrisoned troops return home. You can get rid of a region you can't maintain or defend this way.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1273"
+      "apps/web/src/screens/Harita.tsx:1375"
     ]
   },
   "t141e709a": {
@@ -2919,7 +2929,7 @@
     "tr": "Bölgen {0}/{1}",
     "en": "Your region {0}/{1}",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:847"
+      "apps/web/src/screens/Harita.tsx:946"
     ]
   },
   "tc94ced4d": {
@@ -2985,7 +2995,7 @@
     "tr": "Bölgeyi bırak",
     "en": "Abandon region",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1271"
+      "apps/web/src/screens/Harita.tsx:1373"
     ]
   },
   "tec7a2e6e": {
@@ -3001,7 +3011,7 @@
     "tr": "Bu bilgi eskidi; garnizon değişmiş olabilir. Tavsiyeler eski rapora göre verilmiyor.",
     "en": "This info is outdated; the garrison might have changed. Advice is not given based on an old report.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:525"
+      "apps/web/src/screens/Harita.tsx:530"
     ]
   },
   "t9577a02a": {
@@ -3009,7 +3019,7 @@
     "tr": "Bu bölgede {0} askerin savunmada.",
     "en": "{0} of your soldiers are defending in this region.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:351"
+      "apps/web/src/screens/Harita.tsx:356"
     ]
   },
   "t0bb9d20f": {
@@ -3017,7 +3027,7 @@
     "tr": "Bu Bölgedeki Savaşların",
     "en": "Your Battles in this Region",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1433"
+      "apps/web/src/screens/Harita.tsx:1538"
     ]
   },
   "t6a9f9031": {
@@ -3033,7 +3043,7 @@
     "tr": "Bu bölgeyi bırak",
     "en": "Abandon this region",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1320"
+      "apps/web/src/screens/Harita.tsx:1424"
     ]
   },
   "t82f1944e": {
@@ -3041,7 +3051,7 @@
     "tr": "Bu bölgeyi sadece buradaki garnizon savunur.",
     "en": "Only the garrison here defends this region.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1263"
+      "apps/web/src/screens/Harita.tsx:1365"
     ]
   },
   "t48c3baf4": {
@@ -3290,7 +3300,7 @@
     "tr": "Casus gönder · {0} altın · {1}",
     "en": "Send spy · {0} gold · {1}",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:544"
+      "apps/web/src/screens/Harita.tsx:549"
     ]
   },
   "t324c016f": {
@@ -3298,7 +3308,7 @@
     "tr": "Casus gönderilemedi.",
     "en": "Spy could not be sent.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:483"
+      "apps/web/src/screens/Harita.tsx:488"
     ]
   },
   "td9552ee2": {
@@ -3306,7 +3316,7 @@
     "tr": "Casus yakalanabilir; Kurnazlık statın riski düşürür.",
     "en": "The spy might be caught; your Cunning stat reduces the risk.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:555"
+      "apps/web/src/screens/Harita.tsx:560"
     ]
   },
   "tcc2c2673": {
@@ -3314,7 +3324,7 @@
     "tr": "Casus yola çıkıyor…",
     "en": "Spy is departing...",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:543"
+      "apps/web/src/screens/Harita.tsx:548"
     ]
   },
   "tb3c8f1a0": {
@@ -3330,7 +3340,7 @@
     "tr": "Çekiliyor…",
     "en": "Withdrawing...",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:362"
+      "apps/web/src/screens/Harita.tsx:367"
     ]
   },
   "t4aee0ab1": {
@@ -3338,7 +3348,7 @@
     "tr": "Çekirdek — ele geçirilemez",
     "en": "Core — cannot be captured",
     "nerede": [
-      "apps/web/src/components/DunyaHaritasi.tsx:1016"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1293"
     ]
   },
   "t53904c10": {
@@ -3354,7 +3364,7 @@
     "tr": "Çekirdek bölge — ele geçirilemez",
     "en": "Core region — cannot be captured",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:758"
+      "apps/web/src/screens/Harita.tsx:789"
     ]
   },
   "t0b794ade": {
@@ -3571,7 +3581,7 @@
     "tr": "Depo:",
     "en": "Storage:",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:511"
+      "apps/web/src/screens/Harita.tsx:516"
     ]
   },
   "t1d20a17b": {
@@ -3802,7 +3812,7 @@
     "tr": "Diyarda tek. Sahibi %{0}{1}şöhret bonusu alır, bölge limitine sayılmaz. Buraya saldırmak günlük hakkından düşmez ve el değiştirdikten sonra kalkanı yalnızca{2}{3} saat sürer.",
     "en": "Unique in the realm. Its owner gets a {0}%{1}fame bonus and it does not count towards the region limit. Attacking here does not use your daily allowance, and after it changes hands its shield lasts only{2}{3} hours.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1122"
+      "apps/web/src/screens/Harita.tsx:1220"
     ]
   },
   "t782046fc": {
@@ -3892,7 +3902,7 @@
     "tr": "Diyarın Lordu · {0}",
     "en": "Lord of the Realm · {0}",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1042"
+      "apps/web/src/screens/Harita.tsx:1141"
     ]
   },
   "t8adeae05": {
@@ -4023,6 +4033,14 @@
       "apps/web/src/screens/Ittifak.tsx:508"
     ]
   },
+  "t17ac34a9": {
+    "grup": "arayuz",
+    "tr": "dolu: lordun · soluk: sahipsiz",
+    "en": "solid: a lord's · faded: unclaimed",
+    "nerede": [
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1520"
+    ]
+  },
   "tf95e22df": {
     "grup": "arayuz",
     "tr": "Donanım",
@@ -4037,7 +4055,7 @@
     "tr": "Dönen ordun",
     "en": "Your returning army",
     "nerede": [
-      "apps/web/src/components/DunyaHaritasi.tsx:460"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:573"
     ]
   },
   "tb6842d76": {
@@ -4045,7 +4063,7 @@
     "tr": "Dönüş",
     "en": "Return",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:974"
+      "apps/web/src/screens/Harita.tsx:1029"
     ]
   },
   "te41adb3c": {
@@ -4103,23 +4121,16 @@
     "tr": "Dünya Haritası",
     "en": "World Map",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:845"
+      "apps/web/src/screens/Harita.tsx:900",
+      "apps/web/src/screens/Harita.tsx:944"
     ]
   },
   "t92c998be": {
     "grup": "arayuz",
     "tr": "Dünya haritası, {0} bölge",
-    "en": "World map, {0} regions",
+    "en": "World map, {0} region|World map, {0} regions",
     "nerede": [
-      "apps/web/src/components/DunyaHaritasi.tsx:556"
-    ]
-  },
-  "t537fb85a": {
-    "grup": "arayuz",
-    "tr": "düşman",
-    "en": "enemy",
-    "nerede": [
-      "apps/web/src/screens/Harita.tsx:926"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:611"
     ]
   },
   "tcb8eae6b": {
@@ -4127,7 +4138,7 @@
     "tr": "Düşman garnizonu görünmüyor. Casus göndererek öğrenebilir ya da Casus Leyla'yı sahaya sürerek sürekli görebilirsin.",
     "en": "Enemy garrison is not visible. You can learn by sending a spy or deploy Spy Leyla to see it constantly.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1416"
+      "apps/web/src/screens/Harita.tsx:1520"
     ]
   },
   "t4d955461": {
@@ -4579,7 +4590,7 @@
     "tr": "eski bilgi · {0} önce",
     "en": "old info · {0} ago",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:502"
+      "apps/web/src/screens/Harita.tsx:507"
     ]
   },
   "t99e130e8": {
@@ -4653,7 +4664,7 @@
     "tr": "Evde asker yok. Saldırmak için önce ordu kurman gerekiyor.",
     "en": "No troops at home. You must build an army to attack first.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:227"
+      "apps/web/src/screens/Harita.tsx:232"
     ]
   },
   "tac9a5137": {
@@ -4669,7 +4680,7 @@
     "tr": "Evet, bırak",
     "en": "Yes, abandon",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1309"
+      "apps/web/src/screens/Harita.tsx:1413"
     ]
   },
   "t581fa11c": {
@@ -4775,7 +4786,7 @@
     "tr": "garnizon",
     "en": "garrison",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1455"
+      "apps/web/src/screens/Harita.tsx:1561"
     ]
   },
   "tc36274bf": {
@@ -4784,8 +4795,8 @@
     "en": "Garrison",
     "nerede": [
       "apps/web/src/components/SavasRaporu.tsx:523",
-      "apps/web/src/screens/Harita.tsx:1247",
-      "apps/web/src/screens/Harita.tsx:1393"
+      "apps/web/src/screens/Harita.tsx:1349",
+      "apps/web/src/screens/Harita.tsx:1497"
     ]
   },
   "t31bf9958": {
@@ -4809,7 +4820,7 @@
     "tr": "Garnizonu ayarla",
     "en": "Manage garrison",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1260"
+      "apps/web/src/screens/Harita.tsx:1362"
     ]
   },
   "t2adab535": {
@@ -4836,14 +4847,6 @@
       "apps/web/src/components/Ogretici.tsx:149"
     ]
   },
-  "t1e73a047": {
-    "grup": "arayuz",
-    "tr": "geçit",
-    "en": "pass",
-    "nerede": [
-      "apps/web/src/screens/Harita.tsx:950"
-    ]
-  },
   "tead799ae": {
     "grup": "arayuz",
     "tr": "GELEN TEKLİF",
@@ -4857,8 +4860,8 @@
     "tr": "Geliştirme",
     "en": "Development",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1162",
-      "apps/web/src/screens/Harita.tsx:1225"
+      "apps/web/src/screens/Harita.tsx:1260",
+      "apps/web/src/screens/Harita.tsx:1325"
     ]
   },
   "t3a40efac": {
@@ -4866,7 +4869,7 @@
     "tr": "Geliştirme kuyruğu dolu",
     "en": "Development queue is full",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1143"
+      "apps/web/src/screens/Harita.tsx:1241"
     ]
   },
   "t433def14": {
@@ -4990,7 +4993,7 @@
     "tr": "Geri çağır",
     "en": "Recall",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:993"
+      "apps/web/src/screens/Harita.tsx:1051"
     ]
   },
   "tde74af89": {
@@ -5091,7 +5094,7 @@
     "tr": "Gönderilecek takviye",
     "en": "Reinforcements to send",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:371"
+      "apps/web/src/screens/Harita.tsx:376"
     ]
   },
   "t694ea4fc": {
@@ -5115,7 +5118,7 @@
       "apps/web/src/screens/EsyaPazari.tsx:411",
       "apps/web/src/screens/Generaller.tsx:149",
       "apps/web/src/screens/Giris.tsx:319",
-      "apps/web/src/screens/Harita.tsx:1213",
+      "apps/web/src/screens/Harita.tsx:1311",
       "apps/web/src/screens/Hesap.tsx:259",
       "apps/web/src/screens/Kisla.tsx:286",
       "apps/web/src/screens/ParolaSifirla.tsx:62",
@@ -5209,7 +5212,7 @@
     "tr": "Günde en fazla {0} saldırı yapabilirsin. Taht Kalesi bu limitten muaftır; yarın sıfırlanır.",
     "en": "You can attack at most {0} [time|times] a day. The Throne Citadel is exempt from this limit; resets tomorrow.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:747"
+      "apps/web/src/screens/Harita.tsx:778"
     ]
   },
   "t6ed6957e": {
@@ -5225,7 +5228,7 @@
     "tr": "Günlük saldırı hakkın bitti",
     "en": "Daily attack limit reached",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:746"
+      "apps/web/src/screens/Harita.tsx:777"
     ]
   },
   "t13da7c2c": {
@@ -5259,6 +5262,14 @@
     "en": "Map",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:566"
+    ]
+  },
+  "t16b56e08": {
+    "grup": "arayuz",
+    "tr": "Harita merceği",
+    "en": "Map lens",
+    "nerede": [
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:685"
     ]
   },
   "t811aa7b9": {
@@ -5318,7 +5329,7 @@
     "tr": "Haritayı sığdır",
     "en": "Fit the map",
     "nerede": [
-      "apps/web/src/components/DunyaHaritasi.tsx:809"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:731"
     ]
   },
   "t4888ec29": {
@@ -5352,7 +5363,7 @@
     "tr": "Hedef işaretlenemedi.",
     "en": "Target could not be marked.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:418"
+      "apps/web/src/screens/Harita.tsx:423"
     ]
   },
   "t4a708677": {
@@ -5369,6 +5380,14 @@
     "en": "The target's fortification added +{0}% to defense.",
     "nerede": [
       "apps/web/src/components/SavasRaporu.tsx:398"
+    ]
+  },
+  "t65049340": {
+    "grup": "arayuz",
+    "tr": "Hedefler",
+    "en": "Targets",
+    "nerede": [
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:71"
     ]
   },
   "t1f235445": {
@@ -5464,7 +5483,7 @@
     "tr": "Hepsi",
     "en": "All",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:218"
+      "apps/web/src/screens/Harita.tsx:223"
     ]
   },
   "t26d32801": {
@@ -5539,7 +5558,7 @@
     "en": "DELETE MY ACCOUNT",
     "nerede": [
       "apps/api/src/routes/me.ts:64",
-      "apps/web/src/api/client.ts:1300",
+      "apps/web/src/api/client.ts:1302",
       "apps/web/src/screens/Hesap.tsx:297"
     ]
   },
@@ -5887,7 +5906,7 @@
     "tr": "İşaretleniyor…",
     "en": "Marking...",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:449"
+      "apps/web/src/screens/Harita.tsx:454"
     ]
   },
   "t55615cba": {
@@ -5897,7 +5916,7 @@
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:363",
       "apps/web/src/screens/Generaller.tsx:181",
-      "apps/web/src/screens/Harita.tsx:645",
+      "apps/web/src/screens/Harita.tsx:676",
       "apps/web/src/screens/Kisla.tsx:381",
       "apps/web/src/screens/LordEkrani.tsx:220"
     ]
@@ -5925,7 +5944,7 @@
     "nerede": [
       "apps/web/src/components/IttifakBasvurular.tsx:43",
       "apps/web/src/components/IttifakIncele.tsx:44",
-      "apps/web/src/screens/Harita.tsx:312",
+      "apps/web/src/screens/Harita.tsx:317",
       "apps/web/src/screens/Ittifak.tsx:134"
     ]
   },
@@ -5939,7 +5958,7 @@
       "apps/api/src/routes/ittifak.ts:514",
       "apps/api/src/routes/ittifak.ts:961",
       "apps/web/src/components/ProfilKarti.tsx:133",
-      "apps/web/src/screens/Harita.tsx:440",
+      "apps/web/src/screens/Harita.tsx:445",
       "apps/web/src/screens/Ittifak.tsx:207",
       "apps/web/src/screens/Siralama.tsx:37",
       "apps/web/src/screens/YoneticiPaneli.tsx:323",
@@ -5967,7 +5986,7 @@
     "tr": "İttifak hedefi yap",
     "en": "Make alliance target",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:449"
+      "apps/web/src/screens/Harita.tsx:454"
     ]
   },
   "ta58c0e06": {
@@ -6119,7 +6138,7 @@
     "tr": "İyileşene kadar saldıramazsın. Malikâne ekranında kalan süreyi görebilirsin.",
     "en": "You cannot attack until healed. You can see the remaining time on the Manor screen.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:737"
+      "apps/web/src/screens/Harita.tsx:768"
     ]
   },
   "t3922a4ac": {
@@ -6204,6 +6223,16 @@
       "apps/web/src/screens/YoneticiPaneli.tsx:326"
     ]
   },
+  "t89ae57e6": {
+    "grup": "arayuz",
+    "tr": "Kale",
+    "en": "Castle",
+    "nerede": [
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:107",
+      "data/balance.json:bolgeler.gelisim_adlari.kale[2]",
+      "packages/shared/src/bolge-adi.ts:35"
+    ]
+  },
   "ta2c9f70e": {
     "grup": "arayuz",
     "tr": "Kale kırıcı. Tahkimata ×2, birime karşı ×0,5.",
@@ -6236,6 +6265,14 @@
       "apps/web/src/screens/YoneticiPaneli.tsx:210"
     ]
   },
+  "t0ae2b8b4": {
+    "grup": "arayuz",
+    "tr": "kalın çizgi: vilayet",
+    "en": "thick line: province",
+    "nerede": [
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1495"
+    ]
+  },
   "t0f86f2e3": {
     "grup": "arayuz",
     "tr": "Kalkan",
@@ -6260,8 +6297,8 @@
     "tr": "Kampın",
     "en": "Your camp",
     "nerede": [
-      "apps/web/src/components/DunyaHaritasi.tsx:1041",
-      "apps/web/src/components/DunyaHaritasi.tsx:468"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1299",
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:584"
     ]
   },
   "t926ba486": {
@@ -6290,8 +6327,7 @@
       "apps/web/src/components/SikayetSayfasi.tsx:66",
       "apps/web/src/components/UygulamaKasasi.tsx:183",
       "apps/web/src/screens/Demirhane.tsx:128",
-      "apps/web/src/screens/Harita.tsx:1005",
-      "apps/web/src/screens/Harita.tsx:1111",
+      "apps/web/src/screens/Harita.tsx:1210",
       "apps/web/src/screens/Medeniyet.tsx:325"
     ]
   },
@@ -6382,6 +6418,22 @@
     "en": "Against you: {0}",
     "nerede": [
       "apps/web/src/screens/Akin.tsx:644"
+    ]
+  },
+  "t02842203": {
+    "grup": "arayuz",
+    "tr": "Kartı büyüt",
+    "en": "Expand card",
+    "nerede": [
+      "apps/web/src/screens/Harita.tsx:1074"
+    ]
+  },
+  "t89e90b92": {
+    "grup": "arayuz",
+    "tr": "Kartı küçült",
+    "en": "Shrink card",
+    "nerede": [
+      "apps/web/src/screens/Harita.tsx:1074"
     ]
   },
   "t9481412e": {
@@ -6573,6 +6625,14 @@
       "apps/web/src/components/KaynakGonder.tsx:100"
     ]
   },
+  "t2203e53d": {
+    "grup": "arayuz",
+    "tr": "Kaynaklar",
+    "en": "Resources",
+    "nerede": [
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:73"
+    ]
+  },
   "t9ae9775c": {
     "grup": "arayuz",
     "tr": "Kaynakları, ordusu ve hesap bilgileri kimseye gösterilmez.",
@@ -6636,7 +6696,7 @@
     "en": "Your own member's region cannot be a target.",
     "nerede": [
       "apps/api/src/routes/ittifak.ts:750",
-      "apps/web/src/screens/Harita.tsx:453"
+      "apps/web/src/screens/Harita.tsx:458"
     ]
   },
   "ta2711e58": {
@@ -6668,7 +6728,7 @@
     "tr": "Keşif",
     "en": "Scouting",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:499",
+      "apps/web/src/screens/Harita.tsx:504",
       "apps/web/src/screens/Sehir.tsx:66",
       "data/generals.json:generaller[7].yetenek.ad"
     ]
@@ -6731,7 +6791,7 @@
     "tr": "Kışla'ya git",
     "en": "Go to Barracks",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:230"
+      "apps/web/src/screens/Harita.tsx:235"
     ]
   },
   "t4aa6e545": {
@@ -6773,6 +6833,14 @@
     "en": "Locked — {0}",
     "nerede": [
       "apps/web/src/components/DizilimIzgarasi.tsx:426"
+    ]
+  },
+  "t28cde64f": {
+    "grup": "arayuz",
+    "tr": "Kim nerede",
+    "en": "Who holds what",
+    "nerede": [
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:70"
     ]
   },
   "t620209e5": {
@@ -6860,7 +6928,7 @@
     "tr": "Korumalı",
     "en": "Protected",
     "nerede": [
-      "apps/web/src/components/DunyaHaritasi.tsx:1027"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1285"
     ]
   },
   "t0d0d93bf": {
@@ -6869,6 +6937,17 @@
     "en": "The button will enable automatically when the condition changes.",
     "nerede": [
       "apps/web/src/components/IttifakIncele.tsx:173"
+    ]
+  },
+  "tcbfde837": {
+    "grup": "arayuz",
+    "tr": "Köy",
+    "en": "Village",
+    "nerede": [
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:103",
+      "data/balance.json:bolgeler.gelisim_adlari.koy[0]",
+      "packages/shared/src/bina.ts:58",
+      "packages/shared/src/bolge-adi.ts:31"
     ]
   },
   "td7c1c774": {
@@ -7042,6 +7121,22 @@
       "apps/web/src/screens/Sehir.tsx:552"
     ]
   },
+  "tc652094b": {
+    "grup": "arayuz",
+    "tr": "Küçük harita",
+    "en": "Minimap",
+    "nerede": [
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1403"
+    ]
+  },
+  "t74877610": {
+    "grup": "arayuz",
+    "tr": "Küçük harita — dokunduğun yere git",
+    "en": "Minimap — go where you tap",
+    "nerede": [
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1402"
+    ]
+  },
   "t04fed051": {
     "grup": "arayuz",
     "tr": "Lider",
@@ -7072,7 +7167,7 @@
     "tr": "lider avı · +%{0} yağma",
     "en": "leader hunt · +{0}% loot",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1092"
+      "apps/web/src/screens/Harita.tsx:1191"
     ]
   },
   "tf8bf69b9": {
@@ -7123,6 +7218,14 @@
       "apps/web/src/components/UygulamaKasasi.tsx:42"
     ]
   },
+  "t1ce702ea": {
+    "grup": "arayuz",
+    "tr": "lord · saldırılabilir",
+    "en": "lord · attackable",
+    "nerede": [
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1480"
+    ]
+  },
   "t1703d35e": {
     "grup": "arayuz",
     "tr": "Lord adı",
@@ -7163,7 +7266,8 @@
     "tr": "lorddan",
     "en": "from lord",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:77"
+      "apps/web/src/components/DunyaSeridi.tsx:77",
+      "apps/web/src/screens/Harita.tsx:954"
     ]
   },
   "tf479120b": {
@@ -7215,7 +7319,7 @@
     "tr": "Lordun yaralı",
     "en": "Your lord is wounded",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:736",
+      "apps/web/src/screens/Harita.tsx:767",
       "apps/web/src/screens/LordEkrani.tsx:420"
     ]
   },
@@ -7242,6 +7346,15 @@
     "en": "Equip your lord",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:1040"
+    ]
+  },
+  "t21b3e1a2": {
+    "grup": "arayuz",
+    "tr": "Maden",
+    "en": "Mine",
+    "nerede": [
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:105",
+      "packages/shared/src/bolge-adi.ts:33"
     ]
   },
   "t496f8dba": {
@@ -7291,7 +7404,7 @@
     "tr": "medeniyet",
     "en": "civilization",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1102"
+      "apps/web/src/screens/Harita.tsx:1201"
     ]
   },
   "t474cfa95": {
@@ -7366,6 +7479,14 @@
     "en": "Regions held by the civilization are harder to capture.",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:43"
+    ]
+  },
+  "tbfd93fd8": {
+    "grup": "arayuz",
+    "tr": "Medeniyetler",
+    "en": "Civilizations",
+    "nerede": [
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:72"
     ]
   },
   "tf7042dec": {
@@ -7648,7 +7769,7 @@
     "tr": "Ordu seçmedin",
     "en": "You didn't select an army",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:781"
+      "apps/web/src/screens/Harita.tsx:812"
     ]
   },
   "tb51bd036": {
@@ -7656,7 +7777,7 @@
     "tr": "Ordu yola çıktı. Varış {0} sonra.",
     "en": "Army is on the move. Arrival in {0}.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:828"
+      "apps/web/src/screens/Harita.tsx:860"
     ]
   },
   "t7b119d9d": {
@@ -7664,7 +7785,7 @@
     "tr": "Ordun {0} yolunda",
     "en": "Your army is on the way to {0}",
     "nerede": [
-      "apps/web/src/components/DunyaHaritasi.tsx:460"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:573"
     ]
   },
   "t2dd46a4d": {
@@ -7729,7 +7850,7 @@
     "tr": "Ordun sahada. Döndüğünde bu bölgeye yollayabilirsin.",
     "en": "Your army is in the field. You can send them to this region when they return.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:226"
+      "apps/web/src/screens/Harita.tsx:231"
     ]
   },
   "tec21ead2": {
@@ -7838,7 +7959,7 @@
     "tr": "Ordunu ve ittifak durumunu gözden geçir.",
     "en": "Review your army and alliance status.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:386"
+      "apps/web/src/screens/Harita.tsx:391"
     ]
   },
   "t5db509a2": {
@@ -7862,7 +7983,7 @@
     "tr": "Ortak hedef bir tanedir; işaretlemek öncekini değiştirir.",
     "en": "There is only one common target; marking it will replace the previous one.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:446"
+      "apps/web/src/screens/Harita.tsx:451"
     ]
   },
   "t2302bad8": {
@@ -8112,6 +8233,14 @@
     "en": "Offer a pact",
     "nerede": [
       "apps/web/src/components/Paktlar.tsx:191"
+    ]
+  },
+  "t2853ceff": {
+    "grup": "arayuz",
+    "tr": "parlak = yakın",
+    "en": "brighter = closer",
+    "nerede": [
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1483"
     ]
   },
   "t1e55263e": {
@@ -8472,7 +8601,7 @@
     "en": "Hourly {0}",
     "nerede": [
       "apps/web/src/components/SavasRaporu.tsx:102",
-      "apps/web/src/screens/Harita.tsx:1176"
+      "apps/web/src/screens/Harita.tsx:1274"
     ]
   },
   "tb7be14e2": {
@@ -8480,7 +8609,7 @@
     "tr": "Saatlik şöhret",
     "en": "Hourly fame",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1184"
+      "apps/web/src/screens/Harita.tsx:1282"
     ]
   },
   "t32bbc8e5": {
@@ -8524,23 +8653,12 @@
       "apps/web/src/screens/Generaller.tsx:195"
     ]
   },
-  "tdbd47db9": {
+  "t8bba885c": {
     "grup": "arayuz",
-    "tr": "sahibi {0}",
-    "en": "owned by {0}",
+    "tr": "sahipsiz · saldırılabilir",
+    "en": "unclaimed · attackable",
     "nerede": [
-      "apps/web/src/components/DunyaHaritasi.tsx:948",
-      "apps/web/src/components/DunyaHaritasi.tsx:954"
-    ]
-  },
-  "tbf39f844": {
-    "grup": "arayuz",
-    "tr": "sahipsiz",
-    "en": "unowned",
-    "nerede": [
-      "apps/web/src/components/DunyaHaritasi.tsx:948",
-      "apps/web/src/components/DunyaHaritasi.tsx:954",
-      "apps/web/src/screens/Harita.tsx:929"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1481"
     ]
   },
   "t39eb2036": {
@@ -8548,7 +8666,7 @@
     "tr": "Saldır",
     "en": "Attack",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1382"
+      "apps/web/src/screens/Harita.tsx:1486"
     ]
   },
   "t9f872c01": {
@@ -8573,7 +8691,7 @@
     "tr": "Saldırı",
     "en": "Attack",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:974",
+      "apps/web/src/screens/Harita.tsx:1029",
       "apps/web/src/screens/Kisla.tsx:317"
     ]
   },
@@ -8590,7 +8708,7 @@
     "tr": "Saldırı başlatılamadı.",
     "en": "Attack could not be initiated.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:835"
+      "apps/web/src/screens/Harita.tsx:867"
     ]
   },
   "t09fe9781": {
@@ -8598,7 +8716,15 @@
     "tr": "Saldırı ordusu",
     "en": "Attacking army",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1335"
+      "apps/web/src/screens/Harita.tsx:1439"
+    ]
+  },
+  "t37fea432": {
+    "grup": "arayuz",
+    "tr": "saldırılamaz ya da uzak",
+    "en": "not attackable or far",
+    "nerede": [
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1482"
     ]
   },
   "tc79e6213": {
@@ -8606,7 +8732,7 @@
     "tr": "Saldırmadan önce garnizonu ve depoyu öğren. Casus ordu götürmez.",
     "en": "Learn about the garrison and storage before attacking. A spy does not take an army.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:531"
+      "apps/web/src/screens/Harita.tsx:536"
     ]
   },
   "t7b0a257c": {
@@ -8942,6 +9068,15 @@
       "apps/web/src/components/ArmaSecici.tsx:169"
     ]
   },
+  "tc026fd91": {
+    "grup": "arayuz",
+    "tr": "sen",
+    "en": "you",
+    "nerede": [
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1479",
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1509"
+    ]
+  },
   "tb0994bfe": {
     "grup": "arayuz",
     "tr": "sen açarsan",
@@ -8972,8 +9107,7 @@
     "tr": "senin",
     "en": "yours",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1030",
-      "apps/web/src/screens/Harita.tsx:922"
+      "apps/web/src/screens/Harita.tsx:1129"
     ]
   },
   "t614f2f56": {
@@ -9324,7 +9458,7 @@
     "tr": "Sonuç hesaplanıyor…",
     "en": "Calculating outcome...",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1355"
+      "apps/web/src/screens/Harita.tsx:1459"
     ]
   },
   "t5d49e7d6": {
@@ -9365,14 +9499,6 @@
     "en": "Server unreachable. The sleeping server might be waking up, this can take 30–60 seconds.",
     "nerede": [
       "apps/web/src/components/BaglantiDurumu.tsx:42"
-    ]
-  },
-  "tcf24897a": {
-    "grup": "arayuz",
-    "tr": "surlu",
-    "en": "walled",
-    "nerede": [
-      "apps/web/src/screens/Harita.tsx:941"
     ]
   },
   "t2fc5c33d": {
@@ -9529,6 +9655,7 @@
     "nerede": [
       "apps/web/src/components/MobilKabuk.tsx:74",
       "apps/web/src/components/UygulamaKasasi.tsx:38",
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:106",
       "packages/shared/src/bina.ts:60",
       "packages/shared/src/bolge-adi.ts:34"
     ]
@@ -9810,7 +9937,7 @@
     "tr": "tahkimat +%{0}",
     "en": "fortification +{0}%",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1105"
+      "apps/web/src/screens/Harita.tsx:1204"
     ]
   },
   "t4cf38d67": {
@@ -9834,7 +9961,7 @@
     "tr": "Tahkimat:",
     "en": "Fortification:",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:517"
+      "apps/web/src/screens/Harita.tsx:522"
     ]
   },
   "tdb1bbee3": {
@@ -9861,12 +9988,20 @@
       "apps/web/src/screens/Akin.tsx:696"
     ]
   },
+  "t8bde157a": {
+    "grup": "arayuz",
+    "tr": "Taht",
+    "en": "Throne",
+    "nerede": [
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:108"
+    ]
+  },
   "t1319ad6a": {
     "grup": "arayuz",
     "tr": "taht boş",
     "en": "throne is empty",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1042"
+      "apps/web/src/screens/Harita.tsx:1141"
     ]
   },
   "tdb506b31": {
@@ -9874,7 +10009,8 @@
     "tr": "Taht Kalesi",
     "en": "Throne Citadel",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1121",
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1349",
+      "apps/web/src/screens/Harita.tsx:1219",
       "data/balance.json:bolgeler.gelisim_adlari.taht[0]",
       "data/balance.json:bolgeler.gelisim_adlari.taht[1]",
       "data/balance.json:bolgeler.gelisim_adlari.taht[2]",
@@ -9915,7 +10051,8 @@
     "tr": "taht sahipsiz",
     "en": "throne is unowned",
     "nerede": [
-      "apps/web/src/components/DunyaSeridi.tsx:88"
+      "apps/web/src/components/DunyaSeridi.tsx:88",
+      "apps/web/src/screens/Harita.tsx:961"
     ]
   },
   "tf4ea0a0b": {
@@ -9971,7 +10108,7 @@
     "tr": "Takviye",
     "en": "Reinforce",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:345"
+      "apps/web/src/screens/Harita.tsx:350"
     ]
   },
   "t8d452854": {
@@ -9979,7 +10116,7 @@
     "tr": "Takviye gönder ({0} birim)",
     "en": "Send reinforcements ({0} unit)|Send reinforcements ({0} units)",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:381"
+      "apps/web/src/screens/Harita.tsx:386"
     ]
   },
   "t0e0c4fc6": {
@@ -9995,7 +10132,7 @@
     "tr": "Takviyeyi geri çek",
     "en": "Withdraw reinforcements",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:362"
+      "apps/web/src/screens/Harita.tsx:367"
     ]
   },
   "t6d080047": {
@@ -10046,6 +10183,15 @@
       "apps/web/src/components/BildirimKarti.tsx:55"
     ]
   },
+  "tc3531f23": {
+    "grup": "arayuz",
+    "tr": "Tarla",
+    "en": "Farm",
+    "nerede": [
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:104",
+      "packages/shared/src/bolge-adi.ts:32"
+    ]
+  },
   "t3c819dd0": {
     "grup": "arayuz",
     "tr": "Taşın",
@@ -10059,7 +10205,7 @@
     "tr": "taze · {0} önce",
     "en": "fresh · {0} ago",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:502"
+      "apps/web/src/screens/Harita.tsx:507"
     ]
   },
   "t82fd453f": {
@@ -10116,6 +10262,14 @@
     "en": "Total{0}{1}{2}units died · seed {3}",
     "nerede": [
       "apps/web/src/components/SavasRaporu.tsx:583"
+    ]
+  },
+  "t549376dd": {
+    "grup": "arayuz",
+    "tr": "Toprağın",
+    "en": "Your territory",
+    "nerede": [
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:581"
     ]
   },
   "tbd670cd2": {
@@ -10239,7 +10393,7 @@
     "tr": "Uzaklaştır",
     "en": "Zoom out",
     "nerede": [
-      "apps/web/src/components/DunyaHaritasi.tsx:803"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:725"
     ]
   },
   "tf8038d21": {
@@ -10329,7 +10483,7 @@
       "apps/web/src/components/SikayetSayfasi.tsx:114",
       "apps/web/src/components/SohbetMesajlari.tsx:152",
       "apps/web/src/screens/Arastirma.tsx:1059",
-      "apps/web/src/screens/Harita.tsx:1295",
+      "apps/web/src/screens/Harita.tsx:1397",
       "apps/web/src/screens/Hesap.tsx:314",
       "apps/web/src/screens/Medeniyet.tsx:258"
     ]
@@ -10403,7 +10557,7 @@
     "tr": "Yağmalanabilir depo",
     "en": "Lootable storage",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:1232"
+      "apps/web/src/screens/Harita.tsx:1333"
     ]
   },
   "t88e04ff0": {
@@ -10411,7 +10565,7 @@
     "tr": "Yakınlaştır",
     "en": "Zoom in",
     "nerede": [
-      "apps/web/src/components/DunyaHaritasi.tsx:798"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:723"
     ]
   },
   "te07ec6d1": {
@@ -10600,7 +10754,7 @@
     "tr": "Yeni ele geçirilmiş ya da yeni oyuncuya ait bölgelere bir süre saldırılamaz.",
     "en": "Newly captured regions or those belonging to new players cannot be attacked for a while.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:776"
+      "apps/web/src/screens/Harita.tsx:807"
     ]
   },
   "t3b0cfa0d": {
@@ -10691,7 +10845,7 @@
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:76",
       "apps/web/src/components/SavasRaporu.tsx:478",
-      "apps/web/src/screens/Harita.tsx:1451"
+      "apps/web/src/screens/Harita.tsx:1557"
     ]
   },
   "t47e174c5": {
@@ -10750,7 +10904,7 @@
     "en": "Departing…",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:95",
-      "apps/web/src/screens/Harita.tsx:381"
+      "apps/web/src/screens/Harita.tsx:386"
     ]
   },
   "taa63a479": {
@@ -10767,7 +10921,7 @@
     "tr": "Yoldaşının toprağı",
     "en": "Your comrade's land",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:769"
+      "apps/web/src/screens/Harita.tsx:800"
     ]
   },
   "td2b85187": {
@@ -10826,7 +10980,7 @@
     "tr": "Yukarıdan kaç birim göndereceğini seç.",
     "en": "Select how many units to send from above.",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:782"
+      "apps/web/src/screens/Harita.tsx:813"
     ]
   },
   "tad4bad3a": {
@@ -10967,7 +11121,7 @@
     "tr": "Yürüyüşler",
     "en": "Marches",
     "nerede": [
-      "apps/web/src/screens/Harita.tsx:964"
+      "apps/web/src/screens/Harita.tsx:1017"
     ]
   },
   "t5753527f": {
@@ -10993,7 +11147,7 @@
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:76",
       "apps/web/src/components/SavasRaporu.tsx:478",
-      "apps/web/src/screens/Harita.tsx:1451"
+      "apps/web/src/screens/Harita.tsx:1557"
     ]
   },
   "t69e973b0": {
@@ -13116,15 +13270,6 @@
       "packages/shared/src/rehber.ts:38"
     ]
   },
-  "t89ae57e6": {
-    "grup": "motor",
-    "tr": "Kale",
-    "en": "Castle",
-    "nerede": [
-      "data/balance.json:bolgeler.gelisim_adlari.kale[2]",
-      "packages/shared/src/bolge-adi.ts:35"
-    ]
-  },
   "tb5329d34": {
     "grup": "motor",
     "tr": "Kale Bekçisi Sarya",
@@ -13359,16 +13504,6 @@
       "packages/shared/src/duzen.ts:282"
     ]
   },
-  "tcbfde837": {
-    "grup": "motor",
-    "tr": "Köy",
-    "en": "Village",
-    "nerede": [
-      "data/balance.json:bolgeler.gelisim_adlari.koy[0]",
-      "packages/shared/src/bina.ts:58",
-      "packages/shared/src/bolge-adi.ts:31"
-    ]
-  },
   "t067d9963": {
     "grup": "motor",
     "tr": "Köy Tarlası",
@@ -13536,14 +13671,6 @@
     "en": "My lord, we have nothing but a tent and a drilling yard. Let us enrol soldiers first — I will gather the first batch in {0} seconds, you will not have to wait.",
     "nerede": [
       "packages/shared/src/rehber.ts:62"
-    ]
-  },
-  "t21b3e1a2": {
-    "grup": "motor",
-    "tr": "Maden",
-    "en": "Mine",
-    "nerede": [
-      "packages/shared/src/bolge-adi.ts:33"
     ]
   },
   "t8fea1e77": {
@@ -14386,14 +14513,6 @@
       "data/balance.json:medeniyetler.fayda_puani.rutbeler[4].aciklama"
     ]
   },
-  "tc3531f23": {
-    "grup": "motor",
-    "tr": "Tarla",
-    "en": "Farm",
-    "nerede": [
-      "packages/shared/src/bolge-adi.ts:32"
-    ]
-  },
   "tbab76525": {
     "grup": "motor",
     "tr": "Taş bir meydan, ilk sur, bir çarşı.",
@@ -14948,7 +15067,7 @@
     "tr": "{0} bırakıldı.",
     "en": "{0} abandoned.",
     "nerede": [
-      "apps/api/src/routes/map.ts:1363"
+      "apps/api/src/routes/map.ts:1369"
     ]
   },
   "tc6359540": {
@@ -15413,7 +15532,7 @@
     "tr": "{0}, {1} üzerine göz dikti.",
     "en": "{0} set their sights on {1}.",
     "nerede": [
-      "apps/api/src/routes/map.ts:1454"
+      "apps/api/src/routes/map.ts:1460"
     ]
   },
   "tf6cc8850": {
@@ -15495,7 +15614,7 @@
     "tr": "Aynı anda en fazla {0} takviye tutabilirsin. Elçiliğini yükselt.",
     "en": "You can hold at most {0} [reinforcement|reinforcements] at once. Upgrade your embassy.",
     "nerede": [
-      "apps/api/src/routes/map.ts:805"
+      "apps/api/src/routes/map.ts:811"
     ]
   },
   "t33676df1": {
@@ -15503,7 +15622,7 @@
     "tr": "Aynı anda en fazla {0} yürüyüş. Ordularından biri dönene kadar bekle",
     "en": "At most {0} [march|marches] at once. Wait until one of your armies returns",
     "nerede": [
-      "apps/api/src/routes/map.ts:1173"
+      "apps/api/src/routes/map.ts:1179"
     ]
   },
   "t530e3bfe": {
@@ -15692,7 +15811,7 @@
     "tr": "Bölge limitin dolu ({0}/{1}). Kazansan bile bölgeyi alamazsın, sadece yağmalarsın.",
     "en": "Your region limit is full ({0}/{1}). Even if you win, you cannot take the region, you will only loot it.",
     "nerede": [
-      "apps/api/src/routes/map.ts:1258"
+      "apps/api/src/routes/map.ts:1264"
     ]
   },
   "t68b70044": {
@@ -15708,7 +15827,7 @@
     "tr": "Bölge zaten en üst seviyede.",
     "en": "The region is already at the max level.",
     "nerede": [
-      "apps/api/src/routes/map.ts:672"
+      "apps/api/src/routes/map.ts:678"
     ]
   },
   "t901ec29a": {
@@ -15871,7 +15990,7 @@
     "tr": "Bu bölge senin değil.",
     "en": "This region is not yours.",
     "nerede": [
-      "apps/api/src/routes/map.ts:1336"
+      "apps/api/src/routes/map.ts:1342"
     ]
   },
   "t1fdaed47": {
@@ -15879,7 +15998,7 @@
     "tr": "Bu bölgede askerin yok.",
     "en": "You have no troops in this region.",
     "nerede": [
-      "apps/api/src/routes/map.ts:884"
+      "apps/api/src/routes/map.ts:890"
     ]
   },
   "teb7b0eae": {
@@ -16098,7 +16217,7 @@
     "tr": "Bu yürüyüş zaten tamamlandı.",
     "en": "This march is already completed.",
     "nerede": [
-      "apps/api/src/routes/map.ts:1271"
+      "apps/api/src/routes/map.ts:1277"
     ]
   },
   "t7d39deab": {
@@ -16170,7 +16289,7 @@
     "tr": "Burası senin bölgen; garnizonu garnizon ekranından düzenle.",
     "en": "This is your region; manage the garrison from the garrison screen.",
     "nerede": [
-      "apps/api/src/routes/map.ts:874"
+      "apps/api/src/routes/map.ts:880"
     ]
   },
   "t85b9c34d": {
@@ -16269,7 +16388,7 @@
     "tr": "Dönüş yürüyüşü geri çağrılamaz.",
     "en": "A return march cannot be recalled.",
     "nerede": [
-      "apps/api/src/routes/map.ts:1276"
+      "apps/api/src/routes/map.ts:1282"
     ]
   },
   "teff33b64": {
@@ -16396,7 +16515,7 @@
     "nerede": [
       "apps/api/src/routes/akin.ts:92",
       "apps/api/src/routes/map.ts:108",
-      "apps/api/src/routes/map.ts:954"
+      "apps/api/src/routes/map.ts:960"
     ]
   },
   "t20646d48": {
@@ -16453,7 +16572,7 @@
     "tr": "Geri çağırma süresi doldu. Yürüyüşün ilk %25'inde geri çağırabilirsin.",
     "en": "Recall time expired. You can recall during the first 25% of the march.",
     "nerede": [
-      "apps/api/src/routes/map.ts:1280"
+      "apps/api/src/routes/map.ts:1286"
     ]
   },
   "t4bd8515e": {
@@ -16706,7 +16825,7 @@
     "tr": "Kendi bölgene garnizon koy, takviye gönderme.",
     "en": "Place a garrison in your own region, do not send reinforcements.",
     "nerede": [
-      "apps/api/src/routes/map.ts:763"
+      "apps/api/src/routes/map.ts:769"
     ]
   },
   "t2846312f": {
@@ -16722,7 +16841,7 @@
     "tr": "Kendi bölgeni keşfetmene gerek yok.",
     "en": "You don't need to scout your own region.",
     "nerede": [
-      "apps/api/src/routes/map.ts:703"
+      "apps/api/src/routes/map.ts:709"
     ]
   },
   "t15616869": {
@@ -17006,8 +17125,8 @@
     "tr": "Ordu boş.",
     "en": "Army is empty.",
     "nerede": [
-      "apps/api/src/routes/map.ts:1154",
-      "apps/api/src/routes/map.ts:999"
+      "apps/api/src/routes/map.ts:1005",
+      "apps/api/src/routes/map.ts:1160"
     ]
   },
   "tb12c7fd3": {
@@ -17214,7 +17333,7 @@
     "tr": "Sahipsiz bölgenin garnizonu zaten görünüyor; casusa gerek yok.",
     "en": "Unowned region's garrison is already visible; no need for a spy.",
     "nerede": [
-      "apps/api/src/routes/map.ts:710"
+      "apps/api/src/routes/map.ts:716"
     ]
   },
   "t8b1e59db": {
@@ -17222,7 +17341,7 @@
     "tr": "Sahipsiz bölgeye takviye gönderilemez.",
     "en": "Reinforcements cannot be sent to an unowned region.",
     "nerede": [
-      "apps/api/src/routes/map.ts:766"
+      "apps/api/src/routes/map.ts:772"
     ]
   },
   "t1458da19": {
@@ -17238,7 +17357,7 @@
     "tr": "Savaş",
     "en": "Battle",
     "nerede": [
-      "apps/api/src/routes/map.ts:1411",
+      "apps/api/src/routes/map.ts:1417",
       "data/basarimlar.json:kumeler[1].ad"
     ]
   },
@@ -17255,7 +17374,7 @@
     "tr": "Savunan ordusu tam biliniyor.",
     "en": "Defending army is fully known.",
     "nerede": [
-      "apps/api/src/routes/map.ts:1146"
+      "apps/api/src/routes/map.ts:1152"
     ]
   },
   "t704a90ad": {
@@ -17263,7 +17382,7 @@
     "tr": "Savunanın garnizonu bilinmiyor; tahmin eksik istihbarata dayanıyor. Casus Leyla tam bilgi verir.",
     "en": "Defender's garrison is unknown; estimation relies on incomplete intel. Spy Leyla provides full info.",
     "nerede": [
-      "apps/api/src/routes/map.ts:1147"
+      "apps/api/src/routes/map.ts:1153"
     ]
   },
   "t8f413a36": {
@@ -17359,7 +17478,7 @@
     "tr": "Taht Kalesi bırakılamaz. Elinden ancak savaşla alınır.",
     "en": "Throne Citadel cannot be abandoned. It can only be taken from you by battle.",
     "nerede": [
-      "apps/api/src/routes/map.ts:1340"
+      "apps/api/src/routes/map.ts:1346"
     ]
   },
   "tae8e75b8": {
@@ -17367,7 +17486,7 @@
     "tr": "Takviye için birim seçmedin.",
     "en": "You didn't select units for reinforcement.",
     "nerede": [
-      "apps/api/src/routes/map.ts:755"
+      "apps/api/src/routes/map.ts:761"
     ]
   },
   "ta5f16350": {
@@ -17375,7 +17494,7 @@
     "tr": "Takviye yalnız ittifak üyelerine gönderilebilir.",
     "en": "Reinforcements can only be sent to alliance members.",
     "nerede": [
-      "apps/api/src/routes/map.ts:784"
+      "apps/api/src/routes/map.ts:790"
     ]
   },
   "ta6fb76b3": {
@@ -17495,7 +17614,7 @@
     "tr": "Yürüyüş",
     "en": "March",
     "nerede": [
-      "apps/api/src/routes/map.ts:1270"
+      "apps/api/src/routes/map.ts:1276"
     ]
   },
   "te9b9c83f": {

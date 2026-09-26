@@ -76,7 +76,7 @@ await page.waitForSelector('nav button:has-text("Dünya")', { timeout: 15000 });
 
 // --- Saldır ---
 await page.locator('nav button:has-text("Dünya")').click();
-await page.waitForSelector('[role=img][aria-label*="Dünya haritası"]', { timeout: 15000 });
+await page.waitForSelector('[aria-label*="Dünya haritası"] [data-bolge]', { timeout: 15000 });
 await page.waitForTimeout(1200);
 // Bölgeler artık gerçek <button>; türü erişilebilir isimde yazılı.
 // Görünür etiket yakınlık kademesine göre gizlenebiliyor, o yüzden
@@ -146,7 +146,7 @@ await page.screenshot({ path: `${CIKTI}/rapor-malikane.png` });
 await page.reload({ waitUntil: 'networkidle' });
 await page.waitForSelector('nav button:has-text("Dünya")', { timeout: 15000 });
 await page.locator('nav button:has-text("Dünya")').click();
-await page.waitForSelector('[role=img][aria-label*="Dünya haritası"]', { timeout: 15000 });
+await page.waitForSelector('[aria-label*="Dünya haritası"] [data-bolge]', { timeout: 15000 });
 await page.waitForTimeout(1200);
 // AYNI bölge: savaş listesi ancak burada savaş olduysa dolu. "İlk tarla"
 // diyen hâli rastgele bir bölgeye basıyordu ve listenin dolu çıkması
