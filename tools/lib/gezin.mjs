@@ -245,3 +245,24 @@ export async function bolgeyeDokun(page, secici) {
   await page.mouse.click(aday.x, aday.y);
   return aday.id;
 }
+
+/**
+ * BELİRLİ bir bölgeyi seçer: önce oyuncu gibi toprağına dokunur; toprağın
+ * noktası bir düğmenin (araç sütunu, mercek çipleri) altında kalıyorsa
+ * klavye oyuncusunun yoluna döner — toprağa odaklanıp Enter.
+ *
+ * Neden: `getByRole(..., { name }).click()` toprağın KUTUSUNUN ortasına
+ * basıyor. Kenardaki bir bölgede o nokta sağdaki araç sütununun altına
+ * düşüyor ve tıklama otuz saniye bekleyip kalıyordu (CI #104,
+ * dizilim-arayuz-testi — yerelde hedef başka yere düştüğü için geçiyordu).
+ * Dokunma doğruluğunu `harita-testi` ölçüyor; buradaki testler bölgenin
+ * ARKASINDAKİ işi sınıyor, oraya varmanın güvenilir bir yolu yeter.
+ */
+export async function bolgeyiSec(page, id) {
+  const secici = `[data-bolge="${id}"]`;
+  if (await bolgeyeDokun(page, secici)) return 'dokunuş';
+  const yol = page.locator(secici).first();
+  await yol.focus();
+  await page.keyboard.press('Enter');
+  return 'klavye';
+}

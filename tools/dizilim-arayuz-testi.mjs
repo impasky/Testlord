@@ -11,7 +11,7 @@
  */
 import { devices } from 'playwright';
 import { tarayiciAc } from './lib/tarayici.mjs';
-import { ekrana, rehberiSustur } from './lib/gezin.mjs';
+import { bolgeyiSec, ekrana, rehberiSustur } from './lib/gezin.mjs';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
 
 const WEB = process.env.WEB_URL ?? 'http://127.0.0.1:5173';
@@ -71,17 +71,14 @@ await page.waitForTimeout(1500);
 // da başkasının olabilir ve saldırı paneli hiç açılmaz.
 const oneri = await fetch(`${API}/api/map`, { headers: bas }).then((r) => r.json());
 const hedefAd = oneri?.oneri?.name ?? null;
+const hedefId = oneri?.oneri?.regionId ?? null;
 kontrol('oyunun önerdiği bir hedef var', Boolean(hedefAd), hedefAd ?? 'yok');
 
 await ekrana(page, 'harita', 2000);
-// Bölgeler artık gerçek <button>; adları erişilebilir isimde duruyor.
-// Görünür etiket yakınlık kademesine göre gizlenebiliyor, o yüzden
-// metne değil erişilebilir isme bakıyoruz.
-const bolgeDugmesi = page.getByRole('button', {
-  name: new RegExp(`^${(hedefAd ?? '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')} —`),
-});
-if (await bolgeDugmesi.count()) {
-  await bolgeDugmesi.first().click();
+// Toprağına dokunuluyor; kenarda bir düğmenin altındaysa klavyeyle
+// seçiliyor (bkz. `bolgeyiSec`).
+if (hedefId != null) {
+  await bolgeyiSec(page, hedefId);
   await page.waitForTimeout(1500);
 }
 // "Hepsi" ile orduyu seç.
