@@ -200,24 +200,28 @@ await page.screenshot({ path: `${CIKTI}/mob-5-generaller.png` });
 
 // --- Harita: bölge seç, önizle, saldır ---
 await sekme('Harita');
-await page.waitForSelector('text=/lorddan/', { timeout: 8000 });
+await page.waitForSelector('text=/lord aktif/', { timeout: 8000 });
 await page.screenshot({ path: `${CIKTI}/mob-6-harita.png` });
 
-// Harita "yaşayan bir yer" gibi görünmeli: kaç lord olduğu, tahtın kimde
-// olduğu ve diyarda neler olduğu yazılı olmalı. (docs/08 İ5)
+// Harita "yaşayan bir yer" gibi görünmeli: kaç lordun oynadığı çekmece
+// kapalıyken de yazıyor; tahtın kimde olduğu çekmecenin içinde. (docs/08 İ5)
 kontrol(
-  'Harita başlığı dünyanın kaç kişilik olduğunu söylüyor',
+  'Harita çekmecesi dünyanın kaç kişilik olduğunu söylüyor',
   await page
-    .locator('text=/lorddan/')
+    .locator('text=/lord aktif/')
     .first()
     .isVisible()
     .catch(() => false),
 );
+await page.locator('[data-diyar-cekmecesi] button[aria-expanded="false"]').first().click();
+await page.waitForTimeout(500);
 kontrol(
-  'Taht sahibi başlıkta yazıyor',
+  'Taht sahibi çekmecede yazıyor',
   (await page.locator('text=/taht sahipsiz/').count()) > 0 ||
-    (await page.locator('svg text').count()) > 0,
+    (await page.locator('[data-diyar-cekmecesi] strong.text-altin').count()) > 0,
 );
+await page.locator('[data-diyar-cekmecesi] button[aria-expanded="true"]').first().click();
+await page.waitForTimeout(400);
 
 const harita = await (await fetch(`${API}/api/map`, { headers: h })).json();
 // Eski `ring === 4` ölçütünün karşılığı: Taht Kalesi'nden en az 4 adım

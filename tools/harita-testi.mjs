@@ -183,14 +183,16 @@ await sayfa.screenshot({ path: `${CIKTI}/harita-0-acilis.png` });
 await sayfa.getByRole('button', { name: 'Haritayı sığdır' }).click();
 await sayfa.waitForTimeout(600);
 
-// Vilayet adları KAYNAKLAR merceğinde: vilayet birliği bir gelir kuralı.
-await sayfa.click('[data-mercek="kaynak"]');
-await sayfa.waitForTimeout(400);
+// Uzakta büyük alan adları: medeniyetler (docs/23 §8 — vilayet artık
+// bölge kartında, ayrı mercek yok).
 const uzakMetin = await govdeMetni();
+const medeniyetAdlari = [
+  ...new Set((await G('/map')).regions.filter((r) => r.medeniyet).map((r) => r.medeniyet.ad)),
+].map((a) => a.toLocaleUpperCase('tr'));
 kontrol(
-  'Vilayet adları haritada yazıyor',
-  /KUZEYMARK|KARAORMAN|AKSU OVASI/.test(uzakMetin),
-  (uzakMetin.match(/[A-ZÇĞİÖŞÜ]{4,}(?: [A-ZÇĞİÖŞÜ]+)*/g) ?? []).slice(0, 3).join(' / '),
+  'Uzakta medeniyet adları haritada yazıyor',
+  medeniyetAdlari.some((a) => uzakMetin.includes(a)),
+  medeniyetAdlari.filter((a) => uzakMetin.includes(a)).join(' / ') || 'yok',
 );
 await sayfa.screenshot({ path: `${CIKTI}/harita-1-genel.png` });
 
@@ -229,8 +231,8 @@ await sayfa.screenshot({ path: `${CIKTI}/harita-1-genel.png` });
 }
 
 /*
- * MERCEKLER: tek soru, tek boyama. Çipler basılı durumunu söylüyor,
- * boyama gerçekten değişiyor.
+ * İKİ GÖRÜNÜM (docs/23 §8): "kim nerede" ve tek düğmeyle "Hedefler".
+ * Düğme basılı durumunu söylüyor, boyama gerçekten değişiyor.
  */
 {
   const benimId = (await G('/map')).regions.find((r) => r.isMine)?.id;
@@ -239,25 +241,24 @@ await sayfa.screenshot({ path: `${CIKTI}/harita-1-genel.png` });
       const p = document.querySelector(`path[data-bolge="${id}"]`);
       return `${p?.getAttribute('fill')}@${p?.getAttribute('fill-opacity')}`;
     }, benimId);
-  await sayfa.click('[data-mercek="siyasi"]');
-  await sayfa.waitForTimeout(300);
+  const hedefDugmesi = sayfa.locator('[data-mercek="hedef"]');
+  kontrol(
+    'Varsayılan görünüm Kim nerede: Hedefler kapalı',
+    (await hedefDugmesi.getAttribute('aria-pressed')) === 'false',
+  );
   const siyasi = await dolgu();
   kontrol('Kim nerede: benim toprağım ALTIN', siyasi.startsWith('#f5b731'), siyasi);
-  await sayfa.click('[data-mercek="kaynak"]');
-  await sayfa.waitForTimeout(300);
-  const kaynak = await dolgu();
-  kontrol('Kaynaklar merceği boyamayı türe çeviriyor', kaynak !== siyasi, `${siyasi} -> ${kaynak}`);
-  const basili = await sayfa
-    .locator('[data-mercek][aria-pressed="true"]')
-    .getAttribute('data-mercek');
-  kontrol('Basılı çip seçili merceği söylüyor', basili === 'kaynak', basili ?? 'yok');
 
   /*
    * HEDEFLER sunucunun kurallarıyla aynı: çekirdek, kendi medeniyetinin
    * lordu, kalkanlı bölge karanlık; benim toprağım altın.
    */
-  await sayfa.click('[data-mercek="hedef"]');
+  await hedefDugmesi.click();
   await sayfa.waitForTimeout(300);
+  kontrol(
+    'Hedefler düğmesi basılı durumunu söylüyor',
+    (await hedefDugmesi.getAttribute('aria-pressed')) === 'true',
+  );
   const harita = await G('/map');
   const benMed = (await G('/me')).lord.medeniyet?.id ?? null;
   const yasakOlmali = harita.regions.filter(
@@ -283,8 +284,9 @@ await sayfa.screenshot({ path: `${CIKTI}/harita-1-genel.png` });
     karanliklar === yasakOlmali.length && yasakOlmali.length > 0,
     `${karanliklar} / ${yasakOlmali.length}`,
   );
-  await sayfa.click('[data-mercek="siyasi"]');
+  await hedefDugmesi.click();
   await sayfa.waitForTimeout(300);
+  kontrol('Hedefler kapanınca boyama geri geliyor', (await dolgu()) === siyasi, await dolgu());
 }
 
 /*
@@ -307,6 +309,16 @@ const simgeBoyu = async () =>
 await sayfa.getByRole('button', { name: 'Yakınlaştır' }).click();
 await sayfa.waitForTimeout(500);
 const ortaSimge = await simgeBoyu();
+/*
+ * ORTADA SİMGE AZ (docs/23 §8). Her bölgeye simge koymak ekranı ~65
+ * daireyle dolduruyordu; ortada yalnız oyuncunun toprakları ve kampı.
+ */
+const ortaSimgeSayisi = await sayfa.locator('[data-bolge-simge]').count();
+kontrol(
+  'Orta ölçekte simge yalnız senin topraklarında',
+  ortaSimgeSayisi > 0 && ortaSimgeSayisi <= 6,
+  `${ortaSimgeSayisi} simge`,
+);
 await sayfa.getByRole('button', { name: 'Yakınlaştır' }).click();
 await sayfa.getByRole('button', { name: 'Yakınlaştır' }).click();
 await sayfa.waitForTimeout(600);

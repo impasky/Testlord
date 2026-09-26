@@ -9,7 +9,8 @@ Oyuncunun cümlesi:
 Bu belge önce sorunu **ölçüyor**, sonra sıfırdan bir tasarım öneriyor ve
 onu gerçek veriyle çizilmiş bir **taslakla** gösteriyor. Oyuncu "haritayı
 sıfırdan yapmak istiyorum" dedi; öneri uygulandı — ne yapıldığı, neyin
-değiştiği ve neyin ölçüldüğü **§7**'de.
+değiştiği ve neyin ölçüldüğü **§7**'de. Oyuncu ardından "hâlâ karmaşık
+geliyor" dedi; neyin kalktığı ve neden kalktığı **§8**'de.
 
 ## 1. Bugün ne görülüyor
 
@@ -284,3 +285,44 @@ dört mercek, rengi kısılmış bugünkü zemin.
 | Hedefler merceği ↔ sunucu          | Saldırılamaz her bölge karanlık (20/20)                                                         |
 | Jestler (`harita-dokunma-testi`)   | Yatay/dikey kaydırma, iki parmak, sığdır'da esneme, kısa dokunuş seçiyor; sayfa arkada kaymıyor |
 | Kare hızı                          | Ölçülmedi. Kaydırma yalnız tuvalin `transform`'unu değiştiriyor, katmanlar `memo`               |
+
+## 8. Sadeleştirme: "hâlâ karmaşık geliyor"
+
+Toprak haritası "kimin nerede olduğunu" çözdü, ama oyuncu ekranı hâlâ
+kalabalık buldu. Açılış ekranında (390×844) haritanın üstünde 15 ayrı
+katman sayıldı. Bu bölüm neyin kalktığını ve neden kalktığını yazıyor.
+Kural: **harita bir soru soruyor, ikinci soru tek düğme uzağında.**
+
+| Ne                   | Önce                                                          | Sonra                                                                                  |
+| -------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Görünüm              | 4 mercek çipi (Kim nerede, Hedefler, Medeniyetler, Kaynaklar) | Varsayılan "kim nerede" + tek **Hedefler** düğmesi (aç/kapa)                           |
+| Zemin resmi          | Rengi yarıya kısık; dağ, orman, nehir sahiplikle yarışıyor    | Daha koyu ve soluk (`saturate .3 · brightness .6`); sahipli toprak dolu renk (.66–.72) |
+| Bölge simgesi (orta) | Her bölgede bir daire — ekranda **65**                        | Yalnız senin toprakların, kampın, seçili bölge — ekranda **3**; yakınlaşınca hepsi     |
+| Sınırlar             | Üç kalınlıkta siyah çizgi                                     | Bölge arası neredeyse görünmez; çizgi yalnız sahiplik değiştiği yerde; seninki altın   |
+| Kenar araçları       | Küçük harita + 3 düğme — haritanın üstünde **9** düğme        | Küçük harita kalktı; + − ⊡ tek kutuda — **5** düğme                                    |
+| Gösterge             | İki satır, 79 harf, "dolu: lordun · soluk: sahipsiz"          | Tek satır renk noktası, 44 harf                                                        |
+| Çekmece (kapalı)     | İki satır, 62 px                                              | Tek satır, 52 px: diyar adı · "N lord aktif" · yoldaki ordu                            |
+| Hedefler'de çizgiler | Her komşuluk bir çizgi (bir ağ)                               | Yalnız geçitler; kaç adımda gidildiğini toprağın parlaklığı söylüyor                   |
+| Dokunulabilir bölge  | 121'in 118'i (3'ü küçük harita altında)                       | **121'in 121'i**                                                                       |
+
+Kalkan mercekler bilgiyi kaybettirmiyor:
+
+- **Kaynaklar** (bölge türü, vilayet): tür yakınlaşınca her bölgenin
+  simgesinde, vilayet ve "alırsan birlik ×1,16" bölge kartında.
+- **Medeniyetler**: "kim nerede" zaten medeniyet rengiyle boyuyor; adları
+  uzakta haritada, renkleri göstergede.
+
+İki davranış eklendi:
+
+- **Hedefler açılınca harita toprağına kayıyor.** Saldırılabilir yerler
+  senin çevrende; harita başka yerdeyken açılan görünüm baştan sona
+  karanlık kalıyordu.
+- **Hedefler'de yakındaki (≤ 2 adım) açık hedeflerin simgesi** orta
+  ölçekte de görünüyor: "neye saldırabilirim" sorusunun cevabı türüyle
+  birlikte.
+
+Doğrulama: `harita-testi` iki görünümü sınıyor (varsayılan kapalı, düğme
+basılı durumunu söylüyor, kapanınca boyama geri geliyor; ortada simge ≤ 6;
+uzakta medeniyet adları); `tarayici-tam-akis` "N lord aktif"i ve çekmecedeki
+tahtı arıyor; düğme botu Dünya sekmesinde 14 basışta hatasız; kenar okları
+on kaydırmada 13 okta 0 örtülme.

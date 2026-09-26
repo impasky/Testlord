@@ -932,34 +932,22 @@ export function Harita({
               type="button"
               aria-expanded={cekmeceAcik}
               onClick={() => setCekmeceAcik((a) => !a)}
-              className="bas relative flex h-[62px] w-full shrink-0 items-center gap-2 px-4 pt-1.5 text-left"
+              className="bas relative flex h-[52px] w-full shrink-0 items-center gap-2 px-4 pt-1.5 text-left"
             >
               <span
                 className="absolute top-1.5 left-1/2 h-1 w-10 -translate-x-1/2 rounded-full bg-kenar"
                 aria-hidden
               />
-              <span className="min-w-0 flex-1">
-                <span className="flex items-baseline gap-2">
-                  <span className="baslik min-w-0 truncate text-[13px] text-parsomen">
-                    {dunya.data?.ad ?? 'Dünya Haritası'}
-                  </span>
-                  <span className="shrink-0 text-[11px] text-solgun">{`Bölgen ${benimSayi}/${harita.data.maxRegions}`}</span>
+              {/* TEK SATIR: diyarın adı ve kaç lordun oynadığı (docs/08 İ5 —
+                  harita insanlı görünsün). Taht, bölge sayın ve gerisi
+                  çekmecenin içinde. */}
+              <span className="flex min-w-0 flex-1 items-baseline gap-2">
+                <span className="baslik min-w-0 truncate text-[13px] text-parsomen">
+                  {dunya.data?.ad ?? 'Dünya Haritası'}
                 </span>
-                {/* Harita "yaşayan bir yer" gibi okunmalı: kaç lordun
-                    olduğu ve tahtın kimde olduğu çekmece KAPALIYKEN de
-                    yazıyor (docs/08 İ5). Ayrıntısı çekmecenin içinde. */}
                 {dunya.data && (
-                  <span className="block truncate text-[11px] text-solgun">
-                    <strong className="text-parsomen">{formatSayi(dunya.data.lordSayisi)}</strong>{' '}
-                    lorddan{' '}
-                    <strong className="text-parsomen">{formatSayi(dunya.data.aktifLord)}</strong>
-                    'i bu hafta oynadı
-                    {' · '}
-                    {dunya.data.taht?.sahip ? (
-                      <strong className="text-altin">{dunya.data.taht.sahip.name}</strong>
-                    ) : (
-                      <span>taht sahipsiz</span>
-                    )}
+                  <span className="shrink-0 text-[11px] text-solgun">
+                    {`${formatSayi(dunya.data.aktifLord)} lord aktif`}
                   </span>
                 )}
               </span>
@@ -974,6 +962,7 @@ export function Harita({
             {cekmeceAcik && (
               <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain px-3 pb-3">
                 {dunya.data && <DunyaBasligi dunya={dunya.data} />}
+                <p className="text-[11px] text-solgun">{`Bölgen ${benimSayi}/${harita.data.maxRegions}`}</p>
                 {lord.medeniyet && (
                   <button
                     type="button"

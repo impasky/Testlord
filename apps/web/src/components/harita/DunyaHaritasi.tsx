@@ -10,19 +10,19 @@
  *
  * ── Katmanlar ──────────────────────────────────────────────────────────
  *
- *   zemin      dokuz karo; rengi kısık — bilgi katmanı öne çıksın diye
+ *   zemin      dokuz karo; koyu ve soluk — bilgi katmanı öne çıksın diye
  *   toprak     her bölge bir Voronoi hücresi (packages/shared/src/toprak.ts),
- *              karaya kırpılı (kara.ts); rengi merceğe göre
- *   sınır      dört kademe: bölge ince, medeniyet orta, lord kalın, SEN altın
- *   etiket     lord adı kümenin ortasında BİR kez, medeniyet adları, tür
- *              simgeleri ve bölge adları yakınlığa göre
+ *              karaya kırpılı (kara.ts); sahipli toprak dolu renk
+ *   sınır      bölge arası kıl gibi; çizgi sahiplik değiştiği yerde; SEN altın
+ *   etiket     lord adı kümenin ortasında BİR kez; uzakta medeniyet adları;
+ *              tür simgeleri ve bölge adları yakınlaşınca
  *
- * ── Mercek: tek soru, tek boyama ─────────────────────────────────────
+ * ── İki görünüm: bir soru, bir düğme (§8) ────────────────────────────
  *
  * Madalyon her soruyu aynı anda cevaplamaya çalışıyordu (tür, sahip,
- * medeniyet, sur, kalkan) ve 24 piksele beş boyut sığmıyordu. Mercek her
- * seferinde BİR soruyu cevaplıyor: Kim nerede, Hedefler, Medeniyetler,
- * Kaynaklar.
+ * medeniyet, sur, kalkan) ve 24 piksele beş boyut sığmıyordu. Sonra dört
+ * mercek geldi; oyuncu onu da karmaşık buldu. Harita artık "kim nerede"
+ * diye açılıyor ve tek düğmeyle "neye saldırabilirim"e (Hedefler) geçiyor.
  *
  * ── Dokunma = toprak ─────────────────────────────────────────────────
  *
@@ -46,7 +46,6 @@ import {
   toprakYolu,
   topraklar,
   gecitMi,
-  VILAYET_ADI,
   type Sahiplik,
   type SinirTuru,
 } from '@lordlar/shared';
@@ -62,16 +61,16 @@ import {
 } from 'react';
 import type { MarchDto, RegionDto } from '../../api/client';
 import { IKONLAR } from '../ikon-verisi';
+import { IkonSaldiri } from '../Ikonlar';
 import { KARA_YOLU } from './kara';
 
-export type Mercek = 'siyasi' | 'hedef' | 'medeniyet' | 'kaynak';
-
-export const MERCEKLER: { key: Mercek; ad: string }[] = [
-  { key: 'siyasi', ad: 'Kim nerede' },
-  { key: 'hedef', ad: 'Hedefler' },
-  { key: 'medeniyet', ad: 'Medeniyetler' },
-  { key: 'kaynak', ad: 'Kaynaklar' },
-];
+/*
+ * İKİ GÖRÜNÜM (docs/23 §8). Dört mercek vardı; oyuncu "hâlâ karmaşık"
+ * dedi. Harita bir soru soruyor — "kim nerede?" — ve tek düğmeyle ikinci
+ * soruya geçiyor: "neye saldırabilirim?". Bölge türü yakınlaşınca ve bölge
+ * kartında, vilayet bölge kartında; ayrı merceğe gerek yok.
+ */
+export type Mercek = 'siyasi' | 'hedef';
 
 const MERCEK_ANAHTARI = 'lordlar_harita_mercek';
 
@@ -79,7 +78,7 @@ const MERCEK_ANAHTARI = 'lordlar_harita_mercek';
 function kayitliMercek(): Mercek {
   try {
     const v = localStorage.getItem(MERCEK_ANAHTARI);
-    if (v && MERCEKLER.some((m) => m.key === v)) return v as Mercek;
+    if (v === 'hedef') return 'hedef';
   } catch {
     /* gizli sekme ya da kapalı depo: varsayılan yeter */
   }
@@ -88,25 +87,6 @@ function kayitliMercek(): Mercek {
 
 const ALTIN = '#f5b731';
 const KARANLIK = '#0b0806';
-
-/** Kaynaklar merceğinde türün rengi. Hiçbir sayıya dokunmuyor. */
-const TIP_RENGI: Record<string, string> = {
-  koy: '#b59a5a',
-  tarla: '#7fa23f',
-  maden: '#6f8aa6',
-  sehir: '#d49a3c',
-  kale: '#b2553f',
-  taht: ALTIN,
-};
-
-const TIP_ADI: Record<string, string> = {
-  koy: 'Köy',
-  tarla: 'Tarla',
-  maden: 'Maden',
-  sehir: 'Şehir',
-  kale: 'Kale',
-  taht: 'Taht',
-};
 
 const TIP_IKON: Record<string, keyof typeof IKONLAR> = {
   koy: 'koy',
@@ -152,10 +132,10 @@ const ACILIS = 1.8;
 /** Kademe eşikleri: uzak (toprak ve adlar), orta (+ simgeler), yakın (+ bölge adları). */
 const ORTA = 1.5;
 const YAKIN = 2.6;
-/** Sağdaki araç sütununun (küçük harita + üç düğme) alt kenarı. */
-const ARAC_SUTUNU_ALTI = 48 + 64 + 3 * 50 + 12;
-/** Araç sütununun sağ kenardan eni: `right-2` + 64 px küçük harita. */
-const ARAC_SUTUNU_ENI = 8 + 64;
+/** Sağdaki araç sütununun (üç düğme) alt kenarı: `top-2` + 3 × 44 + pay. */
+const ARAC_SUTUNU_ALTI = 8 + 3 * 45 + 12;
+/** Araç sütununun sağ kenardan eni: `right-2` + 44 px düğme. */
+const ARAC_SUTUNU_ENI = 8 + 46;
 /** Bu kadar pikselden sonra parmak "dokundu" değil "kaydırdı" sayılıyor. */
 const SURUKLE_ESIGI = 8;
 
@@ -449,23 +429,26 @@ export function DunyaHaritasi({
     return m;
   }, [regions, mercek, benimMedeniyetId]);
 
+  // Hedefler açıkken simgesi görünen yerler: iki adım içindeki açık hedefler.
+  const hedefSimgeleri = useMemo(() => {
+    const s = new Set<number>();
+    if (mercek !== 'hedef') return s;
+    for (const r of regions) {
+      const d = hedefDurumu(r, benimMedeniyetId);
+      if (d.tur === 'acik' && d.adim <= 2) s.add(r.id);
+    }
+    return s;
+  }, [regions, mercek, benimMedeniyetId]);
+
   const sinirlar = useMemo(() => {
     const yol: Record<SinirTuru, string[]> = { ic: [], medeniyet: [], lord: [], ben: [] };
     for (const k of kenarlar) {
       const a = sahiplik(k.a);
       const b = sahiplik(k.b);
-      let tur: SinirTuru;
-      if (mercek === 'siyasi') tur = sinirTuru(a, b);
-      else if (mercek === 'medeniyet') tur = sinirTuru({ ...a, lord: null }, { ...b, lord: null });
-      else if (a.benim !== b.benim) tur = 'ben';
-      // Kaynaklar'da orta çizgi VİLAYET sınırı: vilayet birliği bir gelir
-      // kuralı ve "aynı vilayette mi" sorusunun cevabı bu çizgi.
-      else if (
-        mercek === 'kaynak' &&
-        bolgeHaritasi.get(k.a)?.province !== bolgeHaritasi.get(k.b)?.province
-      )
-        tur = 'medeniyet';
-      else tur = 'ic';
+      // Hedeflerde sahiplik çizgileri yok: soru "neye saldırabilirim",
+      // yalnız kendi sınırın kalıyor.
+      const tur: SinirTuru =
+        mercek === 'siyasi' ? sinirTuru(a, b) : a.benim !== b.benim ? 'ben' : 'ic';
       // Birleştirme, şablon değil: şablon dizgeyi çeviri çıkarıcısı metin sanıyor.
       yol[tur].push(
         'M' +
@@ -511,21 +494,6 @@ export function DunyaHaritasi({
     return [...enBuyuk.values()].map((k) => ({ ...k, bilgi: bilgi.get(k.anahtar)! }));
   }, [hucreler, regions, bolgeHaritasi]);
 
-  const vilayetKumeleri = useMemo(() => {
-    const enBuyuk = new Map<string, ReturnType<typeof kumeler>[number]>();
-    for (const k of kumeler(hucreler, (id) => {
-      const p = bolgeHaritasi.get(id)?.province;
-      return p && p !== 'taht' ? p : null;
-    })) {
-      if (!enBuyuk.has(k.anahtar)) enBuyuk.set(k.anahtar, k);
-    }
-    return [...enBuyuk.values()].map((k) => ({
-      anahtar: k.anahtar,
-      merkez: k.merkez,
-      ad: VILAYET_ADI[k.anahtar] ?? k.anahtar,
-    }));
-  }, [hucreler, bolgeHaritasi]);
-
   // Yürüyüş sancağı her saniye ilerliyor; yürüyüş yokken zamanlayıcı yok.
   const [, tik] = useState(0);
   useEffect(() => {
@@ -550,9 +518,7 @@ export function DunyaHaritasi({
       const dunya = kutu.getBoundingClientRect();
       const olcek = W > 0 ? dunya.width / W : 1;
       const itilecek = [
-        ...kutu.querySelectorAll<HTMLElement>(
-          '[data-kume-ad],[data-medeniyet-ad],[data-vilayet-ad]',
-        ),
+        ...kutu.querySelectorAll<HTMLElement>('[data-kume-ad],[data-medeniyet-ad]'),
       ];
       for (const e of itilecek) {
         e.style.marginLeft = '';
@@ -640,7 +606,8 @@ export function DunyaHaritasi({
       if (sx >= 0 && sx <= boyut.en && sy >= 44 && sy <= gorunurBoy) continue;
       const aci = (Math.atan2(sy - gorunurBoy / 2, sx - boyut.en / 2) * 180) / Math.PI;
       const ekranX = Math.max(PAY, Math.min(boyut.en - PAY, sx));
-      let ekranY = Math.max(PAY + 44, Math.min(gorunurBoy - PAY - 40, sy));
+      // Üstte "Hedefler" düğmesi (8 + 44): ok onun altından başlıyor.
+      let ekranY = Math.max(PAY + 56, Math.min(gorunurBoy - PAY - 40, sy));
       // Sağ kenarda araç sütunu (küçük harita + yakınlık) duruyor: ok
       // onun üstüne binmesin, altına kaysın. Okun yarısı (22) da sayılıyor:
       // ortası sütunun dışında kalan ok kenarıyla yine altına giriyordu.
@@ -724,7 +691,7 @@ export function DunyaHaritasi({
             homeBolgeId={homeBolgeId}
             lordKumeleri={lordKumeleri}
             medeniyetKumeleri={medeniyetKumeleri}
-            vilayetKumeleri={vilayetKumeleri}
+            hedefSimgeleri={hedefSimgeleri}
             ittifakHedefId={ittifakHedefi?.regionId ?? null}
             ittifakEtiket={ittifakHedefi?.etiket ?? null}
           />
@@ -732,49 +699,46 @@ export function DunyaHaritasi({
         </div>
       )}
 
-      {/* --- Mercek seçimi: tepede, parmağın kolay ulaştığı çipler --- */}
-      <div
-        className="absolute top-2 right-2 left-2 flex gap-1.5 overflow-x-auto"
-        role="group"
-        aria-label="Harita merceği"
+      {/* --- Hedefler: tek düğme, aç/kapa. Varsayılan görünüm "kim nerede". --- */}
+      <button
+        type="button"
+        aria-pressed={mercek === 'hedef'}
+        data-mercek="hedef"
         onPointerDown={(e) => e.stopPropagation()}
+        onClick={() => {
+          if (mercek === 'hedef') {
+            setMercek('siyasi');
+            return;
+          }
+          setMercek('hedef');
+          // Hedefler senin toprağının çevresinde: harita başka yerdeyken
+          // açılan görünüm baştan sona karanlık kalıyordu. Toprağın
+          // ekranda değilse oraya kayılıyor.
+          const m = benimKumem?.merkez ?? bolgeHaritasi.get(homeBolgeId);
+          if (!m) return;
+          const sx = (m.x / 100) * W * gorunum.k + gorunum.tx;
+          const sy = (m.y / 100) * W * gorunum.k + gorunum.ty;
+          if (sx > 40 && sx < boyut.en - 40 && sy > 60 && sy < gorunurBoy - 40) return;
+          setAnimasyon(true);
+          setGorunum(ortala(m.x, m.y, Math.max(gorunum.k, ORTA)));
+          setYerlesim((n) => n + 1);
+        }}
+        className={`bas absolute top-2 left-2 flex h-11 items-center gap-1.5 rounded-full border px-3.5 text-[12px] font-bold backdrop-blur ${
+          mercek === 'hedef'
+            ? 'border-kirmizi bg-kirmizi text-parsomen'
+            : 'border-kenar bg-gece/80 text-parsomen'
+        }`}
       >
-        {MERCEKLER.map((m) => (
-          <button
-            key={m.key}
-            type="button"
-            aria-pressed={mercek === m.key}
-            data-mercek={m.key}
-            onClick={() => setMercek(m.key)}
-            className={`bas h-9 shrink-0 rounded-full border px-2.5 text-[11.5px] font-bold whitespace-nowrap backdrop-blur ${
-              mercek === m.key
-                ? 'border-altin bg-altin text-gece'
-                : 'border-kenar bg-gece/80 text-solgun'
-            }`}
-          >
-            {m.ad}
-          </button>
-        ))}
-      </div>
+        <IkonSaldiri boyut={14} />
+        {mercek === 'hedef' ? 'Hedefler açık' : 'Hedefler'}
+      </button>
 
-      {/* --- Sağ sütun: küçük harita ve yakınlık --- */}
+      {/* --- Sağ sütun: yakınlık. Tek kutu, üç düğme. --- */}
       <div
         data-arac-sutunu=""
-        className="absolute top-12 right-2 flex flex-col items-end gap-1.5"
+        className="absolute top-2 right-2 flex flex-col divide-y divide-kenar overflow-hidden rounded-xl border border-kenar bg-gece/80 backdrop-blur"
         onPointerDown={(e) => e.stopPropagation()}
       >
-        <KucukHarita
-          regions={regions}
-          gorunum={gorunum}
-          W={W}
-          en={boyut.en}
-          boy={gorunurBoy}
-          onGit={(x, y) => {
-            setAnimasyon(true);
-            setGorunum(ortala(x, y, Math.max(gorunum.k, ORTA)));
-            setYerlesim((n) => n + 1);
-          }}
-        />
         <YakinlikDugmesi etiket="Yakınlaştır" isaret="+" onTikla={() => dugmeyleYakinlastir(1.5)} />
         <YakinlikDugmesi
           etiket="Uzaklaştır"
@@ -831,7 +795,7 @@ export function DunyaHaritasi({
 
       {/* Ekran okuyucuya haritanın ne gösterdiği. */}
       <p className="sr-only" aria-live="polite">
-        {`${MERCEKLER.find((m) => m.key === mercek)?.ad} merceği. Görünen alan ${Math.round(
+        {`${mercek === 'hedef' ? 'Hedefler' : 'Kim nerede'} görünümü. Görünen alan ${Math.round(
           Math.min(1, boyut.en / Math.max(1, D)) * 100,
         )}%.`}
       </p>
@@ -851,21 +815,15 @@ function toprakRengi(
   const med = r.medeniyet?.renk ?? null;
   switch (mercek) {
     case 'siyasi': {
-      // Renk = SAHİP. Altın sen; medeniyet rengi dolu: o medeniyetten
-      // bir lordun toprağı; soluk: lordu yok ama medeniyetin elinde.
-      if (r.isMine) return { renk: ALTIN, alfa: 0.55 };
-      if (r.owner) return { renk: med ?? '#c8453b', alfa: 0.55 };
-      if (r.type === 'taht') return { renk: ALTIN, alfa: 0.28 };
+      // Renk = SAHİP. Sahipli toprak DOLU renk, sahipsiz boş: göz önce
+      // "kimin" sorusunu okuyor. Lordu olmayan medeniyet toprağı yalnız
+      // hafif bir tül — renginin kime ait olduğunu söyleyecek kadar.
+      if (r.isMine) return { renk: ALTIN, alfa: 0.72 };
+      if (r.owner) return { renk: med ?? '#c8453b', alfa: 0.66 };
+      if (r.type === 'taht') return { renk: ALTIN, alfa: 0.3 };
       if (med) return { renk: med, alfa: 0.2 };
       return { renk: '#000', alfa: 0 };
     }
-    case 'medeniyet': {
-      if (med) return { renk: med, alfa: r.owner ? 0.55 : 0.38 };
-      if (r.type === 'taht') return { renk: ALTIN, alfa: 0.28 };
-      return { renk: '#000', alfa: 0 };
-    }
-    case 'kaynak':
-      return { renk: TIP_RENGI[r.type] ?? '#8a7a52', alfa: 0.5 };
     case 'hedef': {
       const d = hedefDurumu(r, benimMedeniyetId);
       if (d.tur === 'benim') return { renk: ALTIN, alfa: 0.5 };
@@ -895,15 +853,17 @@ function bolgeEtiketi(r: RegionDto): string {
 const ZEMIN_KAROLARI = [0, 1, 2].flatMap((r) => [0, 1, 2].map((c) => ({ c, r })));
 
 /**
- * Zemin: dokuz karo, rengi kısık. Resim bilgi değil, YER hissi — toprak
- * renkleri onun üstünde okunmalı. Karolar %33,34: ölçek büyüyünce
- * yuvarlanmada aralarında kıl gibi çizgi kalmasın diye bir tık bindiriyor.
+ * Zemin: dokuz karo, rengi ve ışığı kısık. Resim bilgi değil, YER hissi —
+ * toprak renkleri onun üstünde okunmalı. Önceki ayarda dağlar, ormanlar ve
+ * nehirler sahiplik renkleriyle yarışıyordu (docs/23 §8); artık geri
+ * planda. Karolar %33,34: ölçek büyüyünce yuvarlanmada aralarında kıl gibi
+ * çizgi kalmasın diye bir tık bindiriyor.
  */
 const Zemin = memo(function Zemin() {
   return (
     <div
       className="absolute inset-0"
-      style={{ filter: 'saturate(0.5) brightness(0.78)' }}
+      style={{ filter: 'saturate(0.3) brightness(0.6) contrast(0.85)' }}
       aria-hidden="true"
     >
       <img
@@ -955,22 +915,21 @@ const ToprakKatmani = memo(function ToprakKatmani({
   const secili = seciliId != null ? yollar.get(seciliId) : undefined;
   const hedef = ittifakHedefiId != null ? yollar.get(ittifakHedefiId) : undefined;
   const muttefikler = regions.filter((r) => r.muttefik && !r.isMine);
-  // Yollar ve geçitler yalnız Hedefler merceğinde: orada soru "nereye
-  // kaç adımda gidilir" ve cevabı yol grafiği.
-  const yolCizgileri = useMemo(() => {
+  // Geçitler yalnız Hedefler'de: ordunun kestirme yolu. Sıradan komşuluk
+  // çizgileri kalktı — her iki bölge arasına bir çizgi haritayı bir ağa
+  // çeviriyordu; kaç adımda gidildiğini toprağın parlaklığı söylüyor.
+  const gecitCizgileri = useMemo(() => {
     if (mercek !== 'hedef') return null;
     const yer = new Map(regions.map((r) => [r.id, r]));
-    const sade: string[] = [];
     const gecit: string[] = [];
     for (const r of regions) {
       for (const k of r.komsular) {
-        if (k <= r.id) continue;
+        if (k <= r.id || !gecitMi(r.id, k)) continue;
         const o = yer.get(k);
-        if (!o) continue;
-        (gecitMi(r.id, k) ? gecit : sade).push('M' + r.x + ' ' + r.y + 'L' + o.x + ' ' + o.y);
+        if (o) gecit.push('M' + r.x + ' ' + r.y + 'L' + o.x + ' ' + o.y);
       }
     }
-    return { sade: sade.join(''), gecit: gecit.join('') };
+    return gecit.join('');
   }, [regions, mercek]);
 
   return (
@@ -1028,30 +987,35 @@ const ToprakKatmani = memo(function ToprakKatmani({
           );
         })}
 
-        {/* Sınırlar: ince → kalın. Kalınlık ekran pikseli (yakınlaşınca kalınlaşmaz). */}
-        <g pointerEvents="none" fill="none" strokeLinecap="round">
+        {/*
+          Sınırlar: kıl gibi → belirgin. Kalınlık ekran pikseli (yakınlaşınca
+          kalınlaşmaz). Siyah kalın çizgiler haritayı bir ızgaraya
+          çeviriyordu; artık yalnız SAHİPLİK değiştiği yerde bir çizgi var,
+          bölgelerin arası neredeyse görünmez, senin sınırın altın.
+        */}
+        <g pointerEvents="none" fill="none" strokeLinecap="round" strokeLinejoin="round">
           <path
             d={sinirlar.ic}
-            stroke="rgba(20,14,10,0.42)"
-            strokeWidth={0.7}
+            stroke="rgba(240,225,200,0.09)"
+            strokeWidth={0.6}
             vectorEffect="non-scaling-stroke"
           />
           <path
             d={sinirlar.medeniyet}
-            stroke="rgba(18,12,8,0.78)"
-            strokeWidth={1.6}
+            stroke="rgba(10,7,5,0.45)"
+            strokeWidth={1}
             vectorEffect="non-scaling-stroke"
           />
           <path
             d={sinirlar.lord}
-            stroke="#110b07"
-            strokeWidth={2.6}
+            stroke="rgba(10,7,5,0.8)"
+            strokeWidth={1.6}
             vectorEffect="non-scaling-stroke"
           />
           <path
             d={sinirlar.ben}
             stroke={ALTIN}
-            strokeWidth={2.8}
+            strokeWidth={2.4}
             vectorEffect="non-scaling-stroke"
           />
           {/* İttifak arkadaşı: beyaz kesik sınır — renk medeniyetin, kesik çizgi ittifakın. */}
@@ -1065,23 +1029,14 @@ const ToprakKatmani = memo(function ToprakKatmani({
               vectorEffect="non-scaling-stroke"
             />
           ))}
-          {yolCizgileri && (
-            <>
-              <path
-                d={yolCizgileri.sade}
-                stroke="#e6d3ae"
-                strokeWidth={0.8}
-                opacity={0.35}
-                vectorEffect="non-scaling-stroke"
-              />
-              <path
-                d={yolCizgileri.gecit}
-                stroke="#ff8c3a"
-                strokeWidth={1.8}
-                strokeDasharray="4 3"
-                vectorEffect="non-scaling-stroke"
-              />
-            </>
+          {gecitCizgileri && (
+            <path
+              d={gecitCizgileri}
+              stroke="#ff8c3a"
+              strokeWidth={1.8}
+              strokeDasharray="4 3"
+              vectorEffect="non-scaling-stroke"
+            />
           )}
           {hedef && (
             <path
@@ -1116,8 +1071,8 @@ const ToprakKatmani = memo(function ToprakKatmani({
       <path
         d={KARA_YOLU}
         fill="none"
-        stroke="rgba(8,6,4,0.55)"
-        strokeWidth={1.2}
+        stroke="rgba(8,6,4,0.45)"
+        strokeWidth={1}
         vectorEffect="non-scaling-stroke"
         pointerEvents="none"
       />
@@ -1232,7 +1187,7 @@ const Etiketler = memo(function Etiketler({
   homeBolgeId,
   lordKumeleri,
   medeniyetKumeleri,
-  vilayetKumeleri,
+  hedefSimgeleri,
   ittifakHedefId,
   ittifakEtiket,
 }: {
@@ -1253,7 +1208,7 @@ const Etiketler = memo(function Etiketler({
     bilgi: { id: string; ad: string; renk: string };
     anahtar: string;
   }[];
-  vilayetKumeleri: { anahtar: string; merkez: { x: number; y: number }; ad: string }[];
+  hedefSimgeleri: Set<number>;
   ittifakHedefId: number | null;
   ittifakEtiket: string | null;
 }) {
@@ -1261,10 +1216,10 @@ const Etiketler = memo(function Etiketler({
   const yakin = kademe === 'yakin';
   // Lord adları "Kim nerede"de; uzakta yalnız büyük topraklar (ve SEN).
   const lordAdlari = mercek === 'siyasi';
-  // Medeniyet ve vilayet adları — büyük alan adları — yalnız UZAKTA. Orta
+  // Medeniyet adları — büyük alan adları — yalnız UZAKTA. Orta
   // ölçekte bölge simgelerinin ve araç sütununun altında ezilip
   // okunmuyorlardı; orada hangi rengin kim olduğunu gösterge söylüyor.
-  const medeniyetAdlari = uzak && (mercek === 'medeniyet' || mercek === 'siyasi');
+  const medeniyetAdlari = uzak && mercek === 'siyasi';
   const simgeler = !uzak;
 
   return (
@@ -1289,30 +1244,20 @@ const Etiketler = memo(function Etiketler({
           </span>
         ))}
 
-      {/* Vilayet adları Kaynaklar'da, uzakta (bkz. medeniyetAdlari). */}
-      {mercek === 'kaynak' &&
-        uzak &&
-        vilayetKumeleri.map((v) => (
-          <span
-            key={`v-${v.anahtar}`}
-            data-vilayet-ad=""
-            data-oncelik={3}
-            className="baslik absolute text-[12px] tracking-[0.22em] whitespace-nowrap text-parsomen"
-            style={{
-              left: `${v.merkez.x}%`,
-              top: `${v.merkez.y}%`,
-              textShadow: '0 0 4px #0a0705, 0 0 8px #0a0705, 0 1px 2px #0a0705',
-              ...TERS,
-            }}
-          >
-            {v.ad.toLocaleUpperCase('tr')}
-          </span>
-        ))}
-
       {simgeler &&
         regions.map((r) => {
           const secili = r.id === seciliId;
-          const adGoster = yakin || secili || (r.isMine && !uzak);
+          /*
+           * SİMGE YALNIZ GEREKTİĞİNDE. Orta ölçekte her bölgeye bir simge
+           * koymak ekranı ~65 daireyle dolduruyordu ve "hâlâ karmaşık"
+           * denmişti. Ortada yalnız senin toprakların, kampın, seçili bölge
+           * ve Hedefler açıkken yakındaki saldırılabilir yerler; yakınlaşınca
+           * hepsi. Türü merak eden dokunuyor ya da yakınlaşıyor.
+           */
+          const simgeVar =
+            yakin || secili || r.isMine || r.id === homeBolgeId || hedefSimgeleri.has(r.id);
+          if (!simgeVar) return null;
+          const adGoster = yakin || secili || r.isMine;
           return (
             <span
               key={r.id}
@@ -1430,63 +1375,6 @@ const Etiketler = memo(function Etiketler({
 /* Kenar araçları                                                      */
 /* ------------------------------------------------------------------ */
 
-function KucukHarita({
-  regions,
-  gorunum,
-  W,
-  en,
-  boy,
-  onGit,
-}: {
-  regions: RegionDto[];
-  gorunum: Gorunum;
-  W: number;
-  en: number;
-  boy: number;
-  onGit: (x: number, y: number) => void;
-}) {
-  const S = 64;
-  if (W === 0) return null;
-  const D = W * gorunum.k;
-  const x = (-gorunum.tx / D) * S;
-  const y = (-gorunum.ty / D) * S;
-  const w = Math.min(S, (en / D) * S);
-  const h = Math.min(S, (boy / D) * S);
-  return (
-    <button
-      type="button"
-      aria-label="Küçük harita — dokunduğun yere git"
-      title="Küçük harita"
-      className="bas relative overflow-hidden rounded-md border border-kenar"
-      style={{ width: S, height: S }}
-      onClick={(e) => {
-        const r = e.currentTarget.getBoundingClientRect();
-        onGit(((e.clientX - r.left) / S) * 100, ((e.clientY - r.top) / S) * 100);
-      }}
-    >
-      <img
-        src="/gorseller/harita/dunya-onizleme.webp"
-        alt=""
-        className="absolute inset-0 h-full w-full"
-        style={{ filter: 'saturate(0.5) brightness(0.7)' }}
-      />
-      {regions
-        .filter((r) => r.isMine)
-        .map((r) => (
-          <span
-            key={r.id}
-            className="absolute h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-altin"
-            style={{ left: `${r.x}%`, top: `${r.y}%` }}
-          />
-        ))}
-      <span
-        className="absolute rounded-sm border-[1.5px] border-white"
-        style={{ left: Math.max(0, x), top: Math.max(0, y), width: w, height: h }}
-      />
-    </button>
-  );
-}
-
 function YakinlikDugmesi({
   etiket,
   isaret,
@@ -1503,13 +1391,17 @@ function YakinlikDugmesi({
       aria-label={etiket}
       title={etiket}
       // 44px: dokunma hedefi alt sınırı (tools/gorsel-denetim.mjs ölçüyor).
-      className="bas flex h-11 w-11 items-center justify-center rounded-lg border border-kenar bg-gece/80 text-[16px] leading-none text-solgun backdrop-blur"
+      className="bas flex h-11 w-11 items-center justify-center text-[18px] leading-none text-parsomen"
     >
       {isaret}
     </button>
   );
 }
 
+/**
+ * Gösterge: TEK SATIR, yalnız renk noktaları. Açıklama cümleleri ("dolu:
+ * lordun · soluk: sahipsiz") kalktı; renk ile adın yan yana durması yetiyor.
+ */
 function Gosterge({
   mercek,
   regions,
@@ -1521,10 +1413,10 @@ function Gosterge({
   benimMedeniyetId: string | null;
   alt: number;
 }) {
-  const kutu = (renk: string, soluk = false) => (
+  const nokta = (renk: string) => (
     <span
-      className="inline-block h-2.5 w-2.5 shrink-0 rounded-sm"
-      style={{ background: renk, opacity: soluk ? 0.45 : 1 }}
+      className="inline-block h-2.5 w-2.5 shrink-0 rounded-full border border-parsomen/35"
+      style={{ background: renk }}
       aria-hidden
     />
   );
@@ -1532,27 +1424,12 @@ function Gosterge({
   if (mercek === 'hedef') {
     icerik = (
       <>
-        <span className="flex items-center gap-1">{kutu(ALTIN)}sen</span>
-        <span className="flex items-center gap-1">{kutu('#e8524d')}lord · saldırılabilir</span>
-        <span className="flex items-center gap-1">{kutu('#f0e1c8')}sahipsiz · saldırılabilir</span>
-        <span className="flex items-center gap-1">{kutu(KARANLIK)}saldırılamaz ya da uzak</span>
-        <span className="text-sonuk">parlak = yakın</span>
-      </>
-    );
-  } else if (mercek === 'kaynak') {
-    icerik = (
-      <>
-        {Object.entries(TIP_RENGI).map(([t, renk]) => (
-          <span key={t} className="flex items-center gap-1">
-            {kutu(renk)}
-            {TIP_ADI[t]}
-          </span>
-        ))}
-        <span className="text-sonuk">kalın çizgi: vilayet</span>
+        <span className="flex items-center gap-1">{nokta('#e8524d')}lord</span>
+        <span className="flex items-center gap-1">{nokta('#f0e1c8')}boş</span>
+        <span className="flex items-center gap-1">{nokta('#2a221c')}kapalı</span>
       </>
     );
   } else {
-    // Medeniyetler: renk + bölge sayısı; Kim nerede: renk + sen.
     const say = new Map<string, { ad: string; renk: string; n: number }>();
     for (const r of regions) {
       if (!r.medeniyet) continue;
@@ -1562,24 +1439,21 @@ function Gosterge({
     }
     icerik = (
       <>
-        {mercek === 'siyasi' && <span className="flex items-center gap-1">{kutu(ALTIN)}sen</span>}
         {[...say.entries()]
           .sort((a, b) => b[1].n - a[1].n)
           .map(([id, m]) => (
             <span key={id} className="flex items-center gap-1">
-              {kutu(m.renk)}
+              {nokta(m.renk)}
               {m.ad}
-              {mercek === 'medeniyet' && <span className="tabular text-sonuk">{m.n}</span>}
               {id === benimMedeniyetId && <span className="text-altin">★</span>}
             </span>
           ))}
-        {mercek === 'siyasi' && <span className="text-sonuk">dolu: lordun · soluk: sahipsiz</span>}
       </>
     );
   }
   return (
     <div
-      className="pointer-events-none absolute right-2 left-2 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 rounded-lg border border-kenar bg-gece/85 px-2.5 py-1.5 text-[11px] text-solgun backdrop-blur"
+      className="pointer-events-none absolute left-2 flex max-w-[calc(100%-1rem)] flex-wrap items-center gap-x-2.5 gap-y-0.5 rounded-xl bg-gece/75 px-3 py-1 text-[11px] text-solgun backdrop-blur"
       style={{ bottom: alt + 8 }}
       data-harita-gosterge=""
     >
