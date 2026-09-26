@@ -252,9 +252,18 @@ dört mercek, rengi kısılmış bugünkü zemin.
   yürüyüşü komşuyla sınırlamıyor. Kapalı nedenleri sunucuyla aynı
   sırada: çekirdek, aynı medeniyetten bir lord (yoldaş), ittifak üyesi,
   pakt, kalkan.
-- **Kaynaklar merceğinde vilayet sınırları orta kalınlıkta** ve uzak ve
-  orta ölçekte vilayet adları çıkıyor. Vilayet birliği bonusu (G4) bu
+- **Kaynaklar merceğinde vilayet sınırları orta kalınlıkta** ve uzak
+  ölçekte vilayet adları çıkıyor. Vilayet birliği bonusu (G4) bu
   mercekte okunuyor.
+- **Büyük alan adları (medeniyet, vilayet) yalnız uzakta.** Orta ölçekte
+  bölge simgelerinin ve sağdaki araç sütununun altında ezilip
+  okunmuyorlardı; orada rengin kime ait olduğunu gösterge söylüyor.
+  Kıyıdaki adlar dünyanın sınırına, araç sütununun altına düşenler
+  sütunun soluna itiliyor; ekrandan taşıp kesilmiyor, düğme altında
+  kalmıyor.
+- **Ekran dışı okları üst üste binmiyor.** Dönen ordu eve gidiyor ve
+  "Toprağın" oku aynı kenar noktasına düşüp onu örtüyordu (düğme botu
+  buldu). Aynı yeri gösteren ikinci ok çizilmiyor; öncelik ordularda.
 - **Esneme:** harita sınırında (ve "sığdır"da, hiç kayacak yer yokken)
   parmak ölü bir jest yapmıyor. Harita parmağı dirençle izliyor, parmak
   kalkınca yerine yaylanıyor.

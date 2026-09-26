@@ -154,6 +154,8 @@ const ORTA = 1.5;
 const YAKIN = 2.6;
 /** Sağdaki araç sütununun (küçük harita + üç düğme) alt kenarı. */
 const ARAC_SUTUNU_ALTI = 48 + 64 + 3 * 50 + 12;
+/** Araç sütununun sağ kenardan eni: `right-2` + 64 px küçük harita. */
+const ARAC_SUTUNU_ENI = 8 + 64;
 /** Bu kadar pikselden sonra parmak "dokundu" değil "kaydırdı" sayılıyor. */
 const SURUKLE_ESIGI = 8;
 
@@ -557,15 +559,25 @@ export function DunyaHaritasi({
         e.style.marginTop = '';
       }
       const PAY = 4;
+      // Sağdaki araç sütunu (küçük harita, yakınlık düğmeleri) haritanın
+      // ÜSTÜNDE duruyor; altına düşen ad sütunun soluna itiliyor.
+      const sutun = kutuRef.current?.querySelector('[data-arac-sutunu]')?.getBoundingClientRect();
       const kaymalar = itilecek.map((e) => {
         const r = e.getBoundingClientRect();
         if (r.width === 0) return { dx: 0, dy: 0 };
         const kay = (bas: number, son: number, alt: number, ust: number) =>
           bas < alt + PAY ? alt + PAY - bas : son > ust - PAY ? ust - PAY - son : 0;
-        return {
-          dx: kay(r.left, r.right, dunya.left, dunya.right),
-          dy: kay(r.top, r.bottom, dunya.top, dunya.bottom),
-        };
+        let dx = kay(r.left, r.right, dunya.left, dunya.right);
+        const dy = kay(r.top, r.bottom, dunya.top, dunya.bottom);
+        if (
+          sutun &&
+          r.right + dx > sutun.left - PAY &&
+          r.left + dx < sutun.right &&
+          r.top + dy < sutun.bottom &&
+          r.bottom + dy > sutun.top
+        )
+          dx = sutun.left - PAY - r.right;
+        return { dx, dy };
       });
       itilecek.forEach((e, i) => {
         const { dx, dy } = kaymalar[i]!;
@@ -619,7 +631,8 @@ export function DunyaHaritasi({
       if (ev) adaylar.push({ anahtar: 'ev', ad: 'Kampın', x: ev.x, y: ev.y, renk: ALTIN });
     }
     const PAY = 24;
-    const sonuc = [];
+    const sonuc: ((typeof adaylar)[number] & { ekranX: number; ekranY: number; aci: number })[] =
+      [];
     for (const a of adaylar) {
       if (sonuc.length >= 4) break;
       const sx = (a.x / 100) * W * gorunum.k + gorunum.tx;
@@ -629,8 +642,14 @@ export function DunyaHaritasi({
       const ekranX = Math.max(PAY, Math.min(boyut.en - PAY, sx));
       let ekranY = Math.max(PAY + 44, Math.min(gorunurBoy - PAY - 40, sy));
       // Sağ kenarda araç sütunu (küçük harita + yakınlık) duruyor: ok
-      // onun üstüne binmesin, altına kaysın.
-      if (ekranX > boyut.en - 64 && ekranY < ARAC_SUTUNU_ALTI) ekranY = ARAC_SUTUNU_ALTI;
+      // onun üstüne binmesin, altına kaysın. Okun yarısı (22) da sayılıyor:
+      // ortası sütunun dışında kalan ok kenarıyla yine altına giriyordu.
+      if (ekranX + 22 > boyut.en - ARAC_SUTUNU_ENI && ekranY - 22 < ARAC_SUTUNU_ALTI)
+        ekranY = ARAC_SUTUNU_ALTI + 22;
+      // Aynı yeri gösteren iki ok üst üste binmesin: dönen ordu EVE gidiyor
+      // ve "Toprağın" oku aynı kenar noktasına düşüp onu örtüyordu. Öncelik
+      // listedeki sırada — önce ordular.
+      if (sonuc.some((o) => Math.hypot(o.ekranX - ekranX, o.ekranY - ekranY) < 44)) continue;
       sonuc.push({ ...a, ekranX, ekranY, aci });
     }
     return sonuc;
@@ -740,6 +759,7 @@ export function DunyaHaritasi({
 
       {/* --- Sağ sütun: küçük harita ve yakınlık --- */}
       <div
+        data-arac-sutunu=""
         className="absolute top-12 right-2 flex flex-col items-end gap-1.5"
         onPointerDown={(e) => e.stopPropagation()}
       >
@@ -1241,8 +1261,10 @@ const Etiketler = memo(function Etiketler({
   const yakin = kademe === 'yakin';
   // Lord adları "Kim nerede"de; uzakta yalnız büyük topraklar (ve SEN).
   const lordAdlari = mercek === 'siyasi';
-  // Medeniyet adları: Medeniyetler merceğinde her zaman, Kim nerede'de uzakta.
-  const medeniyetAdlari = mercek === 'medeniyet' || (mercek === 'siyasi' && uzak);
+  // Medeniyet ve vilayet adları — büyük alan adları — yalnız UZAKTA. Orta
+  // ölçekte bölge simgelerinin ve araç sütununun altında ezilip
+  // okunmuyorlardı; orada hangi rengin kim olduğunu gösterge söylüyor.
+  const medeniyetAdlari = uzak && (mercek === 'medeniyet' || mercek === 'siyasi');
   const simgeler = !uzak;
 
   return (
@@ -1267,10 +1289,9 @@ const Etiketler = memo(function Etiketler({
           </span>
         ))}
 
-      {/* Vilayet adları Kaynaklar'da, yakınlaşınca çekiliyor: o ölçekte
-          bölge adları yazılıyor ve ikisi aynı yerde birbirini okutmaz. */}
+      {/* Vilayet adları Kaynaklar'da, uzakta (bkz. medeniyetAdlari). */}
       {mercek === 'kaynak' &&
-        !yakin &&
+        uzak &&
         vilayetKumeleri.map((v) => (
           <span
             key={`v-${v.anahtar}`}
