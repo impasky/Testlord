@@ -138,8 +138,56 @@ function useNaara() {
   };
 }
 
-export function OrduSahnesi({ army, komutaTavani }: { army: Army; komutaTavani: number }) {
+/** Evde olmayan asker: akında, yolda (saldırı, kuşatma, dönüş), garnizonda. */
+export interface DisaridakiOrdu {
+  akin: number;
+  yolda: number;
+  garnizon: number;
+}
+
+/**
+ * Evdeki sahne boşken ordunun NEREDE olduğu.
+ *
+ * Oyuncu: "ordu akına ya da kuşatmaya gitmişse 'ordun yok' yerine
+ * 'ordun seferde' denmeli." Akına ya da saldırıya çıkan oyuncuya "ordun
+ * yok, Kışla'da asker eğit" demek hem yanlış hem ürkütücüydü: ordusunu
+ * kaybettiğini sanıyordu.
+ *
+ * Sefer (akın, yol) garnizondan önce geliyor: dönecek olan ordu oyuncunun
+ * beklediği şey. Yalnız garnizon varsa ordu bölgeleri bekliyor — o da
+ * "yok" değil.
+ */
+function bosSahneMetni(d: DisaridakiOrdu | undefined): { baslik: string; alt: string } {
+  const seferde = (d?.akin ?? 0) + (d?.yolda ?? 0);
+  if (d && seferde > 0) {
+    const parcalar = [
+      d.akin > 0 ? `${d.akin} asker akında` : null,
+      d.yolda > 0 ? `${d.yolda} asker yolda` : null,
+      d.garnizon > 0 ? `${d.garnizon} asker garnizonda` : null,
+    ].filter(Boolean);
+    return { baslik: 'Ordun seferde', alt: parcalar.join(' · ') };
+  }
+  if (d && d.garnizon > 0) {
+    return {
+      baslik: 'Ordun garnizonda',
+      alt: `${d.garnizon} asker bölgelerini bekliyor. Evde yeni asker eğitebilirsin.`,
+    };
+  }
+  return { baslik: 'Ordun yok', alt: "Kışla'da asker eğit, burası dolsun." };
+}
+
+export function OrduSahnesi({
+  army,
+  komutaTavani,
+  disarida,
+}: {
+  army: Army;
+  komutaTavani: number;
+  disarida?: DisaridakiOrdu;
+}) {
   const dagilim = figurDagilimi(army);
+  const bos = bosSahneMetni(disarida);
+  const seferde = (disarida?.akin ?? 0) + (disarida?.yolda ?? 0);
   const kullanilan = armySlots(army);
   const siralar = sahneyeDiz(dagilim);
   const { naara, naaraAt } = useNaara();
@@ -185,9 +233,9 @@ export function OrduSahnesi({ army, komutaTavani }: { army: Army; komutaTavani: 
               </div>
             ))}
           </div>
-          <div>
-            <span className="baslik block text-[13px] text-solgun">Ordun yok</span>
-            <span className="text-[11px] text-sonuk">Kışla'da asker eğit, burası dolsun.</span>
+          <div data-ordu-durumu>
+            <span className="baslik block text-[13px] text-solgun">{bos.baslik}</span>
+            <span className="text-[11px] text-sonuk">{bos.alt}</span>
           </div>
         </div>
       ) : (
@@ -240,6 +288,17 @@ export function OrduSahnesi({ army, komutaTavani }: { army: Army; komutaTavani: 
             </div>
           </div>
         ))
+      )}
+
+      {/* Evde asker VARKEN de seferdekiler görünmeli: sahne yalnız evdekini
+          çiziyor ve yarısı akındaki bir ordu küçülmüş sanılıyordu. */}
+      {dagilim.length > 0 && seferde > 0 && (
+        <span
+          data-ordu-durumu
+          className="absolute top-2 left-3 rounded-full border border-kenar bg-gece/80 px-2 py-0.5 text-[11px] text-solgun"
+        >
+          {`${seferde} asker seferde`}
+        </span>
       )}
 
       {/* Alt şerit: sahnenin söylemediği tek şey, gerçek sayılar. */}

@@ -197,6 +197,8 @@ export interface LordState {
   akinYapti: boolean;
   /** Şu an sahada bir akın var mı. */
   akindaOrduVar: boolean;
+  /** Evde olmayan asker: akında, yolda, bölge garnizonlarında. */
+  disaridakiOrdu: { akin: number; yolda: number; garnizon: number };
   /** Rehberi (kâhya kartı + rehber ışığı) kapattı mı. */
   rehberGorundu: boolean;
   /** Başarım ölçütleri; başarımlar bunlardan `basarimlar()` ile türetilir. */

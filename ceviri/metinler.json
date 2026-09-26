@@ -204,7 +204,7 @@
     "tr": "'de dövülür; ürettiğin parçayı buradan kuşanırsın.",
     "en": "is forged at; you equip the crafted piece here.",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:644"
+      "apps/web/src/screens/LordEkrani.tsx:648"
     ]
   },
   "tea6f95f4": {
@@ -640,6 +640,30 @@
       "apps/web/src/screens/EsyaPazari.tsx:158"
     ]
   },
+  "te1c5b879": {
+    "grup": "arayuz",
+    "tr": "{0} asker akında",
+    "en": "{0} soldier on a raid|{0} soldiers on a raid",
+    "nerede": [
+      "apps/web/src/components/OrduSahnesi.tsx:164"
+    ]
+  },
+  "t1f412b0c": {
+    "grup": "arayuz",
+    "tr": "{0} asker bölgelerini bekliyor. Evde yeni asker eğitebilirsin.",
+    "en": "{0} [soldier is|soldiers are] guarding your regions. You can train new troops at home.",
+    "nerede": [
+      "apps/web/src/components/OrduSahnesi.tsx:173"
+    ]
+  },
+  "te0d8032c": {
+    "grup": "arayuz",
+    "tr": "{0} asker garnizonda",
+    "en": "{0} soldier in garrison|{0} soldiers in garrison",
+    "nerede": [
+      "apps/web/src/components/OrduSahnesi.tsx:166"
+    ]
+  },
   "tcc16d07e": {
     "grup": "arayuz",
     "tr": "{0} asker ölü sanılmıştı, yaralı olarak döndü. Kayıp sayısı bunu çıkardıktan sonrası.",
@@ -648,12 +672,28 @@
       "apps/web/src/components/SavasRaporu.tsx:207"
     ]
   },
+  "t1fc2fe59": {
+    "grup": "arayuz",
+    "tr": "{0} asker seferde",
+    "en": "{0} soldier on campaign|{0} soldiers on campaign",
+    "nerede": [
+      "apps/web/src/components/OrduSahnesi.tsx:300"
+    ]
+  },
   "t2eadcc70": {
     "grup": "arayuz",
     "tr": "{0} asker yaralı döndü. İyileşene kadar savaşa giremez, erzak yemez ve komuta yerini kaplamaz.",
     "en": "{0} [soldier|soldiers] came back wounded. They cannot fight until they heal, they eat no supplies and take up no command space.",
     "nerede": [
       "apps/web/src/components/Hastane.tsx:80"
+    ]
+  },
+  "t386cd5bc": {
+    "grup": "arayuz",
+    "tr": "{0} asker yolda",
+    "en": "{0} soldier on the march|{0} soldiers on the march",
+    "nerede": [
+      "apps/web/src/components/OrduSahnesi.tsx:165"
     ]
   },
   "t9db89aaa": {
@@ -852,7 +892,7 @@
     "tr": "{0} galibiyet · {1} yenilgi",
     "en": "{0} [victory|victories] · {1} [defeat|defeats]",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:614"
+      "apps/web/src/screens/LordEkrani.tsx:618"
     ]
   },
   "td06a4e7f": {
@@ -1057,7 +1097,7 @@
     "tr": "{0} PUAN",
     "en": "{0} POINTS",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:495"
+      "apps/web/src/screens/LordEkrani.tsx:499"
     ]
   },
   "t75469fdf": {
@@ -1065,7 +1105,7 @@
     "tr": "{0} puanı dağıt",
     "en": "Distribute {0} [point|points]",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:560"
+      "apps/web/src/screens/LordEkrani.tsx:564"
     ]
   },
   "t2a3b407a": {
@@ -1261,7 +1301,7 @@
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:224",
       "apps/web/src/screens/Demirhane.tsx:538",
-      "apps/web/src/screens/LordEkrani.tsx:678"
+      "apps/web/src/screens/LordEkrani.tsx:682"
     ]
   },
   "t9c4493d9": {
@@ -1487,7 +1527,7 @@
     "tr": "{0}/{1} bölge",
     "en": "{0}/{1} regions",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:442",
+      "apps/web/src/screens/LordEkrani.tsx:446",
       "apps/web/src/screens/Malikane.tsx:124"
     ]
   },
@@ -1496,7 +1536,7 @@
     "tr": "{0}/{1} komuta",
     "en": "{0}/{1} command",
     "nerede": [
-      "apps/web/src/components/OrduSahnesi.tsx:258",
+      "apps/web/src/components/OrduSahnesi.tsx:317",
       "apps/web/src/screens/Kisla.tsx:455"
     ]
   },
@@ -1513,7 +1553,7 @@
     "tr": "{0}/{1} saldırı",
     "en": "{0}/{1} attacks",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:450"
+      "apps/web/src/screens/LordEkrani.tsx:454"
     ]
   },
   "tca03ab23": {
@@ -3437,8 +3477,8 @@
     "en": "Blacksmith",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:400",
-      "apps/web/src/screens/LordEkrani.tsx:642",
-      "apps/web/src/screens/LordEkrani.tsx:659",
+      "apps/web/src/screens/LordEkrani.tsx:646",
+      "apps/web/src/screens/LordEkrani.tsx:663",
       "apps/web/src/screens/Sehir.tsx:563",
       "data/basarimlar.json:kumeler[3].ad",
       "data/binalar.json:binalar[3].ad",
@@ -4202,7 +4242,7 @@
     "tr": "Ekipman gücü",
     "en": "Equipment power",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:585"
+      "apps/web/src/screens/LordEkrani.tsx:589"
     ]
   },
   "tf8c29599": {
@@ -4523,7 +4563,7 @@
     "tr": "Erzak bitti, askerler saatte %5 firar ediyor. Tarla bölgesi al ya da ordunu küçült.",
     "en": "Supplies are out, troops desert at 5% per hour. Take a farm region or reduce your army.",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:406"
+      "apps/web/src/screens/LordEkrani.tsx:410"
     ]
   },
   "t709594fe": {
@@ -5112,7 +5152,7 @@
     "tr": "Görünüş",
     "en": "Appearance",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:479"
+      "apps/web/src/screens/LordEkrani.tsx:483"
     ]
   },
   "tec5ebccb": {
@@ -5499,7 +5539,7 @@
     "en": "DELETE MY ACCOUNT",
     "nerede": [
       "apps/api/src/routes/me.ts:64",
-      "apps/web/src/api/client.ts:1298",
+      "apps/web/src/api/client.ts:1300",
       "apps/web/src/screens/Hesap.tsx:297"
     ]
   },
@@ -5548,7 +5588,7 @@
     "tr": "Hesap",
     "en": "Account",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:723",
+      "apps/web/src/screens/LordEkrani.tsx:727",
       "packages/shared/src/types.ts:364"
     ]
   },
@@ -5605,7 +5645,7 @@
     "tr": "Hiçbir yuvan dolu değil. Ekipman",
     "en": "None of your slots are full. Equipment",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:636"
+      "apps/web/src/screens/LordEkrani.tsx:640"
     ]
   },
   "tdca95e4b": {
@@ -6095,7 +6135,7 @@
     "tr": "İyileşmesine {0} kaldı. Bu sürede saldıramazsın.",
     "en": "{0} left until recovery. You cannot attack during this time.",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:419"
+      "apps/web/src/screens/LordEkrani.tsx:423"
     ]
   },
   "t217040e8": {
@@ -6399,7 +6439,7 @@
     "tr": "Kaydediliyor...",
     "en": "Saving...",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:560"
+      "apps/web/src/screens/LordEkrani.tsx:564"
     ]
   },
   "t6e20f3cf": {
@@ -6683,7 +6723,7 @@
     "tr": "Kışla'da asker eğit, burası dolsun.",
     "en": "Train troops in the Barracks, so this place fills up.",
     "nerede": [
-      "apps/web/src/components/OrduSahnesi.tsx:190"
+      "apps/web/src/components/OrduSahnesi.tsx:176"
     ]
   },
   "t547d4428": {
@@ -6911,7 +6951,7 @@
     "en": "Loadout",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:292",
-      "apps/web/src/screens/LordEkrani.tsx:478"
+      "apps/web/src/screens/LordEkrani.tsx:482"
     ]
   },
   "taecbd481": {
@@ -6935,7 +6975,7 @@
     "tr": "Kuşanılan Ekipman",
     "en": "Equipped Gear",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:630"
+      "apps/web/src/screens/LordEkrani.tsx:634"
     ]
   },
   "t43eafc33": {
@@ -7076,8 +7116,8 @@
       "apps/api/src/routes/moderasyon.ts:83",
       "apps/api/src/routes/rankings.ts:265",
       "apps/api/src/routes/ticaret.ts:62",
-      "apps/api/src/services/lord.ts:379",
-      "apps/api/src/services/lord.ts:660",
+      "apps/api/src/services/lord.ts:390",
+      "apps/api/src/services/lord.ts:677",
       "apps/api/src/services/profil.ts:79",
       "apps/web/src/components/MobilKabuk.tsx:78",
       "apps/web/src/components/UygulamaKasasi.tsx:42"
@@ -7106,7 +7146,7 @@
     "tr": "Lord savaş katkısı",
     "en": "Lord battle contribution",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:586"
+      "apps/web/src/screens/LordEkrani.tsx:590"
     ]
   },
   "t10934225": {
@@ -7151,7 +7191,7 @@
     "tr": "Lordlara karşı",
     "en": "Against lords",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:614"
+      "apps/web/src/screens/LordEkrani.tsx:618"
     ]
   },
   "tc8f2ac29": {
@@ -7176,7 +7216,7 @@
     "en": "Your lord is wounded",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:736",
-      "apps/web/src/screens/LordEkrani.tsx:416"
+      "apps/web/src/screens/LordEkrani.tsx:420"
     ]
   },
   "tda0d5c1f": {
@@ -7483,7 +7523,7 @@
     "tr": "Nitelik",
     "en": "Attributes",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:477"
+      "apps/web/src/screens/LordEkrani.tsx:481"
     ]
   },
   "t9465a68b": {
@@ -7591,7 +7631,7 @@
     "tr": "Ordu donanımı",
     "en": "Army gear",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:596",
+      "apps/web/src/screens/LordEkrani.tsx:600",
       "apps/web/src/screens/Sehir.tsx:64"
     ]
   },
@@ -7633,7 +7673,7 @@
     "en": "Your army is starving",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:714",
-      "apps/web/src/screens/LordEkrani.tsx:404"
+      "apps/web/src/screens/LordEkrani.tsx:408"
     ]
   },
   "t287cf37e": {
@@ -7658,6 +7698,14 @@
     "en": "Your army is returning",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:818"
+    ]
+  },
+  "t373b60cc": {
+    "grup": "arayuz",
+    "tr": "Ordun garnizonda",
+    "en": "Your army is in garrison",
+    "nerede": [
+      "apps/web/src/components/OrduSahnesi.tsx:172"
     ]
   },
   "t320993d2": {
@@ -7692,6 +7740,14 @@
       "apps/web/src/screens/Akin.tsx:667"
     ]
   },
+  "t814aec79": {
+    "grup": "arayuz",
+    "tr": "Ordun seferde",
+    "en": "Your army is on campaign",
+    "nerede": [
+      "apps/web/src/components/OrduSahnesi.tsx:168"
+    ]
+  },
   "t437a0412": {
     "grup": "arayuz",
     "tr": "ordun yetiyor",
@@ -7713,7 +7769,7 @@
     "tr": "Ordun yok",
     "en": "You have no army",
     "nerede": [
-      "apps/web/src/components/OrduSahnesi.tsx:189"
+      "apps/web/src/components/OrduSahnesi.tsx:176"
     ]
   },
   "t0b0cefdc": {
@@ -7739,7 +7795,7 @@
     "tr": "Ordun: {0}/{1} komuta yeri dolu",
     "en": "Your army: {0}/{1} command space filled",
     "nerede": [
-      "apps/web/src/components/OrduSahnesi.tsx:151"
+      "apps/web/src/components/OrduSahnesi.tsx:199"
     ]
   },
   "te65b1599": {
@@ -8095,7 +8151,7 @@
     "tr": "parola, öğretici, çıkış",
     "en": "password, tutorial, logout",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:724"
+      "apps/web/src/screens/LordEkrani.tsx:728"
     ]
   },
   "t53526980": {
@@ -8293,7 +8349,7 @@
     "tr": "Puan dağıtımı kalıcıdır. Liderlik ordunun büyüklüğünü ve general slotunu belirler.",
     "en": "Point distribution is permanent. Leadership determines army size and general slots.",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:572"
+      "apps/web/src/screens/LordEkrani.tsx:576"
     ]
   },
   "t8aa587ec": {
@@ -8526,7 +8582,7 @@
     "tr": "Saldırı +%{0} · Savunma +%{1} · Can +%{2}",
     "en": "Attack +{0}% · Defense +{1}% · Health +{2}%",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:597"
+      "apps/web/src/screens/LordEkrani.tsx:601"
     ]
   },
   "t293989d5": {
@@ -8649,7 +8705,7 @@
     "tr": "Savaş derecen",
     "en": "Battle rating",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:615"
+      "apps/web/src/screens/LordEkrani.tsx:619"
     ]
   },
   "t951ee66f": {
@@ -8657,7 +8713,7 @@
     "tr": "Savaş Gücü",
     "en": "Battle Power",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:576"
+      "apps/web/src/screens/LordEkrani.tsx:580"
     ]
   },
   "tc54d661e": {
@@ -9031,7 +9087,7 @@
     "tr": "Sıfırla",
     "en": "Reset",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:567"
+      "apps/web/src/screens/LordEkrani.tsx:571"
     ]
   },
   "t481ea9d9": {
@@ -9400,7 +9456,7 @@
       "apps/web/src/components/ProfilKarti.tsx:111",
       "apps/web/src/screens/Ittifak.tsx:460",
       "apps/web/src/screens/Ittifak.tsx:76",
-      "apps/web/src/screens/LordEkrani.tsx:447",
+      "apps/web/src/screens/LordEkrani.tsx:451",
       "apps/web/src/screens/Siralama.tsx:138"
     ]
   },
@@ -9673,7 +9729,7 @@
       "apps/web/src/screens/Demirhane.tsx:463",
       "apps/web/src/screens/Demirhane.tsx:474",
       "apps/web/src/screens/Demirhane.tsx:541",
-      "apps/web/src/screens/LordEkrani.tsx:685"
+      "apps/web/src/screens/LordEkrani.tsx:689"
     ]
   },
   "t5170099f": {
@@ -9722,7 +9778,7 @@
     "tr": "T{0}{1}",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:701"
+      "apps/web/src/screens/LordEkrani.tsx:705"
     ]
   },
   "t75bd333b": {
@@ -15496,7 +15552,7 @@
     "tr": "Başkentin düştü",
     "en": "Your capital fell",
     "nerede": [
-      "apps/api/src/services/lord.ts:725"
+      "apps/api/src/services/lord.ts:742"
     ]
   },
   "ta3ff14a1": {
@@ -15628,7 +15684,7 @@
     "tr": "Bölge ele geçirildi",
     "en": "Region captured",
     "nerede": [
-      "apps/api/src/services/lord.ts:727"
+      "apps/api/src/services/lord.ts:744"
     ]
   },
   "tb08bcfd6": {
@@ -16322,7 +16378,7 @@
     "tr": "Eşyan satıldı",
     "en": "Your item sold",
     "nerede": [
-      "apps/api/src/services/lord.ts:731"
+      "apps/api/src/services/lord.ts:748"
     ]
   },
   "tc3dc0d24": {
@@ -16506,7 +16562,7 @@
     "tr": "İşin bitti",
     "en": "You're done",
     "nerede": [
-      "apps/api/src/services/lord.ts:728"
+      "apps/api/src/services/lord.ts:745"
     ]
   },
   "t75da2234": {
@@ -16967,7 +17023,7 @@
     "tr": "Ordun eve döndü",
     "en": "Your army returned home",
     "nerede": [
-      "apps/api/src/services/lord.ts:726"
+      "apps/api/src/services/lord.ts:743"
     ]
   },
   "t69d0d616": {
@@ -17018,7 +17074,7 @@
     "tr": "Ön siparişin karşılandı",
     "en": "Your buy order was filled",
     "nerede": [
-      "apps/api/src/services/lord.ts:732"
+      "apps/api/src/services/lord.ts:749"
     ]
   },
   "t57668250": {
@@ -17084,7 +17140,7 @@
     "tr": "Pazar emrin eşleşmiyor",
     "en": "Your market order doesn't match",
     "nerede": [
-      "apps/api/src/services/lord.ts:733"
+      "apps/api/src/services/lord.ts:750"
     ]
   },
   "te41957df": {
@@ -17191,7 +17247,7 @@
     "tr": "Savaş kaybedildi",
     "en": "Battle lost",
     "nerede": [
-      "apps/api/src/services/lord.ts:724"
+      "apps/api/src/services/lord.ts:741"
     ]
   },
   "t668e46ee": {
@@ -17343,7 +17399,7 @@
     "tr": "Toprağın saldırı altında",
     "en": "Your land is under attack",
     "nerede": [
-      "apps/api/src/services/lord.ts:723"
+      "apps/api/src/services/lord.ts:740"
     ]
   },
   "t20afa09d": {

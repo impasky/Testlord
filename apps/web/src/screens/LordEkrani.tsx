@@ -392,7 +392,11 @@ export function LordEkrani({
 
       {/* Ekranın tepesi artık bir sahne: lordun ordusu. Nitelik kartlarıyla
           açılmak, bu ekranı bir karakter sayfası değil bir form yapıyordu. */}
-      <OrduSahnesi army={lord.homeArmy} komutaTavani={lord.commandCapacity} />
+      <OrduSahnesi
+        army={lord.homeArmy}
+        komutaTavani={lord.commandCapacity}
+        disarida={lord.disaridakiOrdu}
+      />
 
       {lord.starving && (
         <Kart className="border-kirmizi/60 p-3" vurgu="var(--color-kirmizi)">

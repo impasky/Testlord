@@ -154,6 +154,12 @@ export interface LordState {
   /** Şu an sahada bir akın var mı. */
   akindaOrduVar: boolean;
   /**
+   * Evde OLMAYAN asker sayıları: akında, yolda (saldırı/kuşatma/dönüş),
+   * bölge garnizonlarında. Lord ekranı evde kimse yokken "Ordun yok"
+   * değil ordunun NEREDE olduğunu söylüyor.
+   */
+  disaridakiOrdu: { akin: number; yolda: number; garnizon: number };
+  /**
    * Rehberi (kâhya kartı + rehber ışığı) kapattı mı.
    *
    * Bu da sunucuda, aynı sebeple ve bir sebep daha ile: tarayıcı deposunda
@@ -194,6 +200,11 @@ const lordInclude = {
 type LordWithRelations = Prisma.LordGetPayload<{ include: typeof lordInclude }>;
 
 /** Bir lordun tüm birimlerini (ev + garnizon + yürüyüş) tek orduya toplar. */
+/** Bir yerdeki toplam asker — yalnız sayı, bileşim değil. */
+function disaridaSay(units: { count: number; locationType: string }[], yer: string): number {
+  return units.filter((u) => u.locationType === yer).reduce((t, u) => t + u.count, 0);
+}
+
 function collectAllUnits(units: { unitType: string; count: number }[]): Army {
   const army: Army = {};
   for (const u of units) {
@@ -594,6 +605,12 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
      * kazandığımız tek şey aynı bilginin ikinci bir yolu olurdu.
      */
     akindaOrduVar: lord.units.some((u) => u.locationType === 'akin'),
+    // Aynı satırlardan: ayrı sorgu yok (yukarıdaki not).
+    disaridakiOrdu: {
+      akin: disaridaSay(lord.units, 'akin'),
+      yolda: disaridaSay(lord.units, 'march'),
+      garnizon: disaridaSay(lord.units, 'region'),
+    },
     rehberGorundu: lord.rehberBittiAt !== null,
     basarimOlcutleri: basarimOlcutleriHesapla(
       lord,

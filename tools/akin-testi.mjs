@@ -145,6 +145,15 @@ kontrol(
   `${orduSayisi(ordu)} -> ${orduSayisi(evdeSefer)}`,
 );
 
+// Lord ekranı evde kimse yokken "Ordun yok" değil "Ordun seferde" diyor;
+// bunun verisi /me'de.
+const disarida = (await get('/me')).lord.disaridakiOrdu;
+kontrol(
+  'Durum akındaki askeri sayıyor',
+  disarida?.akin === orduSayisi(ordu) - orduSayisi(evdeSefer),
+  JSON.stringify(disarida),
+);
+
 // Aynı gruba ikinci akın: ordu evde yok, reddedilmeli.
 const ikinciRed = await post('/akin', { haritaKey: ilk.key, grupNo: 2, army: ordu });
 kontrol(
@@ -265,6 +274,30 @@ if (await acikGrup.count()) {
 }
 
 await page.screenshot({ path: `${process.env.CIKTI ?? 'ekran-goruntuleri'}/akin.png` });
+
+/*
+ * ORDU SEFERDEYKEN LORD EKRANI. Oyuncu: "ordu akına ya da kuşatmaya
+ * gitmişse 'ordun yok' yerine 'ordun seferde' denmeli." Evdeki bütün
+ * askerle akına çıkılıyor, Lord sekmesi açılıyor.
+ */
+const evdekiHepsi = (await get('/army')).home;
+const seferCikis =
+  orduSayisi(evdekiHepsi) > 0
+    ? await post('/akin', { haritaKey: ilk.key, grupNo: 1, army: evdekiHepsi })
+    : { error: 'evde asker yok' };
+kontrol('Bütün orduyla akına çıkıldı', Boolean(seferCikis.id), seferCikis.error ?? '');
+await page.reload({ waitUntil: 'domcontentloaded' });
+await page.waitForSelector('nav button:has-text("Lord")', { timeout: 20000 });
+await page.locator('nav button:has-text("Lord")').click();
+await page.locator('[data-ordu-durumu]').first().waitFor({ timeout: 10000 });
+const orduDurumu = (await page.locator('[data-ordu-durumu]').first().innerText()).trim();
+kontrol(
+  'Lord ekranı "Ordun seferde" diyor, "Ordun yok" değil',
+  /Ordun seferde/i.test(orduDurumu) && /akında/i.test(orduDurumu),
+  orduDurumu.replace(/\s+/g, ' '),
+);
+await post('/test/akinlari-bitir');
+
 kontrol('Konsol hatası yok', konsol.length === 0, konsol[0] ?? '');
 
 await b.close();
