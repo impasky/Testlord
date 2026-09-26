@@ -1,0 +1,219 @@
+# 23 — Dünya haritası: noktalar yerine toprak
+
+Oyuncunun cümlesi:
+
+> "Dünya haritası kısmı hâlâ verimsiz, nerenin ne olduğu anlaşılmıyor,
+> hangi bölge kimin belli değil. Sıfırdan yapmak istesek en iyi sonucu
+> ve en yüksek verimliliği nasıl alırız?"
+
+Bu belge önce sorunu **ölçüyor**, sonra sıfırdan bir tasarım öneriyor ve
+onu gerçek veriyle çizilmiş bir **taslakla** gösteriyor. Kod henüz
+yazılmadı. Karar oyuncunun.
+
+## 1. Bugün ne görülüyor
+
+| Açılış (×2,4)                                       | Sığdır (×1)                                         |
+| --------------------------------------------------- | --------------------------------------------------- |
+| ![bugün açılış](gorseller/harita-simdi-acilis.webp) | ![bugün sığdır](gorseller/harita-simdi-sigdir.webp) |
+
+Beş sorun var. Hepsi aynı kökten çıkıyor: **harita bir nokta haritası,
+ama oyuncunun sorusu bir toprak sorusu.**
+
+1. **Sahiplik en küçük işarette, tür en büyüğünde.** Her bölge 24
+   piksellik bir madalyon. Madalyonun dolgusu ve simgesi TÜRÜ söylüyor
+   (köy, tarla, maden, kale). SAHİBİ ise etrafındaki 2–3 piksellik halka
+   söylüyor. Oyuncunun ilk sorusu "burası kimin". Ekran ise önce "burası
+   ne" diye cevap veriyor. Hiyerarşi ters.
+2. **Kırmızı-kahve üç şey demek.** Düşman lordun halkası kırmızı, Demir
+   Ocağı'nın rengi turuncu-kahve, kalenin madalyonu kiremit. Küçük bir
+   halkada bu üçü ayırt edilemiyor.
+3. **Toprak yok, nokta var.** "Kimin nerede olduğu" bir BÖLGE sorusu:
+   Risk'te, Civilization'da, HOI4'te göz önce renkli alanları ve
+   sınırları okur. Bizde alan yok. Kimin nerede olduğunu anlamak için
+   121 halkayı tek tek okumak gerekiyor.
+4. **Harita ekranın üçte biri.** Telefonda haritanın görünen kutusu
+   ekran yüksekliğinin **~%33**'ü (iPhone 13 görüntüsünde 2532 pikselin
+   ~830'u). Gerisini başlık,
+   kaynaklar, diyar satırı, medeniyet şeridi, omurga çubuğu ve alt çubuk
+   alıyor. Bölgeye dokununca kart TAM EKRAN açılıyor ve harita kayboluyor.
+   Hangi bölgeyi seçtiğini, yanında ne olduğunu artık göremiyorsun.
+5. **Uzakta çorba.** Sığdırınca 121 madalyon üst üste biniyor, adlar
+   susuyor. Gösterge yok: beyaz elmas, sarı nokta, kırmızı nokta, kalın
+   halka ne demek, hiçbir yerde yazmıyor.
+
+Madalyona her ölçüm turunda bir anlam daha eklendi (sur halkası,
+medeniyet rengi, kalkan, geçit). Hepsi haklı bir ihtiyaçtan doğdu. Ama 24
+piksele beş boyut sığmıyor. Sorun cilayla çözülmez; **gösterim birimi**
+yanlış.
+
+## 2. Öneri: toprak haritası
+
+![taslak — kim nerede](gorseller/harita-taslak-kim-nerede.webp)
+
+_Taslak, bugünkü 121 bölgenin gerçek konum ve komşuluklarından çizildi.
+Sahiplik orta oyunu göstersin diye büyütüldü: her lord, bugünkü
+bölgesinden komşuluk grafiğinde 3–6 bölgelik bir kümeye yayıldı._
+
+### 2.1 Her bölge bir toprak parçası
+
+Her bölgenin `x/y`'sinden bir **Voronoi hücresi** çıkıyor. Hücre karaya
+kırpılıyor, yani denize taşmıyor. Sonuç 121 komşu toprak parçası; bugünkü
+komşuluk grafiğiyle aynı yerleşim.
+
+- **Renk = sahip.** Oyuncunun ilk sorusu tek bakışta cevaplanıyor:
+  - Altın: sen.
+  - Medeniyet rengi, dolu: o medeniyetten bir lordun toprağı.
+  - Aynı renk, soluk: sahipsiz ama o medeniyetin elinde.
+  - Boş: kimsenin değil.
+- **Sınır hiyerarşisi.** Göz önce sınırı okur, sınırda dört kademe var:
+  - İnce: bölge.
+  - Orta: medeniyet.
+  - Kalın siyah: lord.
+  - Altın: senin toprağın.
+
+  İki lordun toprağının nerede bittiği artık bir çizgi.
+
+- **Lord adı toprağın ortasında, bir kez.** Her bölgenin yanında ayrı
+  sahip etiketi yok. Her lordun bitişik toprak kümesinin ağırlık
+  merkezinde tek bir ad var, bir ülke adı gibi. 121 etiket yerine ~20.
+- **Tür küçük bir simge.** Köy/tarla/maden hâlâ görünüyor ama sahipliğin
+  ALTINDA, yardımcı bilgi olarak.
+
+### 2.2 Tek soru, tek mercek
+
+Madalyonun sorunu, her soruyu aynı anda cevaplamaya çalışmasıydı.
+Mercek her seferinde BİR soruyu cevaplıyor:
+
+| Mercek           | Cevapladığı soru                       | Boyama                                                                                            |
+| ---------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| **Kim nerede**   | Hangi toprak kimin?                    | Sahip rengi, lord sınırları, lord adları                                                          |
+| **Hedefler**     | Nereye saldırabilirim, ne kadar sürer? | Saldırılabilir bölgeler yakınlığa göre aydınlık (1 adım en parlak); saldırılamayanlar karartılmış |
+| **Medeniyetler** | Savaşı kim kazanıyor?                  | Dört medeniyet rengi, dev medeniyet adları, altta diyarın durumu                                  |
+| **Kaynaklar**    | Nerede tarla, maden, köy; kaç seviye?  | Tür rengi ve seviye; sahiplik yalnız sınır                                                        |
+
+| Medeniyetler (genel bakış)                                         | Hedefler + seçili bölge                               |
+| ------------------------------------------------------------------ | ----------------------------------------------------- |
+| ![taslak — medeniyetler](gorseller/harita-taslak-genel-bakis.webp) | ![taslak — hedef](gorseller/harita-taslak-hedef.webp) |
+
+**Hedefler** merceği sunucunun kurallarını haritaya taşıyor. Saldırılamayanlar
+karartılıyor:
+
+- kendi bölgen,
+- aynı medeniyetten bir lordun toprağı,
+- ittifak arkadaşı,
+- paktlı ittifak,
+- kalkanlı bölge,
+- dokunulmaz çekirdek.
+
+Kalanlar en yakın toprağından uzaklığa göre aydınlanıyor
+(`yakinlikMesafesi`): bitişik olan en parlak. Taslak yalnız bu 1 adımlık
+halkayı gösteriyor. Oyuncu bugün bunu bölgelere tek tek dokunup, kart
+açıp reddedilerek öğreniyor.
+
+### 2.3 Harita ekranın kendisi
+
+- **Tam ekran.** Harita, ince bir kaynak satırıyla alt çubuk arasında
+  kalan bütün alanı alıyor.
+- **Alt çekmeceye inenler:** diyar satırı, "diyarda neler oluyor",
+  yürüyüşler, medeniyet şeridi. Kapalıyken tek satır: "2 ordu yolda · 3
+  yeni olay". Yukarı çekince açılıyor; kasayla aynı hareket.
+- **Bölge kartı yarım.** Dokununca alttan ~190 piksellik bir kart
+  çıkıyor: ad, sahip, kazanma ihtimali, yürüyüş süresi, gelir,
+  Saldır/Keşif. Harita görünür kalıyor; seçili toprak ve komşuları
+  üstünde vurgulu. Ayrıntı isteyen kartı yukarı çekiyor.
+- **Küçük harita ve gösterge.** Sağ üstte bütün diyar ve görünen alan.
+  Altta, merceğe göre değişen tek satırlık gösterge.
+
+### 2.4 Yakınlığa göre ayrıntı (semantik yakınlaştırma)
+
+| Yakınlık | Görünen                                                        |
+| -------- | -------------------------------------------------------------- |
+| Uzak     | Toprak renkleri, medeniyet adları, Taht, SEN                   |
+| Orta     | + lord adları (küme başına bir), tür simgeleri                 |
+| Yakın    | + bölge adları, seviye, sur/kalkan işaretleri, geçit çizgileri |
+
+Bugünkü etiket önceliği ve çakışma mantığı (`DunyaHaritasi.tsx`) aynen
+kullanılıyor, yalnız etiketler daha az.
+
+## 3. Verimlilik: nasıl yapılır
+
+### 3.1 Toprak şekilleri bir kez hesaplanıyor, oyuncuda değil
+
+- `tools/harita-kur.py` bölgeleri zaten yerleştiriyor. Aynı adımda
+  toprak şekilleri de çıkıyor:
+  1. Kara maskesi: bugünkü `harita-arazi.py`. Göl ve bataklık gözleri
+     karaya katılıyor.
+  2. Her kara pikseli en yakın bölgeye atanıyor.
+  3. Kontur çıkarılıp sadeleştiriliyor (Douglas–Peucker).
+  4. Sonuç 0–100 koordinatlı SVG yolları.
+- **Boyut:** 121 yol, bölge başına birkaç düzine nokta. Tahminen
+  sıkıştırılmış 10–20 KB. Henüz ölçülmedi; Faz 1'in ilk ölçümü bu.
+  Tek statik dosya (`public/`), tarayıcı önbelleğinde.
+- **Harita sürümü değişmiyor.** `HARITA_SURUMU` yalnız
+  `x/y/ad/tür/komşuluk/…` alanlarından hesaplanıyor. Şekil bunlardan
+  TÜRÜYOR ve motor onu hiç okumuyor. Canlı dünyalar etkilenmiyor
+  (docs/12 A1).
+- **Kodu yazılı.** Taslağı çizen betik, 121 bölgeyi 12 saniyede
+  işliyor. Çekirdeği ~60 satır numpy/scipy, üretim aracına taşınacak.
+
+### 3.2 Çizim: tek SVG katmanı
+
+- **121 `<path>`**, her biri bir `data-bolge` taşıyor. Mercek değişince
+  yalnız sınıflar değişiyor, yeniden hesap yok. SVG seçmemin sebepleri:
+  - Her yakınlıkta keskin.
+  - CSS ile boyanıyor.
+  - Playwright ile sınanabiliyor.
+  - Ekran okuyucuya erişilebilir.
+- **Dokunma = toprak.** `<path>` kendiliğinden dokunulabilir. Hedef 24
+  piksellik madalyon değil, 80–150 piksellik toprak. Bugünkü üst üste
+  binen işaretçi ve "yanlış bölge açıldı" sorunu kökten kalkıyor.
+  `harita-dokunma-testi`nin uğraştığı şey bu.
+- **Kaydırma:** bugünkü tek `transform` korunuyor. Kaydırırken React
+  yeniden çizmiyor; etiketler hareket bitince yeniden süzülüyor.
+- **Canvas/WebGL gereksiz.** 121 yol bir telefon için hafif; PixiJS
+  gibi bir motor ancak binlerce bölgede kazandırır. Bundle'a eklenen
+  kütüphane: sıfır.
+- **Zemin sanatı korunuyor.** Dokuz karo aynen kalıyor. Üstüne CSS ile
+  rengi kısılıyor, böylece bilgi katmanı öne çıkıyor. Yeni görsel
+  üretimi gerekmiyor.
+
+### 3.3 Sunucu
+
+`/map` zaten her şeyi veriyor: `isMine`, `owner`, `medeniyet`,
+`komsular`, `shielded`, `paktli`. Mercekler istemcide hesaplanıyor.
+**Sunucuda değişiklik yok.** Tek ek, ittifak arkadaşlarını işaretlemek
+için bölgeye `muttefik` bayrağı. O da ayrıntı ucunda var, listeye
+taşınacak.
+
+## 4. Sıra
+
+| Faz | İş                                                                                                                                              | Ölçüt                                                           |
+| --- | ----------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| 1   | Toprak şekilleri (`harita-kur.py` + statik dosya), SVG toprak katmanı, **Kim nerede** merceği, sınır hiyerarşisi, lord adları, dokunma = toprak | Her bölgeye toprağından dokunuluyor; etiket çakışması 0; 60 FPS |
+| 2   | Tam ekran düzen, alt çekmece (olaylar, yürüyüşler, medeniyet), yarım bölge kartı, küçük harita, gösterge                                        | Harita ekranın ≥ %75'i; kart açıkken seçili toprak görünür      |
+| 3   | **Hedefler**, **Medeniyetler**, **Kaynaklar** mercekleri; liste görünümü (ekran okuyucu ve hızlı hedef için)                                    | Hedefler merceği sunucunun kabul edeceği hedeflerle birebir     |
+| 4   | Testler (`harita-testi`, `harita-dokunma-testi`, görsel/erişim denetimleri, düğme botu), belge, çeviri                                          | Tam e2e zinciri yeşil                                           |
+
+Faz 1 tek başına "hangi bölge kimin belli değil" sorununu çözüyor. 2 ve
+3 onun üstüne kuruluyor. Her faz ayrı ayrı itilebilir ve oynanabilir
+kalır.
+
+## 5. Neler DEĞİŞMİYOR
+
+- Bölgeler, komşuluk grafiği, geçitler, vilayetler, harita sürümü: motor
+  aynı kalıyor. Bu yalnız bir **gösterim** değişikliği.
+- Zemin sanatı ve dokuz karo.
+- `/map` ve `/map/:id` uçları.
+- Ekran dışı okları, seçileni ekrana getirme, etiket önceliği: aynen
+  taşınıyor.
+
+## 6. Karar bekleyenler
+
+1. **"Kim nerede"de renk neyi söylesin?** Öneri: medeniyet rengi (oyunun
+   büyük savaşı medeniyetler arası, docs/16) + altın sen + ittifak
+   arkadaşına beyaz kesik sınır. Seçenek: ilişki rengi (sen / müttefik /
+   düşman / tarafsız). O zaman medeniyet kendi merceğine kalır.
+2. **Mercek sayısı dört mü?** Kaynaklar merceği ertelenebilir; ilk üç
+   oyuncunun asıl sorularını cevaplıyor.
+3. **Zemin:** bugünkü resim, rengi kısılmış olarak (öneri, maliyetsiz)
+   ya da daha sade yeni bir parşömen zemin (görsel üretimi gerekir).
