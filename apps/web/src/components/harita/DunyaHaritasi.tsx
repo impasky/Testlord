@@ -538,6 +538,41 @@ export function DunyaHaritasi({
     const kutu = tuvalRef.current;
     if (!kutu) return;
     const kare = requestAnimationFrame(() => {
+      /*
+       * Dünyanın kenarına taşan ad İÇERİ itiliyor. Küme ortası kıyıdaki
+       * bir lordun ya da medeniyetin adı yarısı dünyanın dışında
+       * yazılıyordu; "sığdır"da dünya ekranın eni olduğu için o yarı
+       * ekrandan da taşıp kesiliyordu. Kayma tuvalin birimiyle veriliyor
+       * (ekran pikseli / o anki ölçek): harita kayınca ad yerinde kalır.
+       */
+      const dunya = kutu.getBoundingClientRect();
+      const olcek = W > 0 ? dunya.width / W : 1;
+      const itilecek = [
+        ...kutu.querySelectorAll<HTMLElement>(
+          '[data-kume-ad],[data-medeniyet-ad],[data-vilayet-ad]',
+        ),
+      ];
+      for (const e of itilecek) {
+        e.style.marginLeft = '';
+        e.style.marginTop = '';
+      }
+      const PAY = 4;
+      const kaymalar = itilecek.map((e) => {
+        const r = e.getBoundingClientRect();
+        if (r.width === 0) return { dx: 0, dy: 0 };
+        const kay = (bas: number, son: number, alt: number, ust: number) =>
+          bas < alt + PAY ? alt + PAY - bas : son > ust - PAY ? ust - PAY - son : 0;
+        return {
+          dx: kay(r.left, r.right, dunya.left, dunya.right),
+          dy: kay(r.top, r.bottom, dunya.top, dunya.bottom),
+        };
+      });
+      itilecek.forEach((e, i) => {
+        const { dx, dy } = kaymalar[i]!;
+        if (dx) e.style.marginLeft = `${dx / olcek}px`;
+        if (dy) e.style.marginTop = `${dy / olcek}px`;
+      });
+
       const etiketler = [...kutu.querySelectorAll<HTMLElement>('[data-oncelik]')];
       for (const e of etiketler) e.style.visibility = '';
       const sirali = etiketler
