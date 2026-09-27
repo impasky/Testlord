@@ -10,6 +10,7 @@
  * general eklenebilir, yarısı çizilmişken de oyun tutarlı görünür.
  */
 import { useState } from 'react';
+import { NesneCizimi, nesneCizimiVar } from '../cizim/Cizimler';
 
 export type GorselTuru = 'birimler' | 'generaller' | 'bolgeler' | 'ekipman' | 'harita' | 'lord';
 
@@ -57,6 +58,10 @@ export function Gorsel({
     setGosterilen(`${tur}/${ad}`);
     setYok(false);
   }
+
+  // Koddan çizilen görsel (docs/24): birlik, eşya. Dosya beklemiyor.
+  if (nesneCizimiVar(tur, ad))
+    return <NesneCizimi tur={tur} ad={ad} alt={alt} boyut={boyut} className={className} />;
 
   if (yok) return <>{yedek}</>;
 

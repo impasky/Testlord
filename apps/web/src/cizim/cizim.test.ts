@@ -1,5 +1,14 @@
 import { describe, expect, it } from 'vitest';
+import { AKIN_HARITALARI, B } from '@lordlar/shared';
 import { BINA_ADLARI, BINA_KUTUSU, binaModeli } from './binalar';
+import {
+  BIRLIK_ADLARI,
+  DUSMAN_ADLARI,
+  EKIPMAN_ADLARI,
+  birlikModeli,
+  dusmanModeli,
+  ekipmanModeli,
+} from './birlikler';
 import { BOLGE_SAHNELERI, bolgeAdiCoz, bolgeModeli } from './bolgeler';
 import { rastgele } from './rastgele';
 import { ciz, kutu, sabitKutu, yansitici, zemineGeri } from './uc';
@@ -112,5 +121,34 @@ describe('bölge sahneleri', () => {
         .slice(0, 50)
         .join('|');
     expect(arazi('koy_3')).toBe(arazi('koy'));
+  });
+});
+
+describe('birlik, düşman, ekipman', () => {
+  it('oyundaki her birlik çiziliyor', () => {
+    for (const b of Object.keys(B.birimler)) expect(BIRLIK_ADLARI).toContain(b);
+  });
+  it('her diyarın düşmanı er ve şef olarak çiziliyor', () => {
+    for (const h of AKIN_HARITALARI) {
+      expect(DUSMAN_ADLARI).toContain(h.dusman_key);
+      expect(DUSMAN_ADLARI).toContain(h.dusman_key + '_sef');
+    }
+  });
+  it('her ekipman yuvasının beş kademesi çiziliyor', () => {
+    for (const y of B.ekipman.slotlar)
+      for (let t = 1; t <= 5; t++) expect(EKIPMAN_ADLARI).toContain(`${y}_t${t}`);
+  });
+  it.each([
+    ...BIRLIK_ADLARI.map((a) => [a, birlikModeli] as const),
+    ...DUSMAN_ADLARI.map((a) => [a, dusmanModeli] as const),
+    ...EKIPMAN_ADLARI.map((a) => [a, ekipmanModeli] as const),
+  ])('%s: NaN yok', (ad, uret) => {
+    const c = ciz(uret(ad)!);
+    expect(c.cokgenler.length).toBeGreaterThan(8);
+    for (const p of c.cokgenler) expect(sayilar(p.n).every(Number.isFinite)).toBe(true);
+  });
+  it('bilinmeyen ad null', () => {
+    expect(birlikModeli('ejderha')).toBeNull();
+    expect(ekipmanModeli('silah_t9')).toBeNull();
   });
 });

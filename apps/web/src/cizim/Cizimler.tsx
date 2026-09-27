@@ -5,8 +5,17 @@
  */
 import type { CSSProperties } from 'react';
 import { BINA_ADLARI, BINA_KUTUSU, binaModeli } from './binalar';
+import {
+  BIRLIK_ADLARI,
+  DUSMAN_ADLARI,
+  EKIPMAN_ADLARI,
+  birlikModeli,
+  dusmanModeli,
+  ekipmanModeli,
+} from './birlikler';
 import { BOLGE_KUTUSU, BOLGE_TIPLERI, bolgeModeli } from './bolgeler';
 import { Sahne } from './Sahne';
+import type { Model } from './uc';
 import { YERLESIM_KUTUSU, yerlesimModeli, type Kademe } from './yerlesim';
 
 /** Çizimi olan bina adları (`kisla_3`, `arsa`, `gorev_panosu`...). */
@@ -75,6 +84,51 @@ export function BolgeCizimi({
       alt={alt}
       className={className}
       kirp
+    />
+  );
+}
+
+/**
+ * `Gorsel` türleri için çizim üreticileri: tür → (ad kümesi, üretici).
+ * Kümede olmayan ad için `null` — çağıran kendi yedeğini (ikon) gösteriyor.
+ */
+const NESNE: Record<string, [Set<string>, (ad: string) => Model | null]> = {
+  birimler: [new Set(BIRLIK_ADLARI), birlikModeli],
+  dusmanlar: [new Set(DUSMAN_ADLARI), dusmanModeli],
+  ekipman: [new Set(EKIPMAN_ADLARI), ekipmanModeli],
+};
+
+export function nesneCizimiVar(tur: string, ad: string): boolean {
+  return NESNE[tur]?.[0].has(ad) ?? false;
+}
+
+/** Birlik, düşman, eşya: kare yuvada ortalı, kendi çerçevesinde. */
+export function NesneCizimi({
+  tur,
+  ad,
+  alt = '',
+  boyut,
+  className,
+  style,
+}: {
+  tur: string;
+  ad: string;
+  alt?: string;
+  boyut?: number;
+  className?: string;
+  style?: CSSProperties;
+}) {
+  const uret = NESNE[tur]?.[1];
+  if (!uret || !nesneCizimiVar(tur, ad)) return null;
+  return (
+    <Sahne
+      anahtar={tur + ':' + ad}
+      uret={() => uret(ad) ?? []}
+      alt={alt}
+      boyut={boyut}
+      className={className}
+      style={style}
+      kare
     />
   );
 }

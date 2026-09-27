@@ -521,9 +521,11 @@ if (yeniToken) {
   const eksikHarita = akinlar.haritalar
     .map((h) => h.key)
     .filter((k) => !existsSync(`apps/web/public/gorseller/akin_harita/${k}.webp`));
+  // Düşman figürleri koddan çiziliyor (cizim/birlikler.ts, DUSMAN tarifleri).
+  const birlikKaynak = readFileSync('apps/web/src/cizim/birlikler.ts', 'utf8');
   const eksikDusman = akinlar.haritalar
     .flatMap((h) => [h.dusman_key, `${h.dusman_key}_sef`])
-    .filter((k) => !existsSync(`apps/web/public/gorseller/dusmanlar/${k}.webp`));
+    .filter((k) => !new RegExp(`^  ${k}: \\(\\) =>`, 'm').test(birlikKaynak));
   if (eksikHarita.length || eksikDusman.length) {
     sorun(
       'akin-diyar',

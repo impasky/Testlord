@@ -51,6 +51,16 @@ export function Cokgenler({ c }: { c: Cizilmis }) {
   );
 }
 
+function kareyeTamamla([x, y, w, h]: [number, number, number, number]): [
+  number,
+  number,
+  number,
+  number,
+] {
+  const s = Math.max(w, h);
+  return [x - (s - w) / 2, y - (s - h) / 2, s, s];
+}
+
 export const Sahne = memo(function Sahne({
   anahtar,
   uret,
@@ -61,6 +71,7 @@ export const Sahne = memo(function Sahne({
   kutu,
   style,
   kirp = false,
+  kare = false,
 }: {
   anahtar: string;
   uret: () => Model;
@@ -73,9 +84,15 @@ export const Sahne = memo(function Sahne({
   style?: React.CSSProperties;
   /** Kutuyu doldur, taşanı kırp (afiş). */
   kirp?: boolean;
+  /**
+   * Modelin kendi çerçevesini kareye tamamla (ortalı). Birlik ve eşya
+   * çizimleri kare yuvalarda duruyor; uzun bir mızrakçı ile geniş bir
+   * mancınık aynı yuvada ortalanıyor.
+   */
+  kare?: boolean;
 }) {
   const c = cizimiAl(anahtar, uret, kamera);
-  const v = kutu ?? c.kutu;
+  const v = kutu ?? (kare ? kareyeTamamla(c.kutu) : c.kutu);
   return (
     <svg
       viewBox={v.join(' ')}

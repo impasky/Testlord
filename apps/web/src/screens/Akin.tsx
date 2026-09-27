@@ -51,6 +51,7 @@ import {
   nadirlikRengi,
 } from '../components/ui';
 import { Gorsel } from '../components/Gorsel';
+import { NesneCizimi } from '../cizim/Cizimler';
 import { Zemin } from '../components/Zemin';
 
 /**
@@ -571,11 +572,10 @@ function KampIsareti({
             'radial-gradient(ellipse at center, rgba(20,14,8,0.55) 0%, rgba(20,14,8,0.24) 52%, rgba(20,14,8,0) 78%)',
         }}
       />
-      <img
-        src={`/gorseller/dusmanlar/${ad}.webp`}
-        alt=""
-        aria-hidden="true"
-        className="relative h-full w-full object-contain"
+      <NesneCizimi
+        tur="dusmanlar"
+        ad={ad}
+        className="relative h-full w-full"
         style={{
           filter: secili
             ? 'drop-shadow(0 0 3px #fff3cf) drop-shadow(0 0 8px #f5b731)'

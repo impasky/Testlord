@@ -6,6 +6,14 @@
  * palet, aynı ölçek tutuyor mu?
  */
 import { BINA_ADLARI, BINA_KUTUSU, binaModeli } from './binalar';
+import {
+  BIRLIK_ADLARI,
+  DUSMAN_ADLARI,
+  EKIPMAN_ADLARI,
+  birlikModeli,
+  dusmanModeli,
+  ekipmanModeli,
+} from './birlikler';
 import { BOLGE_KUTUSU, BOLGE_SAHNELERI, bolgeModeli } from './bolgeler';
 import { Sahne } from './Sahne';
 import { YERLESIM_KADEMELERI, YERLESIM_KUTUSU, yerlesimModeli } from './yerlesim';
@@ -66,6 +74,21 @@ const BOLUMLER: {
       ),
     })),
   },
+  ...(
+    [
+      ['Birlikler', BIRLIK_ADLARI, birlikModeli],
+      ['Düşmanlar', DUSMAN_ADLARI, dusmanModeli],
+      ['Ekipman', EKIPMAN_ADLARI, ekipmanModeli],
+    ] as const
+  ).map(([baslik, adlar, uret]) => ({
+    baslik,
+    ogeler: adlar.map((ad) => ({
+      ad,
+      cizim: (
+        <Sahne anahtar={baslik + ':' + ad} uret={() => uret(ad) ?? []} alt={ad} boyut={170} kare />
+      ),
+    })),
+  })),
   {
     baslik: 'Bölgeler',
     ogeler: BOLGE_SAHNELERI.map((ad) => ({

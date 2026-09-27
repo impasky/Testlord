@@ -486,7 +486,7 @@
     "tr": "{0} · T{1}",
     "en": "{0} · T{1}",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:246"
+      "apps/web/src/screens/Akin.tsx:247"
     ]
   },
   "tfc8f58f7": {
@@ -1213,7 +1213,7 @@
     "tr": "{0} savaşçı",
     "en": "{0} warrior|{0} warriors",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:535"
+      "apps/web/src/screens/Akin.tsx:536"
     ]
   },
   "t76f8b84f": {
@@ -1405,7 +1405,7 @@
     "tr": "{0} yaralı hastaneye girdi.",
     "en": "{0} wounded went into the hospital.",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:264"
+      "apps/web/src/screens/Akin.tsx:265"
     ]
   },
   "t271a5a20": {
@@ -1454,7 +1454,7 @@
     "tr": "{0}. {1}, şef — {2}",
     "en": "{0}. {1}, chief — {2}",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:550"
+      "apps/web/src/screens/Akin.tsx:551"
     ]
   },
   "t2b67876a": {
@@ -1594,7 +1594,7 @@
     "tr": "{0}/10 grup hazır",
     "en": "{0}/10 groups ready",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:380"
+      "apps/web/src/screens/Akin.tsx:381"
     ]
   },
   "t58779ae6": {
@@ -1840,7 +1840,7 @@
       "apps/api/src/routes/akin.ts:377",
       "apps/web/src/components/MobilKabuk.tsx:76",
       "apps/web/src/components/UygulamaKasasi.tsx:40",
-      "apps/web/src/screens/Akin.tsx:119"
+      "apps/web/src/screens/Akin.tsx:120"
     ]
   },
   "t06e21e2e": {
@@ -1872,7 +1872,7 @@
     "tr": "Akına çıkılamadı.",
     "en": "Raid could not be started.",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:105"
+      "apps/web/src/screens/Akin.tsx:106"
     ]
   },
   "tb3e070f1": {
@@ -3958,7 +3958,7 @@
     "tr": "Diyarlar",
     "en": "Realms",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:154"
+      "apps/web/src/screens/Akin.tsx:155"
     ]
   },
   "t6c1f26e7": {
@@ -4146,7 +4146,7 @@
     "tr": "Düşman kamplarına in, kaynak ve ekipman getir",
     "en": "Descend on enemy camps, bring back resources and equipment",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:119"
+      "apps/web/src/screens/Akin.tsx:120"
     ]
   },
   "t4c53b814": {
@@ -5412,7 +5412,7 @@
     "tr": "Henüz akına çıkmadın. Bir diyar seç, grubunu belirle, ordunu gönder.",
     "en": "You haven't gone on a raid yet. Choose a realm, set your group, send your army.",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:195"
+      "apps/web/src/screens/Akin.tsx:196"
     ]
   },
   "t714210b8": {
@@ -6807,7 +6807,7 @@
     "tr": "Kilitli",
     "en": "Locked",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:538"
+      "apps/web/src/screens/Akin.tsx:539"
     ]
   },
   "t75c58153": {
@@ -8572,7 +8572,7 @@
     "tr": "Sahadaki akınlar · {0}/{1}",
     "en": "Raids on the field · {0}/{1}",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:124"
+      "apps/web/src/screens/Akin.tsx:125"
     ]
   },
   "tf223dd3f": {
@@ -9290,7 +9290,7 @@
     "tr": "Son akınlar",
     "en": "Recent raids",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:192"
+      "apps/web/src/screens/Akin.tsx:193"
     ]
   },
   "t7777e141": {
@@ -9530,7 +9530,7 @@
     "en": "Lvl{0}",
     "nerede": [
       "apps/web/src/components/SavasRaporu.tsx:246",
-      "apps/web/src/screens/Akin.tsx:327",
+      "apps/web/src/screens/Akin.tsx:328",
       "apps/web/src/screens/Arastirma.tsx:571",
       "apps/web/src/screens/Demirhane.tsx:464",
       "apps/web/src/screens/Demirhane.tsx:488",
@@ -9754,7 +9754,7 @@
     "tr": "T{0}",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:258",
+      "apps/web/src/screens/Akin.tsx:259",
       "apps/web/src/screens/Demirhane.tsx:228",
       "apps/web/src/screens/Demirhane.tsx:236",
       "apps/web/src/screens/Demirhane.tsx:463",
@@ -10713,7 +10713,7 @@
     "tr": "Yenileniyor",
     "en": "Resetting",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:537"
+      "apps/web/src/screens/Akin.tsx:538"
     ]
   },
   "t56d9b3e2": {
@@ -10721,7 +10721,7 @@
     "tr": "yenilgi",
     "en": "defeat",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:206"
+      "apps/web/src/screens/Akin.tsx:207"
     ]
   },
   "t1ff6091c": {
@@ -11023,7 +11023,7 @@
     "tr": "zafer",
     "en": "victory",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:206"
+      "apps/web/src/screens/Akin.tsx:207"
     ]
   },
   "tc31c9cb1": {

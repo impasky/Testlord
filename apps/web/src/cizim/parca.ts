@@ -600,6 +600,50 @@ export function cubuk(a: V3, b: V3, k: number, renk: string): Model {
   });
 }
 
+/**
+ * İki nokta arası sivrilen uzuv (kesik koni): kol, bacak, at boynu, kuyruk.
+ * `r1` a ucunda, `r2` b ucunda yarıçap; `n` kenar sayısı.
+ */
+export function uzuv(a: V3, b: V3, r1: number, r2: number, renk: string, n = 6): Model {
+  const d = tekle(fark(b, a));
+  const yard: V3 = Math.abs(d[2]) > 0.9 ? [1, 0, 0] : [0, 0, 1];
+  const u = tekle(carp(d, yard));
+  const v = tekle(carp(d, u));
+  const halka = (o: V3, r: number): V3[] =>
+    Array.from({ length: n }, (_, i) => {
+      const t = (i / n) * Math.PI * 2 + Math.PI / n;
+      const c = Math.cos(t) * r;
+      const s = Math.sin(t) * r;
+      return [o[0] + u[0] * c + v[0] * s, o[1] + u[1] * c + v[1] * s, o[2] + u[2] * c + v[2] * s];
+    });
+  const A = halka(a, r1);
+  const B = halka(b, r2);
+  const orta: V3 = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2];
+  const yuzler: V3[][] = [A, B];
+  for (let i = 0; i < n; i++) yuzler.push([A[i]!, A[(i + 1) % n]!, B[(i + 1) % n]!, B[i]!]);
+  return yuzler.map((p) => {
+    const c = p.reduce<V3>(
+      (s, q) => [s[0] + q[0] / p.length, s[1] + q[1] / p.length, s[2] + q[2] / p.length],
+      [0, 0, 0],
+    );
+    const nn = carp(fark(p[1]!, p[0]!), fark(p[2]!, p[0]!));
+    const disa = fark(c, orta);
+    const ters = nn[0] * disa[0] + nn[1] * disa[1] + nn[2] * disa[2] < 0;
+    return { p: ters ? [...p].reverse() : p, renk };
+  });
+}
+
+/** Modelin yalnız `tut` koşulunu sağlayan yüzleri (kukuleta: kürenin arka yarısı). */
+export function suz(m: Model, tut: (merkez: V3) => boolean): Model {
+  return m.filter((y) => {
+    const c = y.p.reduce<V3>(
+      (s, q) => [s[0] + q[0] / y.p.length, s[1] + q[1] / y.p.length, s[2] + q[2] / y.p.length],
+      [0, 0, 0],
+    );
+    return tut(c);
+  });
+}
+
 /** Dikey düzlemde teker: araba tekeri, değirmen çarkı. `eksen` tekerin mili. */
 export function teker(
   cx: number,
