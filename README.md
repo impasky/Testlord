@@ -47,11 +47,11 @@ Oyun **sadece mobil**. Masaüstü düzeni yok.
 |                                              |                                             |                                                |
 | -------------------------------------------- | ------------------------------------------- | ---------------------------------------------- |
 | ![Şehir](docs/gorseller/1-malikane.png)      | ![Ordu](docs/gorseller/2-kisla.png)         | ![Dünya](docs/gorseller/3-harita.png)          |
-| **Şehir** — ana sayfa, yerleşim haritası     | **Ordu** — birim kartları, komuta, erzak    | **Dünya** — 61 bölge, resimli zemin            |
+| **Şehir** — ana sayfa, yerleşim haritası     | **Ordu** — birim kartları, komuta, erzak    | **Dünya** — 121 bölge, dört medeniyet          |
 | ![Demirhane](docs/gorseller/4-demirhane.png) | ![Bölge](docs/gorseller/5-harita-bolge.png) | ![Generaller](docs/gorseller/8-generaller.png) |
 | **Demirhane** — üretim, envanter, donanım    | **Bölge** — alt sayfada saldırı ve garnizon | **Generaller** — 12 kişilik kadro              |
 | ![Lord](docs/gorseller/7-lord.png)           | ![Sıralama](docs/gorseller/9-siralama.png)  | ![Giriş](docs/gorseller/0-giris.png)           |
-| **Lord** — nitelikler, ekipman, savaş gücü   | **Sıralama** — üç liste                     | **Giriş**                                      |
+| **Lord** — nitelikler, ekipman, savaş gücü   | **Sıralama** — dört liste                   | **Giriş**                                      |
 
 ## Kendin oyna
 
