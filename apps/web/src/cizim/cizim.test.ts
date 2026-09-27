@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { AKIN_HARITALARI, B, HAZIR_PORTRELER } from '@lordlar/shared';
 import { BINA_ADLARI, BINA_KUTUSU, binaModeli } from './binalar';
+import { diyarModeli } from './diyarlar';
 import { GENERAL_ADLARI, PORTRE_ADLARI, generalModeli, lordModeli, portreModeli } from './kisiler';
 import {
   BIRLIK_ADLARI,
@@ -185,4 +186,16 @@ describe('belirlenimcilik', () => {
   ])('%s iki kez aynı çiziliyor', (_, uret) => {
     expect(ciz(uret()!).cokgenler).toEqual(ciz(uret()!).cokgenler);
   });
+});
+
+describe('akın diyarları', () => {
+  it.each(AKIN_HARITALARI.flatMap((h) => [[h.key, 'kapak'] as const, [h.key, 'harita'] as const]))(
+    '%s %s: NaN yok, dolu',
+    (ad, kadraj) => {
+      const c = ciz(diyarModeli(ad, kadraj)!);
+      expect(c.cokgenler.length).toBeGreaterThan(300);
+      for (const p of c.cokgenler) expect(sayilar(p.n).every(Number.isFinite)).toBe(true);
+    },
+  );
+  it('bilinmeyen diyar null', () => expect(diyarModeli('ay', 'kapak')).toBeNull());
 });

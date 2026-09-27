@@ -526,7 +526,7 @@
     "tr": "{0} adedi",
     "en": "{0} quantity",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:744",
+      "apps/web/src/screens/Akin.tsx:724",
       "apps/web/src/screens/Kisla.tsx:271"
     ]
   },
@@ -1213,7 +1213,7 @@
     "tr": "{0} savaşçı",
     "en": "{0} warrior|{0} warriors",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:536"
+      "apps/web/src/screens/Akin.tsx:516"
     ]
   },
   "t76f8b84f": {
@@ -1454,7 +1454,7 @@
     "tr": "{0}. {1}, şef — {2}",
     "en": "{0}. {1}, chief — {2}",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:551"
+      "apps/web/src/screens/Akin.tsx:531"
     ]
   },
   "t2b67876a": {
@@ -1594,7 +1594,7 @@
     "tr": "{0}/10 grup hazır",
     "en": "{0}/10 groups ready",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:381"
+      "apps/web/src/screens/Akin.tsx:369"
     ]
   },
   "t58779ae6": {
@@ -1636,7 +1636,7 @@
     "tr": "%{0} ihtimalle T{1} ekipman düşer.",
     "en": "{0}% chance to drop T{1} equipment.",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:704"
+      "apps/web/src/screens/Akin.tsx:684"
     ]
   },
   "t1827a8a3": {
@@ -1864,7 +1864,7 @@
     "tr": "Akına çık · {0} asker",
     "en": "Go on a raid · {0} troops",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:715"
+      "apps/web/src/screens/Akin.tsx:695"
     ]
   },
   "t82148189": {
@@ -4656,7 +4656,7 @@
     "tr": "Evde asker yok. Önce Kışla'da asker eğit.",
     "en": "No troops at home. Train troops in the Barracks first.",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:670"
+      "apps/web/src/screens/Akin.tsx:650"
     ]
   },
   "t0552f64c": {
@@ -5113,7 +5113,7 @@
     "nerede": [
       "apps/web/src/components/Paktlar.tsx:191",
       "apps/web/src/components/SikayetSayfasi.tsx:117",
-      "apps/web/src/screens/Akin.tsx:715",
+      "apps/web/src/screens/Akin.tsx:695",
       "apps/web/src/screens/Demirhane.tsx:579",
       "apps/web/src/screens/EsyaPazari.tsx:411",
       "apps/web/src/screens/Generaller.tsx:149",
@@ -6408,7 +6408,7 @@
     "tr": "Karşında: {0}",
     "en": "Against you: {0}",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:644"
+      "apps/web/src/screens/Akin.tsx:624"
     ]
   },
   "t02842203": {
@@ -6646,7 +6646,7 @@
     "tr": "Kazanırsan:",
     "en": "If you win:",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:700"
+      "apps/web/src/screens/Akin.tsx:680"
     ]
   },
   "tcf60c0c7": {
@@ -6654,7 +6654,7 @@
     "tr": "Kazanma ihtimali",
     "en": "Chance of winning",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:678"
+      "apps/web/src/screens/Akin.tsx:658"
     ]
   },
   "t9ab780a2": {
@@ -6807,7 +6807,7 @@
     "tr": "Kilitli",
     "en": "Locked",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:539"
+      "apps/web/src/screens/Akin.tsx:519"
     ]
   },
   "t75c58153": {
@@ -7796,7 +7796,7 @@
     "tr": "Ordun sahada. Döndüğünde buradan akına çıkabilirsin.",
     "en": "Your army is on the field. When it returns, you can go on a raid from here.",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:667"
+      "apps/web/src/screens/Akin.tsx:647"
     ]
   },
   "t814aec79": {
@@ -9530,7 +9530,7 @@
     "en": "Lvl{0}",
     "nerede": [
       "apps/web/src/components/SavasRaporu.tsx:246",
-      "apps/web/src/screens/Akin.tsx:328",
+      "apps/web/src/screens/Akin.tsx:322",
       "apps/web/src/screens/Arastirma.tsx:571",
       "apps/web/src/screens/Demirhane.tsx:464",
       "apps/web/src/screens/Demirhane.tsx:488",
@@ -9550,7 +9550,7 @@
     "tr": "ŞEF",
     "en": "CHIEF",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:598"
+      "apps/web/src/screens/Akin.tsx:578"
     ]
   },
   "t8a5a4437": {
@@ -9889,7 +9889,7 @@
     "tr": "Tahmini yaralı: {0} asker, ölen olmaz",
     "en": "Estimated wounded: {0} [soldier|soldiers], none will die",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:696"
+      "apps/web/src/screens/Akin.tsx:676"
     ]
   },
   "t1319ad6a": {
@@ -10713,7 +10713,7 @@
     "tr": "Yenileniyor",
     "en": "Resetting",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:538"
+      "apps/web/src/screens/Akin.tsx:518"
     ]
   },
   "t56d9b3e2": {

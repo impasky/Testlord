@@ -51,7 +51,7 @@ import {
   nadirlikRengi,
 } from '../components/ui';
 import { Gorsel } from '../components/Gorsel';
-import { NesneCizimi } from '../cizim/Cizimler';
+import { DiyarCizimi, NesneCizimi } from '../cizim/Cizimler';
 import { Zemin } from '../components/Zemin';
 
 /**
@@ -314,13 +314,7 @@ function HaritaKarti({
           className="bas flex w-full items-center gap-3 p-2 text-left"
         >
           <span className="relative h-11 w-16 shrink-0 overflow-hidden rounded-lg grayscale">
-            <img
-              src={`/gorseller/akin/${h.key}.webp`}
-              alt=""
-              aria-hidden="true"
-              className="h-full w-full object-cover"
-              loading="lazy"
-            />
+            <DiyarCizimi ad={h.key} kadraj="kapak" className="h-full w-full" />
           </span>
           <span className="min-w-0 flex-1">
             <span className="flex items-baseline justify-between gap-2">
@@ -364,13 +358,7 @@ function HaritaKarti({
             küçük ve gri: renkli bir kapak "gir" diye bağırıp kapıyı
             kapatıyordu.) */}
         <div className="relative aspect-[16/6] w-full overflow-hidden rounded-t-[18px]">
-          <img
-            src={`/gorseller/akin/${h.key}.webp`}
-            alt=""
-            aria-hidden="true"
-            className="h-full w-full object-cover"
-            loading="lazy"
-          />
+          <DiyarCizimi ad={h.key} kadraj="kapak" className="h-full w-full" />
           {/* Alt kenarı karartan perde: kapağın açık tonu kart kenarıyla
               birleşince kartın nerede bittiği kayboluyordu. */}
           <span className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-[var(--color-panel)] to-transparent" />
@@ -452,20 +440,12 @@ function DiyarHaritasi({
       ref={kutu}
       className="oyuk relative isolate aspect-square w-full overflow-hidden rounded-lg border border-kenar"
     >
-      <img
-        src={`/gorseller/akin_harita/${h.key}.webp`}
-        alt=""
-        aria-hidden="true"
-        className="absolute inset-0 h-full w-full object-cover"
-        onError={(e) => {
-          (e.currentTarget as HTMLImageElement).style.visibility = 'hidden';
-        }}
-      />
+      <DiyarCizimi ad={h.key} kadraj="harita" className="absolute inset-0 h-full w-full" />
 
-      {/* Kampları bağlayan iz. Zeminde boyalı bir patika zaten var ama
-          işaretçiler tam onun üstüne oturmuyor — bu çizgi hangi kampın
-          hangisinden sonra geldiğini kesinleştiriyor. Kesikli ve soluk:
-          yolun kendisi zemindeki resim, bu yalnızca sırayı söylüyor. */}
+      {/* Kampları bağlayan iz. Zemindeki yol (koddan çiziliyor, docs/24)
+          kampların tam üstünden kıvrılarak geçiyor; bu kesikli çizgi
+          yalnızca SIRAYI söylüyor — hangi kamp hangisinden sonra. Soluk:
+          yolun kendisi zeminde. */}
       <svg
         viewBox="0 0 100 100"
         preserveAspectRatio="none"

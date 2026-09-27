@@ -23,6 +23,7 @@ import {
   lordModeli,
   portreModeli,
 } from './kisiler';
+import { HARITA_KUTUSU, KAPAK_KUTUSU, diyarModeli, type Kadraj } from './diyarlar';
 import { Sahne } from './Sahne';
 import type { Model } from './uc';
 import { YERLESIM_KUTUSU, yerlesimModeli, type Kademe } from './yerlesim';
@@ -194,4 +195,26 @@ export function YolCizimi({ yol, className }: { yol: string; className?: string 
   if (klasor === 'bolgeler') return <BolgeCizimi ad={ad} alt="" className={className} />;
   if (klasor === 'portre') return <PortreCizimi ad={ad} className={className} />;
   return <NesneCizimi tur={klasor} ad={ad} className={className} />;
+}
+
+/** Akın diyarının kapağı (16:9, kutuyu doldurur) ya da haritası (kare). */
+export function DiyarCizimi({
+  ad,
+  kadraj,
+  className,
+}: {
+  ad: string;
+  kadraj: Kadraj;
+  className?: string;
+}) {
+  return (
+    <Sahne
+      anahtar={'diyar:' + ad + ':' + kadraj}
+      uret={() => diyarModeli(ad, kadraj) ?? []}
+      kutu={kadraj === 'kapak' ? KAPAK_KUTUSU : HARITA_KUTUSU}
+      alt=""
+      className={className}
+      kirp
+    />
+  );
 }

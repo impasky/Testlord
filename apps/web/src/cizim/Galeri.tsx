@@ -24,6 +24,7 @@ import {
   lordModeli,
   portreModeli,
 } from './kisiler';
+import { DIYAR_ADLARI, HARITA_KUTUSU, KAPAK_KUTUSU, diyarModeli } from './diyarlar';
 import { Sahne } from './Sahne';
 import { YERLESIM_KADEMELERI, YERLESIM_KUTUSU, yerlesimModeli } from './yerlesim';
 import { P } from './renk';
@@ -115,6 +116,25 @@ const BOLUMLER: {
         />
       ),
     })),
+  },
+  {
+    baslik: 'Diyarlar',
+    ogeler: DIYAR_ADLARI.flatMap((ad) =>
+      (['kapak', 'harita'] as const).map((k) => ({
+        ad: ad + ' · ' + k,
+        genis: true,
+        oran: k === 'kapak' ? 'aspect-[16/9]' : 'aspect-square',
+        cizim: (
+          <Sahne
+            anahtar={'diyar:' + ad + ':' + k}
+            uret={() => diyarModeli(ad, k) ?? []}
+            kutu={k === 'kapak' ? KAPAK_KUTUSU : HARITA_KUTUSU}
+            alt={ad}
+            className="h-full w-full"
+          />
+        ),
+      })),
+    ),
   },
   {
     baslik: 'Bölgeler',

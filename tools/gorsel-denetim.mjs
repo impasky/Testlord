@@ -499,11 +499,12 @@ if (yeniToken) {
  * mı": eksik dosya, kartın tepesinde kırık bir görsel demek.
  */
 {
-  const { existsSync, readFileSync } = await import('node:fs');
+  const { readFileSync } = await import('node:fs');
   const akinlar = JSON.parse(readFileSync('data/akinlar.json', 'utf8'));
-  const eksik = akinlar.haritalar
-    .map((h) => h.key)
-    .filter((k) => !existsSync(`apps/web/public/gorseller/akin/${k}.webp`));
+  // Kapak ve harita koddan çiziliyor (cizim/diyarlar.ts, DIYAR_ADLARI).
+  const diyarKaynak = readFileSync('apps/web/src/cizim/diyarlar.ts', 'utf8');
+  const temali = (k) => new RegExp(`^  ${k}: \\{`, 'm').test(diyarKaynak);
+  const eksik = akinlar.haritalar.map((h) => h.key).filter((k) => !temali(k));
   if (eksik.length) {
     sorun('akin-kapak', 'Akın diyarının kapak görseli yok', eksik.join(', '));
   } else {
@@ -518,9 +519,7 @@ if (yeniToken) {
    * (asker + şef) yerinde mi". Eksik dosya, haritanın ortasında kırık
    * bir görsel demek — üstelik oyuncu oraya DOKUNARAK akına çıkıyor.
    */
-  const eksikHarita = akinlar.haritalar
-    .map((h) => h.key)
-    .filter((k) => !existsSync(`apps/web/public/gorseller/akin_harita/${k}.webp`));
+  const eksikHarita = akinlar.haritalar.map((h) => h.key).filter((k) => !temali(k));
   // Düşman figürleri koddan çiziliyor (cizim/birlikler.ts, DUSMAN tarifleri).
   const birlikKaynak = readFileSync('apps/web/src/cizim/birlikler.ts', 'utf8');
   const eksikDusman = akinlar.haritalar
