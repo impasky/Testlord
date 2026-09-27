@@ -24,6 +24,8 @@ import {
   portreModeli,
 } from './kisiler';
 import { HARITA_KUTUSU, KAPAK_KUTUSU, diyarModeli, type Kadraj } from './diyarlar';
+import { dunyaUcgenleri, type Ucgen } from './dunya';
+import { ZEMIN_ADLARI, ZEMIN_KUTUSU, zeminModeli } from './zeminler';
 import { Sahne } from './Sahne';
 import type { Model } from './uc';
 import { YERLESIM_KUTUSU, yerlesimModeli, type Kademe } from './yerlesim';
@@ -186,6 +188,7 @@ export function yolCizimiVar(yol: string): boolean {
   if (klasor === 'binalar') return CIZILEN_BINALAR.has(ad);
   if (klasor === 'bolgeler') return CIZILEN_BOLGELER.has(ad.split('_')[0] ?? '');
   if (klasor === 'portre') return PORTRELER.has(ad);
+  if (klasor === 'harita') return true;
   return nesneCizimiVar(klasor, ad);
 }
 
@@ -194,6 +197,7 @@ export function YolCizimi({ yol, className }: { yol: string; className?: string 
   if (klasor === 'binalar') return <BinaCizimi ad={ad} className={className} />;
   if (klasor === 'bolgeler') return <BolgeCizimi ad={ad} alt="" className={className} />;
   if (klasor === 'portre') return <PortreCizimi ad={ad} className={className} />;
+  if (klasor === 'harita') return <DunyaKucuk className={className} />;
   return <NesneCizimi tur={klasor} ad={ad} className={className} />;
 }
 
@@ -212,6 +216,37 @@ export function DiyarCizimi({
       anahtar={'diyar:' + ad + ':' + kadraj}
       uret={() => diyarModeli(ad, kadraj) ?? []}
       kutu={kadraj === 'kapak' ? KAPAK_KUTUSU : HARITA_KUTUSU}
+      alt=""
+      className={className}
+      kirp
+    />
+  );
+}
+
+let kucukDunya: Ucgen[] | null = null;
+
+/** Dünyanın kaba önizlemesi (kasa karosu): ağaçsız, seyrek ızgara. */
+export function DunyaKucuk({ className }: { className?: string }) {
+  kucukDunya ??= dunyaUcgenleri(4, false);
+  return (
+    <svg viewBox="0 0 100 100" className={className} aria-hidden>
+      {kucukDunya.map((u, i) => (
+        <polygon key={i} points={u.n.join(' ')} fill={u.renk} stroke={u.renk} strokeWidth={0.3} />
+      ))}
+    </svg>
+  );
+}
+
+/** Çizimi olan ekran zeminleri (`kisla`, `demirhane`...). */
+export const CIZILEN_ZEMINLER = new Set<string>(ZEMIN_ADLARI);
+
+/** Ekranın tepesindeki manzara şeridi: kutuyu doldurur, taşanı kırpar. */
+export function ZeminCizimi({ ad, className }: { ad: string; className?: string }) {
+  return (
+    <Sahne
+      anahtar={'zemin:' + ad}
+      uret={() => zeminModeli(ad) ?? []}
+      kutu={ZEMIN_KUTUSU}
       alt=""
       className={className}
       kirp

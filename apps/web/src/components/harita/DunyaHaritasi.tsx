@@ -63,6 +63,7 @@ import type { MarchDto, RegionDto } from '../../api/client';
 import { IKONLAR } from '../ikon-verisi';
 import { IkonSaldiri } from '../Ikonlar';
 import { KARA_YOLU } from './kara';
+import { dunyaUcgenleri } from '../../cizim/dunya';
 
 /*
  * İKİ GÖRÜNÜM (docs/23 §8). Dört mercek vardı; oyuncu "hâlâ karmaşık"
@@ -850,44 +851,68 @@ function bolgeEtiketi(r: RegionDto): string {
 /* Katmanlar                                                           */
 /* ------------------------------------------------------------------ */
 
-const ZEMIN_KAROLARI = [0, 1, 2].flatMap((r) => [0, 1, 2].map((c) => ({ c, r })));
+/**
+ * Zemin tuvali: kuşbakışı düşük çokgenli arazi (cizim/dunya.ts), bir kez
+ * çiziliyor ve modül düzeyinde saklanıyor. Harita yeniden açıldığında aynı
+ * tuval öğesi yerine takılıyor — ne yeniden çizim ne kopya.
+ *
+ * Neden SVG değil: yirmi bin üçgen, yakınlaştırma ve kaydırmada her karede
+ * yeniden taranıyordu. Tuval tek bir resim gibi ölçekleniyor.
+ */
+const ZEMIN_PIKSEL = 1600;
+let zeminTuvali: HTMLCanvasElement | null = null;
+function zeminTuvaliAl(): HTMLCanvasElement {
+  if (zeminTuvali) return zeminTuvali;
+  const t = document.createElement('canvas');
+  t.width = ZEMIN_PIKSEL;
+  t.height = ZEMIN_PIKSEL;
+  t.className = 'absolute inset-0 h-full w-full';
+  t.dataset.dunyaZemini = '';
+  const c = t.getContext('2d');
+  if (c) {
+    const k = ZEMIN_PIKSEL / 100;
+    c.lineJoin = 'round';
+    c.lineWidth = 1;
+    for (const u of dunyaUcgenleri()) {
+      c.beginPath();
+      c.moveTo(u.n[0]! * k, u.n[1]! * k);
+      for (let i = 2; i < u.n.length; i += 2) c.lineTo(u.n[i]! * k, u.n[i + 1]! * k);
+      c.closePath();
+      c.fillStyle = u.renk;
+      c.strokeStyle = u.renk;
+      c.fill();
+      // Aynı renkte ince kenar: komşu üçgenler arasında kıl gibi boşluk kalmasın.
+      c.stroke();
+    }
+  }
+  zeminTuvali = t;
+  return t;
+}
 
 /**
- * Zemin: dokuz karo, rengi ve ışığı kısık. Resim bilgi değil, YER hissi —
- * toprak renkleri onun üstünde okunmalı. Önceki ayarda dağlar, ormanlar ve
+ * Zemin: rengi ve ışığı kısık. Resim bilgi değil, YER hissi — toprak
+ * renkleri onun üstünde okunmalı. Önceki ayarda dağlar, ormanlar ve
  * nehirler sahiplik renkleriyle yarışıyordu (docs/23 §8); artık geri
- * planda. Karolar %33,34: ölçek büyüyünce yuvarlanmada aralarında kıl gibi
- * çizgi kalmasın diye bir tık bindiriyor.
+ * planda.
  */
 const Zemin = memo(function Zemin() {
+  const kutu = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const k = kutu.current;
+    if (!k) return;
+    const t = zeminTuvaliAl();
+    k.appendChild(t);
+    return () => {
+      if (t.parentNode === k) k.removeChild(t);
+    };
+  }, []);
   return (
     <div
+      ref={kutu}
       className="absolute inset-0"
       style={{ filter: 'saturate(0.3) brightness(0.6) contrast(0.85)' }}
       aria-hidden="true"
-    >
-      <img
-        src="/gorseller/harita/dunya-onizleme.webp"
-        alt=""
-        className="absolute inset-0 h-full w-full"
-        onError={(e) => ((e.currentTarget as HTMLImageElement).style.visibility = 'hidden')}
-      />
-      {ZEMIN_KAROLARI.map(({ c, r }) => (
-        <img
-          key={`${c}${r}`}
-          src={`/gorseller/harita/dunya-${c}${r}.webp`}
-          alt=""
-          className="absolute"
-          style={{
-            left: `${(c * 100) / 3}%`,
-            top: `${(r * 100) / 3}%`,
-            width: '33.34%',
-            height: '33.34%',
-          }}
-          onError={(e) => ((e.currentTarget as HTMLImageElement).style.visibility = 'hidden')}
-        />
-      ))}
-    </div>
+    />
   );
 });
 

@@ -11,62 +11,32 @@
  * eritiliyor ki afiş kesilmiş bir kart gibi durmasın, ekranın kendisi
  * oradan başlıyormuş gibi olsun. (docs/08 İ11)
  *
- * Görsel yoksa hiçbir şey çizilmez — sadece bugünkü üst boşluk kalır.
- * Böylece `zeminler/kisla.webp` dosyası konduğu anda Kışla bir avluya
- * dönüşür, konmadığı sürece ekran bugünkü haliyle çalışır.
+ * Manzara koddan çiziliyor (cizim/zeminler.ts, docs/24): ekranın şehirdeki
+ * binası ve önünde o ekranın insanları. Dosya beklemiyor — şerit ilk
+ * boyamada dolu, açılışta ne zıplama ne de boş bir bekleme karesi var.
+ * Çizimi olmayan ekran sade bir başlıkla açılıyor.
  */
-import { useState, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import { BolgeCizimi, CIZILEN_ZEMINLER, ZeminCizimi } from '../cizim/Cizimler';
+
+/** Giriş ekranının manzarası: gelişmiş bir kale bölgesi. */
+const GIRIS_SAHNESI = 'kale_5';
 
 /** Şeridin yüksekliği. Görsel gelse de gelmese de DEĞİŞMİYOR. */
 const BOY = 150;
-
-/**
- * Zemin görseli OLAN ekranlar.
- *
- * Neden elle yazılmış bir liste: görselin var olup olmadığını çalışma
- * anında öğrenmek (yükle, olmazsa küçült) sayfayı ZIPLATIYOR — oyuncunun
- * "görsel kaymalar var" şikâyetinin asıl sebebi buydu. Hangi dosyanın var
- * olduğu derleme zamanı bilinen bir şey; tahmin etmek yerine biliyoruz ve
- * ilk boyamada doğru yüksekliği veriyoruz.
- *
- * Listeyle klasörün ayrışmasını `tools/gorsel-denetim.mjs` yakalıyor:
- * dosya konur da liste güncellenmezse denetim kalıyor.
- */
-const ZEMINI_OLAN = new Set([
-  'malikane',
-  'kisla',
-  'demirhane',
-  'generaller',
-  'siralama',
-  'gorevler',
-  'olaylar',
-  'arastirma',
-  'akin',
-  'ittifak',
-  /*
-   * Pazar'ın kendi resmi henüz üretilmedi; şerit o gelene kadar mevcut
-   * sanattan kesildi: `bolgeler/sehir_3`teki çarşı meydanı, öteki kapı
-   * şeritleri gibi biraz karartılmış. Kapı eskiden başlıksız açılıyordu —
-   * Demirhane'den Pazar'a geçen oyuncu bir mekândan boş bir forma
-   * düşüyordu. Asıl görsel gelince `gorsel-koy.py zeminler pazar=...`
-   * aynı dosyanın üstüne yazıyor, kod değişmiyor.
-   */
-  'pazar',
-]);
 
 export function Zemin({
   ad,
   baslik,
   altyazi,
 }: {
-  /** `public/gorseller/zeminler/<ad>.webp` */
+  /** Zemin sahnesinin adı (cizim/zeminler.ts `ZEMIN_ADLARI`). */
   ad: string;
   baslik: string;
   /** Tek satırlık "burası neresi" cümlesi. */
   altyazi?: ReactNode;
 }) {
-  const [yuklendi, setYuklendi] = useState(false);
-  const gorselVar = ZEMINI_OLAN.has(ad);
+  const gorselVar = CIZILEN_ZEMINLER.has(ad);
 
   // Görseli olmayan ekran: koca boş bir bant yerine sade bir başlık.
   // Yüksekliği yine SABİT — hiçbir şey beklemediği için zıplayacak bir şey
@@ -98,25 +68,7 @@ export function Zemin({
       className="relative -mx-3 overflow-hidden"
       style={{ height: BOY }}
     >
-      <img
-        src={`/gorseller/zeminler/${ad}.webp`}
-        alt=""
-        aria-hidden
-        className={`h-full w-full object-cover transition-opacity duration-300 ${
-          yuklendi ? 'opacity-100' : 'opacity-0'
-        }`}
-        // Üst yarıdan kırpar: 16:10 kaynakta ilgi çeken öğe (avlu, ocak,
-        // masa) üstte, alt üçte biri arayüz için bilerek boş bırakılıyor.
-        style={{ objectPosition: 'center 38%' }}
-        loading="eager"
-        decoding="async"
-        onLoad={() => setYuklendi(true)}
-      />
-      {/* Görsel gelene kadar (ya da hiç gelmezse) şeridin zemini: boş bir
-          delik değil, sakin bir kapak. */}
-      {!yuklendi && (
-        <div className="absolute inset-0 bg-gradient-to-b from-panel to-gece" aria-hidden />
-      )}
+      <ZeminCizimi ad={ad} className="h-full w-full" />
       <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-gece via-gece/80 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 px-3 pb-2.5">
         <h1
@@ -155,31 +107,22 @@ export function Zemin({
  * blok arka planlarından sonra boyatıyor. Karşılığı: içeriğin `relative`
  * olması gerekiyor, yoksa zemin onun üstüne biner.
  */
-export function TamZemin({ ad }: { ad: string }) {
-  const [gorunur, setGorunur] = useState(false);
-
+export function TamZemin({ ad: _ad }: { ad: string }) {
   return (
     <>
-      <img
-        src={`/gorseller/zeminler/${ad}.webp`}
-        alt=""
-        aria-hidden
-        className="fixed inset-0 z-0 h-full w-full object-cover transition-opacity duration-700"
-        style={{ opacity: gorunur ? 1 : 0 }}
-        loading="eager"
-        decoding="async"
-        onLoad={() => setGorunur(true)}
-      />
+      {/* Giriş manzarası: gelişmiş bir kale bölgesi, telefonun boyuna
+          kırpılmış (kale ortada kalıyor). Koddan çiziliyor (docs/24). */}
+      <div className="fixed inset-0 z-0" aria-hidden>
+        <BolgeCizimi ad={GIRIS_SAHNESI} alt="" className="h-full w-full" />
+      </div>
       {/* Perde: manzara okunaklı kalsın ama metnin kontrastını yemesin. */}
-      {gorunur && (
-        <div
-          className="fixed inset-0 z-0"
-          style={{
-            background:
-              'linear-gradient(180deg, color-mix(in srgb, var(--color-gece) 45%, transparent) 0%, color-mix(in srgb, var(--color-gece) 78%, transparent) 45%, color-mix(in srgb, var(--color-gece) 94%, transparent) 100%)',
-          }}
-        />
-      )}
+      <div
+        className="fixed inset-0 z-0"
+        style={{
+          background:
+            'linear-gradient(180deg, color-mix(in srgb, var(--color-gece) 45%, transparent) 0%, color-mix(in srgb, var(--color-gece) 78%, transparent) 45%, color-mix(in srgb, var(--color-gece) 94%, transparent) 100%)',
+        }}
+      />
     </>
   );
 }

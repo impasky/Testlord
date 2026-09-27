@@ -385,43 +385,27 @@ if (yeniToken) {
 }
 
 /**
- * Zemin listesi ile klasör birbirini tutuyor mu?
+ * --- Ekranlarda kullanılan her zeminin çizimi var mı (docs/24) ---
  *
- * Zemin.tsx hangi ekranın görseli olduğunu ELLE tutuyor; çalışma anında
- * "yükle, olmazsa küçült" yapmak sayfayı zıplatıyordu. Elle tutulan liste
- * kaçınılmaz olarak klasörden sapar — bu kontrol o sapmayı yakalıyor:
- * dosya konur da liste güncellenmezse ekran görselsiz kalır ve kimse fark
- * etmez; listede olup dosyası olmayan ekran ise boş bir bant gösterir.
+ * Zeminler koddan çiziliyor (cizim/zeminler.ts, ZEMIN_ADLARI). Bir ekran
+ * `<Zemin ad="…">` ile çizimi olmayan bir ad isterse şerit sessizce sade
+ * başlığa düşüyor; burada ekranların istediği adlar listeyle
+ * karşılaştırılıyor.
  */
 {
-  const { readdirSync, readFileSync } = await import('node:fs');
-  const klasor = new Set(
-    readdirSync('apps/web/public/gorseller/zeminler')
-      .filter((f) => f.endsWith('.webp'))
-      .map((f) => f.replace(/\.webp$/, '')),
-  );
-  const kaynak = readFileSync('apps/web/src/components/Zemin.tsx', 'utf8');
-  const blok = kaynak.match(/const ZEMINI_OLAN = new Set\(\[([^\]]*)\]/s)?.[1] ?? '';
+  const { readFileSync, readdirSync } = await import('node:fs');
+  const kaynak = readFileSync('apps/web/src/cizim/zeminler.ts', 'utf8');
+  const blok = kaynak.match(/export const ZEMIN_ADLARI = \[([^\]]*)\]/s)?.[1] ?? '';
   const liste = listeOgeleri(blok);
-  // 'giris' tam ekran zemin (TamZemin) ve şerit listesinde olmamalı.
-  klasor.delete('giris');
-
-  const eksik = [...klasor].filter((k) => !liste.has(k));
-  const fazla = [...liste].filter((k) => !klasor.has(k));
-  if (eksik.length || fazla.length) {
-    sorun(
-      'zeminler',
-      'Zemin listesi klasörle uyuşmuyor',
-      [
-        eksik.length ? `dosyası var listede yok: ${eksik.join(', ')}` : '',
-        fazla.length ? `listede var dosyası yok: ${fazla.join(', ')}` : '',
-      ]
-        .filter(Boolean)
-        .join(' | '),
-    );
-  } else {
-    iyi('zeminler', `liste klasörle uyuşuyor (${liste.size} zemin)`);
-  }
+  const istenen = new Set();
+  for (const f of readdirSync('apps/web/src/screens'))
+    for (const m of readFileSync(`apps/web/src/screens/${f}`, 'utf8').matchAll(
+      /<Zemin\s+ad="(\w+)"/g,
+    ))
+      istenen.add(m[1]);
+  const eksik = [...istenen].filter((k) => !liste.has(k));
+  if (eksik.length) sorun('zeminler', 'Bazı ekran zeminlerinin çizimi yok', eksik.join(', '));
+  else iyi('zeminler', `${istenen.size} ekranın zemini çiziliyor`);
 }
 
 /**
@@ -463,30 +447,6 @@ if (yeniToken) {
   const eksik = beklenen.filter((k) => !cizilen.has(k));
   if (eksik.length) sorun('bina-cizim', 'Bazı yapı aşamalarının çizimi yok', eksik.join(', '));
   else iyi('bina-cizim', `${beklenen.length} yapı aşamasının hepsi çiziliyor`);
-}
-
-/**
- * --- Dünya zemini karoları tam mı ---
- *
- * Zemin dokuz karoya bölündü (`tools/dunya-karo.py`). Eksik bir karo
- * ekranda BOŞ bir kare demek ve tam ortada durmuyorsa kimse fark etmez:
- * oyuncu haritanın o köşesine gitmeden görünmüyor. Önizleme de şart —
- * yoksa dokuz karo sırayla düşerken harita yapboz gibi kuruluyor.
- *
- * Izgara `DunyaHaritasi.tsx`teki ZEMIN_KAROLARI ile aynı: 3x3.
- */
-{
-  const { existsSync } = await import('node:fs');
-  const yol = 'apps/web/public/gorseller/harita';
-  const bekleneni = [];
-  for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) bekleneni.push(`dunya-${c}${r}.webp`);
-  bekleneni.push('dunya-onizleme.webp');
-  const eksik = bekleneni.filter((f) => !existsSync(`${yol}/${f}`));
-  if (eksik.length) {
-    sorun('dunya-karo', 'Dünya zemini eksik', `yok: ${eksik.join(', ')}`);
-  } else {
-    iyi('dunya-karo', `9 karo ve önizleme yerinde`);
-  }
 }
 
 /**

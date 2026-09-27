@@ -163,7 +163,7 @@ function plaka(r: () => number, ust: string = P.cimen, yan: string = P.toprak) {
 }
 
 /** Talim kuklası: direk + kol + çuval gövde. */
-function kukla(x: number, y: number): Model {
+export function kukla(x: number, y: number): Model {
   return birlestir(
     silindir(x, y, 0, 0.15, 3.2, P.koyuTahta, 5),
     kutu(x - 1.1, y - 0.12, 2.3, 2.2, 0.24, 0.24, P.tahta),
@@ -173,7 +173,7 @@ function kukla(x: number, y: number): Model {
 }
 
 /** Mızrak sehpası. */
-function mizrakSehpasi(x: number, y: number): Model {
+export function mizrakSehpasi(x: number, y: number): Model {
   const m = kutu(x, y, 0.8, 0.25, 3, 0.25, P.koyuTahta);
   m.push(
     ...kutu(x, y, 0, 0.25, 0.25, 1.2, P.koyuTahta),
@@ -187,7 +187,7 @@ function mizrakSehpasi(x: number, y: number): Model {
 }
 
 /** Kamp ateşi: taş halka + kor. */
-function ates(x: number, y: number): Model {
+export function ates(x: number, y: number): Model {
   const m: Model = [];
   for (let i = 0; i < 7; i++) {
     const a = (i / 7) * Math.PI * 2;
@@ -210,7 +210,7 @@ function ates(x: number, y: number): Model {
 }
 
 /** Örs + ocak: demircinin işareti. */
-function ors(x: number, y: number): Model {
+export function ors(x: number, y: number): Model {
   return birlestir(
     kutu(x, y, 0, 0.9, 0.9, 0.9, P.koyuTahta),
     kutu(x - 0.3, y + 0.1, 0.9, 1.5, 0.7, 0.45, P.demir),
@@ -218,7 +218,7 @@ function ors(x: number, y: number): Model {
   );
 }
 
-function ocak(x: number, y: number, s = 2.2): Model {
+export function ocak(x: number, y: number, s = 2.2): Model {
   const kor = kutu(x + 0.3, y + 0.3, s * 0.55, s - 0.6, s - 0.6, 0.15, P.ates);
   for (const f of kor) f.isima = 1;
   return birlestir(kutu(x, y, 0, s, s, s * 0.55, P.koyuTas), kor);

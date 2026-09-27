@@ -25,6 +25,8 @@ import {
   portreModeli,
 } from './kisiler';
 import { DIYAR_ADLARI, HARITA_KUTUSU, KAPAK_KUTUSU, diyarModeli } from './diyarlar';
+import { dunyaUcgenleri } from './dunya';
+import { ZEMIN_ADLARI, ZEMIN_KUTUSU, zeminModeli } from './zeminler';
 import { Sahne } from './Sahne';
 import { YERLESIM_KADEMELERI, YERLESIM_KUTUSU, yerlesimModeli } from './yerlesim';
 import { P } from './renk';
@@ -152,6 +154,46 @@ const BOLUMLER: {
         />
       ),
     })),
+  },
+  {
+    baslik: 'Ekran zeminleri',
+    ogeler: ZEMIN_ADLARI.map((ad) => ({
+      ad,
+      genis: true,
+      oran: 'aspect-[60/23]',
+      cizim: (
+        <Sahne
+          anahtar={'zemin:' + ad}
+          uret={() => zeminModeli(ad) ?? []}
+          kutu={ZEMIN_KUTUSU}
+          alt={ad}
+          className="h-full w-full"
+        />
+      ),
+    })),
+  },
+  {
+    baslik: 'Dünya',
+    ogeler: [
+      {
+        ad: 'dunya',
+        genis: true,
+        oran: 'aspect-square',
+        cizim: (
+          <svg viewBox="0 0 100 100" className="h-full w-full" aria-hidden>
+            {dunyaUcgenleri().map((u, i) => (
+              <polygon
+                key={i}
+                points={u.n.join(' ')}
+                fill={u.renk}
+                stroke={u.renk}
+                strokeWidth={0.05}
+              />
+            ))}
+          </svg>
+        ),
+      },
+    ],
   },
   {
     baslik: 'Deneme',
