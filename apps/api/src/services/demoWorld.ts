@@ -11,6 +11,7 @@
  */
 import {
   GEAR_LINES,
+  MEDENIYETLER,
   UNIT_TYPES,
   WORLD_MAP,
   armySlots,
@@ -24,6 +25,9 @@ import {
 import { hashPassword } from '../auth.js';
 import { prisma } from '../db.js';
 import { medeniyetAta } from './medeniyet.js';
+
+/** Çekirdekler ele geçirilemez (docs/16 §5): demo lord da tutamaz. */
+const CEKIRDEK_IDLER = MEDENIYETLER.flatMap((m) => m.cekirdekBolgeler);
 
 interface DemoTanim {
   ad: string;
@@ -91,10 +95,15 @@ export async function seedDemoLords(worldId: string): Promise<number> {
     const d = DEMO[i]!;
     const ev = koyler[(i * 4) % koyler.length]!;
 
-    // Sahipsiz bir bölge bul: kale ve taht dışında. Demo lord bir dolgu,
-    // hangi bölgeyi tuttuğu değil TUTUYOR olması önemli.
+    // Sahipsiz bir bölge bul: kale, taht ve çekirdek dışında. Demo lord bir
+    // dolgu, hangi bölgeyi tuttuğu değil TUTUYOR olması önemli.
     const bolge = await prisma.region.findFirst({
-      where: { worldId, ownerLordId: null, type: { notIn: ['kale', 'taht'] } },
+      where: {
+        worldId,
+        ownerLordId: null,
+        type: { notIn: ['kale', 'taht'] },
+        mapId: { notIn: CEKIRDEK_IDLER },
+      },
       orderBy: { id: 'asc' },
     });
 
