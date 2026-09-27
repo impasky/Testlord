@@ -44,6 +44,7 @@ import {
 } from '../components/ui';
 import { IkonUyari } from '../components/Ikonlar';
 import { ZemineGolgesi } from '../components/ZemineGolgesi';
+import { BinaCizimi, CIZILEN_BINALAR, YerlesimCizimi } from '../cizim/Cizimler';
 import type { Kapi } from '@lordlar/shared';
 import type { Sekme } from '../components/MobilKabuk';
 
@@ -163,53 +164,10 @@ const BINA_IKONU: Record<string, keyof typeof IKONLAR> = {
 };
 
 /**
- * Üretilmiş bina sprite'ları — `public/gorseller/binalar/` ile aynı liste.
- *
- * `Zemin.tsx`teki `ZEMINI_OLAN` ile aynı desen ve aynı gerekçe: dosya
- * yoksa isteği hiç atmıyoruz. `onError` ile denemek de olurdu ama şehir
- * sayfasında 13 yapı var, yani her çizimde 13 boşa istek — üretimde 13
- * gerçek 404. Vite geliştirme sunucusu eksik dosyaya index.html dönüp
- * 200 verdiği için bu ölçümde de görünmezdi.
- *
- * Liste `gorsel-denetim.mjs` tarafından klasörle karşılaştırılıyor:
- * dosya eklenip satır unutulursa ya da tersi olursa denetim düşüyor.
+ * Bina çizimleri artık KODDAN (docs/24, `cizim/binalar.ts`): her bina ×
+ * aşama çiziliyor, dosya yok, istek yok. Liste çizim modülünden geliyor.
  */
-const SPRITE_OLAN = new Set<string>([
-  'arsa',
-  'malikane_1',
-  'malikane_3',
-  'malikane_5',
-  'kisla_1',
-  'kisla_3',
-  'kisla_5',
-  'demirhane_1',
-  'demirhane_3',
-  'demirhane_5',
-  'hastane_1',
-  'hastane_3',
-  'hastane_5',
-  'pazar_1',
-  'pazar_3',
-  'pazar_5',
-  'surlar_1',
-  'surlar_3',
-  'surlar_5',
-  'karargah_1',
-  'karargah_3',
-  'karargah_5',
-  'kutuphane_1',
-  'kutuphane_3',
-  'kutuphane_5',
-  'liman_1',
-  'liman_3',
-  'liman_5',
-  'elcilik_1',
-  'elcilik_3',
-  'elcilik_5',
-  'gorev_panosu',
-  'haberci_kulesi',
-  'onur_meydani',
-]);
+const SPRITE_OLAN = CIZILEN_BINALAR;
 
 /**
  * Binanın görseli: varsa SPRITE, yoksa çizgi ikon.
@@ -246,18 +204,7 @@ function BinaIkonu({
   seviyeli?: boolean;
 }) {
   const ad = spriteAdi(binaKey, seviye, seviyeli);
-  if (SPRITE_OLAN.has(ad)) {
-    return (
-      <img
-        src={`/gorseller/binalar/${ad}.webp`}
-        alt=""
-        aria-hidden="true"
-        width={boyut}
-        height={boyut}
-        className="object-contain"
-      />
-    );
-  }
+  if (SPRITE_OLAN.has(ad)) return <BinaCizimi ad={ad} boyut={boyut} />;
   const v = IKONLAR[BINA_IKONU[binaKey] ?? 'navMalikane'];
   return (
     <svg
@@ -405,15 +352,7 @@ export function Sehir({
           role="img"
           aria-label={`${yerlesim.ad} — ${binalar.length} yapı`}
         >
-          <img
-            src={`/gorseller/yerlesim/${yerlesim.kademe}.webp`}
-            alt=""
-            aria-hidden="true"
-            className="h-full w-full object-cover"
-            onError={(e) => {
-              (e.currentTarget as HTMLImageElement).style.visibility = 'hidden';
-            }}
-          />
+          <YerlesimCizimi kademe={yerlesim.kademe} className="h-full w-full" />
           {binalar.map((b) => (
             <BinaIsareti
               key={b.key}
@@ -805,11 +744,9 @@ function BinaIsareti({
       )}
 
       {sprite ? (
-        <img
-          src={`/gorseller/binalar/${ad}.webp`}
-          alt=""
-          aria-hidden="true"
-          className="relative h-full w-full object-contain"
+        <BinaCizimi
+          ad={ad}
+          className="relative h-full w-full"
           style={{
             // Sprite'ın KENDİ düşen gölgesi kalktı: temas gölgesi varken
             // ikincisi binayı zemine basan bir yapı değil, zeminin üstüne

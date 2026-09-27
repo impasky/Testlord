@@ -85,6 +85,12 @@ const OPERASYON = [
    * görmüyor. Sekiz satır çeviri listesinde yer kaplıyordu.
    */
   'apps/api/src/diyar-birlestir.ts',
+  /*
+   * Çizim galerisi (`#/cizim-galerisi`). `main.tsx` onu yalnız
+   * `import.meta.env.DEV` iken açıyor; üretim paketinde yok. Başlıkları
+   * yalnız çizimleri gözden geçiren geliştiriciye görünüyor.
+   */
+  'apps/web/src/cizim/Galeri.tsx',
 ];
 
 function dosyalar(kok, uzantilar) {

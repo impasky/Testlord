@@ -92,7 +92,7 @@
     "tr": " Daha büyük bir başkent daha yükseğine izin verir.",
     "en": " A larger capital allows a higher one.",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:485"
+      "apps/web/src/screens/Sehir.tsx:424"
     ]
   },
   "t8c81192e": {
@@ -148,7 +148,7 @@
     "tr": ", {0} sürüyor",
     "en": ", {0} in progress",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:734"
+      "apps/web/src/screens/Sehir.tsx:673"
     ]
   },
   "tfc687484": {
@@ -308,7 +308,7 @@
     "tr": "{0} — {1} yapı",
     "en": "{0} — {1} building",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:406"
+      "apps/web/src/screens/Sehir.tsx:353"
     ]
   },
   "te4dc80c9": {
@@ -438,7 +438,7 @@
     "tr": "{0} · bina tavanı {1}",
     "en": "{0} · building cap {1}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:530"
+      "apps/web/src/screens/Sehir.tsx:469"
     ]
   },
   "t48aeb4d6": {
@@ -975,7 +975,7 @@
     "tr": "{0} inşa ediliyor",
     "en": "{0} under construction",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:494"
+      "apps/web/src/screens/Sehir.tsx:433"
     ]
   },
   "t4438dd01": {
@@ -1478,7 +1478,7 @@
     "tr": "{0}. seviye",
     "en": "level {0}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:484"
+      "apps/web/src/screens/Sehir.tsx:423"
     ]
   },
   "tace5639c": {
@@ -1503,7 +1503,7 @@
     "tr": "{0}'a git",
     "en": "Go to {0}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:998"
+      "apps/web/src/screens/Sehir.tsx:935"
     ]
   },
   "t0900053c": {
@@ -2156,7 +2156,7 @@
     "tr": "Asker eğitimi",
     "en": "Troop training",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:61"
+      "apps/web/src/screens/Sehir.tsx:62"
     ]
   },
   "tc9c35393": {
@@ -2402,7 +2402,7 @@
     "tr": "Başkent taşınamadı.",
     "en": "Capital could not be moved.",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:334"
+      "apps/web/src/screens/Sehir.tsx:281"
     ]
   },
   "t2947aef5": {
@@ -2410,7 +2410,7 @@
     "tr": "başkentin yok",
     "en": "you have no capital",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:477"
+      "apps/web/src/screens/Sehir.tsx:416"
     ]
   },
   "tc727a7f6": {
@@ -2418,7 +2418,7 @@
     "tr": "Başkentini taşıyabilirsin",
     "en": "You can move your capital",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:516"
+      "apps/web/src/screens/Sehir.tsx:455"
     ]
   },
   "tea7af10a": {
@@ -2671,7 +2671,7 @@
     "tr": "Binaların bu yerleşimde en fazla",
     "en": "Buildings in this settlement can at most",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:483"
+      "apps/web/src/screens/Sehir.tsx:422"
     ]
   },
   "te7b9c929": {
@@ -2803,9 +2803,9 @@
     "tr": "boş arsa",
     "en": "vacant lot",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:732",
-      "apps/web/src/screens/Sehir.tsx:735",
-      "apps/web/src/screens/Sehir.tsx:956"
+      "apps/web/src/screens/Sehir.tsx:671",
+      "apps/web/src/screens/Sehir.tsx:674",
+      "apps/web/src/screens/Sehir.tsx:893"
     ]
   },
   "t0f1623db": {
@@ -2912,7 +2912,7 @@
     "tr": "Bölge yükseltme",
     "en": "Region upgrade",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:65"
+      "apps/web/src/screens/Sehir.tsx:66"
     ]
   },
   "ta5c31fa5": {
@@ -3420,7 +3420,7 @@
     "tr": "Daha büyük bir yerleşimin var. Taşınırsan binaların seninle gelir — hiçbir seviye kaybolmaz, yalnız tavan yükselir.",
     "en": "You have a larger settlement. If you move, your buildings come with you — no levels are lost, only the cap increases.",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:518"
+      "apps/web/src/screens/Sehir.tsx:457"
     ]
   },
   "tfa0c522b": {
@@ -3497,7 +3497,7 @@
       "apps/web/src/screens/Demirhane.tsx:400",
       "apps/web/src/screens/LordEkrani.tsx:646",
       "apps/web/src/screens/LordEkrani.tsx:663",
-      "apps/web/src/screens/Sehir.tsx:563",
+      "apps/web/src/screens/Sehir.tsx:502",
       "data/basarimlar.json:kumeler[3].ad",
       "data/binalar.json:binalar[3].ad",
       "packages/shared/src/types.ts:360"
@@ -3703,7 +3703,7 @@
     "tr": "Dikili yapıya dokun: içine girersin. Boş arsaya dokun: bedelini söyler.",
     "en": "Tap an erected structure: you enter it. Tap a vacant lot: it states the cost.",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:448"
+      "apps/web/src/screens/Sehir.tsx:387"
     ]
   },
   "t34691c46": {
@@ -4277,7 +4277,7 @@
     "tr": "Ekipman üretimi",
     "en": "Equipment production",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:62"
+      "apps/web/src/screens/Sehir.tsx:63"
     ]
   },
   "t12fb0004": {
@@ -4285,7 +4285,7 @@
     "tr": "Ekipman yükseltme",
     "en": "Equipment upgrade",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:63"
+      "apps/web/src/screens/Sehir.tsx:64"
     ]
   },
   "tcf58093a": {
@@ -5122,7 +5122,7 @@
       "apps/web/src/screens/Hesap.tsx:259",
       "apps/web/src/screens/Kisla.tsx:286",
       "apps/web/src/screens/ParolaSifirla.tsx:62",
-      "apps/web/src/screens/Sehir.tsx:994"
+      "apps/web/src/screens/Sehir.tsx:931"
     ]
   },
   "t5b346f80": {
@@ -5261,7 +5261,7 @@
     "tr": "Harita",
     "en": "Map",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:566"
+      "apps/web/src/screens/Sehir.tsx:505"
     ]
   },
   "t811aa7b9": {
@@ -5827,7 +5827,7 @@
     "tr": "inşa ediliyor",
     "en": "under construction",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:650"
+      "apps/web/src/screens/Sehir.tsx:589"
     ]
   },
   "tff2e7684": {
@@ -5835,7 +5835,7 @@
     "tr": "İnşa et",
     "en": "Construct",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:994"
+      "apps/web/src/screens/Sehir.tsx:931"
     ]
   },
   "t776ce02a": {
@@ -5843,7 +5843,7 @@
     "tr": "İnşaat",
     "en": "Construction",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:60"
+      "apps/web/src/screens/Sehir.tsx:61"
     ]
   },
   "t22b61a98": {
@@ -5851,7 +5851,7 @@
     "tr": "İnşaat başlatılamadı.",
     "en": "Construction could not be started.",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:318"
+      "apps/web/src/screens/Sehir.tsx:265"
     ]
   },
   "t68d4eca6": {
@@ -5859,7 +5859,7 @@
     "tr": "İptal",
     "en": "Cancel",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:500"
+      "apps/web/src/screens/Sehir.tsx:439"
     ]
   },
   "t8f6427be": {
@@ -5867,7 +5867,7 @@
     "tr": "İptal edersen harcadığının yarısı geri gelir.",
     "en": "If you cancel, half of what you spent is refunded.",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:504"
+      "apps/web/src/screens/Sehir.tsx:443"
     ]
   },
   "tbf6e4d16": {
@@ -6213,7 +6213,7 @@
     "en": "remaining",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:905",
-      "apps/web/src/screens/Sehir.tsx:496"
+      "apps/web/src/screens/Sehir.tsx:435"
     ]
   },
   "tbee327a4": {
@@ -6712,7 +6712,7 @@
     "en": "Scouting",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:504",
-      "apps/web/src/screens/Sehir.tsx:66",
+      "apps/web/src/screens/Sehir.tsx:67",
       "data/generals.json:generaller[7].yetenek.ad"
     ]
   },
@@ -6757,7 +6757,7 @@
       "apps/web/src/screens/Demirhane.tsx:618",
       "apps/web/src/screens/Kisla.tsx:417",
       "apps/web/src/screens/Olaylar.tsx:113",
-      "apps/web/src/screens/Sehir.tsx:560",
+      "apps/web/src/screens/Sehir.tsx:499",
       "data/binalar.json:binalar[1].ad"
     ]
   },
@@ -7082,7 +7082,7 @@
     "tr": "Kuyruk boş. Bir şeyler başlat.",
     "en": "Queue is empty. Start something.",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:557"
+      "apps/web/src/screens/Sehir.tsx:496"
     ]
   },
   "t2b606a9d": {
@@ -7090,7 +7090,7 @@
     "tr": "Kuyruklar{0}",
     "en": "Queues{0}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:552"
+      "apps/web/src/screens/Sehir.tsx:491"
     ]
   },
   "t04fed051": {
@@ -7622,7 +7622,7 @@
     "tr": "olabilir.",
     "en": "can be.",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:484"
+      "apps/web/src/screens/Sehir.tsx:423"
     ]
   },
   "t38e7530f": {
@@ -7691,7 +7691,7 @@
     "en": "Army gear",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:600",
-      "apps/web/src/screens/Sehir.tsx:64"
+      "apps/web/src/screens/Sehir.tsx:65"
     ]
   },
   "tb1ed25c1": {
@@ -9044,8 +9044,8 @@
     "tr": "seviye {0}",
     "en": "level {0}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:732",
-      "apps/web/src/screens/Sehir.tsx:735"
+      "apps/web/src/screens/Sehir.tsx:671",
+      "apps/web/src/screens/Sehir.tsx:674"
     ]
   },
   "tc36d65d0": {
@@ -9062,7 +9062,7 @@
     "tr": "Seviye {0} / {1}",
     "en": "Level {0} / {1}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:956"
+      "apps/web/src/screens/Sehir.tsx:893"
     ]
   },
   "tc15fa5ea": {
@@ -9070,7 +9070,7 @@
     "tr": "Seviye {0} yap",
     "en": "Upgrade to Level {0}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:994"
+      "apps/web/src/screens/Sehir.tsx:931"
     ]
   },
   "t939a055a": {
@@ -9110,7 +9110,7 @@
     "tr": "Seviye yükseltmek için buradan seç: haritadaki dokunuş yapının içine giriyor.",
     "en": "Select here to upgrade level: tapping on the map enters the structure.",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:609"
+      "apps/web/src/screens/Sehir.tsx:548"
     ]
   },
   "t2e677d3f": {
@@ -10083,7 +10083,7 @@
     "tr": "Taşın",
     "en": "Move",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:538"
+      "apps/web/src/screens/Sehir.tsx:477"
     ]
   },
   "tf3733180": {
@@ -10493,7 +10493,7 @@
     "tr": "yapı",
     "en": "structure",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:956"
+      "apps/web/src/screens/Sehir.tsx:893"
     ]
   },
   "tdd99127b": {
@@ -10501,7 +10501,7 @@
     "tr": "Yapılar",
     "en": "Structures",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:607"
+      "apps/web/src/screens/Sehir.tsx:546"
     ]
   },
   "td55cc683": {

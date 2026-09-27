@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { StrictMode, Suspense } from 'react';
+import { StrictMode, Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
 import { HataSiniri } from './components/HataSiniri';
@@ -18,6 +18,19 @@ import './styles.css';
  * daha buraya gelinmeden değerlerini alıyor. Burada beklenen bir söz
  * (Promise) onları kurtarmaya yetmezdi.
  */
+
+/*
+ * ÇİZİM GALERİSİ (docs/24): koddan çizilen bütün görseller tek sayfada —
+ * yalnız geliştirmede, `#/cizim-galerisi` ile. Ekran görüntüsü alıp
+ * çizimleri topluca denetlemek için. `import.meta.env.DEV` derlemede
+ * `false` oluyor ve dal bütünüyle siliniyor: üretim paketinde galeri
+ * parçası (chunk) hiç yok.
+ */
+const Galeri = import.meta.env.DEV
+  ? lazy(() => import('./cizim/Galeri').then((m) => ({ default: m.Galeri })))
+  : null;
+const galeriAcik = Galeri !== null && window.location.hash.startsWith('#/cizim-galerisi');
+
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: true, staleTime: 5_000 } },
 });
@@ -39,9 +52,7 @@ createRoot(document.getElementById('root')!).render(
             synchronous input") — tüm düğmeleri deneyen bot yakaladı. Boş
             yedek: sayfa yüklenirken tek bir kare boş kalıyor, o kadar.
           */}
-          <Suspense fallback={null}>
-            <App />
-          </Suspense>
+          <Suspense fallback={null}>{galeriAcik && Galeri ? <Galeri /> : <App />}</Suspense>
         </HataSiniri>
       </QueryClientProvider>
     </DilSaglayici>
