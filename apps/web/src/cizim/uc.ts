@@ -31,6 +31,19 @@ export interface Yuz {
   /** Kenar çizgisi çizilmesin (duman, parıltı: yumuşak görünsün). */
   kenarsiz?: boolean;
   /**
+   * Eğri bir yüzeyin dilimi (silindir yanı, koni, küre, uzuv). Kenarı
+   * belli belirsiz çiziliyor: koyu kenar her dilimde yinelenince kule ve
+   * kafa tel kafes gibi okunuyordu. Dış hat yine gölge farkından belli.
+   */
+  yumusak?: boolean;
+  /**
+   * Gölgeleme normali. Verilirse ışık bununla hesaplanıyor, görünürlük
+   * yine yüzün kendi normalinden. Arazi komşu noktaların ortalamasını
+   * veriyor: geometri düşük çokgenli kalıyor ama ışık yüzden yüze
+   * sıçramadan akıyor (buruşuk kâğıt görüntüsü buradan geliyordu).
+   */
+  gn?: V3;
+  /**
    * Çizim katmanı: küçük önce. Ressam algoritması yüzün ORTASINA bakıyor;
    * dev bir zemin yüzünün ortası sahnenin ortasında kaldığı için arkadaki
    * duvarlar onun altında kalıyordu. Zemin -2, yere yatık yol/döşeme -1,
@@ -229,6 +242,14 @@ export function cember(cx: number, cy: number, r: number, n: number, faz = 0): [
   });
 }
 
+/**
+ * Eğri yüzeylerin dilim çarpanı. Tarifler dilim sayısını düşük yazıyor
+ * (5–8); ekranda kule ve kafa köşeli, apolet topaklı duruyordu. 4 ve altı
+ * bilerek köşeli (kare çatı, dört köşeli sivri kule): dokunulmuyor.
+ */
+const DILIM = 1.5;
+export const dilim = (n: number): number => (n >= 5 ? Math.round(n * DILIM) : n);
+
 export function silindir(
   cx: number,
   cy: number,
@@ -238,7 +259,10 @@ export function silindir(
   renk: string | { ust: string; yan: string },
   n = 8,
 ): Model {
-  return prizma(cember(cx, cy, r, n, Math.PI / n), z, h, renk);
+  const k = dilim(n);
+  return prizma(cember(cx, cy, r, k, Math.PI / k), z, h, renk).map((y, i) =>
+    i < 2 ? y : { ...y, yumusak: true },
+  );
 }
 
 /** Koni ya da kesik koni (r2 > 0). */
@@ -249,9 +273,10 @@ export function koni(
   r1: number,
   h: number,
   renk: string,
-  n = 8,
+  dilimSayisi = 8,
   r2 = 0,
 ): Model {
+  const n = dilim(dilimSayisi);
   const alt = cember(cx, cy, r1, n, Math.PI / n);
   const m: Model = [{ p: [...alt].reverse().map(([x, y]): V3 => [x, y, z]), renk }];
   if (r2 > 0) {
@@ -270,6 +295,7 @@ export function koni(
           [d[0], d[1], z + h],
         ],
         renk,
+        yumusak: true,
       });
     }
   } else {
@@ -283,6 +309,7 @@ export function koni(
           [cx, cy, z + h],
         ],
         renk,
+        yumusak: true,
       });
     }
   }
@@ -299,13 +326,17 @@ export function kure(
   cz: number,
   r: number,
   renk: string,
-  n = 7,
-  halka = 4,
+  dilimSayisi = 7,
+  halkaSayisi = 4,
   boz = 0,
   // Varsayılan: bozulma yok. Math.random olsaydı çizim her açılışta değişirdi.
   rnd: () => number = () => 0.5,
   basik = 1,
 ): Model {
+  // Bozulmuş küre (ağaç tacı, kaya) bilerek topaklı; dilimi artırmak
+  // tohumlu dizinin uzunluğunu da değiştirirdi ve sahnedeki ağaçlar kayardı.
+  const n = boz === 0 ? dilim(dilimSayisi) : dilimSayisi;
+  const halka = boz === 0 && halkaSayisi >= 4 ? halkaSayisi + 1 : halkaSayisi;
   const nokta3 = (i: number, j: number): V3 => {
     const t = (i / halka) * Math.PI; // 0 tepe, π dip
     const f = (j / n) * Math.PI * 2 + (i % 2 ? Math.PI / n : 0);
@@ -329,11 +360,11 @@ export function kure(
       const b = izgara[i]![(j + 1) % n]!;
       const c = izgara[i + 1]![(j + 1) % n]!;
       const d = izgara[i + 1]![j]!;
-      if (i === 0) m.push({ p: [a, d, c], renk });
-      else if (i === halka - 1) m.push({ p: [a, d, b], renk });
+      if (i === 0) m.push({ p: [a, d, c], renk, yumusak: true });
+      else if (i === halka - 1) m.push({ p: [a, d, b], renk, yumusak: true });
       else {
-        m.push({ p: [a, d, c], renk });
-        m.push({ p: [a, c, b], renk });
+        m.push({ p: [a, d, c], renk, yumusak: true });
+        m.push({ p: [a, c, b], renk, yumusak: true });
       }
     }
   }
@@ -493,6 +524,9 @@ export const IZOMETRIK: Kamera = { yon: Math.PI / 4, egim: Math.PI / 6 };
 const ISIK = birim([0.55, 0.2, 1]);
 const ORTAM = 0.46;
 const YAYGIN = 0.58;
+/** Kenar: yüzün bir tık koyusu. Eğri yüzeyin dilim kenarı neredeyse görünmez. */
+const KENAR = 0.78;
+const KENAR_YUMUSAK = 0.94;
 
 export interface Cokgen {
   n: string;
@@ -547,7 +581,10 @@ export function ciz(model: Model, kamera: Kamera = IZOMETRIK, pay = 1): Cizilmis
       if (!y.ciftYuz) continue;
       n = [-nrm[0], -nrm[1], -nrm[2]];
     }
-    const k = y.isima ? 0.75 + y.isima * 0.5 : ORTAM + YAYGIN * Math.max(0, nokta(n, ISIK));
+    // Gölgeleme normali ancak yüz öne bakıyorsa: arka yüzü çevrilmiş ince
+    // levhada kendi (çevrilmiş) normali geçerli.
+    const g = y.gn && n === nrm ? birim(y.gn) : n;
+    const k = y.isima ? 0.75 + y.isima * 0.5 : ORTAM + YAYGIN * Math.max(0, nokta(g, ISIK));
     const noktalar = y.p.map(ekran);
     for (const [px, py] of noktalar) {
       if (px < minX) minX = px;
@@ -561,7 +598,7 @@ export function ciz(model: Model, kamera: Kamera = IZOMETRIK, pay = 1): Cizilmis
       d: nokta(merkez(y.p), c),
       n: noktalar.map(([px, py]) => px.toFixed(2) + ',' + py.toFixed(2)).join(' '),
       renk,
-      kenar: y.kenarsiz ? undefined : isikla(renk, 0.72),
+      kenar: y.kenarsiz ? undefined : isikla(renk, y.yumusak ? KENAR_YUMUSAK : KENAR),
       saydam: y.saydam,
     });
   }

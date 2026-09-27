@@ -14,6 +14,7 @@ import {
   besikCati,
   birlestir,
   cember,
+  dilim,
   dondur,
   koni,
   katmanla,
@@ -604,7 +605,8 @@ export function cubuk(a: V3, b: V3, k: number, renk: string): Model {
  * İki nokta arası sivrilen uzuv (kesik koni): kol, bacak, at boynu, kuyruk.
  * `r1` a ucunda, `r2` b ucunda yarıçap; `n` kenar sayısı.
  */
-export function uzuv(a: V3, b: V3, r1: number, r2: number, renk: string, n = 6): Model {
+export function uzuv(a: V3, b: V3, r1: number, r2: number, renk: string, dilimSayisi = 6): Model {
+  const n = dilim(dilimSayisi);
   const d = tekle(fark(b, a));
   const yard: V3 = Math.abs(d[2]) > 0.9 ? [1, 0, 0] : [0, 0, 1];
   const u = tekle(carp(d, yard));
@@ -621,7 +623,7 @@ export function uzuv(a: V3, b: V3, r1: number, r2: number, renk: string, n = 6):
   const orta: V3 = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2];
   const yuzler: V3[][] = [A, B];
   for (let i = 0; i < n; i++) yuzler.push([A[i]!, A[(i + 1) % n]!, B[(i + 1) % n]!, B[i]!]);
-  return yuzler.map((p) => {
+  return yuzler.map((p, i) => {
     const c = p.reduce<V3>(
       (s, q) => [s[0] + q[0] / p.length, s[1] + q[1] / p.length, s[2] + q[2] / p.length],
       [0, 0, 0],
@@ -629,7 +631,8 @@ export function uzuv(a: V3, b: V3, r1: number, r2: number, renk: string, n = 6):
     const nn = carp(fark(p[1]!, p[0]!), fark(p[2]!, p[0]!));
     const disa = fark(c, orta);
     const ters = nn[0] * disa[0] + nn[1] * disa[1] + nn[2] * disa[2] < 0;
-    return { p: ters ? [...p].reverse() : p, renk };
+    // Uçlar düz kapak, yan dilimler eğri yüzey.
+    return { p: ters ? [...p].reverse() : p, renk, yumusak: i >= 2 };
   });
 }
 
@@ -674,10 +677,11 @@ export function kubbe(
   z: number,
   r: number,
   renk: string,
-  n = 10,
+  dilimSayisi = 10,
   halka = 3,
   basik = 1,
 ): Model {
+  const n = dilim(dilimSayisi);
   const nokta3 = (i: number, j: number): V3 => {
     const t = (i / halka) * (Math.PI / 2);
     const f = (j / n) * Math.PI * 2;
@@ -694,7 +698,7 @@ export function kubbe(
       const b = nokta3(i, j + 1);
       const c = nokta3(i + 1, j + 1);
       const d = nokta3(i + 1, j);
-      m.push({ p: i === 0 ? [a, d, c] : [a, d, c, b], renk });
+      m.push({ p: i === 0 ? [a, d, c] : [a, d, c, b], renk, yumusak: true });
     }
   return m;
 }

@@ -16,6 +16,7 @@ import {
   cizgiyeUzaklik,
   duzle,
   ekrandanYere,
+  gecis,
   gurultu,
   nehirOy,
   tepe,
@@ -313,9 +314,9 @@ const TEMA: Record<Diyar, Tema> = {
       },
     renk: (g) => (x, y, z, dik) => {
       const t = g(x + 40, y, 8, 2);
-      let c = karistir('#8a7d62', '#6e6556', Math.min(1, z / 3));
-      if (z > 2.5 || dik > 0.3) c = karistir('#4f4a44', '#6a6258', t);
-      return c;
+      const c = karistir('#8a7d62', '#6e6556', Math.min(1, z / 3));
+      const kaya = Math.max(gecis(z, 2.5, 0.8), gecis(dik, 0.3));
+      return karistir(c, karistir('#4f4a44', '#6a6258', t), kaya);
     },
     su: -0.4,
     suRengi: '#2f5566',
@@ -368,9 +369,8 @@ const TEMA: Record<Diyar, Tema> = {
       },
     renk: (g) => (x, y, _z, dik) => {
       const t = g(x - 20, y + 5, 7, 2);
-      let c = karistir('#7d7f52', '#a09d68', t);
-      if (dik > 0.3) c = karistir(c, '#5a5840', 0.5);
-      return c;
+      const c = karistir('#7d7f52', '#a09d68', t);
+      return karistir(c, '#5a5840', 0.5 * gecis(dik, 0.3));
     },
     su: 0,
     suRengi: '#3f5a52',
@@ -482,9 +482,9 @@ const TEMA: Record<Diyar, Tema> = {
     },
     renk: (g) => (x, y, z, dik) => {
       const t = g(x + 3, y + 3, 7, 2);
-      let c = karistir('#4a443e', '#5e554b', t);
-      if (dik > 0.3 || z > 5) c = karistir('#3a3632', '#4f4640', t);
-      return c;
+      const c = karistir('#4a443e', '#5e554b', t);
+      const kaya = Math.max(gecis(dik, 0.3), gecis(z, 5, 1));
+      return karistir(c, karistir('#3a3632', '#4f4640', t), kaya);
     },
     yolRengi: '#6a5a4a',
     duzZ: 1.0,
@@ -584,9 +584,8 @@ const TEMA: Record<Diyar, Tema> = {
         1.2 + g(x * 0.8, y * 0.35, 12, 2) * 4 + g(x, y, 6, 1) * 0.6,
     renk: (g) => (x, y, _z, dik) => {
       const t = g(x - 7, y + 2, 8, 2);
-      let c = karistir('#c9a36a', '#b08a52', t);
-      if (dik > 0.3) c = karistir(c, '#9a7a4a', 0.6);
-      return c;
+      const c = karistir('#c9a36a', '#b08a52', t);
+      return karistir(c, '#9a7a4a', 0.6 * gecis(dik, 0.3));
     },
     yolRengi: '#8a6a44',
     duzZ: 1.4,

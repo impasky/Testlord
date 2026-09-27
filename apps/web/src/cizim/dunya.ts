@@ -90,6 +90,34 @@ export function dunyaUcgenleri(adim = 1.25, agacli = true): Ucgen[] {
     K.push(sat);
   }
 
+  /*
+   * Köşe ışığı: komşu köşelerden normal (merkezî fark), deniz kıyıda
+   * sıfıra basık. Üçgen ışığını köşelerinin ortalamasından alıyor; dağ
+   * yamacı yüzden yüze sıçramadan aydınlanıyor, geometri yine üçgen.
+   */
+  const kose = (i: number, j: number) =>
+    K[Math.max(0, Math.min(n, i))]![Math.max(0, Math.min(n, j))]!;
+  const isikOf = new Map<(typeof K)[number][number], number>();
+  for (let i = 0; i <= n; i++)
+    for (let j = 0; j <= n; j++) {
+      const a1 = kose(i + 1, j);
+      const a0 = kose(i - 1, j);
+      const b1 = kose(i, j + 1);
+      const b0 = kose(i, j - 1);
+      const dx = [a1.x - a0.x, a1.y - a0.y, Math.max(0, a1.z) - Math.max(0, a0.z)] as const;
+      const dy = [b1.x - b0.x, b1.y - b0.y, Math.max(0, b1.z) - Math.max(0, b0.z)] as const;
+      let nx = dx[1] * dy[2] - dx[2] * dy[1];
+      let ny = dx[2] * dy[0] - dx[0] * dy[2];
+      let nz = dx[0] * dy[1] - dx[1] * dy[0];
+      if (nz < 0) {
+        nx = -nx;
+        ny = -ny;
+        nz = -nz;
+      }
+      const nl = Math.hypot(nx, ny, nz) || 1;
+      isikOf.set(K[i]![j]!, 0.46 + 0.58 * Math.max(0, (nx * L[0] + ny * L[1] + nz * L[2]) / nl));
+    }
+
   const cikti: Ucgen[] = [];
   for (let i = 0; i < n; i++)
     for (let j = 0; j < n; j++) {
@@ -112,23 +140,7 @@ export function dunyaUcgenleri(adim = 1.25, agacli = true): Ucgen[] {
         const cx = (u[0]!.x + u[1]!.x + u[2]!.x) / 3;
         const cy = (u[0]!.y + u[1]!.y + u[2]!.y) / 3;
         const cz = (u[0]!.z + u[1]!.z + u[2]!.z) / 3;
-        // Normal (y aşağı eksende sağ el kuralı: z yukarı için çapraz çarpım işareti)
-        const ax = u[1]!.x - u[0]!.x;
-        const ay = u[1]!.y - u[0]!.y;
-        const az = (karaSay ? Math.max(0, u[1]!.z) : 0) - (karaSay ? Math.max(0, u[0]!.z) : 0);
-        const bx = u[2]!.x - u[0]!.x;
-        const by = u[2]!.y - u[0]!.y;
-        const bz = (karaSay ? Math.max(0, u[2]!.z) : 0) - (karaSay ? Math.max(0, u[0]!.z) : 0);
-        let nx = ay * bz - az * by;
-        let ny = az * bx - ax * bz;
-        let nz = ax * by - ay * bx;
-        if (nz < 0) {
-          nx = -nx;
-          ny = -ny;
-          nz = -nz;
-        }
-        const nl = Math.hypot(nx, ny, nz) || 1;
-        const isik = 0.46 + 0.58 * Math.max(0, (nx * L[0] + ny * L[1] + nz * L[2]) / nl);
+        const isik = (isikOf.get(u[0]!)! + isikOf.get(u[1]!)! + isikOf.get(u[2]!)!) / 3;
         let renk: string;
         if (karaSay === 0) renk = karistir(P.su, P.derinSu, Math.min(1, -cz / 1.8));
         else if (karaSay < 3) renk = '#9b9362';
@@ -141,7 +153,9 @@ export function dunyaUcgenleri(adim = 1.25, agacli = true): Ucgen[] {
         }
         cikti.push({
           n: [u[0]!.x, u[0]!.y, u[1]!.x, u[1]!.y, u[2]!.x, u[2]!.y],
-          renk: isikla(renk, (karaSay === 0 ? 1 : isik) * (0.97 + r() * 0.06)),
+          // Tohumlu ton oynaması hafif; `r()` çağrısı yerinde kalıyor ki
+          // ağaçların yeri kaymasın.
+          renk: isikla(renk, (karaSay === 0 ? 1 : isik) * (0.985 + r() * 0.03)),
         });
       }
     }

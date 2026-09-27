@@ -41,6 +41,20 @@ Küçük bir 3B motor. Yöntem "low-poly" oyunlarınki:
 - **Katmanlar:** arazi `-2`, yere yatık yol ve döşeme `-1.x`, nesneler
   `0`. Dev bir zemin yüzünün ortası sahnenin ortasında kaldığı için
   katman olmadan arkadaki duvarlar onun altında kalıyordu.
+- **Pürüzsüzlük:** geometri low-poly kalıyor, pürüz almıyor.
+  - Arazi ışığı her üçgenin kendi normalinden değil, köşe normallerinin
+    ortalamasından (`gn`, gölgeleme normali) alıyor. Yamaç yüzden yüze
+    sıçramadan aydınlanıyor; dünya haritası da aynı yolu izliyor.
+  - Eğri yüzeylerin dilimleri (`yumusak`: silindir yanı, koni, küre,
+    uzuv, kubbe) belli belirsiz bir kenarla çiziliyor; koyu kenar her
+    dilimde yinelenince kule ve kafa tel kafes gibi okunuyordu.
+  - Tariflerde 5 ve üstü dilim 1,5 katına çıkıyor (`dilim`); 4 ve altı
+    bilerek köşeli (kare çatı, dört köşeli kule) kalıyor. Tohumlu bozulmalı
+    kürenin (ağaç tacı, kaya) dilimi değişmiyor: bilerek topaklı, ve dizinin
+    uzunluğu değişse sahnedeki ağaçların yeri kayardı.
+  - Arazi rengindeki eşikler (`dikse kaya`) yumuşak geçişle (`gecis`)
+    yazılıyor; sert eşikte her üçgen iki paletten birine düşüp yamaç yama
+    yama görünüyordu.
 
 `renk.ts` ortak paleti (`P`) ve `isikla` / `karistir` yardımcılarını
 taşıyor. Renkler arayüzle aynı sıcaklıkta: koyu zemin, altın vurgu.

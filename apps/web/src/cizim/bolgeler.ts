@@ -16,6 +16,7 @@ import {
   cizgiyeUzaklik,
   duzle,
   ekrandanYere,
+  gecis,
   gurultu,
   nehirOy,
   parsel,
@@ -595,9 +596,13 @@ function dagRengi(g: Gurultu) {
       karistir('#77736b', '#9a958b', t),
       Math.min(1, z / 14),
     );
-    if (z < 2.5 && dik < 0.3)
-      c = karistir('#6c7a44', '#857357', Math.min(1, Math.max(0, z / 2.5 + t * 0.4)));
-    else if (dik < 0.3 && z < 12) c = karistir(c, '#6a7440', 0.45);
+    // Düzlükte çayır: dik yamaçta ve yükseklikte kaya. Eşikler yumuşak —
+    // sert koşulda her üçgen iki paletten birine düşüp yama yama duruyordu.
+    const duz = 1 - gecis(dik, 0.3);
+    const cayir = karistir('#6c7a44', '#857357', Math.min(1, Math.max(0, z / 2.5 + t * 0.4)));
+    const etek = karistir(c, '#6a7440', 0.45);
+    c = karistir(c, etek, duz * (1 - gecis(z, 12, 1.5)));
+    c = karistir(c, cayir, duz * (1 - gecis(z, 2.5, 0.8)));
     if (z > 17) c = karistir(c, P.kar, Math.min(0.9, (z - 17) / 4));
     return c;
   };

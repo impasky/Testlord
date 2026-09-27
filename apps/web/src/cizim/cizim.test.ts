@@ -15,7 +15,8 @@ import {
 } from './birlikler';
 import { BOLGE_SAHNELERI, bolgeAdiCoz, bolgeModeli } from './bolgeler';
 import { rastgele } from './rastgele';
-import { ciz, kutu, sabitKutu, yansitici, zemineGeri } from './uc';
+import { gecis } from './arazi';
+import { ciz, dilim, kutu, levha, sabitKutu, silindir, yansitici, zemineGeri } from './uc';
 import { YERLESIM_KADEMELERI, yerlesimModeli, yerlesimNoktasi, yerlesimYuzdesi } from './yerlesim';
 
 const sayilar = (n: string) => n.split(/[ ,]/).map(Number);
@@ -30,6 +31,41 @@ describe('3B motor', () => {
     const c = ciz(kutu(0, 0, 0, 1, 1, 1, '#808080'));
     const parlak = c.cokgenler.map((p) => parseInt(p.renk.slice(1, 3), 16)).sort((a, b) => a - b);
     expect(new Set(parlak).size).toBe(3);
+  });
+
+  it('dilim: 5 ve üstü yuvarlak sayılıp artıyor, 4 ve altı bilerek köşeli kalıyor', () => {
+    expect(dilim(4)).toBe(4);
+    expect(dilim(3)).toBe(3);
+    expect(dilim(5)).toBeGreaterThan(5);
+    expect(dilim(8)).toBe(12);
+    // Silindirin yan dilimleri yumuşak kenarlı, kapakları değil.
+    const s = silindir(0, 0, 0, 1, 2, '#808080', 8);
+    expect(s).toHaveLength(2 + 12);
+    expect(s.filter((y) => y.yumusak)).toHaveLength(12);
+  });
+
+  it('gölgeleme normali ışığı değiştiriyor, görünürlüğü değil', () => {
+    const duz = levha(
+      [
+        [0, 0, 0],
+        [1, 0, 0],
+        [1, 1, 0],
+        [0, 1, 0],
+      ],
+      '#808080',
+    );
+    const egik = duz.map((y) => ({ ...y, gn: [0, 1, 0.2] as [number, number, number] }));
+    const a = ciz(duz).cokgenler;
+    const b = ciz(egik).cokgenler;
+    expect(b).toHaveLength(a.length);
+    expect(b[0]!.renk).not.toBe(a[0]!.renk);
+  });
+
+  it('geçiş: eşiğin altında 0, üstünde 1, arada sürekli', () => {
+    expect(gecis(0, 0.3)).toBe(0);
+    expect(gecis(1, 0.3)).toBe(1);
+    expect(gecis(0.3, 0.3)).toBeCloseTo(0.5);
+    expect(gecis(0.31, 0.3)).toBeGreaterThan(gecis(0.29, 0.3));
   });
 
   it('zemine geri yansıtma, yansıtmanın tersi', () => {

@@ -69,6 +69,14 @@ export const yumusakAdim = (t: number) => {
   return u * u * (3 - 2 * u);
 };
 
+/**
+ * Eşik yerine yumuşak geçiş: `x` `esik`in `genislik` kadar altında 0,
+ * üstünde 1. Arazi rengi "dikse kaya" gibi sert bir koşula bağlıyken her
+ * üçgen iki paletten birine düşüyor ve yamaç yama yama görünüyordu.
+ */
+export const gecis = (x: number, esik: number, genislik = 0.12) =>
+  yumusakAdim((x - esik) / genislik + 0.5);
+
 /** Yuvarlak tepe (ya da `h` < 0 ise çukur). */
 export function tepe(x: number, y: number, cx: number, cy: number, r: number, h: number) {
   const d = Math.hypot(x - cx, y - cy) / r;
@@ -175,6 +183,12 @@ export interface AraziAyari {
   titrek?: number;
 }
 
+const fark3 = (a: V3, b: V3): V3 => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+const tek3 = (a: V3): V3 => {
+  const l = Math.hypot(a[0], a[1], a[2]) || 1;
+  return [a[0] / l, a[1] / l, a[2] / l];
+};
+
 export function arazi(a: AraziAyari): Model {
   const [vx, vy, ve, vb] = a.cerceve;
   const geri = zemineGeri();
@@ -201,6 +215,27 @@ export function arazi(a: AraziAyari): Model {
     }
     K.push(sat);
   }
+
+  /*
+   * Köşe normalleri: komşu köşelerden (merkezî fark). Her üçgen ışığı
+   * kendi düz normaliyle değil köşelerinin ortalamasıyla alıyor; geometri
+   * düşük çokgenli kalıyor ama yamaç yüzden yüze sıçramadan aydınlanıyor.
+   */
+  const kose = (i: number, j: number): V3 =>
+    K[Math.max(0, Math.min(nx, i))]![Math.max(0, Math.min(ny, j))]!;
+  const N: V3[][] = K.map((sat, i) =>
+    sat.map((_, j) => {
+      const dx = fark3(kose(i + 1, j), kose(i - 1, j));
+      const dy = fark3(kose(i, j + 1), kose(i, j - 1));
+      return tek3([
+        dx[1] * dy[2] - dx[2] * dy[1],
+        dx[2] * dy[0] - dx[0] * dy[2],
+        dx[0] * dy[1] - dx[1] * dy[0],
+      ]);
+    }),
+  );
+  const normalOf = new Map<V3, V3>();
+  K.forEach((sat, i) => sat.forEach((q, j) => normalOf.set(q, N[i]![j]!)));
 
   const su = a.su ?? -Infinity;
   const suRengi = a.suRengi ?? P.su;
@@ -242,11 +277,27 @@ export function arazi(a: AraziAyari): Model {
         const cx = (p[0]![0] + p[1]![0] + p[2]![0]) / 3;
         const cy = (p[0]![1] + p[1]![1] + p[2]![1]) / 3;
         const cz = (u[0]![2] + u[1]![2] + u[2]![2]) / 3;
+        // Su ve kıyı düz (su yüzeyi zaten yatay); kara köşe normalleriyle.
+        const gn =
+          alti > 0
+            ? undefined
+            : tek3(
+                u.reduce<V3>(
+                  (t, q) => {
+                    const k = normalOf.get(q)!;
+                    return [t[0] + k[0], t[1] + k[1], t[2] + k[2]];
+                  },
+                  [0, 0, 0],
+                ),
+              );
         let renk: string;
         if (alti === 3) renk = karistir(suRengi, derinSu, Math.min(1, (su - cz) / 5));
         else if (alti > 0) renk = kiyi;
-        else renk = a.renk(cx, cy, cz, 1 - normal(p)[2]);
-        m.push({ p, renk: isikla(renk, 0.965 + r() * 0.07), katman: -2, kenarsiz: true });
+        else renk = a.renk(cx, cy, cz, 1 - (gn ?? normal(p))[2]);
+        // Tohumlu ton oynaması hafif: sert olunca her üçgen ayrı bir yama
+        // gibi okunuyordu. `r()` çağrısı yerinde, yoksa dizinin geri kalanı
+        // (ağaçların yeri) kayardı.
+        m.push({ p, renk: isikla(renk, 0.985 + r() * 0.03), katman: -2, kenarsiz: true, gn });
       }
     }
   }
