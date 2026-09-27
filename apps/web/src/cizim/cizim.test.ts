@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { BINA_ADLARI, BINA_KUTUSU, binaModeli } from './binalar';
+import { BOLGE_SAHNELERI, bolgeAdiCoz, bolgeModeli } from './bolgeler';
 import { rastgele } from './rastgele';
 import { ciz, kutu, sabitKutu, yansitici, zemineGeri } from './uc';
 import { YERLESIM_KADEMELERI, yerlesimModeli, yerlesimNoktasi, yerlesimYuzdesi } from './yerlesim';
@@ -87,5 +88,29 @@ describe('yerleşim zeminleri', () => {
     const [px, py] = yerlesimYuzdesi(x, y);
     expect(px).toBeCloseTo(51, 6);
     expect(py).toBeCloseTo(53, 6);
+  });
+});
+
+describe('bölge sahneleri', () => {
+  it.each(BOLGE_SAHNELERI)('%s: NaN yok, dolu', (ad) => {
+    const c = ciz(bolgeModeli(ad));
+    expect(c.cokgenler.length).toBeGreaterThan(400);
+    for (const p of c.cokgenler) expect(sayilar(p.n).every(Number.isFinite)).toBe(true);
+  });
+
+  it('aşama adı çözülüyor; bilinmeyen tür null', () => {
+    expect(bolgeAdiCoz('tarla_3')).toEqual(['tarla', 3]);
+    expect(bolgeAdiCoz('kale')).toEqual(['kale', 1]);
+    expect(bolgeAdiCoz('ejderha')).toBeNull();
+  });
+
+  it('aynı türün aşamaları aynı araziyi paylaşıyor', () => {
+    const arazi = (ad: string) =>
+      bolgeModeli(ad)
+        .filter((y) => y.katman === -2)
+        .map((y) => y.p.flat().join(','))
+        .slice(0, 50)
+        .join('|');
+    expect(arazi('koy_3')).toBe(arazi('koy'));
   });
 });

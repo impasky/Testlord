@@ -548,3 +548,109 @@ export function tekne(x: number, y: number, uzun: number, yon: Yon = 'x', yelken
   if (yon === 'y') m = dondur(m, 'z', Math.PI / 2, [0, 0, 0]);
   return tasi(m, [x, y, 0]);
 }
+
+/* ── Serbest parçalar ──────────────────────────────────────────────── */
+
+const fark = (a: V3, b: V3): V3 => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+const carp = (a: V3, b: V3): V3 => [
+  a[1] * b[2] - a[2] * b[1],
+  a[2] * b[0] - a[0] * b[2],
+  a[0] * b[1] - a[1] * b[0],
+];
+const tekle = (a: V3): V3 => {
+  const l = Math.hypot(a[0], a[1], a[2]) || 1;
+  return [a[0] / l, a[1] / l, a[2] / l];
+};
+
+/**
+ * İki nokta arası kare kesitli kiriş: eğik payanda, kafes kule, kürek.
+ * Yüzlerin yönü kirişin ekseninden dışarı bakacak şekilde düzeltiliyor.
+ */
+export function cubuk(a: V3, b: V3, k: number, renk: string): Model {
+  const d = tekle(fark(b, a));
+  const yard: V3 = Math.abs(d[2]) > 0.9 ? [1, 0, 0] : [0, 0, 1];
+  const u = tekle(carp(d, yard));
+  const v = tekle(carp(d, u));
+  const h = k / 2;
+  const kose = (o: V3, su: number, sv: number): V3 => [
+    o[0] + (u[0] * su + v[0] * sv) * h,
+    o[1] + (u[1] * su + v[1] * sv) * h,
+    o[2] + (u[2] * su + v[2] * sv) * h,
+  ];
+  const isaret: [number, number][] = [
+    [-1, -1],
+    [1, -1],
+    [1, 1],
+    [-1, 1],
+  ];
+  const A = isaret.map(([s, t]) => kose(a, s, t));
+  const B = isaret.map(([s, t]) => kose(b, s, t));
+  const orta: V3 = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2];
+  const yuzler: V3[][] = [A, B];
+  for (let i = 0; i < 4; i++) yuzler.push([A[i]!, A[(i + 1) % 4]!, B[(i + 1) % 4]!, B[i]!]);
+  return yuzler.map((p) => {
+    const c = p.reduce<V3>(
+      (s, q) => [s[0] + q[0] / 4, s[1] + q[1] / 4, s[2] + q[2] / 4],
+      [0, 0, 0],
+    );
+    const n = carp(fark(p[1]!, p[0]!), fark(p[2]!, p[0]!));
+    const disa = fark(c, orta);
+    const ters = n[0] * disa[0] + n[1] * disa[1] + n[2] * disa[2] < 0;
+    return { p: ters ? [...p].reverse() : p, renk };
+  });
+}
+
+/** Dikey düzlemde teker: araba tekeri, değirmen çarkı. `eksen` tekerin mili. */
+export function teker(
+  cx: number,
+  cy: number,
+  cz: number,
+  r: number,
+  eksen: Yon,
+  renk: string = P.koyuTahta,
+  n = 8,
+): Model {
+  const halka = (rr: number, kay: number): V3[] =>
+    Array.from({ length: n }, (_, i) => {
+      const a = (i / n) * Math.PI * 2;
+      return eksen === 'y'
+        ? [cx + Math.cos(a) * rr, cy + kay, cz + Math.sin(a) * rr]
+        : [cx + kay, cy + Math.cos(a) * rr, cz + Math.sin(a) * rr];
+    });
+  return [
+    { p: halka(r, 0), renk, ciftYuz: true },
+    { p: halka(r * 0.3, 0.06), renk: isikla(renk, 0.7), ciftYuz: true },
+  ];
+}
+
+/** Yarım küre kubbe (altı kasnağın içinde kalıyor, çizilmiyor). */
+export function kubbe(
+  cx: number,
+  cy: number,
+  z: number,
+  r: number,
+  renk: string,
+  n = 10,
+  halka = 3,
+  basik = 1,
+): Model {
+  const nokta3 = (i: number, j: number): V3 => {
+    const t = (i / halka) * (Math.PI / 2);
+    const f = (j / n) * Math.PI * 2;
+    return [
+      cx + Math.sin(t) * Math.cos(f) * r,
+      cy + Math.sin(t) * Math.sin(f) * r,
+      z + Math.cos(t) * r * basik,
+    ];
+  };
+  const m: Model = [];
+  for (let i = 0; i < halka; i++)
+    for (let j = 0; j < n; j++) {
+      const a = nokta3(i, j);
+      const b = nokta3(i, j + 1);
+      const c = nokta3(i + 1, j + 1);
+      const d = nokta3(i + 1, j);
+      m.push({ p: i === 0 ? [a, d, c] : [a, d, c, b], renk });
+    }
+  return m;
+}

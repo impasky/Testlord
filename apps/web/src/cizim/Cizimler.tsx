@@ -5,6 +5,7 @@
  */
 import type { CSSProperties } from 'react';
 import { BINA_ADLARI, BINA_KUTUSU, binaModeli } from './binalar';
+import { BOLGE_KUTUSU, BOLGE_TIPLERI, bolgeModeli } from './bolgeler';
 import { Sahne } from './Sahne';
 import { YERLESIM_KUTUSU, yerlesimModeli, type Kademe } from './yerlesim';
 
@@ -46,6 +47,34 @@ export function YerlesimCizimi({ kademe, className }: { kademe: string; classNam
       kutu={YERLESIM_KUTUSU}
       alt=""
       className={className}
+    />
+  );
+}
+
+/** Çizimi olan bölge türleri (`koy`, `tarla`, `maden`, `sehir`, `kale`, `taht`). */
+export const CIZILEN_BOLGELER = new Set<string>(BOLGE_TIPLERI);
+
+/**
+ * Bölge afişi: türün aşama sahnesi (`tarla`, `tarla_3`, `tarla_5`).
+ * Kutuyu dolduruyor; kısa şeritte ortası görünüyor.
+ */
+export function BolgeCizimi({
+  ad,
+  alt,
+  className,
+}: {
+  ad: string;
+  alt: string;
+  className?: string;
+}) {
+  return (
+    <Sahne
+      anahtar={'bolge:' + ad}
+      uret={() => bolgeModeli(ad)}
+      kutu={BOLGE_KUTUSU}
+      alt={alt}
+      className={className}
+      kirp
     />
   );
 }

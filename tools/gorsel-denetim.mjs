@@ -425,45 +425,22 @@ if (yeniToken) {
 }
 
 /**
- * BÖLGE AFİŞİ listesi klasörle uyuşuyor mu.
+ * --- Haritadaki her bölge türünün afiş çizimi var mı (docs/24) ---
  *
- * `Harita.tsx` içindeki `AFISI_OLAN`, afişin yerini İLK BOYAMADA ayırmak
- * için var: dosyanın gelmesini bekleyip sonra yer açmak paneli
- * zıplatıyordu (ölçüldü, CLS 0,253). Ama liste yanlışsa iki yönde de
- * zarar var — listede olup dosyası olmayan tür boş bir bant gösterir,
- * dosyası olup listede olmayan tür yine zıplar.
- *
- * Aşama dosyaları (`_3`, `_5`) sayılmıyor: liste TÜRÜ tutuyor, aşamayı
- * değil; aşama yoksa kod zaten tabana düşüyor.
+ * Afiş koddan çiziliyor (`cizim/bolgeler.ts`, `BOLGE_TIPLERI`). Haritaya
+ * yeni bir tür eklenir de çizimi yazılmazsa `BolgeAfisi` o türde hiçbir
+ * şey göstermiyor — sessiz bir boşluk. Burada ikisi karşılaştırılıyor.
  */
 {
-  const { readdirSync, readFileSync } = await import('node:fs');
-  const turler = new Set(
-    readdirSync('apps/web/public/gorseller/bolgeler')
-      .filter((f) => f.endsWith('.webp'))
-      .map((f) => f.replace(/\.webp$/, ''))
-      .filter((a) => !/_\d+$/.test(a)),
-  );
-  const kaynak = readFileSync('apps/web/src/screens/Harita.tsx', 'utf8');
-  const blok = kaynak.match(/const AFISI_OLAN = new Set\(\[([^\]]*)\]/s)?.[1] ?? '';
-  const liste = listeOgeleri(blok);
-
-  const eksik = [...turler].filter((k) => !liste.has(k));
-  const fazla = [...liste].filter((k) => !turler.has(k));
-  if (eksik.length || fazla.length) {
-    sorun(
-      'bolge-afis',
-      'Afiş listesi klasörle uyuşmuyor',
-      [
-        eksik.length ? `dosyası var listede yok: ${eksik.join(', ')}` : '',
-        fazla.length ? `listede var dosyası yok: ${fazla.join(', ')}` : '',
-      ]
-        .filter(Boolean)
-        .join(' | '),
-    );
-  } else {
-    iyi('bolge-afis', `liste klasörle uyuşuyor (${liste.size} tür)`);
-  }
+  const { readFileSync } = await import('node:fs');
+  const harita = JSON.parse(readFileSync('data/world-map.json', 'utf8'));
+  const turler = new Set(harita.regions.map((b) => b.type));
+  const kaynak = readFileSync('apps/web/src/cizim/bolgeler.ts', 'utf8');
+  const blok = kaynak.match(/BOLGE_TIPLERI: BolgeTipi\[\] = \[([^\]]*)\]/s)?.[1] ?? '';
+  const cizilen = listeOgeleri(blok);
+  const eksik = [...turler].filter((k) => !cizilen.has(k));
+  if (eksik.length) sorun('bolge-afis', 'Bazı bölge türlerinin afiş çizimi yok', eksik.join(', '));
+  else iyi('bolge-afis', `${turler.size} bölge türünün hepsi çiziliyor (× 3 aşama)`);
 }
 
 /**

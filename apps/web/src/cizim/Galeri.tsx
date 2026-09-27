@@ -6,6 +6,7 @@
  * palet, aynı ölçek tutuyor mu?
  */
 import { BINA_ADLARI, BINA_KUTUSU, binaModeli } from './binalar';
+import { BOLGE_KUTUSU, BOLGE_SAHNELERI, bolgeModeli } from './bolgeler';
 import { Sahne } from './Sahne';
 import { YERLESIM_KADEMELERI, YERLESIM_KUTUSU, yerlesimModeli } from './yerlesim';
 import { P } from './renk';
@@ -32,7 +33,7 @@ function denemeKule() {
 
 const BOLUMLER: {
   baslik: string;
-  ogeler: { ad: string; cizim: React.ReactNode; genis?: boolean }[];
+  ogeler: { ad: string; cizim: React.ReactNode; genis?: boolean; oran?: string }[];
 }[] = [
   {
     baslik: 'Binalar',
@@ -60,6 +61,23 @@ const BOLUMLER: {
           uret={() => yerlesimModeli(k)}
           kutu={YERLESIM_KUTUSU}
           alt={k}
+          className="h-full w-full"
+        />
+      ),
+    })),
+  },
+  {
+    baslik: 'Bölgeler',
+    ogeler: BOLGE_SAHNELERI.map((ad) => ({
+      ad,
+      genis: true,
+      oran: 'aspect-[3/2]',
+      cizim: (
+        <Sahne
+          anahtar={'bolge:' + ad}
+          uret={() => bolgeModeli(ad)}
+          kutu={BOLGE_KUTUSU}
+          alt={ad}
           className="h-full w-full"
         />
       ),
@@ -94,7 +112,7 @@ export function Galeri() {
               >
                 <div
                   className={`flex items-center justify-center overflow-hidden rounded-lg bg-yuzey ${
-                    o.genis ? 'aspect-[4/3] w-[360px]' : 'h-[180px] w-[180px]'
+                    o.genis ? `${o.oran ?? 'aspect-[4/3]'} w-[360px]` : 'h-[180px] w-[180px]'
                   }`}
                 >
                   {o.cizim}

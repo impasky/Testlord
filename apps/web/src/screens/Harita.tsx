@@ -33,6 +33,7 @@ import { DunyaHaritasi } from '../components/harita/DunyaHaritasi';
 import { BirimIkonu, IkonKapali, IkonSure } from '../components/Ikonlar';
 import { Cumle } from '../components/Cumle';
 import { bolgeGorselAdi } from '../components/Gorsel';
+import { BolgeCizimi, CIZILEN_BOLGELER } from '../cizim/Cizimler';
 import { hisAgir, hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { DunyaBasligi, OlaySeridi } from '../components/DunyaSeridi';
 import type { Sekme } from '../components/MobilKabuk';
@@ -64,37 +65,17 @@ const BOLGE_LIMITI = B.kuyruklar.es_zamanli.upgrade_region;
 const GELIR_ADI = { altin: 'altın', demir: 'demir', erzak: 'erzak' } as const;
 
 /**
- * Bölge alt sayfasının tepesindeki manzara afişi.
+ * Bölge alt sayfasının tepesindeki manzara afişi (docs/24).
  *
- * Gorsel bileşenini kullanmıyor: orada illüstrasyon yoksa ikon gösteriliyor,
- * burada ise hiçbir şey gösterilmemeli — küçük bir ikonu afiş yüksekliğine
- * germek, afişi hiç koymamaktan kötü durur.
+ * Afiş koddan çiziliyor (`cizim/bolgeler.ts`): altı tür × üç aşama, aynı
+ * türün aşamaları aynı arazide. Dosya yüklemiyor, dolayısıyla ne bekleme
+ * ne de "görsel geldi, sayfa zıpladı" var — eski webp afişlerde bunun
+ * için yükseklik ayırma ve yedeğe düşme mantığı gerekiyordu (bkz. git
+ * geçmişi, CLS 0,253 ölçümü).
  *
- * Oran 3/2: kaynak görseller kare ve kompozisyonları ortalı. Daha dar bir
- * şeride (16/9 ya da sabit 112px) kırpınca tarlanın ambarı, kalenin
- * kuleleri, taht salonunun tacı kadraj dışında kalıyordu — geriye sadece
- * bir doku şeridi kalıyor. 3/2 karenin üçte ikisini koruyor ve afiş
- * kaydırılınca yukarı çıktığı için alt sayfayı boğmuyor.
+ * Oran 3/2, çizimin kendi oranı. Yarım kartta (kompakt) kısa bir şerit:
+ * çizim kutuyu doldurup taşanı kırpıyor, ortası görünüyor.
  */
-/**
- * AFİŞİ OLAN bölge türleri.
- *
- * Neden elle yazılmış bir liste — `Zemin`'deki `ZEMINI_OLAN` ile aynı
- * gerekçe ve aynı ders: dosyanın var olup olmadığını çalışma anında
- * öğrenmek (yükle, gelirse yer aç) sayfayı ZIPLATIYOR.
- *
- * Bu ölçüldü. Afişler 512 pikselden 1152'ye çıkınca dosya boyutu dört
- * katına çıktı, yükleme uzadı ve `gorsel-denetim.mjs` bölge panelinde
- * CLS 0,253 raporladı — Chrome'un "iyi" eşiğinin iki buçuk katı. Küçük
- * dosyalarda aynı kusur vardı, yalnız görülmeyecek kadar hızlı
- * kapanıyordu.
- *
- * Artık altı türün de afişi var (köy en son geldi), yani yeri ilk
- * boyamada ayırmak güvenli. Listeyle klasörün ayrışmasını
- * `tools/gorsel-denetim.mjs` yakalıyor.
- */
-const AFISI_OLAN = new Set(['tarla', 'maden', 'sehir', 'kale', 'koy', 'taht']);
-
 function BolgeAfisi({
   tip,
   seviye,
@@ -105,68 +86,16 @@ function BolgeAfisi({
   /** Yarım kartta afiş kısa bir şerit: kart açılır açılmaz asıl iş görünsün. */
   kompakt?: boolean;
   tip: string;
-  /** Aşama görselini seçer: 1-2 taban, 3-4 `_3`, 5 `_5`. */
+  /** Aşama sahnesini seçer: 1-2 taban, 3-4 `_3`, 5 `_5`. */
   seviye: number;
   ad: string;
   /** Görselin üstüne binen başlık: bölgenin adı ve gelişim aşaması. */
   ustyazi?: ReactNode;
 }) {
-  // Aşama görseli yoksa tabana düşülür; taban da yoksa afiş hiç görünmez.
-  // Böylece "tarla_5.webp henüz çizilmedi" durumu bölgeyi görselsiz
-  // bırakmaz, sadece gelişimi görünmez kılar.
-  const asamaAdi = bolgeGorselAdi(tip, seviye);
-
-  const [durum, setDurum] = useState<'bekliyor' | 'var' | 'yok'>(
-    AFISI_OLAN.has(tip) ? 'var' : 'bekliyor',
-  );
-  const [dosya, setDosya] = useState(asamaAdi);
-  const [istenen, setIstenen] = useState(asamaAdi);
-
-  // Alt sayfa açık kalırken bölge değişebiliyor (haritada başka bölgeye
-  // dokunmak) ve bölge gelişebiliyor. İkisinde de istenen dosya değişir.
-  //
-  // Render sırasında güncelliyoruz, useEffect ile değil: efektle yapınca
-  // bir kare boyunca ESKİ bölgenin görseli yeni bölgenin adıyla duruyor.
-  //
-  // Şart iki katmanlı, ve ikinci katman şart: `tarla_5` yoksa `tarla`ya
-  // düşmüş bir afişten seviye 1 bir tarlaya geçince istenen ad değişir ama
-  // gösterilecek dosya aynı kalır. Orada durumu sıfırlarsak img yeniden
-  // yüklenmediği için onLoad bir daha hiç gelmez ve afiş sonsuza dek
-  // "bekliyor"da, yani sıfır yükseklikte kalırdı.
-  if (istenen !== asamaAdi) {
-    setIstenen(asamaAdi);
-    if (dosya !== asamaAdi) {
-      setDosya(asamaAdi);
-      // Afişi OLAN türde yüksekliği bırakmıyoruz: bölge değiştirince
-      // kutuyu sıfıra indirip yeniden açmak, panelin içeriğini bir kez
-      // daha zıplatırdı. Yeni görsel eskisinin yerine geliyor.
-      if (!AFISI_OLAN.has(tip)) setDurum('bekliyor');
-    }
-  }
-
-  if (durum === 'yok') return null;
-
+  if (!CIZILEN_BOLGELER.has(tip)) return null;
   return (
-    <div
-      className={`relative overflow-hidden ${durum === 'var' ? (kompakt ? 'h-28' : 'aspect-[3/2]') : 'h-0'}`}
-    >
-      <img
-        key={dosya}
-        src={`/gorseller/bolgeler/${dosya}.webp`}
-        alt={ad}
-        className="h-full w-full object-cover"
-        // Kaynak da 3:2 (1152x768) ve kutu da 3:2, yani `object-cover`
-        // artık hiçbir şeyi kırpmıyor — kaydırmaya gerek yok. Eskiden
-        // kaynaklar KAREYDİ ve merkezden kırpınca ambar, kule ya da taht
-        // kadraj dışında kalıyordu; o yüzden %18 yukarı kaydırılıyordu.
-        style={{ objectPosition: 'center' }}
-        // Afiş panelin en üstünde ve panel açılır açılmaz görüş alanında:
-        // `lazy` burada beklemeye değil, hemen yüklemeye denk geliyor.
-        loading="lazy"
-        decoding="async"
-        onLoad={() => setDurum('var')}
-        onError={() => (dosya === tip ? setDurum('yok') : setDosya(tip))}
-      />
+    <div className={`relative overflow-hidden ${kompakt ? 'h-28' : 'aspect-[3/2]'}`}>
+      <BolgeCizimi ad={bolgeGorselAdi(tip, seviye)} alt={ad} className="h-full w-full" />
       {/* Alt kenarı panele eritir; afişin sert kesimi başlık satırına bitişik durmasın. */}
       <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-panel via-panel/80 to-transparent" />
 

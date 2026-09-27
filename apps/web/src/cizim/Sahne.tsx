@@ -11,6 +11,14 @@ import { ciz, type Cizilmis, type Kamera, type Model } from './uc';
 
 const ONBELLEK = new Map<string, Cizilmis>();
 
+/**
+ * Kutuyu doldur, taşanı kırp (CSS `object-cover` karşılığı). Afiş kısa
+ * şeritte (yarım kart) 3:2 çizimin ortasını gösteriyor. Değer iki
+ * parçadan birleşiyor: boşluklu bir dizge metin çıkarıcısına "çevrilecek
+ * cümle" gibi görünüyordu.
+ */
+const KIRP = ['xMidYMid', 'slice'].join(' ');
+
 export function cizimiAl(anahtar: string, uret: () => Model, kamera?: Kamera): Cizilmis {
   let c = ONBELLEK.get(anahtar);
   if (!c) {
@@ -52,6 +60,7 @@ export const Sahne = memo(function Sahne({
   className = '',
   kutu,
   style,
+  kirp = false,
 }: {
   anahtar: string;
   uret: () => Model;
@@ -62,12 +71,15 @@ export const Sahne = memo(function Sahne({
   /** Sabit görüş kutusu; verilmezse modelin kendisine oturuyor. */
   kutu?: [number, number, number, number];
   style?: React.CSSProperties;
+  /** Kutuyu doldur, taşanı kırp (afiş). */
+  kirp?: boolean;
 }) {
   const c = cizimiAl(anahtar, uret, kamera);
   const v = kutu ?? c.kutu;
   return (
     <svg
       viewBox={v.join(' ')}
+      preserveAspectRatio={kirp ? KIRP : undefined}
       width={boyut}
       height={boyut}
       // Boş `alt`: süs — yanında zaten adı yazan bir çizim (liste simgesi).
