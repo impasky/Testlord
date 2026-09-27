@@ -24,8 +24,7 @@ import {
   rehberSozu,
   type RehberDurumu,
 } from '@lordlar/shared';
-import { Gorsel } from './Gorsel';
-import { IkonNavGeneraller } from './Ikonlar';
+import { PortreCizimi } from '../cizim/Cizimler';
 import { Kart } from './ui';
 
 export function Rehber({
@@ -57,18 +56,7 @@ export function Rehber({
     <Kart className="p-3" vurgu="var(--color-mavi)">
       <div className="flex items-start gap-3">
         <div className="oyuk h-12 w-12 shrink-0 overflow-hidden rounded-xl border-2 border-kenar">
-          <Gorsel
-            tur="generaller"
-            ad={REHBER.key}
-            alt={REHBER.ad}
-            boyut={48}
-            yedek={
-              <span className="flex h-full w-full items-center justify-center text-solgun">
-                <IkonNavGeneraller boyut={24} />
-              </span>
-            }
-            className="h-full w-full object-cover"
-          />
+          <PortreCizimi ad={REHBER.key} alt={REHBER.ad} className="h-full w-full" />
         </div>
 
         <div className="min-w-0 flex-1">

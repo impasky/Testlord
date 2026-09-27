@@ -20,6 +20,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { KAPI_ADI, type AltSekme, type Kapi } from '@lordlar/shared';
 import { IkonGoz, IkonKapali, IkonKilit, IkonSohbet, IkonUyari } from './Ikonlar';
+import { YolCizimi, yolCizimiVar } from '../cizim/Cizimler';
 
 export type KasaHedefi = { tur: 'sekme'; key: AltSekme } | { tur: 'kapi'; key: Kapi };
 
@@ -204,7 +205,9 @@ export function UygulamaKasasi({
                       etkin ? 'border-altin' : 'border-kenar'
                     }`}
                   >
-                    {typeof k.gorsel === 'string' ? (
+                    {typeof k.gorsel === 'string' && yolCizimiVar(k.gorsel) ? (
+                      <YolCizimi yol={k.gorsel} className="h-full w-full" />
+                    ) : typeof k.gorsel === 'string' ? (
                       <img
                         src={`/gorseller/${k.gorsel}.webp`}
                         alt=""

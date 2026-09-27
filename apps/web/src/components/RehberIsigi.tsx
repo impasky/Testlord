@@ -60,8 +60,8 @@ import {
   type RehberIsaret,
 } from '@lordlar/shared';
 import { useEffect, useRef, useState } from 'react';
-import { Gorsel } from './Gorsel';
-import { IkonNavGeneraller, IkonSure } from './Ikonlar';
+import { PortreCizimi } from '../cizim/Cizimler';
+import { IkonSure } from './Ikonlar';
 import { GeriSayim, Hap } from './ui';
 
 /** Deliğin çevresindeki nefes payı. */
@@ -582,18 +582,7 @@ export function RehberIsigi({
           <div className="w-full max-w-sm rounded-2xl border border-altin/45 bg-gece/95 p-3 shadow-xl">
             <div className="flex items-start gap-2.5">
               <div className="oyuk h-9 w-9 shrink-0 overflow-hidden rounded-lg border border-kenar">
-                <Gorsel
-                  tur="generaller"
-                  ad={REHBER.key}
-                  alt={REHBER.ad}
-                  boyut={36}
-                  yedek={
-                    <span className="flex h-full w-full items-center justify-center text-solgun">
-                      <IkonNavGeneraller boyut={18} />
-                    </span>
-                  }
-                  className="h-full w-full object-cover"
-                />
+                <PortreCizimi ad={REHBER.key} alt={REHBER.ad} className="h-full w-full" />
               </div>
               <div className="min-w-0 flex-1">
                 <span className="baslik text-[10px] text-mavi">{REHBER.ad}</span>
@@ -639,18 +628,7 @@ export function RehberIsigi({
           <div className="w-full max-w-sm rounded-2xl border border-altin/45 bg-gece/95 p-3 shadow-xl">
             <div className="flex items-start gap-2.5">
               <div className="oyuk h-9 w-9 shrink-0 overflow-hidden rounded-lg border border-kenar">
-                <Gorsel
-                  tur="generaller"
-                  ad={REHBER.key}
-                  alt={REHBER.ad}
-                  boyut={36}
-                  yedek={
-                    <span className="flex h-full w-full items-center justify-center text-solgun">
-                      <IkonNavGeneraller boyut={18} />
-                    </span>
-                  }
-                  className="h-full w-full object-cover"
-                />
+                <PortreCizimi ad={REHBER.key} alt={REHBER.ad} className="h-full w-full" />
               </div>
               <div className="min-w-0 flex-1">
                 <span className="baslik text-[10px] text-mavi">{REHBER.ad}</span>
@@ -739,18 +717,7 @@ export function RehberIsigi({
         <div className="w-full max-w-sm rounded-2xl border border-altin/45 bg-gece/95 p-3 shadow-xl">
           <div className="flex items-start gap-2.5">
             <div className="oyuk h-9 w-9 shrink-0 overflow-hidden rounded-lg border border-kenar">
-              <Gorsel
-                tur="generaller"
-                ad={REHBER.key}
-                alt={REHBER.ad}
-                boyut={36}
-                yedek={
-                  <span className="flex h-full w-full items-center justify-center text-solgun">
-                    <IkonNavGeneraller boyut={18} />
-                  </span>
-                }
-                className="h-full w-full object-cover"
-              />
+              <PortreCizimi ad={REHBER.key} alt={REHBER.ad} className="h-full w-full" />
             </div>
             <div className="min-w-0 flex-1">
               <span className="baslik text-[10px] text-mavi">{REHBER.ad}</span>

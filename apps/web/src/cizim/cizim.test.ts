@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { AKIN_HARITALARI, B } from '@lordlar/shared';
+import { AKIN_HARITALARI, B, HAZIR_PORTRELER } from '@lordlar/shared';
 import { BINA_ADLARI, BINA_KUTUSU, binaModeli } from './binalar';
+import { GENERAL_ADLARI, PORTRE_ADLARI, generalModeli, lordModeli, portreModeli } from './kisiler';
 import {
   BIRLIK_ADLARI,
   DUSMAN_ADLARI,
@@ -150,5 +151,38 @@ describe('birlik, düşman, ekipman', () => {
   it('bilinmeyen ad null', () => {
     expect(birlikModeli('ejderha')).toBeNull();
     expect(ekipmanModeli('silah_t9')).toBeNull();
+  });
+});
+
+describe('generaller, lord, portreler', () => {
+  it('seçilebilen her hazır portrenin çizimi var', () => {
+    for (const p of HAZIR_PORTRELER) expect(PORTRE_ADLARI).toContain(p.key);
+  });
+  it('lordun beş kuşam aşaması çiziliyor', () => {
+    for (let i = 1; i <= 5; i++) expect(lordModeli(`lord_${i}`)).not.toBeNull();
+    expect(lordModeli('lord_6')).toBeNull();
+  });
+  it.each(PORTRE_ADLARI)('%s: NaN yok', (ad) => {
+    const c = ciz(portreModeli(ad)!);
+    expect(c.cokgenler.length).toBeGreaterThan(80);
+    for (const p of c.cokgenler) expect(sayilar(p.n).every(Number.isFinite)).toBe(true);
+  });
+  it('general tam boy = portre (aynı kişi)', () => {
+    for (const g of GENERAL_ADLARI) expect(portreModeli(g)).toEqual(generalModeli(g));
+  });
+});
+
+describe('belirlenimcilik', () => {
+  // Çizim her açılışta aynı olmalı: Math.random'a düşen bir parça (kürk
+  // yakasında oldu) aynı generalin iki ekranda farklı görünmesi demek.
+  it.each([
+    ...BINA_ADLARI.map((a) => [a, () => binaModeli(a)] as const),
+    ...BIRLIK_ADLARI.map((a) => [a, () => birlikModeli(a)] as const),
+    ...DUSMAN_ADLARI.map((a) => [a, () => dusmanModeli(a)] as const),
+    ...EKIPMAN_ADLARI.map((a) => [a, () => ekipmanModeli(a)] as const),
+    ...PORTRE_ADLARI.map((a) => [a, () => portreModeli(a)] as const),
+    ['koy_5', () => bolgeModeli('koy_5')] as const,
+  ])('%s iki kez aynı çiziliyor', (_, uret) => {
+    expect(ciz(uret()!).cokgenler).toEqual(ciz(uret()!).cokgenler);
   });
 });

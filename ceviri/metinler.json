@@ -1535,7 +1535,7 @@
     "tr": "{0}/{1} adım",
     "en": "{0}/{1} steps",
     "nerede": [
-      "apps/web/src/components/Rehber.tsx:100"
+      "apps/web/src/components/Rehber.tsx:88"
     ]
   },
   "t1ae0b497": {
@@ -1684,7 +1684,7 @@
     "tr": "↓ şimdi buna bas ↓",
     "en": "↓ now press this ↓",
     "nerede": [
-      "apps/web/src/components/RehberIsigi.tsx:762"
+      "apps/web/src/components/RehberIsigi.tsx:729"
     ]
   },
   "tc1118513": {
@@ -1839,7 +1839,7 @@
     "nerede": [
       "apps/api/src/routes/akin.ts:377",
       "apps/web/src/components/MobilKabuk.tsx:76",
-      "apps/web/src/components/UygulamaKasasi.tsx:40",
+      "apps/web/src/components/UygulamaKasasi.tsx:41",
       "apps/web/src/screens/Akin.tsx:120"
     ]
   },
@@ -4113,7 +4113,7 @@
     "en": "World",
     "nerede": [
       "apps/web/src/components/MobilKabuk.tsx:77",
-      "apps/web/src/components/UygulamaKasasi.tsx:41"
+      "apps/web/src/components/UygulamaKasasi.tsx:42"
     ]
   },
   "td4decb88": {
@@ -6316,7 +6316,7 @@
       "apps/web/src/components/SavasRaporu.tsx:470",
       "apps/web/src/components/SavunmaDuzeni.tsx:69",
       "apps/web/src/components/SikayetSayfasi.tsx:66",
-      "apps/web/src/components/UygulamaKasasi.tsx:183",
+      "apps/web/src/components/UygulamaKasasi.tsx:184",
       "apps/web/src/screens/Demirhane.tsx:128",
       "apps/web/src/screens/Harita.tsx:1128",
       "apps/web/src/screens/Medeniyet.tsx:325"
@@ -7179,7 +7179,7 @@
       "apps/api/src/services/lord.ts:677",
       "apps/api/src/services/profil.ts:79",
       "apps/web/src/components/MobilKabuk.tsx:78",
-      "apps/web/src/components/UygulamaKasasi.tsx:42"
+      "apps/web/src/components/UygulamaKasasi.tsx:43"
     ]
   },
   "t1703d35e": {
@@ -7680,7 +7680,7 @@
     "en": "Army",
     "nerede": [
       "apps/web/src/components/MobilKabuk.tsx:75",
-      "apps/web/src/components/UygulamaKasasi.tsx:39",
+      "apps/web/src/components/UygulamaKasasi.tsx:40",
       "data/arastirma.json:dallar[1].ad",
       "data/basarimlar.json:kumeler[2].ad"
     ]
@@ -9559,7 +9559,7 @@
     "en": "City",
     "nerede": [
       "apps/web/src/components/MobilKabuk.tsx:74",
-      "apps/web/src/components/UygulamaKasasi.tsx:38",
+      "apps/web/src/components/UygulamaKasasi.tsx:39",
       "packages/shared/src/bina.ts:60",
       "packages/shared/src/bolge-adi.ts:34"
     ]
@@ -10212,8 +10212,8 @@
     "en": "All pages",
     "nerede": [
       "apps/web/src/components/MobilKabuk.tsx:545",
-      "apps/web/src/components/UygulamaKasasi.tsx:168",
-      "apps/web/src/components/UygulamaKasasi.tsx:179"
+      "apps/web/src/components/UygulamaKasasi.tsx:169",
+      "apps/web/src/components/UygulamaKasasi.tsx:180"
     ]
   },
   "tcf2259f5": {
@@ -10221,7 +10221,7 @@
     "tr": "Tüm sayfaları kapat",
     "en": "Close all pages",
     "nerede": [
-      "apps/web/src/components/UygulamaKasasi.tsx:163"
+      "apps/web/src/components/UygulamaKasasi.tsx:164"
     ]
   },
   "t0468e99c": {

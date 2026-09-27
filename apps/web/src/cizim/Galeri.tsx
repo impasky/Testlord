@@ -15,6 +15,15 @@ import {
   ekipmanModeli,
 } from './birlikler';
 import { BOLGE_KUTUSU, BOLGE_SAHNELERI, bolgeModeli } from './bolgeler';
+import {
+  GENERAL_ADLARI,
+  LORD_ADLARI,
+  PORTRE_ADLARI,
+  PORTRE_KUTUSU,
+  generalModeli,
+  lordModeli,
+  portreModeli,
+} from './kisiler';
 import { Sahne } from './Sahne';
 import { YERLESIM_KADEMELERI, YERLESIM_KUTUSU, yerlesimModeli } from './yerlesim';
 import { P } from './renk';
@@ -79,6 +88,8 @@ const BOLUMLER: {
       ['Birlikler', BIRLIK_ADLARI, birlikModeli],
       ['Düşmanlar', DUSMAN_ADLARI, dusmanModeli],
       ['Ekipman', EKIPMAN_ADLARI, ekipmanModeli],
+      ['Generaller', GENERAL_ADLARI, generalModeli],
+      ['Lord', LORD_ADLARI, lordModeli],
     ] as const
   ).map(([baslik, adlar, uret]) => ({
     baslik,
@@ -89,6 +100,22 @@ const BOLUMLER: {
       ),
     })),
   })),
+  {
+    baslik: 'Portreler',
+    ogeler: PORTRE_ADLARI.map((ad) => ({
+      ad,
+      cizim: (
+        <Sahne
+          anahtar={'portre:' + ad}
+          uret={() => portreModeli(ad) ?? []}
+          kutu={PORTRE_KUTUSU}
+          alt={ad}
+          boyut={170}
+          className="rounded-full bg-[radial-gradient(circle_at_50%_40%,#3a2b1b,#1a120c)]"
+        />
+      ),
+    })),
+  },
   {
     baslik: 'Bölgeler',
     ogeler: BOLGE_SAHNELERI.map((ad) => ({

@@ -302,7 +302,8 @@ export function kure(
   n = 7,
   halka = 4,
   boz = 0,
-  rnd: () => number = Math.random,
+  // Varsayılan: bozulma yok. Math.random olsaydı çizim her açılışta değişirdi.
+  rnd: () => number = () => 0.5,
   basik = 1,
 ): Model {
   const nokta3 = (i: number, j: number): V3 => {

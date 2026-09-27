@@ -95,37 +95,9 @@ kontrol(
   (await a.put('/profil/resim', { tur: 'hazir', key: 'yok' })).kod === 400,
 );
 
-// Her hazır portrenin görseli gerçekten var (paylaşılan listeden).
-const PORTRELER = [
-  'lord_1',
-  'lord_2',
-  'lord_3',
-  'lord_4',
-  'lord_5',
-  'kumandan_alparslan',
-  'sovalye_doruk',
-  'kale_bekcisi_sarya',
-  'okcubasi_elif',
-  'casus_leyla',
-  'suvari_bora',
-  'mizrakci_kadir',
-  'kusatmaci_tarik',
-  'demirci_yusuf',
-  'erzakci_meryem',
-  'kahya_sinan',
-  'vaiz_bertan',
-  'barbar_sef',
-  'eskiya_sef',
-  'haydut_sef',
-  'kultist_sef',
-  'lejyoner_sef',
-];
-const eksik = [];
-for (const k of PORTRELER) {
-  const r = await fetch(`${WEB}/gorseller/portre/${k}.webp`);
-  if (r.status !== 200 || !(r.headers.get('content-type') ?? '').includes('image')) eksik.push(k);
-}
-kontrol('Her hazır portrenin görseli sunuluyor', eksik.length === 0, eksik.join(', '));
+// Hazır portreler dosya değil, koddan çizim (docs/24): her anahtarın
+// çizimi olduğunu `apps/web/src/cizim/cizim.test.ts` denetliyor
+// (HAZIR_PORTRELER ⊆ PORTRE_ADLARI).
 
 console.log('\nProfil resmi — yükleme ve gerçek sınıflandırıcı');
 // Konum bilgisi taşıyan bir JPEG: silinmeli.
@@ -364,11 +336,7 @@ kontrol('Lord ekranından profil resmi seçici açılıyor', true);
 const hazirSayisi = await secici.getByRole('button', { pressed: false }).count();
 kontrol('Seçicide hazır portreler var', hazirSayisi >= 20, String(hazirSayisi));
 await secici.getByRole('button', { name: 'Şövalye Doruk' }).click();
-await page.waitForFunction(() =>
-  [...document.querySelectorAll('header img')].some((i) =>
-    i.getAttribute('src')?.includes('portre/sovalye_doruk'),
-  ),
-);
+await page.waitForSelector('header [data-portre="sovalye_doruk"] svg');
 kontrol('Hazır portre seçilince üst çubuktaki resim değişiyor', true);
 kontrol(
   'Seçili portre işaretli',

@@ -12,6 +12,7 @@
  */
 import { cubuk, kubbe, suz, teker, uzuv } from './parca';
 import { P, isikla } from './renk';
+import { rastgele } from './rastgele';
 import {
   birlestir,
   dondur,
@@ -45,7 +46,10 @@ export type EsyaTipi =
   | 'yuvarlakKalkan'
   | 'scutum'
   | 'sancak'
-  | 'hancer';
+  | 'hancer'
+  | 'kitap'
+  | 'tomar'
+  | 'hac';
 
 export interface Esya {
   tip: EsyaTipi;
@@ -80,6 +84,10 @@ export interface Insan {
   sadak?: boolean;
   /** Şefler için: omuzları geniş, bir tık iri. */
   iri?: number;
+  /** Uzun saç (başlık yoksa ense boyunca), dar omuz. */
+  kadin?: boolean;
+  /** Yere kadar etek: cüppe, elbise. Bacaklar görünmüyor. */
+  elbise?: boolean;
   /** Atlı: bacaklar öne ve yanlara açık, eteksiz. */
   oturan?: boolean;
   poz?: 'duz' | 'nisan' | 'kaldir';
@@ -366,6 +374,33 @@ function esyaModeli(e: Esya, el: V3, yan: number): Model {
         );
       return m;
     }
+    case 'kitap': {
+      const m = kutu(x - 0.55, y + 0.05, z - 0.1, 1.1, 0.4, 1.4, r ?? '#6a2a22');
+      m.push(...kutu(x - 0.5, y + 0.12, z - 0.05, 1.0, 0.3, 1.3, P.bez));
+      m.push(...kutu(x - 0.58, y + 0.02, z - 0.12, 0.12, 0.46, 1.44, r ?? '#6a2a22'));
+      return m;
+    }
+    case 'tomar': {
+      const m = uzuv([x - 0.9, y + 0.3, z + 0.3], [x + 0.9, y + 0.3, z + 0.3], 0.2, 0.2, P.bez, 6);
+      m.push(
+        ...levha(
+          [
+            [x - 0.8, y + 0.42, z + 0.25],
+            [x + 0.8, y + 0.42, z + 0.25],
+            [x + 0.75, y + 0.5, z - 1.3],
+            [x - 0.75, y + 0.5, z - 1.3],
+          ],
+          '#e2d8c0',
+        ),
+      );
+      return m;
+    }
+    case 'hac': {
+      const m = uzuv([x, y, z - 4.2], [x, y, z + 3.4], 0.13, 0.11, r ?? P.koyuTahta, 5);
+      m.push(...kutu(x - 0.9, y - 0.12, z + 2.4, 1.8, 0.24, 0.28, e.ikinci ?? P.koyuAltin));
+      m.push(...kutu(x - 0.14, y - 0.12, z + 3.4, 0.28, 0.24, 0.7, e.ikinci ?? P.koyuAltin));
+      return m;
+    }
     case 'yay': {
       // Dikey yay: el ortasında, uçlar geriye kıvrık
       const m: Model = [];
@@ -397,7 +432,7 @@ function esyaModeli(e: Esya, el: V3, yan: number): Model {
 
 export function insan(f: Insan): Model {
   const m: Model = [];
-  const iri = f.iri ?? 1;
+  const iri = f.iri ?? (f.kadin ? 0.92 : 1);
   const etek = f.etek ?? f.govde;
   const kolRenk = f.kol ?? f.govde;
   const kemer = f.kemer ?? P.deri;
@@ -411,6 +446,8 @@ export function insan(f: Insan): Model {
       m.push(...uzuv(diz, ayak, 0.34, 0.3, f.cizme, 6));
       m.push(...kutu(ayak[0] - 0.35, ayak[1] - 0.3, ayak[2] - 0.5, 0.7, 1.0, 0.55, f.cizme));
     }
+  } else if (f.elbise) {
+    for (const x of [-0.45, 0.45]) m.push(...kutu(x - 0.38, -0.2, 0, 0.76, 1.1, 0.5, f.cizme));
   } else
     for (const x of [-0.52, 0.52]) {
       m.push(...kutu(x - 0.42, -0.45, 0, 0.84, 1.05, 0.8, f.cizme));
@@ -418,7 +455,8 @@ export function insan(f: Insan): Model {
     }
   // Etek ve gövde (yassı kesik koniler)
   const yassi = (mm: Model) => olcekle(mm, [iri, 0.62, 1]);
-  if (!f.oturan) m.push(...yassi(koni(0, 0, 2.5, 1.28, 1.35, etek, 8, 1.02)));
+  if (f.elbise) m.push(...yassi(koni(0, 0, 0.3, 1.5, 3.55, etek, 8, 1.03)));
+  else if (!f.oturan) m.push(...yassi(koni(0, 0, 2.5, 1.28, 1.35, etek, 8, 1.02)));
   else m.push(...yassi(koni(0, 0, 3.0, 1.1, 0.85, etek, 8, 1.02)));
   const govdeRenk = f.zirh ? f.zirh.renk : f.govde;
   m.push(...yassi(koni(0, 0, 3.8, 1.02, 2.45, govdeRenk, 8, 1.3)));
@@ -497,7 +535,7 @@ export function insan(f: Insan): Model {
   if (f.kurk) {
     m.push(
       ...olcekle(
-        kure(0, 0, 6.05, 1.35, f.kurk, 8, 3, 0.15, undefined, 0.45),
+        kure(0, 0, 6.05, 1.35, f.kurk, 8, 3, 0.15, rastgele('kurk:' + f.kurk), 0.45),
         [iri, 0.7, 1],
         [0, 0, 6.05],
       ),
@@ -505,7 +543,13 @@ export function insan(f: Insan): Model {
   }
   m.push(...silindir(0, 0.02, 6.1, 0.34, 0.5, f.ten, 6));
   const bz = 7.1;
-  m.push(...kure(0, 0.06, bz, 0.8, f.ten, 7, 4, 0, undefined, 1.08));
+  // Baş: önü DÜZ sekizgen gövde (çene → şakak → tepe). Küre kafa önden
+  // bir kenara oturuyor, yüz gaga gibi sivri duruyordu; düz ön yüzde göz
+  // ve burun okunuyor.
+  m.push(...uzuv([0, 0.06, bz - 0.85], [0, 0.06, bz - 0.25], 0.5, 0.74, f.ten, 8));
+  m.push(...uzuv([0, 0.06, bz - 0.25], [0, 0.06, bz + 0.45], 0.74, 0.8, f.ten, 8));
+  m.push(...koni(0, 0.06, bz + 0.45, 0.8, 0.42, f.ten, 8, 0.4));
+  m.push(...kutu(-0.09, 0.78, bz - 0.35, 0.18, 0.2, 0.36, isikla(f.ten, 0.92)));
   // Gözler ve kaş
   if (f.baslik?.tip !== 'kapali' && f.baslik?.tip !== 'maske')
     for (const s of [-1, 1])
@@ -523,6 +567,8 @@ export function insan(f: Insan): Model {
     m.push(
       ...suz(kure(0, -0.02, bz + 0.05, 0.9, f.sac, 7, 4), ([, y, z]) => y < 0.2 || z > bz + 0.55),
     );
+    // Uzun saç: enseden omuz aşağısına, arkada tek örgü gibi
+    if (f.kadin) m.push(...uzuv([0, -0.45, bz + 0.1], [0, -0.85, 4.9], 0.72, 0.42, f.sac, 7));
   }
   if (f.baslik) m.push(...baslik(f.baslik.tip, f.baslik.renk, f.baslik.ikinci, bz));
 
@@ -533,13 +579,17 @@ export function insan(f: Insan): Model {
   let elSol: V3 = [-omuzX - 0.2, 0.35, 3.9];
   if (
     f.sag &&
-    ['mizrak', 'kargi', 'yaba', 'asa', 'sancak', 'cekic', 'balta', 'ciftBalta'].includes(f.sag.tip)
+    ['mizrak', 'kargi', 'yaba', 'asa', 'sancak', 'cekic', 'balta', 'ciftBalta', 'hac'].includes(
+      f.sag.tip,
+    )
   )
     elSag = [omuzX + 0.35, 0.75, 4.4];
   if (f.sag && (f.sag.tip === 'kilic' || f.sag.tip === 'hancer')) elSag = [omuzX + 0.1, 1.0, 4.3];
   if (f.sol && ['kalkan', 'yuvarlakKalkan', 'scutum'].includes(f.sol.tip))
     elSol = [-omuzX - 0.1, 0.8, 4.6];
   if (f.sol?.tip === 'fener') elSol = [-omuzX - 0.35, 0.9, 4.6];
+  if (f.sol?.tip === 'kitap' || f.sol?.tip === 'tomar') elSol = [-0.7, 1.3, 4.7];
+  if (f.sag?.tip === 'tomar') elSag = [0.7, 1.3, 4.7];
   if (f.poz === 'nisan') {
     elSol = [-omuzX - 0.6, 2.4, 5.8];
     elSag = [-0.1, 1.0, 5.85];
