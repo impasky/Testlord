@@ -454,9 +454,9 @@ if (yeniToken) {
  *
  * Burada elle tutulan bir liste YOK ve olmamalı: diyarlar zaten
  * `data/akinlar.json` içinde sayılı. `Akin.tsx` kapağı koşulsuz çiziyor
- * (`/gorseller/akin/<key>.webp`), çünkü beşinin de dosyası var. Ölçüt bu
- * yüzden "liste klasörle uyuşuyor mu" değil, "her diyarın dosyası var
- * mı": eksik dosya, kartın tepesinde kırık bir görsel demek.
+ * (`DiyarCizimi`). Ölçüt bu yüzden "her diyarın `cizim/diyarlar.ts`te
+ * teması var mı": teması olmayan diyar, kartın tepesinde boş bir kutu
+ * demek.
  */
 {
   const { readFileSync } = await import('node:fs');

@@ -180,18 +180,10 @@ export function PortreCizimi({
 }
 
 /**
- * Eski görsel yolunu (`binalar/kisla_3`, `portre/lord_3`...) çizime
- * çevirir. Karo gibi tek bir yol dizgesiyle tanımlanmış yerler için.
+ * `klasor/ad` biçimindeki bir yolu (`binalar/kisla_3`, `portre/lord_3`,
+ * `harita/dunya`) çizime çevirir. Karo gibi tek bir dizgeyle tanımlanmış
+ * yerler için.
  */
-export function yolCizimiVar(yol: string): boolean {
-  const [klasor = '', ad = ''] = yol.split('/');
-  if (klasor === 'binalar') return CIZILEN_BINALAR.has(ad);
-  if (klasor === 'bolgeler') return CIZILEN_BOLGELER.has(ad.split('_')[0] ?? '');
-  if (klasor === 'portre') return PORTRELER.has(ad);
-  if (klasor === 'harita') return true;
-  return nesneCizimiVar(klasor, ad);
-}
-
 export function YolCizimi({ yol, className }: { yol: string; className?: string }) {
   const [klasor = '', ad = ''] = yol.split('/');
   if (klasor === 'binalar') return <BinaCizimi ad={ad} className={className} />;

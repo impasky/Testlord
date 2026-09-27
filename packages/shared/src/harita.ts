@@ -19,8 +19,8 @@
  * komşusu vardı. Her yer birbirine benziyordu; bir geçidi tutmakla
  * ovanın ortasında oturmak arasında fark yoktu.
  *
- * Harita artık ÇİZİLMİŞ ZEMİNDEN türetiliyor (`tools/harita-kur.py`,
- * docs/12 §11): bölgeler araziye serpiliyor, komşuluk Delaunay'dan çıkıp
+ * Harita ÇİZİLMİŞ ZEMİNDEN türetildi (docs/12 §11; türeten araç boyalı
+ * zeminle birlikte kaldırıldı, docs/24): bölgeler araziye serpiliyor, komşuluk Delaunay'dan çıkıp
  * budanıyor, dağın arkasına yalnız GEÇİTLERDEN geçiliyor. Derece dağılımı
  * artık 2'den 7'ye yayılıyor — yani haritada dar boğaz da var kavşak da.
  * Dengenin omurgası değişmedi: gelir çarpanı ve NPC garnizonu hâlâ Taht
@@ -32,8 +32,8 @@
  * üzerinde işaretçinin duracağı yer. Mesafe ve komşuluk buradan
  * hesaplanmaz. Bu kasıtlı — harita resmini yeniden ürettiğimizde
  * işaretçileri yeniden yerleştirmek gerekecek ve o iş oyunun kurallarını
- * kaydırmamalı. (Ters yönü de doğru: x/y artık RESİMDEN geliyor, yani
- * zemin değişirse harita da değişir ve `harita-kur.py` yeniden koşar.)
+ * kaydırmamalı. (Arazi artık koddan çiziliyor, kara sınırı `kara.ts`te;
+ * işaretçilerin karada durduğunu `tools/generate_map.py` denetliyor.)
  */
 import { WORLD_MAP } from './balance.js';
 
@@ -47,7 +47,7 @@ export const KOMSULUK: ReadonlyMap<number, readonly number[]> = new Map(
  *
  * Haritanın bütün meselesi bunlar. Komşuluk grafiği Delaunay'dan çıkıp
  * budanırken dağ aşan her kenar atılıyor; sonra dağın arkasına ulaşmak
- * için EN KISA olanlar geri ekleniyor (`tools/harita-kur.py`). Sonuç:
+ * için EN KISA olanlar geri ekleniyor (docs/12 §11). Sonuç:
  * sıradağın öte yanı ancak birkaç noktadan geçilebiliyor ve o noktaları
  * tutan bölge -- çoğu zaman bir KALE -- arkasındaki her şeyi tutuyor.
  *

@@ -29,6 +29,3 @@ __pycache__/
 # her commit geçmişi kalıcı olarak şişiriyor.
 ekran-goruntuleri/
 
-# ComfyUI adayları (tools/comfy-uret.py). Ham üretim, seçilmeden oyuna
-# girmiyor; seçilen `--koy` ile WebP olarak public/ altına yazılıyor.
-tools/comfy-aday/

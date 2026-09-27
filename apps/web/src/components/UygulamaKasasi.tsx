@@ -20,26 +20,24 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { KAPI_ADI, type AltSekme, type Kapi } from '@lordlar/shared';
 import { IkonGoz, IkonKapali, IkonKilit, IkonSohbet, IkonUyari } from './Ikonlar';
-import { YolCizimi, yolCizimiVar } from '../cizim/Cizimler';
+import { YolCizimi } from '../cizim/Cizimler';
 
 export type KasaHedefi = { tur: 'sekme'; key: AltSekme } | { tur: 'kapi'; key: Kapi };
 
 interface Karo {
   hedef: KasaHedefi;
   ad: string;
-  /** public/gorseller altında bir görsel ya da çizilmiş bir simge. */
+  /** Çizim yolu (`binalar/kisla_3`, `portre/lord_3`, `harita/…`; bkz. `YolCizimi`) ya da simge. */
   gorsel: string | ReactNode;
-  /** Manzara görseli: kareyi doldursun (bina çizimleri sığdırılıyor). */
-  kapla?: boolean;
   /** Yalnız yöneticiye görünen kapılar. */
   yonetici?: boolean;
 }
 
 const KAROLAR: Karo[] = [
-  { hedef: { tur: 'sekme', key: 'sehir' }, ad: 'Şehir', gorsel: 'bolgeler/sehir_5', kapla: true },
+  { hedef: { tur: 'sekme', key: 'sehir' }, ad: 'Şehir', gorsel: 'bolgeler/sehir_5' },
   { hedef: { tur: 'sekme', key: 'kisla' }, ad: 'Ordu', gorsel: 'binalar/kisla_3' },
   { hedef: { tur: 'sekme', key: 'akin' }, ad: 'Akın', gorsel: 'birimler/suvari' },
-  { hedef: { tur: 'sekme', key: 'harita' }, ad: 'Dünya', gorsel: 'harita/dunya-01', kapla: true },
+  { hedef: { tur: 'sekme', key: 'harita' }, ad: 'Dünya', gorsel: 'harita/dunya' },
   { hedef: { tur: 'sekme', key: 'lord' }, ad: 'Lord', gorsel: 'portre/lord_3' },
   { hedef: { tur: 'kapi', key: 'malikane' }, ad: KAPI_ADI.malikane, gorsel: 'binalar/malikane_3' },
   {
@@ -78,7 +76,6 @@ const KAROLAR: Karo[] = [
     hedef: { tur: 'kapi', key: 'medeniyet' },
     ad: KAPI_ADI.medeniyet,
     gorsel: 'bolgeler/taht',
-    kapla: true,
   },
   {
     hedef: { tur: 'kapi', key: 'olaylar' },
@@ -205,18 +202,8 @@ export function UygulamaKasasi({
                       etkin ? 'border-altin' : 'border-kenar'
                     }`}
                   >
-                    {typeof k.gorsel === 'string' && yolCizimiVar(k.gorsel) ? (
+                    {typeof k.gorsel === 'string' ? (
                       <YolCizimi yol={k.gorsel} className="h-full w-full" />
-                    ) : typeof k.gorsel === 'string' ? (
-                      <img
-                        src={`/gorseller/${k.gorsel}.webp`}
-                        alt=""
-                        width={56}
-                        height={56}
-                        loading="lazy"
-                        decoding="async"
-                        className={`h-full w-full ${k.kapla ? 'object-cover' : 'object-contain p-0.5'}`}
-                      />
                     ) : (
                       k.gorsel
                     )}

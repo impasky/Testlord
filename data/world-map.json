@@ -1,6 +1,6 @@
 {
   "schema": "lordlar-cagi/world-map@1",
-  "_not": "Harita CIZILMIS ZEMINDEN turetiliyor: `tools/harita-kur.py`. Elle duzenlenmez -- araci calistir. Konum x/y (yuzdelik, YALNIZ cizim icin); motor x/y okumaz, mesafe komsuluk grafiginde en kisa yoldur. Komsuluk Delaunay'dan cikip budaniyor: deniz gecen ve dag asan kenar atiliyor, dagin arkasina yalniz GECITLERDEN gecilebiliyor (bkz. gecitler). Denge mesafeden geliyor ve eski haritayla ayni: gelir carpani ve NPC garnizonu Taht Kalesi'ne uzakliga bagli.",
+  "_not": "Harita bir zamanlar cizilmis zeminden turetildi (docs/12 bolum 11); tureten arac boyali zeminle birlikte kaldirildi (docs/24). Elle duzenlenmez: `tools/generate_map.py` dogruluyor, kara siniri `apps/web/src/components/harita/kara.ts`. Konum x/y (yuzdelik, YALNIZ cizim icin); motor x/y okumaz, mesafe komsuluk grafiginde en kisa yoldur. Komsuluk Delaunay'dan cikip budaniyor: deniz gecen ve dag asan kenar atiliyor, dagin arkasina yalniz GECITLERDEN gecilebiliyor (bkz. gecitler). Denge mesafeden geliyor ve eski haritayla ayni: gelir carpani ve NPC garnizonu Taht Kalesi'ne uzakliga bagli.",
   "region_count": 121,
   "gecitler": [
     [2, 48],

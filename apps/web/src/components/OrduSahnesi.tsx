@@ -5,10 +5,10 @@
  * arkasında ordusunu görse."* Bu, o isteğin ordu yarısı.
  *
  * Lord figürü DENENDİ ve geri alındı: beş görsel üretildi, sahneye kondu,
- * oyuncu beğenmedi ("çok kötü"). Görseller ve üretim hattı yerinde duruyor
- * (`gorseller/lord/`, `kusamSeviyesi()`), sadece çizilmiyorlar — geri
- * getirmek bu dosyaya bir `<Gorsel tur="lord">` eklemek kadar. Neden
- * kaldırıldığı ve nasıl geri geleceği: docs/08 İ13.
+ * oyuncu beğenmedi ("çok kötü"). Lordun beş kuşam hâli artık koddan
+ * çiziliyor (cizim/kisiler.ts, `kusamSeviyesi()`) ve Lord ekranında
+ * görünüyor; bu sahneye geri getirmek bir `<Gorsel tur="lord">` eklemek
+ * kadar. Neden kaldırıldığı: docs/08 İ13.
  *
  * Neden değerli: Kışla'da "okçu 42" yazısı bir satır. Burada kırk iki
  * okçunun oluşturduğu kalabalık bir ŞEY. Ordu büyüdükçe sahne doluyor,

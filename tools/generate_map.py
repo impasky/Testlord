@@ -21,12 +21,14 @@ turetmek, o secimleri silmek olurdu.
 
   python3 tools/generate_map.py        # dogrula
 
-Isaretcilerin cizilmis zemine oturup oturmadigi da burada denetleniyor
-(x/y yalniz cizim icin; kural docs/12 §9). Suya dusen isaretci varsa
-duzeltmesi ayri bir arac: tools/harita-yerlestir.py
+Isaretcilerin karaya oturup oturmadigi da burada denetleniyor (x/y yalniz
+cizim icin; kural docs/12 §9). Kara, bolge hucrelerinin de kirpildigi kiyi
+cizgisi: apps/web/src/components/harita/kara.ts (KARA_YOLU). Suya dusen
+isaretci varsa x/y'si elle karaya alinir.
 """
-import importlib.util
 import json
+import math
+import re
 import os
 import sys
 from collections import Counter, deque
@@ -118,45 +120,78 @@ def dogrula(harita: dict) -> list[str]:
     return sorunlar
 
 
-def zemin_denetimi(bolgeler) -> tuple[list[str], str]:
-    """
-    Isaretciler cizilmis dunya zemininde KARAYA mi dusuyor?
+# Kiyi payi (harita birimi, 0-100): isaretcinin bu kadar yakininda kara varsa
+# karada sayiliyor.
+YAKIN_KARA = 2.0
 
-    Bu denetim buraya ait: x/y yalniz cizim icin ve tek olcutu zemine
+
+def kara_cokgenleri(kok: str) -> list[list[tuple[float, float]]]:
+    """kara.ts icindeki KARA_YOLU'nu (M ... Z alt yollari) cokgenlere cevirir."""
+    yol = os.path.join(kok, "apps", "web", "src", "components", "harita", "kara.ts")
+    with open(yol, encoding="utf-8") as f:
+        metin = f.read()
+    # Yol birden fazla dizgenin `+` ile birlesimi: tanimdan noktali virgule
+    # kadar butun tirnakli parcalar.
+    m = re.search(r"KARA_YOLU\s*=([^;]+);", metin)
+    if not m:
+        return []
+    yol_metni = "".join(re.findall(r"'([^']*)'", m.group(1)))
+    cokgenler = []
+    for parca in yol_metni.split("M"):
+        sayilar = [float(t) for t in re.split(r"[\s,]+", parca.replace("Z", "").strip()) if t]
+        if len(sayilar) >= 6:
+            cokgenler.append(list(zip(sayilar[0::2], sayilar[1::2])))
+    return cokgenler
+
+
+def karada(x: float, y: float, cokgenler) -> bool:
+    """Tek-cift kurali (SVG evenodd ile ayni): adalar ve goller dogru sayiliyor."""
+    ic = False
+    for c in cokgenler:
+        j = len(c) - 1
+        for i in range(len(c)):
+            xi, yi = c[i]
+            xj, yj = c[j]
+            if (yi > y) != (yj > y) and x < (xj - xi) * (y - yi) / (yj - yi) + xi:
+                ic = not ic
+            j = i
+    return ic
+
+
+def zemin_denetimi(bolgeler, kok: str) -> tuple[list[str], str]:
+    """
+    Isaretciler KARADA mi?
+
+    Bu denetim buraya ait: x/y yalniz cizim icin ve tek olcutu karaya
     oturmasi. Denizin ortasinda duran bir tarla, oyuncunun "burasi neresi"
     sorusuna verilebilecek en kotu cevap -- ve hicbir testte gorunmez,
     cunku oyunun mantigi `komsular` grafigine bakiyor.
 
-    Kara maskesi tools/harita-yerlestir.py icinde tanimli; ikinci bir kopya
-    yazmak, iki aracin "kara" tanimini zamanla ayirmak demekti. Zemin ya da
-    Pillow/scipy yoksa denetim ATLANIYOR: bu script gorselsiz de calismali.
+    Kara, bolge hucrelerinin kirpildigi ve dunya zemininin cizildigi AYNI
+    kiyi cizgisi (kara.ts). Eskiden boyali dunya resminden bir maske
+    okunuyordu; resim kalkinca (docs/24) kiyi tek yerde kaldi.
     """
-    yol = os.path.join(os.path.dirname(os.path.abspath(__file__)), "harita-yerlestir.py")
-    spec = importlib.util.spec_from_file_location("harita_yerlestir", yol)
-    if spec is None or spec.loader is None:
-        return [], "zemin denetimi atlandi (arac bulunamadi)"
-    arac = importlib.util.module_from_spec(spec)
-    try:
-        spec.loader.exec_module(arac)
-        if not arac.ZEMIN.exists():
-            return [], "zemin denetimi atlandi (dunya.webp yok)"
-        kara = arac.kara_maskesi()
-    except Exception as e:  # Pillow/scipy yok, ya da zemin okunamadi
-        return [], f"zemin denetimi atlandi ({type(e).__name__})"
+    cokgenler = kara_cokgenleri(kok)
+    if not cokgenler:
+        return ["kara.ts okunamadi: KARA_YOLU yok"], ""
+    # Kiyi burnu da kara sayiliyor (eski resim denetimindeki en gevsek
+    # kademe gibi): isaretcinin YAKIN_KARA birim cevresinde kara varsa
+    # tamam. Kiyidaki dort bolgenin isaretcisi cizginin bir tik disinda ve
+    # hucreleri karaya kirpildigi icin oyuncu onlari karada goruyor.
+    def kiyida(x: float, y: float) -> bool:
+        if karada(x, y, cokgenler):
+            return True
+        for yaricap in (YAKIN_KARA / 2, YAKIN_KARA):
+            for k in range(12):
+                a = k / 12 * 6.283185307179586
+                if karada(x + yaricap * math.cos(a), y + yaricap * math.sin(a), cokgenler):
+                    return True
+        return False
 
-    yuk, gen = kara.shape
-    oran, _, _ = arac.TURLAR[-1]     # en gevsek kademe: kiyi burnu da kara sayilir
-    r = arac.YARICAP
-    suda = []
-    for b in bolgeler:
-        px, py = int(b["x"] / 100 * gen), int(b["y"] / 100 * yuk)
-        pencere = kara[max(0, py - r):py + r + 1, max(0, px - r):px + r + 1]
-        if pencere.size == 0 or pencere.mean() <= oran:
-            suda.append(f"{b['name']} ({b['x']}, {b['y']})")
+    suda = [f"{b['name']} ({b['x']}, {b['y']})" for b in bolgeler if not kiyida(b["x"], b["y"])]
     if suda:
         return [
-            f"{len(suda)} isaretci zeminde suya dusuyor "
-            f"(duzelt: python3 tools/harita-yerlestir.py --yaz): " + ", ".join(suda[:6])
+            f"{len(suda)} isaretci denize dusuyor (x/y'yi karaya al): " + ", ".join(suda[:6])
             + ("..." if len(suda) > 6 else "")
         ], ""
     return [], f"{len(bolgeler)} isaretcinin hepsi karada"
@@ -168,7 +203,7 @@ def main() -> int:
     sorunlar = dogrula(harita)
 
     bolgeler = harita.get("regions", [])
-    zemin_sorun, zemin_not = zemin_denetimi(bolgeler)
+    zemin_sorun, zemin_not = zemin_denetimi(bolgeler, kok)
     sorunlar += zemin_sorun
     tipler = Counter(b.get("type") for b in bolgeler)
     komsuSayilari = [len(b.get("komsular", [])) for b in bolgeler]

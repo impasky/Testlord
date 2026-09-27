@@ -74,8 +74,14 @@ async function lordKur(etiket, dogrula = true) {
 }
 
 const b64 = (buf) => Buffer.from(buf).toString('base64');
+/*
+ * Deneme resimleri: eski (boyalı) bina görsellerinden beşi. Oyun artık
+ * görsellerini koddan çiziyor (docs/24); bu dosyalar yalnız yükleme ve
+ * sınıflandırıcı denemesi için, `tools/fiksturler/` altında duruyor ve
+ * sunulmuyor.
+ */
 const oyunGorseli = (yol) =>
-  b64(readFileSync(new URL(`../apps/web/public/gorseller/${yol}`, import.meta.url)));
+  b64(readFileSync(new URL(`./fiksturler/${yol.split('/').pop()}`, import.meta.url)));
 const TEMIZ_TAHMIN = { Porn: 0, Hentai: 0, Sexy: 0, Neutral: 0.97, Drawing: 0.03 };
 
 console.log('Profil resmi — hazır portreler');
@@ -101,9 +107,7 @@ kontrol(
 
 console.log('\nProfil resmi — yükleme ve gerçek sınıflandırıcı');
 // Konum bilgisi taşıyan bir JPEG: silinmeli.
-const exifli = await sharp(
-  readFileSync(new URL('../apps/web/public/gorseller/binalar/kisla_3.webp', import.meta.url)),
-)
+const exifli = await sharp(readFileSync(new URL('./fiksturler/kisla_3.webp', import.meta.url)))
   .flatten({ background: '#445566' })
   .jpeg()
   .withExif({ IFD0: { Make: 'GizliTelefon', Copyright: 'konum-bilgisi' } })
@@ -347,9 +351,7 @@ kontrol(
 // Dosya yükle: tarayıcıda küçültülüp gönderiliyor, gerçek sınıflandırıcı.
 await secici
   .locator('[data-resim-dosyasi]')
-  .setInputFiles(
-    new URL('../apps/web/public/gorseller/binalar/surlar_3.webp', import.meta.url).pathname,
-  );
+  .setInputFiles(new URL('./fiksturler/surlar_3.webp', import.meta.url).pathname);
 await secici.getByRole('img', { name: 'Yüklenecek resim' }).waitFor();
 kontrol('Seçilen dosyanın önizlemesi çıkıyor', true);
 await secici.getByRole('button', { name: 'Yükle', exact: true }).click();

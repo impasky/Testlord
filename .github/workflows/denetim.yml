@@ -64,21 +64,15 @@ jobs:
 
       # ── Üretilen dosyalar hâlâ üretilebiliyor mu ────────────────────
       #
-      # `data/world-map.json` ve `docs/GORSEL-ISTEMLERI.md` elle
-      # düzenlenmiyor; ikisi de bir betiğin çıktısı. Elle düzenlenmiş bir
-      # satır sessizce yaşar ve betik bir gün yeniden koşunca kaybolur.
+      # `data/world-map.json` elle düzenlenmiyor; bir betiğin çıktısı.
+      # Elle düzenlenmiş bir satır sessizce yaşar ve betik bir gün yeniden
+      # koşunca kaybolur.
       # Burası o sessizliği bozuyor: betiği koşturup dosyanın DEĞİŞMEDİĞİNİ
       # ölçüyor.
       - name: Harita yeniden üretilebiliyor
         run: |
           python3 tools/generate_map.py
           git diff --exit-code data/world-map.json
-
-      - name: Görsel istemleri yeniden üretilebiliyor
-        run: |
-          python3 tools/gorsel-uret.py --istemler > docs/GORSEL-ISTEMLERI.md
-          npx prettier --write docs/GORSEL-ISTEMLERI.md
-          git diff --exit-code docs/GORSEL-ISTEMLERI.md
 
       - name: Derleme
         run: pnpm build

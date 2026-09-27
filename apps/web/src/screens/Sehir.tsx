@@ -170,14 +170,13 @@ const BINA_IKONU: Record<string, keyof typeof IKONLAR> = {
 const SPRITE_OLAN = CIZILEN_BINALAR;
 
 /**
- * Binanın görseli: varsa SPRITE, yoksa çizgi ikon.
+ * Binanın görseli: kodla çizim, çizimi olmayan bina için çizgi ikon.
  *
- * İkisi birden duruyor ve bu bilinçli. Sprite'lar üretildikçe şehir
- * kendiliğinden zenginleşiyor; üretilmeyen bina çizgi ikonuyla çalışmaya
- * devam ediyor. Tersi — önce ikonu kaldırıp sprite beklemek — dosya
- * gelene kadar boş kutular demekti.
+ * İkon yedek olarak duruyor: veriye yeni bir bina eklenip tarifi henüz
+ * `cizim/binalar.ts`e yazılmadıysa kutu boş kalmıyor. `gorsel-denetim`
+ * çizimi eksik binayı ayrıca bildiriyor.
  *
- * Dosya adı SEVİYEYE bağlı: `_1` ahşap, `_3` taş taban + ahşap üst kat,
+ * Çizim adı SEVİYEYE bağlı: `_1` ahşap, `_3` taş taban + ahşap üst kat,
  * `_5` tam taş. Üç kademe, çünkü ikisi az kalıyordu: bina tavanı kademeye
  * bağlı (kamp 1, köy 2, kasaba 3, şehir/kale 4, metropol 5) ve iki
  * görselle oyuncu seviye 3'te zaten en gelişmiş hâli görüyordu — geri
@@ -621,10 +620,9 @@ function etkiYazisi(deger: number | null, birim: BinaDurumu['etkiBirimi']): stri
  * çizimden çok YERLEŞTİRMEDEN geliyordu. Dört şey birlikte çalışıyor:
  *
  * 1. TABANDAN ÇAKMA. `translate(-50%, -100%)` — kutunun ALT kenarı
- *    x/y'ye oturuyor, merkezi değil. Sprite'ların tabanı da ortak bir
- *    çizgiye getirildi (`tools/sprite-hizala.py`); önce alt boşlukları
- *    %3 ile %12 arasında geziyordu, yani aynı kutuya konsalar bile biri
- *    zemine gömülü, öteki havada duruyordu.
+ *    x/y'ye oturuyor, merkezi değil. Bütün binalar aynı sabit kutuda
+ *    çiziliyor (`BINA_KUTUSU`), yani tabanları aynı çizgide; kutuya
+ *    göre değişseydi biri zemine gömülü, öteki havada dururdu.
  *
  * 2. TEMAS GÖLGESİ. Binanın ayak bastığı yere bir elips. Bir nesnenin
  *    zeminde durduğunu söyleyen şey bu; sprite'ın kendi düşen gölgesi

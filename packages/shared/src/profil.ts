@@ -57,14 +57,14 @@ export const PROFIL_RESMI = {
 } as const;
 
 export interface HazirPortre {
-  /** Kalıcı anahtar — `apps/web/public/gorseller/portre/<key>.webp`. */
+  /** Kalıcı anahtar — koddan çizilen portre (apps/web/src/cizim/kisiler.ts). */
   key: string;
   ad: string;
 }
 
 /**
- * Hazır portreler: oyunun kendi figürlerinden baş-omuz kırpmaları
- * (tools/portre-kirp.py). Denetim gerektirmiyor — hepsini biz çizdik.
+ * Hazır portreler: oyunun kendi figürlerinin baş-omuz çizimleri
+ * (apps/web/src/cizim/kisiler.ts). Denetim gerektirmiyor — hepsini biz çizdik.
  */
 export const HAZIR_PORTRELER: readonly HazirPortre[] = [
   { key: 'lord_1', ad: 'Lord I' },

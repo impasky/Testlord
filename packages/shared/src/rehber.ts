@@ -32,7 +32,7 @@
  */
 import { B } from './balance.js';
 
-/** Rehberin kimliği. Portre `gorseller/generaller/<key>.webp`. */
+/** Rehberin kimliği. Portresi generalin çiziminden (apps/web/src/cizim/kisiler.ts). */
 export const REHBER = {
   key: 'kahya_sinan',
   ad: 'Kâhya Sinan',

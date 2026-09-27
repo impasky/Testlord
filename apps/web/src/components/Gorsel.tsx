@@ -1,26 +1,23 @@
 /**
- * İllüstrasyon varsa onu, yoksa ikonu gösterir.
+ * Çizim varsa onu, yoksa ikonu gösterir.
  *
- * Amaç: gerçek çizim eklemeyi dosyayı klasöre atmak kadar basitleştirmek.
- * Kod değişikliği gerekmez — `apps/web/public/gorseller/birimler/suvari.webp`
- * dosyası konduğu anda Süvari'nin madalyonunda o görsel çıkar, dosya yoksa
- * game-icons silueti görünmeye devam eder.
- *
- * Böylece sanat işi koddan bağımsız ilerleyebilir: birim birim, general
- * general eklenebilir, yarısı çizilmişken de oyun tutarlı görünür.
+ * Oyunun görselleri koddan çiziliyor (docs/24, `cizim/`): birlik, düşman,
+ * eşya, general, lord. Bu bileşen ekranların eski arayüzünü koruyor —
+ * `tur` + `ad` veriliyor, çizim o adla varsa çiziliyor, yoksa (yeni bir
+ * birlik eklendi ama tarifi henüz yazılmadı) `yedek` ikon görünüyor.
+ * Dosya yüklenmediği için ne bekleme ne de "görsel geldi, kutu zıpladı"
+ * var.
  */
-import { useState } from 'react';
 import { NesneCizimi, nesneCizimiVar } from '../cizim/Cizimler';
 
-export type GorselTuru = 'birimler' | 'generaller' | 'bolgeler' | 'ekipman' | 'harita' | 'lord';
+export type GorselTuru = 'birimler' | 'generaller' | 'ekipman' | 'lord';
 
 /**
  * Bölgenin aşamasına uygun görselin adı.
  *
  * Bölge geliştikçe görselin de değişmesi, geliştirmenin karşılığını GÖRÜNÜR
- * kılan tek şey: "Kasabam Pazar Şehri oldu" cümlesinin resmi olmalı. Aşama
- * görseli yoksa taban görsele düşülür — dosya konduğu anda devreye girer,
- * kod değişikliği gerekmez.
+ * kılan tek şey: "Kasabam Pazar Şehri oldu" cümlesinin resmi olmalı. Her
+ * türün üç aşamasının da çizimi var (cizim/bolgeler.ts).
  *
  *   seviye 1-2 -> tarla        seviye 3-4 -> tarla_3       seviye 5 -> tarla_5
  */
@@ -39,42 +36,15 @@ export function Gorsel({
   className = '',
 }: {
   tur: GorselTuru;
-  /** Dosya adı (uzantısız): suvari, mizrakci, kusatmaci_tarik, kale... */
+  /** Çizim adı: suvari, mizrakci, kusatmaci_tarik, silah_t3... */
   ad: string;
   alt: string;
   boyut: number;
-  /** İllüstrasyon yoksa gösterilecek ikon. */
+  /** Çizimi olmayan ad için gösterilecek ikon. */
   yedek: React.ReactNode;
   className?: string;
 }) {
-  const [yok, setYok] = useState(false);
-  const [gosterilen, setGosterilen] = useState(`${tur}/${ad}`);
-
-  // Aynı bileşen örneği başka bir görsele geçebilir (sekme değiştiren bir
-  // liste, kuşanılan eşyanın değişmesi). Bir kez yedeğe düşmüş örnek,
-  // görseli OLAN yeni adda da yedekte kalırdı. Render sırasında sıfırlıyoruz:
-  // efektle yapsak bir kare boyunca yanlış görsel görünürdü.
-  if (gosterilen !== `${tur}/${ad}`) {
-    setGosterilen(`${tur}/${ad}`);
-    setYok(false);
-  }
-
-  // Koddan çizilen görsel (docs/24): birlik, eşya. Dosya beklemiyor.
   if (nesneCizimiVar(tur, ad))
     return <NesneCizimi tur={tur} ad={ad} alt={alt} boyut={boyut} className={className} />;
-
-  if (yok) return <>{yedek}</>;
-
-  return (
-    <img
-      src={`/gorseller/${tur}/${ad}.webp`}
-      alt={alt}
-      width={boyut}
-      height={boyut}
-      loading="lazy"
-      decoding="async"
-      onError={() => setYok(true)}
-      className={`object-contain ${className}`}
-    />
-  );
+  return <>{yedek}</>;
 }

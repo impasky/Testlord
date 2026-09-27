@@ -166,7 +166,6 @@ pnpm test        # 40 birim testi (savaş motoru + tasarım garantileri)
 pnpm balance     # aritmetik denge kontrolleri
 pnpm typecheck   # üç paketin tip kontrolü
 pnpm e2e         # oyun döngüsü + shard + worker + tarayıcı (sunucu ayakta olmalı)
-pnpm gorsel      # 22 oyun görselini üretir — bkz. docs/GORSEL-REHBERI.md
 ```
 
 `pnpm e2e` gerçek Chromium açar ve yedi ekranı dolaşır. Tarayıcı testi
@@ -177,8 +176,8 @@ pnpm gorsel      # 22 oyun görselini üretir — bkz. docs/GORSEL-REHBERI.md
 ```
 docs/
   gorseller/              Ekran görüntüleri
-  GORSEL-REHBERI.md       Gerçek illüstrasyon nasıl eklenir (dosyayı koy, yeter)
   LISANSLAR.md            Üçüncü taraf varlıklar ve künye
+  24-kodla-cizim.md       Oyundaki her görsel kodla çiziliyor — motor, dosyalar, kurallar
   00-ozet-ve-kapsam.md    Yönetici özeti + DONDURULMUŞ kapsam sınırı (önce bunu oku)
   01-oyun-tasarimi.md     Tüm sistemler, oynanış döngüleri, ekranlar
   02-denge-formulleri.md  Her formül ve tablo, gerekçeleriyle
@@ -201,14 +200,10 @@ apps/api/                 Fastify + Prisma + PostgreSQL
   src/services/           İş kuralları
   src/worker.ts           10 sn aralıkla yürüyüş ve kuyruk çözümü
 apps/web/                 React + Vite + Tailwind, yedi ekran
+  src/cizim/              Kodla çizim: low-poly izometrik motor, SVG'ye çiziyor
 tools/
   generate_map.py         Haritayı DOĞRULAYAN script (artık üretmiyor)
-  gorsel-uret.py          Oyun görsellerini üretir (GEMINI_API_KEY ister)
-                          --plaka / --sayfa: kent varlıkları sayfa sayfa
-  gorsel-ayikla.py        Çok figürlü sayfayı tek tek varlıklara böler
-  dama-sil.py             Modelin ÇİZDİĞİ saydamlık damasını gerçek alfaya çevirir
-  sprite-hizala.py        Bina sprite'larını ortak zemin çizgisine oturtur
-  harita-yerlestir.py     Bölge işaretçilerini çizilmiş dünya zeminine oturtur
+  gorsel-denetim.mjs      Her ekranın kodla çizilen görsellerini ve taşmaları denetler
   check_balance.py        Aritmetik denge doğrulayıcı
   oyun-dongusu-testi.mjs  API üzerinden tam oyun döngüsü
   shard-testi.mjs         Dünya dolunca yeni shard açıldığını doğrular

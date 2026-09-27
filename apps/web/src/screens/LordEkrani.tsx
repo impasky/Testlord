@@ -129,14 +129,6 @@ function YoklukKarti({ y, onGit }: { y: YoklukOzeti; onGit: (s: Sekme) => void }
   );
 }
 
-/**
- * public/gorseller/lord/ altındaki portre sayısı.
- *
- * Elle yazılı bir sayı, çünkü tarayıcı klasörü listeleyemiyor. Dosya
- * eklenip bu sayı güncellenmezse yeni portre hiç seçilmez (sessiz ama
- * zararsız); sayı dosyalardan büyük olursa var olmayan bir dosya istenir
- * ve Gorsel yedeğe düşer — yine sessiz, yine zararsız.
- */
 /*
  * Kuşam hâllerinin adları. Görselle aynı sırada (`lord_1..lord_5`) ve
  * sayıyı değil ANLAMI söylüyorlar: "kuşam 3" bir şey ifade etmiyor,
