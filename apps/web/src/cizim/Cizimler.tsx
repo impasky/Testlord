@@ -242,6 +242,7 @@ export function ZeminCizimi({ ad, className }: { ad: string; className?: string 
       alt=""
       className={className}
       kirp
+      ertele
     />
   );
 }

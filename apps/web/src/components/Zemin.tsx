@@ -12,8 +12,10 @@
  * oradan başlıyormuş gibi olsun. (docs/08 İ11)
  *
  * Manzara koddan çiziliyor (cizim/zeminler.ts, docs/24): ekranın şehirdeki
- * binası ve önünde o ekranın insanları. Dosya beklemiyor — şerit ilk
- * boyamada dolu, açılışta ne zıplama ne de boş bir bekleme karesi var.
+ * binası ve önünde o ekranın insanları. Dosya beklemiyor. İlk açılışta
+ * çizim bir kare sonra geliyor (`Sahne` `ertele`): binlerce yüzlük bir
+ * sahne, ekranın düğmelerinden önce hesaplanıp onları geciktirmesin.
+ * Şeridin yüksekliği sabit olduğu için bu bekleme hiçbir şeyi kaydırmıyor.
  * Çizimi olmayan ekran sade bir başlıkla açılıyor.
  */
 import type { ReactNode } from 'react';
