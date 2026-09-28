@@ -203,90 +203,90 @@ function yeterMi(saldiran: Army, savunan: Army, tahkimat: number): boolean {
   return armyPower(saldiran) >= savunmaGucu * N.guvenli_fetih_payi;
 }
 
-/** Tek bir NPC lorda sıra verir. */
+/** Tek bir NPC lorda sıra verir (kendi işleminde). */
 async function lordOynasin(lordId: string, now: Date): Promise<NpcIsi> {
-  return prisma.$transaction(
-    async (tx) => {
-      const lord = await tx.lord.findUniqueOrThrow({
-        where: { id: lordId },
-        select: {
-          id: true,
-          worldId: true,
-          level: true,
-          liderlik: true,
-          altin: true,
-          homeBolgeId: true,
-        },
-      });
+  return prisma.$transaction((tx) => lordOynasinTx(tx, lordId, now), { timeout: 20_000 });
+}
 
-      // Sıra damgası EN BAŞTA yazılıyor: iş yapılmasa da tur harcanmış
-      // sayılır. Yoksa yapacak işi olmayan bir NPC her worker turunda
-      // yeniden seçilir ve öteki NPC'lere hiç sıra gelmezdi.
-      await tx.lord.update({ where: { id: lordId }, data: { npcSonTur: sonrakiTur(now) } });
-
-      const ev = await evOrdusu(lord.id, tx);
-      const kapasite = commandCapacity(lord.liderlik, bosGeneralBonus());
-      const kullanilan = armySlots(ev);
-
-      // ── 1. Ordu zayıfsa önce asker ──────────────────────────────────
-      if (kullanilan < kapasite * N.ordu_esigi) {
-        const kuyrukta = await tx.queue.count({
-          where: { lordId: lord.id, kind: 'train', resolved: false },
-        });
-        if (kuyrukta === 0) {
-          const yapildi = await egitimVer(
-            lord.id,
-            kapasite - kullanilan,
-            lord.altin * N.egitim_harcama_orani,
-            tx,
-          );
-          if (yapildi) return 'egitim';
-        }
-      }
-      if (armyCount(ev) === 0) return 'bekledi';
-
-      // ── 2. Aynı anda bir yürüyüş ────────────────────────────────────
-      // NPC'nin bütün ordusu tek yürüyüşe biniyor; ikinci bir yürüyüş
-      // açmak "NPC evini boş bıraktı" demek olurdu.
-      const yolda = await tx.march.count({ where: { lordId: lord.id, resolved: false } });
-      if (yolda > 0) return 'bekledi';
-
-      const graf = await dunyaGrafigi(lord.worldId, tx);
-      const topraklar = await tx.region.findMany({
-        where: { worldId: lord.worldId, ownerLordId: lord.id },
-        select: { mapId: true },
-      });
-      const olc = (hedef: number): number => {
-        let enAz = graf.mesafe(lord.homeBolgeId, hedef);
-        for (const t of topraklar) enAz = Math.min(enAz, graf.mesafe(t.mapId, hedef));
-        return enAz;
-      };
-
-      // Bölge tavanı: NPC de oyuncuyla aynı seviye kuralına tabi.
-      const bolgeTavani = topraklar.length >= maxRegions(lord.level);
-
-      // ── 3. Oyuncuya saldırı (şansa bağlı) ───────────────────────────
-      const oyuncuyaGit = Math.random() < N.oyuncuya_saldiri_olasiligi;
-      if (oyuncuyaGit) {
-        const hedef = await oyuncuHedefiSec(lord, ev, olc, tx, now);
-        if (hedef && (await yuruyuseCikar(lord, hedef.id, ev, hedef.mesafe, tx))) {
-          return 'oyuncuya-saldiri';
-        }
-      }
-
-      // ── 4. Sahipsiz bölge ───────────────────────────────────────────
-      if (bolgeTavani) return 'bekledi';
-      const payDolu = await npcPayiDolu(lord.worldId, tx);
-      if (payDolu) return 'bekledi';
-
-      const hedef = await sahipsizHedefSec(lord, ev, olc, tx, now);
-      if (hedef && (await yuruyuseCikar(lord, hedef.id, ev, hedef.mesafe, tx))) {
-        return 'sahipsiz-fetih';
-      }
-      return 'bekledi';
+/** Sıra verme işin kendisi: çağıranın işlemi içinde. */
+async function lordOynasinTx(tx: Tx, lordId: string, now: Date): Promise<NpcIsi> {
+  const lord = await tx.lord.findUniqueOrThrow({
+    where: { id: lordId },
+    select: {
+      id: true,
+      worldId: true,
+      level: true,
+      liderlik: true,
+      altin: true,
+      homeBolgeId: true,
     },
-    { timeout: 20_000 },
-  );
+  });
+
+  // Sıra damgası EN BAŞTA yazılıyor: iş yapılmasa da tur harcanmış
+  // sayılır. Yoksa yapacak işi olmayan bir NPC her worker turunda
+  // yeniden seçilir ve öteki NPC'lere hiç sıra gelmezdi.
+  await tx.lord.update({ where: { id: lordId }, data: { npcSonTur: sonrakiTur(now) } });
+
+  const ev = await evOrdusu(lord.id, tx);
+  const kapasite = commandCapacity(lord.liderlik, bosGeneralBonus());
+  const kullanilan = armySlots(ev);
+
+  // ── 1. Ordu zayıfsa önce asker ──────────────────────────────────
+  if (kullanilan < kapasite * N.ordu_esigi) {
+    const kuyrukta = await tx.queue.count({
+      where: { lordId: lord.id, kind: 'train', resolved: false },
+    });
+    if (kuyrukta === 0) {
+      const yapildi = await egitimVer(
+        lord.id,
+        kapasite - kullanilan,
+        lord.altin * N.egitim_harcama_orani,
+        tx,
+      );
+      if (yapildi) return 'egitim';
+    }
+  }
+  if (armyCount(ev) === 0) return 'bekledi';
+
+  // ── 2. Aynı anda bir yürüyüş ────────────────────────────────────
+  // NPC'nin bütün ordusu tek yürüyüşe biniyor; ikinci bir yürüyüş
+  // açmak "NPC evini boş bıraktı" demek olurdu.
+  const yolda = await tx.march.count({ where: { lordId: lord.id, resolved: false } });
+  if (yolda > 0) return 'bekledi';
+
+  const graf = await dunyaGrafigi(lord.worldId, tx);
+  const topraklar = await tx.region.findMany({
+    where: { worldId: lord.worldId, ownerLordId: lord.id },
+    select: { mapId: true },
+  });
+  const olc = (hedef: number): number => {
+    let enAz = graf.mesafe(lord.homeBolgeId, hedef);
+    for (const t of topraklar) enAz = Math.min(enAz, graf.mesafe(t.mapId, hedef));
+    return enAz;
+  };
+
+  // Bölge tavanı: NPC de oyuncuyla aynı seviye kuralına tabi.
+  const bolgeTavani = topraklar.length >= maxRegions(lord.level);
+
+  // ── 3. Oyuncuya saldırı (şansa bağlı) ───────────────────────────
+  const oyuncuyaGit = Math.random() < N.oyuncuya_saldiri_olasiligi;
+  if (oyuncuyaGit) {
+    const hedef = await oyuncuHedefiSec(lord, ev, olc, tx, now);
+    if (hedef && (await yuruyuseCikar(lord, hedef.id, ev, hedef.mesafe, tx))) {
+      return 'oyuncuya-saldiri';
+    }
+  }
+
+  // ── 4. Sahipsiz bölge ───────────────────────────────────────────
+  if (bolgeTavani) return 'bekledi';
+  const payDolu = await npcPayiDolu(lord.worldId, tx);
+  if (payDolu) return 'bekledi';
+
+  const hedef = await sahipsizHedefSec(lord, ev, olc, tx, now);
+  if (hedef && (await yuruyuseCikar(lord, hedef.id, ev, hedef.mesafe, tx))) {
+    return 'sahipsiz-fetih';
+  }
+  return 'bekledi';
 }
 
 /** NPC'ler birlikte dünyanın ne kadarını tutuyor — tavana geldi mi. */
@@ -489,27 +489,12 @@ async function oyuncuHedefiSec(
  * doğrusu da bu: NPC'lerin işi diyarı oyuncu için canlı tutmak; kimsenin
  * bakmadığı bir haritada savaşmaları yalnız veritabanını büyütür.
  */
-export async function npcTuru(now = new Date()): Promise<NpcTurSonucu> {
-  const sonuc: NpcTurSonucu = {
-    oynayan: 0,
-    isler: { egitim: 0, 'sahipsiz-fetih': 0, 'oyuncuya-saldiri': 0, bekledi: 0 },
-  };
+export async function npcTuru(now = new Date(), yalniz?: string): Promise<NpcTurSonucu> {
+  const sonuc = bosSonuc();
   if (!N.etkin) return sonuc;
 
-  const sirasiGelenler = await prisma.lord.findMany({
-    where: {
-      isNpc: true,
-      OR: [{ npcSonTur: null }, { npcSonTur: { lte: now } }],
-      // Dünyada gerçek bir oyuncu olmalı.
-      world: { lords: { some: { isNpc: false } } },
-    },
-    select: { id: true, worldId: true },
-    orderBy: { npcSonTur: { sort: 'asc', nulls: 'first' } },
-    take: 100,
-  });
-
   const dunyaSayaci = new Map<string, number>();
-  for (const l of sirasiGelenler) {
+  for (const l of await sirasiGelenler(prisma, now, yalniz)) {
     const kac = dunyaSayaci.get(l.worldId) ?? 0;
     if (kac >= N.dunya_basina_tur_basi_lord) continue;
     dunyaSayaci.set(l.worldId, kac + 1);
@@ -527,12 +512,59 @@ export async function npcTuru(now = new Date()): Promise<NpcTurSonucu> {
   return sonuc;
 }
 
+function bosSonuc(): NpcTurSonucu {
+  return {
+    oynayan: 0,
+    isler: { egitim: 0, 'sahipsiz-fetih': 0, 'oyuncuya-saldiri': 0, bekledi: 0 },
+  };
+}
+
+/**
+ * Sırası gelmiş NPC'ler, en uzun bekleyen önce. Dünyada gerçek bir oyuncu
+ * olmalı. `yalniz`: yalnız bu lord (test; bkz. `npcYapVeOynat`).
+ */
+function sirasiGelenler(db: Tx, now: Date, yalniz?: string) {
+  return db.lord.findMany({
+    where: {
+      ...(yalniz ? { id: yalniz } : {}),
+      isNpc: true,
+      OR: [{ npcSonTur: null }, { npcSonTur: { lte: now } }],
+      world: { lords: { some: { isNpc: false } } },
+    },
+    select: { id: true, worldId: true },
+    orderBy: { npcSonTur: { sort: 'asc', nulls: 'first' } },
+    take: 100,
+  });
+}
+
 /** Test ve araçlar için: bir lordu NPC yapar ve sırasını hemen açar. */
 export async function npcYap(lordId: string): Promise<void> {
   await prisma.lord.update({
     where: { id: lordId },
     data: { isNpc: true, npcSonTur: null },
   });
+}
+
+/**
+ * Test için: lordu NPC yapar ve AYNI işlemde sırasını oynatır. Seçim
+ * gerçek turla aynı sorgudan geçiyor (dünyada oyuncu şartı dahil), yalnız
+ * bu lordla sınırlı. Tek işlem olduğu için arka plandaki worker araya
+ * giremiyor: işlem bitene kadar lord ona NPC görünmüyor, bittiğinde sırası
+ * zaten harcanmış. Veritabanındaki başka NPC'ler de sonucu değiştirmiyor.
+ */
+export async function npcYapVeOynat(lordId: string, now = new Date()): Promise<NpcTurSonucu> {
+  return prisma.$transaction(
+    async (tx) => {
+      await tx.lord.update({ where: { id: lordId }, data: { isNpc: true, npcSonTur: null } });
+      const sonuc = bosSonuc();
+      for (const l of await sirasiGelenler(tx, now, lordId)) {
+        sonuc.isler[await lordOynasinTx(tx, l.id, now)]++;
+        sonuc.oynayan++;
+      }
+      return sonuc;
+    },
+    { timeout: 20_000 },
+  );
 }
 
 /** Araçların okuyabilmesi için NPC ayarları. */

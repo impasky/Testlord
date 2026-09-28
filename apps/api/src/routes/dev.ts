@@ -18,7 +18,7 @@ import { transferRegion } from '../services/region.js';
 import { medeniyetleriKur } from '../services/medeniyet.js';
 import { resolveQueueItem } from '../services/queue.js';
 import { sevkiyatCoz } from '../services/ticaret.js';
-import { npcTuru, npcYap } from '../services/npc.js';
+import { npcTuru, npcYap, npcYapVeOynat } from '../services/npc.js';
 import { kuyruklariCek, tabanlariGuncelle } from '../services/esyaPazari.js';
 import { testTahminiKoy } from '../services/resimDenetimi.js';
 
@@ -129,6 +129,10 @@ export async function devRoutes(app: FastifyInstance): Promise<void> {
    */
   app.post('/test/npc-yap', { preHandler: requireAuth }, async (req) => {
     const lordId = await findLordByUser(req.user.userId);
+    // `oynat`: NPC yap ve sırasını AYNI işlemde oynat (bkz. `npcYapVeOynat`):
+    // arka plandaki worker araya giremiyor, sonuç bu lordun turu.
+    const { oynat } = z.object({ oynat: z.boolean().optional() }).parse(req.body ?? {});
+    if (oynat) return { npc: true, ...(await npcYapVeOynat(lordId)) };
     await npcYap(lordId);
     return { npc: true };
   });
@@ -229,9 +233,14 @@ export async function devRoutes(app: FastifyInstance): Promise<void> {
     return { eskitildi: gun };
   });
 
-  /** Bir NPC turu koşturur ve ne yapıldığını söyler. */
-  app.post('/test/npc-turu', { preHandler: requireAuth }, async () => {
-    return npcTuru(new Date());
+  /**
+   * Bir NPC turu koşturur ve ne yapıldığını söyler. `yalnizBen`: tur
+   * yalnız çağıranın lordunu kapsıyor — veritabanında başka diyarlarda
+   * sırası gelmiş NPC'ler olsa da sonuç yalnız bu lordu anlatıyor.
+   */
+  app.post('/test/npc-turu', { preHandler: requireAuth }, async (req) => {
+    const { yalnizBen } = z.object({ yalnizBen: z.boolean().optional() }).parse(req.body ?? {});
+    return npcTuru(new Date(), yalnizBen ? await findLordByUser(req.user.userId) : undefined);
   });
 
   /**

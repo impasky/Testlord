@@ -13,7 +13,16 @@
  *   2. Koruma kuralları gerçekten tutuyor mu — yeni oyuncu kalkanı
  *      altındaki bir lorda saldırılmıyor.
  *
- * Bir de kapsam kontrolü: oyuncusuz bir dünyada NPC hiç oynamamalı.
+ * Bir de kapsam kontrolü: NPC olmayan lord tura girmiyor.
+ *
+ * YALNIZ BU TESTİN RAKİBİ. Turlar bütün veritabanına değil rakibe
+ * sınırlı (`yalnizBen`, `oynat`). Yerel veritabanında aylarca biriken
+ * test artığı NPC'ler var ve bütün dünyaya bakan bir tur onları da
+ * oynatıyordu: "NPC yokken tur boş" başka bir diyardaki NPC yüzünden
+ * kalıyor, "NPC bir iş yaptı" başka birinin işiyle geçebiliyordu. NPC
+ * yapmak ve oynatmak da tek işlemde: arka plandaki worker rakibi testten
+ * önce oynatıp sırasını harcayamıyor. Seçim yine gerçek turun sorgusundan
+ * geçiyor (dünyada oyuncu şartı dahil).
  */
 import { benzersizAd, kayitOl } from './lib/kayit.mjs';
 
@@ -67,19 +76,17 @@ kontrol(
   `${oyuncuHarita.regions.length} bölge`,
 );
 
-// ── 1. Oyuncusuz dünyada NPC oynamaz — henüz kimse NPC değil ──────────
-const bosTur = await istek('/test/npc-turu', oyuncu, {});
-kontrol('NPC yokken tur boş geçiyor', bosTur.oynayan === 0, `${bosTur.oynayan} oynadı`);
+// ── 1. NPC olmayan lord tura girmiyor ─────────────────────────────────
+const bosTur = await istek('/test/npc-turu', rakip, { yalnizBen: true });
+kontrol('NPC olmayan lord tura girmiyor', bosTur.oynayan === 0, `${bosTur.oynayan} oynadı`);
 
 // ── 2. Rakibi NPC yap, ordu ver, sıra ver ────────────────────────────
 // Başlangıç altını 5000; 25 mızrakçı + 12 okçu bunun içinde kalıyor ve
 // en zayıf köyü almaya yetiyor.
 await askerYetistir(rakip, 'mizrakci', 25);
 await askerYetistir(rakip, 'okcu', 12);
-await istek('/test/npc-yap', rakip, {});
-
-const tur = await istek('/test/npc-turu', oyuncu, {});
-kontrol('Sırası gelen NPC bir iş yaptı', tur.oynayan > 0, JSON.stringify(tur.isler));
+const tur = await istek('/test/npc-yap', rakip, { oynat: true });
+kontrol('Sırası gelen NPC bir iş yaptı', tur.oynayan === 1, JSON.stringify(tur.isler));
 
 const yuruyusler = await istek('/marches', rakip);
 const yuruyus = yuruyusler[0];
@@ -127,10 +134,7 @@ const oyuncuBolgeleri = () =>
   istek('/map', oyuncu).then((h) => h.regions.filter((r) => r.isMine).map((r) => r.id));
 
 const once = await oyuncuBolgeleri();
-for (let i = 0; i < 5; i++) {
-  await istek('/test/npc-yap', rakip, {}); // sırasını tekrar aç
-  await istek('/test/npc-turu', oyuncu, {});
-}
+for (let i = 0; i < 5; i++) await istek('/test/npc-yap', rakip, { oynat: true }); // sırasını tekrar aç ve oynat
 const rakipYuruyusleri = await istek('/marches', rakip);
 const oyuncuyaGiden = rakipYuruyusleri.filter(
   (m) => m.kind === 'attack' && once.includes(m.toRegionId),
