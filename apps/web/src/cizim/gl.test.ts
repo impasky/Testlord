@@ -3,7 +3,7 @@ import { arazi } from './arazi';
 import { DUNYA_KAMERASI, DUNYA_KUTUSU, dunyaModeli, dunyaUcgenleri } from './dunya';
 import { insan } from './figur';
 import { DOKU_NO, KOSE, agYap, dokuBul } from './glAg';
-import { goruntuMatrisi } from './glCizici';
+import { atlasDuzeni, goruntuMatrisi, sayfalaraYerlestir } from './glCizici';
 import { rastgele } from './rastgele';
 import { P } from './renk';
 import {
@@ -163,7 +163,55 @@ describe('GPU ağı (agYap)', () => {
     const bayraksiz = agYap(m, undefined, { bayraksiz: true });
     expect(ucgenSayisi(tam.nesne)).toBe(2);
     expect(ucgenSayisi(bayraksiz.nesne)).toBe(1);
+    // Kumaş kaybolmuyor: ayrı tamponda (atlas kurulamazsa ana resme çiziliyor).
+    expect(ucgenSayisi(bayraksiz.bez)).toBe(1);
     expect(bayraksiz.golge.length).toBe(tam.golge.length);
+  });
+
+  it('köşe kaynağı: nesne tamponunun her köşesi modeldeki yüzüne ve köşesine dönüyor', () => {
+    const m: Model = [ustUcgen({ renk: '#ff0000' }), ...kutu(3, 3, 0, 1, 1, 1, '#00ff00')];
+    const ag = agYap(m, undefined, { kaynak: true });
+    const k = ag.nesneKaynak!;
+    expect(k.length).toBe((ag.nesne.length / KOSE) * 2);
+    for (let v = 0; v < k.length / 2; v++) {
+      const q = m[k[v * 2]!]!.p[k[v * 2 + 1]!]!;
+      expect(kose(ag.nesne, v).konum).toEqual(q);
+    }
+  });
+
+  it('atlas rafları ve çizim sayfaları: bloklar çakışmıyor, boşluk korunuyor', () => {
+    const kutular: [number, number, number, number][] = Array.from({ length: 30 }, (_, i) => [
+      i * 7,
+      i * 3,
+      40 + (i % 5) * 10,
+      50 + (i % 3) * 10,
+    ]);
+    const kare = 12;
+    const a = atlasDuzeni(kutular, kare);
+    const b = sayfalaraYerlestir(kutular, 300, 200, 6);
+    const cakisir = (
+      p: [number, number, number, number],
+      q: [number, number, number, number],
+      bosluk: number,
+    ) =>
+      p[0] < q[0] + q[2] + bosluk &&
+      q[0] < p[0] + p[2] + bosluk &&
+      p[1] < q[1] + q[3] + bosluk &&
+      q[1] < p[1] + p[3] + bosluk;
+    for (let i = 0; i < kutular.length; i++) {
+      const [, , w, h] = kutular[i]!;
+      const ai: [number, number, number, number] = [...a.yer[i]!, w * kare, h];
+      expect(ai[0] + ai[2]).toBeLessThanOrEqual(a.en);
+      expect(ai[1] + ai[3]).toBeLessThanOrEqual(a.boy);
+      expect(b[i]!.x + w).toBeLessThanOrEqual(300);
+      expect(b[i]!.y + h).toBeLessThanOrEqual(200);
+      for (let j = 0; j < i; j++) {
+        const [, , wj, hj] = kutular[j]!;
+        expect(cakisir(ai, [...a.yer[j]!, wj * kare, hj], 0)).toBe(false);
+        if (b[i]!.sayfa === b[j]!.sayfa)
+          expect(cakisir([b[i]!.x, b[i]!.y, w, h], [b[j]!.x, b[j]!.y, wj, hj], 6)).toBe(false);
+      }
+    }
   });
 
   it('parlaklık köşeye yazılıyor; işaretsiz yüz mat (0), dönüşümden sağ çıkıyor', () => {

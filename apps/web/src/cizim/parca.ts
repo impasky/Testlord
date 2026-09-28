@@ -247,8 +247,30 @@ export function duman(x: number, y: number, z: number, r: () => number, adet = 3
 const BEZ_DILIM = 6;
 /** Durağan bayrağın (SVG, hareketsiz sahne) dalga evresi. */
 export const BAYRAK_FAZ = 1.9;
-/** Durağan sancağın evresi: salınımın ortası (sancak dik asılı). */
+/** Durağan sancağın (ve ağacın) evresi: salınımın ortası. */
 export const SANCAK_FAZ = 0;
+/**
+ * Bir turun süresi (sn): direkteki bayrak rüzgârda çırpınıyor, askıdaki
+ * sancak ağır ağır salınıyor, ağaç daha da yavaş.
+ */
+export const BAYRAK_SURE = 1.2;
+export const SANCAK_SURE = 3.2;
+export const AGAC_SURE = 4.4;
+
+/**
+ * Sarkaç salınımı (sancak, ağaç): bağlı uçtan oran `u`, evre `faz`. Uç
+ * sarkaç gibi (u²), üstüne hafif bir kıvrım. İki sabit biçimin toplamı:
+ * sin(faz)·a(u) + cos(faz)·b(u) — kareler ağı bir kez kurup köşeleri
+ * bununla kaydırıyor (`salinimBicimi`).
+ */
+const SALINIM_KIVRIM = 2 * Math.PI * 0.9;
+export function salinimBicimi(u: number): [number, number] {
+  return [u * u - 0.25 * u * Math.cos(SALINIM_KIVRIM * u), 0.25 * u * Math.sin(SALINIM_KIVRIM * u)];
+}
+export function salinim(u: number, faz: number): number {
+  const [a, b] = salinimBicimi(u);
+  return Math.sin(faz) * a + Math.cos(faz) * b;
+}
 
 /** Kumaşın durağan hâlinin evresi: sancakta salınımın ortası, bayrakta dalganın bir anı. */
 export const bezFazi = (y: Yuz): number => (y.bez?.yon ? SANCAK_FAZ : BAYRAK_FAZ);
@@ -268,8 +290,7 @@ export function bezAni(y: Yuz, faz: number): Yuz {
     // Askıdaki sancak: çubuğa bağlı üst kenar yerinde, uç duvar boyunca
     // sarkaç gibi salınıyor; üstüne kumaş boyunca hafif bir kıvrım.
     const p = d.map((q, i): V3 => {
-      const k = u[i]!;
-      const s = k * k * Math.sin(faz) + 0.25 * k * Math.sin(2 * Math.PI * 0.9 * k - faz);
+      const s = salinim(u[i]!, faz);
       return [q[0] + yon[0] * s, q[1] + yon[1] * s, q[2] + yon[2] * s];
     });
     return { ...y, p };
@@ -336,7 +357,12 @@ export function bayrak(
       [a0, a1, t - sarkma * k0 - boy],
     ];
     const [y0] = levha(dinlenik, renk);
-    bez.push(bezAni({ ...y0!, yumusak: true, bez: { dinlenik, u: [k0, k1, k1, k0] } }, BAYRAK_FAZ));
+    bez.push(
+      bezAni(
+        { ...y0!, yumusak: true, bez: { dinlenik, u: [k0, k1, k1, k0], kok: [x, y, t] } },
+        BAYRAK_FAZ,
+      ),
+    );
   }
   return birlestir(direk, bez, koni(x, y, z + h, 0.22, 0.4, P.altin, 5));
 }
@@ -357,10 +383,14 @@ export function sancak(yuz: Yon, duz: number, u: number, z: number, renk: string
   const bezle = (m: Model) =>
     m.map((y) =>
       bezAni(
-        { ...y, bez: { dinlenik: y.p, u: y.p.map((q) => (z - q[2]) / uzun), yon } },
+        {
+          ...y,
+          bez: { dinlenik: y.p, u: y.p.map((q) => (z - q[2]) / uzun), yon, kok, sure: SANCAK_SURE },
+        },
         SANCAK_FAZ,
       ),
     );
+  const kok: V3 = yuz === 'x' ? [duz, u + 0.6, z] : [u + 0.6, duz, z];
   const kumas: Model = [];
   for (let i = 0; i < SANCAK_KAT; i++) {
     const h = boy / SANCAK_KAT;
@@ -429,11 +459,40 @@ export function sandik(x: number, y: number, z = 0, s = 1.3): Model {
 }
 
 /** Yapraklı ağaç: gövde + iki üç yumru taç. */
+/** Rüzgâr: ekranda yatay (varsayılan kamerada), dünyada sabit yön. */
+const RUZGAR: V3 = [-Math.SQRT1_2, Math.SQRT1_2, 0];
+/** Ağacın tepesinin salınımı, boyunun kaçta kaçı (hafif). */
+const AGAC_GENLIK = 0.05;
+
+/**
+ * Ağacı rüzgâra bağlar (`Yuz.bez`): kök yerinde, yükseldikçe daha çok,
+ * tepe yavaşça salınıyor. `boy` kökten tepeye.
+ */
+function ruzgarla(m: Model, x: number, y: number, z: number, boy: number): Model {
+  const yon: V3 = [RUZGAR[0] * AGAC_GENLIK * boy, RUZGAR[1] * AGAC_GENLIK * boy, 0];
+  const kok: V3 = [x, y, z];
+  return m.map((f) =>
+    bezAni(
+      {
+        ...f,
+        bez: {
+          dinlenik: f.p,
+          u: f.p.map((q) => Math.min(1, Math.max(0, (q[2] - z) / boy))),
+          yon,
+          kok,
+          sure: AGAC_SURE,
+        },
+      },
+      SANCAK_FAZ,
+    ),
+  );
+}
+
 export function agac(x: number, y: number, z: number, r: () => number, olcek = 1): Model {
   const h = (2.2 + r() * 1.2) * olcek;
   const tac = 1.7 * olcek + r() * 0.6;
   const renk = r() > 0.5 ? P.yaprak : P.koyuYaprak;
-  return birlestir(
+  const govde = birlestir(
     silindir(x, y, z, 0.3 * olcek, h, P.koyuTahta, 5),
     kure(x, y, z + h + tac * 0.5, tac, renk, 6, 3, 0.18, r),
     kure(
@@ -448,6 +507,7 @@ export function agac(x: number, y: number, z: number, r: () => number, olcek = 1
       r,
     ),
   );
+  return ruzgarla(govde, x, y, z, h + tac * 1.5);
 }
 
 /** İğne yapraklı: gövde + üst üste iki üç koni. */
@@ -461,7 +521,7 @@ export function cam(x: number, y: number, z: number, r: () => number, olcek = 1)
       ...koni(x, y, z + (1.2 + i * 1.5) * olcek, rr, 2.4 * olcek, isikla(renk, 1 + i * 0.06), 7),
     );
   }
-  return m;
+  return ruzgarla(m, x, y, z, (1.2 + (kat - 1) * 1.5 + 2.4) * olcek);
 }
 
 export function kaya(

@@ -221,15 +221,29 @@ parçacığında da aynı koşuyor. Üç geçiş:
      (`KATMAN_HARE_YARICAP`, `KATMAN_HARE_GUC`).
      Sahnede su ya da ışıyan yüz yoksa o katman hiç çizilmiyor. Ağ
      `dumansiz` kuruluyor: duman yüzleri (`Yuz.duman`) GPU resminde yok.
-6. Bayrak atlası (hareketli sahnede bayrak varsa): ağ `bayraksiz`
-   kuruluyor, kumaş ana resimde yok ama gölgesi var. Kumaşın dalga
-   turundaki 12 anı (`bayrakAni.bayrakKareleri`, ana iş parçacığında
-   modelden) sahnenin derinliğine karşı çiziliyor: önündeki kule ve çatı
-   örtüyor; derinliğe yazmıyor, kareler birbirini örtmesin (kıvrım üst
-   üste binince uzaktan yakına sırayla). Her kare yalnız bayrağın
-   kutusunda çözülüyor (kenar çizgisi, renk düzenlemesi, tilt-shift; ortam
-   gölgesi ve hare yok, kutunun dışındaki sahneye uzanıyorlar) ve atlasa
-   diziliyor: her bayrak bir satır, kareler yan yana.
+6. Salınan parçaların atlası (bayrak, sancak, ağaç; hareketli sahnede):
+   ağ `bayraksiz` kuruluyor, parçalar ana resimde yok (ayrı tamponda,
+   `Ag.bez`), gölgeleri var. Her parçanın bir turdaki 12 anı
+   (`bayrakAni.bayrakKareleri`, ana iş parçacığında). Bayrağın dalgası
+   normali de değiştirdiği için her karede yeniden kuruluyor (bayrak az);
+   sancak ve ağaçta ağ bir kez kuruluyor, her karede yalnız köşeler
+   kayıyor (salınım iki sabit biçimin toplamı; `agYap` `kaynak`: her
+   köşenin modeldeki yeri). 92 ağaçlı tarla afişinde hazırlık ~60 ms.
+   - Kare başına tek geçiş: bütün parçalar ana hedeflerde çakışmayan
+     hücrelere kaydırılarak çiziliyor (sayfa, `sayfalaraYerlestir`;
+     hücreler arasında ortam gölgesi ve bulanıklık kadar boşluk). Sahnenin
+     önündekiler (kule, çatı, yamaç, zemin) ana geçişin ek dokusunun
+     kopyasıyla örtüyor; parçanın kendi içi donanım derinliğiyle.
+   - Sayfa bir kez çözülüyor (kenar ve ortam gölgesi parçanın kendi
+     derinliğinden, renk düzenlemesi; hare yok), tilt-shift parçanın
+     gerçek yerine göre; hücreler doğrudan GPU'daki atlasa yazılıyor
+     (raflı: her parçanın kareleri yan yana bir blok). Atlas en sonda bir
+     kez okunuyor.
+   - Kare başına üç hedef değişimi, parça sayısından bağımsız: telefonun
+     döşemeli GPU'sunda her hedef değişimi bütün hedefi yükleyip
+     yazabiliyor; parça parça çizim yüzlerce değişim demekti.
+   - Atlas kurulamazsa (doku sınırı, bellek) parçalar ana resme durağan
+     çiziliyor: hiçbir şey kaybolmuyor.
 
 Bellek yetmezse (ya da hedef doku kurulamazsa) iş `null` dönüyor ve o
 çizim SVG'ye düşüyor. Sıra boşalınca büyük hedef dokular dört saniye sonra
@@ -292,6 +306,11 @@ kaydırıyor.
   düşey yönde kıpırdamıyor: duvarın içine girmiyor. `yon` bir yer
   değiştirme: ölçek ve dönme onu da taşıyor. Tur 3,2 sn (bayrakta 1,2);
   süre bayrak başına atlastan geliyor.
+- Ağaç (`agac`, `cam`): aynı sarkaç salınımı; kök yerinde, yükseldikçe
+  daha çok, tepe rüzgâr yönünde (dünyada sabit, varsayılan kamerada
+  ekranda yatay) boyunun ~%5'i kadar. Tur 4,4 sn. Gövde ve taç aynı
+  parça (`bez.kok`). Parçalar sayfada uzaktan yakına dizili: iç içe
+  ağaçlarda yakındaki üstte.
 
 Kutu bir ızgara sarmalayıcısına geçiyor: resim ve katmanlar aynı hücrede
 üst üste, çağıranın sınıfları sarmalayıcıda. Katman dikdörtgeni ölçülüyor
@@ -320,7 +339,7 @@ her köşe yüzlerce kenarı değil, yalnız kendi şeridini tarıyor.
 | `renk.ts`                     | Palet ve renk yardımcıları                                                                                                              |
 | `rastgele.ts`                 | Tohumlu rastgele (FNV-1a + mulberry32)                                                                                                  |
 | `parca.ts`                    | Ortak parçalar: ağaç, çam, bayrak (dalgası `bezAni`), çadır, fıçı, duman, uzuv, teker, kubbe                                            |
-| `bayrakAni.ts`                | Dalgalanan bayrağın ve salınan sancağın kareleri, GPU için (bayrak bayrak ardışık)                                                      |
+| `bayrakAni.ts`                | Salınan parçaların (bayrak, sancak, ağaç) kareleri, GPU için; parçalar uzaktan yakına                                                   |
 | `arazi.ts`                    | Yükseklik alanından arazi, su, kıyı, nehir yatağı, yol ve parsel izleri, düzleme                                                        |
 | `binalar.ts`                  | Şehir binaları, her biri üç aşama; arsa, görev panosu, haberci kulesi, onur meydanı                                                     |
 | `yerlesim.ts`                 | Şehir sayfasının altındaki altı yerleşim kademesi (kamp → metropol)                                                                     |

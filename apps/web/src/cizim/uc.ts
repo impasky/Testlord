@@ -107,9 +107,12 @@ export interface Yuz {
    * `yon` varsa askıdaki sancak: ucun salınımdaki en büyük yer değiştirmesi
    * (dünya birimi, duvar boyunca); yoksa direkteki bayrak: kendi düzlemine
    * dik dalgalanıyor. Dönüşümler dinlenik hâli ve yönü de taşıyor (yön bir
-   * yer değiştirme: ölçekle birlikte büyüyor).
+   * yer değiştirme: ölçekle birlikte büyüyor). Ağaç da böyle salınıyor
+   * (kök yerinde, tepe rüzgârla). `kok`: aynı bayrağın, sancağın ya da
+   * ağacın bütün yüzlerinde aynı nokta (hareketli sahnede birlikte
+   * çiziliyorlar); `sure`: bir turun süresi (sn).
    */
-  bez?: { dinlenik: V3[]; u: number[]; yon?: V3 };
+  bez?: { dinlenik: V3[]; u: number[]; yon?: V3; kok?: V3; sure?: number };
   /**
    * Çizim katmanı: küçük önce. Ressam algoritması yüzün ORTASINA bakıyor;
    * dev bir zemin yüzünün ortası sahnenin ortasında kaldığı için arkadaki
@@ -167,7 +170,15 @@ export function tasi(m: Model, d: V3): Model {
     ...y,
     p: y.p.map((q) => ekle(q, d)),
     ...(y.duman ? { duman: ekle(y.duman, d) } : {}),
-    ...(y.bez ? { bez: { ...y.bez, dinlenik: y.bez.dinlenik.map((q) => ekle(q, d)) } } : {}),
+    ...(y.bez
+      ? {
+          bez: {
+            ...y.bez,
+            dinlenik: y.bez.dinlenik.map((q) => ekle(q, d)),
+            ...(y.bez.kok ? { kok: ekle(y.bez.kok, d) } : {}),
+          },
+        }
+      : {}),
   }));
 }
 
@@ -202,6 +213,8 @@ export function olcekle(m: Model, s: number | V3, o: V3 = [0, 0, 0]): Model {
               ...(y.bez.yon
                 ? { yon: [y.bez.yon[0] * k[0], y.bez.yon[1] * k[1], y.bez.yon[2] * k[2]] as V3 }
                 : {}),
+              ...(y.bez.kok ? { kok: f(y.bez.kok) } : {}),
+              ...(y.bez.sure ? { sure: y.bez.sure } : {}),
             },
           }
         : {}),
@@ -237,6 +250,7 @@ export function dondur(m: Model, eksen: 'x' | 'y' | 'z', aci: number, o: V3 = [0
             ...y.bez,
             dinlenik: y.bez.dinlenik.map(f),
             ...(y.bez.yon ? { yon: yon(y.bez.yon) } : {}),
+            ...(y.bez.kok ? { kok: f(y.bez.kok) } : {}),
           },
         }
       : {}),

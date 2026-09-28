@@ -458,7 +458,8 @@ function Bayraklar({ b, o }: { b: NonNullable<Katmanlar['bayrak']>; o: number })
             <span
               style={
                 {
-                  top: -duzen.satir[i]! * o,
+                  left: -duzen.yer[i]![0] * o,
+                  top: -duzen.yer[i]![1] * o,
                   width: duzen.en * o,
                   height: duzen.boy * o,
                   backgroundImage: `url(${b.url})`,

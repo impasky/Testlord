@@ -81,6 +81,13 @@ export interface Ag {
   /** Görünen su ve ışıyan yüz var mı (hareket katmanları yalnız varsa çiziliyor). */
   suVar: boolean;
   isimaVar: boolean;
+  /**
+   * `bayraksiz` ağda salınan yüzler (bayrak, sancak, ağaç), nesne düzeninde:
+   * çizici bunları hareket kareleri kurulamazsa ana resme çiziyor.
+   */
+  bez: Float32Array;
+  /** `kaynak` istendiyse nesne tamponunun her köşesi için (model sırası, köşe sırası). */
+  nesneKaynak?: Int32Array;
 }
 
 const rgb = (hex: string): [number, number, number] => {
@@ -112,17 +119,21 @@ interface Parca {
   cevir: boolean;
   k: number;
   d: number;
+  /** Modeldeki sırası. */
+  mi: number;
 }
 
 /**
  * `dumansiz`: duman yüzleri (`Yuz.duman`) atlanıyor — hareketli sahnede
- * yerlerine canlı duman konuyor. `bayraksiz`: bayrak kumaşı (`Yuz.bez`)
- * çizilmiyor ama gölgesini düşürüyor — kumaş ayrı karelerde dalgalanıyor.
+ * yerlerine canlı duman konuyor. `bayraksiz`: salınan yüzler (`Yuz.bez`:
+ * bayrak, sancak, ağaç) nesnelere girmiyor, ayrı tamponda (`Ag.bez`), gölgesi
+ * yerinde — ayrı karelerde salınıyorlar. `kaynak`: nesne tamponunun her
+ * köşesinin modeldeki yeri (kareler köşeleri buradan kaydırıyor).
  */
 export function agYap(
   model: Model,
   kamera?: Kamera,
-  secenek: { dumansiz?: boolean; bayraksiz?: boolean } = {},
+  secenek: { dumansiz?: boolean; bayraksiz?: boolean; kaynak?: boolean } = {},
 ): Ag {
   const { c } = kameraTabani(kamera);
   // Bir modelde renkler çok tekrar ediyor (arazi, duvar): bir kez çözülsün.
@@ -135,6 +146,7 @@ export function agYap(
   const yer: Parca[] = [];
   const nesne: Parca[] = [];
   const saydam: Parca[] = [];
+  const bezler: Parca[] = [];
   const golgeler: Yuz[] = [];
   const enAz: V3 = [Infinity, Infinity, Infinity];
   const enCok: V3 = [-Infinity, -Infinity, -Infinity];
@@ -144,14 +156,14 @@ export function agYap(
   let isimaVar = false;
 
   // 1) Karar: hangi yüz nereye, hangi sırayla (kopya yok).
-  for (const y of model) {
+  for (let mi = 0; mi < model.length; mi++) {
+    const y = model[mi]!;
     if (y.p.length < 3) continue;
     if (secenek.dumansiz && y.duman) continue;
     const alfa = y.saydam ?? 1;
     const k = y.katman ?? 0;
     // Gölge: nesnelerin dolu yüzleri, bakana dönük olsun olmasın.
     if (k >= 0 && alfa >= 1) golgeler.push(y);
-    if (secenek.bayraksiz && y.bez) continue;
     const yn = normal(y.p);
     const cevir = nokta(yn, c) <= 1e-6;
     // Arkası dönük ince levha çevriliyor; değilse atılıyor.
@@ -167,10 +179,11 @@ export function agYap(
         if (q[e]! > enCok[e]!) enCok[e] = q[e]!;
       }
     }
-    const x: Parca = { y, yn, cevir, k, d: d / y.p.length };
+    const x: Parca = { y, yn, cevir, k, d: d / y.p.length, mi };
     if (y.su) suVar = true;
     if (y.isima) isimaVar = true;
-    if (alfa < 1) saydam.push(x);
+    if (secenek.bayraksiz && y.bez) bezler.push(x);
+    else if (alfa < 1) saydam.push(x);
     else if (k < 0) yer.push(x);
     else nesne.push(x);
   }
@@ -178,12 +191,15 @@ export function agYap(
   saydam.sort((a, b) => a.d - b.d);
 
   // 2) Yazım: üçgen yelpazesi doğrudan tampona.
-  const dizi = (ps: Parca[]) => {
+  let kaynak: Int32Array | undefined;
+  const dizi = (ps: Parca[], kaynakla = false) => {
     let n = 0;
     for (const x of ps) n += (x.y.p.length - 2) * 3 * KOSE;
     const f = new Float32Array(n);
+    if (kaynakla) kaynak = new Int32Array((n / KOSE) * 2);
     let o = 0;
-    for (const { y, yn, cevir } of ps) {
+    let ko = 0;
+    for (const { y, yn, cevir, mi } of ps) {
       const m = y.p.length;
       // Çevrilen yüzde köşe sırası ters, normal eksi.
       const j = (i: number) => (cevir ? m - 1 - i : i);
@@ -210,6 +226,10 @@ export function agYap(
       const vz = yatay ? 0 : 1 / yatayUz;
       const yaz = (i: number) => {
         const q = y.p[i]!;
+        if (kaynak && kaynakla) {
+          kaynak[ko++] = mi;
+          kaynak[ko++] = i;
+        }
         const n = y.vn ? y.vn[i]! : duz!;
         const r = y.vr ? renk(y.vr[i]!) : yuzRengi;
         f[o++] = q[0];
@@ -269,9 +289,10 @@ export function agYap(
     dMin = 0;
     dMax = 1;
   }
+  const nesneDizi = dizi(nesne, secenek.kaynak);
   return {
     yer: dizi(yer),
-    nesne: dizi(nesne),
+    nesne: nesneDizi,
     saydam: dizi(saydam),
     golge,
     enAz,
@@ -279,5 +300,7 @@ export function agYap(
     derinlik: [dMin, dMax],
     suVar,
     isimaVar,
+    bez: dizi(bezler),
+    ...(kaynak ? { nesneKaynak: kaynak } : {}),
   };
 }

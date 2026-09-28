@@ -18,9 +18,28 @@ import { rastgele } from './rastgele';
 import { gecis } from './arazi';
 import { insan, type Insan } from './figur';
 import { P, isikla } from './renk';
-import { BAYRAK_KARE, BAYRAK_SURE, SANCAK_SURE, bayrakGruplari, bayrakKareleri } from './bayrakAni';
-import { KOSE } from './glAg';
-import { BAYRAK_FAZ, SANCAK_FAZ, bayrak, bezAni, duman, sancak } from './parca';
+import {
+  AGAC_SURE,
+  BAYRAK_KARE,
+  BAYRAK_SURE,
+  SANCAK_SURE,
+  bayrakGruplari,
+  bayrakKareleri,
+} from './bayrakAni';
+import { KOSE, agYap } from './glAg';
+import {
+  BAYRAK_FAZ,
+  SANCAK_FAZ,
+  agac,
+  bayrak,
+  bezAni,
+  bezFazi,
+  cam,
+  duman,
+  salinim,
+  salinimBicimi,
+  sancak,
+} from './parca';
 import {
   ciz,
   dilim,
@@ -34,6 +53,7 @@ import {
   tasi,
   yansitici,
   zemineGeri,
+  kameraTabani,
   type V3,
 } from './uc';
 import { YERLESIM_KADEMELERI, yerlesimModeli, yerlesimNoktasi, yerlesimYuzdesi } from './yerlesim';
@@ -233,6 +253,69 @@ describe('3B motor', () => {
     const d = dondur(bez, 'z', Math.PI / 2)[0]!.bez!.yon!;
     expect(d[0]).toBeCloseTo(-bez[0]!.bez!.yon![1]);
     expect(d[1]).toBeCloseTo(0);
+  });
+
+  it('ağaç: kök yerinde, tepe yalnız rüzgâr yönünde hafifçe salınıyor', () => {
+    for (const m of [agac(3, 4, 1, rastgele('a1')), cam(3, 4, 1, rastgele('a2'))]) {
+      expect(m.every((y) => y.bez?.yon && y.bez.sure === AGAC_SURE)).toBe(true);
+      expect(new Set(m.map((y) => y.bez!.kok!.join())).size).toBe(1);
+      // Gövde ve taç tek parça.
+      expect(bayrakGruplari(m)).toHaveLength(1);
+      let enCok = 0;
+      for (const y of m) {
+        const [a, b] = [bezAni(y, 1.2).p, bezAni(y, -1.2).p];
+        y.bez!.u.forEach((u, i) => {
+          expect(a[i]![2]).toBeCloseTo(b[i]![2]);
+          // Rüzgâr ekranda yatay: (-1, 1, 0) yönü.
+          expect(a[i]![0] - b[i]![0]).toBeCloseTo(-(a[i]![1] - b[i]![1]));
+          if (u < 1e-9) expect(a[i]![0]).toBeCloseTo(b[i]![0]);
+          enCok = Math.max(enCok, Math.abs(a[i]![0] - b[i]![0]));
+        });
+      }
+      expect(enCok).toBeGreaterThan(0.1);
+      expect(enCok).toBeLessThan(0.6);
+    }
+  });
+
+  it('salınım iki biçimin toplamı; hızlı kareler yavaş yolla aynı', () => {
+    for (const u of [0, 0.3, 0.7, 1])
+      for (const f of [0, 1, 2.5]) {
+        const [a, b] = salinimBicimi(u);
+        expect(salinim(u, f)).toBeCloseTo(Math.sin(f) * a + Math.cos(f) * b);
+      }
+    const m = [...agac(0, 0, 0, rastgele('h1')), ...agac(9, 2, 0, rastgele('h2'))];
+    const k = bayrakKareleri(m)!;
+    const gruplar = bayrakGruplari(m);
+    const { c } = kameraTabani();
+    const derinlik = (y: (typeof m)[number]) =>
+      y.p.reduce((t, q) => t + q[0] * c[0] + q[1] * c[1] + q[2] * c[2], 0);
+    const f = 5;
+    const adim = (2 * Math.PI * f) / BAYRAK_KARE;
+    // Görünürlük durağan hâlden (salınım hafif): her köşe kaynak yüzünün o
+    // andaki yerinde.
+    const sirali = gruplar.flatMap((g) => [...g].sort((a, b) => derinlik(a) - derinlik(b)));
+    const kaynak = agYap(sirali, undefined, { kaynak: true }).nesneKaynak!;
+    const hizli = k.kareler[f]!;
+    expect(hizli.length / KOSE).toBe(kaynak.length / 2);
+    for (let v = 0; v < kaynak.length / 2; v++) {
+      const y = sirali[kaynak[v * 2]!]!;
+      const q = bezAni(y, bezFazi(y) + adim).p[kaynak[v * 2 + 1]!]!;
+      for (let e = 0; e < 3; e++) expect(hizli[v * KOSE + e]).toBeCloseTo(q[e]!, 4);
+    }
+  });
+
+  it('parçalar uzaktan yakına sıralı (sayfada yakın olan üstte)', () => {
+    const { c } = kameraTabani();
+    const m = [
+      ...agac(10, 10, 0, rastgele('s1')),
+      ...agac(0, 0, 0, rastgele('s2')),
+      ...agac(5, 5, 0, rastgele('s3')),
+    ];
+    const d = bayrakGruplari(m).map((g) => {
+      const q = g[0]!.bez!.kok!;
+      return q[0] * c[0] + q[1] * c[1] + q[2] * c[2];
+    });
+    expect([...d].sort((a, b) => a - b)).toEqual(d);
   });
 
   it('kare süreleri: bayrak çırpınıyor, sancak ağır salınıyor', () => {

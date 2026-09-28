@@ -524,14 +524,13 @@ svg g[role='button']:focus-visible > path:first-of-type {
   }
 }
 
-/* Bayrak: atlastaki kareler adım adım (GPU'da çizilmiş dalga, sayfada yalnız kayma). */
+/* Bayrak, sancak, ağaç: atlastaki kareler adım adım (GPU'da çizilmiş hareket, sayfada yalnız kayma). */
 .hareket-bayrak {
   position: absolute;
   overflow: hidden;
 }
 .hareket-bayrak > span {
   position: absolute;
-  left: 0;
   background-size: 100% 100%;
   animation-name: bayrak-dalga;
   animation-iteration-count: infinite;
