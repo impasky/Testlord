@@ -256,6 +256,8 @@ export const SANCAK_FAZ = 0;
 export const BAYRAK_SURE = 1.2;
 export const SANCAK_SURE = 3.2;
 export const AGAC_SURE = 4.4;
+/** Askerin duruşu: ağırlığını bir ayağından öbürüne verir gibi, ağır. */
+export const ASKER_SURE = 3.6;
 
 /**
  * Sarkaç salınımı (sancak, ağaç): bağlı uçtan oran `u`, evre `faz`. Uç
@@ -264,11 +266,14 @@ export const AGAC_SURE = 4.4;
  * bununla kaydırıyor (`salinimBicimi`).
  */
 const SALINIM_KIVRIM = 2 * Math.PI * 0.9;
-export function salinimBicimi(u: number): [number, number] {
-  return [u * u - 0.25 * u * Math.cos(SALINIM_KIVRIM * u), 0.25 * u * Math.sin(SALINIM_KIVRIM * u)];
+export function salinimBicimi(u: number, kivrim = 0.25): [number, number] {
+  return [
+    u * u - kivrim * u * Math.cos(SALINIM_KIVRIM * u),
+    kivrim * u * Math.sin(SALINIM_KIVRIM * u),
+  ];
 }
-export function salinim(u: number, faz: number): number {
-  const [a, b] = salinimBicimi(u);
+export function salinim(u: number, faz: number, kivrim?: number): number {
+  const [a, b] = salinimBicimi(u, kivrim);
   return Math.sin(faz) * a + Math.cos(faz) * b;
 }
 
@@ -285,12 +290,12 @@ const BEZ_GENLIK = 0.16;
  * eğiminden: kumaş kıvrımlı gölgeleniyor, dilimler arasında çizgi yok.
  */
 export function bezAni(y: Yuz, faz: number): Yuz {
-  const { dinlenik: d, u, yon } = y.bez!;
+  const { dinlenik: d, u, yon, kivrim } = y.bez!;
   if (yon) {
     // Askıdaki sancak: çubuğa bağlı üst kenar yerinde, uç duvar boyunca
     // sarkaç gibi salınıyor; üstüne kumaş boyunca hafif bir kıvrım.
     const p = d.map((q, i): V3 => {
-      const s = salinim(u[i]!, faz);
+      const s = salinim(u[i]!, faz, kivrim);
       return [q[0] + yon[0] * s, q[1] + yon[1] * s, q[2] + yon[2] * s];
     });
     return { ...y, p };

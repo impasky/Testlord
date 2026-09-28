@@ -66,6 +66,8 @@ function heykel(p: Nokta): Model {
     pelerin: P.koyuAltin,
     sag: { tip: 'kilic', renk: altin, ikinci: P.koyuAltin },
   });
+  // Heykel kıpırdamıyor.
+  for (const y of m) delete y.bez;
   return [
     ...kutu(p[0] - 1.6, p[1] - 1.6, 0, 3.2, 3.2, 2, P.acikTas),
     ...tasi(olcekle(dondur(m, 'z', -Math.PI / 4 + 0.35), 0.8), [p[0], p[1], 2]),

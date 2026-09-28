@@ -10,7 +10,7 @@
  * yanında. Çizimden önce z etrafında döndürülüyor (`bakis`): kameraya
  * dörtte üç dönük, bir tık ekranın sağına.
  */
-import { cubuk, kubbe, suz, teker, uzuv } from './parca';
+import { ASKER_SURE, cubuk, kubbe, suz, teker, uzuv } from './parca';
 import { P, isikla } from './renk';
 import { rastgele } from './rastgele';
 import {
@@ -584,7 +584,37 @@ function esyaModeli(e: Esya, el: V3, yan: number): Model {
 
 /* ── İnsan ─────────────────────────────────────────────────────────── */
 
+/** Duruş salınımı: başın yana kayması, boyun kaçta kaçı (hafif). */
+const DURUS_GENLIK = 0.04;
+
+/**
+ * Figürü duruş salınımına bağlar (`Yuz.bez`, hareketli sahnede): ayaklar
+ * yerinde, gövde ağırlığını bir yandan öbürüne verir gibi kendi sağ-sol
+ * ekseninde (x) yavaşça yana salınıyor; silah ve kalkan elde, birlikte.
+ * Kıvrım yok: durağan hâl (liste simgesi, portre, SVG) birebir aynı.
+ */
+function durus(m: Model): Model {
+  let boy = 0;
+  for (const y of m) for (const q of y.p) boy = Math.max(boy, q[2]);
+  if (!(boy > 0)) return m;
+  const yon: V3 = [DURUS_GENLIK * boy, 0, 0];
+  for (const y of m)
+    y.bez = {
+      dinlenik: y.p,
+      u: y.p.map((q) => Math.min(1, Math.max(0, q[2] / boy))),
+      yon,
+      kok: [0, 0, 0],
+      sure: ASKER_SURE,
+      kivrim: 0,
+    };
+  return m;
+}
+
 export function insan(f: Insan): Model {
+  return durus(insanGovdesi(f));
+}
+
+function insanGovdesi(f: Insan): Model {
   const m: Model = [];
   const iri = f.iri ?? (f.kadin ? 0.92 : 1);
   const etek = f.etek ?? f.govde;

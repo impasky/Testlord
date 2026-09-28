@@ -20,6 +20,7 @@ import { insan, type Insan } from './figur';
 import { P, isikla } from './renk';
 import {
   AGAC_SURE,
+  ASKER_SURE,
   BAYRAK_KARE,
   BAYRAK_SURE,
   SANCAK_SURE,
@@ -316,6 +317,31 @@ describe('3B motor', () => {
       return q[0] * c[0] + q[1] * c[1] + q[2] * c[2];
     });
     expect([...d].sort((a, b) => a - b)).toEqual(d);
+  });
+
+  it('asker: ayaklar yerinde, gövde kendi sağ-sol ekseninde hafifçe salınıyor; durağanı aynı', () => {
+    const m = insan({ ten: P.ten1, govde: P.kirmiziBez, bacak: P.koyuTahta, cizme: P.deri });
+    expect(m.every((y) => y.bez?.yon && y.bez.kivrim === 0 && y.bez.sure === ASKER_SURE)).toBe(
+      true,
+    );
+    // Durağan hâl birebir dinlenik (liste simgesi, portre ve SVG değişmiyor).
+    for (const y of m) expect(bezAni(y, SANCAK_FAZ).p).toEqual(y.p);
+    let bas = 0;
+    for (const y of m) {
+      const [a, b] = [bezAni(y, Math.PI / 2).p, bezAni(y, -Math.PI / 2).p];
+      y.bez!.u.forEach((u, i) => {
+        // Yalnız x (figürün sağ-solu) oynuyor; ayak tabanı yerinde.
+        expect(a[i]![1]).toBeCloseTo(b[i]![1]);
+        expect(a[i]![2]).toBeCloseTo(b[i]![2]);
+        if (u < 1e-9) expect(a[i]![0]).toBeCloseTo(b[i]![0]);
+        bas = Math.max(bas, Math.abs(a[i]![0] - b[i]![0]));
+      });
+    }
+    expect(bas).toBeGreaterThan(0.3);
+    expect(bas).toBeLessThan(1.2);
+    // Zemindeki altın heykel kıpırdamıyor; askerler birer parça.
+    const zemin = zeminModeli('malikane')!;
+    expect(bayrakGruplari(zemin).filter((g) => g[0]!.bez!.sure === ASKER_SURE).length).toBe(2);
   });
 
   it('kare süreleri: bayrak çırpınıyor, sancak ağır salınıyor', () => {

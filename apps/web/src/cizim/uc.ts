@@ -110,9 +110,17 @@ export interface Yuz {
    * yer değiştirme: ölçekle birlikte büyüyor). Ağaç da böyle salınıyor
    * (kök yerinde, tepe rüzgârla). `kok`: aynı bayrağın, sancağın ya da
    * ağacın bütün yüzlerinde aynı nokta (hareketli sahnede birlikte
-   * çiziliyorlar); `sure`: bir turun süresi (sn).
+   * çiziliyorlar); `sure`: bir turun süresi (sn); `kivrim`: salınımın
+   * üstündeki kıvrımın gücü (varsayılan 0,25; figürde 0: gövde bükülmüyor).
    */
-  bez?: { dinlenik: V3[]; u: number[]; yon?: V3; kok?: V3; sure?: number };
+  bez?: {
+    dinlenik: V3[];
+    u: number[];
+    yon?: V3;
+    kok?: V3;
+    sure?: number;
+    kivrim?: number;
+  };
   /**
    * Çizim katmanı: küçük önce. Ressam algoritması yüzün ORTASINA bakıyor;
    * dev bir zemin yüzünün ortası sahnenin ortasında kaldığı için arkadaki
@@ -208,6 +216,7 @@ export function olcekle(m: Model, s: number | V3, o: V3 = [0, 0, 0]): Model {
       ...(y.bez
         ? {
             bez: {
+              ...y.bez,
               dinlenik: ters ? y.bez.dinlenik.map(f).reverse() : y.bez.dinlenik.map(f),
               u: ters ? [...y.bez.u].reverse() : y.bez.u,
               ...(y.bez.yon

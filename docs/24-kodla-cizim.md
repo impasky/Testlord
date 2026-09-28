@@ -311,6 +311,11 @@ kaydırıyor.
   ekranda yatay) boyunun ~%5'i kadar. Tur 4,4 sn. Gövde ve taç aynı
   parça (`bez.kok`). Parçalar sayfada uzaktan yakına dizili: iç içe
   ağaçlarda yakındaki üstte.
+- Asker (her `insan`): duruş salınımı; ayaklar yerinde, gövde ağırlığını
+  bir yandan öbürüne verir gibi kendi sağ-sol ekseninde boyunun ~%4'ü
+  kadar yana, silah ve kalkan elde. Tur 3,6 sn. Kıvrım yok
+  (`bez.kivrim` 0): durağan figür (liste simgesi, portre, SVG) birebir
+  aynı. Zemindeki altın heykel kıpırdamıyor.
 
 Kutu bir ızgara sarmalayıcısına geçiyor: resim ve katmanlar aynı hücrede
 üst üste, çağıranın sınıfları sarmalayıcıda. Katman dikdörtgeni ölçülüyor

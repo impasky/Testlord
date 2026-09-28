@@ -12,7 +12,7 @@ import type { BayrakKareleri } from './glCizici';
 import { BAYRAK_SURE, bezAni, bezFazi, salinimBicimi } from './parca';
 import { kameraTabani, type Kamera, type Model, type V3, type Yuz } from './uc';
 
-export { AGAC_SURE, BAYRAK_SURE, SANCAK_SURE } from './parca';
+export { AGAC_SURE, ASKER_SURE, BAYRAK_SURE, SANCAK_SURE } from './parca';
 
 /** Bir dalga turundaki kare sayısı. */
 export const BAYRAK_KARE = 12;
@@ -94,7 +94,7 @@ function salinanKareler(
     const d = b.dinlenik[i]!;
     temel.set(d, v * 3);
     yon.set(b.yon!, v * 3);
-    bicim.set(salinimBicimi(b.u[i]!), v * 2);
+    bicim.set(salinimBicimi(b.u[i]!, b.kivrim), v * 2);
     faz[v] = bezFazi(y);
     sinir[grubu[kaynak[v * 2]!]!]!++;
   }
