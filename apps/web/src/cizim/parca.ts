@@ -607,6 +607,7 @@ export function cubuk(a: V3, b: V3, k: number, renk: string): Model {
  */
 export function uzuv(a: V3, b: V3, r1: number, r2: number, renk: string, dilimSayisi = 6): Model {
   const n = dilim(dilimSayisi);
+  const yuvarlak = n >= 5;
   const d = tekle(fark(b, a));
   const yard: V3 = Math.abs(d[2]) > 0.9 ? [1, 0, 0] : [0, 0, 1];
   const u = tekle(carp(d, yard));
@@ -621,8 +622,26 @@ export function uzuv(a: V3, b: V3, r1: number, r2: number, renk: string, dilimSa
   const A = halka(a, r1);
   const B = halka(b, r2);
   const orta: V3 = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2];
+  // Yan yüz normali: eksenden dışarı + incelmenin eğimi.
+  const boy = Math.hypot(b[0] - a[0], b[1] - a[1], b[2] - a[2]) || 1;
+  const N = Array.from({ length: n }, (_, i): V3 => {
+    const t = (i / n) * Math.PI * 2 + Math.PI / n;
+    const c = Math.cos(t) * boy;
+    const s = Math.sin(t) * boy;
+    const e = r1 - r2;
+    return tekle([
+      u[0] * c + v[0] * s + d[0] * e,
+      u[1] * c + v[1] * s + d[1] * e,
+      u[2] * c + v[2] * s + d[2] * e,
+    ]);
+  });
   const yuzler: V3[][] = [A, B];
-  for (let i = 0; i < n; i++) yuzler.push([A[i]!, A[(i + 1) % n]!, B[(i + 1) % n]!, B[i]!]);
+  const normaller: (V3[] | undefined)[] = [undefined, undefined];
+  for (let i = 0; i < n; i++) {
+    const j = (i + 1) % n;
+    yuzler.push([A[i]!, A[j]!, B[j]!, B[i]!]);
+    normaller.push(yuvarlak ? [N[i]!, N[j]!, N[j]!, N[i]!] : undefined);
+  }
   return yuzler.map((p, i) => {
     const c = p.reduce<V3>(
       (s, q) => [s[0] + q[0] / p.length, s[1] + q[1] / p.length, s[2] + q[2] / p.length],
@@ -632,7 +651,14 @@ export function uzuv(a: V3, b: V3, r1: number, r2: number, renk: string, dilimSa
     const disa = fark(c, orta);
     const ters = nn[0] * disa[0] + nn[1] * disa[1] + nn[2] * disa[2] < 0;
     // Uçlar düz kapak, yan dilimler eğri yüzey.
-    return { p: ters ? [...p].reverse() : p, renk, yumusak: i >= 2 };
+    const vn = normaller[i];
+    if (!vn) return { p: ters ? [...p].reverse() : p, renk };
+    return {
+      p: ters ? [...p].reverse() : p,
+      renk,
+      yumusak: true,
+      vn: ters ? [...vn].reverse() : vn,
+    };
   });
 }
 
@@ -682,6 +708,7 @@ export function kubbe(
   basik = 1,
 ): Model {
   const n = dilim(dilimSayisi);
+  const nrm = (q: V3): V3 => tekle([q[0] - cx, q[1] - cy, (q[2] - z) / (basik * basik)]);
   const nokta3 = (i: number, j: number): V3 => {
     const t = (i / halka) * (Math.PI / 2);
     const f = (j / n) * Math.PI * 2;
@@ -698,7 +725,8 @@ export function kubbe(
       const b = nokta3(i, j + 1);
       const c = nokta3(i + 1, j + 1);
       const d = nokta3(i + 1, j);
-      m.push({ p: i === 0 ? [a, d, c] : [a, d, c, b], renk, yumusak: true });
+      const p = i === 0 ? [a, d, c] : [a, d, c, b];
+      m.push({ p, renk, yumusak: true, vn: p.map(nrm) });
     }
   return m;
 }

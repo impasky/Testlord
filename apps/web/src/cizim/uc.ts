@@ -44,6 +44,27 @@ export interface Yuz {
    */
   gn?: V3;
   /**
+   * Köşe normalleri (`p` ile aynı sıra). Yalnız GPU çizimi okuyor: ışık
+   * yüzün içinde piksel piksel ara değerleniyor, eğri yüzey (kule, kafa,
+   * arazi) dilimsiz görünüyor. Yoksa yüzün kendi normali.
+   */
+  vn?: V3[];
+  /**
+   * Köşe renkleri (`p` ile aynı sıra). Yalnız GPU çizimi okuyor: renk de
+   * üçgenin içinde ara değerleniyor (arazi yama yama değil, akarak
+   * değişiyor). SVG yüzün kendi `renk`ini kullanıyor.
+   */
+  vr?: string[];
+  /**
+   * Su (yalnız GPU). `d`: her köşenin su seviyesine uzaklığı, kum şeridi
+   * genişliği biriminden — suyun altında artı, 0 ile -1 arası kum. `renk`:
+   * o köşedeki su rengi; `kum`: kıyı rengi. `d` üçgenin içinde ara
+   * değerlenip piksel piksel sınanıyor: kıyı çizgisi ve kum şeridi üçgen
+   * kenarına değil `d` eğrilerine oturuyor — komşu üçgenlerde kesintisiz,
+   * sivri uçsuz. `renk`/`vr` kumsuz kara rengi olarak kalıyor.
+   */
+  su?: { d: number[]; renk: string[]; kum: string };
+  /**
    * Çizim katmanı: küçük önce. Ressam algoritması yüzün ORTASINA bakıyor;
    * dev bir zemin yüzünün ortası sahnenin ortasında kaldığı için arkadaki
    * duvarlar onun altında kalıyordu. Zemin -2, yere yatık yol/döşeme -1,
@@ -108,8 +129,19 @@ export function olcekle(m: Model, s: number | V3, o: V3 = [0, 0, 0]): Model {
       o[1] + (q[1] - o[1]) * k[1],
       o[2] + (q[2] - o[2]) * k[2],
     ]);
+    // Normal ölçeğin tersiyle dönüşür (ters devrik); köşe sırası gibi o da
+    // aynalamada çevrilir.
+    const vn = y.vn?.map((n) => birim([n[0] / k[0], n[1] / k[1], n[2] / k[2]]));
     // Aynalamada köşe sırası tersine döner; normal dışarı baksın diye çevir.
-    return { ...y, p: ters ? p.reverse() : p };
+    return {
+      ...y,
+      p: ters ? p.reverse() : p,
+      ...(vn ? { vn: ters ? vn.reverse() : vn } : {}),
+      ...(y.vr && ters ? { vr: [...y.vr].reverse() } : {}),
+      ...(y.su && ters
+        ? { su: { ...y.su, d: [...y.su.d].reverse(), renk: [...y.su.renk].reverse() } }
+        : {}),
+    };
   });
 }
 
@@ -125,7 +157,12 @@ export function dondur(m: Model, eksen: 'x' | 'y' | 'z', aci: number, o: V3 = [0
     if (eksen === 'x') return [o[0] + x, o[1] + y * c - z * s, o[2] + y * s + z * c];
     return [o[0] + x * c + z * s, o[1] + y, o[2] - x * s + z * c];
   };
-  return m.map((y) => ({ ...y, p: y.p.map(f) }));
+  // Normal: aynı dönme, orijin olmadan.
+  const yon = (n: V3): V3 => {
+    const q = f(ekle(n, o));
+    return [q[0] - o[0], q[1] - o[1], q[2] - o[2]];
+  };
+  return m.map((y) => ({ ...y, p: y.p.map(f), ...(y.vn ? { vn: y.vn.map(yon) } : {}) }));
 }
 
 /** Modelin bütün yüzlerini bir katmana koyar (bkz. `Yuz.katman`). */
@@ -260,8 +297,11 @@ export function silindir(
   n = 8,
 ): Model {
   const k = dilim(n);
-  return prizma(cember(cx, cy, r, k, Math.PI / k), z, h, renk).map((y, i) =>
-    i < 2 ? y : { ...y, yumusak: true },
+  const m = prizma(cember(cx, cy, r, k, Math.PI / k), z, h, renk);
+  // 4 ve altı: bilerek köşeli (kare sütun) — sert kenar, düz ışık.
+  if (k < 5) return m;
+  return m.map((y, i) =>
+    i < 2 ? y : { ...y, yumusak: true, vn: y.p.map((q) => birim([q[0] - cx, q[1] - cy, 0])) },
   );
 }
 
@@ -277,6 +317,10 @@ export function koni(
   r2 = 0,
 ): Model {
   const n = dilim(dilimSayisi);
+  const yuvarlak = n >= 5;
+  // Yan yüzün normali: yarıçap yönü + eğim (yarıçap h boyunca r1'den r2'ye).
+  const egimli = (a: number): V3 => birim([Math.cos(a) * h, Math.sin(a) * h, r1 - r2]);
+  const aci = (x: number, y: number) => Math.atan2(y - cy, x - cx);
   const alt = cember(cx, cy, r1, n, Math.PI / n);
   const m: Model = [{ p: [...alt].reverse().map(([x, y]): V3 => [x, y, z]), renk }];
   if (r2 > 0) {
@@ -295,13 +339,20 @@ export function koni(
           [d[0], d[1], z + h],
         ],
         renk,
-        yumusak: true,
+        ...(yuvarlak
+          ? {
+              yumusak: true,
+              vn: [a, b, c, d].map(([x, y]) => egimli(aci(x, y))),
+            }
+          : {}),
       });
     }
   } else {
     for (let i = 0; i < n; i++) {
       const a = alt[i]!;
       const b = alt[(i + 1) % n]!;
+      const na = egimli(aci(a[0], a[1]));
+      const nb = egimli(aci(b[0], b[1]));
       m.push({
         p: [
           [a[0], a[1], z],
@@ -309,7 +360,14 @@ export function koni(
           [cx, cy, z + h],
         ],
         renk,
-        yumusak: true,
+        ...(yuvarlak
+          ? {
+              yumusak: true,
+              // Tepe noktası: iki kenarın ortasındaki yön (sivri uçta tek
+              // normal olmaz; her dilim kendi ortasına bakıyor).
+              vn: [na, nb, birim(ekle(na, nb))],
+            }
+          : {}),
       });
     }
   }
@@ -347,6 +405,9 @@ export function kure(
       cz + Math.cos(t) * r * basik * (i > 0 && i < halka ? k : 1),
     ];
   };
+  // Basıklık z'yi ölçekliyor: normal ölçeğin tersiyle (z / basik²).
+  const nrm = (q: V3): V3 => birim([q[0] - cx, q[1] - cy, (q[2] - cz) / (basik * basik)]);
+  const yuvarlak = n >= 5;
   const izgara: V3[][] = [];
   for (let i = 0; i <= halka; i++) {
     const satir: V3[] = [];
@@ -360,11 +421,13 @@ export function kure(
       const b = izgara[i]![(j + 1) % n]!;
       const c = izgara[i + 1]![(j + 1) % n]!;
       const d = izgara[i + 1]![j]!;
-      if (i === 0) m.push({ p: [a, d, c], renk, yumusak: true });
-      else if (i === halka - 1) m.push({ p: [a, d, b], renk, yumusak: true });
+      const yuz = (p: V3[]) =>
+        m.push({ p, renk, ...(yuvarlak ? { yumusak: true, vn: p.map(nrm) } : {}) });
+      if (i === 0) yuz([a, d, c]);
+      else if (i === halka - 1) yuz([a, d, b]);
       else {
-        m.push({ p: [a, d, c], renk, yumusak: true });
-        m.push({ p: [a, c, b], renk, yumusak: true });
+        yuz([a, d, c]);
+        yuz([a, c, b]);
       }
     }
   }
@@ -521,12 +584,12 @@ export interface Kamera {
 export const IZOMETRIK: Kamera = { yon: Math.PI / 4, egim: Math.PI / 6 };
 
 /** Işık: sol üstten, hafif önden. Tüm çizimlerde aynı. */
-const ISIK = birim([0.55, 0.2, 1]);
-const ORTAM = 0.46;
-const YAYGIN = 0.58;
+export const ISIK = birim([0.55, 0.2, 1]);
+export const ORTAM = 0.46;
+export const YAYGIN = 0.58;
 /** Kenar: yüzün bir tık koyusu. Eğri yüzeyin dilim kenarı neredeyse görünmez. */
-const KENAR = 0.78;
-const KENAR_YUMUSAK = 0.94;
+export const KENAR = 0.78;
+export const KENAR_YUMUSAK = 0.94;
 
 export interface Cokgen {
   n: string;
@@ -554,11 +617,20 @@ function kameraYonu(kamera: Kamera): V3 {
   ];
 }
 
-/** Dünya noktasını ekran noktasına çeviren işlev (SVG: y aşağı). */
-export function yansitici(kamera: Kamera = IZOMETRIK): (q: V3) => [number, number] {
+/**
+ * Kameranın dünya tabanı: `sag` ve `yukari` ekran eksenleri, `c` bakana
+ * doğru (derinlik). SVG ve GPU çizimi aynı tabanı kullanıyor.
+ */
+export function kameraTabani(kamera: Kamera = IZOMETRIK): { sag: V3; yukari: V3; c: V3 } {
   const c = kameraYonu(kamera);
   const sag = birim(capraz([0, 0, 1], c));
   const yukari = capraz(c, sag);
+  return { sag, yukari, c };
+}
+
+/** Dünya noktasını ekran noktasına çeviren işlev (SVG: y aşağı). */
+export function yansitici(kamera: Kamera = IZOMETRIK): (q: V3) => [number, number] {
+  const { sag, yukari } = kameraTabani(kamera);
   return (q: V3) => [nokta(q, sag), -nokta(q, yukari)];
 }
 
@@ -583,7 +655,8 @@ export function ciz(model: Model, kamera: Kamera = IZOMETRIK, pay = 1): Cizilmis
     }
     // Gölgeleme normali ancak yüz öne bakıyorsa: arka yüzü çevrilmiş ince
     // levhada kendi (çevrilmiş) normali geçerli.
-    const g = y.gn && n === nrm ? birim(y.gn) : n;
+    const ort = y.gn ?? (y.vn ? y.vn.reduce<V3>((t, v) => ekle(t, v), [0, 0, 0]) : undefined);
+    const g = ort && n === nrm ? birim(ort) : n;
     const k = y.isima ? 0.75 + y.isima * 0.5 : ORTAM + YAYGIN * Math.max(0, nokta(g, ISIK));
     const noktalar = y.p.map(ekran);
     for (const [px, py] of noktalar) {

@@ -3,8 +3,9 @@
 Oyundaki her resim kodla çiziliyor. Binalar, yerleşim kademeleri, bölge
 sahneleri, birlikler, düşmanlar, ekipman, generaller, lord, profil
 portreleri, akın diyarları, ekran zeminleri ve dünya haritasının arazisi
-`apps/web/src/cizim/` altında birkaç ilkel parçadan kuruluyor ve tarayıcıda
-SVG olarak çiziliyor. Depoda oyun için tek bir resim dosyası yok.
+`apps/web/src/cizim/` altında birkaç ilkel parçadan kuruluyor. Tarayıcıda
+WebGL2 varsa GPU'da (piksel başına ışık, gölge, kenar yumuşatma), yoksa SVG
+olarak çiziliyor. Depoda oyun için tek bir resim dosyası yok.
 
 ## Neden
 
@@ -59,33 +60,117 @@ Küçük bir 3B motor. Yöntem "low-poly" oyunlarınki:
 `renk.ts` ortak paleti (`P`) ve `isikla` / `karistir` yardımcılarını
 taşıyor. Renkler arayüzle aynı sıcaklıkta: koyu zemin, altın vurgu.
 
+## GPU çizimi (`gl*.ts`)
+
+SVG her yüzü tek düz renkle boyuyor; ne kadar dilim eklense yüzler
+seçiliyor. WebGL2 varsa aynı model GPU'da çiziliyor ve sonuç aynı SVG'nin
+içine resim olarak konuyor. Kamera, ışık ve palet aynı; yan yana duran iki
+yol aynı dünyanın parçası. Model de aynı: GPU'nun istediği ek bilgi
+yüzün üstünde, SVG onu okumuyor.
+
+**Köşe verisi (`Yuz`).** Yalnız GPU okuyor.
+
+- `vn`: köşe normalleri. Silindir, koni, küre, uzuv ve kubbe eğri
+  yüzeyin gerçek normalini, arazi komşu köşelerden hesaplananı veriyor.
+  Işık yüzün içinde piksel piksel ara değerleniyor; kule, kafa ve yamaç
+  dilimsiz görünüyor.
+- `vr`: köşe renkleri. Arazi rengi köşede hesaplanıyor; renk üçgenden
+  üçgene sıçramıyor, akıyor.
+- `su`: köşenin su seviyesine uzaklığı (kum şeridi biriminden), su rengi
+  ve kıyı rengi. Kıyı çizgisi ve kum şeridi üçgen kenarına değil, bu
+  uzaklığın sıfır eğrisine oturuyor: komşu üçgenlerde kesintisiz, sivri
+  uçsuz, bir piksel genişliğinde yumuşak. Suyun kıyıya değdiği yerde ince
+  bir köpük şeridi var.
+- Dönüşümler (`olcekle`, `dondur`) bunları da taşıyor; aynalamada köşe
+  sırasıyla birlikte dönüyorlar.
+
+**Ağ (`glAg.ts`).** Modelden üçgen tamponu; saf, node'da test ediliyor.
+Görünürlük ve `ciftYuz` çevirmesi SVG ile aynı karar. Yer katmanları
+(`katman < 0`) ressam sırasıyla tek tampon, nesneler derinlik tamponuna,
+saydam yüzler en sona. İki geçiş: önce hangi yüz nereye, sonra doğrudan
+`Float32Array`'e yazım (dünya zemininin elli bin üçgeninde ara dizi
+çöpü ana iş parçacığını dolduruyordu).
+
+**Çizici (`glCizici.ts`).** DOM'a dokunmuyor; işçide de ana iş
+parçacığında da aynı koşuyor. Üç geçiş:
+
+1. Gölge haritası (2048²): yalnız nesneler (bina, ağaç, figür), iki
+   yüzlü. Araziye ve birbirine gölge düşürüyorlar; 5×5 yüzdeli süzgeç
+   gölge kenarını yumuşatıyor.
+2. Ana geçiş, dört hedefe birden: renk, normal + çizgi koyuluğu, taban
+   renk, derinlik. Işık `ORTAM + YAYGIN · (n·L)`, gölgedeki yüz yaygın
+   ışığın %38'ini alıyor.
+3. Çözme: her çıktı pikseli 2×2 örneğin ortalaması (süper örnekleme) ve
+   her örnek kendi kenarını buluyor. Çizgi yalnız siluette (komşu boş ya
+   da belirgin arkada) ve keskin kırılımda ya da renk değişiminde; yuvarlak
+   yüzeyin içinde çizgi yok. Kalınlık ekran pikselinde sabit (~0,7 CSS
+   pikseli). 1400 pikselden büyük çıktı (dünya zemini) tek örnekle
+   çiziliyor; 2×2'si bellek sınırını aşıyor.
+
+Bellek yetmezse (ya da hedef doku kurulamazsa) iş `null` dönüyor ve o
+çizim SVG'ye düşüyor. Sıra boşalınca büyük hedef dokular dört saniye sonra
+bırakılıyor; telefonda tam ekran bir afişin dokuları onlarca MB tutuyordu.
+
+**Sıra ve işçi (`gl.ts`, `glIsci.ts`).** Çizim bir işçide (Web Worker +
+OffscreenCanvas) koşuyor. GPU sürücüsü yazılımsa (donanım hızlandırması
+yok) bir sahne yüzlerce milisaniye sürebiliyor; ana iş parçacığında bu
+kaydırmayı ve dokunmayı donduruyordu (dünya haritasında 661 ms'lik tek bir
+görev ölçüldü, işçiyle 70 ms). Ana iş parçacığında yalnız modelden ağ
+kuruluyor ve tamponlar kopyasız aktarılıyor. İşçi açılamazsa ya da WebGL2
+orada yoksa aynı çizici ana iş parçacığında; o da yoksa SVG. İşler tek tek,
+aralarında nefes payıyla; aynı istek (anahtar + görüş kutusu + boy) bir kez
+çiziliyor.
+
+**Sahne (`Sahne.tsx`).** Önce SVG çokgenleri görünüyor (ertelenen büyük
+şeritlerde GPU varsa hiç hesaplanmıyor), GPU resmi hazır olunca aynı
+SVG'nin içine `<image>` olarak oturuyor: yer değişmiyor, erişilebilir ad
+aynı, `data-gl` imzası ekleniyor. Resim öğenin ekrandaki boyu × piksel
+yoğunluğu kadar çiziliyor (en çok 3×, 1400 piksel); boy 1,25'in
+kuvvetlerine yuvarlanıyor, öğe büyürken her pikselde yeniden çizilmesin.
+
+**Dünya zemini (`dunya.ts`, `dunyaAgi.ts`, `dunyaIsci.ts`).** Aynı
+arazi, iki çıktı. `dunyaUcgenleri` düz renkli üçgenler (2D tuval, WebGL
+yoksa); `dunyaModeli` GPU için: iki kat sık ızgara (köşe rengi doruklarda
+yıldız gibi dilimlenmesin), ışık ve renk köşede, kıyı `KARA_YOLU`na
+işaretli uzaklıktan. Toprak hücreleri de aynı yolla kırpıldığı için zemin
+ve hücreler aynı kıyıyı paylaşıyor. Ağaçlar iki çıktıda da aynı yerde
+(rastgele dizi 2D ızgaranın tükettiği kadar atlanıyor). Ağ ayrı bir
+işçide kuruluyor; zemin 2048 piksel çizilip tuvale yumuşakça geliyor.
+Kıyı ve kara sorguları kenar şeritleri ve hücreleriyle hızlandırıldı:
+her köşe yüzlerce kenarı değil, yalnız kendi şeridini tarıyor.
+
 ## Dosyalar
 
-| Dosya          | Ne çiziyor                                                                                                                    |
-| -------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `uc.ts`        | Motor: ilkeller, dönüşümler, kamera, ışık, sıralama                                                                           |
-| `renk.ts`      | Palet ve renk yardımcıları                                                                                                    |
-| `rastgele.ts`  | Tohumlu rastgele (FNV-1a + mulberry32)                                                                                        |
-| `parca.ts`     | Ortak parçalar: ağaç, çam, bayrak, çadır, fıçı, duman, uzuv, teker, kubbe                                                     |
-| `arazi.ts`     | Yükseklik alanından arazi, su, kıyı, nehir yatağı, yol ve parsel izleri, düzleme                                              |
-| `binalar.ts`   | Şehir binaları, her biri üç aşama; arsa, görev panosu, haberci kulesi, onur meydanı                                           |
-| `yerlesim.ts`  | Şehir sayfasının altındaki altı yerleşim kademesi (kamp → metropol)                                                           |
-| `kir.ts`       | Kır, maden, kale ve saray parçaları: ev, ambar, değirmen, köprü, maden ağzı, sur, kule, teras, köşk                           |
-| `bolgeler.ts`  | Altı bölge türü × üç aşama; aynı türün aşamaları aynı araziyi paylaşıyor                                                      |
-| `figur.ts`     | İnsan figürü (zırh, başlık, eşya, poz), at, mancınık, kalkan, kılıç                                                           |
-| `birlikler.ts` | Beş birlik, on düşman, altı yuva × beş kademe ekipman                                                                         |
-| `kisiler.ts`   | On iki general, beş lord, profil portreleri                                                                                   |
-| `diyarlar.ts`  | Beş akın diyarı: kapak sahnesi ve tepeden yol haritası                                                                        |
-| `zeminler.ts`  | Sekmelerin tepesindeki manzara şeritleri; her biri o ekranın binası ve insanlarıyla                                           |
-| `dunya.ts`     | Dünya haritasının arazisi, tepeden; kara sınırı `kara.ts`teki `KARA_YOLU`                                                     |
-| `Sahne.tsx`    | Modeli SVG'ye çizen bileşen; `kutu`, `kirp` (doldur, taşanı kırp), `kare` (kareye tamamla)                                    |
-| `Cizimler.tsx` | Ekranların kullandığı bileşenler: `BinaCizimi`, `BolgeCizimi`, `NesneCizimi`, `PortreCizimi`, `DiyarCizimi`, `ZeminCizimi`, … |
-| `Galeri.tsx`   | Geliştirme galerisi                                                                                                           |
+| Dosya                         | Ne çiziyor                                                                                                                    |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `uc.ts`                       | Motor: ilkeller, dönüşümler, kamera, ışık, sıralama                                                                           |
+| `renk.ts`                     | Palet ve renk yardımcıları                                                                                                    |
+| `rastgele.ts`                 | Tohumlu rastgele (FNV-1a + mulberry32)                                                                                        |
+| `parca.ts`                    | Ortak parçalar: ağaç, çam, bayrak, çadır, fıçı, duman, uzuv, teker, kubbe                                                     |
+| `arazi.ts`                    | Yükseklik alanından arazi, su, kıyı, nehir yatağı, yol ve parsel izleri, düzleme                                              |
+| `binalar.ts`                  | Şehir binaları, her biri üç aşama; arsa, görev panosu, haberci kulesi, onur meydanı                                           |
+| `yerlesim.ts`                 | Şehir sayfasının altındaki altı yerleşim kademesi (kamp → metropol)                                                           |
+| `kir.ts`                      | Kır, maden, kale ve saray parçaları: ev, ambar, değirmen, köprü, maden ağzı, sur, kule, teras, köşk                           |
+| `bolgeler.ts`                 | Altı bölge türü × üç aşama; aynı türün aşamaları aynı araziyi paylaşıyor                                                      |
+| `figur.ts`                    | İnsan figürü (zırh, başlık, eşya, poz), at, mancınık, kalkan, kılıç                                                           |
+| `birlikler.ts`                | Beş birlik, on düşman, altı yuva × beş kademe ekipman                                                                         |
+| `kisiler.ts`                  | On iki general, beş lord, profil portreleri                                                                                   |
+| `diyarlar.ts`                 | Beş akın diyarı: kapak sahnesi ve tepeden yol haritası                                                                        |
+| `zeminler.ts`                 | Sekmelerin tepesindeki manzara şeritleri; her biri o ekranın binası ve insanlarıyla                                           |
+| `dunya.ts`                    | Dünya haritasının arazisi, tepeden; kara sınırı `kara.ts`teki `KARA_YOLU`. 2D üçgenler ve GPU modeli                          |
+| `dunyaAgi.ts`, `dunyaIsci.ts` | Dünya zemininin GPU ağı, işçide (açılamazsa ana iş parçacığında)                                                              |
+| `glAg.ts`                     | Modelden GPU üçgen tamponu (saf)                                                                                              |
+| `glCizici.ts`                 | WebGL2 çizici: gölge haritası, ana geçiş, kenar + süper örnekleme                                                             |
+| `gl.ts`, `glIsci.ts`          | GPU sırası, önbellek ve çizim işçisi; yedekler                                                                                |
+| `Sahne.tsx`                   | Modeli çizen bileşen: SVG, GPU resmi hazır olunca onun yerine; `kutu`, `kirp` (doldur, taşanı kırp), `kare` (kareye tamamla)  |
+| `Cizimler.tsx`                | Ekranların kullandığı bileşenler: `BinaCizimi`, `BolgeCizimi`, `NesneCizimi`, `PortreCizimi`, `DiyarCizimi`, `ZeminCizimi`, … |
+| `Galeri.tsx`                  | Geliştirme galerisi                                                                                                           |
 
-Dünya haritasının arazisi bir kez, 1600 piksellik bir tuvale çiziliyor ve
-modül düzeyinde saklanıyor. Harita her açıldığında aynı tuval yeniden
-bağlanıyor. SVG'de yirmi bin üçgen yakınlaştırma ve kaydırmada her karede
-yeniden taranıyordu; tuval tek bir resim gibi ölçekleniyor.
+Dünya haritasının arazisi bir kez bir tuvale çiziliyor (GPU'da 2048, 2D
+yedekte 1600 piksel) ve modül düzeyinde saklanıyor. Harita her açıldığında
+aynı tuval yeniden bağlanıyor. SVG'de yirmi bin üçgen yakınlaştırma ve
+kaydırmada her karede yeniden taranıyordu; tuval tek bir resim gibi
+ölçekleniyor.
 
 ## Galeri
 
@@ -126,6 +211,10 @@ tools/gorsel-denetim.mjs` koş.
   farklı modele verilmemeli.
 - **Katman.** Yere yatık her şey (yol, parsel, gölge levhası) eksi katmanda;
   yoksa önündeki nesnenin üstüne çiziliyor.
+- **İki yol, bir model.** Köşe verisi (`vn`, `vr`, `su`) SVG'yi
+  değiştirmiyor; SVG yedeği her zaman aynı modelden. GPU'ya özel bir şey
+  eklenirken SVG'nin de düzgün çizdiği denetlenmeli (galeriyi WebGL
+  kapalıyken de aç).
 
 ## Testler ve denetimler
 
@@ -134,8 +223,17 @@ tools/gorsel-denetim.mjs` koş.
   çerçevesine sığan bir çizim veriyor; çizimler belirlenimci; oyunun
   verisindeki birlikler, diyar düşmanları ve seçilebilen hazır portreler
   çiziliyor; bilinmeyen ad `null` dönüyor.
+- `apps/web/src/cizim/gl.test.ts`: GPU ağı (görünen yüzler, gölgeye
+  girenler, ince levha çevirmesi, katman sırası, köşe normali/rengi/suyu
+  ve aynalamada dönmeleri), GPU ile SVG'nin aynı izdüşümü kullandığı
+  (izometrik ve tepeden), arazinin köşe su verisi, dünya GPU modelinin
+  yüzlerinin kameraya dönük, kıyı uzaklığının sınırlı, ağaçlarının 2D
+  çizimle aynı yerde olduğu.
 - `tools/gorsel-denetim.mjs`: ekranları gerçek tarayıcıda gezip çizimlerin
-  yerinde olduğunu ve taşma olmadığını ölçüyor. Ayrıca kaynak dosyaları
+  yerinde olduğunu ve taşma olmadığını ölçüyor. WebGL2 varken sahnelerin
+  (`svg[data-gl]`) ve dünya zemininin (`canvas[data-gl]`) gerçekten
+  GPU'dan geldiğini de ölçüyor; sessizce SVG'ye düşmek gözle yakalanması
+  en zor gerileme. Ayrıca kaynak dosyaları
   okuyor: veride olup çizimi olmayan bina aşaması, bölge türü, düşman,
   diyar ya da ekranda kullanılıp `ZEMIN_ADLARI`nda olmayan zemin kalmamalı.
 - `tools/generate_map.py`: her bölge işaretçisi karada mı, `kara.ts`teki

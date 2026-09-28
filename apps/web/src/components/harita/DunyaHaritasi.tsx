@@ -63,7 +63,9 @@ import type { MarchDto, RegionDto } from '../../api/client';
 import { IKONLAR } from '../ikon-verisi';
 import { IkonSaldiri } from '../Ikonlar';
 import { KARA_YOLU } from './kara';
-import { dunyaUcgenleri } from '../../cizim/dunya';
+import { DUNYA_ISIGI, DUNYA_KAMERASI, DUNYA_KUTUSU, dunyaUcgenleri } from '../../cizim/dunya';
+import { dunyaAgi } from '../../cizim/dunyaAgi';
+import { glCiz, glVarMi } from '../../cizim/gl';
 
 /*
  * İKİ GÖRÜNÜM (docs/23 §8). Dört mercek vardı; oyuncu "hâlâ karmaşık"
@@ -858,33 +860,71 @@ function bolgeEtiketi(r: RegionDto): string {
  *
  * Neden SVG değil: yirmi bin üçgen, yakınlaştırma ve kaydırmada her karede
  * yeniden taranıyordu. Tuval tek bir resim gibi ölçekleniyor.
+ *
+ * WebGL2 varsa zemin GPU'da çiziliyor (ışık ve renk köşede, kıyı piksel
+ * piksel) ve hazır olunca tuvale yumuşakça geliyor; bölgeler, sınırlar ve
+ * adlar o arada zaten üstte. GPU yoksa ya da düşerse düz üçgenler.
  */
 const ZEMIN_PIKSEL = 1600;
+/** GPU zemini daha büyük: yakınlaştırmada da keskin (tek örnek, bkz. gl.ts). */
+const GPU_PIKSEL = 2048;
 let zeminTuvali: HTMLCanvasElement | null = null;
+
+function ucgenleriDok(t: HTMLCanvasElement) {
+  t.width = ZEMIN_PIKSEL;
+  t.height = ZEMIN_PIKSEL;
+  const c = t.getContext('2d');
+  if (!c) return;
+  const k = ZEMIN_PIKSEL / 100;
+  c.lineJoin = 'round';
+  c.lineWidth = 1;
+  for (const u of dunyaUcgenleri()) {
+    c.beginPath();
+    c.moveTo(u.n[0]! * k, u.n[1]! * k);
+    for (let i = 2; i < u.n.length; i += 2) c.lineTo(u.n[i]! * k, u.n[i + 1]! * k);
+    c.closePath();
+    c.fillStyle = u.renk;
+    c.strokeStyle = u.renk;
+    c.fill();
+    // Aynı renkte ince kenar: komşu üçgenler arasında kıl gibi boşluk kalmasın.
+    c.stroke();
+  }
+}
+
+async function gpuZemini(t: HTMLCanvasElement) {
+  const ag = await dunyaAgi();
+  const url = await glCiz('dunya-zemini', () => ({
+    ag,
+    kamera: DUNYA_KAMERASI,
+    isik: DUNYA_ISIGI,
+    kutu: DUNYA_KUTUSU,
+    en: GPU_PIKSEL,
+    boy: GPU_PIKSEL,
+    olcek: GPU_PIKSEL / 400,
+  }));
+  const resim = url ? new Image() : null;
+  if (resim && url) {
+    resim.src = url;
+    await resim.decode().catch(() => undefined);
+  }
+  if (resim?.naturalWidth) {
+    t.width = GPU_PIKSEL;
+    t.height = GPU_PIKSEL;
+    t.getContext('2d')?.drawImage(resim, 0, 0);
+    t.dataset.gl = '';
+  } else ucgenleriDok(t);
+  t.style.opacity = '1';
+}
+
 function zeminTuvaliAl(): HTMLCanvasElement {
   if (zeminTuvali) return zeminTuvali;
   const t = document.createElement('canvas');
-  t.width = ZEMIN_PIKSEL;
-  t.height = ZEMIN_PIKSEL;
-  t.className = 'absolute inset-0 h-full w-full';
+  t.className = 'absolute inset-0 h-full w-full transition-opacity duration-300';
   t.dataset.dunyaZemini = '';
-  const c = t.getContext('2d');
-  if (c) {
-    const k = ZEMIN_PIKSEL / 100;
-    c.lineJoin = 'round';
-    c.lineWidth = 1;
-    for (const u of dunyaUcgenleri()) {
-      c.beginPath();
-      c.moveTo(u.n[0]! * k, u.n[1]! * k);
-      for (let i = 2; i < u.n.length; i += 2) c.lineTo(u.n[i]! * k, u.n[i + 1]! * k);
-      c.closePath();
-      c.fillStyle = u.renk;
-      c.strokeStyle = u.renk;
-      c.fill();
-      // Aynı renkte ince kenar: komşu üçgenler arasında kıl gibi boşluk kalmasın.
-      c.stroke();
-    }
-  }
+  if (glVarMi()) {
+    t.style.opacity = '0';
+    void gpuZemini(t);
+  } else ucgenleriDok(t);
   zeminTuvali = t;
   return t;
 }

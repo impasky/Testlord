@@ -242,6 +242,21 @@ export function arazi(a: AraziAyari): Model {
   const derinSu = a.derinSu ?? P.derinSu;
   // Kıyı: kumla çimen arası — saf kum rengi geniş üçgenlerde leke gibi duruyordu.
   const kiyi = a.kiyi ?? '#9b9362';
+  /*
+   * Köşe rengi (GPU çizimi): renk köşede hesaplanıyor ve üçgenin içinde
+   * ara değerleniyor. Su varsa her köşe su rengini (derinleştikçe koyu) ve
+   * kum şeridine uzaklığını da taşıyor; kıyı çizgisini ve kumu GPU piksel
+   * piksel buluyor. SVG yüz başına tek renk kullanmaya devam ediyor.
+   */
+  const KUM_SERIDI = 0.7;
+  const karaRengi = new Map<V3, string>();
+  const renkAl = (q: V3): string => {
+    let c = karaRengi.get(q);
+    if (!c) karaRengi.set(q, (c = a.renk(q[0], q[1], q[2], 1 - normalOf.get(q)![2])));
+    return c;
+  };
+  const suAl = (q: V3): string =>
+    karistir(suRengi, derinSu, Math.min(1, Math.max(0, su - q[2]) / 5));
   const kx0 = vx - 1;
   const kx1 = vx + ve + 1;
   const ky0 = vy - 1;
@@ -277,27 +292,44 @@ export function arazi(a: AraziAyari): Model {
         const cx = (p[0]![0] + p[1]![0] + p[2]![0]) / 3;
         const cy = (p[0]![1] + p[1]![1] + p[2]![1]) / 3;
         const cz = (u[0]![2] + u[1]![2] + u[2]![2]) / 3;
-        // Su ve kıyı düz (su yüzeyi zaten yatay); kara köşe normalleriyle.
+        // Su ve kıyı SVG'de düz (su yüzeyi zaten yatay); kara köşe
+        // normalleriyle. Köşe normalleri (`vn`) kıyıda da var: GPU'da kara
+        // tarafı komşu yamaçla aynı ışığı alıyor, su tarafını GPU düzlüyor.
         const gn =
-          alti > 0
+          alti === 3
             ? undefined
-            : tek3(
-                u.reduce<V3>(
-                  (t, q) => {
-                    const k = normalOf.get(q)!;
-                    return [t[0] + k[0], t[1] + k[1], t[2] + k[2]];
-                  },
-                  [0, 0, 0],
-                ),
-              );
+            : alti > 0
+              ? normal(p)
+              : tek3(
+                  u.reduce<V3>(
+                    (t, q) => {
+                      const k = normalOf.get(q)!;
+                      return [t[0] + k[0], t[1] + k[1], t[2] + k[2]];
+                    },
+                    [0, 0, 0],
+                  ),
+                );
         let renk: string;
         if (alti === 3) renk = karistir(suRengi, derinSu, Math.min(1, (su - cz) / 5));
         else if (alti > 0) renk = kiyi;
-        else renk = a.renk(cx, cy, cz, 1 - (gn ?? normal(p))[2]);
+        else renk = a.renk(cx, cy, cz, 1 - gn![2]);
         // Tohumlu ton oynaması hafif: sert olunca her üçgen ayrı bir yama
         // gibi okunuyordu. `r()` çağrısı yerinde, yoksa dizinin geri kalanı
         // (ağaçların yeri) kayardı.
-        m.push({ p, renk: isikla(renk, 0.985 + r() * 0.03), katman: -2, kenarsiz: true, gn });
+        m.push({
+          p,
+          renk: isikla(renk, 0.985 + r() * 0.03),
+          katman: -2,
+          kenarsiz: true,
+          gn,
+          // GPU çizimi için köşe başına: ışık ve renk üçgenin içinde ara
+          // değerleniyor.
+          ...(gn ? { vn: u.map((q) => normalOf.get(q)!) } : {}),
+          vr: u.map(renkAl),
+          ...(isFinite(su)
+            ? { su: { d: u.map((q) => (su - q[2]) / KUM_SERIDI), renk: u.map(suAl), kum: kiyi } }
+            : {}),
+        });
       }
     }
   }

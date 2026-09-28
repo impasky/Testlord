@@ -331,6 +331,42 @@ for (const [ad] of EKRANLAR) {
 // basmak paneli tıklamak olurdu.
 await kapiyiKapat(page);
 
+/**
+ * --- GPU çizimi gerçekten geliyor mu (docs/24) ---
+ *
+ * WebGL2 varken sahneler (afiş, birlik, portre) ve dünya zemini GPU'dan
+ * gelmeli. Gelmiyorsa çizici sessizce SVG'ye düşmüş demektir: ekran yine
+ * dolu görünür, yalnız pürüzsüz değil — gözle yakalanması en zor gerileme.
+ * WebGL2 hiç yoksa ölçüm atlanıyor; orada SVG'ye düşmek doğru davranış.
+ */
+{
+  const webgl2 = await page.evaluate(() => {
+    try {
+      return !!new OffscreenCanvas(1, 1).getContext('webgl2');
+    } catch {
+      return false;
+    }
+  });
+  if (!webgl2) iyi('gpu', 'WebGL2 yok — SVG yedeği çiziyor (ölçüm atlandı)');
+  else {
+    await ekrana(page, 'kisla', 0);
+    const sahne = await page
+      .waitForSelector('svg[data-gl]', { timeout: 20000 })
+      .then(() => true)
+      .catch(() => false);
+    const adet = await page.evaluate(() => document.querySelectorAll('svg[data-gl]').length);
+    if (sahne) iyi('gpu', `Ordu ekranında ${adet} çizim GPU'dan`);
+    else sorun('gpu', "Sahneler GPU'dan gelmedi", 'svg[data-gl] yok');
+    await page.click('nav button:has-text("Dünya")');
+    const zemin = await page
+      .waitForSelector('canvas[data-dunya-zemini][data-gl]', { timeout: 30000 })
+      .then(() => true)
+      .catch(() => false);
+    if (zemin) iyi('gpu', "dünya zemini GPU'dan");
+    else sorun('gpu', "Dünya zemini GPU'dan gelmedi", 'canvas[data-gl] yok');
+  }
+}
+
 // Bölge detayı: alt sayfa açıkken en çok kayma buradaydı
 await page.click('nav button:has-text("Dünya")');
 await page.waitForTimeout(1800);
