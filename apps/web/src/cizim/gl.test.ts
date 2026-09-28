@@ -164,8 +164,19 @@ describe('GPU ağı (agYap)', () => {
       bacak: '#40302a',
       cizme: '#2a221c',
       zirh: { tip: 'deri', renk: '#7a5a38' },
+      omuz: '#b0b4b8',
     });
     expect(deri.some((y) => (y.parlak ?? 0) > 0)).toBe(false);
+    // Metal zırhlının omuzluğu da metal.
+    const sovalye = insan({
+      ten: '#c08060',
+      govde: '#6a4a30',
+      bacak: '#40302a',
+      cizme: '#2a221c',
+      zirh: { tip: 'plaka', renk: '#8a8f94' },
+      omuz: '#b0b4b8',
+    });
+    expect(sovalye.some((y) => y.renk === '#b0b4b8' && (y.parlak ?? 0) > 0)).toBe(true);
   });
 
   it('aynalamada köşe normali, rengi ve suyu köşeyle birlikte dönüyor', () => {

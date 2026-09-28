@@ -476,33 +476,39 @@ export function insan(f: Insan): Model {
   if (f.zirh?.tip === 'serit')
     for (let k = 0; k < 4; k++)
       m.push(
-        ...yassi(
-          koni(
-            0,
-            0,
-            4.0 + k * 0.52,
-            1.07 + k * 0.06,
-            0.12,
-            isikla(f.zirh.renk, 0.72),
-            8,
-            1.1 + k * 0.06,
+        ...parlat(
+          yassi(
+            koni(
+              0,
+              0,
+              4.0 + k * 0.52,
+              1.07 + k * 0.06,
+              0.12,
+              isikla(f.zirh.renk, 0.72),
+              8,
+              1.1 + k * 0.06,
+            ),
           ),
+          zirhParlak,
         ),
       );
   if (f.zirh?.tip === 'zincir')
     for (let k = 0; k < 3; k++)
       m.push(
-        ...yassi(
-          koni(
-            0,
-            0,
-            4.2 + k * 0.62,
-            1.07 + k * 0.08,
-            0.06,
-            isikla(f.zirh.renk, 0.8),
-            8,
-            1.1 + k * 0.08,
+        ...parlat(
+          yassi(
+            koni(
+              0,
+              0,
+              4.2 + k * 0.62,
+              1.07 + k * 0.08,
+              0.06,
+              isikla(f.zirh.renk, 0.8),
+              8,
+              1.1 + k * 0.08,
+            ),
           ),
+          zirhParlak,
         ),
       );
   if (f.tabard) {
@@ -544,7 +550,11 @@ export function insan(f: Insan): Model {
   // Omuzlar, boyun, baş
   const omuzX = 1.28 * iri;
   const omuzRenk = f.omuz ?? kolRenk;
-  for (const s of [-1, 1]) m.push(...kure(s * omuzX, 0, 5.95, f.omuz ? 0.62 : 0.5, omuzRenk, 6, 3));
+  for (const s of [-1, 1]) {
+    const omuz = kure(s * omuzX, 0, 5.95, f.omuz ? 0.62 : 0.5, omuzRenk, 6, 3);
+    // Zırhlının omuzluğu da metal.
+    m.push(...(f.omuz && zirhParlak ? parlat(omuz, zirhParlak) : omuz));
+  }
   if (f.kurk) {
     m.push(
       ...olcekle(

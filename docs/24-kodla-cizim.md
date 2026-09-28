@@ -83,7 +83,8 @@ yüzün üstünde, SVG onu okumuyor.
   bir köpük şeridi var.
 - `parlak`: malzeme parlaklığı (0 mat, 1 cilalı). `parlat(model, p)` bir
   parçanın bütün yüzlerini işaretliyor; figürlerde kılıç ağzı, mızrak ve
-  balta başı, miğfer, plaka/şerit/zincir zırh, kalkan kenarı, at zırhı ve
+  balta başı, miğfer, plaka/şerit/zincir zırh (halkaları ve zırhlının
+  omuzluğu dahil), kalkan kenarı, at zırhı ve
   altın süsler parlak. Ten, bez, deri ve ahşap mat.
 - `doku`: yüzey malzemesi — `tas` (derzli taş örgü), `doseme` (yer
   döşemesi), `kiremit`, `arduvaz`, `saman`, `tahta` (yatay kaplama).
@@ -126,6 +127,12 @@ parçacığında da aynı koşuyor. Üç geçiş:
      yüzlü modelde bu yüzden yüze sert bir ayrım veriyor; metali mat
      boyadan ayıran bu. Üstüne güneşin yansıması (Blinn–Phong; yüzler iri
      olduğu için tepe geniş).
+   - Dik metalin parıltı bandı (stilize): kamera tepeden baktığı için dik
+     yüz (gövde zırhı) güneşi fizik gereği hiç yansıtmıyor, zırh mat boya
+     gibi duruyordu. Yalnız bu terimde normal göğe doğru bükülüyor
+     (`ZIRH_BUKUM`); yuvarlak zırhın güneşe ve bakana dönük yanında dikey
+     bir parlak şerit çıkıyor, öbür yanı koyu kalıyor. Güç `ZIRH_PARILTI`,
+     yalnız dik yüzde tam (yatay yüz zaten yukarıdaki yansımayı alıyor).
    - Su: yüzeyinde yönlü, yumuşak dalgalar (gürültüden normal); güneşi yer
      yer yansıtıyor. Dalga boyu dünya biriminde sabit, çıktı boyundan
      bağımsız.

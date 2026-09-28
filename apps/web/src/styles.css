@@ -357,8 +357,8 @@ svg g[role='button']:focus-visible > path:first-of-type {
   }
 }
 
-/* Naara: sahne kısa ve sert bir sarsıntı alır. */
-.sahne-naara {
+/* Naara: sahnenin içi kısa ve sert bir sarsıntı alır (sahne kırpıyor). */
+.sahne-naara .sahne-ic {
   animation: sahne-sars 460ms ease-out;
 }
 @keyframes sahne-sars {
@@ -419,7 +419,7 @@ svg g[role='button']:focus-visible > path:first-of-type {
  */
 @media (prefers-reduced-motion: reduce) {
   .figur,
-  .sahne-naara,
+  .sahne-naara .sahne-ic,
   .sahne-naara .figur {
     animation: none;
   }

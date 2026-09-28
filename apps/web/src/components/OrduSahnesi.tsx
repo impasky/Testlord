@@ -203,92 +203,97 @@ export function OrduSahnesi({
         background: 'linear-gradient(180deg, var(--color-derin) 0%, #2b1f17 55%, #241a13 100%)',
       }}
     >
-      {/* Zemin şeridi — figürler havada durmasın. */}
-      <div
-        className="absolute inset-x-0 bottom-0 h-[70px]"
-        style={{ background: 'linear-gradient(180deg, transparent, rgba(0,0,0,0.45))' }}
-      />
+      {/* Sarsılan iç kap: naara sahnenin KENDİSİNİ oynatınca sahne ekranın
+          tam genişliğinde olduğu için sayfa sarsıntı boyunca 3 piksel yana
+          taşıyordu. İçerik oynuyor, sahne kırpıyor; sayılar yerinde. */}
+      <div className="sahne-ic absolute inset-0">
+        {/* Zemin şeridi — figürler havada durmasın. */}
+        <div
+          className="absolute inset-x-0 bottom-0 h-[70px]"
+          style={{ background: 'linear-gradient(180deg, transparent, rgba(0,0,0,0.45))' }}
+        />
 
-      {dagilim.length === 0 ? (
-        /* Boş sahne 172 pikseli boşuna kaplıyordu: denetimde ana
+        {dagilim.length === 0 ? (
+          /* Boş sahne 172 pikseli boşuna kaplıyordu: denetimde ana
            sayfanın en büyük ölü alanı buydu. Yükseklik SABİT kalmalı
            (ordu sorgusu geç gelirse sayfa zıplar), o yüzden alan
            küçültülmedi — DOLDURULDU. Soluk siluetler burada ne
            duracağını gösteriyor; boşluk bir vaade dönüşüyor. */
-        <div className="flex h-full flex-col items-center justify-end gap-2 pb-6 text-center">
-          <div className="flex items-end justify-center opacity-20" aria-hidden>
-            {UNIT_TYPES.map((tur, i) => (
-              <div key={tur} style={{ marginLeft: i === 0 ? 0 : -18 }}>
-                <Gorsel
-                  tur="birimler"
-                  ad={tur}
-                  alt=""
-                  boyut={Math.round(FIGUR_BOYU * 0.62)}
-                  yedek={
-                    <span className="text-solgun">
-                      <BirimIkonu tip={tur} boyut={28} />
-                    </span>
-                  }
-                />
-              </div>
-            ))}
-          </div>
-          <div data-ordu-durumu>
-            <span className="baslik block text-[13px] text-solgun">{bos.baslik}</span>
-            <span className="text-[11px] text-sonuk">{bos.alt}</span>
-          </div>
-        </div>
-      ) : (
-        siralar.map((sira, s) => (
-          // kayma: sıralar yatayda kaydırılmasa hepsi ortalandığı için
-          // figürler üst üste hizalanıyor ve kalabalık değil, aynı figürün
-          // çift basılmış hali gibi görünüyor.
-          <div
-            key={s}
-            className="absolute inset-x-0"
-            style={{ bottom: sira.alt, transform: `translateX(${sira.kayma}px)` }}
-          >
-            <div className="flex items-end justify-center">
-              {sira.birimler.map((tur, i) => (
-                <div
-                  key={`${tur}-${i}`}
-                  className="figur"
-                  // Negatif kenar boşluğu bilerek: figürler hafif üst üste
-                  // binince sıra bir kalabalık gibi okunuyor, dizilmiş
-                  // ikonlar gibi değil.
-                  //
-                  // Gecikme sıraya ve yere göre: ordu tek parça zıplamıyor,
-                  // arkadan öne bir dalga geçiyor. Naara o dalgayla okunuyor.
-                  //
-                  // Gecikmeler kısa: ilk denemede sıra başına 90ms, figür
-                  // başına 45ms verilmişti ve sahnenin dolması ~900ms
-                  // sürüyordu — ekrana girip yarım saniye boş bir alana
-                  // bakmak, animasyonun kazandırdığından fazlasını
-                  // kaybettiriyor.
-                  style={{
-                    marginLeft: i === 0 ? 0 : -26 * sira.olcek,
-                    opacity: sira.opak,
-                    filter: sira.bulanik ? `blur(${sira.bulanik}px)` : undefined,
-                    animationDelay: `${s * 60 + i * 25}ms`,
-                  }}
-                >
+          <div className="flex h-full flex-col items-center justify-end gap-2 pb-6 text-center">
+            <div className="flex items-end justify-center opacity-20" aria-hidden>
+              {UNIT_TYPES.map((tur, i) => (
+                <div key={tur} style={{ marginLeft: i === 0 ? 0 : -18 }}>
                   <Gorsel
                     tur="birimler"
                     ad={tur}
-                    alt={unitName(tur)}
-                    boyut={Math.round(FIGUR_BOYU * sira.olcek)}
+                    alt=""
+                    boyut={Math.round(FIGUR_BOYU * 0.62)}
                     yedek={
                       <span className="text-solgun">
-                        <BirimIkonu tip={tur} boyut={Math.round(40 * sira.olcek)} />
+                        <BirimIkonu tip={tur} boyut={28} />
                       </span>
                     }
                   />
                 </div>
               ))}
             </div>
+            <div data-ordu-durumu>
+              <span className="baslik block text-[13px] text-solgun">{bos.baslik}</span>
+              <span className="text-[11px] text-sonuk">{bos.alt}</span>
+            </div>
           </div>
-        ))
-      )}
+        ) : (
+          siralar.map((sira, s) => (
+            // kayma: sıralar yatayda kaydırılmasa hepsi ortalandığı için
+            // figürler üst üste hizalanıyor ve kalabalık değil, aynı figürün
+            // çift basılmış hali gibi görünüyor.
+            <div
+              key={s}
+              className="absolute inset-x-0"
+              style={{ bottom: sira.alt, transform: `translateX(${sira.kayma}px)` }}
+            >
+              <div className="flex items-end justify-center">
+                {sira.birimler.map((tur, i) => (
+                  <div
+                    key={`${tur}-${i}`}
+                    className="figur"
+                    // Negatif kenar boşluğu bilerek: figürler hafif üst üste
+                    // binince sıra bir kalabalık gibi okunuyor, dizilmiş
+                    // ikonlar gibi değil.
+                    //
+                    // Gecikme sıraya ve yere göre: ordu tek parça zıplamıyor,
+                    // arkadan öne bir dalga geçiyor. Naara o dalgayla okunuyor.
+                    //
+                    // Gecikmeler kısa: ilk denemede sıra başına 90ms, figür
+                    // başına 45ms verilmişti ve sahnenin dolması ~900ms
+                    // sürüyordu — ekrana girip yarım saniye boş bir alana
+                    // bakmak, animasyonun kazandırdığından fazlasını
+                    // kaybettiriyor.
+                    style={{
+                      marginLeft: i === 0 ? 0 : -26 * sira.olcek,
+                      opacity: sira.opak,
+                      filter: sira.bulanik ? `blur(${sira.bulanik}px)` : undefined,
+                      animationDelay: `${s * 60 + i * 25}ms`,
+                    }}
+                  >
+                    <Gorsel
+                      tur="birimler"
+                      ad={tur}
+                      alt={unitName(tur)}
+                      boyut={Math.round(FIGUR_BOYU * sira.olcek)}
+                      yedek={
+                        <span className="text-solgun">
+                          <BirimIkonu tip={tur} boyut={Math.round(40 * sira.olcek)} />
+                        </span>
+                      }
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
 
       {/* Evde asker VARKEN de seferdekiler görünmeli: sahne yalnız evdekini
           çiziyor ve yarısı akındaki bir ordu küçülmüş sanılıyordu. */}

@@ -48,6 +48,12 @@ const AO_GUC = 2.2;
  * eşiğin çok üstünde.
  */
 const AO_ESIK = 0.3;
+/**
+ * Dik metalin parıltı bandı: normalin göğe bükülmesi ve bandın gücü (bkz.
+ * ana gölgelendiricide "parıltı bandı").
+ */
+const ZIRH_BUKUM = 0.8;
+const ZIRH_PARILTI = 0.9;
 /** Işıyan yüzlerin haresi. */
 const HARE_GUC = 0.55;
 
@@ -316,6 +322,16 @@ void main() {
       vec3 h = normalize(u_isik + u_goz);
       float sp = pow(max(dot(n, h), 0.0), mix(10.0, 90.0, parlak * parlak)) * parlak * g;
       c += sp * 0.9 * vec3(${GUNES});
+      // Parıltı bandı (stilize): tepeden bakan kamerada dik metal (gövde
+      // zırhı, kılıç ağzı) güneşi fizik gereği hiç yansıtmıyor; normal
+      // göğe doğru bükülünce güneşe ve bakana dönük yan, yuvarlak zırhın
+      // üstünde dikey bir parlak şerit oluyor. Yatay ve eğik yüz zaten
+      // yukarıdaki yansımayı alıyor; bu yalnız dik yüzde güçlü.
+      float m = parlak * (1.0 - s);
+      vec3 nb = normalize(n + vec3(0.0, 0.0, ${ZIRH_BUKUM.toFixed(2)}));
+      float dik = 1.0 - abs(n.z);
+      float bant = pow(max(dot(nb, h), 0.0), mix(8.0, 40.0, parlak * parlak));
+      c += bant * m * dik * g * ${ZIRH_PARILTI.toFixed(2)} * vec3(${GUNES});
     }
     float o = (ortam.r + ortam.g + ortam.b) / 3.0;
     float pay = o / max(o + dif, 1e-3);
