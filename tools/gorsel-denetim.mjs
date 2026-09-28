@@ -334,21 +334,43 @@ await kapiyiKapat(page);
 /**
  * --- GPU çizimi gerçekten geliyor mu (docs/24) ---
  *
- * WebGL2 varken sahneler (afiş, birlik, portre) ve dünya zemini GPU'dan
- * gelmeli. Gelmiyorsa çizici sessizce SVG'ye düşmüş demektir: ekran yine
- * dolu görünür, yalnız pürüzsüz değil — gözle yakalanması en zor gerileme.
- * WebGL2 hiç yoksa ölçüm atlanıyor; orada SVG'ye düşmek doğru davranış.
+ * Donanım hızlandırmalı WebGL2 varken sahneler (afiş, birlik, portre) ve
+ * dünya zemini GPU'dan gelmeli. Gelmiyorsa çizici sessizce SVG'ye düşmüş
+ * demektir: ekran yine dolu görünür, yalnız pürüzsüz değil — gözle
+ * yakalanması en zor gerileme.
+ *
+ * Başsız tarayıcıda WebGL yazılımla öykünülüyor ve uygulama orada BİLEREK
+ * SVG çiziyor (yazılım sürücüsünde GPU yolu sayfayı donduruyordu). Önce
+ * bu ölçülüyor, sonra GPU yolu zorlama bayrağıyla (`gl-yazilim`) açılıp
+ * onun da çalıştığı ölçülüyor. WebGL2 hiç yoksa ölçüm atlanıyor.
  */
 {
-  const webgl2 = await page.evaluate(() => {
+  const surucu = await page.evaluate(() => {
     try {
-      return !!new OffscreenCanvas(1, 1).getContext('webgl2');
+      const gl = new OffscreenCanvas(1, 1).getContext('webgl2');
+      if (!gl) return null;
+      const e = gl.getExtension('WEBGL_debug_renderer_info');
+      return String(gl.getParameter(e ? e.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
     } catch {
-      return false;
+      return null;
     }
   });
-  if (!webgl2) iyi('gpu', 'WebGL2 yok — SVG yedeği çiziyor (ölçüm atlandı)');
+  const yenidenAc = async () => {
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
+  };
+  if (!surucu) iyi('gpu', 'WebGL2 yok — SVG yedeği çiziyor (ölçüm atlandı)');
   else {
+    const yazilim = /swiftshader|llvmpipe|softpipe|software|basic render/i.test(surucu);
+    if (yazilim) {
+      await ekrana(page, 'kisla', 0);
+      await page.waitForTimeout(2500);
+      const adet = await page.evaluate(() => document.querySelectorAll('svg[data-gl]').length);
+      if (adet === 0) iyi('gpu', 'yazılım sürücüsünde SVG çiziliyor (GPU yolu kapalı)');
+      else sorun('gpu', 'Yazılım sürücüsünde GPU yolu açık', `${adet} çizim GPU'dan`);
+      await page.evaluate(() => localStorage.setItem('gl-yazilim', '1'));
+      await yenidenAc();
+    }
     await ekrana(page, 'kisla', 0);
     const sahne = await page
       .waitForSelector('svg[data-gl]', { timeout: 20000 })
@@ -364,6 +386,10 @@ await kapiyiKapat(page);
       .catch(() => false);
     if (zemin) iyi('gpu', "dünya zemini GPU'dan");
     else sorun('gpu', "Dünya zemini GPU'dan gelmedi", 'canvas[data-gl] yok');
+    if (yazilim) {
+      await page.evaluate(() => localStorage.removeItem('gl-yazilim'));
+      await yenidenAc();
+    }
   }
 }
 

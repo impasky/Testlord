@@ -238,7 +238,21 @@ function doku(gl: WebGL2RenderingContext): WebGLTexture {
   return t;
 }
 
-function kur(): Kaynak | null {
+/**
+ * Yazılım sürücüsü: GPU yok, WebGL işlemcide öykünülüyor (SwiftShader,
+ * llvmpipe, Windows'un temel sürücüsü). Orada bu çizici hem yavaş hem
+ * pahalı — 2×2 örnekleme ve gölge haritası bütün çekirdekleri alıp ana
+ * iş parçacığını ve CSS geçişlerini aç bırakıyordu. SVG orada daha iyi.
+ */
+const YAZILIM = /swiftshader|llvmpipe|softpipe|software|basic render/i;
+
+export function yazilimMi(gl: WebGL2RenderingContext): boolean {
+  const e = gl.getExtension('WEBGL_debug_renderer_info');
+  const ad = `${gl.getParameter(gl.RENDERER)} ${e ? gl.getParameter(e.UNMASKED_RENDERER_WEBGL) : ''}`;
+  return YAZILIM.test(ad);
+}
+
+function kur(yazilimaIzin = false): Kaynak | null {
   if (durum === 'yok') return null;
   if (kaynak) return kaynak;
   try {
@@ -253,6 +267,10 @@ function kur(): Kaynak | null {
       preserveDrawingBuffer: true,
     }) as WebGL2RenderingContext | null;
     if (!gl) throw new Error('webgl2Yok');
+    if (!yazilimaIzin && yazilimMi(gl)) {
+      gl.getExtension('WEBGL_lose_context')?.loseContext();
+      throw new Error('yazilimSurucu');
+    }
     (tuval as HTMLCanvasElement).addEventListener?.('webglcontextlost', (e: Event) => {
       e.preventDefault();
       durum = 'yok';
@@ -448,6 +466,8 @@ function tampon(gl: WebGL2RenderingContext, veri: Float32Array, yalnizKonum = fa
 /** Çizicinin işi: ağ hazır (modelden `agYap` ile). İşçiye aktarılabilir. */
 export interface CizimIstegi {
   ag: Ag;
+  /** Yazılım sürücüsünde de çiz (yalnız geliştirme ve denetim; bkz. `gl.ts`). */
+  yazilimaIzin?: boolean;
   kamera?: Kamera;
   /** Görüş kutusu: SVG'nin viewBox'ı (x, y, en, boy). */
   kutu: [number, number, number, number];
@@ -500,7 +520,7 @@ export async function cizBlob(istek: CizimIstegi): Promise<Blob | null> {
 }
 
 async function ciz(istek: CizimIstegi): Promise<Blob | null> {
-  const k = kur();
+  const k = kur(istek.yazilimaIzin);
   if (!k) return null;
   const { gl } = k;
   const { ag } = istek;

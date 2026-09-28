@@ -1256,6 +1256,8 @@ t262b6ab9,arayuz,"Vergi %{0} — kasana {1} altın.","Tax {0}% — {1} gold to y
 t425f7eef,arayuz,"Verilerine erişmek ya da başka bir talepte bulunmak istersen kayıt olduğun e-posta adresinden bize yazman yeterli.","If you want to access your data or make any other request, writing to us from the email address you signed up with is enough.","apps/web/src/screens/Gizlilik.tsx:151"
 tc0bd27c2,arayuz,"Vurucu güç ve hız. Okçuya karşı ×1,5.","Striking power and speed. ×1.5 against Archers.","apps/web/src/screens/Kisla.tsx:58"
 te30b10c9,arayuz,"vuruyor","hitting","apps/web/src/components/KarsiIpuclari.tsx:87"
+t4b58b4c1,arayuz,"WEBGL_debug_renderer_info","","apps/web/src/cizim/glCizici.ts:250"
+t582ad49e,arayuz,"WEBGL_lose_context","","apps/web/src/cizim/gl.ts:146 | apps/web/src/cizim/glCizici.ts:271"
 t884b8a52,arayuz,"Yağma","Loot","apps/web/src/components/SavasRaporu.tsx:543"
 tea3bde58,arayuz,"Yağma +%{0}","Loot +{0}%","apps/web/src/screens/LordEkrani.tsx:65"
 ta24bd532,arayuz,"Yağmalanabilir depo","Lootable storage","apps/web/src/screens/Harita.tsx:1251"

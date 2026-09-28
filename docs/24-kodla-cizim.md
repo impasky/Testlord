@@ -121,6 +121,16 @@ orada yoksa aynı çizici ana iş parçacığında; o da yoksa SVG. İşler tek 
 aralarında nefes payıyla; aynı istek (anahtar + görüş kutusu + boy) bir kez
 çiziliyor.
 
+**Yalnız donanımda.** GPU yolu donanım hızlandırmalı WebGL2 istiyor.
+Sürücü yazılımsa (SwiftShader, llvmpipe, Windows'un temel sürücüsü)
+`glVarMi` ilk çağrıda sürücünün adına bakıp "yok" diyor ve her şey SVG
+çiziliyor: işlemcide öykünülen 2×2 örnekleme ve gölge haritası bütün
+çekirdekleri alıp ana iş parçacığını ve CSS geçişlerini aç bırakıyordu
+(CI'da öğreticinin 150 ms'lik ilerleme geçişi 450 ms'de bitmedi).
+Başsız tarayıcıda WebGL hep yazılım; görsel denetim ve ekran görüntüleri
+GPU yolunu `localStorage['gl-yazilim'] = '1'` ile zorluyor. Oyuncuya bir
+ayar değil.
+
 **Sahne (`Sahne.tsx`).** Önce SVG çokgenleri görünüyor (ertelenen büyük
 şeritlerde GPU varsa hiç hesaplanmıyor), GPU resmi hazır olunca aynı
 SVG'nin içine `<image>` olarak oturuyor: yer değişmiyor, erişilebilir ad
@@ -233,7 +243,8 @@ tools/gorsel-denetim.mjs` koş.
   yerinde olduğunu ve taşma olmadığını ölçüyor. WebGL2 varken sahnelerin
   (`svg[data-gl]`) ve dünya zemininin (`canvas[data-gl]`) gerçekten
   GPU'dan geldiğini de ölçüyor; sessizce SVG'ye düşmek gözle yakalanması
-  en zor gerileme. Ayrıca kaynak dosyaları
+  en zor gerileme. Sürücü yazılımsa önce uygulamanın SVG çizdiğini, sonra
+  zorlama bayrağıyla GPU yolunu ölçüyor. Ayrıca kaynak dosyaları
   okuyor: veride olup çizimi olmayan bina aşaması, bölge türü, düşman,
   diyar ya da ekranda kullanılıp `ZEMIN_ADLARI`nda olmayan zemin kalmamalı.
 - `tools/generate_map.py`: her bölge işaretçisi karada mı, `kara.ts`teki

@@ -9,7 +9,14 @@
  * aynı çizici burada koşuyor; o da yoksa null — çağıran SVG'ye düşüyor.
  */
 import { agYap, type Ag } from './glAg';
-import { aktarilanlar, cizBlob, glDurumu, type CizimIstegi, type IsciCevabi } from './glCizici';
+import {
+  aktarilanlar,
+  cizBlob,
+  glDurumu,
+  yazilimMi,
+  type CizimIstegi,
+  type IsciCevabi,
+} from './glCizici';
 import type { Kamera, Model, V3 } from './uc';
 
 export { EN_BUYUK } from './glCizici';
@@ -80,6 +87,7 @@ async function ciz(istek: GlIstek): Promise<Blob | null> {
   let c: CizimIstegi = {
     ...istek,
     ag: istek.ag ?? agYap(istek.model ?? [], istek.kamera),
+    yazilimaIzin: yazilimaIzin(),
   };
   const i = isciAl();
   if (i) {
@@ -104,14 +112,53 @@ const ONBELLEK = new Map<string, Promise<string | null>>();
 let zincir: Promise<unknown> = Promise.resolve();
 
 /**
- * WebGL2 kullanılabilir görünüyor mu. Bağlamı KURMUYOR (gölgelendirici
- * derlemek ilk boyamayı geciktirirdi); kurulum ilk işte, sırada yapılıyor.
- * İşçide de burada da kurulamazsa iş null dönüyor ve bu işlev bundan sonra
- * false diyor.
+ * Geliştirme ve denetim için: yazılım sürücüsünde de GPU yolunu zorla
+ * (`localStorage['gl-yazilim'] = '1'`). Başsız tarayıcıda WebGL hep
+ * yazılım; görsel denetim ve ekran görüntüleri GPU çıktısını bununla
+ * görüyor. Oyuncuya bir ayar değil.
+ */
+function yazilimaIzin(): boolean {
+  try {
+    return localStorage.getItem('gl-yazilim') === '1';
+  } catch {
+    return false;
+  }
+}
+
+let donanim: boolean | null = null;
+
+/**
+ * Donanım hızlandırmalı WebGL2 var mı: küçük bir bağlam açıp sürücünün
+ * adına bakıyor ve hemen bırakıyor (gölgelendirici derlemiyor; asıl
+ * kurulum ilk işte, sırada). Yazılım sürücüsü (`glCizici.yazilimMi`)
+ * "yok" sayılıyor: orada SVG hem daha hızlı hem sayfayı dondurmuyor.
+ */
+function donanimVarMi(): boolean {
+  if (yazilimaIzin()) return true;
+  try {
+    const t =
+      typeof OffscreenCanvas !== 'undefined'
+        ? new OffscreenCanvas(1, 1)
+        : document.createElement('canvas');
+    const gl = t.getContext('webgl2') as WebGL2RenderingContext | null;
+    if (!gl) return false;
+    const yazilim = yazilimMi(gl);
+    gl.getExtension('WEBGL_lose_context')?.loseContext();
+    return !yazilim;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * GPU yolu kullanılabilir mi. İlk çağrıda sürücüye bir kez bakıyor; iş
+ * sırasında işçide de burada da kurulamazsa bundan sonra false.
  */
 export function glVarMi(): boolean {
   if (typeof WebGL2RenderingContext === 'undefined') return false;
-  return !(isciDurumu === 'yok' && glDurumu() === 'yok');
+  if (isciDurumu === 'yok' && glDurumu() === 'yok') return false;
+  donanim ??= donanimVarMi();
+  return donanim;
 }
 
 /**
