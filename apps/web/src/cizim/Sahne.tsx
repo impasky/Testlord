@@ -10,10 +10,16 @@
  * kenar yumuşatma, gölge. Önce çokgenler görünüyor, GPU resmi hazır
  * olunca aynı SVG'nin içine yerleşiyor — yer değişmiyor, erişilebilir ad
  * aynı. GPU yoksa ya da düşerse çokgenler kalıyor.
+ *
+ * Geniş sahneler (`hareket`) canlı: suyun üstünde kayan parıltı, titreyen
+ * ateş ve pencere ışığı, bacadan yükselen duman. GPU resmi bir kez
+ * çiziliyor; hareket onun üstünde CSS katmanları (yalnız dönüşüm ve
+ * saydamlık: tarayıcı bunları yeniden boyamadan oynatıyor). Hareket
+ * kısıtlıysa (`prefers-reduced-motion`) hiçbiri yok, duman durağan çiziliyor.
  */
-import { memo, useEffect, useRef, useState } from 'react';
-import { EN_BUYUK, glCiz, glVarMi } from './gl';
-import { ciz, type Cizilmis, type Kamera, type Model } from './uc';
+import { memo, useEffect, useRef, useState, type CSSProperties } from 'react';
+import { EN_BUYUK, glCiz, glKatmanlari, glVarMi, type Katmanlar } from './gl';
+import { ciz, yansitici, type Cizilmis, type Kamera, type Model } from './uc';
 
 const ONBELLEK = new Map<string, Cizilmis>();
 /**
@@ -58,6 +64,63 @@ const YAYILMA = 'none';
 const RESIMLER = new Map<string, { en: number; url: string }>();
 
 /**
+ * Canlı dumanın kaynağı (görüş kutusu biriminde): baca ağzı, yükselişin
+ * ekrandaki yönü ve boyu, rengi. Hareketli GPU resminde duman yok; burada
+ * yükseliyor.
+ */
+interface DumanKaynagi {
+  x: number;
+  y: number;
+  dx: number;
+  dy: number;
+  renk: string;
+}
+const DUMANLAR = new Map<string, DumanKaynagi[]>();
+/**
+ * Bir duman yumrusunun yolu (dünya birimi): durağan dumanın ilk küresinin
+ * biraz altından (baca ağzı) çıkıp rüzgârla kayarak yükseliyor
+ * (`parca.duman`la aynı yön).
+ */
+const DUMAN_ALT = 0.8;
+const DUMAN_YOLU: [number, number, number] = [1.4, -0.9, 5];
+/** Yumrunun yarıçapı (dünya birimi); CSS'te 0,4 katından 1,9 katına büyüyor. */
+const DUMAN_YARICAP = 0.85;
+/** Bir yumrunun ömrü (sn) ve bir kaynaktan aynı anda kaç yumru (eşit aralıkla). */
+const DUMAN_SURE = 4.8;
+const DUMAN_ADET = 4;
+
+function dumanKaynaklari(model: Model, kamera?: Kamera): DumanKaynagi[] {
+  const e = yansitici(kamera);
+  const kaynaklar = new Map<string, DumanKaynagi>();
+  for (const y of model) {
+    const d = y.duman;
+    if (!d) continue;
+    const ad = d.join(',');
+    if (kaynaklar.has(ad)) continue;
+    const [x, sy] = e([d[0], d[1], d[2] - DUMAN_ALT]);
+    const [ux, uy] = e([
+      d[0] + DUMAN_YOLU[0],
+      d[1] + DUMAN_YOLU[1],
+      d[2] - DUMAN_ALT + DUMAN_YOLU[2],
+    ]);
+    kaynaklar.set(ad, { x, y: sy, dx: ux - x, dy: uy - sy, renk: y.renk });
+  }
+  return [...kaynaklar.values()];
+}
+
+/**
+ * Hareket kısıtlı mı (işletim sistemi ayarı). Her çizimde bakılıyor;
+ * ayar değişince sahne bir sonraki çizimde durağan olur.
+ */
+function hareketKisitli(): boolean {
+  try {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Boy kovası: çıktı eni 1,25'in kuvvetlerine yuvarlanıyor. Alt sayfa
  * kayarken ya da ekran dönerken öğe her karede biraz büyüyor; her piksel
  * için yeniden çizmek yerine bir basamak büyüğü bir kez çiziliyor.
@@ -76,10 +139,12 @@ function useGpuResmi(
   v: [number, number, number, number],
   kirp: boolean,
   tilt: number | undefined,
+  hareket: boolean,
   ref: React.RefObject<SVGSVGElement | null>,
   basarisiz: () => void,
 ): string | null {
-  const taban = anahtar + '|' + v.join(',') + (tilt !== undefined ? '|t' + tilt : '');
+  const taban =
+    anahtar + '|' + v.join(',') + (tilt !== undefined ? '|t' + tilt : '') + (hareket ? '|h' : '');
   const [resim, setResim] = useState<string | null>(() => RESIMLER.get(taban)?.url ?? null);
   // Kapanıştaki güncel işlevler: etki her çizimde yeniden kurulmasın.
   const guncel = useRef({ uret, kamera, basarisiz });
@@ -111,15 +176,11 @@ function useGpuResmi(
         return;
       }
       const { uret: u, kamera: k } = guncel.current;
-      glCiz(`${taban}|${en}x${boy}`, () => ({
-        model: modelAl(anahtar, u),
-        kamera: k,
-        kutu: v,
-        en,
-        boy,
-        olcek: en / (vw * cssBirim),
-        tilt,
-      })).then((url) => {
+      glCiz(`${taban}|${en}x${boy}`, () => {
+        const model = modelAl(anahtar, u);
+        if (hareket && !DUMANLAR.has(anahtar)) DUMANLAR.set(anahtar, dumanKaynaklari(model, k));
+        return { model, kamera: k, kutu: v, en, boy, olcek: en / (vw * cssBirim), tilt, hareket };
+      }).then((url) => {
         if (!url) {
           if (!iptal) guncel.current.basarisiz();
           return;
@@ -137,7 +198,7 @@ function useGpuResmi(
       ro.disconnect();
     };
     // `v` içerik olarak `taban`da; dizi kimliği her çizimde değişiyor.
-  }, [etkin, taban, kirp, tilt, ref]);
+  }, [etkin, taban, kirp, tilt, hareket, ref]);
 
   return etkin ? resim : null;
 }
@@ -165,6 +226,215 @@ export function Cokgenler({ c }: { c: Cizilmis }) {
   );
 }
 
+/* ── Hareket ───────────────────────────────────────────────────────── */
+
+/** Tohumlu rastgele: dokular her açılışta aynı. */
+function tohumlu(t: number): () => number {
+  return () => (t = (t * 1664525 + 1013904223) >>> 0) / 4294967296;
+}
+
+/**
+ * Dikişsiz bir döşeme karosu çizer (kenardan taşan leke öbür yandan
+ * giriyor). Tuval yoksa (test ortamı) null: o katman çizilmiyor.
+ */
+function karo(en: number, boy: number, ciz: (c: CanvasRenderingContext2D) => void): string | null {
+  try {
+    const t = document.createElement('canvas');
+    t.width = en;
+    t.height = boy;
+    const c = t.getContext('2d');
+    if (!c) return null;
+    ciz(c);
+    return t.toDataURL('image/png');
+  } catch {
+    return null;
+  }
+}
+
+/** Yumuşak kenarlı elips leke; karonun dört yanına sarılarak. */
+function leke(
+  c: CanvasRenderingContext2D,
+  en: number,
+  boy: number,
+  x: number,
+  y: number,
+  rx: number,
+  ry: number,
+  renk: string,
+) {
+  for (const ox of [-en, 0, en])
+    for (const oy of [-boy, 0, boy]) {
+      c.save();
+      c.translate(x + ox, y + oy);
+      c.scale(rx, ry);
+      const g = c.createRadialGradient(0, 0, 0, 0, 0, 1);
+      g.addColorStop(0, renk);
+      g.addColorStop(1, 'rgba(255,255,255,0)');
+      c.fillStyle = g;
+      c.beginPath();
+      c.arc(0, 0, 1, 0, Math.PI * 2);
+      c.fill();
+      c.restore();
+    }
+}
+
+/** Suyun parıltısı: yatık, ince ışık çizgileri (ekran pikselinde; suyun dalgasıyla aynı boy). */
+const SU_KARO: [number, number] = [256, 128];
+let suKaro: string | null | undefined;
+function suKarosu(): string | null {
+  return (suKaro ??= karo(...SU_KARO, (c) => {
+    const r = tohumlu(7);
+    for (let i = 0; i < 36; i++)
+      leke(
+        c,
+        ...SU_KARO,
+        r() * SU_KARO[0],
+        r() * SU_KARO[1],
+        7 + r() * 12,
+        0.8 + r() * 0.7,
+        `rgba(255,255,255,${(0.35 + r() * 0.45).toFixed(2)})`,
+      );
+  }));
+}
+
+/**
+ * Işığın titreme deseni: iri, yumuşak lekeler ve tersi. Işık katmanının iki
+ * kopyası bunlarla örtülü ve ayrı ritimde titriyor: yan yana iki ateş aynı
+ * anda sönüp parlamıyor.
+ */
+const ISIK_KARO = 150;
+let isikKarolari: [string, string] | null | undefined;
+function isikKarosu(): [string, string] | null {
+  if (isikKarolari !== undefined) return isikKarolari;
+  const lekeler = (c: CanvasRenderingContext2D) => {
+    const r = tohumlu(11);
+    for (let i = 0; i < 7; i++)
+      leke(
+        c,
+        ISIK_KARO,
+        ISIK_KARO,
+        r() * ISIK_KARO,
+        r() * ISIK_KARO,
+        26 + r() * 20,
+        26 + r() * 20,
+        '#fff',
+      );
+  };
+  const a = karo(ISIK_KARO, ISIK_KARO, lekeler);
+  const b = karo(ISIK_KARO, ISIK_KARO, (c) => {
+    c.fillStyle = '#fff';
+    c.fillRect(0, 0, ISIK_KARO, ISIK_KARO);
+    c.globalCompositeOperation = 'destination-out';
+    lekeler(c);
+  });
+  return (isikKarolari = a && b ? [a, b] : null);
+}
+
+/** CSS maskesi, önekli (Safari) ve öneksiz. */
+function maske(url: string, boy: string, tekrar: string): CSSProperties {
+  return {
+    maskImage: `url(${url})`,
+    WebkitMaskImage: `url(${url})`,
+    maskSize: boy,
+    WebkitMaskSize: boy,
+    maskRepeat: tekrar,
+    WebkitMaskRepeat: tekrar,
+  };
+}
+
+/**
+ * Resmin üstündeki canlı katmanlar. Kutu ölçülüyor: GPU resmi görüş
+ * kutusunu doldurup taşanı kırpıyor (`kirp`) ya da içine sığıyor; katmanlar
+ * aynı dikdörtgene oturuyor.
+ */
+function HareketKatmani({
+  v,
+  kirp,
+  katman,
+  dumanlar,
+}: {
+  v: [number, number, number, number];
+  kirp: boolean;
+  katman: Katmanlar | undefined;
+  dumanlar: DumanKaynagi[];
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [olcu, setOlcu] = useState<[number, number] | null>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const olc = () => {
+      const r = el.getBoundingClientRect();
+      setOlcu((o) => (o && o[0] === r.width && o[1] === r.height ? o : [r.width, r.height]));
+    };
+    olc();
+    const ro = new ResizeObserver(olc);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  let icerik: React.ReactNode = null;
+  if (olcu && olcu[0] > 1 && olcu[1] > 1) {
+    const [W, H] = olcu;
+    const [vx, vy, vw, vh] = v;
+    // Görüş kutusunun bir birimi kaç CSS pikseli.
+    const s = kirp ? Math.max(W / vw, H / vh) : Math.min(W / vw, H / vh);
+    const su = katman?.su && suKarosu();
+    const isik = katman?.isik ? isikKarosu() : null;
+    icerik = (
+      <span
+        className="hareket-cerceve"
+        style={{ left: (W - vw * s) / 2, top: (H - vh * s) / 2, width: vw * s, height: vh * s }}
+      >
+        {su && (
+          <span className="hareket-su" style={maske(katman!.su!, '100% 100%', 'no-repeat')}>
+            <span className="hareket-su-a" style={{ backgroundImage: `url(${su})` }} />
+            <span className="hareket-su-b" style={{ backgroundImage: `url(${su})` }} />
+          </span>
+        )}
+        {katman?.isik &&
+          (isik ?? [null]).map((m, i) => (
+            <img
+              key={i}
+              src={katman.isik}
+              alt=""
+              className={i ? 'hareket-isik hareket-isik-b' : 'hareket-isik'}
+              style={m ? maske(m, `${ISIK_KARO}px`, 'repeat') : undefined}
+            />
+          ))}
+        {dumanlar.map((d, i) =>
+          Array.from({ length: DUMAN_ADET }, (_, j) => (
+            <span
+              key={i * DUMAN_ADET + j}
+              className="hareket-duman"
+              style={
+                {
+                  left: (d.x - vx) * s,
+                  top: (d.y - vy) * s,
+                  width: 2 * DUMAN_YARICAP * s,
+                  height: 2 * DUMAN_YARICAP * s,
+                  margin: -DUMAN_YARICAP * s,
+                  '--dx': `${(d.dx * s).toFixed(1)}px`,
+                  '--dy': `${(d.dy * s).toFixed(1)}px`,
+                  '--renk': d.renk,
+                  animationDuration: `${DUMAN_SURE}s`,
+                  // Kaynaklar ayrı evrede: bütün bacalar aynı anda tütmesin.
+                  animationDelay: `${(-((j / DUMAN_ADET + i * 0.37) % 1) * DUMAN_SURE).toFixed(2)}s`,
+                } as CSSProperties
+              }
+            />
+          )),
+        )}
+      </span>
+    );
+  }
+  return (
+    <span ref={ref} aria-hidden className="hareket" style={{ gridArea: '1 / 1' }}>
+      {icerik}
+    </span>
+  );
+}
+
 function kareyeTamamla([x, y, w, h]: [number, number, number, number]): [
   number,
   number,
@@ -188,6 +458,7 @@ export const Sahne = memo(function Sahne({
   kare = false,
   ertele = false,
   tilt,
+  hareket = false,
 }: {
   anahtar: string;
   uret: () => Model;
@@ -220,6 +491,12 @@ export const Sahne = memo(function Sahne({
    * maket gibi okunuyor; figür ve bina simgesinde yok.
    */
   tilt?: number;
+  /**
+   * Canlı sahne (yalnız GPU, hareket kısıtlı değilse): su parıltısı, ışık
+   * titremesi, yükselen duman. Kutu bir sarmalayıcıya geçiyor (katmanlar
+   * resmin üstünde); `className` ve `style` sarmalayıcının.
+   */
+  hareket?: boolean;
 }) {
   const ref = useRef<SVGSVGElement>(null);
   const [gpuYok, setGpuYok] = useState(false);
@@ -246,9 +523,12 @@ export const Sahne = memo(function Sahne({
 
   const c = bekle ? null : cizimiAl(anahtar, uret, kamera);
   const v: [number, number, number, number] = kutu ?? (kare ? kareyeTamamla(c!.kutu) : c!.kutu);
-  const resim = useGpuResmi(gpu, anahtar, uret, kamera, v, kirp, tilt, ref, () => setGpuYok(true));
+  const canli = hareket && gpu && !hareketKisitli();
+  const resim = useGpuResmi(gpu, anahtar, uret, kamera, v, kirp, tilt, canli, ref, () =>
+    setGpuYok(true),
+  );
 
-  return (
+  const svg = (
     <svg
       ref={ref}
       viewBox={v.join(' ')}
@@ -259,8 +539,8 @@ export const Sahne = memo(function Sahne({
       role={alt ? 'img' : undefined}
       aria-label={alt || undefined}
       aria-hidden={alt ? undefined : true}
-      className={className}
-      style={style}
+      className={canli ? 'h-full w-full' : className}
+      style={canli ? { gridArea: '1 / 1' } : style}
       data-gl={resim ? '' : undefined}
     >
       {resim ? (
@@ -277,4 +557,23 @@ export const Sahne = memo(function Sahne({
       ) : null}
     </svg>
   );
+  if (!canli) return svg;
+  // Izgara: resim ve katmanlar aynı hücrede üst üste (konumlama yok; çağıranın
+  // `absolute` gibi sınıfları sarmalayıcıda aynen çalışıyor).
+  return (
+    <span className={className} style={{ ...style, display: 'grid', gridTemplate: IZGARA }}>
+      {svg}
+      {resim && (
+        <HareketKatmani
+          v={v}
+          kirp={kirp}
+          katman={glKatmanlari(resim)}
+          dumanlar={DUMANLAR.get(anahtar) ?? []}
+        />
+      )}
+    </span>
+  );
 });
+
+/** Tek hücre, kutuyu dolduran. */
+const IZGARA = ['minmax(0,1fr)', 'minmax(0,1fr)'].join(' / ');

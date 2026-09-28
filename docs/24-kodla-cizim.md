@@ -211,6 +211,16 @@ parçacığında da aynı koşuyor. Üç geçiş:
    geniş sahneler istiyor: bölge afişi ve diyar kapağı (bant 0,18), ekran
    zemini (0,24; uzun şeritte kule tepesi bulanıklaşmasın). Figür, portre,
    bina simgesi, yerleşim ve dünya haritası keskin.
+5. Hareket katmanları (yalnız hareketli sahnede, `hareket`): ana resimden
+   sonra aynı hedeflerden, aynı kırpım ve bulanıklıkla iki PNG daha. Ana
+   geçiş suyu `o_ek.a`ya işaretliyor (1 su; ortam gölgesi ağırlığı 0–0,9'a
+   sıkışıyor).
+   - Su maskesi: pikselin ne kadarı su (beyaz, saydamlıkla). Önündeki
+     köprü, kayık ve ağaç derinlikle zaten örtüyor.
+   - Işık: ışıyan yüzlerin rengi ve ana resimdekinden iki kat geniş hare
+     (`KATMAN_HARE_YARICAP`, `KATMAN_HARE_GUC`).
+     Sahnede su ya da ışıyan yüz yoksa o katman hiç çizilmiyor. Ağ
+     `dumansiz` kuruluyor: duman yüzleri (`Yuz.duman`) GPU resminde yok.
 
 Bellek yetmezse (ya da hedef doku kurulamazsa) iş `null` dönüyor ve o
 çizim SVG'ye düşüyor. Sıra boşalınca büyük hedef dokular dört saniye sonra
@@ -244,6 +254,31 @@ yoğunluğu kadar çiziliyor (en çok 3×, 1400 piksel); boy 1,25'in
 kuvvetlerine yuvarlanıyor, öğe büyürken her pikselde yeniden çizilmesin.
 `tilt` verilirse istek tilt-shift'li; önbellek anahtarına da giriyor.
 
+**Hareket (`Sahne.hareket`).** Geniş sahneler canlı: bölge afişi, ekran
+zemini, diyar kapağı (küçük karoda, kilitli diyar penceresinde yok). GPU
+resmi bir kez çiziliyor; hareket onun üstünde CSS katmanları. Yalnız
+dönüşüm ve saydamlık oynuyor, tarayıcı katmanları yeniden boyamadan
+kaydırıyor.
+
+- Su parıltısı: iki dikişsiz ışık çizgisi karosu (tuvalde bir kez, tohumlu)
+  ayrı yönde, ayrı hızda kayıyor; su maskesiyle (`mask-image`) örtülü.
+- Işık titremesi: ışık katmanı "ekran" karışımıyla resmin üstünde,
+  saydamlığı düzensiz bir ritimle açılıp kısılıyor. İki kopya, tümleyen iki
+  leke deseniyle örtülü ve ayrı ritimde: yan yana iki ateş aynı anda
+  sönüp parlamıyor.
+- Duman: GPU resminde duman yok; her kaynaktan (`Yuz.duman`: baca ağzı,
+  dönüşümlerle birlikte taşınıyor) dört yumuşak yumru sırayla çıkıp
+  rüzgârla kayarak yükseliyor, büyüyüp sönüyor. Kaynaklar ayrı evrede.
+  Kaynağın ekrandaki yeri modelden bir kez hesaplanıyor.
+
+Kutu bir ızgara sarmalayıcısına geçiyor: resim ve katmanlar aynı hücrede
+üst üste, çağıranın sınıfları sarmalayıcıda. Katman dikdörtgeni ölçülüyor
+(`kirp`: doldur ve kırp; değilse sığdır), GPU resmiyle aynı yere oturuyor.
+Hareket kısıtlıysa (`prefers-reduced-motion`) hiçbiri yok ve duman durağan
+çiziliyor; CSS'te de katman gizli (ikinci savunma hattı). GPU yoksa (SVG)
+hareket yok. Bayraklar dalgalanmıyor: bayrak modelin bir parçası, onu
+oynatmak her karede yeniden çizim demek.
+
 **Dünya zemini (`dunya.ts`, `dunyaAgi.ts`, `dunyaIsci.ts`).** Aynı
 arazi, iki çıktı. `dunyaUcgenleri` düz renkli üçgenler (2D tuval, WebGL
 yoksa); `dunyaModeli` GPU için: iki kat sık ızgara (köşe rengi doruklarda
@@ -257,30 +292,30 @@ her köşe yüzlerce kenarı değil, yalnız kendi şeridini tarıyor.
 
 ## Dosyalar
 
-| Dosya                         | Ne çiziyor                                                                                                                    |
-| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `uc.ts`                       | Motor: ilkeller, dönüşümler, kamera, ışık, sıralama                                                                           |
-| `renk.ts`                     | Palet ve renk yardımcıları                                                                                                    |
-| `rastgele.ts`                 | Tohumlu rastgele (FNV-1a + mulberry32)                                                                                        |
-| `parca.ts`                    | Ortak parçalar: ağaç, çam, bayrak, çadır, fıçı, duman, uzuv, teker, kubbe                                                     |
-| `arazi.ts`                    | Yükseklik alanından arazi, su, kıyı, nehir yatağı, yol ve parsel izleri, düzleme                                              |
-| `binalar.ts`                  | Şehir binaları, her biri üç aşama; arsa, görev panosu, haberci kulesi, onur meydanı                                           |
-| `yerlesim.ts`                 | Şehir sayfasının altındaki altı yerleşim kademesi (kamp → metropol)                                                           |
-| `kir.ts`                      | Kır, maden, kale ve saray parçaları: ev, ambar, değirmen, köprü, maden ağzı, sur, kule, teras, köşk                           |
-| `bolgeler.ts`                 | Altı bölge türü × üç aşama; aynı türün aşamaları aynı araziyi paylaşıyor                                                      |
-| `figur.ts`                    | İnsan figürü (zırh, başlık, eşya, poz), at, mancınık, kalkan, kılıç                                                           |
-| `birlikler.ts`                | Beş birlik, on düşman, altı yuva × beş kademe ekipman                                                                         |
-| `kisiler.ts`                  | On iki general, beş lord, profil portreleri                                                                                   |
-| `diyarlar.ts`                 | Beş akın diyarı: kapak sahnesi ve tepeden yol haritası                                                                        |
-| `zeminler.ts`                 | Sekmelerin tepesindeki manzara şeritleri; her biri o ekranın binası ve insanlarıyla                                           |
-| `dunya.ts`                    | Dünya haritasının arazisi, tepeden; kara sınırı `kara.ts`teki `KARA_YOLU`. 2D üçgenler ve GPU modeli                          |
-| `dunyaAgi.ts`, `dunyaIsci.ts` | Dünya zemininin GPU ağı, işçide (açılamazsa ana iş parçacığında)                                                              |
-| `glAg.ts`                     | Modelden GPU üçgen tamponu (saf)                                                                                              |
-| `glCizici.ts`                 | WebGL2 çizici: gölge haritası, ana geçiş, kenar + süper örnekleme                                                             |
-| `gl.ts`, `glIsci.ts`          | GPU sırası, önbellek ve çizim işçisi; yedekler                                                                                |
-| `Sahne.tsx`                   | Modeli çizen bileşen: SVG, GPU resmi hazır olunca onun yerine; `kutu`, `kirp` (doldur, taşanı kırp), `kare` (kareye tamamla)  |
-| `Cizimler.tsx`                | Ekranların kullandığı bileşenler: `BinaCizimi`, `BolgeCizimi`, `NesneCizimi`, `PortreCizimi`, `DiyarCizimi`, `ZeminCizimi`, … |
-| `Galeri.tsx`                  | Geliştirme galerisi                                                                                                           |
+| Dosya                         | Ne çiziyor                                                                                                                              |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `uc.ts`                       | Motor: ilkeller, dönüşümler, kamera, ışık, sıralama                                                                                     |
+| `renk.ts`                     | Palet ve renk yardımcıları                                                                                                              |
+| `rastgele.ts`                 | Tohumlu rastgele (FNV-1a + mulberry32)                                                                                                  |
+| `parca.ts`                    | Ortak parçalar: ağaç, çam, bayrak, çadır, fıçı, duman, uzuv, teker, kubbe                                                               |
+| `arazi.ts`                    | Yükseklik alanından arazi, su, kıyı, nehir yatağı, yol ve parsel izleri, düzleme                                                        |
+| `binalar.ts`                  | Şehir binaları, her biri üç aşama; arsa, görev panosu, haberci kulesi, onur meydanı                                                     |
+| `yerlesim.ts`                 | Şehir sayfasının altındaki altı yerleşim kademesi (kamp → metropol)                                                                     |
+| `kir.ts`                      | Kır, maden, kale ve saray parçaları: ev, ambar, değirmen, köprü, maden ağzı, sur, kule, teras, köşk                                     |
+| `bolgeler.ts`                 | Altı bölge türü × üç aşama; aynı türün aşamaları aynı araziyi paylaşıyor                                                                |
+| `figur.ts`                    | İnsan figürü (zırh, başlık, eşya, poz), at, mancınık, kalkan, kılıç                                                                     |
+| `birlikler.ts`                | Beş birlik, on düşman, altı yuva × beş kademe ekipman                                                                                   |
+| `kisiler.ts`                  | On iki general, beş lord, profil portreleri                                                                                             |
+| `diyarlar.ts`                 | Beş akın diyarı: kapak sahnesi ve tepeden yol haritası                                                                                  |
+| `zeminler.ts`                 | Sekmelerin tepesindeki manzara şeritleri; her biri o ekranın binası ve insanlarıyla                                                     |
+| `dunya.ts`                    | Dünya haritasının arazisi, tepeden; kara sınırı `kara.ts`teki `KARA_YOLU`. 2D üçgenler ve GPU modeli                                    |
+| `dunyaAgi.ts`, `dunyaIsci.ts` | Dünya zemininin GPU ağı, işçide (açılamazsa ana iş parçacığında)                                                                        |
+| `glAg.ts`                     | Modelden GPU üçgen tamponu (saf)                                                                                                        |
+| `glCizici.ts`                 | WebGL2 çizici: gölge haritası, ana geçiş, kenar + süper örnekleme                                                                       |
+| `gl.ts`, `glIsci.ts`          | GPU sırası, önbellek ve çizim işçisi; yedekler                                                                                          |
+| `Sahne.tsx`                   | Modeli çizen bileşen: SVG, GPU resmi hazır olunca onun yerine; `kutu`, `kirp` (doldur, taşanı kırp), `kare` (kareye tamamla), `hareket` |
+| `Cizimler.tsx`                | Ekranların kullandığı bileşenler: `BinaCizimi`, `BolgeCizimi`, `NesneCizimi`, `PortreCizimi`, `DiyarCizimi`, `ZeminCizimi`, …           |
+| `Galeri.tsx`                  | Geliştirme galerisi                                                                                                                     |
 
 Dünya haritasının arazisi bir kez bir tuvale çiziliyor (GPU'da 2048, 2D
 yedekte 1600 piksel) ve modül düzeyinde saklanıyor. Harita her açıldığında
@@ -293,7 +328,7 @@ kaydırmada her karede yeniden taranıyordu; tuval tek bir resim gibi
 Geliştirme sunucusunda `http://localhost:5173/#/cizim-galerisi` bütün
 çizimleri bölüm bölüm tek sayfada gösteriyor: binalar, yerleşim, birlikler,
 düşmanlar, ekipman, generaller, lord, portreler, diyarlar, bölgeler, ekran
-zeminleri, dünya. Aynı ışık, aynı palet ve aynı ölçek tutuyor mu, burada
+zeminleri, canlı sahneler (hareketiyle), dünya. Aynı ışık, aynı palet ve aynı ölçek tutuyor mu, burada
 bakılıyor. Galeri üretim derlemesine girmiyor (`main.tsx`,
 `import.meta.env.DEV`).
 

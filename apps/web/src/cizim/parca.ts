@@ -232,6 +232,7 @@ export function duman(x: number, y: number, z: number, r: () => number, adet = 3
     for (const y2 of kuruk) {
       y2.saydam = 0.55 - i * 0.15;
       y2.kenarsiz = true;
+      y2.duman = [x, y, z];
     }
     m.push(...kuruk);
   }

@@ -15,6 +15,7 @@ import {
   glDurumu,
   yazilimMi,
   type CizimIstegi,
+  type CizimSonucu,
   type IsciCevabi,
 } from './glCizici';
 import type { Kamera, Model, V3 } from './uc';
@@ -45,6 +46,11 @@ export interface GlIstek {
   tilt?: number;
   /** Renk düzenlemesinin gücü (0 kapalı, 1 tam); verilmezse tam. */
   ton?: number;
+  /**
+   * Hareketli sahne: duman ağa girmiyor (sayfada canlı yükseliyor), su
+   * maskesi ve ışık katmanı da çiziliyor (`glKatmanlari`).
+   */
+  hareket?: boolean;
   /** Bir CSS pikselinin çıktıdaki karşılığı: kenar çizgisinin kalınlığı. */
   olcek: number;
 }
@@ -95,24 +101,23 @@ function iscide(i: Worker, istek: CizimIstegi): Promise<IsciCevabi> {
   });
 }
 
-async function ciz(istek: GlIstek): Promise<Blob | null> {
-  let c: CizimIstegi = {
-    ...istek,
-    ag: istek.ag ?? agYap(istek.model ?? [], istek.kamera),
-    yazilimaIzin: yazilimaIzin(),
-  };
+async function ciz(istek: GlIstek): Promise<CizimSonucu | null> {
+  // Model işçiye gitmiyor (yalnız ağı): kopyalanması büyük sahnede pahalı.
+  const { model, ag, ...geri } = istek;
+  const kur = (m: Model) => agYap(m, istek.kamera, { dumansiz: istek.hareket });
+  let c: CizimIstegi = { ...geri, ag: ag ?? kur(model ?? []), yazilimaIzin: yazilimaIzin() };
   const i = isciAl();
   if (i) {
     const cevap = await iscide(i, c);
     if (!cevap.yok) {
       isciDurumu = 'hazir';
-      return cevap.blob ?? null;
+      return cevap.sonuc ?? null;
     }
     // İşçide WebGL2 yok: bundan sonra burada. Ağ geri geldiyse o, gelmediyse
     // (işçi düştü) modelden yeniden; önceden kurulmuş ağ da gittiyse null.
     isciyiBirak();
     if (cevap.ag) c = { ...c, ag: cevap.ag };
-    else if (istek.model) c = { ...c, ag: agYap(istek.model, istek.kamera) };
+    else if (model) c = { ...c, ag: kur(model) };
     else return null;
   }
   return cizBlob(c);
@@ -122,6 +127,17 @@ async function ciz(istek: GlIstek): Promise<Blob | null> {
 
 const ONBELLEK = new Map<string, Promise<string | null>>();
 let zincir: Promise<unknown> = Promise.resolve();
+
+/** Hareketli sahnenin katmanları (nesne url'leri), ana resmin url'sine göre. */
+export interface Katmanlar {
+  su?: string;
+  isik?: string;
+}
+const KATMANLAR = new Map<string, Katmanlar>();
+
+export function glKatmanlari(url: string | null): Katmanlar | undefined {
+  return url ? KATMANLAR.get(url) : undefined;
+}
 
 /**
  * Geliştirme ve denetim için: yazılım sürücüsünde de GPU yolunu zorla
@@ -185,8 +201,15 @@ export function glCiz(anahtar: string, istek: () => GlIstek): Promise<string | n
     .then(() => new Promise((r) => setTimeout(r, 0)))
     .then(async () => {
       try {
-        const b = await ciz(istek());
-        return b ? URL.createObjectURL(b) : null;
+        const s = await ciz(istek());
+        if (!s) return null;
+        const url = URL.createObjectURL(s.resim);
+        if (s.su || s.isik)
+          KATMANLAR.set(url, {
+            su: s.su && URL.createObjectURL(s.su),
+            isik: s.isik && URL.createObjectURL(s.isik),
+          });
+        return url;
       } catch {
         return null;
       }

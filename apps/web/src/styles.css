@@ -426,6 +426,137 @@ svg g[role='button']:focus-visible > path:first-of-type {
 }
 
 /*
+ * Canlı sahne (docs/24 "Hareket"): bölge afişi, ekran zemini, diyar kapağı.
+ * GPU resmi durağan; üstünde suyun parıltısı kayıyor, ateş ve pencere ışığı
+ * titriyor, bacadan duman yükseliyor. Yalnız dönüşüm ve saydamlık oynuyor:
+ * tarayıcı katmanları yeniden boyamadan kaydırıyor, pil yemiyor.
+ */
+.hareket {
+  position: relative;
+  overflow: hidden;
+  pointer-events: none;
+}
+.hareket-cerceve {
+  position: absolute;
+}
+
+/* Su: iki parıltı karosu ayrı yönde, ayrı hızda kayıyor; su maskesiyle örtülü. */
+.hareket-su {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0.8;
+}
+.hareket-su-a,
+.hareket-su-b {
+  position: absolute;
+  background-repeat: repeat;
+  will-change: transform;
+}
+.hareket-su-a {
+  inset: 0 -256px -128px 0;
+  background-size: 256px 128px;
+  animation: su-ak-a 16s linear infinite;
+}
+.hareket-su-b {
+  inset: 0 0 0 -176px;
+  background-size: 176px 88px;
+  background-position: 60px 30px;
+  opacity: 0.8;
+  animation: su-ak-b 11s linear infinite;
+}
+@keyframes su-ak-a {
+  to {
+    transform: translate3d(-256px, -128px, 0);
+  }
+}
+@keyframes su-ak-b {
+  to {
+    transform: translate3d(176px, 0, 0);
+  }
+}
+
+/* Işık: ışıyan yüzler ve geniş hare, "ekran" karışımıyla; iki kopya iki ritimde. */
+.hareket-isik {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  mix-blend-mode: screen;
+  opacity: 0.5;
+  animation: isik-titre 2.9s linear infinite;
+}
+.hareket-isik-b {
+  animation-duration: 3.7s;
+  animation-delay: -1.3s;
+}
+@keyframes isik-titre {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  8% {
+    opacity: 0.3;
+  }
+  17% {
+    opacity: 0.7;
+  }
+  24% {
+    opacity: 0.45;
+  }
+  36% {
+    opacity: 0.8;
+  }
+  45% {
+    opacity: 0.4;
+  }
+  57% {
+    opacity: 0.65;
+  }
+  66% {
+    opacity: 0.3;
+  }
+  78% {
+    opacity: 0.75;
+  }
+  89% {
+    opacity: 0.45;
+  }
+}
+
+/* Duman: baca ağzında küçük, yükseldikçe büyüyüp rüzgârla kayarak sönüyor. */
+.hareket-duman {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--renk) 40%, transparent);
+  opacity: 0;
+  animation-name: duman-yuksel;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+@keyframes duman-yuksel {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.4);
+    opacity: 0;
+  }
+  14% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate3d(var(--dx), var(--dy), 0) scale(1.9);
+    opacity: 0;
+  }
+}
+
+/* Hareket kısıtlıysa katman hiç yok (JS de kurmuyor; bu ikinci savunma hattı). */
+@media (prefers-reduced-motion: reduce) {
+  .hareket {
+    display: none;
+  }
+}
+
+/*
  * Rehber ışığının halkası: oyuncu perdeye bastığında bir kez nabız atar.
  * Perde tıklamayı yutuyor; hiçbir tepki vermeseydi "oyun dondu" diye
  * okunurdu. Sarsıntı değil nabız — "yanlış yaptın" değil, "buraya bak".

@@ -18,7 +18,22 @@ import { rastgele } from './rastgele';
 import { gecis } from './arazi';
 import { insan, type Insan } from './figur';
 import { P, isikla } from './renk';
-import { ciz, dilim, kutu, levha, oneAl, sabitKutu, silindir, yansitici, zemineGeri } from './uc';
+import { duman } from './parca';
+import {
+  ciz,
+  dilim,
+  dondur,
+  kutu,
+  levha,
+  olcekle,
+  oneAl,
+  sabitKutu,
+  silindir,
+  tasi,
+  yansitici,
+  zemineGeri,
+  type V3,
+} from './uc';
 import { YERLESIM_KADEMELERI, yerlesimModeli, yerlesimNoktasi, yerlesimYuzdesi } from './yerlesim';
 
 const sayilar = (n: string) => n.split(/[ ,]/).map(Number);
@@ -120,6 +135,18 @@ describe('3B motor', () => {
     // Işıklanmış renk: kırmızı kanal ilkinde dolu, ikincide boş.
     expect(parseInt(c.cokgenler[0]!.renk.slice(1, 3), 16)).toBeGreaterThan(0);
     expect(parseInt(c.cokgenler[1]!.renk.slice(1, 3), 16)).toBe(0);
+  });
+
+  it('duman yüzleri kaynağını taşıyor; kaynak taşıma, ölçek ve dönmeyle birlikte gidiyor', () => {
+    const d = duman(2, 3, 5, rastgele('duman'), 2);
+    expect(d.length).toBeGreaterThan(0);
+    expect(d.every((y) => y.duman?.join() === '2,3,5')).toBe(true);
+    const yakin = (a: V3 | undefined, b: V3) => a!.map((x, i) => +(x - b[i]!).toFixed(6));
+    expect(yakin(tasi(d, [1, 1, 1])[0]!.duman, [3, 4, 6])).toEqual([0, 0, 0]);
+    expect(yakin(olcekle(d, 2, [1, 1, 1])[0]!.duman, [3, 5, 9])).toEqual([0, 0, 0]);
+    expect(yakin(dondur(d, 'z', Math.PI / 2)[0]!.duman, [-3, 2, 5])).toEqual([0, 0, 0]);
+    // Duman olmayan yüz duman almıyor.
+    expect(tasi(kutu(0, 0, 0, 1, 1, 1, '#808080'), [1, 0, 0])[0]!.duman).toBeUndefined();
   });
 
   it('tohumlu rastgele: aynı anahtar aynı dizi', () => {

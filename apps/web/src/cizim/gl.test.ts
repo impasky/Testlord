@@ -136,6 +136,22 @@ describe('GPU ağı (agYap)', () => {
     expect(kose(ag.nesne, 3).su[3]).toBe(-9);
   });
 
+  it('hareketli sahne: duman yüzleri ağa girmiyor; su ve ışıma varlığı işaretleniyor', () => {
+    const m: Model = [
+      ustUcgen({ saydam: 0.5, duman: [0, 0, 3] }),
+      ustUcgen({ isima: 1 }),
+      ustUcgen({ su: { d: [1, 1, 1], renk: ['#0000ff', '#0000ff', '#0000ff'], kum: '#ffff00' } }),
+    ];
+    const tam = agYap(m);
+    expect(ucgenSayisi(tam.saydam)).toBe(1);
+    expect(tam.suVar && tam.isimaVar).toBe(true);
+    const dumansiz = agYap(m, undefined, { dumansiz: true });
+    expect(ucgenSayisi(dumansiz.saydam)).toBe(0);
+    expect(ucgenSayisi(dumansiz.nesne)).toBe(2);
+    const sade = agYap([ustUcgen()]);
+    expect(sade.suVar || sade.isimaVar).toBe(false);
+  });
+
   it('parlaklık köşeye yazılıyor; işaretsiz yüz mat (0), dönüşümden sağ çıkıyor', () => {
     const [metal] = dondur(tasi(parlat([ustUcgen()], 0.8), [1, 2, 3]), 'z', 0.3);
     const ag = agYap([metal!, ustUcgen()]);

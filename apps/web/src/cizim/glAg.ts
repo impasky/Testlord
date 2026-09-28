@@ -78,6 +78,9 @@ export interface Ag {
   enCok: V3;
   /** Bakana doğru derinlik aralığı (z tamponu ölçeği). */
   derinlik: [number, number];
+  /** Görünen su ve ışıyan yüz var mı (hareket katmanları yalnız varsa çiziliyor). */
+  suVar: boolean;
+  isimaVar: boolean;
 }
 
 const rgb = (hex: string): [number, number, number] => {
@@ -111,7 +114,11 @@ interface Parca {
   d: number;
 }
 
-export function agYap(model: Model, kamera?: Kamera): Ag {
+/**
+ * `dumansiz`: duman yüzleri (`Yuz.duman`) atlanıyor — hareketli sahnede
+ * yerlerine canlı duman konuyor.
+ */
+export function agYap(model: Model, kamera?: Kamera, secenek: { dumansiz?: boolean } = {}): Ag {
   const { c } = kameraTabani(kamera);
   // Bir modelde renkler çok tekrar ediyor (arazi, duvar): bir kez çözülsün.
   const renkler = new Map<string, [number, number, number]>();
@@ -128,10 +135,13 @@ export function agYap(model: Model, kamera?: Kamera): Ag {
   const enCok: V3 = [-Infinity, -Infinity, -Infinity];
   let dMin = Infinity;
   let dMax = -Infinity;
+  let suVar = false;
+  let isimaVar = false;
 
   // 1) Karar: hangi yüz nereye, hangi sırayla (kopya yok).
   for (const y of model) {
     if (y.p.length < 3) continue;
+    if (secenek.dumansiz && y.duman) continue;
     const alfa = y.saydam ?? 1;
     const k = y.katman ?? 0;
     // Gölge: nesnelerin dolu yüzleri, bakana dönük olsun olmasın.
@@ -152,6 +162,8 @@ export function agYap(model: Model, kamera?: Kamera): Ag {
       }
     }
     const x: Parca = { y, yn, cevir, k, d: d / y.p.length };
+    if (y.su) suVar = true;
+    if (y.isima) isimaVar = true;
     if (alfa < 1) saydam.push(x);
     else if (k < 0) yer.push(x);
     else nesne.push(x);
@@ -259,5 +271,7 @@ export function agYap(model: Model, kamera?: Kamera): Ag {
     enAz,
     enCok,
     derinlik: [dMin, dMax],
+    suVar,
+    isimaVar,
   };
 }

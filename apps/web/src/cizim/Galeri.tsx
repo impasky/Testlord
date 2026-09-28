@@ -27,6 +27,7 @@ import {
 import { DIYAR_ADLARI, HARITA_KUTUSU, KAPAK_KUTUSU, diyarModeli } from './diyarlar';
 import { dunyaUcgenleri } from './dunya';
 import { ZEMIN_ADLARI, ZEMIN_KUTUSU, zeminModeli } from './zeminler';
+import { BolgeCizimi, DiyarCizimi, ZeminCizimi } from './Cizimler';
 import { Sahne } from './Sahne';
 import { YERLESIM_KADEMELERI, YERLESIM_KUTUSU, yerlesimModeli } from './yerlesim';
 import { P } from './renk';
@@ -192,6 +193,29 @@ const BOLUMLER: {
             ))}
           </svg>
         ),
+      },
+    ],
+  },
+  {
+    // Uygulamadaki gibi: su parıltısı, ışık titremesi, duman (yalnız GPU).
+    baslik: 'Canlı sahneler',
+    ogeler: [
+      ...['koy_5', 'maden_5', 'kale_5'].map((ad) => ({
+        ad: 'canli:' + ad,
+        genis: true,
+        cizim: <BolgeCizimi ad={ad} alt={ad} className="h-full w-full" />,
+      })),
+      ...['demirhane', 'akin'].map((ad) => ({
+        ad: 'canli:' + ad,
+        genis: true,
+        oran: 'aspect-[60/23]',
+        cizim: <ZeminCizimi ad={ad} className="h-full w-full" />,
+      })),
+      {
+        ad: 'canli:kirik_sahil',
+        genis: true,
+        oran: 'aspect-video',
+        cizim: <DiyarCizimi ad="kirik_sahil" kadraj="kapak" className="h-full w-full" />,
       },
     ],
   },

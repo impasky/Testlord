@@ -15,9 +15,9 @@ let zincir: Promise<unknown> = Promise.resolve();
 kapsam.onmessage = (e) => {
   const { id, istek } = e.data;
   zincir = zincir.then(async () => {
-    const blob = await cizBlob(istek).catch(() => null);
+    const sonuc = await cizBlob(istek).catch(() => null);
     if (glDurumu() === 'yok')
       kapsam.postMessage({ id, yok: true, ag: istek.ag }, aktarilanlar(istek.ag));
-    else kapsam.postMessage({ id, blob });
+    else kapsam.postMessage({ id, sonuc });
   });
 };

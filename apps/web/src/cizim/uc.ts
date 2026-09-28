@@ -94,6 +94,13 @@ export interface Yuz {
    */
   onde?: number;
   /**
+   * Duman parçası: bacanın ağzı (kaynak). Hareketli sahnede GPU bu yüzleri
+   * çizmiyor; yerine kaynaktan yükselen canlı duman konuyor (bkz.
+   * `Sahne.hareket`). SVG ve hareketsiz çizim duman küresini çiziyor.
+   * Dönüşümler (`tasi`, `olcekle`, `dondur`) kaynağı da taşıyor.
+   */
+  duman?: V3;
+  /**
    * Çizim katmanı: küçük önce. Ressam algoritması yüzün ORTASINA bakıyor;
    * dev bir zemin yüzünün ortası sahnenin ortasında kaldığı için arkadaki
    * duvarlar onun altında kalıyordu. Zemin -2, yere yatık yol/döşeme -1,
@@ -146,18 +153,23 @@ function merkez(p: V3[]): V3 {
 /* ── Dönüşümler ────────────────────────────────────────────────────── */
 
 export function tasi(m: Model, d: V3): Model {
-  return m.map((y) => ({ ...y, p: y.p.map((q) => ekle(q, d)) }));
+  return m.map((y) => ({
+    ...y,
+    p: y.p.map((q) => ekle(q, d)),
+    ...(y.duman ? { duman: ekle(y.duman, d) } : {}),
+  }));
 }
 
 export function olcekle(m: Model, s: number | V3, o: V3 = [0, 0, 0]): Model {
   const k: V3 = typeof s === 'number' ? [s, s, s] : s;
   const ters = k[0] * k[1] * k[2] < 0;
+  const f = (q: V3): V3 => [
+    o[0] + (q[0] - o[0]) * k[0],
+    o[1] + (q[1] - o[1]) * k[1],
+    o[2] + (q[2] - o[2]) * k[2],
+  ];
   return m.map((y) => {
-    const p = y.p.map((q): V3 => [
-      o[0] + (q[0] - o[0]) * k[0],
-      o[1] + (q[1] - o[1]) * k[1],
-      o[2] + (q[2] - o[2]) * k[2],
-    ]);
+    const p = y.p.map(f);
     // Normal ölçeğin tersiyle dönüşür (ters devrik); köşe sırası gibi o da
     // aynalamada çevrilir.
     const vn = y.vn?.map((n) => birim([n[0] / k[0], n[1] / k[1], n[2] / k[2]]));
@@ -170,6 +182,7 @@ export function olcekle(m: Model, s: number | V3, o: V3 = [0, 0, 0]): Model {
       ...(y.su && ters
         ? { su: { ...y.su, d: [...y.su.d].reverse(), renk: [...y.su.renk].reverse() } }
         : {}),
+      ...(y.duman ? { duman: f(y.duman) } : {}),
     };
   });
 }
@@ -191,7 +204,12 @@ export function dondur(m: Model, eksen: 'x' | 'y' | 'z', aci: number, o: V3 = [0
     const q = f(ekle(n, o));
     return [q[0] - o[0], q[1] - o[1], q[2] - o[2]];
   };
-  return m.map((y) => ({ ...y, p: y.p.map(f), ...(y.vn ? { vn: y.vn.map(yon) } : {}) }));
+  return m.map((y) => ({
+    ...y,
+    p: y.p.map(f),
+    ...(y.vn ? { vn: y.vn.map(yon) } : {}),
+    ...(y.duman ? { duman: f(y.duman) } : {}),
+  }));
 }
 
 /** Modelin bütün yüzlerini parlak (metal) yapar (bkz. `Yuz.parlak`). */

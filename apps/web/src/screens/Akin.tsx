@@ -314,7 +314,7 @@ function HaritaKarti({
           className="bas flex w-full items-center gap-3 p-2 text-left"
         >
           <span className="relative h-11 w-16 shrink-0 overflow-hidden rounded-lg grayscale">
-            <DiyarCizimi ad={h.key} kadraj="kapak" className="h-full w-full" />
+            <DiyarCizimi ad={h.key} kadraj="kapak" className="h-full w-full" hareket={false} />
           </span>
           <span className="min-w-0 flex-1">
             <span className="flex items-baseline justify-between gap-2">

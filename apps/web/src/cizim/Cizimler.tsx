@@ -90,10 +90,13 @@ export function BolgeCizimi({
   ad,
   alt,
   className,
+  hareket = true,
 }: {
   ad: string;
   alt: string;
   className?: string;
+  /** Canlı afiş (su, ışık, duman); küçük karoda kapalı. */
+  hareket?: boolean;
 }) {
   return (
     <Sahne
@@ -104,6 +107,7 @@ export function BolgeCizimi({
       className={className}
       kirp
       tilt={TILT_AFIS}
+      hareket={hareket}
     />
   );
 }
@@ -195,7 +199,8 @@ export function PortreCizimi({
 export function YolCizimi({ yol, className }: { yol: string; className?: string }) {
   const [klasor = '', ad = ''] = yol.split('/');
   if (klasor === 'binalar') return <BinaCizimi ad={ad} className={className} />;
-  if (klasor === 'bolgeler') return <BolgeCizimi ad={ad} alt="" className={className} />;
+  if (klasor === 'bolgeler')
+    return <BolgeCizimi ad={ad} alt="" className={className} hareket={false} />;
   if (klasor === 'portre') return <PortreCizimi ad={ad} className={className} />;
   if (klasor === 'harita') return <DunyaKucuk className={className} />;
   return <NesneCizimi tur={klasor} ad={ad} className={className} />;
@@ -206,10 +211,13 @@ export function DiyarCizimi({
   ad,
   kadraj,
   className,
+  hareket = kadraj === 'kapak',
 }: {
   ad: string;
   kadraj: Kadraj;
   className?: string;
+  /** Canlı kapak (su, ışık, duman); küçük kilitli pencerede kapalı. */
+  hareket?: boolean;
 }) {
   return (
     <Sahne
@@ -220,6 +228,7 @@ export function DiyarCizimi({
       className={className}
       kirp
       tilt={kadraj === 'kapak' ? TILT_AFIS : undefined}
+      hareket={hareket}
     />
   );
 }
@@ -252,6 +261,7 @@ export function ZeminCizimi({ ad, className }: { ad: string; className?: string 
       className={className}
       kirp
       tilt={TILT_ZEMIN}
+      hareket
       ertele
     />
   );

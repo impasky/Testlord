@@ -63,6 +63,13 @@ const TILT_YARICAP = 0.0065;
 const TILT_ODAK = 0.56;
 /** Işıyan yüzlerin haresi. */
 const HARE_GUC = 0.55;
+/**
+ * Hareketli sahnenin ışık katmanı: hare ana resimdekinin kaç katı geniş ve
+ * ne kadar güçlü. Sayfada titreyen bu katman ateşin çevresini soluk alıp
+ * veriyormuş gibi açıp kısıyor.
+ */
+const KATMAN_HARE_YARICAP = 2;
+const KATMAN_HARE_GUC = 1.1;
 
 const ANA_KOSE = `#version 300 es
 layout(location=0) in vec3 a_konum;
@@ -349,7 +356,8 @@ void main() {
   o_normal = vec4(nCizgi * 0.5 + 0.5, v_ek.z);
   // Kaplama: 1 nesne, 0,75 yer (arazi, yol, tarla); 0 boş.
   o_taban = vec4(tabanCizgi, u_yer > 0.5 ? 0.75 : 1.0);
-  o_ek = vec4(paketle(gl_FragCoord.z), isima, aoAgirlik);
+  // a: ortam gölgesi ağırlığı 0–0,9; 1 su (hareket katmanının maskesi).
+  o_ek = vec4(paketle(gl_FragCoord.z), isima, s > 0.5 ? 1.0 : aoAgirlik * 0.9);
 }`;
 
 const GOLGE_KOSE = `#version 300 es
@@ -466,7 +474,8 @@ vec4 ornek(ivec2 p) {
   vec4 t = texelFetch(u_taban, p, 0);
   if (t.a < 0.5) return c;
   if (u_aoPx > 0.5) {
-    float agirlik = texelFetch(u_ek, p, 0).a;
+    float ea = texelFetch(u_ek, p, 0).a;
+    float agirlik = ea < 0.95 ? ea / 0.9 : 0.0;
     if (agirlik > 0.01) c.rgb *= mix(1.0, ortamGolgesi(p), agirlik);
   }
   vec4 nn = texelFetch(u_normal, p, 0);
@@ -557,6 +566,57 @@ void main() {
   o = t / 24.0;
 }`;
 
+/*
+ * Hareket katmanları: ana resimle aynı boyda ve kırpımda, ayrı PNG'ler.
+ * Sayfa (`Sahne.hareket`) bunları CSS ile oynatıyor; GPU bir kez çiziyor.
+ *   0) Su maskesi: pikselin ne kadarı su (beyaz, saydamlıkla). Üstünde
+ *      kayan parıltı dokusu yalnız suya düşüyor; önündeki köprü, kayık,
+ *      ağaç maskeyi zaten örtüyor (derinlik).
+ *   1) Işık: ışıyan yüzlerin (ateş, pencere, büyü) rengi ve ana resimdekinden
+ *      geniş bir hare. Sayfada "ekran" karışımıyla, saydamlığı titreyerek.
+ * Önceden çarpılmış renk.
+ */
+const KATMAN_PARCA = `#version 300 es
+precision highp float;
+uniform sampler2D u_renk;
+uniform sampler2D u_ek;
+uniform ivec2 u_boyut;
+uniform int u_ss;
+uniform int u_tur;
+uniform float u_harePx;
+uniform float u_hare;
+out vec4 o;
+ivec2 sinirla(ivec2 p) { return clamp(p, ivec2(0), u_boyut - 1); }
+float titrek(vec2 p) { return fract(52.9829189 * fract(dot(p, vec2(0.06711056, 0.00583715)))); }
+vec3 isiyan(ivec2 q) { return texelFetch(u_renk, q, 0).rgb * texelFetch(u_ek, q, 0).b; }
+void main() {
+  ivec2 b = ivec2(gl_FragCoord.xy) * u_ss;
+  float n = float(u_ss * u_ss);
+  if (u_tur == 0) {
+    float su = 0.0;
+    for (int i = 0; i < u_ss; i++)
+      for (int j = 0; j < u_ss; j++) su += step(0.95, texelFetch(u_ek, b + ivec2(i, j), 0).a);
+    o = vec4(su / n);
+    return;
+  }
+  vec3 g = vec3(0.0);
+  for (int i = 0; i < u_ss; i++)
+    for (int j = 0; j < u_ss; j++) g += isiyan(b + ivec2(i, j));
+  g /= n;
+  vec3 h = vec3(0.0);
+  float top = 0.0;
+  float aci = titrek(gl_FragCoord.xy) * 6.2831853;
+  for (int i = 0; i < 32; i++) {
+    float f = sqrt((float(i) + 0.5) / 32.0);
+    float a = aci + float(i) * 2.3999632;
+    float w = exp(-2.5 * f * f);
+    h += isiyan(sinirla(b + ivec2(vec2(cos(a), sin(a)) * f * u_harePx))) * w;
+    top += w;
+  }
+  g = min(g * 0.6 + h * u_hare / top, vec3(1.0));
+  o = vec4(g, max(g.r, max(g.g, g.b)));
+}`;
+
 type Tuval = OffscreenCanvas | HTMLCanvasElement;
 
 interface Kaynak {
@@ -566,6 +626,7 @@ interface Kaynak {
   golge: WebGLProgram;
   coz: WebGLProgram;
   bulanik: WebGLProgram;
+  katman: WebGLProgram;
   golgeFbo: WebGLFramebuffer;
   golgeDoku: WebGLTexture;
   anaFbo: WebGLFramebuffer;
@@ -678,6 +739,7 @@ function kur(yazilimaIzin = false): Kaynak | null {
       golge: derle(gl, GOLGE_KOSE, GOLGE_PARCA),
       coz: derle(gl, COZ_KOSE, COZ_PARCA),
       bulanik: derle(gl, COZ_KOSE, BULANIK_PARCA),
+      katman: derle(gl, COZ_KOSE, KATMAN_PARCA),
       golgeFbo,
       golgeDoku,
       anaFbo: gl.createFramebuffer()!,
@@ -896,8 +958,21 @@ export interface CizimIstegi {
   tilt?: number;
   /** Renk düzenlemesinin gücü (0 kapalı, 1 tam); verilmezse tam. */
   ton?: number;
+  /**
+   * Hareket katmanlarını da çiz (su maskesi, ışık; bkz. `KATMAN_PARCA`).
+   * Ağ `agYap(..., { dumansiz: true })` ile kurulmuş olmalı: duman sayfada
+   * canlı yükseliyor.
+   */
+  hareket?: boolean;
   /** Bir CSS pikselinin çıktıdaki karşılığı: kenar çizgisinin kalınlığı. */
   olcek: number;
+}
+
+/** Çizimin çıktısı: resim ve (hareketli sahnede, varsa) katmanları. */
+export interface CizimSonucu {
+  resim: Blob;
+  su?: Blob;
+  isik?: Blob;
 }
 
 async function blobla(tuval: Tuval): Promise<Blob | null> {
@@ -908,7 +983,7 @@ async function blobla(tuval: Tuval): Promise<Blob | null> {
 /** İşçinin cevabı: resim, ya da "burada WebGL2 yok" (ağ geri aktarılıyor). */
 export interface IsciCevabi {
   id: number;
-  blob?: Blob | null;
+  sonuc?: CizimSonucu | null;
   yok?: boolean;
   ag?: Ag;
 }
@@ -927,10 +1002,10 @@ export function glDurumu(): typeof durum {
 }
 
 /**
- * Tek bir çizim: PNG blob'u ya da (WebGL yoksa/bozulduysa) null. Çağıran
+ * Tek bir çizim: PNG blob'ları ya da (WebGL yoksa/bozulduysa) null. Çağıran
  * işleri tek tek veriyor (sıra `gl.ts`'de ve işçide).
  */
-export async function cizBlob(istek: CizimIstegi): Promise<Blob | null> {
+export async function cizBlob(istek: CizimIstegi): Promise<CizimSonucu | null> {
   clearTimeout(bosaltma);
   try {
     return await ciz(istek);
@@ -939,7 +1014,7 @@ export async function cizBlob(istek: CizimIstegi): Promise<Blob | null> {
   }
 }
 
-async function ciz(istek: CizimIstegi): Promise<Blob | null> {
+async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
   const k = kur(istek.yazilimaIzin);
   if (!k) return null;
   const { gl } = k;
@@ -1083,7 +1158,8 @@ async function ciz(istek: CizimIstegi): Promise<Blob | null> {
   gl.uniform1f(uc('u_aoGuc'), AO_GUC);
   // Hare: ~6 CSS pikseli yarıçap.
   gl.uniform1f(uc('u_hare'), istek.hare ?? HARE_GUC);
-  gl.uniform1f(uc('u_harePx'), Math.max(4, 6 * istek.olcek * ss));
+  const harePx = Math.max(4, 6 * istek.olcek * ss);
+  gl.uniform1f(uc('u_harePx'), harePx);
   gl.uniform2i(uc('u_boyut'), sen, sboy);
   // Çizgi: SVG'deki gibi ~0,7 CSS pikseli; siluette tek yanlı, kırılımda iki yanlı.
   gl.uniform1i(uc('u_ss'), ss);
@@ -1099,7 +1175,8 @@ async function ciz(istek: CizimIstegi): Promise<Blob | null> {
   gl.drawArrays(gl.TRIANGLES, 0, 3);
 
   // 4) Tilt-shift: ara doku → tuval.
-  if (tilt) {
+  const bulandir = () => {
+    if (!tilt) return;
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.useProgram(k.bulanik);
     const ub = (ad: string) => gl.getUniformLocation(k.bulanik, ad);
@@ -1111,11 +1188,46 @@ async function ciz(istek: CizimIstegi): Promise<Blob | null> {
     gl.uniform1f(ub('u_bant'), istek.tilt!);
     gl.uniform1f(ub('u_yaricap'), TILT_YARICAP * en);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
-  }
+  };
+  bulandir();
 
   for (const s of silinecek) s();
   if (gl.isContextLost()) return null;
-  return blobla(k.tuval);
+  const resim = await blobla(k.tuval);
+  if (!resim) return null;
+  const sonuc: CizimSonucu = { resim };
+  if (!istek.hareket) return sonuc;
+
+  // 5) Hareket katmanları: aynı hedeflerden, aynı kırpım ve bulanıklıkla.
+  // Her biri tuvale sırayla; önceki PNG'ye dönüşmeden tuval yeniden
+  // çizilmiyor. Sıradaki iş bu bitmeden başlamıyor, hedefler yerinde.
+  for (const [tur, ad, var_] of [
+    [0, 'su', ag.suVar],
+    [1, 'isik', ag.isimaVar],
+  ] as const) {
+    if (!var_) continue;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, tilt ? k.araFbo : null);
+    gl.viewport(0, 0, en, boy);
+    gl.useProgram(k.katman);
+    const uk = (ad: string) => gl.getUniformLocation(k.katman, ad);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, k.dokular[0]!);
+    gl.uniform1i(uk('u_renk'), 0);
+    gl.activeTexture(gl.TEXTURE1);
+    gl.bindTexture(gl.TEXTURE_2D, k.dokular[3]!);
+    gl.uniform1i(uk('u_ek'), 1);
+    gl.uniform2i(uk('u_boyut'), sen, sboy);
+    gl.uniform1i(uk('u_ss'), ss);
+    gl.uniform1i(uk('u_tur'), tur);
+    gl.uniform1f(uk('u_harePx'), harePx * KATMAN_HARE_YARICAP);
+    gl.uniform1f(uk('u_hare'), KATMAN_HARE_GUC);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    bulandir();
+    if (gl.isContextLost()) return sonuc;
+    const b = await blobla(k.tuval);
+    if (b) sonuc[ad] = b;
+  }
+  return sonuc;
 }
 
 /**
