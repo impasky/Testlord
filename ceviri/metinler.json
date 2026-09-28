@@ -284,7 +284,7 @@
     "tr": "[{0}] hedef",
     "en": "[{0}] target",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:1431"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1433"
     ]
   },
   "t07b8fe99": {
@@ -2794,7 +2794,7 @@
     "en": "empty",
     "nerede": [
       "apps/web/src/components/DizilimIzgarasi.tsx:324",
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:1493",
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1495",
       "apps/web/src/screens/Harita.tsx:1418"
     ]
   },
@@ -3356,7 +3356,7 @@
     "tr": "Çekirdek — ele geçirilemez",
     "en": "Core — cannot be captured",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:1359"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1361"
     ]
   },
   "t53904c10": {
@@ -6280,7 +6280,7 @@
     "tr": "Kampın",
     "en": "Your camp",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:1365",
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1367",
       "apps/web/src/components/harita/DunyaHaritasi.tsx:600"
     ]
   },
@@ -6289,7 +6289,7 @@
     "tr": "kapalı",
     "en": "off-limits",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:1494"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1496"
     ]
   },
   "t926ba486": {
@@ -6911,7 +6911,7 @@
     "tr": "Korumalı",
     "en": "Protected",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:1351"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1353"
     ]
   },
   "t0d0d93bf": {
@@ -7163,7 +7163,7 @@
     "tr": "lord",
     "en": "lord",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:1492"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1494"
     ]
   },
   "t76d9061a": {
@@ -9905,7 +9905,7 @@
     "tr": "Taht Kalesi",
     "en": "Throne Citadel",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:1415",
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1417",
       "apps/web/src/screens/Harita.tsx:1137",
       "data/balance.json:bolgeler.gelisim_adlari.taht[0]",
       "data/balance.json:bolgeler.gelisim_adlari.taht[1]",

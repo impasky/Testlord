@@ -1,16 +1,20 @@
 import { describe, expect, it } from 'vitest';
 import { arazi } from './arazi';
 import { DUNYA_KAMERASI, DUNYA_KUTUSU, dunyaModeli, dunyaUcgenleri } from './dunya';
+import { insan } from './figur';
 import { KOSE, agYap } from './glAg';
 import { goruntuMatrisi } from './glCizici';
 import { rastgele } from './rastgele';
 import {
   IZOMETRIK,
+  dondur,
   kameraTabani,
   kutu,
   levha,
   normal,
   olcekle,
+  parlat,
+  tasi,
   yansitici,
   type Model,
   type V3,
@@ -24,7 +28,7 @@ const kose = (f: Float32Array, i: number) => ({
   konum: [f[i * KOSE]!, f[i * KOSE + 1]!, f[i * KOSE + 2]!] as V3,
   normal: [f[i * KOSE + 3]!, f[i * KOSE + 4]!, f[i * KOSE + 5]!] as V3,
   renk: [f[i * KOSE + 6]!, f[i * KOSE + 7]!, f[i * KOSE + 8]!],
-  ek: [f[i * KOSE + 9]!, f[i * KOSE + 10]!, f[i * KOSE + 11]!],
+  ek: [f[i * KOSE + 9]!, f[i * KOSE + 10]!, f[i * KOSE + 11]!, f[i * KOSE + 12]!],
   su: [f[i * KOSE + 13]!, f[i * KOSE + 14]!, f[i * KOSE + 15]!, f[i * KOSE + 16]!],
   kum: [f[i * KOSE + 17]!, f[i * KOSE + 18]!, f[i * KOSE + 19]!],
 });
@@ -125,6 +129,38 @@ describe('GPU ağı (agYap)', () => {
     expect(b!.su[3]).toBe(-1);
     expect(a!.kum).toEqual([0, 1, 0]);
     expect(kose(ag.nesne, 3).su[3]).toBe(-9);
+  });
+
+  it('parlaklık köşeye yazılıyor; işaretsiz yüz mat (0), dönüşümden sağ çıkıyor', () => {
+    const [metal] = dondur(tasi(parlat([ustUcgen()], 0.8), [1, 2, 3]), 'z', 0.3);
+    const ag = agYap([metal!, ustUcgen()]);
+    expect(kose(ag.nesne, 0).ek[3]).toBeCloseTo(0.8);
+    expect(kose(ag.nesne, 3).ek[3]).toBe(0);
+  });
+
+  it('figürde metal parlıyor, ten ve bez mat', () => {
+    const f = insan({
+      ten: '#c08060',
+      govde: '#6a4a30',
+      bacak: '#40302a',
+      cizme: '#2a221c',
+      zirh: { tip: 'plaka', renk: '#8a8f94' },
+      baslik: { tip: 'migfer', renk: '#8a8f94' },
+      sag: { tip: 'kilic' },
+    });
+    const parlak = (renk: string) => f.filter((y) => y.renk === renk && (y.parlak ?? 0) > 0);
+    expect(parlak('#8a8f94').length).toBeGreaterThan(0);
+    expect(parlak('#c08060')).toHaveLength(0);
+    expect(parlak('#40302a')).toHaveLength(0);
+    // Deri zırh mat kalıyor.
+    const deri = insan({
+      ten: '#c08060',
+      govde: '#6a4a30',
+      bacak: '#40302a',
+      cizme: '#2a221c',
+      zirh: { tip: 'deri', renk: '#7a5a38' },
+    });
+    expect(deri.some((y) => (y.parlak ?? 0) > 0)).toBe(false);
   });
 
   it('aynalamada köşe normali, rengi ve suyu köşeyle birlikte dönüyor', () => {

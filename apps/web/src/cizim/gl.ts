@@ -33,6 +33,10 @@ export interface GlIstek {
   boy: number;
   /** Işık yönü; verilmezse bütün çizimlerin ışığı (`ISIK`). */
   isik?: V3;
+  /** Ortam gölgesi yarıçapı (dünya birimi); 0 kapalı, verilmezse sahnenin boyundan. */
+  ao?: number;
+  /** Hare gücü; 0 kapalı. */
+  hare?: number;
   /** Bir CSS pikselinin çıktıdaki karşılığı: kenar çizgisinin kalınlığı. */
   olcek: number;
 }

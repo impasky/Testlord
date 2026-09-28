@@ -81,6 +81,10 @@ yüzün üstünde, SVG onu okumuyor.
   uzaklığın sıfır eğrisine oturuyor: komşu üçgenlerde kesintisiz, sivri
   uçsuz, bir piksel genişliğinde yumuşak. Suyun kıyıya değdiği yerde ince
   bir köpük şeridi var.
+- `parlak`: malzeme parlaklığı (0 mat, 1 cilalı). `parlat(model, p)` bir
+  parçanın bütün yüzlerini işaretliyor; figürlerde kılıç ağzı, mızrak ve
+  balta başı, miğfer, plaka/şerit/zincir zırh, kalkan kenarı, at zırhı ve
+  altın süsler parlak. Ten, bez, deri ve ahşap mat.
 - Dönüşümler (`olcekle`, `dondur`) bunları da taşıyor; aynalamada köşe
   sırasıyla birlikte dönüyorlar.
 
@@ -98,14 +102,45 @@ parçacığında da aynı koşuyor. Üç geçiş:
    yüzlü. Araziye ve birbirine gölge düşürüyorlar; 5×5 yüzdeli süzgeç
    gölge kenarını yumuşatıyor.
 2. Ana geçiş, dört hedefe birden: renk, normal + çizgi koyuluğu, taban
-   renk, derinlik. Işık `ORTAM + YAYGIN · (n·L)`, gölgedeki yüz yaygın
-   ışığın %38'ini alıyor.
+   renk ve bir "ek" hedef (iki kanala paketlenmiş derinlik, ışıma, ortam
+   gölgesi payı). Işık:
+   - Ortam ışığı gökyüzü/zemin karışımı: üste bakan yüz göğün serinliğini,
+     alta ve yana bakan yerden yansıyan sıcaklığı alıyor. Gölgeler hafif
+     mavi, güneşli yüzler hafif sıcak. Ortalama parlaklık SVG ile aynı.
+   - Güneş `YAYGIN · (n·L)`; gölgedeki yüz yaygın ışığın %38'ini alıyor.
+   - Parlak yüz (`parlak`): yansıyan bakış yönü göğe dönükse yüz açılıyor,
+     yere dönükse koyulaşıyor, ufkun güneş yanına dönükse parlıyor. Düz
+     yüzlü modelde bu yüzden yüze sert bir ayrım veriyor; metali mat
+     boyadan ayıran bu. Üstüne güneşin yansıması (Blinn–Phong; yüzler iri
+     olduğu için tepe geniş).
+   - Su: yüzeyinde yönlü, yumuşak dalgalar (gürültüden normal); güneşi yer
+     yer yansıtıyor. Dalga boyu dünya biriminde sabit, çıktı boyundan
+     bağımsız.
 3. Çözme: her çıktı pikseli 2×2 örneğin ortalaması (süper örnekleme) ve
    her örnek kendi kenarını buluyor. Çizgi yalnız siluette (komşu boş ya
    da belirgin arkada) ve keskin kırılımda ya da renk değişiminde; yuvarlak
    yüzeyin içinde çizgi yok. Kalınlık ekran pikselinde sabit (~0,7 CSS
    pikseli). 1400 pikselden büyük çıktı (dünya zemini) tek örnekle
-   çiziliyor; 2×2'si bellek sınırını aşıyor.
+   çiziliyor; 2×2'si bellek sınırını aşıyor. Aynı geçişte:
+   - Ortam gölgesi (SSAO): her örnek derinlikten görüş uzayı konumunu
+     kuruyor, çevresinde 12 noktayı (altın açıyla dağılmış, piksel başına
+     döndürülmüş) yoklayıp yüzeyin ~17°'den dik üstünde kalanları sayıyor.
+     Duvar dibi, mazgal arası, kule ve ağaç altı kararıyor. Yalnız ortam
+     ışığının payı kadar işliyor: güneşli yüzde az, gölgede çok.
+     - Yüzeyin düzlemi köşe normalinden değil derinlikten (iki yandaki
+       farkın kısası): arazinin köşe normali yumuşak, üçgenleri düz; eğik
+       üçgende komşular yumuşak normalin düzleminin üstünde kalıyor ve
+       üçgen toptan kararıyordu.
+     - Yer yeri örtmüyor: yol ve tarla araziye oturan düz plakalar, üst
+       üste bindikleri yerde halka halka kararıyordu. Yer (`katman < 0`)
+       yalnız üstündeki nesneden gölge alıyor.
+     - Su ve ışıyan yüz hiç kararmıyor (kıyının eğimli üçgenleri suyun
+       ortasına çizgi çekiyordu).
+     - Yarıçap görüş kutusunun %1,2'si; istek `ao` ile değişir, `ao: 0`
+       kapatır (dünya zemini düz, tutunacak girinti yok).
+   - Işıma haresi: ışıyan yüzler (pencere, meşale, büyü taşı) 24 örnekli
+     yumuşak bir hare yayıyor; saydam zeminde de görünüyor (harenin
+     kendisi saydamlık da ekliyor). Güç `hare` ile, `hare: 0` kapatır.
 
 Bellek yetmezse (ya da hedef doku kurulamazsa) iş `null` dönüyor ve o
 çizim SVG'ye düşüyor. Sıra boşalınca büyük hedef dokular dört saniye sonra
@@ -235,7 +270,9 @@ tools/gorsel-denetim.mjs` koş.
   çiziliyor; bilinmeyen ad `null` dönüyor.
 - `apps/web/src/cizim/gl.test.ts`: GPU ağı (görünen yüzler, gölgeye
   girenler, ince levha çevirmesi, katman sırası, köşe normali/rengi/suyu
-  ve aynalamada dönmeleri), GPU ile SVG'nin aynı izdüşümü kullandığı
+  ve aynalamada dönmeleri, parlaklığın köşeye yazılıp dönüşümden sağ
+  çıktığı, figürde metalin parlak, ten/bez/derinin mat olduğu), GPU ile
+  SVG'nin aynı izdüşümü kullandığı
   (izometrik ve tepeden), arazinin köşe su verisi, dünya GPU modelinin
   yüzlerinin kameraya dönük, kıyı uzaklığının sınırlı, ağaçlarının 2D
   çizimle aynı yerde olduğu.

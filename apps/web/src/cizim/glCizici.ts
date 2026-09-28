@@ -38,6 +38,18 @@ export const EN_BUYUK = 1400;
 const ORNEK_SINIRI = EN_BUYUK * SS;
 /** Gölgedeki yüzün yaygın ışığından kalan pay. */
 const GOLGE_GUC = 0.62;
+/** Ortam gölgesinin gücü (yarıçap içinde yükselen komşuların ortalamasına çarpan). */
+const AO_GUC = 2.2;
+/**
+ * Ortam gölgesine sayılan en düşük yükselti (komşunun yüzey düzlemiyle
+ * yaptığı açının sinüsü, ~17°). Arazi düz yüzlü; köşe normali yumuşak
+ * olduğu için komşu üçgenlerin sığ kıvrımı düzlemin biraz üstünde kalıyor
+ * ve eşik düşükken çimde üçgenler tek tek kararıyordu. Duvar dibi (90°)
+ * eşiğin çok üstünde.
+ */
+const AO_ESIK = 0.3;
+/** Işıyan yüzlerin haresi. */
+const HARE_GUC = 0.55;
 
 const ANA_KOSE = `#version 300 es
 layout(location=0) in vec3 a_konum;
@@ -63,6 +75,16 @@ void main() {
   gl_Position = u_goruntu * vec4(a_konum, 1.0);
 }`;
 
+/*
+ * Işık: gökyüzü/zemin ortam ışığı (üste bakan yüz göğün serinliğini, alta
+ * bakan yerden yansıyan sıcaklığı alıyor; gölgeler hafif mavi) + hafif
+ * sıcak güneş + parlak yüzlerde (metal, su) güneşin yansıması. Ortalama
+ * parlaklık SVG çizimiyle aynı kalıyor, yalnız renk sıcaklığı ayrışıyor.
+ */
+const GOK = '0.93, 0.99, 1.10';
+const YER = '1.09, 1.00, 0.88';
+const GUNES = '1.05, 1.00, 0.92';
+
 const ANA_PARCA = `#version 300 es
 precision highp float;
 precision highp sampler2DShadow;
@@ -75,12 +97,16 @@ in vec3 v_kum;
 uniform sampler2DShadow u_golge;
 uniform mat4 u_isikMat;
 uniform vec3 u_isik;
+uniform vec3 u_goz;
 uniform float u_golgeVar;
 uniform float u_texel;
 uniform float u_normalKay;
+uniform float u_dalga;
+uniform float u_yer;
 layout(location=0) out vec4 o_renk;
 layout(location=1) out vec4 o_normal;
 layout(location=2) out vec4 o_taban;
+layout(location=3) out vec4 o_ek;
 float golge(vec3 n) {
   if (u_golgeVar < 0.5) return 1.0;
   vec4 lp = u_isikMat * vec4(v_konum + n * u_normalKay, 1.0);
@@ -92,29 +118,89 @@ float golge(vec3 n) {
       t += texture(u_golge, vec3(s.xy + vec2(float(i), float(j)) * u_texel, s.z - 0.0008));
   return t / 25.0;
 }
+float karma(vec2 p) {
+  p = fract(p * vec2(123.34, 456.21));
+  p += dot(p, p + 45.32);
+  return fract(p.x * p.y);
+}
+float gurultu(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(mix(karma(i), karma(i + vec2(1.0, 0.0)), u.x),
+             mix(karma(i + vec2(0.0, 1.0)), karma(i + vec2(1.0, 1.0)), u.x), u.y);
+}
+float dalga(vec2 p) {
+  return gurultu(p) * 0.7 + gurultu(p * 2.1 + 7.1) * 0.3;
+}
+vec2 paketle(float v) {
+  v = clamp(v, 0.0, 0.99998);
+  float h = floor(v * 255.0) / 255.0;
+  return vec2(h, (v - h) * 255.0);
+}
 void main() {
   // Su: derinlik piksel başına sınanıyor; kıyı çizgisi d = 0 eğrisi, bir
-  // piksel genişliğinde yumuşak, üstünde kum şeridi (0 > d > -1). Su yüzeyi
-  // yatay (ışığı düz alıyor), kıyıya değdiği yerde ince açık şerit (köpük).
+  // piksel genişliğinde yumuşak, üstünde kum şeridi (0 > d > -1), kıyıya
+  // değdiği yerde ince açık şerit (köpük). Yüzeyde küçük dalgalar: eğim
+  // gürültüden, güneşi yer yer yansıtıyor.
   float d = v_su.w;
   float w = max(fwidth(d), 1e-5);
   float s = smoothstep(-w, w, d);
   float kopuk = s * (1.0 - smoothstep(w, 4.0 * w, d));
   vec3 kara = mix(v_kum, v_renk, smoothstep(0.0, 1.0, -d));
   vec3 taban = mix(mix(kara, v_su.rgb, s), vec3(1.0), 0.22 * kopuk);
-  vec3 n = normalize(mix(normalize(v_normal), vec3(0.0, 0.0, 1.0), s));
-  float k;
-  if (v_ek.x > 0.0) {
-    k = 0.75 + v_ek.x * 0.5;
-  } else {
-    float dif = max(dot(n, u_isik), 0.0);
-    k = ${ORTAM.toFixed(4)} + ${YAYGIN.toFixed(4)} * dif * mix(${(1 - GOLGE_GUC).toFixed(4)}, 1.0, golge(n));
+  vec3 n = normalize(v_normal);
+  if (s > 0.0) {
+    // Yönlü, yumuşak kırışıklık: bir yanda uzun, öbür yanda kısa dalga.
+    vec2 p = v_konum.xy * u_dalga * vec2(1.0, 2.4);
+    float h0 = dalga(p);
+    vec2 e = vec2(dalga(p + vec2(0.2, 0.0)) - h0, dalga(p + vec2(0.0, 0.2)) - h0) / 0.2;
+    n = normalize(mix(n, normalize(vec3(-e * vec2(0.18, 0.42), 1.0)), s));
   }
-  vec3 c = k <= 1.0 ? taban * k : taban + (1.0 - taban) * min(1.0, k - 1.0);
+  float parlak = mix(v_ek.w, 0.85, s);
+  vec3 c;
+  // Ortam gölgesinin bu piksele ne kadar işleyeceği: ortam ışığının payı
+  // ve biraz da güneş (temas hissi). Işıyan yüz ve su kararmıyor — suyun
+  // kıyı üçgenleri eğimli, orada gölge suyun ortasına çizgi çekiyordu.
+  float aoAgirlik = 0.0;
+  float isima = 0.0;
+  if (v_ek.x > 0.0) {
+    float k = 0.75 + v_ek.x * 0.5;
+    c = k <= 1.0 ? taban * k : taban + (1.0 - taban) * min(1.0, k - 1.0);
+    isima = min(1.0, v_ek.x);
+  } else {
+    float g = golge(n);
+    vec3 ortam = ${ORTAM.toFixed(4)} * mix(vec3(${YER}), vec3(${GOK}), n.z * 0.5 + 0.5);
+    float dif = ${YAYGIN.toFixed(4)} * max(dot(n, u_isik), 0.0) * mix(${(1 - GOLGE_GUC).toFixed(4)}, 1.0, g);
+    vec3 k = ortam + dif * vec3(${GUNES});
+    c = taban * min(k, vec3(1.0)) + (1.0 - taban) * max(k - vec3(1.0), vec3(0.0));
+    if (parlak > 0.0) {
+      // Metal: göğü yansıtan yüz açılıyor, yeri yansıtan koyulaşıyor. Düz
+      // yüzlü modelde her yüz tek bir değer alıyor; yüzler arasındaki bu
+      // sert ayrım metali mat boyadan ayıran şey. Su kendi rengini koruyor.
+      // Dik yüz (gövde zırhı, kılıç ağzı) güneşi hiç yansıtmıyor — kamera
+      // tepeden bakıyor — ama ufkun güneş yanı parlak: yuvarlak zırhın
+      // güneşe dönük yanı açılıyor, öbür yanı koyulaşıyor.
+      vec3 r = reflect(-u_goz, n);
+      float gok = smoothstep(-0.45, 0.45, r.z);
+      float yan = max(dot(normalize(r.xy + vec2(1e-4)), normalize(u_isik.xy)), 0.0);
+      float cevre = mix(0.7, 1.25, gok) + 0.75 * yan * yan * yan * (1.0 - abs(r.z));
+      c *= mix(1.0, cevre, parlak * (1.0 - s));
+      // Güneşin yansıması: yüzler iri, dar bir tepe çoğu yüzü ıskalıyor.
+      vec3 h = normalize(u_isik + u_goz);
+      float sp = pow(max(dot(n, h), 0.0), mix(10.0, 90.0, parlak * parlak)) * parlak * g;
+      c += sp * 0.9 * vec3(${GUNES});
+    }
+    float o = (ortam.r + ortam.g + ortam.b) / 3.0;
+    float pay = o / max(o + dif, 1e-3);
+    aoAgirlik = (pay + (1.0 - pay) * 0.3) * (1.0 - s);
+  }
   float a = v_ek.y;
-  o_renk = vec4(c * a, a);
+  o_renk = vec4(min(c, vec3(1.0)) * a, a);
   o_normal = vec4(n * 0.5 + 0.5, v_ek.z);
-  o_taban = vec4(taban, 1.0);
+  // Kaplama: 1 nesne, 0,75 yer (arazi, yol, tarla); 0 boş.
+  o_taban = vec4(taban, u_yer > 0.5 ? 0.75 : 1.0);
+  o_ek = vec4(paketle(gl_FragCoord.z), isima, aoAgirlik);
 }`;
 
 const GOLGE_KOSE = `#version 300 es
@@ -133,11 +219,16 @@ void main() {
 }`;
 
 /*
- * Kenar ve indirgeme. Her çıktı pikseli 2×2 örneğin ortalaması; her örnek
- * kendi kenarını buluyor:
+ * Kenar, ortam gölgesi, hare ve indirgeme. Her çıktı pikseli 2×2 örneğin
+ * ortalaması; her örnek kendi kenarını ve ortam gölgesini buluyor:
  *   1) Siluet: `r` uzaktaki komşu boşsa ya da belirgin arkadaysa (derinlik).
  *   2) Kırılım/renk: `r2` uzaktaki komşunun normali ya da taban rengi
  *      farklıysa — öndeki taraf çizer.
+ *   3) Ortam gölgesi (ekran uzayı): yarıçap içindeki komşular yüzeyin
+ *      önüne ne kadar yükseliyor. Bina dibi, çatı altı, ayak dibi, iki
+ *      duvarın birleştiği köşe kararıyor. Yalnız ortam ışığına (ve biraz
+ *      güneşe, temas hissi için) uygulanıyor; ışıyan yüz kararmıyor.
+ * Sonra ışıyan yüzlerin (ateş, pencere, büyü) çevresine yumuşak hare.
  * Çizgi koyuluğu yüzün kendi değeri (SVG'deki kenar rengiyle aynı oran).
  */
 const COZ_PARCA = `#version 300 es
@@ -146,21 +237,78 @@ uniform sampler2D u_renk;
 uniform sampler2D u_normal;
 uniform sampler2D u_taban;
 uniform sampler2D u_derinlik;
+uniform sampler2D u_ek;
 uniform ivec2 u_boyut;
 uniform int u_r;
 uniform int u_r2;
 uniform float u_derinEsik;
 uniform int u_ss;
+uniform vec3 u_sag;
+uniform vec3 u_yukari;
+uniform vec3 u_goz;
+uniform float u_birim;
+uniform float u_derinBoy;
+uniform float u_aoPx;
+uniform float u_aoGuc;
+uniform float u_hare;
+uniform float u_harePx;
 out vec4 o;
 ivec2 sinirla(ivec2 p) { return clamp(p, ivec2(0), u_boyut - 1); }
+float ac(vec2 p) { return p.x + p.y / 255.0; }
+float titrek(vec2 p) { return fract(52.9829189 * fract(dot(p, vec2(0.06711056, 0.00583715)))); }
+vec3 gorunum(ivec2 p) {
+  return vec3(vec2(p) * u_birim, -ac(texelFetch(u_ek, p, 0).rg) * u_derinBoy);
+}
+// Yüzeyin gerçek düzlemi, derinlikten: iki yandan kısa olan fark (kenarda
+// öbür yüzeye atlamasın). Köşe normali yumuşak ama arazi düz yüzlü; eğik
+// bir üçgende komşular yumuşak normalin düzleminin üstünde kalıyor ve
+// üçgen toptan kararıyordu.
+vec3 fark(ivec2 p, vec3 P, ivec2 d) {
+  ivec2 ia = sinirla(p + d);
+  ivec2 ib = sinirla(p - d);
+  vec3 a = gorunum(ia) - P;
+  vec3 b = P - gorunum(ib);
+  // Çerçeve kenarında bir yan kendisine düşüyor (sıfır fark).
+  if (ia == p) return b;
+  if (ib == p) return a;
+  return abs(a.z) < abs(b.z) ? a : b;
+}
+float ortamGolgesi(ivec2 p) {
+  vec3 P = gorunum(p);
+  vec3 N = normalize(cross(fark(p, P, ivec2(1, 0)), fark(p, P, ivec2(0, 1))));
+  if (N.z < 0.0) N = -N;
+  // Yer yeri örtmüyor: yol ve tarla araziye tek tek oturan düz plakalar,
+  // üst üste bindikleri yerde halka halka kararıyorlardı. Yer yalnız
+  // üstündeki nesneden (duvar, ağaç) gölge alıyor.
+  bool yer = texelFetch(u_taban, p, 0).a < 0.9;
+  float R = u_aoPx * u_birim;
+  float aci = titrek(vec2(p)) * 6.2831853;
+  float t = 0.0;
+  for (int i = 0; i < 12; i++) {
+    float f = (float(i) + 0.5) / 12.0;
+    float a = aci + float(i) * 2.3999632;
+    ivec2 q = sinirla(p + ivec2(vec2(cos(a), sin(a)) * f * u_aoPx));
+    float kq = texelFetch(u_taban, q, 0).a;
+    if (kq < 0.5 || (yer && kq < 0.9)) continue;
+    vec3 v = gorunum(q) - P;
+    float l = length(v);
+    if (l < 1e-5) continue;
+    t += max(0.0, (dot(v / l, N) - ${AO_ESIK.toFixed(2)}) / ${(1 - AO_ESIK).toFixed(2)}) * (1.0 - smoothstep(0.6 * R, R, l));
+  }
+  return clamp(1.0 - u_aoGuc * t / 12.0, 0.0, 1.0);
+}
 vec4 ornek(ivec2 p) {
   vec4 c = texelFetch(u_renk, p, 0);
   vec4 t = texelFetch(u_taban, p, 0);
   if (t.a < 0.5) return c;
+  if (u_aoPx > 0.5) {
+    float agirlik = texelFetch(u_ek, p, 0).a;
+    if (agirlik > 0.01) c.rgb *= mix(1.0, ortamGolgesi(p), agirlik);
+  }
   vec4 nn = texelFetch(u_normal, p, 0);
+  vec3 n = nn.xyz * 2.0 - 1.0;
   float f = nn.a;
   if (f > 0.995) return c;
-  vec3 n = nn.xyz * 2.0 - 1.0;
   float d = texelFetch(u_derinlik, p, 0).r;
   ivec2 yon[4] = ivec2[4](ivec2(1, 0), ivec2(-1, 0), ivec2(0, 1), ivec2(0, -1));
   bool kenar = false;
@@ -187,6 +335,23 @@ void main() {
   for (int i = 0; i < u_ss; i++)
     for (int j = 0; j < u_ss; j++) s += ornek(b + ivec2(i, j));
   o = s / float(u_ss * u_ss);
+  if (u_hare > 0.0) {
+    vec3 g = vec3(0.0);
+    float top = 0.0;
+    float aci = titrek(gl_FragCoord.xy) * 6.2831853;
+    for (int i = 0; i < 24; i++) {
+      float f = sqrt((float(i) + 0.5) / 24.0);
+      float a = aci + float(i) * 2.3999632;
+      ivec2 q = sinirla(b + ivec2(vec2(cos(a), sin(a)) * f * u_harePx));
+      float agirlik = exp(-3.0 * f * f);
+      float e = texelFetch(u_ek, q, 0).b;
+      if (e > 0.0) g += texelFetch(u_renk, q, 0).rgb * e * agirlik;
+      top += agirlik;
+    }
+    g *= u_hare / top;
+    o.rgb += g;
+    o.a = min(1.0, o.a + (1.0 - o.a) * max(g.r, max(g.g, g.b)));
+  }
 }`;
 
 type Tuval = OffscreenCanvas | HTMLCanvasElement;
@@ -306,7 +471,7 @@ function kur(yazilimaIzin = false): Kaynak | null {
       golgeFbo,
       golgeDoku,
       anaFbo: gl.createFramebuffer()!,
-      dokular: [doku(gl), doku(gl), doku(gl)],
+      dokular: [doku(gl), doku(gl), doku(gl), doku(gl)],
       derinlik: doku(gl),
       en: 0,
       boy: 0,
@@ -376,6 +541,12 @@ function matris(satirlar: number[][]): Float32Array {
 }
 
 const nokta = (a: V3, b: V3) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+
+/** Derinlik tamponunun dünya birimindeki boyu (görüntü matrisiyle aynı pay). */
+function derinlikBoyu(derinlik: [number, number]): number {
+  const pay = (derinlik[1] - derinlik[0]) * 0.02 + 0.01;
+  return derinlik[1] - derinlik[0] + 2 * pay;
+}
 
 /** Görüntü: dünya → SVG görüş kutusu (y aşağı) → kırpma uzayı. */
 export function goruntuMatrisi(
@@ -476,6 +647,10 @@ export interface CizimIstegi {
   boy: number;
   /** Işık yönü; verilmezse bütün çizimlerin ışığı (`ISIK`). */
   isik?: V3;
+  /** Ortam gölgesi yarıçapı (dünya birimi); 0 kapalı, verilmezse sahnenin boyundan. */
+  ao?: number;
+  /** Hare gücü; 0 kapalı. */
+  hare?: number;
   /** Bir CSS pikselinin çıktıdaki karşılığı: kenar çizgisinin kalınlığı. */
   olcek: number;
 }
@@ -562,11 +737,16 @@ async function ciz(istek: CizimIstegi): Promise<Blob | null> {
 
   // 2) Ana geçiş: renk, normal+çizgi, taban rengi; derinlik.
   gl.bindFramebuffer(gl.FRAMEBUFFER, k.anaFbo);
-  gl.drawBuffers([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1, gl.COLOR_ATTACHMENT2]);
+  gl.drawBuffers([
+    gl.COLOR_ATTACHMENT0,
+    gl.COLOR_ATTACHMENT1,
+    gl.COLOR_ATTACHMENT2,
+    gl.COLOR_ATTACHMENT3,
+  ]);
   gl.viewport(0, 0, sen, sboy);
   gl.enable(gl.SCISSOR_TEST);
   gl.scissor(0, 0, sen, sboy);
-  for (let i = 0; i < 3; i++) gl.clearBufferfv(gl.COLOR, i, [0, 0, 0, 0]);
+  for (let i = 0; i < 4; i++) gl.clearBufferfv(gl.COLOR, i, [0, 0, 0, 0]);
   gl.depthMask(true);
   gl.clearBufferfv(gl.DEPTH, 0, [1]);
   gl.disable(gl.SCISSOR_TEST);
@@ -576,6 +756,11 @@ async function ciz(istek: CizimIstegi): Promise<Blob | null> {
   gl.uniformMatrix4fv(u('u_goruntu'), false, goruntu);
   gl.uniformMatrix4fv(u('u_isikMat'), false, isik.mat);
   gl.uniform3f(u('u_isik'), lz[0], lz[1], lz[2]);
+  const taban = kameraTabani(istek.kamera);
+  gl.uniform3f(u('u_goz'), taban.c[0], taban.c[1], taban.c[2]);
+  // Dünya birimi / örnek pikseli; dalgalar ekranda ~11 piksellik.
+  const birim = istek.kutu[2] / sen;
+  gl.uniform1f(u('u_dalga'), 1 / (22 * birim));
   gl.uniform1f(u('u_golgeVar'), golgeVar ? 1 : 0);
   gl.uniform1f(u('u_texel'), 1 / GOLGE_BOYU);
   gl.uniform1f(u('u_normalKay'), (isik.genislik / GOLGE_BOYU) * 1.5);
@@ -585,6 +770,7 @@ async function ciz(istek: CizimIstegi): Promise<Blob | null> {
   gl.disable(gl.CULL_FACE);
 
   // a) Yer: ressam sırası, derinlik yok.
+  gl.uniform1f(u('u_yer'), 1);
   if (ag.yer.length) {
     const t = tampon(gl, ag.yer);
     silinecek.push(t.sil);
@@ -595,6 +781,7 @@ async function ciz(istek: CizimIstegi): Promise<Blob | null> {
     gl.drawArrays(gl.TRIANGLES, 0, t.say);
   }
   // b) Nesneler: derinlik tamponu.
+  gl.uniform1f(u('u_yer'), 0);
   if (ag.nesne.length) {
     const t = tampon(gl, ag.nesne);
     silinecek.push(t.sil);
@@ -608,7 +795,7 @@ async function ciz(istek: CizimIstegi): Promise<Blob | null> {
   if (ag.saydam.length) {
     const t = tampon(gl, ag.saydam);
     silinecek.push(t.sil);
-    gl.drawBuffers([gl.COLOR_ATTACHMENT0, gl.NONE, gl.NONE]);
+    gl.drawBuffers([gl.COLOR_ATTACHMENT0, gl.NONE, gl.NONE, gl.NONE]);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.depthMask(false);
@@ -634,6 +821,23 @@ async function ciz(istek: CizimIstegi): Promise<Blob | null> {
   gl.activeTexture(gl.TEXTURE3);
   gl.bindTexture(gl.TEXTURE_2D, k.derinlik);
   gl.uniform1i(uc('u_derinlik'), 3);
+  gl.activeTexture(gl.TEXTURE4);
+  gl.bindTexture(gl.TEXTURE_2D, k.dokular[3]!);
+  gl.uniform1i(uc('u_ek'), 4);
+  gl.uniform3f(uc('u_sag'), taban.sag[0], taban.sag[1], taban.sag[2]);
+  gl.uniform3f(uc('u_yukari'), taban.yukari[0], taban.yukari[1], taban.yukari[2]);
+  gl.uniform3f(uc('u_goz'), taban.c[0], taban.c[1], taban.c[2]);
+  gl.uniform1f(uc('u_birim'), birim);
+  gl.uniform1f(uc('u_derinBoy'), derinlikBoyu(ag.derinlik));
+  // Ortam gölgesi yarıçapı: sahnenin boyuna göre (bina sahnesinde bir
+  // kapı eşiği, figürde bir kol-gövde aralığı); örnek pikselinde sınırlı.
+  const aoR =
+    istek.ao ?? Math.min(1.2, Math.max(0.05, 0.012 * Math.max(istek.kutu[2], istek.kutu[3])));
+  gl.uniform1f(uc('u_aoPx'), aoR > 0 ? Math.min(64, aoR / birim) : 0);
+  gl.uniform1f(uc('u_aoGuc'), AO_GUC);
+  // Hare: ~6 CSS pikseli yarıçap.
+  gl.uniform1f(uc('u_hare'), istek.hare ?? HARE_GUC);
+  gl.uniform1f(uc('u_harePx'), Math.max(4, 6 * istek.olcek * ss));
   gl.uniform2i(uc('u_boyut'), sen, sboy);
   // Çizgi: SVG'deki gibi ~0,7 CSS pikseli; siluette tek yanlı, kırılımda iki yanlı.
   gl.uniform1i(uc('u_ss'), ss);
@@ -642,9 +846,8 @@ async function ciz(istek: CizimIstegi): Promise<Blob | null> {
   gl.uniform1i(uc('u_r2'), Math.max(1, Math.round(r / 2)));
   // Derinlik sıçraması: dünya biriminde eşik, piksel boyuna göre büyüyor
   // (dik açıyla görülen yüzey komşusundan doğal olarak uzak).
-  const birimPiksel = istek.kutu[2] / sen;
   const aralik = ag.derinlik[1] - ag.derinlik[0] || 1;
-  gl.uniform1f(uc('u_derinEsik'), Math.max(0.25, 6 * r * birimPiksel) / (aralik * 1.04));
+  gl.uniform1f(uc('u_derinEsik'), Math.max(0.25, 6 * r * birim) / (aralik * 1.04));
   gl.bindVertexArray(null);
   gl.drawArrays(gl.TRIANGLES, 0, 3);
 

@@ -27,8 +27,8 @@ import {
 
 /**
  * Köşe başına kayan sayı: konum 3, normal 3, renk 3, ek 4 (ışıma,
- * saydamlık, çizgi, boş), su 4 (renk 3, derinlik — suyu olmayanda -9),
- * kum 3.
+ * saydamlık, çizgi, parlaklık), su 4 (renk 3, derinlik — suyu olmayanda
+ * -9), kum 3.
  */
 export const KOSE = 20;
 
@@ -138,6 +138,7 @@ export function agYap(model: Model, kamera?: Kamera): Ag {
       const isima = y.isima ?? 0;
       const alfa = y.saydam ?? 1;
       const cz = cizgi(y);
+      const parlak = y.parlak ?? 0;
       const yaz = (i: number) => {
         const q = y.p[i]!;
         const n = y.vn ? y.vn[i]! : duz!;
@@ -154,7 +155,7 @@ export function agYap(model: Model, kamera?: Kamera): Ag {
         f[o++] = isima;
         f[o++] = alfa;
         f[o++] = cz;
-        f[o++] = 0;
+        f[o++] = parlak;
         if (y.su) {
           const w = renk(y.su.renk[i]!);
           f[o++] = w[0];

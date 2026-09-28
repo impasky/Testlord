@@ -65,6 +65,12 @@ export interface Yuz {
    */
   su?: { d: number[]; renk: string[]; kum: string };
   /**
+   * Parlaklık (0-1, yalnız GPU): metal yüz güneşi yansıtıyor — kılıç ağzı,
+   * miğfer, zırh, kalkan kenarı, altın süs. Yüksek değer dar ve parlak,
+   * düşük değer geniş ve soluk bir parıltı. Bkz. `parlat`.
+   */
+  parlak?: number;
+  /**
    * Çizim katmanı: küçük önce. Ressam algoritması yüzün ORTASINA bakıyor;
    * dev bir zemin yüzünün ortası sahnenin ortasında kaldığı için arkadaki
    * duvarlar onun altında kalıyordu. Zemin -2, yere yatık yol/döşeme -1,
@@ -163,6 +169,12 @@ export function dondur(m: Model, eksen: 'x' | 'y' | 'z', aci: number, o: V3 = [0
     return [q[0] - o[0], q[1] - o[1], q[2] - o[2]];
   };
   return m.map((y) => ({ ...y, p: y.p.map(f), ...(y.vn ? { vn: y.vn.map(yon) } : {}) }));
+}
+
+/** Modelin bütün yüzlerini parlak (metal) yapar (bkz. `Yuz.parlak`). */
+export function parlat(m: Model, p = 0.7): Model {
+  for (const y of m) y.parlak = p;
+  return m;
 }
 
 /** Modelin bütün yüzlerini bir katmana koyar (bkz. `Yuz.katman`). */

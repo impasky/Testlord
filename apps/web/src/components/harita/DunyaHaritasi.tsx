@@ -898,6 +898,8 @@ async function gpuZemini(t: HTMLCanvasElement) {
     kamera: DUNYA_KAMERASI,
     isik: DUNYA_ISIGI,
     kutu: DUNYA_KUTUSU,
+    // Tepeden düz arazi: ortam gölgesinin tutunacağı bir girinti yok.
+    ao: 0,
     en: GPU_PIKSEL,
     boy: GPU_PIKSEL,
     olcek: GPU_PIKSEL / 400,

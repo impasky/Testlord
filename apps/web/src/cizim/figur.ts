@@ -21,6 +21,7 @@ import {
   kutu,
   levha,
   olcekle,
+  parlat,
   prizma,
   silindir,
   tasi,
@@ -94,6 +95,13 @@ export interface Insan {
 }
 
 const KARA = '#1d1612';
+/** Zırh türüne göre parlaklık (bkz. `Yuz.parlak`): düz plaka en çok, deri hiç. */
+const ZIRH_PARLAK: Record<NonNullable<Insan['zirh']>['tip'], number> = {
+  plaka: 0.75,
+  serit: 0.6,
+  zincir: 0.4,
+  deri: 0,
+};
 
 const merkezle = (a: V3, b: V3, t: number): V3 => [
   a[0] + (b[0] - a[0]) * t,
@@ -163,7 +171,7 @@ export function kalkan(
   const buyut = (c: [number, number][], k: number) =>
     c.map(([x, z]): [number, number] => [x * k, z * k]);
   const m = birlestir(
-    plaka(buyut(cok, 1.1), -kalin - 0.12, kalin, kenar),
+    parlat(plaka(buyut(cok, 1.1), -kalin - 0.12, kalin, kenar), 0.55),
     plaka(cok, -kalin, kalin, renk),
   );
   // Döndürme: prizma xy→ x,-z,y; ön yüz -y'ye düşüyor: aynala
@@ -240,6 +248,7 @@ export function kilicModeli(uzun: number, renk: string, balcak: string, isik?: s
     ];
     if (n[0] * d[0] + n[1] * d[1] < 0) y.p.reverse();
   }
+  parlat(m, 0.9);
   if (isik) {
     // Ağız boyunca yanan oluk
     m.push({
@@ -254,9 +263,9 @@ export function kilicModeli(uzun: number, renk: string, balcak: string, isik?: s
       ciftYuz: true,
     });
   }
-  m.push(...kutu(-w * 2.6, -t * 1.6, -0.25, w * 5.2, t * 3.2, 0.28, balcak));
+  m.push(...parlat(kutu(-w * 2.6, -t * 1.6, -0.25, w * 5.2, t * 3.2, 0.28, balcak), 0.6));
   m.push(...uzuv([0, 0, -0.25], [0, 0, -uzun * 0.22], w * 0.55, w * 0.5, P.deri, 6));
-  m.push(...kure(0, 0, -uzun * 0.22 - w * 0.5, w * 0.85, balcak, 6, 3));
+  m.push(...parlat(kure(0, 0, -uzun * 0.22 - w * 0.5, w * 0.85, balcak, 6, 3), 0.6));
   return m;
 }
 
@@ -270,15 +279,15 @@ function esyaModeli(e: Esya, el: V3, yan: number): Model {
       const boy = e.tip === 'kargi' ? 12.5 : 11;
       return birlestir(
         uzuv([x, y, z - 4], [x, y, z - 4 + boy], 0.13, 0.11, P.tahta, 5),
-        koni(x, y, z - 4 + boy, 0.3, 1.1, r ?? P.celik, 4),
+        parlat(koni(x, y, z - 4 + boy, 0.3, 1.1, r ?? P.celik, 4), 0.8),
       );
     }
     case 'yaba': {
       const ust = z + 5;
       const m = uzuv([x, y, z - 3.6], [x, y, ust], 0.13, 0.12, P.acikTahta, 5);
-      m.push(...kutu(x - 0.6, y - 0.07, ust - 0.1, 1.2, 0.14, 0.18, P.demir));
+      m.push(...parlat(kutu(x - 0.6, y - 0.07, ust - 0.1, 1.2, 0.14, 0.18, P.demir), 0.4));
       for (const dx of [-0.55, 0, 0.55])
-        m.push(...kutu(x + dx - 0.06, y - 0.06, ust, 0.12, 0.12, 1.3, P.demir));
+        m.push(...parlat(kutu(x + dx - 0.06, y - 0.06, ust, 0.12, 0.12, 1.3, P.demir), 0.4));
       return m;
     }
     case 'kilic':
@@ -301,7 +310,7 @@ function esyaModeli(e: Esya, el: V3, yan: number): Model {
         [0, 0.3],
       ];
       const plaka = (c: [number, number][]) =>
-        dondur(prizma(c, -0.09, 0.18, r ?? P.celik), 'x', Math.PI / 2);
+        parlat(dondur(prizma(c, -0.09, 0.18, r ?? P.celik), 'x', Math.PI / 2), 0.8);
       // yana: -x yönünde (figürün dışı değil, önü: y)
       m.push(...tasi(dondur(plaka(agiz(1)), 'z', yan > 0 ? Math.PI / 2 : Math.PI / 2), [x, y, bz]));
       if (e.tip === 'ciftBalta')
@@ -310,12 +319,12 @@ function esyaModeli(e: Esya, el: V3, yan: number): Model {
     }
     case 'cekic': {
       const m = uzuv([x, y, z - 1.2], [x, y, z + 3.4], 0.13, 0.12, P.koyuTahta, 5);
-      m.push(...kutu(x - 0.45, y - 0.8, z + 3.1, 0.9, 1.6, 0.9, r ?? P.demir));
+      m.push(...parlat(kutu(x - 0.45, y - 0.8, z + 3.1, 0.9, 1.6, 0.9, r ?? P.demir), 0.5));
       return m;
     }
     case 'asa': {
       const m = uzuv([x, y, z - 4.2], [x, y, z + 4.2], 0.14, 0.12, r ?? P.koyuTahta, 5);
-      m.push(...koni(x, y, z + 4.2, 0.45, 0.6, e.ikinci ?? P.koyuAltin, 5, 0.3));
+      m.push(...parlat(koni(x, y, z + 4.2, 0.45, 0.6, e.ikinci ?? P.koyuAltin, 5, 0.3)));
       const tas = kure(x, y, z + 5.2, 0.5, e.isik ?? P.buyu, 6, 3);
       for (const f of tas) f.isima = 1;
       m.push(...tas);
@@ -347,7 +356,7 @@ function esyaModeli(e: Esya, el: V3, yan: number): Model {
       const bx = x + d + 1.4;
       const m = uzuv([x, y, z - 4], [x, y, ust], 0.12, 0.1, P.koyuTahta, 5);
       m.push(...kutu(x + d, y - 0.06, ust - 0.5, 2.8, 0.12, 0.14, P.koyuTahta));
-      m.push(...koni(x, y, ust, 0.25, 0.7, P.altin, 5));
+      m.push(...parlat(koni(x, y, ust, 0.25, 0.7, P.altin, 5)));
       m.push(
         ...levha(
           [
@@ -397,8 +406,9 @@ function esyaModeli(e: Esya, el: V3, yan: number): Model {
     }
     case 'hac': {
       const m = uzuv([x, y, z - 4.2], [x, y, z + 3.4], 0.13, 0.11, r ?? P.koyuTahta, 5);
-      m.push(...kutu(x - 0.9, y - 0.12, z + 2.4, 1.8, 0.24, 0.28, e.ikinci ?? P.koyuAltin));
-      m.push(...kutu(x - 0.14, y - 0.12, z + 3.4, 0.28, 0.24, 0.7, e.ikinci ?? P.koyuAltin));
+      const altin = e.ikinci ?? P.koyuAltin;
+      m.push(...parlat(kutu(x - 0.9, y - 0.12, z + 2.4, 1.8, 0.24, 0.28, altin)));
+      m.push(...parlat(kutu(x - 0.14, y - 0.12, z + 3.4, 0.28, 0.24, 0.7, altin)));
       return m;
     }
     case 'yay': {
@@ -459,7 +469,10 @@ export function insan(f: Insan): Model {
   else if (!f.oturan) m.push(...yassi(koni(0, 0, 2.5, 1.28, 1.35, etek, 8, 1.02)));
   else m.push(...yassi(koni(0, 0, 3.0, 1.1, 0.85, etek, 8, 1.02)));
   const govdeRenk = f.zirh ? f.zirh.renk : f.govde;
-  m.push(...yassi(koni(0, 0, 3.8, 1.02, 2.45, govdeRenk, 8, 1.3)));
+  const govde = yassi(koni(0, 0, 3.8, 1.02, 2.45, govdeRenk, 8, 1.3));
+  // Metal zırh ışığı yakalar; deri ve bez mat kalır.
+  const zirhParlak = f.zirh ? ZIRH_PARLAK[f.zirh.tip] : 0;
+  m.push(...(zirhParlak ? parlat(govde, zirhParlak) : govde));
   if (f.zirh?.tip === 'serit')
     for (let k = 0; k < 4; k++)
       m.push(
@@ -624,9 +637,16 @@ function baslik(tip: BaslikTipi, renk: string, ikinci: string | undefined, bz: n
     case 'migfer':
     case 'boynuz':
     case 'sorguc':
-      m.push(...kubbe(0, 0.04, bz + 0.2, 0.92, renk, 8, 3));
-      m.push(...silindir(0, 0.04, bz + 0.12, 0.98, 0.16, isikla(renk, 0.85), 8));
-      m.push(...kutu(-0.09, 0.86, bz - 0.55, 0.18, 0.14, 0.8, isikla(renk, 0.85)));
+      m.push(
+        ...parlat(
+          birlestir(
+            kubbe(0, 0.04, bz + 0.2, 0.92, renk, 8, 3),
+            silindir(0, 0.04, bz + 0.12, 0.98, 0.16, isikla(renk, 0.85), 8),
+            kutu(-0.09, 0.86, bz - 0.55, 0.18, 0.14, 0.8, isikla(renk, 0.85)),
+          ),
+          0.75,
+        ),
+      );
       if (tip === 'boynuz')
         for (const s of [-1, 1]) {
           const a: V3 = [s * 0.8, 0, bz + 0.6];
@@ -642,8 +662,15 @@ function baslik(tip: BaslikTipi, renk: string, ikinci: string | undefined, bz: n
       }
       break;
     case 'kapali':
-      m.push(...silindir(0, 0.04, bz - 0.75, 0.9, 1.4, renk, 8));
-      m.push(...kubbe(0, 0.04, bz + 0.65, 0.9, renk, 8, 2));
+      m.push(
+        ...parlat(
+          birlestir(
+            silindir(0, 0.04, bz - 0.75, 0.9, 1.4, renk, 8),
+            kubbe(0, 0.04, bz + 0.65, 0.9, renk, 8, 2),
+          ),
+          0.75,
+        ),
+      );
       m.push(...kutu(-0.6, 0.8, bz + 0.05, 1.2, 0.14, 0.14, KARA));
       m.push(...kutu(-0.07, 0.8, bz - 0.6, 0.14, 0.14, 0.62, KARA));
       if (ikinci) m.push(...koni(0, 0, bz + 1.4, 0.3, 1.6, ikinci, 5));
@@ -668,7 +695,9 @@ function baslik(tip: BaslikTipi, renk: string, ikinci: string | undefined, bz: n
         ...suz(kure(0, -0.1, bz + 0.05, 1.02, renk, 8, 4), ([, y, z]) => y < 0.35 || z > bz + 0.65),
       );
       m.push(
-        ...olcekle(kure(0, 0.2, bz, 0.78, ikinci ?? P.altin, 6, 3), [1, 0.8, 1.1], [0, 0.2, bz]),
+        ...parlat(
+          olcekle(kure(0, 0.2, bz, 0.78, ikinci ?? P.altin, 6, 3), [1, 0.8, 1.1], [0, 0.2, bz]),
+        ),
       );
       for (const s of [-1, 1]) {
         const goz = kutu(s * 0.3 - 0.09, 0.82, bz + 0.05, 0.18, 0.06, 0.12, P.buyu);
@@ -753,14 +782,15 @@ export function at(a: AtAyari): Model {
     m.push(...kutu(0.35, -0.3, 5.5, 0.25, 0.6, 0.45, a.eyer));
   }
   if (a.zirh) {
-    m.push(...kutu(3.2, -0.42, 6.35, 1.05, 0.84, 0.3, a.zirh));
-    m.push(
+    const zirh: Model = kutu(3.2, -0.42, 6.35, 1.05, 0.84, 0.3, a.zirh);
+    zirh.push(
       ...uzuv([2.0, 0, 5.3], [2.75, 0, 6.8], 0.7, 0.55, a.zirh, 6).map((y) => ({
         ...y,
         p: y.p.map((q): V3 => [q[0] - 0.2, q[1], q[2] + 0.12]),
       })),
     );
-    m.push(...kutu(1.9, -1.0, 3.4, 0.7, 2.0, 1.6, a.zirh));
+    zirh.push(...kutu(1.9, -1.0, 3.4, 0.7, 2.0, 1.6, a.zirh));
+    m.push(...parlat(zirh, 0.7));
   }
   return m;
 }
