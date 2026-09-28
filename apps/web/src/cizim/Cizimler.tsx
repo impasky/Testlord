@@ -33,6 +33,13 @@ import { YERLESIM_KUTUSU, yerlesimModeli, type Kademe } from './yerlesim';
 /** Çizimi olan bina adları (`kisla_3`, `arsa`, `gorev_panosu`...). */
 export const CIZILEN_BINALAR = new Set(BINA_ADLARI);
 
+/**
+ * Tilt-shift odak bandı (yarı yükseklik, boya oran): afiş ve kapakta
+ * ortanın üçte biri keskin; uzun ekran zemininde bant geniş (kule tepesi,
+ * bayrak bulanıklaşmasın).
+ */
+const TILT_AFIS = 0.18;
+const TILT_ZEMIN = 0.24;
 export function BinaCizimi({
   ad,
   boyut,
@@ -96,6 +103,7 @@ export function BolgeCizimi({
       alt={alt}
       className={className}
       kirp
+      tilt={TILT_AFIS}
     />
   );
 }
@@ -211,6 +219,7 @@ export function DiyarCizimi({
       alt=""
       className={className}
       kirp
+      tilt={kadraj === 'kapak' ? TILT_AFIS : undefined}
     />
   );
 }
@@ -242,6 +251,7 @@ export function ZeminCizimi({ ad, className }: { ad: string; className?: string 
       alt=""
       className={className}
       kirp
+      tilt={TILT_ZEMIN}
       ertele
     />
   );

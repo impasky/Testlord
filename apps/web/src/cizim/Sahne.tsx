@@ -75,10 +75,11 @@ function useGpuResmi(
   kamera: Kamera | undefined,
   v: [number, number, number, number],
   kirp: boolean,
+  tilt: number | undefined,
   ref: React.RefObject<SVGSVGElement | null>,
   basarisiz: () => void,
 ): string | null {
-  const taban = anahtar + '|' + v.join(',');
+  const taban = anahtar + '|' + v.join(',') + (tilt !== undefined ? '|t' + tilt : '');
   const [resim, setResim] = useState<string | null>(() => RESIMLER.get(taban)?.url ?? null);
   // Kapanıştaki güncel işlevler: etki her çizimde yeniden kurulmasın.
   const guncel = useRef({ uret, kamera, basarisiz });
@@ -117,6 +118,7 @@ function useGpuResmi(
         en,
         boy,
         olcek: en / (vw * cssBirim),
+        tilt,
       })).then((url) => {
         if (!url) {
           if (!iptal) guncel.current.basarisiz();
@@ -135,7 +137,7 @@ function useGpuResmi(
       ro.disconnect();
     };
     // `v` içerik olarak `taban`da; dizi kimliği her çizimde değişiyor.
-  }, [etkin, taban, kirp, ref]);
+  }, [etkin, taban, kirp, tilt, ref]);
 
   return etkin ? resim : null;
 }
@@ -185,6 +187,7 @@ export const Sahne = memo(function Sahne({
   kirp = false,
   kare = false,
   ertele = false,
+  tilt,
 }: {
   anahtar: string;
   uret: () => Model;
@@ -211,6 +214,12 @@ export const Sahne = memo(function Sahne({
    * boş kare aynı görüş kutusunu taşıyor, yer değişmiyor.
    */
   ertele?: boolean;
+  /**
+   * Tilt-shift (yalnız GPU): keskin kalan odak bandının yarı yüksekliği
+   * (boya oran). Geniş sahneler (bölge afişi, ekran zemini, diyar kapağı)
+   * maket gibi okunuyor; figür ve bina simgesinde yok.
+   */
+  tilt?: number;
 }) {
   const ref = useRef<SVGSVGElement>(null);
   const [gpuYok, setGpuYok] = useState(false);
@@ -237,7 +246,7 @@ export const Sahne = memo(function Sahne({
 
   const c = bekle ? null : cizimiAl(anahtar, uret, kamera);
   const v: [number, number, number, number] = kutu ?? (kare ? kareyeTamamla(c!.kutu) : c!.kutu);
-  const resim = useGpuResmi(gpu, anahtar, uret, kamera, v, kirp, ref, () => setGpuYok(true));
+  const resim = useGpuResmi(gpu, anahtar, uret, kamera, v, kirp, tilt, ref, () => setGpuYok(true));
 
   return (
     <svg

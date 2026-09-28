@@ -54,6 +54,13 @@ const AO_ESIK = 0.3;
  */
 const ZIRH_BUKUM = 0.8;
 const ZIRH_PARILTI = 0.9;
+/**
+ * Tilt-shift: odak bandının dışında bulanıklık yarıçapı (çıktı enine oran)
+ * ve bandın merkezi (0 alt, 1 üst). Maket etkisi: izometrik sahne yakından
+ * çekilmiş bir minyatür gibi okunuyor.
+ */
+const TILT_YARICAP = 0.0065;
+const TILT_ODAK = 0.56;
 /** Işıyan yüzlerin haresi. */
 const HARE_GUC = 0.55;
 
@@ -394,7 +401,22 @@ uniform float u_aoPx;
 uniform float u_aoGuc;
 uniform float u_hare;
 uniform float u_harePx;
+uniform float u_ton;
 out vec4 o;
+/*
+ * Renk düzenlemesi: hafif S eğrisi (orta ton yerinde, uçlar açılıyor),
+ * az doygun renge biraz canlılık, gölgede serin ışıkta sıcak ton. Düz
+ * boyanmış sahnenin "bilgisayar çizimi" soğukluğunu alıyor; arayüzün sıcak
+ * paletine yaklaştırıyor.
+ */
+vec3 tonla(vec3 c) {
+  c = mix(c, c * c * (3.0 - 2.0 * c), 0.2);
+  float l = dot(c, vec3(0.299, 0.587, 0.114));
+  float doy = max(c.r, max(c.g, c.b)) - min(c.r, min(c.g, c.b));
+  c = mix(vec3(l), c, 1.0 + 0.16 * (1.0 - doy));
+  c *= mix(vec3(0.97, 0.99, 1.04), vec3(1.04, 1.0, 0.95), smoothstep(0.12, 0.85, l));
+  return clamp(c, 0.0, 1.0);
+}
 ivec2 sinirla(ivec2 p) { return clamp(p, ivec2(0), u_boyut - 1); }
 float ac(vec2 p) { return p.x + p.y / 255.0; }
 float titrek(vec2 p) { return fract(52.9829189 * fract(dot(p, vec2(0.06711056, 0.00583715)))); }
@@ -494,6 +516,45 @@ void main() {
     o.rgb += g;
     o.a = min(1.0, o.a + (1.0 - o.a) * max(g.r, max(g.g, g.b)));
   }
+  // Renk düzenlemesi önceden çarpılmamış renge (saydam figürün kenarı
+  // kararmasın).
+  if (u_ton > 0.0 && o.a > 0.004) {
+    vec3 d = min(o.rgb / o.a, vec3(1.0));
+    o.rgb = mix(d, tonla(d), u_ton) * o.a;
+  }
+}`;
+
+/*
+ * Tilt-shift: çözülmüş resim ara dokudan okunuyor; odak bandı keskin,
+ * bandın dışında bulanıklık kenara doğru büyüyor (yumuşak adımla). Disk
+ * biçimli 24 örnek, piksel başına döndürülmüş (bant bant iz kalmasın).
+ * Önceden çarpılmış renk: saydam kenar doğru karışıyor.
+ */
+const BULANIK_PARCA = `#version 300 es
+precision highp float;
+uniform sampler2D u_kaynak;
+uniform vec2 u_boyut;
+uniform float u_odak;
+uniform float u_bant;
+uniform float u_yaricap;
+out vec4 o;
+float titrek(vec2 p) { return fract(52.9829189 * fract(dot(p, vec2(0.06711056, 0.00583715)))); }
+void main() {
+  vec2 p = gl_FragCoord.xy;
+  float uzak = clamp((abs(p.y / u_boyut.y - u_odak) - u_bant) / max(1e-3, 0.5 - u_bant), 0.0, 1.0);
+  float r = u_yaricap * uzak * uzak * (3.0 - 2.0 * uzak);
+  if (r < 0.35) {
+    o = texture(u_kaynak, p / u_boyut);
+    return;
+  }
+  vec4 t = vec4(0.0);
+  float aci = titrek(p) * 6.2831853;
+  for (int i = 0; i < 24; i++) {
+    float f = sqrt((float(i) + 0.5) / 24.0);
+    float a = aci + float(i) * 2.3999632;
+    t += texture(u_kaynak, (p + vec2(cos(a), sin(a)) * f * r) / u_boyut);
+  }
+  o = t / 24.0;
 }`;
 
 type Tuval = OffscreenCanvas | HTMLCanvasElement;
@@ -504,6 +565,7 @@ interface Kaynak {
   ana: WebGLProgram;
   golge: WebGLProgram;
   coz: WebGLProgram;
+  bulanik: WebGLProgram;
   golgeFbo: WebGLFramebuffer;
   golgeDoku: WebGLTexture;
   anaFbo: WebGLFramebuffer;
@@ -512,6 +574,11 @@ interface Kaynak {
   /** Ana hedeflerin şu anki boyu (büyüyerek). */
   en: number;
   boy: number;
+  /** Tilt-shift ara hedefi: çözülmüş resim, çıktı boyunda. */
+  araFbo: WebGLFramebuffer;
+  ara: WebGLTexture;
+  araEn: number;
+  araBoy: number;
 }
 
 let kaynak: Kaynak | null = null;
@@ -610,6 +677,7 @@ function kur(yazilimaIzin = false): Kaynak | null {
       ana: derle(gl, ANA_KOSE, ANA_PARCA),
       golge: derle(gl, GOLGE_KOSE, GOLGE_PARCA),
       coz: derle(gl, COZ_KOSE, COZ_PARCA),
+      bulanik: derle(gl, COZ_KOSE, BULANIK_PARCA),
       golgeFbo,
       golgeDoku,
       anaFbo: gl.createFramebuffer()!,
@@ -617,7 +685,15 @@ function kur(yazilimaIzin = false): Kaynak | null {
       derinlik: doku(gl),
       en: 0,
       boy: 0,
+      araFbo: gl.createFramebuffer()!,
+      ara: doku(gl),
+      araEn: 0,
+      araBoy: 0,
     };
+    // Ara doku süzgeçli okunuyor (bulanıklık örnekleri piksel arasına düşüyor).
+    gl.bindTexture(gl.TEXTURE_2D, kaynak.ara);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     durum = 'hazir';
     return kaynak;
   } catch {
@@ -647,6 +723,23 @@ function hedefleriHazirla(k: Kaynak, en: number, boy: number): boolean {
     k.en = 0;
     k.boy = 0;
   }
+  return tamam;
+}
+
+/** Tilt-shift ara hedefini çıktı boyuna getirir; bellek yetmezse false (bulanıklıksız çizilir). */
+function araHazirla(k: Kaynak, en: number, boy: number): boolean {
+  const { gl } = k;
+  if (k.araEn === en && k.araBoy === boy) return true;
+  for (let i = 0; i < 8 && gl.getError() !== gl.NO_ERROR; i++);
+  gl.bindTexture(gl.TEXTURE_2D, k.ara);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, en, boy, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, k.araFbo);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, k.ara, 0);
+  const tamam =
+    gl.getError() !== gl.OUT_OF_MEMORY &&
+    gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE;
+  k.araEn = tamam ? en : 0;
+  k.araBoy = tamam ? boy : 0;
   return tamam;
 }
 
@@ -795,6 +888,14 @@ export interface CizimIstegi {
   ao?: number;
   /** Hare gücü; 0 kapalı. */
   hare?: number;
+  /**
+   * Tilt-shift: keskin kalan odak bandının yarı yüksekliği (çıktı boyuna
+   * oran; bant ortada). Verilmezse yok. Yalnız geniş sahneler (bölge afişi,
+   * ekran zemini, diyar kapağı) istiyor; figür ve bina simgesi değil.
+   */
+  tilt?: number;
+  /** Renk düzenlemesinin gücü (0 kapalı, 1 tam); verilmezse tam. */
+  ton?: number;
   /** Bir CSS pikselinin çıktıdaki karşılığı: kenar çizgisinin kalınlığı. */
   olcek: number;
 }
@@ -948,10 +1049,11 @@ async function ciz(istek: CizimIstegi): Promise<Blob | null> {
     gl.disable(gl.BLEND);
   }
 
-  // 3) Kenar + indirgeme → tuval.
+  // 3) Kenar + indirgeme → tuval (tilt-shift varsa önce ara dokuya).
   if (k.tuval.width !== en) k.tuval.width = en;
   if (k.tuval.height !== boy) k.tuval.height = boy;
-  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  const tilt = istek.tilt !== undefined && istek.tilt < 0.5 && araHazirla(k, en, boy);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, tilt ? k.araFbo : null);
   gl.viewport(0, 0, en, boy);
   gl.disable(gl.DEPTH_TEST);
   gl.depthMask(true);
@@ -992,8 +1094,24 @@ async function ciz(istek: CizimIstegi): Promise<Blob | null> {
   // (dik açıyla görülen yüzey komşusundan doğal olarak uzak).
   const aralik = ag.derinlik[1] - ag.derinlik[0] || 1;
   gl.uniform1f(uc('u_derinEsik'), Math.max(0.25, 6 * r * birim) / (aralik * 1.04));
+  gl.uniform1f(uc('u_ton'), istek.ton ?? 1);
   gl.bindVertexArray(null);
   gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+  // 4) Tilt-shift: ara doku → tuval.
+  if (tilt) {
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.useProgram(k.bulanik);
+    const ub = (ad: string) => gl.getUniformLocation(k.bulanik, ad);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, k.ara);
+    gl.uniform1i(ub('u_kaynak'), 0);
+    gl.uniform2f(ub('u_boyut'), en, boy);
+    gl.uniform1f(ub('u_odak'), TILT_ODAK);
+    gl.uniform1f(ub('u_bant'), istek.tilt!);
+    gl.uniform1f(ub('u_yaricap'), TILT_YARICAP * en);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  }
 
   for (const s of silinecek) s();
   if (gl.isContextLost()) return null;
@@ -1015,6 +1133,10 @@ function bosalt() {
   k.en = 1;
   k.boy = 1;
   hedefleriAyir(k);
+  k.araEn = 0;
+  k.araBoy = 0;
+  k.gl.bindTexture(k.gl.TEXTURE_2D, k.ara);
+  k.gl.texImage2D(k.gl.TEXTURE_2D, 0, k.gl.RGBA8, 1, 1, 0, k.gl.RGBA, k.gl.UNSIGNED_BYTE, null);
   k.tuval.width = 1;
   k.tuval.height = 1;
 }

@@ -37,6 +37,14 @@ export interface GlIstek {
   ao?: number;
   /** Hare gücü; 0 kapalı. */
   hare?: number;
+  /**
+   * Tilt-shift: keskin kalan odak bandının yarı yüksekliği (çıktı boyuna
+   * oran; bant ortada). Verilmezse yok. Yalnız geniş sahneler (bölge afişi,
+   * ekran zemini, diyar kapağı) istiyor; figür ve bina simgesi değil.
+   */
+  tilt?: number;
+  /** Renk düzenlemesinin gücü (0 kapalı, 1 tam); verilmezse tam. */
+  ton?: number;
   /** Bir CSS pikselinin çıktıdaki karşılığı: kenar çizgisinin kalınlığı. */
   olcek: number;
 }

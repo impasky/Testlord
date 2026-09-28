@@ -198,6 +198,19 @@ parçacığında da aynı koşuyor. Üç geçiş:
    - Işıma haresi: ışıyan yüzler (pencere, meşale, büyü taşı) 24 örnekli
      yumuşak bir hare yayıyor; saydam zeminde de görünüyor (harenin
      kendisi saydamlık da ekliyor). Güç `hare` ile, `hare: 0` kapatır.
+   - Renk düzenlemesi (her çizimde): hafif S eğrisi (orta ton yerinde,
+     uçlar açılıyor), az doygun renge biraz canlılık, gölgede serin ışıkta
+     sıcak ton. Önceden çarpılmamış renge uygulanıyor, saydam figürün kenarı
+     kararmıyor. Güç `ton` ile (0 kapalı).
+4. Tilt-shift (yalnız isteyen çizimde, `tilt`): çözülmüş resim bir ara
+   dokuya yazılıyor; son geçişte odak bandı (`tilt`: yarı yüksekliği,
+   boya oran; merkezi `TILT_ODAK`, ortanın biraz üstü) keskin, bandın
+   dışında bulanıklık kenara doğru yumuşakça büyüyor (en çok çıktı eninin
+   `TILT_YARICAP` katı; 24 örnekli disk, piksel başına döndürülmüş).
+   İzometrik sahne yakından çekilmiş bir minyatür gibi okunuyor. Yalnız
+   geniş sahneler istiyor: bölge afişi ve diyar kapağı (bant 0,18), ekran
+   zemini (0,24; uzun şeritte kule tepesi bulanıklaşmasın). Figür, portre,
+   bina simgesi, yerleşim ve dünya haritası keskin.
 
 Bellek yetmezse (ya da hedef doku kurulamazsa) iş `null` dönüyor ve o
 çizim SVG'ye düşüyor. Sıra boşalınca büyük hedef dokular dört saniye sonra
@@ -229,6 +242,7 @@ SVG'nin içine `<image>` olarak oturuyor: yer değişmiyor, erişilebilir ad
 aynı, `data-gl` imzası ekleniyor. Resim öğenin ekrandaki boyu × piksel
 yoğunluğu kadar çiziliyor (en çok 3×, 1400 piksel); boy 1,25'in
 kuvvetlerine yuvarlanıyor, öğe büyürken her pikselde yeniden çizilmesin.
+`tilt` verilirse istek tilt-shift'li; önbellek anahtarına da giriyor.
 
 **Dünya zemini (`dunya.ts`, `dunyaAgi.ts`, `dunyaIsci.ts`).** Aynı
 arazi, iki çıktı. `dunyaUcgenleri` düz renkli üçgenler (2D tuval, WebGL
