@@ -43,7 +43,7 @@ export async function yerlesimAl(api, token, tur = 'sehir') {
     });
   }
 
-  const harita = await get('/map');
+  let harita = await get('/map');
   /*
    * En YAKIN uygun bölge: komşuluk kuralı uzağa saldırmayı engelliyor.
    *
@@ -60,9 +60,22 @@ export async function yerlesimAl(api, token, tur = 'sehir') {
    * ilgisizdi. Aynı sınıf hata `shielded` için de bir kez yaşanmıştı;
    * süzgeç o yüzden burada, tek yerde duruyor.
    */
-  const hedef = harita.regions
-    .filter((r) => r.type === tur && !r.owner && !r.shielded && !r.cekirdek)
-    .sort((a, b) => a.distance - b.distance)[0];
+  const uygun = () =>
+    harita.regions
+      .filter((r) => r.type === tur && !r.owner && !r.shielded && !r.cekirdek)
+      .sort((a, b) => a.distance - b.distance)[0];
+  let hedef = uygun();
+  /*
+   * Uygun bölge kalmadıysa dünyayı bir kez sıfırla (öteki test araçlarının
+   * başında yaptığı gibi). Yerel veritabanında her koşu bir şehir alıyor;
+   * birikince hiç sahipsiz şehir kalmıyor ve araç ölçtüğü şeyle ilgisiz
+   * bir yerden düşüyordu. CI'da veritabanı temiz, bu dal çalışmıyor.
+   */
+  if (!hedef) {
+    await post('/test/bolgeleri-sifirla');
+    harita = await get('/map');
+    hedef = uygun();
+  }
   if (!hedef) throw new Error(`yerlesimAl: saldırılabilir "${tur}" bölgesi kalmamış`);
 
   /*

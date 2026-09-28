@@ -14,11 +14,13 @@
  * - Gölge düşürenler: nesnelerin bütün yüzleri, iki yüzlü (ışıktan
  *   bakınca arka yüz de gölge yapar).
  */
+import { P } from './renk';
 import {
   KENAR,
   KENAR_YUMUSAK,
   kameraTabani,
   normal,
+  type Doku,
   type Kamera,
   type Model,
   type V3,
@@ -28,9 +30,42 @@ import {
 /**
  * Köşe başına kayan sayı: konum 3, normal 3, renk 3, ek 4 (ışıma,
  * saydamlık, çizgi, parlaklık), su 4 (renk 3, derinlik — suyu olmayanda
- * -9), kum 3.
+ * -9), kum 3, doku 3 (yüzey koordinatı u, v ve malzeme numarası; 0 düz).
  */
-export const KOSE = 20;
+export const KOSE = 23;
+
+/** Gölgelendiricideki malzeme numarası (0: desen yok). */
+export const DOKU_NO: Record<Doku, number> = {
+  tas: 1,
+  doseme: 2,
+  kiremit: 3,
+  arduvaz: 4,
+  saman: 5,
+  tahta: 6,
+};
+
+const DUVAR = new Set<string>([P.tas, P.koyuTas, P.acikTas, P.kumTasi]);
+const CATI = new Map<string, Doku>([
+  [P.kiremit, 'kiremit'],
+  [P.arduvaz, 'arduvaz'],
+  [P.saman, 'saman'],
+]);
+
+/**
+ * Yüzün malzemesi: açıkça verilen (`Yuz.doku`), yoksa renginden ve
+ * eğiminden. Renk paletteki taş/çatı rengiyle BİREBİR aynı olmalı: kaya,
+ * kemik, kırmızı bez yakın renkte ama taş ya da kiremit değil; `isikla`
+ * ile türetilmiş ayrıntı (taç, süs taşı) da düz kalıyor. `nz`: yüz
+ * normalinin z'si.
+ */
+export function dokuBul(y: Yuz, nz: number): Doku | null {
+  if (y.doku !== undefined) return y.doku;
+  if (y.isima || y.su || (y.saydam ?? 1) < 1) return null;
+  const a = Math.abs(nz);
+  if (DUVAR.has(y.renk)) return a < 0.5 ? 'tas' : a > 0.85 ? 'doseme' : null;
+  const cati = CATI.get(y.renk);
+  return cati && a > 0.12 && a < 0.99 ? cati : null;
+}
 
 export interface Ag {
   yer: Float32Array;
@@ -68,6 +103,8 @@ function cizgi(y: { kenarsiz?: boolean; yumusak?: boolean }): number {
 
 interface Parca {
   y: Yuz;
+  /** Yüzün kendi normali (köşe normali değil). */
+  yn: V3;
   /** Bakana dönük değil, çevrilecek (ince levhanın arkası). */
   cevir: boolean;
   k: number;
@@ -99,7 +136,8 @@ export function agYap(model: Model, kamera?: Kamera): Ag {
     const k = y.katman ?? 0;
     // Gölge: nesnelerin dolu yüzleri, bakana dönük olsun olmasın.
     if (k >= 0 && alfa >= 1) golgeler.push(y);
-    const cevir = nokta(normal(y.p), c) <= 1e-6;
+    const yn = normal(y.p);
+    const cevir = nokta(yn, c) <= 1e-6;
     // Arkası dönük ince levha çevriliyor; değilse atılıyor.
     if (cevir && !y.ciftYuz) continue;
     let d = 0;
@@ -113,7 +151,7 @@ export function agYap(model: Model, kamera?: Kamera): Ag {
         if (q[e]! > enCok[e]!) enCok[e] = q[e]!;
       }
     }
-    const x: Parca = { y, cevir, k, d: d / y.p.length };
+    const x: Parca = { y, yn, cevir, k, d: d / y.p.length };
     if (alfa < 1) saydam.push(x);
     else if (k < 0) yer.push(x);
     else nesne.push(x);
@@ -127,7 +165,7 @@ export function agYap(model: Model, kamera?: Kamera): Ag {
     for (const x of ps) n += (x.y.p.length - 2) * 3 * KOSE;
     const f = new Float32Array(n);
     let o = 0;
-    for (const { y, cevir } of ps) {
+    for (const { y, yn, cevir } of ps) {
       const m = y.p.length;
       // Çevrilen yüzde köşe sırası ters, normal eksi.
       const j = (i: number) => (cevir ? m - 1 - i : i);
@@ -139,6 +177,19 @@ export function agYap(model: Model, kamera?: Kamera): Ag {
       const alfa = y.saydam ?? 1;
       const cz = cizgi(y);
       const parlak = y.parlak ?? 0;
+      // Desenin yüzey koordinatı, dünya biriminde. Eğik ve dik yüzde u
+      // yatay (yüz boyunca), v eğim boyunca yukarı: v = z / sin(eğim) —
+      // aynı eğimdeki yüzlerde (konik çatının dilimleri, beşik çatının iki
+      // yanı) sıralar aynı yükseklikte hizalanıyor. Yatay yüzde (döşeme)
+      // u = x, v = y. Gölgelendirici aynı çerçeveyi yüzün normalinden
+      // kurup desenin kabartmasını ona göre eğiyor.
+      const doku = dokuBul(y, yn[2]);
+      const dokuNo = doku ? DOKU_NO[doku] : 0;
+      const yatayUz = Math.hypot(yn[0], yn[1]);
+      const yatay = doku === 'doseme' || yatayUz < 0.15;
+      const tx = yatay ? 1 : (-s * yn[1]) / yatayUz;
+      const ty = yatay ? 0 : (s * yn[0]) / yatayUz;
+      const vz = yatay ? 0 : 1 / yatayUz;
       const yaz = (i: number) => {
         const q = y.p[i]!;
         const n = y.vn ? y.vn[i]! : duz!;
@@ -171,6 +222,9 @@ export function agYap(model: Model, kamera?: Kamera): Ag {
         f[o++] = kum[0];
         f[o++] = kum[1];
         f[o++] = kum[2];
+        f[o++] = q[0] * tx + q[1] * ty;
+        f[o++] = yatay ? q[1] : q[2] * vz;
+        f[o++] = dokuNo;
       };
       for (let i = 1; i < m - 1; i++) {
         yaz(j(0));

@@ -58,6 +58,7 @@ layout(location=2) in vec3 a_renk;
 layout(location=3) in vec4 a_ek;
 layout(location=4) in vec4 a_su;
 layout(location=5) in vec3 a_kum;
+layout(location=6) in vec3 a_doku;
 uniform mat4 u_goruntu;
 out vec3 v_konum;
 out vec3 v_normal;
@@ -65,6 +66,7 @@ out vec3 v_renk;
 out vec4 v_ek;
 out vec4 v_su;
 out vec3 v_kum;
+out vec3 v_doku;
 void main() {
   v_konum = a_konum;
   v_normal = a_normal;
@@ -72,6 +74,7 @@ void main() {
   v_ek = a_ek;
   v_su = a_su;
   v_kum = a_kum;
+  v_doku = a_doku;
   gl_Position = u_goruntu * vec4(a_konum, 1.0);
 }`;
 
@@ -94,6 +97,7 @@ in vec3 v_renk;
 in vec4 v_ek;
 in vec4 v_su;
 in vec3 v_kum;
+in vec3 v_doku;
 uniform sampler2DShadow u_golge;
 uniform mat4 u_isikMat;
 uniform vec3 u_isik;
@@ -133,6 +137,106 @@ float gurultu(vec2 p) {
 float dalga(vec2 p) {
   return gurultu(p) * 0.7 + gurultu(p * 2.1 + 7.1) * 0.3;
 }
+/*
+ * Malzeme desenleri. Girdi: yüzey koordinatı (dünya birimi, v eğim boyunca
+ * yukarı) ve piksel başına değişimi (kenar yumuşatma). Çıktı: (renk
+ * çarpanı, kabartma: normalin yüzey boyunca u ve v yönüne eğimi).
+ */
+// Taş örgü / döşeme: sıralar kaydırmalı, taş başına ton; derz koyu ve
+// gömük, taşın kenarı derze doğru pahlı.
+vec3 orgu(vec2 uv, vec2 boy, float derz, float pah, vec2 aa) {
+  float sira = floor(uv.y / boy.y);
+  float x = uv.x + karma(vec2(sira, 7.31)) * boy.x;
+  float blok = floor(x / boy.x);
+  float fx = x - blok * boy.x;
+  float fy = uv.y - sira * boy.y;
+  float dx = min(fx, boy.x - fx);
+  float dy = min(fy, boy.y - fy);
+  float a = 0.7 * max(aa.x, aa.y) + 1e-4;
+  float dm = min(dx, dy);
+  float harc = 1.0 - smoothstep(derz - a, derz + a, dm);
+  float ton = 0.93 + 0.2 * karma(vec2(blok, sira) + 0.37);
+  vec2 e = dx < dy ? vec2(fx < 0.5 * boy.x ? -1.0 : 1.0, 0.0)
+                   : vec2(0.0, fy < 0.5 * boy.y ? -1.0 : 1.0);
+  e *= (1.0 - smoothstep(derz, derz + pah, dm)) * (1.0 - harc) * 0.55;
+  return vec3(mix(ton, 0.64, harc), e);
+}
+// Kiremit (alaturka): sütun sütun yuvarlak kiremit, aralarında oluk; her
+// sıranın alt dudağı alttakinin tepesine gölge düşürüyor.
+vec3 kiremitDoku(vec2 uv, vec2 aa) {
+  vec2 boy = vec2(0.5, 0.62);
+  float sira = floor(uv.y / boy.y);
+  float fy = uv.y / boy.y - sira;
+  float x = uv.x / boy.x + 0.1 * (karma(vec2(sira, 3.1)) - 0.5);
+  float kol = floor(x);
+  float sx = (x - kol) * 2.0 - 1.0;
+  float a = 0.7 * max(aa.x / boy.x, aa.y / boy.y) + 1e-4;
+  float oluk = smoothstep(0.8 - 2.0 * a, 0.95, abs(sx));
+  float golge = smoothstep(0.68, 1.0, fy);
+  float ton = 0.97 + 0.2 * karma(vec2(kol, sira) + 1.7);
+  float k = ton * (1.0 - 0.38 * oluk) * (1.0 - 0.32 * golge);
+  vec2 e = vec2(sx * 0.55 * (1.0 - oluk), -0.55 * (1.0 - smoothstep(0.0, 0.16, fy)));
+  return vec3(k, e);
+}
+// Arduvaz: yarım kaydırmalı ince levhalar, aralarında yarık; alt kenar
+// kalın, üst sıranın gölgesi.
+vec3 arduvazDoku(vec2 uv, vec2 aa) {
+  vec2 boy = vec2(0.6, 0.45);
+  float sira = floor(uv.y / boy.y);
+  float fy = uv.y / boy.y - sira;
+  float x = uv.x / boy.x + 0.5 * mod(sira, 2.0);
+  float kol = floor(x);
+  float fx = x - kol;
+  float a = 0.7 * max(aa.x / boy.x, aa.y / boy.y) + 1e-4;
+  float yarik = 1.0 - smoothstep(0.035 - a, 0.035 + a, min(fx, 1.0 - fx));
+  float golge = smoothstep(0.7, 1.0, fy);
+  float ton = 0.92 + 0.26 * karma(vec2(kol, sira) + 5.1);
+  float k = ton * (1.0 - 0.4 * yarik) * (1.0 - 0.3 * golge);
+  return vec3(k, 0.0, -0.5 * (1.0 - smoothstep(0.0, 0.14, fy)));
+}
+// Saman: eğim boyunca lifler, kat kat; her katın alt kenarı kabarık.
+vec3 samanDoku(vec2 uv, vec2 aa) {
+  float kat = 0.9;
+  float sira = floor(uv.y / kat);
+  float fy = uv.y / kat - sira;
+  vec2 p = vec2(uv.x * 5.0, uv.y * 0.5 + sira * 13.7);
+  float lif = gurultu(p) * 0.6 + gurultu(p * vec2(2.3, 1.0) + 3.3) * 0.4;
+  float yan = gurultu(p + vec2(0.3, 0.0)) - gurultu(p - vec2(0.3, 0.0));
+  float golge = smoothstep(0.62, 1.0, fy);
+  float k = (0.9 + 0.3 * lif) * (1.0 - 0.3 * golge);
+  return vec3(k, yan * 0.6, -0.45 * (1.0 - smoothstep(0.0, 0.2, fy)));
+}
+// Tahta kaplama: yatay tahtalar, aralarında ince yarık, arada bir ek
+// yeri; her tahtanın alt kenarı alttakinin üstüne biniyor; boyunca lif.
+vec3 tahtaDoku(vec2 uv, vec2 aa) {
+  float H = 0.42;
+  float sira = floor(uv.y / H);
+  float fy = uv.y / H - sira;
+  float a = 0.7 * aa.y / H + 1e-4;
+  float yarik = 1.0 - smoothstep(0.045 - a, 0.045 + a, min(fy, 1.0 - fy));
+  float x = uv.x / 3.2 + karma(vec2(sira, 2.3));
+  float fx = fract(x) * 3.2;
+  float b = 0.7 * aa.x + 1e-4;
+  float ek = 1.0 - smoothstep(0.03 - b, 0.03 + b, min(fx, 3.2 - fx));
+  float ton = 0.9 + 0.2 * karma(vec2(floor(x), sira) + 4.4);
+  float lif = gurultu(vec2(uv.x * 0.9, uv.y * 16.0 + sira * 5.0));
+  float k = ton * (0.9 + 0.2 * lif) * (1.0 - 0.45 * max(yarik, ek));
+  return vec3(k, 0.0, -0.45 * (1.0 - smoothstep(0.0, 0.25, fy)));
+}
+vec3 malzeme(vec2 uv, vec2 aa, float no) {
+  vec3 r;
+  float olcu;
+  if (no < 1.5) { r = orgu(uv, vec2(1.25, 0.6), 0.045, 0.1, aa); olcu = 0.6; }
+  else if (no < 2.5) { r = orgu(uv, vec2(1.5, 1.15), 0.055, 0.14, aa); olcu = 1.15; }
+  else if (no < 3.5) { r = kiremitDoku(uv, aa); olcu = 0.5; }
+  else if (no < 4.5) { r = arduvazDoku(uv, aa); olcu = 0.45; }
+  else if (no < 5.5) { r = samanDoku(uv, aa); olcu = 0.45; }
+  else { r = tahtaDoku(uv, aa); olcu = 0.42; }
+  // Desen piksele sığmayacak kadar küçülünce (şehir haritasındaki minik
+  // bina) titreşmesin: yavaşça düz renge dönüyor.
+  float sil = smoothstep(0.1, 0.3, max(aa.x, aa.y) / olcu);
+  return vec3(mix(r.x, 1.0, sil), r.yz * (1.0 - sil));
+}
 vec2 paketle(float v) {
   v = clamp(v, 0.0, 0.99998);
   float h = floor(v * 255.0) / 255.0;
@@ -150,12 +254,34 @@ void main() {
   vec3 kara = mix(v_kum, v_renk, smoothstep(0.0, 1.0, -d));
   vec3 taban = mix(mix(kara, v_su.rgb, s), vec3(1.0), 0.22 * kopuk);
   vec3 n = normalize(v_normal);
+  // Türevler dallanmadan önce: komşu piksel başka yüzden olabilir.
+  vec3 yuzN = normalize(cross(dFdx(v_konum), dFdy(v_konum)));
+  vec2 dokuAa = fwidth(v_doku.xy);
   if (s > 0.0) {
     // Yönlü, yumuşak kırışıklık: bir yanda uzun, öbür yanda kısa dalga.
     vec2 p = v_konum.xy * u_dalga * vec2(1.0, 2.4);
     float h0 = dalga(p);
     vec2 e = vec2(dalga(p + vec2(0.2, 0.0)) - h0, dalga(p + vec2(0.0, 0.2)) - h0) / 0.2;
     n = normalize(mix(n, normalize(vec3(-e * vec2(0.18, 0.42), 1.0)), s));
+  }
+  // Kenar bulucu desensiz rengi ve normali görüyor: derzde, kiremit
+  // sırasında çizgi çekmesin.
+  vec3 tabanCizgi = taban;
+  vec3 nCizgi = n;
+  if (v_doku.z > 0.5 && s < 0.5) {
+    // Yüzün çerçevesi, ağdakiyle aynı: u yatay (yüz boyunca), v eğim
+    // boyunca yukarı; yatay yüzde x ve y.
+    if (dot(yuzN, n) < 0.0) yuzN = -yuzN;
+    float yu = length(yuzN.xy);
+    vec3 t = vec3(1.0, 0.0, 0.0);
+    vec3 b = vec3(0.0, 1.0, 0.0);
+    if (!(v_doku.z > 1.5 && v_doku.z < 2.5) && yu >= 0.15) {
+      t = vec3(-yuzN.y, yuzN.x, 0.0) / yu;
+      b = cross(yuzN, t);
+    }
+    vec3 m = malzeme(v_doku.xy, dokuAa, v_doku.z);
+    taban *= m.x;
+    n = normalize(n + t * m.y + b * m.z);
   }
   float parlak = mix(v_ek.w, 0.85, s);
   vec3 c;
@@ -197,9 +323,9 @@ void main() {
   }
   float a = v_ek.y;
   o_renk = vec4(min(c, vec3(1.0)) * a, a);
-  o_normal = vec4(n * 0.5 + 0.5, v_ek.z);
+  o_normal = vec4(nCizgi * 0.5 + 0.5, v_ek.z);
   // Kaplama: 1 nesne, 0,75 yer (arazi, yol, tarla); 0 boş.
-  o_taban = vec4(taban, u_yer > 0.5 ? 0.75 : 1.0);
+  o_taban = vec4(tabanCizgi, u_yer > 0.5 ? 0.75 : 1.0);
   o_ek = vec4(paketle(gl_FragCoord.z), isima, aoAgirlik);
 }`;
 
@@ -622,6 +748,8 @@ function tampon(gl: WebGL2RenderingContext, veri: Float32Array, yalnizKonum = fa
     gl.vertexAttribPointer(4, 4, gl.FLOAT, false, adim, 52);
     gl.enableVertexAttribArray(5);
     gl.vertexAttribPointer(5, 3, gl.FLOAT, false, adim, 68);
+    gl.enableVertexAttribArray(6);
+    gl.vertexAttribPointer(6, 3, gl.FLOAT, false, adim, 80);
   }
   gl.bindVertexArray(null);
   return {

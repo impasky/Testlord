@@ -2,13 +2,15 @@ import { describe, expect, it } from 'vitest';
 import { arazi } from './arazi';
 import { DUNYA_KAMERASI, DUNYA_KUTUSU, dunyaModeli, dunyaUcgenleri } from './dunya';
 import { insan } from './figur';
-import { KOSE, agYap } from './glAg';
+import { DOKU_NO, KOSE, agYap, dokuBul } from './glAg';
 import { goruntuMatrisi } from './glCizici';
 import { rastgele } from './rastgele';
+import { P } from './renk';
 import {
   IZOMETRIK,
   dondur,
   kameraTabani,
+  koni,
   kutu,
   levha,
   normal,
@@ -31,7 +33,10 @@ const kose = (f: Float32Array, i: number) => ({
   ek: [f[i * KOSE + 9]!, f[i * KOSE + 10]!, f[i * KOSE + 11]!, f[i * KOSE + 12]!],
   su: [f[i * KOSE + 13]!, f[i * KOSE + 14]!, f[i * KOSE + 15]!, f[i * KOSE + 16]!],
   kum: [f[i * KOSE + 17]!, f[i * KOSE + 18]!, f[i * KOSE + 19]!],
+  /** Yüzey koordinatı u, v ve malzeme numarası. */
+  doku: [f[i * KOSE + 20]!, f[i * KOSE + 21]!, f[i * KOSE + 22]!] as V3,
 });
+const koseler = (f: Float32Array) => Array.from({ length: f.length / KOSE }, (_, i) => kose(f, i));
 
 const { c } = kameraTabani();
 /** Kameraya dönük tek üçgen (üstten bakan yatay yüz). */
@@ -181,6 +186,67 @@ describe('GPU ağı (agYap)', () => {
     // Normal x'te aynalanıyor ve köşesiyle yer değiştiriyor.
     expect(a!.vn![1]!.map((x) => +x.toFixed(5))).toEqual([-0.6, 0, 0.8]);
     expect(a!.vn![0]!.map((x) => +x.toFixed(5))).toEqual([0, 0.6, 0.8]);
+  });
+});
+
+describe('malzeme dokusu', () => {
+  const yuz = (renk: string, ek: Partial<Yuz> = {}): Yuz => ({ p: [], renk, ...ek });
+
+  it('renginden ve eğiminden: taş dikte örgü, yatayda döşeme; çatı rengi eğikte', () => {
+    expect(dokuBul(yuz(P.tas), 0)).toBe('tas');
+    expect(dokuBul(yuz(P.acikTas), 0.2)).toBe('tas');
+    expect(dokuBul(yuz(P.acikTas), 1)).toBe('doseme');
+    expect(dokuBul(yuz(P.tas), 0.7)).toBeNull();
+    expect(dokuBul(yuz(P.kiremit), 0.7)).toBe('kiremit');
+    expect(dokuBul(yuz(P.arduvaz), 0.4)).toBe('arduvaz');
+    expect(dokuBul(yuz(P.saman), 0.6)).toBe('saman');
+    // Çatı rengi dik ya da düz yüzde çatı değil.
+    expect(dokuBul(yuz(P.kiremit), 0)).toBeNull();
+    expect(dokuBul(yuz(P.kiremit), 1)).toBeNull();
+  });
+
+  it('yakın renkte ama başka şey olan yüz düz kalıyor; açık seçim her şeyi eziyor', () => {
+    expect(dokuBul(yuz(P.kaya), 0)).toBeNull();
+    expect(dokuBul(yuz(P.kemik), 0)).toBeNull();
+    expect(dokuBul(yuz(P.kirmiziBez), 0.7)).toBeNull();
+    expect(dokuBul(yuz(P.tahta), 0)).toBeNull();
+    expect(dokuBul(yuz(P.tas, { isima: 1 }), 0)).toBeNull();
+    expect(dokuBul(yuz(P.tas, { doku: null }), 0)).toBeNull();
+    expect(dokuBul(yuz('#123456', { doku: 'tahta' }), 0)).toBe('tahta');
+  });
+
+  it('taş kutu: yan yüzde örgü, v = yükseklik; üstte döşeme, u = x, v = y', () => {
+    const ks = koseler(agYap(kutu(0, 0, 0, 2, 3, 4, P.tas)).nesne);
+    const yan = ks.filter((k) => Math.abs(k.normal[2]) < 1e-6);
+    const ust = ks.filter((k) => k.normal[2] > 0.99);
+    expect(yan.length).toBeGreaterThan(0);
+    expect(ust.length).toBeGreaterThan(0);
+    for (const k of yan) {
+      expect(k.doku[2]).toBe(DOKU_NO.tas);
+      expect(k.doku[1]).toBeCloseTo(k.konum[2]);
+    }
+    for (const k of ust) {
+      expect(k.doku[2]).toBe(DOKU_NO.doseme);
+      expect(k.doku[0]).toBeCloseTo(k.konum[0]);
+      expect(k.doku[1]).toBeCloseTo(k.konum[1]);
+    }
+  });
+
+  it('konik çatı: her dilimde aynı yükseklik aynı sıra (v = z / sin eğim)', () => {
+    const ks = koseler(agYap(koni(3, -2, 1, 2, 2, P.arduvaz, 8)).nesne);
+    expect(ks.length).toBeGreaterThan(0);
+    const oran = new Set<string>();
+    for (const k of ks) {
+      expect(k.doku[2]).toBe(DOKU_NO.arduvaz);
+      // Dilimlerin eğimi aynı: v / z hepsinde aynı, sıralar hizalı.
+      if (k.konum[2] > 1.5) oran.add((k.doku[1] / k.konum[2]).toFixed(4));
+    }
+    expect(oran.size).toBe(1);
+  });
+
+  it('desensiz yüzde malzeme numarası 0', () => {
+    const [k] = koseler(agYap([ustUcgen({ renk: P.kaya })]).nesne);
+    expect(k!.doku[2]).toBe(0);
   });
 });
 

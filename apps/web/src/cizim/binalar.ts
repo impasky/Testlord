@@ -42,6 +42,7 @@ import { rastgele } from './rastgele';
 import {
   besikCati,
   birlestir,
+  dokula,
   dondur,
   katmanla,
   kirmaCati,
@@ -108,7 +109,8 @@ function yapi(
     ksx += t * 2;
     ksy += t * 2;
     const renk = DUVAR_RENGI[k.duvar];
-    m.push(...kutu(kx, ky, z, ksx, ksy, k.h, renk));
+    const govde = kutu(kx, ky, z, ksx, ksy, k.h, renk);
+    m.push(...(k.duvar === 'tahta' ? dokula(govde, 'tahta') : govde));
     if (k.duvar === 'tas' || k.duvar === 'acikTas')
       m.push(...tasDokusu(kx, ky, z, ksx, ksy, k.h, renk, r));
     if (k.duvar === 'kiris') m.push(...kirisler(kx, ky, z, ksx, ksy, k.h));

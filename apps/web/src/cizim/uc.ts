@@ -18,6 +18,12 @@ import { isikla } from './renk';
 
 export type V3 = [number, number, number];
 
+/**
+ * Yüzey malzemesi (yalnız GPU, bkz. `Yuz.doku`): taş örgü (derzli), yer
+ * döşemesi, kiremit, arduvaz, saman, tahta kaplama.
+ */
+export type Doku = 'tas' | 'doseme' | 'kiremit' | 'arduvaz' | 'saman' | 'tahta';
+
 export interface Yuz {
   /** Köşeler — DIŞARIDAN bakınca saat yönünün TERSİ (normal dışarı). */
   p: V3[];
@@ -70,6 +76,15 @@ export interface Yuz {
    * düşük değer geniş ve soluk bir parıltı. Bkz. `parlat`.
    */
   parlak?: number;
+  /**
+   * Yüzey malzemesi (yalnız GPU): desen dünya ölçüsünde, yüzün üstüne
+   * gölgelendiricide çiziliyor — taşın derzi, kiremidin sırası. Verilmezse
+   * renginden ve eğiminden çıkarılıyor (`glAg.dokuBul`): taş rengi dik yüzde
+   * örgü, yatayda döşeme; çatı rengi eğik yüzde kiremit/arduvaz/saman.
+   * Tahta yalnız açıkça (`dokula`): aynı ahşap rengi sandıkta, çitte,
+   * kapıda da var. `null` deseni kapatır. SVG düz boyuyor.
+   */
+  doku?: Doku | null;
   /**
    * Çizim katmanı: küçük önce. Ressam algoritması yüzün ORTASINA bakıyor;
    * dev bir zemin yüzünün ortası sahnenin ortasında kaldığı için arkadaki
@@ -174,6 +189,12 @@ export function dondur(m: Model, eksen: 'x' | 'y' | 'z', aci: number, o: V3 = [0
 /** Modelin bütün yüzlerini parlak (metal) yapar (bkz. `Yuz.parlak`). */
 export function parlat(m: Model, p = 0.7): Model {
   for (const y of m) y.parlak = p;
+  return m;
+}
+
+/** Modelin bütün yüzlerine malzeme verir (bkz. `Yuz.doku`; `null` kapatır). */
+export function dokula(m: Model, doku: Doku | null): Model {
+  for (const y of m) y.doku = doku;
   return m;
 }
 

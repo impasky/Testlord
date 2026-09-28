@@ -85,6 +85,19 @@ yüzün üstünde, SVG onu okumuyor.
   parçanın bütün yüzlerini işaretliyor; figürlerde kılıç ağzı, mızrak ve
   balta başı, miğfer, plaka/şerit/zincir zırh, kalkan kenarı, at zırhı ve
   altın süsler parlak. Ten, bez, deri ve ahşap mat.
+- `doku`: yüzey malzemesi — `tas` (derzli taş örgü), `doseme` (yer
+  döşemesi), `kiremit`, `arduvaz`, `saman`, `tahta` (yatay kaplama).
+  Verilmezse `glAg.dokuBul` renkten ve eğimden çıkarıyor:
+  - Paletteki taş rengi (`P.tas`, `koyuTas`, `acikTas`, `kumTasi`) dik
+    yüzde örgü, yatayda döşeme.
+  - Çatı rengi (`P.kiremit`, `arduvaz`, `saman`) eğik yüzde çatı.
+  - Renk BİREBİR aynı olmalı: kaya, kemik, kırmızı bez yakın renkte ama
+    taş ya da kiremit değil. `isikla` ile türetilmiş ayrıntı (taç, süs
+    taşı) da düz kalıyor.
+  - Tahta yalnız açıkça (`dokula(model, 'tahta')`): aynı ahşap rengi
+    sandıkta, çitte, ağaç gövdesinde de var. Tahta katlı yapılar ve kır
+    evleri ile ambarlar işaretli.
+  - `doku: null` deseni kapatır.
 - Dönüşümler (`olcekle`, `dondur`) bunları da taşıyor; aynalamada köşe
   sırasıyla birlikte dönüyorlar.
 
@@ -116,6 +129,24 @@ parçacığında da aynı koşuyor. Üç geçiş:
    - Su: yüzeyinde yönlü, yumuşak dalgalar (gürültüden normal); güneşi yer
      yer yansıtıyor. Dalga boyu dünya biriminde sabit, çıktı boyundan
      bağımsız.
+   - Malzeme (`doku`): desen gölgelendiricide, dünya biriminde (1 birim ≈
+     yarım metre). Ağ her köşeye yüzey koordinatı yazıyor: u yatay (yüz
+     boyunca), v eğim boyunca yukarı, `v = z / sin(eğim)`. Aynı eğimdeki
+     yüzlerde (konik çatının dilimleri, beşik çatının iki yanı) sıralar aynı
+     yükseklikte hizalı; yatay yüzde u = x, v = y. Her desen rengi çarpıyor
+     ve normali eğiyor (kabartma), ışık da ona göre düşüyor:
+     - Taş: 1,25 × 0,6 birim taşlar, sıra sıra kaydırmalı, taş başına ton;
+       derz koyu ve gömük, taş kenarı derze doğru pahlı. Döşeme aynı,
+       taşlar iri.
+     - Kiremit: sütun sütun yuvarlak (alaturka) kiremit, aralarında oluk;
+       her sıranın alt dudağı alttakinin tepesine gölge düşürüyor.
+     - Arduvaz: yarım kaydırmalı ince levhalar, aralarında yarık.
+     - Saman: eğim boyunca lifler, kat kat.
+     - Tahta: yatay tahtalar, ince yarık, arada bir ek yeri, bindirme.
+     - Desen piksele sığmayacak kadar küçülünce (şehir haritasındaki
+       minik bina) yavaşça düz renge dönüyor; titreşmiyor.
+     - Kenar bulucu desensiz rengi ve normali görüyor: derzde, kiremit
+       sırasında çizgi çekmiyor.
 3. Çözme: her çıktı pikseli 2×2 örneğin ortalaması (süper örnekleme) ve
    her örnek kendi kenarını buluyor. Çizgi yalnız siluette (komşu boş ya
    da belirgin arkada) ve keskin kırılımda ya da renk değişiminde; yuvarlak
@@ -256,7 +287,10 @@ tools/gorsel-denetim.mjs` koş.
   farklı modele verilmemeli.
 - **Katman.** Yere yatık her şey (yol, parsel, gölge levhası) eksi katmanda;
   yoksa önündeki nesnenin üstüne çiziliyor.
-- **İki yol, bir model.** Köşe verisi (`vn`, `vr`, `su`) SVG'yi
+- **Malzeme paletten.** Taş duvar ve çatı rengini paletten doğrudan
+  kullan (`P.tas`, `P.kiremit`…); türetilmiş renk desen almaz. Tahta
+  duvara `dokula(…, 'tahta')`.
+- **İki yol, bir model.** Köşe verisi (`vn`, `vr`, `su`, `doku`) SVG'yi
   değiştirmiyor; SVG yedeği her zaman aynı modelden. GPU'ya özel bir şey
   eklenirken SVG'nin de düzgün çizdiği denetlenmeli (galeriyi WebGL
   kapalıyken de aç).
@@ -271,7 +305,10 @@ tools/gorsel-denetim.mjs` koş.
 - `apps/web/src/cizim/gl.test.ts`: GPU ağı (görünen yüzler, gölgeye
   girenler, ince levha çevirmesi, katman sırası, köşe normali/rengi/suyu
   ve aynalamada dönmeleri, parlaklığın köşeye yazılıp dönüşümden sağ
-  çıktığı, figürde metalin parlak, ten/bez/derinin mat olduğu), GPU ile
+  çıktığı, figürde metalin parlak, ten/bez/derinin mat olduğu; malzemenin
+  renkten ve eğimden bulunduğu, yakın renkteki kaya/kemik/bezin düz
+  kaldığı, taş kutuda v'nin yükseklik, üstte döşemenin x/y olduğu, konik
+  çatının dilimlerinde sıraların hizalı olduğu), GPU ile
   SVG'nin aynı izdüşümü kullandığı
   (izometrik ve tepeden), arazinin köşe su verisi, dünya GPU modelinin
   yüzlerinin kameraya dönük, kıyı uzaklığının sınırlı, ağaçlarının 2D

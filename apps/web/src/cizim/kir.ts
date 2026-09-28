@@ -12,6 +12,7 @@ import { P, isikla } from './renk';
 import {
   besikCati,
   birlestir,
+  dokula,
   katmanla,
   kirmaCati,
   koni,
@@ -52,6 +53,7 @@ export function ev(
   const cati = o.cati ?? P.saman;
   const yon = o.yon ?? (sx >= sy ? 'x' : 'y');
   const m = kutu(x, y, z, sx, sy, h, duvar);
+  if (duvar === P.tahta || duvar === P.koyuTahta || duvar === P.acikTahta) dokula(m, 'tahta');
   if (o.kiris) {
     const k = 0.25;
     const koyu = P.koyuTahta;
@@ -97,7 +99,7 @@ export function ambar(
   duvar = '#8a4a30',
   cati: string = P.arduvaz,
 ): Model {
-  const m = kutu(x, y, z, sx, sy, h, duvar);
+  const m = dokula(kutu(x, y, z, sx, sy, h, duvar), 'tahta');
   for (let u = x + 0.8; u < x + sx - 0.3; u += 1.3)
     m.push(...yuzeyKutusu('y', y + sy, u, z, 0.16, h, 0.05, isikla(duvar, 0.78)));
   m.push(...besikCati(x, y, z + h, sx, sy, sy * 0.5, 'x', cati, duvar, 0.45));
