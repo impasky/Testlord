@@ -247,7 +247,7 @@ function doku(gl: WebGL2RenderingContext): WebGLTexture {
 const YAZILIM = /swiftshader|llvmpipe|softpipe|software|basic render/i;
 
 export function yazilimMi(gl: WebGL2RenderingContext): boolean {
-  const e = gl.getExtension('WEBGL_debug_renderer_info');
+  const e = gl.getExtension('webgl_debug_renderer_info');
   const ad = `${gl.getParameter(gl.RENDERER)} ${e ? gl.getParameter(e.UNMASKED_RENDERER_WEBGL) : ''}`;
   return YAZILIM.test(ad);
 }
@@ -268,7 +268,7 @@ function kur(yazilimaIzin = false): Kaynak | null {
     }) as WebGL2RenderingContext | null;
     if (!gl) throw new Error('webgl2Yok');
     if (!yazilimaIzin && yazilimMi(gl)) {
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
+      gl.getExtension('webgl_lose_context')?.loseContext();
       throw new Error('yazilimSurucu');
     }
     (tuval as HTMLCanvasElement).addEventListener?.('webglcontextlost', (e: Event) => {

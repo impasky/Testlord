@@ -143,7 +143,7 @@ function donanimVarMi(): boolean {
     const gl = t.getContext('webgl2') as WebGL2RenderingContext | null;
     if (!gl) return false;
     const yazilim = yazilimMi(gl);
-    gl.getExtension('WEBGL_lose_context')?.loseContext();
+    gl.getExtension('webgl_lose_context')?.loseContext();
     return !yazilim;
   } catch {
     return false;

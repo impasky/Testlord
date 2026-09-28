@@ -10422,23 +10422,6 @@
       "apps/web/src/components/KarsiIpuclari.tsx:87"
     ]
   },
-  "t4b58b4c1": {
-    "grup": "arayuz",
-    "tr": "WEBGL_debug_renderer_info",
-    "en": "",
-    "nerede": [
-      "apps/web/src/cizim/glCizici.ts:250"
-    ]
-  },
-  "t582ad49e": {
-    "grup": "arayuz",
-    "tr": "WEBGL_lose_context",
-    "en": "",
-    "nerede": [
-      "apps/web/src/cizim/gl.ts:146",
-      "apps/web/src/cizim/glCizici.ts:271"
-    ]
-  },
   "t884b8a52": {
     "grup": "arayuz",
     "tr": "Yağma",
