@@ -964,8 +964,32 @@ export interface CizimIstegi {
    * canlı yükseliyor.
    */
   hareket?: boolean;
+  /**
+   * Dalgalanan bayrakların kareleri (`bayrakAni.bayrakKareleri`). Ağ
+   * `bayraksiz` kurulmuş olmalı: kumaş ana resimde yok, atlasta dalgalanıyor.
+   */
+  bayrak?: BayrakKareleri;
   /** Bir CSS pikselinin çıktıdaki karşılığı: kenar çizgisinin kalınlığı. */
   olcek: number;
+}
+
+/** Bayrak kumaşının her anı; her karede bayraklar aynı sırayla ardışık. */
+export interface BayrakKareleri {
+  /** Kare başına üçgen tamponu (`KOSE` düzeninde, ağın nesne tamponu gibi). */
+  kareler: Float32Array[];
+  /** Her bayrağın bir karedeki köşe sayısı (bütün karelerde aynı). */
+  gruplar: number[];
+}
+
+/** Bayrak atlası: her bayrak bir satır, satırda kareler yan yana. */
+export interface BayrakAtlasi {
+  resim: Blob;
+  /** Her bayrağın resimdeki kutusu (x, y, en, boy; piksel, y aşağı); boşsa 0 boy. */
+  kutular: [number, number, number, number][];
+  /** Resmin (ana çıktının) boyu: kutuların ölçeği. */
+  en: number;
+  boy: number;
+  kare: number;
 }
 
 /** Çizimin çıktısı: resim ve (hareketli sahnede, varsa) katmanları. */
@@ -973,6 +997,23 @@ export interface CizimSonucu {
   resim: Blob;
   su?: Blob;
   isik?: Blob;
+  bayrak?: BayrakAtlasi;
+}
+
+/** Atlasın düzeni: her bayrağın satırının üstü, atlasın boyu. */
+export function atlasDuzeni(
+  kutular: [number, number, number, number][],
+  kare: number,
+): { satir: number[]; en: number; boy: number } {
+  const satir: number[] = [];
+  let boy = 0;
+  let en = 0;
+  for (const [, , w, h] of kutular) {
+    satir.push(boy);
+    boy += h;
+    en = Math.max(en, w * kare);
+  }
+  return { satir, en, boy };
 }
 
 async function blobla(tuval: Tuval): Promise<Blob | null> {
@@ -986,14 +1027,19 @@ export interface IsciCevabi {
   sonuc?: CizimSonucu | null;
   yok?: boolean;
   ag?: Ag;
+  bayrak?: BayrakKareleri;
 }
 
-/** Ağın tamponları: işçiyle kopyasız (aktararak) gidip geliyor. */
-export const aktarilanlar = (ag: Ag): Transferable[] => [
+/** İsteğin tamponları: işçiyle kopyasız (aktararak) gidip geliyor. */
+export const aktarilanlar = ({
+  ag,
+  bayrak,
+}: Pick<CizimIstegi, 'ag' | 'bayrak'>): Transferable[] => [
   ag.yer.buffer,
   ag.nesne.buffer,
   ag.saydam.buffer,
   ag.golge.buffer,
+  ...(bayrak?.kareler.map((k) => k.buffer) ?? []),
 ];
 
 /** Çizicinin durumu: `yok` ise WebGL2 bu bağlamda yok ya da kayboldu. */
@@ -1132,19 +1178,22 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
   gl.viewport(0, 0, en, boy);
   gl.disable(gl.DEPTH_TEST);
   gl.depthMask(true);
-  gl.useProgram(k.coz);
   const uc = (ad: string) => gl.getUniformLocation(k.coz, ad);
-  ['u_renk', 'u_normal', 'u_taban'].forEach((ad, i) => {
-    gl.activeTexture(gl.TEXTURE0 + i);
-    gl.bindTexture(gl.TEXTURE_2D, k.dokular[i]!);
-    gl.uniform1i(uc(ad), i);
-  });
-  gl.activeTexture(gl.TEXTURE3);
-  gl.bindTexture(gl.TEXTURE_2D, k.derinlik);
-  gl.uniform1i(uc('u_derinlik'), 3);
-  gl.activeTexture(gl.TEXTURE4);
-  gl.bindTexture(gl.TEXTURE_2D, k.dokular[3]!);
-  gl.uniform1i(uc('u_ek'), 4);
+  const cozHazirla = () => {
+    gl.useProgram(k.coz);
+    ['u_renk', 'u_normal', 'u_taban'].forEach((ad, i) => {
+      gl.activeTexture(gl.TEXTURE0 + i);
+      gl.bindTexture(gl.TEXTURE_2D, k.dokular[i]!);
+      gl.uniform1i(uc(ad), i);
+    });
+    gl.activeTexture(gl.TEXTURE3);
+    gl.bindTexture(gl.TEXTURE_2D, k.derinlik);
+    gl.uniform1i(uc('u_derinlik'), 3);
+    gl.activeTexture(gl.TEXTURE4);
+    gl.bindTexture(gl.TEXTURE_2D, k.dokular[3]!);
+    gl.uniform1i(uc('u_ek'), 4);
+  };
+  cozHazirla();
   gl.uniform3f(uc('u_sag'), taban.sag[0], taban.sag[1], taban.sag[2]);
   gl.uniform3f(uc('u_yukari'), taban.yukari[0], taban.yukari[1], taban.yukari[2]);
   gl.uniform3f(uc('u_goz'), taban.c[0], taban.c[1], taban.c[2]);
@@ -1227,7 +1276,137 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
     const b = await blobla(k.tuval);
     if (b) sonuc[ad] = b;
   }
+
+  // 6) Dalgalanan bayrak: kumaşın her anı sahnenin derinliğine karşı
+  // çiziliyor (önündeki kule örtüyor; derinliğe yazmıyor, kareler
+  // birbirini örtmesin), yalnız bayrağın kutusunda çözülüp bulanıklaşıyor
+  // ve atlasa diziliyor. Ana resimde kumaş yok (`bayraksiz`).
+  const by = istek.bayrak;
+  if (by?.kareler.length) {
+    const kare = by.kareler.length;
+    const pay = 2 + r + (tilt ? Math.ceil(TILT_YARICAP * en) : 0);
+    const kutular = bayrakKutulari(by, taban, istek.kutu, en, boy, pay);
+    const duzen = atlasDuzeni(kutular, kare);
+    const atlas = duzen.en > 0 && duzen.boy > 0 ? yeniTuval(duzen.en, duzen.boy) : null;
+    const c2 = atlas?.getContext('2d') as CanvasRenderingContext2D | null | undefined;
+    if (atlas && c2) {
+      const dolu = kutular.flatMap((q, i) => (q[2] > 0 && q[3] > 0 ? [i] : []));
+      // Kutu → kesme dikdörtgeni (GL: y yukarı), `o` örnek ölçeği.
+      const kes = ([x, y, w, h]: [number, number, number, number], o: number) =>
+        gl.scissor(x * o, (boy - y - h) * o, w * o, h * o);
+      const u = (ad: string) => gl.getUniformLocation(k.ana, ad);
+      for (let f = 0; f < kare; f++) {
+        // a) Hedefler kutularda boş; sahnenin derinliği yerinde.
+        gl.bindFramebuffer(gl.FRAMEBUFFER, k.anaFbo);
+        gl.drawBuffers([
+          gl.COLOR_ATTACHMENT0,
+          gl.COLOR_ATTACHMENT1,
+          gl.COLOR_ATTACHMENT2,
+          gl.COLOR_ATTACHMENT3,
+        ]);
+        gl.enable(gl.SCISSOR_TEST);
+        for (const i of dolu) {
+          kes(kutular[i]!, ss);
+          for (let j = 0; j < 4; j++) gl.clearBufferfv(gl.COLOR, j, [0, 0, 0, 0]);
+        }
+        gl.disable(gl.SCISSOR_TEST);
+        // b) Kumaş.
+        const t = tampon(gl, by.kareler[f]!);
+        gl.viewport(0, 0, sen, sboy);
+        gl.useProgram(k.ana);
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, k.golgeDoku);
+        gl.uniform1i(u('u_golge'), 0);
+        gl.enable(gl.DEPTH_TEST);
+        gl.depthFunc(gl.LESS);
+        gl.depthMask(false);
+        gl.disable(gl.BLEND);
+        gl.bindVertexArray(t.vao);
+        gl.drawArrays(gl.TRIANGLES, 0, t.say);
+        gl.bindVertexArray(null);
+        t.sil();
+        // c) Çözme: kenar ve renk düzenlemesi; ortam gölgesi ve hare yok
+        // (kutunun dışındaki sahneye uzanıyorlar).
+        gl.disable(gl.DEPTH_TEST);
+        gl.depthMask(true);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, tilt ? k.araFbo : null);
+        gl.viewport(0, 0, en, boy);
+        if (tilt) gl.clearBufferfv(gl.COLOR, 0, [0, 0, 0, 0]);
+        cozHazirla();
+        gl.uniform1f(uc('u_aoPx'), 0);
+        gl.uniform1f(uc('u_hare'), 0);
+        gl.enable(gl.SCISSOR_TEST);
+        for (const i of dolu) {
+          kes(kutular[i]!, 1);
+          gl.drawArrays(gl.TRIANGLES, 0, 3);
+        }
+        // d) Bulanıklık, yine kutularda.
+        for (const i of dolu) {
+          kes(kutular[i]!, 1);
+          bulandir();
+        }
+        gl.disable(gl.SCISSOR_TEST);
+        if (gl.isContextLost()) return sonuc;
+        // e) Atlasa: bayrağın satırında f. kare.
+        for (const i of dolu) {
+          const [x, y, w, h] = kutular[i]!;
+          c2.drawImage(k.tuval, x, y, w, h, f * w, duzen.satir[i]!, w, h);
+        }
+      }
+      const resim = await blobla(atlas);
+      if (resim) sonuc.bayrak = { resim, kutular, en, boy, kare };
+    }
+  }
   return sonuc;
+}
+
+function yeniTuval(en: number, boy: number): Tuval | null {
+  try {
+    return typeof OffscreenCanvas !== 'undefined'
+      ? new OffscreenCanvas(en, boy)
+      : Object.assign(document.createElement('canvas'), { width: en, height: boy });
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Her bayrağın resimdeki kutusu: bütün karelerde kumaşın kapladığı yer,
+ * kenar çizgisi ve bulanıklık payıyla; resmin dışı kırpılmış.
+ */
+function bayrakKutulari(
+  by: BayrakKareleri,
+  { sag, yukari }: { sag: V3; yukari: V3 },
+  [vx, vy, vw, vh]: [number, number, number, number],
+  en: number,
+  boy: number,
+  pay: number,
+): [number, number, number, number][] {
+  const kutular: [number, number, number, number][] = [];
+  let bas = 0;
+  for (const say of by.gruplar) {
+    let x0 = Infinity;
+    let y0 = Infinity;
+    let x1 = -Infinity;
+    let y1 = -Infinity;
+    for (const t of by.kareler)
+      for (let i = bas; i < bas + say; i++) {
+        const q: V3 = [t[i * KOSE]!, t[i * KOSE + 1]!, t[i * KOSE + 2]!];
+        const x = ((nokta(q, sag) - vx) / vw) * en;
+        const y = ((-nokta(q, yukari) - vy) / vh) * boy;
+        x0 = Math.min(x0, x);
+        y0 = Math.min(y0, y);
+        x1 = Math.max(x1, x);
+        y1 = Math.max(y1, y);
+      }
+    bas += say;
+    const a = Math.max(0, Math.floor(x0 - pay));
+    const b = Math.max(0, Math.floor(y0 - pay));
+    const c = Math.min(en, Math.ceil(x1 + pay));
+    const d = Math.min(boy, Math.ceil(y1 + pay));
+    kutular.push(c > a && d > b ? [a, b, c - a, d - b] : [0, 0, 0, 0]);
+  }
+  return kutular;
 }
 
 /**

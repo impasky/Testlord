@@ -152,6 +152,20 @@ describe('GPU ağı (agYap)', () => {
     expect(sade.suVar || sade.isimaVar).toBe(false);
   });
 
+  it('bayraksız ağ: kumaş çizilmiyor ama gölgesini düşürüyor', () => {
+    const d: V3[] = [
+      [0, 0, 0],
+      [1, 0, 0],
+      [0, 1, 0],
+    ];
+    const m: Model = [ustUcgen({ bez: { dinlenik: d, u: [0, 1, 1] } }), ustUcgen()];
+    const tam = agYap(m);
+    const bayraksiz = agYap(m, undefined, { bayraksiz: true });
+    expect(ucgenSayisi(tam.nesne)).toBe(2);
+    expect(ucgenSayisi(bayraksiz.nesne)).toBe(1);
+    expect(bayraksiz.golge.length).toBe(tam.golge.length);
+  });
+
   it('parlaklık köşeye yazılıyor; işaretsiz yüz mat (0), dönüşümden sağ çıkıyor', () => {
     const [metal] = dondur(tasi(parlat([ustUcgen()], 0.8), [1, 2, 3]), 'z', 0.3);
     const ag = agYap([metal!, ustUcgen()]);

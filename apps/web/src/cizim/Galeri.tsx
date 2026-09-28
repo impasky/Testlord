@@ -205,7 +205,7 @@ const BOLUMLER: {
         genis: true,
         cizim: <BolgeCizimi ad={ad} alt={ad} className="h-full w-full" />,
       })),
-      ...['demirhane', 'akin'].map((ad) => ({
+      ...['malikane', 'demirhane', 'akin'].map((ad) => ({
         ad: 'canli:' + ad,
         genis: true,
         oran: 'aspect-[60/23]',

@@ -101,6 +101,13 @@ export interface Yuz {
    */
   duman?: V3;
   /**
+   * Bayrak kumaşı: dinlenik (düz) hâli ve her köşenin direkten uca oranı
+   * (0 direk, 1 uç). `p` bunun durağan bir anı (`parca.bezAni`); hareketli
+   * sahnede kumaş kare kare dalgalanıyor. Dönüşümler dinlenik hâli de
+   * taşıyor.
+   */
+  bez?: { dinlenik: V3[]; u: number[] };
+  /**
    * Çizim katmanı: küçük önce. Ressam algoritması yüzün ORTASINA bakıyor;
    * dev bir zemin yüzünün ortası sahnenin ortasında kaldığı için arkadaki
    * duvarlar onun altında kalıyordu. Zemin -2, yere yatık yol/döşeme -1,
@@ -157,6 +164,7 @@ export function tasi(m: Model, d: V3): Model {
     ...y,
     p: y.p.map((q) => ekle(q, d)),
     ...(y.duman ? { duman: ekle(y.duman, d) } : {}),
+    ...(y.bez ? { bez: { ...y.bez, dinlenik: y.bez.dinlenik.map((q) => ekle(q, d)) } } : {}),
   }));
 }
 
@@ -183,6 +191,14 @@ export function olcekle(m: Model, s: number | V3, o: V3 = [0, 0, 0]): Model {
         ? { su: { ...y.su, d: [...y.su.d].reverse(), renk: [...y.su.renk].reverse() } }
         : {}),
       ...(y.duman ? { duman: f(y.duman) } : {}),
+      ...(y.bez
+        ? {
+            bez: {
+              dinlenik: ters ? y.bez.dinlenik.map(f).reverse() : y.bez.dinlenik.map(f),
+              u: ters ? [...y.bez.u].reverse() : y.bez.u,
+            },
+          }
+        : {}),
     };
   });
 }
@@ -209,6 +225,7 @@ export function dondur(m: Model, eksen: 'x' | 'y' | 'z', aci: number, o: V3 = [0
     p: y.p.map(f),
     ...(y.vn ? { vn: y.vn.map(yon) } : {}),
     ...(y.duman ? { duman: f(y.duman) } : {}),
+    ...(y.bez ? { bez: { ...y.bez, dinlenik: y.bez.dinlenik.map(f) } } : {}),
   }));
 }
 

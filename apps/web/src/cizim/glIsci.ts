@@ -17,7 +17,10 @@ kapsam.onmessage = (e) => {
   zincir = zincir.then(async () => {
     const sonuc = await cizBlob(istek).catch(() => null);
     if (glDurumu() === 'yok')
-      kapsam.postMessage({ id, yok: true, ag: istek.ag }, aktarilanlar(istek.ag));
+      kapsam.postMessage(
+        { id, yok: true, ag: istek.ag, bayrak: istek.bayrak },
+        aktarilanlar(istek),
+      );
     else kapsam.postMessage({ id, sonuc });
   });
 };

@@ -221,6 +221,15 @@ parçacığında da aynı koşuyor. Üç geçiş:
      (`KATMAN_HARE_YARICAP`, `KATMAN_HARE_GUC`).
      Sahnede su ya da ışıyan yüz yoksa o katman hiç çizilmiyor. Ağ
      `dumansiz` kuruluyor: duman yüzleri (`Yuz.duman`) GPU resminde yok.
+6. Bayrak atlası (hareketli sahnede bayrak varsa): ağ `bayraksiz`
+   kuruluyor, kumaş ana resimde yok ama gölgesi var. Kumaşın dalga
+   turundaki 12 anı (`bayrakAni.bayrakKareleri`, ana iş parçacığında
+   modelden) sahnenin derinliğine karşı çiziliyor: önündeki kule ve çatı
+   örtüyor; derinliğe yazmıyor, kareler birbirini örtmesin (kıvrım üst
+   üste binince uzaktan yakına sırayla). Her kare yalnız bayrağın
+   kutusunda çözülüyor (kenar çizgisi, renk düzenlemesi, tilt-shift; ortam
+   gölgesi ve hare yok, kutunun dışındaki sahneye uzanıyorlar) ve atlasa
+   diziliyor: her bayrak bir satır, kareler yan yana.
 
 Bellek yetmezse (ya da hedef doku kurulamazsa) iş `null` dönüyor ve o
 çizim SVG'ye düşüyor. Sıra boşalınca büyük hedef dokular dört saniye sonra
@@ -270,14 +279,21 @@ kaydırıyor.
   dönüşümlerle birlikte taşınıyor) dört yumuşak yumru sırayla çıkıp
   rüzgârla kayarak yükseliyor, büyüyüp sönüyor. Kaynaklar ayrı evrede.
   Kaynağın ekrandaki yeri modelden bir kez hesaplanıyor.
+- Bayrak: her bayrak kendi kutusunda; atlastaki satırı `steps(12)` ile
+  kare kare kayıyor (1,2 sn'de bir dalga turu). Bayraklar ayrı evrede.
+  Kumaş dilimli ve dinlenik hâlini taşıyor (`Yuz.bez`: düz hâli ve her
+  köşenin direkten uca oranı; dönüşümler onu da taşıyor). Dalga
+  (`parca.bezAni`) direkten uca büyüyüp uca doğru yürüyor, direk kenarı
+  yerinde; köşe normali dalganın eğiminden, kumaş kıvrımlı gölgeleniyor.
+  Durağan bayrak (SVG, hareketsiz sahne) dalganın ilk anı.
 
 Kutu bir ızgara sarmalayıcısına geçiyor: resim ve katmanlar aynı hücrede
 üst üste, çağıranın sınıfları sarmalayıcıda. Katman dikdörtgeni ölçülüyor
 (`kirp`: doldur ve kırp; değilse sığdır), GPU resmiyle aynı yere oturuyor.
 Hareket kısıtlıysa (`prefers-reduced-motion`) hiçbiri yok ve duman durağan
 çiziliyor; CSS'te de katman gizli (ikinci savunma hattı). GPU yoksa (SVG)
-hareket yok. Bayraklar dalgalanmıyor: bayrak modelin bir parçası, onu
-oynatmak her karede yeniden çizim demek.
+hareket yok. Katman ilk boyamadan önce ölçülüyor: kumaş ana resimde
+olmadığı için bir kare bile bayraksız direk görünmesin.
 
 **Dünya zemini (`dunya.ts`, `dunyaAgi.ts`, `dunyaIsci.ts`).** Aynı
 arazi, iki çıktı. `dunyaUcgenleri` düz renkli üçgenler (2D tuval, WebGL
@@ -297,7 +313,8 @@ her köşe yüzlerce kenarı değil, yalnız kendi şeridini tarıyor.
 | `uc.ts`                       | Motor: ilkeller, dönüşümler, kamera, ışık, sıralama                                                                                     |
 | `renk.ts`                     | Palet ve renk yardımcıları                                                                                                              |
 | `rastgele.ts`                 | Tohumlu rastgele (FNV-1a + mulberry32)                                                                                                  |
-| `parca.ts`                    | Ortak parçalar: ağaç, çam, bayrak, çadır, fıçı, duman, uzuv, teker, kubbe                                                               |
+| `parca.ts`                    | Ortak parçalar: ağaç, çam, bayrak (dalgası `bezAni`), çadır, fıçı, duman, uzuv, teker, kubbe                                            |
+| `bayrakAni.ts`                | Dalgalanan bayrağın kareleri, GPU için (bayrak bayrak ardışık)                                                                          |
 | `arazi.ts`                    | Yükseklik alanından arazi, su, kıyı, nehir yatağı, yol ve parsel izleri, düzleme                                                        |
 | `binalar.ts`                  | Şehir binaları, her biri üç aşama; arsa, görev panosu, haberci kulesi, onur meydanı                                                     |
 | `yerlesim.ts`                 | Şehir sayfasının altındaki altı yerleşim kademesi (kamp → metropol)                                                                     |

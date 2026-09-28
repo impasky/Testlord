@@ -21,11 +21,13 @@ import {
   kure,
   kutu,
   levha,
+  normal,
   prizma,
   silindir,
   tasi,
   type Model,
   type V3,
+  type Yuz,
 } from './uc';
 
 export type Yon = 'x' | 'y';
@@ -241,7 +243,56 @@ export function duman(x: number, y: number, z: number, r: () => number, adet = 3
 
 /* ── Nesneler ──────────────────────────────────────────────────────── */
 
-/** Direk + dalgalı bayrak. `yon` bayrağın açıldığı eksen. */
+/** Bayrak kumaşının dilim sayısı: dalga dilim dilim kırılıyor. */
+const BEZ_DILIM = 6;
+/** Durağan bayrağın (SVG, hareketsiz sahne) dalga evresi. */
+export const BAYRAK_FAZ = 1.9;
+/** Dalga: kumaş boyunda kaç dalga boyu, genlik kumaş boyunun kaçta kaçı. */
+const BEZ_DALGA = 1.1;
+const BEZ_GENLIK = 0.16;
+
+/**
+ * Kumaşın bir anı (`Yuz.bez`): dinlenik düz hâlinden, direkten uca büyüyen
+ * ve uca doğru yürüyen bir dalga (`faz` arttıkça tepe uca kayıyor). Direk
+ * kenarı yerinde, genlik kumaşın boyuyla orantılı. Köşe normali dalganın
+ * eğiminden: kumaş kıvrımlı gölgeleniyor, dilimler arasında çizgi yok.
+ */
+export function bezAni(y: Yuz, faz: number): Yuz {
+  const { dinlenik: d, u } = y.bez!;
+  const n = normal(d);
+  // Kumaş boyunca yön ve kumaşın boyu: oranı farklı iki köşeden.
+  let t: V3 = [0, 0, 0];
+  let boy = 0;
+  for (let i = 1; i < d.length && !boy; i++) {
+    const du = u[i]! - u[0]!;
+    if (Math.abs(du) < 1e-6) continue;
+    const f: V3 = [d[i]![0] - d[0]![0], d[i]![1] - d[0]![1], 0];
+    const l = Math.hypot(f[0], f[1]);
+    boy = l / Math.abs(du);
+    t = [(f[0] / l) * Math.sign(du), (f[1] / l) * Math.sign(du), 0];
+  }
+  const a = BEZ_GENLIK * boy;
+  const w = 2 * Math.PI * BEZ_DALGA;
+  const p: V3[] = [];
+  const vn: V3[] = [];
+  d.forEach((q, i) => {
+    const k = u[i]!;
+    const th = w * k - faz;
+    const s = a * k * Math.sin(th);
+    // Eğim (kumaş boyunca birim uzunluk başına sapma) normali yatırıyor.
+    const e = boy ? (a * (Math.sin(th) + k * w * Math.cos(th))) / boy : 0;
+    p.push([q[0] + n[0] * s, q[1] + n[1] * s, q[2] + n[2] * s]);
+    const m: V3 = [n[0] - t[0] * e, n[1] - t[1] * e, n[2]];
+    const l = Math.hypot(m[0], m[1], m[2]) || 1;
+    vn.push([m[0] / l, m[1] / l, m[2] / l]);
+  });
+  return { ...y, p, vn };
+}
+
+/**
+ * Direk + dalgalı bayrak. `yon` bayrağın açıldığı eksen. Kumaş dilimli ve
+ * dinlenik hâlini taşıyor (`Yuz.bez`): hareketli sahnede dalgalanıyor.
+ */
 export function bayrak(
   x: number,
   y: number,
@@ -255,32 +306,23 @@ export function bayrak(
   const direk = silindir(x, y, z, 0.12, h, P.koyuTahta, 5);
   const t = z + h - 0.2;
   const u = (d: number) => (yon === 'y' ? ([x, y + d] as const) : ([x + d, y] as const));
-  const dalga = 0.35;
-  const [a0, a1] = u(0);
-  const [b0, b1] = u(en / 2);
-  const [c0, c1] = u(en);
-  const kay = (k: number): [number, number] => (yon === 'y' ? [k, 0] : [0, k]);
-  const [bx, by] = kay(dalga);
-  const bez = birlestir(
-    levha(
-      [
-        [a0, a1, t],
-        [b0 + bx, b1 + by, t - 0.1],
-        [b0 + bx, b1 + by, t - boy - 0.1],
-        [a0, a1, t - boy],
-      ],
-      renk,
-    ),
-    levha(
-      [
-        [b0 + bx, b1 + by, t - 0.1],
-        [c0, c1, t - 0.25],
-        [c0, c1, t - boy - 0.25],
-        [b0 + bx, b1 + by, t - boy - 0.1],
-      ],
-      isikla(renk, 0.85),
-    ),
-  );
+  // Uç biraz aşağıda: kumaş kendi ağırlığıyla sarkıyor.
+  const sarkma = 0.25;
+  const bez: Model = [];
+  for (let i = 0; i < BEZ_DILIM; i++) {
+    const k0 = i / BEZ_DILIM;
+    const k1 = (i + 1) / BEZ_DILIM;
+    const [a0, a1] = u(k0 * en);
+    const [b0, b1] = u(k1 * en);
+    const dinlenik: V3[] = [
+      [a0, a1, t - sarkma * k0],
+      [b0, b1, t - sarkma * k1],
+      [b0, b1, t - sarkma * k1 - boy],
+      [a0, a1, t - sarkma * k0 - boy],
+    ];
+    const [y0] = levha(dinlenik, renk);
+    bez.push(bezAni({ ...y0!, yumusak: true, bez: { dinlenik, u: [k0, k1, k1, k0] } }, BAYRAK_FAZ));
+  }
   return birlestir(direk, bez, koni(x, y, z + h, 0.22, 0.4, P.altin, 5));
 }
 

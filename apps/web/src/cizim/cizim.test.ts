@@ -18,7 +18,9 @@ import { rastgele } from './rastgele';
 import { gecis } from './arazi';
 import { insan, type Insan } from './figur';
 import { P, isikla } from './renk';
-import { duman } from './parca';
+import { BAYRAK_KARE, bayrakGruplari, bayrakKareleri } from './bayrakAni';
+import { KOSE } from './glAg';
+import { BAYRAK_FAZ, bayrak, bezAni, duman } from './parca';
 import {
   ciz,
   dilim,
@@ -147,6 +149,60 @@ describe('3B motor', () => {
     expect(yakin(dondur(d, 'z', Math.PI / 2)[0]!.duman, [-3, 2, 5])).toEqual([0, 0, 0]);
     // Duman olmayan yüz duman almıyor.
     expect(tasi(kutu(0, 0, 0, 1, 1, 1, '#808080'), [1, 0, 0])[0]!.duman).toBeUndefined();
+  });
+
+  it('bayrak kumaşı: durağan hâl dalganın bir anı; direk kenarı yerinde, uç dalgalanıyor', () => {
+    const bez = bayrak(0, 0, 0, 6, '#aa0000').filter((y) => y.bez);
+    expect(bez.length).toBeGreaterThanOrEqual(4);
+    const yakin = (a: V3[], b: V3[]) =>
+      a.every((q, i) => q.every((v, j) => Math.abs(v - b[i]![j]!) < 1e-9));
+    for (const y of bez) expect(yakin(bezAni(y, BAYRAK_FAZ).p, y.p)).toBe(true);
+    const ilk = bez.find((y) => y.bez!.u.includes(0))!;
+    const son = bez.find((y) => y.bez!.u.includes(1))!;
+    const direk = ilk.bez!.u.indexOf(0);
+    const uc = son.bez!.u.indexOf(1);
+    expect(bezAni(ilk, 0.3).p[direk]).toEqual(bezAni(ilk, 2.5).p[direk]);
+    expect(Math.abs(bezAni(son, 0.3).p[uc]![0] - bezAni(son, 2.5).p[uc]![0])).toBeGreaterThan(0.1);
+    // Normal birim ve kumaşa dik (dikey kumaşta yatay).
+    for (const n of bezAni(son, 1).vn!) {
+      expect(Math.hypot(...n)).toBeCloseTo(1);
+      expect(Math.abs(n[2])).toBeLessThan(1e-9);
+    }
+  });
+
+  it('bayrak dönüşümlerle taşınıyor; aynalamada dalga da aynalanıyor', () => {
+    const b = bayrak(1, 2, 0, 6, '#aa0000').filter((y) => y.bez);
+    const t = tasi(b, [3, 0, 1]);
+    expect(t[0]!.bez!.dinlenik[0]).toEqual(
+      b[0]!.bez!.dinlenik[0]!.map((v, i) => v + [3, 0, 1][i]!),
+    );
+    const ayna = olcekle(b, [-1, 1, 1]);
+    for (let i = 0; i < b.length; i++) {
+      const once = bezAni(b[i]!, 0.8)
+        .p.map((q) => [-q[0], q[1], q[2]] as V3)
+        .reverse();
+      const sonra = bezAni(ayna[i]!, 0.8).p;
+      once.forEach((q, j) => q.forEach((v, k) => expect(sonra[j]![k]).toBeCloseTo(v)));
+    }
+    const d = dondur(b, 'z', Math.PI / 2);
+    for (let i = 0; i < b.length; i++) {
+      const once = bezAni(b[i]!, 0.8).p.map(([x, y, z]) => [-y, x, z] as V3);
+      bezAni(d[i]!, 0.8).p.forEach((q, j) =>
+        q.forEach((v, k) => expect(v).toBeCloseTo(once[j]![k]!)),
+      );
+    }
+  });
+
+  it('bayrak kareleri: bayrak bayrak ardışık, her karede aynı köşe sayısı, kumaş kıpırdıyor', () => {
+    const m = [...bayrak(0, 0, 0, 6, '#aa0000'), ...bayrak(20, 0, 0, 6, '#0000aa', 'x')];
+    expect(bayrakGruplari(m)).toHaveLength(2);
+    const k = bayrakKareleri(m)!;
+    expect(k.kareler).toHaveLength(BAYRAK_KARE);
+    expect(k.gruplar).toHaveLength(2);
+    const toplam = k.gruplar.reduce((a, b) => a + b, 0) * KOSE;
+    for (const t of k.kareler) expect(t.length).toBe(toplam);
+    expect(k.kareler[0]).not.toEqual(k.kareler[BAYRAK_KARE / 2]);
+    expect(bayrakKareleri(kutu(0, 0, 0, 1, 1, 1, '#808080'))).toBeUndefined();
   });
 
   it('tohumlu rastgele: aynı anahtar aynı dizi', () => {

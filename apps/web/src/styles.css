@@ -524,6 +524,25 @@ svg g[role='button']:focus-visible > path:first-of-type {
   }
 }
 
+/* Bayrak: atlastaki kareler adım adım (GPU'da çizilmiş dalga, sayfada yalnız kayma). */
+.hareket-bayrak {
+  position: absolute;
+  overflow: hidden;
+}
+.hareket-bayrak > span {
+  position: absolute;
+  left: 0;
+  background-size: 100% 100%;
+  animation-name: bayrak-dalga;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+@keyframes bayrak-dalga {
+  to {
+    transform: translate3d(var(--kay), 0, 0);
+  }
+}
+
 /* Duman: baca ağzında küçük, yükseldikçe büyüyüp rüzgârla kayarak sönüyor. */
 .hareket-duman {
   position: absolute;

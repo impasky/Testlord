@@ -116,9 +116,14 @@ interface Parca {
 
 /**
  * `dumansiz`: duman yüzleri (`Yuz.duman`) atlanıyor — hareketli sahnede
- * yerlerine canlı duman konuyor.
+ * yerlerine canlı duman konuyor. `bayraksiz`: bayrak kumaşı (`Yuz.bez`)
+ * çizilmiyor ama gölgesini düşürüyor — kumaş ayrı karelerde dalgalanıyor.
  */
-export function agYap(model: Model, kamera?: Kamera, secenek: { dumansiz?: boolean } = {}): Ag {
+export function agYap(
+  model: Model,
+  kamera?: Kamera,
+  secenek: { dumansiz?: boolean; bayraksiz?: boolean } = {},
+): Ag {
   const { c } = kameraTabani(kamera);
   // Bir modelde renkler çok tekrar ediyor (arazi, duvar): bir kez çözülsün.
   const renkler = new Map<string, [number, number, number]>();
@@ -146,6 +151,7 @@ export function agYap(model: Model, kamera?: Kamera, secenek: { dumansiz?: boole
     const k = y.katman ?? 0;
     // Gölge: nesnelerin dolu yüzleri, bakana dönük olsun olmasın.
     if (k >= 0 && alfa >= 1) golgeler.push(y);
+    if (secenek.bayraksiz && y.bez) continue;
     const yn = normal(y.p);
     const cevir = nokta(yn, c) <= 1e-6;
     // Arkası dönük ince levha çevriliyor; değilse atılıyor.

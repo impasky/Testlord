@@ -12,13 +12,13 @@
  * aynı. GPU yoksa ya da düşerse çokgenler kalıyor.
  *
  * Geniş sahneler (`hareket`) canlı: suyun üstünde kayan parıltı, titreyen
- * ateş ve pencere ışığı, bacadan yükselen duman. GPU resmi bir kez
+ * ateş ve pencere ışığı, bacadan yükselen duman, dalgalanan bayrak. GPU resmi bir kez
  * çiziliyor; hareket onun üstünde CSS katmanları (yalnız dönüşüm ve
  * saydamlık: tarayıcı bunları yeniden boyamadan oynatıyor). Hareket
  * kısıtlıysa (`prefers-reduced-motion`) hiçbiri yok, duman durağan çiziliyor.
  */
-import { memo, useEffect, useRef, useState, type CSSProperties } from 'react';
-import { EN_BUYUK, glCiz, glKatmanlari, glVarMi, type Katmanlar } from './gl';
+import { memo, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
+import { EN_BUYUK, atlasDuzeni, glCiz, glKatmanlari, glVarMi, type Katmanlar } from './gl';
 import { ciz, yansitici, type Cizilmis, type Kamera, type Model } from './uc';
 
 const ONBELLEK = new Map<string, Cizilmis>();
@@ -360,7 +360,9 @@ function HareketKatmani({
 }) {
   const ref = useRef<HTMLSpanElement>(null);
   const [olcu, setOlcu] = useState<[number, number] | null>(null);
-  useEffect(() => {
+  // Boyamadan önce ölç: bayrak kumaşı ana resimde yok, bir kare bile
+  // bayraksız direk görünmesin.
+  useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
     const olc = () => {
@@ -402,6 +404,7 @@ function HareketKatmani({
               style={m ? maske(m, `${ISIK_KARO}px`, 'repeat') : undefined}
             />
           ))}
+        {katman?.bayrak && <Bayraklar b={katman.bayrak} o={(vw * s) / katman.bayrak.en} />}
         {dumanlar.map((d, i) =>
           Array.from({ length: DUMAN_ADET }, (_, j) => (
             <span
@@ -432,6 +435,47 @@ function HareketKatmani({
     <span ref={ref} aria-hidden className="hareket" style={{ gridArea: '1 / 1' }}>
       {icerik}
     </span>
+  );
+}
+
+/** Bir dalga turunun süresi (sn). */
+const BAYRAK_SURE = 1.2;
+
+/**
+ * Dalgalanan bayraklar: her bayrak kendi kutusunda, atlastaki satırının
+ * kareleri adım adım kayıyor (yalnız dönüşüm). `o`: çıktı pikseli başına
+ * CSS pikseli.
+ */
+function Bayraklar({ b, o }: { b: NonNullable<Katmanlar['bayrak']>; o: number }) {
+  const duzen = atlasDuzeni(b.kutular, b.kare);
+  return (
+    <>
+      {b.kutular.map(([x, y, w, h], i) =>
+        w > 0 && h > 0 ? (
+          <span
+            key={i}
+            className="hareket-bayrak"
+            style={{ left: x * o, top: y * o, width: w * o, height: h * o }}
+          >
+            <span
+              style={
+                {
+                  top: -duzen.satir[i]! * o,
+                  width: duzen.en * o,
+                  height: duzen.boy * o,
+                  backgroundImage: `url(${b.url})`,
+                  '--kay': `${(-b.kare * w * o).toFixed(2)}px`,
+                  animationDuration: `${BAYRAK_SURE}s`,
+                  animationTimingFunction: `steps(${b.kare})`,
+                  // Her bayrak ayrı evrede: rüzgâr hepsini aynı anda savurmasın.
+                  animationDelay: `${(-((i * 0.29) % 1) * BAYRAK_SURE).toFixed(2)}s`,
+                } as CSSProperties
+              }
+            />
+          </span>
+        ) : null,
+      )}
+    </>
   );
 }
 
