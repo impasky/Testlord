@@ -38,7 +38,11 @@ Küçük bir 3B motor. Yöntem "low-poly" oyunlarınki:
   ışığı olan yüzler (`isima`: ateş, pencere, büyü) gölgeden etkilenmez.
 - **Sıralama:** önce `katman`, sonra derinlik (ressam algoritması). Arka
   yüzler atılıyor; bayrak, yaprak gibi ince şeyler `ciftYuz` ile iki
-  taraftan çiziliyor.
+  taraftan çiziliyor. Bir yüzeye oturan küçük parça (göz, kaş, burun, saç
+  kabuğu) altındaki iri yüzle aynı derinlikte kalıp arkasına düşüyordu;
+  `oneAl(model, d)` (`Yuz.onde`) onu sırada `d` birim öne alıyor. Yalnız
+  SVG okuyor (GPU derinlik tamponuyla çiziyor); küçük tutulmalı, öndeki
+  başka bir nesneyi aşmamalı.
 - **Katmanlar:** arazi `-2`, yere yatık yol ve döşeme `-1.x`, nesneler
   `0`. Dev bir zemin yüzünün ortası sahnenin ortasında kaldığı için
   katman olmadan arkadaki duvarlar onun altında kalıyordu.
@@ -59,6 +63,21 @@ Küçük bir 3B motor. Yöntem "low-poly" oyunlarınki:
 
 `renk.ts` ortak paleti (`P`) ve `isikla` / `karistir` yardımcılarını
 taşıyor. Renkler arayüzle aynı sıcaklıkta: koyu zemin, altın vurgu.
+
+**İnsan figürü (`figur.ts`).** Baş çeneden şakağa iki kesik koni ve bir
+kapak; 12 dilim, bir dilim tam öne bakıyor (düz alın).
+
+- Yüz (`yuz`): göz akı ve gözbebeği, kaş (erkekte iç ucu aşağı, kadında
+  dış ucu), üçgen burun, ağız, kulak. Her öğe önde kurulup başın ekseni
+  etrafında çevriliyor ve dilimin düz yüzüne oturuyor. Kapalı miğfer ve
+  maske yüzü örtüyor; sakal ağzı, kukuleta kulağı. Eski yüz iki siyah
+  kare ve kutu burundu; portrede maske gibi duruyordu.
+- Saç başın dışında bir kabuk: alın açık, erkekte şakaktan aşağısı kesik
+  (kulak görünüyor), kadında iki yandan iniyor. Eski saç küresi başla aynı
+  boydaydı, başın içinde kalıyordu; figürler kel görünüyordu.
+- El: top değil yumruk. Ön kolun doğrultusunda kare avuç, öne çıkan
+  başparmak, giyinik kolda bilekte koyu yen ağzı. Plaka zırhlının eli
+  parlak demir eldiven.
 
 ## GPU çizimi (`gl*.ts`)
 
@@ -305,10 +324,12 @@ tools/gorsel-denetim.mjs` koş.
 ## Testler ve denetimler
 
 - `apps/web/src/cizim/cizim.test.ts`: motorun kendisi (görünen yüzler,
-  ışık, yansıtma); her ailenin her üyesi boş olmayan, sonlu koordinatlı,
-  çerçevesine sığan bir çizim veriyor; çizimler belirlenimci; oyunun
-  verisindeki birlikler, diyar düşmanları ve seçilebilen hazır portreler
-  çiziliyor; bilinmeyen ad `null` dönüyor.
+  ışık, yansıtma, öne almanın yalnız sırayı değiştirdiği); figürün yüzü
+  (göz, ağız; kapalı miğferde, maskede, sakalda gizlenmesi), plaka
+  zırhlının eldiveni, saç kabuğunun öne alınması; her ailenin her üyesi
+  boş olmayan, sonlu koordinatlı, çerçevesine sığan bir çizim veriyor;
+  çizimler belirlenimci; oyunun verisindeki birlikler, diyar düşmanları ve
+  seçilebilen hazır portreler çiziliyor; bilinmeyen ad `null` dönüyor.
 - `apps/web/src/cizim/gl.test.ts`: GPU ağı (görünen yüzler, gölgeye
   girenler, ince levha çevirmesi, katman sırası, köşe normali/rengi/suyu
   ve aynalamada dönmeleri, parlaklığın köşeye yazılıp dönüşümden sağ

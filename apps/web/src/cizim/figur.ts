@@ -21,6 +21,7 @@ import {
   kutu,
   levha,
   olcekle,
+  oneAl,
   parlat,
   prizma,
   silindir,
@@ -109,8 +110,21 @@ const merkezle = (a: V3, b: V3, t: number): V3 => [
   a[2] + (b[2] - a[2]) * t,
 ];
 
+const birimV = (a: V3): V3 => {
+  const l = Math.hypot(a[0], a[1], a[2]) || 1;
+  return [a[0] / l, a[1] / l, a[2] / l];
+};
+
+/** El: çıplak (ten) ya da eldivenli (plaka zırhlının demir eldiveni). */
+interface ElAyari {
+  renk: string;
+  parlak?: number;
+  /** Yen ağzı: giyinik kolun bileğindeki koyu kenar; çıplak kolda yok. */
+  yen?: string;
+}
+
 /** Eli verilen noktaya uzatan kol: üst kol + ön kol + el. */
-function kol(omuz: V3, el: V3, renk: string, ten: string, disa: number): Model {
+function kol(omuz: V3, el: V3, renk: string, elAyari: ElAyari, disa: number): Model {
   const dirsek = merkezle(omuz, el, 0.5);
   dirsek[0] += disa * 0.25;
   dirsek[1] -= 0.15;
@@ -118,8 +132,138 @@ function kol(omuz: V3, el: V3, renk: string, ten: string, disa: number): Model {
   return birlestir(
     uzuv(omuz, dirsek, 0.34, 0.29, renk, 6),
     uzuv(dirsek, el, 0.29, 0.24, renk, 6),
-    kure(el[0], el[1], el[2], 0.27, ten, 5, 3),
+    yumruk(dirsek, el, elAyari),
   );
+}
+
+/**
+ * El: top değil yumruk. Ön kolun doğrultusunda kare bir avuç, öne (+y)
+ * doğru çıkan başparmak, bilekte yen ağzı. Top el her boyda yumak gibi
+ * okunuyordu; kare avuç ve başparmak küçük figürde de "el" diyor.
+ */
+function yumruk(dirsek: V3, el: V3, o: ElAyari): Model {
+  const d = birimV([el[0] - dirsek[0], el[1] - dirsek[1], el[2] - dirsek[2]]);
+  // Başparmak yönü: ileri (+y), ön kolun doğrultusuna dik bileşeni.
+  let t: V3 = [-d[0] * d[1], 1 - d[1] * d[1], -d[2] * d[1]];
+  if (Math.hypot(t[0], t[1], t[2]) < 0.2) t = [1, 0, 0];
+  t = birimV(t);
+  const at = (k: number, j = 0): V3 => [
+    el[0] + d[0] * k + t[0] * j,
+    el[1] + d[1] * k + t[1] * j,
+    el[2] + d[2] * k + t[2] * j,
+  ];
+  const m: Model = o.yen ? uzuv(at(-0.16), at(-0.03), 0.3, 0.3, o.yen, 6) : [];
+  const avuc = birlestir(
+    cubuk(at(-0.06), at(0.28), 0.34, o.renk),
+    uzuv(at(0.0, 0.15), at(0.17, 0.22), 0.085, 0.07, o.renk, 5),
+  );
+  m.push(...(o.parlak ? parlat(avuc, o.parlak) : avuc));
+  return m;
+}
+
+/** Yüzleri `merkez`den dışa baktırır (elle kurulan küçük parçalar için). */
+function disaDonuk(m: Model, merkez: V3): Model {
+  for (const y of m) {
+    const [a, b, c] = y.p as [V3, V3, V3];
+    const n: V3 = [
+      (b[1] - a[1]) * (c[2] - a[2]) - (b[2] - a[2]) * (c[1] - a[1]),
+      (b[2] - a[2]) * (c[0] - a[0]) - (b[0] - a[0]) * (c[2] - a[2]),
+      (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]),
+    ];
+    const g: V3 = [
+      (a[0] + b[0] + c[0]) / 3 - merkez[0],
+      (a[1] + b[1] + c[1]) / 3 - merkez[1],
+      (a[2] + b[2] + c[2]) / 3 - merkez[2],
+    ];
+    if (n[0] * g[0] + n[1] * g[1] + n[2] * g[2] < 0) y.p.reverse();
+  }
+  return m;
+}
+
+/**
+ * Yüz: göz akı ve bebeği, kaş, burun, ağız, kulak. Başın ön yüzü düz
+ * (12 dilim, bir dilim tam öne bakıyor); her öğe önde, +y'ye bakarak
+ * kuruluyor, sonra başın ekseni etrafında çevrilip yüzeye oturuyor. Eski
+ * yüz iki siyah kare ve kutu burundu; portrede "maske" gibi duruyordu.
+ */
+function yuz(f: Insan, bz: number): Model {
+  const m: Model = [];
+  const tip = f.baslik?.tip;
+  // Kapalı miğfer ve maske yüzü örtüyor.
+  if (tip === 'kapali' || tip === 'maske') return m;
+  // Başın yarıçapı (bkz. insan: çeneden şakağa iki kesik koni).
+  const r = (z: number) =>
+    z < bz - 0.25
+      ? 0.5 + ((z - (bz - 0.85)) / 0.6) * 0.24
+      : 0.74 + ((z - (bz - 0.25)) / 0.7) * 0.06;
+  const DILIM_ACI = Math.PI / 6;
+  /** Öğeyi başın `aci` yönündeki yüzeye, `z` yüksekliğine oturt. */
+  const oturt = (parca: Model, aci: number, z: number): Model => {
+    // Dilimin düz yüzüne uzaklık: dilimin ortasından sapma kadar uzar.
+    const sapma = aci - Math.round(aci / DILIM_ACI) * DILIM_ACI;
+    const R = (r(z) * Math.cos(DILIM_ACI / 2)) / Math.cos(sapma);
+    // SVG'nin ressam sırasında başın önüne düşsün (bkz. `Yuz.onde`).
+    return oneAl(dondur(tasi(parca, [0, 0.06 + R, z]), 'z', aci, [0, 0.06, 0]), 0.45);
+  };
+  const kas = f.sac ?? f.sakal ?? isikla(f.ten, 0.55);
+  const gz = bz + 0.03;
+  for (const s of [-1, 1]) {
+    // s = 1 sağ göz (dünya +x): başın ekseni etrafında eksi yöne çevrilir.
+    const aci = -s * 0.28;
+    m.push(
+      ...oturt(
+        birlestir(
+          kutu(-0.085, -0.02, -0.065, 0.17, 0.04, 0.13, P.gozAki),
+          kutu(-0.045, 0, -0.055, 0.09, 0.035, 0.11, P.gozBebegi),
+        ),
+        aci,
+        gz,
+      ),
+    );
+    // Kaş: erkekte iç ucu aşağı (kararlı), kadında dış ucu (yumuşak).
+    const egim = (f.kadin ? 0.12 : -0.22) * s;
+    m.push(
+      ...oturt(
+        dondur(kutu(-0.12, -0.02, -0.025, 0.24, 0.05, 0.05, kas), 'y', egim),
+        aci,
+        gz + 0.15,
+      ),
+    );
+    // Kulak: saç ya da başlık örtmüyorsa görünüyor (uzun saç örtüyor).
+    if (tip !== 'kukuleta')
+      m.push(
+        ...oturt(
+          kutu(-0.1, -0.03, -0.16, 0.2, 0.1, 0.32, isikla(f.ten, 0.93)),
+          (s * Math.PI) / 2,
+          bz - 0.08,
+        ),
+      );
+  }
+  // Burun: kaş hizasından inen üçgen sırt; tabanı yüze gömük.
+  const ust: V3 = [0, -0.03, 0.02];
+  const uc: V3 = [0, 0.17, -0.3];
+  const sol: V3 = [-0.1, -0.06, -0.34];
+  const sag: V3 = [0.1, -0.06, -0.34];
+  const renk = isikla(f.ten, 0.97);
+  const burun = disaDonuk(
+    [
+      { p: [ust, sol, uc], renk },
+      { p: [ust, uc, sag], renk },
+      { p: [sol, sag, uc], renk },
+    ],
+    [0, -0.1, -0.2],
+  );
+  m.push(...oturt(burun, 0, bz - 0.02));
+  // Ağız: sakal örtüyor.
+  if (!f.sakal)
+    m.push(
+      ...oturt(
+        kutu(-0.12, -0.03, -0.022, 0.24, 0.06, 0.045, f.kadin ? '#b4544a' : P.dudak),
+        0,
+        bz - 0.53,
+      ),
+    );
+  return m;
 }
 
 /* ── Eldeki eşya ───────────────────────────────────────────────────── */
@@ -572,11 +716,7 @@ export function insan(f: Insan): Model {
   m.push(...uzuv([0, 0.06, bz - 0.85], [0, 0.06, bz - 0.25], 0.5, 0.74, f.ten, 8));
   m.push(...uzuv([0, 0.06, bz - 0.25], [0, 0.06, bz + 0.45], 0.74, 0.8, f.ten, 8));
   m.push(...koni(0, 0.06, bz + 0.45, 0.8, 0.42, f.ten, 8, 0.4));
-  m.push(...kutu(-0.09, 0.78, bz - 0.35, 0.18, 0.2, 0.36, isikla(f.ten, 0.92)));
-  // Gözler ve kaş
-  if (f.baslik?.tip !== 'kapali' && f.baslik?.tip !== 'maske')
-    for (const s of [-1, 1])
-      m.push(...kutu(s * 0.3 - 0.08, 0.8, bz + 0.05, 0.16, 0.06, 0.16, KARA));
+  m.push(...yuz(f, bz));
   if (f.sakal) {
     m.push(
       ...olcekle(
@@ -587,8 +727,23 @@ export function insan(f: Insan): Model {
     );
   }
   if (f.sac && !(f.baslik && f.baslik.tip !== 'bant')) {
+    // Saç başın DIŞINDA bir kabuk: eski küre başla aynı boydaydı, başın
+    // içinde kalıyor, figür kel görünüyor, tepede bir leke kalıyordu. Alın
+    // açık (saç çizgisi kaşın üstünde); erkekte şakaktan aşağısı kesik,
+    // kulak görünüyor; kadında saç iki yandan iniyor.
+    const kadin = !!f.kadin;
     m.push(
-      ...suz(kure(0, -0.02, bz + 0.05, 0.9, f.sac, 7, 4), ([, y, z]) => y < 0.2 || z > bz + 0.55),
+      ...oneAl(
+        suz(
+          kure(0, -0.02, bz + 0.1, 0.94, f.sac, 8, 5),
+          ([, y, z]) =>
+            z > bz + 0.42 ||
+            (y < 0.25 && z > bz + 0.14) ||
+            (y < -0.3 && z > bz - 0.6) ||
+            (kadin && y < 0.3),
+        ),
+        0.35,
+      ),
     );
     // Uzun saç: enseden omuz aşağısına, arkada tek örgü gibi
     if (f.kadin) m.push(...uzuv([0, -0.45, bz + 0.1], [0, -0.85, 4.9], 0.72, 0.42, f.sac, 7));
@@ -618,8 +773,15 @@ export function insan(f: Insan): Model {
     elSag = [-0.1, 1.0, 5.85];
   }
   if (f.poz === 'kaldir') elSag = [omuzX + 0.4, 0.5, 7.4];
-  m.push(...kol(omuzSag, elSag, kolRenk, f.ten, 1));
-  m.push(...kol(omuzSol, elSol, kolRenk, f.ten, -1));
+  // Plaka zırhlının eli demir eldiven; öbürleri çıplak.
+  const eldiven = f.zirh?.tip === 'plaka' ? f.zirh.renk : undefined;
+  const elAyari: ElAyari = {
+    renk: eldiven ? isikla(eldiven, 0.8) : f.ten,
+    parlak: eldiven ? 0.45 : undefined,
+    yen: kolRenk === f.ten ? undefined : isikla(kolRenk, 0.82),
+  };
+  m.push(...kol(omuzSag, elSag, kolRenk, elAyari, 1));
+  m.push(...kol(omuzSol, elSol, kolRenk, elAyari, -1));
   if (f.sag) m.push(...esyaModeli(f.sag, elSag, 1));
   if (f.sol) m.push(...esyaModeli(f.sol, elSol, -1));
   return m;

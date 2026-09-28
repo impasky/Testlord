@@ -90,6 +90,9 @@ export const P = {
   sac3: '#8a5a2b',
   sac4: '#c9b08a',
   deri: '#6b4526',
+  gozAki: '#efe6d6',
+  gozBebegi: '#2a1c12',
+  dudak: '#9c4f42',
   // Işık ve sihir
   ates: '#f28c28',
   kor: '#ffcf5a',

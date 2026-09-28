@@ -16,7 +16,9 @@ import {
 import { BOLGE_SAHNELERI, bolgeAdiCoz, bolgeModeli } from './bolgeler';
 import { rastgele } from './rastgele';
 import { gecis } from './arazi';
-import { ciz, dilim, kutu, levha, sabitKutu, silindir, yansitici, zemineGeri } from './uc';
+import { insan, type Insan } from './figur';
+import { P, isikla } from './renk';
+import { ciz, dilim, kutu, levha, oneAl, sabitKutu, silindir, yansitici, zemineGeri } from './uc';
 import { YERLESIM_KADEMELERI, yerlesimModeli, yerlesimNoktasi, yerlesimYuzdesi } from './yerlesim';
 
 const sayilar = (n: string) => n.split(/[ ,]/).map(Number);
@@ -98,6 +100,26 @@ describe('3B motor', () => {
       expect(py).toBeGreaterThanOrEqual(y);
       expect(py).toBeLessThanOrEqual(y + h);
     }
+  });
+
+  it('öne alma (onde) yalnız ressam sırasını değiştiriyor: aynı derinlikte sonra çiziliyor', () => {
+    const kare = (renk: string) =>
+      levha(
+        [
+          [0, 0, 0],
+          [1, 0, 0],
+          [1, 1, 0],
+          [0, 1, 0],
+        ],
+        renk,
+      );
+    const [alt, ust] = [kare('#ff0000'), kare('#00ff00')];
+    // Eklenme sırası tersine olsa da öne alınan sonra (üstte) çiziliyor.
+    const c = ciz([...oneAl(ust, 0.3), ...alt]);
+    expect(c.cokgenler).toHaveLength(2);
+    // Işıklanmış renk: kırmızı kanal ilkinde dolu, ikincide boş.
+    expect(parseInt(c.cokgenler[0]!.renk.slice(1, 3), 16)).toBeGreaterThan(0);
+    expect(parseInt(c.cokgenler[1]!.renk.slice(1, 3), 16)).toBe(0);
   });
 
   it('tohumlu rastgele: aynı anahtar aynı dizi', () => {
@@ -208,6 +230,49 @@ describe('generaller, lord, portreler', () => {
   });
   it('general tam boy = portre (aynı kişi)', () => {
     for (const g of GENERAL_ADLARI) expect(portreModeli(g)).toEqual(generalModeli(g));
+  });
+});
+
+describe('figür: yüz ve el', () => {
+  const temel: Insan = {
+    ten: '#c08060',
+    govde: '#6a4a30',
+    bacak: '#40302a',
+    cizme: '#2a221c',
+  };
+  const var_ = (m: ReturnType<typeof insan>, renk: string) => m.some((y) => y.renk === renk);
+
+  it('açık yüzde göz akı, gözbebeği ve ağız var', () => {
+    const m = insan(temel);
+    expect(var_(m, P.gozAki)).toBe(true);
+    expect(var_(m, P.gozBebegi)).toBe(true);
+    expect(var_(m, P.dudak)).toBe(true);
+  });
+
+  it('kapalı miğfer ve maske yüzü örtüyor; sakal ağzı örtüyor', () => {
+    for (const tip of ['kapali', 'maske'] as const) {
+      const m = insan({ ...temel, baslik: { tip, renk: '#8a8f94' } });
+      expect(var_(m, P.gozAki)).toBe(false);
+    }
+    const sakalli = insan({ ...temel, sakal: '#3a2a1a' });
+    expect(var_(sakalli, P.gozAki)).toBe(true);
+    expect(var_(sakalli, P.dudak)).toBe(false);
+  });
+
+  it('plaka zırhlının eli parlak demir eldiven; öbürü çıplak', () => {
+    const zirh = '#8a8f94';
+    const sovalye = insan({ ...temel, zirh: { tip: 'plaka', renk: zirh } });
+    const eldiven = isikla(zirh, 0.8);
+    expect(sovalye.some((y) => y.renk === eldiven && (y.parlak ?? 0) > 0)).toBe(true);
+    const koylu = insan(temel);
+    expect(var_(koylu, eldiven)).toBe(false);
+  });
+
+  it('saç kabuğu SVG sırasında başın önüne alınıyor', () => {
+    const m = insan({ ...temel, sac: '#5a3a1e' });
+    const sac = m.filter((y) => y.renk === '#5a3a1e');
+    expect(sac.length).toBeGreaterThan(0);
+    expect(sac.every((y) => (y.onde ?? 0) > 0)).toBe(true);
   });
 });
 

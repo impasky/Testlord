@@ -677,7 +677,7 @@
     "tr": "{0} asker seferde",
     "en": "{0} soldier on campaign|{0} soldiers on campaign",
     "nerede": [
-      "apps/web/src/components/OrduSahnesi.tsx:300"
+      "apps/web/src/components/OrduSahnesi.tsx:305"
     ]
   },
   "t2eadcc70": {
@@ -1560,7 +1560,7 @@
     "tr": "{0}/{1} komuta",
     "en": "{0}/{1} command",
     "nerede": [
-      "apps/web/src/components/OrduSahnesi.tsx:317",
+      "apps/web/src/components/OrduSahnesi.tsx:322",
       "apps/web/src/screens/Kisla.tsx:455"
     ]
   },

@@ -86,6 +86,14 @@ export interface Yuz {
    */
   doku?: Doku | null;
   /**
+   * Ressam sırasında bakana doğru kaydırma (dünya birimi; yalnız SVG):
+   * başın yüzeyine oturan göz, kaş, burun ve saç kabuğu, altındaki iri
+   * yüzle aynı derinlikte kalıp arkasına düşüyordu. GPU derinlik
+   * tamponuyla çiziyor, bunu okumuyor. Küçük tutulmalı: önündeki başka bir
+   * nesneyi (öndeki asker) aşmamalı.
+   */
+  onde?: number;
+  /**
    * Çizim katmanı: küçük önce. Ressam algoritması yüzün ORTASINA bakıyor;
    * dev bir zemin yüzünün ortası sahnenin ortasında kaldığı için arkadaki
    * duvarlar onun altında kalıyordu. Zemin -2, yere yatık yol/döşeme -1,
@@ -195,6 +203,12 @@ export function parlat(m: Model, p = 0.7): Model {
 /** Modelin bütün yüzlerine malzeme verir (bkz. `Yuz.doku`; `null` kapatır). */
 export function dokula(m: Model, doku: Doku | null): Model {
   for (const y of m) y.doku = doku;
+  return m;
+}
+
+/** Modelin bütün yüzlerini ressam sırasında öne alır (bkz. `Yuz.onde`). */
+export function oneAl(m: Model, d: number): Model {
+  for (const y of m) y.onde = d;
   return m;
 }
 
@@ -701,7 +715,7 @@ export function ciz(model: Model, kamera: Kamera = IZOMETRIK, pay = 1): Cizilmis
     const renk = isikla(y.renk, k);
     liste.push({
       k: y.katman ?? 0,
-      d: nokta(merkez(y.p), c),
+      d: nokta(merkez(y.p), c) + (y.onde ?? 0),
       n: noktalar.map(([px, py]) => px.toFixed(2) + ',' + py.toFixed(2)).join(' '),
       renk,
       kenar: y.kenarsiz ? undefined : isikla(renk, y.yumusak ? KENAR_YUMUSAK : KENAR),
