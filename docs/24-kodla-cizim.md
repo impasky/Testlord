@@ -286,6 +286,12 @@ kaydırıyor.
   (`parca.bezAni`) direkten uca büyüyüp uca doğru yürüyor, direk kenarı
   yerinde; köşe normali dalganın eğiminden, kumaş kıvrımlı gölgeleniyor.
   Durağan bayrak (SVG, hareketsiz sahne) dalganın ilk anı.
+- Sancak (duvara asılı): aynı hat, `Yuz.bez.yon` ile. Kumaş dört kat ve
+  ucu; askı çubuğu yerinde, üst kenar bağlı, uç duvar boyunca sarkaç gibi
+  salınıyor (kumaş boyunun ~%9'u), üstüne hafif bir kıvrım. Duvara dik ve
+  düşey yönde kıpırdamıyor: duvarın içine girmiyor. `yon` bir yer
+  değiştirme: ölçek ve dönme onu da taşıyor. Tur 3,2 sn (bayrakta 1,2);
+  süre bayrak başına atlastan geliyor.
 
 Kutu bir ızgara sarmalayıcısına geçiyor: resim ve katmanlar aynı hücrede
 üst üste, çağıranın sınıfları sarmalayıcıda. Katman dikdörtgeni ölçülüyor
@@ -314,7 +320,7 @@ her köşe yüzlerce kenarı değil, yalnız kendi şeridini tarıyor.
 | `renk.ts`                     | Palet ve renk yardımcıları                                                                                                              |
 | `rastgele.ts`                 | Tohumlu rastgele (FNV-1a + mulberry32)                                                                                                  |
 | `parca.ts`                    | Ortak parçalar: ağaç, çam, bayrak (dalgası `bezAni`), çadır, fıçı, duman, uzuv, teker, kubbe                                            |
-| `bayrakAni.ts`                | Dalgalanan bayrağın kareleri, GPU için (bayrak bayrak ardışık)                                                                          |
+| `bayrakAni.ts`                | Dalgalanan bayrağın ve salınan sancağın kareleri, GPU için (bayrak bayrak ardışık)                                                      |
 | `arazi.ts`                    | Yükseklik alanından arazi, su, kıyı, nehir yatağı, yol ve parsel izleri, düzleme                                                        |
 | `binalar.ts`                  | Şehir binaları, her biri üç aşama; arsa, görev panosu, haberci kulesi, onur meydanı                                                     |
 | `yerlesim.ts`                 | Şehir sayfasının altındaki altı yerleşim kademesi (kamp → metropol)                                                                     |

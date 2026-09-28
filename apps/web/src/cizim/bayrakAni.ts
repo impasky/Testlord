@@ -1,5 +1,6 @@
 /**
- * Dalgalanan bayrak (docs/24 "Hareket"): kumaşın bir tur dalgası, GPU için.
+ * Dalgalanan bayrak ve salınan sancak (docs/24 "Hareket"): kumaşın bir
+ * turu, GPU için.
  *
  * Bayrak kumaşı dinlenik hâlini taşıyor (`Yuz.bez`); her kare aynı
  * kumaşın dalganın bir sonraki evresindeki hâli (`parca.bezAni`). İlk kare
@@ -8,11 +9,17 @@
  */
 import { KOSE, agYap } from './glAg';
 import type { BayrakKareleri } from './glCizici';
-import { BAYRAK_FAZ, bezAni } from './parca';
+import { bezAni, bezFazi } from './parca';
 import { kameraTabani, type Kamera, type Model, type Yuz } from './uc';
 
 /** Bir dalga turundaki kare sayısı. */
 export const BAYRAK_KARE = 12;
+/**
+ * Bir turun süresi (sn): direkteki bayrak rüzgârda çırpınıyor, askıdaki
+ * sancak ağır ağır salınıyor.
+ */
+export const BAYRAK_SURE = 1.2;
+export const SANCAK_SURE = 3.2;
 
 /** Kumaş yüzlerini bayrak bayrak toplar: dinlenik köşesini paylaşan yüzler aynı bayrak. */
 export function bayrakGruplari(model: Model): Yuz[][] {
@@ -46,11 +53,13 @@ export function bayrakKareleri(model: Model, kamera?: Kamera): BayrakKareleri | 
   const kareler: Float32Array[] = [];
   let sayilar: number[] = [];
   for (let f = 0; f < BAYRAK_KARE; f++) {
-    const faz = BAYRAK_FAZ + (2 * Math.PI * f) / BAYRAK_KARE;
+    const adim = (2 * Math.PI * f) / BAYRAK_KARE;
     const parcalar = gruplar.map((g) => {
       // Uzaktan yakına: kumaş derinliğe yazmadan çiziliyor, kıvrım üst
       // üste binince yakın olan üstte kalsın.
-      const yuzler = g.map((y) => bezAni(y, faz)).sort((a, b) => derinlik(a) - derinlik(b));
+      const yuzler = g
+        .map((y) => bezAni(y, bezFazi(y) + adim))
+        .sort((a, b) => derinlik(a) - derinlik(b));
       return agYap(yuzler, kamera).nesne;
     });
     if (f === 0) sayilar = parcalar.map((p) => p.length / KOSE);
@@ -62,5 +71,9 @@ export function bayrakKareleri(model: Model, kamera?: Kamera): BayrakKareleri | 
     }
     kareler.push(toplam);
   }
-  return { kareler, gruplar: sayilar };
+  return {
+    kareler,
+    gruplar: sayilar,
+    sureler: gruplar.map((g) => (g.some((y) => y.bez!.yon) ? SANCAK_SURE : BAYRAK_SURE)),
+  };
 }

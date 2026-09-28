@@ -18,9 +18,9 @@ import { rastgele } from './rastgele';
 import { gecis } from './arazi';
 import { insan, type Insan } from './figur';
 import { P, isikla } from './renk';
-import { BAYRAK_KARE, bayrakGruplari, bayrakKareleri } from './bayrakAni';
+import { BAYRAK_KARE, BAYRAK_SURE, SANCAK_SURE, bayrakGruplari, bayrakKareleri } from './bayrakAni';
 import { KOSE } from './glAg';
-import { BAYRAK_FAZ, bayrak, bezAni, duman } from './parca';
+import { BAYRAK_FAZ, SANCAK_FAZ, bayrak, bezAni, duman, sancak } from './parca';
 import {
   ciz,
   dilim,
@@ -203,6 +203,46 @@ describe('3B motor', () => {
     for (const t of k.kareler) expect(t.length).toBe(toplam);
     expect(k.kareler[0]).not.toEqual(k.kareler[BAYRAK_KARE / 2]);
     expect(bayrakKareleri(kutu(0, 0, 0, 1, 1, 1, '#808080'))).toBeUndefined();
+  });
+
+  it('askıdaki sancak: üst kenar yerinde, uç yalnız duvar boyunca salınıyor', () => {
+    const m = sancak('x', 5, 2, 9, '#aa0000', 3);
+    const bez = m.filter((y) => y.bez);
+    // Askı çubuğu kumaş değil; kumaş katlı ve ucuyla birlikte.
+    expect(m.length - bez.length).toBe(6);
+    expect(bayrakGruplari(m).length).toBeGreaterThanOrEqual(1);
+    for (const y of bez) {
+      expect(y.bez!.yon).toBeDefined();
+      const [a, b] = [bezAni(y, SANCAK_FAZ + 1.2).p, bezAni(y, SANCAK_FAZ - 1.2).p];
+      y.bez!.u.forEach((u, i) => {
+        // Duvara dik ve düşey yön hiç oynamıyor (duvarın içine girmiyor).
+        expect(a[i]![0]).toBeCloseTo(b[i]![0]);
+        expect(a[i]![2]).toBeCloseTo(b[i]![2]);
+        if (u < 1e-9) expect(a[i]![1]).toBeCloseTo(b[i]![1]);
+      });
+    }
+    const uc = bez.find((y) => y.bez!.u.some((u) => u > 0.99))!;
+    const i = uc.bez!.u.findIndex((u) => u > 0.99);
+    const fark =
+      bezAni(uc, SANCAK_FAZ + Math.PI / 2).p[i]![1] - bezAni(uc, SANCAK_FAZ - Math.PI / 2).p[i]![1];
+    // Hafif: uçta kumaş boyunun onda biri kadar, iki yana.
+    expect(Math.abs(fark)).toBeGreaterThan(0.2);
+    expect(Math.abs(fark)).toBeLessThan(1);
+    // Salınım yönü ölçek ve dönmeyle birlikte gidiyor.
+    expect(olcekle(bez, 2)[0]!.bez!.yon![1]).toBeCloseTo(bez[0]!.bez!.yon![1] * 2);
+    const d = dondur(bez, 'z', Math.PI / 2)[0]!.bez!.yon!;
+    expect(d[0]).toBeCloseTo(-bez[0]!.bez!.yon![1]);
+    expect(d[1]).toBeCloseTo(0);
+  });
+
+  it('kare süreleri: bayrak çırpınıyor, sancak ağır salınıyor', () => {
+    const k = bayrakKareleri([
+      ...bayrak(0, 0, 0, 6, '#aa0000'),
+      ...sancak('y', 10, 0, 9, '#00aa00'),
+    ])!;
+    expect(k.sureler).toContain(BAYRAK_SURE);
+    expect(k.sureler).toContain(SANCAK_SURE);
+    expect(k.sureler).toHaveLength(k.gruplar.length);
   });
 
   it('tohumlu rastgele: aynı anahtar aynı dizi', () => {

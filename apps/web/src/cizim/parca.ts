@@ -247,6 +247,11 @@ export function duman(x: number, y: number, z: number, r: () => number, adet = 3
 const BEZ_DILIM = 6;
 /** Durağan bayrağın (SVG, hareketsiz sahne) dalga evresi. */
 export const BAYRAK_FAZ = 1.9;
+/** Durağan sancağın evresi: salınımın ortası (sancak dik asılı). */
+export const SANCAK_FAZ = 0;
+
+/** Kumaşın durağan hâlinin evresi: sancakta salınımın ortası, bayrakta dalganın bir anı. */
+export const bezFazi = (y: Yuz): number => (y.bez?.yon ? SANCAK_FAZ : BAYRAK_FAZ);
 /** Dalga: kumaş boyunda kaç dalga boyu, genlik kumaş boyunun kaçta kaçı. */
 const BEZ_DALGA = 1.1;
 const BEZ_GENLIK = 0.16;
@@ -258,7 +263,17 @@ const BEZ_GENLIK = 0.16;
  * eğiminden: kumaş kıvrımlı gölgeleniyor, dilimler arasında çizgi yok.
  */
 export function bezAni(y: Yuz, faz: number): Yuz {
-  const { dinlenik: d, u } = y.bez!;
+  const { dinlenik: d, u, yon } = y.bez!;
+  if (yon) {
+    // Askıdaki sancak: çubuğa bağlı üst kenar yerinde, uç duvar boyunca
+    // sarkaç gibi salınıyor; üstüne kumaş boyunca hafif bir kıvrım.
+    const p = d.map((q, i): V3 => {
+      const k = u[i]!;
+      const s = k * k * Math.sin(faz) + 0.25 * k * Math.sin(2 * Math.PI * 0.9 * k - faz);
+      return [q[0] + yon[0] * s, q[1] + yon[1] * s, q[2] + yon[2] * s];
+    });
+    return { ...y, p };
+  }
   const n = normal(d);
   // Kumaş boyunca yön ve kumaşın boyu: oranı farklı iki köşeden.
   let t: V3 = [0, 0, 0];
@@ -326,11 +341,37 @@ export function bayrak(
   return birlestir(direk, bez, koni(x, y, z + h, 0.22, 0.4, P.altin, 5));
 }
 
-/** Uzun dikey sancak (duvara asılı kumaş). */
+/** Sancağın kumaşı kaç kat: salınımda kumaş katlar arasında kıvrılıyor. */
+const SANCAK_KAT = 4;
+/** Sancak ucunun salınımı, kumaş boyunun kaçta kaçı (hafif). */
+const SANCAK_GENLIK = 0.09;
+
+/**
+ * Uzun dikey sancak (duvara asılı kumaş). Kumaş katlı ve dinlenik hâlini
+ * taşıyor (`Yuz.bez`, `yon` duvar boyunca): hareketli sahnede askı
+ * çubuğundan yavaşça salınıyor.
+ */
 export function sancak(yuz: Yon, duz: number, u: number, z: number, renk: string, boy = 3): Model {
-  const m = yuzeyKutusu(yuz, duz, u, z - boy, 1.2, boy, 0.06, renk);
+  const uzun = boy + 0.5;
+  const yon: V3 = yuz === 'x' ? [0, SANCAK_GENLIK * uzun, 0] : [SANCAK_GENLIK * uzun, 0, 0];
+  const bezle = (m: Model) =>
+    m.map((y) =>
+      bezAni(
+        { ...y, bez: { dinlenik: y.p, u: y.p.map((q) => (z - q[2]) / uzun), yon } },
+        SANCAK_FAZ,
+      ),
+    );
+  const kumas: Model = [];
+  for (let i = 0; i < SANCAK_KAT; i++) {
+    const h = boy / SANCAK_KAT;
+    kumas.push(...yuzeyKutusu(yuz, duz, u, z - (i + 1) * h, 1.2, h, 0.06, renk));
+  }
   const ucu = yuzeyKutusu(yuz, duz, u + 0.3, z - boy - 0.5, 0.6, 0.5, 0.06, renk);
-  return birlestir(m, ucu, yuzeyKutusu(yuz, duz, u - 0.2, z, 1.6, 0.2, 0.12, P.koyuTahta));
+  return birlestir(
+    bezle(kumas),
+    bezle(ucu),
+    yuzeyKutusu(yuz, duz, u - 0.2, z, 1.6, 0.2, 0.12, P.koyuTahta),
+  );
 }
 
 export function cit(

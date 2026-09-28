@@ -979,6 +979,8 @@ export interface BayrakKareleri {
   kareler: Float32Array[];
   /** Her bayrağın bir karedeki köşe sayısı (bütün karelerde aynı). */
   gruplar: number[];
+  /** Her bayrağın bir turunun süresi (sn): sayfa kareleri bu hızda oynatıyor. */
+  sureler: number[];
 }
 
 /** Bayrak atlası: her bayrak bir satır, satırda kareler yan yana. */
@@ -990,6 +992,8 @@ export interface BayrakAtlasi {
   en: number;
   boy: number;
   kare: number;
+  /** Her bayrağın bir turunun süresi (sn). */
+  sureler: number[];
 }
 
 /** Çizimin çıktısı: resim ve (hareketli sahnede, varsa) katmanları. */
@@ -1354,7 +1358,7 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
         }
       }
       const resim = await blobla(atlas);
-      if (resim) sonuc.bayrak = { resim, kutular, en, boy, kare };
+      if (resim) sonuc.bayrak = { resim, kutular, en, boy, kare, sureler: by.sureler };
     }
   }
   return sonuc;

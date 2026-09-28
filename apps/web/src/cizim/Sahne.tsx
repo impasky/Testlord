@@ -438,11 +438,8 @@ function HareketKatmani({
   );
 }
 
-/** Bir dalga turunun süresi (sn). */
-const BAYRAK_SURE = 1.2;
-
 /**
- * Dalgalanan bayraklar: her bayrak kendi kutusunda, atlastaki satırının
+ * Dalgalanan bayraklar ve salınan sancaklar: her biri kendi kutusunda, atlastaki satırının
  * kareleri adım adım kayıyor (yalnız dönüşüm). `o`: çıktı pikseli başına
  * CSS pikseli.
  */
@@ -452,6 +449,7 @@ function Bayraklar({ b, o }: { b: NonNullable<Katmanlar['bayrak']>; o: number })
     <>
       {b.kutular.map(([x, y, w, h], i) =>
         w > 0 && h > 0 ? (
+          // Her biri ayrı evrede: rüzgâr hepsini aynı anda savurmasın.
           <span
             key={i}
             className="hareket-bayrak"
@@ -465,10 +463,9 @@ function Bayraklar({ b, o }: { b: NonNullable<Katmanlar['bayrak']>; o: number })
                   height: duzen.boy * o,
                   backgroundImage: `url(${b.url})`,
                   '--kay': `${(-b.kare * w * o).toFixed(2)}px`,
-                  animationDuration: `${BAYRAK_SURE}s`,
+                  animationDuration: `${b.sureler[i]}s`,
                   animationTimingFunction: `steps(${b.kare})`,
-                  // Her bayrak ayrı evrede: rüzgâr hepsini aynı anda savurmasın.
-                  animationDelay: `${(-((i * 0.29) % 1) * BAYRAK_SURE).toFixed(2)}s`,
+                  animationDelay: `${(-((i * 0.29) % 1) * b.sureler[i]!).toFixed(2)}s`,
                 } as CSSProperties
               }
             />
