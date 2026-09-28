@@ -200,7 +200,7 @@ apps/api/                 Fastify + Prisma + PostgreSQL
   src/services/           İş kuralları
   src/worker.ts           10 sn aralıkla yürüyüş ve kuyruk çözümü
 apps/web/                 React + Vite + Tailwind, yedi ekran
-  src/cizim/              Kodla çizim: low-poly izometrik motor, SVG'ye çiziyor
+  src/cizim/              Kodla çizim: low-poly izometrik motor; GPU'da (WebGL2), yoksa SVG
 tools/
   generate_map.py         Haritayı DOĞRULAYAN script (artık üretmiyor)
   gorsel-denetim.mjs      Her ekranın kodla çizilen görsellerini ve taşmaları denetler
