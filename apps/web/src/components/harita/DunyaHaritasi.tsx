@@ -868,20 +868,23 @@ function bolgeEtiketi(r: RegionDto): string {
 const ZEMIN_PIKSEL = 1600;
 /** GPU zemini daha büyük: yakınlaştırmada da keskin (tek örnek, bkz. gl.ts). */
 const GPU_PIKSEL = 2048;
-let zeminTuvali: HTMLCanvasElement | null = null;
+let zeminKabi: HTMLDivElement | null = null;
 
-function ucgenleriDok(t: HTMLCanvasElement) {
+function ucgenleriDok(k: HTMLElement) {
+  const t = document.createElement('canvas');
+  t.className = 'absolute inset-0 h-full w-full';
   t.width = ZEMIN_PIKSEL;
   t.height = ZEMIN_PIKSEL;
+  k.appendChild(t);
   const c = t.getContext('2d');
   if (!c) return;
-  const k = ZEMIN_PIKSEL / 100;
+  const o = ZEMIN_PIKSEL / 100;
   c.lineJoin = 'round';
   c.lineWidth = 1;
   for (const u of dunyaUcgenleri()) {
     c.beginPath();
-    c.moveTo(u.n[0]! * k, u.n[1]! * k);
-    for (let i = 2; i < u.n.length; i += 2) c.lineTo(u.n[i]! * k, u.n[i + 1]! * k);
+    c.moveTo(u.n[0]! * o, u.n[1]! * o);
+    for (let i = 2; i < u.n.length; i += 2) c.lineTo(u.n[i]! * o, u.n[i + 1]! * o);
     c.closePath();
     c.fillStyle = u.renk;
     c.strokeStyle = u.renk;
@@ -891,7 +894,14 @@ function ucgenleriDok(t: HTMLCanvasElement) {
   }
 }
 
-async function gpuZemini(t: HTMLCanvasElement) {
+/**
+ * GPU zemini doğrudan bir resim. Önceden 2048 piksellik resim bir tuvale
+ * kopyalanıyordu (`drawImage`): telefonda ana iş parçacığında yüzlerce
+ * milisaniye ve bir o kadar daha bellek; Dünya'ya her ilk girişte sayfa
+ * takılıyordu. Resim tarayıcının kendi çözücüsünde, iş parçacığı dışında
+ * açılıyor.
+ */
+async function gpuZemini(k: HTMLDivElement) {
   const ag = await dunyaAgi();
   const url = await glCiz('dunya-zemini', () => ({
     ag,
@@ -907,28 +917,29 @@ async function gpuZemini(t: HTMLCanvasElement) {
   const resim = url ? new Image() : null;
   if (resim && url) {
     resim.src = url;
+    resim.decoding = 'async';
     await resim.decode().catch(() => undefined);
   }
   if (resim?.naturalWidth) {
-    t.width = GPU_PIKSEL;
-    t.height = GPU_PIKSEL;
-    t.getContext('2d')?.drawImage(resim, 0, 0);
-    t.dataset.gl = '';
-  } else ucgenleriDok(t);
-  t.style.opacity = '1';
+    resim.alt = '';
+    resim.className = 'absolute inset-0 h-full w-full';
+    k.appendChild(resim);
+    k.dataset.gl = '';
+  } else ucgenleriDok(k);
+  k.style.opacity = '1';
 }
 
-function zeminTuvaliAl(): HTMLCanvasElement {
-  if (zeminTuvali) return zeminTuvali;
-  const t = document.createElement('canvas');
-  t.className = 'absolute inset-0 h-full w-full transition-opacity duration-300';
-  t.dataset.dunyaZemini = '';
+function zeminKabiAl(): HTMLDivElement {
+  if (zeminKabi) return zeminKabi;
+  const k = document.createElement('div');
+  k.className = 'absolute inset-0 h-full w-full transition-opacity duration-300';
+  k.dataset.dunyaZemini = '';
   if (glVarMi()) {
-    t.style.opacity = '0';
-    void gpuZemini(t);
-  } else ucgenleriDok(t);
-  zeminTuvali = t;
-  return t;
+    k.style.opacity = '0';
+    void gpuZemini(k);
+  } else ucgenleriDok(k);
+  zeminKabi = k;
+  return k;
 }
 
 /**
@@ -942,7 +953,7 @@ const Zemin = memo(function Zemin() {
   useEffect(() => {
     const k = kutu.current;
     if (!k) return;
-    const t = zeminTuvaliAl();
+    const t = zeminKabiAl();
     k.appendChild(t);
     return () => {
       if (t.parentNode === k) k.removeChild(t);

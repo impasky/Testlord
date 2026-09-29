@@ -531,7 +531,9 @@ svg g[role='button']:focus-visible > path:first-of-type {
 }
 .hareket-bayrak > span {
   position: absolute;
-  background-size: 100% 100%;
+  left: 0;
+  top: 0;
+  background-repeat: no-repeat;
   animation-name: bayrak-dalga;
   animation-iteration-count: infinite;
   will-change: transform;
@@ -565,6 +567,12 @@ svg g[role='button']:focus-visible > path:first-of-type {
     transform: translate3d(var(--dx), var(--dy), 0) scale(1.9);
     opacity: 0;
   }
+}
+
+/* Ekranda olmayan sahne durur (IntersectionObserver): görünmeyen katmanlar boşuna oynamasın. */
+.hareket-durgun,
+.hareket-durgun * {
+  animation-play-state: paused !important;
 }
 
 /* Hareket kısıtlıysa katman hiç yok (JS de kurmuyor; bu ikinci savunma hattı). */

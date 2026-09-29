@@ -15,6 +15,7 @@ import {
 } from './birlikler';
 import { BOLGE_SAHNELERI, bolgeAdiCoz, bolgeModeli } from './bolgeler';
 import { rastgele } from './rastgele';
+import { tarifModeli } from './tarif';
 import { gecis } from './arazi';
 import { insan, type Insan } from './figur';
 import { P, isikla } from './renk';
@@ -46,6 +47,7 @@ import {
   dilim,
   dondur,
   kutu,
+  kutusu,
   levha,
   olcekle,
   oneAl,
@@ -555,5 +557,37 @@ describe('ekran zeminleri ve dünya', () => {
       }
     // Belirlenimci: iki üretim aynı.
     expect(dunyaUcgenleri(4)).toEqual(u);
+  });
+});
+
+describe('tarifler ve kutu', () => {
+  it('her çizim anahtarı tarifinden aynı modeli kuruyor', () => {
+    // GPU işçisi modeli anahtardan kendisi kuruyor; SVG yedeği ile aynı olmalı.
+    expect(tarifModeli('bina:kisla_3')).toEqual(binaModeli('kisla_3'));
+    expect(tarifModeli('birimler:okcu')).toEqual(birlikModeli('okcu'));
+    expect(tarifModeli('dusmanlar:' + DUSMAN_ADLARI[0])).toEqual(dusmanModeli(DUSMAN_ADLARI[0]!));
+    expect(tarifModeli('ekipman:' + EKIPMAN_ADLARI[0])).toEqual(ekipmanModeli(EKIPMAN_ADLARI[0]!));
+    expect(tarifModeli('generaller:' + GENERAL_ADLARI[0])).toEqual(
+      generalModeli(GENERAL_ADLARI[0]!),
+    );
+    expect(tarifModeli('portre:' + PORTRE_ADLARI[0])).toEqual(portreModeli(PORTRE_ADLARI[0]!));
+    expect(tarifModeli('zemin:kisla')).toEqual(zeminModeli('kisla'));
+    expect(tarifModeli('diyar:' + AKIN_HARITALARI[0]!.key + ':kapak')).toEqual(
+      diyarModeli(AKIN_HARITALARI[0]!.key, 'kapak'),
+    );
+    expect(tarifModeli('bolge:tarla_3')).toEqual(bolgeModeli('tarla_3'));
+    expect(tarifModeli('yerlesim:koy')!.length).toBeGreaterThan(0);
+  });
+  it('bilinmeyen tarif null', () => {
+    expect(tarifModeli('yok:bir')).toBeNull();
+    expect(tarifModeli('anahtarsiz')).toBeNull();
+  });
+  it('kutusu, çokgenlerin kutusuyla aynı (arka yüz dahil değil)', () => {
+    for (const m of [
+      birlikModeli('suvari')!,
+      ekipmanModeli(EKIPMAN_ADLARI[3]!)!,
+      binaModeli('arsa'),
+    ])
+      expect(kutusu(m)).toEqual(ciz(m).kutu);
   });
 });

@@ -903,7 +903,26 @@ export function DegerKarti({
  * sayıyı okunmaz değil, YANLIŞ yapıyor.
  */
 export function formatSayi(n: number): string {
-  return Math.floor(n).toLocaleString(yerel());
+  return bicim(yerel(), false).format(Math.floor(n));
+}
+
+/**
+ * Biçimleyici dil başına bir kez. `toLocaleString` her çağrıda yeni bir
+ * `Intl.NumberFormat` kuruyor; üst çubuktaki kaynak sayaçları saniyede
+ * defalarca yazılırken bu, telefonda sürekli bir yük olarak ölçüldü.
+ */
+const BICIMLER = new Map<string, Intl.NumberFormat>();
+function bicim(dil: string, ondalikli: boolean): Intl.NumberFormat {
+  const k = dil + (ondalikli ? '.1' : '');
+  let b = BICIMLER.get(k);
+  if (!b) {
+    b = new Intl.NumberFormat(
+      dil,
+      ondalikli ? { minimumFractionDigits: 1, maximumFractionDigits: 1 } : undefined,
+    );
+    BICIMLER.set(k, b);
+  }
+  return b;
 }
 
 /**
@@ -922,11 +941,10 @@ export function kisaSayi(n: number): string {
   const a = Math.floor(Math.abs(n));
   const isaret = n < 0 ? '-' : '';
   const k = KISALTMA[aktifDil()];
-  const ondalikli = (x: number) =>
-    x.toLocaleString(yerel(), { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  const ondalikli = (x: number) => bicim(yerel(), true).format(x);
   if (a >= 1_000_000) return `${isaret}${ondalikli(a / 1_000_000)}${k.milyon}`;
   if (a >= 10_000) return `${isaret}${ondalikli(a / 1000)}${k.bin}`;
-  return `${isaret}${a.toLocaleString(yerel())}`;
+  return `${isaret}${bicim(yerel(), false).format(a)}`;
 }
 
 /**

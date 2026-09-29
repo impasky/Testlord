@@ -236,7 +236,7 @@
     "tr": "({0} parti)",
     "en": "({0} party)",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:297"
+      "apps/web/src/screens/Kisla.tsx:296"
     ]
   },
   "ta53c0918": {
@@ -284,7 +284,7 @@
     "tr": "[{0}] hedef",
     "en": "[{0}] target",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:1433"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1444"
     ]
   },
   "t07b8fe99": {
@@ -409,14 +409,6 @@
       "apps/web/src/components/ProfilKarti.tsx:213"
     ]
   },
-  "t37fde2f0": {
-    "grup": "arayuz",
-    "tr": "{0} · {1} yürüyüş",
-    "en": "{0} · {1} march",
-    "nerede": [
-      "apps/web/src/components/HedefSeridi.tsx:58"
-    ]
-  },
   "t89eb3d42": {
     "grup": "arayuz",
     "tr": "{0} · +%{1} yağma",
@@ -439,14 +431,6 @@
     "en": "{0} · building cap {1}",
     "nerede": [
       "apps/web/src/screens/Sehir.tsx:468"
-    ]
-  },
-  "t48aeb4d6": {
-    "grup": "arayuz",
-    "tr": "{0} · haritada aç",
-    "en": "{0} · show on map",
-    "nerede": [
-      "apps/web/src/components/HedefSeridi.tsx:96"
     ]
   },
   "t381449cb": {
@@ -497,14 +481,6 @@
       "apps/web/src/components/DunyaSeridi.tsx:183"
     ]
   },
-  "t9f6f97fa": {
-    "grup": "arayuz",
-    "tr": "{0} {1} daha",
-    "en": "{0} {1} more",
-    "nerede": [
-      "apps/web/src/components/HedefSeridi.tsx:77"
-    ]
-  },
   "td0ac02bc": {
     "grup": "arayuz",
     "tr": "{0} {1} daha.",
@@ -518,7 +494,7 @@
     "tr": "{0} {1} eğit",
     "en": "Train {0} {1}",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:286"
+      "apps/web/src/screens/Kisla.tsx:285"
     ]
   },
   "t53f178e2": {
@@ -527,7 +503,7 @@
     "en": "{0} quantity",
     "nerede": [
       "apps/web/src/screens/Akin.tsx:724",
-      "apps/web/src/screens/Kisla.tsx:271"
+      "apps/web/src/screens/Kisla.tsx:270"
     ]
   },
   "t8ed22750": {
@@ -1221,7 +1197,6 @@
     "tr": "{0} savunan",
     "en": "{0} defending",
     "nerede": [
-      "apps/web/src/components/HedefSeridi.tsx:86",
       "apps/web/src/components/Omurga.tsx:939"
     ]
   },
@@ -1511,7 +1486,7 @@
     "tr": "{0}{1} erzak/sa",
     "en": "{0}{1} supplies/hr",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:459"
+      "apps/web/src/screens/Kisla.tsx:444"
     ]
   },
   "t59b5ca1c": {
@@ -1561,7 +1536,7 @@
     "en": "{0}/{1} command",
     "nerede": [
       "apps/web/src/components/OrduSahnesi.tsx:322",
-      "apps/web/src/screens/Kisla.tsx:455"
+      "apps/web/src/screens/Kisla.tsx:440"
     ]
   },
   "t0faee630": {
@@ -1610,7 +1585,7 @@
     "tr": "{0}dk {1}sn",
     "en": "{0}m {1}s",
     "nerede": [
-      "apps/web/src/components/ui.tsx:955"
+      "apps/web/src/components/ui.tsx:973"
     ]
   },
   "t474d6d19": {
@@ -1618,7 +1593,7 @@
     "tr": "{0}g {1}sa",
     "en": "{0}d {1}h",
     "nerede": [
-      "apps/web/src/components/ui.tsx:953"
+      "apps/web/src/components/ui.tsx:971"
     ]
   },
   "t756e7987": {
@@ -1626,7 +1601,7 @@
     "tr": "{0}sa {1}dk",
     "en": "{0}h {1}m",
     "nerede": [
-      "apps/web/src/components/ui.tsx:954",
+      "apps/web/src/components/ui.tsx:972",
       "apps/web/src/screens/Arastirma.tsx:246",
       "apps/web/src/screens/Harita.tsx:210"
     ]
@@ -1718,8 +1693,6 @@
     "tr": "+{0}/sa",
     "en": "+{0}/hr",
     "nerede": [
-      "apps/web/src/components/HedefSeridi.tsx:29",
-      "apps/web/src/components/HedefSeridi.tsx:32",
       "apps/web/src/components/Omurga.tsx:1259",
       "apps/web/src/screens/Malikane.tsx:128",
       "apps/web/src/screens/Malikane.tsx:205",
@@ -2164,7 +2137,7 @@
     "tr": "Asker Eğitimi",
     "en": "Troop Training",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:463"
+      "apps/web/src/screens/Kisla.tsx:448"
     ]
   },
   "t9872375b": {
@@ -2247,7 +2220,7 @@
     "tr": "Aynı anda en fazla {0} eğitim yapabilirsin. Kışlanı yükseltirsen artar.",
     "en": "You can have a maximum of {0} [training|trainings] at once. Upgrading your Barracks increases this.",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:87"
+      "apps/web/src/screens/Kisla.tsx:86"
     ]
   },
   "t98950e8c": {
@@ -2280,7 +2253,7 @@
     "en": "just now",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:27",
-      "apps/web/src/components/ui.tsx:940"
+      "apps/web/src/components/ui.tsx:958"
     ]
   },
   "t03f09d10": {
@@ -2370,7 +2343,7 @@
     "tr": "Bakım",
     "en": "Upkeep",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:325"
+      "apps/web/src/screens/Kisla.tsx:324"
     ]
   },
   "tfb644c22": {
@@ -2704,7 +2677,7 @@
     "tr": "Bir bölgeyi sadece oraya bıraktığın garnizon savunur.",
     "en": "A region is defended solely by the garrison you leave there.",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:526"
+      "apps/web/src/screens/Kisla.tsx:511"
     ]
   },
   "t32f39dc2": {
@@ -2794,7 +2767,7 @@
     "en": "empty",
     "nerede": [
       "apps/web/src/components/DizilimIzgarasi.tsx:324",
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:1495",
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1506",
       "apps/web/src/screens/Harita.tsx:1418"
     ]
   },
@@ -2813,7 +2786,7 @@
     "tr": "Boş yer {0}, gereken {1}. Liderlik statını artır ya da daha az birim eğit.",
     "en": "Vacant {0}, required {1}. Increase your Leadership stat or train fewer units.",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:94"
+      "apps/web/src/screens/Kisla.tsx:93"
     ]
   },
   "tdd8bd1b3": {
@@ -2873,14 +2846,6 @@
     "en": "Regions are scarce, rivals are many. Whoever deserves the throne takes it.",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:202"
-    ]
-  },
-  "t815f7c76": {
-    "grup": "arayuz",
-    "tr": "Bölge limitin dolu — kazansan bile alamazsın.",
-    "en": "Your region limit is full — you cannot take it even if you win.",
-    "nerede": [
-      "apps/web/src/components/HedefSeridi.tsx:92"
     ]
   },
   "t777e4732": {
@@ -3292,7 +3257,7 @@
     "tr": "Can",
     "en": "Health",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:319"
+      "apps/web/src/screens/Kisla.tsx:318"
     ]
   },
   "ta06cea5b": {
@@ -3356,7 +3321,7 @@
     "tr": "Çekirdek — ele geçirilemez",
     "en": "Core — cannot be captured",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:1361"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1372"
     ]
   },
   "t53904c10": {
@@ -3670,7 +3635,7 @@
     "tr": "DETAY",
     "en": "DETAILS",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:310"
+      "apps/web/src/screens/Kisla.tsx:309"
     ]
   },
   "t37cf0867": {
@@ -3678,7 +3643,7 @@
     "tr": "DETAYI GİZLE",
     "en": "HIDE DETAILS",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:310"
+      "apps/web/src/screens/Kisla.tsx:309"
     ]
   },
   "t0f10796a": {
@@ -4229,7 +4194,7 @@
     "tr": "Eğitim kuyruğu dolu",
     "en": "Training queue is full",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:86"
+      "apps/web/src/screens/Kisla.tsx:85"
     ]
   },
   "tc38ff08d": {
@@ -4237,7 +4202,7 @@
     "tr": "Eğitimde",
     "en": "In Training",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:295"
+      "apps/web/src/screens/Kisla.tsx:294"
     ]
   },
   "t54fd1832": {
@@ -4639,8 +4604,8 @@
     "tr": "Evde {0}",
     "en": "At home {0}",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:192",
-      "apps/web/src/screens/Kisla.tsx:232"
+      "apps/web/src/screens/Kisla.tsx:191",
+      "apps/web/src/screens/Kisla.tsx:231"
     ]
   },
   "ta56383d3": {
@@ -4812,7 +4777,7 @@
     "tr": "Garnizonlarda",
     "en": "In Garrisons",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:505"
+      "apps/web/src/screens/Kisla.tsx:490"
     ]
   },
   "t19ae54dc": {
@@ -5120,7 +5085,7 @@
       "apps/web/src/screens/Giris.tsx:319",
       "apps/web/src/screens/Harita.tsx:1229",
       "apps/web/src/screens/Hesap.tsx:259",
-      "apps/web/src/screens/Kisla.tsx:286",
+      "apps/web/src/screens/Kisla.tsx:285",
       "apps/web/src/screens/ParolaSifirla.tsx:62",
       "apps/web/src/screens/Sehir.tsx:929"
     ]
@@ -5649,7 +5614,7 @@
     "tr": "Hız",
     "en": "Speed",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:320"
+      "apps/web/src/screens/Kisla.tsx:319"
     ]
   },
   "tf120ff46": {
@@ -5918,7 +5883,7 @@
       "apps/web/src/screens/Demirhane.tsx:363",
       "apps/web/src/screens/Generaller.tsx:181",
       "apps/web/src/screens/Harita.tsx:605",
-      "apps/web/src/screens/Kisla.tsx:381",
+      "apps/web/src/screens/Kisla.tsx:377",
       "apps/web/src/screens/LordEkrani.tsx:212"
     ]
   },
@@ -6229,7 +6194,7 @@
     "tr": "Kale kırıcı. Tahkimata ×2, birime karşı ×0,5.",
     "en": "Siege breaker. ×2 against fortifications, ×0.5 against units.",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:59"
+      "apps/web/src/screens/Kisla.tsx:58"
     ]
   },
   "t228ca0c6": {
@@ -6280,7 +6245,7 @@
     "tr": "Kampın",
     "en": "Your camp",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:1367",
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1378",
       "apps/web/src/components/harita/DunyaHaritasi.tsx:600"
     ]
   },
@@ -6289,7 +6254,7 @@
     "tr": "kapalı",
     "en": "off-limits",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:1496"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1507"
     ]
   },
   "t926ba486": {
@@ -6755,7 +6720,7 @@
     "en": "Barracks",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:618",
-      "apps/web/src/screens/Kisla.tsx:417",
+      "apps/web/src/screens/Kisla.tsx:413",
       "apps/web/src/screens/Olaylar.tsx:113",
       "apps/web/src/screens/Sehir.tsx:498",
       "data/binalar.json:binalar[1].ad"
@@ -6895,7 +6860,7 @@
     "tr": "Komuta yeri",
     "en": "Command space",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:321"
+      "apps/web/src/screens/Kisla.tsx:320"
     ]
   },
   "t42c135b1": {
@@ -6903,7 +6868,7 @@
     "tr": "Komuta yerin yetmiyor",
     "en": "Not enough command space",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:93"
+      "apps/web/src/screens/Kisla.tsx:92"
     ]
   },
   "t44600e9f": {
@@ -6911,7 +6876,7 @@
     "tr": "Korumalı",
     "en": "Protected",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:1353"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1364"
     ]
   },
   "t0d0d93bf": {
@@ -7074,7 +7039,7 @@
     "tr": "Kuyruk {0}/{1}",
     "en": "Queue {0}/{1}",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:469"
+      "apps/web/src/screens/Kisla.tsx:454"
     ]
   },
   "t24a14132": {
@@ -7163,7 +7128,7 @@
     "tr": "lord",
     "en": "lord",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:1494"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1505"
     ]
   },
   "t76d9061a": {
@@ -7807,14 +7772,6 @@
       "apps/web/src/components/OrduSahnesi.tsx:168"
     ]
   },
-  "t437a0412": {
-    "grup": "arayuz",
-    "tr": "ordun yetiyor",
-    "en": "your army is enough",
-    "nerede": [
-      "apps/web/src/components/HedefSeridi.tsx:72"
-    ]
-  },
   "te695b1e4": {
     "grup": "arayuz",
     "tr": "Ordun yetiyor. Bölge senin olunca kazanacakların:",
@@ -7862,7 +7819,7 @@
     "tr": "Ordunu burada büyütürsün",
     "en": "You grow your army here",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:417"
+      "apps/web/src/screens/Kisla.tsx:413"
     ]
   },
   "td1115723": {
@@ -7884,14 +7841,6 @@
       "packages/shared/src/rehber.ts:177"
     ]
   },
-  "te801c243": {
-    "grup": "arayuz",
-    "tr": "Ordunu ne için kuruyorsun",
-    "en": "What are you building your army for",
-    "nerede": [
-      "apps/web/src/screens/Kisla.tsx:443"
-    ]
-  },
   "tcdac426c": {
     "grup": "arayuz",
     "tr": "Ordunu ve ittifak durumunu gözden geçir.",
@@ -7905,7 +7854,7 @@
     "tr": "Ordunun Dağılımı",
     "en": "Army Distribution",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:502"
+      "apps/web/src/screens/Kisla.tsx:487"
     ]
   },
   "t5d7d275e": {
@@ -8614,7 +8563,7 @@
     "en": "Attack",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:947",
-      "apps/web/src/screens/Kisla.tsx:317"
+      "apps/web/src/screens/Kisla.tsx:316"
     ]
   },
   "tf84af079": {
@@ -8850,7 +8799,7 @@
     "tr": "Savunma",
     "en": "Defense",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:318"
+      "apps/web/src/screens/Kisla.tsx:317"
     ]
   },
   "t739f8573": {
@@ -8882,7 +8831,7 @@
     "tr": "Savunmanın omurgası. Süvariye karşı ×1,5.",
     "en": "The backbone of defense. ×1.5 against Cavalry.",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:56"
+      "apps/web/src/screens/Kisla.tsx:55"
     ]
   },
   "t000a6979": {
@@ -9135,14 +9084,6 @@
     "en": "Send reset link",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:319"
-    ]
-  },
-  "tee25d0bd": {
-    "grup": "arayuz",
-    "tr": "Sıradaki hedef",
-    "en": "Next target",
-    "nerede": [
-      "apps/web/src/components/HedefSeridi.tsx:40"
     ]
   },
   "t2301a99e": {
@@ -9905,7 +9846,7 @@
     "tr": "Taht Kalesi",
     "en": "Throne Citadel",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:1417",
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1428",
       "apps/web/src/screens/Harita.tsx:1137",
       "data/balance.json:bolgeler.gelisim_adlari.taht[0]",
       "data/balance.json:bolgeler.gelisim_adlari.taht[1]",
@@ -10229,7 +10170,7 @@
     "tr": "Ucuz et kalkanı. Kayıpları önce o üstlenir.",
     "en": "Cheap meat shield. Absorbs casualties first.",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:55"
+      "apps/web/src/screens/Kisla.tsx:54"
     ]
   },
   "tbeb2b0c2": {
@@ -10237,7 +10178,7 @@
     "tr": "Ucuz hasar. Mızrakçıya karşı ×1,5.",
     "en": "Cheap damage. ×1.5 against Spearmen.",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:57"
+      "apps/web/src/screens/Kisla.tsx:56"
     ]
   },
   "t89558a23": {
@@ -10411,7 +10352,7 @@
     "tr": "Vurucu güç ve hız. Okçuya karşı ×1,5.",
     "en": "Striking power and speed. ×1.5 against Archers.",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:58"
+      "apps/web/src/screens/Kisla.tsx:57"
     ]
   },
   "te30b10c9": {
@@ -11015,7 +10956,7 @@
     "tr": "Yürüyüşte",
     "en": "Marching",
     "nerede": [
-      "apps/web/src/screens/Kisla.tsx:506"
+      "apps/web/src/screens/Kisla.tsx:491"
     ]
   },
   "tdd948d11": {
@@ -14843,7 +14784,7 @@
     "tr": " ve bir ekipman",
     "en": " and one piece of equipment",
     "nerede": [
-      "apps/api/src/services/akin.ts:246"
+      "apps/api/src/services/akin.ts:253"
     ]
   },
   "t18dcaa3c": {
@@ -15469,7 +15410,7 @@
     "tr": "Akın başarılı: {0} altın, {1} demir{2} getirdin.",
     "en": "Raid successful: you brought {0} gold, {1} iron{2}.",
     "nerede": [
-      "apps/api/src/services/akin.ts:245"
+      "apps/api/src/services/akin.ts:252"
     ]
   },
   "t727e50b0": {
@@ -15477,7 +15418,7 @@
     "tr": "Akın başarısız: grubu düşüremedin, kalan askerin döndü.",
     "en": "Raid failed: you couldn't defeat the group, your remaining troops returned.",
     "nerede": [
-      "apps/api/src/services/akin.ts:248"
+      "apps/api/src/services/akin.ts:255"
     ]
   },
   "tef24ea7b": {
@@ -17001,14 +16942,6 @@
       "apps/api/src/routes/me.ts:58"
     ]
   },
-  "t4a240541": {
-    "grup": "sunucu",
-    "tr": "miğfer",
-    "en": "helmet",
-    "nerede": [
-      "apps/api/src/services/akin.ts:54"
-    ]
-  },
   "t464c2de7": {
     "grup": "sunucu",
     "tr": "Miktar sayı olmalı.",
@@ -17536,14 +17469,6 @@
     "en": "March",
     "nerede": [
       "apps/api/src/routes/map.ts:1276"
-    ]
-  },
-  "te9b9c83f": {
-    "grup": "sunucu",
-    "tr": "yüzük",
-    "en": "ring",
-    "nerede": [
-      "apps/api/src/services/akin.ts:54"
     ]
   },
   "tb57b7485": {

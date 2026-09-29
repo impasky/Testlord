@@ -19,7 +19,7 @@
  */
 import { memo, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import { EN_BUYUK, atlasDuzeni, glCiz, glKatmanlari, glVarMi, type Katmanlar } from './gl';
-import { ciz, yansitici, type Cizilmis, type Kamera, type Model } from './uc';
+import { ciz, kutusu, type Cizilmis, type Kamera, type Model } from './uc';
 
 const ONBELLEK = new Map<string, Cizilmis>();
 /**
@@ -48,6 +48,17 @@ function modelAl(anahtar: string, uret: () => Model): Model {
  */
 const KIRP = ['xMidYMid', 'slice'].join(' ');
 
+/**
+ * Tarifli, kendi çerçevesine oturan çizimin (birlik, eşya) görüş kutusu:
+ * GPU varken çokgen hesaplanmıyor, yalnız kutusu. Model küçük; kutu bir kez.
+ */
+const KUTULAR = new Map<string, [number, number, number, number]>();
+function kutuAl(anahtar: string, uret: () => Model, kamera?: Kamera) {
+  let k = KUTULAR.get(anahtar);
+  if (!k) KUTULAR.set(anahtar, (k = kutusu(modelAl(anahtar, uret), kamera)));
+  return k;
+}
+
 export function cizimiAl(anahtar: string, uret: () => Model, kamera?: Kamera): Cizilmis {
   let c = ONBELLEK.get(anahtar);
   if (!c) {
@@ -63,50 +74,11 @@ const YAYILMA = 'none';
 /** Hazır GPU resimleri: çizim + görüş kutusu → çizilmiş en büyük resim. */
 const RESIMLER = new Map<string, { en: number; url: string }>();
 
-/**
- * Canlı dumanın kaynağı (görüş kutusu biriminde): baca ağzı, yükselişin
- * ekrandaki yönü ve boyu, rengi. Hareketli GPU resminde duman yok; burada
- * yükseliyor.
- */
-interface DumanKaynagi {
-  x: number;
-  y: number;
-  dx: number;
-  dy: number;
-  renk: string;
-}
-const DUMANLAR = new Map<string, DumanKaynagi[]>();
-/**
- * Bir duman yumrusunun yolu (dünya birimi): durağan dumanın ilk küresinin
- * biraz altından (baca ağzı) çıkıp rüzgârla kayarak yükseliyor
- * (`parca.duman`la aynı yön).
- */
-const DUMAN_ALT = 0.8;
-const DUMAN_YOLU: [number, number, number] = [1.4, -0.9, 5];
 /** Yumrunun yarıçapı (dünya birimi); CSS'te 0,4 katından 1,9 katına büyüyor. */
 const DUMAN_YARICAP = 0.85;
 /** Bir yumrunun ömrü (sn) ve bir kaynaktan aynı anda kaç yumru (eşit aralıkla). */
 const DUMAN_SURE = 4.8;
 const DUMAN_ADET = 4;
-
-function dumanKaynaklari(model: Model, kamera?: Kamera): DumanKaynagi[] {
-  const e = yansitici(kamera);
-  const kaynaklar = new Map<string, DumanKaynagi>();
-  for (const y of model) {
-    const d = y.duman;
-    if (!d) continue;
-    const ad = d.join(',');
-    if (kaynaklar.has(ad)) continue;
-    const [x, sy] = e([d[0], d[1], d[2] - DUMAN_ALT]);
-    const [ux, uy] = e([
-      d[0] + DUMAN_YOLU[0],
-      d[1] + DUMAN_YOLU[1],
-      d[2] - DUMAN_ALT + DUMAN_YOLU[2],
-    ]);
-    kaynaklar.set(ad, { x, y: sy, dx: ux - x, dy: uy - sy, renk: y.renk });
-  }
-  return [...kaynaklar.values()];
-}
 
 /**
  * Hareket kısıtlı mı (işletim sistemi ayarı). Her çizimde bakılıyor;
@@ -134,6 +106,7 @@ const kova = (x: number) => Math.pow(1.25, Math.ceil(Math.log(Math.max(x, 8)) / 
 function useGpuResmi(
   etkin: boolean,
   anahtar: string,
+  tarif: boolean,
   uret: () => Model,
   kamera: Kamera | undefined,
   v: [number, number, number, number],
@@ -176,11 +149,17 @@ function useGpuResmi(
         return;
       }
       const { uret: u, kamera: k } = guncel.current;
-      glCiz(`${taban}|${en}x${boy}`, () => {
-        const model = modelAl(anahtar, u);
-        if (hareket && !DUMANLAR.has(anahtar)) DUMANLAR.set(anahtar, dumanKaynaklari(model, k));
-        return { model, kamera: k, kutu: v, en, boy, olcek: en / (vw * cssBirim), tilt, hareket };
-      }).then((url) => {
+      // Tarifliyse model işçide kuruluyor (`tarif.ts`): buradan yalnız anahtar.
+      glCiz(`${taban}|${en}x${boy}`, () => ({
+        ...(tarif ? { tarif: anahtar } : { model: modelAl(anahtar, u) }),
+        kamera: k,
+        kutu: v,
+        en,
+        boy,
+        olcek: en / (vw * cssBirim),
+        tilt,
+        hareket,
+      })).then((url) => {
         if (!url) {
           if (!iptal) guncel.current.basarisiz();
           return;
@@ -198,7 +177,7 @@ function useGpuResmi(
       ro.disconnect();
     };
     // `v` içerik olarak `taban`da; dizi kimliği her çizimde değişiyor.
-  }, [etkin, taban, kirp, tilt, hareket, ref]);
+  }, [etkin, taban, tarif, kirp, tilt, hareket, ref]);
 
   return etkin ? resim : null;
 }
@@ -351,15 +330,24 @@ function HareketKatmani({
   v,
   kirp,
   katman,
-  dumanlar,
 }: {
   v: [number, number, number, number];
   kirp: boolean;
   katman: Katmanlar | undefined;
-  dumanlar: DumanKaynagi[];
 }) {
   const ref = useRef<HTMLSpanElement>(null);
   const [olcu, setOlcu] = useState<[number, number] | null>(null);
+  const dumanlar = katman?.dumanlar ?? [];
+  // Ekranda olmayan sahne durur: uzun bir listede (akın diyarları) görünmeyen
+  // kapakların onlarca katmanı boşuna oynamasın.
+  const [gorunur, setGorunur] = useState(true);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const io = new IntersectionObserver(([g]) => setGorunur(g?.isIntersecting ?? true));
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
   // Boyamadan önce ölç: bayrak kumaşı ana resimde yok, bir kare bile
   // bayraksız direk görünmesin.
   useLayoutEffect(() => {
@@ -432,16 +420,26 @@ function HareketKatmani({
     );
   }
   return (
-    <span ref={ref} aria-hidden className="hareket" style={{ gridArea: '1 / 1' }}>
+    <span
+      ref={ref}
+      aria-hidden
+      className={gorunur ? 'hareket' : 'hareket hareket-durgun'}
+      style={{ gridArea: '1 / 1' }}
+    >
       {icerik}
     </span>
   );
 }
 
 /**
- * Dalgalanan bayraklar ve salınan sancaklar: her biri kendi kutusunda, atlastaki satırının
- * kareleri adım adım kayıyor (yalnız dönüşüm). `o`: çıktı pikseli başına
- * CSS pikseli.
+ * Dalgalanan bayraklar, salınan sancak, ağaç ve asker: her biri kendi
+ * kutusunda, atlastaki satırının kareleri adım adım kayıyor (yalnız dönüşüm).
+ * `o`: çıktı pikseli başına CSS pikseli.
+ *
+ * Kayan katman yalnız o parçanın kare şeridi kadar: atlas arka plan olarak
+ * şeridin yerinden gösteriliyor. Önceden her parça atlasın TAMAMI boyunda
+ * bir katmandı; ağaçlı bir zeminde yirmi üç parça ~74 megapiksellik katman
+ * demekti ve telefonun GPU belleği tükenip sayfa takılıyordu.
  */
 function Bayraklar({ b, o }: { b: NonNullable<Katmanlar['bayrak']>; o: number }) {
   const duzen = atlasDuzeni(b.kutular, b.kare);
@@ -458,11 +456,11 @@ function Bayraklar({ b, o }: { b: NonNullable<Katmanlar['bayrak']>; o: number })
             <span
               style={
                 {
-                  left: -duzen.yer[i]![0] * o,
-                  top: -duzen.yer[i]![1] * o,
-                  width: duzen.en * o,
-                  height: duzen.boy * o,
+                  width: b.kare * w * o,
+                  height: h * o,
                   backgroundImage: `url(${b.url})`,
+                  backgroundSize: `${duzen.en * o}px ${duzen.boy * o}px`,
+                  backgroundPosition: `${-duzen.yer[i]![0] * o}px ${-duzen.yer[i]![1] * o}px`,
                   '--kay': `${(-b.kare * w * o).toFixed(2)}px`,
                   animationDuration: `${b.sureler[i]}s`,
                   animationTimingFunction: `steps(${b.kare})`,
@@ -501,6 +499,7 @@ export const Sahne = memo(function Sahne({
   ertele = false,
   tilt,
   hareket = false,
+  tarif = false,
 }: {
   anahtar: string;
   uret: () => Model;
@@ -539,11 +538,19 @@ export const Sahne = memo(function Sahne({
    * resmin üstünde); `className` ve `style` sarmalayıcının.
    */
   hareket?: boolean;
+  /**
+   * `anahtar` bir çizim tarifi (`tarif.ts`): GPU varken model, ağ ve bayrak
+   * kareleri işçide kuruluyor, çokgen hiç hesaplanmıyor. Ana iş parçacığına
+   * yalnız anahtar düşüyor; resim gelene kadar kare boş. GPU yoksa (ya da
+   * düşerse) çokgenler `uret`ten, eskisi gibi.
+   */
+  tarif?: boolean;
 }) {
   const ref = useRef<SVGSVGElement>(null);
   const [gpuYok, setGpuYok] = useState(false);
   const gpu = glVarMi() && !gpuYok;
-  const bekle = ertele && kutu !== undefined && !ONBELLEK.has(anahtar);
+  const cokgensiz = gpu && tarif;
+  const bekle = !cokgensiz && ertele && kutu !== undefined && !ONBELLEK.has(anahtar);
   const [, yenile] = useState(0);
   // Ertelenen sahne GPU ile çiziliyorsa çokgen hiç hesaplanmıyor: resim
   // gelene kadar boş kare. GPU yoksa (ya da düştüyse) çokgen boyamadan sonra.
@@ -563,10 +570,11 @@ export const Sahne = memo(function Sahne({
     };
   }, [bekle, gpu, anahtar, uret, kamera]);
 
-  const c = bekle ? null : cizimiAl(anahtar, uret, kamera);
-  const v: [number, number, number, number] = kutu ?? (kare ? kareyeTamamla(c!.kutu) : c!.kutu);
+  const c = bekle || cokgensiz ? null : cizimiAl(anahtar, uret, kamera);
+  const kendi = kutu ?? (c ? c.kutu : kutuAl(anahtar, uret, kamera));
+  const v: [number, number, number, number] = kutu ?? (kare ? kareyeTamamla(kendi) : kendi);
   const canli = hareket && gpu && !hareketKisitli();
-  const resim = useGpuResmi(gpu, anahtar, uret, kamera, v, kirp, tilt, canli, ref, () =>
+  const resim = useGpuResmi(gpu, anahtar, cokgensiz, uret, kamera, v, kirp, tilt, canli, ref, () =>
     setGpuYok(true),
   );
 
@@ -605,14 +613,7 @@ export const Sahne = memo(function Sahne({
   return (
     <span className={className} style={{ ...style, display: 'grid', gridTemplate: IZGARA }}>
       {svg}
-      {resim && (
-        <HareketKatmani
-          v={v}
-          kirp={kirp}
-          katman={glKatmanlari(resim)}
-          dumanlar={DUMANLAR.get(anahtar) ?? []}
-        />
-      )}
+      {resim && <HareketKatmani v={v} kirp={kirp} katman={glKatmanlari(resim)} />}
     </span>
   );
 });

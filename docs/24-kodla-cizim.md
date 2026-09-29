@@ -253,11 +253,19 @@ bırakılıyor; telefonda tam ekran bir afişin dokuları onlarca MB tutuyordu.
 OffscreenCanvas) koşuyor. GPU sürücüsü yazılımsa (donanım hızlandırması
 yok) bir sahne yüzlerce milisaniye sürebiliyor; ana iş parçacığında bu
 kaydırmayı ve dokunmayı donduruyordu (dünya haritasında 661 ms'lik tek bir
-görev ölçüldü, işçiyle 70 ms). Ana iş parçacığında yalnız modelden ağ
-kuruluyor ve tamponlar kopyasız aktarılıyor. İşçi açılamazsa ya da WebGL2
-orada yoksa aynı çizici ana iş parçacığında; o da yoksa SVG. İşler tek tek,
-aralarında nefes payıyla; aynı istek (anahtar + görüş kutusu + boy) bir kez
-çiziliyor.
+görev ölçüldü, işçiyle 70 ms). İşçi açılamazsa ya da WebGL2 orada yoksa
+aynı çizici ana iş parçacığında; o da yoksa SVG. İşler tek tek, aralarında
+nefes payıyla; aynı istek (anahtar + görüş kutusu + boy) bir kez çiziliyor.
+
+**Tarif (`tarif.ts`).** Oyunun her çizimi bir anahtarla adlı (`zemin:kisla`,
+`bina:kisla_3`, `birimler:okcu`, `diyar:…:kapak`) ve model yalnız o
+anahtardan kuruluyor. Bu yüzden model, ağ, salınan parçaların kareleri ve
+duman kaynakları İŞÇİDE kuruluyor; ana iş parçacığına bir dizge düşüyor.
+Önceden bunlar ana iş parçacığındaydı ve telefon düzeyinde (işlemci 4 kat
+yavaş) ölçüldü: Kışla'ya girerken 1,9 sn, Akın'da 2,4 sn tek parça
+kilitlenme; tarifle 0,4 sn ve 0,07 sn. `Cizimler.tsx` SVG yedeğinin
+modelini de aynı işlevden alıyor. Tarifi olmayan çizim (galerideki
+denemeler) eskisi gibi modelini yolluyor.
 
 **Yalnız donanımda.** GPU yolu donanım hızlandırmalı WebGL2 istiyor.
 Sürücü yazılımsa (SwiftShader, llvmpipe, Windows'un temel sürücüsü)
@@ -269,10 +277,14 @@ Başsız tarayıcıda WebGL hep yazılım; görsel denetim ve ekran görüntüle
 GPU yolunu `localStorage['gl-yazilim'] = '1'` ile zorluyor. Oyuncuya bir
 ayar değil.
 
-**Sahne (`Sahne.tsx`).** Önce SVG çokgenleri görünüyor (ertelenen büyük
-şeritlerde GPU varsa hiç hesaplanmıyor), GPU resmi hazır olunca aynı
-SVG'nin içine `<image>` olarak oturuyor: yer değişmiyor, erişilebilir ad
-aynı, `data-gl` imzası ekleniyor. Resim öğenin ekrandaki boyu × piksel
+**Sahne (`Sahne.tsx`).** GPU varken tarifli sahnede çokgen hiç
+hesaplanmıyor: kare resim gelene kadar boş, resim aynı SVG'nin içine
+`<image>` olarak oturuyor (yer değişmiyor, erişilebilir ad aynı, `data-gl`
+imzası ekleniyor). Kendi çerçevesine oturan çizim (birlik, eşya) yalnız
+kutusunu hesaplıyor (`uc.kutusu`, çokgenlerin kutusuyla aynı). Önceden her
+sahne önce SVG çokgenleriyle çiziliyordu: Akın ekranında 6.400 çokgen, onları
+ölçen yerleşim hesabı ve çöp toplama sayfayı donduruyordu. GPU yoksa (ya da
+düşerse) çokgenler eskisi gibi. Resim öğenin ekrandaki boyu × piksel
 yoğunluğu kadar çiziliyor (en çok 3×, 1400 piksel); boy 1,25'in
 kuvvetlerine yuvarlanıyor, öğe büyürken her pikselde yeniden çizilmesin.
 `tilt` verilirse istek tilt-shift'li; önbellek anahtarına da giriyor.
@@ -294,7 +306,12 @@ kaydırıyor.
   rüzgârla kayarak yükseliyor, büyüyüp sönüyor. Kaynaklar ayrı evrede.
   Kaynağın ekrandaki yeri modelden bir kez hesaplanıyor.
 - Bayrak: her bayrak kendi kutusunda; atlastaki satırı `steps(12)` ile
-  kare kare kayıyor (1,2 sn'de bir dalga turu). Bayraklar ayrı evrede.
+  kare kare kayıyor (1,2 sn'de bir dalga turu). Kayan katman yalnız o
+  parçanın kare şeridi kadar (atlas arka plan olarak şeridin yerinden
+  gösteriliyor): önceden her parça atlasın tamamı boyunda bir katmandı,
+  ağaçlı bir zeminde ~74 megapiksel katman telefonun GPU belleğini
+  tüketiyordu (şimdi ~2,6). Ekranda olmayan sahnenin katmanları duruyor
+  (`IntersectionObserver`). Bayraklar ayrı evrede.
   Kumaş dilimli ve dinlenik hâlini taşıyor (`Yuz.bez`: düz hâli ve her
   köşenin direkten uca oranı; dönüşümler onu da taşıyor). Dalga
   (`parca.bezAni`) direkten uca büyüyüp uca doğru yürüyor, direk kenarı
@@ -332,7 +349,9 @@ yıldız gibi dilimlenmesin), ışık ve renk köşede, kıyı `KARA_YOLU`na
 işaretli uzaklıktan. Toprak hücreleri de aynı yolla kırpıldığı için zemin
 ve hücreler aynı kıyıyı paylaşıyor. Ağaçlar iki çıktıda da aynı yerde
 (rastgele dizi 2D ızgaranın tükettiği kadar atlanıyor). Ağ ayrı bir
-işçide kuruluyor; zemin 2048 piksel çizilip tuvale yumuşakça geliyor.
+işçide kuruluyor; zemin 2048 piksellik bir resim olarak yumuşakça geliyor
+(tuvale kopyalanmıyor: `drawImage` telefonda ana iş parçacığında yüzlerce
+milisaniyeydi).
 Kıyı ve kara sorguları kenar şeritleri ve hücreleriyle hızlandırıldı:
 her köşe yüzlerce kenarı değil, yalnız kendi şeridini tarıyor.
 
@@ -345,6 +364,8 @@ her köşe yüzlerce kenarı değil, yalnız kendi şeridini tarıyor.
 | `rastgele.ts`                 | Tohumlu rastgele (FNV-1a + mulberry32)                                                                                                  |
 | `parca.ts`                    | Ortak parçalar: ağaç, çam, bayrak (dalgası `bezAni`), çadır, fıçı, duman, uzuv, teker, kubbe                                            |
 | `bayrakAni.ts`                | Salınan parçaların (bayrak, sancak, ağaç) kareleri, GPU için; parçalar uzaktan yakına                                                   |
+| `tarif.ts`                    | Çizim anahtarından model (`zemin:kisla` → `zeminModeli`): GPU işçisi modeli kendisi kuruyor                                             |
+| `duman.ts`                    | Canlı dumanın kaynakları (saf; işçide hesaplanıyor)                                                                                     |
 | `arazi.ts`                    | Yükseklik alanından arazi, su, kıyı, nehir yatağı, yol ve parsel izleri, düzleme                                                        |
 | `binalar.ts`                  | Şehir binaları, her biri üç aşama; arsa, görev panosu, haberci kulesi, onur meydanı                                                     |
 | `yerlesim.ts`                 | Şehir sayfasının altındaki altı yerleşim kademesi (kamp → metropol)                                                                     |
@@ -364,8 +385,8 @@ her köşe yüzlerce kenarı değil, yalnız kendi şeridini tarıyor.
 | `Cizimler.tsx`                | Ekranların kullandığı bileşenler: `BinaCizimi`, `BolgeCizimi`, `NesneCizimi`, `PortreCizimi`, `DiyarCizimi`, `ZeminCizimi`, …           |
 | `Galeri.tsx`                  | Geliştirme galerisi                                                                                                                     |
 
-Dünya haritasının arazisi bir kez bir tuvale çiziliyor (GPU'da 2048, 2D
-yedekte 1600 piksel) ve modül düzeyinde saklanıyor. Harita her açıldığında
+Dünya haritasının arazisi bir kez çiziliyor (GPU'da 2048 piksellik resim,
+2D yedekte 1600 piksellik tuval) ve modül düzeyinde saklanıyor. Harita her açıldığında
 aynı tuval yeniden bağlanıyor. SVG'de yirmi bin üçgen yakınlaştırma ve
 kaydırmada her karede yeniden taranıyordu; tuval tek bir resim gibi
 ölçekleniyor.

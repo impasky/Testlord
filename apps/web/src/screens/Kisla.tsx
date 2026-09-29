@@ -13,7 +13,6 @@ import { useState } from 'react';
 import { ApiError, api, type LordState, type QueueItem, type UnitDto } from '../api/client';
 import { hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { Gorsel } from '../components/Gorsel';
-import { HedefSeridi } from '../components/HedefSeridi';
 import {
   BirimIkonu,
   IkonCan,
@@ -336,13 +335,10 @@ export function Kisla({
   lord,
   queues,
   onGuncelle,
-  onHaritayaGit,
 }: {
   lord: LordState;
   queues: QueueItem[];
   onGuncelle: () => void;
-  /** Önerilen hedefi haritada açar — "ne için asker eğitiyorum" sorusunun sonu. */
-  onHaritayaGit?: (regionId: number) => void;
 }) {
   const qc = useQueryClient();
   const [hata, setHata] = useState<string | null>(null);
@@ -432,17 +428,6 @@ export function Kisla({
             {hata}
           </p>
         </Kart>
-      )}
-
-      {/* Asker eğitmenin sebebi ekranın en üstünde durur. Önceden beş kart
-          beş düğmeyle yan yanaydı ve hiçbiri neden eğitim yapıldığını
-          söylemiyordu. (docs/08 İ1) */}
-      {oneri && (
-        <HedefSeridi
-          hedef={oneri}
-          baslik="Ordunu ne için kuruyorsun"
-          onAc={onHaritayaGit ? () => onHaritayaGit(oneri.regionId) : undefined}
-        />
       )}
 
       {/* Malikâne'yle aynı dil: iki büyük kart yerine tek rozet satırı.

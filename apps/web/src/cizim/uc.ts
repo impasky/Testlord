@@ -802,6 +802,37 @@ export function ciz(model: Model, kamera: Kamera = IZOMETRIK, pay = 1): Cizilmis
   };
 }
 
+/**
+ * `ciz`in görüş kutusu, çokgenleri kurmadan: aynı yüzler (arka yüz atılıyor,
+ * ince levhanınki kalıyor), aynı pay. GPU çiziminde çokgen hiç gerekmiyor;
+ * kendi çerçevesine oturan çizim (birlik, eşya) yalnız kutusunu istiyor.
+ */
+export function kutusu(
+  model: Model,
+  kamera: Kamera = IZOMETRIK,
+  pay = 1,
+): [number, number, number, number] {
+  const c = kameraYonu(kamera);
+  const ekran = yansitici(kamera);
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
+  for (const y of model) {
+    if (y.p.length < 3) continue;
+    if (nokta(normal(y.p), c) <= 1e-6 && !y.ciftYuz) continue;
+    for (const q of y.p) {
+      const [px, py] = ekran(q);
+      if (px < minX) minX = px;
+      if (py < minY) minY = py;
+      if (px > maxX) maxX = px;
+      if (py > maxY) maxY = py;
+    }
+  }
+  if (!isFinite(minX)) return [0, 0, 1, 1];
+  return [minX - pay, minY - pay, maxX - minX + pay * 2, maxY - minY + pay * 2];
+}
+
 /** İki modeli birleştirir (dizi yayma kısayolu, okunaklılık için). */
 export function birlestir(...parcalar: Model[]): Model {
   return parcalar.flat();

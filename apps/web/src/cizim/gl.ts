@@ -9,6 +9,7 @@
  * aynı çizici burada koşuyor; o da yoksa null — çağıran SVG'ye düşüyor.
  */
 import { bayrakKareleri } from './bayrakAni';
+import { dumanKaynaklari, type DumanKaynagi } from './duman';
 import { agYap, type Ag } from './glAg';
 import {
   aktarilanlar,
@@ -19,15 +20,22 @@ import {
   type BayrakAtlasi,
   type CizimSonucu,
   type IsciCevabi,
+  type IsciIstegi,
 } from './glCizici';
+import { tarifModeli } from './tarif';
 import type { Kamera, Model, V3 } from './uc';
 
 export { EN_BUYUK, atlasDuzeni } from './glCizici';
 
 export interface GlIstek {
-  /** Çizilecek model; ya da önceden (işçide) kurulmuş ağı (`ag`). */
+  /**
+   * Çizilecek model; ya da önceden (işçide) kurulmuş ağı (`ag`); ya da
+   * modelin tarifi (`tarif.ts` anahtarı): model de işçide kuruluyor, ana iş
+   * parçacığına yalnız anahtar düşüyor.
+   */
   model?: Model;
   ag?: Ag;
+  tarif?: string;
   kamera?: Kamera;
   /** Görüş kutusu: SVG'nin viewBox'ı (x, y, en, boy). */
   kutu: [number, number, number, number];
@@ -96,42 +104,57 @@ function isciAl(): Worker | null {
   return isci;
 }
 
-function iscide(i: Worker, istek: CizimIstegi): Promise<IsciCevabi> {
+function iscide(i: Worker, istek: IsciIstegi): Promise<IsciCevabi> {
   const id = ++sayac;
   return new Promise((coz) => {
     bekleyenler.set(id, coz);
-    i.postMessage({ id, istek }, aktarilanlar(istek));
+    i.postMessage({ id, istek }, aktarilanlar(istek as Partial<CizimIstegi>));
   });
 }
 
 async function ciz(istek: GlIstek): Promise<CizimSonucu | null> {
-  // Model işçiye gitmiyor (yalnız ağı): kopyalanması büyük sahnede pahalı.
-  const { model, ag, ...geri } = istek;
+  // Model işçiye gitmiyor (yalnız ağı ya da tarifi): kopyalanması büyük
+  // sahnede pahalı.
+  const { model, ag, tarif, ...geri } = istek;
   const h = istek.hareket;
-  const kur = (m: Model) => ({
-    ag: agYap(m, istek.kamera, { dumansiz: h, bayraksiz: h }),
-    bayrak: h ? bayrakKareleri(m, istek.kamera) : undefined,
-  });
-  let c: CizimIstegi = {
-    ...geri,
-    ...(ag ? { ag } : kur(model ?? [])),
-    yazilimaIzin: yazilimaIzin(),
+  let dumanlar: DumanKaynagi[] | undefined;
+  const kur = (m: Model) => {
+    if (h) dumanlar = dumanKaynaklari(m, istek.kamera);
+    return {
+      ag: agYap(m, istek.kamera, { dumansiz: h, bayraksiz: h }),
+      bayrak: h ? bayrakKareleri(m, istek.kamera) : undefined,
+    };
   };
+  const modelden = () => kur(model ?? (tarif ? tarifModeli(tarif) : null) ?? []);
+  const yazilim = yazilimaIzin();
   const i = isciAl();
   if (i) {
-    const cevap = await iscide(i, c);
+    const gidecek: IsciIstegi = ag
+      ? { ...geri, ag, yazilimaIzin: yazilim }
+      : tarif && !model
+        ? { ...geri, tarif, yazilimaIzin: yazilim }
+        : { ...geri, ...modelden(), yazilimaIzin: yazilim };
+    const cevap = await iscide(i, gidecek);
     if (!cevap.yok) {
       isciDurumu = 'hazir';
-      return cevap.sonuc ?? null;
+      return cevap.sonuc ? { ...cevap.sonuc, dumanlar: cevap.sonuc.dumanlar ?? dumanlar } : null;
     }
     // İşçide WebGL2 yok: bundan sonra burada. Ağ geri geldiyse o, gelmediyse
     // (işçi düştü) modelden yeniden; önceden kurulmuş ağ da gittiyse null.
     isciyiBirak();
-    if (cevap.ag) c = { ...c, ag: cevap.ag, bayrak: cevap.bayrak };
-    else if (model) c = { ...c, ...kur(model) };
-    else return null;
+    if (cevap.ag) {
+      dumanlar = cevap.dumanlar ?? dumanlar;
+      return sonuna(
+        await cizBlob({ ...geri, ag: cevap.ag, bayrak: cevap.bayrak, yazilimaIzin: yazilim }),
+      );
+    }
+    if (!model && !tarif) return null;
   }
-  return cizBlob(c);
+  return sonuna(await cizBlob({ ...geri, ...(ag ? { ag } : modelden()), yazilimaIzin: yazilim }));
+
+  function sonuna(s: CizimSonucu | null): CizimSonucu | null {
+    return s && { ...s, dumanlar };
+  }
 }
 
 /* ── Sıra ve önbellek ──────────────────────────────────────────────── */
@@ -145,6 +168,8 @@ export interface Katmanlar {
   isik?: string;
   /** Bayrak atlası ve bayrakların resimdeki kutuları (bkz. `BayrakAtlasi`). */
   bayrak?: Omit<BayrakAtlasi, 'resim'> & { url: string };
+  /** Canlı dumanın kaynakları (görüş kutusu biriminde). */
+  dumanlar?: DumanKaynagi[];
 }
 const KATMANLAR = new Map<string, Katmanlar>();
 
@@ -217,7 +242,7 @@ export function glCiz(anahtar: string, istek: () => GlIstek): Promise<string | n
         const s = await ciz(istek());
         if (!s) return null;
         const url = URL.createObjectURL(s.resim);
-        if (s.su || s.isik || s.bayrak) {
+        if (s.su || s.isik || s.bayrak || s.dumanlar?.length) {
           const { resim, ...bayrak } = s.bayrak ?? {};
           KATMANLAR.set(url, {
             su: s.su && URL.createObjectURL(s.su),
@@ -226,6 +251,7 @@ export function glCiz(anahtar: string, istek: () => GlIstek): Promise<string | n
               ...(bayrak as Omit<BayrakAtlasi, 'resim'>),
               url: URL.createObjectURL(resim),
             },
+            dumanlar: s.dumanlar,
           });
         }
         return url;

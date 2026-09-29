@@ -381,11 +381,11 @@ await kapiyiKapat(page);
     else sorun('gpu', "Sahneler GPU'dan gelmedi", 'svg[data-gl] yok');
     await page.click('nav button:has-text("Dünya")');
     const zemin = await page
-      .waitForSelector('canvas[data-dunya-zemini][data-gl]', { timeout: 30000 })
+      .waitForSelector('[data-dunya-zemini][data-gl]', { timeout: 30000 })
       .then(() => true)
       .catch(() => false);
     if (zemin) iyi('gpu', "dünya zemini GPU'dan");
-    else sorun('gpu', "Dünya zemini GPU'dan gelmedi", 'canvas[data-gl] yok');
+    else sorun('gpu', "Dünya zemini GPU'dan gelmedi", '[data-dunya-zemini][data-gl] yok');
     if (yazilim) {
       await page.evaluate(() => localStorage.removeItem('gl-yazilim'));
       await yenidenAc();

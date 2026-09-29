@@ -14,6 +14,7 @@
  */
 import {
   B,
+  EQUIP_SLOTS,
   UNIT_TYPES,
   akinEkipmanSansi,
   akinGarnizonu,
@@ -50,8 +51,14 @@ function akinDuzeni(value: unknown): Side['duzen'] | undefined {
   return d && typeof d === 'object' ? d : undefined;
 }
 
-/** Ekipman düşürülürken hangi slotlar çekilebilir. */
-const SLOTLAR = ['silah', 'kalkan', 'zirh', 'miğfer', 'yüzük', 'sancak'] as const;
+/**
+ * Ekipman düşürülürken hangi slotlar çekilebilir: oyunun yuvaları, tek
+ * listeden. Burada elle yazılmış bir liste duruyordu ve iki adı yanlıştı
+ * ("miğfer", "yüzük"): düşen parça hiçbir yuvaya uymuyor, Demirhane'de
+ * adsız ve resimsiz ("T2") görünüyordu, kuşanılınca da yedinci bir yuva
+ * gibi güç ekliyordu.
+ */
+const SLOTLAR = EQUIP_SLOTS;
 
 /**
  * Bir akını çözer. `true` = bu çağrı çözdü, `false` = başkası aldı.

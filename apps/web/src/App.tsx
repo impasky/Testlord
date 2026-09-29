@@ -554,17 +554,7 @@ export function App() {
             onBolumeGit={bolumeGit}
           />
         )}
-        {sekme === 'kisla' && (
-          <Kisla
-            lord={lord}
-            queues={queues}
-            onGuncelle={tazele}
-            onHaritayaGit={(bolgeId) => {
-              setHedefBolge(bolgeId);
-              setSekme('harita');
-            }}
-          />
-        )}
+        {sekme === 'kisla' && <Kisla lord={lord} queues={queues} onGuncelle={tazele} />}
         {sekme === 'harita' && (
           <Harita
             lord={lord}

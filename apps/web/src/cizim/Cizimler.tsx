@@ -4,31 +4,16 @@
  * `Sahne`ye bağlıyor.
  */
 import type { CSSProperties } from 'react';
-import { BINA_ADLARI, BINA_KUTUSU, binaModeli } from './binalar';
-import {
-  BIRLIK_ADLARI,
-  DUSMAN_ADLARI,
-  EKIPMAN_ADLARI,
-  birlikModeli,
-  dusmanModeli,
-  ekipmanModeli,
-} from './birlikler';
-import { BOLGE_KUTUSU, BOLGE_TIPLERI, bolgeModeli } from './bolgeler';
-import {
-  GENERAL_ADLARI,
-  LORD_ADLARI,
-  PORTRE_ADLARI,
-  PORTRE_KUTUSU,
-  generalModeli,
-  lordModeli,
-  portreModeli,
-} from './kisiler';
-import { HARITA_KUTUSU, KAPAK_KUTUSU, diyarModeli, type Kadraj } from './diyarlar';
+import { BINA_ADLARI, BINA_KUTUSU } from './binalar';
+import { BIRLIK_ADLARI, DUSMAN_ADLARI, EKIPMAN_ADLARI } from './birlikler';
+import { BOLGE_KUTUSU, BOLGE_TIPLERI } from './bolgeler';
+import { GENERAL_ADLARI, LORD_ADLARI, PORTRE_ADLARI, PORTRE_KUTUSU } from './kisiler';
+import { HARITA_KUTUSU, KAPAK_KUTUSU, type Kadraj } from './diyarlar';
 import { dunyaUcgenleri, type Ucgen } from './dunya';
-import { ZEMIN_ADLARI, ZEMIN_KUTUSU, zeminModeli } from './zeminler';
+import { ZEMIN_ADLARI, ZEMIN_KUTUSU } from './zeminler';
 import { Sahne } from './Sahne';
-import type { Model } from './uc';
-import { YERLESIM_KUTUSU, yerlesimModeli, type Kademe } from './yerlesim';
+import { tarifModeli } from './tarif';
+import { YERLESIM_KUTUSU, type Kademe } from './yerlesim';
 
 /** Çizimi olan bina adları (`kisla_3`, `arsa`, `gorev_panosu`...). */
 export const CIZILEN_BINALAR = new Set(BINA_ADLARI);
@@ -56,7 +41,8 @@ export function BinaCizimi({
   return (
     <Sahne
       anahtar={'bina:' + ad}
-      uret={() => binaModeli(ad)}
+      uret={() => tarifModeli('bina:' + ad) ?? []}
+      tarif
       kutu={BINA_KUTUSU}
       boyut={boyut}
       alt={alt}
@@ -71,7 +57,8 @@ export function YerlesimCizimi({ kademe, className }: { kademe: string; classNam
   return (
     <Sahne
       anahtar={'yerlesim:' + k}
-      uret={() => yerlesimModeli(k)}
+      uret={() => tarifModeli('yerlesim:' + k) ?? []}
+      tarif
       kutu={YERLESIM_KUTUSU}
       alt=""
       className={className}
@@ -101,7 +88,8 @@ export function BolgeCizimi({
   return (
     <Sahne
       anahtar={'bolge:' + ad}
-      uret={() => bolgeModeli(ad)}
+      uret={() => tarifModeli('bolge:' + ad) ?? []}
+      tarif
       kutu={BOLGE_KUTUSU}
       alt={alt}
       className={className}
@@ -113,19 +101,19 @@ export function BolgeCizimi({
 }
 
 /**
- * `Gorsel` türleri için çizim üreticileri: tür → (ad kümesi, üretici).
- * Kümede olmayan ad için `null` — çağıran kendi yedeğini (ikon) gösteriyor.
+ * `Gorsel` türleri için çizimi olan adlar (model `tarif.ts`ten). Kümede
+ * olmayan ad için `null` — çağıran kendi yedeğini (ikon) gösteriyor.
  */
-const NESNE: Record<string, [Set<string>, (ad: string) => Model | null]> = {
-  birimler: [new Set(BIRLIK_ADLARI), birlikModeli],
-  dusmanlar: [new Set(DUSMAN_ADLARI), dusmanModeli],
-  ekipman: [new Set(EKIPMAN_ADLARI), ekipmanModeli],
-  generaller: [new Set(GENERAL_ADLARI), generalModeli],
-  lord: [new Set(LORD_ADLARI), lordModeli],
+const NESNE: Record<string, Set<string>> = {
+  birimler: new Set(BIRLIK_ADLARI),
+  dusmanlar: new Set(DUSMAN_ADLARI),
+  ekipman: new Set(EKIPMAN_ADLARI),
+  generaller: new Set(GENERAL_ADLARI),
+  lord: new Set(LORD_ADLARI),
 };
 
 export function nesneCizimiVar(tur: string, ad: string): boolean {
-  return NESNE[tur]?.[0].has(ad) ?? false;
+  return NESNE[tur]?.has(ad) ?? false;
 }
 
 /** Birlik, düşman, eşya: kare yuvada ortalı, kendi çerçevesinde. */
@@ -144,12 +132,12 @@ export function NesneCizimi({
   className?: string;
   style?: CSSProperties;
 }) {
-  const uret = NESNE[tur]?.[1];
-  if (!uret || !nesneCizimiVar(tur, ad)) return null;
+  if (!nesneCizimiVar(tur, ad)) return null;
   return (
     <Sahne
       anahtar={tur + ':' + ad}
-      uret={() => uret(ad) ?? []}
+      uret={() => tarifModeli(tur + ':' + ad) ?? []}
+      tarif
       alt={alt}
       boyut={boyut}
       className={className}
@@ -182,7 +170,8 @@ export function PortreCizimi({
   return (
     <Sahne
       anahtar={'portre:' + ad}
-      uret={() => portreModeli(ad) ?? []}
+      uret={() => tarifModeli('portre:' + ad) ?? []}
+      tarif
       kutu={PORTRE_KUTUSU}
       alt={alt}
       className={className}
@@ -222,7 +211,8 @@ export function DiyarCizimi({
   return (
     <Sahne
       anahtar={'diyar:' + ad + ':' + kadraj}
-      uret={() => diyarModeli(ad, kadraj) ?? []}
+      uret={() => tarifModeli('diyar:' + ad + ':' + kadraj) ?? []}
+      tarif
       kutu={kadraj === 'kapak' ? KAPAK_KUTUSU : HARITA_KUTUSU}
       alt=""
       className={className}
@@ -255,7 +245,8 @@ export function ZeminCizimi({ ad, className }: { ad: string; className?: string 
   return (
     <Sahne
       anahtar={'zemin:' + ad}
-      uret={() => zeminModeli(ad) ?? []}
+      uret={() => tarifModeli('zemin:' + ad) ?? []}
+      tarif
       kutu={ZEMIN_KUTUSU}
       alt=""
       className={className}

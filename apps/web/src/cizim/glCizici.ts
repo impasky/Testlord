@@ -22,6 +22,7 @@
  * OffscreenCanvas) ana iş parçacığında da aynı koşuyor. Sıra, önbellek ve
  * işçi `gl.ts`'de.
  */
+import type { DumanKaynagi } from './duman';
 import { KOSE, type Ag } from './glAg';
 import { ISIK, ORTAM, YAYGIN, kameraTabani, type Kamera, type V3 } from './uc';
 
@@ -1117,6 +1118,8 @@ export interface CizimSonucu {
   su?: Blob;
   isik?: Blob;
   bayrak?: BayrakAtlasi;
+  /** Canlı dumanın kaynakları (hareketli sahne; bkz. `duman.ts`). */
+  dumanlar?: DumanKaynagi[];
 }
 
 /** Atlas rafının eni: çok ağaçlı sahnede atlas tek uzun sütun olmasın. */
@@ -1156,6 +1159,13 @@ async function blobla(tuval: Tuval): Promise<Blob | null> {
   return new Promise((coz) => (tuval as HTMLCanvasElement).toBlob((b) => coz(b), 'image/png'));
 }
 
+/**
+ * İşçiye giden iş: kurulmuş ağ, ya da yalnız çizimin anahtarı (`tarif`).
+ * Tarifte model, ağ, bayrak kareleri ve duman kaynakları işçide kuruluyor
+ * (`tarif.ts`); ana iş parçacığına yalnız bir dizge düşüyor.
+ */
+export type IsciIstegi = CizimIstegi | (Omit<CizimIstegi, 'ag' | 'bayrak'> & { tarif: string });
+
 /** İşçinin cevabı: resim, ya da "burada WebGL2 yok" (ağ geri aktarılıyor). */
 export interface IsciCevabi {
   id: number;
@@ -1163,20 +1173,27 @@ export interface IsciCevabi {
   yok?: boolean;
   ag?: Ag;
   bayrak?: BayrakKareleri;
+  dumanlar?: DumanKaynagi[];
 }
 
 /** İsteğin tamponları: işçiyle kopyasız (aktararak) gidip geliyor. */
 export const aktarilanlar = ({
   ag,
   bayrak,
-}: Pick<CizimIstegi, 'ag' | 'bayrak'>): Transferable[] => [
-  ag.yer.buffer,
-  ag.nesne.buffer,
-  ag.saydam.buffer,
-  ag.golge.buffer,
-  ag.bez.buffer,
-  ...(bayrak?.kareler.map((k) => k.buffer) ?? []),
-];
+}: {
+  ag?: Ag;
+  bayrak?: BayrakKareleri;
+}): Transferable[] =>
+  ag
+    ? [
+        ag.yer.buffer,
+        ag.nesne.buffer,
+        ag.saydam.buffer,
+        ag.golge.buffer,
+        ag.bez.buffer,
+        ...(bayrak?.kareler.map((k) => k.buffer) ?? []),
+      ]
+    : [];
 
 /** Çizicinin durumu: `yok` ise WebGL2 bu bağlamda yok ya da kayboldu. */
 export function glDurumu(): typeof durum {

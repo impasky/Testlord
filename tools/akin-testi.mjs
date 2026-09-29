@@ -176,6 +176,16 @@ kontrol(
   `${sonuc.odul?.altin ?? 0} altın`,
 );
 
+// İlk zaferde parça kesin düşüyor. Yuvası oyunun altı yuvasından biri
+// olmalı: ganimet "miğfer" ve "yüzük" yazıyordu, parça Demirhane'de adsız
+// ve resimsiz ("T2") görünüyor, kuşanılınca yedinci bir yuva gibi sayılıyordu.
+const YUVALAR = ['silah', 'kalkan', 'zirh', 'migfer', 'at', 'sancak'];
+kontrol(
+  'Düşen parça oyunun bir yuvasında',
+  Boolean(sonuc.dusenParca) && YUVALAR.includes(sonuc.dusenParca.slot),
+  sonuc.dusenParca ? `${sonuc.dusenParca.slot} T${sonuc.dusenParca.tier}` : 'parça yok',
+);
+
 const meSonra = await get('/me');
 kontrol(
   'AKIN TOPRAK VERMİYOR — bölge sayısı değişmedi',
