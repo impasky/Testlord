@@ -149,7 +149,19 @@ describe('GPU ağı (agYap)', () => {
     expect(ucgenSayisi(dumansiz.saydam)).toBe(0);
     expect(ucgenSayisi(dumansiz.nesne)).toBe(2);
     const sade = agYap([ustUcgen()]);
-    expect(sade.suVar || sade.isimaVar).toBe(false);
+    expect(sade.suVar || sade.isimaVar || sade.cimenVar).toBe(false);
+  });
+
+  it('çimen: yerdeki çimen işaretleniyor (hareket katmanının maskesi), desensiz', () => {
+    const ag = agYap([ustUcgen({ katman: -2, doku: 'cimen' })]);
+    expect(ag.cimenVar).toBe(true);
+    expect(ucgenSayisi(ag.yer)).toBe(1);
+    // Malzeme numarası gölgelendiriciye gidiyor; numaralar ayrı ayrı.
+    expect(kose(ag.yer, 0).doku[2]).toBe(DOKU_NO.cimen);
+    expect(new Set(Object.values(DOKU_NO)).size).toBe(Object.keys(DOKU_NO).length);
+    // Yalnız yer: nesnenin üstündeki çimen (plaka) dalgalanmıyor.
+    expect(agYap([ustUcgen({ doku: 'cimen' })]).cimenVar).toBe(false);
+    expect(agYap([ustUcgen({ katman: -2 })]).cimenVar).toBe(false);
   });
 
   it('bayraksız ağ: kumaş çizilmiyor ama gölgesini düşürüyor', () => {

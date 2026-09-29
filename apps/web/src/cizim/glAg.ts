@@ -42,6 +42,7 @@ export const DOKU_NO: Record<Doku, number> = {
   arduvaz: 4,
   saman: 5,
   tahta: 6,
+  cimen: 7,
 };
 
 const DUVAR = new Set<string>([P.tas, P.koyuTas, P.acikTas, P.kumTasi]);
@@ -78,9 +79,10 @@ export interface Ag {
   enCok: V3;
   /** Bakana doğru derinlik aralığı (z tamponu ölçeği). */
   derinlik: [number, number];
-  /** Görünen su ve ışıyan yüz var mı (hareket katmanları yalnız varsa çiziliyor). */
+  /** Görünen su, ışıyan yüz, yerde çimen var mı (hareket katmanları yalnız varsa çiziliyor). */
   suVar: boolean;
   isimaVar: boolean;
+  cimenVar: boolean;
   /**
    * `bayraksiz` ağda salınan yüzler (bayrak, sancak, ağaç), nesne düzeninde:
    * çizici bunları hareket kareleri kurulamazsa ana resme çiziyor.
@@ -154,6 +156,7 @@ export function agYap(
   let dMax = -Infinity;
   let suVar = false;
   let isimaVar = false;
+  let cimenVar = false;
 
   // 1) Karar: hangi yüz nereye, hangi sırayla (kopya yok).
   for (let mi = 0; mi < model.length; mi++) {
@@ -184,6 +187,7 @@ export function agYap(
     const x: Parca = { y, yn, cevir, k, d: d / y.p.length, mi };
     if (y.su) suVar = true;
     if (y.isima) isimaVar = true;
+    if (y.doku === 'cimen' && k < 0) cimenVar = true;
     if (secenek.bayraksiz && y.bez) bezler.push(x);
     else if (alfa < 1) saydam.push(x);
     else if (k < 0) yer.push(x);
@@ -302,6 +306,7 @@ export function agYap(
     derinlik: [dMin, dMax],
     suVar,
     isimaVar,
+    cimenVar,
     bez: dizi(bezler),
     ...(kaynak ? { nesneKaynak: kaynak } : {}),
   };

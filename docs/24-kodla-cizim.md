@@ -212,14 +212,18 @@ parçacığında da aynı koşuyor. Üç geçiş:
    zemini (0,24; uzun şeritte kule tepesi bulanıklaşmasın). Figür, portre,
    bina simgesi, yerleşim ve dünya haritası keskin.
 5. Hareket katmanları (yalnız hareketli sahnede, `hareket`): ana resimden
-   sonra aynı hedeflerden, aynı kırpım ve bulanıklıkla iki PNG daha. Ana
+   sonra aynı hedeflerden, aynı kırpım ve bulanıklıkla üç PNG'ye kadar. Ana
    geçiş suyu `o_ek.a`ya işaretliyor (1 su; ortam gölgesi ağırlığı 0–0,9'a
-   sıkışıyor).
+   sıkışıyor), yerdeki çimeni `o_taban.a`ya (0,625; yer 0,75, nesne 1;
+   okuyanlar 0,5 ve 0,9 eşiğine bakıyor, davranış aynı).
    - Su maskesi: pikselin ne kadarı su (beyaz, saydamlıkla). Önündeki
      köprü, kayık ve ağaç derinlikle zaten örtüyor.
    - Işık: ışıyan yüzlerin rengi ve ana resimdekinden iki kat geniş hare
      (`KATMAN_HARE_YARICAP`, `KATMAN_HARE_GUC`).
-     Sahnede su ya da ışıyan yüz yoksa o katman hiç çizilmiyor. Ağ
+   - Çimen maskesi: pikselin ne kadarı görünen çimen (yer, malzeme
+     `cimen`). Yalın örtü: içine ot gürültüsü işlenince PNG sıkışmıyordu
+     (1000×781'de 805 KB; yalın 99 KB). Ot çizgileri sayfada.
+     Sahnede su, ışıyan yüz ya da yerde çimen yoksa o katman hiç çizilmiyor. Ağ
      `dumansiz` kuruluyor: duman yüzleri (`Yuz.duman`) GPU resminde yok.
 6. Salınan ve canlı parçaların atlası (bayrak, sancak, ağaç; talimdeki
    okçu, koşan at; hareketli sahnede): ağ `bayraksiz` kuruluyor, parçalar
@@ -403,8 +407,18 @@ kaydırıyor.
   ahır), meyve bahçesi ve kovanlar, talim kampı ve atlı ahır, patikalar,
   serpinti (çalı, çiçek, kaya, kütük), orman. Yerler ekran biriminde
   yazılı; dolu yerler (`doluMu`) serpintiye ve ormana kapalı. Doğa
-  durağan: canlılık su, duman ve iki çarktan (yerleşkenin canlı katmanları
-  ~9,5 megapiksel, çevreden önceki kadar).
+  durağan: canlılık su, duman, iki çark ve çimenin rüzgârından
+  (yerleşkenin canlı katmanları ~9,5 megapiksel, çevreden önceki kadar).
+- Çimen rüzgârda: yerleşkenin tabanı ve çimen lekeleri `doku: 'cimen'`
+  (desen değil, işaret; SVG ve durağan resim değişmiyor). GPU çimen
+  maskesini çıkarıyor; sayfada maskeyle küçük bir ot karosunun
+  (kısa, dik, ince vuruşlar; ekranın piksel yoğunluğunda) kesişimi
+  üstünden rüzgâr karosu kayıyor: rüzgâra dik uzamış iri, yumuşak açık ve
+  koyu lekeler, dumanla aynı yönde (sola) 12 sn'de bir karo. Dalga
+  geçtiği yerde otlar ışığı yakalıyor, arkasında hafifçe gölgeleniyor.
+  Tek katman, yalnız kayma; bina, ağaç, yol ve figür maskede yok
+  (önündekiler örtüyor, canlı parçalar üstte). Salınan ağaç aynı eksende
+  (ekranda yatay) gidip geliyor.
 
 Kutu bir ızgara sarmalayıcısına geçiyor: resim ve katmanlar aynı hücrede
 üst üste, çağıranın sınıfları sarmalayıcıda. Katman dikdörtgeni ölçülüyor

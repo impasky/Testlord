@@ -406,6 +406,11 @@ dere ve köprü, su ve yel değirmeni, gölet, bacası tüten köy evleri ve
 bostanları, mera, meyve bahçesi, talim kampı, patikalar, çalı ve çiçek
 (docs/24 "Canlı yerleşke").
 
+Üçüncü tur: **"çimenleri de rüzgârda hafifçe dalgalandır."** Çimen GPU'da
+işaretleniyor, sayfada üstünden rüzgâr dalgaları kayıyor: dalganın
+geçtiği yerde otlar ışığı yakalıyor. Yeniden çizim yok, tek bir kayan
+katman (docs/24 "Çimen rüzgârda").
+
 ### 6.1 Diyar haritası — gruplar yazı ızgarasından çıktı
 
 Oyuncu: **"Akın kısmında harita yap, 10 NPC karakteri de o haritaya ekle;

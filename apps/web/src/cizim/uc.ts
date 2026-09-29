@@ -20,9 +20,11 @@ export type V3 = [number, number, number];
 
 /**
  * Yüzey malzemesi (yalnız GPU, bkz. `Yuz.doku`): taş örgü (derzli), yer
- * döşemesi, kiremit, arduvaz, saman, tahta kaplama.
+ * döşemesi, kiremit, arduvaz, saman, tahta kaplama. `cimen` desen değil:
+ * yerdeki çimeni işaretliyor, hareketli sahnede rüzgâr üstünde dalgalanıyor
+ * (bkz. `glCizici.KATMAN_PARCA`).
  */
-export type Doku = 'tas' | 'doseme' | 'kiremit' | 'arduvaz' | 'saman' | 'tahta';
+export type Doku = 'tas' | 'doseme' | 'kiremit' | 'arduvaz' | 'saman' | 'tahta' | 'cimen';
 
 export interface Yuz {
   /** Köşeler — DIŞARIDAN bakınca saat yönünün TERSİ (normal dışarı). */

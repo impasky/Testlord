@@ -476,6 +476,30 @@ svg g[role='button']:focus-visible > path:first-of-type {
   }
 }
 
+/*
+ * Çimen: rüzgâr dalgası karosu çimen maskesinin (dik ot çizgili) üstünden
+ * sola kayıyor (dumanla aynı yön); dalga geçtiği yerde otlar ışığı yakalıyor.
+ */
+.hareket-cimen {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0.32;
+}
+.hareket-cimen-a {
+  position: absolute;
+  inset: 0 -512px 0 0;
+  background-repeat: repeat;
+  background-size: 512px 256px;
+  will-change: transform;
+  animation: cimen-es 12s linear infinite;
+}
+@keyframes cimen-es {
+  to {
+    transform: translate3d(-512px, 0, 0);
+  }
+}
+
 /* Işık: ışıyan yüzler ve geniş hare, "ekran" karışımıyla; iki kopya iki ritimde. */
 .hareket-isik {
   position: absolute;

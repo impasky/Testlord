@@ -58,7 +58,7 @@ export interface GlIstek {
   ton?: number;
   /**
    * Hareketli sahne: duman ağa girmiyor (sayfada canlı yükseliyor), su
-   * maskesi, ışık katmanı ve dalgalanan bayrak atlası da çiziliyor
+   * maskesi, ışık katmanı, çimen maskesi ve dalgalanan bayrak atlası da çiziliyor
    * (`glKatmanlari`); bayrak kumaşı ana resimde yok.
    */
   hareket?: boolean;
@@ -171,6 +171,8 @@ let zincir: Promise<unknown> = Promise.resolve();
 export interface Katmanlar {
   su?: string;
   isik?: string;
+  /** Çimen maskesi: üstünden rüzgâr dalgaları kayıyor. */
+  cimen?: string;
   /** Bayrak atlası ve bayrakların resimdeki kutuları (bkz. `BayrakAtlasi`). */
   bayrak?: Omit<BayrakAtlasi, 'resim'> & { url: string };
   /** Canlı dumanın kaynakları (görüş kutusu biriminde). */
@@ -238,11 +240,12 @@ async function calistir(istek: () => GlIstek): Promise<string | null> {
     const s = await ciz(istek());
     if (!s) return null;
     const url = URL.createObjectURL(s.resim);
-    if (s.su || s.isik || s.bayrak || s.dumanlar?.length) {
+    if (s.su || s.isik || s.cimen || s.bayrak || s.dumanlar?.length) {
       const { resim, ...bayrak } = s.bayrak ?? {};
       KATMANLAR.set(url, {
         su: s.su && URL.createObjectURL(s.su),
         isik: s.isik && URL.createObjectURL(s.isik),
+        cimen: s.cimen && URL.createObjectURL(s.cimen),
         bayrak: resim && {
           ...(bayrak as Omit<BayrakAtlasi, 'resim'>),
           url: URL.createObjectURL(resim),
@@ -355,7 +358,7 @@ export function glCiz(
  */
 export async function glOnYukle(url: string): Promise<void> {
   const k = KATMANLAR.get(url);
-  const adresler = [url, k?.su, k?.isik, k?.bayrak?.url].filter((u): u is string => !!u);
+  const adresler = [url, k?.su, k?.isik, k?.cimen, k?.bayrak?.url].filter((u): u is string => !!u);
   await Promise.all(
     adresler.map((u) => {
       const r = new Image();

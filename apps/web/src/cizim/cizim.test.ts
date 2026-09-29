@@ -825,6 +825,23 @@ describe('yerleşke: binalar sahnede, çevre', () => {
     expect(doluMu(-20, 36)).toBe(false); // okçularla meranın arası
   });
 
+  it('çimen rüzgârda: yerin çimeni işaretli, toprak ve nesne değil', () => {
+    for (const k of YERLESIM_KADEMELERI) {
+      const m = yerlesimModeli(k, [{ ad: 'kisla_3', x: 24, y: 95, olcek: 1.05 }]);
+      const cimen = m.filter((y) => y.doku === 'cimen');
+      expect(cimen.length).toBeGreaterThan(40);
+      // Yalnız yer (katman < 0; GPU'da yer geçişi), yalnız yeşil.
+      for (const y of cimen) {
+        expect(y.katman ?? 0).toBeLessThan(0);
+        const [r, g] = [parseInt(y.renk.slice(1, 3), 16), parseInt(y.renk.slice(3, 5), 16)];
+        expect(g).toBeGreaterThan(r);
+      }
+      expect(agYap(m, undefined, { dumansiz: true, bayraksiz: true }).cimenVar).toBe(true);
+    }
+    // Yapının kendi çizimi (liste simgesi) dalgalanmıyor.
+    expect(binaModeli('kisla_3').some((y) => y.doku === 'cimen')).toBe(false);
+  });
+
   it('yerleşke bütün yapılarıyla bile hafif kalıyor (yüz bütçesi)', () => {
     const hepsi: YerlesimBinasi[] = Object.keys(BINA_YUVALARI).map((k) => ({
       ad: k === 'gorev_panosu' || k === 'haberci_kulesi' || k === 'onur_meydani' ? k : `${k}_5`,

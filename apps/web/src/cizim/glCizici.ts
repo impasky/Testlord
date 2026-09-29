@@ -302,7 +302,7 @@ void main() {
   // sırasında çizgi çekmesin.
   vec3 tabanCizgi = taban;
   vec3 nCizgi = n;
-  if (v_doku.z > 0.5 && s < 0.5) {
+  if (v_doku.z > 0.5 && v_doku.z < 6.5 && s < 0.5) {
     // Yüzün çerçevesi, ağdakiyle aynı: u yatay (yüz boyunca), v eğim
     // boyunca yukarı; yatay yüzde x ve y.
     if (dot(yuzN, n) < 0.0) yuzN = -yuzN;
@@ -368,8 +368,9 @@ void main() {
   float a = v_ek.y;
   o_renk = vec4(min(c, vec3(1.0)) * a, a);
   o_normal = vec4(nCizgi * 0.5 + 0.5, v_ek.z);
-  // Kaplama: 1 nesne, 0,75 yer (arazi, yol, tarla); 0 boş.
-  o_taban = vec4(tabanCizgi, u_yer > 0.5 ? 0.75 : 1.0);
+  // Kaplama: 1 nesne, 0,75 yer (arazi, yol, tarla), 0,625 çimen (yer; malzeme 7,
+  // hareket katmanının maskesi); 0 boş. Okuyanlar eşikle (0,5 ve 0,9) bakıyor.
+  o_taban = vec4(tabanCizgi, u_yer > 0.5 ? (v_doku.z > 6.5 ? 0.625 : 0.75) : 1.0);
   // a: ortam gölgesi ağırlığı 0–0,9; 1 su (hareket katmanının maskesi).
   o_ek = vec4(paketle(gl_FragCoord.z), isima, s > 0.5 ? 1.0 : aoAgirlik * 0.9);
 }`;
@@ -597,12 +598,17 @@ void main() {
  *      ağaç maskeyi zaten örtüyor (derinlik).
  *   1) Işık: ışıyan yüzlerin (ateş, pencere, büyü) rengi ve ana resimdekinden
  *      geniş bir hare. Sayfada "ekran" karışımıyla, saydamlığı titreyerek.
+ *   2) Çimen maskesi: pikselin ne kadarı görünen çimen (yer, malzeme 7).
+ *      Sayfada üstünden rüzgâr dalgaları kayıyor (ot çizgileri sayfanın
+ *      küçük karosunda: gürültülü maske PNG'de sıkışmıyordu). Önündeki
+ *      bina, ağaç, figür maskeyi örtüyor.
  * Önceden çarpılmış renk.
  */
 const KATMAN_PARCA = `#version 300 es
 precision highp float;
 uniform sampler2D u_renk;
 uniform sampler2D u_ek;
+uniform sampler2D u_taban;
 uniform ivec2 u_boyut;
 uniform int u_ss;
 uniform int u_tur;
@@ -615,6 +621,16 @@ vec3 isiyan(ivec2 q) { return texelFetch(u_renk, q, 0).rgb * texelFetch(u_ek, q,
 void main() {
   ivec2 b = ivec2(gl_FragCoord.xy) * u_ss;
   float n = float(u_ss * u_ss);
+  if (u_tur == 2) {
+    float c = 0.0;
+    for (int i = 0; i < u_ss; i++)
+      for (int j = 0; j < u_ss; j++) {
+        float k = texelFetch(u_taban, b + ivec2(i, j), 0).a;
+        c += step(0.55, k) * step(k, 0.7);
+      }
+    o = vec4(c / n);
+    return;
+  }
   if (u_tur == 0) {
     float su = 0.0;
     for (int i = 0; i < u_ss; i++)
@@ -1075,7 +1091,7 @@ export interface CizimIstegi {
   /** Renk düzenlemesinin gücü (0 kapalı, 1 tam); verilmezse tam. */
   ton?: number;
   /**
-   * Hareket katmanlarını da çiz (su maskesi, ışık; bkz. `KATMAN_PARCA`).
+   * Hareket katmanlarını da çiz (su maskesi, ışık, çimen maskesi; bkz. `KATMAN_PARCA`).
    * Ağ `agYap(..., { dumansiz: true })` ile kurulmuş olmalı: duman sayfada
    * canlı yükseliyor.
    */
@@ -1144,6 +1160,7 @@ export interface CizimSonucu {
   resim: Blob;
   su?: Blob;
   isik?: Blob;
+  cimen?: Blob;
   bayrak?: BayrakAtlasi;
   /** Canlı dumanın kaynakları (hareketli sahne; bkz. `duman.ts`). */
   dumanlar?: DumanKaynagi[];
@@ -1508,6 +1525,7 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
   for (const [tur, ad, var_] of [
     [0, 'su', ag.suVar],
     [1, 'isik', ag.isimaVar],
+    [2, 'cimen', ag.cimenVar],
   ] as const) {
     if (!var_) continue;
     gl.bindFramebuffer(gl.FRAMEBUFFER, tilt ? k.araFbo : null);
@@ -1520,6 +1538,9 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
     gl.activeTexture(gl.TEXTURE1);
     gl.bindTexture(gl.TEXTURE_2D, k.dokular[3]!);
     gl.uniform1i(uk('u_ek'), 1);
+    gl.activeTexture(gl.TEXTURE2);
+    gl.bindTexture(gl.TEXTURE_2D, k.dokular[2]!);
+    gl.uniform1i(uk('u_taban'), 2);
     gl.uniform2i(uk('u_boyut'), sen, sboy);
     gl.uniform1i(uk('u_ss'), ss);
     gl.uniform1i(uk('u_tur'), tur);

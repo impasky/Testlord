@@ -50,6 +50,7 @@ import { rastgele } from './rastgele';
 import {
   birlestir,
   cember,
+  dokula,
   dondur,
   katmanla,
   koni,
@@ -454,11 +455,12 @@ export function yerlesimModeli(kademe: Kademe, binalar: YerlesimBinasi[] = []): 
     ekrandan(kx + kw + 8, ky + kh + 8),
     ekrandan(kx + kw + 8, ky - 8),
   ];
-  m.push(...katmanla(prizma(taban, -1, 1, zemin), -2));
-  m.push(...lekeler(r, zemin, 40, 90));
+  // Çimen (taban ve çimen lekeleri): hareketli sahnede rüzgârda dalgalanıyor.
+  m.push(...dokula(katmanla(prizma(taban, -1, 1, zemin), -2), 'cimen'));
+  m.push(...dokula(lekeler(r, zemin, 40, 90), 'cimen'));
   const tasli = kademe === 'kale' || kademe === 'metropol';
   if (!tasli) {
-    m.push(...lekeler(r, zemin, 34));
+    m.push(...dokula(lekeler(r, zemin, 34), 'cimen'));
     // Toprak lekeleri yalnız kampta: köyde ve kasabada kasabanın ortasında
     // anlamsız çamur gölleri gibi duruyordu.
     if (kademe === 'kamp') m.push(...lekeler(r, isikla(P.toprak, 1.05), 12, 28));
