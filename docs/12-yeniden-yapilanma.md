@@ -374,6 +374,29 @@ Meşgul ya da seçili yapı öne alınıyor (`zIndex + 200`). Sıralar bilerek
 çakıştığı için öndeki bina arkadakinin tabanını örtüyor ve sayaç tam
 orada duruyordu; olan biteni gösteren şey üstü örtülü olmamalı.
 
+### 3.8 Yalnız şehir: tam ekran, canlı yerleşke
+
+Oyuncu: **"Şehir sayfasında sadece şehir olsun, alttaki yazılar
+olmasın; kendi köyümüz olduğunu hissedelim. Yerleşkeye hayat getir."**
+
+Yerleşimin altındaki bölümler (diyar tanıtımı, kuyruklar, yapı listesi)
+kalktı. Sayfa Dünya haritası gibi üst çubukla omurga şeridi arasındaki
+bütün alan; yerleşke ondan büyük ve parmakla kaydırılıyor, açılışta
+kasabanın ortası ekranda. Kasabanın çevresinde tarlalar, talim alanı ve
+orman var:
+
+- Talim alanı: okçular hedefe ok atıyor, mızrakçılar kuklaya hamle
+  yapıyor, iki şövalye iki uçtan birbirine at sürüyor ve biri düşüyor.
+- Tarla: öküz sabanı sürülüyor, orakçılar buğday biçiyor, bir kadın
+  demetleri yığına taşıyor.
+
+Canlandırma GPU'da bir kez çizilip CSS'le oynatılıyor (docs/24
+"Canlı yerleşke"). Kaybolan bilgi yok, yeri değişti:
+
+- Kuyruklar zaten binaların tabanında sayıyordu (§3.7).
+- Yapı listesi köşedeki "Yapılar" düğmesiyle yerleşkenin üstünde açılıyor.
+- Kâhya, süren inşaat ve seçili yapının kartı yerleşkenin üstünde yüzüyor.
+
 ### 6.1 Diyar haritası — gruplar yazı ızgarasından çıktı
 
 Oyuncu: **"Akın kısmında harita yap, 10 NPC karakteri de o haritaya ekle;

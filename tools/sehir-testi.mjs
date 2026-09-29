@@ -396,10 +396,14 @@ if (bosArsa) {
 
 /*
  * Seviye yükseltme kayboldu mu: haritadaki dokunuş girmeye ayrıldı,
- * yükseltme LİSTEYE taşındı. Listeden seçilen yapının kartı açılmalı.
+ * yükseltme LİSTEYE taşındı. Liste yerleşkenin altında bir bölüm değil
+ * (sayfada yalnız şehir var), köşedeki "Yapılar" düğmesiyle açılıyor.
+ * Listeden seçilen yapının kartı açılmalı.
  */
 await page.locator('[data-bina]').first().waitFor();
-await page.evaluate(() => document.getElementById('yapilar')?.scrollIntoView());
+const kartKapat = page.locator('[aria-label="Kartı kapat"]');
+if (await kartKapat.isVisible().catch(() => false)) await kartKapat.click();
+await page.locator('[data-yapilar-ac]').click();
 await page.waitForTimeout(400);
 await page.locator('#yapilar button').first().click();
 await page.waitForTimeout(700);
@@ -407,6 +411,32 @@ const listeGovde = await page.locator('main').innerText();
 kontrol(
   'Listeden seçilen yapının kartı açılıyor',
   /Seviye \d+ yap|İnşa et|En yüksek seviyede|tavan/i.test(listeGovde),
+);
+
+/*
+ * Sayfa yalnız şehir: yerleşke ekranı dolduruyor, altında yazı bölümü
+ * yok; talim alanı ve tarla canlı (okçu, mızrakçı, düello, saban...).
+ */
+await page.locator('[aria-label="Kartı kapat"]').click();
+await page.waitForTimeout(400);
+const sayfa = await page.evaluate(() => {
+  const kap = document.querySelector('[data-sehir-sayfasi]');
+  const r = kap?.getBoundingClientRect();
+  return {
+    genis: r ? r.width >= window.innerWidth - 1 : false,
+    bolum: kap ? kap.querySelectorAll('h2:not(.sr-only), h3, section').length : -1,
+    canli: kap ? kap.querySelectorAll('.hareket-bayrak').length : 0,
+    gpu: kap ? kap.querySelectorAll('svg[data-gl]').length > 0 : false,
+  };
+});
+kontrol('Şehir sayfası ekranı dolduran yerleşke', sayfa.genis);
+kontrol('Yerleşkenin altında yazı bölümü yok', sayfa.bolum === 0, `${sayfa.bolum} başlık`);
+// Canlı katmanlar GPU'da kuruluyor; GPU'suz tarayıcı (CI) durağan
+// çizimi görüyor, orada sayılacak katman yok.
+kontrol(
+  'Yerleşke canlı (talim alanı, tarla)',
+  !sayfa.gpu || sayfa.canli > 0,
+  sayfa.gpu ? `${sayfa.canli} katman` : 'GPU yok, durağan çizim — atlandı',
 );
 
 await page.screenshot({ path: `${process.env.CIKTI ?? 'ekran-goruntuleri'}/sehir.png` });

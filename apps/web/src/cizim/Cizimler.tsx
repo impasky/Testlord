@@ -52,6 +52,11 @@ export function BinaCizimi({
   );
 }
 
+/**
+ * Şehir sayfasının yerleşkesi: kasaba, tarlalar, talim alanı. Canlı:
+ * okçular ok atıyor, şövalyeler at sürüyor, köylüler saban sürüyor
+ * (`canli.ts`); bayraklar ve kasabanın ağaçları salınıyor (orman durağan).
+ */
 export function YerlesimCizimi({ kademe, className }: { kademe: string; className?: string }) {
   const k = kademe as Kademe;
   return (
@@ -62,6 +67,8 @@ export function YerlesimCizimi({ kademe, className }: { kademe: string; classNam
       kutu={YERLESIM_KUTUSU}
       alt=""
       className={className}
+      hareket
+      ertele
     />
   );
 }

@@ -442,35 +442,64 @@ function HareketKatmani({
  * demekti ve telefonun GPU belleği tükenip sayfa takılıyordu.
  */
 function Bayraklar({ b, o }: { b: NonNullable<Katmanlar['bayrak']>; o: number }) {
-  const duzen = atlasDuzeni(b.kutular, b.kare);
+  const duzen = atlasDuzeni(b.kutular, b.kareSayilari);
   return (
     <>
-      {b.kutular.map(([x, y, w, h], i) =>
-        w > 0 && h > 0 ? (
-          // Her biri ayrı evrede: rüzgâr hepsini aynı anda savurmasın.
+      {b.kutular.map(([x, y, w, h], i) => {
+        if (!(w > 0 && h > 0)) return null;
+        const k = b.kareSayilari[i]!;
+        const sutun = duzen.sutun[i]!;
+        const satir = k / sutun;
+        const sure = b.sureler[i]!;
+        // Her biri ayrı evrede: rüzgâr hepsini aynı anda savurmasın.
+        const gecikme = `${(-((i * 0.29) % 1) * sure).toFixed(2)}s`;
+        const serit = (
+          <span
+            style={
+              {
+                width: sutun * w * o,
+                height: satir * h * o,
+                backgroundImage: `url(${b.url})`,
+                backgroundSize: `${duzen.en * o}px ${duzen.boy * o}px`,
+                backgroundPosition: `${-duzen.yer[i]![0] * o}px ${-duzen.yer[i]![1] * o}px`,
+                '--kay': `${(-sutun * w * o).toFixed(2)}px`,
+                animationDuration: `${sure / satir}s`,
+                animationTimingFunction: `steps(${sutun})`,
+                animationDelay: gecikme,
+              } as CSSProperties
+            }
+          />
+        );
+        return (
           <span
             key={i}
             className="hareket-bayrak"
             style={{ left: x * o, top: y * o, width: w * o, height: h * o }}
           >
-            <span
-              style={
-                {
-                  width: b.kare * w * o,
-                  height: h * o,
-                  backgroundImage: `url(${b.url})`,
-                  backgroundSize: `${duzen.en * o}px ${duzen.boy * o}px`,
-                  backgroundPosition: `${-duzen.yer[i]![0] * o}px ${-duzen.yer[i]![1] * o}px`,
-                  '--kay': `${(-b.kare * w * o).toFixed(2)}px`,
-                  animationDuration: `${b.sureler[i]}s`,
-                  animationTimingFunction: `steps(${b.kare})`,
-                  animationDelay: `${(-((i * 0.29) % 1) * b.sureler[i]!).toFixed(2)}s`,
-                } as CSSProperties
-              }
-            />
+            {satir > 1 ? (
+              // Uzun tur (canlı parça) atlasta satır satır: şerit bir
+              // satırın karelerini kayarken sarmalayıcı satırdan satıra iniyor.
+              <span
+                className="hareket-satir"
+                style={
+                  {
+                    width: sutun * w * o,
+                    height: satir * h * o,
+                    '--kayY': `${(-satir * h * o).toFixed(2)}px`,
+                    animationDuration: `${sure}s`,
+                    animationTimingFunction: `steps(${satir})`,
+                    animationDelay: gecikme,
+                  } as CSSProperties
+                }
+              >
+                {serit}
+              </span>
+            ) : (
+              serit
+            )}
           </span>
-        ) : null,
-      )}
+        );
+      })}
     </>
   );
 }

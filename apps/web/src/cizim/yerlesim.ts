@@ -9,19 +9,56 @@
  * Kademe büyüdükçe zemin de "yerleşiyor": toprak açıklık → patikalar →
  * çitli yollar ve kuyu → taş yollar, meydan, sur → kale avlusu →
  * bahçeli meydan ve çeşme.
+ *
+ * Kasabanın çevresi YERLEŞKE: arkada tarlalar (saban süren, orak biçen,
+ * demet taşıyan köylüler), önde talim alanı (ok atan okçular, kuklaya
+ * mızrak saplayan mızrakçılar, mızrak düellosu), yanlarda orman. Aktörler
+ * kare kare canlı (`canli.ts`); şehir sayfası yerleşkeyi tam ekran ve
+ * kaydırılabilir gösteriyor.
  */
-import { agac, cam, cit, duman, kaya, mesale, palisat } from './parca';
+import { mizrakSehpasi } from './binalar';
+import {
+  DEMET_KARE,
+  DEMET_SURE,
+  DUELLO_KARE,
+  DUELLO_SURE,
+  MIZRAK_KARE,
+  MIZRAK_SURE,
+  OKCU_KARE,
+  OKCU_SURE,
+  ORAK_KARE,
+  ORAK_SURE,
+  SABAN_KARE,
+  SABAN_SURE,
+  canlandir,
+  demetYigini,
+  demetciPoz,
+  duelloAlani,
+  duelloPoz,
+  mizrakciPoz,
+  okHedefi,
+  okcuPoz,
+  orakciPoz,
+  sabanPoz,
+  seyirci,
+} from './canli';
+import { araba, balya } from './kir';
+import { agac, cam, cit, duman, fici, kaya, mesale, palisat } from './parca';
 import { P, isikla } from './renk';
 import { rastgele } from './rastgele';
 import {
+  birlestir,
   cember,
+  dondur,
   katmanla,
   koni,
   kure,
   kutu,
   mazgal,
+  olcekle,
   prizma,
   silindir,
+  tasi,
   yansitici,
   zemineGeri,
   type Model,
@@ -29,10 +66,16 @@ import {
 
 export type Kademe = 'kamp' | 'koy' | 'kasaba' | 'sehir' | 'kale' | 'metropol';
 
-/** Sahnenin 4:3 çerçevesi (ekran birimi). Binaların yüzdeleri buna göre. */
+/** Kasabanın 4:3 çerçevesi (ekran birimi). Binaların yüzdeleri buna göre. */
 const EN = 64;
 const BOY = 48;
-export const YERLESIM_KUTUSU: [number, number, number, number] = [-EN / 2, -BOY / 2, EN, BOY];
+export const KASABA_KUTUSU: [number, number, number, number] = [-EN / 2, -BOY / 2, EN, BOY];
+
+/**
+ * Yerleşkenin tamamı (ekran birimi): kasaba ortada, arkada tarlalar, önde
+ * talim alanı, yanlarda orman. Şehir sayfası bunu kaydırılabilir gösteriyor.
+ */
+export const YERLESIM_KUTUSU: [number, number, number, number] = [-48, -44, 96, 100];
 
 /** Ekran yüzdesini dünya noktasına çevirir. */
 const geri = zemineGeri();
@@ -257,12 +300,184 @@ const ZEMIN_RENGI: Record<Kademe, string> = {
 
 export const YERLESIM_KADEMELERI: Kademe[] = ['kamp', 'koy', 'kasaba', 'sehir', 'kale', 'metropol'];
 
+/* ── Yerleşke: tarlalar, talim alanı, orman ────────────────────────── */
+
+/** Ekran noktasının (yerleşke çerçevesinde) yerdeki karşılığı. */
+const ekrandan = (sx: number, sy: number) => geri(sx, sy);
+
+/**
+ * Figür biriminde kurulmuş aktörlerin yerleşkedeki ölçeği: insan ~4,5 birim,
+ * binaya göre iri (masa oyunu minyatürü gibi): okçunun yayı, mızrakçının
+ * hamlesi telefonda seçilsin.
+ */
+export const YERLESIM_OLCEK = 0.55;
+
+/**
+ * Yerel x'i ekranda yataya çeviren dönme. Uzun yol boyunca koşan parça
+ * (düello, saban) çapraz dururken kare kutusu hem geniş hem yüksekti ve
+ * atlasta yarısı boştu; yatayda yalnız geniş.
+ */
+const EKRAN_YATAY = -Math.PI / 4;
+
+/** Figür biriminde kurulmuş modeli yerleşkeye koyar: ölçek, yön, ekrandaki yer. */
+function koy(m: Model, sx: number, sy: number, yon = 0): Model {
+  const [x, y] = ekrandan(sx, sy);
+  return tasi(dondur(olcekle(m, YERLESIM_OLCEK), 'z', yon), [x, y, 0]);
+}
+
+/** Yere yatık dikdörtgen (dünya ekseninde), kenarsız: tarla, kum alan. */
+function yerDortgeni(x0: number, y0: number, x1: number, y1: number, renk: string, k: number) {
+  return duz(
+    prizma(
+      [
+        [x0, y0],
+        [x1, y0],
+        [x1, y1],
+        [x0, y1],
+      ],
+      0,
+      0.03,
+      renk,
+    ),
+    k,
+  );
+}
+
+/**
+ * Tarlalar (kasabanın arkası): saban süren köylü ve öküzü, orak biçen iki
+ * köylü, demetleri yığına taşıyan kadın, saman arabası.
+ */
+function tarlalar(): Model {
+  const m: Model = [];
+  // Sürülen tarla: koyu toprak, iz boyunca çizgiler; saban ortasından geçiyor.
+  // Figür biriminde kurulup ekranda yatay dönüyor (iz soldan sağa).
+  const tarla: Model = [...yerDortgeni(-30, -9, 30, 9, '#6e5034', -1.4)];
+  for (let i = 0; i < 9; i++)
+    tarla.push(...yerDortgeni(-29, -8 + i * 2, 29, -7.4 + i * 2, '#5a3f28', -1.3));
+  tarla.push(...cit(-31, -10, 62, 'x', P.tahta, 2.2), ...cit(-31, -10, 20, 'y', P.tahta, 2.2));
+  tarla.push(...canlandir(sabanPoz, SABAN_KARE, SABAN_SURE, [0, 0, 0], true));
+  m.push(...koy(tarla, -20, -35, EKRAN_YATAY));
+
+  // Buğday tarlası: önde anız, arkada ayakta başaklar (sıra sıra); orakçılar arada.
+  const [bx, by] = ekrandan(12, -37);
+  m.push(...yerDortgeni(bx - 11, by - 9, bx + 11, by + 8, '#b8964e', -1.4));
+  for (let y = by - 0.4; y < by + 7.8; y += 1.3)
+    m.push(...kutu(bx - 10.6, y, 0, 21.2, 0.9, 1.5, { ust: '#e0bc5c', yan: '#c9a24e' }));
+  for (const dx of [-4.5, 3.5]) {
+    const [ex, ey] = [bx + dx, by - 2.2];
+    m.push(
+      ...tasi(olcekle(canlandir(orakciPoz, ORAK_KARE, ORAK_SURE, [dx, 0, 0]), YERLESIM_OLCEK), [
+        ex,
+        ey,
+        0,
+      ]),
+    );
+  }
+
+  // Demetçi ve yığın, saman arabası ve balyalar.
+  m.push(
+    ...koy(
+      birlestir(canlandir(demetciPoz, DEMET_KARE, DEMET_SURE, [0, 0, 0]), demetYigini()),
+      29,
+      -31,
+    ),
+  );
+  const [ax, ay] = ekrandan(38, -36);
+  m.push(
+    ...araba(ax, ay, 0, 'y'),
+    ...balya(ax + 4, ay - 2, 0, 0.9),
+    ...balya(ax + 2, ay - 5, 0, 1),
+  );
+  return m;
+}
+
+/**
+ * Talim alanı (kasabanın önü): hedeflere ok atan üç okçu, kuklalara mızrak
+ * saplayan üç mızrakçı, ortada mızrak düellosu ve onu izleyen köylüler.
+ */
+function talimAlani(): Model {
+  const m: Model = [];
+  // Okçular: yan yana, hedefler ileride (+y); altlarında çiğnenmiş toprak.
+  const okcular: Model = [];
+  // Ekranda alt alta dizildikleri için aralık geniş: biri ötekini örtmesin.
+  for (let i = 0; i < 3; i++) {
+    const d = -11 * i;
+    okcular.push(
+      ...tasi(canlandir(okcuPoz, OKCU_KARE, OKCU_SURE, [0, 0, 0]), [d, 0, 0]),
+      ...tasi(okHedefi(), [d, 0, 0]),
+    );
+  }
+  okcular.push(...yerDortgeni(-26, -3, 3, 27, '#7d6848', -1.3));
+  // Atış ekranda soldan sağa: okçu profilden, ok yatay uçuyor.
+  m.push(...koy(okcular, -38, 28, Math.PI / 4));
+
+  // Mızrakçılar: kuklalara doğru (+x), altlarında kum.
+  const mizrakcilar: Model = [];
+  for (let i = 0; i < 3; i++)
+    mizrakcilar.push(
+      ...tasi(canlandir(mizrakciPoz, MIZRAK_KARE, MIZRAK_SURE, [0, 0, 0]), [10 * i, 0, 0]),
+    );
+  mizrakcilar.push(...yerDortgeni(-4, -4, 24, 15, '#9a8660', -1.3));
+  // Hamle ekranda sağdan sola: mızrakçı profilden.
+  m.push(...koy(mizrakcilar, 34, 31, (-3 * Math.PI) / 4));
+  const [rx, ry] = ekrandan(38, 33);
+  m.push(...mizrakSehpasi(rx, ry), ...fici(rx - 2, ry + 3), ...fici(rx - 0.5, ry + 4.2));
+
+  // Düello: perde ortada, yol boyunca kum; iki ucunda çadır.
+  const duello = birlestir(
+    canlandir(duelloPoz, DUELLO_KARE, DUELLO_SURE, [0, 0, 0], true),
+    duelloAlani(),
+    yerDortgeni(-30, -6, 30, 6, '#a8936a', -1.3),
+  );
+  // Koşu yolu ekranda yatay: şövalyeler soldan ve sağdan geliyor.
+  m.push(...koy(duello, -2, 46, EKRAN_YATAY));
+  // Seyirciler: perdenin arkasında, yolun kenarında.
+  for (let i = 0; i < 4; i++) {
+    const [px, py] = ekrandan(-11 + i * 6, 37.5 + (i % 2) * 0.8);
+    m.push(...tasi(dondur(olcekle(seyirci(i), YERLESIM_OLCEK), 'z', -Math.PI / 4), [px, py, 0]));
+  }
+  return m;
+}
+
+/** Yerleşkenin kıyısında orman: yanlarda ve köşelerde, tarlaya ve talim alanına girmeden. */
+function orman(r: () => number): Model {
+  const m: Model = [];
+  const bos = (sx: number, sy: number) =>
+    // Kasaba, tarlalar, talim alanı
+    (sx > -33 && sx < 33 && sy > -25 && sy < 25) ||
+    (sx > -40 && sx < 40 && sy > -44 && sy < -25) ||
+    (sx > -45 && sx < 40 && sy > 26 && sy < 55);
+  let kalan = 46;
+  let deneme = 0;
+  while (kalan > 0 && deneme++ < 2000) {
+    const sx = -50 + r() * 100;
+    const sy = -46 + r() * 104;
+    if (bos(sx, sy)) continue;
+    const [x, y] = ekrandan(sx, sy);
+    if (r() < 0.45) m.push(...cam(x, y, 0, r, 1 + r() * 0.35));
+    else m.push(...agac(x, y, 0, r, 1 + r() * 0.35));
+    kalan--;
+  }
+  // Kıyıdaki orman durağan: salınan her ağaç ayrı bir katman ve kırk ağaç
+  // telefonun GPU belleğinde ~6 megapiksel demekti. Kasabadakiler salınıyor.
+  for (const y of m) delete y.bez;
+  return m;
+}
+
 export function yerlesimModeli(kademe: Kademe): Model {
   const r = rastgele('yerlesim:' + kademe);
   const zemin = ZEMIN_RENGI[kademe] ?? ZEMIN_RENGI.koy;
   const m: Model = [];
-  // Taban: çerçeveyi taşan geniş bir düzlem.
-  m.push(...katmanla(kutu(-60, -60, -1, 120, 120, 1, zemin), -2));
+  // Taban: yerleşke çerçevesini taşan geniş bir düzlem (ekran köşelerinden).
+  const [kx, ky, kw, kh] = YERLESIM_KUTUSU;
+  const taban = [
+    ekrandan(kx - 8, ky - 8),
+    ekrandan(kx - 8, ky + kh + 8),
+    ekrandan(kx + kw + 8, ky + kh + 8),
+    ekrandan(kx + kw + 8, ky - 8),
+  ];
+  m.push(...katmanla(prizma(taban, -1, 1, zemin), -2));
+  m.push(...lekeler(r, zemin, 40, 90));
   const tasli = kademe === 'kale' || kademe === 'metropol';
   if (!tasli) {
     m.push(...lekeler(r, zemin, 34));
@@ -329,7 +544,7 @@ export function yerlesimModeli(kademe: Kademe): Model {
     }
     case 'kale': {
       // Taş avlu: bütün iç taş döşeli, kenarda sur ve kuleler.
-      m.push(...katmanla(kutu(-40, -40, 0, 80, 80, 0.04, isikla(P.acikTas, 0.95)), -1.8));
+      m.push(...kasabaDosemesi(isikla(P.acikTas, 0.95)));
       for (let i = 0; i < 90; i++) {
         const x = (r() - 0.5) * 60;
         const y = (r() - 0.5) * 60;
@@ -349,7 +564,7 @@ export function yerlesimModeli(kademe: Kademe): Model {
       break;
     }
     case 'metropol': {
-      m.push(...katmanla(kutu(-40, -40, 0, 80, 80, 0.04, isikla(P.acikTas, 0.97)), -1.8));
+      m.push(...kasabaDosemesi(isikla(P.acikTas, 0.97)));
       m.push(...yolAgi(r, 3, isikla(P.acikTas, 0.9)));
       // Büyük meydan + çeşme
       m.push(...katmanla(prizma(cember(g[0], g[1], 7.5, 16), 0.04, 0.06, P.acikTas), -0.8));
@@ -378,7 +593,15 @@ export function yerlesimModeli(kademe: Kademe): Model {
       break;
     }
   }
+  // Kasabanın çevresi: arkada tarlalar, önde talim alanı, kıyıda orman.
+  m.push(...tarlalar(), ...talimAlani(), ...orman(r));
   return m;
+}
+
+/** Kasabanın döşemesi (kale, metropol): kasaba çerçevesi kadar, dışı çimen. */
+function kasabaDosemesi(renk: string): Model {
+  const taban = [yuzdeden(-3, -6), yuzdeden(-3, 106), yuzdeden(103, 106), yuzdeden(103, -6)];
+  return katmanla(prizma(taban, 0, 0.04, renk), -1.8);
 }
 
 /** Ekrandaki yüzde → dünya (test ve yerleşim hesapları için). */

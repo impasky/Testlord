@@ -221,10 +221,14 @@ parçacığında da aynı koşuyor. Üç geçiş:
      (`KATMAN_HARE_YARICAP`, `KATMAN_HARE_GUC`).
      Sahnede su ya da ışıyan yüz yoksa o katman hiç çizilmiyor. Ağ
      `dumansiz` kuruluyor: duman yüzleri (`Yuz.duman`) GPU resminde yok.
-6. Salınan parçaların atlası (bayrak, sancak, ağaç; hareketli sahnede):
-   ağ `bayraksiz` kuruluyor, parçalar ana resimde yok (ayrı tamponda,
-   `Ag.bez`), gölgeleri var. Her parçanın bir turdaki 12 anı
-   (`bayrakAni.bayrakKareleri`, ana iş parçacığında). Bayrağın dalgası
+6. Salınan ve canlı parçaların atlası (bayrak, sancak, ağaç; talimdeki
+   okçu, koşan at; hareketli sahnede): ağ `bayraksiz` kuruluyor, parçalar
+   ana resimde yok (ayrı tamponda, `Ag.bez`), gölgeleri var (canlı parça
+   `golgesiz` ise yok: yerinden ayrılan atlının gölgesi yerde kalmasın).
+   Her parçanın bir turdaki anları (`bayrakAni.bayrakKareleri`): salınan
+   parçada 12, canlı parçada kendi sayısı (`kareSayilari`; okçu 24,
+   düello 40). Kare tamponları en uzun tur kadar; turu biten parçanın yeri
+   sonraki karelerde boş kalıyor, ne kuruluyor ne çiziliyor. Bayrağın dalgası
    normali de değiştirdiği için her karede yeniden kuruluyor (bayrak az);
    sancak ve ağaçta ağ bir kez kuruluyor, her karede yalnız köşeler
    kayıyor (salınım iki sabit biçimin toplamı; `agYap` `kaynak`: her
@@ -237,8 +241,10 @@ parçacığında da aynı koşuyor. Üç geçiş:
    - Sayfa bir kez çözülüyor (kenar ve ortam gölgesi parçanın kendi
      derinliğinden, renk düzenlemesi; hare yok), tilt-shift parçanın
      gerçek yerine göre; hücreler doğrudan GPU'daki atlasa yazılıyor
-     (raflı: her parçanın kareleri yan yana bir blok). Atlas en sonda bir
-     kez okunuyor.
+     (raflı: her parçanın kareleri yan yana bir blok, `atlasDuzeni`).
+     Rafa sığmayan uzun tur satır satır sarılıyor: sütun sayısı kare
+     sayısının atlasa sığan en büyük böleni, blok dikdörtgen kalıyor.
+     Atlas en sonda bir kez okunuyor.
    - Kare başına üç hedef değişimi, parça sayısından bağımsız: telefonun
      döşemeli GPU'sunda her hedef değişimi bütün hedefi yükleyip
      yazabiliyor; parça parça çizim yüzlerce değişim demekti.
@@ -290,7 +296,8 @@ kuvvetlerine yuvarlanıyor, öğe büyürken her pikselde yeniden çizilmesin.
 `tilt` verilirse istek tilt-shift'li; önbellek anahtarına da giriyor.
 
 **Hareket (`Sahne.hareket`).** Geniş sahneler canlı: bölge afişi, ekran
-zemini, diyar kapağı (küçük karoda, kilitli diyar penceresinde yok). GPU
+zemini, diyar kapağı (küçük karoda, kilitli diyar penceresinde yok),
+Şehir sayfasının yerleşkesi. GPU
 resmi bir kez çiziliyor; hareket onun üstünde CSS katmanları. Yalnız
 dönüşüm ve saydamlık oynuyor, tarayıcı katmanları yeniden boyamadan
 kaydırıyor.
@@ -333,6 +340,22 @@ kaydırıyor.
   kadar yana, silah ve kalkan elde. Tur 3,6 sn. Kıvrım yok
   (`bez.kivrim` 0): durağan figür (liste simgesi, portre, SVG) birebir
   aynı. Zemindeki altın heykel kıpırdamıyor.
+- Canlı yerleşke (`canli.ts`): talim alanında üç okçu ok atıyor (kılıftan
+  al, kirişe tak, çek, bırak; ok uçup hedefe saplanıyor), üç mızrakçı
+  kuklaya hamle yapıyor (kukla sarsılıyor), iki şövalye iki uçtan
+  birbirine at sürüyor: çarpışmada kızıl olan atından düşüyor, kalkıp
+  atına binerek kendi ucuna dönüyor. Tarlada öküz sabanı sürülüyor (uçta
+  dönüyor), iki orakçı buğday biçiyor, bir kadın demeti yığına taşıyor.
+  Her aktör bir turun duruşları (`poz(t)`), her karede AYNI yüzler (yalnız
+  köşeler kayıyor): `canlandir` modelin ilk karesini veriyor, her yüz
+  sonraki karelerindeki hâlini tembelce taşıyor (`bez.canli`). SVG ve
+  durağan resim ilk kareyi çiziyor; dönüşümler (taşı, ölçekle, döndür)
+  karelere de gidiyor. Tur başa sarınca figür başladığı duruşta; yalnız
+  elden çıkan nesne yerine dönüyor (hedefteki okun yerine kılıftan yenisi,
+  yığına konan demetin yerine yerdeki). Uzun tur atlasta satır satır:
+  CSS iki adımda oynatıyor, dış katman satırları (`hareket-satir`,
+  `steps(satır)`), içteki şerit sütunları. Yerleşkenin ormanı salınmıyor:
+  ekranı dolduran onlarca ağaç katmanı telefonun belleğini tüketiyordu.
 
 Kutu bir ızgara sarmalayıcısına geçiyor: resim ve katmanlar aynı hücrede
 üst üste, çağıranın sınıfları sarmalayıcıda. Katman dikdörtgeni ölçülüyor
@@ -363,12 +386,13 @@ her köşe yüzlerce kenarı değil, yalnız kendi şeridini tarıyor.
 | `renk.ts`                     | Palet ve renk yardımcıları                                                                                                              |
 | `rastgele.ts`                 | Tohumlu rastgele (FNV-1a + mulberry32)                                                                                                  |
 | `parca.ts`                    | Ortak parçalar: ağaç, çam, bayrak (dalgası `bezAni`), çadır, fıçı, duman, uzuv, teker, kubbe                                            |
-| `bayrakAni.ts`                | Salınan parçaların (bayrak, sancak, ağaç) kareleri, GPU için; parçalar uzaktan yakına                                                   |
+| `bayrakAni.ts`                | Salınan (bayrak, sancak, ağaç) ve canlı parçaların kareleri, GPU için; parçalar uzaktan yakına                                          |
+| `canli.ts`                    | Canlı yerleşke: okçu, mızrakçı, düello, saban, orakçı, demetçi; `canlandir` bir turun duruşlarını karelere çeviriyor                    |
 | `tarif.ts`                    | Çizim anahtarından model (`zemin:kisla` → `zeminModeli`): GPU işçisi modeli kendisi kuruyor                                             |
 | `duman.ts`                    | Canlı dumanın kaynakları (saf; işçide hesaplanıyor)                                                                                     |
 | `arazi.ts`                    | Yükseklik alanından arazi, su, kıyı, nehir yatağı, yol ve parsel izleri, düzleme                                                        |
 | `binalar.ts`                  | Şehir binaları, her biri üç aşama; arsa, görev panosu, haberci kulesi, onur meydanı                                                     |
-| `yerlesim.ts`                 | Şehir sayfasının altındaki altı yerleşim kademesi (kamp → metropol)                                                                     |
+| `yerlesim.ts`                 | Şehir sayfasının tam ekran yerleşkesi, altı kademe (kamp → metropol): kasaba, tarlalar, talim alanı, orman                              |
 | `kir.ts`                      | Kır, maden, kale ve saray parçaları: ev, ambar, değirmen, köprü, maden ağzı, sur, kule, teras, köşk                                     |
 | `bolgeler.ts`                 | Altı bölge türü × üç aşama; aynı türün aşamaları aynı araziyi paylaşıyor                                                                |
 | `figur.ts`                    | İnsan figürü (zırh, başlık, eşya, poz), at, mancınık, kalkan, kılıç                                                                     |
@@ -447,6 +471,11 @@ tools/gorsel-denetim.mjs` koş.
   boş olmayan, sonlu koordinatlı, çerçevesine sığan bir çizim veriyor;
   çizimler belirlenimci; oyunun verisindeki birlikler, diyar düşmanları ve
   seçilebilen hazır portreler çiziliyor; bilinmeyen ad `null` dönüyor.
+  Canlı yerleşke: her aktörün her karesi aynı yüzlerden, tur başa
+  sarınca figür sıçramıyor (yalnız elden çıkan ok ve demet yerine
+  dönüyor), `canlandir`ın k. karesi `poz(k/K)` ve dönüşümler karelere de
+  gidiyor, turu biten parçanın yeri sonraki karelerde boş, `golgesiz`
+  parça ana resme gölge bırakmıyor, her kademede on bir canlı aktör var.
 - `apps/web/src/cizim/gl.test.ts`: GPU ağı (görünen yüzler, gölgeye
   girenler, ince levha çevirmesi, katman sırası, köşe normali/rengi/suyu
   ve aynalamada dönmeleri, parlaklığın köşeye yazılıp dönüşümden sağ
@@ -454,7 +483,8 @@ tools/gorsel-denetim.mjs` koş.
   renkten ve eğimden bulunduğu, yakın renkteki kaya/kemik/bezin düz
   kaldığı, taş kutuda v'nin yükseklik, üstte döşemenin x/y olduğu, konik
   çatının dilimlerinde sıraların hizalı olduğu), GPU ile
-  SVG'nin aynı izdüşümü kullandığı
+  SVG'nin aynı izdüşümü kullandığı; atlasta her parçanın kendi kare
+  sayısı, uzun turun satır satır sarıldığı ve blokların çakışmadığı
   (izometrik ve tepeden), arazinin köşe su verisi, dünya GPU modelinin
   yüzlerinin kameraya dönük, kıyı uzaklığının sınırlı, ağaçlarının 2D
   çizimle aynı yerde olduğu.

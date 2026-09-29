@@ -23,18 +23,15 @@
  * yoksa gradyan kalıyor ve sayfa çalışmaya devam ediyor.
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { ApiError, api, type BinaDurumu, type LordState, type QueueItem } from '../api/client';
 import { useOmurgaAdimi } from '../components/Omurga';
 import { Rehber } from '../components/Rehber';
 import { useRehberDurumu } from '../rehberDurumu';
-import { DiyarTanitimi } from '../components/DiyarTanitimi';
 import { IKONLAR } from '../components/ikon-verisi';
 import {
-  Bolum,
   Buton,
   GeriSayim,
-  Ilerleme,
   Iskelet,
   Maliyet,
   Sure,
@@ -45,16 +42,11 @@ import {
 import { IkonUyari } from '../components/Ikonlar';
 import { ZemineGolgesi } from '../components/ZemineGolgesi';
 import { BinaCizimi, CIZILEN_BINALAR, YerlesimCizimi } from '../cizim/Cizimler';
+import { KASABA_KUTUSU, YERLESIM_KUTUSU } from '../cizim/yerlesim';
 import type { Kapi } from '@lordlar/shared';
 import type { Sekme } from '../components/MobilKabuk';
 
-/**
- * Kuyruk satırı — "şu an ne oluyor".
- *
- * Malikâne'den Lord ekranına, oradan da buraya taşındı: her seferinde
- * ANA SAYFANIN peşinden gitti. Oyuncunun "bir şey başlattım, ne oldu"
- * sorusu indiği yerde cevaplanmalı.
- */
+/** Binada süren işin adı (sayaç rozeti ve erişilebilir ad). */
 const KUYRUK_ADI: Record<string, string> = {
   // `bina` unutulmuştu: inşaat kuyruğu listede ham anahtarıyla ("bina")
   // görünüyordu.
@@ -66,28 +58,6 @@ const KUYRUK_ADI: Record<string, string> = {
   upgrade_region: 'Bölge yükseltme',
   kesif: 'Keşif',
 };
-
-function KuyrukSatiri({ q }: { q: QueueItem }) {
-  const bas = new Date(q.startedAt).getTime();
-  const bit = new Date(q.finishAt).getTime();
-  const gecen = Math.max(0, Math.min(1, (Date.now() - bas) / (bit - bas)));
-  return (
-    <Kart className="p-3">
-      <div className="mb-1.5 flex items-baseline justify-between gap-2 text-[13px]">
-        <span className="truncate">
-          {KUYRUK_ADI[q.kind] ?? q.kind}
-          {typeof q.payload.count === 'number' && (
-            <span className="ml-1.5 text-solgun">×{q.payload.count as number}</span>
-          )}
-        </span>
-        <span className="shrink-0 text-[12px] text-altin">
-          <GeriSayim bitis={q.finishAt} />
-        </span>
-      </div>
-      <Ilerleme deger={gecen} max={1} renk="var(--color-altin)" boy="ince" />
-    </Kart>
-  );
-}
 
 /**
  * Hangi iş HANGİ BİNADA geçiyor.
@@ -137,6 +107,26 @@ function binadakiIsler(queues: QueueItem[]): Map<string, { bitis: string; ad: st
  * üç ayrı boydan değil — biri değişince ötekilerle ilişkisi kayardı.
  */
 const TABAN_BOY = 22;
+
+/**
+ * Yerleşkenin sayfadaki boyu (CSS pikseli): ekran biriminin 8 katı. İnsan
+ * ~30 piksel boyunda: okçunun yayı, mızrakçının hamlesi seçiliyor.
+ * Telefonda yerleşkenin yarısı kadarı görünüyor, gerisi kaydırılarak.
+ */
+const PIKSEL = 8;
+const [YX, YY, YW, YH] = YERLESIM_KUTUSU;
+const [KX, KY, KW, KH] = KASABA_KUTUSU;
+const SAHNE_EN = YW * PIKSEL;
+const SAHNE_BOY = YH * PIKSEL;
+/** Kasabanın (binaların) yerleşkedeki yeri: binaların yüzdeleri buna göre. */
+const KASABA_YERI = {
+  left: `${((KX - YX) / YW) * 100}%`,
+  top: `${((KY - YY) / YH) * 100}%`,
+  width: `${(KW / YW) * 100}%`,
+  height: `${(KH / YH) * 100}%`,
+};
+/** Açılışta ortalanan yer (yerleşkenin oranı): malikânenin önü (%51, %53). */
+const ORTA: [number, number] = [(KX + KW * 0.51 - YX) / YW, (KY + KH * 0.53 - YY) / YH];
 
 /**
  * Binanın dokunulan alanı, kutusunun yüzdesi olarak: sprite'ın gövdesi.
@@ -239,19 +229,24 @@ export function Sehir({
   const veri = useQuery({ queryKey: ['sehir'], queryFn: api.sehir });
   const [secili, setSecili] = useState<string | null>(null);
   const [hata, setHata] = useState<string | null>(null);
-  /*
-   * Kart HARİTANIN altında duruyor, liste ise sayfanın dibinde. Listeden
-   * bir yapı seçen oyuncu, ekranın dışında açılan bir karta bakıyordu:
-   * dokundu, hiçbir şey olmadı sandı. Seçim listeden geldiyse karta
-   * kaydırılıyor; haritadan geldiyse kart zaten görünürde.
-   */
+  /** Yapı listesi açık mı (seviye yükseltme oradan; dokunuş yapının içine giriyor). */
+  const [liste, setListe] = useState(false);
   const kartRef = useRef<HTMLDivElement>(null);
-  const listedenGeldi = useRef(false);
-  useEffect(() => {
-    if (!secili || !listedenGeldi.current) return;
-    listedenGeldi.current = false;
-    kartRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }, [secili]);
+  /*
+   * Yerleşke ekrandan büyük: açılışta malikânenin önü ortada. Bir kez,
+   * veri geldiğinde; oyuncu kaydırdıktan sonra yerinden oynatılmıyor.
+   */
+  const kaydirici = useRef<HTMLDivElement>(null);
+  const ortalandi = useRef(false);
+  const hazir = Boolean(veri.data);
+  useLayoutEffect(() => {
+    const k = kaydirici.current;
+    if (!hazir || !k || ortalandi.current) return;
+    ortalandi.current = true;
+    const [x, y] = ORTA;
+    k.scrollLeft = x * SAHNE_EN - k.clientWidth / 2;
+    k.scrollTop = y * SAHNE_BOY - k.clientHeight * 0.55;
+  }, [hazir]);
 
   const yap = useMutation({
     mutationFn: (key: string) => api.binaYap(key),
@@ -321,278 +316,197 @@ export function Sehir({
   }
 
   return (
-    <div className="space-y-4">
-      {/* --- Tepede YALNIZ kâhya ---
-          Oyuncu: "üst kısımda sadece kâhya Sinan olsun." Kâhya ile omurga
-          üst üste duruyordu ve ikisi de "şimdi ne yapmalısın" diyordu —
-          biri hikâyeyle, biri düğmeyle. Alt alta iki cevap, telefonda
-          ekranın tamamını yiyor ve oyuncu şehrini görmeden kaydırmaya
-          başlıyordu. Kâhya kaldı (bir cümle), omurga haritanın altına
-          indi (docs/12 §3.5). */}
-      <Rehber
-        adim={rehberAdimi?.anahtar ?? null}
-        durum={rehberDurumu}
-        gorundu={lord.rehberGorundu}
-        medeniyet={lord.medeniyet}
-      />
-
-      {/* --- Yerleşim haritası ---
-          Sayfanın ilk ekranında artık ŞEHİR var. Ana sayfanın şehir
-          olmasının bütün gerekçesi buydu; kartların altında kalınca
-          oyuncu onu ancak kaydırarak buluyordu. */}
-      <div className="oyuk relative overflow-hidden rounded-xl border border-kenar">
+    /*
+     * TAM EKRAN YERLEŞKE. Oyuncu: "şehir sayfasında sadece şehir olsun,
+     * alttaki yazılar olmasın; kendi köyümüz olduğunu hissedelim." Harita
+     * gibi üst çubukla omurga şeridi arasındaki bütün alan; yerleşke ondan
+     * büyük ve parmakla kaydırılıyor (tarayıcının kendi kaydırması: akıcı,
+     * JS yok). Kâhya, süren inşaat ve seçili yapının kartı yerleşkenin
+     * ÜSTÜNDE yüzüyor; altında sayfa yok.
+     */
+    <div
+      className="fixed inset-x-0 z-10 mx-auto max-w-lg overflow-hidden bg-[#2f3b22]"
+      style={{ top: 'var(--ust-bar)', bottom: 'calc(var(--alt-bar) + var(--omurga-serit))' }}
+      data-sehir-sayfasi=""
+    >
+      <h2 className="sr-only">{yerlesim.ad}</h2>
+      <div
+        ref={kaydirici}
+        className="gizli-kaydirma h-full w-full overflow-auto overscroll-contain"
+      >
         <div
           /* isolate: yapıların derinlik sırası (`zIndex = y`) YALNIZ
-             haritanın içinde geçerli olmalı. Kap kendi yığın bağlamını
-             kurmayınca z-index'ler kök bağlamda yarışıyordu ve 96'ya
-             çıkan bir bina, kapı panelinin (z-52) ÜSTÜNE geçip
-             tıklamayı yiyordu. */
-          className="relative aspect-[4/3] w-full isolate bg-[radial-gradient(ellipse_at_50%_38%,#4a4028_0%,#332c1f_45%,#221c14_100%)]"
+             yerleşkenin içinde geçerli olmalı; yoksa 96'ya çıkan bir bina
+             yüzen kartların üstüne geçip dokunuşu yiyordu. */
+          className="relative isolate"
+          style={{ width: SAHNE_EN, height: SAHNE_BOY }}
           role="img"
           aria-label={`${yerlesim.ad} — ${binalar.length} yapı`}
         >
-          <YerlesimCizimi kademe={yerlesim.kademe} className="h-full w-full" />
-          {binalar.map((b) => (
-            <BinaIsareti
-              key={b.key}
-              b={b}
-              secili={secili === b.key}
-              mesgul={isler.get(b.key) ?? null}
-              onSec={() => haritadaSec(b)}
-            />
-          ))}
-          {/* Adlar en üstte ve tıklamayı geçiriyor: hangi binanın adı
-              olduğu konumdan belli, dokunuş binanın kendisine gitmeli. */}
-          <div className="pointer-events-none absolute inset-0 z-[400]">
+          <YerlesimCizimi kademe={yerlesim.kademe} className="absolute inset-0 h-full w-full" />
+          {/* Kasaba: binalar yüzdeleriyle, yerleşkenin ortasındaki çerçevede. */}
+          <div className="absolute" style={KASABA_YERI}>
             {binalar.map((b) => (
-              <YapiEtiketi key={b.key} b={b} secili={secili === b.key} />
+              <BinaIsareti
+                key={b.key}
+                b={b}
+                secili={secili === b.key}
+                mesgul={isler.get(b.key) ?? null}
+                onSec={() => haritadaSec(b)}
+              />
             ))}
+            {/* Adlar en üstte ve tıklamayı geçiriyor: hangi binanın adı
+                olduğu konumdan belli, dokunuş binanın kendisine gitmeli. */}
+            <div className="pointer-events-none absolute inset-0 z-[400]">
+              {binalar.map((b) => (
+                <YapiEtiketi key={b.key} b={b} secili={secili === b.key} />
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* --- Seçili binanın kartı --- */}
-      <div ref={kartRef}>
-        {seciliBina ? (
-          <BinaKarti
-            b={seciliBina}
-            kaynak={lord.resources}
-            bekliyor={yap.isPending}
-            onGit={() => binayaGit(seciliBina)}
-            onYap={() => yap.mutate(seciliBina.key)}
+      {/* --- Üstte yüzenler: kâhya, süren inşaat, taşınma, hata --- */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-[500] space-y-1.5 p-2">
+        <div className="pointer-events-auto">
+          <Rehber
+            adim={rehberAdimi?.anahtar ?? null}
+            durum={rehberDurumu}
+            gorundu={lord.rehberGorundu}
+            medeniyet={lord.medeniyet}
           />
-        ) : (
-          <p className="text-center text-[12px] text-sonuk">
-            Dikili yapıya dokun: içine girersin. Boş arsaya dokun: bedelini söyler.
-          </p>
-        )}
-      </div>
-
-      {hata && <p className="text-[12px] text-kirmizi">{hata}</p>}
-
-      {/* --- Şimdi ne yapmalısın ---
-          Haritanın ALTINDA: oyuncu önce şehrini görüyor, sonra "sırada ne
-          var" cevabını alıyor. Cevap ekrandan çıkmadı, sırası değişti. */}
-      {/* Omurga kartı buradan KALKTI: artık alt gezinmenin üstünde,
-          beş sekmenin beşinde de duran bir şerit (`OmurgaSeridi`).
-          Şehir'e özel 500 piksellik bir kart olarak durduğu sürece
-          oyuncu Ordu'dayken ya da Dünya'dayken "sırada ne var"
-          cevabını göremiyordu. */}
-
-      {/* Diyar tanıtımı omurganın ALTINDA: "burası neresi" hâlâ
-          cevaplanıyor ama "şimdi ne yapmalıyım" cevabından sonra. Kartın
-          kendi kapısı var — yalnız hiçbir şey yapmamış lorda görünüyor. */}
-      <DiyarTanitimi lord={lord} queues={queues} />
-
-      {/* --- Yerleşim başlığı ---
-          Bu da haritanın altında: "burası bir kamp ve bina tavanı 1" bir
-          AÇIKLAMA, haritanın kendisi değil. Üstte dururken haritayı
-          aşağı itiyordu. */}
-      <Kart className="p-3">
-        <div className="flex items-baseline justify-between gap-2">
-          <span className="baslik text-[15px] text-altin">{yerlesim.ad}</span>
-          <span className="text-[12px] text-solgun">
-            {yerlesim.baskent ? yerlesim.baskent.ad : 'başkentin yok'}
-          </span>
         </div>
-        <p className="mt-1 text-[12.5px] leading-snug text-solgun">{yerlesim.ozet}</p>
-        {/* Kademe bir TAVAN: fetihin karşılığı bu, o yüzden görünür. */}
-        <p className="mt-1.5 text-[12px] text-sonuk">
-          Binaların bu yerleşimde en fazla{' '}
-          <strong className="text-parsomen">{`${yerlesim.binaTavani}. seviye`}</strong> olabilir.
-          {yerlesim.kademe !== 'metropol' && ' Daha büyük bir başkent daha yükseğine izin verir.'}
-        </p>
-      </Kart>
-
-      {/* --- Süren inşaat --- */}
-      {insaat.map((i) => (
-        <Kart key={i.id} className="border-altin/40 p-3">
-          <div className="flex items-center justify-between gap-2">
-            <div className="min-w-0">
-              <p className="text-[13px] font-semibold text-altin">{`${i.ad} inşa ediliyor`}</p>
-              <p className="text-[12px] text-solgun">
-                <GeriSayim bitis={i.finishAt} /> kaldı
-              </p>
-            </div>
-            <Buton tur="anahat" disabled={iptal.isPending} onClick={() => iptal.mutate(i.id)}>
+        {insaat.map((i) => (
+          <div
+            key={i.id}
+            className="pointer-events-auto flex items-center gap-2 rounded-full border border-altin/50 bg-gece/85 py-1 pr-1 pl-3 text-[12px] backdrop-blur"
+          >
+            <span className="min-w-0 flex-1 truncate text-altin">{`${i.ad} inşa ediliyor`}</span>
+            <span className="tabular shrink-0 text-parsomen">
+              <GeriSayim bitis={i.finishAt} kisa />
+            </span>
+            <Buton
+              tur="anahat"
+              boy="kucuk"
+              disabled={iptal.isPending}
+              onClick={() => iptal.mutate(i.id)}
+            >
               İptal
             </Buton>
           </div>
-          <p className="mt-1.5 text-[11px] text-solgun">
-            İptal edersen harcadığının yarısı geri gelir.
-          </p>
-        </Kart>
-      ))}
-
-      {/* --- Başkentini taşı ---
-          Fetih ancak KARŞILIĞI görünürse bir kazanç. Daha büyük bir
-          yerleşim aldığında oyun bunu kendiliğinden söylüyor; binalar
-          lordla birlikte taşındığı için taşınmak hiçbir şey kaybettirmez
-          (docs/12 §2.4). Liste boşsa kart hiç çizilmiyor. */}
-      {tasinabilir.length > 0 && (
-        <Kart className="border-altin/40 p-3">
-          <p className="baslik text-[13.5px] text-altin">Başkentini taşıyabilirsin</p>
-          <p className="mt-1 text-[12px] leading-snug text-solgun">
-            Daha büyük bir yerleşimin var. Taşınırsan binaların seninle gelir — hiçbir seviye
-            kaybolmaz, yalnız tavan yükselir.
-          </p>
-          <div className="mt-2 space-y-2">
-            {tasinabilir.map((t) => (
-              <div
-                key={t.bolgeId}
-                className="flex items-center justify-between gap-2 rounded-lg border border-kenar bg-black/20 p-2"
-                data-tasinabilir={t.bolgeId}
-              >
-                <div className="min-w-0">
-                  <p className="truncate text-[13px] font-semibold text-parsomen">{t.ad}</p>
-                  <p className="text-[11.5px] text-solgun">{`${t.kademeAdi} · bina tavanı ${t.binaTavani}`}</p>
-                </div>
-                <Buton
-                  tur="altin"
-                  isaret="sehir-tasin"
-                  disabled={tasi.isPending}
-                  onClick={() => tasi.mutate(t.bolgeId)}
-                >
-                  Taşın
-                </Buton>
-              </div>
-            ))}
+        ))}
+        {/* Fetih ancak KARŞILIĞI görünürse bir kazanç: daha büyük bir
+            yerleşim aldığında oyun bunu kendiliğinden söylüyor; binalar
+            lordla birlikte taşınıyor (docs/12 §2.4). */}
+        {tasinabilir.map((t) => (
+          <div
+            key={t.bolgeId}
+            className="pointer-events-auto flex items-center gap-2 rounded-xl border border-altin/50 bg-gece/85 p-2 backdrop-blur"
+            data-tasinabilir={t.bolgeId}
+          >
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-[12.5px] font-semibold text-altin">{`Başkentini taşı: ${t.ad}`}</p>
+              <p className="text-[11px] text-solgun">{`${t.kademeAdi} · bina tavanı ${t.binaTavani}`}</p>
+            </div>
+            <Buton
+              tur="altin"
+              boy="kucuk"
+              isaret="sehir-tasin"
+              disabled={tasi.isPending}
+              onClick={() => tasi.mutate(t.bolgeId)}
+            >
+              Taşın
+            </Buton>
           </div>
-        </Kart>
-      )}
+        ))}
+        {hata && (
+          <p className="pointer-events-auto rounded-lg bg-gece/90 px-3 py-1.5 text-[12px] text-kirmizi">
+            {hata}
+          </p>
+        )}
+      </div>
 
-      {/* Boş kuyruk bölümü ilk döngüde de KALIYOR ve bu bilinçli:
-          boş hâlindeki düğmeler gürültü değil, "yapacak bir şey yok
-          ekranı olmasın" kuralının kendisi (docs/09 K7). Ayrıca kart geç
-          gelen kuyruk verisine bağlı gizlenince açılışta zıplama
-          çıkıyordu. */}
-      <Bolum
-        baslik={`Kuyruklar${queues.length ? ` · ${queues.length}` : ''}`}
-        sakin={queues.length === 0}
-      >
-        {queues.length === 0 ? (
-          <Kart sakin className="p-4">
-            <p className="mb-3 text-[13px] text-solgun">Kuyruk boş. Bir şeyler başlat.</p>
-            <div className="flex gap-2">
-              <Buton tur="sessiz" boy="kucuk" onClick={() => onGit('kisla')}>
-                Kışla
-              </Buton>
-              <Buton tur="sessiz" boy="kucuk" onClick={() => onKapiAc('demirhane')}>
-                Demirhane
-              </Buton>
-              <Buton tur="sessiz" boy="kucuk" onClick={() => onGit('harita')}>
-                Harita
-              </Buton>
+      {/* --- Altta: seçili yapının kartı, yapı listesi ya da listenin düğmesi --- */}
+      <div ref={kartRef} className="pointer-events-none absolute inset-x-0 bottom-0 z-[500] p-2">
+        {seciliBina ? (
+          <div className="pointer-events-auto relative">
+            <BinaKarti
+              b={seciliBina}
+              kaynak={lord.resources}
+              bekliyor={yap.isPending}
+              onGit={() => binayaGit(seciliBina)}
+              onYap={() => yap.mutate(seciliBina.key)}
+              onKapat={() => setSecili(null)}
+            />
+          </div>
+        ) : liste ? (
+          <Kart className="pointer-events-auto max-h-[60vh] overflow-y-auto p-3">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="baslik text-[13px] text-altin">Yapılar</span>
+              <button
+                type="button"
+                aria-label="Listeyi kapat"
+                onClick={() => setListe(false)}
+                className="bas flex h-7 w-7 items-center justify-center rounded-full text-solgun"
+              >
+                ✕
+              </button>
+            </div>
+            {/* Seviye yükseltme burada: haritadaki dokunuş yapının içine giriyor. */}
+            <div id="yapilar" className="grid grid-cols-4 gap-1.5">
+              {binalar.map((b) => (
+                <button
+                  key={b.key}
+                  type="button"
+                  onClick={() => {
+                    setListe(false);
+                    setSecili(b.key);
+                  }}
+                  className="kart relative flex min-h-[76px] w-full flex-col items-center justify-start gap-1 p-1.5 text-center"
+                >
+                  <span
+                    className={`relative flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
+                      b.seviye > 0 ? 'bg-altin/15 text-altin' : 'bg-kenar/40 text-sonuk'
+                    }`}
+                  >
+                    <BinaIkonu binaKey={b.key} boyut={22} seviye={b.seviye} seviyeli={b.seviyeli} />
+                    {b.seviyeli && b.seviye > 0 && (
+                      <span className="tabular absolute -top-1.5 -right-1.5 rounded-full border border-kenar bg-panel px-1 text-[11px] leading-[15px] font-bold text-altin">
+                        {b.seviye}
+                      </span>
+                    )}
+                  </span>
+                  <span
+                    className={`line-clamp-2 text-[11px] leading-tight ${
+                      b.seviye > 0 ? 'text-parsomen' : 'text-sonuk'
+                    }`}
+                  >
+                    {b.ad}
+                  </span>
+                  {b.insaatta && (
+                    <span
+                      aria-label="inşa ediliyor"
+                      className="pointer-events-none absolute inset-0 rounded-[inherit] border-2 border-altin"
+                    />
+                  )}
+                </button>
+              ))}
             </div>
           </Kart>
         ) : (
-          <div className="space-y-2">
-            {queues.map((q) => (
-              <KuyrukSatiri key={q.id} q={q} />
-            ))}
+          <div className="flex justify-end">
+            <button
+              type="button"
+              data-yapilar-ac=""
+              onClick={() => setListe(true)}
+              className="bas pointer-events-auto flex items-center gap-1.5 rounded-full border border-kenar bg-gece/85 px-3 py-2 text-[12px] font-bold text-altin shadow-[0_2px_8px_rgba(0,0,0,0.5)] backdrop-blur"
+            >
+              <BinaIkonu binaKey="malikane" boyut={16} seviye={1} seviyeli={false} />
+              Yapılar
+            </button>
           </div>
         )}
-      </Bolum>
-
-      {/* --- Yapı ızgarası ---
-          Bir LİSTE gerekiyor ve gerekçesi hâlâ geçerli: hangi yapının
-          kaçıncı seviyede olduğunu görmek, haritada tek tek dokunmakla
-          değil tek bakışta olmalı.
-
-          Ama liste TAM GENİŞLİK SATIRLARDAN kuruluydu: on üç yapı ×74px =
-          962 piksel, yani ekranın bir buçuk katı. "Tek bakış" diye
-          başlayan şey iki ekran kaydırmaya dönüşüyordu ve sayfanın
-          1915 pikselinin yarısını bu tutuyordu. Üstelik her satır yapının
-          ÖZETİNİ de taşıyordu — "Ekipman döver", "Yaralıları tedavi
-          eder" — ilk seferde öğrenilen, yüzüncü seferde okunmayan bir
-          cümle.
-
-          Izgara aynı bilgiyi (ad, seviye, inşa hâli) ~200 pikselde ve
-          HEPSİ AYNI ANDA görünür şekilde veriyor. Özet, yapının kendi
-          paneline taşındı: oraya zaten dokunuyorsun. */}
-      {/* KATLI ve KAPALI açılıyor.
-          Ölçüldü: Şehir 1182px, 29 düğme, 27 görsel — 92 kelimeye karşı.
-          Bunun 433 pikseli ve 13 düğmesi bu ızgaraydı ve ızgara, hemen
-          yukarıdaki yerleşim haritasıyla AYNI 13 yapıyı gösteriyor.
-
-          Izgaranın gerekçesi ("hangi yapı kaçıncı seviyede, tek bakışta")
-          yazıldığı gün doğruydu; bugün değil, çünkü harita artık her
-          yapının seviye rozetini taşıyor. Geriye tek işlevi kalıyor:
-          yapıların ADLARINI söylemek — haritadaki çizimler etiketsiz.
-
-          O yüzden silinmedi, katlandı. Ada bakmak isteyen bir dokunuşla
-          açıyor; herkes için ekranın üçte biri geri geliyor. */}
-      <Bolum baslik="Yapılar" id="yapilar" katlanir>
-        <p className="mb-2 text-[12px] text-sonuk">
-          Seviye yükseltmek için buradan seç: haritadaki dokunuş yapının içine giriyor.
-        </p>
-        <div className="grid grid-cols-4 gap-1.5">
-          {binalar.map((b) => (
-            <button
-              key={b.key}
-              type="button"
-              onClick={() => {
-                listedenGeldi.current = true;
-                setSecili(b.key);
-              }}
-              className="kart relative flex min-h-[76px] w-full flex-col items-center justify-start gap-1 p-1.5 text-center"
-            >
-              <span
-                className={`relative flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
-                  b.seviye > 0 ? 'bg-altin/15 text-altin' : 'bg-kenar/40 text-sonuk'
-                }`}
-              >
-                <BinaIkonu binaKey={b.key} boyut={22} seviye={b.seviye} seviyeli={b.seviyeli} />
-                {/* Seviye rozeti ikonun ÜSTÜNDE: ızgarada her karo dar ve
-                    adın yanına sığmıyor. Boş arsada rozet yok — yokluğu
-                    zaten "dikilmemiş" demek, ayrıca "boş arsa" yazmak
-                    on üç karoda on üç kez aynı şeyi söylemek olurdu. */}
-                {b.seviyeli && b.seviye > 0 && (
-                  <span className="tabular absolute -top-1.5 -right-1.5 rounded-full border border-kenar bg-panel px-1 text-[11px] leading-[15px] font-bold text-altin">
-                    {b.seviye}
-                  </span>
-                )}
-              </span>
-              <span
-                className={`line-clamp-2 text-[11px] leading-tight ${
-                  b.seviye > 0 ? 'text-parsomen' : 'text-sonuk'
-                }`}
-              >
-                {b.ad}
-              </span>
-              {/* İnşa hâli hap değil ÇERÇEVE: dar karoda bir hap adın
-                  yerini yer, oysa "şu an inşa ediliyor" tek bakışlık bir
-                  durum ve kenarlık onu yazıya yer açmadan söylüyor. */}
-              {b.insaatta && (
-                <span
-                  aria-label="inşa ediliyor"
-                  className="pointer-events-none absolute inset-0 rounded-[inherit] border-2 border-altin"
-                />
-              )}
-            </button>
-          ))}
-        </div>
-      </Bolum>
+      </div>
     </div>
   );
 }
@@ -874,12 +788,14 @@ function BinaKarti({
   bekliyor,
   onGit,
   onYap,
+  onKapat,
 }: {
   b: BinaDurumu;
   kaynak: { altin: number; demir: number; erzak: number };
   bekliyor: boolean;
   onGit: () => void;
   onYap: () => void;
+  onKapat: () => void;
 }) {
   const dikili = b.seviye > 0;
   const girilebilir = dikili && (b.kapi || b.sekme);
@@ -887,8 +803,19 @@ function BinaKarti({
     <Kart className="p-3" vurgu={dikili ? 'var(--color-altin)' : undefined}>
       <div className="flex items-baseline justify-between gap-2">
         <span className="baslik text-[13px] text-parsomen">{b.ad}</span>
-        <span className="text-[12px] text-solgun">
-          {b.seviyeli ? (dikili ? `Seviye ${b.seviye} / ${b.tavan}` : 'boş arsa') : 'yapı'}
+        <span className="flex items-baseline gap-2">
+          <span className="text-[12px] text-solgun">
+            {b.seviyeli ? (dikili ? `Seviye ${b.seviye} / ${b.tavan}` : 'boş arsa') : 'yapı'}
+          </span>
+          {/* Kart yerleşkenin üstünde yüzüyor: kapanınca yerleşke açılıyor. */}
+          <button
+            type="button"
+            aria-label="Kartı kapat"
+            onClick={onKapat}
+            className="bas -my-1 flex h-7 w-7 items-center justify-center rounded-full text-solgun"
+          >
+            ✕
+          </button>
         </span>
       </div>
       <p className="mt-1 text-[12.5px] leading-snug text-solgun">{b.aciklama}</p>

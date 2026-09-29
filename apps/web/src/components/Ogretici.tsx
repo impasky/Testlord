@@ -3,9 +3,8 @@
  * tanıtım.
  *
  * Neden tam ekran ve neden ilk girişte: yeni oyuncu ilk otuz saniyede "burada
- * ne var" sorusunu cevaplayamazsa çıkıyor. Malikânedeki `DiyarTanitimi` kartı
- * amacı söylüyor (docs/08 İ6), `Omurga` sıradaki adımı söylüyor (İ4) — ama
- * ikisi de oyunun HARİTASINI vermiyor: kışla nedir, demirhane ne işe yarar,
+ * ne var" sorusunu cevaplayamazsa çıkıyor. `Omurga` sıradaki adımı söylüyor
+ * (docs/08 İ4) — ama oyunun HARİTASINI vermiyor: kışla nedir, demirhane ne işe yarar,
  * ittifak neden var, uykudayken silinip silinmeyeceğim. Öğretici o boşluğu
  * dolduruyor.
  *

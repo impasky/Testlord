@@ -112,6 +112,13 @@ export interface Yuz {
    * ağacın bütün yüzlerinde aynı nokta (hareketli sahnede birlikte
    * çiziliyorlar); `sure`: bir turun süresi (sn); `kivrim`: salınımın
    * üstündeki kıvrımın gücü (varsayılan 0,25; figürde 0: gövde bükülmüyor).
+   *
+   * `canli`: kare kare canlandırma (talim alanı, tarla; `canli.ts`). Salınım
+   * değil, her karede parçanın başka bir duruşu: `yuz(k)` bu yüzün k.
+   * karedeki hâli (aynı köşe sayısı), `kare` bir turdaki kare sayısı.
+   * Kareler tembel: yalnız hareketli GPU çizimi istiyor, SVG ve durağan
+   * resim `p`yi (ilk kareyi) çiziyor. `golgesiz`: yerinden ayrılan parça
+   * (koşan at) durağan resme gölge bırakmıyor.
    */
   bez?: {
     dinlenik: V3[];
@@ -120,6 +127,7 @@ export interface Yuz {
     kok?: V3;
     sure?: number;
     kivrim?: number;
+    canli?: { kare: number; yuz: (k: number) => Yuz; golgesiz?: boolean };
   };
   /**
    * Çizim katmanı: küçük önce. Ressam algoritması yüzün ORTASINA bakıyor;
@@ -173,6 +181,13 @@ function merkez(p: V3[]): V3 {
 
 /* ── Dönüşümler ────────────────────────────────────────────────────── */
 
+type Canli = NonNullable<NonNullable<Yuz['bez']>['canli']>;
+
+/** Canlandırmanın her karesine aynı dönüşüm (kareler tembel kalıyor). */
+function kareyle(c: Canli, d: (m: Model) => Model): Canli {
+  return { ...c, yuz: (k) => d([c.yuz(k)])[0]! };
+}
+
 export function tasi(m: Model, d: V3): Model {
   return m.map((y) => ({
     ...y,
@@ -184,6 +199,7 @@ export function tasi(m: Model, d: V3): Model {
             ...y.bez,
             dinlenik: y.bez.dinlenik.map((q) => ekle(q, d)),
             ...(y.bez.kok ? { kok: ekle(y.bez.kok, d) } : {}),
+            ...(y.bez.canli ? { canli: kareyle(y.bez.canli, (m) => tasi(m, d)) } : {}),
           },
         }
       : {}),
@@ -224,6 +240,7 @@ export function olcekle(m: Model, s: number | V3, o: V3 = [0, 0, 0]): Model {
                 : {}),
               ...(y.bez.kok ? { kok: f(y.bez.kok) } : {}),
               ...(y.bez.sure ? { sure: y.bez.sure } : {}),
+              ...(y.bez.canli ? { canli: kareyle(y.bez.canli, (m) => olcekle(m, s, o)) } : {}),
             },
           }
         : {}),
@@ -260,6 +277,9 @@ export function dondur(m: Model, eksen: 'x' | 'y' | 'z', aci: number, o: V3 = [0
             dinlenik: y.bez.dinlenik.map(f),
             ...(y.bez.yon ? { yon: yon(y.bez.yon) } : {}),
             ...(y.bez.kok ? { kok: f(y.bez.kok) } : {}),
+            ...(y.bez.canli
+              ? { canli: kareyle(y.bez.canli, (m) => dondur(m, eksen, aci, o)) }
+              : {}),
           },
         }
       : {}),

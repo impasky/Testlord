@@ -31,7 +31,42 @@ import { BolgeCizimi, DiyarCizimi, ZeminCizimi } from './Cizimler';
 import { Sahne } from './Sahne';
 import { YERLESIM_KADEMELERI, YERLESIM_KUTUSU, yerlesimModeli } from './yerlesim';
 import { P } from './renk';
-import { besikCati, birlestir, kirmaCati, kutu, mazgal, silindir, koni } from './uc';
+import {
+  besikCati,
+  birlestir,
+  katmanla,
+  kirmaCati,
+  kutu,
+  mazgal,
+  silindir,
+  koni,
+  tasi,
+  type Model,
+} from './uc';
+import {
+  DEMET_KARE,
+  DEMET_SURE,
+  DUELLO_KARE,
+  DUELLO_SURE,
+  MIZRAK_KARE,
+  MIZRAK_SURE,
+  OKCU_KARE,
+  OKCU_SURE,
+  ORAK_KARE,
+  ORAK_SURE,
+  SABAN_KARE,
+  SABAN_SURE,
+  canlandir,
+  demetYigini,
+  demetciPoz,
+  duelloAlani,
+  duelloPoz,
+  mizrakciPoz,
+  okHedefi,
+  okcuPoz,
+  orakciPoz,
+  sabanPoz,
+} from './canli';
 
 function denemeEvi() {
   return birlestir(
@@ -52,10 +87,65 @@ function denemeKule() {
   );
 }
 
+/** Talim ve tarla aktörleri: düz bir çimenin üstünde, tek başına. */
+function canliDeneme(ad: string): Model {
+  // Zemin aktörün çevresi kadar: çizim ona oturuyor, aktör yakından görünsün.
+  const zemin = (x0: number, y0: number, x1: number, y1: number) =>
+    katmanla(kutu(x0, y0, -1, x1 - x0, y1 - y0, 1, '#5e7a3a'), -2);
+  switch (ad) {
+    case 'okcu':
+      return birlestir(
+        zemin(-7, -5, 7, 29),
+        canlandir(okcuPoz, OKCU_KARE, OKCU_SURE, [0, 0, 0]),
+        okHedefi(),
+      );
+    case 'mizrakci':
+      return birlestir(
+        zemin(-6, -5, 7, 16),
+        canlandir(mizrakciPoz, MIZRAK_KARE, MIZRAK_SURE, [0, 0, 0]),
+      );
+    case 'duello':
+      return birlestir(
+        zemin(-40, -12, 36, 12),
+        canlandir(duelloPoz, DUELLO_KARE, DUELLO_SURE, [0, 0, 0], true),
+        duelloAlani(),
+      );
+    case 'saban':
+      return birlestir(
+        zemin(-30, -9, 30, 9),
+        canlandir(sabanPoz, SABAN_KARE, SABAN_SURE, [0, 0, 0], true),
+      );
+    default:
+      return birlestir(
+        zemin(-6, -5, 18, 8),
+        canlandir(orakciPoz, ORAK_KARE, ORAK_SURE, [0, 0, 0]),
+        tasi(canlandir(demetciPoz, DEMET_KARE, DEMET_SURE, [1, 0, 0]), [10, 0, 0]),
+        tasi(demetYigini(), [10, 0, 0]),
+      );
+  }
+}
+
 const BOLUMLER: {
   baslik: string;
   ogeler: { ad: string; cizim: React.ReactNode; genis?: boolean; oran?: string }[];
 }[] = [
+  {
+    // Kare kare canlandırma (canli.ts): yalnız GPU'da oynuyor.
+    baslik: 'Talim ve tarla',
+    ogeler: ['okcu', 'mizrakci', 'duello', 'saban', 'orak'].map((ad) => ({
+      ad: 'talim:' + ad,
+      genis: true,
+      cizim: (
+        <Sahne
+          anahtar={'talim:' + ad}
+          uret={() => canliDeneme(ad)}
+          alt={ad}
+          className="h-full w-full"
+          hareket
+        />
+      ),
+    })),
+  },
   {
     baslik: 'Binalar',
     ogeler: BINA_ADLARI.map((ad) => ({
@@ -76,6 +166,7 @@ const BOLUMLER: {
     ogeler: YERLESIM_KADEMELERI.map((k) => ({
       ad: k,
       genis: true,
+      oran: 'aspect-[24/25]',
       cizim: (
         <Sahne
           anahtar={'yerlesim:' + k}

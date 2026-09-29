@@ -162,8 +162,10 @@ export function agYap(
     if (secenek.dumansiz && y.duman) continue;
     const alfa = y.saydam ?? 1;
     const k = y.katman ?? 0;
-    // Gölge: nesnelerin dolu yüzleri, bakana dönük olsun olmasın.
-    if (k >= 0 && alfa >= 1) golgeler.push(y);
+    // Gölge: nesnelerin dolu yüzleri, bakana dönük olsun olmasın. Yerinden
+    // ayrılan canlı parça (koşan at) hareketli sahnede gölge bırakmıyor:
+    // gölgesi ilk karedeki yerinde kalırdı.
+    if (k >= 0 && alfa >= 1 && !(secenek.bayraksiz && y.bez?.canli?.golgesiz)) golgeler.push(y);
     const yn = normal(y.p);
     const cevir = nokta(yn, c) <= 1e-6;
     // Arkası dönük ince levha çevriliyor; değilse atılıyor.

@@ -60,6 +60,21 @@ import {
   type V3,
 } from './uc';
 import { YERLESIM_KADEMELERI, yerlesimModeli, yerlesimNoktasi, yerlesimYuzdesi } from './yerlesim';
+import {
+  DEMET_KARE,
+  DUELLO_KARE,
+  MIZRAK_KARE,
+  OKCU_KARE,
+  ORAK_KARE,
+  SABAN_KARE,
+  canlandir,
+  demetciPoz,
+  duelloPoz,
+  mizrakciPoz,
+  okcuPoz,
+  orakciPoz,
+  sabanPoz,
+} from './canli';
 
 const sayilar = (n: string) => n.split(/[ ,]/).map(Number);
 
@@ -589,5 +604,94 @@ describe('tarifler ve kutu', () => {
       binaModeli('arsa'),
     ])
       expect(kutusu(m)).toEqual(ciz(m).kutu);
+  });
+});
+
+describe('canlı yerleşke', () => {
+  // Son sütun: tur başında yerine dönen elden çıkmış nesnenin yüz sayısı
+  // (hedefteki ok kılıftan yenisiyle, yığına konan demet yerdekiyle
+  // değişiyor). Modelin sonunda; figürün kendisi hiç sıçramıyor.
+  const AKTORLER = [
+    ['okçu', okcuPoz, OKCU_KARE, 18],
+    ['mızrakçı', mizrakciPoz, MIZRAK_KARE, 0],
+    ['düello', duelloPoz, DUELLO_KARE, 0],
+    ['saban', sabanPoz, SABAN_KARE, 0],
+    ['orakçı', orakciPoz, ORAK_KARE, 0],
+    ['demetçi', demetciPoz, DEMET_KARE, 38],
+  ] as const;
+  const bicim = (m: ReturnType<typeof okcuPoz>) => m.map((y) => y.p.length).join(',');
+
+  it.each(AKTORLER)(
+    '%s: her karede aynı yüzler, tur başa sarınca aynı duruş',
+    (_, poz, kare, yenilenen) => {
+      const ilk = poz(0);
+      for (let k = 0; k < kare; k++) {
+        const m = poz(k / kare);
+        expect(bicim(m)).toBe(bicim(ilk));
+        for (const y of m) for (const q of y.p) expect(q.every(Number.isFinite)).toBe(true);
+      }
+      // Son kareden başa atlama sıçramasın: tur sonu, turun başı.
+      poz(1)
+        .slice(0, ilk.length - yenilenen)
+        .forEach((y, i) =>
+          y.p.forEach((q, j) => q.forEach((v, e) => expect(v).toBeCloseTo(ilk[i]!.p[j]![e]!, 4))),
+        );
+    },
+  );
+
+  it.each(AKTORLER)('%s: kıpırdıyor', (_, poz) => {
+    const a = poz(0).flatMap((y) => y.p.flat());
+    const b = poz(0.5).flatMap((y) => y.p.flat());
+    expect(Math.max(...a.map((v, i) => Math.abs(v - b[i]!)))).toBeGreaterThan(0.5);
+  });
+
+  it('canlandırma: k. kare poz(k/K); taşıma, ölçek ve dönme karelere de gidiyor', () => {
+    const c = canlandir(okcuPoz, OKCU_KARE, 2, [0, 0, 0]);
+    expect(c).toHaveLength(okcuPoz(0).length);
+    const k = 7;
+    const beklenen = okcuPoz(k / OKCU_KARE);
+    c.forEach((y, i) => expect(y.bez!.canli!.yuz(k).p).toEqual(beklenen[i]!.p));
+    const d = tasi(olcekle(dondur(c, 'z', Math.PI / 2), 0.5), [3, 4, 0]);
+    const elle = tasi(olcekle(dondur(beklenen, 'z', Math.PI / 2), 0.5), [3, 4, 0]);
+    d.forEach((y, i) =>
+      y
+        .bez!.canli!.yuz(k)
+        .p.forEach((q, j) => q.forEach((v, e) => expect(v).toBeCloseTo(elle[i]!.p[j]![e]!, 6))),
+    );
+  });
+
+  it('kareler: canlı parça kendi sayısı kadar, bayrak 12; turu biten parçanın yeri boş', () => {
+    const m = [
+      ...canlandir(orakciPoz, ORAK_KARE, 2, [0, 0, 0]),
+      ...tasi(canlandir(duelloPoz, DUELLO_KARE, 7, [0, 0, 0]), [60, 0, 0]),
+      ...bayrak(-30, 0, 0, 6, '#aa0000'),
+    ];
+    const k = bayrakKareleri(m)!;
+    expect([...k.kareSayilari!].sort((a, b) => a - b)).toEqual([
+      BAYRAK_KARE,
+      ORAK_KARE,
+      DUELLO_KARE,
+    ]);
+    expect(k.kareler).toHaveLength(DUELLO_KARE);
+    const orak = k.kareSayilari!.indexOf(ORAK_KARE);
+    const bas = k.gruplar.slice(0, orak).reduce((a, b) => a + b, 0) * KOSE;
+    const parca = (f: number) => k.kareler[f]!.subarray(bas, bas + k.gruplar[orak]! * KOSE);
+    expect(parca(ORAK_KARE - 1).some((v) => v !== 0)).toBe(true);
+    expect(parca(ORAK_KARE).every((v) => v === 0)).toBe(true);
+  });
+
+  it('gölgesiz canlı parça (at, saban) sabit resme gölge bırakmıyor', () => {
+    const say = (golgesiz: boolean) =>
+      agYap(canlandir(sabanPoz, SABAN_KARE, 13, [0, 0, 0], golgesiz), undefined, {
+        bayraksiz: true,
+      }).golge.length;
+    expect(say(false)).toBeGreaterThan(0);
+    expect(say(true)).toBe(0);
+  });
+
+  it.each(YERLESIM_KADEMELERI)('%s: talim alanı ve tarla canlı', (k) => {
+    const canli = bayrakGruplari(yerlesimModeli(k)).filter((g) => g[0]!.bez!.canli);
+    // 3 okçu, 3 mızrakçı, düello, saban, 2 orakçı, demetçi.
+    expect(canli).toHaveLength(11);
   });
 });

@@ -93,6 +93,14 @@ export interface Insan {
   /** Atlı: bacaklar öne ve yanlara açık, eteksiz. */
   oturan?: boolean;
   poz?: 'duz' | 'nisan' | 'kaldir';
+  /**
+   * Kare kare canlandırma (`canli.ts`): ellerin yeri, eşyadan ve pozdan
+   * gelen yerin yerine. Eşyayı canlandırma kendisi tutuyor (yay çekilirken,
+   * mızrak saplanırken yönü değişiyor).
+   */
+  eller?: { sag?: V3; sol?: V3 };
+  /** Adım (-1…1): sol ayak öne, sağ ayak geriye (yürüyüş, hamle). 0 durağan. */
+  adim?: number;
 }
 
 const KARA = '#1d1612';
@@ -634,8 +642,10 @@ function insanGovdesi(f: Insan): Model {
     for (const x of [-0.45, 0.45]) m.push(...kutu(x - 0.38, -0.2, 0, 0.76, 1.1, 0.5, f.cizme));
   } else
     for (const x of [-0.52, 0.52]) {
-      m.push(...kutu(x - 0.42, -0.45, 0, 0.84, 1.05, 0.8, f.cizme));
-      m.push(...uzuv([x, 0, 0.7], [x, 0, 3.3], 0.36, 0.42, f.bacak, 6));
+      // Adımda sol ayak öne, sağ ayak geriye; kalça yerinde.
+      const d = (f.adim ?? 0) * (x < 0 ? 0.9 : -0.9);
+      m.push(...kutu(x - 0.42, -0.45 + d, 0, 0.84, 1.05, 0.8, f.cizme));
+      m.push(...uzuv([x, d, 0.7], [x, 0, 3.3], 0.36, 0.42, f.bacak, 6));
     }
   // Etek ve gövde (yassı kesik koniler)
   const yassi = (mm: Model) => olcekle(mm, [iri, 0.62, 1]);
@@ -803,6 +813,8 @@ function insanGovdesi(f: Insan): Model {
     elSag = [-0.1, 1.0, 5.85];
   }
   if (f.poz === 'kaldir') elSag = [omuzX + 0.4, 0.5, 7.4];
+  if (f.eller?.sag) elSag = f.eller.sag;
+  if (f.eller?.sol) elSol = f.eller.sol;
   // Plaka zırhlının eli demir eldiven; öbürleri çıplak.
   const eldiven = f.zirh?.tip === 'plaka' ? f.zirh.renk : undefined;
   const elAyari: ElAyari = {
@@ -931,29 +943,58 @@ export interface AtAyari {
   ortu?: string;
   zirh?: string;
   alev?: boolean;
+  /**
+   * Koşu evresi (0…1; canlandırma): bacaklar kalçadan öne arkaya salınıyor,
+   * kalkan bacağın dizi bükülüyor. Verilmezse at dimdik duruyor.
+   */
+  adim?: number;
+  /** Salınımın genliği (radyan): dörtnala ~0,55, yürüyüşte ~0,3. */
+  genlik?: number;
+  /** Boynuz (öküz): başın iki yanında. */
+  boynuz?: string;
 }
+
+/** Koşu evresinde her bacağın payı (dörtnala: önler ve arkalar yarım tur ayrık). */
+const BACAK_EVRESI = [0, 0.12, 0.5, 0.62];
 
 /** At: uzun ekseni +x, başı +x yanında. Sırt ~5.2 yüksekte. */
 export function at(a: AtAyari): Model {
   const m: Model = [];
   const govde = olcekle(kure(0, 0, 4.25, 1, a.renk, 8, 4), [2.55, 1.02, 1.05], [0, 0, 4.25]);
   m.push(...govde);
-  // Bacaklar: diz bükük değil, dimdik; ince alt bacak, koyu toynak
-  for (const [x, y] of [
+  // Bacaklar: diz bükük değil, dimdik; ince alt bacak, koyu toynak.
+  // Koşuda (`adim`) kalçadan salınıyor; öne gelen bacağın dizi bükülüyor.
+  const bacaklar: [number, number][] = [
     [1.7, 0.55],
     [1.7, -0.55],
     [-1.75, 0.55],
     [-1.75, -0.55],
-  ] as [number, number][]) {
-    m.push(...uzuv([x, y, 3.9], [x + 0.05, y, 1.9], 0.42, 0.26, a.renk, 6));
-    m.push(...uzuv([x + 0.05, y, 1.9], [x, y, 0.35], 0.24, 0.2, isikla(a.renk, 0.92), 5));
-    m.push(...kutu(x - 0.28, y - 0.26, 0, 0.56, 0.52, 0.38, '#2a221c'));
-  }
+  ];
+  bacaklar.forEach(([x, y], i) => {
+    const t = a.adim === undefined ? null : 2 * Math.PI * (a.adim + BACAK_EVRESI[i]!);
+    const th = t === null ? 0 : (a.genlik ?? 0.55) * Math.sin(t);
+    const bukum = t === null ? 0 : Math.max(0, Math.cos(t)) * 0.9;
+    const don = (dx: number, dz: number, aci: number): [number, number] => [
+      dx * Math.cos(aci) - dz * Math.sin(aci),
+      dx * Math.sin(aci) + dz * Math.cos(aci),
+    ];
+    const kalca: V3 = [x, y, 3.9];
+    const [ux, uz] = t === null ? [0.05, -2.0] : don(0.05, -2.0, th);
+    const diz: V3 = [x + ux, y, 3.9 + uz];
+    const [lx, lz] = t === null ? [-0.05, -1.55] : don(-0.05, -1.55, th - bukum);
+    const toynak: V3 = [diz[0] + lx, y, diz[2] + lz];
+    m.push(...uzuv(kalca, diz, 0.42, 0.26, a.renk, 6));
+    m.push(...uzuv(diz, toynak, 0.24, 0.2, isikla(a.renk, 0.92), 5));
+    m.push(...kutu(toynak[0] - 0.28, y - 0.26, toynak[2] - 0.35, 0.56, 0.52, 0.38, '#2a221c'));
+  });
   // Boyun ve baş
   m.push(...uzuv([1.8, 0, 4.7], [2.9, 0, 6.7], 0.95, 0.62, a.renk, 7));
   m.push(...uzuv([2.75, 0, 7.05], [4.15, 0, 6.0], 0.55, 0.36, a.renk, 6));
   m.push(...kutu(3.95, -0.34, 5.7, 0.5, 0.68, 0.5, isikla(a.renk, 0.8)));
   for (const s of [-1, 1]) m.push(...koni(2.8, s * 0.3, 7.35, 0.18, 0.7, a.renk, 4));
+  if (a.boynuz)
+    for (const s of [-1, 1])
+      m.push(...uzuv([2.95, s * 0.35, 7.1], [3.1, s * 1.05, 7.65], 0.16, 0.06, a.boynuz, 4));
   for (const s of [-1, 1]) m.push(...kutu(3.35, s * 0.47 - 0.05, 6.75, 0.2, 0.1, 0.18, KARA));
   // Yele ve kuyruk
   m.push(

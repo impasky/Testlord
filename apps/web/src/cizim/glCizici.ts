@@ -1097,6 +1097,12 @@ export interface BayrakKareleri {
   gruplar: number[];
   /** Her bayrağın bir turunun süresi (sn): sayfa kareleri bu hızda oynatıyor. */
   sureler: number[];
+  /**
+   * Her parçanın bir turundaki kare sayısı (canlı parçada kendi sayısı);
+   * verilmezse hepsi `kareler.length`. Turu kısa olan parça sonraki
+   * karelerde çizilmiyor.
+   */
+  kareSayilari?: number[];
 }
 
 /** Bayrak atlası: her bayrak bir satır, satırda kareler yan yana. */
@@ -1110,6 +1116,8 @@ export interface BayrakAtlasi {
   kare: number;
   /** Her bayrağın bir turunun süresi (sn). */
   sureler: number[];
+  /** Her parçanın kare sayısı (bkz. `BayrakKareleri.kareSayilari`). */
+  kareSayilari: number[];
 }
 
 /** Çizimin çıktısı: resim ve (hareketli sahnede, varsa) katmanları. */
@@ -1131,16 +1139,28 @@ const ATLAS_EN = 4096;
  */
 export function atlasDuzeni(
   kutular: [number, number, number, number][],
-  kare: number,
-): { yer: [number, number][]; en: number; boy: number } {
-  const raf = Math.max(ATLAS_EN, ...kutular.map(([, , w]) => w * kare));
+  kare: number | number[],
+): { yer: [number, number][]; en: number; boy: number; sutun: number[] } {
+  const say = (i: number) => (typeof kare === 'number' ? kare : (kare[i] ?? 1));
+  // Uzun turlu parça (canlı: koşan at, 48 kare) rafa sığmıyorsa kareleri
+  // satır satır sarılıyor: sütun sayısı kare sayısını tam bölen, rafa
+  // sığan en büyük sayı (son satır da dolu, sayfa iki adımla oynatıyor).
+  const sutun = kutular.map(([, , w], i) => {
+    const k = say(i);
+    const sigan = Math.max(1, Math.floor(ATLAS_EN / Math.max(1, w)));
+    let s = Math.min(k, sigan);
+    while (k % s) s--;
+    return s;
+  });
+  const raf = Math.max(ATLAS_EN, ...kutular.map(([, , w], i) => w * sutun[i]!));
   const yer: [number, number][] = [];
   let x = 0;
   let y = 0;
   let h0 = 0;
   let en = 0;
-  for (const [, , w, h] of kutular) {
-    const b = w * kare;
+  kutular.forEach(([, , w, h], i) => {
+    const b = w * sutun[i]!;
+    const bh = h * (say(i) / sutun[i]!);
     if (x > 0 && x + b > raf) {
       y += h0;
       x = 0;
@@ -1148,10 +1168,10 @@ export function atlasDuzeni(
     }
     yer.push([x, y]);
     x += b;
-    h0 = Math.max(h0, h);
+    h0 = Math.max(h0, bh);
     en = Math.max(en, x);
-  }
-  return { yer, en, boy: y + h0 };
+  });
+  return { yer, en, boy: y + h0, sutun };
 }
 
 async function blobla(tuval: Tuval): Promise<Blob | null> {
@@ -1267,7 +1287,7 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
     const tiltVar = istek.tilt !== undefined && istek.tilt < 0.5;
     const pay = 2 + r0 + (tiltVar ? Math.ceil(TILT_YARICAP * en) : 0);
     const kutular = bayrakKutulari(by, kameraTabani(istek.kamera), istek.kutu, en, boy, pay);
-    const duzen = atlasDuzeni(kutular, by.kareler.length);
+    const duzen = atlasDuzeni(kutular, by.kareSayilari ?? by.kareler.length);
     const sinir = gl.getParameter(gl.MAX_TEXTURE_SIZE) as number;
     if (
       duzen.en > 0 &&
@@ -1522,10 +1542,13 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
     gl.readBuffer(gl.COLOR_ATTACHMENT0);
     gl.bindFramebuffer(gl.FRAMEBUFFER, k.atlasFbo);
     gl.clearBufferfv(gl.COLOR, 0, [0, 0, 0, 0]);
+    const kareSayisi = (i: number) => by.kareSayilari?.[i] ?? kare;
     for (let f = 0; f < kare; f++) {
       const t = tampon(gl, by.kareler[f]!);
       for (let sayfa = 0; sayfa < sayfaSayisi; sayfa++) {
-        const uyeler = dolu.filter((i) => yerlesim[i]!.sayfa === sayfa);
+        // Turu bu kareden kısa olan parça çizilmiyor (atlasta yeri yok).
+        const uyeler = dolu.filter((i) => yerlesim[i]!.sayfa === sayfa && f < kareSayisi(i));
+        if (!uyeler.length) continue;
         // a) Sayfa: hedefler ve derinlik boş, parçalar hücrelerinde.
         gl.bindFramebuffer(gl.FRAMEBUFFER, k.anaFbo);
         gl.drawBuffers([
@@ -1575,8 +1598,9 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
           const [x, y, w, h] = kutular[i]!;
           const { x: px, y: py } = yerlesim[i]!;
           const [ax, ay] = duzen.yer[i]!;
-          const hx = ax + f * w;
-          const hy = Ha - ay - h;
+          const sutun = duzen.sutun[i]!;
+          const hx = ax + (f % sutun) * w;
+          const hy = Ha - (ay + Math.floor(f / sutun) * h) - h;
           return {
             hx,
             hy,
@@ -1629,7 +1653,16 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
     bulanikCiz(null, [0, 0], k.atlas, [Wa, Ha], 1, 0);
     if (gl.isContextLost()) return sonuc;
     const resim = await blobla(k.tuval);
-    if (resim) sonuc.bayrak = { resim, kutular, en, boy, kare, sureler: by.sureler };
+    if (resim)
+      sonuc.bayrak = {
+        resim,
+        kutular,
+        en,
+        boy,
+        kare,
+        sureler: by.sureler,
+        kareSayilari: kutular.map((_, i) => kareSayisi(i)),
+      };
   }
   return sonuc;
 }
@@ -1648,12 +1681,13 @@ function bayrakKutulari(
 ): [number, number, number, number][] {
   const kutular: [number, number, number, number][] = [];
   let bas = 0;
-  for (const say of by.gruplar) {
+  by.gruplar.forEach((say, g) => {
     let x0 = Infinity;
     let y0 = Infinity;
     let x1 = -Infinity;
     let y1 = -Infinity;
-    for (const t of by.kareler)
+    // Yalnız parçanın kendi kareleri: turu bitince yeri boş (sıfır).
+    for (const t of by.kareler.slice(0, by.kareSayilari?.[g]))
       for (let i = bas; i < bas + say; i++) {
         const q: V3 = [t[i * KOSE]!, t[i * KOSE + 1]!, t[i * KOSE + 2]!];
         const x = ((nokta(q, sag) - vx) / vw) * en;
@@ -1669,7 +1703,7 @@ function bayrakKutulari(
     const c = Math.min(en, Math.ceil(x1 + pay));
     const d = Math.min(boy, Math.ceil(y1 + pay));
     kutular.push(c > a && d > b ? [a, b, c - a, d - b] : [0, 0, 0, 0]);
-  }
+  });
   return kutular;
 }
 

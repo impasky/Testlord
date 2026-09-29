@@ -529,7 +529,8 @@ svg g[role='button']:focus-visible > path:first-of-type {
   position: absolute;
   overflow: hidden;
 }
-.hareket-bayrak > span {
+.hareket-bayrak > span,
+.hareket-satir > span {
   position: absolute;
   left: 0;
   top: 0;
@@ -541,6 +542,15 @@ svg g[role='button']:focus-visible > path:first-of-type {
 @keyframes bayrak-dalga {
   to {
     transform: translate3d(var(--kay), 0, 0);
+  }
+}
+/* Uzun turlu canlı parça: kareler atlasta satır satır; sarmalayıcı satırdan satıra iniyor. */
+.hareket-bayrak > .hareket-satir {
+  animation-name: bayrak-satir;
+}
+@keyframes bayrak-satir {
+  to {
+    transform: translate3d(0, var(--kayY), 0);
   }
 }
 

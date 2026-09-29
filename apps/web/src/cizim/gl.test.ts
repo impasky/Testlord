@@ -214,6 +214,34 @@ describe('GPU ağı (agYap)', () => {
     }
   });
 
+  it('atlas: parçanın kendi kare sayısı; rafa sığmayan uzun tur satır satır sarılıyor', () => {
+    const kutular: [number, number, number, number][] = [
+      [0, 0, 40, 50],
+      [0, 0, 300, 90],
+      [0, 0, 60, 30],
+    ];
+    const kareler = [12, 48, 24];
+    const a = atlasDuzeni(kutular, kareler);
+    const bloklar = kutular.map(([, , w, h], i): [number, number, number, number] => {
+      const s = a.sutun[i]!;
+      // Sütun sayısı kare sayısını tam bölüyor: son satır da dolu.
+      expect(kareler[i]! % s).toBe(0);
+      expect(w * s).toBeLessThanOrEqual(Math.max(4096, w));
+      return [...a.yer[i]!, w * s, h * (kareler[i]! / s)];
+    });
+    // 300 piksellik 48 kare rafa (4096) sığmıyor: birden çok satır.
+    expect(kareler[1]! / a.sutun[1]!).toBeGreaterThan(1);
+    for (let i = 0; i < bloklar.length; i++) {
+      const [x, y, w, h] = bloklar[i]!;
+      expect(x + w).toBeLessThanOrEqual(a.en);
+      expect(y + h).toBeLessThanOrEqual(a.boy);
+      for (let j = 0; j < i; j++) {
+        const [xj, yj, wj, hj] = bloklar[j]!;
+        expect(x < xj + wj && xj < x + w && y < yj + hj && yj < y + h).toBe(false);
+      }
+    }
+  });
+
   it('parlaklık köşeye yazılıyor; işaretsiz yüz mat (0), dönüşümden sağ çıkıyor', () => {
     const [metal] = dondur(tasi(parlat([ustUcgen()], 0.8), [1, 2, 3]), 'z', 0.3);
     const ag = agYap([metal!, ustUcgen()]);
