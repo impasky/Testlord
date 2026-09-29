@@ -114,11 +114,13 @@ export interface Yuz {
    * üstündeki kıvrımın gücü (varsayılan 0,25; figürde 0: gövde bükülmüyor).
    *
    * `canli`: kare kare canlandırma (talim alanı, tarla; `canli.ts`). Salınım
-   * değil, her karede parçanın başka bir duruşu: `yuz(k)` bu yüzün k.
-   * karedeki hâli (aynı köşe sayısı), `kare` bir turdaki kare sayısı.
-   * Kareler tembel: yalnız hareketli GPU çizimi istiyor, SVG ve durağan
-   * resim `p`yi (ilk kareyi) çiziyor. `golgesiz`: yerinden ayrılan parça
-   * (koşan at) durağan resme gölge bırakmıyor.
+   * değil, her karede parçanın başka bir duruşu: `model(k)` aktörün k.
+   * karedeki bütün yüzleri (her karede aynı yüzler), bu yüz onun `i`.
+   * sırasında; `kare` bir turdaki kare sayısı. Aktörün bütün yüzleri aynı
+   * `model`i paylaşıyor: kare bir kez kuruluyor ve dönüşüyor (son kare
+   * saklı). Kareler tembel: yalnız hareketli GPU çizimi istiyor, SVG ve
+   * durağan resim `p`yi (ilk kareyi) çiziyor. `golgesiz`: yerinden ayrılan
+   * parça (koşan at) durağan resme gölge bırakmıyor.
    */
   bez?: {
     dinlenik: V3[];
@@ -127,7 +129,7 @@ export interface Yuz {
     kok?: V3;
     sure?: number;
     kivrim?: number;
-    canli?: { kare: number; yuz: (k: number) => Yuz; golgesiz?: boolean };
+    canli?: { kare: number; model: (k: number) => Model; i: number; golgesiz?: boolean };
   };
   /**
    * Çizim katmanı: küçük önce. Ressam algoritması yüzün ORTASINA bakıyor;
@@ -183,12 +185,36 @@ function merkez(p: V3[]): V3 {
 
 type Canli = NonNullable<NonNullable<Yuz['bez']>['canli']>;
 
-/** Canlandırmanın her karesine aynı dönüşüm (kareler tembel kalıyor). */
-function kareyle(c: Canli, d: (m: Model) => Model): Canli {
-  return { ...c, yuz: (k) => d([c.yuz(k)])[0]! };
+/**
+ * Canlandırmanın her karesine aynı dönüşüm (kareler tembel kalıyor). Bir
+ * dönüşüm çağrısında aynı aktörün yüzleri aynı sarmalayıcıyı alıyor: kare
+ * yüz yüz değil, bütün model bir kez dönüşüyor ve son kare saklanıyor.
+ * Önceden her yüz her karede kendi dönüşüm zincirinden tek başına
+ * geçiyordu; yerleşkenin karelerinde sürenin çeyreği oydu.
+ */
+function kareSarici(d: (m: Model) => Model): (c: Canli) => Canli {
+  const sarilan = new Map<Canli['model'], Canli['model']>();
+  return (c) => {
+    let s = sarilan.get(c.model);
+    if (!s) {
+      const ic = c.model;
+      let sonK = -1;
+      let son: Model = [];
+      s = (k) => {
+        if (k !== sonK) {
+          son = d(ic(k));
+          sonK = k;
+        }
+        return son;
+      };
+      sarilan.set(ic, s);
+    }
+    return { ...c, model: s };
+  };
 }
 
 export function tasi(m: Model, d: V3): Model {
+  const sar = kareSarici((m) => tasi(m, d));
   return m.map((y) => ({
     ...y,
     p: y.p.map((q) => ekle(q, d)),
@@ -199,7 +225,7 @@ export function tasi(m: Model, d: V3): Model {
             ...y.bez,
             dinlenik: y.bez.dinlenik.map((q) => ekle(q, d)),
             ...(y.bez.kok ? { kok: ekle(y.bez.kok, d) } : {}),
-            ...(y.bez.canli ? { canli: kareyle(y.bez.canli, (m) => tasi(m, d)) } : {}),
+            ...(y.bez.canli ? { canli: sar(y.bez.canli) } : {}),
           },
         }
       : {}),
@@ -209,6 +235,7 @@ export function tasi(m: Model, d: V3): Model {
 export function olcekle(m: Model, s: number | V3, o: V3 = [0, 0, 0]): Model {
   const k: V3 = typeof s === 'number' ? [s, s, s] : s;
   const ters = k[0] * k[1] * k[2] < 0;
+  const sar = kareSarici((m) => olcekle(m, s, o));
   const f = (q: V3): V3 => [
     o[0] + (q[0] - o[0]) * k[0],
     o[1] + (q[1] - o[1]) * k[1],
@@ -240,7 +267,7 @@ export function olcekle(m: Model, s: number | V3, o: V3 = [0, 0, 0]): Model {
                 : {}),
               ...(y.bez.kok ? { kok: f(y.bez.kok) } : {}),
               ...(y.bez.sure ? { sure: y.bez.sure } : {}),
-              ...(y.bez.canli ? { canli: kareyle(y.bez.canli, (m) => olcekle(m, s, o)) } : {}),
+              ...(y.bez.canli ? { canli: sar(y.bez.canli) } : {}),
             },
           }
         : {}),
@@ -260,6 +287,7 @@ export function dondur(m: Model, eksen: 'x' | 'y' | 'z', aci: number, o: V3 = [0
     if (eksen === 'x') return [o[0] + x, o[1] + y * c - z * s, o[2] + y * s + z * c];
     return [o[0] + x * c + z * s, o[1] + y, o[2] - x * s + z * c];
   };
+  const sar = kareSarici((m) => dondur(m, eksen, aci, o));
   // Normal: aynı dönme, orijin olmadan.
   const yon = (n: V3): V3 => {
     const q = f(ekle(n, o));
@@ -277,9 +305,7 @@ export function dondur(m: Model, eksen: 'x' | 'y' | 'z', aci: number, o: V3 = [0
             dinlenik: y.bez.dinlenik.map(f),
             ...(y.bez.yon ? { yon: yon(y.bez.yon) } : {}),
             ...(y.bez.kok ? { kok: f(y.bez.kok) } : {}),
-            ...(y.bez.canli
-              ? { canli: kareyle(y.bez.canli, (m) => dondur(m, eksen, aci, o)) }
-              : {}),
+            ...(y.bez.canli ? { canli: sar(y.bez.canli) } : {}),
           },
         }
       : {}),

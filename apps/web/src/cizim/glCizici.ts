@@ -1091,8 +1091,16 @@ export interface CizimIstegi {
 
 /** Bayrak kumaşının her anı; her karede bayraklar aynı sırayla ardışık. */
 export interface BayrakKareleri {
-  /** Kare başına üçgen tamponu (`KOSE` düzeninde, ağın nesne tamponu gibi). */
-  kareler: Float32Array[];
+  /** Kare sayısı: en uzun turunki. */
+  kare: number;
+  /**
+   * f. karenin üçgen tamponu (`KOSE` düzeninde, ağın nesne tamponu gibi).
+   * Tembel: çizici kareleri sırayla istiyor, her kare istenince kuruluyor
+   * ve çizildikten sonra bırakılıyor (bellekte bir kare).
+   */
+  kareAl?: (f: number) => Float32Array;
+  /** Önceden kurulmuş kareler: işçiye aktarılabilen biçim (`kareleriKur`). */
+  kareler?: Float32Array[];
   /** Her bayrağın bir karedeki köşe sayısı (bütün karelerde aynı). */
   gruplar: number[];
   /** Her bayrağın bir turunun süresi (sn): sayfa kareleri bu hızda oynatıyor. */
@@ -1103,6 +1111,17 @@ export interface BayrakKareleri {
    * karelerde çizilmiyor.
    */
   kareSayilari?: number[];
+  /**
+   * Her parçanın bütün karelerde kameranın düzleminde kapladığı yer (dünya
+   * birimi): [sağ en az, sağ en çok, yukarı en az, yukarı en çok]. Atlas
+   * kareler kurulmadan bununla yerleştiriliyor.
+   */
+  kapsam: [number, number, number, number][];
+}
+
+/** f. karenin tamponu: tembelse kuruluyor, değilse hazır. */
+function kareTamponu(by: BayrakKareleri, f: number): Float32Array {
+  return by.kareAl ? by.kareAl(f) : by.kareler![f]!;
 }
 
 /** Bayrak atlası: her bayrak bir satır, satırda kareler yan yana. */
@@ -1211,7 +1230,7 @@ export const aktarilanlar = ({
         ag.saydam.buffer,
         ag.golge.buffer,
         ag.bez.buffer,
-        ...(bayrak?.kareler.map((k) => k.buffer) ?? []),
+        ...(bayrak?.kareler?.map((k) => k.buffer) ?? []),
       ]
     : [];
 
@@ -1282,12 +1301,12 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
     duzen: ReturnType<typeof atlasDuzeni>;
     kare: number;
   } | null = null;
-  if (by?.kareler.length) {
+  if (by && by.kare > 0) {
     const r0 = Math.max(1, Math.round(0.7 * istek.olcek * ss));
     const tiltVar = istek.tilt !== undefined && istek.tilt < 0.5;
     const pay = 2 + r0 + (tiltVar ? Math.ceil(TILT_YARICAP * en) : 0);
-    const kutular = bayrakKutulari(by, kameraTabani(istek.kamera), istek.kutu, en, boy, pay);
-    const duzen = atlasDuzeni(kutular, by.kareSayilari ?? by.kareler.length);
+    const kutular = bayrakKutulari(by, istek.kutu, en, boy, pay);
+    const duzen = atlasDuzeni(kutular, by.kareSayilari ?? by.kare);
     const sinir = gl.getParameter(gl.MAX_TEXTURE_SIZE) as number;
     if (
       duzen.en > 0 &&
@@ -1296,7 +1315,7 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
       duzen.boy <= sinir &&
       atlasHazirla(k, duzen.en, duzen.boy, sen, sboy)
     )
-      plan = { kutular, duzen, kare: by.kareler.length };
+      plan = { kutular, duzen, kare: by.kare };
   }
 
   // 2) Ana geçiş: renk, normal+çizgi, taban rengi; derinlik.
@@ -1544,7 +1563,7 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
     gl.clearBufferfv(gl.COLOR, 0, [0, 0, 0, 0]);
     const kareSayisi = (i: number) => by.kareSayilari?.[i] ?? kare;
     for (let f = 0; f < kare; f++) {
-      const t = tampon(gl, by.kareler[f]!);
+      const t = tampon(gl, kareTamponu(by, f));
       for (let sayfa = 0; sayfa < sayfaSayisi; sayfa++) {
         // Turu bu kareden kısa olan parça çizilmiyor (atlasta yeri yok).
         const uyeler = dolu.filter((i) => yerlesim[i]!.sayfa === sayfa && f < kareSayisi(i));
@@ -1668,43 +1687,29 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
 }
 
 /**
- * Her bayrağın resimdeki kutusu: bütün karelerde kumaşın kapladığı yer,
- * kenar çizgisi ve bulanıklık payıyla; resmin dışı kırpılmış.
+ * Her bayrağın resimdeki kutusu: bütün karelerde kumaşın kapladığı yer
+ * (`BayrakKareleri.kapsam`), kenar çizgisi ve bulanıklık payıyla; resmin
+ * dışı kırpılmış.
  */
 function bayrakKutulari(
   by: BayrakKareleri,
-  { sag, yukari }: { sag: V3; yukari: V3 },
   [vx, vy, vw, vh]: [number, number, number, number],
   en: number,
   boy: number,
   pay: number,
 ): [number, number, number, number][] {
-  const kutular: [number, number, number, number][] = [];
-  let bas = 0;
-  by.gruplar.forEach((say, g) => {
-    let x0 = Infinity;
-    let y0 = Infinity;
-    let x1 = -Infinity;
-    let y1 = -Infinity;
-    // Yalnız parçanın kendi kareleri: turu bitince yeri boş (sıfır).
-    for (const t of by.kareler.slice(0, by.kareSayilari?.[g]))
-      for (let i = bas; i < bas + say; i++) {
-        const q: V3 = [t[i * KOSE]!, t[i * KOSE + 1]!, t[i * KOSE + 2]!];
-        const x = ((nokta(q, sag) - vx) / vw) * en;
-        const y = ((-nokta(q, yukari) - vy) / vh) * boy;
-        x0 = Math.min(x0, x);
-        y0 = Math.min(y0, y);
-        x1 = Math.max(x1, x);
-        y1 = Math.max(y1, y);
-      }
-    bas += say;
+  return by.kapsam.map(([s0, s1, u0, u1]) => {
+    // Ekranda y aşağı: yukarının en çoğu resmin tepesi.
+    const x0 = ((s0 - vx) / vw) * en;
+    const x1 = ((s1 - vx) / vw) * en;
+    const y0 = ((-u1 - vy) / vh) * boy;
+    const y1 = ((-u0 - vy) / vh) * boy;
     const a = Math.max(0, Math.floor(x0 - pay));
     const b = Math.max(0, Math.floor(y0 - pay));
     const c = Math.min(en, Math.ceil(x1 + pay));
     const d = Math.min(boy, Math.ceil(y1 + pay));
-    kutular.push(c > a && d > b ? [a, b, c - a, d - b] : [0, 0, 0, 0]);
+    return c > a && d > b ? [a, b, c - a, d - b] : [0, 0, 0, 0];
   });
-  return kutular;
 }
 
 /**

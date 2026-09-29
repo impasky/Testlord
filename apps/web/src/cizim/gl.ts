@@ -8,7 +8,7 @@
  * tamponlar kopyasız aktarılıyor. İşçi açılamazsa ya da WebGL2 orada yoksa
  * aynı çizici burada koşuyor; o da yoksa null — çağıran SVG'ye düşüyor.
  */
-import { bayrakKareleri } from './bayrakAni';
+import { bayrakKareleri, kareleriKur } from './bayrakAni';
 import { dumanKaynaklari, type DumanKaynagi } from './duman';
 import { agYap, type Ag } from './glAg';
 import {
@@ -126,6 +126,11 @@ async function ciz(istek: GlIstek): Promise<CizimSonucu | null> {
     };
   };
   const modelden = () => kur(model ?? (tarif ? tarifModeli(tarif) : null) ?? []);
+  // İşçiye giden kareler önceden kuruluyor: tembel işlev gönderilemiyor.
+  const aktarilabilir = (k: ReturnType<typeof kur>) => ({
+    ...k,
+    bayrak: k.bayrak && kareleriKur(k.bayrak),
+  });
   const yazilim = yazilimaIzin();
   const i = isciAl();
   if (i) {
@@ -133,7 +138,7 @@ async function ciz(istek: GlIstek): Promise<CizimSonucu | null> {
       ? { ...geri, ag, yazilimaIzin: yazilim }
       : tarif && !model
         ? { ...geri, tarif, yazilimaIzin: yazilim }
-        : { ...geri, ...modelden(), yazilimaIzin: yazilim };
+        : { ...geri, ...aktarilabilir(modelden()), yazilimaIzin: yazilim };
     const cevap = await iscide(i, gidecek);
     if (!cevap.yok) {
       isciDurumu = 'hazir';
@@ -227,39 +232,135 @@ export function glVarMi(): boolean {
   return donanim;
 }
 
+/** Bir işi çizip resmin (ve katmanlarının) nesne url'sini veriyor. */
+async function calistir(istek: () => GlIstek): Promise<string | null> {
+  try {
+    const s = await ciz(istek());
+    if (!s) return null;
+    const url = URL.createObjectURL(s.resim);
+    if (s.su || s.isik || s.bayrak || s.dumanlar?.length) {
+      const { resim, ...bayrak } = s.bayrak ?? {};
+      KATMANLAR.set(url, {
+        su: s.su && URL.createObjectURL(s.su),
+        isik: s.isik && URL.createObjectURL(s.isik),
+        bayrak: resim && {
+          ...(bayrak as Omit<BayrakAtlasi, 'resim'>),
+          url: URL.createObjectURL(resim),
+        },
+        dumanlar: s.dumanlar,
+      });
+    }
+    return url;
+  } catch {
+    return null;
+  }
+}
+
+/** Zincire ekler: işler tek tek, aralarında ana iş parçacığına nefes payı. */
+function sirayaKoy(is: () => Promise<string | null>): Promise<string | null> {
+  const p = zincir.then(() => new Promise((r) => setTimeout(r, 0))).then(is);
+  zincir = p.catch(() => undefined);
+  return p;
+}
+
+/** Sırada ya da çizilmekte olan öncelikli iş sayısı. */
+let oncelikli = 0;
+/** Sonraya bırakılan işler (bkz. `glCiz` `sonra`). */
+const sonrakiler: {
+  anahtar: string;
+  istek: () => GlIstek;
+  ilgi: (() => boolean)[];
+  coz: (url: string | null) => void;
+}[] = [];
+let sonrakiCalisiyor = false;
+/**
+ * Sıra boşaldıktan sonra sonraki işin beklediği süre (ms): açılıştan hemen
+ * sonra başka ekrana geçen oyuncu onu başlamadan iptal ediyor; yoksa yeni
+ * ekranın çizimleri başlamış ağır işin arkasında bekliyordu.
+ */
+const SONRA_BEKLE = 1500;
+let sonraZamani: ReturnType<typeof setTimeout> | undefined;
+
+function sonrakiniBaslat() {
+  if (oncelikli > 0 || sonrakiCalisiyor || !sonrakiler.length) return;
+  clearTimeout(sonraZamani);
+  sonraZamani = setTimeout(sonrakiniCalistir, SONRA_BEKLE);
+}
+
+function sonrakiniCalistir() {
+  if (oncelikli > 0 || sonrakiCalisiyor) return;
+  while (sonrakiler.length) {
+    const s = sonrakiler.shift()!;
+    // Artık isteyen yok (sayfadan çıkıldı): hiç çizilmiyor, sonra yeniden istenebilir.
+    if (s.ilgi.every((istenmiyor) => istenmiyor())) {
+      ONBELLEK.delete(s.anahtar);
+      s.coz(null);
+      continue;
+    }
+    sonrakiCalisiyor = true;
+    void sirayaKoy(() => calistir(s.istek)).then((url) => {
+      sonrakiCalisiyor = false;
+      s.coz(url);
+      sonrakiniBaslat();
+    });
+    return;
+  }
+}
+
+const ILGI = new Map<string, (() => boolean)[]>();
+
 /**
  * Çizimi sıraya koyar; aynı istek (anahtar + kutu + boy) bir kez çiziliyor.
  * İşler tek tek, aralarında ana iş parçacığına nefes payı bırakarak
  * çalışıyor: bir ekranda otuz çizim açıldığında sayfa donmasın.
+ *
+ * `sonra`: ağır ve beklemesi dert olmayan iş (yerleşkenin canlı kareleri):
+ * öncelikli iş kalmayınca başlıyor, başlamadan önce isteyen kalmadıysa
+ * (`istenmiyor`, sayfadan çıkıldı) hiç çizilmiyor. Böylece Şehir'den
+ * hemen ayrılan oyuncunun yeni ekranı onu beklemiyor.
  */
-export function glCiz(anahtar: string, istek: () => GlIstek): Promise<string | null> {
+export function glCiz(
+  anahtar: string,
+  istek: () => GlIstek,
+  secenek: { sonra?: boolean; istenmiyor?: () => boolean } = {},
+): Promise<string | null> {
   const var_ = ONBELLEK.get(anahtar);
-  if (var_) return var_;
-  const is = zincir
-    .then(() => new Promise((r) => setTimeout(r, 0)))
-    .then(async () => {
-      try {
-        const s = await ciz(istek());
-        if (!s) return null;
-        const url = URL.createObjectURL(s.resim);
-        if (s.su || s.isik || s.bayrak || s.dumanlar?.length) {
-          const { resim, ...bayrak } = s.bayrak ?? {};
-          KATMANLAR.set(url, {
-            su: s.su && URL.createObjectURL(s.su),
-            isik: s.isik && URL.createObjectURL(s.isik),
-            bayrak: resim && {
-              ...(bayrak as Omit<BayrakAtlasi, 'resim'>),
-              url: URL.createObjectURL(resim),
-            },
-            dumanlar: s.dumanlar,
-          });
-        }
-        return url;
-      } catch {
-        return null;
-      }
+  if (var_) {
+    if (secenek.istenmiyor) ILGI.get(anahtar)?.push(secenek.istenmiyor);
+    return var_;
+  }
+  let is: Promise<string | null>;
+  if (secenek.sonra) {
+    const ilgi = secenek.istenmiyor ? [secenek.istenmiyor] : [() => false];
+    ILGI.set(anahtar, ilgi);
+    is = new Promise((coz) => sonrakiler.push({ anahtar, istek, ilgi, coz }));
+    void is.then(() => ILGI.delete(anahtar));
+    sonrakiniBaslat();
+  } else {
+    oncelikli++;
+    is = sirayaKoy(() => calistir(istek));
+    void is.then(() => {
+      oncelikli--;
+      sonrakiniBaslat();
     });
-  zincir = is.catch(() => undefined);
+  }
   ONBELLEK.set(anahtar, is);
   return is;
+}
+
+/**
+ * Resmi ve katmanlarını çözer (yükler, bitmap'e açar): durağan resmin
+ * yerine canlısı konurken bir kare bile figürsüz görünmesin (canlı
+ * resimde hareketli parçalar yok, atlasta).
+ */
+export async function glOnYukle(url: string): Promise<void> {
+  const k = KATMANLAR.get(url);
+  const adresler = [url, k?.su, k?.isik, k?.bayrak?.url].filter((u): u is string => !!u);
+  await Promise.all(
+    adresler.map((u) => {
+      const r = new Image();
+      r.src = u;
+      return r.decode().catch(() => undefined);
+    }),
+  );
 }

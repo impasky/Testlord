@@ -18,7 +18,15 @@
  * kısıtlıysa (`prefers-reduced-motion`) hiçbiri yok, duman durağan çiziliyor.
  */
 import { memo, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
-import { EN_BUYUK, atlasDuzeni, glCiz, glKatmanlari, glVarMi, type Katmanlar } from './gl';
+import {
+  EN_BUYUK,
+  atlasDuzeni,
+  glCiz,
+  glKatmanlari,
+  glOnYukle,
+  glVarMi,
+  type Katmanlar,
+} from './gl';
 import { ciz, kutusu, type Cizilmis, type Kamera, type Model } from './uc';
 
 const ONBELLEK = new Map<string, Cizilmis>();
@@ -113,12 +121,17 @@ function useGpuResmi(
   kirp: boolean,
   tilt: number | undefined,
   hareket: boolean,
+  onceDurgun: boolean,
   ref: React.RefObject<SVGSVGElement | null>,
   basarisiz: () => void,
 ): string | null {
-  const taban =
-    anahtar + '|' + v.join(',') + (tilt !== undefined ? '|t' + tilt : '') + (hareket ? '|h' : '');
-  const [resim, setResim] = useState<string | null>(() => RESIMLER.get(taban)?.url ?? null);
+  const durgunTaban = anahtar + '|' + v.join(',') + (tilt !== undefined ? '|t' + tilt : '');
+  const taban = durgunTaban + (hareket ? '|h' : '');
+  // Önce durağan: canlı resim sonra, sıra boşalınca (bkz. `Sahne.onceDurgun`).
+  const iki = hareket && onceDurgun;
+  const [resim, setResim] = useState<string | null>(
+    () => RESIMLER.get(taban)?.url ?? (iki ? (RESIMLER.get(durgunTaban)?.url ?? null) : null),
+  );
   // Kapanıştaki güncel işlevler: etki her çizimde yeniden kurulmasın.
   const guncel = useRef({ uret, kamera, basarisiz });
   guncel.current = { uret, kamera, basarisiz };
@@ -150,7 +163,7 @@ function useGpuResmi(
       }
       const { uret: u, kamera: k } = guncel.current;
       // Tarifliyse model işçide kuruluyor (`tarif.ts`): buradan yalnız anahtar.
-      glCiz(`${taban}|${en}x${boy}`, () => ({
+      const istek = (h: boolean) => () => ({
         ...(tarif ? { tarif: anahtar } : { model: modelAl(anahtar, u) }),
         kamera: k,
         kutu: v,
@@ -158,15 +171,48 @@ function useGpuResmi(
         boy,
         olcek: en / (vw * cssBirim),
         tilt,
-        hareket,
-      })).then((url) => {
-        if (!url) {
-          if (!iptal) guncel.current.basarisiz();
-          return;
-        }
-        const simdiki = RESIMLER.get(taban);
-        if (!simdiki || simdiki.en < en) RESIMLER.set(taban, { en, url });
-        if (!iptal) setResim(RESIMLER.get(taban)!.url);
+        hareket: h,
+      });
+      const sakla = (t: string, url: string) => {
+        const simdiki = RESIMLER.get(t);
+        if (!simdiki || simdiki.en < en) RESIMLER.set(t, { en, url });
+        return RESIMLER.get(t)!.url;
+      };
+      if (!iki) {
+        glCiz(`${taban}|${en}x${boy}`, istek(hareket)).then((url) => {
+          if (!url) {
+            if (!iptal) guncel.current.basarisiz();
+            return;
+          }
+          const son = sakla(taban, url);
+          if (!iptal) setResim(son);
+        });
+        return;
+      }
+      // Önce durağan resim (hızlı; bütün parçalar içinde), sonra canlısı.
+      let canliGeldi = false;
+      const durgun = RESIMLER.get(durgunTaban);
+      if (durgun && durgun.en >= en) setResim(durgun.url);
+      else
+        glCiz(`${durgunTaban}|${en}x${boy}`, istek(false)).then((url) => {
+          if (!url) {
+            if (!iptal) guncel.current.basarisiz();
+            return;
+          }
+          const son = sakla(durgunTaban, url);
+          if (!iptal && !canliGeldi) setResim(son);
+        });
+      glCiz(`${taban}|${en}x${boy}`, istek(true), {
+        sonra: true,
+        istenmiyor: () => iptal,
+      }).then(async (url) => {
+        // Canlı gelmediyse (vazgeçildi ya da çizilemedi) durağan kalıyor.
+        if (!url) return;
+        const son = sakla(taban, url);
+        await glOnYukle(son);
+        if (iptal) return;
+        canliGeldi = true;
+        setResim(son);
       });
     };
     iste();
@@ -177,7 +223,7 @@ function useGpuResmi(
       ro.disconnect();
     };
     // `v` içerik olarak `taban`da; dizi kimliği her çizimde değişiyor.
-  }, [etkin, taban, tarif, kirp, tilt, hareket, ref]);
+  }, [etkin, taban, durgunTaban, iki, tarif, kirp, tilt, hareket, ref]);
 
   return etkin ? resim : null;
 }
@@ -526,6 +572,7 @@ export const Sahne = memo(function Sahne({
   kirp = false,
   kare = false,
   ertele = false,
+  onceDurgun = false,
   tilt,
   hareket = false,
   tarif = false,
@@ -555,6 +602,14 @@ export const Sahne = memo(function Sahne({
    * boş kare aynı görüş kutusunu taşıyor, yer değişmiyor.
    */
   ertele?: boolean;
+  /**
+   * Hareketli sahnede önce DURAĞAN resim (hızlı: bütün parçalar içinde
+   * çizili), canlı resim ve katmanları sonra: öncelikli işler bitince,
+   * sayfadan çıkılmadıysa (`gl.glCiz` `sonra`); gelince çözülüp yerine
+   * konuyor. Canlı kareleri ağır olan sahne için (yerleşke: talim alanı,
+   * tarla): açılış onları beklemiyor, sonraki ekran da.
+   */
+  onceDurgun?: boolean;
   /**
    * Tilt-shift (yalnız GPU): keskin kalan odak bandının yarı yüksekliği
    * (boya oran). Geniş sahneler (bölge afişi, ekran zemini, diyar kapağı)
@@ -603,8 +658,19 @@ export const Sahne = memo(function Sahne({
   const kendi = kutu ?? (c ? c.kutu : kutuAl(anahtar, uret, kamera));
   const v: [number, number, number, number] = kutu ?? (kare ? kareyeTamamla(kendi) : kendi);
   const canli = hareket && gpu && !hareketKisitli();
-  const resim = useGpuResmi(gpu, anahtar, cokgensiz, uret, kamera, v, kirp, tilt, canli, ref, () =>
-    setGpuYok(true),
+  const resim = useGpuResmi(
+    gpu,
+    anahtar,
+    cokgensiz,
+    uret,
+    kamera,
+    v,
+    kirp,
+    tilt,
+    canli,
+    onceDurgun,
+    ref,
+    () => setGpuYok(true),
   );
 
   const svg = (

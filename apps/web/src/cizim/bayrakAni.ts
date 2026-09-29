@@ -124,67 +124,171 @@ function salinanKareler(
  * parça (`bez.canli`: talimdeki okçu, koşan at) kendi sayısı. Kare
  * tamponları en uzun turun sayısı kadar; turu kısa olan parçanın sonraki
  * karelerde yeri boş tutuluyor ve çizilmiyor (`kareSayilari`).
+ *
+ * Kareler TEMBEL (`kareAl`): çizici onları sırayla istiyor, her kare
+ * istenince kuruluyor ve çizildikten sonra bırakılıyor. Yerleşkenin 40
+ * karesi önceden kurulunca işçide ~195 MB tutuyordu (telefonun belleğini
+ * aşar). Atlasın yerleşimi için gereken kapsam (`kapsam`) karelerden
+ * değil, duruşların köşelerinden önceden bulunuyor.
  */
 export function bayrakKareleri(model: Model, kamera?: Kamera): BayrakKareleri | undefined {
   const gruplar = bayrakGruplari(model, kamera);
   if (!gruplar.length) return undefined;
-  const { c } = kameraTabani(kamera);
-  const derinlik = (y: Yuz) => y.p.reduce((t, q) => t + q[0] * c[0] + q[1] * c[1] + q[2] * c[2], 0);
+  const { c, sag, yukari } = kameraTabani(kamera);
   // Uzaktan yakına: parça derinliğe yazmadan çiziliyor, kıvrım üst üste
-  // binince yakın olan üstte kalsın.
-  const sirala = (g: Yuz[]) => [...g].sort((a, b) => derinlik(a) - derinlik(b));
+  // binince yakın olan üstte kalsın. Derinlik yüz başına bir kez: her
+  // karşılaştırmada yeniden toplamak sıralamanın kendisinden pahalıydı.
+  const sirala = (g: Yuz[]) =>
+    g
+      .map((y) => ({ y, d: y.p.reduce((t, q) => t + q[0] * c[0] + q[1] * c[1] + q[2] * c[2], 0) }))
+      .sort((a, b) => a.d - b.d)
+      .map(({ y }) => y);
   const canli = gruplar.map((g) => g[0]!.bez!.canli?.kare ?? 0);
   const kareSayilari = canli.map((k) => k || BAYRAK_KARE);
   const toplamKare = Math.max(...kareSayilari);
   // Sancak ve ağaç hızlı yoldan; bayrağın dalgası normali de değiştiriyor,
   // her karede yeniden kuruluyor (bayrak az).
   const sarkac = gruplar.map((g, i) => !canli[i] && !!g[0]!.bez!.yon);
-  const hizli = salinanKareler(
-    gruplar.filter((_, i) => sarkac[i]),
-    kamera,
-    sirala,
-  );
-  // Salınanların 12 karesi bir kez: uzun turlu sahnede başa sararak yeniden kullanılıyor.
+  // Salınanların 12 karesi bir kez, baştan (küçükler; kapsamları da
+  // onlardan): uzun turlu sahnede başa sararak yeniden kullanılıyor.
   const salinan: Float32Array[][] = [];
-  const kareler: Float32Array[] = [];
-  let sayilar: number[] = [];
-  for (let f = 0; f < toplamKare; f++) {
-    const fs = f % BAYRAK_KARE;
-    if (!salinan[fs]) {
+  if (canli.some((k) => !k)) {
+    const hizli = salinanKareler(
+      gruplar.filter((_, i) => sarkac[i]),
+      kamera,
+      sirala,
+    );
+    for (let fs = 0; fs < BAYRAK_KARE; fs++) {
       const adim = (2 * Math.PI * fs) / BAYRAK_KARE;
       const hizliParcalar = hizli.kare(adim);
       let h = 0;
-      salinan[fs] = gruplar.map((g, i) =>
-        canli[i]
-          ? new Float32Array(0)
-          : sarkac[i]
-            ? hizliParcalar[h++]!
-            : agYap(sirala(g.map((y) => bezAni(y, bezFazi(y) + adim))), kamera).nesne,
+      salinan.push(
+        gruplar.map((g, i) =>
+          canli[i]
+            ? new Float32Array(0)
+            : sarkac[i]
+              ? hizliParcalar[h++]!
+              : agYap(sirala(g.map((y) => bezAni(y, bezFazi(y) + adim))), kamera).nesne,
+        ),
       );
     }
-    const parcalar = gruplar.map((g, i) =>
-      f >= kareSayilari[i]!
-        ? null
-        : canli[i]
-          ? // Her karede başka bir duruş: normal de o duruştan. İki yüzlü:
-            // dönen uzuv arkasını gösterse de köşe sayısı karede karede aynı.
-            agYap(sirala(g.map((y) => ({ ...y.bez!.canli!.yuz(f), ciftYuz: true }))), kamera).nesne
-          : salinan[fs]![i]!,
-    );
-    if (f === 0) sayilar = parcalar.map((p) => p!.length / KOSE);
-    const toplam = new Float32Array(sayilar.reduce((t, n) => t + n, 0) * KOSE);
-    let bas = 0;
-    parcalar.forEach((p, i) => {
-      // Turu bitmiş parçanın yeri boş kalıyor: o karede çizilmiyor.
-      if (p) toplam.set(p, bas);
-      bas += sayilar[i]! * KOSE;
-    });
-    kareler.push(toplam);
   }
+  // Kapsam: her parçanın bütün karelerde kameranın düzleminde kapladığı
+  // yer. Salınanda karelerinden; canlıda duruşların köşelerinden.
+  const kapsam = gruplar.map((): [number, number, number, number] => [
+    Infinity,
+    -Infinity,
+    Infinity,
+    -Infinity,
+  ]);
+  const genislet = (i: number, x: number, y: number, z: number) => {
+    const k = kapsam[i]!;
+    const a = x * sag[0] + y * sag[1] + z * sag[2];
+    const b = x * yukari[0] + y * yukari[1] + z * yukari[2];
+    if (a < k[0]) k[0] = a;
+    if (a > k[1]) k[1] = a;
+    if (b < k[2]) k[2] = b;
+    if (b > k[3]) k[3] = b;
+  };
+  for (const kare of salinan)
+    kare.forEach((t, i) => {
+      for (let o = 0; o < t.length; o += KOSE) genislet(i, t[o]!, t[o + 1]!, t[o + 2]!);
+    });
+
+  // Canlı parçanın f. karesi: aktörün o duruşu (bütün yüzleri bir kez
+  // kurulup dönüşüyor, bkz. `uc.Yuz.bez`). Duruşlar TEK geçişte, kapsamla
+  // birlikte kuruluyor; karede yalnız köşeler ve köşe normalleri değişiyor
+  // (renk, malzeme, yüz sırası aynı), onlar sıkışık bir tampona yazılıyor
+  // ve kare istenince ilk karenin yüzlerinden yeniden kuruluyor. Duruşu ve
+  // dönüşümleri iki kez hesaplamak (kapsam, sonra kare) sürenin yarısıydı.
+  const kayit: Float32Array[][] = gruplar.map(() => []);
+  const duruslar = (i: number, f: number) =>
+    gruplar[i]!.map((y) => {
+      const c = y.bez!.canli!;
+      return c.model(f)[c.i]!;
+    });
+  for (let f = 0; f < toplamKare; f++)
+    canli.forEach((k, i) => {
+      if (!k || f >= k) return;
+      const yuzler = duruslar(i, f);
+      let n = 0;
+      for (const y of yuzler) n += y.p.length * (y.vn ? 6 : 3);
+      const t = new Float32Array(n);
+      let o = 0;
+      for (const y of yuzler) {
+        for (const q of y.p) {
+          genislet(i, q[0], q[1], q[2]);
+          t[o++] = q[0];
+          t[o++] = q[1];
+          t[o++] = q[2];
+        }
+        if (y.vn)
+          for (const v of y.vn) {
+            t[o++] = v[0];
+            t[o++] = v[1];
+            t[o++] = v[2];
+          }
+      }
+      kayit[i]![f] = t;
+    });
+  // İki yüzlü: dönen uzuv arkasını gösterse de köşe sayısı karede karede aynı.
+  const canliKare = (i: number, f: number): Float32Array => {
+    const t = kayit[i]![f];
+    let o = 0;
+    const oku = (): V3 => [t![o++]!, t![o++]!, t![o++]!];
+    // Kaydı bırakılmış kare (sırası geçmiş) duruştan yeniden kuruluyor;
+    // kayıttaki gibi 32 bitlik sayıya yuvarlanarak: iki yol aynı kareyi versin.
+    const yuvarla = (q: V3): V3 => [Math.fround(q[0]), Math.fround(q[1]), Math.fround(q[2])];
+    const yuzler: Yuz[] = t
+      ? gruplar[i]!.map((y) => {
+          const p = y.p.map(oku);
+          return { ...y, p, ...(y.vn ? { vn: y.vn.map(oku) } : {}), bez: undefined };
+        })
+      : duruslar(i, f).map((y) => ({
+          ...y,
+          p: y.p.map(yuvarla),
+          ...(y.vn ? { vn: y.vn.map(yuvarla) } : {}),
+        }));
+    return agYap(sirala(yuzler.map((y) => ({ ...y, ciftYuz: true }))), kamera).nesne;
+  };
+  const parcalar = (f: number) =>
+    gruplar.map((_, i) =>
+      f >= kareSayilari[i]! ? null : canli[i] ? canliKare(i, f) : salinan[f % BAYRAK_KARE]![i]!,
+    );
+
+  let ilk: (Float32Array | null)[] | null = parcalar(0);
+  const sayilar = ilk.map((p) => p!.length / KOSE);
+  const toplam = sayilar.reduce((t, n) => t + n, 0) * KOSE;
   return {
-    kareler,
+    kare: toplamKare,
+    kareAl: (f) => {
+      const p = f === 0 && ilk ? ilk : parcalar(f);
+      if (f === 0) ilk = null;
+      // Geride kalan karelerin kaydı bırakılıyor: çizici sırayla istiyor.
+      for (const k of kayit) delete k[f - 1];
+      const t = new Float32Array(toplam);
+      let bas = 0;
+      p.forEach((x, i) => {
+        // Turu bitmiş parçanın yeri boş kalıyor: o karede çizilmiyor.
+        if (x) t.set(x, bas);
+        bas += sayilar[i]! * KOSE;
+      });
+      return t;
+    },
     gruplar: sayilar,
     sureler: gruplar.map((g) => g[0]!.bez!.sure ?? BAYRAK_SURE),
     kareSayilari,
+    kapsam,
   };
+}
+
+/**
+ * Karelerin hepsi önceden kurulmuş, aktarılabilir biçim: ana iş
+ * parçacığından işçiye giden istek için (tembel işlev gönderilemiyor).
+ * Yalnız tarifsiz sahnede (galeri) gerekiyor; oyunun sahneleri işçide
+ * kuruluyor.
+ */
+export function kareleriKur(by: BayrakKareleri): BayrakKareleri {
+  const { kareAl, ...geri } = by;
+  return kareAl ? { ...geri, kareler: Array.from({ length: by.kare }, (_, f) => kareAl(f)) } : by;
 }

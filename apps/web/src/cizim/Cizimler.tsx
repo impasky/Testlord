@@ -69,6 +69,7 @@ export function YerlesimCizimi({ kademe, className }: { kademe: string; classNam
       className={className}
       hareket
       ertele
+      onceDurgun
     />
   );
 }

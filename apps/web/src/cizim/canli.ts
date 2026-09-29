@@ -32,11 +32,27 @@ import {
 /* ── Canlandırma ───────────────────────────────────────────────────── */
 
 /**
+ * Aynı duruş işlevinin son karesi: aynı işlevle kurulan aktörler (üç okçu,
+ * üç mızrakçı) kareleri sırayla istendiğinde duruşu bir kez hesaplıyor.
+ * Kare figürün kendi yerinde; her aktörü kendi dönüşümü yerine taşıyor.
+ */
+const SON_DURUS = new WeakMap<(t: number) => Model, { k: number; kare: number; m: Model }>();
+
+function durus(poz: (t: number) => Model, k: number, kare: number): Model {
+  const son = SON_DURUS.get(poz);
+  if (son && son.k === k && son.kare === kare) return son.m;
+  // Duruş salınımı (`insan`ın `bez`i) karede gereksiz: kare zaten bir an.
+  const m = poz(k / kare).map((y) => (y.bez ? { ...y, bez: undefined } : y));
+  SON_DURUS.set(poz, { k, kare, m });
+  return m;
+}
+
+/**
  * Bir aktörün turu: `poz(t)` (t ∈ [0, 1)) her karede aynı yüzleri
  * veriyor. Dönen model ilk karenin kendisi; her yüzü `bez.canli` ile
- * sonraki karelerindeki hâlini taşıyor (tembel: yalnız hareketli GPU
- * çizimi istiyor, SVG ve durağan resim ilk kareyi çiziyor). `kok`
- * aktörün kimliği: bütün yüzleri tek parça olarak çiziliyor.
+ * aktörün karelerini (`model(k)`) ve o karedeki sırasını taşıyor (tembel:
+ * yalnız hareketli GPU çizimi istiyor, SVG ve durağan resim ilk kareyi
+ * çiziyor). `kok` aktörün kimliği: bütün yüzleri tek parça olarak çiziliyor.
  */
 export function canlandir(
   poz: (t: number) => Model,
@@ -46,17 +62,10 @@ export function canlandir(
   golgesiz = false,
 ): Model {
   const ilk = poz(0);
-  // Kareler sırayla isteniyor (bir karenin bütün yüzleri art arda): son
-  // kareyi tutmak yetiyor, bütün tur bellekte durmuyor.
-  let sonK = 0;
-  let son = ilk;
-  const karesi = (k: number): Model => {
-    if (k !== sonK) {
-      son = poz(k / kare);
-      sonK = k;
-      if (son.length !== ilk.length) throw new Error('canlandir: kareler aynı yüzlerden kurulmalı');
-    }
-    return son;
+  const model = (k: number): Model => {
+    const m = durus(poz, k, kare);
+    if (m.length !== ilk.length) throw new Error('canlandir: kareler aynı yüzlerden kurulmalı');
+    return m;
   };
   return ilk.map((y, i) => ({
     ...y,
@@ -65,7 +74,7 @@ export function canlandir(
       u: y.p.map(() => 0),
       kok,
       sure,
-      canli: { kare, yuz: (k: number) => karesi(k)[i]!, golgesiz },
+      canli: { kare, model, i, golgesiz },
     },
   }));
 }

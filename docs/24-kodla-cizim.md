@@ -228,7 +228,21 @@ parçacığında da aynı koşuyor. Üç geçiş:
    Her parçanın bir turdaki anları (`bayrakAni.bayrakKareleri`): salınan
    parçada 12, canlı parçada kendi sayısı (`kareSayilari`; okçu 24,
    düello 40). Kare tamponları en uzun tur kadar; turu biten parçanın yeri
-   sonraki karelerde boş kalıyor, ne kuruluyor ne çiziliyor. Bayrağın dalgası
+   sonraki karelerde boş kalıyor, ne kuruluyor ne çiziliyor. Kareler
+   TEMBEL (`kareAl`): çizici onları sırayla istiyor, her kare çizilmeden
+   hemen önce kuruluyor ve sonra bırakılıyor. Yerleşkenin 40 karesi
+   önceden kurulunca işçide ~195 MB tutuyordu; şimdi bellekte bir kare
+   (~5 MB). Atlasın yerleşimi için parçanın bütün karelerdeki kapsamı
+   (`kapsam`, kameranın düzleminde) önceden bulunuyor: canlı parçanın
+   duruşları tek geçişte kuruluyor, kapsam onlardan; karede yalnız köşeler
+   ve köşe normalleri değiştiği için (renk, malzeme, yüz sırası aynı) onlar
+   sıkışık bir tampona yazılıyor, kare istenince ilk karenin yüzlerinden
+   yeniden kuruluyor. Aynı duruş işlevini paylaşan aktörler (üç okçu)
+   duruşu karede bir kez hesaplıyor; aktörün dönüşümleri (taşı, ölçekle,
+   döndür) kareye yüz yüz değil bütün model olarak bir kez uygulanıyor.
+   Yerleşkenin kareleri böyle ~4,5 sn'den ~3,5 sn'ye indi (geliştirme
+   makinesi); telefonda yine saniyeler, bu yüzden yerleşke önce durağan
+   geliyor (bkz. "Sıra ve işçi"). Bayrağın dalgası
    normali de değiştirdiği için her karede yeniden kuruluyor (bayrak az);
    sancak ve ağaçta ağ bir kez kuruluyor, her karede yalnız köşeler
    kayıyor (salınım iki sabit biçimin toplamı; `agYap` `kaynak`: her
@@ -262,6 +276,19 @@ kaydırmayı ve dokunmayı donduruyordu (dünya haritasında 661 ms'lik tek bir
 görev ölçüldü, işçiyle 70 ms). İşçi açılamazsa ya da WebGL2 orada yoksa
 aynı çizici ana iş parçacığında; o da yoksa SVG. İşler tek tek, aralarında
 nefes payıyla; aynı istek (anahtar + görüş kutusu + boy) bir kez çiziliyor.
+
+Ağır canlı sahne önce DURAĞAN (`Sahne.onceDurgun`; Şehir'in yerleşkesi):
+önce bütün parçaları içinde çizili durağan resim (hızlı), canlı resim ve
+katmanları sonra. Canlı iş `glCiz` `sonra` ile sıraya giriyor: öncelikli
+iş kalmayınca başlıyor ve başlamadan önce isteyen kalmadıysa (sayfadan
+çıkıldı) hiç çizilmiyor, sonra yeniden istenebiliyor. Gelen canlı resim ve
+katmanları çözülüp (`glOnYukle`) öyle yerine konuyor: canlı resimde
+hareketli parçalar yok (atlasta), bir kare bile figürsüz görünmesin.
+Böylece açılış canlı kareleri beklemiyor, Şehir'den hemen ayrılan
+oyuncunun yeni ekranı da. Tembel kareler işlev olduğu için işçiye
+gönderilemiyor: ana iş parçacığında kurulan (tarifsiz) sahnenin kareleri
+önceden kuruluyor (`kareleriKur`); işçide WebGL2 yoksa ağ geri
+gönderilmiyor, sahne tariften yeniden kuruluyor.
 
 **Tarif (`tarif.ts`).** Oyunun her çizimi bir anahtarla adlı (`zemin:kisla`,
 `bina:kisla_3`, `birimler:okcu`, `diyar:…:kapak`) ve model yalnız o
@@ -348,7 +375,8 @@ kaydırıyor.
   dönüyor), iki orakçı buğday biçiyor, bir kadın demeti yığına taşıyor.
   Her aktör bir turun duruşları (`poz(t)`), her karede AYNI yüzler (yalnız
   köşeler kayıyor): `canlandir` modelin ilk karesini veriyor, her yüz
-  sonraki karelerindeki hâlini tembelce taşıyor (`bez.canli`). SVG ve
+  aktörün karelerini (`bez.canli.model(k)`, bütün yüzlerince paylaşılan)
+  ve o karedeki sırasını tembelce taşıyor. SVG ve
   durağan resim ilk kareyi çiziyor; dönüşümler (taşı, ölçekle, döndür)
   karelere de gidiyor. Tur başa sarınca figür başladığı duruşta; yalnız
   elden çıkan nesne yerine dönüyor (hedefteki okun yerine kılıftan yenisi,

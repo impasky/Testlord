@@ -426,6 +426,9 @@ if (yeniToken) {
   // ilk lordunki onun adına geçmiyor. (Tarayıcı deposunda tutulduğunda
   // geçiyordu; ürün hatasının kendisi buydu.)
   await rehberiSustur(page);
+  // Açılış artık Şehir: yalnız yerleşke, bölüm yok. Boş bölümler
+  // Malikâne panelinde (bkz. docs/12 §3.8).
+  await ekrana(page, 'malikane', 600);
   await denetle('yeni-lord-malikane');
 
   const sakin = await page.evaluate(() => ({

@@ -60,6 +60,7 @@ import {
   type V3,
 } from './uc';
 import { YERLESIM_KADEMELERI, yerlesimModeli, yerlesimNoktasi, yerlesimYuzdesi } from './yerlesim';
+import { kareleriKur } from './bayrakAni';
 import {
   DEMET_KARE,
   DUELLO_KARE,
@@ -235,11 +236,12 @@ describe('3B motor', () => {
     const m = [...bayrak(0, 0, 0, 6, '#aa0000'), ...bayrak(20, 0, 0, 6, '#0000aa', 'x')];
     expect(bayrakGruplari(m)).toHaveLength(2);
     const k = bayrakKareleri(m)!;
-    expect(k.kareler).toHaveLength(BAYRAK_KARE);
+    expect(k.kare).toBe(BAYRAK_KARE);
+    const kareler = Array.from({ length: k.kare }, (_, f) => k.kareAl!(f));
     expect(k.gruplar).toHaveLength(2);
     const toplam = k.gruplar.reduce((a, b) => a + b, 0) * KOSE;
-    for (const t of k.kareler) expect(t.length).toBe(toplam);
-    expect(k.kareler[0]).not.toEqual(k.kareler[BAYRAK_KARE / 2]);
+    for (const t of kareler) expect(t.length).toBe(toplam);
+    expect(kareler[0]).not.toEqual(kareler[BAYRAK_KARE / 2]);
     expect(bayrakKareleri(kutu(0, 0, 0, 1, 1, 1, '#808080'))).toBeUndefined();
   });
 
@@ -313,7 +315,7 @@ describe('3B motor', () => {
     // andaki yerinde.
     const sirali = gruplar.flatMap((g) => [...g].sort((a, b) => derinlik(a) - derinlik(b)));
     const kaynak = agYap(sirali, undefined, { kaynak: true }).nesneKaynak!;
-    const hizli = k.kareler[f]!;
+    const hizli = k.kareAl!(f);
     expect(hizli.length / KOSE).toBe(kaynak.length / 2);
     for (let v = 0; v < kaynak.length / 2; v++) {
       const y = sirali[kaynak[v * 2]!]!;
@@ -628,7 +630,7 @@ describe('canlı yerleşke', () => {
       for (let k = 0; k < kare; k++) {
         const m = poz(k / kare);
         expect(bicim(m)).toBe(bicim(ilk));
-        for (const y of m) for (const q of y.p) expect(q.every(Number.isFinite)).toBe(true);
+        expect(m.every((y) => y.p.every((q) => q.every(Number.isFinite)))).toBe(true);
       }
       // Son kareden başa atlama sıçramasın: tur sonu, turun başı.
       poz(1)
@@ -650,13 +652,14 @@ describe('canlı yerleşke', () => {
     expect(c).toHaveLength(okcuPoz(0).length);
     const k = 7;
     const beklenen = okcuPoz(k / OKCU_KARE);
-    c.forEach((y, i) => expect(y.bez!.canli!.yuz(k).p).toEqual(beklenen[i]!.p));
+    const yuzu = (y: (typeof c)[number]) => y.bez!.canli!.model(k)[y.bez!.canli!.i]!;
+    c.forEach((y, i) => expect(yuzu(y).p).toEqual(beklenen[i]!.p));
     const d = tasi(olcekle(dondur(c, 'z', Math.PI / 2), 0.5), [3, 4, 0]);
     const elle = tasi(olcekle(dondur(beklenen, 'z', Math.PI / 2), 0.5), [3, 4, 0]);
     d.forEach((y, i) =>
-      y
-        .bez!.canli!.yuz(k)
-        .p.forEach((q, j) => q.forEach((v, e) => expect(v).toBeCloseTo(elle[i]!.p[j]![e]!, 6))),
+      yuzu(y).p.forEach((q, j) =>
+        q.forEach((v, e) => expect(v).toBeCloseTo(elle[i]!.p[j]![e]!, 6)),
+      ),
     );
   });
 
@@ -672,12 +675,67 @@ describe('canlı yerleşke', () => {
       ORAK_KARE,
       DUELLO_KARE,
     ]);
-    expect(k.kareler).toHaveLength(DUELLO_KARE);
+    expect(k.kare).toBe(DUELLO_KARE);
     const orak = k.kareSayilari!.indexOf(ORAK_KARE);
     const bas = k.gruplar.slice(0, orak).reduce((a, b) => a + b, 0) * KOSE;
-    const parca = (f: number) => k.kareler[f]!.subarray(bas, bas + k.gruplar[orak]! * KOSE);
+    const parca = (f: number) => k.kareAl!(f).subarray(bas, bas + k.gruplar[orak]! * KOSE);
     expect(parca(ORAK_KARE - 1).some((v) => v !== 0)).toBe(true);
     expect(parca(ORAK_KARE).every((v) => v === 0)).toBe(true);
+  });
+
+  it('kapsam her karenin köşelerini içine alıyor; önceden kurulan kareler tembellerle aynı', () => {
+    const m = [
+      ...tasi(canlandir(okcuPoz, OKCU_KARE, 2, [0, 0, 0]), [4, 0, 0]),
+      ...bayrak(-30, 0, 0, 6, '#aa0000'),
+    ];
+    const k = bayrakKareleri(m)!;
+    const kurulu = kareleriKur(bayrakKareleri(m)!);
+    expect(kurulu.kareAl).toBeUndefined();
+    const { sag, yukari } = kameraTabani();
+    // Kareler sırayla (çizicinin istediği gibi); her karede her parça kendi kapsamında.
+    for (let f = 0; f < k.kare; f++) {
+      const t = k.kareAl!(f);
+      expect(Array.from(kurulu.kareler![f]!)).toEqual(Array.from(t));
+      let bas = 0;
+      k.gruplar.forEach((n, i) => {
+        const [s0, s1, u0, u1] = k.kapsam[i]!;
+        if (f < k.kareSayilari![i]!) {
+          let [a0, a1, b0, b1] = [Infinity, -Infinity, Infinity, -Infinity];
+          for (let o = bas; o < bas + n * KOSE; o += KOSE) {
+            const a = t[o]! * sag[0] + t[o + 1]! * sag[1] + t[o + 2]! * sag[2];
+            const b = t[o]! * yukari[0] + t[o + 1]! * yukari[1] + t[o + 2]! * yukari[2];
+            [a0, a1, b0, b1] = [Math.min(a0, a), Math.max(a1, a), Math.min(b0, b), Math.max(b1, b)];
+          }
+          expect(a0).toBeGreaterThanOrEqual(s0 - 1e-6);
+          expect(a1).toBeLessThanOrEqual(s1 + 1e-6);
+          expect(b0).toBeGreaterThanOrEqual(u0 - 1e-6);
+          expect(b1).toBeLessThanOrEqual(u1 + 1e-6);
+        }
+        bas += n * KOSE;
+      });
+    }
+    // Sırası geçmiş kare de istenebiliyor (duruştan yeniden kuruluyor).
+    expect(Array.from(k.kareAl!(2))).toEqual(Array.from(kurulu.kareler![2]!));
+  });
+
+  it('aynı duruşlu aktörler (üç okçu) bir karede duruşu bir kez kuruyor; aktörün yüzleri tek kare işlevi', () => {
+    let sayac = 0;
+    const poz = (t: number) => (sayac++, okcuPoz(t));
+    const m = olcekle(
+      dondur(
+        [0, 6, 12].flatMap((x) => tasi(canlandir(poz, 8, 1, [0, 0, 0]), [x, 0, 0])),
+        'z',
+        0.7,
+      ),
+      0.5,
+    );
+    const actors = bayrakGruplari(m);
+    expect(actors).toHaveLength(3);
+    for (const g of actors) expect(new Set(g.map((y) => y.bez!.canli!.model)).size).toBe(1);
+    const once = sayac;
+    const kareler = m.map((y) => y.bez!.canli!.model(3)[y.bez!.canli!.i]!);
+    expect(kareler.every((y) => y.p.length > 0)).toBe(true);
+    expect(sayac - once).toBe(1);
   });
 
   it('gölgesiz canlı parça (at, saban) sabit resme gölge bırakmıyor', () => {

@@ -64,8 +64,15 @@ kapsam.onmessage = (e) => {
   zincir = zincir.then(async () => {
     const { c, dumanlar } = hazirla(istek);
     const sonuc = await cizBlob(c).catch(() => null);
-    if (glDurumu() === 'yok')
-      kapsam.postMessage({ id, yok: true, ag: c.ag, bayrak: c.bayrak, dumanlar }, aktarilanlar(c));
-    else kapsam.postMessage({ id, sonuc: sonuc && { ...sonuc, dumanlar } });
+    if (glDurumu() === 'yok') {
+      // Tembel kareler (işlev) aktarılamıyor: ağ da gitmiyor, ana iş
+      // parçacığı sahneyi tariften yeniden kuruyor.
+      if (c.bayrak?.kareAl) kapsam.postMessage({ id, yok: true });
+      else
+        kapsam.postMessage(
+          { id, yok: true, ag: c.ag, bayrak: c.bayrak, dumanlar },
+          aktarilanlar(c),
+        );
+    } else kapsam.postMessage({ id, sonuc: sonuc && { ...sonuc, dumanlar } });
   });
 };
