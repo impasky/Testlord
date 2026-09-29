@@ -329,7 +329,11 @@ export function Sehir({
       style={{ top: 'var(--ust-bar)', bottom: 'calc(var(--alt-bar) + var(--omurga-serit))' }}
       data-sehir-sayfasi=""
     >
+      {/* Ekranda yazı yok; ekran okuyucu yerleşkenin adını ve özetini duyuyor. */}
       <h2 className="sr-only">{yerlesim.ad}</h2>
+      <p id="yerlesim-ozeti" className="sr-only">
+        {yerlesim.ozet}
+      </p>
       <div
         ref={kaydirici}
         className="gizli-kaydirma h-full w-full overflow-auto overscroll-contain"
@@ -342,6 +346,7 @@ export function Sehir({
           style={{ width: SAHNE_EN, height: SAHNE_BOY }}
           role="img"
           aria-label={`${yerlesim.ad} — ${binalar.length} yapı`}
+          aria-describedby="yerlesim-ozeti"
         >
           <YerlesimCizimi kademe={yerlesim.kademe} className="absolute inset-0 h-full w-full" />
           {/* Kasaba: binalar yüzdeleriyle, yerleşkenin ortasındaki çerçevede. */}
