@@ -17,12 +17,15 @@ import { bolgeModeli } from './bolgeler';
 import { diyarModeli, type Kadraj } from './diyarlar';
 import { generalModeli, lordModeli, portreModeli } from './kisiler';
 import type { Model } from './uc';
-import { yerlesimModeli, type Kademe } from './yerlesim';
+import { yerlesimAnahtariCoz, yerlesimModeli } from './yerlesim';
 import { zeminModeli } from './zeminler';
 
 const TARIFLER: Record<string, (ad: string) => Model | null> = {
   bina: binaModeli,
-  yerlesim: (ad) => yerlesimModeli(ad as Kademe),
+  yerlesim: (ad) => {
+    const { kademe, binalar } = yerlesimAnahtariCoz(ad);
+    return yerlesimModeli(kademe, binalar);
+  },
   bolge: bolgeModeli,
   birimler: birlikModeli,
   dusmanlar: dusmanModeli,

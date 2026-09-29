@@ -40,9 +40,13 @@ import {
   formatSayi,
 } from '../components/ui';
 import { IkonUyari } from '../components/Ikonlar';
-import { ZemineGolgesi } from '../components/ZemineGolgesi';
 import { BinaCizimi, CIZILEN_BINALAR, YerlesimCizimi } from '../cizim/Cizimler';
-import { KASABA_KUTUSU, YERLESIM_KUTUSU } from '../cizim/yerlesim';
+import {
+  BINA_TABAN_BOY,
+  KASABA_KUTUSU,
+  YERLESIM_KUTUSU,
+  type YerlesimBinasi,
+} from '../cizim/yerlesim';
 import type { Kapi } from '@lordlar/shared';
 import type { Sekme } from '../components/MobilKabuk';
 
@@ -105,8 +109,9 @@ function binadakiIsler(queues: QueueItem[]): Map<string, { bitis: string; ad: st
  * Gerçek boy bununla `data/binalar.json` içindeki `olcek` çarpımı. Tek
  * bir sayı olmasının sebebi: hiyerarşi orandan gelmeli, elle yazılmış on
  * üç ayrı boydan değil — biri değişince ötekilerle ilişkisi kayardı.
+ * Yerleşke sahnesi binayı aynı kutuya çiziyor (`yerlesim.sahneBinasi`).
  */
-const TABAN_BOY = 22;
+const TABAN_BOY = BINA_TABAN_BOY;
 
 /**
  * Yerleşkenin sayfadaki boyu (CSS pikseli): ekran biriminin 8 katı. İnsan
@@ -279,6 +284,12 @@ export function Sehir({
   const { yerlesim, binalar, insaat, tasinabilir } = veri.data;
   const isler = binadakiIsler(queues);
   const seciliBina = binalar.find((b) => b.key === secili) ?? null;
+  // Çizimi olan yapılar yerleşkenin İÇİNDE çiziliyor (aynı zemin, gölge,
+  // ışık); işaretler yalnız dokunma alanı, rozet ve seçim halkası.
+  const sahnedekiler: YerlesimBinasi[] = binalar.flatMap((b) => {
+    const ad = spriteAdi(b.key, b.seviye, b.seviyeli);
+    return SPRITE_OLAN.has(ad) ? [{ ad, x: b.x, y: b.y, olcek: b.olcek }] : [];
+  });
 
   /**
    * Binanın açtığı yere götür. Kapı sekme değiştirmiyor, panel açıyor.
@@ -348,7 +359,11 @@ export function Sehir({
           aria-label={`${yerlesim.ad} — ${binalar.length} yapı`}
           aria-describedby="yerlesim-ozeti"
         >
-          <YerlesimCizimi kademe={yerlesim.kademe} className="absolute inset-0 h-full w-full" />
+          <YerlesimCizimi
+            kademe={yerlesim.kademe}
+            binalar={sahnedekiler}
+            className="absolute inset-0 h-full w-full"
+          />
           {/* Kasaba: binalar yüzdeleriyle, yerleşkenin ortasındaki çerçevede. */}
           <div className="absolute" style={KASABA_YERI}>
             {binalar.map((b) => (
@@ -606,10 +621,23 @@ function BinaIsareti({
         zIndex: Math.round(b.y) + (mesgul || secili ? 200 : 0),
       }}
     >
-      {/* Zemine oturtan iki gölge — ortak bileşende, çünkü aynı iş bölge
-          sahnesinde de yapılıyor ve iki kopya, bir gün birinin düzelip
-          ötekinin düzelmemesi demek (`ZemineGolgesi`). */}
-      <ZemineGolgesi />
+      {/*
+        SEÇİM HALKASI — bina artık yerleşkenin içinde çiziliyor (gölgesi
+        yere düşüyor, bkz. `yerlesim.sahneBinasi`); seçili ya da işi süren
+        yapıyı tabanındaki halka gösteriyor. Önceden çizimin kendisi
+        parlıyordu; ayrı resim olmayınca parlatılacak bir şey yok, oyunlarda
+        seçim de zaten tabandaki halkayla okunuyor.
+      */}
+      {sprite && (secili || mesgul) && (
+        <span
+          aria-hidden="true"
+          className={`pointer-events-none absolute bottom-[-5%] left-1/2 h-[30%] w-[92%] -translate-x-1/2 rounded-[50%] border-2 ${
+            secili
+              ? 'border-[#fff3cf] shadow-[0_0_10px_2px_rgba(245,183,49,0.75)]'
+              : 'animate-pulse border-altin/70 shadow-[0_0_8px_rgba(245,183,49,0.45)]'
+          }`}
+        />
+      )}
 
       {/*
         DOKUNMA ALANI — kutunun tamamı değil, sprite'ın GÖVDESİ.
@@ -660,24 +688,7 @@ function BinaIsareti({
         </svg>
       )}
 
-      {sprite ? (
-        <BinaCizimi
-          ad={ad}
-          className="relative h-full w-full"
-          style={{
-            // Sprite'ın KENDİ düşen gölgesi kalktı: temas gölgesi varken
-            // ikincisi binayı zemine basan bir yapı değil, zeminin üstüne
-            // yapıştırılmış bir çıkartma gibi gösteriyordu.
-            filter: secili
-              ? 'drop-shadow(0 0 3px #fff3cf) drop-shadow(0 0 8px #f5b731)'
-              : mesgul
-                ? 'drop-shadow(0 0 5px rgba(245,183,49,0.55))'
-                : undefined,
-            // Dikilmemiş arsa soluk: "burada ne var, ne yok" bir bakışta.
-            opacity: dikili ? 1 : 0.72,
-          }}
-        />
-      ) : (
+      {sprite ? null : (
         <span
           className={`relative flex h-full w-full items-center justify-center rounded-xl shadow-[0_2px_6px_rgba(0,0,0,0.55)] ${
             dikili

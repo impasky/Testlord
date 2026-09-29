@@ -16,7 +16,7 @@
  * kare kare canlı (`canli.ts`); şehir sayfası yerleşkeyi tam ekran ve
  * kaydırılabilir gösteriyor.
  */
-import { mizrakSehpasi } from './binalar';
+import { BINA_KUTUSU, binaModeli, mizrakSehpasi } from './binalar';
 import {
   DEMET_KARE,
   DEMET_SURE,
@@ -42,6 +42,7 @@ import {
   sabanPoz,
   seyirci,
 } from './canli';
+import { cevre } from './cevre';
 import { araba, balya } from './kir';
 import { agac, cam, cit, duman, fici, kaya, mesale, palisat } from './parca';
 import { P, isikla } from './renk';
@@ -84,7 +85,7 @@ function yuzdeden(px: number, py: number): [number, number] {
 }
 
 /** Yapıların ayak bastığı yerler (data/binalar.json ile aynı). */
-const YUVALAR: Record<string, [number, number]> = {
+export const BINA_YUVALARI: Record<string, [number, number]> = {
   malikane: [51, 53],
   kisla: [24, 95],
   gorev_panosu: [36, 72],
@@ -102,7 +103,7 @@ const YUVALAR: Record<string, [number, number]> = {
 
 /** Ayak noktası: binanın sprite'ı tabanından çakılı; yol biraz önüne çıksın. */
 const nokta = (k: string): [number, number] => {
-  const [px, py] = YUVALAR[k]!;
+  const [px, py] = BINA_YUVALARI[k]!;
   return yuzdeden(px, py);
 };
 
@@ -200,7 +201,7 @@ function egriYol(
 /** Yuvaların dışında kalan kenar bölgelere ağaç/kaya serper. */
 function kenarSusu(r: () => number, adet: number, iglecik = 0.4): Model {
   const m: Model = [];
-  const yuvaNoktalari = Object.keys(YUVALAR).map(nokta);
+  const yuvaNoktalari = Object.keys(BINA_YUVALARI).map(nokta);
   let kalan = adet;
   let deneme = 0;
   while (kalan > 0 && deneme++ < adet * 20) {
@@ -236,7 +237,7 @@ function gobek(): [number, number] {
 function yolAgi(r: () => number, gen: number, renk: string, egri = false): Model {
   const noktalar: [number, number][] = [
     gobek(),
-    ...Object.keys(YUVALAR)
+    ...Object.keys(BINA_YUVALARI)
       .filter((k) => k !== 'malikane')
       .map((k): [number, number] => {
         const [x, y] = nokta(k);
@@ -267,7 +268,9 @@ function yolAgi(r: () => number, gen: number, renk: string, egri = false): Model
 function arkaSur(renk: string, h: number, kuleler: boolean, r: () => number): Model {
   const [kx, ky] = yuzdeden(50, -6);
   const m: Model = [];
-  const L = 60;
+  // Kasabanın üst iki kenarı kadar: daha uzunu surun dışındaki köy
+  // evlerinin ve göletin üstünden geçiyordu (`cevre.ts`).
+  const L = 46;
   m.push(...kutu(kx - 1, ky - 1, 0, L, 2, h, renk));
   m.push(...mazgal(kx - 1, ky - 1, h, L, 2, 'x', renk, 1.2));
   m.push(...kutu(kx - 1, ky - 1, 0, 2, L, h, renk));
@@ -439,32 +442,7 @@ function talimAlani(): Model {
   return m;
 }
 
-/** Yerleşkenin kıyısında orman: yanlarda ve köşelerde, tarlaya ve talim alanına girmeden. */
-function orman(r: () => number): Model {
-  const m: Model = [];
-  const bos = (sx: number, sy: number) =>
-    // Kasaba, tarlalar, talim alanı
-    (sx > -33 && sx < 33 && sy > -25 && sy < 25) ||
-    (sx > -40 && sx < 40 && sy > -44 && sy < -25) ||
-    (sx > -45 && sx < 40 && sy > 26 && sy < 55);
-  let kalan = 46;
-  let deneme = 0;
-  while (kalan > 0 && deneme++ < 2000) {
-    const sx = -50 + r() * 100;
-    const sy = -46 + r() * 104;
-    if (bos(sx, sy)) continue;
-    const [x, y] = ekrandan(sx, sy);
-    if (r() < 0.45) m.push(...cam(x, y, 0, r, 1 + r() * 0.35));
-    else m.push(...agac(x, y, 0, r, 1 + r() * 0.35));
-    kalan--;
-  }
-  // Kıyıdaki orman durağan: salınan her ağaç ayrı bir katman ve kırk ağaç
-  // telefonun GPU belleğinde ~6 megapiksel demekti. Kasabadakiler salınıyor.
-  for (const y of m) delete y.bez;
-  return m;
-}
-
-export function yerlesimModeli(kademe: Kademe): Model {
+export function yerlesimModeli(kademe: Kademe, binalar: YerlesimBinasi[] = []): Model {
   const r = rastgele('yerlesim:' + kademe);
   const zemin = ZEMIN_RENGI[kademe] ?? ZEMIN_RENGI.koy;
   const m: Model = [];
@@ -481,7 +459,9 @@ export function yerlesimModeli(kademe: Kademe): Model {
   const tasli = kademe === 'kale' || kademe === 'metropol';
   if (!tasli) {
     m.push(...lekeler(r, zemin, 34));
-    m.push(...lekeler(r, isikla(P.toprak, 1.05), kademe === 'kamp' ? 12 : 5, 28));
+    // Toprak lekeleri yalnız kampta: köyde ve kasabada kasabanın ortasında
+    // anlamsız çamur gölleri gibi duruyordu.
+    if (kademe === 'kamp') m.push(...lekeler(r, isikla(P.toprak, 1.05), 12, 28));
   }
   const g = gobek();
 
@@ -524,7 +504,7 @@ export function yerlesimModeli(kademe: Kademe): Model {
       );
       // Arkada palisat
       const [kx, ky] = yuzdeden(50, -6);
-      m.push(...palisat(kx - 1, ky - 1, 50, 'x', 4), ...palisat(kx - 1, ky - 1, 50, 'y', 4));
+      m.push(...palisat(kx - 1, ky - 1, 44, 'x', 4), ...palisat(kx - 1, ky - 1, 44, 'y', 4));
       m.push(...kenarSusu(r, 16, 0.3));
       break;
     }
@@ -593,8 +573,10 @@ export function yerlesimModeli(kademe: Kademe): Model {
       break;
     }
   }
-  // Kasabanın çevresi: arkada tarlalar, önde talim alanı, kıyıda orman.
-  m.push(...tarlalar(), ...talimAlani(), ...orman(r));
+  // Kasabanın çevresi: arkada tarlalar, önde talim alanı; dere, köy,
+  // mera, değirmenler, orman (`cevre.ts`).
+  m.push(...tarlalar(), ...talimAlani(), ...cevre(kademe, r));
+  for (const b of binalar) m.push(...sahneBinasi(b));
   return m;
 }
 
@@ -602,6 +584,93 @@ export function yerlesimModeli(kademe: Kademe): Model {
 function kasabaDosemesi(renk: string): Model {
   const taban = [yuzdeden(-3, -6), yuzdeden(-3, 106), yuzdeden(103, 106), yuzdeden(103, -6)];
   return katmanla(prizma(taban, 0, 0.04, renk), -1.8);
+}
+
+/* ── Binalar sahnede ──────────────────────────────────────────────── */
+
+/**
+ * Binanın sayfadaki kutusunun eni, kasaba eninin yüzdesi olarak (× `olcek`).
+ * Şehir sayfası dokunma alanını ve rozetleri aynı kutuya koyuyor.
+ */
+export const BINA_TABAN_BOY = 22;
+
+/** Sahnede çizilen yapı: çizimin adı (`kisla_3`, `arsa`) ve yeri (kasabanın yüzdesi). */
+export interface YerlesimBinasi {
+  ad: string;
+  x: number;
+  y: number;
+  olcek: number;
+}
+
+/**
+ * Yerleşke tarifinin adı: kademe ve yapılar (`koy|kisla_3@24,95,1.05|…`).
+ * Bina yükselince anahtar değişiyor, sahne yeniden çiziliyor.
+ */
+export function yerlesimAnahtari(kademe: Kademe, binalar: YerlesimBinasi[] = []): string {
+  return [kademe, ...binalar.map((b) => `${b.ad}@${b.x},${b.y},${b.olcek}`)].join('|');
+}
+
+/** `yerlesimAnahtari`nın tersi; bozuk parça atlanıyor. */
+export function yerlesimAnahtariCoz(ad: string): { kademe: Kademe; binalar: YerlesimBinasi[] } {
+  const [kademe = 'koy', ...parcalar] = ad.split('|');
+  const binalar: YerlesimBinasi[] = [];
+  for (const p of parcalar) {
+    const [isim = '', yer = ''] = p.split('@');
+    const [x, y, olcek] = yer.split(',').map(Number);
+    if (isim && Number.isFinite(x) && Number.isFinite(y) && Number.isFinite(olcek))
+      binalar.push({ ad: isim, x: x!, y: y!, olcek: olcek! });
+  }
+  return { kademe: kademe as Kademe, binalar };
+}
+
+/**
+ * Binanın yerleşkedeki modeli: kendi çiziminin (`binaModeli`) sayfadaki
+ * kutusuna oturduğu yerde ve boyda — dokunma alanı ve rozetler aynı
+ * kutuda.
+ *
+ * Binalar önceden ayrı resimlerdi, her biri kendi kalın toprak plakasının
+ * üstünde, kendi ışığı ve gölgesiyle yerleşkenin üstüne yapıştırılıyordu.
+ * Oyuncu: "binalar havada uçuyor." Gölgeleri kendi plakalarına düşüyor,
+ * yere hiç düşmüyordu. Artık sahnenin içindeler: aynı zeminde, gölgeleri
+ * yerleşkenin toprağına düşüyor, ağaçla ve yolla aynı ışıkta. Plaka yok;
+ * çimen plakanın yeri zaten çimen, toprak ya da taş olan (arsa, pazar)
+ * zemine yapışık bir avlu olarak kalıyor.
+ */
+function sahneBinasi(b: YerlesimBinasi): Model {
+  const [vx, vy, vw, vh] = BINA_KUTUSU;
+  const [kx, ky, kw, kh] = KASABA_KUTUSU;
+  // Sayfadaki kare kutu (ekran birimi): tabanın ortası (x, y)'de.
+  const W = (BINA_TABAN_BOY / 100) * b.olcek * kw;
+  const px = kx + (kw * b.x) / 100;
+  const py = ky + (kh * b.y) / 100;
+  // Çizim kutuya sığdırılıyor ve ortalanıyor (SVG `meet`).
+  const s = W / Math.max(vw, vh);
+  const [tx, ty] = geri(px - vx * s - (vw * s) / 2, py - W / 2 - vy * s - (vh * s) / 2);
+  return tasi(olcekle(plakasiz(binaModeli(b.ad)), s), [tx, ty, 0]);
+}
+
+/**
+ * Bina plakası (`zeminPlakasi`, katman -2) sahnede yok: yan yüzleri
+ * atılıyor, üstü çimense o da (zemin zaten çimen); toprak ya da taşsa
+ * zemine yapışık avlu oluyor.
+ */
+function plakasiz(m: Model): Model {
+  const out: Model = [];
+  for (const y of m) {
+    if (y.katman !== -2) {
+      out.push(y);
+      continue;
+    }
+    const ust = y.p.every((q) => q[2] > -0.01);
+    if (!ust || y.renk === P.cimen) continue;
+    out.push({
+      ...y,
+      p: y.p.map(([x, yy]) => [x, yy, 0.02]),
+      katman: -1.1,
+      kenarsiz: true,
+    });
+  }
+  return out;
 }
 
 /** Ekrandaki yüzde → dünya (test ve yerleşim hesapları için). */

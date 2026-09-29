@@ -157,7 +157,7 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
   "Araştırılıyor —"
       apps/web/src/screens/Arastirma.tsx:905
   "canlandir: kareler aynı yüzlerden kurulmalı"
-      apps/web/src/cizim/canli.ts:57
+      apps/web/src/cizim/canli.ts:67
   "T{0}"
       apps/web/src/screens/Akin.tsx:259
   "T{0}{1}"

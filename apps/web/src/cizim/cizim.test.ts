@@ -59,7 +59,19 @@ import {
   kameraTabani,
   type V3,
 } from './uc';
-import { YERLESIM_KADEMELERI, yerlesimModeli, yerlesimNoktasi, yerlesimYuzdesi } from './yerlesim';
+import {
+  BINA_TABAN_BOY,
+  BINA_YUVALARI,
+  KASABA_KUTUSU,
+  YERLESIM_KADEMELERI,
+  yerlesimAnahtari,
+  yerlesimAnahtariCoz,
+  yerlesimModeli,
+  yerlesimNoktasi,
+  yerlesimYuzdesi,
+  type YerlesimBinasi,
+} from './yerlesim';
+import { doluMu } from './cevre';
 import { kareleriKur } from './bayrakAni';
 import {
   DEMET_KARE,
@@ -749,7 +761,77 @@ describe('canlı yerleşke', () => {
 
   it.each(YERLESIM_KADEMELERI)('%s: talim alanı ve tarla canlı', (k) => {
     const canli = bayrakGruplari(yerlesimModeli(k)).filter((g) => g[0]!.bez!.canli);
-    // 3 okçu, 3 mızrakçı, düello, saban, 2 orakçı, demetçi.
-    expect(canli).toHaveLength(11);
+    // 3 okçu, 3 mızrakçı, düello, saban, 2 orakçı, demetçi; yel değirmeni, su çarkı.
+    expect(canli).toHaveLength(13);
+  });
+});
+
+describe('yerleşke: binalar sahnede, çevre', () => {
+  const KIS: YerlesimBinasi = { ad: 'kisla_3', x: 24, y: 95, olcek: 1.05 };
+
+  it('anahtar kademeyi ve yapıları taşıyor; bozuk parça atlanıyor', () => {
+    const b: YerlesimBinasi[] = [KIS, { ad: 'arsa', x: 20, y: 55, olcek: 0.95 }];
+    expect(yerlesimAnahtariCoz(yerlesimAnahtari('kasaba', b))).toEqual({
+      kademe: 'kasaba',
+      binalar: b,
+    });
+    expect(yerlesimAnahtariCoz('koy|kisla_3@x,1,1|arsa@1,2,3').binalar).toEqual([
+      { ad: 'arsa', x: 1, y: 2, olcek: 3 },
+    ]);
+    expect(tarifModeli('yerlesim:' + yerlesimAnahtari('koy', b))!.length).toBe(
+      yerlesimModeli('koy', b).length,
+    );
+  });
+
+  it('bina sayfadaki kutusuna oturuyor, zeminde duruyor, plakası yok', () => {
+    const bos = yerlesimModeli('koy');
+    const bina = yerlesimModeli('koy', [KIS]).slice(bos.length);
+    expect(bina.length).toBeGreaterThan(50);
+    expect(bina.some((y) => y.katman === -2)).toBe(false);
+    expect(bina.every((y) => y.p.every((q) => q[2] > -0.01))).toBe(true);
+    // Sayfadaki kare kutu (ekran birimi): tabanın ortası (x, y)'de.
+    const [kx, ky, kw, kh] = KASABA_KUTUSU;
+    const W = (BINA_TABAN_BOY / 100) * KIS.olcek * kw;
+    const px = kx + (kw * KIS.x) / 100;
+    const py = ky + (kh * KIS.y) / 100;
+    const ekran = yansitici();
+    let [x0, y0, x1, y1] = [Infinity, Infinity, -Infinity, -Infinity];
+    for (const y of bina)
+      for (const q of y.p) {
+        const [a, b] = ekran(q);
+        [x0, y0, x1, y1] = [Math.min(x0, a), Math.min(y0, b), Math.max(x1, a), Math.max(y1, b)];
+      }
+    expect(x0).toBeGreaterThanOrEqual(px - W / 2 - 0.01);
+    expect(x1).toBeLessThanOrEqual(px + W / 2 + 0.01);
+    expect(y0).toBeGreaterThanOrEqual(py - W - 0.01);
+    expect(y1).toBeLessThanOrEqual(py + 0.01);
+    expect(Math.abs((x0 + x1) / 2 - px)).toBeLessThan(W * 0.15);
+  });
+
+  it('dere ve gölet su yüzü: köşe başına derinlik ve renk, kıyıda sığ', () => {
+    const su = yerlesimModeli('koy').filter((y) => y.su);
+    expect(su.length).toBeGreaterThan(100);
+    for (const y of su) {
+      expect(y.su!.d).toHaveLength(y.p.length);
+      expect(y.su!.renk).toHaveLength(y.p.length);
+    }
+    expect(su.some((y) => y.su!.d.includes(0))).toBe(true);
+  });
+
+  it('çevre dolu yerleri biliyor: dere, gölet, kasaba dolu; açık çimen boş', () => {
+    expect(doluMu(41, -2)).toBe(true); // dere (köprü)
+    expect(doluMu(-40, -8)).toBe(true); // gölet
+    expect(doluMu(0, 0)).toBe(true); // kasaba
+    expect(doluMu(-20, 36)).toBe(false); // okçularla meranın arası
+  });
+
+  it('yerleşke bütün yapılarıyla bile hafif kalıyor (yüz bütçesi)', () => {
+    const hepsi: YerlesimBinasi[] = Object.keys(BINA_YUVALARI).map((k) => ({
+      ad: k === 'gorev_panosu' || k === 'haberci_kulesi' || k === 'onur_meydani' ? k : `${k}_5`,
+      x: BINA_YUVALARI[k]![0],
+      y: BINA_YUVALARI[k]![1],
+      olcek: 1.2,
+    }));
+    expect(yerlesimModeli('metropol', hepsi).length).toBeLessThan(40000);
   });
 });

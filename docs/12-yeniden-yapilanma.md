@@ -397,6 +397,15 @@ Canlandırma GPU'da bir kez çizilip CSS'le oynatılıyor (docs/24
 - Yapı listesi köşedeki "Yapılar" düğmesiyle yerleşkenin üstünde açılıyor.
 - Kâhya, süren inşaat ve seçili yapının kartı yerleşkenin üstünde yüzüyor.
 
+Oyuncunun ikinci turu: **"aşırı boş duruyor ve binalar havada uçuyor."**
+Binalar ayrı resimlerdi, her biri kendi kalın toprak plakasının üstünde
+yerleşkeye yapıştırılıyordu; gölgeleri yere düşmüyordu. Artık yerleşke
+sahnesinin içinde çiziliyorlar (aynı zemin, ışık, gölge); sayfada kalan
+yalnız dokunma alanı, rozet ve seçim halkası. Boşluk da dolduruldu:
+dere ve köprü, su ve yel değirmeni, gölet, bacası tüten köy evleri ve
+bostanları, mera, meyve bahçesi, talim kampı, patikalar, çalı ve çiçek
+(docs/24 "Canlı yerleşke").
+
 ### 6.1 Diyar haritası — gruplar yazı ızgarasından çıktı
 
 Oyuncu: **"Akın kısmında harita yap, 10 NPC karakteri de o haritaya ekle;

@@ -13,7 +13,7 @@ import { dunyaUcgenleri, type Ucgen } from './dunya';
 import { ZEMIN_ADLARI, ZEMIN_KUTUSU } from './zeminler';
 import { Sahne } from './Sahne';
 import { tarifModeli } from './tarif';
-import { YERLESIM_KUTUSU, type Kademe } from './yerlesim';
+import { YERLESIM_KUTUSU, yerlesimAnahtari, type Kademe, type YerlesimBinasi } from './yerlesim';
 
 /** Çizimi olan bina adları (`kisla_3`, `arsa`, `gorev_panosu`...). */
 export const CIZILEN_BINALAR = new Set(BINA_ADLARI);
@@ -53,16 +53,25 @@ export function BinaCizimi({
 }
 
 /**
- * Şehir sayfasının yerleşkesi: kasaba, tarlalar, talim alanı. Canlı:
+ * Şehir sayfasının yerleşkesi: kasaba, tarlalar, talim alanı; `binalar`
+ * verilirse yapılar da sahnenin içinde (aynı zemin, gölge, ışık). Canlı:
  * okçular ok atıyor, şövalyeler at sürüyor, köylüler saban sürüyor
  * (`canli.ts`); bayraklar ve kasabanın ağaçları salınıyor (orman durağan).
  */
-export function YerlesimCizimi({ kademe, className }: { kademe: string; className?: string }) {
-  const k = kademe as Kademe;
+export function YerlesimCizimi({
+  kademe,
+  binalar,
+  className,
+}: {
+  kademe: string;
+  binalar?: YerlesimBinasi[];
+  className?: string;
+}) {
+  const anahtar = 'yerlesim:' + yerlesimAnahtari(kademe as Kademe, binalar);
   return (
     <Sahne
-      anahtar={'yerlesim:' + k}
-      uret={() => tarifModeli('yerlesim:' + k) ?? []}
+      anahtar={anahtar}
+      uret={() => tarifModeli(anahtar) ?? []}
       tarif
       kutu={YERLESIM_KUTUSU}
       alt=""
