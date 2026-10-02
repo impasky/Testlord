@@ -4,6 +4,7 @@ import { DUNYA_KAMERASI, DUNYA_KUTUSU, dunyaModeli, dunyaUcgenleri } from './dun
 import { insan } from './figur';
 import { DOKU_NO, KOSE, agYap, dokuBul } from './glAg';
 import { atlasDuzeni, goruntuMatrisi, sayfalaraYerlestir } from './glCizici';
+import { glCiz } from './gl';
 import { rastgele } from './rastgele';
 import { P } from './renk';
 import {
@@ -499,5 +500,21 @@ describe('dünya zemini GPU modeli', () => {
 
   it('belirlenimci: iki üretim aynı', () => {
     expect(dunyaModeli(4)).toEqual(kaba);
+  });
+});
+
+describe('çizim sırası (glCiz)', () => {
+  it('sırası gelince isteyen kalmayan iş çizilmiyor ve önbellekte kalmıyor (yakınlık yaması)', async () => {
+    let kuruldu = 0;
+    const istek = () => {
+      kuruldu++;
+      return { kutu: [0, 0, 1, 1] as [number, number, number, number], en: 1, boy: 1, olcek: 1 };
+    };
+    expect(await glCiz('deneme|vazgecildi', istek, { istenmiyor: () => true })).toBeNull();
+    expect(kuruldu).toBe(0);
+    // Önbellekte kalsaydı aynı anahtar eski (boş) sonucu dönerdi: yeniden sıraya giriyor.
+    let ikinci = 0;
+    await glCiz('deneme|vazgecildi', istek, { istenmiyor: () => (ikinci++, true) });
+    expect(ikinci).toBe(1);
   });
 });

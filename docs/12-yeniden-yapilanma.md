@@ -434,6 +434,12 @@ türünü söyleyen simgeli bir tabela. Açık birinci aşamalar (demirhane,
 kışla, pazar, liman) iş yerinin eşyalarıyla doldu (docs/24 "Bina
 ayrıntısı").
 
+Ardından: ayrıntı vardı ama sayfa ölçeğinde seçilmiyordu. Yerleşke artık
+yakınlaşıyor: iki parmakla kıstırma, Ctrl + tekerlek (dokunmatik yüzeyde
+kıstırma) ve sol alttaki −/+ düğmeleri; en uzakta bütün köy ekrana
+sığıyor, en yakında (3×) bir figür ~90 piksel. Yakında ekranda görünen
+bölge ayrıca keskin çiziliyor (docs/24 "Yakınlaştırma").
+
 ### 6.1 Diyar haritası — gruplar yazı ızgarasından çıktı
 
 Oyuncu: **"Akın kısmında harita yap, 10 NPC karakteri de o haritaya ekle;

@@ -1119,6 +1119,15 @@ export interface CizimIstegi {
   olcek: number;
 }
 
+/**
+ * Ortam gölgesinin varsayılan yarıçapı (dünya birimi): görüş kutusunun
+ * boyundan. Kutunun bir parçasını çizen (yakınlık yaması) bütünün
+ * yarıçapını veriyor, yoksa yamanın gölgesi çevresinden ince kalırdı.
+ */
+export function aoYaricapi(kutu: [number, number, number, number]): number {
+  return Math.min(1.2, Math.max(0.05, 0.012 * Math.max(kutu[2], kutu[3])));
+}
+
 /** Bayrak kumaşının her anı; her karede bayraklar aynı sırayla ardışık. */
 export interface BayrakKareleri {
   /** Kare sayısı: en uzun turunki. */
@@ -1234,7 +1243,13 @@ async function blobla(tuval: Tuval): Promise<Blob | null> {
  * Tarifte model, ağ, bayrak kareleri ve duman kaynakları işçide kuruluyor
  * (`tarif.ts`); ana iş parçacığına yalnız bir dizge düşüyor.
  */
-export type IsciIstegi = CizimIstegi | (Omit<CizimIstegi, 'ag' | 'bayrak'> & { tarif: string });
+export type IsciIstegi =
+  | CizimIstegi
+  | (Omit<CizimIstegi, 'ag' | 'bayrak'> & {
+      tarif: string;
+      /** Yakınlık yaması: ağ hareketli sahnenin ana resmi gibi kuruluyor (bkz. `GlIstek.yama`). */
+      yama?: boolean;
+    });
 
 /** İşçinin cevabı: resim, ya da "burada WebGL2 yok" (ağ geri aktarılıyor). */
 export interface IsciCevabi {
@@ -1467,8 +1482,7 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
   gl.uniform1f(uc('u_derinBoy'), derinlikBoyu(ag.derinlik));
   // Ortam gölgesi yarıçapı: sahnenin boyuna göre (bina sahnesinde bir
   // kapı eşiği, figürde bir kol-gövde aralığı); örnek pikselinde sınırlı.
-  const aoR =
-    istek.ao ?? Math.min(1.2, Math.max(0.05, 0.012 * Math.max(istek.kutu[2], istek.kutu[3])));
+  const aoR = istek.ao ?? aoYaricapi(istek.kutu);
   const aoPx = aoR > 0 ? Math.min(64, aoR / birim) : 0;
   gl.uniform1f(uc('u_aoPx'), aoPx);
   gl.uniform1i(uc('u_ekD'), 0);

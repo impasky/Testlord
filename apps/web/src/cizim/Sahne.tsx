@@ -20,7 +20,9 @@
 import { memo, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import {
   EN_BUYUK,
+  aoYaricapi,
   atlasDuzeni,
+  glBirak,
   glCiz,
   glKatmanlari,
   glOnYukle,
@@ -81,6 +83,13 @@ const YAYILMA = 'none';
 
 /** Hazır GPU resimleri: çizim + görüş kutusu → çizilmiş en büyük resim. */
 const RESIMLER = new Map<string, { en: number; url: string }>();
+
+/** Gösterilen resmin piksel eni (yakınlık yamasının ölçüsü). */
+function resimEni(url: string | null): number | undefined {
+  if (!url) return undefined;
+  for (const r of RESIMLER.values()) if (r.url === url) return r.en;
+  return undefined;
+}
 
 /** Yumrunun yarıçapı (dünya birimi); CSS'te 0,4 katından 1,9 katına büyüyor. */
 const DUMAN_YARICAP = 0.85;
@@ -235,8 +244,179 @@ function useGpuResmi(
   return etkin ? resim : null;
 }
 
-/** Çokgen listesini SVG gövdesine döker; çevre bileşenler (sahne, portre) de kullanıyor. */
-export function Cokgenler({ c }: { c: Cizilmis }) {
+/* ── Yakınlık yaması ───────────────────────────────────────────────── */
+
+type Kutu = [number, number, number, number];
+
+/** Yamanın görünen bölgenin her yanından taşan payı (bölgenin boyuna oran). */
+const YAMA_PAYI = 0.15;
+/** Yama ancak ana resimden bu kat yoğunsa çiziliyor: azı göze görünmüyor. */
+const YAMA_KAZANC = 1.25;
+
+interface Yama {
+  /** `glCiz` anahtarı: yerine yenisi konunca bellekten bırakılıyor. */
+  is: string;
+  url: string;
+  kutu: Kutu;
+  /** Ekrandaki bir CSS pikseline düşen resim pikseli. */
+  yogunluk: number;
+  /** Canlı sahnenin ana resmi gibi mi (salınan parçasız); bkz. `GlIstek.yama`. */
+  hareketli: boolean;
+}
+
+const icinde = (a: Kutu, b: Kutu) =>
+  b[0] >= a[0] - 1e-6 &&
+  b[1] >= a[1] - 1e-6 &&
+  b[0] + b[2] <= a[0] + a[2] + 1e-6 &&
+  b[1] + b[3] <= a[1] + a[3] + 1e-6;
+
+/**
+ * Görünen bölgenin keskin resmi (bkz. `Sahne.yama`). Bölge ana resimden
+ * belirgin daha yoğun çizilebiliyorsa, payıyla birlikte ekrandaki boyunun
+ * piksel yoğunluğunda çiziliyor (en fazla `EN_BUYUK`). Bölge eldeki yamanın
+ * içinde kaldıkça ve yoğunluk yetiyorsa yeniden çizilmiyor: küçük
+ * kaydırmalar bedava. Yenisi gelince eskisi bellekten bırakılıyor.
+ */
+function useYama(
+  etkin: boolean,
+  anahtar: string,
+  tarif: boolean,
+  uret: () => Model,
+  kamera: Kamera | undefined,
+  v: Kutu,
+  gorunen: Kutu | undefined,
+  tabanEn: number | undefined,
+  hareketli: boolean,
+  tilt: number | undefined,
+  sicak: number | undefined,
+  ref: React.RefObject<SVGSVGElement | null>,
+): Yama | null {
+  const [yama, setYama] = useState<Yama | null>(null);
+  const guncel = useRef({ uret, kamera, yama });
+  guncel.current = { uret, kamera, yama };
+  /** Son istenen yamanın işi: eski isteğin geç gelen sonucu onu bırakmasın. */
+  const istenen = useRef<string | null>(null);
+  /** Sahne kapandı: yolda olan yama gelince de bırakılıyor. */
+  const kapandi = useRef(false);
+  const gorunenAnahtar = gorunen?.map((x) => x.toFixed(2)).join(',') ?? '';
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!etkin || !el || !gorunen || !tabanEn) {
+      if (!gorunen) setYama(null);
+      return;
+    }
+    const [vx, vy, vw, vh] = v;
+    const r = el.getBoundingClientRect();
+    if (r.width < 2 || vw <= 0) return;
+    // Ekrandaki (dönüşüm dahil) ve düzendeki (dönüşümsüz) birim boyu.
+    const ekranBirim = Math.min(r.width / vw, r.height / vh);
+    const duzenBirim = Math.min(
+      (el.clientWidth || r.width) / vw,
+      (el.clientHeight || r.height) / vh,
+    );
+    const dpr = Math.min(3, window.devicePixelRatio || 1);
+    const tabanYogunluk = tabanEn / (vw * ekranBirim);
+    // Görünen bölge, sahneye kırpılmış; yama payıyla.
+    const gx = Math.max(vx, gorunen[0]);
+    const gy = Math.max(vy, gorunen[1]);
+    const g: Kutu = [
+      gx,
+      gy,
+      Math.min(vx + vw, gorunen[0] + gorunen[2]) - gx,
+      Math.min(vy + vh, gorunen[1] + gorunen[3]) - gy,
+    ];
+    if (g[2] <= 0 || g[3] <= 0) return;
+    const px = Math.max(vx, g[0] - g[2] * YAMA_PAYI);
+    const py = Math.max(vy, g[1] - g[3] * YAMA_PAYI);
+    const k: Kutu = [
+      px,
+      py,
+      Math.min(vx + vw, g[0] + g[2] * (1 + YAMA_PAYI)) - px,
+      Math.min(vy + vh, g[1] + g[3] * (1 + YAMA_PAYI)) - py,
+    ];
+    let en = k[2] * ekranBirim * dpr;
+    let boy = k[3] * ekranBirim * dpr;
+    const sigdir = Math.min(1, EN_BUYUK / Math.max(en, boy));
+    en = Math.max(1, Math.round(en * sigdir));
+    boy = Math.max(1, Math.round(boy * sigdir));
+    const yogunluk = en / (k[2] * ekranBirim);
+    if (yogunluk < tabanYogunluk * YAMA_KAZANC) {
+      // Uzaktan ana resim yetiyor.
+      setYama(null);
+      return;
+    }
+    const eldeki = guncel.current.yama;
+    if (
+      eldeki &&
+      eldeki.is.startsWith(anahtar + '|yama|') &&
+      eldeki.hareketli === hareketli &&
+      icinde(eldeki.kutu, g) &&
+      eldeki.yogunluk >= yogunluk * 0.85
+    )
+      return;
+    const is = `${anahtar}|yama|${k.map((x) => x.toFixed(2)).join(',')}|${en}x${boy}|${hareketli ? 'h' : ''}|${sicak ?? ''}|${tilt ?? ''}`;
+    istenen.current = is;
+    let iptal = false;
+    const { uret: u, kamera: kam } = guncel.current;
+    void glCiz(
+      is,
+      () => ({
+        ...(tarif ? { tarif: anahtar } : { model: modelAl(anahtar, u) }),
+        kamera: kam,
+        kutu: k,
+        en,
+        boy,
+        // Kenar çizgisi düzen pikselinde: yakınlaşınca ana resimle aynı oranda kalınlaşıyor.
+        olcek: en / (k[2] * duzenBirim),
+        ao: aoYaricapi(v),
+        tilt,
+        sicak,
+        yama: hareketli,
+      }),
+      { istenmiyor: () => iptal },
+    ).then(async (url) => {
+      if (!url) return;
+      await glOnYukle(url);
+      if (iptal) {
+        const bekleniyor = istenen.current === is || guncel.current.yama?.is === is;
+        if (kapandi.current || !bekleniyor) glBirak(is);
+        return;
+      }
+      setYama({ is, url, kutu: k, yogunluk, hareketli });
+    });
+    return () => {
+      iptal = true;
+    };
+    // `v` ve `gorunen` içerik olarak anahtarlarda.
+  }, [etkin, anahtar, tarif, gorunenAnahtar, tabanEn, hareketli, tilt, sicak, ref]);
+
+  // Yerine yenisi geçen yama bırakılıyor; sahne kapanınca sonuncusu da.
+  const gosterilen = useRef<Yama | null>(null);
+  useEffect(() => {
+    const o = gosterilen.current;
+    if (o && o.is !== yama?.is) glBirak(o.is);
+    gosterilen.current = yama;
+  }, [yama]);
+  useEffect(() => {
+    kapandi.current = false;
+    return () => {
+      kapandi.current = true;
+      if (gosterilen.current) glBirak(gosterilen.current.is);
+      gosterilen.current = null;
+    };
+  }, []);
+  // Sahne değişti (yeni yapı): eski yama ona ait değil.
+  return etkin && yama && yama.is.startsWith(anahtar + '|yama|') ? yama : null;
+}
+
+/**
+ * Çokgen listesini SVG gövdesine döker; çevre bileşenler (sahne, portre) de
+ * kullanıyor. Çizim önbellekte tek nesne: sahne başka sebeple yeniden
+ * çizilince (yerleşkede görünen bölge değişti) binlerce çokgen yeniden
+ * karşılaştırılmıyor.
+ */
+export const Cokgenler = memo(function Cokgenler({ c }: { c: Cizilmis }) {
   return (
     <>
       {c.cokgenler.map((p, i) => (
@@ -256,7 +436,7 @@ export function Cokgenler({ c }: { c: Cizilmis }) {
       ))}
     </>
   );
-}
+});
 
 /* ── Hareket ───────────────────────────────────────────────────────── */
 
@@ -431,15 +611,17 @@ function HareketKatmani({
   }, []);
   // Boyamadan önce ölç: bayrak kumaşı ana resimde yok, bir kare bile
   // bayraksız direk görünmesin.
+  // Düzen boyu (dönüşümsüz): sahne CSS ile büyütülüyorsa (yakınlaşan
+  // yerleşke) katmanlar da onunla birlikte büyüyor, ölçü büyümüş hâli değil.
   useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const olc = () => {
-      const r = el.getBoundingClientRect();
-      setOlcu((o) => (o && o[0] === r.width && o[1] === r.height ? o : [r.width, r.height]));
-    };
-    olc();
-    const ro = new ResizeObserver(olc);
+    const olc = (w: number, h: number) =>
+      setOlcu((o) => (o && o[0] === w && o[1] === h ? o : [w, h]));
+    olc(el.offsetWidth, el.offsetHeight);
+    const ro = new ResizeObserver(([g]) => {
+      if (g) olc(g.contentRect.width, g.contentRect.height);
+    });
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
@@ -618,6 +800,7 @@ export const Sahne = memo(function Sahne({
   sicak,
   hareket = false,
   tarif = false,
+  yama,
 }: {
   anahtar: string;
   uret: () => Model;
@@ -676,6 +859,14 @@ export const Sahne = memo(function Sahne({
    * düşerse) çokgenler `uret`ten, eskisi gibi.
    */
   tarif?: boolean;
+  /**
+   * Yakınlık yaması (yalnız GPU): ekranda görünen bölge (görüş kutusu
+   * biriminde). Sahne CSS ile büyütülünce (yerleşke yakınlaşınca) ana
+   * resim `EN_BUYUK`la sınırlı kalıp bulanıklaşıyor; bu bölge, ekrandaki
+   * boyunun piksel yoğunluğunda ayrıca çizilip ana resmin üstüne oturuyor
+   * (`useYama`). Hareket katmanları yine en üstte.
+   */
+  yama?: [number, number, number, number];
 }) {
   const ref = useRef<SVGSVGElement>(null);
   const [gpuYok, setGpuYok] = useState(false);
@@ -720,6 +911,22 @@ export const Sahne = memo(function Sahne({
     ref,
     () => setGpuYok(true),
   );
+  const katman = glKatmanlari(resim);
+  const yamaResmi = useYama(
+    gpu && yama !== undefined,
+    anahtar,
+    cokgensiz,
+    uret,
+    kamera,
+    v,
+    yama,
+    resimEni(resim),
+    // Canlı resimde salınan parçalar katmanda: yama da onlarsız olmalı.
+    canli && katman !== undefined,
+    tilt,
+    sicak,
+    ref,
+  );
 
   const svg = (
     <svg
@@ -737,14 +944,27 @@ export const Sahne = memo(function Sahne({
       data-gl={resim ? '' : undefined}
     >
       {resim ? (
-        <image
-          href={resim}
-          x={v[0]}
-          y={v[1]}
-          width={v[2]}
-          height={v[3]}
-          preserveAspectRatio={YAYILMA}
-        />
+        <>
+          <image
+            href={resim}
+            x={v[0]}
+            y={v[1]}
+            width={v[2]}
+            height={v[3]}
+            preserveAspectRatio={YAYILMA}
+          />
+          {yamaResmi && yamaResmi.hareketli === (canli && katman !== undefined) && (
+            <image
+              href={yamaResmi.url}
+              x={yamaResmi.kutu[0]}
+              y={yamaResmi.kutu[1]}
+              width={yamaResmi.kutu[2]}
+              height={yamaResmi.kutu[3]}
+              preserveAspectRatio={YAYILMA}
+              data-yama=""
+            />
+          )}
+        </>
       ) : c ? (
         <Cokgenler c={c} />
       ) : null}
@@ -756,7 +976,7 @@ export const Sahne = memo(function Sahne({
   return (
     <span className={className} style={{ ...style, display: 'grid', gridTemplate: IZGARA }}>
       {svg}
-      {resim && <HareketKatmani v={v} kirp={kirp} katman={glKatmanlari(resim)} />}
+      {resim && <HareketKatmani v={v} kirp={kirp} katman={katman} />}
     </span>
   );
 });

@@ -439,6 +439,71 @@ kontrol(
   sayfa.gpu ? `${sayfa.canli} katman` : 'GPU yok, durağan çizim — atlandı',
 );
 
+/*
+ * Yakınlaştırma. Oyuncu: "binaları daha da detaylı yap" — ayrıntı vardı
+ * ama sayfa ölçeğinde seçilmiyordu. "+" yerleşkeyi büyütüyor; yapıların
+ * dokunma alanları yüzdeyle onunla büyüyor ve yakında da dokunuş yapının
+ * içine giriyor. "−" en uzakta duruyor: yerleşke kabı dolduruyor,
+ * kenarından öte boşluk yok. (Kıstırma ve Ctrl + tekerlek aynı yolu
+ * kullanıyor; burada düğme, çünkü başsız tarayıcıda iki parmak yok.)
+ */
+{
+  const olcu = () =>
+    page.evaluate(() => {
+      const kap = document.querySelector('[data-sehir-sayfasi] [data-yakinlik]');
+      const kaydirici = kap.parentElement;
+      return {
+        z: Number(kap.dataset.yakinlik),
+        en: kap.getBoundingClientRect().width,
+        boy: kap.getBoundingClientRect().height,
+        kapEn: kaydirici.clientWidth,
+        kapBoy: kaydirici.clientHeight,
+        bina: document.querySelector('[data-bina="kisla"]').getBoundingClientRect().width,
+      };
+    });
+  const once = await olcu();
+  await page.getByRole('button', { name: 'Yakınlaştır' }).click();
+  await page.waitForTimeout(500);
+  const yakin = await olcu();
+  kontrol(
+    'Yakınlaştır yerleşkeyi büyütüyor',
+    yakin.z > once.z && yakin.en > once.en * 1.3,
+    `${once.z} → ${yakin.z}`,
+  );
+  kontrol(
+    'Yapılar yerleşkeyle birlikte büyüyor',
+    Math.abs(yakin.bina / once.bina - yakin.en / once.en) < 0.02,
+    `yapı ×${(yakin.bina / once.bina).toFixed(2)}, yerleşke ×${(yakin.en / once.en).toFixed(2)}`,
+  );
+  for (let i = 0; i < 12; i++) {
+    const d = page.getByRole('button', { name: 'Uzaklaştır' });
+    if (await d.isDisabled()) break;
+    await d.click();
+    await page.waitForTimeout(150);
+  }
+  await page.waitForTimeout(400);
+  const uzak = await olcu();
+  kontrol(
+    'Uzaklaştır en uzakta duruyor, yerleşke kabı dolduruyor',
+    (await page.getByRole('button', { name: 'Uzaklaştır' }).isDisabled()) &&
+      uzak.z < 1 &&
+      uzak.en >= uzak.kapEn - 1 &&
+      uzak.boy >= uzak.kapBoy - 1,
+    `z ${uzak.z}, ${Math.round(uzak.en)}×${Math.round(uzak.boy)} / ${uzak.kapEn}×${uzak.kapBoy}`,
+  );
+  await page.getByRole('button', { name: 'Yakınlaştır' }).click();
+  await page.getByRole('button', { name: 'Yakınlaştır' }).click();
+  await page.waitForTimeout(400);
+  await page.locator('[data-bina="kisla"]').click();
+  await page.waitForTimeout(900);
+  kontrol(
+    'Yakındayken de yapıya dokununca içine giriyor',
+    (await page.locator('nav button[aria-current=page]').innerText()).includes('ORDU'),
+  );
+  await page.locator('nav button:has-text("Şehir")').click();
+  await page.waitForTimeout(900);
+}
+
 await page.screenshot({ path: `${process.env.CIKTI ?? 'ekran-goruntuleri'}/sehir.png` });
 kontrol('Konsol hatası yok', konsol.length === 0, konsol[0] ?? '');
 

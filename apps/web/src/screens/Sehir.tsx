@@ -23,7 +23,7 @@
  * yoksa gradyan kalıyor ve sayfa çalışmaya devam ediyor.
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { ApiError, api, type BinaDurumu, type LordState, type QueueItem } from '../api/client';
 import { useOmurgaAdimi } from '../components/Omurga';
 import { Rehber } from '../components/Rehber';
@@ -41,6 +41,8 @@ import {
 } from '../components/ui';
 import { IkonUyari } from '../components/Ikonlar';
 import { BinaCizimi, CIZILEN_BINALAR, YerlesimCizimi } from '../cizim/Cizimler';
+import { YakinlikDugmesi } from '../components/YakinlikDugmesi';
+import { DUGME_ADIMI, useYerleskeYakinligi } from './yerleskeYakinligi';
 import {
   BINA_TABAN_BOY,
   KASABA_KUTUSU,
@@ -244,6 +246,20 @@ export function Sehir({
   const kaydirici = useRef<HTMLDivElement>(null);
   const ortalandi = useRef(false);
   const hazir = Boolean(veri.data);
+  // Yakınlaştırma: kap düzende büyüyor (binalar yüzdeyle), sahne CSS ölçeğiyle.
+  const kap = useRef<HTMLDivElement>(null);
+  const sahne = useRef<HTMLDivElement>(null);
+  const yakinlik = useYerleskeYakinligi(kaydirici, kap, sahne, SAHNE_EN, SAHNE_BOY, hazir);
+  const z = yakinlik.z;
+  const gorunen = yakinlik.gorunen;
+  /** Görünen bölge yerleşke biriminde (yama: `Sahne.yama`). */
+  const gorunenKutu = useMemo<[number, number, number, number] | undefined>(
+    () =>
+      gorunen
+        ? [YX + gorunen[0] * YW, YY + gorunen[1] * YH, gorunen[2] * YW, gorunen[3] * YH]
+        : undefined,
+    [gorunen],
+  );
   useLayoutEffect(() => {
     const k = kaydirici.current;
     if (!hazir || !k || ortalandi.current) return;
@@ -347,23 +363,35 @@ export function Sehir({
       </p>
       <div
         ref={kaydirici}
-        className="gizli-kaydirma h-full w-full overflow-auto overscroll-contain"
+        // İki parmak tarayıcının değil yerleşkenin: kıstırma yakınlaştırıyor.
+        className="gizli-kaydirma h-full w-full touch-pan-x touch-pan-y overflow-auto overscroll-contain"
       >
         <div
+          ref={kap}
           /* isolate: yapıların derinlik sırası (`zIndex = y`) YALNIZ
              yerleşkenin içinde geçerli olmalı; yoksa 96'ya çıkan bir bina
              yüzen kartların üstüne geçip dokunuşu yiyordu. */
           className="relative isolate"
-          style={{ width: SAHNE_EN, height: SAHNE_BOY }}
+          style={{ width: SAHNE_EN * z, height: SAHNE_BOY * z }}
           role="img"
           aria-label={`${yerlesim.ad} — ${binalar.length} yapı`}
           aria-describedby="yerlesim-ozeti"
+          data-yakinlik={z.toFixed(2)}
         >
-          <YerlesimCizimi
-            kademe={yerlesim.kademe}
-            binalar={sahnedekiler}
-            className="absolute inset-0 h-full w-full"
-          />
+          {/* Sahne hep aynı düzen boyunda, CSS ölçeğiyle büyüyor: resmi
+              yeniden çizilmiyor, keskinliği görünen bölgenin yaması veriyor. */}
+          <div
+            ref={sahne}
+            className="absolute top-0 left-0 origin-top-left"
+            style={{ width: SAHNE_EN, height: SAHNE_BOY, transform: `scale(${z})` }}
+          >
+            <YerlesimCizimi
+              kademe={yerlesim.kademe}
+              binalar={sahnedekiler}
+              className="absolute inset-0 h-full w-full"
+              gorunen={gorunenKutu}
+            />
+          </div>
           {/* Kasaba: binalar yüzdeleriyle, yerleşkenin ortasındaki çerçevede. */}
           <div className="absolute" style={KASABA_YERI}>
             {binalar.map((b) => (
@@ -514,7 +542,25 @@ export function Sehir({
             </div>
           </Kart>
         ) : (
-          <div className="flex justify-end">
+          <div className="flex items-end justify-between">
+            {/* Yakınlık: kıstırmanın düğmeli karşılığı (fare, ekran okuyucu). */}
+            <div
+              data-yakinlik-araci=""
+              className="pointer-events-auto flex divide-x divide-kenar overflow-hidden rounded-full border border-kenar bg-gece/85 shadow-[0_2px_8px_rgba(0,0,0,0.5)] backdrop-blur"
+            >
+              <YakinlikDugmesi
+                etiket="Uzaklaştır"
+                isaret="−"
+                disabled={yakinlik.enUzakta}
+                onTikla={() => yakinlik.yakinlastir(1 / DUGME_ADIMI)}
+              />
+              <YakinlikDugmesi
+                etiket="Yakınlaştır"
+                isaret="+"
+                disabled={yakinlik.enYakinda}
+                onTikla={() => yakinlik.yakinlastir(DUGME_ADIMI)}
+              />
+            </div>
             <button
               type="button"
               data-yapilar-ac=""

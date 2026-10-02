@@ -3,7 +3,7 @@
  * (docs/24). Her biri bir model üreticisini ortak çerçevesiyle
  * `Sahne`ye bağlıyor.
  */
-import type { CSSProperties } from 'react';
+import { useCallback, type CSSProperties } from 'react';
 import { BINA_ADLARI, BINA_KUTUSU } from './binalar';
 import { BIRLIK_ADLARI, DUSMAN_ADLARI, EKIPMAN_ADLARI } from './birlikler';
 import { BOLGE_KUTUSU, BOLGE_TIPLERI } from './bolgeler';
@@ -62,16 +62,21 @@ export function YerlesimCizimi({
   kademe,
   binalar,
   className,
+  gorunen,
 }: {
   kademe: string;
   binalar?: YerlesimBinasi[];
   className?: string;
+  /** Ekranda görünen bölge (yerleşke biriminde): yakınlaşınca keskin çiziliyor (`Sahne.yama`). */
+  gorunen?: [number, number, number, number];
 }) {
   const anahtar = 'yerlesim:' + yerlesimAnahtari(kademe as Kademe, binalar);
+  // Kararlı üretici: yakınlaşıp kaydırırken sahne boşuna yeniden çizilmesin.
+  const uret = useCallback(() => tarifModeli(anahtar) ?? [], [anahtar]);
   return (
     <Sahne
       anahtar={anahtar}
-      uret={() => tarifModeli(anahtar) ?? []}
+      uret={uret}
       tarif
       kutu={YERLESIM_KUTUSU}
       alt=""
@@ -80,6 +85,7 @@ export function YerlesimCizimi({
       ertele
       onceDurgun
       sicak={1}
+      yama={gorunen}
     />
   );
 }

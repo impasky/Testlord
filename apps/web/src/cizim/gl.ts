@@ -25,7 +25,7 @@ import {
 import { tarifModeli } from './tarif';
 import type { Kamera, Model, V3 } from './uc';
 
-export { EN_BUYUK, atlasDuzeni } from './glCizici';
+export { EN_BUYUK, aoYaricapi, atlasDuzeni } from './glCizici';
 
 export interface GlIstek {
   /**
@@ -64,6 +64,13 @@ export interface GlIstek {
    * (`glKatmanlari`); bayrak kumaşı ana resimde yok.
    */
   hareket?: boolean;
+  /**
+   * Yakınlık yaması (yerleşke yakınlaşınca, bkz. `Sahne.yama`): canlı
+   * sahnenin bir parçası, ana resmi gibi kuruluyor — salınan parça, canlı
+   * figür ve duman YOK (onlar sahnenin katmanlarında oynuyor, yamanın
+   * üstünde). Katman üretilmiyor.
+   */
+  yama?: boolean;
   /** Bir CSS pikselinin çıktıdaki karşılığı: kenar çizgisinin kalınlığı. */
   olcek: number;
 }
@@ -117,13 +124,14 @@ function iscide(i: Worker, istek: IsciIstegi): Promise<IsciCevabi> {
 async function ciz(istek: GlIstek): Promise<CizimSonucu | null> {
   // Model işçiye gitmiyor (yalnız ağı ya da tarifi): kopyalanması büyük
   // sahnede pahalı.
-  const { model, ag, tarif, ...geri } = istek;
+  const { model, ag, tarif, yama, ...geri } = istek;
   const h = istek.hareket;
+  const parcasiz = h || yama;
   let dumanlar: DumanKaynagi[] | undefined;
   const kur = (m: Model) => {
     if (h) dumanlar = dumanKaynaklari(m, istek.kamera);
     return {
-      ag: agYap(m, istek.kamera, { dumansiz: h, bayraksiz: h }),
+      ag: agYap(m, istek.kamera, { dumansiz: parcasiz, bayraksiz: parcasiz }),
       bayrak: h ? bayrakKareleri(m, istek.kamera) : undefined,
     };
   };
@@ -139,7 +147,7 @@ async function ciz(istek: GlIstek): Promise<CizimSonucu | null> {
     const gidecek: IsciIstegi = ag
       ? { ...geri, ag, yazilimaIzin: yazilim }
       : tarif && !model
-        ? { ...geri, tarif, yazilimaIzin: yazilim }
+        ? { ...geri, tarif, yama, yazilimaIzin: yazilim }
         : { ...geri, ...aktarilabilir(modelden()), yazilimaIzin: yazilim };
     const cevap = await iscide(i, gidecek);
     if (!cevap.yok) {
@@ -343,7 +351,14 @@ export function glCiz(
     sonrakiniBaslat();
   } else {
     oncelikli++;
-    is = sirayaKoy(() => calistir(istek));
+    // Sırası gelince isteyen kalmadıysa (yakınlık yaması: oyuncu çoktan
+    // başka yere kaydı) çizilmiyor.
+    const vazgec = secenek.istenmiyor;
+    is = sirayaKoy(() => {
+      if (!vazgec?.()) return calistir(istek);
+      ONBELLEK.delete(anahtar);
+      return Promise.resolve(null);
+    });
     void is.then(() => {
       oncelikli--;
       sonrakiniBaslat();
@@ -351,6 +366,25 @@ export function glCiz(
   }
   ONBELLEK.set(anahtar, is);
   return is;
+}
+
+/**
+ * Çizimi önbellekten çıkarıp belleğini bırakıyor. Yalnız tek kullanımlık
+ * resim için (yakınlık yaması): yerine yenisi konunca eskisinin artık
+ * gösterildiği yer yok.
+ */
+export function glBirak(anahtar: string): void {
+  const is = ONBELLEK.get(anahtar);
+  if (!is) return;
+  ONBELLEK.delete(anahtar);
+  void is.then((url) => {
+    if (!url) return;
+    URL.revokeObjectURL(url);
+    const k = KATMANLAR.get(url);
+    if (!k) return;
+    KATMANLAR.delete(url);
+    for (const u of [k.su, k.isik, k.cimen, k.bayrak?.url]) if (u) URL.revokeObjectURL(u);
+  });
 }
 
 /**

@@ -62,6 +62,7 @@ import {
 import type { MarchDto, RegionDto } from '../../api/client';
 import { IKONLAR } from '../ikon-verisi';
 import { IkonSaldiri } from '../Ikonlar';
+import { YakinlikDugmesi } from '../YakinlikDugmesi';
 import { KARA_YOLU } from './kara';
 import { DUNYA_ISIGI, DUNYA_KAMERASI, DUNYA_KUTUSU, dunyaUcgenleri } from '../../cizim/dunya';
 import { dunyaAgi } from '../../cizim/dunyaAgi';
@@ -1452,29 +1453,6 @@ const Etiketler = memo(function Etiketler({
 /* ------------------------------------------------------------------ */
 /* Kenar araçları                                                      */
 /* ------------------------------------------------------------------ */
-
-function YakinlikDugmesi({
-  etiket,
-  isaret,
-  onTikla,
-}: {
-  etiket: string;
-  isaret: string;
-  onTikla: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onTikla}
-      aria-label={etiket}
-      title={etiket}
-      // 44px: dokunma hedefi alt sınırı (tools/gorsel-denetim.mjs ölçüyor).
-      className="bas flex h-11 w-11 items-center justify-center text-[18px] leading-none text-parsomen"
-    >
-      {isaret}
-    </button>
-  );
-}
 
 /**
  * Gösterge: TEK SATIR, yalnız renk noktaları. Açıklama cümleleri ("dolu:
