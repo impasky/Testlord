@@ -23,6 +23,18 @@ export const DUGME_ADIMI = 1.5;
 /** Hareket durduktan sonra görünen bölgenin bildirilmesi (ms). */
 const DURMA_MS = 220;
 
+/**
+ * Son görünüm: yakınlık ve ekranın ortasındaki nokta (sahnenin oranı).
+ * Oyuncu: "yakınlığı Şehir'e dönünce de korusun." Bir yapıya girip
+ * dönen oyuncu bıraktığı yerde, bıraktığı yakınlıkta; sekme açık kaldıkça.
+ */
+let SON_GORUNUM: { z: number; merkez: [number, number] } | null = null;
+
+/** Saklı görünüm (yoksa null). */
+export function sonGorunum(): { z: number; merkez: [number, number] } | null {
+  return SON_GORUNUM;
+}
+
 /** Kabı dolduran en uzak yakınlık: yerleşkenin kenarından öte boşluk görünmesin. */
 export function enUzak(kapEn: number, kapBoy: number, sahneEn: number, sahneBoy: number): number {
   return Math.min(1, Math.max(kapEn / sahneEn, kapBoy / sahneBoy));
@@ -51,8 +63,8 @@ export function useYerleskeYakinligi(
   sahneBoy: number,
   etkin: boolean,
 ) {
-  const [z, setZ] = useState(1);
-  const zRef = useRef(1);
+  const [z, setZ] = useState(() => SON_GORUNUM?.z ?? 1);
+  const zRef = useRef(z);
   const [gorunen, setGorunen] = useState<[number, number, number, number] | null>(null);
   /** Kabı dolduran en uzak yakınlık (kap boyu değişince yeniden). */
   const [uzak, setUzak] = useState(0);
@@ -75,6 +87,7 @@ export function useYerleskeYakinligi(
       );
       setGorunen((g) => (g && g.every((x, i) => Math.abs(x - o[i]!) < 1e-3) ? g : o));
       setUzak(enUzak(k.clientWidth, k.clientHeight, sahneEn, sahneBoy));
+      SON_GORUNUM = { z: zRef.current, merkez: [o[0] + o[2] / 2, o[1] + o[3] / 2] };
     }, DURMA_MS);
   }, [kaydirici, sahneEn, sahneBoy]);
 
@@ -120,6 +133,23 @@ export function useYerleskeYakinligi(
       bitir();
     },
     [kaydirici, uygula, bitir],
+  );
+
+  /**
+   * Açılış: saklı görünüm varsa onun ortası ekranın ortasında, yoksa
+   * verilen nokta (kabın `dikey` oranında). Yakınlık kaba göre sınırlanıyor
+   * (ekran döndüyse saklı yakınlık artık kabı doldurmayabilir).
+   */
+  const ortala = useCallback(
+    (varsayilan: [number, number], dikey: number) => {
+      const k = kaydirici.current;
+      if (!k) return;
+      const [x, y] = SON_GORUNUM?.merkez ?? varsayilan;
+      const my = k.clientHeight * (SON_GORUNUM ? 0.5 : dikey);
+      uygula(zRef.current, x * sahneEn, y * sahneBoy, k.clientWidth / 2, my);
+      bitir();
+    },
+    [kaydirici, uygula, bitir, sahneEn, sahneBoy],
   );
 
   useEffect(() => {
@@ -205,6 +235,7 @@ export function useYerleskeYakinligi(
     z,
     gorunen,
     yakinlastir,
+    ortala,
     enYakinda: z >= EN_YAKIN - 1e-3,
     enUzakta: z <= uzak + 1e-3,
   };

@@ -240,8 +240,10 @@ export function Sehir({
   const [liste, setListe] = useState(false);
   const kartRef = useRef<HTMLDivElement>(null);
   /*
-   * Yerleşke ekrandan büyük: açılışta malikânenin önü ortada. Bir kez,
-   * veri geldiğinde; oyuncu kaydırdıktan sonra yerinden oynatılmıyor.
+   * Yerleşke ekrandan büyük: ilk açılışta malikânenin önü ortada; sonra
+   * oyuncu nerede, hangi yakınlıkta bıraktıysa orada (bir yapıya girip
+   * dönünce de; `yerleskeYakinligi.sonGorunum`). Bir kez, veri
+   * geldiğinde; oyuncu kaydırdıktan sonra yerinden oynatılmıyor.
    */
   const kaydirici = useRef<HTMLDivElement>(null);
   const ortalandi = useRef(false);
@@ -260,14 +262,12 @@ export function Sehir({
         : undefined,
     [gorunen],
   );
+  const ortala = yakinlik.ortala;
   useLayoutEffect(() => {
-    const k = kaydirici.current;
-    if (!hazir || !k || ortalandi.current) return;
+    if (!hazir || !kaydirici.current || ortalandi.current) return;
     ortalandi.current = true;
-    const [x, y] = ORTA;
-    k.scrollLeft = x * SAHNE_EN - k.clientWidth / 2;
-    k.scrollTop = y * SAHNE_BOY - k.clientHeight * 0.55;
-  }, [hazir]);
+    ortala(ORTA, 0.55);
+  }, [hazir, ortala]);
 
   const yap = useMutation({
     mutationFn: (key: string) => api.binaYap(key),

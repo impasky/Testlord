@@ -262,6 +262,8 @@ interface Yama {
   hareketli: boolean;
   /** İkinci aşama: yamaya giren salınan parçaların kendi kare atlası. */
   katman?: Katmanlar;
+  /** Ekrandaki bir CSS pikseline düşen resim pikseli (çizildiği yakınlıkta). */
+  yogunluk: number;
 }
 
 /** Bir yama oturumu: aynı bölgenin önce durağan, sonra parçalı resmi. */
@@ -274,6 +276,16 @@ interface YamaOturumu {
   /** Bu oturumun istediği işler: vazgeçilen eski oturum onları bırakmasın. */
   isler: Set<string>;
 }
+
+/**
+ * Sahne kapanınca son yama bırakılmıyor, burada bekliyor (tek tane): Şehir'e
+ * dönen oyuncu aynı yerde ve yakınlıkta (`yerleskeYakinligi.sonGorunum`),
+ * yama yeniden çizilmeden hemen keskin. Başka bir yama buraya girince ya
+ * da bu yama yeniden gösterilip yerine yenisi gelince bırakılıyor.
+ */
+let SAKLI: { yama: Yama; oturum: YamaOturumu | null } | null = null;
+const sakliMi = (anahtar: string) =>
+  SAKLI !== null && SAKLI.yama.is.startsWith(anahtar + '|yama|') ? SAKLI : null;
 
 const icinde = (a: Kutu, b: Kutu) =>
   b[0] >= a[0] - 1e-6 &&
@@ -309,10 +321,11 @@ function useYama(
   sicak: number | undefined,
   ref: React.RefObject<SVGSVGElement | null>,
 ): Yama | null {
-  const [yama, setYama] = useState<Yama | null>(null);
+  // Saklı yama bu sahnenin ise oradan başla (okuma saf; sahiplik etkide).
+  const [yama, setYama] = useState<Yama | null>(() => sakliMi(anahtar)?.yama ?? null);
   const guncel = useRef({ uret, kamera, yama });
   guncel.current = { uret, kamera, yama };
-  const oturum = useRef<YamaOturumu | null>(null);
+  const oturum = useRef<YamaOturumu | null>(sakliMi(anahtar)?.oturum ?? null);
   /** Sahne kapandı: yolda olan yama gelince de bırakılıyor. */
   const kapandi = useRef(false);
   const gorunenAnahtar = gorunen?.map((x) => x.toFixed(2)).join(',') ?? '';
@@ -323,13 +336,8 @@ function useYama(
       if (oturum.current) oturum.current.iptal = true;
       oturum.current = null;
     };
-    if (!etkin || !el || !gorunen || !tabanEn) {
-      if (!gorunen) {
-        vazgec();
-        setYama(null);
-      }
-      return;
-    }
+    // Görünen bölge henüz bildirilmediyse (açılış) eldeki yama kalıyor.
+    if (!etkin || !el || !gorunen || !tabanEn) return;
     const [vx, vy, vw, vh] = v;
     const r = el.getBoundingClientRect();
     if (r.width < 2 || vw <= 0) return;
@@ -420,7 +428,14 @@ function useYama(
         if (url && !bekleyen && guncel.current.yama?.is !== is) glBirak(is);
         return false;
       }
-      setYama({ is, url, kutu: k, hareketli, katman: parcali ? glKatmanlari(url) : undefined });
+      setYama({
+        is,
+        url,
+        kutu: k,
+        hareketli,
+        katman: parcali ? glKatmanlari(url) : undefined,
+        yogunluk,
+      });
       return true;
     };
     void (async () => {
@@ -440,12 +455,37 @@ function useYama(
   }, [yama]);
   useEffect(() => {
     kapandi.current = false;
+    // Saklı yama yeniden gösteriliyor: artık bu sahnenin.
+    if (SAKLI && SAKLI.yama.is === gosterilen.current?.is) SAKLI = null;
     return () => {
       kapandi.current = true;
-      if (oturum.current) oturum.current.iptal = true;
+      const o = oturum.current;
       oturum.current = null;
-      if (gosterilen.current) glBirak(gosterilen.current.is);
+      const y = gosterilen.current;
       gosterilen.current = null;
+      if (!y) {
+        if (o) o.iptal = true;
+        return;
+      }
+      // Son yama bekliyor (bkz. `SAKLI`). Bitmişse oturumu da onun
+      // bölgesiyle; parçalı aşaması gelmeden kapandıysa dönüşte yeni oturum
+      // (durağan aşama önbellekten hemen, sonra parçalı).
+      if (SAKLI && SAKLI.yama.is !== y.is) glBirak(SAKLI.yama.is);
+      const bitti = !y.hareketli || y.katman !== undefined;
+      SAKLI = {
+        yama: y,
+        oturum: bitti
+          ? {
+              iptal: false,
+              anahtar: y.is.slice(0, y.is.indexOf('|yama|')),
+              kutu: y.kutu,
+              yogunluk: y.yogunluk,
+              hareketli: y.hareketli,
+              isler: new Set([y.is]),
+            }
+          : null,
+      };
+      if (o) o.iptal = true;
     };
   }, []);
   // Sahne değişti (yeni yapı): eski yama ona ait değil.

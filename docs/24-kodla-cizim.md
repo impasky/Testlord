@@ -514,7 +514,11 @@ kaydırıyor.
   bellekten bırakılıyor (`glBirak`). Sırası gelince isteyeni kalmayan iş
   çizilmiyor; aynı işi yeniden isteyen varsa eskisinin vazgeçişi onu
   düşürmüyor (her çağıran bir ilgi bırakıyor). SVG yedeğinde yama yok:
-  çokgenler zaten vektör.
+  çokgenler zaten vektör. Şehir'e dönünce yakınlık ve bakılan nokta
+  korunuyor (`sonGorunum`, sekme açık kaldıkça; yakınlık kaba göre yeniden
+  sınırlanıyor). Sahne kapanınca son yama bırakılmıyor, tek bir yuvada
+  bekliyor (`SAKLI`): dönüşte yeniden çizilmeden hemen keskin; parçalı
+  aşaması gelmeden kapandıysa durağanı önbellekten, parçalısı yeniden.
 
 Kutu bir ızgara sarmalayıcısına geçiyor: resim ve katmanlar aynı hücrede
 üst üste, çağıranın sınıfları sarmalayıcıda. Katman dikdörtgeni ölçülüyor

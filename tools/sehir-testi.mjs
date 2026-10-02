@@ -494,6 +494,7 @@ kontrol(
   await page.getByRole('button', { name: 'Yakınlaştır' }).click();
   await page.getByRole('button', { name: 'Yakınlaştır' }).click();
   await page.waitForTimeout(400);
+  const ayrilirken = await olcu();
   await page.locator('[data-bina="kisla"]').click();
   await page.waitForTimeout(900);
   kontrol(
@@ -502,6 +503,13 @@ kontrol(
   );
   await page.locator('nav button:has-text("Şehir")').click();
   await page.waitForTimeout(900);
+  // Oyuncu: "yakınlığı Şehir'e dönünce de korusun."
+  const donunce = await olcu();
+  kontrol(
+    "Şehir'e dönünce yakınlık korunuyor",
+    Math.abs(donunce.z - ayrilirken.z) < 0.01 && Math.abs(donunce.en - ayrilirken.en) < 2,
+    `${ayrilirken.z} → ${donunce.z}`,
+  );
 }
 
 await page.screenshot({ path: `${process.env.CIKTI ?? 'ekran-goruntuleri'}/sehir.png` });

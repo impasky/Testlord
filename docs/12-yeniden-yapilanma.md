@@ -440,7 +440,9 @@ kıstırma) ve sol alttaki −/+ düğmeleri; en uzakta bütün köy ekrana
 sığıyor, en yakında (3×) bir figür ~90 piksel. Yakında ekranda görünen
 bölge ayrıca keskin çiziliyor (docs/24 "Yakınlaştırma"). Sonra: **"köylüler
 ve bayraklar da yakında keskin olsun"** — yama ikinci aşamada kendi
-bölgesindeki canlı parçaları da kendi çözünürlüğünde oynatıyor.
+bölgesindeki canlı parçaları da kendi çözünürlüğünde oynatıyor. Ardından:
+**"yakınlığı Şehir'e dönünce de korusun"** — bir yapıya girip dönen
+oyuncu bıraktığı yerde ve yakınlıkta, yama da hemen keskin.
 
 ### 6.1 Diyar haritası — gruplar yazı ızgarasından çıktı
 
