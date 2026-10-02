@@ -79,6 +79,7 @@ export function YerlesimCizimi({
       hareket
       ertele
       onceDurgun
+      sicak={1}
     />
   );
 }

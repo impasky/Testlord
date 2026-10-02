@@ -56,6 +56,8 @@ export interface GlIstek {
   tilt?: number;
   /** Renk düzenlemesinin gücü (0 kapalı, 1 tam); verilmezse tam. */
   ton?: number;
+  /** Sıcak gün ışığı (0 kapalı, 1 tam): canlı renk, altın ışık, serin gölge (yerleşke). */
+  sicak?: number;
   /**
    * Hareketli sahne: duman ağa girmiyor (sayfada canlı yükseliyor), su
    * maskesi, ışık katmanı, çimen maskesi ve dalgalanan bayrak atlası da çiziliyor

@@ -120,12 +120,18 @@ function useGpuResmi(
   v: [number, number, number, number],
   kirp: boolean,
   tilt: number | undefined,
+  sicak: number | undefined,
   hareket: boolean,
   onceDurgun: boolean,
   ref: React.RefObject<SVGSVGElement | null>,
   basarisiz: () => void,
 ): string | null {
-  const durgunTaban = anahtar + '|' + v.join(',') + (tilt !== undefined ? '|t' + tilt : '');
+  const durgunTaban =
+    anahtar +
+    '|' +
+    v.join(',') +
+    (tilt !== undefined ? '|t' + tilt : '') +
+    (sicak !== undefined ? '|s' + sicak : '');
   const taban = durgunTaban + (hareket ? '|h' : '');
   // Önce durağan: canlı resim sonra, sıra boşalınca (bkz. `Sahne.onceDurgun`).
   const iki = hareket && onceDurgun;
@@ -171,6 +177,7 @@ function useGpuResmi(
         boy,
         olcek: en / (vw * cssBirim),
         tilt,
+        sicak,
         hareket: h,
       });
       const sakla = (t: string, url: string) => {
@@ -223,7 +230,7 @@ function useGpuResmi(
       ro.disconnect();
     };
     // `v` içerik olarak `taban`da; dizi kimliği her çizimde değişiyor.
-  }, [etkin, taban, durgunTaban, iki, tarif, kirp, tilt, hareket, ref]);
+  }, [etkin, taban, durgunTaban, iki, tarif, kirp, tilt, sicak, hareket, ref]);
 
   return etkin ? resim : null;
 }
@@ -608,6 +615,7 @@ export const Sahne = memo(function Sahne({
   ertele = false,
   onceDurgun = false,
   tilt,
+  sicak,
   hareket = false,
   tarif = false,
 }: {
@@ -650,6 +658,11 @@ export const Sahne = memo(function Sahne({
    * maket gibi okunuyor; figür ve bina simgesinde yok.
    */
   tilt?: number;
+  /**
+   * Sıcak gün ışığı (yalnız GPU, 0–1): biraz daha canlı renk, güneşte
+   * altın, gölgede serin. Şehir'in yerleşkesi; öbür çizimler eskisi gibi.
+   */
+  sicak?: number;
   /**
    * Canlı sahne (yalnız GPU, hareket kısıtlı değilse): su parıltısı, ışık
    * titremesi, yükselen duman. Kutu bir sarmalayıcıya geçiyor (katmanlar
@@ -701,6 +714,7 @@ export const Sahne = memo(function Sahne({
     v,
     kirp,
     tilt,
+    sicak,
     canli,
     onceDurgun,
     ref,

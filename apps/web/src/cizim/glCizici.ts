@@ -425,6 +425,8 @@ uniform float u_aoGuc;
 uniform float u_hare;
 uniform float u_harePx;
 uniform float u_ton;
+// Sıcak hava (0 kapalı): yerleşke. Bkz. tonla.
+uniform float u_sicak;
 // 1: derinlik ek dokudan (salınan parçanın karesi: derinliğe yazmadan çiziliyor).
 uniform int u_ekD;
 // Çıktı kaydırması: salınan parçanın karesi atlasta başka yere yazılıyor.
@@ -442,6 +444,16 @@ vec3 tonla(vec3 c) {
   float doy = max(c.r, max(c.g, c.b)) - min(c.r, min(c.g, c.b));
   c = mix(vec3(l), c, 1.0 + 0.16 * (1.0 - doy));
   c *= mix(vec3(0.97, 0.99, 1.04), vec3(1.04, 1.0, 0.95), smoothstep(0.12, 0.85, l));
+  if (u_sicak > 0.0) {
+    // Sıcak gün ışığı (yerleşke): biraz daha canlı renk, güneşte altın, gölgede
+    // serin; orta tonlar biraz daha ayrışıyor. Sahne "öğleden sonra" gibi.
+    float s = clamp(c.r * 0.299 + c.g * 0.587 + c.b * 0.114, 0.0, 1.0);
+    c = mix(vec3(s), c, 1.0 + 0.22 * u_sicak);
+    vec3 isik = mix(vec3(0.94, 0.98, 1.06), vec3(1.09, 1.02, 0.88), smoothstep(0.1, 0.75, s));
+    c *= mix(vec3(1.0), isik, u_sicak);
+    c = clamp(c, 0.0, 1.0);
+    c = mix(c, c * c * (3.0 - 2.0 * c), 0.14 * u_sicak);
+  }
   return clamp(c, 0.0, 1.0);
 }
 ivec2 sinirla(ivec2 p) { return clamp(p, ivec2(0), u_boyut - 1); }
@@ -1090,6 +1102,8 @@ export interface CizimIstegi {
   tilt?: number;
   /** Renk düzenlemesinin gücü (0 kapalı, 1 tam); verilmezse tam. */
   ton?: number;
+  /** Sıcak gün ışığı (0 kapalı, 1 tam): canlı renk, altın ışık, serin gölge (yerleşke). */
+  sicak?: number;
   /**
    * Hareket katmanlarını da çiz (su maskesi, ışık, çimen maskesi; bkz. `KATMAN_PARCA`).
    * Ağ `agYap(..., { dumansiz: true })` ile kurulmuş olmalı: duman sayfada
@@ -1475,6 +1489,7 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
   const aralik = ag.derinlik[1] - ag.derinlik[0] || 1;
   gl.uniform1f(uc('u_derinEsik'), Math.max(0.25, 6 * r * birim) / (aralik * 1.04));
   gl.uniform1f(uc('u_ton'), istek.ton ?? 1);
+  gl.uniform1f(uc('u_sicak'), istek.sicak ?? 0);
   gl.bindVertexArray(null);
   gl.drawArrays(gl.TRIANGLES, 0, 3);
 

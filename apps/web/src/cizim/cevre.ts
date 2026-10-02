@@ -317,7 +317,7 @@ function suDegirmeni(r: () => number): Model {
 /* ── Köy ───────────────────────────────────────────────────────────── */
 
 /** Kademenin ev dokusu: köyde tahta ve saman, kasabada sıva ve kiremit, şehirde taş. */
-function evAyari(kademe: Kademe, i: number) {
+export function evAyari(kademe: Kademe, i: number) {
   const tas = kademe === 'sehir' || kademe === 'kale' || kademe === 'metropol';
   const koy = kademe === 'koy' || kademe === 'kamp';
   return {
@@ -329,7 +329,7 @@ function evAyari(kademe: Kademe, i: number) {
 }
 
 /** Sebze bahçesi: sıra sıra yeşil ve toprak, kısa çitle. */
-function bostan(x: number, y: number, sx: number, sy: number): Model {
+export function bostan(x: number, y: number, sx: number, sy: number): Model {
   const m: Model = [
     ...prizma(
       [

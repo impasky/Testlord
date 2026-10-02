@@ -434,6 +434,33 @@ kaydırıyor.
   katman, yalnız kayma; bina, ağaç, yol ve figür maskede yok
   (önündekiler örtüyor, canlı parçalar üstte). Salınan ağaç aynı eksende
   (ekranda yatay) gidip geliyor.
+- Yapılar sahnede aşamaya göre büyüyor (`yerlesim.ASAMA_BUYUME`): birinci
+  aşama yapı plakasının içinde alçak bir kulübeydi, yerleşkede köy değil
+  dağınık barakalar okunuyordu. Yapı (avlu değil) plakanın ortası
+  etrafında ×1,3 (birinci), ×1,15 (üçüncü, boş arsa) büyüyor; beşinci
+  aşama olduğu gibi, yükseltmenin büyüme hissi duruyor. Liste simgesi
+  (`binaModeli`) değişmiyor.
+- Boş arsa yapılmaya hazır bir inşaat yeri: zemini çayır (plaka yok),
+  ortada sıkıştırılmış temel izi, köşe kazıkları arasında gerili ip, arka
+  kenarlarda dizilmeye başlanmış temel taşları, önde kereste ve taş
+  yığını, tabela. Önceden üç yanı çitli bir toprak plakaydı, çamurlu bir
+  ağıl gibi okunuyordu.
+- Kalabalık (`kalabalik.ts`): kilitli (kademesi henüz açmamış) arsalar boş
+  çayır kalmıyor; plakanın ortasında kademenin duvarı ve çatısıyla bir köy
+  evi, bostanı ve odunu (kampta çadırlar, sandıklar, taş ocak). Arsa
+  açılınca ev kalkıyor, yerine inşaat yeri geliyor: köy büyüyüp yer
+  açıyor. Kasabanın boş yerine ek evler (boş yer modelin kendisinden: çimen
+  olmayan yer ve nesnelerin ayağı dolu, bütün arsalar kapalı). Kuyunun
+  (kampta ateşin) başında sohbet eden üç köylü (durağan). Yolda gidip gelen
+  köylüler (köyde 3, şehirde 4): çuval, sepet, kova taşıyor; yol ağının
+  kendi eğrisini izliyor, uçta dönüyor (canlı parça, 32 kare; rota en çok
+  13 birim, atlası o kadar). Kasabadaki insan figürün 0,42 katı: talim
+  alanının ölçeğinde (0,55) köylü büyütülen yapıların kapısını aşıyordu.
+- Sıcak hava (`Sahne.sicak`, `GlIstek.sicak`; yalnız yerleşke): renk
+  düzenlemesinin üstüne biraz daha canlı renk, güneşte altın ışık,
+  gölgede serin ton, orta tonlarda hafif kontrast. Canlı parçaların atlası
+  aynı çözüm geçişiyle aynı ayarı alıyor; önbellek anahtarına giriyor.
+  Öbür çizimler eskisi gibi.
 
 Kutu bir ızgara sarmalayıcısına geçiyor: resim ve katmanlar aynı hücrede
 üst üste, çağıranın sınıfları sarmalayıcıda. Katman dikdörtgeni ölçülüyor
@@ -472,6 +499,7 @@ her köşe yüzlerce kenarı değil, yalnız kendi şeridini tarıyor.
 | `binalar.ts`                  | Şehir binaları, her biri üç aşama; arsa, görev panosu, haberci kulesi, onur meydanı                                                      |
 | `yerlesim.ts`                 | Şehir sayfasının tam ekran yerleşkesi, altı kademe (kamp → metropol): kasaba ve yapıları (sahnenin içinde), tarlalar, talim alanı        |
 | `cayir.ts`                    | Yerleşkenin zemini: köşe renkli çayır, ot tutamları, kır çiçekleri, yol kenarı ve tekerlek izi (yalnız GPU)                              |
+| `kalabalik.ts`                | Kasabanın insanları ve evleri: kilitli arsada köy evi (kampta çadır), ek evler, kuyu başında sohbet, yolda gidip gelen köylüler          |
 | `cevre.ts`                    | Yerleşkenin çevresi: dere ve köprü, su ve yel değirmeni, gölet, köy evleri, mera, meyve bahçesi, talim kampı, patikalar, serpinti, orman |
 | `kir.ts`                      | Kır, maden, kale ve saray parçaları: ev, ambar, değirmen, köprü, maden ağzı, sur, kule, teras, köşk                                      |
 | `bolgeler.ts`                 | Altı bölge türü × üç aşama; aynı türün aşamaları aynı araziyi paylaşıyor                                                                 |

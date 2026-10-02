@@ -277,21 +277,73 @@ function su(x: number, y: number, sx: number, sy: number): Model {
 type Tarif = (r: () => number) => Model;
 
 const T: Record<string, Tarif> = {
-  arsa: (r) =>
-    birlestir(
-      plaka(r, P.toprak, isikla(P.toprak, 0.8)),
-      cit(1.5, 1.5, 13, 'x', P.tahta, 1.3),
-      cit(1.5, 1.5, 13, 'y', P.tahta, 1.3),
-      cit(14.5, 1.5, 13, 'y', P.tahta, 1.3),
-      kaya(4, 5, 0, 1.1, r),
-      kaya(5.3, 4.4, 0, 0.8, r),
-      kaya(4.6, 6.4, 0, 0.7, r),
-      kutu(8, 8, 0, 4, 1.4, 0.35, P.acikTahta),
-      kutu(8.2, 8.1, 0.35, 4, 1.2, 0.35, P.tahta),
-      kutu(8.1, 8.2, 0.7, 3.6, 1.2, 0.35, P.acikTahta),
-      tasi(dondur(kutu(0, 0, 0, 0.2, 0.2, 3, P.koyuTahta), 'x', 0.35), [11, 12, 0]),
-      kutu(10.8, 12.9, 2.6, 0.6, 0.15, 0.7, P.demir),
-    ),
+  /*
+   * Boş arsa: yapılmaya hazır bir inşaat yeri. Önceden toprak bir plakanın
+   * üç yanı çitliydi; yerleşkede çamurlu bir ağıl gibi okunuyordu. Şimdi
+   * zemin çayır (sahnede plaka yok, çayır görünüyor), ortada sıkıştırılmış
+   * temel izi, köşe kazıkları arasında gerili ip, arka kenarlarda dizilmeye
+   * başlanmış temel taşları; önde kereste ve taş yığını, tabela.
+   */
+  arsa: (r) => {
+    const m: Model = [...plaka(r)];
+    // Temel izi (yere yapışık; yerleşkede çimen sayılmıyor).
+    m.push(
+      ...katmanla(
+        prizma(
+          [
+            [3.4, 3.4],
+            [12.6, 3.4],
+            [12.6, 12.6],
+            [3.4, 12.6],
+          ],
+          0,
+          0.04,
+          isikla(P.toprak, 1.14),
+        ),
+        -1,
+      ).map((f) => ({ ...f, kenarsiz: true })),
+    );
+    // Köşe kazıkları ve aralarında ip.
+    const kose: [number, number][] = [
+      [3.2, 3.2],
+      [12.8, 3.2],
+      [12.8, 12.8],
+      [3.2, 12.8],
+    ];
+    for (const [x, y] of kose) m.push(...kutu(x - 0.16, y - 0.16, 0, 0.32, 0.32, 1.4, P.koyuTahta));
+    const ip = '#efe3c0';
+    m.push(
+      ...kutu(3.2, 3.16, 1.05, 9.6, 0.08, 0.08, ip),
+      ...kutu(3.2, 12.76, 1.05, 9.6, 0.08, 0.08, ip),
+      ...kutu(3.16, 3.2, 1.05, 0.08, 9.6, 0.08, ip),
+      ...kutu(12.76, 3.2, 1.05, 0.08, 9.6, 0.08, ip),
+    );
+    // Arka iki kenarda temel taşları (dizilmeye başlanmış).
+    const tas = { ust: P.acikTas, yan: P.tas };
+    for (let i = 0; i < 5; i++) {
+      const b = 0.5 + r() * 0.15;
+      m.push(...dokula(kutu(3.6 + i * 1.75, 3.6, 0.04, 1.5, 1.0, b, tas), 'tas'));
+    }
+    for (let j = 0; j < 3; j++) {
+      const b = 0.5 + r() * 0.15;
+      m.push(...dokula(kutu(3.6, 5.5 + j * 1.75, 0.04, 1.0, 1.5, b, tas), 'tas'));
+    }
+    // Önde kereste yığını ve taş öbeği.
+    m.push(
+      ...kutu(9.6, 13.6, 0, 4.2, 1.3, 0.32, P.acikTahta),
+      ...kutu(9.8, 13.65, 0.32, 3.9, 1.2, 0.32, P.tahta),
+      ...kutu(9.7, 13.7, 0.64, 3.6, 1.1, 0.3, P.acikTahta),
+      ...kaya(13.9, 9.8, 0, 0.9, r),
+      ...kaya(14.4, 11.2, 0, 0.7, r),
+      ...kaya(13.6, 11.0, 0.3, 0.6, r),
+    );
+    // Tabela: direk ve tahta.
+    m.push(
+      ...kutu(14.2, 14.2, 0, 0.22, 0.22, 2.6, P.koyuTahta),
+      ...kutu(13.6, 14.08, 1.7, 1.4, 0.12, 0.8, P.acikTahta),
+    );
+    return m;
+  },
 
   malikane_1: (r) => {
     const ev = yapi(r, 3.5, 4, 8, 6, [{ h: 4.2, duvar: 'tahta' }], {

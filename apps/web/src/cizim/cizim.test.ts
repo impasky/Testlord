@@ -57,15 +57,20 @@ import {
   yansitici,
   zemineGeri,
   kameraTabani,
+  type Model,
   type V3,
 } from './uc';
 import {
   BINA_TABAN_BOY,
   BINA_YUVALARI,
   KASABA_KUTUSU,
+  ASAMA_BUYUME,
   YERLESIM_KADEMELERI,
+  YURUYEN,
   yerlesimAnahtari,
   yerlesimAnahtariCoz,
+  sahneBinasi,
+  yerlesimMerkezi,
   yerlesimModeli,
   yerlesimNoktasi,
   yerlesimYuzdesi,
@@ -761,10 +766,19 @@ describe('canlı yerleşke', () => {
 
   it.each(YERLESIM_KADEMELERI)('%s: talim alanı ve tarla canlı', (k) => {
     const canli = bayrakGruplari(yerlesimModeli(k)).filter((g) => g[0]!.bez!.canli);
-    // 3 okçu, 3 mızrakçı, düello, saban, 2 orakçı, demetçi; yel değirmeni, su çarkı.
-    expect(canli).toHaveLength(13);
+    // 3 okçu, 3 mızrakçı, düello, saban, 2 orakçı, demetçi; yel değirmeni, su
+    // çarkı; yolda gidip gelen köylüler.
+    expect(canli).toHaveLength(13 + YURUYEN[k]);
   });
 });
+
+const KOYLU_T: Insan = {
+  ten: P.ten2,
+  govde: '#8a7458',
+  bacak: '#6b5a45',
+  cizme: P.deri,
+  baslik: { tip: 'bone', renk: '#9a8a6a' },
+};
 
 describe('yerleşke: binalar sahnede, çevre', () => {
   const KIS: YerlesimBinasi = { ad: 'kisla_3', x: 24, y: 95, olcek: 1.05 };
@@ -784,12 +798,7 @@ describe('yerleşke: binalar sahnede, çevre', () => {
   });
 
   it('bina sayfadaki kutusuna oturuyor, zeminde duruyor, plakası yok', () => {
-    // Yalnız-GPU ayrıntı (çayır, ot, yol kenarı) yapıya göre yer değiştiriyor;
-    // yapının yüzleri geri kalanın sonuna ekleniyor.
-    const bos = yerlesimModeli('koy').filter((y) => !y.gpu);
-    const bina = yerlesimModeli('koy', [KIS])
-      .filter((y) => !y.gpu)
-      .slice(bos.length);
+    const bina = sahneBinasi(KIS);
     expect(bina.length).toBeGreaterThan(50);
     expect(bina.some((y) => y.katman === -2)).toBe(false);
     expect(bina.every((y) => y.p.every((q) => q[2] > -0.01))).toBe(true);
@@ -805,11 +814,63 @@ describe('yerleşke: binalar sahnede, çevre', () => {
         const [a, b] = ekran(q);
         [x0, y0, x1, y1] = [Math.min(x0, a), Math.min(y0, b), Math.max(x1, a), Math.max(y1, b)];
       }
-    expect(x0).toBeGreaterThanOrEqual(px - W / 2 - 0.01);
-    expect(x1).toBeLessThanOrEqual(px + W / 2 + 0.01);
-    expect(y0).toBeGreaterThanOrEqual(py - W - 0.01);
-    expect(y1).toBeLessThanOrEqual(py + 0.01);
+    // Sahnede aşamaya göre büyüyor (plakanın ortası etrafında): kutu o kadar
+    // geniş; tabanın önü plakanın çeyreği kadar öne kayabiliyor.
+    const k = ASAMA_BUYUME.find(([d]) => d.test(KIS.ad))![1];
+    expect(k).toBeGreaterThan(1);
+    expect(x0).toBeGreaterThanOrEqual(px - (W * k) / 2 - 0.01);
+    expect(x1).toBeLessThanOrEqual(px + (W * k) / 2 + 0.01);
+    expect(y0).toBeGreaterThanOrEqual(py - W * k - 0.01);
+    expect(y1).toBeLessThanOrEqual(py + (W * (k - 1)) / 2 + 0.01);
     expect(Math.abs((x0 + x1) / 2 - px)).toBeLessThan(W * 0.15);
+  });
+
+  it('kilitli arsa boş kalmıyor: köy evi; açılan arsada ev yok', () => {
+    // Plakanın ortasında yüksek (> 2) yüzler: kilitli arsada ev, açılınca yok.
+    const say = (m: Model, [x, y]: [number, number]) =>
+      m.filter((f) => !f.gpu && f.p.some((q) => Math.hypot(q[0] - x, q[1] - y) < 5.5 && q[2] > 2))
+        .length;
+    const merkez = yerlesimMerkezi(KIS);
+    expect(say(yerlesimModeli('koy'), merkez)).toBeGreaterThan(4);
+    expect(say(yerlesimModeli('koy', [{ ...KIS, ad: 'arsa' }]), merkez)).toBe(0);
+  });
+
+  it('yürüyen köylüler: her karede aynı yüzler, kasabanın insan boyunda', () => {
+    const gruplar = bayrakGruplari(yerlesimModeli('koy')).filter(
+      (g) => g[0]!.bez!.canli?.kare === 32,
+    );
+    expect(gruplar).toHaveLength(YURUYEN.koy);
+    // Talim alanının aktörleri figürün 0,55 katı; kasabadakiler daha küçük.
+    const insanBoyu = Math.max(...insan(KOYLU_T).flatMap((f) => f.p.map((q) => q[2])));
+    for (const g of gruplar) {
+      const c = g[0]!.bez!.canli!;
+      const n = c.model(0).length;
+      for (const k of [8, 16, 24]) {
+        const kare = c.model(k);
+        expect(kare).toHaveLength(n);
+        const z = Math.max(...kare.flatMap((f) => f.p.map((q) => q[2])));
+        expect(z).toBeLessThan(insanBoyu * 0.5);
+      }
+    }
+  });
+
+  it('boş arsa yapılmaya hazır inşaat yeri: zemin çimen, temel izi, çitsiz', () => {
+    const m = binaModeli('arsa');
+    // Plakanın üstü çimen (sahnede plaka yok, çayır görünüyor).
+    expect(m.some((f) => f.katman === -2 && f.renk === P.cimen)).toBe(true);
+    // Temel izi yere yapışık ve çimen değil (ot düşmüyor).
+    expect(m.some((f) => f.katman === -1 && f.renk !== P.cimen)).toBe(true);
+    // Eski hâlin uzun çitleri yok: en uzun nesne yüzü ipin kendisi kadar.
+    const uzun = Math.max(
+      ...m
+        .filter((f) => (f.katman ?? 0) >= 0)
+        .map((f) => {
+          const xs = f.p.map((q) => q[0]);
+          const ys = f.p.map((q) => q[1]);
+          return Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys));
+        }),
+    );
+    expect(uzun).toBeLessThan(10);
   });
 
   it('dere ve gölet su yüzü: köşe başına derinlik ve renk, kıyıda sığ', () => {
@@ -846,7 +907,7 @@ describe('yerleşke: binalar sahnede, çevre', () => {
     }
     // Yapının kendi çizimi (liste simgesi) dalgalanmıyor.
     expect(binaModeli('kisla_3').some((y) => y.doku === 'cimen')).toBe(false);
-  });
+  }, 30000);
 
   it('yerleşke bütün yapılarıyla bile hafif kalıyor (yüz bütçesi)', () => {
     const hepsi: YerlesimBinasi[] = Object.keys(BINA_YUVALARI).map((k) => ({

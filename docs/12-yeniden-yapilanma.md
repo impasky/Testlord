@@ -418,6 +418,14 @@ ot tutamları, kır çiçekleri, kenarı çimene karışan toprak yollar ve
 tekerlek izi. Dalga otların üstünden geçiyor. Hepsi yalnız GPU'da;
 GPU'suz telefon eskisi kadar hafif (docs/24 "Çayır").
 
+Beşinci tur: **"hepsini yap"** (kalan üç zayıflık). Birinci aşama yapılar
+küçük kulübelerdi: sahnede aşamaya göre büyüyorlar. Köy seyrek ve ıssızdı:
+kilitli arsalarda köy evleri ve bostanlar, kasabanın boş yerinde ek evler,
+kuyu başında sohbet eden köylüler, yollarda çuval ve kova taşıyan
+köylüler. Boş arsa çamurlu bir ağıl gibiydi: artık temel izi, gerili ip,
+temel taşları ve kerestesiyle bir inşaat yeri. Işık donuktu: yerleşke
+sıcak bir gün ışığında (docs/24 "Kalabalık", "Sıcak hava").
+
 ### 6.1 Diyar haritası — gruplar yazı ızgarasından çıktı
 
 Oyuncu: **"Akın kısmında harita yap, 10 NPC karakteri de o haritaya ekle;

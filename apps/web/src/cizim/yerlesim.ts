@@ -43,7 +43,8 @@ import {
   seyirci,
 } from './canli';
 import { cayirZemini, otlar, yolKenari } from './cayir';
-import { cevre } from './cevre';
+import { cevre, evAyari } from './cevre';
+import { kalabalik, type KalabalikAyari } from './kalabalik';
 import { araba, balya } from './kir';
 import { agac, cam, cit, duman, fici, kaya, mesale, palisat } from './parca';
 import { P, isikla } from './renk';
@@ -174,14 +175,12 @@ function lekeler(r: () => number, renk: string, adet: number, alan = 34): Model 
   return m;
 }
 
-/** Kıvrımlı patika: iki nokta arası ikinci derece eğri, yana büküm `bukum`. */
-function egriYol(
+/** İki nokta arası ikinci derece eğrinin noktaları (yana büküm `bukum`). */
+function egriNoktalari(
   a: [number, number],
   b: [number, number],
   bukum: number,
-  gen: number,
-  renk: string,
-): Model {
+): [number, number][] {
   const dx = b[0] - a[0];
   const dy = b[1] - a[1];
   const l = Math.hypot(dx, dy) || 1;
@@ -197,7 +196,7 @@ function egriYol(
       u * u * a[1] + 2 * u * t * ky + t * t * b[1],
     ]);
   }
-  return yol(noktalar, gen, renk);
+  return noktalar;
 }
 
 /** Yuvaların dışında kalan kenar bölgelere ağaç/kaya serper. */
@@ -236,7 +235,13 @@ function gobek(): [number, number] {
  * Gerçek köyde patika komşudan komşuya gider; ağaç tam bunu veriyor.
  * Köy ve kasabada kıvrımlı patika, şehirde düz taş yol.
  */
-function yolAgi(r: () => number, gen: number, renk: string, egri = false): Model {
+function yolAgi(
+  r: () => number,
+  gen: number,
+  renk: string,
+  egri = false,
+  cizgiler: [number, number][][] = [],
+): Model {
   const noktalar: [number, number][] = [
     gobek(),
     ...Object.keys(BINA_YUVALARI)
@@ -260,8 +265,9 @@ function yolAgi(r: () => number, gen: number, renk: string, egri = false): Model
     agacta.add(j);
     const a = noktalar[i]!;
     const b = noktalar[j]!;
-    if (egri) m.push(...egriYol(a, b, (r() - 0.5) * 5, gen, renk));
-    else m.push(...yol([a, b], gen, renk));
+    const cizgi = egri ? egriNoktalari(a, b, (r() - 0.5) * 5) : [a, b];
+    cizgiler.push(cizgi);
+    m.push(...yol(cizgi, gen, renk));
   }
   return m;
 }
@@ -470,6 +476,8 @@ export function yerlesimModeli(kademe: Kademe, binalar: YerlesimBinasi[] = []): 
     if (kademe === 'kamp') m.push(...lekeler(r, isikla(P.toprak, 1.05), 12, 28));
   }
   const g = gobek();
+  // Yol ağının çizgileri: yürüyen köylüler bunların üstünde (`kalabalik.ts`).
+  const yollar: [number, number][][] = [];
 
   switch (kademe) {
     case 'kamp': {
@@ -485,12 +493,12 @@ export function yerlesimModeli(kademe: Kademe, binalar: YerlesimBinasi[] = []): 
         const ly = g[1] + Math.sin(a) * 3.6;
         m.push(...kutu(lx - 0.9, ly - 0.35, 0, 1.8, 0.7, 0.7, P.koyuTahta));
       }
-      m.push(...yolAgi(r, 1.4, isikla(P.toprak, 1.05), true));
+      m.push(...yolAgi(r, 1.4, isikla(P.toprak, 1.05), true, yollar));
       m.push(...kenarSusu(r, 26, 0.6));
       break;
     }
     case 'koy': {
-      m.push(...yolAgi(r, 2, P.toprak, true));
+      m.push(...yolAgi(r, 2, P.toprak, true, yollar));
       m.push(...katmanla(prizma(cember(g[0], g[1], 4, 10), 0, 0.03, P.toprak), -0.9));
       // Tarla şeritleri (üst sol köşe)
       const [fx, fy] = yuzdeden(30, 8);
@@ -501,7 +509,7 @@ export function yerlesimModeli(kademe: Kademe, binalar: YerlesimBinasi[] = []): 
       break;
     }
     case 'kasaba': {
-      m.push(...yolAgi(r, 2.4, isikla(P.toprak, 1.08), true));
+      m.push(...yolAgi(r, 2.4, isikla(P.toprak, 1.08), true, yollar));
       m.push(...katmanla(prizma(cember(g[0], g[1], 5, 10), 0, 0.03, isikla(P.toprak, 1.08)), -0.9));
       // Kuyu
       m.push(
@@ -515,7 +523,7 @@ export function yerlesimModeli(kademe: Kademe, binalar: YerlesimBinasi[] = []): 
       break;
     }
     case 'sehir': {
-      m.push(...yolAgi(r, 2.6, P.acikTas));
+      m.push(...yolAgi(r, 2.6, P.acikTas, false, yollar));
       m.push(...katmanla(prizma(cember(g[0], g[1], 6, 12), 0, 0.05, P.acikTas), -0.9));
       m.push(
         ...katmanla(prizma(cember(g[0], g[1], 5.2, 12), 0.05, 0.05, isikla(P.acikTas, 0.94)), -0.8),
@@ -541,7 +549,7 @@ export function yerlesimModeli(kademe: Kademe, binalar: YerlesimBinasi[] = []): 
           ),
         );
       }
-      m.push(...yolAgi(r, 2.4, P.tas));
+      m.push(...yolAgi(r, 2.4, P.tas, false, yollar));
       m.push(...arkaSur(P.tas, 7, true, r));
       for (const k of ['malikane', 'karargah', 'demirhane']) {
         const [x, y] = nokta(k);
@@ -551,7 +559,7 @@ export function yerlesimModeli(kademe: Kademe, binalar: YerlesimBinasi[] = []): 
     }
     case 'metropol': {
       m.push(...kasabaDosemesi(isikla(P.acikTas, 0.97)));
-      m.push(...yolAgi(r, 3, isikla(P.acikTas, 0.9)));
+      m.push(...yolAgi(r, 3, isikla(P.acikTas, 0.9), false, yollar));
       // Büyük meydan + çeşme
       m.push(...katmanla(prizma(cember(g[0], g[1], 7.5, 16), 0.04, 0.06, P.acikTas), -0.8));
       m.push(...prizma(cember(g[0], g[1], 2.6, 12), 0.1, 0.8, P.tas));
@@ -583,6 +591,9 @@ export function yerlesimModeli(kademe: Kademe, binalar: YerlesimBinasi[] = []): 
   // mera, değirmenler, orman (`cevre.ts`).
   m.push(...tarlalar(), ...talimAlani(), ...cevre(kademe, r));
   for (const b of binalar) m.push(...sahneBinasi(b));
+  // Kasabanın insanları ve ek evleri (`kalabalik.ts`): yapılardan sonra,
+  // boş yer onların ayağına göre bulunuyor.
+  m.push(...kalabalik(m, kalabalikAyari(kademe, g, yollar, binalar), kademe));
   // En son: çimen görünen her yere ot tutamları (yalnız GPU).
   m.push(...otlar(m, kademe, YERLESIM_KUTUSU));
   return m;
@@ -644,7 +655,7 @@ export function yerlesimAnahtariCoz(ad: string): { kademe: Kademe; binalar: Yerl
  * çimen plakanın yeri zaten çimen, toprak ya da taş olan (arsa, pazar)
  * zemine yapışık bir avlu olarak kalıyor.
  */
-function sahneBinasi(b: YerlesimBinasi): Model {
+export function sahneBinasi(b: YerlesimBinasi): Model {
   const [vx, vy, vw, vh] = BINA_KUTUSU;
   const [kx, ky, kw, kh] = KASABA_KUTUSU;
   // Sayfadaki kare kutu (ekran birimi): tabanın ortası (x, y)'de.
@@ -654,7 +665,94 @@ function sahneBinasi(b: YerlesimBinasi): Model {
   // Çizim kutuya sığdırılıyor ve ortalanıyor (SVG `meet`).
   const s = W / Math.max(vw, vh);
   const [tx, ty] = geri(px - vx * s - (vw * s) / 2, py - W / 2 - vy * s - (vh * s) / 2);
-  return tasi(olcekle(plakasiz(binaModeli(b.ad)), s), [tx, ty, 0]);
+  return tasi(olcekle(asamaBuyut(plakasiz(binaModeli(b.ad)), b.ad), s), [tx, ty, 0]);
+}
+
+const EK_EV: Record<Kademe, number> = {
+  kamp: 0,
+  koy: 4,
+  kasaba: 6,
+  sehir: 7,
+  kale: 7,
+  metropol: 8,
+};
+/** Yolda gidip gelen köylüler (canlı parça: atlası rotası kadar, az tutuluyor). */
+export const YURUYEN: Record<Kademe, number> = {
+  kamp: 1,
+  koy: 3,
+  kasaba: 3,
+  sehir: 4,
+  kale: 4,
+  metropol: 4,
+};
+
+/** Bir yuvanın plakasının ortası (dünya): yapı ve kilitli arsanın evi buraya oturuyor. */
+export function yerlesimMerkezi(b: { x: number; y: number }, olcek = 1): [number, number] {
+  const [kx, ky, kw, kh] = KASABA_KUTUSU;
+  const [vx, vy, vw, vh] = BINA_KUTUSU;
+  const W = (BINA_TABAN_BOY / 100) * olcek * kw;
+  const s = W / Math.max(vw, vh);
+  const px = kx + (kw * b.x) / 100;
+  const py = ky + (kh * b.y) / 100;
+  const [tx, ty] = geri(px - vx * s - (vw * s) / 2, py - W / 2 - vy * s - (vh * s) / 2);
+  return [tx + 8 * s, ty + 8 * s];
+}
+
+/** Kalabalığın ayarı: kasabanın ve arsaların ekran kutuları, yollar, göbek. */
+function kalabalikAyari(
+  kademe: Kademe,
+  gobekNoktasi: [number, number],
+  yollar: [number, number][][],
+  binalar: YerlesimBinasi[],
+): KalabalikAyari {
+  const [kx, ky, kw, kh] = KASABA_KUTUSU;
+  // Kilitli arsa: yuvası sahnedeki yapılardan hiçbirinin yeri değil.
+  const [, , vw, vh] = BINA_KUTUSU;
+  const plaka = (16 * (BINA_TABAN_BOY / 100) * kw) / Math.max(vw, vh);
+  const kilitli = Object.values(BINA_YUVALARI)
+    .filter(([x, y]) => !binalar.some((b) => Math.abs(b.x - x) < 0.5 && Math.abs(b.y - y) < 0.5))
+    .map(([x, y]): [number, number, number] => [...yerlesimMerkezi({ x, y }), plaka]);
+  // Arsanın kutusu: en iri yapının (ölçek 1,25) tabanı, önünde kapı payı.
+  const W = (BINA_TABAN_BOY / 100) * 1.25 * kw;
+  const arsalar = Object.values(BINA_YUVALARI).map(([x, y]): [number, number, number, number] => {
+    const px = kx + (kw * x) / 100;
+    const py = ky + (kh * y) / 100;
+    return [px - W / 2, py - W * 0.6, px + W / 2, py + 2];
+  });
+  return {
+    geri,
+    kasaba: [kx, ky, kx + kw, ky + kh],
+    arsalar,
+    kilitli,
+    kamp: kademe === 'kamp',
+    yollar,
+    gobek: gobekNoktasi,
+    sohbetUzak: kademe === 'kamp' ? 2.4 : 3.6,
+    ev: EK_EV[kademe],
+    yuruyen: YURUYEN[kademe],
+    evAyari: (i) => evAyari(kademe, i + 3),
+  };
+}
+
+/**
+ * Sahnede aşamaya göre büyütme: birinci aşama yapı plakasının içinde alçak
+ * bir kulübeydi ve yerleşkede "köy" değil dağınık barakalar okunuyordu.
+ * Yapı (avlu değil) plakanın ortası etrafında büyüyor: birinci aşama ×1,3,
+ * üçüncü ×1,15, beşinci olduğu gibi. Yükseltmenin büyüme hissi duruyor
+ * (beşinci aşama hâlâ en büyüğü); liste simgesi (`binaModeli`) değişmiyor.
+ */
+export const ASAMA_BUYUME: [RegExp, number][] = [
+  [/_1$/, 1.3],
+  [/_3$/, 1.15],
+  [/^arsa$/, 1.15],
+];
+function asamaBuyut(m: Model, ad: string): Model {
+  const k = ASAMA_BUYUME.find(([d]) => d.test(ad))?.[1] ?? 1;
+  if (k === 1) return m;
+  // Plakanın ortası (16×16) etrafında; avlu (yere yapışık, katman -1.1) yerinde.
+  const avlu = m.filter((y) => y.katman === -1.1);
+  const yapi = m.filter((y) => y.katman !== -1.1);
+  return [...avlu, ...tasi(olcekle(tasi(yapi, [-8, -8, 0]), k), [8, 8, 0])];
 }
 
 /**
