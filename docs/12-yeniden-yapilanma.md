@@ -444,7 +444,10 @@ bölgesindeki canlı parçaları da kendi çözünürlüğünde oynatıyor. Ard�
 **"yakınlığı Şehir'e dönünce de korusun"** — bir yapıya girip dönen
 oyuncu bıraktığı yerde ve yakınlıkta, yama da hemen keskin. **"Kalıcı
 olarak da saklasın"**: görünüm cihazda; uygulamayı kapatıp açan da aynı
-yerde.
+yerde. **"Keskin görüntü de kalıcı olsun"**: yerleşkenin canlı resmi ve
+son keskin yaması da cihazda (IndexedDB, çizim koduyla sürümlü); yeniden
+açılışta saniyeler süren çizim yerine bir saniyede (docs/24 "Kalıcı
+çizim").
 
 ### 6.1 Diyar haritası — gruplar yazı ızgarasından çıktı
 

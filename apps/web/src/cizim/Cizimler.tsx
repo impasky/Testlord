@@ -86,6 +86,7 @@ export function YerlesimCizimi({
       onceDurgun
       sicak={1}
       yama={gorunen}
+      kalici
     />
   );
 }

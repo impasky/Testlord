@@ -22,6 +22,7 @@ import {
   type IsciCevabi,
   type IsciIstegi,
 } from './glCizici';
+import { kaliciOku, kaliciYaz } from './kalici';
 import { tarifModeli } from './tarif';
 import type { Kamera, Model, V3 } from './uc';
 
@@ -246,26 +247,42 @@ export function glVarMi(): boolean {
   return donanim;
 }
 
+/**
+ * Çizimin sonucu (bloblar), url'sine göre: kalıcı depoya sonradan yazılabilsin
+ * (`glKaydet`). Bloblar zaten url'leriyle bellekte; burada yalnız başvuru.
+ */
+const SONUCLAR = new Map<string, CizimSonucu>();
+
+/** Sonucun resmine ve katmanlarına nesne url'si verir. */
+function urlle(s: CizimSonucu): string {
+  const url = URL.createObjectURL(s.resim);
+  SONUCLAR.set(url, s);
+  if (s.su || s.isik || s.cimen || s.bayrak || s.dumanlar?.length) {
+    const { resim, ...bayrak } = s.bayrak ?? {};
+    KATMANLAR.set(url, {
+      su: s.su && URL.createObjectURL(s.su),
+      isik: s.isik && URL.createObjectURL(s.isik),
+      cimen: s.cimen && URL.createObjectURL(s.cimen),
+      bayrak: resim && {
+        ...(bayrak as Omit<BayrakAtlasi, 'resim'>),
+        url: URL.createObjectURL(resim),
+      },
+      dumanlar: s.dumanlar,
+    });
+  }
+  return url;
+}
+
 /** Bir işi çizip resmin (ve katmanlarının) nesne url'sini veriyor. */
-async function calistir(istek: () => GlIstek): Promise<string | null> {
+async function calistir(
+  istek: () => GlIstek,
+  sonra?: (s: CizimSonucu) => void,
+): Promise<string | null> {
   try {
     const s = await ciz(istek());
     if (!s) return null;
-    const url = URL.createObjectURL(s.resim);
-    if (s.su || s.isik || s.cimen || s.bayrak || s.dumanlar?.length) {
-      const { resim, ...bayrak } = s.bayrak ?? {};
-      KATMANLAR.set(url, {
-        su: s.su && URL.createObjectURL(s.su),
-        isik: s.isik && URL.createObjectURL(s.isik),
-        cimen: s.cimen && URL.createObjectURL(s.cimen),
-        bayrak: resim && {
-          ...(bayrak as Omit<BayrakAtlasi, 'resim'>),
-          url: URL.createObjectURL(resim),
-        },
-        dumanlar: s.dumanlar,
-      });
-    }
-    return url;
+    sonra?.(s);
+    return urlle(s);
   } catch {
     return null;
   }
@@ -286,6 +303,8 @@ const sonrakiler: {
   istek: () => GlIstek;
   ilgi: (() => boolean)[];
   coz: (url: string | null) => void;
+  /** Kalıcı işin sonucu cihaza (bkz. `glCiz` `kalici`). */
+  yaz?: (s: CizimSonucu) => void;
 }[] = [];
 let sonrakiCalisiyor = false;
 /**
@@ -313,7 +332,7 @@ function sonrakiniCalistir() {
       continue;
     }
     sonrakiCalisiyor = true;
-    void sirayaKoy(() => calistir(s.istek)).then((url) => {
+    void sirayaKoy(() => calistir(s.istek, s.yaz)).then((url) => {
       sonrakiCalisiyor = false;
       s.coz(url);
       sonrakiniBaslat();
@@ -337,7 +356,15 @@ const ILGI = new Map<string, (() => boolean)[]>();
 export function glCiz(
   anahtar: string,
   istek: () => GlIstek,
-  secenek: { sonra?: boolean; istenmiyor?: () => boolean } = {},
+  secenek: {
+    sonra?: boolean;
+    istenmiyor?: () => boolean;
+    /**
+     * Kalıcı: önce cihazdaki depoya bakılıyor (`kalici.ts`, yuva anahtarın
+     * kendisi), yoksa çizilip yazılıyor. Yalnız yerleşkenin ana resmi.
+     */
+    kalici?: boolean;
+  } = {},
 ): Promise<string | null> {
   // Aynı işi bekleyen her çağıran bir ilgi bırakıyor; iş ancak hepsi
   // vazgeçtiyse atlanıyor (yeniden isteyen eskisinin vazgeçişine takılmasın).
@@ -349,24 +376,34 @@ export function glCiz(
   }
   const ilgi = [ilgisi];
   ILGI.set(anahtar, ilgi);
-  let is: Promise<string | null>;
-  if (secenek.sonra) {
-    is = new Promise((coz) => sonrakiler.push({ anahtar, istek, ilgi, coz }));
-    sonrakiniBaslat();
-  } else {
+  // Kalıcıysa çizilen sonuç cihaza da yazılıyor.
+  const yaz = secenek.kalici ? (s: CizimSonucu) => kaliciYaz(anahtar, anahtar, s) : undefined;
+  const sirala = (): Promise<string | null> => {
+    if (secenek.sonra) {
+      const p = new Promise<string | null>((coz) =>
+        sonrakiler.push({ anahtar, istek, ilgi, coz, yaz }),
+      );
+      sonrakiniBaslat();
+      return p;
+    }
     oncelikli++;
     // Sırası gelince isteyen kalmadıysa (yakınlık yaması: oyuncu çoktan
     // başka yere kaydı) çizilmiyor.
-    is = sirayaKoy(() => {
-      if (!ilgi.every((istenmiyor) => istenmiyor())) return calistir(istek);
+    const p = sirayaKoy(() => {
+      if (!ilgi.every((istenmiyor) => istenmiyor())) return calistir(istek, yaz);
       ONBELLEK.delete(anahtar);
       return Promise.resolve(null);
     });
-    void is.then(() => {
+    void p.then(() => {
       oncelikli--;
       sonrakiniBaslat();
     });
-  }
+    return p;
+  };
+  // Kalıcı: cihazda varsa sıraya hiç girmiyor (canlı resim de beklemiyor).
+  const is = secenek.kalici
+    ? kaliciOku(anahtar).then((k) => (k && k.anahtar === anahtar ? urlle(k.sonuc) : sirala()))
+    : sirala();
   void is.then(() => {
     if (ILGI.get(anahtar) === ilgi) ILGI.delete(anahtar);
   });
@@ -386,11 +423,39 @@ export function glBirak(anahtar: string): void {
   void is.then((url) => {
     if (!url) return;
     URL.revokeObjectURL(url);
+    SONUCLAR.delete(url);
     const k = KATMANLAR.get(url);
     if (!k) return;
     KATMANLAR.delete(url);
     for (const u of [k.su, k.isik, k.cimen, k.bayrak?.url]) if (u) URL.revokeObjectURL(u);
   });
+}
+
+/**
+ * Çizilmiş bir resmi (ve katmanlarını) cihazdaki yuvaya yazar (yakınlık
+ * yaması: sahne kapanınca ya da uygulama arka plana geçince). `ek` geri
+ * yüklerken dönüyor.
+ */
+export function glKaydet(yuva: string, anahtar: string, url: string, ek?: unknown): void {
+  const s = SONUCLAR.get(url);
+  if (s) kaliciYaz(yuva, anahtar, s, ek);
+}
+
+/**
+ * Yuvadaki resmi geri yükler: url'si verilip önbelleğe kendi anahtarıyla
+ * giriyor (aynı çizim yeniden istenirse ondan; `glBirak` bırakabiliyor).
+ */
+export async function glKalici(
+  yuva: string,
+): Promise<{ anahtar: string; url: string; ek: unknown } | null> {
+  const k = await kaliciOku(yuva);
+  if (!k) return null;
+  const var_ = ONBELLEK.get(k.anahtar);
+  const url = var_ ? await var_ : null;
+  if (url) return { anahtar: k.anahtar, url, ek: k.ek };
+  const yeni = urlle(k.sonuc);
+  ONBELLEK.set(k.anahtar, Promise.resolve(yeni));
+  return { anahtar: k.anahtar, url: yeni, ek: k.ek };
 }
 
 /**

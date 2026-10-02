@@ -24,6 +24,8 @@ import {
   atlasDuzeni,
   glBirak,
   glCiz,
+  glKalici,
+  glKaydet,
   glKatmanlari,
   glOnYukle,
   glVarMi,
@@ -132,6 +134,7 @@ function useGpuResmi(
   sicak: number | undefined,
   hareket: boolean,
   onceDurgun: boolean,
+  kalici: boolean,
   ref: React.RefObject<SVGSVGElement | null>,
   basarisiz: () => void,
 ): string | null {
@@ -195,7 +198,7 @@ function useGpuResmi(
         return RESIMLER.get(t)!.url;
       };
       if (!iki) {
-        glCiz(`${taban}|${en}x${boy}`, istek(hareket)).then((url) => {
+        glCiz(`${taban}|${en}x${boy}`, istek(hareket), { kalici }).then((url) => {
           if (!url) {
             if (!iptal) guncel.current.basarisiz();
             return;
@@ -210,7 +213,7 @@ function useGpuResmi(
       const durgun = RESIMLER.get(durgunTaban);
       if (durgun && durgun.en >= en) setResim(durgun.url);
       else
-        glCiz(`${durgunTaban}|${en}x${boy}`, istek(false)).then((url) => {
+        glCiz(`${durgunTaban}|${en}x${boy}`, istek(false), { kalici }).then((url) => {
           if (!url) {
             if (!iptal) guncel.current.basarisiz();
             return;
@@ -221,6 +224,7 @@ function useGpuResmi(
       glCiz(`${taban}|${en}x${boy}`, istek(true), {
         sonra: true,
         istenmiyor: () => iptal,
+        kalici,
       }).then(async (url) => {
         // Canlı gelmediyse (vazgeçildi ya da çizilemedi) durağan kalıyor.
         if (!url) return;
@@ -239,7 +243,7 @@ function useGpuResmi(
       ro.disconnect();
     };
     // `v` içerik olarak `taban`da; dizi kimliği her çizimde değişiyor.
-  }, [etkin, taban, durgunTaban, iki, tarif, kirp, tilt, sicak, hareket, ref]);
+  }, [etkin, taban, durgunTaban, iki, tarif, kirp, tilt, sicak, hareket, kalici, ref]);
 
   return etkin ? resim : null;
 }
@@ -287,6 +291,39 @@ let SAKLI: { yama: Yama; oturum: YamaOturumu | null } | null = null;
 const sakliMi = (anahtar: string) =>
   SAKLI !== null && SAKLI.yama.is.startsWith(anahtar + '|yama|') ? SAKLI : null;
 
+/** Biten yamanın oturumu (parçalı aşaması gelmediyse yok: yeni oturum ister). */
+function bitmisOturum(y: Yama): YamaOturumu | null {
+  if (y.hareketli && y.katman === undefined) return null;
+  return {
+    iptal: false,
+    anahtar: y.is.slice(0, y.is.indexOf('|yama|')),
+    kutu: y.kutu,
+    yogunluk: y.yogunluk,
+    hareketli: y.hareketli,
+    isler: new Set([y.is]),
+  };
+}
+
+/** Kalıcı yamanın cihazdaki yuvası: sahne başına bir (son yama). */
+const yamaYuvasi = (anahtar: string) => 'yama|' + anahtar;
+/** Son yazılan yama, yuvaya göre: aynısı yeniden yazılmasın. */
+const KAYDEDILEN = new Map<string, string>();
+
+/** Kalıcı yamanın eki: hangi bölge, hangi yoğunlukta, nasıl. */
+interface YamaEki {
+  kutu: Kutu;
+  yogunluk: number;
+  hareketli: boolean;
+}
+/** Cihazdan okunan eki denetler (eski biçimli kayıt sessizce yok). */
+function yamaEki(ek: unknown): YamaEki | null {
+  const e = ek as Partial<YamaEki> | null;
+  if (!e || !Array.isArray(e.kutu) || e.kutu.length !== 4) return null;
+  if (!e.kutu.every((x) => typeof x === 'number' && Number.isFinite(x))) return null;
+  if (typeof e.yogunluk !== 'number' || typeof e.hareketli !== 'boolean') return null;
+  return { kutu: e.kutu as Kutu, yogunluk: e.yogunluk, hareketli: e.hareketli };
+}
+
 const icinde = (a: Kutu, b: Kutu) =>
   b[0] >= a[0] - 1e-6 &&
   b[1] >= a[1] - 1e-6 &&
@@ -317,18 +354,27 @@ function useYama(
   gorunen: Kutu | undefined,
   tabanEn: number | undefined,
   hareketli: boolean,
+  /** Canlı ana resim bekleniyor (durağanı gösteriliyor). */
+  canliBekleniyor: boolean,
   tilt: number | undefined,
   sicak: number | undefined,
+  kalici: boolean,
   ref: React.RefObject<SVGSVGElement | null>,
 ): Yama | null {
   // Saklı yama bu sahnenin ise oradan başla (okuma saf; sahiplik etkide).
   const [yama, setYama] = useState<Yama | null>(() => sakliMi(anahtar)?.yama ?? null);
-  const guncel = useRef({ uret, kamera, yama });
-  guncel.current = { uret, kamera, yama };
+  const guncel = useRef({ uret, kamera, yama, anahtar, kalici });
+  guncel.current = { uret, kamera, yama, anahtar, kalici };
   const oturum = useRef<YamaOturumu | null>(sakliMi(anahtar)?.oturum ?? null);
   /** Sahne kapandı: yolda olan yama gelince de bırakılıyor. */
   const kapandi = useRef(false);
   const gorunenAnahtar = gorunen?.map((x) => x.toFixed(2)).join(',') ?? '';
+  /**
+   * Cihazdaki son yamaya bakıldı mı (kalıcıysa). Bakılmadan yeni oturum
+   * açılmıyor: açılışta görünen bölge cihazdan okumadan önce bildirilirse
+   * yeni bir yama çizilmeye başlıyor, saklı olan boşa gidiyordu.
+   */
+  const [bakildi, setBakildi] = useState(() => !kalici || sakliMi(anahtar) !== null);
 
   useEffect(() => {
     const el = ref.current;
@@ -336,8 +382,12 @@ function useYama(
       if (oturum.current) oturum.current.iptal = true;
       oturum.current = null;
     };
-    // Görünen bölge henüz bildirilmediyse (açılış) eldeki yama kalıyor.
-    if (!etkin || !el || !gorunen || !tabanEn) return;
+    // Görünen bölge henüz bildirilmediyse (açılış) eldeki yama kalıyor;
+    // cihazdaki yamaya da bakılmadıysa bekleniyor.
+    if (!etkin || !el || !gorunen || !tabanEn || !bakildi) return;
+    // Canlı ana resim gelmek üzere ve eldeki yama canlı: onu bekle (durağan
+    // resme göre yeni bir yama çizilip hemen atılmasın).
+    if (canliBekleniyor && guncel.current.yama?.hareketli) return;
     const [vx, vy, vw, vh] = v;
     const r = el.getBoundingClientRect();
     if (r.width < 2 || vw <= 0) return;
@@ -444,7 +494,37 @@ function useYama(
     })();
     // `v` ve `gorunen` içerik olarak anahtarlarda. Oturum etkiyle değil,
     // yerine yenisi gelince ya da sahne kapanınca bitiyor.
-  }, [etkin, anahtar, tarif, gorunenAnahtar, tabanEn, hareketli, tilt, sicak, ref]);
+  }, [etkin, anahtar, tarif, gorunenAnahtar, tabanEn, hareketli, tilt, sicak, bakildi, ref]);
+
+  // Kalıcı: uygulama yeniden açıldıysa son yama cihazdan (bellekte saklı
+  // yoksa). Görünen bölge bildirilmeden, eldeki oturum ve yama yokken
+  // gelirse gösteriliyor; değilse bırakılıyor.
+  useEffect(() => {
+    if (!etkin || !kalici || sakliMi(anahtar) || guncel.current.yama) {
+      setBakildi(true);
+      return;
+    }
+    void glKalici(yamaYuvasi(anahtar)).then(async (r) => {
+      const ek = r && yamaEki(r.ek);
+      if (!r) return setBakildi(true);
+      if (ek) await glOnYukle(r.url);
+      setBakildi(true);
+      const kullan =
+        ek &&
+        !kapandi.current &&
+        !oturum.current &&
+        !guncel.current.yama &&
+        r.anahtar.startsWith(guncel.current.anahtar + '|yama|');
+      if (!kullan) {
+        if (!oturum.current?.isler.has(r.anahtar) && guncel.current.yama?.is !== r.anahtar)
+          glBirak(r.anahtar);
+        return;
+      }
+      const y: Yama = { is: r.anahtar, url: r.url, ...ek, katman: glKatmanlari(r.url) };
+      oturum.current = bitmisOturum(y);
+      setYama(y);
+    });
+  }, [etkin, kalici, anahtar]);
 
   // Yerine yenisi geçen yama bırakılıyor; sahne kapanınca sonuncusu da.
   const gosterilen = useRef<Yama | null>(null);
@@ -457,7 +537,27 @@ function useYama(
     kapandi.current = false;
     // Saklı yama yeniden gösteriliyor: artık bu sahnenin.
     if (SAKLI && SAKLI.yama.is === gosterilen.current?.is) SAKLI = null;
+    // Kalıcı: gösterilen yama cihaza, uygulama arka plana geçince (telefonda
+    // kapatılmadan önceki son an) ve sahne kapanınca.
+    const kaydet = () => {
+      const y = gosterilen.current;
+      const { anahtar: a, kalici: k } = guncel.current;
+      if (!k || !y || !y.is.startsWith(a + '|yama|')) return;
+      const yuva = yamaYuvasi(a);
+      if (KAYDEDILEN.get(yuva) === y.is) return;
+      KAYDEDILEN.set(yuva, y.is);
+      const ek: YamaEki = { kutu: y.kutu, yogunluk: y.yogunluk, hareketli: y.hareketli };
+      glKaydet(yuva, y.is, y.url, ek);
+    };
+    const gizlenince = () => {
+      if (document.visibilityState === 'hidden') kaydet();
+    };
+    document.addEventListener('visibilitychange', gizlenince);
+    window.addEventListener('pagehide', kaydet);
     return () => {
+      document.removeEventListener('visibilitychange', gizlenince);
+      window.removeEventListener('pagehide', kaydet);
+      kaydet();
       kapandi.current = true;
       const o = oturum.current;
       oturum.current = null;
@@ -471,20 +571,7 @@ function useYama(
       // bölgesiyle; parçalı aşaması gelmeden kapandıysa dönüşte yeni oturum
       // (durağan aşama önbellekten hemen, sonra parçalı).
       if (SAKLI && SAKLI.yama.is !== y.is) glBirak(SAKLI.yama.is);
-      const bitti = !y.hareketli || y.katman !== undefined;
-      SAKLI = {
-        yama: y,
-        oturum: bitti
-          ? {
-              iptal: false,
-              anahtar: y.is.slice(0, y.is.indexOf('|yama|')),
-              kutu: y.kutu,
-              yogunluk: y.yogunluk,
-              hareketli: y.hareketli,
-              isler: new Set([y.is]),
-            }
-          : null,
-      };
+      SAKLI = { yama: y, oturum: bitmisOturum(y) };
       if (o) o.iptal = true;
     };
   }, []);
@@ -926,6 +1013,7 @@ export const Sahne = memo(function Sahne({
   hareket = false,
   tarif = false,
   yama,
+  kalici = false,
 }: {
   anahtar: string;
   uret: () => Model;
@@ -992,6 +1080,12 @@ export const Sahne = memo(function Sahne({
    * (`useYama`). Hareket katmanları yine en üstte.
    */
   yama?: [number, number, number, number];
+  /**
+   * Kalıcı (yalnız GPU): çizilen resim ve katmanları cihazda saklanıyor
+   * (`kalici.ts`), uygulama yeniden açılınca çizilmeden geliyor; son
+   * yakınlık yaması da. Yerleşke: telefonda saniyelerce süren canlı resmi.
+   */
+  kalici?: boolean;
 }) {
   const ref = useRef<SVGSVGElement>(null);
   const [gpuYok, setGpuYok] = useState(false);
@@ -1033,6 +1127,7 @@ export const Sahne = memo(function Sahne({
     sicak,
     canli,
     onceDurgun,
+    kalici,
     ref,
     () => setGpuYok(true),
   );
@@ -1041,7 +1136,7 @@ export const Sahne = memo(function Sahne({
   // içinde): yama da öyle olmalı.
   const parcalarKatmanda = canli && katman?.bayrak !== undefined;
   const yamaResmi = useYama(
-    gpu && yama !== undefined,
+    gpu && (yama !== undefined || kalici),
     anahtar,
     cokgensiz,
     uret,
@@ -1050,8 +1145,10 @@ export const Sahne = memo(function Sahne({
     yama,
     resimEni(resim),
     parcalarKatmanda,
+    canli && katman === undefined,
     tilt,
     sicak,
+    kalici,
     ref,
   );
   const yamaUygun = yamaResmi && yamaResmi.hareketli === parcalarKatmanda ? yamaResmi : null;

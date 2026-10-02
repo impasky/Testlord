@@ -519,7 +519,24 @@ kaydırıyor.
   cihazda da saklanıyor (`lordlar_sehir_gorunum`, haritanın merceği gibi):
   uygulama kapanıp açılınca da aynı yerde. Bozuk ya da sınır dışı değer
   yok sayılıyor (`gorunumOku`); depo kapalıysa (gizli sekme) sekme açık
-  kaldıkça. Sahne kapanınca son yama bırakılmıyor, tek bir yuvada
+  kaldıkça.
+- Kalıcı çizim (`kalici.ts`, `Sahne.kalici`; yalnız yerleşke): oyuncu
+  "keskin görüntü de kalıcı olsun" dedi. Yerleşkenin durağan ve canlı
+  resmi (su, ışık, çimen katmanı, canlı parçaların atlası, duman
+  kaynaklarıyla) çizilince cihazda, IndexedDB'de saklanıyor; uygulama
+  açılınca sıraya hiç girmeden oradan geliyor (`glCiz` `kalici`). Son yama
+  sahnenin tek yuvasında (`glKaydet`/`glKalici`): uygulama arka plana
+  geçince ve Şehir'den çıkılınca yazılıyor, açılışta görünen bölge
+  bildirilmeden okunuyor (okunmadan yeni yama çizilmiyor; canlı resim
+  beklenirken eldeki canlı yama korunuyor). Ölçüldü (yazılım GPU'su):
+  yeniden açılışta ana resim 0,6 sn, canlı katman ve keskin yama 1 sn
+  (ilk açılışta 24 + 14 sn). Anahtar çizimin kendisi (sahne, yapıların
+  seviyesi, boy); sürüm çizim kodunun ve verinin içerik özeti
+  (`vite-cizim-surumu.mjs`: `src/cizim`, `data`, `packages/shared`):
+  biri değişince eski kayıt okunmuyor, siliniyor. En çok altı kayıt, en
+  uzun süredir kullanılmayan atılıyor. Service worker'ın "önbellek yok"
+  kuralıyla çelişmiyor: saklanan şey oyunun verisi değil, verinin
+  çizilmiş hâli; anahtarı verinin kendisi. Sahne kapanınca son yama bırakılmıyor, tek bir yuvada
   bekliyor (`SAKLI`): dönüşte yeniden çizilmeden hemen keskin; parçalı
   aşaması gelmeden kapandıysa durağanı önbellekten, parçalısı yeniden.
 
@@ -561,6 +578,7 @@ her köşe yüzlerce kenarı değil, yalnız kendi şeridini tarıyor.
 | `yerlesim.ts`                 | Şehir sayfasının tam ekran yerleşkesi, altı kademe (kamp → metropol): kasaba ve yapıları (sahnenin içinde), tarlalar, talim alanı                                              |
 | `cayir.ts`                    | Yerleşkenin zemini: köşe renkli çayır, ot tutamları, kır çiçekleri, yol kenarı ve tekerlek izi (yalnız GPU)                                                                    |
 | `kalabalik.ts`                | Kasabanın insanları ve evleri: kilitli arsada köy evi (kampta çadır), ek evler, kuyu başında sohbet, yolda gidip gelen köylüler                                                |
+| `kalici.ts`                   | Kalıcı çizim deposu (IndexedDB): yerleşkenin resimleri ve son yaması cihazda, çizim sürümüyle                                                                                  |
 | `cevre.ts`                    | Yerleşkenin çevresi: dere ve köprü, su ve yel değirmeni, gölet, köy evleri, mera, meyve bahçesi, talim kampı, patikalar, serpinti, orman                                       |
 | `kir.ts`                      | Kır, maden, kale ve saray parçaları: ev, ambar, değirmen, köprü, maden ağzı, sur, kule, teras, köşk                                                                            |
 | `bolgeler.ts`                 | Altı bölge türü × üç aşama; aynı türün aşamaları aynı araziyi paylaşıyor                                                                                                       |
