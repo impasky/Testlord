@@ -63,6 +63,7 @@ import type { MarchDto, RegionDto } from '../../api/client';
 import { IKONLAR } from '../ikon-verisi';
 import { IkonSaldiri } from '../Ikonlar';
 import { YakinlikDugmesi } from '../YakinlikDugmesi';
+import { haritaGorunumuYaz, sonHaritaGorunumu } from './haritaGorunumu';
 import { useZeminYamasi, type ZeminYamasi } from './zeminYamasi';
 import { KARA_YOLU } from './kara';
 import {
@@ -300,12 +301,35 @@ export function DunyaHaritasi({
   useEffect(() => {
     if (acilisYapildi.current || regions.length === 0 || W === 0) return;
     acilisYapildi.current = true;
+    // Oyuncu: "haritanın yakınlığını ve konumunu da hatırlasın." Saklı
+    // görünüm varsa orada (`haritaGorunumu.ts`); ilk açılışta toprağında.
+    const sakli = sonHaritaGorunumu(EN_COK);
+    if (sakli) {
+      setGorunum(ortala(sakli.merkez[0], sakli.merkez[1], sakli.k));
+      return;
+    }
     const ev = bolgeHaritasi.get(homeBolgeId) ?? regions[0]!;
     const hedef = benimKumem?.merkez ?? { x: ev.x, y: ev.y };
     setGorunum(ortala(hedef.x, hedef.y, ACILIS));
     // Yalnız BİR kez: oyuncu haritayı kaydırdıktan sonra her tazelemede
     // onu eve geri fırlatmak, elinden haritayı almak olurdu.
   }, [regions.length, W]);
+
+  // Görünüm durunca saklanıyor (açılıştan önceki ilk değer değil).
+  useEffect(() => {
+    if (!acilisYapildi.current || W === 0 || gorunurBoy <= 0) return;
+    const zaman = setTimeout(() => {
+      const D = W * gorunum.k;
+      haritaGorunumuYaz({
+        k: gorunum.k,
+        merkez: [
+          Math.min(100, Math.max(0, ((boyut.en / 2 - gorunum.tx) / D) * 100)),
+          Math.min(100, Math.max(0, ((gorunurBoy / 2 - gorunum.ty) / D) * 100)),
+        ],
+      });
+    }, 300);
+    return () => clearTimeout(zaman);
+  }, [gorunum, W, boyut.en, gorunurBoy]);
 
   /*
    * SEÇİLEN BÖLGE GÖRÜNEN ALANA getiriliyor — omurga, ittifak hedefi ya

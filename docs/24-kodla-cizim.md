@@ -565,8 +565,14 @@ kalıcı (oyuncu "haritayı da kalıcı sakla" dedi; `glCiz` `kalici`,
 (yazılım GPU'su): ilk açılışta 10,4 sn, yeniden açılışta 0,2 sn; kayıt
 5,2 MB. Ayarları çizim kodunda (`dunya.ts`) olduğu için sürüm onları da
 kapsıyor; dünya modelinin okuduğu kıyı yolu (`components/harita/kara.ts`)
-da sürümde. Son yakınlık yaması kalıcı değil: harita her açılışta
-oyuncunun toprağında ×1,8'de açılıyor, orada yama gerekmiyor.
+da sürümde. Haritanın yakınlığı ve konumu da hatırlanıyor (oyuncu
+"haritanın yakınlığını ve konumunu da hatırlasın" dedi;
+`components/harita/haritaGorunumu.ts`): görünen alanın ortası ve yakınlık
+hareket durunca cihaza (`lordlar_harita_gorunum`), açılışta oradan; ilk
+açılışta yine oyuncunun toprağında ×1,8. Bu yüzden son yakınlık yaması da
+bekliyor: başka sekmeye geçince bellekte (dönüşte 0,1 sn), uygulama arka
+plana geçince ve harita kapanınca cihazdaki yuvada (yeniden açılışta zemin
+0,3 sn, yama 0,3 sn); cihazdakine bakılmadan yeni yama çizilmiyor.
 Kıyı ve kara sorguları kenar şeritleri ve hücreleriyle hızlandırıldı:
 her köşe yüzlerce kenarı değil, yalnız kendi şeridini tarıyor.
 Yakınlık yaması (`components/harita/zeminYamasi.ts`; oyuncu "haritaya da

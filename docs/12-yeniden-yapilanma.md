@@ -450,7 +450,10 @@ açılışta saniyeler süren çizim yerine bir saniyede (docs/24 "Kalıcı
 çizim"). **"Haritaya da yakınlık yaması ekle"**: dünya haritası yakında
 görünen bölgeyi ayrıca, keskin çiziyor (docs/24 "Dünya zemini").
 **"Haritayı da kalıcı sakla"**: dünya zemini cihazda; Dünya sekmesi
-açılışta yeniden çizilmeden geliyor (10,4 sn yerine 0,2 sn).
+açılışta yeniden çizilmeden geliyor (10,4 sn yerine 0,2 sn). **"Haritanın
+yakınlığını ve konumunu da hatırlasın"**: harita bırakıldığı yerde ve
+yakınlıkta açılıyor (ilk açılışta yine toprağın üstünde), son keskin yama
+da hemen yerinde.
 
 ### 6.1 Diyar haritası — gruplar yazı ızgarasından çıktı
 

@@ -587,7 +587,18 @@ if (yeniToken) {
    * görünmesi şart koşuluyor.
    */
   await ekrana(page, 'harita', 900);
-  for (let i = 0; i < 2; i++) {
+  // Yakın kademenin içine (×4; ×1,8'lik açılıştan eskisi gibi iki adım):
+  // harita artık bırakıldığı yakınlıkta açılıyor (`haritaGorunumu.ts`),
+  // sabit iki adım her zaman yetmiyor.
+  const olcek = () =>
+    page.evaluate(() =>
+      Number(
+        /scale\(([\d.]+)\)/.exec(
+          document.querySelector('[data-harita-tuval]')?.style.transform ?? '',
+        )?.[1] ?? 1,
+      ),
+    );
+  for (let i = 0; i < 6 && (await olcek()) < 4; i++) {
     await page.getByRole('button', { name: 'Yakınlaştır' }).click();
     await page.waitForTimeout(450);
   }

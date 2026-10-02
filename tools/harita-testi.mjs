@@ -349,6 +349,43 @@ kontrol(
   ortaSimge > 0 && Math.abs(yakinSimge - ortaSimge) < 4,
   `${ortaSimge.toFixed(0)}px -> ${yakinSimge.toFixed(0)}px`,
 );
+/*
+ * GÖRÜNÜM HATIRLANIYOR. Oyuncu: "haritanın yakınlığını ve konumunu da
+ * hatırlasın." Başka sekmeye gidip dönen de, uygulamayı yeniden açan da
+ * haritayı bıraktığı yerde ve yakınlıkta buluyor (ilk açılış yukarıda:
+ * toprağın üstünde).
+ */
+{
+  const sayilar = (d) => (d.match(/-?[\d.]+/g) ?? []).map(Number);
+  const ayni = (a, b) => {
+    const [x, y] = [sayilar(a), sayilar(b)];
+    return x.length === y.length && x.every((v, i) => Math.abs(v - y[i]) < 1);
+  };
+  const yakinDonusum = await tuval.evaluate((el) => el.style.transform);
+  await sayfa.waitForTimeout(500); // hareket durunca saklanıyor
+  await sayfa.click('nav button:has-text("Şehir")');
+  await sayfa.waitForTimeout(800);
+  await sayfa.click('nav button:has-text("Dünya")');
+  await sayfa.waitForSelector('[data-bolge]', { timeout: 30000 });
+  await sayfa.waitForTimeout(900);
+  const donunce = await tuval.evaluate((el) => el.style.transform);
+  kontrol(
+    "Dünya'ya dönünce yakınlık ve konum korunuyor",
+    ayni(donunce, yakinDonusum),
+    `${yakinDonusum} → ${donunce}`,
+  );
+  await sayfa.reload({ waitUntil: 'domcontentloaded' });
+  await sayfa.click('nav button:has-text("Dünya")');
+  await sayfa.waitForSelector('[data-bolge]', { timeout: 30000 });
+  await sayfa.waitForTimeout(900);
+  const yeniden = await tuval.evaluate((el) => el.style.transform);
+  kontrol(
+    'Uygulama yeniden açılınca da korunuyor',
+    ayni(yeniden, yakinDonusum),
+    `${yakinDonusum} → ${yeniden}`,
+  );
+}
+
 await sayfa.getByRole('button', { name: 'Haritayı sığdır' }).click();
 await sayfa.waitForTimeout(500);
 

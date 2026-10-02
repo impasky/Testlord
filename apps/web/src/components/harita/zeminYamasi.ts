@@ -18,7 +18,15 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import { DUNYA_ZEMIN_PIKSEL, dunyaZeminIstegi } from '../../cizim/dunya';
-import { glBirak, glCiz, glOnYukle, glVarMi, ornekSayisi } from '../../cizim/gl';
+import {
+  glBirak,
+  glCiz,
+  glKalici,
+  glKaydet,
+  glOnYukle,
+  glVarMi,
+  ornekSayisi,
+} from '../../cizim/gl';
 
 type Kutu = [number, number, number, number];
 
@@ -41,6 +49,35 @@ export interface ZeminYamasi {
   url: string;
   /** Yamanın bölgesi, dünya biriminde (0–100). */
   kutu: Kutu;
+  /** Dünya birimine düşen resim pikseli. */
+  yogunluk: number;
+}
+
+/**
+ * Harita kapanınca (başka sekme) son yama bırakılmıyor, burada bekliyor:
+ * harita aynı yerde açılıyor (`haritaGorunumu.ts`), yama yeniden
+ * çizilmeden hemen keskin. Uygulama kapanırken de cihaza yazılıyor
+ * (`YUVA`), yeniden açılışta oradan.
+ */
+let SAKLI: ZeminYamasi | null = null;
+const YUVA = 'yama|dunya-zemini';
+/** Cihaza son yazılan yama: aynısı yeniden yazılmasın. */
+let KAYDEDILEN: string | null = null;
+
+const oturumu = (y: ZeminYamasi): Oturum => ({
+  iptal: false,
+  kutu: y.kutu,
+  yogunluk: y.yogunluk,
+  is: y.is,
+});
+
+/** Cihazdan okunan eki denetler (eski biçimli kayıt sessizce yok). */
+function yamaEki(ek: unknown): { kutu: Kutu; yogunluk: number } | null {
+  const e = ek as { kutu?: unknown; yogunluk?: unknown } | null;
+  if (!e || !Array.isArray(e.kutu) || e.kutu.length !== 4) return null;
+  if (!e.kutu.every((x) => typeof x === 'number' && Number.isFinite(x))) return null;
+  if (typeof e.yogunluk !== 'number' || !Number.isFinite(e.yogunluk)) return null;
+  return { kutu: e.kutu as Kutu, yogunluk: e.yogunluk };
 }
 
 interface Oturum {
@@ -87,12 +124,39 @@ export function useZeminYamasi(
   /** Ana zemin GPU'da çizilip yerine oturdu mu (düz üçgenlere yama yok). */
   zeminHazir: () => boolean,
 ): ZeminYamasi | null {
-  const [yama, setYama] = useState<ZeminYamasi | null>(null);
-  const oturum = useRef<Oturum | null>(null);
+  // Bellekte bekleyen yama varsa oradan başla (okuma saf; sahiplik etkide).
+  const [yama, setYama] = useState<ZeminYamasi | null>(() => SAKLI);
+  const oturum = useRef<Oturum | null>(SAKLI && oturumu(SAKLI));
   const gosterilen = useRef<ZeminYamasi | null>(null);
   const kapandi = useRef(false);
   const guncel = useRef(zeminHazir);
   guncel.current = zeminHazir;
+  /**
+   * Cihazdaki son yamaya bakıldı mı: bakılmadan yeni yama çizilmiyor
+   * (açılışta saklı olan boşa gitmesin).
+   */
+  const bakildi = useRef(SAKLI !== null);
+
+  useEffect(() => {
+    if (bakildi.current || !glVarMi()) {
+      bakildi.current = true;
+      return;
+    }
+    void glKalici(YUVA).then(async (r) => {
+      const ek = r && yamaEki(r.ek);
+      if (r && ek) await glOnYukle(r.url);
+      bakildi.current = true;
+      if (!r) return;
+      if (!ek || kapandi.current || oturum.current || gosterilen.current) {
+        if (oturum.current?.is !== r.anahtar && gosterilen.current?.is !== r.anahtar)
+          glBirak(r.anahtar);
+        return;
+      }
+      const y: ZeminYamasi = { is: r.anahtar, url: r.url, ...ek };
+      oturum.current = oturumu(y);
+      setYama(y);
+    });
+  }, []);
 
   useEffect(() => {
     let zaman: ReturnType<typeof setTimeout> | undefined;
@@ -102,7 +166,7 @@ export function useZeminYamasi(
     };
     const hesapla = () => {
       if (!glVarMi()) return;
-      if (!guncel.current()) {
+      if (!guncel.current() || !bakildi.current) {
         zaman = setTimeout(hesapla, YENIDEN_MS);
         return;
       }
@@ -158,7 +222,7 @@ export function useZeminYamasi(
           if (url && !bekleyen && gosterilen.current?.is !== is) glBirak(is);
           return;
         }
-        setYama({ is, url, kutu: k });
+        setYama({ is, url, kutu: k, yogunluk });
       });
     };
     zaman = setTimeout(hesapla, DURMA_MS);
@@ -173,12 +237,34 @@ export function useZeminYamasi(
   }, [yama]);
   useEffect(() => {
     kapandi.current = false;
+    // Bellekteki yama yeniden gösteriliyor: artık bu haritanın.
+    if (SAKLI && SAKLI.is === gosterilen.current?.is) SAKLI = null;
+    // Gösterilen yama cihaza: uygulama arka plana geçince (telefonda
+    // kapatılmadan önceki son an) ve harita kapanınca.
+    const kaydet = () => {
+      const y = gosterilen.current;
+      if (!y || KAYDEDILEN === y.is) return;
+      KAYDEDILEN = y.is;
+      glKaydet(YUVA, y.is, y.url, { kutu: y.kutu, yogunluk: y.yogunluk });
+    };
+    const gizlenince = () => {
+      if (document.visibilityState === 'hidden') kaydet();
+    };
+    document.addEventListener('visibilitychange', gizlenince);
+    window.addEventListener('pagehide', kaydet);
     return () => {
+      document.removeEventListener('visibilitychange', gizlenince);
+      window.removeEventListener('pagehide', kaydet);
+      kaydet();
       kapandi.current = true;
       if (oturum.current) oturum.current.iptal = true;
       oturum.current = null;
-      if (gosterilen.current) glBirak(gosterilen.current.is);
+      const y = gosterilen.current;
       gosterilen.current = null;
+      if (!y) return;
+      // Bırakılmıyor, bekliyor (bkz. `SAKLI`); öncekinin yerine.
+      if (SAKLI && SAKLI.is !== y.is) glBirak(SAKLI.is);
+      SAKLI = y;
     };
   }, []);
   return yama;
