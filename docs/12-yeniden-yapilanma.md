@@ -426,6 +426,14 @@ köylüler. Boş arsa çamurlu bir ağıl gibiydi: artık temel izi, gerili ip,
 temel taşları ve kerestesiyle bir inşaat yeri. Işık donuktu: yerleşke
 sıcak bir gün ışığında (docs/24 "Kalabalık", "Sıcak hava").
 
+Altıncı tur: **"hâlâ yetersiz, binaları daha da detaylı yap."** Bütün
+yapılar ortak kurucudan ayrıntı aldı: kepenkli ve kayıtlı pencereler,
+denizlik ve çiçeklik, lentolu kapı ve taş basamak, fener, taş temel, köşe
+taşları, mahya ve alın tahtası, çatı penceresi; her yapının kapısında
+türünü söyleyen simgeli bir tabela. Açık birinci aşamalar (demirhane,
+kışla, pazar, liman) iş yerinin eşyalarıyla doldu (docs/24 "Bina
+ayrıntısı").
+
 ### 6.1 Diyar haritası — gruplar yazı ızgarasından çıktı
 
 Oyuncu: **"Akın kısmında harita yap, 10 NPC karakteri de o haritaya ekle;

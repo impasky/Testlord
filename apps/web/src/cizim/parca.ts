@@ -90,7 +90,17 @@ export function yuzeyKutusu(
     : kutu(u, duz - 0.02, z, en, derin + 0.02, boy, renk);
 }
 
-/** Pencere: koyu boşluk + çerçeve; `isikli` ise içeriden sıcak ışık. */
+/** İnce ayrıntı: yalnız GPU (SVG yedeği çizmiyor; bkz. `Yuz.gpu`). */
+export function ince(m: Model): Model {
+  for (const y of m) y.gpu = true;
+  return m;
+}
+
+/**
+ * Pencere: koyu boşluk + çerçeve; `isikli` ise içeriden sıcak ışık. Üstüne
+ * (yalnız GPU) haç biçimli kayıt ve denizlik; `kepenk` verilirse iki yanda
+ * açık kepenk (boyalı tahta). Düz bir boşluk "pencere" diye okunmuyordu.
+ */
 export function pencere(
   yuz: Yon,
   duz: number,
@@ -100,14 +110,35 @@ export function pencere(
   boy = 1.8,
   isikli = false,
   cerceve: string = P.koyuTahta,
+  kepenk?: string,
 ): Model {
   const m = yuzeyKutusu(yuz, duz, u - 0.2, z - 0.2, en + 0.4, boy + 0.4, 0.12, cerceve);
   const ic = yuzeyKutusu(yuz, duz, u, z, en, boy, 0.16, isikli ? '#e8a84a' : '#231a14');
   if (isikli) for (const y of ic) y.isima = 0.6;
-  return birlestir(m, ic);
+  const ayrinti: Model = [
+    // Kayıt: dikey ve yatay çıta.
+    ...yuzeyKutusu(yuz, duz, u + en / 2 - 0.06, z, 0.12, boy, 0.22, cerceve),
+    ...yuzeyKutusu(yuz, duz, u, z + boy * 0.55, en, 0.1, 0.22, cerceve),
+    // Denizlik.
+    ...yuzeyKutusu(yuz, duz, u - 0.35, z - 0.34, en + 0.7, 0.14, 0.34, isikla(cerceve, 1.3)),
+  ];
+  if (kepenk) {
+    const k = boy + 0.3;
+    ayrinti.push(
+      ...yuzeyKutusu(yuz, duz, u - 0.86, z - 0.15, 0.6, k, 0.08, kepenk),
+      ...yuzeyKutusu(yuz, duz, u + en + 0.26, z - 0.15, 0.6, k, 0.08, kepenk),
+      // Kepenk tahtalarının arası (ince koyu çizgi).
+      ...yuzeyKutusu(yuz, duz, u - 0.58, z - 0.15, 0.05, k, 0.1, isikla(kepenk, 0.7)),
+      ...yuzeyKutusu(yuz, duz, u + en + 0.54, z - 0.15, 0.05, k, 0.1, isikla(kepenk, 0.7)),
+    );
+  }
+  return birlestir(m, ic, ince(ayrinti));
 }
 
-/** Kapı: kanat + söve. */
+/**
+ * Kapı: kanat + söve; üstüne (yalnız GPU) lento, önünde taş basamak, kanatta
+ * tahta aralıkları ve demir halka.
+ */
 export function kapi(
   yuz: Yon,
   duz: number,
@@ -117,10 +148,170 @@ export function kapi(
   boy = 3.4,
   renk: string = P.koyuTahta,
 ): Model {
+  const koyu = isikla(renk, 0.7);
+  const basamak =
+    yuz === 'x'
+      ? kutu(duz, u - 0.35, z, 0.75, en + 0.7, 0.24, P.acikTas)
+      : kutu(u - 0.35, duz, z, en + 0.7, 0.75, 0.24, P.acikTas);
   return birlestir(
     yuzeyKutusu(yuz, duz, u - 0.25, z, en + 0.5, boy + 0.3, 0.1, isikla(renk, 0.8)),
     yuzeyKutusu(yuz, duz, u, z, en, boy, 0.16, renk),
+    ince([
+      ...yuzeyKutusu(yuz, duz, u - 0.5, z + boy + 0.3, en + 1, 0.38, 0.3, koyu),
+      ...yuzeyKutusu(yuz, duz, u + en / 3 - 0.03, z, 0.06, boy, 0.19, koyu),
+      ...yuzeyKutusu(yuz, duz, u + (en * 2) / 3 - 0.03, z, 0.06, boy, 0.19, koyu),
+      ...yuzeyKutusu(yuz, duz, u + en * 0.74, z + boy * 0.46, 0.16, 0.16, 0.26, P.demir),
+      ...basamak,
+    ]),
   );
+}
+
+/** Duvar feneri: dirsek, içi yanan küçük kafes, koyu başlık (yalnız GPU). */
+export function fener(yuz: Yon, duz: number, u: number, z: number): Model {
+  const dis = (d: number, a: number, w: number, zz: number, h: number, sw: number, renk: string) =>
+    yuz === 'x'
+      ? kutu(duz + d, u + a, zz, sw, w, h, renk)
+      : kutu(u + a, duz + d, zz, w, sw, h, renk);
+  const isik = dis(0.32, -0.16, 0.32, z - 0.5, 0.42, 0.32, '#ffc860');
+  for (const y of isik) y.isima = 1;
+  return ince([
+    ...dis(0, -0.05, 0.1, z + 0.05, 0.1, 0.5, P.demir),
+    ...dis(0.27, -0.21, 0.42, z - 0.08, 0.12, 0.42, '#2a2420'),
+    ...isik,
+    ...dis(0.27, -0.21, 0.42, z - 0.6, 0.1, 0.42, '#2a2420'),
+  ]);
+}
+
+/** Tabelanın simgesi: tahtanın görünen yüzünde, tahta biriminde (0..1) dikdörtgenler. */
+export type Ikon =
+  'ors' | 'hac' | 'kitap' | 'kese' | 'kilic' | 'kalkan' | 'capa' | 'mektup' | 'sancak';
+
+const IKON: Record<Ikon, { zemin: string; parca: [number, number, number, number, string][] }> = {
+  ors: {
+    zemin: '#c9a878',
+    parca: [
+      [0.18, 0.5, 0.56, 0.16, '#3a3a40'],
+      [0.08, 0.54, 0.14, 0.08, '#3a3a40'],
+      [0.36, 0.3, 0.24, 0.22, '#3a3a40'],
+      [0.28, 0.2, 0.4, 0.1, '#3a3a40'],
+    ],
+  },
+  hac: {
+    zemin: '#efe8d8',
+    parca: [
+      [0.4, 0.18, 0.18, 0.64, '#b8322a'],
+      [0.18, 0.42, 0.64, 0.18, '#b8322a'],
+    ],
+  },
+  kitap: {
+    zemin: '#c9a878',
+    parca: [
+      [0.2, 0.22, 0.6, 0.56, '#6a3a2a'],
+      [0.26, 0.28, 0.48, 0.44, '#efe3c0'],
+      [0.48, 0.22, 0.04, 0.56, '#6a3a2a'],
+    ],
+  },
+  kese: {
+    zemin: '#7a5a3a',
+    parca: [
+      [0.3, 0.22, 0.4, 0.4, '#e2b64a'],
+      [0.22, 0.3, 0.56, 0.24, '#e2b64a'],
+      [0.4, 0.62, 0.2, 0.12, '#b08a3a'],
+    ],
+  },
+  kilic: {
+    zemin: '#7a3f30',
+    parca: [
+      [0.46, 0.3, 0.08, 0.52, '#d8dde2'],
+      [0.3, 0.3, 0.4, 0.08, '#b08a3a'],
+      [0.46, 0.16, 0.08, 0.14, '#6a4a2a'],
+    ],
+  },
+  kalkan: {
+    zemin: '#c9a878',
+    parca: [
+      [0.24, 0.36, 0.52, 0.44, '#9a2a24'],
+      [0.32, 0.22, 0.36, 0.16, '#9a2a24'],
+      [0.46, 0.22, 0.08, 0.58, '#e2b64a'],
+    ],
+  },
+  capa: {
+    zemin: '#c9a878',
+    parca: [
+      [0.46, 0.22, 0.08, 0.56, '#3a4450'],
+      [0.24, 0.22, 0.52, 0.08, '#3a4450'],
+      [0.36, 0.7, 0.28, 0.07, '#3a4450'],
+      [0.2, 0.22, 0.07, 0.16, '#3a4450'],
+      [0.73, 0.22, 0.07, 0.16, '#3a4450'],
+    ],
+  },
+  mektup: {
+    zemin: '#7a5a3a',
+    parca: [
+      [0.2, 0.32, 0.6, 0.36, '#efe3c0'],
+      [0.14, 0.3, 0.1, 0.4, '#c9a26a'],
+      [0.76, 0.3, 0.1, 0.4, '#c9a26a'],
+      [0.44, 0.38, 0.12, 0.1, '#b8322a'],
+    ],
+  },
+  sancak: {
+    zemin: '#c9a878',
+    parca: [
+      [0.28, 0.16, 0.06, 0.7, '#4a3020'],
+      [0.34, 0.5, 0.42, 0.3, '#9a2a24'],
+      [0.34, 0.5, 0.42, 0.06, '#e2b64a'],
+    ],
+  },
+};
+
+/**
+ * Asma tabela: duvardan dışarı uzanan dirsek, altında duvara dik sallanan
+ * tahta, görünen yüzünde yapının simgesi (örs, haç, kitap...). Yapı bir
+ * bakışta ne olduğunu söylüyor (yalnız GPU).
+ */
+export function tabela(yuz: Yon, duz: number, u: number, z: number, ikon: Ikon): Model {
+  const { zemin, parca } = IKON[ikon];
+  const B = 1.0;
+  const m: Model = [];
+  if (yuz === 'y') {
+    // Dirsek +y boyunca; tahta x'e dik, görünen yüzü +x.
+    m.push(...kutu(u - 0.06, duz, z, 0.12, 1.45, 0.12, P.demir));
+    m.push(...kutu(u - 0.06, duz + 0.3, z - 0.15, 0.12, 0.05, 0.15, P.demir));
+    m.push(...kutu(u - 0.06, duz + 1.2, z - 0.15, 0.12, 0.05, 0.15, P.demir));
+    m.push(...kutu(u - 0.06, duz + 0.25, z - 0.15 - B, 0.12, B, B, zemin));
+    for (const [a, b, w, h, renk] of parca)
+      m.push(
+        ...yuzeyKutusu(
+          'x',
+          u + 0.06,
+          duz + 0.25 + (1 - a - w) * B,
+          z - 0.15 - B + b * B,
+          w * B,
+          h * B,
+          0.04,
+          renk,
+        ),
+      );
+  } else {
+    m.push(...kutu(duz, u - 0.06, z, 1.45, 0.12, 0.12, P.demir));
+    m.push(...kutu(duz + 0.3, u - 0.06, z - 0.15, 0.05, 0.12, 0.15, P.demir));
+    m.push(...kutu(duz + 1.2, u - 0.06, z - 0.15, 0.05, 0.12, 0.15, P.demir));
+    m.push(...kutu(duz + 0.25, u - 0.06, z - 0.15 - B, B, 0.12, B, zemin));
+    for (const [a, b, w, h, renk] of parca)
+      m.push(
+        ...yuzeyKutusu(
+          'y',
+          u + 0.06,
+          duz + 0.25 + a * B,
+          z - 0.15 - B + b * B,
+          w * B,
+          h * B,
+          0.04,
+          renk,
+        ),
+      );
+  }
+  return ince(m);
 }
 
 /**

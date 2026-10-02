@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { AKIN_HARITALARI, B, HAZIR_PORTRELER } from '@lordlar/shared';
-import { BINA_ADLARI, BINA_KUTUSU, binaModeli } from './binalar';
+import { BINA_ADLARI, BINA_KUTUSU, TABELA, binaModeli } from './binalar';
 import { diyarModeli } from './diyarlar';
 import { dunyaUcgenleri } from './dunya';
 import { ZEMIN_ADLARI, zeminModeli } from './zeminler';
@@ -59,6 +59,7 @@ import {
   kameraTabani,
   type Model,
   type V3,
+  type Yuz,
 } from './uc';
 import {
   BINA_TABAN_BOY,
@@ -852,6 +853,38 @@ describe('yerleşke: binalar sahnede, çevre', () => {
         expect(z).toBeLessThan(insanBoyu * 0.5);
       }
     }
+  });
+
+  it('yapının tabelası: her türün her aşamasında simgeli asma tahta (yalnız GPU)', () => {
+    // Tabelanın tahtası: 0,12 kalınlığında 1×1'lik levha (bir eksende ince).
+    const tahtaMi = (f: Yuz) => {
+      const d = [0, 1, 2].map((e) => {
+        const v = f.p.map((q) => q[e]!);
+        return Math.max(...v) - Math.min(...v);
+      });
+      return (
+        d.filter((x) => Math.abs(x - 1) < 0.01).length >= 1 &&
+        d.some((x) => Math.abs(x - 0.12) < 0.01)
+      );
+    };
+    for (const tur of Object.keys(TABELA))
+      for (const a of ['_1', '_3', '_5']) {
+        const m = binaModeli(tur + a);
+        expect(
+          m.some((f) => f.gpu && tahtaMi(f)),
+          tur + a,
+        ).toBe(true);
+      }
+  });
+
+  it('bina ayrıntısı: ahşap yapı taş temelde, ince ayrıntı SVG yedeğinde yok', () => {
+    const m = binaModeli('malikane_1');
+    // Taş temel: zemin katın altında, 0,6 boyunda taş desenli kutu.
+    expect(m.some((f) => f.doku === 'tas' && f.p.every((q) => q[2] <= 0.61))).toBe(true);
+    // Kepenk, kayıt, denizlik, fener, tabela, mahya: yalnız GPU.
+    const ince = m.filter((f) => f.gpu);
+    expect(ince.length).toBeGreaterThan(100);
+    expect(ciz(m).cokgenler.length).toBe(ciz(m.filter((f) => !f.gpu)).cokgenler.length);
   });
 
   it('boş arsa yapılmaya hazır inşaat yeri: zemin çimen, temel izi, çitsiz', () => {

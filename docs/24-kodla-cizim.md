@@ -440,6 +440,31 @@ kaydırıyor.
   etrafında ×1,3 (birinci), ×1,15 (üçüncü, boş arsa) büyüyor; beşinci
   aşama olduğu gibi, yükseltmenin büyüme hissi duruyor. Liste simgesi
   (`binaModeli`) değişmiyor.
+- Bina ayrıntısı (`binalar.yapi`, `parca`): oyuncu "binaları daha da
+  detaylı yap" dedi. Ortak kurucu ve parçalar zenginleşti, bütün yapılar
+  birden aldı:
+  - Pencere: haç biçimli kayıt, denizlik; ahşap ve sıvalı duvarda iki
+    yanda boyalı açık kepenk (yapıdan yapıya bir renk), zemin katta yer
+    yer çiçeklik.
+  - Kapı: lento, taş basamak, kanatta tahta aralıkları ve demir halka;
+    yanında yanan bir fener, öbür yanında yapının tabelası.
+  - Ahşap ve sıvalı zemin katın altında taş temel; taş duvarın görünen
+    köşesinde açık renk köşe taşları.
+  - Beşik çatıda mahya kirişi, görünen alında eğik alın tahtaları ve ışıklı
+    küçük çatı penceresi.
+  - Tabela (`parca.tabela`): duvardan çıkan dirsekte sallanan tahta,
+    görünen yüzünde türün simgesi (malikâne kalkan, kışla kılıç, demirhane
+    örs, hastane haç, pazar kese, karargâh sancak, kütüphane kitap, liman
+    çapa, elçilik mektup). `binaModeli` simgeyi koyuyor, yapının ilk
+    `yapi`sı alıyor; kurucuyu kullanmayan birinci aşamalarda direkli tabela.
+  - Birinci aşamanın açık yapıları: demirhanede su teknesi, alet rafı,
+    demir çubuk istifi, odun ve kömür; kışlada kalkan rafı, flama, ateş
+    başında kütük oturaklar; pazarda ikinci tezgâh, dolu kasalar,
+    çuvallar; limanda balık ağı, halat kangalı, fıçılar. Salınan parça
+    (bayrak) eklenmedi: her biri ayrı canlı katman olurdu.
+    Bu ince ayrıntının hepsi yalnız GPU (`Yuz.gpu`): SVG yedeği ve liste
+    simgesi eskisi gibi; yerleşke GPU'da ~57 bin yüz (bütün yapılar), SVG
+    yedeği ~16,8 bin çokgen.
 - Boş arsa yapılmaya hazır bir inşaat yeri: zemini çayır (plaka yok),
   ortada sıkıştırılmış temel izi, köşe kazıkları arasında gerili ip, arka
   kenarlarda dizilmeye başlanmış temel taşları, önde kereste ve taş

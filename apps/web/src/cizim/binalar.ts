@@ -19,7 +19,9 @@ import {
   cit,
   doseme,
   duman,
+  fener,
   fici,
+  ince,
   kapi,
   kaya,
   kemer,
@@ -29,12 +31,14 @@ import {
   pencere,
   sancak,
   sandik,
+  tabela,
   tasDokusu,
   tekne,
   tente,
   yuvarlakKule,
   yuzeyKutusu,
   zeminPlakasi,
+  type Ikon,
   type Yon,
 } from './parca';
 import { P, isikla } from './renk';
@@ -56,6 +60,7 @@ import {
   silindir,
   tasi,
   type Model,
+  type V3,
 } from './uc';
 
 export const BINA_KUTUSU = sabitKutu([-0.8, -0.8, -1.2], [16.8, 16.8, 17.5]);
@@ -85,9 +90,83 @@ const DUVAR_RENGI: Record<Duvar, string> = {
   acikTas: P.acikTas,
 };
 
+/** Kepenk boyaları: yapıdan yapıya biri (tohumlu). */
+const KEPENK = ['#4e6a4a', '#4a5f78', '#7a3f30', '#8a6a3a', '#5a4a6a'];
+
+/** Pencere altında çiçeklik: tahta saksı, içinde renkli çiçekler (yalnız GPU). */
+function ciceklik(yuz: Yon, duz: number, u: number, z: number, r: () => number): Model {
+  const m: Model = [...yuzeyKutusu(yuz, duz, u - 0.1, z - 0.75, 1.6, 0.4, 0.42, P.tahta)];
+  const renk = ['#d84a4a', '#f2d25a', '#e88ab8', '#f4f1e4'][Math.floor(r() * 4)]!;
+  for (let j = 0; j < 4; j++) {
+    const uu = u + 0.05 + j * 0.38;
+    const c = j % 2 ? '#5f8a3a' : renk;
+    m.push(...yuzeyKutusu(yuz, duz, uu, z - 0.42, 0.28, 0.24, 0.36, c));
+  }
+  return ince(m);
+}
+
+/**
+ * Beşik çatının ayrıntısı (yalnız GPU): mahya kirişi, görünen alında iki
+ * eğik alın tahtası ve küçük çatı penceresi. Düz iki yüzey "kutu üstüne
+ * kapak" gibi duruyordu.
+ */
+function catiAyrintisi(
+  x: number,
+  y: number,
+  z: number,
+  sx: number,
+  sy: number,
+  h: number,
+  yon: Yon,
+  renk: string,
+): Model {
+  const m: Model = [];
+  const koyu = isikla(renk, 0.72);
+  const tahta = P.koyuTahta;
+  // `besikCati` ile aynı taşmalar.
+  const sacak = 0.5;
+  const uc = 0.25;
+  const serit = (A: V3, B: V3, d: V3): Model =>
+    levha(
+      [A, B, [B[0] + d[0], B[1] + d[1], B[2] + d[2]], [A[0] + d[0], A[1] + d[1], A[2] + d[2]]],
+      tahta,
+    );
+  if (yon === 'x') {
+    const ym = y + sy / 2;
+    m.push(...kutu(x - uc, ym - 0.28, z + h - 0.12, sx + uc * 2, 0.56, 0.24, koyu));
+    const X = x + sx + uc + 0.03;
+    const [y0, y1] = [y - sacak, y + sy + sacak];
+    const L = Math.hypot(ym - y0, h);
+    const [ey, ez] = [(ym - y0) / L, h / L];
+    m.push(...serit([X, y0, z], [X, ym, z + h], [0, ez * 0.32, -ey * 0.32]));
+    m.push(...serit([X, y1, z], [X, ym, z + h], [0, -ez * 0.32, -ey * 0.32]));
+    if (h >= 2.6 && sy >= 4)
+      m.push(...pencere('x', x + sx, ym - 0.45, z + h * 0.24, 0.9, 0.9, true));
+  } else {
+    const xm = x + sx / 2;
+    m.push(...kutu(xm - 0.28, y - uc, z + h - 0.12, 0.56, sy + uc * 2, 0.24, koyu));
+    const Y = y + sy + uc + 0.03;
+    const [x0, x1] = [x - sacak, x + sx + sacak];
+    const L = Math.hypot(xm - x0, h);
+    const [ex, ez] = [(xm - x0) / L, h / L];
+    m.push(...serit([x0, Y, z], [xm, Y, z + h], [ez * 0.32, 0, -ex * 0.32]));
+    m.push(...serit([x1, Y, z], [xm, Y, z + h], [-ez * 0.32, 0, -ex * 0.32]));
+    if (h >= 2.6 && sx >= 4)
+      m.push(...pencere('y', y + sy, xm - 0.45, z + h * 0.24, 0.9, 0.9, true));
+  }
+  return ince(m);
+}
+
+/** Sıradaki yapının tabelası (`binaModeli` koyuyor, ilk `yapi` alıyor). */
+let siradakiTabela: Ikon | undefined;
+
 /**
  * Katları üst üste kurar, görünen iki yüze pencere dizer, zemin katına
  * kapı koyar, en üste çatıyı oturtur. Dönen `ust`: çatının başladığı z.
+ * Ayrıntı: ahşap ve sıvalı zemin katın altında taş temel, taş duvarın
+ * köşesinde köşe taşları, kepenkli pencereler ve çiçeklikler, kapının
+ * yanında fener ve yapının tabelası, beşik çatıda mahya, alın tahtası,
+ * çatı penceresi (ince olanlar yalnız GPU).
  */
 function yapi(
   r: () => number,
@@ -100,6 +179,10 @@ function yapi(
   { kapiYuz = 'y' as Yon, isikli = false, pencereYok = false } = {},
 ): { m: Model; ust: number; kutu: [number, number, number, number] } {
   const m: Model = [];
+  // Yapının kimliği (bkz. `binaModeli`): ilk yapı tabelayı alıyor.
+  const ikon = siradakiTabela;
+  siradakiTabela = undefined;
+  const kepenk = KEPENK[Math.floor(r() * KEPENK.length)]!;
   let z = 0;
   let [kx, ky, ksx, ksy] = [x, y, sx, sy];
   katlar.forEach((k, i) => {
@@ -114,6 +197,22 @@ function yapi(
     if (k.duvar === 'tas' || k.duvar === 'acikTas')
       m.push(...tasDokusu(kx, ky, z, ksx, ksy, k.h, renk, r));
     if (k.duvar === 'kiris') m.push(...kirisler(kx, ky, z, ksx, ksy, k.h));
+    // Ahşap ve sıvalı zemin katın altında taş temel: yapı yere oturuyor.
+    if (i === 0 && (k.duvar === 'tahta' || k.duvar === 'kiris'))
+      m.push(...dokula(kutu(kx - 0.18, ky - 0.18, 0, ksx + 0.36, ksy + 0.36, 0.6, P.tas), 'tas'));
+    // Taş duvarın görünen köşesinde açık renk köşe taşları (sırayla uzun-kısa).
+    if (k.duvar === 'tas' || k.duvar === 'acikTas') {
+      const X = kx + ksx;
+      const Y = ky + ksy;
+      const acik = isikla(renk, 1.18);
+      const kose: Model = [];
+      for (let zz = z + 0.1, j = 0; zz < z + k.h - 0.4; zz += 0.85, j++) {
+        const [a, b] = j % 2 ? [0.6, 1.1] : [1.1, 0.6];
+        kose.push(...kutu(X - a, Y - 0.06, zz, a + 0.06, 0.12, 0.5, acik));
+        kose.push(...kutu(X - 0.06, Y - b, zz, 0.12, b + 0.06, 0.5, acik));
+      }
+      m.push(...ince(kose));
+    }
     if (k.duvar === 'tahta') {
       // Tahta duvar: köşe dikmeleri ve üst kuşak.
       m.push(...kutu(kx + ksx - 0.3, ky + ksy - 0.3, z, 0.4, 0.4, k.h, P.koyuTahta));
@@ -128,25 +227,34 @@ function yapi(
       };
       const pz = z + (i === 0 ? k.h * 0.38 : k.h * 0.3);
       const ph = Math.min(1.8, k.h * 0.38);
+      const kp = k.duvar === 'tas' ? undefined : kepenk;
       for (const u of dizi(ksy)) {
         if (i === 0 && kapiYuz === 'x' && Math.abs(u + 0.7 - ksy / 2) < 1.8) continue;
-        m.push(...pencere('x', kx + ksx, ky + u, pz, 1.4, ph, isikli && r() > 0.4));
+        m.push(...pencere('x', kx + ksx, ky + u, pz, 1.4, ph, isikli && r() > 0.4, undefined, kp));
+        if (i === 0 && r() < 0.5) m.push(...ciceklik('x', kx + ksx, ky + u, pz, r));
       }
       for (const u of dizi(ksx)) {
         if (i === 0 && kapiYuz === 'y' && Math.abs(u + 0.7 - ksx / 2) < 1.8) continue;
-        m.push(...pencere('y', ky + ksy, kx + u, pz, 1.4, ph, isikli && r() > 0.4));
+        m.push(...pencere('y', ky + ksy, kx + u, pz, 1.4, ph, isikli && r() > 0.4, undefined, kp));
+        if (i === 0 && r() < 0.5) m.push(...ciceklik('y', ky + ksy, kx + u, pz, r));
       }
     }
     if (i === 0) {
       const kh = Math.min(3.4, k.h - 0.6);
-      if (kapiYuz === 'y') m.push(...kapi('y', ky + ksy, kx + ksx / 2 - 1, z, 2, kh));
-      else m.push(...kapi('x', kx + ksx, ky + ksy / 2 - 1, z, 2, kh));
+      const duz = kapiYuz === 'y' ? ky + ksy : kx + ksx;
+      const orta = kapiYuz === 'y' ? kx + ksx / 2 : ky + ksy / 2;
+      m.push(...kapi(kapiYuz, duz, orta - 1, z, 2, kh));
+      // Kapının bir yanında fener, öbür yanında yapının tabelası.
+      m.push(...fener(kapiYuz, duz, orta - 1.75, z + kh + 0.1));
+      if (ikon)
+        m.push(...tabela(kapiYuz, duz, orta + 1.85, z + Math.min(kh + 0.6, k.h - 0.2), ikon));
     }
     z += k.h;
   });
   if (cati.tip === 'besik') {
     const alin = DUVAR_RENGI[katlar[katlar.length - 1]!.duvar];
     m.push(...besikCati(kx, ky, z, ksx, ksy, cati.h, cati.yon ?? 'x', cati.renk, alin));
+    m.push(...catiAyrintisi(kx, ky, z, ksx, ksy, cati.h, cati.yon ?? 'x', cati.renk));
   } else if (cati.tip === 'kirma') {
     m.push(...kirmaCati(kx, ky, z, ksx, ksy, cati.h, cati.renk));
   } else {
@@ -218,6 +326,89 @@ export function ors(x: number, y: number): Model {
     kutu(x - 0.3, y + 0.1, 0.9, 1.5, 0.7, 0.45, P.demir),
     kutu(x + 1.2, y + 0.25, 1.1, 0.5, 0.4, 0.2, P.demir),
   );
+}
+
+/* ── Yapı çevresinin ayrıntıları (yalnız GPU olanlar `ince`) ──────── */
+
+/** Serbest duran tabela: direk ve üstünden sarkan simgeli tahta. */
+function tabelaDiregi(x: number, y: number, ikon: Ikon, z = 3.2): Model {
+  return birlestir(
+    kutu(x - 0.14, y - 0.14, 0, 0.28, 0.28, z + 0.25, P.koyuTahta),
+    tabela('x', x + 0.14, y, z, ikon),
+  );
+}
+
+/** İçi dolu kasa: tahta kasa, üstünde öbek öbek meyve ya da sebze. */
+function doluKasa(x: number, y: number, renk: string, r: () => number): Model {
+  const m: Model = [...kutu(x, y, 0, 1.3, 1.0, 0.7, { ust: P.acikTahta, yan: P.tahta })];
+  const ic: Model = [];
+  for (let i = 0; i < 6; i++)
+    ic.push(
+      ...kure(
+        x + 0.25 + (i % 3) * 0.4,
+        y + 0.28 + Math.floor(i / 3) * 0.42,
+        0.78,
+        0.22,
+        isikla(renk, 0.9 + r() * 0.2),
+        5,
+        2,
+      ),
+    );
+  return birlestir(m, ince(ic));
+}
+
+/** Çuval: ağzı bağlı, tombul. */
+function cuval(x: number, y: number, renk = '#c9b48a'): Model {
+  return birlestir(
+    kutu(x, y, 0, 0.9, 0.8, 0.75, renk),
+    kutu(x + 0.15, y + 0.12, 0.75, 0.6, 0.56, 0.2, isikla(renk, 0.92)),
+    ince(kutu(x + 0.33, y + 0.3, 0.95, 0.24, 0.2, 0.14, isikla(renk, 0.75))),
+  );
+}
+
+/** Alet rafı: iki direk ve kiriş, kirişte asılı çekiç, kerpeten, testere (yalnız GPU ayrıntı). */
+function aletRafi(x: number, y: number): Model {
+  const m: Model = [
+    ...kutu(x, y, 0, 0.22, 0.22, 2.6, P.koyuTahta),
+    ...kutu(x, y + 2.6, 0, 0.22, 0.22, 2.6, P.koyuTahta),
+    ...kutu(x, y, 2.4, 0.22, 2.82, 0.2, P.koyuTahta),
+  ];
+  const alet: Model = [];
+  for (let i = 0; i < 4; i++) {
+    const u = y + 0.45 + i * 0.6;
+    alet.push(...kutu(x + 0.05, u, 1.3, 0.1, 0.08, 1.1, P.tahta));
+    alet.push(...kutu(x - 0.05, u - 0.12, 1.15 + (i % 2) * 0.1, 0.3, 0.32, 0.22, P.demir));
+  }
+  return birlestir(m, ince(alet));
+}
+
+/** Silah rafı: kalkanlar ve dik duran mızraklar. */
+function kalkanRafi(x: number, y: number): Model {
+  const m: Model = [
+    ...kutu(x, y, 0, 0.2, 3.2, 0.2, P.koyuTahta),
+    ...kutu(x, y, 1.4, 0.2, 3.2, 0.2, P.koyuTahta),
+  ];
+  const k: Model = [];
+  ['#9a2a24', '#3a5a8a', '#9a2a24'].forEach((renk, i) => {
+    const u = y + 0.3 + i * 1.0;
+    k.push(...kutu(x + 0.2, u, 0.3, 0.14, 0.85, 1.1, renk));
+    k.push(...kutu(x + 0.34, u + 0.36, 0.7, 0.06, 0.14, 0.3, P.altin));
+  });
+  return birlestir(m, ince(k));
+}
+
+/** Balık ağı: iki direk arasında kurumaya serilmiş ağ (yalnız GPU). */
+function balikAgi(x: number, y: number): Model {
+  const m: Model = [
+    ...kutu(x, y, 0, 0.18, 0.18, 2.4, P.koyuTahta),
+    ...kutu(x, y + 3, 0, 0.18, 0.18, 2.4, P.koyuTahta),
+  ];
+  const ag: Model = [...kutu(x + 0.05, y, 2.2, 0.08, 3.2, 0.06, '#d8c9a0')];
+  for (let i = 0; i < 6; i++)
+    ag.push(...kutu(x + 0.06, y + 0.25 + i * 0.5, 0.9, 0.05, 0.05, 1.3, '#bfae88'));
+  for (let j = 0; j < 3; j++)
+    ag.push(...kutu(x + 0.06, y + 0.2, 1.0 + j * 0.42, 0.05, 2.8, 0.05, '#bfae88'));
+  return birlestir(m, ince(ag));
 }
 
 export function ocak(x: number, y: number, s = 2.2): Model {
@@ -426,6 +617,21 @@ const T: Record<string, Tarif> = {
       mizrakSehpasi(12.5, 9),
       kukla(4, 12),
       sandik(10, 13),
+      // Ateşin çevresinde kütük oturaklar, kalkan rafı, flama direği, tabela.
+      kutu(5.6, 9.6, 0, 2.2, 0.7, 0.55, P.tahta),
+      kutu(8.9, 12.2, 0, 0.7, 2.0, 0.55, P.tahta),
+      kalkanRafi(14.2, 2.6),
+      kutu(1.6, 8.4, 0, 0.18, 0.18, 4.6, P.koyuTahta),
+      levha(
+        [
+          [1.7, 8.5, 4.5],
+          [1.7, 10.4, 4.1],
+          [1.7, 8.5, 3.6],
+        ],
+        P.kirmiziBez,
+      ),
+      cuval(11.6, 13.4, '#bfa878'),
+      tabelaDiregi(14.4, 11.6, 'kilic'),
     ),
 
   kisla_3: (r) => {
@@ -490,6 +696,19 @@ const T: Record<string, Tarif> = {
       ors(8, 7),
       fici(12.5, 12),
       sandik(9.5, 12),
+      // Su teknesi (kızgın demiri söndürmek), alet rafı, demir çubuk istifi,
+      // odun ve kömür, tabela.
+      kutu(7.2, 10.2, 0, 2.4, 1.1, 0.8, P.koyuTahta),
+      katmanla(kutu(7.4, 10.4, 0.62, 2.0, 0.7, 0.12, P.su), 0),
+      aletRafi(3.2, 10.4),
+      ince([
+        ...kutu(12.2, 3.6, 0, 2.2, 0.2, 0.18, P.demir),
+        ...kutu(12.2, 3.9, 0, 2.2, 0.2, 0.18, P.demir),
+        ...kutu(12.3, 3.75, 0.18, 2.0, 0.2, 0.18, P.demir),
+      ]),
+      kutu(12.4, 5.6, 0, 2.2, 1.6, 0.9, P.tahta),
+      kure(13.3, 8.6, 0.1, 0.8, '#2a2622', 6, 3),
+      tabelaDiregi(14.4, 11, 'ors'),
     ),
 
   demirhane_3: (r) => {
@@ -639,6 +858,17 @@ const T: Record<string, Tarif> = {
       sandik(12.6, 10.2, 0, 1.1),
       silindir(5, 11, 0, 0.9, 1, P.bez, 7),
       silindir(6.8, 11.4, 0, 0.8, 0.9, P.bez, 7),
+      // İkinci tezgâh (mavi-beyaz tente), dolu kasalar, çuvallar, tabela.
+      kutu(9.6, 9.4, 0, 3.2, 1.6, 1.6, P.tahta),
+      silindir(9.8, 9.6, 0, 0.12, 3.8, P.koyuTahta, 5),
+      silindir(12.6, 9.6, 0, 0.12, 3.8, P.koyuTahta, 5),
+      tente(9.5, 9.0, 3.8, 3.4, 2.6, '#3a5a8a', P.bez, 4),
+      doluKasa(2.6, 9.0, '#c0392b', r),
+      doluKasa(3.0, 10.4, '#6f9a3a', r),
+      doluKasa(9.8, 7.2, '#e08a2a', r),
+      cuval(1.8, 12.4),
+      cuval(2.9, 12.8, '#bfa878'),
+      tabelaDiregi(14.2, 13.6, 'kese'),
     ),
 
   pazar_3: (r) => {
@@ -934,6 +1164,12 @@ const T: Record<string, Tarif> = {
       fici(3, 3),
       sandik(4, 4.5),
       cit(1, 1.5, 13, 'x'),
+      // Kurumaya serilmiş ağ, halat kangalı, fıçılar, tabela.
+      balikAgi(12.8, 2.4),
+      silindir(5.4, 2.6, 0, 0.55, 0.35, '#c9b48a', 8),
+      fici(10.6, 3.2),
+      fici(11.4, 4.4),
+      tabelaDiregi(14.6, 6.2, 'capa'),
     ),
 
   liman_3: (r) => {
@@ -1180,5 +1416,23 @@ export const BINA_ADLARI = Object.keys(T);
 /** Bir binanın modeli; bilinmeyen ad için boş arsa. */
 export function binaModeli(ad: string): Model {
   const tarif = T[ad] ?? T.arsa!;
-  return tarif(rastgele('bina:' + ad));
+  siradakiTabela = TABELA[ad.replace(/_\d$/, '')];
+  try {
+    return tarif(rastgele('bina:' + ad));
+  } finally {
+    siradakiTabela = undefined;
+  }
 }
+
+/** Yapının tabelasındaki simge: türü bir bakışta söylesin. */
+export const TABELA: Record<string, Ikon> = {
+  malikane: 'kalkan',
+  kisla: 'kilic',
+  demirhane: 'ors',
+  hastane: 'hac',
+  pazar: 'kese',
+  karargah: 'sancak',
+  kutuphane: 'kitap',
+  liman: 'capa',
+  elcilik: 'mektup',
+};
