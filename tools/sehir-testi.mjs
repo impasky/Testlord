@@ -510,6 +510,16 @@ kontrol(
     Math.abs(donunce.z - ayrilirken.z) < 0.01 && Math.abs(donunce.en - ayrilirken.en) < 2,
     `${ayrilirken.z} → ${donunce.z}`,
   );
+  // "Kalıcı olarak da saklasın": uygulama kapanıp açılınca (yeniden yükleme) da.
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.waitForSelector('[data-sehir-sayfasi] [data-yakinlik]', { timeout: 20000 });
+  await page.waitForTimeout(900);
+  const yeniden = await olcu();
+  kontrol(
+    'Sayfa yeniden açılınca da yakınlık korunuyor',
+    Math.abs(yeniden.z - ayrilirken.z) < 0.01,
+    `${ayrilirken.z} → ${yeniden.z}`,
+  );
 }
 
 await page.screenshot({ path: `${process.env.CIKTI ?? 'ekran-goruntuleri'}/sehir.png` });

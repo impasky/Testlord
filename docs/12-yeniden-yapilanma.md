@@ -442,7 +442,9 @@ bölge ayrıca keskin çiziliyor (docs/24 "Yakınlaştırma"). Sonra: **"köylü
 ve bayraklar da yakında keskin olsun"** — yama ikinci aşamada kendi
 bölgesindeki canlı parçaları da kendi çözünürlüğünde oynatıyor. Ardından:
 **"yakınlığı Şehir'e dönünce de korusun"** — bir yapıya girip dönen
-oyuncu bıraktığı yerde ve yakınlıkta, yama da hemen keskin.
+oyuncu bıraktığı yerde ve yakınlıkta, yama da hemen keskin. **"Kalıcı
+olarak da saklasın"**: görünüm cihazda; uygulamayı kapatıp açan da aynı
+yerde.
 
 ### 6.1 Diyar haritası — gruplar yazı ızgarasından çıktı
 

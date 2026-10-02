@@ -23,16 +23,64 @@ export const DUGME_ADIMI = 1.5;
 /** Hareket durduktan sonra görünen bölgenin bildirilmesi (ms). */
 const DURMA_MS = 220;
 
-/**
- * Son görünüm: yakınlık ve ekranın ortasındaki nokta (sahnenin oranı).
- * Oyuncu: "yakınlığı Şehir'e dönünce de korusun." Bir yapıya girip
- * dönen oyuncu bıraktığı yerde, bıraktığı yakınlıkta; sekme açık kaldıkça.
- */
-let SON_GORUNUM: { z: number; merkez: [number, number] } | null = null;
+export interface Gorunum {
+  z: number;
+  /** Ekranın ortasındaki nokta, sahnenin oranı (0–1). */
+  merkez: [number, number];
+}
 
-/** Saklı görünüm (yoksa null). */
-export function sonGorunum(): { z: number; merkez: [number, number] } | null {
+/** Cihazda saklanan görünümün anahtarı (haritanın merceği gibi). */
+export const GORUNUM_ANAHTARI = 'lordlar_sehir_gorunum';
+
+/**
+ * Saklı görünümü okur; bozuk, eski biçimli ya da sınır dışı değer yok
+ * sayılıyor (elle düzenlenmiş ya da başka sürümden kalmış depo).
+ */
+export function gorunumOku(ham: string | null): Gorunum | null {
+  if (!ham) return null;
+  try {
+    const g = JSON.parse(ham) as Partial<Gorunum>;
+    const [x, y] = Array.isArray(g.merkez) ? g.merkez : [];
+    const sayi = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v);
+    if (!sayi(g.z) || !sayi(x) || !sayi(y)) return null;
+    if (g.z <= 0 || g.z > EN_YAKIN || x < 0 || x > 1 || y < 0 || y > 1) return null;
+    return { z: g.z, merkez: [x, y] };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Son görünüm: yakınlık ve ekranın ortasındaki nokta. Oyuncu: "yakınlığı
+ * Şehir'e dönünce de korusun", sonra "kalıcı olarak da saklasın". Bir
+ * yapıya girip dönen de, uygulamayı kapatıp açan da bıraktığı yerde ve
+ * yakınlıkta. Cihazda saklanıyor; depo kapalıysa (gizli sekme) sekme açık
+ * kaldıkça.
+ */
+let SON_GORUNUM: Gorunum | null | undefined;
+
+/** Saklı görünüm (yoksa null). İlk çağrıda cihazdan okunuyor. */
+export function sonGorunum(): Gorunum | null {
+  if (SON_GORUNUM === undefined) {
+    try {
+      SON_GORUNUM = gorunumOku(localStorage.getItem(GORUNUM_ANAHTARI));
+    } catch {
+      SON_GORUNUM = null;
+    }
+  }
   return SON_GORUNUM;
+}
+
+function gorunumYaz(g: Gorunum) {
+  SON_GORUNUM = g;
+  try {
+    localStorage.setItem(
+      GORUNUM_ANAHTARI,
+      JSON.stringify({ z: +g.z.toFixed(3), merkez: g.merkez.map((v) => +v.toFixed(4)) }),
+    );
+  } catch {
+    /* gizli sekme ya da dolu depo: sekme açık kaldıkça yine hatırlanıyor */
+  }
 }
 
 /** Kabı dolduran en uzak yakınlık: yerleşkenin kenarından öte boşluk görünmesin. */
@@ -63,7 +111,7 @@ export function useYerleskeYakinligi(
   sahneBoy: number,
   etkin: boolean,
 ) {
-  const [z, setZ] = useState(() => SON_GORUNUM?.z ?? 1);
+  const [z, setZ] = useState(() => sonGorunum()?.z ?? 1);
   const zRef = useRef(z);
   const [gorunen, setGorunen] = useState<[number, number, number, number] | null>(null);
   /** Kabı dolduran en uzak yakınlık (kap boyu değişince yeniden). */
@@ -87,7 +135,7 @@ export function useYerleskeYakinligi(
       );
       setGorunen((g) => (g && g.every((x, i) => Math.abs(x - o[i]!) < 1e-3) ? g : o));
       setUzak(enUzak(k.clientWidth, k.clientHeight, sahneEn, sahneBoy));
-      SON_GORUNUM = { z: zRef.current, merkez: [o[0] + o[2] / 2, o[1] + o[3] / 2] };
+      gorunumYaz({ z: zRef.current, merkez: [o[0] + o[2] / 2, o[1] + o[3] / 2] });
     }, DURMA_MS);
   }, [kaydirici, sahneEn, sahneBoy]);
 
@@ -144,8 +192,9 @@ export function useYerleskeYakinligi(
     (varsayilan: [number, number], dikey: number) => {
       const k = kaydirici.current;
       if (!k) return;
-      const [x, y] = SON_GORUNUM?.merkez ?? varsayilan;
-      const my = k.clientHeight * (SON_GORUNUM ? 0.5 : dikey);
+      const sakli = sonGorunum();
+      const [x, y] = sakli?.merkez ?? varsayilan;
+      const my = k.clientHeight * (sakli ? 0.5 : dikey);
       uygula(zRef.current, x * sahneEn, y * sahneBoy, k.clientWidth / 2, my);
       bitir();
     },

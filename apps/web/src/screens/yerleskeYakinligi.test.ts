@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EN_YAKIN, enUzak, gorunenOran } from './yerleskeYakinligi';
+import { EN_YAKIN, enUzak, gorunenOran, gorunumOku } from './yerleskeYakinligi';
 
 describe('yerleşke yakınlığı', () => {
   it('en uzak: kabı dolduruyor, kenardan öte boşluk yok; 1’den büyük değil', () => {
@@ -22,5 +22,20 @@ describe('yerleşke yakınlığı', () => {
     expect(iki[1]).toBeCloseTo(0.5);
     expect(iki[2]).toBeCloseTo(bir[2] / 2);
     expect(gorunenOran(0, 0, 2000, 2000, 768, 800, 1).slice(2)).toEqual([1, 1]);
+  });
+
+  it('saklı görünüm: geçerli değer okunuyor; bozuk, eksik ya da sınır dışı olan yok sayılıyor', () => {
+    expect(gorunumOku(JSON.stringify({ z: 2.25, merkez: [0.4, 0.6] }))).toEqual({
+      z: 2.25,
+      merkez: [0.4, 0.6],
+    });
+    expect(gorunumOku(null)).toBeNull();
+    expect(gorunumOku('{bozuk')).toBeNull();
+    expect(gorunumOku(JSON.stringify({ z: 2 }))).toBeNull();
+    expect(gorunumOku(JSON.stringify({ z: 'iki', merkez: [0.5, 0.5] }))).toBeNull();
+    expect(gorunumOku(JSON.stringify({ z: EN_YAKIN + 1, merkez: [0.5, 0.5] }))).toBeNull();
+    expect(gorunumOku(JSON.stringify({ z: 0, merkez: [0.5, 0.5] }))).toBeNull();
+    expect(gorunumOku(JSON.stringify({ z: 1, merkez: [1.5, 0.5] }))).toBeNull();
+    expect(gorunumOku(JSON.stringify({ z: 1, merkez: [0.5, null] }))).toBeNull();
   });
 });

@@ -515,8 +515,11 @@ kaydırıyor.
   çizilmiyor; aynı işi yeniden isteyen varsa eskisinin vazgeçişi onu
   düşürmüyor (her çağıran bir ilgi bırakıyor). SVG yedeğinde yama yok:
   çokgenler zaten vektör. Şehir'e dönünce yakınlık ve bakılan nokta
-  korunuyor (`sonGorunum`, sekme açık kaldıkça; yakınlık kaba göre yeniden
-  sınırlanıyor). Sahne kapanınca son yama bırakılmıyor, tek bir yuvada
+  korunuyor (`sonGorunum`; yakınlık kaba göre yeniden sınırlanıyor);
+  cihazda da saklanıyor (`lordlar_sehir_gorunum`, haritanın merceği gibi):
+  uygulama kapanıp açılınca da aynı yerde. Bozuk ya da sınır dışı değer
+  yok sayılıyor (`gorunumOku`); depo kapalıysa (gizli sekme) sekme açık
+  kaldıkça. Sahne kapanınca son yama bırakılmıyor, tek bir yuvada
   bekliyor (`SAKLI`): dönüşte yeniden çizilmeden hemen keskin; parçalı
   aşaması gelmeden kapandıysa durağanı önbellekten, parçalısı yeniden.
 
