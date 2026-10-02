@@ -67,8 +67,10 @@ export interface GlIstek {
   /**
    * Yakınlık yaması (yerleşke yakınlaşınca, bkz. `Sahne.yama`): canlı
    * sahnenin bir parçası, ana resmi gibi kuruluyor — salınan parça, canlı
-   * figür ve duman YOK (onlar sahnenin katmanlarında oynuyor, yamanın
-   * üstünde). Katman üretilmiyor.
+   * figür ve duman ana resimde YOK. Su, ışık, çimen katmanı ve duman
+   * üretilmiyor (sahneninkiler yamanın üstünde). `hareket` ile birlikte
+   * yalnız parçaların kare atlası: yamaya giren köylü ve bayraklar
+   * yamanın çözünürlüğünde oynuyor.
    */
   yama?: boolean;
   /** Bir CSS pikselinin çıktıdaki karşılığı: kenar çizgisinin kalınlığı. */
@@ -124,12 +126,12 @@ function iscide(i: Worker, istek: IsciIstegi): Promise<IsciCevabi> {
 async function ciz(istek: GlIstek): Promise<CizimSonucu | null> {
   // Model işçiye gitmiyor (yalnız ağı ya da tarifi): kopyalanması büyük
   // sahnede pahalı.
-  const { model, ag, tarif, yama, ...geri } = istek;
+  const { model, ag, tarif, ...geri } = istek;
   const h = istek.hareket;
-  const parcasiz = h || yama;
+  const parcasiz = h || istek.yama;
   let dumanlar: DumanKaynagi[] | undefined;
   const kur = (m: Model) => {
-    if (h) dumanlar = dumanKaynaklari(m, istek.kamera);
+    if (h && !istek.yama) dumanlar = dumanKaynaklari(m, istek.kamera);
     return {
       ag: agYap(m, istek.kamera, { dumansiz: parcasiz, bayraksiz: parcasiz }),
       bayrak: h ? bayrakKareleri(m, istek.kamera) : undefined,
@@ -147,7 +149,7 @@ async function ciz(istek: GlIstek): Promise<CizimSonucu | null> {
     const gidecek: IsciIstegi = ag
       ? { ...geri, ag, yazilimaIzin: yazilim }
       : tarif && !model
-        ? { ...geri, tarif, yama, yazilimaIzin: yazilim }
+        ? { ...geri, tarif, yazilimaIzin: yazilim }
         : { ...geri, ...aktarilabilir(modelden()), yazilimaIzin: yazilim };
     const cevap = await iscide(i, gidecek);
     if (!cevap.yok) {
@@ -337,25 +339,26 @@ export function glCiz(
   istek: () => GlIstek,
   secenek: { sonra?: boolean; istenmiyor?: () => boolean } = {},
 ): Promise<string | null> {
+  // Aynı işi bekleyen her çağıran bir ilgi bırakıyor; iş ancak hepsi
+  // vazgeçtiyse atlanıyor (yeniden isteyen eskisinin vazgeçişine takılmasın).
+  const ilgisi = secenek.istenmiyor ?? (() => false);
   const var_ = ONBELLEK.get(anahtar);
   if (var_) {
-    if (secenek.istenmiyor) ILGI.get(anahtar)?.push(secenek.istenmiyor);
+    ILGI.get(anahtar)?.push(ilgisi);
     return var_;
   }
+  const ilgi = [ilgisi];
+  ILGI.set(anahtar, ilgi);
   let is: Promise<string | null>;
   if (secenek.sonra) {
-    const ilgi = secenek.istenmiyor ? [secenek.istenmiyor] : [() => false];
-    ILGI.set(anahtar, ilgi);
     is = new Promise((coz) => sonrakiler.push({ anahtar, istek, ilgi, coz }));
-    void is.then(() => ILGI.delete(anahtar));
     sonrakiniBaslat();
   } else {
     oncelikli++;
     // Sırası gelince isteyen kalmadıysa (yakınlık yaması: oyuncu çoktan
     // başka yere kaydı) çizilmiyor.
-    const vazgec = secenek.istenmiyor;
     is = sirayaKoy(() => {
-      if (!vazgec?.()) return calistir(istek);
+      if (!ilgi.every((istenmiyor) => istenmiyor())) return calistir(istek);
       ONBELLEK.delete(anahtar);
       return Promise.resolve(null);
     });
@@ -364,6 +367,9 @@ export function glCiz(
       sonrakiniBaslat();
     });
   }
+  void is.then(() => {
+    if (ILGI.get(anahtar) === ilgi) ILGI.delete(anahtar);
+  });
   ONBELLEK.set(anahtar, is);
   return is;
 }

@@ -498,13 +498,23 @@ kaydırıyor.
   bölge her yanından %15 payla, ekrandaki boyunun piksel yoğunluğunda
   ayrıca çiziliyor ve ana resmin üstüne oturuyor (yakınlık yaması). Yama
   canlı resmin ana resmi gibi kuruluyor (`GlIstek.yama`: salınan parça,
-  canlı figür, duman yok; onlar katmanlarda, yamanın üstünde oynuyor),
-  ortam gölgesi bütün sahnenin yarıçapıyla (`aoYaricapi`), kenar çizgisi
-  düzen pikselinde: dikişte ana resimle aynı. Ancak ana resimden belirgin
-  yoğunsa (1,25 kat) çiziliyor; bölge eldeki yamanın içinde kaldıkça
-  yeniden çizilmiyor, yenisi gelince eskisi bellekten bırakılıyor
-  (`glBirak`), sırası gelince istenmeyen yama hiç çizilmiyor. SVG
-  yedeğinde yama yok: çokgenler zaten vektör.
+  canlı figür, duman yok — atlasa giremeseler de durağan çizilmiyor; su,
+  ışık, çimen katmanı ve duman sahneninki), ortam gölgesi bütün sahnenin
+  yarıçapıyla (`aoYaricapi`), kenar çizgisi düzen pikselinde: dikişte ana
+  resimle aynı. İki aşama: önce durağan yama (hızlı), sonra aynı bölge
+  `hareket` ile — yamaya giren köylü, at, bayrak ve ağaçların kare atlası
+  yamanın çözünürlüğünde (oyuncu: "köylüler ve bayraklar da yakında
+  keskin olsun"). Sahnenin katmanı o parçaların kendi kopyasını gizliyor
+  (aynı model, aynı sıra; kurulu kalıyor), yamanınki yamanın
+  dikdörtgeninde oynuyor; taşan yer görünen bölgenin dışında. Karelerin
+  evresi sayfanın saatinden: sahnedeki ve yamadaki kopya (ya da yerine
+  gelen yeni yama) aynı karede, köylü sıçramıyor. Yama ancak ana resimden
+  belirgin yoğunsa (1,25 kat) çiziliyor; bölge eldeki ya da yoldaki
+  yamanın içinde kaldıkça yeniden istenmiyor, yenisi gelince eskisi
+  bellekten bırakılıyor (`glBirak`). Sırası gelince isteyeni kalmayan iş
+  çizilmiyor; aynı işi yeniden isteyen varsa eskisinin vazgeçişi onu
+  düşürmüyor (her çağıran bir ilgi bırakıyor). SVG yedeğinde yama yok:
+  çokgenler zaten vektör.
 
 Kutu bir ızgara sarmalayıcısına geçiyor: resim ve katmanlar aynı hücrede
 üst üste, çağıranın sınıfları sarmalayıcıda. Katman dikdörtgeni ölçülüyor

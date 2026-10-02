@@ -44,18 +44,19 @@ function modelAl(tarif: string): Model {
 
 function hazirla(istek: IsciIstegi): { c: CizimIstegi; dumanlar?: DumanKaynagi[] } {
   if (!('tarif' in istek)) return { c: istek };
-  const { tarif, yama, ...geri } = istek;
+  const { tarif, ...geri } = istek;
   const model = modelAl(tarif);
   const h = istek.hareket;
   // Yama, canlı sahnenin ana resmi gibi: salınan parça ve duman katmanlarda.
-  const parcasiz = h || yama;
+  const parcasiz = h || istek.yama;
   return {
     c: {
       ...geri,
       ag: agYap(model, istek.kamera, { dumansiz: parcasiz, bayraksiz: parcasiz }),
       bayrak: h ? bayrakKareleri(model, istek.kamera) : undefined,
     },
-    dumanlar: h ? dumanKaynaklari(model, istek.kamera) : undefined,
+    // Yamanın dumanı yok: sahnenin kendi dumanı onun üstünde yükseliyor.
+    dumanlar: h && !istek.yama ? dumanKaynaklari(model, istek.kamera) : undefined,
   };
 }
 

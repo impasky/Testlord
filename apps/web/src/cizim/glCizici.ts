@@ -1115,6 +1115,13 @@ export interface CizimIstegi {
    * `bayraksiz` kurulmuş olmalı: kumaş ana resimde yok, atlasta dalgalanıyor.
    */
   bayrak?: BayrakKareleri;
+  /**
+   * Yakınlık yaması (bkz. `GlIstek.yama`): salınan parçalar atlasa
+   * giremese de ana resme durağan çizilmiyor (sahnenin kendi katmanında
+   * oynuyorlar); su, ışık, çimen katmanı çizilmiyor (sahneninkiler yamanın
+   * üstünde). `hareket` ile yalnız parçaların atlası.
+   */
+  yama?: boolean;
   /** Bir CSS pikselinin çıktıdaki karşılığı: kenar çizgisinin kalınlığı. */
   olcek: number;
 }
@@ -1243,13 +1250,7 @@ async function blobla(tuval: Tuval): Promise<Blob | null> {
  * Tarifte model, ağ, bayrak kareleri ve duman kaynakları işçide kuruluyor
  * (`tarif.ts`); ana iş parçacığına yalnız bir dizge düşüyor.
  */
-export type IsciIstegi =
-  | CizimIstegi
-  | (Omit<CizimIstegi, 'ag' | 'bayrak'> & {
-      tarif: string;
-      /** Yakınlık yaması: ağ hareketli sahnenin ana resmi gibi kuruluyor (bkz. `GlIstek.yama`). */
-      yama?: boolean;
-    });
+export type IsciIstegi = CizimIstegi | (Omit<CizimIstegi, 'ag' | 'bayrak'> & { tarif: string });
 
 /** İşçinin cevabı: resim, ya da "burada WebGL2 yok" (ağ geri aktarılıyor). */
 export interface IsciCevabi {
@@ -1428,8 +1429,9 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
     gl.bindVertexArray(t.vao);
     gl.drawArrays(gl.TRIANGLES, 0, t.say);
   }
-  // Salınan parçalar atlasa giremediyse burada, durağan.
-  if (!plan && ag.bez.length) {
+  // Salınan parçalar atlasa giremediyse burada, durağan (yamada değil:
+  // onlar sahnenin katmanında).
+  if (!plan && ag.bez.length && !istek.yama) {
     const t = tampon(gl, ag.bez);
     silinecek.push(t.sil);
     gl.enable(gl.DEPTH_TEST);
@@ -1556,7 +1558,7 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
     [1, 'isik', ag.isimaVar],
     [2, 'cimen', ag.cimenVar],
   ] as const) {
-    if (!var_) continue;
+    if (!var_ || istek.yama) continue;
     gl.bindFramebuffer(gl.FRAMEBUFFER, tilt ? k.araFbo : null);
     gl.viewport(0, 0, en, boy);
     gl.useProgram(k.katman);

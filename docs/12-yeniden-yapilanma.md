@@ -438,7 +438,9 @@ Ardından: ayrıntı vardı ama sayfa ölçeğinde seçilmiyordu. Yerleşke art�
 yakınlaşıyor: iki parmakla kıstırma, Ctrl + tekerlek (dokunmatik yüzeyde
 kıstırma) ve sol alttaki −/+ düğmeleri; en uzakta bütün köy ekrana
 sığıyor, en yakında (3×) bir figür ~90 piksel. Yakında ekranda görünen
-bölge ayrıca keskin çiziliyor (docs/24 "Yakınlaştırma").
+bölge ayrıca keskin çiziliyor (docs/24 "Yakınlaştırma"). Sonra: **"köylüler
+ve bayraklar da yakında keskin olsun"** — yama ikinci aşamada kendi
+bölgesindeki canlı parçaları da kendi çözünürlüğünde oynatıyor.
 
 ### 6.1 Diyar haritası — gruplar yazı ızgarasından çıktı
 

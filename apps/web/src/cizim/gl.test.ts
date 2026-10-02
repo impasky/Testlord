@@ -517,4 +517,19 @@ describe('çizim sırası (glCiz)', () => {
     await glCiz('deneme|vazgecildi', istek, { istenmiyor: () => (ikinci++, true) });
     expect(ikinci).toBe(1);
   });
+
+  it('vazgeçen eski isteyen, aynı işi hâlâ bekleyen yenisini boşa düşürmüyor', async () => {
+    let kuruldu = 0;
+    const istek = () => {
+      kuruldu++;
+      return { kutu: [0, 0, 1, 1] as [number, number, number, number], en: 1, boy: 1, olcek: 1 };
+    };
+    // Eski oturum (vazgeçti) ve aynı bölgeyi yeniden isteyen yeni oturum aynı sözü alıyor.
+    const eski = glCiz('deneme|yeniden', istek, { istenmiyor: () => true });
+    const yeni = glCiz('deneme|yeniden', istek, { istenmiyor: () => false });
+    expect(yeni).toBe(eski);
+    await yeni;
+    // İş çizilmeye girdi (burada WebGL yok, sonuç boş; önemli olan atlanmaması).
+    expect(kuruldu).toBe(1);
+  });
 });

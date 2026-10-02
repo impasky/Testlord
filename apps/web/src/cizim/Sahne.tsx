@@ -258,10 +258,21 @@ interface Yama {
   is: string;
   url: string;
   kutu: Kutu;
-  /** Ekrandaki bir CSS pikseline düşen resim pikseli. */
-  yogunluk: number;
   /** Canlı sahnenin ana resmi gibi mi (salınan parçasız); bkz. `GlIstek.yama`. */
   hareketli: boolean;
+  /** İkinci aşama: yamaya giren salınan parçaların kendi kare atlası. */
+  katman?: Katmanlar;
+}
+
+/** Bir yama oturumu: aynı bölgenin önce durağan, sonra parçalı resmi. */
+interface YamaOturumu {
+  iptal: boolean;
+  anahtar: string;
+  kutu: Kutu;
+  yogunluk: number;
+  hareketli: boolean;
+  /** Bu oturumun istediği işler: vazgeçilen eski oturum onları bırakmasın. */
+  isler: Set<string>;
 }
 
 const icinde = (a: Kutu, b: Kutu) =>
@@ -273,9 +284,16 @@ const icinde = (a: Kutu, b: Kutu) =>
 /**
  * Görünen bölgenin keskin resmi (bkz. `Sahne.yama`). Bölge ana resimden
  * belirgin daha yoğun çizilebiliyorsa, payıyla birlikte ekrandaki boyunun
- * piksel yoğunluğunda çiziliyor (en fazla `EN_BUYUK`). Bölge eldeki yamanın
- * içinde kaldıkça ve yoğunluk yetiyorsa yeniden çizilmiyor: küçük
- * kaydırmalar bedava. Yenisi gelince eskisi bellekten bırakılıyor.
+ * piksel yoğunluğunda çiziliyor (en fazla `EN_BUYUK`).
+ *
+ * Canlı sahnede iki aşama: önce durağan resim (hızlı; salınan parça yok,
+ * sahnenin katmanı onları ana resmin çözünürlüğünde oynatıyor), sonra
+ * aynı bölge yamaya giren köylü ve bayrakların kare atlasıyla — onlar da
+ * yamanın çözünürlüğünde oynuyor, sahnedeki kopyaları gizleniyor.
+ *
+ * Bölge eldeki (ya da yolda olan) yamanın içinde kaldıkça ve yoğunluk
+ * yetiyorsa yeniden istenmiyor: küçük kaydırmalar bedava. Yenisi gelince
+ * eskisi bellekten bırakılıyor; vazgeçilen yama sırası gelince çizilmiyor.
  */
 function useYama(
   etkin: boolean,
@@ -294,16 +312,22 @@ function useYama(
   const [yama, setYama] = useState<Yama | null>(null);
   const guncel = useRef({ uret, kamera, yama });
   guncel.current = { uret, kamera, yama };
-  /** Son istenen yamanın işi: eski isteğin geç gelen sonucu onu bırakmasın. */
-  const istenen = useRef<string | null>(null);
+  const oturum = useRef<YamaOturumu | null>(null);
   /** Sahne kapandı: yolda olan yama gelince de bırakılıyor. */
   const kapandi = useRef(false);
   const gorunenAnahtar = gorunen?.map((x) => x.toFixed(2)).join(',') ?? '';
 
   useEffect(() => {
     const el = ref.current;
+    const vazgec = () => {
+      if (oturum.current) oturum.current.iptal = true;
+      oturum.current = null;
+    };
     if (!etkin || !el || !gorunen || !tabanEn) {
-      if (!gorunen) setYama(null);
+      if (!gorunen) {
+        vazgec();
+        setYama(null);
+      }
       return;
     }
     const [vx, vy, vw, vh] = v;
@@ -343,52 +367,68 @@ function useYama(
     const yogunluk = en / (k[2] * ekranBirim);
     if (yogunluk < tabanYogunluk * YAMA_KAZANC) {
       // Uzaktan ana resim yetiyor.
+      vazgec();
       setYama(null);
       return;
     }
-    const eldeki = guncel.current.yama;
+    const o = oturum.current;
     if (
-      eldeki &&
-      eldeki.is.startsWith(anahtar + '|yama|') &&
-      eldeki.hareketli === hareketli &&
-      icinde(eldeki.kutu, g) &&
-      eldeki.yogunluk >= yogunluk * 0.85
+      o &&
+      o.anahtar === anahtar &&
+      o.hareketli === hareketli &&
+      icinde(o.kutu, g) &&
+      o.yogunluk >= yogunluk * 0.85
     )
       return;
-    const is = `${anahtar}|yama|${k.map((x) => x.toFixed(2)).join(',')}|${en}x${boy}|${hareketli ? 'h' : ''}|${sicak ?? ''}|${tilt ?? ''}`;
-    istenen.current = is;
-    let iptal = false;
-    const { uret: u, kamera: kam } = guncel.current;
-    void glCiz(
-      is,
-      () => ({
-        ...(tarif ? { tarif: anahtar } : { model: modelAl(anahtar, u) }),
-        kamera: kam,
-        kutu: k,
-        en,
-        boy,
-        // Kenar çizgisi düzen pikselinde: yakınlaşınca ana resimle aynı oranda kalınlaşıyor.
-        olcek: en / (k[2] * duzenBirim),
-        ao: aoYaricapi(v),
-        tilt,
-        sicak,
-        yama: hareketli,
-      }),
-      { istenmiyor: () => iptal },
-    ).then(async (url) => {
-      if (!url) return;
-      await glOnYukle(url);
-      if (iptal) {
-        const bekleniyor = istenen.current === is || guncel.current.yama?.is === is;
-        if (kapandi.current || !bekleniyor) glBirak(is);
-        return;
-      }
-      setYama({ is, url, kutu: k, yogunluk, hareketli });
-    });
-    return () => {
-      iptal = true;
+    vazgec();
+    const yeni: YamaOturumu = {
+      iptal: false,
+      anahtar,
+      kutu: k,
+      yogunluk,
+      hareketli,
+      isler: new Set(),
     };
-    // `v` ve `gorunen` içerik olarak anahtarlarda.
+    oturum.current = yeni;
+    const { uret: u, kamera: kam } = guncel.current;
+    const taban = `${anahtar}|yama|${k.map((x) => x.toFixed(2)).join(',')}|${en}x${boy}|${sicak ?? ''}|${tilt ?? ''}`;
+    const iste = async (parcali: boolean): Promise<boolean> => {
+      const is = taban + (parcali ? '|parcali' : hareketli ? '|h' : '');
+      yeni.isler.add(is);
+      const url = await glCiz(
+        is,
+        () => ({
+          ...(tarif ? { tarif: anahtar } : { model: modelAl(anahtar, u) }),
+          kamera: kam,
+          kutu: k,
+          en,
+          boy,
+          // Kenar çizgisi düzen pikselinde: yakınlaşınca ana resimle aynı oranda kalınlaşıyor.
+          olcek: en / (k[2] * duzenBirim),
+          ao: aoYaricapi(v),
+          tilt,
+          sicak,
+          yama: hareketli,
+          hareket: parcali,
+        }),
+        { istenmiyor: () => yeni.iptal },
+      );
+      if (url) await glOnYukle(url);
+      if (!url || yeni.iptal || kapandi.current) {
+        // Gösterilmeyecek: başka bir canlı oturum aynı işi beklemiyorsa bırak.
+        const bekleyen = !kapandi.current && oturum.current?.isler.has(is);
+        if (url && !bekleyen && guncel.current.yama?.is !== is) glBirak(is);
+        return false;
+      }
+      setYama({ is, url, kutu: k, hareketli, katman: parcali ? glKatmanlari(url) : undefined });
+      return true;
+    };
+    void (async () => {
+      if (!(await iste(false)) || !hareketli) return;
+      await iste(true);
+    })();
+    // `v` ve `gorunen` içerik olarak anahtarlarda. Oturum etkiyle değil,
+    // yerine yenisi gelince ya da sahne kapanınca bitiyor.
   }, [etkin, anahtar, tarif, gorunenAnahtar, tabanEn, hareketli, tilt, sicak, ref]);
 
   // Yerine yenisi geçen yama bırakılıyor; sahne kapanınca sonuncusu da.
@@ -402,6 +442,8 @@ function useYama(
     kapandi.current = false;
     return () => {
       kapandi.current = true;
+      if (oturum.current) oturum.current.iptal = true;
+      oturum.current = null;
       if (gosterilen.current) glBirak(gosterilen.current.is);
       gosterilen.current = null;
     };
@@ -591,10 +633,16 @@ function HareketKatmani({
   v,
   kirp,
   katman,
+  yama,
 }: {
   v: [number, number, number, number];
   kirp: boolean;
   katman: Katmanlar | undefined;
+  /**
+   * Yakınlık yamasının parça atlası (bkz. `useYama`): yamaya giren parçalar
+   * onun çözünürlüğünde oynuyor, sahnedeki kopyaları gizli.
+   */
+  yama?: { kutu: Kutu; bayrak: NonNullable<Katmanlar['bayrak']> };
 }) {
   const ref = useRef<HTMLSpanElement>(null);
   const [olcu, setOlcu] = useState<[number, number] | null>(null);
@@ -626,6 +674,8 @@ function HareketKatmani({
     return () => ro.disconnect();
   }, []);
 
+  // Yamanın atlasında yeri olan parçalar sahnede gizli (aynı model, aynı sıra).
+  const gizli = yama?.bayrak.kutular.map(([, , w, h]) => w > 0 && h > 0);
   let icerik: React.ReactNode = null;
   if (olcu && olcu[0] > 1 && olcu[1] > 1) {
     const [W, H] = olcu;
@@ -661,7 +711,24 @@ function HareketKatmani({
               style={m ? maske(m, `${ISIK_KARO}px`, 'repeat') : undefined}
             />
           ))}
-        {katman?.bayrak && <Bayraklar b={katman.bayrak} o={(vw * s) / katman.bayrak.en} />}
+        {katman?.bayrak && (
+          <Bayraklar b={katman.bayrak} o={(vw * s) / katman.bayrak.en} gizli={gizli} />
+        )}
+        {yama && (
+          // Yamanın dikdörtgeni: parça yamanın dışına taşarsa orada kesiliyor
+          // (yama görünen bölgeden geniş; taşan yer ekranın dışında).
+          <span
+            className="hareket-yama"
+            style={{
+              left: (yama.kutu[0] - vx) * s,
+              top: (yama.kutu[1] - vy) * s,
+              width: yama.kutu[2] * s,
+              height: yama.kutu[3] * s,
+            }}
+          >
+            <Bayraklar b={yama.bayrak} o={(yama.kutu[2] * s) / yama.bayrak.en} />
+          </span>
+        )}
         {dumanlar.map((d, i) =>
           Array.from({ length: DUMAN_ADET }, (_, j) => (
             <span
@@ -710,8 +777,20 @@ function HareketKatmani({
  * bir katmandı; ağaçlı bir zeminde yirmi üç parça ~74 megapiksellik katman
  * demekti ve telefonun GPU belleği tükenip sayfa takılıyordu.
  */
-function Bayraklar({ b, o }: { b: NonNullable<Katmanlar['bayrak']>; o: number }) {
+function Bayraklar({
+  b,
+  o,
+  gizli,
+}: {
+  b: NonNullable<Katmanlar['bayrak']>;
+  o: number;
+  /** Gizlenen parçalar (yamada oynayanlar): kurulu kalıyor, evresi kaymıyor. */
+  gizli?: boolean[];
+}) {
   const duzen = atlasDuzeni(b.kutular, b.kareSayilari);
+  // Evre sayfanın saatinden: aynı parçanın sahnedeki ve yamadaki kopyası
+  // (ya da yerine gelen yeni yama) aynı karede; yama değişince köylü sıçramıyor.
+  const [t0] = useState(() => performance.now() / 1000);
   return (
     <>
       {b.kutular.map(([x, y, w, h], i) => {
@@ -721,7 +800,7 @@ function Bayraklar({ b, o }: { b: NonNullable<Katmanlar['bayrak']>; o: number })
         const satir = k / sutun;
         const sure = b.sureler[i]!;
         // Her biri ayrı evrede: rüzgâr hepsini aynı anda savurmasın.
-        const gecikme = `${(-((i * 0.29) % 1) * sure).toFixed(2)}s`;
+        const gecikme = `${(-((t0 + ((i * 0.29) % 1) * sure) % sure)).toFixed(3)}s`;
         const serit = (
           <span
             style={
@@ -743,7 +822,13 @@ function Bayraklar({ b, o }: { b: NonNullable<Katmanlar['bayrak']>; o: number })
           <span
             key={i}
             className="hareket-bayrak"
-            style={{ left: x * o, top: y * o, width: w * o, height: h * o }}
+            style={{
+              left: x * o,
+              top: y * o,
+              width: w * o,
+              height: h * o,
+              visibility: gizli?.[i] ? 'hidden' : undefined,
+            }}
           >
             {satir > 1 ? (
               // Uzun tur (canlı parça) atlasta satır satır: şerit bir
@@ -912,6 +997,9 @@ export const Sahne = memo(function Sahne({
     () => setGpuYok(true),
   );
   const katman = glKatmanlari(resim);
+  // Canlı resimde salınan parçalar atlasta (atlas kurulamadıysa resmin
+  // içinde): yama da öyle olmalı.
+  const parcalarKatmanda = canli && katman?.bayrak !== undefined;
   const yamaResmi = useYama(
     gpu && yama !== undefined,
     anahtar,
@@ -921,12 +1009,12 @@ export const Sahne = memo(function Sahne({
     v,
     yama,
     resimEni(resim),
-    // Canlı resimde salınan parçalar katmanda: yama da onlarsız olmalı.
-    canli && katman !== undefined,
+    parcalarKatmanda,
     tilt,
     sicak,
     ref,
   );
+  const yamaUygun = yamaResmi && yamaResmi.hareketli === parcalarKatmanda ? yamaResmi : null;
 
   const svg = (
     <svg
@@ -953,13 +1041,13 @@ export const Sahne = memo(function Sahne({
             height={v[3]}
             preserveAspectRatio={YAYILMA}
           />
-          {yamaResmi && yamaResmi.hareketli === (canli && katman !== undefined) && (
+          {yamaUygun && (
             <image
-              href={yamaResmi.url}
-              x={yamaResmi.kutu[0]}
-              y={yamaResmi.kutu[1]}
-              width={yamaResmi.kutu[2]}
-              height={yamaResmi.kutu[3]}
+              href={yamaUygun.url}
+              x={yamaUygun.kutu[0]}
+              y={yamaUygun.kutu[1]}
+              width={yamaUygun.kutu[2]}
+              height={yamaUygun.kutu[3]}
               preserveAspectRatio={YAYILMA}
               data-yama=""
             />
@@ -976,7 +1064,18 @@ export const Sahne = memo(function Sahne({
   return (
     <span className={className} style={{ ...style, display: 'grid', gridTemplate: IZGARA }}>
       {svg}
-      {resim && <HareketKatmani v={v} kirp={kirp} katman={katman} />}
+      {resim && (
+        <HareketKatmani
+          v={v}
+          kirp={kirp}
+          katman={katman}
+          yama={
+            yamaUygun?.katman?.bayrak
+              ? { kutu: yamaUygun.kutu, bayrak: yamaUygun.katman.bayrak }
+              : undefined
+          }
+        />
+      )}
     </span>
   );
 });

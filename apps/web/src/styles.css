@@ -554,6 +554,11 @@ svg g[role='button']:focus-visible > path:first-of-type {
   position: absolute;
   overflow: hidden;
 }
+/* Yakınlık yamasının parçaları: yamanın dikdörtgeninde, dışına taşmadan. */
+.hareket-yama {
+  position: absolute;
+  overflow: hidden;
+}
 .hareket-bayrak > span,
 .hareket-satir > span {
   position: absolute;
