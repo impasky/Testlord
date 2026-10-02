@@ -477,26 +477,27 @@ svg g[role='button']:focus-visible > path:first-of-type {
 }
 
 /*
- * Çimen: rüzgâr dalgası karosu çimen maskesinin (dik ot çizgili) üstünden
- * sola kayıyor (dumanla aynı yön); dalga geçtiği yerde otlar ışığı yakalıyor.
+ * Çimen: rüzgâr dalgası karosu çimen maskesinin (yer ve ot tutamları)
+ * üstünden sola kayıyor (dumanla aynı yön); dalga geçtiği yerde otlar
+ * ışığı yakalıyor.
  */
 .hareket-cimen {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  opacity: 0.32;
+  opacity: 0.38;
 }
 .hareket-cimen-a {
   position: absolute;
-  inset: 0 -512px 0 0;
+  inset: 0 -640px 0 0;
   background-repeat: repeat;
-  background-size: 512px 256px;
+  background-size: 640px 320px;
   will-change: transform;
   animation: cimen-es 12s linear infinite;
 }
 @keyframes cimen-es {
   to {
-    transform: translate3d(-512px, 0, 0);
+    transform: translate3d(-640px, 0, 0);
   }
 }
 

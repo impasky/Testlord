@@ -784,8 +784,12 @@ describe('yerleşke: binalar sahnede, çevre', () => {
   });
 
   it('bina sayfadaki kutusuna oturuyor, zeminde duruyor, plakası yok', () => {
-    const bos = yerlesimModeli('koy');
-    const bina = yerlesimModeli('koy', [KIS]).slice(bos.length);
+    // Yalnız-GPU ayrıntı (çayır, ot, yol kenarı) yapıya göre yer değiştiriyor;
+    // yapının yüzleri geri kalanın sonuna ekleniyor.
+    const bos = yerlesimModeli('koy').filter((y) => !y.gpu);
+    const bina = yerlesimModeli('koy', [KIS])
+      .filter((y) => !y.gpu)
+      .slice(bos.length);
     expect(bina.length).toBeGreaterThan(50);
     expect(bina.some((y) => y.katman === -2)).toBe(false);
     expect(bina.every((y) => y.p.every((q) => q[2] > -0.01))).toBe(true);
@@ -830,9 +834,11 @@ describe('yerleşke: binalar sahnede, çevre', () => {
       const m = yerlesimModeli(k, [{ ad: 'kisla_3', x: 24, y: 95, olcek: 1.05 }]);
       const cimen = m.filter((y) => y.doku === 'cimen');
       expect(cimen.length).toBeGreaterThan(40);
-      // Yalnız yer (katman < 0; GPU'da yer geçişi), yalnız yeşil.
+      // Yalnız yer (katman < 0; GPU'da yer geçişi). Düz plaka ve çayır
+      // yeşil; yalnız-GPU ayrıntının içinde kır çiçekleri de var.
       for (const y of cimen) {
         expect(y.katman ?? 0).toBeLessThan(0);
+        if (y.gpu && y.vn?.length === 4) continue;
         const [r, g] = [parseInt(y.renk.slice(1, 3), 16), parseInt(y.renk.slice(3, 5), 16)];
         expect(g).toBeGreaterThan(r);
       }
@@ -849,6 +855,50 @@ describe('yerleşke: binalar sahnede, çevre', () => {
       y: BINA_YUVALARI[k]![1],
       olcek: 1.2,
     }));
-    expect(yerlesimModeli('metropol', hepsi).length).toBeLessThan(40000);
+    const m = yerlesimModeli('metropol', hepsi);
+    // SVG yedeği (GPU'suz telefon) yalnız-GPU ayrıntıyı çizmiyor: onun bütçesi
+    // eskisi kadar. GPU'da üçgen ucuz, ama yine de sınırlı.
+    expect(m.filter((y) => !y.gpu).length).toBeLessThan(40000);
+    expect(m.length).toBeLessThan(70000);
+  });
+
+  it('çayır: köşe renkli, yalnız GPU; SVG yedeği yalnız-GPU yüzleri çizmiyor', () => {
+    const m = yerlesimModeli('koy');
+    const cayir = m.filter((y) => y.gpu && y.katman === -2);
+    expect(cayir.length).toBeGreaterThan(1000);
+    for (const y of cayir) {
+      expect(y.doku).toBe('cimen');
+      expect(y.vr).toHaveLength(y.p.length);
+    }
+    // Renk geçişli: çayırın köşe renkleri tek ton değil.
+    expect(new Set(cayir.flatMap((y) => y.vr!)).size).toBeGreaterThan(200);
+    // SVG yedeği altındaki düz plakayı görüyor, ızgarayı ve otları değil.
+    expect(ciz(m).cokgenler.length).toBe(ciz(m.filter((y) => !y.gpu)).cokgenler.length);
+    expect(kutusu(m)).toEqual(kutusu(m.filter((y) => !y.gpu)));
+  });
+
+  it('ot tutamları çimende: yola, tarlaya, suya, avluya düşmüyor', () => {
+    const m = yerlesimModeli('koy', [KIS]);
+    const yaprak = m.filter((y) => y.gpu && y.p.length === 3 && y.p[2]![2] > 0.2);
+    expect(yaprak.length).toBeGreaterThan(5000);
+    // Çimen olmayan yer yüzleri (dışbükey; yelpaze üçgenleri).
+    const yer = m.filter((y) => (y.katman ?? 0) < 0 && y.doku !== 'cimen' && !y.gpu);
+    const icinde = (p: V3[], x: number, y: number) => {
+      for (let k = 1; k < p.length - 1; k++) {
+        const [a, b, c] = [p[0]!, p[k]!, p[k + 1]!];
+        const d1 = (x - b[0]) * (a[1] - b[1]) - (a[0] - b[0]) * (y - b[1]);
+        const d2 = (x - c[0]) * (b[1] - c[1]) - (b[0] - c[0]) * (y - c[1]);
+        const d3 = (x - a[0]) * (c[1] - a[1]) - (c[0] - a[0]) * (y - a[1]);
+        if (!((d1 < 0 || d2 < 0 || d3 < 0) && (d1 > 0 || d2 > 0 || d3 > 0))) return true;
+      }
+      return false;
+    };
+    let ihlal = 0;
+    for (let i = 0; i < yaprak.length; i += 17) {
+      const [a, b] = [yaprak[i]!.p[0]!, yaprak[i]!.p[1]!];
+      const [x, y] = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+      if (yer.some((f) => icinde(f.p, x, y))) ihlal++;
+    }
+    expect(ihlal).toBe(0);
   });
 });

@@ -96,6 +96,12 @@ export interface Yuz {
    */
   onde?: number;
   /**
+   * Yalnız GPU (ince ayrıntı: çimendeki ot tutamları). SVG yedeği bu yüzü
+   * çizmiyor: binlerce minik çokgen GPU'suz telefonda sayfayı ağırlaştırırdı,
+   * GPU'da ise üçgen başına maliyet yok denecek kadar az.
+   */
+  gpu?: boolean;
+  /**
    * Duman parçası: bacanın ağzı (kaynak). Hareketli sahnede GPU bu yüzleri
    * çizmiyor; yerine kaynaktan yükselen canlı duman konuyor (bkz.
    * `Sahne.hareket`). SVG ve hareketsiz çizim duman küresini çiziyor.
@@ -812,7 +818,7 @@ export function ciz(model: Model, kamera: Kamera = IZOMETRIK, pay = 1): Cizilmis
   let maxY = -Infinity;
 
   for (const y of model) {
-    if (y.p.length < 3) continue;
+    if (y.p.length < 3 || y.gpu) continue;
     const nrm = normal(y.p);
     let n = nrm;
     if (nokta(nrm, c) <= 1e-6) {
@@ -867,7 +873,7 @@ export function kutusu(
   let maxX = -Infinity;
   let maxY = -Infinity;
   for (const y of model) {
-    if (y.p.length < 3) continue;
+    if (y.p.length < 3 || y.gpu) continue;
     if (nokta(normal(y.p), c) <= 1e-6 && !y.ciftYuz) continue;
     for (const q of y.p) {
       const [px, py] = ekran(q);

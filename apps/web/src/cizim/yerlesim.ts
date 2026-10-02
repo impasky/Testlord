@@ -42,6 +42,7 @@ import {
   sabanPoz,
   seyirci,
 } from './canli';
+import { cayirZemini, otlar, yolKenari } from './cayir';
 import { cevre } from './cevre';
 import { araba, balya } from './kir';
 import { agac, cam, cit, duman, fici, kaya, mesale, palisat } from './parca';
@@ -144,7 +145,7 @@ function duz(m: Model, katman: number): Model {
 
 /** Kırık çizgi yol: köşeleri yuvarlatmak için her düğüme bir disk. */
 function yol(noktalar: [number, number][], gen: number, renk: string, z = 0.02): Model {
-  const m: Model = [];
+  const m: Model = yolKenari(noktalar, gen, renk);
   for (let i = 0; i < noktalar.length - 1; i++)
     m.push(...serit(noktalar[i]!, noktalar[i + 1]!, gen, renk, z));
   for (const [x, y] of noktalar)
@@ -447,7 +448,10 @@ export function yerlesimModeli(kademe: Kademe, binalar: YerlesimBinasi[] = []): 
   const r = rastgele('yerlesim:' + kademe);
   const zemin = ZEMIN_RENGI[kademe] ?? ZEMIN_RENGI.koy;
   const m: Model = [];
-  // Taban: yerleşke çerçevesini taşan geniş bir düzlem (ekran köşelerinden).
+  // Taban: yerleşke çerçevesini taşan düz plaka (SVG yedeği bunu görüyor)
+  // ve üstünde köşe renkli çayır (yalnız GPU, `cayir.ts`).
+  // Rastgele dizisi çayırın kendi tohumunda: buradaki `r` (ağaçların,
+  // serpintinin yeri) kaymasın diye lekelerin çekişleri yerinde kalıyor.
   const [kx, ky, kw, kh] = YERLESIM_KUTUSU;
   const taban = [
     ekrandan(kx - 8, ky - 8),
@@ -455,12 +459,12 @@ export function yerlesimModeli(kademe: Kademe, binalar: YerlesimBinasi[] = []): 
     ekrandan(kx + kw + 8, ky + kh + 8),
     ekrandan(kx + kw + 8, ky - 8),
   ];
-  // Çimen (taban ve çimen lekeleri): hareketli sahnede rüzgârda dalgalanıyor.
-  m.push(...dokula(katmanla(prizma(taban, -1, 1, zemin), -2), 'cimen'));
-  m.push(...dokula(lekeler(r, zemin, 40, 90), 'cimen'));
+  m.push(...dokula(katmanla(prizma(taban, -1, 1, zemin), -2.2), 'cimen'));
+  m.push(...cayirZemini(kademe, YERLESIM_KUTUSU));
+  lekeler(r, zemin, 40, 90);
   const tasli = kademe === 'kale' || kademe === 'metropol';
   if (!tasli) {
-    m.push(...dokula(lekeler(r, zemin, 34), 'cimen'));
+    lekeler(r, zemin, 34);
     // Toprak lekeleri yalnız kampta: köyde ve kasabada kasabanın ortasında
     // anlamsız çamur gölleri gibi duruyordu.
     if (kademe === 'kamp') m.push(...lekeler(r, isikla(P.toprak, 1.05), 12, 28));
@@ -579,6 +583,8 @@ export function yerlesimModeli(kademe: Kademe, binalar: YerlesimBinasi[] = []): 
   // mera, değirmenler, orman (`cevre.ts`).
   m.push(...tarlalar(), ...talimAlani(), ...cevre(kademe, r));
   for (const b of binalar) m.push(...sahneBinasi(b));
+  // En son: çimen görünen her yere ot tutamları (yalnız GPU).
+  m.push(...otlar(m, kademe, YERLESIM_KUTUSU));
   return m;
 }
 

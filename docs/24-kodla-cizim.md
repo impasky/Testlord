@@ -222,7 +222,8 @@ parçacığında da aynı koşuyor. Üç geçiş:
      (`KATMAN_HARE_YARICAP`, `KATMAN_HARE_GUC`).
    - Çimen maskesi: pikselin ne kadarı görünen çimen (yer, malzeme
      `cimen`). Yalın örtü: içine ot gürültüsü işlenince PNG sıkışmıyordu
-     (1000×781'de 805 KB; yalın 99 KB). Ot çizgileri sayfada.
+     (1000×781'de 805 KB; yalın 99 KB). Dokuyu çayırın gerçek ot
+     tutamları veriyor (yer geçişinde, maskenin içinde).
      Sahnede su, ışıyan yüz ya da yerde çimen yoksa o katman hiç çizilmiyor. Ağ
      `dumansiz` kuruluyor: duman yüzleri (`Yuz.duman`) GPU resminde yok.
 6. Salınan ve canlı parçaların atlası (bayrak, sancak, ağaç; talimdeki
@@ -409,14 +410,28 @@ kaydırıyor.
   yazılı; dolu yerler (`doluMu`) serpintiye ve ormana kapalı. Doğa
   durağan: canlılık su, duman, iki çark ve çimenin rüzgârından
   (yerleşkenin canlı katmanları ~9,5 megapiksel, çevreden önceki kadar).
-- Çimen rüzgârda: yerleşkenin tabanı ve çimen lekeleri `doku: 'cimen'`
-  (desen değil, işaret; SVG ve durağan resim değişmiyor). GPU çimen
-  maskesini çıkarıyor; sayfada maskeyle küçük bir ot karosunun
-  (kısa, dik, ince vuruşlar; ekranın piksel yoğunluğunda) kesişimi
-  üstünden rüzgâr karosu kayıyor: rüzgâra dik uzamış iri, yumuşak açık ve
-  koyu lekeler, dumanla aynı yönde (sola) 12 sn'de bir karo. Dalga
-  geçtiği yerde otlar ışığı yakalıyor, arkasında hafifçe gölgeleniyor.
-  Tek katman, yalnız kayma; bina, ağaç, yol ve figür maskede yok
+- Çayır (`cayir.ts`): yerleşkenin zemini köşe renkli bir arazi ızgarası
+  (`arazi`, düz: yapılar havada kalmasın). Geniş koyu ve açık çayır
+  lekeleri, yer yer kuru ot, kasabanın göbeğinde çiğnenmiş açık yeşil,
+  kenarlara doğru koyulaşan orman zemini; GPU köşe renklerini üçgenin
+  içinde ara değerliyor. Üstünde öbek öbek ~3000 ot tutamı (dört ince
+  yaprak, dipte zeminden koyu, uçta açık; köşe normalleri yukarı: dik
+  yaprak yandan ışık alıp kapkara bir çizik gibi okunuyordu) ve seyrek
+  kır çiçeği öbekleri. Yollar ve patikalar çimenle toprak arası bir
+  kenar şeridinin üstünde, geniş toprak yolda silik tekerlek izi.
+  Tutamın yeri model kurulduktan SONRA seçiliyor: çimen olmayan bütün
+  yer yüzleri (yol, tarla, avlu, döşeme, su) bir ızgaraya dökülüyor,
+  tutam (ve kenar payı) hiçbirinin içine düşmüyor; sonradan eklenen yer
+  parçası kendiliğinden saygı görüyor. Bu ayrıntının hepsi yalnız GPU
+  (`Yuz.gpu`): SVG yedeği altındaki düz plakayı ve eski yolları çiziyor,
+  GPU'suz telefonun çokgen sayısı arttırılmadı (köyde ~13,6 bin). GPU'da
+  köy ~49 bin yüz, model ~0,3 sn.
+- Çimen rüzgârda: çayır, tutamlar ve çiçekler `doku: 'cimen'` (desen
+  değil, işaret). GPU çimen maskesini çıkarıyor; sayfada maskenin
+  üstünden rüzgâr karosu kayıyor: rüzgâra dik uzamış iri, çok yumuşak
+  açık bantlar ve aralarında hafif gölge, dumanla aynı yönde (sola)
+  12 sn'de bir karo. Dalga geçtiği yerde otlar ışığı yakalıyor. Tek
+  katman, yalnız kayma; bina, ağaç, yol ve figür maskede yok
   (önündekiler örtüyor, canlı parçalar üstte). Salınan ağaç aynı eksende
   (ekranda yatay) gidip geliyor.
 
@@ -456,6 +471,7 @@ her köşe yüzlerce kenarı değil, yalnız kendi şeridini tarıyor.
 | `arazi.ts`                    | Yükseklik alanından arazi, su, kıyı, nehir yatağı, yol ve parsel izleri, düzleme                                                         |
 | `binalar.ts`                  | Şehir binaları, her biri üç aşama; arsa, görev panosu, haberci kulesi, onur meydanı                                                      |
 | `yerlesim.ts`                 | Şehir sayfasının tam ekran yerleşkesi, altı kademe (kamp → metropol): kasaba ve yapıları (sahnenin içinde), tarlalar, talim alanı        |
+| `cayir.ts`                    | Yerleşkenin zemini: köşe renkli çayır, ot tutamları, kır çiçekleri, yol kenarı ve tekerlek izi (yalnız GPU)                              |
 | `cevre.ts`                    | Yerleşkenin çevresi: dere ve köprü, su ve yel değirmeni, gölet, köy evleri, mera, meyve bahçesi, talim kampı, patikalar, serpinti, orman |
 | `kir.ts`                      | Kır, maden, kale ve saray parçaları: ev, ambar, değirmen, köprü, maden ağzı, sur, kule, teras, köşk                                      |
 | `bolgeler.ts`                 | Altı bölge türü × üç aşama; aynı türün aşamaları aynı araziyi paylaşıyor                                                                 |

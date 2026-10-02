@@ -323,85 +323,31 @@ function suKarosu(): string | null {
 }
 
 /**
- * Çimenin rüzgâr dalgası: rüzgâra dik uzamış iri, yumuşak lekeler; açık
- * olanlar ışığı yakalayan otlar, koyular eğilip gölgelenenler. Karo çimen
- * maskesinin üstünden rüzgâr yönünde kayıyor: dalga geçtiği yerde otlar
- * parlıyor. Rüzgâr dumanla aynı yönde (sola).
+ * Çimenin rüzgâr dalgası: rüzgâra dik uzamış, iri ve çok yumuşak açık
+ * bantlar (eğilen otların ışığı yakalaması), aralarında hafif gölge. Karo
+ * çimen maskesinin (yer ve ot tutamları) üstünden rüzgâr yönünde kayıyor;
+ * dokuyu otların kendisi veriyor. Rüzgâr dumanla aynı yönde (sola).
  */
-const RUZGAR_KARO: [number, number] = [512, 256];
+const RUZGAR_KARO: [number, number] = [640, 320];
 let ruzgarKaro: string | null | undefined;
 function ruzgarKarosu(): string | null {
   return (ruzgarKaro ??= karo(...RUZGAR_KARO, (c) => {
     const r = tohumlu(23);
-    for (let i = 0; i < 12; i++) {
-      const acik = i % 5 < 3;
+    for (let i = 0; i < 9; i++) {
+      const acik = i % 3 < 2;
       leke(
         c,
         ...RUZGAR_KARO,
         r() * RUZGAR_KARO[0],
         r() * RUZGAR_KARO[1],
-        20 + r() * 34,
-        48 + r() * 64,
+        34 + r() * 40,
+        90 + r() * 80,
         acik
-          ? `rgba(255,248,200,${(0.45 + r() * 0.3).toFixed(2)})`
-          : `rgba(26,46,10,${(0.25 + r() * 0.15).toFixed(2)})`,
+          ? `rgba(246,250,196,${(0.5 + r() * 0.3).toFixed(2)})`
+          : `rgba(20,40,8,${(0.3 + r() * 0.15).toFixed(2)})`,
       );
     }
   }));
-}
-
-/**
- * Ot çizgileri: kısa, dik, ince vuruşlar (ikinci maske, sabit). Dalga yalnız
- * onların üstünde parlıyor: düz bir ışık lekesi değil, ışığı yakalayan
- * otlar. Karo ekranın piksel yoğunluğunda çiziliyor, CSS boyu `OT_KARO`.
- */
-const OT_KARO = 96;
-let otKaro: string | null | undefined;
-function otKarosu(): string | null {
-  if (otKaro !== undefined) return otKaro;
-  const d = Math.min(3, Math.max(1, Math.round(window.devicePixelRatio || 1)));
-  const n = OT_KARO * d;
-  return (otKaro = karo(n, n, (c) => {
-    const r = tohumlu(31);
-    c.fillStyle = 'rgba(255,255,255,0.5)';
-    c.fillRect(0, 0, n, n);
-    c.lineCap = 'round';
-    for (let i = 0; i < 420; i++) {
-      const x = r() * n;
-      const y = r() * n;
-      const boy = (2.5 + r() * 3.5) * d;
-      const egik = (r() - 0.5) * 1.6 * d;
-      c.strokeStyle = `rgba(255,255,255,${(0.6 + r() * 0.4).toFixed(2)})`;
-      c.lineWidth = (0.8 + r() * 0.6) * d;
-      // Karonun kenarından taşan vuruş öbür yandan devam ediyor (dikişsiz).
-      for (const ox of [-n, 0, n])
-        for (const oy of [-n, 0, n]) {
-          c.beginPath();
-          c.moveTo(x + ox, y + oy);
-          c.lineTo(x + ox + egik, y + oy - boy);
-          c.stroke();
-        }
-    }
-  }));
-}
-
-/** Çimen katmanının iki maskesi: çimenin yeri (GPU) ve ot çizgileri, kesişimi. */
-function cimenMaskesi(cimen: string, ot: string | null): CSSProperties {
-  if (!ot) return maske(cimen, '100% 100%', 'no-repeat');
-  // Listeler boşluksuz: CSS'e göre aynı, çeviri çıkarıcısı onları metin sanmıyor.
-  const resim = `url(${cimen}),url(${ot})`;
-  const boy = ['100% 100%', `${OT_KARO}px`].join(',');
-  const tekrar = 'no-repeat,repeat';
-  return {
-    maskImage: resim,
-    WebkitMaskImage: resim,
-    maskSize: boy,
-    WebkitMaskSize: boy,
-    maskRepeat: tekrar,
-    WebkitMaskRepeat: tekrar,
-    maskComposite: 'intersect',
-    WebkitMaskComposite: 'source-in',
-  };
 }
 
 /**
@@ -506,7 +452,7 @@ function HareketKatmani({
         style={{ left: (W - vw * s) / 2, top: (H - vh * s) / 2, width: vw * s, height: vh * s }}
       >
         {ruzgar && (
-          <span className="hareket-cimen" style={cimenMaskesi(katman!.cimen!, otKarosu())}>
+          <span className="hareket-cimen" style={maske(katman!.cimen!, '100% 100%', 'no-repeat')}>
             <span className="hareket-cimen-a" style={{ backgroundImage: `url(${ruzgar})` }} />
           </span>
         )}

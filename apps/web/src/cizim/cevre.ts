@@ -18,6 +18,7 @@
  * Doğa durağan (salınan her ağaç GPU'da ayrı katman, telefonun belleği);
  * canlılık su, duman ve dönen iki çarktan.
  */
+import { yolKenari } from './cayir';
 import { canlandir } from './canli';
 import { at } from './figur';
 import { ambar, araba, balya, degirmen, ev, kuyuKucuk } from './kir';
@@ -646,8 +647,8 @@ function orman(r: () => number): Model {
 /** Toprak patika: ekrandaki kırık çizgi boyunca yere yatık şerit, köşeleri yuvarlak. */
 function patika(yol: Nokta[], gen = 1.5): Model {
   const renk = isikla(P.toprak, 1.06);
-  const m: Model = [];
   const d = yol.map(([x, y]) => yere(x, y));
+  const m: Model = yolKenari(d, gen, renk);
   const zemin = (f: Yuz): Yuz => ({ ...f, katman: -1, kenarsiz: true });
   for (let i = 0; i < d.length - 1; i++) {
     const [ax, ay] = d[i]!;

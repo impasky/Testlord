@@ -411,6 +411,13 @@ işaretleniyor, sayfada üstünden rüzgâr dalgaları kayıyor: dalganın
 geçtiği yerde otlar ışığı yakalıyor. Yeniden çizim yok, tek bir kayan
 katman (docs/24 "Çimen rüzgârda").
 
+Dördüncü tur: **"görsel olarak hâlâ çok yetersiz."** Ekranın büyük kısmı
+tek renk, dümdüz bir yeşil plakaydı; rüzgârın dalgası boş bir yüzeyde
+kayan soluk bir ışıktı. Zemin artık renk geçişli bir çayır: öbek öbek
+ot tutamları, kır çiçekleri, kenarı çimene karışan toprak yollar ve
+tekerlek izi. Dalga otların üstünden geçiyor. Hepsi yalnız GPU'da;
+GPU'suz telefon eskisi kadar hafif (docs/24 "Çayır").
+
 ### 6.1 Diyar haritası — gruplar yazı ızgarasından çıktı
 
 Oyuncu: **"Akın kısmında harita yap, 10 NPC karakteri de o haritaya ekle;
