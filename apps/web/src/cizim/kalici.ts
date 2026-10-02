@@ -12,8 +12,9 @@
  * sahnenin tek yuvası (son yama, hangi bölge olduğu ekinde). Kayıtlar çizim
  * sürümüyle (`vite-cizim-surumu.mjs`: çizim kodunun ve verinin içerik
  * özeti) yazılıyor; sürümü tutmayan kayıt okunmuyor, siliniyor. En çok
- * `SINIR` kayıt: en uzun süredir kullanılmayan atılıyor (bir sahnenin
- * durağan ve canlı resmiyle yaması üç kayıt; iki sahne sığıyor).
+ * `SINIR` kayıt: en uzun süredir kullanılmayan atılıyor (yerleşkenin
+ * durağan ve canlı resmiyle yaması üç kayıt, dünya haritasının zemini
+ * bir; iki yerleşke ve harita sığıyor).
  *
  * Depo açılamazsa (gizli sekme, eski tarayıcı, test ortamı) her şey sessizce
  * boş: çizim eskisi gibi her açılışta.
@@ -28,7 +29,7 @@ const VERITABANI = 'lordlar-cizim';
 const DEPO = 'resimler';
 /** Son kullanım zamanının dizini: en eskiyi değerleri okumadan bulmak için. */
 const ZAMAN = 'zaman';
-export const SINIR = 6;
+export const SINIR = 8;
 
 export interface KaliciKayit {
   yuva: string;

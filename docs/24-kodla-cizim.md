@@ -533,8 +533,9 @@ kaydırıyor.
   (ilk açılışta 24 + 14 sn). Anahtar çizimin kendisi (sahne, yapıların
   seviyesi, boy); sürüm çizim kodunun ve verinin içerik özeti
   (`vite-cizim-surumu.mjs`: `src/cizim`, `data`, `packages/shared`):
-  biri değişince eski kayıt okunmuyor, siliniyor. En çok altı kayıt, en
-  uzun süredir kullanılmayan atılıyor. Service worker'ın "önbellek yok"
+  biri değişince eski kayıt okunmuyor, siliniyor. En çok sekiz kayıt (iki
+  yerleşke ve dünya haritasının zemini sığıyor), en uzun süredir
+  kullanılmayan atılıyor. Service worker'ın "önbellek yok"
   kuralıyla çelişmiyor: saklanan şey oyunun verisi değil, verinin
   çizilmiş hâli; anahtarı verinin kendisi. Sahne kapanınca son yama bırakılmıyor, tek bir yuvada
   bekliyor (`SAKLI`): dönüşte yeniden çizilmeden hemen keskin; parçalı
@@ -548,16 +549,24 @@ Hareket kısıtlıysa (`prefers-reduced-motion`) hiçbiri yok ve duman durağan
 hareket yok. Katman ilk boyamadan önce ölçülüyor: kumaş ana resimde
 olmadığı için bir kare bile bayraksız direk görünmesin.
 
-**Dünya zemini (`dunya.ts`, `dunyaAgi.ts`, `dunyaIsci.ts`).** Aynı
+**Dünya zemini (`dunya.ts`).** Aynı
 arazi, iki çıktı. `dunyaUcgenleri` düz renkli üçgenler (2D tuval, WebGL
 yoksa); `dunyaModeli` GPU için: iki kat sık ızgara (köşe rengi doruklarda
 yıldız gibi dilimlenmesin), ışık ve renk köşede, kıyı `KARA_YOLU`na
 işaretli uzaklıktan. Toprak hücreleri de aynı yolla kırpıldığı için zemin
 ve hücreler aynı kıyıyı paylaşıyor. Ağaçlar iki çıktıda da aynı yerde
-(rastgele dizi 2D ızgaranın tükettiği kadar atlanıyor). Ağ ayrı bir
-işçide kuruluyor; zemin 2048 piksellik bir resim olarak yumuşakça geliyor
-(tuvale kopyalanmıyor: `drawImage` telefonda ana iş parçacığında yüzlerce
-milisaniyeydi).
+(rastgele dizi 2D ızgaranın tükettiği kadar atlanıyor). Model ve ağ
+GPU işçisinde tariften (`dunya:zemin`; işçide WebGL2 yoksa kurduğu ağı ana
+iş parçacığına geri yolluyor); istek `dunyaZeminIstegi`, zemin 2048
+piksellik bir resim olarak yumuşakça geliyor (tuvale kopyalanmıyor:
+`drawImage` telefonda ana iş parçacığında yüzlerce milisaniyeydi). Zemin
+kalıcı (oyuncu "haritayı da kalıcı sakla" dedi; `glCiz` `kalici`,
+"Kalıcı çizim"): cihazda varsa ne model kuruluyor ne çiziliyor. Ölçüldü
+(yazılım GPU'su): ilk açılışta 10,4 sn, yeniden açılışta 0,2 sn; kayıt
+5,2 MB. Ayarları çizim kodunda (`dunya.ts`) olduğu için sürüm onları da
+kapsıyor; dünya modelinin okuduğu kıyı yolu (`components/harita/kara.ts`)
+da sürümde. Son yakınlık yaması kalıcı değil: harita her açılışta
+oyuncunun toprağında ×1,8'de açılıyor, orada yama gerekmiyor.
 Kıyı ve kara sorguları kenar şeritleri ve hücreleriyle hızlandırıldı:
 her köşe yüzlerce kenarı değil, yalnız kendi şeridini tarıyor.
 Yakınlık yaması (`components/harita/zeminYamasi.ts`; oyuncu "haritaya da
@@ -604,7 +613,6 @@ eskisi bırakılıyor. Zemin GPU'da değilse (düz üçgenler) yama yok.
 | `diyarlar.ts`                         | Beş akın diyarı: kapak sahnesi ve tepeden yol haritası                                                                                                                         |
 | `zeminler.ts`                         | Sekmelerin tepesindeki manzara şeritleri; her biri o ekranın binası ve insanlarıyla                                                                                            |
 | `dunya.ts`                            | Dünya haritasının arazisi, tepeden; kara sınırı `kara.ts`teki `KARA_YOLU`. 2D üçgenler ve GPU modeli                                                                           |
-| `dunyaAgi.ts`, `dunyaIsci.ts`         | Dünya zemininin GPU ağı, işçide (açılamazsa ana iş parçacığında)                                                                                                               |
 | `glAg.ts`                             | Modelden GPU üçgen tamponu (saf)                                                                                                                                               |
 | `glCizici.ts`                         | WebGL2 çizici: gölge haritası, ana geçiş, kenar + süper örnekleme                                                                                                              |
 | `gl.ts`, `glIsci.ts`                  | GPU sırası, önbellek ve çizim işçisi; yedekler                                                                                                                                 |

@@ -63,10 +63,14 @@ import type { MarchDto, RegionDto } from '../../api/client';
 import { IKONLAR } from '../ikon-verisi';
 import { IkonSaldiri } from '../Ikonlar';
 import { YakinlikDugmesi } from '../YakinlikDugmesi';
-import { ZEMIN_GPU_PIKSEL, useZeminYamasi, type ZeminYamasi } from './zeminYamasi';
+import { useZeminYamasi, type ZeminYamasi } from './zeminYamasi';
 import { KARA_YOLU } from './kara';
-import { DUNYA_ISIGI, DUNYA_KAMERASI, DUNYA_KUTUSU, dunyaUcgenleri } from '../../cizim/dunya';
-import { dunyaAgi } from '../../cizim/dunyaAgi';
+import {
+  DUNYA_KUTUSU,
+  DUNYA_ZEMIN_PIKSEL,
+  dunyaUcgenleri,
+  dunyaZeminIstegi,
+} from '../../cizim/dunya';
 import { glCiz, glVarMi } from '../../cizim/gl';
 
 /*
@@ -874,7 +878,7 @@ const ZEMIN_PIKSEL = 1600;
  * GPU zemini daha büyük (tek örnek, bkz. gl.ts). Yakında yine de ekranın
  * istediğinden az: görünen bölge ayrıca çiziliyor (`zeminYamasi.ts`).
  */
-const GPU_PIKSEL = ZEMIN_GPU_PIKSEL;
+const GPU_PIKSEL = DUNYA_ZEMIN_PIKSEL;
 let zeminKabi: HTMLDivElement | null = null;
 
 function ucgenleriDok(k: HTMLElement) {
@@ -909,18 +913,14 @@ function ucgenleriDok(k: HTMLElement) {
  * açılıyor.
  */
 async function gpuZemini(k: HTMLDivElement) {
-  const ag = await dunyaAgi();
-  const url = await glCiz('dunya-zemini', () => ({
-    ag,
-    kamera: DUNYA_KAMERASI,
-    isik: DUNYA_ISIGI,
-    kutu: DUNYA_KUTUSU,
-    // Tepeden düz arazi: ortam gölgesinin tutunacağı bir girinti yok.
-    ao: 0,
-    en: GPU_PIKSEL,
-    boy: GPU_PIKSEL,
-    olcek: GPU_PIKSEL / 400,
-  }));
+  // Kalıcı: cihazda varsa çizilmeden (model de kurulmadan) oradan; yoksa
+  // GPU işçisi modeli tariften kurup çiziyor ve cihaza yazıyor. Yakınlık
+  // yamaları aynı işçide kurulmuş modeli kullanıyor.
+  const url = await glCiz(
+    'dunya-zemini',
+    () => dunyaZeminIstegi(DUNYA_KUTUSU, GPU_PIKSEL, GPU_PIKSEL),
+    { kalici: true },
+  );
   const resim = url ? new Image() : null;
   if (resim && url) {
     resim.src = url;

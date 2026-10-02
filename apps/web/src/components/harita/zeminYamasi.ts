@@ -17,13 +17,13 @@
  * bellekten bırakılıyor, sırası gelince istenmeyen yama çizilmiyor.
  */
 import { useEffect, useRef, useState } from 'react';
-import { DUNYA_ISIGI, DUNYA_KAMERASI } from '../../cizim/dunya';
+import { DUNYA_ZEMIN_PIKSEL, dunyaZeminIstegi } from '../../cizim/dunya';
 import { glBirak, glCiz, glOnYukle, glVarMi, ornekSayisi } from '../../cizim/gl';
 
 type Kutu = [number, number, number, number];
 
 /** Ana zeminin piksel kenarı (`DunyaHaritasi` GPU zemini). */
-export const ZEMIN_GPU_PIKSEL = 2048;
+const ZEMIN_GPU_PIKSEL = DUNYA_ZEMIN_PIKSEL;
 /** Yamanın en uzun kenarı: ana zeminle aynı sınır (tek örnek). */
 const YAMA_EN_COK = 2048;
 /** Görünen bölgenin her yanından taşan pay (bölgenin boyuna oran). */
@@ -141,19 +141,14 @@ export function useZeminYamasi(
       oturum.current = yeni;
       void glCiz(
         is,
-        () => ({
-          tarif: 'dunya:zemin',
-          kamera: DUNYA_KAMERASI,
-          isik: DUNYA_ISIGI,
-          kutu: k,
-          // Ana zeminle aynı: ortam gölgesi yok, çizgi ve hare dünya biriminde
-          // (ana zemin 2048 pikselde `olcek` 2048 / 400), dalgalar onun ölçüsünde.
-          ao: 0,
-          en: pe,
-          boy: pb,
-          olcek: pe / (k[2] * 4),
-          dalgaBirimi: 100 / (ZEMIN_GPU_PIKSEL * ornekSayisi(ZEMIN_GPU_PIKSEL, ZEMIN_GPU_PIKSEL)),
-        }),
+        // Ana zeminle aynı istek; dalgalar onun ölçüsünde.
+        () =>
+          dunyaZeminIstegi(
+            k,
+            pe,
+            pb,
+            100 / (ZEMIN_GPU_PIKSEL * ornekSayisi(ZEMIN_GPU_PIKSEL, ZEMIN_GPU_PIKSEL)),
+          ),
         { istenmiyor: () => yeni.iptal },
       ).then(async (url) => {
         if (url) await glOnYukle(url);

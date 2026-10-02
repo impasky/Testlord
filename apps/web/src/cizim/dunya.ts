@@ -318,6 +318,38 @@ export const DUNYA_KAMERASI: Kamera = { yon: -Math.PI / 2, egim: Math.PI / 2 };
 export const DUNYA_ISIGI: V3 = [L[0], -L[1], L[2]];
 export const DUNYA_KUTUSU: [number, number, number, number] = [0, 0, 100, 100];
 
+/** Haritanın GPU zemininin kenarı (piksel; tek örnek, bkz. `gl.ts`). */
+export const DUNYA_ZEMIN_PIKSEL = 2048;
+
+/**
+ * Dünya zemininin GPU isteği: bütün dünya (harita) ya da bir bölgesi
+ * (yakınlık yaması, `components/harita/zeminYamasi.ts`). Model işçide
+ * tariften (`dunya:zemin`). Tepeden düz arazi: ortam gölgesinin tutunacağı
+ * bir girinti yok. Kenar çizgisi ve hare dünya biriminde (bütün dünya
+ * 2048 pikselde `olcek` 2048 / 400): yama ana zeminle aynı.
+ *
+ * Ayarlar burada, çizim kodunda: zemin cihazda saklanıyor (`kalici.ts`) ve
+ * sürümü bu dosyanın içerik özetinden; ayar değişince eski zemin okunmuyor.
+ */
+export function dunyaZeminIstegi(
+  kutu: [number, number, number, number],
+  en: number,
+  boy: number,
+  dalgaBirimi?: number,
+) {
+  return {
+    tarif: 'dunya:zemin',
+    kamera: DUNYA_KAMERASI,
+    isik: DUNYA_ISIGI,
+    kutu,
+    ao: 0,
+    en,
+    boy,
+    olcek: en / (kutu[2] * 4),
+    dalgaBirimi,
+  };
+}
+
 /** Kum şeridi: kıyıdan içeri (harita birimi). */
 const KUM = 0.5;
 /** Kıyıya bundan uzak köşelerin uzaklığı yalnız işaret için; tam değer gereksiz. */

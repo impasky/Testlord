@@ -5,8 +5,9 @@
  * çizilmeden geliyor. Saklanan resim onu çizen kodun ve verinin ürünü;
  * çizim kodu ya da veri değişince eski resim yanlış olur (eski çatı, eski
  * renk). Sürüm bu yüzden elle artırılan bir sayı değil, çizimi belirleyen
- * dosyaların İÇERİK ÖZETİ: `src/cizim` (testler hariç), `data/*.json` ve
- * `packages/shared/src`. Biri değişince sürüm değişiyor, eski kayıtlar
+ * dosyaların İÇERİK ÖZETİ: `src/cizim` (testler hariç), `data/*.json`,
+ * `packages/shared/src` ve çizimin dışarıdan okuduğu kıyı yolu
+ * (`components/harita/kara.ts`). Biri değişince sürüm değişiyor, eski kayıtlar
  * okunmuyor. Elle artırılan sayı unutulurdu.
  *
  * Özet `kalici.ts` içindeki `__CIZIM_SURUMU__` yerine yazılıyor. Geliştirme
@@ -26,6 +27,11 @@ const KAYNAKLAR = [
   },
   { dizin: join(KOK, 'data'), uygun: (f) => f.endsWith('.json') },
   { dizin: join(KOK, 'packages/shared/src'), uygun: (f) => f.endsWith('.ts') },
+  // Dünya modelinin kıyı yolu (`cizim/dunya.ts` buradan okuyor).
+  {
+    dizin: join(KOK, 'apps/web/src/components/harita'),
+    uygun: (f) => /(^|[\\/])kara\.ts$/.test(f),
+  },
 ];
 const HEDEF = '/cizim/kalici.ts';
 /** Vite kimlikleri ve değişen dosya yolları her işletim sisteminde `/` ile. */
