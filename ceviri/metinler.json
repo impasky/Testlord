@@ -156,7 +156,7 @@
     "tr": ", çekirdek — ele geçirilemez",
     "en": ", core — cannot be captured",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:849"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:852"
     ]
   },
   "t9627bb6e": {
@@ -164,7 +164,7 @@
     "tr": ", tahkimat +%{0}",
     "en": ", fortification +{0}%",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:845"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:848"
     ]
   },
   "ta0f4c75c": {
@@ -276,7 +276,7 @@
     "tr": "[{0}] hedef",
     "en": "[{0}] target",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:1445"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1470"
     ]
   },
   "t07b8fe99": {
@@ -308,7 +308,7 @@
     "tr": "{0} — {1}, seviye {2}, {3}{4}{5}, {6} adım{7}",
     "en": "{0} — {1}, level {2}, {3}{4}{5}, {6} steps{7}",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:846"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:849"
     ]
   },
   "t14eabbb8": {
@@ -348,8 +348,8 @@
     "tr": "{0} — haritada göster",
     "en": "{0} — show on map",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:776",
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:777"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:779",
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:780"
     ]
   },
   "ta28d78fb": {
@@ -883,7 +883,7 @@
     "tr": "{0} görünümü. Görünen alan {1}%.",
     "en": "{0} view. Visible area {1}%.",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:802"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:805"
     ]
   },
   "tebc946e2": {
@@ -2715,7 +2715,7 @@
     "en": "empty",
     "nerede": [
       "apps/web/src/components/DizilimIzgarasi.tsx:324",
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:1484",
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1509",
       "apps/web/src/screens/Harita.tsx:1418"
     ]
   },
@@ -3277,7 +3277,7 @@
     "tr": "Çekirdek — ele geçirilemez",
     "en": "Core — cannot be captured",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:1373"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1398"
     ]
   },
   "t53904c10": {
@@ -3948,7 +3948,7 @@
     "tr": "Dönen ordun",
     "en": "Your returning army",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:590"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:591"
     ]
   },
   "tb6842d76": {
@@ -4023,7 +4023,7 @@
     "tr": "Dünya haritası, {0} bölge",
     "en": "World map, {0} region|World map, {0} regions",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:636"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:639"
     ]
   },
   "tcb8eae6b": {
@@ -5206,7 +5206,7 @@
     "tr": "Haritayı sığdır",
     "en": "Fit the map",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:754"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:757"
     ]
   },
   "t4888ec29": {
@@ -5264,8 +5264,8 @@
     "tr": "Hedefler",
     "en": "Targets",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:737",
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:802"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:740",
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:805"
     ]
   },
   "taeca49b4": {
@@ -5273,7 +5273,7 @@
     "tr": "Hedefler açık",
     "en": "Targets on",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:737"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:740"
     ]
   },
   "t1f235445": {
@@ -6148,8 +6148,8 @@
     "tr": "Kampın",
     "en": "Your camp",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:1379",
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:601"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1404",
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:602"
     ]
   },
   "tc6b158ed": {
@@ -6157,7 +6157,7 @@
     "tr": "kapalı",
     "en": "off-limits",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:1485"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1510"
     ]
   },
   "t926ba486": {
@@ -6698,7 +6698,7 @@
     "tr": "Kim nerede",
     "en": "Who holds what",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:802"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:805"
     ]
   },
   "t620209e5": {
@@ -6786,7 +6786,7 @@
     "tr": "Korumalı",
     "en": "Protected",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:1365"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1390"
     ]
   },
   "t0d0d93bf": {
@@ -7030,7 +7030,7 @@
     "tr": "lord",
     "en": "lord",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:1483"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1508"
     ]
   },
   "t76d9061a": {
@@ -7582,7 +7582,7 @@
     "tr": "Ordun {0} yolunda",
     "en": "Your army is on the way to {0}",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:590"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:591"
     ]
   },
   "t2dd46a4d": {
@@ -9724,7 +9724,7 @@
     "tr": "Taht Kalesi",
     "en": "Throne Citadel",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:1429",
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:1454",
       "apps/web/src/screens/Harita.tsx:1137",
       "data/balance.json:bolgeler.gelisim_adlari.taht[0]",
       "data/balance.json:bolgeler.gelisim_adlari.taht[1]",
@@ -9950,7 +9950,7 @@
     "tr": "Toprağın",
     "en": "Your territory",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:598"
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:599"
     ]
   },
   "tbd670cd2": {
@@ -10074,7 +10074,7 @@
     "tr": "Uzaklaştır",
     "en": "Zoom out",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:748",
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:751",
       "apps/web/src/screens/Sehir.tsx:552"
     ]
   },
@@ -10247,7 +10247,7 @@
     "tr": "Yakınlaştır",
     "en": "Zoom in",
     "nerede": [
-      "apps/web/src/components/harita/DunyaHaritasi.tsx:746",
+      "apps/web/src/components/harita/DunyaHaritasi.tsx:749",
       "apps/web/src/screens/Sehir.tsx:558"
     ]
   },

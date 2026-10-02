@@ -447,7 +447,8 @@ olarak da saklasın"**: görünüm cihazda; uygulamayı kapatıp açan da aynı
 yerde. **"Keskin görüntü de kalıcı olsun"**: yerleşkenin canlı resmi ve
 son keskin yaması da cihazda (IndexedDB, çizim koduyla sürümlü); yeniden
 açılışta saniyeler süren çizim yerine bir saniyede (docs/24 "Kalıcı
-çizim").
+çizim"). **"Haritaya da yakınlık yaması ekle"**: dünya haritası yakında
+görünen bölgeyi ayrıca, keskin çiziyor (docs/24 "Dünya zemini").
 
 ### 6.1 Diyar haritası — gruplar yazı ızgarasından çıktı
 

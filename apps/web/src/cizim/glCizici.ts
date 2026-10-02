@@ -1122,8 +1122,22 @@ export interface CizimIstegi {
    * üstünde). `hareket` ile yalnız parçaların atlası.
    */
   yama?: boolean;
+  /**
+   * Su dalgasının ölçüsü (dünya birimi / örnek pikseli). Verilmezse çıktının
+   * kendi pikseli: dalgalar ekranda ~11 piksel. Yakınlık yaması ana resminkini
+   * veriyor: daha yoğun çizilen yamada dalgalar küçülmesin, dikişte aynı boyda.
+   */
+  dalgaBirimi?: number;
   /** Bir CSS pikselinin çıktıdaki karşılığı: kenar çizgisinin kalınlığı. */
   olcek: number;
+}
+
+/**
+ * Çıktının örnek sayısı (kenar başına): 2×2 örnekleme bellek sınırına
+ * sığıyorsa 2, yoksa 1. Yama, ana resmin dalga ölçüsünü bununla buluyor.
+ */
+export function ornekSayisi(en: number, boy: number): number {
+  return Math.max(en, boy) * SS <= ORNEK_SINIRI ? SS : 1;
 }
 
 /**
@@ -1307,7 +1321,7 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
   const en = Math.max(1, Math.min(ORNEK_SINIRI, Math.round(istek.en)));
   const boy = Math.max(1, Math.min(ORNEK_SINIRI, Math.round(istek.boy)));
   // Büyük çıktı (dünya zemini) tek örnekle: 2×2'si bellek sınırını aşıyor.
-  const ss = Math.max(en, boy) * SS <= ORNEK_SINIRI ? SS : 1;
+  const ss = ornekSayisi(en, boy);
   const sen = en * ss;
   const sboy = boy * ss;
   if (!hedefleriHazirla(k, sen, sboy)) return null;
@@ -1390,7 +1404,7 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
   gl.uniform3f(u('u_goz'), taban.c[0], taban.c[1], taban.c[2]);
   // Dünya birimi / örnek pikseli; dalgalar ekranda ~11 piksellik.
   const birim = istek.kutu[2] / sen;
-  gl.uniform1f(u('u_dalga'), 1 / (22 * birim));
+  gl.uniform1f(u('u_dalga'), 1 / (22 * (istek.dalgaBirimi ?? birim)));
   gl.uniform1f(u('u_golgeVar'), golgeVar ? 1 : 0);
   gl.uniform1f(u('u_texel'), 1 / GOLGE_BOYU);
   gl.uniform1f(u('u_normalKay'), (isik.genislik / GOLGE_BOYU) * 1.5);

@@ -29,6 +29,7 @@ import {
   glKatmanlari,
   glOnYukle,
   glVarMi,
+  ornekSayisi,
   type Katmanlar,
 } from './gl';
 import { ciz, kutusu, type Cizilmis, type Kamera, type Model } from './uc';
@@ -266,7 +267,7 @@ interface Yama {
   hareketli: boolean;
   /** İkinci aşama: yamaya giren salınan parçaların kendi kare atlası. */
   katman?: Katmanlar;
-  /** Ekrandaki bir CSS pikseline düşen resim pikseli (çizildiği yakınlıkta). */
+  /** Dünya birimine düşen resim pikseli (yakınlıktan bağımsız). */
   yogunluk: number;
 }
 
@@ -398,7 +399,10 @@ function useYama(
       (el.clientHeight || r.height) / vh,
     );
     const dpr = Math.min(3, window.devicePixelRatio || 1);
-    const tabanYogunluk = tabanEn / (vw * ekranBirim);
+    // Yoğunluk dünya birimine düşen resim pikseli: yakınlıktan bağımsız.
+    // (Ekran pikseline göre saklansaydı yamanın içinde daha da yakınlaşınca
+    // eski, seyrek yama "yeter" sayılıp kalıyordu.)
+    const tabanYogunluk = tabanEn / vw;
     // Görünen bölge, sahneye kırpılmış; yama payıyla.
     const gx = Math.max(vx, gorunen[0]);
     const gy = Math.max(vy, gorunen[1]);
@@ -422,7 +426,7 @@ function useYama(
     const sigdir = Math.min(1, EN_BUYUK / Math.max(en, boy));
     en = Math.max(1, Math.round(en * sigdir));
     boy = Math.max(1, Math.round(boy * sigdir));
-    const yogunluk = en / (k[2] * ekranBirim);
+    const yogunluk = en / k[2];
     if (yogunluk < tabanYogunluk * YAMA_KAZANC) {
       // Uzaktan ana resim yetiyor.
       vazgec();
@@ -464,6 +468,8 @@ function useYama(
           // Kenar çizgisi düzen pikselinde: yakınlaşınca ana resimle aynı oranda kalınlaşıyor.
           olcek: en / (k[2] * duzenBirim),
           ao: aoYaricapi(v),
+          // Dalgalar ana resimdeki boyda (dikişte aynı).
+          dalgaBirimi: vw / (tabanEn * ornekSayisi(tabanEn, (tabanEn * vh) / vw)),
           tilt,
           sicak,
           yama: hareketli,

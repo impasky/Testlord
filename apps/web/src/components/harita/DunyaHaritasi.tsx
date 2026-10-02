@@ -63,6 +63,7 @@ import type { MarchDto, RegionDto } from '../../api/client';
 import { IKONLAR } from '../ikon-verisi';
 import { IkonSaldiri } from '../Ikonlar';
 import { YakinlikDugmesi } from '../YakinlikDugmesi';
+import { ZEMIN_GPU_PIKSEL, useZeminYamasi, type ZeminYamasi } from './zeminYamasi';
 import { KARA_YOLU } from './kara';
 import { DUNYA_ISIGI, DUNYA_KAMERASI, DUNYA_KUTUSU, dunyaUcgenleri } from '../../cizim/dunya';
 import { dunyaAgi } from '../../cizim/dunyaAgi';
@@ -628,6 +629,8 @@ export function DunyaHaritasi({
 
   const ev = bolgeHaritasi.get(homeBolgeId) ?? regions[0];
   const D = W * gorunum.k;
+  // Yakında zemin bulanıklaşmasın: görünen bölge ayrıca, keskin.
+  const zeminYamasi = useZeminYamasi(gorunum, boyut.en, boyut.boy, W, zeminGpuHazir);
 
   return (
     <div
@@ -674,7 +677,7 @@ export function DunyaHaritasi({
             setYerlesim((n) => n + 1);
           }}
         >
-          <Zemin />
+          <Zemin yama={zeminYamasi} />
           <ToprakKatmani
             regions={regions}
             yollar={yollar}
@@ -867,8 +870,11 @@ function bolgeEtiketi(r: RegionDto): string {
  * adlar o arada zaten üstte. GPU yoksa ya da düşerse düz üçgenler.
  */
 const ZEMIN_PIKSEL = 1600;
-/** GPU zemini daha büyük: yakınlaştırmada da keskin (tek örnek, bkz. gl.ts). */
-const GPU_PIKSEL = 2048;
+/**
+ * GPU zemini daha büyük (tek örnek, bkz. gl.ts). Yakında yine de ekranın
+ * istediğinden az: görünen bölge ayrıca çiziliyor (`zeminYamasi.ts`).
+ */
+const GPU_PIKSEL = ZEMIN_GPU_PIKSEL;
 let zeminKabi: HTMLDivElement | null = null;
 
 function ucgenleriDok(k: HTMLElement) {
@@ -949,7 +955,7 @@ function zeminKabiAl(): HTMLDivElement {
  * nehirler sahiplik renkleriyle yarışıyordu (docs/23 §8); artık geri
  * planda.
  */
-const Zemin = memo(function Zemin() {
+const Zemin = memo(function Zemin({ yama }: { yama: ZeminYamasi | null }) {
   const kutu = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const k = kutu.current;
@@ -962,13 +968,32 @@ const Zemin = memo(function Zemin() {
   }, []);
   return (
     <div
-      ref={kutu}
       className="absolute inset-0"
       style={{ filter: 'saturate(0.3) brightness(0.6) contrast(0.85)' }}
       aria-hidden="true"
-    />
+    >
+      <div ref={kutu} className="absolute inset-0" />
+      {/* Yakınlık yaması: görünen bölge keskin, aynı süzgeçte (`zeminYamasi.ts`). */}
+      {yama && (
+        <img
+          src={yama.url}
+          alt=""
+          data-zemin-yamasi=""
+          className="absolute max-w-none"
+          style={{
+            left: `${yama.kutu[0]}%`,
+            top: `${yama.kutu[1]}%`,
+            width: `${yama.kutu[2]}%`,
+            height: `${yama.kutu[3]}%`,
+          }}
+        />
+      )}
+    </div>
   );
 });
+
+/** Ana zemin GPU'da çizilip yerine oturdu mu (yama yalnız onun üstüne). */
+const zeminGpuHazir = () => zeminKabi?.dataset.gl !== undefined;
 
 const ToprakKatmani = memo(function ToprakKatmani({
   regions,

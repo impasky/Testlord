@@ -26,7 +26,7 @@ import { kaliciOku, kaliciYaz } from './kalici';
 import { tarifModeli } from './tarif';
 import type { Kamera, Model, V3 } from './uc';
 
-export { EN_BUYUK, aoYaricapi, atlasDuzeni } from './glCizici';
+export { EN_BUYUK, aoYaricapi, atlasDuzeni, ornekSayisi } from './glCizici';
 
 export interface GlIstek {
   /**
@@ -74,6 +74,8 @@ export interface GlIstek {
    * yamanın çözünürlüğünde oynuyor.
    */
   yama?: boolean;
+  /** Su dalgasının ölçüsü (bkz. `CizimIstegi.dalgaBirimi`): yamada ana resminki. */
+  dalgaBirimi?: number;
   /** Bir CSS pikselinin çıktıdaki karşılığı: kenar çizgisinin kalınlığı. */
   olcek: number;
 }

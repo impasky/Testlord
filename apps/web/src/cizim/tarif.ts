@@ -15,6 +15,7 @@ import { binaModeli } from './binalar';
 import { birlikModeli, dusmanModeli, ekipmanModeli } from './birlikler';
 import { bolgeModeli } from './bolgeler';
 import { diyarModeli, type Kadraj } from './diyarlar';
+import { dunyaModeli } from './dunya';
 import { generalModeli, lordModeli, portreModeli } from './kisiler';
 import type { Model } from './uc';
 import { yerlesimAnahtariCoz, yerlesimModeli } from './yerlesim';
@@ -38,6 +39,9 @@ const TARIFLER: Record<string, (ad: string) => Model | null> = {
     return diyarModeli(diyar, kadraj as Kadraj);
   },
   zemin: zeminModeli,
+  // Dünya haritasının zemini: yakınlık yaması işçide kurulmuş modelden
+  // (her yama için elli bin üçgen yeniden kurulmasın).
+  dunya: (ad) => (ad === 'zemin' ? dunyaModeli() : null),
 };
 
 /** Anahtarın modeli; tarifi olmayan (ya da bilinmeyen) anahtar için null. */
