@@ -226,17 +226,23 @@ export function DiyarCizimi({
   kadraj,
   className,
   hareket = kadraj === 'kapak',
+  gorunen,
 }: {
   ad: string;
   kadraj: Kadraj;
   className?: string;
   /** Canlı kapak (su, ışık, duman); küçük kilitli pencerede kapalı. */
   hareket?: boolean;
+  /** Ekranda görünen bölge (harita biriminde): yakınlaşınca keskin çiziliyor (`Sahne.yama`). */
+  gorunen?: [number, number, number, number];
 }) {
+  const anahtar = 'diyar:' + ad + ':' + kadraj;
+  // Kararlı üretici: yakınlaşıp kaydırırken sahne boşuna yeniden çizilmesin.
+  const uret = useCallback(() => tarifModeli(anahtar) ?? [], [anahtar]);
   return (
     <Sahne
-      anahtar={'diyar:' + ad + ':' + kadraj}
-      uret={() => tarifModeli('diyar:' + ad + ':' + kadraj) ?? []}
+      anahtar={anahtar}
+      uret={uret}
       tarif
       kutu={kadraj === 'kapak' ? KAPAK_KUTUSU : HARITA_KUTUSU}
       alt=""
@@ -244,6 +250,7 @@ export function DiyarCizimi({
       kirp
       tilt={kadraj === 'kapak' ? TILT_AFIS : undefined}
       hareket={hareket}
+      yama={gorunen}
     />
   );
 }

@@ -490,6 +490,14 @@ vurulmuş kamp solgun ve üstünde yenilenme sayacı. Diyar açılınca harita
 kendiliğinden ekrana kaydırılıyor — kart sırası kapak → ad → özet →
 harita ve telefonda harita ekranın altında kalıyordu.
 
+Sonra: **"diyar haritasına da yakınlaştırma ekle."** Şehir'in yerleşkesiyle
+aynı kanca (`yerleskeYakinligi`): iki parmak, Ctrl + tekerlek, sağ altta
+−/+ (yolda kamp yok), 3 kata kadar. Kamplar ve iz yüzdeyle büyüyor,
+zeminin görünen bölgesi keskin çiziliyor (yama). Harita sayfanın içinde:
+×1'de taşma yok, tek parmak sayfayı kaydırıyor; yakında haritayı geziyor,
+kenarına gelince sayfa devam ediyor. Görünüm saklanmıyor: diyar her
+açılışta bütünüyle (docs/24 "Yakınlaştırma").
+
 ## 4. Bina seviyesi ile araştırma neden çakışmıyor
 
 Bu, planın en riskli yeriydi ve ilkesi tek cümle:

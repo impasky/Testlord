@@ -110,8 +110,13 @@ export function useYerleskeYakinligi(
   sahneEn: number,
   sahneBoy: number,
   etkin: boolean,
+  /**
+   * Görünüm cihazda saklanıyor ve açılış oradan (Şehir'in yerleşkesi).
+   * Kapalıysa (diyar haritası) her açılışta ×1.
+   */
+  kalici = true,
 ) {
-  const [z, setZ] = useState(() => sonGorunum()?.z ?? 1);
+  const [z, setZ] = useState(() => (kalici ? sonGorunum()?.z : undefined) ?? 1);
   const zRef = useRef(z);
   const [gorunen, setGorunen] = useState<[number, number, number, number] | null>(null);
   /** Kabı dolduran en uzak yakınlık (kap boyu değişince yeniden). */
@@ -135,9 +140,9 @@ export function useYerleskeYakinligi(
       );
       setGorunen((g) => (g && g.every((x, i) => Math.abs(x - o[i]!) < 1e-3) ? g : o));
       setUzak(enUzak(k.clientWidth, k.clientHeight, sahneEn, sahneBoy));
-      gorunumYaz({ z: zRef.current, merkez: [o[0] + o[2] / 2, o[1] + o[3] / 2] });
+      if (kalici) gorunumYaz({ z: zRef.current, merkez: [o[0] + o[2] / 2, o[1] + o[3] / 2] });
     }, DURMA_MS);
-  }, [kaydirici, sahneEn, sahneBoy]);
+  }, [kaydirici, sahneEn, sahneBoy, kalici]);
 
   /**
    * Yeni yakınlık: sahnenin (fx, fy) noktası (yakınlık 1'deki CSS pikseli)
@@ -192,13 +197,13 @@ export function useYerleskeYakinligi(
     (varsayilan: [number, number], dikey: number) => {
       const k = kaydirici.current;
       if (!k) return;
-      const sakli = sonGorunum();
+      const sakli = kalici ? sonGorunum() : null;
       const [x, y] = sakli?.merkez ?? varsayilan;
       const my = k.clientHeight * (sakli ? 0.5 : dikey);
       uygula(zRef.current, x * sahneEn, y * sahneBoy, k.clientWidth / 2, my);
       bitir();
     },
-    [kaydirici, uygula, bitir, sahneEn, sahneBoy],
+    [kaydirici, uygula, bitir, sahneEn, sahneBoy, kalici],
   );
 
   useEffect(() => {

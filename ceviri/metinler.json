@@ -462,7 +462,7 @@
     "tr": "{0} · T{1}",
     "en": "{0} · T{1}",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:247"
+      "apps/web/src/screens/Akin.tsx:250"
     ]
   },
   "tfc8f58f7": {
@@ -494,7 +494,7 @@
     "tr": "{0} adedi",
     "en": "{0} quantity",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:724",
+      "apps/web/src/screens/Akin.tsx:806",
       "apps/web/src/screens/Kisla.tsx:270"
     ]
   },
@@ -1179,7 +1179,7 @@
     "tr": "{0} savaşçı",
     "en": "{0} warrior|{0} warriors",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:516"
+      "apps/web/src/screens/Akin.tsx:598"
     ]
   },
   "t76f8b84f": {
@@ -1370,7 +1370,7 @@
     "tr": "{0} yaralı hastaneye girdi.",
     "en": "{0} wounded went into the hospital.",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:265"
+      "apps/web/src/screens/Akin.tsx:268"
     ]
   },
   "t271a5a20": {
@@ -1419,7 +1419,7 @@
     "tr": "{0}. {1}, şef — {2}",
     "en": "{0}. {1}, chief — {2}",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:531"
+      "apps/web/src/screens/Akin.tsx:613"
     ]
   },
   "t2b67876a": {
@@ -1550,7 +1550,7 @@
     "tr": "{0}/10 grup hazır",
     "en": "{0}/10 groups ready",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:369"
+      "apps/web/src/screens/Akin.tsx:372"
     ]
   },
   "t58779ae6": {
@@ -1592,7 +1592,7 @@
     "tr": "%{0} ihtimalle T{1} ekipman düşer.",
     "en": "{0}% chance to drop T{1} equipment.",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:684"
+      "apps/web/src/screens/Akin.tsx:766"
     ]
   },
   "t1827a8a3": {
@@ -1786,7 +1786,7 @@
       "apps/api/src/routes/akin.ts:377",
       "apps/web/src/components/MobilKabuk.tsx:76",
       "apps/web/src/components/UygulamaKasasi.tsx:39",
-      "apps/web/src/screens/Akin.tsx:120"
+      "apps/web/src/screens/Akin.tsx:123"
     ]
   },
   "t06e21e2e": {
@@ -1810,7 +1810,7 @@
     "tr": "Akına çık · {0} asker",
     "en": "Go on a raid · {0} troops",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:695"
+      "apps/web/src/screens/Akin.tsx:777"
     ]
   },
   "t82148189": {
@@ -1818,7 +1818,7 @@
     "tr": "Akına çıkılamadı.",
     "en": "Raid could not be started.",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:106"
+      "apps/web/src/screens/Akin.tsx:109"
     ]
   },
   "tb3e070f1": {
@@ -3851,7 +3851,7 @@
     "tr": "Diyarlar",
     "en": "Realms",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:155"
+      "apps/web/src/screens/Akin.tsx:158"
     ]
   },
   "t6c1f26e7": {
@@ -4039,7 +4039,7 @@
     "tr": "Düşman kamplarına in, kaynak ve ekipman getir",
     "en": "Descend on enemy camps, bring back resources and equipment",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:120"
+      "apps/web/src/screens/Akin.tsx:123"
     ]
   },
   "t4c53b814": {
@@ -4549,7 +4549,7 @@
     "tr": "Evde asker yok. Önce Kışla'da asker eğit.",
     "en": "No troops at home. Train troops in the Barracks first.",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:650"
+      "apps/web/src/screens/Akin.tsx:732"
     ]
   },
   "t0552f64c": {
@@ -5006,7 +5006,7 @@
     "nerede": [
       "apps/web/src/components/Paktlar.tsx:191",
       "apps/web/src/components/SikayetSayfasi.tsx:117",
-      "apps/web/src/screens/Akin.tsx:695",
+      "apps/web/src/screens/Akin.tsx:777",
       "apps/web/src/screens/Demirhane.tsx:579",
       "apps/web/src/screens/EsyaPazari.tsx:411",
       "apps/web/src/screens/Generaller.tsx:149",
@@ -5297,7 +5297,7 @@
     "tr": "Henüz akına çıkmadın. Bir diyar seç, grubunu belirle, ordunu gönder.",
     "en": "You haven't gone on a raid yet. Choose a realm, set your group, send your army.",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:196"
+      "apps/web/src/screens/Akin.tsx:199"
     ]
   },
   "t714210b8": {
@@ -6276,7 +6276,7 @@
     "tr": "Karşında: {0}",
     "en": "Against you: {0}",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:624"
+      "apps/web/src/screens/Akin.tsx:706"
     ]
   },
   "t02842203": {
@@ -6522,7 +6522,7 @@
     "tr": "Kazanırsan:",
     "en": "If you win:",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:680"
+      "apps/web/src/screens/Akin.tsx:762"
     ]
   },
   "tcf60c0c7": {
@@ -6530,7 +6530,7 @@
     "tr": "Kazanma ihtimali",
     "en": "Chance of winning",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:658"
+      "apps/web/src/screens/Akin.tsx:740"
     ]
   },
   "t9ab780a2": {
@@ -6682,7 +6682,7 @@
     "tr": "Kilitli",
     "en": "Locked",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:519"
+      "apps/web/src/screens/Akin.tsx:601"
     ]
   },
   "t75c58153": {
@@ -7655,7 +7655,7 @@
     "tr": "Ordun sahada. Döndüğünde buradan akına çıkabilirsin.",
     "en": "Your army is on the field. When it returns, you can go on a raid from here.",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:647"
+      "apps/web/src/screens/Akin.tsx:729"
     ]
   },
   "t814aec79": {
@@ -8415,7 +8415,7 @@
     "tr": "Sahadaki akınlar · {0}/{1}",
     "en": "Raids on the field · {0}/{1}",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:125"
+      "apps/web/src/screens/Akin.tsx:128"
     ]
   },
   "tf223dd3f": {
@@ -9117,7 +9117,7 @@
     "tr": "Son akınlar",
     "en": "Recent raids",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:193"
+      "apps/web/src/screens/Akin.tsx:196"
     ]
   },
   "t7777e141": {
@@ -9357,7 +9357,7 @@
     "en": "Lvl{0}",
     "nerede": [
       "apps/web/src/components/SavasRaporu.tsx:246",
-      "apps/web/src/screens/Akin.tsx:322",
+      "apps/web/src/screens/Akin.tsx:325",
       "apps/web/src/screens/Arastirma.tsx:571",
       "apps/web/src/screens/Demirhane.tsx:464",
       "apps/web/src/screens/Demirhane.tsx:488",
@@ -9377,7 +9377,7 @@
     "tr": "ŞEF",
     "en": "CHIEF",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:578"
+      "apps/web/src/screens/Akin.tsx:660"
     ]
   },
   "t8a5a4437": {
@@ -9573,7 +9573,7 @@
     "tr": "T{0}",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:259",
+      "apps/web/src/screens/Akin.tsx:262",
       "apps/web/src/screens/Demirhane.tsx:228",
       "apps/web/src/screens/Demirhane.tsx:236",
       "apps/web/src/screens/Demirhane.tsx:463",
@@ -9708,7 +9708,7 @@
     "tr": "Tahmini yaralı: {0} asker, ölen olmaz",
     "en": "Estimated wounded: {0} [soldier|soldiers], none will die",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:676"
+      "apps/web/src/screens/Akin.tsx:758"
     ]
   },
   "t1319ad6a": {
@@ -10075,6 +10075,7 @@
     "en": "Zoom out",
     "nerede": [
       "apps/web/src/components/harita/DunyaHaritasi.tsx:779",
+      "apps/web/src/screens/Akin.tsx:552",
       "apps/web/src/screens/Sehir.tsx:552"
     ]
   },
@@ -10248,6 +10249,7 @@
     "en": "Zoom in",
     "nerede": [
       "apps/web/src/components/harita/DunyaHaritasi.tsx:777",
+      "apps/web/src/screens/Akin.tsx:546",
       "apps/web/src/screens/Sehir.tsx:558"
     ]
   },
@@ -10511,7 +10513,7 @@
     "tr": "Yenileniyor",
     "en": "Resetting",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:518"
+      "apps/web/src/screens/Akin.tsx:600"
     ]
   },
   "t56d9b3e2": {
@@ -10519,7 +10521,7 @@
     "tr": "yenilgi",
     "en": "defeat",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:207"
+      "apps/web/src/screens/Akin.tsx:210"
     ]
   },
   "t1ff6091c": {
@@ -10820,7 +10822,7 @@
     "tr": "zafer",
     "en": "victory",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:207"
+      "apps/web/src/screens/Akin.tsx:210"
     ]
   },
   "tc31c9cb1": {

@@ -151,7 +151,7 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
   " ve "
       apps/web/src/screens/Arastirma.tsx:937
   "{0} · T{1}"
-      apps/web/src/screens/Akin.tsx:247
+      apps/web/src/screens/Akin.tsx:250
   "{0} T{1}"
       apps/web/src/screens/Demirhane.tsx:224
   "Araştırılıyor —"
@@ -159,6 +159,6 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
   "canlandir: kareler aynı yüzlerden kurulmalı"
       apps/web/src/cizim/canli.ts:67
   "T{0}"
-      apps/web/src/screens/Akin.tsx:259
+      apps/web/src/screens/Akin.tsx:262
   "T{0}{1}"
       apps/web/src/screens/LordEkrani.tsx:697

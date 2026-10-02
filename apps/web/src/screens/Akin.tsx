@@ -20,7 +20,7 @@
  *    (oyuncunun kararı, `akinYenilenmeSn`).
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
   ApiError,
   api,
@@ -52,6 +52,9 @@ import {
 } from '../components/ui';
 import { Gorsel } from '../components/Gorsel';
 import { DiyarCizimi, NesneCizimi } from '../cizim/Cizimler';
+import { HARITA_KUTUSU } from '../cizim/diyarlar';
+import { YakinlikDugmesi } from '../components/YakinlikDugmesi';
+import { DUGME_ADIMI, useYerleskeYakinligi } from './yerleskeYakinligi';
 import { Zemin } from '../components/Zemin';
 
 /**
@@ -435,44 +438,123 @@ function DiyarHaritasi({
   useEffect(() => {
     kutu.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, []);
+  /*
+   * YAKINLAŞTIRMA (Şehir'in yerleşkesiyle aynı kanca, `yerleskeYakinligi`).
+   * Oyuncu: "diyar haritasına da yakınlaştırma ekle." İki parmak, Ctrl +
+   * tekerlek, −/+. Kap düzende büyüyor (kamplar ve iz yüzdeyle, yazı aynı
+   * boyda), zemin CSS ölçeğiyle; görünen bölgesi keskin çiziliyor (yama).
+   * Harita sayfanın içinde: ×1'de taşma yok, tek parmak sayfayı kaydırıyor;
+   * yakında haritayı geziyor, kenarına gelince sayfa devam ediyor.
+   * Görünüm saklanmıyor: diyar her açılışta bütünüyle.
+   */
+  const [en, setEn] = useState(0);
+  useEffect(() => {
+    const el = kutu.current;
+    if (!el) return;
+    const olc = () => setEn(el.clientWidth);
+    olc();
+    const ro = new ResizeObserver(olc);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  const kaydirici = useRef<HTMLDivElement>(null);
+  const kap = useRef<HTMLDivElement>(null);
+  const sahne = useRef<HTMLDivElement>(null);
+  const yakinlik = useYerleskeYakinligi(kaydirici, kap, sahne, en, en, en > 0, false);
+  const z = yakinlik.z;
+  const oran = yakinlik.gorunen;
+  const [hx, hy, hw, hh] = HARITA_KUTUSU;
+  /** Görünen bölge harita biriminde (yama: `Sahne.yama`). */
+  const gorunen = useMemo<[number, number, number, number] | undefined>(
+    () => (oran ? [hx + oran[0] * hw, hy + oran[1] * hh, oran[2] * hw, oran[3] * hh] : undefined),
+    [oran, hx, hy, hw, hh],
+  );
   return (
     <div
       ref={kutu}
       className="oyuk relative isolate aspect-square w-full overflow-hidden rounded-lg border border-kenar"
+      data-diyar-haritasi=""
     >
-      <DiyarCizimi ad={h.key} kadraj="harita" className="absolute inset-0 h-full w-full" />
-
-      {/* Kampları bağlayan iz. Zemindeki yol (koddan çiziliyor, docs/24)
-          kampların tam üstünden kıvrılarak geçiyor; bu kesikli çizgi
-          yalnızca SIRAYI söylüyor — hangi kamp hangisinden sonra. Soluk:
-          yolun kendisi zeminde. */}
-      <svg
-        viewBox="0 0 100 100"
-        preserveAspectRatio="none"
-        className="pointer-events-none absolute inset-0 h-full w-full"
-        aria-hidden="true"
+      <div
+        ref={kaydirici}
+        className="gizli-kaydirma absolute inset-0 touch-pan-x touch-pan-y overflow-auto"
       >
-        <polyline
-          points={AKIN_YOLU.map((n) => `${n.x},${n.y}`).join(' ')}
-          fill="none"
-          stroke="rgba(245,183,49,0.35)"
-          strokeWidth="0.8"
-          strokeDasharray="2 2"
-          vectorEffect="non-scaling-stroke"
-        />
-      </svg>
+        <div
+          ref={kap}
+          className="relative"
+          style={{ width: en ? en * z : '100%', height: en ? en * z : '100%' }}
+          data-yakinlik={z.toFixed(2)}
+        >
+          {/* Zemin hep aynı düzen boyunda, CSS ölçeğiyle büyüyor. */}
+          <div
+            ref={sahne}
+            className="absolute top-0 left-0 origin-top-left"
+            style={{
+              width: en || '100%',
+              height: en || '100%',
+              transform: `scale(${z})`,
+            }}
+          >
+            <DiyarCizimi
+              ad={h.key}
+              kadraj="harita"
+              className="absolute inset-0 h-full w-full"
+              gorunen={gorunen}
+            />
+          </div>
 
-      {h.gruplar.map((g, i) => (
-        <KampIsareti
-          key={g.grupNo}
-          g={g}
-          yer={AKIN_YOLU[i] ?? { x: 50, y: 50 }}
-          dusmanKey={h.dusmanKey}
-          secili={seciliGrup === g.grupNo}
-          isikta={isiktakiGrup === g.grupNo}
-          onSec={() => onGrupSec(g.grupNo)}
+          {/* Kampları bağlayan iz. Zemindeki yol (koddan çiziliyor, docs/24)
+              kampların tam üstünden kıvrılarak geçiyor; bu kesikli çizgi
+              yalnızca SIRAYI söylüyor — hangi kamp hangisinden sonra. Soluk:
+              yolun kendisi zeminde. */}
+          <svg
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+            className="pointer-events-none absolute inset-0 h-full w-full"
+            aria-hidden="true"
+          >
+            <polyline
+              points={AKIN_YOLU.map((n) => `${n.x},${n.y}`).join(' ')}
+              fill="none"
+              stroke="rgba(245,183,49,0.35)"
+              strokeWidth="0.8"
+              strokeDasharray="2 2"
+              vectorEffect="non-scaling-stroke"
+            />
+          </svg>
+
+          {h.gruplar.map((g, i) => (
+            <KampIsareti
+              key={g.grupNo}
+              g={g}
+              yer={AKIN_YOLU[i] ?? { x: 50, y: 50 }}
+              dusmanKey={h.dusmanKey}
+              secili={seciliGrup === g.grupNo}
+              isikta={isiktakiGrup === g.grupNo}
+              onSec={() => onGrupSec(g.grupNo)}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Yakınlık: sağ alt köşe (yolda kamp yok). Kıstırmanın düğmeli karşılığı. */}
+      <div
+        data-yakinlik-araci=""
+        className="absolute right-1.5 bottom-1.5 z-[400] flex flex-col divide-y divide-kenar overflow-hidden rounded-xl border border-kenar bg-gece/80 backdrop-blur"
+      >
+        <YakinlikDugmesi
+          etiket="Yakınlaştır"
+          isaret="+"
+          disabled={yakinlik.enYakinda}
+          onTikla={() => yakinlik.yakinlastir(DUGME_ADIMI)}
         />
-      ))}
+        <YakinlikDugmesi
+          etiket="Uzaklaştır"
+          isaret="−"
+          disabled={yakinlik.enUzakta}
+          onTikla={() => yakinlik.yakinlastir(1 / DUGME_ADIMI)}
+        />
+      </div>
     </div>
   );
 }

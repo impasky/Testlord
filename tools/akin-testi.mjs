@@ -266,6 +266,37 @@ await page.waitForTimeout(600);
 const grupSayisi = await page.locator('[data-akin-grup]').count();
 kontrol('Diyar açılınca on grup çıkıyor', grupSayisi === 10, `${grupSayisi} grup`);
 
+/*
+ * DİYAR HARİTASI YAKINLAŞIYOR. Oyuncu: "diyar haritasına da yakınlaştırma
+ * ekle." "+" haritayı büyütüyor, kamplar onunla büyüyor; "−" ×1'de duruyor
+ * (harita sayfadaki kutusunu dolduruyor, taşma yok).
+ */
+{
+  const olcu = () =>
+    page.evaluate(() => {
+      const kap = document.querySelector('[data-diyar-haritasi] [data-yakinlik]');
+      return {
+        z: Number(kap?.dataset.yakinlik ?? 0),
+        kamp: document.querySelector('[data-akin-grup]')?.getBoundingClientRect().width ?? 0,
+      };
+    });
+  const once = await olcu();
+  await page.getByRole('button', { name: 'Yakınlaştır' }).click();
+  await page.waitForTimeout(400);
+  const yakin = await olcu();
+  kontrol(
+    'Diyar haritası yakınlaşıyor, kamplar onunla büyüyor',
+    yakin.z > once.z && Math.abs(yakin.kamp / once.kamp - yakin.z / once.z) < 0.05,
+    `×${once.z} → ×${yakin.z}, kamp ${once.kamp.toFixed(0)} → ${yakin.kamp.toFixed(0)} px`,
+  );
+  await page.getByRole('button', { name: 'Uzaklaştır' }).click();
+  await page.waitForTimeout(400);
+  kontrol(
+    'Uzaklaştır ×1’de duruyor',
+    (await olcu()).z === 1 && (await page.getByRole('button', { name: 'Uzaklaştır' }).isDisabled()),
+  );
+}
+
 // Açık bir gruba dokun: sefer kartı ve önizleme gelmeli.
 const acikGrup = page.locator('[data-akin-grup]:not([disabled])');
 if (await acikGrup.count()) {

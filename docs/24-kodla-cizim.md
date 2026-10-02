@@ -486,7 +486,8 @@ kaydırıyor.
   gölgede serin ton, orta tonlarda hafif kontrast. Canlı parçaların atlası
   aynı çözüm geçişiyle aynı ayarı alıyor; önbellek anahtarına giriyor.
   Öbür çizimler eskisi gibi.
-- Yakınlaştırma (`screens/yerleskeYakinligi.ts`, `Sahne.yama`): yerleşke
+- Yakınlaştırma (`screens/yerleskeYakinligi.ts`, `Sahne.yama`; aynı kanca
+  Akın'ın diyar haritasında da, görünümü saklamadan: `kalici` kapalı): yerleşke
   kıstırmayla, Ctrl + tekerlekle ve −/+ düğmeleriyle 3 kata kadar
   büyüyor, en uzakta kabı dolduruyor (kenarından öte boşluk yok).
   Gezinme yine tarayıcının kaydırması. Hareket sürerken React'e
