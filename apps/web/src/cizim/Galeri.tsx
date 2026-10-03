@@ -12,7 +12,9 @@
  * çizimde (galeriye özgü talim ve deneme) resim gelene kadar binlerce
  * çokgen DOM'a yazılıp siliniyordu — yeniden açılışın 4,6 sn'si oydu.
  *
- * Görünen önce (`GorununceCiz`): çizim ancak ekrana yaklaşınca isteniyor.
+ * Görünen önce (`GorununceCiz`): çizim ancak ekrana girince isteniyor;
+ * önce kaba, sonra keskin (`OnceKaba`): kaydı olmayan çizim önce küçük bir
+ * taslak.
  */
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { BINA_ADLARI, BINA_KUTUSU, binaModeli } from './binalar';
@@ -38,7 +40,7 @@ import { DIYAR_ADLARI, HARITA_KUTUSU, KAPAK_KUTUSU, diyarModeli } from './diyarl
 import { dunyaUcgenleri } from './dunya';
 import { ZEMIN_ADLARI, ZEMIN_KUTUSU, zeminModeli } from './zeminler';
 import { BolgeCizimi, DiyarCizimi, ZeminCizimi } from './Cizimler';
-import { Sahne } from './Sahne';
+import { OnceKaba, Sahne } from './Sahne';
 import { YERLESIM_KADEMELERI, YERLESIM_KUTUSU, yerlesimModeli } from './yerlesim';
 import { P } from './renk';
 import {
@@ -391,29 +393,31 @@ function GorununceCiz({ className, children }: { className: string; children: Re
 
 export function Galeri() {
   return (
-    <div className="min-h-screen bg-gece p-4 text-parsomen" data-cizim-galerisi="">
-      {BOLUMLER.map((b) => (
-        <section key={b.baslik} className="mb-6">
-          <h2 className="baslik mb-2 text-[14px] text-altin">{b.baslik}</h2>
-          <div className="flex flex-wrap gap-3">
-            {b.ogeler.map((o) => (
-              <figure
-                key={o.ad}
-                className={`flex flex-col items-center gap-1 ${o.genis ? 'w-[360px]' : 'w-[180px]'}`}
-              >
-                <GorununceCiz
-                  className={`flex items-center justify-center overflow-hidden rounded-lg bg-yuzey ${
-                    o.genis ? `${o.oran ?? 'aspect-[4/3]'} w-[360px]` : 'h-[180px] w-[180px]'
-                  }`}
+    <OnceKaba.Provider value>
+      <div className="min-h-screen bg-gece p-4 text-parsomen" data-cizim-galerisi="">
+        {BOLUMLER.map((b) => (
+          <section key={b.baslik} className="mb-6">
+            <h2 className="baslik mb-2 text-[14px] text-altin">{b.baslik}</h2>
+            <div className="flex flex-wrap gap-3">
+              {b.ogeler.map((o) => (
+                <figure
+                  key={o.ad}
+                  className={`flex flex-col items-center gap-1 ${o.genis ? 'w-[360px]' : 'w-[180px]'}`}
                 >
-                  {o.cizim}
-                </GorununceCiz>
-                <figcaption className="text-[11px] text-solgun">{o.ad}</figcaption>
-              </figure>
-            ))}
-          </div>
-        </section>
-      ))}
-    </div>
+                  <GorununceCiz
+                    className={`flex items-center justify-center overflow-hidden rounded-lg bg-yuzey ${
+                      o.genis ? `${o.oran ?? 'aspect-[4/3]'} w-[360px]` : 'h-[180px] w-[180px]'
+                    }`}
+                  >
+                    {o.cizim}
+                  </GorununceCiz>
+                  <figcaption className="text-[11px] text-solgun">{o.ad}</figcaption>
+                </figure>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+    </OnceKaba.Provider>
   );
 }

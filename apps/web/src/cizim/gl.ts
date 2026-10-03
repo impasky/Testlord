@@ -294,8 +294,20 @@ const SIRA: {
   piksel: number;
   is: () => Promise<string | null>;
   coz: (url: string | null) => void;
+  /** Seçilebilir mi: kalıcı iş cihaz okuması bitmeden seçilmiyor. */
+  hazir: boolean;
+  /** Sıraya girdiği an (okuması süren iş için bekleme sınırı). */
+  zaman: number;
 }[] = [];
 let isleniyor = false;
+let secim: ReturnType<typeof setTimeout> | undefined;
+/**
+ * Okuması süren iş varken seçim en çok bu kadar bekliyor (ms). Okumalar
+ * sırayla bitiyor: ilki biter bitmez seçilen iş (Ordu'nun manzara şeridi)
+ * okuması birkaç milisaniye sonra biten küçüklerin (figürler) önüne
+ * geçiyordu. Sınır, cihaz deposu yavaşsa sıra durmasın diye.
+ */
+const OKUMA_BEKLE = 100;
 
 /**
  * Sıraya koyar: işler tek tek, aralarında ana iş parçacığına nefes payı.
@@ -304,29 +316,56 @@ let isleniyor = false;
  * saniyeler — şerit önce istendi diye Ordu'nun figürleri onun arkasında
  * 14 sn beklemesin.
  */
-function sirayaKoy(is: () => Promise<string | null>, piksel = Infinity): Promise<string | null> {
-  const p = new Promise<string | null>((coz) => SIRA.push({ piksel, is, coz }));
+function sirayaKoy(
+  is: () => Promise<string | null>,
+  piksel = Infinity,
+  /**
+   * Bitince seçilebilir (kalıcı işin cihaz okuması). Okuma sürerken seçilen
+   * iş sırayı tutuyordu: kaydı yoksa küçük taslağı (`kayitYok`) ancak
+   * okumadan sonra geliyor, büyük iş onun önüne geçiyordu.
+   */
+  bekle?: Promise<unknown>,
+): Promise<string | null> {
+  const p = new Promise<string | null>((coz) => {
+    const s = { piksel, is, coz, hazir: !bekle, zaman: performance.now() };
+    SIRA.push(s);
+    void bekle?.then(() => {
+      s.hazir = true;
+      siradakini();
+    });
+  });
   siradakini();
   return p;
 }
 
 function siradakini() {
-  if (isleniyor || !SIRA.length) return;
-  isleniyor = true;
+  if (isleniyor || secim !== undefined || !SIRA.some((s) => s.hazir)) return;
   // Seçim nefes payından sonra: o arada gelen küçük iş de hesaba katılıyor.
-  setTimeout(() => {
-    let i = 0;
-    for (let j = 1; j < SIRA.length; j++) if (SIRA[j]!.piksel < SIRA[i]!.piksel) i = j;
-    const s = SIRA.splice(i, 1)[0]!;
-    void s
-      .is()
-      .catch(() => null)
-      .then((url) => {
-        isleniyor = false;
-        s.coz(url);
-        siradakini();
-      });
-  }, 0);
+  secim = setTimeout(sec, 0);
+}
+
+function sec() {
+  secim = undefined;
+  if (isleniyor) return;
+  const simdi = performance.now();
+  if (SIRA.some((s) => !s.hazir && simdi - s.zaman < OKUMA_BEKLE)) {
+    secim = setTimeout(sec, 10);
+    return;
+  }
+  let i = -1;
+  for (let j = 0; j < SIRA.length; j++)
+    if (SIRA[j]!.hazir && (i < 0 || SIRA[j]!.piksel < SIRA[i]!.piksel)) i = j;
+  if (i < 0) return;
+  const s = SIRA.splice(i, 1)[0]!;
+  isleniyor = true;
+  void s
+    .is()
+    .catch(() => null)
+    .then((url) => {
+      isleniyor = false;
+      s.coz(url);
+      siradakini();
+    });
 }
 
 /** Sırada ya da çizilmekte olan öncelikli iş sayısı. */
@@ -382,6 +421,8 @@ function sonrakiniCalistir() {
 }
 
 const ILGI = new Map<string, (() => boolean)[]>();
+/** Bitmemiş işlerin cihaz okuması (bkz. `glCiz` `kayitYok`). */
+const OKUMALAR = new Map<string, Promise<string | null>>();
 
 /**
  * Çizimi sıraya koyar; aynı istek (anahtar + kutu + boy) bir kez çiziliyor.
@@ -409,23 +450,35 @@ export function glCiz(
     kalici?: KaliciGrup;
     /** Çizimin piksel sayısı (en × boy): sırada küçük önce. Yoksa en büyük sayılıyor. */
     piksel?: number;
+    /**
+     * Çizilecek: cihazda kaydı yok (ya da kalıcı değil). İş bitmediyse onu
+     * bekleyen her çağırana (geliştirmede StrictMode etkiyi iki kez kuruyor:
+     * işi kuran ilk çağıran çoktan vazgeçmiş oluyor). Önce kaba taslak
+     * isteyen için (`Sahne` `OnceKaba`): kaydı olan resim zaten hemen
+     * geliyor, taslak boşuna çizilmesin.
+     */
+    kayitYok?: () => void;
   } = {},
 ): Promise<string | null> {
   // Aynı işi bekleyen her çağıran bir ilgi bırakıyor; iş ancak hepsi
   // vazgeçtiyse atlanıyor (yeniden isteyen eskisinin vazgeçişine takılmasın).
   const ilgisi = secenek.istenmiyor ?? (() => false);
+  const { kayitYok } = secenek;
   const var_ = ONBELLEK.get(anahtar);
   if (var_) {
     ILGI.get(anahtar)?.push(ilgisi);
+    if (kayitYok) void OKUMALAR.get(anahtar)?.then((url) => url === null && kayitYok());
     return var_;
   }
   const ilgi = [ilgisi];
   ILGI.set(anahtar, ilgi);
-  // Kalıcı: cihaza hemen bakılıyor, sıradaki yer de hemen tutuluyor.
-  // Kayıt varsa sıra beklenmeden ondan (yeri gelince çizilmeden geçiliyor);
-  // yoksa iş kendi sırasında çiziliyor ve sonucu cihaza yazılıyor. Sıraya
-  // okuma bitince girseydi, o arada giren büyük çizim (ekranın manzara
-  // şeridi) küçüklerin önüne geçiyordu: Ordu'nun figürleri 6,5 yerine 14 sn.
+  // İşçi şimdiden: modülleri, cihazdaki kayda bakılırken yüklensin (ilk iş
+  // okumayı beklerken işçi de bekliyordu).
+  isciAl();
+  // Kalıcı: cihaza hemen bakılıyor, sıradaki yer de hemen tutuluyor; iş
+  // ancak okuma bitince seçilebiliyor (bkz. `sirayaKoy` `bekle`). Kayıt
+  // varsa sıra beklenmeden ondan (yeri gelince çizilmeden geçiliyor); yoksa
+  // iş kendi sırasında çiziliyor ve sonucu cihaza yazılıyor.
   const grup = secenek.kalici;
   const piksel = secenek.piksel ?? Infinity;
   let geldi = false;
@@ -449,12 +502,16 @@ export function glCiz(
     oncelikli++;
     // Sırası gelince isteyen kalmadıysa (yakınlık yaması: oyuncu çoktan
     // başka yere kaydı) çizilmiyor.
-    const p = sirayaKoy(async () => {
-      if (grup) await okuma;
-      if (geldi || !ilgi.every((istenmiyor) => istenmiyor())) return calis();
-      ONBELLEK.delete(anahtar);
-      return null;
-    }, piksel);
+    const p = sirayaKoy(
+      async () => {
+        if (grup) await okuma;
+        if (geldi || !ilgi.every((istenmiyor) => istenmiyor())) return calis();
+        ONBELLEK.delete(anahtar);
+        return null;
+      },
+      piksel,
+      grup ? okuma : undefined,
+    );
     void p.then(() => {
       oncelikli--;
       sonrakiniBaslat();
@@ -462,9 +519,12 @@ export function glCiz(
     return p;
   };
   const sirada = sirala();
+  if (kayitYok) void okuma.then((url) => url === null && kayitYok());
   const is = grup ? okuma.then((url) => url ?? sirada) : sirada;
+  OKUMALAR.set(anahtar, okuma);
   void is.then(() => {
     if (ILGI.get(anahtar) === ilgi) ILGI.delete(anahtar);
+    if (OKUMALAR.get(anahtar) === okuma) OKUMALAR.delete(anahtar);
   });
   ONBELLEK.set(anahtar, is);
   return is;

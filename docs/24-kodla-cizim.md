@@ -583,7 +583,20 @@ kaydırıyor.
   PNG'ye çevirme 1–5 ms), üstüne geliştirme sunucusunun modül yüklemesi.
   İşçiyi uygulama açılırken ısıtmak denendi, kazandırmadı (son çizim
   ~1,97 yerine ~1,95 sn): modüller sayfanınkilerle yarışıp galeriyi
-  geciktiriyordu.
+  geciktiriyordu. Ardından "önce kaba sonra keskin çizimi de ekle"
+  (`Sahne` `OnceKaba`, galeri açıyor; oyunda kapalı): cihazda kaydı olmayan
+  çizim önce üç kat küçük bir taslak (kalıcı değil, durağan), sonra tam
+  kalitede; taslak keskin resim yerine oturunca bırakılıyor. Taslak ancak
+  kayıt yoksa isteniyor (`glCiz` `kayitYok`; geliştirmede StrictMode etkiyi
+  iki kez kurduğu için bildirim işi bekleyen her çağırana gidiyor). Sırada
+  iki kural daha: kalıcı iş cihaz okuması bitmeden seçilmiyor (okuma
+  sürerken seçilen büyük iş, okumadan sonra gelen küçük taslağın önüne
+  geçiyordu), okuması süren iş varken seçim en çok 100 ms bekliyor
+  (okumalar sırayla bitiyor; ilki biter bitmez seçilen manzara şeridi
+  figürlerin önüne geçmesin); işçi de ilk istekte, okuma beklenmeden
+  başlatılıyor. Ölçüldü: ekrandaki on bir çizim 0,85–0,95 sn'de görünüyor
+  (taslaklar; ilki gölgelendirici derlemesiyle ~360 ms, ötekiler 12–35 ms),
+  1,67–1,79 sn'de hepsi keskin; yeniden açılış 0,3 sn, taslaksız.
   Ölçüldü (yazılım GPU'su): yeniden açılışta kapak 18,5 sn yerine 0,1 sn,
   afiş 12,4 sn yerine 0,1 sn; telefon boyunda kapak ~0,9 MB, afiş ~2,3 MB
   (grup en çok ~35 MB). `zemin`: en çok on iki — ardından "ekran

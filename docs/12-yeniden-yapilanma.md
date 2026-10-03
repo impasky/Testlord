@@ -525,7 +525,10 @@ galerinin tarifsiz çizimlerinin ana iş parçacığında kurduğu SVG
 Ardından **"ilk açılışı da 1 saniyenin altına indir"**: oyuncunun seçtiği
 yolla yalnız ekrandakiler çiziliyor; ekran 28,5 sn yerine 1,4 sn'de doluyor.
 Yazılım GPU'sunda bu on bir çizimin saf çizimi tek başına ~0,95 sn — 1 sn'nin
-altı burada görünümü değiştirmeden yok (docs/24 "Kalıcı çizim").
+altı burada görünümü değiştirmeden yok (docs/24 "Kalıcı çizim"). Sonra
+**"önce kaba sonra keskin çizimi de ekle"**: galeride kaydı olmayan çizim önce
+küçük bir taslak, sonra tam kalitede — ekran 0,85–0,95 sn'de doluyor, 1,7
+sn'de hepsi keskin.
 
 ## 4. Bina seviyesi ile araştırma neden çakışmıyor
 

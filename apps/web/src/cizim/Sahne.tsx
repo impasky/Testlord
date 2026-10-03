@@ -17,7 +17,16 @@
  * saydamlık: tarayıcı bunları yeniden boyamadan oynatıyor). Hareket
  * kısıtlıysa (`prefers-reduced-motion`) hiçbiri yok, duman durağan çiziliyor.
  */
-import { memo, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
+import {
+  createContext,
+  memo,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from 'react';
 import {
   EN_BUYUK,
   aoYaricapi,
@@ -121,6 +130,16 @@ function hareketKisitli(): boolean {
 const kova = (x: number) => Math.pow(1.25, Math.ceil(Math.log(Math.max(x, 8)) / Math.log(1.25)));
 
 /**
+ * Önce kaba, sonra keskin (geliştirme galerisi, `Galeri.tsx`). Oyuncu:
+ * "önce kaba sonra keskin çizimi de ekle." Cihazda kaydı olmayan çizim önce
+ * `KABA_KAT` kat küçük bir taslak (kalıcı değil; sırada küçük önce olduğu
+ * için bütün taslaklar keskinlerden önce), sonra tam kalitede. Ekran
+ * yazılım GPU'sunda da hemen doluyor, ilk anlarda bulanık.
+ */
+export const OnceKaba = createContext(false);
+const KABA_KAT = 3;
+
+/**
  * GPU resmini ister; hazır olunca url, yoksa null. Öğe ölçülüyor: resim
  * ekrandaki boyun piksel yoğunluğu kadar çiziliyor, ne eksik ne fazla.
  */
@@ -137,6 +156,7 @@ function useGpuResmi(
   hareket: boolean,
   onceDurgun: boolean,
   kalici: KaliciGrup | undefined,
+  kaba: boolean,
   ref: React.RefObject<SVGSVGElement | null>,
   basarisiz: () => void,
 ): string | null {
@@ -160,6 +180,15 @@ function useGpuResmi(
     const el = ref.current;
     if (!etkin || !el) return;
     let iptal = false;
+    // Önce kaba (bkz. `OnceKaba`): taslak istendi mi, keskin resim geldi mi.
+    let kabaIs: string | null = null;
+    let tamGeldi = false;
+    const tamKondu = () => {
+      tamGeldi = true;
+      const t = kabaIs;
+      // Taslak bırakılıyor; keskin resim yerine oturduktan sonra.
+      if (t) requestAnimationFrame(() => glBirak(t));
+    };
     const [, , vw, vh] = v;
     const iste = () => {
       // Düzendeki boy (CSS dönüşümü hariç): yakınlaşan sahnenin ana resmi
@@ -182,22 +211,42 @@ function useGpuResmi(
       boy = Math.max(1, Math.round(boy));
       const var_ = RESIMLER.get(taban);
       if (var_ && var_.en >= en) {
+        tamKondu();
         setResim(var_.url);
         return;
       }
       const { uret: u, kamera: k } = guncel.current;
       // Tarifliyse model işçide kuruluyor (`tarif.ts`): buradan yalnız anahtar.
-      const istek = (h: boolean) => () => ({
-        ...(tarif ? { tarif: anahtar } : { model: modelAl(anahtar, u) }),
-        kamera: k,
-        kutu: v,
-        en,
-        boy,
-        olcek: en / (vw * cssBirim),
-        tilt,
-        sicak,
-        hareket: h,
-      });
+      const istek =
+        (h: boolean, e = en, b = boy) =>
+        () => ({
+          ...(tarif ? { tarif: anahtar } : { model: modelAl(anahtar, u) }),
+          kamera: k,
+          kutu: v,
+          en: e,
+          boy: b,
+          olcek: e / (vw * cssBirim),
+          tilt,
+          sicak,
+          hareket: h,
+        });
+      // Taslak: durağan, küçük, kalıcı değil; keskin resim gelmişse çizilmiyor.
+      const kabaIste = () => {
+        if (iptal || tamGeldi || kabaIs) return;
+        const ke = Math.max(1, Math.round(en / KABA_KAT));
+        const kb = Math.max(1, Math.round(boy / KABA_KAT));
+        const is = `${durgunTaban}|${ke}x${kb}|kaba`;
+        kabaIs = is;
+        void glCiz(is, istek(false, ke, kb), {
+          piksel: ke * kb,
+          istenmiyor: () => iptal || tamGeldi,
+        }).then((url) => {
+          if (!url) return;
+          if (iptal || tamGeldi) glBirak(is);
+          else setResim(url);
+        });
+      };
+      const kayitYok = kaba ? kabaIste : undefined;
       // Sırada küçük çizim önce (`glCiz` `piksel`).
       const piksel = en * boy;
       const sakla = (t: string, url: string) => {
@@ -206,29 +255,37 @@ function useGpuResmi(
         return RESIMLER.get(t)!.url;
       };
       if (!iki) {
-        glCiz(`${taban}|${en}x${boy}`, istek(hareket), { kalici, piksel }).then((url) => {
+        glCiz(`${taban}|${en}x${boy}`, istek(hareket), { kalici, piksel, kayitYok }).then((url) => {
           if (!url) {
             if (!iptal) guncel.current.basarisiz();
             return;
           }
           const son = sakla(taban, url);
-          if (!iptal) setResim(son);
+          if (iptal) return;
+          setResim(son);
+          tamKondu();
         });
         return;
       }
       // Önce durağan resim (hızlı; bütün parçalar içinde), sonra canlısı.
       let canliGeldi = false;
       const durgun = RESIMLER.get(durgunTaban);
-      if (durgun && durgun.en >= en) setResim(durgun.url);
-      else
-        glCiz(`${durgunTaban}|${en}x${boy}`, istek(false), { kalici, piksel }).then((url) => {
-          if (!url) {
-            if (!iptal) guncel.current.basarisiz();
-            return;
-          }
-          const son = sakla(durgunTaban, url);
-          if (!iptal && !canliGeldi) setResim(son);
-        });
+      if (durgun && durgun.en >= en) {
+        tamKondu();
+        setResim(durgun.url);
+      } else
+        glCiz(`${durgunTaban}|${en}x${boy}`, istek(false), { kalici, piksel, kayitYok }).then(
+          (url) => {
+            if (!url) {
+              if (!iptal) guncel.current.basarisiz();
+              return;
+            }
+            const son = sakla(durgunTaban, url);
+            if (iptal || canliGeldi) return;
+            setResim(son);
+            tamKondu();
+          },
+        );
       glCiz(`${taban}|${en}x${boy}`, istek(true), {
         sonra: true,
         istenmiyor: () => iptal,
@@ -242,6 +299,7 @@ function useGpuResmi(
         if (iptal) return;
         canliGeldi = true;
         setResim(son);
+        tamKondu();
       });
     };
     iste();
@@ -252,7 +310,7 @@ function useGpuResmi(
       ro.disconnect();
     };
     // `v` içerik olarak `taban`da; dizi kimliği her çizimde değişiyor.
-  }, [etkin, taban, durgunTaban, iki, tarif, kirp, tilt, sicak, hareket, kalici, ref]);
+  }, [etkin, taban, durgunTaban, iki, tarif, kirp, tilt, sicak, hareket, kalici, kaba, ref]);
 
   return etkin ? resim : null;
 }
@@ -1121,6 +1179,7 @@ export const Sahne = memo(function Sahne({
   kalici?: KaliciGrup;
 }) {
   const ref = useRef<SVGSVGElement>(null);
+  const kaba = useContext(OnceKaba);
   const [gpuYok, setGpuYok] = useState(false);
   const gpu = glVarMi() && !gpuYok;
   const cokgensiz = gpu && tarif;
@@ -1161,6 +1220,7 @@ export const Sahne = memo(function Sahne({
     canli,
     onceDurgun,
     kalici,
+    kaba,
     ref,
     () => setGpuYok(true),
   );
