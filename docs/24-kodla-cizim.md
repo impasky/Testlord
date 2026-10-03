@@ -572,7 +572,18 @@ kaydırıyor.
   iş). Tarifi olan her çizim artık oyundaki gibi tariften (`Sahne.tarif`:
   GPU varken çokgen yok, model işçide); tarifsiz kalan yalnız galeriye
   özgü yedi sahne. Yeniden açılış 0,42–0,52 sn (uzun iş 0,2 sn), ilk
-  açılış da 42,8 yerine 35 sn.
+  açılış da 42,8 yerine 35 sn. Sonra "ilk açılışı da 1 saniyenin altına
+  indir" — oyuncu "görünen önce"yi seçti: çizim ancak kutusu ekrana
+  girince isteniyor (`GorununceCiz`; önceden istemek ekrandakileri
+  kenardakilerle yarıştırıyordu), canlı talim sahneleri önce durağan
+  (canlı kareler ~1,2 sn, durağan ~0,13 sn). Ekrandaki on bir çizim 28,5
+  yerine 1,4 sn'de; kaydırdıkça gerisi geliyor, yeniden açılış 0,1–0,3 sn.
+  Bu ortamda 1 sn'nin altı yok: on bir çizimin saf çizim süresi yazılım
+  GPU'sunda tek başına ~0,95 sn (yapı simgesi ~40 ms, talim ~110–130 ms;
+  PNG'ye çevirme 1–5 ms), üstüne geliştirme sunucusunun modül yüklemesi.
+  İşçiyi uygulama açılırken ısıtmak denendi, kazandırmadı (son çizim
+  ~1,97 yerine ~1,95 sn): modüller sayfanınkilerle yarışıp galeriyi
+  geciktiriyordu.
   Ölçüldü (yazılım GPU'su): yeniden açılışta kapak 18,5 sn yerine 0,1 sn,
   afiş 12,4 sn yerine 0,1 sn; telefon boyunda kapak ~0,9 MB, afiş ~2,3 MB
   (grup en çok ~35 MB). `zemin`: en çok on iki — ardından "ekran

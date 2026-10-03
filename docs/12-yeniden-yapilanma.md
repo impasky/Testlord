@@ -522,6 +522,10 @@ yap"**: geliştirme galerisinin yüz yetmiş yedi çizimi de, kendi grubunda
 kalıcı. Sonra **"galeriyi de 1 saniyenin altına indir"**: kalan süre
 galerinin tarifsiz çizimlerinin ana iş parçacığında kurduğu SVG
 çokgenleriydi; tarifli çizimler artık tariften, yeniden açılış 0,5 sn.
+Ardından **"ilk açılışı da 1 saniyenin altına indir"**: oyuncunun seçtiği
+yolla yalnız ekrandakiler çiziliyor; ekran 28,5 sn yerine 1,4 sn'de doluyor.
+Yazılım GPU'sunda bu on bir çizimin saf çizimi tek başına ~0,95 sn — 1 sn'nin
+altı burada görünümü değiştirmeden yok (docs/24 "Kalıcı çizim").
 
 ## 4. Bina seviyesi ile araştırma neden çakışmıyor
 

@@ -11,7 +11,10 @@
  * (`Sahne.tarif`): GPU varken çokgen hiç kurulmuyor, model işçide. Tarifsiz
  * çizimde (galeriye özgü talim ve deneme) resim gelene kadar binlerce
  * çokgen DOM'a yazılıp siliniyordu — yeniden açılışın 4,6 sn'si oydu.
+ *
+ * Görünen önce (`GorununceCiz`): çizim ancak ekrana yaklaşınca isteniyor.
  */
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { BINA_ADLARI, BINA_KUTUSU, binaModeli } from './binalar';
 import {
   BIRLIK_ADLARI,
@@ -134,10 +137,11 @@ function canliDeneme(ad: string): Model {
 
 const BOLUMLER: {
   baslik: string;
-  ogeler: { ad: string; cizim: React.ReactNode; genis?: boolean; oran?: string }[];
+  ogeler: { ad: string; cizim: ReactNode; genis?: boolean; oran?: string }[];
 }[] = [
   {
-    // Kare kare canlandırma (canli.ts): yalnız GPU'da oynuyor.
+    // Kare kare canlandırma (canli.ts): yalnız GPU'da oynuyor. Önce durağan
+    // (oyunun yerleşkesi gibi): canlı kareler ~1,2 sn, durağan resim ~0,13 sn.
     baslik: 'Talim ve tarla',
     ogeler: ['okcu', 'mizrakci', 'duello', 'saban', 'orak'].map((ad) => ({
       ad: 'talim:' + ad,
@@ -149,6 +153,7 @@ const BOLUMLER: {
           alt={ad}
           className="h-full w-full"
           hareket
+          onceDurgun
           kalici="galeri"
         />
       ),
@@ -357,6 +362,33 @@ const BOLUMLER: {
   },
 ];
 
+/**
+ * Çizimin kutusu; çizim ancak kutu ekrana girince isteniyor, sonra
+ * kalıyor. Oyuncu: "ilk açılışı da 1 saniyenin altına indir." Galeri yüz
+ * yetmişi aşkın çizim ve açılışta hepsi birden isteniyordu: ekrandaki on
+ * bir çizim, sıradaki yüz altmış altısıyla yarışıp sonuncusu 28,5 sn'de
+ * geliyordu (yazılım GPU'su). Önceden (ekranın kenarından) istemek de
+ * ekrandakileri geciktiriyordu: 1,95 yerine 1,38 sn.
+ */
+function GorununceCiz({ className, children }: { className: string; children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [acik, setAcik] = useState(() => typeof IntersectionObserver === 'undefined');
+  useEffect(() => {
+    const el = ref.current;
+    if (acik || !el) return;
+    const io = new IntersectionObserver((g) => g.some((x) => x.isIntersecting) && setAcik(true), {
+      rootMargin: '0px',
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [acik]);
+  return (
+    <div ref={ref} className={className}>
+      {acik ? children : null}
+    </div>
+  );
+}
+
 export function Galeri() {
   return (
     <div className="min-h-screen bg-gece p-4 text-parsomen" data-cizim-galerisi="">
@@ -369,13 +401,13 @@ export function Galeri() {
                 key={o.ad}
                 className={`flex flex-col items-center gap-1 ${o.genis ? 'w-[360px]' : 'w-[180px]'}`}
               >
-                <div
+                <GorununceCiz
                   className={`flex items-center justify-center overflow-hidden rounded-lg bg-yuzey ${
                     o.genis ? `${o.oran ?? 'aspect-[4/3]'} w-[360px]` : 'h-[180px] w-[180px]'
                   }`}
                 >
                   {o.cizim}
-                </div>
+                </GorununceCiz>
                 <figcaption className="text-[11px] text-solgun">{o.ad}</figcaption>
               </figure>
             ))}
