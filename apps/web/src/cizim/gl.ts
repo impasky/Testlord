@@ -97,6 +97,25 @@ function isciyiBirak() {
   bekleyenler.clear();
 }
 
+/** Çalışan iş kesildi: sözü bununla düşüyor, iş sıraya geri dönüyor. */
+class Kesildi extends Error {}
+
+/** Kesilmesi istenen işler: bir kez istensin. */
+const KESILEN = new Set<number>();
+
+/**
+ * Çalışan işi keser: işçi süren çizimi bir sonraki şerit arasında bırakıp
+ * "kesildi" diyor (`glCizici` `SERIT_ORNEK`; bağlam ve gölgelendiriciler
+ * yerinde). Bkz. `kesmeyiDene`.
+ */
+function isciyiKes() {
+  for (const id of bekleyenler.keys()) {
+    if (KESILEN.has(id)) continue;
+    KESILEN.add(id);
+    isci?.postMessage({ kes: id });
+  }
+}
+
 function isciAl(): Worker | null {
   if (isciDurumu === 'yok') return null;
   if (isci) return isci;
@@ -113,6 +132,7 @@ function isciAl(): Worker | null {
   isci.onmessage = (e: MessageEvent<IsciCevabi>) => {
     const coz = bekleyenler.get(e.data.id);
     bekleyenler.delete(e.data.id);
+    KESILEN.delete(e.data.id);
     coz?.(e.data);
   };
   // Yüklenemedi (eski tarayıcı, güvenlik politikası) ya da düştü.
@@ -157,6 +177,7 @@ async function ciz(istek: GlIstek): Promise<CizimSonucu | null> {
         ? { ...geri, tarif, yazilimaIzin: yazilim }
         : { ...geri, ...aktarilabilir(modelden()), yazilimaIzin: yazilim };
     const cevap = await iscide(i, gidecek);
+    if (cevap.kesildi) throw new Kesildi();
     if (!cevap.yok) {
       isciDurumu = 'hazir';
       return cevap.sonuc ? { ...cevap.sonuc, dumanlar: cevap.sonuc.dumanlar ?? dumanlar } : null;
@@ -286,7 +307,8 @@ async function calistir(
     if (!s) return null;
     sonra?.(s);
     return urlle(s);
-  } catch {
+  } catch (e) {
+    if (e instanceof Kesildi) throw e;
     return null;
   }
 }
@@ -300,8 +322,22 @@ const SIRA: {
   hazir: boolean;
   /** Sıraya girdiği an (okuması süren iş için bekleme sınırı). */
   zaman: number;
+  /** Seçilince gerçekten çizecek mi (kayıttan gelen, istenmeyen iş değil). */
+  cizecek: () => boolean;
+  /** Kaç kez kesildi (bkz. `KESME_EN_COK`). */
+  kesilme: number;
 }[] = [];
 let isleniyor = false;
+/** Çalışan iş (kesilebilsin diye). */
+let calisan: (typeof SIRA)[number] | null = null;
+/**
+ * Çalışan iş, ancak gelen iş ondan en az bu kat küçükse kesiliyor: yakın
+ * boylar birbirini kesip durmasın; kesilen işin yaptığı iş boşa gidiyor,
+ * baştan çiziliyor.
+ */
+const KESME_KAT = 4;
+/** Bir iş en çok bu kadar kesiliyor: küçük işler birbiri ardına gelse de biter. */
+const KESME_EN_COK = 3;
 let secim: ReturnType<typeof setTimeout> | undefined;
 /**
  * Okuması süren iş varken seçim en çok bu kadar bekliyor (ms). Okumalar
@@ -313,7 +349,8 @@ const OKUMA_BEKLE = 100;
 
 /**
  * Sıraya koyar: işler tek tek, aralarında ana iş parçacığına nefes payı.
- * Bekleyenlerden en küçüğü önce (eşitse ilk gelen; çalışan iş kesilmiyor):
+ * Bekleyenlerden en küçüğü önce (eşitse ilk gelen; çalışan iş ancak çok
+ * daha küçüğü gelince kesiliyor, bkz. `kesmeyiDene`):
  * ekranın figürleri ve simgeleri milisaniyeler sürüyor, manzara şeridi
  * saniyeler — şerit önce istendi diye Ordu'nun figürleri onun arkasında
  * 14 sn beklemesin.
@@ -327,17 +364,34 @@ function sirayaKoy(
    * okumadan sonra geliyor, büyük iş onun önüne geçiyordu.
    */
   bekle?: Promise<unknown>,
+  cizecek: () => boolean = () => true,
 ): Promise<string | null> {
   const p = new Promise<string | null>((coz) => {
-    const s = { piksel, is, coz, hazir: !bekle, zaman: performance.now() };
+    const s = { piksel, is, coz, hazir: !bekle, zaman: performance.now(), cizecek, kesilme: 0 };
     SIRA.push(s);
     void bekle?.then(() => {
       s.hazir = true;
+      kesmeyiDene();
       siradakini();
     });
   });
+  kesmeyiDene();
   siradakini();
   return p;
+}
+
+/**
+ * Oyuncu: "çalışan işi de kesilebilir yap." Büyük bir çizim sürerken
+ * (uygulama açılırken Şehir'in yerleşkesi, canlı resmi, yakınlık yaması)
+ * açılan ekranın küçük çizimleri onun bitmesini bekliyordu. Sırada çizilecek
+ * bir iş, çalışandan `KESME_KAT` kat küçükse çalışan kesiliyor (işçide
+ * sürüyorsa; ana iş parçacığındaki çizim kesilemiyor): küçük önce, kesilen
+ * sıraya geri dönüp baştan çiziliyor.
+ */
+function kesmeyiDene() {
+  const c = calisan;
+  if (!c || c.kesilme >= KESME_EN_COK || !bekleyenler.size) return;
+  if (SIRA.some((s) => s.hazir && s.piksel * KESME_KAT <= c.piksel && s.cizecek())) isciyiKes();
 }
 
 function siradakini() {
@@ -360,14 +414,24 @@ function sec() {
   if (i < 0) return;
   const s = SIRA.splice(i, 1)[0]!;
   isleniyor = true;
-  void s
-    .is()
-    .catch(() => null)
-    .then((url) => {
-      isleniyor = false;
-      s.coz(url);
-      siradakini();
-    });
+  calisan = s;
+  void s.is().then(
+    (url) => bitti(s, url),
+    (e: unknown) => {
+      if (!(e instanceof Kesildi)) return bitti(s, null);
+      // Kesildi: sıraya geri, baştan (küçükler önce seçiliyor).
+      s.kesilme++;
+      SIRA.push(s);
+      bitti(null, null);
+    },
+  );
+}
+
+function bitti(s: (typeof SIRA)[number] | null, url: string | null) {
+  isleniyor = false;
+  calisan = null;
+  s?.coz(url);
+  siradakini();
 }
 
 /** Sırada ya da çizilmekte olan öncelikli iş sayısı. */
@@ -513,6 +577,7 @@ export function glCiz(
       },
       piksel,
       grup ? okuma : undefined,
+      () => !geldi && !ilgi.every((istenmiyor) => istenmiyor()),
     );
     void p.then(() => {
       oncelikli--;

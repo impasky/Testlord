@@ -530,7 +530,10 @@ altı burada görünümü değiştirmeden yok (docs/24 "Kalıcı çizim"). Sonra
 küçük bir taslak, sonra tam kalitede — ekran 0,85–0,95 sn'de doluyor, 1,7
 sn'de hepsi keskin. Aynı istek yinelenince oyuna da: büyük sahneler (en az
 300×300 piksel) önce gölgesiz taslak; Şehir'in yerleşkesi 6,5 yerine 1,45
-sn'de görünüyor, keskin resim ~0,7 sn geç.
+sn'de görünüyor, keskin resim ~0,7 sn geç. Sonra **"çalışan işi de
+kesilebilir yap"**: büyük çizim işçide şerit şerit gidiyor, aralarda kesme
+soruluyor; çok daha küçük bir iş gelince çalışan bırakılıp sonra baştan
+çiziliyor — yerleşke çizilirken açılan Ordu'nun figürleri 6,2 yerine 0,9 sn.
 
 ## 4. Bina seviyesi ile araştırma neden çakışmıyor
 

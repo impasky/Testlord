@@ -288,6 +288,27 @@ figürleri önce istenen şeridin arkasında 14 sn bekliyordu; şimdi 0,4 sn
 (Akın'ın düşmanları 9,3 yerine 0,4 sn; diyar haritası da önündeki küçük
 işler bir anda bittiği için 15 yerine 5 sn).
 
+Çalışan iş kesilebiliyor (oyuncu: "çalışan işi de kesilebilir yap"). Büyük
+bir çizim sürerken (uygulama açılırken Şehir'in yerleşkesi, canlı resmi,
+yakınlık yaması) açılan ekranın küçük çizimleri onu bekliyordu: uygulama
+açılır açılmaz Ordu'ya geçince figürler 6,2 sn'de. Tek bir GPU çizimi
+yarıda durdurulamıyor; işçiyi sonlandırmak da durdurmuyordu (denendi:
+Chrome'da gönderilmiş komutlar bitiriliyor, yeni işçinin çizimi onları
+bekliyordu). Bu yüzden büyük çizim işçide şerit şerit gidiyor
+(`glCizici` `seritle`, `SERIT_ORNEK`: bir milyon örneklik yatay şeritler,
+makasla — ana geçiş ve kenar geçişi; hareket katmanları ve atlas
+kareleri arasında da durak): her şeritten sonra GPU'nun bitirmesi
+bekleniyor (`fenceSync`) ve kesme isteğine bakılıyor. Sırada çizilecek bir
+iş çalışandan dört kat küçükse (`KESME_KAT`; kayıttan gelen ya da artık
+istenmeyen iş saymıyor) işçiye "kes" gidiyor; çizim bir sonraki şerit
+arasında bırakılıyor (tamponlar siliniyor; bağlam ve gölgelendiriciler
+yerinde), iş sıraya geri dönüp baştan çiziliyor — en çok üç kez
+(`KESME_EN_COK`). Ölçüldü: yerleşke çizilirken Ordu'nun figürleri 6,2 yerine
+0,9 sn; Şehir'e dönünce yerleşke yine geliyor. Bedeli: kesilmeyen büyük
+çizim %2,5–5 yavaş (şerit başına geometri ve durak); şeritli ve tek parça
+çizim bayt bayt aynı PNG (yapı, canlı afiş ve katmanları, atlas). Küçük
+çizim (bir milyon örnekten az) eskisi gibi tek parça, durak yok.
+
 Ağır canlı sahne önce DURAĞAN (`Sahne.onceDurgun`; Şehir'in yerleşkesi):
 önce bütün parçaları içinde çizili durağan resim (hızlı), canlı resim ve
 katmanları sonra. Canlı iş `glCiz` `sonra` ile sıraya giriyor: öncelikli
@@ -608,8 +629,8 @@ kaydırıyor.
   1,45 → 7,1–7,3 sn; Ordu'nun şeridi 7,7 yerine 0,5 → 7,9 sn; Akın'ın
   kapağı 7,5–7,9 yerine 0,9 → 7,9–8,3 sn; diyar haritası 1,8–1,9 yerine
   0,37 → 2,0–2,2 sn. Yeniden açılış değişmedi (kayıttan, taslaksız).
-  Başka büyük çizim sürerken (yerleşkenin canlı yaması, canlı resmi)
-  açılan ekran yine onu bekliyor: çalışan iş kesilmiyor.
+  Başka büyük çizim sürerken açılan ekranın çizimleri onu bekliyordu;
+  ardından "çalışan işi de kesilebilir yap": bkz. "Sıra ve işçi".
   Ölçüldü (yazılım GPU'su): yeniden açılışta kapak 18,5 sn yerine 0,1 sn,
   afiş 12,4 sn yerine 0,1 sn; telefon boyunda kapak ~0,9 MB, afiş ~2,3 MB
   (grup en çok ~35 MB). `zemin`: en çok on iki — ardından "ekran

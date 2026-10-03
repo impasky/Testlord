@@ -12,6 +12,7 @@ import { bayrakKareleri } from './bayrakAni';
 import { dumanKaynaklari, type DumanKaynagi } from './duman';
 import { agYap } from './glAg';
 import {
+  CizimKesildi,
   aktarilanlar,
   cizBlob,
   glDurumu,
@@ -23,7 +24,8 @@ import { tarifModeli } from './tarif';
 import type { Model } from './uc';
 
 const kapsam = self as unknown as {
-  onmessage: ((e: MessageEvent<{ id: number; istek: IsciIstegi }>) => void) | null;
+  onmessage:
+    ((e: MessageEvent<{ id: number; istek: IsciIstegi } | { kes: number }>) => void) | null;
   postMessage(ileti: IsciCevabi, aktar?: Transferable[]): void;
 };
 
@@ -61,12 +63,28 @@ function hazirla(istek: IsciIstegi): { c: CizimIstegi; dumanlar?: DumanKaynagi[]
 }
 
 let zincir: Promise<unknown> = Promise.resolve();
+/**
+ * Kesilecek işler (`gl.ts` `isciyiKes`): mesaj hemen işleniyor (zincire
+ * girmiyor); süren çizim bir sonraki şerit arasında soruyor.
+ */
+const KESILECEK = new Set<number>();
 
 kapsam.onmessage = (e) => {
+  if ('kes' in e.data) {
+    KESILECEK.add(e.data.kes);
+    return;
+  }
   const { id, istek } = e.data;
   zincir = zincir.then(async () => {
+    if (KESILECEK.delete(id)) return kapsam.postMessage({ id, kesildi: true });
     const { c, dumanlar } = hazirla(istek);
-    const sonuc = await cizBlob(c).catch(() => null);
+    let kesildi = false;
+    const sonuc = await cizBlob(c, () => KESILECEK.has(id)).catch((h: unknown) => {
+      kesildi = h instanceof CizimKesildi;
+      return null;
+    });
+    KESILECEK.delete(id);
+    if (kesildi) return kapsam.postMessage({ id, kesildi: true });
     if (glDurumu() === 'yok') {
       // Tembel kareler (işlev) aktarılamıyor: ağ da gitmiyor, ana iş
       // parçacığı sahneyi tariften yeniden kuruyor.

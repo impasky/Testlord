@@ -1278,6 +1278,8 @@ export interface IsciCevabi {
   id: number;
   sonuc?: CizimSonucu | null;
   yok?: boolean;
+  /** İşçi kesildi (bkz. `gl.ts` `isciyiKes`): iş sıraya geri dönüyor. */
+  kesildi?: boolean;
   ag?: Ag;
   bayrak?: BayrakKareleri;
   dumanlar?: DumanKaynagi[];
@@ -1307,15 +1309,77 @@ export function glDurumu(): typeof durum {
   return durum;
 }
 
+/** Çizim kesildi (`cizBlob` `kes`): işçi sıradaki işe geçiyor. */
+export class CizimKesildi extends Error {}
+
+/** Süren çizimin kesme sorusu (yalnız işçide, `cizBlob` `kes`). */
+let kesmeSorusu: (() => boolean) | undefined;
+
+/**
+ * Bir şeridin örnek sayısı: büyük çizim bu boyda şeritlere bölünüp tek tek
+ * GPU'ya gidiyor. Tek bir GPU çizimi yarıda durdurulamıyor (işçiyi
+ * sonlandırmak da durdurmuyordu: Chrome'da gönderilmiş komutlar bitiriliyor,
+ * yeni işçinin çizimi onları bekliyordu). Şerit arasında GPU'nun bitirmesi
+ * bekleniyor ve kesme isteğine bakılıyor: kesilen çizim en çok bir şerit
+ * sürüyor (yerleşkenin zemini 3,5 sn tek parçaydı, sekiz şeritte ~0,4 sn).
+ */
+const SERIT_ORNEK = 1_000_000;
+
+/** Kesme istendiyse dur. */
+function kesildiyse() {
+  if (kesmeSorusu?.()) throw new CizimKesildi();
+}
+
+/** Durak: GPU buraya kadarki komutları bitirsin (beklerken işçi mesaj alıyor). */
+async function durak(gl: WebGL2RenderingContext) {
+  const f = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
+  gl.flush();
+  if (f) {
+    while (gl.getSyncParameter(f, gl.SYNC_STATUS) !== gl.SIGNALED && !gl.isContextLost())
+      await new Promise((r) => setTimeout(r, 0));
+    gl.deleteSync(f);
+  }
+  kesildiyse();
+}
+
+/**
+ * Hedefin tamamına `ciz`; `n` şeritte (makasla, alttan üste), her şeritten
+ * sonra durakla. `n` 1 ise eskisi gibi tek seferde.
+ */
+async function seritle(
+  gl: WebGL2RenderingContext,
+  w: number,
+  h: number,
+  n: number,
+  ciz: () => void,
+) {
+  if (n <= 1) return ciz();
+  const adim = Math.ceil(h / n);
+  gl.enable(gl.SCISSOR_TEST);
+  for (let y = 0; y < h; y += adim) {
+    gl.scissor(0, y, w, Math.min(adim, h - y));
+    ciz();
+    await durak(gl);
+  }
+  gl.disable(gl.SCISSOR_TEST);
+}
+
 /**
  * Tek bir çizim: PNG blob'ları ya da (WebGL yoksa/bozulduysa) null. Çağıran
- * işleri tek tek veriyor (sıra `gl.ts`'de ve işçide).
+ * işleri tek tek veriyor (sıra `gl.ts`'de ve işçide). `kes` verilirse
+ * (işçide) büyük çizim şerit şerit ve aralarda soruluyor: true ise
+ * `CizimKesildi` (bkz. `SERIT_ORNEK`).
  */
-export async function cizBlob(istek: CizimIstegi): Promise<CizimSonucu | null> {
+export async function cizBlob(
+  istek: CizimIstegi,
+  kes?: () => boolean,
+): Promise<CizimSonucu | null> {
   clearTimeout(bosaltma);
+  kesmeSorusu = kes;
   try {
     return await ciz(istek);
   } finally {
+    kesmeSorusu = undefined;
     bosaltma = setTimeout(bosalt, BOSTA_MS);
   }
 }
@@ -1338,425 +1402,435 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
   const isik = isikKamerasi(ag, lz);
   const golgeVar = ag.golge.length > 0 && !istek.taslak;
   const silinecek: (() => void)[] = [];
+  // Şerit sayısı: büyük çizim, kesilebiliyorsa (bkz. `SERIT_ORNEK`).
+  const n = kesmeSorusu && sen * sboy >= SERIT_ORNEK ? Math.ceil((sen * sboy) / SERIT_ORNEK) : 1;
+  try {
+    // 1) Gölge haritası: yalnız nesneler, iki yüzlü.
+    if (golgeVar) {
+      const t = tampon(gl, ag.golge, true);
+      silinecek.push(t.sil);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, k.golgeFbo);
+      gl.viewport(0, 0, GOLGE_BOYU, GOLGE_BOYU);
+      gl.clearDepth(1);
+      gl.clear(gl.DEPTH_BUFFER_BIT);
+      gl.enable(gl.DEPTH_TEST);
+      gl.depthFunc(gl.LESS);
+      gl.depthMask(true);
+      gl.disable(gl.BLEND);
+      gl.disable(gl.CULL_FACE);
+      gl.enable(gl.POLYGON_OFFSET_FILL);
+      gl.polygonOffset(2, 4);
+      gl.useProgram(k.golge);
+      gl.uniformMatrix4fv(gl.getUniformLocation(k.golge, 'u_isikMat'), false, isik.mat);
+      gl.bindVertexArray(t.vao);
+      gl.drawArrays(gl.TRIANGLES, 0, t.say);
+      gl.disable(gl.POLYGON_OFFSET_FILL);
+    }
 
-  // 1) Gölge haritası: yalnız nesneler, iki yüzlü.
-  if (golgeVar) {
-    const t = tampon(gl, ag.golge, true);
-    silinecek.push(t.sil);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, k.golgeFbo);
-    gl.viewport(0, 0, GOLGE_BOYU, GOLGE_BOYU);
-    gl.clearDepth(1);
-    gl.clear(gl.DEPTH_BUFFER_BIT);
-    gl.enable(gl.DEPTH_TEST);
-    gl.depthFunc(gl.LESS);
+    // Salınan parçalar (bayrak, sancak, ağaç) için kare atlası kurulabilir
+    // mi: kurulamazsa (çok büyük, bellek) onlar ana resme çiziliyor.
+    const by = istek.hareket ? istek.bayrak : undefined;
+    let plan: {
+      kutular: [number, number, number, number][];
+      duzen: ReturnType<typeof atlasDuzeni>;
+      kare: number;
+    } | null = null;
+    if (by && by.kare > 0) {
+      const r0 = Math.max(1, Math.round(0.7 * istek.olcek * ss));
+      const tiltVar = istek.tilt !== undefined && istek.tilt < 0.5;
+      const pay = 2 + r0 + (tiltVar ? Math.ceil(TILT_YARICAP * en) : 0);
+      const kutular = bayrakKutulari(by, istek.kutu, en, boy, pay);
+      const duzen = atlasDuzeni(kutular, by.kareSayilari ?? by.kare);
+      const sinir = gl.getParameter(gl.MAX_TEXTURE_SIZE) as number;
+      if (
+        duzen.en > 0 &&
+        duzen.boy > 0 &&
+        duzen.en <= sinir &&
+        duzen.boy <= sinir &&
+        atlasHazirla(k, duzen.en, duzen.boy, sen, sboy)
+      )
+        plan = { kutular, duzen, kare: by.kare };
+    }
+
+    // 2) Ana geçiş: renk, normal+çizgi, taban rengi; derinlik.
+    gl.bindFramebuffer(gl.FRAMEBUFFER, k.anaFbo);
+    gl.drawBuffers([
+      gl.COLOR_ATTACHMENT0,
+      gl.COLOR_ATTACHMENT1,
+      gl.COLOR_ATTACHMENT2,
+      gl.COLOR_ATTACHMENT3,
+    ]);
+    gl.viewport(0, 0, sen, sboy);
+    gl.enable(gl.SCISSOR_TEST);
+    gl.scissor(0, 0, sen, sboy);
+    for (let i = 0; i < 4; i++) gl.clearBufferfv(gl.COLOR, i, [0, 0, 0, 0]);
     gl.depthMask(true);
-    gl.disable(gl.BLEND);
-    gl.disable(gl.CULL_FACE);
-    gl.enable(gl.POLYGON_OFFSET_FILL);
-    gl.polygonOffset(2, 4);
-    gl.useProgram(k.golge);
-    gl.uniformMatrix4fv(gl.getUniformLocation(k.golge, 'u_isikMat'), false, isik.mat);
-    gl.bindVertexArray(t.vao);
-    gl.drawArrays(gl.TRIANGLES, 0, t.say);
-    gl.disable(gl.POLYGON_OFFSET_FILL);
-  }
-
-  // Salınan parçalar (bayrak, sancak, ağaç) için kare atlası kurulabilir
-  // mi: kurulamazsa (çok büyük, bellek) onlar ana resme çiziliyor.
-  const by = istek.hareket ? istek.bayrak : undefined;
-  let plan: {
-    kutular: [number, number, number, number][];
-    duzen: ReturnType<typeof atlasDuzeni>;
-    kare: number;
-  } | null = null;
-  if (by && by.kare > 0) {
-    const r0 = Math.max(1, Math.round(0.7 * istek.olcek * ss));
-    const tiltVar = istek.tilt !== undefined && istek.tilt < 0.5;
-    const pay = 2 + r0 + (tiltVar ? Math.ceil(TILT_YARICAP * en) : 0);
-    const kutular = bayrakKutulari(by, istek.kutu, en, boy, pay);
-    const duzen = atlasDuzeni(kutular, by.kareSayilari ?? by.kare);
-    const sinir = gl.getParameter(gl.MAX_TEXTURE_SIZE) as number;
-    if (
-      duzen.en > 0 &&
-      duzen.boy > 0 &&
-      duzen.en <= sinir &&
-      duzen.boy <= sinir &&
-      atlasHazirla(k, duzen.en, duzen.boy, sen, sboy)
-    )
-      plan = { kutular, duzen, kare: by.kare };
-  }
-
-  // 2) Ana geçiş: renk, normal+çizgi, taban rengi; derinlik.
-  gl.bindFramebuffer(gl.FRAMEBUFFER, k.anaFbo);
-  gl.drawBuffers([
-    gl.COLOR_ATTACHMENT0,
-    gl.COLOR_ATTACHMENT1,
-    gl.COLOR_ATTACHMENT2,
-    gl.COLOR_ATTACHMENT3,
-  ]);
-  gl.viewport(0, 0, sen, sboy);
-  gl.enable(gl.SCISSOR_TEST);
-  gl.scissor(0, 0, sen, sboy);
-  for (let i = 0; i < 4; i++) gl.clearBufferfv(gl.COLOR, i, [0, 0, 0, 0]);
-  gl.depthMask(true);
-  gl.clearBufferfv(gl.DEPTH, 0, [1]);
-  gl.disable(gl.SCISSOR_TEST);
-
-  gl.useProgram(k.ana);
-  const u = (ad: string) => gl.getUniformLocation(k.ana, ad);
-  gl.uniformMatrix4fv(u('u_goruntu'), false, goruntu);
-  gl.uniformMatrix4fv(u('u_isikMat'), false, isik.mat);
-  gl.uniform3f(u('u_isik'), lz[0], lz[1], lz[2]);
-  const taban = kameraTabani(istek.kamera);
-  gl.uniform3f(u('u_goz'), taban.c[0], taban.c[1], taban.c[2]);
-  // Dünya birimi / örnek pikseli; dalgalar ekranda ~11 piksellik.
-  const birim = istek.kutu[2] / sen;
-  gl.uniform1f(u('u_dalga'), 1 / (22 * (istek.dalgaBirimi ?? birim)));
-  gl.uniform1f(u('u_golgeVar'), golgeVar ? 1 : 0);
-  gl.uniform1f(u('u_texel'), 1 / GOLGE_BOYU);
-  gl.uniform1f(u('u_normalKay'), (isik.genislik / GOLGE_BOYU) * 1.5);
-  gl.activeTexture(gl.TEXTURE0);
-  gl.bindTexture(gl.TEXTURE_2D, k.golgeDoku);
-  gl.uniform1i(u('u_golge'), 0);
-  gl.uniform2f(u('u_kaydir'), 0, 0);
-  gl.uniform1i(u('u_sahneVar'), 0);
-  // Kullanılmasa da örnekleyici geçerli bir birimde olmalı: gölge haritasıyla
-  // (başka türde örnekleyici) aynı birim ya da hedefe bağlı bir doku çizimi
-  // geçersiz kılıyor.
-  gl.activeTexture(gl.TEXTURE1);
-  gl.bindTexture(gl.TEXTURE_2D, k.sahne);
-  gl.uniform1i(u('u_sahne'), 1);
-  gl.disable(gl.CULL_FACE);
-
-  // a) Yer: ressam sırası, derinlik yok.
-  gl.uniform1f(u('u_yer'), 1);
-  if (ag.yer.length) {
-    const t = tampon(gl, ag.yer);
-    silinecek.push(t.sil);
-    gl.disable(gl.DEPTH_TEST);
-    gl.depthMask(false);
-    gl.disable(gl.BLEND);
-    gl.bindVertexArray(t.vao);
-    gl.drawArrays(gl.TRIANGLES, 0, t.say);
-  }
-  // b) Nesneler: derinlik tamponu.
-  gl.uniform1f(u('u_yer'), 0);
-  if (ag.nesne.length) {
-    const t = tampon(gl, ag.nesne);
-    silinecek.push(t.sil);
-    gl.enable(gl.DEPTH_TEST);
-    gl.depthFunc(gl.LESS);
-    gl.depthMask(true);
-    gl.bindVertexArray(t.vao);
-    gl.drawArrays(gl.TRIANGLES, 0, t.say);
-  }
-  // Salınan parçalar atlasa giremediyse burada, durağan (yamada değil:
-  // onlar sahnenin katmanında).
-  if (!plan && ag.bez.length && !istek.yama) {
-    const t = tampon(gl, ag.bez);
-    silinecek.push(t.sil);
-    gl.enable(gl.DEPTH_TEST);
-    gl.depthFunc(gl.LESS);
-    gl.depthMask(true);
-    gl.bindVertexArray(t.vao);
-    gl.drawArrays(gl.TRIANGLES, 0, t.say);
-  }
-  // c) Saydam: yalnız renge, önceden çarpılmış harmanla.
-  if (ag.saydam.length) {
-    const t = tampon(gl, ag.saydam);
-    silinecek.push(t.sil);
-    gl.drawBuffers([gl.COLOR_ATTACHMENT0, gl.NONE, gl.NONE, gl.NONE]);
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-    gl.depthMask(false);
-    gl.bindVertexArray(t.vao);
-    gl.drawArrays(gl.TRIANGLES, 0, t.say);
-    gl.disable(gl.BLEND);
-  }
-
-  // 3) Kenar + indirgeme → tuval (tilt-shift varsa önce ara dokuya).
-  if (k.tuval.width !== en) k.tuval.width = en;
-  if (k.tuval.height !== boy) k.tuval.height = boy;
-  const tilt = istek.tilt !== undefined && istek.tilt < 0.5 && araHazirla(k, en, boy);
-  gl.bindFramebuffer(gl.FRAMEBUFFER, tilt ? k.araFbo : null);
-  gl.viewport(0, 0, en, boy);
-  gl.disable(gl.DEPTH_TEST);
-  gl.depthMask(true);
-  const uc = (ad: string) => gl.getUniformLocation(k.coz, ad);
-  const cozHazirla = () => {
-    gl.useProgram(k.coz);
-    ['u_renk', 'u_normal', 'u_taban'].forEach((ad, i) => {
-      gl.activeTexture(gl.TEXTURE0 + i);
-      gl.bindTexture(gl.TEXTURE_2D, k.dokular[i]!);
-      gl.uniform1i(uc(ad), i);
-    });
-    gl.activeTexture(gl.TEXTURE3);
-    gl.bindTexture(gl.TEXTURE_2D, k.derinlik);
-    gl.uniform1i(uc('u_derinlik'), 3);
-    gl.activeTexture(gl.TEXTURE4);
-    gl.bindTexture(gl.TEXTURE_2D, k.dokular[3]!);
-    gl.uniform1i(uc('u_ek'), 4);
-  };
-  cozHazirla();
-  gl.uniform3f(uc('u_sag'), taban.sag[0], taban.sag[1], taban.sag[2]);
-  gl.uniform3f(uc('u_yukari'), taban.yukari[0], taban.yukari[1], taban.yukari[2]);
-  gl.uniform3f(uc('u_goz'), taban.c[0], taban.c[1], taban.c[2]);
-  gl.uniform1f(uc('u_birim'), birim);
-  gl.uniform1f(uc('u_derinBoy'), derinlikBoyu(ag.derinlik));
-  // Ortam gölgesi yarıçapı: sahnenin boyuna göre (bina sahnesinde bir
-  // kapı eşiği, figürde bir kol-gövde aralığı); örnek pikselinde sınırlı.
-  const aoR = istek.ao ?? aoYaricapi(istek.kutu);
-  const aoPx = aoR > 0 ? Math.min(64, aoR / birim) : 0;
-  gl.uniform1f(uc('u_aoPx'), aoPx);
-  gl.uniform1i(uc('u_ekD'), 0);
-  gl.uniform2i(uc('u_kay'), 0, 0);
-  gl.uniform1f(uc('u_aoGuc'), AO_GUC);
-  // Hare: ~6 CSS pikseli yarıçap.
-  gl.uniform1f(uc('u_hare'), istek.hare ?? HARE_GUC);
-  const harePx = Math.max(4, 6 * istek.olcek * ss);
-  gl.uniform1f(uc('u_harePx'), harePx);
-  gl.uniform2i(uc('u_boyut'), sen, sboy);
-  // Çizgi: SVG'deki gibi ~0,7 CSS pikseli; siluette tek yanlı, kırılımda iki yanlı.
-  gl.uniform1i(uc('u_ss'), ss);
-  const r = Math.max(1, Math.round(0.7 * istek.olcek * ss));
-  gl.uniform1i(uc('u_r'), r);
-  gl.uniform1i(uc('u_r2'), Math.max(1, Math.round(r / 2)));
-  // Derinlik sıçraması: dünya biriminde eşik, piksel boyuna göre büyüyor
-  // (dik açıyla görülen yüzey komşusundan doğal olarak uzak).
-  const aralik = ag.derinlik[1] - ag.derinlik[0] || 1;
-  gl.uniform1f(uc('u_derinEsik'), Math.max(0.25, 6 * r * birim) / (aralik * 1.04));
-  gl.uniform1f(uc('u_ton'), istek.ton ?? 1);
-  gl.uniform1f(uc('u_sicak'), istek.sicak ?? 0);
-  gl.bindVertexArray(null);
-  gl.drawArrays(gl.TRIANGLES, 0, 3);
-
-  // 4) Tilt-shift: ara doku → tuval.
-  const ub = (ad: string) => gl.getUniformLocation(k.bulanik, ad);
-  // Kaynak dokudan hedefe (kaydırarak); bant 1 ve yarıçap 0 düz kopya.
-  const bulanikCiz = (
-    hedef: WebGLFramebuffer | null,
-    kay: [number, number],
-    dokusu: WebGLTexture,
-    boyut: [number, number],
-    bant: number,
-    yaricap: number,
-    bantKay: [number, number] = [0, 0],
-  ) => {
-    gl.bindFramebuffer(gl.FRAMEBUFFER, hedef);
-    gl.useProgram(k.bulanik);
-    gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, dokusu);
-    gl.uniform1i(ub('u_kaynak'), 0);
-    gl.uniform2f(ub('u_boyut'), boyut[0], boyut[1]);
-    gl.uniform1f(ub('u_odak'), TILT_ODAK);
-    gl.uniform1f(ub('u_bant'), bant);
-    gl.uniform1f(ub('u_yaricap'), yaricap);
-    gl.uniform2f(ub('u_kay'), kay[0], kay[1]);
-    gl.uniform2f(ub('u_bantKay'), bantKay[0], bantKay[1]);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
-  };
-  const bulandir = (
-    hedef: WebGLFramebuffer | null = null,
-    kay: [number, number] = [0, 0],
-    bantKay: [number, number] = [0, 0],
-  ) => {
-    if (tilt) bulanikCiz(hedef, kay, k.ara, [en, boy], istek.tilt!, TILT_YARICAP * en, bantKay);
-  };
-  bulandir();
-
-  for (const s of silinecek) s();
-  if (gl.isContextLost()) return null;
-  const resim = await blobla(k.tuval);
-  if (!resim) return null;
-  const sonuc: CizimSonucu = { resim };
-  if (!istek.hareket) return sonuc;
-
-  // 5) Hareket katmanları: aynı hedeflerden, aynı kırpım ve bulanıklıkla.
-  // Her biri tuvale sırayla; önceki PNG'ye dönüşmeden tuval yeniden
-  // çizilmiyor. Sıradaki iş bu bitmeden başlamıyor, hedefler yerinde.
-  for (const [tur, ad, var_] of [
-    [0, 'su', ag.suVar],
-    [1, 'isik', ag.isimaVar],
-    [2, 'cimen', ag.cimenVar],
-  ] as const) {
-    if (!var_ || istek.yama) continue;
-    gl.bindFramebuffer(gl.FRAMEBUFFER, tilt ? k.araFbo : null);
-    gl.viewport(0, 0, en, boy);
-    gl.useProgram(k.katman);
-    const uk = (ad: string) => gl.getUniformLocation(k.katman, ad);
-    gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, k.dokular[0]!);
-    gl.uniform1i(uk('u_renk'), 0);
-    gl.activeTexture(gl.TEXTURE1);
-    gl.bindTexture(gl.TEXTURE_2D, k.dokular[3]!);
-    gl.uniform1i(uk('u_ek'), 1);
-    gl.activeTexture(gl.TEXTURE2);
-    gl.bindTexture(gl.TEXTURE_2D, k.dokular[2]!);
-    gl.uniform1i(uk('u_taban'), 2);
-    gl.uniform2i(uk('u_boyut'), sen, sboy);
-    gl.uniform1i(uk('u_ss'), ss);
-    gl.uniform1i(uk('u_tur'), tur);
-    gl.uniform1f(uk('u_harePx'), harePx * KATMAN_HARE_YARICAP);
-    gl.uniform1f(uk('u_hare'), KATMAN_HARE_GUC);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
-    bulandir();
-    if (gl.isContextLost()) return sonuc;
-    const b = await blobla(k.tuval);
-    if (b) sonuc[ad] = b;
-  }
-
-  // 6) Salınan parçalar (bayrak, sancak, ağaç): her karede bütün parçalar
-  // tek geçişte, ana hedeflerde çakışmayan hücrelere kaydırılarak
-  // çiziliyor (sayfa). Sahnenin önündekiler (kule, çatı, yamaç) ana geçişin
-  // derinlik kopyasıyla örtüyor; parçanın kendi içi donanım derinliğiyle.
-  // Sonra sayfa bir kez çözülüyor (kenar, ortam gölgesi, renk; tilt-shift
-  // parçanın gerçek yerine göre) ve hücreler doğrudan GPU'daki atlasa
-  // yazılıyor. Kare başına üç hedef değişimi, parça sayısından bağımsız
-  // (telefonun döşemeli GPU'sunda her hedef değişimi pahalı). Ana resimde
-  // bu parçalar yok (`bayraksiz`).
-  if (plan && by) {
-    const { kutular, duzen, kare } = plan;
-    const [Wa, Ha] = [duzen.en, duzen.boy];
-    const dolu = kutular.flatMap((q, i) => (q[2] > 0 && q[3] > 0 ? [i] : []));
-    // Hücreler arası boşluk: ortam gölgesi ve bulanıklık komşuya uzanmasın.
-    const bosluk = Math.max(Math.ceil(aoPx / ss), Math.ceil(TILT_YARICAP * en)) + 2;
-    const yerlesim = sayfalaraYerlestir(kutular, en, boy, bosluk);
-    const sayfaSayisi = dolu.reduce((m, i) => Math.max(m, yerlesim[i]!.sayfa + 1), 0);
-    const bas: number[] = [];
-    by.gruplar.reduce((t, n) => (bas.push(t), t + n), 0);
-    const u = (ad: string) => gl.getUniformLocation(k.ana, ad);
-    // Sahnenin derinliği (ek doku) kopyalanıyor: ana hedefler sayfaya gidiyor.
+    gl.clearBufferfv(gl.DEPTH, 0, [1]);
     gl.disable(gl.SCISSOR_TEST);
-    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, k.anaFbo);
-    gl.readBuffer(gl.COLOR_ATTACHMENT3);
-    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, k.sahneFbo);
-    gl.blitFramebuffer(0, 0, sen, sboy, 0, 0, sen, sboy, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-    gl.readBuffer(gl.COLOR_ATTACHMENT0);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, k.atlasFbo);
-    gl.clearBufferfv(gl.COLOR, 0, [0, 0, 0, 0]);
-    const kareSayisi = (i: number) => by.kareSayilari?.[i] ?? kare;
-    for (let f = 0; f < kare; f++) {
-      const t = tampon(gl, kareTamponu(by, f));
-      for (let sayfa = 0; sayfa < sayfaSayisi; sayfa++) {
-        // Turu bu kareden kısa olan parça çizilmiyor (atlasta yeri yok).
-        const uyeler = dolu.filter((i) => yerlesim[i]!.sayfa === sayfa && f < kareSayisi(i));
-        if (!uyeler.length) continue;
-        // a) Sayfa: hedefler ve derinlik boş, parçalar hücrelerinde.
-        gl.bindFramebuffer(gl.FRAMEBUFFER, k.anaFbo);
-        gl.drawBuffers([
-          gl.COLOR_ATTACHMENT0,
-          gl.COLOR_ATTACHMENT1,
-          gl.COLOR_ATTACHMENT2,
-          gl.COLOR_ATTACHMENT3,
-        ]);
-        gl.viewport(0, 0, sen, sboy);
-        gl.disable(gl.SCISSOR_TEST);
-        for (let j = 0; j < 4; j++) gl.clearBufferfv(gl.COLOR, j, [0, 0, 0, 0]);
-        gl.depthMask(true);
-        gl.clearBufferfv(gl.DEPTH, 0, [1]);
-        gl.useProgram(k.ana);
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, k.golgeDoku);
-        gl.uniform1i(u('u_golge'), 0);
-        gl.activeTexture(gl.TEXTURE1);
-        gl.bindTexture(gl.TEXTURE_2D, k.sahne);
-        gl.uniform1i(u('u_sahne'), 1);
-        gl.uniform1i(u('u_sahneVar'), 1);
+
+    gl.useProgram(k.ana);
+    const u = (ad: string) => gl.getUniformLocation(k.ana, ad);
+    gl.uniformMatrix4fv(u('u_goruntu'), false, goruntu);
+    gl.uniformMatrix4fv(u('u_isikMat'), false, isik.mat);
+    gl.uniform3f(u('u_isik'), lz[0], lz[1], lz[2]);
+    const taban = kameraTabani(istek.kamera);
+    gl.uniform3f(u('u_goz'), taban.c[0], taban.c[1], taban.c[2]);
+    // Dünya birimi / örnek pikseli; dalgalar ekranda ~11 piksellik.
+    const birim = istek.kutu[2] / sen;
+    gl.uniform1f(u('u_dalga'), 1 / (22 * (istek.dalgaBirimi ?? birim)));
+    gl.uniform1f(u('u_golgeVar'), golgeVar ? 1 : 0);
+    gl.uniform1f(u('u_texel'), 1 / GOLGE_BOYU);
+    gl.uniform1f(u('u_normalKay'), (isik.genislik / GOLGE_BOYU) * 1.5);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, k.golgeDoku);
+    gl.uniform1i(u('u_golge'), 0);
+    gl.uniform2f(u('u_kaydir'), 0, 0);
+    gl.uniform1i(u('u_sahneVar'), 0);
+    // Kullanılmasa da örnekleyici geçerli bir birimde olmalı: gölge haritasıyla
+    // (başka türde örnekleyici) aynı birim ya da hedefe bağlı bir doku çizimi
+    // geçersiz kılıyor.
+    gl.activeTexture(gl.TEXTURE1);
+    gl.bindTexture(gl.TEXTURE_2D, k.sahne);
+    gl.uniform1i(u('u_sahne'), 1);
+    gl.disable(gl.CULL_FACE);
+
+    // Tamponlar bir kez; çizimler şerit şerit (bkz. `seritle`).
+    const tYer = ag.yer.length ? tampon(gl, ag.yer) : null;
+    const tNesne = ag.nesne.length ? tampon(gl, ag.nesne) : null;
+    // Salınan parçalar atlasa giremediyse burada, durağan (yamada değil:
+    // onlar sahnenin katmanında).
+    const tBez = !plan && ag.bez.length && !istek.yama ? tampon(gl, ag.bez) : null;
+    const tSaydam = ag.saydam.length ? tampon(gl, ag.saydam) : null;
+    for (const t of [tYer, tNesne, tBez, tSaydam]) if (t) silinecek.push(t.sil);
+    await seritle(gl, sen, sboy, n, () => {
+      gl.drawBuffers([
+        gl.COLOR_ATTACHMENT0,
+        gl.COLOR_ATTACHMENT1,
+        gl.COLOR_ATTACHMENT2,
+        gl.COLOR_ATTACHMENT3,
+      ]);
+      // a) Yer: ressam sırası, derinlik yok.
+      gl.uniform1f(u('u_yer'), 1);
+      if (tYer) {
+        gl.disable(gl.DEPTH_TEST);
+        gl.depthMask(false);
+        gl.disable(gl.BLEND);
+        gl.bindVertexArray(tYer.vao);
+        gl.drawArrays(gl.TRIANGLES, 0, tYer.say);
+      }
+      // b) Nesneler: derinlik tamponu.
+      gl.uniform1f(u('u_yer'), 0);
+      for (const t of [tNesne, tBez]) {
+        if (!t) continue;
         gl.enable(gl.DEPTH_TEST);
         gl.depthFunc(gl.LESS);
-        gl.disable(gl.BLEND);
-        gl.enable(gl.SCISSOR_TEST);
+        gl.depthMask(true);
         gl.bindVertexArray(t.vao);
-        for (const i of uyeler) {
-          const [x, y, w, h] = kutular[i]!;
-          const { x: px, y: py } = yerlesim[i]!;
-          const dx = px - x;
-          const dy = py - y;
-          // Kutunun dışına taşan (ekran kenarında kırpılmış) parça komşu hücreye girmesin.
-          gl.scissor(px * ss, (boy - py - h) * ss, w * ss, h * ss);
-          gl.uniform2f(u('u_kaydir'), (2 * dx) / en, (-2 * dy) / boy);
-          gl.uniform2i(u('u_sahneKay'), dx * ss, -dy * ss);
-          gl.drawArrays(gl.TRIANGLES, bas[i]!, by.gruplar[i]!);
-        }
-        gl.bindVertexArray(null);
-        gl.uniform2f(u('u_kaydir'), 0, 0);
-        gl.uniform1i(u('u_sahneVar'), 0);
-        gl.disable(gl.DEPTH_TEST);
-        gl.disable(gl.SCISSOR_TEST);
-        // b) Çözme: kenar ve ortam gölgesi parçanın kendi derinliğinden,
-        // renk düzenlemesi; hare yok. Tilt-shift varsa bütün sayfa ara
-        // dokuya, yoksa hücre hücre doğrudan atlasa.
-        const hedefi = (i: number) => {
-          const [x, y, w, h] = kutular[i]!;
-          const { x: px, y: py } = yerlesim[i]!;
-          const [ax, ay] = duzen.yer[i]!;
-          const sutun = duzen.sutun[i]!;
-          const hx = ax + (f % sutun) * w;
-          const hy = Ha - (ay + Math.floor(f / sutun) * h) - h;
-          return {
-            hx,
-            hy,
-            w,
-            h,
-            kay: [hx - px, hy - (boy - py - h)] as [number, number],
-            bantKay: [x - px, py - y] as [number, number],
-          };
-        };
-        if (tilt) {
-          gl.bindFramebuffer(gl.FRAMEBUFFER, k.araFbo);
-          gl.viewport(0, 0, en, boy);
-          gl.clearBufferfv(gl.COLOR, 0, [0, 0, 0, 0]);
-          cozHazirla();
-          gl.uniform1f(uc('u_hare'), 0);
-          gl.uniform1i(uc('u_ekD'), 1);
-          gl.uniform2i(uc('u_kay'), 0, 0);
-          gl.drawArrays(gl.TRIANGLES, 0, 3);
-          // c) Bulanıklık: sayfadan atlasa, bant parçanın gerçek yerinden.
-          gl.viewport(0, 0, Wa, Ha);
-          gl.enable(gl.SCISSOR_TEST);
-          for (const i of uyeler) {
-            const { hx, hy, w, h, kay, bantKay } = hedefi(i);
-            gl.scissor(hx, hy, w, h);
-            bulandir(k.atlasFbo, kay, bantKay);
-          }
-        } else {
-          gl.bindFramebuffer(gl.FRAMEBUFFER, k.atlasFbo);
-          gl.viewport(0, 0, Wa, Ha);
-          cozHazirla();
-          gl.uniform1f(uc('u_hare'), 0);
-          gl.uniform1i(uc('u_ekD'), 1);
-          gl.enable(gl.SCISSOR_TEST);
-          for (const i of uyeler) {
-            const { hx, hy, w, h, kay } = hedefi(i);
-            gl.scissor(hx, hy, w, h);
-            gl.uniform2i(uc('u_kay'), kay[0], kay[1]);
-            gl.drawArrays(gl.TRIANGLES, 0, 3);
-          }
-        }
-        gl.disable(gl.SCISSOR_TEST);
+        gl.drawArrays(gl.TRIANGLES, 0, t.say);
       }
-      t.sil();
-      if (gl.isContextLost()) return sonuc;
-    }
-    // Atlas → tuval → PNG (tek okuma).
-    k.tuval.width = Wa;
-    k.tuval.height = Ha;
-    gl.viewport(0, 0, Wa, Ha);
-    bulanikCiz(null, [0, 0], k.atlas, [Wa, Ha], 1, 0);
-    if (gl.isContextLost()) return sonuc;
+      // c) Saydam: yalnız renge, önceden çarpılmış harmanla.
+      if (tSaydam) {
+        gl.drawBuffers([gl.COLOR_ATTACHMENT0, gl.NONE, gl.NONE, gl.NONE]);
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+        gl.depthMask(false);
+        gl.bindVertexArray(tSaydam.vao);
+        gl.drawArrays(gl.TRIANGLES, 0, tSaydam.say);
+        gl.disable(gl.BLEND);
+      }
+    });
+
+    // 3) Kenar + indirgeme → tuval (tilt-shift varsa önce ara dokuya).
+    if (k.tuval.width !== en) k.tuval.width = en;
+    if (k.tuval.height !== boy) k.tuval.height = boy;
+    const tilt = istek.tilt !== undefined && istek.tilt < 0.5 && araHazirla(k, en, boy);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, tilt ? k.araFbo : null);
+    gl.viewport(0, 0, en, boy);
+    gl.disable(gl.DEPTH_TEST);
+    gl.depthMask(true);
+    const uc = (ad: string) => gl.getUniformLocation(k.coz, ad);
+    const cozHazirla = () => {
+      gl.useProgram(k.coz);
+      ['u_renk', 'u_normal', 'u_taban'].forEach((ad, i) => {
+        gl.activeTexture(gl.TEXTURE0 + i);
+        gl.bindTexture(gl.TEXTURE_2D, k.dokular[i]!);
+        gl.uniform1i(uc(ad), i);
+      });
+      gl.activeTexture(gl.TEXTURE3);
+      gl.bindTexture(gl.TEXTURE_2D, k.derinlik);
+      gl.uniform1i(uc('u_derinlik'), 3);
+      gl.activeTexture(gl.TEXTURE4);
+      gl.bindTexture(gl.TEXTURE_2D, k.dokular[3]!);
+      gl.uniform1i(uc('u_ek'), 4);
+    };
+    cozHazirla();
+    gl.uniform3f(uc('u_sag'), taban.sag[0], taban.sag[1], taban.sag[2]);
+    gl.uniform3f(uc('u_yukari'), taban.yukari[0], taban.yukari[1], taban.yukari[2]);
+    gl.uniform3f(uc('u_goz'), taban.c[0], taban.c[1], taban.c[2]);
+    gl.uniform1f(uc('u_birim'), birim);
+    gl.uniform1f(uc('u_derinBoy'), derinlikBoyu(ag.derinlik));
+    // Ortam gölgesi yarıçapı: sahnenin boyuna göre (bina sahnesinde bir
+    // kapı eşiği, figürde bir kol-gövde aralığı); örnek pikselinde sınırlı.
+    const aoR = istek.ao ?? aoYaricapi(istek.kutu);
+    const aoPx = aoR > 0 ? Math.min(64, aoR / birim) : 0;
+    gl.uniform1f(uc('u_aoPx'), aoPx);
+    gl.uniform1i(uc('u_ekD'), 0);
+    gl.uniform2i(uc('u_kay'), 0, 0);
+    gl.uniform1f(uc('u_aoGuc'), AO_GUC);
+    // Hare: ~6 CSS pikseli yarıçap.
+    gl.uniform1f(uc('u_hare'), istek.hare ?? HARE_GUC);
+    const harePx = Math.max(4, 6 * istek.olcek * ss);
+    gl.uniform1f(uc('u_harePx'), harePx);
+    gl.uniform2i(uc('u_boyut'), sen, sboy);
+    // Çizgi: SVG'deki gibi ~0,7 CSS pikseli; siluette tek yanlı, kırılımda iki yanlı.
+    gl.uniform1i(uc('u_ss'), ss);
+    const r = Math.max(1, Math.round(0.7 * istek.olcek * ss));
+    gl.uniform1i(uc('u_r'), r);
+    gl.uniform1i(uc('u_r2'), Math.max(1, Math.round(r / 2)));
+    // Derinlik sıçraması: dünya biriminde eşik, piksel boyuna göre büyüyor
+    // (dik açıyla görülen yüzey komşusundan doğal olarak uzak).
+    const aralik = ag.derinlik[1] - ag.derinlik[0] || 1;
+    gl.uniform1f(uc('u_derinEsik'), Math.max(0.25, 6 * r * birim) / (aralik * 1.04));
+    gl.uniform1f(uc('u_ton'), istek.ton ?? 1);
+    gl.uniform1f(uc('u_sicak'), istek.sicak ?? 0);
+    gl.bindVertexArray(null);
+    await seritle(gl, en, boy, n, () => gl.drawArrays(gl.TRIANGLES, 0, 3));
+
+    // 4) Tilt-shift: ara doku → tuval.
+    const ub = (ad: string) => gl.getUniformLocation(k.bulanik, ad);
+    // Kaynak dokudan hedefe (kaydırarak); bant 1 ve yarıçap 0 düz kopya.
+    const bulanikCiz = (
+      hedef: WebGLFramebuffer | null,
+      kay: [number, number],
+      dokusu: WebGLTexture,
+      boyut: [number, number],
+      bant: number,
+      yaricap: number,
+      bantKay: [number, number] = [0, 0],
+    ) => {
+      gl.bindFramebuffer(gl.FRAMEBUFFER, hedef);
+      gl.useProgram(k.bulanik);
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, dokusu);
+      gl.uniform1i(ub('u_kaynak'), 0);
+      gl.uniform2f(ub('u_boyut'), boyut[0], boyut[1]);
+      gl.uniform1f(ub('u_odak'), TILT_ODAK);
+      gl.uniform1f(ub('u_bant'), bant);
+      gl.uniform1f(ub('u_yaricap'), yaricap);
+      gl.uniform2f(ub('u_kay'), kay[0], kay[1]);
+      gl.uniform2f(ub('u_bantKay'), bantKay[0], bantKay[1]);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    };
+    const bulandir = (
+      hedef: WebGLFramebuffer | null = null,
+      kay: [number, number] = [0, 0],
+      bantKay: [number, number] = [0, 0],
+    ) => {
+      if (tilt) bulanikCiz(hedef, kay, k.ara, [en, boy], istek.tilt!, TILT_YARICAP * en, bantKay);
+    };
+    bulandir();
+    if (n > 1) await durak(gl);
+
+    for (const s of silinecek.splice(0)) s();
+    if (gl.isContextLost()) return null;
     const resim = await blobla(k.tuval);
-    if (resim)
-      sonuc.bayrak = {
-        resim,
-        kutular,
-        en,
-        boy,
-        kare,
-        sureler: by.sureler,
-        kareSayilari: kutular.map((_, i) => kareSayisi(i)),
-      };
+    if (!resim) return null;
+    const sonuc: CizimSonucu = { resim };
+    if (!istek.hareket) return sonuc;
+
+    // 5) Hareket katmanları: aynı hedeflerden, aynı kırpım ve bulanıklıkla.
+    // Her biri tuvale sırayla; önceki PNG'ye dönüşmeden tuval yeniden
+    // çizilmiyor. Sıradaki iş bu bitmeden başlamıyor, hedefler yerinde.
+    for (const [tur, ad, var_] of [
+      [0, 'su', ag.suVar],
+      [1, 'isik', ag.isimaVar],
+      [2, 'cimen', ag.cimenVar],
+    ] as const) {
+      if (!var_ || istek.yama) continue;
+      kesildiyse();
+      gl.bindFramebuffer(gl.FRAMEBUFFER, tilt ? k.araFbo : null);
+      gl.viewport(0, 0, en, boy);
+      gl.useProgram(k.katman);
+      const uk = (ad: string) => gl.getUniformLocation(k.katman, ad);
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, k.dokular[0]!);
+      gl.uniform1i(uk('u_renk'), 0);
+      gl.activeTexture(gl.TEXTURE1);
+      gl.bindTexture(gl.TEXTURE_2D, k.dokular[3]!);
+      gl.uniform1i(uk('u_ek'), 1);
+      gl.activeTexture(gl.TEXTURE2);
+      gl.bindTexture(gl.TEXTURE_2D, k.dokular[2]!);
+      gl.uniform1i(uk('u_taban'), 2);
+      gl.uniform2i(uk('u_boyut'), sen, sboy);
+      gl.uniform1i(uk('u_ss'), ss);
+      gl.uniform1i(uk('u_tur'), tur);
+      gl.uniform1f(uk('u_harePx'), harePx * KATMAN_HARE_YARICAP);
+      gl.uniform1f(uk('u_hare'), KATMAN_HARE_GUC);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      bulandir();
+      if (gl.isContextLost()) return sonuc;
+      const b = await blobla(k.tuval);
+      if (b) sonuc[ad] = b;
+    }
+
+    // 6) Salınan parçalar (bayrak, sancak, ağaç): her karede bütün parçalar
+    // tek geçişte, ana hedeflerde çakışmayan hücrelere kaydırılarak
+    // çiziliyor (sayfa). Sahnenin önündekiler (kule, çatı, yamaç) ana geçişin
+    // derinlik kopyasıyla örtüyor; parçanın kendi içi donanım derinliğiyle.
+    // Sonra sayfa bir kez çözülüyor (kenar, ortam gölgesi, renk; tilt-shift
+    // parçanın gerçek yerine göre) ve hücreler doğrudan GPU'daki atlasa
+    // yazılıyor. Kare başına üç hedef değişimi, parça sayısından bağımsız
+    // (telefonun döşemeli GPU'sunda her hedef değişimi pahalı). Ana resimde
+    // bu parçalar yok (`bayraksiz`).
+    if (plan && by) {
+      const { kutular, duzen, kare } = plan;
+      const [Wa, Ha] = [duzen.en, duzen.boy];
+      const dolu = kutular.flatMap((q, i) => (q[2] > 0 && q[3] > 0 ? [i] : []));
+      // Hücreler arası boşluk: ortam gölgesi ve bulanıklık komşuya uzanmasın.
+      const bosluk = Math.max(Math.ceil(aoPx / ss), Math.ceil(TILT_YARICAP * en)) + 2;
+      const yerlesim = sayfalaraYerlestir(kutular, en, boy, bosluk);
+      const sayfaSayisi = dolu.reduce((m, i) => Math.max(m, yerlesim[i]!.sayfa + 1), 0);
+      const bas: number[] = [];
+      by.gruplar.reduce((t, n) => (bas.push(t), t + n), 0);
+      const u = (ad: string) => gl.getUniformLocation(k.ana, ad);
+      // Sahnenin derinliği (ek doku) kopyalanıyor: ana hedefler sayfaya gidiyor.
+      gl.disable(gl.SCISSOR_TEST);
+      gl.bindFramebuffer(gl.READ_FRAMEBUFFER, k.anaFbo);
+      gl.readBuffer(gl.COLOR_ATTACHMENT3);
+      gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, k.sahneFbo);
+      gl.blitFramebuffer(0, 0, sen, sboy, 0, 0, sen, sboy, gl.COLOR_BUFFER_BIT, gl.NEAREST);
+      gl.readBuffer(gl.COLOR_ATTACHMENT0);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, k.atlasFbo);
+      gl.clearBufferfv(gl.COLOR, 0, [0, 0, 0, 0]);
+      const kareSayisi = (i: number) => by.kareSayilari?.[i] ?? kare;
+      for (let f = 0; f < kare; f++) {
+        if (n > 1) await durak(gl);
+        const t = tampon(gl, kareTamponu(by, f));
+        for (let sayfa = 0; sayfa < sayfaSayisi; sayfa++) {
+          // Turu bu kareden kısa olan parça çizilmiyor (atlasta yeri yok).
+          const uyeler = dolu.filter((i) => yerlesim[i]!.sayfa === sayfa && f < kareSayisi(i));
+          if (!uyeler.length) continue;
+          // a) Sayfa: hedefler ve derinlik boş, parçalar hücrelerinde.
+          gl.bindFramebuffer(gl.FRAMEBUFFER, k.anaFbo);
+          gl.drawBuffers([
+            gl.COLOR_ATTACHMENT0,
+            gl.COLOR_ATTACHMENT1,
+            gl.COLOR_ATTACHMENT2,
+            gl.COLOR_ATTACHMENT3,
+          ]);
+          gl.viewport(0, 0, sen, sboy);
+          gl.disable(gl.SCISSOR_TEST);
+          for (let j = 0; j < 4; j++) gl.clearBufferfv(gl.COLOR, j, [0, 0, 0, 0]);
+          gl.depthMask(true);
+          gl.clearBufferfv(gl.DEPTH, 0, [1]);
+          gl.useProgram(k.ana);
+          gl.activeTexture(gl.TEXTURE0);
+          gl.bindTexture(gl.TEXTURE_2D, k.golgeDoku);
+          gl.uniform1i(u('u_golge'), 0);
+          gl.activeTexture(gl.TEXTURE1);
+          gl.bindTexture(gl.TEXTURE_2D, k.sahne);
+          gl.uniform1i(u('u_sahne'), 1);
+          gl.uniform1i(u('u_sahneVar'), 1);
+          gl.enable(gl.DEPTH_TEST);
+          gl.depthFunc(gl.LESS);
+          gl.disable(gl.BLEND);
+          gl.enable(gl.SCISSOR_TEST);
+          gl.bindVertexArray(t.vao);
+          for (const i of uyeler) {
+            const [x, y, w, h] = kutular[i]!;
+            const { x: px, y: py } = yerlesim[i]!;
+            const dx = px - x;
+            const dy = py - y;
+            // Kutunun dışına taşan (ekran kenarında kırpılmış) parça komşu hücreye girmesin.
+            gl.scissor(px * ss, (boy - py - h) * ss, w * ss, h * ss);
+            gl.uniform2f(u('u_kaydir'), (2 * dx) / en, (-2 * dy) / boy);
+            gl.uniform2i(u('u_sahneKay'), dx * ss, -dy * ss);
+            gl.drawArrays(gl.TRIANGLES, bas[i]!, by.gruplar[i]!);
+          }
+          gl.bindVertexArray(null);
+          gl.uniform2f(u('u_kaydir'), 0, 0);
+          gl.uniform1i(u('u_sahneVar'), 0);
+          gl.disable(gl.DEPTH_TEST);
+          gl.disable(gl.SCISSOR_TEST);
+          // b) Çözme: kenar ve ortam gölgesi parçanın kendi derinliğinden,
+          // renk düzenlemesi; hare yok. Tilt-shift varsa bütün sayfa ara
+          // dokuya, yoksa hücre hücre doğrudan atlasa.
+          const hedefi = (i: number) => {
+            const [x, y, w, h] = kutular[i]!;
+            const { x: px, y: py } = yerlesim[i]!;
+            const [ax, ay] = duzen.yer[i]!;
+            const sutun = duzen.sutun[i]!;
+            const hx = ax + (f % sutun) * w;
+            const hy = Ha - (ay + Math.floor(f / sutun) * h) - h;
+            return {
+              hx,
+              hy,
+              w,
+              h,
+              kay: [hx - px, hy - (boy - py - h)] as [number, number],
+              bantKay: [x - px, py - y] as [number, number],
+            };
+          };
+          if (tilt) {
+            gl.bindFramebuffer(gl.FRAMEBUFFER, k.araFbo);
+            gl.viewport(0, 0, en, boy);
+            gl.clearBufferfv(gl.COLOR, 0, [0, 0, 0, 0]);
+            cozHazirla();
+            gl.uniform1f(uc('u_hare'), 0);
+            gl.uniform1i(uc('u_ekD'), 1);
+            gl.uniform2i(uc('u_kay'), 0, 0);
+            gl.drawArrays(gl.TRIANGLES, 0, 3);
+            // c) Bulanıklık: sayfadan atlasa, bant parçanın gerçek yerinden.
+            gl.viewport(0, 0, Wa, Ha);
+            gl.enable(gl.SCISSOR_TEST);
+            for (const i of uyeler) {
+              const { hx, hy, w, h, kay, bantKay } = hedefi(i);
+              gl.scissor(hx, hy, w, h);
+              bulandir(k.atlasFbo, kay, bantKay);
+            }
+          } else {
+            gl.bindFramebuffer(gl.FRAMEBUFFER, k.atlasFbo);
+            gl.viewport(0, 0, Wa, Ha);
+            cozHazirla();
+            gl.uniform1f(uc('u_hare'), 0);
+            gl.uniform1i(uc('u_ekD'), 1);
+            gl.enable(gl.SCISSOR_TEST);
+            for (const i of uyeler) {
+              const { hx, hy, w, h, kay } = hedefi(i);
+              gl.scissor(hx, hy, w, h);
+              gl.uniform2i(uc('u_kay'), kay[0], kay[1]);
+              gl.drawArrays(gl.TRIANGLES, 0, 3);
+            }
+          }
+          gl.disable(gl.SCISSOR_TEST);
+        }
+        t.sil();
+        if (gl.isContextLost()) return sonuc;
+      }
+      // Atlas → tuval → PNG (tek okuma).
+      k.tuval.width = Wa;
+      k.tuval.height = Ha;
+      gl.viewport(0, 0, Wa, Ha);
+      bulanikCiz(null, [0, 0], k.atlas, [Wa, Ha], 1, 0);
+      if (gl.isContextLost()) return sonuc;
+      const resim = await blobla(k.tuval);
+      if (resim)
+        sonuc.bayrak = {
+          resim,
+          kutular,
+          en,
+          boy,
+          kare,
+          sureler: by.sureler,
+          kareSayilari: kutular.map((_, i) => kareSayisi(i)),
+        };
+    }
+    return sonuc;
+  } finally {
+    // Kesildiyse de tamponlar bırakılıyor, makas kapanıyor.
+    for (const s of silinecek.splice(0)) s();
+    gl.disable(gl.SCISSOR_TEST);
   }
-  return sonuc;
 }
 
 /**
