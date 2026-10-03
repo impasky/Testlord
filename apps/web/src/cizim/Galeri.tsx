@@ -7,7 +7,10 @@
  *
  * Kalıcı (`kalici.ts`): çizimler cihazda, kendi `galeri` grubunda — sayfa
  * yeniden açılınca yüz yetmişi aşkın çizim yeniden çizilmiyor, oyunun
- * kayıtları da atılmıyor.
+ * kayıtları da atılmıyor. Tarifi olan çizim oyundaki gibi tariften
+ * (`Sahne.tarif`): GPU varken çokgen hiç kurulmuyor, model işçide. Tarifsiz
+ * çizimde (galeriye özgü talim ve deneme) resim gelene kadar binlerce
+ * çokgen DOM'a yazılıp siliniyordu — yeniden açılışın 4,6 sn'si oydu.
  */
 import { BINA_ADLARI, BINA_KUTUSU, binaModeli } from './binalar';
 import {
@@ -159,6 +162,7 @@ const BOLUMLER: {
         <Sahne
           anahtar={'bina:' + ad}
           uret={() => binaModeli(ad)}
+          tarif
           kutu={BINA_KUTUSU}
           alt={ad}
           boyut={170}
@@ -177,6 +181,7 @@ const BOLUMLER: {
         <Sahne
           anahtar={'yerlesim:' + k}
           uret={() => yerlesimModeli(k)}
+          tarif
           kutu={YERLESIM_KUTUSU}
           alt={k}
           className="h-full w-full"
@@ -187,20 +192,21 @@ const BOLUMLER: {
   },
   ...(
     [
-      ['Birlikler', BIRLIK_ADLARI, birlikModeli],
-      ['Düşmanlar', DUSMAN_ADLARI, dusmanModeli],
-      ['Ekipman', EKIPMAN_ADLARI, ekipmanModeli],
-      ['Generaller', GENERAL_ADLARI, generalModeli],
-      ['Lord', LORD_ADLARI, lordModeli],
+      ['Birlikler', 'birimler', BIRLIK_ADLARI, birlikModeli],
+      ['Düşmanlar', 'dusmanlar', DUSMAN_ADLARI, dusmanModeli],
+      ['Ekipman', 'ekipman', EKIPMAN_ADLARI, ekipmanModeli],
+      ['Generaller', 'generaller', GENERAL_ADLARI, generalModeli],
+      ['Lord', 'lord', LORD_ADLARI, lordModeli],
     ] as const
-  ).map(([baslik, adlar, uret]) => ({
+  ).map(([baslik, tur, adlar, uret]) => ({
     baslik,
     ogeler: adlar.map((ad) => ({
       ad,
       cizim: (
         <Sahne
-          anahtar={baslik + ':' + ad}
+          anahtar={tur + ':' + ad}
           uret={() => uret(ad) ?? []}
+          tarif
           alt={ad}
           boyut={170}
           kare
@@ -217,6 +223,7 @@ const BOLUMLER: {
         <Sahne
           anahtar={'portre:' + ad}
           uret={() => portreModeli(ad) ?? []}
+          tarif
           kutu={PORTRE_KUTUSU}
           alt={ad}
           boyut={170}
@@ -237,6 +244,7 @@ const BOLUMLER: {
           <Sahne
             anahtar={'diyar:' + ad + ':' + k}
             uret={() => diyarModeli(ad, k) ?? []}
+            tarif
             kutu={k === 'kapak' ? KAPAK_KUTUSU : HARITA_KUTUSU}
             alt={ad}
             className="h-full w-full"
@@ -256,6 +264,7 @@ const BOLUMLER: {
         <Sahne
           anahtar={'bolge:' + ad}
           uret={() => bolgeModeli(ad)}
+          tarif
           kutu={BOLGE_KUTUSU}
           alt={ad}
           className="h-full w-full"
@@ -274,6 +283,7 @@ const BOLUMLER: {
         <Sahne
           anahtar={'zemin:' + ad}
           uret={() => zeminModeli(ad) ?? []}
+          tarif
           kutu={ZEMIN_KUTUSU}
           alt={ad}
           className="h-full w-full"

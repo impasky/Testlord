@@ -519,7 +519,9 @@ diyarın gri penceresi ve sayfa kasasındaki bölge karoları da cihazda
 (yeniden açılışta 8,7 sn yerine 0,2 sn). Ardından **"galeriyi de kalıcı
 yap"**: geliştirme galerisinin yüz yetmiş yedi çizimi de, kendi grubunda
 (yeniden açılışta 41,3 sn yerine 4,6 sn). GPU'da çizilen her resim artık
-kalıcı.
+kalıcı. Sonra **"galeriyi de 1 saniyenin altına indir"**: kalan süre
+galerinin tarifsiz çizimlerinin ana iş parçacığında kurduğu SVG
+çokgenleriydi; tarifli çizimler artık tariften, yeniden açılış 0,5 sn.
 
 ## 4. Bina seviyesi ile araştırma neden çakışmıyor
 

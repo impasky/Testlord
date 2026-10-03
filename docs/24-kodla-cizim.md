@@ -564,7 +564,15 @@ kaydırıyor.
   çizimi kendi grubunda (oyunun gruplarına yazsa onları bir açılışta
   doldurup oyunun kayıtlarını atardı; galerideki canlı afiş, zemin ve
   kapak da bileşenin `kalici` seçeneğiyle oraya). Ölçüldü: yeniden
-  açılışta 41,3 sn yerine 4,6 sn; 12,1 MB.
+  açılışta 41,3 sn yerine 4,6 sn; 12,1 MB. Ardından "galeriyi de 1
+  saniyenin altına indir": kalan 4,6 sn çizim değildi — galeri tarifsiz
+  çizdiği için her sahne, resmi cihazdan gelene kadar binlerce SVG
+  çokgenini kurup DOM'a yazıyor, sonra siliyordu (profil: `setAttribute`,
+  `createElementNS`, `ciz`, çöp toplama; ana iş parçacığında 9,2 sn uzun
+  iş). Tarifi olan her çizim artık oyundaki gibi tariften (`Sahne.tarif`:
+  GPU varken çokgen yok, model işçide); tarifsiz kalan yalnız galeriye
+  özgü yedi sahne. Yeniden açılış 0,42–0,52 sn (uzun iş 0,2 sn), ilk
+  açılış da 42,8 yerine 35 sn.
   Ölçüldü (yazılım GPU'su): yeniden açılışta kapak 18,5 sn yerine 0,1 sn,
   afiş 12,4 sn yerine 0,1 sn; telefon boyunda kapak ~0,9 MB, afiş ~2,3 MB
   (grup en çok ~35 MB). `zemin`: en çok on iki — ardından "ekran
