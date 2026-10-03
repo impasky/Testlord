@@ -161,12 +161,16 @@ function useGpuResmi(
     let iptal = false;
     const [, , vw, vh] = v;
     const iste = () => {
+      // Düzendeki boy (CSS dönüşümü hariç): yakınlaşan sahnenin ana resmi
+      // açıldığı andaki yakınlığa göre büyümüyor — yakının keskinliği
+      // yamada. Boy hep aynı kalınca cihazdaki kayıt da tutuyor (yakında
+      // açılan diyar haritası 1400'lük resmi baştan çiziyordu).
       const r = el.getBoundingClientRect();
-      if (r.width < 2 || r.height < 2) return;
+      const w = el.clientWidth || r.width;
+      const h = el.clientHeight || r.height;
+      if (w < 2 || h < 2) return;
       const dpr = Math.min(3, window.devicePixelRatio || 1);
-      const cssBirim = kirp
-        ? Math.max(r.width / vw, r.height / vh)
-        : Math.min(r.width / vw, r.height / vh);
+      const cssBirim = kirp ? Math.max(w / vw, h / vh) : Math.min(w / vw, h / vh);
       let en = Math.min(EN_BUYUK, kova(vw * cssBirim * dpr));
       let boy = (en * vh) / vw;
       if (boy > EN_BUYUK) {
@@ -283,14 +287,28 @@ interface YamaOturumu {
 }
 
 /**
- * Sahne kapanınca son yama bırakılmıyor, burada bekliyor (tek tane): Şehir'e
- * dönen oyuncu aynı yerde ve yakınlıkta (`yerleskeYakinligi.sonGorunum`),
- * yama yeniden çizilmeden hemen keskin. Başka bir yama buraya girince ya
- * da bu yama yeniden gösterilip yerine yenisi gelince bırakılıyor.
+ * Sahne kapanınca son yaması bırakılmıyor, burada bekliyor (sahne başına
+ * bir, en çok `SAKLI_SINIR`): Şehir'e ya da diyar haritasına dönen oyuncu
+ * aynı yerde ve yakınlıkta (`yerleskeYakinligi.sonGorunum`), yama yeniden
+ * çizilmeden hemen keskin — arada öbürüne gidip gelse de. Sınırı aşınca
+ * en eskisi, yeniden gösterilip yerine yenisi gelince de kendisi
+ * bırakılıyor.
  */
-let SAKLI: { yama: Yama; oturum: YamaOturumu | null } | null = null;
-const sakliMi = (anahtar: string) =>
-  SAKLI !== null && SAKLI.yama.is.startsWith(anahtar + '|yama|') ? SAKLI : null;
+const SAKLI = new Map<string, { yama: Yama; oturum: YamaOturumu | null }>();
+const SAKLI_SINIR = 3;
+const sakliMi = (anahtar: string) => SAKLI.get(anahtar) ?? null;
+/** Kapanan sahnenin son yaması bekliyor (öncekinin yerine, en yeni sırada). */
+function sakla(anahtar: string, y: Yama) {
+  const eski = SAKLI.get(anahtar);
+  if (eski && eski.yama.is !== y.is) glBirak(eski.yama.is);
+  SAKLI.delete(anahtar);
+  SAKLI.set(anahtar, { yama: y, oturum: bitmisOturum(y) });
+  for (const [a, { yama }] of SAKLI) {
+    if (SAKLI.size <= SAKLI_SINIR) break;
+    SAKLI.delete(a);
+    glBirak(yama.is);
+  }
+}
 
 /** Biten yamanın oturumu (parçalı aşaması gelmediyse yok: yeni oturum ister). */
 function bitmisOturum(y: Yama): YamaOturumu | null {
@@ -542,7 +560,8 @@ function useYama(
   useEffect(() => {
     kapandi.current = false;
     // Saklı yama yeniden gösteriliyor: artık bu sahnenin.
-    if (SAKLI && SAKLI.yama.is === gosterilen.current?.is) SAKLI = null;
+    const a = guncel.current.anahtar;
+    if (SAKLI.get(a)?.yama.is === gosterilen.current?.is) SAKLI.delete(a);
     // Kalıcı: gösterilen yama cihaza, uygulama arka plana geçince (telefonda
     // kapatılmadan önceki son an) ve sahne kapanınca.
     const kaydet = () => {
@@ -576,8 +595,8 @@ function useYama(
       // Son yama bekliyor (bkz. `SAKLI`). Bitmişse oturumu da onun
       // bölgesiyle; parçalı aşaması gelmeden kapandıysa dönüşte yeni oturum
       // (durağan aşama önbellekten hemen, sonra parçalı).
-      if (SAKLI && SAKLI.yama.is !== y.is) glBirak(SAKLI.yama.is);
-      SAKLI = { yama: y, oturum: bitmisOturum(y) };
+      const sahibi = y.is.slice(0, y.is.indexOf('|yama|'));
+      sakla(sahibi, y);
       if (o) o.iptal = true;
     };
   }, []);
@@ -1089,7 +1108,8 @@ export const Sahne = memo(function Sahne({
   /**
    * Kalıcı (yalnız GPU): çizilen resim ve katmanları cihazda saklanıyor
    * (`kalici.ts`), uygulama yeniden açılınca çizilmeden geliyor; son
-   * yakınlık yaması da. Yerleşke: telefonda saniyelerce süren canlı resmi.
+   * yakınlık yaması da. Yerleşke (telefonda saniyelerce süren canlı resmi)
+   * ve diyar haritası.
    */
   kalici?: boolean;
 }) {

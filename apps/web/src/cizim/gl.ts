@@ -363,7 +363,8 @@ export function glCiz(
     istenmiyor?: () => boolean;
     /**
      * Kalıcı: önce cihazdaki depoya bakılıyor (`kalici.ts`, yuva anahtarın
-     * kendisi), yoksa çizilip yazılıyor. Yalnız yerleşkenin ana resmi.
+     * kendisi), yoksa çizilip yazılıyor. Yerleşkenin, dünya ve diyar
+     * haritalarının ana resmi.
      */
     kalici?: boolean;
   } = {},

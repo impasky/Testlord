@@ -220,7 +220,11 @@ export function YolCizimi({ yol, className }: { yol: string; className?: string 
   return <NesneCizimi tur={klasor} ad={ad} className={className} />;
 }
 
-/** Akın diyarının kapağı (16:9, kutuyu doldurur) ya da haritası (kare). */
+/**
+ * Akın diyarının kapağı (16:9, kutuyu doldurur) ya da haritası (kare).
+ * Harita kalıcı (`Sahne.kalici`): zemini ve son keskin yaması cihazda,
+ * uygulama yeniden açılınca çizilmeden geliyor.
+ */
 export function DiyarCizimi({
   ad,
   kadraj,
@@ -251,6 +255,7 @@ export function DiyarCizimi({
       tilt={kadraj === 'kapak' ? TILT_AFIS : undefined}
       hareket={hareket}
       yama={gorunen}
+      kalici={kadraj === 'harita'}
     />
   );
 }

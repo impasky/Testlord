@@ -524,8 +524,8 @@ kaydırıyor.
   uygulama kapanıp açılınca da aynı yerde. Bozuk ya da sınır dışı değer
   yok sayılıyor (`gorunumOku`); depo kapalıysa (gizli sekme) sekme açık
   kaldıkça.
-- Kalıcı çizim (`kalici.ts`, `Sahne.kalici`; yalnız yerleşke): oyuncu
-  "keskin görüntü de kalıcı olsun" dedi. Yerleşkenin durağan ve canlı
+- Kalıcı çizim (`kalici.ts`, `Sahne.kalici`; yerleşke ve Akın'ın diyar
+  haritası): oyuncu "keskin görüntü de kalıcı olsun" dedi. Yerleşkenin durağan ve canlı
   resmi (su, ışık, çimen katmanı, canlı parçaların atlası, duman
   kaynaklarıyla) çizilince cihazda, IndexedDB'de saklanıyor; uygulama
   açılınca sıraya hiç girmeden oradan geliyor (`glCiz` `kalici`). Son yama
@@ -537,13 +537,22 @@ kaydırıyor.
   (ilk açılışta 24 + 14 sn). Anahtar çizimin kendisi (sahne, yapıların
   seviyesi, boy); sürüm çizim kodunun ve verinin içerik özeti
   (`vite-cizim-surumu.mjs`: `src/cizim`, `data`, `packages/shared`):
-  biri değişince eski kayıt okunmuyor, siliniyor. En çok sekiz kayıt (iki
-  yerleşke ve dünya haritasının zemini sığıyor), en uzun süredir
-  kullanılmayan atılıyor. Service worker'ın "önbellek yok"
+  biri değişince eski kayıt okunmuyor, siliniyor. En çok on iki kayıt
+  (yerleşke üç, dünya haritası iki, her diyar haritası iki — zemini ve
+  yaması; yerleşke, dünya haritası ve üç diyar sığıyor), en uzun süredir
+  kullanılmayan atılıyor. Diyar haritası da aynı yolla (`DiyarCizimi`,
+  harita kadrajı): ölçüldü, yeniden açılışta zemin 0,0 sn, ×3'teki keskin
+  yama 0,1 sn (ilk açılışta 15 + 5 sn). Ana resim sahnenin düzen boyunda
+  isteniyor (CSS dönüşümü hariç): yakında açılan harita ölçüsünü
+  büyütülmüş kutudan alıp 1400'lük resmi baştan çiziyor, cihazdaki
+  kaydı da tutturamıyordu — yakının keskinliği zaten yamada. Service worker'ın "önbellek yok"
   kuralıyla çelişmiyor: saklanan şey oyunun verisi değil, verinin
-  çizilmiş hâli; anahtarı verinin kendisi. Sahne kapanınca son yama bırakılmıyor, tek bir yuvada
-  bekliyor (`SAKLI`): dönüşte yeniden çizilmeden hemen keskin; parçalı
-  aşaması gelmeden kapandıysa durağanı önbellekten, parçalısı yeniden.
+  çizilmiş hâli; anahtarı verinin kendisi. Sahne kapanınca son yama bırakılmıyor, bellekte
+  sahne başına bir yuvada bekliyor (`SAKLI`, en çok üç sahne; aşınca en
+  eskisi bırakılıyor): dönüşte yeniden çizilmeden hemen keskin — Şehir'le
+  diyar haritası arasında gidip gelince ikisi de (ölçüldü: 0,0 sn; tek
+  yuvayken biri ötekini siliyordu). Parçalı aşaması gelmeden kapandıysa
+  durağanı önbellekten, parçalısı yeniden.
 
 Kutu bir ızgara sarmalayıcısına geçiyor: resim ve katmanlar aynı hücrede
 üst üste, çağıranın sınıfları sarmalayıcıda. Katman dikdörtgeni ölçülüyor
@@ -612,7 +621,7 @@ eskisi bırakılıyor. Zemin GPU'da değilse (düz üçgenler) yama yok.
 | `yerlesim.ts`                         | Şehir sayfasının tam ekran yerleşkesi, altı kademe (kamp → metropol): kasaba ve yapıları (sahnenin içinde), tarlalar, talim alanı                                              |
 | `cayir.ts`                            | Yerleşkenin zemini: köşe renkli çayır, ot tutamları, kır çiçekleri, yol kenarı ve tekerlek izi (yalnız GPU)                                                                    |
 | `kalabalik.ts`                        | Kasabanın insanları ve evleri: kilitli arsada köy evi (kampta çadır), ek evler, kuyu başında sohbet, yolda gidip gelen köylüler                                                |
-| `kalici.ts`                           | Kalıcı çizim deposu (IndexedDB): yerleşkenin resimleri ve son yaması cihazda, çizim sürümüyle                                                                                  |
+| `kalici.ts`                           | Kalıcı çizim deposu (IndexedDB): yerleşkenin, dünya ve diyar haritalarının resimleri ve son yamaları cihazda, çizim sürümüyle                                                  |
 | `../components/harita/zeminYamasi.ts` | Dünya haritası zemininin yakınlık yaması: görünen bölge ekranın piksel yoğunluğunda                                                                                            |
 | `cevre.ts`                            | Yerleşkenin çevresi: dere ve köprü, su ve yel değirmeni, gölet, köy evleri, mera, meyve bahçesi, talim kampı, patikalar, serpinti, orman                                       |
 | `kir.ts`                              | Kır, maden, kale ve saray parçaları: ev, ambar, değirmen, köprü, maden ağzı, sur, kule, teras, köşk                                                                            |

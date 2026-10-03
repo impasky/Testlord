@@ -499,7 +499,11 @@ kenarına gelince sayfa devam ediyor (docs/24 "Yakınlaştırma"). Ardından
 **"diyar haritasının yakınlığını da hatırlasın"**: her diyarın yakınlığı ve
 bakılan yeri cihazda ayrı (`lordlar_diyar_<anahtar>_gorunum`); diyar
 kapanıp açılınca, sekme değişince ve uygulama yeniden açılınca bırakıldığı
-gibi.
+gibi. Sonra **"hepsini yap"**: diyar haritası da Şehir ve dünya haritası
+kadar kalıcı — zemini ve son keskin yaması cihazda (yeniden açılışta
+zemin hemen, yakındaki keskin görüntü 0,1 sn; önce 15 sn çiziliyordu),
+Şehir'le diyar arasında gidip gelince ikisinin yaması da bellekte bekliyor
+(docs/24 "Kalıcı çizim").
 
 ## 4. Bina seviyesi ile araştırma neden çakışmıyor
 
