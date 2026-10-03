@@ -180,7 +180,6 @@ async function ciz(istek: GlIstek): Promise<CizimSonucu | null> {
 /* ── Sıra ve önbellek ──────────────────────────────────────────────── */
 
 const ONBELLEK = new Map<string, Promise<string | null>>();
-let zincir: Promise<unknown> = Promise.resolve();
 
 /** Hareketli sahnenin katmanları (nesne url'leri), ana resmin url'sine göre. */
 export interface Katmanlar {
@@ -290,11 +289,44 @@ async function calistir(
   }
 }
 
-/** Zincire ekler: işler tek tek, aralarında ana iş parçacığına nefes payı. */
-function sirayaKoy(is: () => Promise<string | null>): Promise<string | null> {
-  const p = zincir.then(() => new Promise((r) => setTimeout(r, 0))).then(is);
-  zincir = p.catch(() => undefined);
+/** Sırada bekleyen işler (bkz. `sirayaKoy`). */
+const SIRA: {
+  piksel: number;
+  is: () => Promise<string | null>;
+  coz: (url: string | null) => void;
+}[] = [];
+let isleniyor = false;
+
+/**
+ * Sıraya koyar: işler tek tek, aralarında ana iş parçacığına nefes payı.
+ * Bekleyenlerden en küçüğü önce (eşitse ilk gelen; çalışan iş kesilmiyor):
+ * ekranın figürleri ve simgeleri milisaniyeler sürüyor, manzara şeridi
+ * saniyeler — şerit önce istendi diye Ordu'nun figürleri onun arkasında
+ * 14 sn beklemesin.
+ */
+function sirayaKoy(is: () => Promise<string | null>, piksel = Infinity): Promise<string | null> {
+  const p = new Promise<string | null>((coz) => SIRA.push({ piksel, is, coz }));
+  siradakini();
   return p;
+}
+
+function siradakini() {
+  if (isleniyor || !SIRA.length) return;
+  isleniyor = true;
+  // Seçim nefes payından sonra: o arada gelen küçük iş de hesaba katılıyor.
+  setTimeout(() => {
+    let i = 0;
+    for (let j = 1; j < SIRA.length; j++) if (SIRA[j]!.piksel < SIRA[i]!.piksel) i = j;
+    const s = SIRA.splice(i, 1)[0]!;
+    void s
+      .is()
+      .catch(() => null)
+      .then((url) => {
+        isleniyor = false;
+        s.coz(url);
+        siradakini();
+      });
+  }, 0);
 }
 
 /** Sırada ya da çizilmekte olan öncelikli iş sayısı. */
@@ -302,11 +334,13 @@ let oncelikli = 0;
 /** Sonraya bırakılan işler (bkz. `glCiz` `sonra`). */
 const sonrakiler: {
   anahtar: string;
-  istek: () => GlIstek;
+  piksel: number;
+  /** Çizer (kalıcıysa önce cihaza bakılmasını bekleyip). */
+  calis: () => Promise<string | null>;
+  /** Cihazdan geldi: yeri gelince çizilmeden geçiliyor (bkz. `glCiz` `kalici`). */
+  geldi: () => boolean;
   ilgi: (() => boolean)[];
   coz: (url: string | null) => void;
-  /** Kalıcı işin sonucu cihaza (bkz. `glCiz` `kalici`). */
-  yaz?: (s: CizimSonucu) => void;
 }[] = [];
 let sonrakiCalisiyor = false;
 /**
@@ -327,6 +361,10 @@ function sonrakiniCalistir() {
   if (oncelikli > 0 || sonrakiCalisiyor) return;
   while (sonrakiler.length) {
     const s = sonrakiler.shift()!;
+    if (s.geldi()) {
+      s.coz(null);
+      continue;
+    }
     // Artık isteyen yok (sayfadan çıkıldı): hiç çizilmiyor, sonra yeniden istenebilir.
     if (s.ilgi.every((istenmiyor) => istenmiyor())) {
       ONBELLEK.delete(s.anahtar);
@@ -334,7 +372,7 @@ function sonrakiniCalistir() {
       continue;
     }
     sonrakiCalisiyor = true;
-    void sirayaKoy(() => calistir(s.istek, s.yaz)).then((url) => {
+    void sirayaKoy(s.calis, s.piksel).then((url) => {
       sonrakiCalisiyor = false;
       s.coz(url);
       sonrakiniBaslat();
@@ -365,9 +403,12 @@ export function glCiz(
      * Kalıcı: önce cihazdaki depoya bakılıyor (`kalici.ts`, yuva anahtarın
      * kendisi), yoksa çizilip bu grupta yazılıyor. Yerleşkenin, dünya ve
      * diyar haritalarının ana resmi (`sahne`); kapaklar ve afişler (`afis`);
-     * ekran zeminleri (`zemin`); portreler (`portre`), yapılar (`bina`).
+     * ekran zeminleri (`zemin`); portreler (`portre`), yapılar (`bina`),
+     * birlik, düşman ve ekipman (`nesne`).
      */
     kalici?: KaliciGrup;
+    /** Çizimin piksel sayısı (en × boy): sırada küçük önce. Yoksa en büyük sayılıyor. */
+    piksel?: number;
   } = {},
 ): Promise<string | null> {
   // Aynı işi bekleyen her çağıran bir ilgi bırakıyor; iş ancak hepsi
@@ -380,13 +421,27 @@ export function glCiz(
   }
   const ilgi = [ilgisi];
   ILGI.set(anahtar, ilgi);
-  // Kalıcıysa çizilen sonuç cihaza da yazılıyor.
+  // Kalıcı: cihaza hemen bakılıyor, sıradaki yer de hemen tutuluyor.
+  // Kayıt varsa sıra beklenmeden ondan (yeri gelince çizilmeden geçiliyor);
+  // yoksa iş kendi sırasında çiziliyor ve sonucu cihaza yazılıyor. Sıraya
+  // okuma bitince girseydi, o arada giren büyük çizim (ekranın manzara
+  // şeridi) küçüklerin önüne geçiyordu: Ordu'nun figürleri 6,5 yerine 14 sn.
   const grup = secenek.kalici;
+  const piksel = secenek.piksel ?? Infinity;
+  let geldi = false;
+  const okuma: Promise<string | null> = grup
+    ? kaliciOku(anahtar).then((k) => {
+        if (!k || k.anahtar !== anahtar) return null;
+        geldi = true;
+        return urlle(k.sonuc);
+      })
+    : Promise.resolve(null);
   const yaz = grup ? (s: CizimSonucu) => kaliciYaz(anahtar, anahtar, s, grup) : undefined;
+  const calis = grup ? async () => (await okuma) ?? calistir(istek, yaz) : () => calistir(istek);
   const sirala = (): Promise<string | null> => {
     if (secenek.sonra) {
       const p = new Promise<string | null>((coz) =>
-        sonrakiler.push({ anahtar, istek, ilgi, coz, yaz }),
+        sonrakiler.push({ anahtar, piksel, calis, geldi: () => geldi, ilgi, coz }),
       );
       sonrakiniBaslat();
       return p;
@@ -394,21 +449,20 @@ export function glCiz(
     oncelikli++;
     // Sırası gelince isteyen kalmadıysa (yakınlık yaması: oyuncu çoktan
     // başka yere kaydı) çizilmiyor.
-    const p = sirayaKoy(() => {
-      if (!ilgi.every((istenmiyor) => istenmiyor())) return calistir(istek, yaz);
+    const p = sirayaKoy(async () => {
+      if (grup) await okuma;
+      if (geldi || !ilgi.every((istenmiyor) => istenmiyor())) return calis();
       ONBELLEK.delete(anahtar);
-      return Promise.resolve(null);
-    });
+      return null;
+    }, piksel);
     void p.then(() => {
       oncelikli--;
       sonrakiniBaslat();
     });
     return p;
   };
-  // Kalıcı: cihazda varsa sıraya hiç girmiyor (canlı resim de beklemiyor).
-  const is = secenek.kalici
-    ? kaliciOku(anahtar).then((k) => (k && k.anahtar === anahtar ? urlle(k.sonuc) : sirala()))
-    : sirala();
+  const sirada = sirala();
+  const is = grup ? okuma.then((url) => url ?? sirada) : sirada;
   void is.then(() => {
     if (ILGI.get(anahtar) === ilgi) ILGI.delete(anahtar);
   });

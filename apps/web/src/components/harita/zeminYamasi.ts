@@ -213,7 +213,7 @@ export function useZeminYamasi(
             pb,
             100 / (ZEMIN_GPU_PIKSEL * ornekSayisi(ZEMIN_GPU_PIKSEL, ZEMIN_GPU_PIKSEL)),
           ),
-        { istenmiyor: () => yeni.iptal },
+        { istenmiyor: () => yeni.iptal, piksel: pe * pb },
       ).then(async (url) => {
         if (url) await glOnYukle(url);
         if (!url || yeni.iptal || kapandi.current) {

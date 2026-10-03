@@ -147,7 +147,10 @@ export function nesneCizimiVar(tur: string, ad: string): boolean {
   return NESNE[tur]?.has(ad) ?? false;
 }
 
-/** Birlik, düşman, eşya: kare yuvada ortalı, kendi çerçevesinde. */
+/**
+ * Birlik, düşman, eşya: kare yuvada ortalı, kendi çerçevesinde. Kalıcı
+ * (`Sahne.kalici`): cihazda, uygulama yeniden açılınca çizilmeden geliyor.
+ */
 export function NesneCizimi({
   tur,
   ad,
@@ -174,6 +177,7 @@ export function NesneCizimi({
       className={className}
       style={style}
       kare
+      kalici="nesne"
     />
   );
 }

@@ -198,13 +198,15 @@ function useGpuResmi(
         sicak,
         hareket: h,
       });
+      // Sırada küçük çizim önce (`glCiz` `piksel`).
+      const piksel = en * boy;
       const sakla = (t: string, url: string) => {
         const simdiki = RESIMLER.get(t);
         if (!simdiki || simdiki.en < en) RESIMLER.set(t, { en, url });
         return RESIMLER.get(t)!.url;
       };
       if (!iki) {
-        glCiz(`${taban}|${en}x${boy}`, istek(hareket), { kalici }).then((url) => {
+        glCiz(`${taban}|${en}x${boy}`, istek(hareket), { kalici, piksel }).then((url) => {
           if (!url) {
             if (!iptal) guncel.current.basarisiz();
             return;
@@ -219,7 +221,7 @@ function useGpuResmi(
       const durgun = RESIMLER.get(durgunTaban);
       if (durgun && durgun.en >= en) setResim(durgun.url);
       else
-        glCiz(`${durgunTaban}|${en}x${boy}`, istek(false), { kalici }).then((url) => {
+        glCiz(`${durgunTaban}|${en}x${boy}`, istek(false), { kalici, piksel }).then((url) => {
           if (!url) {
             if (!iptal) guncel.current.basarisiz();
             return;
@@ -231,6 +233,7 @@ function useGpuResmi(
         sonra: true,
         istenmiyor: () => iptal,
         kalici,
+        piksel,
       }).then(async (url) => {
         // Canlı gelmediyse (vazgeçildi ya da çizilemedi) durağan kalıyor.
         if (!url) return;
@@ -494,7 +497,7 @@ function useYama(
           yama: hareketli,
           hareket: parcali,
         }),
-        { istenmiyor: () => yeni.iptal },
+        { istenmiyor: () => yeni.iptal, piksel: en * boy },
       );
       if (url) await glOnYukle(url);
       if (!url || yeni.iptal || kapandi.current) {
@@ -1112,7 +1115,8 @@ export const Sahne = memo(function Sahne({
    * `sahne`: yakınlaşan büyük sahne, son yakınlık yaması da (yerleşke —
    * telefonda saniyelerce süren canlı resmi —, diyar haritası). `afis`:
    * yalnız ana resim (diyar kapağı, bölge afişi). `zemin`: ekranların
-   * manzara şeridi. `portre`, `bina`: portreler ve yapı çizimleri.
+   * manzara şeridi. `portre`, `bina`, `nesne`: portreler, yapılar ve
+   * birlik, düşman, ekipman.
    */
   kalici?: KaliciGrup;
 }) {

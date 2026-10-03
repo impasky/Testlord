@@ -281,6 +281,12 @@ kaydırmayı ve dokunmayı donduruyordu (dünya haritasında 661 ms'lik tek bir
 görev ölçüldü, işçiyle 70 ms). İşçi açılamazsa ya da WebGL2 orada yoksa
 aynı çizici ana iş parçacığında; o da yoksa SVG. İşler tek tek, aralarında
 nefes payıyla; aynı istek (anahtar + görüş kutusu + boy) bir kez çiziliyor.
+Bekleyenlerden en küçüğü önce (`glCiz` `piksel`: en × boy; eşitse ilk
+gelen, çalışan iş kesilmiyor): ekranın figürleri ve simgeleri
+milisaniyeler, manzara şeridi saniyeler sürüyor. Geliş sırasıyla Ordu'nun
+figürleri önce istenen şeridin arkasında 14 sn bekliyordu; şimdi 0,4 sn
+(Akın'ın düşmanları 9,3 yerine 0,4 sn; diyar haritası da önündeki küçük
+işler bir anda bittiği için 15 yerine 5 sn).
 
 Ağır canlı sahne önce DURAĞAN (`Sahne.onceDurgun`; Şehir'in yerleşkesi):
 önce bütün parçaları içinde çizili durağan resim (hızlı), canlı resim ve
@@ -529,7 +535,9 @@ kaydırıyor.
   yapılar): oyuncu "keskin görüntü de kalıcı olsun" dedi. Yerleşkenin durağan ve canlı
   resmi (su, ışık, çimen katmanı, canlı parçaların atlası, duman
   kaynaklarıyla) çizilince cihazda, IndexedDB'de saklanıyor; uygulama
-  açılınca sıraya hiç girmeden oradan geliyor (`glCiz` `kalici`). Son yama
+  açılınca sıra beklenmeden oradan geliyor (`glCiz` `kalici`: sıradaki
+  yer hemen tutuluyor, cihaza aynı anda bakılıyor; kayıt varsa yeri
+  gelince çizilmeden geçiliyor, yoksa iş kendi sırasında çiziliyor). Son yama
   sahnenin tek yuvasında (`glKaydet`/`glKalici`): uygulama arka plana
   geçince ve Şehir'den çıkılınca yazılıyor, açılışta görünen bölge
   bildirilmeden okunuyor (okunmadan yeni yama çizilmiyor; canlı resim
@@ -556,7 +564,11 @@ kaydırıyor.
   çok kırk) ve `bina` (en çok kırk sekiz) — sonra "portreleri ve binaları
   da kalıcı yap": küçük ama çok sayıda; üst çubuktaki portre ve Şehir'in
   yapı simgeleri sırada büyük çizimlerin arkasında bekliyordu. Ölçüldü:
-  yeniden açılışta 6,3 sn yerine 0,1 sn; kayıt 2–5 KB. Depo biçimi
+  yeniden açılışta 6,3 sn yerine 0,1 sn; kayıt 2–5 KB. `nesne` (en çok
+  yüz yirmi sekiz) — ardından "birlikleri, düşmanları ve ekipmanı da
+  kalıcı yap": altmış iki çizim (aynı bileşendeki general ve lord
+  figürleri de), kayıt 7–26 KB; yeniden açılışta Ordu'nun ve Akın'ın
+  figürleri 0,0–0,1 sn. Depo biçimi
   değişince (sürüm 2: gruplar) eskisi
   atılıp yeniden kuruluyor — önbellek. Diyar haritası da aynı yolla
   (`DiyarCizimi`, harita kadrajı): ölçüldü, yeniden açılışta zemin 0,0 sn,
@@ -639,7 +651,7 @@ eskisi bırakılıyor. Zemin GPU'da değilse (düz üçgenler) yama yok.
 | `yerlesim.ts`                         | Şehir sayfasının tam ekran yerleşkesi, altı kademe (kamp → metropol): kasaba ve yapıları (sahnenin içinde), tarlalar, talim alanı                                              |
 | `cayir.ts`                            | Yerleşkenin zemini: köşe renkli çayır, ot tutamları, kır çiçekleri, yol kenarı ve tekerlek izi (yalnız GPU)                                                                    |
 | `kalabalik.ts`                        | Kasabanın insanları ve evleri: kilitli arsada köy evi (kampta çadır), ek evler, kuyu başında sohbet, yolda gidip gelen köylüler                                                |
-| `kalici.ts`                           | Kalıcı çizim deposu (IndexedDB): büyük sahneler, kapak, afiş, ekran zemini, portre ve yapı cihazda; sürümlü, gruba göre sınırlı                                                |
+| `kalici.ts`                           | Kalıcı çizim deposu (IndexedDB): büyük sahneler, kapak, afiş, zemin, portre, yapı, birlik ve eşya; sürümlü, gruba göre sınırlı                                                 |
 | `../components/harita/zeminYamasi.ts` | Dünya haritası zemininin yakınlık yaması: görünen bölge ekranın piksel yoğunluğunda                                                                                            |
 | `cevre.ts`                            | Yerleşkenin çevresi: dere ve köprü, su ve yel değirmeni, gölet, köy evleri, mera, meyve bahçesi, talim kampı, patikalar, serpinti, orman                                       |
 | `kir.ts`                              | Kır, maden, kale ve saray parçaları: ev, ambar, değirmen, köprü, maden ağzı, sur, kule, teras, köşk                                                                            |

@@ -510,7 +510,10 @@ sınırlarında, yerleşkenin ve haritaların kaydını atmıyorlar. Sonra
 **"ekran zeminlerini de kalıcı yap"**: on bir ekranın manzara şeridi de
 cihazda, kendi grubunda (Ordu'nun şeridi 14,3 sn yerine hemen). Ardından
 **"portreleri ve binaları da kalıcı yap"**: üst çubuktaki portre ve Şehir'in
-yapı simgeleri de (yeniden açılışta 6,3 sn yerine 0,1 sn).
+yapı simgeleri de (yeniden açılışta 6,3 sn yerine 0,1 sn). Sonra
+**"birlikleri, düşmanları ve ekipmanı da kalıcı yap"**: figürler ve eşyalar
+da cihazda. Ölçerken sıra da düzeldi: küçük çizim büyüğün önüne geçiyor,
+ilk açılışta Ordu'nun figürleri 14 sn yerine 0,4 sn (docs/24 "Sıra ve işçi").
 
 ## 4. Bina seviyesi ile araştırma neden çakışmıyor
 
