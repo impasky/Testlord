@@ -1322,6 +1322,8 @@ let kesmeSorusu: (() => boolean) | undefined;
  * yeni işçinin çizimi onları bekliyordu). Şerit arasında GPU'nun bitirmesi
  * bekleniyor ve kesme isteğine bakılıyor: kesilen çizim en çok bir şerit
  * sürüyor (yerleşkenin zemini 3,5 sn tek parçaydı, sekiz şeritte ~0,4 sn).
+ * Küçük çizim tek şerit, ama o da geçiş aralarında soruyor (oyuncu:
+ * "küçük çizimleri de kesilebilir yap"; bkz. `yokla`).
  */
 const SERIT_ORNEK = 1_000_000;
 
@@ -1343,8 +1345,30 @@ async function durak(gl: WebGL2RenderingContext) {
 }
 
 /**
+ * Küçük çizimin durağı: GPU beklenmiyor, işçi yalnız gelen mesajları
+ * (kesme) alacak kadar soluklanıyor. Fence'li durak küçük çizimi %18
+ * yavaşlatıyordu (her durakta GPU boşa bekliyor); kesilince GPU'ya gitmiş
+ * küçük parça yine bitiyor, sonrası gönderilmiyor.
+ */
+async function yokla() {
+  await new Promise<void>((r) => {
+    const k = new MessageChannel();
+    k.port1.onmessage = () => r();
+    k.port2.postMessage(0);
+  });
+  kesildiyse();
+}
+
+/** Geçiş arası: büyük çizimde durak, küçükte yoklama, kesilemeyende hiçbiri. */
+async function ara(gl: WebGL2RenderingContext, n: number) {
+  if (n > 1) await durak(gl);
+  else if (n === 1) await yokla();
+}
+
+/**
  * Hedefin tamamına `ciz`; `n` şeritte (makasla, alttan üste), her şeritten
- * sonra durakla. `n` 1 ise eskisi gibi tek seferde.
+ * sonra durakla. `n` 1 ise tek seferde, sonra yoklama; 0 ise (kesilemeyen
+ * çizim, ana iş parçacığında) hiçbiri.
  */
 async function seritle(
   gl: WebGL2RenderingContext,
@@ -1353,7 +1377,10 @@ async function seritle(
   n: number,
   ciz: () => void,
 ) {
-  if (n <= 1) return ciz();
+  if (n <= 1) {
+    ciz();
+    return ara(gl, n);
+  }
   const adim = Math.ceil(h / n);
   gl.enable(gl.SCISSOR_TEST);
   for (let y = 0; y < h; y += adim) {
@@ -1402,8 +1429,9 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
   const isik = isikKamerasi(ag, lz);
   const golgeVar = ag.golge.length > 0 && !istek.taslak;
   const silinecek: (() => void)[] = [];
-  // Şerit sayısı: büyük çizim, kesilebiliyorsa (bkz. `SERIT_ORNEK`).
-  const n = kesmeSorusu && sen * sboy >= SERIT_ORNEK ? Math.ceil((sen * sboy) / SERIT_ORNEK) : 1;
+  // Şerit sayısı: kesilebilen çizimde (işçide) en az bir, büyükte birden
+  // çok (bkz. `SERIT_ORNEK`); kesilemiyorsa 0, durak yok.
+  const n = kesmeSorusu ? Math.max(1, Math.ceil((sen * sboy) / SERIT_ORNEK)) : 0;
   try {
     // 1) Gölge haritası: yalnız nesneler, iki yüzlü.
     if (golgeVar) {
@@ -1629,7 +1657,7 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
       if (tilt) bulanikCiz(hedef, kay, k.ara, [en, boy], istek.tilt!, TILT_YARICAP * en, bantKay);
     };
     bulandir();
-    if (n > 1) await durak(gl);
+    await ara(gl, n);
 
     for (const s of silinecek.splice(0)) s();
     if (gl.isContextLost()) return null;
@@ -1704,7 +1732,7 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
       gl.clearBufferfv(gl.COLOR, 0, [0, 0, 0, 0]);
       const kareSayisi = (i: number) => by.kareSayilari?.[i] ?? kare;
       for (let f = 0; f < kare; f++) {
-        if (n > 1) await durak(gl);
+        await ara(gl, n);
         const t = tampon(gl, kareTamponu(by, f));
         for (let sayfa = 0; sayfa < sayfaSayisi; sayfa++) {
           // Turu bu kareden kısa olan parça çizilmiyor (atlasta yeri yok).

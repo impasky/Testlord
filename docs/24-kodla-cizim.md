@@ -306,8 +306,15 @@ yerinde), iş sıraya geri dönüp baştan çiziliyor — en çok üç kez
 (`KESME_EN_COK`). Ölçüldü: yerleşke çizilirken Ordu'nun figürleri 6,2 yerine
 0,9 sn; Şehir'e dönünce yerleşke yine geliyor. Bedeli: kesilmeyen büyük
 çizim %2,5–5 yavaş (şerit başına geometri ve durak); şeritli ve tek parça
-çizim bayt bayt aynı PNG (yapı, canlı afiş ve katmanları, atlas). Küçük
-çizim (bir milyon örnekten az) eskisi gibi tek parça, durak yok.
+çizim bayt bayt aynı PNG (yapı, canlı afiş ve katmanları, atlas). Sonra
+"küçük çizimleri de kesilebilir yap": bir milyon örnekten az çizim yine
+tek parça, ama o da geçiş aralarında (ana geçiş, kenar, tilt, atlas
+karesi) soruyor (`yokla`). GPU beklenmiyor, işçi yalnız gelen mesajı
+alacak kadar soluklanıyor (`MessageChannel`): fence'li durak küçük çizimi
+%18 yavaşlatıyordu (58,5 → 69,1 ms), yoklamayla fark ölçülemiyor (54,7
+ms). Kesilince GPU'ya gitmiş küçük parça yine bitiyor, sonrası
+gönderilmiyor. Denendi: 400×400'lük çizim 60×60'lık iş gelince 12–108 ms
+sonra kesildi, küçük önce çizildi, büyük baştan tamamlandı.
 
 Ağır canlı sahne önce DURAĞAN (`Sahne.onceDurgun`; Şehir'in yerleşkesi):
 önce bütün parçaları içinde çizili durağan resim (hızlı), canlı resim ve

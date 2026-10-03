@@ -534,6 +534,9 @@ sn'de görünüyor, keskin resim ~0,7 sn geç. Sonra **"çalışan işi de
 kesilebilir yap"**: büyük çizim işçide şerit şerit gidiyor, aralarda kesme
 soruluyor; çok daha küçük bir iş gelince çalışan bırakılıp sonra baştan
 çiziliyor — yerleşke çizilirken açılan Ordu'nun figürleri 6,2 yerine 0,9 sn.
+Ardından **"küçük çizimleri de kesilebilir yap"**: küçük çizim de geçiş
+aralarında soruyor; GPU'yu beklemeden, yalnız gelen mesajı alacak kadar
+soluklanarak (fark ölçülemiyor).
 
 ## 4. Bina seviyesi ile araştırma neden çakışmıyor
 
