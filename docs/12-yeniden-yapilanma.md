@@ -506,7 +506,9 @@ zemin hemen, yakındaki keskin görüntü 0,1 sn; önce 15 sn çiziliyordu),
 (docs/24 "Kalıcı çizim"). Ardından **"kapakları ve afişleri de kalıcı
 yap"**: diyar kapakları ve bölge afişleri de cihazda (yeniden açılışta
 kapak 18,5 sn yerine 0,1 sn, afiş 12,4 sn yerine 0,1 sn); kendi
-sınırlarında, yerleşkenin ve haritaların kaydını atmıyorlar.
+sınırlarında, yerleşkenin ve haritaların kaydını atmıyorlar. Sonra
+**"ekran zeminlerini de kalıcı yap"**: on bir ekranın manzara şeridi de
+cihazda, kendi grubunda (Ordu'nun şeridi 14,3 sn yerine hemen).
 
 ## 4. Bina seviyesi ile araştırma neden çakışmıyor
 

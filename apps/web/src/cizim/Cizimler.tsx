@@ -281,7 +281,11 @@ export function DunyaKucuk({ className }: { className?: string }) {
 /** Çizimi olan ekran zeminleri (`kisla`, `demirhane`...). */
 export const CIZILEN_ZEMINLER = new Set<string>(ZEMIN_ADLARI);
 
-/** Ekranın tepesindeki manzara şeridi: kutuyu doldurur, taşanı kırpar. */
+/**
+ * Ekranın tepesindeki manzara şeridi: kutuyu doldurur, taşanı kırpar.
+ * Kalıcı (`Sahne.kalici`): cihazda, uygulama yeniden açılınca çizilmeden
+ * geliyor.
+ */
 export function ZeminCizimi({ ad, className }: { ad: string; className?: string }) {
   return (
     <Sahne
@@ -295,6 +299,7 @@ export function ZeminCizimi({ ad, className }: { ad: string; className?: string 
       tilt={TILT_ZEMIN}
       hareket
       ertele
+      kalici="zemin"
     />
   );
 }

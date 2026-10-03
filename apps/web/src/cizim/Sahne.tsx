@@ -1111,7 +1111,8 @@ export const Sahne = memo(function Sahne({
    * saklanıyor (`kalici.ts`), uygulama yeniden açılınca çizilmeden geliyor.
    * `sahne`: yakınlaşan büyük sahne, son yakınlık yaması da (yerleşke —
    * telefonda saniyelerce süren canlı resmi —, diyar haritası). `afis`:
-   * yalnız ana resim (diyar kapağı, bölge afişi).
+   * yalnız ana resim (diyar kapağı, bölge afişi). `zemin`: ekranların
+   * manzara şeridi.
    */
   kalici?: KaliciGrup;
 }) {

@@ -9,14 +9,16 @@
  * yeniden çizilmeden geliyor.
  *
  * Sonra: "kapakları ve afişleri de kalıcı yap." Akın'ın diyar kapakları
- * ve bölge afişleri (giriş ekranının manzarası da) aynı yolla.
+ * ve bölge afişleri (giriş ekranının manzarası da) aynı yolla. Ardından
+ * "ekran zeminlerini de kalıcı yap": ekranların tepesindeki manzara
+ * şeritleri de.
  *
  * Her kayıt bir YUVADA: ana resimde yuva çizimin kendi anahtarı; yamada
  * sahnenin tek yuvası (son yama, hangi bölge olduğu ekinde). Kayıtlar çizim
  * sürümüyle (`vite-cizim-surumu.mjs`: çizim kodunun ve verinin içerik
  * özeti) yazılıyor; sürümü tutmayan kayıt okunmuyor, siliniyor.
  *
- * Kayıtlar iki GRUPTA, her grubun kendi sınırı var (`SINIR`): en uzun
+ * Kayıtlar GRUPLARDA, her grubun kendi sınırı var (`SINIR`): en uzun
  * süredir kullanılmayan, yalnız kendi grubundan atılıyor. Bölgeden bölgeye
  * gezen oyuncunun afişleri telefonda en uzun çizilen yerleşkeyi atmasın.
  *  - `sahne`: yakınlaşan büyük sahneler. Yerleşkenin durağan ve canlı
@@ -25,6 +27,8 @@
  *    üç diyar sığıyor.
  *  - `afis`: diyar kapakları (beşi) ve bölge afişleri (altı tür, üçer
  *    aşama; panelin iki boyu): kapaklar ve on bir afiş sığıyor.
+ *  - `zemin`: ekran zeminleri (on bir ekranın manzara şeridi): hepsi
+ *    sığıyor, ekrandan ekrana geçen oyuncu hiçbirini yeniden çizmiyor.
  *
  * Depo açılamazsa (gizli sekme, eski tarayıcı, test ortamı) her şey sessizce
  * boş: çizim eskisi gibi her açılışta.
@@ -46,8 +50,8 @@ const DEPO = 'resimler';
 const GRUP_ZAMAN = 'grup_zaman';
 
 /** Kaydın grubu (bkz. üstteki açıklama). */
-export type KaliciGrup = 'sahne' | 'afis';
-export const SINIR: Record<KaliciGrup, number> = { sahne: 12, afis: 16 };
+export type KaliciGrup = 'sahne' | 'afis' | 'zemin';
+export const SINIR: Record<KaliciGrup, number> = { sahne: 12, afis: 16, zemin: 12 };
 
 export interface KaliciKayit {
   yuva: string;
