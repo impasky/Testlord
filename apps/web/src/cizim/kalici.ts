@@ -37,6 +37,9 @@
  *  - `bina`: yapı çizimleri (otuz dört aşama; simge ve karo boyunda).
  *  - `nesne`: birlik, düşman, ekipman (aynı bileşendeki general ve lord
  *    figürleri de): altmış iki çizim, liste ve ayrıntı boyunda.
+ *  - `karo`: kapak ve afişin küçük hareketsiz hâli (kilitli diyarın gri
+ *    penceresi, sayfa kasasındaki bölge karosu). Büyük afişlerin grubunda
+ *    olsalar sınırı sayıyla doldurup onları atarlardı.
  *
  * Depo açılamazsa (gizli sekme, eski tarayıcı, test ortamı) her şey sessizce
  * boş: çizim eskisi gibi her açılışta.
@@ -58,7 +61,7 @@ const DEPO = 'resimler';
 const GRUP_ZAMAN = 'grup_zaman';
 
 /** Kaydın grubu (bkz. üstteki açıklama). */
-export type KaliciGrup = 'sahne' | 'afis' | 'zemin' | 'portre' | 'bina' | 'nesne';
+export type KaliciGrup = 'sahne' | 'afis' | 'zemin' | 'portre' | 'bina' | 'nesne' | 'karo';
 export const SINIR: Record<KaliciGrup, number> = {
   sahne: 12,
   afis: 16,
@@ -66,6 +69,7 @@ export const SINIR: Record<KaliciGrup, number> = {
   portre: 40,
   bina: 48,
   nesne: 128,
+  karo: 32,
 };
 
 export interface KaliciKayit {

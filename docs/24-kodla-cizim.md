@@ -553,8 +553,13 @@ kaydırıyor.
   diyar haritası iki — zemini ve yaması; yerleşke, dünya haritası ve üç
   diyar sığıyor). `afis`: en çok on altı — sonra oyuncu "kapakları ve
   afişleri de kalıcı yap" dedi: canlı diyar kapakları (beşi) ve bölge
-  afişleri (giriş ekranının manzarası da); kilitli diyarın küçük gri
-  penceresi ve afişin küçük karosu hareketsiz ve ucuz, kalıcı değil.
+  afişleri (giriş ekranının manzarası da). Küçük hareketsiz hâlleri
+  (kilitli diyarın gri penceresi, sayfa kasasındaki bölge karosu) önce
+  ucuz diye dışarıda kalmıştı; ardından "kilitli pencereyi ve küçük
+  karoları da kalıcı yap": onlar da `karo` grubunda (en çok otuz iki;
+  büyük afişlerin grubunda sınırı sayıyla doldururlardı). Yeniden
+  açılışta dört kilitli pencere 8,7 sn yerine 0,2 sn, kasanın iki karosu
+  6,3 sn yerine 0,1 sn; kayıt 54–82 KB.
   Ölçüldü (yazılım GPU'su): yeniden açılışta kapak 18,5 sn yerine 0,1 sn,
   afiş 12,4 sn yerine 0,1 sn; telefon boyunda kapak ~0,9 MB, afiş ~2,3 MB
   (grup en çok ~35 MB). `zemin`: en çok on iki — ardından "ekran

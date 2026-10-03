@@ -99,9 +99,9 @@ export const CIZILEN_BOLGELER = new Set<string>(BOLGE_TIPLERI);
 
 /**
  * Bölge afişi: türün aşama sahnesi (`tarla`, `tarla_3`, `tarla_5`).
- * Kutuyu dolduruyor; kısa şeritte ortası görünüyor. Canlı afiş kalıcı
+ * Kutuyu dolduruyor; kısa şeritte ortası görünüyor. Kalıcı
  * (`Sahne.kalici`): cihazda, uygulama yeniden açılınca çizilmeden geliyor;
- * küçük karo (hareketsiz) ucuz, her açılışta çiziliyor.
+ * küçük karo (hareketsiz) kendi grubunda.
  */
 export function BolgeCizimi({
   ad,
@@ -126,7 +126,7 @@ export function BolgeCizimi({
       kirp
       tilt={TILT_AFIS}
       hareket={hareket}
-      kalici={hareket ? 'afis' : undefined}
+      kalici={hareket ? 'afis' : 'karo'}
     />
   );
 }
@@ -237,7 +237,7 @@ export function YolCizimi({ yol, className }: { yol: string; className?: string 
  * Akın diyarının kapağı (16:9, kutuyu doldurur) ya da haritası (kare).
  * Kalıcı (`Sahne.kalici`): haritanın zemini ve son keskin yaması, canlı
  * kapağın resmi cihazda, uygulama yeniden açılınca çizilmeden geliyor
- * (kilitli diyarın küçük gri penceresi ucuz, her açılışta çiziliyor).
+ * (kilitli diyarın küçük gri penceresi de, kendi grubunda).
  */
 export function DiyarCizimi({
   ad,
@@ -269,7 +269,7 @@ export function DiyarCizimi({
       tilt={kadraj === 'kapak' ? TILT_AFIS : undefined}
       hareket={hareket}
       yama={gorunen}
-      kalici={kadraj === 'harita' ? 'sahne' : hareket ? 'afis' : undefined}
+      kalici={kadraj === 'harita' ? 'sahne' : hareket ? 'afis' : 'karo'}
     />
   );
 }

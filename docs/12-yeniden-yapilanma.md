@@ -514,6 +514,10 @@ yapı simgeleri de (yeniden açılışta 6,3 sn yerine 0,1 sn). Sonra
 **"birlikleri, düşmanları ve ekipmanı da kalıcı yap"**: figürler ve eşyalar
 da cihazda. Ölçerken sıra da düzeldi: küçük çizim büyüğün önüne geçiyor,
 ilk açılışta Ordu'nun figürleri 14 sn yerine 0,4 sn (docs/24 "Sıra ve işçi").
+Son olarak **"kilitli pencereyi ve küçük karoları da kalıcı yap"**: kilitli
+diyarın gri penceresi ve sayfa kasasındaki bölge karoları da cihazda
+(yeniden açılışta 8,7 sn yerine 0,2 sn); oyunda GPU'da çizilen her resim
+artık kalıcı (yalnız geliştirme galerisi değil).
 
 ## 4. Bina seviyesi ile araştırma neden çakışmıyor
 

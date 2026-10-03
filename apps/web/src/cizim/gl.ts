@@ -404,7 +404,7 @@ export function glCiz(
      * kendisi), yoksa çizilip bu grupta yazılıyor. Yerleşkenin, dünya ve
      * diyar haritalarının ana resmi (`sahne`); kapaklar ve afişler (`afis`);
      * ekran zeminleri (`zemin`); portreler (`portre`), yapılar (`bina`),
-     * birlik, düşman ve ekipman (`nesne`).
+     * birlik, düşman ve ekipman (`nesne`); küçük kapak ve afiş karosu (`karo`).
      */
     kalici?: KaliciGrup;
     /** Çizimin piksel sayısı (en × boy): sırada küçük önce. Yoksa en büyük sayılıyor. */

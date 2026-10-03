@@ -1116,7 +1116,7 @@ export const Sahne = memo(function Sahne({
    * telefonda saniyelerce süren canlı resmi —, diyar haritası). `afis`:
    * yalnız ana resim (diyar kapağı, bölge afişi). `zemin`: ekranların
    * manzara şeridi. `portre`, `bina`, `nesne`: portreler, yapılar ve
-   * birlik, düşman, ekipman.
+   * birlik, düşman, ekipman. `karo`: kapak ve afişin küçük hareketsiz hâli.
    */
   kalici?: KaliciGrup;
 }) {
