@@ -596,7 +596,20 @@ kaydırıyor.
   figürlerin önüne geçmesin); işçi de ilk istekte, okuma beklenmeden
   başlatılıyor. Ölçüldü: ekrandaki on bir çizim 0,85–0,95 sn'de görünüyor
   (taslaklar; ilki gölgelendirici derlemesiyle ~360 ms, ötekiler 12–35 ms),
-  1,67–1,79 sn'de hepsi keskin; yeniden açılış 0,3 sn, taslaksız.
+  1,67–1,79 sn'de hepsi keskin; yeniden açılış 0,3 sn, taslaksız. Sonra
+  oyunda da (oyuncu aynı isteği yineledi): `OnceKaba` artık taslak çizilen
+  en küçük çizim (piksel); oyunda 300×300 — yerleşke, diyar haritası,
+  kapak, afiş, ekran şeridi; figür ve simge zaten onlarca milisaniyede
+  geliyor, bulanık taslağı yalnız iş ve titreme olurdu. Galeri 0 veriyor.
+  Taslak gölgesiz (`CizimIstegi.taslak`): büyük sahnede maliyet üçgende,
+  küçültülen yerleşke taslağı bile 1 sn sürüyordu (gölge ve ana geçişte
+  bütün üçgenler); gölgesiz ~0,5 sn. Ölçüldü (ilk açılış, sıra boşken,
+  yazılım GPU'su; taslak → keskin): Şehir'in yerleşkesi 6,3–6,7 yerine
+  1,45 → 7,1–7,3 sn; Ordu'nun şeridi 7,7 yerine 0,5 → 7,9 sn; Akın'ın
+  kapağı 7,5–7,9 yerine 0,9 → 7,9–8,3 sn; diyar haritası 1,8–1,9 yerine
+  0,37 → 2,0–2,2 sn. Yeniden açılış değişmedi (kayıttan, taslaksız).
+  Başka büyük çizim sürerken (yerleşkenin canlı yaması, canlı resmi)
+  açılan ekran yine onu bekliyor: çalışan iş kesilmiyor.
   Ölçüldü (yazılım GPU'su): yeniden açılışta kapak 18,5 sn yerine 0,1 sn,
   afiş 12,4 sn yerine 0,1 sn; telefon boyunda kapak ~0,9 MB, afiş ~2,3 MB
   (grup en çok ~35 MB). `zemin`: en çok on iki — ardından "ekran

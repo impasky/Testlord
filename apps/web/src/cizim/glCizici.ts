@@ -1123,6 +1123,13 @@ export interface CizimIstegi {
    */
   yama?: boolean;
   /**
+   * Önce kaba taslak (`Sahne` `OnceKaba`): gölge geçişi yok. Büyük sahnede
+   * maliyet üçgende, pikselde değil — küçültülen taslak yine yerleşkenin
+   * bütün üçgenlerini iki kez (gölge ve ana geçiş) işliyordu; resim zaten
+   * bir saniye sonra keskiniyle değişiyor.
+   */
+  taslak?: boolean;
+  /**
    * Su dalgasının ölçüsü (dünya birimi / örnek pikseli). Verilmezse çıktının
    * kendi pikseli: dalgalar ekranda ~11 piksel. Yakınlık yaması ana resminkini
    * veriyor: daha yoğun çizilen yamada dalgalar küçülmesin, dikişte aynı boyda.
@@ -1329,7 +1336,7 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
   const goruntu = goruntuMatrisi(istek.kamera, istek.kutu, ag.derinlik);
   const lz = istek.isik ?? ISIK;
   const isik = isikKamerasi(ag, lz);
-  const golgeVar = ag.golge.length > 0;
+  const golgeVar = ag.golge.length > 0 && !istek.taslak;
   const silinecek: (() => void)[] = [];
 
   // 1) Gölge haritası: yalnız nesneler, iki yüzlü.

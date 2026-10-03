@@ -74,6 +74,8 @@ export interface GlIstek {
    * yamanın çözünürlüğünde oynuyor.
    */
   yama?: boolean;
+  /** Taslak (bkz. `CizimIstegi.taslak`, `Sahne` `OnceKaba`): gölgesiz. */
+  taslak?: boolean;
   /** Su dalgasının ölçüsü (bkz. `CizimIstegi.dalgaBirimi`): yamada ana resminki. */
   dalgaBirimi?: number;
   /** Bir CSS pikselinin çıktıdaki karşılığı: kenar çizgisinin kalınlığı. */

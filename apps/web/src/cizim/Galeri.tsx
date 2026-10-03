@@ -393,7 +393,7 @@ function GorununceCiz({ className, children }: { className: string; children: Re
 
 export function Galeri() {
   return (
-    <OnceKaba.Provider value>
+    <OnceKaba.Provider value={0}>
       <div className="min-h-screen bg-gece p-4 text-parsomen" data-cizim-galerisi="">
         {BOLUMLER.map((b) => (
           <section key={b.baslik} className="mb-6">

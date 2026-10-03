@@ -130,13 +130,16 @@ function hareketKisitli(): boolean {
 const kova = (x: number) => Math.pow(1.25, Math.ceil(Math.log(Math.max(x, 8)) / Math.log(1.25)));
 
 /**
- * Önce kaba, sonra keskin (geliştirme galerisi, `Galeri.tsx`). Oyuncu:
- * "önce kaba sonra keskin çizimi de ekle." Cihazda kaydı olmayan çizim önce
- * `KABA_KAT` kat küçük bir taslak (kalıcı değil; sırada küçük önce olduğu
- * için bütün taslaklar keskinlerden önce), sonra tam kalitede. Ekran
- * yazılım GPU'sunda da hemen doluyor, ilk anlarda bulanık.
+ * Önce kaba, sonra keskin. Oyuncu: "önce kaba sonra keskin çizimi de ekle"
+ * (önce galeriye, sonra oyuna). Cihazda kaydı olmayan çizim önce `KABA_KAT`
+ * kat küçük bir taslak (kalıcı değil, durağan; sırada küçük önce olduğu
+ * için taslaklar keskinlerden önce), sonra tam kalitede: ekran hemen
+ * doluyor, ilk anlarda bulanık. Değer, taslak çizilen en küçük çizim
+ * (piksel). Oyunda büyük sahneler (yerleşke, haritalar, kapak, afiş, ekran
+ * şeridi): figür ve simge zaten onlarca milisaniyede geliyor, bulanık
+ * taslağı yalnız iş ve titreme olurdu. Galeri hepsine istiyor (0).
  */
-export const OnceKaba = createContext(false);
+export const OnceKaba = createContext(300 * 300);
 const KABA_KAT = 3;
 
 /**
@@ -156,7 +159,8 @@ function useGpuResmi(
   hareket: boolean,
   onceDurgun: boolean,
   kalici: KaliciGrup | undefined,
-  kaba: boolean,
+  /** Taslak çizilen en küçük çizim (piksel; bkz. `OnceKaba`). */
+  kabaEnaz: number,
   ref: React.RefObject<SVGSVGElement | null>,
   basarisiz: () => void,
 ): string | null {
@@ -218,7 +222,7 @@ function useGpuResmi(
       const { uret: u, kamera: k } = guncel.current;
       // Tarifliyse model işçide kuruluyor (`tarif.ts`): buradan yalnız anahtar.
       const istek =
-        (h: boolean, e = en, b = boy) =>
+        (h: boolean, e = en, b = boy, taslak = false) =>
         () => ({
           ...(tarif ? { tarif: anahtar } : { model: modelAl(anahtar, u) }),
           kamera: k,
@@ -229,6 +233,7 @@ function useGpuResmi(
           tilt,
           sicak,
           hareket: h,
+          taslak,
         });
       // Taslak: durağan, küçük, kalıcı değil; keskin resim gelmişse çizilmiyor.
       const kabaIste = () => {
@@ -237,7 +242,7 @@ function useGpuResmi(
         const kb = Math.max(1, Math.round(boy / KABA_KAT));
         const is = `${durgunTaban}|${ke}x${kb}|kaba`;
         kabaIs = is;
-        void glCiz(is, istek(false, ke, kb), {
+        void glCiz(is, istek(false, ke, kb, true), {
           piksel: ke * kb,
           istenmiyor: () => iptal || tamGeldi,
         }).then((url) => {
@@ -246,7 +251,7 @@ function useGpuResmi(
           else setResim(url);
         });
       };
-      const kayitYok = kaba ? kabaIste : undefined;
+      const kayitYok = en * boy >= kabaEnaz ? kabaIste : undefined;
       // Sırada küçük çizim önce (`glCiz` `piksel`).
       const piksel = en * boy;
       const sakla = (t: string, url: string) => {
@@ -310,7 +315,7 @@ function useGpuResmi(
       ro.disconnect();
     };
     // `v` içerik olarak `taban`da; dizi kimliği her çizimde değişiyor.
-  }, [etkin, taban, durgunTaban, iki, tarif, kirp, tilt, sicak, hareket, kalici, kaba, ref]);
+  }, [etkin, taban, durgunTaban, iki, tarif, kirp, tilt, sicak, hareket, kalici, kabaEnaz, ref]);
 
   return etkin ? resim : null;
 }
@@ -1179,7 +1184,7 @@ export const Sahne = memo(function Sahne({
   kalici?: KaliciGrup;
 }) {
   const ref = useRef<SVGSVGElement>(null);
-  const kaba = useContext(OnceKaba);
+  const kabaEnaz = useContext(OnceKaba);
   const [gpuYok, setGpuYok] = useState(false);
   const gpu = glVarMi() && !gpuYok;
   const cokgensiz = gpu && tarif;
@@ -1220,7 +1225,7 @@ export const Sahne = memo(function Sahne({
     canli,
     onceDurgun,
     kalici,
-    kaba,
+    kabaEnaz,
     ref,
     () => setGpuYok(true),
   );
