@@ -487,7 +487,10 @@ kaydırıyor.
   aynı çözüm geçişiyle aynı ayarı alıyor; önbellek anahtarına giriyor.
   Öbür çizimler eskisi gibi.
 - Yakınlaştırma (`screens/yerleskeYakinligi.ts`, `Sahne.yama`; aynı kanca
-  Akın'ın diyar haritasında da, görünümü saklamadan: `kalici` kapalı): yerleşke
+  Akın'ın diyar haritasında da; görünüm yuvasıyla saklanıyor: `sehir`,
+  `diyar_<anahtar>` — her diyar kendi yakınlığında. Görünüm kaydırır
+  kaydırmaz bellekte, cihaza hareket durunca; harita kapanırken bekleyen
+  yazılıyor, yoksa kaydırıp hemen çıkanın son yeri kayboluyordu): yerleşke
   kıstırmayla, Ctrl + tekerlekle ve −/+ düğmeleriyle 3 kata kadar
   büyüyor, en uzakta kabı dolduruyor (kenarından öte boşluk yok).
   Gezinme yine tarayıcının kaydırması. Hareket sürerken React'e

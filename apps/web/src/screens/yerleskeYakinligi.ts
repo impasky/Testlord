@@ -29,8 +29,12 @@ export interface Gorunum {
   merkez: [number, number];
 }
 
-/** Cihazda saklanan görünümün anahtarı (haritanın merceği gibi). */
-export const GORUNUM_ANAHTARI = 'lordlar_sehir_gorunum';
+/**
+ * Cihazda saklanan görünümün anahtarı, yuvaya göre (haritanın merceği
+ * gibi): `sehir` → `lordlar_sehir_gorunum`, `diyar_bataklik` →
+ * `lordlar_diyar_bataklik_gorunum`.
+ */
+export const gorunumAnahtari = (yuva: string) => `lordlar_${yuva}_gorunum`;
 
 /**
  * Saklı görünümü okur; bozuk, eski biçimli ya da sınır dışı değer yok
@@ -51,31 +55,34 @@ export function gorunumOku(ham: string | null): Gorunum | null {
 }
 
 /**
- * Son görünüm: yakınlık ve ekranın ortasındaki nokta. Oyuncu: "yakınlığı
- * Şehir'e dönünce de korusun", sonra "kalıcı olarak da saklasın". Bir
- * yapıya girip dönen de, uygulamayı kapatıp açan da bıraktığı yerde ve
- * yakınlıkta. Cihazda saklanıyor; depo kapalıysa (gizli sekme) sekme açık
- * kaldıkça.
+ * Son görünüm, yuvaya göre: yakınlık ve ekranın ortasındaki nokta. Oyuncu:
+ * "yakınlığı Şehir'e dönünce de korusun", "kalıcı olarak da saklasın",
+ * sonra "diyar haritasının yakınlığını da hatırlasın". Bir yapıya ya da
+ * başka sekmeye gidip dönen de, uygulamayı kapatıp açan da bıraktığı yerde
+ * ve yakınlıkta; her diyar kendi görünümüyle. Cihazda saklanıyor; depo
+ * kapalıysa (gizli sekme) sekme açık kaldıkça.
  */
-let SON_GORUNUM: Gorunum | null | undefined;
+const SON_GORUNUM = new Map<string, Gorunum | null>();
 
-/** Saklı görünüm (yoksa null). İlk çağrıda cihazdan okunuyor. */
-export function sonGorunum(): Gorunum | null {
-  if (SON_GORUNUM === undefined) {
+/** Yuvanın saklı görünümü (yoksa null). İlk çağrıda cihazdan okunuyor. */
+export function sonGorunum(yuva: string): Gorunum | null {
+  if (!SON_GORUNUM.has(yuva)) {
+    let g: Gorunum | null = null;
     try {
-      SON_GORUNUM = gorunumOku(localStorage.getItem(GORUNUM_ANAHTARI));
+      g = gorunumOku(localStorage.getItem(gorunumAnahtari(yuva)));
     } catch {
-      SON_GORUNUM = null;
+      /* gizli sekme: yok */
     }
+    SON_GORUNUM.set(yuva, g);
   }
-  return SON_GORUNUM;
+  return SON_GORUNUM.get(yuva) ?? null;
 }
 
-function gorunumYaz(g: Gorunum) {
-  SON_GORUNUM = g;
+function gorunumYaz(yuva: string, g: Gorunum) {
+  SON_GORUNUM.set(yuva, g);
   try {
     localStorage.setItem(
-      GORUNUM_ANAHTARI,
+      gorunumAnahtari(yuva),
       JSON.stringify({ z: +g.z.toFixed(3), merkez: g.merkez.map((v) => +v.toFixed(4)) }),
     );
   } catch {
@@ -111,12 +118,12 @@ export function useYerleskeYakinligi(
   sahneBoy: number,
   etkin: boolean,
   /**
-   * Görünüm cihazda saklanıyor ve açılış oradan (Şehir'in yerleşkesi).
-   * Kapalıysa (diyar haritası) her açılışta ×1.
+   * Görünümün saklandığı yuva (`sehir`, `diyar_<anahtar>`): cihazda
+   * saklanıyor, açılış oradan. Yoksa (null) her açılışta ×1.
    */
-  kalici = true,
+  yuva: string | null = 'sehir',
 ) {
-  const [z, setZ] = useState(() => (kalici ? sonGorunum()?.z : undefined) ?? 1);
+  const [z, setZ] = useState(() => (yuva ? sonGorunum(yuva)?.z : undefined) ?? 1);
   const zRef = useRef(z);
   const [gorunen, setGorunen] = useState<[number, number, number, number] | null>(null);
   /** Kabı dolduran en uzak yakınlık (kap boyu değişince yeniden). */
@@ -124,7 +131,25 @@ export function useYerleskeYakinligi(
   const durma = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   /** Görünen bölgeyi hareket durunca bildir. */
+  /** Cihaza yazılmayı bekleyen görünüm var mı (harita kapanırken hemen yazılıyor). */
+  const yazilacak = useRef(false);
   const bildir = useCallback(() => {
+    // Görünüm bellekte HEMEN (kaydırır kaydırmaz diyar kapanırsa ya da sekme
+    // değişirse son yer kaybolmasın); cihaza ve React'e hareket durunca.
+    const k = kaydirici.current;
+    if (yuva && k && k.clientWidth >= 2) {
+      const o = gorunenOran(
+        k.scrollLeft,
+        k.scrollTop,
+        k.clientWidth,
+        k.clientHeight,
+        sahneEn,
+        sahneBoy,
+        zRef.current,
+      );
+      SON_GORUNUM.set(yuva, { z: zRef.current, merkez: [o[0] + o[2] / 2, o[1] + o[3] / 2] });
+      yazilacak.current = true;
+    }
     clearTimeout(durma.current);
     durma.current = setTimeout(() => {
       const k = kaydirici.current;
@@ -140,9 +165,10 @@ export function useYerleskeYakinligi(
       );
       setGorunen((g) => (g && g.every((x, i) => Math.abs(x - o[i]!) < 1e-3) ? g : o));
       setUzak(enUzak(k.clientWidth, k.clientHeight, sahneEn, sahneBoy));
-      if (kalici) gorunumYaz({ z: zRef.current, merkez: [o[0] + o[2] / 2, o[1] + o[3] / 2] });
+      if (yuva) gorunumYaz(yuva, { z: zRef.current, merkez: [o[0] + o[2] / 2, o[1] + o[3] / 2] });
+      yazilacak.current = false;
     }, DURMA_MS);
-  }, [kaydirici, sahneEn, sahneBoy, kalici]);
+  }, [kaydirici, sahneEn, sahneBoy, yuva]);
 
   /**
    * Yeni yakınlık: sahnenin (fx, fy) noktası (yakınlık 1'deki CSS pikseli)
@@ -197,13 +223,13 @@ export function useYerleskeYakinligi(
     (varsayilan: [number, number], dikey: number) => {
       const k = kaydirici.current;
       if (!k) return;
-      const sakli = kalici ? sonGorunum() : null;
+      const sakli = yuva ? sonGorunum(yuva) : null;
       const [x, y] = sakli?.merkez ?? varsayilan;
       const my = k.clientHeight * (sakli ? 0.5 : dikey);
       uygula(zRef.current, x * sahneEn, y * sahneBoy, k.clientWidth / 2, my);
       bitir();
     },
-    [kaydirici, uygula, bitir, sahneEn, sahneBoy, kalici],
+    [kaydirici, uygula, bitir, sahneEn, sahneBoy, yuva],
   );
 
   useEffect(() => {
@@ -282,8 +308,12 @@ export function useYerleskeYakinligi(
       k.removeEventListener('scroll', bildir);
       clearTimeout(tekerBitti);
       clearTimeout(durma.current);
+      // Bekleyen görünüm cihaza (bellekteki son hâli: öğe artık ölçülemeyebilir).
+      const g = yuva ? SON_GORUNUM.get(yuva) : null;
+      if (yazilacak.current && yuva && g) gorunumYaz(yuva, g);
+      yazilacak.current = false;
     };
-  }, [etkin, kaydirici, uygula, bitir, bildir]);
+  }, [etkin, kaydirici, uygula, bitir, bildir, yuva]);
 
   return {
     z,

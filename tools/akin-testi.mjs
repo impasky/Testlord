@@ -289,6 +289,28 @@ kontrol('Diyar açılınca on grup çıkıyor', grupSayisi === 10, `${grupSayisi
     yakin.z > once.z && Math.abs(yakin.kamp / once.kamp - yakin.z / once.z) < 0.05,
     `×${once.z} → ×${yakin.z}, kamp ${once.kamp.toFixed(0)} → ${yakin.kamp.toFixed(0)} px`,
   );
+  // Oyuncu: "diyar haritasının yakınlığını da hatırlasın." Diyar kapanıp
+  // açılınca ve uygulama yeniden açılınca aynı yakınlıkta.
+  await page.waitForTimeout(400); // hareket durunca saklanıyor
+  await page.locator('[data-akin-harita]').first().click();
+  await page.waitForTimeout(400);
+  await page.locator('[data-akin-harita]').first().click();
+  await page.waitForTimeout(800);
+  kontrol(
+    'Diyar kapanıp açılınca yakınlık korunuyor',
+    (await olcu()).z === yakin.z,
+    `×${yakin.z} → ×${(await olcu()).z}`,
+  );
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.locator('nav button:has-text("Akın")').click();
+  await page.waitForTimeout(1200);
+  await page.locator('[data-akin-harita]').first().click();
+  await page.waitForTimeout(800);
+  kontrol(
+    'Uygulama yeniden açılınca da korunuyor',
+    (await olcu()).z === yakin.z,
+    `×${yakin.z} → ×${(await olcu()).z}`,
+  );
   await page.getByRole('button', { name: 'Uzaklaştır' }).click();
   await page.waitForTimeout(400);
   kontrol(

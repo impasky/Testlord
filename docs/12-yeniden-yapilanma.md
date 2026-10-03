@@ -495,8 +495,11 @@ aynı kanca (`yerleskeYakinligi`): iki parmak, Ctrl + tekerlek, sağ altta
 −/+ (yolda kamp yok), 3 kata kadar. Kamplar ve iz yüzdeyle büyüyor,
 zeminin görünen bölgesi keskin çiziliyor (yama). Harita sayfanın içinde:
 ×1'de taşma yok, tek parmak sayfayı kaydırıyor; yakında haritayı geziyor,
-kenarına gelince sayfa devam ediyor. Görünüm saklanmıyor: diyar her
-açılışta bütünüyle (docs/24 "Yakınlaştırma").
+kenarına gelince sayfa devam ediyor (docs/24 "Yakınlaştırma"). Ardından
+**"diyar haritasının yakınlığını da hatırlasın"**: her diyarın yakınlığı ve
+bakılan yeri cihazda ayrı (`lordlar_diyar_<anahtar>_gorunum`); diyar
+kapanıp açılınca, sekme değişince ve uygulama yeniden açılınca bırakıldığı
+gibi.
 
 ## 4. Bina seviyesi ile araştırma neden çakışmıyor
 

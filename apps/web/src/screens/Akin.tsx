@@ -20,7 +20,7 @@
  *    (oyuncunun kararı, `akinYenilenmeSn`).
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
   ApiError,
   api,
@@ -445,7 +445,8 @@ function DiyarHaritasi({
    * boyda), zemin CSS ölçeğiyle; görünen bölgesi keskin çiziliyor (yama).
    * Harita sayfanın içinde: ×1'de taşma yok, tek parmak sayfayı kaydırıyor;
    * yakında haritayı geziyor, kenarına gelince sayfa devam ediyor.
-   * Görünüm saklanmıyor: diyar her açılışta bütünüyle.
+   * Görünüm her diyar için ayrı saklanıyor (oyuncu: "diyar haritasının
+   * yakınlığını da hatırlasın"): diyar bırakıldığı yakınlıkta ve yerde.
    */
   const [en, setEn] = useState(0);
   useEffect(() => {
@@ -460,7 +461,16 @@ function DiyarHaritasi({
   const kaydirici = useRef<HTMLDivElement>(null);
   const kap = useRef<HTMLDivElement>(null);
   const sahne = useRef<HTMLDivElement>(null);
-  const yakinlik = useYerleskeYakinligi(kaydirici, kap, sahne, en, en, en > 0, false);
+  // Her diyarın görünümü kendi yuvasında (cihazda): diyar bırakıldığı
+  // yakınlıkta ve yerde açılıyor.
+  const yakinlik = useYerleskeYakinligi(kaydirici, kap, sahne, en, en, en > 0, 'diyar_' + h.key);
+  const ortala = yakinlik.ortala;
+  const ortalandi = useRef(false);
+  useLayoutEffect(() => {
+    if (!en || ortalandi.current) return;
+    ortalandi.current = true;
+    ortala([0.5, 0.5], 0.5);
+  }, [en, ortala]);
   const z = yakinlik.z;
   const oran = yakinlik.gorunen;
   const [hx, hy, hw, hh] = HARITA_KUTUSU;
