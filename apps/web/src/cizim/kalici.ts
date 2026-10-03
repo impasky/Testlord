@@ -11,7 +11,9 @@
  * Sonra: "kapakları ve afişleri de kalıcı yap." Akın'ın diyar kapakları
  * ve bölge afişleri (giriş ekranının manzarası da) aynı yolla. Ardından
  * "ekran zeminlerini de kalıcı yap": ekranların tepesindeki manzara
- * şeritleri de.
+ * şeritleri de. Sonra "portreleri ve binaları da kalıcı yap": küçük ama
+ * çok sayıda (üst çubuktaki portre, Şehir'in yapı simgeleri) — her biri
+ * sırada büyük çizimlerin arkasında bekliyordu.
  *
  * Her kayıt bir YUVADA: ana resimde yuva çizimin kendi anahtarı; yamada
  * sahnenin tek yuvası (son yama, hangi bölge olduğu ekinde). Kayıtlar çizim
@@ -29,6 +31,9 @@
  *    aşama; panelin iki boyu): kapaklar ve on bir afiş sığıyor.
  *  - `zemin`: ekran zeminleri (on bir ekranın manzara şeridi): hepsi
  *    sığıyor, ekrandan ekrana geçen oyuncu hiçbirini yeniden çizmiyor.
+ *  - `portre`: portreler (yirmi iki; üst çubukta, sohbette, profilde
+ *    ayrı boylarda). Kayıt küçük, sınır geniş.
+ *  - `bina`: yapı çizimleri (otuz dört aşama; simge ve karo boyunda).
  *
  * Depo açılamazsa (gizli sekme, eski tarayıcı, test ortamı) her şey sessizce
  * boş: çizim eskisi gibi her açılışta.
@@ -50,8 +55,14 @@ const DEPO = 'resimler';
 const GRUP_ZAMAN = 'grup_zaman';
 
 /** Kaydın grubu (bkz. üstteki açıklama). */
-export type KaliciGrup = 'sahne' | 'afis' | 'zemin';
-export const SINIR: Record<KaliciGrup, number> = { sahne: 12, afis: 16, zemin: 12 };
+export type KaliciGrup = 'sahne' | 'afis' | 'zemin' | 'portre' | 'bina';
+export const SINIR: Record<KaliciGrup, number> = {
+  sahne: 12,
+  afis: 16,
+  zemin: 12,
+  portre: 40,
+  bina: 48,
+};
 
 export interface KaliciKayit {
   yuva: string;

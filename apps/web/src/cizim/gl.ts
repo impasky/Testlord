@@ -365,7 +365,7 @@ export function glCiz(
      * Kalıcı: önce cihazdaki depoya bakılıyor (`kalici.ts`, yuva anahtarın
      * kendisi), yoksa çizilip bu grupta yazılıyor. Yerleşkenin, dünya ve
      * diyar haritalarının ana resmi (`sahne`); kapaklar ve afişler (`afis`);
-     * ekran zeminleri (`zemin`).
+     * ekran zeminleri (`zemin`); portreler (`portre`), yapılar (`bina`).
      */
     kalici?: KaliciGrup;
   } = {},

@@ -525,8 +525,8 @@ kaydırıyor.
   yok sayılıyor (`gorunumOku`); depo kapalıysa (gizli sekme) sekme açık
   kaldıkça.
 - Kalıcı çizim (`kalici.ts`, `Sahne.kalici`; yerleşke, Akın'ın diyar
-  haritası ve kapakları, bölge afişleri, ekran zeminleri): oyuncu "keskin
-  görüntü de kalıcı olsun" dedi. Yerleşkenin durağan ve canlı
+  haritası ve kapakları, bölge afişleri, ekran zeminleri, portreler ve
+  yapılar): oyuncu "keskin görüntü de kalıcı olsun" dedi. Yerleşkenin durağan ve canlı
   resmi (su, ışık, çimen katmanı, canlı parçaların atlası, duman
   kaynaklarıyla) çizilince cihazda, IndexedDB'de saklanıyor; uygulama
   açılınca sıraya hiç girmeden oradan geliyor (`glCiz` `kalici`). Son yama
@@ -552,7 +552,11 @@ kaydırıyor.
   (grup en çok ~35 MB). `zemin`: en çok on iki — ardından "ekran
   zeminlerini de kalıcı yap": on bir ekranın manzara şeridi, hepsi
   sığıyor. Ölçüldü: Ordu'nun şeridi 14,3 sn yerine 0,0 sn, Akın'ınki
-  5,7 sn yerine 0,1 sn; şerit ~2 MB (grup en çok ~26 MB). Depo biçimi
+  5,7 sn yerine 0,1 sn; şerit ~2 MB (grup en çok ~26 MB). `portre` (en
+  çok kırk) ve `bina` (en çok kırk sekiz) — sonra "portreleri ve binaları
+  da kalıcı yap": küçük ama çok sayıda; üst çubuktaki portre ve Şehir'in
+  yapı simgeleri sırada büyük çizimlerin arkasında bekliyordu. Ölçüldü:
+  yeniden açılışta 6,3 sn yerine 0,1 sn; kayıt 2–5 KB. Depo biçimi
   değişince (sürüm 2: gruplar) eskisi
   atılıp yeniden kuruluyor — önbellek. Diyar haritası da aynı yolla
   (`DiyarCizimi`, harita kadrajı): ölçüldü, yeniden açılışta zemin 0,0 sn,
@@ -635,7 +639,7 @@ eskisi bırakılıyor. Zemin GPU'da değilse (düz üçgenler) yama yok.
 | `yerlesim.ts`                         | Şehir sayfasının tam ekran yerleşkesi, altı kademe (kamp → metropol): kasaba ve yapıları (sahnenin içinde), tarlalar, talim alanı                                              |
 | `cayir.ts`                            | Yerleşkenin zemini: köşe renkli çayır, ot tutamları, kır çiçekleri, yol kenarı ve tekerlek izi (yalnız GPU)                                                                    |
 | `kalabalik.ts`                        | Kasabanın insanları ve evleri: kilitli arsada köy evi (kampta çadır), ek evler, kuyu başında sohbet, yolda gidip gelen köylüler                                                |
-| `kalici.ts`                           | Kalıcı çizim deposu (IndexedDB): yerleşke, haritalar, kapaklar, afişler, ekran zeminleri cihazda; sürümlü, gruba göre sınırlı                                                  |
+| `kalici.ts`                           | Kalıcı çizim deposu (IndexedDB): büyük sahneler, kapak, afiş, ekran zemini, portre ve yapı cihazda; sürümlü, gruba göre sınırlı                                                |
 | `../components/harita/zeminYamasi.ts` | Dünya haritası zemininin yakınlık yaması: görünen bölge ekranın piksel yoğunluğunda                                                                                            |
 | `cevre.ts`                            | Yerleşkenin çevresi: dere ve köprü, su ve yel değirmeni, gölet, köy evleri, mera, meyve bahçesi, talim kampı, patikalar, serpinti, orman                                       |
 | `kir.ts`                              | Kır, maden, kale ve saray parçaları: ev, ambar, değirmen, köprü, maden ağzı, sur, kule, teras, köşk                                                                            |

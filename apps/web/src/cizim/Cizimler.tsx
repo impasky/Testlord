@@ -25,6 +25,8 @@ export const CIZILEN_BINALAR = new Set(BINA_ADLARI);
  */
 const TILT_AFIS = 0.18;
 const TILT_ZEMIN = 0.24;
+
+/** Yapı çizimi (simge, karo). Kalıcı (`Sahne.kalici`): cihazda, çizilmeden geliyor. */
 export function BinaCizimi({
   ad,
   boyut,
@@ -48,6 +50,7 @@ export function BinaCizimi({
       alt={alt}
       className={className}
       style={style}
+      kalici="bina"
     />
   );
 }
@@ -184,6 +187,8 @@ export function portreCizimiVar(ad: string): boolean {
 /**
  * Portre: generalin, lordun ya da düşman şefinin baş-omuz kadrajı.
  * Kutuyu dolduruyor (yuvarlak profil resmi, rehberin küçük karesi).
+ * Kalıcı (`Sahne.kalici`): cihazda, uygulama yeniden açılınca çizilmeden
+ * geliyor.
  */
 export function PortreCizimi({
   ad,
@@ -204,6 +209,7 @@ export function PortreCizimi({
       alt={alt}
       className={className}
       kirp
+      kalici="portre"
     />
   );
 }

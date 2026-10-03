@@ -1112,7 +1112,7 @@ export const Sahne = memo(function Sahne({
    * `sahne`: yakınlaşan büyük sahne, son yakınlık yaması da (yerleşke —
    * telefonda saniyelerce süren canlı resmi —, diyar haritası). `afis`:
    * yalnız ana resim (diyar kapağı, bölge afişi). `zemin`: ekranların
-   * manzara şeridi.
+   * manzara şeridi. `portre`, `bina`: portreler ve yapı çizimleri.
    */
   kalici?: KaliciGrup;
 }) {

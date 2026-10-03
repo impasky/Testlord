@@ -508,7 +508,9 @@ yap"**: diyar kapakları ve bölge afişleri de cihazda (yeniden açılışta
 kapak 18,5 sn yerine 0,1 sn, afiş 12,4 sn yerine 0,1 sn); kendi
 sınırlarında, yerleşkenin ve haritaların kaydını atmıyorlar. Sonra
 **"ekran zeminlerini de kalıcı yap"**: on bir ekranın manzara şeridi de
-cihazda, kendi grubunda (Ordu'nun şeridi 14,3 sn yerine hemen).
+cihazda, kendi grubunda (Ordu'nun şeridi 14,3 sn yerine hemen). Ardından
+**"portreleri ve binaları da kalıcı yap"**: üst çubuktaki portre ve Şehir'in
+yapı simgeleri de (yeniden açılışta 6,3 sn yerine 0,1 sn).
 
 ## 4. Bina seviyesi ile araştırma neden çakışmıyor
 
