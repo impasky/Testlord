@@ -40,6 +40,9 @@
  *  - `karo`: kapak ve afişin küçük hareketsiz hâli (kilitli diyarın gri
  *    penceresi, sayfa kasasındaki bölge karosu). Büyük afişlerin grubunda
  *    olsalar sınırı sayıyla doldurup onları atarlardı.
+ *  - `galeri`: geliştirme galerisi (`Galeri.tsx`, yalnız geliştirmede): her
+ *    çizim bir arada, yüz yetmişi aşkın; hepsi sığıyor. Oyunun gruplarına
+ *    yazsa onları bir açılışta doldurup oyunun kayıtlarını atardı.
  *
  * Depo açılamazsa (gizli sekme, eski tarayıcı, test ortamı) her şey sessizce
  * boş: çizim eskisi gibi her açılışta.
@@ -61,7 +64,8 @@ const DEPO = 'resimler';
 const GRUP_ZAMAN = 'grup_zaman';
 
 /** Kaydın grubu (bkz. üstteki açıklama). */
-export type KaliciGrup = 'sahne' | 'afis' | 'zemin' | 'portre' | 'bina' | 'nesne' | 'karo';
+export type KaliciGrup =
+  'sahne' | 'afis' | 'zemin' | 'portre' | 'bina' | 'nesne' | 'karo' | 'galeri';
 export const SINIR: Record<KaliciGrup, number> = {
   sahne: 12,
   afis: 16,
@@ -70,6 +74,7 @@ export const SINIR: Record<KaliciGrup, number> = {
   bina: 48,
   nesne: 128,
   karo: 32,
+  galeri: 200,
 };
 
 export interface KaliciKayit {

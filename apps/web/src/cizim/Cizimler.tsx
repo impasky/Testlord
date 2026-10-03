@@ -10,6 +10,7 @@ import { BOLGE_KUTUSU, BOLGE_TIPLERI } from './bolgeler';
 import { GENERAL_ADLARI, LORD_ADLARI, PORTRE_ADLARI, PORTRE_KUTUSU } from './kisiler';
 import { HARITA_KUTUSU, KAPAK_KUTUSU, type Kadraj } from './diyarlar';
 import { dunyaUcgenleri, type Ucgen } from './dunya';
+import type { KaliciGrup } from './kalici';
 import { ZEMIN_ADLARI, ZEMIN_KUTUSU } from './zeminler';
 import { Sahne } from './Sahne';
 import { tarifModeli } from './tarif';
@@ -108,12 +109,15 @@ export function BolgeCizimi({
   alt,
   className,
   hareket = true,
+  kalici = hareket ? 'afis' : 'karo',
 }: {
   ad: string;
   alt: string;
   className?: string;
   /** Canlı afiş (su, ışık, duman); küçük karoda kapalı. */
   hareket?: boolean;
+  /** Kalıcı kaydın grubu; verilmezse oyundaki yeri (galeri kendi grubunu veriyor). */
+  kalici?: KaliciGrup;
 }) {
   return (
     <Sahne
@@ -126,7 +130,7 @@ export function BolgeCizimi({
       kirp
       tilt={TILT_AFIS}
       hareket={hareket}
-      kalici={hareket ? 'afis' : 'karo'}
+      kalici={kalici}
     />
   );
 }
@@ -245,6 +249,7 @@ export function DiyarCizimi({
   className,
   hareket = kadraj === 'kapak',
   gorunen,
+  kalici = kadraj === 'harita' ? 'sahne' : hareket ? 'afis' : 'karo',
 }: {
   ad: string;
   kadraj: Kadraj;
@@ -253,6 +258,8 @@ export function DiyarCizimi({
   hareket?: boolean;
   /** Ekranda görünen bölge (harita biriminde): yakınlaşınca keskin çiziliyor (`Sahne.yama`). */
   gorunen?: [number, number, number, number];
+  /** Kalıcı kaydın grubu; verilmezse oyundaki yeri (galeri kendi grubunu veriyor). */
+  kalici?: KaliciGrup;
 }) {
   const anahtar = 'diyar:' + ad + ':' + kadraj;
   // Kararlı üretici: yakınlaşıp kaydırırken sahne boşuna yeniden çizilmesin.
@@ -269,7 +276,7 @@ export function DiyarCizimi({
       tilt={kadraj === 'kapak' ? TILT_AFIS : undefined}
       hareket={hareket}
       yama={gorunen}
-      kalici={kadraj === 'harita' ? 'sahne' : hareket ? 'afis' : 'karo'}
+      kalici={kalici}
     />
   );
 }
@@ -296,7 +303,16 @@ export const CIZILEN_ZEMINLER = new Set<string>(ZEMIN_ADLARI);
  * Kalıcı (`Sahne.kalici`): cihazda, uygulama yeniden açılınca çizilmeden
  * geliyor.
  */
-export function ZeminCizimi({ ad, className }: { ad: string; className?: string }) {
+export function ZeminCizimi({
+  ad,
+  className,
+  kalici = 'zemin',
+}: {
+  ad: string;
+  className?: string;
+  /** Kalıcı kaydın grubu; verilmezse oyundaki yeri (galeri kendi grubunu veriyor). */
+  kalici?: KaliciGrup;
+}) {
   return (
     <Sahne
       anahtar={'zemin:' + ad}
@@ -309,7 +325,7 @@ export function ZeminCizimi({ ad, className }: { ad: string; className?: string 
       tilt={TILT_ZEMIN}
       hareket
       ertele
-      kalici="zemin"
+      kalici={kalici}
     />
   );
 }

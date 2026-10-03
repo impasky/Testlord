@@ -4,6 +4,10 @@
  * Yalnız geliştirmede açılıyor (`#/cizim-galerisi`). Çizimler burada
  * yan yana görülüp ekran görüntüsüyle denetleniyor: aynı ışık, aynı
  * palet, aynı ölçek tutuyor mu?
+ *
+ * Kalıcı (`kalici.ts`): çizimler cihazda, kendi `galeri` grubunda — sayfa
+ * yeniden açılınca yüz yetmişi aşkın çizim yeniden çizilmiyor, oyunun
+ * kayıtları da atılmıyor.
  */
 import { BINA_ADLARI, BINA_KUTUSU, binaModeli } from './binalar';
 import {
@@ -142,6 +146,7 @@ const BOLUMLER: {
           alt={ad}
           className="h-full w-full"
           hareket
+          kalici="galeri"
         />
       ),
     })),
@@ -157,6 +162,7 @@ const BOLUMLER: {
           kutu={BINA_KUTUSU}
           alt={ad}
           boyut={170}
+          kalici="galeri"
         />
       ),
     })),
@@ -174,6 +180,7 @@ const BOLUMLER: {
           kutu={YERLESIM_KUTUSU}
           alt={k}
           className="h-full w-full"
+          kalici="galeri"
         />
       ),
     })),
@@ -191,7 +198,14 @@ const BOLUMLER: {
     ogeler: adlar.map((ad) => ({
       ad,
       cizim: (
-        <Sahne anahtar={baslik + ':' + ad} uret={() => uret(ad) ?? []} alt={ad} boyut={170} kare />
+        <Sahne
+          anahtar={baslik + ':' + ad}
+          uret={() => uret(ad) ?? []}
+          alt={ad}
+          boyut={170}
+          kare
+          kalici="galeri"
+        />
       ),
     })),
   })),
@@ -207,6 +221,7 @@ const BOLUMLER: {
           alt={ad}
           boyut={170}
           className="rounded-full bg-[radial-gradient(circle_at_50%_40%,#3a2b1b,#1a120c)]"
+          kalici="galeri"
         />
       ),
     })),
@@ -225,6 +240,7 @@ const BOLUMLER: {
             kutu={k === 'kapak' ? KAPAK_KUTUSU : HARITA_KUTUSU}
             alt={ad}
             className="h-full w-full"
+            kalici="galeri"
           />
         ),
       })),
@@ -243,6 +259,7 @@ const BOLUMLER: {
           kutu={BOLGE_KUTUSU}
           alt={ad}
           className="h-full w-full"
+          kalici="galeri"
         />
       ),
     })),
@@ -260,6 +277,7 @@ const BOLUMLER: {
           kutu={ZEMIN_KUTUSU}
           alt={ad}
           className="h-full w-full"
+          kalici="galeri"
         />
       ),
     })),
@@ -294,19 +312,21 @@ const BOLUMLER: {
       ...['koy_5', 'maden_5', 'kale_5'].map((ad) => ({
         ad: 'canli:' + ad,
         genis: true,
-        cizim: <BolgeCizimi ad={ad} alt={ad} className="h-full w-full" />,
+        cizim: <BolgeCizimi ad={ad} alt={ad} className="h-full w-full" kalici="galeri" />,
       })),
       ...['malikane', 'demirhane', 'akin'].map((ad) => ({
         ad: 'canli:' + ad,
         genis: true,
         oran: 'aspect-[60/23]',
-        cizim: <ZeminCizimi ad={ad} className="h-full w-full" />,
+        cizim: <ZeminCizimi ad={ad} className="h-full w-full" kalici="galeri" />,
       })),
       {
         ad: 'canli:kirik_sahil',
         genis: true,
         oran: 'aspect-video',
-        cizim: <DiyarCizimi ad="kirik_sahil" kadraj="kapak" className="h-full w-full" />,
+        cizim: (
+          <DiyarCizimi ad="kirik_sahil" kadraj="kapak" className="h-full w-full" kalici="galeri" />
+        ),
       },
     ],
   },
@@ -315,11 +335,13 @@ const BOLUMLER: {
     ogeler: [
       {
         ad: 'ev',
-        cizim: <Sahne anahtar="deneme-ev" uret={denemeEvi} alt="ev" boyut={180} />,
+        cizim: <Sahne anahtar="deneme-ev" uret={denemeEvi} alt="ev" boyut={180} kalici="galeri" />,
       },
       {
         ad: 'kule',
-        cizim: <Sahne anahtar="deneme-kule" uret={denemeKule} alt="kule" boyut={180} />,
+        cizim: (
+          <Sahne anahtar="deneme-kule" uret={denemeKule} alt="kule" boyut={180} kalici="galeri" />
+        ),
       },
     ],
   },

@@ -516,8 +516,10 @@ da cihazda. Ölçerken sıra da düzeldi: küçük çizim büyüğün önüne ge
 ilk açılışta Ordu'nun figürleri 14 sn yerine 0,4 sn (docs/24 "Sıra ve işçi").
 Son olarak **"kilitli pencereyi ve küçük karoları da kalıcı yap"**: kilitli
 diyarın gri penceresi ve sayfa kasasındaki bölge karoları da cihazda
-(yeniden açılışta 8,7 sn yerine 0,2 sn); oyunda GPU'da çizilen her resim
-artık kalıcı (yalnız geliştirme galerisi değil).
+(yeniden açılışta 8,7 sn yerine 0,2 sn). Ardından **"galeriyi de kalıcı
+yap"**: geliştirme galerisinin yüz yetmiş yedi çizimi de, kendi grubunda
+(yeniden açılışta 41,3 sn yerine 4,6 sn). GPU'da çizilen her resim artık
+kalıcı.
 
 ## 4. Bina seviyesi ile araştırma neden çakışmıyor
 
