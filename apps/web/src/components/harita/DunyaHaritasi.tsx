@@ -943,7 +943,7 @@ async function gpuZemini(k: HTMLDivElement) {
   const url = await glCiz(
     'dunya-zemini',
     () => dunyaZeminIstegi(DUNYA_KUTUSU, GPU_PIKSEL, GPU_PIKSEL),
-    { kalici: true },
+    { kalici: 'sahne' },
   );
   const resim = url ? new Image() : null;
   if (resim && url) {

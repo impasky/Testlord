@@ -503,7 +503,10 @@ gibi. Sonra **"hepsini yap"**: diyar haritası da Şehir ve dünya haritası
 kadar kalıcı — zemini ve son keskin yaması cihazda (yeniden açılışta
 zemin hemen, yakındaki keskin görüntü 0,1 sn; önce 15 sn çiziliyordu),
 Şehir'le diyar arasında gidip gelince ikisinin yaması da bellekte bekliyor
-(docs/24 "Kalıcı çizim").
+(docs/24 "Kalıcı çizim"). Ardından **"kapakları ve afişleri de kalıcı
+yap"**: diyar kapakları ve bölge afişleri de cihazda (yeniden açılışta
+kapak 18,5 sn yerine 0,1 sn, afiş 12,4 sn yerine 0,1 sn); kendi
+sınırlarında, yerleşkenin ve haritaların kaydını atmıyorlar.
 
 ## 4. Bina seviyesi ile araştırma neden çakışmıyor
 

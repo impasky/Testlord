@@ -22,7 +22,7 @@ import {
   type IsciCevabi,
   type IsciIstegi,
 } from './glCizici';
-import { kaliciOku, kaliciYaz } from './kalici';
+import { kaliciOku, kaliciYaz, type KaliciGrup } from './kalici';
 import { tarifModeli } from './tarif';
 import type { Kamera, Model, V3 } from './uc';
 
@@ -363,10 +363,10 @@ export function glCiz(
     istenmiyor?: () => boolean;
     /**
      * Kalıcı: önce cihazdaki depoya bakılıyor (`kalici.ts`, yuva anahtarın
-     * kendisi), yoksa çizilip yazılıyor. Yerleşkenin, dünya ve diyar
-     * haritalarının ana resmi.
+     * kendisi), yoksa çizilip bu grupta yazılıyor. Yerleşkenin, dünya ve
+     * diyar haritalarının ana resmi (`sahne`); kapaklar ve afişler (`afis`).
      */
-    kalici?: boolean;
+    kalici?: KaliciGrup;
   } = {},
 ): Promise<string | null> {
   // Aynı işi bekleyen her çağıran bir ilgi bırakıyor; iş ancak hepsi
@@ -380,7 +380,8 @@ export function glCiz(
   const ilgi = [ilgisi];
   ILGI.set(anahtar, ilgi);
   // Kalıcıysa çizilen sonuç cihaza da yazılıyor.
-  const yaz = secenek.kalici ? (s: CizimSonucu) => kaliciYaz(anahtar, anahtar, s) : undefined;
+  const grup = secenek.kalici;
+  const yaz = grup ? (s: CizimSonucu) => kaliciYaz(anahtar, anahtar, s, grup) : undefined;
   const sirala = (): Promise<string | null> => {
     if (secenek.sonra) {
       const p = new Promise<string | null>((coz) =>
@@ -436,12 +437,12 @@ export function glBirak(anahtar: string): void {
 
 /**
  * Çizilmiş bir resmi (ve katmanlarını) cihazdaki yuvaya yazar (yakınlık
- * yaması: sahne kapanınca ya da uygulama arka plana geçince). `ek` geri
- * yüklerken dönüyor.
+ * yaması: sahne kapanınca ya da uygulama arka plana geçince; büyük
+ * sahnelerin grubunda). `ek` geri yüklerken dönüyor.
  */
 export function glKaydet(yuva: string, anahtar: string, url: string, ek?: unknown): void {
   const s = SONUCLAR.get(url);
-  if (s) kaliciYaz(yuva, anahtar, s, ek);
+  if (s) kaliciYaz(yuva, anahtar, s, 'sahne', ek);
 }
 
 /**

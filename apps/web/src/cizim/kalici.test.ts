@@ -10,7 +10,7 @@ type Eklenti = {
 describe('kalıcı çizim deposu', () => {
   it('depo yoksa (test ortamı, gizli sekme) sessizce boş: okuma null, yazma hata vermiyor', async () => {
     expect(await kaliciOku('yok')).toBeNull();
-    expect(() => kaliciYaz('yok', 'yok', { resim: new Blob() })).not.toThrow();
+    expect(() => kaliciYaz('yok', 'yok', { resim: new Blob() }, 'afis')).not.toThrow();
   });
 
   it('çizim sürümü: yalnız kalici.ts içinde, içerik özetiyle değiştiriliyor', async () => {

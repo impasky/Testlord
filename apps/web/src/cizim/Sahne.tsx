@@ -32,6 +32,7 @@ import {
   ornekSayisi,
   type Katmanlar,
 } from './gl';
+import type { KaliciGrup } from './kalici';
 import { ciz, kutusu, type Cizilmis, type Kamera, type Model } from './uc';
 
 const ONBELLEK = new Map<string, Cizilmis>();
@@ -135,7 +136,7 @@ function useGpuResmi(
   sicak: number | undefined,
   hareket: boolean,
   onceDurgun: boolean,
-  kalici: boolean,
+  kalici: KaliciGrup | undefined,
   ref: React.RefObject<SVGSVGElement | null>,
   basarisiz: () => void,
 ): string | null {
@@ -1038,7 +1039,7 @@ export const Sahne = memo(function Sahne({
   hareket = false,
   tarif = false,
   yama,
-  kalici = false,
+  kalici,
 }: {
   anahtar: string;
   uret: () => Model;
@@ -1106,12 +1107,13 @@ export const Sahne = memo(function Sahne({
    */
   yama?: [number, number, number, number];
   /**
-   * Kalıcı (yalnız GPU): çizilen resim ve katmanları cihazda saklanıyor
-   * (`kalici.ts`), uygulama yeniden açılınca çizilmeden geliyor; son
-   * yakınlık yaması da. Yerleşke (telefonda saniyelerce süren canlı resmi)
-   * ve diyar haritası.
+   * Kalıcı (yalnız GPU): çizilen resim ve katmanları cihazda, bu grupta
+   * saklanıyor (`kalici.ts`), uygulama yeniden açılınca çizilmeden geliyor.
+   * `sahne`: yakınlaşan büyük sahne, son yakınlık yaması da (yerleşke —
+   * telefonda saniyelerce süren canlı resmi —, diyar haritası). `afis`:
+   * yalnız ana resim (diyar kapağı, bölge afişi).
    */
-  kalici?: boolean;
+  kalici?: KaliciGrup;
 }) {
   const ref = useRef<SVGSVGElement>(null);
   const [gpuYok, setGpuYok] = useState(false);
@@ -1161,8 +1163,9 @@ export const Sahne = memo(function Sahne({
   // Canlı resimde salınan parçalar atlasta (atlas kurulamadıysa resmin
   // içinde): yama da öyle olmalı.
   const parcalarKatmanda = canli && katman?.bayrak !== undefined;
+  const yamaKalici = kalici === 'sahne';
   const yamaResmi = useYama(
-    gpu && (yama !== undefined || kalici),
+    gpu && (yama !== undefined || yamaKalici),
     anahtar,
     cokgensiz,
     uret,
@@ -1174,7 +1177,7 @@ export const Sahne = memo(function Sahne({
     canli && katman === undefined,
     tilt,
     sicak,
-    kalici,
+    yamaKalici,
     ref,
   );
   const yamaUygun = yamaResmi && yamaResmi.hareketli === parcalarKatmanda ? yamaResmi : null;
