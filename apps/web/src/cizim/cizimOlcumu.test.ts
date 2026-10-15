@@ -72,7 +72,7 @@ describe('telefonda çizim ölçümü', () => {
     const birak = m.olcumuDinle(() => haber++);
     for (let i = 0; i < 305; i++) m.olcumKaydet(kayit({ toplam: i }));
     expect(m.olcumKayitlari()).toHaveLength(300);
-    expect(m.olcumKayitlari()[0].toplam).toBe(5);
+    expect(m.olcumKayitlari()[0]?.toplam).toBe(5);
     expect(haber).toBe(305);
     birak();
     m.olcumuTemizle();

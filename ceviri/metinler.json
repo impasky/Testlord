@@ -15961,7 +15961,7 @@
     "tr": "Bağlantı geçersiz ya da süresi dolmuş. Yeni bir tane iste.",
     "en": "The link is invalid or expired. Request a new one.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:323"
+      "apps/api/src/routes/auth.ts:343"
     ]
   },
   "t4c97b297": {
@@ -15969,8 +15969,8 @@
     "tr": "Bağlantı geçersiz ya da süresi dolmuş. Yeniden sıfırlama iste.",
     "en": "Link is invalid or expired. Request a reset again.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:468",
-      "apps/api/src/routes/auth.ts:489"
+      "apps/api/src/routes/auth.ts:488",
+      "apps/api/src/routes/auth.ts:509"
     ]
   },
   "tf9754a95": {
@@ -16337,7 +16337,8 @@
     "tr": "Bu e-posta zaten kayıtlı.",
     "en": "This email is already registered.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:207"
+      "apps/api/src/routes/auth.ts:207",
+      "apps/api/src/routes/auth.ts:284"
     ]
   },
   "t26a1c540": {
@@ -16450,7 +16451,8 @@
     "tr": "Bu lord adı alınmış.",
     "en": "This lord name is taken.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:210"
+      "apps/api/src/routes/auth.ts:214",
+      "apps/api/src/routes/auth.ts:282"
     ]
   },
   "tac7d4a4c": {
@@ -16557,7 +16559,7 @@
     "tr": "Bulunamadı.",
     "en": "Not found.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:299",
+      "apps/api/src/routes/auth.ts:319",
       "apps/api/src/routes/yonetici.ts:166",
       "apps/api/src/routes/yonetici.ts:267",
       "apps/api/src/routes/yonetici.ts:280",
@@ -16620,7 +16622,7 @@
     "tr": "Çok fazla hatalı deneme. {0} dakika sonra yeniden dene ya da parolanı sıfırla.",
     "en": "Too many failed attempts. Try again in {0} [minute|minutes] or reset your password.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:344"
+      "apps/api/src/routes/auth.ts:364"
     ]
   },
   "t4f5adcbf": {
@@ -16759,7 +16761,7 @@
     "tr": "E-posta veya parola hatalı.",
     "en": "Email or password incorrect.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:352"
+      "apps/api/src/routes/auth.ts:372"
     ]
   },
   "tc33fbc55": {
@@ -16768,7 +16770,7 @@
     "en": "Verify your email.",
     "nerede": [
       "apps/api/src/auth.ts:89",
-      "apps/api/src/routes/auth.ts:376"
+      "apps/api/src/routes/auth.ts:396"
     ]
   },
   "t61d3205f": {
@@ -16953,7 +16955,7 @@
     "en": "Your account is banned.",
     "nerede": [
       "apps/api/src/auth.ts:77",
-      "apps/api/src/routes/auth.ts:365"
+      "apps/api/src/routes/auth.ts:385"
     ]
   },
   "t9b52960a": {
@@ -17309,7 +17311,7 @@
     "tr": "Lordlar Çağı — parola sıfırlama",
     "en": "Age of Lords — password reset",
     "nerede": [
-      "apps/api/src/routes/auth.ts:444"
+      "apps/api/src/routes/auth.ts:464"
     ]
   },
   "t20970dae": {
@@ -17542,7 +17544,7 @@
     "tr": "Parolanı sıfırlamak için {0} dakika içinde bu bağlantıyı aç:\n\n{1}\n\nBu isteği sen yapmadıysan hiçbir şey yapmana gerek yok; parolan değişmedi.",
     "en": "To reset your password open this link within {0} [minute|minutes]:\n\n{1}\n\nIf you did not make this request you need to do nothing; your password has not changed.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:445"
+      "apps/api/src/routes/auth.ts:465"
     ]
   },
   "t2695daea": {
