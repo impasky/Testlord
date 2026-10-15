@@ -220,7 +220,7 @@
     "tr": "'de dövülür; ürettiğin parçayı buradan kuşanırsın.",
     "en": "is forged at; you equip the crafted piece here.",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:640"
+      "apps/web/src/screens/LordEkrani.tsx:647"
     ]
   },
   "tea6f95f4": {
@@ -899,7 +899,7 @@
     "tr": "{0} galibiyet · {1} yenilgi",
     "en": "{0} [victory|victories] · {1} [defeat|defeats]",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:610"
+      "apps/web/src/screens/LordEkrani.tsx:617"
     ]
   },
   "td06a4e7f": {
@@ -1135,7 +1135,7 @@
     "tr": "{0} PUAN",
     "en": "{0} POINTS",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:491"
+      "apps/web/src/screens/LordEkrani.tsx:498"
     ]
   },
   "t75469fdf": {
@@ -1143,7 +1143,7 @@
     "tr": "{0} puanı dağıt",
     "en": "Distribute {0} [point|points]",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:556"
+      "apps/web/src/screens/LordEkrani.tsx:563"
     ]
   },
   "t2a3b407a": {
@@ -1292,7 +1292,7 @@
     "tr": "{0} sonra {1} olacaksın.",
     "en": "You will become {1} after {0}.",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:324",
+      "apps/web/src/screens/LordEkrani.tsx:331",
       "apps/web/src/screens/Medeniyet.tsx:164"
     ]
   },
@@ -1328,7 +1328,7 @@
     "nerede": [
       "apps/web/src/components/IttifakIncele.tsx:71",
       "apps/web/src/components/Omurga.tsx:1011",
-      "apps/web/src/screens/LordEkrani.tsx:326"
+      "apps/web/src/screens/LordEkrani.tsx:333"
     ]
   },
   "tb1cd334c": {
@@ -1338,7 +1338,7 @@
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:224",
       "apps/web/src/screens/Demirhane.tsx:538",
-      "apps/web/src/screens/LordEkrani.tsx:674"
+      "apps/web/src/screens/LordEkrani.tsx:681"
     ]
   },
   "t9c4493d9": {
@@ -1507,7 +1507,7 @@
     "tr": "{0}. sıradasın",
     "en": "You rank #{0}",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:347"
+      "apps/web/src/screens/LordEkrani.tsx:354"
     ]
   },
   "tf952a101": {
@@ -1563,7 +1563,7 @@
     "tr": "{0}/{1} bölge",
     "en": "{0}/{1} regions",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:438",
+      "apps/web/src/screens/LordEkrani.tsx:445",
       "apps/web/src/screens/Malikane.tsx:124"
     ]
   },
@@ -1589,7 +1589,7 @@
     "tr": "{0}/{1} saldırı",
     "en": "{0}/{1} attacks",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:446"
+      "apps/web/src/screens/LordEkrani.tsx:453"
     ]
   },
   "tca03ab23": {
@@ -1742,7 +1742,7 @@
     "tr": "+%{0} yağma",
     "en": "+{0}% loot",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:353"
+      "apps/web/src/screens/LordEkrani.tsx:360"
     ]
   },
   "t98317199": {
@@ -2126,7 +2126,7 @@
     "tr": "Armanı kullan",
     "en": "Use your coat of arms",
     "nerede": [
-      "apps/web/src/components/ProfilResmiSecici.tsx:232"
+      "apps/web/src/components/ProfilResmiSecici.tsx:250"
     ]
   },
   "tce83d9f3": {
@@ -2747,7 +2747,7 @@
     "en": "Try again in a moment.",
     "nerede": [
       "apps/web/src/components/ProfilKarti.tsx:202",
-      "apps/web/src/components/ProfilResmiSecici.tsx:263"
+      "apps/web/src/components/ProfilResmiSecici.tsx:284"
     ]
   },
   "t6ba9eca2": {
@@ -3054,7 +3054,7 @@
     "tr": "Bu dosya açılamadı. JPEG, PNG ya da WebP bir resim seç.",
     "en": "Couldn't open this file. Choose a JPEG, PNG or WebP image.",
     "nerede": [
-      "apps/web/src/components/ProfilResmiSecici.tsx:140"
+      "apps/web/src/components/ProfilResmiSecici.tsx:158"
     ]
   },
   "t1abc5eae": {
@@ -3238,7 +3238,7 @@
     "tr": "Bugünlük yükleme hakkın bitti. Yarın yeniden deneyebilirsin.",
     "en": "You've used today's uploads. You can try again tomorrow.",
     "nerede": [
-      "apps/web/src/components/ProfilResmiSecici.tsx:176"
+      "apps/web/src/components/ProfilResmiSecici.tsx:194"
     ]
   },
   "t00c6c08c": {
@@ -3497,8 +3497,8 @@
     "en": "Blacksmith",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:400",
-      "apps/web/src/screens/LordEkrani.tsx:638",
-      "apps/web/src/screens/LordEkrani.tsx:655",
+      "apps/web/src/screens/LordEkrani.tsx:645",
+      "apps/web/src/screens/LordEkrani.tsx:662",
       "data/basarimlar.json:kumeler[3].ad",
       "data/binalar.json:binalar[3].ad",
       "packages/shared/src/types.ts:360"
@@ -3574,7 +3574,7 @@
     "tr": "Denetleniyor…",
     "en": "Checking…",
     "nerede": [
-      "apps/web/src/components/ProfilResmiSecici.tsx:153"
+      "apps/web/src/components/ProfilResmiSecici.tsx:171"
     ]
   },
   "tfb4d7db3": {
@@ -3772,7 +3772,7 @@
     "tr": "Diyarda {0} — ve en şöhretli lord sensin: sana saldıran {1} alır.",
     "en": "{0} in the realm — and you are the most renowned lord: whoever attacks you takes {1}.",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:343"
+      "apps/web/src/screens/LordEkrani.tsx:350"
     ]
   },
   "t6fc50793": {
@@ -3780,7 +3780,7 @@
     "tr": "Diyarda {0}.",
     "en": "{0} in the realm.",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:344"
+      "apps/web/src/screens/LordEkrani.tsx:351"
     ]
   },
   "t1c2cafbf": {
@@ -4235,7 +4235,7 @@
     "tr": "Ekipman gücü",
     "en": "Equipment power",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:581"
+      "apps/web/src/screens/LordEkrani.tsx:588"
     ]
   },
   "tf8c29599": {
@@ -4453,7 +4453,7 @@
     "tr": "En üst unvandasın:",
     "en": "You are at the highest title:",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:333"
+      "apps/web/src/screens/LordEkrani.tsx:340"
     ]
   },
   "ta47d707e": {
@@ -4572,7 +4572,7 @@
     "tr": "Erzak bitti, askerler saatte %5 firar ediyor. Tarla bölgesi al ya da ordunu küçült.",
     "en": "Supplies are out, troops desert at 5% per hour. Take a farm region or reduce your army.",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:402"
+      "apps/web/src/screens/LordEkrani.tsx:409"
     ]
   },
   "t709594fe": {
@@ -5154,7 +5154,7 @@
     "tr": "Görünüş",
     "en": "Appearance",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:475"
+      "apps/web/src/screens/LordEkrani.tsx:482"
     ]
   },
   "t52b39cca": {
@@ -5362,7 +5362,7 @@
     "tr": "HAZIR PORTRELER",
     "en": "READY-MADE PORTRAITS",
     "nerede": [
-      "apps/web/src/components/ProfilResmiSecici.tsx:224"
+      "apps/web/src/components/ProfilResmiSecici.tsx:242"
     ]
   },
   "t67fd13ec": {
@@ -5623,7 +5623,7 @@
     "tr": "Hesap",
     "en": "Account",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:719",
+      "apps/web/src/screens/LordEkrani.tsx:726",
       "packages/shared/src/types.ts:364"
     ]
   },
@@ -5680,7 +5680,7 @@
     "tr": "Hiçbir yuvan dolu değil. Ekipman",
     "en": "None of your slots are full. Equipment",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:632"
+      "apps/web/src/screens/LordEkrani.tsx:639"
     ]
   },
   "tdca95e4b": {
@@ -5818,7 +5818,7 @@
     "tr": "İncelemede",
     "en": "Under review",
     "nerede": [
-      "apps/web/src/components/ProfilResmiSecici.tsx:215"
+      "apps/web/src/components/ProfilResmiSecici.tsx:233"
     ]
   },
   "t4ce28749": {
@@ -5826,7 +5826,7 @@
     "tr": "İncelemedeki resim",
     "en": "Picture under review",
     "nerede": [
-      "apps/web/src/components/ProfilResmiSecici.tsx:206"
+      "apps/web/src/components/ProfilResmiSecici.tsx:224"
     ]
   },
   "t11e05dd1": {
@@ -6154,7 +6154,7 @@
     "tr": "İyileşmesine {0} kaldı. Bu sürede saldıramazsın.",
     "en": "{0} left until recovery. You cannot attack during this time.",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:415"
+      "apps/web/src/screens/LordEkrani.tsx:422"
     ]
   },
   "t217040e8": {
@@ -6318,7 +6318,7 @@
       "apps/web/src/components/KapiPaneli.tsx:89",
       "apps/web/src/components/Omurga.tsx:466",
       "apps/web/src/components/ProfilKarti.tsx:206",
-      "apps/web/src/components/ProfilResmiSecici.tsx:265",
+      "apps/web/src/components/ProfilResmiSecici.tsx:286",
       "apps/web/src/components/SavasRaporu.tsx:477",
       "apps/web/src/components/SavasRaporu.tsx:500",
       "apps/web/src/components/SavunmaDuzeni.tsx:69",
@@ -6497,7 +6497,7 @@
     "tr": "Kaydediliyor...",
     "en": "Saving...",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:556"
+      "apps/web/src/screens/LordEkrani.tsx:563"
     ]
   },
   "t6e20f3cf": {
@@ -6709,7 +6709,7 @@
     "tr": "KENDİ RESMİN",
     "en": "YOUR OWN PICTURE",
     "nerede": [
-      "apps/web/src/components/ProfilResmiSecici.tsx:124"
+      "apps/web/src/components/ProfilResmiSecici.tsx:142"
     ]
   },
   "t8cd1d240": {
@@ -7072,8 +7072,8 @@
     "tr": "Kuşam",
     "en": "Loadout",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:284",
-      "apps/web/src/screens/LordEkrani.tsx:474"
+      "apps/web/src/screens/LordEkrani.tsx:291",
+      "apps/web/src/screens/LordEkrani.tsx:481"
     ]
   },
   "taecbd481": {
@@ -7097,7 +7097,7 @@
     "tr": "Kuşanılan Ekipman",
     "en": "Equipped Gear",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:626"
+      "apps/web/src/screens/LordEkrani.tsx:633"
     ]
   },
   "t43eafc33": {
@@ -7238,8 +7238,8 @@
       "apps/api/src/routes/moderasyon.ts:83",
       "apps/api/src/routes/rankings.ts:265",
       "apps/api/src/routes/ticaret.ts:62",
-      "apps/api/src/services/lord.ts:390",
-      "apps/api/src/services/lord.ts:677",
+      "apps/api/src/services/lord.ts:392",
+      "apps/api/src/services/lord.ts:694",
       "apps/api/src/services/profil.ts:79",
       "apps/web/src/components/MobilKabuk.tsx:78",
       "apps/web/src/components/UygulamaKasasi.tsx:41"
@@ -7268,7 +7268,7 @@
     "tr": "Lord savaş katkısı",
     "en": "Lord battle contribution",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:582"
+      "apps/web/src/screens/LordEkrani.tsx:589"
     ]
   },
   "t10934225": {
@@ -7321,7 +7321,7 @@
     "tr": "Lordlara karşı",
     "en": "Against lords",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:610"
+      "apps/web/src/screens/LordEkrani.tsx:617"
     ]
   },
   "tc8f2ac29": {
@@ -7346,7 +7346,7 @@
     "en": "Your lord is wounded",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:696",
-      "apps/web/src/screens/LordEkrani.tsx:412"
+      "apps/web/src/screens/LordEkrani.tsx:419"
     ]
   },
   "tda0d5c1f": {
@@ -7653,7 +7653,7 @@
     "tr": "Nitelik",
     "en": "Attributes",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:473"
+      "apps/web/src/screens/LordEkrani.tsx:480"
     ]
   },
   "t9465a68b": {
@@ -7753,7 +7753,7 @@
     "tr": "Ordu donanımı",
     "en": "Army gear",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:592",
+      "apps/web/src/screens/LordEkrani.tsx:599",
       "apps/web/src/screens/Sehir.tsx:63"
     ]
   },
@@ -7795,7 +7795,7 @@
     "en": "Your army is starving",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:714",
-      "apps/web/src/screens/LordEkrani.tsx:400"
+      "apps/web/src/screens/LordEkrani.tsx:407"
     ]
   },
   "t287cf37e": {
@@ -8281,7 +8281,7 @@
     "tr": "parola, öğretici, çıkış",
     "en": "password, tutorial, logout",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:720"
+      "apps/web/src/screens/LordEkrani.tsx:727"
     ]
   },
   "t53526980": {
@@ -8428,8 +8428,8 @@
     "tr": "Profil resmi",
     "en": "Profile picture",
     "nerede": [
-      "apps/web/src/components/ProfilResmiSecici.tsx:113",
-      "apps/web/src/components/ProfilResmiSecici.tsx:118",
+      "apps/web/src/components/ProfilResmiSecici.tsx:131",
+      "apps/web/src/components/ProfilResmiSecici.tsx:136",
       "apps/web/src/screens/Kosullar.tsx:56",
       "apps/web/src/screens/Moderasyon.tsx:176"
     ]
@@ -8439,7 +8439,7 @@
     "tr": "Profil resmi seçiciyi kapat",
     "en": "Close profile picture picker",
     "nerede": [
-      "apps/web/src/components/ProfilResmiSecici.tsx:108"
+      "apps/web/src/components/ProfilResmiSecici.tsx:126"
     ]
   },
   "t1fc1a294": {
@@ -8455,7 +8455,7 @@
     "tr": "Profil resmini değiştir",
     "en": "Change profile picture",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:295"
+      "apps/web/src/screens/LordEkrani.tsx:302"
     ]
   },
   "tdf0ca734": {
@@ -8479,7 +8479,7 @@
     "tr": "Puan dağıtımı kalıcıdır. Liderlik ordunun büyüklüğünü ve general slotunu belirler.",
     "en": "Point distribution is permanent. Leadership determines army size and general slots.",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:568"
+      "apps/web/src/screens/LordEkrani.tsx:575"
     ]
   },
   "t8aa587ec": {
@@ -8536,7 +8536,7 @@
     "tr": "Resim seçilemedi.",
     "en": "Couldn't choose the picture.",
     "nerede": [
-      "apps/web/src/components/ProfilResmiSecici.tsx:79"
+      "apps/web/src/components/ProfilResmiSecici.tsx:97"
     ]
   },
   "tee4cabe8": {
@@ -8552,7 +8552,7 @@
     "tr": "Resim yükle",
     "en": "Upload a picture",
     "nerede": [
-      "apps/web/src/components/ProfilResmiSecici.tsx:169"
+      "apps/web/src/components/ProfilResmiSecici.tsx:187"
     ]
   },
   "tb408831c": {
@@ -8560,7 +8560,7 @@
     "tr": "Resim yüklenemedi.",
     "en": "Couldn't upload the picture.",
     "nerede": [
-      "apps/web/src/components/ProfilResmiSecici.tsx:95"
+      "apps/web/src/components/ProfilResmiSecici.tsx:113"
     ]
   },
   "tb19e8c32": {
@@ -8568,7 +8568,7 @@
     "tr": "Resimler otomatik denetimden geçer; +18, şiddet ve nefret içeren resimler reddedilir, kuralı çiğneyen hesap kısıtlanır. Bugün {0} yükleme hakkın var.",
     "en": "Pictures are checked automatically; 18+, violent and hateful pictures are rejected, and accounts that break the rules are restricted. You have {0} uploads left today.",
     "nerede": [
-      "apps/web/src/components/ProfilResmiSecici.tsx:175"
+      "apps/web/src/components/ProfilResmiSecici.tsx:193"
     ]
   },
   "t2f7bfb76": {
@@ -8585,7 +8585,7 @@
     "tr": "Rütbe",
     "en": "Rank",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:374"
+      "apps/web/src/screens/LordEkrani.tsx:381"
     ]
   },
   "t50ab46f6": {
@@ -8693,7 +8693,7 @@
     "tr": "Saldırı +%{0} · Savunma +%{1} · Can +%{2}",
     "en": "Attack +{0}% · Defense +{1}% · Health +{2}%",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:593"
+      "apps/web/src/screens/LordEkrani.tsx:600"
     ]
   },
   "t293989d5": {
@@ -8816,7 +8816,7 @@
     "tr": "Savaş derecen",
     "en": "Battle rating",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:611"
+      "apps/web/src/screens/LordEkrani.tsx:618"
     ]
   },
   "t951ee66f": {
@@ -8824,7 +8824,7 @@
     "tr": "Savaş Gücü",
     "en": "Battle Power",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:572"
+      "apps/web/src/screens/LordEkrani.tsx:579"
     ]
   },
   "tc54d661e": {
@@ -9189,7 +9189,7 @@
     "tr": "Sıfırla",
     "en": "Reset",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:563"
+      "apps/web/src/screens/LordEkrani.tsx:570"
     ]
   },
   "t481ea9d9": {
@@ -9337,7 +9337,7 @@
     "tr": "Sohbette ve profil kartında herkes bunu görür.",
     "en": "Everyone sees this in chat and on your profile card.",
     "nerede": [
-      "apps/web/src/components/ProfilResmiSecici.tsx:120"
+      "apps/web/src/components/ProfilResmiSecici.tsx:138"
     ]
   },
   "t66ed0f01": {
@@ -9558,7 +9558,7 @@
       "apps/web/src/components/ProfilKarti.tsx:111",
       "apps/web/src/screens/Ittifak.tsx:460",
       "apps/web/src/screens/Ittifak.tsx:76",
-      "apps/web/src/screens/LordEkrani.tsx:443",
+      "apps/web/src/screens/LordEkrani.tsx:450",
       "apps/web/src/screens/Siralama.tsx:138"
     ]
   },
@@ -9742,7 +9742,7 @@
     "tr": "Şöhret harcanmaz, biriktirilir.",
     "en": "Renown is not spent, it is accumulated.",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:363"
+      "apps/web/src/screens/LordEkrani.tsx:370"
     ]
   },
   "t73998c3c": {
@@ -9823,7 +9823,7 @@
       "apps/web/src/screens/Demirhane.tsx:463",
       "apps/web/src/screens/Demirhane.tsx:474",
       "apps/web/src/screens/Demirhane.tsx:541",
-      "apps/web/src/screens/LordEkrani.tsx:681"
+      "apps/web/src/screens/LordEkrani.tsx:688"
     ]
   },
   "t5170099f": {
@@ -9872,7 +9872,7 @@
     "tr": "T{0}{1}",
     "en": "",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:697"
+      "apps/web/src/screens/LordEkrani.tsx:704"
     ]
   },
   "t75bd333b": {
@@ -10316,7 +10316,7 @@
     "tr": "Unvan",
     "en": "Title",
     "nerede": [
-      "apps/web/src/screens/LordEkrani.tsx:313"
+      "apps/web/src/screens/LordEkrani.tsx:320"
     ]
   },
   "ta077015d": {
@@ -10438,7 +10438,7 @@
     "nerede": [
       "apps/web/src/components/IttifakDuyuru.tsx:83",
       "apps/web/src/components/ProfilKarti.tsx:153",
-      "apps/web/src/components/ProfilResmiSecici.tsx:156",
+      "apps/web/src/components/ProfilResmiSecici.tsx:174",
       "apps/web/src/components/SikayetSayfasi.tsx:114",
       "apps/web/src/components/SohbetMesajlari.tsx:152",
       "apps/web/src/screens/Arastirma.tsx:1059",
@@ -10998,7 +10998,7 @@
     "tr": "Yükle",
     "en": "Upload",
     "nerede": [
-      "apps/web/src/components/ProfilResmiSecici.tsx:153"
+      "apps/web/src/components/ProfilResmiSecici.tsx:171"
     ]
   },
   "t4ab0157c": {
@@ -11006,7 +11006,7 @@
     "tr": "Yüklediğin resmi kullan",
     "en": "Use the picture you uploaded",
     "nerede": [
-      "apps/web/src/components/ProfilResmiSecici.tsx:206"
+      "apps/web/src/components/ProfilResmiSecici.tsx:224"
     ]
   },
   "t6a104550": {
@@ -11014,7 +11014,7 @@
     "tr": "Yüklenecek resim",
     "en": "Picture to upload",
     "nerede": [
-      "apps/web/src/components/ProfilResmiSecici.tsx:148"
+      "apps/web/src/components/ProfilResmiSecici.tsx:166"
     ]
   },
   "tcea0cfb0": {
@@ -11775,7 +11775,7 @@
     "tr": "Barbar Şefi",
     "en": "Barbarian Chief",
     "nerede": [
-      "packages/shared/src/profil.ts:87"
+      "packages/shared/src/profil.ts:95"
     ]
   },
   "te76587c7": {
@@ -12169,7 +12169,7 @@
     "tr": "Bu resim uygunsuz içerik barındırıyor, kullanılamaz. Başka bir resim dene.",
     "en": "This image contains inappropriate content and can't be used. Try another image.",
     "nerede": [
-      "packages/shared/src/profil.ts:178"
+      "packages/shared/src/profil.ts:208"
     ]
   },
   "t803cfbd7": {
@@ -12330,7 +12330,7 @@
     "en": "Spy Leyla",
     "nerede": [
       "data/generals.json:generaller[7].ad",
-      "packages/shared/src/profil.ts:79"
+      "packages/shared/src/profil.ts:87"
     ]
   },
   "t91c31dd1": {
@@ -12443,7 +12443,7 @@
     "en": "Blacksmith Yusuf",
     "nerede": [
       "data/generals.json:generaller[0].ad",
-      "packages/shared/src/profil.ts:83"
+      "packages/shared/src/profil.ts:91"
     ]
   },
   "t899dea41": {
@@ -12854,7 +12854,7 @@
     "en": "Quartermaster Meryem",
     "nerede": [
       "data/generals.json:generaller[3].ad",
-      "packages/shared/src/profil.ts:84"
+      "packages/shared/src/profil.ts:92"
     ]
   },
   "tf5606051": {
@@ -12862,7 +12862,7 @@
     "tr": "Eşkıya Şefi",
     "en": "Brigand Chief",
     "nerede": [
-      "packages/shared/src/profil.ts:88"
+      "packages/shared/src/profil.ts:96"
     ]
   },
   "t884143c4": {
@@ -13184,7 +13184,7 @@
     "tr": "Haydut Şefi",
     "en": "Bandit Chief",
     "nerede": [
-      "packages/shared/src/profil.ts:89"
+      "packages/shared/src/profil.ts:97"
     ]
   },
   "tca150eae": {
@@ -13411,7 +13411,7 @@
     "en": "Steward Sinan",
     "nerede": [
       "data/generals.json:generaller[5].ad",
-      "packages/shared/src/profil.ts:85",
+      "packages/shared/src/profil.ts:93",
       "packages/shared/src/rehber.ts:38"
     ]
   },
@@ -13430,7 +13430,7 @@
     "en": "Castle Guard Sarya",
     "nerede": [
       "data/generals.json:generaller[11].ad",
-      "packages/shared/src/profil.ts:77"
+      "packages/shared/src/profil.ts:85"
     ]
   },
   "tcf47b520": {
@@ -13698,7 +13698,15 @@
     "en": "Commander Alparslan",
     "nerede": [
       "data/generals.json:generaller[10].ad",
-      "packages/shared/src/profil.ts:75"
+      "packages/shared/src/profil.ts:83"
+    ]
+  },
+  "tc62bef22": {
+    "grup": "motor",
+    "tr": "Kuşamım",
+    "en": "My outfit",
+    "nerede": [
+      "packages/shared/src/profil.ts:77"
     ]
   },
   "te4bd666c": {
@@ -13738,7 +13746,7 @@
     "tr": "Kuşatmacı Tarık",
     "en": "Tarık the Besieger",
     "nerede": [
-      "packages/shared/src/profil.ts:82"
+      "packages/shared/src/profil.ts:90"
     ]
   },
   "t36a62d98": {
@@ -13754,7 +13762,7 @@
     "tr": "Kültist Şefi",
     "en": "Cultist Chief",
     "nerede": [
-      "packages/shared/src/profil.ts:90"
+      "packages/shared/src/profil.ts:98"
     ]
   },
   "td45ae79b": {
@@ -13762,7 +13770,7 @@
     "tr": "Lejyoner Şefi",
     "en": "Legionary Chief",
     "nerede": [
-      "packages/shared/src/profil.ts:91"
+      "packages/shared/src/profil.ts:99"
     ]
   },
   "tfe631b3b": {
@@ -13778,7 +13786,7 @@
     "tr": "Lord I",
     "en": "Lord I",
     "nerede": [
-      "packages/shared/src/profil.ts:70"
+      "packages/shared/src/profil.ts:78"
     ]
   },
   "tf15bdda4": {
@@ -13786,7 +13794,7 @@
     "tr": "Lord II",
     "en": "Lord II",
     "nerede": [
-      "packages/shared/src/profil.ts:71"
+      "packages/shared/src/profil.ts:79"
     ]
   },
   "te09e5c17": {
@@ -13794,7 +13802,7 @@
     "tr": "Lord III",
     "en": "Lord III",
     "nerede": [
-      "packages/shared/src/profil.ts:72"
+      "packages/shared/src/profil.ts:80"
     ]
   },
   "tf85be8a9": {
@@ -13802,7 +13810,7 @@
     "tr": "Lord IV",
     "en": "Lord IV",
     "nerede": [
-      "packages/shared/src/profil.ts:73"
+      "packages/shared/src/profil.ts:81"
     ]
   },
   "tce3d381c": {
@@ -13826,7 +13834,7 @@
     "tr": "Lord V",
     "en": "Lord V",
     "nerede": [
-      "packages/shared/src/profil.ts:74"
+      "packages/shared/src/profil.ts:82"
     ]
   },
   "t8572460e": {
@@ -13940,7 +13948,7 @@
     "en": "Spearman Kadir",
     "nerede": [
       "data/generals.json:generaller[4].ad",
-      "packages/shared/src/profil.ts:81"
+      "packages/shared/src/profil.ts:89"
     ]
   },
   "tacecf5b8": {
@@ -14054,7 +14062,7 @@
     "en": "Master Archer Elif",
     "nerede": [
       "data/generals.json:generaller[1].ad",
-      "packages/shared/src/profil.ts:78"
+      "packages/shared/src/profil.ts:86"
     ]
   },
   "t167d22a9": {
@@ -14342,7 +14350,7 @@
     "tr": "Profil resmin güncellendi.",
     "en": "Your profile picture was updated.",
     "nerede": [
-      "packages/shared/src/profil.ts:182"
+      "packages/shared/src/profil.ts:212"
     ]
   },
   "t668bd75c": {
@@ -14382,8 +14390,8 @@
     "tr": "Resmin bir yöneticinin onayını bekliyor. Onaylanınca herkes görecek.",
     "en": "Your picture is waiting for a moderator's approval. Everyone will see it once approved.",
     "nerede": [
-      "packages/shared/src/profil.ts:171",
-      "packages/shared/src/profil.ts:186"
+      "packages/shared/src/profil.ts:201",
+      "packages/shared/src/profil.ts:216"
     ]
   },
   "tbf53c72b": {
@@ -14641,7 +14649,7 @@
     "tr": "Süvari Bora",
     "en": "Bora the Rider",
     "nerede": [
-      "packages/shared/src/profil.ts:80"
+      "packages/shared/src/profil.ts:88"
     ]
   },
   "t81af9968": {
@@ -14682,7 +14690,7 @@
     "en": "Knight Doruk",
     "nerede": [
       "data/generals.json:generaller[8].ad",
-      "packages/shared/src/profil.ts:76"
+      "packages/shared/src/profil.ts:84"
     ]
   },
   "tb048e209": {
@@ -14955,7 +14963,7 @@
     "en": "Preacher Bertan",
     "nerede": [
       "data/generals.json:generaller[9].ad",
-      "packages/shared/src/profil.ts:86"
+      "packages/shared/src/profil.ts:94"
     ]
   },
   "tf888e23a": {
@@ -15987,7 +15995,7 @@
     "tr": "Başkentin düştü",
     "en": "Your capital fell",
     "nerede": [
-      "apps/api/src/services/lord.ts:742"
+      "apps/api/src/services/lord.ts:759"
     ]
   },
   "ta3ff14a1": {
@@ -16119,7 +16127,7 @@
     "tr": "Bölge ele geçirildi",
     "en": "Region captured",
     "nerede": [
-      "apps/api/src/services/lord.ts:744"
+      "apps/api/src/services/lord.ts:761"
     ]
   },
   "tb08bcfd6": {
@@ -16192,7 +16200,7 @@
     "tr": "Böyle bir portre yok.",
     "en": "No such portrait.",
     "nerede": [
-      "apps/api/src/routes/profil.ts:89"
+      "apps/api/src/routes/profil.ts:91"
     ]
   },
   "t461a1fae": {
@@ -16485,7 +16493,7 @@
     "tr": "Bu resim henüz onaylanmadı.",
     "en": "This picture hasn't been approved yet.",
     "nerede": [
-      "apps/api/src/routes/profil.ts:98"
+      "apps/api/src/routes/profil.ts:100"
     ]
   },
   "t051f9702": {
@@ -16551,7 +16559,7 @@
     "tr": "Bugünlük yükleme hakkın bitti ({0}). Yarın yeniden dene.",
     "en": "You've used today's uploads ({0}). Try again tomorrow.",
     "nerede": [
-      "apps/api/src/routes/profil.ts:119"
+      "apps/api/src/routes/profil.ts:127"
     ]
   },
   "tea1021b9": {
@@ -16815,7 +16823,7 @@
     "tr": "Eşyan satıldı",
     "en": "Your item sold",
     "nerede": [
-      "apps/api/src/services/lord.ts:748"
+      "apps/api/src/services/lord.ts:765"
     ]
   },
   "tc3dc0d24": {
@@ -16999,7 +17007,7 @@
     "tr": "İşin bitti",
     "en": "You're done",
     "nerede": [
-      "apps/api/src/services/lord.ts:745"
+      "apps/api/src/services/lord.ts:762"
     ]
   },
   "t75da2234": {
@@ -17452,7 +17460,7 @@
     "tr": "Ordun eve döndü",
     "en": "Your army returned home",
     "nerede": [
-      "apps/api/src/services/lord.ts:743"
+      "apps/api/src/services/lord.ts:760"
     ]
   },
   "t69d0d616": {
@@ -17503,7 +17511,7 @@
     "tr": "Ön siparişin karşılandı",
     "en": "Your buy order was filled",
     "nerede": [
-      "apps/api/src/services/lord.ts:749"
+      "apps/api/src/services/lord.ts:766"
     ]
   },
   "t57668250": {
@@ -17569,7 +17577,7 @@
     "tr": "Pazar emrin eşleşmiyor",
     "en": "Your market order doesn't match",
     "nerede": [
-      "apps/api/src/services/lord.ts:750"
+      "apps/api/src/services/lord.ts:767"
     ]
   },
   "te41957df": {
@@ -17594,8 +17602,8 @@
     "en": "Picture",
     "nerede": [
       "apps/api/src/routes/moderasyon.ts:544",
-      "apps/api/src/routes/profil.ts:176",
-      "apps/api/src/routes/profil.ts:96"
+      "apps/api/src/routes/profil.ts:184",
+      "apps/api/src/routes/profil.ts:98"
     ]
   },
   "t07e84767": {
@@ -17676,7 +17684,7 @@
     "tr": "Savaş kaybedildi",
     "en": "Battle lost",
     "nerede": [
-      "apps/api/src/services/lord.ts:741"
+      "apps/api/src/services/lord.ts:758"
     ]
   },
   "t668e46ee": {
@@ -17828,7 +17836,7 @@
     "tr": "Toprağın saldırı altında",
     "en": "Your land is under attack",
     "nerede": [
-      "apps/api/src/services/lord.ts:740"
+      "apps/api/src/services/lord.ts:757"
     ]
   },
   "t20afa09d": {

@@ -10,7 +10,9 @@
  *     onay:     saklanıyor ve hemen profile konuyor
  */
 import {
+  KUSAM_PORTRESI,
   PROFIL_RESMI,
+  kusamKodu,
   hazirPortreVarMi,
   profilResmiCoz,
   profilResmiSutunu,
@@ -98,11 +100,17 @@ export async function profilRoutes(app: FastifyInstance): Promise<void> {
         throw new GameError('Bu resim henüz onaylanmadı.', 400, 'RESIM_ONAYSIZ');
       }
     }
-    await prisma.lord.update({
-      where: { id: lordId },
-      data: { profilResmi: profilResmiSutunu(secim) },
-    });
-    return { secili: secim };
+    // Kuşamım: sütun kuşam kodunu da taşıyor (`tickLord` sonra tazeliyor).
+    let sutun = profilResmiSutunu(secim);
+    if (secim.tur === 'hazir' && secim.key === KUSAM_PORTRESI) {
+      const giyilen = await prisma.item.findMany({
+        where: { lordId, equipped: true },
+        select: { slot: true, tier: true },
+      });
+      sutun = `hazir:${KUSAM_PORTRESI}:${kusamKodu(giyilen)}`;
+    }
+    await prisma.lord.update({ where: { id: lordId }, data: { profilResmi: sutun } });
+    return { secili: profilResmiCoz(sutun) };
   });
 
   app.post(

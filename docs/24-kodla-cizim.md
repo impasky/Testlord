@@ -769,6 +769,27 @@ zeminleri, savaş sahneleri, canlı sahneler (hareketiyle), dünya. Aynı ışı
 bakılıyor. Galeri üretim derlemesine girmiyor (`main.tsx`,
 `import.meta.env.DEV`).
 
+## Kuşam
+
+Lord figürü eskiden beş hazır aşamadan biriydi (`lord_1..5`, altı yuvanın
+ortalaması): T5 kılıç alan oyuncunun figüründe ortalama kıpırdamadıkça
+hiçbir şey değişmiyordu. Figür artık parçaları ayrı giyiyor: ad `giy-` ve
+altı hane, her biri bir yuvanın kademesi (silah, kalkan, zırh, miğfer, at,
+sancak; shared `kusamKodu`, boş yuva 0). Kılıç ve kalkan sağ ve sol elde,
+zırh gövdede (deri → zincir → mavi çelik → altın → kara plaka), miğfer
+başta (konik → kapalı → sorguçlu/boynuzlu), sancağın kademesi pelerinde.
+Renkler ekipman çizimleriyle aynı kademe dili (`KADEME`, birlikler.ts). At
+ayakta duran figürde görünmüyor; ortalamaya giriyor ve ortalama sakalı,
+iriliği ve Lord ekranındaki "Kuşam" rozetinin adını veriyor
+(`kusamSeviyesi`).
+
+**Kuşamım portresi.** Hazır portrelerin başında: lordun kendi kuşamıyla baş
+ve omuzları. Sütunda kuşam kodu da duruyor (`hazir:kusam:302010`) ki
+başkaları (sohbet, profil kartı) ekipmanı ayrıca sorgulamadan görsün;
+ekipman yalnız sahibinin eylemiyle değişiyor ve `tickLord` her eylemden
+sonra kodu tazeliyor (yazma yalnız kod değişince). Galeride "Kuşam" bölümü
+altı düz kademeyi ve karışık takımları gösteriyor.
+
 ## Telefonda ölçüm
 
 Oyuncu: "telefonda çizim ölçüm ekranı." Bu belgedeki bütün süreler

@@ -1,10 +1,23 @@
 import { describe, expect, it } from 'vitest';
-import { AKIN_HARITALARI, B, HAZIR_PORTRELER } from '@lordlar/shared';
+import {
+  AKIN_HARITALARI,
+  B,
+  HAZIR_PORTRELER,
+  KUSAM_PORTRESI,
+  kusamPortresi,
+} from '@lordlar/shared';
 import { BINA_ADLARI, BINA_KUTUSU, TABELA, binaModeli } from './binalar';
 import { diyarModeli } from './diyarlar';
 import { dunyaUcgenleri } from './dunya';
 import { ZEMIN_ADLARI, zeminModeli } from './zeminler';
-import { GENERAL_ADLARI, PORTRE_ADLARI, generalModeli, lordModeli, portreModeli } from './kisiler';
+import {
+  GENERAL_ADLARI,
+  PORTRE_ADLARI,
+  generalModeli,
+  giyimliLord,
+  lordModeli,
+  portreModeli,
+} from './kisiler';
 import {
   BIRLIK_ADLARI,
   DUSMAN_ADLARI,
@@ -486,11 +499,36 @@ describe('birlik, düşman, ekipman', () => {
 
 describe('generaller, lord, portreler', () => {
   it('seçilebilen her hazır portrenin çizimi var', () => {
-    for (const p of HAZIR_PORTRELER) expect(PORTRE_ADLARI).toContain(p.key);
+    for (const p of HAZIR_PORTRELER) {
+      // Kuşamım kendi kuşamıyla çiziliyor: sunucu `giy-<kod>`a çözüyor.
+      if (p.key === KUSAM_PORTRESI) expect(portreModeli(kusamPortresi('000000'))).not.toBeNull();
+      else expect(PORTRE_ADLARI).toContain(p.key);
+    }
   });
   it('lordun beş kuşam aşaması çiziliyor', () => {
     for (let i = 1; i <= 5; i++) expect(lordModeli(`lord_${i}`)).not.toBeNull();
     expect(lordModeli('lord_6')).toBeNull();
+  });
+  it('kuşam: her yuva kendi parçasını giyiyor (giy-<kod>)', () => {
+    expect(lordModeli('giy-000000')).not.toBeNull();
+    expect(lordModeli('giy-555555')).not.toBeNull();
+    expect(lordModeli('giy-600000')).toBeNull();
+    expect(lordModeli('giy-12345')).toBeNull();
+    const ciplak = giyimliLord('000000')!;
+    expect(ciplak.sag).toBeUndefined();
+    expect(ciplak.sol).toBeUndefined();
+    expect(ciplak.baslik).toBeUndefined();
+    // Yalnız kılıç: yalnız sağ el değişiyor.
+    const kilicli = giyimliLord('500000')!;
+    expect(kilicli.sag?.tip).toBe('kilic');
+    expect(kilicli.sag?.isik).toBeTruthy();
+    expect(kilicli.zirh).toEqual(ciplak.zirh);
+    // Zırh ve miğfer kademesi renkte okunuyor.
+    expect(giyimliLord('004000')!.zirh?.renk).not.toBe(giyimliLord('003000')!.zirh?.renk);
+    expect(giyimliLord('000400')!.baslik?.tip).toBe('sorguc');
+    // Çizim NaN'sız.
+    const c = ciz(lordModeli('giy-213304')!);
+    for (const p of c.cokgenler) expect(sayilar(p.n).every(Number.isFinite)).toBe(true);
   });
   it.each(PORTRE_ADLARI)('%s: NaN yok', (ad) => {
     const c = ciz(portreModeli(ad)!);

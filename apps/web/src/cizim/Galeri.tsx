@@ -81,6 +81,20 @@ import {
   sabanPoz,
 } from './canli';
 
+/** Galerideki kuşamlar: altı düz kademe ve karışık takımlar. */
+const KUSAM_ORNEKLERI = [
+  'giy-000000',
+  'giy-111111',
+  'giy-222222',
+  'giy-333333',
+  'giy-444444',
+  'giy-555555',
+  'giy-500000',
+  'giy-052003',
+  'giy-340254',
+  'giy-213304',
+];
+
 /** Galerideki savaşlar: raporların göreceği çeşitlilik. */
 const SAVAS_ORNEKLERI: SavasGirdisi[] = [
   {
@@ -254,6 +268,8 @@ const BOLUMLER: {
       ['Ekipman', 'ekipman', EKIPMAN_ADLARI, ekipmanModeli],
       ['Generaller', 'generaller', GENERAL_ADLARI, generalModeli],
       ['Lord', 'lord', LORD_ADLARI, lordModeli],
+      // Kuşam: her yuva kendi parçasını giyiyor (silah, kalkan, zırh, miğfer, at, sancak).
+      ['Kuşam', 'lord', KUSAM_ORNEKLERI, lordModeli],
     ] as const
   ).map(([baslik, tur, adlar, uret]) => ({
     baslik,

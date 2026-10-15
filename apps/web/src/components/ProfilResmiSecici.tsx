@@ -19,7 +19,13 @@
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
-import { HAZIR_PORTRELER, type ProfilResmi } from '@lordlar/shared';
+import {
+  HAZIR_PORTRELER,
+  KUSAM_PORTRESI,
+  kusamPortresi,
+  kusamPortresiMi,
+  type ProfilResmi,
+} from '@lordlar/shared';
 import { ApiError, api, type ArmaDto, type ResimYuklemeDto } from '../api/client';
 import { hisOnay, hisRet } from './hisGeriBildirimi';
 import { IkonFotograf } from './Ikonlar';
@@ -48,12 +54,24 @@ async function kucult(dosya: File): Promise<string> {
 
 function ayni(a: ProfilResmi, b: ProfilResmi): boolean {
   if (a.tur !== b.tur) return false;
+  // Kuşamım: sunucu kodu çözüp `giy-302010` dönüyor, seçimde `kusam`.
+  if (a.tur === 'hazir' && b.tur === 'hazir' && kusamPortresiMi(a.key) && kusamPortresiMi(b.key))
+    return true;
   if (a.tur === 'hazir' && b.tur === 'hazir') return a.key === b.key;
   if (a.tur === 'yuklenen' && b.tur === 'yuklenen') return a.id === b.id;
   return true;
 }
 
-export function ProfilResmiSecici({ arma, onKapat }: { arma: ArmaDto; onKapat: () => void }) {
+export function ProfilResmiSecici({
+  arma,
+  kusamKodu,
+  onKapat,
+}: {
+  arma: ArmaDto;
+  /** Lordun kuşam kodu: "Kuşamım" portresinin önizlemesi (shared `kusamKodu`). */
+  kusamKodu: string;
+  onKapat: () => void;
+}) {
   const qc = useQueryClient();
   const q = useQuery({ queryKey: ['profil-resmim'], queryFn: api.profilResmim });
   const dosyaGirdisi = useRef<HTMLInputElement | null>(null);
@@ -240,6 +258,9 @@ export function ProfilResmiSecici({ arma, onKapat }: { arma: ArmaDto; onKapat: (
           {HAZIR_PORTRELER.map((p) => {
             const r: ProfilResmi = { tur: 'hazir', key: p.key };
             const seciliMi = ayni(secili, r);
+            // Kuşamım önizlemede lordun bugünkü kuşamıyla çiziliyor.
+            const gorunen: ProfilResmi =
+              p.key === KUSAM_PORTRESI ? { tur: 'hazir', key: kusamPortresi(kusamKodu) } : r;
             return (
               <li key={p.key}>
                 <button
@@ -253,7 +274,7 @@ export function ProfilResmiSecici({ arma, onKapat }: { arma: ArmaDto; onKapat: (
                     seciliMi ? 'border-altin' : 'border-transparent'
                   }`}
                 >
-                  <ProfilGorseli resim={r} arma={arma} boyut={56} className="mx-auto" />
+                  <ProfilGorseli resim={gorunen} arma={arma} boyut={56} className="mx-auto" />
                 </button>
               </li>
             );

@@ -51,6 +51,8 @@ import {
   type UnitType,
   medeniyet as medeniyetTanimi,
   type MedeniyetBonusu,
+  KUSAM_PORTRESI,
+  kusamKodu,
   profilResmiCoz,
   type ProfilResmi,
 } from '@lordlar/shared';
@@ -466,6 +468,21 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
       upgradeLevel: i.upgradeLevel,
     }));
 
+  /*
+   * "Kuşamım" portresi kuşamla birlikte tazeleniyor (docs/24): sütun
+   * kodu taşıyor ki başkaları (sohbet, profil kartı) ekipmanı ayrıca
+   * sorgulamadan görsün. Ekipman yalnız sahibinin eylemiyle değişiyor
+   * ve her eylemden sonra burası koşuyor; yazma yalnız kod değişince.
+   */
+  let profilResmi = lord.profilResmi;
+  if (profilResmi?.startsWith(`hazir:${KUSAM_PORTRESI}`)) {
+    const taze = `hazir:${KUSAM_PORTRESI}:${kusamKodu(items)}`;
+    if (profilResmi !== taze) {
+      await client.lord.update({ where: { id: lordId }, data: { profilResmi: taze } });
+      profilResmi = taze;
+    }
+  }
+
   const homeArmy = collectUnitsAt(lord.units, 'home');
   // locationId İLE değil, yalnız türle topluyoruz: her tedavi kafilesi
   // kendi kuyruk kimliğini taşıyor ve bir lordun aynı anda birden çok
@@ -570,7 +587,7 @@ export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promi
     // Kimlik: arma ve unvan (docs/10). İkisi de saf görünüş, hiçbir sayıya
     // dokunmuyorlar. Unvan şöhretten TÜRETİLİYOR — yeni sayaç yok.
     arma: lordArmasi(lord),
-    resim: profilResmiCoz(lord.profilResmi),
+    resim: profilResmiCoz(profilResmi),
     unvan: unvan(fame, ownsThrone),
     elo: lord.elo,
     pvpWins: lord.pvpWins,

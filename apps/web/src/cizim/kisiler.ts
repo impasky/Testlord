@@ -7,7 +7,7 @@
  * (`PORTRE_KUTUSU`). Profil resmi, rehber kâhyası ve düşman şefinin yüzü
  * böylece tam boy hâliyle birebir aynı kişi.
  */
-import { dusmanModeli } from './birlikler';
+import { KADEME, dusmanModeli } from './birlikler';
 import { insan, type Insan } from './figur';
 import { P } from './renk';
 import { dondur, yansitici, type Model } from './uc';
@@ -242,10 +242,95 @@ export function generalModeli(ad: string): Model | null {
   return g ? bak(insan(g)) : null;
 }
 
+/*
+ * KUŞAM — lord giydiği parçalarla (docs/24 "Kuşam").
+ *
+ * Beş hazır aşama (`lord_1..5`) altı yuvanın ORTALAMASINI gösteriyordu:
+ * T5 kılıç alan oyuncunun figüründe hiçbir şey değişmiyordu, ortalama
+ * kıpırdamadıkça. Şimdi her yuva kendi parçasını çiziyor; renkler
+ * ekipman çizimleriyle aynı kademe dili (`KADEME`, birlikler.ts): 1 kaba
+ * demir · 2 parlak çelik · 3 mavi çelik, altın kenar · 4 altın · 5 kara ve
+ * içinden yanan. Ad `giy-` ve altı hane: silah, kalkan, zırh, miğfer, at,
+ * sancak (shared `kusamKodu`). At ayakta duran figürde görünmüyor; ama
+ * ortalamaya giriyor, ortalama da sakalı ve iriliği veriyor.
+ */
+const ZIRH_GOVDESI: { govde: string; kol?: string; zirh?: Insan['zirh']; omuz?: string }[] = [
+  { govde: '#7a6448' },
+  { govde: '#6b5a40', kol: '#6b5a40', zirh: { tip: 'deri', renk: '#6b4a2e' } },
+  { govde: '#8a8a82', kol: '#8a8a82', zirh: { tip: 'zincir', renk: '#8a8f94' } },
+  {
+    govde: KADEME[3]!.renk,
+    kol: KADEME[3]!.renk,
+    zirh: { tip: 'plaka', renk: KADEME[3]!.renk },
+    omuz: KADEME[3]!.kenar,
+  },
+  {
+    govde: KADEME[4]!.renk,
+    kol: KADEME[4]!.renk,
+    zirh: { tip: 'plaka', renk: KADEME[4]!.renk },
+    omuz: KADEME[4]!.kenar,
+  },
+  {
+    govde: KADEME[5]!.renk,
+    kol: KADEME[5]!.renk,
+    zirh: { tip: 'plaka', renk: KADEME[5]!.renk },
+    omuz: KADEME[5]!.kenar,
+  },
+];
+const MIGFER: (Insan['baslik'] | undefined)[] = [
+  undefined,
+  { tip: 'migfer', renk: KADEME[1]!.renk },
+  { tip: 'kapali', renk: KADEME[2]!.renk },
+  { tip: 'kapali', renk: KADEME[3]!.renk, ikinci: KADEME[3]!.kenar },
+  { tip: 'sorguc', renk: KADEME[4]!.renk, ikinci: P.kirmiziBez },
+  { tip: 'boynuz', renk: KADEME[5]!.renk, ikinci: KADEME[5]!.kenar },
+];
+/** Sancağın kademesi lordun pelerininde. */
+const PELERIN = [undefined, '#8a7a5a', P.kirmiziBez, '#2a3a52', '#6a1f1a', '#26232a'];
+
+export function giyimliLord(kod: string): Insan | null {
+  if (!/^[0-5]{6}$/.test(kod)) return null;
+  const [silah, kalkan, zirh, migfer, , sancak] = [...kod].map(Number) as number[];
+  const ortalama = Math.min(5, Math.max(1, Math.floor([...kod].reduce((a, c) => a + +c, 0) / 6)));
+  const g = ZIRH_GOVDESI[zirh!]!;
+  const ks = KADEME[silah!];
+  const kk = KADEME[kalkan!];
+  return {
+    ten: P.ten2,
+    sac: ortalama >= 3 ? P.sac1 : P.sac2,
+    sakal: ortalama >= 3 ? P.sac1 : undefined,
+    govde: g.govde,
+    kol: g.kol,
+    zirh: g.zirh,
+    omuz: g.omuz,
+    bacak: zirh! >= 4 ? '#8a7040' : zirh! === 3 ? '#3a4a5a' : '#5a4a38',
+    cizme: zirh! === 5 ? '#1d1a1a' : zirh! >= 3 ? '#2a2a2a' : P.deri,
+    kemer: zirh! <= 1 ? P.deri : undefined,
+    tabard: zirh! === 2 && sancak! >= 2 ? PELERIN[sancak!] : undefined,
+    pelerin: PELERIN[sancak!],
+    kurk: sancak! >= 4 ? '#d8d0c0' : undefined,
+    baslik: MIGFER[migfer!],
+    sag: ks ? { tip: 'kilic', renk: ks.renk, ikinci: ks.kenar, isik: ks.isik } : undefined,
+    sol: kk
+      ? { tip: 'kalkan', renk: kk.renk, ikinci: kk.susu ?? kk.kenar, isik: kk.isik }
+      : undefined,
+    iri: ortalama === 5 ? 1.08 : undefined,
+  };
+}
+
 export function lordModeli(ad: string): Model | null {
+  if (ad.startsWith('giy-')) {
+    const g = giyimliLord(ad.slice(4));
+    return g ? bak(insan(g)) : null;
+  }
   const i = Number(/^lord_(\d)$/.exec(ad)?.[1]) - 1;
   const l = LORD[i];
   return l ? bak(insan(l)) : null;
+}
+
+/** Kuşam figürü/portresi adı mı (`giy-302010`). */
+export function kusamAdiMi(ad: string): boolean {
+  return /^giy-[0-5]{6}$/.test(ad);
 }
 
 /** Portre: aynı figür, baş ve omuz kadrajında. */

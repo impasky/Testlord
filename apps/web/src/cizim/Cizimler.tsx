@@ -7,7 +7,7 @@ import { useCallback, type CSSProperties } from 'react';
 import { BINA_ADLARI, BINA_KUTUSU } from './binalar';
 import { BIRLIK_ADLARI, DUSMAN_ADLARI, EKIPMAN_ADLARI } from './birlikler';
 import { BOLGE_KUTUSU, BOLGE_TIPLERI } from './bolgeler';
-import { GENERAL_ADLARI, LORD_ADLARI, PORTRE_ADLARI, PORTRE_KUTUSU } from './kisiler';
+import { GENERAL_ADLARI, LORD_ADLARI, PORTRE_ADLARI, PORTRE_KUTUSU, kusamAdiMi } from './kisiler';
 import { HARITA_KUTUSU, KAPAK_KUTUSU, type Kadraj } from './diyarlar';
 import { dunyaUcgenleri, type Ucgen } from './dunya';
 import type { KaliciGrup } from './kalici';
@@ -149,6 +149,8 @@ const NESNE: Record<string, Set<string>> = {
 };
 
 export function nesneCizimiVar(tur: string, ad: string): boolean {
+  // Lord, kuşamıyla da çizilebiliyor (`giy-302010`, kisiler.ts).
+  if (tur === 'lord' && kusamAdiMi(ad)) return true;
   return NESNE[tur]?.has(ad) ?? false;
 }
 
@@ -190,7 +192,7 @@ export function NesneCizimi({
 const PORTRELER = new Set(PORTRE_ADLARI);
 
 export function portreCizimiVar(ad: string): boolean {
-  return PORTRELER.has(ad);
+  return PORTRELER.has(ad) || kusamAdiMi(ad);
 }
 
 /**
@@ -208,7 +210,7 @@ export function PortreCizimi({
   alt?: string;
   className?: string;
 }) {
-  if (!PORTRELER.has(ad)) return null;
+  if (!portreCizimiVar(ad)) return null;
   return (
     <Sahne
       anahtar={'portre:' + ad}

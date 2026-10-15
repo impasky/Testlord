@@ -101,6 +101,30 @@ kontrol(
   (await a.put('/profil/resim', { tur: 'hazir', key: 'yok' })).kod === 400,
 );
 
+/* Kuşamım: lordun kendi kuşamıyla portresi, kuşam değişince tazeleniyor. */
+{
+  const s = await c.put('/profil/resim', { tur: 'hazir', key: 'kusam' });
+  kontrol(
+    'Kuşamım seçiliyor ve koda çözülüyor',
+    s.kod === 200 && s.govde?.secili?.key === 'giy-000000',
+    s.govde?.secili?.key,
+  );
+  await c.post('/items/craft', { tier: 1, slot: 'silah' });
+  await c.post('/test/kuyruklari-bitir');
+  const esya = (await c.get('/items'))?.items?.find((i) => i.slot === 'silah');
+  if (esya) await c.post(`/items/${esya.id}/equip`, {});
+  const me = await c.me();
+  kontrol(
+    'Kuşanınca Kuşamım portresi tazeleniyor',
+    me.resim?.key === 'giy-100000',
+    `${me.resim?.key} (eşya ${esya ? 'var' : 'YOK'})`,
+  );
+  kontrol(
+    'Başkası da yeni kuşamı görüyor (profil kartı)',
+    (await d.get(`/lord/${c.id}/profil`))?.resim?.key === 'giy-100000',
+  );
+}
+
 // Hazır portreler dosya değil, koddan çizim (docs/24): her anahtarın
 // çizimi olduğunu `apps/web/src/cizim/cizim.test.ts` denetliyor
 // (HAZIR_PORTRELER ⊆ PORTRE_ADLARI).

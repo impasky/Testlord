@@ -14,6 +14,7 @@
  * tek yerde (balance.json → profil_resmi) dursun diye.
  */
 import { B } from './balance.js';
+import { KUSAM_KODU } from './equipment.js';
 
 const P = B.profil_resmi;
 const G = B.genel_sohbet;
@@ -67,6 +68,13 @@ export interface HazirPortre {
  * (apps/web/src/cizim/kisiler.ts). Denetim gerektirmiyor — hepsini biz çizdik.
  */
 export const HAZIR_PORTRELER: readonly HazirPortre[] = [
+  /*
+   * KUŞAMIM: lordun KENDİ kuşamıyla portresi (docs/24 "Kuşam"). Seçilince
+   * sütunda kuşam kodu da duruyor (`hazir:kusam:302010`) ve sahibi oyunu
+   * her açtığında tazeleniyor (`/me`); başkaları onu sohbette giydiği
+   * parçalarla görüyor.
+   */
+  { key: 'kusam', ad: 'Kuşamım' },
   { key: 'lord_1', ad: 'Lord I' },
   { key: 'lord_2', ad: 'Lord II' },
   { key: 'lord_3', ad: 'Lord III' },
@@ -95,6 +103,19 @@ export function hazirPortreVarMi(key: string): boolean {
   return HAZIR_PORTRELER.some((p) => p.key === key);
 }
 
+/** "Kuşamım" portresinin seçim anahtarı. */
+export const KUSAM_PORTRESI = 'kusam';
+
+/** Kuşam kodundan çizilecek portrenin adı (`giy-302010`). */
+export function kusamPortresi(kod: string): string {
+  return `giy-${kod}`;
+}
+
+/** Bu portre adı bir kuşam portresi mi (seçicide "Kuşamım" seçili görünsün). */
+export function kusamPortresiMi(key: string): boolean {
+  return /^giy-[0-5]{6}$/.test(key) || key === KUSAM_PORTRESI;
+}
+
 /**
  * Profil resmi — her ekranda aynı biçim.
  *
@@ -116,12 +137,21 @@ export function profilResmiCoz(sutun: string | null | undefined): ProfilResmi {
   const i = sutun.indexOf(':');
   const tur = sutun.slice(0, i);
   const deger = sutun.slice(i + 1);
+  // Kuşamım: çizilecek portre kodun kendisi (`giy-302010`, cizim/kisiler.ts).
+  if (tur === 'hazir' && (deger === KUSAM_PORTRESI || deger.startsWith(KUSAM_PORTRESI + ':'))) {
+    const kod = deger.slice(KUSAM_PORTRESI.length + 1);
+    return { tur: 'hazir', key: kusamPortresi(KUSAM_KODU.test(kod) ? kod : '000000') };
+  }
   if (tur === 'hazir' && hazirPortreVarMi(deger)) return { tur: 'hazir', key: deger };
   if (tur === 'yuklenen' && deger.length > 0) return { tur: 'yuklenen', id: deger };
   return { tur: 'arma' };
 }
 
 export function profilResmiSutunu(r: ProfilResmi): string | null {
+  if (r.tur === 'hazir' && kusamPortresiMi(r.key)) {
+    const kod = r.key.slice('giy-'.length);
+    return `hazir:${KUSAM_PORTRESI}${KUSAM_KODU.test(kod) ? ':' + kod : ''}`;
+  }
   if (r.tur === 'hazir') return `hazir:${r.key}`;
   if (r.tur === 'yuklenen') return `yuklenen:${r.id}`;
   return null;

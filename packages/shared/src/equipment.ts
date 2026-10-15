@@ -101,10 +101,10 @@ export function sellValue(item: EquippedItem): number {
  * yeniden yazılsa aynı tuzağa düşülür — aşağıdaki "boş yuvaları da say"
  * kuralı bariz değil.
  *
- * Lord figürü altı yuvayı ayrı ayrı gösteremiyor — bunun için her parçanın
- * aynı gövdeye kayıtlı çizilmiş olması gerekirdi (bkz. docs/08 İ13). Onun
- * yerine tek bir sayı: lordun ne kadar güçlü GÖRÜNDÜĞÜ. Beş görsel, beş
- * seviye.
+ * Figür resimken altı yuvayı ayrı ayrı gösteremiyordu (docs/08 İ13); o
+ * yüzden tek bir sayıydı: lordun ne kadar güçlü GÖRÜNDÜĞÜ. Figür artık
+ * parçaları ayrı giyiyor (`kusamKodu`, aşağıda); bu sayı rozetin adı ve
+ * figürün genel görünüşü (sakal, irilik) için kalıyor.
  *
  * Ölçü, kuşanılan parçaların tier ORTALAMASI değil, boş yuvaları da sayan
  * ortalaması. Sebep: tek bir T5 kılıcı olan ama başka hiçbir şeyi olmayan
@@ -120,3 +120,24 @@ export function kusamSeviyesi(items: Pick<EquippedItem, 'tier'>[]): number {
   const toplam = items.reduce((s, i) => s + i.tier, 0);
   return Math.min(5, Math.max(1, Math.floor(toplam / yuvaSayisi)));
 }
+
+/**
+ * KUŞAM KODU — figür altı yuvayı artık AYRI AYRI giyiyor (docs/24).
+ *
+ * Yukarıdaki not "lord figürü altı yuvayı ayrı ayrı gösteremiyor" diyordu:
+ * figürler resimdi ve her parçanın aynı gövdeye kayıtlı çizilmesi
+ * gerekirdi. Figür artık koddan çiziliyor ve parçalar aynı gövdenin
+ * üstüne kuruluyor; kod da hangi parçanın giyileceğini söylüyor: altı
+ * yuvanın kademesi, `EQUIP_SLOTS` sırasıyla ("302010" = T3 kılıç, kalkan
+ * yok, T2 zırh…). Boş yuva 0. `kusamSeviyesi` kalıyor: rozetin adı ve
+ * figürün genel görünüşü (sakal, irilik) hâlâ ondan.
+ */
+export function kusamKodu(items: readonly { slot: string; tier: number }[]): string {
+  return EQUIP_SLOTS.map((s) => {
+    const t = items.find((i) => i.slot === s)?.tier ?? 0;
+    return String(Math.max(0, Math.min(5, Math.floor(t))));
+  }).join('');
+}
+
+/** Geçerli bir kuşam kodu: altı hane, her biri 0–5. */
+export const KUSAM_KODU = /^[0-5]{6}$/;

@@ -260,14 +260,15 @@ const DUSMAN: Record<string, () => Model> = {
 
 /* ── Ekipman ───────────────────────────────────────────────────────── */
 
-interface Kademe {
+export interface Kademe {
   renk: string;
   kenar: string;
   susu?: string;
   isik?: string;
 }
 
-const KADEME: Record<number, Kademe> = {
+/** Kademe dili (yukarıdaki açıklama): lordun giydiği parçalar da bundan (kisiler.ts). */
+export const KADEME: Record<number, Kademe> = {
   1: { renk: '#77736b', kenar: P.koyuTahta },
   2: { renk: '#a8b0b8', kenar: '#7d858d' },
   3: { renk: '#4f6f9a', kenar: P.altin, susu: '#d9ccab' },

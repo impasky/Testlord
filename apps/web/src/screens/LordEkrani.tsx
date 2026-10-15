@@ -41,7 +41,7 @@ import {
 } from '../components/ui';
 import { Cumle } from '../components/Cumle';
 import { Gorsel } from '../components/Gorsel';
-import { kusamSeviyesi } from '@lordlar/shared';
+import { kusamKodu, kusamSeviyesi } from '@lordlar/shared';
 import { OrduSahnesi } from '../components/OrduSahnesi';
 import { Arma } from '../components/Arma';
 import { ArmaSecici } from '../components/ArmaSecici';
@@ -217,10 +217,11 @@ export function LordEkrani({
 
   const kusanilan = new Map(lord.equippedItems?.map((i) => [i.slot, i]) ?? []);
   /*
-   * Lordun figürü KUŞAMDAN geliyor: altı yuvanın tier ortalaması
-   * (`kusamSeviyesi`). Yuva boşsa 0 sayılıyor, yani hiçbir şey kuşanmamış
-   * lord 1. hâlde — paçavralar içinde. Bu, ekipman yükseltmenin ekrandaki
-   * tek görünür karşılığı.
+   * Lordun figürü KUŞAMDAN geliyor ve artık her yuvayı ayrı giyiyor
+   * (`kusamKodu`, docs/24 "Kuşam"): T5 kılıç alan oyuncu kılıcın
+   * figürde kararıp yandığını görüyor, ortalamanın kıpırdamasını
+   * beklemeden. Rozetin adı hâlâ altı yuvanın ortalamasından
+   * (`kusamSeviyesi`; boş yuva 0 sayılıyor).
    */
   const kusam = kusamSeviyesi(lord.equippedItems ?? []);
   const kusamAdi = KUSAM_ADI[kusam - 1] ?? KUSAM_ADI[0]!;
@@ -237,7 +238,13 @@ export function LordEkrani({
 
   return (
     <div className="space-y-4">
-      {resimSecici && <ProfilResmiSecici arma={lord.arma} onKapat={() => setResimSecici(false)} />}
+      {resimSecici && (
+        <ProfilResmiSecici
+          arma={lord.arma}
+          kusamKodu={kusamKodu(lord.equippedItems ?? [])}
+          onKapat={() => setResimSecici(false)}
+        />
+      )}
       {/* ---- Lordun kendisi ----
           Denetimin en büyük bulgusu buydu: oyunun adı "Lordlar Çağı" ve
           ana sayfada lord YOKTU. Ekranda tek bir görsel bile
@@ -260,7 +267,7 @@ export function LordEkrani({
           <div className="relative flex h-[190px] items-end justify-center bg-[radial-gradient(ellipse_at_50%_85%,#3a2b1b_0%,#241a12_55%,#1a120c_100%)]">
             <Gorsel
               tur="lord"
-              ad={`lord_${kusam}`}
+              ad={`giy-${kusamKodu(lord.equippedItems ?? [])}`}
               alt={`${lord.name} — ${kusamAdi}`}
               boyut={190}
               className="h-full w-auto object-contain"
