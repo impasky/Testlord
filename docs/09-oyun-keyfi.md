@@ -435,7 +435,7 @@ yenilemek, diğerleri hiç açılmamış kategoriler. Yani "eksik görsel" deği
 | G3  | Birim illüstrasyonlarını yenile            | 5 görsel VAR ama diğer setten farklı üslupta; değiştirme işi, eksik değil          |
 | G4  | ~~Savaş sahnesi~~ **tamamlandı**           | Raporun tepesinde, raporun verisinden koddan çiziliyor (`cizim/savas.ts`, docs/24) |
 | G5  | Sancak arması (yatay kazanç)               | 10–20 arma parçası; oyuncunun kendi sancağı                                        |
-| G6  | Bölge tipi çeşitliliği                     | Aynı tipin 2–3 varyantı; harita tekrar etmesin                                     |
+| G6  | ~~Bölge tipi çeşitliliği~~ **tamamlandı**  | Her türün üç görünüşü (özgün, ayna, yeni tohum); bölge kimliğinden (docs/24)       |
 
 ### 4.3 Daha sonra (büyük sistemler)
 

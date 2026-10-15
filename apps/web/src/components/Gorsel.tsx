@@ -9,6 +9,7 @@
  * var.
  */
 import { NesneCizimi, nesneCizimiVar } from '../cizim/Cizimler';
+import { VARYANT_EKI } from '../cizim/bolgeler';
 
 export type GorselTuru = 'birimler' | 'generaller' | 'ekipman' | 'lord';
 
@@ -21,10 +22,12 @@ export type GorselTuru = 'birimler' | 'generaller' | 'ekipman' | 'lord';
  *
  *   seviye 1-2 -> tarla        seviye 3-4 -> tarla_3       seviye 5 -> tarla_5
  */
-export function bolgeGorselAdi(tip: string, seviye: number): string {
-  if (seviye >= 5) return `${tip}_5`;
-  if (seviye >= 3) return `${tip}_3`;
-  return tip;
+export function bolgeGorselAdi(tip: string, seviye: number, varyant = 0): string {
+  const asama = seviye >= 5 ? 5 : seviye >= 3 ? 3 : 1;
+  // Varyant (cizim/bolgeler.ts): aynı türün üç görünüşü, bölgenin kimliğinden.
+  const ek = VARYANT_EKI[varyant] ?? '';
+  if (ek) return `${tip}_${asama}_${ek}`;
+  return asama === 1 ? tip : `${tip}_${asama}`;
 }
 
 export function Gorsel({

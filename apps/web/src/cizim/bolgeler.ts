@@ -61,7 +61,18 @@ import {
 import { agac, bayrak, cam, duman, kaya, kemer, kubbe, mesale } from './parca';
 import { P, isikla, karistir } from './renk';
 import { rastgele } from './rastgele';
-import { besikCati, kirmaCati, koni, kutu, silindir, tasi, yansitici, type Model } from './uc';
+import {
+  besikCati,
+  dondur,
+  kirmaCati,
+  koni,
+  kutu,
+  olcekle,
+  silindir,
+  tasi,
+  yansitici,
+  type Model,
+} from './uc';
 import { tekne } from './parca';
 
 export type BolgeTipi = 'koy' | 'tarla' | 'maden' | 'sehir' | 'kale' | 'taht';
@@ -1184,20 +1195,49 @@ const SAHNE: Record<BolgeTipi, (a: Asama, r: () => number, g: Gurultu, ra: () =>
     taht: tahtSahnesi,
   };
 
-/** `tarla_3` → ['tarla', 3]; tanınmayan ad → null. */
-export function bolgeAdiCoz(ad: string): [BolgeTipi, Asama] | null {
-  const [tip, as] = ad.split('_');
+/**
+ * BÖLGE VARYANTLARI (docs/24 "Bölge varyantları"). Haritada otuz iki tarla
+ * vardı ve hepsinin afişi birebir aynıydı: bir tarladan ötekine geçen
+ * oyuncu aynı resme bakıyordu. Her türün üç görünüşü var ve bölge kendi
+ * kimliğinden birini alıyor (hep aynısını):
+ *
+ *   0  özgün sahne,
+ *   1  yatay ayna (dünya x↔y; ışık aynı kaldığı için gölgeler yine doğru),
+ *   2  ayrıntılar (ağaç, kaya, süs, ev rengi) yeniden tohumlanmış.
+ *
+ * Arazinin şekli (tepe, nehir) türün adıyla tohumlu kalıyor: yerleşim
+ * araziye göre kurulduğu için şekli değiştirmek evi suya oturtabilirdi.
+ * Üç aşama aynı varyantı paylaşıyor: bölge gelişince manzara aynı.
+ */
+export const VARYANT_EKI = ['', 'b', 'c'] as const;
+
+/** Bölgenin varyantı: kimliğinden (0, 1, 2). */
+export function bolgeVaryanti(id: number): number {
+  return ((Math.round(id) % 3) + 3) % 3;
+}
+
+/** `tarla_3` → ['tarla', 3, 0]; `tarla_1_b` → ['tarla', 1, 1]; tanınmayan ad → null. */
+export function bolgeAdiCoz(ad: string): [BolgeTipi, Asama, number] | null {
+  const [tip, as, v] = ad.split('_');
   if (!BOLGE_TIPLERI.includes(tip as BolgeTipi)) return null;
   const asama = as === '5' ? 5 : as === '3' ? 3 : 1;
-  return [tip as BolgeTipi, asama];
+  const varyant = Math.max(0, VARYANT_EKI.indexOf((v ?? '') as (typeof VARYANT_EKI)[number]));
+  return [tip as BolgeTipi, asama, varyant];
+}
+
+/** Yatay ayna: dünya x↔y (ekranda sol↔sağ), sahnenin ortası yerinde. */
+function aynala(m: Model): Model {
+  return dondur(olcekle(m, [-1, 1, 1]), 'z', -Math.PI / 2);
 }
 
 export function bolgeModeli(ad: string): Model {
-  const c = bolgeAdiCoz(ad) ?? ['koy', 1];
-  const [tip, a] = c;
+  const c = bolgeAdiCoz(ad) ?? ['koy', 1, 0];
+  const [tip, a, v] = c;
+  const ek = v === 2 ? ':c' : '';
   // Arazi türün adıyla tohumlanıyor: üç aşama aynı manzarada.
   const g = gurultu('bolge:' + tip);
-  const ra = rastgele('arazi:' + tip);
-  const r = rastgele('bolge:' + tip + ':' + a);
-  return SAHNE[tip](a, r, g, ra);
+  const ra = rastgele('arazi:' + tip + ek);
+  const r = rastgele('bolge:' + tip + ':' + a + ek);
+  const m = SAHNE[tip](a, r, g, ra);
+  return v === 1 ? aynala(m) : m;
 }

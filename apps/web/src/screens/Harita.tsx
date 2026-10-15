@@ -34,6 +34,7 @@ import { BirimIkonu, IkonKapali, IkonSure } from '../components/Ikonlar';
 import { Cumle } from '../components/Cumle';
 import { bolgeGorselAdi } from '../components/Gorsel';
 import { BolgeCizimi, CIZILEN_BOLGELER } from '../cizim/Cizimler';
+import { bolgeVaryanti } from '../cizim/bolgeler';
 import { hisAgir, hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { DunyaBasligi, OlaySeridi } from '../components/DunyaSeridi';
 import type { Sekme } from '../components/MobilKabuk';
@@ -79,6 +80,7 @@ const GELIR_ADI = { altin: 'altın', demir: 'demir', erzak: 'erzak' } as const;
 function BolgeAfisi({
   tip,
   seviye,
+  id,
   ad,
   ustyazi,
   kompakt = false,
@@ -88,6 +90,8 @@ function BolgeAfisi({
   tip: string;
   /** Aşama sahnesini seçer: 1-2 taban, 3-4 `_3`, 5 `_5`. */
   seviye: number;
+  /** Bölgenin kimliği: türün üç görünüşünden hangisi (`bolgeVaryanti`). */
+  id: number;
   ad: string;
   /** Görselin üstüne binen başlık: bölgenin adı ve gelişim aşaması. */
   ustyazi?: ReactNode;
@@ -95,7 +99,11 @@ function BolgeAfisi({
   if (!CIZILEN_BOLGELER.has(tip)) return null;
   return (
     <div className={`relative overflow-hidden ${kompakt ? 'h-28' : 'aspect-[3/2]'}`}>
-      <BolgeCizimi ad={bolgeGorselAdi(tip, seviye)} alt={ad} className="h-full w-full" />
+      <BolgeCizimi
+        ad={bolgeGorselAdi(tip, seviye, bolgeVaryanti(id))}
+        alt={ad}
+        className="h-full w-full"
+      />
       {/* Alt kenarı panele eritir; afişin sert kesimi başlık satırına bitişik durmasın. */}
       <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-panel via-panel/80 to-transparent" />
 
@@ -1027,6 +1035,7 @@ export function Harita({
                   kompakt
                   tip={bolge.type}
                   seviye={bolge.level}
+                  id={bolge.id}
                   ad={bolgeAdi(bolge.type)}
                   ustyazi={
                     <>

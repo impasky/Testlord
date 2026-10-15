@@ -26,7 +26,7 @@ import {
   dusmanModeli,
   ekipmanModeli,
 } from './birlikler';
-import { BOLGE_KUTUSU, BOLGE_SAHNELERI, bolgeModeli } from './bolgeler';
+import { BOLGE_KUTUSU, BOLGE_SAHNELERI, BOLGE_TIPLERI, bolgeModeli } from './bolgeler';
 import {
   GENERAL_ADLARI,
   LORD_ADLARI,
@@ -330,6 +330,26 @@ const BOLUMLER: {
   {
     baslik: 'Bölgeler',
     ogeler: BOLGE_SAHNELERI.map((ad) => ({
+      ad,
+      genis: true,
+      oran: 'aspect-[3/2]',
+      cizim: (
+        <Sahne
+          anahtar={'bolge:' + ad}
+          uret={() => bolgeModeli(ad)}
+          tarif
+          kutu={BOLGE_KUTUSU}
+          alt={ad}
+          className="h-full w-full"
+          kalici="galeri"
+        />
+      ),
+    })),
+  },
+  {
+    // Bölge varyantları (bolgeler.ts): her türün üç görünüşü, `_3` aşamasında.
+    baslik: 'Bölge varyantları',
+    ogeler: BOLGE_TIPLERI.flatMap((t) => [`${t}_3`, `${t}_3_b`, `${t}_3_c`]).map((ad) => ({
       ad,
       genis: true,
       oran: 'aspect-[3/2]',

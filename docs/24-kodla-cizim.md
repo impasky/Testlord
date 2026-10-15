@@ -769,6 +769,25 @@ zeminleri, savaş sahneleri, canlı sahneler (hareketiyle), dünya. Aynı ışı
 bakılıyor. Galeri üretim derlemesine girmiyor (`main.tsx`,
 `import.meta.env.DEV`).
 
+## Bölge varyantları
+
+Haritada otuz iki tarla, yirmi sekiz şehir vardı ve aynı türün bütün
+afişleri birebir aynıydı: bir tarladan ötekine geçen oyuncu aynı resme
+bakıyordu. Her türün artık üç görünüşü var (`bolgeler.ts`) ve bölge kendi
+kimliğinden birini alıyor, hep aynısını (`bolgeVaryanti`):
+
+- **0** özgün sahne;
+- **1** yatay ayna: dünya x↔y (`aynala`; ekranda sol↔sağ, sahnenin ortası
+  yerinde). Işık sabit kaldığı için gölgeler yine doğru düşüyor;
+- **2** ayrıntılar yeniden tohumlanmış: ağaçlar, kayalar, evlerin rengi ve
+  yeri.
+
+Arazinin şekli (tepe, nehir) türün adıyla tohumlu kalıyor: yerleşim araziye
+göre kurulduğu için şekli değiştirmek evi suya oturtabilirdi. Üç aşama aynı
+varyantı paylaşıyor. Ad `tarla_3_b`, `koy_1_c` (taban aşama için `_1`
+yazılıyor); eski adlar (`tarla_3`) varyant 0. Galeride "Bölge varyantları"
+bölümü.
+
 ## Kuşam
 
 Lord figürü eskiden beş hazır aşamadan biriydi (`lord_1..5`, altı yuvanın

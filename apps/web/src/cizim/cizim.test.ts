@@ -26,7 +26,7 @@ import {
   dusmanModeli,
   ekipmanModeli,
 } from './birlikler';
-import { BOLGE_SAHNELERI, bolgeAdiCoz, bolgeModeli } from './bolgeler';
+import { BOLGE_SAHNELERI, bolgeAdiCoz, bolgeModeli, bolgeVaryanti } from './bolgeler';
 import { rastgele } from './rastgele';
 import { tarifModeli } from './tarif';
 import { gecis } from './arazi';
@@ -452,9 +452,40 @@ describe('bölge sahneleri', () => {
   });
 
   it('aşama adı çözülüyor; bilinmeyen tür null', () => {
-    expect(bolgeAdiCoz('tarla_3')).toEqual(['tarla', 3]);
-    expect(bolgeAdiCoz('kale')).toEqual(['kale', 1]);
+    expect(bolgeAdiCoz('tarla_3')).toEqual(['tarla', 3, 0]);
+    expect(bolgeAdiCoz('kale')).toEqual(['kale', 1, 0]);
     expect(bolgeAdiCoz('ejderha')).toBeNull();
+  });
+
+  it('varyantlar: ad çözülüyor, bölge kimliğinden hep aynısı', () => {
+    expect(bolgeAdiCoz('tarla_1_b')).toEqual(['tarla', 1, 1]);
+    expect(bolgeAdiCoz('koy_5_c')).toEqual(['koy', 5, 2]);
+    expect(bolgeAdiCoz('koy_5_z')).toEqual(['koy', 5, 0]);
+    expect([0, 1, 2, 3, 4, 5].map(bolgeVaryanti)).toEqual([0, 1, 2, 0, 1, 2]);
+    expect(bolgeVaryanti(-1)).toBe(2);
+  });
+
+  it('varyantlar farklı, ama aynı yüz sayısında ve NaN yok', () => {
+    const imza = (ad: string) =>
+      bolgeModeli(ad)
+        .filter((y) => y.katman !== -2)
+        .map(
+          (y) =>
+            y.p
+              .flat()
+              .map((n) => n.toFixed(2))
+              .join(',') + y.renk,
+        )
+        .join('|');
+    for (const tip of ['koy', 'tarla', 'maden', 'sehir', 'kale', 'taht']) {
+      const [a, b, c] = [`${tip}_3`, `${tip}_3_b`, `${tip}_3_c`];
+      expect(imza(b), tip).not.toBe(imza(a));
+      expect(imza(c), tip).not.toBe(imza(a));
+      // Ayna aynı yüzleri taşıyor (yalnız yerleri değişiyor).
+      expect(bolgeModeli(b).length).toBe(bolgeModeli(a).length);
+      const cc = ciz(bolgeModeli(c));
+      for (const p of cc.cokgenler) expect(sayilar(p.n).every(Number.isFinite)).toBe(true);
+    }
   });
 
   it('aynı türün aşamaları aynı araziyi paylaşıyor', () => {
