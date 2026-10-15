@@ -116,7 +116,7 @@
     "tr": " eksik.",
     "en": " missing.",
     "nerede": [
-      "apps/web/src/components/ui.tsx:187"
+      "apps/web/src/components/ui.tsx:250"
     ]
   },
   "t55e4602a": {
@@ -164,7 +164,7 @@
     "tr": ", {0} sürüyor",
     "en": ", {0} in progress",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:658"
+      "apps/web/src/screens/Sehir.tsx:667"
     ]
   },
   "tfc687484": {
@@ -324,7 +324,7 @@
     "tr": "{0} — {1} yapı",
     "en": "{0} — {1} building",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:380"
+      "apps/web/src/screens/Sehir.tsx:389"
     ]
   },
   "te4dc80c9": {
@@ -446,7 +446,7 @@
     "tr": "{0} · bina tavanı {1}",
     "en": "{0} · building cap {1}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:461"
+      "apps/web/src/screens/Sehir.tsx:470"
     ]
   },
   "tef9d6dc5": {
@@ -990,7 +990,7 @@
     "tr": "{0} inşa ediliyor",
     "en": "{0} under construction",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:436"
+      "apps/web/src/screens/Sehir.tsx:445"
     ]
   },
   "t4438dd01": {
@@ -1515,7 +1515,7 @@
     "tr": "{0}'a git",
     "en": "Go to {0}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:932"
+      "apps/web/src/screens/Sehir.tsx:941"
     ]
   },
   "t0900053c": {
@@ -1622,7 +1622,7 @@
     "tr": "{0}dk {1}sn",
     "en": "{0}m {1}s",
     "nerede": [
-      "apps/web/src/components/ui.tsx:973"
+      "apps/web/src/components/ui.tsx:1036"
     ]
   },
   "t474d6d19": {
@@ -1630,7 +1630,7 @@
     "tr": "{0}g {1}sa",
     "en": "{0}d {1}h",
     "nerede": [
-      "apps/web/src/components/ui.tsx:971"
+      "apps/web/src/components/ui.tsx:1034"
     ]
   },
   "t756e7987": {
@@ -1638,7 +1638,7 @@
     "tr": "{0}sa {1}dk",
     "en": "{0}h {1}m",
     "nerede": [
-      "apps/web/src/components/ui.tsx:972",
+      "apps/web/src/components/ui.tsx:1035",
       "apps/web/src/screens/Arastirma.tsx:246",
       "apps/web/src/screens/Harita.tsx:218"
     ]
@@ -1971,7 +1971,7 @@
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:21",
       "apps/web/src/components/SavasRaporu.tsx:118",
-      "apps/web/src/components/ui.tsx:179",
+      "apps/web/src/components/ui.tsx:242",
       "apps/web/src/screens/Harita.tsx:66",
       "packages/shared/src/bina.ts:259",
       "packages/shared/src/pazar.ts:38"
@@ -2282,7 +2282,7 @@
     "en": "just now",
     "nerede": [
       "apps/web/src/components/DunyaSeridi.tsx:27",
-      "apps/web/src/components/ui.tsx:958"
+      "apps/web/src/components/ui.tsx:1021"
     ]
   },
   "t03f09d10": {
@@ -2412,7 +2412,7 @@
     "tr": "Başkentini taşı: {0}",
     "en": "Move your capital: {0}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:460"
+      "apps/web/src/screens/Sehir.tsx:469"
     ]
   },
   "tea7af10a": {
@@ -2789,9 +2789,9 @@
     "tr": "boş arsa",
     "en": "vacant lot",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:656",
-      "apps/web/src/screens/Sehir.tsx:659",
-      "apps/web/src/screens/Sehir.tsx:880"
+      "apps/web/src/screens/Sehir.tsx:665",
+      "apps/web/src/screens/Sehir.tsx:668",
+      "apps/web/src/screens/Sehir.tsx:889"
     ]
   },
   "t0f1623db": {
@@ -4209,7 +4209,7 @@
     "tr": "Efsanevi",
     "en": "Legendary",
     "nerede": [
-      "apps/web/src/components/ui.tsx:330",
+      "apps/web/src/components/ui.tsx:393",
       "apps/web/src/screens/LordEkrani.tsx:137",
       "packages/shared/src/esyaPazari.ts:69"
     ]
@@ -5129,7 +5129,7 @@
       "apps/web/src/screens/Hesap.tsx:259",
       "apps/web/src/screens/Kisla.tsx:285",
       "apps/web/src/screens/ParolaSifirla.tsx:62",
-      "apps/web/src/screens/Sehir.tsx:928"
+      "apps/web/src/screens/Sehir.tsx:937"
     ]
   },
   "t5b346f80": {
@@ -5842,7 +5842,7 @@
     "tr": "inşa ediliyor",
     "en": "under construction",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:540"
+      "apps/web/src/screens/Sehir.tsx:549"
     ]
   },
   "tff2e7684": {
@@ -5850,7 +5850,7 @@
     "tr": "İnşa et",
     "en": "Construct",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:928"
+      "apps/web/src/screens/Sehir.tsx:937"
     ]
   },
   "t776ce02a": {
@@ -5874,7 +5874,7 @@
     "tr": "İptal",
     "en": "Cancel",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:446"
+      "apps/web/src/screens/Sehir.tsx:455"
     ]
   },
   "tbf6e4d16": {
@@ -6194,7 +6194,7 @@
     "tr": "Kadim",
     "en": "Ancient",
     "nerede": [
-      "apps/web/src/components/ui.tsx:336",
+      "apps/web/src/components/ui.tsx:399",
       "packages/shared/src/esyaPazari.ts:70"
     ]
   },
@@ -6439,7 +6439,7 @@
     "tr": "Kartı kapat",
     "en": "Close card",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:885"
+      "apps/web/src/screens/Sehir.tsx:894"
     ]
   },
   "t89e90b92": {
@@ -6489,7 +6489,7 @@
     "tr": "Kaybedersen",
     "en": "If you lose",
     "nerede": [
-      "apps/web/src/components/ui.tsx:275"
+      "apps/web/src/components/ui.tsx:338"
     ]
   },
   "t2a417817": {
@@ -6620,7 +6620,7 @@
     "en": "Not enough resources",
     "nerede": [
       "apps/web/src/components/IttifakBagis.tsx:73",
-      "apps/web/src/components/ui.tsx:186"
+      "apps/web/src/components/ui.tsx:249"
     ]
   },
   "t9f18d90b": {
@@ -6685,7 +6685,7 @@
     "en": "If you win",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:101",
-      "apps/web/src/components/ui.tsx:274"
+      "apps/web/src/components/ui.tsx:337"
     ]
   },
   "t545b2a19": {
@@ -7218,7 +7218,7 @@
     "tr": "Listeyi kapat",
     "en": "Close list",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:500"
+      "apps/web/src/screens/Sehir.tsx:509"
     ]
   },
   "t585a841c": {
@@ -7405,7 +7405,7 @@
     "tr": "maliyet",
     "en": "cost",
     "nerede": [
-      "apps/web/src/components/ui.tsx:664"
+      "apps/web/src/components/ui.tsx:727"
     ]
   },
   "te474d5f1": {
@@ -7588,7 +7588,7 @@
     "tr": "Nadir",
     "en": "Rare",
     "nerede": [
-      "apps/web/src/components/ui.tsx:324",
+      "apps/web/src/components/ui.tsx:387",
       "packages/shared/src/esyaPazari.ts:68"
     ]
   },
@@ -9123,8 +9123,8 @@
     "tr": "seviye {0}",
     "en": "level {0}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:656",
-      "apps/web/src/screens/Sehir.tsx:659"
+      "apps/web/src/screens/Sehir.tsx:665",
+      "apps/web/src/screens/Sehir.tsx:668"
     ]
   },
   "tc36d65d0": {
@@ -9141,7 +9141,7 @@
     "tr": "Seviye {0} / {1}",
     "en": "Level {0} / {1}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:880"
+      "apps/web/src/screens/Sehir.tsx:889"
     ]
   },
   "tc15fa5ea": {
@@ -9149,7 +9149,7 @@
     "tr": "Seviye {0} yap",
     "en": "Upgrade to Level {0}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:928"
+      "apps/web/src/screens/Sehir.tsx:937"
     ]
   },
   "t939a055a": {
@@ -9221,7 +9221,7 @@
     "tr": "Sıradan",
     "en": "Common",
     "nerede": [
-      "apps/web/src/components/ui.tsx:312",
+      "apps/web/src/components/ui.tsx:375",
       "packages/shared/src/esyaPazari.ts:66"
     ]
   },
@@ -10155,7 +10155,7 @@
     "tr": "Taşın",
     "en": "Move",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:470"
+      "apps/web/src/screens/Sehir.tsx:479"
     ]
   },
   "tf3733180": {
@@ -10333,7 +10333,7 @@
     "tr": "Usta işi",
     "en": "Masterwork",
     "nerede": [
-      "apps/web/src/components/ui.tsx:318",
+      "apps/web/src/components/ui.tsx:381",
       "apps/web/src/screens/LordEkrani.tsx:137",
       "packages/shared/src/esyaPazari.ts:67"
     ]
@@ -10361,7 +10361,7 @@
     "nerede": [
       "apps/web/src/components/harita/DunyaHaritasi.tsx:779",
       "apps/web/src/screens/Akin.tsx:562",
-      "apps/web/src/screens/Sehir.tsx:556"
+      "apps/web/src/screens/Sehir.tsx:565"
     ]
   },
   "tf8038d21": {
@@ -10543,7 +10543,7 @@
     "nerede": [
       "apps/web/src/components/harita/DunyaHaritasi.tsx:777",
       "apps/web/src/screens/Akin.tsx:556",
-      "apps/web/src/screens/Sehir.tsx:562"
+      "apps/web/src/screens/Sehir.tsx:571"
     ]
   },
   "te07ec6d1": {
@@ -10585,7 +10585,7 @@
     "tr": "yapı",
     "en": "structure",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:880"
+      "apps/web/src/screens/Sehir.tsx:889"
     ]
   },
   "tdd99127b": {
@@ -10593,8 +10593,8 @@
     "tr": "Yapılar",
     "en": "Structures",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:497",
-      "apps/web/src/screens/Sehir.tsx:575"
+      "apps/web/src/screens/Sehir.tsx:506",
+      "apps/web/src/screens/Sehir.tsx:584"
     ]
   },
   "td55cc683": {
@@ -11040,7 +11040,8 @@
     "en": "Loading",
     "nerede": [
       "apps/web/src/components/Omurga.tsx:597",
-      "apps/web/src/components/ui.tsx:91"
+      "apps/web/src/components/ui.tsx:107",
+      "apps/web/src/components/ui.tsx:145"
     ]
   },
   "tb2582797": {

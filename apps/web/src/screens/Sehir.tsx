@@ -32,7 +32,7 @@ import { IKONLAR } from '../components/ikon-verisi';
 import {
   Buton,
   GeriSayim,
-  Iskelet,
+  SahneIskeleti,
   Maliyet,
   Sure,
   Kart,
@@ -299,7 +299,16 @@ export function Sehir({
     onError: (e) => setHata(e instanceof ApiError ? e.message : 'Başkent taşınamadı.'),
   });
 
-  if (veri.isPending || !veri.data) return <Iskelet satir={5} />;
+  // İskelet ekranın kendisi: yerleşkenin yerinde çayır (docs/13).
+  if (veri.isPending || !veri.data)
+    return (
+      <div
+        className="fixed inset-x-0 z-10 mx-auto max-w-lg overflow-hidden"
+        style={{ top: 'var(--ust-bar)', bottom: 'calc(var(--alt-bar) + var(--omurga-serit))' }}
+      >
+        <SahneIskeleti style={{ top: 0, bottom: 0 }} />
+      </div>
+    );
   const { yerlesim, binalar, insaat, tasinabilir } = veri.data;
   const isler = binadakiIsler(queues);
   const seciliBina = binalar.find((b) => b.key === secili) ?? null;

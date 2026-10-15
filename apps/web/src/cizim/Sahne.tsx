@@ -1263,7 +1263,7 @@ export const Sahne = memo(function Sahne({
       role={alt ? 'img' : undefined}
       aria-label={alt || undefined}
       aria-hidden={alt ? undefined : true}
-      className={canli ? 'h-full w-full' : className}
+      className={`${canli ? 'h-full w-full' : (className ?? '')}${resim || c ? '' : ' cizim-bekliyor'}`}
       style={canli ? { gridArea: '1 / 1' } : style}
       data-gl={resim ? '' : undefined}
     >

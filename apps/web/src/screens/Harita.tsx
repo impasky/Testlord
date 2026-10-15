@@ -1518,7 +1518,7 @@ export function Harita({
               </div>
             ) : (
               <div className="p-4">
-                <Iskelet satir={3} />
+                <Iskelet satir={3} tur="afis" />
               </div>
             )}
           </div>

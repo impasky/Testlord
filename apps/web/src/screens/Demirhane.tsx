@@ -370,7 +370,7 @@ export function Demirhane({
   const donanimKuyrugu = queues.filter((q) => q.kind === 'upgrade_gear');
 
   if (items.isLoading || gear.isLoading) {
-    return <Iskelet satir={4} />;
+    return <Iskelet satir={4} tur="izgara" />;
   }
   const secili = items.data?.tiers.find((t) => t.tier === tier);
 

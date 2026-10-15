@@ -86,13 +86,76 @@ export function SureCubugu({
  * Animasyon prefers-reduced-motion'a saygı duyuyor — nabız gibi atan bir
  * ekran, hareket hassasiyeti olan oyuncuda rahatsızlık yaratabilir.
  */
-export function Iskelet({ satir = 3 }: { satir?: number }) {
+export function Iskelet({
+  satir = 3,
+  tur = 'kart',
+}: {
+  satir?: number;
+  /**
+   * Ekranın ŞEKLİ (docs/13 "Yükleme iskeletleri"). Her ekran aynı üç gri
+   * kartla yükleniyordu; veri gelince sayfa bambaşka bir şekle zıplıyordu.
+   * İskelet gelecek ekrana benzerse göz yerini önceden buluyor:
+   *   kart    alt alta kartlar (varsayılan)
+   *   afis    tepede geniş bir afiş, altında kartlar (Akın, bölge sayfası)
+   *   izgara  kare karolar (Demirhane, Eşya Pazarı)
+   *   liste   simge + iki satırlık sıralar (sıralama, yönetici, ittifak)
+   */
+  tur?: 'kart' | 'afis' | 'izgara' | 'liste';
+}) {
+  const kutu = 'oyuk border border-kenar/60 motion-safe:animate-pulse';
   return (
-    <div className="space-y-2.5 pt-3" aria-busy="true" aria-label="Yükleniyor">
-      {Array.from({ length: satir }, (_, i) => (
-        <div
+    <div className="space-y-2.5 pt-3" aria-busy="true" aria-label="Yükleniyor" data-iskelet={tur}>
+      {tur === 'afis' && <div className={`${kutu} aspect-[16/7] rounded-2xl`} />}
+      {tur === 'izgara' ? (
+        <div className="grid grid-cols-3 gap-2">
+          {Array.from({ length: satir * 3 }, (_, i) => (
+            <div key={i} className={`${kutu} aspect-square rounded-xl`} />
+          ))}
+        </div>
+      ) : tur === 'liste' ? (
+        Array.from({ length: satir }, (_, i) => (
+          <div key={i} className="flex items-center gap-2.5">
+            <div className={`${kutu} h-10 w-10 shrink-0 rounded-full`} />
+            <div className="flex-1 space-y-1.5">
+              <div className={`${kutu} h-3 w-2/3 rounded`} />
+              <div className={`${kutu} h-2.5 w-1/3 rounded`} />
+            </div>
+          </div>
+        ))
+      ) : (
+        Array.from({ length: tur === 'afis' ? Math.max(1, satir - 1) : satir }, (_, i) => (
+          <div key={i} className={`${kutu} h-24 rounded-2xl`} />
+        ))
+      )}
+    </div>
+  );
+}
+
+/**
+ * Tam ekran sahnenin iskeleti (Şehir): yerleşkenin yerinde çayır renginde,
+ * yavaşça parlayan bir zemin ve binaların düşeceği yerlerde soluk
+ * tabanlar. Üç gri kart yerine gelecek ekranın kendisi.
+ */
+export function SahneIskeleti({ style }: { style?: React.CSSProperties }) {
+  return (
+    <div
+      className="sahne-iskeleti absolute inset-x-0 overflow-hidden"
+      style={style}
+      aria-busy="true"
+      aria-label="Yükleniyor"
+      data-iskelet="sahne"
+    >
+      {[
+        [50, 42],
+        [28, 56],
+        [72, 54],
+        [40, 72],
+        [64, 74],
+      ].map(([x, y], i) => (
+        <span
           key={i}
-          className="oyuk h-24 rounded-2xl border border-kenar/60 motion-safe:animate-pulse"
+          className="absolute h-[9%] w-[22%] -translate-x-1/2 -translate-y-1/2 rounded-[50%] bg-black/15"
+          style={{ left: `${x}%`, top: `${y}%` }}
         />
       ))}
     </div>

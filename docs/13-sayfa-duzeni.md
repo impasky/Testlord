@@ -274,3 +274,22 @@ modül düzeyinde: oyuncu iş sürerken başka sekmedeyse, Şehir'e dönünce
 kutlanıyor. İlk açılışta (sayfa yenilenince) kutlanacak bir şey yok.
 Hareket azaltılmışsa yalnız etiket. İşin bitiş zamanlayıcısı (`App.tsx`)
 artık `sehir`i de tazeliyor. Test: `tools/sehir-testi.mjs`.
+
+## 13.14 Yükleme iskeletleri
+
+Her ekran aynı üç gri kartla yükleniyordu; veri gelince sayfa bambaşka bir
+şekle zıplıyordu — Şehir'de üç kart gidip yerine tam ekran bir köy
+geliyordu. İskelet artık gelecek ekrana benziyor (`Iskelet` `tur`,
+`SahneIskeleti`, `components/ui.tsx`):
+
+| Ekran               | İskelet                                                          |
+| ------------------- | ---------------------------------------------------------------- |
+| Şehir               | yerleşkenin yerinde çayır renginde zemin ve soluk bina tabanları |
+| Akın, bölge sayfası | tepede geniş afiş, altında kartlar                               |
+| Demirhane           | kare karolar                                                     |
+| Yönetici araması    | simge ve iki satırlık sıralar                                    |
+| ötekiler            | alt alta kartlar (eskisi)                                        |
+
+Çizimler de kendi yerinde bekliyor: koddan çizilen bir resim gelene kadar
+kutusu boş kalıyordu; şimdi hafif bir parıltı "burası dolacak" diyor
+(`.cizim-bekliyor`, `Sahne`). Hareket azaltılmışsa parıltı durağan.

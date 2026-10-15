@@ -78,7 +78,7 @@ export function YoneticiPaneli() {
       {sorgu.length >= 2 && (
         <Bolum baslik="Sonuçlar">
           {!arama.data ? (
-            <Iskelet satir={3} />
+            <Iskelet satir={3} tur="liste" />
           ) : arama.data.sonuclar.length === 0 ? (
             <BosHal mesaj="Kimse bulunamadı. Adın tamamını değil, bir parçasını yaz." />
           ) : (

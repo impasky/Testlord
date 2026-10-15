@@ -715,6 +715,40 @@ svg g[role='button']:focus-visible > path:first-of-type {
 }
 
 /*
+ * Yükleme iskeletleri (docs/13). Çizim gelene kadar kutu boş kalıyordu;
+ * şimdi hafif bir parıltı "burası dolacak" diyor. Sahne iskeleti (Şehir)
+ * yerleşkenin çayır rengi. Hareket azaltılmışsa parıltı durağan.
+ */
+.cizim-bekliyor,
+.sahne-iskeleti {
+  background-image: linear-gradient(
+    100deg,
+    rgba(255, 240, 210, 0.02) 30%,
+    rgba(255, 240, 210, 0.08) 50%,
+    rgba(255, 240, 210, 0.02) 70%
+  );
+  background-size: 250% 100%;
+  animation: cizim-parilti 1.6s linear infinite;
+}
+.sahne-iskeleti {
+  background-color: #3a4a2a;
+}
+@keyframes cizim-parilti {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -150% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cizim-bekliyor,
+  .sahne-iskeleti {
+    animation: none;
+  }
+}
+
+/*
  * Yükseltme geçişi (`YukselmeGecisi`): bina seviye atlayınca tabandan toz
  * kalkıyor, altın halka açılıyor, "Sv N" yükselip sönüyor. Hareket
  * azaltılmışsa yalnız etiket duruyor (bileşen süre dolunca kalkıyor).

@@ -109,7 +109,7 @@ export function Akin({ lord, onGuncelle }: { lord: LordState; onGuncelle: () => 
     onError: (e) => setHata(e instanceof ApiError ? e.message : 'Akına çıkılamadı.'),
   });
 
-  if (veri.isPending || !veri.data) return <Iskelet satir={5} />;
+  if (veri.isPending || !veri.data) return <Iskelet satir={5} tur="afis" />;
   const { haritalar, sahadaki, sonuclar, esZamanli } = veri.data;
 
   // Rehber ışığı zincirinin hedefleri: ilk AÇIK diyar ve onun ilk açık
