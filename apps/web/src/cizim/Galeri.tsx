@@ -39,7 +39,8 @@ import {
 import { DIYAR_ADLARI, HARITA_KUTUSU, KAPAK_KUTUSU, diyarModeli } from './diyarlar';
 import { dunyaUcgenleri } from './dunya';
 import { ZEMIN_ADLARI, ZEMIN_KUTUSU, zeminModeli } from './zeminler';
-import { BolgeCizimi, DiyarCizimi, ZeminCizimi } from './Cizimler';
+import { BolgeCizimi, DiyarCizimi, SavasCizimi, ZeminCizimi } from './Cizimler';
+import { savasAnahtari, type SavasGirdisi } from './savas';
 import { OnceKaba, Sahne } from './Sahne';
 import { YERLESIM_KADEMELERI, YERLESIM_KUTUSU, yerlesimModeli } from './yerlesim';
 import { P } from './renk';
@@ -79,6 +80,55 @@ import {
   orakciPoz,
   sabanPoz,
 } from './canli';
+
+/** Galerideki savaşlar: raporların göreceği çeşitlilik. */
+const SAVAS_ORNEKLERI: SavasGirdisi[] = [
+  {
+    tip: 'tarla',
+    saldiran: { kalan: { mizrakci: 40, okcu: 25, suvari: 10 }, kayip: { mizrakci: 12, okcu: 3 } },
+    savunan: { kalan: {}, kayip: { milis: 30, mizrakci: 15 } },
+    saldiranKazandi: true,
+    tahkimat: false,
+  },
+  {
+    tip: 'koy',
+    saldiran: { kalan: { milis: 4 }, kayip: { milis: 16, mizrakci: 8 } },
+    savunan: { kalan: { mizrakci: 20, okcu: 14 }, kayip: { mizrakci: 6 } },
+    saldiranKazandi: false,
+    tahkimat: true,
+  },
+  {
+    tip: 'maden',
+    saldiran: { kalan: { suvari: 30, okcu: 20 }, kayip: { suvari: 8 } },
+    savunan: { kalan: { okcu: 2 }, kayip: { okcu: 18, milis: 10 } },
+    saldiranKazandi: true,
+    tahkimat: false,
+  },
+  {
+    tip: 'sehir',
+    saldiran: { kalan: { mizrakci: 300, okcu: 200, suvari: 120 }, kayip: { mizrakci: 90 } },
+    savunan: { kalan: {}, kayip: { mizrakci: 150, okcu: 90 } },
+    saldiranKazandi: true,
+    tahkimat: true,
+  },
+  {
+    tip: 'kale',
+    saldiran: {
+      kalan: { mizrakci: 200, kusatma: 4 },
+      kayip: { mizrakci: 120, okcu: 60, kusatma: 2 },
+    },
+    savunan: { kalan: { okcu: 180, mizrakci: 90 }, kayip: { okcu: 40 } },
+    saldiranKazandi: false,
+    tahkimat: true,
+  },
+  {
+    tip: 'taht',
+    saldiran: { kalan: { suvari: 900, mizrakci: 1200, kusatma: 10 }, kayip: { mizrakci: 400 } },
+    savunan: { kalan: {}, kayip: { mizrakci: 800, okcu: 600, suvari: 200 } },
+    saldiranKazandi: true,
+    tahkimat: true,
+  },
+];
 
 function denemeEvi() {
   return birlestir(
@@ -298,6 +348,21 @@ const BOLUMLER: {
         />
       ),
     })),
+  },
+  {
+    // Savaş raporunun sahnesi: altı arazi, iki sonuç, tahkimatlı ve tahkimatsız.
+    baslik: 'Savaş',
+    ogeler: SAVAS_ORNEKLERI.map((g) => {
+      const anahtar = savasAnahtari(g);
+      return {
+        ad: anahtar.slice('savas:'.length),
+        genis: true,
+        oran: 'aspect-[60/23]',
+        cizim: (
+          <SavasCizimi anahtar={anahtar} alt={anahtar} className="h-full w-full" kalici="galeri" />
+        ),
+      };
+    }),
   },
   {
     baslik: 'Dünya',

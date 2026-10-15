@@ -669,7 +669,7 @@
     "tr": "{0} asker ölü sanılmıştı, yaralı olarak döndü. Kayıp sayısı bunu çıkardıktan sonrası.",
     "en": "{0} [soldier was|soldiers were] presumed dead and came back wounded. The casualty count is what remains after subtracting them.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:207"
+      "apps/web/src/components/SavasRaporu.tsx:209"
     ]
   },
   "t1fc2fe59": {
@@ -733,7 +733,7 @@
     "tr": "{0} birliklerin {1} karşısında {2} vurdu.",
     "en": "Your {0} troops hit {2} against {1}.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:402"
+      "apps/web/src/components/SavasRaporu.tsx:404"
     ]
   },
   "t0460d827": {
@@ -741,7 +741,7 @@
     "tr": "{0} birliklerin {1} karşısında {2} yedi.",
     "en": "Your {0} troops took {2} against {1}.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:403"
+      "apps/web/src/components/SavasRaporu.tsx:405"
     ]
   },
   "t12853735": {
@@ -760,7 +760,7 @@
     "tr": "{0} bölgesine karşı saldır",
     "en": "Counterattack region {0}",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:580"
+      "apps/web/src/components/SavasRaporu.tsx:615"
     ]
   },
   "t64000673": {
@@ -907,7 +907,7 @@
     "tr": "{0} generalleri",
     "en": "{0}'s generals",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:236"
+      "apps/web/src/components/SavasRaporu.tsx:238"
     ]
   },
   "t6f068ff0": {
@@ -975,6 +975,14 @@
     "en": "{0} [listing|listings] in the registration queue; first draw in {1}.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:394"
+    ]
+  },
+  "t9cd06b3f": {
+    "grup": "arayuz",
+    "tr": "{0} ile {1} arasındaki savaş",
+    "en": "Battle between {0} and {1}",
+    "nerede": [
+      "apps/web/src/components/SavasRaporu.tsx:439"
     ]
   },
   "tf8c9cd73": {
@@ -1252,7 +1260,7 @@
     "en": "{0} rank {1}",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:151",
-      "apps/web/src/components/SavasRaporu.tsx:86"
+      "apps/web/src/components/SavasRaporu.tsx:88"
     ]
   },
   "t245f1bcb": {
@@ -1962,7 +1970,7 @@
     "en": "gold",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:21",
-      "apps/web/src/components/SavasRaporu.tsx:116",
+      "apps/web/src/components/SavasRaporu.tsx:118",
       "apps/web/src/components/ui.tsx:179",
       "apps/web/src/screens/Harita.tsx:65",
       "packages/shared/src/bina.ts:259",
@@ -2183,7 +2191,7 @@
     "en": "down",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:151",
-      "apps/web/src/components/SavasRaporu.tsx:86"
+      "apps/web/src/components/SavasRaporu.tsx:88"
     ]
   },
   "t56d563a8": {
@@ -2755,7 +2763,7 @@
     "tr": "Birlik yok.",
     "en": "No troops.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:184"
+      "apps/web/src/components/SavasRaporu.tsx:186"
     ]
   },
   "tcf92ba89": {
@@ -2826,7 +2834,7 @@
     "tr": "BÖLGE EL DEĞİŞTİRDİ",
     "en": "REGION CHANGED HANDS",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:481"
+      "apps/web/src/components/SavasRaporu.tsx:511"
     ]
   },
   "tc0b6010d": {
@@ -2891,7 +2899,7 @@
     "en": "Your regions",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:154",
-      "apps/web/src/components/SavasRaporu.tsx:90"
+      "apps/web/src/components/SavasRaporu.tsx:92"
     ]
   },
   "t2b7352ec": {
@@ -3110,7 +3118,7 @@
     "tr": "Bu savaş sıralamanı ve gelirini değiştirmedi — kazanılan tek şey tecrübe oldu.",
     "en": "This battle did not change your ranking or income — the only thing gained was experience.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:67"
+      "apps/web/src/components/SavasRaporu.tsx:69"
     ]
   },
   "tb09ce6e8": {
@@ -3956,7 +3964,7 @@
     "tr": "Dizilim ve Taktik",
     "en": "Formation and Tactic",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:333"
+      "apps/web/src/components/SavasRaporu.tsx:335"
     ]
   },
   "t1fc71cab": {
@@ -4784,7 +4792,8 @@
     "tr": "Garnizon",
     "en": "Garrison",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:523",
+      "apps/web/src/components/SavasRaporu.tsx:431",
+      "apps/web/src/components/SavasRaporu.tsx:558",
       "apps/web/src/screens/Harita.tsx:1267",
       "apps/web/src/screens/Harita.tsx:1415"
     ]
@@ -5177,7 +5186,7 @@
     "tr": "Gücün savunanın {0} katıydı.",
     "en": "Your power was {0}× the defender's.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:371"
+      "apps/web/src/components/SavasRaporu.tsx:373"
     ]
   },
   "t269314eb": {
@@ -5377,7 +5386,7 @@
     "tr": "Hedefin tahkimatı savunmaya +%{0} kattı.",
     "en": "The target's fortification added +{0}% to defense.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:398"
+      "apps/web/src/components/SavasRaporu.tsx:400"
     ]
   },
   "t65049340": {
@@ -5565,7 +5574,7 @@
     "en": "DELETE MY ACCOUNT",
     "nerede": [
       "apps/api/src/routes/me.ts:64",
-      "apps/web/src/api/client.ts:1310",
+      "apps/web/src/api/client.ts:1312",
       "apps/web/src/screens/Hesap.tsx:297"
     ]
   },
@@ -6194,7 +6203,7 @@
     "tr": "KALAN",
     "en": "REMAINING",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:190"
+      "apps/web/src/components/SavasRaporu.tsx:192"
     ]
   },
   "tc67d9cb8": {
@@ -6310,8 +6319,8 @@
       "apps/web/src/components/Omurga.tsx:466",
       "apps/web/src/components/ProfilKarti.tsx:206",
       "apps/web/src/components/ProfilResmiSecici.tsx:265",
-      "apps/web/src/components/SavasRaporu.tsx:447",
-      "apps/web/src/components/SavasRaporu.tsx:470",
+      "apps/web/src/components/SavasRaporu.tsx:477",
+      "apps/web/src/components/SavasRaporu.tsx:500",
       "apps/web/src/components/SavunmaDuzeni.tsx:69",
       "apps/web/src/components/SikayetSayfasi.tsx:66",
       "apps/web/src/components/UygulamaKasasi.tsx:181",
@@ -6374,7 +6383,7 @@
     "tr": "Karşı taraf {0} kat güçlüydü.",
     "en": "The opposing side was {0}× stronger.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:372"
+      "apps/web/src/components/SavasRaporu.tsx:374"
     ]
   },
   "tf40b4b94": {
@@ -6382,7 +6391,7 @@
     "tr": "Karşı taraf {0}. turda en çok öne geçti: {1} güce karşı {2}.",
     "en": "The opposing side pulled ahead the most in round {0}: {1} power against {2}.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:390"
+      "apps/web/src/components/SavasRaporu.tsx:392"
     ]
   },
   "tdd047557": {
@@ -6514,7 +6523,7 @@
     "tr": "KAYIP",
     "en": "LOSSES",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:189"
+      "apps/web/src/components/SavasRaporu.tsx:191"
     ]
   },
   "t6ff52f6d": {
@@ -7370,7 +7379,7 @@
     "tr": "Makas {0}. turda en çok açıldı: {1} güce karşı {2}.",
     "en": "The gap widened the most in round {0}: {1} power against {2}.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:385"
+      "apps/web/src/components/SavasRaporu.tsx:387"
     ]
   },
   "t5c2dce44": {
@@ -7404,7 +7413,7 @@
     "tr": "Mancınıklar tahkimata karşı iki katı iş yaptı.",
     "en": "Catapults did double work against the fortification.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:407"
+      "apps/web/src/components/SavasRaporu.tsx:409"
     ]
   },
   "t6b688af5": {
@@ -7628,7 +7637,7 @@
     "tr": "Neden Böyle Oldu",
     "en": "Why Did This Happen",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:316"
+      "apps/web/src/components/SavasRaporu.tsx:318"
     ]
   },
   "t73ac5603": {
@@ -8494,7 +8503,7 @@
     "tr": "Rapor açılamadı.",
     "en": "Report could not be opened.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:489"
+      "apps/web/src/components/SavasRaporu.tsx:519"
     ]
   },
   "t0808f810": {
@@ -8592,7 +8601,7 @@
     "tr": "Saatlik {0}",
     "en": "Hourly {0}",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:102",
+      "apps/web/src/components/SavasRaporu.tsx:104",
       "apps/web/src/screens/Harita.tsx:1192"
     ]
   },
@@ -8658,7 +8667,7 @@
     "tr": "Saldıran",
     "en": "Attacker",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:533"
+      "apps/web/src/components/SavasRaporu.tsx:568"
     ]
   },
   "t87d8df09": {
@@ -8666,8 +8675,8 @@
     "tr": "SALDIRAN",
     "en": "ATTACKER",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:480",
-      "apps/web/src/components/SavasRaporu.tsx:514"
+      "apps/web/src/components/SavasRaporu.tsx:510",
+      "apps/web/src/components/SavasRaporu.tsx:549"
     ]
   },
   "t3424fe05": {
@@ -8831,7 +8840,7 @@
     "tr": "Savaş kazanıldı ama güç payı %{0} eşiğine ulaşmadı — bölge el değiştirmedi, yalnızca yağma alındı.",
     "en": "The battle was won but the power share did not reach the {0}% threshold — the region did not change hands, only loot was taken.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:375"
+      "apps/web/src/components/SavasRaporu.tsx:377"
     ]
   },
   "tbbc85c89": {
@@ -8855,7 +8864,7 @@
     "tr": "Savaş Raporu",
     "en": "Battle Report",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:457"
+      "apps/web/src/components/SavasRaporu.tsx:487"
     ]
   },
   "tbfc25419": {
@@ -8895,7 +8904,7 @@
     "tr": "Savunan",
     "en": "Defender",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:538"
+      "apps/web/src/components/SavasRaporu.tsx:573"
     ]
   },
   "tf48cad35": {
@@ -8903,8 +8912,8 @@
     "tr": "SAVUNAN",
     "en": "DEFENDER",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:480",
-      "apps/web/src/components/SavasRaporu.tsx:522"
+      "apps/web/src/components/SavasRaporu.tsx:510",
+      "apps/web/src/components/SavasRaporu.tsx:557"
     ]
   },
   "td8820cb4": {
@@ -9065,8 +9074,8 @@
     "tr": "Sende ne değişti",
     "en": "What changed for you",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:65",
-      "apps/web/src/components/SavasRaporu.tsx:75"
+      "apps/web/src/components/SavasRaporu.tsx:67",
+      "apps/web/src/components/SavasRaporu.tsx:77"
     ]
   },
   "tcef5c072": {
@@ -9140,7 +9149,7 @@
     "tr": "Seviye atladı: Sv {0} → Sv {1}",
     "en": "Leveled up: Lvl {0} → Lvl {1}",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:256"
+      "apps/web/src/components/SavasRaporu.tsx:258"
     ]
   },
   "t8eb45bb8": {
@@ -9156,7 +9165,7 @@
     "tr": "Seviye atladın: {0} → {1}",
     "en": "You leveled up: {0} → {1}",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:110"
+      "apps/web/src/components/SavasRaporu.tsx:112"
     ]
   },
   "tee50015f": {
@@ -9591,7 +9600,7 @@
     "tr": "Sv{0}",
     "en": "Lvl{0}",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:246",
+      "apps/web/src/components/SavasRaporu.tsx:248",
       "apps/web/src/screens/Akin.tsx:325",
       "apps/web/src/screens/Arastirma.tsx:571",
       "apps/web/src/screens/Demirhane.tsx:464",
@@ -9742,7 +9751,7 @@
     "en": "Your fame ranking",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:144",
-      "apps/web/src/components/SavasRaporu.tsx:79"
+      "apps/web/src/components/SavasRaporu.tsx:81"
     ]
   },
   "t3974a602": {
@@ -9759,7 +9768,7 @@
     "en": "Your fame",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:141",
-      "apps/web/src/components/SavasRaporu.tsx:76",
+      "apps/web/src/components/SavasRaporu.tsx:78",
       "apps/web/src/screens/Demirhane.tsx:135"
     ]
   },
@@ -9903,7 +9912,7 @@
     "tr": "Tahkimat olmadığı için mancınıklar canlı orduya {0} vurdu — o kaynak boşa gitti.",
     "en": "With no fortification the catapults hit the living army at {0} — that resource went to waste.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:410"
+      "apps/web/src/components/SavasRaporu.tsx:412"
     ]
   },
   "te9b9ec08": {
@@ -9927,7 +9936,7 @@
     "tr": "Tahkimatın savunmaya +%{0} kattı.",
     "en": "Your fortification added +{0}% to defense.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:397"
+      "apps/web/src/components/SavasRaporu.tsx:399"
     ]
   },
   "tebef06ac": {
@@ -10209,7 +10218,7 @@
     "tr": "Toplam{0}{1}{2}birim öldü · tohum {3}",
     "en": "Total{0}{1}{2}units died · seed {3}",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:583"
+      "apps/web/src/components/SavasRaporu.tsx:618"
     ]
   },
   "t549376dd": {
@@ -10257,7 +10266,7 @@
     "tr": "TUR {0}",
     "en": "ROUND {0}",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:129"
+      "apps/web/src/components/SavasRaporu.tsx:131"
     ]
   },
   "te2ee684f": {
@@ -10265,7 +10274,7 @@
     "tr": "Tur Tur Güç · {0} tur",
     "en": "Power Round by Round · {0} [round|rounds]",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:506"
+      "apps/web/src/components/SavasRaporu.tsx:541"
     ]
   },
   "te56699c1": {
@@ -10392,7 +10401,7 @@
     "tr": "Üstteki çubuk saldıran, alttaki savunan.",
     "en": "The top bar is the attacker, the bottom is the defender.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:509"
+      "apps/web/src/components/SavasRaporu.tsx:544"
     ]
   },
   "tee23d259": {
@@ -10499,7 +10508,7 @@
     "tr": "Yağma",
     "en": "Loot",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:543"
+      "apps/web/src/components/SavasRaporu.tsx:578"
     ]
   },
   "tea3bde58": {
@@ -10592,7 +10601,7 @@
     "tr": "yarım",
     "en": "half",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:411"
+      "apps/web/src/components/SavasRaporu.tsx:413"
     ]
   },
   "t8165b4a2": {
@@ -10829,7 +10838,7 @@
     "en": "DEFEAT",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:76",
-      "apps/web/src/components/SavasRaporu.tsx:478",
+      "apps/web/src/components/SavasRaporu.tsx:508",
       "apps/web/src/screens/Harita.tsx:1475"
     ]
   },
@@ -10949,7 +10958,7 @@
     "en": "up",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:151",
-      "apps/web/src/components/SavasRaporu.tsx:86"
+      "apps/web/src/components/SavasRaporu.tsx:88"
     ]
   },
   "t3244c60c": {
@@ -11030,7 +11039,7 @@
     "tr": "yükleniyor…",
     "en": "loading…",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:467"
+      "apps/web/src/components/SavasRaporu.tsx:497"
     ]
   },
   "tb65d2ef7": {
@@ -11130,7 +11139,7 @@
     "en": "VICTORY",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:76",
-      "apps/web/src/components/SavasRaporu.tsx:478",
+      "apps/web/src/components/SavasRaporu.tsx:508",
       "apps/web/src/screens/Harita.tsx:1475"
     ]
   },
@@ -15839,7 +15848,7 @@
     "tr": "{0}, {1} üzerine göz dikti.",
     "en": "{0} set their sights on {1}.",
     "nerede": [
-      "apps/api/src/routes/map.ts:1460"
+      "apps/api/src/routes/map.ts:1467"
     ]
   },
   "tf6cc8850": {

@@ -1416,7 +1416,14 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
     });
     if (!battle) throw hata.bulunamadi('Savaş');
     if (battle.attackerLordId !== lordId && battle.defenderLordId !== lordId) throw hata.yetkisiz();
-    return battle;
+    // Bölgenin türü raporun sahnesi için (nerede savaşıldı: köy, maden,
+    // kale…). Savaş kaydı bölgeye bağlı değil; bölge silinmişse sahne
+    // varsayılan araziye düşüyor.
+    const bolge = await prisma.region.findUnique({
+      where: { id: battle.regionId },
+      select: { type: true },
+    });
+    return { ...battle, bolgeTipi: bolge?.type ?? null };
   });
 }
 

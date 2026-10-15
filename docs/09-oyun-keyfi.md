@@ -433,7 +433,7 @@ yenilemek, diğerleri hiç açılmamış kategoriler. Yani "eksik görsel" deği
 | G1  | ~~Bölge gelişim aşamaları~~ **tamamlandı** | 8/8 kondu. Sv1-2 taban, Sv3-4 `_3`, Sv5 `_5`; üç seviyede de tarayıcıda doğrulandı |
 | G2  | Lord figürü (geri gelirse)                 | 5 görsel var, sahne kodu hazır, oyuncu beğenmedi                                   |
 | G3  | Birim illüstrasyonlarını yenile            | 5 görsel VAR ama diğer setten farklı üslupta; değiştirme işi, eksik değil          |
-| G4  | Savaş sahnesi                              | Rapor ekranına iki ordunun karşılaştığı tek kare                                   |
+| G4  | ~~Savaş sahnesi~~ **tamamlandı**           | Raporun tepesinde, raporun verisinden koddan çiziliyor (`cizim/savas.ts`, docs/24) |
 | G5  | Sancak arması (yatay kazanç)               | 10–20 arma parçası; oyuncunun kendi sancağı                                        |
 | G6  | Bölge tipi çeşitliliği                     | Aynı tipin 2–3 varyantı; harita tekrar etmesin                                     |
 

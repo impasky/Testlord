@@ -11,6 +11,7 @@ import { GENERAL_ADLARI, LORD_ADLARI, PORTRE_ADLARI, PORTRE_KUTUSU } from './kis
 import { HARITA_KUTUSU, KAPAK_KUTUSU, type Kadraj } from './diyarlar';
 import { dunyaUcgenleri, type Ucgen } from './dunya';
 import type { KaliciGrup } from './kalici';
+import { SAVAS_KUTUSU } from './savas';
 import { ZEMIN_ADLARI, ZEMIN_KUTUSU } from './zeminler';
 import { Sahne } from './Sahne';
 import { tarifModeli } from './tarif';
@@ -325,6 +326,39 @@ export function ZeminCizimi({
       tilt={TILT_ZEMIN}
       hareket
       ertele
+      kalici={kalici}
+    />
+  );
+}
+
+/**
+ * Savaş raporunun sahnesi (savas.ts): iki ordu karşı karşıya. Anahtar
+ * `savasAnahtari`ndan; kutuyu doldurur, taşanı kırpar. Kalıcı: rapor
+ * yeniden açılınca çizilmeden geliyor.
+ */
+export function SavasCizimi({
+  anahtar,
+  alt,
+  className,
+  kalici = 'savas',
+}: {
+  /** `savasAnahtari(...)` — `savas:` ile başlıyor. */
+  anahtar: string;
+  alt: string;
+  className?: string;
+  kalici?: KaliciGrup;
+}) {
+  return (
+    <Sahne
+      anahtar={anahtar}
+      uret={() => tarifModeli(anahtar) ?? []}
+      tarif
+      kutu={SAVAS_KUTUSU}
+      alt={alt}
+      className={className}
+      kirp
+      tilt={TILT_ZEMIN}
+      hareket
       kalici={kalici}
     />
   );

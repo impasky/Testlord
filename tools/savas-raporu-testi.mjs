@@ -140,6 +140,17 @@ kontrol(
   (await page.locator('text=ZAFER').count()) + (await page.locator('text=YENİLGİ').count()) > 0,
 );
 kontrol('Saldıran ve savunan dökümü var', (await page.locator('text=KALAN').count()) >= 2);
+{
+  // Savaş sahnesi (docs/09 G4): anahtar raporun verisinden — bölgenin
+  // türü, iki tarafın figürleri, kazanan.
+  const anahtar = await page.locator('[data-savas-sahnesi]').getAttribute('data-savas-sahnesi');
+  kontrol(
+    'Savaş sahnesi raporun verisinden kuruldu',
+    /^savas:(koy|tarla|maden|sehir|kale|taht):[^:]+:[^:]+:[sd]:[01]$/.test(anahtar ?? ''),
+    anahtar ?? 'yok',
+  );
+  kontrol('Sahne savaşılan bölgenin türünde (tarla)', (anahtar ?? '').startsWith('savas:tarla:'));
+}
 await page.screenshot({ path: `${CIKTI}/rapor-malikane.png` });
 
 // --- 2. giriş: Harita bölge alt sayfası ---

@@ -65,11 +65,13 @@ const GRUP_ZAMAN = 'grup_zaman';
 
 /** Kaydın grubu (bkz. üstteki açıklama). */
 export type KaliciGrup =
-  'sahne' | 'afis' | 'zemin' | 'portre' | 'bina' | 'nesne' | 'karo' | 'galeri';
+  'sahne' | 'afis' | 'zemin' | 'savas' | 'portre' | 'bina' | 'nesne' | 'karo' | 'galeri';
 export const SINIR: Record<KaliciGrup, number> = {
   sahne: 12,
   afis: 16,
   zemin: 12,
+  // Savaş raporu sahneleri (savas.ts): son açılan raporlar; eskisi düşüyor.
+  savas: 16,
   portre: 40,
   bina: 48,
   nesne: 128,

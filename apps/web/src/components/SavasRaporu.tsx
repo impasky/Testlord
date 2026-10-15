@@ -28,6 +28,8 @@ import {
   type GeneralYukselisiDto,
   type LordOzetiDto,
 } from '../api/client';
+import { SavasCizimi } from '../cizim/Cizimler';
+import { savasAnahtari } from '../cizim/savas';
 import { BirimIkonu, IkonAltin, IkonDemir, IkonErzak, IkonKapali } from './Ikonlar';
 import { Buton, Fark, Kart, Rozet, SonucSatiri, formatSayi, nadirlikRengi, sablonlu } from './ui';
 
@@ -413,6 +415,34 @@ function sebepCumlesi(s: SavasSebebi): ReactNode {
   }
 }
 
+/**
+ * Raporun sahnesi: soldan saldıran (kırmızı), sağdan savunan (mavi).
+ * Anahtar raporun verisinden (`savasAnahtari`); aynı görünen savaşlar
+ * aynı resmi paylaşıyor ve resim cihazda kalıyor.
+ */
+function SavasSahnesi({ savas }: { savas: BattleDto }) {
+  const anahtar = savasAnahtari({
+    tip: savas.bolgeTipi ?? null,
+    saldiran: { kalan: savas.log.attackerSurvivors, kayip: savas.log.attackerLosses },
+    savunan: { kalan: savas.log.defenderSurvivors, kayip: savas.log.defenderLosses },
+    saldiranKazandi: savas.result === 'attacker_win',
+    tahkimat: (savas.log.tahkimatBonusu ?? 0) > 0,
+  });
+  const savunan = savas.defender?.name ?? 'Garnizon';
+  return (
+    <div
+      className="relative -mx-4 -mt-3 aspect-[60/23] overflow-hidden border-b border-kenar"
+      data-savas-sahnesi={anahtar}
+    >
+      <SavasCizimi
+        anahtar={anahtar}
+        alt={`${savas.attacker.name} ile ${savunan} arasındaki savaş`}
+        className="h-full w-full"
+      />
+    </div>
+  );
+}
+
 export function SavasRaporu({
   battleId,
   benimId,
@@ -492,6 +522,11 @@ export function SavasRaporu({
 
           {savas && (
             <>
+              {/* Savaşın kendisi, tek karede (docs/09 G4): kim sahadaydı,
+                  kaçı düştü, kim kazandı. Sayıların üstünde, çünkü göz
+                  önce resmi okuyor. */}
+              <SavasSahnesi savas={savas} />
+
               {/* Sonuç en başta: okunacak ilk şey "bu bana ne kazandırdı".
                   Tur tur güç ve kayıp dökümü "neden oldu"yu anlatır ve
                   aşağıda kalır. */}

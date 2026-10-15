@@ -744,6 +744,7 @@ eskisi bırakılıyor. Zemin GPU'da değilse (düz üçgenler) yama yok.
 | `kisiler.ts`                          | On iki general, beş lord, profil portreleri                                                                                                                                    |
 | `diyarlar.ts`                         | Beş akın diyarı: kapak sahnesi ve tepeden yol haritası                                                                                                                         |
 | `zeminler.ts`                         | Sekmelerin tepesindeki manzara şeritleri; her biri o ekranın binası ve insanlarıyla                                                                                            |
+| `savas.ts`                            | Savaş raporunun sahnesi: iki ordu karşı karşıya, düşenler ortada, bölgenin türünde arazi; anahtar raporun verisinden (`savasAnahtari`)                                         |
 | `dunya.ts`                            | Dünya haritasının arazisi, tepeden; kara sınırı `kara.ts`teki `KARA_YOLU`. 2D üçgenler ve GPU modeli                                                                           |
 | `glAg.ts`                             | Modelden GPU üçgen tamponu (saf)                                                                                                                                               |
 | `glCizici.ts`                         | WebGL2 çizici: gölge haritası, ana geçiş, kenar + süper örnekleme                                                                                                              |
@@ -764,7 +765,7 @@ kaydırmada her karede yeniden taranıyordu; tuval tek bir resim gibi
 Geliştirme sunucusunda `http://localhost:5173/#/cizim-galerisi` bütün
 çizimleri bölüm bölüm tek sayfada gösteriyor: binalar, yerleşim, birlikler,
 düşmanlar, ekipman, generaller, lord, portreler, diyarlar, bölgeler, ekran
-zeminleri, canlı sahneler (hareketiyle), dünya. Aynı ışık, aynı palet ve aynı ölçek tutuyor mu, burada
+zeminleri, savaş sahneleri, canlı sahneler (hareketiyle), dünya. Aynı ışık, aynı palet ve aynı ölçek tutuyor mu, burada
 bakılıyor. Galeri üretim derlemesine girmiyor (`main.tsx`,
 `import.meta.env.DEV`).
 

@@ -17,6 +17,7 @@ import { bolgeModeli } from './bolgeler';
 import { diyarModeli, type Kadraj } from './diyarlar';
 import { dunyaModeli } from './dunya';
 import { generalModeli, lordModeli, portreModeli } from './kisiler';
+import { savasModeli } from './savas';
 import type { Model } from './uc';
 import { yerlesimAnahtariCoz, yerlesimModeli } from './yerlesim';
 import { zeminModeli } from './zeminler';
@@ -39,6 +40,8 @@ const TARIFLER: Record<string, (ad: string) => Model | null> = {
     return diyarModeli(diyar, kadraj as Kadraj);
   },
   zemin: zeminModeli,
+  // Savaş raporunun sahnesi: anahtar raporun verisini taşıyor (savas.ts).
+  savas: savasModeli,
   // Dünya haritasının zemini: yakınlık yaması işçide kurulmuş modelden
   // (her yama için elli bin üçgen yeniden kurulmasın).
   dunya: (ad) => (ad === 'zemin' ? dunyaModeli() : null),

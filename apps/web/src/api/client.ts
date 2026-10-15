@@ -774,6 +774,8 @@ export interface BattleDto {
   defenderLordId: string | null;
   attacker: { name: string };
   defender: { name: string } | null;
+  /** Savaşılan bölgenin türü (raporun sahnesi için); bölge yoksa null. */
+  bolgeTipi?: string | null;
   log: {
     rounds: { tur: number; saldiranGuc: number; savunanGuc: number }[];
     attackerLosses: Army;
