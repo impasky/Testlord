@@ -715,6 +715,73 @@ svg g[role='button']:focus-visible > path:first-of-type {
 }
 
 /*
+ * Mikro animasyonlar (docs/13 "Mikro animasyonlar"): küçük, kısa, tek
+ * seferlik. Hareket azaltılmışsa hiçbiri oynamıyor; öğe son hâlinde duruyor
+ * (kaynak farkı hiç çizilmiyor: `useSayan` sıçramayı kaydetmiyor).
+ */
+.kaynak-fark {
+  position: absolute;
+  right: 0;
+  top: -0.35rem;
+  animation: kaynak-fark 1.4s ease-out forwards;
+}
+@keyframes kaynak-fark {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+.sekme-zipla {
+  animation: sekme-zipla 0.32s ease-out;
+}
+@keyframes sekme-zipla {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  40% {
+    transform: translateY(-3px) scale(1.12);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+.nokta-belir {
+  animation: nokta-belir 0.35s ease-out;
+}
+@keyframes nokta-belir {
+  0% {
+    transform: scale(0);
+  }
+  60% {
+    transform: scale(1.35);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kaynak-fark,
+  .sekme-zipla,
+  .nokta-belir {
+    animation: none;
+  }
+  .kaynak-fark {
+    display: none;
+  }
+}
+
+/*
  * Yükleme iskeletleri (docs/13). Çizim gelene kadar kutu boş kalıyordu;
  * şimdi hafif bir parıltı "burası dolacak" diyor. Sahne iskeleti (Şehir)
  * yerleşkenin çayır rengi. Hareket azaltılmışsa parıltı durağan.

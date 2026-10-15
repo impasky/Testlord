@@ -293,3 +293,19 @@ geliyordu. İskelet artık gelecek ekrana benziyor (`Iskelet` `tur`,
 Çizimler de kendi yerinde bekliyor: koddan çizilen bir resim gelene kadar
 kutusu boş kalıyordu; şimdi hafif bir parıltı "burası dolacak" diyor
 (`.cizim-bekliyor`, `Sahne`). Hareket azaltılmışsa parıltı durağan.
+
+## 13.15 Mikro animasyonlar
+
+Küçük, kısa, tek seferlik; hepsi `prefers-reduced-motion`a uyuyor
+(styles.css "Mikro animasyonlar"):
+
+- **Kaynak farkı.** Üst çubukta sayı sıçrayınca (ödül, harcama, ganimet)
+  yanında "+1.200" ya da "−300" yükselip sönüyor; harcamada sayı sayarken
+  kısa bir an kızarıyor (kazançta zaten yeşeriyordu). Sayının sayması
+  "değişti" diyordu ama ne kadar değiştiğini söylemiyordu: üretim başlatan
+  oyuncu bedelin düştüğünü göremiyordu. Saniyelik gelir akışı sıçrama
+  sayılmıyor (eşik: bir dakikalık gelir).
+- **Sekme.** Alt çubukta seçilen sekmenin simgesi hafifçe zıplıyor:
+  dokunuşun karşılığı ekran değişmeden önce parmağın altında.
+- **Nokta.** Omurganın işaret noktası ve okunmamış sohbet noktası
+  belirirken "pop" ediyor; sessizce beliren nokta gözden kaçıyordu.

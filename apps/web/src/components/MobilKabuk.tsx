@@ -98,9 +98,19 @@ function hareketAzaltilmis(): boolean {
  * saniye sayan bir çubuk gürültü olurdu. Hareket azaltılmışsa hiç
  * saymıyor.
  */
-function useSayan(hedef: number, esik: number): { deger: number; yon: -1 | 0 | 1 } {
+function useSayan(
+  hedef: number,
+  esik: number,
+): { deger: number; yon: -1 | 0 | 1; sicrama: { fark: number; an: number } | null } {
   const [gosterilen, setGosterilen] = useState(hedef);
   const [yon, setYon] = useState<-1 | 0 | 1>(0);
+  /*
+   * Son sıçrama (ödül, harcama, ganimet): sayının yanında "+1.200" ya da
+   * "−300" yükselip sönüyor (`.kaynak-fark`). Sayının sayması "değişti"
+   * diyordu ama ne kadar değiştiğini söylemiyordu; harcayan oyuncu bedelin
+   * düştüğünü göremiyordu.
+   */
+  const [sicrama, setSicrama] = useState<{ fark: number; an: number } | null>(null);
   const simdiki = useRef(hedef);
   useEffect(() => {
     const bas = simdiki.current;
@@ -112,6 +122,7 @@ function useSayan(hedef: number, esik: number): { deger: number; yon: -1 | 0 | 1
       return;
     }
     setYon(fark > 0 ? 1 : -1);
+    setSicrama({ fark, an: performance.now() });
     const t0 = performance.now();
     let id = 0;
     const adim = (t: number) => {
@@ -125,7 +136,7 @@ function useSayan(hedef: number, esik: number): { deger: number; yon: -1 | 0 | 1
     id = requestAnimationFrame(adim);
     return () => cancelAnimationFrame(id);
   }, [hedef, esik]);
-  return { deger: gosterilen, yon };
+  return { deger: gosterilen, yon, sicrama };
 }
 
 /** Kaynak sayacı: sunucu değerinden itibaren saniye saniye ilerler. */
@@ -257,17 +268,30 @@ function KaynakSayaci({
       }`}
       title={ipucu}
     >
-      <div className="flex items-center gap-1">
+      <div className="relative flex items-center gap-1">
         <span className="shrink-0" style={{ color: renk }}>
           {ikon}
         </span>
         <span
-          className={`tabular truncate text-[13px] font-bold transition-colors duration-300 ${
-            sayan.yon > 0 ? 'text-yesil' : ''
+          className={`tabular relative truncate text-[13px] font-bold transition-colors duration-300 ${
+            sayan.yon > 0 ? 'text-yesil' : sayan.yon < 0 ? 'text-kirmizi' : ''
           }`}
         >
           {kisaSayi(sayan.deger)}
         </span>
+        {sayan.sicrama && (
+          <span
+            key={sayan.sicrama.an}
+            aria-hidden="true"
+            data-kaynak-fark={Math.round(sayan.sicrama.fark)}
+            className={`kaynak-fark tabular pointer-events-none text-[11px] font-bold ${
+              sayan.sicrama.fark > 0 ? 'text-yesil' : 'text-kirmizi'
+            }`}
+          >
+            {sayan.sicrama.fark > 0 ? '+' : '−'}
+            {kisaSayi(Math.abs(Math.round(sayan.sicrama.fark)))}
+          </span>
+        )}
       </div>
       <div className="mt-1 flex items-center gap-1">
         {cubukGerek && (
@@ -455,7 +479,7 @@ export function MobilKabuk({
               <IkonSohbet boyut={18} />
               {okunmamis && (
                 <span
-                  className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border border-gece bg-altin"
+                  className="nokta-belir absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border border-gece bg-altin"
                   aria-hidden
                 />
               )}
@@ -566,14 +590,19 @@ export function MobilKabuk({
                      ekranda kopmamasını bu sağlıyor. */
                   data-rehber={key === ANA_SEKME ? 'nav-ana' : undefined}
                 >
-                  <span className="relative">
+                  {/* Seçilince simge hafifçe zıplıyor (`.sekme-zipla`): dokunuşun
+                      karşılığı ekran değişmeden önce parmağın altında. */}
+                  <span
+                    key={etkin ? 'etkin' : 'bos'}
+                    className={`relative ${etkin ? 'sekme-zipla' : ''}`}
+                  >
                     <Ikon boyut={22} />
                     {/* Omurganın işaret ettiği sekmede altın nokta.
                         Referanstaki kırmızı noktaların işlevi bu: oyuncu
                         nereye gideceğini okumadan görüyor. */}
                     {isaretli === key && !etkin && (
                       <span
-                        className="absolute -top-1 -right-1.5 h-2.5 w-2.5 rounded-full border border-gece bg-altin"
+                        className="nokta-belir absolute -top-1 -right-1.5 h-2.5 w-2.5 rounded-full border border-gece bg-altin"
                         aria-hidden
                       />
                     )}

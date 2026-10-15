@@ -340,7 +340,7 @@
     "tr": "{0} — {1}, sonra ordu saatte %{2} firar verir",
     "en": "{0} — {1}, then the army deserts at {2}% per hour",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:243"
+      "apps/web/src/components/MobilKabuk.tsx:254"
     ]
   },
   "t89ee47d6": {
@@ -356,7 +356,7 @@
     "tr": "{0} — depo dolu, üretim boşa gidiyor",
     "en": "{0} — storage is full, production is wasted",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:246"
+      "apps/web/src/components/MobilKabuk.tsx:257"
     ]
   },
   "t3cf4481e": {
@@ -364,7 +364,7 @@
     "tr": "{0} — eksiye gidiyor",
     "en": "{0} — going into the negative",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:244"
+      "apps/web/src/components/MobilKabuk.tsx:255"
     ]
   },
   "tc3b64242": {
@@ -825,7 +825,7 @@
     "tr": "{0} dk sonra biter",
     "en": "Finishes in {0} min",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:227"
+      "apps/web/src/components/MobilKabuk.tsx:238"
     ]
   },
   "td8423f34": {
@@ -1151,7 +1151,7 @@
     "tr": "{0} sa sonra biter",
     "en": "Finishes in {0} hr",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:228"
+      "apps/web/src/components/MobilKabuk.tsx:239"
     ]
   },
   "t423b2a6e": {
@@ -1443,7 +1443,7 @@
     "tr": "{0}: {1} ({2}{3}/sa)",
     "en": "{0}: {1} ({2}{3}/hr)",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:239"
+      "apps/web/src/components/MobilKabuk.tsx:250"
     ]
   },
   "tdfb3b8bb": {
@@ -1983,7 +1983,7 @@
     "en": "Gold",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:89",
-      "apps/web/src/components/MobilKabuk.tsx:478",
+      "apps/web/src/components/MobilKabuk.tsx:502",
       "apps/web/src/screens/Generaller.tsx:32",
       "apps/web/src/screens/Medeniyet.tsx:342",
       "data/arma.json:renkler[5].ad"
@@ -2290,7 +2290,7 @@
     "tr": "azalıyor",
     "en": "decreasing",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:290"
+      "apps/web/src/components/MobilKabuk.tsx:314"
     ]
   },
   "t41939cf2": {
@@ -3398,7 +3398,7 @@
     "tr": "Çıkış",
     "en": "Logout",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:467"
+      "apps/web/src/components/MobilKabuk.tsx:491"
     ]
   },
   "t402aadc7": {
@@ -3479,7 +3479,7 @@
     "en": "Iron",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:90",
-      "apps/web/src/components/MobilKabuk.tsx:486",
+      "apps/web/src/components/MobilKabuk.tsx:510",
       "apps/web/src/screens/Medeniyet.tsx:350"
     ]
   },
@@ -3582,7 +3582,7 @@
     "tr": "depo dolu",
     "en": "storage full",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:287"
+      "apps/web/src/components/MobilKabuk.tsx:311"
     ]
   },
   "t98a9b4f3": {
@@ -4323,7 +4323,7 @@
     "tr": "Elmas",
     "en": "Gems",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:436"
+      "apps/web/src/components/MobilKabuk.tsx:460"
     ]
   },
   "t059e37f2": {
@@ -4562,7 +4562,7 @@
     "en": "Supplies",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:91",
-      "apps/web/src/components/MobilKabuk.tsx:494",
+      "apps/web/src/components/MobilKabuk.tsx:518",
       "apps/web/src/screens/Medeniyet.tsx:358",
       "packages/shared/src/ogretici.ts:300"
     ]
@@ -4892,7 +4892,7 @@
     "tr": "Genel sohbet",
     "en": "Global chat",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:449"
+      "apps/web/src/components/MobilKabuk.tsx:473"
     ]
   },
   "t9b854c91": {
@@ -4900,7 +4900,7 @@
     "tr": "Genel sohbet — yeni mesaj var",
     "en": "Global chat — new messages",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:449"
+      "apps/web/src/components/MobilKabuk.tsx:473"
     ]
   },
   "tee31b148": {
@@ -7302,7 +7302,7 @@
     "en": "Age of Lords",
     "nerede": [
       "apps/api/src/routes/push.ts:92",
-      "apps/web/src/components/MobilKabuk.tsx:520",
+      "apps/web/src/components/MobilKabuk.tsx:544",
       "apps/web/src/screens/EpostaDogrula.tsx:38",
       "apps/web/src/screens/Giris.tsx:200",
       "apps/web/src/screens/ParolaSifirla.tsx:31"
@@ -9562,7 +9562,7 @@
       "apps/web/src/components/IttifakBasvurular.tsx:149",
       "apps/web/src/components/IttifakIncele.tsx:69",
       "apps/web/src/components/IttifakIncele.tsx:98",
-      "apps/web/src/components/MobilKabuk.tsx:423",
+      "apps/web/src/components/MobilKabuk.tsx:447",
       "apps/web/src/components/ProfilKarti.tsx:111",
       "apps/web/src/components/YukselmeGecisi.tsx:113",
       "apps/web/src/screens/Ittifak.tsx:460",
@@ -10291,7 +10291,7 @@
     "tr": "Tüm sayfalar",
     "en": "All pages",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:545",
+      "apps/web/src/components/MobilKabuk.tsx:569",
       "apps/web/src/components/UygulamaKasasi.tsx:166",
       "apps/web/src/components/UygulamaKasasi.tsx:177"
     ]
