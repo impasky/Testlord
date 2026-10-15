@@ -164,7 +164,7 @@
     "tr": ", {0} sürüyor",
     "en": ", {0} in progress",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:651"
+      "apps/web/src/screens/Sehir.tsx:658"
     ]
   },
   "tfc687484": {
@@ -324,7 +324,7 @@
     "tr": "{0} — {1} yapı",
     "en": "{0} — {1} building",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:377"
+      "apps/web/src/screens/Sehir.tsx:380"
     ]
   },
   "te4dc80c9": {
@@ -446,7 +446,7 @@
     "tr": "{0} · bina tavanı {1}",
     "en": "{0} · building cap {1}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:457"
+      "apps/web/src/screens/Sehir.tsx:461"
     ]
   },
   "tef9d6dc5": {
@@ -990,7 +990,7 @@
     "tr": "{0} inşa ediliyor",
     "en": "{0} under construction",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:432"
+      "apps/web/src/screens/Sehir.tsx:436"
     ]
   },
   "t4438dd01": {
@@ -1515,7 +1515,7 @@
     "tr": "{0}'a git",
     "en": "Go to {0}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:922"
+      "apps/web/src/screens/Sehir.tsx:932"
     ]
   },
   "t0900053c": {
@@ -2158,7 +2158,7 @@
     "tr": "Asker eğitimi",
     "en": "Troop training",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:60"
+      "apps/web/src/screens/Sehir.tsx:61"
     ]
   },
   "tc9c35393": {
@@ -2404,7 +2404,7 @@
     "tr": "Başkent taşınamadı.",
     "en": "Capital could not be moved.",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:296"
+      "apps/web/src/screens/Sehir.tsx:299"
     ]
   },
   "tb8e6f80a": {
@@ -2412,7 +2412,7 @@
     "tr": "Başkentini taşı: {0}",
     "en": "Move your capital: {0}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:456"
+      "apps/web/src/screens/Sehir.tsx:460"
     ]
   },
   "tea7af10a": {
@@ -2789,9 +2789,9 @@
     "tr": "boş arsa",
     "en": "vacant lot",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:649",
-      "apps/web/src/screens/Sehir.tsx:652",
-      "apps/web/src/screens/Sehir.tsx:870"
+      "apps/web/src/screens/Sehir.tsx:656",
+      "apps/web/src/screens/Sehir.tsx:659",
+      "apps/web/src/screens/Sehir.tsx:880"
     ]
   },
   "t0f1623db": {
@@ -2890,7 +2890,7 @@
     "tr": "Bölge yükseltme",
     "en": "Region upgrade",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:64"
+      "apps/web/src/screens/Sehir.tsx:65"
     ]
   },
   "ta5c31fa5": {
@@ -3699,6 +3699,14 @@
       "apps/web/src/components/Ogretici.tsx:260"
     ]
   },
+  "t1d5732c8": {
+    "grup": "arayuz",
+    "tr": "Dikildi!",
+    "en": "Built!",
+    "nerede": [
+      "apps/web/src/components/YukselmeGecisi.tsx:113"
+    ]
+  },
   "t34691c46": {
     "grup": "arayuz",
     "tr": "Dil",
@@ -3732,7 +3740,7 @@
     "tr": "Diyar yükleniyor…",
     "en": "Realm loading…",
     "nerede": [
-      "apps/web/src/App.tsx:474"
+      "apps/web/src/App.tsx:477"
     ]
   },
   "tadebb397": {
@@ -4259,7 +4267,7 @@
     "tr": "Ekipman üretimi",
     "en": "Equipment production",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:61"
+      "apps/web/src/screens/Sehir.tsx:62"
     ]
   },
   "t12fb0004": {
@@ -4267,7 +4275,7 @@
     "tr": "Ekipman yükseltme",
     "en": "Equipment upgrade",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:62"
+      "apps/web/src/screens/Sehir.tsx:63"
     ]
   },
   "tcf58093a": {
@@ -5035,7 +5043,7 @@
     "tr": "Giriş ekranına dön",
     "en": "Return to login screen",
     "nerede": [
-      "apps/web/src/App.tsx:463",
+      "apps/web/src/App.tsx:466",
       "apps/web/src/screens/ParolaSifirla.tsx:41"
     ]
   },
@@ -5121,7 +5129,7 @@
       "apps/web/src/screens/Hesap.tsx:259",
       "apps/web/src/screens/Kisla.tsx:285",
       "apps/web/src/screens/ParolaSifirla.tsx:62",
-      "apps/web/src/screens/Sehir.tsx:918"
+      "apps/web/src/screens/Sehir.tsx:928"
     ]
   },
   "t5b346f80": {
@@ -5834,7 +5842,7 @@
     "tr": "inşa ediliyor",
     "en": "under construction",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:536"
+      "apps/web/src/screens/Sehir.tsx:540"
     ]
   },
   "tff2e7684": {
@@ -5842,7 +5850,7 @@
     "tr": "İnşa et",
     "en": "Construct",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:918"
+      "apps/web/src/screens/Sehir.tsx:928"
     ]
   },
   "t776ce02a": {
@@ -5850,7 +5858,7 @@
     "tr": "İnşaat",
     "en": "Construction",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:59"
+      "apps/web/src/screens/Sehir.tsx:60"
     ]
   },
   "t22b61a98": {
@@ -5858,7 +5866,7 @@
     "tr": "İnşaat başlatılamadı.",
     "en": "Construction could not be started.",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:280"
+      "apps/web/src/screens/Sehir.tsx:283"
     ]
   },
   "t68d4eca6": {
@@ -5866,7 +5874,7 @@
     "tr": "İptal",
     "en": "Cancel",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:442"
+      "apps/web/src/screens/Sehir.tsx:446"
     ]
   },
   "tbf6e4d16": {
@@ -6431,7 +6439,7 @@
     "tr": "Kartı kapat",
     "en": "Close card",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:875"
+      "apps/web/src/screens/Sehir.tsx:885"
     ]
   },
   "t89e90b92": {
@@ -6760,7 +6768,7 @@
     "en": "Scouting",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:433",
-      "apps/web/src/screens/Sehir.tsx:65",
+      "apps/web/src/screens/Sehir.tsx:66",
       "data/generals.json:generaller[7].yetenek.ad"
     ]
   },
@@ -7210,7 +7218,7 @@
     "tr": "Listeyi kapat",
     "en": "Close list",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:496"
+      "apps/web/src/screens/Sehir.tsx:500"
     ]
   },
   "t585a841c": {
@@ -7754,7 +7762,7 @@
     "en": "Army gear",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:599",
-      "apps/web/src/screens/Sehir.tsx:63"
+      "apps/web/src/screens/Sehir.tsx:64"
     ]
   },
   "tb1ed25c1": {
@@ -7992,7 +8000,7 @@
     "tr": "Oturum açılamadı. Tekrar giriş yapman gerekiyor.",
     "en": "Could not log in. You need to sign in again.",
     "nerede": [
-      "apps/web/src/App.tsx:461"
+      "apps/web/src/App.tsx:464"
     ]
   },
   "t63341816": {
@@ -9115,8 +9123,8 @@
     "tr": "seviye {0}",
     "en": "level {0}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:649",
-      "apps/web/src/screens/Sehir.tsx:652"
+      "apps/web/src/screens/Sehir.tsx:656",
+      "apps/web/src/screens/Sehir.tsx:659"
     ]
   },
   "tc36d65d0": {
@@ -9133,7 +9141,7 @@
     "tr": "Seviye {0} / {1}",
     "en": "Level {0} / {1}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:870"
+      "apps/web/src/screens/Sehir.tsx:880"
     ]
   },
   "tc15fa5ea": {
@@ -9141,7 +9149,7 @@
     "tr": "Seviye {0} yap",
     "en": "Upgrade to Level {0}",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:918"
+      "apps/web/src/screens/Sehir.tsx:928"
     ]
   },
   "t939a055a": {
@@ -9450,7 +9458,7 @@
     "tr": "Sunucu uykudan uyanıyor olabilir. Bu ilk açılışta 30–60 saniye sürebilir.",
     "en": "The server might be waking up from sleep. This can take 30–60 seconds on the first launch.",
     "nerede": [
-      "apps/web/src/App.tsx:477"
+      "apps/web/src/App.tsx:480"
     ]
   },
   "tf5b5351e": {
@@ -9556,6 +9564,7 @@
       "apps/web/src/components/IttifakIncele.tsx:98",
       "apps/web/src/components/MobilKabuk.tsx:423",
       "apps/web/src/components/ProfilKarti.tsx:111",
+      "apps/web/src/components/YukselmeGecisi.tsx:113",
       "apps/web/src/screens/Ittifak.tsx:460",
       "apps/web/src/screens/Ittifak.tsx:76",
       "apps/web/src/screens/LordEkrani.tsx:450",
@@ -10146,7 +10155,7 @@
     "tr": "Taşın",
     "en": "Move",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:466"
+      "apps/web/src/screens/Sehir.tsx:470"
     ]
   },
   "tf3733180": {
@@ -10352,7 +10361,7 @@
     "nerede": [
       "apps/web/src/components/harita/DunyaHaritasi.tsx:779",
       "apps/web/src/screens/Akin.tsx:562",
-      "apps/web/src/screens/Sehir.tsx:552"
+      "apps/web/src/screens/Sehir.tsx:556"
     ]
   },
   "tf8038d21": {
@@ -10534,7 +10543,7 @@
     "nerede": [
       "apps/web/src/components/harita/DunyaHaritasi.tsx:777",
       "apps/web/src/screens/Akin.tsx:556",
-      "apps/web/src/screens/Sehir.tsx:558"
+      "apps/web/src/screens/Sehir.tsx:562"
     ]
   },
   "te07ec6d1": {
@@ -10576,7 +10585,7 @@
     "tr": "yapı",
     "en": "structure",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:870"
+      "apps/web/src/screens/Sehir.tsx:880"
     ]
   },
   "tdd99127b": {
@@ -10584,8 +10593,8 @@
     "tr": "Yapılar",
     "en": "Structures",
     "nerede": [
-      "apps/web/src/screens/Sehir.tsx:493",
-      "apps/web/src/screens/Sehir.tsx:571"
+      "apps/web/src/screens/Sehir.tsx:497",
+      "apps/web/src/screens/Sehir.tsx:575"
     ]
   },
   "td55cc683": {
@@ -10813,7 +10822,7 @@
     "tr": "Yeniden dene",
     "en": "Try again",
     "nerede": [
-      "apps/web/src/App.tsx:482"
+      "apps/web/src/App.tsx:485"
     ]
   },
   "t2579f562": {

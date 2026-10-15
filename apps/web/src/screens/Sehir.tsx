@@ -42,6 +42,7 @@ import {
 import { IkonUyari } from '../components/Ikonlar';
 import { BinaCizimi, CIZILEN_BINALAR, YerlesimCizimi } from '../cizim/Cizimler';
 import { YakinlikDugmesi } from '../components/YakinlikDugmesi';
+import { YukselmeGecisi, useYukselenler } from '../components/YukselmeGecisi';
 import { DUGME_ADIMI, useYerleskeYakinligi } from './yerleskeYakinligi';
 import {
   BINA_TABAN_BOY,
@@ -234,6 +235,8 @@ export function Sehir({
   const rehberAdimi = useOmurgaAdimi(lord, queues);
   const rehberDurumu = useRehberDurumu(lord);
   const veri = useQuery({ queryKey: ['sehir'], queryFn: api.sehir });
+  // Az önce seviye atlayan yapılar: üstlerinde geçiş oynuyor.
+  const yukselenler = useYukselenler(veri.data?.binalar);
   const [secili, setSecili] = useState<string | null>(null);
   const [hata, setHata] = useState<string | null>(null);
   /** Yapı listesi açık mı (seviye yükseltme oradan; dokunuş yapının içine giriyor). */
@@ -400,6 +403,7 @@ export function Sehir({
                 b={b}
                 secili={secili === b.key}
                 mesgul={isler.get(b.key) ?? null}
+                yukseldi={yukselenler.get(b.key)}
                 onSec={() => haritadaSec(b)}
               />
             ))}
@@ -625,12 +629,15 @@ function BinaIsareti({
   b,
   secili,
   mesgul,
+  yukseldi,
   onSec,
 }: {
   b: BinaDurumu;
   secili: boolean;
   /** Bu yapıda süren iş — varsa bitiş zamanı ve tek kelimelik adı. */
   mesgul: { bitis: string; ad: string } | null;
+  /** Az önce bu seviyeye çıktı: geçiş oynuyor (`YukselmeGecisi`). */
+  yukseldi?: number;
   onSec: () => void;
 }) {
   const dikili = b.seviye > 0;
@@ -712,6 +719,9 @@ function BinaIsareti({
         ahşap bir iskele çiziliyor. Bütün binalar için çalışıyor, hiçbiri
         için ayrı dosya gerekmiyor.
       */}
+      {/* Yükseltme bitti: iskele kalktığı an toz, halka ve "Sv N". */}
+      {yukseldi !== undefined && <YukselmeGecisi seviye={yukseldi} />}
+
       {mesgul && (
         <svg
           viewBox="0 0 100 100"

@@ -522,6 +522,37 @@ kontrol(
   );
 }
 
+/*
+ * YÜKSELTME GEÇİŞİ (docs/13): iş bitince binanın üstünde toz, halka ve
+ * "Sv N". Oyuncu başka sekmedeyken biten yükseltme, Şehir'e dönünce
+ * kutlanıyor (son görülen seviyeler modülde duruyor).
+ */
+{
+  await page.waitForSelector('[data-bina]', { timeout: 20000 });
+  const sehirNow = await get('/sehir');
+  const aday = sehirNow.binalar.find(
+    (b) => b.seviye >= 1 && b.seviye < sehirNow.yerlesim.binaTavani && b.seviyeli,
+  );
+  const yuk = aday ? await post('/sehir/bina', { key: aday.key }) : null;
+  await post('/test/kuyruklari-bitir');
+  await page.locator('nav button:has-text("Ordu")').click();
+  // `sehir` sorgusu 5 sn taze sayılıyor: dönüşte yeniden okunsun.
+  await page.waitForTimeout(6000);
+  await page.locator('nav button:has-text("Şehir")').click();
+  const gecis = await page
+    .waitForSelector(`[data-bina="${aday?.key}"] [data-yukselme]`, { timeout: 10000 })
+    .catch(() => null);
+  kontrol(
+    'Yükseltme bitince binada geçiş oynuyor',
+    Boolean(gecis),
+    aday
+      ? `${aday.key} ${aday.seviye} → ${aday.seviye + 1}${yuk?.error ? ' · ' + yuk.error : ''}`
+      : 'aday yok',
+  );
+  await page.waitForTimeout(2800);
+  kontrol('Geçiş süre dolunca kalkıyor', (await page.locator('[data-yukselme]').count()) === 0);
+}
+
 await page.screenshot({ path: `${process.env.CIKTI ?? 'ekran-goruntuleri'}/sehir.png` });
 kontrol('Konsol hatası yok', konsol.length === 0, konsol[0] ?? '');
 

@@ -257,3 +257,20 @@ düzelip ötekinin düzelmemesi demek.
 Sahne kurgusunun tamamı git geçmişinde duruyor (`a0700a4`): bir gün
 tekrar istenirse üretilmiş sprite'lar dahil oradan alınır, yeni çağrı
 gerekmez.
+
+## 13.13 Yükseltme geçişi
+
+İnşaat süresince binanın üstünde ahşap bir iskele duruyordu; iş bitince
+iskele bir karede kayboluyor, yeni aşamanın çizimi de birkaç yüz
+milisaniye sonra sessizce yerine oturuyordu. Oyuncu dakikalarca beklediği
+anı kaçırıyordu. Üstelik `sehir` sorgusu iş bitince tazelenmiyordu:
+iskele `/me` ile kalkıyor, yapı otuz saniye eski seviyede duruyordu.
+
+Şimdi (`components/YukselmeGecisi.tsx`): seviye artan ya da arsada
+dikilen yapının tabanından bir toz bulutu kalkıyor, altın bir halka
+açılıyor, "Sv 3" (ilk dikilişte "Dikildi!") yükselip sönüyor; zafer sesi
+ve titreşimi. Toz yeni çizimin gelişini de örtüyor. Son görülen seviyeler
+modül düzeyinde: oyuncu iş sürerken başka sekmedeyse, Şehir'e dönünce
+kutlanıyor. İlk açılışta (sayfa yenilenince) kutlanacak bir şey yok.
+Hareket azaltılmışsa yalnız etiket. İşin bitiş zamanlayıcısı (`App.tsx`)
+artık `sehir`i de tazeliyor. Test: `tools/sehir-testi.mjs`.

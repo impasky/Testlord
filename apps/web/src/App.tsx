@@ -242,8 +242,11 @@ export function App() {
        */
       void qc.refetchQueries({ queryKey: ['me'] }).then(() => {
         // `items`: biten üretim envantere bir parça koyuyor; omurga
-        // "kuşan" adımını ancak onu görünce söyleyebiliyor.
-        for (const anahtar of [['army'], ['map'], ['marches'], ['items']]) {
+        // "kuşan" adımını ancak onu görünce söyleyebiliyor. `sehir`: biten
+        // yükseltmenin yeni seviyesi — iskele `/me` ile kalkıyordu ama yapı
+        // otuz saniye eski seviyede duruyordu; yükseltme geçişi de
+        // (`YukselmeGecisi`) ancak yeni seviyeyi görünce oynuyor.
+        for (const anahtar of [['army'], ['map'], ['marches'], ['items'], ['sehir']]) {
           void qc.invalidateQueries({ queryKey: anahtar });
         }
       });
