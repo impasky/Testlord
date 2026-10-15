@@ -17,6 +17,7 @@ import type {
   StatKey,
   TaktikDurumu,
   YayinBulgusu,
+  BildirimTercihi,
 } from '@lordlar/shared';
 
 export type { AkinGrupDurumu, AkinHaritaDurumu, BinaDurumu, Kademe } from '@lordlar/shared';
@@ -1330,6 +1331,9 @@ export const api = {
   pushCik: (endpoint: string) =>
     post<{ cikildi: boolean; cihazSayisi: number }>('/push/cik', { endpoint }),
   pushDeneme: () => post<{ gonderildi: number }>('/push/deneme'),
+  pushTercih: () => request<BildirimTercihi>('/push/tercih'),
+  pushTercihKaydet: (t: BildirimTercihi) =>
+    request<BildirimTercihi>('/push/tercih', { method: 'PUT', body: JSON.stringify(t) }),
 
   items: () => request<{ items: ItemDto[]; tiers: TierDto[] }>('/items'),
   craft: (tier: number, slot: string) => post('/items/craft', { tier, slot }),

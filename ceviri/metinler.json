@@ -20,7 +20,7 @@
     "tr": " · {0} cihaz",
     "en": " · {0} device| · {0} devices",
     "nerede": [
-      "apps/web/src/components/BildirimKarti.tsx:101"
+      "apps/web/src/components/BildirimKarti.tsx:102"
     ]
   },
   "t6bfb7bdb": {
@@ -1807,7 +1807,7 @@
     "tr": "Açılıyor…",
     "en": "Turning on…",
     "nerede": [
-      "apps/web/src/components/BildirimKarti.tsx:95",
+      "apps/web/src/components/BildirimKarti.tsx:96",
       "apps/web/src/screens/Hesap.tsx:227"
     ]
   },
@@ -2011,7 +2011,7 @@
     "tr": "Ana Ekrana Ekle",
     "en": "Add to Home Screen",
     "nerede": [
-      "apps/web/src/components/BildirimKarti.tsx:76"
+      "apps/web/src/components/BildirimKarti.tsx:77"
     ]
   },
   "t9efb58a1": {
@@ -2609,7 +2609,7 @@
     "tr": "Bildirimler açık{0}",
     "en": "Notifications are on{0}",
     "nerede": [
-      "apps/web/src/components/BildirimKarti.tsx:101"
+      "apps/web/src/components/BildirimKarti.tsx:102"
     ]
   },
   "t80e752d3": {
@@ -2617,7 +2617,7 @@
     "tr": "Bildirimler açılamadı. Birazdan tekrar dene.",
     "en": "Notifications could not be turned on. Try again later.",
     "nerede": [
-      "apps/web/src/components/BildirimKarti.tsx:59"
+      "apps/web/src/components/BildirimKarti.tsx:60"
     ]
   },
   "tafbba83c": {
@@ -2625,7 +2625,7 @@
     "tr": "Bildirimler açıldı.",
     "en": "Notifications are turned on.",
     "nerede": [
-      "apps/web/src/components/BildirimKarti.tsx:93"
+      "apps/web/src/components/BildirimKarti.tsx:94"
     ]
   },
   "tf1309d33": {
@@ -2633,7 +2633,7 @@
     "tr": "Bildirimler iPhone ve iPad'de yalnızca ana ekrana eklenmiş uygulamada çalışır. Paylaş menüsünden {0} deyip oyunu oradan aç, sonra buraya dön.",
     "en": "Notifications on iPhone and iPad only work when the app is added to the home screen. Select {0} from the share menu, open the game from there, then return here.",
     "nerede": [
-      "apps/web/src/components/BildirimKarti.tsx:75"
+      "apps/web/src/components/BildirimKarti.tsx:76"
     ]
   },
   "tc89c7361": {
@@ -2649,7 +2649,7 @@
     "tr": "Bildirimleri aç",
     "en": "Turn on notifications",
     "nerede": [
-      "apps/web/src/components/BildirimKarti.tsx:95"
+      "apps/web/src/components/BildirimKarti.tsx:96"
     ]
   },
   "ta69b22b0": {
@@ -2657,7 +2657,7 @@
     "tr": "Bilinmeyen bir hata oluştu.",
     "en": "An unknown error occurred.",
     "nerede": [
-      "apps/web/src/api/client.ts:99"
+      "apps/web/src/api/client.ts:100"
     ]
   },
   "te7b9c929": {
@@ -3113,6 +3113,14 @@
       "apps/web/src/screens/Gizlilik.tsx:158"
     ]
   },
+  "tdfa5359f": {
+    "grup": "arayuz",
+    "tr": "Bu saatlerde hiçbir bildirim gelmez; olaylar oyunun içinde seni bekler.",
+    "en": "No notifications arrive in these hours; events wait for you in the game.",
+    "nerede": [
+      "apps/web/src/components/BildirimTercihleri.tsx:112"
+    ]
+  },
   "t48c066f2": {
     "grup": "arayuz",
     "tr": "Bu savaş sıralamanı ve gelirini değiştirmedi — kazanılan tek şey tecrübe oldu.",
@@ -3166,7 +3174,7 @@
     "tr": "Bu tarayıcıda bildirimlere izin verilmemiş. Adres çubuğundaki kilit simgesinden izni açtıktan sonra tekrar dene.",
     "en": "Notifications are not permitted in this browser. Allow permission from the lock icon in the address bar and try again.",
     "nerede": [
-      "apps/web/src/components/BildirimKarti.tsx:83"
+      "apps/web/src/components/BildirimKarti.tsx:84"
     ]
   },
   "t5027f5f4": {
@@ -3550,7 +3558,7 @@
     "tr": "Deneme bildirimi gönderildi.",
     "en": "Test notification sent.",
     "nerede": [
-      "apps/web/src/components/BildirimKarti.tsx:115"
+      "apps/web/src/components/BildirimKarti.tsx:116"
     ]
   },
   "t3409142b": {
@@ -3558,7 +3566,7 @@
     "tr": "Deneme bildirimi gönderilemedi.",
     "en": "Test notification could not be sent.",
     "nerede": [
-      "apps/web/src/components/BildirimKarti.tsx:119"
+      "apps/web/src/components/BildirimKarti.tsx:120"
     ]
   },
   "t0cd9dbc7": {
@@ -3566,7 +3574,7 @@
     "tr": "Deneme gönder",
     "en": "Send test",
     "nerede": [
-      "apps/web/src/components/BildirimKarti.tsx:123"
+      "apps/web/src/components/BildirimKarti.tsx:124"
     ]
   },
   "tfd091f8b": {
@@ -4735,7 +4743,8 @@
     "en": "Conquest",
     "nerede": [
       "apps/web/src/screens/Siralama.tsx:25",
-      "data/basarimlar.json:kumeler[0].ad"
+      "data/basarimlar.json:kumeler[0].ad",
+      "packages/shared/src/bildirimTercihi.ts:22"
     ]
   },
   "te9c54ad3": {
@@ -5093,7 +5102,7 @@
     "tr": "Gönderilecek cihaz bulunamadı.",
     "en": "No device found to send to.",
     "nerede": [
-      "apps/web/src/components/BildirimKarti.tsx:116"
+      "apps/web/src/components/BildirimKarti.tsx:117"
     ]
   },
   "t3d21f583": {
@@ -5276,6 +5285,14 @@
     "en": "How to exercise your rights",
     "nerede": [
       "apps/web/src/screens/Gizlilik.tsx:141"
+    ]
+  },
+  "tc7a68253": {
+    "grup": "arayuz",
+    "tr": "Hangi bildirimler gelsin",
+    "en": "Which notifications to receive",
+    "nerede": [
+      "apps/web/src/components/BildirimTercihleri.tsx:45"
     ]
   },
   "tc93b345b": {
@@ -5582,7 +5599,7 @@
     "en": "DELETE MY ACCOUNT",
     "nerede": [
       "apps/api/src/routes/me.ts:64",
-      "apps/web/src/api/client.ts:1312",
+      "apps/web/src/api/client.ts:1313",
       "apps/web/src/screens/Hesap.tsx:297"
     ]
   },
@@ -6322,7 +6339,7 @@
     "en": "Close",
     "nerede": [
       "apps/web/src/components/ArmaSecici.tsx:105",
-      "apps/web/src/components/BildirimKarti.tsx:131",
+      "apps/web/src/components/BildirimKarti.tsx:132",
       "apps/web/src/components/KapiPaneli.tsx:89",
       "apps/web/src/components/Omurga.tsx:466",
       "apps/web/src/components/ProfilKarti.tsx:206",
@@ -7301,7 +7318,7 @@
     "tr": "Lordlar Çağı",
     "en": "Age of Lords",
     "nerede": [
-      "apps/api/src/routes/push.ts:92",
+      "apps/api/src/routes/push.ts:135",
       "apps/web/src/components/MobilKabuk.tsx:544",
       "apps/web/src/screens/EpostaDogrula.tsx:38",
       "apps/web/src/screens/Giris.tsx:200",
@@ -7819,7 +7836,7 @@
     "tr": "Ordun döndüğünde, kuyruğun bittiğinde ve toprağına saldırıldığında haberin olsun. Bildirim yalnız bu cihaza gelir; istediğin zaman kapatabilirsin.",
     "en": "Get notified when your army returns, your queue finishes, and your land is attacked. Notifications only come to this device; you can turn them off anytime.",
     "nerede": [
-      "apps/web/src/components/BildirimKarti.tsx:68"
+      "apps/web/src/components/BildirimKarti.tsx:69"
     ]
   },
   "t8acaa615": {
@@ -8388,6 +8405,7 @@
       "apps/web/src/components/Pazar.tsx:105",
       "apps/web/src/screens/EsyaPazari.tsx:58",
       "data/binalar.json:binalar[5].ad",
+      "packages/shared/src/bildirimTercihi.ts:24",
       "packages/shared/src/types.ts:368"
     ]
   },
@@ -9116,6 +9134,30 @@
     "en": "streak ×{0}",
     "nerede": [
       "apps/web/src/components/GunlukKart.tsx:136"
+    ]
+  },
+  "t91831b54": {
+    "grup": "arayuz",
+    "tr": "Sessiz saatler",
+    "en": "Quiet hours",
+    "nerede": [
+      "apps/web/src/components/BildirimTercihleri.tsx:79"
+    ]
+  },
+  "t87b8361c": {
+    "grup": "arayuz",
+    "tr": "Sessiz saatlerin başı",
+    "en": "Start of quiet hours",
+    "nerede": [
+      "apps/web/src/components/BildirimTercihleri.tsx:84"
+    ]
+  },
+  "t22c6981e": {
+    "grup": "arayuz",
+    "tr": "Sessiz saatlerin sonu",
+    "en": "End of quiet hours",
+    "nerede": [
+      "apps/web/src/components/BildirimTercihleri.tsx:97"
     ]
   },
   "tc2cee430": {
@@ -10123,7 +10165,7 @@
     "tr": "Tarayıcı bildirimleri engelliyor. Adres çubuğundaki kilit simgesinden bu siteye bildirim izni vermen gerekiyor.",
     "en": "The browser is blocking notifications. You need to grant this site notification permission from the lock icon in the address bar.",
     "nerede": [
-      "apps/web/src/components/BildirimKarti.tsx:55"
+      "apps/web/src/components/BildirimKarti.tsx:56"
     ]
   },
   "t13d763b3": {
@@ -10204,6 +10246,14 @@
     "en": "Clear",
     "nerede": [
       "apps/web/src/components/CizimOlcumPaneli.tsx:154"
+    ]
+  },
+  "tf4719125": {
+    "grup": "arayuz",
+    "tr": "Tercih kaydedilemedi.",
+    "en": "Preference could not be saved.",
+    "nerede": [
+      "apps/web/src/components/BildirimTercihleri.tsx:115"
     ]
   },
   "tf613c281": {
@@ -11972,6 +12022,14 @@
       "packages/shared/src/ogretici.ts:339"
     ]
   },
+  "t32d3a550": {
+    "grup": "motor",
+    "tr": "Biten işler",
+    "en": "Finished jobs",
+    "nerede": [
+      "packages/shared/src/bildirimTercihi.ts:23"
+    ]
+  },
   "te9270bdb": {
     "grup": "motor",
     "tr": "bölge geliri",
@@ -12697,6 +12755,14 @@
       "packages/shared/src/medeniyet.ts:200"
     ]
   },
+  "t0e204c55": {
+    "grup": "motor",
+    "tr": "Eğitim, üretim, inşaat",
+    "en": "Training, crafting, construction",
+    "nerede": [
+      "packages/shared/src/bildirimTercihi.ts:23"
+    ]
+  },
   "t7cf4a3a9": {
     "grup": "motor",
     "tr": "Eğitim, yürüyüş ve imar zamanla biter. Uygulamayı açık tutman gerekmez; kapalıyken de işler.",
@@ -12744,6 +12810,14 @@
     "en": "Negative amounts cannot be sent.",
     "nerede": [
       "packages/shared/src/ticaret.ts:83"
+    ]
+  },
+  "t6327a9ab": {
+    "grup": "motor",
+    "tr": "Ele geçirilen bölge",
+    "en": "Captured region",
+    "nerede": [
+      "packages/shared/src/bildirimTercihi.ts:22"
     ]
   },
   "t9d099ea3": {
@@ -14187,6 +14261,14 @@
       "packages/shared/src/rehber.ts:326"
     ]
   },
+  "t5c4c1f43": {
+    "grup": "motor",
+    "tr": "Ordunun dönüşü",
+    "en": "Army returns",
+    "nerede": [
+      "packages/shared/src/bildirimTercihi.ts:21"
+    ]
+  },
   "t377699da": {
     "grup": "motor",
     "tr": "Orduyu yollarsın, yol alır, çarpışır; sen izlersin.",
@@ -14412,6 +14494,14 @@
       "packages/shared/src/duzen.ts:343"
     ]
   },
+  "t7ec9c488": {
+    "grup": "motor",
+    "tr": "Saldırı ve savaş",
+    "en": "Attacks and battles",
+    "nerede": [
+      "packages/shared/src/bildirimTercihi.ts:18"
+    ]
+  },
   "t3a83c369": {
     "grup": "motor",
     "tr": "saldırısı",
@@ -14451,6 +14541,14 @@
     "nerede": [
       "data/balance.json:medeniyetler.fayda_puani.rutbeler[2].ad",
       "data/generals.json:generaller[8].pasif.ad"
+    ]
+  },
+  "t857b9a22": {
+    "grup": "motor",
+    "tr": "Satılan eşya, karşılanan ön sipariş",
+    "en": "Item sold, pre-order filled",
+    "nerede": [
+      "packages/shared/src/bildirimTercihi.ts:24"
     ]
   },
   "t4bcff1b8": {
@@ -14539,6 +14637,14 @@
     "en": "You don't choose, you are enlisted",
     "nerede": [
       "packages/shared/src/ogretici.ts:260"
+    ]
+  },
+  "t6a950023": {
+    "grup": "motor",
+    "tr": "Seferden ya da akından eve dönen ordu",
+    "en": "Army back home from a campaign or raid",
+    "nerede": [
+      "packages/shared/src/bildirimTercihi.ts:21"
     ]
   },
   "t7215dd9a": {
@@ -14853,6 +14959,14 @@
     "en": "Multiplying land is not the only way. Upgrade what you have: the region gives more, and your garrison's share grows with it.",
     "nerede": [
       "packages/shared/src/rehber.ts:109"
+    ]
+  },
+  "tc21bbac0": {
+    "grup": "motor",
+    "tr": "Toprağına saldırı, kaybedilen savaş, başkent",
+    "en": "Attack on your land, lost battle, capital",
+    "nerede": [
+      "packages/shared/src/bildirimTercihi.ts:19"
     ]
   },
   "t5c9bcae8": {
@@ -16038,7 +16152,7 @@
     "tr": "Bildirimler açık değil.",
     "en": "Notifications are not turned on.",
     "nerede": [
-      "apps/api/src/routes/push.ts:88"
+      "apps/api/src/routes/push.ts:131"
     ]
   },
   "t1f844892": {
@@ -16046,7 +16160,7 @@
     "tr": "Bildirimler açık. Ordun döndüğünde haberin olacak.",
     "en": "Notifications are on. You will be notified when your army returns.",
     "nerede": [
-      "apps/api/src/routes/push.ts:93"
+      "apps/api/src/routes/push.ts:136"
     ]
   },
   "t0db59094": {
@@ -16054,7 +16168,7 @@
     "tr": "Bildirimler bu sunucuda açık değil.",
     "en": "Notifications are not enabled on this server.",
     "nerede": [
-      "apps/api/src/routes/push.ts:49"
+      "apps/api/src/routes/push.ts:53"
     ]
   },
   "t63648729": {
@@ -16300,7 +16414,7 @@
     "tr": "Bu bildirim adresi desteklenmiyor.",
     "en": "This notification address isn't supported.",
     "nerede": [
-      "apps/api/src/routes/push.ts:58"
+      "apps/api/src/routes/push.ts:62"
     ]
   },
   "t79552d97": {
@@ -17638,6 +17752,14 @@
     "en": "Couldn't process the picture. Try another image.",
     "nerede": [
       "apps/api/src/services/resimDenetimi.ts:86"
+    ]
+  },
+  "t4a2654e3": {
+    "grup": "sunucu",
+    "tr": "Saat dilimi tanınmadı.",
+    "en": "Time zone not recognized.",
+    "nerede": [
+      "apps/api/src/routes/push.ts:110"
     ]
   },
   "tea8d3f85": {

@@ -389,6 +389,10 @@ model Lord {
   /// yerini almıyor.
   profilResmi String?
 
+  /// Bildirim tercihleri: kapatılan konular ve sessiz saatler (shared
+  /// `tercihiCoz`). Null = hepsi açık, sessiz saat yok.
+  bildirimTercihi Json?
+
   @@unique([userId, worldId])
   /// Her kayıtta nüfus sayımı bu sütundan geçiyor (`medeniyetAta`).
   @@index([worldId, medeniyetId])

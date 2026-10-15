@@ -81,6 +81,42 @@ const { token } = await kayitOl(API, { email: `${ad.toLowerCase()}@test.local`, 
 const anahtar = await istek('/push/anahtar', token);
 kontrol('Anahtar ucu cevap veriyor', anahtar.durum === 200, `açık: ${anahtar.govde?.acik}`);
 
+/* Bildirim tercihleri (docs/12 §17): konu konu ve sessiz saatler. Teslim
+   kararı saf (shared `bildirimGitsinMi`) ve birim testinde; burada uç. */
+{
+  const koy = async (govde) => {
+    const r = await fetch(`${API}/api/push/tercih`, {
+      method: 'PUT',
+      headers: { authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(govde),
+    });
+    return { durum: r.status, govde: await r.json().catch(() => null) };
+  };
+  const ilk = await istek('/push/tercih', token);
+  kontrol(
+    'Varsayılan tercih: hepsi açık, sessiz saat yok',
+    ilk.durum === 200 && ilk.govde?.kapali?.length === 0 && ilk.govde?.sessiz === null,
+  );
+  const yeni = await koy({
+    kapali: ['pazar', 'kuyruk', 'uydurma'],
+    sessiz: { bas: 23, son: 8, dilim: 'Europe/Istanbul' },
+  });
+  kontrol(
+    'Tercih kaydediliyor; bilinmeyen konu düşüyor',
+    yeni.durum === 200 && JSON.stringify(yeni.govde?.kapali) === '["pazar","kuyruk"]',
+    JSON.stringify(yeni.govde),
+  );
+  const okunan = await istek('/push/tercih', token);
+  kontrol(
+    'Tercih kalıcı',
+    okunan.govde?.sessiz?.bas === 23 && okunan.govde?.kapali?.includes('pazar'),
+  );
+  const bozuk = await koy({ kapali: [], sessiz: { bas: 1, son: 5, dilim: 'Mars/Olympus' } });
+  kontrol('Tanınmayan saat dilimi reddediliyor', bozuk.durum === 400, `HTTP ${bozuk.durum}`);
+  const sinir = await koy({ kapali: [], sessiz: { bas: 25, son: 5, dilim: 'Europe/Istanbul' } });
+  kontrol('Saat sınırın dışında reddediliyor', sinir.durum === 400, `HTTP ${sinir.durum}`);
+}
+
 if (!anahtar.govde?.acik) {
   const abone = await istek('/push/abone', token, {
     endpoint: 'https://ornek.gecersiz/x',

@@ -97,6 +97,11 @@ const OPERASYON = [
    * yalnız çizimleri gözden geçiren geliştiriciye görünüyor.
    */
   'apps/web/src/cizim/Galeri.tsx',
+  /*
+   * Görsel bozulma testinin fark cümleleri ("alan 120 → 118"): yalnız
+   * test çıktısında, oyunun paketinde hiç kullanılmıyor.
+   */
+  'apps/web/src/cizim/parmakizi.ts',
 ];
 
 function dosyalar(kok, uzantilar) {

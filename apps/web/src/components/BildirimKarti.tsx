@@ -12,6 +12,7 @@
  * bunu söylüyor, tarayıcı reddettiyse nereden açılacağını tarif ediyor.
  */
 import { useEffect, useState } from 'react';
+import { BildirimTercihleri } from './BildirimTercihleri';
 import { Cumle } from './Cumle';
 import { Buton, Kart } from './ui';
 import { api } from '../api/client';
@@ -131,6 +132,7 @@ export function BildirimKarti() {
               Kapat
             </Buton>
           </div>
+          <BildirimTercihleri />
         </div>
       )}
 

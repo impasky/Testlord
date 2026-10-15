@@ -1732,6 +1732,27 @@ bütün bildirimlerini engeller; geçici bir hatada silersen oyuncunun
 aboneliğini ekranda "açık" yazarken kaybedersin. 404 ve 410 siliyor;
 429, 5xx, 401/403 ve durum kodu olmayan ağ hataları silmiyor.
 
+### Bildirim tercihleri
+
+Push ya hep ya hiçti: "ordun döndü"yü isteyip gece üçte "pazar emrin
+eşleşmiyor" ile uyanmak istemeyen oyuncunun tek seçeneği hepsini
+kapatmaktı — ve kapatan, saldırı uyarısını da kaçırıyordu. Hesap
+ekranındaki bildirim kartında (bildirimler açıkken) artık beş konu ayrı
+ayrı açılıp kapanıyor — saldırı ve savaş, ordunun dönüşü, fetih, biten
+işler, pazar (sunucudaki `etiket`lerle aynı) — ve isteğe bağlı sessiz
+saatler seçiliyor (varsayılan 23:00–08:00). Sessiz saatler oyuncunun KENDİ
+saat diliminde: dilim tarayıcıdan geliyor, sunucunun saatine bakılmıyor.
+
+Karar saf ve paylaşılan katmanda (`packages/shared/src/bildirimTercihi.ts`,
+`bildirimGitsinMi`): sunucu göndermeden önce soruyor (`services/push.ts`,
+yalnız abonesi olan lord için tek sorgu), arayüz aynı listeyi gösteriyor.
+Konusuz bildirim ("Deneme gönder") her zaman gidiyor — oyuncunun kendi
+istediği. Tercih `Lord.bildirimTercihi` (JSON); bozuk ya da eski değer
+varsayılana düşüyor, bilinmeyen konu sessizce atılıyor, tanınmayan saat
+dilimi 400. Uçlar: `GET`/`PUT /api/push/tercih`. Test:
+`bildirimTercihi.test.ts` (gece yarısını aşan aralık, saat dilimi) ve
+`tools/bildirim-testi.mjs`.
+
 ## 18. Erişim — göremeyen ve dokunamayan oyuncu
 
 docs/07 M13'ün "erişim" yarısı. Dil desteğinden ayrı tutuldu, çünkü

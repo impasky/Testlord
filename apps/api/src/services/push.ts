@@ -32,6 +32,7 @@
 import webpush from 'web-push';
 import { prisma } from '../db.js';
 import { env } from '../env.js';
+import { bildirimGitsinMi, tercihiCoz } from '@lordlar/shared';
 import { AZAMI_ABONELIK, gonderimKarari } from './pushPolitika.js';
 
 let kuruldu = false;
@@ -122,6 +123,14 @@ export async function bildirimGonder(lordId: string, b: Bildirim): Promise<numbe
 
   const aboneler = await prisma.pushAbonesi.findMany({ where: { lordId } });
   if (aboneler.length === 0) return 0;
+
+  // Oyuncunun tercihi (docs/12 §17): kapattığı konu ya da sessiz saat.
+  // Yalnız abonesi varsa soruluyor; konusuz bildirim (deneme) hep gidiyor.
+  const lord = await prisma.lord.findUnique({
+    where: { id: lordId },
+    select: { bildirimTercihi: true },
+  });
+  if (!bildirimGitsinMi(tercihiCoz(lord?.bildirimTercihi), b.etiket)) return 0;
 
   const yuk = JSON.stringify({
     baslik: b.baslik,

@@ -1,7 +1,11 @@
 /** Push bildirimi abonelikleri (docs/07 M14). */
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
+import { BILDIRIM_TURLERI, saatDilimiGecerli, tercihiCoz } from '@lordlar/shared';
+import type { Prisma } from '@prisma/client';
 import { requireAuth } from '../auth.js';
+import { prisma } from '../db.js';
+import { GameError } from '../errors.js';
 import { findLordByUser } from '../services/lord.js';
 import {
   abonelikBirak,
@@ -74,6 +78,45 @@ export async function pushRoutes(app: FastifyInstance): Promise<void> {
     const lordId = await findLordByUser(req.user.userId);
     const silinen = await abonelikBirak(lordId, endpoint);
     return { cikildi: silinen > 0, cihazSayisi: await cihazSayisi(lordId) };
+  });
+
+  /**
+   * Bildirim tercihleri (docs/12 §17): hangi konular kapalı, sessiz saatler.
+   * Saat dilimi tarayıcıdan geliyor; sessiz saat oyuncunun kendi saatinde.
+   */
+  app.get('/push/tercih', { preHandler: requireAuth }, async (req) => {
+    const lordId = await findLordByUser(req.user.userId);
+    const l = await prisma.lord.findUniqueOrThrow({
+      where: { id: lordId },
+      select: { bildirimTercihi: true },
+    });
+    return tercihiCoz(l.bildirimTercihi);
+  });
+
+  app.put('/push/tercih', { preHandler: requireAuth }, async (req) => {
+    const govde = z
+      .object({
+        kapali: z.array(z.string().max(16)).max(BILDIRIM_TURLERI.length),
+        sessiz: z
+          .object({
+            bas: z.number().int().min(0).max(23),
+            son: z.number().int().min(0).max(23),
+            dilim: z.string().min(1).max(64),
+          })
+          .nullable(),
+      })
+      .parse(req.body);
+    if (govde.sessiz && !saatDilimiGecerli(govde.sessiz.dilim)) {
+      throw new GameError('Saat dilimi tanınmadı.', 400, 'GECERSIZ_ISTEK');
+    }
+    // `tercihiCoz`dan geçiriliyor: bilinmeyen konu sessizce düşüyor.
+    const tercih = tercihiCoz(govde);
+    const lordId = await findLordByUser(req.user.userId);
+    await prisma.lord.update({
+      where: { id: lordId },
+      data: { bildirimTercihi: tercih as unknown as Prisma.InputJsonValue },
+    });
+    return tercih;
   });
 
   /**
