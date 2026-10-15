@@ -13,10 +13,10 @@ import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { hashPassword, requireAuth, verifyPassword } from '../auth.js';
 import { prisma } from '../db.js';
-import { GameError } from '../errors.js';
+import { GameError, benzersizlikIhlali } from '../errors.js';
 import { createHash, randomBytes } from 'node:crypto';
 import { env } from '../env.js';
-import { adiDenetle } from '../services/adDenetimi.js';
+import { adiDenetle, lordAdiAnahtari } from '../services/adDenetimi.js';
 import { postaGonder } from '../services/eposta.js';
 import { girisFreni } from '../services/girisFreni.js';
 import { dogrulamaGonder, ozet as dogrulamaOzeti } from '../services/epostaDogrulama.js';
@@ -206,7 +206,11 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
     if (await prisma.user.findUnique({ where: { email } })) {
       throw new GameError('Bu e-posta zaten kayıtlı.', 409, 'EPOSTA_KAYITLI');
     }
-    if (await prisma.lord.findFirst({ where: { name: body.lordName } })) {
+    // Büyük/küçük harf duyarsız: "Yunus" varken "YUNUS" alınamıyor. Bu
+    // sorgu yalnız hızlı cevap; asıl bekçi `adAnahtari`nın benzersizlik
+    // kısıtı — aynı anda gelen iki kayıt ikisi de buradan geçebilir.
+    const adAnahtari = lordAdiAnahtari(body.lordName);
+    if (await prisma.lord.findUnique({ where: { adAnahtari }, select: { id: true } })) {
       throw new GameError('Bu lord adı alınmış.', 409, 'AD_ALINMIS');
     }
 
@@ -229,41 +233,57 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
     const start = B.lord.baslangic_kaynaklari;
     const stats = B.lord.baslangic_statlari;
 
-    const user = await prisma.$transaction(async (tx) => {
-      const u = await tx.user.create({
-        data: { email, passwordHash: await hashPassword(body.password) },
+    const passwordHash = await hashPassword(body.password);
+    const user = await prisma
+      .$transaction(async (tx) => {
+        const u = await tx.user.create({
+          data: { email, passwordHash },
+        });
+        await tx.lord.create({
+          data: {
+            userId: u.id,
+            worldId,
+            medeniyetId: med.id,
+            name: body.lordName,
+            adAnahtari,
+            guc: stats.guc,
+            dayaniklilik: stats.dayaniklilik,
+            liderlik: stats.liderlik,
+            kurnazlik: stats.kurnazlik,
+            altin: start.altin,
+            demir: start.demir,
+            erzak: start.erzak,
+            // Küçük bir elmas kesesi. Para biriminin ne işe yaradığını
+            // ANLATMAK yerine bir kez KULLANDIRMAK, onu öğretmenin tek
+            // işe yarayan yolu; cüzdanı boş oyuncu düğmeye hiç basmaz.
+            elmas: BASLANGIC_ELMASI,
+            homeBolgeId: home,
+            // Kamp bir yokluk değil, küçük bir başlangıç: bir çadır ve bir
+            // talimgah. Sıfırdan başlasaydı öğreticinin ilk cümlesi ("asker
+            // eğit") boş bir arsaya çarpardı.
+            binalar: B.binalar.baslangic,
+            lastTickAt: now,
+            dailyResetAt: now,
+            // Yeni oyuncu kalkanı: ilk saldırısını yapana kadar veya 72 saat
+            protectionUntil: new Date(now.getTime() + B.korumalar.yeni_oyuncu_saat * 3_600_000),
+            gearLines: { create: GEAR_LINES.map((line) => ({ line, level: 0 })) },
+          },
+        });
+        return u;
+      })
+      .catch((e: unknown) => {
+        /*
+         * YARIŞ: iki kayıt aynı adla (ya da aynı adresle) yukarıdaki
+         * sorgulardan birlikte geçti; kısıt ikincisini durdurdu. Oyuncuya
+         * sunucu hatası değil, tek başına gelseydi alacağı cevap dönüyor.
+         * İşlem bütünüyle geri alındığı için yarım hesap kalmıyor.
+         */
+        const alan = benzersizlikIhlali(e);
+        if (alan === 'adAnahtari') throw new GameError('Bu lord adı alınmış.', 409, 'AD_ALINMIS');
+        if (alan === 'email')
+          throw new GameError('Bu e-posta zaten kayıtlı.', 409, 'EPOSTA_KAYITLI');
+        throw e;
       });
-      await tx.lord.create({
-        data: {
-          userId: u.id,
-          worldId,
-          medeniyetId: med.id,
-          name: body.lordName,
-          guc: stats.guc,
-          dayaniklilik: stats.dayaniklilik,
-          liderlik: stats.liderlik,
-          kurnazlik: stats.kurnazlik,
-          altin: start.altin,
-          demir: start.demir,
-          erzak: start.erzak,
-          // Küçük bir elmas kesesi. Para biriminin ne işe yaradığını
-          // ANLATMAK yerine bir kez KULLANDIRMAK, onu öğretmenin tek
-          // işe yarayan yolu; cüzdanı boş oyuncu düğmeye hiç basmaz.
-          elmas: BASLANGIC_ELMASI,
-          homeBolgeId: home,
-          // Kamp bir yokluk değil, küçük bir başlangıç: bir çadır ve bir
-          // talimgah. Sıfırdan başlasaydı öğreticinin ilk cümlesi ("asker
-          // eğit") boş bir arsaya çarpardı.
-          binalar: B.binalar.baslangic,
-          lastTickAt: now,
-          dailyResetAt: now,
-          // Yeni oyuncu kalkanı: ilk saldırısını yapana kadar veya 72 saat
-          protectionUntil: new Date(now.getTime() + B.korumalar.yeni_oyuncu_saat * 3_600_000),
-          gearLines: { create: GEAR_LINES.map((line) => ({ line, level: 0 })) },
-        },
-      });
-      return u;
-    });
 
     /*
      * DOĞRULAMA POSTASI KAYITTA ÇIKIYOR ama hiçbir kapı kapatmıyor.

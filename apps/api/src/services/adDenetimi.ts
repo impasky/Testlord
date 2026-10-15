@@ -122,3 +122,42 @@ export function adiDenetle(ad: string): AdSonucu {
 
   return { uygun: true };
 }
+
+/**
+ * Lord adının BENZERSİZLİK anahtarı (`Lord.adAnahtari`, docs/18).
+ *
+ * "Yunus" ile "YUNUS", "Işık" ile "IŞIK" aynı ad: sıralamada ve savaş
+ * raporunda ayırt edilemiyorlar, biri ötekinin kılığına girebiliyor.
+ * Anahtar büyük/küçük harfe ve Türkçenin dört I'sına duyarsız; baştaki,
+ * sondaki ve arka arkaya boşluklar tek sayılıyor. Bundan ötesi (5→s gibi)
+ * `normalize`ın işi ve orada kalıyor: "Ali5" ile "Alis" iki ayrı oyuncu
+ * olabilir.
+ *
+ * Göçteki SQL bunun aynısı (`20261015120000_lord_adi_benzersiz`):
+ * `lower(translate(regexp_replace(btrim(name), '\s+', ' ', 'g'),
+ * 'İIıÇĞÖŞÜ', 'iiiçğöşü'))`. Biri değişirse öteki de değişmeli.
+ */
+export function lordAdiAnahtari(ad: string): string {
+  return ad.normalize('NFC').trim().replace(/\s+/g, ' ').replace(/[İIı]/g, 'i').toLowerCase();
+}
+
+const SIRA_EKI = ['II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
+
+/**
+ * Sistemin açtığı bir lord için boş ad: istenen ad boşsa o, değilse
+ * "II", "III"… (hükümdar sırası, ortaçağın kendi çözümü).
+ *
+ * Lord adı veritabanında benzersiz (docs/18). Bir oyuncu "Sungur Bey"
+ * adını demo lordlardan önce almışsa ya da ikinci bir diyar tohumlanıyorsa
+ * düz ad çakışıyor ve kısıt açılışı düşürürdü. On sıra da doluysa zamandan
+ * kısa bir ek. `alinmis` anahtarı alıyor (bkz. `lordAdiAnahtari`).
+ */
+export async function bosLordAdi(
+  ad: string,
+  alinmis: (anahtar: string) => Promise<boolean>,
+): Promise<string> {
+  for (const aday of [ad, ...SIRA_EKI.map((e) => `${ad} ${e}`)]) {
+    if (!(await alinmis(lordAdiAnahtari(aday)))) return aday;
+  }
+  return `${ad} ${Date.now().toString(36).slice(-4)}`;
+}

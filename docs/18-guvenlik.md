@@ -97,6 +97,22 @@ taşınmalı.
 başlığının ham metni anahtardı: her istekte uydurma başlık gönderen, her
 seferinde boş bir kova açıp sınırdan tamamen kaçıyordu.
 
+**Lord adı veritabanında benzersiz** (eskiden "kalan riskler"deydi). Ad
+yalnız kayıtta soruluyordu ve aynı anda gelen iki kayıt ikisi de "boş"
+cevabını alıp aynı adı alabiliyordu; "Yunus" varken "YUNUS" da
+alınabiliyordu — sıralamada ve savaş raporunda biri ötekinin kılığına
+girebiliyordu. Artık `Lord.adAnahtari` benzersiz: büyük/küçük harf, Türkçe
+I'lar ve fazla boşluk duyarsız (`lordAdiAnahtari`, `services/adDenetimi.ts`;
+göçteki SQL aynı kural). Yarışı kaybeden kayıt sunucu hatası değil "Bu lord
+adı alınmış" alıyor; aynı adresle yarışan da "Bu e-posta zaten kayıtlı"
+(`benzersizlikIhlali`), işlem bütünüyle geri alındığı için yarım hesap
+kalmıyor. Göç var olan çakışmaları çözüyor: en eski lord adını koruyor,
+sonrakilerin adına kimliğinin son dört hanesi ekleniyor. Kısıtın önündeki
+engel demo tohumlamaydı: ad doluysa demo lord artık "Sungur Bey II", "III"…
+oluyor (`bosLordAdi`) ve tohumlandı mı sorusu ada değil demo hesabına
+bakıyor. Test: `tools/lord-adi-testi.mjs` (aynı adla sekiz, aynı adresle beş
+eşzamanlı kayıt).
+
 ## 3. Push aboneliği — SSRF, kapatıldı
 
 Sunucu her bildirimde, istemcinin verdiği adrese POST atıyor. Denetimsizken
@@ -146,12 +162,11 @@ abonelik — sınırsızken tek bildirim binlerce isteğe çevrilebiliyordu.
 
 ## Kalan riskler — bilerek kabul edilenler
 
-| Risk                                                | Neden kabul                                                                                                                                             |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Kayıt "bu e-posta zaten kayıtlı" diyor              | Adresin kayıtlı olduğunu söylüyor, ama oyuncuya "zaten hesabın var" demek kayıt akışının kendisi. Giriş ve sıfırlama sızdırmıyor.                       |
-| Lord adı benzersizliği kayıtta, veritabanında değil | İki kayıt aynı anda aynı adı alabilir. Kısıt eklemek, demo lordları tohumlayan açılışı çökertebilir; önce tohumlama ad çakışmasına dayanıklı yapılmalı. |
-| `deepmerge-ts` uyarısı (Prisma yapılandırması)      | Yalnız Prisma'nın kendi yapılandırma dosyası birleştirilirken çalışıyor; oyuncu girdisi oraya ulaşmıyor.                                                |
-| Giriş freni sayacı bellekte                         | Tek servisli dağıtımda doğru. Birden çok sunucuda tavan sunucu sayısıyla çarpılır.                                                                      |
+| Risk                                           | Neden kabul                                                                                                                       |
+| ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Kayıt "bu e-posta zaten kayıtlı" diyor         | Adresin kayıtlı olduğunu söylüyor, ama oyuncuya "zaten hesabın var" demek kayıt akışının kendisi. Giriş ve sıfırlama sızdırmıyor. |
+| `deepmerge-ts` uyarısı (Prisma yapılandırması) | Yalnız Prisma'nın kendi yapılandırma dosyası birleştirilirken çalışıyor; oyuncu girdisi oraya ulaşmıyor.                          |
+| Giriş freni sayacı bellekte                    | Tek servisli dağıtımda doğru. Birden çok sunucuda tavan sunucu sayısıyla çarpılır.                                                |
 
 ## Kod nerede
 

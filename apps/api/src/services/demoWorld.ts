@@ -24,6 +24,7 @@ import {
 } from '@lordlar/shared';
 import { hashPassword } from '../auth.js';
 import { prisma } from '../db.js';
+import { bosLordAdi, lordAdiAnahtari } from './adDenetimi.js';
 import { medeniyetAta } from './medeniyet.js';
 
 /** Çekirdekler ele geçirilemez (docs/16 §5): demo lord da tutamaz. */
@@ -77,13 +78,27 @@ function toplamXp(seviye: number): number {
   return t;
 }
 
+/** Demo lordun alacağı ad; çakışırsa "II", "III"… (bkz. `bosLordAdi`). */
+function bosAd(ad: string): Promise<string> {
+  return bosLordAdi(ad, async (anahtar) =>
+    Boolean(await prisma.lord.findUnique({ where: { adAnahtari: anahtar }, select: { id: true } })),
+  );
+}
+
 /**
  * Dünyada demo lord yoksa ekler. Tekrar çalıştırılabilir: mevcutsa hiçbir şey yapmaz.
  * Dönüş: eklenen lord sayısı.
  */
 export async function seedDemoLords(worldId: string): Promise<number> {
+  // Ada değil hesaba bakılıyor: ad çakışınca demo lord "Sungur Bey II"
+  // olarak açılmış olabilir, ama hesabı yine demo hesabı. (Yalnız
+  // `isNpc` yetmez: testler oyuncu lordlarını da NPC yapabiliyor.)
   const zaten = await prisma.lord.count({
-    where: { worldId, name: { in: DEMO.map((d) => d.ad) } },
+    where: {
+      worldId,
+      isNpc: true,
+      user: { email: { startsWith: 'demo-', endsWith: '@lordlar.local' } },
+    },
   });
   if (zaten > 0) return 0;
 
@@ -110,6 +125,7 @@ export async function seedDemoLords(worldId: string): Promise<number> {
     const dagitilan = statPointsForLevelUp(1, d.seviye);
     const kalanPuan = Math.max(0, dagitilan - d.liderlik - d.guc);
 
+    const ad = await bosAd(d.ad);
     const lord = await prisma.lord.create({
       data: {
         user: {
@@ -124,7 +140,8 @@ export async function seedDemoLords(worldId: string): Promise<number> {
         // toprağına saldırabiliyor ve fethettiği yerin rengini
         // değiştirmiyor — yani dünyayı tutarsız bırakıyor.
         medeniyet: { connect: { id: (await medeniyetAta(worldId)).id } },
-        name: d.ad,
+        name: ad,
+        adAnahtari: lordAdiAnahtari(ad),
         level: d.seviye,
         xp: 0,
         liderlik: 5 + d.liderlik,

@@ -161,6 +161,11 @@ model Lord {
   userId  String
   worldId String
   name    String
+  /// Adın benzersizlik anahtarı: büyük/küçük harf ve Türkçe I duyarsız
+  /// (`lordAdiAnahtari`, services/adDenetimi.ts). Benzersizlik kayıtta
+  /// sorulup geçiliyordu; aynı anda gelen iki kayıt aynı adı alabiliyordu.
+  /// Artık veritabanı da tutuyor (docs/18).
+  adAnahtari String @unique
 
   level Int @default(1)
   xp    Int @default(0)
