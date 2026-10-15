@@ -63,6 +63,7 @@ import type { MarchDto, RegionDto } from '../../api/client';
 import { IKONLAR } from '../ikon-verisi';
 import { IkonSaldiri } from '../Ikonlar';
 import { YakinlikDugmesi } from '../YakinlikDugmesi';
+import { BolgeListesi } from './BolgeListesi';
 import { haritaGorunumuYaz, sonHaritaGorunumu } from './haritaGorunumu';
 import { useZeminYamasi, type ZeminYamasi } from './zeminYamasi';
 import { KARA_YOLU } from './kara';
@@ -194,6 +195,7 @@ export function DunyaHaritasi({
   const [gorunum, setGorunum] = useState<Gorunum>({ k: 1, tx: 0, ty: 0 });
   const [animasyon, setAnimasyon] = useState(false);
   const [mercek, setMercekHam] = useState<Mercek>(kayitliMercek);
+  const [listeAcik, setListeAcik] = useState(false);
   const [yerlesim, setYerlesim] = useState(0);
   const acilisYapildi = useRef(false);
   // Geri çağrılar SABİT: katmanlar `memo` ve her çizimde yeni bir işlev
@@ -735,38 +737,65 @@ export function DunyaHaritasi({
       )}
 
       {/* --- Hedefler: tek düğme, aç/kapa. Varsayılan görünüm "kim nerede". --- */}
-      <button
-        type="button"
-        aria-pressed={mercek === 'hedef'}
-        data-mercek="hedef"
-        onPointerDown={(e) => e.stopPropagation()}
-        onClick={() => {
-          if (mercek === 'hedef') {
-            setMercek('siyasi');
-            return;
-          }
-          setMercek('hedef');
-          // Hedefler senin toprağının çevresinde: harita başka yerdeyken
-          // açılan görünüm baştan sona karanlık kalıyordu. Toprağın
-          // ekranda değilse oraya kayılıyor.
-          const m = benimKumem?.merkez ?? bolgeHaritasi.get(homeBolgeId);
-          if (!m) return;
-          const sx = (m.x / 100) * W * gorunum.k + gorunum.tx;
-          const sy = (m.y / 100) * W * gorunum.k + gorunum.ty;
-          if (sx > 40 && sx < boyut.en - 40 && sy > 60 && sy < gorunurBoy - 40) return;
-          setAnimasyon(true);
-          setGorunum(ortala(m.x, m.y, Math.max(gorunum.k, ORTA)));
-          setYerlesim((n) => n + 1);
-        }}
-        className={`bas absolute top-2 left-2 flex h-11 items-center gap-1.5 rounded-full border px-3.5 text-[12px] font-bold backdrop-blur ${
-          mercek === 'hedef'
-            ? 'border-kirmizi bg-kirmizi text-parsomen'
-            : 'border-kenar bg-gece/80 text-parsomen'
-        }`}
-      >
-        <IkonSaldiri boyut={14} />
-        {mercek === 'hedef' ? 'Hedefler açık' : 'Hedefler'}
-      </button>
+      <div className="absolute top-2 left-2 flex gap-2">
+        <button
+          type="button"
+          aria-pressed={mercek === 'hedef'}
+          data-mercek="hedef"
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={() => {
+            if (mercek === 'hedef') {
+              setMercek('siyasi');
+              return;
+            }
+            setMercek('hedef');
+            // Hedefler senin toprağının çevresinde: harita başka yerdeyken
+            // açılan görünüm baştan sona karanlık kalıyordu. Toprağın
+            // ekranda değilse oraya kayılıyor.
+            const m = benimKumem?.merkez ?? bolgeHaritasi.get(homeBolgeId);
+            if (!m) return;
+            const sx = (m.x / 100) * W * gorunum.k + gorunum.tx;
+            const sy = (m.y / 100) * W * gorunum.k + gorunum.ty;
+            if (sx > 40 && sx < boyut.en - 40 && sy > 60 && sy < gorunurBoy - 40) return;
+            setAnimasyon(true);
+            setGorunum(ortala(m.x, m.y, Math.max(gorunum.k, ORTA)));
+            setYerlesim((n) => n + 1);
+          }}
+          className={`bas flex h-11 items-center gap-1.5 rounded-full border px-3.5 text-[12px] font-bold backdrop-blur ${
+            mercek === 'hedef'
+              ? 'border-kirmizi bg-kirmizi text-parsomen'
+              : 'border-kenar bg-gece/80 text-parsomen'
+          }`}
+        >
+          <IkonSaldiri boyut={14} />
+          {mercek === 'hedef' ? 'Hedefler açık' : 'Hedefler'}
+        </button>
+        {/* Liste: aynı toprakları yakından uzağa sıralı satırlar (docs/23 Faz 3). */}
+        <button
+          type="button"
+          aria-expanded={listeAcik}
+          data-harita-liste=""
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={() => setListeAcik((a) => !a)}
+          className={`bas flex h-11 items-center gap-1.5 rounded-full border px-3.5 text-[12px] font-bold backdrop-blur ${
+            listeAcik ? 'border-altin bg-altin text-gece' : 'border-kenar bg-gece/80 text-parsomen'
+          }`}
+        >
+          <span aria-hidden>☰</span>
+          Liste
+        </button>
+      </div>
+
+      {listeAcik && (
+        <BolgeListesi
+          regions={regions}
+          benimMedeniyetId={benimMedeniyetId}
+          seciliId={seciliId}
+          alt={altBosluk}
+          onSec={sec}
+          onKapat={() => setListeAcik(false)}
+        />
+      )}
 
       {/* --- Sağ sütun: yakınlık. Tek kutu, üç düğme. --- */}
       <div
@@ -819,7 +848,7 @@ export function DunyaHaritasi({
       ))}
 
       {/* --- Gösterge: merceğe göre, tek satır --- */}
-      {!gostergeGizli && (
+      {!gostergeGizli && !listeAcik && (
         <Gosterge
           mercek={mercek}
           regions={regions}

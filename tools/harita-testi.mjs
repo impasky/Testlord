@@ -602,6 +602,60 @@ kontrol('Haritadan bölge seçilebiliyor', /garnizon|Garnizon|SALDIR|Seviye|GEL�
   }
 }
 
+/*
+ * LİSTE GÖRÜNÜMÜ (docs/23 Faz 3).
+ *
+ * "En yakın saldırılabilir toprak hangisi" sorusu haritada tek tek
+ * dokunarak aranıyordu. Liste aynı veriyi sıralı veriyor; burada üç şey
+ * ölçülüyor: Hepsi her bölgeyi gösteriyor, Hedefler'deki her satır
+ * sunucunun saldırı izni verdiği bir toprak ve yakından uzağa sıralı,
+ * satıra dokunmak o bölgenin kartını açıyor.
+ */
+{
+  const kapatB = sayfa.getByRole('button', { name: 'Kapat' });
+  if ((await kapatB.count()) > 0) {
+    await kapatB.last().click();
+    await sayfa.waitForTimeout(600);
+  }
+  const harita = await G('/map');
+  await sayfa.locator('[data-harita-liste]').click();
+  const pano = sayfa.locator('[data-bolge-listesi]');
+  await pano.waitFor({ timeout: 5000 });
+
+  await pano.getByRole('button', { name: /^Hepsi/ }).click();
+  const hepsi = await pano.locator('[data-liste-bolge]').count();
+  kontrol('Liste: Hepsi her bölgeyi gösteriyor', hepsi === harita.regions.length, `${hepsi}`);
+
+  await pano.getByRole('button', { name: /^Hedefler/ }).click();
+  const idler = await pano
+    .locator('[data-liste-bolge]')
+    .evaluateAll((els) => els.map((e) => Number(e.getAttribute('data-liste-bolge'))));
+  const bolgeler = idler.map((id) => harita.regions.find((r) => r.id === id));
+  const saldirilabilir = (r) =>
+    r && !r.isMine && !r.cekirdek && !r.shielded && !(r.owner && (r.paktli || r.muttefik));
+  kontrol(
+    'Liste: Hedefler yalnız saldırılabilir topraklar',
+    idler.length > 0 && bolgeler.every(saldirilabilir),
+    `${idler.length} satır`,
+  );
+  kontrol(
+    'Liste: Hedefler yakından uzağa sıralı',
+    bolgeler.every((r, i) => i === 0 || bolgeler[i - 1].distance <= r.distance),
+    bolgeler.map((r) => r?.distance).join(','),
+  );
+
+  const ilk = bolgeler[0];
+  await pano.locator(`[data-liste-bolge="${ilk?.id}"]`).click();
+  await sayfa.waitForTimeout(900);
+  const kapandi = (await pano.count()) === 0;
+  const metin = await sayfa.locator('body').innerText();
+  kontrol(
+    'Liste: satıra dokunmak bölgenin kartını açıyor',
+    kapandi && Boolean(ilk) && metin.includes(ilk.name),
+    ilk?.name ?? '',
+  );
+}
+
 kontrol('Konsol hatası yok', konsol.length === 0, konsol[0] ?? '');
 
 await tarayici.close();

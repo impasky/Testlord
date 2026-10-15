@@ -271,9 +271,22 @@ dört mercek, rengi kısılmış bugünkü zemin.
 - **Çekmecenin kapalı hâli boş değil:** diyar adı, "Bölgen x/y", bu hafta
   oynayan lord sayısı ve tahtın sahibi (docs/08 İ5 "harita insanlı
   görünsün" burada yaşıyor).
-- **Liste görünümü yapılmadı** (Faz 3). Her toprak klavyeyle
-  odaklanabilen, adı, sahibi ve medeniyeti okunan bir düğme; ekran
-  okuyucu için ayrı bir listeye şimdilik gerek görülmedi.
+- **Liste görünümü** (Faz 3). "Hedefler"in yanındaki **Liste** düğmesi
+  haritanın üstünde bir pano açıyor: üç süzgeç (Hedefler / Toprağım /
+  Hepsi, yanlarında sayıları) ve yakından uzağa sıralı satırlar — ad,
+  bölge türü ve seviyesi, sahibi, medeniyeti, kaç adım uzakta. Eşit
+  uzaklıkta yüksek seviye önce. Saldırılamayan toprağın sebebi satırda
+  rozet (Kalkanlı, Pakt, Müttefik, Yoldaş, Çekirdek); "Toprağım"
+  garnizonunun durduğu bölgeleri de sayıyor. Hedefler süzgeci Hedefler
+  merceğiyle aynı kuralı okuyor (shared `hedefDurumu`), yani listedeki
+  her hedefe sunucu da izin veriyor. Satıra dokunmak bölgeyi seçiyor:
+  kart açılıyor, harita oraya kayıyor, liste kapanıyor. Pano haritanın
+  kaydırma ve yakınlık hareketlerini almıyor, Esc ile kapanıyor, son
+  süzgeç hatırlanıyor. Ekran okuyucu için de "en yakın hedef" artık
+  121 düğmeyi tek tek gezmeden bulunuyor. Mantık
+  `components/harita/bolgeListesi.ts` (birim testi yanında),
+  `harita-testi` Hepsi'nin her bölgeyi, Hedefler'in yalnız saldırılabilir
+  ve sıralı toprakları gösterdiğini ve satırın kartı açtığını ölçüyor.
 
 ### 7.3 Ölçülen
 
