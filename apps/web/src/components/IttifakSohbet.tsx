@@ -17,6 +17,7 @@ import { useState } from 'react';
 import { ApiError, api } from '../api/client';
 import { hisRet } from './hisGeriBildirimi';
 import { ProfilKarti } from './ProfilKarti';
+import { SavasRaporu } from './SavasRaporu';
 import { SikayetSayfasi } from './SikayetSayfasi';
 import { EngelOnayi, SohbetMesajlari, type SohbetSatiri } from './SohbetMesajlari';
 import { Bolum, Buton, EngelNotu, Input, Kart } from './ui';
@@ -30,6 +31,8 @@ export function IttifakSohbet({ lordId }: { lordId: string }) {
   const [engelSor, setEngelSor] = useState<SohbetSatiri | null>(null);
   // Ada ya da resme dokununca: genel sohbetle aynı profil kartı.
   const [profil, setProfil] = useState<string | null>(null);
+  /** Açık rapor: paylaşılan savaş ve paylaşanın gözü (zafer/yenilgi onun). */
+  const [rapor, setRapor] = useState<{ battleId: string; goz: string } | null>(null);
 
   /**
    * Susturulmuşsam yazamam ve bunu YAZMAYA ÇALIŞMADAN ÖNCE bilmeliyim.
@@ -108,6 +111,7 @@ export function IttifakSohbet({ lordId }: { lordId: string }) {
             benimId={lordId}
             bosMetin="Henüz kimse yazmadı. İlk sözü sen söyle — bir hedef göster, yardım iste."
             onProfil={setProfil}
+            onRapor={(m) => m.rapor && setRapor({ battleId: m.rapor.battleId, goz: m.lordId })}
             onSikayet={setSikayet}
             onEngelle={setEngelSor}
           />
@@ -140,6 +144,14 @@ export function IttifakSohbet({ lordId }: { lordId: string }) {
       </Kart>
 
       {profil && <ProfilKarti lordId={profil} onKapat={() => setProfil(null)} />}
+      {rapor && (
+        <SavasRaporu
+          battleId={rapor.battleId}
+          benimId={rapor.goz}
+          paylasilabilir={false}
+          onKapat={() => setRapor(null)}
+        />
+      )}
       {sikayet && (
         <SikayetSayfasi
           baslik={`${sikayet.ad} — mesaj şikâyeti`}

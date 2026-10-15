@@ -52,6 +52,18 @@ onsuz saldırı kilidi kalkan gibi kullanılırdı.
 grupla başladık — genel sohbet, moderasyon yükü kaldırılabilir hâle
 gelmeden açılmamalı.
 
+**B3b ile eklendi:** savaş raporunu ittifak sohbetinde paylaşmak. Rapor
+yalnız savaşın iki tarafına açıktı; müttefik ancak "kazandım" cümlesini
+okuyordu, ordunun neden eridiğini göremiyordu. Raporun altındaki
+"İttifak sohbetinde paylaş" sohbete bir rapor kartı koyuyor (bölge,
+taraflar, paylaşanın gözünden sonuç); dokunan üye raporun tamamını
+açıyor. Paylaşım yalnız o ittifaka: dışarıdan açılamıyor, kaldırılan
+mesajın raporu da kapanıyor. Yalnız kendi savaşın paylaşılıyor, aynı
+rapor bir kez; sohbetin kuralları (doğrulama, susturma, hız freni)
+geçerli. Kod: `routes/ittifak.ts` (`/ittifak/sohbet/rapor`),
+`routes/map.ts` (rapora ittifak erişimi), `SohbetMesajlari.tsx`
+(`RaporKarti`). Test: `tools/rapor-paylasim-testi.mjs`.
+
 **B1b ile eklendi:** ortak hedef işaretleme (docs/01 §7d). Lider tek bir
 bölgeyi işaretliyor, herkesin haritasında görünüyor.
 

@@ -1074,6 +1074,18 @@ export interface SohbetMesajiDto extends YazarDto {
   /** Yönetici kaldırdı ya da şikâyet eşiği aştı: metin yerine bir not var. */
   kaldirildi: boolean;
   an: string;
+  /** İttifak sohbetinde paylaşılan savaş raporu (paylaşanın gözünden). */
+  rapor?: RaporKartiDto | null;
+}
+
+export interface RaporKartiDto {
+  battleId: string;
+  bolge: string;
+  saldiran: string;
+  savunan: string | null;
+  paylasanSaldiran: boolean;
+  zafer: boolean;
+  elDegistirdi: boolean;
 }
 
 export interface SohbetDto {
@@ -1593,6 +1605,8 @@ export const api = {
   ittifakKatil: (id: string) => post<{ katildi: string; ad: string }>(`/ittifak/${id}/katil`, {}),
   ittifakAyril: () => post<{ ayrildi: boolean; dagildi: boolean }>('/ittifak/ayril', {}),
   ittifakSohbet: () => request<SohbetDto>('/ittifak/sohbet'),
+  ittifakRaporPaylas: (battleId: string, not?: string) =>
+    post<{ id: string; an: string }>('/ittifak/sohbet/rapor', { battleId, not }),
   takviyeGonder: (regionId: number, army: Army) =>
     post<{ marchId: string; arriveAt: string; durationSec: number; hedef: string }>(
       `/map/${regionId}/takviye`,

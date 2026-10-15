@@ -1415,7 +1415,21 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       },
     });
     if (!battle) throw hata.bulunamadi('Savaş');
-    if (battle.attackerLordId !== lordId && battle.defenderLordId !== lordId) throw hata.yetkisiz();
+    if (battle.attackerLordId !== lordId && battle.defenderLordId !== lordId) {
+      // İttifak sohbetinde paylaşılmışsa (docs/09 B3) o ittifakın üyeleri de
+      // okuyabiliyor — yalnız paylaşıldığı ittifak, kaldırılmamış mesaj.
+      const bakan = await prisma.lord.findUnique({
+        where: { id: lordId },
+        select: { allianceId: true },
+      });
+      const paylasildi =
+        bakan?.allianceId &&
+        (await prisma.allianceMessage.findFirst({
+          where: { battleId: id, allianceId: bakan.allianceId, silindiAn: null, gizli: false },
+          select: { id: true },
+        }));
+      if (!paylasildi) throw hata.yetkisiz();
+    }
     // Bölgenin türü raporun sahnesi için (nerede savaşıldı: köy, maden,
     // kale…). Savaş kaydı bölgeye bağlı değil; bölge silinmişse sahne
     // varsayılan araziye düşüyor.

@@ -157,10 +157,10 @@ model WorldMerge {
 }
 
 model Lord {
-  id      String @id @default(cuid())
-  userId  String
-  worldId String
-  name    String
+  id         String @id @default(cuid())
+  userId     String
+  worldId    String
+  name       String
   /// Adın benzersizlik anahtarı: büyük/küçük harf ve Türkçe I duyarsız
   /// (`lordAdiAnahtari`, services/adDenetimi.ts). Benzersizlik kayıtta
   /// sorulup geçiliyordu; aynı anda gelen iki kayıt aynı adı alabiliyordu.
@@ -603,8 +603,10 @@ model Battle {
   log            Json
   createdAt      DateTime @default(now())
 
-  attacker Lord  @relation("AttackerBattles", fields: [attackerLordId], references: [id], onDelete: Cascade)
-  defender Lord? @relation("DefenderBattles", fields: [defenderLordId], references: [id])
+  attacker    Lord              @relation("AttackerBattles", fields: [attackerLordId], references: [id], onDelete: Cascade)
+  defender    Lord?             @relation("DefenderBattles", fields: [defenderLordId], references: [id])
+  /// İttifak sohbetinde paylaşıldığı mesajlar.
+  paylasimlar AllianceMessage[]
 
   @@index([attackerLordId, createdAt])
   @@index([defenderLordId, createdAt])
@@ -889,12 +891,17 @@ model AllianceMessage {
   /// Eşiği aşan şikâyet yüzünden yönetici bakana kadar gizli.
   /// Ceza değil: yazana bir şey olmuyor, "yok say" kararı geri getiriyor.
   gizli     Boolean   @default(false)
+  /// Paylaşılan savaş raporu (docs/09 B3): mesaj bir rapor kartı. Rapor bu
+  /// ittifakın üyelerine açılıyor — yalnız paylaşıldığı ittifakta.
+  battleId  String?
 
   alliance Alliance @relation(fields: [allianceId], references: [id], onDelete: Cascade)
   lord     Lord     @relation(fields: [lordId], references: [id], onDelete: Cascade)
+  battle   Battle?  @relation(fields: [battleId], references: [id], onDelete: SetNull)
 
   @@index([allianceId, createdAt])
   @@index([lordId, createdAt])
+  @@index([battleId])
 }
 
 /// Genel sohbet: bütün oyuncuların tek kanalı.

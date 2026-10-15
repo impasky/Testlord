@@ -631,7 +631,20 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
       },
       orderBy: { createdAt: 'desc' },
       take: k.gosterilen_mesaj,
-      include: { lord: { select: YAZAR_SEC } },
+      include: {
+        lord: { select: YAZAR_SEC },
+        battle: {
+          select: {
+            id: true,
+            result: true,
+            captured: true,
+            attackerLordId: true,
+            log: true,
+            attacker: { select: { name: true } },
+            defender: { select: { name: true } },
+          },
+        },
+      },
     });
 
     // Sunucu en yeniden eskiye çekiyor (indeks o yönde), arayüz eskiden
@@ -647,6 +660,20 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
         metin: m.silindiAn ? SILINMIS_MESAJ : m.gizli ? GIZLI_MESAJ : m.text,
         kaldirildi: m.silindiAn !== null || m.gizli,
         an: m.createdAt,
+        // Paylaşılan savaş raporu: kartın özeti, paylaşanın gözünden.
+        rapor:
+          m.battle && !m.silindiAn && !m.gizli
+            ? {
+                battleId: m.battle.id,
+                bolge: (m.battle.log as { regionName?: string }).regionName ?? '',
+                saldiran: m.battle.attacker.name,
+                savunan: m.battle.defender?.name ?? null,
+                paylasanSaldiran: m.battle.attackerLordId === m.lordId,
+                zafer:
+                  (m.battle.result === 'attacker_win') === (m.battle.attackerLordId === m.lordId),
+                elDegistirdi: m.battle.captured,
+              }
+            : null,
       })),
       enFazlaHarf: k.mesaj_en_fazla_harf,
     };
@@ -697,6 +724,72 @@ export async function ittifakRoutes(app: FastifyInstance): Promise<void> {
 
     const m = await prisma.allianceMessage.create({
       data: { allianceId: lord.allianceId, lordId, text: metin },
+    });
+    return { id: m.id, an: m.createdAt };
+  });
+
+  /**
+   * Savaş raporunu ittifak sohbetinde paylaşır (docs/09 B3).
+   *
+   * Rapor savaşın iki tarafına açıktı; müttefik ancak "kazandım" cümlesini
+   * okuyordu. Paylaşılınca sohbette bir rapor kartı duruyor ve ittifak
+   * üyeleri raporun tamamını açabiliyor — yalnız paylaşıldığı ittifakta.
+   * Sohbetin bütün kuralları geçerli: doğrulama, susturma, hız freni.
+   */
+  app.post('/ittifak/sohbet/rapor', { preHandler: requireAuth }, async (req) => {
+    const k = B.ittifak.sohbet;
+    const body = z
+      .object({
+        battleId: z.string().min(1).max(64),
+        not: z.string().max(k.mesaj_en_fazla_harf).optional(),
+      })
+      .parse(req.body);
+    await dogrulamaKontrol(req.user.userId, 'ittifak_sohbet');
+    const lordId = await findLordByUser(req.user.userId);
+    await susturmaKontrol(lordId);
+    const not = (body.not ?? '').trim();
+    if (not) {
+      const denetim = mesajDenetle(not);
+      if (!denetim.uygun) {
+        throw new GameError(denetim.sebep ?? 'Mesaj gönderilemez.', 400, 'MESAJ_UYGUNSUZ');
+      }
+    }
+    const lord = await prisma.lord.findUniqueOrThrow({
+      where: { id: lordId },
+      select: { allianceId: true },
+    });
+    if (!lord.allianceId) throw new GameError('Bir ittifakta değilsin.', 400, 'ITTIFAK_YOK');
+    const savas = await prisma.battle.findUnique({
+      where: { id: body.battleId },
+      select: { attackerLordId: true, defenderLordId: true },
+    });
+    // Yalnız kendi savaşın: başkasının raporunu paylaşmak, ona ait olmayan
+    // bir bilgiyi (ordusu, kaybı) yaymak olurdu.
+    if (!savas || (savas.attackerLordId !== lordId && savas.defenderLordId !== lordId)) {
+      throw hata.bulunamadi('Savaş');
+    }
+    const ayni = await prisma.allianceMessage.findFirst({
+      where: { allianceId: lord.allianceId, battleId: body.battleId },
+      select: { id: true },
+    });
+    if (ayni) throw new GameError('Bu rapor zaten paylaşıldı.', 409, 'ZATEN_PAYLASILDI');
+    const sonuncu = await prisma.allianceMessage.findFirst({
+      where: { lordId },
+      orderBy: { createdAt: 'desc' },
+      select: { createdAt: true },
+    });
+    if (sonuncu) {
+      const gecen = (Date.now() - sonuncu.createdAt.getTime()) / 1000;
+      if (gecen < k.iki_mesaj_arasi_sn) {
+        throw new GameError(
+          `Çok hızlı yazıyorsun. ${Math.ceil(k.iki_mesaj_arasi_sn - gecen)} saniye bekle.`,
+          400,
+          'COK_HIZLI',
+        );
+      }
+    }
+    const m = await prisma.allianceMessage.create({
+      data: { allianceId: lord.allianceId, lordId, text: not, battleId: body.battleId },
     });
     return { id: m.id, an: m.createdAt };
   });

@@ -19,9 +19,10 @@ import {
   type UnitType,
   yerel,
 } from '@lordlar/shared';
-import { useQuery } from '@tanstack/react-query';
-import type { ReactNode } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState, type ReactNode } from 'react';
 import {
+  ApiError,
   api,
   type BattleDto,
   type GeneralKatkisiDto,
@@ -30,6 +31,7 @@ import {
 } from '../api/client';
 import { SavasCizimi } from '../cizim/Cizimler';
 import { savasAnahtari } from '../cizim/savas';
+import { hisOnay, hisRet } from './hisGeriBildirimi';
 import { BirimIkonu, IkonAltin, IkonDemir, IkonErzak, IkonKapali } from './Ikonlar';
 import { Buton, Fark, Kart, Rozet, SonucSatiri, formatSayi, nadirlikRengi, sablonlu } from './ui';
 
@@ -443,17 +445,63 @@ function SavasSahnesi({ savas }: { savas: BattleDto }) {
   );
 }
 
+/**
+ * Raporu ittifak sohbetinde paylaş (docs/09 B3). Yalnız bir ittifaktaysan;
+ * paylaşılan rapor sohbette kart olarak duruyor ve üyeler açabiliyor.
+ */
+function IttifakaPaylas({ battleId }: { battleId: string }) {
+  const qc = useQueryClient();
+  const ittifak = useQuery({ queryKey: ['ittifak'], queryFn: api.ittifak, staleTime: 60_000 });
+  const [sonuc, setSonuc] = useState<{ tamam: boolean; metin: string } | null>(null);
+  const paylas = useMutation({
+    mutationFn: () => api.ittifakRaporPaylas(battleId),
+    onSuccess: () => {
+      hisOnay();
+      setSonuc({ tamam: true, metin: 'İttifak sohbetinde paylaşıldı.' });
+      void qc.invalidateQueries({ queryKey: ['ittifak-sohbet'] });
+    },
+    onError: (e) => {
+      hisRet();
+      setSonuc({ tamam: false, metin: e instanceof ApiError ? e.message : 'Paylaşılamadı.' });
+    },
+  });
+  if (!ittifak.data?.ittifakim) return null;
+  return (
+    <div>
+      <Buton
+        tur="anahat"
+        tam
+        disabled={paylas.isPending || sonuc?.tamam === true}
+        onClick={() => paylas.mutate()}
+        data-rapor-paylas=""
+      >
+        {sonuc?.tamam ? 'Paylaşıldı' : 'İttifak sohbetinde paylaş'}
+      </Buton>
+      {sonuc && (
+        <p
+          className={`mt-1 text-center text-[12px] ${sonuc.tamam ? 'text-yesil' : 'text-kirmizi'}`}
+        >
+          {sonuc.metin}
+        </p>
+      )}
+    </div>
+  );
+}
+
 export function SavasRaporu({
   battleId,
   benimId,
   onKapat,
   onKarsiSaldiri,
+  paylasilabilir = true,
 }: {
   battleId: string;
   benimId: string;
   onKapat: () => void;
   /** Savunan taraftaysan doğrudan o bölgeye saldırmak için. */
   onKarsiSaldiri?: (regionId: number) => void;
+  /** İttifakta paylaş düğmesi (sohbetten açılan, başkasının raporunda yok). */
+  paylasilabilir?: boolean;
 }) {
   const { data: savas, isError } = useQuery({
     queryKey: ['battle', battleId],
@@ -604,6 +652,8 @@ export function SavasRaporu({
                   </div>
                 </Kart>
               ) : null}
+
+              {paylasilabilir && <IttifakaPaylas battleId={savas.id} />}
 
               {/* Karşı saldırı yalnızca savunandayken: saldıran zaten oraya
                   nasıl gideceğini biliyor, savunan ise raporu okuyup

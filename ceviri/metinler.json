@@ -63,6 +63,14 @@
       "apps/web/src/screens/Harita.tsx:1097"
     ]
   },
+  "t8d676f6b": {
+    "grup": "arayuz",
+    "tr": " · bölge el değiştirdi",
+    "en": " · region changed hands",
+    "nerede": [
+      "apps/web/src/components/SohbetMesajlari.tsx:159"
+    ]
+  },
   "t64fe69d3": {
     "grup": "arayuz",
     "tr": " · en az Sv{0}",
@@ -389,7 +397,7 @@
     "tr": "{0} — mesaj şikâyeti",
     "en": "{0} — message report",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:145",
+      "apps/web/src/components/IttifakSohbet.tsx:157",
       "apps/web/src/screens/GenelSohbet.tsx:176"
     ]
   },
@@ -543,7 +551,7 @@
     "tr": "{0} adlı lordu engelle",
     "en": "Block {0}",
     "nerede": [
-      "apps/web/src/components/SohbetMesajlari.tsx:116"
+      "apps/web/src/components/SohbetMesajlari.tsx:126"
     ]
   },
   "te723bf3b": {
@@ -559,7 +567,7 @@
     "tr": "{0} adlı lordun mesajını şikâyet et",
     "en": "Report message of the lord named {0}",
     "nerede": [
-      "apps/web/src/components/SohbetMesajlari.tsx:106"
+      "apps/web/src/components/SohbetMesajlari.tsx:116"
     ]
   },
   "tfc391785": {
@@ -669,7 +677,7 @@
     "tr": "{0} asker ölü sanılmıştı, yaralı olarak döndü. Kayıp sayısı bunu çıkardıktan sonrası.",
     "en": "{0} [soldier was|soldiers were] presumed dead and came back wounded. The casualty count is what remains after subtracting them.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:209"
+      "apps/web/src/components/SavasRaporu.tsx:211"
     ]
   },
   "t1fc2fe59": {
@@ -733,7 +741,7 @@
     "tr": "{0} birliklerin {1} karşısında {2} vurdu.",
     "en": "Your {0} troops hit {2} against {1}.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:404"
+      "apps/web/src/components/SavasRaporu.tsx:406"
     ]
   },
   "t0460d827": {
@@ -741,7 +749,7 @@
     "tr": "{0} birliklerin {1} karşısında {2} yedi.",
     "en": "Your {0} troops took {2} against {1}.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:405"
+      "apps/web/src/components/SavasRaporu.tsx:407"
     ]
   },
   "t12853735": {
@@ -760,7 +768,7 @@
     "tr": "{0} bölgesine karşı saldır",
     "en": "Counterattack region {0}",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:615"
+      "apps/web/src/components/SavasRaporu.tsx:665"
     ]
   },
   "t64000673": {
@@ -857,7 +865,7 @@
     "tr": "{0} engellendi. Mesajlarını artık görmeyeceksin; Hesap ekranından kaldırabilirsin.",
     "en": "{0} blocked. You won't see their messages anymore; you can undo this from the Account screen.",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:78",
+      "apps/web/src/components/IttifakSohbet.tsx:81",
       "apps/web/src/screens/GenelSohbet.tsx:85"
     ]
   },
@@ -867,7 +875,7 @@
     "en": "Block {0}? You won't see their messages again; they won't be notified.",
     "nerede": [
       "apps/web/src/components/ProfilKarti.tsx:150",
-      "apps/web/src/components/SohbetMesajlari.tsx:149"
+      "apps/web/src/components/SohbetMesajlari.tsx:194"
     ]
   },
   "t3c2e09ca": {
@@ -907,7 +915,7 @@
     "tr": "{0} generalleri",
     "en": "{0}'s generals",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:238"
+      "apps/web/src/components/SavasRaporu.tsx:240"
     ]
   },
   "t6f068ff0": {
@@ -982,7 +990,7 @@
     "tr": "{0} ile {1} arasındaki savaş",
     "en": "Battle between {0} and {1}",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:439"
+      "apps/web/src/components/SavasRaporu.tsx:441"
     ]
   },
   "tf8c9cd73": {
@@ -1119,7 +1127,7 @@
     "tr": "{0} profilini aç",
     "en": "Open {0}'s profile",
     "nerede": [
-      "apps/web/src/components/SohbetMesajlari.tsx:71"
+      "apps/web/src/components/SohbetMesajlari.tsx:74"
     ]
   },
   "t120b571b": {
@@ -1260,7 +1268,7 @@
     "en": "{0} rank {1}",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:151",
-      "apps/web/src/components/SavasRaporu.tsx:88"
+      "apps/web/src/components/SavasRaporu.tsx:90"
     ]
   },
   "t245f1bcb": {
@@ -1970,7 +1978,7 @@
     "en": "gold",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:21",
-      "apps/web/src/components/SavasRaporu.tsx:118",
+      "apps/web/src/components/SavasRaporu.tsx:120",
       "apps/web/src/components/ui.tsx:242",
       "apps/web/src/screens/Harita.tsx:66",
       "packages/shared/src/bina.ts:259",
@@ -2191,7 +2199,7 @@
     "en": "down",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:151",
-      "apps/web/src/components/SavasRaporu.tsx:88"
+      "apps/web/src/components/SavasRaporu.tsx:90"
     ]
   },
   "t56d563a8": {
@@ -2730,7 +2738,7 @@
     "tr": "Bir şey yaz…",
     "en": "Type something…",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:129"
+      "apps/web/src/components/IttifakSohbet.tsx:133"
     ]
   },
   "t2d3fb36b": {
@@ -2763,7 +2771,7 @@
     "tr": "Birlik yok.",
     "en": "No troops.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:186"
+      "apps/web/src/components/SavasRaporu.tsx:188"
     ]
   },
   "tcf92ba89": {
@@ -2815,7 +2823,7 @@
     "tr": "Bölge",
     "en": "Region",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:741",
+      "apps/api/src/routes/ittifak.ts:834",
       "apps/api/src/routes/map.ts:1015",
       "apps/api/src/routes/map.ts:1167",
       "apps/api/src/routes/map.ts:1340",
@@ -2834,7 +2842,7 @@
     "tr": "BÖLGE EL DEĞİŞTİRDİ",
     "en": "REGION CHANGED HANDS",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:511"
+      "apps/web/src/components/SavasRaporu.tsx:559"
     ]
   },
   "tc0b6010d": {
@@ -2899,7 +2907,7 @@
     "en": "Your regions",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:154",
-      "apps/web/src/components/SavasRaporu.tsx:92"
+      "apps/web/src/components/SavasRaporu.tsx:94"
     ]
   },
   "t2b7352ec": {
@@ -3126,7 +3134,7 @@
     "tr": "Bu savaş sıralamanı ve gelirini değiştirmedi — kazanılan tek şey tecrübe oldu.",
     "en": "This battle did not change your ranking or income — the only thing gained was experience.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:69"
+      "apps/web/src/components/SavasRaporu.tsx:71"
     ]
   },
   "tb09ce6e8": {
@@ -3980,7 +3988,7 @@
     "tr": "Dizilim ve Taktik",
     "en": "Formation and Tactic",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:335"
+      "apps/web/src/components/SavasRaporu.tsx:337"
     ]
   },
   "t1fc71cab": {
@@ -4511,7 +4519,7 @@
     "en": "Block",
     "nerede": [
       "apps/web/src/components/ProfilKarti.tsx:160",
-      "apps/web/src/components/SohbetMesajlari.tsx:155"
+      "apps/web/src/components/SohbetMesajlari.tsx:200"
     ]
   },
   "t6ff6f321": {
@@ -4535,7 +4543,7 @@
     "tr": "Engellenemedi.",
     "en": "Could not block.",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:86",
+      "apps/web/src/components/IttifakSohbet.tsx:89",
       "apps/web/src/components/ProfilKarti.tsx:62",
       "apps/web/src/screens/GenelSohbet.tsx:93"
     ]
@@ -4809,8 +4817,9 @@
     "tr": "Garnizon",
     "en": "Garrison",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:431",
-      "apps/web/src/components/SavasRaporu.tsx:558",
+      "apps/web/src/components/SavasRaporu.tsx:433",
+      "apps/web/src/components/SavasRaporu.tsx:606",
+      "apps/web/src/components/SohbetMesajlari.tsx:159",
       "apps/web/src/screens/Harita.tsx:1276",
       "apps/web/src/screens/Harita.tsx:1424"
     ]
@@ -5203,7 +5212,7 @@
     "tr": "Gücün savunanın {0} katıydı.",
     "en": "Your power was {0}× the defender's.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:373"
+      "apps/web/src/components/SavasRaporu.tsx:375"
     ]
   },
   "t269314eb": {
@@ -5411,7 +5420,7 @@
     "tr": "Hedefin tahkimatı savunmaya +%{0} kattı.",
     "en": "The target's fortification added +{0}% to defense.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:400"
+      "apps/web/src/components/SavasRaporu.tsx:402"
     ]
   },
   "t65049340": {
@@ -5500,7 +5509,7 @@
     "tr": "Henüz kimse yazmadı. İlk sözü sen söyle — bir hedef göster, yardım iste.",
     "en": "Nobody has written yet. You say the first word — point out a target, ask for help.",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:109"
+      "apps/web/src/components/IttifakSohbet.tsx:112"
     ]
   },
   "tf1702137": {
@@ -5599,7 +5608,7 @@
     "en": "DELETE MY ACCOUNT",
     "nerede": [
       "apps/api/src/routes/me.ts:64",
-      "apps/web/src/api/client.ts:1313",
+      "apps/web/src/api/client.ts:1325",
       "apps/web/src/screens/Hesap.tsx:297"
     ]
   },
@@ -5978,10 +5987,10 @@
     "tr": "İttifak",
     "en": "Alliance",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1309",
-      "apps/api/src/routes/ittifak.ts:1491",
+      "apps/api/src/routes/ittifak.ts:1054",
+      "apps/api/src/routes/ittifak.ts:1402",
+      "apps/api/src/routes/ittifak.ts:1584",
       "apps/api/src/routes/ittifak.ts:514",
-      "apps/api/src/routes/ittifak.ts:961",
       "apps/web/src/components/ProfilKarti.tsx:133",
       "apps/web/src/screens/Harita.tsx:382",
       "apps/web/src/screens/Ittifak.tsx:207",
@@ -6059,7 +6068,7 @@
     "tr": "İttifak Sohbeti",
     "en": "Alliance Chat",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:95"
+      "apps/web/src/components/IttifakSohbet.tsx:98"
     ]
   },
   "t152a5b13": {
@@ -6068,6 +6077,22 @@
     "en": "Alliance chat message",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:175"
+    ]
+  },
+  "t31f01a25": {
+    "grup": "arayuz",
+    "tr": "İttifak sohbetinde paylaş",
+    "en": "Share in alliance chat",
+    "nerede": [
+      "apps/web/src/components/SavasRaporu.tsx:478"
+    ]
+  },
+  "tae4ab61b": {
+    "grup": "arayuz",
+    "tr": "İttifak sohbetinde paylaşıldı.",
+    "en": "Shared in alliance chat.",
+    "nerede": [
+      "apps/web/src/components/SavasRaporu.tsx:460"
     ]
   },
   "t94cb806d": {
@@ -6228,7 +6253,7 @@
     "tr": "KALAN",
     "en": "REMAINING",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:192"
+      "apps/web/src/components/SavasRaporu.tsx:194"
     ]
   },
   "tc67d9cb8": {
@@ -6344,8 +6369,8 @@
       "apps/web/src/components/Omurga.tsx:466",
       "apps/web/src/components/ProfilKarti.tsx:206",
       "apps/web/src/components/ProfilResmiSecici.tsx:286",
-      "apps/web/src/components/SavasRaporu.tsx:477",
-      "apps/web/src/components/SavasRaporu.tsx:500",
+      "apps/web/src/components/SavasRaporu.tsx:525",
+      "apps/web/src/components/SavasRaporu.tsx:548",
       "apps/web/src/components/SavunmaDuzeni.tsx:69",
       "apps/web/src/components/SikayetSayfasi.tsx:66",
       "apps/web/src/components/UygulamaKasasi.tsx:181",
@@ -6408,7 +6433,7 @@
     "tr": "Karşı taraf {0} kat güçlüydü.",
     "en": "The opposing side was {0}× stronger.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:374"
+      "apps/web/src/components/SavasRaporu.tsx:376"
     ]
   },
   "tf40b4b94": {
@@ -6416,7 +6441,7 @@
     "tr": "Karşı taraf {0}. turda en çok öne geçti: {1} güce karşı {2}.",
     "en": "The opposing side pulled ahead the most in round {0}: {1} power against {2}.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:392"
+      "apps/web/src/components/SavasRaporu.tsx:394"
     ]
   },
   "tdd047557": {
@@ -6548,7 +6573,7 @@
     "tr": "KAYIP",
     "en": "LOSSES",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:191"
+      "apps/web/src/components/SavasRaporu.tsx:193"
     ]
   },
   "t6ff52f6d": {
@@ -6742,7 +6767,7 @@
     "tr": "Kendi üyenizin bölgesi hedef olamaz.",
     "en": "Your own member's region cannot be a target.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:750",
+      "apps/api/src/routes/ittifak.ts:843",
       "apps/web/src/screens/Harita.tsx:395"
     ]
   },
@@ -7404,7 +7429,7 @@
     "tr": "Makas {0}. turda en çok açıldı: {1} güce karşı {2}.",
     "en": "The gap widened the most in round {0}: {1} power against {2}.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:387"
+      "apps/web/src/components/SavasRaporu.tsx:389"
     ]
   },
   "t5c2dce44": {
@@ -7438,7 +7463,7 @@
     "tr": "Mancınıklar tahkimata karşı iki katı iş yaptı.",
     "en": "Catapults did double work against the fortification.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:409"
+      "apps/web/src/components/SavasRaporu.tsx:411"
     ]
   },
   "t6b688af5": {
@@ -7528,7 +7553,7 @@
     "tr": "Mesaj gönderilemedi.",
     "en": "Message could not be sent.",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:60",
+      "apps/web/src/components/IttifakSohbet.tsx:63",
       "apps/web/src/screens/GenelSohbet.tsx:74"
     ]
   },
@@ -7554,7 +7579,7 @@
     "tr": "Mesajını gözden geçir ve tekrar dene.",
     "en": "Review your message and try again.",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:138",
+      "apps/web/src/components/IttifakSohbet.tsx:142",
       "apps/web/src/screens/GenelSohbet.tsx:169"
     ]
   },
@@ -7662,7 +7687,7 @@
     "tr": "Neden Böyle Oldu",
     "en": "Why Did This Happen",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:318"
+      "apps/web/src/components/SavasRaporu.tsx:320"
     ]
   },
   "t73ac5603": {
@@ -8397,6 +8422,22 @@
       "apps/web/src/screens/Malikane.tsx:229"
     ]
   },
+  "ta7ccd072": {
+    "grup": "arayuz",
+    "tr": "Paylaşılamadı.",
+    "en": "Could not share.",
+    "nerede": [
+      "apps/web/src/components/SavasRaporu.tsx:465"
+    ]
+  },
+  "t8dd3cca9": {
+    "grup": "arayuz",
+    "tr": "Paylaşıldı",
+    "en": "Shared",
+    "nerede": [
+      "apps/web/src/components/SavasRaporu.tsx:478"
+    ]
+  },
   "tbc71d6a3": {
     "grup": "arayuz",
     "tr": "Pazar",
@@ -8529,7 +8570,15 @@
     "tr": "Rapor açılamadı.",
     "en": "Report could not be opened.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:519"
+      "apps/web/src/components/SavasRaporu.tsx:567"
+    ]
+  },
+  "t37c36930": {
+    "grup": "arayuz",
+    "tr": "Raporu aç",
+    "en": "Open report",
+    "nerede": [
+      "apps/web/src/components/SohbetMesajlari.tsx:161"
     ]
   },
   "t0808f810": {
@@ -8627,7 +8676,7 @@
     "tr": "Saatlik {0}",
     "en": "Hourly {0}",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:104",
+      "apps/web/src/components/SavasRaporu.tsx:106",
       "apps/web/src/screens/Harita.tsx:1201"
     ]
   },
@@ -8693,7 +8742,7 @@
     "tr": "Saldıran",
     "en": "Attacker",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:568"
+      "apps/web/src/components/SavasRaporu.tsx:616"
     ]
   },
   "t87d8df09": {
@@ -8701,8 +8750,8 @@
     "tr": "SALDIRAN",
     "en": "ATTACKER",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:510",
-      "apps/web/src/components/SavasRaporu.tsx:549"
+      "apps/web/src/components/SavasRaporu.tsx:558",
+      "apps/web/src/components/SavasRaporu.tsx:597"
     ]
   },
   "t3424fe05": {
@@ -8866,7 +8915,7 @@
     "tr": "Savaş kazanıldı ama güç payı %{0} eşiğine ulaşmadı — bölge el değiştirmedi, yalnızca yağma alındı.",
     "en": "The battle was won but the power share did not reach the {0}% threshold — the region did not change hands, only loot was taken.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:377"
+      "apps/web/src/components/SavasRaporu.tsx:379"
     ]
   },
   "tbbc85c89": {
@@ -8890,7 +8939,7 @@
     "tr": "Savaş Raporu",
     "en": "Battle Report",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:487"
+      "apps/web/src/components/SavasRaporu.tsx:535"
     ]
   },
   "tbfc25419": {
@@ -8930,7 +8979,7 @@
     "tr": "Savunan",
     "en": "Defender",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:573"
+      "apps/web/src/components/SavasRaporu.tsx:621"
     ]
   },
   "tf48cad35": {
@@ -8938,8 +8987,8 @@
     "tr": "SAVUNAN",
     "en": "DEFENDER",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:510",
-      "apps/web/src/components/SavasRaporu.tsx:557"
+      "apps/web/src/components/SavasRaporu.tsx:558",
+      "apps/web/src/components/SavasRaporu.tsx:605"
     ]
   },
   "td8820cb4": {
@@ -9100,8 +9149,8 @@
     "tr": "Sende ne değişti",
     "en": "What changed for you",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:67",
-      "apps/web/src/components/SavasRaporu.tsx:77"
+      "apps/web/src/components/SavasRaporu.tsx:69",
+      "apps/web/src/components/SavasRaporu.tsx:79"
     ]
   },
   "tcef5c072": {
@@ -9199,7 +9248,7 @@
     "tr": "Seviye atladı: Sv {0} → Sv {1}",
     "en": "Leveled up: Lvl {0} → Lvl {1}",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:258"
+      "apps/web/src/components/SavasRaporu.tsx:260"
     ]
   },
   "t8eb45bb8": {
@@ -9215,7 +9264,7 @@
     "tr": "Seviye atladın: {0} → {1}",
     "en": "You leveled up: {0} → {1}",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:112"
+      "apps/web/src/components/SavasRaporu.tsx:114"
     ]
   },
   "tee50015f": {
@@ -9651,7 +9700,7 @@
     "tr": "Sv{0}",
     "en": "Lvl{0}",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:248",
+      "apps/web/src/components/SavasRaporu.tsx:250",
       "apps/web/src/screens/Akin.tsx:325",
       "apps/web/src/screens/Arastirma.tsx:571",
       "apps/web/src/screens/Demirhane.tsx:464",
@@ -9802,7 +9851,7 @@
     "en": "Your fame ranking",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:144",
-      "apps/web/src/components/SavasRaporu.tsx:81"
+      "apps/web/src/components/SavasRaporu.tsx:83"
     ]
   },
   "t3974a602": {
@@ -9819,7 +9868,7 @@
     "en": "Your fame",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:141",
-      "apps/web/src/components/SavasRaporu.tsx:78",
+      "apps/web/src/components/SavasRaporu.tsx:80",
       "apps/web/src/screens/Demirhane.tsx:135"
     ]
   },
@@ -9963,7 +10012,7 @@
     "tr": "Tahkimat olmadığı için mancınıklar canlı orduya {0} vurdu — o kaynak boşa gitti.",
     "en": "With no fortification the catapults hit the living army at {0} — that resource went to waste.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:412"
+      "apps/web/src/components/SavasRaporu.tsx:414"
     ]
   },
   "te9b9ec08": {
@@ -9987,7 +10036,7 @@
     "tr": "Tahkimatın savunmaya +%{0} kattı.",
     "en": "Your fortification added +{0}% to defense.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:399"
+      "apps/web/src/components/SavasRaporu.tsx:401"
     ]
   },
   "tebef06ac": {
@@ -10277,7 +10326,7 @@
     "tr": "Toplam{0}{1}{2}birim öldü · tohum {3}",
     "en": "Total{0}{1}{2}units died · seed {3}",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:618"
+      "apps/web/src/components/SavasRaporu.tsx:668"
     ]
   },
   "t549376dd": {
@@ -10325,7 +10374,7 @@
     "tr": "TUR {0}",
     "en": "ROUND {0}",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:131"
+      "apps/web/src/components/SavasRaporu.tsx:133"
     ]
   },
   "te2ee684f": {
@@ -10333,7 +10382,7 @@
     "tr": "Tur Tur Güç · {0} tur",
     "en": "Power Round by Round · {0} [round|rounds]",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:541"
+      "apps/web/src/components/SavasRaporu.tsx:589"
     ]
   },
   "te56699c1": {
@@ -10460,7 +10509,7 @@
     "tr": "Üstteki çubuk saldıran, alttaki savunan.",
     "en": "The top bar is the attacker, the bottom is the defender.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:544"
+      "apps/web/src/components/SavasRaporu.tsx:592"
     ]
   },
   "tee23d259": {
@@ -10468,8 +10517,8 @@
     "tr": "Üye",
     "en": "Member",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1840",
-      "apps/api/src/routes/ittifak.ts:805",
+      "apps/api/src/routes/ittifak.ts:1933",
+      "apps/api/src/routes/ittifak.ts:898",
       "apps/web/src/components/ProfilKarti.tsx:26",
       "packages/shared/src/ittifakSeviye.ts:186"
     ]
@@ -10499,7 +10548,7 @@
       "apps/web/src/components/ProfilKarti.tsx:153",
       "apps/web/src/components/ProfilResmiSecici.tsx:174",
       "apps/web/src/components/SikayetSayfasi.tsx:114",
-      "apps/web/src/components/SohbetMesajlari.tsx:152",
+      "apps/web/src/components/SohbetMesajlari.tsx:197",
       "apps/web/src/screens/Arastirma.tsx:1059",
       "apps/web/src/screens/Harita.tsx:1324",
       "apps/web/src/screens/Hesap.tsx:314",
@@ -10567,7 +10616,7 @@
     "tr": "Yağma",
     "en": "Loot",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:578"
+      "apps/web/src/components/SavasRaporu.tsx:626"
     ]
   },
   "tea3bde58": {
@@ -10660,7 +10709,7 @@
     "tr": "yarım",
     "en": "half",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:413"
+      "apps/web/src/components/SavasRaporu.tsx:415"
     ]
   },
   "t8165b4a2": {
@@ -10758,7 +10807,7 @@
     "tr": "Yaz",
     "en": "Type",
     "nerede": [
-      "apps/web/src/components/IttifakSohbet.tsx:134",
+      "apps/web/src/components/IttifakSohbet.tsx:138",
       "apps/web/src/screens/GenelSohbet.tsx:162"
     ]
   },
@@ -10897,7 +10946,8 @@
     "en": "DEFEAT",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:76",
-      "apps/web/src/components/SavasRaporu.tsx:508",
+      "apps/web/src/components/SavasRaporu.tsx:556",
+      "apps/web/src/components/SohbetMesajlari.tsx:155",
       "apps/web/src/screens/Harita.tsx:1484"
     ]
   },
@@ -11017,7 +11067,7 @@
     "en": "up",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:151",
-      "apps/web/src/components/SavasRaporu.tsx:88"
+      "apps/web/src/components/SavasRaporu.tsx:90"
     ]
   },
   "t3244c60c": {
@@ -11099,7 +11149,7 @@
     "tr": "yükleniyor…",
     "en": "loading…",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:497"
+      "apps/web/src/components/SavasRaporu.tsx:545"
     ]
   },
   "tb65d2ef7": {
@@ -11199,7 +11249,8 @@
     "en": "VICTORY",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:76",
-      "apps/web/src/components/SavasRaporu.tsx:508",
+      "apps/web/src/components/SavasRaporu.tsx:556",
+      "apps/web/src/components/SohbetMesajlari.tsx:155",
       "apps/web/src/screens/Harita.tsx:1484"
     ]
   },
@@ -13452,7 +13503,7 @@
     "tr": "İttifak dolu ({0} üye).",
     "en": "Alliance full ({0} [member|members]).",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1151",
+      "apps/api/src/routes/ittifak.ts:1244",
       "packages/shared/src/ittifakBasvuru.ts:161",
       "packages/shared/src/ittifakBasvuru.ts:87"
     ]
@@ -15378,7 +15429,7 @@
     "tr": ", en az Sv{0}",
     "en": ", at least Lvl{0}",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:922"
+      "apps/api/src/routes/ittifak.ts:1015"
     ]
   },
   "tb6bc6cea": {
@@ -15403,7 +15454,7 @@
     "tr": "{0} (Sv{1}) ittifağınıza başvurdu.",
     "en": "{0} (Lv{1}) applied to your alliance.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1017"
+      "apps/api/src/routes/ittifak.ts:1110"
     ]
   },
   "tf684dd4f": {
@@ -15483,7 +15534,7 @@
     "tr": "{0} bağış yaptı (+{1} XP).",
     "en": "{0} donated (+{1} XP).",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1255"
+      "apps/api/src/routes/ittifak.ts:1348"
     ]
   },
   "t8a093e37": {
@@ -15491,7 +15542,7 @@
     "tr": "{0} başvurusu kabul edildi.",
     "en": "{0}'s application accepted.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1264"
+      "apps/api/src/routes/ittifak.ts:1357"
     ]
   },
   "t03052597": {
@@ -15499,7 +15550,7 @@
     "tr": "{0} başvurusu kabul edilip katıldı.",
     "en": "{0}'s application was accepted and they joined.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1167"
+      "apps/api/src/routes/ittifak.ts:1260"
     ]
   },
   "t847a8c87": {
@@ -15507,7 +15558,7 @@
     "tr": "{0} başvurusu reddedildi.",
     "en": "{0}'s application rejected.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1265"
+      "apps/api/src/routes/ittifak.ts:1358"
     ]
   },
   "t4fe888ec": {
@@ -15563,7 +15614,7 @@
     "tr": "{0} bu arada başka bir ittifağa katılmış.",
     "en": "{0} joined another alliance in the meantime.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1145"
+      "apps/api/src/routes/ittifak.ts:1238"
     ]
   },
   "t0f5e6bb4": {
@@ -15683,7 +15734,7 @@
     "tr": "{0} ile pakt feshedildi.",
     "en": "Pact with {0} dissolved.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1273"
+      "apps/api/src/routes/ittifak.ts:1366"
     ]
   },
   "ta76946fb": {
@@ -15691,7 +15742,7 @@
     "tr": "{0} ile pakt kuruldu.",
     "en": "Pact established with {0}.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1271"
+      "apps/api/src/routes/ittifak.ts:1364"
     ]
   },
   "teb26cc7c": {
@@ -15731,7 +15782,7 @@
     "tr": "{0} ittifakın hedefini {1} olarak işaretledi.",
     "en": "{0} marked the alliance target as {1}.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:773"
+      "apps/api/src/routes/ittifak.ts:866"
     ]
   },
   "t8ccb6e59": {
@@ -15739,7 +15790,7 @@
     "tr": "{0} ittifakına kabul edildin.",
     "en": "You were accepted into the {0} alliance.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1178"
+      "apps/api/src/routes/ittifak.ts:1271"
     ]
   },
   "tb280b5d3": {
@@ -15763,7 +15814,7 @@
     "tr": "{0} ittifakından çıkarıldı.",
     "en": "Kicked from the {0} alliance.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:816"
+      "apps/api/src/routes/ittifak.ts:909"
     ]
   },
   "t9b853237": {
@@ -15779,7 +15830,7 @@
     "tr": "{0} ittifaktan çıkarıldı.",
     "en": "{0} was kicked from the alliance.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:812"
+      "apps/api/src/routes/ittifak.ts:905"
     ]
   },
   "t1fbe3442": {
@@ -15787,7 +15838,7 @@
     "tr": "{0} ittifaktan yeni ayrılmış, {1} saat daha giremez.",
     "en": "{0} has just left an alliance and cannot join for another {1} [hour|hours].",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1156"
+      "apps/api/src/routes/ittifak.ts:1249"
     ]
   },
   "tc84e1ceb": {
@@ -15827,7 +15878,7 @@
     "tr": "{0} pakt teklifini kapattı.",
     "en": "{0} closed the pact offer.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1602"
+      "apps/api/src/routes/ittifak.ts:1695"
     ]
   },
   "t3d8681d2": {
@@ -15835,7 +15886,7 @@
     "tr": "{0} paktı feshetti. Pakt {1} saat sonra sona eriyor.",
     "en": "{0} dissolved the pact. The pact expires in {1} [hour|hours].",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1642"
+      "apps/api/src/routes/ittifak.ts:1735"
     ]
   },
   "t7cff0ab1": {
@@ -15859,7 +15910,7 @@
     "tr": "{0} saldırmazlık paktı teklif etti.",
     "en": "{0} offered a non-aggression pact.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1545"
+      "apps/api/src/routes/ittifak.ts:1638"
     ]
   },
   "t024a1acb": {
@@ -15964,7 +16015,7 @@
     "tr": "{0} Yaşlı oldu.",
     "en": "{0} became an Elder.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1861"
+      "apps/api/src/routes/ittifak.ts:1954"
     ]
   },
   "t4bbe2f22": {
@@ -15972,7 +16023,7 @@
     "tr": "{0} Yaşlı rütbesini kaybetti.",
     "en": "{0} lost the Elder rank.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1861"
+      "apps/api/src/routes/ittifak.ts:1954"
     ]
   },
   "t12f9a857": {
@@ -15980,7 +16031,7 @@
     "tr": "{0}, {1} üzerine göz dikti.",
     "en": "{0} set their sights on {1}.",
     "nerede": [
-      "apps/api/src/routes/map.ts:1467"
+      "apps/api/src/routes/map.ts:1481"
     ]
   },
   "tf6cc8850": {
@@ -16127,8 +16178,8 @@
     "tr": "Başvuru",
     "en": "Application",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1037",
-      "apps/api/src/routes/ittifak.ts:1111"
+      "apps/api/src/routes/ittifak.ts:1130",
+      "apps/api/src/routes/ittifak.ts:1204"
     ]
   },
   "t3e65b797": {
@@ -16136,7 +16187,7 @@
     "tr": "başvuruyla",
     "en": "by application",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:921"
+      "apps/api/src/routes/ittifak.ts:1014"
     ]
   },
   "t5ac47aa2": {
@@ -16192,7 +16243,7 @@
     "tr": "bilinmeyen ittifak",
     "en": "unknown alliance",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1268"
+      "apps/api/src/routes/ittifak.ts:1361"
     ]
   },
   "tb724b5e4": {
@@ -16200,17 +16251,18 @@
     "tr": "Bir ittifakta değilsin.",
     "en": "You are not in an alliance.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1205",
-      "apps/api/src/routes/ittifak.ts:1480",
-      "apps/api/src/routes/ittifak.ts:1662",
-      "apps/api/src/routes/ittifak.ts:1707",
+      "apps/api/src/routes/ittifak.ts:1298",
+      "apps/api/src/routes/ittifak.ts:1573",
+      "apps/api/src/routes/ittifak.ts:1755",
+      "apps/api/src/routes/ittifak.ts:1800",
       "apps/api/src/routes/ittifak.ts:235",
       "apps/api/src/routes/ittifak.ts:308",
       "apps/api/src/routes/ittifak.ts:552",
       "apps/api/src/routes/ittifak.ts:619",
-      "apps/api/src/routes/ittifak.ts:678",
-      "apps/api/src/routes/ittifak.ts:723",
-      "apps/api/src/routes/ittifak.ts:793"
+      "apps/api/src/routes/ittifak.ts:705",
+      "apps/api/src/routes/ittifak.ts:761",
+      "apps/api/src/routes/ittifak.ts:816",
+      "apps/api/src/routes/ittifak.ts:886"
     ]
   },
   "t2ffdc779": {
@@ -16406,7 +16458,7 @@
     "tr": "Bu başvuru zaten karara bağlanmış.",
     "en": "This application has already been decided.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1113"
+      "apps/api/src/routes/ittifak.ts:1206"
     ]
   },
   "t879fbc69": {
@@ -16584,7 +16636,7 @@
     "tr": "Bu ittifakla zaten paktın var.",
     "en": "You already have a pact with this alliance.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1518"
+      "apps/api/src/routes/ittifak.ts:1611"
     ]
   },
   "t7c2cd60c": {
@@ -16609,7 +16661,15 @@
     "tr": "Bu pakt zaten feshediliyor.",
     "en": "This pact is already being dissolved.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1626"
+      "apps/api/src/routes/ittifak.ts:1719"
+    ]
+  },
+  "tc3fdaed0": {
+    "grup": "sunucu",
+    "tr": "Bu rapor zaten paylaşıldı.",
+    "en": "This report has already been shared.",
+    "nerede": [
+      "apps/api/src/routes/ittifak.ts:775"
     ]
   },
   "t6b9c7a24": {
@@ -16658,8 +16718,8 @@
     "tr": "Bu teklif artık açık değil.",
     "en": "This offer is no longer open.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1560",
-      "apps/api/src/routes/ittifak.ts:1596"
+      "apps/api/src/routes/ittifak.ts:1653",
+      "apps/api/src/routes/ittifak.ts:1689"
     ]
   },
   "t14d7d3bd": {
@@ -16675,7 +16735,7 @@
     "tr": "Bugünlük bağış hakkın bitti ({0}). Yarın tekrar.",
     "en": "Your donation allowance for today is over ({0}). Try again tomorrow.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1714"
+      "apps/api/src/routes/ittifak.ts:1807"
     ]
   },
   "t0dde2e79": {
@@ -16779,7 +16839,8 @@
     "tr": "Çok hızlı yazıyorsun. {0} saniye bekle.",
     "en": "You are typing too fast. Wait {0} second.|You are typing too fast. Wait {0} seconds.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:691",
+      "apps/api/src/routes/ittifak.ts:718",
+      "apps/api/src/routes/ittifak.ts:785",
       "apps/api/src/routes/sohbet.ts:112"
     ]
   },
@@ -16854,7 +16915,7 @@
     "tr": "Duyuru güncellendi.",
     "en": "Announcement updated.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1811"
+      "apps/api/src/routes/ittifak.ts:1904"
     ]
   },
   "tf7049390": {
@@ -16862,7 +16923,7 @@
     "tr": "Duyuru kaldırıldı.",
     "en": "Announcement removed.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1811"
+      "apps/api/src/routes/ittifak.ts:1904"
     ]
   },
   "t075455aa": {
@@ -16919,7 +16980,7 @@
     "tr": "En fazla {0} yaşlı olabilir. Önce birinin rütbesini almalısın.",
     "en": "There can be at most {0} [elder|elders]. You must demote someone first.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1846"
+      "apps/api/src/routes/ittifak.ts:1939"
     ]
   },
   "t99f8a247": {
@@ -17087,7 +17148,7 @@
     "tr": "herkese açık",
     "en": "open to everyone",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:921"
+      "apps/api/src/routes/ittifak.ts:1014"
     ]
   },
   "t367d59af": {
@@ -17139,7 +17200,7 @@
     "tr": "İttifak arması değişti.",
     "en": "Alliance crest changed.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:857"
+      "apps/api/src/routes/ittifak.ts:950"
     ]
   },
   "td286be2a": {
@@ -17147,7 +17208,7 @@
     "tr": "İttifak başvurun kabul edilmedi.",
     "en": "Your alliance application was not accepted.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1125"
+      "apps/api/src/routes/ittifak.ts:1218"
     ]
   },
   "tfb810908": {
@@ -17171,7 +17232,7 @@
     "tr": "İttifakında Yaşlı oldun.",
     "en": "You became an Elder in your alliance.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1869"
+      "apps/api/src/routes/ittifak.ts:1962"
     ]
   },
   "taaa9a7ea": {
@@ -17179,7 +17240,7 @@
     "tr": "İttifakındaki Yaşlı rütben alındı.",
     "en": "Your Elder rank in your alliance was revoked.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1869"
+      "apps/api/src/routes/ittifak.ts:1962"
     ]
   },
   "tb15d50e9": {
@@ -17187,7 +17248,7 @@
     "tr": "İttifaktan yeni ayrıldın. {0} saat sonra girebilirsin.",
     "en": "You just left an alliance. You can join in {0} [hour|hours].",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1349"
+      "apps/api/src/routes/ittifak.ts:1442"
     ]
   },
   "t8f1e61bf": {
@@ -17195,7 +17256,7 @@
     "tr": "İttifaktan yeni ayrıldın. {0} saat sonra yeni bir ittifağa başvurabilirsin.",
     "en": "You have just left an alliance. You can apply to a new one in {0} [hour|hours].",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:972"
+      "apps/api/src/routes/ittifak.ts:1065"
     ]
   },
   "t96bb795c": {
@@ -17235,7 +17296,7 @@
     "tr": "Katılım: {0}",
     "en": "Joining: {0}",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:921"
+      "apps/api/src/routes/ittifak.ts:1014"
     ]
   },
   "td7c0e87f": {
@@ -17324,7 +17385,7 @@
     "tr": "Kendi rütbeni değiştiremezsin.",
     "en": "You cannot change your own rank.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1833"
+      "apps/api/src/routes/ittifak.ts:1926"
     ]
   },
   "t3adae11a": {
@@ -17332,7 +17393,7 @@
     "tr": "Kendi teklifini kabul edemezsin.",
     "en": "You cannot accept your own offer.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1564"
+      "apps/api/src/routes/ittifak.ts:1657"
     ]
   },
   "ta36df99b": {
@@ -17348,7 +17409,7 @@
     "tr": "Kendini çıkaramazsın; ayrılmak için \"Ayrıl\" kullan.",
     "en": "You cannot kick yourself; use \"Leave\" to leave.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:798"
+      "apps/api/src/routes/ittifak.ts:891"
     ]
   },
   "t90b95e55": {
@@ -17502,7 +17563,8 @@
     "tr": "Mesaj gönderilemez.",
     "en": "Message cannot be sent.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:671",
+      "apps/api/src/routes/ittifak.ts:698",
+      "apps/api/src/routes/ittifak.ts:754",
       "apps/api/src/routes/sohbet.ts:100"
     ]
   },
@@ -17600,7 +17662,7 @@
     "tr": "Ortak hedef kaldırıldı.",
     "en": "Common target removed.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:736"
+      "apps/api/src/routes/ittifak.ts:829"
     ]
   },
   "tc9991460": {
@@ -17608,7 +17670,7 @@
     "tr": "Ortak hedef: {0}.",
     "en": "Common target: {0}.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:763"
+      "apps/api/src/routes/ittifak.ts:856"
     ]
   },
   "t1265fa4b": {
@@ -17807,6 +17869,7 @@
     "tr": "Savaş",
     "en": "Battle",
     "nerede": [
+      "apps/api/src/routes/ittifak.ts:769",
       "apps/api/src/routes/map.ts:1417",
       "data/basarimlar.json:kumeler[1].ad"
     ]
@@ -17960,7 +18023,7 @@
     "tr": "Teklifin zaten gönderildi.",
     "en": "Your offer is already sent.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1521"
+      "apps/api/src/routes/ittifak.ts:1614"
     ]
   },
   "tb739c118": {
@@ -18056,7 +18119,7 @@
     "tr": "Yürürlükte olmayan pakt feshedilemez.",
     "en": "A pact not in effect cannot be dissolved.",
     "nerede": [
-      "apps/api/src/routes/ittifak.ts:1627"
+      "apps/api/src/routes/ittifak.ts:1720"
     ]
   },
   "t4403a7f4": {

@@ -8,7 +8,7 @@
  * şikâyet edilebilsin", "oyuncu engellenebilsin".
  */
 import { useEffect, useRef } from 'react';
-import type { SohbetMesajiDto } from '../api/client';
+import type { RaporKartiDto, SohbetMesajiDto } from '../api/client';
 import { ProfilGorseli } from './ProfilGorseli';
 import { Buton, formatGecen } from './ui';
 
@@ -21,6 +21,7 @@ export function SohbetMesajlari({
   onProfil,
   onSikayet,
   onEngelle,
+  onRapor,
 }: {
   mesajlar: SohbetSatiri[];
   benimId: string;
@@ -28,6 +29,8 @@ export function SohbetMesajlari({
   onProfil: (lordId: string) => void;
   onSikayet: (m: SohbetSatiri) => void;
   onEngelle: (m: SohbetSatiri) => void;
+  /** Paylaşılan savaş raporunu aç (ittifak sohbeti). */
+  onRapor?: (m: SohbetSatiri) => void;
 }) {
   const dip = useRef<HTMLDivElement | null>(null);
   // Okuyan yukarı kaydırdıysa yeni mesaj onu dibe çekmemeli: yalnız dip
@@ -90,13 +93,20 @@ export function SohbetMesajlari({
                 <span className="ml-auto shrink-0 text-[11px] text-sonuk">{formatGecen(m.an)}</span>
               </div>
               <div className="flex items-start gap-1">
-                <p
-                  className={`min-w-0 flex-1 whitespace-pre-wrap break-words text-[13px] leading-snug ${
-                    m.kaldirildi ? 'italic text-sonuk' : ''
-                  }`}
-                >
-                  {m.metin}
-                </p>
+                <div className="min-w-0 flex-1">
+                  {(m.metin || !m.rapor) && (
+                    <p
+                      className={`whitespace-pre-wrap break-words text-[13px] leading-snug ${
+                        m.kaldirildi ? 'italic text-sonuk' : ''
+                      }`}
+                    >
+                      {m.metin}
+                    </p>
+                  )}
+                  {m.rapor && (
+                    <RaporKarti r={m.rapor} onAc={onRapor ? () => onRapor(m) : undefined} />
+                  )}
+                </div>
                 {/* Kendi mesajını ve zaten kaldırılmışı şikâyet etmenin
                     anlamı yok: düğme yalnız işe yarayacağı yerde var. */}
                 {!benim && !m.kaldirildi && (
@@ -126,6 +136,41 @@ export function SohbetMesajlari({
       })}
       <div ref={dip} aria-hidden />
     </ul>
+  );
+}
+
+/**
+ * Paylaşılan savaş raporu (docs/09 B3): sohbette bir kart — nerede, kim
+ * kime, sonuç. Dokununca raporun tamamı açılıyor (ittifak üyelerine).
+ */
+function RaporKarti({ r, onAc }: { r: RaporKartiDto; onAc?: () => void }) {
+  const ic = (
+    <>
+      <span className="flex items-center gap-1.5">
+        <span aria-hidden>⚔</span>
+        <span className="min-w-0 truncate font-bold">{r.bolge}</span>
+        <span
+          className={`baslik ml-auto shrink-0 text-[11px] ${r.zafer ? 'text-yesil' : 'text-kirmizi'}`}
+        >
+          {r.zafer ? 'ZAFER' : 'YENİLGİ'}
+        </span>
+      </span>
+      <span className="block truncate text-[11.5px] text-sonuk">
+        {`${r.saldiran} → ${r.savunan ?? 'Garnizon'}${r.elDegistirdi ? ' · bölge el değiştirdi' : ''}`}
+      </span>
+      {onAc && <span className="mt-0.5 block text-[11.5px] text-altin">Raporu aç</span>}
+    </>
+  );
+  const sinif =
+    'mt-1 block w-full rounded-lg border border-kenar bg-derin/60 px-2.5 py-1.5 text-left text-[12.5px]';
+  return onAc ? (
+    <button type="button" className={`bas ${sinif} min-h-[44px]`} onClick={onAc} data-rapor-karti>
+      {ic}
+    </button>
+  ) : (
+    <div className={sinif} data-rapor-karti>
+      {ic}
+    </div>
   );
 }
 
