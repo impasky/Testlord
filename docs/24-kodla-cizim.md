@@ -751,6 +751,7 @@ eskisi bırakılıyor. Zemin GPU'da değilse (düz üçgenler) yama yok.
 | `Sahne.tsx`                           | Modeli çizen bileşen: SVG, GPU resmi hazır olunca onun yerine; `kutu`, `kirp` (doldur, taşanı kırp), `kare` (kareye tamamla), `hareket`, `yama` (yakında görünen bölge keskin) |
 | `Cizimler.tsx`                        | Ekranların kullandığı bileşenler: `BinaCizimi`, `BolgeCizimi`, `NesneCizimi`, `PortreCizimi`, `DiyarCizimi`, `ZeminCizimi`, …                                                  |
 | `Galeri.tsx`                          | Geliştirme galerisi                                                                                                                                                            |
+| `cizimOlcumu.ts`                      | Telefonda çizim ölçümü (`?olcum=1`): her çizim işinin süresi; pano `components/CizimOlcumPaneli.tsx`                                                                           |
 
 Dünya haritasının arazisi bir kez çiziliyor (GPU'da 2048 piksellik resim,
 2D yedekte 1600 piksellik tuval) ve modül düzeyinde saklanıyor. Harita her açıldığında
@@ -766,6 +767,28 @@ düşmanlar, ekipman, generaller, lord, portreler, diyarlar, bölgeler, ekran
 zeminleri, canlı sahneler (hareketiyle), dünya. Aynı ışık, aynı palet ve aynı ölçek tutuyor mu, burada
 bakılıyor. Galeri üretim derlemesine girmiyor (`main.tsx`,
 `import.meta.env.DEV`).
+
+## Telefonda ölçüm
+
+Oyuncu: "telefonda çizim ölçüm ekranı." Bu belgedeki bütün süreler
+geliştirme kabının yazılım GPU'suyla (SwiftShader) ölçüldü; gerçek
+telefonda ne kadar sürdüğünü bilmiyorduk. Adresin sonuna `?olcum=1`
+eklenince (`https://…/?olcum=1`) ölçüm o cihazda açılıyor ve açık kalıyor
+(`localStorage`; ana ekrana eklenmiş uygulama adres çubuğu olmadan
+açıldığı için). `?olcum=0` ya da panodaki "Ölçümü kapat" kapatıyor.
+
+Açıkken her `glCiz` işi bir kayıt bırakıyor (`cizim/cizimOlcumu.ts`):
+anahtar, piksel, nereden geldiği (cihazdaki kayıttan, çizilerek, gelmedi),
+taslak mı, istendikten sonra toplam süre, bunun çizimde geçen kısmı (geri
+kalanı sırada bekleme) ve kaç kez kesildiği. Son 300 kayıt tutuluyor.
+Ekranın sol altında, alt çubuğun üstünde bir şerit beliriyor (çizim sayısı,
+ortalama, en uzun); açılınca GPU'nun adı, ekran, çekirdek, kaynağa göre
+özet ve "Kopyala" — oyuncu metni yapıştırıp gönderiyor; pano izni yoksa
+metin seçilebilir bir kutuda. GPU yolu kapalıysa (yazılım sürücüsü, WebGL2
+yok) çizimler SVG'den ve ölçülecek bir şey yok; pano bunu söylüyor.
+
+Kapalıyken maliyet bir bayrak okumak: pano parçası hiç yüklenmiyor
+(`main.tsx`, tembel) ve `glCiz` süre tutmuyor.
 
 ## Yeni bir çizim eklemek
 

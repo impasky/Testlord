@@ -9,6 +9,7 @@
  * aynı çizici burada koşuyor; o da yoksa null — çağıran SVG'ye düşüyor.
  */
 import { bayrakKareleri, kareleriKur } from './bayrakAni';
+import { olcerek, olcumAcik, olcumKaydet } from './cizimOlcumu';
 import { dumanKaynaklari, type DumanKaynagi } from './duman';
 import { agYap, type Ag } from './glAg';
 import {
@@ -556,7 +557,11 @@ export function glCiz(
       })
     : Promise.resolve(null);
   const yaz = grup ? (s: CizimSonucu) => kaliciYaz(anahtar, anahtar, s, grup) : undefined;
-  const calis = grup ? async () => (await okuma) ?? calistir(istek, yaz) : () => calistir(istek);
+  // Telefonda ölçüm (`?olcum=1`, `cizimOlcumu.ts`): kapalıyken hiçbir şey.
+  const olc = olcumAcik() ? { istendi: performance.now(), cizim: 0, deneme: 0 } : null;
+  const cizdir = (y?: (s: CizimSonucu) => void) =>
+    olc ? olcerek(olc, () => calistir(istek, y)) : calistir(istek, y);
+  const calis = grup ? async () => (await okuma) ?? cizdir(yaz) : () => cizdir();
   const sirala = (): Promise<string | null> => {
     if (secenek.sonra) {
       const p = new Promise<string | null>((coz) =>
@@ -589,9 +594,21 @@ export function glCiz(
   if (kayitYok) void okuma.then((url) => url === null && kayitYok());
   const is = grup ? okuma.then((url) => url ?? sirada) : sirada;
   OKUMALAR.set(anahtar, okuma);
-  void is.then(() => {
+  void is.then((url) => {
     if (ILGI.get(anahtar) === ilgi) ILGI.delete(anahtar);
     if (OKUMALAR.get(anahtar) === okuma) OKUMALAR.delete(anahtar);
+    if (!olc) return;
+    const simdi = performance.now();
+    olcumKaydet({
+      anahtar,
+      piksel,
+      kaynak: geldi ? 'kayit' : url ? 'cizim' : 'yok',
+      taslak: anahtar.endsWith('|kaba'),
+      toplam: simdi - olc.istendi,
+      cizim: olc.cizim,
+      kesilme: Math.max(0, olc.deneme - 1),
+      bitti: simdi,
+    });
   });
   ONBELLEK.set(anahtar, is);
   return is;

@@ -23,6 +23,14 @@
       "apps/web/src/components/BildirimKarti.tsx:101"
     ]
   },
+  "t6bfb7bdb": {
+    "grup": "arayuz",
+    "tr": " · {0} kez kesildi",
+    "en": " · interrupted {0} time| · interrupted {0} times",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:73"
+    ]
+  },
   "ta8e565e3": {
     "grup": "arayuz",
     "tr": " · {0} şikâyet",
@@ -77,6 +85,22 @@
     "en": " · admin",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:198"
+    ]
+  },
+  "t07a293f0": {
+    "grup": "arayuz",
+    "tr": " (çizimde {0}){1}",
+    "en": " (drawing {0}){1}",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:73"
+    ]
+  },
+  "t0cd67a40": {
+    "grup": "arayuz",
+    "tr": " (taslak)",
+    "en": " (draft)",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:72"
     ]
   },
   "t69efe19a": {
@@ -425,6 +449,14 @@
       "apps/web/src/screens/Sehir.tsx:457"
     ]
   },
+  "tef9d6dc5": {
+    "grup": "arayuz",
+    "tr": "{0} · çekirdek {1} · GPU yolu {2}",
+    "en": "{0} · cores {1} · GPU path {2}",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:128"
+    ]
+  },
   "t381449cb": {
     "grup": "arayuz",
     "tr": "{0} · kurayla",
@@ -745,6 +777,14 @@
     "en": "{0} core. Cores are untouchable so the losing civilization doesn't die; only its own members can upgrade them.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:719"
+    ]
+  },
+  "t3bd0bd04": {
+    "grup": "arayuz",
+    "tr": "{0} çizim · ort {1} · en uzun {2}",
+    "en": "{0} drawing · avg {1} · longest {2}|{0} drawings · avg {1} · longest {2}",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:121"
     ]
   },
   "ta012b2a3": {
@@ -1398,6 +1438,14 @@
       "apps/web/src/components/MobilKabuk.tsx:239"
     ]
   },
+  "tdfb3b8bb": {
+    "grup": "arayuz",
+    "tr": "{0}: {1}, ortalama {2} (çizimde {3}), en uzun {4}",
+    "en": "{0}: {1}, average {2} (drawing {3}), longest {4}",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:56"
+    ]
+  },
   "tc31d749f": {
     "grup": "arayuz",
     "tr": "{0}: başvuruyu geri çek",
@@ -1727,6 +1775,15 @@
     "en": "OPEN",
     "nerede": [
       "apps/web/src/components/GorevOzeti.tsx:90"
+    ]
+  },
+  "teeca3ed1": {
+    "grup": "arayuz",
+    "tr": "açık",
+    "en": "on",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:128",
+      "apps/web/src/components/CizimOlcumPaneli.tsx:61"
     ]
   },
   "t32e351f6": {
@@ -3336,6 +3393,30 @@
       "apps/web/src/components/MobilKabuk.tsx:467"
     ]
   },
+  "t402aadc7": {
+    "grup": "arayuz",
+    "tr": "çizildi",
+    "en": "drawn",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:80"
+    ]
+  },
+  "t413450ab": {
+    "grup": "arayuz",
+    "tr": "Çizim",
+    "en": "Drawn",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:63"
+    ]
+  },
+  "t326d2b0c": {
+    "grup": "arayuz",
+    "tr": "Çizim: {0} · ort {1} · en uzun {2}",
+    "en": "Drawn: {0} · avg {1} · longest {2}",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:137"
+    ]
+  },
   "tfa0c522b": {
     "grup": "arayuz",
     "tr": "Dayanıklılık",
@@ -4197,6 +4278,14 @@
       "apps/web/src/components/HataSiniri.tsx:40"
     ]
   },
+  "tb896858f": {
+    "grup": "arayuz",
+    "tr": "Ekran: {0} · çekirdek {1} · bellek {2} GB",
+    "en": "Screen: {0} · cores {1} · memory {2} GB",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:60"
+    ]
+  },
   "t530d9dd8": {
     "grup": "arayuz",
     "tr": "Elinde biriken kaynağı eksiğine çevir. Tüccar payını alır — doğru bölgeyi almak hâlâ daha kârlı.",
@@ -5049,6 +5138,30 @@
     "en": "Appearance",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:475"
+    ]
+  },
+  "t52b39cca": {
+    "grup": "arayuz",
+    "tr": "GPU yolu kapalı: çizimler eski yoldan (SVG) yapılıyor, burada ölçülmüyor.",
+    "en": "GPU path off: drawings use the old path (SVG) and are not measured here.",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:132"
+    ]
+  },
+  "t304e01a3": {
+    "grup": "arayuz",
+    "tr": "GPU: {0}",
+    "en": "GPU: {0}",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:126"
+    ]
+  },
+  "t113e8c40": {
+    "grup": "arayuz",
+    "tr": "GPU: {0} · GPU yolu {1}",
+    "en": "GPU: {0} · GPU path {1}",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:61"
     ]
   },
   "tec5ebccb": {
@@ -6157,7 +6270,16 @@
     "tr": "kapalı",
     "en": "off-limits",
     "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:128",
       "apps/web/src/components/harita/DunyaHaritasi.tsx:1534"
+    ]
+  },
+  "tca1abff0": {
+    "grup": "arayuz",
+    "tr": "kapalı (SVG)",
+    "en": "off (SVG)",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:61"
     ]
   },
   "t926ba486": {
@@ -6443,6 +6565,30 @@
       "apps/web/src/screens/YoneticiPaneli.tsx:300"
     ]
   },
+  "t066577c0": {
+    "grup": "arayuz",
+    "tr": "kayıttan",
+    "en": "from storage",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:79"
+    ]
+  },
+  "t86e73760": {
+    "grup": "arayuz",
+    "tr": "Kayıttan",
+    "en": "From storage",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:62"
+    ]
+  },
+  "teeccea05": {
+    "grup": "arayuz",
+    "tr": "Kayıttan: {0} · ort {1}",
+    "en": "From storage: {0} · avg {1}",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:136"
+    ]
+  },
   "t1ea0a49d": {
     "grup": "arayuz",
     "tr": "Kaynağın yetmiyor",
@@ -6580,6 +6726,15 @@
     "en": "You have {0} [gem|gems]. Gems only shorten time; a soldier released early is the same as one who waited.",
     "nerede": [
       "apps/web/src/components/Hastane.tsx:115"
+    ]
+  },
+  "teebe79f7": {
+    "grup": "arayuz",
+    "tr": "Kesilme: {0}",
+    "en": "Interruptions: {0}",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:139",
+      "apps/web/src/components/CizimOlcumPaneli.tsx:65"
     ]
   },
   "tb766e201": {
@@ -6779,6 +6934,30 @@
     "en": "Not enough command space",
     "nerede": [
       "apps/web/src/screens/Kisla.tsx:92"
+    ]
+  },
+  "t6bf8cf20": {
+    "grup": "arayuz",
+    "tr": "Kopyala",
+    "en": "Copy",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:147"
+    ]
+  },
+  "t653a2491": {
+    "grup": "arayuz",
+    "tr": "Kopyalanamadı; aşağıdaki metni seçip kopyala.",
+    "en": "Could not copy; select and copy the text below.",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:169"
+    ]
+  },
+  "t7d0bdf3d": {
+    "grup": "arayuz",
+    "tr": "Kopyalandı.",
+    "en": "Copied.",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:167"
     ]
   },
   "t44600e9f": {
@@ -7102,6 +7281,14 @@
       "apps/web/src/screens/EpostaDogrula.tsx:38",
       "apps/web/src/screens/Giris.tsx:200",
       "apps/web/src/screens/ParolaSifirla.tsx:31"
+    ]
+  },
+  "tb32a21c1": {
+    "grup": "arayuz",
+    "tr": "Lordlar Çağı — çizim ölçümü",
+    "en": "Age of Lords — drawing measurement",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:58"
     ]
   },
   "t8efe9043": {
@@ -7894,6 +8081,30 @@
     "en": "Reread the tutorial",
     "nerede": [
       "apps/web/src/screens/Hesap.tsx:227"
+    ]
+  },
+  "t1adc9383": {
+    "grup": "arayuz",
+    "tr": "Ölçüm",
+    "en": "Measurement",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:119"
+    ]
+  },
+  "t95fb77b8": {
+    "grup": "arayuz",
+    "tr": "Ölçüm raporu",
+    "en": "Measurement report",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:173"
+    ]
+  },
+  "tb41a1010": {
+    "grup": "arayuz",
+    "tr": "Ölçümü kapat",
+    "en": "Turn off measurement",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:164"
     ]
   },
   "t96de5998": {
@@ -9120,6 +9331,14 @@
       "apps/web/src/screens/Akin.tsx:196"
     ]
   },
+  "ta95bb327": {
+    "grup": "arayuz",
+    "tr": "Son çizimler (en yenisi üstte):",
+    "en": "Latest drawings (newest first):",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:66"
+    ]
+  },
   "t7777e141": {
     "grup": "arayuz",
     "tr": "Son giriş anın ve son gördüğün ekran.",
@@ -9873,6 +10092,30 @@
       "apps/web/src/components/BildirimKarti.tsx:55"
     ]
   },
+  "t13d763b3": {
+    "grup": "arayuz",
+    "tr": "Tarayıcı: {0}",
+    "en": "Browser: {0}",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:59"
+    ]
+  },
+  "t43b5a719": {
+    "grup": "arayuz",
+    "tr": "Taslak",
+    "en": "Draft",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:64"
+    ]
+  },
+  "te90564c2": {
+    "grup": "arayuz",
+    "tr": "Taslak: {0} · ort {1}",
+    "en": "Draft: {0} · avg {1}",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:138"
+    ]
+  },
   "t3c819dd0": {
     "grup": "arayuz",
     "tr": "Taşın",
@@ -9919,6 +10162,14 @@
     "en": "Technical detail",
     "nerede": [
       "apps/web/src/components/HataSiniri.tsx:47"
+    ]
+  },
+  "tbcf9f69d": {
+    "grup": "arayuz",
+    "tr": "Temizle",
+    "en": "Clear",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:154"
     ]
   },
   "tf613c281": {
@@ -10217,6 +10468,14 @@
     "en": "hitting",
     "nerede": [
       "apps/web/src/components/KarsiIpuclari.tsx:87"
+    ]
+  },
+  "tf4f37b8f": {
+    "grup": "arayuz",
+    "tr": "WebGL yok",
+    "en": "No WebGL",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:27"
     ]
   },
   "t884b8a52": {

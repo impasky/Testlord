@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StrictMode, Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
+import { olcumAcik } from './cizim/cizimOlcumu';
 import { HataSiniri } from './components/HataSiniri';
 import { DilSaglayici } from './lib/dil';
 // Yazı tipi oyunla paketleniyor, dışarıdan çekilmiyor (bkz. styles.css başı).
@@ -31,6 +32,16 @@ const Galeri = import.meta.env.DEV
   : null;
 const galeriAcik = Galeri !== null && window.location.hash.startsWith('#/cizim-galerisi');
 
+/*
+ * TELEFONDA ÇİZİM ÖLÇÜMÜ (docs/24 "Telefonda ölçüm"): `?olcum=1` ile açılıyor,
+ * cihazda kalıyor. Kapalıyken pano parçası hiç yüklenmiyor.
+ */
+const OlcumPaneli = olcumAcik()
+  ? lazy(() =>
+      import('./components/CizimOlcumPaneli').then((m) => ({ default: m.CizimOlcumPaneli })),
+    )
+  : null;
+
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: true, staleTime: 5_000 } },
 });
@@ -53,6 +64,11 @@ createRoot(document.getElementById('root')!).render(
             yedek: sayfa yüklenirken tek bir kare boş kalıyor, o kadar.
           */}
           <Suspense fallback={null}>{galeriAcik && Galeri ? <Galeri /> : <App />}</Suspense>
+          {OlcumPaneli && (
+            <Suspense fallback={null}>
+              <OlcumPaneli />
+            </Suspense>
+          )}
         </HataSiniri>
       </QueryClientProvider>
     </DilSaglayici>
