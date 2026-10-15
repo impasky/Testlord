@@ -30,6 +30,7 @@ import { env } from '../env.js';
 import { GameError } from '../errors.js';
 import { AKTIF_GUN } from '../services/world.js';
 import { okuArastirmalar } from '../services/lord.js';
+import { olcumPanosu } from '../services/olcumPanosu.js';
 import {
   GRUPLAR,
   KARTOPU_FRENI,
@@ -299,9 +300,10 @@ export async function olcumRoutes(app: FastifyInstance): Promise<void> {
       throw new GameError('Geçersiz anahtar.', 403, 'YETKISIZ');
     }
 
-    const lordlar = await prisma.lord.findMany({
+    const tumLordlar = await prisma.lord.findMany({
       select: {
         id: true,
+        isNpc: true,
         createdAt: true,
         lastSeenAt: true,
         lastScreen: true,
@@ -313,6 +315,11 @@ export async function olcumRoutes(app: FastifyInstance): Promise<void> {
         arastirmaDegisim: true,
       },
     });
+    // İlk oturum ve geri dönüş yalnız OYUNCULARIN: NPC lord `/me`
+    // çağırmıyor, son görülmesi kayıt anında kalıyor ve her biri "dönmedi"
+    // sayılıp oranı aşağı çekiyordu. Medeniyet nüfusu ise NPC'yi de sayıyor
+    // (haritada toprak tutan onlar da).
+    const lordlar = tumLordlar.filter((l) => !l.isNpc);
     if (lordlar.length === 0) return { lordSayisi: 0, not: 'Henüz oyuncu yok.' };
 
     const ilkSavaslar = await prisma.battle.groupBy({
@@ -375,7 +382,7 @@ export async function olcumRoutes(app: FastifyInstance): Promise<void> {
       };
     };
 
-    const medeniyet = await medeniyetOlcusu(lordlar);
+    const medeniyet = await medeniyetOlcusu(tumLordlar);
 
     const ekranlar = new Map<string, number>();
     for (const l of lordlar) {
@@ -405,9 +412,17 @@ export async function olcumRoutes(app: FastifyInstance): Promise<void> {
 
       birakilanEkran: Object.fromEntries([...ekranlar.entries()].sort((a, b) => b[1] - a[1])),
 
+      /**
+       * KABA dönüş: kayıttan en az N gün sonra BİR KEZ görülmüş. Üç hafta
+       * sonra bir kez dönen de sayılıyor. Kesin günlük sayılar `pano`da
+       * (GunlukAktiflik); bu ikisi o tablodan önceki hesaplar için duruyor.
+       */
       ertesiGunDonus: donusOrani(1),
       /** 7. gün tutundurma — docs/07'nin en önemli başarı ölçütü. */
       yedinciGunDonus: donusOrani(7),
+
+      /** Günlük aktif ve kohort tutundurması — yönetici panosunun aynısı. */
+      pano: await olcumPanosu(),
 
       /** Medeniyet katmanı; sistem hiç kurulmamışsa null (docs/16 §15). */
       medeniyet,

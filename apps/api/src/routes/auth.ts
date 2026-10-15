@@ -5,6 +5,7 @@ import {
   WORLD_MAP,
   dogrulamaDurumu,
   gonderilebilirMi,
+  gunNumarasi,
   jetonGecerli,
   yasakDurumu,
   yurtBolgeleri,
@@ -267,6 +268,9 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
             // Yeni oyuncu kalkanı: ilk saldırısını yapana kadar veya 72 saat
             protectionUntil: new Date(now.getTime() + B.korumalar.yeni_oyuncu_saat * 3_600_000),
             gearLines: { create: GEAR_LINES.map((line) => ({ line, level: 0 })) },
+            // Kayıt günü aktif günüdür: ölçüm panosu kohortları buradan
+            // başlıyor. Sonraki günler `/me`nin günün ilk açılışında yazılıyor.
+            aktifGunler: { create: { gun: gunNumarasi(now) } },
           },
         });
         return u;

@@ -105,6 +105,53 @@ await yonetici.post('/test/yonetici-yap');
   );
 }
 
+/*
+ * 1c. Ölçüm panosu (docs/05 §7): günlük aktif ve tutundurma.
+ *
+ * Sayıların doğruluğu birim testinde (olcumHesabi.test.ts); burada
+ * zincir ölçülüyor: kayıt aktif günü yazıyor, `/me` günün ilk
+ * açılışını yazıyor, pano ikisini de görüyor. Başka testler aynı anda
+ * lord açabilir — o yüzden eşitlik değil, ARTIŞ aranıyor.
+ */
+{
+  const yetkisizOlcum = await hedef.getHam('/yonetici/olcum');
+  kontrol('Yetkisiz için ölçüm panosu yok (404)', yetkisizOlcum.kod === 404);
+
+  const once = await yonetici.get('/yonetici/olcum');
+  const bugun = once?.gunluk?.at(-1);
+  kontrol(
+    'Pano 30 günlük seri veriyor, bugün sonda',
+    once?.gunluk?.length === 30 && bugun?.gun === once?.bugun,
+    `${once?.gunluk?.length} gün`,
+  );
+  kontrol(
+    'Kayıt bugünün aktifine ve yenisine giriyor',
+    (bugun?.yeni ?? 0) >= 2 && (once?.ozet?.bugunAktif ?? 0) >= 2,
+    `yeni ${bugun?.yeni}, aktif ${once?.ozet?.bugunAktif}`,
+  );
+
+  // İki gün önce kaydolmuş bir lord: kohortu iki gün önceye düşüyor ve
+  // bugün oyunu açınca bugünün aktifine giriyor.
+  const eski = await lordKur('c');
+  await eski.post('/test/lordu-eskit', { gun: 2 });
+  const arada = await yonetici.get('/yonetici/olcum');
+  const kohort = (p) => p?.kohortlar?.find((k) => k.gun === p.bugun - 2);
+  await eski.get('/me');
+  const sonra = await yonetici.get('/yonetici/olcum');
+  kontrol(
+    'Eskitilmiş lord iki gün önceki kohortta',
+    (kohort(arada)?.kayit ?? 0) >= 1 && kohort(arada)?.d1 !== null,
+    JSON.stringify(kohort(arada)),
+  );
+  kontrol(
+    '/me günün ilk açılışını yazıyor',
+    (sonra?.ozet?.bugunAktif ?? 0) > (arada?.ozet?.bugunAktif ?? 0),
+    `${arada?.ozet?.bugunAktif} -> ${sonra?.ozet?.bugunAktif}`,
+  );
+  const ham = JSON.stringify(sonra);
+  kontrol('Panoda oyuncu adı yok', !ham.includes(eski.ad) && !ham.includes(hedef.ad));
+}
+
 /* 2. Arama: şikâyet beklemeden oyuncuyu bul                           */
 const arama = await yonetici.get(`/yonetici/ara?q=${encodeURIComponent(hedef.ad)}`);
 const bulunan = arama?.sonuclar?.find((s) => s.ad === hedef.ad);
@@ -258,8 +305,28 @@ await page.waitForTimeout(1000);
   );
 }
 
+{
+  // Ölçüm panosu da katlı; başlık bugünkü aktifi taşıyor.
+  const baslik = page.locator('button:has-text("Ölçüm")').first();
+  const metin = (await baslik.count()) ? ((await baslik.textContent()) ?? '') : '';
+  kontrol('Ölçüm başlığı bugünkü aktifi söylüyor', /bugün \d+ aktif/i.test(metin), metin);
+  if (metin) await baslik.click();
+  await page.waitForTimeout(400);
+  const pano = page.locator('[data-olcum-panosu]');
+  const panoMetni = (await pano.count()) ? await pano.innerText() : '';
+  kontrol(
+    'Açılınca tutundurma ve 30 günlük sütunlar görünüyor',
+    /1\. gün tutundurma/i.test(panoMetni) &&
+      (await pano.locator('[role="img"] > div').count()) === 30,
+    panoMetni.slice(0, 80).replace(/\n/g, ' '),
+  );
+  await page.screenshot({ path: `${process.env.CIKTI ?? 'ekran-goruntuleri'}/yonetici-olcum.png` });
+}
+
 await page.locator('input[aria-label="Lord adı"]').fill(hedef.ad);
-await page.locator('button:has-text("Ara")').click();
+// Tam ad: "Ara" metni bölge adlarının içinde de geçiyor ("Çınaraltı")
+// ve omurga şeridi o adı taşıdığında seçici iki düğme buluyordu.
+await page.getByRole('button', { name: 'Ara', exact: true }).click();
 await page.waitForTimeout(1200);
 kontrol('Arama sonucu ekranda', (await page.locator(`text=${hedef.ad}`).count()) > 0, hedef.ad);
 

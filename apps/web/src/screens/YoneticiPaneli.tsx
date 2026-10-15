@@ -23,7 +23,7 @@
  * Sebep ZORUNLU. Neden giremediğini bilmeyen oyuncu davranışını
  * değiştiremez; sebep hem oyuncuya gösteriliyor hem kayda giriyor.
  */
-import { YAYIN_ELLE, YAYIN_METNI, type YayinDurumu } from '@lordlar/shared';
+import { YAYIN_ELLE, YAYIN_METNI, yerel, type YayinDurumu } from '@lordlar/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ApiError, api, type YoneticiOyuncuDto } from '../api/client';
@@ -107,12 +107,134 @@ export function YoneticiPaneli() {
         </Bolum>
       )}
 
+      <OlcumPanosu />
       <YayinKontrolu />
     </div>
   );
 }
 
 /* ------------------------------------------------------------------ */
+
+const yuzde = (o: number | null) => (o === null ? '—' : `%${Math.round(o * 100)}`);
+/** UTC gün numarası → "14 Eki". */
+const gunMetni = (gun: number) =>
+  new Date(gun * 86_400_000).toLocaleDateString(yerel(), {
+    day: 'numeric',
+    month: 'short',
+    timeZone: 'UTC',
+  });
+
+/**
+ * Ölçüm panosu (docs/05 §7): yayından sonra karar sayıyla verilsin.
+ *
+ * Dört soru, yukarıdan aşağı: bugün kaç kişi oynuyor, oyun alışkanlık
+ * mı (yapışkanlık), yeni gelen ertesi gün ve bir hafta sonra dönüyor mu
+ * (tutundurma), ve bu son günlerde değişti mi (kohortlar). Katlı
+ * açılıyor; başlık bugünkü aktifi taşıyor, açmadan görülsün.
+ */
+function OlcumPanosu() {
+  const q = useQuery({ queryKey: ['olcum-panosu'], queryFn: api.olcumPanosu });
+  const d = q.data;
+  const enCok = Math.max(1, ...(d?.gunluk.map((g) => g.aktif) ?? []));
+  const kohortlar = d?.kohortlar.filter((k) => k.kayit > 0).slice(0, 14) ?? [];
+  return (
+    <Bolum baslik={d ? `Ölçüm: bugün ${d.ozet.bugunAktif} aktif` : 'Ölçüm'} katlanir sakin>
+      {!d ? (
+        <Iskelet satir={4} />
+      ) : (
+        <div className="space-y-3" data-olcum-panosu="">
+          <div className="grid grid-cols-4 gap-1.5 text-center">
+            {[
+              { ad: 'Bugün', n: d.ozet.bugunAktif },
+              { ad: 'Dün', n: d.ozet.dunAktif },
+              { ad: '7 gün', n: d.ozet.haftalikAktif },
+              { ad: '30 gün', n: d.ozet.aylikAktif },
+            ].map((x) => (
+              <Kart key={x.ad} className="px-1 py-2">
+                <div className="tabular text-[17px] leading-tight font-bold">{x.n}</div>
+                <div className="text-[10px] text-sonuk">{x.ad}</div>
+              </Kart>
+            ))}
+          </div>
+          <p className="text-[11px] leading-snug text-sonuk">
+            {`Yapışkanlık (dün ÷ 30 gün): ${yuzde(d.ozet.yapiskanlik)}. Aynı kişiler her gün dönüyorsa yükselir.`}
+          </p>
+
+          <div className="grid grid-cols-2 gap-1.5">
+            {[
+              { ad: '1. gün tutundurma', t: d.tutundurma.d1 },
+              { ad: '7. gün tutundurma', t: d.tutundurma.d7 },
+            ].map((x) => (
+              <Kart key={x.ad} className="p-2.5">
+                <div className="text-[11px] font-bold">{x.ad}</div>
+                <div className="tabular text-[20px] leading-tight font-bold text-altin">
+                  {yuzde(x.t.oran)}
+                </div>
+                <div className="text-[10px] text-sonuk">{`${x.t.donen} / ${x.t.kohort} oyuncu`}</div>
+              </Kart>
+            ))}
+          </div>
+
+          {/* Son 30 gün: sütun günlük aktif, yeşil payı o gün kaydolan. */}
+          <div>
+            <div
+              className="flex h-20 items-end gap-px"
+              role="img"
+              aria-label={`Son 30 günün günlük aktif oyuncusu; en çok ${enCok}`}
+            >
+              {d.gunluk.map((g) => (
+                <div
+                  key={g.gun}
+                  title={`${gunMetni(g.gun)}: ${g.aktif} aktif, ${g.yeni} yeni`}
+                  className="relative flex-1 rounded-t-sm bg-altin/70"
+                  style={{ height: `${(g.aktif / enCok) * 100}%`, minHeight: g.aktif > 0 ? 2 : 0 }}
+                >
+                  <div
+                    className="absolute inset-x-0 bottom-0 rounded-t-sm bg-yesil"
+                    style={{
+                      height: g.aktif > 0 ? `${(Math.min(g.yeni, g.aktif) / g.aktif) * 100}%` : 0,
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="mt-0.5 flex justify-between text-[10px] text-sonuk">
+              <span>{gunMetni(d.gunluk[0]!.gun)}</span>
+              <span>Yeşil: o gün kaydolan</span>
+              <span>{gunMetni(d.bugun)}</span>
+            </div>
+          </div>
+
+          {kohortlar.length > 0 && (
+            <table className="w-full text-[11px]">
+              <thead>
+                <tr className="text-left text-sonuk">
+                  <th className="py-1 font-bold">Kayıt günü</th>
+                  <th className="py-1 text-right font-bold">Kayıt</th>
+                  <th className="py-1 text-right font-bold">1. gün</th>
+                  <th className="py-1 text-right font-bold">7. gün</th>
+                </tr>
+              </thead>
+              <tbody className="tabular">
+                {kohortlar.map((k) => (
+                  <tr key={k.gun} className="border-t border-kenar/60">
+                    <td className="py-1">{gunMetni(k.gun)}</td>
+                    <td className="py-1 text-right">{k.kayit}</td>
+                    <td className="py-1 text-right">{yuzde(k.d1)}</td>
+                    <td className="py-1 text-right">{yuzde(k.d7)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+          <p className="text-[11px] leading-snug text-sonuk">
+            Gün UTC'ye göre. Oran, o gün bitmeden yazılmıyor (—). NPC lordlar sayılmıyor.
+          </p>
+        </div>
+      )}
+    </Bolum>
+  );
+}
 
 const YAYIN_RENGI: Record<YayinDurumu, string> = {
   eksik: 'var(--color-kirmizi)',

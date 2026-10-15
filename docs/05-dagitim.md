@@ -191,3 +191,48 @@ yedeğin geri yüklenerek denenmesi, sıfırlama postasının gerçekten gelmesi
       Hesap ekranındaki "Deneme gönder" gerçekten telefona düşüyor
       — `log` bırakılırsa akış çalışır ama posta gitmez, oyuncu bağlantıyı
       hiç görmez
+
+---
+
+## 7. Ölçüm panosu
+
+Yayından sonra her karar ("öğretici kısalsın mı", "ilk akın kolay mı")
+bir sayıya dayanmalı. **Yönetici paneli → "Ölçüm"** (katlı; başlık bugünkü
+aktifi söylüyor) dört soruyu cevaplıyor:
+
+| Soru                     | Sayı                                                                    |
+| ------------------------ | ----------------------------------------------------------------------- |
+| Bugün kaç kişi oynuyor?  | Bugün / dün / 7 gün / 30 gün tekil aktif oyuncu                         |
+| Oyun alışkanlık mı?      | Yapışkanlık: dünkü aktif ÷ 30 günlük aktif                              |
+| Yeni gelen dönüyor mu?   | **1. ve 7. gün tutundurma** — o gün kaydolanların kaçı N gün sonra açtı |
+| Son günlerde değişti mi? | Son 30 günün sütunları (yeşil payı o gün kaydolan) ve kohort tablosu    |
+
+**Kaynak: `GunlukAktiflik`** — lord başına, oyunu açtığı her gün için bir
+satır (UTC gün numarası, shared `gunNumarasi`; giriş serisiyle aynı gün).
+Kayıtta ve günün ilk `/me`sinde yazılıyor; aynı gün ikinci açılış bir şey
+yazmıyor. Eskiden `lastSeenAt` yalnız SON anı tutuyordu: "dün kaç kişi
+oynadı" sorusunun cevabı yoktu ve `/olcum`un "ertesi gün dönüş"ü üç hafta
+sonra bir kez döneni de sayıyordu (o kaba sayı geçmiş kayıtlar için hâlâ
+`/olcum`da, yanında kesin sayılar `pano` alanında).
+
+Kurallar:
+
+- **Gün bitmeden oran yok.** 1. gün oranı ancak ertesi gün tamamen
+  geçince yazılıyor (`—`); yarım günün oranı hep düşük çıkar ve yanlış
+  alarm verir.
+- **Ortalama kayıt sayısıyla ağırlıklı.** Üç kişilik bir günün %100'ü ile
+  otuz kişilik bir günün %20'si "%60" değil.
+- **NPC lord sayılmıyor.** `/me` çağırmadıkları için her biri "dönmedi"
+  sayılıp oranı aşağı çekiyordu (`/olcum` da artık onları dışarıda
+  bırakıyor).
+- **Oyuncu adı yok.** Pano yalnız toplam döndürüyor.
+
+Geçiş, tablo yokken kaydolmuş lordlar için iki bilinen günü (kayıt ve son
+görülme) yazıyor; aradaki günler bilinmiyor. Tablodan önceki kohortların
+tutundurması bu yüzden eksik sayılabilir — yayından sonraki kohortlar
+tam.
+
+Kod: `apps/api/src/services/olcumHesabi.ts` (saf hesap, birim testi
+yanında), `olcumPanosu.ts` (pencereyi okuyan). `tools/yonetici-testi.mjs`
+kaydın ve `/me`nin satır yazdığını, panonun onları gördüğünü ve
+yetkisize kapalı olduğunu ölçüyor.

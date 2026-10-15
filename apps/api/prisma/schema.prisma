@@ -382,6 +382,7 @@ model Lord {
   engelleyenler       LordEngel[]       @relation("Engellenen")
   genelMesajlar       GenelMesaj[]
   profilResimleri     ProfilResmi[]
+  aktifGunler         GunlukAktiflik[]
 
   /// Profil resmi: "hazir:<portre>" | "yuklenen:<ProfilResmi.id>" | null
   /// (arma). Çözümü shared `profilResmiCoz`. YALNIZ onaylı yüklenen resim
@@ -1240,4 +1241,22 @@ model EsyaIslemi {
 
   @@index([worldId, tier, rarity, upgradeLevel, createdAt])
   @@index([createdAt])
+}
+
+/// Lordun oyunu açtığı bir gün (UTC gün numarası, shared `gunNumarasi`).
+///
+/// `lastSeenAt` yalnız SON anı tutuyor: "dün kaç kişi oynadı" ve "üç gün
+/// önce kaydolanların kaçı ertesi gün döndü" sorularını cevaplayamıyor.
+/// Günlük aktif oyuncu ve kohort tutundurması (yönetici ölçüm panosu,
+/// docs/05) bu satırlardan sayılıyor. Kayıtta ve günün ilk `/me`sinde
+/// yazılıyor — lord başına günde en çok bir satır. Hesap silinince
+/// satırları da gidiyor.
+model GunlukAktiflik {
+  gun    Int
+  lordId String
+
+  lord Lord @relation(fields: [lordId], references: [id], onDelete: Cascade)
+
+  @@id([gun, lordId])
+  @@index([lordId])
 }

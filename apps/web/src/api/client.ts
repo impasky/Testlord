@@ -1191,6 +1191,27 @@ export interface YayinKontroluDto {
   uyari: number;
 }
 
+/**
+ * Ölçüm panosu (docs/05 §7). `gun` UTC gün numarası (shared
+ * `gunNumarasi`); oranlar 0-1, null = gün henüz bitmedi ya da kohort boş.
+ */
+export interface OlcumPanosuDto {
+  bugun: number;
+  gunluk: { gun: number; aktif: number; yeni: number }[];
+  ozet: {
+    bugunAktif: number;
+    dunAktif: number;
+    haftalikAktif: number;
+    aylikAktif: number;
+    yapiskanlik: number | null;
+  };
+  tutundurma: {
+    d1: { oran: number | null; kohort: number; donen: number };
+    d7: { oran: number | null; kohort: number; donen: number };
+  };
+  kohortlar: { gun: number; kayit: number; d1: number | null; d7: number | null }[];
+}
+
 export interface AramaSonucuDto {
   lordId: string;
   ad: string;
@@ -1705,6 +1726,7 @@ export const api = {
     post<{ gonderildi: boolean; zatenDogrulandi: boolean }>('/auth/dogrulama-gonder', {}),
   yoneticiAyarlari: () => request<YoneticiAyarlariDto>('/yonetici/ayarlar'),
   yayinKontrolu: () => request<YayinKontroluDto>('/yonetici/yayin-kontrolu'),
+  olcumPanosu: () => request<OlcumPanosuDto>('/yonetici/olcum'),
   yoneticiAra: (q: string) =>
     request<{ sonuclar: AramaSonucuDto[] }>(`/yonetici/ara?q=${encodeURIComponent(q)}`),
   yoneticiOyuncu: (lordId: string) => request<YoneticiOyuncuDto>(`/yonetici/oyuncu/${lordId}`),

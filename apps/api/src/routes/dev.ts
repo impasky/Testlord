@@ -234,6 +234,36 @@ export async function devRoutes(app: FastifyInstance): Promise<void> {
   });
 
   /**
+   * Lordu N gün önce kaydolmuş gibi yapar: kayıt anı, son görülme ve
+   * aktif günleri birlikte geri kayıyor. Ölçüm panosunun kohortu ve
+   * `/me`nin "günün ilk açılışı" yazımı bununla sınanıyor.
+   */
+  app.post('/test/lordu-eskit', { preHandler: requireAuth }, async (req) => {
+    const { gun } = z.object({ gun: z.coerce.number().int().min(1).max(60) }).parse(req.body);
+    const lordId = await findLordByUser(req.user.userId);
+    const kay = gun * 86_400_000;
+    const lord = await prisma.lord.findUniqueOrThrow({
+      where: { id: lordId },
+      select: { createdAt: true, lastSeenAt: true, aktifGunler: { select: { gun: true } } },
+    });
+    // Sil ve yeniden yaz: anahtarı yerinde kaydırmak sıradaki satırla çakışabilir.
+    await prisma.$transaction([
+      prisma.lord.update({
+        where: { id: lordId },
+        data: {
+          createdAt: new Date(lord.createdAt.getTime() - kay),
+          lastSeenAt: new Date(lord.lastSeenAt.getTime() - kay),
+        },
+      }),
+      prisma.gunlukAktiflik.deleteMany({ where: { lordId } }),
+      prisma.gunlukAktiflik.createMany({
+        data: lord.aktifGunler.map((a) => ({ gun: a.gun - gun, lordId })),
+      }),
+    ]);
+    return { eskitildi: gun };
+  });
+
+  /**
    * Bir NPC turu koşturur ve ne yapıldığını söyler. `yalnizBen`: tur
    * yalnız çağıranın lordunu kapsıyor — veritabanında başka diyarlarda
    * sırası gelmiş NPC'ler olsa da sonuç yalnız bu lordu anlatıyor.

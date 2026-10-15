@@ -13,6 +13,9 @@
  *   3. SUSTUR / YASAKLA — sohbete ya da oyuna, süreli ya da kalıcı.
  *   4. GERİ AL — her ikisi de kaldırılabiliyor.
  *
+ * Yanında iki okuma ucu: yayın kontrolü (eksik ayar) ve ölçüm panosu
+ * (günlük aktif, tutundurma).
+ *
  * TASARIM KURALLARI, kuyruktakiyle aynı:
  *
  * - Her işlem KAYDA geçiyor (`ModerasyonKaydi`). Yöneticinin de
@@ -51,6 +54,7 @@ import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError } from '../errors.js';
 import { requireYonetici } from '../services/moderasyon.js';
+import { olcumPanosu } from '../services/olcumPanosu.js';
 import { yayinKontrolu } from '../services/yayin.js';
 
 /** `yunus@site.com` -> `yun***@site.com`. Eşleştirmeye yeter, kimliğe yetmez. */
@@ -85,6 +89,12 @@ export async function yoneticiRoutes(app: FastifyInstance): Promise<void> {
     const bulgular = await yayinKontrolu();
     return { bulgular, ...yayinOzeti(bulgular) };
   });
+
+  /**
+   * Ölçüm panosu (docs/05 §7): günlük aktif oyuncu, 1./7. gün
+   * tutundurma, kohortlar. Yalnız toplamlar — hiçbir oyuncu adı yok.
+   */
+  app.get('/yonetici/olcum', koruma, async () => olcumPanosu());
 
   /**
    * Lord adına göre arama.

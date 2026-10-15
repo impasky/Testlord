@@ -4,6 +4,7 @@ import {
   UNIT_TYPES,
   armaDuzelt,
   dizilimGecerliMi,
+  gunNumarasi,
   taktikDurumlari,
   varsayilanDizilim,
   type Army,
@@ -23,6 +24,7 @@ import { GameError } from '../errors.js';
 import { findLordByUser, tickLord } from '../services/lord.js';
 import { lordIslemi } from '../services/kilit.js';
 import { gecikmisleriKapat } from '../services/gecikmis.js';
+import { aktiflikYaz } from '../services/olcumPanosu.js';
 
 /**
  * Savunma düzeni gövdesi. Taktiğin koşulu burada denetlenmiyor —
@@ -145,10 +147,14 @@ export async function meRoutes(app: FastifyInstance): Promise<void> {
 
     // Damgayı okuduktan SONRA güncelliyoruz: aynı istekte güncelleseydik
     // özet her zaman boş çıkardı.
+    const simdi = new Date();
     await prisma.lord.update({
       where: { id: lordId },
-      data: { lastSeenAt: new Date(), ...(ekran ? { lastScreen: ekran } : {}) },
+      data: { lastSeenAt: simdi, ...(ekran ? { lastScreen: ekran } : {}) },
     });
+    // Günün ilk açılışı: ölçüm panosunun günlük aktif sayısı (docs/05).
+    // Son görülme aynı günse yazacak bir şey yok — `/me` sık çağrılıyor.
+    if (gunNumarasi(lastSeenAt) !== gunNumarasi(simdi)) await aktiflikYaz(lordId, simdi);
 
     return { lord: state, queues, events, yokluk, serverTime: new Date().toISOString() };
   });
