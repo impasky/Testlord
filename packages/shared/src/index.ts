@@ -53,3 +53,4 @@ export * from './birlesme.js';
 export * from './moderasyon.js';
 export * from './profil.js';
 export * from './toprak.js';
+export * from './yayin.js';

@@ -25,6 +25,7 @@
  * uçtan uca işi derleme yapmıyor ve koruma zaten kaynakta.
  */
 import { spawn } from 'node:child_process';
+import { randomBytes } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 
 const PORT = Number(process.env.KORUMA_PORT ?? 3210);
@@ -78,7 +79,11 @@ console.log('Lordlar Çağı — üretim korumaları\n');
 const uclar = devUclari();
 k('dev.ts uçları okunabildi', uclar.length > 0, `${uclar.length} uç`);
 
+// Testin bildiği bir imza: günlükte geçmediği aranabilsin (sunucu .env'den
+// okuduğunda değer bu süreçte yok).
+const IMZA = randomBytes(32).toString('hex');
 const { surec, oku } = sunucuBaslat({
+  JWT_SECRET: IMZA,
   NODE_ENV: 'production',
   PORT: String(PORT),
   SERVE_WEB: 'false',
@@ -111,6 +116,24 @@ try {
 
     const saglik = await fetch(`http://127.0.0.1:${PORT}/health`).then((r) => r.json());
     k('/health izleme durumunu bildiriyor', typeof saglik.izleme === 'string', `${saglik.izleme}`);
+
+    // Yayın kontrolü (docs/05 §6): kurulmuş sunucu eksikleri açılışta
+    // yazıyor — ve hiçbir ayarın değerini yazmıyor.
+    {
+      const bitis = Date.now() + 10_000;
+      while (!/Yayın kontrolü:/.test(oku()) && Date.now() < bitis) {
+        await new Promise((r) => setTimeout(r, 200));
+      }
+      const log = oku();
+      const satir = /Yayın kontrolü: \d+ eksik, \d+ uyarı/.exec(log)?.[0];
+      k('açılış günlüğü yayın kontrolünü yazıyor', !!satir, satir ?? log.slice(-300));
+      const gizliler = [IMZA, process.env.DATABASE_URL].filter(Boolean);
+      k(
+        'yayın kontrolü imzayı ve veritabanı adresini yazmıyor',
+        gizliler.length > 0 && gizliler.every((g) => !log.includes(g)),
+        `${gizliler.length} değer arandı`,
+      );
+    }
 
     /*
      * SIKIŞTIRMA — sessizce kaybolursa kimse fark etmez.

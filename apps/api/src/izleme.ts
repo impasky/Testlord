@@ -26,7 +26,9 @@ export function izlemeBaslat(): void {
     // Parola, token ve e-posta gönderilmez.
     sendDefaultPii: false,
   });
-  acik = true;
+  // Yazım hatalı bir DSN'de istemci yine kuruluyor ama hiçbir şey
+  // göndermiyor; "açık" demek için DSN'in gerçekten çözülmüş olması gerek.
+  acik = Boolean(Sentry.getClient()?.getDsn());
 }
 
 export function izlemeAcikMi(): boolean {

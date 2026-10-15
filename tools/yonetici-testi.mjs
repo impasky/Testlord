@@ -75,7 +75,35 @@ const hedef = await lordKur('b');
 const yetkisiz = await hedef.getHam(`/yonetici/ara?q=${encodeURIComponent(hedef.ad)}`);
 kontrol('Yetkisiz için panel yok (404)', yetkisiz.kod === 404, `kod ${yetkisiz.kod}`);
 
+const yayinYetkisiz = await hedef.getHam('/yonetici/yayin-kontrolu');
+kontrol('Yetkisiz için yayın kontrolü yok (404)', yayinYetkisiz.kod === 404);
+
 await yonetici.post('/test/yonetici-yap');
+
+/* 1b. Yayın kontrolü: ad, durum, sebep — hiçbir ayarın değeri yok     */
+{
+  const y = await yonetici.get('/yonetici/yayin-kontrolu');
+  const bulgular = y?.bulgular ?? [];
+  kontrol(
+    'Yayın kontrolü bulguları dönüyor',
+    bulgular.length >= 10 && typeof y.eksik === 'number' && typeof y.uyari === 'number',
+    `${bulgular.length} bulgu, ${y?.eksik} eksik`,
+  );
+  kontrol(
+    'Bulgularda yalnız ad, durum ve sebep var',
+    bulgular.every((b) => Object.keys(b).sort().join() === 'ad,durum,neden'),
+  );
+  const ham = JSON.stringify(y);
+  kontrol(
+    'Yanıtta adres ya da anahtar yok',
+    !/:\/\/|postgres|mailto:|@localhost/i.test(ham),
+    ham.length > 200 ? `${ham.length} karakter` : ham,
+  );
+  kontrol(
+    'Yönetici atanınca "yönetici" tamam',
+    bulgular.find((b) => b.ad === 'yönetici')?.durum === 'tamam',
+  );
+}
 
 /* 2. Arama: şikâyet beklemeden oyuncuyu bul                           */
 const arama = await yonetici.get(`/yonetici/ara?q=${encodeURIComponent(hedef.ad)}`);
@@ -214,6 +242,21 @@ const panelDugmesi = page.locator('button:has-text("Yönetici paneli")');
 kontrol('Yöneticiye panel düğmesi çiziliyor', (await panelDugmesi.count()) === 1);
 await panelDugmesi.click();
 await page.waitForTimeout(1000);
+
+{
+  // Yayın kontrolü katlı açılıyor; başlık eksik sayısını açmadan söylüyor.
+  const baslik = page.locator('button:has-text("Yayın kontrolü")').first();
+  // textContent: başlık CSS'le büyük harf ve "EKSİK"in İ'si /i ile eşleşmiyor.
+  const metin = (await baslik.count()) ? ((await baslik.textContent()) ?? '') : '';
+  kontrol('Yayın kontrolü başlığı eksik sayısını söylüyor', /\d+ eksik/.test(metin), metin);
+  if (metin) await baslik.click();
+  await page.waitForTimeout(400);
+  kontrol(
+    'Açılınca ayar kartları ve elle denenecekler görünüyor',
+    (await page.locator('text=NODE_ENV').count()) > 0 &&
+      (await page.locator('text=Sunucunun bilemediği').count()) > 0,
+  );
+}
 
 await page.locator('input[aria-label="Lord adı"]').fill(hedef.ad);
 await page.locator('button:has-text("Ara")').click();

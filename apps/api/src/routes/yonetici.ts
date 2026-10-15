@@ -43,6 +43,7 @@ import {
   yasagiDenetle,
   yasakBitisi,
   yasakDurumu,
+  yayinOzeti,
 } from '@lordlar/shared';
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
@@ -50,6 +51,7 @@ import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError } from '../errors.js';
 import { requireYonetici } from '../services/moderasyon.js';
+import { yayinKontrolu } from '../services/yayin.js';
 
 /** `yunus@site.com` -> `yun***@site.com`. Eşleştirmeye yeter, kimliğe yetmez. */
 function maskeli(eposta: string): string {
@@ -73,6 +75,16 @@ export async function yoneticiRoutes(app: FastifyInstance): Promise<void> {
     yasakSureleri: YASAK_SURELERI.map((s) => ({ saat: s, metin: saatMetni(s) })),
     kaliciYasak: KALICI_YASAK_ACIK,
   }));
+
+  /**
+   * Yayın kontrolü (docs/05 §6): hangi ayar eksik. Yalnız ad, durum ve
+   * sebep kodu dönüyor — hiçbir ayarın değeri yok; açıklamaları arayüz
+   * shared `YAYIN_METNI`nden yazıyor (çevrilebilsin diye).
+   */
+  app.get('/yonetici/yayin-kontrolu', koruma, async () => {
+    const bulgular = await yayinKontrolu();
+    return { bulgular, ...yayinOzeti(bulgular) };
+  });
 
   /**
    * Lord adına göre arama.

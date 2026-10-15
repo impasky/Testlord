@@ -16,6 +16,7 @@
     "typecheck": "tsc --noEmit",
     "prisma": "prisma",
     "yonetici": "tsx src/yonetici.ts",
+    "yayin-kontrolu": "tsx src/yayin-kontrolu.ts",
     "diyar-birlestir": "tsx src/diyar-birlestir.ts"
   },
   "dependencies": {

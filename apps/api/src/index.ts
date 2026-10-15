@@ -7,7 +7,7 @@ import { execFileSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { validateBalance } from '@lordlar/shared';
+import { validateBalance, yayinOzeti } from '@lordlar/shared';
 import Fastify from 'fastify';
 import { ZodError } from 'zod';
 import { prisma } from './db.js';
@@ -41,6 +41,7 @@ import { sohbetRoutes } from './routes/sohbet.js';
 import { profilRoutes } from './routes/profil.js';
 import { seedDemoLords } from './services/demoWorld.js';
 import { createWorld } from './services/world.js';
+import { kurulumMu, yayinKontrolu, yayinRaporu } from './services/yayin.js';
 import { startWorker } from './worker.js';
 
 // Bozuk denge verisiyle ayağa kalkmaktansa hemen ölmek iyidir.
@@ -379,6 +380,17 @@ if (isMain) {
   try {
     await app.listen({ port: env.PORT, host: '0.0.0.0' });
     console.log(`Lordlar Çağı API çalışıyor: http://localhost:${env.PORT}`);
+    // Kurulmuş bir sunucuda eksik ayarlar açılış günlüğünde (docs/05 §6).
+    // Okunamazsa açılış durmuyor: kontrol bir uyarı, kapı değil.
+    if (kurulumMu()) {
+      yayinKontrolu()
+        .then((b) => {
+          const metin = yayinRaporu(b);
+          if (yayinOzeti(b).eksik > 0) app.log.warn(metin);
+          else app.log.info(metin);
+        })
+        .catch((e) => app.log.warn({ err: e }, 'Yayın kontrolü okunamadı'));
+    }
   } catch (err) {
     app.log.error(err);
     await prisma.$disconnect();

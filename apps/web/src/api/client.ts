@@ -16,6 +16,7 @@ import type {
   SavasDuzeni,
   StatKey,
   TaktikDurumu,
+  YayinBulgusu,
 } from '@lordlar/shared';
 
 export type { AkinGrupDurumu, AkinHaritaDurumu, BinaDurumu, Kademe } from '@lordlar/shared';
@@ -1168,6 +1169,13 @@ export interface YoneticiAyarlariDto {
   kaliciYasak: boolean;
 }
 
+/** Yayın kontrolü: yalnız ad, durum, sebep — ayarların değeri yok. */
+export interface YayinKontroluDto {
+  bulgular: YayinBulgusu[];
+  eksik: number;
+  uyari: number;
+}
+
 export interface AramaSonucuDto {
   lordId: string;
   ad: string;
@@ -1676,6 +1684,7 @@ export const api = {
   dogrulamaGonder: () =>
     post<{ gonderildi: boolean; zatenDogrulandi: boolean }>('/auth/dogrulama-gonder', {}),
   yoneticiAyarlari: () => request<YoneticiAyarlariDto>('/yonetici/ayarlar'),
+  yayinKontrolu: () => request<YayinKontroluDto>('/yonetici/yayin-kontrolu'),
   yoneticiAra: (q: string) =>
     request<{ sonuclar: AramaSonucuDto[] }>(`/yonetici/ara?q=${encodeURIComponent(q)}`),
   yoneticiOyuncu: (lordId: string) => request<YoneticiOyuncuDto>(`/yonetici/oyuncu/${lordId}`),

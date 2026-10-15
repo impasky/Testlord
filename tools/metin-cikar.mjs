@@ -61,6 +61,12 @@ const OPERASYON = [
   'apps/api/src/dunya-temizle.ts',
   'apps/api/src/yonetici.ts',
   /*
+   * Yayın kontrolünün açılış günlüğü ve `pnpm yayin-kontrolu` çıktısı.
+   * Panoda görünen açıklamalar shared `yayin.ts`te ve orada çevriliyor.
+   */
+  'apps/api/src/services/yayin.ts',
+  'apps/api/src/yayin-kontrolu.ts',
+  /*
    * Denge doğrulayıcısı. Mesajları ("world-map.json: harita kopuk",
    * "Taht Kalesi tam 1 olmalı") yalnız `pnpm balance` koşan GELİŞTİRİCİYE
    * çıkıyor ve ancak veri dosyaları bozuksa. Oyuncu bunları hiçbir

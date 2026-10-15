@@ -23,10 +23,12 @@
  * Sebep ZORUNLU. Neden giremediğini bilmeyen oyuncu davranışını
  * değiştiremez; sebep hem oyuncuya gösteriliyor hem kayda giriyor.
  */
+import { YAYIN_ELLE, YAYIN_METNI, type YayinDurumu } from '@lordlar/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ApiError, api, type YoneticiOyuncuDto } from '../api/client';
 import { BosHal } from '../components/BosHal';
+import { ts } from '../lib/dil';
 import { Bolum, Buton, EngelNotu, Iskelet, Kart, Rozet, formatGecen } from '../components/ui';
 
 export function YoneticiPaneli() {
@@ -104,7 +106,66 @@ export function YoneticiPaneli() {
           )}
         </Bolum>
       )}
+
+      <YayinKontrolu />
     </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+
+const YAYIN_RENGI: Record<YayinDurumu, string> = {
+  eksik: 'var(--color-kirmizi)',
+  uyari: 'var(--color-turuncu)',
+  tamam: 'var(--color-yesil)',
+};
+const YAYIN_ETIKETI: Record<YayinDurumu, string> = {
+  eksik: 'EKSİK',
+  uyari: 'UYARI',
+  tamam: 'TAMAM',
+};
+const YAYIN_SIRASI: Record<YayinDurumu, number> = { eksik: 0, uyari: 1, tamam: 2 };
+
+/**
+ * Yayın kontrolü (docs/05 §6): sunucu hangi ayarın eksik olduğunu
+ * kendisi söylüyor. Katlı açılıyor — panelin asıl işi moderasyon; ama
+ * başlık eksik sayısını taşıyor, açmadan görülsün.
+ */
+function YayinKontrolu() {
+  const q = useQuery({ queryKey: ['yayin-kontrolu'], queryFn: api.yayinKontrolu });
+  const d = q.data;
+  const baslik = !d
+    ? 'Yayın kontrolü'
+    : d.eksik + d.uyari === 0
+      ? 'Yayın kontrolü: hepsi tamam'
+      : `Yayın kontrolü: ${d.eksik} eksik, ${d.uyari} uyarı`;
+  return (
+    <Bolum baslik={baslik} katlanir sakin={!!d && d.eksik === 0}>
+      {!d ? (
+        <Iskelet satir={4} />
+      ) : (
+        <div className="space-y-1.5">
+          {[...d.bulgular]
+            .sort((a, b) => YAYIN_SIRASI[a.durum] - YAYIN_SIRASI[b.durum])
+            .map((b) => (
+              <Kart key={b.ad} className="p-2.5">
+                <div className="flex items-center gap-2">
+                  {/* Ad sunucudan: ayar adları olduğu gibi, "yönetici" çevriliyor. */}
+                  <span className="min-w-0 flex-1 truncate text-[12px] font-bold">{ts(b.ad)}</span>
+                  <Rozet renk={YAYIN_RENGI[b.durum]}>{YAYIN_ETIKETI[b.durum]}</Rozet>
+                </div>
+                <p className="mt-0.5 text-[11px] leading-snug text-sonuk">{YAYIN_METNI[b.neden]}</p>
+              </Kart>
+            ))}
+          <p className="pt-1 text-[11px] font-bold">Sunucunun bilemediği, elle denenecek:</p>
+          <ul className="list-disc space-y-0.5 pl-4 text-[11px] leading-snug text-sonuk">
+            {YAYIN_ELLE.map((m) => (
+              <li key={m}>{m}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </Bolum>
   );
 }
 

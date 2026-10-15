@@ -33,7 +33,9 @@ karşılığıdır.
 
 **`/health`** kimlik istemez ve `{ ok, time, izleme }` döner. `izleme` alanı
 Sentry'nin gerçekten açık olup olmadığını söyler — DSN'i girip de yazım hatası
-yaptıysan burada görürsün.
+yaptıysan burada görürsün. (Eskiden yazım hatalı DSN'de de `acik` diyordu:
+Sentry istemciyi yine kuruyor ama hiçbir şey göndermiyor. Artık DSN'in
+çözülmüş olmasına bakılıyor.)
 
 ---
 
@@ -147,6 +149,33 @@ dosyanın başında.
 
 Onay kutusu yine de duruyor, çünkü test KODUN doğru davrandığını gösteriyor;
 üretim ORTAMINDA değişkenin gerçekten öyle ayarlandığını göstermiyor.
+
+**Yayın kontrolü — sunucu eksikleri kendisi söylüyor.** Aşağıdaki maddelerin
+sunucunun görebildiği hepsi (`NODE_ENV`, imzanın rastgeleliği, yönetici
+sayısı, Sentry'nin gerçekten açılması, e-posta taşıyıcısı ve gönderen,
+VAPID çifti, uygulamanın adresi, `WEB_ORIGIN`, demo lordlar, destek adresi,
+istek tavanları, günlük seviyesi, resim sınıflandırıcısı) üç yerde
+okunuyor:
+
+- **Açılış günlüğü.** Sunucu kurulmuş bir yerdeyse (`NODE_ENV=production`,
+  Render ya da `SERVE_WEB`) dinlemeye başlayınca listeyi yazıyor; eksik
+  varsa uyarı seviyesinde.
+- **`pnpm yayin-kontrolu`** — sunucunun kabuğunda (Render → Shell). Eksik
+  varsa çıkış kodu 1.
+- **Yönetici paneli → "Yayın kontrolü"** (katlı; başlık eksik sayısını
+  söylüyor).
+
+Hiçbiri bir ayarın DEĞERİNİ göstermiyor: denetime yalnız evet/hayır ve
+sayılar giriyor (`JWT_SECRET`in kendisi değil "rastgele görünüyor mu",
+adresin kendisi değil "yerel mi, https mi"), çıkan da ad, durum ve sebep.
+Kod: `packages/shared/src/yayin.ts` (saf denetim ve metinler),
+`apps/api/src/services/yayin.ts` (girdiyi toplayan). Eksik bir kapı değil
+uyarı: sunucu yine açılıyor, çünkü yarım ayarla açık bir oyun (ör. push
+kapalı) kapalı bir oyundan iyidir.
+
+Sunucunun bilemediği üç iş elle kalıyor ve kontrolün sonunda yazıyor:
+yedeğin geri yüklenerek denenmesi, sıfırlama postasının gerçekten gelmesi,
+"Deneme gönder"in telefona düşmesi.
 
 - [ ] `JWT_SECRET` üretimde rastgele ve en az 32 karakter _(kod tarafı test
       ediliyor; kalan iş: değeri gerçekten rastgele üretmek)_

@@ -84,7 +84,7 @@
     "tr": " · yönetici",
     "en": " · admin",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:198"
+      "apps/web/src/screens/YoneticiPaneli.tsx:259"
     ]
   },
   "t07a293f0": {
@@ -236,7 +236,7 @@
     "tr": "‹ Aramaya dön",
     "en": "‹ Back to search",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:185"
+      "apps/web/src/screens/YoneticiPaneli.tsx:246"
     ]
   },
   "t1b6bc363": {
@@ -1808,7 +1808,7 @@
     "tr": "Ada göre aranıyor; en az iki harf. Panel bir adres defteri değil, e-postayla arama yok.",
     "en": "Searching by name; at least two characters. The panel is not an address book, there is no email search.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:72"
+      "apps/web/src/screens/YoneticiPaneli.tsx:74"
     ]
   },
   "tb440b86f": {
@@ -2011,7 +2011,7 @@
     "tr": "Ara",
     "en": "Search",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:68"
+      "apps/web/src/screens/YoneticiPaneli.tsx:70"
     ]
   },
   "t1d831981": {
@@ -2257,7 +2257,7 @@
     "tr": "Aynı hesapta {0} lord: {1}",
     "en": "{0} lords on the same account: {1}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:202"
+      "apps/web/src/screens/YoneticiPaneli.tsx:263"
     ]
   },
   "t8ba0b91f": {
@@ -2649,7 +2649,7 @@
     "tr": "Bilinmeyen bir hata oluştu.",
     "en": "An unknown error occurred.",
     "nerede": [
-      "apps/web/src/api/client.ts:98"
+      "apps/web/src/api/client.ts:99"
     ]
   },
   "te7b9c929": {
@@ -4286,6 +4286,14 @@
       "apps/web/src/components/CizimOlcumPaneli.tsx:60"
     ]
   },
+  "tf76bac8b": {
+    "grup": "arayuz",
+    "tr": "EKSİK",
+    "en": "MISSING",
+    "nerede": [
+      "apps/web/src/screens/YoneticiPaneli.tsx:123"
+    ]
+  },
   "t530d9dd8": {
     "grup": "arayuz",
     "tr": "Elinde biriken kaynağı eksiğine çevir. Tüccar payını alır — doğru bölgeyi almak hâlâ daha kârlı.",
@@ -4670,7 +4678,7 @@
     "tr": "Evet, kalıcı yasakla",
     "en": "Yes, ban permanently",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:279"
+      "apps/web/src/screens/YoneticiPaneli.tsx:340"
     ]
   },
   "t67f6ac68": {
@@ -4859,7 +4867,7 @@
     "tr": "Genel",
     "en": "Global",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:323"
+      "apps/web/src/screens/YoneticiPaneli.tsx:384"
     ]
   },
   "te69a54b9": {
@@ -5043,7 +5051,7 @@
     "tr": "GİZLİ",
     "en": "HIDDEN",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:332"
+      "apps/web/src/screens/YoneticiPaneli.tsx:393"
     ]
   },
   "t5228efad": {
@@ -5540,7 +5548,7 @@
     "tr": "HESABI YASAKLA",
     "en": "BAN ACCOUNT",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:251"
+      "apps/web/src/screens/YoneticiPaneli.tsx:312"
     ]
   },
   "t0f414ea5": {
@@ -5548,7 +5556,7 @@
     "tr": "Hesabı yasakla — {0}",
     "en": "Ban account — {0}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:258"
+      "apps/web/src/screens/YoneticiPaneli.tsx:319"
     ]
   },
   "t30c7d34d": {
@@ -5557,7 +5565,7 @@
     "en": "DELETE MY ACCOUNT",
     "nerede": [
       "apps/api/src/routes/me.ts:64",
-      "apps/web/src/api/client.ts:1302",
+      "apps/web/src/api/client.ts:1310",
       "apps/web/src/screens/Hesap.tsx:297"
     ]
   },
@@ -5639,7 +5647,7 @@
     "tr": "Hesap: {0}{1}",
     "en": "Account: {0}{1}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:198"
+      "apps/web/src/screens/YoneticiPaneli.tsx:259"
     ]
   },
   "t5a3adcd8": {
@@ -5655,7 +5663,7 @@
     "tr": "Hiç mesaj yazmamış.",
     "en": "Has never written a message.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:315"
+      "apps/web/src/screens/YoneticiPaneli.tsx:376"
     ]
   },
   "t778c4ebf": {
@@ -5917,7 +5925,7 @@
     "tr": "İşlem uygulanmadı; sayfayı tazeleyip tekrar dene.",
     "en": "Action not applied; refresh the page and try again.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:216"
+      "apps/web/src/screens/YoneticiPaneli.tsx:277"
     ]
   },
   "tcabdf0fd": {
@@ -5944,7 +5952,7 @@
       "apps/web/src/screens/Harita.tsx:374",
       "apps/web/src/screens/Ittifak.tsx:207",
       "apps/web/src/screens/Siralama.tsx:37",
-      "apps/web/src/screens/YoneticiPaneli.tsx:323",
+      "apps/web/src/screens/YoneticiPaneli.tsx:384",
       "packages/shared/src/types.ts:361"
     ]
   },
@@ -6202,7 +6210,7 @@
     "tr": "KALDIRILDI",
     "en": "REMOVED",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:326"
+      "apps/web/src/screens/YoneticiPaneli.tsx:387"
     ]
   },
   "ta2c9f70e": {
@@ -6218,7 +6226,7 @@
     "tr": "Kalıcı",
     "en": "Permanent",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:279"
+      "apps/web/src/screens/YoneticiPaneli.tsx:340"
     ]
   },
   "t32403562": {
@@ -6234,7 +6242,7 @@
     "tr": "Kalıcı yasak — {0}",
     "en": "Permanent ban — {0}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:210"
+      "apps/web/src/screens/YoneticiPaneli.tsx:271"
     ]
   },
   "t0f86f2e3": {
@@ -6341,7 +6349,7 @@
     "tr": "Karar",
     "en": "Decision",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:218"
+      "apps/web/src/screens/YoneticiPaneli.tsx:279"
     ]
   },
   "t07d6d627": {
@@ -6562,7 +6570,7 @@
     "tr": "Kayıt yok — bu ilk.",
     "en": "No record — this is the first.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:300"
+      "apps/web/src/screens/YoneticiPaneli.tsx:361"
     ]
   },
   "t066577c0": {
@@ -6877,7 +6885,7 @@
     "tr": "Kimse bulunamadı. Adın tamamını değil, bir parçasını yaz.",
     "en": "Nobody found. Type a part of the name, not the whole name.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:81"
+      "apps/web/src/screens/YoneticiPaneli.tsx:83"
     ]
   },
   "tcb16054a": {
@@ -7234,8 +7242,8 @@
     "en": "Lord name",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:227",
-      "apps/web/src/screens/YoneticiPaneli.tsx:61",
-      "apps/web/src/screens/YoneticiPaneli.tsx:62"
+      "apps/web/src/screens/YoneticiPaneli.tsx:63",
+      "apps/web/src/screens/YoneticiPaneli.tsx:64"
     ]
   },
   "tec26d312": {
@@ -7495,7 +7503,7 @@
     "tr": "Mesaj kaldırılamadı.",
     "en": "Message could not be removed.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:174"
+      "apps/web/src/screens/YoneticiPaneli.tsx:235"
     ]
   },
   "t1910af19": {
@@ -7504,7 +7512,7 @@
     "en": "Remove message",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:235",
-      "apps/web/src/screens/YoneticiPaneli.tsx:329"
+      "apps/web/src/screens/YoneticiPaneli.tsx:390"
     ]
   },
   "t7ff46615": {
@@ -7555,7 +7563,7 @@
     "tr": "Moderasyon geçmişi",
     "en": "Moderation history",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:298"
+      "apps/web/src/screens/YoneticiPaneli.tsx:359"
     ]
   },
   "tb1714ce7": {
@@ -8015,7 +8023,7 @@
     "tr": "Oyuncu ara",
     "en": "Search player",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:50"
+      "apps/web/src/screens/YoneticiPaneli.tsx:52"
     ]
   },
   "t173eaf6d": {
@@ -8960,7 +8968,7 @@
     "tr": "Sebep",
     "en": "Reason",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:223"
+      "apps/web/src/screens/YoneticiPaneli.tsx:284"
     ]
   },
   "tc0ae04ff": {
@@ -8968,7 +8976,7 @@
     "tr": "Sebep (oyuncuya gösterilir)",
     "en": "Reason (shown to the player)",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:222"
+      "apps/web/src/screens/YoneticiPaneli.tsx:283"
     ]
   },
   "tc2aff6e5": {
@@ -8976,8 +8984,8 @@
     "tr": "sebep yok",
     "en": "no reason",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:210",
-      "apps/web/src/screens/YoneticiPaneli.tsx:211"
+      "apps/web/src/screens/YoneticiPaneli.tsx:271",
+      "apps/web/src/screens/YoneticiPaneli.tsx:272"
     ]
   },
   "t8181f45e": {
@@ -9304,7 +9312,7 @@
     "tr": "SOHBETTE SUSTUR",
     "en": "MUTE IN CHAT",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:227"
+      "apps/web/src/screens/YoneticiPaneli.tsx:288"
     ]
   },
   "t70032e07": {
@@ -9312,7 +9320,7 @@
     "tr": "Sohbette sustur — {0}",
     "en": "Mute in chat — {0}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:234"
+      "apps/web/src/screens/YoneticiPaneli.tsx:295"
     ]
   },
   "t5f1b61cb": {
@@ -9352,7 +9360,7 @@
     "tr": "Son görülme: {0}",
     "en": "Last seen: {0}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:99"
+      "apps/web/src/screens/YoneticiPaneli.tsx:101"
     ]
   },
   "tfe819188": {
@@ -9368,7 +9376,7 @@
     "tr": "Son mesajları",
     "en": "Latest messages",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:313"
+      "apps/web/src/screens/YoneticiPaneli.tsx:374"
     ]
   },
   "t9564f32e": {
@@ -9417,7 +9425,7 @@
     "tr": "Sonuçlar",
     "en": "Results",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:77"
+      "apps/web/src/screens/YoneticiPaneli.tsx:79"
     ]
   },
   "t997d2a2b": {
@@ -9442,6 +9450,14 @@
     "en": "If an error occurs on the server, its technical details may be sent to an error-monitoring service; your email and password are not sent — only the error itself and your lord's ID number.",
     "nerede": [
       "apps/web/src/screens/Gizlilik.tsx:128"
+    ]
+  },
+  "t2761d220": {
+    "grup": "arayuz",
+    "tr": "Sunucunun bilemediği, elle denenecek:",
+    "en": "Not visible to the server, try by hand:",
+    "nerede": [
+      "apps/web/src/screens/YoneticiPaneli.tsx:160"
     ]
   },
   "t0a0f8af7": {
@@ -9474,7 +9490,7 @@
     "en": "Mute could not be lifted.",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:58",
-      "apps/web/src/screens/YoneticiPaneli.tsx:156"
+      "apps/web/src/screens/YoneticiPaneli.tsx:217"
     ]
   },
   "t222bf466": {
@@ -9482,7 +9498,7 @@
     "tr": "Susturma sohbete, yasak oyuna dokunur. Yasak için sebep zorunlu; ikisi de geri alınabilir ve ikisi de kayda geçer.",
     "en": "A mute affects the chat, a ban affects the game. A reason is mandatory for a ban; both can be revoked and both go on record.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:293"
+      "apps/web/src/screens/YoneticiPaneli.tsx:354"
     ]
   },
   "ta6e05d38": {
@@ -9491,7 +9507,7 @@
     "en": "Lift mute",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:278",
-      "apps/web/src/screens/YoneticiPaneli.tsx:246"
+      "apps/web/src/screens/YoneticiPaneli.tsx:307"
     ]
   },
   "tb183d188": {
@@ -9499,7 +9515,7 @@
     "tr": "Susturulamadı.",
     "en": "Could not be muted.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:150"
+      "apps/web/src/screens/YoneticiPaneli.tsx:211"
     ]
   },
   "tededc44c": {
@@ -9508,8 +9524,8 @@
     "en": "MUTED",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:160",
-      "apps/web/src/screens/YoneticiPaneli.tsx:192",
-      "apps/web/src/screens/YoneticiPaneli.tsx:93"
+      "apps/web/src/screens/YoneticiPaneli.tsx:253",
+      "apps/web/src/screens/YoneticiPaneli.tsx:95"
     ]
   },
   "tfd8148a4": {
@@ -9542,7 +9558,7 @@
     "tr": "Sv {0} · {1}",
     "en": "Lvl {0} · {1}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:95"
+      "apps/web/src/screens/YoneticiPaneli.tsx:97"
     ]
   },
   "te69cb05e": {
@@ -9550,7 +9566,7 @@
     "tr": "Sv {0} · {1} · son görülme {2}",
     "en": "Lvl {0} · {1} · last seen {2}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:195"
+      "apps/web/src/screens/YoneticiPaneli.tsx:256"
     ]
   },
   "t20f49a9a": {
@@ -10584,7 +10600,7 @@
     "tr": "Yasağı kaldır",
     "en": "Lift ban",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:288"
+      "apps/web/src/screens/YoneticiPaneli.tsx:349"
     ]
   },
   "t01f1b0ca": {
@@ -10592,7 +10608,7 @@
     "tr": "Yasak {0} tarihine kadar — {1}",
     "en": "Banned until {0} — {1}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:211"
+      "apps/web/src/screens/YoneticiPaneli.tsx:272"
     ]
   },
   "t8639ff2a": {
@@ -10600,7 +10616,7 @@
     "tr": "Yasak kaldırılamadı.",
     "en": "Ban could not be lifted.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:168"
+      "apps/web/src/screens/YoneticiPaneli.tsx:229"
     ]
   },
   "tf3dfe837": {
@@ -10608,7 +10624,7 @@
     "tr": "Yasaklanamadı.",
     "en": "Could not be banned.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:162"
+      "apps/web/src/screens/YoneticiPaneli.tsx:223"
     ]
   },
   "td0e8da6b": {
@@ -10616,8 +10632,8 @@
     "tr": "YASAKLI",
     "en": "BANNED",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:191",
-      "apps/web/src/screens/YoneticiPaneli.tsx:92"
+      "apps/web/src/screens/YoneticiPaneli.tsx:252",
+      "apps/web/src/screens/YoneticiPaneli.tsx:94"
     ]
   },
   "t0cba2b1f": {
@@ -10643,6 +10659,30 @@
     "en": "MAKE ELDER",
     "nerede": [
       "apps/web/src/screens/Ittifak.tsx:102"
+    ]
+  },
+  "t3d6bbfcc": {
+    "grup": "arayuz",
+    "tr": "Yayın kontrolü",
+    "en": "Release check",
+    "nerede": [
+      "apps/web/src/screens/YoneticiPaneli.tsx:138"
+    ]
+  },
+  "te6425b08": {
+    "grup": "arayuz",
+    "tr": "Yayın kontrolü: {0} eksik, {1} uyarı",
+    "en": "Release check: {0} missing, {1} [warning|warnings]",
+    "nerede": [
+      "apps/web/src/screens/YoneticiPaneli.tsx:141"
+    ]
+  },
+  "t4863455f": {
+    "grup": "arayuz",
+    "tr": "Yayın kontrolü: hepsi tamam",
+    "en": "Release check: all good",
+    "nerede": [
+      "apps/web/src/screens/YoneticiPaneli.tsx:140"
     ]
   },
   "tc4aede4f": {
@@ -11553,6 +11593,22 @@
       "packages/shared/src/rehber.ts:437"
     ]
   },
+  "t5535feae": {
+    "grup": "motor",
+    "tr": "Arayüz ayrı bir adreste ama WEB_ORIGIN yalnız localhost: tarayıcı istekleri CORS'ta düşer. Arayüzün adresini WEB_ORIGIN'e yaz.",
+    "en": "The web app is on a separate address but WEB_ORIGIN is localhost only: browser requests fail CORS. Add the app's address to WEB_ORIGIN.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:122"
+    ]
+  },
+  "t5620a7c7": {
+    "grup": "motor",
+    "tr": "Arayüzün adresi izinli.",
+    "en": "The app's address is allowed.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:120"
+    ]
+  },
   "t67406112": {
     "grup": "motor",
     "tr": "Artık bir general tutabilirsin. Onlar ordunun değil, ORDUNUN KURALLARININ gücüdür.",
@@ -11695,6 +11751,14 @@
     "en": "Every extra region you hold in the same province raises the income of all your regions there by {0}% (up to {1}%). Three scattered regions and three adjacent regions are not the same thing.",
     "nerede": [
       "packages/shared/src/ogretici.ts:505"
+    ]
+  },
+  "t68749bf3": {
+    "grup": "motor",
+    "tr": "Bağlantıların tabanı herkese açık bir https adresi.",
+    "en": "Links use a public https address.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:115"
     ]
   },
   "t8b9a9069": {
@@ -12437,6 +12501,22 @@
       "data/balance.json:bolgeler.gelisim_adlari.maden[2]"
     ]
   },
+  "t1989a374": {
+    "grup": "motor",
+    "tr": "Destek adresi yayında.",
+    "en": "Support address is published.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:123"
+    ]
+  },
+  "t9592b8a7": {
+    "grup": "motor",
+    "tr": "DESTEK_EPOSTA boş: Kullanım Koşulları ve Aydınlatma Metni'nde iletişim satırı yok. Oyuncunun yazabileceği bir adres gir.",
+    "en": "DESTEK_EPOSTA is empty: the Terms of Use and Privacy Notice have no contact line. Enter an address players can write to.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:125"
+    ]
+  },
   "tefcb3bb6": {
     "grup": "motor",
     "tr": "Dibe vurursun, silinmezsin",
@@ -12558,6 +12638,22 @@
       "packages/shared/src/ogretici.ts:475"
     ]
   },
+  "t37e8b396": {
+    "grup": "motor",
+    "tr": "E-posta gerçekten gönderiliyor.",
+    "en": "Email is really being sent.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:105"
+    ]
+  },
+  "t0d07faa6": {
+    "grup": "motor",
+    "tr": "E-posta yalnız sunucu günlüğüne yazılıyor; parola sıfırlama ve doğrulama postası oyuncuya gitmiyor. EPOSTA_TASIYICI=resend yap.",
+    "en": "Email is only written to the server log; password reset and verification emails never reach players. Set EPOSTA_TASIYICI=resend.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:107"
+    ]
+  },
   "t8e1ff3a2": {
     "grup": "motor",
     "tr": "E-postan doğrulanmadı — {0} gün sonra giriş için gerekecek.",
@@ -12671,6 +12767,14 @@
       "packages/shared/src/ticaret.ts:88"
     ]
   },
+  "t1806e306": {
+    "grup": "motor",
+    "tr": "En az bir yönetici var.",
+    "en": "There is at least one admin.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:98"
+    ]
+  },
   "t878c2032": {
     "grup": "motor",
     "tr": "En fazla {0} paktın olabilir. Yenisi için birini feshetmen gerekiyor.",
@@ -12701,6 +12805,14 @@
     "en": "English",
     "nerede": [
       "packages/shared/src/dil.ts:26"
+    ]
+  },
+  "tc74fd36f": {
+    "grup": "motor",
+    "tr": "EPOSTA_TASIYICI=resend ama EPOSTA_ANAHTAR boş: posta gönderilemez.",
+    "en": "EPOSTA_TASIYICI=resend but EPOSTA_ANAHTAR is empty: email cannot be sent.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:108"
     ]
   },
   "t86714050": {
@@ -12853,7 +12965,7 @@
     "tr": "Geçersiz susturma süresi.",
     "en": "Invalid mute duration.",
     "nerede": [
-      "apps/api/src/routes/yonetici.ts:252",
+      "apps/api/src/routes/yonetici.ts:264",
       "packages/shared/src/moderasyon.ts:246"
     ]
   },
@@ -12921,6 +13033,14 @@
       "packages/shared/src/rehber.ts:401"
     ]
   },
+  "t8333758c": {
+    "grup": "motor",
+    "tr": "Gönderen adresi varsayılan (@localhost); posta reddedilir. EPOSTA_GONDEREN alan adın doğrulanmış bir adres olmalı.",
+    "en": "The sender address is the default (@localhost); email will be rejected. EPOSTA_GONDEREN must be an address on your verified domain.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:110"
+    ]
+  },
   "t2674e2d7": {
     "grup": "motor",
     "tr": "Görev Panosu",
@@ -12954,6 +13074,14 @@
       "packages/shared/src/arastirma.ts:309"
     ]
   },
+  "t6f6dd4cd": {
+    "grup": "motor",
+    "tr": "Günlük debug/trace seviyesinde; üretimde gereğinden çok yazıyor. LOG_LEVEL=info yap.",
+    "en": "Logging is at debug/trace level; it writes more than needed in production. Set LOG_LEVEL=info.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:131"
+    ]
+  },
   "t590d8e92": {
     "grup": "motor",
     "tr": "Günlük gönderim tavanını aşıyor. Bugün {0} değerinde daha gönderebilirsin.",
@@ -12976,6 +13104,14 @@
     "en": "Your daily attack limit is capped",
     "nerede": [
       "packages/shared/src/ipuclari.ts:53"
+    ]
+  },
+  "t6cb9c3ca": {
+    "grup": "motor",
+    "tr": "Günlük seviyesi olağan.",
+    "en": "Log level is normal.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:129"
     ]
   },
   "t97c33115": {
@@ -13016,6 +13152,22 @@
     "en": "The gold-framed region in the middle of the map. Whoever holds it becomes the Lord of the Realm and their renown grows by {0}%; every member of the CIVILIZATION holding the throne also receives {1}%. This is the endgame — and it is won with your faction, not alone.",
     "nerede": [
       "packages/shared/src/ogretici.ts:223"
+    ]
+  },
+  "tb3dae56b": {
+    "grup": "motor",
+    "tr": "Hata izleme açık.",
+    "en": "Error monitoring is on.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:101"
+    ]
+  },
+  "t99572bb9": {
+    "grup": "motor",
+    "tr": "Hata izleme kapalı: sunucu çökünce kimse haber almıyor. SENTRY_DSN gir.",
+    "en": "Error monitoring is off: nobody is notified when the server crashes. Enter SENTRY_DSN.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:102"
     ]
   },
   "t1be8937a": {
@@ -13082,6 +13234,14 @@
       "packages/shared/src/moderasyon.ts:362"
     ]
   },
+  "tab6e4f82": {
+    "grup": "motor",
+    "tr": "Hesap ekranındaki \"Deneme gönder\" telefona düşüyor.",
+    "en": "\"Send test\" on the Account screen reaches the phone.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:141"
+    ]
+  },
   "tde5c8550": {
     "grup": "motor",
     "tr": "Hesap KALICI olarak yasaklandı",
@@ -13096,6 +13256,14 @@
     "en": "Account banned ({0})",
     "nerede": [
       "packages/shared/src/moderasyon.ts:266"
+    ]
+  },
+  "t18fac6d0": {
+    "grup": "motor",
+    "tr": "Hiç yönetici yok: şikâyetler kuyrukta birikiyor ve kimse bakamıyor. pnpm yonetici ver <eposta>",
+    "en": "There are no admins: reports pile up in the queue and nobody can review them. pnpm yonetici ver <eposta>",
+    "nerede": [
+      "packages/shared/src/yayin.ts:100"
     ]
   },
   "t14ab6624": {
@@ -13130,12 +13298,36 @@
       "packages/shared/src/ipuclari.ts:63"
     ]
   },
+  "t7efc3f89": {
+    "grup": "motor",
+    "tr": "İlk açılışta 6 demo lord ekleniyor. Gerçek oyuncular gelecekse SEED_DEMO_LORDS=false yap.",
+    "en": "6 demo lords are added on first start. If real players are coming, set SEED_DEMO_LORDS=false.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:97"
+    ]
+  },
   "tfb8e4e56": {
     "grup": "motor",
     "tr": "İlk turda saldırı {0}",
     "en": "First round attack {0}",
     "nerede": [
       "packages/shared/src/duzen.ts:347"
+    ]
+  },
+  "t21364f70": {
+    "grup": "motor",
+    "tr": "İstek tavanları çok yüksek; yük testi değeri kalmış olabilir. RATE_LIMIT_MAX ve AUTH_RATE_LIMIT_MAX'ı varsayılana döndür.",
+    "en": "Request limits are very high; a load test value may have been left behind. Return RATE_LIMIT_MAX and AUTH_RATE_LIMIT_MAX to their defaults.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:128"
+    ]
+  },
+  "t90de0bb0": {
+    "grup": "motor",
+    "tr": "İstek tavanları olağan.",
+    "en": "Request limits are normal.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:126"
     ]
   },
   "t65946fc8": {
@@ -13790,6 +13982,14 @@
       "packages/shared/src/moderasyon.ts:74"
     ]
   },
+  "td3f253cc": {
+    "grup": "motor",
+    "tr": "NODE_ENV=production değil: /api/test/* uçları açık ve CORS gevşek. Sunucuda NODE_ENV=production yap.",
+    "en": "NODE_ENV is not production: /api/test/* endpoints are open and CORS is loose. Set NODE_ENV=production on the server.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:91"
+    ]
+  },
   "t3d5e14ec": {
     "grup": "motor",
     "tr": "Not en fazla {0} harf olabilir.",
@@ -13968,6 +14168,22 @@
       "packages/shared/src/ogretici.ts:386"
     ]
   },
+  "te8b6b9b3": {
+    "grup": "motor",
+    "tr": "Oturum imzası tahmin edilebilir görünüyor (tekrarlı ya da örnek bir sözcük içeriyor). Rastgele üret; değişince herkes çıkış yapar.",
+    "en": "The session secret looks guessable (repeated characters or a sample word). Generate a random one; changing it signs everyone out.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:94"
+    ]
+  },
+  "t8e92ac9d": {
+    "grup": "motor",
+    "tr": "Oturum imzası uzun ve rastgele görünüyor.",
+    "en": "The session secret looks long and random.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:92"
+    ]
+  },
   "t40087aa8": {
     "grup": "motor",
     "tr": "Oyunun ritmi",
@@ -14056,6 +14272,14 @@
       "packages/shared/src/rehber.ts:432"
     ]
   },
+  "t046260c6": {
+    "grup": "motor",
+    "tr": "Parola sıfırlama e-postası gerçekten geliyor.",
+    "en": "The password reset email really arrives.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:140"
+    ]
+  },
   "tfa811875": {
     "grup": "motor",
     "tr": "Pazar Şehri",
@@ -14080,6 +14304,22 @@
       "packages/shared/src/moderasyon.ts:260"
     ]
   },
+  "t27137741": {
+    "grup": "motor",
+    "tr": "Profil resmi sınıflandırıcısı açık.",
+    "en": "Profile picture classifier is on.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:132"
+    ]
+  },
+  "t8d0a5451": {
+    "grup": "motor",
+    "tr": "Profil resmi sınıflandırıcısı kapalı: yüklenen her resim yönetici onayını bekliyor.",
+    "en": "Profile picture classifier is off: every uploaded picture waits for admin approval.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:134"
+    ]
+  },
   "tb0ab002d": {
     "grup": "motor",
     "tr": "Profil resmi yüklemek",
@@ -14094,6 +14334,30 @@
     "en": "Your profile picture was updated.",
     "nerede": [
       "packages/shared/src/profil.ts:182"
+    ]
+  },
+  "t668bd75c": {
+    "grup": "motor",
+    "tr": "Push bildirimi açık.",
+    "en": "Push notifications are on.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:111"
+    ]
+  },
+  "t1aed82d8": {
+    "grup": "motor",
+    "tr": "Push bildirimi kapalı; arayüzde düğme hiç çıkmıyor. pnpm push-anahtari ile üretilen VAPID çiftini gir.",
+    "en": "Push notifications are off; the button never appears in the app. Enter the VAPID pair generated by pnpm push-anahtari.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:113"
+    ]
+  },
+  "tc750492c": {
+    "grup": "motor",
+    "tr": "Rakip demo lordlar eklenmiyor.",
+    "en": "Rival demo lords are not added.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:95"
     ]
   },
   "t0f6c0cea": {
@@ -14264,6 +14528,14 @@
     "en": "Rules that protect you",
     "nerede": [
       "packages/shared/src/ogretici.ts:541"
+    ]
+  },
+  "t63bc7c32": {
+    "grup": "motor",
+    "tr": "SENTRY_DSN girilmiş ama izleme açılamadı; büyük olasılıkla yazım hatası. Sentry panelinden yeniden kopyala.",
+    "en": "SENTRY_DSN is set but monitoring could not start; most likely a typo. Copy it again from the Sentry dashboard.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:104"
     ]
   },
   "ta5b1e298": {
@@ -14596,6 +14868,30 @@
       "packages/shared/src/dil.ts:25"
     ]
   },
+  "tc285e198": {
+    "grup": "motor",
+    "tr": "UYGULAMA_URL https değil; parola sıfırlama bağlantısı şifresiz gidiyor.",
+    "en": "UYGULAMA_URL is not https; the password reset link travels unencrypted.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:119"
+    ]
+  },
+  "tfc8b38f8": {
+    "grup": "motor",
+    "tr": "UYGULAMA_URL yerel bir adres; e-postadaki bağlantılar oyuncuda açılmaz.",
+    "en": "UYGULAMA_URL is a local address; links in emails will not open for players.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:118"
+    ]
+  },
+  "t65fb1da9": {
+    "grup": "motor",
+    "tr": "Uygulamanın adresi bilinmiyor; parola sıfırlama bağlantısı localhost gösteriyor. UYGULAMA_URL gir.",
+    "en": "The app's address is unknown; the password reset link points to localhost. Enter UYGULAMA_URL.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:117"
+    ]
+  },
   "t41c5d512": {
     "grup": "motor",
     "tr": "Uygunsuz lord adı",
@@ -14618,6 +14914,14 @@
     "en": "Three resources, one score",
     "nerede": [
       "packages/shared/src/ogretici.ts:292"
+    ]
+  },
+  "t8a50d339": {
+    "grup": "motor",
+    "tr": "Üretim kipinde; test uçları kapalı.",
+    "en": "Production mode; test endpoints are closed.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:89"
     ]
   },
   "t4a0c5585": {
@@ -14643,6 +14947,14 @@
     "nerede": [
       "data/generals.json:generaller[9].ad",
       "packages/shared/src/profil.ts:86"
+    ]
+  },
+  "tf888e23a": {
+    "grup": "motor",
+    "tr": "VAPID çiftinin yalnız bir yarısı girilmiş; push kapalı. İkisini birlikte gir.",
+    "en": "Only one half of the VAPID pair is set; push is off. Enter both together.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:114"
     ]
   },
   "t442686cb": {
@@ -14734,6 +15046,14 @@
       "packages/shared/src/moderasyon.ts:313"
     ]
   },
+  "tf83ae117": {
+    "grup": "motor",
+    "tr": "Yedek alınıyor ve bir kez geri yüklenerek denendi (docs/05 §4).",
+    "en": "Backups are taken and a restore has been tried once (docs/05 §4).",
+    "nerede": [
+      "packages/shared/src/yayin.ts:139"
+    ]
+  },
   "t0ee42256": {
     "grup": "motor",
     "tr": "Yeminli",
@@ -14796,6 +15116,14 @@
     "en": "Swords are not drawn against a comrade",
     "nerede": [
       "packages/shared/src/ogretici.ts:417"
+    ]
+  },
+  "te6f13230": {
+    "grup": "motor",
+    "tr": "yönetici",
+    "en": "admin",
+    "nerede": [
+      "packages/shared/src/yayin.ts:176"
     ]
   },
   "t068619b5": {
@@ -16230,12 +16558,12 @@
     "en": "Not found.",
     "nerede": [
       "apps/api/src/routes/auth.ts:299",
-      "apps/api/src/routes/yonetici.ts:154",
-      "apps/api/src/routes/yonetici.ts:255",
-      "apps/api/src/routes/yonetici.ts:268",
-      "apps/api/src/routes/yonetici.ts:304",
-      "apps/api/src/routes/yonetici.ts:327",
-      "apps/api/src/routes/yonetici.ts:353",
+      "apps/api/src/routes/yonetici.ts:166",
+      "apps/api/src/routes/yonetici.ts:267",
+      "apps/api/src/routes/yonetici.ts:280",
+      "apps/api/src/routes/yonetici.ts:316",
+      "apps/api/src/routes/yonetici.ts:339",
+      "apps/api/src/routes/yonetici.ts:365",
       "apps/api/src/services/moderasyon.ts:34"
     ]
   },
@@ -16535,7 +16863,7 @@
     "tr": "Geçersiz yasak.",
     "en": "Invalid ban.",
     "nerede": [
-      "apps/api/src/routes/yonetici.ts:298"
+      "apps/api/src/routes/yonetici.ts:310"
     ]
   },
   "t5561fd0b": {
@@ -16828,7 +17156,7 @@
     "tr": "Kendi hesabını yasaklayamazsın.",
     "en": "You cannot ban your own account.",
     "nerede": [
-      "apps/api/src/routes/yonetici.ts:306"
+      "apps/api/src/routes/yonetici.ts:318"
     ]
   },
   "t2151cf3f": {
