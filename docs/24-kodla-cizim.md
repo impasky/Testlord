@@ -903,6 +903,30 @@ tools/gorsel-denetim.mjs` koş.
   zorlama bayrağıyla GPU yolunu ölçüyor. Ayrıca kaynak dosyaları
   okuyor: veride olup çizimi olmayan bina aşaması, bölge türü, düşman,
   diyar ya da ekranda kullanılıp `ZEMIN_ADLARI`nda olmayan zemin kalmamalı.
+- **Görsel bozulma testi.** Testler "NaN yok, çokgen var" diyordu; bir
+  parçayı (`kule`, `insan`, palet) değiştirmek onu kullanan yüz çizimi
+  birden değiştirse de geçiyorlardı. İki katman:
+  - `apps/web/src/cizim/parmakizi.test.ts` (her `pnpm test`te, CI'da):
+    154 çizimin (binalar, birlikler, düşmanlar, ekipman, generaller, lord
+    ve kuşam, bölgeler ve varyantları, ekran zeminleri, diyarlar, savaş)
+    PARMAK İZİ — çokgen sayısı, toplam alan, alanın ağırlık merkezi,
+    çerçeve, rengin alandaki payı (`parmakizi.ts`) — kayıtlı izle
+    (`parmakizi.json`) paylı karşılaştırılıyor. Sayılar toplam olduğu için
+    kayan noktanın son hanesi onları kıpırdatmıyor. Bir çatı rengini
+    değiştirmek yirmi binayı adıyla düşürüyor. Bilerek değişen çizimde:
+    `PARMAKIZI_YAZ=1 pnpm test -- parmakizi`; izdeki değişiklik incelemede
+    görünüyor.
+  - `pnpm gorsel-bozulma` (`tools/gorsel-bozulma-testi.mjs`): GPU
+    çizicisinin RESMİ. Galeriden yedi temsilci, boş tarayıcı profilinde
+    (kalıcı kayıt yok) yazılım GPU'suyla çiziliyor ve
+    `tools/fiksturler/gorsel/` altındaki resimlerle piksel piksel
+    karşılaştırılıyor (kanal farkı 12'yi aşan piksel %0,5'i geçmesin;
+    aynı kapta tekrar koşu %0 fark). Gölge, kenar çizgisi, odak bulanıklığı
+    değişince modelin izi aynı kalıyor ama resim değişiyor; onu bu görüyor.
+    Kalan çizimde kırmızı farklı piksellerle bir fark resmi yazıyor.
+    Kayıtlı resimler bu kabın tarayıcısıyla çıkarıldı ve CI'nın tarayıcısı
+    başka bir sürüm olabildiği için CI zincirinde değil; çizici
+    değişince elle koşuluyor (`--yaz` yeniliyor).
 - `tools/generate_map.py`: her bölge işaretçisi karada mı, `kara.ts`teki
   `KARA_YOLU` üzerinden denetleniyor. Eskiden zemin resminin pikselleri
   okunuyordu; artık kara sınırının kaynağı kod.

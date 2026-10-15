@@ -503,6 +503,8 @@ export function Galeri() {
               {b.ogeler.map((o) => (
                 <figure
                   key={o.ad}
+                  // Görsel bozulma aracı öğeyi bölüm ve adıyla buluyor (tools/gorsel-bozulma-testi.mjs).
+                  data-galeri-oge={`${b.baslik}/${o.ad}`}
                   className={`flex flex-col items-center gap-1 ${o.genis ? 'w-[360px]' : 'w-[180px]'}`}
                 >
                   <GorununceCiz

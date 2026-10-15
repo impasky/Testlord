@@ -35,6 +35,7 @@
     "yedekle": "bash tools/yedekle.sh",
     "olcum": "node tools/olcum.mjs",
     "simge": "python3 tools/simge-uret.py",
+    "gorsel-bozulma": "node tools/gorsel-bozulma-testi.mjs",
     "yonetici": "pnpm --filter @lordlar/api yonetici",
     "yayin-kontrolu": "pnpm --filter @lordlar/api yayin-kontrolu",
     "ceviri": "node tools/metin-cikar.mjs && node tools/ceviri-liste.mjs && node tools/ceviri-paket.mjs",

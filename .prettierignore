@@ -11,3 +11,7 @@ dist/
 # kosuda birbirinin uzerine yazar.
 ceviri/metinler.json
 ceviri/metinler.csv
+
+# Görsel bozulma testinin kayıtlı izleri: biçimi testin kendisi belirliyor
+# (`PARMAKIZI_YAZ=1 pnpm test` yazıyor).
+apps/web/src/cizim/parmakizi.json
