@@ -237,6 +237,17 @@ jobs:
           SMOKE_OUT: /tmp/uretim-ekran
         run: node tools/uretim-testi.mjs
 
+      # "Denenmemiş yedek yedek değildir" (docs/05 §4). Sunucunun kendi
+      # kurduğu ve az önce oynanan veritabanı yedekleniyor, boş bir
+      # veritabanına yükleniyor, satır satır karşılaştırılıyor ve derlenmiş
+      # sunucu onunla açılıyor; geri yükleme betiğinin emniyetleri de
+      # sınanıyor. Postgres istemcisi sunucuyla aynı ana sürüm olmalı.
+      - name: Yedek tatbikatı
+        run: |
+          command -v pg_dump >/dev/null || sudo apt-get install -y postgresql-client
+          pg_dump --version
+          node tools/yedek-tatbikati.mjs
+
       - name: Günlük (kalırsa)
         if: failure()
         run: tail -150 /tmp/uretim.log || true

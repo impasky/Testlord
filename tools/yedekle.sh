@@ -12,7 +12,8 @@
 #   SAKLA_GUN=14 tools/yedekle.sh
 #
 # GERİ YÜKLEME
-#   pg_restore --clean --if-exists -d "$DATABASE_URL" yedek/lordlar-2026-09-01.dump
+#   HEDEF_URL=postgresql://... tools/geri-yukle.sh yedek/lordlar-2026-09-01.dump
+#   Denemesi (ayda bir): pnpm yedek-tatbikati — bkz. docs/05 §4.
 #
 # ZAMANLAMA
 #   Günlük, gecenin trafiği en düşük saatinde. Örnek crontab satırı:

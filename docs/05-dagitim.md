@@ -92,19 +92,44 @@ Günlük, trafiğin en düşük olduğu saatte:
 17 3 * * *  cd /srv/lordlar && tools/yedekle.sh >> /var/log/lordlar-yedek.log 2>&1
 ```
 
-**Geri yükleme:**
+**Geri yükleme** — `tools/geri-yukle.sh`:
 
 ```bash
-pg_restore --clean --if-exists --no-owner -d "$DATABASE_URL" yedek/lordlar-....dump
+HEDEF_URL=postgresql://.../bos_vt tools/geri-yukle.sh yedek/lordlar-....dump
+HEDEF_URL=postgresql://.../canli tools/geri-yukle.sh yedek/lordlar-....dump --uzerine-yaz
 ```
+
+Hedef **açıkça** veriliyor: betik `DATABASE_URL`i bilerek okumuyor, çünkü
+yedek alan kabukta duran adres canlı veritabanıdır ve bir kopyala-yapıştır
+hatası onun üstüne yazardı. Hedefte tablo varsa durur; üstüne yazmak
+`--uzerine-yaz` ister (gerçek kurtarmada sıra: önce HEDEFİN kendisini
+yedekle, sonra üstüne yaz). Yükleme tek işlem — yarıda kalırsa yarım bir
+veritabanı bırakmıyor. Bitince tablo sayısını dump'la, son migration'ı ve
+temel tabloların satırlarını yazıyor. Adres ekrana yalnız sunucu ve
+veritabanı adı olarak çıkıyor.
+
+**Tatbikat** — `pnpm yedek-tatbikati`: yedek al → boş, geçici bir
+veritabanına yükle → tablo tablo satır sayılarını kaynakla karşılaştır →
+şema koddakiyle birebir mi (`prisma migrate diff`) → derlenmiş sunucu
+yüklenen veritabanıyla açılıp diyar listesini okuyabiliyor mu → betiğin
+emniyetleri (hedefsiz, dolu hedef, bozuk dump) → bozulmuş bir veritabanının
+`--uzerine-yaz` ile dump anına dönmesi → temizlik. Süreleri yazıyor:
+geliştirme veritabanında (108 bin satır) yedek 0,6 sn, geri yükleme
+1,3 sn. CI'daki üretim işi bunu her itişte, sunucunun kendi kurduğu ve az
+önce oynanan veritabanında koşuyor.
+
+Geçici veritabanı kaynakla aynı sunucuda açılıyor (`CREATE DATABASE`).
+Yönetilen Postgres buna izin vermiyorsa `HEDEF_URL` ile boş bir hedef ver
+(ör. kendi makinende bir Postgres): canlı veritabanında **ayda bir**
+koşturmak, yayın listesindeki "denendi" kutusunun ta kendisi.
 
 Üç kural:
 
 1. **Yedeği veritabanıyla aynı diskte tutmak yedek değildir.** Makine gidince
    ikisi birden gider.
-2. **Denenmemiş yedek yedek değildir.** Ayda bir boş bir veritabanına geri
-   yükle ve satır say. Script'in kendisi de 10 KB altındaki dump için uyarır —
-   boş bir dump sessizce başarılı görünür.
+2. **Denenmemiş yedek yedek değildir.** Ayda bir `pnpm yedek-tatbikati`.
+   `yedekle.sh` de 10 KB altındaki dump için uyarır — boş bir dump sessizce
+   başarılı görünür.
 3. **Yedek almadan migration çalıştırma.**
 
 ---
@@ -186,7 +211,8 @@ yedeğin geri yüklenerek denenmesi, sıfırlama postasının gerçekten gelmesi
 - [ ] `SEED_DEMO_LORDS=false` (gerçek oyuncular gelecekse)
 - [ ] **En az bir yönetici hesabı atandı** (`pnpm yonetici ver <eposta>`) —
       yoksa şikâyetler kuyrukta birikir ve kimse bakamaz (docs/14)
-- [ ] Yedek alınıyor **ve** bir kez geri yüklenerek denendi
+- [ ] Yedek alınıyor **ve** canlı veritabanında bir kez `pnpm yedek-tatbikati`
+      koştu (§4)
 - [ ] `SENTRY_DSN` girildi, `/health` `izleme: acik` diyor
 - [ ] Parola sıfırlama e-postası gerçekten gidiyor (`EPOSTA_TASIYICI=resend`)
 - [ ] Push bildirimi açık (`pnpm push-anahtari` ile üretilmiş VAPID çifti) ve

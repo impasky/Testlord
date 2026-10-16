@@ -136,7 +136,7 @@ export const YAYIN_METNI: Record<YayinNedeni, string> = {
 
 /** Sunucunun bilemediği, elle denenecek işler (docs/05 §6). */
 export const YAYIN_ELLE: readonly string[] = [
-  'Yedek alınıyor ve bir kez geri yüklenerek denendi (docs/05 §4).',
+  'Yedek alınıyor ve canlı veritabanında bir kez "pnpm yedek-tatbikati" koştu (docs/05 §4).',
   'Parola sıfırlama e-postası gerçekten geliyor.',
   'Hesap ekranındaki "Deneme gönder" telefona düşüyor.',
 ];

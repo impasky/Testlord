@@ -1876,7 +1876,7 @@
   "t590f82dd": "You are wounded. Marching without resting is losing the army twice.",
   "t10bb3b61": "Ban lifted",
   "t65e8fab7": "Write the ban reason using at least {0} characters.",
-  "tf83ae117": "Backups are taken and a restore has been tried once (docs/05 §4).",
+  "tf56eabb1": "Backups are taken and \"pnpm yedek-tatbikati\" has run once against the live database (docs/05 §4).",
   "t0ee42256": "Oathbound",
   "tee2eace9": "A region you have just taken is protected for a while. It cannot be taken from you the moment you get it — you have time to gather its garrison.",
   "t399a819f": "Taking a new region is not the only way: upgrading what you have increases the region's hourly income, and your garrison's share grows along with it.",

@@ -34,6 +34,8 @@
     "yuk-testi": "node tools/yuk-testi.mjs",
     "yuk-testi-500": "node tools/yuk-testi.mjs --500",
     "yedekle": "bash tools/yedekle.sh",
+    "geri-yukle": "bash tools/geri-yukle.sh",
+    "yedek-tatbikati": "node tools/yedek-tatbikati.mjs",
     "olcum": "node tools/olcum.mjs",
     "simge": "python3 tools/simge-uret.py",
     "gorsel-bozulma": "node tools/gorsel-bozulma-testi.mjs",
