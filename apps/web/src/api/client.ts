@@ -1240,6 +1240,30 @@ export interface CokluHesapDto {
   }[];
 }
 
+/** Hafta sonu diyar seferi (docs/09 §2.6): ortak hedef, katılana ödül. */
+export interface DiyarEtkinligiDto {
+  etkinlik: {
+    key: string;
+    ad: string;
+    aciklama: string;
+    olcut: string;
+    birim: string;
+    bas: string;
+    son: string;
+    odulSonu: string;
+    durum: 'yaklasiyor' | 'acik' | 'odul';
+  };
+  hedef: number;
+  toplam: number;
+  katkim: number;
+  odul: {
+    kaynak: Resources;
+    hakEdildi: boolean;
+    alindi: boolean;
+    engel: 'kapali' | 'hedef' | 'katki' | 'alindi' | null;
+  };
+}
+
 export interface AramaSonucuDto {
   lordId: string;
   ad: string;
@@ -1650,6 +1674,9 @@ export const api = {
   gunluk: () => request<GunlukDto>('/gunluk'),
   gunlukOdul: () => post<GunlukOdulDto>('/gunluk/odul', {}),
   sefer: () => request<SeferDto>('/sefer'),
+  diyarEtkinligi: () => request<DiyarEtkinligiDto>('/diyar-etkinligi'),
+  diyarEtkinligiOdul: () =>
+    post<{ verilen: Resources; kirpildi: boolean }>('/diyar-etkinligi/odul', {}),
   armaKaydet: (arma: ArmaDto) => post<{ arma: ArmaDto }>('/me/arma', arma),
   ticaret: () => request<SevkiyatDto>('/ticaret'),
   kaynakGonder: (lordId: string, yuk: Resources) =>

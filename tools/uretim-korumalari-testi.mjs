@@ -180,6 +180,21 @@ try {
         kodlama !== null && /br|gzip|deflate/.test(kodlama),
         kodlama ? `${kodlama} · ${boyut} bayt` : 'Content-Encoding YOK — sıkıştırma kapalı',
       );
+
+      // Diyar seferinin test saati başlığı (`x-test-an`, docs/09 §2.6)
+      // üretimde yok sayılmalı: yoksa oyuncu başlıkla hafta sonunu açar,
+      // ödülü hafta içinde alırdı.
+      const etkinlik = (ek) =>
+        fetch(`http://127.0.0.1:${PORT}/api/diyar-etkinligi`, {
+          headers: { Authorization: `Bearer ${kayit.token}`, ...ek },
+        }).then((r) => r.json());
+      const gercek = await etkinlik({});
+      const kaydirilmis = await etkinlik({ 'x-test-an': '2030-01-05T12:00:00Z' });
+      k(
+        'üretimde test saati başlığı yok sayılıyor',
+        !!gercek?.etkinlik?.bas && kaydirilmis?.etkinlik?.bas === gercek.etkinlik.bas,
+        `${gercek?.etkinlik?.bas} / ${kaydirilmis?.etkinlik?.bas}`,
+      );
     }
   }
 } finally {

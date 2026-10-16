@@ -243,6 +243,10 @@ model Lord {
   /// Haftalık sefer ödülünün en son alındığı an. Hangi seferin açık olduğu
   /// SAKLANMIYOR — hafta numarasından türetiliyor (packages/shared/sefer.ts).
   seferOduluHaftasi DateTime?
+  /// Hafta sonu diyar seferinin ödülünün alındığı etkinlik (etkinliğin
+  /// başladığı cumartesi 00:00 UTC; shared `diyarEtkinligi`). Hangi
+  /// etkinliğin açık olduğu saklanmıyor, hafta numarasından türetiliyor.
+  diyarEtkinligiOdulu DateTime?
   /// Öğreticiyi bitirdiği (ya da geçtiği) an. Türetilemiyor: öğreticinin
   /// okunması oyunda hiçbir iz bırakmıyor — okuyan da okumayan da aynı
   /// durumda duruyor. Sunucuda tutuluyor cunku tam ekran bir tanıtımı

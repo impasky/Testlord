@@ -50,6 +50,8 @@ export const SEFERLER = seferlerJson.seferler as unknown as {
   birim: string;
 }[];
 export const SEFER_ODUL = seferlerJson.odul;
+/** Hafta sonu diyar seferi (seferler.json `diyar_etkinligi`). */
+export const DIYAR_ETKINLIGI = seferlerJson.diyar_etkinligi;
 
 /**
  * Savaş taktikleri. Sayısal etkileri burada, mantığı `duzen.ts`de.

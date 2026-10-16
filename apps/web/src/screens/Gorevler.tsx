@@ -12,6 +12,7 @@
 import { Basarimlar } from '../components/Basarimlar';
 import { GunlukKart } from '../components/GunlukKart';
 import { SeferKart } from '../components/SeferKart';
+import { DiyarSeferiKart } from '../components/DiyarSeferiKart';
 import { Zemin } from '../components/Zemin';
 import type { LordState } from '../api/client';
 import type { Kapi } from '@lordlar/shared';
@@ -31,6 +32,7 @@ export function Gorevler({
       <Zemin ad="gorevler" baslik="Görevler" altyazi="Bugün, bu hafta ve kilometre taşları" />
       <GunlukKart onGit={onGit} onKapiAc={onKapiAc} />
       <SeferKart />
+      <DiyarSeferiKart />
       <Basarimlar olcutler={lord.basarimOlcutleri} />
     </div>
   );

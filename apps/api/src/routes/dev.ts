@@ -15,6 +15,7 @@ import { findLordByUser, grantXp, tickLord } from '../services/lord.js';
 import { resolveMarch } from '../services/march.js';
 import { resolveAkin } from '../services/akin.js';
 import { transferRegion } from '../services/region.js';
+import { createWorld } from '../services/world.js';
 import { medeniyetleriKur } from '../services/medeniyet.js';
 import { resolveQueueItem } from '../services/queue.js';
 import { sevkiyatCoz } from '../services/ticaret.js';
@@ -278,6 +279,29 @@ export async function devRoutes(app: FastifyInstance): Promise<void> {
       }),
     ]);
     return { eskitildi: gun };
+  });
+
+  /**
+   * Boş bir diyar açar (kimliğini döner). Diyar seferi testi kendi
+   * diyarında koşuyor: hedef diyarın aktif nüfusuyla ölçekleniyor ve
+   * geliştirme diyarındaki yüzlerce test lordu hedefi ulaşılmaz yapardı.
+   */
+  app.post('/test/diyar-ac', async () => ({ worldId: await createWorld() }));
+
+  /**
+   * Çağıranın akın, savaş ve eğitim kayıtlarını verilen ana taşır — sanki
+   * o an olmuş gibi. Hafta sonu diyar seferi kayıtları hafta sonu
+   * penceresinden sayıyor; test hafta içinde de koşabilsin (docs/09 §2.6).
+   */
+  app.post('/test/etkinlik-kayitlari', { preHandler: requireAuth }, async (req) => {
+    const { an } = z.object({ an: z.coerce.date() }).parse(req.body);
+    const lordId = await findLordByUser(req.user.userId);
+    const [akin, savas, kuyruk] = await prisma.$transaction([
+      prisma.akin.updateMany({ where: { lordId, resolved: true }, data: { arriveAt: an } }),
+      prisma.battle.updateMany({ where: { attackerLordId: lordId }, data: { createdAt: an } }),
+      prisma.queue.updateMany({ where: { lordId, kind: 'train' }, data: { startedAt: an } }),
+    ]);
+    return { akin: akin.count, savas: savas.count, kuyruk: kuyruk.count };
   });
 
   /**

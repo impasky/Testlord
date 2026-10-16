@@ -265,6 +265,35 @@ bir çerçeve yok.
 Bir haftalık hedef + tablo + ödül. Boş zamanı doldurmuyor, **sebep**
 yaratıyor.
 
+**Bizde durum:** haftalık sefer (B4) kişisel: her oyuncunun kendi çubuğu.
+Üstüne **hafta sonu diyar seferi** geldi ve o ORTAK: cumartesi 00:00 –
+pazartesi 00:00 (UTC) arası diyarın bütün lordları aynı çubuğu
+dolduruyor. Tema üçlü dönüyor ve hafta numarasından türüyor (sunucu bir
+şey saklamıyor): Barbar Kuşatması (akın zaferi), Sınır Savaşları (savaş
+zaferi), Büyük Seferberlik (eğitilen asker). Hedef diyarın nüfusuyla
+ölçülüyor — etkinlikten önceki yedi günde giren gerçek lord × kişi başı
+(2 zafer / 40 asker), tabanı 12 / 200; nüfus etkinlik başlamadan önceki
+günlerden, hafta sonu boyunca hedef oynamıyor. Küçük diyar da hedefe
+yetişebilsin, kalabalık diyar bir saatte dolduruvermesin.
+
+Tablo da sıralama da yok (§3.4): hedef tutunca en az bir katkısı olan
+HERKES aynı ödülü alıyor — 12 saatlik malikâne geliri, haftalık seferin
+yarısı. En çok yapan değil, katılan; katkısız lord almıyor. Pazartesi
+ödül günü: hafta sonu bakamayan da alabiliyor. NPC lordlar çubuğu
+doldurmuyor.
+
+Sayım mevcut kayıtlardan türüyor (akın, savaş, eğitim kuyruğu satırları);
+ayrı etkinlik tablosu yok. Lordda tek alan var, `diyarEtkinligiOdulu`
+(son ödül alınan hafta sonunun başı) ve yazım koşullu: aynı anda gelen iki
+istek ödülü iki kez vermiyor. Diyar toplamı bir dakika bellekte, ödül
+anında taze. Veri `data/seferler.json` (`diyar_etkinligi`), kural
+`packages/shared/src/diyarEtkinligi.ts`, uçlar `GET /diyar-etkinligi` ve
+`POST /diyar-etkinligi/odul`, kart Görevler'de. `diyar-seferi-testi`
+kendi diyarında, sunucu saatini geliştirme başlığıyla (`x-test-an`,
+üretimde yok sayılıyor) cumartesiye kaydırarak ortak toplamı, hedef
+öncesi reddi, katkısızın reddini, tek alımı, pazartesi ödül gününü ve
+yeni hafta sonunu ölçüyor.
+
 ---
 
 ## 3. Zayıf yönleri — burada ayrışacağız

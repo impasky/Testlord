@@ -1075,6 +1075,14 @@
       "apps/web/src/components/Hastane.tsx:96"
     ]
   },
+  "tea23109e": {
+    "grup": "arayuz",
+    "tr": "{0} kaldı",
+    "en": "{0} left",
+    "nerede": [
+      "apps/web/src/components/DiyarSeferiKart.tsx:37"
+    ]
+  },
   "t163d871e": {
     "grup": "arayuz",
     "tr": "{0} kapasiten dolsa bile alınmıyor. Liderlik statını yükseltmen gerek.",
@@ -2089,6 +2097,7 @@
     "tr": "Alınıyor…",
     "en": "Claiming…",
     "nerede": [
+      "apps/web/src/components/DiyarSeferiKart.tsx:111",
       "apps/web/src/components/GunlukKart.tsx:154",
       "apps/web/src/components/SeferKart.tsx:92",
       "apps/web/src/screens/EsyaPazari.tsx:115"
@@ -2905,6 +2914,14 @@
       "apps/web/src/components/SavasRaporu.tsx:188"
     ]
   },
+  "ta9f6d247": {
+    "grup": "arayuz",
+    "tr": "Bitti · ödül bugün alınabilir",
+    "en": "Over · the reward can be claimed today",
+    "nerede": [
+      "apps/web/src/components/DiyarSeferiKart.tsx:38"
+    ]
+  },
   "tcf92ba89": {
     "grup": "arayuz",
     "tr": "Bittiğinde ordun saatte %{0} firar verir. Bir tarla bölgesi al ya da ordunu küçült.",
@@ -3378,7 +3395,7 @@
     "tr": "Bugün, bu hafta ve kilometre taşları",
     "en": "Today, this week and milestones",
     "nerede": [
-      "apps/web/src/screens/Gorevler.tsx:31"
+      "apps/web/src/screens/Gorevler.tsx:32"
     ]
   },
   "t30e07985": {
@@ -3483,6 +3500,14 @@
     "en": "Spy is departing...",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:485"
+    ]
+  },
+  "t0c12817e": {
+    "grup": "arayuz",
+    "tr": "Cumartesi başlıyor · {0}",
+    "en": "Starts Saturday · {0}",
+    "nerede": [
+      "apps/web/src/components/DiyarSeferiKart.tsx:35"
     ]
   },
   "tb3c8f1a0": {
@@ -3827,6 +3852,7 @@
     "tr": "Deponun bir kısmı doluydu; sığan kadarı verildi.",
     "en": "Part of your storage was full; as much as could fit was given.",
     "nerede": [
+      "apps/web/src/components/DiyarSeferiKart.tsx:115",
       "apps/web/src/components/GunlukKart.tsx:158",
       "apps/web/src/components/SeferKart.tsx:96"
     ]
@@ -3922,6 +3948,22 @@
       "apps/web/src/screens/Giris.tsx:50",
       "data/arastirma.json:dallar[3].ad",
       "data/basarimlar.json:kumeler[4].ad"
+    ]
+  },
+  "t87472908": {
+    "grup": "arayuz",
+    "tr": "Diyar hedefe vardı. Sen de katkı yap, ödül senin de.",
+    "en": "The realm reached the goal. Contribute too, and the reward is yours as well.",
+    "nerede": [
+      "apps/web/src/components/DiyarSeferiKart.tsx:124"
+    ]
+  },
+  "tba23082b": {
+    "grup": "arayuz",
+    "tr": "Diyar ödülünü al",
+    "en": "Claim the realm reward",
+    "nerede": [
+      "apps/web/src/components/DiyarSeferiKart.tsx:111"
     ]
   },
   "t2e0e6622": {
@@ -4050,6 +4092,14 @@
     "en": "State of the realm",
     "nerede": [
       "apps/web/src/screens/Medeniyet.tsx:181"
+    ]
+  },
+  "t93910436": {
+    "grup": "arayuz",
+    "tr": "Diyarın hep birlikte · senin katkın: {0}",
+    "en": "The whole realm together · your share: {0}",
+    "nerede": [
+      "apps/web/src/components/DiyarSeferiKart.tsx:67"
     ]
   },
   "tf29f8017": {
@@ -5337,7 +5387,7 @@
     "tr": "Görevler",
     "en": "Quests",
     "nerede": [
-      "apps/web/src/screens/Gorevler.tsx:31"
+      "apps/web/src/screens/Gorevler.tsx:32"
     ]
   },
   "tcfc6fca0": {
@@ -5478,6 +5528,22 @@
       "apps/web/src/components/GunlukKart.tsx:134"
     ]
   },
+  "tf00065c8": {
+    "grup": "arayuz",
+    "tr": "Hafta sonu başlıyor; o zamana kadar ordunu hazırla.",
+    "en": "The weekend is coming; get your army ready until then.",
+    "nerede": [
+      "apps/web/src/components/DiyarSeferiKart.tsx:122"
+    ]
+  },
+  "t933d262d": {
+    "grup": "arayuz",
+    "tr": "Hafta Sonu Diyar Seferi",
+    "en": "Weekend Realm Campaign",
+    "nerede": [
+      "apps/web/src/components/DiyarSeferiKart.tsx:41"
+    ]
+  },
   "t03749a55": {
     "grup": "arayuz",
     "tr": "Haklarını nasıl kullanırsın",
@@ -5589,12 +5655,28 @@
       "apps/web/src/components/ProfilResmiSecici.tsx:242"
     ]
   },
+  "tfb97ff2e": {
+    "grup": "arayuz",
+    "tr": "Hedef diyarın nüfusuyla ölçülüyor: şimdilik {0} {1}. Hafta sonu bütün lordlar aynı çubuğu dolduruyor.",
+    "en": "The goal scales with the realm's population: currently {0} {1}. On the weekend every lord fills the same bar.",
+    "nerede": [
+      "apps/web/src/components/DiyarSeferiKart.tsx:73"
+    ]
+  },
   "t67fd13ec": {
     "grup": "arayuz",
     "tr": "Hedef işaretlenemedi.",
     "en": "Target could not be marked.",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:360"
+    ]
+  },
+  "td6fdc414": {
+    "grup": "arayuz",
+    "tr": "Hedefe {0} kaldı — diyarın hep birlikte.",
+    "en": "{0} to go — the whole realm together.",
+    "nerede": [
+      "apps/web/src/components/DiyarSeferiKart.tsx:125"
     ]
   },
   "t4a708677": {
@@ -5808,7 +5890,7 @@
     "en": "DELETE MY ACCOUNT",
     "nerede": [
       "apps/api/src/routes/me.ts:66",
-      "apps/web/src/api/client.ts:1376",
+      "apps/web/src/api/client.ts:1400",
       "apps/web/src/screens/Hesap.tsx:297"
     ]
   },
@@ -6715,6 +6797,14 @@
     "nerede": [
       "apps/web/src/components/IttifakIncele.tsx:163",
       "apps/web/src/screens/Ittifak.tsx:511"
+    ]
+  },
+  "t52a79b58": {
+    "grup": "arayuz",
+    "tr": "Katılan herkese ödül",
+    "en": "A reward for everyone who joins",
+    "nerede": [
+      "apps/web/src/components/DiyarSeferiKart.tsx:78"
     ]
   },
   "tdf3e1ca9": {
@@ -8365,6 +8455,14 @@
     "en": "Claim reward",
     "nerede": [
       "apps/web/src/components/GunlukKart.tsx:154"
+    ]
+  },
+  "t1ff5d989": {
+    "grup": "arayuz",
+    "tr": "Ödülünü aldın. Diyar seni andı.",
+    "en": "You claimed your reward. The realm remembers you.",
+    "nerede": [
+      "apps/web/src/components/DiyarSeferiKart.tsx:101"
     ]
   },
   "t09015f38": {
@@ -17019,6 +17117,15 @@
       "apps/api/src/routes/akin.ts:293"
     ]
   },
+  "ta5c11fce": {
+    "grup": "sunucu",
+    "tr": "Bu hafta sonunun ödülünü zaten aldın.",
+    "en": "You already claimed this weekend's reward.",
+    "nerede": [
+      "apps/api/src/routes/diyarEtkinligi.ts:157",
+      "apps/api/src/routes/diyarEtkinligi.ts:196"
+    ]
+  },
   "t13668100": {
     "grup": "sunucu",
     "tr": "Bu haftanın seferini zaten aldın.",
@@ -17287,6 +17394,22 @@
     "en": "No room for gold in your storage. Spend some first or upgrade the Manor.",
     "nerede": [
       "apps/api/src/routes/esyaPazari.ts:808"
+    ]
+  },
+  "t99877ea5": {
+    "grup": "sunucu",
+    "tr": "Diyar henüz hedefe varmadı ({0}/{1} {2}).",
+    "en": "The realm hasn't reached the goal yet ({0}/{1} {2}).",
+    "nerede": [
+      "apps/api/src/routes/diyarEtkinligi.ts:160"
+    ]
+  },
+  "t9e78eaec": {
+    "grup": "sunucu",
+    "tr": "Diyar seferi cumartesi başlıyor.",
+    "en": "The realm campaign starts on Saturday.",
+    "nerede": [
+      "apps/api/src/routes/diyarEtkinligi.ts:158"
     ]
   },
   "t6d6945d3": {
@@ -18111,6 +18234,14 @@
       "apps/api/src/auth.ts:73"
     ]
   },
+  "td2f4b0c2": {
+    "grup": "sunucu",
+    "tr": "Ödül sefere katılanların: bu hafta sonu katkın yok.",
+    "en": "The reward belongs to those who joined the campaign: you have no contribution this weekend.",
+    "nerede": [
+      "apps/api/src/routes/diyarEtkinligi.ts:163"
+    ]
+  },
   "t92270202": {
     "grup": "sunucu",
     "tr": "Ön sipariş",
@@ -18608,6 +18739,14 @@
       "data/seferler.json:seferler[0].ad"
     ]
   },
+  "tf0783fbf": {
+    "grup": "veri",
+    "tr": "akın zaferi",
+    "en": "raid victories",
+    "nerede": [
+      "data/seferler.json:diyar_etkinligi.etkinlikler[0].birim"
+    ]
+  },
   "t172dac65": {
     "grup": "veri",
     "tr": "Akıncı Kumandan",
@@ -18832,12 +18971,28 @@
       "data/arma.json:renkler[7].ad"
     ]
   },
+  "t2cf0cf41": {
+    "grup": "veri",
+    "tr": "Barbar kampları diyarın kapısına dayandı. Hafta sonu bütün lordlar birlikte akına çıkıyor.",
+    "en": "Barbarian camps are at the realm's gates. This weekend all lords ride out on raids together.",
+    "nerede": [
+      "data/seferler.json:diyar_etkinligi.etkinlikler[0].aciklama"
+    ]
+  },
   "t95669593": {
     "grup": "veri",
     "tr": "Barbar Klanları",
     "en": "Barbarian Clans",
     "nerede": [
       "data/akinlar.json:haritalar[2].dusman"
+    ]
+  },
+  "t158c39f9": {
+    "grup": "veri",
+    "tr": "Barbar Kuşatması",
+    "en": "Barbarian Siege",
+    "nerede": [
+      "data/seferler.json:diyar_etkinligi.etkinlikler[0].ad"
     ]
   },
   "t5ff0d5f3": {
@@ -19112,6 +19267,14 @@
       "data/binalar.json:binalar[4].aciklama"
     ]
   },
+  "t3aa80a41": {
+    "grup": "veri",
+    "tr": "Büyük Seferberlik",
+    "en": "Great Mobilization",
+    "nerede": [
+      "data/seferler.json:diyar_etkinligi.etkinlikler[2].ad"
+    ]
+  },
   "ta681f179": {
     "grup": "veri",
     "tr": "Casus Ağı",
@@ -19310,6 +19473,14 @@
     "en": "Your council now debates not only your realm but its neighbors too. Every region is part of a plan.",
     "nerede": [
       "data/arastirma.json:dallar[3].dugumler[10].aciklama"
+    ]
+  },
+  "ted2becb7": {
+    "grup": "veri",
+    "tr": "Diyar bayrak açtı. Hafta sonu bütün kışlalar birlikte asker yetiştiriyor.",
+    "en": "The realm has raised its banner. This weekend every barracks trains soldiers together.",
+    "nerede": [
+      "data/seferler.json:diyar_etkinligi.etkinlikler[2].aciklama"
     ]
   },
   "tbc16599c": {
@@ -21075,12 +21246,28 @@
       "data/basarimlar.json:kumeler[1].basarimlar[1].ad"
     ]
   },
+  "t97d5940c": {
+    "grup": "veri",
+    "tr": "Sınır boyları kaynıyor. Diyarın lordları hafta sonu birlikte savaş kazanıyor.",
+    "en": "The borderlands are boiling. This weekend the realm's lords win battles together.",
+    "nerede": [
+      "data/seferler.json:diyar_etkinligi.etkinlikler[1].aciklama"
+    ]
+  },
   "t7b842dcb": {
     "grup": "veri",
     "tr": "Sınır bölgelerini kendi beylerine bırakırsın. Uçlar hem sağlam durur hem düşmanı yağmalar.",
     "en": "You leave the border regions to your own lords. The marches hold firm and raid the enemy.",
     "nerede": [
       "data/arastirma.json:dallar[3].dugumler[6].aciklama"
+    ]
+  },
+  "tddb6526a": {
+    "grup": "veri",
+    "tr": "Sınır Savaşları",
+    "en": "Border Wars",
+    "nerede": [
+      "data/seferler.json:diyar_etkinligi.etkinlikler[1].ad"
     ]
   },
   "tfc91ca9e": {

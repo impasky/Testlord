@@ -20,6 +20,7 @@ import { devRoutes } from './routes/dev.js';
 import { dunyaRoutes } from './routes/dunya.js';
 import { gunlukRoutes } from './routes/gunluk.js';
 import { seferRoutes } from './routes/sefer.js';
+import { diyarEtkinligiRoutes } from './routes/diyarEtkinligi.js';
 import { ittifakRoutes } from './routes/ittifak.js';
 import { arastirmaRoutes } from './routes/arastirma.js';
 import { akinRoutes } from './routes/akin.js';
@@ -292,6 +293,7 @@ export async function buildServer() {
   await app.register(dunyaRoutes, { prefix: '/api' });
   await app.register(gunlukRoutes, { prefix: '/api' });
   await app.register(seferRoutes, { prefix: '/api' });
+  await app.register(diyarEtkinligiRoutes, { prefix: '/api' });
   await app.register(ittifakRoutes, { prefix: '/api' });
   await app.register(ticaretRoutes, { prefix: '/api' });
   await app.register(arastirmaRoutes, { prefix: '/api' });

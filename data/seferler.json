@@ -55,5 +55,42 @@
       "hedef": 6,
       "birim": "zafer"
     }
-  ]
+  ],
+  "diyar_etkinligi": {
+    "_aciklama": "Hafta sonu DIYAR SEFERI (docs/09 §2.6): diyarin butun lordlari BIRLIKTE bir hedefe yuruyor. Haftalik sefer kisisel, bu ortak. Ayni ilkeler: tema saklanmiyor, hafta numarasindan turetiliyor; siralama yok, hedef var. Hedefe varilirsa en az en_az_katki kadar katkisi olan HERKES odulunu aliyor -- en cok yapan degil, katilan.",
+    "_hedef": "hedef = max(taban, etkinlikten onceki 7 gunun aktif oyuncusu x kisi_basi). Aktif sayisi GunlukAktiflik'ten ve etkinlik baslamadan ONCEKI gunlerden: hafta sonu boyunca hedef oynamiyor. Taban kucuk diyarda hedefin anlamsizlasmamasi icin.",
+    "_pencere": "Cumartesi 00:00 - Pazartesi 00:00 (UTC). Odul pazartesi gunu sonuna kadar alinabiliyor.",
+    "odul_malikane_saati": 12,
+    "_odul": "Haftalik seferin (24 saat) yarisi: iki gunluk ortak is, haftalik kisisel isten kucuk ama gunlukten belirgin buyuk.",
+    "en_az_katki": 1,
+    "etkinlikler": [
+      {
+        "key": "barbar_kusatmasi",
+        "ad": "Barbar Kuşatması",
+        "aciklama": "Barbar kampları diyarın kapısına dayandı. Hafta sonu bütün lordlar birlikte akına çıkıyor.",
+        "olcut": "akin_zaferi",
+        "taban": 12,
+        "kisi_basi": 2,
+        "birim": "akın zaferi"
+      },
+      {
+        "key": "sinir_savaslari",
+        "ad": "Sınır Savaşları",
+        "aciklama": "Sınır boyları kaynıyor. Diyarın lordları hafta sonu birlikte savaş kazanıyor.",
+        "olcut": "savas_zaferi",
+        "taban": 12,
+        "kisi_basi": 2,
+        "birim": "zafer"
+      },
+      {
+        "key": "buyuk_seferberlik",
+        "ad": "Büyük Seferberlik",
+        "aciklama": "Diyar bayrak açtı. Hafta sonu bütün kışlalar birlikte asker yetiştiriyor.",
+        "olcut": "egitilen_asker",
+        "taban": 200,
+        "kisi_basi": 40,
+        "birim": "asker"
+      }
+    ]
+  }
 }
