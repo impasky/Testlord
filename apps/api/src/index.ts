@@ -12,6 +12,7 @@ import Fastify from 'fastify';
 import { ZodError } from 'zod';
 import { prisma } from './db.js';
 import { env } from './env.js';
+import { veritabaniniYokla, yoklamaAciklamasi, yoklamaOzeti } from './vtYoklama.js';
 import { GameError } from './errors.js';
 import { hataBildir, izlemeAcikMi, izlemeBaslat, surecHatalariniYakala } from './izleme.js';
 import { istemciIp } from './istemciIp.js';
@@ -345,31 +346,43 @@ export async function buildServer() {
  * Dağıtımda açılış hazırlığı: migration'ları uygula, dünya yoksa aç,
  * istenmişse rakip lordları ekle. Hepsi tekrar çalıştırılabilir.
  */
-async function veritabaniniBekle(azamiSaniye = 120): Promise<void> {
+/*
+ * Ağ yolu açılana kadar Prisma'ya hiç sorulmuyor: P1001 her denemede aynı
+ * uzun hatayı basıyor ve sebebini söylemiyordu. Önce yoklama (vtYoklama.ts);
+ * günlüğe durum DEĞİŞTİKÇE tek satır, vazgeçerken sebep ve ne yapılacağı.
+ *
+ * 5 dakika: Render'da yeni ücretli veritabanının açılması birkaç dakika
+ * sürebiliyor; 2 dakikada vazgeçen sunucu dağıtımı başarısız saydırıyordu
+ * ve Render kendiliğinden yeniden denemiyor.
+ */
+async function veritabaniniBekle(azamiSaniye = 300): Promise<void> {
   const bitis = Date.now() + azamiSaniye * 1000;
   let deneme = 0;
+  let sonOzet = '';
   for (;;) {
-    try {
-      await prisma.$queryRaw`SELECT 1`;
-      if (deneme > 0) console.log(`Veritabanı ${deneme} denemede hazır oldu.`);
-      return;
-    } catch (e) {
-      deneme++;
-      if (Date.now() >= bitis) {
-        console.error(
-          `Veritabanına ${azamiSaniye} saniyedir ulaşılamıyor. En sık sebepler:
-  - DigitalOcean: uygulama veritabanının "güvenilir kaynakları"nda değil
-    ya da veritabanı başka bölgede (ikisi de FRA olmalı, docs/05 §2).
-  - Render: veritabanı ile sunucu farklı bölgede; iç ağ adresi
-    (dpg-xxxxx-a) yalnız aynı bölgeden çözülür.
-  - DATABASE_URL yanlış ya da boş.`,
-        );
-        throw e;
+    deneme++;
+    const y = await veritabaniniYokla(env.DATABASE_URL);
+    if (!y || y.tcp === 'acik') {
+      try {
+        await prisma.$queryRaw`SELECT 1`;
+        if (deneme > 1) console.log(`Veritabanı ${deneme}. denemede hazır.`);
+        return;
+      } catch (e) {
+        if (Date.now() >= bitis) {
+          console.error(yoklamaAciklamasi(y, azamiSaniye));
+          throw e;
+        }
       }
-      const bekle = Math.min(5000, 500 * deneme);
-      if (deneme === 1) console.log('Veritabanı henüz hazır değil, bekleniyor...');
-      await new Promise((r) => setTimeout(r, bekle));
+    } else if (Date.now() >= bitis) {
+      console.error(yoklamaAciklamasi(y, azamiSaniye));
+      throw new Error(`Veritabanına ulaşılamıyor: ${yoklamaOzeti(y)}`);
     }
+    const ozet = y ? yoklamaOzeti(y) : 'adres okunamıyor';
+    if (ozet !== sonOzet) {
+      console.log(`Veritabanı bekleniyor — ${ozet}`);
+      sonOzet = ozet;
+    }
+    await new Promise((r) => setTimeout(r, Math.min(5000, 500 * deneme)));
   }
 }
 

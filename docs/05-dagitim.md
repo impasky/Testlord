@@ -143,9 +143,18 @@ başlatır; o adımı panelden sen atıyorsun.
 **Bilinmesi gerekenler:**
 
 - **Veritabanı ve servis aynı bölgede olmalı.** Render'ın iç ağ adresi
-  (`dpg-xxxxx-a`) yalnızca aynı bölgedeki servislerden çözülür. Farklı
-  bölgede kalırsa Prisma `P1001` verir. `render.yaml`'da ikisi de
-  `frankfurt`.
+  (`dpg-xxxxx-a`) yalnızca aynı bölgedeki ve aynı çalışma alanındaki
+  servislerden çözülür. Farklı bölgede kalırsa Prisma `P1001` ("Can't
+  reach database server") verir. `render.yaml`'da ikisi de `frankfurt`;
+  ama servis ya da veritabanı daha önce başka bölgede açıldıysa Blueprint
+  bölgeyi DEĞİŞTİREMİYOR — yanlış olanı silip yeniden uygula.
+- **`Can't reach database server at dpg-…` görürsen** günlüğün kendi
+  satırlarına bak: sunucu beklerken "adı çözülmüyor" (bölge/çalışma alanı
+  farkı ya da veritabanı yok) ya da "bağlantıyı reddediyor / cevap
+  vermiyor" (veritabanı açılıyor ya da durmuş) diye yazıyor; 5 dakika
+  sonra vazgeçerken ne yapılacağını söylüyor. Ücretsiz veritabanı 30 gün
+  sonra kapanıyor: panelde durumu "Available" değilse sebep o. Veritabanı
+  sonradan hazır olduysa Manual Deploy → Deploy latest commit.
 - **İstemcinin IP'si `cf-connecting-ip`den.** Render'da istek vekilden
   geçiyor; ayar olmadan kayıt/giriş sınırı bütün oyunculara tek kova olur
   (docs/18). render.yaml'da ayarlı; yönetici panosundaki yayın kontrolü

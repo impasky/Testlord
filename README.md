@@ -136,10 +136,12 @@ duruyor (`docs/05` §2b).
 
 ### Kurulum hata verirse
 
-Sunucu açılışta veritabanına 2 dakika boyunca bağlanmayı dener, yani yavaş
-kurulan bir veritabanı sorun olmaz. Gerçekten ulaşılamıyorsa durur ve sebepleri
-loga yazar: en sık ikisi veritabanının başka bölgede olması ya da uygulamanın
-veritabanının "güvenilir kaynakları"nda olmaması (ikisi de FRA olmalı).
+Sunucu açılışta veritabanına 5 dakika boyunca bağlanmayı dener, yani yavaş
+kurulan bir veritabanı sorun olmaz. Beklerken loga tek satır yazar (adres
+çözülüyor mu, bağlantı açılıyor mu); gerçekten ulaşılamıyorsa durur ve sebebi
+ve ne yapılacağını yazar. En sık sebepler: veritabanının başka bölgede olması,
+uygulamanın veritabanının "güvenilir kaynakları"nda olmaması (DigitalOcean),
+Render'da veritabanının süresinin dolmuş ya da farklı bölgede olması.
 
 ### Bilmen gerekenler
 

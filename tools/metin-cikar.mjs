@@ -98,6 +98,11 @@ const OPERASYON = [
   'apps/api/src/services/admob.ts',
   'apps/api/src/routes/appAds.ts',
   /*
+   * Açılışta veritabanı yoklaması: sunucu günlüğüne, işletene yazıyor
+   * (Render/DigitalOcean paneli); oyuncu hiç görmüyor.
+   */
+  'apps/api/src/vtYoklama.ts',
+  /*
    * Birleşme aracının konsol çıktısı. `dunya-temizle` ile aynı aile:
    * yalnız komutu koşan geliştirici görüyor, oyuncu hiçbir koşulda
    * görmüyor. Sekiz satır çeviri listesinde yer kaplıyordu.
