@@ -217,6 +217,13 @@ yüklenmiyor (`tools/uretim-korumalari-testi.mjs`).
 
 ### 4.4 Android derlemesi
 
+**Bilgisayarsız (önerilen):** GitHub Actions → "Android yayın paketi" →
+Run workflow (`.github/workflows/android-yayin.yml`). Gizli değişkenler,
+yükleme anahtarının bir kez üretilmesi ve Play'e yükleme: `docs/26` §5.
+Sürüm kodu koşu numarasından kendiliğinden artıyor.
+
+**Kendi bilgisayarında:**
+
 ```sh
 OYUN_ADRESI=https://alan.adin node apps/mobil/derle.mjs   # arayüz + cap sync
 cd apps/mobil/android
@@ -231,7 +238,11 @@ IMZA_DOSYASI=/yol/yukleme.jks IMZA_PAROLASI=… IMZA_TAKMA_ADI=… IMZA_ANAHTAR_
 - **Play Uygulama İmzalama** kullan; yükleme anahtarını yedekle.
   `SURUM_KODU` her yüklemede bir artmalı.
 - CI'daki `android` işi her gönderimde hata ayıklama APK'sı derliyor ve
-  yapıt olarak bırakıyor (cihaza kurup denemek için).
+  yapıt olarak bırakıyor (cihaza kurup denemek için). Aynı iş sürüm
+  derlemesinin ayarsız durduğunu ve tek kullanımlık bir anahtarla imzalı
+  AAB çıktığını da sınıyor.
+- Play Console formlarının (mağaza girişi, veri güvenliği, içerik
+  derecelendirmesi, ürünler) hazır cevapları: `docs/26`.
 
 ### 4.5 Yayın kontrolü
 

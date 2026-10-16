@@ -24,8 +24,10 @@ def admobTestUygulamasi = 'ca-app-pub-3940256099942544~3347511713'
  */
 if (gradle.startParameter.taskNames.any { it.toLowerCase().contains('release') }) {
     def eksik = []
-    if (!(ortam('ADMOB_UYGULAMA_KIMLIGI', '').toString() ==~ /ca-app-pub-\d+~\d+/)) {
-        eksik << 'ADMOB_UYGULAMA_KIMLIGI (ca-app-pub-…~…)'
+    def admob = ortam('ADMOB_UYGULAMA_KIMLIGI', '').toString()
+    // Biçim doğru olsa da Google'ın test yayıncısı (3940256099942544) olmaz.
+    if (!(admob ==~ /ca-app-pub-\d+~\d+/) || admob.startsWith('ca-app-pub-3940256099942544~')) {
+        eksik << 'ADMOB_UYGULAMA_KIMLIGI (kendi ca-app-pub-…~… kimliğin)'
     }
     if (!ortam('IMZA_DOSYASI', '')) eksik << 'IMZA_DOSYASI ve parolaları'
     if (eksik) {

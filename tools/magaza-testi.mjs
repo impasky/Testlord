@@ -359,8 +359,24 @@ kontrol('app-ads.txt yayıncı kimliği yokken yok (404)', appAds.status === 404
   await ogreticiyiGec(sayfa);
   await rehberiSustur(sayfa);
   try {
-    await ekrana(sayfa, 'kisla');
+    /*
+     * CI'da binaya dokunuş şehir sahnesi hazır olmadan gidebiliyor ve kapı
+     * açılmıyordu (yerelde hiç görülmedi). Panel görünene kadar bekle,
+     * açılmadıysa bir kez daha dokun.
+     */
+    for (let deneme = 0; deneme < 2; deneme++) {
+      await ekrana(sayfa, 'kisla');
+      const acildi = await sayfa
+        .locator('[role="dialog"][aria-label="Kışla"]')
+        .waitFor({ timeout: 10000 })
+        .then(
+          () => true,
+          () => false,
+        );
+      if (acildi) break;
+    }
     const dugme = sayfa.locator(`[data-hizlandir="${once.id}"]`).first();
+    await dugme.waitFor({ state: 'visible', timeout: 20000 });
     await dugme.scrollIntoViewIfNeeded();
     await dugme.click();
     const elmasDugmesi = sayfa.locator('[data-hizlandir-penceresi] [data-hizlandir-elmas]');
@@ -392,7 +408,16 @@ kontrol('app-ads.txt yayıncı kimliği yokken yok (404)', appAds.status === 404
       fullPage: false,
     });
   } catch (e) {
-    kontrol('Arayüz akışı tamamlandı', false, String(e?.message ?? e).slice(0, 140));
+    // CI kalanında neyin açık olduğu görünsün: görüntü /tmp'de (yapıt), pencereler raporda.
+    await sayfa.screenshot({ path: '/tmp/magaza-arayuz-hata.png' }).catch(() => {});
+    const pencereler = await sayfa
+      .$$eval('[role="dialog"]', (d) => d.map((x) => x.getAttribute('aria-label') ?? '?'))
+      .catch(() => []);
+    kontrol(
+      'Arayüz akışı tamamlandı',
+      false,
+      `${String(e?.message ?? e).slice(0, 140)} · açık pencereler: ${JSON.stringify(pencereler)}`,
+    );
   }
   kontrol('Arayüzde sayfa hatası yok', hatalar.length === 0, hatalar.slice(0, 2).join(' | '));
   await tarayici.close();

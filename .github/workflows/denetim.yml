@@ -15,7 +15,9 @@
 #   uretim  Derlenmiş tek servis, boş veritabanında, telefon boyutunda.
 #           e2e geliştirme sunucularını ölçüyor; oyuncuya giden ise bu.
 #   android Android uygulaması (Capacitor, docs/25) gerçekten derleniyor mu:
-#           Play Faturalandırma ve AdMob eklentileriyle hata ayıklama APK'sı.
+#           Play Faturalandırma ve AdMob eklentileriyle hata ayıklama APK'sı;
+#           ayrıca sürüm derlemesi ayarsız duruyor mu ve tek kullanımlık bir
+#           anahtarla imzalı AAB çıkıyor mu (yayın: android-yayin.yml).
 #           Geliştirme ortamında Google'ın Android deposuna erişim yok;
 #           yerel kod yalnız burada derleniyor.
 #
@@ -304,3 +306,39 @@ jobs:
           path: apps/mobil/android/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
           retention-days: 7
+
+      # Yayın yolu (android-yayin.yml) gerçek anahtar olmadan da sınansın:
+      # ayarsız sürüm derlemesi DURMALI, tek kullanımlık bir anahtarla
+      # imzalı AAB çıkmalı. Paket saklanmıyor; anahtar koşucuyla gidiyor.
+      - name: Sürüm derlemesi ayarsız duruyor
+        working-directory: apps/mobil/android
+        run: |
+          if ./gradlew --no-daemon bundleRelease --dry-run > "$RUNNER_TEMP/kilit.log" 2>&1; then
+            echo "::error::İmza ve AdMob kimliği olmadan sürüm derlemesi durmadı"
+            exit 1
+          fi
+          grep -q 'Sürüm derlemesi için eksik' "$RUNNER_TEMP/kilit.log" \
+            || { cat "$RUNNER_TEMP/kilit.log"; echo "::error::Beklenen hata iletisi yok"; exit 1; }
+          # İmza var ama AdMob kimliği Google'ın test yayıncısı: o da geçmemeli.
+          if IMZA_DOSYASI=/yok.p12 ADMOB_UYGULAMA_KIMLIGI='ca-app-pub-3940256099942544~3347511713' \
+            ./gradlew --no-daemon bundleRelease --dry-run > "$RUNNER_TEMP/test-kimlik.log" 2>&1; then
+            echo "::error::Test AdMob kimliğiyle sürüm derlemesi durmadı"
+            exit 1
+          fi
+          grep -q 'ADMOB_UYGULAMA_KIMLIGI' "$RUNNER_TEMP/test-kimlik.log" \
+            && ! grep -q 'IMZA_DOSYASI ve' "$RUNNER_TEMP/test-kimlik.log" \
+            || { cat "$RUNNER_TEMP/test-kimlik.log"; echo "::error::Test kimliği başka bir sebeple durdu"; exit 1; }
+
+      - name: Sürüm derlemesi (tek kullanımlık anahtarla)
+        working-directory: apps/mobil/android
+        run: |
+          export IMZA_DOSYASI="$RUNNER_TEMP/deneme.p12" IMZA_TAKMA_ADI=deneme
+          export IMZA_PAROLASI="$(openssl rand -hex 16)"
+          export IMZA_ANAHTAR_PAROLASI="$IMZA_PAROLASI"
+          export ADMOB_UYGULAMA_KIMLIGI='ca-app-pub-1111111111111111~2222222222'
+          export SURUM_KODU=1 SURUM_ADI=0.0.1
+          keytool -genkeypair -keystore "$IMZA_DOSYASI" -storetype PKCS12 \
+            -storepass "$IMZA_PAROLASI" -alias deneme -keyalg RSA -keysize 2048 \
+            -validity 1 -dname 'CN=Deneme' > /dev/null
+          ./gradlew --no-daemon bundleRelease
+          jarsigner -verify app/build/outputs/bundle/release/app-release.aab | grep -q 'jar verified'

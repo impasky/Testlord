@@ -1,0 +1,126 @@
+# Play'e yüklenecek imzalı Android paketi (AAB) — elle başlatılır.
+#
+# NEDEN VAR: sürüm derlemesi Android SDK ve Java istiyor; bunlar olmadan
+# (telefondan) yayın yapılabilsin diye derleme burada. Actions → "Android
+# yayın paketi" → Run workflow → sürüm adını yaz. Paket koşunun sonunda
+# yapıt olarak iniyor; Play Console → Sürümler'e o yükleniyor (docs/25 §4.4).
+#
+# Depo HERKESE AÇIK: imza anahtarı yalnız gizli değişkenden geliyor,
+# koşucunun geçici dizinine yazılıp iş bitince siliniyor; depoya, günlüğe
+# ya da yapıta hiçbir zaman girmiyor.
+#
+# Settings → Secrets and variables → Actions:
+#   Secrets    IMZA_ANAHTARI_B64      yükleme anahtarının (.p12/.jks) base64'ü
+#              IMZA_PAROLASI          anahtar deposunun parolası
+#              IMZA_TAKMA_ADI         anahtarın takma adı (alias)
+#              IMZA_ANAHTAR_PAROLASI  (isteğe bağlı) anahtar parolası; PKCS12'de
+#                                     depo parolasıyla aynı, boşsa o kullanılıyor
+#   Variables  OYUN_ADRESI            https://alan.adin (gizli değil)
+#              ADMOB_UYGULAMA_KIMLIGI ca-app-pub-…~… (gizli değil)
+#
+# Sürüm kodu bu iş akışının koşu numarası: her paket bir öncekinden büyük,
+# elle artırmak unutulamıyor.
+name: Android yayın paketi
+
+on:
+  workflow_dispatch:
+    inputs:
+      surum_adi:
+        description: 'Oyuncunun gördüğü sürüm (ör. 1.0.0)'
+        required: true
+        default: '1.0.0'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-yayin
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: '22'
+
+jobs:
+  aab:
+    name: İmzalı AAB
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      # Eksik ayar derlemeden ÖNCE söylensin; yirmi dakika sonra değil.
+      - name: Ayarlar tam mı
+        env:
+          OYUN_ADRESI: ${{ vars.OYUN_ADRESI }}
+          ADMOB_UYGULAMA_KIMLIGI: ${{ vars.ADMOB_UYGULAMA_KIMLIGI }}
+          IMZA_ANAHTARI_B64: ${{ secrets.IMZA_ANAHTARI_B64 }}
+          IMZA_PAROLASI: ${{ secrets.IMZA_PAROLASI }}
+          IMZA_TAKMA_ADI: ${{ secrets.IMZA_TAKMA_ADI }}
+          SURUM_ADI: ${{ inputs.surum_adi }}
+        run: |
+          eksik=()
+          for ad in OYUN_ADRESI ADMOB_UYGULAMA_KIMLIGI IMZA_ANAHTARI_B64 IMZA_PAROLASI IMZA_TAKMA_ADI; do
+            [ -n "${!ad}" ] || eksik+=("$ad")
+          done
+          if [ ${#eksik[@]} -gt 0 ]; then
+            echo "::error::Eksik ayar: ${eksik[*]} — docs/25 §4.4"
+            exit 1
+          fi
+          [[ "$OYUN_ADRESI" =~ ^https:// ]] || { echo "::error::OYUN_ADRESI https ile başlamalı"; exit 1; }
+          [[ "$SURUM_ADI" =~ ^[0-9]+(\.[0-9]+){1,3}$ ]] || { echo "::error::Sürüm adı 1.0.0 biçiminde olmalı"; exit 1; }
+
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Arayüz ve Capacitor eşitlemesi
+        env:
+          OYUN_ADRESI: ${{ vars.OYUN_ADRESI }}
+        run: node apps/mobil/derle.mjs
+
+      - name: İmzalı AAB
+        working-directory: apps/mobil/android
+        env:
+          IMZA_ANAHTARI_B64: ${{ secrets.IMZA_ANAHTARI_B64 }}
+          IMZA_PAROLASI: ${{ secrets.IMZA_PAROLASI }}
+          IMZA_TAKMA_ADI: ${{ secrets.IMZA_TAKMA_ADI }}
+          IMZA_ANAHTAR_PAROLASI: ${{ secrets.IMZA_ANAHTAR_PAROLASI || secrets.IMZA_PAROLASI }}
+          ADMOB_UYGULAMA_KIMLIGI: ${{ vars.ADMOB_UYGULAMA_KIMLIGI }}
+          SURUM_KODU: ${{ github.run_number }}
+          SURUM_ADI: ${{ inputs.surum_adi }}
+          OYUN_ADRESI: ${{ vars.OYUN_ADRESI }}
+        run: |
+          export IMZA_DOSYASI="$RUNNER_TEMP/yukleme-anahtari.p12"
+          trap 'rm -f "$IMZA_DOSYASI"' EXIT
+          printf '%s' "$IMZA_ANAHTARI_B64" | base64 -d > "$IMZA_DOSYASI"
+          # Parola ya da takma ad yanlışsa Gradle'ın uzun yığın izi yerine tek satır.
+          keytool -list -keystore "$IMZA_DOSYASI" -storepass "$IMZA_PAROLASI" -alias "$IMZA_TAKMA_ADI" > /dev/null \
+            || { echo "::error::Anahtar açılamadı: IMZA_ANAHTARI_B64, IMZA_PAROLASI ya da IMZA_TAKMA_ADI yanlış"; exit 1; }
+          ./gradlew --no-daemon bundleRelease
+          jarsigner -verify app/build/outputs/bundle/release/app-release.aab | grep -q 'jar verified' \
+            || { echo "::error::Paket imzalı değil"; exit 1; }
+          {
+            echo "### Android paketi hazır"
+            echo ""
+            echo "- Sürüm: **${SURUM_ADI}** (kod ${SURUM_KODU})"
+            echo "- Sunucu: ${OYUN_ADRESI}"
+            echo "- Aşağıdaki **lordlar-aab-…** yapıtını indir, Play Console → Sürümler'e yükle."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: lordlar-aab-${{ inputs.surum_adi }}-${{ github.run_number }}
+          path: apps/mobil/android/app/build/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+          retention-days: 14

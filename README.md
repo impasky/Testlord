@@ -179,6 +179,7 @@ docs/
   LISANSLAR.md            Üçüncü taraf varlıklar ve künye
   24-kodla-cizim.md       Oyundaki her görsel kodla çiziliyor — motor, dosyalar, kurallar
   25-magaza.md            Mağaza (P2S): elmas paketi Play'den, ödüllü reklam AdMob'dan; kurulum
+  26-play-listesi.md      Play Console formlarının hazır cevapları; bilgisayarsız imzalı paket
   00-ozet-ve-kapsam.md    Yönetici özeti + DONDURULMUŞ kapsam sınırı (önce bunu oku)
   01-oyun-tasarimi.md     Tüm sistemler, oynanış döngüleri, ekranlar
   02-denge-formulleri.md  Her formül ve tablo, gerekçeleriyle
