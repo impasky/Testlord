@@ -10,6 +10,7 @@
  *   4. Bölge depolarını biriktirir
  *   5. Sırası gelen RAKİP LORDLARA sıra verir (services/npc.ts)
  *   6. Eşya pazarı: kayıt kuyruklarının kurası, saatlik taban (docs/19)
+ *   7. Saatte bir: diyar birleşmesi, süresi dolan ağ izlerinin silinmesi
  *
  * Her adım tek transaction içinde ve idempotenttir: `resolved` bayrağı
  * koşullu updateMany ile alındığı için worker iki kez çalışsa bile iş
@@ -25,6 +26,7 @@ import { accrueRegionStores } from './services/region.js';
 import { npcTuru } from './services/npc.js';
 import { bekleyenBirlesmeleriUygula, birlesmeyiPlanla } from './services/birlesme.js';
 import { kuyruklariCek, tabanlariGuncelle } from './services/esyaPazari.js';
+import { eskiAgIzleriniSil } from './services/agIzi.js';
 
 const ARALIK_MS = 10_000;
 let calisiyor = false;
@@ -125,6 +127,13 @@ export async function tur(): Promise<void> {
       } catch (e) {
         // Birleşme patlarsa oyunun geri kalanı dönmeye devam etsin.
         console.error('Birleşme turu başarısız:', e);
+      }
+      // Ağ izinin saklama süresi (docs/14): gün ölçeğinde, saatlik bakış yetiyor.
+      try {
+        const silinen = await eskiAgIzleriniSil(now);
+        if (silinen) console.log(`[worker] ağ izi: ${silinen} eski satır silindi`);
+      } catch (e) {
+        console.error('Ağ izi temizliği başarısız:', e);
       }
     }
 

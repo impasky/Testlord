@@ -133,6 +133,39 @@ abonelik — sınırsızken tek bildirim binlerce isteğe çevrilebiliyordu.
 - Günlüğe istek adresi **sorgu dizgisiz** yazılıyor: `/api/olcum?anahtar=…`
   her çağrıda anahtarı günlüğe düşürüyordu. Anahtar karşılaştırması da sabit
   sürede.
+- Günlüğe **istemcinin IP'si yazılmıyor.** Üretimde her istek satırı
+  `remoteAddress` taşıyordu (ölçüldü) ve gizlilik metni "IP yalnız istek
+  anında kullanılıyor" diyordu; Render günlüğü günlerce tutuyor.
+
+### İstemcinin adresi vekil arkasında — KRİTİK, kapatıldı
+
+Fastify'a vekile güvenmesi söylenmemişti; Render'da `req.ip` her istekte
+VEKİLİN adresiydi. Kayıt ve giriş sınırı (adres başına dakikada 60) bu
+yüzden bütün oyunculara TEK kovaydı: açılış günü dakikada 60 kayıttan sonra
+herkes 429 alırdı, parola deneyen tek bir saldırgan da herkesin girişini
+kilitlerdi. Hiçbir test bunu göremezdi — geliştirmede vekil yok.
+
+Adres artık tek kapıdan okunuyor (`apps/api/src/istemciIp.ts`):
+
+- **`ISTEMCI_IP_BASLIGI`** — vekilin yazdığı ve istemcinin ezemediği başlık.
+  Render'da `cf-connecting-ip` (önündeki Cloudflare her istekte kendisi
+  yazıyor; render.yaml'da ayarlı). Geçerli IP olmayan değer yok sayılıyor.
+- **`VEKIL_SAYISI`** — kendi Caddy/nginx'in için: X-Forwarded-For'un sondan
+  o kadar adımı. Baştaki adreslere güvenilmiyor; istemci onları yazabilir.
+- `X-Forwarded-For`'un başı **hiçbir yolda** kendiliğinden güvenilmiyor:
+  Render istemcinin yolladığını silmeden ona ekliyor.
+- Başlık ayarlı ama bir vekilden geçmiş istekte yoksa (ad yanlış, vekil
+  değişmiş) günlüğe bir kez yazılıyor; Render'ın sağlık denetimi gibi
+  vekilsiz iç istekler susuyor. **Yayın kontrolü** yöneticinin kendi
+  isteğine bakıp ayarın gerçekten tuttuğunu panoda söylüyor; Render'da
+  ayar yoksa açılış günlüğü de "eksik" diyor.
+- Geliştirmede `x-test-ip` başlığı adresi seçiyor (çoklu hesap testi);
+  üretimde yok sayılıyor.
+
+`tools/uretim-korumalari-testi.mjs` üretim kipinde ölçüyor: başlığa göre
+ayrı kovalar, uydurma `x-test-ip`/`X-Forwarded-For`'un kovayı değiştirmemesi,
+eksik başlık uyarısının bir kez basılması ve günlükte adres olmaması.
+`VEKIL_SAYISI=1` elle sınandı: baştaki uydurma adresler kovayı değiştirmedi.
 
 ## 5. Diğerleri
 

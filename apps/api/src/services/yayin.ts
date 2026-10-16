@@ -18,10 +18,17 @@ import {
 import { prisma } from '../db.js';
 import { env } from '../env.js';
 import { izlemeAcikMi } from '../izleme.js';
+import { ipKaynagi } from '../istemciIp.js';
 
 const YEREL = /^https?:\/\/(localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])(:|\/|$)/i;
 
-export async function yayinKontrolu(): Promise<YayinBulgusu[]> {
+/**
+ * `istek`: panoyu açan yöneticinin isteğinde görülen (`istekIzi`).
+ * Açılışta ve komut satırında yok; IP kaynağı o zaman yalnız ayardan.
+ */
+export async function yayinKontrolu(
+  istek: { vekilIzi: boolean; baslikEksik: boolean } | null = null,
+): Promise<YayinBulgusu[]> {
   const yoneticiSayisi = await prisma.user.count({ where: { yonetici: true } });
   return yayinDenetimi({
     uretim: env.NODE_ENV === 'production',
@@ -44,6 +51,9 @@ export async function yayinKontrolu(): Promise<YayinBulgusu[]> {
       env.AUTH_RATE_LIMIT_MAX > HIZ_SINIRI_TAVANI.giris,
     logAyrintili: env.LOG_LEVEL === 'debug' || env.LOG_LEVEL === 'trace',
     resimSiniflandirici: env.RESIM_SINIFLANDIRICI === 'acik',
+    ipKaynagi: ipKaynagi(),
+    renderda: Boolean(env.RENDER_EXTERNAL_URL),
+    istek,
   });
 }
 

@@ -989,7 +989,7 @@
     "susturma_gecmis_sayisi": 10,
     "_susturma_gecmisi": "Yonetici kuyrukta bir lorda bakarken son bu kadar moderasyon kaydini gorur. Karar gecmise bakmadan verilemez: ilk kez mi, besinci kez mi ayni sey.",
     "coklu_hesap": {
-      "_aciklama": "Coklu hesap supheleri (docs/14 Coklu hesap). Ag izi YOK: gizlilik metni 'IP adresin veritabanina yazilmiyor' diyor. Yalniz oyunun zaten tuttugu davranis izleri: ittifak ici sevkiyat, takviye yuruyusu, ayni cift arasinda pazar islemi. Otomatik ceza YOK: arkadaslar da birbirine yardim eder; liste bir yoneticinin bakmasi icin.",
+      "_aciklama": "Coklu hesap supheleri (docs/14 Coklu hesap). Davranis izleri: ittifak ici sevkiyat, takviye yuruyusu, ayni cift arasinda pazar islemi. Ustune AG IZI: IP'nin gizli anahtarli ozeti (duz adres hic yazilmiyor), kisa sure tutuluyor. Ag tek basina kimseyi listeye sokmuyor -- ayni evde iki kardes olagan; yalniz aralarinda akis olan cifti agirlastiriyor. Otomatik ceza YOK: liste bir yoneticinin bakmasi icin.",
       "pencere_gun": 7,
       "sevkiyat_esigi": 30000,
       "_sevkiyat_esigi": "Bir lordun otekine pencere boyunca gonderdigi yukun altin karsiligi (yukAgirligi). Gunluk tavan 20000: esik en az iki gun tam tavan gondermek demek.",
@@ -1001,6 +1001,12 @@
       "_pazar_cift_esigi": "Ayni iki lord arasinda pencere boyunca esya pazari islemi. Pazar anonim ve eslesme kurayla; ayni ciftin tekrar tekrar bulusmasi kendiliginden olmaz.",
       "genc_hesap_gun": 3,
       "_genc_hesap_gun": "Besleyen hesap bundan gencse kartta not dusuluyor. Yeni acilip hemen kaynak akitan hesap, besleme hesabinin tipik izi.",
+      "ag_gun_esigi": 2,
+      "_ag_gun_esigi": "Iki lordun pencere icinde AYNI GUN ayni agdan girdigi gun sayisi. Tek gun rastlanti olabilir (kafe, otel); iki gun ayni ev demek.",
+      "kalabalik_ag_lord": 6,
+      "_kalabalik_ag_lord": "Pencere icinde bundan cok lordun girdigi ag KALABALIK sayiliyor ve yok sayiliyor: mobil operatorlerin ortak adresi (CGNAT), okul, yurt. Orada ayni adres ayni kisi demek degil.",
+      "ag_izi_saklama_gun": 14,
+      "_ag_izi_saklama_gun": "Ag izinin tutuldugu sure; worker eskisini siliyor. Pencere (7 gun) arti bir hafta: yonetici isaretli bir cifte bakana kadar iz dursun, daha fazlasi gerekmiyor.",
       "liste_boyu": 30
     }
   },

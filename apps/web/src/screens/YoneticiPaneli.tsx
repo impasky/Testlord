@@ -185,6 +185,11 @@ function CokluHesap({ onSec }: { onSec: (lordId: string) => void }) {
                   {b.isaretler.includes('pazar') && (
                     <Rozet renk="var(--color-turuncu)">{`Pazarda ${b.pazar} işlem`}</Rozet>
                   )}
+                  {b.isaretler.includes('ag') && (
+                    <span data-coklu-ag={b.agGun}>
+                      <Rozet renk="var(--color-kirmizi)">{`Aynı ağ · ${b.agGun} gün`}</Rozet>
+                    </span>
+                  )}
                 </div>
                 <p className="mt-1 text-[11px] text-sonuk">
                   {`${b.besleyen.ad}: ${b.besleyen.hesapYasiGun} günlük, Sv ${b.besleyen.seviye}`}
@@ -195,7 +200,7 @@ function CokluHesap({ onSec }: { onSec: (lordId: string) => void }) {
             ))
           )}
           <p className="pt-1 text-[11px] leading-snug text-sonuk">
-            {`Son ${d.pencereGun} gün. Yalnız oyunun kendi izleri: sevkiyat, takviye, pazar — ağ adresi tutulmuyor. Otomatik ceza yok; arkadaşlar da birbirine yardım eder. İki dosyaya da bakıp karar ver.`}
+            {`Son ${d.pencereGun} gün. Önce oyunun kendi izleri: sevkiyat, takviye, pazar. "Aynı ağ" yalnız aralarında akış olan çiftte çıkar; adresin kendisi değil anahtarlı özeti tutuluyor ve kalabalık ağlar (mobil operatör, yurt) sayılmıyor. Aynı ev aynı kişi değildir. Otomatik ceza yok; iki dosyaya da bakıp karar ver.`}
           </p>
         </div>
       )}

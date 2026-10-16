@@ -20,6 +20,8 @@ karşılığıdır.
 | `SEED_DEMO_LORDS`           | hayır      | false                | İlk açılışta 6 rakip lord ekler                                                                                        |
 | `RATE_LIMIT_MAX`            | hayır      | 300                  | Oturum başına dakikalık istek tavanı                                                                                   |
 | `AUTH_RATE_LIMIT_MAX`       | hayır      | 60                   | Kayıt/giriş için IP başına dakikalık tavan                                                                             |
+| `ISTEMCI_IP_BASLIGI`        | vekil ise  | boş                  | İstemcinin IP'sini yazan, istemcinin ezemediği vekil başlığı. **Render'da `cf-connecting-ip`** (render.yaml'da ayarlı) |
+| `VEKIL_SAYISI`              | hayır      | 0                    | Kendi Caddy/nginx'in için X-Forwarded-For'da güvenilen adım sayısı (genelde 1). İkisi de yoksa adres bağlantıdan       |
 | `DB_HAVUZU`                 | hayır      | 10                   | Veritabanı bağlantı havuzu. `DATABASE_URL` kendi `connection_limit`ini taşıyorsa o geçerli (§8)                        |
 | `SENTRY_DSN`                | hayır      | boş                  | Boşsa hata izleme kapalıdır, dışarıya hiçbir şey gitmez                                                                |
 | `SENTRY_TRACES_SAMPLE_RATE` | hayır      | 0.05                 | İzleme örneklemesi. Ücretsiz katmanda kota var                                                                         |
@@ -46,8 +48,25 @@ Sentry istemciyi yine kuruyor ama hiçbir şey göndermiyor. Artık DSN'in
 Render hem sunucuyu hem PostgreSQL'i kurar.
 
 **Tek servis:** API hem oyunu hem arayüzü sunar ve worker'ı kendi içinde
-çalıştırır. Ücretsiz katmanda ayrı worker süreci yok; ayrıca tek origin
-olduğu için CORS hiç devreye girmiyor.
+çalıştırır. Tek origin olduğu için CORS hiç devreye girmiyor; ayrı bir
+worker servisi ikinci bir ücret demek ve gerekmiyor.
+
+**Planlar — render.yaml'da hazır:**
+
+| Ne         | Plan        | Kaynak        | Aylık (Render fiyat sayfası) | Neden                                                                                |
+| ---------- | ----------- | ------------- | ---------------------------- | ------------------------------------------------------------------------------------ |
+| Sunucu     | `standard`  | 1 CPU, 2 GB   | 25 $                         | Uyumuyor; ~250 aktif oyuncu (§8). Bellek 300–430 MB + resim sınıflandırıcısı ~100 MB |
+| PostgreSQL | `basic-1gb` | 0,5 CPU, 1 GB | 19 $ + disk                  | Kalıcı. Disk 5 GB — büyütülebilir, küçültülemez                                      |
+
+Ücretsiz katman yayın için uygun değil: ücretsiz sunucu 15 dakika istek
+gelmezse uyuyor ve içindeki worker da duruyor (yürüyüşler oyuncu dönene
+kadar çözülmüyor, bildirim gitmiyor); ücretsiz PostgreSQL 30 günde süresi
+doluyor ve 14 gün sonra verisiyle birlikte siliniyor. `starter` (0,5 CPU,
+512 MB) ölçülen belleğe dar. **500 aktif** oyuncuya gelince sunucuyu `pro`
+(2 CPU, 4 GB), veritabanını `basic-4gb` yap; kod değişmiyor. Fiyatlar ve
+çalışma alanı ücreti Render'da değişebiliyor — paneldeki tutar geçerli.
+render.yaml'ı eşitlemek (Blueprint → Sync) planı değiştirir ve ücreti
+başlatır; o adımı panelden sen atıyorsun.
 
 **Bilinmesi gerekenler:**
 
@@ -55,12 +74,14 @@ olduğu için CORS hiç devreye girmiyor.
   (`dpg-xxxxx-a`) yalnızca aynı bölgedeki servislerden çözülür. Farklı
   bölgede kalırsa Prisma `P1001` verir. `render.yaml`'da ikisi de
   `frankfurt`.
-- **Ücretsiz servis uyur.** Bir süre istek gelmezse durur, ilk açılış 30–60
-  saniye sürer. Hata değil, katmanın davranışı.
-- **Ücretsiz veritabanının ömrü sınırlıdır.** Render ücretsiz PostgreSQL'i
-  belli bir süre sonra siler. Gerçek oyuncu almadan önce ücretli katmana
-  geç ya da yedeği başka yerde tut (bkz. bölüm 4).
-- **Ücretsiz katmanda cron yok.** Yedekleme zamanlaması dışarıdan yapılmalı.
+- **İstemcinin IP'si `cf-connecting-ip`den.** Render'da istek vekilden
+  geçiyor; ayar olmadan kayıt/giriş sınırı bütün oyunculara tek kova olur
+  (docs/18). render.yaml'da ayarlı; yönetici panosundaki yayın kontrolü
+  senin isteğinle doğruluyor.
+- **Blueprint'te `value` olan değişken paneldekini ezer.** `SEED_DEMO_LORDS`
+  burada `false`; panelden değiştirirsen bir sonraki eşitlemede geri döner.
+- **Yedek:** ücretli PostgreSQL'in kendi geri dönüş noktaları var ama
+  depodaki betikle (bölüm 4) ayrıca başka bir yerde de tut.
 
 ---
 
@@ -298,11 +319,13 @@ saldırı yolda kalmıyor. Bu kasten aşırı bir an; oyuncu eşiğine (1 sn)
 tabi değil. Bellek dalgadan sonra kendiliğinden ~300 MB'a iniyor — sızıntı
 yok, yük altında büyüyen yığın.
 
-**Öneri.** Aynı anda **500** aktif oyuncu için **2 CPU, 1 GB** bellekli bir
-sunucu. **1 CPU** ~250 aktif oyuncuyu rahat taşıyor. Render'ın ücretsiz
-planı (0,1 CPU, 512 MB) ölçülmedi; doğrusal tahminle ~25 aktif oyuncu —
-deneme için yeter, yayın için değil. "Aktif" = o an uygulamayı açık tutan;
-kayıtlı oyuncu sayısı bunun birkaç katı olabilir.
+**Öneri ve seçilen.** Aynı anda **500** aktif oyuncu için **2 CPU, 1 GB**
+bellekli bir sunucu. **1 CPU** ~250 aktif oyuncuyu rahat taşıyor — yayın
+için seçilen bu (Render `standard`, §2). Ücretsiz plan (0,1 CPU, 512 MB)
+ölçülmedi; doğrusal tahminle ~25 aktif oyuncu ve üstelik uyuyor — yalnız
+deneme için. "Aktif" = o an uygulamayı açık tutan; kayıtlı oyuncu sayısı
+bunun birkaç katı olabilir. Yükseltme zamanı yönetici ölçüm panosundan
+(§7) okunuyor: günlük aktif ~2.000'i geçince `pro`ya bak.
 
 İşin çoğu JS'te değil sorgu motorunda: CPU profilinde JS iş parçacığı
 zamanın %79'unda boştu, uç başına ~20 SQL ifadesi var (`/me` 23, `/map`

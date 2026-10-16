@@ -198,21 +198,51 @@ taşıyor) son 7 günde üç izden birini taşıyan lord çiftlerini listeliyor:
 | Sevkiyat | Bir lord ötekine ≥ 30.000 (altın karşılığı) gönderdi ve karşı yön bunun %20'si altında — iki gün tam günlük tavan                   |
 | Takviye  | Aynı lordun bölgelerine ≥ 3 takviye yürüyüşü                                                                                        |
 | Pazar    | Aynı iki lord arasında ≥ 3 eşya pazarı işlemi (pazar anonim ve kurayla eşleşiyor; aynı çiftin tekrar buluşması kendiliğinden olmaz) |
+| Ağ       | Aralarında herhangi bir akış olan iki lord, pencerede ≥ 2 AYRI gün aynı ağdan girdi (aşağıya bak)                                   |
 
 Kartta besleyen → alan, iki lordun adı (dokununca dosyası açılıyor),
 izlerin büyüklüğü ve besleyen hesap yeniyse (3 günden genç) bir not.
 Eşikler `balance.json` → `moderasyon.coklu_hesap`.
 
-İki ilke:
+Üç ilke:
 
-- **Ağ izi yok.** Gizlilik metni "IP adresin veritabanına yazılmıyor"
-  diyor ve bu söz duruyor. Aynı ağdan açılan hesapları görmek, o
-  metni değiştirip IP'nin (en azından özetinin) tutulmasını
-  gerektirirdi — bu bir ürün ve hukuk kararı, bir kod kararı değil.
+- **Önce davranış.** Sevkiyat, takviye, pazar: oyunun zaten tuttuğu izler.
+- **Ağ yalnız ağırlaştırır.** İlk sürümde ağ izi hiç yoktu ve en güçlü
+  işaret eksikti: besleme hesabı çoğu zaman aynı evden açılıyor. Ama
+  aynı ev aynı kişi değil (iki kardeş, bir yurt), o yüzden ağ tek
+  başına kimseyi listeye SOKMUYOR — yalnız aralarında akış olan çifte
+  "Aynı ağ · N gün" işareti ekliyor. Eşiğin altında kalan küçük bir
+  besleme böylece görünür oluyor; ortak ağı olup birbirine hiçbir şey
+  göndermeyen iki lord görünmüyor.
 - **Otomatik ceza yok.** Arkadaşlar da birbirine yardım eder; güçlü
   olanın zayıfı kaldırması tamamen meşru olabilir. Karşılıklı yardım
   (karşı yön %20'yi geçiyorsa) listeye hiç girmiyor. Liste bir insanın
   bakması için; karar iki dosyaya bakıp yöneticinin.
+
+### Ağ izi — nasıl tutuluyor
+
+- **Düz adres hiçbir yere yazılmıyor.** `/me` her açılışta lordun o gün
+  girdiği ağın özetini `AgIzi` tablosuna yazıyor (lord, özet, gün).
+  Özet HMAC-SHA256, anahtarı `JWT_SECRET`ten alan ayrımıyla türetiliyor
+  (`services/agIzi.ts`); anahtar olmadan dört milyar IPv4'ü denemek işe
+  yaramıyor. İstek günlüğünden de adres çıkarıldı (index.ts).
+- **"Ağ" ne demek:** IPv4'te adresin tamamı (evdeki cihazlar dışarıya tek
+  adresle çıkıyor), IPv6'da ilk 64 bit (cihazların adresi değişiyor,
+  evin öneki değişmiyor). `services/ag.ts`.
+- **Kalabalık ağ yok sayılıyor.** Pencerede 6'dan çok lordun girdiği ağ
+  mobil operatörün ortak adresi (CGNAT), okul ya da yurt: orada aynı
+  adres aynı kişi demek değil.
+- **Kısa ömür.** 14 günden eski iz worker'da saatte bir siliniyor; hesap
+  silinince izleri de gidiyor. Pencere 7 gün; bir hafta pay, yöneticinin
+  işaretli bir çifte bakabilmesi için.
+- **Tek okuyucu.** Yalnız bu liste; panoya ne adres ne özet çıkıyor,
+  yalnız ortak gün sayısı.
+- **Adresin doğru okunması** şart: vekil arkasında yanlış ayarla herkes
+  aynı ağda görünür ve kalabalık sayılıp sessizce elenir (docs/18,
+  `ISTEMCI_IP_BASLIGI`). Yönetici panosundaki yayın kontrolü bunu
+  yöneticinin kendi isteğiyle ölçüyor.
+- Gizlilik metni (Aydınlatma Metni → "Ne topluyoruz", "Ne kadar süre")
+  buna göre yazıldı; saklama süresi metne `balance.json`'dan geliyor.
 
 Takviyenin gittiği lord, bölgenin ŞİMDİKİ sahibinden okunuyor
 (yürüyüş anındaki sahip saklanmıyor); arada el değiştiren bölge yanlış
@@ -221,7 +251,12 @@ Takviyenin gittiği lord, bölgenin ŞİMDİKİ sahibinden okunuyor
 Kod: `packages/shared/src/cokluHesap.ts` (saf kural, birim testi
 yanında), `routes/yonetici.ts` (`/yonetici/coklu-hesap`).
 `tools/yonetici-testi.mjs` iki günlük tek yönlü beslemeyi kurup bağın
-listede, besleyenin doğru tarafta ve "yeni" notuyla göründüğünü ölçüyor.
+listede, besleyenin doğru tarafta ve "yeni" notuyla göründüğünü ölçüyor;
+ağ için aynı IPv6 evinden iki lordun küçük akışının yalnız ağ işaretiyle
+girdiğini, akışsız komşuların girmediğini, panoya adres ya da özet
+çıkmadığını ve süresi dolan izin silindiğini. Kalabalık ağ ve aynı gün
+kuralı birim testinde (`cokluHesap.test.ts`), adres seçimi ve özet
+`services/ag.test.ts`te.
 
 ---
 

@@ -310,6 +310,30 @@ export function atlanirMi(node) {
     p.expression.expression.getText() === 'console'
   )
     return true;
+  /*
+   * Fastify'ın günlüğü de aynı: `req.log.warn('…')`, `app.log.error(…)`.
+   * İleti `+` ile parçalara bölünmüş olabilir; zincirin başından bakılıyor.
+   */
+  {
+    let n = node;
+    while (
+      n.parent &&
+      (ts.isParenthesizedExpression(n.parent) ||
+        (ts.isBinaryExpression(n.parent) &&
+          n.parent.operatorToken.kind === ts.SyntaxKind.PlusToken))
+    )
+      n = n.parent;
+    const c = n.parent;
+    if (
+      c &&
+      ts.isCallExpression(c) &&
+      c.arguments.includes(n) &&
+      ts.isPropertyAccessExpression(c.expression) &&
+      /^(fatal|error|warn|info|debug|trace)$/.test(c.expression.name.getText()) &&
+      /(^|\.)log$/.test(c.expression.expression.getText())
+    )
+      return true;
+  }
 
   // Ayar ya da protokol taşıyan nesne özelliği: `timeWindow: '1 minute'`.
   if (ts.isPropertyAssignment(p) && p.initializer === node) {

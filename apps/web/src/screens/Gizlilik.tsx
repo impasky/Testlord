@@ -19,6 +19,7 @@
  * BU BİR HUKUKİ GÖRÜŞ DEĞİL. Metin toplanan veriyi dürüstçe anlatıyor;
  * yayına almadan önce bir hukukçuya okutulmalı.
  */
+import { COKLU_HESAP } from '@lordlar/shared';
 import { Buton, Kart, sablonlu } from '../components/ui';
 import { DestekSatiri } from '../components/DestekSatiri';
 import { TamZemin } from '../components/Zemin';
@@ -69,10 +70,16 @@ export function Gizlilik({ onKapat }: { onKapat: () => void }) {
               bakıyor. Reddedilen resim saklanmıyor.
             </p>
             <p>
-              <strong className="text-parsomen">Son giriş anın ve son gördüğün ekran.</strong> İki
-              iş için: sen yokken ne olduğunu özetlemek, ve oyuncuların oyunu nerede bıraktığını
-              toplam olarak görmek. İkincisinde kimin hangi ekranda olduğu değil, yalnızca sayılar
-              okunuyor.
+              <strong className="text-parsomen">
+                Son giriş anın, son gördüğün ekran ve oyunu açtığın günler.
+              </strong>{' '}
+              Sen yokken ne olduğunu özetlemek ve oyuncuların oyunu nerede bıraktığını, kaç kişinin
+              ertesi gün döndüğünü toplam olarak görmek için. Kimin hangi ekranda olduğu değil,
+              yalnızca sayılar okunuyor.
+            </p>
+            <p>
+              <strong className="text-parsomen">Ağının anahtarlı özeti — kısa süreliğine.</strong>{' '}
+              {`Bir oyuncunun ikinci hesap açıp kendini beslemesini görebilmek için oyuna girdiğin ağın geri çevrilemez bir özeti (gizli anahtarlı HMAC) ${COKLU_HESAP.agIziSaklamaGun} gün tutuluyor, sonra kendiliğinden siliniyor. Adresin kendisi değil: özetten adres geri çıkarılamıyor. Özeti yalnız yöneticinin çoklu hesap listesi okuyor ve tek başına hiçbir yaptırıma yol açmıyor — aynı evden oynamak serbest.`}
             </p>
           </Madde>
 
@@ -90,8 +97,9 @@ export function Gizlilik({ onKapat }: { onKapat: () => void }) {
               sen seçiyorsun ve gerçek adın olmak zorunda değil.
             </p>
             <p>
-              IP adresin veritabanına yazılmıyor. Yalnızca kayıt ve giriş denemelerini sınırlamak
-              için, istek anında ve geçici olarak kullanılıyor.
+              IP adresinin kendisi hiçbir yere yazılmıyor — ne veritabanına ne sunucu günlüğüne.
+              Kayıt ve giriş denemelerini sınırlamak için yalnızca istek anında kullanılıyor.
+              Yukarıdaki özet adres değil, ondan geri dönülemeyen bir iz.
             </p>
           </Madde>
 
@@ -133,8 +141,7 @@ export function Gizlilik({ onKapat }: { onKapat: () => void }) {
 
           <Madde baslik="Ne kadar süre">
             <p>
-              Hesabın açık kaldığı sürece. Hesabını silersen lordun, ordun, ekipmanın, sohbet
-              mesajların, yüklediğin resimler ve bildirim aboneliğin birlikte silinir.
+              {`Hesabın açık kaldığı sürece; ağ özeti en fazla ${COKLU_HESAP.agIziSaklamaGun} gün. Hesabını silersen lordun, ordun, ekipmanın, sohbet mesajların, yüklediğin resimler, ağ özetlerin ve bildirim aboneliğin birlikte silinir.`}
             </p>
           </Madde>
 

@@ -50,6 +50,7 @@ import {
   yayinOzeti,
   yukAgirligi,
   cokluHesapBaglari,
+  gunNumarasi,
 } from '@lordlar/shared';
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
@@ -59,6 +60,7 @@ import { GameError } from '../errors.js';
 import { requireYonetici } from '../services/moderasyon.js';
 import { olcumPanosu } from '../services/olcumPanosu.js';
 import { yayinKontrolu } from '../services/yayin.js';
+import { istekIzi } from '../istemciIp.js';
 
 /** `yunus@site.com` -> `yun***@site.com`. Eşleştirmeye yeter, kimliğe yetmez. */
 function maskeli(eposta: string): string {
@@ -88,8 +90,10 @@ export async function yoneticiRoutes(app: FastifyInstance): Promise<void> {
    * sebep kodu dönüyor — hiçbir ayarın değeri yok; açıklamaları arayüz
    * shared `YAYIN_METNI`nden yazıyor (çevrilebilsin diye).
    */
-  app.get('/yonetici/yayin-kontrolu', koruma, async () => {
-    const bulgular = await yayinKontrolu();
+  app.get('/yonetici/yayin-kontrolu', koruma, async (req) => {
+    // Yöneticinin kendi isteği, IP ayarının gerçekten tutup tutmadığını
+    // gösteren tek kanıt: açılışta istek yok.
+    const bulgular = await yayinKontrolu(istekIzi(req));
     return { bulgular, ...yayinOzeti(bulgular) };
   });
 
@@ -130,7 +134,37 @@ export async function yoneticiRoutes(app: FastifyInstance): Promise<void> {
     });
     const sahibi = new Map(bolgeler.map((b) => [b.id, b.ownerLordId]));
 
+    /*
+     * Ağ izi: önce etkileşimi olan lordların ağları, sonra o ağlara
+     * pencerede giren HERKES — "kalabalık ağ" kararı (mobil operatörün
+     * ortak adresi) ağdaki toplam lord sayısına bakıyor. Etkileşimsiz
+     * çift zaten değerlendirilmiyor (shared cokluHesap.ts).
+     */
+    const ilgili = [
+      ...new Set([
+        ...sevkiyatlar.flatMap((s) => [s.fromLordId, s.toLordId]),
+        ...takviyeler.map((t) => t.lordId),
+        ...islemler.flatMap((i) => [i.saticiId, i.aliciId]),
+        ...[...sahibi.values()].filter((x): x is string => Boolean(x)),
+      ]),
+    ];
+    const ilkGun = gunNumarasi(pencere);
+    const agTablosu = ilgili.length
+      ? await prisma.agIzi.findMany({
+          where: { lordId: { in: ilgili }, gun: { gte: ilkGun } },
+          select: { ozet: true },
+          distinct: ['ozet'],
+        })
+      : [];
+    const agIzleri = agTablosu.length
+      ? await prisma.agIzi.findMany({
+          where: { ozet: { in: agTablosu.map((a) => a.ozet) }, gun: { gte: ilkGun } },
+          select: { lordId: true, ozet: true, gun: true },
+        })
+      : [];
+
     const baglar = cokluHesapBaglari({
+      agIzleri,
       sevkiyatlar: sevkiyatlar.map((s) => ({
         from: s.fromLordId,
         to: s.toLordId,

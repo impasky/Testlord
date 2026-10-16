@@ -98,7 +98,7 @@ export function SeferKart() {
               )}
             </>
           ) : (
-            <p className="mt-2 text-[12px] text-sonuk">{`${sefer.hedef - sefer.simdi} ${sefer.birim} daha.`}</p>
+            <p className="mt-2 text-[12px] text-sonuk">{`Hedefe ${sefer.hedef - sefer.simdi} kaldı.`}</p>
           )}
         </div>
       </Kart>

@@ -5,7 +5,7 @@
  * gözünü kör eder, beslemeyi kaçırmak listeyi anlamsız kılar.
  */
 import { describe, expect, it } from 'vitest';
-import { COKLU_HESAP, cokluHesapBaglari } from './cokluHesap.js';
+import { COKLU_HESAP, cokluHesapBaglari, ortakAgGunleri } from './cokluHesap.js';
 
 const bos = { sevkiyatlar: [], takviyeler: [], pazar: [] };
 const E = COKLU_HESAP.sevkiyatEsigi;
@@ -80,5 +80,60 @@ describe('çoklu hesap bağları', () => {
         pazar: [{ satici: 'a', alici: 'a' }],
       }),
     ).toEqual([]);
+  });
+
+  /* --- Ağ izi --------------------------------------------------- */
+
+  const gunlerde = (lordlar: string[], ozet: string, gunler: number[]) =>
+    lordlar.flatMap((lordId) => gunler.map((gun) => ({ lordId, ozet, gun })));
+
+  it('ağ tek başına listeye sokmuyor: aynı evde iki kardeş olağan', () => {
+    const b = cokluHesapBaglari({ ...bos, agIzleri: gunlerde(['a', 'b'], 'ev', [1, 2, 3]) });
+    expect(b).toEqual([]);
+  });
+
+  it('aralarında akış olan çifte ağ işareti ekleniyor ve öne çıkıyor', () => {
+    const kucuk = { from: 'alt', to: 'ana', agirlik: E / 10 }; // eşiğin altında
+    const b = cokluHesapBaglari({
+      ...bos,
+      sevkiyatlar: [kucuk, { from: 'x', to: 'y', agirlik: E }],
+      agIzleri: gunlerde(['alt', 'ana'], 'ev', [1, 2]),
+    });
+    expect(b.map((x) => [x.besleyen, x.isaretler])).toEqual([
+      ['x', ['sevkiyat']],
+      ['alt', ['ag']],
+    ]);
+    expect(b[1]!.agGun).toBe(2);
+    // İki işaretli, tek işaretliden önce.
+    const iki = cokluHesapBaglari({
+      ...bos,
+      sevkiyatlar: [
+        { from: 'alt', to: 'ana', agirlik: E },
+        { from: 'x', to: 'y', agirlik: E * 3 },
+      ],
+      agIzleri: gunlerde(['alt', 'ana'], 'ev', [1, 2]),
+    });
+    expect(iki[0]!.isaretler).toEqual(['sevkiyat', 'ag']);
+  });
+
+  it('ortak gün AYNI gün sayılıyor; tek gün eşiğin altında', () => {
+    const farkliGun = [
+      { lordId: 'a', ozet: 'ev', gun: 1 },
+      { lordId: 'b', ozet: 'ev', gun: 2 },
+    ];
+    expect(ortakAgGunleri(farkliGun).size).toBe(0);
+    const b = cokluHesapBaglari({
+      ...bos,
+      sevkiyatlar: [{ from: 'a', to: 'b', agirlik: 1 }],
+      agIzleri: gunlerde(['a', 'b'], 'ev', [1]),
+    });
+    expect(b).toEqual([]);
+  });
+
+  it('kalabalık ağ (mobil operatör, yurt) yok sayılıyor', () => {
+    const cok = Array.from({ length: COKLU_HESAP.kalabalikAgLord + 1 }, (_, i) => `l${i}`);
+    expect(ortakAgGunleri(gunlerde(cok, 'cgnat', [1, 2])).size).toBe(0);
+    const sinirda = cok.slice(0, COKLU_HESAP.kalabalikAgLord);
+    expect(ortakAgGunleri(gunlerde(sinirda, 'ev', [1, 2])).get('l0|l1')).toBe(2);
   });
 });

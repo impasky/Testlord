@@ -4,7 +4,7 @@
  * iken bağlar. Oyuncuya avantaj sağlayan hiçbir şey yapmaz, sadece bekleme
  * sürelerini atlar; testlerin dakikalarca beklememesi için.
  */
-import { WORLD_MAP, jetonBitisi } from '@lordlar/shared';
+import { WORLD_MAP, gunNumarasi, jetonBitisi } from '@lordlar/shared';
 import { createHash, randomBytes } from 'node:crypto';
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
@@ -22,6 +22,7 @@ import { sevkiyatCoz } from '../services/ticaret.js';
 import { npcTuru, npcYap, npcYapVeOynat } from '../services/npc.js';
 import { kuyruklariCek, tabanlariGuncelle } from '../services/esyaPazari.js';
 import { testTahminiKoy } from '../services/resimDenetimi.js';
+import { eskiAgIzleriniSil } from '../services/agIzi.js';
 
 export async function devRoutes(app: FastifyInstance): Promise<void> {
   /** Bekleyen tüm kuyrukları hemen bitirir. */
@@ -351,6 +352,27 @@ export async function devRoutes(app: FastifyInstance): Promise<void> {
    * bugünün gönderimlerini sayıyor; çoklu hesap penceresi ise bir haftayı
    * (docs/14 "Çoklu hesap"). Test iki günlük beslemeyi beklemeden kurabilsin diye.
    */
+  /**
+   * Çağıranın BUGÜNKÜ ağ izlerini `gun` gün öncesine kopyalar — sanki o
+   * gün de aynı ağdan girmiş gibi. Ağ işareti iki AYRI gün istiyor
+   * (docs/14); test iki gün bekleyemez. Taşımak değil kopyalamak: bugünkü
+   * iz süreç belleğinde "görüldü" diye işaretli, yeniden yazılmazdı.
+   */
+  app.post('/test/ag-izi-gecmise', { preHandler: requireAuth }, async (req) => {
+    const { gun } = z.object({ gun: z.coerce.number().int().min(1).max(60) }).parse(req.body);
+    const lordId = await findLordByUser(req.user.userId);
+    const bugun = gunNumarasi(new Date());
+    const izler = await prisma.agIzi.findMany({ where: { lordId, gun: bugun } });
+    const { count } = await prisma.agIzi.createMany({
+      data: izler.map((i) => ({ ...i, gun: bugun - gun })),
+      skipDuplicates: true,
+    });
+    return { kopya: count };
+  });
+
+  /** Worker'ın saatlik ağ izi temizliğini HEMEN koşturur. */
+  app.post('/test/ag-izi-temizle', async () => ({ silinen: await eskiAgIzleriniSil() }));
+
   app.post('/test/sevkiyatlari-eskit', { preHandler: requireAuth }, async (req) => {
     const { gun } = z.object({ gun: z.coerce.number().int().min(1).max(30) }).parse(req.body);
     const lordId = await findLordByUser(req.user.userId);

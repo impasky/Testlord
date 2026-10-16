@@ -90,6 +90,10 @@ const { surec, oku } = sunucuBaslat({
   RUN_WORKER: 'false',
   AUTO_MIGRATE: 'false',
   SEED_DEMO_LORDS: 'false',
+  // İstemci adresi vekilin başlığından (Render'daki ayar); tavan küçük ki
+  // kova ayrımı birkaç istekle ölçülebilsin.
+  ISTEMCI_IP_BASLIGI: 'cf-connecting-ip',
+  AUTH_RATE_LIMIT_MAX: '3',
 });
 
 try {
@@ -159,7 +163,7 @@ try {
     const ad = `koruma${Date.now().toString(36)}`;
     const kayit = await fetch(`http://127.0.0.1:${PORT}/api/auth/register`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'cf-connecting-ip': '198.51.100.50' },
       body: JSON.stringify({
         email: `${ad}@lordlar.dev`,
         password: 'parola1234',
@@ -196,6 +200,61 @@ try {
         `${gercek?.etkinlik?.bas} / ${kaydirilmis?.etkinlik?.bas}`,
       );
     }
+
+    /*
+     * İSTEMCİ ADRESİ (istemciIp.ts). Giriş sınırı vekilin yazdığı başlığa
+     * göre kova ayırmalı; istemcinin uydurabileceği iki başlık — test
+     * başlığı ve X-Forwarded-For'un başı — kovayı değiştirmemeli.
+     */
+    {
+      const giris = (basliklar) =>
+        fetch(`http://127.0.0.1:${PORT}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...basliklar },
+          body: JSON.stringify({
+            email: `yok${Math.random().toString(36).slice(2)}@lordlar.dev`,
+            password: 'yanlisparola',
+          }),
+        }).then((r) => r.status);
+      const A = { 'cf-connecting-ip': '203.0.113.10' };
+      const ilkUc = [await giris(A), await giris(A), await giris(A)];
+      const dorduncu = await giris(A);
+      k(
+        'giriş sınırı vekilin başlığına göre: tavanda 429',
+        ilkUc.every((d) => d !== 429) && dorduncu === 429,
+        `${ilkUc.join(',')} → ${dorduncu}`,
+      );
+      const baskasi = await giris({ 'cf-connecting-ip': '203.0.113.11' });
+      k('başka adres ayrı kova', baskasi !== 429, `${baskasi}`);
+      const uydurma = await giris({
+        ...A,
+        'x-test-ip': '203.0.113.12',
+        'x-forwarded-for': '203.0.113.13',
+      });
+      k(
+        'üretimde test başlığı ve X-Forwarded-For kovayı değiştirmiyor',
+        uydurma === 429,
+        `${uydurma}`,
+      );
+      // Başlık eksik + vekil izi: ayar hatası, günlüğe bir kez.
+      await giris({ 'x-forwarded-for': '203.0.113.14' });
+      await giris({ 'x-forwarded-for': '203.0.113.15' });
+      const uyari = (
+        oku().match(/ISTEMCI_IP_BASLIGI=cf-connecting-ip ayarlı ama istekte yok/g) ?? []
+      ).length;
+      k(
+        'başlık eksikse günlüğe bir kez yazılıyor (sağlık denetimi susuyor)',
+        uyari === 1,
+        `${uyari}`,
+      );
+    }
+
+    // Günlük IP taşımıyor: gizlilik metni "yalnız istek anında" diyor.
+    k(
+      'üretim günlüğünde istemci adresi yok',
+      !/remoteAddress|203\.0\.113\.|198\.51\.100\./.test(oku()),
+      /incoming request/.test(oku()) ? 'istek satırları var, adres yok' : 'istek satırı yok',
+    );
   }
 } finally {
   surec.kill('SIGTERM');

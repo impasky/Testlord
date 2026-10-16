@@ -387,6 +387,7 @@ model Lord {
   genelMesajlar       GenelMesaj[]
   profilResimleri     ProfilResmi[]
   aktifGunler         GunlukAktiflik[]
+  agIzleri            AgIzi[]
 
   /// Profil resmi: "hazir:<portre>" | "yuklenen:<ProfilResmi.id>" | null
   /// (arma). Çözümü shared `profilResmiCoz`. YALNIZ onaylı yüklenen resim
@@ -1267,4 +1268,24 @@ model GunlukAktiflik {
 
   @@id([gun, lordId])
   @@index([lordId])
+}
+
+/// Ağ izi: lordun o gün girdiği ağın GİZLİ ANAHTARLI ÖZETİ (docs/14 Çoklu hesap).
+///
+/// Düz IP hiçbir yere yazılmıyor. Özet HMAC-SHA256 (anahtar sunucunun
+/// imzasından türüyor), IPv4'te adresin, IPv6'da evin ilk 64 bitinin;
+/// anahtar olmadan geri çevrilemiyor (services/ag.ts). Yalnız yöneticinin
+/// çoklu hesap listesi okuyor ve orada da ağ tek başına kimseyi
+/// işaretlemiyor. `ag_izi_saklama_gun`den eski satırı worker siliyor;
+/// hesap silinince satırlar da gidiyor.
+model AgIzi {
+  lordId String
+  ozet   String
+  gun    Int
+
+  lord Lord @relation(fields: [lordId], references: [id], onDelete: Cascade)
+
+  @@id([lordId, ozet, gun])
+  @@index([ozet, gun])
+  @@index([gun])
 }

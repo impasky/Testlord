@@ -25,6 +25,8 @@ import { findLordByUser, tickLord } from '../services/lord.js';
 import { lordIslemi } from '../services/kilit.js';
 import { gecikmisleriKapat } from '../services/gecikmis.js';
 import { aktiflikYaz } from '../services/olcumPanosu.js';
+import { agIziYaz } from '../services/agIzi.js';
+import { istemciIp } from '../istemciIp.js';
 
 /**
  * Savunma düzeni gövdesi. Taktiğin koşulu burada denetlenmiyor —
@@ -159,6 +161,11 @@ export async function meRoutes(app: FastifyInstance): Promise<void> {
     // Günün ilk açılışı: ölçüm panosunun günlük aktif sayısı (docs/05).
     // Son görülme aynı günse yazacak bir şey yok — `/me` sık çağrılıyor.
     if (gunNumarasi(lastSeenAt) !== gunNumarasi(simdi)) await aktiflikYaz(lordId, simdi);
+    // Ağ izi (çoklu hesap, docs/14): adresin anahtarlı özeti, düz adres
+    // değil. Yazılamazsa oyuncunun ekranı bundan düşmesin.
+    await agIziYaz(lordId, istemciIp(req), simdi).catch((e: unknown) =>
+      req.log.warn({ err: e }, 'ağ izi yazılamadı'),
+    );
 
     return { lord: state, queues, events, yokluk, serverTime: new Date().toISOString() };
   });

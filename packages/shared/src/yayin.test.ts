@@ -27,6 +27,9 @@ const HAZIR: YayinGirdisi = {
   hizSiniriYuksek: false,
   logAyrintili: false,
   resimSiniflandirici: true,
+  ipKaynagi: 'baslik',
+  renderda: true,
+  istek: { vekilIzi: true, baslikEksik: false },
 };
 
 const neden = (g: Partial<YayinGirdisi>) =>
@@ -91,6 +94,32 @@ describe('yayın kontrolü', () => {
       }),
     );
     expect(o).toEqual({ eksik: 0, uyari: 5 });
+  });
+
+  it('istemci adresi: vekil arkasında bağlantıdan okumak eksik, kanıt yöneticinin isteği', () => {
+    const ip = (g: Partial<YayinGirdisi>) =>
+      yayinDenetimi({ ...HAZIR, ...g }).find((b) => b.ad.match(/ISTEMCI_IP|VEKIL/))!;
+    // Render'da ayar yoksa istek olmasa da kesin: orada her istek vekilden.
+    expect(ip({ ipKaynagi: 'baglanti', istek: null })).toMatchObject({
+      durum: 'eksik',
+      neden: 'ip-vekil-arkasi',
+    });
+    // Başka bir yerde: açılışta bilinmiyor (uyarı), isteğe vekil izi düşünce kesin.
+    expect(ip({ ipKaynagi: 'baglanti', renderda: false, istek: null }).neden).toBe('ip-bilinmiyor');
+    expect(
+      ip({ ipKaynagi: 'baglanti', renderda: false, istek: { vekilIzi: true, baslikEksik: false } })
+        .neden,
+    ).toBe('ip-vekil-arkasi');
+    expect(
+      ip({ ipKaynagi: 'baglanti', renderda: false, istek: { vekilIzi: false, baslikEksik: false } })
+        .durum,
+    ).toBe('tamam');
+    // Başlık ayarlı ama istekte yok: ad yanlış ya da vekil değişmiş.
+    expect(ip({ istek: { vekilIzi: true, baslikEksik: true } })).toMatchObject({
+      durum: 'eksik',
+      neden: 'ip-baslik-yok',
+    });
+    expect(ip({ ipKaynagi: 'vekil' }).durum).toBe('tamam');
   });
 
   it('her sebebin metni var', () => {

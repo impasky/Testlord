@@ -14,6 +14,7 @@ import { prisma } from './db.js';
 import { env } from './env.js';
 import { GameError } from './errors.js';
 import { hataBildir, izlemeAcikMi, izlemeBaslat, surecHatalariniYakala } from './izleme.js';
+import { istemciIp } from './istemciIp.js';
 import { armyRoutes } from './routes/army.js';
 import { authRoutes } from './routes/auth.js';
 import { devRoutes } from './routes/dev.js';
@@ -80,15 +81,25 @@ export async function buildServer() {
              * tam adresi basıyordu ve `/api/olcum?anahtar=…` her çağrıda
              * anahtarı günlüğe düşürüyordu. Günlük toplanır, aktarılır,
              * yedeklenir; sızan satır geri alınamaz.
+             *
+             * IP de YAZILMIYOR. Her isteğin satırı adresi taşıyordu ve
+             * gizlilik metni "IP yalnız istek anında kullanılıyor" diyor;
+             * Render günlüğü günlerce tutuyor. Hata ayıklamaya yolu ve
+             * süresi yetiyor; çoklu hesap için tutulan tek iz anahtarlı
+             * özet (services/agIzi.ts).
              */
             serializers: {
-              req: (req: { method: string; url: string; ip?: string }) => ({
+              req: (req: { method: string; url: string }) => ({
                 method: req.method,
                 url: yolYalniz(req.url),
-                remoteAddress: req.ip,
               }),
             },
           },
+    // Kendi vekilin (Caddy/nginx) için X-Forwarded-For'da güvenilen adım
+    // sayısı. Render'da başlık yolu kullanılıyor (bkz. istemciIp.ts).
+    // `i` sokete en yakından sayılan adım: ilk VEKIL_SAYISI adıma güven
+    // (proxy-addr'ın sayı biçimiyle aynı; tip tanımı sayıyı kabul etmiyor).
+    trustProxy: env.VEKIL_SAYISI > 0 ? (_adres: string, i: number) => i < env.VEKIL_SAYISI : false,
   });
 
   surecHatalariniYakala(app.log);
@@ -169,7 +180,7 @@ export async function buildServer() {
           /* geçersiz jeton: IP kovasına düşsün */
         }
       }
-      return `ip:${req.ip}`;
+      return `ip:${istemciIp(req)}`;
     },
   });
 

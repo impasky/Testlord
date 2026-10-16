@@ -1236,7 +1236,9 @@ export interface CokluHesapDto {
     geriSevkiyat: number;
     takviye: number;
     pazar: number;
-    isaretler: ('sevkiyat' | 'takviye' | 'pazar')[];
+    /** Aynı gün aynı (kalabalık olmayan) ağdan girdikleri gün sayısı. */
+    agGun: number;
+    isaretler: ('sevkiyat' | 'takviye' | 'pazar' | 'ag')[];
   }[];
 }
 

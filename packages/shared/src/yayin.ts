@@ -41,6 +41,16 @@ export interface YayinGirdisi {
   hizSiniriYuksek: boolean;
   logAyrintili: boolean;
   resimSiniflandirici: boolean;
+  /** İstemcinin IP'si nereden okunuyor (apps/api istemciIp.ts). */
+  ipKaynagi: 'baslik' | 'vekil' | 'baglanti';
+  /** Render'da mı — orada istek her zaman bir vekilden geçiyor. */
+  renderda: boolean;
+  /**
+   * Denetimi isteyen yöneticinin KENDİ isteğinde görülen: vekil izi var
+   * mı, ayarlı başlık eksik mi. Açılışta ve komut satırında istek yok:
+   * `null`. Değer değil, yalnız evet/hayır.
+   */
+  istek: { vekilIzi: boolean; baslikEksik: boolean } | null;
 }
 
 export type YayinNedeni =
@@ -75,7 +85,13 @@ export type YayinNedeni =
   | 'log'
   | 'log-ayrintili'
   | 'resim'
-  | 'resim-kapali';
+  | 'resim-kapali'
+  | 'ip'
+  | 'ip-vekil'
+  | 'ip-dogrudan'
+  | 'ip-baslik-yok'
+  | 'ip-vekil-arkasi'
+  | 'ip-bilinmiyor';
 
 export interface YayinBulgusu {
   /** Ayarın adı (`NODE_ENV`) ya da ayar olmayan işin adı (`yönetici`). */
@@ -132,6 +148,15 @@ export const YAYIN_METNI: Record<YayinNedeni, string> = {
   resim: 'Profil resmi sınıflandırıcısı açık.',
   'resim-kapali':
     'Profil resmi sınıflandırıcısı kapalı: yüklenen her resim yönetici onayını bekliyor.',
+  ip: 'İstemcinin adresi vekilin yazdığı başlıktan okunuyor.',
+  'ip-vekil': "İstemcinin adresi X-Forwarded-For'dan, güvenilen vekil sayısıyla okunuyor.",
+  'ip-dogrudan': 'İstemcinin adresi doğrudan bağlantıdan okunuyor.',
+  'ip-baslik-yok':
+    'ISTEMCI_IP_BASLIGI girilmiş ama bu istekte o başlık yok: adres vekilinkine düşüyor. Başlığın adını denetle (Render: cf-connecting-ip).',
+  'ip-vekil-arkasi':
+    'Sunucu bir vekilin arkasında ama adres bağlantıdan okunuyor: kayıt ve giriş sınırı bütün oyunculara tek kova. Render’da ISTEMCI_IP_BASLIGI=cf-connecting-ip yap.',
+  'ip-bilinmiyor':
+    'Sunucu bir vekilin arkasındaysa ISTEMCI_IP_BASLIGI ya da VEKIL_SAYISI gir; yoksa giriş sınırı herkese tek kova olur. Yönetici panosu bunu senin isteğinle ölçer.',
 };
 
 /** Sunucunun bilemediği, elle denenecek işler (docs/05 §6). */
@@ -224,6 +249,26 @@ export function yayinDenetimi(g: YayinGirdisi): YayinBulgusu[] {
     g.resimSiniflandirici ? 'tamam' : 'uyari',
     g.resimSiniflandirici ? 'resim' : 'resim-kapali',
   );
+  /*
+   * İstemci adresi. Yanlışsa hiçbir şey hata vermiyor: oyun çalışıyor,
+   * yalnız giriş sınırı bütün oyunculara tek kova ve çoklu hesap izi
+   * herkesi aynı ağda gösteriyor. Kesin hüküm yöneticinin kendi isteğinden.
+   */
+  if (g.ipKaynagi === 'baslik') {
+    ekle(
+      'ISTEMCI_IP_BASLIGI',
+      g.istek?.baslikEksik ? 'eksik' : 'tamam',
+      g.istek?.baslikEksik ? 'ip-baslik-yok' : 'ip',
+    );
+  } else if (g.ipKaynagi === 'vekil') {
+    ekle('VEKIL_SAYISI', 'tamam', 'ip-vekil');
+  } else if (g.renderda || g.istek?.vekilIzi) {
+    ekle('ISTEMCI_IP_BASLIGI', 'eksik', 'ip-vekil-arkasi');
+  } else if (g.uretim && !g.istek) {
+    ekle('ISTEMCI_IP_BASLIGI', 'uyari', 'ip-bilinmiyor');
+  } else {
+    ekle('ISTEMCI_IP_BASLIGI', 'tamam', 'ip-dogrudan');
+  }
   return b;
 }
 

@@ -10,13 +10,14 @@ import {
   yasakDurumu,
   yurtBolgeleri,
 } from '@lordlar/shared';
-import type { FastifyInstance } from 'fastify';
+import type { FastifyInstance, FastifyRequest } from 'fastify';
 import { z } from 'zod';
 import { hashPassword, requireAuth, verifyPassword } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError, benzersizlikIhlali } from '../errors.js';
 import { createHash, randomBytes } from 'node:crypto';
 import { env } from '../env.js';
+import { istemciIp } from '../istemciIp.js';
 import { adiDenetle, lordAdiAnahtari } from '../services/adDenetimi.js';
 import { postaGonder } from '../services/eposta.js';
 import { girisFreni } from '../services/girisFreni.js';
@@ -42,7 +43,7 @@ const kimlikSiniri = {
     rateLimit: {
       max: env.AUTH_RATE_LIMIT_MAX,
       timeWindow: '1 minute',
-      keyGenerator: (req: { ip: string }) => `ip:${req.ip}`,
+      keyGenerator: (req: FastifyRequest) => `ip:${istemciIp(req)}`,
     },
   },
 };

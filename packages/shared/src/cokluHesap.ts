@@ -6,13 +6,18 @@
  * yönlü olarak ötekine akıtıyor. Ticaret ve takviye açıldığından beri
  * kapı açık; bunu görmenin yolu yoktu.
  *
- * İKİ İLKE
+ * ÜÇ İLKE
  *
- * 1. AĞ İZİ YOK. Gizlilik metni "IP adresin veritabanına yazılmıyor"
- *    diyor; bu söz duruyor. Yalnız oyunun zaten tuttuğu davranış izleri
- *    okunuyor: ittifak içi sevkiyat, takviye yürüyüşü, eşya pazarında
- *    aynı çiftin işlemleri.
- * 2. OTOMATİK CEZA YOK. Arkadaşlar da birbirine yardım eder ve tek yönlü
+ * 1. ÖNCE DAVRANIŞ. Oyunun zaten tuttuğu izler: ittifak içi sevkiyat,
+ *    takviye yürüyüşü, eşya pazarında aynı çiftin işlemleri.
+ * 2. AĞ YALNIZ AĞIRLAŞTIRIR. İlk sürümde ağ izi hiç yoktu ve en güçlü
+ *    işaret eksikti: besleme hesabı çoğu zaman aynı evden açılıyor. Artık
+ *    IP'nin gizli anahtarlı ÖZETİ kısa süre tutuluyor (düz adres hiçbir
+ *    yere yazılmıyor, bkz. apps/api services/agIzi.ts). Ama aynı ev aynı
+ *    kişi değil — iki kardeş, bir yurt — o yüzden ağ tek başına kimseyi
+ *    listeye sokmuyor: yalnız ARALARINDA AKIŞ olan çifte işaret ekliyor.
+ *    Çok lordun girdiği ağ (mobil operatörün ortak adresi) yok sayılıyor.
+ * 3. OTOMATİK CEZA YOK. Arkadaşlar da birbirine yardım eder ve tek yönlü
  *    bir yardım (güçlü olan zayıfı kaldırıyor) tamamen meşru olabilir.
  *    Liste bir insanın BAKMASI için; karar yöneticinin.
  *
@@ -29,10 +34,13 @@ export const COKLU_HESAP = {
   takviyeEsigi: C.takviye_esigi,
   pazarCiftEsigi: C.pazar_cift_esigi,
   gencHesapGun: C.genc_hesap_gun,
+  agGunEsigi: C.ag_gun_esigi,
+  kalabalikAgLord: C.kalabalik_ag_lord,
+  agIziSaklamaGun: C.ag_izi_saklama_gun,
   listeBoyu: C.liste_boyu,
 } as const;
 
-export type CokluHesapIsareti = 'sevkiyat' | 'takviye' | 'pazar';
+export type CokluHesapIsareti = 'sevkiyat' | 'takviye' | 'pazar' | 'ag';
 
 export interface CokluHesapGirdisi {
   /** Pencere içindeki sevkiyatlar; `agirlik` = yükün altın karşılığı. */
@@ -41,6 +49,11 @@ export interface CokluHesapGirdisi {
   takviyeler: readonly { from: string; to: string }[];
   /** Pencere içindeki eşya pazarı işlemleri. */
   pazar: readonly { satici: string; alici: string }[];
+  /**
+   * Pencere içindeki ağ izleri: lord, ağın özeti, gün. Verilmezse ağ
+   * işareti hiç çıkmıyor (eski çağıranlar ve testler için).
+   */
+  agIzleri?: readonly { lordId: string; ozet: string; gun: number }[];
 }
 
 /** İki lord arasındaki bağ: `besleyen` akışın KAYNAĞI. */
@@ -55,7 +68,45 @@ export interface CokluHesapBagi {
   takviye: number;
   /** İki lord arasındaki pazar işlemi (yönsüz). */
   pazar: number;
+  /** Aynı gün aynı (kalabalık olmayan) ağdan girdikleri gün sayısı. */
+  agGun: number;
   isaretler: CokluHesapIsareti[];
+}
+
+/**
+ * Çift başına ortak ağ günü. Kalabalık ağ (pencerede `kalabalikAgLord`dan
+ * çok lord) sayılmıyor: mobil operatörün ortak adresinde yüzlerce oyuncu
+ * "aynı ağda" görünür ve işaret anlamını yitirirdi.
+ */
+export function ortakAgGunleri(
+  izler: NonNullable<CokluHesapGirdisi['agIzleri']>,
+): Map<string, number> {
+  const agdakiler = new Map<string, Set<string>>();
+  const gunde = new Map<string, Set<string>>(); // "ozet|gun" -> lordlar
+  for (const iz of izler) {
+    let a = agdakiler.get(iz.ozet);
+    if (!a) agdakiler.set(iz.ozet, (a = new Set()));
+    a.add(iz.lordId);
+    const k = `${iz.ozet}|${iz.gun}`;
+    let g = gunde.get(k);
+    if (!g) gunde.set(k, (g = new Set()));
+    g.add(iz.lordId);
+  }
+  const gunler = new Map<string, Set<number>>(); // çift -> günler
+  for (const [k, lordlar] of gunde) {
+    const [ozet, gun] = k.split('|') as [string, string];
+    if ((agdakiler.get(ozet)?.size ?? 0) > COKLU_HESAP.kalabalikAgLord) continue;
+    const l = [...lordlar];
+    for (let i = 0; i < l.length; i++) {
+      for (let j = i + 1; j < l.length; j++) {
+        const c = ciftAnahtari(l[i]!, l[j]!);
+        let s = gunler.get(c);
+        if (!s) gunler.set(c, (s = new Set()));
+        s.add(Number(gun));
+      }
+    }
+  }
+  return new Map([...gunler].map(([c, s]) => [c, s.size]));
 }
 
 /** Yönsüz çift anahtarı: aynı iki lord tek bağ. */
@@ -86,6 +137,9 @@ export function cokluHesapBaglari(g: CokluHesapGirdisi): CokluHesapBagi[] {
     ciftler.add(k);
   }
 
+  // Ağ yalnız etkileşimi olan çiftlere bakıyor: döngü `ciftler` üstünde.
+  const agGunleri = g.agIzleri ? ortakAgGunleri(g.agIzleri) : new Map<string, number>();
+
   const baglar: CokluHesapBagi[] = [];
   for (const cift of ciftler) {
     const [a, b] = cift.split('|') as [string, string];
@@ -110,8 +164,10 @@ export function cokluHesapBaglari(g: CokluHesapGirdisi): CokluHesapBagi[] {
     }
     if (takviye >= COKLU_HESAP.takviyeEsigi) isaretler.push('takviye');
     if (p >= COKLU_HESAP.pazarCiftEsigi) isaretler.push('pazar');
+    const agGun = agGunleri.get(cift) ?? 0;
+    if (agGun >= COKLU_HESAP.agGunEsigi) isaretler.push('ag');
     if (isaretler.length === 0) continue;
-    baglar.push({ besleyen, alan, sevkiyat, geriSevkiyat, takviye, pazar: p, isaretler });
+    baglar.push({ besleyen, alan, sevkiyat, geriSevkiyat, takviye, pazar: p, agGun, isaretler });
   }
 
   // Çok işaretli önce; eşitse büyük akış önce.

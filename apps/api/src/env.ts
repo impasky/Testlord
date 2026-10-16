@@ -20,6 +20,25 @@ const schema = z.object({
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(300),
   /** Kayıt/giriş için IP başına dakikalık tavan. Kaba kuvveti burası durdurur. */
   AUTH_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(60),
+  /*
+   * İSTEMCİNİN IP'Sİ NEREDEN OKUNACAK (bkz. istemciIp.ts).
+   *
+   * Sunucu bir vekilin (Render, Caddy, nginx) arkasındaysa bağlantının
+   * adresi VEKİLİN adresi: hiçbiri verilmezse giriş sınırı bütün
+   * oyunculara tek kova olur. İkisinden biri:
+   *
+   *   ISTEMCI_IP_BASLIGI  Vekilin istemci adresini yazdığı ve istemcinin
+   *                       EZEMEDİĞİ başlık. Render'da `cf-connecting-ip`
+   *                       (önündeki Cloudflare yazıyor).
+   *   VEKIL_SAYISI        X-Forwarded-For'da güvenilecek vekil sayısı
+   *                       (kendi Caddy/nginx'in için 1).
+   */
+  ISTEMCI_IP_BASLIGI: z
+    .string()
+    .transform((s) => s.trim().toLowerCase())
+    .pipe(z.string().regex(/^[a-z0-9-]+$/, 'başlık adı yalnız harf, rakam ve tire'))
+    .optional(),
+  VEKIL_SAYISI: z.coerce.number().int().min(0).max(5).default(0),
   /**
    * Veritabanı bağlantı havuzu (db.ts). `DATABASE_URL` kendi
    * `connection_limit`ini taşıyorsa o geçerli; bu ikisi de yoksa 10.

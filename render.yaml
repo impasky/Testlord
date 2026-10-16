@@ -4,14 +4,25 @@
 # seç. Render bu dosyayı okuyup hem sunucuyu hem PostgreSQL'i kendisi kurar.
 #
 # Tek servis: API hem oyunu hem arayüzü sunar (SERVE_WEB) ve worker'ı kendi
-# içinde çalıştırır (RUN_WORKER). Render'ın ücretsiz katmanında ayrı bir worker
-# süreci yok; ayrıca tek origin olduğu için CORS hiç devreye girmiyor.
+# içinde çalıştırır (RUN_WORKER). Tek origin olduğu için CORS hiç devreye
+# girmiyor; ayrı bir worker servisi ikinci bir ücret demek ve gerekmiyor.
+#
+# PLANLAR (docs/05 §2 ve §8). Ücretsiz katman yayın için uygun değil:
+#   - ücretsiz sunucu 15 dakika istek gelmezse UYUYOR; içindeki worker da
+#     duruyor (yürüyüşler oyuncu dönene kadar çözülmüyor, bildirim gitmiyor);
+#   - ücretsiz PostgreSQL 30 günde süresi doluyor, 14 gün sonra VERİSİYLE
+#     birlikte siliniyor.
+# Yük testine göre 1 CPU ~250 aktif oyuncuyu taşıyor (bellek 300–430 MB,
+# profil resmi sınıflandırıcısı ~100 MB daha). 500 aktif için web'i `pro`
+# (2 CPU) ve veritabanını `basic-4gb` yap — kod değişmiyor.
 
 databases:
   - name: lordlar-db
     databaseName: lordlar_cagi
     user: lordlar
-    plan: free
+    # 1 GB bellek, 0,5 CPU. Disk büyütülebilir, KÜÇÜLTÜLEMEZ: küçük başla.
+    plan: basic-1gb
+    diskSizeGB: 5
     # ÖNEMLİ: servisle AYNI bölge olmalı. Render'ın verdiği iç ağ adresi
     # (dpg-xxxxx-a) yalnızca aynı bölgedeki servislerden çözülür; farklı
     # bölgede kalırsa sunucu veritabanına hiç ulaşamaz (Prisma P1001).
@@ -21,7 +32,8 @@ services:
   - type: web
     name: lordlar-cagi
     runtime: node
-    plan: free
+    # 1 CPU, 2 GB: uyumuyor, ~250 aktif oyuncu (docs/05 §8).
+    plan: standard
     region: frankfurt
     buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build
     startCommand: pnpm start
@@ -54,16 +66,17 @@ services:
       - key: AUTO_MIGRATE
         value: 'true'
 
-      # İlk açılışta 6 rakip lord ekle. Tek başına boş bir dünyada sıralama,
-      # PvP ve düşman garnizonu denenemez. Kendi dünyanı kurduğunda "false" yap.
       # Oyuncuların ulaşacağı destek adresi (Kullanım Koşulları ve
-      # Aydınlatma Metni'nde yayınlanır). Mağazalar herkese açık bir
-      # iletişim yolu istiyor. Render panelinden elle gir.
+      # Aydınlatma Metni'nde yayınlanır). Herkese açık bir iletişim yolu
+      # olmalı. Render panelinden elle gir.
       - key: DESTEK_EPOSTA
         sync: false
 
+      # İlk açılışta 6 rakip demo lord. Gerçek oyuncuların dünyasında sahte
+      # rakip olmasın: kapalı. Tek başına denemek için geçici olarak "true".
+      # (Burada `value` olduğu için Blueprint eşitlemesi paneldeki değeri ezer.)
       - key: SEED_DEMO_LORDS
-        value: 'true'
+        value: 'false'
 
       # Hata izleme. Boş bırakılırsa kapalıdır ve dışarıya hiçbir şey gitmez.
       # sentry.io'da ücretsiz proje açıp DSN'i Render panelinden gir.
@@ -106,6 +119,14 @@ services:
       # kendi alan adını bağladığında burayı onunla doldur.
       - key: UYGULAMA_URL
         sync: false
+
+      # İstemcinin IP'si (apps/api/src/istemciIp.ts). Render'ın önündeki
+      # Cloudflare bu başlığı her istekte kendisi yazıyor; X-Forwarded-For'un
+      # başı istemcinin uydurabileceği bir değer. Bu olmadan kayıt/giriş
+      # sınırı bütün oyunculara TEK kova olur. Yönetici panosundaki yayın
+      # kontrolü ayarın tuttuğunu senin isteğinle ölçer.
+      - key: ISTEMCI_IP_BASLIGI
+        value: cf-connecting-ip
 
       # Hız sınırları. Genel sınır oturuma, kayıt/giriş IP'ye bağlı.
       - key: RATE_LIMIT_MAX

@@ -53,7 +53,7 @@
       "aciklama": "Saldırmak yetmez; kazanman lazım.",
       "olcut": "kazanilan_savas",
       "hedef": 6,
-      "birim": "zafer"
+      "birim": "savaş zaferi"
     }
   ],
   "diyar_etkinligi": {
@@ -80,7 +80,7 @@
         "olcut": "savas_zaferi",
         "taban": 12,
         "kisi_basi": 2,
-        "birim": "zafer"
+        "birim": "savaş zaferi"
       },
       {
         "key": "buyuk_seferberlik",

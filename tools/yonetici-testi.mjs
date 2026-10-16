@@ -29,7 +29,8 @@ function kontrol(ad, kosul, detay = '') {
 const damga = Date.now().toString(36).slice(-4);
 const tuz = Math.random().toString(36).slice(2, 5);
 
-async function lordKur(etiket, worldId) {
+/** `ip`: geliştirme sunucusunda `x-test-ip` — lordun "girdiği ağ". */
+async function lordKur(etiket, worldId, ip) {
   const eposta = `yon${damga}${tuz}${etiket}@lordlar.dev`;
   const parola = 'Yonetici123!';
   const { token } = await kayitOl(API, {
@@ -41,7 +42,11 @@ async function lordKur(etiket, worldId) {
   const cagir = async (yol, yontem, govde, jeton = token) => {
     const c = await fetch(`${API}/api${yol}`, {
       method: yontem,
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${jeton}` },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jeton}`,
+        ...(ip ? { 'x-test-ip': ip } : {}),
+      },
       ...(yontem === 'POST' ? { body: JSON.stringify(govde ?? {}) } : {}),
     });
     return { kod: c.status, govde: await c.json().catch(() => null) };
@@ -206,6 +211,76 @@ let besleyenAdi;
   kontrol('Besleyen hesap "yeni açılmış" diye not ediliyor', bag?.besleyen?.genc === true);
   // Karşılıklı yardımın listeye girmediği birim testinde (cokluHesap.test.ts):
   // burada bağ listede kalıyor ki arayüz de onu göstersin.
+}
+
+/*
+ * 1e. Ağ izi (docs/14 "Çoklu hesap" — ağ).
+ *
+ * Aynı evden iki lord, aralarında EŞİĞİN ALTINDA bir sevkiyat: davranış
+ * tek başına listeye sokmuyor, ağ ağırlaştırıyor. Aynı evden ama
+ * aralarında hiçbir şey olmayan iki lord listeye girmiyor. Panoya ne
+ * adres ne özet çıkıyor; saklama süresini aşan iz siliniyor.
+ */
+let agBesleyenAdi;
+{
+  const diyar = await onerilenDiyar(API);
+  // Koşu başına yeni bir ev: geliştirme veritabanı kalıcı ve aynı adres her
+  // koşuda iki lord daha toplayıp "kalabalık ağ" olurdu. IPv6 belgeleme
+  // aralığında rastgele bir /64; iki lordun ADRESİ farklı, evi aynı.
+  const onek = () =>
+    `2001:db8:${Math.floor(Math.random() * 0xffff).toString(16)}:${Math.floor(Math.random() * 0xffff).toString(16)}`;
+  const EV = onek();
+  const KOMSU = onek();
+  const ana = await lordKur('f', diyar, `${EV}::10`);
+  const alt = await lordKur('g', diyar, `${EV}:aa:bb:cc:dd`);
+  const k1 = await lordKur('h', diyar, `${KOMSU}::1`);
+  const k2 = await lordKur('i', diyar, `${KOMSU}::2`);
+  agBesleyenAdi = alt.ad;
+  const anaId = (await ana.get('/me'))?.lord?.id;
+  const altId = (await alt.get('/me'))?.lord?.id;
+  const k1Id = (await k1.get('/me'))?.lord?.id;
+  const k2Id = (await k2.get('/me'))?.lord?.id;
+  for (const l of [ana, alt, k1, k2]) await l.post('/test/ag-izi-gecmise', { gun: 1 });
+
+  await ana.post('/test/kaynak-ver', { altin: 200000, demir: 0, erzak: 0 }); // kuruluş bedeli
+  const itt = await ana.post('/ittifak/kur', {
+    ad: `Ev ${damga}`.slice(0, 20),
+    etiket: `E${tuz}`.slice(0, 4).toUpperCase(),
+  });
+  await ana.post('/ittifak/ayarlar', { katilim: 'acik' });
+  await alt.post(`/ittifak/${itt?.id}/katil`);
+  await alt.post('/test/kaynak-ver', { altin: 5000, demir: 0, erzak: 0 });
+  const kucuk = await alt.postHam('/ticaret/gonder', { lordId: anaId, yuk: { altin: 1000 } });
+
+  const liste = await yonetici.get('/yonetici/coklu-hesap');
+  const bag = liste?.baglar?.find((b) => b.besleyen?.lordId === altId && b.alan?.lordId === anaId);
+  kontrol(
+    'Aynı evden küçük akış: yalnız ağ işaretiyle listede',
+    kucuk.kod === 200 && JSON.stringify(bag?.isaretler) === '["ag"]' && bag?.agGun === 2,
+    bag
+      ? `${bag.isaretler.join(',')} · ${bag.agGun} gün`
+      : `gönderim ${kucuk.kod} ${kucuk.govde?.code ?? ''} ${kucuk.govde?.error ?? ''}`,
+  );
+  const kardesler = liste?.baglar?.some((b) =>
+    [b.besleyen?.lordId, b.alan?.lordId].every((id) => id === k1Id || id === k2Id),
+  );
+  kontrol('Aynı evden ama aralarında akış yok: listede değil', kardesler === false);
+  const ham = JSON.stringify(liste ?? {});
+  kontrol(
+    'Panoya ne adres ne özet çıkıyor',
+    !ham.includes(EV) && !ham.includes(KOMSU) && !/"ozet"/.test(ham) && !/[0-9a-f]{16}/.test(ham),
+  );
+
+  // Saklama süresi: yirmi gün önceki iz temizlikte gidiyor, dünkü kalıyor.
+  await alt.post('/test/ag-izi-gecmise', { gun: 20 });
+  const temizlik = await yonetici.post('/test/ag-izi-temizle');
+  const sonra = await yonetici.get('/yonetici/coklu-hesap');
+  const kalan = sonra?.baglar?.find((b) => b.besleyen?.lordId === altId);
+  kontrol(
+    'Süresi dolan iz siliniyor, penceredeki kalıyor',
+    (temizlik?.silinen ?? 0) >= 1 && kalan?.agGun === 2,
+    `${temizlik?.silinen} silindi · kalan ${kalan?.agGun ?? 'yok'} gün`,
+  );
 }
 
 /* 2. Arama: şikâyet beklemeden oyuncuyu bul                           */
@@ -393,9 +468,22 @@ await page.waitForTimeout(1000);
     Boolean(besleyenAdi) && listeMetni.includes(besleyenAdi) && /ceza yok/i.test(listeMetni),
     listeMetni.slice(0, 80).replace(/\n/g, ' '),
   );
+  // Rozet yazısı CSS'le büyütülüyor; sayı niteliğin kendisinde.
+  const agRozeti = page.locator('[data-coklu-ag="2"]');
+  kontrol(
+    'Aynı ağ rozeti kartta, gün sayısıyla',
+    Boolean(agBesleyenAdi) && listeMetni.includes(agBesleyenAdi) && (await agRozeti.count()) >= 1,
+    `${await agRozeti.count()} rozet · ${agBesleyenAdi && listeMetni.includes(agBesleyenAdi) ? 'kart var' : 'kart yok'}`,
+  );
   await page.screenshot({
     path: `${process.env.CIKTI ?? 'ekran-goruntuleri'}/yonetici-coklu-hesap.png`,
   });
+  if (await agRozeti.count()) {
+    await agRozeti.first().scrollIntoViewIfNeeded();
+    await page.screenshot({
+      path: `${process.env.CIKTI ?? 'ekran-goruntuleri'}/yonetici-ag-izi.png`,
+    });
+  }
   if (metin) await baslik.click(); // kapat: aşağıdaki arama aynı ekranda
 }
 

@@ -44,7 +44,7 @@
     "tr": " · {0}: Sv {1}",
     "en": " · {0}: Lv {1}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:192"
+      "apps/web/src/screens/YoneticiPaneli.tsx:197"
     ]
   },
   "t5fc25c41": {
@@ -100,7 +100,7 @@
     "tr": " · yönetici",
     "en": " · admin",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:471"
+      "apps/web/src/screens/YoneticiPaneli.tsx:476"
     ]
   },
   "t07a293f0": {
@@ -244,7 +244,7 @@
     "tr": "· yeni açılmış hesap",
     "en": "· newly created account",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:191"
+      "apps/web/src/screens/YoneticiPaneli.tsx:196"
     ]
   },
   "t243874a1": {
@@ -268,7 +268,7 @@
     "tr": "‹ Aramaya dön",
     "en": "‹ Back to search",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:458"
+      "apps/web/src/screens/YoneticiPaneli.tsx:463"
     ]
   },
   "t1b6bc363": {
@@ -545,14 +545,6 @@
       "apps/web/src/components/DunyaSeridi.tsx:183"
     ]
   },
-  "td0ac02bc": {
-    "grup": "arayuz",
-    "tr": "{0} {1} daha.",
-    "en": "{0} {1} more.",
-    "nerede": [
-      "apps/web/src/components/SeferKart.tsx:101"
-    ]
-  },
   "t4d76c9d7": {
     "grup": "arayuz",
     "tr": "{0} {1} eğit",
@@ -566,7 +558,7 @@
     "tr": "{0} / {1} oyuncu",
     "en": "{0} / {1} [player|players]",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:263"
+      "apps/web/src/screens/YoneticiPaneli.tsx:268"
     ]
   },
   "t53f178e2": {
@@ -1525,7 +1517,7 @@
     "tr": "{0}: {1} aktif, {2} yeni",
     "en": "{0}: {1} active, {2} new",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:278"
+      "apps/web/src/screens/YoneticiPaneli.tsx:283"
     ]
   },
   "tf23dc337": {
@@ -1533,7 +1525,7 @@
     "tr": "{0}: {1} günlük, Sv {2}",
     "en": "{0}: {1} [day|days] old, Lv {2}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:190"
+      "apps/web/src/screens/YoneticiPaneli.tsx:195"
     ]
   },
   "tdfb3b8bb": {
@@ -1900,7 +1892,7 @@
     "tr": "1. gün",
     "en": "Day 1",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:304"
+      "apps/web/src/screens/YoneticiPaneli.tsx:309"
     ]
   },
   "tc8bf4968": {
@@ -1908,7 +1900,7 @@
     "tr": "1. gün tutundurma",
     "en": "Day-1 retention",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:255"
+      "apps/web/src/screens/YoneticiPaneli.tsx:260"
     ]
   },
   "ta0211d55": {
@@ -1916,7 +1908,7 @@
     "tr": "30 gün",
     "en": "30 days",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:241"
+      "apps/web/src/screens/YoneticiPaneli.tsx:246"
     ]
   },
   "t14ca80d5": {
@@ -1924,7 +1916,7 @@
     "tr": "7 gün",
     "en": "7 days",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:240"
+      "apps/web/src/screens/YoneticiPaneli.tsx:245"
     ]
   },
   "tbd4555b7": {
@@ -1932,7 +1924,7 @@
     "tr": "7. gün",
     "en": "Day 7",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:305"
+      "apps/web/src/screens/YoneticiPaneli.tsx:310"
     ]
   },
   "t1311abee": {
@@ -1940,7 +1932,7 @@
     "tr": "7. gün tutundurma",
     "en": "Day-7 retention",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:256"
+      "apps/web/src/screens/YoneticiPaneli.tsx:261"
     ]
   },
   "tca25ca91": {
@@ -1998,7 +1990,7 @@
     "tr": "Adın, yaşın, konumun, telefonun, cihaz kimliğin sorulmuyor ve tutulmuyor. Lord adını sen seçiyorsun ve gerçek adın olmak zorunda değil.",
     "en": "Your name, age, location, phone and device identifier are never asked for or stored. You choose your lord name, and it does not have to be your real name.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:89"
+      "apps/web/src/screens/Gizlilik.tsx:96"
     ]
   },
   "tc54f73d4": {
@@ -2015,6 +2007,14 @@
     "en": "If the address is registered, a reset link has been sent. Check your inbox.",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:105"
+    ]
+  },
+  "t5c7b9913": {
+    "grup": "arayuz",
+    "tr": "Ağının anahtarlı özeti — kısa süreliğine.",
+    "en": "A keyed digest of your network — only for a short while.",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:81"
     ]
   },
   "t6b527296": {
@@ -2393,7 +2393,15 @@
     "tr": "Aydınlatma Metni",
     "en": "Privacy Notice",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:41"
+      "apps/web/src/screens/Gizlilik.tsx:42"
+    ]
+  },
+  "ta08d617e": {
+    "grup": "arayuz",
+    "tr": "Aynı ağ · {0} gün",
+    "en": "Same network · {0} day|Same network · {0} days",
+    "nerede": [
+      "apps/web/src/screens/YoneticiPaneli.tsx:190"
     ]
   },
   "t25d5f415": {
@@ -2441,7 +2449,7 @@
     "tr": "Aynı hesapta {0} lord: {1}",
     "en": "{0} lords on the same account: {1}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:475"
+      "apps/web/src/screens/YoneticiPaneli.tsx:480"
     ]
   },
   "t8ba0b91f": {
@@ -2776,7 +2784,7 @@
     "tr": "Bildirim, tarayıcının kendi bildirim servisi üzerinden gidiyor — bu, cihazının üreticisine ait bir hizmet.",
     "en": "Notifications travel through your browser's own notification service — a service run by your device's maker.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:106"
+      "apps/web/src/screens/Gizlilik.tsx:114"
     ]
   },
   "t341083b0": {
@@ -2784,7 +2792,7 @@
     "tr": "Bildirimler",
     "en": "Notifications",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:98",
+      "apps/web/src/screens/Gizlilik.tsx:106",
       "apps/web/src/screens/Hesap.tsx:211"
     ]
   },
@@ -2825,7 +2833,7 @@
     "tr": "Bildirimleri {0} tarayıcının ürettiği abonelik bilgisi (adres ve şifreleme anahtarları) ile cihazını ayırt etmeye yarayan kısa bir etiket saklanıyor. Kapattığında silinir.",
     "en": "Notifications: if {0}, the subscription details your browser generates (address and encryption keys) are stored, along with a short label that tells your devices apart. They are deleted when you turn notifications off.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:101"
+      "apps/web/src/screens/Gizlilik.tsx:109"
     ]
   },
   "t5bbe9ba5": {
@@ -2899,6 +2907,14 @@
     "en": "A civilization's",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:727"
+    ]
+  },
+  "t269c2c1c": {
+    "grup": "arayuz",
+    "tr": "Bir oyuncunun ikinci hesap açıp kendini beslemesini görebilmek için oyuna girdiğin ağın geri çevrilemez bir özeti (gizli anahtarlı HMAC) {0} gün tutuluyor, sonra kendiliğinden siliniyor. Adresin kendisi değil: özetten adres geri çıkarılamıyor. Özeti yalnız yöneticinin çoklu hesap listesi okuyor ve tek başına hiçbir yaptırıma yol açmıyor — aynı evden oynamak serbest.",
+    "en": "So that we can see a player opening a second account to feed themselves, an irreversible digest of the network you play from (a keyed HMAC) is kept for {0} [day|days] and then deleted automatically. Not the address itself: the address cannot be recovered from the digest. Only the admin's multi-account list reads it, and on its own it never leads to any penalty — playing from the same home is fine.",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:82"
     ]
   },
   "tb8821114": {
@@ -3318,7 +3334,7 @@
     "tr": "Bu metin oyunun gerçekten tuttuğu veriyi anlatır. Yeni bir alan eklendiğinde metin de güncellenir.",
     "en": "This notice describes the data the game actually keeps. When a new field is added, the notice is updated too.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:158"
+      "apps/web/src/screens/Gizlilik.tsx:165"
     ]
   },
   "tdfa5359f": {
@@ -3407,7 +3423,7 @@
     "en": "Today",
     "nerede": [
       "apps/web/src/screens/Olaylar.tsx:76",
-      "apps/web/src/screens/YoneticiPaneli.tsx:238"
+      "apps/web/src/screens/YoneticiPaneli.tsx:243"
     ]
   },
   "tda09d6e8": {
@@ -4370,7 +4386,7 @@
     "en": "Yesterday",
     "nerede": [
       "apps/web/src/screens/Olaylar.tsx:78",
-      "apps/web/src/screens/YoneticiPaneli.tsx:239"
+      "apps/web/src/screens/YoneticiPaneli.tsx:244"
     ]
   },
   "t06db6bc3": {
@@ -4420,7 +4436,7 @@
     "tr": "Düzeltme:",
     "en": "Correction:",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:147"
+      "apps/web/src/screens/Gizlilik.tsx:154"
     ]
   },
   "t4d81c255": {
@@ -4453,7 +4469,7 @@
     "tr": "E-posta adresin.",
     "en": "Your email address.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:50"
+      "apps/web/src/screens/Gizlilik.tsx:51"
     ]
   },
   "t7a2e7ae2": {
@@ -4469,7 +4485,7 @@
     "tr": "E-posta göndermek için (parola sıfırlama, savaş bildirimi) bir e-posta sağlayıcısı kullanılıyor; o sağlayıcı yalnızca adresini ve gönderilen iletinin metnini görüyor.",
     "en": "To send email (password reset, battle notifications) an email provider is used; that provider sees only your address and the text of the message sent.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:114"
+      "apps/web/src/screens/Gizlilik.tsx:122"
     ]
   },
   "t8bcc1657": {
@@ -4583,7 +4599,7 @@
     "tr": "EKSİK",
     "en": "MISSING",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:335"
+      "apps/web/src/screens/YoneticiPaneli.tsx:340"
     ]
   },
   "t530d9dd8": {
@@ -4970,7 +4986,7 @@
     "tr": "Evet, kalıcı yasakla",
     "en": "Yes, ban permanently",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:552"
+      "apps/web/src/screens/YoneticiPaneli.tsx:557"
     ]
   },
   "t67f6ac68": {
@@ -5170,7 +5186,7 @@
     "tr": "Genel",
     "en": "Global",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:596"
+      "apps/web/src/screens/YoneticiPaneli.tsx:601"
     ]
   },
   "te69a54b9": {
@@ -5304,7 +5320,7 @@
     "tr": "Geri dön",
     "en": "Go back",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:163",
+      "apps/web/src/screens/Gizlilik.tsx:170",
       "apps/web/src/screens/Kosullar.tsx:116"
     ]
   },
@@ -5354,7 +5370,7 @@
     "tr": "GİZLİ",
     "en": "HIDDEN",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:605"
+      "apps/web/src/screens/YoneticiPaneli.tsx:610"
     ]
   },
   "t5228efad": {
@@ -5529,7 +5545,7 @@
     "tr": "Gün UTC'ye göre. Oran, o gün bitmeden yazılmıyor (—). NPC lordlar sayılmıyor.",
     "en": "Days are in UTC. A rate is not shown until that day is over (—). NPC lords are not counted.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:321"
+      "apps/web/src/screens/YoneticiPaneli.tsx:326"
     ]
   },
   "ta4e04755": {
@@ -5585,7 +5601,7 @@
     "tr": "Haklarını nasıl kullanırsın",
     "en": "How to exercise your rights",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:141"
+      "apps/web/src/screens/Gizlilik.tsx:148"
     ]
   },
   "tc7a68253": {
@@ -5713,6 +5729,14 @@
     "en": "{0} to go — the whole realm together.",
     "nerede": [
       "apps/web/src/components/DiyarSeferiKart.tsx:125"
+    ]
+  },
+  "t852ed1dd": {
+    "grup": "arayuz",
+    "tr": "Hedefe {0} kaldı.",
+    "en": "{0} to go.",
+    "nerede": [
+      "apps/web/src/components/SeferKart.tsx:101"
     ]
   },
   "t4a708677": {
@@ -5909,7 +5933,7 @@
     "tr": "HESABI YASAKLA",
     "en": "BAN ACCOUNT",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:524"
+      "apps/web/src/screens/YoneticiPaneli.tsx:529"
     ]
   },
   "t0f414ea5": {
@@ -5917,7 +5941,7 @@
     "tr": "Hesabı yasakla — {0}",
     "en": "Ban account — {0}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:531"
+      "apps/web/src/screens/YoneticiPaneli.tsx:536"
     ]
   },
   "t30c7d34d": {
@@ -5925,8 +5949,8 @@
     "tr": "HESABIMI SIL",
     "en": "DELETE MY ACCOUNT",
     "nerede": [
-      "apps/api/src/routes/me.ts:66",
-      "apps/web/src/api/client.ts:1400",
+      "apps/api/src/routes/me.ts:68",
+      "apps/web/src/api/client.ts:1402",
       "apps/web/src/screens/Hesap.tsx:297"
     ]
   },
@@ -5946,12 +5970,12 @@
       "apps/web/src/screens/Kosullar.tsx:97"
     ]
   },
-  "t81be8585": {
+  "td4c8baff": {
     "grup": "arayuz",
-    "tr": "Hesabın açık kaldığı sürece. Hesabını silersen lordun, ordun, ekipmanın, sohbet mesajların, yüklediğin resimler ve bildirim aboneliğin birlikte silinir.",
-    "en": "As long as your account is open. If you delete your account, your lord, army, equipment, chat messages, uploaded pictures and notification subscription are deleted with it.",
+    "tr": "Hesabın açık kaldığı sürece; ağ özeti en fazla {0} gün. Hesabını silersen lordun, ordun, ekipmanın, sohbet mesajların, yüklediğin resimler, ağ özetlerin ve bildirim aboneliğin birlikte silinir.",
+    "en": "As long as your account is open; the network digest at most {0} [day|days]. If you delete your account, your lord, army, equipment, chat messages, uploaded pictures, network digests and notification subscription are deleted with it.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:136"
+      "apps/web/src/screens/Gizlilik.tsx:144"
     ]
   },
   "t8b2fd54f": {
@@ -5967,7 +5991,7 @@
     "tr": "Hesabını tanımak ve parolanı sıfırlaman için. Başka hiçbir amaçla kullanılmıyor.",
     "en": "To identify your account and let you reset your password. It is used for nothing else.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:50"
+      "apps/web/src/screens/Gizlilik.tsx:51"
     ]
   },
   "t1c280cbe": {
@@ -5984,7 +6008,7 @@
     "tr": "Hesap ekranındaki “Hesabı Sil” bölümünden, parolanı girerek. İşlem geri alınamaz ve aracı gerektirmez.",
     "en": "From the \"Delete Account\" section of the Account screen, by entering your password. It cannot be undone and needs no intermediary.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:143"
+      "apps/web/src/screens/Gizlilik.tsx:150"
     ]
   },
   "t6f440138": {
@@ -6008,7 +6032,7 @@
     "tr": "Hesap: {0}{1}",
     "en": "Account: {0}{1}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:471"
+      "apps/web/src/screens/YoneticiPaneli.tsx:476"
     ]
   },
   "t5a3adcd8": {
@@ -6024,7 +6048,7 @@
     "tr": "Hiç mesaj yazmamış.",
     "en": "Has never written a message.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:588"
+      "apps/web/src/screens/YoneticiPaneli.tsx:593"
     ]
   },
   "t778c4ebf": {
@@ -6035,12 +6059,12 @@
       "apps/web/src/screens/LordEkrani.tsx:644"
     ]
   },
-  "tdca95e4b": {
+  "tfdc0164f": {
     "grup": "arayuz",
-    "tr": "IP adresin veritabanına yazılmıyor. Yalnızca kayıt ve giriş denemelerini sınırlamak için, istek anında ve geçici olarak kullanılıyor.",
-    "en": "Your IP address is never written to the database. It is used only at the moment of a request, and only to limit sign-up and sign-in attempts.",
+    "tr": "IP adresinin kendisi hiçbir yere yazılmıyor — ne veritabanına ne sunucu günlüğüne. Kayıt ve giriş denemelerini sınırlamak için yalnızca istek anında kullanılıyor. Yukarıdaki özet adres değil, ondan geri dönülemeyen bir iz.",
+    "en": "Your IP address itself is never written anywhere — neither to the database nor to the server log. It is used only at the moment of a request, to limit sign-up and sign-in attempts. The digest above is not the address, but a trace that cannot be turned back into it.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:93"
+      "apps/web/src/screens/Gizlilik.tsx:100"
     ]
   },
   "t76d5e47d": {
@@ -6049,14 +6073,6 @@
     "en": "Ideal formation",
     "nerede": [
       "apps/web/src/components/DizilimSemasi.tsx:33"
-    ]
-  },
-  "tee5870c4": {
-    "grup": "arayuz",
-    "tr": "İki iş için: sen yokken ne olduğunu özetlemek, ve oyuncuların oyunu nerede bıraktığını toplam olarak görmek. İkincisinde kimin hangi ekranda olduğu değil, yalnızca sayılar okunuyor.",
-    "en": "For two things: to summarise what happened while you were away, and to see in aggregate where players leave the game. For the second, only totals are read — never who was on which screen.",
-    "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:72"
     ]
   },
   "t1458df25": {
@@ -6286,7 +6302,7 @@
     "tr": "İşlem uygulanmadı; sayfayı tazeleyip tekrar dene.",
     "en": "Action not applied; refresh the page and try again.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:489"
+      "apps/web/src/screens/YoneticiPaneli.tsx:494"
     ]
   },
   "tcabdf0fd": {
@@ -6313,7 +6329,7 @@
       "apps/web/src/screens/Harita.tsx:382",
       "apps/web/src/screens/Ittifak.tsx:207",
       "apps/web/src/screens/Siralama.tsx:37",
-      "apps/web/src/screens/YoneticiPaneli.tsx:596",
+      "apps/web/src/screens/YoneticiPaneli.tsx:601",
       "packages/shared/src/types.ts:361"
     ]
   },
@@ -6418,7 +6434,7 @@
     "tr": "İttifak sohbetinde yazdıkların ittifakındaki diğer oyunculara, genel sohbette yazdıkların bütün oyunculara açık. Şikâyet edilen bir mesaj ya da resim, kararı verecek yöneticiye görünür.",
     "en": "What you write in alliance chat is visible to the other players in your alliance, and what you write in global chat is visible to all players. A reported message or picture is visible to the moderator who decides on it.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:118"
+      "apps/web/src/screens/Gizlilik.tsx:126"
     ]
   },
   "tad6b90ff": {
@@ -6587,7 +6603,7 @@
     "tr": "KALDIRILDI",
     "en": "REMOVED",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:599"
+      "apps/web/src/screens/YoneticiPaneli.tsx:604"
     ]
   },
   "ta2c9f70e": {
@@ -6603,7 +6619,7 @@
     "tr": "Kalıcı",
     "en": "Permanent",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:552"
+      "apps/web/src/screens/YoneticiPaneli.tsx:557"
     ]
   },
   "t32403562": {
@@ -6619,7 +6635,7 @@
     "tr": "Kalıcı yasak — {0}",
     "en": "Permanent ban — {0}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:483"
+      "apps/web/src/screens/YoneticiPaneli.tsx:488"
     ]
   },
   "t0f86f2e3": {
@@ -6734,7 +6750,7 @@
     "tr": "Karar",
     "en": "Decision",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:491"
+      "apps/web/src/screens/YoneticiPaneli.tsx:496"
     ]
   },
   "t07d6d627": {
@@ -6916,7 +6932,7 @@
     "en": "Log",
     "nerede": [
       "apps/web/src/screens/Ittifak.tsx:223",
-      "apps/web/src/screens/YoneticiPaneli.tsx:303"
+      "apps/web/src/screens/YoneticiPaneli.tsx:308"
     ]
   },
   "t4b2bd8f8": {
@@ -6932,7 +6948,7 @@
     "tr": "Kayıt günü",
     "en": "Sign-up day",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:302"
+      "apps/web/src/screens/YoneticiPaneli.tsx:307"
     ]
   },
   "ta5d4e053": {
@@ -6972,7 +6988,7 @@
     "tr": "Kayıt yok — bu ilk.",
     "en": "No record — this is the first.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:573"
+      "apps/web/src/screens/YoneticiPaneli.tsx:578"
     ]
   },
   "t066577c0": {
@@ -7287,7 +7303,7 @@
     "tr": "Kimlerle paylaşılıyor",
     "en": "Who it is shared with",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:111"
+      "apps/web/src/screens/Gizlilik.tsx:119"
     ]
   },
   "t392ba242": {
@@ -7723,7 +7739,7 @@
     "tr": "Lordlar Çağı hangi veriyi neden tutuyor — ve neyi tutmuyor.",
     "en": "What data Lordlar Çağı keeps and why — and what it does not keep.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:43"
+      "apps/web/src/screens/Gizlilik.tsx:44"
     ]
   },
   "t084b456e": {
@@ -7764,7 +7780,7 @@
     "tr": "Lordun, ordun, bölgelerin, savaş raporların, ittifakın, sohbet mesajların ve engellediğin lordlar. Oyunun kendisi bu.",
     "en": "Your lord, army, regions, battle reports, alliance, chat messages and the lords you blocked. This is the game itself.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:59"
+      "apps/web/src/screens/Gizlilik.tsx:60"
     ]
   },
   "tbe00b129": {
@@ -7922,7 +7938,7 @@
     "tr": "Mesaj kaldırılamadı.",
     "en": "Message could not be removed.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:447"
+      "apps/web/src/screens/YoneticiPaneli.tsx:452"
     ]
   },
   "t1910af19": {
@@ -7931,7 +7947,7 @@
     "en": "Remove message",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:235",
-      "apps/web/src/screens/YoneticiPaneli.tsx:602"
+      "apps/web/src/screens/YoneticiPaneli.tsx:607"
     ]
   },
   "t7ff46615": {
@@ -7982,7 +7998,7 @@
     "tr": "Moderasyon geçmişi",
     "en": "Moderation history",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:571"
+      "apps/web/src/screens/YoneticiPaneli.tsx:576"
     ]
   },
   "ta4ba30ab": {
@@ -8023,7 +8039,7 @@
     "tr": "Ne kadar süre",
     "en": "How long",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:134"
+      "apps/web/src/screens/Gizlilik.tsx:142"
     ]
   },
   "t19e787fd": {
@@ -8039,7 +8055,7 @@
     "tr": "Ne toplamıyoruz",
     "en": "What we do not collect",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:79"
+      "apps/web/src/screens/Gizlilik.tsx:86"
     ]
   },
   "t06674569": {
@@ -8047,7 +8063,7 @@
     "tr": "Ne topluyoruz",
     "en": "What we collect",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:48"
+      "apps/web/src/screens/Gizlilik.tsx:49"
     ]
   },
   "t9f6b9fa1": {
@@ -8418,7 +8434,7 @@
     "tr": "Oyun durumun.",
     "en": "Your game state.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:59"
+      "apps/web/src/screens/Gizlilik.tsx:60"
     ]
   },
   "tacd576a8": {
@@ -8434,7 +8450,7 @@
     "tr": "Oyun verisi kimseyle paylaşılmıyor, satılmıyor.",
     "en": "Game data is never shared with anyone, and never sold.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:112"
+      "apps/web/src/screens/Gizlilik.tsx:120"
     ]
   },
   "t86766a95": {
@@ -8532,7 +8548,7 @@
     "en": "Measurement",
     "nerede": [
       "apps/web/src/components/CizimOlcumPaneli.tsx:119",
-      "apps/web/src/screens/YoneticiPaneli.tsx:231"
+      "apps/web/src/screens/YoneticiPaneli.tsx:236"
     ]
   },
   "t95fb77b8": {
@@ -8548,7 +8564,7 @@
     "tr": "Ölçüm: bugün {0} aktif",
     "en": "Metrics: {0} active today",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:231"
+      "apps/web/src/screens/YoneticiPaneli.tsx:236"
     ]
   },
   "tb41a1010": {
@@ -8749,7 +8765,7 @@
     "tr": "Parolan — şifrelenmiş hâliyle.",
     "en": "Your password — in encrypted form.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:54"
+      "apps/web/src/screens/Gizlilik.tsx:55"
     ]
   },
   "t349238d8": {
@@ -8781,7 +8797,7 @@
     "tr": "Parolanı Hesap ekranından değiştirebilirsin.",
     "en": "You can change your password from the Account screen.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:147"
+      "apps/web/src/screens/Gizlilik.tsx:154"
     ]
   },
   "tfec6626c": {
@@ -8789,7 +8805,7 @@
     "tr": "Parolanın kendisi hiçbir yerde saklanmıyor; yalnızca geri çevrilemez bir özeti (argon2id) tutuluyor. Parolanı unutursan biz de bilemeyiz, sıfırlaman gerekir.",
     "en": "Your password itself is stored nowhere; only an irreversible digest of it (argon2id) is kept. If you forget your password, we cannot know it either — you have to reset it.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:54"
+      "apps/web/src/screens/Gizlilik.tsx:55"
     ]
   },
   "tbb5ecdaf": {
@@ -8889,7 +8905,7 @@
     "tr": "Profil kartında başkaları yalnızca lord adını, profil resmini, armanı, seviyeni, unvanını, şöhretini, medeniyetini, ittifakını, bölge sayını, diyarını ve katıldığın ayı görür. Kaynakların, ordun, e-postan ve son giriş anın kimseye gösterilmez.",
     "en": "On your profile card, others only see your lord name, profile picture, coat of arms, level, title, fame, civilization, alliance, region count, realm and the month you joined. Your resources, army, email and last login are never shown to anyone.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:123"
+      "apps/web/src/screens/Gizlilik.tsx:131"
     ]
   },
   "t5211e5e7": {
@@ -8916,7 +8932,7 @@
     "tr": "Profil resmin — yüklersen.",
     "en": "Your profile picture — if you upload one.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:64"
+      "apps/web/src/screens/Gizlilik.tsx:65"
     ]
   },
   "t1449ce95": {
@@ -9005,7 +9021,7 @@
     "tr": "Reklam ağı, izleme çerezi, analitik kütüphanesi {0}. Sayfada hiçbir üçüncü taraf betiği çalışmıyor.",
     "en": "Ad networks, tracking cookies, analytics libraries: {0}. No third-party script runs on this page.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:84"
+      "apps/web/src/screens/Gizlilik.tsx:91"
     ]
   },
   "t5adb3d8b": {
@@ -9021,7 +9037,7 @@
     "tr": "Resim sunucumuzda küçültülüp yeniden kaydediliyor; bu sırada konum, cihaz ve tarih gibi gizli bilgileri (EXIF) siliniyor. Uygunsuz içeriğe karşı bir görüntü sınıflandırıcısından geçiyor — sınıflandırıcı kendi sunucumuzda çalışıyor, resim hiçbir dış hizmete gönderilmiyor. Sınıflandırıcının emin olamadığı resme bir yönetici bakıyor. Reddedilen resim saklanmıyor.",
     "en": "The picture is resized and re-saved on our server; in the process hidden information such as location, device and date (EXIF) is removed. It is checked for inappropriate content by an image classifier — the classifier runs on our own server and the picture is never sent to any outside service. A moderator reviews pictures the classifier is unsure about. Rejected pictures are not stored.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:64"
+      "apps/web/src/screens/Gizlilik.tsx:65"
     ]
   },
   "tec598dae": {
@@ -9462,7 +9478,7 @@
     "tr": "Sebep",
     "en": "Reason",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:496"
+      "apps/web/src/screens/YoneticiPaneli.tsx:501"
     ]
   },
   "tc0ae04ff": {
@@ -9470,7 +9486,7 @@
     "tr": "Sebep (oyuncuya gösterilir)",
     "en": "Reason (shown to the player)",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:495"
+      "apps/web/src/screens/YoneticiPaneli.tsx:500"
     ]
   },
   "tc2aff6e5": {
@@ -9478,8 +9494,8 @@
     "tr": "sebep yok",
     "en": "no reason",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:483",
-      "apps/web/src/screens/YoneticiPaneli.tsx:484"
+      "apps/web/src/screens/YoneticiPaneli.tsx:488",
+      "apps/web/src/screens/YoneticiPaneli.tsx:489"
     ]
   },
   "t8181f45e": {
@@ -9551,7 +9567,7 @@
     "tr": "sen açarsan",
     "en": "you turn them on",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:102"
+      "apps/web/src/screens/Gizlilik.tsx:110"
     ]
   },
   "tbfca2c2e": {
@@ -9560,6 +9576,14 @@
     "en": "While you were away",
     "nerede": [
       "apps/web/src/screens/LordEkrani.tsx:99"
+    ]
+  },
+  "t2ec76689": {
+    "grup": "arayuz",
+    "tr": "Sen yokken ne olduğunu özetlemek ve oyuncuların oyunu nerede bıraktığını, kaç kişinin ertesi gün döndüğünü toplam olarak görmek için. Kimin hangi ekranda olduğu değil, yalnızca sayılar okunuyor.",
+    "en": "To summarise what happened while you were away, and to see in aggregate where players leave the game and how many come back the next day. Only totals are read — never who was on which screen.",
+    "nerede": [
+      "apps/web/src/screens/Gizlilik.tsx:76"
     ]
   },
   "t46e6f684": {
@@ -9798,7 +9822,7 @@
     "tr": "Silme:",
     "en": "Deletion:",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:143"
+      "apps/web/src/screens/Gizlilik.tsx:150"
     ]
   },
   "ta5d9b6cf": {
@@ -9854,7 +9878,7 @@
     "tr": "SOHBETTE SUSTUR",
     "en": "MUTE IN CHAT",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:500"
+      "apps/web/src/screens/YoneticiPaneli.tsx:505"
     ]
   },
   "t70032e07": {
@@ -9862,7 +9886,7 @@
     "tr": "Sohbette sustur — {0}",
     "en": "Mute in chat — {0}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:507"
+      "apps/web/src/screens/YoneticiPaneli.tsx:512"
     ]
   },
   "t5f1b61cb": {
@@ -9873,12 +9897,12 @@
       "apps/web/src/components/ProfilResmiSecici.tsx:138"
     ]
   },
-  "t573b9d32": {
+  "t49eaade9": {
     "grup": "arayuz",
-    "tr": "Son {0} gün. Yalnız oyunun kendi izleri: sevkiyat, takviye, pazar — ağ adresi tutulmuyor. Otomatik ceza yok; arkadaşlar da birbirine yardım eder. İki dosyaya da bakıp karar ver.",
-    "en": "Last {0} days. Only the game's own traces: shipments, reinforcements, market — no network address is stored. No automatic penalty; friends help each other too. Look at both files and decide.",
+    "tr": "Son {0} gün. Önce oyunun kendi izleri: sevkiyat, takviye, pazar. \"Aynı ağ\" yalnız aralarında akış olan çiftte çıkar; adresin kendisi değil anahtarlı özeti tutuluyor ve kalabalık ağlar (mobil operatör, yurt) sayılmıyor. Aynı ev aynı kişi değildir. Otomatik ceza yok; iki dosyaya da bakıp karar ver.",
+    "en": "Last {0} [day|days]. The game's own traces first: shipments, reinforcements, market. \"Same network\" appears only on a pair with a flow between them; not the address but a keyed digest of it is kept, and crowded networks (mobile carriers, dorms) are not counted. The same home is not the same person. No automatic penalty; look at both files and decide.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:198"
+      "apps/web/src/screens/YoneticiPaneli.tsx:203"
     ]
   },
   "t8ef85e2f": {
@@ -9894,7 +9918,7 @@
     "tr": "Son 30 günün günlük aktif oyuncusu; en çok {0}",
     "en": "Daily active players over the last 30 days; peak {0}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:273"
+      "apps/web/src/screens/YoneticiPaneli.tsx:278"
     ]
   },
   "t66ed0f01": {
@@ -9913,12 +9937,12 @@
       "apps/web/src/components/CizimOlcumPaneli.tsx:66"
     ]
   },
-  "t7777e141": {
+  "t8b64bc8a": {
     "grup": "arayuz",
-    "tr": "Son giriş anın ve son gördüğün ekran.",
-    "en": "Your last sign-in time and the last screen you saw.",
+    "tr": "Son giriş anın, son gördüğün ekran ve oyunu açtığın günler.",
+    "en": "Your last sign-in time, the last screen you saw and the days you opened the game.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:72"
+      "apps/web/src/screens/Gizlilik.tsx:74"
     ]
   },
   "tc0ede74c": {
@@ -9942,7 +9966,7 @@
     "tr": "Son mesajları",
     "en": "Latest messages",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:586"
+      "apps/web/src/screens/YoneticiPaneli.tsx:591"
     ]
   },
   "t9564f32e": {
@@ -10015,7 +10039,7 @@
     "tr": "Sunucuda bir hata olursa teknik ayrıntısı bir hata izleme hizmetine gidebilir; oraya e-posta adresin ve parolan gönderilmez, yalnız hatanın kendisi ve lordunun kimlik numarası.",
     "en": "If an error occurs on the server, its technical details may be sent to an error-monitoring service; your email and password are not sent — only the error itself and your lord's ID number.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:128"
+      "apps/web/src/screens/Gizlilik.tsx:136"
     ]
   },
   "t2761d220": {
@@ -10023,7 +10047,7 @@
     "tr": "Sunucunun bilemediği, elle denenecek:",
     "en": "Not visible to the server, try by hand:",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:372"
+      "apps/web/src/screens/YoneticiPaneli.tsx:377"
     ]
   },
   "t0a0f8af7": {
@@ -10056,7 +10080,7 @@
     "en": "Mute could not be lifted.",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:58",
-      "apps/web/src/screens/YoneticiPaneli.tsx:429"
+      "apps/web/src/screens/YoneticiPaneli.tsx:434"
     ]
   },
   "t222bf466": {
@@ -10064,7 +10088,7 @@
     "tr": "Susturma sohbete, yasak oyuna dokunur. Yasak için sebep zorunlu; ikisi de geri alınabilir ve ikisi de kayda geçer.",
     "en": "A mute affects the chat, a ban affects the game. A reason is mandatory for a ban; both can be revoked and both go on record.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:566"
+      "apps/web/src/screens/YoneticiPaneli.tsx:571"
     ]
   },
   "ta6e05d38": {
@@ -10073,7 +10097,7 @@
     "en": "Lift mute",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:278",
-      "apps/web/src/screens/YoneticiPaneli.tsx:519"
+      "apps/web/src/screens/YoneticiPaneli.tsx:524"
     ]
   },
   "tb183d188": {
@@ -10081,7 +10105,7 @@
     "tr": "Susturulamadı.",
     "en": "Could not be muted.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:423"
+      "apps/web/src/screens/YoneticiPaneli.tsx:428"
     ]
   },
   "tededc44c": {
@@ -10091,7 +10115,7 @@
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:160",
       "apps/web/src/screens/YoneticiPaneli.tsx:104",
-      "apps/web/src/screens/YoneticiPaneli.tsx:465"
+      "apps/web/src/screens/YoneticiPaneli.tsx:470"
     ]
   },
   "tfd8148a4": {
@@ -10133,7 +10157,7 @@
     "tr": "Sv {0} · {1} · son görülme {2}",
     "en": "Lvl {0} · {1} · last seen {2}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:468"
+      "apps/web/src/screens/YoneticiPaneli.tsx:473"
     ]
   },
   "t20f49a9a": {
@@ -11098,7 +11122,7 @@
     "tr": "Verilerine erişmek ya da başka bir talepte bulunmak istersen kayıt olduğun e-posta adresinden bize yazman yeterli.",
     "en": "If you want to access your data or make any other request, writing to us from the email address you signed up with is enough.",
     "nerede": [
-      "apps/web/src/screens/Gizlilik.tsx:151"
+      "apps/web/src/screens/Gizlilik.tsx:158"
     ]
   },
   "tc0bd27c2": {
@@ -11223,7 +11247,7 @@
     "tr": "Yapışkanlık (dün ÷ 30 gün): {0}. Aynı kişiler her gün dönüyorsa yükselir.",
     "en": "Stickiness (yesterday ÷ 30 days): {0}. Rises when the same people come back every day.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:250"
+      "apps/web/src/screens/YoneticiPaneli.tsx:255"
     ]
   },
   "td55cc683": {
@@ -11247,7 +11271,7 @@
     "tr": "Yasağı kaldır",
     "en": "Lift ban",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:561"
+      "apps/web/src/screens/YoneticiPaneli.tsx:566"
     ]
   },
   "t01f1b0ca": {
@@ -11255,7 +11279,7 @@
     "tr": "Yasak {0} tarihine kadar — {1}",
     "en": "Banned until {0} — {1}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:484"
+      "apps/web/src/screens/YoneticiPaneli.tsx:489"
     ]
   },
   "t8639ff2a": {
@@ -11263,7 +11287,7 @@
     "tr": "Yasak kaldırılamadı.",
     "en": "Ban could not be lifted.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:441"
+      "apps/web/src/screens/YoneticiPaneli.tsx:446"
     ]
   },
   "tf3dfe837": {
@@ -11271,7 +11295,7 @@
     "tr": "Yasaklanamadı.",
     "en": "Could not be banned.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:435"
+      "apps/web/src/screens/YoneticiPaneli.tsx:440"
     ]
   },
   "td0e8da6b": {
@@ -11280,7 +11304,7 @@
     "en": "BANNED",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:103",
-      "apps/web/src/screens/YoneticiPaneli.tsx:464"
+      "apps/web/src/screens/YoneticiPaneli.tsx:469"
     ]
   },
   "t0cba2b1f": {
@@ -11313,7 +11337,7 @@
     "tr": "Yayın kontrolü",
     "en": "Release check",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:350"
+      "apps/web/src/screens/YoneticiPaneli.tsx:355"
     ]
   },
   "te6425b08": {
@@ -11321,7 +11345,7 @@
     "tr": "Yayın kontrolü: {0} eksik, {1} uyarı",
     "en": "Release check: {0} missing, {1} [warning|warnings]",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:353"
+      "apps/web/src/screens/YoneticiPaneli.tsx:358"
     ]
   },
   "t4863455f": {
@@ -11329,7 +11353,7 @@
     "tr": "Yayın kontrolü: hepsi tamam",
     "en": "Release check: all good",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:352"
+      "apps/web/src/screens/YoneticiPaneli.tsx:357"
     ]
   },
   "tc4aede4f": {
@@ -11494,7 +11518,7 @@
     "tr": "Yeşil: o gün kaydolan",
     "en": "Green: signed up that day",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:293"
+      "apps/web/src/screens/YoneticiPaneli.tsx:298"
     ]
   },
   "t46b8c0de": {
@@ -11503,7 +11527,7 @@
     "en": "none",
     "nerede": [
       "apps/web/src/components/ArmaSecici.tsx:179",
-      "apps/web/src/screens/Gizlilik.tsx:85"
+      "apps/web/src/screens/Gizlilik.tsx:92"
     ]
   },
   "tabbdc17e": {
@@ -11786,9 +11810,7 @@
     "tr": "zafer",
     "en": "victory",
     "nerede": [
-      "apps/web/src/screens/Akin.tsx:238",
-      "data/seferler.json:diyar_etkinligi.etkinlikler[1].birim",
-      "data/seferler.json:seferler[5].birim"
+      "apps/web/src/screens/Akin.tsx:238"
     ]
   },
   "tc31c9cb1": {
@@ -12266,7 +12288,7 @@
     "tr": "Arayüz ayrı bir adreste ama WEB_ORIGIN yalnız localhost: tarayıcı istekleri CORS'ta düşer. Arayüzün adresini WEB_ORIGIN'e yaz.",
     "en": "The web app is on a separate address but WEB_ORIGIN is localhost only: browser requests fail CORS. Add the app's address to WEB_ORIGIN.",
     "nerede": [
-      "packages/shared/src/yayin.ts:122"
+      "packages/shared/src/yayin.ts:138"
     ]
   },
   "t5620a7c7": {
@@ -12274,7 +12296,7 @@
     "tr": "Arayüzün adresi izinli.",
     "en": "The app's address is allowed.",
     "nerede": [
-      "packages/shared/src/yayin.ts:120"
+      "packages/shared/src/yayin.ts:136"
     ]
   },
   "t67406112": {
@@ -12426,7 +12448,7 @@
     "tr": "Bağlantıların tabanı herkese açık bir https adresi.",
     "en": "Links use a public https address.",
     "nerede": [
-      "packages/shared/src/yayin.ts:115"
+      "packages/shared/src/yayin.ts:131"
     ]
   },
   "t8b9a9069": {
@@ -13182,7 +13204,7 @@
     "tr": "Destek adresi yayında.",
     "en": "Support address is published.",
     "nerede": [
-      "packages/shared/src/yayin.ts:123"
+      "packages/shared/src/yayin.ts:139"
     ]
   },
   "t9592b8a7": {
@@ -13190,7 +13212,7 @@
     "tr": "DESTEK_EPOSTA boş: Kullanım Koşulları ve Aydınlatma Metni'nde iletişim satırı yok. Oyuncunun yazabileceği bir adres gir.",
     "en": "DESTEK_EPOSTA is empty: the Terms of Use and Privacy Notice have no contact line. Enter an address players can write to.",
     "nerede": [
-      "packages/shared/src/yayin.ts:125"
+      "packages/shared/src/yayin.ts:141"
     ]
   },
   "tefcb3bb6": {
@@ -13319,7 +13341,7 @@
     "tr": "E-posta gerçekten gönderiliyor.",
     "en": "Email is really being sent.",
     "nerede": [
-      "packages/shared/src/yayin.ts:105"
+      "packages/shared/src/yayin.ts:121"
     ]
   },
   "t0d07faa6": {
@@ -13327,7 +13349,7 @@
     "tr": "E-posta yalnız sunucu günlüğüne yazılıyor; parola sıfırlama ve doğrulama postası oyuncuya gitmiyor. EPOSTA_TASIYICI=resend yap.",
     "en": "Email is only written to the server log; password reset and verification emails never reach players. Set EPOSTA_TASIYICI=resend.",
     "nerede": [
-      "packages/shared/src/yayin.ts:107"
+      "packages/shared/src/yayin.ts:123"
     ]
   },
   "t8e1ff3a2": {
@@ -13464,7 +13486,7 @@
     "tr": "En az bir yönetici var.",
     "en": "There is at least one admin.",
     "nerede": [
-      "packages/shared/src/yayin.ts:98"
+      "packages/shared/src/yayin.ts:114"
     ]
   },
   "t878c2032": {
@@ -13504,7 +13526,7 @@
     "tr": "EPOSTA_TASIYICI=resend ama EPOSTA_ANAHTAR boş: posta gönderilemez.",
     "en": "EPOSTA_TASIYICI=resend but EPOSTA_ANAHTAR is empty: email cannot be sent.",
     "nerede": [
-      "packages/shared/src/yayin.ts:108"
+      "packages/shared/src/yayin.ts:124"
     ]
   },
   "t86714050": {
@@ -13657,7 +13679,7 @@
     "tr": "Geçersiz susturma süresi.",
     "en": "Invalid mute duration.",
     "nerede": [
-      "apps/api/src/routes/yonetici.ts:360",
+      "apps/api/src/routes/yonetici.ts:394",
       "packages/shared/src/moderasyon.ts:246"
     ]
   },
@@ -13730,7 +13752,7 @@
     "tr": "Gönderen adresi varsayılan (@localhost); posta reddedilir. EPOSTA_GONDEREN alan adın doğrulanmış bir adres olmalı.",
     "en": "The sender address is the default (@localhost); email will be rejected. EPOSTA_GONDEREN must be an address on your verified domain.",
     "nerede": [
-      "packages/shared/src/yayin.ts:110"
+      "packages/shared/src/yayin.ts:126"
     ]
   },
   "t2674e2d7": {
@@ -13771,7 +13793,7 @@
     "tr": "Günlük debug/trace seviyesinde; üretimde gereğinden çok yazıyor. LOG_LEVEL=info yap.",
     "en": "Logging is at debug/trace level; it writes more than needed in production. Set LOG_LEVEL=info.",
     "nerede": [
-      "packages/shared/src/yayin.ts:131"
+      "packages/shared/src/yayin.ts:147"
     ]
   },
   "t590d8e92": {
@@ -13803,7 +13825,7 @@
     "tr": "Günlük seviyesi olağan.",
     "en": "Log level is normal.",
     "nerede": [
-      "packages/shared/src/yayin.ts:129"
+      "packages/shared/src/yayin.ts:145"
     ]
   },
   "t97c33115": {
@@ -13851,7 +13873,7 @@
     "tr": "Hata izleme açık.",
     "en": "Error monitoring is on.",
     "nerede": [
-      "packages/shared/src/yayin.ts:101"
+      "packages/shared/src/yayin.ts:117"
     ]
   },
   "t99572bb9": {
@@ -13859,7 +13881,7 @@
     "tr": "Hata izleme kapalı: sunucu çökünce kimse haber almıyor. SENTRY_DSN gir.",
     "en": "Error monitoring is off: nobody is notified when the server crashes. Enter SENTRY_DSN.",
     "nerede": [
-      "packages/shared/src/yayin.ts:102"
+      "packages/shared/src/yayin.ts:118"
     ]
   },
   "t1be8937a": {
@@ -13931,7 +13953,7 @@
     "tr": "Hesap ekranındaki \"Deneme gönder\" telefona düşüyor.",
     "en": "\"Send test\" on the Account screen reaches the phone.",
     "nerede": [
-      "packages/shared/src/yayin.ts:141"
+      "packages/shared/src/yayin.ts:166"
     ]
   },
   "tde5c8550": {
@@ -13955,7 +13977,7 @@
     "tr": "Hiç yönetici yok: şikâyetler kuyrukta birikiyor ve kimse bakamıyor. pnpm yonetici ver <eposta>",
     "en": "There are no admins: reports pile up in the queue and nobody can review them. pnpm yonetici ver <eposta>",
     "nerede": [
-      "packages/shared/src/yayin.ts:100"
+      "packages/shared/src/yayin.ts:116"
     ]
   },
   "t14ab6624": {
@@ -13964,6 +13986,14 @@
     "en": "Citadel",
     "nerede": [
       "data/balance.json:bolgeler.gelisim_adlari.kale[1]"
+    ]
+  },
+  "tb5ddf0f5": {
+    "grup": "motor",
+    "tr": "ISTEMCI_IP_BASLIGI girilmiş ama bu istekte o başlık yok: adres vekilinkine düşüyor. Başlığın adını denetle (Render: cf-connecting-ip).",
+    "en": "ISTEMCI_IP_BASLIGI is set but this request does not carry that header: the address falls back to the proxy's. Check the header name (Render: cf-connecting-ip).",
+    "nerede": [
+      "packages/shared/src/yayin.ts:155"
     ]
   },
   "teb818bbe": {
@@ -13995,7 +14025,7 @@
     "tr": "İlk açılışta 6 demo lord ekleniyor. Gerçek oyuncular gelecekse SEED_DEMO_LORDS=false yap.",
     "en": "6 demo lords are added on first start. If real players are coming, set SEED_DEMO_LORDS=false.",
     "nerede": [
-      "packages/shared/src/yayin.ts:97"
+      "packages/shared/src/yayin.ts:113"
     ]
   },
   "tfb8e4e56": {
@@ -14011,7 +14041,7 @@
     "tr": "İstek tavanları çok yüksek; yük testi değeri kalmış olabilir. RATE_LIMIT_MAX ve AUTH_RATE_LIMIT_MAX'ı varsayılana döndür.",
     "en": "Request limits are very high; a load test value may have been left behind. Return RATE_LIMIT_MAX and AUTH_RATE_LIMIT_MAX to their defaults.",
     "nerede": [
-      "packages/shared/src/yayin.ts:128"
+      "packages/shared/src/yayin.ts:144"
     ]
   },
   "t90de0bb0": {
@@ -14019,7 +14049,31 @@
     "tr": "İstek tavanları olağan.",
     "en": "Request limits are normal.",
     "nerede": [
-      "packages/shared/src/yayin.ts:126"
+      "packages/shared/src/yayin.ts:142"
+    ]
+  },
+  "t815234ac": {
+    "grup": "motor",
+    "tr": "İstemcinin adresi doğrudan bağlantıdan okunuyor.",
+    "en": "The client's address is read directly from the connection.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:153"
+    ]
+  },
+  "t7352cc9b": {
+    "grup": "motor",
+    "tr": "İstemcinin adresi vekilin yazdığı başlıktan okunuyor.",
+    "en": "The client's address is read from the header the proxy writes.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:151"
+    ]
+  },
+  "te602ac9d": {
+    "grup": "motor",
+    "tr": "İstemcinin adresi X-Forwarded-For'dan, güvenilen vekil sayısıyla okunuyor.",
+    "en": "The client's address is read from X-Forwarded-For, using the trusted proxy count.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:152"
     ]
   },
   "t65946fc8": {
@@ -14687,7 +14741,7 @@
     "tr": "NODE_ENV=production değil: /api/test/* uçları açık ve CORS gevşek. Sunucuda NODE_ENV=production yap.",
     "en": "NODE_ENV is not production: /api/test/* endpoints are open and CORS is loose. Set NODE_ENV=production on the server.",
     "nerede": [
-      "packages/shared/src/yayin.ts:91"
+      "packages/shared/src/yayin.ts:107"
     ]
   },
   "t3d5e14ec": {
@@ -14881,7 +14935,7 @@
     "tr": "Oturum imzası tahmin edilebilir görünüyor (tekrarlı ya da örnek bir sözcük içeriyor). Rastgele üret; değişince herkes çıkış yapar.",
     "en": "The session secret looks guessable (repeated characters or a sample word). Generate a random one; changing it signs everyone out.",
     "nerede": [
-      "packages/shared/src/yayin.ts:94"
+      "packages/shared/src/yayin.ts:110"
     ]
   },
   "t8e92ac9d": {
@@ -14889,7 +14943,7 @@
     "tr": "Oturum imzası uzun ve rastgele görünüyor.",
     "en": "The session secret looks long and random.",
     "nerede": [
-      "packages/shared/src/yayin.ts:92"
+      "packages/shared/src/yayin.ts:108"
     ]
   },
   "t40087aa8": {
@@ -14985,7 +15039,7 @@
     "tr": "Parola sıfırlama e-postası gerçekten geliyor.",
     "en": "The password reset email really arrives.",
     "nerede": [
-      "packages/shared/src/yayin.ts:140"
+      "packages/shared/src/yayin.ts:165"
     ]
   },
   "tfa811875": {
@@ -15017,7 +15071,7 @@
     "tr": "Profil resmi sınıflandırıcısı açık.",
     "en": "Profile picture classifier is on.",
     "nerede": [
-      "packages/shared/src/yayin.ts:132"
+      "packages/shared/src/yayin.ts:148"
     ]
   },
   "t8d0a5451": {
@@ -15025,7 +15079,7 @@
     "tr": "Profil resmi sınıflandırıcısı kapalı: yüklenen her resim yönetici onayını bekliyor.",
     "en": "Profile picture classifier is off: every uploaded picture waits for admin approval.",
     "nerede": [
-      "packages/shared/src/yayin.ts:134"
+      "packages/shared/src/yayin.ts:150"
     ]
   },
   "tb0ab002d": {
@@ -15049,7 +15103,7 @@
     "tr": "Push bildirimi açık.",
     "en": "Push notifications are on.",
     "nerede": [
-      "packages/shared/src/yayin.ts:111"
+      "packages/shared/src/yayin.ts:127"
     ]
   },
   "t1aed82d8": {
@@ -15057,7 +15111,7 @@
     "tr": "Push bildirimi kapalı; arayüzde düğme hiç çıkmıyor. pnpm push-anahtari ile üretilen VAPID çiftini gir.",
     "en": "Push notifications are off; the button never appears in the app. Enter the VAPID pair generated by pnpm push-anahtari.",
     "nerede": [
-      "packages/shared/src/yayin.ts:113"
+      "packages/shared/src/yayin.ts:129"
     ]
   },
   "tc750492c": {
@@ -15065,7 +15119,7 @@
     "tr": "Rakip demo lordlar eklenmiyor.",
     "en": "Rival demo lords are not added.",
     "nerede": [
-      "packages/shared/src/yayin.ts:95"
+      "packages/shared/src/yayin.ts:111"
     ]
   },
   "t0f6c0cea": {
@@ -15267,7 +15321,7 @@
     "tr": "SENTRY_DSN girilmiş ama izleme açılamadı; büyük olasılıkla yazım hatası. Sentry panelinden yeniden kopyala.",
     "en": "SENTRY_DSN is set but monitoring could not start; most likely a typo. Copy it again from the Sentry dashboard.",
     "nerede": [
-      "packages/shared/src/yayin.ts:104"
+      "packages/shared/src/yayin.ts:120"
     ]
   },
   "ta5b1e298": {
@@ -15316,6 +15370,22 @@
     "en": "You have been muted in chat — {0} left.{1}",
     "nerede": [
       "packages/shared/src/moderasyon.ts:201"
+    ]
+  },
+  "t9849ad40": {
+    "grup": "motor",
+    "tr": "Sunucu bir vekilin arkasında ama adres bağlantıdan okunuyor: kayıt ve giriş sınırı bütün oyunculara tek kova. Render’da ISTEMCI_IP_BASLIGI=cf-connecting-ip yap.",
+    "en": "The server sits behind a proxy but reads the address from the connection: the sign-up and sign-in limit is one shared bucket for every player. On Render, set ISTEMCI_IP_BASLIGI=cf-connecting-ip.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:157"
+    ]
+  },
+  "t7e74a9e5": {
+    "grup": "motor",
+    "tr": "Sunucu bir vekilin arkasındaysa ISTEMCI_IP_BASLIGI ya da VEKIL_SAYISI gir; yoksa giriş sınırı herkese tek kova olur. Yönetici panosu bunu senin isteğinle ölçer.",
+    "en": "If the server sits behind a proxy, set ISTEMCI_IP_BASLIGI or VEKIL_SAYISI; otherwise the sign-in limit becomes one shared bucket for everyone. The admin panel checks this against your own request.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:159"
     ]
   },
   "tf7055aec": {
@@ -15613,7 +15683,7 @@
     "tr": "UYGULAMA_URL https değil; parola sıfırlama bağlantısı şifresiz gidiyor.",
     "en": "UYGULAMA_URL is not https; the password reset link travels unencrypted.",
     "nerede": [
-      "packages/shared/src/yayin.ts:119"
+      "packages/shared/src/yayin.ts:135"
     ]
   },
   "tfc8b38f8": {
@@ -15621,7 +15691,7 @@
     "tr": "UYGULAMA_URL yerel bir adres; e-postadaki bağlantılar oyuncuda açılmaz.",
     "en": "UYGULAMA_URL is a local address; links in emails will not open for players.",
     "nerede": [
-      "packages/shared/src/yayin.ts:118"
+      "packages/shared/src/yayin.ts:134"
     ]
   },
   "t65fb1da9": {
@@ -15629,7 +15699,7 @@
     "tr": "Uygulamanın adresi bilinmiyor; parola sıfırlama bağlantısı localhost gösteriyor. UYGULAMA_URL gir.",
     "en": "The app's address is unknown; the password reset link points to localhost. Enter UYGULAMA_URL.",
     "nerede": [
-      "packages/shared/src/yayin.ts:117"
+      "packages/shared/src/yayin.ts:133"
     ]
   },
   "t41c5d512": {
@@ -15661,7 +15731,7 @@
     "tr": "Üretim kipinde; test uçları kapalı.",
     "en": "Production mode; test endpoints are closed.",
     "nerede": [
-      "packages/shared/src/yayin.ts:89"
+      "packages/shared/src/yayin.ts:105"
     ]
   },
   "t4a0c5585": {
@@ -15694,7 +15764,7 @@
     "tr": "VAPID çiftinin yalnız bir yarısı girilmiş; push kapalı. İkisini birlikte gir.",
     "en": "Only one half of the VAPID pair is set; push is off. Enter both together.",
     "nerede": [
-      "packages/shared/src/yayin.ts:114"
+      "packages/shared/src/yayin.ts:130"
     ]
   },
   "t442686cb": {
@@ -15791,7 +15861,7 @@
     "tr": "Yedek alınıyor ve canlı veritabanında bir kez \"pnpm yedek-tatbikati\" koştu (docs/05 §4).",
     "en": "Backups are taken and \"pnpm yedek-tatbikati\" has run once against the live database (docs/05 §4).",
     "nerede": [
-      "packages/shared/src/yayin.ts:139"
+      "packages/shared/src/yayin.ts:164"
     ]
   },
   "t0ee42256": {
@@ -15863,7 +15933,7 @@
     "tr": "yönetici",
     "en": "admin",
     "nerede": [
-      "packages/shared/src/yayin.ts:176"
+      "packages/shared/src/yayin.ts:201"
     ]
   },
   "t068619b5": {
@@ -16717,7 +16787,7 @@
     "tr": "Bağlantı geçersiz ya da süresi dolmuş. Yeni bir tane iste.",
     "en": "The link is invalid or expired. Request a new one.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:347"
+      "apps/api/src/routes/auth.ts:348"
     ]
   },
   "t4c97b297": {
@@ -16725,8 +16795,8 @@
     "tr": "Bağlantı geçersiz ya da süresi dolmuş. Yeniden sıfırlama iste.",
     "en": "Link is invalid or expired. Request a reset again.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:492",
-      "apps/api/src/routes/auth.ts:513"
+      "apps/api/src/routes/auth.ts:493",
+      "apps/api/src/routes/auth.ts:514"
     ]
   },
   "tf9754a95": {
@@ -16924,7 +16994,7 @@
     "tr": "Böyle bir diyar yok.",
     "en": "No such realm.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:175"
+      "apps/api/src/routes/auth.ts:176"
     ]
   },
   "t9da35381": {
@@ -16972,7 +17042,7 @@
     "tr": "Bu ad kullanılamaz.",
     "en": "This name cannot be used.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:204",
+      "apps/api/src/routes/auth.ts:205",
       "apps/api/src/routes/ittifak.ts:430"
     ]
   },
@@ -17094,8 +17164,8 @@
     "tr": "Bu e-posta zaten kayıtlı.",
     "en": "This email is already registered.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:208",
-      "apps/api/src/routes/auth.ts:288"
+      "apps/api/src/routes/auth.ts:209",
+      "apps/api/src/routes/auth.ts:289"
     ]
   },
   "t26a1c540": {
@@ -17226,8 +17296,8 @@
     "tr": "Bu lord adı alınmış.",
     "en": "This lord name is taken.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:215",
-      "apps/api/src/routes/auth.ts:286"
+      "apps/api/src/routes/auth.ts:216",
+      "apps/api/src/routes/auth.ts:287"
     ]
   },
   "tac7d4a4c": {
@@ -17350,13 +17420,13 @@
     "tr": "Bulunamadı.",
     "en": "Not found.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:323",
-      "apps/api/src/routes/yonetici.ts:262",
-      "apps/api/src/routes/yonetici.ts:363",
-      "apps/api/src/routes/yonetici.ts:376",
-      "apps/api/src/routes/yonetici.ts:412",
-      "apps/api/src/routes/yonetici.ts:435",
-      "apps/api/src/routes/yonetici.ts:461",
+      "apps/api/src/routes/auth.ts:324",
+      "apps/api/src/routes/yonetici.ts:296",
+      "apps/api/src/routes/yonetici.ts:397",
+      "apps/api/src/routes/yonetici.ts:410",
+      "apps/api/src/routes/yonetici.ts:446",
+      "apps/api/src/routes/yonetici.ts:469",
+      "apps/api/src/routes/yonetici.ts:495",
       "apps/api/src/services/moderasyon.ts:34"
     ]
   },
@@ -17405,7 +17475,7 @@
     "tr": "Çok fazla hatalı deneme. {0} dakika sonra yeniden dene ya da parolanı sıfırla.",
     "en": "Too many failed attempts. Try again in {0} [minute|minutes] or reset your password.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:368"
+      "apps/api/src/routes/auth.ts:369"
     ]
   },
   "t4f5adcbf": {
@@ -17431,7 +17501,7 @@
     "tr": "Dağıtılacak puan belirtmedin.",
     "en": "You did not specify points to distribute.",
     "nerede": [
-      "apps/api/src/routes/me.ts:206"
+      "apps/api/src/routes/me.ts:213"
     ]
   },
   "tb5e007e8": {
@@ -17473,7 +17543,7 @@
     "nerede": [
       "apps/api/src/routes/akin.ts:56",
       "apps/api/src/routes/map.ts:80",
-      "apps/api/src/routes/me.ts:41"
+      "apps/api/src/routes/me.ts:43"
     ]
   },
   "tbf2e9855": {
@@ -17524,30 +17594,6 @@
       "apps/api/src/routes/ittifak.ts:1904"
     ]
   },
-  "t075455aa": {
-    "grup": "sunucu",
-    "tr": "E-posta (log taşıyıcısı)",
-    "en": "Email (log carrier)",
-    "nerede": [
-      "apps/api/src/services/eposta.ts:61"
-    ]
-  },
-  "t1ae040d6": {
-    "grup": "sunucu",
-    "tr": "E-posta gönderildi",
-    "en": "Email sent",
-    "nerede": [
-      "apps/api/src/services/eposta.ts:56"
-    ]
-  },
-  "t44fe3ed5": {
-    "grup": "sunucu",
-    "tr": "E-posta gönderilemedi",
-    "en": "Email could not be sent",
-    "nerede": [
-      "apps/api/src/services/eposta.ts:63"
-    ]
-  },
   "tc0e0b6c1": {
     "grup": "sunucu",
     "tr": "E-posta gönderilemedi ({0}): {1}",
@@ -17561,7 +17607,7 @@
     "tr": "E-posta veya parola hatalı.",
     "en": "Email or password incorrect.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:376"
+      "apps/api/src/routes/auth.ts:377"
     ]
   },
   "tc33fbc55": {
@@ -17570,7 +17616,7 @@
     "en": "Verify your email.",
     "nerede": [
       "apps/api/src/auth.ts:89",
-      "apps/api/src/routes/auth.ts:400"
+      "apps/api/src/routes/auth.ts:401"
     ]
   },
   "t61d3205f": {
@@ -17649,7 +17695,7 @@
     "tr": "Geçerli bir e-posta gir.",
     "en": "Enter a valid email.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:51"
+      "apps/api/src/routes/auth.ts:52"
     ]
   },
   "tfe3021a2": {
@@ -17665,7 +17711,7 @@
     "tr": "Geçersiz yasak.",
     "en": "Invalid ban.",
     "nerede": [
-      "apps/api/src/routes/yonetici.ts:406"
+      "apps/api/src/routes/yonetici.ts:440"
     ]
   },
   "t5561fd0b": {
@@ -17756,7 +17802,7 @@
     "en": "Your account is banned.",
     "nerede": [
       "apps/api/src/auth.ts:77",
-      "apps/api/src/routes/auth.ts:389"
+      "apps/api/src/routes/auth.ts:390"
     ]
   },
   "t9b52960a": {
@@ -17959,7 +18005,7 @@
     "tr": "Kendi hesabını yasaklayamazsın.",
     "en": "You cannot ban your own account.",
     "nerede": [
-      "apps/api/src/routes/yonetici.ts:414"
+      "apps/api/src/routes/yonetici.ts:448"
     ]
   },
   "t2151cf3f": {
@@ -18064,7 +18110,7 @@
     "tr": "Lord adı en az 3 karakter olmalı.",
     "en": "Lord name must be at least 3 characters.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:55"
+      "apps/api/src/routes/auth.ts:56"
     ]
   },
   "te600421c": {
@@ -18072,7 +18118,7 @@
     "tr": "Lord adı en fazla 20 karakter olabilir.",
     "en": "Lord name can be at most 20 characters.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:56"
+      "apps/api/src/routes/auth.ts:57"
     ]
   },
   "t902efbf7": {
@@ -18080,7 +18126,7 @@
     "tr": "Lord adında geçersiz karakter var.",
     "en": "Lord name contains invalid characters.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:57"
+      "apps/api/src/routes/auth.ts:58"
     ]
   },
   "t12a0a254": {
@@ -18112,7 +18158,7 @@
     "tr": "Lordlar Çağı — parola sıfırlama",
     "en": "Age of Lords — password reset",
     "nerede": [
-      "apps/api/src/routes/auth.ts:468"
+      "apps/api/src/routes/auth.ts:469"
     ]
   },
   "t20970dae": {
@@ -18180,7 +18226,7 @@
     "tr": "Mevcut parola hatalı.",
     "en": "Current password incorrect.",
     "nerede": [
-      "apps/api/src/routes/me.ts:329"
+      "apps/api/src/routes/me.ts:336"
     ]
   },
   "tb5017c4f": {
@@ -18188,7 +18234,7 @@
     "tr": "Mevcut parolanı gir.",
     "en": "Enter your current password.",
     "nerede": [
-      "apps/api/src/routes/me.ts:60"
+      "apps/api/src/routes/me.ts:62"
     ]
   },
   "t464c2de7": {
@@ -18204,7 +18250,7 @@
     "tr": "O diyar doldu. Başka bir diyar seç.",
     "en": "That realm is full. Pick another one.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:190"
+      "apps/api/src/routes/auth.ts:191"
     ]
   },
   "tb209b8d4": {
@@ -18212,7 +18258,7 @@
     "tr": "Onay metnini birebir yazman gerekiyor.",
     "en": "You must type the confirmation text exactly.",
     "nerede": [
-      "apps/api/src/routes/me.ts:67"
+      "apps/api/src/routes/me.ts:69"
     ]
   },
   "tc2bfa5ef": {
@@ -18329,8 +18375,8 @@
     "tr": "Parola en az 8 karakter olmalı.",
     "en": "Password must be at least 8 characters.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:52",
-      "apps/api/src/routes/auth.ts:76"
+      "apps/api/src/routes/auth.ts:53",
+      "apps/api/src/routes/auth.ts:77"
     ]
   },
   "tdc156679": {
@@ -18338,7 +18384,7 @@
     "tr": "Parola hatalı.",
     "en": "Password incorrect.",
     "nerede": [
-      "apps/api/src/routes/me.ts:369"
+      "apps/api/src/routes/me.ts:376"
     ]
   },
   "t1f48c059": {
@@ -18346,7 +18392,7 @@
     "tr": "Parolanı sıfırlamak için {0} dakika içinde bu bağlantıyı aç:\n\n{1}\n\nBu isteği sen yapmadıysan hiçbir şey yapmana gerek yok; parolan değişmedi.",
     "en": "To reset your password open this link within {0} [minute|minutes]:\n\n{1}\n\nIf you did not make this request you need to do nothing; your password has not changed.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:469"
+      "apps/api/src/routes/auth.ts:470"
     ]
   },
   "t2695daea": {
@@ -18436,7 +18482,7 @@
     "tr": "Sadece {0} stat puanın var, {1} dağıtmaya çalıştın.",
     "en": "You only have {0} stat points, you tried to distribute {1}.",
     "nerede": [
-      "apps/api/src/routes/me.ts:215"
+      "apps/api/src/routes/me.ts:222"
     ]
   },
   "tfb73485d": {
@@ -18518,7 +18564,7 @@
     "tr": "Silmek için parolanı gir.",
     "en": "Enter your password to delete.",
     "nerede": [
-      "apps/api/src/routes/me.ts:65"
+      "apps/api/src/routes/me.ts:67"
     ]
   },
   "t6b3014a7": {
@@ -18678,7 +18724,7 @@
     "tr": "Yeni parola en az 8 karakter olmalı.",
     "en": "New password must be at least 8 characters.",
     "nerede": [
-      "apps/api/src/routes/me.ts:61"
+      "apps/api/src/routes/me.ts:63"
     ]
   },
   "tb7d384d8": {
@@ -21179,6 +21225,15 @@
     "en": "Art of War",
     "nerede": [
       "data/arastirma.json:dallar[2].dugumler[0].ad"
+    ]
+  },
+  "ta27e8c92": {
+    "grup": "veri",
+    "tr": "savaş zaferi",
+    "en": "battle victories",
+    "nerede": [
+      "data/seferler.json:diyar_etkinligi.etkinlikler[1].birim",
+      "data/seferler.json:seferler[5].birim"
     ]
   },
   "t6fd469aa": {
