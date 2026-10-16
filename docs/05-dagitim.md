@@ -20,6 +20,7 @@ karşılığıdır.
 | `SEED_DEMO_LORDS`           | hayır      | false                | İlk açılışta 6 rakip lord ekler                                                                                        |
 | `RATE_LIMIT_MAX`            | hayır      | 300                  | Oturum başına dakikalık istek tavanı                                                                                   |
 | `AUTH_RATE_LIMIT_MAX`       | hayır      | 60                   | Kayıt/giriş için IP başına dakikalık tavan                                                                             |
+| `DB_HAVUZU`                 | hayır      | 10                   | Veritabanı bağlantı havuzu. `DATABASE_URL` kendi `connection_limit`ini taşıyorsa o geçerli (§8)                        |
 | `SENTRY_DSN`                | hayır      | boş                  | Boşsa hata izleme kapalıdır, dışarıya hiçbir şey gitmez                                                                |
 | `SENTRY_TRACES_SAMPLE_RATE` | hayır      | 0.05                 | İzleme örneklemesi. Ücretsiz katmanda kota var                                                                         |
 | `LOG_LEVEL`                 | hayır      | info                 | `fatal\|error\|warn\|info\|debug\|trace`                                                                               |
@@ -130,7 +131,8 @@ satırlarının artması ilk uyarıdır.
 pnpm typecheck && pnpm test && pnpm balance   # statik + birim + denge
 pnpm build                                    # üretim derlemesi
 pnpm e2e                                      # tarayıcı akışları (API + web ayakta olmalı)
-pnpm yuk-testi                                # 120 oyuncu
+pnpm yuk-testi                                # 120 oyuncu, tur kipi
+pnpm yuk-testi-500                            # 500 oyuncu, 3 dk oturum (§8)
 ```
 
 İlk iki madde artık **otomatik denetleniyor**:
@@ -236,3 +238,75 @@ Kod: `apps/api/src/services/olcumHesabi.ts` (saf hesap, birim testi
 yanında), `olcumPanosu.ts` (pencereyi okuyan). `tools/yonetici-testi.mjs`
 kaydın ve `/me`nin satır yazdığını, panonun onları gördüğünü ve
 yetkisize kapalı olduğunu ölçüyor.
+
+---
+
+## 8. Kapasite: 500 oyunculu yük testi
+
+**`pnpm yuk-testi-500`** — 500 oyuncu kaydoluyor, 30 sn içinde oyuna
+giriyor ve 3 dakika OYNUYOR: istemcinin kendi yoklamaları (`/me` 30 sn,
+sohbet 30 sn, diyar 60 sn) ve arada ortalama 8 sn düşünme süresiyle bir
+eylem karışımı (harita, şehir, ordu, sıralama, sohbet okuma/yazma, eğitim,
+üretim, saldırı). Sonunda **savaş dalgası**: 500 oyuncu aynı saniyede
+saldırıyor ve yürüyüşler anında çözülüyor. Yanında olay döngüsünün nabzı
+(`/health` 2 sn'de bir) ve API sürecinin belleği/CPU'su ölçülüyor. Eski
+"tur" kipi (`pnpm yuk-testi`) bir uçun en kötü hâlini bulmaya yarıyor ama
+gerçek bir akşamı anlatmıyordu — 500 kişi aynı saniyede aynı düğmeye
+basmıyor.
+
+### Ölçülen (üretim derlemesi, worker süreç içinde — Render'daki gibi)
+
+API `taskset` ile çekirdeğe sabitlendi; veritabanı ayrı çekirdeklerde
+(Render'da ayrı makine).
+
+| API'nin çekirdeği | Oyuncu | Debi     | Oturumda en yavaş uç (p95)             | CPU (oturum) | Bellek (oturum / dalga tepe) | Sonuç     |
+| ----------------- | ------ | -------- | -------------------------------------- | ------------ | ---------------------------- | --------- |
+| 4                 | 500    | 117 i/sn | kayıt 294 ms (en yavaş uç)             | %119         | — / 669 MB                   | geçti     |
+| 2                 | 500    | 117 i/sn | kayıt 475 ms; `/map` 124, `/me` 101 ms | %97 (yarısı) | 350 / 572 MB                 | geçti     |
+| 1                 | 500    | 105 i/sn | `/map` 5,3 sn; `/me` p50 1,8 sn        | doymuş       | 399 / 677 MB                 | **kaldı** |
+| 1                 | 250    | 58 i/sn  | kayıt 958 ms; `/map` 110, `/me` 99 ms  | %49          | 308 / 432 MB                 | geçti     |
+
+Savaş dalgası (500 oyuncu aynı saniyede eğitimi bitirip haritayı açıp
+saldırıyor) 2 çekirdekte p95 ~11 sn, 4 çekirdekte ~8 sn sürüyor ve hiçbir
+saldırı yolda kalmıyor. Bu kasten aşırı bir an; oyuncu eşiğine (1 sn)
+tabi değil. Bellek dalgadan sonra kendiliğinden ~300 MB'a iniyor — sızıntı
+yok, yük altında büyüyen yığın.
+
+**Öneri.** Aynı anda **500** aktif oyuncu için **2 CPU, 1 GB** bellekli bir
+sunucu. **1 CPU** ~250 aktif oyuncuyu rahat taşıyor. Render'ın ücretsiz
+planı (0,1 CPU, 512 MB) ölçülmedi; doğrusal tahminle ~25 aktif oyuncu —
+deneme için yeter, yayın için değil. "Aktif" = o an uygulamayı açık tutan;
+kayıtlı oyuncu sayısı bunun birkaç katı olabilir.
+
+İşin çoğu JS'te değil sorgu motorunda: CPU profilinde JS iş parçacığı
+zamanın %79'unda boştu, uç başına ~20 SQL ifadesi var (`/me` 23, `/map`
+25). Kapasiteyi artırmanın yolu sorgu sayısını azaltmak.
+
+### Testin bulduğu ve düzeltilen hatalar
+
+1. **Aynı bölgeye aynı anda varan saldırılar** garnizonu birlikte okuyup
+   yazıyordu: oyuncu garnizonunda 500, NPC garnizonunda SESSİZ hata —
+   ikinci savaş birincinin kaybını eziyor, savunan aynı askerle iki kez
+   savaşıyordu (3/3 koşuda yeniden üretildi). Çözüm bölge kilidi
+   (`services/march.ts`, `FOR UPDATE SKIP LOCKED`): bölge başka bir
+   savaşın elindeyse yürüyüş sonraki tura kalıyor. Bekleyen kilit değil,
+   çünkü her bekleyen bir veritabanı bağlantısı tutuyor ve aynı köye düşen
+   onlarca savaş havuzu tüketiyordu. Postgres'in kilitlenme sezgisinin
+   geri aldığı çözüm (40P01) de aynı yoldan yeniden deneniyor.
+   `tools/yaris-testi.mjs` 5. senaryo: her savaş öncekinin bıraktığı
+   garnizonla başlıyor.
+2. **Diyar dolarken gelen kayıtlar** her biri kendi diyarını açıyordu:
+   aynı saniyede 8 diyar, 6'sında tek lord; dört denemeyi aşan çakışma da
+   500 dönüyordu. Çözüm danışma kilidi (`findOrOpenWorld`): kilidi alan
+   açık diyarları yeniden okuyor, önündeki az önce açtıysa oraya
+   katılıyor. Kilidin içindeki her okuma aynı işlemin bağlantısından —
+   ikinci bağlantı istemek, kilidi bekleyenler havuzu doldurmuşken kilidi
+   tutanı kilitliyordu.
+3. **Bağlantı havuzu** Prisma'nın varsayılanıydı (`2 × çekirdek + 1`,
+   1 çekirdekte 3 bağlantı). Artık `DB_HAVUZU` (varsayılan 10); işlem
+   başlama beklemesi 2 sn'den 5 sn'ye.
+
+Kayıt anındaki doluluk hâlâ yaklaşık: diyar 240 aktifte dolarken aynı
+anda gelen kayıtlar onu birkaç kişi aşabiliyor (ölçülen 254). Kapasite
+bir tasarım hedefi, sert bir sınır değil; bunu kapatmak her kaydı
+sıraya dizmek demekti.

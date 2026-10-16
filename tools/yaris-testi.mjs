@@ -14,7 +14,7 @@
  *
  * API ayakta olmalı. node tools/yaris-testi.mjs
  */
-import { benzersizAd, kayitOl } from './lib/kayit.mjs';
+import { benzersizAd, kayitOl, onerilenDiyar } from './lib/kayit.mjs';
 
 const API = process.env.API_URL ?? 'http://localhost:3000';
 const N = 10;
@@ -25,11 +25,12 @@ function kontrol(ad, kosul, detay = '') {
   if (!kosul) hata++;
 }
 
-async function yeniLord(onek) {
+async function yeniLord(onek, worldId) {
   const ad = benzersizAd(onek);
   const { token } = await kayitOl(API, {
     email: `${ad.toLowerCase().replace(/[^a-z0-9]/g, '')}${Date.now()}@lordlar.dev`,
     lordName: ad,
+    worldId,
   });
   const bas = { authorization: `Bearer ${token}`, 'content-type': 'application/json' };
   const al = (y) => fetch(`${API}/api${y}`, { headers: bas }).then((r) => r.json());
@@ -159,6 +160,84 @@ console.log('Lordlar Çağı — yarış testi\n');
     'Eşzamanlı /me okumaları harcamayı geri almıyor',
     egitim.s === 200 && Math.abs(son.altin - beklenen) <= 5,
     `beklenen ~${Math.floor(beklenen)}, son ${Math.floor(son.altin)}`,
+  );
+}
+
+// ── 5. Aynı bölgeye aynı anda varan saldırılar ─────────────────────────
+//
+// 500 oyunculu yük testi buldu: iki çözüm garnizonu birlikte okuyup
+// birlikte yazıyordu. Oyuncu garnizonunda biri silinmiş satırı
+// güncellemeye çalışıp 500 alıyordu; NPC garnizonunda hata bile yoktu —
+// ikinci savaş birincinin kaybını eski sayıyla eziyor, savunan aynı
+// askerle iki kez savaşıyordu. Düzeltme `services/march.ts`te bölge
+// kilidi. Ölçülen: hata yok, her yürüyüş bir kez çözülüyor ve her savaş
+// bir öncekinin BIRAKTIĞI garnizonla başlıyor.
+{
+  const K = 3;
+  const worldId = await onerilenDiyar(API);
+  const lordlar = await Promise.all(Array.from({ length: K }, () => yeniLord('Kusatma', worldId)));
+  const hedef = (await lordlar[0].al('/map')).oneri?.regionId;
+  for (const l of lordlar) {
+    await l.post('/test/kaynak-ver', { altin: 100000, demir: 100000, erzak: 100000 });
+    await l.post('/army/train', { unitType: 'mizrakci', count: 12 });
+    await l.post('/test/kuyruklari-bitir');
+    const home = (await l.al('/army')).home ?? {};
+    await l.post('/march', { toRegionId: hedef, army: home, generalIds: [] });
+  }
+  const s = await ayni(lordlar.map((l) => () => l.post('/test/yuruyusleri-bitir')));
+  kontrol(
+    'Aynı bölgeye eşzamanlı saldırılar: sunucu hatası yok',
+    sunucuHatasi(s) === 0,
+    s.map((x) => x.s).join(','),
+  );
+  const cozulen = s.reduce((t, x) => t + (x.b?.cozulen ?? 0), 0);
+  kontrol('Her yürüyüş bir kez çözüldü', cozulen === K, `${cozulen}/${K}`);
+
+  // Savaşlar sırayla: her biri bir öncekinin bıraktığıyla başlamalı.
+  // Her rapor kendi saldıranının jetonuyla açılıyor: başkasınınki kapalı.
+  const savaslar = (
+    await Promise.all(
+      lordlar.map(async (l) => {
+        const liste = (await l.al('/battles')) ?? [];
+        const benim = liste.filter((b) => b?.regionId === hedef);
+        return Promise.all(benim.map((b) => l.al(`/battles/${b.id}`)));
+      }),
+    )
+  )
+    .flat()
+    // Aynı savaş iki tarafın listesinde de görünebilir (el değiştirdiyse).
+    .filter((b, i, d) => b?.id && d.findIndex((x) => x?.id === b.id) === i)
+    .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+  const topla = (a = {}, b = {}) => {
+    const t = {};
+    for (const k of new Set([...Object.keys(a), ...Object.keys(b)]))
+      t[k] = (a[k] ?? 0) + (b[k] ?? 0);
+    return t;
+  };
+  const esit = (a = {}, b = {}) => {
+    const ks = new Set([...Object.keys(a), ...Object.keys(b)]);
+    return [...ks].every((k) => (a[k] ?? 0) === (b[k] ?? 0));
+  };
+  let zincir = savaslar.length === K;
+  const iz = [];
+  for (let i = 1; i < savaslar.length; i++) {
+    const once = savaslar[i - 1];
+    const sonra = savaslar[i];
+    if (!once.log || !sonra.log) continue; // başkasının raporu kapalıysa atla
+    if (once.captured) {
+      // El değiştirdi: sonraki savaş yeni sahibin garnizonuna karşı.
+      zincir &&= sonra.defenderLordId === once.attackerLordId;
+      iz.push('el değişti');
+    } else {
+      const baslangic = topla(sonra.log.defenderLosses, sonra.log.defenderSurvivors);
+      zincir &&= esit(baslangic, once.log.defenderSurvivors);
+      iz.push(esit(baslangic, once.log.defenderSurvivors) ? 'zincir' : 'AYNI GARNİZON');
+    }
+  }
+  kontrol(
+    'Her savaş öncekinin bıraktığı garnizonla başlıyor',
+    zincir,
+    `${savaslar.length} savaş: ${iz.join(', ') || '—'}`,
   );
 }
 

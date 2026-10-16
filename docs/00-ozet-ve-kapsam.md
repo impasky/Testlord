@@ -123,6 +123,12 @@ işaretleyen şey kanaat değil, `pnpm e2e` ve `pnpm yuk-testi`:
 | 6   | ✅ General kiralayıp savaşa sokabiliyor                  | `pvp-testi.mjs` — general sahaya sürülüyor ve savaştan XP kazanıyor       |
 | 7   | ✅ 120 oyuncu aynı dünyada, kimse çökmeden oynayabiliyor | `yuk-testi.mjs` — 120/120 kayıt, 5xx yok, en yavaş uç 408 ms p95          |
 
+Yayın hedefi bunun ötesine geçti: **500 aktif oyuncu**, 3 dakikalık
+gerçekçi oturum ve aynı saniyede 500 saldırı — 2 çekirdekte 5xx yok, en
+yavaş uç 475 ms p95 (`pnpm yuk-testi-500`, ölçümler ve kapasite önerisi
+docs/05 §8). Test iki gerçek hata buldu: aynı bölgeye eşzamanlı savaşın
+garnizonu ezmesi ve dolan diyarda aynı saniyede sekiz diyar açılması.
+
 Bu 7 madde tuttuğunda oyun yayına hazırdır. Fazlası v1 değildir.
 
 > **v1 kapsamı bilerek dondurulmuştu ve oyun bu sayede hızlı bitti. Ama o

@@ -154,8 +154,8 @@ export const AKTIF_GUN = 7;
  * `closed` dışarıda kalıyor — o, bilerek kapatılmış diyar demek ve
  * doluluktan bağımsız.
  */
-export async function acikDiyarlar(): Promise<AcikDiyar[]> {
-  const dunyalar = await prisma.world.findMany({
+export async function acikDiyarlar(client: Tx = prisma): Promise<AcikDiyar[]> {
+  const dunyalar = await client.world.findMany({
     where: { status: { in: ['open', 'full'] } },
     orderBy: { openedAt: 'asc' },
   });
@@ -168,8 +168,8 @@ export async function acikDiyarlar(): Promise<AcikDiyar[]> {
    */
   const aktifSinir = new Date(Date.now() - AKTIF_GUN * 86_400_000);
   const [hepsi, aktifler] = await Promise.all([
-    prisma.lord.groupBy({ by: ['worldId'], _count: { _all: true } }),
-    prisma.lord.groupBy({
+    client.lord.groupBy({ by: ['worldId'], _count: { _all: true } }),
+    client.lord.groupBy({
       by: ['worldId'],
       _count: { _all: true },
       where: { lastSeenAt: { gte: aktifSinir } },
@@ -220,10 +220,10 @@ export async function acikDiyarlar(): Promise<AcikDiyar[]> {
   // Damgayı düzeltmek listeyi beklemiyor: liste zaten doğru, damga
   // yalnızca başka kodun ucuza okuyabilmesi için tutuluyor.
   if (doldu.length) {
-    await prisma.world.updateMany({ where: { id: { in: doldu } }, data: { status: 'full' } });
+    await client.world.updateMany({ where: { id: { in: doldu } }, data: { status: 'full' } });
   }
   if (bosaldi.length) {
-    await prisma.world.updateMany({ where: { id: { in: bosaldi } }, data: { status: 'open' } });
+    await client.world.updateMany({ where: { id: { in: bosaldi } }, data: { status: 'open' } });
   }
 
   return sonuc;
@@ -239,7 +239,33 @@ export async function acikDiyarlar(): Promise<AcikDiyar[]> {
  */
 export async function findOrOpenWorld(): Promise<string> {
   const acik = await acikDiyarlar();
-  return acik[0]?.id ?? createWorld();
+  if (acik[0]) return acik[0].id;
+  /*
+   * YENİ DİYAR TEK SIRADAN AÇILIYOR. Diyar dolduğu an gelen kayıtların
+   * HEPSİ "açık diyar yok" görüp kendi diyarını açıyordu: 500 oyunculu
+   * yük testinde aynı saniyede sekiz diyar açıldı, altısında tek lord
+   * vardı — kimsenin olmadığı haritalar, tam da kapasite kuralının
+   * önlemek istediği şey. Dört denemeyi aşan çakışmalar da 500 dönüyordu.
+   *
+   * Danışma kilidi açmayı sıraya diziyor; kilidi alan, açık diyar
+   * listesini YENİDEN okuyor — önündeki az önce bir diyar açtıysa oraya
+   * katılıyor. Kilit yalnız diyar dolduğu an devrede: her zamanki
+   * kayıt yukarıdaki satırdan dönüyor.
+   */
+  return prisma.$transaction(
+    async (tx) => {
+      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext('lordlar:diyar-ac'))`;
+      // Kilidin İÇİNDE her okuma bu işlemin bağlantısından: havuzdan
+      // ikinci bir bağlantı istemek, kilidi bekleyenler havuzu
+      // doldurmuşken kilidi tutanı kilitliyordu (yük testi, 300 kayıt).
+      const yeniden = await acikDiyarlar(tx);
+      return yeniden[0]?.id ?? createWorld(tx);
+    },
+    // Sıradakiler kilidi beklerken bağlantı tutuyor; bekleme payı
+    // varsayılan 2 sn'den uzun ki dolum anında kayıt "sunucu hatası"
+    // almasın.
+    { timeout: 30_000, maxWait: 15_000 },
+  );
 }
 
 /**

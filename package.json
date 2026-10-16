@@ -32,6 +32,7 @@
     "erisim": "node tools/erisim-denetim.mjs",
     "dugmeler": "node tools/tum-dugmeler-testi.mjs",
     "yuk-testi": "node tools/yuk-testi.mjs",
+    "yuk-testi-500": "node tools/yuk-testi.mjs --500",
     "yedekle": "bash tools/yedekle.sh",
     "olcum": "node tools/olcum.mjs",
     "simge": "python3 tools/simge-uret.py",

@@ -65,7 +65,24 @@ export async function devRoutes(app: FastifyInstance): Promise<void> {
       data: { arriveAt: new Date() },
     });
     let n = 0;
-    for (const m of marches) if (await resolveMarch(m.id)) n++;
+    for (const m of marches) {
+      // Hedef bölge başka bir savaşın çözümündeyse `resolveMarch` onu
+      // sonraki tura bırakıyor (bölge kilidi). Test ucu "bitir" diyor:
+      // bölge boşalana kadar yeniden deniyor — bekleme bağlantı tutmuyor.
+      const son = Date.now() + 30_000;
+      while (Date.now() < son) {
+        if (await resolveMarch(m.id)) {
+          n++;
+          break;
+        }
+        const hala = await prisma.march.findUnique({
+          where: { id: m.id },
+          select: { resolved: true },
+        });
+        if (!hala || hala.resolved) break; // başka biri (worker, /me) çözdü
+        await new Promise((r) => setTimeout(r, 50 + Math.random() * 100));
+      }
+    }
     return { cozulen: n };
   });
 

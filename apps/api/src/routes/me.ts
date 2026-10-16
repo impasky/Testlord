@@ -151,6 +151,10 @@ export async function meRoutes(app: FastifyInstance): Promise<void> {
     await prisma.lord.update({
       where: { id: lordId },
       data: { lastSeenAt: simdi, ...(ekran ? { lastScreen: ekran } : {}) },
+      // Yalnız kimlik: Prisma güncellenen satırı geri döndürüyor ve lord
+      // satırı büyük JSON sütunları taşıyor — en sık çağrılan uçta boşa
+      // çözümlenen yük (docs/05 §8).
+      select: { id: true },
     });
     // Günün ilk açılışı: ölçüm panosunun günlük aktif sayısı (docs/05).
     // Son görülme aynı günse yazacak bir şey yok — `/me` sık çağrılıyor.

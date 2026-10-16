@@ -411,7 +411,35 @@ export async function liderAviGecerli(
   return lider?.id === defenderLordId;
 }
 
+/** Bölge başka bir savaşın çözümünde: işlem geri alınıyor, yürüyüş sonraki tura kalıyor. */
+class BolgeMesgul extends Error {}
+
+/**
+ * Veritabanının kilitlenme (40P01) ya da yazma çakışması (P2034) yüzünden
+ * geri aldığı işlem. İki savaş aynı savunanın satırlarına farklı sırayla
+ * dokununca Postgres birini geri alıyor (500 oyunculu yük testi, savaş
+ * dalgası); işlem bütünüyle geri alındığı için yeniden denemek güvenli.
+ */
+function geciciCakisma(e: unknown): boolean {
+  const kod = (e as { code?: string } | null)?.code;
+  return kod === 'P2034' || /40P01|deadlock detected/.test(String((e as Error)?.message ?? ''));
+}
+
+/**
+ * Yürüyüşü çözer. `false`: çözülmedi — ya başkası çözdü ya da hedef bölge
+ * o an başka bir savaşın elinde ya da işlem bir çakışmada geri alındı.
+ * Üçünde de yürüyüş çözülmemiş durur ve bir sonraki turda yeniden denenir.
+ */
 export async function resolveMarch(marchId: string): Promise<boolean> {
+  try {
+    return await yuruyusuCoz(marchId);
+  } catch (e) {
+    if (e instanceof BolgeMesgul || geciciCakisma(e)) return false;
+    throw e;
+  }
+}
+
+async function yuruyusuCoz(marchId: string): Promise<boolean> {
   const sonuc = await prisma.$transaction(
     async (tx) => {
       const claimed = await tx.march.updateMany({
@@ -572,6 +600,23 @@ export async function resolveMarch(marchId: string): Promise<boolean> {
       }
 
       // --- Saldırı ---
+      //
+      // BÖLGE KİLİDİ. Aynı bölgeye aynı anda varan iki yürüyüş garnizonu
+      // birlikte okuyup birlikte yazıyordu (500 oyunculu yük testi buldu):
+      // biri silinmiş satırı güncellemeye çalışıp 500 alıyor, hata
+      // vermeyen hâlde ise ikinci savaşın sonucu birincinin kaybını eski
+      // sayıyla eziyordu — savunan aynı askerle iki kez savaşmış oluyordu.
+      //
+      // Kilit BEKLEMİYOR (SKIP LOCKED): bölge başka bir çözümün elindeyse
+      // bu yürüyüş bir sonraki tura kalıyor (worker 10 sn'de bir, oyuncunun
+      // kendi `/me`si de deniyor) ve o tur bölgeyi — belki el değiştirmiş
+      // hâliyle — TAZE okuyor. Bekleyen kilit ilk denemede bunu yapıyordu
+      // ama her bekleyen bir veritabanı bağlantısı tutuyordu: aynı köye
+      // yüzlerce savaş düşünce havuz tükeniyor, alakasız istekler saniyelerce
+      // sıra bekliyordu.
+      const kilit = await tx.$queryRaw<{ id: number }[]>`
+        SELECT id FROM "Region" WHERE id = ${march.toRegionId} FOR UPDATE SKIP LOCKED`;
+      if (kilit.length === 0) throw new BolgeMesgul();
       const region = await tx.region.findUniqueOrThrow({ where: { id: march.toRegionId } });
       // Savaştan önceki hâl; rapordaki "öncesi/sonrası" bunun üstüne kurulur.
       const saldiranOnce = await lordOzeti(march.lordId, tx);

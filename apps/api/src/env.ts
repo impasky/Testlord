@@ -20,6 +20,11 @@ const schema = z.object({
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(300),
   /** Kayıt/giriş için IP başına dakikalık tavan. Kaba kuvveti burası durdurur. */
   AUTH_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(60),
+  /**
+   * Veritabanı bağlantı havuzu (db.ts). `DATABASE_URL` kendi
+   * `connection_limit`ini taşıyorsa o geçerli; bu ikisi de yoksa 10.
+   */
+  DB_HAVUZU: z.coerce.number().int().positive().max(100).optional(),
   /** Boşsa hata izleme kapalıdır ve dışarıya hiçbir şey gönderilmez. */
   /**
    * İlk oturum ölçüm ucunun (/api/olcum) anahtarı. Boşsa uç hiç yüklenmez.
