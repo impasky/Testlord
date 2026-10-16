@@ -139,7 +139,7 @@ ve yer adları o dünyanın parçası.
   İskelebaşı
   Şahinkaya
 
---- Cümle parçaları (8) ---
+--- Cümle parçaları (9) ---
 
 Bunlar tek başına çevrilemez, çünkü tek başına bir anlamı yok: kodda başka
 metinlerle birleşerek cümle oluyorlar (" ve ", ", boş" gibi). Bir
@@ -153,7 +153,9 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
   "{0} · Sv {1} · "
       apps/web/src/components/harita/BolgeListesi.tsx:168
   "{0} · T{1}"
-      apps/web/src/screens/Akin.tsx:250
+      apps/web/src/screens/Akin.tsx:278
+  "{0} asker seferde ·"
+      apps/web/src/components/OrduSahnesi.tsx:341
   "{0} T{1}"
       apps/web/src/screens/Demirhane.tsx:224
   "Araştırılıyor —"
@@ -161,6 +163,6 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
   "canlandir: kareler aynı yüzlerden kurulmalı"
       apps/web/src/cizim/canli.ts:67
   "T{0}"
-      apps/web/src/screens/Akin.tsx:262
+      apps/web/src/screens/Akin.tsx:290
   "T{0}{1}"
-      apps/web/src/screens/LordEkrani.tsx:704
+      apps/web/src/screens/LordEkrani.tsx:709

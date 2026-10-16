@@ -309,3 +309,27 @@ Küçük, kısa, tek seferlik; hepsi `prefers-reduced-motion`a uyuyor
   dokunuşun karşılığı ekran değişmeden önce parmağın altında.
 - **Nokta.** Omurganın işaret noktası ve okunmamış sohbet noktası
   belirirken "pop" ediyor; sessizce beliren nokta gözden kaçıyordu.
+
+## 13.16 Lord ordusunun önünde, Akın tek kararda
+
+§13.11'in bıraktığı iki ekran (iPhone 13, yerleşmiş lord):
+
+| Ekran | Önce    | Sonra   | Ne değişti                                                                                       |
+| ----- | ------- | ------- | ------------------------------------------------------------------------------------------------ |
+| Lord  | 1520 px | 1356 px | Ordu sahnesi ayrı kart değil, portre sahnesinde lordun ARKASINDA; sayılar sahnenin alt şeridinde |
+| Akın  | 1105 px | 906 px  | Kilitli diyarlardan yalnız sıradaki görünüyor, kalanı tek satırda toplu (dokununca açılıyor)     |
+
+**Lord.** Oyuncunun en baştaki isteği tam buydu: "kendi karakterinin
+arkasında ordusunu görse". Sahne ve portre iki ayrı karttı (172 + 190
+piksel) ve lordu ordusundan koparıyordu. Şimdi tek sahne (214 piksel):
+önde kuşanmış lord, arkasında üç sıra halinde ordunun bileşimi
+(`OrduSahnesi gomulu`, figürler %72), altta birim sayıları ve komuta.
+Ordu evde değilse siluet çizilmiyor — lord önde duruyor — ve "Ordun
+seferde · 215 asker akında" yazısı şeritte. Naara hâlâ sahneye
+dokunmakla.
+
+**Akın.** Ekranın tek işi açık diyarı seçmek ve sıradaki hedefi bilmek.
+Sıradaki kilitli diyar tam satır (ne zaman açılacağıyla); ötekiler
+"3 kilitli diyar daha · Kuzey Buzulu, Küller Vadisi, …" satırında.
+`akin-testi` görünenin beşten az olduğunu ve satıra dokununca beşinin de
+listelendiğini ölçüyor.

@@ -96,6 +96,7 @@ export function Akin({ lord, onGuncelle }: { lord: LordState; onGuncelle: () => 
   const veri = useQuery({ queryKey: ['akin'], queryFn: api.akin, refetchInterval: 15000 });
   const [secili, setSecili] = useState<{ harita: string; grup: number } | null>(null);
   const [hata, setHata] = useState<string | null>(null);
+  const [kilitliler, setKilitliler] = useState(false);
 
   const cik = useMutation({
     mutationFn: (g: { haritaKey: string; grupNo: number; army: Army }) => api.akinaCik(g),
@@ -117,6 +118,17 @@ export function Akin({ lord, onGuncelle }: { lord: LordState; onGuncelle: () => 
   const ilkAcikHarita = haritalar.find((h) => h.acik)?.key ?? null;
   const seciliHarita = secili ? (haritalar.find((h) => h.key === secili.harita) ?? null) : null;
   const seciliGrup = seciliHarita?.gruplar.find((g) => g.grupNo === secili?.grup) ?? null;
+  /*
+   * Kilitli diyarlardan yalnız SIRADAKİ görünüyor (docs/13 §13.16): ekranın
+   * tek işi açık diyarı seçmek ve sıradaki hedefi bilmek. Dört kilitli satır
+   * üst üste o kararı iki ekran aşağıya itiyordu; ötekiler tek bir satırda
+   * toplanıyor, dokununca açılıyor.
+   */
+  const siradakiKilitli = haritalar.find((h) => !h.acik)?.key ?? null;
+  const gizliKilitli = haritalar.filter((h) => !h.acik && h.key !== siradakiKilitli);
+  const gorunenHaritalar = kilitliler
+    ? haritalar
+    : haritalar.filter((h) => h.acik || h.key === siradakiKilitli);
 
   return (
     <div className="space-y-4">
@@ -157,7 +169,7 @@ export function Akin({ lord, onGuncelle }: { lord: LordState; onGuncelle: () => 
       {/* --- Haritalar --- */}
       <Bolum baslik="Diyarlar">
         <div className="space-y-2.5">
-          {haritalar.map((h) => (
+          {gorunenHaritalar.map((h) => (
             <HaritaKarti
               key={h.key}
               h={h}
@@ -189,6 +201,22 @@ export function Akin({ lord, onGuncelle }: { lord: LordState; onGuncelle: () => 
               )}
             </HaritaKarti>
           ))}
+          {gizliKilitli.length > 0 && (
+            <button
+              type="button"
+              data-kilitli-ac=""
+              aria-expanded={kilitliler}
+              onClick={() => setKilitliler((a) => !a)}
+              className="bas flex w-full items-center gap-2 rounded-xl border border-kenar/70 px-3 py-2.5 text-left text-[12px] text-solgun"
+            >
+              <span className="min-w-0 flex-1 truncate">
+                {kilitliler
+                  ? 'Kilitli diyarları gizle'
+                  : `${gizliKilitli.length} kilitli diyar daha · ${gizliKilitli.map((h) => h.ad).join(', ')}`}
+              </span>
+              <span aria-hidden>{kilitliler ? '▴' : '▾'}</span>
+            </button>
+          )}
         </div>
       </Bolum>
 

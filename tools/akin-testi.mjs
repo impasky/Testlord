@@ -257,8 +257,23 @@ kontrol('Alt çubukta AKIN sekmesi var', true);
 await page.locator('nav button:has-text("Akın")').click();
 await page.waitForTimeout(1500);
 
+/*
+ * Beş diyar da erişilebilir; ama kilitlilerden yalnız SIRADAKİ görünüyor,
+ * ötekiler tek satırda toplu (docs/13 §13.16). Satıra dokununca hepsi açılıyor.
+ */
+const gorunenDiyar = await page.locator('[data-akin-harita]').count();
+const kilitliSatiri = page.locator('[data-kilitli-ac]');
+kontrol(
+  'Kilitli diyarlardan yalnız sıradaki görünüyor, kalanı tek satırda',
+  gorunenDiyar < 5 && (await kilitliSatiri.count()) === 1,
+  `${gorunenDiyar} görünen`,
+);
+await kilitliSatiri.click();
+await page.waitForTimeout(300);
 const haritaSayisi = await page.locator('[data-akin-harita]').count();
-kontrol('Beş diyar listeleniyor', haritaSayisi === 5, `${haritaSayisi} diyar`);
+kontrol('Satıra dokununca beş diyar listeleniyor', haritaSayisi === 5, `${haritaSayisi} diyar`);
+await kilitliSatiri.click();
+await page.waitForTimeout(300);
 
 // Bir diyarı aç, gruplarını gör.
 await page.locator('[data-akin-harita]').first().click();

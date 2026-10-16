@@ -46,6 +46,10 @@ const SIRALAR = [
 /** Ön sıradaki figürün yüksekliği; arka sıralar bunun ölçeğiyle küçülür. */
 const FIGUR_BOYU = 132;
 
+/** Gömülü sahne (lordun arkası): figürler bu oranda, alt şeridin üstünde. */
+const GOMULU_OLCEK = 0.72;
+const GOMULU_TABAN = 22;
+
 /**
  * Ordu bileşimini figür sayılarına çevirir.
  *
@@ -180,10 +184,18 @@ export function OrduSahnesi({
   army,
   komutaTavani,
   disarida,
+  gomulu = false,
 }: {
   army: Army;
   komutaTavani: number;
   disarida?: DisaridakiOrdu;
+  /**
+   * Lordun ARKASINDA (docs/13 §13.16): sahne kendi kartı değil, portre
+   * sahnesinin içinde, onu dolduruyor. Kendi zemini yok, figürler biraz
+   * küçük; boş ordunun siluetleri çizilmiyor (lord önde duruyor), durum
+   * yazısı ve seferdekiler alt şeritte.
+   */
+  gomulu?: boolean;
 }) {
   const dagilim = figurDagilimi(army);
   const bos = bosSahneMetni(disarida);
@@ -198,10 +210,15 @@ export function OrduSahnesi({
       role="img"
       aria-label={`Ordun: ${kullanilan}/${komutaTavani} komuta yeri dolu`}
       key={naara}
-      className={`sahne relative -mx-3 h-[172px] overflow-hidden ${naara > 0 ? 'sahne-naara' : ''}`}
-      style={{
-        background: 'linear-gradient(180deg, var(--color-derin) 0%, #2b1f17 55%, #241a13 100%)',
-      }}
+      className={`sahne overflow-hidden ${gomulu ? 'absolute inset-0' : 'relative -mx-3 h-[172px]'} ${naara > 0 ? 'sahne-naara' : ''}`}
+      style={
+        gomulu
+          ? undefined
+          : {
+              background:
+                'linear-gradient(180deg, var(--color-derin) 0%, #2b1f17 55%, #241a13 100%)',
+            }
+      }
     >
       {/* Sarsılan iç kap: naara sahnenin KENDİSİNİ oynatınca sahne ekranın
           tam genişliğinde olduğu için sayfa sarsıntı boyunca 3 piksel yana
@@ -213,7 +230,7 @@ export function OrduSahnesi({
           style={{ background: 'linear-gradient(180deg, transparent, rgba(0,0,0,0.45))' }}
         />
 
-        {dagilim.length === 0 ? (
+        {dagilim.length === 0 && gomulu ? null : dagilim.length === 0 ? (
           /* Boş sahne 172 pikseli boşuna kaplıyordu: denetimde ana
            sayfanın en büyük ölü alanı buydu. Yükseklik SABİT kalmalı
            (ordu sorgusu geç gelirse sayfa zıplar), o yüzden alan
@@ -250,7 +267,10 @@ export function OrduSahnesi({
             <div
               key={s}
               className="absolute inset-x-0"
-              style={{ bottom: sira.alt, transform: `translateX(${sira.kayma}px)` }}
+              style={{
+                bottom: gomulu ? GOMULU_TABAN + sira.alt * GOMULU_OLCEK : sira.alt,
+                transform: `translateX(${sira.kayma}px)`,
+              }}
             >
               <div className="flex items-end justify-center">
                 {sira.birimler.map((tur, i) => (
@@ -280,7 +300,7 @@ export function OrduSahnesi({
                       tur="birimler"
                       ad={tur}
                       alt={unitName(tur)}
-                      boyut={Math.round(FIGUR_BOYU * sira.olcek)}
+                      boyut={Math.round(FIGUR_BOYU * sira.olcek * (gomulu ? GOMULU_OLCEK : 1))}
                       yedek={
                         <span className="text-solgun">
                           <BirimIkonu tip={tur} boyut={Math.round(40 * sira.olcek)} />
@@ -297,7 +317,7 @@ export function OrduSahnesi({
 
       {/* Evde asker VARKEN de seferdekiler görünmeli: sahne yalnız evdekini
           çiziyor ve yarısı akındaki bir ordu küçülmüş sanılıyordu. */}
-      {dagilim.length > 0 && seferde > 0 && (
+      {!gomulu && dagilim.length > 0 && seferde > 0 && (
         <span
           data-ordu-durumu
           className="absolute top-2 left-3 rounded-full border border-kenar bg-gece/80 px-2 py-0.5 text-[11px] text-solgun"
@@ -310,6 +330,17 @@ export function OrduSahnesi({
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-gece via-gece/85 to-transparent px-3 pt-4 pb-1.5">
         <div className="flex items-end justify-between gap-2">
           <div className="flex min-w-0 flex-wrap items-center gap-x-2.5 gap-y-0.5">
+            {gomulu && dagilim.length === 0 && (
+              <span data-ordu-durumu className="text-[11px]">
+                <span className="baslik text-solgun">{bos.baslik}</span>
+                <span className="text-sonuk">{` · ${bos.alt}`}</span>
+              </span>
+            )}
+            {gomulu && dagilim.length > 0 && seferde > 0 && (
+              <span data-ordu-durumu className="text-[11px] text-solgun">
+                {`${seferde} asker seferde ·`}
+              </span>
+            )}
             {UNIT_TYPES.filter((t) => (army[t] ?? 0) > 0).map((t) => (
               <span key={t} className="flex shrink-0 items-center gap-1 text-[11px]">
                 <span className="text-solgun">

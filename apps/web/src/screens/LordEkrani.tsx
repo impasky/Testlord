@@ -264,17 +264,30 @@ export function LordEkrani({
              pul büyüklüğünde bir avatarla bakılmıyor. */}
       <Kart className="overflow-hidden p-0">
         <div className="relative">
-          <div className="relative flex h-[190px] items-end justify-center bg-[radial-gradient(ellipse_at_50%_85%,#3a2b1b_0%,#241a12_55%,#1a120c_100%)]">
-            <Gorsel
-              tur="lord"
-              ad={`giy-${kusamKodu(lord.equippedItems ?? [])}`}
-              alt={`${lord.name} — ${kusamAdi}`}
-              boyut={190}
-              className="h-full w-auto object-contain"
-              yedek={<IkonNavLord boyut={72} />}
+          {/* Lord ve ARKASINDA ordusu (docs/13 §13.16). Oyuncunun ilk isteği
+              buydu: "kendi karakterinin arkasında ordusunu görse". İkisi
+              ayrı kartlardı (190 + 172 piksel) ve ekranın yarısını alıp
+              lordu ordusundan koparıyordu. Sayılar sahnenin alt şeridinde;
+              lord şeridin üstünde duruyor ki sayıları örtmesin. */}
+          <div className="relative flex h-[214px] items-end justify-center bg-[radial-gradient(ellipse_at_50%_85%,#3a2b1b_0%,#241a12_55%,#1a120c_100%)]">
+            <OrduSahnesi
+              army={lord.homeArmy}
+              komutaTavani={lord.commandCapacity}
+              disarida={lord.disaridakiOrdu}
+              gomulu
             />
+            <div className="pointer-events-none relative z-[1] h-full pb-6">
+              <Gorsel
+                tur="lord"
+                ad={`giy-${kusamKodu(lord.equippedItems ?? [])}`}
+                alt={`${lord.name} — ${kusamAdi}`}
+                boyut={190}
+                className="h-full w-auto object-contain"
+                yedek={<IkonNavLord boyut={72} />}
+              />
+            </div>
             {/* Arma köşede: figür ve arma tek bir kimlik. */}
-            <span className="absolute top-2 right-2">
+            <span className="absolute top-2 right-2 z-[2]">
               <Arma arma={lord.arma} boyut={30} />
             </span>
             {/* Kuşam rozeti: figürün NEDEN değiştiğini söylüyor. Değişen
@@ -287,7 +300,7 @@ export function LordEkrani({
                 söyleyen hiçbir şey yok. İkisi gerçekten ayrı şey —
                 biri kuşanılan ekipmanın kademesi, öteki şöhret unvanı —
                 ama oyuncu bunu bilemez, çelişki sanır. */}
-            <span className="absolute top-2 left-2 rounded-lg bg-gece/80 px-2 py-1 text-[11px]">
+            <span className="absolute top-2 left-2 z-[2] rounded-lg bg-gece/80 px-2 py-1 text-[11px]">
               <span className="baslik text-sonuk">Kuşam</span>{' '}
               <span className="baslik text-altin">{kusamAdi}</span>
             </span>
@@ -388,14 +401,6 @@ export function LordEkrani({
           </div>
         </div>
       </Kart>
-
-      {/* Ekranın tepesi artık bir sahne: lordun ordusu. Nitelik kartlarıyla
-          açılmak, bu ekranı bir karakter sayfası değil bir form yapıyordu. */}
-      <OrduSahnesi
-        army={lord.homeArmy}
-        komutaTavani={lord.commandCapacity}
-        disarida={lord.disaridakiOrdu}
-      />
 
       {lord.starving && (
         <Kart className="border-kirmizi/60 p-3" vurgu="var(--color-kirmizi)">
