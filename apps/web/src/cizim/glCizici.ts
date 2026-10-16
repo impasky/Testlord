@@ -25,6 +25,7 @@
 import type { DumanKaynagi } from './duman';
 import { KOSE, type Ag } from './glAg';
 import { ISIK, ORTAM, YAYGIN, kameraTabani, type Kamera, type V3 } from './uc';
+import { VAKIT_ISIGI, type Vakit } from './vakit';
 
 /** Süper örnekleme: her çıktı pikseli 2×2 örnek. */
 const SS = 2;
@@ -107,10 +108,11 @@ void main() {
  * bakan yerden yansıyan sıcaklığı alıyor; gölgeler hafif mavi) + hafif
  * sıcak güneş + parlak yüzlerde (metal, su) güneşin yansıması. Ortalama
  * parlaklık SVG çizimiyle aynı kalıyor, yalnız renk sıcaklığı ayrışıyor.
+ * Güneşin rengi bir uniform (`u_gunes`): günün saatine göre değişiyor
+ * (vakit.ts; öğle 1.05, 1.00, 0.92).
  */
 const GOK = '0.93, 0.99, 1.10';
 const YER = '1.09, 1.00, 0.88';
-const GUNES = '1.05, 1.00, 0.92';
 
 const ANA_PARCA = `#version 300 es
 precision highp float;
@@ -125,6 +127,9 @@ in vec3 v_doku;
 uniform sampler2DShadow u_golge;
 uniform mat4 u_isikMat;
 uniform vec3 u_isik;
+// Güneşin rengi ve ortam ışığının çarpanı: günün saati (vakit.ts).
+uniform vec3 u_gunes;
+uniform float u_ortamK;
 uniform vec3 u_goz;
 uniform float u_golgeVar;
 uniform float u_texel;
@@ -330,9 +335,9 @@ void main() {
     isima = min(1.0, v_ek.x);
   } else {
     float g = golge(n);
-    vec3 ortam = ${ORTAM.toFixed(4)} * mix(vec3(${YER}), vec3(${GOK}), n.z * 0.5 + 0.5);
+    vec3 ortam = u_ortamK * ${ORTAM.toFixed(4)} * mix(vec3(${YER}), vec3(${GOK}), n.z * 0.5 + 0.5);
     float dif = ${YAYGIN.toFixed(4)} * max(dot(n, u_isik), 0.0) * mix(${(1 - GOLGE_GUC).toFixed(4)}, 1.0, g);
-    vec3 k = ortam + dif * vec3(${GUNES});
+    vec3 k = ortam + dif * u_gunes;
     c = taban * min(k, vec3(1.0)) + (1.0 - taban) * max(k - vec3(1.0), vec3(0.0));
     if (parlak > 0.0) {
       // Metal: göğü yansıtan yüz açılıyor, yeri yansıtan koyulaşıyor. Düz
@@ -349,7 +354,7 @@ void main() {
       // Güneşin yansıması: yüzler iri, dar bir tepe çoğu yüzü ıskalıyor.
       vec3 h = normalize(u_isik + u_goz);
       float sp = pow(max(dot(n, h), 0.0), mix(10.0, 90.0, parlak * parlak)) * parlak * g;
-      c += sp * 0.9 * vec3(${GUNES});
+      c += sp * 0.9 * u_gunes;
       // Parıltı bandı (stilize): tepeden bakan kamerada dik metal (gövde
       // zırhı, kılıç ağzı) güneşi fizik gereği hiç yansıtmıyor; normal
       // göğe doğru bükülünce güneşe ve bakana dönük yan, yuvarlak zırhın
@@ -359,7 +364,7 @@ void main() {
       vec3 nb = normalize(n + vec3(0.0, 0.0, ${ZIRH_BUKUM.toFixed(2)}));
       float dik = 1.0 - abs(n.z);
       float bant = pow(max(dot(nb, h), 0.0), mix(8.0, 40.0, parlak * parlak));
-      c += bant * m * dik * g * ${ZIRH_PARILTI.toFixed(2)} * vec3(${GUNES});
+      c += bant * m * dik * g * ${ZIRH_PARILTI.toFixed(2)} * u_gunes;
     }
     float o = (ortam.r + ortam.g + ortam.b) / 3.0;
     float pay = o / max(o + dif, 1e-3);
@@ -427,6 +432,9 @@ uniform float u_harePx;
 uniform float u_ton;
 // Sıcak hava (0 kapalı): yerleşke. Bkz. tonla.
 uniform float u_sicak;
+// Günün saati: koyu ve açık tonların çarpanı (öğlede ikisi de 1).
+uniform vec3 u_golgeTon;
+uniform vec3 u_acikTon;
 // 1: derinlik ek dokudan (salınan parçanın karesi: derinliğe yazmadan çiziliyor).
 uniform int u_ekD;
 // Çıktı kaydırması: salınan parçanın karesi atlasta başka yere yazılıyor.
@@ -454,6 +462,9 @@ vec3 tonla(vec3 c) {
     c = clamp(c, 0.0, 1.0);
     c = mix(c, c * c * (3.0 - 2.0 * c), 0.14 * u_sicak);
   }
+  // Günün saati: akşam gölge serin, ışık turuncu; sabah ışık pembe-altın.
+  float lv = dot(c, vec3(0.299, 0.587, 0.114));
+  c *= mix(u_golgeTon, u_acikTon, smoothstep(0.08, 0.8, lv));
   return clamp(c, 0.0, 1.0);
 }
 ivec2 sinirla(ivec2 p) { return clamp(p, ivec2(0), u_boyut - 1); }
@@ -1104,6 +1115,8 @@ export interface CizimIstegi {
   ton?: number;
   /** Sıcak gün ışığı (0 kapalı, 1 tam): canlı renk, altın ışık, serin gölge (yerleşke). */
   sicak?: number;
+  /** Günün saati (vakit.ts): ışık yönü, güneş rengi, ortam ve ton. Verilmezse öğle. */
+  vakit?: Vakit;
   /**
    * Hareket katmanlarını da çiz (su maskesi, ışık, çimen maskesi; bkz. `KATMAN_PARCA`).
    * Ağ `agYap(..., { dumansiz: true })` ile kurulmuş olmalı: duman sayfada
@@ -1425,7 +1438,8 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
   if (!hedefleriHazirla(k, sen, sboy)) return null;
 
   const goruntu = goruntuMatrisi(istek.kamera, istek.kutu, ag.derinlik);
-  const lz = istek.isik ?? ISIK;
+  const vi = VAKIT_ISIGI[istek.vakit ?? 'ogle'];
+  const lz = istek.isik ?? (istek.vakit ? vi.isik : ISIK);
   const isik = isikKamerasi(ag, lz);
   const golgeVar = ag.golge.length > 0 && !istek.taslak;
   const silinecek: (() => void)[] = [];
@@ -1501,6 +1515,8 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
     gl.uniformMatrix4fv(u('u_goruntu'), false, goruntu);
     gl.uniformMatrix4fv(u('u_isikMat'), false, isik.mat);
     gl.uniform3f(u('u_isik'), lz[0], lz[1], lz[2]);
+    gl.uniform3f(u('u_gunes'), vi.gunes[0], vi.gunes[1], vi.gunes[2]);
+    gl.uniform1f(u('u_ortamK'), vi.ortam);
     const taban = kameraTabani(istek.kamera);
     gl.uniform3f(u('u_goz'), taban.c[0], taban.c[1], taban.c[2]);
     // Dünya birimi / örnek pikseli; dalgalar ekranda ~11 piksellik.
@@ -1621,6 +1637,8 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
     gl.uniform1f(uc('u_derinEsik'), Math.max(0.25, 6 * r * birim) / (aralik * 1.04));
     gl.uniform1f(uc('u_ton'), istek.ton ?? 1);
     gl.uniform1f(uc('u_sicak'), istek.sicak ?? 0);
+    gl.uniform3f(uc('u_golgeTon'), vi.golgeTon[0], vi.golgeTon[1], vi.golgeTon[2]);
+    gl.uniform3f(uc('u_acikTon'), vi.acikTon[0], vi.acikTon[1], vi.acikTon[2]);
     gl.bindVertexArray(null);
     await seritle(gl, en, boy, n, () => gl.drawArrays(gl.TRIANGLES, 0, 3));
 

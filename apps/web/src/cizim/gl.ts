@@ -26,6 +26,7 @@ import {
 import { kaliciOku, kaliciYaz, type KaliciGrup } from './kalici';
 import { tarifModeli } from './tarif';
 import type { Kamera, Model, V3 } from './uc';
+import type { Vakit } from './vakit';
 
 export { EN_BUYUK, aoYaricapi, atlasDuzeni, ornekSayisi } from './glCizici';
 
@@ -60,6 +61,8 @@ export interface GlIstek {
   ton?: number;
   /** Sıcak gün ışığı (0 kapalı, 1 tam): canlı renk, altın ışık, serin gölge (yerleşke). */
   sicak?: number;
+  /** Günün saati (vakit.ts): ışık yönü, güneş rengi, ortam ve ton. Verilmezse öğle. */
+  vakit?: Vakit;
   /**
    * Hareketli sahne: duman ağa girmiyor (sayfada canlı yükseliyor), su
    * maskesi, ışık katmanı, çimen maskesi ve dalgalanan bayrak atlası da çiziliyor

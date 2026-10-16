@@ -3,7 +3,7 @@
  * (docs/24). Her biri bir model üreticisini ortak çerçevesiyle
  * `Sahne`ye bağlıyor.
  */
-import { useCallback, type CSSProperties } from 'react';
+import { useCallback, useEffect, useState, type CSSProperties } from 'react';
 import { BINA_ADLARI, BINA_KUTUSU } from './binalar';
 import { BIRLIK_ADLARI, DUSMAN_ADLARI, EKIPMAN_ADLARI } from './birlikler';
 import { BOLGE_KUTUSU, BOLGE_TIPLERI } from './bolgeler';
@@ -16,6 +16,7 @@ import { ZEMIN_ADLARI, ZEMIN_KUTUSU } from './zeminler';
 import { Sahne } from './Sahne';
 import { tarifModeli } from './tarif';
 import { YERLESIM_KUTUSU, yerlesimAnahtari, type Kademe, type YerlesimBinasi } from './yerlesim';
+import { VAKITLER, gununVakti, type Vakit } from './vakit';
 
 /** Çizimi olan bina adları (`kisla_3`, `arsa`, `gorev_panosu`...). */
 export const CIZILEN_BINALAR = new Set(BINA_ADLARI);
@@ -58,6 +59,29 @@ export function BinaCizimi({
 }
 
 /**
+ * Günün vakti (vakit.ts), dakikada bir yeniden bakılıyor: uygulama 17:00'yi
+ * açık geçirirse ışık kendiliğinden akşama dönüyor. `localStorage
+ * ['vakit-zorla']` vakti sabitliyor — görsel denetim ve ekran görüntüsü için.
+ */
+function vakitSecimi(): Vakit {
+  try {
+    const z = localStorage.getItem('vakit-zorla');
+    if (z && (VAKITLER as readonly string[]).includes(z)) return z as Vakit;
+  } catch {
+    /* depo yoksa saate göre */
+  }
+  return gununVakti();
+}
+function useVakit(): Vakit {
+  const [vakit, setVakit] = useState(vakitSecimi);
+  useEffect(() => {
+    const t = setInterval(() => setVakit(vakitSecimi()), 60_000);
+    return () => clearInterval(t);
+  }, []);
+  return vakit;
+}
+
+/**
  * Şehir sayfasının yerleşkesi: kasaba, tarlalar, talim alanı; `binalar`
  * verilirse yapılar da sahnenin içinde (aynı zemin, gölge, ışık). Canlı:
  * okçular ok atıyor, şövalyeler at sürüyor, köylüler saban sürüyor
@@ -76,6 +100,7 @@ export function YerlesimCizimi({
   gorunen?: [number, number, number, number];
 }) {
   const anahtar = 'yerlesim:' + yerlesimAnahtari(kademe as Kademe, binalar);
+  const vakit = useVakit();
   // Kararlı üretici: yakınlaşıp kaydırırken sahne boşuna yeniden çizilmesin.
   const uret = useCallback(() => tarifModeli(anahtar) ?? [], [anahtar]);
   return (
@@ -90,6 +115,7 @@ export function YerlesimCizimi({
       ertele
       onceDurgun
       sicak={1}
+      vakit={vakit}
       yama={gorunen}
       kalici="sahne"
     />

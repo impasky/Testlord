@@ -788,6 +788,34 @@ varyantı paylaşıyor. Ad `tarla_3_b`, `koy_1_c` (taban aşama için `_1`
 yazılıyor); eski adlar (`tarla_3`) varyant 0. Galeride "Bölge varyantları"
 bölümü.
 
+## Günün saati
+
+Şehir'in yerleşkesi cihazın saatine göre üç ışıktan birini alıyor
+(`vakit.ts`, `Sahne.vakit`, `GlIstek.vakit`; yalnız GPU):
+
+| Vakit | Saat  | Işık                                                                                  |
+| ----- | ----- | ------------------------------------------------------------------------------------- |
+| sabah | 05–11 | güneş doğudan ve alçak, pembe-altın; gölgeler öbür yana uzun düşüyor                  |
+| öğle  | 11–17 | bugünkü görünüm — anahtara bir şey eklenmiyor, cihazdaki kayıtlar aynen geçerli       |
+| akşam | 17–05 | güneş batıdan iyice alçak, turuncu; ortam %12 loş, gölge serin; meşale/pencere parlak |
+
+Değişen dört şey: ışık yönü (gölge haritası da onunla döndüğü için uzun
+gölgeler kendiliğinden geliyor), güneşin rengi ve ortam ışığının çarpanı
+(ana parçada `u_gunes`, `u_ortamK` — eskiden derleme sabitiydi), ve ton
+geçişinde koyu/açık tonların çarpanı (`u_golgeTon`, `u_acikTon`). Akşam
+Sahne'nin sarmalayıcısı `data-vakit="aksam"` taşıyor ve ışık katmanı
+(meşale, pencere titremesi) daha parlak. Gece ayrı bir ışık değil: kapkara
+bir şehir okunmuyor, akşamla aynı alacakaranlık.
+
+Vakit dakikada bir yeniden okunuyor (uygulama 17:00'yi açık geçirirse ışık
+kendiliğinden döner); `localStorage['vakit-zorla']` vakti sabitliyor
+(görsel denetim, ekran görüntüsü). Her vakit ayrı resim ve ayrı kayıt:
+yerleşkenin cihazdaki kaydı en çok üç katına çıkıyor, sahne grubunun
+tavanı içinde. Öğlenin uniform değerleri eski sabitlerin aynısı (birim
+testi `vakit.test.ts`), görsel bozulma testinin taban resimleri de bu
+yüzden değişmedi. Galeride "Vakit" bölümü aynı kasabayı üç ışıkta
+gösteriyor.
+
 ## Kuşam
 
 Lord figürü eskiden beş hazır aşamadan biriydi (`lord_1..5`, altı yuvanın

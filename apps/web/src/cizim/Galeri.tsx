@@ -43,6 +43,7 @@ import { BolgeCizimi, DiyarCizimi, SavasCizimi, ZeminCizimi } from './Cizimler';
 import { savasAnahtari, type SavasGirdisi } from './savas';
 import { OnceKaba, Sahne } from './Sahne';
 import { YERLESIM_KADEMELERI, YERLESIM_KUTUSU, yerlesimModeli } from './yerlesim';
+import { VAKITLER } from './vakit';
 import { P } from './renk';
 import {
   besikCati,
@@ -256,6 +257,28 @@ const BOLUMLER: {
           kutu={YERLESIM_KUTUSU}
           alt={k}
           className="h-full w-full"
+          kalici="galeri"
+        />
+      ),
+    })),
+  },
+  {
+    // Günün saati (vakit.ts): aynı kasaba üç ışıkta, Şehir'deki gibi sıcak havayla.
+    baslik: 'Vakit',
+    ogeler: VAKITLER.map((vakit) => ({
+      ad: vakit,
+      genis: true,
+      oran: 'aspect-[24/25]',
+      cizim: (
+        <Sahne
+          anahtar="yerlesim:kasaba"
+          uret={() => yerlesimModeli('kasaba')}
+          tarif
+          kutu={YERLESIM_KUTUSU}
+          alt={vakit}
+          className="h-full w-full"
+          sicak={1}
+          vakit={vakit}
           kalici="galeri"
         />
       ),

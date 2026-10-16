@@ -515,6 +515,10 @@ svg g[role='button']:focus-visible > path:first-of-type {
   animation-duration: 3.7s;
   animation-delay: -1.3s;
 }
+/* Akşam (vakit.ts): güneş alçalınca meşale ve pencere ışıkları öne çıkıyor. */
+[data-vakit='aksam'] .hareket-isik {
+  filter: brightness(1.6) saturate(1.25);
+}
 @keyframes isik-titre {
   0%,
   100% {

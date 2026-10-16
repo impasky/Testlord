@@ -42,6 +42,7 @@ import {
   type Katmanlar,
 } from './gl';
 import type { KaliciGrup } from './kalici';
+import { vakitAnahtari, type Vakit } from './vakit';
 import { ciz, kutusu, type Cizilmis, type Kamera, type Model } from './uc';
 
 const ONBELLEK = new Map<string, Cizilmis>();
@@ -156,6 +157,7 @@ function useGpuResmi(
   kirp: boolean,
   tilt: number | undefined,
   sicak: number | undefined,
+  vakit: Vakit | undefined,
   hareket: boolean,
   onceDurgun: boolean,
   kalici: KaliciGrup | undefined,
@@ -169,7 +171,8 @@ function useGpuResmi(
     '|' +
     v.join(',') +
     (tilt !== undefined ? '|t' + tilt : '') +
-    (sicak !== undefined ? '|s' + sicak : '');
+    (sicak !== undefined ? '|s' + sicak : '') +
+    vakitAnahtari(vakit);
   const taban = durgunTaban + (hareket ? '|h' : '');
   // Önce durağan: canlı resim sonra, sıra boşalınca (bkz. `Sahne.onceDurgun`).
   const iki = hareket && onceDurgun;
@@ -232,6 +235,7 @@ function useGpuResmi(
           olcek: e / (vw * cssBirim),
           tilt,
           sicak,
+          vakit,
           hareket: h,
           taslak,
         });
@@ -315,7 +319,21 @@ function useGpuResmi(
       ro.disconnect();
     };
     // `v` içerik olarak `taban`da; dizi kimliği her çizimde değişiyor.
-  }, [etkin, taban, durgunTaban, iki, tarif, kirp, tilt, sicak, hareket, kalici, kabaEnaz, ref]);
+  }, [
+    etkin,
+    taban,
+    durgunTaban,
+    iki,
+    tarif,
+    kirp,
+    tilt,
+    sicak,
+    vakit,
+    hareket,
+    kalici,
+    kabaEnaz,
+    ref,
+  ]);
 
   return etkin ? resim : null;
 }
@@ -444,6 +462,7 @@ function useYama(
   canliBekleniyor: boolean,
   tilt: number | undefined,
   sicak: number | undefined,
+  vakit: Vakit | undefined,
   kalici: boolean,
   ref: React.RefObject<SVGSVGElement | null>,
 ): Yama | null {
@@ -538,7 +557,7 @@ function useYama(
     };
     oturum.current = yeni;
     const { uret: u, kamera: kam } = guncel.current;
-    const taban = `${anahtar}|yama|${k.map((x) => x.toFixed(2)).join(',')}|${en}x${boy}|${sicak ?? ''}|${tilt ?? ''}`;
+    const taban = `${anahtar}|yama|${k.map((x) => x.toFixed(2)).join(',')}|${en}x${boy}|${sicak ?? ''}|${tilt ?? ''}${vakitAnahtari(vakit)}`;
     const iste = async (parcali: boolean): Promise<boolean> => {
       const is = taban + (parcali ? '|parcali' : hareketli ? '|h' : '');
       yeni.isler.add(is);
@@ -557,6 +576,7 @@ function useYama(
           dalgaBirimi: vw / (tabanEn * ornekSayisi(tabanEn, (tabanEn * vh) / vw)),
           tilt,
           sicak,
+          vakit,
           yama: hareketli,
           hareket: parcali,
         }),
@@ -585,7 +605,7 @@ function useYama(
     })();
     // `v` ve `gorunen` içerik olarak anahtarlarda. Oturum etkiyle değil,
     // yerine yenisi gelince ya da sahne kapanınca bitiyor.
-  }, [etkin, anahtar, tarif, gorunenAnahtar, tabanEn, hareketli, tilt, sicak, bakildi, ref]);
+  }, [etkin, anahtar, tarif, gorunenAnahtar, tabanEn, hareketli, tilt, sicak, vakit, bakildi, ref]);
 
   // Kalıcı: uygulama yeniden açıldıysa son yama cihazdan (bellekte saklı
   // yoksa). Görünen bölge bildirilmeden, eldeki oturum ve yama yokken
@@ -1102,6 +1122,7 @@ export const Sahne = memo(function Sahne({
   onceDurgun = false,
   tilt,
   sicak,
+  vakit,
   hareket = false,
   tarif = false,
   yama,
@@ -1151,6 +1172,11 @@ export const Sahne = memo(function Sahne({
    * altın, gölgede serin. Şehir'in yerleşkesi; öbür çizimler eskisi gibi.
    */
   sicak?: number;
+  /**
+   * Günün saati (yalnız GPU; vakit.ts): ışığın yönü ve rengi. Her vakit
+   * ayrı resim ve ayrı kayıt; öğle eskisiyle aynı anahtar.
+   */
+  vakit?: Vakit;
   /**
    * Canlı sahne (yalnız GPU, hareket kısıtlı değilse): su parıltısı, ışık
    * titremesi, yükselen duman. Kutu bir sarmalayıcıya geçiyor (katmanlar
@@ -1222,6 +1248,7 @@ export const Sahne = memo(function Sahne({
     kirp,
     tilt,
     sicak,
+    vakit,
     canli,
     onceDurgun,
     kalici,
@@ -1247,6 +1274,7 @@ export const Sahne = memo(function Sahne({
     canli && katman === undefined,
     tilt,
     sicak,
+    vakit,
     yamaKalici,
     ref,
   );
@@ -1298,7 +1326,11 @@ export const Sahne = memo(function Sahne({
   // Izgara: resim ve katmanlar aynı hücrede üst üste (konumlama yok; çağıranın
   // `absolute` gibi sınıfları sarmalayıcıda aynen çalışıyor).
   return (
-    <span className={className} style={{ ...style, display: 'grid', gridTemplate: IZGARA }}>
+    <span
+      className={className}
+      data-vakit={vakit}
+      style={{ ...style, display: 'grid', gridTemplate: IZGARA }}
+    >
       {svg}
       {resim && (
         <HareketKatmani
