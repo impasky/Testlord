@@ -433,5 +433,12 @@ export function metinKabul(node, metin) {
    * anahtar sanılıp eleniyor. Baştaki boşluk o metnin parçası.
    */
   const ic = ts.isTemplateExpression(node) ? metin.replace(/\{\d+\}/g, '').trim() : metin;
+  /*
+   * Tek birimlik süre: `${n}dk`, `${n}sa`, `${n}g`, `${n}sn`. Yer tutucu
+   * sökülünce geriye küçük harfli iki harf kalıyor ve şekil süzgeci onu
+   * anahtar sanıyordu; İngilizcede şehir rozetleri "14dk" yazıyordu. Bu
+   * dört kısaltma Türkçe — hiçbir CSS ya da kod birimiyle çakışmıyor.
+   */
+  if (ts.isTemplateExpression(node) && /^\{0\}(g|sa|dk|sn)$/.test(metin)) return true;
   return kesinMetin(node) ? metinKirintisi(ic, true) : metinMi(ic);
 }

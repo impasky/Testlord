@@ -236,7 +236,13 @@ function jsonTara(yol, ekle, yollar = null) {
         const tamIz = iz ? `${iz}.${k}` : k;
         const uygun = yollar ? yollar.some((r) => r.test(desen(tamIz))) : VERI_ALANI.has(k);
         if (typeof v === 'string' && uygun) {
-          if (metinMi(v)) ekle(v, `${kisa}:${tamIz}`);
+          // Alan adı oyuncuya gittiğini zaten söylüyor: şekil süzgeci
+          // (`metinMi`) burada fazla katı. Küçük harfli tek sözcüğü anahtar
+          // sanıp atıyordu ve "120/200 asker" İngilizcede Türkçe kalıyordu.
+          // Koşul nesneleri (`kosul`, `ek_kosul`) hariç: oradaki `birim`
+          // motorun okuduğu bir kimlik ("mizrakci"), ekrana yazılmıyor.
+          const gevsek = !yollar && !/(^|\.)(ek_)?kosul\./.test(tamIz);
+          if (gevsek ? metinKirintisi(v) : metinMi(v)) ekle(v, `${kisa}:${tamIz}`);
         } else gez(v, tamIz);
       }
     } else if (typeof dugum === 'string' && yollar?.some((r) => r.test(desen(iz)))) {

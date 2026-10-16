@@ -100,6 +100,8 @@ function parcaMi(s) {
    * kalmıyor. `{0} T{1}`, `{0} · T{1}` böyle — "T" bir kademe harfi,
    * gerisi noktalama. Çevirmene sorulacak bir şey yok.
    */
+  // Tek birimlik süre (`{0}g` = gün) biçim değil: İngilizcede `{0}d`.
+  if (/^\{0\}(g|sa|dk|sn)$/.test(t)) return false;
   if (t.replace(/\{\d+\}/g, '').replace(/[^\p{L}]/gu, '').length <= 1) return true;
 
   // Tek karakter: `a`, `d`, `e` gibi kaynak kısaltmaları. Bağlamı olan

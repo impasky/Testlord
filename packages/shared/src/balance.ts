@@ -17,6 +17,7 @@ import unvanlarJson from '../../../data/unvanlar.json';
 import worldMapJson from '../../../data/world-map.json';
 import type { GeneralDef, RegionDef, Rarity, UnitStats, UnitType } from './types.js';
 import { RARITIES, UNIT_TYPES } from './types.js';
+import { t } from './dil.js';
 
 export const B = balanceJson;
 export const GENERALS = generalsJson.generaller as unknown as GeneralDef[];
@@ -178,9 +179,13 @@ export function unit(type: UnitType): UnitStats {
 /**
  * Birimin oyuncuya gösterilecek adı.
  * Arayüzde HİÇBİR yerde ham anahtar ('mizrakci') gösterilmemeli.
+ *
+ * Ad pakete gömülü veriden geliyor, sunucudan değil: API yanıtları
+ * istemcide çevriliyor ama bu yol oradan geçmiyor. Kışla İngilizcede
+ * "Köylü Milis" yazıyordu. Sözlük yoksa (sunucu, Türkçe) ad olduğu gibi.
  */
 export function unitName(type: UnitType): string {
-  return unit(type).ad;
+  return t(unit(type).ad);
 }
 
 /** Bir orduyu "40 Mızrakçı, 25 Okçu" gibi okunur metne çevirir. */

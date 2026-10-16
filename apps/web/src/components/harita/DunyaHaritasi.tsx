@@ -513,7 +513,9 @@ export function DunyaHaritasi({
       return r.isMine ? 'ben' : r.owner.id;
     }).map((k) => ({
       ...k,
-      ad: k.anahtar === 'ben' ? 'SEN' : (ad.get(k.anahtar) ?? ''),
+      // "Sen" yazılıyor, büyük harfi CSS veriyor: büyük harfli 'SEN' çeviriye
+      // SABIT_ADI sanılıp girmiyordu ve İngilizce haritada Türkçe kalıyordu.
+      ad: k.anahtar === 'ben' ? 'Sen' : (ad.get(k.anahtar) ?? ''),
       benim: k.anahtar === 'ben',
     }));
   }, [hucreler, regions, bolgeHaritasi]);
@@ -1481,7 +1483,9 @@ const Etiketler = memo(function Etiketler({
               data-kume-ad=""
               data-oncelik={k.benim ? 1 : 2}
               className={`absolute font-extrabold whitespace-nowrap ${
-                k.benim ? 'text-[13px] tracking-[0.14em] text-altin' : 'text-[12px] text-white'
+                k.benim
+                  ? 'text-[13px] uppercase tracking-[0.14em] text-altin'
+                  : 'text-[12px] text-white'
               }`}
               style={{
                 left: `${k.merkez.x}%`,
