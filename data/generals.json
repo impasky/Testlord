@@ -20,6 +20,11 @@
     "ihtimal": 0.25,
     "saat": 6
   },
+  "uzmanlik": {
+    "_aciklama": "Her general 10. seviyede iki yoldan birini seciyor: pasifini DERINLESTIREN ya da ona YAN bir etki ekleyen. Yeni general degil, mevcut kadroda karar derinligi. Etkiler motorun zaten tanidigi pasif etkilerinden (gecerli_pasif_etkileri); deger pasif gibi seviyeyle buyuyor. Ilk secim bedava, degistirmek generalin kiralama fiyatinin bu orani kadar altin; seferdeki general degistirilemez (savas sonucu yolda degismesin).",
+    "seviye": 10,
+    "degistirme_orani": 0.5
+  },
   "generaller": [
     {
       "key": "demirci_yusuf",
@@ -37,7 +42,23 @@
       },
       "ek_etki": {
         "ilk_tur_hasar_azaltma": 0.15
-      }
+      },
+      "uzmanliklar": [
+        {
+          "key": "kalkan_duvari",
+          "ad": "Kalkan Duvarı",
+          "aciklama": "Ordu savunması daha da sağlamlaşır.",
+          "etki": "ordu_savunma",
+          "deger": 0.05
+        },
+        {
+          "key": "zirh_ustasi",
+          "ad": "Zırh Ustası",
+          "aciklama": "Dövülen zırh askerin canını artırır.",
+          "etki": "ordu_can",
+          "deger": 0.06
+        }
+      ]
     },
     {
       "key": "okcubasi_elif",
@@ -55,7 +76,23 @@
       },
       "ek_etki": {
         "on_hasar_orani": 0.05
-      }
+      },
+      "uzmanliklar": [
+        {
+          "key": "keskin_nisanci",
+          "ad": "Keskin Nişancı",
+          "aciklama": "Okçuların vuruşu daha da sertleşir.",
+          "etki": "okcu_saldiri",
+          "deger": 0.08
+        },
+        {
+          "key": "ates_oklari",
+          "ad": "Ateşli Oklar",
+          "aciklama": "Ok yağmuru bütün orduyu cesaretlendirir.",
+          "etki": "ordu_saldiri",
+          "deger": 0.04
+        }
+      ]
     },
     {
       "key": "suvari_bora",
@@ -74,7 +111,23 @@
       "ek_etki": {
         "suvari_orani_esigi": 0.5,
         "ilk_tur_saldiri": 0.1
-      }
+      },
+      "uzmanliklar": [
+        {
+          "key": "hizli_kol",
+          "ad": "Hızlı Kol",
+          "aciklama": "Ordu yolda daha da hızlı.",
+          "etki": "yuruyus_suresi",
+          "deger": -0.06
+        },
+        {
+          "key": "baskinci",
+          "ad": "Baskıncı",
+          "aciklama": "Ani baskın daha çok ganimet getirir.",
+          "etki": "yagma",
+          "deger": 0.1
+        }
+      ]
     },
     {
       "key": "erzakci_meryem",
@@ -92,7 +145,23 @@
       },
       "ek_etki": {
         "yuruyusteki_ordu_bakimsiz": true
-      }
+      },
+      "uzmanliklar": [
+        {
+          "key": "tutumlu_ambar",
+          "ad": "Tutumlu Ambar",
+          "aciklama": "Ordunun bakımı daha da ucuzlar.",
+          "etki": "ordu_bakim_maliyeti",
+          "deger": -0.08
+        },
+        {
+          "key": "sefer_mutfagi",
+          "ad": "Sefer Mutfağı",
+          "aciklama": "İyi beslenen yaralı toparlanıp döner.",
+          "etki": "kayip_geri_donus",
+          "deger": 0.06
+        }
+      ]
     },
     {
       "key": "mizrakci_kadir",
@@ -110,7 +179,23 @@
       },
       "ek_etki": {
         "mizrakci_suvari_kars": 1.8
-      }
+      },
+      "uzmanliklar": [
+        {
+          "key": "kirpi_duzeni",
+          "ad": "Kirpi Düzeni",
+          "aciklama": "Mızrakçılar daha da zor yarılır.",
+          "etki": "mizrakci_savunma",
+          "deger": 0.09
+        },
+        {
+          "key": "siper_ustasi",
+          "ad": "Siper Ustası",
+          "aciklama": "Savunmada bütün ordu siper alır.",
+          "etki": "savunmada_ordu_savunma",
+          "deger": 0.06
+        }
+      ]
     },
     {
       "key": "kahya_sinan",
@@ -128,7 +213,23 @@
       },
       "ek_etki": {
         "gunluk_vergi_saat": 2
-      }
+      },
+      "uzmanliklar": [
+        {
+          "key": "vergi_memuru",
+          "ad": "Vergi Memuru",
+          "aciklama": "Bölgelerden daha çok gelir toplanır.",
+          "etki": "bolge_geliri",
+          "deger": 0.04
+        },
+        {
+          "key": "ganimet_katibi",
+          "ad": "Ganimet Kâtibi",
+          "aciklama": "Yağmanın hesabı daha iyi tutulur.",
+          "etki": "yagma",
+          "deger": 0.08
+        }
+      ]
     },
     {
       "key": "kusatmaci_tarik",
@@ -146,7 +247,23 @@
       },
       "ek_etki": {
         "kale_delme": 0.3
-      }
+      },
+      "uzmanliklar": [
+        {
+          "key": "mancinik_ustasi",
+          "ad": "Mancınık Ustası",
+          "aciklama": "Kuşatma makineleri daha da yıkıcı.",
+          "etki": "kusatma_saldiri",
+          "deger": 0.15
+        },
+        {
+          "key": "lagimci",
+          "ad": "Lağımcı",
+          "aciklama": "Sur dibinde açılan lağım bütün orduya yol açar.",
+          "etki": "ordu_saldiri",
+          "deger": 0.05
+        }
+      ]
     },
     {
       "key": "casus_leyla",
@@ -164,7 +281,23 @@
       },
       "ek_etki": {
         "kesif": true
-      }
+      },
+      "uzmanliklar": [
+        {
+          "key": "golge_lonca",
+          "ad": "Gölge Lonca",
+          "aciklama": "Yağma daha da bereketli.",
+          "etki": "yagma",
+          "deger": 0.12
+        },
+        {
+          "key": "pusu",
+          "ad": "Pusu",
+          "aciklama": "Düşman hazırlıksız yakalanır.",
+          "etki": "ordu_saldiri",
+          "deger": 0.05
+        }
+      ]
     },
     {
       "key": "sovalye_doruk",
@@ -182,7 +315,23 @@
       },
       "ek_etki": {
         "lord_yaralanma_azaltma": 0.5
-      }
+      },
+      "uzmanliklar": [
+        {
+          "key": "sancak_sovalyesi",
+          "ad": "Sancak Şövalyesi",
+          "aciklama": "Lordun savaştaki payı daha da büyür.",
+          "etki": "lord_savas_katkisi",
+          "deger": 0.12
+        },
+        {
+          "key": "muhafiz",
+          "ad": "Muhafız",
+          "aciklama": "Şövalye ordunun önünde kalkan olur.",
+          "etki": "ordu_savunma",
+          "deger": 0.05
+        }
+      ]
     },
     {
       "key": "vaiz_bertan",
@@ -198,7 +347,23 @@
         "ad": "Yaralı Toplama",
         "aciklama": "Kazanılan savaşlarda kayıpların %20'si yaralı olarak geri döner."
       },
-      "ek_etki": {}
+      "ek_etki": {},
+      "uzmanliklar": [
+        {
+          "key": "sifaci",
+          "ad": "Şifacı",
+          "aciklama": "Daha çok yaralı savaş alanından döner.",
+          "etki": "kayip_geri_donus",
+          "deger": 0.1
+        },
+        {
+          "key": "atesli_vaaz",
+          "ad": "Ateşli Vaaz",
+          "aciklama": "Vaaz askerin dayanma gücünü artırır.",
+          "etki": "ordu_can",
+          "deger": 0.05
+        }
+      ]
     },
     {
       "key": "kumandan_alparslan",
@@ -216,7 +381,23 @@
       },
       "ek_etki": {
         "komuta_kapasitesi": 120
-      }
+      },
+      "uzmanliklar": [
+        {
+          "key": "akinci_kumandan",
+          "ad": "Akıncı Kumandan",
+          "aciklama": "Saldırı daha da sertleşir.",
+          "etki": "ordu_saldiri",
+          "deger": 0.07
+        },
+        {
+          "key": "stratejist",
+          "ad": "Stratejist",
+          "aciklama": "Saldırıda bile ordu dağılmaz.",
+          "etki": "ordu_savunma",
+          "deger": 0.07
+        }
+      ]
     },
     {
       "key": "kale_bekcisi_sarya",
@@ -234,7 +415,23 @@
       },
       "ek_etki": {
         "garnizon_bakimsiz": true
-      }
+      },
+      "uzmanliklar": [
+        {
+          "key": "sur_bekcisi",
+          "ad": "Sur Bekçisi",
+          "aciklama": "Savunmada ordu daha da sağlam.",
+          "etki": "savunmada_ordu_savunma",
+          "deger": 0.12
+        },
+        {
+          "key": "nobetci_ordu",
+          "ad": "Nöbetçi Ordu",
+          "aciklama": "Nöbete alışmış asker daha dayanıklı.",
+          "etki": "ordu_can",
+          "deger": 0.06
+        }
+      ]
     }
   ],
   "gecerli_pasif_etkileri": [

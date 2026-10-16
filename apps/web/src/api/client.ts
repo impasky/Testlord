@@ -733,6 +733,11 @@ export interface GeneralDto {
   slotIndex: number | null;
   dinleniyor: string | null;
   etkinDeger: number;
+  /** İki uzmanlık yolu (docs/09 §2.3); seçilen, açık mı, değiştirme bedeli. */
+  uzmanliklar: { key: string; ad: string; aciklama: string; etki: string; deger: number }[];
+  uzmanlik: string | null;
+  uzmanlikAcik: boolean;
+  uzmanlikBedeli: number;
 }
 
 export interface RankingRow {
@@ -1308,6 +1313,8 @@ export interface GeneralKatkisiDto {
   pasifDeger: number;
   yetenekAd: string | null;
   yetenekAciklama: string | null;
+  /** Uzmanlık yolu (eski raporlarda yok). */
+  uzmanlik?: { ad: string; etki: string; deger: number } | null;
 }
 
 /** Süren bir araştırma; `startedAt` yuva çubuğunun ilerlemesi için. */
@@ -1628,7 +1635,14 @@ export const api = {
   battles: () => request<BattleDto[]>('/battles'),
   battle: (id: string) => request<BattleDto>(`/battles/${id}`),
 
-  generals: () => request<{ slots: number; altin: number; kadro: GeneralDto[] }>('/generals'),
+  generals: () =>
+    request<{ slots: number; altin: number; kadro: GeneralDto[]; uzmanlikSeviyesi: number }>(
+      '/generals',
+    ),
+  generalUzmanlik: (key: string, uzmanlik: string) =>
+    post<{ uzmanlik: string; ad: string; bedel: number }>(`/generals/${key}/uzmanlik`, {
+      uzmanlik,
+    }),
   hireGeneral: (key: string) => post(`/generals/${key}/hire`),
   assignGeneral: (key: string, slotIndex: number | null) =>
     post(`/generals/${key}/assign`, { slotIndex }),

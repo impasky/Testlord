@@ -264,6 +264,12 @@ function GeneralKatkilari({
                 <span className="text-parsomen">{g.pasifAd}</span> — %
                 {Math.round(g.pasifDeger * 100)} {etkiAdi(g.pasifEtki)}
               </p>
+              {g.uzmanlik && (
+                <p className="mt-0.5 text-[11px] text-solgun">
+                  <span className="text-parsomen">{g.uzmanlik.ad}</span> — %
+                  {Math.round(g.uzmanlik.deger * 100)} {etkiAdi(g.uzmanlik.etki)}
+                </p>
+              )}
               {g.yetenekAd && (
                 <p className="mt-0.5 text-[11px] text-altin">
                   {g.yetenekAd}

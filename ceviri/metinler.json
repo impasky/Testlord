@@ -151,6 +151,14 @@
       "apps/web/src/screens/Arastirma.tsx:937"
     ]
   },
+  "tae9b2efc": {
+    "grup": "arayuz",
+    "tr": " ya da ",
+    "en": "",
+    "nerede": [
+      "apps/web/src/screens/Generaller.tsx:200"
+    ]
+  },
   "tae835c20": {
     "grup": "arayuz",
     "tr": " zayıf: ",
@@ -646,7 +654,8 @@
     "tr": "{0} altın eksik.",
     "en": "{0} gold missing.",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:154"
+      "apps/web/src/screens/Generaller.tsx:166",
+      "apps/web/src/screens/Generaller.tsx:255"
     ]
   },
   "te3dc4ecc": {
@@ -782,7 +791,7 @@
     "tr": "{0} birliklerin {1} karşısında {2} vurdu.",
     "en": "Your {0} troops hit {2} against {1}.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:406"
+      "apps/web/src/components/SavasRaporu.tsx:412"
     ]
   },
   "t0460d827": {
@@ -790,7 +799,7 @@
     "tr": "{0} birliklerin {1} karşısında {2} yedi.",
     "en": "Your {0} troops took {2} against {1}.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:407"
+      "apps/web/src/components/SavasRaporu.tsx:413"
     ]
   },
   "t12853735": {
@@ -809,7 +818,7 @@
     "tr": "{0} bölgesine karşı saldır",
     "en": "Counterattack region {0}",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:665"
+      "apps/web/src/components/SavasRaporu.tsx:671"
     ]
   },
   "t64000673": {
@@ -1031,7 +1040,7 @@
     "tr": "{0} ile {1} arasındaki savaş",
     "en": "Battle between {0} and {1}",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:441"
+      "apps/web/src/components/SavasRaporu.tsx:447"
     ]
   },
   "tf8c9cd73": {
@@ -2123,7 +2132,8 @@
     "tr": "Altının yetmiyor",
     "en": "Not enough gold",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:153",
+      "apps/web/src/screens/Generaller.tsx:165",
+      "apps/web/src/screens/Generaller.tsx:254",
       "apps/web/src/screens/Ittifak.tsx:354"
     ]
   },
@@ -2963,7 +2973,7 @@
     "tr": "BÖLGE EL DEĞİŞTİRDİ",
     "en": "REGION CHANGED HANDS",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:559"
+      "apps/web/src/components/SavasRaporu.tsx:565"
     ]
   },
   "tc0b6010d": {
@@ -4151,7 +4161,7 @@
     "tr": "Dizilim ve Taktik",
     "en": "Formation and Tactic",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:337"
+      "apps/web/src/components/SavasRaporu.tsx:343"
     ]
   },
   "t1fc71cab": {
@@ -4649,7 +4659,7 @@
     "tr": "En yüksek seviye.",
     "en": "Max level.",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:114"
+      "apps/web/src/screens/Generaller.tsx:118"
     ]
   },
   "ta793f864": {
@@ -4981,8 +4991,8 @@
     "tr": "Garnizon",
     "en": "Garrison",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:433",
-      "apps/web/src/components/SavasRaporu.tsx:606",
+      "apps/web/src/components/SavasRaporu.tsx:439",
+      "apps/web/src/components/SavasRaporu.tsx:612",
       "apps/web/src/components/SohbetMesajlari.tsx:159",
       "apps/web/src/screens/Harita.tsx:1276",
       "apps/web/src/screens/Harita.tsx:1424"
@@ -5165,7 +5175,7 @@
     "tr": "Generaller",
     "en": "Generals",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:194",
+      "apps/web/src/screens/Generaller.tsx:293",
       "packages/shared/src/types.ts:358"
     ]
   },
@@ -5313,7 +5323,7 @@
       "apps/web/src/screens/Akin.tsx:815",
       "apps/web/src/screens/Demirhane.tsx:579",
       "apps/web/src/screens/EsyaPazari.tsx:411",
-      "apps/web/src/screens/Generaller.tsx:149",
+      "apps/web/src/screens/Generaller.tsx:161",
       "apps/web/src/screens/Giris.tsx:319",
       "apps/web/src/screens/Harita.tsx:1238",
       "apps/web/src/screens/Hesap.tsx:259",
@@ -5384,7 +5394,7 @@
     "tr": "Gücün savunanın {0} katıydı.",
     "en": "Your power was {0}× the defender's.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:375"
+      "apps/web/src/components/SavasRaporu.tsx:381"
     ]
   },
   "t269314eb": {
@@ -5600,7 +5610,7 @@
     "tr": "Hedefin tahkimatı savunmaya +%{0} kattı.",
     "en": "The target's fortification added +{0}% to defense.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:402"
+      "apps/web/src/components/SavasRaporu.tsx:408"
     ]
   },
   "t65049340": {
@@ -5798,7 +5808,7 @@
     "en": "DELETE MY ACCOUNT",
     "nerede": [
       "apps/api/src/routes/me.ts:66",
-      "apps/web/src/api/client.ts:1369",
+      "apps/web/src/api/client.ts:1376",
       "apps/web/src/screens/Hesap.tsx:297"
     ]
   },
@@ -6139,7 +6149,7 @@
     "en": "Operation failed.",
     "nerede": [
       "apps/web/src/screens/Demirhane.tsx:363",
-      "apps/web/src/screens/Generaller.tsx:181",
+      "apps/web/src/screens/Generaller.tsx:280",
       "apps/web/src/screens/Harita.tsx:613",
       "apps/web/src/screens/Kisla.tsx:377",
       "apps/web/src/screens/LordEkrani.tsx:212"
@@ -6274,7 +6284,7 @@
     "tr": "İttifak sohbetinde paylaş",
     "en": "Share in alliance chat",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:478"
+      "apps/web/src/components/SavasRaporu.tsx:484"
     ]
   },
   "tae4ab61b": {
@@ -6282,7 +6292,7 @@
     "tr": "İttifak sohbetinde paylaşıldı.",
     "en": "Shared in alliance chat.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:460"
+      "apps/web/src/components/SavasRaporu.tsx:466"
     ]
   },
   "t94cb806d": {
@@ -6435,7 +6445,7 @@
     "tr": "Kadro çağrılıyor...",
     "en": "Roster is being summoned...",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:185"
+      "apps/web/src/screens/Generaller.tsx:284"
     ]
   },
   "t0f383914": {
@@ -6567,8 +6577,8 @@
       "apps/web/src/components/Omurga.tsx:466",
       "apps/web/src/components/ProfilKarti.tsx:206",
       "apps/web/src/components/ProfilResmiSecici.tsx:286",
-      "apps/web/src/components/SavasRaporu.tsx:525",
-      "apps/web/src/components/SavasRaporu.tsx:548",
+      "apps/web/src/components/SavasRaporu.tsx:531",
+      "apps/web/src/components/SavasRaporu.tsx:554",
       "apps/web/src/components/SavunmaDuzeni.tsx:69",
       "apps/web/src/components/SikayetSayfasi.tsx:66",
       "apps/web/src/components/UygulamaKasasi.tsx:181",
@@ -6631,7 +6641,7 @@
     "tr": "Karşı taraf {0} kat güçlüydü.",
     "en": "The opposing side was {0}× stronger.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:376"
+      "apps/web/src/components/SavasRaporu.tsx:382"
     ]
   },
   "tf40b4b94": {
@@ -6639,7 +6649,7 @@
     "tr": "Karşı taraf {0}. turda en çok öne geçti: {1} güce karşı {2}.",
     "en": "The opposing side pulled ahead the most in round {0}: {1} power against {2}.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:394"
+      "apps/web/src/components/SavasRaporu.tsx:400"
     ]
   },
   "tdd047557": {
@@ -7175,7 +7185,7 @@
     "tr": "Kirala · {0}",
     "en": "Hire · {0}",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:149"
+      "apps/web/src/screens/Generaller.tsx:161"
     ]
   },
   "te5a5abc7": {
@@ -7512,8 +7522,8 @@
       "apps/api/src/routes/moderasyon.ts:83",
       "apps/api/src/routes/rankings.ts:265",
       "apps/api/src/routes/ticaret.ts:62",
-      "apps/api/src/services/lord.ts:392",
-      "apps/api/src/services/lord.ts:694",
+      "apps/api/src/services/lord.ts:393",
+      "apps/api/src/services/lord.ts:695",
       "apps/api/src/services/profil.ts:79",
       "apps/web/src/components/MobilKabuk.tsx:78",
       "apps/web/src/components/UygulamaKasasi.tsx:41"
@@ -7653,7 +7663,7 @@
     "tr": "Makas {0}. turda en çok açıldı: {1} güce karşı {2}.",
     "en": "The gap widened the most in round {0}: {1} power against {2}.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:389"
+      "apps/web/src/components/SavasRaporu.tsx:395"
     ]
   },
   "t5c2dce44": {
@@ -7687,7 +7697,7 @@
     "tr": "Mancınıklar tahkimata karşı iki katı iş yaptı.",
     "en": "Catapults did double work against the fortification.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:411"
+      "apps/web/src/components/SavasRaporu.tsx:417"
     ]
   },
   "t6b688af5": {
@@ -7919,7 +7929,7 @@
     "tr": "Neden Böyle Oldu",
     "en": "Why Did This Happen",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:320"
+      "apps/web/src/components/SavasRaporu.tsx:326"
     ]
   },
   "t73ac5603": {
@@ -8677,7 +8687,7 @@
     "tr": "Paylaşılamadı.",
     "en": "Could not share.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:465"
+      "apps/web/src/components/SavasRaporu.tsx:471"
     ]
   },
   "t8dd3cca9": {
@@ -8685,7 +8695,7 @@
     "tr": "Paylaşıldı",
     "en": "Shared",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:478"
+      "apps/web/src/components/SavasRaporu.tsx:484"
     ]
   },
   "tbc71d6a3": {
@@ -8828,7 +8838,7 @@
     "tr": "Rapor açılamadı.",
     "en": "Report could not be opened.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:567"
+      "apps/web/src/components/SavasRaporu.tsx:573"
     ]
   },
   "t37c36930": {
@@ -8968,7 +8978,7 @@
     "tr": "Sahada general yok. Kiraladığın bir generali slota yerleştir.",
     "en": "No general on the field. Place a hired general in a slot.",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:199"
+      "apps/web/src/screens/Generaller.tsx:298"
     ]
   },
   "tde5de59c": {
@@ -8984,7 +8994,7 @@
     "tr": "Sahadaki Generaller · {0}/{1}",
     "en": "Generals on the Field · {0}/{1}",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:195"
+      "apps/web/src/screens/Generaller.tsx:294"
     ]
   },
   "te7c4ca64": {
@@ -9008,7 +9018,7 @@
     "tr": "Saldıran",
     "en": "Attacker",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:616"
+      "apps/web/src/components/SavasRaporu.tsx:622"
     ]
   },
   "t87d8df09": {
@@ -9016,8 +9026,8 @@
     "tr": "SALDIRAN",
     "en": "ATTACKER",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:558",
-      "apps/web/src/components/SavasRaporu.tsx:597"
+      "apps/web/src/components/SavasRaporu.tsx:564",
+      "apps/web/src/components/SavasRaporu.tsx:603"
     ]
   },
   "t3424fe05": {
@@ -9181,7 +9191,7 @@
     "tr": "Savaş kazanıldı ama güç payı %{0} eşiğine ulaşmadı — bölge el değiştirmedi, yalnızca yağma alındı.",
     "en": "The battle was won but the power share did not reach the {0}% threshold — the region did not change hands, only loot was taken.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:379"
+      "apps/web/src/components/SavasRaporu.tsx:385"
     ]
   },
   "tbbc85c89": {
@@ -9189,7 +9199,7 @@
     "tr": "Savaş meclisin",
     "en": "Your war council",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:194"
+      "apps/web/src/screens/Generaller.tsx:293"
     ]
   },
   "t271491e0": {
@@ -9205,7 +9215,7 @@
     "tr": "Savaş Raporu",
     "en": "Battle Report",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:535"
+      "apps/web/src/components/SavasRaporu.tsx:541"
     ]
   },
   "tbfc25419": {
@@ -9245,7 +9255,7 @@
     "tr": "Savunan",
     "en": "Defender",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:621"
+      "apps/web/src/components/SavasRaporu.tsx:627"
     ]
   },
   "tf48cad35": {
@@ -9253,8 +9263,8 @@
     "tr": "SAVUNAN",
     "en": "DEFENDER",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:558",
-      "apps/web/src/components/SavasRaporu.tsx:605"
+      "apps/web/src/components/SavasRaporu.tsx:564",
+      "apps/web/src/components/SavasRaporu.tsx:611"
     ]
   },
   "td8820cb4": {
@@ -9654,7 +9664,7 @@
     "tr": "Slot {0}",
     "en": "Slot {0}",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:128"
+      "apps/web/src/screens/Generaller.tsx:140"
     ]
   },
   "tae7f3bd1": {
@@ -9670,7 +9680,7 @@
     "tr": "Slotun {0}. Liderlik {1} puanda bir slot açar (en fazla{2}{3}); karargâhın seviyesi bunun üstüne ekler.",
     "en": "You have {0} [slot|slots]. Leadership opens a slot every {1} [point|points] (at most{2}{3}); your headquarters level adds on top of that.",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:221"
+      "apps/web/src/screens/Generaller.tsx:320"
     ]
   },
   "t1b462bb4": {
@@ -9989,7 +9999,15 @@
     "tr": "Sv {0}: %{1} {2} — savaşa girdikçe büyür.",
     "en": "Lvl {0}: {1}% {2} — grows as you enter battles.",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:105"
+      "apps/web/src/screens/Generaller.tsx:109"
+    ]
+  },
+  "tfea6e4de": {
+    "grup": "arayuz",
+    "tr": "Sv {0}'da uzmanlık: {1}.",
+    "en": "Specialisation at Lv {0}: {1}.",
+    "nerede": [
+      "apps/web/src/screens/Generaller.tsx:200"
     ]
   },
   "tcd932b52": {
@@ -9997,7 +10015,7 @@
     "tr": "Sv {0}/{1}",
     "en": "Lvl {0}/{1}",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:94",
+      "apps/web/src/screens/Generaller.tsx:98",
       "apps/web/src/screens/Medeniyet.tsx:294"
     ]
   },
@@ -10011,7 +10029,7 @@
       "apps/web/src/screens/Arastirma.tsx:571",
       "apps/web/src/screens/Demirhane.tsx:464",
       "apps/web/src/screens/Demirhane.tsx:488",
-      "apps/web/src/screens/Generaller.tsx:208"
+      "apps/web/src/screens/Generaller.tsx:307"
     ]
   },
   "t9febed47": {
@@ -10326,7 +10344,7 @@
     "tr": "Tahkimat olmadığı için mancınıklar canlı orduya {0} vurdu — o kaynak boşa gitti.",
     "en": "With no fortification the catapults hit the living army at {0} — that resource went to waste.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:414"
+      "apps/web/src/components/SavasRaporu.tsx:420"
     ]
   },
   "te9b9ec08": {
@@ -10350,7 +10368,7 @@
     "tr": "Tahkimatın savunmaya +%{0} kattı.",
     "en": "Your fortification added +{0}% to defense.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:401"
+      "apps/web/src/components/SavasRaporu.tsx:407"
     ]
   },
   "tebef06ac": {
@@ -10656,7 +10674,7 @@
     "tr": "Toplam{0}{1}{2}birim öldü · tohum {3}",
     "en": "Total{0}{1}{2}units died · seed {3}",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:668"
+      "apps/web/src/components/SavasRaporu.tsx:674"
     ]
   },
   "t51937224": {
@@ -10720,7 +10738,7 @@
     "tr": "Tur Tur Güç · {0} tur",
     "en": "Power Round by Round · {0} [round|rounds]",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:589"
+      "apps/web/src/components/SavasRaporu.tsx:595"
     ]
   },
   "te56699c1": {
@@ -10801,6 +10819,22 @@
       "apps/web/src/screens/Sehir.tsx:569"
     ]
   },
+  "t1acd531f": {
+    "grup": "arayuz",
+    "tr": "Uzmanlık · değiştirmek {0} altın",
+    "en": "Specialisation · changing costs {0} gold",
+    "nerede": [
+      "apps/web/src/screens/Generaller.tsx:211"
+    ]
+  },
+  "tc8e2fde2": {
+    "grup": "arayuz",
+    "tr": "Uzmanlık seç · ilk seçim bedava",
+    "en": "Choose a specialisation · first choice is free",
+    "nerede": [
+      "apps/web/src/screens/Generaller.tsx:212"
+    ]
+  },
   "tf8038d21": {
     "grup": "arayuz",
     "tr": "Üç görevi de bitirince alınır ({0}/{1}).",
@@ -10847,7 +10881,7 @@
     "tr": "Üstteki çubuk saldıran, alttaki savunan.",
     "en": "The top bar is the attacker, the bottom is the defender.",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:592"
+      "apps/web/src/components/SavasRaporu.tsx:598"
     ]
   },
   "tee23d259": {
@@ -10954,7 +10988,7 @@
     "tr": "Yağma",
     "en": "Loot",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:626"
+      "apps/web/src/components/SavasRaporu.tsx:632"
     ]
   },
   "tea3bde58": {
@@ -11055,7 +11089,7 @@
     "tr": "Yaralı — {0} tarihine kadar dinleniyor.",
     "en": "Wounded — resting until {0}.",
     "nerede": [
-      "apps/web/src/screens/Generaller.tsx:117"
+      "apps/web/src/screens/Generaller.tsx:129"
     ]
   },
   "tc6d3b17d": {
@@ -11063,7 +11097,7 @@
     "tr": "yarım",
     "en": "half",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:415"
+      "apps/web/src/components/SavasRaporu.tsx:421"
     ]
   },
   "t8165b4a2": {
@@ -11300,7 +11334,7 @@
     "en": "DEFEAT",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:76",
-      "apps/web/src/components/SavasRaporu.tsx:556",
+      "apps/web/src/components/SavasRaporu.tsx:562",
       "apps/web/src/components/SohbetMesajlari.tsx:155",
       "apps/web/src/screens/Harita.tsx:1484"
     ]
@@ -11519,7 +11553,7 @@
     "tr": "yükleniyor…",
     "en": "loading…",
     "nerede": [
-      "apps/web/src/components/SavasRaporu.tsx:545"
+      "apps/web/src/components/SavasRaporu.tsx:551"
     ]
   },
   "tb65d2ef7": {
@@ -11619,7 +11653,7 @@
     "en": "VICTORY",
     "nerede": [
       "apps/web/src/components/SaldiriOnizleme.tsx:76",
-      "apps/web/src/components/SavasRaporu.tsx:556",
+      "apps/web/src/components/SavasRaporu.tsx:562",
       "apps/web/src/components/SohbetMesajlari.tsx:155",
       "apps/web/src/screens/Harita.tsx:1484"
     ]
@@ -16080,7 +16114,7 @@
     "tr": "{0} için {1} altın gerekiyor, {2} altının var.",
     "en": "{0} requires {1} gold, you have {2} gold.",
     "nerede": [
-      "apps/api/src/routes/generals.ts:67"
+      "apps/api/src/routes/generals.ts:141"
     ]
   },
   "t8b6b2b9f": {
@@ -16315,6 +16349,14 @@
       "apps/api/src/services/march.ts:921"
     ]
   },
+  "t3566f751": {
+    "grup": "sunucu",
+    "tr": "{0} seferde. Dönünce yolunu değiştirebilirsin.",
+    "en": "{0} is on campaign. You can change the path when they return.",
+    "nerede": [
+      "apps/api/src/routes/generals.ts:102"
+    ]
+  },
   "t4855a1a5": {
     "grup": "sunucu",
     "tr": "{0} senin. {1} altın ödendi.",
@@ -16338,6 +16380,14 @@
     "en": "{0} leveled up: Lvl {1} → Lvl {2}. Its passive is now {3}% stronger.",
     "nerede": [
       "apps/api/src/services/march.ts:281"
+    ]
+  },
+  "t92c90753": {
+    "grup": "sunucu",
+    "tr": "{0} uzmanlığını {1}. seviyede seçebilir.",
+    "en": "{0} can choose a specialisation at level {1}.",
+    "nerede": [
+      "apps/api/src/routes/generals.ts:85"
     ]
   },
   "t357052dc": {
@@ -16540,7 +16590,7 @@
     "tr": "Başkentin düştü",
     "en": "Your capital fell",
     "nerede": [
-      "apps/api/src/services/lord.ts:759"
+      "apps/api/src/services/lord.ts:760"
     ]
   },
   "ta3ff14a1": {
@@ -16673,7 +16723,7 @@
     "tr": "Bölge ele geçirildi",
     "en": "Region captured",
     "nerede": [
-      "apps/api/src/services/lord.ts:761"
+      "apps/api/src/services/lord.ts:762"
     ]
   },
   "tb08bcfd6": {
@@ -16941,7 +16991,8 @@
     "tr": "Bu general kadronda değil.",
     "en": "This general is not in your roster.",
     "nerede": [
-      "apps/api/src/routes/generals.ts:105"
+      "apps/api/src/routes/generals.ts:179",
+      "apps/api/src/routes/generals.ts:82"
     ]
   },
   "t666ddb82": {
@@ -16949,7 +17000,15 @@
     "tr": "Bu general zaten kadronda.",
     "en": "This general is already in your roster.",
     "nerede": [
-      "apps/api/src/routes/generals.ts:62"
+      "apps/api/src/routes/generals.ts:136"
+    ]
+  },
+  "t9eb9c386": {
+    "grup": "sunucu",
+    "tr": "Bu generalin böyle bir yolu yok.",
+    "en": "This general has no such path.",
+    "nerede": [
+      "apps/api/src/routes/generals.ts:75"
     ]
   },
   "ta0762f35": {
@@ -17090,6 +17149,14 @@
     "nerede": [
       "apps/api/src/routes/ittifak.ts:1653",
       "apps/api/src/routes/ittifak.ts:1689"
+    ]
+  },
+  "tc6951f67": {
+    "grup": "sunucu",
+    "tr": "Bu yol zaten seçili.",
+    "en": "This path is already chosen.",
+    "nerede": [
+      "apps/api/src/routes/generals.ts:91"
     ]
   },
   "t14d7d3bd": {
@@ -17370,7 +17437,7 @@
     "tr": "Eşyan satıldı",
     "en": "Your item sold",
     "nerede": [
-      "apps/api/src/services/lord.ts:765"
+      "apps/api/src/services/lord.ts:766"
     ]
   },
   "tc3dc0d24": {
@@ -17437,7 +17504,8 @@
     "tr": "General",
     "en": "General",
     "nerede": [
-      "apps/api/src/routes/generals.ts:55"
+      "apps/api/src/routes/generals.ts:129",
+      "apps/api/src/routes/generals.ts:73"
     ]
   },
   "tf9f26e6c": {
@@ -17554,7 +17622,7 @@
     "tr": "İşin bitti",
     "en": "You're done",
     "nerede": [
-      "apps/api/src/services/lord.ts:762"
+      "apps/api/src/services/lord.ts:763"
     ]
   },
   "t75da2234": {
@@ -18008,7 +18076,7 @@
     "tr": "Ordun eve döndü",
     "en": "Your army returned home",
     "nerede": [
-      "apps/api/src/services/lord.ts:760"
+      "apps/api/src/services/lord.ts:761"
     ]
   },
   "t69d0d616": {
@@ -18059,7 +18127,7 @@
     "tr": "Ön siparişin karşılandı",
     "en": "Your buy order was filled",
     "nerede": [
-      "apps/api/src/services/lord.ts:766"
+      "apps/api/src/services/lord.ts:767"
     ]
   },
   "t57668250": {
@@ -18117,7 +18185,7 @@
     "tr": "Pazar emrin eşleşmiyor",
     "en": "Your market order doesn't match",
     "nerede": [
-      "apps/api/src/services/lord.ts:767"
+      "apps/api/src/services/lord.ts:768"
     ]
   },
   "te41957df": {
@@ -18183,7 +18251,7 @@
     "tr": "Sadece {0} general slotun var. Liderlik statını artır ya da Karargâh'ı yükselt.",
     "en": "You only have {0} general slots. Increase your Leadership stat or upgrade the Headquarters.",
     "nerede": [
-      "apps/api/src/routes/generals.ts:115"
+      "apps/api/src/routes/generals.ts:189"
     ]
   },
   "t32fe7d29": {
@@ -18233,7 +18301,7 @@
     "tr": "Savaş kaybedildi",
     "en": "Battle lost",
     "nerede": [
-      "apps/api/src/services/lord.ts:758"
+      "apps/api/src/services/lord.ts:759"
     ]
   },
   "t668e46ee": {
@@ -18385,7 +18453,7 @@
     "tr": "Toprağın saldırı altında",
     "en": "Your land is under attack",
     "nerede": [
-      "apps/api/src/services/lord.ts:757"
+      "apps/api/src/services/lord.ts:758"
     ]
   },
   "t20afa09d": {
@@ -18450,6 +18518,14 @@
     "en": "You don't have enough resources. Missing: {0}.",
     "nerede": [
       "apps/api/src/services/queue.ts:88"
+    ]
+  },
+  "t74a68d85": {
+    "grup": "sunucu",
+    "tr": "Yolu değiştirmek {0} altın tutuyor, {1} altının var.",
+    "en": "Changing the path costs {0} gold; you have {1} gold.",
+    "nerede": [
+      "apps/api/src/routes/generals.ts:114"
     ]
   },
   "te056a93d": {
@@ -18532,6 +18608,14 @@
       "data/seferler.json:seferler[0].ad"
     ]
   },
+  "t172dac65": {
+    "grup": "veri",
+    "tr": "Akıncı Kumandan",
+    "en": "Raider Commander",
+    "nerede": [
+      "data/generals.json:generaller[10].uzmanliklar[0].ad"
+    ]
+  },
   "ta2d2c6c7": {
     "grup": "veri",
     "tr": "Akıncı Öğretisi",
@@ -18588,6 +18672,14 @@
       "data/generals.json:generaller[2].yetenek.ad"
     ]
   },
+  "t9a28b9a7": {
+    "grup": "veri",
+    "tr": "Ani baskın daha çok ganimet getirir.",
+    "en": "A sudden raid brings more loot.",
+    "nerede": [
+      "data/generals.json:generaller[2].uzmanliklar[1].aciklama"
+    ]
+  },
   "td2d1295b": {
     "grup": "veri",
     "tr": "Araştırma.",
@@ -18642,6 +18734,22 @@
     "en": "Impassable Wall",
     "nerede": [
       "data/generals.json:generaller[11].pasif.ad"
+    ]
+  },
+  "t6be34f06": {
+    "grup": "veri",
+    "tr": "Ateşli Oklar",
+    "en": "Fire Arrows",
+    "nerede": [
+      "data/generals.json:generaller[1].uzmanliklar[1].ad"
+    ]
+  },
+  "t95d3d1fb": {
+    "grup": "veri",
+    "tr": "Ateşli Vaaz",
+    "en": "Fiery Sermon",
+    "nerede": [
+      "data/generals.json:generaller[9].uzmanliklar[1].ad"
     ]
   },
   "t505e6e2a": {
@@ -18738,6 +18846,14 @@
     "en": "Baron",
     "nerede": [
       "data/unvanlar.json:kademeler[4].ad"
+    ]
+  },
+  "t7d1cf109": {
+    "grup": "veri",
+    "tr": "Baskıncı",
+    "en": "Raider",
+    "nerede": [
+      "data/generals.json:generaller[2].uzmanliklar[1].ad"
     ]
   },
   "tca71bc0c": {
@@ -18924,6 +19040,14 @@
       "data/generals.json:generaller[11].yetenek.aciklama"
     ]
   },
+  "t2fc9317a": {
+    "grup": "veri",
+    "tr": "Bölgelerden daha çok gelir toplanır.",
+    "en": "More income is gathered from regions.",
+    "nerede": [
+      "data/generals.json:generaller[5].uzmanliklar[0].aciklama"
+    ]
+  },
   "t2ff1fd72": {
     "grup": "veri",
     "tr": "Bölgelerini merkezden mi, uçlardaki beylerle mi yöneteceğin.",
@@ -19066,6 +19190,14 @@
     "en": "Mountain Bandits",
     "nerede": [
       "data/akinlar.json:haritalar[3].dusman"
+    ]
+  },
+  "te534f5a3": {
+    "grup": "veri",
+    "tr": "Daha çok yaralı savaş alanından döner.",
+    "en": "More of the wounded return from the field.",
+    "nerede": [
+      "data/generals.json:generaller[9].uzmanliklar[0].aciklama"
     ]
   },
   "tbf95c950": {
@@ -19285,12 +19417,28 @@
       "data/generals.json:generaller[2].pasif.ad"
     ]
   },
+  "t746e284f": {
+    "grup": "veri",
+    "tr": "Dövülen zırh askerin canını artırır.",
+    "en": "Forged armour raises the soldiers' health.",
+    "nerede": [
+      "data/generals.json:generaller[0].uzmanliklar[1].aciklama"
+    ]
+  },
   "t588ab162": {
     "grup": "veri",
     "tr": "Dük",
     "en": "Duke",
     "nerede": [
       "data/unvanlar.json:kademeler[6].ad"
+    ]
+  },
+  "t44a9d718": {
+    "grup": "veri",
+    "tr": "Düşman hazırlıksız yakalanır.",
+    "en": "The enemy is caught unprepared.",
+    "nerede": [
+      "data/generals.json:generaller[7].uzmanliklar[1].aciklama"
     ]
   },
   "t0a01795f": {
@@ -19429,6 +19577,14 @@
       "data/seferler.json:seferler[1].ad"
     ]
   },
+  "t905bb371": {
+    "grup": "veri",
+    "tr": "Ganimet Kâtibi",
+    "en": "Loot Clerk",
+    "nerede": [
+      "data/generals.json:generaller[5].uzmanliklar[1].ad"
+    ]
+  },
   "t3c884c53": {
     "grup": "veri",
     "tr": "Gedik Açma",
@@ -19491,6 +19647,14 @@
     "en": "Sky",
     "nerede": [
       "data/arma.json:renkler[1].ad"
+    ]
+  },
+  "t90240aed": {
+    "grup": "veri",
+    "tr": "Gölge Lonca",
+    "en": "Shadow Guild",
+    "nerede": [
+      "data/generals.json:generaller[7].uzmanliklar[0].ad"
     ]
   },
   "t16f452a3": {
@@ -19621,6 +19785,14 @@
       "data/arastirma.json:dallar[2].dugumler[1].aciklama"
     ]
   },
+  "t5a219359": {
+    "grup": "veri",
+    "tr": "Hızlı Kol",
+    "en": "Swift Column",
+    "nerede": [
+      "data/generals.json:generaller[2].uzmanliklar[0].ad"
+    ]
+  },
   "t7d236604": {
     "grup": "veri",
     "tr": "Hilâl",
@@ -19709,6 +19881,14 @@
       "data/binalar.json:binalar[11].ozet"
     ]
   },
+  "t10b9295a": {
+    "grup": "veri",
+    "tr": "İyi beslenen yaralı toparlanıp döner.",
+    "en": "Well-fed wounded recover and return.",
+    "nerede": [
+      "data/generals.json:generaller[3].uzmanliklar[1].aciklama"
+    ]
+  },
   "t06b6ace4": {
     "grup": "veri",
     "tr": "Kaç kademe ekipman dövebileceğini demirhanenin seviyesi belirler.",
@@ -19738,6 +19918,7 @@
     "tr": "Kalkan Duvarı",
     "en": "Shield Wall",
     "nerede": [
+      "data/generals.json:generaller[0].uzmanliklar[0].ad",
       "data/taktikler.json:taktikler[1].ad"
     ]
   },
@@ -19909,6 +20090,14 @@
       "data/generals.json:generaller[1].pasif.ad"
     ]
   },
+  "ta57c1a39": {
+    "grup": "veri",
+    "tr": "Keskin Nişancı",
+    "en": "Sharpshooter",
+    "nerede": [
+      "data/generals.json:generaller[1].uzmanliklar[0].ad"
+    ]
+  },
   "tdd1c8ba1": {
     "grup": "veri",
     "tr": "keşif",
@@ -19955,6 +20144,14 @@
     "en": "A city excavated for a king whose name no one mentions. Whatever is below hasn't been touched for a hundred years.",
     "nerede": [
       "data/akinlar.json:haritalar[4].ozet"
+    ]
+  },
+  "te66e6e96": {
+    "grup": "veri",
+    "tr": "Kirpi Düzeni",
+    "en": "Hedgehog Formation",
+    "nerede": [
+      "data/generals.json:generaller[4].uzmanliklar[0].ad"
     ]
   },
   "t0172deb2": {
@@ -20061,6 +20258,14 @@
       "data/taktikler.json:taktikler[4].ad"
     ]
   },
+  "tbece64ad": {
+    "grup": "veri",
+    "tr": "Kuşatma makineleri daha da yıkıcı.",
+    "en": "Siege engines become even more devastating.",
+    "nerede": [
+      "data/generals.json:generaller[6].uzmanliklar[0].aciklama"
+    ]
+  },
   "t5e91007f": {
     "grup": "veri",
     "tr": "Kuşatma Ustalığı",
@@ -20101,6 +20306,14 @@
       "data/binalar.json:binalar[8].ad"
     ]
   },
+  "t0b6441c5": {
+    "grup": "veri",
+    "tr": "Lağımcı",
+    "en": "Sapper",
+    "nerede": [
+      "data/generals.json:generaller[6].uzmanliklar[1].ad"
+    ]
+  },
   "te282d2da": {
     "grup": "veri",
     "tr": "Liman",
@@ -20115,6 +20328,14 @@
     "en": "Guild System",
     "nerede": [
       "data/arastirma.json:dallar[0].dugumler[4].ad"
+    ]
+  },
+  "t03f757f1": {
+    "grup": "veri",
+    "tr": "Lordun savaştaki payı daha da büyür.",
+    "en": "The lord's share in battle grows even larger.",
+    "nerede": [
+      "data/generals.json:generaller[8].uzmanliklar[0].aciklama"
     ]
   },
   "tecd45692": {
@@ -20163,6 +20384,14 @@
     "en": "Trebuchet Masters",
     "nerede": [
       "data/arastirma.json:dallar[1].dugumler[5].ad"
+    ]
+  },
+  "t4e7f45a6": {
+    "grup": "veri",
+    "tr": "Mancınık Ustası",
+    "en": "Catapult Master",
+    "nerede": [
+      "data/generals.json:generaller[6].uzmanliklar[0].ad"
     ]
   },
   "t3cf71435": {
@@ -20269,6 +20498,14 @@
       "data/arastirma.json:dallar[2].dugumler[13].ad"
     ]
   },
+  "t77e4a45e": {
+    "grup": "veri",
+    "tr": "Mızrakçılar daha da zor yarılır.",
+    "en": "Spearmen become even harder to break.",
+    "nerede": [
+      "data/generals.json:generaller[4].uzmanliklar[0].aciklama"
+    ]
+  },
   "td0c695fb": {
     "grup": "veri",
     "tr": "Mızrakçılar diz çöküp mızrak uçlarını öne diker. Süvari hücumunu kıran klasik cevap: düşmanda ne kadar çok süvari varsa o kadar işe yarar. Süvarisiz düşmana karşı boşa gider.",
@@ -20301,6 +20538,14 @@
       "data/arastirma.json:dallar[0].dugumler[12].ad"
     ]
   },
+  "tb29fdcdd": {
+    "grup": "veri",
+    "tr": "Muhafız",
+    "en": "Bodyguard",
+    "nerede": [
+      "data/generals.json:generaller[8].uzmanliklar[1].ad"
+    ]
+  },
   "t6c049e8f": {
     "grup": "veri",
     "tr": "Müttefiklerine gönderebileceğin kaynak hacmini limanın seviyesi belirler.",
@@ -20315,6 +20560,22 @@
     "en": "Guard Formation",
     "nerede": [
       "data/generals.json:generaller[11].yetenek.ad"
+    ]
+  },
+  "tbb963aa2": {
+    "grup": "veri",
+    "tr": "Nöbetçi Ordu",
+    "en": "Watchful Army",
+    "nerede": [
+      "data/generals.json:generaller[11].uzmanliklar[1].ad"
+    ]
+  },
+  "t1fb53ab9": {
+    "grup": "veri",
+    "tr": "Nöbete alışmış asker daha dayanıklı.",
+    "en": "Soldiers used to the watch endure more.",
+    "nerede": [
+      "data/generals.json:generaller[11].uzmanliklar[1].aciklama"
     ]
   },
   "t77e63494": {
@@ -20340,6 +20601,14 @@
     "nerede": [
       "data/generals.json:generaller[1].yetenek.ad",
       "data/taktikler.json:taktikler[2].ad"
+    ]
+  },
+  "t299efd03": {
+    "grup": "veri",
+    "tr": "Ok yağmuru bütün orduyu cesaretlendirir.",
+    "en": "The rain of arrows emboldens the whole army.",
+    "nerede": [
+      "data/generals.json:generaller[1].uzmanliklar[1].aciklama"
     ]
   },
   "t909d9ad5": {
@@ -20382,6 +20651,14 @@
       "data/arastirma.json:dallar[2].dugumler[9].aciklama"
     ]
   },
+  "tfa016ca1": {
+    "grup": "veri",
+    "tr": "Okçuların vuruşu daha da sertleşir.",
+    "en": "Archers strike even harder.",
+    "nerede": [
+      "data/generals.json:generaller[1].uzmanliklar[0].aciklama"
+    ]
+  },
   "t76c7bf17": {
     "grup": "veri",
     "tr": "Olay akışı.",
@@ -20414,6 +20691,22 @@
       "data/binalar.json:binalar[12].ad"
     ]
   },
+  "t3bf5f09b": {
+    "grup": "veri",
+    "tr": "Ordu savunması daha da sağlamlaşır.",
+    "en": "The army's defence grows even sturdier.",
+    "nerede": [
+      "data/generals.json:generaller[0].uzmanliklar[0].aciklama"
+    ]
+  },
+  "t7335f6f7": {
+    "grup": "veri",
+    "tr": "Ordu yolda daha da hızlı.",
+    "en": "The army moves even faster on the road.",
+    "nerede": [
+      "data/generals.json:generaller[2].uzmanliklar[0].aciklama"
+    ]
+  },
   "t0a6cd00e": {
     "grup": "veri",
     "tr": "Ordudan kaçmış bir alay, sazlığın içine kendi karargâhını kurmuş. Zırhları hâlâ üzerlerinde.",
@@ -20444,6 +20737,14 @@
     "en": "Which idea you build your army around. Only one of three.",
     "nerede": [
       "data/arastirma.json:gruplar[0].aciklama"
+    ]
+  },
+  "t96bed2a4": {
+    "grup": "veri",
+    "tr": "Ordunun bakımı daha da ucuzlar.",
+    "en": "The army's upkeep gets even cheaper.",
+    "nerede": [
+      "data/generals.json:generaller[3].uzmanliklar[0].aciklama"
     ]
   },
   "tea2a029a": {
@@ -20518,6 +20819,14 @@
       "data/arastirma.json:dallar[1].dugumler[7].aciklama"
     ]
   },
+  "tf3ca04b6": {
+    "grup": "veri",
+    "tr": "Pusu",
+    "en": "Ambush",
+    "nerede": [
+      "data/generals.json:generaller[7].uzmanliklar[1].ad"
+    ]
+  },
   "t99a7b57e": {
     "grup": "veri",
     "tr": "Rasathane",
@@ -20550,12 +20859,28 @@
       "data/seferler.json:seferler[0].birim"
     ]
   },
+  "t96db38fb": {
+    "grup": "veri",
+    "tr": "Saldırı daha da sertleşir.",
+    "en": "The attack grows even fiercer.",
+    "nerede": [
+      "data/generals.json:generaller[10].uzmanliklar[0].aciklama"
+    ]
+  },
   "tab002d66": {
     "grup": "veri",
     "tr": "Saldırı emrinden önce hedefin garnizonunu ve deposunu görürsün.",
     "en": "You see the target's garrison and storage before the attack order.",
     "nerede": [
       "data/generals.json:generaller[7].yetenek.aciklama"
+    ]
+  },
+  "t170df575": {
+    "grup": "veri",
+    "tr": "Saldırıda bile ordu dağılmaz.",
+    "en": "Even on the attack the army holds together.",
+    "nerede": [
+      "data/generals.json:generaller[10].uzmanliklar[1].aciklama"
     ]
   },
   "t29e4b502": {
@@ -20588,6 +20913,14 @@
     "en": "Bannerman's Domain",
     "nerede": [
       "data/arastirma.json:dallar[1].dugumler[9].ad"
+    ]
+  },
+  "tb8258473": {
+    "grup": "veri",
+    "tr": "Sancak Şövalyesi",
+    "en": "Banner Knight",
+    "nerede": [
+      "data/generals.json:generaller[8].uzmanliklar[0].ad"
     ]
   },
   "tc0e16e44": {
@@ -20638,6 +20971,22 @@
       "data/generals.json:generaller[6].yetenek.aciklama"
     ]
   },
+  "t7d900110": {
+    "grup": "veri",
+    "tr": "Savunmada bütün ordu siper alır.",
+    "en": "On defence the whole army takes cover.",
+    "nerede": [
+      "data/generals.json:generaller[4].uzmanliklar[1].aciklama"
+    ]
+  },
+  "t0e1a7e45": {
+    "grup": "veri",
+    "tr": "Savunmada ordu daha da sağlam.",
+    "en": "On defence the army is even sturdier.",
+    "nerede": [
+      "data/generals.json:generaller[11].uzmanliklar[0].aciklama"
+    ]
+  },
   "t440b76c9": {
     "grup": "veri",
     "tr": "Savunmada süvariye karşı karşı çarpanı 1.5 → 1.8.",
@@ -20660,6 +21009,14 @@
     "en": "Campaign Preparation",
     "nerede": [
       "data/generals.json:generaller[3].yetenek.ad"
+    ]
+  },
+  "t89d6ac51": {
+    "grup": "veri",
+    "tr": "Sefer Mutfağı",
+    "en": "Campaign Kitchen",
+    "nerede": [
+      "data/generals.json:generaller[3].uzmanliklar[1].ad"
     ]
   },
   "t9ff9f559": {
@@ -20750,6 +21107,14 @@
       "data/binalar.json:binalar[12].ozet"
     ]
   },
+  "t4f3ba3b3": {
+    "grup": "veri",
+    "tr": "Siper Ustası",
+    "en": "Trench Master",
+    "nerede": [
+      "data/generals.json:generaller[4].uzmanliklar[1].ad"
+    ]
+  },
   "t256c5494": {
     "grup": "veri",
     "tr": "Sivri",
@@ -20772,6 +21137,30 @@
     "en": "They set up a forge at the foot of an extinct volcano. They pour the iron they stole into their own weapons.",
     "nerede": [
       "data/akinlar.json:haritalar[3].ozet"
+    ]
+  },
+  "tc3bdc4a2": {
+    "grup": "veri",
+    "tr": "Stratejist",
+    "en": "Strategist",
+    "nerede": [
+      "data/generals.json:generaller[10].uzmanliklar[1].ad"
+    ]
+  },
+  "tb40fc823": {
+    "grup": "veri",
+    "tr": "Sur Bekçisi",
+    "en": "Wall Warden",
+    "nerede": [
+      "data/generals.json:generaller[11].uzmanliklar[0].ad"
+    ]
+  },
+  "t6db5c6c5": {
+    "grup": "veri",
+    "tr": "Sur dibinde açılan lağım bütün orduya yol açar.",
+    "en": "A tunnel dug under the wall opens the way for the whole army.",
+    "nerede": [
+      "data/generals.json:generaller[6].uzmanliklar[1].aciklama"
     ]
   },
   "t8e611b20": {
@@ -20910,12 +21299,28 @@
       "data/generals.json:generaller[9].pasif.ad"
     ]
   },
+  "t5796aed5": {
+    "grup": "veri",
+    "tr": "Şifacı",
+    "en": "Healer",
+    "nerede": [
+      "data/generals.json:generaller[9].uzmanliklar[0].ad"
+    ]
+  },
   "t67d044be": {
     "grup": "veri",
     "tr": "Şövalye",
     "en": "Knight",
     "nerede": [
       "data/unvanlar.json:kademeler[2].ad"
+    ]
+  },
+  "tf13f572a": {
+    "grup": "veri",
+    "tr": "Şövalye ordunun önünde kalkan olur.",
+    "en": "The knight becomes a shield at the front of the army.",
+    "nerede": [
+      "data/generals.json:generaller[8].uzmanliklar[1].aciklama"
     ]
   },
   "t18adc94e": {
@@ -21062,6 +21467,14 @@
       "data/unvanlar.json:kademeler[4].aciklama"
     ]
   },
+  "tba691c68": {
+    "grup": "veri",
+    "tr": "Tutumlu Ambar",
+    "en": "Thrifty Granary",
+    "nerede": [
+      "data/generals.json:generaller[3].uzmanliklar[0].ad"
+    ]
+  },
   "t2c337f21": {
     "grup": "veri",
     "tr": "Uç Beylikleri",
@@ -21110,12 +21523,28 @@
       "data/arastirma.json:dallar[1].dugumler[4].ad"
     ]
   },
+  "t79df0afa": {
+    "grup": "veri",
+    "tr": "Vaaz askerin dayanma gücünü artırır.",
+    "en": "The sermon raises the soldiers' endurance.",
+    "nerede": [
+      "data/generals.json:generaller[9].uzmanliklar[1].aciklama"
+    ]
+  },
   "ta4cb9ae3": {
     "grup": "veri",
     "tr": "Vergi Defteri",
     "en": "Tax Ledger",
     "nerede": [
       "data/arastirma.json:dallar[0].dugumler[10].ad"
+    ]
+  },
+  "t6cd8b91f": {
+    "grup": "veri",
+    "tr": "Vergi Memuru",
+    "en": "Tax Officer",
+    "nerede": [
+      "data/generals.json:generaller[5].uzmanliklar[0].ad"
     ]
   },
   "t41aded24": {
@@ -21126,12 +21555,28 @@
       "data/generals.json:generaller[5].yetenek.ad"
     ]
   },
+  "t68dc6ecc": {
+    "grup": "veri",
+    "tr": "Yağma daha da bereketli.",
+    "en": "Plunder is even richer.",
+    "nerede": [
+      "data/generals.json:generaller[7].uzmanliklar[0].aciklama"
+    ]
+  },
   "t0cb4258c": {
     "grup": "veri",
     "tr": "Yağma Yolları",
     "en": "Loot Paths",
     "nerede": [
       "data/arastirma.json:dallar[3].dugumler[1].ad"
+    ]
+  },
+  "tbfbd7433": {
+    "grup": "veri",
+    "tr": "Yağmanın hesabı daha iyi tutulur.",
+    "en": "The loot is better accounted for.",
+    "nerede": [
+      "data/generals.json:generaller[5].uzmanliklar[1].aciklama"
     ]
   },
   "t3a092187": {
@@ -21244,6 +21689,14 @@
     "en": "Armor Workshop",
     "nerede": [
       "data/arastirma.json:dallar[1].dugumler[3].ad"
+    ]
+  },
+  "t925e4315": {
+    "grup": "veri",
+    "tr": "Zırh Ustası",
+    "en": "Armour Smith",
+    "nerede": [
+      "data/generals.json:generaller[0].uzmanliklar[1].ad"
     ]
   },
   "tfc889618": {

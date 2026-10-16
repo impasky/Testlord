@@ -34,6 +34,8 @@ export const BASARIM_KUMELERI = basarimlarJson.kumeler as unknown as {
 }[];
 export const GENERAL_LEVEL = generalsJson.seviye;
 export const GENERAL_INJURY = generalsJson.yaralanma;
+/** Uzmanlığın açıldığı seviye ve değiştirme bedeli (generals.json `uzmanlik`). */
+export const GENERAL_UZMANLIK = generalsJson.uzmanlik;
 
 /**
  * Haftalık sefer tanımları. Hangisinin açık olduğu sefer.ts'te hafta
@@ -292,6 +294,18 @@ export function validateBalance(): void {
   if (GENERALS.length === 0) hatalar.push('generals.json boş');
   const keys = new Set(GENERALS.map((g) => g.key));
   if (keys.size !== GENERALS.length) hatalar.push('generals.json içinde tekrar eden key var');
+  // Uzmanlık: her generalde tam iki yol, etkisi motorun tanıdığı bir pasif.
+  const gecerliEtki = new Set<string>(generalsJson.gecerli_pasif_etkileri);
+  for (const g of GENERALS) {
+    const u = g.uzmanliklar ?? [];
+    if (u.length !== 2) hatalar.push(`${g.key}: tam iki uzmanlık olmalı, ${u.length} var`);
+    if (new Set(u.map((x) => x.key)).size !== u.length) {
+      hatalar.push(`${g.key}: uzmanlık anahtarı tekrar ediyor`);
+    }
+    for (const x of u) {
+      if (!gecerliEtki.has(x.etki)) hatalar.push(`${g.key}.${x.key}: geçersiz etki ${x.etki}`);
+    }
+  }
 
   if (WORLD_MAP.regions.length !== WORLD_MAP.region_count) {
     hatalar.push('world-map.json: region_count ile gerçek bölge sayısı uyuşmuyor');

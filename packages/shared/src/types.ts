@@ -376,6 +376,17 @@ export interface GeneralDef {
   pasif: { ad: string; etki: string; deger: number };
   yetenek: { ad: string; aciklama: string };
   ek_etki?: { komuta_kapasitesi?: number };
+  /** 10. seviyede seçilen iki yol (generals.json `uzmanlik`). */
+  uzmanliklar?: GeneralUzmanligi[];
+}
+
+/** Bir generalin uzmanlık yolu: pasif gibi bir etki, seviyeyle büyüyor. */
+export interface GeneralUzmanligi {
+  key: string;
+  ad: string;
+  aciklama: string;
+  etki: string;
+  deger: number;
 }
 
 export interface RegionDef {

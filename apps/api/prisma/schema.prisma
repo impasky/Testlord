@@ -453,6 +453,10 @@ model LordGeneral {
   xp         Int       @default(0)
   slotIndex  Int?
   restUntil  DateTime?
+  /// Seçilmiş uzmanlık yolu (generals.json `uzmanliklar[].key`); 10.
+  /// seviyede açılıyor. Null = seçilmedi. Etkisi `equippedGenerals` üstünden
+  /// savaşa, önizlemeye ve rapora akıyor.
+  uzmanlik   String?
 
   lord Lord @relation(fields: [lordId], references: [id], onDelete: Cascade)
 

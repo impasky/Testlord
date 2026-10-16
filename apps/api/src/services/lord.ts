@@ -233,12 +233,13 @@ export function equippedGenerals(
     level: number;
     slotIndex: number | null;
     restUntil: Date | null;
+    uzmanlik?: string | null;
   }[],
   now: Date,
 ): EquippedGeneral[] {
   return generals
     .filter((g) => g.slotIndex !== null && (!g.restUntil || g.restUntil <= now))
-    .map((g) => ({ key: g.generalKey, level: g.level }));
+    .map((g) => ({ key: g.generalKey, level: g.level, uzmanlik: g.uzmanlik ?? null }));
 }
 
 export function gearBonusFrom(lines: { line: string; level: number }[]): {

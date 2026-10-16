@@ -215,6 +215,29 @@ tanımlanmıştı (api içinde `200 * n^1.4`) — XP eklerken bir eğri, seviye
 okurken başka bir eğri kullanılabilirdi. Tek kaynağa indirildi ve test
 kilitledi.
 
+**Uzmanlık ile yapıldı:** eşleştirmenin ötesinde generalin kendisinde bir
+karar. Her general 10. seviyede iki yoldan birini seçiyor — pasifini
+DERİNLEŞTİREN ya da ona YAN bir etki ekleyen: Demirci Yusuf "Kalkan
+Duvarı" (ordu savunması +%5) ya da "Zırh Ustası" (ordu canı +%6),
+Kumandan Alparslan "Akıncı Kumandan" (saldırı) ya da "Stratejist"
+(savunma). Yeni general yok, yeni mekanik yok: yirmi dört yolun hepsi
+motorun zaten tanıdığı pasif etkilerinden (`gecerli_pasif_etkileri`) ve
+değeri pasif gibi seviyeyle büyüyor. İlk seçim bedava, değiştirmek
+generalin kiralama fiyatının yarısı (bronz 2.500, gümüş 12.500, altın
+50.000): karar ucuz olursa karar değil, pahalı olursa tek bir yanlış
+seçim generali kaybettirir. Seferdeki generalin yolu değişmiyor — savaş
+varışta hesaplanıyor ve yola çıkarkenki önizlemeyle ayrışırdı.
+
+Etki tek kapıdan akıyor (`equippedGenerals` → `aggregateGeneralBonus`):
+savaş, önizleme, öneri ve rapor aynı sayıyı görüyor; raporda generalin
+altında uzmanlığı da yazıyor. Veri `data/generals.json` (`uzmanlik`,
+`uzmanliklar`), doğrulama `dengeyiDogrula` (her generalde tam iki yol,
+etkisi geçerli), kural `packages/shared/src/generals.ts`, uç
+`POST /generals/:key/uzmanlik`. `general-uzmanlik-testi` seviye kapısını,
+bedeli, bonusun gerçekten değiştiğini, seferdeki kilidi ve raporu
+ölçüyor. Denge riski bilinçli olarak küçük tutuldu: yolların değeri
+pasifin yarısı civarında.
+
 **Sırada ne var:** generallere hikâye (kısa bir paragraf, nereden geldiği)
 ve generale bağlı küçük bir görev zinciri.
 

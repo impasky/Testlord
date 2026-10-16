@@ -39,6 +39,8 @@ function GeneralKarti({
   bekliyor,
   onKirala,
   onAta,
+  onUzmanlik,
+  uzmanlikSeviyesi,
 }: {
   g: GeneralDto;
   slots: number;
@@ -46,6 +48,8 @@ function GeneralKarti({
   bekliyor: boolean;
   onKirala: () => void;
   onAta: (slot: number | null) => void;
+  onUzmanlik: (yol: string) => void;
+  uzmanlikSeviyesi: number;
 }) {
   const renk = NADIRLIK_RENGI[g.nadirlik] ?? '#9aa0a6';
   const yeterli = altin >= g.maliyet_altin;
@@ -113,6 +117,14 @@ function GeneralKarti({
           ) : (
             <p className="mb-2 text-[11px] text-altin">En yüksek seviye.</p>
           )}
+          <Uzmanlik
+            g={g}
+            renk={renk}
+            altin={altin}
+            bekliyor={bekliyor}
+            seviye={uzmanlikSeviyesi}
+            onSec={onUzmanlik}
+          />
           {g.dinleniyor ? (
             <p className="text-[11px] text-kirmizi">{`Yaralı — ${new Date(g.dinleniyor).toLocaleString(yerel())} tarihine kadar dinleniyor.`}</p>
           ) : (
@@ -157,6 +169,93 @@ function GeneralKarti({
         </div>
       )}
     </Kart>
+  );
+}
+
+/**
+ * Uzmanlık (docs/09 §2.3): 10. seviyede iki yoldan biri. Açılmadan önce
+ * iki yolun adı bir hedef olarak görünüyor; açılınca iki düğme. İlk seçim
+ * bedava, değiştirmek bedelli — bedel düğmenin üstünde yazıyor, sürprizi
+ * yok.
+ */
+function Uzmanlik({
+  g,
+  renk,
+  altin,
+  bekliyor,
+  seviye,
+  onSec,
+}: {
+  g: GeneralDto;
+  renk: string;
+  altin: number;
+  bekliyor: boolean;
+  seviye: number;
+  onSec: (yol: string) => void;
+}) {
+  if (!g.uzmanliklar?.length) return null;
+  if (!g.uzmanlikAcik) {
+    return (
+      <p className="mb-2 text-[11px] text-sonuk" data-uzmanlik="kilitli">
+        {`Sv ${seviye}'da uzmanlık: ${g.uzmanliklar.map((u) => u.ad).join(' ya da ')}.`}
+      </p>
+    );
+  }
+  const carpan = generalLevelMultiplier(g.level);
+  const degistir = g.uzmanlik !== null;
+  const yetiyor = !degistir || altin >= g.uzmanlikBedeli;
+  return (
+    <div className="mb-2" data-uzmanlik={g.uzmanlik ?? 'secilmedi'}>
+      <p className="mb-1 text-[11px] text-solgun">
+        {degistir
+          ? `Uzmanlık · değiştirmek ${formatSayi(g.uzmanlikBedeli)} altın`
+          : 'Uzmanlık seç · ilk seçim bedava'}
+      </p>
+      <div className="grid grid-cols-2 gap-1.5">
+        {g.uzmanliklar.map((u) => {
+          const secili = g.uzmanlik === u.key;
+          const yuzde = Math.round(u.deger * carpan * 100);
+          return (
+            <button
+              key={u.key}
+              type="button"
+              data-uzmanlik-yolu={u.key}
+              aria-pressed={secili}
+              disabled={bekliyor || secili || !yetiyor}
+              onClick={() => onSec(u.key)}
+              className={`bas rounded-xl border p-2 text-left disabled:cursor-default ${
+                secili ? '' : 'border-kenar disabled:opacity-50'
+              }`}
+              style={
+                secili
+                  ? {
+                      borderColor: renk,
+                      background: `color-mix(in srgb, ${renk} 14%, transparent)`,
+                    }
+                  : undefined
+              }
+            >
+              <span
+                className="baslik block text-[12px] leading-tight"
+                style={secili ? { color: renk } : undefined}
+              >
+                {u.ad}
+              </span>
+              <span className="block text-[11px] text-solgun">
+                {`${etkiAdi(u.etki)} ${yuzde >= 0 ? '+' : ''}%${yuzde}`}
+              </span>
+              <span className="mt-0.5 block text-[10px] leading-snug text-sonuk">{u.aciklama}</span>
+            </button>
+          );
+        })}
+      </div>
+      {degistir && !yetiyor && (
+        <EngelNotu
+          kisa="Altının yetmiyor"
+          uzun={`${formatSayi(g.uzmanlikBedeli - altin)} altın eksik.`}
+        />
+      )}
+    </div>
   );
 }
 
@@ -257,6 +356,10 @@ export function Generaller({ onGuncelle }: { onGuncelle: () => void }) {
                 onAta={(slot) =>
                   mut.mutate({ anahtar: g.key, f: () => api.assignGeneral(g.key, slot) })
                 }
+                onUzmanlik={(yol) =>
+                  mut.mutate({ anahtar: g.key, f: () => api.generalUzmanlik(g.key, yol) })
+                }
+                uzmanlikSeviyesi={q.data.uzmanlikSeviyesi}
               />
             ))}
         </div>

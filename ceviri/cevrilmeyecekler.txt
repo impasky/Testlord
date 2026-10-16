@@ -139,7 +139,7 @@ ve yer adları o dünyanın parçası.
   İskelebaşı
   Şahinkaya
 
---- Cümle parçaları (9) ---
+--- Cümle parçaları (10) ---
 
 Bunlar tek başına çevrilemez, çünkü tek başına bir anlamı yok: kodda başka
 metinlerle birleşerek cümle oluyorlar (" ve ", ", boş" gibi). Bir
@@ -150,6 +150,8 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
 
   " ve "
       apps/web/src/screens/Arastirma.tsx:937
+  " ya da "
+      apps/web/src/screens/Generaller.tsx:200
   "{0} · Sv {1} · "
       apps/web/src/components/harita/BolgeListesi.tsx:168
   "{0} · T{1}"
