@@ -816,6 +816,28 @@ testi `vakit.test.ts`), görsel bozulma testinin taban resimleri de bu
 yüzden değişmedi. Galeride "Vakit" bölümü aynı kasabayı üç ışıkta
 gösteriyor.
 
+## Hava
+
+Şehir'in üstünde ara sıra hafif yağmur, sis ya da (Aralık–Şubat) kar
+(`hava.ts`, `components/HavaKatmani.tsx`). Yalnız görsel: hiçbir sayı
+havaya bağlı değil.
+
+- **Herkese aynı.** Hava üç saatlik dilimlerle, dilimin numarasıyla
+  tohumlu (`havaDurumu`): aynı anda oyunu açan herkes aynı havayı görüyor,
+  sayfa yenilenince zıplamıyor, dilim bitince kendiliğinden değişiyor.
+- **Çoğu zaman açık.** Payı yağmur %12, sis %8, kışın kar %10; yağışlı
+  hava bir istisna kalmalı, yoksa şehir hep gri görünür (birim testi bir
+  yılın dilimlerini sayıyor).
+- **Çizim değil katman.** Sahne yeniden çizilmiyor, önbelleğe kayıt
+  eklenmiyor: ekrana sabit bir CSS katmanı (sahneyle kaymıyor, yağmur
+  pencerenin içinde yağıyor). Yağış iki karo katmanı, yalnız `transform`
+  canlanıyor ve her döngüde tam bir karo kayıyor — dikişsiz. Sis yavaşça
+  sürüklenen iki bulanık leke. Hareket azaltılmışsa yağış yok, yalnız ton.
+- **Dokunuşu geçiriyor** (`pointer-events: none`): `sehir-testi` yağmuru
+  zorla açıp yapıya dokunuyor ve içine gidildiğini ölçüyor.
+
+`localStorage['hava-zorla']` havayı sabitliyor (görsel denetim).
+
 ## Kuşam
 
 Lord figürü eskiden beş hazır aşamadan biriydi (`lord_1..5`, altı yuvanın

@@ -553,6 +553,30 @@ kontrol(
   kontrol('Geçiş süre dolunca kalkıyor', (await page.locator('[data-yukselme]').count()) === 0);
 }
 
+/*
+ * HAVA (docs/24 "Hava"): yağmur, sis ve kar ekranın üstünde bir katman.
+ * Katman dokunuşu YUTMAMALI — yutsaydı yağmurlu bir akşam şehir
+ * dokunulmaz olurdu. Yağmuru zorla açıp yapıya dokunuyoruz.
+ */
+{
+  await page.evaluate(() => localStorage.setItem('hava-zorla', 'yagmur'));
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.locator('[data-bina="kisla"]').waitFor({ timeout: 20000 });
+  kontrol('Yağmur katmanı çiziliyor', (await page.locator('[data-hava="yagmur"]').count()) === 1);
+  await page.screenshot({
+    path: `${process.env.CIKTI ?? 'ekran-goruntuleri'}/sehir-yagmur.png`,
+  });
+  await page.locator('[data-bina="kisla"]').click();
+  await page.waitForTimeout(900);
+  kontrol(
+    'Yağmurda da yapıya dokunmak içine götürüyor',
+    (await page.locator('nav button[aria-current=page]').innerText()).includes('ORDU'),
+  );
+  await page.evaluate(() => localStorage.removeItem('hava-zorla'));
+  await page.locator('nav button:has-text("Şehir")').click();
+  await page.waitForTimeout(600);
+}
+
 await page.screenshot({ path: `${process.env.CIKTI ?? 'ekran-goruntuleri'}/sehir.png` });
 kontrol('Konsol hatası yok', konsol.length === 0, konsol[0] ?? '');
 

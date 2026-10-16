@@ -42,6 +42,7 @@ import {
 import { IkonUyari } from '../components/Ikonlar';
 import { BinaCizimi, CIZILEN_BINALAR, YerlesimCizimi } from '../cizim/Cizimler';
 import { YakinlikDugmesi } from '../components/YakinlikDugmesi';
+import { HavaKatmani } from '../components/HavaKatmani';
 import { YukselmeGecisi, useYukselenler } from '../components/YukselmeGecisi';
 import { DUGME_ADIMI, useYerleskeYakinligi } from './yerleskeYakinligi';
 import {
@@ -426,6 +427,9 @@ export function Sehir({
           </div>
         </div>
       </div>
+
+      {/* Hava: ara sıra yağmur, sis, kar — ekrana sabit, dokunuşu geçiriyor. */}
+      <HavaKatmani />
 
       {/* --- Üstte yüzenler: kâhya, süren inşaat, taşınma, hata --- */}
       <div className="pointer-events-none absolute inset-x-0 top-0 z-[500] space-y-1.5 p-2">
