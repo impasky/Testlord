@@ -359,22 +359,24 @@ kontrol('app-ads.txt yayıncı kimliği yokken yok (404)', appAds.status === 404
   await ogreticiyiGec(sayfa);
   await rehberiSustur(sayfa);
   try {
+    await ekrana(sayfa, 'kisla');
     /*
-     * CI'da binaya dokunuş şehir sahnesi hazır olmadan gidebiliyor ve kapı
-     * açılmıyordu (yerelde hiç görülmedi). Panel görünene kadar bekle,
-     * açılmadıysa bir kez daha dokun.
+     * Kışla'da açık gelen kart rehberin önerdiği birlik: dolu bir diyarda
+     * okçu, boşta ilk birlik (milis). Eskiden test yalnız ikincisinde
+     * geçiyordu. Belirlenimli olsun: başka bir kartı aç, milisin KAPALI
+     * satırı eğitimi söylüyor mu bak, sonra milisi aç.
      */
-    for (let deneme = 0; deneme < 2; deneme++) {
-      await ekrana(sayfa, 'kisla');
-      const acildi = await sayfa
-        .locator('[role="dialog"][aria-label="Kışla"]')
-        .waitFor({ timeout: 10000 })
-        .then(
-          () => true,
-          () => false,
-        );
-      if (acildi) break;
-    }
+    await sayfa.locator('button[aria-expanded="false"]', { hasText: 'Mızrakçı' }).first().click();
+    const kapaliMilis = sayfa.locator('button[aria-expanded="false"]', {
+      hasText: 'Köylü Milis',
+    });
+    const satir = await kapaliMilis.first().innerText();
+    kontrol(
+      'Kapalı birlik kartı eğitimdeki askeri söylüyor',
+      /eğitimde 8/.test(satir),
+      satir.replace(/\s+/g, ' ').slice(0, 80),
+    );
+    await kapaliMilis.first().click();
     const dugme = sayfa.locator(`[data-hizlandir="${once.id}"]`).first();
     await dugme.waitFor({ state: 'visible', timeout: 20000 });
     await dugme.scrollIntoViewIfNeeded();

@@ -1,0 +1,20 @@
+# İmaja girmeyenler. .env ve yedekler GİZLİ: imaj bir kayıt defterine
+# itildiğinde içindeki her dosya okunabilir.
+.env
+.env.*
+**/.env
+yedek/
+*.dump
+
+.git/
+**/node_modules/
+**/dist/
+**/build/
+*.log
+coverage/
+ekran-goruntuleri/
+.turbo/
+
+# Android kabuğu ve büyük görseller sunucuya gerekmiyor.
+apps/mobil/android/
+docs/gorseller/

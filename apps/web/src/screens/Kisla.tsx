@@ -189,7 +189,14 @@ function BirimKarti({
         </span>
         <span className="min-w-0 flex-1">
           <span className="baslik block truncate text-[13.5px]">{unitName(tip)}</span>
-          <span className="block text-[11px] text-sonuk">{`Evde ${formatSayi(evdeki)}`}</span>
+          {/* Eğitim sürüyorsa kapalı satır da söylüyor: açık gelen kart
+              rehberin önerdiği birlik olabiliyor ve oyuncu eğittiği askeri
+              (ve Hızlandır'ı) o kartın arkasında kaybediyordu. */}
+          <span className="block text-[11px] text-sonuk" data-egitimde={kuyrukAdedi || undefined}>
+            {kuyrukAdedi > 0
+              ? `Evde ${formatSayi(evdeki)} · eğitimde ${formatSayi(kuyrukAdedi)}`
+              : `Evde ${formatSayi(evdeki)}`}
+          </span>
         </span>
         <Maliyet
           altin={u.maliyet.altin}

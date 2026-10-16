@@ -113,50 +113,48 @@ Sonra kendi hesabınla kayıt ol. Haritada **noktalı desenli** bölgeler onlar�
 | Askerler kaçıyor                       | Erzak eksiye düşmüş — Tarla bölgesi al ya da ordunu küçült           |
 | "Hedef koruma altında"                 | Yeni oyuncu 72 saat, fethedilen bölge 6 saat korumalı                |
 
-## Telefondan oynamak — Render'a kur
+## Telefondan yayına al — DigitalOcean
 
 Bilgisayarın yoksa oyunu bir sunucuya kurup telefon tarayıcısından açabilirsin.
-Aşağıdaki adımların tamamı telefondan yapılabilir.
+Aşağıdaki adımların tamamı telefondan yapılabilir; ayrıntısı `docs/05` §2'de.
 
-1. **render.com**'a gir, GitHub hesabınla kayıt ol
-2. **New → Blueprint**
-3. Bu repoyu seç (`Testlord`) ve dalı `claude/medieval-strategy-game-design-y08qr7` yap
-4. **Apply** de
+1. **cloud.digitalocean.com** → Databases → PostgreSQL 16, Frankfurt, ad
+   `lordlar-db`; içinde `lordlar_cagi` adlı bir veritabanı aç
+2. Şu bağlantıyı aç (Deploy to DigitalOcean) ve GitHub'a izin ver:
+   `https://cloud.digitalocean.com/apps/new?repo=https://github.com/impasky/Testlord/tree/claude/medieval-strategy-game-design-y08qr7`
+3. Ekranın sorduğu `JWT_SECRET`'ı (48+ rastgele karakter) ve destek
+   e-postanı gir → **Create**
 
-Render repodaki `render.yaml`'ı okuyup gerisini kendisi yapar: PostgreSQL'i
-kurar, bağlantı bilgisini sunucuya geçirir, JWT anahtarını rastgele üretir,
-migration'ları uygular, dünyayı açar ve 6 rakip lord ekler.
+DigitalOcean depodaki `Dockerfile`'dan imajı derler, `.do/deploy.template.yaml`'daki
+ayarları uygular; açılışta migration'lar koşar ve ilk diyar açılır. İlk kurulum
+5–10 dakika sürer; bittiğinde `https://lordlar-cagi-xxxxx.ondigitalocean.app`
+gibi bir adres verir. Kendi alan adını Settings → Domains'ten bağla.
 
-İlk kurulum 5–10 dakika sürer. Bittiğinde Render sana
-`https://lordlar-cagi.onrender.com` gibi bir adres verir — telefondan onu aç,
-kayıt ol, oyna.
+Aylık maliyet yaklaşık 27 $: sunucu 12 $ (1 vCPU, 1 GiB, uyumuyor) +
+yönetilen PostgreSQL ~15 $ (yedekli). Render alternatifi `render.yaml`'da
+duruyor (`docs/05` §2b).
 
 ### Kurulum hata verirse
 
-**`P1001: Can't reach database server at dpg-...`** — veritabanı ile sunucu
-farklı bölgede. Render'ın iç ağ adresi yalnızca aynı bölgeden çözülür.
-`render.yaml` içinde `databases[].region` ile `services[].region` aynı olmalı
-(ikisi de `frankfurt`). Bölge sonradan değiştirilemez: Render panelinden hem
-servisi hem veritabanını silip Blueprint'i yeniden uygula.
-
 Sunucu açılışta veritabanına 2 dakika boyunca bağlanmayı dener, yani yavaş
-kurulan bir veritabanı sorun olmaz — yalnızca gerçekten ulaşılamıyorsa durur
-ve yukarıdaki açıklamayı loga yazar.
+kurulan bir veritabanı sorun olmaz. Gerçekten ulaşılamıyorsa durur ve sebepleri
+loga yazar: en sık ikisi veritabanının başka bölgede olması ya da uygulamanın
+veritabanının "güvenilir kaynakları"nda olmaması (ikisi de FRA olmalı).
 
 ### Bilmen gerekenler
 
-| Konu            | Durum                                                                                                                                                               |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Uyku**        | Ücretsiz katmanda 15 dakika kullanılmazsa sunucu uyur. Sonraki açılış ~1 dakika sürer. Uyurken yürüyüşler ilerlemez ama uyanınca hepsi birden çözülür — kayıp olmaz |
-| **Veritabanı**  | Ücretsiz PostgreSQL 30 gün sonra yenilenmek ister; Render e-posta gönderir                                                                                          |
-| **Test uçları** | Üretimde tamamen kapalı — kimse kendine kaynak veremez                                                                                                              |
-| **Rakipler**    | `SEED_DEMO_LORDS=true` ile 6 rakip lord eklenir. Gerçek oyuncularla oynayacaksan Render panelinden `false` yapıp veritabanını sıfırla                               |
+| Konu            | Durum                                                                                                                              |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| **Güncelleme**  | CI'ın bütün işleri yeşil olan commit kendiliğinden dağıtılır (GitHub'da `DIGITALOCEAN_ACCESS_TOKEN` gerekli); yoksa panelde Deploy |
+| **Yönetici**    | Uygulamanın Console sekmesinde `pnpm yonetici ver <e-postan>`                                                                      |
+| **Test uçları** | Üretimde tamamen kapalı — kimse kendine kaynak veremez                                                                             |
+| **Rakipler**    | Gerçek sunucuda demo lord yok (`SEED_DEMO_LORDS=false`)                                                                            |
 
 ### Tek servis nasıl çalışıyor
 
 Sunucu hem API'yi hem derlenmiş arayüzü aynı adresten sunar ve worker'ı kendi
-sürecinde çalıştırır. Bunun üç faydası var: ücretsiz katmanda ayrı worker
-gerekmez, tek origin olduğu için CORS hiç devreye girmez, ve kurulumda tek
+sürecinde çalıştırır. Bunun üç faydası var: ayrı bir worker servisi ikinci bir
+ücret olurdu, tek origin olduğu için CORS hiç devreye girmez, ve kurulumda tek
 servis ayarlaman yeter.
 
 ## Doğrulama

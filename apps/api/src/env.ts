@@ -23,13 +23,14 @@ const schema = z.object({
   /*
    * İSTEMCİNİN IP'Sİ NEREDEN OKUNACAK (bkz. istemciIp.ts).
    *
-   * Sunucu bir vekilin (Render, Caddy, nginx) arkasındaysa bağlantının
-   * adresi VEKİLİN adresi: hiçbiri verilmezse giriş sınırı bütün
-   * oyunculara tek kova olur. İkisinden biri:
+   * Sunucu bir vekilin (DigitalOcean, Render, Caddy, nginx) arkasındaysa
+   * bağlantının adresi VEKİLİN adresi: hiçbiri verilmezse giriş sınırı
+   * bütün oyunculara tek kova olur. İkisinden biri:
    *
    *   ISTEMCI_IP_BASLIGI  Vekilin istemci adresini yazdığı ve istemcinin
-   *                       EZEMEDİĞİ başlık. Render'da `cf-connecting-ip`
-   *                       (önündeki Cloudflare yazıyor).
+   *                       EZEMEDİĞİ başlık. DigitalOcean App Platform'da
+   *                       `do-connecting-ip` (X-Forwarded-For'da onun kendi
+   *                       giriş sunucusu var); Render'da `cf-connecting-ip`.
    *   VEKIL_SAYISI        X-Forwarded-For'da güvenilecek vekil sayısı
    *                       (kendi Caddy/nginx'in için 1).
    */

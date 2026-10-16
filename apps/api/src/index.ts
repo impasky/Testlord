@@ -357,9 +357,12 @@ async function veritabaniniBekle(azamiSaniye = 120): Promise<void> {
       deneme++;
       if (Date.now() >= bitis) {
         console.error(
-          `Veritabanına ${azamiSaniye} saniyedir ulaşılamıyor.\nEn sık sebep: veritabanı ile sunucu FARKLI BÖLGEDE. Render iç ağ
-adresi (dpg-xxxxx-a) yalnızca aynı bölgeden çözülür. render.yaml
-içinde databases[].region ile services[].region aynı olmalı.`,
+          `Veritabanına ${azamiSaniye} saniyedir ulaşılamıyor. En sık sebepler:
+  - DigitalOcean: uygulama veritabanının "güvenilir kaynakları"nda değil
+    ya da veritabanı başka bölgede (ikisi de FRA olmalı, docs/05 §2).
+  - Render: veritabanı ile sunucu farklı bölgede; iç ağ adresi
+    (dpg-xxxxx-a) yalnız aynı bölgeden çözülür.
+  - DATABASE_URL yanlış ya da boş.`,
         );
         throw e;
       }
@@ -371,7 +374,7 @@ içinde databases[].region ile services[].region aynı olmalı.`,
 }
 
 async function acilisHazirligi(): Promise<void> {
-  // Render'da veritabanı sunucudan sonra hazır olabiliyor; beklemeden
+  // Barındırmada veritabanı sunucudan sonra hazır olabiliyor; beklemeden
   // migration çalıştırmak servisi sonsuz yeniden başlatma döngüsüne sokar.
   await veritabaniniBekle();
 

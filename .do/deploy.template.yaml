@@ -1,0 +1,130 @@
+# DigitalOcean App Platform — Lordlar Çağı (docs/05 §2).
+#
+# "Deploy to DigitalOcean" düğmesi bu dosyayı okuyor; değeri boş bırakılan
+# ayarları kurulum ekranında soruyor. Telefondan kurulabilir.
+#
+# ÖNCE veritabanı: Databases → Create → PostgreSQL 16, Frankfurt (FRA1),
+# en küçük üretim boyutu, adı `lordlar-db`. Users & Databases → veritabanı
+# ekle: `lordlar_cagi`. App Platform onu aşağıdaki addan buluyor ve
+# uygulamayı güvenilir kaynak olarak kendisi ekliyor.
+#
+# Tek servis: imaj (Dockerfile) API'yi, arayüzü ve worker'ı aynı süreçte
+# çalıştırıyor. Tek köken: CORS devreye girmiyor.
+spec:
+  name: lordlar-cagi
+  # Veritabanıyla AYNI bölge; Türkiye'ye en yakın App Platform bölgesi.
+  region: fra
+
+  alerts:
+    - rule: DEPLOYMENT_FAILED
+    - rule: DOMAIN_FAILED
+
+  services:
+    - name: oyun
+      github:
+        repo: impasky/Testlord
+        branch: claude/medieval-strategy-game-design-y08qr7
+        # KAPALI: her gönderim değil, CI'ın bütün işleri yeşil olan commit
+        # dağıtılıyor (denetim.yml → dagit). Elle: panelde "Deploy".
+        deploy_on_push: false
+      dockerfile_path: Dockerfile
+      http_port: 3000
+      # 1 paylaşımlı vCPU, 1 GiB. Ölçülen bellek 300–430 MB (+~100 MB
+      # profil resmi sınıflandırıcısı). Oyuncu arttıkça boyutu büyüt;
+      # kod değişmiyor (docs/05 §8). Worker süreçte: instance_count 1 kalmalı.
+      instance_size_slug: apps-s-1vcpu-1gb
+      instance_count: 1
+      health_check:
+        http_path: /health
+        # Açılışta migration koşuyor; erken denetim sağlıklı sunucuyu öldürür.
+        initial_delay_seconds: 30
+        period_seconds: 10
+        timeout_seconds: 5
+        failure_threshold: 6
+      envs:
+        - key: DATABASE_URL
+          scope: RUN_TIME
+          value: ${db.DATABASE_URL}
+        # En az 32 karakter, rastgele. Değiştirmek herkesin oturumunu kapatır.
+        - key: JWT_SECRET
+          scope: RUN_TIME
+          type: SECRET
+        - key: UYGULAMA_URL
+          scope: RUN_TIME
+          value: ${APP_URL}
+        - key: SERVE_WEB
+          value: 'true'
+        - key: RUN_WORKER
+          value: 'true'
+        - key: AUTO_MIGRATE
+          value: 'true'
+        - key: SEED_DEMO_LORDS
+          value: 'false'
+        - key: LOG_LEVEL
+          value: info
+        # İstemcinin gerçek adresi: App Platform'un giriş sunucusu bu başlığı
+        # yazıyor; X-Forwarded-For'da DigitalOcean'ın kendi adresi var.
+        - key: ISTEMCI_IP_BASLIGI
+          value: do-connecting-ip
+        - key: RATE_LIMIT_MAX
+          value: '300'
+        - key: AUTH_RATE_LIMIT_MAX
+          value: '60'
+
+        # Oyuncunun yazabileceği adres (Koşullar, Aydınlatma Metni).
+        - key: DESTEK_EPOSTA
+          scope: RUN_TIME
+        # E-posta: log → resend yap, anahtarı ve gönderen adresi gir.
+        - key: EPOSTA_TASIYICI
+          value: log
+        - key: EPOSTA_ANAHTAR
+          scope: RUN_TIME
+          type: SECRET
+        - key: EPOSTA_GONDEREN
+          scope: RUN_TIME
+        # Hata izleme ve ölçüm panosu.
+        - key: SENTRY_DSN
+          scope: RUN_TIME
+          type: SECRET
+        - key: OLCUM_ANAHTARI
+          scope: RUN_TIME
+          type: SECRET
+        # Push bildirimi: `pnpm push-anahtari` ile üretilen çift.
+        - key: VAPID_ACIK_ANAHTAR
+          scope: RUN_TIME
+        - key: VAPID_GIZLI_ANAHTAR
+          scope: RUN_TIME
+          type: SECRET
+        - key: VAPID_ILETISIM
+          scope: RUN_TIME
+
+        # Mağaza (docs/25) — isteğe bağlı; boşsa Mağaza yalnız bilgi gösterir.
+        - key: PLAY_PAKET_ADI
+          scope: RUN_TIME
+        - key: PLAY_SERVIS_HESABI
+          scope: RUN_TIME
+          type: SECRET
+        - key: ADMOB_ODUL_BIRIMI
+          scope: RUN_TIME
+        - key: ADMOB_YAYINCI_KIMLIGI
+          scope: RUN_TIME
+
+  databases:
+    - name: db
+      engine: PG
+      version: '16'
+      production: true
+      cluster_name: lordlar-db
+      db_name: lordlar_cagi
+      # Kümenin yönetici kullanıcısı: PostgreSQL 15+ `public` şemasında
+      # tablo açmayı veritabanı sahibine bırakıyor; panelden açılan ayrı
+      # bir kullanıcıyla ilk migration "permission denied" ile düşer.
+      db_user: doadmin
+
+  ingress:
+    rules:
+      - component:
+          name: oyun
+        match:
+          path:
+            prefix: /

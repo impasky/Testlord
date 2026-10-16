@@ -5,7 +5,7 @@
 # testtir: unutulan bir koşu iki hafta sonra "ne zaman bozuldu bu" sorusuna
 # dönüşür.
 #
-# ÜÇ İŞ, çünkü maliyetleri ve ölçtükleri çok farklı:
+# AYRI İŞLER, çünkü maliyetleri ve ölçtükleri çok farklı:
 #
 #   hizli   Veritabanı istemiyor, bir dakikada biter. Tip denetimi, lint,
 #           biçim, birim testleri, denge aritmetiği ve ÜRETİLEN DOSYALARIN
@@ -20,6 +20,10 @@
 #           anahtarla imzalı AAB çıkıyor mu (yayın: android-yayin.yml).
 #           Geliştirme ortamında Google'ın Android deposuna erişim yok;
 #           yerel kod yalnız burada derleniyor.
+#   docker  Sunucuya giden imaj (Dockerfile): boş veritabanında açılış,
+#           arayüz, root olmayan kullanıcı, imajda .env yok, konsol komutları.
+#   dagit   Hepsi yeşilse DigitalOcean'daki uygulamayı günceller (anahtar
+#           varsa; docs/05 §2).
 #
 # Yük testi bilerek DIŞARIDA: eşiği makinenin hızına bağlı ve paylaşılan
 # koşucuda dalgalanır. Yanlış alarm veren bir kontrol, bir süre sonra
@@ -342,3 +346,121 @@ jobs:
             -validity 1 -dname 'CN=Deneme' > /dev/null
           ./gradlew --no-daemon bundleRelease
           jarsigner -verify app/build/outputs/bundle/release/app-release.aab | grep -q 'jar verified'
+
+  # ── Docker imajı ─────────────────────────────────────────────────────
+  #
+  # Sunucuya giden şey bu imaj (Dockerfile; DigitalOcean App Platform onu
+  # derliyor). Üretim işi derlenmiş servisi ölçüyor; bu iş İMAJI: boş
+  # veritabanında açılış ve migration, arayüz, kimlik, imajda .env
+  # olmaması, root olmayan kullanıcı ve sunucu konsolunda koşulan komutlar
+  # (`pnpm yonetici`, `pnpm yayin-kontrolu` — imajda tsx ve prisma CLI
+  # yoksa ilk yayında patlarlardı).
+  docker:
+    name: Docker imajı
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: lordlar
+          POSTGRES_USER: lordlar
+          POSTGRES_DB: lordlar_cagi
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U lordlar"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: İmaj
+        run: |
+          docker build -t lordlar:ci .
+          docker image ls lordlar:ci --format 'Boyut: {{.Size}}'
+
+      - name: Açılış (boş veritabanı, migration)
+        run: |
+          docker run -d --name oyun --network host \
+            -e DATABASE_URL=postgresql://lordlar:lordlar@127.0.0.1:5432/lordlar_cagi \
+            -e JWT_SECRET="$(openssl rand -hex 32)" \
+            -e SERVE_WEB=true -e RUN_WORKER=true -e AUTO_MIGRATE=true \
+            -e UYGULAMA_URL=https://ornek.invalid \
+            lordlar:ci
+          for i in $(seq 1 90); do
+            curl -sf http://127.0.0.1:3000/health > /dev/null && break
+            sleep 2
+          done
+          curl -sf http://127.0.0.1:3000/health
+
+      - name: Arayüz, kimlik, imajın içi
+        run: |
+          curl -sf http://127.0.0.1:3000/ | grep -q 'id="root"' \
+            || { echo "::error::Arayüz sunulmuyor"; exit 1; }
+          kod=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3000/api/me)
+          [ "$kod" = 401 ] || { echo "::error::/api/me $kod döndü, 401 bekleniyordu"; exit 1; }
+          [ "$(docker exec oyun id -u)" != 0 ] || { echo "::error::Süreç root çalışıyor"; exit 1; }
+          if docker exec oyun sh -c 'ls -a apps/api/.env .env 2>/dev/null' | grep -q env; then
+            echo "::error::İmajda .env var"; exit 1
+          fi
+
+      - name: Sunucu konsolu komutları
+        run: |
+          docker exec oyun pnpm -s yonetici liste | tee "$RUNNER_TEMP/yonetici.txt"
+          grep -q 'Hiç yönetici yok' "$RUNNER_TEMP/yonetici.txt"
+          docker exec oyun pnpm -s yayin-kontrolu | tee "$RUNNER_TEMP/yayin.txt" || true
+          grep -q 'Yayın kontrolü:' "$RUNNER_TEMP/yayin.txt"
+
+      - name: Sunucu günlüğü (kalırsa)
+        if: failure()
+        run: docker logs oyun 2>&1 | tail -150 || true
+
+  # ── Dağıtım ──────────────────────────────────────────────────────────
+  #
+  # Bütün işler yeşilse DigitalOcean'daki uygulamayı günceller. App
+  # Platform'da "gönderince dağıt" bilerek KAPALI (.do/deploy.template.yaml):
+  # kırmızı bir commit canlıya çıkmasın. Anahtar yoksa iş bir not bırakıp
+  # geçiyor; panelden "Deploy"a basmak aynı işi görür (docs/05 §2).
+  dagit:
+    name: DigitalOcean dağıtımı
+    needs: [hizli, e2e, uretim, android, docker]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/claude/medieval-strategy-game-design-y08qr7'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      DO_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      APP_ADI: lordlar-cagi
+    steps:
+      - name: Dağıtılacak mı
+        id: karar
+        run: |
+          if [ -z "$DO_TOKEN" ]; then
+            echo "::notice::DIGITALOCEAN_ACCESS_TOKEN yok; dağıtım atlandı (docs/05 §2)."
+            echo "dagit=hayir" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          # App Platform dalın UCUNU derliyor. Bu koşu sürerken daha yeni bir
+          # commit geldiyse onun denetimi dağıtacak; denetlenmemiş commit çıkmasın.
+          uc=$(git ls-remote "https://github.com/${GITHUB_REPOSITORY}" "$GITHUB_REF" | cut -f1)
+          if [ "$uc" != "$GITHUB_SHA" ]; then
+            echo "::notice::Dalın ucu ilerlemiş ($uc); dağıtımı yeni commit'in denetimi yapacak."
+            echo "dagit=hayir" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          echo "dagit=evet" >> "$GITHUB_OUTPUT"
+
+      - uses: digitalocean/action-doctl@v2
+        if: steps.karar.outputs.dagit == 'evet'
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Dağıt ve sonucu doğrula
+        if: steps.karar.outputs.dagit == 'evet'
+        run: |
+          ilk='if type == "array" then .[0] else . end'
+          id=$(doctl apps list -o json | jq -r --arg ad "$APP_ADI" '.[] | select(.spec.name == $ad) | .id' | head -1)
+          [ -n "$id" ] || { echo "::error::DigitalOcean'da '$APP_ADI' adlı uygulama yok"; exit 1; }
+          dep=$(doctl apps create-deployment "$id" --update-sources --wait -o json | jq -r "$ilk | .id")
+          # Çıkış koduna güvenilmiyor (eski doctl sürümleri hatada da 0 döndü).
+          faz=$(doctl apps get-deployment "$id" "$dep" -o json | jq -r "$ilk | .phase")
+          echo "Dağıtım $dep: $faz"
+          [ "$faz" = "ACTIVE" ] || { echo "::error::Dağıtım '$faz' bitti; DigitalOcean → Activity"; exit 1; }

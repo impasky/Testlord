@@ -1,7 +1,7 @@
 /**
  * İSTEMCİNİN IP'Sİ — tek kapı.
  *
- * Sunucu Render'da bir vekilin arkasında çalışıyor ve Fastify'a vekile
+ * Sunucu barındırmada bir vekilin arkasında çalışıyor ve Fastify'a vekile
  * güvenmesi söylenmemişti: `req.ip` her istekte VEKİLİN adresiydi. Kayıt
  * ve giriş sınırı (IP başına dakikada 60) bu yüzden bütün oyunculara TEK
  * kovaydı — açılış günü dakikada 60 kayıttan sonra herkes 429 alırdı,
@@ -10,10 +10,11 @@
  * Adres üç yoldan biriyle okunuyor (env.ts):
  *
  *   1. `ISTEMCI_IP_BASLIGI` — vekilin yazdığı ve istemcinin EZEMEDİĞİ bir
- *      başlık. Render'ın önünde Cloudflare var ve `cf-connecting-ip`yi
- *      her istekte kendisi yazıyor. `X-Forwarded-For` bunun yerine
- *      geçmiyor: Render ona istemcinin yolladığını silmeden EKLİYOR, yani
- *      baştaki adres istemcinin istediği herhangi bir şey olabilir.
+ *      başlık. DigitalOcean App Platform'da `do-connecting-ip`; orada
+ *      `X-Forwarded-For` DigitalOcean'ın kendi giriş sunucusunu gösteriyor.
+ *      Render'da `cf-connecting-ip` (önündeki Cloudflare yazıyor);
+ *      `X-Forwarded-For` orada da yerine geçmiyor: Render ona istemcinin
+ *      yolladığını silmeden EKLİYOR, baştaki adres uydurulabilir.
  *   2. `VEKIL_SAYISI` — kendi Caddy/nginx'in için: Fastify
  *      X-Forwarded-For'un sondan o kadar adımına güveniyor (`trustProxy`).
  *   3. İkisi de yoksa bağlantının kendisi (geliştirme, vekilsiz kurulum).
@@ -64,6 +65,7 @@ const VEKIL_BASLIKLARI = [
   'x-real-ip',
   'cf-connecting-ip',
   'true-client-ip',
+  'do-connecting-ip',
 ];
 
 function vekilIziVar(req: FastifyRequest): boolean {

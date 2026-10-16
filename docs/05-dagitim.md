@@ -7,37 +7,37 @@ karşılığıdır.
 
 ## 1. Ortam değişkenleri
 
-| Değişken                    | Zorunlu    | Varsayılan           | Ne işe yarar                                                                                                           |
-| --------------------------- | ---------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `DATABASE_URL`              | evet       | —                    | PostgreSQL bağlantısı                                                                                                  |
-| `JWT_SECRET`                | evet       | —                    | Oturum imzası. **En az 32 karakter.** Değiştirilirse herkes çıkış yapar                                                |
-| `PORT`                      | hayır      | 3000                 | Dinlenecek port                                                                                                        |
-| `NODE_ENV`                  | hayır      | development          | `production` olmadan CORS gevşek kalır ve test uçları açılır                                                           |
-| `WEB_ORIGIN`                | hayır      | localhost:5173       | Üretimde izinli origin listesi. Tek servisli kurulumda kullanılmaz                                                     |
-| `SERVE_WEB`                 | hayır      | false                | Arayüzü API ile aynı sunucudan sunar                                                                                   |
-| `RUN_WORKER`                | hayır      | false                | Worker'ı API sürecinin içinde çalıştırır                                                                               |
-| `AUTO_MIGRATE`              | hayır      | false                | Açılışta migration uygular, dünya yoksa açar                                                                           |
-| `SEED_DEMO_LORDS`           | hayır      | false                | İlk açılışta 6 rakip lord ekler                                                                                        |
-| `RATE_LIMIT_MAX`            | hayır      | 300                  | Oturum başına dakikalık istek tavanı                                                                                   |
-| `AUTH_RATE_LIMIT_MAX`       | hayır      | 60                   | Kayıt/giriş için IP başına dakikalık tavan                                                                             |
-| `ISTEMCI_IP_BASLIGI`        | vekil ise  | boş                  | İstemcinin IP'sini yazan, istemcinin ezemediği vekil başlığı. **Render'da `cf-connecting-ip`** (render.yaml'da ayarlı) |
-| `VEKIL_SAYISI`              | hayır      | 0                    | Kendi Caddy/nginx'in için X-Forwarded-For'da güvenilen adım sayısı (genelde 1). İkisi de yoksa adres bağlantıdan       |
-| `DB_HAVUZU`                 | hayır      | 10                   | Veritabanı bağlantı havuzu. `DATABASE_URL` kendi `connection_limit`ini taşıyorsa o geçerli (§8)                        |
-| `SENTRY_DSN`                | hayır      | boş                  | Boşsa hata izleme kapalıdır, dışarıya hiçbir şey gitmez                                                                |
-| `SENTRY_TRACES_SAMPLE_RATE` | hayır      | 0.05                 | İzleme örneklemesi. Ücretsiz katmanda kota var                                                                         |
-| `LOG_LEVEL`                 | hayır      | info                 | `fatal\|error\|warn\|info\|debug\|trace`                                                                               |
-| `EPOSTA_TASIYICI`           | hayır      | log                  | `log` dışarı göndermez; `resend` gerçek posta atar                                                                     |
-| `EPOSTA_ANAHTAR`            | resend ise | —                    | Resend API anahtarı                                                                                                    |
-| `EPOSTA_GONDEREN`           | resend ise | —                    | Gönderen adresi; alan adı doğrulanmış olmalı                                                                           |
-| `UYGULAMA_URL`              | hayır      | Render'ın dış adresi | Sıfırlama bağlantısının tabanı. Verilmezse `RENDER_EXTERNAL_URL` kullanılır; kendi alan adını bağlayınca burayı doldur |
-| `VAPID_ACIK_ANAHTAR`        | hayır      | boş                  | Push bildirimi. `pnpm push-anahtari` ile üret; ikisi de boşsa bildirim kapalı ve arayüzde düğme hiç çıkmaz             |
-| `VAPID_GIZLI_ANAHTAR`       | push ise   | —                    | Aynı komutun ürettiği gizli yarısı. **Depoya yazma.** Değiştirmek bütün abonelikleri geçersiz kılar                    |
-| `VAPID_ILETISIM`            | hayır      | mailto: yerel        | Push servislerinin sorun çıkınca ulaşacağı adres                                                                       |
-| `PLAY_PAKET_ADI`            | satış ise  | boş                  | Android paket adı (`com.lordlarcagi.oyun`). Servis hesabıyla birlikte; biri boşsa satın alma kapalı (docs/25)          |
-| `PLAY_SERVIS_HESABI`        | satış ise  | boş                  | Play Developer API servis hesabının JSON anahtarı (düz ya da base64). **Gizli, depoya yazma**                          |
-| `ADMOB_ODUL_BIRIMI`         | reklam ise | boş                  | Ödüllü reklam birimi `ca-app-pub-…/…`. Boşsa uygulamada reklam düğmesi çıkmaz                                          |
-| `ADMOB_YAYINCI_KIMLIGI`     | reklam ise | boş                  | `pub-…`; `/app-ads.txt` bundan yazılır. Birimle aynı AdMob hesabından olmalı                                           |
-| `MOBIL_KOKEN`               | hayır      | https://localhost    | Android uygulamasının kökeni; üretimde CORS ona da izin veriyor                                                        |
+| Değişken                    | Zorunlu    | Varsayılan           | Ne işe yarar                                                                                                                                         |
+| --------------------------- | ---------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`              | evet       | —                    | PostgreSQL bağlantısı                                                                                                                                |
+| `JWT_SECRET`                | evet       | —                    | Oturum imzası. **En az 32 karakter.** Değiştirilirse herkes çıkış yapar                                                                              |
+| `PORT`                      | hayır      | 3000                 | Dinlenecek port                                                                                                                                      |
+| `NODE_ENV`                  | hayır      | development          | `production` olmadan CORS gevşek kalır ve test uçları açılır                                                                                         |
+| `WEB_ORIGIN`                | hayır      | localhost:5173       | Üretimde izinli origin listesi. Tek servisli kurulumda kullanılmaz                                                                                   |
+| `SERVE_WEB`                 | hayır      | false                | Arayüzü API ile aynı sunucudan sunar                                                                                                                 |
+| `RUN_WORKER`                | hayır      | false                | Worker'ı API sürecinin içinde çalıştırır                                                                                                             |
+| `AUTO_MIGRATE`              | hayır      | false                | Açılışta migration uygular, dünya yoksa açar                                                                                                         |
+| `SEED_DEMO_LORDS`           | hayır      | false                | İlk açılışta 6 rakip lord ekler                                                                                                                      |
+| `RATE_LIMIT_MAX`            | hayır      | 300                  | Oturum başına dakikalık istek tavanı                                                                                                                 |
+| `AUTH_RATE_LIMIT_MAX`       | hayır      | 60                   | Kayıt/giriş için IP başına dakikalık tavan                                                                                                           |
+| `ISTEMCI_IP_BASLIGI`        | vekil ise  | boş                  | İstemcinin IP'sini yazan, istemcinin ezemediği vekil başlığı. **DigitalOcean'da `do-connecting-ip`** (şablonda ayarlı), Render'da `cf-connecting-ip` |
+| `VEKIL_SAYISI`              | hayır      | 0                    | Kendi Caddy/nginx'in için X-Forwarded-For'da güvenilen adım sayısı (genelde 1). İkisi de yoksa adres bağlantıdan                                     |
+| `DB_HAVUZU`                 | hayır      | 10                   | Veritabanı bağlantı havuzu. `DATABASE_URL` kendi `connection_limit`ini taşıyorsa o geçerli (§8)                                                      |
+| `SENTRY_DSN`                | hayır      | boş                  | Boşsa hata izleme kapalıdır, dışarıya hiçbir şey gitmez                                                                                              |
+| `SENTRY_TRACES_SAMPLE_RATE` | hayır      | 0.05                 | İzleme örneklemesi. Ücretsiz katmanda kota var                                                                                                       |
+| `LOG_LEVEL`                 | hayır      | info                 | `fatal\|error\|warn\|info\|debug\|trace`                                                                                                             |
+| `EPOSTA_TASIYICI`           | hayır      | log                  | `log` dışarı göndermez; `resend` gerçek posta atar                                                                                                   |
+| `EPOSTA_ANAHTAR`            | resend ise | —                    | Resend API anahtarı                                                                                                                                  |
+| `EPOSTA_GONDEREN`           | resend ise | —                    | Gönderen adresi; alan adı doğrulanmış olmalı                                                                                                         |
+| `UYGULAMA_URL`              | hayır      | Render'ın dış adresi | Sıfırlama bağlantısının tabanı. DigitalOcean şablonunda `${APP_URL}` (birincil alan adını izliyor); Render'da verilmezse `RENDER_EXTERNAL_URL`       |
+| `VAPID_ACIK_ANAHTAR`        | hayır      | boş                  | Push bildirimi. `pnpm push-anahtari` ile üret; ikisi de boşsa bildirim kapalı ve arayüzde düğme hiç çıkmaz                                           |
+| `VAPID_GIZLI_ANAHTAR`       | push ise   | —                    | Aynı komutun ürettiği gizli yarısı. **Depoya yazma.** Değiştirmek bütün abonelikleri geçersiz kılar                                                  |
+| `VAPID_ILETISIM`            | hayır      | mailto: yerel        | Push servislerinin sorun çıkınca ulaşacağı adres                                                                                                     |
+| `PLAY_PAKET_ADI`            | satış ise  | boş                  | Android paket adı (`com.lordlarcagi.oyun`). Servis hesabıyla birlikte; biri boşsa satın alma kapalı (docs/25)                                        |
+| `PLAY_SERVIS_HESABI`        | satış ise  | boş                  | Play Developer API servis hesabının JSON anahtarı (düz ya da base64). **Gizli, depoya yazma**                                                        |
+| `ADMOB_ODUL_BIRIMI`         | reklam ise | boş                  | Ödüllü reklam birimi `ca-app-pub-…/…`. Boşsa uygulamada reklam düğmesi çıkmaz                                                                        |
+| `ADMOB_YAYINCI_KIMLIGI`     | reklam ise | boş                  | `pub-…`; `/app-ads.txt` bundan yazılır. Birimle aynı AdMob hesabından olmalı                                                                         |
+| `MOBIL_KOKEN`               | hayır      | https://localhost    | Android uygulamasının kökeni; üretimde CORS ona da izin veriyor                                                                                      |
 
 **`/health`** kimlik istemez ve `{ ok, time, izleme }` döner. `izleme` alanı
 Sentry'nin gerçekten açık olup olmadığını söyler — DSN'i girip de yazım hatası
@@ -47,14 +47,81 @@ Sentry istemciyi yine kuruyor ama hiçbir şey göndermiyor. Artık DSN'in
 
 ---
 
-## 2. Render (en kolay yol, telefondan yapılabilir)
+## 2. DigitalOcean App Platform (seçilen yol, telefondan yapılabilir)
+
+İmaj depodaki `Dockerfile`'dan derleniyor; kurulum tanımı
+`.do/deploy.template.yaml`. **Tek servis:** imaj API'yi, arayüzü ve
+worker'ı aynı süreçte çalıştırıyor. Tek köken: CORS devreye girmiyor.
+
+**Maliyet** (DigitalOcean fiyat sayfası, 2026-10; paneldeki tutar geçerli):
+
+| Ne         | Boyut                   | Kaynak                   | Aylık | Neden                                                        |
+| ---------- | ----------------------- | ------------------------ | ----- | ------------------------------------------------------------ |
+| Sunucu     | `apps-s-1vcpu-1gb`      | 1 paylaşımlı vCPU, 1 GiB | 12 $  | Uyumuyor. Bellek 300–430 MB + resim sınıflandırıcısı ~100 MB |
+| PostgreSQL | en küçük yönetilen küme | 1 vCPU, 1 GiB            | ~15 $ | Kalıcı; günlük yedek ve geri dönüş noktaları DigitalOcean'da |
+
+§8'deki ~250 aktif oyuncu ölçümü TAM bir CPU'daydı; paylaşımlı vCPU
+yoğun saatte daha az taşıyabilir. Oyuncu arttıkça panelden bir üst boyuta
+(adanmış CPU) geç — kod değişmiyor. **`instance_count` 1 kalmalı:** worker
+sürecin içinde ve tek kopya için yazıldı.
+
+### Kurulum — sırayla
+
+1. **Veritabanı.** cloud.digitalocean.com → Databases → Create Database
+   Cluster: PostgreSQL 16, bölge **Frankfurt (FRA1)**, en küçük boyut,
+   ad **`lordlar-db`**. Hazır olunca Users & Databases → Add database:
+   **`lordlar_cagi`**.
+2. **Uygulama.** Bu bağlantıyı aç (Deploy to DigitalOcean):
+   `https://cloud.digitalocean.com/apps/new?repo=https://github.com/impasky/Testlord/tree/claude/medieval-strategy-game-design-y08qr7`
+   GitHub'a erişim izni iste. Ekran şablonu okuyup boş alanları soruyor;
+   en az **`JWT_SECRET`** (parola yöneticisiyle üretilmiş 48+ rastgele
+   karakter) ve **`DESTEK_EPOSTA`**'yı doldur, gerisi sonradan da girilir.
+   _Düğme açılmazsa:_ Apps → Create App → GitHub → depo ve dal →
+   Dockerfile algılanıyor → ortam değişkenlerini §1'deki tablodan gir →
+   Add Resource → Database → mevcut `lordlar-db`.
+3. **İlk dağıtım** 5–10 dakika: imaj derleniyor, açılışta migration'lar
+   uygulanıyor ve ilk diyar açılıyor. Runtime Logs'ta
+   `Lordlar Çağı API çalışıyor` satırı görünür.
+4. **Alan adı.** Settings → Domains → Add Domain; DNS'te gösterilen CNAME'i
+   ekle (ya da alan adını DigitalOcean'ın ad sunucularına taşı). Sertifika
+   kendiliğinden. `UYGULAMA_URL` = `${APP_URL}` birincil alan adını izliyor.
+   Mağaza için Play listesindeki web sitesi bu alan adı olmalı (docs/25 §4.3).
+5. **Yönetici.** Oyuna kendi e-postanla kayıt ol, sonra uygulamanın
+   **Console** sekmesinde: `pnpm yonetici ver <e-postan>`.
+6. **Yayın kontrolü.** Oyunda Hesap → Yönetici paneli: eksik ayarları
+   söylüyor ve `ISTEMCI_IP_BASLIGI`'nın tuttuğunu senin isteğinle ölçüyor.
+7. **Otomatik dağıtım (önerilen).** DigitalOcean → API → Generate New Token
+   (özel kapsamla yalnız uygulamalar: okuma ve güncelleme). GitHub → Settings → Secrets and
+   variables → Actions → **`DIGITALOCEAN_ACCESS_TOKEN`**. Bundan sonra CI'ın
+   bütün işleri yeşil olan commit kendiliğinden dağıtılıyor (`dagit` işi).
+   Anahtar yoksa her sürümde panelde **Deploy**'a bas.
+
+### Bilinmesi gerekenler
+
+- **"Gönderince dağıt" bilerek kapalı.** Açık olsaydı CI kırmızıyken de
+  yeni sürüm canlıya çıkardı. `dagit` işi ayrıca dalın ucunun hâlâ
+  denetlenen commit olduğuna bakıyor: arada yeni bir commit geldiyse onun
+  denetimini bekliyor.
+- **Veritabanı ve uygulama aynı bölgede** (FRA). Uygulama veritabanını
+  bileşen olarak ekleyince güvenilir kaynaklara kendiliğinden giriyor;
+  ulaşamazsa açılış günlüğü sebepleri sayıyor.
+- **Bağlantı TLS ile** (`sslmode=require`; adres DigitalOcean'dan geliyor).
+- **Veritabanı kullanıcısı `doadmin`.** PostgreSQL 15+ `public` şemasında
+  tablo açmayı veritabanı sahibine bırakıyor; panelden açılan ayrı bir
+  kullanıcıyla ilk migration "permission denied" ile düşerdi.
+- **İstemcinin IP'si `do-connecting-ip`den.** `X-Forwarded-For`'da
+  DigitalOcean'ın kendi giriş sunucusu var; ayar olmadan kayıt/giriş sınırı
+  bütün oyunculara tek kova olur (docs/18). Şablonda ayarlı.
+- **Yedek:** yönetilen PostgreSQL'in kendi yedekleri var; yine de §4'teki
+  betikle başka bir yerde de tut ve ayda bir tatbikat yap.
+- **Uyarılar:** dağıtım ya da alan adı hatası hesabın e-postasına gidiyor
+  (şablonda `alerts`).
+
+## 2b. Render (alternatif)
 
 `render.yaml` bir Blueprint'tir: render.com → New → Blueprint → depoyu seç.
-Render hem sunucuyu hem PostgreSQL'i kurar.
-
-**Tek servis:** API hem oyunu hem arayüzü sunar ve worker'ı kendi içinde
-çalıştırır. Tek origin olduğu için CORS hiç devreye girmiyor; ayrı bir
-worker servisi ikinci bir ücret demek ve gerekmiyor.
+Render hem sunucuyu hem PostgreSQL'i kurar ve imajı değil kendi Node
+derleyicisini kullanır.
 
 **Planlar — render.yaml'da hazır:**
 
@@ -90,18 +157,22 @@ başlatır; o adımı panelden sen atıyorsun.
 
 ---
 
-## 3. Kendi sunucun (VPS + Docker)
+## 3. Kendi sunucun (Droplet / VPS + Docker)
 
-`docker-compose.yml` PostgreSQL ve API'yi ayağa kaldırır.
+Aynı imaj her yerde çalışıyor. Veritabanı ayrı (yönetilen PostgreSQL ya da
+kendi kurduğun); `.env` dosyası sunucuda, imajda değil.
 
 ```bash
-cp .env.example apps/api/.env          # değerleri doldur
-docker compose up -d
-pnpm db:setup                          # migration + tohumlama
+docker build -t lordlar .
+docker run -d --name lordlar --restart unless-stopped \
+  --env-file /srv/lordlar/.env -e SERVE_WEB=true -e RUN_WORKER=true -e AUTO_MIGRATE=true \
+  -e VEKIL_SAYISI=1 -p 127.0.0.1:3000:3000 lordlar
+docker exec -it lordlar pnpm yonetici ver <e-postan>
 ```
 
-Önüne bir ters vekil (Caddy/nginx) koyup TLS'i orada bitir. Node'u doğrudan
-443'e açma.
+Önüne bir ters vekil (Caddy/nginx) koyup TLS'i orada bitir; Node'u
+doğrudan 443'e açma. `VEKIL_SAYISI=1` o tek vekile güvenmek için.
+(`docker-compose.yml` yalnız geliştirme veritabanı.)
 
 ---
 

@@ -93,8 +93,8 @@ için her yere taze bir sayfayla giriliyor.
 
 ## 3. Kodun dışında kalanlar — hesabın sahibinin işi
 
-1. **`DESTEK_EPOSTA`** — Render panelinden gir (render.yaml'da `sync: false`
-   olarak tanımlı). Girmezsen iletişim satırı oyuncuyu şikâyet düğmesine
+1. **`DESTEK_EPOSTA`** — sunucu ayarlarından gir (DigitalOcean şablonu
+   kurulumda soruyor). Girmezsen iletişim satırı oyuncuyu şikâyet düğmesine
    yolluyor; mağazalar gerçek bir adres istiyor.
 2. **İnceleyici için demo hesap** — Apple ve Google inceleme notuna bir
    e-posta/parola ister. Yerleşmiş bir lord hazırla (şehir, ordu, ittifak)
@@ -131,7 +131,7 @@ için her yere taze bir sayfayla giriliyor.
    satış eklendiği için özellikle iade, eksi bakiye ve 18 yaş altı maddeleri.
 9. **Sınıflandırıcının belleği** — profil resmi denetimi sunucuda ~100 MB
    bellek istiyor (ilk yüklemede açılıyor, on dakika boşta kalınca
-   kapanıyor). Render'ın en küçük planında bellek darsa
+   kapanıyor). Sunucunun belleği darsa (1 GiB'ın altı)
    `RESIM_SINIFLANDIRICI=kapali`: o zaman her yüklenen resim YÖNETİCİ
    ONAYINA gidiyor (hiçbiri denetimsiz görünmüyor), iş yükü sana kalıyor.
 10. **Mağaza kurulumu** — Play Console ürünleri, servis hesabı, AdMob

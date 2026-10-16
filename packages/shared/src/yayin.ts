@@ -43,7 +43,10 @@ export interface YayinGirdisi {
   resimSiniflandirici: boolean;
   /** İstemcinin IP'si nereden okunuyor (apps/api istemciIp.ts). */
   ipKaynagi: 'baslik' | 'vekil' | 'baglanti';
-  /** Render'da mı — orada istek her zaman bir vekilden geçiyor. */
+  /**
+   * Render'da mı — orada istek her zaman bir vekilden geçiyor. (DigitalOcean
+   * kendini bir değişkenle bildirmiyor; orada kanıt yöneticinin isteği.)
+   */
   renderda: boolean;
   /**
    * Denetimi isteyen yöneticinin KENDİ isteğinde görülen: vekil izi var
@@ -167,9 +170,9 @@ export const YAYIN_METNI: Record<YayinNedeni, string> = {
   'ip-vekil': "İstemcinin adresi X-Forwarded-For'dan, güvenilen vekil sayısıyla okunuyor.",
   'ip-dogrudan': 'İstemcinin adresi doğrudan bağlantıdan okunuyor.',
   'ip-baslik-yok':
-    'ISTEMCI_IP_BASLIGI girilmiş ama bu istekte o başlık yok: adres vekilinkine düşüyor. Başlığın adını denetle (Render: cf-connecting-ip).',
+    'ISTEMCI_IP_BASLIGI girilmiş ama bu istekte o başlık yok: adres vekilinkine düşüyor. Başlığın adını denetle (DigitalOcean: do-connecting-ip, Render: cf-connecting-ip).',
   'ip-vekil-arkasi':
-    'Sunucu bir vekilin arkasında ama adres bağlantıdan okunuyor: kayıt ve giriş sınırı bütün oyunculara tek kova. Render’da ISTEMCI_IP_BASLIGI=cf-connecting-ip yap.',
+    'Sunucu bir vekilin arkasında ama adres bağlantıdan okunuyor: kayıt ve giriş sınırı bütün oyunculara tek kova. ISTEMCI_IP_BASLIGI gir: DigitalOcean’da do-connecting-ip, Render’da cf-connecting-ip.',
   'ip-bilinmiyor':
     'Sunucu bir vekilin arkasındaysa ISTEMCI_IP_BASLIGI ya da VEKIL_SAYISI gir; yoksa giriş sınırı herkese tek kova olur. Yönetici panosu bunu senin isteğinle ölçer.',
   play: 'Google Play satın alma açık; her satın alma sunucuda Google’a doğrulatılıyor.',
@@ -191,6 +194,7 @@ export const YAYIN_METNI: Record<YayinNedeni, string> = {
 /** Sunucunun bilemediği, elle denenecek işler (docs/05 §6). */
 export const YAYIN_ELLE: readonly string[] = [
   'Yedek alınıyor ve canlı veritabanında bir kez "pnpm yedek-tatbikati" koştu (docs/05 §4).',
+  'GitHub’da DIGITALOCEAN_ACCESS_TOKEN var ve CI’ın "DigitalOcean dağıtımı" işi yeşil; yoksa her sürüm panelden elle dağıtılıyor (docs/05 §2).',
   'Parola sıfırlama e-postası gerçekten geliyor.',
   'Hesap ekranındaki "Deneme gönder" telefona düşüyor.',
   'AdMob’da ödüllü birimin sunucu doğrulama (SSV) adresi https://<alan adın>/api/reklam/ssv ve "Doğrula" geçiyor (docs/25).',

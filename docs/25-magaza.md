@@ -190,7 +190,8 @@ yüklenmiyor (`tools/uretim-korumalari-testi.mjs`).
    bunu istiyor) ve **Siparişleri ve abonelikleri yönetme** (iade
    listesi ve tüketme için). Yönetici (Admin) verme. İznin işlemesi
    saatler sürebilir.
-4. Render panelinde: `PLAY_PAKET_ADI=com.lordlarcagi.oyun`,
+4. Sunucu ayarlarında (DigitalOcean: uygulama → Settings → Environment
+   Variables): `PLAY_PAKET_ADI=com.lordlarcagi.oyun`,
    `PLAY_SERVIS_HESABI=<JSON ya da base64 JSON>`. **Anahtarı depoya ya da
    bir sohbete yapıştırma.**
 
@@ -202,7 +203,7 @@ yüklenmiyor (`tools/uretim-korumalari-testi.mjs`).
    `balance.json`'u kullanıyor; tutarlı olsun diye "15 dakika" yaz.
    Birimin **sunucu tarafı doğrulama** adresine
    `https://<alan adın>/api/reklam/ssv` gir ve "Doğrula"ya bas.
-3. Render panelinde: `ADMOB_ODUL_BIRIMI=ca-app-pub-…/…`,
+3. Sunucu ayarlarında: `ADMOB_ODUL_BIRIMI=ca-app-pub-…/…`,
    `ADMOB_YAYINCI_KIMLIGI=pub-…` (aynı hesaptan; yayın kontrolü
    uyuşmazlığı yakalıyor).
 4. **app-ads.txt:** sunucu `/app-ads.txt`'yi kendisi yayımlıyor. Play
