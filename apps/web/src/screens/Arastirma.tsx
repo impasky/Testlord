@@ -32,6 +32,7 @@ import {
   IkonOnay,
   IkonSure,
 } from '../components/Ikonlar';
+import { HizlandirDugmesi } from '../components/Hizlandir';
 import {
   AltSekmeler,
   Buton,
@@ -384,21 +385,27 @@ function Yuvalar({
               </div>
             );
           return (
-            <button
-              key={s.id}
-              type="button"
-              // Anahtarsız süren kayıt (eski ağaçtan kalma) açılacak bir düğüm taşımıyor.
-              disabled={!s.key}
-              onClick={() => s.key && onAc(s.key)}
-              className="bas relative flex min-h-11 min-w-0 flex-col justify-center overflow-hidden rounded-xl border border-altin/50 bg-altin/10 px-2.5 pt-1 pb-2 text-left"
-            >
-              <span className="truncate text-[12px] font-semibold text-altin">{s.ad}</span>
-              <span className="flex items-center gap-1 text-[11px] text-solgun">
-                <IkonSure boyut={11} className="shrink-0" />
-                <GeriSayim bitis={s.finishAt} />
-              </span>
-              <SurenCubugu bas={s.startedAt} bit={s.finishAt} />
-            </button>
+            // Düğmeler iç içe olamaz: yuva (düğümü açar) ile Hızlandır yan yana.
+            <div key={s.id} className="flex min-w-0 flex-col gap-1">
+              <button
+                type="button"
+                // Anahtarsız süren kayıt (eski ağaçtan kalma) açılacak bir düğüm taşımıyor.
+                disabled={!s.key}
+                onClick={() => s.key && onAc(s.key)}
+                className="bas relative flex min-h-11 min-w-0 flex-col justify-center overflow-hidden rounded-xl border border-altin/50 bg-altin/10 px-2.5 pt-1 pb-2 text-left"
+              >
+                <span className="truncate text-[12px] font-semibold text-altin">{s.ad}</span>
+                <span className="flex items-center gap-1 text-[11px] text-solgun">
+                  <IkonSure boyut={11} className="shrink-0" />
+                  <GeriSayim bitis={s.finishAt} />
+                </span>
+                <SurenCubugu bas={s.startedAt} bit={s.finishAt} />
+              </button>
+              <HizlandirDugmesi
+                is={{ id: s.id, kind: 'research', finishAt: s.finishAt }}
+                ad={s.ad}
+              />
+            </div>
           );
         })}
       </div>

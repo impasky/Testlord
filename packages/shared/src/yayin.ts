@@ -51,6 +51,13 @@ export interface YayinGirdisi {
    * `null`. Değer değil, yalnız evet/hayır.
    */
   istek: { vekilIzi: boolean; baslikEksik: boolean } | null;
+  /**
+   * Google Play satın alma (docs/25): paket adı ve servis hesabının ikisi
+   * de var mı, hesap okunabiliyor mu. Hesabın kendisi değil.
+   */
+  play: 'yok' | 'yarim' | 'bozuk' | 'tamam';
+  /** AdMob: ödüllü birim, yayıncı kimliği ve ikisi aynı hesaptan mı. */
+  reklam: { birim: boolean; yayinci: boolean; uyusuyor: boolean };
 }
 
 export type YayinNedeni =
@@ -91,7 +98,15 @@ export type YayinNedeni =
   | 'ip-dogrudan'
   | 'ip-baslik-yok'
   | 'ip-vekil-arkasi'
-  | 'ip-bilinmiyor';
+  | 'ip-bilinmiyor'
+  | 'play'
+  | 'play-kapali'
+  | 'play-yarim'
+  | 'play-bozuk'
+  | 'reklam'
+  | 'reklam-kapali'
+  | 'reklam-app-ads-yok'
+  | 'reklam-yayinci-uyusmuyor';
 
 export interface YayinBulgusu {
   /** Ayarın adı (`NODE_ENV`) ya da ayar olmayan işin adı (`yönetici`). */
@@ -157,6 +172,20 @@ export const YAYIN_METNI: Record<YayinNedeni, string> = {
     'Sunucu bir vekilin arkasında ama adres bağlantıdan okunuyor: kayıt ve giriş sınırı bütün oyunculara tek kova. Render’da ISTEMCI_IP_BASLIGI=cf-connecting-ip yap.',
   'ip-bilinmiyor':
     'Sunucu bir vekilin arkasındaysa ISTEMCI_IP_BASLIGI ya da VEKIL_SAYISI gir; yoksa giriş sınırı herkese tek kova olur. Yönetici panosu bunu senin isteğinle ölçer.',
+  play: 'Google Play satın alma açık; her satın alma sunucuda Google’a doğrulatılıyor.',
+  'play-kapali':
+    'Google Play satın alma kapalı: Mağaza yalnız bilgi gösteriyor, elmas paketi satılmıyor. Açmak için PLAY_PAKET_ADI ve PLAY_SERVIS_HESABI gir (docs/25).',
+  'play-yarim':
+    'PLAY_PAKET_ADI ile PLAY_SERVIS_HESABI’ndan yalnız biri girilmiş; satın alma kapalı. İkisini birlikte gir.',
+  'play-bozuk':
+    'PLAY_SERVIS_HESABI okunamıyor (JSON ya da base64 JSON değil, ya da client_email/private_key eksik); satın alma kapalı. Anahtarı Google Cloud’dan yeniden indirip gir.',
+  reklam: 'Ödüllü reklam açık; ödül yalnız Google’ın imzalı bildirimiyle veriliyor.',
+  'reklam-kapali':
+    'Ödüllü reklam kapalı: uygulamada "Reklam izle" çıkmıyor. Açmak için ADMOB_ODUL_BIRIMI gir (docs/25).',
+  'reklam-app-ads-yok':
+    'ADMOB_YAYINCI_KIMLIGI boş: /app-ads.txt yayımlanmıyor ve AdMob doğrulanmamış uygulamanın reklamını kısıyor. pub-… kimliğini gir.',
+  'reklam-yayinci-uyusmuyor':
+    'ADMOB_ODUL_BIRIMI ile ADMOB_YAYINCI_KIMLIGI farklı yayıncılara ait; app-ads.txt yanlış hesabı gösteriyor. İkisini aynı AdMob hesabından kopyala.',
 };
 
 /** Sunucunun bilemediği, elle denenecek işler (docs/05 §6). */
@@ -164,6 +193,8 @@ export const YAYIN_ELLE: readonly string[] = [
   'Yedek alınıyor ve canlı veritabanında bir kez "pnpm yedek-tatbikati" koştu (docs/05 §4).',
   'Parola sıfırlama e-postası gerçekten geliyor.',
   'Hesap ekranındaki "Deneme gönder" telefona düşüyor.',
+  'AdMob’da ödüllü birimin sunucu doğrulama (SSV) adresi https://<alan adın>/api/reklam/ssv ve "Doğrula" geçiyor (docs/25).',
+  'Android uygulamasında lisans test hesabıyla bir elmas paketi alındı ve elmas geldi; bir test reklamı izlendi ve süre düştü (docs/25).',
 ];
 
 /** Bir tavanın üstü "yük testinden kalmış" sayılıyor. */
@@ -269,6 +300,20 @@ export function yayinDenetimi(g: YayinGirdisi): YayinBulgusu[] {
   } else {
     ekle('ISTEMCI_IP_BASLIGI', 'tamam', 'ip-dogrudan');
   }
+  /*
+   * Mağaza isteğe bağlı: hiç girilmemişse oyun eksiksiz, yalnız satış
+   * ve reklam yok (uyarı). Yarım ya da bozuk bir ayar ise birinin açmak
+   * isteyip başaramadığı demek (eksik).
+   */
+  ekle(
+    'PLAY_SERVIS_HESABI',
+    g.play === 'tamam' ? 'tamam' : g.play === 'yok' ? 'uyari' : 'eksik',
+    g.play === 'tamam' ? 'play' : g.play === 'yok' ? 'play-kapali' : (`play-${g.play}` as const),
+  );
+  if (!g.reklam.birim) ekle('ADMOB_ODUL_BIRIMI', 'uyari', 'reklam-kapali');
+  else if (!g.reklam.yayinci) ekle('ADMOB_YAYINCI_KIMLIGI', 'uyari', 'reklam-app-ads-yok');
+  else if (!g.reklam.uyusuyor) ekle('ADMOB_YAYINCI_KIMLIGI', 'eksik', 'reklam-yayinci-uyusmuyor');
+  else ekle('ADMOB_ODUL_BIRIMI', 'tamam', 'reklam');
   return b;
 }
 

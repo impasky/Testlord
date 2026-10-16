@@ -178,6 +178,7 @@ docs/
   gorseller/              Ekran görüntüleri
   LISANSLAR.md            Üçüncü taraf varlıklar ve künye
   24-kodla-cizim.md       Oyundaki her görsel kodla çiziliyor — motor, dosyalar, kurallar
+  25-magaza.md            Mağaza (P2S): elmas paketi Play'den, ödüllü reklam AdMob'dan; kurulum
   00-ozet-ve-kapsam.md    Yönetici özeti + DONDURULMUŞ kapsam sınırı (önce bunu oku)
   01-oyun-tasarimi.md     Tüm sistemler, oynanış döngüleri, ekranlar
   02-denge-formulleri.md  Her formül ve tablo, gerekçeleriyle
@@ -201,6 +202,7 @@ apps/api/                 Fastify + Prisma + PostgreSQL
   src/worker.ts           10 sn aralıkla yürüyüş ve kuyruk çözümü
 apps/web/                 React + Vite + Tailwind, yedi ekran
   src/cizim/              Kodla çizim: low-poly izometrik motor; GPU'da (WebGL2), yoksa SVG
+apps/mobil/               Android kabuğu (Capacitor): Play Faturalandırma + AdMob (docs/25)
 tools/
   generate_map.py         Haritayı DOĞRULAYAN script (artık üretmiyor)
   gorsel-denetim.mjs      Her ekranın kodla çizilen görsellerini ve taşmaları denetler

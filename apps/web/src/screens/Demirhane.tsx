@@ -22,6 +22,7 @@ import {
 import { eYonelme, inIlgi } from '../components/ekler';
 import { hisOnay, hisRet } from '../components/hisGeriBildirimi';
 import { IkonKilit, IkonNavDemirhane } from '../components/Ikonlar';
+import { HizlandirDugmesi } from '../components/Hizlandir';
 import {
   AltSekmeler,
   Bolum,
@@ -311,7 +312,11 @@ function EsyaKarti({
         <EngelNotu kisa={yukseltmeEngeli.kisa} uzun={yukseltmeEngeli.uzun} />
       )}
 
-      <KuyrukSeridi kuyruklar={bunuYukseltiyor} etiket="Yükseltiliyor" />
+      <KuyrukSeridi
+        kuyruklar={bunuYukseltiyor}
+        etiket="Yükseltiliyor"
+        ek={(q) => <HizlandirDugmesi is={q} />}
+      />
     </Kart>
   );
 }
@@ -591,6 +596,7 @@ export function Demirhane({
                       )}
                     </>
                   }
+                  ek={(q) => <HizlandirDugmesi is={q} />}
                 />
               </>
             )}
@@ -714,6 +720,7 @@ export function Demirhane({
                         <KuyrukSeridi
                           kuyruklar={donanimKuyrugu.filter((q) => q.payload.line === g.line)}
                           etiket="Yükseltiliyor"
+                          ek={(q) => <HizlandirDugmesi is={q} />}
                         />
                       </>
                     );

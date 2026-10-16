@@ -14,6 +14,10 @@
 #           sürüyor; yine de her itişte koşar, çünkü asıl yakalayan o.
 #   uretim  Derlenmiş tek servis, boş veritabanında, telefon boyutunda.
 #           e2e geliştirme sunucularını ölçüyor; oyuncuya giden ise bu.
+#   android Android uygulaması (Capacitor, docs/25) gerçekten derleniyor mu:
+#           Play Faturalandırma ve AdMob eklentileriyle hata ayıklama APK'sı.
+#           Geliştirme ortamında Google'ın Android deposuna erişim yok;
+#           yerel kod yalnız burada derleniyor.
 #
 # Yük testi bilerek DIŞARIDA: eşiği makinenin hızına bağlı ve paylaşılan
 # koşucuda dalgalanır. Yanlış alarm veren bir kontrol, bir süre sonra
@@ -259,3 +263,44 @@ jobs:
           name: uretim-ekran-goruntuleri
           path: /tmp/uretim-ekran/
           if-no-files-found: ignore
+
+  android:
+    name: Android derlemesi
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      # Capacitor 8: Java 21. Android SDK koşucuda hazır.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+
+      - run: pnpm install --frozen-lockfile
+
+      # Arayüz uygulama içinden sunuluyor; API adresi derlemeye gömülüyor.
+      # Burada yalnız derlenebilirlik ölçülüyor, adres bir yer tutucu.
+      - name: Arayüz ve Capacitor eşitlemesi
+        env:
+          OYUN_ADRESI: https://ornek.invalid
+        run: node apps/mobil/derle.mjs
+
+      - name: Hata ayıklama APK'sı
+        working-directory: apps/mobil/android
+        run: ./gradlew --no-daemon assembleDebug
+
+      - name: APK (inceleme için)
+        uses: actions/upload-artifact@v4
+        with:
+          name: lordlar-debug-apk
+          path: apps/mobil/android/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+          retention-days: 7

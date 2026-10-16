@@ -1242,6 +1242,51 @@ export interface CokluHesapDto {
   }[];
 }
 
+/** Mağaza (docs/25): öde, zamanı atla. */
+export interface ElmasPaketiDto {
+  urun: string;
+  ad: string;
+  elmas: number;
+  ek: number;
+  toplam: number;
+}
+export interface HizlanacakIsDto {
+  id: string;
+  kind: string;
+  payload: Record<string, unknown>;
+  startedAt: string;
+  finishAt: string;
+  kalanSaniye: number;
+  /** Hemen bitirmenin elmas bedeli (sunucunun hesabı). */
+  bedel: number;
+}
+export interface MagazaDto {
+  elmas: number;
+  reklamDakikasi: number;
+  paketler: ElmasPaketiDto[];
+  play: { acik: boolean; paket: string | null; hesapEtiketi: string };
+  reklam: {
+    acik: boolean;
+    birim: string | null;
+    kisisellestirilmis: boolean;
+    odulDakika: number;
+    bankaTavanDakika: number;
+    hak: {
+      izinli: boolean;
+      kalan: number;
+      beklemeSn: number;
+      engel: 'tavan' | 'bekleme' | null;
+    };
+  };
+  kuyruklar: HizlanacakIsDto[];
+  gecmis: { urun: string; elmas: number; durum: 'verildi' | 'iade'; createdAt: string }[];
+}
+export type HizlandirmaSonucu =
+  | { harcananElmas: number; kalanElmas: number; kalanSaniye: number }
+  | { harcananDakika: number; kalanBanka: number; kalanSaniye: number };
+export type PlayDogrulamaDto =
+  { durum: 'verildi' | 'zaten'; elmas: number; bakiye: number } | { durum: 'bekliyor' };
+
 /** Hafta sonu diyar seferi (docs/09 §2.6): ortak hedef, katılana ödül. */
 export interface DiyarEtkinligiDto {
   etkinlik: {
@@ -1679,6 +1724,19 @@ export const api = {
   diyarEtkinligi: () => request<DiyarEtkinligiDto>('/diyar-etkinligi'),
   diyarEtkinligiOdul: () =>
     post<{ verilen: Resources; kirpildi: boolean }>('/diyar-etkinligi/odul', {}),
+  magaza: () => request<MagazaDto>('/magaza'),
+  hizlandir: (kuyrukId: string, yontem: 'elmas' | 'banka') =>
+    post<HizlandirmaSonucu>(`/kuyruk/${encodeURIComponent(kuyrukId)}/hizlandir`, { yontem }),
+  playDogrula: (urun: string, jeton: string) =>
+    post<PlayDogrulamaDto>('/magaza/play/dogrula', { urun, jeton }),
+  reklamOturumu: (hedefKuyrukId?: string) =>
+    post<{ oturumId: string; kullanici: string; kalan: number }>('/reklam/oturum', {
+      hedefKuyrukId: hedefKuyrukId ?? null,
+    }),
+  reklamOturumDurumu: (id: string) =>
+    request<{ durum: 'bekliyor' | 'odullendi'; kuyrukSaniye: number; bankaDakika: number }>(
+      `/reklam/oturum/${encodeURIComponent(id)}`,
+    ),
   armaKaydet: (arma: ArmaDto) => post<{ arma: ArmaDto }>('/me/arma', arma),
   ticaret: () => request<SevkiyatDto>('/ticaret'),
   kaynakGonder: (lordId: string, yuk: Resources) =>

@@ -23,8 +23,12 @@ import { npcTuru, npcYap, npcYapVeOynat } from '../services/npc.js';
 import { kuyruklariCek, tabanlariGuncelle } from '../services/esyaPazari.js';
 import { testTahminiKoy } from '../services/resimDenetimi.js';
 import { eskiAgIzleriniSil } from '../services/agIzi.js';
+import { devMagazaRoutes } from './devMagaza.js';
 
 export async function devRoutes(app: FastifyInstance): Promise<void> {
+  // Mağaza taklitleri (Play API'si, AdMob SSV) — ayrı dosyada, aynı kural: üretimde yok.
+  await app.register(devMagazaRoutes);
+
   /** Bekleyen tüm kuyrukları hemen bitirir. */
   app.post('/test/kuyruklari-bitir', { preHandler: requireAuth }, async (req) => {
     const lordId = await findLordByUser(req.user.userId);

@@ -177,9 +177,15 @@ model Lord {
   statPoints   Int @default(0)
 
   altin              Int        @default(0)
-  /// Elmas: oyun ICINDE kazanilan para birimi, satin alinmiyor.
-  /// Yalniz ZAMAN kisaltir, guc satmaz (packages/shared/src/elmas.ts).
+  /// Elmas: oynayarak kazaniliyor, Android uygulamasinda Google Play'den
+  /// satin alinabiliyor (docs/25). Yalniz ZAMAN kisaltir, guc satmaz.
+  /// EKSIYE dusebilir: iade edilen satin almanin elmasi geri aliniyor ve
+  /// coktan harcanmissa bakiye borca giriyor (harcama >= bedel istedigi
+  /// icin borcluyken hicbir sey hizlanmiyor).
   elmas              Int        @default(0)
+  /// Odullu reklamdan artan, henuz bir kuyrukta kullanilmamis DAKIKA
+  /// (magaza.reklam.banka_tavan_dakika ile sinirli).
+  reklamDakikasi     Int        @default(0)
   /// Lordun medeniyeti (docs/16). Kayıtta atanıyor, değiştirilemiyor.
   /// Null = medeniyet sisteminden ÖNCE açılmış lord; geçiş bitene kadar
   /// ikisi bir arada yaşıyor.
@@ -230,19 +236,19 @@ model Lord {
 
   /// Oyuncunun oyunu en son ne zaman açtığı. "Sen yokken ne oldu" özeti
   /// bu ana göre hesaplanır.
-  lastSeenAt        DateTime  @default(now())
+  lastSeenAt          DateTime  @default(now())
   /// Giriş serisi: kaç gün üst üste girildi. Türetilemiyor — tek bir
   /// zaman damgası "kaç gün üst üste" sorusunu cevaplayamaz, o bir geçmiş.
-  girisSerisi       Int       @default(0)
+  girisSerisi         Int       @default(0)
   /// Serinin en son işlendiği gün. Aynı gün ikinci girişte seri artmasın diye.
-  girisSerisiGunu   DateTime?
+  girisSerisiGunu     DateTime?
   /// Günlük görev ödülünün en son alındığı gün. Bu da türetilemiyor: ödülün
   /// verilmesi mevcut hiçbir kayda iz bırakmıyor, kaynak artışı altına
   /// karışıyor.
-  gunlukOdulGunu    DateTime?
+  gunlukOdulGunu      DateTime?
   /// Haftalık sefer ödülünün en son alındığı an. Hangi seferin açık olduğu
   /// SAKLANMIYOR — hafta numarasından türetiliyor (packages/shared/sefer.ts).
-  seferOduluHaftasi DateTime?
+  seferOduluHaftasi   DateTime?
   /// Hafta sonu diyar seferinin ödülünün alındığı etkinlik (etkinliğin
   /// başladığı cumartesi 00:00 UTC; shared `diyarEtkinligi`). Hangi
   /// etkinliğin açık olduğu saklanmıyor, hafta numarasından türetiliyor.
@@ -252,7 +258,7 @@ model Lord {
   /// durumda duruyor. Sunucuda tutuluyor cunku tam ekran bir tanıtımı
   /// ikinci kez göstermek, kartı ikinci kez göstermekten çok daha rahatsız
   /// edici; tarayıcı deposu silinince ya da telefon değişince geri gelirdi.
-  ogreticiBittiAt   DateTime?
+  ogreticiBittiAt     DateTime?
   /// Rehberi (kâhya kartı + ekranı karartan rehber ışığı) kapattığı an.
   ///
   /// Tarayıcı deposunda tutuluyordu ve bu SESSİZ bir hataydı: anahtar
@@ -264,7 +270,7 @@ model Lord {
   ///
   /// Öğreticininki gibi sunucuda: tam ekran bir perdeyi ikinci kez
   /// göstermek, kartı ikinci kez göstermekten çok daha rahatsız edici.
-  rehberBittiAt     DateTime?
+  rehberBittiAt       DateTime?
 
   /// İlk KAZANILAN akının saati; hiç kazanmadıysa null (docs/12 §8).
   ///
@@ -388,6 +394,8 @@ model Lord {
   profilResimleri     ProfilResmi[]
   aktifGunler         GunlukAktiflik[]
   agIzleri            AgIzi[]
+  satinAlmalar        SatinAlma[]
+  reklamOturumlari    ReklamOturumu[]
 
   /// Profil resmi: "hazir:<portre>" | "yuklenen:<ProfilResmi.id>" | null
   /// (arma). Çözümü shared `profilResmiCoz`. YALNIZ onaylı yüklenen resim
@@ -1288,4 +1296,61 @@ model AgIzi {
   @@id([lordId, ozet, gun])
   @@index([ozet, gun])
   @@index([gun])
+}
+
+/// Google Play'den elmas satin almasi (docs/25).
+///
+/// `jeton` Play'in purchaseToken'i: kuresel olarak tekil, ayni satin
+/// almanin iki kez elmas vermesini veritabani engelliyor. Elmas YALNIZ
+/// sunucu Play'e sorup "satin alindi" cevabini aldiktan sonra veriliyor;
+/// istemcinin soyledigi hicbir sey (urun, miktar) dogrudan kullanilmiyor.
+/// Satir elmas verildigi AN yaziliyor, Play'de TUKETME ondan sonra
+/// (`tuketildi`); tuketme basarisiz olursa worker yeniden deniyor —
+/// tuketilmeyen satin alma uc gunde kendiliginden iade olurdu.
+model SatinAlma {
+  id        String    @id @default(cuid())
+  lordId    String
+  jeton     String    @unique
+  siparisNo String?
+  urun      String
+  elmas     Int
+  /// verildi | iade
+  durum     String    @default("verildi")
+  /// Play'in test satin almasi (lisans test hesabi): elmas veriliyor ama ayri sayiliyor.
+  test      Boolean   @default(false)
+  tuketildi Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  iadeAt    DateTime?
+
+  lord Lord @relation(fields: [lordId], references: [id], onDelete: Cascade)
+
+  @@index([lordId, createdAt])
+  @@index([tuketildi, createdAt])
+}
+
+/// Odullu reklam oturumu (AdMob, docs/25).
+///
+/// Istemci reklam istemeden ONCE oturum aciyor; oturumun kimligi reklama
+/// `custom_data` olarak veriliyor ve odulu YALNIZ Google'in imzali sunucu
+/// cagrisi (SSV) veriyor — istemcinin "izledim" demesi hicbir sey
+/// kazandirmiyor. `islemNo` Google'in transaction_id'si: ayni cagrinin
+/// tekrari ikinci kez odul vermiyor. Gunluk tavan ACILAN oturumlardan
+/// sayiliyor; yarim birakip yeniden istemek tavani asmanin yolu degil.
+model ReklamOturumu {
+  id            String    @id @default(cuid())
+  lordId        String
+  /// Odulun gidecegi kuyruk; yoksa ya da bitmisse odul bankaya.
+  hedefKuyrukId String?
+  /// bekliyor | odullendi
+  durum         String    @default("bekliyor")
+  islemNo       String?   @unique
+  /// Kuyruktan silinen saniye ve bankaya yazilan dakika (sonuc).
+  kuyrukSaniye  Int       @default(0)
+  bankaDakika   Int       @default(0)
+  createdAt     DateTime  @default(now())
+  odulAt        DateTime?
+
+  lord Lord @relation(fields: [lordId], references: [id], onDelete: Cascade)
+
+  @@index([lordId, createdAt])
 }

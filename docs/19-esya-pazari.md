@@ -33,7 +33,9 @@ eşya, diyar içi, anonim, açık artırma yok.
 kıpırdamazdı.
 
 Yalnız ekipman. Kaynak ve elmas pazarda yok: kaynağın kendi takası var
-(Malikâne, komisyonlu), elmas ise satın alınmıyor ve güç satmıyor.
+(Malikâne, komisyonlu), elmas ise güç satmıyor — parayla alınabildiği
+için (docs/25) pazara girseydi satın alınan elmas ekipmana, yani güce
+dönüşürdü.
 
 ## 2. Fiyat
 

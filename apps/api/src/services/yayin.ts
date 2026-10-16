@@ -19,6 +19,7 @@ import { prisma } from '../db.js';
 import { env } from '../env.js';
 import { izlemeAcikMi } from '../izleme.js';
 import { ipKaynagi } from '../istemciIp.js';
+import { playHesabiBozukMu } from './play.js';
 
 const YEREL = /^https?:\/\/(localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])(:|\/|$)/i;
 
@@ -54,6 +55,22 @@ export async function yayinKontrolu(
     ipKaynagi: ipKaynagi(),
     renderda: Boolean(env.RENDER_EXTERNAL_URL),
     istek,
+    play:
+      env.PLAY_PAKET_ADI && env.PLAY_SERVIS_HESABI
+        ? playHesabiBozukMu()
+          ? 'bozuk'
+          : 'tamam'
+        : env.PLAY_PAKET_ADI || env.PLAY_SERVIS_HESABI
+          ? 'yarim'
+          : 'yok',
+    reklam: {
+      birim: Boolean(env.ADMOB_ODUL_BIRIMI),
+      yayinci: Boolean(env.ADMOB_YAYINCI_KIMLIGI),
+      // ca-app-pub-<yayıncı>/<birim> ile pub-<yayıncı> aynı rakamlar mı.
+      uyusuyor:
+        /^ca-app-pub-(\d+)\//.exec(env.ADMOB_ODUL_BIRIMI ?? '')?.[1] ===
+        /^pub-(\d+)$/.exec(env.ADMOB_YAYINCI_KIMLIGI ?? '')?.[1],
+    },
   });
 }
 

@@ -12,6 +12,7 @@ import {
   ARASTIRMA_GRUPLARI,
   B,
   EKRANLAR,
+  KAPILAR,
   TAKTIKLER,
   UNIT_TYPES,
   WORLD_MAP,
@@ -719,6 +720,10 @@ describe('ekran listesi', () => {
     for (const e of ['malikane', 'harita', 'ittifak', 'hesap']) {
       expect(EKRANLAR).toContain(e);
     }
+    // Açılabilen HER kapı ekran adı olarak da geçerli olmalı: arayüz açık
+    // kapıyı `/me?ekran=` ile bildiriyor. Elle tutulan bir alt küme yetmedi
+    // — Mağaza kapısı eklendiğinde aynı 400 yeniden oldu.
+    for (const k of KAPILAR) expect(EKRANLAR).toContain(k);
   });
 });
 

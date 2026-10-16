@@ -11,6 +11,7 @@
  *   5. Sırası gelen RAKİP LORDLARA sıra verir (services/npc.ts)
  *   6. Eşya pazarı: kayıt kuyruklarının kurası, saatlik taban (docs/19)
  *   7. Saatte bir: diyar birleşmesi, süresi dolan ağ izlerinin silinmesi
+ *   8. On dakikada bir: Play'de tüketilemeyen satın almalar, iadeler
  *
  * Her adım tek transaction içinde ve idempotenttir: `resolved` bayrağı
  * koşullu updateMany ile alındığı için worker iki kez çalışsa bile iş
@@ -27,6 +28,8 @@ import { npcTuru } from './services/npc.js';
 import { bekleyenBirlesmeleriUygula, birlesmeyiPlanla } from './services/birlesme.js';
 import { kuyruklariCek, tabanlariGuncelle } from './services/esyaPazari.js';
 import { eskiAgIzleriniSil } from './services/agIzi.js';
+import { eskiReklamOturumlariniSil } from './services/reklam.js';
+import { iadeleriIsle, tuketilmeyenleriTuket } from './services/satinAlma.js';
 
 const ARALIK_MS = 10_000;
 let calisiyor = false;
@@ -41,6 +44,15 @@ let calisiyor = false;
  */
 const BIRLESME_ARALIK_MS = 3_600_000;
 let sonBirlesmeBakisi = 0;
+
+/**
+ * Mağaza (docs/25) ON DAKİKADA BİR: elması verilip Play'de tüketilemeyen
+ * satın almaları yeniden tüket (üç gün tüketilmeyen satın almayı Play
+ * iade ediyor) ve iade edilenlerin elmasını geri al. Her turda Google'a
+ * gitmek kota ve gecikme; saatte bir ise iadeyi geç düşürmek.
+ */
+const MAGAZA_ARALIK_MS = 600_000;
+let sonMagazaBakisi = 0;
 
 export async function tur(): Promise<void> {
   if (calisiyor) return; // önceki tur bitmediyse üst üste binme
@@ -134,6 +146,25 @@ export async function tur(): Promise<void> {
         if (silinen) console.log(`[worker] ağ izi: ${silinen} eski satır silindi`);
       } catch (e) {
         console.error('Ağ izi temizliği başarısız:', e);
+      }
+    }
+
+    if (now.getTime() - sonMagazaBakisi >= MAGAZA_ARALIK_MS) {
+      sonMagazaBakisi = now.getTime();
+      try {
+        const tuketilen = await tuketilmeyenleriTuket(now);
+        const iade = await iadeleriIsle(now);
+        if (tuketilen || iade) console.log(`[worker] mağaza: ${tuketilen} tüketildi, ${iade} iade`);
+      } catch (e) {
+        // Google'a ulaşılamadı: bir sonraki bakışta yeniden.
+        console.error('Mağaza turu başarısız:', (e as Error).message);
+      }
+      // Saklama süresi Google'a bağlı değil; Play'e ulaşılamasa da işlesin.
+      try {
+        const silinen = await eskiReklamOturumlariniSil(now);
+        if (silinen) console.log(`[worker] reklam: ${silinen} eski oturum silindi`);
+      } catch (e) {
+        console.error('Reklam oturumu temizliği başarısız:', e);
       }
     }
 

@@ -43,6 +43,7 @@ import { KarsiIpuclari } from '../components/KarsiIpuclari';
 import { SaldiriOnizleme } from '../components/SaldiriOnizleme';
 import { DizilimKatlanir } from '../components/DizilimIzgarasi';
 import { SavasRaporu } from '../components/SavasRaporu';
+import { HizlandirDugmesi } from '../components/Hizlandir';
 import {
   Bolum,
   Buton,
@@ -1243,6 +1244,7 @@ export function Harita({
                                   (q) => q.payload.regionId === bolge.id,
                                 )}
                                 etiket={`${sonrakiAd} oluyor`}
+                                ek={(q) => <HizlandirDugmesi is={q} />}
                               />
                             </Kart>
                           );

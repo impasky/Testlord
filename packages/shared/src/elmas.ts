@@ -1,8 +1,9 @@
 /**
  * ELMAS ve YENİ OYUNCU BONUSU — saf katman.
  *
- * Elmas oyun İÇİNDE kazanılan bir para birimi; satın alınmıyor (mağaza
- * bu projenin kapsamı dışında). Tek işi ZAMAN kısaltmak.
+ * Elmas oyun İÇİNDE kazanılan bir para birimi; Android uygulamasında
+ * Google Play'den paket olarak da alınabiliyor (mağaza: `magaza.ts`,
+ * docs/25). Satılsa da tek işi ZAMAN kısaltmak.
  *
  * TEK KATI KURAL: ELMAS GÜÇ SATIN ALMAZ.
  *
@@ -11,6 +12,9 @@
  * yapar; o daha çok kazanır, daha çok satın alır ve kartopu bireysel
  * ölçekte geri döner. Elmasla kısaltılan bir yürüyüşün sonucu,
  * beklenerek yapılanınkiyle birebir aynı — yalnız daha erken geliyor.
+ * Elmas satıldığından beri kural iki kat önemli: güç satan bir mağaza
+ * çok ödeyeni de kalıcı olarak güçlü yapardı (pay-to-win). Bu yüzden
+ * oyuncular arası yürüyüşler hiç hızlanmıyor (`magaza.ts`).
  *
  * Yeni oyuncu bonusu da aynı çizgide: hızlandırıyor, güçlendirmiyor.
  * Ve KÜÇÜK tutuluyor — büyük bir bonus bittiğinde oyun yavaşlamış gibi

@@ -41,11 +41,13 @@ lordlar-cagi/
 │   │       ├── services/       İş kuralları (shared'i çağırır)
 │   │       ├── worker.ts       10 sn'lik döngü
 │   │       └── seed.ts         world-map.json → veritabanı
-│   └── web/
-│       └── src/
-│           ├── screens/        7 ekran
-│           ├── components/
-│           └── api/            Tipli istemci
+│   ├── web/
+│   │   └── src/
+│   │       ├── screens/        7 ekran
+│   │       ├── components/
+│   │       └── api/            Tipli istemci
+│   └── mobil/                  Android kabuğu (Capacitor): web çıktısı +
+│                               Play Faturalandırma + AdMob (docs/25)
 └── docker-compose.yml
 ```
 

@@ -30,6 +30,8 @@ const HAZIR: YayinGirdisi = {
   ipKaynagi: 'baslik',
   renderda: true,
   istek: { vekilIzi: true, baslikEksik: false },
+  play: 'tamam',
+  reklam: { birim: true, yayinci: true, uyusuyor: true },
 };
 
 const neden = (g: Partial<YayinGirdisi>) =>
@@ -120,6 +122,38 @@ describe('yayın kontrolü', () => {
       neden: 'ip-baslik-yok',
     });
     expect(ip({ ipKaynagi: 'vekil' }).durum).toBe('tamam');
+  });
+
+  it('mağaza isteğe bağlı: hiç yoksa uyarı, yarım ya da bozuksa eksik', () => {
+    const bul = (g: Partial<YayinGirdisi>, ad: RegExp) =>
+      yayinDenetimi({ ...HAZIR, ...g }).find((b) => ad.test(b.ad))!;
+    const play = (p: YayinGirdisi['play']) => bul({ play: p }, /^PLAY_/);
+    expect(play('tamam')).toMatchObject({ durum: 'tamam', neden: 'play' });
+    expect(play('yok')).toMatchObject({ durum: 'uyari', neden: 'play-kapali' });
+    expect(play('yarim')).toMatchObject({ durum: 'eksik', neden: 'play-yarim' });
+    expect(play('bozuk')).toMatchObject({ durum: 'eksik', neden: 'play-bozuk' });
+
+    const reklam = (r: YayinGirdisi['reklam']) => bul({ reklam: r }, /^ADMOB_/);
+    expect(reklam({ birim: false, yayinci: true, uyusuyor: false }).neden).toBe('reklam-kapali');
+    expect(reklam({ birim: true, yayinci: false, uyusuyor: false })).toMatchObject({
+      durum: 'uyari',
+      neden: 'reklam-app-ads-yok',
+    });
+    expect(reklam({ birim: true, yayinci: true, uyusuyor: false })).toMatchObject({
+      durum: 'eksik',
+      neden: 'reklam-yayinci-uyusmuyor',
+    });
+
+    // Mağazasız bir sunucu yayına çıkabiliyor: yalnız iki uyarı.
+    expect(
+      yayinOzeti(
+        yayinDenetimi({
+          ...HAZIR,
+          play: 'yok',
+          reklam: { birim: false, yayinci: false, uyusuyor: false },
+        }),
+      ),
+    ).toEqual({ eksik: 0, uyari: 2 });
   });
 
   it('her sebebin metni var', () => {

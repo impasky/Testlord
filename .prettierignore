@@ -15,3 +15,8 @@ ceviri/metinler.csv
 # Görsel bozulma testinin kayıtlı izleri: biçimi testin kendisi belirliyor
 # (`PARMAKIZI_YAZ=1 pnpm test` yazıyor).
 apps/web/src/cizim/parmakizi.json
+
+# Android projesi (docs/25): Capacitor'ın ürettiği Gradle/XML dosyaları ve
+# `cap sync`in kopyaladığı derlenmiş web paketi. Biçimini Android araçları
+# belirliyor; kaynak kod apps/web'de.
+apps/mobil/android/

@@ -1,0 +1,13 @@
+{
+  "appId": "com.lordlarcagi.oyun",
+  "appName": "Lordlar Çağı",
+  "webDir": "../web/dist",
+  "android": {
+    "allowMixedContent": false,
+    "captureInput": false,
+    "webContentsDebuggingEnabled": false
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

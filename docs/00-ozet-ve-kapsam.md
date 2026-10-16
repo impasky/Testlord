@@ -85,7 +85,9 @@ Yani oyuncuların yarısı bölgesiz. Bu bir hata değil, tasarımın motoru:
 
 **Platform**
 
-- Mağaza uygulaması (iOS/Android paketi) — mobil web önce çalışsın
+- Mağaza uygulaması (iOS/Android paketi) — mobil web önce çalışsın.
+  _Sonradan: Android kabuğu ve P2S mağaza yapıldı (`apps/mobil`, docs/25);
+  iOS hâlâ kapsam dışı._
 - Masaüstü düzeni — bilinçli olarak yok
 - Push bildirimi
 - Çoklu dil (v1 sadece Türkçe)

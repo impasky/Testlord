@@ -317,6 +317,13 @@ yalnızca görünüştür. Sancak arması, lord kıyafeti, bölge adı hakkı, p
 Bu bir pazarlama cümlesi değil, `balance.json`'a dokunan hiçbir şeyin
 satılmaması demek.
 
+> **Değişti (2026-10-16, oyunun sahibinin kararı):** mağaza pay-to-skip
+> olarak eklendi (`docs/25`). Artık **kendi gelişim işlerinin zamanı**
+> satılıyor (inşaat, araştırma, eğitim, üretim, yükseltme). Güç hâlâ
+> satılmıyor: kaynak, asker, kalkan, ekipman yok; başka bir lorda değen
+> hiçbir yürüyüş hızlanmıyor; her işin kaynağı yine oynayarak kazanılıyor.
+> Zaman satmanın dolaylı bir güç olduğu açık — frenleri `docs/25` §0'da.
+
 ### 3.2 Sonu gelmeyen bekleme
 
 Şikâyet net: _"Rise of Kingdoms'ta saatlerce grind yapıp minimum ilerleme
@@ -511,7 +518,7 @@ yenilemek, diğerleri hiç açılmamış kategoriler. Yani "eksik görsel" deği
 | B4  | ~~**Süreli etkinlik**~~ **yapıldı**              | Haftalık sefer: tema hafta numarasından türüyor (sunucu bir şey saklamıyor), hedef herkes için aynı. **Tablo YOK** — sıralamalı etkinlik zaten önde olanı ilerletirdi (§3.4).                                                                                                                                                                                                                                                                                                                                                                                |
 | B5  | ~~**Casusluk**~~ **yapıldı**                     | Kuyruk tabanlı keşif, yakalanma riski Kurnazlık'a bağlı, rapor bir fotoğraf (docs/01 §6b). Beklenenden küçük çıktı: yeni motor gerekmedi, mevcut kuyruk makinesi yetti.                                                                                                                                                                                                                                                                                                                                                                                      |
 | B6  | ~~**Ticaret**~~ **yapıldı**                      | İttifak içinde tek yönlü kaynak gönderme. Takas değil gönderim seçildi: takas iki tarafın onayını, teklif kuyruğunu ve teklif süresinin dolmasını gerektiriyordu — üç yeni ekran. İki fren açık: kaynak yol alır (kuşatılanı sınırsız beslemesin) ve günlük tavan var (çoklu hesap çiftliği geçmesin).                                                                                                                                                                                                                                                       |
-| B7  | **Yatay kazanç**                                 | Görünüş satışı. Mağaza işi **açıkça beklemede** (docs/06).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| B7  | ~~**Yatay kazanç**~~ **P2S mağaza yapıldı**      | Görünüş satışı değil, zaman: elmas paketi (Play) ve ödüllü reklam (AdMob), yalnız Android uygulamasında (docs/25). Arma ücretsiz kaldı.                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | B8  | ~~**Öğretici**~~ **yapıldı**                     | İlk girişte sekiz sayfalık tam ekran tanıtım. Zorunlu tur DEĞİL: anlatım, ilk saniyede geçilebiliyor, Hesap ekranından tekrar okunabiliyor. Metin `packages/shared/src/ogretici.ts`'te ve sayıları `balance.json`'dan türetiyor — denge değişirse öğretici de değişir, sessizce yalan söylemez.                                                                                                                                                                                                                                                              |
 
 ---
@@ -520,8 +527,9 @@ yenilemek, diğerleri hiç açılmamış kategoriler. Yani "eksik görsel" deği
 
 Bu doküman büyürken kolayca çiğnenebilecek şeyler:
 
-1. **Satılan hiçbir şey `balance.json`'a dokunmaz.** Güç, zaman, birim, hak
-   satılmaz. Sadece görünüş.
+1. **Güç satılmaz.** Kaynak, birim, ekipman, hak satılmaz; oyuncular arası
+   yürüyüş hızlanmaz. Satılan tek şey kendi gelişim işlerinin zamanı
+   (2026-10-16'dan beri, docs/25 — önceki kural "zaman da satılmaz"dı).
 2. **Her sayı `balance.json`'dan gelir.** Yeni sistem yeni sabit demek değil;
    yeni anahtar demek.
 3. **Oyun mantığı `packages/shared`'da, saf fonksiyon olarak.** Sunucu

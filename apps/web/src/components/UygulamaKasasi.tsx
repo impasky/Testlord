@@ -19,7 +19,7 @@
  */
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { KAPI_ADI, type AltSekme, type Kapi } from '@lordlar/shared';
-import { IkonGoz, IkonKapali, IkonKilit, IkonSohbet, IkonUyari } from './Ikonlar';
+import { IkonElmas, IkonGoz, IkonKapali, IkonKilit, IkonSohbet, IkonUyari } from './Ikonlar';
 import { YolCizimi } from '../cizim/Cizimler';
 
 export type KasaHedefi = { tur: 'sekme'; key: AltSekme } | { tur: 'kapi'; key: Kapi };
@@ -66,6 +66,11 @@ const KAROLAR: Karo[] = [
     hedef: { tur: 'kapi', key: 'sohbet' },
     ad: KAPI_ADI.sohbet,
     gorsel: <IkonSohbet boyut={30} />,
+  },
+  {
+    hedef: { tur: 'kapi', key: 'magaza' },
+    ad: KAPI_ADI.magaza,
+    gorsel: <IkonElmas boyut={28} />,
   },
   {
     hedef: { tur: 'kapi', key: 'siralama' },

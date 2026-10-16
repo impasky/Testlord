@@ -17,6 +17,8 @@ import { OmurgaSeridi, useOmurgaAdimi } from './components/Omurga';
 import { useRehberDurumu } from './rehberDurumu';
 
 import { Sehir } from './screens/Sehir';
+import { kapiIstekleriniDinle } from './lib/kapiIstegi';
+import { useYarimSatinAlmalar } from './lib/yarimSatinAlma';
 
 /**
  * E-postadaki sıfırlama bağlantısının jetonu.
@@ -78,6 +80,7 @@ const Medeniyet = lazy(() => import('./screens/Medeniyet').then((m) => ({ defaul
 const EsyaPazari = lazy(() =>
   import('./screens/EsyaPazari').then((m) => ({ default: m.EsyaPazari })),
 );
+const Magaza = lazy(() => import('./screens/Magaza').then((m) => ({ default: m.Magaza })));
 const GenelSohbet = lazy(() =>
   import('./screens/GenelSohbet').then((m) => ({ default: m.GenelSohbet })),
 );
@@ -200,6 +203,8 @@ export function App() {
   // Rehberin aşamaları: hem ışığın görünürlüğü hem turu bitiren damga
   // aynı hesabı okuyor.
   const rehberDurumu = useRehberDurumu(data?.lord);
+  // Android'de cihazda kalmış Play satın almaları (docs/25 §2.2).
+  useYarimSatinAlmalar(girisli);
 
   /**
    * Biten iş EKRANDAKİ oyuncuya kendiliğinden ulaşsın.
@@ -387,6 +392,8 @@ export function App() {
    * gibi) ve o oyuncuyu ana sayfaya sürüklemiyor.
    */
   const kapiAc = (k: Kapi) => setKapi(k);
+  // Derindeki bileşenlerin kapı açma isteği (ör. Hızlandır → Mağaza).
+  useEffect(() => kapiIstekleriniDinle(setKapi), []);
 
   function cikis() {
     setToken(null);
@@ -667,6 +674,7 @@ export function App() {
               pazarı ve kaynak takası. */}
             {kapi === 'pazar' && <EsyaPazari lordSeviyesi={lord.level} />}
             {kapi === 'sohbet' && <GenelSohbet lordId={lord.id} />}
+            {kapi === 'magaza' && <Magaza />}
             {kapi === 'moderasyon' && <Moderasyon />}
             {kapi === 'yoneticiPaneli' && <YoneticiPaneli />}
             {kapi === 'hesap' && (

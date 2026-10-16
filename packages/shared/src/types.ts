@@ -218,6 +218,8 @@ export const EKRANLAR = [
   'pazar',
   /** Genel sohbet — üst çubuktan, her ekrandan. */
   'sohbet',
+  /** Mağaza (docs/25) — üst çubuktaki elmas sayacından. */
+  'magaza',
 ] as const;
 
 export type Ekran = (typeof EKRANLAR)[number];
@@ -329,6 +331,12 @@ export const KAPILAR = [
    * uygulama kasasında. Ana sayfa ızgarasına taş koymuyor.
    */
   'sohbet',
+  /**
+   * Mağaza (docs/25): elmas, hızlandırma, ödüllü reklam. Ana sayfa
+   * ızgarasında taş DEĞİL — girişi üst çubuktaki elmas sayacı (elması
+   * gördüğün yerden ona dokunuyorsun) ve uygulama kasası.
+   */
+  'magaza',
 ] as const;
 export type Kapi = (typeof KAPILAR)[number];
 
@@ -348,7 +356,8 @@ export const OYUNCU_KAPILARI = KAPILAR.filter(
     k !== 'medeniyet' &&
     k !== 'yoneticiPaneli' &&
     k !== 'pazar' &&
-    k !== 'sohbet',
+    k !== 'sohbet' &&
+    k !== 'magaza',
 );
 
 /** Kapının başlığı — hem panelde hem onu açan düğmede aynı ad. */
@@ -367,6 +376,7 @@ export const KAPI_ADI: Record<Kapi, string> = {
   yoneticiPaneli: 'Yönetici Paneli',
   pazar: 'Pazar',
   sohbet: 'Genel Sohbet',
+  magaza: 'Mağaza',
 };
 export interface GeneralDef {
   key: string;

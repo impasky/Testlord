@@ -1130,7 +1130,7 @@
     "taht_vilayeti": "taht"
   },
   "elmas": {
-    "_aciklama": "Oyun ICINDE KAZANILAN para birimi. Satin alinmiyor — magaza kapsam disi.",
+    "_aciklama": "Oyun ici para birimi. OYNAYARAK kazaniliyor (kazanim) ve Android uygulamasinda Google Play'den SATIN ALINABILIYOR (magaza, docs/25). Iki yoldan gelen elmas ayni: harcandigi tek yer ZAMAN.",
     "_kati_kural": "ELMAS GUC SATIN ALMAZ, yalniz ZAMAN kisaltir. Guc satan bir para birimi cok oynayani kalici olarak guclu yapar ve kartopu geri doner. Elmasla kisaltilan bir yuruyusun sonucu, beklenerek yapilaninkiyle AYNI.",
     "akin_kisaltma": {
       "dakika_basina": 2,
@@ -1144,11 +1144,53 @@
       "_formul": "maliyet = ceil(en_uzun_kalan_dakika * dakika_basina), en az asgari. Hastanedeki BUTUN kafileler birden taburcu oluyor; bedeli en uzun kalan kafile belirliyor, cunku kafileler paralel iyilesiyor ve satin alinan sey o bekleyis.",
       "_neden": "Oyuncu karari: 'oyuncular isterse elmas harcayarak iyilesme suresini kisaltabilsin.' Dakika fiyati akin kisaltmanin dortte biri: tedavi dakikalarca degil onlarca dakika suruyor; akinin fiyatiyla tipik bir akin kafilesi (~20 dk) 40 elmas ederdi, yani oyuncunun iki haftalik gunluk gorev kazanci. 0,5 ile ~10 elmas: baslangic kesesi (15) bir-iki kafileye yetiyor, sinirsiz degil. Elmas GUC SATIN ALMIYOR: taburcu olan asker beklenerek taburcu olanla ayni."
     },
+    "kuyruk_hizlandirma": {
+      "katsayi": 1,
+      "us": 0.8,
+      "asgari": 1,
+      "_formul": "maliyet = max(asgari, ceil(katsayi * kalan_dakika ^ us))",
+      "_neden_azalan": "Bina ve arastirma dakikalar degil SAATLER-GUNLER suruyor (bina Sv10 ~34 sa, arastirma kademe 6 ~19 sa). Dogrusal fiyatla bir gunluk bekleyis binlerce elmas ederdi ve satin alinamaz bir sayi, hic satilmayan bir urundur. Us 0.8: bir saat 27, bir gun 337 elmas. Kisa bekleyis dakikasi pahali, uzun bekleyisinki ucuz -- ama hicbir zaman BEDAVA degil.",
+      "_neden_akindan_ucuz": "Akin kisaltma (2/dk) bir GANIMET dongusunu hizlandiriyor: kisalan her akin yeni bir odul demek. Kuyruk hizlandirmanin sonucu ise beklenerek alinanla AYNI bina, ayni asker -- dongu degil, tek bir bekleyis."
+    },
     "kazanim": {
       "gunluk_gorev_tamamlama": 5,
       "akin_sef_grubu": 3,
       "basarim": 10,
       "_neden_bunlar": "Ucu de OYNAYARAK kazaniliyor ve ucu de tekrar edilebilir degil (gunluk bir kez, sef grubu haritada bir kez, basarim bir kez). Siniran bir musluk, elmasi degerli tutuyor."
+    }
+  },
+  "magaza": {
+    "_aciklama": "Odeyip ZAMAN atla (pay-to-skip), oyeyip GUC alma (pay-to-win) degil. docs/25. Satilan tek sey elmas; elmasin harcandigi tek yer kendi kuyruklarinin suresi. Kaynak, asker, kalkan, saldiri yuruyusu, casus SATILMIYOR ve elmasla HIZLANMIYOR: bunlar oyuncular arasi rekabete dokunuyor.",
+    "hizlandirilabilir": [
+      "bina",
+      "research",
+      "train",
+      "craft",
+      "upgrade_item",
+      "upgrade_gear",
+      "upgrade_region"
+    ],
+    "_hizlandirilabilir": "Yalniz oyuncunun KENDI gelisim kuyruklari. Disarida: kesif (casusluk -- rakip hakkinda bilgi), yuruyusler (saldiri, donus, takviye -- savunanin tepki suresi), sevkiyat (coklu hesap besleme yolu). Hastane (iyilestir) ve akin kendi uclariyla kisaltiliyor (elmas.tedavi_kisaltma, elmas.akin_kisaltma).",
+    "paketler": [
+      { "urun": "elmas_100", "ad": "Avuç Elmas", "elmas": 100, "ek": 0 },
+      { "urun": "elmas_550", "ad": "Elmas Kesesi", "elmas": 500, "ek": 50 },
+      { "urun": "elmas_1200", "ad": "Elmas Sandığı", "elmas": 1000, "ek": 200 },
+      { "urun": "elmas_2600", "ad": "Hazine", "elmas": 2000, "ek": 600 }
+    ],
+    "_paketler": "urun = Play Console'daki uygulama ici urun kimligi (tek seferlik, TUKETILEBILIR). FIYAT BURADA DEGIL: Play Console'da, yerel para birimiyle ve vergi dahil. Sunucu yalniz urun -> elmas eslemesini biliyor; istemcinin gonderdigi miktara asla guvenilmiyor. ek = buyuk pakete tesvik; toplam = elmas + ek.",
+    "reklam": {
+      "odul_dakika": 15,
+      "gunluk_tavan": 5,
+      "bekleme_sn": 90,
+      "banka_tavan_dakika": 120,
+      "oturum_omru_dk": 60,
+      "kisisellestirilmis": false,
+      "saklama_gun": 30,
+      "_saklama": "Reklam oturumu (hangi isin, ne zaman, Google'in islem numarasi) bu kadar gun tutulup siliniyor. Gunluk tavan yalniz bugunu okuyor; 30 gun bir oyuncunun 'odulum gelmedi' sorusuna bakabilmek icin. Gizlilik metni bu sayiyi okuyor.",
+      "_aciklama": "Odullu reklam (AdMob, yalniz Android uygulamasinda): izlenen her reklam secilen kuyruktan odul_dakika siliyor. Kuyruk o arada bittiyse ya da odul kalandan buyukse artan sure BANKAYA yaziliyor (tavan banka_tavan_dakika) ve sonra herhangi bir kuyrukta kullaniliyor. Odul ELMAS DEGIL: Google'in kurali odulun parasal degeri olmamasini istiyor ve elmas satiliyor; ayrica reklamla elmas biriktirmek satisi anlamsizlastirirdi.",
+      "_tavan": "Gunde 5 reklam = 75 dakika: bir gunluk bekleyisin kucuk bir parcasi. Daha cok reklam oyunu reklam izleme oyununa cevirir.",
+      "_bekleme": "Iki reklam arasi en az 90 sn: art arda reklam istemek ya bir hata ya kotuye kullanim.",
+      "_kisisellestirilmis": "false: reklamlar kisisellestirilmemis isteniyor (npa). Gelir daha dusuk ama reklam kimligiyle profil cikarilmiyor ve KVKK/GDPR riski en az. Acmak icin gizlilik metni ve onay akisi da degismeli."
     }
   },
   "yeni_oyuncu": {

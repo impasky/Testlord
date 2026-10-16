@@ -17,6 +17,7 @@ export * from './equipment.js';
 export * from './generals.js';
 export * from './bolge-adi.js';
 export * from './elmas.js';
+export * from './magaza.js';
 export * from './etki-adi.js';
 export * from './liste.js';
 export * from './epostaDogrulama.js';

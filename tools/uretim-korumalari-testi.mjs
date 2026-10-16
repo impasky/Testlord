@@ -26,7 +26,7 @@
  */
 import { spawn } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 
 const PORT = Number(process.env.KORUMA_PORT ?? 3210);
 const KOK = new URL('..', import.meta.url).pathname;
@@ -36,9 +36,16 @@ const k = (ad, kosul, detay = '') => {
   if (!kosul) hata++;
 };
 
-/** dev.ts içindeki bütün rota yolları — elle liste tutmuyoruz. */
+/**
+ * Geliştirme rotalarının yolları — elle liste tutmuyoruz. `routes/dev*.ts`:
+ * dev.ts ve oradan yüklenen taklitler (devMagaza.ts).
+ */
 function devUclari() {
-  const kaynak = readFileSync(`${KOK}apps/api/src/routes/dev.ts`, 'utf8');
+  const dizin = `${KOK}apps/api/src/routes/`;
+  const kaynak = readdirSync(dizin)
+    .filter((f) => /^dev.*\.ts$/.test(f) && !f.endsWith('.test.ts'))
+    .map((f) => readFileSync(dizin + f, 'utf8'))
+    .join('\n');
   const yollar = [...kaynak.matchAll(/app\.(?:post|get|put|delete)\(\s*'([^']+)'/g)].map(
     (m) => m[1],
   );

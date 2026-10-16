@@ -161,6 +161,10 @@ Oyunun vaadi adil rekabet. Bu vaadi bozan hiçbir şey satılamaz.
 - Kaynak, hızlandırma, ekipman, general, ordu, ekstra bölge
 - Kısaca: **güç satılmaz.**
 
+> **Değişti (2026-10-16):** oyunun sahibinin kararıyla kendi gelişim
+> işlerinin hızlandırması artık satılıyor (pay-to-skip, `docs/25`);
+> listenin geri kalanı ve "güç satılmaz" aynen geçerli.
+
 **Dürüst değerlendirme:** 120 kişilik shard'larda kozmetik satışı bir iş
 kurmaz. Amaç zaten o değil — amaç **oyun tutarsa batmamak.** Sunucu ve
 veritabanı faturasını karşılarsa görevini yapmış olur. Bunun ötesini
@@ -318,9 +322,12 @@ alınamayan yanlış bir seçim oyuncuyu hesabını silmeye iter.
   gönderiyor. Yayına çıkmadan yapılacak tek şey `pnpm push-anahtari` ile
   anahtar üretip sunucunun ortamına koymak.
 - **M13 — native kabuk.** PWA kabuğu (manifest, simgeler, "ana ekrana
-  ekle") ve artık push da var; gerçek bir uygulama mağazası kabuğu
-  bilinçli olarak beklemede.
-- **M15 — para modeli.** Mağaza işleri bilinçli olarak beklemede.
+  ekle") ve push var. **Android kabuğu YAPILDI** (`apps/mobil`, Capacitor;
+  CI her gönderimde derliyor). iOS kabuğu yok.
+- **M15 — para modeli. YAPILDI** (`docs/25`): pay-to-skip — elmas paketi
+  Google Play Faturalandırma ile, ödüllü reklam AdMob ile; ikisi de yalnız
+  Android uygulamasında. Elmas yalnız kendi gelişim işlerinin zamanını
+  kısaltıyor.
 - **M16 — canlı operasyon otomasyonu.** Sezon iptal edilince en büyük
   parçası düştü. Kalan parçası — **şikâyet kuyruğu — YAPILDI**
   (docs/14): sohbet mesajı şikâyeti, yöneticinin kuyruğu, üç karar

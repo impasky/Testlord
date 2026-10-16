@@ -23,6 +23,7 @@ import {
   IkonUyari,
   IkonYer,
 } from '../components/Ikonlar';
+import { HizlandirDugmesi } from '../components/Hizlandir';
 import {
   Bolum,
   DurumSiridi,
@@ -297,6 +298,7 @@ function BirimKarti({
             )}
           </>
         }
+        ek={(q) => <HizlandirDugmesi is={q} />}
       />
 
       <button

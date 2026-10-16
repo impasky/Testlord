@@ -452,19 +452,22 @@ export function MobilKabuk({
               </span>
               <span className="tabular">{kisaSayi(lord.fame)}</span>
             </div>
-            {/* Elmas: oyuncunun isteği ("üst headere elmas da ekle"). Hastanede
-                taburcu için harcanıyor; kesede ne olduğu harcanacağı ekrana
-                gitmeden görünmeli. */}
-            <div
-              className="flex shrink-0 items-center gap-1 text-[11px] text-solgun"
-              title="Elmas"
+            {/* Elmas: oyuncunun isteği ("üst headere elmas da ekle"). Kesede
+                ne olduğu harcanacağı ekrana gitmeden görünmeli; dokununca
+                Mağaza açılıyor (docs/25) — elmasın nereden geldiği ve nereye
+                gittiği orada. */}
+            <button
+              type="button"
+              onClick={() => onKapiAc('magaza')}
+              aria-label={`Mağaza — ${lord.elmas ?? 0} elmas`}
+              className="bas -my-2 flex h-11 shrink-0 items-center gap-1 rounded-lg px-1 text-[11px] text-solgun"
               data-ust-elmas
             >
               <span style={{ color: 'var(--color-elmas)' }}>
                 <IkonElmas boyut={13} />
               </span>
               <span className="tabular">{kisaSayi(lord.elmas ?? 0)}</span>
-            </div>
+            </button>
             {/* Genel sohbet HER EKRANDAN: üst çubuk her sekmede duruyor
                 (oyuncunun isteği "her sayfadan erişilebilsin"). */}
             <button

@@ -19,7 +19,7 @@
  * BU BİR HUKUKİ GÖRÜŞ DEĞİL. Metin toplanan veriyi dürüstçe anlatıyor;
  * yayına almadan önce bir hukukçuya okutulmalı.
  */
-import { COKLU_HESAP } from '@lordlar/shared';
+import { COKLU_HESAP, REKLAM } from '@lordlar/shared';
 import { Buton, Kart, sablonlu } from '../components/ui';
 import { DestekSatiri } from '../components/DestekSatiri';
 import { TamZemin } from '../components/Zemin';
@@ -81,6 +81,43 @@ export function Gizlilik({ onKapat }: { onKapat: () => void }) {
               <strong className="text-parsomen">Ağının anahtarlı özeti — kısa süreliğine.</strong>{' '}
               {`Bir oyuncunun ikinci hesap açıp kendini beslemesini görebilmek için oyuna girdiğin ağın geri çevrilemez bir özeti (gizli anahtarlı HMAC) ${COKLU_HESAP.agIziSaklamaGun} gün tutuluyor, sonra kendiliğinden siliniyor. Adresin kendisi değil: özetten adres geri çıkarılamıyor. Özeti yalnız yöneticinin çoklu hesap listesi okuyor ve tek başına hiçbir yaptırıma yol açmıyor — aynı evden oynamak serbest.`}
             </p>
+            <p>
+              <strong className="text-parsomen">
+                Satın almaların — Android uygulamasında alırsan.
+              </strong>{' '}
+              Google Play'in verdiği sipariş numarası ve satın alma jetonu, ürün, elmas miktarı,
+              tarih ve iade durumu. Elmasın bir kez verilmesi, iadenin düşülmesi ve bir sorunu
+              birlikte çözebilmemiz için. Kart ve ödeme bilgin bize hiç gelmiyor; ödemeyi Google
+              alıyor.
+            </p>
+            <p>
+              <strong className="text-parsomen">
+                İzlediğin ödüllü reklamlar — Android uygulamasında izlersen.
+              </strong>{' '}
+              {`Reklamın hangi işe gittiği, ne zaman izlendiği, kazandırdığı süre ve reklam ağının işlem numarası. Günlük hakkı saymak ve ödülü bir kez vermek için; ${REKLAM.saklamaGun} gün sonra siliniyor.`}
+            </p>
+          </Madde>
+
+          <Madde baslik="Android uygulamasında reklam ve ödeme">
+            <p>
+              Ödüllü reklamları Google AdMob gösteriyor ve reklam yalnız sen istediğinde açılıyor.
+              Reklamı gösterebilmek, sahtekârlığı önlemek ve ölçmek için AdMob cihazından reklam
+              kimliği, IP adresi, cihaz ve uygulama bilgisi gibi verileri Google'ın kendi gizlilik
+              politikasına göre topluyor; bu veri bize gelmiyor.
+            </p>
+            <p>
+              Reklamlar kişiselleştirilmemiş isteniyor: Google ilgi alanlarına göre reklam seçmiyor,
+              ama sıklık sınırı, sahtekârlık önleme ve ölçüm için veri işlemeye devam ediyor.
+              Bölgende gerekiyorsa uygulama ilk reklamdan önce onayını soruyor; kararını Hesap
+              ekranındaki “Reklam gizlilik seçenekleri”nden değiştirebilirsin.
+            </p>
+            <p>
+              Satın almanın ve reklam ödülünün senin hesabına ait olduğunu doğrulamak için Google'a
+              hesabının geri çevrilemez bir etiketi gidiyor — e-postan ya da lord adın değil. Satın
+              almayı Google Play'den, reklam ödülünü de Google'ın sunucumuza gönderdiği imzalı
+              bildirimden doğruluyoruz.
+            </p>
+            <p>Web sürümünde bunların hiçbiri yok: ne reklam var ne satın alma.</p>
           </Madde>
 
           <Madde baslik="Ne toplamıyoruz">
@@ -88,13 +125,13 @@ export function Gizlilik({ onKapat }: { onKapat: () => void }) {
                 listesine "cümle ortası" diye düşüp hiç çevrilmiyordu. */}
             <p>
               {sablonlu(
-                'Reklam ağı, izleme çerezi, analitik kütüphanesi {0}. Sayfada hiçbir üçüncü taraf betiği çalışmıyor.',
+                'İzleme çerezi ve analitik kütüphanesi {0}. Web sürümünde hiçbir üçüncü taraf betiği çalışmıyor; Android uygulamasındaki tek üçüncü taraf, yukarıda anlatılan Google reklam ve ödeme hizmetleri.',
                 [<strong key="y">yok</strong>],
               )}
             </p>
             <p>
-              Adın, yaşın, konumun, telefonun, cihaz kimliğin sorulmuyor ve tutulmuyor. Lord adını
-              sen seçiyorsun ve gerçek adın olmak zorunda değil.
+              Adın, yaşın, konumun, telefonun ve cihaz kimliğin bizim tarafımızdan sorulmuyor ve
+              tutulmuyor. Lord adını sen seçiyorsun ve gerçek adın olmak zorunda değil.
             </p>
             <p>
               IP adresinin kendisi hiçbir yere yazılmıyor — ne veritabanına ne sunucu günlüğüne.
@@ -123,6 +160,10 @@ export function Gizlilik({ onKapat }: { onKapat: () => void }) {
               kullanılıyor; o sağlayıcı yalnızca adresini ve gönderilen iletinin metnini görüyor.
             </p>
             <p>
+              Android uygulamasında reklam ve ödeme için Google (AdMob ve Google Play) — yukarıdaki
+              bölümde anlatıldığı kadarıyla.
+            </p>
+            <p>
               İttifak sohbetinde yazdıkların ittifakındaki diğer oyunculara, genel sohbette
               yazdıkların bütün oyunculara açık. Şikâyet edilen bir mesaj ya da resim, kararı
               verecek yöneticiye görünür.
@@ -141,7 +182,7 @@ export function Gizlilik({ onKapat }: { onKapat: () => void }) {
 
           <Madde baslik="Ne kadar süre">
             <p>
-              {`Hesabın açık kaldığı sürece; ağ özeti en fazla ${COKLU_HESAP.agIziSaklamaGun} gün. Hesabını silersen lordun, ordun, ekipmanın, sohbet mesajların, yüklediğin resimler, ağ özetlerin ve bildirim aboneliğin birlikte silinir.`}
+              {`Hesabın açık kaldığı sürece; ağ özeti en fazla ${COKLU_HESAP.agIziSaklamaGun} gün, reklam kayıtları ${REKLAM.saklamaGun} gün. Hesabını silersen lordun, ordun, ekipmanın, sohbet mesajların, yüklediğin resimler, ağ özetlerin, satın alma ve reklam kayıtların ve bildirim aboneliğin birlikte silinir. Google'ın kendi tuttuğu ödeme kayıtları Google Play'in koşullarına tabidir.`}
             </p>
           </Madde>
 

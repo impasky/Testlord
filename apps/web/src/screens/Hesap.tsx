@@ -12,6 +12,7 @@ import { Alan, Bolum, Buton, EngelNotu, Input, Kart } from '../components/ui';
 import { BildirimKarti } from '../components/BildirimKarti';
 import { DILLER, type Kapi } from '@lordlar/shared';
 import { useDil } from '../lib/dil';
+import { reklamGizlilikSecenekleri, uygulamadaMi } from '../lib/yerel';
 
 export function Hesap({
   lord,
@@ -118,6 +119,7 @@ export function Hesap({
         >
           Kullanım koşulları
         </a>
+        {uygulamadaMi() && <ReklamGizliligi />}
       </Bolum>
 
       {moderasyon.data?.susturulmus && (
@@ -377,5 +379,34 @@ function Engelliler() {
         )}
       </Kart>
     </Bolum>
+  );
+}
+
+/**
+ * Reklam onayını değiştirme girişi (docs/25) — yalnız Android uygulamasında.
+ * AdMob'un onay kuralı: onay soran bölgede (AB/Birleşik Krallık) oyuncu
+ * verdiği kararı sonradan da değiştirebilmeli. Başka bölgede pencere
+ * gerekmiyor ve bağlantı bunu söylüyor.
+ */
+function ReklamGizliligi() {
+  const [not, setNot] = useState<string | null>(null);
+  const ac = useMutation({
+    mutationFn: reklamGizlilikSecenekleri,
+    onSuccess: (gosterildi) =>
+      setNot(gosterildi ? null : 'Bölgende reklam için ayrıca bir onay gerekmiyor.'),
+    onError: () => setNot('Reklam ayarları şu an açılamadı.'),
+  });
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => ac.mutate()}
+        disabled={ac.isPending}
+        className="bas block py-2 text-left text-[12px] text-sonuk underline decoration-dotted underline-offset-2"
+      >
+        Reklam gizlilik seçenekleri
+      </button>
+      {not && <p className="text-[11px] text-solgun">{not}</p>}
+    </>
   );
 }

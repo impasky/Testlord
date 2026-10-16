@@ -29,6 +29,7 @@ import { useOmurgaAdimi } from '../components/Omurga';
 import { Rehber } from '../components/Rehber';
 import { useRehberDurumu } from '../rehberDurumu';
 import { IKONLAR } from '../components/ikon-verisi';
+import { HizlandirDugmesi } from '../components/Hizlandir';
 import {
   Buton,
   GeriSayim,
@@ -450,6 +451,7 @@ export function Sehir({
             <span className="tabular shrink-0 text-parsomen">
               <GeriSayim bitis={i.finishAt} kisa />
             </span>
+            <HizlandirDugmesi is={{ id: i.id, kind: 'bina', finishAt: i.finishAt }} ad={i.ad} />
             <Buton
               tur="anahat"
               boy="kucuk"

@@ -39,6 +39,44 @@ const schema = z.object({
     .pipe(z.string().regex(/^[a-z0-9-]+$/, 'başlık adı yalnız harf, rakam ve tire'))
     .optional(),
   VEKIL_SAYISI: z.coerce.number().int().min(0).max(5).default(0),
+
+  /*
+   * MAĞAZA (docs/25) — Google Play ve AdMob, yalnız Android uygulamasında.
+   *
+   * Hiçbiri verilmezse mağaza "bilgi" kipinde: paketler görünür, satın
+   * alma ve reklam kapalı. Geliştirmede (NODE_ENV ≠ production) ikisi de
+   * yerel taklide bağlanıyor (routes/devMagaza.ts) ki uçtan uca test
+   * gerçek kod yolunu koşsun.
+   */
+  /** Uygulamanın paket adı (Play Console'daki), ör. com.lordlarcagi.oyun. */
+  PLAY_PAKET_ADI: z
+    .string()
+    .regex(/^[a-zA-Z][\w]*(\.[a-zA-Z][\w]*)+$/, 'paket adı biçimi: com.ornek.oyun')
+    .optional(),
+  /**
+   * Play Developer API'ye erişen servis hesabının JSON anahtarı — düz JSON
+   * ya da base64. GİZLİ: depoya yazılmaz, yalnız barındırma panelinde.
+   */
+  PLAY_SERVIS_HESABI: z.string().optional(),
+  /** Geliştirmede Play API'si yerine taklit (üretimde yok sayılır). */
+  PLAY_API_ADRESI: z.string().url().optional(),
+  /** Ödüllü reklam biriminin kimliği, ör. ca-app-pub-123/456. Herkese açık. */
+  ADMOB_ODUL_BIRIMI: z
+    .string()
+    .regex(/^ca-app-pub-\d+\/\d+$/, 'ca-app-pub-<yayıncı>/<birim> biçiminde olmalı')
+    .optional(),
+  /** AdMob yayıncı kimliği (pub-…): /app-ads.txt bundan yazılıyor. */
+  ADMOB_YAYINCI_KIMLIGI: z
+    .string()
+    .regex(/^pub-\d+$/, 'pub-<rakamlar> biçiminde olmalı')
+    .optional(),
+  /** Geliştirmede SSV anahtar sunucusu yerine taklit (üretimde yok sayılır). */
+  ADMOB_ANAHTAR_ADRESI: z.string().url().optional(),
+  /**
+   * Android uygulamasının kökeni (Capacitor'ın yerel sunucusu). CORS bu
+   * kökene de izin veriyor; uygulama arayüzü paketin içinden sunuyor.
+   */
+  MOBIL_KOKEN: z.string().default('https://localhost'),
   /**
    * Veritabanı bağlantı havuzu (db.ts). `DATABASE_URL` kendi
    * `connection_limit`ini taşıyorsa o geçerli; bu ikisi de yoksa 10.

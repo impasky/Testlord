@@ -89,8 +89,45 @@ export function Kosullar({ onKapat }: { onKapat: () => void }) {
 
           <Madde baslik="Elmas ve oyun içi değerler">
             <p>
-              Elmas, kaynaklar ve ekipman yalnız oyun içinde oynayarak kazanılır; gerçek parayla
-              satılmaz, gerçek bir değeri yoktur, başka bir hesaba ya da kişiye devredilemez.
+              Kaynaklar, asker ve ekipman yalnız oynayarak kazanılır. Elmas da oynayarak kazanılır;
+              ayrıca Android uygulamasında Google Play üzerinden paket olarak alınabilir.
+            </p>
+            <p>
+              Elmas yalnız kendi işlerinin süresini kısaltır: inşaat, araştırma, eğitim, üretim,
+              yükseltme, yaralıların iyileşmesi ve akın beklemesi. Kaynak, asker, kalkan ya da
+              oyuncular arası rekabette bir üstünlük satılmaz; başka bir lorda giden yürüyüş
+              hızlanmaz.
+            </p>
+            <p>
+              Elmas ve bütün oyun içi değerler yalnız bu oyunda kullanılabilen bir kullanım
+              hakkıdır: gerçek bir değeri yoktur, paraya çevrilemez, başka bir hesaba ya da kişiye
+              devredilemez. Hesabını silersen kalan elmasın da silinir ve bedeli geri ödenmez.
+            </p>
+          </Madde>
+
+          <Madde baslik="Satın alma ve iade">
+            <p>
+              Satın alma Google Play üzerinden yapılır; ödeme, fatura ve iade Google Play'in
+              koşullarına tabidir. Kart ya da ödeme bilgin bize hiç gelmez. Satın aldığın elmas,
+              Google ödemeyi onaylayınca hesabına eklenir.
+            </p>
+            <p>
+              İade edilen ya da ödemesi geri çekilen bir satın almanın elması hesabından düşülür.
+              Elmas harcanmışsa bakiye eksiye iner ve sonra kazandığın elmas önce bu açığı kapatır.
+              Elması harcayıp iade istemeyi alışkanlık hâline getirmek adil oyun kuralını çiğner.
+            </p>
+            <p>18 yaşından küçüksen satın almadan önce ebeveyninin ya da vasinin iznini al.</p>
+          </Madde>
+
+          <Madde baslik="Reklamlar">
+            <p>
+              Android uygulamasında isteğe bağlı, ödüllü bir reklam izleyerek bir işin süresini
+              kısaltabilirsin. Reklam yalnız sen istediğinde açılır; oyun kendiliğinden reklam
+              göstermez. Günlük hak ve iki reklam arasındaki bekleme oyunda yazılıdır.
+            </p>
+            <p>
+              Ödül, reklam ağının izlemeyi sunucumuza doğrulamasıyla verilir. Reklamı atlatan ya da
+              izlenmiş gibi gösteren yazılımlar yasaktır.
             </p>
           </Madde>
 

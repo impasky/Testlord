@@ -128,6 +128,21 @@ services:
       - key: ISTEMCI_IP_BASLIGI
         value: cf-connecting-ip
 
+      # Mağaza (docs/25) — isteğe bağlı; boşsa Mağaza yalnız bilgi gösterir.
+      # Google Play satın alma: uygulamanın paket adı ve Play Developer
+      # API'ye erişen servis hesabının JSON anahtarı (düz ya da base64).
+      # Anahtar GİZLİ: depoya ya da sohbete yazma, yalnız Render panelinde.
+      - key: PLAY_PAKET_ADI
+        sync: false
+      - key: PLAY_SERVIS_HESABI
+        sync: false
+      # AdMob ödüllü reklam: birim kimliği (ca-app-pub-…/…) ve /app-ads.txt
+      # için yayıncı kimliği (pub-…). İkisi de herkese açık değerler.
+      - key: ADMOB_ODUL_BIRIMI
+        sync: false
+      - key: ADMOB_YAYINCI_KIMLIGI
+        sync: false
+
       # Hız sınırları. Genel sınır oturuma, kayıt/giriş IP'ye bağlı.
       - key: RATE_LIMIT_MAX
         value: '300'

@@ -33,6 +33,11 @@ karşılığıdır.
 | `VAPID_ACIK_ANAHTAR`        | hayır      | boş                  | Push bildirimi. `pnpm push-anahtari` ile üret; ikisi de boşsa bildirim kapalı ve arayüzde düğme hiç çıkmaz             |
 | `VAPID_GIZLI_ANAHTAR`       | push ise   | —                    | Aynı komutun ürettiği gizli yarısı. **Depoya yazma.** Değiştirmek bütün abonelikleri geçersiz kılar                    |
 | `VAPID_ILETISIM`            | hayır      | mailto: yerel        | Push servislerinin sorun çıkınca ulaşacağı adres                                                                       |
+| `PLAY_PAKET_ADI`            | satış ise  | boş                  | Android paket adı (`com.lordlarcagi.oyun`). Servis hesabıyla birlikte; biri boşsa satın alma kapalı (docs/25)          |
+| `PLAY_SERVIS_HESABI`        | satış ise  | boş                  | Play Developer API servis hesabının JSON anahtarı (düz ya da base64). **Gizli, depoya yazma**                          |
+| `ADMOB_ODUL_BIRIMI`         | reklam ise | boş                  | Ödüllü reklam birimi `ca-app-pub-…/…`. Boşsa uygulamada reklam düğmesi çıkmaz                                          |
+| `ADMOB_YAYINCI_KIMLIGI`     | reklam ise | boş                  | `pub-…`; `/app-ads.txt` bundan yazılır. Birimle aynı AdMob hesabından olmalı                                           |
+| `MOBIL_KOKEN`               | hayır      | https://localhost    | Android uygulamasının kökeni; üretimde CORS ona da izin veriyor                                                        |
 
 **`/health`** kimlik istemez ve `{ ok, time, izleme }` döner. `izleme` alanı
 Sentry'nin gerçekten açık olup olmadığını söyler — DSN'i girip de yazım hatası

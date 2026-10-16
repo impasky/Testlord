@@ -22,6 +22,9 @@ export default ts.config(
       '**/node_modules/**',
       'apps/api/prisma/migrations/**',
       'ekran-goruntuleri/**',
+      // Android projesi: Gradle dosyaları ve `cap sync`in kopyaladığı
+      // derlenmiş web paketi (docs/25). Kaynak kod apps/web'de.
+      'apps/mobil/android/**',
     ],
   },
   js.configs.recommended,

@@ -372,6 +372,34 @@ export function validateBalance(): void {
     }
   }
 
+  /*
+   * MAĞAZA (docs/25). Ürün kimliği Play Console'daki kimlikle birebir
+   * eşleşmeli ve Play'in kuralına uymalı (küçük harf, rakam, _ ve .);
+   * tekrar eden kimlik aynı satın almaya iki ayrı paket demek olurdu.
+   * Hızlandırılabilir listesinde PvP'ye dokunan bir tür olmamalı.
+   */
+  {
+    const m = B.magaza as unknown as {
+      paketler: { urun: string; elmas: number; ek: number }[];
+      hizlandirilabilir: string[];
+      reklam: { saklama_gun: number };
+    };
+    // Günlük tavan bugünün oturumlarını sayıyor; onlar silinmemeli.
+    if (!(m.reklam.saklama_gun >= 1)) hatalar.push('magaza: reklam.saklama_gun en az 1 olmalı');
+    const urunler = new Set<string>();
+    for (const p of m.paketler) {
+      if (!/^[a-z0-9][a-z0-9_.]*$/.test(p.urun))
+        hatalar.push(`magaza: geçersiz ürün kimliği ${p.urun}`);
+      if (urunler.has(p.urun)) hatalar.push(`magaza: tekrar eden ürün ${p.urun}`);
+      urunler.add(p.urun);
+      if (!(p.elmas > 0) || p.ek < 0) hatalar.push(`magaza: ${p.urun} elmas/ek geçersiz`);
+    }
+    const yasak = ['attack', 'return', 'takviye', 'kesif', 'sevkiyat'];
+    for (const k of m.hizlandirilabilir) {
+      if (yasak.includes(k)) hatalar.push(`magaza: ${k} hızlandırılamaz (oyuncular arası rekabet)`);
+    }
+  }
+
   if (hatalar.length > 0) {
     throw new Error(`Denge verisi geçersiz:\n  - ${hatalar.join('\n  - ')}`);
   }

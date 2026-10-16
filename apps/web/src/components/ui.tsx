@@ -174,12 +174,15 @@ export function SahneIskeleti({ style }: { style?: React.CSSProperties }) {
  * Birden fazla iş varsa en erken biten öne çıkar: oyuncunun beklediği ilk
  * sonuç odur.
  */
-export function KuyrukSeridi({
+export function KuyrukSeridi<Q extends { startedAt: string; finishAt: string }>({
   kuyruklar,
   etiket,
+  ek,
 }: {
-  kuyruklar: { startedAt: string; finishAt: string }[];
+  kuyruklar: Q[];
   etiket: ReactNode;
+  /** Öne çıkan (en erken biten) işin yanına: ör. Hızlandır düğmesi (docs/25). */
+  ek?: (ilk: Q) => ReactNode;
 }) {
   if (kuyruklar.length === 0) return null;
 
@@ -198,7 +201,12 @@ export function KuyrukSeridi({
           <GeriSayim bitis={ilk.finishAt} />
         </span>
       </div>
-      <Ilerleme deger={gecen} max={1} renk="var(--color-altin)" boy="ince" />
+      <div className="flex items-center gap-2">
+        <div className="min-w-0 flex-1">
+          <Ilerleme deger={gecen} max={1} renk="var(--color-altin)" boy="ince" />
+        </div>
+        {ek?.(ilk)}
+      </div>
     </div>
   );
 }

@@ -85,6 +85,18 @@ const OPERASYON = [
    * ("key gerekli.") testlere ve geliştiriciye çıkıyor.
    */
   'apps/api/src/routes/dev.ts',
+  // Mağazanın geliştirme taklitleri (Play API'si, AdMob SSV): dev.ts ile
+  // aynı kural, üretimde yüklenmiyor.
+  'apps/api/src/routes/devMagaza.ts',
+  /*
+   * Google'la konuşan istemciler (docs/25): Play API ve AdMob imza
+   * doğrulaması. İletileri yalnız sunucu günlüğüne gidiyor; oyuncuya
+   * gösterilen metinler `services/satinAlma.ts` ve `services/reklam.ts`te.
+   * `app-ads.txt` AdMob'un tarayıcısının okuduğu bir dosya.
+   */
+  'apps/api/src/services/play.ts',
+  'apps/api/src/services/admob.ts',
+  'apps/api/src/routes/appAds.ts',
   /*
    * Birleşme aracının konsol çıktısı. `dunya-temizle` ile aynı aile:
    * yalnız komutu koşan geliştirici görüyor, oyuncu hiçbir koşulda

@@ -1,0 +1,19 @@
+{
+  "name": "@lordlar/mobil",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Android kabuğu (Capacitor): web arayüzünü paketin içinden sunar, Play Faturalandırma ve AdMob eklentilerini taşır (docs/25).",
+  "scripts": {
+    "derle": "node derle.mjs",
+    "android": "cap open android"
+  },
+  "dependencies": {
+    "@capacitor-community/admob": "8.2.1",
+    "@capacitor/android": "8.5.3",
+    "@capacitor/core": "8.5.3",
+    "@capgo/native-purchases": "8.9.6"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.3"
+  }
+}

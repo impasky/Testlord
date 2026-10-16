@@ -36,6 +36,10 @@ Mağazalar web sitesi kabul etmiyor; uygulamanın paketlenmesi gerekiyor.
 platforma da paket üretir ve bildirim, titreşim, paylaşım gibi native
 yetenekleri eklenti olarak açar.
 
+> **Yapıldı (Android):** `apps/mobil` bir Capacitor kabuğu; Google Play
+> Faturalandırma ve AdMob eklentileriyle. Derleme, imza ve mağaza
+> kurulumu `docs/25` §4'te. iOS kabuğu yok.
+
 Alternatifi **TWA (Bubblewrap)** yalnızca Android'de çalışır ve daha basittir,
 ama iOS yolunu tamamen kapatır.
 
@@ -134,6 +138,9 @@ kendi hesabının gördüğü şartı oku.
 - Play'in istediği hedef API seviyesi (her yıl yükseliyor)
 - İmzalama anahtarı — Play App Signing kullan, anahtarı kaybetmek uygulamayı
   bir daha güncelleyememek demek
+- Komutlar ve ortam değişkenleri (`SURUM_KODU`, `ADMOB_UYGULAMA_KIMLIGI`,
+  `IMZA_*`): `docs/25` §4.4. Sürüm derlemesi imza ya da gerçek AdMob
+  kimliği olmadan duruyor.
 
 **iOS**
 

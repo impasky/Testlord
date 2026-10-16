@@ -41,6 +41,8 @@ import { moderasyonRoutes } from './routes/moderasyon.js';
 import { yoneticiRoutes } from './routes/yonetici.js';
 import { sohbetRoutes } from './routes/sohbet.js';
 import { profilRoutes } from './routes/profil.js';
+import { magazaRoutes } from './routes/magaza.js';
+import { appAdsRoutes } from './routes/appAds.js';
 import { seedDemoLords } from './services/demoWorld.js';
 import { createWorld } from './services/world.js';
 import { kurulumMu, yayinKontrolu, yayinRaporu } from './services/yayin.js';
@@ -138,7 +140,10 @@ export async function buildServer() {
    */
   await app.register(compress, { global: true, encodings: ['br', 'gzip', 'deflate'] });
   await app.register(cors, {
-    origin: env.NODE_ENV === 'production' ? env.webOrigins : true,
+    // Android uygulaması arayüzü paketin içinden (MOBIL_KOKEN) sunuyor ve
+    // API'ye o kökenden konuşuyor (docs/25). Jeton başlıkta, çerezde değil:
+    // bu kökene izin vermek başka bir sitenin oturumu kullanması demek değil.
+    origin: env.NODE_ENV === 'production' ? [...env.webOrigins, env.MOBIL_KOKEN] : true,
     credentials: true,
     /*
      * YÖNTEMLER açıkça yazılı. @fastify/cors'un varsayılanı yalnız
@@ -316,6 +321,9 @@ export async function buildServer() {
   await app.register(yoneticiRoutes, { prefix: '/api' });
   await app.register(sohbetRoutes, { prefix: '/api' });
   await app.register(profilRoutes, { prefix: '/api' });
+  await app.register(magazaRoutes, { prefix: '/api' });
+  // Kökte: AdMob onu sitenin kökünde arıyor.
+  await app.register(appAdsRoutes);
 
   // Ölçüm ucu yalnızca anahtar tanımlıysa var olur: tanımsızken uç hiç
   // yoktur, yanlış yapılandırma ile açıkta kalamaz.

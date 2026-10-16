@@ -8,7 +8,9 @@ Bu belge İKİ işi kaydediyor: bütün düğmeleri tek tek deneyen botun
 bulduklarını (§1) ve mağaza inceleme kurallarının KOD tarafını (§2).
 Mağaza hesabı, listeleme, yerel sarmalayıcı derlemesi (TWA / Capacitor) ve
 formlar bu işin dışında — oyuncunun önceki kararı "mağaza işi yapma" ve o
-adımlar zaten hesabın sahibinin elinde (§3).
+adımlar zaten hesabın sahibinin elinde (§3). _Sonradan (2026-10-16): Android
+kabuğu ve uygulama içi mağaza eklendi (`apps/mobil`, docs/25); kurallar
+9 ve 19–22 onlar için._
 
 Bu bir hukuki görüş değil. Metinler (Aydınlatma, Kullanım Koşulları) oyunun
 gerçekten yaptığını anlatıyor; yayından önce bir hukukçuya okutulmalı.
@@ -64,26 +66,30 @@ için her yere taze bir sayfayla giriliyor.
 
 ## 2. İnceleme kuralları — kod tarafı
 
-| #   | Kural                                                                | Mağaza                                 | Durum                                                                                                                                                                                                 |
-| --- | -------------------------------------------------------------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Hesap uygulamanın İÇİNDEN silinebilmeli                              | Apple 5.1.1(v), Play Hesap silme       | ✓ Hesap → Hesabı Sil. `DELETE /me` gerçekten siliyor (lord, ordu, ekipman, bildirim aboneliği, engeller); bölgeler NPC'ye dönüyor.                                                                    |
-| 2   | Gizlilik politikası uygulamada ve girişte                            | Apple 5.1.1(i), Play Kullanıcı Verisi  | ✓ `#/gizlilik` kayıt ekranında ve Hesap'ta. Bu turda: içeriden açınca çöküyordu → düzeltildi. Hata izleme hizmeti metne eklendi.                                                                      |
-| 3   | Kullanıcı içeriği: KOŞULLAR (sıfır tolerans)                         | Apple 1.2, Play UGC                    | ✓ YENİ `#/kosullar`; kayıt ekranında "diyara girerek kabul edersin" ve bağlantı; Hesap'ta bağlantı.                                                                                                   |
-| 4   | Kullanıcı içeriği: SÜZGEÇ                                            | Apple 1.2, Play UGC                    | ✓ `mesajDenetimi` (sohbet), `adDenetimi` (lord ve ittifak adları).                                                                                                                                    |
-| 5   | Kullanıcı içeriği: ŞİKÂYET                                           | Apple 1.2, Play UGC                    | ✓ Sohbette ⚑; yönetici kuyruğu (`Moderasyon`), susturma ve kaldırma kararları.                                                                                                                        |
-| 6   | Kullanıcı içeriği: kötüye kullananı ENGELLEME                        | Apple 1.2                              | ✓ YENİ. Sohbette ⊘ → onay → o lordun mesajları sunucudan hiç gelmiyor (`LordEngel`, `GET/POST/DELETE /engel`). Hesap'ta "Engellediklerin" ve engeli kaldır.                                           |
-| 7   | Herkese açık İLETİŞİM yolu                                           | Apple 1.2, Play geliştirici bilgisi    | ✓ Koşullar ve Aydınlatma'da destek satırı; adres `DESTEK_EPOSTA` ortam değişkeninden (`/api/destek`). **Adresi sen girmelisin (§3).**                                                                 |
-| 8   | Şikâyete 24 saat içinde işlem                                        | Apple 1.2                              | Koşullarda söz verildi, kuyruk var. **Uygulamak senin işin (§3).**                                                                                                                                    |
-| 9   | Sanal para gerçek parayla satılıyorsa mağaza ödemesi                 | Apple 3.1.1, Play Faturalandırma       | ✓ Gerekmiyor: elmas yalnız oynayarak kazanılıyor, satılmıyor (Koşullar'da yazılı). Satış eklenirse IAP / Play Billing zorunlu.                                                                        |
-| 10  | Rastgele ödül ihtimalleri açık                                       | Apple 3.1.1, Play                      | ✓ Üretimde nadirlik oranları, akında ekipman ihtimali ekranda.                                                                                                                                        |
-| 11  | Üçüncü taraf giriş varsa Sign in with Apple                          | Apple 4.8                              | ✓ Gerekmiyor: yalnız e-posta + parola.                                                                                                                                                                |
-| 12  | Bildirim isteğe bağlı, oyuncunun eylemiyle                           | Apple 4.5.4                            | ✓ İzin, Bildirim kartındaki düğmeyle isteniyor; açılışta değil.                                                                                                                                       |
-| 13  | Tamamlanmışlık: çökme yok, yer tutucu yok, ölü düğme yok             | Apple 2.1, Play                        | ✓ §1 botu + 64 uçtan uca test; "lorem/yakında" taraması temiz.                                                                                                                                        |
-| 14  | Geliştirme uçları üretimde kapalı                                    | Apple 2.1 (gizli özellik)              | ✓ `/test/*` yalnız `NODE_ENV !== production` iken yükleniyor.                                                                                                                                         |
-| 15  | Şifreleme ihracat beyanı                                             | Apple                                  | Yalnız standart HTTPS → muaf. Derlemede `ITSAppUsesNonExemptEncryption = false` (§3).                                                                                                                 |
-| 16  | Genel sohbet (herkese açık kanal) — süzgeç, şikâyet, engel, susturma | Apple 1.2, Play UGC                    | ✓ YENİ (docs/22). İttifak sohbetiyle aynı dört araç; yavaş mod ve aynı söz tekrar freni; doğrulanmış hesap şartı. Engel geriye dönük ve iki kanalda birden işliyor.                                   |
-| 17  | Kullanıcı RESMİ (profil resmi) — süzgeç ve insan denetimi            | Apple 1.2, Play UGC ve Uygunsuz içerik | ✓ YENİ (docs/22). Sunucuda çalışan sınıflandırıcı (+18 anında ret), kararsız resim yönetici onayına; şikâyet eşiğinde resim kalkıyor; yönetici onayla/kaldır. Reddedilen resmin baytları saklanmıyor. |
-| 18  | Profil kartı kişisel veri sızdırmamalı                               | Apple 5.1.1, Play Kullanıcı Verisi     | ✓ Kartta yalnız oyunun zaten herkese gösterdiği alanlar; e-posta, kaynak, ordu, son görülme yok (e2e bunu alan alan sınıyor). Yüklenen resmin EXIF'i (konum) siliniyor.                               |
+| #   | Kural                                                                | Mağaza                                         | Durum                                                                                                                                                                                                                             |
+| --- | -------------------------------------------------------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Hesap uygulamanın İÇİNDEN silinebilmeli                              | Apple 5.1.1(v), Play Hesap silme               | ✓ Hesap → Hesabı Sil. `DELETE /me` gerçekten siliyor (lord, ordu, ekipman, bildirim aboneliği, engeller); bölgeler NPC'ye dönüyor.                                                                                                |
+| 2   | Gizlilik politikası uygulamada ve girişte                            | Apple 5.1.1(i), Play Kullanıcı Verisi          | ✓ `#/gizlilik` kayıt ekranında ve Hesap'ta. Bu turda: içeriden açınca çöküyordu → düzeltildi. Hata izleme hizmeti metne eklendi.                                                                                                  |
+| 3   | Kullanıcı içeriği: KOŞULLAR (sıfır tolerans)                         | Apple 1.2, Play UGC                            | ✓ YENİ `#/kosullar`; kayıt ekranında "diyara girerek kabul edersin" ve bağlantı; Hesap'ta bağlantı.                                                                                                                               |
+| 4   | Kullanıcı içeriği: SÜZGEÇ                                            | Apple 1.2, Play UGC                            | ✓ `mesajDenetimi` (sohbet), `adDenetimi` (lord ve ittifak adları).                                                                                                                                                                |
+| 5   | Kullanıcı içeriği: ŞİKÂYET                                           | Apple 1.2, Play UGC                            | ✓ Sohbette ⚑; yönetici kuyruğu (`Moderasyon`), susturma ve kaldırma kararları.                                                                                                                                                    |
+| 6   | Kullanıcı içeriği: kötüye kullananı ENGELLEME                        | Apple 1.2                                      | ✓ YENİ. Sohbette ⊘ → onay → o lordun mesajları sunucudan hiç gelmiyor (`LordEngel`, `GET/POST/DELETE /engel`). Hesap'ta "Engellediklerin" ve engeli kaldır.                                                                       |
+| 7   | Herkese açık İLETİŞİM yolu                                           | Apple 1.2, Play geliştirici bilgisi            | ✓ Koşullar ve Aydınlatma'da destek satırı; adres `DESTEK_EPOSTA` ortam değişkeninden (`/api/destek`). **Adresi sen girmelisin (§3).**                                                                                             |
+| 8   | Şikâyete 24 saat içinde işlem                                        | Apple 1.2                                      | Koşullarda söz verildi, kuyruk var. **Uygulamak senin işin (§3).**                                                                                                                                                                |
+| 9   | Sanal para gerçek parayla satılıyorsa mağaza ödemesi                 | Apple 3.1.1, Play Faturalandırma               | ✓ Elmas yalnız Android uygulamasında, **Google Play Faturalandırma** ile satılıyor (docs/25). Web'de satış ve dış ödeme bağlantısı yok. Satın alma sunucuda Play'e doğrulatılıyor, tüketiliyor; iade düşülüyor. iOS'ta satış yok. |
+| 10  | Rastgele ödül ihtimalleri açık                                       | Apple 3.1.1, Play                              | ✓ Üretimde nadirlik oranları, akında ekipman ihtimali ekranda.                                                                                                                                                                    |
+| 11  | Üçüncü taraf giriş varsa Sign in with Apple                          | Apple 4.8                                      | ✓ Gerekmiyor: yalnız e-posta + parola.                                                                                                                                                                                            |
+| 12  | Bildirim isteğe bağlı, oyuncunun eylemiyle                           | Apple 4.5.4                                    | ✓ İzin, Bildirim kartındaki düğmeyle isteniyor; açılışta değil.                                                                                                                                                                   |
+| 13  | Tamamlanmışlık: çökme yok, yer tutucu yok, ölü düğme yok             | Apple 2.1, Play                                | ✓ §1 botu + 64 uçtan uca test; "lorem/yakında" taraması temiz.                                                                                                                                                                    |
+| 14  | Geliştirme uçları üretimde kapalı                                    | Apple 2.1 (gizli özellik)                      | ✓ `/test/*` yalnız `NODE_ENV !== production` iken yükleniyor.                                                                                                                                                                     |
+| 15  | Şifreleme ihracat beyanı                                             | Apple                                          | Yalnız standart HTTPS → muaf. Derlemede `ITSAppUsesNonExemptEncryption = false` (§3).                                                                                                                                             |
+| 16  | Genel sohbet (herkese açık kanal) — süzgeç, şikâyet, engel, susturma | Apple 1.2, Play UGC                            | ✓ YENİ (docs/22). İttifak sohbetiyle aynı dört araç; yavaş mod ve aynı söz tekrar freni; doğrulanmış hesap şartı. Engel geriye dönük ve iki kanalda birden işliyor.                                                               |
+| 17  | Kullanıcı RESMİ (profil resmi) — süzgeç ve insan denetimi            | Apple 1.2, Play UGC ve Uygunsuz içerik         | ✓ YENİ (docs/22). Sunucuda çalışan sınıflandırıcı (+18 anında ret), kararsız resim yönetici onayına; şikâyet eşiğinde resim kalkıyor; yönetici onayla/kaldır. Reddedilen resmin baytları saklanmıyor.                             |
+| 18  | Profil kartı kişisel veri sızdırmamalı                               | Apple 5.1.1, Play Kullanıcı Verisi             | ✓ Kartta yalnız oyunun zaten herkese gösterdiği alanlar; e-posta, kaynak, ordu, son görülme yok (e2e bunu alan alan sınıyor). Yüklenen resmin EXIF'i (konum) siliniyor.                                                           |
+| 19  | Ödüllü reklam isteğe bağlı, ödülü açık                               | AdMob ödüllü reklam politikası, Play Reklamlar | ✓ Reklam yalnız oyuncunun dokunuşuyla açılıyor; düğmede ödül yazılı (−15 dk). Ödül süre, parasal değeri olan bir şey değil. Günlük tavan ve bekleme var. Ödül yalnız Google'ın imzalı SSV çağrısıyla.                             |
+| 20  | Reklam onayı ve gizlilik seçenekleri girişi                          | AdMob/UMP, GDPR                                | ✓ UMP onayı ilk reklamdan önce (gerekiyorsa); Hesap → "Reklam gizlilik seçenekleri". Kişiselleştirilmemiş reklam. **AdMob'da GDPR mesajını sen yayımlamalısın (§3).**                                                             |
+| 21  | Satın alma ve reklam gizlilik metninde                               | Play Kullanıcı Verisi, KVKK                    | ✓ Aydınlatma Metni: satın alma kayıtları, reklam oturumları (30 gün), AdMob'un topladıkları, hesap etiketi. Koşullar: iade, eksi bakiye, 18 yaş altı izin, elmasın değeri yok.                                                    |
+| 22  | app-ads.txt                                                          | AdMob                                          | ✓ Sunucu `/app-ads.txt`'yi `ADMOB_YAYINCI_KIMLIGI`'nden yazıyor; yoksa 404 ve yayın kontrolünde uyarı.                                                                                                                            |
 
 ## 3. Kodun dışında kalanlar — hesabın sahibinin işi
 
@@ -106,15 +112,28 @@ için her yere taze bir sayfayla giriliyor.
    (yüklenen profil resmi — isteğe bağlı), uygulama etkinliği (son giriş,
    son ekran — toplam olarak), bildirim jetonu, hata kayıtları.
    Satış/paylaşım yok; silme var; aktarım şifreli (HTTPS).
+   **Android uygulaması ek olarak:** satın alma geçmişi (Finansal bilgi →
+   Satın alma geçmişi; ödeme bilgisi bize gelmiyor). AdMob SDK'sının
+   topladıklarını Google'ın kendi beyan rehberine göre işaretle — IP
+   adresi (yaklaşık konum), uygulama etkileşimleri, tanılama ve cihaz
+   kimlikleri (reklam kimliği); Google'la paylaşılıyor; amaç reklam,
+   analiz, sahtekârlık önleme
+   ([AdMob Play veri beyanı](https://developers.google.com/admob/android/privacy/play-data-disclosure)).
+   Uygulama reklam içeriyor: "Reklam içerir" işaretlenmeli.
 6. **Play hesap silme bağlantısı** — uygulamanın web adresi +
    `#/gizlilik` ("Haklarını nasıl kullanırsın": Hesap → Hesabı Sil).
-7. **Yerel sarmalayıcı** — oyun bir PWA (manifest, simgeler hazır). Play
-   için TWA, App Store için yerel bir kabuk gerekiyor. Apple 4.2 "yalnız web
-   sitesini saran" uygulamayı reddedebiliyor: oyun gerçek işlev sunuyor ama
-   kabukta bildirimler, çevrimdışı sayfa ve geri tuşu yerel davranmalı.
-8. **Metinlerin hukuki okuması** — Aydınlatma Metni ve Kullanım Koşulları.
+7. **Yerel sarmalayıcı** — Android kabuğu hazır (`apps/mobil`, Capacitor;
+   derleme ve kurulum `docs/25` §4). App Store için yerel bir kabuk yok.
+   Apple 4.2 "yalnız web sitesini saran" uygulamayı reddedebiliyor: oyun
+   gerçek işlev sunuyor ama kabukta bildirimler, çevrimdışı sayfa ve geri
+   tuşu yerel davranmalı.
+8. **Metinlerin hukuki okuması** — Aydınlatma Metni ve Kullanım Koşulları;
+   satış eklendiği için özellikle iade, eksi bakiye ve 18 yaş altı maddeleri.
 9. **Sınıflandırıcının belleği** — profil resmi denetimi sunucuda ~100 MB
    bellek istiyor (ilk yüklemede açılıyor, on dakika boşta kalınca
    kapanıyor). Render'ın en küçük planında bellek darsa
    `RESIM_SINIFLANDIRICI=kapali`: o zaman her yüklenen resim YÖNETİCİ
    ONAYINA gidiyor (hiçbiri denetimsiz görünmüyor), iş yükü sana kalıyor.
+10. **Mağaza kurulumu** — Play Console ürünleri, servis hesabı, AdMob
+    uygulaması/birimi, SSV adresi, GDPR mesajı, app-ads.txt için web sitesi
+    alanı: adım adım `docs/25` §4.
