@@ -183,6 +183,48 @@ seferinde tarihe bakılarak cevaplanıyor. Geçmişi silmek, yöneticinin
 
 ---
 
+## Çoklu hesap — ceza değil, bakılacak liste
+
+İkinci bir hesap açıp ana hesabı BESLEMEK bu türün bilinen istismarı:
+yeni hesap kaynağını, askerini ya da pazardaki altınını tek yönlü
+ötekine akıtıyor. İttifak içi ticaret ve takviye açıldığından beri kapı
+açık; görmenin yolu yoktu.
+
+Yönetici paneli → **"Çoklu hesap şüphesi"** (katlı; başlık sayıyı
+taşıyor) son 7 günde üç izden birini taşıyan lord çiftlerini listeliyor:
+
+| İz       | Ne zaman işaret                                                                                                                     |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Sevkiyat | Bir lord ötekine ≥ 30.000 (altın karşılığı) gönderdi ve karşı yön bunun %20'si altında — iki gün tam günlük tavan                   |
+| Takviye  | Aynı lordun bölgelerine ≥ 3 takviye yürüyüşü                                                                                        |
+| Pazar    | Aynı iki lord arasında ≥ 3 eşya pazarı işlemi (pazar anonim ve kurayla eşleşiyor; aynı çiftin tekrar buluşması kendiliğinden olmaz) |
+
+Kartta besleyen → alan, iki lordun adı (dokununca dosyası açılıyor),
+izlerin büyüklüğü ve besleyen hesap yeniyse (3 günden genç) bir not.
+Eşikler `balance.json` → `moderasyon.coklu_hesap`.
+
+İki ilke:
+
+- **Ağ izi yok.** Gizlilik metni "IP adresin veritabanına yazılmıyor"
+  diyor ve bu söz duruyor. Aynı ağdan açılan hesapları görmek, o
+  metni değiştirip IP'nin (en azından özetinin) tutulmasını
+  gerektirirdi — bu bir ürün ve hukuk kararı, bir kod kararı değil.
+- **Otomatik ceza yok.** Arkadaşlar da birbirine yardım eder; güçlü
+  olanın zayıfı kaldırması tamamen meşru olabilir. Karşılıklı yardım
+  (karşı yön %20'yi geçiyorsa) listeye hiç girmiyor. Liste bir insanın
+  bakması için; karar iki dosyaya bakıp yöneticinin.
+
+Takviyenin gittiği lord, bölgenin ŞİMDİKİ sahibinden okunuyor
+(yürüyüş anındaki sahip saklanmıyor); arada el değiştiren bölge yanlış
+çifte yazılabilir. Silinmiş hesabın bağı listeden düşüyor.
+
+Kod: `packages/shared/src/cokluHesap.ts` (saf kural, birim testi
+yanında), `routes/yonetici.ts` (`/yonetici/coklu-hesap`).
+`tools/yonetici-testi.mjs` iki günlük tek yönlü beslemeyi kurup bağın
+listede, besleyenin doğru tarafta ve "yeni" notuyla göründüğünü ölçüyor.
+
+---
+
 ## Sınırlar — bilerek yapılmayanlar
 
 - **Genel sohbet yok**, dolayısıyla moderasyon yükü de yok. Sohbet

@@ -26,10 +26,19 @@
 import { YAYIN_ELLE, YAYIN_METNI, yerel, type YayinDurumu } from '@lordlar/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { ApiError, api, type YoneticiOyuncuDto } from '../api/client';
+import { ApiError, api, type CokluHesapLordu, type YoneticiOyuncuDto } from '../api/client';
 import { BosHal } from '../components/BosHal';
 import { ts } from '../lib/dil';
-import { Bolum, Buton, EngelNotu, Iskelet, Kart, Rozet, formatGecen } from '../components/ui';
+import {
+  Bolum,
+  Buton,
+  EngelNotu,
+  Iskelet,
+  Kart,
+  Rozet,
+  formatGecen,
+  formatSayi,
+} from '../components/ui';
 
 export function YoneticiPaneli() {
   const [terim, setTerim] = useState('');
@@ -107,9 +116,90 @@ export function YoneticiPaneli() {
         </Bolum>
       )}
 
+      <CokluHesap onSec={setSecili} />
       <OlcumPanosu />
       <YayinKontrolu />
     </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+
+/**
+ * Çoklu hesap şüphesi (docs/14 "Çoklu hesap").
+ *
+ * Bir hesabın ötekini BESLEMESİ: tek yönlü sevkiyat, aynı lorda
+ * tekrarlanan takviye, pazarda aynı çiftin tekrar tekrar buluşması. Ağ
+ * izi yok (gizlilik metninin sözü), otomatik ceza yok: arkadaşlar da
+ * birbirine yardım eder. Kart iki dosyaya da tek dokunuşla açılıyor —
+ * karar orada, iki hesabın geçmişine bakarak veriliyor.
+ */
+function CokluHesap({ onSec }: { onSec: (lordId: string) => void }) {
+  const q = useQuery({ queryKey: ['coklu-hesap'], queryFn: api.cokluHesap });
+  const d = q.data;
+  const lordDugmesi = (l: CokluHesapLordu) => (
+    <button
+      type="button"
+      onClick={() => onSec(l.lordId)}
+      className="bas min-w-0 truncate text-left text-[13px] font-bold text-altin underline decoration-altin/40"
+    >
+      {l.ad}
+    </button>
+  );
+  return (
+    <Bolum
+      baslik={d ? `Çoklu hesap şüphesi: ${d.baglar.length}` : 'Çoklu hesap şüphesi'}
+      katlanir
+      sakin={!!d && d.baglar.length === 0}
+    >
+      {!d ? (
+        <Iskelet satir={3} tur="liste" />
+      ) : (
+        <div className="space-y-1.5" data-coklu-hesap="">
+          {d.baglar.length === 0 ? (
+            <BosHal mesaj={`Son ${d.pencereGun} günde dikkat çeken bir bağ yok.`} />
+          ) : (
+            d.baglar.map((b) => (
+              <Kart key={`${b.besleyen.lordId}>${b.alan.lordId}`} className="p-2.5">
+                <div className="flex items-center gap-1.5">
+                  {lordDugmesi(b.besleyen)}
+                  <span className="shrink-0 text-sonuk" aria-label="besliyor">
+                    →
+                  </span>
+                  {lordDugmesi(b.alan)}
+                  {b.besleyen.ittifak && (
+                    <span className="ml-auto shrink-0 text-[11px] text-sonuk">
+                      {`[${b.besleyen.ittifak}]`}
+                    </span>
+                  )}
+                </div>
+                <div className="mt-1 flex flex-wrap gap-1">
+                  {b.isaretler.includes('sevkiyat') && (
+                    <Rozet renk="var(--color-turuncu)">
+                      {`Sevkiyat ${formatSayi(b.sevkiyat)} · geri ${formatSayi(b.geriSevkiyat)}`}
+                    </Rozet>
+                  )}
+                  {b.isaretler.includes('takviye') && (
+                    <Rozet renk="var(--color-turuncu)">{`Takviye ${b.takviye} kez`}</Rozet>
+                  )}
+                  {b.isaretler.includes('pazar') && (
+                    <Rozet renk="var(--color-turuncu)">{`Pazarda ${b.pazar} işlem`}</Rozet>
+                  )}
+                </div>
+                <p className="mt-1 text-[11px] text-sonuk">
+                  {`${b.besleyen.ad}: ${b.besleyen.hesapYasiGun} günlük, Sv ${b.besleyen.seviye}`}
+                  {b.besleyen.genc && <span className="text-turuncu"> · yeni açılmış hesap</span>}
+                  {` · ${b.alan.ad}: Sv ${b.alan.seviye}`}
+                </p>
+              </Kart>
+            ))
+          )}
+          <p className="pt-1 text-[11px] leading-snug text-sonuk">
+            {`Son ${d.pencereGun} gün. Yalnız oyunun kendi izleri: sevkiyat, takviye, pazar — ağ adresi tutulmuyor. Otomatik ceza yok; arkadaşlar da birbirine yardım eder. İki dosyaya da bakıp karar ver.`}
+          </p>
+        </div>
+      )}
+    </Bolum>
   );
 }
 

@@ -16,7 +16,7 @@
  * SADECE GELİŞTİRME. /api/test/* uçlarını kullanır.
  * API ayakta olmalı. node tools/yonetici-testi.mjs
  */
-import { kayitOl } from './lib/kayit.mjs';
+import { kayitOl, onerilenDiyar } from './lib/kayit.mjs';
 
 const API = process.env.API_URL ?? 'http://localhost:3000';
 
@@ -29,13 +29,14 @@ function kontrol(ad, kosul, detay = '') {
 const damga = Date.now().toString(36).slice(-4);
 const tuz = Math.random().toString(36).slice(2, 5);
 
-async function lordKur(etiket) {
+async function lordKur(etiket, worldId) {
   const eposta = `yon${damga}${tuz}${etiket}@lordlar.dev`;
   const parola = 'Yonetici123!';
   const { token } = await kayitOl(API, {
     email: eposta,
     password: parola,
     lordName: `Yon${damga}${tuz}${etiket}`,
+    worldId,
   });
   const cagir = async (yol, yontem, govde, jeton = token) => {
     const c = await fetch(`${API}/api${yol}`, {
@@ -150,6 +151,61 @@ await yonetici.post('/test/yonetici-yap');
   );
   const ham = JSON.stringify(sonra);
   kontrol('Panoda oyuncu adı yok', !ham.includes(eski.ad) && !ham.includes(hedef.ad));
+}
+
+/*
+ * 1d. Çoklu hesap şüphesi (docs/14 "Çoklu hesap").
+ *
+ * Bir hesap ötekini BESLİYOR: iki gün üst üste günlük tavan kadar tek
+ * yönlü sevkiyat. Pano bağı görmeli, karşı yönü olmayan akışı "tek
+ * yönlü" saymalı ve yetkisize kapalı olmalı. Ceza yok — ölçülen yalnız
+ * listenin doğruluğu.
+ */
+let besleyenAdi;
+{
+  const yetkisizCoklu = await hedef.getHam('/yonetici/coklu-hesap');
+  kontrol('Yetkisiz için çoklu hesap listesi yok (404)', yetkisizCoklu.kod === 404);
+
+  const diyar = await onerilenDiyar(API);
+  const ana = await lordKur('d', diyar);
+  const alt = await lordKur('e', diyar);
+  besleyenAdi = alt.ad;
+  const anaId = (await ana.get('/me'))?.lord?.id;
+  const altId = (await alt.get('/me'))?.lord?.id;
+  await ana.post('/test/kaynak-ver', { altin: 200000, demir: 0, erzak: 0 });
+  const itt = await ana.post('/ittifak/kur', {
+    ad: `Besleme ${damga}`.slice(0, 20),
+    etiket: `B${tuz}`.slice(0, 4).toUpperCase(),
+  });
+  await ana.post('/ittifak/ayarlar', { katilim: 'acik' });
+  await alt.post(`/ittifak/${itt?.id}/katil`);
+  await alt.post('/test/kaynak-ver', { altin: 100000, demir: 0, erzak: 0 });
+
+  // İki gün, ikisi de günlük tavan kadar: dünkünü geriye alıp bugün yine.
+  const tavan = (await alt.get('/ticaret'))?.kalanTavan ?? 20000;
+  const g1 = await alt.postHam('/ticaret/gonder', { lordId: anaId, yuk: { altin: tavan } });
+  await alt.post('/test/sevkiyatlari-eskit', { gun: 1 });
+  // Depo tavanı fazlasını tutmuyor: ikinci gün için yeniden doldur.
+  await alt.post('/test/kaynak-ver', { altin: 100000, demir: 0, erzak: 0 });
+  const g2 = await alt.postHam('/ticaret/gonder', { lordId: anaId, yuk: { altin: tavan } });
+  kontrol(
+    'İki günlük besleme gönderildi',
+    g1.kod === 200 && g2.kod === 200,
+    `${g1.kod} ${g1.govde?.code ?? ''} / ${g2.kod} ${g2.govde?.code ?? ''}`,
+  );
+
+  const liste = await yonetici.get('/yonetici/coklu-hesap');
+  const bag = liste?.baglar?.find((b) => b.besleyen?.lordId === altId && b.alan?.lordId === anaId);
+  kontrol(
+    'Tek yönlü sevkiyat listede, besleyen gönderen taraf',
+    Boolean(bag?.isaretler?.includes('sevkiyat')) && bag.geriSevkiyat === 0,
+    bag
+      ? `${bag.sevkiyat} ağırlık, ${bag.isaretler.join(',')}`
+      : `${liste?.baglar?.length ?? 0} bağ`,
+  );
+  kontrol('Besleyen hesap "yeni açılmış" diye not ediliyor', bag?.besleyen?.genc === true);
+  // Karşılıklı yardımın listeye girmediği birim testinde (cokluHesap.test.ts):
+  // burada bağ listede kalıyor ki arayüz de onu göstersin.
 }
 
 /* 2. Arama: şikâyet beklemeden oyuncuyu bul                           */
@@ -321,6 +377,26 @@ await page.waitForTimeout(1000);
     panoMetni.slice(0, 80).replace(/\n/g, ' '),
   );
   await page.screenshot({ path: `${process.env.CIKTI ?? 'ekran-goruntuleri'}/yonetici-olcum.png` });
+}
+
+{
+  // Çoklu hesap şüphesi katlı; başlık sayıyı taşıyor, kart iki dosyayı açıyor.
+  const baslik = page.locator('button:has-text("Çoklu hesap")').first();
+  const metin = (await baslik.count()) ? ((await baslik.textContent()) ?? '') : '';
+  kontrol('Çoklu hesap başlığı sayıyı söylüyor', /şüphesi: \d+/i.test(metin), metin);
+  if (metin) await baslik.click();
+  await page.waitForTimeout(400);
+  const liste = page.locator('[data-coklu-hesap]');
+  const listeMetni = (await liste.count()) ? await liste.innerText() : '';
+  kontrol(
+    'Besleyen hesap kartta, ceza yok notuyla',
+    Boolean(besleyenAdi) && listeMetni.includes(besleyenAdi) && /ceza yok/i.test(listeMetni),
+    listeMetni.slice(0, 80).replace(/\n/g, ' '),
+  );
+  await page.screenshot({
+    path: `${process.env.CIKTI ?? 'ekran-goruntuleri'}/yonetici-coklu-hesap.png`,
+  });
+  if (metin) await baslik.click(); // kapat: aşağıdaki arama aynı ekranda
 }
 
 await page.locator('input[aria-label="Lord adı"]').fill(hedef.ad);

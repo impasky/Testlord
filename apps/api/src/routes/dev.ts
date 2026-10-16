@@ -323,6 +323,31 @@ export async function devRoutes(app: FastifyInstance): Promise<void> {
   });
 
   /**
+   * Çağıranın gönderdiği sevkiyatları N gün geriye alır. Günlük tavan
+   * bugünün gönderimlerini sayıyor; çoklu hesap penceresi ise bir haftayı
+   * (docs/14 "Çoklu hesap"). Test iki günlük beslemeyi beklemeden kurabilsin diye.
+   */
+  app.post('/test/sevkiyatlari-eskit', { preHandler: requireAuth }, async (req) => {
+    const { gun } = z.object({ gun: z.coerce.number().int().min(1).max(30) }).parse(req.body);
+    const lordId = await findLordByUser(req.user.userId);
+    const kay = gun * 86_400_000;
+    const sevk = await prisma.shipment.findMany({
+      where: { fromLordId: lordId },
+      select: { id: true, departAt: true, arriveAt: true },
+    });
+    for (const s of sevk) {
+      await prisma.shipment.update({
+        where: { id: s.id },
+        data: {
+          departAt: new Date(s.departAt.getTime() - kay),
+          arriveAt: new Date(s.arriveAt.getTime() - kay),
+        },
+      });
+    }
+    return { eskitilen: sevk.length };
+  });
+
+  /**
    * Fesih ihbarı süren paktların bitiş anını geçmişe alır.
    *
    * İhbar süresi 24 saat: testin gerçekten beklemesi mümkün değil. Zamanı

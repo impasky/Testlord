@@ -39,6 +39,14 @@
       "apps/web/src/screens/Moderasyon.tsx:364"
     ]
   },
+  "t5442a7fe": {
+    "grup": "arayuz",
+    "tr": " · {0}: Sv {1}",
+    "en": " · {0}: Lv {1}",
+    "nerede": [
+      "apps/web/src/screens/YoneticiPaneli.tsx:192"
+    ]
+  },
   "t5fc25c41": {
     "grup": "arayuz",
     "tr": " · alırsan birlik {0}",
@@ -92,7 +100,7 @@
     "tr": " · yönetici",
     "en": " · admin",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:381"
+      "apps/web/src/screens/YoneticiPaneli.tsx:471"
     ]
   },
   "t07a293f0": {
@@ -223,6 +231,14 @@
       "apps/web/src/screens/Hesap.tsx:103"
     ]
   },
+  "t135e851c": {
+    "grup": "arayuz",
+    "tr": "· yeni açılmış hesap",
+    "en": "· newly created account",
+    "nerede": [
+      "apps/web/src/screens/YoneticiPaneli.tsx:191"
+    ]
+  },
   "t243874a1": {
     "grup": "arayuz",
     "tr": "'de dövülür; ürettiğin parçayı buradan kuşanırsın.",
@@ -244,7 +260,7 @@
     "tr": "‹ Aramaya dön",
     "en": "‹ Back to search",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:368"
+      "apps/web/src/screens/YoneticiPaneli.tsx:458"
     ]
   },
   "t1b6bc363": {
@@ -542,7 +558,7 @@
     "tr": "{0} / {1} oyuncu",
     "en": "{0} / {1} [player|players]",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:173"
+      "apps/web/src/screens/YoneticiPaneli.tsx:263"
     ]
   },
   "t53f178e2": {
@@ -1476,7 +1492,15 @@
     "tr": "{0}: {1} aktif, {2} yeni",
     "en": "{0}: {1} active, {2} new",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:188"
+      "apps/web/src/screens/YoneticiPaneli.tsx:278"
+    ]
+  },
+  "tf23dc337": {
+    "grup": "arayuz",
+    "tr": "{0}: {1} günlük, Sv {2}",
+    "en": "{0}: {1} [day|days] old, Lv {2}",
+    "nerede": [
+      "apps/web/src/screens/YoneticiPaneli.tsx:190"
     ]
   },
   "tdfb3b8bb": {
@@ -1807,7 +1831,7 @@
     "tr": "1. gün",
     "en": "Day 1",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:214"
+      "apps/web/src/screens/YoneticiPaneli.tsx:304"
     ]
   },
   "tc8bf4968": {
@@ -1815,7 +1839,7 @@
     "tr": "1. gün tutundurma",
     "en": "Day-1 retention",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:165"
+      "apps/web/src/screens/YoneticiPaneli.tsx:255"
     ]
   },
   "ta0211d55": {
@@ -1823,7 +1847,7 @@
     "tr": "30 gün",
     "en": "30 days",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:151"
+      "apps/web/src/screens/YoneticiPaneli.tsx:241"
     ]
   },
   "t14ca80d5": {
@@ -1831,7 +1855,7 @@
     "tr": "7 gün",
     "en": "7 days",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:150"
+      "apps/web/src/screens/YoneticiPaneli.tsx:240"
     ]
   },
   "tbd4555b7": {
@@ -1839,7 +1863,7 @@
     "tr": "7. gün",
     "en": "Day 7",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:215"
+      "apps/web/src/screens/YoneticiPaneli.tsx:305"
     ]
   },
   "t1311abee": {
@@ -1847,7 +1871,7 @@
     "tr": "7. gün tutundurma",
     "en": "Day-7 retention",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:166"
+      "apps/web/src/screens/YoneticiPaneli.tsx:256"
     ]
   },
   "tca25ca91": {
@@ -1897,7 +1921,7 @@
     "tr": "Ada göre aranıyor; en az iki harf. Panel bir adres defteri değil, e-postayla arama yok.",
     "en": "Searching by name; at least two characters. The panel is not an address book, there is no email search.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:74"
+      "apps/web/src/screens/YoneticiPaneli.tsx:83"
     ]
   },
   "tb440b86f": {
@@ -2100,7 +2124,7 @@
     "tr": "Ara",
     "en": "Search",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:70"
+      "apps/web/src/screens/YoneticiPaneli.tsx:79"
     ]
   },
   "t1d831981": {
@@ -2346,7 +2370,7 @@
     "tr": "Aynı hesapta {0} lord: {1}",
     "en": "{0} lords on the same account: {1}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:385"
+      "apps/web/src/screens/YoneticiPaneli.tsx:475"
     ]
   },
   "t8ba0b91f": {
@@ -2658,6 +2682,14 @@
     "en": "waiting",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:717"
+    ]
+  },
+  "tbe8f4248": {
+    "grup": "arayuz",
+    "tr": "besliyor",
+    "en": "feeds",
+    "nerede": [
+      "apps/web/src/screens/YoneticiPaneli.tsx:166"
     ]
   },
   "tfc8bbaee": {
@@ -3296,7 +3328,7 @@
     "en": "Today",
     "nerede": [
       "apps/web/src/screens/Olaylar.tsx:76",
-      "apps/web/src/screens/YoneticiPaneli.tsx:148"
+      "apps/web/src/screens/YoneticiPaneli.tsx:238"
     ]
   },
   "tda09d6e8": {
@@ -3538,6 +3570,22 @@
     "en": "Drawn: {0} · avg {1} · longest {2}",
     "nerede": [
       "apps/web/src/components/CizimOlcumPaneli.tsx:137"
+    ]
+  },
+  "t21d6cbb0": {
+    "grup": "arayuz",
+    "tr": "Çoklu hesap şüphesi",
+    "en": "Multi-account suspicion",
+    "nerede": [
+      "apps/web/src/screens/YoneticiPaneli.tsx:151"
+    ]
+  },
+  "tba04a82c": {
+    "grup": "arayuz",
+    "tr": "Çoklu hesap şüphesi: {0}",
+    "en": "Multi-account suspicion: {0}",
+    "nerede": [
+      "apps/web/src/screens/YoneticiPaneli.tsx:151"
     ]
   },
   "tfa0c522b": {
@@ -4210,7 +4258,7 @@
     "en": "Yesterday",
     "nerede": [
       "apps/web/src/screens/Olaylar.tsx:78",
-      "apps/web/src/screens/YoneticiPaneli.tsx:149"
+      "apps/web/src/screens/YoneticiPaneli.tsx:239"
     ]
   },
   "t06db6bc3": {
@@ -4423,7 +4471,7 @@
     "tr": "EKSİK",
     "en": "MISSING",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:245"
+      "apps/web/src/screens/YoneticiPaneli.tsx:335"
     ]
   },
   "t530d9dd8": {
@@ -4810,7 +4858,7 @@
     "tr": "Evet, kalıcı yasakla",
     "en": "Yes, ban permanently",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:462"
+      "apps/web/src/screens/YoneticiPaneli.tsx:552"
     ]
   },
   "t67f6ac68": {
@@ -5010,7 +5058,7 @@
     "tr": "Genel",
     "en": "Global",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:506"
+      "apps/web/src/screens/YoneticiPaneli.tsx:596"
     ]
   },
   "te69a54b9": {
@@ -5194,7 +5242,7 @@
     "tr": "GİZLİ",
     "en": "HIDDEN",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:515"
+      "apps/web/src/screens/YoneticiPaneli.tsx:605"
     ]
   },
   "t5228efad": {
@@ -5369,7 +5417,7 @@
     "tr": "Gün UTC'ye göre. Oran, o gün bitmeden yazılmıyor (—). NPC lordlar sayılmıyor.",
     "en": "Days are in UTC. A rate is not shown until that day is over (—). NPC lords are not counted.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:231"
+      "apps/web/src/screens/YoneticiPaneli.tsx:321"
     ]
   },
   "ta4e04755": {
@@ -5717,7 +5765,7 @@
     "tr": "HESABI YASAKLA",
     "en": "BAN ACCOUNT",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:434"
+      "apps/web/src/screens/YoneticiPaneli.tsx:524"
     ]
   },
   "t0f414ea5": {
@@ -5725,7 +5773,7 @@
     "tr": "Hesabı yasakla — {0}",
     "en": "Ban account — {0}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:441"
+      "apps/web/src/screens/YoneticiPaneli.tsx:531"
     ]
   },
   "t30c7d34d": {
@@ -5734,7 +5782,7 @@
     "en": "DELETE MY ACCOUNT",
     "nerede": [
       "apps/api/src/routes/me.ts:66",
-      "apps/web/src/api/client.ts:1346",
+      "apps/web/src/api/client.ts:1369",
       "apps/web/src/screens/Hesap.tsx:297"
     ]
   },
@@ -5816,7 +5864,7 @@
     "tr": "Hesap: {0}{1}",
     "en": "Account: {0}{1}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:381"
+      "apps/web/src/screens/YoneticiPaneli.tsx:471"
     ]
   },
   "t5a3adcd8": {
@@ -5832,7 +5880,7 @@
     "tr": "Hiç mesaj yazmamış.",
     "en": "Has never written a message.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:498"
+      "apps/web/src/screens/YoneticiPaneli.tsx:588"
     ]
   },
   "t778c4ebf": {
@@ -6094,7 +6142,7 @@
     "tr": "İşlem uygulanmadı; sayfayı tazeleyip tekrar dene.",
     "en": "Action not applied; refresh the page and try again.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:399"
+      "apps/web/src/screens/YoneticiPaneli.tsx:489"
     ]
   },
   "tcabdf0fd": {
@@ -6121,7 +6169,7 @@
       "apps/web/src/screens/Harita.tsx:382",
       "apps/web/src/screens/Ittifak.tsx:207",
       "apps/web/src/screens/Siralama.tsx:37",
-      "apps/web/src/screens/YoneticiPaneli.tsx:506",
+      "apps/web/src/screens/YoneticiPaneli.tsx:596",
       "packages/shared/src/types.ts:361"
     ]
   },
@@ -6395,7 +6443,7 @@
     "tr": "KALDIRILDI",
     "en": "REMOVED",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:509"
+      "apps/web/src/screens/YoneticiPaneli.tsx:599"
     ]
   },
   "ta2c9f70e": {
@@ -6411,7 +6459,7 @@
     "tr": "Kalıcı",
     "en": "Permanent",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:462"
+      "apps/web/src/screens/YoneticiPaneli.tsx:552"
     ]
   },
   "t32403562": {
@@ -6427,7 +6475,7 @@
     "tr": "Kalıcı yasak — {0}",
     "en": "Permanent ban — {0}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:393"
+      "apps/web/src/screens/YoneticiPaneli.tsx:483"
     ]
   },
   "t0f86f2e3": {
@@ -6542,7 +6590,7 @@
     "tr": "Karar",
     "en": "Decision",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:401"
+      "apps/web/src/screens/YoneticiPaneli.tsx:491"
     ]
   },
   "t07d6d627": {
@@ -6716,7 +6764,7 @@
     "en": "Log",
     "nerede": [
       "apps/web/src/screens/Ittifak.tsx:223",
-      "apps/web/src/screens/YoneticiPaneli.tsx:213"
+      "apps/web/src/screens/YoneticiPaneli.tsx:303"
     ]
   },
   "t4b2bd8f8": {
@@ -6732,7 +6780,7 @@
     "tr": "Kayıt günü",
     "en": "Sign-up day",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:212"
+      "apps/web/src/screens/YoneticiPaneli.tsx:302"
     ]
   },
   "ta5d4e053": {
@@ -6772,7 +6820,7 @@
     "tr": "Kayıt yok — bu ilk.",
     "en": "No record — this is the first.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:483"
+      "apps/web/src/screens/YoneticiPaneli.tsx:573"
     ]
   },
   "t066577c0": {
@@ -7087,7 +7135,7 @@
     "tr": "Kimse bulunamadı. Adın tamamını değil, bir parçasını yaz.",
     "en": "Nobody found. Type a part of the name, not the whole name.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:83"
+      "apps/web/src/screens/YoneticiPaneli.tsx:92"
     ]
   },
   "tcb16054a": {
@@ -7453,8 +7501,8 @@
     "en": "Lord name",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:227",
-      "apps/web/src/screens/YoneticiPaneli.tsx:63",
-      "apps/web/src/screens/YoneticiPaneli.tsx:64"
+      "apps/web/src/screens/YoneticiPaneli.tsx:72",
+      "apps/web/src/screens/YoneticiPaneli.tsx:73"
     ]
   },
   "tec26d312": {
@@ -7714,7 +7762,7 @@
     "tr": "Mesaj kaldırılamadı.",
     "en": "Message could not be removed.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:357"
+      "apps/web/src/screens/YoneticiPaneli.tsx:447"
     ]
   },
   "t1910af19": {
@@ -7723,7 +7771,7 @@
     "en": "Remove message",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:235",
-      "apps/web/src/screens/YoneticiPaneli.tsx:512"
+      "apps/web/src/screens/YoneticiPaneli.tsx:602"
     ]
   },
   "t7ff46615": {
@@ -7774,7 +7822,7 @@
     "tr": "Moderasyon geçmişi",
     "en": "Moderation history",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:481"
+      "apps/web/src/screens/YoneticiPaneli.tsx:571"
     ]
   },
   "ta4ba30ab": {
@@ -8242,7 +8290,7 @@
     "tr": "Oyuncu ara",
     "en": "Search player",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:52"
+      "apps/web/src/screens/YoneticiPaneli.tsx:61"
     ]
   },
   "t173eaf6d": {
@@ -8316,7 +8364,7 @@
     "en": "Measurement",
     "nerede": [
       "apps/web/src/components/CizimOlcumPaneli.tsx:119",
-      "apps/web/src/screens/YoneticiPaneli.tsx:141"
+      "apps/web/src/screens/YoneticiPaneli.tsx:231"
     ]
   },
   "t95fb77b8": {
@@ -8332,7 +8380,7 @@
     "tr": "Ölçüm: bugün {0} aktif",
     "en": "Metrics: {0} active today",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:141"
+      "apps/web/src/screens/YoneticiPaneli.tsx:231"
     ]
   },
   "tb41a1010": {
@@ -8634,6 +8682,14 @@
     "en": "Market purse",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:105"
+    ]
+  },
+  "tb40d8d80": {
+    "grup": "arayuz",
+    "tr": "Pazarda {0} işlem",
+    "en": "{0} [market trade|market trades]",
+    "nerede": [
+      "apps/web/src/screens/YoneticiPaneli.tsx:186"
     ]
   },
   "t03621ed5": {
@@ -9238,7 +9294,7 @@
     "tr": "Sebep",
     "en": "Reason",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:406"
+      "apps/web/src/screens/YoneticiPaneli.tsx:496"
     ]
   },
   "tc0ae04ff": {
@@ -9246,7 +9302,7 @@
     "tr": "Sebep (oyuncuya gösterilir)",
     "en": "Reason (shown to the player)",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:405"
+      "apps/web/src/screens/YoneticiPaneli.tsx:495"
     ]
   },
   "tc2aff6e5": {
@@ -9254,8 +9310,8 @@
     "tr": "sebep yok",
     "en": "no reason",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:393",
-      "apps/web/src/screens/YoneticiPaneli.tsx:394"
+      "apps/web/src/screens/YoneticiPaneli.tsx:483",
+      "apps/web/src/screens/YoneticiPaneli.tsx:484"
     ]
   },
   "t8181f45e": {
@@ -9477,6 +9533,14 @@
       "apps/web/src/components/IttifakBagis.tsx:151"
     ]
   },
+  "t74832a54": {
+    "grup": "arayuz",
+    "tr": "Sevkiyat {0} · geri {1}",
+    "en": "Shipments {0} · back {1}",
+    "nerede": [
+      "apps/web/src/screens/YoneticiPaneli.tsx:179"
+    ]
+  },
   "t4cf27c11": {
     "grup": "arayuz",
     "tr": "Sıfırla",
@@ -9614,7 +9678,7 @@
     "tr": "SOHBETTE SUSTUR",
     "en": "MUTE IN CHAT",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:410"
+      "apps/web/src/screens/YoneticiPaneli.tsx:500"
     ]
   },
   "t70032e07": {
@@ -9622,7 +9686,7 @@
     "tr": "Sohbette sustur — {0}",
     "en": "Mute in chat — {0}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:417"
+      "apps/web/src/screens/YoneticiPaneli.tsx:507"
     ]
   },
   "t5f1b61cb": {
@@ -9633,12 +9697,28 @@
       "apps/web/src/components/ProfilResmiSecici.tsx:138"
     ]
   },
+  "t573b9d32": {
+    "grup": "arayuz",
+    "tr": "Son {0} gün. Yalnız oyunun kendi izleri: sevkiyat, takviye, pazar — ağ adresi tutulmuyor. Otomatik ceza yok; arkadaşlar da birbirine yardım eder. İki dosyaya da bakıp karar ver.",
+    "en": "Last {0} days. Only the game's own traces: shipments, reinforcements, market — no network address is stored. No automatic penalty; friends help each other too. Look at both files and decide.",
+    "nerede": [
+      "apps/web/src/screens/YoneticiPaneli.tsx:198"
+    ]
+  },
+  "t8ef85e2f": {
+    "grup": "arayuz",
+    "tr": "Son {0} günde dikkat çeken bir bağ yok.",
+    "en": "No notable links in the last {0} days.",
+    "nerede": [
+      "apps/web/src/screens/YoneticiPaneli.tsx:160"
+    ]
+  },
   "t51ee8fa4": {
     "grup": "arayuz",
     "tr": "Son 30 günün günlük aktif oyuncusu; en çok {0}",
     "en": "Daily active players over the last 30 days; peak {0}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:183"
+      "apps/web/src/screens/YoneticiPaneli.tsx:273"
     ]
   },
   "t66ed0f01": {
@@ -9670,7 +9750,7 @@
     "tr": "Son görülme: {0}",
     "en": "Last seen: {0}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:101"
+      "apps/web/src/screens/YoneticiPaneli.tsx:110"
     ]
   },
   "tfe819188": {
@@ -9686,7 +9766,7 @@
     "tr": "Son mesajları",
     "en": "Latest messages",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:496"
+      "apps/web/src/screens/YoneticiPaneli.tsx:586"
     ]
   },
   "t9564f32e": {
@@ -9735,7 +9815,7 @@
     "tr": "Sonuçlar",
     "en": "Results",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:79"
+      "apps/web/src/screens/YoneticiPaneli.tsx:88"
     ]
   },
   "t997d2a2b": {
@@ -9767,7 +9847,7 @@
     "tr": "Sunucunun bilemediği, elle denenecek:",
     "en": "Not visible to the server, try by hand:",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:282"
+      "apps/web/src/screens/YoneticiPaneli.tsx:372"
     ]
   },
   "t0a0f8af7": {
@@ -9800,7 +9880,7 @@
     "en": "Mute could not be lifted.",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:58",
-      "apps/web/src/screens/YoneticiPaneli.tsx:339"
+      "apps/web/src/screens/YoneticiPaneli.tsx:429"
     ]
   },
   "t222bf466": {
@@ -9808,7 +9888,7 @@
     "tr": "Susturma sohbete, yasak oyuna dokunur. Yasak için sebep zorunlu; ikisi de geri alınabilir ve ikisi de kayda geçer.",
     "en": "A mute affects the chat, a ban affects the game. A reason is mandatory for a ban; both can be revoked and both go on record.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:476"
+      "apps/web/src/screens/YoneticiPaneli.tsx:566"
     ]
   },
   "ta6e05d38": {
@@ -9817,7 +9897,7 @@
     "en": "Lift mute",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:278",
-      "apps/web/src/screens/YoneticiPaneli.tsx:429"
+      "apps/web/src/screens/YoneticiPaneli.tsx:519"
     ]
   },
   "tb183d188": {
@@ -9825,7 +9905,7 @@
     "tr": "Susturulamadı.",
     "en": "Could not be muted.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:333"
+      "apps/web/src/screens/YoneticiPaneli.tsx:423"
     ]
   },
   "tededc44c": {
@@ -9834,8 +9914,8 @@
     "en": "MUTED",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:160",
-      "apps/web/src/screens/YoneticiPaneli.tsx:375",
-      "apps/web/src/screens/YoneticiPaneli.tsx:95"
+      "apps/web/src/screens/YoneticiPaneli.tsx:104",
+      "apps/web/src/screens/YoneticiPaneli.tsx:465"
     ]
   },
   "tfd8148a4": {
@@ -9869,7 +9949,7 @@
     "tr": "Sv {0} · {1}",
     "en": "Lvl {0} · {1}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:97"
+      "apps/web/src/screens/YoneticiPaneli.tsx:106"
     ]
   },
   "te69cb05e": {
@@ -9877,7 +9957,7 @@
     "tr": "Sv {0} · {1} · son görülme {2}",
     "en": "Lvl {0} · {1} · last seen {2}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:378"
+      "apps/web/src/screens/YoneticiPaneli.tsx:468"
     ]
   },
   "t20f49a9a": {
@@ -10361,6 +10441,14 @@
     "en": "Reinforce",
     "nerede": [
       "apps/web/src/screens/Harita.tsx:287"
+    ]
+  },
+  "tb3d1824c": {
+    "grup": "arayuz",
+    "tr": "Takviye {0} kez",
+    "en": "Reinforcements {0} [time|times]",
+    "nerede": [
+      "apps/web/src/screens/YoneticiPaneli.tsx:183"
     ]
   },
   "t8d452854": {
@@ -10935,7 +11023,7 @@
     "tr": "Yapışkanlık (dün ÷ 30 gün): {0}. Aynı kişiler her gün dönüyorsa yükselir.",
     "en": "Stickiness (yesterday ÷ 30 days): {0}. Rises when the same people come back every day.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:160"
+      "apps/web/src/screens/YoneticiPaneli.tsx:250"
     ]
   },
   "td55cc683": {
@@ -10959,7 +11047,7 @@
     "tr": "Yasağı kaldır",
     "en": "Lift ban",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:471"
+      "apps/web/src/screens/YoneticiPaneli.tsx:561"
     ]
   },
   "t01f1b0ca": {
@@ -10967,7 +11055,7 @@
     "tr": "Yasak {0} tarihine kadar — {1}",
     "en": "Banned until {0} — {1}",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:394"
+      "apps/web/src/screens/YoneticiPaneli.tsx:484"
     ]
   },
   "t8639ff2a": {
@@ -10975,7 +11063,7 @@
     "tr": "Yasak kaldırılamadı.",
     "en": "Ban could not be lifted.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:351"
+      "apps/web/src/screens/YoneticiPaneli.tsx:441"
     ]
   },
   "tf3dfe837": {
@@ -10983,7 +11071,7 @@
     "tr": "Yasaklanamadı.",
     "en": "Could not be banned.",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:345"
+      "apps/web/src/screens/YoneticiPaneli.tsx:435"
     ]
   },
   "td0e8da6b": {
@@ -10991,8 +11079,8 @@
     "tr": "YASAKLI",
     "en": "BANNED",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:374",
-      "apps/web/src/screens/YoneticiPaneli.tsx:94"
+      "apps/web/src/screens/YoneticiPaneli.tsx:103",
+      "apps/web/src/screens/YoneticiPaneli.tsx:464"
     ]
   },
   "t0cba2b1f": {
@@ -11025,7 +11113,7 @@
     "tr": "Yayın kontrolü",
     "en": "Release check",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:260"
+      "apps/web/src/screens/YoneticiPaneli.tsx:350"
     ]
   },
   "te6425b08": {
@@ -11033,7 +11121,7 @@
     "tr": "Yayın kontrolü: {0} eksik, {1} uyarı",
     "en": "Release check: {0} missing, {1} [warning|warnings]",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:263"
+      "apps/web/src/screens/YoneticiPaneli.tsx:353"
     ]
   },
   "t4863455f": {
@@ -11041,7 +11129,7 @@
     "tr": "Yayın kontrolü: hepsi tamam",
     "en": "Release check: all good",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:262"
+      "apps/web/src/screens/YoneticiPaneli.tsx:352"
     ]
   },
   "tc4aede4f": {
@@ -11206,7 +11294,7 @@
     "tr": "Yeşil: o gün kaydolan",
     "en": "Green: signed up that day",
     "nerede": [
-      "apps/web/src/screens/YoneticiPaneli.tsx:203"
+      "apps/web/src/screens/YoneticiPaneli.tsx:293"
     ]
   },
   "t46b8c0de": {
@@ -13367,7 +13455,7 @@
     "tr": "Geçersiz susturma süresi.",
     "en": "Invalid mute duration.",
     "nerede": [
-      "apps/api/src/routes/yonetici.ts:274",
+      "apps/api/src/routes/yonetici.ts:360",
       "packages/shared/src/moderasyon.ts:246"
     ]
   },
@@ -17019,12 +17107,12 @@
     "en": "Not found.",
     "nerede": [
       "apps/api/src/routes/auth.ts:323",
-      "apps/api/src/routes/yonetici.ts:176",
-      "apps/api/src/routes/yonetici.ts:277",
-      "apps/api/src/routes/yonetici.ts:290",
-      "apps/api/src/routes/yonetici.ts:326",
-      "apps/api/src/routes/yonetici.ts:349",
-      "apps/api/src/routes/yonetici.ts:375",
+      "apps/api/src/routes/yonetici.ts:262",
+      "apps/api/src/routes/yonetici.ts:363",
+      "apps/api/src/routes/yonetici.ts:376",
+      "apps/api/src/routes/yonetici.ts:412",
+      "apps/api/src/routes/yonetici.ts:435",
+      "apps/api/src/routes/yonetici.ts:461",
       "apps/api/src/services/moderasyon.ts:34"
     ]
   },
@@ -17317,7 +17405,7 @@
     "tr": "Geçersiz yasak.",
     "en": "Invalid ban.",
     "nerede": [
-      "apps/api/src/routes/yonetici.ts:320"
+      "apps/api/src/routes/yonetici.ts:406"
     ]
   },
   "t5561fd0b": {
@@ -17610,7 +17698,7 @@
     "tr": "Kendi hesabını yasaklayamazsın.",
     "en": "You cannot ban your own account.",
     "nerede": [
-      "apps/api/src/routes/yonetici.ts:328"
+      "apps/api/src/routes/yonetici.ts:414"
     ]
   },
   "t2151cf3f": {

@@ -1212,6 +1212,29 @@ export interface OlcumPanosuDto {
   kohortlar: { gun: number; kayit: number; d1: number | null; d7: number | null }[];
 }
 
+/** Çoklu hesap şüphesi (docs/14 "Çoklu hesap"): yalnız davranış izi, ceza yok. */
+export interface CokluHesapLordu {
+  lordId: string;
+  ad: string;
+  seviye: number;
+  hesapYasiGun: number;
+  genc: boolean;
+  sonGorulme: string;
+  ittifak: string | null;
+}
+export interface CokluHesapDto {
+  pencereGun: number;
+  baglar: {
+    besleyen: CokluHesapLordu;
+    alan: CokluHesapLordu;
+    sevkiyat: number;
+    geriSevkiyat: number;
+    takviye: number;
+    pazar: number;
+    isaretler: ('sevkiyat' | 'takviye' | 'pazar')[];
+  }[];
+}
+
 export interface AramaSonucuDto {
   lordId: string;
   ad: string;
@@ -1727,6 +1750,7 @@ export const api = {
   yoneticiAyarlari: () => request<YoneticiAyarlariDto>('/yonetici/ayarlar'),
   yayinKontrolu: () => request<YayinKontroluDto>('/yonetici/yayin-kontrolu'),
   olcumPanosu: () => request<OlcumPanosuDto>('/yonetici/olcum'),
+  cokluHesap: () => request<CokluHesapDto>('/yonetici/coklu-hesap'),
   yoneticiAra: (q: string) =>
     request<{ sonuclar: AramaSonucuDto[] }>(`/yonetici/ara?q=${encodeURIComponent(q)}`),
   yoneticiOyuncu: (lordId: string) => request<YoneticiOyuncuDto>(`/yonetici/oyuncu/${lordId}`),

@@ -13,8 +13,8 @@
  *   3. SUSTUR / YASAKLA — sohbete ya da oyuna, süreli ya da kalıcı.
  *   4. GERİ AL — her ikisi de kaldırılabiliyor.
  *
- * Yanında iki okuma ucu: yayın kontrolü (eksik ayar) ve ölçüm panosu
- * (günlük aktif, tutundurma).
+ * Yanında üç okuma ucu: yayın kontrolü (eksik ayar), ölçüm panosu
+ * (günlük aktif, tutundurma) ve çoklu hesap şüpheleri.
  *
  * TASARIM KURALLARI, kuyruktakiyle aynı:
  *
@@ -33,6 +33,7 @@
  */
 import {
   ARAMA_SONUC_SAYISI,
+  COKLU_HESAP,
   KALICI_YASAK_ACIK,
   OYUNCU_MESAJ_SAYISI,
   SUSTURMA_GECMIS_SAYISI,
@@ -47,6 +48,8 @@ import {
   yasakBitisi,
   yasakDurumu,
   yayinOzeti,
+  yukAgirligi,
+  cokluHesapBaglari,
 } from '@lordlar/shared';
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
@@ -95,6 +98,89 @@ export async function yoneticiRoutes(app: FastifyInstance): Promise<void> {
    * tutundurma, kohortlar. Yalnız toplamlar — hiçbir oyuncu adı yok.
    */
   app.get('/yonetici/olcum', koruma, async () => olcumPanosu());
+
+  /**
+   * Çoklu hesap şüpheleri (docs/14 "Çoklu hesap"): tek yönlü sevkiyat, aynı lorda
+   * tekrarlanan takviye, aynı çiftin pazar işlemleri. Ağ izi yok, ceza
+   * yok — kural shared `cokluHesapBaglari`da, eşikler balance.json'da.
+   */
+  app.get('/yonetici/coklu-hesap', koruma, async () => {
+    const simdi = Date.now();
+    const pencere = new Date(simdi - COKLU_HESAP.pencereGun * 86_400_000);
+    const [sevkiyatlar, takviyeler, islemler] = await Promise.all([
+      prisma.shipment.findMany({
+        where: { departAt: { gte: pencere } },
+        select: { fromLordId: true, toLordId: true, altin: true, demir: true, erzak: true },
+      }),
+      prisma.march.findMany({
+        where: { kind: 'takviye', departAt: { gte: pencere } },
+        select: { lordId: true, toRegionId: true },
+      }),
+      prisma.esyaIslemi.findMany({
+        where: { createdAt: { gte: pencere } },
+        select: { saticiId: true, aliciId: true },
+      }),
+    ]);
+    // Takviyenin gittiği lord: bölgenin ŞİMDİKİ sahibi. Yürüyüş anındaki
+    // sahip saklanmıyor; arada el değiştiren bölge yanlış çifte yazılabilir
+    // — liste bir insanın bakması için, bu payı taşıyabilir.
+    const bolgeler = await prisma.region.findMany({
+      where: { id: { in: [...new Set(takviyeler.map((t) => t.toRegionId))] } },
+      select: { id: true, ownerLordId: true },
+    });
+    const sahibi = new Map(bolgeler.map((b) => [b.id, b.ownerLordId]));
+
+    const baglar = cokluHesapBaglari({
+      sevkiyatlar: sevkiyatlar.map((s) => ({
+        from: s.fromLordId,
+        to: s.toLordId,
+        agirlik: yukAgirligi({ altin: s.altin, demir: s.demir, erzak: s.erzak }),
+      })),
+      takviyeler: takviyeler.flatMap((t) => {
+        const to = sahibi.get(t.toRegionId);
+        return to ? [{ from: t.lordId, to }] : [];
+      }),
+      pazar: islemler.map((i) => ({ satici: i.saticiId, alici: i.aliciId })),
+    });
+
+    const lordlar = await prisma.lord.findMany({
+      where: { id: { in: [...new Set(baglar.flatMap((b) => [b.besleyen, b.alan]))] } },
+      select: {
+        id: true,
+        name: true,
+        level: true,
+        createdAt: true,
+        lastSeenAt: true,
+        alliance: { select: { tag: true } },
+      },
+    });
+    const ozet = new Map(
+      lordlar.map((l) => {
+        const yasGun = Math.floor((simdi - l.createdAt.getTime()) / 86_400_000);
+        return [
+          l.id,
+          {
+            lordId: l.id,
+            ad: l.name,
+            seviye: l.level,
+            hesapYasiGun: yasGun,
+            genc: yasGun < COKLU_HESAP.gencHesapGun,
+            sonGorulme: l.lastSeenAt,
+            ittifak: l.alliance?.tag ?? null,
+          },
+        ];
+      }),
+    );
+    return {
+      pencereGun: COKLU_HESAP.pencereGun,
+      // Silinmiş hesabın bağı düşüyor: bakılacak bir dosyası yok.
+      baglar: baglar.flatMap((b) => {
+        const besleyen = ozet.get(b.besleyen);
+        const alan = ozet.get(b.alan);
+        return besleyen && alan ? [{ ...b, besleyen, alan }] : [];
+      }),
+    };
+  });
 
   /**
    * Lord adına göre arama.

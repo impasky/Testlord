@@ -987,7 +987,22 @@
     "oyuncu_mesaj_sayisi": 20,
     "_oyuncu_mesaj": "Bir oyuncunun panelde gorunen son mesaj sayisi. Karar vermek icin baglam gerekiyor: tek bir cumle degil, konusmanin akisi.",
     "susturma_gecmis_sayisi": 10,
-    "_susturma_gecmisi": "Yonetici kuyrukta bir lorda bakarken son bu kadar moderasyon kaydini gorur. Karar gecmise bakmadan verilemez: ilk kez mi, besinci kez mi ayni sey."
+    "_susturma_gecmisi": "Yonetici kuyrukta bir lorda bakarken son bu kadar moderasyon kaydini gorur. Karar gecmise bakmadan verilemez: ilk kez mi, besinci kez mi ayni sey.",
+    "coklu_hesap": {
+      "_aciklama": "Coklu hesap supheleri (docs/14 Coklu hesap). Ag izi YOK: gizlilik metni 'IP adresin veritabanina yazilmiyor' diyor. Yalniz oyunun zaten tuttugu davranis izleri: ittifak ici sevkiyat, takviye yuruyusu, ayni cift arasinda pazar islemi. Otomatik ceza YOK: arkadaslar da birbirine yardim eder; liste bir yoneticinin bakmasi icin.",
+      "pencere_gun": 7,
+      "sevkiyat_esigi": 30000,
+      "_sevkiyat_esigi": "Bir lordun otekine pencere boyunca gonderdigi yukun altin karsiligi (yukAgirligi). Gunluk tavan 20000: esik en az iki gun tam tavan gondermek demek.",
+      "tek_yon_orani": 0.2,
+      "_tek_yon_orani": "Karsi yonun gonderimi bunun altindaysa akis TEK YONLU sayiliyor. Iki yonlu yardim ittifakin olagan isi; besleme tek yonlu.",
+      "takviye_esigi": 3,
+      "_takviye_esigi": "Ayni lordun bolgelerine pencere boyunca giden takviye yuruyusu.",
+      "pazar_cift_esigi": 3,
+      "_pazar_cift_esigi": "Ayni iki lord arasinda pencere boyunca esya pazari islemi. Pazar anonim ve eslesme kurayla; ayni ciftin tekrar tekrar bulusmasi kendiliginden olmaz.",
+      "genc_hesap_gun": 3,
+      "_genc_hesap_gun": "Besleyen hesap bundan gencse kartta not dusuluyor. Yeni acilip hemen kaynak akitan hesap, besleme hesabinin tipik izi.",
+      "liste_boyu": 30
+    }
   },
   "genel_sohbet": {
     "_aciklama": "Butun oyuncularin yazdigi tek kanal (oyuncunun istegi: 'tum oyuncularin sohbet edebilecegi genel sohbet'). Ittifak sohbetinden farki zarar yuzeyi: yazan kime yazdigini bilmiyor. Bu yuzden frenler daha siki: mesaj daha kisa, iki mesaj arasi daha uzun, ayni sozu ust uste yazmak reddediliyor. Suzgec, sikayet, engel ve susturma ittifak sohbetiyle ORTAK -- iki kanal iki ayri kural dili konusmamali.",
