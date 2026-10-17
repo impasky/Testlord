@@ -7,33 +7,39 @@
 # içinde çalıştırır (RUN_WORKER). Tek origin olduğu için CORS hiç devreye
 # girmiyor; ayrı bir worker servisi ikinci bir ücret demek ve gerekmiyor.
 #
-# PLANLAR (docs/05 §2 ve §8). Ücretsiz katman yayın için uygun değil:
-#   - ücretsiz sunucu 15 dakika istek gelmezse UYUYOR; içindeki worker da
-#     duruyor (yürüyüşler oyuncu dönene kadar çözülmüyor, bildirim gitmiyor);
-#   - ücretsiz PostgreSQL 30 günde süresi doluyor, 14 gün sonra VERİSİYLE
-#     birlikte siliniyor.
-# Yük testine göre 1 CPU ~250 aktif oyuncuyu taşıyor (bellek 300–430 MB,
-# profil resmi sınıflandırıcısı ~100 MB daha). 500 aktif için web'i `pro`
-# (2 CPU) ve veritabanını `basic-4gb` yap — kod değişmiyor.
+# ŞİMDİLİK: ÜCRETSİZ, GEÇİCİ DENEME SUNUCUSU (2026-10-17). Kalıcı yayın
+# DigitalOcean'da (docs/05 §2, .do/deploy.template.yaml); oraya geçince bu
+# dosyanın işi bitiyor. Ücretsiz katmanın bedeli bilerek kabul edildi:
+#   - sunucu 15 dakika istek gelmezse UYUYOR; ilk açılış ~1 dakika. İçindeki
+#     worker da duruyor, ama oyuncu dönünce birikmiş işler hemen çözülüyor;
+#   - PostgreSQL 30 GÜNDE süresi doluyor, 14 gün sonra VERİSİYLE siliniyor:
+#     DigitalOcean'a geçiş ondan önce;
+#   - bellek 512 MB: profil resmi sınıflandırıcısı (~100 MB) kapalı, yüklenen
+#     resimler yönetici onayına gidiyor.
+# Kalıcı Render için: sunucu `standard`, veritabanı `basic-1gb` (docs/05 §2b).
 
 databases:
-  - name: lordlar-db
+  # YENİ AD. Eski `lordlar-db` 31 Ağustos'ta ücretsiz açılmıştı; 30 günlük
+  # süresi büyük olasılıkla dolup silindi ve sunucu iç adresini çözemiyordu
+  # ("Can't reach database server at dpg-…-a", 2026-10-16). Yeni ad,
+  # Blueprint'in bu bölgede sıfırdan bir veritabanı açıp DATABASE_URL'i ona
+  # bağlaması demek.
+  - name: lordlar-vt
     databaseName: lordlar_cagi
     user: lordlar
-    # 1 GB bellek, 0,5 CPU. Disk büyütülebilir, KÜÇÜLTÜLEMEZ: küçük başla.
-    plan: basic-1gb
-    diskSizeGB: 5
-    # ÖNEMLİ: servisle AYNI bölge olmalı. Render'ın verdiği iç ağ adresi
-    # (dpg-xxxxx-a) yalnızca aynı bölgedeki servislerden çözülür; farklı
-    # bölgede kalırsa sunucu veritabanına hiç ulaşamaz (Prisma P1001).
+    plan: free
+    # ÖNEMLİ: servisle AYNI bölge. Render'ın iç adresi (dpg-xxxxx-a) yalnız
+    # aynı bölgedeki servislerden çözülür (Prisma P1001).
     region: frankfurt
+    # `ipAllowList: []` (yalnız iç bağlantı) bilerek YOK: ücretsiz planda
+    # kabul edildiği doğrulanamadı ve Blueprint eşitlemesini bozabilirdi.
+    # Varsayılan dışarıya açık ama rastgele, uzun bir parolayla korunuyor.
 
 services:
   - type: web
     name: lordlar-cagi
     runtime: node
-    # 1 CPU, 2 GB: uyumuyor, ~250 aktif oyuncu (docs/05 §8).
-    plan: standard
+    plan: free
     region: frankfurt
     buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build
     startCommand: pnpm start
@@ -44,8 +50,12 @@ services:
 
       - key: DATABASE_URL
         fromDatabase:
-          name: lordlar-db
+          name: lordlar-vt
           property: connectionString
+
+      # Ücretsiz sunucunun 512 MB'ına sınıflandırıcı sığmıyor (yukarıda).
+      - key: RESIM_SINIFLANDIRICI
+        value: kapali
 
       # Render rastgele üretir; kimse (sen dahil) görmek zorunda değil
       - key: JWT_SECRET

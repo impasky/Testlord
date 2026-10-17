@@ -131,8 +131,12 @@ ayarları uygular; açılışta migration'lar koşar ve ilk diyar açılır. İl
 gibi bir adres verir. Kendi alan adını Settings → Domains'ten bağla.
 
 Aylık maliyet yaklaşık 27 $: sunucu 12 $ (1 vCPU, 1 GiB, uyumuyor) +
-yönetilen PostgreSQL ~15 $ (yedekli). Render alternatifi `render.yaml`'da
-duruyor (`docs/05` §2b).
+yönetilen PostgreSQL ~15 $ (yedekli).
+
+**Şimdilik ücretsiz deneme: Render.** render.com → New → Blueprint → bu depo
+ve dal → Apply. `render.yaml` ücretsiz sunucu ve ücretsiz PostgreSQL kurar:
+sunucu 15 dakika boşta kalınca uyur (ilk açılış ~1 dakika), veritabanı
+**30 günde silinir** — kalıcı yayın DigitalOcean'da (`docs/05` §2b).
 
 ### Kurulum hata verirse
 

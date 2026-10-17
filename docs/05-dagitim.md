@@ -117,28 +117,36 @@ sürecin içinde ve tek kopya için yazıldı.
 - **Uyarılar:** dağıtım ya da alan adı hatası hesabın e-postasına gidiyor
   (şablonda `alerts`).
 
-## 2b. Render (alternatif)
+## 2b. Render (şimdilik: ücretsiz deneme sunucusu)
 
 `render.yaml` bir Blueprint'tir: render.com → New → Blueprint → depoyu seç.
 Render hem sunucuyu hem PostgreSQL'i kurar ve imajı değil kendi Node
-derleyicisini kullanır.
+derleyicisini kullanır. Kalıcı yayın DigitalOcean'da (§2); Render şimdilik
+oynanabilir bir deneme sunucusu.
 
-**Planlar — render.yaml'da hazır:**
+**Planlar — render.yaml'da ücretsiz (2026-10-17):**
 
-| Ne         | Plan        | Kaynak        | Aylık (Render fiyat sayfası) | Neden                                                                                |
-| ---------- | ----------- | ------------- | ---------------------------- | ------------------------------------------------------------------------------------ |
-| Sunucu     | `standard`  | 1 CPU, 2 GB   | 25 $                         | Uyumuyor; ~250 aktif oyuncu (§8). Bellek 300–430 MB + resim sınıflandırıcısı ~100 MB |
-| PostgreSQL | `basic-1gb` | 0,5 CPU, 1 GB | 19 $ + disk                  | Kalıcı. Disk 5 GB — büyütülebilir, küçültülemez                                      |
+| Ne         | Plan   | Sınır                                                               |
+| ---------- | ------ | ------------------------------------------------------------------- |
+| Sunucu     | `free` | 15 dk istek gelmezse uyuyor, ilk açılış ~1 dk; 512 MB bellek        |
+| PostgreSQL | `free` | **30 günde süresi doluyor, 14 gün sonra verisiyle siliniyor**; 1 GB |
 
-Ücretsiz katman yayın için uygun değil: ücretsiz sunucu 15 dakika istek
-gelmezse uyuyor ve içindeki worker da duruyor (yürüyüşler oyuncu dönene
-kadar çözülmüyor, bildirim gitmiyor); ücretsiz PostgreSQL 30 günde süresi
-doluyor ve 14 gün sonra verisiyle birlikte siliniyor. `starter` (0,5 CPU,
-512 MB) ölçülen belleğe dar. **500 aktif** oyuncuya gelince sunucuyu `pro`
-(2 CPU, 4 GB), veritabanını `basic-4gb` yap; kod değişmiyor. Fiyatlar ve
-çalışma alanı ücreti Render'da değişebiliyor — paneldeki tutar geçerli.
-render.yaml'ı eşitlemek (Blueprint → Sync) planı değiştirir ve ücreti
-başlatır; o adımı panelden sen atıyorsun.
+Uyurken worker da duruyor; oyuncu dönünce birikmiş yürüyüşler ve kuyruklar
+hemen çözülüyor, kayıp yok ama bildirim gecikiyor. 512 MB'a profil resmi
+sınıflandırıcısı sığmıyor: `RESIM_SINIFLANDIRICI=kapali`, yüklenen resimler
+yönetici onayına gidiyor. Veritabanının süresi dolmadan DigitalOcean'a geç;
+içindeki oyuncuları taşımak istersen §4'teki yedekle/geri yükle.
+
+**Kalıcı Render istersen:** sunucuyu `standard` (1 CPU, 2 GB, 25 $),
+veritabanını `basic-1gb` (19 $ + disk) yap; sınıflandırıcıyı aç. 500 aktif
+oyuncuda `pro` ve `basic-4gb`. Fiyatlar paneldeki tutar.
+
+**Eski veritabanı (`lordlar-db`).** 31 Ağustos'ta ücretsiz açılmıştı; 30
+günlük süresi dolunca sunucu iç adresini çözemedi ("Can't reach database
+server at dpg-…-a", 2026-10-16). render.yaml artık `lordlar-vt` adlı yeni
+bir veritabanı istiyor. Render çalışma alanı başına TEK ücretsiz veritabanına
+izin veriyor: panelde eski `lordlar-db` hâlâ duruyorsa önce onu sil, sonra
+Blueprint → Manual Sync.
 
 **Bilinmesi gerekenler:**
 
@@ -161,8 +169,9 @@ başlatır; o adımı panelden sen atıyorsun.
   senin isteğinle doğruluyor.
 - **Blueprint'te `value` olan değişken paneldekini ezer.** `SEED_DEMO_LORDS`
   burada `false`; panelden değiştirirsen bir sonraki eşitlemede geri döner.
-- **Yedek:** ücretli PostgreSQL'in kendi geri dönüş noktaları var ama
-  depodaki betikle (bölüm 4) ayrıca başka bir yerde de tut.
+- **Yedek:** ücretsiz PostgreSQL'in yedeği YOK ve 30 günde siliniyor.
+  Tutmak istediğin bir dünya varsa depodaki betikle (bölüm 4) yedek al;
+  ücretli planda Render'ın kendi geri dönüş noktaları da var.
 
 ---
 
