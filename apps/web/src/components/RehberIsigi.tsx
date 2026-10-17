@@ -116,6 +116,18 @@ const KARARLILIK_MS = 450;
  * yetmeyen oyuncu üç saniye bekliyor; yükleme yapaylığı çok önce geçiyor.
  */
 const ENGEL_SABRI = 3000;
+/**
+ * Hedef bu kadar ms kımıldamazsa YERİNE OTURMUŞ sayılır ve kâhya kartı
+ * görünür. Halkanın kayması 200 ms: daha erken gösterilen kart, halka
+ * henüz eski yerinden gelirken onun üstüne biniyordu.
+ */
+const OTURMA_MS = 250;
+/**
+ * Yerine oturmuş hedef bundan fazla kayarsa (içerik yüklenip düğmeyi
+ * itti) kart gizlenip yeniden oturmayı bekliyor. Az kayınca kart halkayla
+ * birlikte kayıyor: geri sayım yazısı gibi küçük oynamalar gizlemesin.
+ */
+const KAYMA_PAYI = 24;
 
 interface Kutu {
   ust: number;
@@ -316,7 +328,15 @@ export function RehberIsigi({
   const [bekleme, setBekleme] = useState(false);
   // Aydınlatılan düğmenin adı: kâhyanın cümlesi buna göre değişiyor.
   const [hedefAdi, setHedefAdi] = useState<string | null>(null);
+  /**
+   * Yerine OTURMUŞ hedefin adı: güvenli şeritte ve `OTURMA_MS` boyunca
+   * kımıldamamış. Kâhya kartı ancak o zaman görünüyor (aşağıda, taraf).
+   */
+  const [yerlesen, setYerlesen] = useState<string | null>(null);
   const [itiraz, setItiraz] = useState(false);
+  const kartRef = useRef<HTMLDivElement>(null);
+  /** Kartın hangi hedef için hangi tarafa konduğu — histerezis. */
+  const tarafRef = useRef<{ ad: string; taraf: 'alt' | 'ust' } | null>(null);
 
   const isaretler = rehberIsigi(adim);
   const gorunur = acik && rehberGorunsunMu(durum, gorundu);
@@ -356,6 +376,7 @@ export function RehberIsigi({
       setKutu(null);
       setBekleme(false);
       setHedefAdi(null);
+      setYerlesen(null);
       return;
     }
     let yok = 0;
@@ -370,6 +391,12 @@ export function RehberIsigi({
      */
     let disari = 0;
     let sonAd = '';
+    /** Bir önceki ölçümde hedefin kutusu: kımıldadı mı diye. */
+    let sonKutu: Kutu | null = null;
+    /** Hedefin en son kımıldadığı an. */
+    let sonDegisim = 0;
+    /** Kartın göründüğü andaki hedef kutusu. */
+    let oturdugu: Kutu | null = null;
 
     /**
      * O an ışığın üstünde durduğu işaretin listedeki DERİNLİĞİ.
@@ -499,7 +526,23 @@ export function RehberIsigi({
       } else {
         disari = 0;
       }
+      // Şeritte ve bir süredir yerinde: kaydırma da halkanın kayması da bitti.
+      if (ad !== sonAd || !ayniMi(sonKutu, r)) sonDegisim = simdi;
+      else if (!disarida && simdi - sonDegisim >= OTURMA_MS && !oturdugu) {
+        oturdugu = { ust: r.top, sol: r.left, en: r.width, boy: r.height };
+        setYerlesen(ad);
+      }
+      if (
+        oturdugu &&
+        (ad !== sonAd ||
+          Math.abs(oturdugu.ust - r.top) > KAYMA_PAYI ||
+          Math.abs(oturdugu.boy - r.height) > KAYMA_PAYI)
+      ) {
+        oturdugu = null;
+        setYerlesen(null);
+      }
       sonAd = ad;
+      sonKutu = { ust: r.top, sol: r.left, en: r.width, boy: r.height };
 
       setKutu((o) => (ayniMi(o, r) ? o : { ust: r.top, sol: r.left, en: r.width, boy: r.height }));
     };
@@ -653,10 +696,38 @@ export function RehberIsigi({
    * Malikâne'deki kâhya kartında yazıyordu ama perdenin altında kalıyordu.
    * Oyuncu "şuraya bas diyoruz ama neden bastığını söylemiyoruz" derken
    * tam olarak bunu gördü.
+   *
+   * ── Kart bir kez yer seçiyor ──────────────────────────────────────────
+   *
+   * Oyuncu: "zorunlu öğreticide aynı butonu bir üstten bir alttan
+   * gösteriyor sürekli." Ölçünce her kaydırmalı adımda aynıydı: hedef
+   * ekranın altındayken kart ÜSTE kondu, ışık düğmeyi ortaya kaydırdı,
+   * kart da düğmenin üzerinden kayarak ALTA geçti. Telefonda adres çubuğu
+   * kaydırırken ekranın boyunu da değiştirdiği için bu gidip gelme
+   * sürebiliyordu. Üstelik alttayken ok "↓" diyordu: düğmenin tersini.
+   *
+   * Artık kart hedef YERİNE OTURANA kadar gizli (`yerlesen`), tarafını o
+   * an seçiyor ve sığdığı sürece o tarafta kalıyor. Ok tarafına göre
+   * dönüyor. Sığma ölçüsü kartın gerçek boyu, tahmini değil.
    */
   const KART_BOY = 150;
-  const altaSigar = window.innerHeight - a > KART_BOY;
-  const sebep = rehberIsaretSebebi(adim, hedefAdi ?? '');
+  const KART_ARA = 12;
+  const kartBoy = kartRef.current?.offsetHeight || KART_BOY;
+  const altaSigar = window.innerHeight - (a + KART_ARA) - kartBoy >= 8;
+  const usteSigar = u - KART_ARA - kartBoy >= 8;
+  const kartAdi = hedefAdi ?? '';
+  let taraf = tarafRef.current?.ad === kartAdi ? tarafRef.current.taraf : null;
+  if (taraf === 'alt' && !altaSigar && usteSigar) taraf = 'ust';
+  if (taraf === 'ust' && !usteSigar && altaSigar) taraf = 'alt';
+  taraf ??= altaSigar || !usteSigar ? 'alt' : 'ust';
+  const kartGorunur = hedefAdi !== null && yerlesen === hedefAdi;
+  if (kartGorunur) tarafRef.current = { ad: kartAdi, taraf };
+  const sebep = rehberIsaretSebebi(adim, kartAdi);
+  const ok = (
+    <p className={`baslik text-center text-[11px] text-altin ${taraf === 'alt' ? 'mb-2' : 'mt-2'}`}>
+      {taraf === 'alt' ? '↑ şimdi buna bas ↑' : '↓ şimdi buna bas ↓'}
+    </p>
+  );
 
   return (
     <>
@@ -693,6 +764,7 @@ export function RehberIsigi({
           düğmeye giden parmağı yakalamamalı. */}
       <div
         aria-hidden
+        data-rehber-halka=""
         className={`pointer-events-none fixed z-[56] rounded-2xl border-2 border-altin motion-safe:transition-all motion-safe:duration-200 motion-safe:ease-out ${
           itiraz ? 'motion-safe:animate-[nabiz_0.45s_ease-in-out]' : ''
         }`}
@@ -705,16 +777,29 @@ export function RehberIsigi({
         }}
       />
 
+      {/* Taraf değişince YENİ düğüm (`key`): kart deliğin üzerinden kayarak
+          öbür tarafa geçmesin. Gizliyken de çiziliyor ki boyu ölçülsün.
+          Geçiş YALNIZ konumda: `transition-all` görünürlüğü de 200 ms
+          geciktiriyordu ve kart yeni düğmenin yazısıyla eski yerinden
+          kayarak geliyordu. */}
       <div
+        key={`kart-${taraf}`}
+        ref={kartRef}
+        data-rehber-kart={kartAdi}
+        data-taraf={taraf}
         role="status"
-        className="pointer-events-none fixed z-[56] flex justify-center px-3 motion-safe:transition-all motion-safe:duration-200 motion-safe:ease-out"
-        style={
-          altaSigar
-            ? { top: a + 12, left: 0, right: 0 }
-            : { top: Math.max(8, u - KART_BOY + 6), left: 0, right: 0 }
-        }
+        className="pointer-events-none fixed z-[56] flex justify-center px-3 motion-safe:transition-[top,bottom] motion-safe:duration-200 motion-safe:ease-out"
+        style={{
+          ...(taraf === 'alt'
+            ? { top: a + KART_ARA }
+            : { bottom: window.innerHeight - u + KART_ARA }),
+          left: 0,
+          right: 0,
+          visibility: kartGorunur ? 'visible' : 'hidden',
+        }}
       >
         <div className="w-full max-w-sm rounded-2xl border border-altin/45 bg-gece/95 p-3 shadow-xl">
+          {taraf === 'alt' && ok}
           <div className="flex items-start gap-2.5">
             <div className="oyuk h-9 w-9 shrink-0 overflow-hidden rounded-lg border border-kenar">
               <PortreCizimi ad={REHBER.key} alt={REHBER.ad} className="h-full w-full" />
@@ -726,7 +811,7 @@ export function RehberIsigi({
               <p className="mt-0.5 text-[13px] leading-snug text-parsomen">{sebep}</p>
             </div>
           </div>
-          <p className="baslik mt-2 text-center text-[11px] text-altin">↓ şimdi buna bas ↓</p>
+          {taraf === 'ust' && ok}
         </div>
       </div>
     </>

@@ -1843,12 +1843,20 @@
       "apps/web/src/components/DizilimSemasi.tsx:34"
     ]
   },
+  "td4255379": {
+    "grup": "arayuz",
+    "tr": "↑ şimdi buna bas ↑",
+    "en": "↑ now press this ↑",
+    "nerede": [
+      "apps/web/src/components/RehberIsigi.tsx:728"
+    ]
+  },
   "t5758e43d": {
     "grup": "arayuz",
     "tr": "↓ şimdi buna bas ↓",
     "en": "↓ now press this ↓",
     "nerede": [
-      "apps/web/src/components/RehberIsigi.tsx:729"
+      "apps/web/src/components/RehberIsigi.tsx:728"
     ]
   },
   "tc1118513": {

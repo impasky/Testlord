@@ -27,6 +27,10 @@
  *    omurga onu aynı adıma geri gönderiyordu (oyuncu bildirdi). Bu yüzden
  *    bot artık KAYNAĞI yalnız oyun "akına devam et" dediğinde alıyor —
  *    her beklemede bol kaynak vermek o kilidi örtüyordu.
+ *  - kâhya kartı aynı düğmeyi bir üstten bir alttan gösteriyordu (oyuncu
+ *    bildirdi): hedef ekranın altındayken kart üste kondu, ışık düğmeyi
+ *    ortaya kaydırınca kart düğmenin ÜZERİNDEN kayarak alta geçti. Kart
+ *    her karede izleniyor (aşağıda `kartIzi`).
  *
  * SADECE GELİŞTİRME. node tools/rehber-tur-testi.mjs
  */
@@ -61,6 +65,33 @@ const ben = () =>
 
 const tarayici = await tarayiciAc();
 const ctx = await tarayici.newContext({ ...devices['iPhone 13'] });
+/*
+ * Kâhya kartını HER KAREDE izle: göründüğü her an hangi düğme için,
+ * deliğin hangi tarafında, deliğe biniyor mu. Dokunuşlar arası örnekle
+ * yakalanmıyordu — kart yarım saniyede üstten alta geçip duruyordu.
+ */
+await ctx.addInitScript(() => {
+  window.__kartIzi = [];
+  let son = '';
+  const izle = () => {
+    const kart = document.querySelector('[data-rehber-kart]');
+    const halka = document.querySelector('[data-rehber-halka]');
+    let imza = 'yok';
+    if (kart && halka && getComputedStyle(kart).visibility !== 'hidden') {
+      const h = halka.getBoundingClientRect();
+      const k = kart.firstElementChild.getBoundingClientRect();
+      const biniyor = k.bottom > h.top + 2 && k.top < h.bottom - 2;
+      imza = `${kart.getAttribute('data-rehber-kart')}|${kart.getAttribute('data-taraf')}|${biniyor}`;
+    }
+    if (imza !== son) {
+      son = imza;
+      const [hedef, taraf, biniyor] = imza.split('|');
+      window.__kartIzi.push({ hedef, taraf, biniyor: biniyor === 'true' });
+    }
+    requestAnimationFrame(izle);
+  };
+  requestAnimationFrame(izle);
+});
 const page = await ctx.newPage();
 const konsol = [];
 page.on('console', (m) => m.type() === 'error' && konsol.push(m.text()));
@@ -140,6 +171,23 @@ let gelirOncesiDokunus = null;
 let girerkenOmurga = null;
 /** "Paneli kapat"a basıldıysa: o panele girilirken omurga ne diyordu. */
 let kapatilanGiris = null;
+/** Bir dokunuş arasında kartın aynı düğme için taraf değiştirdiği ya da deliğe bindiği anlar. */
+const kartSorunlari = [];
+const kartIziniOku = async () => {
+  const iz = await page.evaluate(() => {
+    const k = window.__kartIzi;
+    window.__kartIzi = [];
+    return k;
+  });
+  const taraflar = new Map();
+  for (const o of iz) {
+    if (o.hedef === 'yok') continue;
+    if (o.biniyor) kartSorunlari.push(`${o.hedef}: kart deliğe bindi`);
+    const once = taraflar.get(o.hedef);
+    if (once && once !== o.taraf) kartSorunlari.push(`${o.hedef}: ${once} → ${o.taraf}`);
+    taraflar.set(o.hedef, o.taraf);
+  }
+};
 
 for (let t = 0; t < 150 && !kilit; t++) {
   const d = await isik();
@@ -195,6 +243,7 @@ for (let t = 0; t < 150 && !kilit; t++) {
   if (d.isaret === 'omurga-dugme') girerkenOmurga = d.omurga;
   kapatilanGiris = d.isaret === 'kapi-kapat' ? girerkenOmurga : null;
   basilan.push(d.isaret);
+  await kartIziniOku();
   await page.mouse.click(d.x, d.y);
   await page.waitForTimeout(1600);
 }
@@ -260,6 +309,11 @@ kontrol(
   'Tur bittiğinde oyuncunun hiç bölgesi yok',
   lordSon?.regionCount === 0,
   `${lordSon?.regionCount} bölge`,
+);
+kontrol(
+  'Kâhya kartı hiçbir düğmede taraf değiştirmedi, deliğe binmedi',
+  kartSorunlari.length === 0,
+  kartSorunlari.slice(0, 3).join(' · ') || `${basilan.length} dokunuş`,
 );
 kontrol('Konsolda hata yok', konsol.length === 0, konsol.slice(0, 2).join(' | '));
 
