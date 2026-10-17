@@ -12,6 +12,12 @@ apply plugin: 'com.android.application'
  *   SURUM_ADI             oyuncunun gördüğü sürüm (ör. 1.2.0)
  *   ADMOB_UYGULAMA_KIMLIGI  ca-app-pub-…~…  (yoksa Google'ın TEST uygulaması)
  *   IMZA_DOSYASI / IMZA_PAROLASI / IMZA_TAKMA_ADI / IMZA_ANAHTAR_PAROLASI
+ *
+ * Üç derleme türü:
+ *   release  Play'e giden AAB (android-yayin.yml)
+ *   deneme   telefona doğrudan kurulan APK (android-apk.yml): hata
+ *            ayıklanamıyor, test reklamları, ayrı paket adı (.deneme)
+ *   debug    geliştirme
  */
 def ortam = { String ad, String varsayilan -> System.getenv(ad) ?: (project.findProperty(ad) ?: varsayilan) }
 // Google'ın herkese açık TEST uygulama kimliği: gerçek reklam göstermez.
@@ -68,6 +74,26 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             if (ortam('IMZA_DOSYASI', '')) signingConfig signingConfigs.release
+        }
+        /*
+         * Arkadaşlara dağıtılan APK. Paket adı ayrı (`.deneme`): ileride
+         * Play'den kurulan sürümle aynı telefonda yan yana durabiliyor,
+         * biri öbürünün üstüne kurulmaya çalışıp imza hatası vermiyor.
+         *
+         * Hata ayıklanamıyor (release'ten türüyor): hata ayıklanabilen bir
+         * uygulamada USB'ye takılı telefondan oturum jetonu okunabilirdi.
+         *
+         * İmza: yükleme anahtarı verilmişse o (her sürüm bir öncekinin
+         * üstüne kuruluyor), yoksa koşucunun hata ayıklama anahtarı — o
+         * her derlemede yeni, yani yeni APK'dan önce eskisi kaldırılmalı.
+         * Reklam kimliği verilmezse Google'ın test uygulaması (yukarıda).
+         */
+        deneme {
+            initWith release
+            applicationIdSuffix '.deneme'
+            versionNameSuffix '-deneme'
+            matchingFallbacks = ['release']
+            signingConfig ortam('IMZA_DOSYASI', '') ? signingConfigs.release : signingConfigs.debug
         }
     }
 }

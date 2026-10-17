@@ -311,6 +311,24 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+      # Telefona doğrudan kurulan APK (android-apk.yml) her itişte derlenebilir
+      # olsun: imzalı, hata ayıklanamıyor, paket adı Play sürümünden ayrı.
+      - name: Deneme APK'sı
+        working-directory: apps/mobil/android
+        run: |
+          ./gradlew --no-daemon assembleDeneme
+          APK=app/build/outputs/apk/deneme/app-deneme.apk
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          "$BT/apksigner" verify "$APK"
+          "$BT/aapt2" dump badging "$APK" > "$RUNNER_TEMP/rozet.txt"
+          grep -q "package: name='com.lordlarcagi.oyun.deneme'" "$RUNNER_TEMP/rozet.txt" \
+            || { head -3 "$RUNNER_TEMP/rozet.txt"; echo "::error::Paket adı beklenmedik"; exit 1; }
+          grep '^application-label:' "$RUNNER_TEMP/rozet.txt" | grep -qF '(Deneme)' \
+            || { grep application-label "$RUNNER_TEMP/rozet.txt"; echo "::error::Uygulama adı beklenmedik"; exit 1; }
+          if grep -q 'application-debuggable' "$RUNNER_TEMP/rozet.txt"; then
+            echo "::error::Deneme APK'sı hata ayıklanabilir"; exit 1
+          fi
+
       # Yayın yolu (android-yayin.yml) gerçek anahtar olmadan da sınansın:
       # ayarsız sürüm derlemesi DURMALI, tek kullanımlık bir anahtarla
       # imzalı AAB çıkmalı. Paket saklanmıyor; anahtar koşucuyla gidiyor.

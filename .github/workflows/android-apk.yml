@@ -1,0 +1,167 @@
+# Telefona doğrudan kurulan Android paketi (APK) — "indir, kur, oyna".
+#
+# NEDEN AYRI: android-yayin.yml Play'e yüklenecek AAB üretiyor; AAB
+# telefona kurulamıyor. Bu iş arkadaşlara gönderilecek APK'yı üretip
+# deponun "Releases" sayfasına SABİT bir bağlantıyla koyuyor:
+#
+#   https://github.com/<sahip>/<depo>/releases/download/deneme-apk/lordlar-cagi-deneme.apk
+#
+# Depo herkese açık: bağlantı GitHub hesabı istemeden iniyor.
+#
+# Başlatmak: Actions → "Android APK (indir, kur, oyna)" → Run workflow →
+# sunucunun adresini yaz (ör. https://lordlar-cagi.onrender.com). Adres
+# APK'nın İÇİNE gömülüyor; sunucu değişince yeni APK gerekir.
+# Settings → Variables'ta OYUN_ADRESI varsa girdi boş bırakılabiliyor ve
+# daldaki her arayüz değişikliğinde APK kendiliğinden yenileniyor.
+#
+# İmza: IMZA_* gizlileri (android-yayin.yml) varsa onlarla — her yeni APK
+# eskisinin üstüne kuruluyor. Yoksa koşucunun hata ayıklama anahtarıyla;
+# o her derlemede yeni, yani yeni APK'dan önce eskisi kaldırılmalı (oyun
+# verisi sunucuda, kaybolan yalnız oturum: yeniden giriş yapılıyor).
+#
+# Satın alma bu APK'da çalışmaz (Google Play Faturalandırma yalnız Play'den
+# kurulan uygulamada); reklamlar Google'ın test reklamları.
+name: Android APK (indir, kur, oyna)
+
+on:
+  workflow_dispatch:
+    inputs:
+      oyun_adresi:
+        description: 'Sunucunun https adresi (boşsa OYUN_ADRESI değişkeni)'
+        required: false
+        default: ''
+  push:
+    branches: [claude/medieval-strategy-game-design-y08qr7]
+    paths:
+      - 'apps/web/**'
+      - 'apps/mobil/**'
+      - 'packages/shared/**'
+      - 'data/**'
+      - '.github/workflows/android-apk.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android-apk
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '22'
+  ETIKET: deneme-apk
+  DOSYA: lordlar-cagi-deneme.apk
+
+jobs:
+  apk:
+    name: Deneme APK'sı
+    # İtişte yalnız adres ayarlıysa: adressiz APK hiçbir sunucuya bağlanamazdı.
+    if: github.event_name == 'workflow_dispatch' || vars.OYUN_ADRESI != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      # Girdi betiğe yazılmıyor, ortamdan okunuyor ve biçimi denetleniyor.
+      - name: Adres
+        env:
+          ADRES: ${{ inputs.oyun_adresi || vars.OYUN_ADRESI }}
+        run: |
+          OYUN_ADRESI="${ADRES%/}"
+          [[ "$OYUN_ADRESI" =~ ^https://[A-Za-z0-9.-]+$ ]] || {
+            echo "::error::Sunucu adresi gerekli ve https://alan.adi biçiminde olmalı (girdi ya da OYUN_ADRESI değişkeni)"
+            exit 1
+          }
+          echo "OYUN_ADRESI=$OYUN_ADRESI" >> "$GITHUB_ENV"
+
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Arayüz ve Capacitor eşitlemesi
+        run: node apps/mobil/derle.mjs
+
+      - name: APK
+        working-directory: apps/mobil/android
+        env:
+          IMZA_ANAHTARI_B64: ${{ secrets.IMZA_ANAHTARI_B64 }}
+          IMZA_PAROLASI: ${{ secrets.IMZA_PAROLASI }}
+          IMZA_TAKMA_ADI: ${{ secrets.IMZA_TAKMA_ADI }}
+          IMZA_ANAHTAR_PAROLASI: ${{ secrets.IMZA_ANAHTAR_PAROLASI || secrets.IMZA_PAROLASI }}
+          SURUM_KODU: ${{ github.run_number }}
+          SURUM_ADI: 0.${{ github.run_number }}
+        run: |
+          if [ -n "$IMZA_ANAHTARI_B64" ]; then
+            export IMZA_DOSYASI="$RUNNER_TEMP/yukleme-anahtari.p12"
+            trap 'rm -f "$IMZA_DOSYASI"' EXIT
+            printf '%s' "$IMZA_ANAHTARI_B64" | base64 -d > "$IMZA_DOSYASI"
+            echo "IMZA=kalici" >> "$GITHUB_ENV"
+          else
+            echo "IMZA=gecici" >> "$GITHUB_ENV"
+          fi
+          ./gradlew --no-daemon assembleDeneme
+          cp app/build/outputs/apk/deneme/app-deneme.apk "$RUNNER_TEMP/$DOSYA"
+
+      # Paket gerçekten kurulabilir mi: imzası geçerli, hata ayıklanamıyor,
+      # paket adı Play sürümünden ayrı.
+      - name: Paket denetimi
+        run: |
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          "$BT/apksigner" verify "$RUNNER_TEMP/$DOSYA"
+          "$BT/aapt2" dump badging "$RUNNER_TEMP/$DOSYA" > "$RUNNER_TEMP/rozet.txt"
+          grep -q "package: name='com.lordlarcagi.oyun.deneme'" "$RUNNER_TEMP/rozet.txt" \
+            || { head -3 "$RUNNER_TEMP/rozet.txt"; echo "::error::Paket adı beklenmedik"; exit 1; }
+          if grep -q 'application-debuggable' "$RUNNER_TEMP/rozet.txt"; then
+            echo "::error::APK hata ayıklanabilir çıktı"; exit 1
+          fi
+
+      - name: Yayın sayfasına koy
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          BAGLANTI="https://github.com/${GITHUB_REPOSITORY}/releases/download/${ETIKET}/${DOSYA}"
+          if [ "$IMZA" = kalici ]; then
+            GUNCELLEME="Yeni sürüm eskisinin üstüne kuruluyor."
+          else
+            GUNCELLEME="Bu APK geçici bir anahtarla imzalı: yeni sürümü kurmadan önce eskisini KALDIR (oyun verin sunucuda, yalnız yeniden giriş yaparsın)."
+          fi
+          cat > "$RUNNER_TEMP/notlar.md" <<NOT
+          ## Lordlar Çağı — telefona doğrudan kurulan APK
+
+          **İndir:** ${BAGLANTI}
+
+          1. Bağlantıyı telefonda aç, dosyayı indir.
+          2. İndirilen dosyaya dokun. Android "bilinmeyen kaynaklardan yükleme" izni isterse tarayıcına izin ver.
+          3. Kur, aç, oyna.
+
+          - Sunucu: ${OYUN_ADRESI}
+          - Sürüm: 0.${GITHUB_RUN_NUMBER} · ${GITHUB_SHA::7}
+          - ${GUNCELLEME}
+          - Elmas satın alma bu APK'da çalışmaz (yalnız Play'den kurulan uygulamada); reklamlar test reklamı.
+          NOT
+          # Etiket bu derlemenin işlemesine taşınıyor: sayfa hangi kodun
+          # paketlendiğini göstersin.
+          git tag -f "$ETIKET" "$GITHUB_SHA"
+          git push -f origin "refs/tags/$ETIKET"
+          if gh release view "$ETIKET" > /dev/null 2>&1; then
+            gh release edit "$ETIKET" --prerelease --title "Lordlar Çağı — Android APK" --notes-file "$RUNNER_TEMP/notlar.md"
+          else
+            gh release create "$ETIKET" --prerelease --title "Lordlar Çağı — Android APK" --notes-file "$RUNNER_TEMP/notlar.md" --verify-tag
+          fi
+          gh release upload "$ETIKET" "$RUNNER_TEMP/$DOSYA" --clobber
+          {
+            echo "### APK hazır"
+            echo ""
+            echo "- İndir: ${BAGLANTI}"
+            echo "- Sunucu: ${OYUN_ADRESI}"
+            echo "- ${GUNCELLEME}"
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- Deneme APK'sının adı: Play sürümüyle aynı telefonda karışmasın (build.gradle → deneme). -->
+<resources>
+    <string name="app_name">Lordlar Çağı (Deneme)</string>
+    <string name="title_activity_main">Lordlar Çağı (Deneme)</string>
+</resources>

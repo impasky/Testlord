@@ -245,6 +245,29 @@ IMZA_DOSYASI=/yol/yukleme.jks IMZA_PAROLASI=… IMZA_TAKMA_ADI=… IMZA_ANAHTAR_
 - Play Console formlarının (mağaza girişi, veri güvenliği, içerik
   derecelendirmesi, ürünler) hazır cevapları: `docs/26`.
 
+**Play'siz: telefona doğrudan kurulan APK.** Arkadaşlarla denemek için
+GitHub Actions → "Android APK (indir, kur, oyna)" → Run workflow →
+sunucunun adresini yaz (`.github/workflows/android-apk.yml`). APK deponun
+Releases sayfasına sabit bir bağlantıyla konuyor:
+
+```text
+https://github.com/<sahip>/<depo>/releases/download/deneme-apk/lordlar-cagi-deneme.apk
+```
+
+- Derleme türü `deneme` (build.gradle): paket adı `com.lordlarcagi.oyun.deneme`,
+  adı "Lordlar Çağı (Deneme)" — Play sürümüyle aynı telefonda yan yana
+  duruyor. Hata ayıklanamıyor; reklamlar Google'ın test reklamları.
+- Sunucu adresi APK'nın içine gömülüyor; sunucu değişince yeni APK gerekir.
+  Settings → Variables'ta `OYUN_ADRESI` varsa girdi boş bırakılabiliyor ve
+  daldaki her arayüz değişikliğinde APK kendiliğinden yenileniyor.
+- `IMZA_*` gizlileri varsa APK yükleme anahtarıyla imzalı ve her yeni sürüm
+  eskisinin üstüne kuruluyor. Yoksa her derleme yeni bir geçici anahtar
+  alıyor: yeni APK'dan önce eskisi kaldırılmalı (oyun verisi sunucuda).
+- **Elmas satın alma bu APK'da çalışmaz**: Google Play Faturalandırma yalnız
+  Play'den kurulan uygulamada açılıyor.
+- CI'daki `android` işi her gönderimde `assembleDeneme`i de derleyip imzayı,
+  paket adını ve hata ayıklanamadığını denetliyor.
+
 ### 4.5 Yayın kontrolü
 
 Yönetici panosu ve `pnpm yayin-kontrolu`: `PLAY_SERVIS_HESABI` (kapalı /
