@@ -246,9 +246,9 @@ IMZA_DOSYASI=/yol/yukleme.jks IMZA_PAROLASI=… IMZA_TAKMA_ADI=… IMZA_ANAHTAR_
   derecelendirmesi, ürünler) hazır cevapları: `docs/26`.
 
 **Play'siz: telefona doğrudan kurulan APK.** Arkadaşlarla denemek için
-GitHub Actions → "Android APK (indir, kur, oyna)" → Run workflow →
-sunucunun adresini yaz (`.github/workflows/android-apk.yml`). APK deponun
-Releases sayfasına sabit bir bağlantıyla konuyor:
+`.github/workflows/android-apk.yml` APK'yı derleyip deponun Releases
+sayfasına sabit bir bağlantıyla koyuyor (elle: GitHub Actions → "Android APK
+(indir, kur, oyna)" → Run workflow):
 
 ```text
 https://github.com/<sahip>/<depo>/releases/download/deneme-apk/lordlar-cagi-deneme.apk
@@ -257,9 +257,12 @@ https://github.com/<sahip>/<depo>/releases/download/deneme-apk/lordlar-cagi-dene
 - Derleme türü `deneme` (build.gradle): paket adı `com.lordlarcagi.oyun.deneme`,
   adı "Lordlar Çağı (Deneme)" — Play sürümüyle aynı telefonda yan yana
   duruyor. Hata ayıklanamıyor; reklamlar Google'ın test reklamları.
-- Sunucu adresi APK'nın içine gömülüyor; sunucu değişince yeni APK gerekir.
-  Settings → Variables'ta `OYUN_ADRESI` varsa girdi boş bırakılabiliyor ve
-  daldaki her arayüz değişikliğinde APK kendiliğinden yenileniyor.
+- Daldaki her arayüz değişikliğinde APK kendiliğinden yenilenip aynı
+  bağlantıya konuyor.
+- Sunucu adresi APK'nın içine gömülüyor: elle başlatırken girilen, yoksa
+  Settings → Variables'taki `OYUN_ADRESI`, yoksa iş akışındaki
+  `VARSAYILAN_ADRES` (şimdilik `https://lordlar-cagi.onrender.com`). Sunucu
+  değişince yeni APK dağıtılmalı; eskiler eski adrese bağlanır.
 - `IMZA_*` gizlileri varsa APK yükleme anahtarıyla imzalı ve her yeni sürüm
   eskisinin üstüne kuruluyor. Yoksa her derleme yeni bir geçici anahtar
   alıyor: yeni APK'dan önce eskisi kaldırılmalı (oyun verisi sunucuda).

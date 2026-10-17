@@ -8,11 +8,14 @@
 #
 # Depo herkese açık: bağlantı GitHub hesabı istemeden iniyor.
 #
-# Başlatmak: Actions → "Android APK (indir, kur, oyna)" → Run workflow →
-# sunucunun adresini yaz (ör. https://lordlar-cagi.onrender.com). Adres
-# APK'nın İÇİNE gömülüyor; sunucu değişince yeni APK gerekir.
-# Settings → Variables'ta OYUN_ADRESI varsa girdi boş bırakılabiliyor ve
-# daldaki her arayüz değişikliğinde APK kendiliğinden yenileniyor.
+# Daldaki her arayüz değişikliğinde APK kendiliğinden yenileniyor; elle:
+# Actions → "Android APK (indir, kur, oyna)" → Run workflow.
+#
+# Sunucu adresi APK'nın İÇİNE gömülüyor. Sırayla: elle başlatırken girilen
+# adres, Settings → Variables'taki OYUN_ADRESI, yoksa aşağıdaki
+# VARSAYILAN_ADRES (şimdilik Render). Sunucu değişince (DigitalOcean)
+# OYUN_ADRESI'ni gir ya da VARSAYILAN_ADRES'i değiştir — eski APK'lar
+# eski sunucuya bağlanmaya devam eder, yenisini dağıtmak gerekir.
 #
 # İmza: IMZA_* gizlileri (android-yayin.yml) varsa onlarla — her yeni APK
 # eskisinin üstüne kuruluyor. Yoksa koşucunun hata ayıklama anahtarıyla;
@@ -27,7 +30,7 @@ on:
   workflow_dispatch:
     inputs:
       oyun_adresi:
-        description: 'Sunucunun https adresi (boşsa OYUN_ADRESI değişkeni)'
+        description: 'Sunucunun https adresi (boşsa OYUN_ADRESI ya da varsayılan)'
         required: false
         default: ''
   push:
@@ -48,21 +51,21 @@ concurrency:
 
 env:
   NODE_VERSION: '22'
+  # Gizli değil: oyuncunun tarayıcıda açtığı adresin ta kendisi.
+  VARSAYILAN_ADRES: https://lordlar-cagi.onrender.com
   ETIKET: deneme-apk
   DOSYA: lordlar-cagi-deneme.apk
 
 jobs:
   apk:
     name: Deneme APK'sı
-    # İtişte yalnız adres ayarlıysa: adressiz APK hiçbir sunucuya bağlanamazdı.
-    if: github.event_name == 'workflow_dispatch' || vars.OYUN_ADRESI != ''
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       # Girdi betiğe yazılmıyor, ortamdan okunuyor ve biçimi denetleniyor.
       - name: Adres
         env:
-          ADRES: ${{ inputs.oyun_adresi || vars.OYUN_ADRESI }}
+          ADRES: ${{ inputs.oyun_adresi || vars.OYUN_ADRESI || env.VARSAYILAN_ADRES }}
         run: |
           OYUN_ADRESI="${ADRES%/}"
           [[ "$OYUN_ADRESI" =~ ^https://[A-Za-z0-9.-]+$ ]] || {
