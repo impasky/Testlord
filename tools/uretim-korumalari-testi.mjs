@@ -305,5 +305,41 @@ k(
     ?.trim() ?? 'JWT_SECRET geçmiyor',
 );
 
+/* ---------------------------------------------------------------- */
+/* 3. Migration güncelken açılış Prisma CLI'yı hiç başlatmıyor        */
+/* ---------------------------------------------------------------- */
+/*
+ * Ücretsiz sunucu (0,1 CPU) her uyanışta `prisma migrate deploy` için
+ * 17-22 sn harcıyordu, bekleyen migration yokken bile. Artık açılış
+ * `_prisma_migrations`a kendisi bakıyor (apps/api migrationDurumu.ts).
+ * Buradaki veritabanı geliştirme sunucusununki: migration'ları güncel.
+ */
+const uyanis = sunucuBaslat({
+  NODE_ENV: 'production',
+  PORT: String(PORT + 2),
+  JWT_SECRET: randomBytes(32).toString('hex'),
+  SERVE_WEB: 'false',
+  RUN_WORKER: 'false',
+  AUTO_MIGRATE: 'true',
+  SEED_DEMO_LORDS: 'false',
+});
+try {
+  const kalkti = await ayagaKalkmasiniBekle(`http://127.0.0.1:${PORT + 2}/health`);
+  k('AUTO_MIGRATE açıkken sunucu açıldı', kalkti, kalkti ? '' : uyanis.oku().slice(-300));
+  k(
+    'bekleyen migration yokken Prisma CLI başlamıyor',
+    /Migration: bekleyen yok\./.test(uyanis.oku()) && !/Prisma schema loaded/.test(uyanis.oku()),
+    uyanis
+      .oku()
+      .split('\n')
+      .find((l) => /Migration/.test(l))
+      ?.trim() ?? 'Migration satırı yok',
+  );
+} finally {
+  uyanis.surec.kill('SIGTERM');
+  await new Promise((r) => setTimeout(r, 1200));
+  if (!uyanis.surec.killed) uyanis.surec.kill('SIGKILL');
+}
+
 console.log(hata === 0 ? '\nÜRETİM KORUMALARI TEMİZ\n' : `\n${hata} KORUMA KALDI\n`);
 process.exit(hata === 0 ? 0 : 1);

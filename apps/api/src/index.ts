@@ -13,9 +13,11 @@ import { ZodError } from 'zod';
 import { prisma } from './db.js';
 import { env } from './env.js';
 import { veritabaniniYokla, yoklamaAciklamasi, yoklamaOzeti } from './vtYoklama.js';
+import { bekleyenMigrationlar, migrationKlasorleri } from './migrationDurumu.js';
 import { GameError } from './errors.js';
 import { hataBildir, izlemeAcikMi, izlemeBaslat, surecHatalariniYakala } from './izleme.js';
 import { istemciIp } from './istemciIp.js';
+import { yazmaSiniri } from './services/tekUcus.js';
 import { armyRoutes } from './routes/army.js';
 import { authRoutes } from './routes/auth.js';
 import { devRoutes } from './routes/dev.js';
@@ -220,6 +222,20 @@ export async function buildServer() {
     "form-action 'self'",
     "frame-ancestors 'none'",
   ].join('; ');
+  /*
+   * Yazma sınırı (services/tekUcus.ts): aynı anda gelen okumalar tek işi
+   * paylaşıyor ama bir yazma BAŞLADIKTAN ya da cevabı GİTTİKTEN sonra
+   * gelen okuma, ondan önce başlamış işe katılmamalı.
+   */
+  const yazmaMi = (yontem: string) => yontem !== 'GET' && yontem !== 'HEAD' && yontem !== 'OPTIONS';
+  app.addHook('onRequest', async (req) => {
+    if (yazmaMi(req.method)) yazmaSiniri();
+  });
+  app.addHook('onSend', async (req, _reply, payload) => {
+    if (yazmaMi(req.method)) yazmaSiniri();
+    return payload;
+  });
+
   app.addHook('onSend', async (_req, reply, payload) => {
     reply.header('Content-Security-Policy', CSP);
     reply.header('X-Content-Type-Options', 'nosniff');
@@ -286,7 +302,29 @@ export async function buildServer() {
     if (!webDist) {
       app.log.error(`Arayüz bulunamadı. Bakılan yerler: ${adaylar.join(', ')}`);
     } else {
-      await app.register(fastifyStatic, { root: webDist, wildcard: false });
+      /*
+       * HAZIR SIKIŞTIRILMIŞ dosya (`preCompressed`): derleme her metin
+       * dosyasının yanına `.br` ve `.gz` koyuyor (apps/web/vite-sikistir.mjs).
+       * İstek anında sıkıştırmak 0,1 CPU'lu sunucuda ana paket için ~1 sn'ydi.
+       *
+       * ÖNBELLEK: `/assets/` altındaki her dosyanın adında içerik özeti var
+       * (Vite), yani adı aynıysa içeriği de aynı — bir yıl, `immutable`.
+       * Önceden her açılışta her dosya için "değişti mi" sorusu gidiyordu.
+       * Geri kalanı (index.html, sw.js, simgeler) her açılışta denetleniyor:
+       * yeni sürüm yayımlanınca oyuncu eskisinde kalmasın.
+       */
+      await app.register(fastifyStatic, {
+        root: webDist,
+        wildcard: false,
+        preCompressed: true,
+        cacheControl: false,
+        setHeaders: (reply, yol) => {
+          reply.header(
+            'cache-control',
+            /[\\/]assets[\\/]/.test(yol) ? 'public, max-age=31536000, immutable' : 'no-cache',
+          );
+        },
+      });
       // Tek sayfalık uygulama: /api dışındaki tüm yollar index.html'e düşer
       app.setNotFoundHandler((req, reply) => {
         if (req.url.startsWith('/api')) {
@@ -392,11 +430,29 @@ async function acilisHazirligi(): Promise<void> {
   await veritabaniniBekle();
 
   if (env.autoMigrate) {
-    console.log('Migration uygulanıyor...');
-    execFileSync('npx', ['prisma', 'migrate', 'deploy'], {
-      stdio: 'inherit',
-      cwd: resolve(dirname(fileURLToPath(import.meta.url)), '..'),
-    });
+    /*
+     * CLI yalnız bekleyen migration varsa (migrationDurumu.ts): uyuyan
+     * ücretsiz sunucunun her uyanışında 17-22 saniyeydi. `npx` değil
+     * paketin kendi `prisma`sı — npm'i açmak da 0,1 CPU'da beş saniye.
+     */
+    const kok = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+    // Tablo yoksa (boş veritabanı) okuma düşer: hepsi bekliyor sayılır.
+    const kayitlar = await prisma.$queryRaw<{ ad: string; bitti: boolean; geriAlindi: boolean }[]>`
+        SELECT migration_name AS ad,
+               finished_at IS NOT NULL AS bitti,
+               rolled_back_at IS NOT NULL AS "geriAlindi"
+        FROM "_prisma_migrations"`.catch(() => []);
+    const bekleyen = bekleyenMigrationlar(migrationKlasorleri(kok), kayitlar);
+    if (bekleyen.length === 0) {
+      console.log('Migration: bekleyen yok.');
+    } else {
+      console.log(`Migration uygulanıyor (${bekleyen.length} bekliyor)...`);
+      const yerel = join(kok, 'node_modules', '.bin', 'prisma');
+      const [komut, ...argumanlar] = existsSync(yerel)
+        ? [yerel, 'migrate', 'deploy']
+        : ['npx', 'prisma', 'migrate', 'deploy'];
+      execFileSync(komut!, argumanlar, { stdio: 'inherit', cwd: kok });
+    }
   }
 
   let dunya = await prisma.world.findFirst({ where: { status: 'open' } });

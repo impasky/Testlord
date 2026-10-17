@@ -44,8 +44,19 @@
 import { gecikmisYuruyusleriCoz } from './march.js';
 import { gecikmisAkinlariCoz } from './akin.js';
 import { gecikmisIsleriCoz } from './queue.js';
+import { tekUcus } from './tekUcus.js';
 
-export async function gecikmisleriKapat(lordId: string, now = new Date()): Promise<void> {
+/**
+ * Zaman verilmezse (uçların hepsi) aynı anda gelen istekler tek kapatmayı
+ * paylaşıyor (services/tekUcus.ts): ekran açılışında dört uç aynı üç
+ * sorguyu ve aynı çözümleri yarıştırıyordu.
+ */
+export function gecikmisleriKapat(lordId: string, now?: Date): Promise<void> {
+  if (now) return kapat(lordId, now);
+  return tekUcus(`gecikmis:${lordId}`, () => kapat(lordId, new Date()));
+}
+
+async function kapat(lordId: string, now: Date): Promise<void> {
   await Promise.all([
     gecikmisIsleriCoz(lordId, now),
     gecikmisYuruyusleriCoz(lordId, now),

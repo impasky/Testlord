@@ -43,7 +43,9 @@ services:
     plan: free
     region: frankfurt
     buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build
-    startCommand: pnpm start
+    # pnpm DEĞİL doğrudan node: ücretsiz sunucu (0,1 CPU) her uyanışta
+    # pnpm'i açmak için dört saniye harcıyordu. Dockerfile da böyle başlıyor.
+    startCommand: node apps/api/dist/index.js
     healthCheckPath: /health
     envVars:
       - key: NODE_VERSION

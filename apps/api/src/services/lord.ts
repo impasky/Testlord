@@ -59,6 +59,7 @@ import {
 import type { Prisma } from '@prisma/client';
 import { prisma, type Tx } from '../db.js';
 import { lordKilitle } from './kilit.js';
+import { tekUcus } from './tekUcus.js';
 import { garnizonPayGirdileri } from './gelir.js';
 import { lordunMedeniyetBonusu, tahtiTutanMedeniyet } from './medeniyet.js';
 import { B } from '@lordlar/shared';
@@ -382,8 +383,21 @@ export function lordArmasi(lord: {
  * sürer). Verilmezse kendi kısa işlemini açıyor: kilitsiz bir `/me`
  * okuması da aynı ezmeyi yapabiliyordu.
  */
-export async function tickLord(lordId: string, now = new Date(), tx?: Tx): Promise<LordState> {
-  if (!tx) return prisma.$transaction((t) => tickLord(lordId, now, t));
+export async function tickLord(lordId: string, now?: Date, tx?: Tx): Promise<LordState> {
+  if (tx) return tickUygula(lordId, now ?? new Date(), tx);
+  if (now) return prisma.$transaction((t) => tickUygula(lordId, now, t));
+  /*
+   * Okuma uçları (zaman ve işlem vermeyenler) aynı anda gelince TEK tick
+   * paylaşılıyor (services/tekUcus.ts): ekran açılışında dört uç aynı
+   * lordu sırayla kilitleyip aynı hesabı dört kez yapıyordu. Her çağıran
+   * kendi kopyasını alıyor — biri sonucu değiştirirse öbürüne geçmesin.
+   */
+  return tekUcus(`tick:${lordId}`, () =>
+    prisma.$transaction((t) => tickUygula(lordId, new Date(), t)),
+  ).then((s) => structuredClone(s));
+}
+
+async function tickUygula(lordId: string, now: Date, tx: Tx): Promise<LordState> {
   await lordKilitle(tx, lordId);
   const client = tx;
   const lord = (await client.lord.findUnique({
@@ -689,11 +703,16 @@ function basarimOlcutleriHesapla(
   };
 }
 
-/** Oturum sahibinin bu dünyadaki lordunu bulur. */
-export async function findLordByUser(userId: string): Promise<string> {
-  const lord = await prisma.lord.findFirst({ where: { userId }, select: { id: true } });
-  if (!lord) throw hata.bulunamadi('Lord');
-  return lord.id;
+/**
+ * Oturum sahibinin bu dünyadaki lordunu bulur. Aynı anda gelen istekler
+ * tek sorguyu paylaşıyor (services/tekUcus.ts).
+ */
+export function findLordByUser(userId: string): Promise<string> {
+  return tekUcus(`lord:${userId}`, async () => {
+    const lord = await prisma.lord.findFirst({ where: { userId }, select: { id: true } });
+    if (!lord) throw hata.bulunamadi('Lord');
+    return lord.id;
+  });
 }
 
 export { armyPower, collectAllUnits, collectUnitsAt };

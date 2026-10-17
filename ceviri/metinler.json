@@ -7976,8 +7976,8 @@
       "apps/api/src/routes/moderasyon.ts:83",
       "apps/api/src/routes/rankings.ts:265",
       "apps/api/src/routes/ticaret.ts:62",
-      "apps/api/src/services/lord.ts:393",
-      "apps/api/src/services/lord.ts:695",
+      "apps/api/src/services/lord.ts:407",
+      "apps/api/src/services/lord.ts:713",
       "apps/api/src/services/profil.ts:79",
       "apps/web/src/components/MobilKabuk.tsx:78",
       "apps/web/src/components/UygulamaKasasi.tsx:41"
@@ -17505,7 +17505,7 @@
     "tr": "Başkentin düştü",
     "en": "Your capital fell",
     "nerede": [
-      "apps/api/src/services/lord.ts:760"
+      "apps/api/src/services/lord.ts:779"
     ]
   },
   "ta3ff14a1": {
@@ -17654,7 +17654,7 @@
     "tr": "Bölge ele geçirildi",
     "en": "Region captured",
     "nerede": [
-      "apps/api/src/services/lord.ts:762"
+      "apps/api/src/services/lord.ts:781"
     ]
   },
   "tb08bcfd6": {
@@ -18451,7 +18451,7 @@
     "tr": "Eşyan satıldı",
     "en": "Your item sold",
     "nerede": [
-      "apps/api/src/services/lord.ts:766"
+      "apps/api/src/services/lord.ts:785"
     ]
   },
   "tc3dc0d24": {
@@ -18644,7 +18644,7 @@
     "tr": "İşin bitti",
     "en": "You're done",
     "nerede": [
-      "apps/api/src/services/lord.ts:763"
+      "apps/api/src/services/lord.ts:782"
     ]
   },
   "t75da2234": {
@@ -19106,7 +19106,7 @@
     "tr": "Ordun eve döndü",
     "en": "Your army returned home",
     "nerede": [
-      "apps/api/src/services/lord.ts:761"
+      "apps/api/src/services/lord.ts:780"
     ]
   },
   "t69d0d616": {
@@ -19165,7 +19165,7 @@
     "tr": "Ön siparişin karşılandı",
     "en": "Your buy order was filled",
     "nerede": [
-      "apps/api/src/services/lord.ts:767"
+      "apps/api/src/services/lord.ts:786"
     ]
   },
   "t57668250": {
@@ -19223,7 +19223,7 @@
     "tr": "Pazar emrin eşleşmiyor",
     "en": "Your market order doesn't match",
     "nerede": [
-      "apps/api/src/services/lord.ts:768"
+      "apps/api/src/services/lord.ts:787"
     ]
   },
   "te41957df": {
@@ -19347,7 +19347,7 @@
     "tr": "Savaş kaybedildi",
     "en": "Battle lost",
     "nerede": [
-      "apps/api/src/services/lord.ts:759"
+      "apps/api/src/services/lord.ts:778"
     ]
   },
   "t668e46ee": {
@@ -19499,7 +19499,7 @@
     "tr": "Toprağın saldırı altında",
     "en": "Your land is under attack",
     "nerede": [
-      "apps/api/src/services/lord.ts:758"
+      "apps/api/src/services/lord.ts:777"
     ]
   },
   "t20afa09d": {

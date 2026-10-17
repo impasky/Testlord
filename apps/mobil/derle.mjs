@@ -22,7 +22,8 @@ const kok = fileURLToPath(new URL('../..', import.meta.url));
 const kos = (komut, args, cwd, ek = {}) =>
   execFileSync(komut, args, { cwd, stdio: 'inherit', env: { ...process.env, ...ek } });
 
-kos('pnpm', ['--filter', '@lordlar/web', 'build'], kok, { VITE_API_URL: adres });
+// SIKISTIRMA=yok: dosyalar cihazdan okunuyor, .br/.gz kopyaları paketi şişirirdi.
+kos('pnpm', ['--filter', '@lordlar/web', 'build'], kok, { VITE_API_URL: adres, SIKISTIRMA: 'yok' });
 kos('npx', ['cap', 'sync', 'android'], `${kok}apps/mobil`);
 console.log(
   `\nAndroid paketi hazır: API ${adres}. Derleme: apps/mobil/android/gradlew bundleRelease`,

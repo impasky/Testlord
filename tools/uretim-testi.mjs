@@ -52,6 +52,33 @@ try {
   process.exit(2);
 }
 k('Sayfa açıldı', (await page.title()) === 'Lordlar Çağı');
+
+/*
+ * Statik dosyalar HAZIR sıkıştırılmış ve önbelleklenebilir gidiyor
+ * (apps/web/vite-sikistir.mjs, apps/api index.ts). İstek anında
+ * sıkıştırmak 0,1 CPU'lu sunucuda ana paket için ~1 sn'ydi; önbellek
+ * başlığı olmayınca her açılışta her dosya yeniden soruluyordu.
+ */
+{
+  const sayfa = await fetch(URL, { headers: { 'accept-encoding': 'br, gzip' } });
+  const html = await fetch(URL).then((r) => r.text());
+  const ana = /\/assets\/index-[^"]+\.js/.exec(html)?.[0];
+  const paket = ana ? await fetch(URL + ana, { headers: { 'accept-encoding': 'br, gzip' } }) : null;
+  // fetch gövdeyi kendisi açıyor: gönderilen boy başlıkta.
+  const gonderilen = paket?.headers.get('content-length');
+  await paket?.arrayBuffer();
+  k(
+    'Ana paket hazır Brotli ile ve bir yıllık önbellekle gidiyor',
+    paket?.headers.get('content-encoding') === 'br' &&
+      /immutable/.test(paket?.headers.get('cache-control') ?? ''),
+    `${paket?.headers.get('content-encoding')} · ${gonderilen} bayt · ${paket?.headers.get('cache-control')}`,
+  );
+  k(
+    'index.html her açılışta denetleniyor (yeni sürüm kaçmasın)',
+    sayfa.headers.get('cache-control') === 'no-cache',
+    `${sayfa.headers.get('cache-control')}`,
+  );
+}
 await page.screenshot({ path: `${SP}/tel-1-giris.png`, fullPage: true });
 
 const d = Date.now();

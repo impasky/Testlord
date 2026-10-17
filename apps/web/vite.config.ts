@@ -5,11 +5,13 @@ import { defineConfig } from 'vite';
 import { ceviriEklentisi } from './vite-ceviri.mjs';
 // @ts-expect-error — eklenti düz .mjs; tipi yok (bkz. dosyanın başı).
 import { cizimSurumu } from './vite-cizim-surumu.mjs';
+// @ts-expect-error — eklenti düz .mjs; tipi yok (bkz. dosyanın başı).
+import { derlemeSikistirma } from './vite-sikistir.mjs';
 
 export default defineConfig({
   // Çeviri eklentisi react()'ten ÖNCE: JSX'i React dönüştürmeden
   // sarmak gerekiyor, sonrasında JSX gövdesi diye bir şey kalmıyor.
-  plugins: [ceviriEklentisi(), cizimSurumu(), react(), tailwindcss()],
+  plugins: [ceviriEklentisi(), cizimSurumu(), react(), tailwindcss(), derlemeSikistirma()],
   // host: true -> 0.0.0.0'a bağlanır. Aynı Wi-Fi'daki telefondan
   // http://<bilgisayarın-LAN-IP>:5173 ile açılabilsin diye.
   // host: true -> 0.0.0.0'a bağlanır, aynı Wi-Fi'daki telefondan

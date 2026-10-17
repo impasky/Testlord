@@ -144,6 +144,22 @@ istersen §4'teki yedekle/geri yükle. Taşıdığın dünyada doğrulamayı AÇ
 yedi günü geçmiş, doğrulanmamış her hesap girişte durur: önce gerçek postayı
 (`resend`) kur, oyunculara haber ver.
 
+**Hız (0,1 CPU).** Ücretsiz sunucu 0,1 CPU; yerelde aynı sınırla
+(cgroup, 0,1 CPU + 512 MB) ölçüldü ve düzeltildi (2026-10-17):
+
+| Ne                              | Önce   | Sonra  | Nasıl                                                                   |
+| ------------------------------- | ------ | ------ | ----------------------------------------------------------------------- |
+| Uyanış (uygulamanın kendi payı) | ~40 sn | ~15 sn | bekleyen migration yoksa Prisma CLI hiç açılmıyor; `pnpm` yerine `node` |
+| Ana paket (745 KB)              | 1,2 sn | 0,1 sn | derlemede Brotli 11 (`.br`/`.gz`); `/assets/` bir yıl `immutable`       |
+| Şehir ekranının en yavaş isteği | 2,3 sn | 1,2 sn | aynı anda gelen istekler tick'i ve gecikmiş kapatmayı paylaşıyor        |
+
+Render'ın kendi uyanma süresi (konteyneri başlatması) bunların üstüne
+ekleniyor. Uyumasını engellemenin tek yolu 15 dakikadan sık dışarıdan
+istek atmak (ör. bir uptime servisiyle `/health`); bu 750 saatlik aylık
+ücretsiz kotanın hepsini yer ve Render çalışanları bunun ücretsiz katmanın
+amacına aykırı olduğunu söylüyor. Uyumayan sunucu için kalıcı yayın:
+DigitalOcean (§2).
+
 **Kalıcı Render istersen:** sunucuyu `standard` (1 CPU, 2 GB, 25 $),
 veritabanını `basic-1gb` (19 $ + disk) yap; sınıflandırıcıyı aç. 500 aktif
 oyuncuda `pro` ve `basic-4gb`. Fiyatlar paneldeki tutar.
