@@ -7,7 +7,8 @@
  *
  *   kayıt → jeton çıktı mı → kısıtlı eylem KAPALI mı → doğrula →
  *   kapı AÇILDI mı → aynı jeton ikinci kez geçiyor mu →
- *   serbest süre dolunca giriş kapanıyor mu.
+ *   serbest süre dolunca giriş kapanıyor mu — ve `EPOSTA_DOGRULAMA=kapali`
+ *   ile kalkan ikinci bir sunucuda HİÇBİRİ kapanmıyor mu.
  *
  * İkinci çekirdek: kapı ilk oturumu HİÇ engellemiyor. Kayıt olan oyuncu
  * jetonu beklemeden oynayabilmeli — "ilk saldırı dakikalarda bitsin"
@@ -16,6 +17,7 @@
  * SADECE GELİŞTİRME. /api/test/* uçlarını kullanır.
  * API ayakta olmalı. node tools/eposta-dogrulama-testi.mjs
  */
+import { spawn } from 'node:child_process';
 import { kayitOl } from './lib/kayit.mjs';
 
 const API = process.env.API_URL ?? 'http://localhost:3000';
@@ -176,6 +178,110 @@ kontrol(
   yeniJeton.kod === 403,
   `kod ${yeniJeton.kod}`,
 );
+
+/*
+ * 7. EPOSTA_DOGRULAMA=kapali — posta göndermeyen sunucu (docs/17)
+ *
+ * Ayar açılışta okunuyor; ikinci bir sunucu o ayarla kalkıyor ve aynı
+ * veritabanında 6. adımın senaryosunu tekrarlıyor: yedi günü geçmiş,
+ * doğrulanmamış hesap bu kez İÇERİDE kalmalı. Kapının bir yeri ayarı
+ * unutsaydı Render'daki oyuncular bir hafta sonra dışarıda kalırdı.
+ */
+const KAPALI_PORT = Number(process.env.DOGRULAMA_KAPALI_PORT ?? 3221);
+const KAPALI = `http://127.0.0.1:${KAPALI_PORT}`;
+const ikinci = spawn('pnpm', ['--filter', '@lordlar/api', 'exec', 'tsx', 'src/index.ts'], {
+  cwd: new URL('..', import.meta.url).pathname,
+  env: {
+    ...process.env,
+    EPOSTA_DOGRULAMA: 'kapali',
+    PORT: String(KAPALI_PORT),
+    NODE_ENV: 'development',
+    SERVE_WEB: 'false',
+    RUN_WORKER: 'false',
+    AUTO_MIGRATE: 'false',
+    SEED_DEMO_LORDS: 'false',
+  },
+  stdio: ['ignore', 'pipe', 'pipe'],
+  // Kendi süreç grubu: pnpm'in altındaki tsx de birlikte kapansın.
+  detached: true,
+});
+let ikinciCikti = '';
+ikinci.stdout.on('data', (d) => (ikinciCikti += d));
+ikinci.stderr.on('data', (d) => (ikinciCikti += d));
+
+try {
+  let kalkti = false;
+  for (let i = 0; i < 120 && !kalkti; i++) {
+    kalkti = await fetch(`${KAPALI}/health`, { signal: AbortSignal.timeout(1500) })
+      .then((y) => y.ok)
+      .catch(() => false);
+    if (!kalkti) await new Promise((r) => setTimeout(r, 500));
+  }
+  kontrol('Doğrulaması kapalı sunucu açıldı', kalkti, kalkti ? '' : ikinciCikti.slice(-300));
+
+  if (kalkti) {
+    const eposta = `dgr${damga}${tuz}k@lordlar.dev`;
+    const parola = 'Dogrula123!';
+    const { token } = await kayitOl(KAPALI, {
+      email: eposta,
+      password: parola,
+      lordName: `Dgr${damga}${tuz}k`,
+      dogrula: false,
+    });
+    const cagir = async (yol, yontem, govde) => {
+      const c = await fetch(`${KAPALI}/api${yol}`, {
+        method: yontem,
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        ...(yontem === 'POST' ? { body: JSON.stringify(govde ?? {}) } : {}),
+      });
+      return { kod: c.status, govde: await c.json().catch(() => null) };
+    };
+    await cagir('/test/hesabi-eskit', 'POST', { gun: 30 });
+
+    const g = await fetch(`${KAPALI}/api/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: eposta, password: parola }),
+    });
+    kontrol(
+      'Kapalıyken 30 günlük doğrulanmamış hesap giriyor',
+      g.status === 200,
+      `kod ${g.status}`,
+    );
+
+    const me = await cagir('/me', 'GET');
+    kontrol('Kapalıyken eldeki jeton çalışıyor', me.kod === 200, `kod ${me.kod}`);
+
+    const d = (await cagir('/moderasyon/durum', 'GET')).govde;
+    kontrol(
+      'Kapalıyken hesap ekranı doğrulama istemiyor',
+      d?.epostaDogrulandi === true && d?.dogrulamaMetni === null,
+      `${d?.epostaDogrulandi} · ${d?.dogrulamaMetni}`,
+    );
+
+    const s = await cagir('/ittifak/sohbet', 'POST', { metin: 'Kapı kapalı.' });
+    kontrol(
+      'Kapalıyken ittifak sohbeti doğrulama istemiyor',
+      s.govde?.code !== 'DOGRULANMADI',
+      `${s.kod} · ${s.govde?.error ?? ''}`.slice(0, 60),
+    );
+    const t = await cagir('/ticaret/gonder', 'POST', {
+      lordId: 'baskasi',
+      yuk: { altin: 10, demir: 0, erzak: 0 },
+    });
+    kontrol(
+      'Kapalıyken kaynak gönderme doğrulama istemiyor',
+      t.govde?.code !== 'DOGRULANMADI',
+      `${t.kod} · ${t.govde?.error ?? ''}`.slice(0, 60),
+    );
+  }
+} finally {
+  try {
+    process.kill(-ikinci.pid, 'SIGTERM');
+  } catch {
+    /* zaten kapanmış */
+  }
+}
 
 console.log(hata === 0 ? '\nTÜM KONTROLLER GEÇTİ' : `\n${hata} KONTROL KALDI`);
 process.exit(hata === 0 ? 0 : 1);

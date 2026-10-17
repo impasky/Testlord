@@ -41,6 +41,7 @@ export async function yayinKontrolu(
     epostaTasiyici: env.EPOSTA_TASIYICI,
     epostaAnahtar: Boolean(env.EPOSTA_ANAHTAR),
     epostaGonderenYerel: /@localhost\b/i.test(env.EPOSTA_GONDEREN),
+    epostaDogrulama: env.EPOSTA_DOGRULAMA === 'acik',
     vapidAcik: Boolean(env.VAPID_ACIK_ANAHTAR),
     vapidGizli: Boolean(env.VAPID_GIZLI_ANAHTAR),
     uygulamaUrl: adresSinifi(env.UYGULAMA_URL ?? env.RENDER_EXTERNAL_URL),

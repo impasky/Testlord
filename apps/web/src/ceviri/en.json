@@ -1680,6 +1680,8 @@
   "te2440594": "The enemy didn't have {0}; the main trump card of this tactic was wasted.",
   "t7292ddeb": "The enemy's {0} unit was {1}: +{2} attack.",
   "tcf7e17f3": "A group you defeat comes back a few hours later. It stays grey during that time but does not disappear — the screen says when it returns.",
+  "tcf434ee0": "Email verification is on.",
+  "t052e63bb": "Email verification is off: no one verifies their address, and a player who forgets their password may lose their account. Once mail is really being sent, set EPOSTA_DOGRULAMA=acik.",
   "t37e8b396": "Email is really being sent.",
   "t0d07faa6": "Email is only written to the server log; password reset and verification emails never reach players. Set EPOSTA_TASIYICI=resend.",
   "t8e1ff3a2": "Your email is not verified — it will be required to log in after {0} days.",

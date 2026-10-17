@@ -29,6 +29,7 @@ karşılığıdır.
 | `EPOSTA_TASIYICI`           | hayır      | log                  | `log` dışarı göndermez; `resend` gerçek posta atar                                                                                                   |
 | `EPOSTA_ANAHTAR`            | resend ise | —                    | Resend API anahtarı                                                                                                                                  |
 | `EPOSTA_GONDEREN`           | resend ise | —                    | Gönderen adresi; alan adı doğrulanmış olmalı                                                                                                         |
+| `EPOSTA_DOGRULAMA`          | hayır      | acik                 | `kapali` ise kimse doğrulama istemez (kısıtlı eylemler açık, 7 gün sonra giriş kapanmaz). Yalnız posta göndermeyen deneme sunucusu için (§2b)        |
 | `UYGULAMA_URL`              | hayır      | Render'ın dış adresi | Sıfırlama bağlantısının tabanı. DigitalOcean şablonunda `${APP_URL}` (birincil alan adını izliyor); Render'da verilmezse `RENDER_EXTERNAL_URL`       |
 | `VAPID_ACIK_ANAHTAR`        | hayır      | boş                  | Push bildirimi. `pnpm push-anahtari` ile üret; ikisi de boşsa bildirim kapalı ve arayüzde düğme hiç çıkmaz                                           |
 | `VAPID_GIZLI_ANAHTAR`       | push ise   | —                    | Aynı komutun ürettiği gizli yarısı. **Depoya yazma.** Değiştirmek bütün abonelikleri geçersiz kılar                                                  |
@@ -134,8 +135,14 @@ oynanabilir bir deneme sunucusu.
 Uyurken worker da duruyor; oyuncu dönünce birikmiş yürüyüşler ve kuyruklar
 hemen çözülüyor, kayıp yok ama bildirim gecikiyor. 512 MB'a profil resmi
 sınıflandırıcısı sığmıyor: `RESIM_SINIFLANDIRICI=kapali`, yüklenen resimler
-yönetici onayına gidiyor. Veritabanının süresi dolmadan DigitalOcean'a geç;
-içindeki oyuncuları taşımak istersen §4'teki yedekle/geri yükle.
+yönetici onayına gidiyor. Posta gönderilmiyor (`EPOSTA_TASIYICI=log`),
+bu yüzden e-posta doğrulaması da kapalı (`EPOSTA_DOGRULAMA=kapali`): açık
+kalsaydı kimse doğrulayamaz, ittifak sohbeti, kaynak gönderme ve eşya pazarı
+ilk günden kapalı olur, yedi gün sonra da giriş herkese kapanırdı.
+Veritabanının süresi dolmadan DigitalOcean'a geç; içindeki oyuncuları taşımak
+istersen §4'teki yedekle/geri yükle. Taşıdığın dünyada doğrulamayı AÇARSAN
+yedi günü geçmiş, doğrulanmamış her hesap girişte durur: önce gerçek postayı
+(`resend`) kur, oyunculara haber ver.
 
 **Kalıcı Render istersen:** sunucuyu `standard` (1 CPU, 2 GB, 25 $),
 veritabanını `basic-1gb` (19 $ + disk) yap; sınıflandırıcıyı aç. 500 aktif

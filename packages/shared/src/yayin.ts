@@ -30,6 +30,8 @@ export interface YayinGirdisi {
   epostaAnahtar: boolean;
   /** Gönderen adresi varsayılan (`@localhost`) mı. */
   epostaGonderenYerel: boolean;
+  /** Doğrulama kapısı açık mı (`EPOSTA_DOGRULAMA`). */
+  epostaDogrulama: boolean;
   vapidAcik: boolean;
   vapidGizli: boolean;
   /** Parola sıfırlama bağlantısının tabanı. */
@@ -79,6 +81,8 @@ export type YayinNedeni =
   | 'eposta-log'
   | 'eposta-anahtar-yok'
   | 'eposta-gonderen-yerel'
+  | 'dogrulama'
+  | 'dogrulama-kapali'
   | 'push'
   | 'push-yok'
   | 'push-yarim'
@@ -142,6 +146,9 @@ export const YAYIN_METNI: Record<YayinNedeni, string> = {
   'eposta-anahtar-yok': 'EPOSTA_TASIYICI=resend ama EPOSTA_ANAHTAR boş: posta gönderilemez.',
   'eposta-gonderen-yerel':
     'Gönderen adresi varsayılan (@localhost); posta reddedilir. EPOSTA_GONDEREN alan adın doğrulanmış bir adres olmalı.',
+  dogrulama: 'E-posta doğrulaması açık.',
+  'dogrulama-kapali':
+    'E-posta doğrulaması kapalı: kimse adresini doğrulamıyor, parolasını unutan hesabını kaybedebilir. Posta gerçekten gidince EPOSTA_DOGRULAMA=acik yap.',
   push: 'Push bildirimi açık.',
   'push-yok':
     'Push bildirimi kapalı; arayüzde düğme hiç çıkmıyor. pnpm push-anahtari ile üretilen VAPID çiftini gir.',
@@ -246,6 +253,11 @@ export function yayinDenetimi(g: YayinGirdisi): YayinBulgusu[] {
   else if (!g.epostaAnahtar) ekle('EPOSTA_ANAHTAR', 'eksik', 'eposta-anahtar-yok');
   else if (g.epostaGonderenYerel) ekle('EPOSTA_GONDEREN', 'eksik', 'eposta-gonderen-yerel');
   else ekle('EPOSTA_TASIYICI', 'tamam', 'eposta');
+  ekle(
+    'EPOSTA_DOGRULAMA',
+    g.epostaDogrulama ? 'tamam' : 'eksik',
+    g.epostaDogrulama ? 'dogrulama' : 'dogrulama-kapali',
+  );
   ekle(
     'VAPID',
     g.vapidAcik && g.vapidGizli ? 'tamam' : 'eksik',

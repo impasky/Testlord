@@ -3,7 +3,6 @@ import {
   BASLANGIC_ELMASI,
   GEAR_LINES,
   WORLD_MAP,
-  dogrulamaDurumu,
   gonderilebilirMi,
   gunNumarasi,
   jetonGecerli,
@@ -21,7 +20,11 @@ import { istemciIp } from '../istemciIp.js';
 import { adiDenetle, lordAdiAnahtari } from '../services/adDenetimi.js';
 import { postaGonder } from '../services/eposta.js';
 import { girisFreni } from '../services/girisFreni.js';
-import { dogrulamaGonder, ozet as dogrulamaOzeti } from '../services/epostaDogrulama.js';
+import {
+  dogrulamaGonder,
+  hesapDogrulamaDurumu,
+  ozet as dogrulamaOzeti,
+} from '../services/epostaDogrulama.js';
 import { medeniyetAta } from '../services/medeniyet.js';
 import { AKTIF_GUN, diyarDoluMu, findOrOpenWorld } from '../services/world.js';
 
@@ -396,7 +399,7 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
      * parolasını unutan da hesabını yine kaybederdi. Kapı burada
      * kapanıyor ama oyuncu ilk yedi günü hiç görmeden oynadı.
      */
-    const d = dogrulamaDurumu(user.epostaDogrulandi, user.createdAt, simdi);
+    const d = hesapDogrulamaDurumu(user.epostaDogrulandi, user.createdAt, simdi);
     if (d.girisKapali) {
       throw new GameError(d.metin ?? 'E-postanı doğrula.', 403, 'DOGRULANMADI');
     }

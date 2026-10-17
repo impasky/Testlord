@@ -1,8 +1,9 @@
-import { dogrulamaDurumu, yasakDurumu } from '@lordlar/shared';
+import { yasakDurumu } from '@lordlar/shared';
 import { hash, verify } from '@node-rs/argon2';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { prisma } from './db.js';
 import { GameError } from './errors.js';
+import { hesapDogrulamaDurumu } from './services/epostaDogrulama.js';
 
 export interface JwtPayload {
   userId: string;
@@ -85,7 +86,7 @@ export async function requireAuth(req: FastifyRequest, _reply: FastifyReply): Pr
    * yoksa oyuncu doğrulamak için giremediği bir kapıya çarpardı.
    */
   if (!DOGRULAMA_MUAF.has(req.url.split('?')[0] ?? '')) {
-    const d = dogrulamaDurumu(u.epostaDogrulandi, u.createdAt, simdi);
+    const d = hesapDogrulamaDurumu(u.epostaDogrulandi, u.createdAt, simdi);
     if (d.girisKapali) throw new GameError(d.metin ?? 'E-postanı doğrula.', 403, 'DOGRULANMADI');
   }
 }

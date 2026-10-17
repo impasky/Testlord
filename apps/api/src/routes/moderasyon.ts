@@ -18,7 +18,6 @@ import {
   SILINMIS_MESAJ,
   SUSTURMA_GECMIS_SAYISI,
   SUSTURMA_SURELERI,
-  dogrulamaDurumu,
   otomatikGizlenir,
   kararMetni,
   karariDenetle,
@@ -35,6 +34,7 @@ import { z } from 'zod';
 import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { GameError, hata } from '../errors.js';
+import { hesapDogrulamaDurumu } from '../services/epostaDogrulama.js';
 import { findLordByUser, pushEvent } from '../services/lord.js';
 import { kararKaydet, requireYonetici, sikayetKaydet } from '../services/moderasyon.js';
 import { resmiKaldir, resmiOnayla } from '../services/profil.js';
@@ -139,7 +139,7 @@ export async function moderasyonRoutes(app: FastifyInstance): Promise<void> {
      * Hesap ekranı zaten bunu çağırıyor; doğrulama için ikinci bir istek
      * açmak aynı ekranda iki bekleme demekti.
      */
-    const d = dogrulamaDurumu(u?.epostaDogrulandi, u?.createdAt ?? new Date(), new Date());
+    const d = hesapDogrulamaDurumu(u?.epostaDogrulandi, u?.createdAt ?? new Date(), new Date());
 
     return {
       yonetici: u?.yonetici === true,

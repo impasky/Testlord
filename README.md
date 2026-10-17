@@ -136,7 +136,8 @@ yönetilen PostgreSQL ~15 $ (yedekli).
 **Şimdilik ücretsiz deneme: Render.** render.com → New → Blueprint → bu depo
 ve dal → Apply. `render.yaml` ücretsiz sunucu ve ücretsiz PostgreSQL kurar:
 sunucu 15 dakika boşta kalınca uyur (ilk açılış ~1 dakika), veritabanı
-**30 günde silinir** — kalıcı yayın DigitalOcean'da (`docs/05` §2b).
+**30 günde silinir** — kalıcı yayın DigitalOcean'da (`docs/05` §2b). Posta
+gönderilmediği için e-posta doğrulaması orada kapalı (`EPOSTA_DOGRULAMA`).
 
 ### Kurulum hata verirse
 

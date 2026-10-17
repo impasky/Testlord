@@ -66,8 +66,12 @@ export function dogrulamaDurumu(
   dogrulandi: Date | null | undefined,
   hesapAcilis: Date,
   simdi: Date,
+  /** Sunucuda kapı kapalıysa (`EPOSTA_DOGRULAMA=kapali`) herkes doğrulanmış. */
+  zorunlu = true,
 ): DogrulamaDurumu {
-  if (dogrulandi) return { dogrulandi: true, kalanGun: null, girisKapali: false, metin: null };
+  if (dogrulandi || !zorunlu) {
+    return { dogrulandi: true, kalanGun: null, girisKapali: false, metin: null };
+  }
 
   const gecen = (simdi.getTime() - hesapAcilis.getTime()) / 86_400_000;
   const kalan = Math.max(0, Math.ceil(SERBEST_GUN - gecen));

@@ -18,6 +18,7 @@ const HAZIR: YayinGirdisi = {
   epostaTasiyici: 'resend',
   epostaAnahtar: true,
   epostaGonderenYerel: false,
+  epostaDogrulama: true,
   vapidAcik: true,
   vapidGizli: true,
   uygulamaUrl: 'tamam',
@@ -76,6 +77,14 @@ describe('yayın kontrolü', () => {
     expect(neden({ uygulamaUrl: 'guvensiz' }).UYGULAMA_URL).toBe('adres-guvensiz');
     expect(neden({ uygulamaUrl: 'yerel' }).UYGULAMA_URL).toBe('adres-yerel');
     expect(neden({ demoLordlar: true }).SEED_DEMO_LORDS).toBe('demo-acik');
+    expect(neden({ epostaDogrulama: false }).EPOSTA_DOGRULAMA).toBe('dogrulama-kapali');
+  });
+
+  it('doğrulama kapalıysa posta gitse de eksik: kapı bilerek açılmalı', () => {
+    expect(yayinOzeti(yayinDenetimi({ ...HAZIR, epostaDogrulama: false }))).toEqual({
+      eksik: 1,
+      uyari: 0,
+    });
   });
 
   it('WEB_ORIGIN yalnız arayüz ayrı adresteyse denetleniyor', () => {

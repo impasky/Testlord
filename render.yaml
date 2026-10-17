@@ -15,7 +15,8 @@
 #   - PostgreSQL 30 GÜNDE süresi doluyor, 14 gün sonra VERİSİYLE siliniyor:
 #     DigitalOcean'a geçiş ondan önce;
 #   - bellek 512 MB: profil resmi sınıflandırıcısı (~100 MB) kapalı, yüklenen
-#     resimler yönetici onayına gidiyor.
+#     resimler yönetici onayına gidiyor;
+#   - posta gönderilmiyor, e-posta doğrulaması da kapalı (EPOSTA_DOGRULAMA).
 # Kalıcı Render için: sunucu `standard`, veritabanı `basic-1gb` (docs/05 §2b).
 
 databases:
@@ -113,6 +114,12 @@ services:
         sync: false
       - key: EPOSTA_GONDEREN
         sync: false
+      # Posta "log"dayken kimse adresini doğrulayamaz; doğrulama kapısı açık
+      # kalsaydı ittifak sohbeti, kaynak gönderme ve eşya pazarı ilk günden
+      # kapalı olur, YEDİ GÜN sonra da giriş herkese kapanırdı. Gerçek posta
+      # (resend) ayarlanınca "acik" yap.
+      - key: EPOSTA_DOGRULAMA
+        value: kapali
 
       # Push bildirimi (docs/05). Yerelde `pnpm push-anahtari` ile bir çift
       # üret, iki yarıyı Render panelinde gir. Boş kalırsa bildirim kapalıdır

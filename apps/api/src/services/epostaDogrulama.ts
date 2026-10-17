@@ -8,7 +8,14 @@
  * yazılıyor. Veritabanı sızarsa elindeki özetle kimse hesap
  * doğrulayamaz — `PasswordReset` ile aynı gerekçe.
  */
-import { JETON_OMRU_SAAT, KISITLI_EYLEM_ADI, gonderilebilirMi, jetonBitisi } from '@lordlar/shared';
+import {
+  JETON_OMRU_SAAT,
+  KISITLI_EYLEM_ADI,
+  dogrulamaDurumu,
+  gonderilebilirMi,
+  jetonBitisi,
+  type DogrulamaDurumu,
+} from '@lordlar/shared';
 import { randomBytes, createHash } from 'node:crypto';
 import { prisma } from '../db.js';
 import { env } from '../env.js';
@@ -20,6 +27,21 @@ export function ozet(jeton: string): string {
 }
 
 type Log = { info: (o: object, m: string) => void; error: (o: object, m: string) => void };
+
+/**
+ * Hesabın doğrulama hâli, sunucunun ayarıyla (`EPOSTA_DOGRULAMA`).
+ *
+ * Kapı soran her yer bunu çağırıyor, shared'dakini doğrudan değil: ayarı
+ * unutan tek bir çağrı, posta göndermeyen sunucuda oyuncuyu yine dışarıda
+ * bırakırdı.
+ */
+export function hesapDogrulamaDurumu(
+  dogrulandi: Date | null | undefined,
+  hesapAcilis: Date,
+  simdi: Date,
+): DogrulamaDurumu {
+  return dogrulamaDurumu(dogrulandi, hesapAcilis, simdi, env.EPOSTA_DOGRULAMA === 'acik');
+}
 
 /**
  * Yeni jeton üretip postayı yollar.
@@ -88,6 +110,7 @@ export async function dogrulamaGonder(
  * engellemek doğrulama değil, ceza olurdu.
  */
 export async function dogrulamaKontrol(userId: string, eylem: string): Promise<void> {
+  if (env.EPOSTA_DOGRULAMA === 'kapali') return;
   const u = await prisma.user.findUnique({
     where: { id: userId },
     select: { epostaDogrulandi: true },

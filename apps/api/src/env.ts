@@ -100,6 +100,16 @@ const schema = z.object({
   /** Gönderen adresi. Alan adının doğrulanmış olması gerekir. */
   EPOSTA_GONDEREN: z.string().default('Lordlar Çağı <bildirim@localhost>'),
   /**
+   * E-posta doğrulama kapısı (docs/17). `kapali` ise herkes doğrulanmış
+   * sayılıyor: kısıtlı eylemler açık, yedi gün sonra giriş kapanmıyor.
+   *
+   * Posta gönderemeyen bir deneme sunucusu için (Render ücretsiz, docs/05
+   * §2b): orada kimse doğrulayamaz ve bir hafta sonra herkes dışarıda
+   * kalırdı. Veritabanına bir şey yazmıyor; açınca kapı kaldığı yerden
+   * işliyor. Yayın kontrolü kapalıyken eksik diyor.
+   */
+  EPOSTA_DOGRULAMA: z.enum(['acik', 'kapali']).default('acik'),
+  /**
    * Oyuncunun ulaşabileceği destek adresi — Kullanım Koşulları ve
    * Aydınlatma Metni'nde yayınlanıyor.
    *

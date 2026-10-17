@@ -12749,7 +12749,7 @@
     "tr": "ADMOB_ODUL_BIRIMI ile ADMOB_YAYINCI_KIMLIGI farklı yayıncılara ait; app-ads.txt yanlış hesabı gösteriyor. İkisini aynı AdMob hesabından kopyala.",
     "en": "ADMOB_ODUL_BIRIMI and ADMOB_YAYINCI_KIMLIGI belong to different publishers; app-ads.txt points to the wrong account. Copy both from the same AdMob account.",
     "nerede": [
-      "packages/shared/src/yayin.ts:191"
+      "packages/shared/src/yayin.ts:198"
     ]
   },
   "t19201f79": {
@@ -12757,7 +12757,7 @@
     "tr": "ADMOB_YAYINCI_KIMLIGI boş: /app-ads.txt yayımlanmıyor ve AdMob doğrulanmamış uygulamanın reklamını kısıyor. pub-… kimliğini gir.",
     "en": "ADMOB_YAYINCI_KIMLIGI is empty: /app-ads.txt is not published and AdMob limits ads for unverified apps. Enter your pub-… ID.",
     "nerede": [
-      "packages/shared/src/yayin.ts:189"
+      "packages/shared/src/yayin.ts:196"
     ]
   },
   "tc1e0e541": {
@@ -12765,7 +12765,7 @@
     "tr": "AdMob’da ödüllü birimin sunucu doğrulama (SSV) adresi https://<alan adın>/api/reklam/ssv ve \"Doğrula\" geçiyor (docs/25).",
     "en": "In AdMob, the rewarded unit's server-side verification (SSV) URL is https://<your domain>/api/reklam/ssv and \"Verify\" passes (docs/25).",
     "nerede": [
-      "packages/shared/src/yayin.ts:200"
+      "packages/shared/src/yayin.ts:207"
     ]
   },
   "t1420b680": {
@@ -12845,7 +12845,7 @@
     "tr": "Android uygulamasında lisans test hesabıyla bir elmas paketi alındı ve elmas geldi; bir test reklamı izlendi ve süre düştü (docs/25).",
     "en": "In the Android app, a gem pack was bought with a license test account and the gems arrived; a test ad was watched and the time went down (docs/25).",
     "nerede": [
-      "packages/shared/src/yayin.ts:201"
+      "packages/shared/src/yayin.ts:208"
     ]
   },
   "t787d12eb": {
@@ -12909,7 +12909,7 @@
     "tr": "Arayüz ayrı bir adreste ama WEB_ORIGIN yalnız localhost: tarayıcı istekleri CORS'ta düşer. Arayüzün adresini WEB_ORIGIN'e yaz.",
     "en": "The web app is on a separate address but WEB_ORIGIN is localhost only: browser requests fail CORS. Add the app's address to WEB_ORIGIN.",
     "nerede": [
-      "packages/shared/src/yayin.ts:156"
+      "packages/shared/src/yayin.ts:163"
     ]
   },
   "t5620a7c7": {
@@ -12917,7 +12917,7 @@
     "tr": "Arayüzün adresi izinli.",
     "en": "The app's address is allowed.",
     "nerede": [
-      "packages/shared/src/yayin.ts:154"
+      "packages/shared/src/yayin.ts:161"
     ]
   },
   "t67406112": {
@@ -13069,7 +13069,7 @@
     "tr": "Bağlantıların tabanı herkese açık bir https adresi.",
     "en": "Links use a public https address.",
     "nerede": [
-      "packages/shared/src/yayin.ts:149"
+      "packages/shared/src/yayin.ts:156"
     ]
   },
   "t8b9a9069": {
@@ -13559,7 +13559,7 @@
     "tr": "Bugünlük gönderim hakkın doldu. Yarın tekrar dene.",
     "en": "Your daily sending limit is reached. Try again tomorrow.",
     "nerede": [
-      "packages/shared/src/epostaDogrulama.ts:104"
+      "packages/shared/src/epostaDogrulama.ts:108"
     ]
   },
   "tcea5d93d": {
@@ -13712,7 +13712,7 @@
     "tr": "Çok hızlı. {0} saniye bekle.",
     "en": "Too fast. Wait {0} seconds.",
     "nerede": [
-      "packages/shared/src/epostaDogrulama.ts:110"
+      "packages/shared/src/epostaDogrulama.ts:114"
     ]
   },
   "t47ab5fd7": {
@@ -13825,7 +13825,7 @@
     "tr": "Destek adresi yayında.",
     "en": "Support address is published.",
     "nerede": [
-      "packages/shared/src/yayin.ts:157"
+      "packages/shared/src/yayin.ts:164"
     ]
   },
   "t9592b8a7": {
@@ -13833,7 +13833,7 @@
     "tr": "DESTEK_EPOSTA boş: Kullanım Koşulları ve Aydınlatma Metni'nde iletişim satırı yok. Oyuncunun yazabileceği bir adres gir.",
     "en": "DESTEK_EPOSTA is empty: the Terms of Use and Privacy Notice have no contact line. Enter an address players can write to.",
     "nerede": [
-      "packages/shared/src/yayin.ts:159"
+      "packages/shared/src/yayin.ts:166"
     ]
   },
   "tefcb3bb6": {
@@ -13957,12 +13957,28 @@
       "packages/shared/src/ogretici.ts:475"
     ]
   },
+  "tcf434ee0": {
+    "grup": "motor",
+    "tr": "E-posta doğrulaması açık.",
+    "en": "Email verification is on.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:149"
+    ]
+  },
+  "t052e63bb": {
+    "grup": "motor",
+    "tr": "E-posta doğrulaması kapalı: kimse adresini doğrulamıyor, parolasını unutan hesabını kaybedebilir. Posta gerçekten gidince EPOSTA_DOGRULAMA=acik yap.",
+    "en": "Email verification is off: no one verifies their address, and a player who forgets their password may lose their account. Once mail is really being sent, set EPOSTA_DOGRULAMA=acik.",
+    "nerede": [
+      "packages/shared/src/yayin.ts:151"
+    ]
+  },
   "t37e8b396": {
     "grup": "motor",
     "tr": "E-posta gerçekten gönderiliyor.",
     "en": "Email is really being sent.",
     "nerede": [
-      "packages/shared/src/yayin.ts:139"
+      "packages/shared/src/yayin.ts:143"
     ]
   },
   "t0d07faa6": {
@@ -13970,7 +13986,7 @@
     "tr": "E-posta yalnız sunucu günlüğüne yazılıyor; parola sıfırlama ve doğrulama postası oyuncuya gitmiyor. EPOSTA_TASIYICI=resend yap.",
     "en": "Email is only written to the server log; password reset and verification emails never reach players. Set EPOSTA_TASIYICI=resend.",
     "nerede": [
-      "packages/shared/src/yayin.ts:141"
+      "packages/shared/src/yayin.ts:145"
     ]
   },
   "t8e1ff3a2": {
@@ -13978,7 +13994,7 @@
     "tr": "E-postan doğrulanmadı — {0} gün sonra giriş için gerekecek.",
     "en": "Your email is not verified — it will be required to log in after {0} days.",
     "nerede": [
-      "packages/shared/src/epostaDogrulama.ts:86"
+      "packages/shared/src/epostaDogrulama.ts:90"
     ]
   },
   "t81e08c1f": {
@@ -13986,7 +14002,7 @@
     "tr": "E-postanı doğrulaman gerekiyor. Yeni bir bağlantı isteyebilirsin.",
     "en": "You need to verify your email. You can request a new link.",
     "nerede": [
-      "packages/shared/src/epostaDogrulama.ts:79"
+      "packages/shared/src/epostaDogrulama.ts:83"
     ]
   },
   "t7005d978": {
@@ -14107,7 +14123,7 @@
     "tr": "En az bir yönetici var.",
     "en": "There is at least one admin.",
     "nerede": [
-      "packages/shared/src/yayin.ts:132"
+      "packages/shared/src/yayin.ts:136"
     ]
   },
   "t878c2032": {
@@ -14147,7 +14163,7 @@
     "tr": "EPOSTA_TASIYICI=resend ama EPOSTA_ANAHTAR boş: posta gönderilemez.",
     "en": "EPOSTA_TASIYICI=resend but EPOSTA_ANAHTAR is empty: email cannot be sent.",
     "nerede": [
-      "packages/shared/src/yayin.ts:142"
+      "packages/shared/src/yayin.ts:146"
     ]
   },
   "t86714050": {
@@ -14373,7 +14389,7 @@
     "tr": "GitHub’da DIGITALOCEAN_ACCESS_TOKEN var ve CI’ın \"DigitalOcean dağıtımı\" işi yeşil; yoksa her sürüm panelden elle dağıtılıyor (docs/05 §2).",
     "en": "DIGITALOCEAN_ACCESS_TOKEN is set on GitHub and the CI \"DigitalOcean dağıtımı\" job is green; otherwise every release is deployed by hand from the panel (docs/05 §2).",
     "nerede": [
-      "packages/shared/src/yayin.ts:197"
+      "packages/shared/src/yayin.ts:204"
     ]
   },
   "t2a6b10b9": {
@@ -14381,7 +14397,7 @@
     "tr": "Google Play satın alma açık; her satın alma sunucuda Google’a doğrulatılıyor.",
     "en": "Google Play purchases are on; every purchase is verified with Google on the server.",
     "nerede": [
-      "packages/shared/src/yayin.ts:178"
+      "packages/shared/src/yayin.ts:185"
     ]
   },
   "t5d69bfc2": {
@@ -14389,7 +14405,7 @@
     "tr": "Google Play satın alma kapalı: Mağaza yalnız bilgi gösteriyor, elmas paketi satılmıyor. Açmak için PLAY_PAKET_ADI ve PLAY_SERVIS_HESABI gir (docs/25).",
     "en": "Google Play purchases are off: the Store only shows information and no gem packs are sold. To turn them on, enter PLAY_PAKET_ADI and PLAY_SERVIS_HESABI (docs/25).",
     "nerede": [
-      "packages/shared/src/yayin.ts:180"
+      "packages/shared/src/yayin.ts:187"
     ]
   },
   "t8333758c": {
@@ -14397,7 +14413,7 @@
     "tr": "Gönderen adresi varsayılan (@localhost); posta reddedilir. EPOSTA_GONDEREN alan adın doğrulanmış bir adres olmalı.",
     "en": "The sender address is the default (@localhost); email will be rejected. EPOSTA_GONDEREN must be an address on your verified domain.",
     "nerede": [
-      "packages/shared/src/yayin.ts:144"
+      "packages/shared/src/yayin.ts:148"
     ]
   },
   "t2674e2d7": {
@@ -14438,7 +14454,7 @@
     "tr": "Günlük debug/trace seviyesinde; üretimde gereğinden çok yazıyor. LOG_LEVEL=info yap.",
     "en": "Logging is at debug/trace level; it writes more than needed in production. Set LOG_LEVEL=info.",
     "nerede": [
-      "packages/shared/src/yayin.ts:165"
+      "packages/shared/src/yayin.ts:172"
     ]
   },
   "t590d8e92": {
@@ -14470,7 +14486,7 @@
     "tr": "Günlük seviyesi olağan.",
     "en": "Log level is normal.",
     "nerede": [
-      "packages/shared/src/yayin.ts:163"
+      "packages/shared/src/yayin.ts:170"
     ]
   },
   "t97c33115": {
@@ -14518,7 +14534,7 @@
     "tr": "Hata izleme açık.",
     "en": "Error monitoring is on.",
     "nerede": [
-      "packages/shared/src/yayin.ts:135"
+      "packages/shared/src/yayin.ts:139"
     ]
   },
   "t99572bb9": {
@@ -14526,7 +14542,7 @@
     "tr": "Hata izleme kapalı: sunucu çökünce kimse haber almıyor. SENTRY_DSN gir.",
     "en": "Error monitoring is off: nobody is notified when the server crashes. Enter SENTRY_DSN.",
     "nerede": [
-      "packages/shared/src/yayin.ts:136"
+      "packages/shared/src/yayin.ts:140"
     ]
   },
   "t1be8937a": {
@@ -14598,7 +14614,7 @@
     "tr": "Hesap ekranındaki \"Deneme gönder\" telefona düşüyor.",
     "en": "\"Send test\" on the Account screen reaches the phone.",
     "nerede": [
-      "packages/shared/src/yayin.ts:199"
+      "packages/shared/src/yayin.ts:206"
     ]
   },
   "tde5c8550": {
@@ -14622,7 +14638,7 @@
     "tr": "Hiç yönetici yok: şikâyetler kuyrukta birikiyor ve kimse bakamıyor. pnpm yonetici ver <eposta>",
     "en": "There are no admins: reports pile up in the queue and nobody can review them. pnpm yonetici ver <eposta>",
     "nerede": [
-      "packages/shared/src/yayin.ts:134"
+      "packages/shared/src/yayin.ts:138"
     ]
   },
   "t14ab6624": {
@@ -14638,7 +14654,7 @@
     "tr": "ISTEMCI_IP_BASLIGI girilmiş ama bu istekte o başlık yok: adres vekilinkine düşüyor. Başlığın adını denetle (DigitalOcean: do-connecting-ip, Render: cf-connecting-ip).",
     "en": "ISTEMCI_IP_BASLIGI is set but this request doesn't carry that header: the address falls back to the proxy's. Check the header name (DigitalOcean: do-connecting-ip, Render: cf-connecting-ip).",
     "nerede": [
-      "packages/shared/src/yayin.ts:173"
+      "packages/shared/src/yayin.ts:180"
     ]
   },
   "teb818bbe": {
@@ -14670,7 +14686,7 @@
     "tr": "İlk açılışta 6 demo lord ekleniyor. Gerçek oyuncular gelecekse SEED_DEMO_LORDS=false yap.",
     "en": "6 demo lords are added on first start. If real players are coming, set SEED_DEMO_LORDS=false.",
     "nerede": [
-      "packages/shared/src/yayin.ts:131"
+      "packages/shared/src/yayin.ts:135"
     ]
   },
   "tfb8e4e56": {
@@ -14686,7 +14702,7 @@
     "tr": "İstek tavanları çok yüksek; yük testi değeri kalmış olabilir. RATE_LIMIT_MAX ve AUTH_RATE_LIMIT_MAX'ı varsayılana döndür.",
     "en": "Request limits are very high; a load test value may have been left behind. Return RATE_LIMIT_MAX and AUTH_RATE_LIMIT_MAX to their defaults.",
     "nerede": [
-      "packages/shared/src/yayin.ts:162"
+      "packages/shared/src/yayin.ts:169"
     ]
   },
   "t90de0bb0": {
@@ -14694,7 +14710,7 @@
     "tr": "İstek tavanları olağan.",
     "en": "Request limits are normal.",
     "nerede": [
-      "packages/shared/src/yayin.ts:160"
+      "packages/shared/src/yayin.ts:167"
     ]
   },
   "t815234ac": {
@@ -14702,7 +14718,7 @@
     "tr": "İstemcinin adresi doğrudan bağlantıdan okunuyor.",
     "en": "The client's address is read directly from the connection.",
     "nerede": [
-      "packages/shared/src/yayin.ts:171"
+      "packages/shared/src/yayin.ts:178"
     ]
   },
   "t7352cc9b": {
@@ -14710,7 +14726,7 @@
     "tr": "İstemcinin adresi vekilin yazdığı başlıktan okunuyor.",
     "en": "The client's address is read from the header the proxy writes.",
     "nerede": [
-      "packages/shared/src/yayin.ts:169"
+      "packages/shared/src/yayin.ts:176"
     ]
   },
   "te602ac9d": {
@@ -14718,7 +14734,7 @@
     "tr": "İstemcinin adresi X-Forwarded-For'dan, güvenilen vekil sayısıyla okunuyor.",
     "en": "The client's address is read from X-Forwarded-For, using the trusted proxy count.",
     "nerede": [
-      "packages/shared/src/yayin.ts:170"
+      "packages/shared/src/yayin.ts:177"
     ]
   },
   "t65946fc8": {
@@ -15386,7 +15402,7 @@
     "tr": "NODE_ENV=production değil: /api/test/* uçları açık ve CORS gevşek. Sunucuda NODE_ENV=production yap.",
     "en": "NODE_ENV is not production: /api/test/* endpoints are open and CORS is loose. Set NODE_ENV=production on the server.",
     "nerede": [
-      "packages/shared/src/yayin.ts:125"
+      "packages/shared/src/yayin.ts:129"
     ]
   },
   "t3d5e14ec": {
@@ -15580,7 +15596,7 @@
     "tr": "Oturum imzası tahmin edilebilir görünüyor (tekrarlı ya da örnek bir sözcük içeriyor). Rastgele üret; değişince herkes çıkış yapar.",
     "en": "The session secret looks guessable (repeated characters or a sample word). Generate a random one; changing it signs everyone out.",
     "nerede": [
-      "packages/shared/src/yayin.ts:128"
+      "packages/shared/src/yayin.ts:132"
     ]
   },
   "t8e92ac9d": {
@@ -15588,7 +15604,7 @@
     "tr": "Oturum imzası uzun ve rastgele görünüyor.",
     "en": "The session secret looks long and random.",
     "nerede": [
-      "packages/shared/src/yayin.ts:126"
+      "packages/shared/src/yayin.ts:130"
     ]
   },
   "t40087aa8": {
@@ -15604,7 +15620,7 @@
     "tr": "Ödüllü reklam açık; ödül yalnız Google’ın imzalı bildirimiyle veriliyor.",
     "en": "Rewarded ads are on; the reward is granted only through Google's signed callback.",
     "nerede": [
-      "packages/shared/src/yayin.ts:185"
+      "packages/shared/src/yayin.ts:192"
     ]
   },
   "t4d8c9969": {
@@ -15612,7 +15628,7 @@
     "tr": "Ödüllü reklam kapalı: uygulamada \"Reklam izle\" çıkmıyor. Açmak için ADMOB_ODUL_BIRIMI gir (docs/25).",
     "en": "Rewarded ads are off: \"Watch ad\" doesn't appear in the app. To turn them on, enter ADMOB_ODUL_BIRIMI (docs/25).",
     "nerede": [
-      "packages/shared/src/yayin.ts:187"
+      "packages/shared/src/yayin.ts:194"
     ]
   },
   "t23446189": {
@@ -15700,7 +15716,7 @@
     "tr": "Parola sıfırlama e-postası gerçekten geliyor.",
     "en": "The password reset email really arrives.",
     "nerede": [
-      "packages/shared/src/yayin.ts:198"
+      "packages/shared/src/yayin.ts:205"
     ]
   },
   "tfa811875": {
@@ -15724,7 +15740,7 @@
     "tr": "PLAY_PAKET_ADI ile PLAY_SERVIS_HESABI’ndan yalnız biri girilmiş; satın alma kapalı. İkisini birlikte gir.",
     "en": "Only one of PLAY_PAKET_ADI and PLAY_SERVIS_HESABI is set; purchases are off. Enter both together.",
     "nerede": [
-      "packages/shared/src/yayin.ts:182"
+      "packages/shared/src/yayin.ts:189"
     ]
   },
   "t35b5477d": {
@@ -15732,7 +15748,7 @@
     "tr": "PLAY_SERVIS_HESABI okunamıyor (JSON ya da base64 JSON değil, ya da client_email/private_key eksik); satın alma kapalı. Anahtarı Google Cloud’dan yeniden indirip gir.",
     "en": "PLAY_SERVIS_HESABI can't be read (not JSON or base64 JSON, or client_email/private_key is missing); purchases are off. Download the key from Google Cloud again and enter it.",
     "nerede": [
-      "packages/shared/src/yayin.ts:184"
+      "packages/shared/src/yayin.ts:191"
     ]
   },
   "te58a3c1c": {
@@ -15748,7 +15764,7 @@
     "tr": "Profil resmi sınıflandırıcısı açık.",
     "en": "Profile picture classifier is on.",
     "nerede": [
-      "packages/shared/src/yayin.ts:166"
+      "packages/shared/src/yayin.ts:173"
     ]
   },
   "t8d0a5451": {
@@ -15756,7 +15772,7 @@
     "tr": "Profil resmi sınıflandırıcısı kapalı: yüklenen her resim yönetici onayını bekliyor.",
     "en": "Profile picture classifier is off: every uploaded picture waits for admin approval.",
     "nerede": [
-      "packages/shared/src/yayin.ts:168"
+      "packages/shared/src/yayin.ts:175"
     ]
   },
   "tb0ab002d": {
@@ -15780,7 +15796,7 @@
     "tr": "Push bildirimi açık.",
     "en": "Push notifications are on.",
     "nerede": [
-      "packages/shared/src/yayin.ts:145"
+      "packages/shared/src/yayin.ts:152"
     ]
   },
   "t1aed82d8": {
@@ -15788,7 +15804,7 @@
     "tr": "Push bildirimi kapalı; arayüzde düğme hiç çıkmıyor. pnpm push-anahtari ile üretilen VAPID çiftini gir.",
     "en": "Push notifications are off; the button never appears in the app. Enter the VAPID pair generated by pnpm push-anahtari.",
     "nerede": [
-      "packages/shared/src/yayin.ts:147"
+      "packages/shared/src/yayin.ts:154"
     ]
   },
   "tc750492c": {
@@ -15796,7 +15812,7 @@
     "tr": "Rakip demo lordlar eklenmiyor.",
     "en": "Rival demo lords are not added.",
     "nerede": [
-      "packages/shared/src/yayin.ts:129"
+      "packages/shared/src/yayin.ts:133"
     ]
   },
   "t0f6c0cea": {
@@ -15998,7 +16014,7 @@
     "tr": "SENTRY_DSN girilmiş ama izleme açılamadı; büyük olasılıkla yazım hatası. Sentry panelinden yeniden kopyala.",
     "en": "SENTRY_DSN is set but monitoring could not start; most likely a typo. Copy it again from the Sentry dashboard.",
     "nerede": [
-      "packages/shared/src/yayin.ts:138"
+      "packages/shared/src/yayin.ts:142"
     ]
   },
   "ta5b1e298": {
@@ -16054,7 +16070,7 @@
     "tr": "Sunucu bir vekilin arkasında ama adres bağlantıdan okunuyor: kayıt ve giriş sınırı bütün oyunculara tek kova. ISTEMCI_IP_BASLIGI gir: DigitalOcean’da do-connecting-ip, Render’da cf-connecting-ip.",
     "en": "The server is behind a proxy but the address is read from the connection: the sign-up and sign-in limit is one shared bucket for every player. Set ISTEMCI_IP_BASLIGI: do-connecting-ip on DigitalOcean, cf-connecting-ip on Render.",
     "nerede": [
-      "packages/shared/src/yayin.ts:175"
+      "packages/shared/src/yayin.ts:182"
     ]
   },
   "t7e74a9e5": {
@@ -16062,7 +16078,7 @@
     "tr": "Sunucu bir vekilin arkasındaysa ISTEMCI_IP_BASLIGI ya da VEKIL_SAYISI gir; yoksa giriş sınırı herkese tek kova olur. Yönetici panosu bunu senin isteğinle ölçer.",
     "en": "If the server sits behind a proxy, set ISTEMCI_IP_BASLIGI or VEKIL_SAYISI; otherwise the sign-in limit becomes one shared bucket for everyone. The admin panel checks this against your own request.",
     "nerede": [
-      "packages/shared/src/yayin.ts:177"
+      "packages/shared/src/yayin.ts:184"
     ]
   },
   "tf7055aec": {
@@ -16360,7 +16376,7 @@
     "tr": "UYGULAMA_URL https değil; parola sıfırlama bağlantısı şifresiz gidiyor.",
     "en": "UYGULAMA_URL is not https; the password reset link travels unencrypted.",
     "nerede": [
-      "packages/shared/src/yayin.ts:153"
+      "packages/shared/src/yayin.ts:160"
     ]
   },
   "tfc8b38f8": {
@@ -16368,7 +16384,7 @@
     "tr": "UYGULAMA_URL yerel bir adres; e-postadaki bağlantılar oyuncuda açılmaz.",
     "en": "UYGULAMA_URL is a local address; links in emails will not open for players.",
     "nerede": [
-      "packages/shared/src/yayin.ts:152"
+      "packages/shared/src/yayin.ts:159"
     ]
   },
   "t65fb1da9": {
@@ -16376,7 +16392,7 @@
     "tr": "Uygulamanın adresi bilinmiyor; parola sıfırlama bağlantısı localhost gösteriyor. UYGULAMA_URL gir.",
     "en": "The app's address is unknown; the password reset link points to localhost. Enter UYGULAMA_URL.",
     "nerede": [
-      "packages/shared/src/yayin.ts:151"
+      "packages/shared/src/yayin.ts:158"
     ]
   },
   "t41c5d512": {
@@ -16408,7 +16424,7 @@
     "tr": "Üretim kipinde; test uçları kapalı.",
     "en": "Production mode; test endpoints are closed.",
     "nerede": [
-      "packages/shared/src/yayin.ts:123"
+      "packages/shared/src/yayin.ts:127"
     ]
   },
   "t4a0c5585": {
@@ -16441,7 +16457,7 @@
     "tr": "VAPID çiftinin yalnız bir yarısı girilmiş; push kapalı. İkisini birlikte gir.",
     "en": "Only one half of the VAPID pair is set; push is off. Enter both together.",
     "nerede": [
-      "packages/shared/src/yayin.ts:148"
+      "packages/shared/src/yayin.ts:155"
     ]
   },
   "t442686cb": {
@@ -16538,7 +16554,7 @@
     "tr": "Yedek alınıyor ve canlı veritabanında bir kez \"pnpm yedek-tatbikati\" koştu (docs/05 §4).",
     "en": "Backups are taken and \"pnpm yedek-tatbikati\" has run once against the live database (docs/05 §4).",
     "nerede": [
-      "packages/shared/src/yayin.ts:196"
+      "packages/shared/src/yayin.ts:203"
     ]
   },
   "t0ee42256": {
@@ -16610,7 +16626,7 @@
     "tr": "yönetici",
     "en": "admin",
     "nerede": [
-      "packages/shared/src/yayin.ts:236"
+      "packages/shared/src/yayin.ts:243"
     ]
   },
   "t068619b5": {
@@ -17013,7 +17029,7 @@
     "tr": "{0} için e-postanı doğrulaman gerekiyor. Hesap ekranından yeni bağlantı isteyebilirsin.",
     "en": "You need to verify your email for {0}. You can request a new link from the account screen.",
     "nerede": [
-      "apps/api/src/services/epostaDogrulama.ts:98"
+      "apps/api/src/services/epostaDogrulama.ts:121"
     ]
   },
   "t4fb585df": {
@@ -17464,7 +17480,7 @@
     "tr": "Bağlantı geçersiz ya da süresi dolmuş. Yeni bir tane iste.",
     "en": "The link is invalid or expired. Request a new one.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:348"
+      "apps/api/src/routes/auth.ts:351"
     ]
   },
   "t4c97b297": {
@@ -17472,8 +17488,8 @@
     "tr": "Bağlantı geçersiz ya da süresi dolmuş. Yeniden sıfırlama iste.",
     "en": "Link is invalid or expired. Request a reset again.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:493",
-      "apps/api/src/routes/auth.ts:514"
+      "apps/api/src/routes/auth.ts:496",
+      "apps/api/src/routes/auth.ts:517"
     ]
   },
   "tf9754a95": {
@@ -17687,7 +17703,7 @@
     "tr": "Böyle bir diyar yok.",
     "en": "No such realm.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:176"
+      "apps/api/src/routes/auth.ts:179"
     ]
   },
   "t9da35381": {
@@ -17752,7 +17768,7 @@
     "tr": "Bu ad kullanılamaz.",
     "en": "This name cannot be used.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:205",
+      "apps/api/src/routes/auth.ts:208",
       "apps/api/src/routes/ittifak.ts:430"
     ]
   },
@@ -17874,8 +17890,8 @@
     "tr": "Bu e-posta zaten kayıtlı.",
     "en": "This email is already registered.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:209",
-      "apps/api/src/routes/auth.ts:289"
+      "apps/api/src/routes/auth.ts:212",
+      "apps/api/src/routes/auth.ts:292"
     ]
   },
   "t26a1c540": {
@@ -17907,7 +17923,7 @@
     "tr": "Bu eylem",
     "en": "this action",
     "nerede": [
-      "apps/api/src/services/epostaDogrulama.ts:96"
+      "apps/api/src/services/epostaDogrulama.ts:119"
     ]
   },
   "t0f68c4b9": {
@@ -18030,8 +18046,8 @@
     "tr": "Bu lord adı alınmış.",
     "en": "This lord name is taken.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:216",
-      "apps/api/src/routes/auth.ts:287"
+      "apps/api/src/routes/auth.ts:219",
+      "apps/api/src/routes/auth.ts:290"
     ]
   },
   "tac7d4a4c": {
@@ -18195,7 +18211,7 @@
     "tr": "Bulunamadı.",
     "en": "Not found.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:324",
+      "apps/api/src/routes/auth.ts:327",
       "apps/api/src/routes/yonetici.ts:296",
       "apps/api/src/routes/yonetici.ts:397",
       "apps/api/src/routes/yonetici.ts:410",
@@ -18250,7 +18266,7 @@
     "tr": "Çok fazla hatalı deneme. {0} dakika sonra yeniden dene ya da parolanı sıfırla.",
     "en": "Too many failed attempts. Try again in {0} [minute|minutes] or reset your password.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:369"
+      "apps/api/src/routes/auth.ts:372"
     ]
   },
   "t4f5adcbf": {
@@ -18382,7 +18398,7 @@
     "tr": "E-posta veya parola hatalı.",
     "en": "Email or password incorrect.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:377"
+      "apps/api/src/routes/auth.ts:380"
     ]
   },
   "tc33fbc55": {
@@ -18390,8 +18406,8 @@
     "tr": "E-postanı doğrula.",
     "en": "Verify your email.",
     "nerede": [
-      "apps/api/src/auth.ts:89",
-      "apps/api/src/routes/auth.ts:401"
+      "apps/api/src/auth.ts:90",
+      "apps/api/src/routes/auth.ts:404"
     ]
   },
   "t61d3205f": {
@@ -18470,7 +18486,7 @@
     "tr": "Geçerli bir e-posta gir.",
     "en": "Enter a valid email.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:52"
+      "apps/api/src/routes/auth.ts:55"
     ]
   },
   "tfe3021a2": {
@@ -18511,8 +18527,8 @@
     "tr": "Giriş yapman gerekiyor.",
     "en": "You need to log in.",
     "nerede": [
-      "apps/api/src/auth.ts:53",
-      "apps/api/src/auth.ts:66"
+      "apps/api/src/auth.ts:54",
+      "apps/api/src/auth.ts:67"
     ]
   },
   "t4b12d123": {
@@ -18584,8 +18600,8 @@
     "tr": "Hesabın yasaklı.",
     "en": "Your account is banned.",
     "nerede": [
-      "apps/api/src/auth.ts:77",
-      "apps/api/src/routes/auth.ts:390"
+      "apps/api/src/auth.ts:78",
+      "apps/api/src/routes/auth.ts:393"
     ]
   },
   "t9b52960a": {
@@ -18593,7 +18609,7 @@
     "tr": "Hesabını doğrulamak için {0} saat içinde bu bağlantıyı aç:\n\n{1}\n\nBu hesabı sen açmadıysan hiçbir şey yapmana gerek yok.",
     "en": "Open this link within {0} hours to verify your account:\n\n{1}\n\nIf you did not create this account, you do not need to do anything.",
     "nerede": [
-      "apps/api/src/services/epostaDogrulama.ts:75"
+      "apps/api/src/services/epostaDogrulama.ts:97"
     ]
   },
   "t94408dab": {
@@ -18893,7 +18909,7 @@
     "tr": "Lord adı en az 3 karakter olmalı.",
     "en": "Lord name must be at least 3 characters.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:56"
+      "apps/api/src/routes/auth.ts:59"
     ]
   },
   "te600421c": {
@@ -18901,7 +18917,7 @@
     "tr": "Lord adı en fazla 20 karakter olabilir.",
     "en": "Lord name can be at most 20 characters.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:57"
+      "apps/api/src/routes/auth.ts:60"
     ]
   },
   "t902efbf7": {
@@ -18909,7 +18925,7 @@
     "tr": "Lord adında geçersiz karakter var.",
     "en": "Lord name contains invalid characters.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:58"
+      "apps/api/src/routes/auth.ts:61"
     ]
   },
   "t12a0a254": {
@@ -18933,7 +18949,7 @@
     "tr": "Lordlar Çağı — e-postanı doğrula",
     "en": "Age of Lords — verify your email",
     "nerede": [
-      "apps/api/src/services/epostaDogrulama.ts:74"
+      "apps/api/src/services/epostaDogrulama.ts:96"
     ]
   },
   "t67e8558e": {
@@ -18941,7 +18957,7 @@
     "tr": "Lordlar Çağı — parola sıfırlama",
     "en": "Age of Lords — password reset",
     "nerede": [
-      "apps/api/src/routes/auth.ts:469"
+      "apps/api/src/routes/auth.ts:472"
     ]
   },
   "t20970dae": {
@@ -19041,7 +19057,7 @@
     "tr": "O diyar doldu. Başka bir diyar seç.",
     "en": "That realm is full. Pick another one.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:191"
+      "apps/api/src/routes/auth.ts:194"
     ]
   },
   "tb209b8d4": {
@@ -19114,7 +19130,7 @@
     "tr": "Oturumun sona erdi. Yeniden giriş yap.",
     "en": "Your session has expired. Please sign in again.",
     "nerede": [
-      "apps/api/src/auth.ts:73"
+      "apps/api/src/auth.ts:74"
     ]
   },
   "td2f4b0c2": {
@@ -19166,8 +19182,8 @@
     "tr": "Parola en az 8 karakter olmalı.",
     "en": "Password must be at least 8 characters.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:53",
-      "apps/api/src/routes/auth.ts:77"
+      "apps/api/src/routes/auth.ts:56",
+      "apps/api/src/routes/auth.ts:80"
     ]
   },
   "tdc156679": {
@@ -19183,7 +19199,7 @@
     "tr": "Parolanı sıfırlamak için {0} dakika içinde bu bağlantıyı aç:\n\n{1}\n\nBu isteği sen yapmadıysan hiçbir şey yapmana gerek yok; parolan değişmedi.",
     "en": "To reset your password open this link within {0} [minute|minutes]:\n\n{1}\n\nIf you did not make this request you need to do nothing; your password has not changed.",
     "nerede": [
-      "apps/api/src/routes/auth.ts:470"
+      "apps/api/src/routes/auth.ts:473"
     ]
   },
   "t2695daea": {
@@ -19403,7 +19419,7 @@
     "tr": "Şimdi gönderilemez.",
     "en": "Cannot be sent right now.",
     "nerede": [
-      "apps/api/src/services/epostaDogrulama.ts:50"
+      "apps/api/src/services/epostaDogrulama.ts:72"
     ]
   },
   "t98be9bae": {

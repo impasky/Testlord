@@ -133,3 +133,15 @@ UYGULAMA_URL=https://alanadin.com
 Üstüne alan adının **SPF ve DKIM** kayıtları. Bunlar olmadan posta
 gidiyor ama spam klasörüne düşüyor — ve spam'e düşen bir doğrulama
 postası, hiç gitmemiş postayla aynı şeydir.
+
+### Posta göndermeyen sunucu: `EPOSTA_DOGRULAMA=kapali`
+
+Posta `log`dayken kimse doğrulayamaz; kapı açık kalırsa bir hafta sonra
+herkes dışarıda kalır. Ücretsiz Render deneme sunucusu (docs/05 §2b) bu
+yüzden kapıyı kapatıyor: `kapali` iken herkes doğrulanmış sayılıyor,
+kısıtlı eylemler açık, giriş kapanmıyor. Veritabanına hiçbir şey yazılmıyor
+— doğrulanmamış hesap doğrulanmamış kalıyor; `acik` yapınca kapı kaldığı
+yerden işliyor ve yedi günü geçmiş hesaplar girişte doğrulama istiyor.
+Ayarın tek okunduğu yer `hesapDogrulamaDurumu` ve `dogrulamaKontrol`
+(`apps/api/src/services/epostaDogrulama.ts`); yayın kontrolü kapalıyken
+**eksik** diyor.

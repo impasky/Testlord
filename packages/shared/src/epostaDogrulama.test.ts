@@ -38,6 +38,13 @@ describe('dogrulamaDurumu', () => {
     expect(d.girisKapali).toBe(false);
     expect(d.kalanGun).toBe(1);
   });
+
+  it('sunucuda kapı kapalıysa eski, doğrulanmamış hesap da serbest', () => {
+    const d = dogrulamaDurumu(null, gunOnce(SERBEST_GUN + 30), simdi, false);
+    expect(d.dogrulandi).toBe(true);
+    expect(d.girisKapali).toBe(false);
+    expect(d.metin).toBeNull();
+  });
 });
 
 describe('gonderilebilirMi', () => {
