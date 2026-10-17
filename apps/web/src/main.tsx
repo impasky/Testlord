@@ -5,6 +5,7 @@ import { App } from './App';
 import { olcumAcik } from './cizim/cizimOlcumu';
 import { HataSiniri } from './components/HataSiniri';
 import { DilSaglayici } from './lib/dil';
+import { turOlayiniKes } from './lib/turOlayi';
 // Yazı tipi oyunla paketleniyor, dışarıdan çekilmiyor (bkz. styles.css başı).
 import '@fontsource-variable/rubik/wght.css';
 import './styles.css';
@@ -46,7 +47,13 @@ const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: true, staleTime: 5_000 } },
 });
 
-createRoot(document.getElementById('root')!).render(
+const kok = document.getElementById('root')!;
+// Kök "animationiteration"ı dinlerse canlı sahne her karede ana iş
+// parçacığını uyandırıyor (bkz. lib/turOlayi.ts). React dinleyicilerini
+// köke createRoot'ta ekliyor: kesmek ondan ÖNCE.
+turOlayiniKes(kok);
+
+createRoot(kok).render(
   <StrictMode>
     {/* Dil sağlayıcı EN DIŞTA: hata ekranının metinleri de çevrilsin. */}
     <DilSaglayici>

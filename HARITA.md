@@ -28,6 +28,7 @@
 - **Mağaza (P2S): elmas, hızlandırma, Google Play, AdMob:** `packages/shared/src/magaza.ts`, `apps/api/src/routes/magaza.ts`, `apps/api/src/services/play.ts`, `apps/api/src/services/reklam.ts`, `apps/web/src/screens/Magaza.tsx`, `docs/25-magaza.md`
 - **Öğretici ve zorunlu rehber (kâhya ışığı, omurga):** `packages/shared/src/rehber.ts`, `apps/web/src/components/Ogretici.tsx`, `apps/web/src/components/RehberIsigi.tsx`, `apps/web/src/components/Rehber.tsx`
 - **Çizim motoru (3B, GPU, kalıcı önbellek):** `apps/web/src/cizim/uc.ts`, `apps/web/src/cizim/Sahne.tsx`, `apps/web/src/cizim/gl.ts`, `apps/web/src/cizim/kalici.ts`
+- **Akıcılık, kasma, canlı sahne (bayrak, duman, su, ışık, hava):** `apps/web/src/lib/turOlayi.ts`, `apps/web/src/cizim/Sahne.tsx`, `apps/web/src/styles.css`, `apps/web/src/components/HavaKatmani.tsx`, `apps/web/src/screens/yerleskeYakinligi.ts`
 - **Arayüz kabuğu, alt gezinme, API istemcisi:** `apps/web/src/App.tsx`, `apps/web/src/components/MobilKabuk.tsx`, `apps/web/src/api/client.ts`
 - **Çeviri (Türkçe → İngilizce):** `tools/metin-cikar.mjs`, `tools/ceviri-al.mjs`, `apps/web/vite-ceviri.mjs`, `packages/shared/src/dil.ts`
 - **Yayın kontrolü (eksik sunucu ayarları):** `packages/shared/src/yayin.ts`, `apps/api/src/services/yayin.ts`
@@ -344,6 +345,7 @@
 - `apps/web/src/lib/dil.tsx` — Dil seçimi — arayüz tarafı. · dışa: kayitliDil, DilSaglayici, useDil, useT, t, ts
 - `apps/web/src/lib/kapiIstegi.ts` — Ekranın derinindeki bir bileşenin bir kapıyı (paneli) açtırması. · dışa: kapiAcIstegi, kapiIstekleriniDinle
 - `apps/web/src/lib/sohbetOkundu.ts` — Genel sohbetin en son okunduğu an — üst çubuktaki "yeni mesaj" noktası. · dışa: OKUNDU_ANAHTARI, okunduOku, okunduYaz
+- `apps/web/src/lib/turOlayi.ts` — React kökünün "animationiteration" dinleyicisini kesiyor: Şehir'deki kasmanın asıl kaynağı buydu (docs/24 "Hareket"). · dışa: turOlayiniKes · (testi var)
 - `apps/web/src/lib/yarimSatinAlma.ts` — Yarım kalmış Google Play satın almaları (docs/25 §2.2). · dışa: yarimSatinAlmalariTamamla, useYarimSatinAlmalar
 - `apps/web/src/lib/yerel.ts` — Android uygulamasının yerel yetenekleri (docs/25): Google Play Faturalandırma ve AdMob ödüllü reklam. · dışa: uygulamadaMi, playFiyatlari, SatinAlmaSonucu, playSatinAl, bekleyenPlaySatinAlmalari, ReklamSonucu, reklamIzle, reklamGizlilikSecenekleri
 

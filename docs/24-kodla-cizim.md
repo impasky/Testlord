@@ -368,6 +368,20 @@ resmi bir kez çiziliyor; hareket onun üstünde CSS katmanları. Yalnız
 dönüşüm ve saydamlık oynuyor, tarayıcı katmanları yeniden boyamadan
 kaydırıyor.
 
+Ana iş parçacığı uyanmasın: React kökü her DOM olayını dinliyor, ve
+sayfada tek bir `animationiteration` dinleyicisi olunca Chromium (Android
+WebView'u da) sonsuz dönen her CSS animasyonunun her tur sınırında ana iş
+parçacığını uyandırıp canlı öğelerin stilini yeniden hesaplıyor, animasyon
+bileşikleyicide koşsa bile. Şehir'de ~60 parça ayrı ritimde dönüyor: her
+kare böyle bir kareydi ("her türlü kasıyor, özellikle şehirde").
+`lib/turOlayi.ts` kökün bu dinleyicisini kesiyor; oyunda
+`onAnimationIteration` yok. Ölçüm (telefon taklidi, 6× yavaş CPU, ana iş
+parçacığı ms/sn): boşta 344 → 26, sürüklerken 418 → 135, kaydırırken
+377 → 97. Kalan: ana kare başka bir nedenle çizilince (kaydırma, sayaç)
+canlı öğelerin stili yine hesaplanıyor (WAAPI'de de; denendi), parça
+sayısı bu yüzden önemli. `uretim-testi` sayfada bu dinleyicinin
+olmadığını denetliyor.
+
 - Su parıltısı: iki dikişsiz ışık çizgisi karosu (tuvalde bir kez, tohumlu)
   ayrı yönde, ayrı hızda kayıyor; su maskesiyle (`mask-image`) örtülü.
 - Işık titremesi: ışık katmanı "ekran" karışımıyla resmin üstünde,

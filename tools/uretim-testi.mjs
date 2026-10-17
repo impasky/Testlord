@@ -109,6 +109,32 @@ if (!girdi) {
 await page.waitForTimeout(1200);
 await page.screenshot({ path: `${SP}/tel-2-malikane.png`, fullPage: true });
 
+/*
+ * Sayfada "animationiteration" dinleyicisi yok (apps/web/src/lib/turOlayi.ts).
+ * React kökü onu da dinliyordu; tek bir dinleyici, sonsuz dönen her CSS
+ * animasyonunun her turunda ana iş parçacığını uyandırıyor ve Şehir'in
+ * canlı sahnesi her karede stil hesaplatıyordu (6× yavaş CPU'da 441 ms/sn).
+ */
+{
+  const cdp = await ctx.newCDPSession(page);
+  const turler = [];
+  for (const ifade of ['window', 'document']) {
+    const { result } = await cdp.send('Runtime.evaluate', { expression: ifade });
+    const { listeners } = await cdp.send('DOMDebugger.getEventListeners', {
+      objectId: result.objectId,
+      depth: -1,
+      pierce: true,
+    });
+    turler.push(...listeners.map((l) => l.type));
+  }
+  k(
+    'Sayfada "animationiteration" dinleyicisi yok (canlı sahne ana iş parçacığını uyandırmıyor)',
+    turler.includes('click') && !turler.includes('animationiteration'),
+    `${new Set(turler).size} olay türü dinleniyor`,
+  );
+  await cdp.detach();
+}
+
 const tasma = await page.evaluate(
   () => document.documentElement.scrollWidth > window.innerWidth + 1,
 );
