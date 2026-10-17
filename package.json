@@ -44,6 +44,7 @@
     "ceviri": "node tools/metin-cikar.mjs && node tools/ceviri-liste.mjs && node tools/ceviri-paket.mjs",
     "ceviri-al": "node tools/ceviri-al.mjs",
     "ceviri-kalan": "node tools/metin-cikar.mjs && node tools/ceviri-liste.mjs --eksik && node tools/ceviri-paket.mjs",
+    "harita": "node tools/harita.mjs",
     "diyar-birlestir": "pnpm --filter @lordlar/api diyar-birlestir"
   },
   "devDependencies": {

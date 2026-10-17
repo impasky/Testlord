@@ -178,6 +178,10 @@ pnpm e2e         # oyun döngüsü + shard + worker + tarayıcı (sunucu ayakta 
 
 ## Repo yapısı
 
+Her dosyanın ne yaptığı, ne dışa açtığı ve hangi API uçlarını sunduğu:
+**[HARITA.md](HARITA.md)** (`pnpm harita` üretir; aşağıdaki ağaç yalnız
+genel bakış).
+
 ```
 docs/
   gorseller/              Ekran görüntüleri

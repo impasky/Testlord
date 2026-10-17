@@ -68,6 +68,11 @@ jobs:
       - run: pnpm lint
       - name: Biçim (prettier)
         run: npx prettier --check .
+      # HARITA.md her dosyanın ne yaptığını söylüyor ve dosya ararken ilk
+      # durak o (CLAUDE.md). Eski harita yanlış yere götürür: dosya eklenince,
+      # silinince ya da dışa açılan ad değişince `pnpm harita`.
+      - name: Proje haritası güncel mi
+        run: node tools/harita.mjs --denetle
       - run: pnpm test
       - name: Denge aritmetiği
         run: python3 tools/check_balance.py
