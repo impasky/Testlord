@@ -382,6 +382,17 @@ canlı öğelerin stili yine hesaplanıyor (WAAPI'de de; denendi), parça
 sayısı bu yüzden önemli. `uretim-testi` sayfada bu dinleyicinin
 olmadığını denetliyor.
 
+Canlıya geçiş (oyuncu: "durağandan tam animasyona geçme süresi çok uzun ve
+donarak oluyor"). Canlı resim ara teslimle geliyor (`CizimIstegi.teslim`,
+`glCiz` `kismi`): bütün kareler biter bitmez atlas PNG'ye çevrilmeden
+(`ImageBitmap`) gidiyor, PNG yalnız cihaz kaydı için ondan sonra. Önceden
+atlas PNG'ye çevriliyor (yerleşkede 4020×2617), sayfa onu yeniden
+çözüyordu: tuvale ilk çizimde ana iş parçacığında (130–210 ms donma,
+telefonda katları). Şerit tuvalleri 2d çizimle kurulunca her biri o
+karede kendi GPU kaynağını üretiyordu (41 tuvalde ~260 ms); şimdi önceden
+kesilmiş bitmap'ler kopyasız konuyor (`bitmaprenderer`). Dondurulmuş
+karede eski ve yeni resim piksel piksel aynı.
+
 - Su parıltısı: iki dikişsiz ışık çizgisi karosu (tuvalde bir kez, tohumlu)
   ayrı yönde, ayrı hızda kayıyor; su maskesiyle (`mask-image`) örtülü.
 - Işık titremesi: ışık katmanı "ekran" karışımıyla resmin üstünde,
@@ -396,9 +407,13 @@ olmadığını denetliyor.
   kare kare kayıyor (1,2 sn'de bir dalga turu). Kayan katman yalnız o
   parçanın kare şeridi kadar: önceden her parça atlasın tamamı boyunda bir
   katmandı, ağaçlı bir zeminde ~74 megapiksel katman telefonun GPU
-  belleğini tüketiyordu. Şerit bir tuval (`Serit`): atlasın o parçaya
-  düşen bölümü bir kez çiziliyor (çözülmüş atlas `glOnYukle`den, ilk
-  karede). Arka plan resmi olan bir öğeyken tarayıcı şeridi karo karo
+  belleğini tüketiyordu. Şerit bir tuval (`Serit`, `bitmaprenderer`):
+  atlasın o parçaya düşen bölümü kendi bitmap'i, kopyasız konuyor;
+  resim gösterilmeden önce ana iş parçacığının dışında kesiliyor
+  (`glOnYukle`), ilk karede çizili. Atlas hep `ImageBitmap`: taze
+  çizimde işçiden PNG'ye çevrilmeden geliyor (ara teslim, bkz. aşağıda
+  "Canlıya geçiş"), cihaz kaydındaki PNG'si `createImageBitmap` ile
+  çözülüyor. Arka plan resmi olan bir öğeyken tarayıcı şeridi karo karo
   rasterliyordu ve uzaktaki karelerin karolarını "sonra lazım" diye atıp
   adım onlara gelince yeniden çiziyordu; telefonda o arada parça boştu
   ("ağaçlar, okçular yok olup geri geliyor"). Tuval kaynak

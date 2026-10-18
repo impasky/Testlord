@@ -14,6 +14,7 @@ import { dumanKaynaklari, type DumanKaynagi } from './duman';
 import { agYap, type Ag } from './glAg';
 import {
   aktarilanlar,
+  atlasDuzeni,
   cizBlob,
   glDurumu,
   yazilimMi,
@@ -22,6 +23,7 @@ import {
   type CizimSonucu,
   type IsciCevabi,
   type IsciIstegi,
+  type KismiSonuc,
 } from './glCizici';
 import { kaliciOku, kaliciYaz, type KaliciGrup } from './kalici';
 import { tarifModeli } from './tarif';
@@ -91,6 +93,8 @@ export interface GlIstek {
 let isci: Worker | null = null;
 let isciDurumu: 'denenmedi' | 'hazir' | 'yok' = 'denenmedi';
 const bekleyenler = new Map<number, (c: IsciCevabi) => void>();
+/** Süren işlerin ara teslimini alanlar (bkz. `KismiSonuc`). */
+const kismiAlanlar = new Map<number, (k: KismiSonuc) => void>();
 let sayac = 0;
 
 function isciyiBirak() {
@@ -99,6 +103,7 @@ function isciyiBirak() {
   isci = null;
   for (const [id, coz] of bekleyenler) coz({ id, yok: true });
   bekleyenler.clear();
+  kismiAlanlar.clear();
 }
 
 /** Çalışan iş kesildi: sözü bununla düşüyor, iş sıraya geri dönüyor. */
@@ -134,8 +139,13 @@ function isciAl(): Worker | null {
     return null;
   }
   isci.onmessage = (e: MessageEvent<IsciCevabi>) => {
+    if (e.data.kismi) {
+      kismiAlanlar.get(e.data.id)?.(e.data.kismi);
+      return;
+    }
     const coz = bekleyenler.get(e.data.id);
     bekleyenler.delete(e.data.id);
+    kismiAlanlar.delete(e.data.id);
     KESILEN.delete(e.data.id);
     coz?.(e.data);
   };
@@ -144,15 +154,23 @@ function isciAl(): Worker | null {
   return isci;
 }
 
-function iscide(i: Worker, istek: IsciIstegi): Promise<IsciCevabi> {
+function iscide(
+  i: Worker,
+  istek: IsciIstegi,
+  kismi?: (k: KismiSonuc) => void,
+): Promise<IsciCevabi> {
   const id = ++sayac;
   return new Promise((coz) => {
     bekleyenler.set(id, coz);
+    if (kismi) kismiAlanlar.set(id, kismi);
     i.postMessage({ id, istek }, aktarilanlar(istek as Partial<CizimIstegi>));
   });
 }
 
-async function ciz(istek: GlIstek): Promise<CizimSonucu | null> {
+async function ciz(
+  istek: GlIstek & Pick<CizimIstegi, 'teslim'>,
+  kismi?: (k: KismiSonuc) => void,
+): Promise<CizimSonucu | null> {
   // Model işçiye gitmiyor (yalnız ağı ya da tarifi): kopyalanması büyük
   // sahnede pahalı.
   const { model, ag, tarif, ...geri } = istek;
@@ -173,6 +191,8 @@ async function ciz(istek: GlIstek): Promise<CizimSonucu | null> {
     bayrak: k.bayrak && kareleriKur(k.bayrak),
   });
   const yazilim = yazilimaIzin();
+  // Ara teslimin dumanı: işçi tarifte kendisi koyuyor, modelde burada kuruldu.
+  const kismiAl = kismi && ((k: KismiSonuc) => kismi({ ...k, dumanlar: k.dumanlar ?? dumanlar }));
   const i = isciAl();
   if (i) {
     const gidecek: IsciIstegi = ag
@@ -180,7 +200,7 @@ async function ciz(istek: GlIstek): Promise<CizimSonucu | null> {
       : tarif && !model
         ? { ...geri, tarif, yazilimaIzin: yazilim }
         : { ...geri, ...aktarilabilir(modelden()), yazilimaIzin: yazilim };
-    const cevap = await iscide(i, gidecek);
+    const cevap = await iscide(i, gidecek, kismiAl);
     if (cevap.kesildi) throw new Kesildi();
     if (!cevap.yok) {
       isciDurumu = 'hazir';
@@ -192,12 +212,22 @@ async function ciz(istek: GlIstek): Promise<CizimSonucu | null> {
     if (cevap.ag) {
       dumanlar = cevap.dumanlar ?? dumanlar;
       return sonuna(
-        await cizBlob({ ...geri, ag: cevap.ag, bayrak: cevap.bayrak, yazilimaIzin: yazilim }),
+        await cizBlob(
+          { ...geri, ag: cevap.ag, bayrak: cevap.bayrak, yazilimaIzin: yazilim },
+          undefined,
+          kismiAl,
+        ),
       );
     }
     if (!model && !tarif) return null;
   }
-  return sonuna(await cizBlob({ ...geri, ...(ag ? { ag } : modelden()), yazilimaIzin: yazilim }));
+  return sonuna(
+    await cizBlob(
+      { ...geri, ...(ag ? { ag } : modelden()), yazilimaIzin: yazilim },
+      undefined,
+      kismiAl,
+    ),
+  );
 
   function sonuna(s: CizimSonucu | null): CizimSonucu | null {
     return s && { ...s, dumanlar };
@@ -281,7 +311,10 @@ export function glVarMi(): boolean {
  */
 const SONUCLAR = new Map<string, CizimSonucu>();
 
-/** Sonucun resmine ve katmanlarına nesne url'si verir. */
+/**
+ * Sonucun resmine ve katmanlarına nesne url'si verir. Atlas url'siz: bir
+ * kimlik (`ATLASLAR`), PNG'si oradan çözülüyor.
+ */
 function urlle(s: CizimSonucu): string {
   const url = URL.createObjectURL(s.resim);
   SONUCLAR.set(url, s);
@@ -293,7 +326,7 @@ function urlle(s: CizimSonucu): string {
       cimen: s.cimen && URL.createObjectURL(s.cimen),
       bayrak: resim && {
         ...(bayrak as Omit<BayrakAtlasi, 'resim'>),
-        url: URL.createObjectURL(resim),
+        url: atlasKoy(undefined, resim),
       },
       dumanlar: s.dumanlar,
     });
@@ -301,14 +334,76 @@ function urlle(s: CizimSonucu): string {
   return url;
 }
 
-/** Bir işi çizip resmin (ve katmanlarının) nesne url'sini veriyor. */
+/** Bir işin ara teslimlerinden sonuncusu (bkz. `calistir`). */
+interface Teslim {
+  asama: 1 | 2;
+  url: string;
+  kismi: KismiSonuc;
+  /** Atlasın kimliği (`ATLASLAR`). */
+  atlas?: string;
+}
+
+/**
+ * Ara teslime url verir: ana resme her aşamada yeni bir nesne url'si
+ * (sayfa değişikliği görsün; blob aynı), katmanlara bir öncekinin url'leri
+ * (aynı blob'lar), atlasa çözülmüş bitmap'iyle bir kimlik.
+ */
+function kismiUrlle(k: KismiSonuc, onceki: Teslim | null): Teslim {
+  const url = URL.createObjectURL(k.resim);
+  const ok = onceki && KATMANLAR.get(onceki.url);
+  const ayni = (a?: Blob, b?: Blob) => a !== undefined && a === b;
+  const katman = (b: Blob | undefined, eski: Blob | undefined, eskiUrl: string | undefined) =>
+    b && (ayni(b, eski) && eskiUrl ? eskiUrl : URL.createObjectURL(b));
+  const { bitmap, ...bayrak } = k.bayrak ?? {};
+  const atlas = bitmap && atlasKoy(bitmap);
+  KATMANLAR.set(url, {
+    su: katman(k.su, onceki?.kismi.su, ok?.su),
+    isik: katman(k.isik, onceki?.kismi.isik, ok?.isik),
+    cimen: katman(k.cimen, onceki?.kismi.cimen, ok?.cimen),
+    bayrak: atlas ? { ...(bayrak as Omit<BayrakAtlasi, 'resim'>), url: atlas } : undefined,
+    dumanlar: k.dumanlar,
+  });
+  return { asama: k.asama, url, kismi: k, atlas };
+}
+
+/**
+ * Bir işi çizip resmin (ve katmanlarının) nesne url'sini veriyor. Ara
+ * teslim varsa (`kismi`) her biri url'siyle hemen bildiriliyor; iş bitince
+ * 2. aşamanın url'si dönüyor (gösterilen resim değişmiyor), sonucun PNG'li
+ * hâli cihaz kaydı (`sonra`) ve `glKaydet` için ona bağlanıyor.
+ */
 async function calistir(
   istek: () => GlIstek,
   sonra?: (s: CizimSonucu) => void,
+  kismi?: (t: Teslim) => void,
+  teslim?: CizimIstegi['teslim'],
 ): Promise<string | null> {
+  // Nesnede: geri çağrıda değişiyor (TS düz değişkeni `null`a daraltıyordu).
+  const d: { son: Teslim | null } = { son: null };
   try {
-    const s = await ciz(istek());
-    if (!s) return null;
+    const s = await ciz(
+      { ...istek(), teslim: kismi ? teslim : undefined },
+      kismi &&
+        ((k) => {
+          const t = kismiUrlle(k, d.son);
+          // 1. aşamanın sıkışık atlası artık gösterilmiyor (tuvaller çizildi).
+          const eski = d.son?.asama === 1 && t.asama === 2 ? d.son.atlas : undefined;
+          if (eski) setTimeout(() => atlasBirak(eski), 3000);
+          d.son = t;
+          kismi(t);
+        }),
+    );
+    const { son } = d;
+    if (!s) return son?.asama === 2 ? son.url : null;
+    if (son?.asama === 2) {
+      // Gösterilen 2. aşama kalıyor; PNG'li sonuç ona bağlanıyor. PNG
+      // gelmediyse (bağlam düştü) kayıt yazılmıyor: atlassız kayıt sonraki
+      // açılışta figürsüz bir sahne gösterirdi.
+      SONUCLAR.set(son.url, s);
+      if (son.atlas && s.bayrak) ATLAS_KAYNAK.set(son.atlas, s.bayrak.resim);
+      if (s.bayrak || !son.kismi.bayrak) sonra?.(s);
+      return son.url;
+    }
     sonra?.(s);
     return urlle(s);
   } catch (e) {
@@ -494,6 +589,15 @@ const ILGI = new Map<string, (() => boolean)[]>();
 /** Bitmemiş işlerin cihaz okuması (bkz. `glCiz` `kayitYok`). */
 const OKUMALAR = new Map<string, Promise<string | null>>();
 
+/** Ara teslimi alan (`glCiz` `kismi`): url ve aşama. */
+export type KismiAlan = (url: string, asama: 1 | 2) => void;
+/** Süren işin ara teslimini bekleyenler ve son teslim (sonradan katılana). */
+interface KismiKaydi {
+  alanlar: Set<KismiAlan>;
+  son?: [string, 1 | 2];
+}
+const KISMILER = new Map<string, KismiKaydi>();
+
 /**
  * Çizimi sıraya koyar; aynı istek (anahtar + kutu + boy) bir kez çiziliyor.
  * İşler tek tek, aralarında ana iş parçacığına nefes payı bırakarak
@@ -528,6 +632,15 @@ export function glCiz(
      * geliyor, taslak boşuna çizilmesin.
      */
     kayitYok?: () => void;
+    /**
+     * Ara teslim (hareketli sahne, bkz. `KismiSonuc`): url'siyle, iş
+     * bitmeden. 2. aşama bütün kareler (atlas PNG'ye çevrilmeden);
+     * `kademeli` ise önce 1. aşama (parçalar ilk karelerinde). Aynı işi
+     * bekleyen her çağırana; sonradan katılan sonuncusunu hemen alıyor.
+     * İş bitince söz 2. aşamanın url'sini veriyor (gösterilen değişmiyor).
+     */
+    kismi?: KismiAlan;
+    kademeli?: boolean;
   } = {},
 ): Promise<string | null> {
   // Aynı işi bekleyen her çağıran bir ilgi bırakıyor; iş ancak hepsi
@@ -536,6 +649,11 @@ export function glCiz(
   const { kayitYok } = secenek;
   const var_ = ONBELLEK.get(anahtar);
   if (var_) {
+    const k = KISMILER.get(anahtar);
+    if (k && secenek.kismi) {
+      k.alanlar.add(secenek.kismi);
+      if (k.son) secenek.kismi(...k.son);
+    }
     ILGI.get(anahtar)?.push(ilgisi);
     if (kayitYok) void OKUMALAR.get(anahtar)?.then((url) => url === null && kayitYok());
     return var_;
@@ -560,10 +678,22 @@ export function glCiz(
       })
     : Promise.resolve(null);
   const yaz = grup ? (s: CizimSonucu) => kaliciYaz(anahtar, anahtar, s, grup) : undefined;
+  // Ara teslim isteyen varsa: bekleyen herkese yayılıyor.
+  const kismiler: KismiKaydi | undefined = secenek.kismi
+    ? { alanlar: new Set([secenek.kismi]) }
+    : undefined;
+  if (kismiler) KISMILER.set(anahtar, kismiler);
+  const yay =
+    kismiler &&
+    ((t: Teslim) => {
+      kismiler.son = [t.url, t.asama];
+      for (const f of kismiler.alanlar) f(t.url, t.asama);
+    });
+  const teslim = secenek.kademeli ? 'kademeli' : 'erken';
   // Telefonda ölçüm (`?olcum=1`, `cizimOlcumu.ts`): kapalıyken hiçbir şey.
   const olc = olcumAcik() ? { istendi: performance.now(), cizim: 0, deneme: 0 } : null;
   const cizdir = (y?: (s: CizimSonucu) => void) =>
-    olc ? olcerek(olc, () => calistir(istek, y)) : calistir(istek, y);
+    olc ? olcerek(olc, () => calistir(istek, y, yay, teslim)) : calistir(istek, y, yay, teslim);
   const calis = grup ? async () => (await okuma) ?? cizdir(yaz) : () => cizdir();
   const sirala = (): Promise<string | null> => {
     if (secenek.sonra) {
@@ -600,6 +730,7 @@ export function glCiz(
   void is.then((url) => {
     if (ILGI.get(anahtar) === ilgi) ILGI.delete(anahtar);
     if (OKUMALAR.get(anahtar) === okuma) OKUMALAR.delete(anahtar);
+    if (kismiler && KISMILER.get(anahtar) === kismiler) KISMILER.delete(anahtar);
     if (!olc) return;
     const simdi = performance.now();
     olcumKaydet({
@@ -633,44 +764,168 @@ export function glBirak(anahtar: string): void {
     const k = KATMANLAR.get(url);
     if (!k) return;
     KATMANLAR.delete(url);
-    if (k.bayrak) ATLASLAR.delete(k.bayrak.url);
-    for (const u of [k.su, k.isik, k.cimen, k.bayrak?.url]) if (u) URL.revokeObjectURL(u);
+    if (k.bayrak) atlasBirak(k.bayrak.url);
+    for (const u of [k.su, k.isik, k.cimen]) if (u) URL.revokeObjectURL(u);
   });
 }
 
 /**
- * Bayrak atlaslarının çözülmüş resmi (url'ye göre): sayfadaki kayan
- * şeritler tuvale buradan çiziliyor (Sahne `Serit`). `glOnYukle` resim
- * gösterilmeden önce çözüp buraya koyuyor: şerit ilk karesinde çizilmiş
- * geliyor, bir kare bile figürsüz kalmıyor. Bırakılan yamanınki siliniyor;
- * bırakılmayan (ana resimlerin) atlaslarından son birkaçı tutuluyor —
- * çizilmiş tuval resmi artık istemiyor, yeniden kurulursa yeniden çözülür.
+ * Bayrak atlasları, kimliğe göre (`Katmanlar.bayrak.url`): sayfadaki kayan
+ * şeritler tuvale buradan çiziliyor (Sahne `Serit`).
+ *
+ * Atlas hep çözülmüş (`ImageBitmap`): taze çizimde işçiden öyle geliyor
+ * (PNG'ye çevrilmeden; bkz. `KismiSonuc`), cihaz kaydından gelende PNG'si
+ * `createImageBitmap` ile ana iş parçacığının DIŞINDA çözülüyor. Önceden
+ * atlas bir `<img>`di: tuvale ilk çizimde 10 megapiksellik resim ana iş
+ * parçacığında yeniden çözülüyordu (ölçüm: canlıya geçerken 130–210 ms
+ * donma, telefonda birkaç katı). `glOnYukle` resim gösterilmeden önce
+ * hazırlıyor: şerit ilk karesinde çizili, bir kare bile figürsüz değil.
+ *
+ * Çözülmüş atlas bellek tutuyor (yerleşkeninki ~10 MP, ~40 MB): toplamı
+ * `ATLAS_BUTCE`yi aşınca en eskisi kapatılıyor (PNG'si varsa; yeniden
+ * kurulan sahne onu yeniden çözüyor). Bırakılan yamanınki hemen gidiyor.
  */
-const ATLASLAR = new Map<string, HTMLImageElement>();
-const ATLAS_SINIRI = 6;
+const ATLASLAR = new Map<string, ImageBitmap>();
+/** Atlasın PNG'si (cihaz kaydı ya da taze çizimin sonradan gelen PNG'si). */
+const ATLAS_KAYNAK = new Map<string, Blob>();
+/** Çözülmekte olanlar: aynı atlas iki kez çözülmesin. */
+const ATLAS_COZULEN = new Map<string, Promise<ImageBitmap | null>>();
+/** Çözülmüş atlasların toplam piksel sınırı (yerleşke ve birkaç afiş). */
+const ATLAS_BUTCE = 16_000_000;
+let atlasSayaci = 0;
 
-/** Çözülmüş atlas, varsa (eşzamanlı: çizim aynı karede). */
-export function glAtlas(url: string): HTMLImageElement | undefined {
-  return ATLASLAR.get(url);
+/** Atlası kaydeder (bitmap'iyle ya da PNG'siyle), kimliğini verir. */
+function atlasKoy(bitmap?: ImageBitmap, png?: Blob): string {
+  const kimlik = `atlas:${++atlasSayaci}`;
+  if (png) ATLAS_KAYNAK.set(kimlik, png);
+  if (bitmap) atlasSakla(kimlik, bitmap);
+  return kimlik;
 }
 
-export async function glAtlasYukle(url: string): Promise<HTMLImageElement | null> {
-  let r = ATLASLAR.get(url);
-  if (!r) {
-    const yeni = new Image();
-    yeni.src = url;
-    try {
-      await yeni.decode();
-    } catch {
-      return null;
-    }
-    r = ATLASLAR.get(url) ?? yeni;
+/** Çözülmüşü en sona koyar; bütçe aşılınca en eskileri (PNG'si olanları) kapatır. */
+function atlasSakla(kimlik: string, b: ImageBitmap) {
+  ATLASLAR.delete(kimlik);
+  ATLASLAR.set(kimlik, b);
+  let toplam = 0;
+  for (const a of ATLASLAR.values()) toplam += a.width * a.height;
+  for (const [k, a] of ATLASLAR) {
+    if (toplam <= ATLAS_BUTCE) break;
+    // PNG'si gelmemiş (taze, çizimi süren) atlas kapatılamaz: yeniden çözülemez.
+    if (k === kimlik || !ATLAS_KAYNAK.has(k)) continue;
+    toplam -= a.width * a.height;
+    a.close();
+    ATLASLAR.delete(k);
   }
-  // En son kullanılan sona: sınır aşılınca en eskisi gidiyor.
-  ATLASLAR.delete(url);
-  ATLASLAR.set(url, r);
-  if (ATLASLAR.size > ATLAS_SINIRI) ATLASLAR.delete(ATLASLAR.keys().next().value!);
-  return r;
+}
+
+function atlasBirak(kimlik: string) {
+  ATLASLAR.get(kimlik)?.close();
+  ATLASLAR.delete(kimlik);
+  ATLAS_KAYNAK.delete(kimlik);
+  for (const b of SERIT_HAZIR.get(kimlik) ?? []) b?.close();
+  SERIT_HAZIR.delete(kimlik);
+}
+
+/**
+ * Önceden kesilmiş şeritler (atlas kimliği → parça sırasıyla): resim
+ * gösterilmeden kesiliyor (`glOnYukle`), ilk kurulan tuval kendisininkini
+ * alıyor (`glSerit`). Şerit tuvali bitmap'i kopyasız gösteriyor
+ * (`bitmaprenderer`); 2d tuvale çizmek 41 tuvalde ana iş parçacığını
+ * donduruyordu (her tuval kendi GPU kaynağını o karede üretiyordu).
+ * Alınmayanlar (sahneden önce çıkıldı) bir süre sonra kapatılıyor.
+ */
+const SERIT_HAZIR = new Map<string, (ImageBitmap | undefined)[]>();
+const SERIT_BEKLE = 10_000;
+
+/** Parçanın atlastaki şeridi (x, y, en, boy; çıktı pikseli). */
+export function seritKutusu(
+  b: NonNullable<Katmanlar['bayrak']>,
+  duzen: ReturnType<typeof atlasDuzeni>,
+  i: number,
+): [number, number, number, number] {
+  const [, , w, h] = b.kutular[i]!;
+  const sutun = duzen.sutun[i]!;
+  return [duzen.yer[i]![0], duzen.yer[i]![1], sutun * w, (b.kareSayilari[i]! / sutun) * h];
+}
+
+async function seritleriHazirla(b: NonNullable<Katmanlar['bayrak']>) {
+  const kimlik = b.url;
+  if (SERIT_HAZIR.has(kimlik)) return;
+  const atlas = await glAtlasYukle(kimlik);
+  if (!atlas || SERIT_HAZIR.has(kimlik)) return;
+  const duzen = atlasDuzeni(b.kutular, b.kareSayilari);
+  const kesik = await Promise.all(
+    b.kutular.map(([, , w, h], i) =>
+      w > 0 && h > 0
+        ? createImageBitmap(atlas, ...seritKutusu(b, duzen, i)).catch(() => undefined)
+        : undefined,
+    ),
+  );
+  if (!ATLASLAR.has(kimlik) && !ATLAS_KAYNAK.has(kimlik)) {
+    // O arada bırakıldı.
+    for (const k of kesik) k?.close();
+    return;
+  }
+  SERIT_HAZIR.set(kimlik, kesik);
+  setTimeout(() => {
+    const l = SERIT_HAZIR.get(kimlik);
+    if (l !== kesik) return;
+    for (const k of l) k?.close();
+    SERIT_HAZIR.delete(kimlik);
+  }, SERIT_BEKLE);
+}
+
+/** Önceden kesilmiş şerit (bir kez verilir: tuval onu sahipleniyor). */
+export function glSerit(kimlik: string, i: number): ImageBitmap | undefined {
+  const l = SERIT_HAZIR.get(kimlik);
+  const b = l?.[i];
+  if (l) l[i] = undefined;
+  return b;
+}
+
+/** Şeridi atlastan keser (önceden kesilmişi yoksa: sahne yeniden kurulunca). */
+export async function glSeritKes(
+  kimlik: string,
+  kutu: [number, number, number, number],
+): Promise<ImageBitmap | null> {
+  const atlas = await glAtlasYukle(kimlik);
+  return atlas ? createImageBitmap(atlas, ...kutu).catch(() => null) : null;
+}
+
+/** Çözülmüş atlas, varsa (eşzamanlı: çizim aynı karede). Kapatılmışın eni 0. */
+function glAtlas(kimlik: string): ImageBitmap | undefined {
+  const a = ATLASLAR.get(kimlik);
+  return a && a.width > 0 ? a : undefined;
+}
+
+/** Atlası çözer (gerekirse; ana iş parçacığının dışında). */
+function glAtlasYukle(kimlik: string): Promise<ImageBitmap | null> {
+  const var_ = glAtlas(kimlik);
+  if (var_) {
+    atlasSakla(kimlik, var_);
+    return Promise.resolve(var_);
+  }
+  let p = ATLAS_COZULEN.get(kimlik);
+  if (!p) {
+    const png = ATLAS_KAYNAK.get(kimlik);
+    p = png
+      ? createImageBitmap(png).then(
+          (b) => {
+            // O arada bırakıldıysa (yama değişti) tutulmuyor.
+            if (!ATLAS_KAYNAK.has(kimlik)) {
+              b.close();
+              return null;
+            }
+            atlasSakla(kimlik, b);
+            return b;
+          },
+          () => null,
+        )
+      : Promise.resolve(null);
+    ATLAS_COZULEN.set(kimlik, p);
+    void p.finally(() => ATLAS_COZULEN.delete(kimlik));
+  }
+  return p;
 }
 
 /**
@@ -703,7 +958,8 @@ export async function glKalici(
 /**
  * Resmi ve katmanlarını çözer (yükler, bitmap'e açar): durağan resmin
  * yerine canlısı konurken bir kare bile figürsüz görünmesin (canlı
- * resimde hareketli parçalar yok, atlasta).
+ * resimde hareketli parçalar yok, atlasta). Atlas `glAtlasYukle`yle
+ * (taze çizimde zaten çözülmüş).
  */
 export async function glOnYukle(url: string): Promise<void> {
   const k = KATMANLAR.get(url);
@@ -714,6 +970,6 @@ export async function glOnYukle(url: string): Promise<void> {
       r.src = u;
       return r.decode().catch(() => undefined);
     }),
-    k?.bayrak && glAtlasYukle(k.bayrak.url),
+    k?.bayrak && seritleriHazirla(k.bayrak),
   ]);
 }

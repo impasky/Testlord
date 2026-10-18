@@ -31,16 +31,17 @@ import {
   EN_BUYUK,
   aoYaricapi,
   atlasDuzeni,
-  glAtlas,
-  glAtlasYukle,
   glBirak,
   glCiz,
   glKalici,
   glKaydet,
   glKatmanlari,
   glOnYukle,
+  glSerit,
+  glSeritKes,
   glVarMi,
   ornekSayisi,
+  seritKutusu,
   type Katmanlar,
 } from './gl';
 import type { KaliciGrup } from './kalici';
@@ -265,8 +266,25 @@ function useGpuResmi(
         if (!simdiki || simdiki.en < en) RESIMLER.set(t, { en, url });
         return RESIMLER.get(t)!.url;
       };
+      // Canlı resim, atlası PNG'ye çevrilmeden geldiği an (2. aşama, bkz.
+      // `KismiSonuc`): çözülüp yerine konuyor; iş PNG'yi cihaza yazarken.
+      const erken = (sonra: (url: string) => void) => (url: string, asama: 1 | 2) => {
+        if (asama !== 2 || iptal) return;
+        void glOnYukle(url).then(() => {
+          if (!iptal) sonra(url);
+        });
+      };
       if (!iki) {
-        glCiz(`${taban}|${en}x${boy}`, istek(hareket), { kalici, piksel, kayitYok }).then((url) => {
+        const goster = (url: string) => {
+          setResim(sakla(taban, url));
+          tamKondu();
+        };
+        glCiz(`${taban}|${en}x${boy}`, istek(hareket), {
+          kalici,
+          piksel,
+          kayitYok,
+          kismi: hareket ? erken(goster) : undefined,
+        }).then((url) => {
           if (!url) {
             if (!iptal) guncel.current.basarisiz();
             return;
@@ -302,6 +320,11 @@ function useGpuResmi(
         istenmiyor: () => iptal,
         kalici,
         piksel,
+        kismi: erken((url) => {
+          canliGeldi = true;
+          setResim(sakla(taban, url));
+          tamKondu();
+        }),
       }).then(async (url) => {
         // Canlı gelmediyse (vazgeçildi ya da çizilemedi) durağan kalıyor.
         if (!url) return;
@@ -563,6 +586,15 @@ function useYama(
     const iste = async (parcali: boolean): Promise<boolean> => {
       const is = taban + (parcali ? '|parcali' : hareketli ? '|h' : '');
       yeni.isler.add(is);
+      const goster = (url: string) =>
+        setYama({
+          is,
+          url,
+          kutu: k,
+          hareketli,
+          katman: parcali ? glKatmanlari(url) : undefined,
+          yogunluk,
+        });
       const url = await glCiz(
         is,
         () => ({
@@ -582,7 +614,19 @@ function useYama(
           yama: hareketli,
           hareket: parcali,
         }),
-        { istenmiyor: () => yeni.iptal, piksel: en * boy },
+        {
+          istenmiyor: () => yeni.iptal,
+          piksel: en * boy,
+          // Parçaların atlası PNG'ye çevrilmeden gelince hemen (2. aşama).
+          kismi: parcali
+            ? (u, asama) => {
+                if (asama !== 2 || yeni.iptal || kapandi.current) return;
+                void glOnYukle(u).then(() => {
+                  if (!yeni.iptal && !kapandi.current) goster(u);
+                });
+              }
+            : undefined,
+        },
       );
       if (url) await glOnYukle(url);
       if (!url || yeni.iptal || kapandi.current) {
@@ -591,14 +635,7 @@ function useYama(
         if (url && !bekleyen && guncel.current.yama?.is !== is) glBirak(is);
         return false;
       }
-      setYama({
-        is,
-        url,
-        kutu: k,
-        hareketli,
-        katman: parcali ? glKatmanlari(url) : undefined,
-        yogunluk,
-      });
+      if (guncel.current.yama?.url !== url) goster(url);
       return true;
     };
     void (async () => {
@@ -1032,20 +1069,6 @@ function Bayraklar({
   // Evre sayfanın saatinden: aynı parçanın sahnedeki ve yamadaki kopyası
   // (ya da yerine gelen yeni yama) aynı karede; yama değişince köylü sıçramıyor.
   const [t0] = useState(() => performance.now() / 1000);
-  // Atlas çoğunlukla çözülmüş geliyor (`glOnYukle`): şeritler ilk karede
-  // çizili. Gelmediyse (sınırdan düşmüş eski bir atlas) çözülünce.
-  const [yuklenen, setYuklenen] = useState<HTMLImageElement | null>(null);
-  const resim = glAtlas(b.url) ?? (yuklenen?.src === b.url ? yuklenen : null);
-  useEffect(() => {
-    if (resim) return;
-    let iptal = false;
-    void glAtlasYukle(b.url).then((r) => {
-      if (!iptal) setYuklenen(r);
-    });
-    return () => {
-      iptal = true;
-    };
-  }, [b.url, resim]);
   return (
     <>
       {b.kutular.map(([x, y, w, h], i) => {
@@ -1058,15 +1081,24 @@ function Bayraklar({
         const gecikme = `${(-((t0 + ((i * 0.29) % 1) * sure) % sure)).toFixed(3)}s`;
         const serit = (
           <Serit
-            resim={resim}
-            kaynak={[duzen.yer[i]![0], duzen.yer[i]![1], sutun * w, satir * h]}
-            style={{
-              width: sutun * w * o,
-              height: satir * h * o,
-              animationDuration: `${sure / satir}s`,
-              animationTimingFunction: `steps(${sutun})`,
-              animationDelay: gecikme,
-            }}
+            // Atlas değişince yeni tuval: eskisinin bitmap'i yeni boyda bir
+            // kare bile gerilmesin.
+            key={b.url}
+            atlas={b.url}
+            sira={i}
+            kaynak={seritKutusu(b, duzen, i)}
+            style={
+              k > 1
+                ? {
+                    width: sutun * w * o,
+                    height: satir * h * o,
+                    animationDuration: `${sure / satir}s`,
+                    animationTimingFunction: `steps(${sutun})`,
+                    animationDelay: gecikme,
+                  }
+                : // Tek kare (kademeli teslimin 1. aşaması): kıpırdamıyor.
+                  { width: w * o, height: h * o, animationName: 'none' }
+            }
           />
         );
         return (
@@ -1107,8 +1139,8 @@ function Bayraklar({
 }
 
 /**
- * Bir parçanın kare şeridi, tuvalde: atlasın o parçaya düşen bölümü bir kez
- * çiziliyor, sonra yalnız kayıyor.
+ * Bir parçanın kare şeridi, tuvalde: atlasın o parçaya düşen bölümü (kendi
+ * bitmap'i), sonra yalnız kayıyor.
  *
  * Neden tuval: şerit arka plan resmi olan bir öğeyken tarayıcı onu karo
  * karo rasterliyordu ve kayan şeridin uzaktaki karelerini "sonra lazım"
@@ -1118,35 +1150,46 @@ function Bayraklar({
  * olmazken: 6 sn'de 342 raster görevi, 359 atılan karo; tuvalde 0 ve 0).
  * Tuval kaynak çözünürlüğünde tek parça bir doku: yakınlıkla büyümüyor,
  * atılmıyor, yeniden çizilmiyor.
+ *
+ * Neden `bitmaprenderer`: bitmap tuvale kopyalanmadan konuyor. 2d tuvale
+ * çizmek, 41 tuval birden kurulunca her biri o karede kendi GPU kaynağını
+ * ürettiği için ana iş parçacığını donduruyordu (canlıya geçişte ~260 ms).
+ * Şerit resim gösterilmeden önce kesilmiş (`glOnYukle`); yoksa (sahne
+ * yeniden kuruldu) atlastan kesilince.
  */
 function Serit({
-  resim,
+  atlas,
+  sira,
   kaynak: [x, y, w, h],
   style,
 }: {
-  resim: HTMLImageElement | null;
+  /** Atlasın kimliği (`Katmanlar.bayrak.url`) ve parçanın sırası. */
+  atlas: string;
+  sira: number;
   /** Atlasta şeridin dikdörtgeni (çıktı pikseli). */
   kaynak: [number, number, number, number];
   style: CSSProperties;
 }) {
   const ref = useRef<HTMLCanvasElement>(null);
-  const en = Math.max(1, Math.round(w));
-  const boy = Math.max(1, Math.round(h));
   useLayoutEffect(() => {
-    const c = ref.current;
-    if (!c || !resim) return;
-    const ciz = () => {
-      const g = c.getContext('2d');
-      if (!g) return;
-      g.clearRect(0, 0, en, boy);
-      g.drawImage(resim, x, y, w, h, 0, 0, en, boy);
+    const g = ref.current?.getContext('bitmaprenderer');
+    if (!g) return;
+    const hazir = glSerit(atlas, sira);
+    if (hazir) {
+      g.transferFromImageBitmap(hazir);
+      return;
+    }
+    let iptal = false;
+    void glSeritKes(atlas, [x, y, w, h]).then((b) => {
+      if (!b) return;
+      if (iptal) b.close();
+      else g.transferFromImageBitmap(b);
+    });
+    return () => {
+      iptal = true;
     };
-    ciz();
-    // GPU bağlamı düşüp geri gelince tuval boş dönüyor.
-    c.addEventListener('contextrestored', ciz);
-    return () => c.removeEventListener('contextrestored', ciz);
-  }, [resim, x, y, w, h, en, boy]);
-  return <canvas ref={ref} width={en} height={boy} style={style} />;
+  }, [atlas, sira, x, y, w, h]);
+  return <canvas ref={ref} style={style} />;
 }
 
 function kareyeTamamla([x, y, w, h]: [number, number, number, number]): [

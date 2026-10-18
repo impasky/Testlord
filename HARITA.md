@@ -244,9 +244,9 @@
 - `apps/web/src/cizim/duman.ts` — Canlı dumanın kaynakları (docs/24 "Hareket"): hareketli GPU resminde duman yok; sayfada CSS yumruları olarak yükseliyor. · dışa: DumanKaynagi, dumanKaynaklari
 - `apps/web/src/cizim/dunya.ts` — DÜNYA ZEMİNİ — haritanın altındaki arazi, kuşbakışı (docs/24). · dışa: Ucgen, dunyaUcgenleri, DUNYA_KAMERASI, DUNYA_ISIGI, DUNYA_KUTUSU, DUNYA_ZEMIN_PIKSEL, dunyaZeminIstegi, dunyaModeli
 - `apps/web/src/cizim/figur.ts` — FİGÜRLER — asker, düşman, at, mancınık (docs/24). · dışa: BaslikTipi, EsyaTipi, Esya, Insan, kalkan, kilicModeli, insan, AtAyari, at, mancinik
-- `apps/web/src/cizim/gl.ts` — GPU çiziminin kapısı (docs/24): sıra, önbellek ve işçi. · dışa: GlIstek, Katmanlar, glKatmanlari, glVarMi, glCiz, glBirak, glAtlas, glAtlasYukle, glKaydet, glKalici, glOnYukle, EN_BUYUK, aoYaricapi, atlasDuzeni, ornekSayisi · (testi var)
+- `apps/web/src/cizim/gl.ts` — GPU çiziminin kapısı (docs/24): sıra, önbellek ve işçi. · dışa: GlIstek, Katmanlar, glKatmanlari, glVarMi, KismiAlan, glCiz, glBirak, seritKutusu, glSerit, glSeritKes, glKaydet, glKalici, glOnYukle, EN_BUYUK, aoYaricapi, atlasDuzeni +1 · (testi var)
 - `apps/web/src/cizim/glAg.ts` — Modelden GPU ağı (docs/24). · dışa: KOSE, DOKU_NO, dokuBul, Ag, agYap
-- `apps/web/src/cizim/glCizici.ts` — GPU ÇİZİMİ (WebGL2) — aynı 3B model, tarayıcının izin verdiği en temiz hâliyle (docs/24). · dışa: EN_BUYUK, yazilimMi, sayfalaraYerlestir, goruntuMatrisi, CizimIstegi, ornekSayisi, aoYaricapi, BayrakKareleri, BayrakAtlasi, CizimSonucu, atlasDuzeni, IsciIstegi, IsciCevabi, aktarilanlar, glDurumu, CizimKesildi +1
+- `apps/web/src/cizim/glCizici.ts` — GPU ÇİZİMİ (WebGL2) — aynı 3B model, tarayıcının izin verdiği en temiz hâliyle (docs/24). · dışa: EN_BUYUK, yazilimMi, sayfalaraYerlestir, goruntuMatrisi, CizimIstegi, KismiSonuc, KismiGonder, ornekSayisi, aoYaricapi, BayrakKareleri, BayrakAtlasi, CizimSonucu, atlasDuzeni, IsciIstegi, IsciCevabi, aktarilanlar +3
 - `apps/web/src/cizim/glIsci.ts` — GPU çizim işçisi (docs/24): `glCizici`yi ana iş parçacığının dışında koşturuyor.
 - `apps/web/src/cizim/hava.ts` — Hava (docs/24 "Hava") — yalnız görsel, ara sıra. · dışa: Hava, HAVALAR, HAVA_DILIMI_SAAT, havaDurumu, havaDilimSonu · (testi var)
 - `apps/web/src/cizim/kalabalik.ts` — KALABALIK — yerleşkenin insanları ve evleri (docs/24 "Kalabalık"). · dışa: KalabalikAyari, kalabalik

@@ -1150,7 +1150,37 @@ export interface CizimIstegi {
   dalgaBirimi?: number;
   /** Bir CSS pikselinin çıktıdaki karşılığı: kenar çizgisinin kalınlığı. */
   olcek: number;
+  /**
+   * Ara teslim (hareketli sahne; bkz. `KismiSonuc`). `erken`: bütün kareler
+   * hazır olunca atlas PNG'ye çevrilmeden gidiyor, PNG yalnız cihaz kaydı
+   * için sonra. `kademeli`: önce parçalar ilk karelerinde (durağan resmin
+   * aynısı), sonra `erken`deki gibi.
+   */
+  teslim?: 'erken' | 'kademeli';
 }
+
+/**
+ * Çizim bitmeden gelen ara sonuç (`CizimIstegi.teslim`).
+ *
+ * Canlı sahne tek iş: ana geçiş, katmanlar, sonra parçaların bütün kareleri.
+ * Önceden önce ayrı bir durağan resim çiziliyordu (ana geçiş iki kez) ve
+ * canlısı ancak o bitince başlıyordu. Şimdi 1. aşama ilk kare biter bitmez
+ * geliyor: ana resim ve katmanlar, parçalar ilk karelerinde sıkışık bir
+ * atlasta (sayfa durağan resmin aynısını gösteriyor). 2. aşama bütün
+ * kareler: atlas PNG'ye çevrilip yeniden çözülmeden (`ImageBitmap`).
+ */
+export interface KismiSonuc {
+  asama: 1 | 2;
+  resim: Blob;
+  su?: Blob;
+  isik?: Blob;
+  cimen?: Blob;
+  bayrak?: Omit<BayrakAtlasi, 'resim'> & { bitmap: ImageBitmap };
+  dumanlar?: DumanKaynagi[];
+}
+
+/** Ara sonucu gönderen (işçide `postMessage`, aktarılacak bitmap'le). */
+export type KismiGonder = (k: KismiSonuc, aktar: Transferable[]) => void;
 
 /**
  * Çıktının örnek sayısı (kenar başına): 2×2 örnekleme bellek sınırına
@@ -1290,6 +1320,8 @@ export type IsciIstegi = CizimIstegi | (Omit<CizimIstegi, 'ag' | 'bayrak'> & { t
 export interface IsciCevabi {
   id: number;
   sonuc?: CizimSonucu | null;
+  /** Ara teslim (`CizimIstegi.teslim`): iş sürüyor, cevap değil. */
+  kismi?: KismiSonuc;
   yok?: boolean;
   /** İşçi kesildi (bkz. `gl.ts` `isciyiKes`): iş sıraya geri dönüyor. */
   kesildi?: boolean;
@@ -1413,18 +1445,20 @@ async function seritle(
 export async function cizBlob(
   istek: CizimIstegi,
   kes?: () => boolean,
+  /** Ara teslim (`istek.teslim` varsa). */
+  kismi?: KismiGonder,
 ): Promise<CizimSonucu | null> {
   clearTimeout(bosaltma);
   kesmeSorusu = kes;
   try {
-    return await ciz(istek);
+    return await ciz(istek, istek.teslim ? kismi : undefined);
   } finally {
     kesmeSorusu = undefined;
     bosaltma = setTimeout(bosalt, BOSTA_MS);
   }
 }
 
-async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
+async function ciz(istek: CizimIstegi, kismi?: KismiGonder): Promise<CizimSonucu | null> {
   const k = kur(istek.yazilimaIzin);
   if (!k) return null;
   const { gl } = k;
@@ -1852,6 +1886,48 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
         }
         t.sil();
         if (gl.isContextLost()) return sonuc;
+        // Kademeli teslim, 1. aşama: ilk kare bitti. Her parçanın ilk
+        // karesi sıkışık bir atlasa (parça başına bir hücre) kopyalanıp
+        // ana resim ve katmanlarla gidiyor: sayfa durağan resmin aynısını
+        // gösteriyor, kalan kareler çizilirken.
+        if (f === 0 && kare > 1 && kismi && istek.teslim === 'kademeli') {
+          const d0 = atlasDuzeni(kutular, 1);
+          k.tuval.width = d0.en;
+          k.tuval.height = d0.boy;
+          gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+          gl.viewport(0, 0, d0.en, d0.boy);
+          gl.disable(gl.SCISSOR_TEST);
+          gl.clearBufferfv(gl.COLOR, 0, [0, 0, 0, 0]);
+          gl.enable(gl.SCISSOR_TEST);
+          for (const i of dolu) {
+            const [, , w, h] = kutular[i]!;
+            const [ax, ay] = duzen.yer[i]!;
+            const [bx, byy] = d0.yer[i]!;
+            // GL'de y yukarı: hücrenin alt kenarı.
+            const hy = d0.boy - byy - h;
+            gl.scissor(bx, hy, w, h);
+            bulanikCiz(null, [bx - ax, hy - (Ha - ay - h)], k.atlas, [Wa, Ha], 1, 0);
+          }
+          gl.disable(gl.SCISSOR_TEST);
+          if (gl.isContextLost()) return sonuc;
+          const bitmap = await createImageBitmap(k.tuval);
+          kismi(
+            {
+              ...sonuc,
+              asama: 1,
+              bayrak: {
+                bitmap,
+                kutular,
+                en,
+                boy,
+                kare: 1,
+                sureler: by.sureler,
+                kareSayilari: kutular.map(() => 1),
+              },
+            },
+            [bitmap],
+          );
+        }
       }
       // Atlas → tuval → PNG (tek okuma).
       k.tuval.width = Wa;
@@ -1859,17 +1935,23 @@ async function ciz(istek: CizimIstegi): Promise<CizimSonucu | null> {
       gl.viewport(0, 0, Wa, Ha);
       bulanikCiz(null, [0, 0], k.atlas, [Wa, Ha], 1, 0);
       if (gl.isContextLost()) return sonuc;
+      const atlas = {
+        kutular,
+        en,
+        boy,
+        kare,
+        sureler: by.sureler,
+        kareSayilari: kutular.map((_, i) => kareSayisi(i)),
+      };
+      // 2. aşama (ara teslim): atlas PNG'ye çevrilmeden. Çevirmek telefonda
+      // saniyeyi buluyor, sayfanın onu yeniden çözmesi ana iş parçacığını
+      // donduruyordu; PNG yalnız cihaz kaydı için, bundan sonra.
+      if (kismi) {
+        const bitmap = await createImageBitmap(k.tuval);
+        kismi({ ...sonuc, asama: 2, bayrak: { ...atlas, bitmap } }, [bitmap]);
+      }
       const resim = await blobla(k.tuval);
-      if (resim)
-        sonuc.bayrak = {
-          resim,
-          kutular,
-          en,
-          boy,
-          kare,
-          sureler: by.sureler,
-          kareSayilari: kutular.map((_, i) => kareSayisi(i)),
-        };
+      if (resim) sonuc.bayrak = { resim, ...atlas };
     }
     return sonuc;
   } finally {

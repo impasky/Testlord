@@ -79,7 +79,12 @@ kapsam.onmessage = (e) => {
     if (KESILECEK.delete(id)) return kapsam.postMessage({ id, kesildi: true });
     const { c, dumanlar } = hazirla(istek);
     let kesildi = false;
-    const sonuc = await cizBlob(c, () => KESILECEK.has(id)).catch((h: unknown) => {
+    const sonuc = await cizBlob(
+      c,
+      () => KESILECEK.has(id),
+      // Ara teslim: iş sürüyor; ana iş parçacığı göstermeye başlıyor.
+      (kismi, aktar) => kapsam.postMessage({ id, kismi: { ...kismi, dumanlar } }, aktar),
+    ).catch((h: unknown) => {
       kesildi = h instanceof CizimKesildi;
       return null;
     });
