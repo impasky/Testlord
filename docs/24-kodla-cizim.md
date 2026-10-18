@@ -394,10 +394,18 @@ olmadığını denetliyor.
   Kaynağın ekrandaki yeri modelden bir kez hesaplanıyor.
 - Bayrak: her bayrak kendi kutusunda; atlastaki satırı `steps(12)` ile
   kare kare kayıyor (1,2 sn'de bir dalga turu). Kayan katman yalnız o
-  parçanın kare şeridi kadar (atlas arka plan olarak şeridin yerinden
-  gösteriliyor): önceden her parça atlasın tamamı boyunda bir katmandı,
-  ağaçlı bir zeminde ~74 megapiksel katman telefonun GPU belleğini
-  tüketiyordu (şimdi ~2,6). Ekranda olmayan sahnenin katmanları duruyor
+  parçanın kare şeridi kadar: önceden her parça atlasın tamamı boyunda bir
+  katmandı, ağaçlı bir zeminde ~74 megapiksel katman telefonun GPU
+  belleğini tüketiyordu. Şerit bir tuval (`Serit`): atlasın o parçaya
+  düşen bölümü bir kez çiziliyor (çözülmüş atlas `glOnYukle`den, ilk
+  karede). Arka plan resmi olan bir öğeyken tarayıcı şeridi karo karo
+  rasterliyordu ve uzaktaki karelerin karolarını "sonra lazım" diye atıp
+  adım onlara gelince yeniden çiziyordu; telefonda o arada parça boştu
+  ("ağaçlar, okçular yok olup geri geliyor"). Tuval kaynak
+  çözünürlüğünde tek parça doku: yakınlıkla büyümüyor, atılmıyor.
+  Ölçüm (Pixel 5 taklidi, oturmuş sahne, 8 sn): yakınlık 2,25'te 68
+  raster görevi ve 155 atılan karo → 0 ve 0; karo belleği 70 → 28 MB
+  (tuvaller ~30 MB, sabit). Ekranda olmayan sahnenin katmanları duruyor
   (`IntersectionObserver`). Bayraklar ayrı evrede.
   Kumaş dilimli ve dinlenik hâlini taşıyor (`Yuz.bez`: düz hâli ve her
   köşenin direkten uca oranı; dönüşümler onu da taşıyor). Dalga

@@ -553,7 +553,11 @@ svg g[role='button']:focus-visible > path:first-of-type {
   }
 }
 
-/* Bayrak, sancak, ağaç: atlastaki kareler adım adım (GPU'da çizilmiş hareket, sayfada yalnız kayma). */
+/*
+ * Bayrak, sancak, ağaç, asker: atlastaki kareler adım adım (GPU'da çizilmiş
+ * hareket, sayfada yalnız kayma). Şerit bir tuval (Sahne `Serit`); kendi
+ * boyunun tamamı kadar kayıyor.
+ */
 .hareket-bayrak {
   position: absolute;
   overflow: hidden;
@@ -563,19 +567,19 @@ svg g[role='button']:focus-visible > path:first-of-type {
   position: absolute;
   overflow: hidden;
 }
-.hareket-bayrak > span,
-.hareket-satir > span {
+.hareket-bayrak > canvas,
+.hareket-bayrak > .hareket-satir,
+.hareket-satir > canvas {
   position: absolute;
   left: 0;
   top: 0;
-  background-repeat: no-repeat;
   animation-name: bayrak-dalga;
   animation-iteration-count: infinite;
   will-change: transform;
 }
 @keyframes bayrak-dalga {
   to {
-    transform: translate3d(var(--kay), 0, 0);
+    transform: translate3d(-100%, 0, 0);
   }
 }
 /* Uzun turlu canlı parça: kareler atlasta satır satır; sarmalayıcı satırdan satıra iniyor. */
@@ -584,7 +588,7 @@ svg g[role='button']:focus-visible > path:first-of-type {
 }
 @keyframes bayrak-satir {
   to {
-    transform: translate3d(0, var(--kayY), 0);
+    transform: translate3d(0, -100%, 0);
   }
 }
 

@@ -633,8 +633,44 @@ export function glBirak(anahtar: string): void {
     const k = KATMANLAR.get(url);
     if (!k) return;
     KATMANLAR.delete(url);
+    if (k.bayrak) ATLASLAR.delete(k.bayrak.url);
     for (const u of [k.su, k.isik, k.cimen, k.bayrak?.url]) if (u) URL.revokeObjectURL(u);
   });
+}
+
+/**
+ * Bayrak atlaslarının çözülmüş resmi (url'ye göre): sayfadaki kayan
+ * şeritler tuvale buradan çiziliyor (Sahne `Serit`). `glOnYukle` resim
+ * gösterilmeden önce çözüp buraya koyuyor: şerit ilk karesinde çizilmiş
+ * geliyor, bir kare bile figürsüz kalmıyor. Bırakılan yamanınki siliniyor;
+ * bırakılmayan (ana resimlerin) atlaslarından son birkaçı tutuluyor —
+ * çizilmiş tuval resmi artık istemiyor, yeniden kurulursa yeniden çözülür.
+ */
+const ATLASLAR = new Map<string, HTMLImageElement>();
+const ATLAS_SINIRI = 6;
+
+/** Çözülmüş atlas, varsa (eşzamanlı: çizim aynı karede). */
+export function glAtlas(url: string): HTMLImageElement | undefined {
+  return ATLASLAR.get(url);
+}
+
+export async function glAtlasYukle(url: string): Promise<HTMLImageElement | null> {
+  let r = ATLASLAR.get(url);
+  if (!r) {
+    const yeni = new Image();
+    yeni.src = url;
+    try {
+      await yeni.decode();
+    } catch {
+      return null;
+    }
+    r = ATLASLAR.get(url) ?? yeni;
+  }
+  // En son kullanılan sona: sınır aşılınca en eskisi gidiyor.
+  ATLASLAR.delete(url);
+  ATLASLAR.set(url, r);
+  if (ATLASLAR.size > ATLAS_SINIRI) ATLASLAR.delete(ATLASLAR.keys().next().value!);
+  return r;
 }
 
 /**
@@ -671,12 +707,13 @@ export async function glKalici(
  */
 export async function glOnYukle(url: string): Promise<void> {
   const k = KATMANLAR.get(url);
-  const adresler = [url, k?.su, k?.isik, k?.cimen, k?.bayrak?.url].filter((u): u is string => !!u);
-  await Promise.all(
-    adresler.map((u) => {
+  const adresler = [url, k?.su, k?.isik, k?.cimen].filter((u): u is string => !!u);
+  await Promise.all([
+    ...adresler.map((u) => {
       const r = new Image();
       r.src = u;
       return r.decode().catch(() => undefined);
     }),
-  );
+    k?.bayrak && glAtlasYukle(k.bayrak.url),
+  ]);
 }

@@ -31,6 +31,8 @@ import {
   EN_BUYUK,
   aoYaricapi,
   atlasDuzeni,
+  glAtlas,
+  glAtlasYukle,
   glBirak,
   glCiz,
   glKalici,
@@ -1011,10 +1013,10 @@ function HareketKatmani({
  * kutusunda, atlastaki satırının kareleri adım adım kayıyor (yalnız dönüşüm).
  * `o`: çıktı pikseli başına CSS pikseli.
  *
- * Kayan katman yalnız o parçanın kare şeridi kadar: atlas arka plan olarak
- * şeridin yerinden gösteriliyor. Önceden her parça atlasın TAMAMI boyunda
- * bir katmandı; ağaçlı bir zeminde yirmi üç parça ~74 megapiksellik katman
- * demekti ve telefonun GPU belleği tükenip sayfa takılıyordu.
+ * Kayan katman yalnız o parçanın kare şeridi kadar (`Serit`). Önceden her
+ * parça atlasın TAMAMI boyunda bir katmandı; ağaçlı bir zeminde yirmi üç
+ * parça ~74 megapiksellik katman demekti ve telefonun GPU belleği tükenip
+ * sayfa takılıyordu.
  */
 function Bayraklar({
   b,
@@ -1030,6 +1032,20 @@ function Bayraklar({
   // Evre sayfanın saatinden: aynı parçanın sahnedeki ve yamadaki kopyası
   // (ya da yerine gelen yeni yama) aynı karede; yama değişince köylü sıçramıyor.
   const [t0] = useState(() => performance.now() / 1000);
+  // Atlas çoğunlukla çözülmüş geliyor (`glOnYukle`): şeritler ilk karede
+  // çizili. Gelmediyse (sınırdan düşmüş eski bir atlas) çözülünce.
+  const [yuklenen, setYuklenen] = useState<HTMLImageElement | null>(null);
+  const resim = glAtlas(b.url) ?? (yuklenen?.src === b.url ? yuklenen : null);
+  useEffect(() => {
+    if (resim) return;
+    let iptal = false;
+    void glAtlasYukle(b.url).then((r) => {
+      if (!iptal) setYuklenen(r);
+    });
+    return () => {
+      iptal = true;
+    };
+  }, [b.url, resim]);
   return (
     <>
       {b.kutular.map(([x, y, w, h], i) => {
@@ -1041,20 +1057,16 @@ function Bayraklar({
         // Her biri ayrı evrede: rüzgâr hepsini aynı anda savurmasın.
         const gecikme = `${(-((t0 + ((i * 0.29) % 1) * sure) % sure)).toFixed(3)}s`;
         const serit = (
-          <span
-            style={
-              {
-                width: sutun * w * o,
-                height: satir * h * o,
-                backgroundImage: `url(${b.url})`,
-                backgroundSize: `${duzen.en * o}px ${duzen.boy * o}px`,
-                backgroundPosition: `${-duzen.yer[i]![0] * o}px ${-duzen.yer[i]![1] * o}px`,
-                '--kay': `${(-sutun * w * o).toFixed(2)}px`,
-                animationDuration: `${sure / satir}s`,
-                animationTimingFunction: `steps(${sutun})`,
-                animationDelay: gecikme,
-              } as CSSProperties
-            }
+          <Serit
+            resim={resim}
+            kaynak={[duzen.yer[i]![0], duzen.yer[i]![1], sutun * w, satir * h]}
+            style={{
+              width: sutun * w * o,
+              height: satir * h * o,
+              animationDuration: `${sure / satir}s`,
+              animationTimingFunction: `steps(${sutun})`,
+              animationDelay: gecikme,
+            }}
           />
         );
         return (
@@ -1074,16 +1086,13 @@ function Bayraklar({
               // satırın karelerini kayarken sarmalayıcı satırdan satıra iniyor.
               <span
                 className="hareket-satir"
-                style={
-                  {
-                    width: sutun * w * o,
-                    height: satir * h * o,
-                    '--kayY': `${(-satir * h * o).toFixed(2)}px`,
-                    animationDuration: `${sure}s`,
-                    animationTimingFunction: `steps(${satir})`,
-                    animationDelay: gecikme,
-                  } as CSSProperties
-                }
+                style={{
+                  width: sutun * w * o,
+                  height: satir * h * o,
+                  animationDuration: `${sure}s`,
+                  animationTimingFunction: `steps(${satir})`,
+                  animationDelay: gecikme,
+                }}
               >
                 {serit}
               </span>
@@ -1095,6 +1104,49 @@ function Bayraklar({
       })}
     </>
   );
+}
+
+/**
+ * Bir parçanın kare şeridi, tuvalde: atlasın o parçaya düşen bölümü bir kez
+ * çiziliyor, sonra yalnız kayıyor.
+ *
+ * Neden tuval: şerit arka plan resmi olan bir öğeyken tarayıcı onu karo
+ * karo rasterliyordu ve kayan şeridin uzaktaki karelerini "sonra lazım"
+ * önceliğine düşürüp atıyordu; adım onlara gelince yeniden çiziliyordu.
+ * Telefonda o arada parça boştu: ağaçlar, okçular, bayraklar "yok olup geri
+ * geliyordu", sürekli raster de sahneyi kasıyordu (ölçüm, hiçbir şey
+ * olmazken: 6 sn'de 342 raster görevi, 359 atılan karo; tuvalde 0 ve 0).
+ * Tuval kaynak çözünürlüğünde tek parça bir doku: yakınlıkla büyümüyor,
+ * atılmıyor, yeniden çizilmiyor.
+ */
+function Serit({
+  resim,
+  kaynak: [x, y, w, h],
+  style,
+}: {
+  resim: HTMLImageElement | null;
+  /** Atlasta şeridin dikdörtgeni (çıktı pikseli). */
+  kaynak: [number, number, number, number];
+  style: CSSProperties;
+}) {
+  const ref = useRef<HTMLCanvasElement>(null);
+  const en = Math.max(1, Math.round(w));
+  const boy = Math.max(1, Math.round(h));
+  useLayoutEffect(() => {
+    const c = ref.current;
+    if (!c || !resim) return;
+    const ciz = () => {
+      const g = c.getContext('2d');
+      if (!g) return;
+      g.clearRect(0, 0, en, boy);
+      g.drawImage(resim, x, y, w, h, 0, 0, en, boy);
+    };
+    ciz();
+    // GPU bağlamı düşüp geri gelince tuval boş dönüyor.
+    c.addEventListener('contextrestored', ciz);
+    return () => c.removeEventListener('contextrestored', ciz);
+  }, [resim, x, y, w, h, en, boy]);
+  return <canvas ref={ref} width={en} height={boy} style={style} />;
 }
 
 function kareyeTamamla([x, y, w, h]: [number, number, number, number]): [
