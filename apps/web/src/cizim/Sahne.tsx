@@ -177,7 +177,7 @@ function useGpuResmi(
     (sicak !== undefined ? '|s' + sicak : '') +
     vakitAnahtari(vakit);
   const taban = durgunTaban + (hareket ? '|h' : '');
-  // Önce durağan: canlı resim sonra, sıra boşalınca (bkz. `Sahne.onceDurgun`).
+  // Önce durağan görünüm, canlısı sonra, tek işte (bkz. `Sahne.onceDurgun`).
   const iki = hareket && onceDurgun;
   const [resim, setResim] = useState<string | null>(
     () => RESIMLER.get(taban)?.url ?? (iki ? (RESIMLER.get(durgunTaban)?.url ?? null) : null),
@@ -296,38 +296,40 @@ function useGpuResmi(
         });
         return;
       }
-      // Önce durağan resim (hızlı; bütün parçalar içinde), sonra canlısı.
+      // Tek canlı iş, iki teslim (bkz. `KismiSonuc`): önce parçalar ilk
+      // karelerinde — durağan resmin aynısı, ayrıca çizilmiyor —, sonra
+      // bütün kareler. Önceden ayrı bir durağan resim çiziliyordu (ana
+      // geçiş iki kez) ve canlısı ancak o bitince başlıyordu.
       let canliGeldi = false;
+      let gosterildi = false;
       const durgun = RESIMLER.get(durgunTaban);
       if (durgun && durgun.en >= en) {
+        gosterildi = true;
         tamKondu();
         setResim(durgun.url);
-      } else
-        glCiz(`${durgunTaban}|${en}x${boy}`, istek(false), { kalici, piksel, kayitYok }).then(
-          (url) => {
-            if (!url) {
-              if (!iptal) guncel.current.basarisiz();
-              return;
-            }
-            const son = sakla(durgunTaban, url);
-            if (iptal || canliGeldi) return;
-            setResim(son);
-            tamKondu();
-          },
-        );
+      }
       glCiz(`${taban}|${en}x${boy}`, istek(true), {
-        sonra: true,
         istenmiyor: () => iptal,
         kalici,
         piksel,
-        kismi: erken((url) => {
-          canliGeldi = true;
-          setResim(sakla(taban, url));
-          tamKondu();
-        }),
+        kayitYok,
+        kademeli: true,
+        kismi: (url, asama) => {
+          if (iptal) return;
+          void glOnYukle(url).then(() => {
+            if (iptal || canliGeldi) return;
+            canliGeldi = asama === 2;
+            gosterildi = true;
+            setResim(sakla(asama === 2 ? taban : durgunTaban, url));
+            tamKondu();
+          });
+        },
       }).then(async (url) => {
-        // Canlı gelmediyse (vazgeçildi ya da çizilemedi) durağan kalıyor.
-        if (!url) return;
+        if (!url) {
+          // Hiçbir şey gelmediyse GPU yolu düştü: SVG'ye.
+          if (!iptal && !gosterildi) guncel.current.basarisiz();
+          return;
+        }
         const son = sakla(taban, url);
         await glOnYukle(son);
         if (iptal) return;
@@ -1249,11 +1251,11 @@ export const Sahne = memo(function Sahne({
    */
   ertele?: boolean;
   /**
-   * Hareketli sahnede önce DURAĞAN resim (hızlı: bütün parçalar içinde
-   * çizili), canlı resim ve katmanları sonra: öncelikli işler bitince,
-   * sayfadan çıkılmadıysa (`gl.glCiz` `sonra`); gelince çözülüp yerine
-   * konuyor. Canlı kareleri ağır olan sahne için (yerleşke: talim alanı,
-   * tarla): açılış onları beklemiyor, sonraki ekran da.
+   * Hareketli sahnede önce DURAĞAN görünüm, canlısı sonra — tek işte
+   * (`gl.glCiz` `kademeli`): canlı çizim parçaların ilk karesi biter bitmez
+   * resmi ve katmanları parçalar ilk karelerinde gönderiyor (durağan
+   * resmin aynısı), kalan kareler gelince parçalar oynamaya başlıyor.
+   * Canlı kareleri ağır olan sahne için (yerleşke: talim alanı, tarla).
    */
   onceDurgun?: boolean;
   /**

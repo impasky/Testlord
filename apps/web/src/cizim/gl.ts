@@ -425,6 +425,12 @@ const SIRA: {
   cizecek: () => boolean;
   /** Kaç kez kesildi (bkz. `KESME_EN_COK`). */
   kesilme: number;
+  /**
+   * Küçük işler kesmesin (bkz. `kesmeyiDene`): kademeli işin 1. aşaması
+   * gösterildi, kalan kareler çiziliyor. Kesilse baştan (ana geçiş de)
+   * çizilirdi; oyuncunun gördüğü sahnenin canlanması bir kez daha gecikirdi.
+   */
+  korunur?: boolean;
 }[] = [];
 let isleniyor = false;
 /** Çalışan iş (kesilebilsin diye). */
@@ -489,7 +495,11 @@ function sirayaKoy(
  */
 function kesmeyiDene() {
   const c = calisan;
-  if (!c || c.kesilme >= KESME_EN_COK || !bekleyenler.size) return;
+  if (!c || !bekleyenler.size) return;
+  // İsteyeni kalmadıysa (sayfadan çıkıldı, yerine yeni yama istendi)
+  // kesiliyor: sırası gelince atlanıyor, yeni ekranın çizimleri onu beklemiyor.
+  if (!c.cizecek()) return isciyiKes();
+  if (c.kesilme >= KESME_EN_COK || c.korunur) return;
   if (SIRA.some((s) => s.hazir && s.piksel * KESME_KAT <= c.piksel && s.cizecek())) isciyiKes();
 }
 
@@ -686,6 +696,8 @@ export function glCiz(
   const yay =
     kismiler &&
     ((t: Teslim) => {
+      // Ara teslim yalnız çalışan işten geliyor.
+      if (t.asama === 1 && calisan) calisan.korunur = true;
       kismiler.son = [t.url, t.asama];
       for (const f of kismiler.alanlar) f(t.url, t.asama);
     });

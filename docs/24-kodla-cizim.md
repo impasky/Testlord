@@ -393,6 +393,19 @@ karede kendi GPU kaynağını üretiyordu (41 tuvalde ~260 ms); şimdi önceden
 kesilmiş bitmap'ler kopyasız konuyor (`bitmaprenderer`). Dondurulmuş
 karede eski ve yeni resim piksel piksel aynı.
 
+Yerleşkede ayrı bir durağan resim artık çizilmiyor (`Sahne.onceDurgun`,
+`glCiz` `kademeli`). Önceden önce durağan resim (ana geçiş), o bitince ve
+1,5 sn sonra canlısı (aynı ana geçiş bir daha, sonra kareler) çiziliyordu.
+Şimdi tek iş, iki teslim: ana geçiş, katmanlar ve parçaların ilk karesi
+biter bitmez 1. aşama (parçalar ilk karelerinde, sıkışık bir atlasta:
+durağan resmin aynısı; su, çimen, ışık katmanları zaten oynuyor), kalan
+kareler bitince 2. aşama (parçalar oynuyor). 1. aşamadan sonra küçük işler
+onu kesmiyor (kesilse baştan çizilirdi, `korunur`); isteyeni kalmayan
+çalışan iş (sayfadan çıkıldı) her zaman kesiliyor. Ölçüm (Pixel 5 taklidi,
+yazılım GPU'su, cihazda kayıt yok): taslak 2,2 → 2,0 sn, keskin durağan
+görünüm 8,6 → 11,2 sn (katmanlar ve ilk kare ondan önce), canlı 29,7 →
+21,1 sn. Cihazdaki kayıttan açılış değişmedi (0,5 sn).
+
 - Su parıltısı: iki dikişsiz ışık çizgisi karosu (tuvalde bir kez, tohumlu)
   ayrı yönde, ayrı hızda kayıyor; su maskesiyle (`mask-image`) örtülü.
 - Işık titremesi: ışık katmanı "ekran" karışımıyla resmin üstünde,
