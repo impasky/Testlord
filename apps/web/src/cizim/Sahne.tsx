@@ -37,6 +37,7 @@ import {
   glKaydet,
   glKatmanlari,
   glOnYukle,
+  glOnceden,
   glSerit,
   glSeritKes,
   glVarMi,
@@ -45,7 +46,7 @@ import {
   type Katmanlar,
 } from './gl';
 import type { KaliciGrup } from './kalici';
-import { vakitAnahtari, type Vakit } from './vakit';
+import { sonrakiVakit, vakitAnahtari, type Vakit } from './vakit';
 import { ciz, kutusu, type Cizilmis, type Kamera, type Model } from './uc';
 
 const ONBELLEK = new Map<string, Cizilmis>();
@@ -145,6 +146,12 @@ const kova = (x: number) => Math.pow(1.25, Math.ceil(Math.log(Math.max(x, 8)) / 
  */
 export const OnceKaba = createContext(300 * 300);
 const KABA_KAT = 3;
+/**
+ * Canlı resim geldikten bu kadar sonra (ms) bir sonraki vaktin resmi
+ * önceden çiziliyor (`glOnceden`): açılışın ve oyuncunun ilk dokunuşlarının
+ * çizimleriyle yarışmasın.
+ */
+const ONCEDEN_BEKLE = 10_000;
 
 /**
  * GPU resmini ister; hazır olunca url, yoksa null. Öğe ölçülüyor: resim
@@ -169,13 +176,14 @@ function useGpuResmi(
   ref: React.RefObject<SVGSVGElement | null>,
   basarisiz: () => void,
 ): string | null {
-  const durgunTaban =
+  const vakitliTaban = (vk: Vakit | undefined) =>
     anahtar +
     '|' +
     v.join(',') +
     (tilt !== undefined ? '|t' + tilt : '') +
     (sicak !== undefined ? '|s' + sicak : '') +
-    vakitAnahtari(vakit);
+    vakitAnahtari(vk);
+  const durgunTaban = vakitliTaban(vakit);
   const taban = durgunTaban + (hareket ? '|h' : '');
   // Önce durağan görünüm, canlısı sonra, tek işte (bkz. `Sahne.onceDurgun`).
   const iki = hareket && onceDurgun;
@@ -190,6 +198,7 @@ function useGpuResmi(
     const el = ref.current;
     if (!etkin || !el) return;
     let iptal = false;
+    let onceden: ReturnType<typeof setTimeout> | undefined;
     // Önce kaba (bkz. `OnceKaba`): taslak istendi mi, keskin resim geldi mi.
     let kabaIs: string | null = null;
     let tamGeldi = false;
@@ -219,16 +228,10 @@ function useGpuResmi(
       }
       en = Math.round(en);
       boy = Math.max(1, Math.round(boy));
-      const var_ = RESIMLER.get(taban);
-      if (var_ && var_.en >= en) {
-        tamKondu();
-        setResim(var_.url);
-        return;
-      }
       const { uret: u, kamera: k } = guncel.current;
       // Tarifliyse model işçide kuruluyor (`tarif.ts`): buradan yalnız anahtar.
       const istek =
-        (h: boolean, e = en, b = boy, taslak = false) =>
+        (h: boolean, e = en, b = boy, taslak = false, vk = vakit) =>
         () => ({
           ...(tarif ? { tarif: anahtar } : { model: modelAl(anahtar, u) }),
           kamera: k,
@@ -238,10 +241,32 @@ function useGpuResmi(
           olcek: e / (vw * cssBirim),
           tilt,
           sicak,
-          vakit,
+          vakit: vk,
           hareket: h,
           taslak,
         });
+      // Bir sonraki vaktin resmi, boşta, yalnız cihaza (`glOnceden`): ışık
+      // vakitle değişiyor, vakit dönünce yerleşke baştan çizilmesin.
+      const oncedenCiz = () => {
+        if (!iki || !vakit || !kalici) return;
+        const sonraki = sonrakiVakit(vakit);
+        clearTimeout(onceden);
+        onceden = setTimeout(() => {
+          if (iptal) return;
+          glOnceden(
+            `${vakitliTaban(sonraki)}|h|${en}x${boy}`,
+            istek(true, en, boy, false, sonraki),
+            { piksel: en * boy, istenmiyor: () => iptal, grup: kalici },
+          );
+        }, ONCEDEN_BEKLE);
+      };
+      const var_ = RESIMLER.get(taban);
+      if (var_ && var_.en >= en) {
+        tamKondu();
+        setResim(var_.url);
+        oncedenCiz();
+        return;
+      }
       // Taslak: durağan, küçük, kalıcı değil; keskin resim gelmişse çizilmiyor.
       const kabaIste = () => {
         if (iptal || tamGeldi || kabaIs) return;
@@ -336,6 +361,7 @@ function useGpuResmi(
         canliGeldi = true;
         setResim(son);
         tamKondu();
+        oncedenCiz();
       });
     };
     iste();
@@ -343,6 +369,7 @@ function useGpuResmi(
     ro.observe(el);
     return () => {
       iptal = true;
+      clearTimeout(onceden);
       ro.disconnect();
     };
     // `v` içerik olarak `taban`da; dizi kimliği her çizimde değişiyor.

@@ -33,6 +33,15 @@ export function gununVakti(an: Date = new Date()): Vakit {
   return 'aksam';
 }
 
+/**
+ * Bir sonraki vakit (akşamdan sonra sabah). Yerleşke onun resmini boşta
+ * önceden çizip cihaza yazıyor (`gl.glOnceden`): vakit dönünce yeniden
+ * çizilmeden geliyor.
+ */
+export function sonrakiVakit(v: Vakit): Vakit {
+  return VAKITLER[(VAKITLER.indexOf(v) + 1) % VAKITLER.length]!;
+}
+
 const birim = (a: V3): V3 => {
   const l = Math.hypot(a[0], a[1], a[2]) || 1;
   return [a[0] / l, a[1] / l, a[2] / l];

@@ -760,6 +760,53 @@ export function glCiz(
   return is;
 }
 
+/** Önceden çizilmekte olanlar (bkz. `glOnceden`). */
+const ONCEDEN = new Set<string>();
+
+/**
+ * Önceden çizer: ileride istenecek bir resmi (yerleşkenin bir sonraki
+ * vakti) boşta çizip YALNIZ cihaza yazar — bellekte tutmuyor, sayfaya
+ * vermiyor. Vakit dönünce sahne onu cihazdan, yeniden çizmeden alıyor.
+ * Oyuncu: "durağandan tam animasyona geçme süresi çok uzun": ışık vakitle
+ * değiştiği için yerleşke günde üç kez baştan çiziliyordu.
+ *
+ * Cihazda varsa ya da bellekte (gösteriliyor, çiziliyor) ise çizilmiyor.
+ * Sonraki işlerin sırasında (`glCiz` `sonra`): öncelikli işler bitince;
+ * başlamadan isteyen kalmadıysa (sayfadan çıkıldı) atlanıyor.
+ */
+export function glOnceden(
+  anahtar: string,
+  istek: () => GlIstek,
+  secenek: { piksel: number; istenmiyor: () => boolean; grup: KaliciGrup },
+): void {
+  if (ONBELLEK.has(anahtar) || ONCEDEN.has(anahtar)) return;
+  ONCEDEN.add(anahtar);
+  void kaliciOku(anahtar).then((k) => {
+    if (k?.anahtar === anahtar) {
+      ONCEDEN.delete(anahtar);
+      return;
+    }
+    sonrakiler.push({
+      anahtar: 'onceden|' + anahtar,
+      piksel: secenek.piksel,
+      calis: async () => {
+        // O arada sayfa kendisi istediyse (vakit döndü) onun işi çiziyor.
+        if (ONBELLEK.has(anahtar)) return null;
+        const s = await ciz(istek()).catch((e: unknown) => {
+          if (e instanceof Kesildi) throw e;
+          return null;
+        });
+        if (s) kaliciYaz(anahtar, anahtar, s, secenek.grup);
+        return null;
+      },
+      geldi: () => false,
+      ilgi: [secenek.istenmiyor],
+      coz: () => ONCEDEN.delete(anahtar),
+    });
+    sonrakiniBaslat();
+  });
+}
+
 /**
  * Çizimi önbellekten çıkarıp belleğini bırakıyor. Yalnız tek kullanımlık
  * resim için (yakınlık yaması): yerine yenisi konunca eskisinin artık

@@ -866,6 +866,16 @@ testi `vakit.test.ts`), görsel bozulma testinin taban resimleri de bu
 yüzden değişmedi. Galeride "Vakit" bölümü aynı kasabayı üç ışıkta
 gösteriyor.
 
+Bir sonraki vakit önceden çiziliyor (`sonrakiVakit`, `gl.glOnceden`):
+ışık vakitle değiştiği için yerleşke günde üç kez baştan çiziliyordu
+(telefonda saniyelerce durağan, sonra canlı). Canlı resim geldikten 10
+sn sonra, öncelikli işler bitince, bir sonraki vaktin canlı resmi boşta
+çizilip YALNIZ cihaza yazılıyor (bellekte tutulmuyor, sayfaya
+verilmiyor); cihazda varsa çizilmiyor. Vakit dönünce sahne onu cihazdan
+alıyor. Ölçüm (Pixel 5 taklidi, yazılım GPU'su): öğlede açılan şehrin
+akşam kaydı ~34 sn sonra cihazda; akşama geçince canlı 23 sn yerine
+0,5 sn.
+
 ## Hava
 
 Şehir'in üstünde ara sıra hafif yağmur, sis ya da (Aralık–Şubat) kar

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { ISIK } from './uc';
-import { VAKITLER, VAKIT_ISIGI, gununVakti, vakitAnahtari } from './vakit';
+import { VAKITLER, VAKIT_ISIGI, gununVakti, sonrakiVakit, vakitAnahtari } from './vakit';
 
 const saat = (s: number, d = 0) => new Date(2026, 9, 16, s, d);
 
@@ -13,6 +13,19 @@ describe('günün vakti', () => {
     expect(gununVakti(saat(16, 59))).toBe('ogle');
     expect(gununVakti(saat(17))).toBe('aksam');
     expect(gununVakti(saat(23, 30))).toBe('aksam');
+  });
+
+  it('bir sonraki vakit: sabah → öğle → akşam → sabah, dilimin bittiği saatte gelen', () => {
+    expect(sonrakiVakit('sabah')).toBe('ogle');
+    expect(sonrakiVakit('ogle')).toBe('aksam');
+    expect(sonrakiVakit('aksam')).toBe('sabah');
+    // Önceden çizilen resim, dilim bitince istenen resim olmalı.
+    for (const [s, d] of [
+      [10, 59],
+      [16, 59],
+      [4, 59],
+    ] as const)
+      expect(sonrakiVakit(gununVakti(saat(s, d)))).toBe(gununVakti(saat(s + 1)));
   });
 
   it('öğle bugünkü ışık: anahtar değişmiyor, ton ve ortam birim', () => {

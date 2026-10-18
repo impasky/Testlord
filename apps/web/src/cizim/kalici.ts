@@ -24,10 +24,10 @@
  * Kayıtlar GRUPLARDA, her grubun kendi sınırı var (`SINIR`): en uzun
  * süredir kullanılmayan, yalnız kendi grubundan atılıyor. Bölgeden bölgeye
  * gezen oyuncunun afişleri telefonda en uzun çizilen yerleşkeyi atmasın.
- *  - `sahne`: yakınlaşan büyük sahneler. Yerleşkenin durağan ve canlı
- *    resmiyle yaması üç kayıt, dünya haritasının zemini ve yaması iki, her
- *    diyar haritasının zemini ve yaması iki: yerleşke, dünya haritası ve
- *    üç diyar sığıyor.
+ *  - `sahne`: yakınlaşan büyük sahneler. Yerleşkenin canlı resmi, bir
+ *    sonraki vaktin önceden çizilmiş resmi (`gl.glOnceden`) ve yaması üç
+ *    kayıt, dünya haritasının zemini ve yaması iki, her diyar haritasının
+ *    zemini ve yaması iki: yerleşke, dünya haritası ve üç diyar sığıyor.
  *  - `afis`: diyar kapakları (beşi) ve bölge afişleri (altı tür, üçer
  *    aşama; panelin iki boyu): kapaklar ve on bir afiş sığıyor.
  *  - `zemin`: ekran zeminleri (on bir ekranın manzara şeridi): hepsi
