@@ -18,8 +18,6 @@ import {
   armySlots,
   bosGeneralBonus,
   calculateFame,
-  faydaRutbesi,
-  type FaydaRutbesi,
   commandCapacity,
   generalSlots,
   statPointsForLevelUp,
@@ -49,8 +47,7 @@ import {
   type Rarity,
   type Resources,
   type UnitType,
-  medeniyet as medeniyetTanimi,
-  type MedeniyetBonusu,
+  ULKELER,
   KUSAM_PORTRESI,
   kusamKodu,
   profilResmiCoz,
@@ -61,7 +58,6 @@ import { prisma, type Tx } from '../db.js';
 import { lordKilitle } from './kilit.js';
 import { tekUcus } from './tekUcus.js';
 import { garnizonPayGirdileri } from './gelir.js';
-import { lordunMedeniyetBonusu, tahtiTutanMedeniyet } from './medeniyet.js';
 import { B } from '@lordlar/shared';
 
 import { bildirimGonder } from './push.js';
@@ -97,25 +93,10 @@ export interface LordState {
   /** İlk 24 saatlik yeni oyuncu bonusu — bittiyse etkin false. */
   yeniOyuncu: { etkin: boolean; kalanSaniye: number };
   /**
-   * Lordun medeniyeti (docs/16). Kayıtta atanıyor ve değişmiyor.
-   *
-   * `null` = medeniyet sisteminden ÖNCE açılmış lord. Geçiş bitene kadar
-   * ikisi bir arada yaşıyor; arayüz bu alanı boş görürse medeniyet
-   * bölümünü hiç çizmiyor.
+   * Lordun SEÇTİĞİ ülke (docs/27). `null`: henüz seçmedi — yeni haritaya
+   * göçen lord; arayüz önce ülke seçimini soruyor.
    */
-  medeniyet: { id: string; ad: string; renk: string; ozet: string } | null;
-  /** Kolektif eylemin kişisel karşılığı (docs/16 §9). Güç satın almaz. */
-  faydaPuani: number;
-  /**
-   * Fayda puanından TÜREYEN rütbe (docs/16 §9).
-   *
-   * Puan harcanmıyor, birikiyor: karşılığı "ne aldın" değil "ne
-   * yaptın". Unvan şöhretten nasıl türüyorsa rütbe de puandan türüyor —
-   * ikinci bir sayaç yok.
-   */
-  faydaRutbesi: FaydaRutbesi;
-  /** Çekirdek yatırımlarının kattığı oranlar (docs/16 §7). */
-  medeniyetBonusu: MedeniyetBonusu;
+  ulke: { kod: string; ad: string; baskent: number } | null;
   storageCapacity: number;
   /** Bina seviyeleri: arayüz kapasiteleri sunucuyla aynı yerden hesaplasın. */
   binalar: Record<string, number>;
@@ -186,19 +167,15 @@ const lordInclude = {
   items: true,
   gearLines: true,
   generals: true,
-  // Yalnız anahtar: ad, renk ve özet `balance.json`dan geliyor. Satırdan
-  // okusaydık aynı metin iki yerde durur ve biri diğerinden habersiz
-  // değişirdi.
-  medeniyet: { select: { key: true } },
 } as const;
 
 /*
  * Tip LİSTEDEN türüyor, ikinci bir liste yazılmıyor.
  *
  * Eskiden ilişki listesi iki yerde duruyordu: bir `lordInclude` sabitinde,
- * bir de bu tipin içinde. `medeniyet`i yalnız sabite eklemek yetmedi —
- * derleyici "böyle bir alan yok" dedi, çünkü tip hâlâ eski listeyi
- * anlatıyordu. Aynı şeyin iki kopyası, klasik biçimiyle.
+ * bir de bu tipin içinde. Yeni bir ilişkiyi yalnız sabite eklemek
+ * yetmedi — derleyici "böyle bir alan yok" dedi, çünkü tip hâlâ eski
+ * listeyi anlatıyordu. Aynı şeyin iki kopyası, klasik biçimiyle.
  */
 type LordWithRelations = Prisma.LordGetPayload<{ include: typeof lordInclude }>;
 
@@ -312,11 +289,9 @@ export function binalariOku(lord: { binalar?: unknown }): Record<string, number>
  * Malikâne geliri KİŞİSEL kalıyor ve bölünmüyor: oyuncunun tartışmasız
  * kendine ait olanı güçlü kalmalı (docs/16 §8).
  *
- * VİLAYET BİRLİĞİ lordun GARNİZON tuttuğu bölgeler üzerinden sayılıyor,
- * sahip olduğu bölgeler üzerinden değil. Tutanın (medeniyetin) vilayet
- * sayısına bakmak daha "doğru" görünürdü ama yurdundaki 17-21 bölge her
- * çekirdeğe kalıcı olarak tavan bonusu verirdi: sessiz bir küresel gelir
- * zammı. Kural yerinde duruyor, yalnız ölçtüğü liste değişti.
+ * ÜLKE BİRLİĞİ (eski adıyla vilayet birliği) lordun GARNİZON tuttuğu
+ * bölgeler üzerinden sayılıyor: aynı ülkede tutulan her şehir ötekileri
+ * besliyor (docs/11 §1.2 H2, docs/27).
  *
  * Bölgelerin kendi depoları ayrı işler (yağmalanabilir kısım orada birikir).
  */
@@ -325,7 +300,6 @@ export function calcHourlyIncome(
   paylar: { type: string; level: number; incomeMult: number; province: string; oran: number }[],
   bonus: GeneralBonus,
   arastirma?: ArastirmaBonusu,
-  medeniyet?: MedeniyetBonusu,
 ): { income: Resources; famePerHour: number } {
   const income = malikaneIncome(level, arastirma);
   let famePerHour = 0;
@@ -335,7 +309,7 @@ export function calcHourlyIncome(
   const vilayet = vilayetSayilari(paylar);
   for (const r of paylar) {
     const birlik = vilayetCarpani(vilayet[r.province] ?? 1);
-    const ri = regionIncome(r.type, r.level, r.incomeMult * birlik, bonus, arastirma, medeniyet);
+    const ri = regionIncome(r.type, r.level, r.incomeMult * birlik, bonus, arastirma);
     income.altin += ri.altin * r.oran;
     income.demir += ri.demir * r.oran;
     income.erzak += ri.erzak * r.oran;
@@ -409,29 +383,11 @@ async function tickUygula(lordId: string, now: Date, tx: Tx): Promise<LordState>
   const generals = equippedGenerals(lord.generals, now);
   const bonus = generals.length > 0 ? aggregateGeneralBonus(generals) : bosGeneralBonus();
 
-  /*
-   * MEDENİYET BONUSU bir kez okunuyor ve üç yere gidiyor: bölge geliri
-   * (ocak), depo tavanı (ambar) ve arayüze gösterilmek üzere durumun
-   * kendisi. Çağrı başına ayrı ayrı okumak, `tickLord` her `/me`
-   * isteğinde koştuğu için üç sorgu demekti.
-   */
-  /*
-   * Tahtı tutan medeniyet benimki mi (docs/16 §13 soru 5). Bonusla
-   * PARALEL okunuyor: ikisi de medeniyet katmanından geliyor ve sırayla
-   * beklemek `tickLord`u her `/me` isteğinde iki tur yavaşlatırdı.
-   */
-  const [medBonus, tahtMedeniyeti] = await Promise.all([
-    lordunMedeniyetBonusu(lordId, client),
-    tahtiTutanMedeniyet(lord.worldId, client),
-  ]);
-  const medeniyetTahti = tahtMedeniyeti !== null && tahtMedeniyeti === lord.medeniyetId;
-
   const { income, famePerHour } = calcHourlyIncome(
     lord.level,
     await garnizonPayGirdileri(lordId, client),
     bonus,
     arastirmaBonusuOku(lord),
-    medBonus,
   );
 
   // Bakım: tüm birimler. Meryem yürüyüştekini, Sarya garnizondakini muaf tutar.
@@ -520,7 +476,6 @@ async function tickUygula(lordId: string, now: Date, tx: Tx): Promise<LordState>
     pvpWins: lord.pvpWins,
     fortressFameAccrued: accruedFame,
     ownsThrone,
-    medeniyetTahti,
   });
 
   // Günlük saldırı sayacını sıfırla
@@ -566,25 +521,11 @@ async function tickUygula(lordId: string, now: Date, tx: Tx): Promise<LordState>
       const d = yeniOyuncuDurumu(lord.createdAt);
       return { etkin: d.etkin, kalanSaniye: d.kalanSaniye };
     })(),
-    medeniyet: (() => {
-      const key = lord.medeniyet?.key;
-      const m = key ? medeniyetTanimi(key) : undefined;
-      return m ? { id: m.id, ad: m.ad, renk: m.renk, ozet: m.ozet } : null;
+    ulke: (() => {
+      const u = lord.ulke ? ULKELER.get(lord.ulke) : undefined;
+      return u ? { kod: u.key, ad: u.name, baskent: u.baskent } : null;
     })(),
-    /*
-     * Bonus oranları arayüze de gidiyor: Malikâne bölge gelirini kendi
-     * hesaplıyor ve `ocak` bonusunu saymazsa oyuncuya ALDIĞINDAN AZINI
-     * yazar — bu projenin defalarca düzelttiği hata.
-     */
-    medeniyetBonusu: medBonus,
-    faydaPuani: lord.faydaPuani,
-    faydaRutbesi: faydaRutbesi(lord.faydaPuani),
-    storageCapacity: storageCapacity(
-      lord.level,
-      arastirmaBonusuOku(lord),
-      binalariOku(lord),
-      medBonus,
-    ),
+    storageCapacity: storageCapacity(lord.level, arastirmaBonusuOku(lord), binalariOku(lord)),
     /*
      * Bina seviyeleri arayüze de gidiyor.
      *

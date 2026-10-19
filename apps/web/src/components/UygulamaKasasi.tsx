@@ -78,8 +78,8 @@ const KAROLAR: Karo[] = [
     gorsel: 'binalar/onur_meydani',
   },
   {
-    hedef: { tur: 'kapi', key: 'medeniyet' },
-    ad: KAPI_ADI.medeniyet,
+    hedef: { tur: 'kapi', key: 'ulke' },
+    ad: KAPI_ADI.ulke,
     gorsel: 'bolgeler/taht',
   },
   {

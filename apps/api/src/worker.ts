@@ -18,6 +18,7 @@
  * iki kez yapılmaz.
  */
 import { validateBalance } from '@lordlar/shared';
+import { haritayiDogrula } from '@lordlar/shared/kanonik';
 import { prisma } from './db.js';
 import { resolveQueueItem } from './services/queue.js';
 import { resolveMarch } from './services/march.js';
@@ -213,6 +214,7 @@ const ayriSurec = process.argv[1]?.endsWith('worker.ts') || process.argv[1]?.end
 
 if (ayriSurec) {
   validateBalance();
+  haritayiDogrula();
   const durdur = startWorker();
 
   const kapat = async (): Promise<void> => {

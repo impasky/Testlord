@@ -5,10 +5,10 @@
  * Kapasite dolduğunda yenisi AÇILIR — oyuncu asla "yer yok" duvarına çarpmaz.
  * (docs/00: "Shard başına 120 oyuncu. Dolunca yeni shard açılır.")
  */
-import { B, HARITA_SURUMU, WORLD_MAP } from '@lordlar/shared';
+import { B, HARITA_KUSAGI } from '@lordlar/shared';
+import { HARITA_SURUMU, WORLD_MAP } from '@lordlar/shared/kanonik';
 import type { Prisma } from '@prisma/client';
 import { prisma, type Tx } from '../db.js';
-import { medeniyetleriKur } from './medeniyet.js';
 import { grafigiUnut } from './mesafe.js';
 
 const ROMEN = [
@@ -45,6 +45,24 @@ async function bosSira(client: Tx): Promise<number> {
   for (let i = 0; ; i++) if (!adlar.has(dunyaAdi(i))) return i;
 }
 
+/** Kanonik haritanın bölge satırları — yeni dünya ve göç (services/goc.ts) aynı biçimi yazıyor. */
+export function haritaSatirlari(worldId: string): Prisma.RegionCreateManyInput[] {
+  return WORLD_MAP.regions.map((r) => ({
+    mapId: r.id,
+    worldId,
+    name: r.name,
+    type: r.type,
+    province: r.province,
+    x: r.x,
+    y: r.y,
+    komsular: r.komsular,
+    level: r.level,
+    incomeMult: r.income_mult,
+    npcGarrison: r.npc_garrison,
+    npcTaban: r.npc_garrison,
+  }));
+}
+
 /**
  * Yeni bir dünya açar ve kanonik haritanın bölgelerini yazar.
  *
@@ -65,6 +83,7 @@ export async function createWorld(client: Tx = prisma): Promise<string> {
           // Dünya, açıldığı haritayı üstünde taşıyor. Kanonik harita sonra
           // değişirse bu dünya kendi sürümünde kalıyor (bkz. tazelemeKarari).
           mapVersion: HARITA_SURUMU,
+          haritaKusagi: HARITA_KUSAGI,
         },
         select: { id: true },
       });
@@ -75,32 +94,7 @@ export async function createWorld(client: Tx = prisma): Promise<string> {
   }
   if (!world) throw new Error('Yeni diyar açılamadı.');
 
-  await client.region.createMany({
-    data: WORLD_MAP.regions.map((r) => ({
-      mapId: r.id,
-      worldId: world.id,
-      name: r.name,
-      type: r.type,
-      province: r.province,
-      x: r.x,
-      y: r.y,
-      komsular: r.komsular,
-      level: r.level,
-      incomeMult: r.income_mult,
-      npcGarrison: r.npc_garrison,
-      npcTaban: r.npc_garrison,
-    })),
-  });
-
-  /*
-   * Diyar medeniyetleriyle birlikte doğuyor (docs/16 §5).
-   *
-   * Bölgeler yazıldıktan SONRA: sahiplik damgası var olmayan satıra
-   * vurulamaz. Ayrı bir kurulum adımı olarak bırakılmadı çünkü
-   * "medeniyetsiz diyar" diye bir durum yok — harita ilk günden dört
-   * yurt artı ortada boşluk olarak açılıyor.
-   */
-  await medeniyetleriKur(world.id, client);
+  await client.region.createMany({ data: haritaSatirlari(world.id) });
 
   return world.id;
 }
@@ -192,8 +186,8 @@ export async function acikDiyarlar(client: Tx = prisma): Promise<AcikDiyar[]> {
    * bölünüyor ve her yeni oyuncu bomboş bir kırk birincisine düşüyordu.
    *
    * Bölge kıtlığı bundan etkilenmiyor: kıtlığı belirleyen şey lord
-   * SAYISI değil, lord başına bölge tavanı (Lv60'ta 5) ve haritanın 121
-   * bölgesi. Uyuyan bir lordun toprağı da alınabiliyor — kalıcı kalkanı
+   * SAYISI değil, lord başına bölge tavanı (Lv60'ta 5) ve haritanın şehir
+   * sayısı. Uyuyan bir lordun toprağı da alınabiliyor — kalıcı kalkanı
    * yok.
    *
    * Tavan yine de var ve emniyet supabı: aktife bakan bir kapasite tek

@@ -29,6 +29,8 @@ const kayit = (ad, ek = '') =>
       email: `dn${d}${ek}@lordlar.dev`,
       password: 'parola1234',
       lordName: ad,
+      // Ülkesi olmayan lord saldıramıyor (docs/27).
+      ulke: 'TUR',
     }),
   });
 

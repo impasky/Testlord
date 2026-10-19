@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { WORLD_MAP } from './balance.js';
+import { WORLD_MAP } from './kanonik.js';
 import {
   hedefDurumu,
   hucredeMi,
@@ -94,32 +94,25 @@ describe('sinirTuru', () => {
   const s = (o: Partial<Sahiplik>): Sahiplik => ({
     benim: false,
     lord: null,
-    medeniyet: null,
+    ulke: 'TUR',
     ...o,
   });
 
   it('benim toprağımın kenarı her şeyden önce', () => {
-    expect(sinirTuru(s({ benim: true, lord: 'ben', medeniyet: 'k' }), s({ medeniyet: 'k' }))).toBe(
-      'ben',
-    );
+    expect(sinirTuru(s({ benim: true, lord: 'ben' }), s({ ulke: 'GRC' }))).toBe('ben');
   });
   it('iki ayrı lord ya da lord ile sahipsiz: kalın', () => {
-    expect(sinirTuru(s({ lord: 'a', medeniyet: 'k' }), s({ lord: 'b', medeniyet: 'k' }))).toBe(
-      'lord',
-    );
-    expect(sinirTuru(s({ lord: 'a', medeniyet: 'k' }), s({ medeniyet: 'k' }))).toBe('lord');
+    expect(sinirTuru(s({ lord: 'a' }), s({ lord: 'b' }))).toBe('lord');
+    expect(sinirTuru(s({ lord: 'a' }), s({}))).toBe('lord');
   });
-  it('lordsuz iki medeniyet toprağı: orta', () => {
-    expect(sinirTuru(s({ medeniyet: 'k' }), s({ medeniyet: 't' }))).toBe('medeniyet');
+  it('lordsuz iki ülke toprağı: orta', () => {
+    expect(sinirTuru(s({}), s({ ulke: 'GRC' }))).toBe('ulke');
   });
   it('aynı lordun iki bölgesi: ince', () => {
-    expect(sinirTuru(s({ lord: 'a', medeniyet: 'k' }), s({ lord: 'a', medeniyet: 'k' }))).toBe(
-      'ic',
-    );
+    expect(sinirTuru(s({ lord: 'a' }), s({ lord: 'a' }))).toBe('ic');
     expect(sinirTuru(s({}), s({}))).toBe('ic');
   });
 });
-
 describe('kumeler — lord adı toprağın ortasında bir kez', () => {
   it('bitişik aynı sahipler tek küme, ayrı parçalar ayrı küme; etiket kümenin İÇİNDE', () => {
     // 1 2 3 yan yana, 4 uzakta. 1-2 ve 4 aynı lordun.
@@ -143,8 +136,7 @@ describe('hedefDurumu — sunucunun kurallarının haritadaki eşi', () => {
   const r = (o: Partial<HedefGirdisi>): HedefGirdisi => ({
     isMine: false,
     owner: null,
-    medeniyet: null,
-    cekirdek: false,
+    sinirda: true,
     shielded: false,
     paktli: false,
     muttefik: false,
@@ -153,30 +145,26 @@ describe('hedefDurumu — sunucunun kurallarının haritadaki eşi', () => {
   });
 
   it('kendi bölgem', () => {
-    expect(hedefDurumu(r({ isMine: true, owner: { id: 'ben' } }), 'k')).toEqual({ tur: 'benim' });
+    expect(hedefDurumu(r({ isMine: true, owner: { id: 'ben' } }), 'TUR')).toEqual({ tur: 'benim' });
   });
-  it('çekirdek dokunulmaz', () => {
-    expect(hedefDurumu(r({ cekirdek: true }), 'k')).toEqual({ tur: 'yasak', sebep: 'cekirdek' });
+  it('ülkesini seçmemiş lord saldıramıyor', () => {
+    expect(hedefDurumu(r({}), null)).toEqual({ tur: 'yasak', sebep: 'ulke' });
   });
-  it('aynı medeniyetten bir LORDUN toprağı yasak, lordsuz medeniyet toprağı serbest', () => {
-    const med = { id: 'k' };
-    expect(hedefDurumu(r({ owner: { id: 'o' }, medeniyet: med }), 'k')).toEqual({
-      tur: 'yasak',
-      sebep: 'yoldas',
-    });
-    expect(hedefDurumu(r({ medeniyet: med }), 'k')).toEqual({ tur: 'acik', adim: 3 });
+  it('sınırda olmayan yabancı şehir kapalı', () => {
+    expect(hedefDurumu(r({ sinirda: false }), 'TUR')).toEqual({ tur: 'yasak', sebep: 'sinir' });
   });
   it('ittifak üyesi, pakt ve kalkan', () => {
-    expect(hedefDurumu(r({ owner: { id: 'o' }, muttefik: true }), 'k').tur).toBe('yasak');
-    expect(hedefDurumu(r({ owner: { id: 'o' }, paktli: true }), 'k')).toEqual({
+    expect(hedefDurumu(r({ owner: { id: 'o' }, muttefik: true }), 'TUR').tur).toBe('yasak');
+    expect(hedefDurumu(r({ owner: { id: 'o' }, paktli: true }), 'TUR')).toEqual({
       tur: 'yasak',
       sebep: 'pakt',
     });
-    expect(hedefDurumu(r({ shielded: true }), 'k')).toEqual({ tur: 'yasak', sebep: 'kalkan' });
+    expect(hedefDurumu(r({ shielded: true }), 'TUR')).toEqual({ tur: 'yasak', sebep: 'kalkan' });
   });
-  it('başka medeniyetin lordu açık hedef, adımı taşıyor', () => {
-    expect(
-      hedefDurumu(r({ owner: { id: 'o' }, medeniyet: { id: 't' }, distance: 2 }), 'k'),
-    ).toEqual({ tur: 'acik', adim: 2 });
+  it('başka bir lordun toprağı açık hedef, adımı taşıyor', () => {
+    expect(hedefDurumu(r({ owner: { id: 'o' }, distance: 2 }), 'TUR')).toEqual({
+      tur: 'acik',
+      adim: 2,
+    });
   });
 });

@@ -1,5 +1,5 @@
 /**
- * İlk oturum ve medeniyet ölçümünü okunur biçimde yazdırır.
+ * İlk oturum ve ülke ölçümünü okunur biçimde yazdırır.
  *
  * Bugüne kadarki bütün analizler tahmindi ve ilk gerçek oyuncu testi
  * hepsini yanlışladı. Bu dört sayı olmadan bir sonraki iyileştirme de
@@ -72,53 +72,28 @@ for (const [ad, d] of [
 }
 
 /*
- * MEDENİYET KATMANI (docs/16 §10 + §15).
+ * ÜLKELER (docs/27).
  *
- * Her sayının yanında HEDEFİ yazıyor: ölçüm okuyana "bu iyi mi kötü mü"
- * diye sordurmamalı. Dört eşit taraf %25 eder; ideal sayı tabloda
- * duruyor ki sapma bir bakışta görünsün.
+ * Herkes kendi adına oynuyor; ülke bir başlangıç yeri. Burada izlenen
+ * iki şey var: oyuncular birkaç ülkeye mi yığılıyor, ve garnizon payı
+ * gerçekten bölünüyor mu.
  */
-if (o.medeniyet) {
-  const m = o.medeniyet;
-  const esitPay = m.taraflar.length > 0 ? 1 / m.taraflar.length : null;
+if (o.ulke) {
+  const u = o.ulke;
 
-  console.log('\nMEDENİYET — TARAFLAR');
-  for (const t of m.taraflar) {
-    satir(
-      t.key,
-      `${t.aktifLord} lord`,
-      `${t.bolge} bölge · çekirdek toplamı ${t.cekirdekSeviyesi}`,
-    );
-  }
-
-  console.log('\nMEDENİYET — DÖRT RİSK');
+  console.log('\nÜLKELER — EN KALABALIK ON');
+  for (const t of u.ulkeler) satir(t.kod, `${t.aktifLord} aktif`, `${t.lord} lord`);
+  satir('ülkesi olan', `${u.ulkeSayisi} ülke`, `${u.ulkesizLord} lord henüz seçmedi`);
+  satir('en kalabalık ülkenin aktif payı', yuzde(u.enKalabalikAktifPay));
   satir(
-    'en kalabalık tarafın payı',
-    yuzde(m.nufusDengesizligi.enKalabalikAktifPay),
-    `${m.nufusDengesizligi.enKalabalik} · denge ${yuzde(esitPay)}`,
-  );
-  satir(
-    'en geniş tarafın toprak payı',
-    yuzde(m.kartopu.enGenisToprakPayi),
-    `${m.kartopu.tutulanBolge}/${m.kartopu.toplamBolge} bölge tutuluyor · denge ${yuzde(esitPay)}`,
-  );
-  // Kartopu freni (docs/16 §10): eşiği geçen medeniyetin toprağından
-  // yağma artıyor. Sayının yanında eşiği de yazıyoruz — "bu iyi mi kötü
-  // mü" diye sordurmayan ölçüm, okunan ölçümdür.
-  satir(
-    'kartopu freni',
-    m.kartopu.frenAcikMi ? 'AÇIK' : 'kapalı',
-    `eşik ${yuzde(m.kartopu.frenEsigi)} · açıkken +${yuzde(m.kartopu.frenYagmaBonusu)} yağma`,
-  );
-  satir(
-    'fayda puanı kazanmış lord',
-    yuzde(m.bedavacilik.puanliLordOrani),
-    `üst ondalık puanın ${yuzde(m.bedavacilik.ustOndalikPayi)}'ini tutuyor`,
+    'tutulan toprak',
+    yuzde(u.toprak.tutulanPay),
+    `${u.toprak.tutulanBolge}/${u.toprak.toplamBolge} bölge`,
   );
   satir(
     'garnizon tutan lord',
-    yuzde(m.garnizonKatilimi.garnizonTutanLordOrani),
-    `ortanca ${m.garnizonKatilimi.ortancaBolge ?? 0} bölge`,
+    yuzde(u.garnizonKatilimi.garnizonTutanLordOrani),
+    `ortanca ${u.garnizonKatilimi.ortancaBolge ?? 0} bölge`,
   );
 
   /*
@@ -127,14 +102,14 @@ if (o.medeniyet) {
    * garnizon payı hiç çalışmıyor demektir ve bunu başka hiçbir sayı
    * söylemiyor.
    */
-  console.log('\nMEDENİYET — PAY GERÇEKTEN BÖLÜNÜYOR MU');
-  satir('garnizonlu bölge', m.garnizonKatilimi.garnizonluBolge);
+  console.log('\nPAY GERÇEKTEN BÖLÜNÜYOR MU');
+  satir('garnizonlu bölge', u.garnizonKatilimi.garnizonluBolge);
   satir(
     'iki ve daha çok lordun durduğu',
-    m.garnizonKatilimi.paylasilanBolge,
-    yuzde(m.garnizonKatilimi.paylasilanBolgeOrani),
+    u.garnizonKatilimi.paylasilanBolge,
+    yuzde(u.garnizonKatilimi.paylasilanBolgeOrani),
   );
-  if (m.garnizonKatilimi.paylasilanBolge === 0) {
+  if (u.garnizonKatilimi.paylasilanBolge === 0) {
     console.log('  UYARI: hiçbir bölgede iki lord birden durmuyor — pay bölünmüyor.');
   }
 }

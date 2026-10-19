@@ -383,19 +383,10 @@ export function LordEkrani({
                 Şöhret harcanmaz, biriktirilir.
               </p>
             </div>
-            {/* RÜTBE: unvanın yanında ama ondan AYRI bir şey ölçüyor.
-                Unvan şöhretten (ne kadar büyüksün), rütbe fayda
-                puanından (medeniyetine ne verdin) türüyor. Yukarıdaki
-                "Kuşam" rozetinin dersi burada da geçerli: iki rütbe
-                sözcüğü yan yana duracaksa ikisinin de neyin karşılığı
-                olduğu yazmalı, yoksa oyuncu çelişki sanıyor. */}
-            {lord.medeniyet && (
+            {lord.ulke && (
               <div className="mt-1 text-[13px]">
-                <span className="baslik text-sonuk">Rütbe</span>{' '}
-                <span className="baslik" style={{ color: lord.medeniyet.renk }}>
-                  {lord.faydaRutbesi.ad}
-                </span>{' '}
-                <span className="text-[11px] text-sonuk">{`· ${lord.medeniyet.ad}`}</span>
+                <span className="baslik text-sonuk">Ülke</span>{' '}
+                <span className="baslik text-parsomen">{lord.ulke.ad}</span>
               </div>
             )}
           </div>

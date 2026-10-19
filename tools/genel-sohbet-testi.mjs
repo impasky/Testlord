@@ -125,8 +125,7 @@ const IZINLI = new Set([
   'seviye',
   'sohret',
   'unvan',
-  'medeniyet',
-  'faydaRutbesi',
+  'ulke',
   'ittifak',
   'bolgeSayisi',
   'diyar',
@@ -141,8 +140,8 @@ kontrol(
   fazla.length === 0,
   fazla.join(', '),
 );
-// Anahtarlara bakılıyor, metne değil: medeniyetin adı "Demir Ocağı"
-// olabilir ve bu bir sızıntı değil.
+// Anahtarlara bakılıyor, metne değil: ülkenin adı "Demirci" gibi bir
+// sözcük içerebilir ve bu bir sızıntı değil.
 const tumAnahtarlar = JSON.stringify(kart, (k, v) => v).match(/"([a-zA-Z]+)":/g) ?? [];
 kontrol(
   'Kaynak, ordu, e-posta, son görülme sızmıyor',
@@ -298,7 +297,7 @@ kontrol('Kartta diyar ve katılış var', /Diyar/.test(kartMetni) && /Katıldı/
 const satirlar = await kartD.locator('dt').allTextContents();
 kontrol(
   'Kartta yalnız güvenli satırlar var',
-  satirlar.join(',') === 'Şöhret,Medeniyet,İttifak,Toprak,Diyar,Katıldı',
+  satirlar.join(',') === 'Şöhret,Ülke,İttifak,Toprak,Diyar,Katıldı',
   satirlar.join(','),
 );
 

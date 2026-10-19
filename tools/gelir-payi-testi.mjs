@@ -81,37 +81,14 @@ const toplam = (g) => (g?.altin ?? 0) + (g?.demir ?? 0) + (g?.erzak ?? 0);
 console.log('Lordlar Çağı — garnizon payı\n');
 
 /*
- * İKİ LORD AYNI MEDENİYETTEN olmalı.
+ * İKİ LORD AYNI İTTİFAKTA olmalı (docs/27).
  *
- * Pay yalnız bölgeyi TUTAN medeniyetin üyeleri arasında bölünüyor:
- * rakip medeniyetten gelen asker kuşatma sayılıyor, ortak değil. Kayıt
- * medeniyeti dengeye göre dağıttığı için arka arkaya açılan iki lord
- * farklı medeniyetlere düşüyor; bu yüzden eşleşen bir çift bulunana
- * kadar lord açılıyor. Dört medeniyet var, sekizde bir çift kesin var.
- *
- * Bu ayrıntı sınamanın kurulumu değil, ölçtüğü kuralın kendisi: ilk
- * hâlde iki lord farklı medeniyetlerdendi ve sınama "pay bölünmedi"
- * diye kaldı — haklı olarak.
+ * Pay yalnız bölgenin SAHİBİ ve sahibin ittifakı arasında bölünüyor:
+ * ittifak dışından gelen asker kuşatma sayılıyor, ortak değil. İkisi aynı
+ * ülkede başlıyor ki takviye birbirine kısa yoldan gitsin.
  */
-const havuz = [];
-let sahip = null;
-let dost = null;
-for (let i = 0; i < 8 && !dost; i++) {
-  const l = await lordKur(`l${i}`);
-  const med = (await l.get('/me')).lord?.medeniyet?.id ?? null;
-  const es = havuz.find((x) => x.med === med && med !== null);
-  if (es) {
-    sahip = es.l;
-    dost = l;
-  } else {
-    havuz.push({ l, med });
-  }
-}
-k('Aynı medeniyetten iki lord bulundu', Boolean(sahip && dost));
-if (!sahip || !dost) {
-  console.log('\n1 KONTROL KALDI\n');
-  process.exit(1);
-}
+const sahip = await lordKur('a');
+const dost = await lordKur('b');
 await sahip.post('/test/bolgeleri-sifirla');
 for (const l of [sahip, dost]) await hazirla(l);
 

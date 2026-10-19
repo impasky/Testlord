@@ -45,7 +45,7 @@ import { Buton } from './ui';
     metne ihtiyacı var, ikona yok. */
 const SIMGELER: Record<string, typeof IkonNavMalikane> = {
   diyar: IkonNavHarita,
-  medeniyet: IkonSancak,
+  ulke: IkonSancak,
   kaynak: IkonSohret,
   ordu: IkonNavKisla,
   duzen: IkonSavunma,
@@ -185,28 +185,16 @@ export function Ogretici({
           </div>
         )}
 
-        {/* Medeniyet sayfasında oyuncunun KENDİ tarafı. Sayfa dört
-            medeniyeti anlatıyor; oyuncunun öğrenmesi gereken ilk şey
-            hangisinden olduğu ve bunu metin değil, rengiyle duran bu
-            kart söylüyor. Medeniyeti olmayan lord (sistemden önceki
-            kayıtlar) kartı görmüyor — sayfanın kalanı yine doğru. */}
-        {sayfa.anahtar === 'medeniyet' && lord.medeniyet && (
+        {/* Ülke sayfasında oyuncunun KENDİ ülkesi (docs/27). */}
+        {sayfa.anahtar === 'ulke' && lord.ulke && (
           <div
-            className="oyuk mb-3 flex items-center gap-3 rounded-xl p-3"
-            style={{ borderLeft: `3px solid ${lord.medeniyet.renk}` }}
+            className="oyuk mb-3 rounded-xl p-3"
+            style={{ borderLeft: '3px solid var(--color-altin)' }}
           >
-            <span
-              className="h-9 w-9 shrink-0 rounded-lg border border-gece"
-              style={{ background: lord.medeniyet.renk }}
-              aria-hidden
-            />
-            <div className="min-w-0">
-              <p className="baslik truncate text-[13px] text-parsomen">{lord.medeniyet.ad}</p>
-              <p className="text-[11px] text-solgun">{lord.medeniyet.ozet}</p>
-              <p className="mt-0.5 text-[11px] text-sonuk">
-                Senin medeniyetin bu. Haritada bu rengi gördüğün her yer yoldaşlarının.
-              </p>
-            </div>
+            <p className="baslik truncate text-[13px] text-parsomen">{lord.ulke.ad}</p>
+            <p className="mt-0.5 text-[11px] text-sonuk">
+              Senin ülken bu: kampın burada ve her şehri sana açık.
+            </p>
           </div>
         )}
 

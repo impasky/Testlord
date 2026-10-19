@@ -82,7 +82,22 @@ const KONULAR = [
       'apps/api/src/services/march.ts',
       'packages/shared/src/harita.ts',
       'apps/web/src/screens/Harita.tsx',
-      'apps/web/src/components/harita/DunyaHaritasi.tsx',
+      'apps/web/src/components/harita/GercekHarita.tsx',
+      'apps/web/src/components/harita/dunyaGeometri.ts',
+    ],
+  ],
+  [
+    'Gerçek dünya: ülkeler, sınır kuralı, ülke seçimi, göç',
+    [
+      'docs/27-gercek-dunya.md',
+      'tools/gercek-dunya-uret.mjs',
+      'packages/shared/src/kanonik.ts',
+      'packages/shared/src/ulkeler.ts',
+      'apps/api/src/services/ulke.ts',
+      'apps/api/src/routes/ulke.ts',
+      'apps/api/src/services/goc.ts',
+      'apps/web/src/screens/UlkeSecimi.tsx',
+      'apps/web/src/screens/Ulkem.tsx',
     ],
   ],
   [
@@ -98,7 +113,10 @@ const KONULAR = [
     'Şehir / Malikâne (yerleşke)',
     ['apps/api/src/routes/sehir.ts', 'apps/web/src/screens/Sehir.tsx'],
   ],
-  ['Medeniyetler', ['apps/api/src/services/medeniyet.ts', 'apps/api/src/routes/medeniyet.ts']],
+  [
+    'Garnizon payı (bölge geliri bölüşümü)',
+    ['packages/shared/src/garnizon.ts', 'apps/api/src/services/gelir.ts'],
+  ],
   ['İttifak', ['apps/api/src/routes/ittifak.ts']],
   [
     'Sohbet ve moderasyon',

@@ -1,9 +1,9 @@
-LORDLAR ÇAĞI — ÇEVİRİ 3/3: KUYRUK  (KALANLAR)
+LORDLAR ÇAĞI — ÇEVİRİ 3/3: KUYRUK
 
 Sunucu hataları ve bildirimleri. Oyuncu bunları ancak bir şey ters gidince
 görüyor; en sona bırakılabilir ama atlanamaz.
 
-Bu dosyada 0 satır var — çevrilmiş olanlar çıkarıldı.
+Bu dosyada 358 satır var.
 
 NASIL ÇEVİRİLİR
   Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.
@@ -34,3 +34,364 @@ NASIL ÇEVİRİLİR
   Bitince dosyayı olduğu gibi geri ver; gerisini ben hallederim.
 
 ==========================================================================
+
+--- Sunucu mesajları (358) ---
+
+72. Raid
+161. Region
+405. DELETE MY ACCOUNT
+436. Alliance
+505. Your own member's region cannot be a target.
+552. Lord
+559. Age of Lords
+777. Report could not be sent.
+1125. Member
+1144. (deleted)
+1145. {0} (Lv{1}) applied to your alliance.
+1146. {0} {1} training completed.
+1147. {0} gold
+1148. {0} gold, {1} iron, {2} supplies.
+1150. {0} research completed.
+1152. {0} is now your capital. You will build your city here.
+1153. {0} left; leadership transferred.
+1154. {0} left.
+1155. {0} donated (+{1} XP).
+1156. {0}'s application accepted.
+1157. {0}'s application was accepted and they joined.
+1158. {0}'s application rejected.
+1159. {0} abandoned.
+1160. {0} unit joined the defense of {1}.|{0} units joined the defense of {1}.
+1161. A spy working for {1} was caught in your region {0}.
+1162. Your spy sent to region {0} was caught. No report received.
+1163. {0} joined another alliance in the meantime.
+1164. {0} can be at most level {1} in this settlement. A larger capital is required.
+1165. {0} not found.
+1166. {0} Realm
+1167. {0} captured!
+1168. {0} was taken from you
+1169. You lost {0}. Your capital became {1}; your buildings moved with you.
+1170. You lost {0}. You retreated to a camp — your buildings remain, and will resume where you left off when you take a new settlement.
+1171. {0} is not finished yet ({1}/{2} {3}).
+1172. Pact with {0} dissolved.
+1173. Pact established with {0}.
+1174. Non-aggression pact with {0} is in effect.
+1175. You have a non-aggression pact with {0}.
+1176. {0} does not require construction.
+1177. Founded the {0} alliance.
+1178. {0} marked the alliance target as {1}.
+1179. You were accepted into the {0} alliance.
+1180. Joined the {0} alliance.
+1181. Left the {0} alliance.
+1182. Kicked from the {0} alliance.
+1183. Leadership of the {0} alliance passed to you.
+1184. {0} was kicked from the alliance.
+1185. {0} joined.
+1186. {0} scouted. Its garrison and storage are now visible.
+1187. Reached {0} limit.
+1189. {0} closed the pact offer.
+1190. {0} dissolved the pact. The pact expires in {1} [hour|hours].
+1192. {0} was attacked
+1193. {0} was attacked and lost.
+1194. {0} offered a non-aggression pact.
+1195. {0} was wounded in battle, will rest for {1} [hour|hours].
+1196. {0} defended. Attack repelled.
+1197. {0} became level {1}.
+1198. {0} leveled up: Lvl {1} → Lvl {2}. Its passive is now {3}% stronger.
+1199. You cannot attack a member of {0}.
+1200. You cannot attack a lord {0} or more levels below you.
+1201. {0} was looted but remains yours. The region is under protection for {1} [hour|hours] — refresh the garrison in the meantime.
+1202. {0} wounded soldiers healed and joined your army.
+1203. {0} became an Elder.
+1204. {0} lost the Elder rank.
+1206. {0} set their sights on {1}.
+1207. {2} reinforcement units arrived at your {0}{1} region.
+1209. Raid successful: you brought {0} gold, {1} iron{2}.
+1210. Raid failed: you couldn't defeat the group, your remaining troops returned.
+1211. Raid group
+1212. Raid map
+1213. Raid has not concluded yet.
+1214. Sixth
+1216. Maximum of {0} {1} queues at once
+1217. Maximum of {0} [raid|raids] at once
+1218. You can hold at most {0} [reinforcement|reinforcements] at once. Upgrade your embassy.
+1219. You cannot repeat the same letter in a row this many times.
+1220. Link is invalid or expired. Request a reset again.
+1221. Your capital fell
+1222. Application
+1223. by application
+1224. Fifth
+1225. Notifications are not turned on.
+1226. Notifications are on. You will be notified when your army returns.
+1227. Notifications are not enabled on this server.
+1228. An unknown lord
+1229. unknown region
+1230. unknown alliance
+1231. You are not in an alliance.
+1232. First
+1234. Empty message cannot be sent.
+1235. Region changed hands.
+1236. Region captured
+1237. Your region limit is full ({0}/{1}). Even if you win, you cannot take the region, you will only loot it.
+1238. The region is yours.
+1239. The region is already at the max level.
+1240. No such research exists.
+1241. No such building exists.
+1243. No such construction exists.
+1244. This name is reserved. Choose another name.
+1245. This name cannot be used.
+1246. This name cannot be used. Choose another name.
+1247. This research is already completed.
+1248. This application has already been decided.
+1249. This region is under protection ({0}).
+1250. This region is not yours.
+1251. You have no troops in this region.
+1252. You cannot attack this region again within {0} [hour|hours].
+1253. This email is already registered.
+1254. This item is already at the max level.
+1255. This tag is taken.
+1256. This general is not in your roster.
+1257. This general is already in your roster.
+1258. This group has not recovered yet. Wait for it to replenish.
+1259. You already claimed this week's campaign.
+1260. This line is already at the max level.
+1262. You do not have permission for this action.
+1263. This alliance name is taken.
+1264. You already have a pact with this alliance.
+1265. This lord name is taken.
+1266. This pact is already being dissolved.
+1267. This report has already been decided.
+1268. This offer is no longer open.
+1269. This march is already completed.
+1270. Your donation allowance for today is over ({0}). Try again tomorrow.
+1271. You already claimed today's reward.
+1272. Not found.
+1273. This is not a settlement. Your capital can be a village, city, or citadel.
+1274. This is your region; manage the garrison from the garrison screen.
+1275. This is not yours.
+1276. You are reporting too fast. Wait {0} second.|You are reporting too fast. Wait {0} seconds.
+1277. You are typing too fast. Wait {0} second.|You are typing too fast. Wait {0} seconds.
+1278. You did not specify points to distribute.
+1280. Formation must be 16 squares.
+1281. Ninth
+1282. Gear line
+1283. A return march cannot be recalled.
+1284. Fourth
+1285. Announcement updated.
+1286. Announcement removed.
+1291. Email could not be sent ({0}): {1}
+1292. Email or password incorrect.
+1293. There can be at most {0} [elder|elders]. You must demote someone first.
+1294. Item
+1295. You don't have that many units at home.
+1296. Not enough {0} at home.
+1298. Enter a valid email.
+1299. Invalid key.
+1300. General
+1301. Recall time expired. You can recall during the first 25% of the march.
+1302. You need to log in.
+1303. Cannot be sent.
+1304. Daily {0} [attack|attacks]
+1305. Target is under protection.
+1306. Not unlocked yet.
+1307. No players yet.
+1308. open to everyone
+1311. Second
+1312. You're done
+1313. Alliance crest changed.
+1314. Your alliance application was not accepted.
+1316. Your alliance
+1317. You became an Elder in your alliance.
+1318. Your Elder rank in your alliance was revoked.
+1319. You just left an alliance. You can join in {0} [hour|hours].
+1320. Decision cannot be applied.
+1321. Opposing alliance
+1322. Joining: {0}
+1323. Resources can only be sent to alliance members.
+1324. Place a garrison in your own region, do not send reinforcements.
+1325. You cannot attack your own region.
+1326. You don't need to scout your own region.
+1327. You cannot report your own message.
+1328. You cannot change your own rank.
+1329. You cannot accept your own offer.
+1330. You cannot send resources to yourself.
+1331. You cannot kick yourself; use "Leave" to leave.
+1332. You cannot report yourself.
+1334. You cannot sell an equipped item.
+1336. Lord name must contain at least 3 letters.
+1337. Lord name must be at least 3 characters.
+1338. Lord name can be at most 20 characters.
+1339. Lord name contains invalid characters.
+1340. Lord not found: {0}
+1341. Age of Lords — {0}
+1342. Age of Lords — password reset
+1343. Your lord is wounded. You cannot attack until {0}.
+1344. Message
+1345. Message cannot be sent.
+1346. Your message contains an inappropriate word.
+1347. Current password incorrect.
+1348. Enter your current password.
+1350. You must type the confirmation text exactly.
+1351. Tenth
+1352. Army is empty.
+1353. Army gear upgraded: {0} level {1}.
+1355. Your army returned home
+1356. Your army returned home ({0} unit){1}.|Your army returned home ({0} units){1}.
+1357. Common target removed.
+1358. Common target: {0}.
+1359. Finish all three quests first ({0}/{1}).
+1360. Pact
+1361. Password must be at least 8 characters.
+1362. Password incorrect.
+1364. You only have {0} general slots. Increase your Leadership stat or upgrade the Headquarters.
+1365. You only have {0} stat points, you tried to distribute {1}.
+1366. Unowned region's garrison is already visible; no need for a spy.
+1367. Reinforcements cannot be sent to an unowned region.
+1368. Attack repelled but your region was looted.
+1369. Battle
+1370. Battle lost
+1371. Defending army is fully known.
+1372. Defender's garrison is unknown; estimation relies on incomplete intel. Spy Leyla provides full info.
+1373. Eighth
+1374. Enter your password to delete.
+1375. You were muted in chat.
+1378. Report
+1381. T{0} equipment requires level {1} blacksmith.
+1382. T{0} equipment requires level {1}.
+1383. Throne Citadel cannot be abandoned. It can only be taken from you by battle.
+1384. You didn't select units for reinforcement.
+1385. Reinforcements can only be sent to alliance members.
+1386. Your reinforcements were not accepted (the region may have changed hands); your army is returning.
+1387. Your offer is already sent.
+1388. Your land is under attack
+1389. Third
+1391. Seventh
+1392. New password must be at least 8 characters.
+1393. You don't have enough resources.
+1394. You don't have enough resources. Missing: {0}.
+1398. Upgrade successful: +{0}
+1399. Upgrade failed ({0}% chance). Materials lost, item intact.
+1400. A pact not in effect cannot be dissolved.
+1401. March
+1403. You already reside here.
+1730. {0} requires {1} gold, you have {2} gold.
+1731. {0} has just left an alliance and cannot join for another {1} [hour|hours].
+1732. At most {0} [march|marches] at once. Wait until one of your armies returns
+1733. Founding an alliance costs {0} gold, you have {1} gold.
+1734. You have just left an alliance. You can apply to a new one in {0} [hour|hours].
+1735. You have just left an alliance. You can join a new one in {0} [hour|hours].
+1736. Your command capacity is not enough. Vacant: {0}, required: {1}. Increase your Leadership stat or train fewer units.
+1737. To reset your password open this link within {0} [minute|minutes]:\n\n{1}\n\nIf you did not make this request you need to do nothing; your password has not changed.
+1856. \n\nYou can see the battle report in the game: {0}\n
+1857.  Part of your storage was full; only what fit was taken.
+1858.  and one piece of equipment
+1859. , at least Lvl{0}
+1860. , loot: {0} gold
+1861. {0} attacked your region {1}. 
+1862. {0} sent you resources: 
+1883. No such realm.
+1884. That realm is full. Pick another one.
+1885. Could not open a new realm.
+1905. {0} is merging into {1}. Your lord, army and research move with you; your regions only come along if they are free there.
+1906. The lords of {0} are coming to {1}. The throne will be left unowned.
+1908. This merge has already been applied.
+1960. This map is not open yet.
+1961. No such raid.
+1962. This raid has already ended.
+1963. This raid has already arrived — wait for it to resolve.
+1964. Rushing this raid costs {0} [gem|gems]. You have {1}.
+2061. {0} unit remained in the {1} garrison.|{0} units remained in the {1} garrison.
+2219. Invalid ban.
+2220. Your account is banned.
+2221. You cannot ban your own account.
+2236. You need to verify your email for {0}. You can request a new link from the account screen.
+2237. The link is invalid or expired. Request a new one.
+2238. this action
+2239. Verify your email.
+2240. Open this link within {0} hours to verify your account:\n\n{1}\n\nIf you did not create this account, you do not need to do anything.
+2241. Age of Lords — verify your email
+2242. Cannot be sent right now.
+2243. This notification address isn't supported.
+2244. Too many failed attempts. Try again in {0} [minute|minutes] or reset your password.
+2245. Your session has expired. Please sign in again.
+2252. The amount must be a number.
+2292. No price selected.
+2345. {0} sold: {1} gold. Tax {2}, {3} gold went into your purse.
+2346. {0} is yours. {1} gold paid.
+2347. No such item.
+2348. This item is on the market. Withdraw the listing first.
+2349. No room for gold in your storage. Spend some first or upgrade the Manor.
+2350. Item market: couldn't open the price row.
+2351. Your item sold
+2352. The price must be a number.
+2353. That's already the price.
+2354. Listing
+2356. Your purse is empty.
+2357. A listing in the registration queue can't be withdrawn until the draw ends.
+2358. A queued listing's price can't change. You can update it after the draw.
+2359. You won the draw: {0} is yours. {1} gold paid.
+2360. Buy order
+2362. Your buy order was filled
+2363. The market changed in the meantime. Try again.
+2364. Your market order doesn't match
+2371. Your {0} listing fell outside the price band; it won't sell as is. You can update its price in the Market.
+2372. Your {0} buy order fell outside the price band; it won't match as is. You can update its price in the Market.
+2447. {0} [day|days] {1} [hour|hours]
+2448. No such choice.
+2449. You have no path to leave in this choice.
+2450. You can change this choice in {0}.
+2451. Finish or cancel your ongoing {0} research first.
+2560. {0} forged.
+2600. You have no wounded waiting in the hospital.
+2601. Releasing the wounded now costs {0} gems. You have {1}.
+2635. You cannot block yourself.
+2723. You can't send the same message twice in a row. Everyone saw the first one.
+2724. No such portrait.
+2725. This file isn't a readable image.
+2726. This lord hasn't uploaded a picture.
+2727. This picture hasn't been approved yet.
+2728. This picture has already been decided.
+2729. You've used today's uploads ({0}). Try again tomorrow.
+2730. You can't report your own picture.
+2731. Your profile picture was removed for breaking the rules. If inappropriate content is repeated, your account may be restricted.
+2732. Your profile picture was approved; everyone can see it now.
+2734. Picture
+2735. The picture is empty.
+2736. The picture is too large (max {0} MB).
+2737. Couldn't process the picture. Try another image.
+2738. You've been muted in chat for {0}. Reason: {1}
+2739. Your mute was lifted. You can write in chat again.
+2740. You can only upload JPEG, PNG or WebP.
+2884. Time zone not recognized.
+2891. This report has already been shared.
+2936. {0} is on campaign. You can change the path when they return.
+2937. {0} can choose a specialisation at level {1}.
+2938. This general has no such path.
+2939. This path is already chosen.
+2940. Changing the path costs {0} gold; you have {1} gold.
+3000. You already claimed this weekend's reward.
+3001. The realm hasn't reached the goal yet ({0}/{1} {2}).
+3002. The realm campaign starts on Saturday.
+3003. The reward belongs to those who joined the campaign: you have no contribution this weekend.
+3087. Ads are unavailable right now.
+3101. Wait {0}s for the next ad.
+3102. You have no banked ad time.
+3103. No such task.
+3104. No such ad session.
+3105. This task can't be sped up: only your own development tasks can.
+3106. This task is already finished.
+3107. Finishing this task now costs {0} [gem|gems]. You have {1}.
+3108. This purchase belongs to another account.
+3109. This purchase has been refunded.
+3110. This purchase has been cancelled.
+3111. This purchase has already been used.
+3112. You've used all your ads for today ({0}). They reset tomorrow.
+3115. Google Play isn't responding right now; try again shortly.
+3118. The store is closed right now.
+3121. The purchase couldn't be verified.
+3249. Böyle bir ülke yok.
+3250. Bu şehir sınırında değil: başka bir ülkeye ancak evinin ya da bir toprağının komşusundan geçebilirsin.
+3251. Bu ülke bu diyarda yok.
+3252. Diyarlar birleşti: {0} lord geldi. Tahtlar sahipsiz — ilk alan o ülkenin hükümdarı olur.
+3253. Dünya değişti: artık gerçek dünya haritasındasın. Şehrin, ordun ve eşyaların yerinde; topraklarının karşılığı hazinene eklendi. Bir ülke seç, kampın orada kurulsun.
+3254. Önce ülkeni seç: kampın orada kurulacak.
+3255. Ülkeni zaten seçtin; seçim bir kez yapılıyor.

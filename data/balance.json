@@ -391,12 +391,10 @@
     "_koy_notu": "Koy en kucuk yerlesim ve BASKENT olabilen turlerden biri. Geliri dusuk ama yerlesim kademesi verdigi icin degeri gelirinde degil: koyu olan oyuncu sehir sayfasina, bina dikmeye ve oyunun geri kalanina kavusuyor."
   },
   "taht_kalesi": {
-    "ad": "Taht Kalesi",
-    "aciklama": "Dunyada tek. Sahibi 'Diyarin Lordu' unvanini alir.",
+    "ad": "Taht",
+    "aciklama": "Her ulkenin baskenti bir TAHT (docs/27). Tutan lord o ulkenin hukumdari unvanini alir.",
     "unvan_sohret_bonusu": 0.2,
-    "medeniyet_sohret_bonusu": 0.05,
-    "_medeniyet_notu": "Tahti TUTAN MEDENIYETIN her uyesi bu orani aliyor (docs/16 §13 soru 5). SOHRET, GUC DEGIL: tahtin ustune bir de guc vermek, onde giden tarafi daha da hizlandirirdi (§10 dorduncu risk) — oysa taht zaten haritanin odulu. Fraksiyon gucunun tek kaynagi cekirdek yatirimi ve o dort tarafa da acik. Sayi bireysel unvandan (0,2) kucuk ve bilerek: bu carpan binlerce uyeye birden isliyor, buyuk olsaydi siralamayi topluca kaydirirdi.",
-    "_kendi_kendini_dengeleyen": "Uyelerin sohreti artinca o medeniyetten birinin diyarin en sohretlisi olma ihtimali de artiyor — yani BIREYSEL lider avi tahti tutan tarafi hedef gosteriyor. Taht seni gorunur yapiyor, dokunulmaz degil.",
+    "_unvan_notu": "Bir ya da daha cok taht tutan lordun sohreti bu oranda artar (kac taht tuttugundan bagimsiz). SOHRET, GUC DEGIL: tahtin ustune bir de guc vermek onde gideni daha da hizlandirirdi.",
     "bolge_limitine_sayilmaz": true,
     "kaybetme_korumasi_saat": 2,
     "_not": "Herkese haritada gorunur ve gunluk saldiri limiti bu bolgeye islemez. Endgame rekabetinin odagi."
@@ -502,7 +500,8 @@
     }
   },
   "dunya": {
-    "oyuncu_kapasitesi": 240,
+    "oyuncu_kapasitesi": 4500,
+    "_kapasite_notu": "Gercek dunya haritasinda 3.000 ustu sehir var (docs/27). Kitlik kurali (balance.test.ts: tahtsiz sehir / kapasite < 0,75) korunuyor: 4.500 aktif lordda lord basina ~0,63 sehir. Kapasite AKTIF lorda bakiyor; diyar dolmadan sehirlerin cogu NPC garnizonunda ve PvE icerigi.",
     "dolunca": "Yeni dunya (shard) acilir. Siralamalar hem dunya bazli hem global tutulur.",
     "gelir_hesabi": "Lazy accrual: last_tick_at ile su an arasindaki fark hesaplanir. Cron gerekmez.",
     "worker_araligi_sn": 10,
@@ -527,8 +526,95 @@
       "biten uretim kuyrugu",
       "biten bolge yukseltme",
       "erzak acligi firari"
+    ]
+  },
+  "gercek_dunya": {
+    "_aciklama": "GERCEK DUNYA HARITASI (docs/27). world-map.json bu ayarlarla tools/gercek-dunya-uret.mjs tarafindan Natural Earth verisinden uretiliyor; sayilar burada, uretici yalniz okuyor.",
+    "kaynak": "Natural Earth v5.1.2 (kamu mali): ne_10m_populated_places_simple, ne_10m_admin_0_countries_tur (Turkiye bakis acisi), ne_10m_admin_0_countries (yalniz Kesmir: fiili kontrol hatti)",
+    "nufus_esigi": 100000,
+    "_nufus_notu": "Bu nufusun ustundeki her sehir bir toprak; nufusu esigin altinda kalan ulkelerde baskent yine toprak (her ulkenin en az bir topragi var).",
+    "birlesme_km": 15,
+    "_birlesme_notu": "Ayni ulkede bu kadar yakin iki sehir tek toprak (veride ayni kentin iki noktasi oluyor: Sakarya ve Adapazari gibi). Baskent ya da buyugu kaliyor.",
+    "deniz_yolu_km": 400,
+    "_deniz_notu": "Kiyi sehirleri arasinda bu mesafeden yakin karsilikli kiyilar komsu (Mans, Kore-Japonya, Sicilya-Tunus). Kara siniri yoksa ve deniz yolu da yetmiyorsa haritanin kopuk kalmamasi icin en yakin kiyiya bir yol ekleniyor (Yeni Zelanda, Izlanda).",
+    "sehir_basina_deniz_yolu": 2,
+    "kademeler": [
+      {
+        "ad": "megakent",
+        "en_az_nufus": 5000000,
+        "tur": "sehir",
+        "gelir_carpani": 2.0,
+        "garnizon": {
+          "milis": 0,
+          "mizrakci": 200,
+          "okcu": 150,
+          "suvari": 70,
+          "kusatma": 20
+        }
+      },
+      {
+        "ad": "buyuksehir",
+        "en_az_nufus": 1000000,
+        "tur": "sehir",
+        "gelir_carpani": 1.5,
+        "garnizon": {
+          "milis": 20,
+          "mizrakci": 80,
+          "okcu": 60,
+          "suvari": 25,
+          "kusatma": 5
+        }
+      },
+      {
+        "ad": "sehir",
+        "en_az_nufus": 300000,
+        "tur": null,
+        "gelir_carpani": 1.2,
+        "garnizon": {
+          "milis": 10,
+          "mizrakci": 30,
+          "okcu": 22,
+          "suvari": 6,
+          "kusatma": 0
+        }
+      },
+      {
+        "ad": "kasaba",
+        "en_az_nufus": 0,
+        "tur": null,
+        "gelir_carpani": 1.0,
+        "garnizon": {
+          "milis": 12,
+          "mizrakci": 6,
+          "okcu": 2,
+          "suvari": 0,
+          "kusatma": 0
+        }
+      }
     ],
-    "_kapasite_notu": "Dunya 61'den 121 bolgeye cikinca kapasite de 120'den 240'a cikti. Sebep KITLIK: oyuncu basina dusen bolge orani (0.50) oyunun gerilim kaynagi ve `balance.test.ts` bunu 0.75 tavaniyla koruyor. Bolgeyi iki katina cikarip lord sayisini sabit birakmak, herkese yer acmak yani catismayi kaldirmak olurdu."
+    "_kademe_notu": "Kucuk sehirler her ulkede ilk hedef olabilecek kadar zayif (eski haritanin koyu: 16 birlik); megakentler eski haritanin Taht'a en yakin bolgeleri kadar guclu (440). 'tur' null olan kademede bolge turu (koy, tarla, maden, kale) sehrin adindan kararli bir karistirmayla seciliyor: kaynak cesitliligi eski haritadaki oranlarda kalsin.",
+    "tur_agirliklari": {
+      "koy": 24,
+      "tarla": 32,
+      "maden": 22,
+      "kale": 14
+    },
+    "tur_garnizon_carpani": { "kale": 2 },
+    "_tur_garnizon_notu": "Kale turundeki sehrin garnizonu kademesinin bu kati: kale koyden zor olmali (eski haritada 37'ye 16). Baslangic ordusu (35) kasaba kalesini (40 + %30 sur) almamali, kasaba koyunu (20) almali.",
+    "baskent": {
+      "tur": "taht",
+      "gelir_carpani": 3.0,
+      "garnizon": {
+        "milis": 0,
+        "mizrakci": 400,
+        "okcu": 300,
+        "suvari": 150,
+        "kusatma": 40
+      },
+      "garnizon_en_az_oran": 0.3,
+      "garnizon_tam_sehir_sayisi": 20
+    },
+    "_baskent_notu": "Her ulkenin baskenti bir TAHT: eski haritanin tek Taht Kalesi'nin kurallari (kaybetme korumasi, gunluk saldiri limitinden muaf, unvan) her baskente isliyor. Garnizon ulkenin buyuklugune gore: garnizon_tam_sehir_sayisi ve ustu sehri olan ulkede tam (890), tek sehirli ulkede %30."
   },
   "npc_garnizonu": {
     "yenilenme_saatlik_oran": 0.1,
@@ -1033,101 +1119,11 @@
     "onay_esigi": 0.15,
     "_onay_esigi": "Porn + Hentai + Sexy bu esigin ALTINDAYSA resim hemen gorunur. Arada kalan (siniflandirici emin degil) resim yonetici onayina dusuyor; o zamana kadar baskalari eski resmi goruyor. Esikler temkinli: oyunun kendi cizimlerinden biri (okcubasi portresi) Hentai 0.46 aldi -- cizim sanati siniflandiriciyi yaniltabiliyor, o yuzden gri bolge insana gidiyor."
   },
-  "medeniyetler": {
-    "_aciklama": "Dort medeniyet: harita katmani (docs/16). Kimlikler UYDURULMADI, vilayetin kendi bolge karisimindan turedi: demirvadi 4 kale+3 maden+1 tarla (demirci, ac), kuzeymark 4 kale (sinir muhafizi), karaorman 6 koy+1 kale (orman halki), tasgecit 8 sehir (tuccar).",
-    "_cekirdek_notu": "cekirdek_bolge_id listeleri world-map.json vilayet merkezine en yakin bes bolgeden HESAPLANDI (tools/medeniyet-cekirdek.py). Harita degisirse yeniden uretilir; elle duzenlenmez.",
-    "yurt_basina_cekirdek": 5,
-    "cekirdek_yatirim": {
-      "taban_maliyet": {
-        "altin": 4000,
-        "demir": 2500,
-        "erzak": 1500
-      },
-      "seviye_carpani": 2.0,
-      "azami_seviye": 10,
-      "_formul": "seviye_maliyeti = taban * seviye_carpani^(N-1) * aktif_uye  (docs/16 §7)",
-      "_neden_uye_ile": "Sabit maliyet olsaydi kalabalik medeniyet cekirdegi hizli buyutur, daha cok kazanir, daha cok oyuncu ceker: kartopu fraksiyon olceginde. Uyeyle olceklenen maliyet buyuk medeniyeti daha hizli degil sadece daha kalabalik yapiyor.",
-      "_bonus_notu": "Her seviye bonusu SEVIYE_BASINA kadar artiriyor; azami seviye 10, yani tam gelistirilmis bir cekirdek +%50. Bonus o medeniyetteki HERKESE isliyor (docs/16 §7) ve yatirim yapmayan da yararlaniyor: bedavaciligi fayda puani cozuyor, bonusu kisitlayarak degil.",
-      "seviye_basina": {
-        "ambar": 0.05,
-        "talimgah": 0.05,
-        "sur": 0.05,
-        "ocak": 0.05
-      }
-    },
-    "garnizon_payi": {
-      "_formul": "pay_i = bolge_geliri * (yer_i / toplam_yer)  (docs/16 §6)",
-      "_neden_tavansiz": "Tavan \"kim once doldurursa\" yarisi yaratir. Oransal bolusum kendi kendini dengeliyor: kalabalik bolgede yer basina kazanc dusuyor, oyuncu bos bolgeye kayiyor.",
-      "asgari_yer": 1
-    },
-    "fayda_puani": {
-      "garnizon_saat_basina_yer_basina": 0.5,
-      "fetihe_katilim": 25,
-      "savunmaya_katilim": 15,
-      "cekirdek_bagis_bin_kaynak_basina": 10,
-      "_kati_kural": "FAYDA PUANI GUC SATIN ALMAZ (docs/16 §9). Kimlik, kolaylik ve icerik erisimi alir. Guc yalniz cekirdek yatirimindan gelir ve herkese esit isler.",
-      "_rutbe_notu": "Puan HARCANMIYOR, birikiyor ve rutbeye donusuyor. Bir dukkan acsaydik puanin karsiligi 'ne aldin' olurdu; boyle 'ne yaptin' oluyor. Unvanin sohretten turedigi gibi (unvanlar.json) rutbe de puandan turuyor: ikinci bir sayac, ikinci bir tablo yok.",
-      "rutbeler": [
-        { "esik": 0, "ad": "Yeminli", "aciklama": "Medeniyetine yazıldın." },
-        { "esik": 250, "ad": "Nöbetçi", "aciklama": "Toprakta durdun, payını aldın." },
-        { "esik": 1000, "ad": "Sancaktar", "aciklama": "Fetihte ve savunmada oradaydın." },
-        { "esik": 3000, "ad": "Ocak Ustası", "aciklama": "Çekirdekleri sen büyüttün." },
-        { "esik": 8000, "ad": "Medeniyetin Kılıcı", "aciklama": "Taraf senin adını biliyor." }
-      ]
-    },
-    "degisim": {
-      "_aciklama": "Medeniyet degisimi (docs/16 §13 soru 3). Once mekanizma HIC yoktu ve oyuncuya da soylenmiyordu: sessiz bir hayirdi. Simdi acik bir kural.",
-      "bekleme_gun": 30,
-      "_neden_bekleme": "Taraf degistirmek kimlik kararidir, taktik degil. Bekleme olmasaydi oyuncular savas oncesi tarafa, savas sonrasi kazanana gecerdi.",
-      "fayda_sifirlanir": true,
-      "_neden_sifirlanir": "Fayda puani ESKI tarafa verilen hizmetin kaydi. Yeni medeniyete tasinsaydi, hic katki vermemis biri ustune rutbe giyerek gelirdi. Bedeli de bu: yeni tarafta sifirdan baslarsin.",
-      "_neden_yalniz_acik_medeniyet": "Hedef yalniz nufusu ORTALAMANIN ALTINDA olan bir medeniyet olabiliyor -- kayittaki kuralin aynisi (acikMedeniyetler). Kazanan tarafa gecis boylece imkansiz: degisim kartopunu buyutemez, ancak dengeler."
-    },
-    "kartopu_freni": {
-      "_aciklama": "Lider avinin FRAKSIYON surumu (docs/16 §10). Bireysel lider avi tek lorda bakiyor; medeniyet olceginde kartopu bir tarafin haritayi yutmasi demek ve onu bir lordun sohreti degil TOPRAK PAYI gosteriyor. Cozum yine ayni: onde gideni zayiflatmak degil, ona saldirmayi karli kilmak.",
-      "onde_esik": 0.35,
-      "_neden_esik": "Dort medeniyetin esit payi 0,25; harita dogdugunda en buyuk yurdun payi 0,273 (karaorman/tasgecit 21 bolge). Esik 0,35 olunca fren ilk gun KAPALI basliyor ve ancak gercek bir onculuk kuruldugunda aciliyor. Daha dusuk bir esik freni surekli acik tutar ve gurultuye donusur; daha yuksek olani oyun karara baglandiktan sonra acilir.",
-      "yagma_bonusu": 0.3,
-      "_neden_bonus": "Bireysel lider avindan (0,5) kucuk ve bilerek: ikisi ust uste binebiliyor. Onde giden medeniyetin en sohretli lorduna saldiran her iki bonusu birden aliyor ve tam olarak istenen davranis bu. Bonus YALNIZ YAGMA: savas gucune dokunmuyor, yani onde giden taraf cezalandirilmiyor, sadece hedef haline geliyor.",
-      "en_az_tutulan_bolge": 20,
-      "_neden_en_az": "Hicbir seyin tutulmadigi bir haritada 'onde giden' anlamsiz: iki bolgenin birini tutan taraf %50 pay gosterir. Esik, dort yurdun acilista tuttugu 77 bolgenin cok altinda, yani gercek bir diyarda hep saglaniyor."
-    },
-    "liste": [
-      {
-        "id": "demirocagi",
-        "ad": "Demir Ocağı",
-        "yurt": "demirvadi",
-        "renk": "#c2703a",
-        "ozet": "Kalelerin ve madenlerin halkı; toprağı kıt, çeliği bol.",
-        "cekirdek_bolge_id": [68, 58, 18, 105, 48]
-      },
-      {
-        "id": "kuzeyuc",
-        "ad": "Kuzey Ucu",
-        "yurt": "kuzeymark",
-        "renk": "#5b8fc9",
-        "ozet": "Sınır muhafızları; dört kaleyle kuzeyin kapısını tutarlar.",
-        "cekirdek_bolge_id": [76, 26, 33, 70, 56]
-      },
-      {
-        "id": "karaorman",
-        "ad": "Kara Orman",
-        "yurt": "karaorman",
-        "renk": "#4f8a55",
-        "ozet": "Köyleri kalabalık, surları alçak; ormanın içinden vururlar.",
-        "cekirdek_bolge_id": [17, 77, 40, 55, 117]
-      },
-      {
-        "id": "tasgecit",
-        "ad": "Taş Geçit",
-        "yurt": "tasgecit",
-        "renk": "#a97fc4",
-        "ozet": "Sekiz şehrin tüccarları; kılıçtan çok kese taşırlar.",
-        "cekirdek_bolge_id": [38, 62, 93, 102, 99]
-      }
-    ],
-    "cekismeli_vilayetler": ["gunbati", "aksu"],
-    "taht_vilayeti": "taht"
+  "garnizon_payi": {
+    "_aciklama": "Bolge geliri orada DURAN garnizonlar arasinda YER oraninda bolunuyor (docs/16 §6, docs/27). Pay alabilen: bolgenin sahibi ve sahibin ittifak uyeleri (takviye). Sahipsiz bolgede garnizon olmuyor.",
+    "_formul": "pay_i = bolge_geliri * (yer_i / toplam_yer)",
+    "_neden_tavansiz": "Tavan \"kim once doldurursa\" yarisi yaratir. Oransal bolusum kendi kendini dengeliyor: kalabalik bolgede yer basina kazanc dusuyor.",
+    "asgari_yer": 1
   },
   "elmas": {
     "_aciklama": "Oyun ici para birimi. OYNAYARAK kazaniliyor (kazanim) ve Android uygulamasinda Google Play'den SATIN ALINABILIYOR (magaza, docs/25). Iki yoldan gelen elmas ayni: harcandigi tek yer ZAMAN.",

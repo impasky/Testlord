@@ -163,12 +163,11 @@ export interface LordState {
   hastane: Army;
   /** Oyunda kazanılan para birimi; yalnız ZAMAN kısaltıyor (docs/12 §6). */
   elmas: number;
-  /** Lordun medeniyeti (docs/16) — sistemden önceki lordlarda null. */
-  medeniyet: { id: string; ad: string; renk: string; ozet: string } | null;
-  /** Kolektif eylemin kişisel karşılığı (docs/16 §9). Güç satın almaz. */
-  faydaPuani: number;
-  /** Fayda puanından türeyen rütbe (docs/16 §9). */
-  faydaRutbesi: FaydaRutbeDto;
+  /**
+   * Lordun SEÇTİĞİ ülke (docs/27). null: henüz seçmedi — yeni haritaya
+   * göçen lord; arayüz önce ülke seçimini soruyor.
+   */
+  ulke: { kod: string; ad: string; baskent: number } | null;
   hourlyIncome: Resources;
   upkeepPerHour: number;
   netErzakPerHour: number;
@@ -412,6 +411,8 @@ export interface GearDto {
 
 export interface RegionDto {
   id: number;
+  /** Kanonik harita numarası — çizimdeki toprak (`dunyaGeo.json`) bununla eşleşiyor. */
+  mapId: number;
   name: string;
   type: string;
   province: string;
@@ -434,10 +435,8 @@ export interface RegionDto {
    * %8-30 az gelir yazıyordu.
    */
   pay: { oran: number; yer: number; toplamYer: number } | null;
-  /** Bölgeyi TUTAN medeniyet (docs/16 §2) — çekişmeli bölgelerde null. */
-  medeniyet: { id: string; ad: string; renk: string } | null;
-  /** Ele geçirilemeyen çekirdek mi (docs/16 §5). */
-  cekirdek: boolean;
+  /** Sınır kuralı izin veriyor mu (docs/27): kendi ülkem ya da evimin/toprağımın komşusu. */
+  sinirda: boolean;
   shielded: boolean;
   distance: number;
   /** Sahibinin ittifakıyla saldırmazlık paktım var mı (docs/09 B1d). */
@@ -447,49 +446,33 @@ export interface RegionDto {
   fortressBonus: number;
 }
 
-/** Bir çekirdek bölgenin yatırım durumu (docs/16 §7). */
-export interface CekirdekDto {
-  mapId: number;
+/** Ülke seçim ekranının bir satırı (docs/27). */
+export interface UlkeSatiriDto {
+  kod: string;
   ad: string;
-  /** Taşıdığı bonus — başkent çekirdeğinde null. */
-  bonus: 'ambar' | 'talimgah' | 'sur' | 'ocak' | null;
-  bonusAdi: string | null;
-  seviye: number;
-  azamiSeviye: number;
-  /** Bir sonraki seviyenin bedeli — tavandaysa null. */
-  maliyet: { altin: number; demir: number; erzak: number } | null;
-  biriken: { altin: number; demir: number; erzak: number };
+  adEn: string;
+  sehirSayisi: number;
+  /** Bu diyarda orada başlamış lord sayısı. */
+  lordSayisi: number;
+  baskent: string | null;
+  hukumdar: { id: string; name: string } | null;
 }
 
-/** Lordun medeniyeti ve o medeniyetin durumu (docs/16). */
-export interface MedeniyetDto {
-  id: string;
+/** Ülkem: başkent, hükümdar, şehirlerin kaçı kimde (docs/27). */
+export interface UlkemDto {
+  kod: string;
   ad: string;
-  renk: string;
-  uyeSayisi: number;
-  bolgeSayisi: number;
-  faydaPuanim: number;
-  /** Puandan türeyen rütbe — puan harcanmıyor, birikiyor (docs/16 §9). */
-  rutbe: FaydaRutbeDto;
-  /** Taraf değiştirme kuralları ve şu an geçilebilecek medeniyetler. */
-  degisim: {
-    kalanGun: number;
-    /** Yoldaki ordu varken değişim reddediliyor — önceden söylensin. */
-    orduYolda: boolean;
-    faydaSifirlanir: boolean;
-    beklemeGun: number;
-    secenekler: { id: string; ad: string; renk: string; ozet: string }[];
-  };
-  cekirdekler: CekirdekDto[];
-  siralama: { id: string; ad: string; renk: string; bolge: number }[];
-}
-
-/** Fayda puanından türeyen rütbe (docs/16 §9). */
-export interface FaydaRutbeDto {
-  ad: string;
-  aciklama: string;
-  sonrakiEsik: number | null;
-  sonrakiAd: string | null;
+  sehirSayisi: number;
+  lordSayisi: number;
+  baskent: {
+    id: number;
+    ad: string;
+    hukumdar: { id: string; name: string; isNpc: boolean } | null;
+  } | null;
+  /** Benim tuttuğum şehir sayısı. */
+  benim: number;
+  /** Bir lordun tuttuğu şehir sayısı (benimkiler dahil). */
+  lordlarda: number;
 }
 
 /** Bir paktın oyuncuya görünen hâli. */
@@ -517,6 +500,8 @@ export interface PaktlarDto {
 export interface MapDto {
   /** Kampın çıpası: hangi bölgenin yanında durduğu. */
   homeBolgeId: number;
+  /** Lordun seçtiği ülke (docs/27); null: henüz seçmedi. */
+  ulke: string | null;
   maxRegions: number;
   oneri: HedefOnerisiDto | null;
   /** İttifakın ortak hedefi — varsa haritada işaretli. */
@@ -627,6 +612,7 @@ export interface DunyaDto {
   aktifLord: number;
   aktifGun: number;
   bolgeSayisi: number;
+  ulkeSayisi: number;
   benimSiram: number;
   benimSohretim: number;
   taht: {
@@ -634,12 +620,8 @@ export interface DunyaDto {
     name: string;
     sahip: { id: string; name: string } | null;
     sohretBonusu: number;
-    /** Tahtı TUTAN medeniyet (docs/16 §13 soru 5) — sahipsizse null. */
-    medeniyet: { id: string; ad: string; renk: string } | null;
-    /** O medeniyetin her üyesine işleyen şöhret çarpanı. */
-    medeniyetSohretBonusu: number;
-    /** Taht benim medeniyetimde mi. */
-    benimMedeniyetimde: boolean;
+    /** Tahtın ülkesi — ülkemin tahtı (docs/27). */
+    ulke: string | null;
   } | null;
   /** Lider avı — kartopu freni. Dünya çok küçükse null. */
   liderAvi: {
@@ -649,23 +631,6 @@ export interface DunyaDto {
     yagmaBonusu: number;
     /** Lider bensem işaret farklı okunmalı: av benim üstümde. */
     benMiyim: boolean;
-  } | null;
-  /**
-   * Fraksiyon lider avı (docs/16 §10) — önde giden medeniyet yoksa null.
-   *
-   * Bireysel lider avından AYRI bir alan: biri bir lordu, öbürü bir
-   * tarafı işaret ediyor ve ikisi üst üste binebiliyor.
-   */
-  medeniyetAvi: {
-    /** Denge anahtarı ("demirocagi") — bölge kartındaki `medeniyet.id` ile aynı. */
-    medeniyetId: string;
-    ad: string | null;
-    renk: string | null;
-    /** Tutulan topraktaki payı (0-1). */
-    pay: number;
-    yagmaBonusu: number;
-    /** Önde giden benim medeniyetimse cümle tersine dönüyor. */
-    benimMi: boolean;
   } | null;
   olaylar: {
     id: string;
@@ -1112,8 +1077,8 @@ export interface ProfilKartiDto extends YazarDto {
   seviye: number;
   sohret: number;
   unvan: string;
-  medeniyet: { ad: string; renk: string } | null;
-  faydaRutbesi: string | null;
+  /** Başladığı ülke (docs/27). */
+  ulke: string | null;
   ittifak: { ad: string; etiket: string; rutbe: 'lider' | 'yasli' | 'uye' | null } | null;
   bolgeSayisi: number;
   diyar: string;
@@ -1483,19 +1448,11 @@ export const api = {
 
   map: () => request<MapDto>('/map'),
   region: (id: number) => request<RegionDetailDto>(`/map/${id}`),
-  medeniyet: () => request<{ medeniyet: MedeniyetDto | null }>('/medeniyet'),
-  /** Taraf değiştir (docs/16 §13 soru 3). Fayda puanı sıfırlanır. */
-  medeniyetDegistir: (key: string) =>
-    post<{
-      medeniyet: { id: string; ad: string; renk: string };
-      faydaPuani: number;
-      tasinanBolge: number;
-    }>('/medeniyet/degis', { key }),
-  cekirdegeBagisla: (mapId: number, kaynak: { altin: number; demir: number; erzak: number }) =>
-    post<{ seviye: number; atladi: boolean; faydaPuani: number }>(
-      `/medeniyet/cekirdek/${mapId}/bagis`,
-      kaynak,
-    ),
+  /** Ülke seçim ekranı (docs/27). */
+  ulkeler: () => request<{ ulkem: string | null; ulkeler: UlkeSatiriDto[] }>('/ulkeler'),
+  ulke: () => request<{ ulke: UlkemDto | null }>('/ulke'),
+  /** Ülke seçimi — bir kez; kamp o ülkenin bir şehrinin yanına kuruluyor. */
+  ulkeSec: (ulke: string) => post<{ ulke: string; homeBolgeId: number }>('/ulke/sec', { ulke }),
   upgradeRegion: (id: number) => post(`/map/${id}/upgrade`),
   setGarrison: (id: number, army: Army) => post(`/map/${id}/garrison`, { army }),
   preview: (

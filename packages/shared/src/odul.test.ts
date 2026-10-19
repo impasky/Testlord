@@ -22,7 +22,6 @@ const temel = {
   fortressFameAccrued: 0,
   regions: [{ type: 'tarla', level: 1 }],
   ownsThrone: false,
-  medeniyetTahti: false,
 };
 
 describe('fetihKazanci', () => {
@@ -58,21 +57,5 @@ describe('tahtın medeniyete yazan payı', () => {
     // Taht, aynı seviyedeki sıradan bir bölgeden belirgin biçimde fazla
     // şöhret getirmeli: iki çarpan da orada devreye giriyor.
     expect(taht.sohretFarki).toBeGreaterThan(koy.sohretFarki);
-  });
-
-  it('medeniyetin tahtı zaten bizdeyse fetih o çarpanı İKİNCİ kez açmıyor', () => {
-    const bizde = fetihKazanci({
-      ...temel,
-      medeniyetTahti: true,
-      hedef: { type: 'koy', level: 1, incomeMult: 1 },
-    });
-    const degil = fetihKazanci({ ...temel, hedef: { type: 'koy', level: 1, incomeMult: 1 } });
-    // Çarpan iki tarafa da işlediği için FARK oransal olarak aynı kalıyor;
-    // değişen şey toplam şöhret.
-    expect(bizde.sohretOncesi).toBeGreaterThan(degil.sohretOncesi);
-    expect(bizde.sohretFarki / degil.sohretFarki).toBeCloseTo(
-      bizde.sohretOncesi / degil.sohretOncesi,
-      2,
-    );
   });
 });

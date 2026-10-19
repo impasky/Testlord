@@ -37,7 +37,6 @@ import {
   portreModeli,
 } from './kisiler';
 import { DIYAR_ADLARI, HARITA_KUTUSU, KAPAK_KUTUSU, diyarModeli } from './diyarlar';
-import { dunyaUcgenleri } from './dunya';
 import { ZEMIN_ADLARI, ZEMIN_KUTUSU, zeminModeli } from './zeminler';
 import { BolgeCizimi, DiyarCizimi, SavasCizimi, ZeminCizimi } from './Cizimler';
 import { savasAnahtari, type SavasGirdisi } from './savas';
@@ -422,29 +421,6 @@ const BOLUMLER: {
         ),
       };
     }),
-  },
-  {
-    baslik: 'Dünya',
-    ogeler: [
-      {
-        ad: 'dunya',
-        genis: true,
-        oran: 'aspect-square',
-        cizim: (
-          <svg viewBox="0 0 100 100" className="h-full w-full" aria-hidden>
-            {dunyaUcgenleri().map((u, i) => (
-              <polygon
-                key={i}
-                points={u.n.join(' ')}
-                fill={u.renk}
-                stroke={u.renk}
-                strokeWidth={0.05}
-              />
-            ))}
-          </svg>
-        ),
-      },
-    ],
   },
   {
     // Uygulamadaki gibi: su parıltısı, ışık titremesi, duman (yalnız GPU).

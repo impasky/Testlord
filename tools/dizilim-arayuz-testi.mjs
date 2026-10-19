@@ -11,7 +11,7 @@
  */
 import { devices } from 'playwright';
 import { tarayiciAc } from './lib/tarayici.mjs';
-import { bolgeyiSec, ekrana, rehberiSustur } from './lib/gezin.mjs';
+import { bolgeyiSec, ekrana, rehberiSustur, ulkeyiSec } from './lib/gezin.mjs';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
 
 const WEB = process.env.WEB_URL ?? 'http://127.0.0.1:5173';
@@ -38,6 +38,8 @@ await page.fill('input[placeholder="Kara Yusuf"]', `Dizi ${damga.toString(36).sl
 await page.fill('input[type=email]', `dizi${damga}@lordlar.dev`);
 await page.fill('input[type=password]', 'parola1234');
 await page.click('button[type=submit]');
+// Yeni lord önce ülkesini seçiyor (docs/27): gerçek oyuncu gibi.
+await ulkeyiSec(page);
 await page.waitForSelector('nav button:has-text("Dünya")', { timeout: 15000 });
 await ogreticiyiGec(page);
 await rehberiSustur(page);

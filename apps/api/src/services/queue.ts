@@ -27,7 +27,6 @@ import {
   type UnitType,
 } from '@lordlar/shared';
 import { prisma, type Tx } from '../db.js';
-import { medeniyetBonuslari, surOrani } from './medeniyet.js';
 import { GameError, hata } from '../errors.js';
 import {
   arastirmaBonusuOku,
@@ -521,11 +520,7 @@ async function kesfiCoz(row: QueueRow, p: Record<string, unknown>, tx: Tx): Prom
   const snapshot = {
     garrison,
     store: { altin: region.storeAltin, demir: region.storeDemir, erzak: region.storeErzak },
-    tahkimatBonusu: bolgeTahkimati(
-      region,
-      sahip,
-      surOrani(await medeniyetBonuslari(region.worldId, tx), region.ownerMedeniyetId),
-    ),
+    tahkimatBonusu: bolgeTahkimati(region, sahip),
     bolgeSeviyesi: region.level,
     sahipAdi: sahip?.name ?? null,
   };

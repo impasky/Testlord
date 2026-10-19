@@ -1,9 +1,9 @@
-LORDLAR ÇAĞI — ÇEVİRİ 1/3: OYUNU OYNANIR KILAN  (KALANLAR)
+LORDLAR ÇAĞI — ÇEVİRİ 1/3: OYUNU OYNANIR KILAN
 
 Gezinme, düğmeler, kaynak ve birim adları, ilk saatin ekranları ve
 öğretici. Bu parti bitince oyun baştan sona oynanabilir.
 
-Bu dosyada 0 satır var — çevrilmiş olanlar çıkarıldı.
+Bu dosyada 850 satır var.
 
 NASIL ÇEVİRİLİR
   Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.
@@ -34,3 +34,898 @@ NASIL ÇEVİRİLİR
   Bitince dosyayı olduğu gibi geri ver; gerisini ben hallederim.
 
 ==========================================================================
+
+--- Oyun motoru (271) ---
+
+569. Mine
+581. spearmen defense
+596. archer attack
+609. army health
+612. army attack
+614. army defense
+722. army defense in defense
+815. Farm
+853. loot
+908. If you selected "Another reason", explain with at least {0} [character|characters].
+910. {0} → {1} komşuluğu tek yönlü
+916. Cap for {0}. A larger settlement is required.
+917. Deployed on the {0} flank: +{1} power.
+919. {0}: harita üzerindeki yeri ({1}, {2}) 0-100 dışında
+920. {0}: hiçbir bölgeye komşu değil
+921. {0}: kendi kendine komşu
+922. {0}: olmayan bölgeye komşu ({1})
+927. Description can be up to {0} [character|characters].
+931. You cannot go on a raid with an empty army.
+941. Troop training +{0} faster
+942. Start troop training
+944. Troop cost −{0}
+947. You can have a maximum of {0} [application|applications] at once. Withdraw one.
+949. You cannot trade the same resource for itself.
+952. Another reason
+954. Unknown unit: {0}
+955. Unknown decision.
+958. A raid
+959. A fire, a few tents. You don't have land yet.
+961. Send an attack to a region
+964. Select a reason.
+969. Region income +{0}
+971. Region development +{0} faster
+978. No such resource exists.
+979. You have already applied to this alliance, awaiting a response.
+980. This alliance is not taking applications, you can join directly.
+981. This alliance rejected your application. You can reapply in {0} [hour|hours].
+982. This alliance recruits by application. You must apply and wait for the leader's approval.
+983. This alliance requires at least Lv{0}. You are Lv{1}.
+985. There is no message to delete in this report.
+986. You can trade at most {0} {1} more today.
+987. Your market limit for today is reached. It will reset tomorrow.
+990. Espionage −{0} cheaper
+991. A muddy road, wooden houses, a palisade.
+995. Storage capacity +{0}
+999. The center of the realm.
+1000. Build your realm
+1004. The enemy didn't have {0}; the main trump card of this tactic was wasted.
+1005. The enemy's {0} unit was {1}: +{2} attack.
+1008. Forge equipment or develop region
+1009. Negative amounts cannot be sent.
+1011. You don't have this much.
+1012. You can trade at least {0} [unit|units].
+1013. A load of at least {0} value can be sent.
+1014. You can have a maximum of {0} [pact|pacts]. You must break one for a new one.
+1016. At maximum level.
+1020. Tag must be {0}-{1} characters.
+1021. Tag can only contain letters and numbers.
+1025. Forum, aqueduct, temple. You are now a city.
+1036. +{0} attack [limit|limits] per day
+1037. Exceeds daily sending limit. You can send {0} more value today.
+1040. Insult or profanity
+1044. Alliance name must be at least {0} [character|characters].
+1045. Alliance name can be at most {0} [character|characters].
+1050. Citadel-city
+1053. Camp
+1056. The opposing alliance's pact quota is full ({0}).
+1061. You cannot make a pact with your own alliance.
+1063. Command capacity +{0}
+1065. Condition not met.
+1069. Manor income +{0}
+1071. Message removed
+1072. Metropolis
+1073. Hate speech
+1074. Note can be at most {0} [character|characters].
+1075. Army upkeep −{0}
+1077. Army attack +{0}
+1078. Army defense +{0}
+1084. Your frontline was exposed: while the militia and spearmen waited in the back, the enemy pushed straight in. {0} defense lost.
+1085. Requires {0} first.
+1088. You need an alliance for a pact.
+1090. Spam or link flooding
+1098. Level threshold must be at least 1.
+1099. Level threshold can be at most {0}.
+1100. Muted in chat ({0})
+1101. You have been muted in chat — {0} left.{1}
+1102. Walls dominate. A military settlement.
+1103. Select mute duration.
+1105. Report Queue
+1106. Report ignored
+1107. Currently under construction.
+1109. Harassment or threat
+1110. Fortification +{0} (in defense)
+1112. The throne is yours. The realm recognizes you.
+1115. A stone square, the first wall, a bazaar.
+1122. Inappropriate lord name
+1130. Loot +{0}
+1141. March +{0} faster
+1143. You are already in an alliance. You must leave first.
+1395. admin
+1691. English
+1722. Türkçe
+1855.  Reason: {0}
+1863. region income
+1864. return of losses
+1865. lord battle contribution
+1866. catapult attack
+1867. army upkeep cost
+1868. march time
+1951. {0} more level(s) required.
+1952. {0} vs. {1}
+1955. First round attack {0}
+1956. Finish {0} first.
+1957. Attack {0}
+1958. Defence {0}
+1959. Wall effect {0}
+2209. Invalid ban duration.
+2210. Your account has been permanently banned.{0}
+2211. Your account is banned — {0} remaining.{1}
+2212. Account is PERMANENTLY banned
+2213. Account banned ({0})
+2214. The reason can be a maximum of {0} characters.
+2215. Mute lifted
+2216. Ban lifted
+2217. Write the ban reason using at least {0} characters.
+2218. Admin Panel
+2230. Your daily sending limit is reached. Try again tomorrow.
+2231. Too fast. Wait {0} seconds.
+2232. Your email is not verified — it will be required to log in after {0} days.
+2233. You need to verify your email. You can request a new link.
+2234. writing in alliance chat
+2235. sending resources
+2249. Not enough room in your storage for {0}. Spend some first or upgrade the Manor.
+2250. Your storage has room for only {0} {1}. You can trade at most {2} {3}.
+2251. The amount must be a whole number.
+2330. {0} gold needed; you have {1} in your purse and storage.
+2331. {0} to {1} gold
+2332. You can have at most {0} [listing|listings] open at once.
+2333. You can place at most {0} buy [order|orders] at once.
+2334. You can't sell and buy the same item. Withdraw your other order first.
+2335. This item is being upgraded at the Blacksmith. You can sell it when the work is done.
+2336. This item is already on the market.
+2337. You already have a buy order for this item. You can update its price.
+2338. You already have a listing for this item. Let it sell or withdraw it first.
+2339. You can place at most {0} new [order|orders] today. Resets tomorrow.
+2340. Trading on the item market
+2341. The price must be within {0}.
+2342. You can't sell an equipped item. Unequip it first.
+2343. Gold held in buy orders can't exceed your storage cap. You can commit at most {0} more gold.
+2411. {0} mastery +{1}
+2412. {0} mastery: its edge is {1} stronger, its cost {2} lighter.
+2413. {0}: another node is in cell {1}
+2414. {0}: {1} is not wired to the engine
+2415. {0}: {1} is chosen. This path is closed.
+2416. {0}: duplicate key
+2417. {0}: linked to a node of another path ({1})
+2418. {0}: era {1} does not exist
+2419. {0}: group {1} is undefined
+2420. {0}: its gate ({1}) is below its era's level ({2})
+2421. {0}: prerequisite {1} does not exist
+2422. {0}: prerequisite {1} is in a later era
+2423. {0}: prerequisite {1} has a higher gate
+2424. {0}: an option without a path
+2425. {0}: column {1} does not exist
+2426. {0}: path {1} is not an option of any group
+2427. +{0} research [slot|slots]
+2428. Gold production +{0}
+2429. Researching.
+2430. Research +{0} faster
+2431. another path
+2433. Construction +{0} faster
+2434. This choice
+2435. {0} [level|levels] early for your era: time +{1}
+2436. You are behind your era: time −{0}
+2437. Iron production +{0}
+2438. cycle: {0}
+2439. Supplies production +{0}
+2440. Siege
+2441. Requires lord level {0}. Early research opens at level {1}.
+2442. Militia
+2444. attack
+2445. defense
+2703. Barbarian Chief
+2704. This image contains inappropriate content and can't be used. Try another image.
+2705. This report has no image to remove.
+2706. Brigand Chief
+2707. Global Chat
+2708. Writing in global chat
+2709. Bandit Chief
+2710. Tarık the Besieger
+2711. Cultist Chief
+2712. Legionary Chief
+2713. Lord I
+2714. Lord II
+2715. Lord III
+2716. Lord IV
+2717. Lord V
+2718. Profile picture removed
+2719. Uploading a profile picture
+2720. Your profile picture was updated.
+2721. Your picture is waiting for a moderator's approval. Everyone will see it once approved.
+2722. Bora the Rider
+2827. The web app is on a separate address but WEB_ORIGIN is localhost only: browser requests fail CORS. Add the app's address to WEB_ORIGIN.
+2828. The app's address is allowed.
+2829. Links use a public https address.
+2830. Support address is published.
+2831. DESTEK_EPOSTA is empty: the Terms of Use and Privacy Notice have no contact line. Enter an address players can write to.
+2832. Email is really being sent.
+2833. Email is only written to the server log; password reset and verification emails never reach players. Set EPOSTA_TASIYICI=resend.
+2834. There is at least one admin.
+2835. EPOSTA_TASIYICI=resend but EPOSTA_ANAHTAR is empty: email cannot be sent.
+2836. The sender address is the default (@localhost); email will be rejected. EPOSTA_GONDEREN must be an address on your verified domain.
+2837. Logging is at debug/trace level; it writes more than needed in production. Set LOG_LEVEL=info.
+2838. Log level is normal.
+2839. Error monitoring is on.
+2840. Error monitoring is off: nobody is notified when the server crashes. Enter SENTRY_DSN.
+2841. "Send test" on the Account screen reaches the phone.
+2842. There are no admins: reports pile up in the queue and nobody can review them. pnpm yonetici ver <eposta>
+2843. 6 demo lords are added on first start. If real players are coming, set SEED_DEMO_LORDS=false.
+2844. Request limits are very high; a load test value may have been left behind. Return RATE_LIMIT_MAX and AUTH_RATE_LIMIT_MAX to their defaults.
+2845. Request limits are normal.
+2846. NODE_ENV is not production: /api/test/* endpoints are open and CORS is loose. Set NODE_ENV=production on the server.
+2847. The session secret looks guessable (repeated characters or a sample word). Generate a random one; changing it signs everyone out.
+2848. The session secret looks long and random.
+2849. The password reset email really arrives.
+2850. Profile picture classifier is on.
+2851. Profile picture classifier is off: every uploaded picture waits for admin approval.
+2852. Push notifications are on.
+2853. Push notifications are off; the button never appears in the app. Enter the VAPID pair generated by pnpm push-anahtari.
+2854. Rival demo lords are not added.
+2855. SENTRY_DSN is set but monitoring could not start; most likely a typo. Copy it again from the Sentry dashboard.
+2856. UYGULAMA_URL is not https; the password reset link travels unencrypted.
+2857. UYGULAMA_URL is a local address; links in emails will not open for players.
+2858. The app's address is unknown; the password reset link points to localhost. Enter UYGULAMA_URL.
+2859. Production mode; test endpoints are closed.
+2860. Only one half of the VAPID pair is set; push is off. Enter both together.
+2863. My outfit
+2876. Finished jobs
+2877. Training, crafting, construction
+2878. Captured region
+2879. Army returns
+2880. Attacks and battles
+2881. Item sold, pre-order filled
+2882. Army back home from a campaign or raid
+2883. Attack on your land, lost battle, capital
+2919. Backups are taken and "pnpm yedek-tatbikati" has run once against the live database (docs/05 §4).
+3037. The client's address is read directly from the connection.
+3038. The client's address is read from the header the proxy writes.
+3039. The client's address is read from X-Forwarded-For, using the trusted proxy count.
+3041. If the server sits behind a proxy, set ISTEMCI_IP_BASLIGI or VEKIL_SAYISI; otherwise the sign-in limit becomes one shared bucket for everyone. The admin panel checks this against your own request.
+3151. ADMOB_ODUL_BIRIMI and ADMOB_YAYINCI_KIMLIGI belong to different publishers; app-ads.txt points to the wrong account. Copy both from the same AdMob account.
+3152. ADMOB_YAYINCI_KIMLIGI is empty: /app-ads.txt is not published and AdMob limits ads for unverified apps. Enter your pub-… ID.
+3153. In AdMob, the rewarded unit's server-side verification (SSV) URL is https://<your domain>/api/reklam/ssv and "Verify" passes (docs/25).
+3154. In the Android app, a gem pack was bought with a license test account and the gems arrived; a test ad was watched and the time went down (docs/25).
+3155. Google Play purchases are on; every purchase is verified with Google on the server.
+3156. Google Play purchases are off: the Store only shows information and no gem packs are sold. To turn them on, enter PLAY_PAKET_ADI and PLAY_SERVIS_HESABI (docs/25).
+3157. Rewarded ads are on; the reward is granted only through Google's signed callback.
+3158. Rewarded ads are off: "Watch ad" doesn't appear in the app. To turn them on, enter ADMOB_ODUL_BIRIMI (docs/25).
+3159. Only one of PLAY_PAKET_ADI and PLAY_SERVIS_HESABI is set; purchases are off. Enter both together.
+3160. PLAY_SERVIS_HESABI can't be read (not JSON or base64 JSON, or client_email/private_key is missing); purchases are off. Download the key from Google Cloud again and enter it.
+3162. DIGITALOCEAN_ACCESS_TOKEN is set on GitHub and the CI "DigitalOcean dağıtımı" job is green; otherwise every release is deployed by hand from the panel (docs/05 §2).
+3163. ISTEMCI_IP_BASLIGI is set but this request doesn't carry that header: the address falls back to the proxy's. Check the header name (DigitalOcean: do-connecting-ip, Render: cf-connecting-ip).
+3164. The server is behind a proxy but the address is read from the connection: the sign-up and sign-in limit is one shared bucket for every player. Set ISTEMCI_IP_BASLIGI: do-connecting-ip on DigitalOcean, cf-connecting-ip on Render.
+3165. Email verification is on.
+3166. Email verification is off: no one verifies their address, and a player who forgets their password may lose their account. Once mail is really being sent, set EPOSTA_DOGRULAMA=acik.
+3221. {0}: başkent olmayan taht
+3222. {0}: başkenti ({1}) bu ülkenin tahtı değil
+3223. {0}: olmayan ülke ({1})
+3232. Harita verisi geçersiz:\n  - {0}
+3245. Ülkem
+3248. world-map.json: tekrar eden ülke
+
+--- Öğretici (137) ---
+
+909. "What you should do now"
+918. {0} hour new lord shield
+923. You position the army on a {0}x{1} grid, then select a tactic.
+930. Raid: fighting without taking land
+932. Gold and iron
+933. You hoard gold, iron, and supplies; fame is your ranking.
+935. Your homepage is a settlement map. Buildings provide capacity.
+937. Research for rate, building for capacity
+938. Research: you shape your realm
+943. Training troops, forging equipment, and developing regions require these.
+946. {0} [research|researches] at once
+948. Only one research at a time
+950. Gather in the same province
+951. Achievements
+953. Five enemy realms, ten camps in each. Resources and equipment.
+957. Buildings move with you
+965. Start something, close it
+966. Units counter each other. Who you send is more important than how many.
+970. Develop region
+973. Region limit
+975. Region, equipment, and general. All three progress simultaneously.
+984. This is an idle game. A few minutes a day is enough.
+988. This is a realm, you are a lord
+989. Three ways to grow
+996. Storage has a cap
+998. You may hit rock bottom, but you won't be wiped out
+1002. The world is persistent
+1006. Forge equipment
+1015. Maximum {0} [member|members]
+1024. {0} [hour|hours] after conquest
+1026. Loot and conquest
+1030. Recruit general
+1038. Daily quests and weekly campaign
+1041. Every unit has its place
+1047. Alliance level
+1048. Alliance; a group that cannot attack each other and feeds each other.
+1054. You start from a camp
+1055. Flanks and open front
+1058. Losing is not death
+1059. Send resources
+1060. Resources are certain, equipment is luck
+1064. Command limit
+1066. Siege weapon
+1079. Army: not a crowd, the right crowd
+1081. You send the army, it marches, it clashes; you watch.
+1082. The rhythm of the game
+1086. Send a spy first
+1087. Preview first
+1089. Trade in the market
+1091. Non-aggression pact
+1092. War is real
+1093. Battle resolves automatically
+1094. Before battle: your formation and tactic
+1096. Rules that protect you
+1104. Your city: every building has a job
+1114. Reinforcement and common target
+1116. Rock-paper-scissors
+1117. Has a cap, does not determine the battle
+1118. A single map, everyone on it. You are one of them.
+1119. Land opens the map
+1120. No land risk
+1123. You won't be wiped out while asleep. Shields are real in this game.
+1124. Three resources, one score
+1126. A hit camp recovers
+1131. {0} [hour|hours] after looting
+1132. You don't have to play alone
+1140. Settlement is a CAP
+1663. For {0} gold you can send a spy to a region and learn its garrison. A report is a snapshot: after {1} hours it is marked "old". Your Cunning stat both raises the chance of success and lowers the risk of being caught.
+1664. A raid gives no land and takes none. Even if you lose, your region stays yours — this is the cheapest place to test your army.
+1667. Research says "15% faster", a building says "2 trainings at once". The two never touch the same number — which one to upgrade is a separate decision.
+1670. You can command {0} [unit|units] at once; Leadership adds {1} more [unit|units] per point. The army does not grow as large as you like.
+1671. The same battle engine, the same formation, the same tactic, the same losses. Your wounded go to the hospital. Everything you learn here also applies against a rival lord.
+1672. Every extra region you hold in the same province raises the income of all your regions there by {0}% (up to {1}%). Three scattered regions and three adjacent regions are not the same thing.
+1673. Nobody can attack you at the start. The shield drops when you make your first attack — you decide yourself when you are ready.
+1675. You can send troops to a member's region to strengthen its defense, and as leader you can mark a common target on the map.
+1676. Regions produce a single resource: city gold, mine iron, farm supplies. In the manor market you can convert one into another — {0}% commission, daily volume limited to {1} gold worth. Trade closes a gap, it does not replace production.
+1677. If your region has been looted it becomes untouchable for a short while. This is what stops different attackers coming one after another and wiping you out in a single night.
+1684. Even if you lose all your regions your base income keeps flowing: {0} gold per hour. You fall back to a camp, your buildings pause, and when you take a new settlement you continue where you left off.
+1685. If you conquer a larger settlement and move your capital there, your buildings come with their levels. Moving costs you nothing.
+1686. The items you equip in the blacksmith are added directly to your army's attack and defense. You fight harder with the same army.
+1687. The formation's effect is at most +{0}% / -{1}%, the tactic's at most {2}%. A good formation will not save a bad army, but it decides which of two equal armies wins. Every mistake you make is written out in the battle report.
+1688. After setting your formation you pick a tactic — the Crescent Formation sweeps your cavalry around the flank, the Shield Wall locks the front line. Every tactic has a condition, and a tactic whose condition is not met cannot be chosen: giving half a bonus to a half-met tactic would make it impossible to explain why you got less.
+1689. A group you defeat comes back a few hours later. It stays grey during that time but does not disappear — the screen says when it returns.
+1690. Training, marching and building finish over time. You do not need to keep the app open; it works while it is closed.
+1692. Generals level up as they take part in battles and grow the army's bonuses. If they get wounded they need to rest for a while.
+1693. It is not spent, it accumulates. Your place in the ranking and your title come from here. Holding regions, winning battles and keeping the throne all earn fame.
+1696. Every {0} lord levels you can hold one more region. In the early game holding a few regions well is better than holding many poorly.
+1697. Three small quests every day, one campaign every week. Even in a short session you leave with something in hand.
+1698. You can store at most {0} of each resource; every time your lord level rises the cap grows by {1}. A resource sitting at the cap stops accumulating — what you produce is wasted. Granaries in the research tree raise this cap.
+1699. Ideal rows: {0}. Every row of deviation from the ideal costs power; the heaviest penalty is the catapult's ({1}% per row) — a catapult standing in the front line falls apart in the first clash.
+1700. Two alliances can promise not to attack each other. At most {0} [pact|pacts], and breaking one is not instant: during the {1} hour notice period the pact still protects. That is why the promise you give means something.
+1701. ×{0} against a castle, ×{1} against living units. Great against walls, terrible against people — take guards with you.
+1702. In a camp buildings cannot pass level 1, in a village 2, in a town 3, in a city 4. This is the reward for conquest: forging T5 equipment requires a real city.
+1703. When you win you always get the resources; equipment is a chance, and as the group gets harder both the chance and the tier grow. Chiefs drop the best.
+1704. The wing columns ({0}) help cavalry ({1}%) and hurt archers and catapults. If you leave no melee unit in the front row, {2}% of your defense is gone: putting archers up front and hiding spearmen at the back is not free.
+1705. Some alliances you join directly, most recruit by application — then you wait for the leader's approval. You can have {0} applications open at once; when one is accepted the others drop away on their own.
+1706. There is an achievement list on the lord screen: region, battle, equipment, general. None of them are required — they are excuses to try the parts of the game you have never seen.
+1708. In the manor a single card always tells you the next step. If you do not know what to do, look there and do not think about the rest.
+1712. Your army eats supplies every hour. If supplies run out your soldiers start melting away from hunger — building a big army is not enough, you have to be able to feed it.
+1715. Before you attack you arrange your army on a {0}x{1} field. Row 1 is the front (where the enemy hits first), row {2} is the rear. Who stands where changes the power of the battle.
+1716. Before you attack we show your chance of winning, your estimated losses and your loot. No blind shots.
+1717. The battle is resolved round by round and the report is readable: it says what you won or lost and why. You can launch a counterattack straight from the report.
+1718. No seasons, no resets. What you build today is still there tomorrow, and next year. There is no need to rush.
+1723. As members donate the alliance levels up and EVERYONE gains: a higher resource sending allowance, faster reinforcements, cheaper scouting. You have {0} donation allowances a day.
+1724. Members cannot attack each other. It is kept small on purpose: enough to besiege a castle together, not enough to swallow the map alone.
+1725. The wounded go to the hospital rather than home and cannot fight until treatment ends. Treatment takes at most {0} hours; during that time they eat no supplies and take up no command space. A defeat is a delay, not a deletion.
+1726. A region you have just taken is protected for a while. It cannot be taken from you the moment you get it — you have time to gather its garrison.
+1727. If you lose you lose part of your army, not your account. A portion of those counted dead come back wounded — both in defense and in attack.
+1728. March time is measured from your nearest land, not from your manor. The moment you take a region everything around it comes closer to you — the more you spread, the further you can reach.
+1729. You can send resources to a member in trouble. Up to {0} gold worth a day, and resources travel too — they do not arrive instantly.
+2026. Upgrading a region increases its income and defense; your garrison's share there grows at the same rate. It is often more profitable than taking a new region.
+2037. Income comes from the garrison
+2045. Resources flow from two places: the base income of the manor and the share of the garrisons in the regions. A region pays those who have troops on it. If you do not leave soldiers on the land you have taken, you will not get a single gold from it.
+2373. You can sell items you don't need to other lords in your realm and buy what you're looking for from them. Sellers stay anonymous; prices move in a narrow band and {0}% tax is taken from each sale. Enter from the Market building or the Manor.
+2408. : you can pick only one path from each. You can change it later, but that path's research is deleted, {0}% of its costs come back and you can't change the same choice again for {1} [day|days].
+2409. {0} major [choice|choices]
+2410. {0} [tab|tabs], {1} [era|eras]
+2432. At first you can run {0} research [project|projects] at once; the Library and some research add slots. The order is your call: grow the economy first, or the army? If you cancel, {1}% of what you spent comes back.
+2446. Your choices set you apart from other lords. Two lords of the same level are never the same.
+3220. {0} şehir, {1} ülke
+3224. Aldığın şehir senin adına yazılır; geliri orada DURAN garnizona gider. İttifak üyelerin takviye gönderirse geliri bıraktıkları yer oranında paylaşırsınız. Askerini çekersen toprak senden gitmez ama gelirin durur.
+3225. Başka bir ülkenin şehrine ancak evinin ya da tuttuğun bir toprağın KOMŞUSUYSA saldırabilirsin. Komşuluk kara sınırından ya da karşı kıyıya giden deniz yolundan gelir. Sınır şehrini aldığında ardındaki ülke de sana açılır.
+3226. Başka ülkeye sınırdan
+3228. Bir bölgeyi ezici bir üstünlükle alırsan bölge senin adına yazılır ve sağ kalan askerlerin orada garnizon olarak kalır — gelirini o andan itibaren almaya başlarsın. Yaralılar ve ganimet eve döner. Dar kazanırsan yalnız yağmalarsın: kaynağı alır, bölgeyi bırakırsın.
+3229. Bir ülkede başlarsın, sınırdan yayılırsın
+3231. Harita bugünkü dünya: her şehir bir toprak ve her toprak ele geçirilebilir. Bir toprağı tutan lord varsa sınırı onun rengini taşır. Şehirler bitmez ama çoğalmaz da — biri alırsa, bir başkası kaybeder.
+3233. Her başkent bir taht
+3234. Her ülkenin başkenti altın çerçeveli bir TAHT. Onu tutan o ülkenin hükümdarı olur ve şöhreti %{0} büyür. Taht bölge sınırına sayılmaz ve el değiştirince yalnız {1} saat korunur — oyunun ucu burası.
+3236. İttifak üyelerinin ve saldırmazlık paktın olan ittifakların topraklarına saldıramazsın. Geri kalan her şehir — kendi ülkendeyse ya da sınırındaysa — açık. Henüz kimsenin almadığı şehirlerde karşındaki bir lord değil, şehrin kendi muhafızlarıdır: ilk fethin büyük ihtimalle orada olacak.
+3237. İttifakına kılıç çekilmez
+3238. Kampın seçtiğin ülkede, bir şehrin yanında kurulur; toprağın yok, ordun yok. İlk şehrini fethettiğinde orası başkentin olur ve şehir sayfan bir kamptan bir yerleşime döner. Sana hiçbir şey verilmiyor — ordu da toprak da bina da kazanılıyor.
+3239. Kendi ülken açık
+3241. Oyuna başlarken bir ülke seçersin ve kampın orada, bir şehrin yanında kurulur. Ülken bir takım değil, bir başlangıç yeri: herkes kendi adına oynar ve aynı ülkeden iki lord da birbirine saldırabilir.
+3242. Seçtiğin ülkenin her şehrine saldırabilirsin — uzaktaki şehre yürüyüş uzun sürer, o kadar.
+3244. Toprak senin, pay garnizonun
+3246. Ülkeni sen seçersin
+3247. Ülkeni sen seçiyorsun; ötesi komşuluk meselesi.
+
+--- Harita (92) ---
+
+36. Becoming {0}
+53. Make {0}
+96. The troops remain yours. Even if the region changes hands, they return home.
+102. The number of scouts you can deploy at once and your gold are limited; try again when one finishes.
+104. A maximum of {0} [region|regions] can be developed at once. A new one cannot start until one finishes.
+137. Abandoning...
+164. Region is under shield
+168. The region becomes unowned, garrisoned troops return home. You can get rid of a region you can't maintain or defend this way.
+183. Abandon region
+185. This info is outdated; the garrison might have changed. Advice is not given based on an old report.
+187. Your Battles in this Region
+189. Abandon this region
+190. Only the garrison here defends this region.
+212. Send spy · {0} gold · {1}
+213. Spy could not be sent.
+214. The spy might be caught; your Cunning stat reduces the risk.
+215. Spy is departing...
+217. Withdrawing...
+276. Return
+281. World Map
+284. Enemy garrison is not visible. You can learn by sending a spy or deploy Spy Leyla to see it constantly.
+320. old info · {0} ago
+327. No troops at home. You must build an army to attack first.
+336. Manage garrison
+341. Development
+342. Development queue is full
+351. Recall
+359. Reinforcements to send
+377. Daily attack limit reached
+390. Target could not be marked.
+432. Marking...
+439. Make alliance target
+456. You cannot attack until healed. You can see the remaining time on the Manor screen.
+506. Scouting
+513. Go to Barracks
+563. Your lord is wounded
+616. You didn't select an army
+617. Army is on the move. Arrival in {0}.
+624. Your army is in the field. You can send them to this region when they return.
+635. Review your army and alliance status.
+638. There is only one common target; marking it will replace the previous one.
+683. Hourly fame
+689. Attack
+693. Attack
+694. Attack could not be initiated.
+695. Attacking army
+697. Learn about the garrison and storage before attacking. A spy does not take an army.
+760. Calculating outcome...
+799. throne is empty
+810. Reinforce
+811. Send reinforcements ({0} unit)|Send reinforcements ({0} units)
+813. Withdraw reinforcements
+817. fresh · {0} ago
+857. Lootable storage
+871. Newly captured regions or those belonging to new players cannot be attacked for a while.
+890. Select how many units to send from above.
+900. Marches
+1741. [{0}] TARGET
+1742. {0} — this region is at its highest stage.
+1753. {0} gold · {1}{2}iron · {3} supplies
+1756. {0} unit|{0} units
+1773. {0} is already the alliance's common target. Marked with a dashed line on the map.
+1783. Your region {0}/{1}
+1809. fortification +{0}%
+1817.  · {0} yours here
+1820.  · take it for unity {0}
+1822.  · unity {0}
+1824.  · your only one here
+1835. · unowned
+1843. Storage:
+1852. Fortification:
+1879. leader hunt · +{0}% loot
+2157. {0} of your soldiers are defending in this region.
+2164. garrison
+2750. {0} is your capital. If you abandon it, you move to your best remaining settlement; if you have none left, you fall back to a camp. Getting it back means fighting for it again.
+2751. {0} will be left without an owner. Getting it back means fighting for it again.
+2752. Yes, abandon
+2762. {0} army on the march|{0} armies on the march
+2767. Expand card
+2768. Shrink card
+2783. {0} lord active|{0} lords active
+3171. — ülken
+3173. {0} hükümdarı · {1}
+3179. {0} topraklarına ancak sınırdan geçebilirsin: evinin ya da tuttuğun bir şehrin komşusu olan şehre saldır.
+3187. Bu ülke
+3192. Günde en fazla {0} saldırı yapabilirsin. Başkentler (taht) bu limitten muaftır; yarın sıfırlanır.
+3196. Her ülkenin başkenti bir taht. Sahibi o ülkenin hükümdarı olur, %{0}{1}şöhret bonusu alır, bölge limitine sayılmaz. Buraya saldırmak günlük hakkından düşmez ve el değiştirdikten sonra kalkanı yalnızca{2}{3} saat sürer.
+3201. Kampın seçtiğin ülkede kurulacak; ondan sonra saldırabilirsin.
+3202. Önce ülkeni seç
+3208. Sınırında değil
+3210. Taht — {0} başkenti
+3218. Ülkeni seç
+
+--- Omurga (81) ---
+
+23. {0} min
+29. Your army is not enough for {0} yet.
+32. It cannot be recruited even if your {0} capacity is full. You need to upgrade your Leadership stat.
+40. {0} hour|{0} hours
+43. Attack {0}
+52. March on {0}
+75. Go on a raid
+76. Your raid is ongoing
+86. Research is permanent and shapes your realm with your choices — two lords at the same level won't be identical.
+88. Go to research
+97. Your troops are training
+145. start a research
+146. Start a research
+174. Develop your region
+175. upgrade your region
+176. Region level increases both income and defense. You can grow stronger without taking new land.
+180. Go to region
+200. You can forge equipment or upgrade your region during this time.
+201. You can grow your army or forge equipment during this time.
+232. Forge equipment in the Blacksmith
+233. Go to the Blacksmith
+238. Everything you produce is wasted because your storage is full. Granaries research expands the storage.
+240. Your storage is overflowing
+254. Expand the realm
+255. keep expanding the realm
+296. Equipment increases the lord's battle contribution; you will emerge from the same battle with fewer losses.
+314. Running out of supplies
+318. Supplies ran out, your troops are deserting. Take a farm region or reduce your army.
+344. A general empowers your entire army at once — making a bigger difference than a single piece of equipment.
+345. hire general
+346. Hire general
+348. Go to Generals
+381. Search for a farm on the map
+389. When ready, you will march on {0}.
+420. Go on your first raid
+421. take your first region
+457. attack when healed
+499. resources and equipment
+514. Train {0} in the Barracks
+515. Go to Barracks
+522. Insufficient command capacity
+562. Your lord is healing
+564. Equip your lord
+591. Go to Stats
+619. Your army is starving
+621. Your army is returning
+622. Your army is not enough yet.
+623. Your army is arriving at the camp. You'll see the loot and report when they return.
+628. Your army is on the march
+632. Grow your army
+633. Build your army
+684. 5% desertion per hour
+746. Your next target is {0}.
+757. next: the upcoming step
+781. What you should do now
+801. Throne Citadel — you can be the sole owner of the realm
+825. your land is safe
+826. no land risk
+869. choose a new target
+891. Loading
+1657. When it runs out your army deserts at {0}% per hour. Take a farm region or reduce your army.
+1659. Your army is on its feet. Descend on an enemy camp first: even if you lose, your land is safe, and if you win you take your first iron by fighting for it.
+1769. {0} defending
+1806. next: {0}
+1808. currently {0} contribution
+1841. +{0}/hr
+1848. Your army is enough. What you gain once the region is yours:
+1899. {0}/hr
+2565. while waiting: craft equipment
+2576. {0} short
+2577. Enlist soldiers for a raid
+2578. go on a raid
+2579. Keep raiding
+2580. grow the realm
+2582. You don't have enough gold for a general. Each raid takes one minute; the loot and equipment are yours.
+2583. Each raid takes one minute; the loot and equipment are yours.
+2584. go on your first raid
+2585. equip your lord
+2589. Your purse can't cover research yet. Each raid takes a minute; the loot and gear are yours.
+2590. Your purse can't cover forging gear yet. Each raid takes a minute; the loot and any dropped piece are yours.
+2592. Your purse falls short; raid loot will close the gap. First you need an army.
+
+--- Rehber ve ipuçları (61) ---
+
+926. A starving army deserts at {0}% per hour. Taking a farm region comes before training troops.
+928. The men are arriving at the camp. We'll count what they brought back together when they return.
+929. The men are gathering. Wait right here, I'll let you know when it's done.
+936. Start research
+939. The research entrance is on the homepage. Let's head back there first, my lord.
+940. You can now hire a general. They are the power of the ARMY'S RULES, not just the army.
+945. Your troops are training, my lord. Wait right here, I'll let you know when it's done.
+962. A piece of equipment only affects the lord; a general affects the whole army. If you have a slot, don't leave it empty.
+963. Select a group, my lord. The ones at the top are the weakest; let's start with the first one.
+972. Region level increases income
+977. We will unlock your region from the map; the way goes through the step on the homepage.
+993. The Blacksmith entrance is on the homepage, my lord. Let's return there first.
+1003. Enemy camps are in the Raid tab, but the path goes through the homepage, my lord.
+1007. Equip gear
+1010. A captured region remains shielded for {0} [hour|hours] — both yours and the enemy's.
+1018. If supplies drop below zero, the army disperses
+1019. Supplies dropped below zero, my lord. A starving army disperses — let's cover this up first.
+1029. A general multiplies the entire army
+1031. The list of generals is on the homepage. Let's return there first, my lord.
+1035. You can make {0} [attack|attacks] a day; Throne Citadel is exempt from this limit. Spend it by picking your target.
+1039. Your daily attack limit is capped
+1042. Nobody can attack you for the first {0} [hour|hours]. That time is for setting up — prepare for what comes after.
+1070. Your manor steward
+1076. Command is required as the army grows. Your Leadership stat dictates how many troops you can carry.
+1080. Your army is marching. Your first march will take {0} [minute|minutes]; you will see the outcome in this session.
+1095. Matchups win, not numbers
+1108. Let's enter this realm. There are ten camps inside, each can be hit individually.
+1133. The task to be done is written on the homepage. Let's return there first, my lord.
+1135. You are wounded. Marching without resting is losing the army twice.
+1138. A new region is untouchable for a while
+1139. New lords are protected
+1666. The granaries have overflowed, my lord — from this hour on everything we produce spills on the ground. There is no point hoarding without enlarging the storage.
+1678. Upgrade the region. The same land gives more, and its defense rises too — this is how you grow stronger without taking new ground.
+1679. This button enrols soldiers in the barracks. I have picked the number for you — this is enough to take the target.
+1681. Equip this piece. Equipment does not grow your army's numbers, it grows the power you bring to the battle — you hit harder with the same army.
+1682. Start this one. Which you choose is your decision — research is permanent and it is the only layer that sets your realm apart from other lords'.
+1683. Hire this one. A general changes not a single soldier but the ARMY'S RULES; a general's effect applies to all your troops at once.
+1707. My lord, we have nothing but a tent and a drilling yard. Let us enrol soldiers first — I will gather the first batch in {0} seconds, you will not have to wait.
+1709. Spearmen eat cavalry, cavalry eats archers, archers eat spearmen. Knowing what the other side holds comes cheaper than gathering twice the soldiers.
+1710. Your army is on its feet but it is early to attack land. Let us descend on that sea bandit camp: we make no enemies and we take the loot.
+1711. Your army is ready. The other side may outnumber you — never mind that, what matters is which soldier eats which. It is written below.
+1713. Send your army onto this camp. Even if you lose, your land is safe — a raid takes no land and gives none; this is the cheapest place to learn.
+1714. First choose who to send. "All" throws in every soldier at home; there is no benefit in splitting the army on the first run.
+1719. Now it is time to make the realm your own. Research is permanent — even two lords at the same level will not be alike.
+2033. The army at home neither protects the land nor brings income. The income of the region is distributed to the garrisons stationed on it, in proportion to the space they leave: if you don't leave soldiers, you will have neither a share nor land.
+2035. A garrison both defends and earns
+2052. Multiplying land is not the only way. Upgrade what you have: the region gives more, and your garrison's share grows with it.
+2055. Taking a new region is not the only way: upgrading what you have increases the region's hourly income, and your garrison's share grows along with it.
+2443. Bright boxes are what you can start now. Tap one to see what it gives, what it costs and how long it takes.
+2571. Our purse can cover the ones on this shelf, my lord. Let's start there.
+2572. We're done here, my lord. Let's close this panel; the next task is outside.
+2573. You have a piece you haven't equipped, my lord. Let's look in the inventory.
+2575. Let's forge a piece first, my lord. It is equipped on your lord; when it's done, equip it from the Inventory.
+2597. We're back from the raid, my lord. Whether it comes from loot or the forge, every piece you equip adds to your strength in battle — the same army loses fewer men.
+2598. Our purse won't cover the next task, my lord. A few more raids: each takes a minute, and the loot is ours.
+2599. We have nothing to equip, my lord; let's return to the forge and make a piece.
+3227. Başkent bir taht
+3230. Bu düğme orduyu yola çıkarır. Geri dönüşü yok — ama hesabı yaptım: bu bölge senin olur, ordun orada kalır ve gelirin o günden sonra oradan akar.
+3235. Her ülkenin başkenti bir TAHT. Tutan lord o ülkenin hükümdarı olur ve şöhreti artar; taht bölge sınırına sayılmaz.
+3240. Kendi ülkenin her şehri açık. Başka bir ülkenin şehrine ancak sınırdan geçebilirsin: evinin ya da tuttuğun bir toprağın komşusu olmalı — kara sınırı ya da deniz yolu.
+3243. Sınırdan yayıl
+
+--- LordEkrani (51) ---
+
+2. is forged at; you equip the crafted piece here.
+27. {0} [victory|victories] · {1} [defeat|defeats]
+38. Distribute {0} [point|points]
+41. {0} [hour|hours] {1} [minute|minutes]
+210. Health +{0} · wounding −{1}%
+216. Rookie
+224. Endurance
+295. Equipment power
+317. Supplies are out, troops desert at 5% per hour. Take a farm region or reduce your army.
+365. Appearance
+369. Power
+383. Look at the map
+408. Account
+412. None of your slots are full. Equipment
+490. Saving...
+521. Command takes {0}
+528. Commander
+530. Cunning
+532. Loadout
+535. Equipped Gear
+550. Leadership
+554. Lord battle contribution
+560. Against lords
+662. password, tutorial, logout
+673. Point distribution is permanent. Leadership determines army size and general slots.
+704. Battle rating
+705. Battle Power
+706. Battle contribution +{0}
+709. You can open battle reports from the event feed below.
+731. While you were away
+743. Reset
+818. Veteran
+833. Title
+855. Loot +{0}%
+1660. Attack +{0}% · Defense +{1}% · Health +{2}%
+1765. {0} POINTS
+1768. {0} battle|{0} battles
+1889. You rank #{0}
+1896. {0}/{1} attacks
+1950. Attributes
+1996. You are at the highest title:
+2016. Renown is not spent, it is accumulated.
+2128. You will become {1} after {0}.
+2130. You were away for {0}. During this time, {1} [event|events] occurred.
+2131. You were away for {0}. During this time, {1} [event|events] and {2} occurred.
+2135. {0} in the realm.
+2136. {0} left until recovery. You cannot attack during this time.
+2140. +{0}% loot
+2141. {0} in the realm — and you are the most renowned lord: whoever attacks you takes {1}.
+2564. {0}/{1} regions
+2683. Change profile picture
+
+--- Adlar (birim, yerleşim, taht) (31) ---
+
+466. Castle
+527. Village
+800. Throne Citadel
+1057. Town
+1469. The Realm's Pantry
+2077. Impenetrable Fortress
+2078. Fertile Fields
+2079. Parish
+2080. Great Castle
+2081. Large Village
+2082. Great City
+2084. Ore Vein
+2085. Iron Mine
+2087. Deep Shaft
+2088. Capital of the Realm
+2089. Farmland
+2091. Watchtower
+2092. Citadel
+2093. Ancient Vein
+2096. Town Gate
+2097. Village Field
+2099. Peasant Militia
+2101. Catapult
+2104. Spearman
+2105. Township
+2108. Archer
+2109. Market City
+2112. Cavalry
+2113. Granary
+2116. Quarry
+2117. Trade City
+
+--- Kisla (29) ---
+
+16. Train {0} {1}
+95. Troop Training
+105. You can have a maximum of {0} [training|trainings] at once. Upgrading your Barracks increases this.
+116. Upkeep
+148. A region is defended solely by the garrison you leave there.
+159. Vacant {0}, required {1}. Increase your Leadership stat or train fewer units.
+209. Health
+242. DETAILS
+243. HIDE DETAILS
+293. Training queue is full
+294. In Training
+335. In Garrisons
+410. Speed
+467. Siege breaker. ×2 against fortifications, ×0.5 against units.
+523. Command space
+524. Not enough command space
+631. You grow your army here
+636. Army Distribution
+718. Defense
+724. The backbone of defense. ×1.5 against Cavalry.
+831. Cheap meat shield. Absorbs casualties first.
+832. Cheap damage. ×1.5 against Spearmen.
+850. Striking power and speed. ×1.5 against Archers.
+901. Marching
+1739. ({0} party)
+1775. {0}{1} supplies/hr
+1791. At home {0}
+1797. Queue {0}/{1}
+3161. At home {0} · training {1}
+
+--- Giris (28) ---
+
+71. If the address is registered, a reset link has been sent. Check your inbox.
+114. Connection failed.
+132. Wait...
+165. Regions are scarce, rivals are many. Whoever deserves the throne takes it.
+249. Enter Realm
+252. You will be known by this name in the realm.
+289. Email
+306. At least 8 characters.
+353. Login
+355. Sign In
+418. Icons
+476. Kara Yusuf
+553. Lord name
+648. Write your email address first.
+658. Password
+663. Forgot password
+744. Send reset link
+872. New Lord
+874. New lords are immune to attacks for 72 hours.
+889. Let us send a reset link to the email address above.
+1831. — CC BY 3.0
+1880. {0} [lord|lords] played in the last {1} [day|days]
+1881. If you are playing with a friend, pick the same realm. Realms are independent of one another.
+1882. Nobody has played here yet — new realm
+1895. {0}/{1} lords
+1925. What data we keep
+2621. Terms of use
+2636. By entering the realm you accept the Terms of Use.
+
+--- Sehir (19) ---
+
+11. {0} — {1} building
+119. Capital could not be moved.
+158. vacant lot
+424. under construction
+425. Construct
+427. Construction could not be started.
+429. Cancel
+737. Level {0} / {1}
+738. Upgrade to Level {0}
+816. Move
+860. structure
+861. Structures
+1746. {0} · building cap {1}
+1763. {0} under construction
+1774. Go to {0}
+1832. , {0} in progress
+2168. level {0}
+2786. Move your capital: {0}
+2787. Close card
+
+--- MobilKabuk (16) ---
+
+25. Finishes in {0} min
+39. Finishes in {0} hr
+108. decreasing
+220. Logout
+237. storage full
+280. World
+607. Army
+775. City
+2149. {0} — {1}, then the army deserts at {2}% per hour
+2150. {0} — storage is full, production is wasted
+2151. {0} — going into the negative
+2153. {0}: {1} ({2}{3}/hr)
+2662. Global chat
+2663. Global chat — new messages
+2696. All pages
+3073. Store — {0} [gem|gems]
+
+--- ui (15) ---
+
+56. {0}m {1}s
+57. {0}d {1}h
+58. {0}h {1}m
+290. Legendary
+462. Ancient
+488. If you lose
+572. cost
+585. Rare
+747. Common
+834. Masterwork
+1828.  missing.
+3020. {0}m
+3021. {0}h
+3022. {0}s
+3023. {0}d
+
+--- Diğer (11) ---
+
+1034. Quest Board
+1049. Steward Sinan
+1449. Spy Leyla
+1456. Blacksmith Yusuf
+1484. Quartermaster Meryem
+1521. Castle Guard Sarya
+1545. Commander Alparslan
+1564. Spearman Kadir
+1572. Master Archer Elif
+1627. Knight Doruk
+1642. Preacher Bertan
+
+--- ParolaSifirla (5) ---
+
+661. Password could not be reset.
+665. Password changed. You can now log in with your new password.
+668. Set password
+847. Cancel, return to login screen
+878. Set your new password
+
+--- Sunucu mesajları (3) ---
+
+1028. Invalid mute duration.
+1046. Alliance full ({0} [member|members]).
+1142. You are already in an alliance.

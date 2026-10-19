@@ -76,7 +76,10 @@ const EpostaDogrula = lazy(() =>
 );
 const Siralama = lazy(() => import('./screens/Siralama').then((m) => ({ default: m.Siralama })));
 const Ittifak = lazy(() => import('./screens/Ittifak').then((m) => ({ default: m.Ittifak })));
-const Medeniyet = lazy(() => import('./screens/Medeniyet').then((m) => ({ default: m.Medeniyet })));
+const Ulkem = lazy(() => import('./screens/Ulkem').then((m) => ({ default: m.Ulkem })));
+const UlkeSecimi = lazy(() =>
+  import('./screens/UlkeSecimi').then((m) => ({ default: m.UlkeSecimi })),
+);
 const EsyaPazari = lazy(() =>
   import('./screens/EsyaPazari').then((m) => ({ default: m.EsyaPazari })),
 );
@@ -499,6 +502,19 @@ export function App() {
 
   const { lord, queues, events, yokluk } = data;
 
+  /*
+   * ÜLKE SEÇİMİ (docs/27) her şeyden ÖNCE: kampı olmayan lordun haritası,
+   * hedefi, ilk saldırısı yok. Yeni kayıt da gerçek dünyaya göçen eski
+   * lord da oyuna bu ekrandan giriyor; seçim bir kez.
+   */
+  if (!lord.ulke) {
+    return (
+      <Suspense fallback={<Iskelet satir={6} />}>
+        <UlkeSecimi onSecildi={tazele} />
+      </Suspense>
+    );
+  }
+
   return (
     <MobilKabuk
       lord={lord}
@@ -647,7 +663,7 @@ export function App() {
               <Arastirma depoTavani={lord.storageCapacity} kaynak={lord.resources} />
             )}
             {kapi === 'ittifak' && <Ittifak lordId={lord.id} />}
-            {kapi === 'medeniyet' && <Medeniyet onGit={(e) => setSekme(e as typeof sekme)} />}
+            {kapi === 'ulke' && <Ulkem onGit={(e) => setSekme(e as typeof sekme)} />}
             {kapi === 'generaller' && <Generaller onGuncelle={tazele} />}
             {kapi === 'demirhane' && (
               <Demirhane

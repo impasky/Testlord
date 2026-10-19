@@ -129,9 +129,15 @@ export function onerilenDiyar(API) {
   return _diyarSozu;
 }
 
+/**
+ * Lord ÜLKESİYLE kaydoluyor (docs/27): ülkesi olmayan lord oyuna ülke
+ * seçim ekranından giriyor ve o ekran haritayı, şehri, her şeyi
+ * örtüyor. Testlerin çoğu bunu ölçmüyor; seçim ekranını ölçen araç
+ * `ulke: null` diyor.
+ */
 export async function kayitOl(
   API,
-  { email, password = 'parola1234', lordName, worldId, dogrula = true },
+  { email, password = 'parola1234', lordName, worldId, dogrula = true, ulke = 'TUR' },
 ) {
   let sonYanit = null;
   let ad = lordName;
@@ -141,7 +147,7 @@ export async function kayitOl(
     const r = await fetch(`${API}/api/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, lordName: ad, worldId }),
+      body: JSON.stringify({ email, password, lordName: ad, worldId, ulke: ulke ?? undefined }),
     });
     const govde = await r.json().catch(() => null);
     if (govde?.token) {

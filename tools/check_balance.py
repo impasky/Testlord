@@ -77,7 +77,9 @@ kontrol(5, "Bolge yukseltme geri odemesi", 7 <= odeme <= 12,
 # Gercek savas motorunu kullanirlar; buradaki Python kopyasi motordan sapardi.
 
 # --- 8) Bolge kitligi korunmali: bolge/oyuncu < 0.75 ------------------------
-elde = M['region_count'] - 1                      # Taht Kalesi haric
+# Tahtlar (her ulkenin baskenti) bolge sinirina sayilmiyor: elde tutulabilen
+# toprak onlarin disindaki sehirler.
+elde = M['region_count'] - sum(1 for r in M['regions'] if r['type'] == 'taht')
 oran = elde / B['dunya']['oyuncu_kapasitesi']
 kontrol(8, "Bolge kitligi korunuyor", oran < 0.75,
         f"{elde} bolge / {B['dunya']['oyuncu_kapasitesi']} oyuncu = {oran:.2f}")

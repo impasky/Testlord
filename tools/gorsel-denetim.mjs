@@ -379,13 +379,15 @@ await kapiyiKapat(page);
     const adet = await page.evaluate(() => document.querySelectorAll('svg[data-gl]').length);
     if (sahne) iyi('gpu', `Ordu ekranında ${adet} çizim GPU'dan`);
     else sorun('gpu', "Sahneler GPU'dan gelmedi", 'svg[data-gl] yok');
+    // Dünya haritası GPU'dan değil, düz bir tuvalden (docs/27): ölçülen
+    // şey yalnız çizilmiş olması.
     await page.click('nav button:has-text("Dünya")');
     const zemin = await page
-      .waitForSelector('[data-dunya-zemini][data-gl]', { timeout: 30000 })
+      .waitForSelector('[data-harita-hazir]', { timeout: 30000 })
       .then(() => true)
       .catch(() => false);
-    if (zemin) iyi('gpu', "dünya zemini GPU'dan");
-    else sorun('gpu', "Dünya zemini GPU'dan gelmedi", '[data-dunya-zemini][data-gl] yok');
+    if (zemin) iyi('gpu', 'dünya haritası çizildi');
+    else sorun('gpu', 'Dünya haritası çizilmedi', '[data-harita-hazir] yok');
     if (yazilim) {
       await page.evaluate(() => localStorage.removeItem('gl-yazilim'));
       await yenidenAc();
@@ -396,7 +398,9 @@ await kapiyiKapat(page);
 // Bölge detayı: alt sayfa açıkken en çok kayma buradaydı
 await page.click('nav button:has-text("Dünya")');
 await page.waitForTimeout(1800);
-const hedef = (await get('/map')).regions.filter((x) => !x.isMine && x.type !== 'taht')[0];
+const hedef = (await get('/map')).regions
+  .filter((x) => !x.isMine && x.type !== 'taht')
+  .sort((a, b) => a.distance - b.distance)[0];
 // Toprağına dokunuluyor; kenarda bir düğmenin altındaysa klavyeyle
 // seçiliyor (bkz. `bolgeyiSec`). Zorla tıklama toprağın kutusunun
 // ortasına basıyordu — orası araç sütunu ya da komşu toprak olabiliyor.
@@ -575,44 +579,34 @@ if (yeniToken) {
    * yetmiyordu: dolu bir diyarda 61 bölgenin neredeyse hepsinin sahibi
    * var, yani kural pratikte "hepsini göster"e dönüşüyor. Oynarken
    * ölçüldü — 19 etiketten 8 ÇİFTİ birbirinin üstündeydi ve hiçbiri
-   * okunmuyordu. Seyreltme (`DunyaHaritasi.tsx`) bunu çözüyor; bu ölçüm
+   * okunmuyordu. Seyreltme (`GercekHarita.tsx`, `etiketleriKur`) bunu çözüyor; bu ölçüm
    * çözümün yerinde durduğunu söylüyor.
    *
    * Gizlenen etiket de ÖLÇÜLMÜYOR: `visibility:hidden` kutusunu koruyor,
    * yani hepsini saymak seyreltmeyi hiç yapılmamış gibi gösterirdi.
    *
-   * Toprak haritasında (docs/23) bölge adları yalnız YAKIN kademede
-   * çıkıyor; açılış ölçeğinde ölçmek "0 ad, çakışma yok" diyip hiçbir
-   * şeyi sınamıyordu. Önce yakın kademeye iniliyor ve en az bir ad
-   * görünmesi şart koşuluyor.
+   * Gerçek dünya haritasında (docs/27) adlar tuvale yazılıyor ve şehir
+   * adları yalnız yakında çıkıyor; açılış ölçeğinde ölçmek "0 ad, çakışma
+   * yok" diyip hiçbir şeyi sınamıyordu. Önce yakın kademeye iniliyor ve en
+   * az bir ad görünmesi şart koşuluyor. Kutular haritanın test
+   * kancasından (`__dunyaHaritasi.etiketKutulari`) okunuyor.
    */
   await ekrana(page, 'harita', 900);
-  // Yakın kademenin içine (×4; ×1,8'lik açılıştan eskisi gibi iki adım):
-  // harita artık bırakıldığı yakınlıkta açılıyor (`haritaGorunumu.ts`),
-  // sabit iki adım her zaman yetmiyor.
-  const olcek = () =>
-    page.evaluate(() =>
-      Number(
-        /scale\(([\d.]+)\)/.exec(
-          document.querySelector('[data-harita-tuval]')?.style.transform ?? '',
-        )?.[1] ?? 1,
-      ),
-    );
-  for (let i = 0; i < 6 && (await olcek()) < 4; i++) {
+  await page.waitForSelector('[data-harita-hazir]', { timeout: 30000 });
+  const olcek = () => page.evaluate(() => window.__dunyaHaritasi.gorunum().k);
+  for (let i = 0; i < 6 && (await olcek()) < 3; i++) {
     await page.getByRole('button', { name: 'Yakınlaştır' }).click();
     await page.waitForTimeout(450);
   }
   await page.waitForTimeout(400);
   const etiketOlcum = await page.evaluate(() => {
-    const e = [...document.querySelectorAll('[data-bolge-ad]')]
-      .filter((x) => getComputedStyle(x).visibility !== 'hidden')
-      .map((x) => x.getBoundingClientRect());
+    const e = window.__dunyaHaritasi.etiketKutulari();
     let cakisan = 0;
     for (let i = 0; i < e.length; i++)
       for (let j = i + 1; j < e.length; j++) {
-        const a = e[i];
-        const b = e[j];
-        if (a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom) cakisan++;
+        const [a0, a1, a2, a3] = e[i];
+        const [b0, b1, b2, b3] = e[j];
+        if (a0 < b2 && b0 < a2 && a1 < b3 && b1 < a3) cakisan++;
       }
     return { adet: e.length, cakisan };
   });

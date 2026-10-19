@@ -2,12 +2,10 @@ import {
   B,
   BASLANGIC_ELMASI,
   GEAR_LINES,
-  WORLD_MAP,
   gonderilebilirMi,
   gunNumarasi,
   jetonGecerli,
   yasakDurumu,
-  yurtBolgeleri,
 } from '@lordlar/shared';
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import { z } from 'zod';
@@ -25,7 +23,7 @@ import {
   hesapDogrulamaDurumu,
   ozet as dogrulamaOzeti,
 } from '../services/epostaDogrulama.js';
-import { medeniyetAta } from '../services/medeniyet.js';
+import { kampYeri, ulkeDogrula } from '../services/ulke.js';
 import { AKTIF_GUN, diyarDoluMu, findOrOpenWorld } from '../services/world.js';
 
 /** Jetonun özeti saklanır; ham jeton yalnızca e-postada gider. */
@@ -67,6 +65,12 @@ const registerSchema = z.object({
    * hata dönüyor ve oyuncu bilerek başka bir diyar seçiyor.
    */
   worldId: z.string().min(1).optional(),
+  /*
+   * Başlanacak ülke (docs/27). İSTEĞE BAĞLI: verilmezse lord ülkesiz
+   * doğuyor ve oyun ilk açılışta ülke seçimini soruyor — kayıt formu
+   * iki yüze yakın ülkelik bir listeyle uzamasın.
+   */
+  ulke: z.string().min(2).max(4).optional(),
 });
 
 const loginSchema = z.object({
@@ -81,79 +85,19 @@ const sifirlamaYapSchema = z.object({
 });
 
 /**
- * Yeni lordun kampına çıpa verir: KENDİ YURDUNDA, en az lord barındıran KÖY.
+ * Ülkesini henüz seçmemiş lordun geçici çıpası: diyarın İLK bölgesi.
  *
- * Köyler haritanın kenarına dağılmış (world-map.json) ve oyunun ilk fethi
- * hep bir köy. Kampı bir köyün yanına kurmak, o köyü ilk hedef hâline
- * getiriyor: oyuncu doğar doğmaz "şurası alınabilir" diyebileceği bir yer
- * görüyor ve kimse güçlü bir komşunun dibinde uyanmıyor.
- *
- * Eskiden ölçüt haritanın dış halkasıydı; halka kavramı altıgenle birlikte
- * kalktı ve yerini bölge TÜRÜ aldı — daha okunur bir ölçüt, çünkü "kenar"
- * geometrik bir tesadüftü, "köy" ise tasarımın kendisi.
- *
- * `yurt` medeniyetle geldi (docs/16 §8): oyuncunun kampı kendi
- * medeniyetinin toprağında kurulur. Yoksa dört medeniyete bölünmüş bir
- * haritada oyuncu rastgele birinin yurdunda doğar ve daha ilk gün
- * "buranın neresi benim" diye sorar. Boş dizi "sınırlama yok" demek ve
- * medeniyetsiz eski diyarlarda eski davranışı aynen koruyor.
+ * Bu lord saldıramıyor (`ULKE_SECILMEDI`), yani çıpanın oyunda bir
+ * anlamı yok; yalnız sütun boş kalamaz. Ülke seçilince gerçek kamp
+ * yerine taşınıyor (`services/ulke.ts`).
  */
-async function pickHomeAnchor(worldId: string, yurt: number[]): Promise<number> {
-  /*
-   * Adaylar DÜNYANIN KENDİ bölgelerinden okunuyor, kanonik dosyadan değil.
-   *
-   * Bir dünya kendi harita sürümünü taşıyor (docs/12 §14): kanonik dosyada
-   * köy olan numara, eski haritalı bir dünyada bambaşka bir yer olabilir.
-   * Kanonik dosyaya bakmak, oyuncuyu var olmayan bir köyün yanına
-   * kurdururdu. Bugün böyle bir dünyaya kayıt açılmıyor (eski haritalı
-   * dünyalar kapatılıyor) ama kuralı veriye bağlamak, o korumayı
-   * unutulabilir olmaktan çıkarıyor.
-   */
-  const koyler = await prisma.region.findMany({
-    where: { worldId, type: 'koy', ...(yurt.length > 0 ? { mapId: { in: yurt } } : {}) },
+async function geciciCipa(worldId: string): Promise<number> {
+  const ilk = await prisma.region.findFirst({
+    where: { worldId },
     select: { mapId: true },
     orderBy: { mapId: 'asc' },
   });
-  /*
-   * Köy yoksa geri çekiliyoruz: önce yurdun tamamına, sonra diyarın
-   * tamamına. Kayıt hiçbir koşulda çökmemeli — ne henüz tazelenmemiş
-   * eski bir dünyada, ne de yurdunda köy kalmamış bir medeniyette.
-   * (Bugünkü haritada her yurtta köy var ve `medeniyet.test.ts` bunu
-   * sınıyor; bu dallar o sınama bir gün kalırsa diye duruyor.)
-   */
-  const adaylar =
-    koyler.length > 0
-      ? koyler
-      : await prisma.region.findMany({
-          where: { worldId, ...(yurt.length > 0 ? { mapId: { in: yurt } } : {}) },
-          select: { mapId: true },
-          orderBy: { mapId: 'asc' },
-        });
-  if (adaylar.length === 0) {
-    const hepsi = await prisma.region.findMany({
-      where: { worldId },
-      select: { mapId: true },
-      orderBy: { mapId: 'asc' },
-    });
-    return hepsi[0]?.mapId ?? WORLD_MAP.regions[0]!.id;
-  }
-
-  const mevcut = await prisma.lord.groupBy({
-    by: ['homeBolgeId'],
-    where: { worldId },
-    _count: { _all: true },
-  });
-  const yuk = new Map(mevcut.map((m) => [m.homeBolgeId, m._count?._all ?? 0]));
-  let enIyi = adaylar[0]!;
-  let enAz = Infinity;
-  for (const koy of adaylar) {
-    const n = yuk.get(koy.mapId) ?? 0;
-    if (n < enAz) {
-      enAz = n;
-      enIyi = koy;
-    }
-  }
-  return enIyi.mapId;
+  return ilk?.mapId ?? 1;
 }
 
 /**
@@ -220,20 +164,9 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
     }
 
     const worldId = body.worldId ? await secilenDiyar(body.worldId) : await findOrOpenWorld();
-    /*
-     * MEDENİYET KAYITTA ATANIYOR, SEÇİLMİYOR (docs/16 §10).
-     *
-     * Serbest seçim, dört fraksiyonlu bir oyunun en bilinen çöküş yolu:
-     * öne geçen medeniyet yeni oyuncu çeker, daha da öne geçer ve harita
-     * üç ay sonra tek renge boyanır. Sayım bunu kendiliğinden kapatıyor —
-     * aktif nüfusu ortalamanın üstünde olan medeniyet kayda kapalı.
-     *
-     * Kural saf katmanda (`atanacakMedeniyet`), burada yalnız uygulaması
-     * var. İki kayıt aynı anda gelip aynı medeniyeti alabilir; denge
-     * yaklaşık tutulduğu için bu kabul edilebilir bir yarış.
-     */
-    const med = await medeniyetAta(worldId);
-    const home = await pickHomeAnchor(worldId, yurtBolgeleri(med.key));
+    // Ülke verildiyse kamp orada (docs/27); verilmediyse oyun soracak.
+    const ulke = body.ulke ? ulkeDogrula(body.ulke) : null;
+    const home = ulke ? await kampYeri(worldId, ulke) : await geciciCipa(worldId);
     const now = new Date();
     const start = B.lord.baslangic_kaynaklari;
     const stats = B.lord.baslangic_statlari;
@@ -248,7 +181,7 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
           data: {
             userId: u.id,
             worldId,
-            medeniyetId: med.id,
+            ulke,
             name: body.lordName,
             adAnahtari,
             guc: stats.guc,

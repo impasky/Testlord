@@ -170,8 +170,8 @@ export function Gizlilik({ onKapat }: { onKapat: () => void }) {
             </p>
             <p>
               Profil kartında başkaları yalnızca lord adını, profil resmini, armanı, seviyeni,
-              unvanını, şöhretini, medeniyetini, ittifakını, bölge sayını, diyarını ve katıldığın
-              ayı görür. Kaynakların, ordun, e-postan ve son giriş anın kimseye gösterilmez.
+              unvanını, şöhretini, ülkeni, ittifakını, bölge sayını, diyarını ve katıldığın ayı
+              görür. Kaynakların, ordun, e-postan ve son giriş anın kimseye gösterilmez.
             </p>
             <p>
               Sunucuda bir hata olursa teknik ayrıntısı bir hata izleme hizmetine gidebilir; oraya

@@ -34,8 +34,6 @@ export interface FetihKazanciGirdi {
   pvpWins: number;
   fortressFameAccrued: number;
   ownsThrone: boolean;
-  /** Tahtı tutan medeniyet benimki mi (docs/16 §13 soru 5). */
-  medeniyetTahti: boolean;
 }
 
 export interface FetihKazanci {
@@ -69,18 +67,12 @@ export function fetihKazanci(g: FetihKazanciGirdi): FetihKazanci {
     ...ortak,
     regions: g.regions,
     ownsThrone: g.ownsThrone,
-    medeniyetTahti: g.medeniyetTahti,
   });
   const sonrasi = calculateFame({
     ...ortak,
     regions: [...g.regions, { type: g.hedef.type, level: g.hedef.level }],
-    /*
-     * TAHTI ALMAK İKİ ÇARPANI BİRDEN AÇIYOR: hem şahsi unvan hem de
-     * medeniyetinin tahtı. Önizleme ikincisini saymasaydı, oyuncuya
-     * haritanın en büyük ödülünü olduğundan küçük gösterirdi.
-     */
+    // Bir başkenti almak hükümdar unvanını açıyor.
     ownsThrone: g.ownsThrone || g.hedef.type === 'taht',
-    medeniyetTahti: g.medeniyetTahti || g.hedef.type === 'taht',
   });
 
   return {

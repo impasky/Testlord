@@ -10,6 +10,8 @@
  *
  * API ayakta olmalı. node tools/hastane-testi.mjs
  */
+import { fethedilebilirMi } from './lib/hedef.mjs';
+
 const API = process.env.API_URL ?? 'http://localhost:3000';
 
 let hata = 0;
@@ -29,6 +31,8 @@ const { token: jeton } = await fetch(`${API}/api/auth/register`, {
     email: `hs${damga}@lordlar.dev`,
     password: 'parola1234',
     lordName: `Hekim ${damga.toString(36).slice(-4) + Math.random().toString(36).slice(2, 4)}`,
+    // Ülkesi olmayan lord saldıramıyor (docs/27).
+    ulke: 'TUR',
   }),
 }).then((r) => r.json());
 
@@ -117,8 +121,24 @@ if (topla(hastane) > 0) {
 
   /* --- Elmasla hemen taburcu (oyuncunun isteği) --- */
   // İkinci bir savaş: ilk kafile az önce doğal yolla taburcu oldu.
+  //
+  // Hedef KAYIP verdiren bir şehir: önizleme saldıranın kaybını söylüyor.
+  // Öneri hedefi en kârlısını seçiyor ve kampın yanındaki zayıf şehirde
+  // (docs/27) bu ordu kayıpsız kazanabiliyordu — yaralı çıkmıyordu.
   const ordu2 = (await al('/army')).home ?? {};
-  const hedef2 = (await al('/map')).oneri;
+  const adaylar = (await al('/map')).regions
+    .filter(fethedilebilirMi)
+    .sort((a, b) => a.distance - b.distance)
+    .slice(0, 20);
+  let hedef2 = null;
+  for (const r of adaylar) {
+    const o = await post('/battle/preview', { toRegionId: r.id, army: ordu2, generalIds: [] });
+    if (topla(o.b?.tahmin?.saldiranKayip ?? {}) >= 3) {
+      hedef2 = { regionId: r.id };
+      break;
+    }
+  }
+  hedef2 ??= (await al('/map')).oneri;
   if (hedef2) {
     await post('/march', { toRegionId: hedef2.regionId, army: ordu2, generalIds: [] });
     await post('/test/yuruyusleri-bitir');

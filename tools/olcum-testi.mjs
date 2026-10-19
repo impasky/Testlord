@@ -63,9 +63,9 @@ const olcumAl = async () => {
   return r.json();
 };
 
-/* --- 2. Medeniyet bölümü tutarlı mı --- */
+/* --- 2. Ülke bölümü tutarlı mı (docs/27) --- */
 const once = await olcumAl();
-k('Ölçüm medeniyet bölümünü taşıyor', Boolean(once.medeniyet));
+k('Ölçüm ülke bölümünü taşıyor', Boolean(once.ulke));
 // Eşya pazarı (docs/19 §13): kasadaki altın ve en sık çiftin payı — pazar
 // bir bankaya ya da altın taşıma yoluna dönüşürse ilk burada görünür.
 k(
@@ -74,52 +74,38 @@ k(
     typeof once.esyaPazari?.islemSon7Gun === 'number',
   JSON.stringify(once.esyaPazari ?? null).slice(0, 120),
 );
-if (!once.medeniyet) {
+if (!once.ulke) {
   console.log('\n1 KONTROL KALDI\n');
   process.exit(1);
 }
 {
-  const m = once.medeniyet;
+  const u = once.ulke;
   const oran = (x) => x === null || (typeof x === 'number' && x >= 0 && x <= 1);
 
-  k('Dört taraf sayılıyor', m.taraflar.length === 4, `${m.taraflar.length} taraf`);
+  k('En çok on ülke listeleniyor', u.ulkeler.length <= 10, `${u.ulkeler.length} ülke`);
   k(
     'Aktif lord toplam lordu aşmıyor',
-    m.taraflar.every((t) => t.aktifLord <= t.lord),
-    m.taraflar.map((t) => `${t.key} ${t.aktifLord}/${t.lord}`).join(' · '),
+    u.ulkeler.every((t) => t.aktifLord <= t.lord),
+    u.ulkeler.map((t) => `${t.kod} ${t.aktifLord}/${t.lord}`).join(' · '),
   );
   k(
     'Tutulan bölge toplam bölgeyi aşmıyor',
-    m.kartopu.tutulanBolge <= m.kartopu.toplamBolge,
-    `${m.kartopu.tutulanBolge}/${m.kartopu.toplamBolge}`,
-  );
-  k(
-    'Taraf bölgelerinin toplamı tutulan bölgeye eşit',
-    m.taraflar.reduce((t, x) => t + x.bolge, 0) === m.kartopu.tutulanBolge,
+    u.toprak.tutulanBolge <= u.toprak.toplamBolge,
+    `${u.toprak.tutulanBolge}/${u.toprak.toplamBolge}`,
   );
   k(
     'Bütün oranlar 0-1 aralığında',
     [
-      m.nufusDengesizligi.enKalabalikAktifPay,
-      m.kartopu.enGenisToprakPayi,
-      m.bedavacilik.puanliLordOrani,
-      m.bedavacilik.ustOndalikPayi,
-      m.garnizonKatilimi.garnizonTutanLordOrani,
-      m.garnizonKatilimi.paylasilanBolgeOrani,
+      u.enKalabalikAktifPay,
+      u.toprak.tutulanPay,
+      u.garnizonKatilimi.garnizonTutanLordOrani,
+      u.garnizonKatilimi.paylasilanBolgeOrani,
     ].every(oran),
-  );
-  // Dört taraftan en kalabalığının payı matematiksel olarak 1/4'ün
-  // altına düşemez; düşüyorsa toplama yanlıştır.
-  k(
-    'En kalabalık payı dörtte birden küçük değil',
-    m.nufusDengesizligi.enKalabalikAktifPay === null ||
-      m.nufusDengesizligi.enKalabalikAktifPay >= 0.25 - 1e-9,
-    String(m.nufusDengesizligi.enKalabalikAktifPay),
   );
   k(
     'Paylaşılan bölge, garnizonlu bölgeyi aşmıyor',
-    m.garnizonKatilimi.paylasilanBolge <= m.garnizonKatilimi.garnizonluBolge,
-    `${m.garnizonKatilimi.paylasilanBolge}/${m.garnizonKatilimi.garnizonluBolge}`,
+    u.garnizonKatilimi.paylasilanBolge <= u.garnizonKatilimi.garnizonluBolge,
+    `${u.garnizonKatilimi.paylasilanBolge}/${u.garnizonKatilimi.garnizonluBolge}`,
   );
 }
 
@@ -143,26 +129,10 @@ async function lordKur(etiket) {
   };
 }
 
-// Pay yalnız bölgeyi TUTAN medeniyetin üyeleri arasında bölünüyor, o
-// yüzden iki lord aynı medeniyetten olmalı (gelir-payi-testi'ndeki
-// gerekçenin aynısı).
-const havuz = [];
-let sahip = null;
-let dost = null;
-for (let i = 0; i < 8 && !dost; i++) {
-  const l = await lordKur(`l${i}`);
-  const med = (await l.get('/me')).lord?.medeniyet?.id ?? null;
-  const es = havuz.find((x) => x.med === med && med !== null);
-  if (es) {
-    sahip = es.l;
-    dost = l;
-  } else havuz.push({ l, med });
-}
-k('Aynı medeniyetten iki lord bulundu', Boolean(sahip && dost));
-if (!sahip || !dost) {
-  console.log(`\n${hata} KONTROL KALDI\n`);
-  process.exit(1);
-}
+// Pay bölgenin sahibi ve sahibin ittifakı arasında bölünüyor (docs/27),
+// o yüzden iki lord aynı ittifaka giriyor.
+const sahip = await lordKur('a');
+const dost = await lordKur('b');
 
 for (const l of [sahip, dost]) {
   await l.post('/test/kaynak-ver', { altin: 900000, demir: 500000, erzak: 500000 });
@@ -209,22 +179,21 @@ const ikiKisi = await olcumAl();
 
 k(
   'Paylaşılan bölge sayısı takviyeyle arttı',
-  ikiKisi.medeniyet.garnizonKatilimi.paylasilanBolge >
-    tekBasina.medeniyet.garnizonKatilimi.paylasilanBolge,
-  `${tekBasina.medeniyet.garnizonKatilimi.paylasilanBolge} -> ${ikiKisi.medeniyet.garnizonKatilimi.paylasilanBolge}`,
+  ikiKisi.ulke.garnizonKatilimi.paylasilanBolge > tekBasina.ulke.garnizonKatilimi.paylasilanBolge,
+  `${tekBasina.ulke.garnizonKatilimi.paylasilanBolge} -> ${ikiKisi.ulke.garnizonKatilimi.paylasilanBolge}`,
 );
 k(
   'Garnizon tutan lord sayısı arttı',
-  ikiKisi.medeniyet.garnizonKatilimi.garnizonTutanLord >
-    tekBasina.medeniyet.garnizonKatilimi.garnizonTutanLord,
-  `${tekBasina.medeniyet.garnizonKatilimi.garnizonTutanLord} -> ${ikiKisi.medeniyet.garnizonKatilimi.garnizonTutanLord}`,
+  ikiKisi.ulke.garnizonKatilimi.garnizonTutanLord >
+    tekBasina.ulke.garnizonKatilimi.garnizonTutanLord,
+  `${tekBasina.ulke.garnizonKatilimi.garnizonTutanLord} -> ${ikiKisi.ulke.garnizonKatilimi.garnizonTutanLord}`,
 );
-// Fetih fayda puanı kazandırıyor (docs/16 §9): puanlı lord sayısı da
-// artmış olmalı, yoksa bedavacılık ölçüsü ölü bir alandır.
+// Fetih tutulan toprağı artırıyor: hep aynı dönen bir sayı da aralık
+// kontrolünden geçerdi.
 k(
-  'Fayda puanı kazanan lord sayısı arttı',
-  ikiKisi.medeniyet.bedavacilik.puanliLord > once.medeniyet.bedavacilik.puanliLord,
-  `${once.medeniyet.bedavacilik.puanliLord} -> ${ikiKisi.medeniyet.bedavacilik.puanliLord}`,
+  'Tutulan bölge sayısı fetihle arttı',
+  ikiKisi.ulke.toprak.tutulanBolge > once.ulke.toprak.tutulanBolge,
+  `${once.ulke.toprak.tutulanBolge} -> ${ikiKisi.ulke.toprak.tutulanBolge}`,
 );
 
 /*

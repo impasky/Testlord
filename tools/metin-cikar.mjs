@@ -243,7 +243,7 @@ function jsonTara(yol, ekle, yollar = null) {
   const kisa = relative(KOK, yol);
   const veri = JSON.parse(readFileSync(yol, 'utf8'));
   // Dizi indeksi yol desenlerinde SAYISIZ: `liste[3].ad` yerine
-  // `liste[].ad`. Yoksa her medeniyet için ayrı desen gerekirdi.
+  // `liste[].ad`. Yoksa her öğe için ayrı desen gerekirdi.
   const desen = (iz) => iz.replace(/\[\d+\]/g, '[]');
   (function gez(dugum, iz) {
     if (Array.isArray(dugum)) return dugum.forEach((d, i) => gez(d, `${iz}[${i}]`));
@@ -314,8 +314,6 @@ for (const { grup, kok, uzanti } of KAYNAKLAR) {
 const BALANCE_YOLLARI = [
   /^birimler\.[a-z]+\.ad$/, // Mızrakçı, Okçu, Süvari…
   /^bolgeler\.gelisim_adlari\.[a-z]+\[\]$/, // Köy, Bucak, Kasaba Kapısı…
-  /^medeniyetler\.liste\[\]\.(ad|ozet)$/, // Demir Ocağı ve tanıtımı
-  /^medeniyetler\.fayda_puani\.rutbeler\[\]\.(ad|aciklama)$/, // Yeminli, Nöbetçi…
   /^taht_kalesi\.ad$/,
 ];
 

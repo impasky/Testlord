@@ -79,15 +79,15 @@ jobs:
 
       # ── Üretilen dosyalar hâlâ üretilebiliyor mu ────────────────────
       #
-      # `data/world-map.json` elle düzenlenmiyor; bir betiğin çıktısı.
-      # Elle düzenlenmiş bir satır sessizce yaşar ve betik bir gün yeniden
-      # koşunca kaybolur.
-      # Burası o sessizliği bozuyor: betiği koşturup dosyanın DEĞİŞMEDİĞİNİ
-      # ölçüyor.
+      # Gerçek dünya haritası (docs/27) elle düzenlenmiyor; Natural Earth'ün
+      # sabit bir sürümünden üretiliyor. Elle düzenlenmiş bir satır sessizce
+      # yaşar ve betik bir gün yeniden koşunca kaybolur.
+      # Burası o sessizliği bozuyor: betiği koşturup üç dosyanın da
+      # DEĞİŞMEDİĞİNİ ölçüyor.
       - name: Harita yeniden üretilebiliyor
         run: |
-          python3 tools/generate_map.py
-          git diff --exit-code data/world-map.json
+          node tools/gercek-dunya-uret.mjs
+          git diff --exit-code data/world-map.json data/dunya-ozet.json apps/web/src/components/harita/dunyaGeo.json
 
       - name: Derleme
         run: pnpm build

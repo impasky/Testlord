@@ -6,11 +6,17 @@
  * bölgeyi SEÇİYOR — kart açılıyor, harita oraya kayıyor, liste kapanıyor.
  * Liste haritanın yerine geçmiyor; haritada arananı bulmanın kısa yolu.
  */
-import { bolgeAdi } from '@lordlar/shared';
+import { ULKE_ADI, bolgeAdi } from '@lordlar/shared';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { RegionDto } from '../../api/client';
 import { AltSekmeler } from '../ui';
-import { bolgeListesi, suzgecSayilari, type ListeSuzgeci, type Rozet } from './bolgeListesi';
+import {
+  LISTE_TAVANI,
+  bolgeListesi,
+  suzgecSayilari,
+  type ListeSuzgeci,
+  type Rozet,
+} from './bolgeListesi';
 
 const SUZGEC_ANAHTARI = 'harita-liste-suzgec';
 
@@ -28,22 +34,22 @@ const ROZET: Record<Rozet, { ad: string; renk: string }> = {
   kalkan: { ad: 'Kalkanlı', renk: 'var(--color-mavi)' },
   pakt: { ad: 'Pakt', renk: 'var(--color-solgun)' },
   muttefik: { ad: 'Müttefik', renk: 'var(--color-yesil)' },
-  cekirdek: { ad: 'Çekirdek', renk: 'var(--color-solgun)' },
-  yoldas: { ad: 'Yoldaş', renk: 'var(--color-yesil)' },
+  sinir: { ad: 'Sınır dışı', renk: 'var(--color-solgun)' },
+  ulke: { ad: 'Ülke seç', renk: 'var(--color-solgun)' },
   taht: { ad: 'Taht', renk: 'var(--color-altin)' },
   garnizon: { ad: 'Garnizonun', renk: 'var(--color-altin)' },
 };
 
 export function BolgeListesi({
   regions,
-  benimMedeniyetId,
+  ulkem,
   seciliId,
   alt,
   onSec,
   onKapat,
 }: {
   regions: RegionDto[];
-  benimMedeniyetId: string | null;
+  ulkem: string | null;
   seciliId: number | null;
   /** Haritanın altını kaplayan panelin yüksekliği: liste onun üstünde biter. */
   alt: number;
@@ -51,14 +57,8 @@ export function BolgeListesi({
   onKapat: () => void;
 }) {
   const [suzgec, setSuzgecHam] = useState<ListeSuzgeci>(kayitliSuzgec);
-  const satirlar = useMemo(
-    () => bolgeListesi(regions, suzgec, benimMedeniyetId),
-    [regions, suzgec, benimMedeniyetId],
-  );
-  const sayilar = useMemo(
-    () => suzgecSayilari(regions, benimMedeniyetId),
-    [regions, benimMedeniyetId],
-  );
+  const satirlar = useMemo(() => bolgeListesi(regions, suzgec, ulkem), [regions, suzgec, ulkem]);
+  const sayilar = useMemo(() => suzgecSayilari(regions, ulkem), [regions, ulkem]);
   const kutuRef = useRef<HTMLDivElement>(null);
 
   function setSuzgec(s: ListeSuzgeci) {
@@ -99,7 +99,7 @@ export function BolgeListesi({
             sekmeler={[
               { key: 'hedef', ad: 'Hedefler', sayi: sayilar.hedef },
               { key: 'benim', ad: 'Toprağım', sayi: sayilar.benim },
-              { key: 'hepsi', ad: 'Hepsi', sayi: sayilar.hepsi },
+              { key: 'hepsi', ad: 'Hepsi', sayi: Math.min(sayilar.hepsi, LISTE_TAVANI) },
             ]}
             etkin={suzgec}
             onSec={setSuzgec}
@@ -121,7 +121,7 @@ export function BolgeListesi({
             ? 'Şu an saldırabileceğin bir toprak yok.'
             : suzgec === 'benim'
               ? 'Henüz toprağın yok. Hedefler süzgecinden en yakın boş köyü seç.'
-              : 'Bu diyarda bölge yok.'}
+              : 'Bu diyarda şehir yok.'}
         </p>
       ) : (
         <ul
@@ -147,7 +147,9 @@ export function BolgeListesi({
                   style={{
                     background: r.isMine
                       ? 'var(--color-altin)'
-                      : (r.medeniyet?.renk ?? 'var(--color-kenar)'),
+                      : r.owner
+                        ? 'var(--color-kirmizi)'
+                        : 'var(--color-kenar)',
                   }}
                   aria-hidden
                 />
@@ -167,7 +169,7 @@ export function BolgeListesi({
                   <span className="block truncate text-[12px] text-solgun">
                     {`${bolgeAdi(r.type)} · Sv ${r.level} · `}
                     {r.isMine ? 'Senin' : (r.owner?.name ?? 'Sahipsiz')}
-                    {r.medeniyet && ` · ${r.medeniyet.ad}`}
+                    {` · ${ULKE_ADI[r.province] ?? r.province}`}
                   </span>
                 </span>
                 <span className="tabular shrink-0 text-[12px] font-bold text-mavi">

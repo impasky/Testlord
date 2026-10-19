@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import { arazi } from './arazi';
-import { DUNYA_KAMERASI, DUNYA_KUTUSU, dunyaModeli, dunyaUcgenleri } from './dunya';
 import { insan } from './figur';
 import { DOKU_NO, KOSE, agYap, dokuBul } from './glAg';
 import { atlasDuzeni, goruntuMatrisi, sayfalaraYerlestir } from './glCizici';
@@ -381,26 +380,26 @@ describe('malzeme dokusu', () => {
 });
 
 describe('GPU ve SVG aynı izdüşümü kullanıyor', () => {
-  it.each([
-    ['izometrik', IZOMETRIK],
-    ['dünya (tepeden)', DUNYA_KAMERASI],
-  ] as const)('%s: dünya noktası iki yolda aynı ekran noktasına düşüyor', (_, kamera) => {
-    const kutu4: [number, number, number, number] = [-20, -30, 60, 50];
-    const m = goruntuMatrisi(kamera, kutu4, [-100, 100]);
-    const ekran = yansitici(kamera);
-    for (const q of [
-      [0, 0, 0],
-      [3, -7, 2],
-      [12, 5, -4],
-    ] as V3[]) {
-      // Sütun sıralı matris: kırpma = M · q.
-      const x = m[0]! * q[0] + m[4]! * q[1] + m[8]! * q[2] + m[12]!;
-      const y = m[1]! * q[0] + m[5]! * q[1] + m[9]! * q[2] + m[13]!;
-      const [sx, sy] = ekran(q);
-      expect(kutu4[0] + ((x + 1) / 2) * kutu4[2]).toBeCloseTo(sx, 6);
-      expect(kutu4[1] + ((1 - y) / 2) * kutu4[3]).toBeCloseTo(sy, 6);
-    }
-  });
+  it.each([['izometrik', IZOMETRIK]] as const)(
+    '%s: dünya noktası iki yolda aynı ekran noktasına düşüyor',
+    (_, kamera) => {
+      const kutu4: [number, number, number, number] = [-20, -30, 60, 50];
+      const m = goruntuMatrisi(kamera, kutu4, [-100, 100]);
+      const ekran = yansitici(kamera);
+      for (const q of [
+        [0, 0, 0],
+        [3, -7, 2],
+        [12, 5, -4],
+      ] as V3[]) {
+        // Sütun sıralı matris: kırpma = M · q.
+        const x = m[0]! * q[0] + m[4]! * q[1] + m[8]! * q[2] + m[12]!;
+        const y = m[1]! * q[0] + m[5]! * q[1] + m[9]! * q[2] + m[13]!;
+        const [sx, sy] = ekran(q);
+        expect(kutu4[0] + ((x + 1) / 2) * kutu4[2]).toBeCloseTo(sx, 6);
+        expect(kutu4[1] + ((1 - y) / 2) * kutu4[3]).toBeCloseTo(sy, 6);
+      }
+    },
+  );
 });
 
 describe('arazinin köşe verileri', () => {
@@ -440,66 +439,6 @@ describe('arazinin köşe verileri', () => {
       r: rastgele('gl-test'),
     });
     expect(m.every((y) => !y.su && y.vr?.length === y.p.length)).toBe(true);
-  });
-});
-
-describe('dünya zemini GPU modeli', () => {
-  const kaba = dunyaModeli(4);
-
-  it('bütün yüzler tepeden bakan kameraya dönük: hiçbiri atılmıyor', () => {
-    const ag = agYap(kaba, DUNYA_KAMERASI);
-    const toplam = kaba.reduce((t, y) => t + y.p.length - 2, 0);
-    expect(ucgenSayisi(ag.yer)).toBe(toplam);
-    expect(ag.nesne.length).toBe(0);
-  });
-
-  it('görüş kutusu haritanın kendisi; köşeler içinde', () => {
-    const ekran = yansitici(DUNYA_KAMERASI);
-    const [x0, y0, w, h] = DUNYA_KUTUSU;
-    for (const y of kaba)
-      for (const q of y.p) {
-        const [sx, sy] = ekran(q);
-        expect(sx).toBeGreaterThan(x0 - 2);
-        expect(sx).toBeLessThan(x0 + w + 2);
-        expect(sy).toBeGreaterThan(y0 - 2);
-        expect(sy).toBeLessThan(y0 + h + 2);
-      }
-  });
-
-  it('kıyı uzaklığı: hem kara hem deniz var, değerler sonlu ve sınırlı', () => {
-    const d = kaba.flatMap((y) => y.su?.d ?? []);
-    expect(d.some((x) => x > 0)).toBe(true);
-    expect(d.some((x) => x < 0)).toBe(true);
-    expect(d.every((x) => Number.isFinite(x) && Math.abs(x) <= 6)).toBe(true);
-  });
-
-  it('ağaçlar 2D çizimle aynı yerde (ince ızgaraya rağmen)', () => {
-    const merkez = (xs: number[], ys: number[]) =>
-      [xs.reduce((a, b) => a + b, 0) / xs.length, ys.reduce((a, b) => a + b, 0) / ys.length]
-        .map((v) => v.toFixed(6))
-        .join(',');
-    const iki = dunyaUcgenleri()
-      .filter((u) => u.n.length === 12)
-      .map((u) =>
-        merkez(
-          u.n.filter((_, i) => i % 2 === 0),
-          u.n.filter((_, i) => i % 2 === 1),
-        ),
-      );
-    const gpu = dunyaModeli()
-      .filter((y) => (y.katman ?? 0) > -2)
-      .map((y) =>
-        merkez(
-          y.p.map((q) => q[0]),
-          y.p.map((q) => -q[1]),
-        ),
-      );
-    expect(iki.length).toBeGreaterThan(100);
-    expect(gpu).toEqual(iki);
-  });
-
-  it('belirlenimci: iki üretim aynı', () => {
-    expect(dunyaModeli(4)).toEqual(kaba);
   });
 });
 

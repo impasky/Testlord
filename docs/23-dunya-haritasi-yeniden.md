@@ -1,5 +1,10 @@
 # 23 — Dünya haritası: noktalar yerine toprak
 
+> **Yerine geçti (docs/27).** Kurgu harita yerini gerçek dünyaya bıraktı;
+> çizim artık tek bir tuval (`GercekHarita.tsx`). Buradaki ilkeler
+> (toprak boyası, iki görünüm, liste, dokunma kuralları) yeni haritada
+> da geçerli.
+
 Oyuncunun cümlesi:
 
 > "Dünya haritası kısmı hâlâ verimsiz, nerenin ne olduğu anlaşılmıyor,

@@ -61,7 +61,7 @@ function BirlesmeIlani({ b }: { b: NonNullable<DunyaDto['birlesme']> }) {
       {sablonlu(
         b.konukMuyum
           ? '{0} sonra {1} diyarına taşınıyorsun. Lordun, ordun, araştırman ve binaların geliyor; bölgelerin ancak orada boşsa geliyor, gelmeyenin bir günlük geliri kasana yazılıyor.'
-          : '{0} sonra {1} diyarının lordları buraya geliyor. Taht sahipsiz kalacak — ilk alan Diyarın Lordu olur.',
+          : '{0} sonra {1} diyarının lordları buraya geliyor. Tahtlar sahipsiz kalacak — ilk alan o ülkenin hükümdarı olur.',
         [vurgu(ne), vurgu(b.karsiDiyar)],
       )}
     </p>
@@ -82,48 +82,14 @@ export function DunyaBasligi({ dunya }: { dunya: DunyaDto }) {
           <span className="text-altin">
             <IkonTaht boyut={11} />
           </span>
+          {/* Ülkemin tahtı (docs/27): her ülkenin başkenti bir taht. */}
+          {dunya.taht && <span>{`${dunya.taht.name}:`}</span>}
           {dunya.taht?.sahip ? (
             <strong className="text-altin">{dunya.taht.sahip.name}</strong>
           ) : (
             <span>taht sahipsiz</span>
           )}
         </span>
-
-        {/* Tahtı tutan MEDENİYET (docs/16 §13 soru 5). Taht artık bir
-            lordun unvanı değil bir tarafın kazancı: tutan medeniyetin
-            her üyesi şöhret çarpanı alıyor. Kolektif hedefin ekranda bir
-            karşılığı olmalı. */}
-        {dunya.taht?.medeniyet && (
-          <>
-            <span aria-hidden>·</span>
-            <span className="inline-flex items-center gap-1">
-              <span
-                className="h-2 w-2 shrink-0 rounded-full border border-gece"
-                style={{ background: dunya.taht.medeniyet.renk }}
-                aria-hidden
-              />
-              <span>
-                <Cumle
-                  metin={
-                    dunya.taht.benimMedeniyetimde
-                      ? '{0} — medeniyetinin tahtı · +%{1} şöhret'
-                      : '{0} tahtta · +%{1} şöhret'
-                  }
-                  /* YÜZDE İŞARETİ CÜMLEDE, vurguda değil. Türkçe "%5"
-                     yazıyor, İngilizce "5%" — işaret kalın yazının
-                     içinde kalsaydı harfsiz bir dizge olur, çeviriye
-                     hiç girmez ve İngilizcede de "+%5" yazardı. */
-                  parca={[
-                    <strong className="text-parsomen">{dunya.taht.medeniyet.ad}</strong>,
-                    <strong className="text-altin">
-                      {Math.round(dunya.taht.medeniyetSohretBonusu * 100)}
-                    </strong>,
-                  ]}
-                />
-              </span>
-            </span>
-          </>
-        )}
 
         {/* Lider avı: oyuncunun kimin peşine düşeceğini bilmesi gerekiyor.
           Lider bensem cümle tersine dönüyor — av benim üstümde. */}
@@ -159,50 +125,6 @@ export function DunyaBasligi({ dunya }: { dunya: DunyaDto }) {
                   ]}
                 />
               </span>
-            </span>
-          </>
-        )}
-
-        {/* Fraksiyon lider avı: bireyselin yanında AYRI bir satır.
-          Biri bir lordu işaret ediyor, öbürü bir tarafı; ikisi üst üste
-          binebildiği için aynı cümleye sıkıştırmak oyuncuya hangi
-          bonusu ne zaman aldığını sorduracaktı. Rengi medeniyetin
-          kendi rengi — haritadaki çerçeveyle aynı işaret. */}
-        {dunya.medeniyetAvi && (
-          <>
-            <span aria-hidden>·</span>
-            <span className="inline-flex items-center gap-1">
-              <span
-                className="h-2 w-2 shrink-0 rounded-full border border-gece"
-                style={{ background: dunya.medeniyetAvi.renk ?? 'var(--color-kirmizi)' }}
-                aria-hidden
-              />
-              {dunya.medeniyetAvi.benimMi ? (
-                <span>
-                  <Cumle
-                    metin="{0} · toprağına saldıran +%{1} yağma alır"
-                    parca={[
-                      <strong className="text-kirmizi">medeniyetin önde</strong>,
-                      <strong className="text-parsomen">
-                        {Math.round(dunya.medeniyetAvi.yagmaBonusu * 100)}
-                      </strong>,
-                    ]}
-                  />
-                </span>
-              ) : (
-                <span>
-                  <Cumle
-                    metin="{0} önde (%{1}) · +%{2} yağma"
-                    parca={[
-                      <strong className="text-parsomen">{dunya.medeniyetAvi.ad}</strong>,
-                      Math.round(dunya.medeniyetAvi.pay * 100),
-                      <strong className="text-kirmizi">
-                        {Math.round(dunya.medeniyetAvi.yagmaBonusu * 100)}
-                      </strong>,
-                    ]}
-                  />
-                </span>
-              )}
             </span>
           </>
         )}

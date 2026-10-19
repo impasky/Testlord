@@ -31,7 +31,7 @@ export function Rehber({
   adim,
   durum,
   gorundu,
-  medeniyet,
+  ulke,
 }: {
   adim: string | null;
   /** Rehberin aşamalarını kapatan oyun durumu. */
@@ -39,14 +39,10 @@ export function Rehber({
   /** Lord rehberi TAMAMLADI mı (sunucudan, hesaba bağlı). */
   gorundu: boolean;
   /**
-   * Oyuncunun medeniyeti (docs/16 §12.6).
-   *
-   * Öğretici tarafını anlatıyor ama GEÇİLEBİLİR; zorunlu olan bu kart.
-   * Oyuncunun ilk oturumda hangi tarafta olduğunu öğrenmesi buna bağlı
-   * kalmasın diye ad kâhyanın yanında duruyor: kâhya senin kâhyan, o
-   * da senin medeniyetin.
+   * Oyuncunun ülkesi (docs/27): kâhyanın yanında — oyuncu ilk oturumda
+   * nerede başladığını buradan da görüyor.
    */
-  medeniyet?: { ad: string; renk: string } | null;
+  ulke?: { ad: string } | null;
 }) {
   const soz = rehberSozu(adim);
   const ilerleme = rehberIlerlemesi(durum);
@@ -67,24 +63,11 @@ export function Rehber({
               Kaçış yoksa oyuncu SONUNU görmeli: sayaç turun bitmek
               bilmeyen bir şey olmadığını söylüyor. */}
           <div className="flex items-baseline justify-between gap-2">
-            {/* Kâhyanın adı KENDİ etiketinde kalıyor: medeniyet adını
-                aynı kutuya koyunca metin "Kâhya Sinan · Demir Ocağı"
-                oluyor ve kartı adıyla arayan ölçüm onu bulamıyor.
-                Rengi metne değil NOKTAYA veriyoruz — haritadaki
-                medeniyet şeridiyle aynı biçim, üstelik dört rengin
-                dördünün de koyu zeminde okunur kalması gerekmiyor. */}
+            {/* Kâhyanın adı KENDİ etiketinde kalıyor: ülke adını aynı
+                kutuya koyunca kartı adıyla arayan ölçüm onu bulamıyordu. */}
             <span className="baslik shrink-0 text-[11px] text-mavi">{REHBER.ad}</span>
             <span className="flex min-w-0 items-baseline gap-2">
-              {medeniyet && (
-                <span className="flex min-w-0 items-center gap-1 text-[11px] text-solgun">
-                  <span
-                    className="h-2 w-2 shrink-0 rounded-full border border-gece"
-                    style={{ background: medeniyet.renk }}
-                    aria-hidden
-                  />
-                  <span className="truncate">{medeniyet.ad}</span>
-                </span>
-              )}
+              {ulke && <span className="min-w-0 truncate text-[11px] text-solgun">{ulke.ad}</span>}
               <span className="tabular shrink-0 text-[11px] text-sonuk">{`${ilerleme.biten}/${ilerleme.toplam} adım`}</span>
             </span>
           </div>

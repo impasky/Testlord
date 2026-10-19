@@ -14,26 +14,29 @@ sıralamada yükselirsin.
 
 ## Beş temel keyif ekseni
 
-| #   | Eksen                         | Oyunda karşılığı                                          |
-| --- | ----------------------------- | --------------------------------------------------------- |
-| 1   | **Rekabet ve sıralama**       | 3 ayrı sıralama + dünyada tek olan Taht Kalesi            |
-| 2   | **Karakter gücü**             | 60 seviye, 4 stat, serbest puan dağıtımı                  |
-| 3   | **Ekipman gücü**              | 6 slot, 5 tier, 5 nadirlik, +0→+10 yükseltme              |
-| 4   | **Bölge ve gelir**            | 61 bölgelik sabit harita, saatlik gelir, bölge seviyeleri |
-| 5   | **Ordu, donanım, generaller** | 5 birim + taş-kağıt-makas, 3 donanım hattı, 12 general    |
+| #   | Eksen                         | Oyunda karşılığı                                       |
+| --- | ----------------------------- | ------------------------------------------------------ |
+| 1   | **Rekabet ve sıralama**       | 3 ayrı sıralama + her ülkenin başkenti bir taht        |
+| 2   | **Karakter gücü**             | 60 seviye, 4 stat, serbest puan dağıtımı               |
+| 3   | **Ekipman gücü**              | 6 slot, 5 tier, 5 nadirlik, +0→+10 yükseltme           |
+| 4   | **Bölge ve gelir**            | Gerçek dünya: 197 ülke, ~3.000 şehir, saatlik gelir    |
+| 5   | **Ordu, donanım, generaller** | 5 birim + taş-kağıt-makas, 3 donanım hattı, 12 general |
 
 ## Nasıl oynanır (30 saniyelik özet)
 
-Bir **kampta** başlarsın: toprağın yok, ordun yok, taban gelirin bir çadır
-kadar. Önce asker yazdırır, ilk savaşını bir **akın** kampında öğrenirsin —
-orada toprak riski yok. Sonra dünya haritasından ilk köyünü alırsın; orası
+Oyuna bir **ülke seçerek** girersin; kampın o ülkede, bir şehrin yanında
+kurulur. Toprağın yok, ordun yok, taban gelirin bir çadır kadar. Önce
+asker yazdırır, ilk savaşını bir **akın** kampında öğrenirsin — orada
+toprak riski yok. Sonra dünya haritasından ilk köyünü alırsın; orası
 başkentin olur ve şehir sayfan bir kamptan bir köye döner. Şehrinde bina
 dikersin, binalar kapasite verir: kışla eş zamanlı eğitim, demirhane
 dövebileceğin ekipman kademesi, malikâne depo.
 
-Bölgeler kıt: 120 oyuncuya 60 bölge düşüyor. Yani bir noktada bölgeyi
-NPC'den değil, başka bir lorddan almak zorundasın. Haritanın merkezindeki
-**Taht Kalesi** dünyada tek — onu tutan "Diyarın Lordu" olur.
+Harita gerçek dünya: her şehir ele geçirilebilir bir toprak. Kendi
+ülkenin her şehrine saldırabilirsin; başka bir ülkeye ancak **sınırdan**
+geçersin — evinin ya da tuttuğun bir şehrin komşusundan, karadan ya da
+yakın kıyılar arası deniz yolundan. Her ülkenin **başkenti bir taht**:
+onu tutan o ülkenin hükümdarı olur. Herkes kendi adına oynar.
 
 Sana hiçbir şey verilmiyor: ordu, demir, toprak ve bina — dördü de
 kazanılıyor.
@@ -47,7 +50,7 @@ Oyun **sadece mobil**. Masaüstü düzeni yok.
 |                                              |                                             |                                                |
 | -------------------------------------------- | ------------------------------------------- | ---------------------------------------------- |
 | ![Şehir](docs/gorseller/1-malikane.png)      | ![Ordu](docs/gorseller/2-kisla.png)         | ![Dünya](docs/gorseller/3-harita.png)          |
-| **Şehir** — ana sayfa, yerleşim haritası     | **Ordu** — birim kartları, komuta, erzak    | **Dünya** — 121 bölge, dört medeniyet          |
+| **Şehir** — ana sayfa, yerleşim haritası     | **Ordu** — birim kartları, komuta, erzak    | **Dünya** — gerçek dünya, 197 ülke             |
 | ![Demirhane](docs/gorseller/4-demirhane.png) | ![Bölge](docs/gorseller/5-harita-bolge.png) | ![Generaller](docs/gorseller/8-generaller.png) |
 | **Demirhane** — üretim, envanter, donanım    | **Bölge** — alt sayfada saldırı ve garnizon | **Generaller** — 12 kişilik kadro              |
 | ![Lord](docs/gorseller/7-lord.png)           | ![Sıralama](docs/gorseller/9-siralama.png)  | ![Giriş](docs/gorseller/0-giris.png)           |
@@ -65,7 +68,7 @@ pnpm install                    # Prisma istemcisi otomatik üretilir
 docker compose up -d postgres   # ya da kendi PostgreSQL'in
 
 cp .env.example apps/api/.env   # kendi PostgreSQL'ini kullanıyorsan DATABASE_URL'i düzenle
-pnpm db:setup                   # Prisma istemcisi + migration + 61 bölge + ilk dünya
+pnpm db:setup                   # Prisma istemcisi + migration + gerçek dünya + ilk diyar
 
 pnpm dev                        # arayüz :5173, API :3000
 ```
@@ -197,7 +200,7 @@ docs/
 data/
   balance.json            TÜM sayısal denge — tek kaynak, kodda sabit sayı yok
   generals.json           12 generallik sabit kadro
-  world-map.json          61 bölgelik sabit harita (üretilmiş çıktı)
+  world-map.json          Gerçek dünya haritası (üretilmiş çıktı, docs/27)
 packages/shared/          Sunucu ve arayüzün ortak çekirdeği (saf fonksiyonlar)
   src/balance.ts          data/*.json'u tipli yükler ve doğrular
   src/combat.ts           Savaş simülatörü — I/O yok, seed'li, deterministik
@@ -214,7 +217,7 @@ apps/web/                 React + Vite + Tailwind, yedi ekran
   src/cizim/              Kodla çizim: low-poly izometrik motor; GPU'da (WebGL2), yoksa SVG
 apps/mobil/               Android kabuğu (Capacitor): Play Faturalandırma + AdMob (docs/25)
 tools/
-  generate_map.py         Haritayı DOĞRULAYAN script (artık üretmiyor)
+  gercek-dunya-uret.mjs   Gerçek dünya haritasını Natural Earth'ten üretir (docs/27)
   gorsel-denetim.mjs      Her ekranın kodla çizilen görsellerini ve taşmaları denetler
   check_balance.py        Aritmetik denge doğrulayıcı
   oyun-dongusu-testi.mjs  API üzerinden tam oyun döngüsü
@@ -234,7 +237,7 @@ tools/
 
 ```bash
 python3 tools/check_balance.py    # dengeyi doğrula (8/8 geçmeli)
-python3 tools/generate_map.py     # haritayı doğrula (komşuluk simetrik, bağlı, işaretçiler karada)
+node tools/gercek-dunya-uret.mjs  # haritayı yeniden üret (docs/27; çıktı değişmemeli)
 ```
 
 ## Teknoloji

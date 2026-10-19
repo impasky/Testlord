@@ -19,12 +19,11 @@
  * komşusu vardı. Her yer birbirine benziyordu; bir geçidi tutmakla
  * ovanın ortasında oturmak arasında fark yoktu.
  *
- * Harita ÇİZİLMİŞ ZEMİNDEN türetildi (docs/12 §11; türeten araç boyalı
- * zeminle birlikte kaldırıldı, docs/24): bölgeler araziye serpiliyor, komşuluk Delaunay'dan çıkıp
- * budanıyor, dağın arkasına yalnız GEÇİTLERDEN geçiliyor. Derece dağılımı
- * artık 2'den 7'ye yayılıyor — yani haritada dar boğaz da var kavşak da.
- * Dengenin omurgası değişmedi: gelir çarpanı ve NPC garnizonu hâlâ Taht
- * Kalesi'ne uzaklıktan geliyor.
+ * Harita artık GERÇEK DÜNYA (docs/27): her şehir bir bölge, komşuluk
+ * şehirlerin topraklarının birbirine değmesinden ve karşılıklı kıyılar
+ * arasındaki deniz yollarından geliyor (`tools/gercek-dunya-uret.mjs`).
+ * Gelir çarpanı ve NPC garnizonu şehrin nüfusundan; her ülkenin başkenti
+ * bir TAHT.
  *
  * ── x/y'yi motor OKUMAZ ───────────────────────────────────────────────
  *
@@ -32,139 +31,83 @@
  * üzerinde işaretçinin duracağı yer. Mesafe ve komşuluk buradan
  * hesaplanmaz. Bu kasıtlı — harita resmini yeniden ürettiğimizde
  * işaretçileri yeniden yerleştirmek gerekecek ve o iş oyunun kurallarını
- * kaydırmamalı. (Arazi artık koddan çiziliyor, kara sınırı `kara.ts`te;
- * işaretçilerin karada durduğunu `tools/generate_map.py` denetliyor.)
+ * kaydırmamalı. (Ülke ve toprak çizgileri `dunyaGeo.json`da, aynı
+ * izdüşümle.)
  */
-import { WORLD_MAP } from './balance.js';
-
-/** Bölge kimliği → komşularının kimlikleri. */
-export const KOMSULUK: ReadonlyMap<number, readonly number[]> = new Map(
-  WORLD_MAP.regions.map((r) => [r.id, Object.freeze([...r.komsular])]),
-);
-
 /**
- * GEÇİTLER — dağı aşan komşuluklar.
+ * MESAFE SATIRLARI İSTENDİKÇE.
  *
- * Haritanın bütün meselesi bunlar. Komşuluk grafiği Delaunay'dan çıkıp
- * budanırken dağ aşan her kenar atılıyor; sonra dağın arkasına ulaşmak
- * için EN KISA olanlar geri ekleniyor (docs/12 §11). Sonuç:
- * sıradağın öte yanı ancak birkaç noktadan geçilebiliyor ve o noktaları
- * tutan bölge -- çoğu zaman bir KALE -- arkasındaki her şeyi tutuyor.
- *
- * Motor için geçit ayrı bir kural DEĞİL: komşuluk komşuluktur. Ayrım
- * arayüzde: oyuncu dar boğazı görmeden orayı tutmanın değerini anlayamaz.
+ * 121 bölgelik haritada bütün çiftler açılışta hesaplanıyordu. Gerçek
+ * dünyada 3.000'i aşkın şehir var: bütün çiftler dokuz milyon kayıt
+ * demek — sunucuda yüzlerce MB, telefonda saniyeler. Oysa bir istek
+ * yalnız birkaç KAYNAKTAN soruyor (lordun evi ve toprakları). Satır o
+ * kaynak ilk sorulduğunda bir genişlik-öncelikli aramayla kuruluyor
+ * (3.000 bölge, ~17.000 kenar: milisaniyenin altında) ve saklanıyor.
  */
-const gecitAnahtari = (a: number, b: number) => `${Math.min(a, b)}-${Math.max(a, b)}`;
+const ULASILAMAZ = 0xffff;
 
-export const GECITLER: ReadonlySet<string> = new Set(
-  ((WORLD_MAP as { gecitler?: number[][] }).gecitler ?? []).map(([a, b]) => gecitAnahtari(a!, b!)),
-);
-
-/** Bu iki bölge arasındaki yol bir dağ geçidi mi. */
-export function gecitMi(a: number, b: number): boolean {
-  return GECITLER.has(gecitAnahtari(a, b));
-}
-
-/** Haritadaki bütün bölge kimlikleri, dosyadaki sırayla. */
-export const BOLGE_IDLERI: readonly number[] = WORLD_MAP.regions.map((r) => r.id);
-
-/**
- * Vilayet anahtarı → görünen ad.
- *
- * Arayüz bu eşlemeyi ELLE tutuyordu (`DunyaHaritasi.tsx`), oysa adlar
- * `world-map.json` → `provinces` içinde zaten yazılı. Elle tutulan kopya,
- * haritaya bir vilayet eklendiği gün sessizce eksik kalır: ekranda ham
- * anahtar ("tasgecit") görünür ve kimse fark etmez.
- */
-export const VILAYET_ADI: Readonly<Record<string, string>> = Object.freeze(
-  Object.fromEntries(WORLD_MAP.provinces.map((p) => [p.key, p.name])),
-);
-
-/**
- * Bütün çiftler için mesafe, modül yüklenirken bir kez hesaplanır.
- *
- * 61 bölge için 61 kez genişlik-öncelikli arama; toplam birkaç bin adım,
- * yani ölçülemeyecek kadar ucuz. Her çağrıda yeniden aramak yerine
- * hazır tablo tutmak, sunucunun sıcak yolundaki (hedef önerisi, saldırı
- * önizlemesi) yüzlerce mesafe sorgusunu tek bir tablo okumasına indiriyor.
- */
-function mesafeTablosu(
-  komsuluk: ReadonlyMap<number, readonly number[]>,
-): Map<number, Map<number, number>> {
-  const tablo = new Map<number, Map<number, number>>();
-  for (const bas of komsuluk.keys()) {
-    const uzaklik = new Map<number, number>([[bas, 0]]);
-    // Dizi + okuma imleci: shift() büyük kuyrukta O(n), burada gereksiz.
-    const kuyruk: number[] = [bas];
-    for (let i = 0; i < kuyruk.length; i++) {
-      const su = kuyruk[i]!;
-      const d = uzaklik.get(su)!;
-      for (const komsu of komsuluk.get(su) ?? []) {
-        if (uzaklik.has(komsu)) continue;
-        uzaklik.set(komsu, d + 1);
-        kuyruk.push(komsu);
+export function satirKurucu(komsuluk: ReadonlyMap<number, readonly number[]>) {
+  const kimlikler = [...komsuluk.keys()];
+  const sira = new Map(kimlikler.map((id, i) => [id, i]));
+  const komsuSira = kimlikler.map((id) =>
+    (komsuluk.get(id) ?? []).map((k) => sira.get(k)).filter((k): k is number => k !== undefined),
+  );
+  const satirlar = new Map<number, Uint16Array>();
+  const satir = (bas: number): Uint16Array | undefined => {
+    const hazir = satirlar.get(bas);
+    if (hazir) return hazir;
+    const i0 = sira.get(bas);
+    if (i0 === undefined) return undefined;
+    const d = new Uint16Array(kimlikler.length).fill(ULASILAMAZ);
+    d[i0] = 0;
+    // Dizi + okuma imleci: shift() büyük kuyrukta O(n).
+    const kuyruk = new Int32Array(kimlikler.length);
+    let son = 0;
+    kuyruk[son++] = i0;
+    for (let k = 0; k < son; k++) {
+      const su = kuyruk[k]!;
+      for (const n of komsuSira[su]!) {
+        if (d[n] !== ULASILAMAZ) continue;
+        d[n] = d[su]! + 1;
+        kuyruk[son++] = n;
       }
     }
-    tablo.set(bas, uzaklik);
-  }
-  return tablo;
-}
-
-const MESAFE: ReadonlyMap<number, ReadonlyMap<number, number>> = mesafeTablosu(KOMSULUK);
-
-/** Haritanın çapı: birbirine en uzak iki bölge arasındaki adım sayısı. */
-export const EN_UZAK_MESAFE: number = (() => {
-  let en = 0;
-  for (const satir of MESAFE.values()) for (const d of satir.values()) en = Math.max(en, d);
-  return en;
-})();
-
-/**
- * İki bölge arasındaki mesafe: komşuluk grafiğinde en kısa yol.
- *
- * Bilinmeyen ya da ulaşılamayan bölge için `EN_UZAK_MESAFE` döner —
- * sonsuz değil. Sonsuz dönseydi çağıran taraftaki her süre hesabı NaN'a
- * düşerdi; en uzak mesafe hem sonlu hem de "çok uzak" anlamını taşıyor.
- */
-export function bolgeMesafesi(a: number, b: number): number {
-  if (a === b) return 0;
-  return MESAFE.get(a)?.get(b) ?? EN_UZAK_MESAFE;
-}
-
-/** İki bölge bitişik mi. */
-export function komsuMu(a: number, b: number): boolean {
-  return (KOMSULUK.get(a) ?? []).includes(b);
-}
-
-/**
- * Ordunun bir hedefe GERÇEK mesafesi: en yakın toprağından ölçülür.
- *
- * Eskiden mesafe yalnız malikâneden ölçülüyordu ve ızgara bu yüzden boş
- * bir süstü: bölgenin senin bölgene bitişik olmasıyla haritanın öbür
- * ucunda olması arasında fark yoktu. Şimdi aldığın her bölge bir çıkış
- * noktası — toprak sahibi olmak haritayı AÇIYOR.
- *
- * Kartopu riski yok: tutulabilecek bölge sayısı seviyeye bağlı. Ev her
- * zaman listede, yani toprağı olmayan lord eskisi gibi oynamaya devam
- * eder.
- */
-export function yakinlikMesafesi(
-  evBolgeId: number,
-  topraklarim: readonly number[],
-  hedefBolgeId: number,
-): number {
-  let enAz = bolgeMesafesi(evBolgeId, hedefBolgeId);
-  for (const t of topraklarim) {
-    const d = bolgeMesafesi(t, hedefBolgeId);
-    if (d < enAz) enAz = d;
-  }
-  return enAz;
+    satirlar.set(bas, d);
+    return d;
+  };
+  /** Grafiğin çapı: iki uçlu tarama (alt sınır, pratikte tam). Bir kez. */
+  let cap: number | null = null;
+  const enUzak = (): number => {
+    if (cap !== null) return cap;
+    cap = 0;
+    let bas = kimlikler[0];
+    for (let tur = 0; tur < 4 && bas !== undefined; tur++) {
+      const d = satir(bas)!;
+      let en = 0;
+      let enId = bas;
+      d.forEach((v, i) => {
+        if (v !== ULASILAMAZ && v > en) {
+          en = v;
+          enId = kimlikler[i]!;
+        }
+      });
+      cap = Math.max(cap, en);
+      bas = enId;
+    }
+    return cap;
+  };
+  const mesafe = (a: number, b: number): number => {
+    if (a === b) return 0;
+    const d = satir(a)?.[sira.get(b) ?? -1];
+    return d === undefined || d === ULASILAMAZ ? enUzak() : d;
+  };
+  return { mesafe, enUzak, bolgeSayisi: kimlikler.length };
 }
 
 /*
  * ─── DÜNYANIN KENDİ GRAFİĞİ ──────────────────────────────────────────
  *
- * Yukarıdaki KOMSULUK/MESAFE kanonik dosyadan geliyor ve tek bir haritaya
+ * Yukarıdaki KOMSULUK kanonik dosyadan geliyor ve tek bir haritaya
  * bağlı. Bu, açık bir riskti (docs/12 §14): `world-map.json` değişince
  * CANLI dünyalar da değişiyordu. Daha sinsisi, motorla veri ayrışıyordu —
  * bölgenin komşuları veritabanı satırında yazılı, ama mesafe kanonik
@@ -181,7 +124,9 @@ export interface HaritaGrafi {
   /** İki bölge arası en kısa yol; ulaşılamıyorsa grafiğin çapı. */
   mesafe(a: number, b: number): number;
   komsuMu(a: number, b: number): boolean;
-  /** Grafiğin çapı — "çok uzak"ın sonlu karşılığı. */
+  /** Bölgenin komşuları. */
+  komsular(a: number): readonly number[];
+  /** Grafiğin çapı — "çok uzak"ın sonlu karşılığı. İlk soruluşta hesaplanıyor. */
   readonly enUzak: number;
   readonly bolgeSayisi: number;
 }
@@ -189,25 +134,23 @@ export interface HaritaGrafi {
 /**
  * Komşuluk listesinden gezilebilir bir grafik kurar.
  *
- * Mesafe tablosu BİR KEZ hesaplanıyor (bölge başına bir genişlik-öncelikli
- * arama) ve sonra her sorgu tek tablo okuması. Sunucunun sıcak yolu —
- * hedef önerisi 121 bölgenin hepsine mesafe soruyor — bu yüzden çağrı
- * başına yeniden aramaya dayanamaz.
+ * Mesafe satırı kaynak başına BİR KEZ hesaplanıyor (genişlik-öncelikli
+ * arama) ve sonra her sorgu tek dizi okuması. Sunucunun sıcak yolu —
+ * hedef önerisi bütün bölgelere mesafe soruyor — ama hep aynı birkaç
+ * kaynaktan (lordun evi ve toprakları).
  */
 export function haritaGrafi(komsuluk: ReadonlyMap<number, readonly number[]>): HaritaGrafi {
-  const tablo = mesafeTablosu(komsuluk);
-  let enUzak = 0;
-  for (const satir of tablo.values()) for (const d of satir.values()) enUzak = Math.max(enUzak, d);
+  const k = satirKurucu(komsuluk);
   return {
-    mesafe: (a, b) => (a === b ? 0 : (tablo.get(a)?.get(b) ?? enUzak)),
+    mesafe: k.mesafe,
     komsuMu: (a, b) => (komsuluk.get(a) ?? []).includes(b),
-    enUzak,
-    bolgeSayisi: tablo.size,
+    komsular: (a) => komsuluk.get(a) ?? [],
+    get enUzak() {
+      return k.enUzak();
+    },
+    bolgeSayisi: k.bolgeSayisi,
   };
 }
-
-/** Kanonik haritanın grafiği — yeni dünyaların ve testlerin başlangıcı. */
-export const KANONIK_GRAFIK: HaritaGrafi = haritaGrafi(KOMSULUK);
 
 /**
  * Ordunun bir hedefe mesafesi, VERİLEN grafik üzerinde.
@@ -230,46 +173,31 @@ export function yakinlikMesafesiGraf(
 }
 
 /**
- * HARİTA SÜRÜMÜ — kanonik haritanın içeriğinden türetilir.
+ * SINIR KURALI (docs/27) — bu hedefe saldırabilir miyim?
  *
- * Elle yazılan bir sürüm numarası er ya da geç unutulur: haritayı
- * değiştirip sürümü artırmayan bir commit, tam da korunmak istenen
- * kazayı yapar. Bu yüzden sürüm haritanın KENDİSİNDEN çıkıyor —
- * bölgenin yerini, adını, türünü ve komşuluğunu değiştiren her düzenleme
- * sürümü kendiliğinden değiştiriyor, unutulacak bir adım yok.
+ * Oyuncu bir ülke seçip orada başlıyor. Kendi ülkesinin her şehri açık;
+ * başka bir ülkenin şehri ancak SINIRDAN: evinin ya da tuttuğu bir
+ * toprağın komşusuysa (kara sınırı ya da deniz yolu). Böylece yayılma
+ * haritada bir çizgi izliyor — Ankara'dan Berlin'e atlanmıyor, Edirne'den
+ * Bulgaristan'a geçiliyor.
  *
- * Gelir çarpanı ve NPC garnizonu da içeride: ikisi de "burası neresi"
- * sorusunun parçası ve ikisi de denge ayarıyla değişiyor.
- *
- * Hash 32 bit FNV-1a: kriptografik değil, çakışmaya karşı da değil —
- * "aynı mı, değil mi" sorusuna cevap veren kısa ve okunabilir bir imza.
+ * Ev bölgesinin kendisi de açık: kampın yanındaki şehir ilk hedef.
  */
-export const HARITA_SURUMU: string = (() => {
-  const ozet = WORLD_MAP.regions
-    .map((r) =>
-      [
-        r.id,
-        r.name,
-        r.type,
-        r.province,
-        r.x,
-        r.y,
-        r.level,
-        r.income_mult,
-        [...r.komsular].sort((a, b) => a - b).join('.'),
-        Object.entries(r.npc_garrison ?? {})
-          .sort(([a], [b]) => a.localeCompare(b))
-          .map(([k, v]) => `${k}=${v}`)
-          .join('.'),
-      ].join('|'),
-    )
-    .sort()
-    .join('\n');
+export function sinirdanMi(
+  graf: Pick<HaritaGrafi, 'komsuMu'>,
+  hedef: { mapId: number; province: string },
+  lord: { ulke: string | null; evBolgeId: number; topraklar: readonly number[] },
+): boolean {
+  if (lord.ulke !== null && hedef.province === lord.ulke) return true;
+  if (hedef.mapId === lord.evBolgeId || graf.komsuMu(lord.evBolgeId, hedef.mapId)) return true;
+  return lord.topraklar.some((t) => t === hedef.mapId || graf.komsuMu(t, hedef.mapId));
+}
 
-  let h = 0x811c9dc5;
-  for (let i = 0; i < ozet.length; i++) {
-    h ^= ozet.charCodeAt(i);
-    h = Math.imul(h, 0x01000193) >>> 0;
-  }
-  return `h${WORLD_MAP.regions.length}-${h.toString(16).padStart(8, '0')}`;
-})();
+/**
+ * HARİTA KUŞAĞI (docs/27). Sürüm her düzenlemede değişiyor ve oyunculu
+ * bir dünyanın haritasına dokunulmuyor; kuşak ise haritanın TÜRÜ. Eski
+ * dünyalar 1. kuşakta (121 bölgelik hayalî diyar), gerçek dünya 2. kuşak.
+ * Kuşağı geride kalan dünya — oyuncusu olsa da — yeni haritaya göçüyor:
+ * şehri, ordusu, eşyası yerinde; toprakları sıfırdan.
+ */
+export const HARITA_KUSAGI = 2;

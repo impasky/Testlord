@@ -115,21 +115,7 @@ export function ProfilKarti({ lordId, onKapat }: { lordId: string; onKapat: () =
 
             <dl className="oyuk mt-3 rounded-xl px-3 py-1">
               <Satir ad="Şöhret">{formatSayi(p.sohret)}</Satir>
-              <Satir ad="Medeniyet">
-                {p.medeniyet ? (
-                  <span className="inline-flex items-center gap-1.5">
-                    <span
-                      className="h-2.5 w-2.5 rounded-full"
-                      style={{ background: p.medeniyet.renk }}
-                      aria-hidden
-                    />
-                    {p.medeniyet.ad}
-                    {p.faydaRutbesi && <span className="text-sonuk">{`· ${p.faydaRutbesi}`}</span>}
-                  </span>
-                ) : (
-                  '—'
-                )}
-              </Satir>
+              <Satir ad="Ülke">{p.ulke ?? '—'}</Satir>
               <Satir ad="İttifak">
                 {p.ittifak
                   ? `[${p.ittifak.etiket}] ${p.ittifak.ad}${p.ittifak.rutbe ? ` · ${RUTBE_ADI[p.ittifak.rutbe]}` : ''}`

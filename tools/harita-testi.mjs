@@ -7,12 +7,13 @@
  *    yakın toprağından ölçülüyor (H1); bunun tek gözlenebilir sonucu, bir
  *    bölge aldıktan sonra uzak bölgelerin YAKINLAŞMASI. Ölçmezsek kural
  *    sessizce geri alınabilir ve kimse fark etmez.
- * 2. GÖRSEL — vilayetler haritada okunuyor ve harita yakınlaştırılabiliyor
- *    mu (H3, H4).
+ * 2. GÖRSEL — gerçek dünya haritası (docs/27, tuval) okunuyor, dokunulan
+ *    şehir gerçekten o şehir, harita yakınlaştırılabiliyor ve görünüm
+ *    hatırlanıyor.
  *
  * API ve web ayakta olmalı. node tools/harita-testi.mjs
  */
-import { bolgeyeDokun, rehberiSustur } from './lib/gezin.mjs';
+import { bolgeyeDokun, bolgeyiSec, rehberiSustur } from './lib/gezin.mjs';
 import { tarayiciAc } from './lib/tarayici.mjs';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
 import { kayitOl } from './lib/kayit.mjs';
@@ -61,9 +62,9 @@ if (ben.lord.statPoints > 0) await P('/me/stats', { liderlik: ben.lord.statPoint
 const once = await G('/map');
 const mesafelerOnce = new Map(once.regions.map((r) => [r.id, r.distance]));
 kontrol(
-  'Haritada vilayet bilgisi var',
+  'Haritada ülke bilgisi var',
   once.regions.every((r) => typeof r.province === 'string'),
-  `${new Set(once.regions.map((r) => r.province)).size} vilayet`,
+  `${new Set(once.regions.map((r) => r.province)).size} ülke`,
 );
 
 /** Öneri motorunun dediğini yaparak bir bölge alır. */
@@ -159,75 +160,93 @@ await sayfa.click('nav button:has-text("Dünya")');
 await sayfa.waitForTimeout(2000);
 
 /*
- * Harita bir TOPRAK haritası (docs/23): resimli zemin, üstünde her
- * bölgenin karaya kırpılmış toprağı (SVG yolu, `data-bolge`) ve ters
- * ölçekli etiketler.
+ * Harita bir TUVAL (docs/27): ülkeler, şehir toprakları ve adlar tek bir
+ * <canvas>'ta çiziliyor. Bölge başına DOM düğümü yok; ölçümler haritanın
+ * test kancasından (`window.__dunyaHaritasi`) okunuyor: görünüm, ekrana
+ * yazılan adlar, bir bölgenin boyası ve ekrandaki noktası.
  */
-const tuval = sayfa.locator('[data-harita-tuval]');
-const bolgeSayisi = await sayfa.locator('[data-bolge]').count();
-const govdeMetni = () => sayfa.locator('[data-harita-tuval]').innerText();
-const adSayisi = () => sayfa.locator('[data-bolge-ad]').count();
+await sayfa.waitForSelector('[data-harita-hazir]', { timeout: 30000 });
+const kanca = (ad, ...arg) =>
+  sayfa.evaluate(([ad, arg]) => window.__dunyaHaritasi[ad](...arg), [ad, arg]);
+const gorunum = () => kanca('gorunum');
+const etiketler = () => kanca('etiketler');
+const bolgeSayisi = (await G('/map')).regions.length;
+const OZET = JSON.parse(readFileSync(new URL('../data/dunya-ozet.json', import.meta.url), 'utf8'));
+const ulkeAdlari = new Set(OZET.provinces.map((p) => p.name));
 
 /*
- * HARİTA YAKIN AÇILIYOR (docs/12 §11.6). Dünya 121 bölge; hepsini tek
- * karede göstermek onu bir rozet kalabalığına çeviriyordu. Açılış artık
- * oyuncunun toprağının üstünde ve gerisi kaydırarak bulunuyor.
+ * HARİTA YAKIN AÇILIYOR (docs/12 §11.6). Dünyanın tamamı bir telefon
+ * ekranında 3.000 şehirlik bir nokta bulutu; açılış oyuncunun kampının
+ * üstünde ve gerisi kaydırarak bulunuyor.
  */
-const acilisDonusumu = await tuval.evaluate((el) => el.style.transform);
-const acilisOlcegi = Number(/scale\(([\d.]+)\)/.exec(acilisDonusumu)?.[1] ?? '1');
-kontrol('Harita yakınlaşmış açılıyor', acilisOlcegi > 1.5, acilisDonusumu);
-
+const acilis = await gorunum();
+kontrol(
+  'Harita yakınlaşmış açılıyor',
+  acilis.k > acilis.enAz * 3,
+  `k ${acilis.k.toFixed(2)} (dünya ${acilis.enAz.toFixed(2)})`,
+);
 await sayfa.screenshot({ path: `${CIKTI}/harita-0-acilis.png` });
 
-// Kademe ölçümleri UZAK ölçekte yapılıyor: "sığdır" bütün dünyayı getiriyor.
-await sayfa.getByRole('button', { name: 'Haritayı sığdır' }).click();
+// "Dünyayı göster" bütün dünyayı getiriyor; uzakta ülke adları yazıyor.
+await sayfa.getByRole('button', { name: 'Dünyayı göster' }).click();
 await sayfa.waitForTimeout(600);
-
-// Uzakta büyük alan adları: medeniyetler (docs/23 §8 — vilayet artık
-// bölge kartında, ayrı mercek yok).
-const uzakMetin = await govdeMetni();
-const medeniyetAdlari = [
-  ...new Set((await G('/map')).regions.filter((r) => r.medeniyet).map((r) => r.medeniyet.ad)),
-].map((a) => a.toLocaleUpperCase('tr'));
+const uzak = await gorunum();
 kontrol(
-  'Uzakta medeniyet adları haritada yazıyor',
-  medeniyetAdlari.some((a) => uzakMetin.includes(a)),
-  medeniyetAdlari.filter((a) => uzakMetin.includes(a)).join(' / ') || 'yok',
+  'Dünyayı göster bütün dünyayı sığdırıyor',
+  Math.abs(uzak.k - uzak.enAz) < 1e-6,
+  `k ${uzak.k}`,
 );
+const uzakAdlar = await etiketler();
+const uzakUlke = uzakAdlar.filter((a) => ulkeAdlari.has(a));
+kontrol(
+  'Uzakta ülke adları haritada yazıyor',
+  uzakUlke.length >= 5,
+  uzakUlke.slice(0, 6).join(' / '),
+);
+/*
+ * ETİKET KADEMESİ. Uzak ölçekte şehir adlarının hepsi yazılamaz; uzakta
+ * yalnız oyuncunun kendi yeri adlanıyor, yakınlaşınca şehirler açılıyor.
+ */
+const uzakSehir = uzakAdlar.filter((a) => !ulkeAdlari.has(a)).length;
+kontrol('Uzakta şehir adı yalnız oyuncunun yeri', uzakSehir <= 3, `${uzakSehir} şehir adı`);
 await sayfa.screenshot({ path: `${CIKTI}/harita-1-genel.png` });
 
 /*
- * TOPRAK HARİTASI (docs/23): her bölgenin bir toprağı var ve kendi
- * noktasına basan parmak KENDİ bölgesini seçiyor — komşusunu değil.
- * Eski madalyon haritasında 121 işaretçi üst üste biniyor ve "yanlış
- * bölge açıldı" oluyordu.
+ * DOKUNULAN ŞEHİR O ŞEHİR. Bir şehrin noktasına basan parmak KENDİ
+ * şehrini seçmeli, komşusunu değil. Kampın çevresinden birkaç şehir
+ * deneniyor; seçilen şehir alt çekmecenin başlığında yazıyor.
  */
 {
-  const d = await sayfa.evaluate(() => {
-    const svg = document.querySelector('[data-toprak-katmani]').getBoundingClientRect();
-    let dogru = 0;
-    let ortulu = 0;
-    const yanlis = [];
-    for (const p of document.querySelectorAll('path[data-bolge]')) {
-      const x = svg.left + (Number(p.dataset.x) / 100) * svg.width;
-      const y = svg.top + (Number(p.dataset.y) / 100) * svg.height;
-      const ust = document.elementFromPoint(x, y);
-      if (ust === p) dogru++;
-      else if (ust?.matches?.('path[data-bolge]'))
-        yanlis.push(`${p.dataset.bolge}→${ust.dataset.bolge}`);
-      else ortulu++; // üstünde düğme ya da çekmece: kaydırınca açılıyor
-    }
-    const bos = [...document.querySelectorAll('path[data-bolge]')].filter(
-      (p) => !p.getAttribute('d'),
-    ).length;
-    return { dogru, ortulu, yanlis, bos };
-  });
-  kontrol('Her bölgenin toprağı çiziliyor', d.bos === 0, `${d.bos} boş`);
+  const harita = await G('/map');
+  const ev = harita.regions.find((r) => r.id === harita.homeBolgeId);
+  const yakinlar = harita.regions
+    .filter((r) => r.komsular.includes(ev.id) || r.id === ev.id)
+    .slice(0, 5);
+  let dogru = 0;
+  const yanlis = [];
+  for (const r of yakinlar) {
+    const dokunulan = await bolgeyeDokun(sayfa, `[data-bolge="${r.id}"]`);
+    if (!dokunulan) continue;
+    await sayfa.waitForTimeout(500);
+    const baslik =
+      (await sayfa
+        .locator('[data-bolge-baslik]')
+        .first()
+        .textContent()
+        .catch(() => '')) ?? '';
+    if (baslik.toLocaleLowerCase('tr').includes(r.name.toLocaleLowerCase('tr'))) dogru++;
+    else yanlis.push(`${r.name}→${baslik.trim().slice(0, 20)}`);
+  }
   kontrol(
-    'Bölgenin noktasına basmak KENDİ toprağını seçiyor, komşusunu değil',
-    d.yanlis.length === 0 && d.dogru > 60,
-    `${d.dogru} doğru, ${d.ortulu} düğme altında, yanlış: ${d.yanlis.slice(0, 3).join(', ') || 'yok'}`,
+    'Şehrin noktasına basmak KENDİ şehrini seçiyor, komşusunu değil',
+    yanlis.length === 0 && dogru >= Math.min(3, yakinlar.length),
+    `${dogru} doğru, yanlış: ${yanlis.join(', ') || 'yok'}`,
   );
+  const kapat = sayfa.getByRole('button', { name: 'Kapat' });
+  if ((await kapat.count()) > 0) {
+    await kapat.last().click();
+    await sayfa.waitForTimeout(500);
+  }
 }
 
 /*
@@ -236,22 +255,18 @@ await sayfa.screenshot({ path: `${CIKTI}/harita-1-genel.png` });
  */
 {
   const benimId = (await G('/map')).regions.find((r) => r.isMine)?.id;
-  const dolgu = () =>
-    sayfa.evaluate((id) => {
-      const p = document.querySelector(`path[data-bolge="${id}"]`);
-      return `${p?.getAttribute('fill')}@${p?.getAttribute('fill-opacity')}`;
-    }, benimId);
+  const dolgu = async () => JSON.stringify(await kanca('boya', benimId));
   const hedefDugmesi = sayfa.locator('[data-mercek="hedef"]');
   kontrol(
     'Varsayılan görünüm Kim nerede: Hedefler kapalı',
     (await hedefDugmesi.getAttribute('aria-pressed')) === 'false',
   );
   const siyasi = await dolgu();
-  kontrol('Kim nerede: benim toprağım ALTIN', siyasi.startsWith('#f5b731'), siyasi);
+  kontrol('Kim nerede: benim toprağım ALTIN', siyasi.includes('#f5b731'), siyasi);
 
   /*
-   * HEDEFLER sunucunun kurallarıyla aynı: çekirdek, kendi medeniyetinin
-   * lordu, kalkanlı bölge karanlık; benim toprağım altın.
+   * HEDEFLER sunucunun kurallarıyla aynı: sınır dışı, ittifak arkadaşı,
+   * paktlı ve kalkanlı toprak karanlık; benim toprağım altın.
    */
   await hedefDugmesi.click();
   await sayfa.waitForTimeout(300);
@@ -260,95 +275,40 @@ await sayfa.screenshot({ path: `${CIKTI}/harita-1-genel.png` });
     (await hedefDugmesi.getAttribute('aria-pressed')) === 'true',
   );
   const harita = await G('/map');
-  const benMed = (await G('/me')).lord.medeniyet?.id ?? null;
   const yasakOlmali = harita.regions.filter(
     (r) =>
-      !r.isMine &&
-      (r.cekirdek ||
-        r.shielded ||
-        (r.owner && r.muttefik) ||
-        (r.owner && r.paktli) ||
-        (r.owner && r.medeniyet && r.medeniyet.id === benMed)),
+      !r.isMine && (!r.sinirda || r.shielded || (r.owner && r.muttefik) || (r.owner && r.paktli)),
   );
-  const karanliklar = await sayfa.evaluate(
-    (idler) => {
-      return idler.filter(
-        (id) =>
-          document.querySelector(`path[data-bolge="${id}"]`)?.getAttribute('fill') === '#0b0806',
-      ).length;
-    },
+  const boyalar = await sayfa.evaluate(
+    (idler) => idler.map((id) => window.__dunyaHaritasi.boya(id)?.renk),
     yasakOlmali.map((r) => r.id),
   );
+  const karanlik = boyalar.filter((b) => b === '#0b0806').length;
   kontrol(
     'Hedefler: saldırılamayan her bölge karanlık',
-    karanliklar === yasakOlmali.length && yasakOlmali.length > 0,
-    `${karanliklar} / ${yasakOlmali.length}`,
+    karanlik === yasakOlmali.length && yasakOlmali.length > 0,
+    `${karanlik} / ${yasakOlmali.length}`,
   );
   await hedefDugmesi.click();
   await sayfa.waitForTimeout(300);
   kontrol('Hedefler kapanınca boyama geri geliyor', (await dolgu()) === siyasi, await dolgu());
 }
 
-/*
- * ETİKET KADEMESİ. Uzak ölçekte adların hepsi yazılamaz — telefon
- * genişliğinde yer yok ve ilk denemede hepsi üst üste biniyordu. Uzakta
- * yalnız oyuncuyu ilgilendiren yerler adlanıyor; yakınlaşınca hepsi
- * açılıyor. Ölçüm bu sözleşmeyi tutuyor.
- */
-const uzakAd = await adSayisi();
-kontrol(
-  'Uzak ölçekte adlar seçili: hepsi yazılmıyor',
-  uzakAd < bolgeSayisi,
-  `${uzakAd} / ${bolgeSayisi} ad`,
-);
-
-// Üç adım: ×1 → 1,5 → 2,25 → 3,375. "Orta" 1,5'ten, "yakın" 2,6'dan.
-// Simge boyu ORTADA ölçülüyor: uzakta simge yok, yalnız toprak.
-const simgeBoyu = async () =>
-  (await sayfa.locator('[data-bolge-simge]').first().boundingBox())?.width ?? 0;
+// Yakınlaştır düğmesi: her basış 1,6 kat.
+await sayfa.getByRole('button', { name: 'Kampıma git' }).click();
+await sayfa.waitForTimeout(400);
+const k0 = (await gorunum()).k;
 await sayfa.getByRole('button', { name: 'Yakınlaştır' }).click();
 await sayfa.waitForTimeout(500);
-const ortaSimge = await simgeBoyu();
-/*
- * ORTADA SİMGE AZ (docs/23 §8). Her bölgeye simge koymak ekranı ~65
- * daireyle dolduruyordu; ortada yalnız oyuncunun toprakları ve kampı.
- */
-const ortaSimgeSayisi = await sayfa.locator('[data-bolge-simge]').count();
+const k1 = (await gorunum()).k;
+kontrol('Yakınlaştırma çalışıyor', k1 > k0 * 1.4, `${k0.toFixed(2)} → ${k1.toFixed(2)}`);
+const yakinAdlar = await etiketler();
 kontrol(
-  'Orta ölçekte simge yalnız senin topraklarında',
-  ortaSimgeSayisi > 0 && ortaSimgeSayisi <= 6,
-  `${ortaSimgeSayisi} simge`,
-);
-await sayfa.getByRole('button', { name: 'Yakınlaştır' }).click();
-await sayfa.getByRole('button', { name: 'Yakınlaştır' }).click();
-await sayfa.waitForTimeout(600);
-const donusum = await tuval.evaluate((el) => el.style.transform);
-kontrol('Yakınlaştırma çalışıyor', /scale\((?!1\))/.test(donusum), donusum);
-
-const yakinAd = await adSayisi();
-kontrol(
-  'Yakınlaşınca bütün adlar açılıyor',
-  yakinAd > uzakAd,
-  `${uzakAd} -> ${yakinAd} ad (toplam ${bolgeSayisi})`,
-);
-const yakinMetin = await govdeMetni();
-kontrol(
-  'Yakınlaşınca bölge adları kısaltılmıyor',
-  !yakinMetin.includes('…'),
-  `${(yakinMetin.match(/…/g) ?? []).length} kısaltma`,
+  'Yakınlaşınca şehir adları açılıyor',
+  yakinAdlar.filter((a) => !ulkeAdlari.has(a)).length > uzakSehir + 3,
+  `${uzakSehir} → ${yakinAdlar.length} ad`,
 );
 
-/*
- * SİMGE SABİT BOYUTTA KALIYOR. Harita pinlerinin kuralı: toprak büyür,
- * simge ve yazı büyümez. İlk madalyon haritasında büyüyordu ve
- * yakınlaştırmak haritayı okunur değil OKUNMAZ yapıyordu.
- */
-const yakinSimge = await simgeBoyu();
-kontrol(
-  'Yakınlaşınca simge büyümüyor',
-  ortaSimge > 0 && Math.abs(yakinSimge - ortaSimge) < 4,
-  `${ortaSimge.toFixed(0)}px -> ${yakinSimge.toFixed(0)}px`,
-);
 /*
  * GÖRÜNÜM HATIRLANIYOR. Oyuncu: "haritanın yakınlığını ve konumunu da
  * hatırlasın." Başka sekmeye gidip dönen de, uygulamayı yeniden açan da
@@ -356,47 +316,47 @@ kontrol(
  * toprağın üstünde).
  */
 {
-  const sayilar = (d) => (d.match(/-?[\d.]+/g) ?? []).map(Number);
-  const ayni = (a, b) => {
-    const [x, y] = [sayilar(a), sayilar(b)];
-    return x.length === y.length && x.every((v, i) => Math.abs(v - y[i]) < 1);
-  };
-  const yakinDonusum = await tuval.evaluate((el) => el.style.transform);
+  const ayni = (a, b) =>
+    Math.abs(a.k - b.k) / b.k < 0.01 && Math.abs(a.tx - b.tx) < 2 && Math.abs(a.ty - b.ty) < 2;
+  const yakin = await gorunum();
   await sayfa.waitForTimeout(500); // hareket durunca saklanıyor
   await sayfa.click('nav button:has-text("Şehir")');
   await sayfa.waitForTimeout(800);
   await sayfa.click('nav button:has-text("Dünya")');
-  await sayfa.waitForSelector('[data-bolge]', { timeout: 30000 });
+  await sayfa.waitForSelector('[data-harita-hazir]', { timeout: 30000 });
   await sayfa.waitForTimeout(900);
-  const donunce = await tuval.evaluate((el) => el.style.transform);
+  const donunce = await gorunum();
   kontrol(
     "Dünya'ya dönünce yakınlık ve konum korunuyor",
-    ayni(donunce, yakinDonusum),
-    `${yakinDonusum} → ${donunce}`,
+    ayni(donunce, yakin),
+    `k ${yakin.k.toFixed(2)} → ${donunce.k.toFixed(2)}`,
   );
   await sayfa.reload({ waitUntil: 'domcontentloaded' });
   await sayfa.click('nav button:has-text("Dünya")');
-  await sayfa.waitForSelector('[data-bolge]', { timeout: 30000 });
+  await sayfa.waitForSelector('[data-harita-hazir]', { timeout: 30000 });
   await sayfa.waitForTimeout(900);
-  const yeniden = await tuval.evaluate((el) => el.style.transform);
+  const yeniden = await gorunum();
   kontrol(
     'Uygulama yeniden açılınca da korunuyor',
-    ayni(yeniden, yakinDonusum),
-    `${yakinDonusum} → ${yeniden}`,
+    ayni(yeniden, yakin),
+    `k ${yakin.k.toFixed(2)} → ${yeniden.k.toFixed(2)}`,
   );
 }
 
-await sayfa.getByRole('button', { name: 'Haritayı sığdır' }).click();
-await sayfa.waitForTimeout(500);
-
-const geri = await tuval.evaluate((el) => el.style.transform);
-kontrol('Sığdır düğmesi haritayı geri alıyor', /scale\(1\)/.test(geri), geri);
-
 // Bölge seçmek hâlâ çalışıyor: yakınlaştırma dokunmayı bozmamalı.
-await bolgeyeDokun(sayfa, '[data-bolge]');
-await sayfa.waitForTimeout(900);
-const govde = await sayfa.locator('body').innerText();
-kontrol('Haritadan bölge seçilebiliyor', /garnizon|Garnizon|SALDIR|Seviye|GELİR/i.test(govde));
+{
+  const harita = await G('/map');
+  const aday = harita.regions
+    .filter((r) => !r.isMine && r.sinirda)
+    .sort((a, b) => a.distance - b.distance)
+    .slice(0, 5)
+    .map((r) => `[data-bolge="${r.id}"]`)
+    .join(',');
+  await bolgeyeDokun(sayfa, aday);
+  await sayfa.waitForTimeout(900);
+  const govde = await sayfa.locator('body').innerText();
+  kontrol('Haritadan bölge seçilebiliyor', /garnizon|Garnizon|SALDIR|Seviye|GELİR/i.test(govde));
+}
 
 /*
  * VİLAYET BİRLİĞİ EKRANDA YAZIYOR MU (docs/11 §1.2 H2).
@@ -437,15 +397,15 @@ kontrol('Haritadan bölge seçilebiliyor', /garnizon|Garnizon|SALDIR|Seviye|GEL�
    */
   await sayfa.reload({ waitUntil: 'domcontentloaded' });
   await sayfa.click('nav button:has-text("Dünya")');
-  await sayfa.waitForSelector('[data-bolge]', { timeout: 30000 });
+  await sayfa.waitForSelector('[data-harita-hazir]', { timeout: 30000 });
   await sayfa.waitForTimeout(900);
 
   const benimler = (await G('/map')).regions.filter((r) => r.pay);
   const sayac = {};
   for (const r of benimler) sayac[r.province] = (sayac[r.province] ?? 0) + 1;
 
-  // Taht Vilayeti'nde tek bölge var; birlik oradan ölçülemez.
-  const hedef = benimler.find((r) => r.province !== 'taht');
+  // Taht birliğe sayılmıyor; birlik taht dışı bir topraktan ölçülüyor.
+  const hedef = benimler.find((r) => r.type !== 'taht');
   if (!hedef) {
     kontrol('Vilayet birliği rozeti ölçülebildi', false, 'taht dışı bölgesi olmayan lord');
   } else {
@@ -463,18 +423,7 @@ kontrol('Haritadan bölge seçilebiliyor', /garnizon|Garnizon|SALDIR|Seviye|GEL�
       await kapat.last().click();
       await sayfa.waitForTimeout(600);
     }
-    /*
-     * Tıklama DOM üzerinden gönderiliyor, fare ile değil.
-     *
-     * 121 bölgelik haritada işaretçiler yer yer üst üste biniyor ve
-     * Playwright'ın erişilebilirlik denetimi "hedefin üstünde başka bir
-     * işaretçi var" diyerek reddediyor. Gerçek oyuncu bunu kaydırarak
-     * çözüyor; buradaki ölçüm ise KARTIN İÇERİĞİ, işaretçiye
-     * dokunulabilirliği değil — o zaten yukarıda ("Haritadan bölge
-     * seçilebiliyor") ölçüldü. `force` de çare değil: örtüşmede tıklamayı
-     * üstteki işaretçi yer ve YANLIŞ bölge açılır.
-     */
-    await sayfa.locator(`[data-bolge="${hedef.id}"]`).dispatchEvent('click');
+    await bolgeyiSec(sayfa, hedef.id);
     /*
      * Kartın AÇILMASI bekleniyor, sabit bir süre değil.
      *
@@ -529,8 +478,10 @@ kontrol('Haritadan bölge seçilebiliyor', /garnizon|Garnizon|SALDIR|Seviye|GEL�
   const evOrdusu = Object.fromEntries(
     Object.entries(ordu.home ?? {}).filter(([, n]) => (n ?? 0) > 0),
   );
+  // Önizleme sınır kuralına bakmıyor (saldırı bakıyor): karşılaştırma için
+  // başka bir ülkenin sınır dışı şehri de olur.
   const oncelik = (await G('/map')).regions.filter((r) => !r.isMine && r.type !== 'taht');
-  const benimVilayet = Object.keys(sayac).find((v) => v !== 'taht' && sayac[v] >= 1);
+  const benimVilayet = Object.keys(sayac).find((v) => sayac[v] >= 1);
   const esle = (r) => `${r.type}|${r.level}`;
   const icerde = oncelik.filter((r) => r.province === benimVilayet);
   const disarda = oncelik.filter((r) => !sayac[r.province]);
@@ -577,7 +528,7 @@ kontrol('Haritadan bölge seçilebiliyor', /garnizon|Garnizon|SALDIR|Seviye|GEL�
       await kapatB.last().click();
       await sayfa.waitForTimeout(600);
     }
-    await sayfa.locator(`[data-bolge="${hedef.id}"]`).dispatchEvent('click');
+    await bolgeyiSec(sayfa, hedef.id);
     const birakDugmesi = sayfa.getByRole('button', { name: 'Bu bölgeyi bırak' });
     await birakDugmesi.waitFor({ timeout: 15000 });
     await birakDugmesi.click();
@@ -622,9 +573,17 @@ kontrol('Haritadan bölge seçilebiliyor', /garnizon|Garnizon|SALDIR|Seviye|GEL�
   const pano = sayfa.locator('[data-bolge-listesi]');
   await pano.waitFor({ timeout: 5000 });
 
+  /*
+   * Hepsi EN YAKIN 250 şehri gösteriyor: 3.000 satırlık bir liste
+   * telefonda kaydırılmaz, aranan şehir haritada bulunuyor.
+   */
   await pano.getByRole('button', { name: /^Hepsi/ }).click();
   const hepsi = await pano.locator('[data-liste-bolge]').count();
-  kontrol('Liste: Hepsi her bölgeyi gösteriyor', hepsi === harita.regions.length, `${hepsi}`);
+  kontrol(
+    'Liste: Hepsi en yakın şehirleri gösteriyor',
+    hepsi === Math.min(250, harita.regions.length),
+    `${hepsi}`,
+  );
 
   await pano.getByRole('button', { name: /^Hedefler/ }).click();
   const idler = await pano
@@ -632,7 +591,7 @@ kontrol('Haritadan bölge seçilebiliyor', /garnizon|Garnizon|SALDIR|Seviye|GEL�
     .evaluateAll((els) => els.map((e) => Number(e.getAttribute('data-liste-bolge'))));
   const bolgeler = idler.map((id) => harita.regions.find((r) => r.id === id));
   const saldirilabilir = (r) =>
-    r && !r.isMine && !r.cekirdek && !r.shielded && !(r.owner && (r.paktli || r.muttefik));
+    r && !r.isMine && r.sinirda && !r.shielded && !(r.owner && (r.paktli || r.muttefik));
   kontrol(
     'Liste: Hedefler yalnız saldırılabilir topraklar',
     idler.length > 0 && bolgeler.every(saldirilabilir),
@@ -648,11 +607,13 @@ kontrol('Haritadan bölge seçilebiliyor', /garnizon|Garnizon|SALDIR|Seviye|GEL�
   await pano.locator(`[data-liste-bolge="${ilk?.id}"]`).click();
   await sayfa.waitForTimeout(900);
   const kapandi = (await pano.count()) === 0;
-  const metin = await sayfa.locator('body').innerText();
+  // Kart başlığı büyük harfle yazılıyor (CSS); hangi bölgenin kartı
+  // açıldığı başlığın imzasından okunuyor, metinden değil.
+  const kartAcik = (await sayfa.locator(`[data-bolge-baslik="${ilk?.id}"]`).count()) > 0;
   kontrol(
     'Liste: satıra dokunmak bölgenin kartını açıyor',
-    kapandi && Boolean(ilk) && metin.includes(ilk.name),
-    ilk?.name ?? '',
+    kapandi && Boolean(ilk) && kartAcik,
+    `${ilk?.name ?? ''} · liste ${kapandi ? 'kapandı' : 'açık'} · kart ${kartAcik ? 'açık' : 'yok'}`,
   );
 }
 

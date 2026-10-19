@@ -7,7 +7,7 @@
  *
  * API ve arayüz ayakta olmalı. node tools/savas-raporu-testi.mjs
  */
-import { bolgeyeDokun, ekrana, rehberiSustur } from './lib/gezin.mjs';
+import { bolgeyeDokun, ekrana, rehberiSustur, ulkeyiSec } from './lib/gezin.mjs';
 import { devices } from 'playwright';
 import { tarayiciAc } from './lib/tarayici.mjs';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
@@ -44,6 +44,8 @@ await page.fill('input[placeholder="Kara Yusuf"]', `Rapor ${damga.toString(36).s
 await page.fill('input[type=email]', `rapor${damga}@lordlar.dev`);
 await page.fill('input[type=password]', 'parola1234');
 await page.click('button[type=submit]');
+// Yeni lord önce ülkesini seçiyor (docs/27): gerçek oyuncu gibi.
+await ulkeyiSec(page);
 await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 15000 });
 // Öğretici tam ekran açılıyor ve arkasını tıklatmıyor: gerçek oyuncu
 // gibi geçiyoruz (bkz. tools/lib/ogretici.mjs).
@@ -76,7 +78,7 @@ await page.waitForSelector('nav button:has-text("Dünya")', { timeout: 15000 });
 
 // --- Saldır ---
 await page.locator('nav button:has-text("Dünya")').click();
-await page.waitForSelector('[aria-label*="Dünya haritası"] [data-bolge]', { timeout: 15000 });
+await page.waitForSelector('[data-harita-hazir]', { timeout: 15000 });
 await page.waitForTimeout(1200);
 // Bölgeler artık gerçek <button>; türü erişilebilir isimde yazılı.
 // Görünür etiket yakınlık kademesine göre gizlenebiliyor, o yüzden
@@ -86,12 +88,14 @@ await page.waitForTimeout(1200);
 // da bir komşusunun altında kalabiliyor ve test otuz saniye bekleyip
 // ölçtüğü şeyle ilgisi olmayan bir sebeple kalıyordu (bkz. bolgeyeDokun).
 /*
- * Hedef ÇEKİRDEK OLMAMALI (docs/16 §5): çekirdekler de sahipsiz
- * görünüyor ama ele geçirilemiyor. Sunucudan alınan listeden
- * çekirdek olmayan bir tarla seçiliyor ve işaretçiye ondan gidiliyor.
+ * Hedef SINIRDA OLMALI (docs/27): sınır dışı şehirler de sahipsiz
+ * görünüyor ama saldırı reddediliyor. Sunucudan alınan listeden
+ * sınırdaki en yakın tarla seçiliyor ve haritada ona gidiliyor.
  */
 const haritaVerisi = await (await fetch(`${API}/api/map`, { headers: h })).json();
-const uygunTarlalar = haritaVerisi.regions.filter((r) => r.type === 'tarla' && fethedilebilirMi(r));
+const uygunTarlalar = haritaVerisi.regions
+  .filter((r) => r.type === 'tarla' && fethedilebilirMi(r))
+  .sort((a, b) => a.distance - b.distance);
 // HEPSİ tek seçicide: yardımcı, üstü kapalı olmayan ilkini seçiyor.
 // Tek bir kimlik versem o işaretçi bir komşusunun altında kalabilir ve
 // `bolgeyeDokun` null döner (bkz. yardımcının kendi yorumu).
@@ -157,7 +161,7 @@ await page.screenshot({ path: `${CIKTI}/rapor-malikane.png` });
 await page.reload({ waitUntil: 'networkidle' });
 await page.waitForSelector('nav button:has-text("Dünya")', { timeout: 15000 });
 await page.locator('nav button:has-text("Dünya")').click();
-await page.waitForSelector('[aria-label*="Dünya haritası"] [data-bolge]', { timeout: 15000 });
+await page.waitForSelector('[data-harita-hazir]', { timeout: 15000 });
 await page.waitForTimeout(1200);
 // AYNI bölge: savaş listesi ancak burada savaş olduysa dolu. "İlk tarla"
 // diyen hâli rastgele bir bölgeye basıyordu ve listenin dolu çıkması

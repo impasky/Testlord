@@ -9,7 +9,7 @@
 import { devices } from 'playwright';
 import { tarayiciAc } from './lib/tarayici.mjs';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
-import { bolgeyeDokun, ekrana, kapida, rehberiSustur } from './lib/gezin.mjs';
+import { bolgeyeDokun, ekrana, kapida, rehberiSustur, ulkeyiSec } from './lib/gezin.mjs';
 import { merkezUzakliklari } from './lib/harita.mjs';
 import { binalariDik, yerlesimAl } from './lib/koy.mjs';
 import { birimiAc } from './lib/birim.mjs';
@@ -87,6 +87,10 @@ await page.fill('input[placeholder="Kara Yusuf"]', `Akis ${damga.toString(36).sl
 await page.fill('input[type=email]', `akis${damga}@lordlar.dev`);
 await page.fill('input[type=password]', 'parola1234');
 await page.click('button[type=submit]');
+// Yeni lord önce ülkesini seçiyor (docs/27): gerçek oyuncu gibi.
+await page.waitForSelector('[data-ulke-secimi]', { timeout: 15000 });
+await page.screenshot({ path: `${CIKTI}/mob-1b-ulke.png` });
+await ulkeyiSec(page);
 await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 15000 });
 // Öğretici tam ekran açılıyor ve arkasını tıklatmıyor: gerçek oyuncu
 // gibi geçiyoruz (bkz. tools/lib/ogretici.mjs).
@@ -252,7 +256,9 @@ const hedef = harita.regions
  * böyle oldu. tools/lib/hedef.mjs'deki dersin gözden kaçan bir kopyası.
  */
 const hedefTipi = hedef?.type ?? 'koy';
-const uygunlar = harita.regions.filter((r) => r.type === hedefTipi && fethedilebilirMi(r));
+const uygunlar = harita.regions
+  .filter((r) => r.type === hedefTipi && fethedilebilirMi(r))
+  .sort((a, b) => a.distance - b.distance);
 const dokunulan = await bolgeyeDokun(
   page,
   uygunlar.length

@@ -3,7 +3,6 @@ import {
   B,
   UNIT_TYPES,
   armyCount,
-  cekirdekMi,
   bosGeneralBonus,
   canRecallMarch,
   ayniIttifaktaMi,
@@ -29,16 +28,16 @@ import { prisma, type Tx } from '../db.js';
 import { GameError, hata } from '../errors.js';
 import { gecikmisleriKapat } from '../services/gecikmis.js';
 import { garnizonPayGirdileri } from '../services/gelir.js';
-import {
-  kartopuDurumu,
-  medeniyetBilgileri,
-  medeniyetBonuslari,
-  surOrani,
-} from '../services/medeniyet.js';
 import { liderAviGecerli } from '../services/march.js';
 import { arastirmaBonusuOku, binalariOku, findLordByUser, pushEvent } from '../services/lord.js';
 import { lordIslemi } from '../services/kilit.js';
-import { dunyaGrafigi, mesafeOlcer, mesafeOlcerHazir } from '../services/mesafe.js';
+import {
+  dunyaGrafigi,
+  mesafeOlcer,
+  mesafeOlcerHazir,
+  sinirOlcer,
+  sinirOlcerHazir,
+} from '../services/mesafe.js';
 import { paktVarMi, paktliIttifaklar } from '../services/pakt.js';
 import { lordunAyricaligi } from '../services/ittifakSeviye.js';
 import {
@@ -110,15 +109,15 @@ async function assertHomeUnits(lordId: string, army: Army, tx: Tx): Promise<void
   }
 }
 
-/** Saldırıyı engelleyen tüm koruma kurallarını uygular (docs/01 §7, docs/16 §5). */
+/** Saldırıyı engelleyen tüm koruma kurallarını uygular (docs/01 §7, docs/27). */
 async function assertCanAttack(
   attackerId: string,
   region: {
     id: number;
     mapId: number;
     type: string;
+    province: string;
     ownerLordId: string | null;
-    ownerMedeniyetId: string | null;
     shieldUntil: Date | null;
   },
   tx: Tx,
@@ -133,28 +132,9 @@ async function assertCanAttack(
       woundedUntil: true,
       dailyAttacks: true,
       arastirmalar: true,
-      medeniyetId: true,
+      ulke: true,
     },
   });
-
-  /*
-   * ÇEKİRDEK ELE GEÇİRİLEMEZ (docs/16 §5).
-   *
-   * Sebebi `docs/09` kural 6'nın fraksiyon ölçeğindeki karşılığı:
-   * kaybeden medeniyet ÖLMEZ, evine çekilir ve geri döner. Çekirdeği
-   * alınabilen bir medeniyet haritadan silinebilirdi ve o medeniyetin
-   * bütün oyuncuları oyundan silinmiş olurdu.
-   *
-   * 121 bölgenin yalnız 20'si çekirdek: harita doğduğu gün karara
-   * bağlanmasın diye küçük tutuldu, ama dokunulmazlık mutlak.
-   */
-  if (cekirdekMi(region.mapId)) {
-    throw new GameError(
-      'Burası bir medeniyetin çekirdeği — ele geçirilemez.',
-      400,
-      'CEKIRDEK_DOKUNULMAZ',
-    );
-  }
 
   if (attacker.woundedUntil && attacker.woundedUntil > now)
     throw hata.yarali(attacker.woundedUntil);
@@ -171,37 +151,26 @@ async function assertCanAttack(
   }
 
   /*
-   * YOLDAŞININ TOPRAĞINA SALDIRAMAZSIN — ama kendi yurdunu ŞENLENDİREBİLİRSİN.
+   * ÜLKE VE SINIR (docs/27).
    *
-   * Kural iki yarıdan oluşuyor ve ikinci yarı ilk yazdığımda yoktu:
+   * Oyuncu bir ülke seçip orada başlıyor; o ülkenin her şehri ona açık.
+   * Başka bir ülkenin şehrine ancak SINIRDAN — evinin ya da tuttuğu bir
+   * toprağın komşusuysa (kara sınırı ya da deniz yolu). Kural shared
+   * `sinirdanMi`de; öneri motoru ve harita da aynı işlevi soruyor.
    *
-   *   - Aynı medeniyetten BİR LORDUN tuttuğu bölgeye saldırı yok. Bu,
-   *     ittifak içi saldırı yasağının fraksiyon ölçeğindeki karşılığı:
-   *     medeniyet seçilmiyor, ATANIYOR ve iç savaş çıkarabilmek atanmış
-   *     bir tarafta olmayı cezaya çevirirdi.
-   *   - Medeniyetin tuttuğu ama HİÇBİR LORDUN almadığı bölge serbest.
-   *     Orada karşındaki yoldaşın değil, bölgenin NPC garnizonu; yurdunu
-   *     şenlendirmek fetihle oluyor.
-   *
-   * SIRA ÖNEMLİ: bu kontrol "kendi bölgen" kontrolünden SONRA geliyor.
-   * Önce koyduğumda kendi bölgesine saldıran oyuncuya "aynı medeniyetten
-   * bir lordun toprağı" deniyordu — doğru ama işe yaramaz bir cevap.
-   * Özel olan genelin önünde durmalı.
-   *
-   * İkinci yarı olmadan oyunun en önemli sözü kırılıyordu: kamp kendi
-   * yurdunda kuruluyor (docs/16 §8), yani yeni oyuncunun ÇEVRESİNDEKİ
-   * her şey kendi medeniyetinin. Hepsi kapalı olunca ilk hedef 5-8 adım
-   * öteye kayıyor ve "ilk saldırı dakikalar içinde biter" sözü (docs/08
-   * İ3) 2 dakikadan 1,6 saate çıkıyordu. Uçtan uca sınama tam olarak
-   * bunu ölçtü ve kaldı.
+   * SIRA: "kendi bölgen"den sonra. Özel olan genelin önünde durmalı —
+   * kendi bölgesine saldıran oyuncuya "sınırın yok" demek doğru ama işe
+   * yaramaz bir cevap olurdu.
    */
-  if (
-    region.ownerMedeniyetId !== null &&
-    region.ownerLordId !== null &&
-    attacker.medeniyetId !== null &&
-    region.ownerMedeniyetId === attacker.medeniyetId
-  ) {
-    throw new GameError('Burası aynı medeniyetten bir lordun toprağı.', 400, 'KENDI_MEDENIYETIN');
+  if (!attacker.ulke) {
+    throw new GameError('Önce ülkeni seç: kampın orada kurulacak.', 400, 'ULKE_SECILMEDI');
+  }
+  if (!(await sinirOlcer(attackerId, tx))(region)) {
+    throw new GameError(
+      'Bu şehir sınırında değil: başka bir ülkeye ancak evinin ya da bir toprağının komşusundan geçebilirsin.',
+      400,
+      'SINIR_YOK',
+    );
   }
 
   // İttifak içi saldırı yok. İttifağın tek zorunlu kuralı bu ve tek
@@ -295,7 +264,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
     await gecikmisleriKapat(lordId);
     const me = await prisma.lord.findUniqueOrThrow({
       where: { id: lordId },
-      select: { worldId: true, homeBolgeId: true, level: true, allianceId: true },
+      select: { worldId: true, homeBolgeId: true, level: true, allianceId: true, ulke: true },
     });
 
     const [regions, oneri, ittifak, graf] = await Promise.all([
@@ -332,11 +301,10 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
 
     // Mesafe en yakın TOPRAĞINDAN ölçülüyor (docs/11 §1.2 H1). Bölgeler
     // zaten elde: ölçeri buradan kuruyoruz, ikinci bir sorgu açmadan.
-    const olc = mesafeOlcerHazir(
-      graf,
-      me.homeBolgeId,
-      regions.filter((r) => r.ownerLordId === lordId).map((r) => r.mapId),
-    );
+    const topraklarim = regions.filter((r) => r.ownerLordId === lordId).map((r) => r.mapId);
+    const olc = mesafeOlcerHazir(graf, me.homeBolgeId, topraklarim);
+    // Sınır kuralı (docs/27) — saldırı ucuyla aynı işlev.
+    const sinirda = sinirOlcerHazir(graf, me.ulke, me.homeBolgeId, topraklarim);
 
     // Paktlı ittifaklar bir kez okunuyor: bölge başına ayrı sorgu 61 sorgu
     // demekti. Sahiplerin ittifakı da tek sorguda geliyor.
@@ -365,20 +333,10 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
      * oldu ve haritada hiçbir aday bulunamadı.
      */
     /*
-     * GARNİZON PAYLARI: gelir artık sahiplikten değil buradan geliyor
+     * GARNİZON PAYLARI: gelir sahipliğe değil garnizona bağlı
      * (docs/16 §6). Arayüz bölge kartındaki geliri kendisi hesaplıyor;
      * payı göndermezsek oyuncuya ALMADIĞI bir sayı yazardı.
-     *
-     * Bu projenin tekrar eden hatası tam olarak bu: aynı sayının iki
-     * yerde ayrı hesaplanması. Ekran payı sunucudan okuyor, kendi
-     * tahmininden değil.
      */
-    const medeniyetler = await medeniyetBilgileri(me.worldId);
-    // Sur oranı: önizleme ile savaşın aynı sayıyı görmesi için TEK
-    // kaynaktan (bkz. `medeniyetBonuslari` yorumu).
-    const surlar = await medeniyetBonuslari(me.worldId);
-    const medeniyetBilgisi = (id: string | null) => (id ? (medeniyetler.get(id) ?? null) : null);
-
     const paylar = new Map(
       (await garnizonPayGirdileri(lordId)).map((p) => [
         p.regionId,
@@ -396,6 +354,8 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       // Kampın çıpası: hangi bölgenin yanında durduğu. Harita bunu
       // "burası senin kampın" işaretini koymak için kullanıyor.
       homeBolgeId: mapIdToId.get(me.homeBolgeId) ?? regions[0]?.id ?? 0,
+      /** Lordun seçtiği ülke (docs/27); null: henüz seçmedi. */
+      ulke: me.ulke,
       maxRegions: maxRegions(me.level),
       ittifakHedefi: ittifak?.targetRegionId
         ? { regionId: ittifak.targetRegionId, not: ittifak.targetNote, etiket: ittifak.tag }
@@ -405,6 +365,8 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       oneri,
       regions: regions.map((r) => ({
         id: r.id,
+        /** Kanonik harita numarası — çizimdeki toprak (`dunyaGeo.json`) bununla eşleşiyor. */
+        mapId: r.mapId,
         name: r.name,
         type: r.type,
         province: r.province,
@@ -417,17 +379,8 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
         isMine: r.ownerLordId === lordId,
         /** Bu bölgenin gelirinden bana düşen pay — garnizonum yoksa null. */
         pay: paylar.get(r.id) ?? null,
-        /**
-         * Bölgeyi TUTAN medeniyet (docs/16 §2) — sahipsiz çekişmeli
-         * bölgelerde null.
-         *
-         * Anahtar, ad ve renk `balance.json`dan geliyor: veritabanı
-         * yalnız hangi medeniyet olduğunu saklıyor, nasıl göründüğünü
-         * değil. İkinci bir kopya olsaydı renk iki yerde yaşardı.
-         */
-        medeniyet: medeniyetBilgisi(r.ownerMedeniyetId),
-        /** Ele geçirilemeyen çekirdek mi (docs/16 §5). */
-        cekirdek: cekirdekMi(r.mapId),
+        /** Sınır kuralı izin veriyor mu (docs/27): kendi ülkem ya da komşum. */
+        sinirda: sinirda(r),
         shielded: r.shieldUntil ? r.shieldUntil > new Date() : false,
         distance: olc(r.mapId),
         // Pakt: saldırılamaz ama müttefik de değil. Haritada ayrı bir
@@ -439,7 +392,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
         muttefik: r.owner
           ? ayniIttifaktaMi(me.allianceId, sahipIttifaki.get(r.owner.id) || null)
           : false,
-        fortressBonus: bolgeTahkimati(r, r.owner, surOrani(surlar, r.ownerMedeniyetId)),
+        fortressBonus: bolgeTahkimati(r, r.owner),
       })),
     };
   });
@@ -447,7 +400,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
   app.get('/map/:id', { preHandler: requireAuth }, async (req) => {
     const { id } = z.object({ id: z.coerce.number().int() }).parse(req.params);
     const lordId = await findLordByUser(req.user.userId);
-    const [region, olc] = await Promise.all([
+    const [region, olc, sinirda] = await Promise.all([
       prisma.region.findUnique({
         where: { id },
         include: {
@@ -465,6 +418,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
       // Mesafe en yakın toprağından (docs/11 §1.2 H1); ölçer evi ve
       // toprakları kendi okuyor.
       mesafeOlcer(lordId),
+      sinirOlcer(lordId),
     ]);
     // Başka bir diyarın bölgesi "yok": numara genel, diyar değil. Denetimsiz
     // uç, oyuncunun hiç giremeyeceği haritaların sahibini ve garnizon
@@ -580,11 +534,6 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
      */
     void gozDikildi(lordId, region, benim, muttefik);
 
-    const bolgeMedeniyetleri = await medeniyetBilgileri(region.worldId);
-    const bolgeSurlari = await medeniyetBonuslari(region.worldId);
-    const medeniyetBilgisi = (id: string | null) =>
-      id ? (bolgeMedeniyetleri.get(id) ?? null) : null;
-
     const payim =
       (await garnizonPayGirdileri(lordId)).find((x) => x.regionId === region.id) ?? null;
 
@@ -613,8 +562,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
        * arayüz ikisinden de aynı şekli bekliyor.
        */
       pay: payim ? { oran: payim.oran, yer: payim.yer, toplamYer: payim.toplamYer } : null,
-      medeniyet: medeniyetBilgisi(region.ownerMedeniyetId),
-      cekirdek: cekirdekMi(region.mapId),
+      sinirda: sinirda(region),
       // Liste ucuyla aynı türetilmiş alanlar; arayüz iki uçtan da aynı şekli bekler.
       distance: olc(region.mapId),
       shielded: region.shieldUntil ? region.shieldUntil > new Date() : false,
@@ -654,11 +602,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
         kesifMaliyetiAltin() * (1 - (await lordunAyricaligi(lordId)).kesifIndirimi),
       ),
       kesifSuresiSn: kesifSuresiSn(olc(region.mapId)),
-      fortressBonus: bolgeTahkimati(
-        region,
-        region.owner,
-        surOrani(bolgeSurlari, region.ownerMedeniyetId),
-      ),
+      fortressBonus: bolgeTahkimati(region, region.owner),
       upgradeCost:
         region.level < B.bolgeler.max_bolge_seviyesi ? regionUpgradeCost(region.level) : null,
       store: benim
@@ -1019,11 +963,7 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
     // kareyi oynatınca kazanma ihtimalinin değişmesi, dizilimin işe
     // yaradığını gösteren tek şey.
     const attacker = await lordSide(lordId, army, body.generalIds, prisma, body.duzen ?? undefined);
-    const fortress = bolgeTahkimati(
-      region,
-      region.owner,
-      surOrani(await medeniyetBonuslari(region.worldId), region.ownerMedeniyetId),
-    );
+    const fortress = bolgeTahkimati(region, region.owner);
 
     const yuruyusSayisi = await prisma.march.count({ where: { lordId } });
     const dist = (await mesafeOlcer(lordId))(region.mapId);
@@ -1103,9 +1043,6 @@ export async function mapRoutes(app: FastifyInstance): Promise<void> {
        * kopya yazmak aynı hatayı bir kez daha kurardı.
        */
       liderAvi: await liderAviGecerli(region.worldId, region.ownerLordId, lordId, prisma),
-      medeniyetAvi:
-        region.ownerMedeniyetId !== null &&
-        (await kartopuDurumu(region.worldId))?.medeniyetId === region.ownerMedeniyetId,
       // Yaralı dönüş savunanın kaybını değiştiriyor; önizleme aynı
       // bayrağı geçirmezse oyuncuya gösterilen "savunanın kaybı"
       // gerçekleşenden farklı çıkardı.

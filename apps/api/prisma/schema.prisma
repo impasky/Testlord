@@ -113,11 +113,14 @@ model World {
   /// oyunculu dünyalar yeniden yazılmasın diye var: yeni harita yalnız
   /// yeni dünyalara uygulanır. Sürümlemeden önce açılmış dünyalarda null.
   mapVersion           String?
+  /// Haritanın TÜRÜ (shared `HARITA_KUSAGI`, docs/27). 1: 121 bölgelik
+  /// hayalî diyar, 2: gerçek dünya. Kuşağı geride kalan dünya — oyuncusu
+  /// olsa da — açılışta yeni haritaya göçüyor (`services/goc.ts`).
+  haritaKusagi         Int          @default(1)
   lords                Lord[]
   regions              Region[]
   alliances            Alliance[]
   paktlar              Pakt[]
-  medeniyetler         Medeniyet[]
   /// Eşya pazarının fiyat grupları (docs/19). Pazar diyar içi: iki
   /// diyarın fiyatı birbirinden habersiz.
   esyaFiyatlari        EsyaFiyati[]
@@ -176,30 +179,23 @@ model Lord {
   kurnazlik    Int @default(5)
   statPoints   Int @default(0)
 
-  altin              Int        @default(0)
+  altin          Int     @default(0)
   /// Elmas: oynayarak kazaniliyor, Android uygulamasinda Google Play'den
   /// satin alinabiliyor (docs/25). Yalniz ZAMAN kisaltir, guc satmaz.
   /// EKSIYE dusebilir: iade edilen satin almanin elmasi geri aliniyor ve
   /// coktan harcanmissa bakiye borca giriyor (harcama >= bedel istedigi
   /// icin borcluyken hicbir sey hizlanmiyor).
-  elmas              Int        @default(0)
+  elmas          Int     @default(0)
   /// Odullu reklamdan artan, henuz bir kuyrukta kullanilmamis DAKIKA
   /// (magaza.reklam.banka_tavan_dakika ile sinirli).
-  reklamDakikasi     Int        @default(0)
-  /// Lordun medeniyeti (docs/16). Kayıtta atanıyor, değiştirilemiyor.
-  /// Null = medeniyet sisteminden ÖNCE açılmış lord; geçiş bitene kadar
-  /// ikisi bir arada yaşıyor.
-  medeniyetId        String?
-  medeniyet          Medeniyet? @relation(fields: [medeniyetId], references: [id], onDelete: SetNull)
-  /// Fayda puanı: kolektif eylemin kişisel karşılığı (docs/16 §9).
-  /// GÜÇ SATIN ALMAZ — kimlik, kolaylık ve içerik erişimi alır.
-  faydaPuani         Int        @default(0)
-  /// Son medeniyet değişimi (docs/16 §13 soru 3). Null: hiç değiştirmedi.
-  /// Bekleme süresi buradan ölçülüyor; taraf değiştirmek kimlik kararı
-  /// olsun diye var, savaş öncesi taktik değil.
-  medeniyetDegisimAt DateTime?
-  demir              Int        @default(0)
-  erzak              Int        @default(0)
+  reklamDakikasi Int     @default(0)
+  /// Oyuncunun SEÇTİĞİ ülke (docs/27): `world-map.json` → `provinces`
+  /// anahtarı (TUR, DEU...). Kampı orada kuruluyor ve o ülkenin her şehri
+  /// ona açık; başka ülkeye sınırdan geçiyor. Null = henüz seçmedi (yeni
+  /// haritaya göçen lord): oyun önce ülke seçimini soruyor.
+  ulke           String?
+  demir          Int     @default(0)
+  erzak          Int     @default(0)
 
   fame                Int @default(0)
   fortressFameAccrued Int @default(0)
@@ -209,7 +205,8 @@ model Lord {
 
   /// Kampın harita üzerindeki çıpası: hangi bölgenin yanında kurulduğu.
   /// Yürüyüş mesafesi buraya göre ölçülür ve kimse buraya saldıramaz.
-  /// Kayıtta kenardaki en az yüklü köyün yanına konur (world-map.json id).
+  /// Ülke seçilince o ülkenin en az yüklü küçük şehrinin yanına konur
+  /// (world-map.json id).
   homeBolgeId Int @default(1)
 
   /// Başkent: şehir sayfasının gösterdiği bölge. null = kamp (henüz toprağı
@@ -408,8 +405,8 @@ model Lord {
   bildirimTercihi Json?
 
   @@unique([userId, worldId])
-  /// Her kayıtta nüfus sayımı bu sütundan geçiyor (`medeniyetAta`).
-  @@index([worldId, medeniyetId])
+  /// Kamp yeri ve ülke ekranı ülkedeki lordları sayıyor.
+  @@index([worldId, ulke])
   @@index([isNpc, npcSonTur])
   @@index([allianceId])
   @@index([worldId, fame])
@@ -480,7 +477,7 @@ model Region {
   /// Veritabanı kimliği. world-map.json'daki numara DEĞİLDİR: birden çok dünya
   /// (shard) aynı haritayı kullandığı için harita numarası dünya başına tekrar eder.
   id       Int    @id @default(autoincrement())
-  /// world-map.json'daki bölge numarası (1-61). Kanonik harita verisine anahtar.
+  /// world-map.json'daki bölge numarası. Kanonik harita verisine anahtar.
   mapId    Int
   worldId  String
   name     String
@@ -494,23 +491,15 @@ model Region {
   komsular Json
   level    Int    @default(1)
 
-  ownerLordId      String?
-  /// Bölgeyi tutan MEDENİYET (docs/16 §2: toprak medeniyetin, pay lordun).
-  ///
-  /// `ownerLordId` bilerek DURUYOR: fetih ve gelir mantığı henüz tek lord
-  /// üzerinden çalışıyor (docs/16 §12 adım 3-4). İkisi bir arada yaşıyor
-  /// ve geçiş bitince eski sütun ayrı bir göçle kalkacak. Şemayı ve
-  /// mantığı aynı anda değiştirmek, çalışan bir oyunu tek hamlede
-  /// kırmak olurdu.
-  ownerMedeniyetId String?
-  ownerMedeniyet   Medeniyet? @relation(fields: [ownerMedeniyetId], references: [id], onDelete: SetNull)
-  npcGarrison      Json
+  /// Bölgeyi tutan lord (docs/27: herkes kendi adına). Null: NPC garnizonu.
+  ownerLordId String?
+  npcGarrison Json
   /// Bu bölgenin KANONİK NPC garnizonu — yıpranan garnizon buna doğru
   /// toparlanır. Dünya kendi tabanını taşıyor ki harita sürümü değişince
   /// eski dünya yeni haritanın garnizonuna doğru yenilenmesin (docs/12 §14).
   /// Sürümlemeden önce yazılmış satırlarda null; seed dolduruyor.
-  npcTaban         Json?
-  incomeMult       Float      @default(1)
+  npcTaban    Json?
+  incomeMult  Float   @default(1)
 
   storeAltin Int @default(0)
   storeDemir Int @default(0)
@@ -526,10 +515,6 @@ model Region {
 
   @@unique([worldId, mapId])
   @@index([worldId, ownerLordId])
-  /// Gelir dağıtımı (docs/16 §12 adım 3) bölgeleri MEDENİYETE göre
-  /// tarayacak; sayımlar da bu sütundan geçiyor. 121 satırda fark
-  /// etmiyor, diyar sayısı arttıkça ediyor.
-  @@index([worldId, ownerMedeniyetId])
 }
 
 model March {
@@ -1099,54 +1084,6 @@ model PushAbonesi {
   lord Lord @relation(fields: [lordId], references: [id], onDelete: Cascade)
 
   @@index([lordId])
-}
-
-/// Bir diyardaki medeniyet ÖRNEĞİ (docs/16).
-///
-/// Kimliğin kendisi (ad, renk, yurt, çekirdek bölgeler) `balance.json`
-/// → `medeniyetler` altında ve veritabanında TEKRARLANMIYOR: bir sayının
-/// ya da adın ikinci kopyası er ya da geç motordan sapar. Burada yalnız
-/// o medeniyetin bu diyardaki DURUMU duruyor.
-model Medeniyet {
-  id        String   @id @default(cuid())
-  worldId   String
-  /// balance.json'daki medeniyet anahtarı: demirocagi | kuzeyuc | karaorman | tasgecit
-  key       String
-  createdAt DateTime @default(now())
-
-  world      World             @relation(fields: [worldId], references: [id], onDelete: Cascade)
-  lordlar    Lord[]
-  bolgeler   Region[]
-  yatirimlar CekirdekYatirim[]
-
-  /// Bir diyarda aynı medeniyet iki kez açılamaz.
-  @@unique([worldId, key])
-}
-
-/// Bir çekirdek bölgeye yapılan ortak yatırım (docs/16 §7).
-///
-/// Bonus TÜRÜ saklanmıyor: hangi çekirdeğin hangi bonusu taşıdığı
-/// `packages/shared/src/medeniyet.ts` içinde haritadan türüyor. Sütun
-/// olsaydı veriyle kod ayrışabilirdi.
-model CekirdekYatirim {
-  id          String @id @default(cuid())
-  medeniyetId String
-  /// world-map.json'daki bölge numarası.
-  mapId       Int
-  seviye      Int    @default(0)
-
-  /// Bir sonraki seviye için BİRİKEN bağış.
-  ///
-  /// Seviye atlayınca maliyeti kadarı düşülüyor, artanı duruyor: bağış
-  /// hiçbir koşulda yanmıyor. Yanan bağış, ortak bir kasaya para atmayı
-  /// kumara çevirirdi — "bir saniye geç kaldım, param gitti".
-  birikenAltin Int @default(0)
-  birikenDemir Int @default(0)
-  birikenErzak Int @default(0)
-
-  medeniyet Medeniyet @relation(fields: [medeniyetId], references: [id], onDelete: Cascade)
-
-  @@unique([medeniyetId, mapId])
 }
 
 /// EŞYA PAZARI — fiyat grubu (docs/19).

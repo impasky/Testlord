@@ -30,21 +30,12 @@ import {
   ARASTIRMA_GRUPLARI,
   B,
   TAKTIKLER,
-  WORLD_MAP,
   counterMultiplier,
   siegeVsFortress,
   siegeVsUnit,
   unitName,
 } from './balance.js';
-import {
-  CEKIRDEK_AZAMI_SEVIYE,
-  CEKIRDEK_BONUSU,
-  FAYDA_FETIH,
-  FAYDA_SAVUNMA,
-  MEDENIYETLER,
-  garnizonFaydaPuani,
-  medeniyetBonusu,
-} from './medeniyet.js';
+import { SEHIR_SAYISI, ULKELER } from './ulkeler.js';
 import { veListesi } from './liste.js';
 import { UNIT_TYPES, type UnitType } from './types.js';
 
@@ -160,48 +151,13 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
     .join(', ');
 
   /*
-   * Medeniyet sayfasının sayıları da motordan (docs/16 §12.6).
-   *
-   * Çekirdek sayısı `balance.json`daki listelerin kendisinden SAYILIYOR,
-   * elle yazılmış bir toplamdan değil. Bu dosyada tam olarak o hata bir
-   * kez yapıldı: bölge sayısı elle yazılmıştı, harita 121'e çıkınca kopya
-   * 61'de kaldı ve öğreticinin ilk sayfası diyarı yarısı kadar tanıttı.
-   *
-   * Bonus oranı da öyle: `medeniyetBonusu` motorun kendi işlevi, öğretici
-   * onu bir kez çağırıp cümleye koyuyor. Denge dosyasındaki `seviye_basina`
-   * değişirse cümle kendiliğinden değişir.
+   * Ülke sayfasının sayıları HARİTADAN (docs/27). Bu dosyada bir kez
+   * bölge sayısı elle yazılmıştı; harita büyüyünce kopya eski sayıda
+   * kaldı ve öğreticinin ilk sayfası diyarı yarısı kadar tanıttı.
    */
-  const cekirdekBasina = MEDENIYETLER[0]!.cekirdekBolgeler.length;
-  const cekirdekSayisi = MEDENIYETLER.reduce((t, m) => t + m.cekirdekBolgeler.length, 0);
-  const cekirdekSeviyeleri = (n: number): Record<number, number> =>
-    Object.fromEntries(MEDENIYETLER[0]!.cekirdekBolgeler.map((id) => [id, n]));
-  const cekirdekBirSeviye = Math.round(medeniyetBonusu(cekirdekSeviyeleri(1)).ambar * 100);
-  const cekirdekTam = Math.round(
-    medeniyetBonusu(cekirdekSeviyeleri(CEKIRDEK_AZAMI_SEVIYE)).ambar * 100,
-  );
-  const medeniyetTanitimi = MEDENIYETLER.map(
-    (m) => `${m.ad}: ${m.ozet.toLocaleLowerCase('tr').replace(/\.$/, '')}`,
-  ).join(' · ');
-  const cekirdekBonuslari = Object.values(CEKIRDEK_BONUSU).join(', ');
-  // Rütbe merdiveni de dengeden: bir kademe eklenirse cümle kendiliğinden
-  // büyür.
-  const faydaRutbeleri = (
-    B.medeniyetler as unknown as { fayda_puani: { rutbeler: { ad: string }[] } }
-  ).fayda_puani.rutbeler
-    .map((r) => r.ad)
-    .join(' → ');
-  // Fayda puanı örneği de motordan: on yerlik bir garnizonun bir saatte
-  // kazandığı puan. "Saatte yarım puan" demek yerine oyuncunun ekranda
-  // göreceği sayıyı yazıyoruz.
-  const ornekGarnizonYeri = 10;
-  const ornekFaydaPuani = garnizonFaydaPuani(ornekGarnizonYeri, 1);
-  // Taht iki ayrı şöhret çarpanı veriyor: tutana ve tutanın medeniyetine
-  // (docs/16 §13 soru 5). İkisi de dengeden.
-  const taht = B.taht_kalesi as { unvan_sohret_bonusu: number; medeniyet_sohret_bonusu: number };
-  const degisimBekleme = (B.medeniyetler as unknown as { degisim: { bekleme_gun: number } }).degisim
-    .bekleme_gun;
-  const tahtUnvanBonusu = Math.round(taht.unvan_sohret_bonusu * 100);
-  const tahtMedeniyetBonusu = Math.round(taht.medeniyet_sohret_bonusu * 100);
+  const ulkeSayisi = ULKELER.size;
+  const tahtUnvanBonusu = Math.round(B.taht_kalesi.unvan_sohret_bonusu * 100);
+  const tahtKorumaSaat = B.taht_kalesi.kaybetme_korumasi_saat;
 
   return [
     {
@@ -210,17 +166,16 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
       ozet: 'Tek bir harita, üzerinde herkes. Sen de onlardan birisin.',
       maddeler: [
         {
-          // Sayı HARİTADAN. `balance.json` içinde elle yazılmış bir kopya
-          // vardı ve 61'de kalmıştı: harita 121 bölgeye çıkınca kopya
-          // büyümedi ve öğreticinin İLK sayfası her yeni oyuncuya diyarı
-          // yarısı kadar tanıtıyordu. Kopya silindi.
-          vurgu: `${WORLD_MAP.region_count} bölge`,
+          // Sayı HARİTADAN: elle yazılmış bir kopya bir kez eski sayıda
+          // kalmıştı ve öğreticinin İLK sayfası diyarı yarısı kadar
+          // tanıtıyordu.
+          vurgu: `${SEHIR_SAYISI} şehir, ${ulkeSayisi} ülke`,
           metin:
-            'Haritadaki her işaret bir bölge. Bir bölgeyi tutan medeniyet varsa çerçevesi onun rengini taşır; ortadaki çekişmeli topraklar henüz kimsenin değil. Bölgeler bitmez ama çoğalmaz da — biri alırsa, bir başkası kaybeder.',
+            'Harita bugünkü dünya: her şehir bir toprak ve her toprak ele geçirilebilir. Bir toprağı tutan lord varsa sınırı onun rengini taşır. Şehirler bitmez ama çoğalmaz da — biri alırsa, bir başkası kaybeder.',
         },
         {
-          vurgu: 'Taht Kalesi',
-          metin: `Haritanın ortasındaki altın çerçeveli bölge. Onu tutan Diyarın Lordu olur ve şöhreti %${tahtUnvanBonusu} büyür; tahtı tutan MEDENİYETİN her üyesi de %${tahtMedeniyetBonusu} alır. Oyunun ucu burası — ve tek başına değil, tarafınla kazanılıyor.`,
+          vurgu: 'Her başkent bir taht',
+          metin: `Her ülkenin başkenti altın çerçeveli bir TAHT. Onu tutan o ülkenin hükümdarı olur ve şöhreti %${tahtUnvanBonusu} büyür. Taht bölge sınırına sayılmaz ve el değiştirince yalnız ${tahtKorumaSaat} saat korunur — oyunun ucu burası.`,
         },
         {
           vurgu: 'Toprak haritayı açar',
@@ -234,56 +189,41 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
         {
           vurgu: 'Kamptan başlarsın',
           metin:
-            'Kampın kendi medeniyetinin yurdunda kurulur; toprağın yok, ordun yok. İlk köyünü fethettiğinde orası başkentin olur ve şehir sayfan bir kamptan bir köye döner. Sana hiçbir şey verilmiyor — ordu da toprak da bina da kazanılıyor.',
+            'Kampın seçtiğin ülkede, bir şehrin yanında kurulur; toprağın yok, ordun yok. İlk şehrini fethettiğinde orası başkentin olur ve şehir sayfan bir kamptan bir yerleşime döner. Sana hiçbir şey verilmiyor — ordu da toprak da bina da kazanılıyor.',
         },
       ],
     },
     /*
-     * MEDENİYET — oyunun türünü söyleyen sayfa (docs/16 §12.6).
+     * ÜLKE — oyunun yayılma kuralını söyleyen sayfa (docs/27).
      *
-     * İkinci sırada ve bilerek: oyuncu "neredeyim"i okudu, şimdi "kimim"
-     * sorusunun sırası. Bu sayfa olmadan yeni oyuncu haritada renkleri
-     * görüyor, bir bölgeye saldıramadığını fark ediyor, aldığı toprağın
-     * gelirini alamadığını anlamıyor — üçünün de tek bir açıklaması var
-     * ve o açıklama burada.
+     * İkinci sırada ve bilerek: oyuncu "neredeyim"i okudu, şimdi "nereye
+     * gidebilirim" sorusunun sırası. Bu sayfa olmadan yeni oyuncu bir
+     * şehre neden saldıramadığını anlamaz — açıklaması sınır kuralı.
      */
     {
-      anahtar: 'medeniyet',
-      baslik: 'Dört medeniyet, sen birinin lordusun',
-      ozet: 'Haritadaki dört renk dört taraf. Tek başına değil, bir tarafla oynuyorsun.',
+      anahtar: 'ulke',
+      baslik: 'Bir ülkede başlarsın, sınırdan yayılırsın',
+      ozet: 'Ülkeni sen seçiyorsun; ötesi komşuluk meselesi.',
       maddeler: [
         {
-          vurgu: `${MEDENIYETLER.length} medeniyet`,
-          metin: `${medeniyetTanitimi}. Her birinin kendi yurdu ve kendi rengi var; haritada bir bölgenin çerçevesi onu tutan medeniyetin rengini taşır.`,
-        },
-        {
-          vurgu: 'Seçmiyorsun, yazılıyorsun',
+          vurgu: 'Ülkeni sen seçersin',
           metin:
-            'Kayıt olurken en az kalabalık medeniyete yazılırsın ve kampın onun yurdunda kurulur. Seçim serbest olsaydı herkes kazanan tarafa geçerdi ve fark kendi kendini büyütürdü — tarafları kura değil sayım dengeliyor.',
+            'Oyuna başlarken bir ülke seçersin ve kampın orada, bir şehrin yanında kurulur. Ülken bir takım değil, bir başlangıç yeri: herkes kendi adına oynar ve aynı ülkeden iki lord da birbirine saldırabilir.',
         },
         {
-          // Kural ÖNCE sessizdi: mekanizma yoktu ve oyuncuya da
-          // söylenmiyordu. Söylenmeyen kural, oyuncunun kafasında
-          // "belki vardır"ı sonsuza kadar yaşatıyor (docs/16 §13 s.3).
-          vurgu: 'Taraf değiştirebilirsin — ama bedeli var',
-          metin: `Yalnız nüfusu ortalamanın ALTINDA olan bir medeniyete geçebilirsin; kazanan tarafa geçiş yok. Geçersen fayda puanın sıfırlanır ve ${degisimBekleme} gün yeniden değiştiremezsin. Toprağın ve kampın seninle gelir.`,
-        },
-        {
-          vurgu: 'Toprak medeniyetin, pay senin',
+          vurgu: 'Kendi ülken açık',
           metin:
-            'Bir bölgenin geliri kâğıt üstündeki sahibine değil, ORADA DURAN garnizonlara gider — bıraktıkları komuta yeri oranında. Askerini çekersen bölge medeniyetinden gitmez ama senin gelirin durur. Bölge bölünemez; bölgedeki pay bölünür.',
+            'Seçtiğin ülkenin her şehrine saldırabilirsin — uzaktaki şehre yürüyüş uzun sürer, o kadar.',
         },
         {
-          vurgu: `${cekirdekSayisi} çekirdek ele geçirilemez`,
-          metin: `Her yurdun ${cekirdekBasina} çekirdek bölgesi var ve hiçbirine saldırılamaz. Bir medeniyet yenilebilir ama silinemez: evine çekilir, toparlanır ve geri döner. Beşincisi medeniyetin başkenti — bonus değil kimlik taşır.`,
+          vurgu: 'Başka ülkeye sınırdan',
+          metin:
+            'Başka bir ülkenin şehrine ancak evinin ya da tuttuğun bir toprağın KOMŞUSUYSA saldırabilirsin. Komşuluk kara sınırından ya da karşı kıyıya giden deniz yolundan gelir. Sınır şehrini aldığında ardındaki ülke de sana açılır.',
         },
         {
-          vurgu: 'Çekirdek bonusu HERKESE işler',
-          metin: `Dört çekirdeğe bağış yaparak medeniyetinin ${cekirdekBonuslari} oranlarını büyütürsün: her seviye +%${cekirdekBirSeviye}, en çok ${CEKIRDEK_AZAMI_SEVIYE} seviye, yani tam geliştirilmiş bir çekirdek +%${cekirdekTam}. Bonus o medeniyetteki herkese işler — bir kuruş vermeyene de.`,
-        },
-        {
-          vurgu: 'Fayda puanı güç satın almaz',
-          metin: `Garnizon tutmak (${ornekGarnizonYeri} yerlik garnizon saatte ${ornekFaydaPuani} puan), fetihe katılmak (${FAYDA_FETIH}), savunmaya katılmak (${FAYDA_SAVUNMA}) ve bağış yapmak fayda puanı kazandırır. Puan HARCANMIYOR: birikiyor ve medeniyetindeki rütbene dönüşüyor (${faydaRutbeleri}). Güç yalnız çekirdekten gelir ve o da herkese eşit işler.`,
+          vurgu: 'Toprak senin, pay garnizonun',
+          metin:
+            'Aldığın şehir senin adına yazılır; geliri orada DURAN garnizona gider. İttifak üyelerin takviye gönderirse geliri bıraktıkları yer oranında paylaşırsınız. Askerini çekersen toprak senden gitmez ama gelirin durur.',
         },
       ],
     },
@@ -411,12 +351,12 @@ export function ogreticiSayfalari(): OgreticiSayfa[] {
         {
           vurgu: 'Ganimet ve fetih',
           metin:
-            'Bir bölgeyi ezici bir üstünlükle alırsan bölge medeniyetine yazılır ve sağ kalan askerlerin orada garnizon olarak kalır — payını o andan itibaren almaya başlarsın. Yaralılar ve ganimet eve döner. Dar kazanırsan yalnız yağmalarsın: kaynağı alır, bölgeyi bırakırsın.',
+            'Bir bölgeyi ezici bir üstünlükle alırsan bölge senin adına yazılır ve sağ kalan askerlerin orada garnizon olarak kalır — gelirini o andan itibaren almaya başlarsın. Yaralılar ve ganimet eve döner. Dar kazanırsan yalnız yağmalarsın: kaynağı alır, bölgeyi bırakırsın.',
         },
         {
-          vurgu: 'Yoldaşına kılıç çekilmez',
+          vurgu: 'İttifakına kılıç çekilmez',
           metin:
-            'Kendi medeniyetinden bir lordun tuttuğu bölgeye saldıramazsın, çekirdeklere ise kimse saldıramaz. Yurdunda henüz hiçbir lordun almadığı bölgeler serbest: oradaki garnizon bir yoldaşın değil, bölgenin kendi muhafızlarıdır — ilk fethin büyük ihtimalle orada olacak.',
+            'İttifak üyelerinin ve saldırmazlık paktın olan ittifakların topraklarına saldıramazsın. Geri kalan her şehir — kendi ülkendeyse ya da sınırındaysa — açık. Henüz kimsenin almadığı şehirlerde karşındaki bir lord değil, şehrin kendi muhafızlarıdır: ilk fethin büyük ihtimalle orada olacak.',
         },
       ],
     },

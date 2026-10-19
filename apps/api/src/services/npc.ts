@@ -55,10 +55,9 @@ import {
   varsayilanDizilim,
   type Army,
   type UnitType,
-  cekirdekMi,
+  sinirdanMi,
 } from '@lordlar/shared';
 import { prisma, type Tx } from '../db.js';
-import { medeniyetBonuslari, surOrani } from './medeniyet.js';
 import { dunyaGrafigi } from './mesafe.js';
 import { enqueue, evdenCikar, spendResources } from './queue.js';
 import { bolgeTahkimati, regionFortressBonus } from './region.js';
@@ -219,6 +218,7 @@ async function lordOynasinTx(tx: Tx, lordId: string, now: Date): Promise<NpcIsi>
       liderlik: true,
       altin: true,
       homeBolgeId: true,
+      ulke: true,
     },
   });
 
@@ -264,6 +264,18 @@ async function lordOynasinTx(tx: Tx, lordId: string, now: Date): Promise<NpcIsi>
     for (const t of topraklar) enAz = Math.min(enAz, graf.mesafe(t.mapId, hedef));
     return enAz;
   };
+  /*
+   * SINIR KURALI NPC'YE DE (docs/27). Kural oyuncunun ucunda
+   * (`assertCanAttack`) duruyor ama NPC yürüyüşü o uçtan geçmiyor —
+   * kendi kaydını doğrudan yazıyor. Burada da sorulmasaydı NPC'ler
+   * dünyanın öbür ucundaki bir şehre atlardı.
+   */
+  const sinirLordu = {
+    ulke: lord.ulke,
+    evBolgeId: lord.homeBolgeId,
+    topraklar: topraklar.map((t) => t.mapId),
+  };
+  const sinirda = (r: { mapId: number; province: string }) => sinirdanMi(graf, r, sinirLordu);
 
   // Bölge tavanı: NPC de oyuncuyla aynı seviye kuralına tabi.
   const bolgeTavani = topraklar.length >= maxRegions(lord.level);
@@ -271,7 +283,7 @@ async function lordOynasinTx(tx: Tx, lordId: string, now: Date): Promise<NpcIsi>
   // ── 3. Oyuncuya saldırı (şansa bağlı) ───────────────────────────
   const oyuncuyaGit = Math.random() < N.oyuncuya_saldiri_olasiligi;
   if (oyuncuyaGit) {
-    const hedef = await oyuncuHedefiSec(lord, ev, olc, tx, now);
+    const hedef = await oyuncuHedefiSec(lord, ev, olc, sinirda, tx, now);
     if (hedef && (await yuruyuseCikar(lord, hedef.id, ev, hedef.mesafe, tx))) {
       return 'oyuncuya-saldiri';
     }
@@ -282,7 +294,7 @@ async function lordOynasinTx(tx: Tx, lordId: string, now: Date): Promise<NpcIsi>
   const payDolu = await npcPayiDolu(lord.worldId, tx);
   if (payDolu) return 'bekledi';
 
-  const hedef = await sahipsizHedefSec(lord, ev, olc, tx, now);
+  const hedef = await sahipsizHedefSec(lord, ev, olc, sinirda, tx, now);
   if (hedef && (await yuruyuseCikar(lord, hedef.id, ev, hedef.mesafe, tx))) {
     return 'sahipsiz-fetih';
   }
@@ -308,6 +320,7 @@ async function sahipsizHedefSec(
   lord: { id: string; worldId: string },
   ordu: Army,
   olc: (mapId: number) => number,
+  sinirda: (r: { mapId: number; province: string }) => boolean,
   tx: Tx,
   now: Date,
 ): Promise<Hedef | null> {
@@ -324,18 +337,7 @@ async function sahipsizHedefSec(
 
   let enIyi: Hedef | null = null;
   for (const r of adaylar) {
-    /*
-     * ÇEKİRDEK NPC'YE DE KAPALI (docs/16 §5).
-     *
-     * Kural oyuncunun ucunda (`assertCanAttack`) duruyor ama NPC
-     * yürüyüşü o uçtan geçmiyor — kendi kaydını doğrudan yazıyor.
-     * Burada tekrar edilmeseydi medeniyetlerin çekirdeklerini bir gece
-     * içinde NPC'ler alırdı ve kimse nasıl olduğunu göremezdi.
-     *
-     * Burası SAHİPSİZ bölgeleri tarıyor: yoldaş toprağı yasağı burada
-     * anlamsız (sahibi yok), o yüzden yalnız çekirdek süzülüyor.
-     */
-    if (cekirdekMi(r.mapId)) continue;
+    if (!sinirda(r)) continue;
     if (!yeterMi(ordu, r.npcGarrison as Army, regionFortressBonus(r.type, r.level))) continue;
     const mesafe = olc(r.mapId);
     if (!enIyi || mesafe < enIyi.mesafe) enIyi = { id: r.id, mesafe };
@@ -355,6 +357,7 @@ async function oyuncuHedefiSec(
   lord: { id: string; level: number; worldId: string },
   ordu: Army,
   olc: (mapId: number) => number,
+  sinirda: (r: { mapId: number; province: string }) => boolean,
   tx: Tx,
   now: Date,
 ): Promise<Hedef | null> {
@@ -439,22 +442,12 @@ async function oyuncuHedefiSec(
     garnizonIle.set(g.locationId, a);
   }
 
-  const benimMedeniyetim = (
-    await tx.lord.findUnique({ where: { id: lord.id }, select: { medeniyetId: true } })
-  )?.medeniyetId;
-
-  const surlar = await medeniyetBonuslari(lord.worldId, tx);
-
   let enIyi: Hedef | null = null;
   for (const r of adaylar) {
     const sahip = r.owner;
     if (!sahip) continue;
 
-    // Çekirdek dokunulmaz; aynı medeniyetten bir lordun toprağı da
-    // (docs/16 §5). Sahipsiz yurt bölgesi serbest: orada yoldaş değil
-    // NPC garnizonu var.
-    if (cekirdekMi(r.mapId)) continue;
-    if (r.ownerMedeniyetId && r.ownerMedeniyetId === benimMedeniyetim) continue;
+    if (!sinirda(r)) continue;
 
     // Seviye farkı kilidi: çok altındakine saldırılmaz.
     if (lord.level - sahip.level >= B.korumalar.seviye_farki_kilidi) continue;
@@ -470,8 +463,7 @@ async function oyuncuHedefiSec(
 
     // Garnizon + surlar: kaybedecek savaşa girilmiyor.
     const garnizon: Army = garnizonIle.get(String(r.id)) ?? {};
-    if (!yeterMi(ordu, garnizon, bolgeTahkimati(r, sahip, surOrani(surlar, r.ownerMedeniyetId))))
-      continue;
+    if (!yeterMi(ordu, garnizon, bolgeTahkimati(r, sahip))) continue;
 
     if (!enIyi || mesafe < enIyi.mesafe) enIyi = { id: r.id, mesafe };
   }

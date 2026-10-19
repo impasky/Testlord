@@ -442,7 +442,7 @@ export const REHBER_ISIKLARI: Record<string, RehberIsaret[]> = {
     {
       isaret: 'harita-saldir',
       sebep:
-        'Bu düğme orduyu yola çıkarır. Geri dönüşü yok — ama hesabı yaptım: bu bölge medeniyetine yazılır, ordun orada kalır ve gelirin o günden sonra oradan akar.',
+        'Bu düğme orduyu yola çıkarır. Geri dönüşü yok — ama hesabı yaptım: bu bölge senin olur, ordun orada kalır ve gelirin o günden sonra oradan akar.',
     },
     {
       isaret: 'harita-hepsi',

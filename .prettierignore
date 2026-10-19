@@ -23,3 +23,10 @@ apps/mobil/android/
 
 # Proje haritası: biçimini `tools/harita.mjs` belirliyor (`pnpm harita`).
 HARITA.md
+
+# Gerçek dünya haritası (docs/27): biçimini `tools/gercek-dunya-uret.mjs`
+# belirliyor. CI üreticiyi koşturup çıktının bayt bayt aynı kaldığını
+# ölçüyor; Prettier yeniden biçimlendirirse ikisi her koşuda çatışır.
+data/world-map.json
+data/dunya-ozet.json
+apps/web/src/components/harita/dunyaGeo.json

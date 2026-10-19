@@ -1,8 +1,8 @@
 /**
- * Taht Kalesi testi: endgame'in kendine özgü kuralları.
+ * Taht testi: endgame'in kendine özgü kuralları.
  *
- * docs/01 §5 tahtı "endgame'in tamamı" diye tanımlıyor ve ona üç ayrıcalık
- * veriyor. Üçü de sessizce bozulabilecek türden: kod çalışmaya devam eder,
+ * Gerçek dünyada (docs/27) her ülkenin başkenti bir taht; tutan o ülkenin
+ * hükümdarı oluyor. docs/01 §5 tahta üç ayrıcalık veriyor. Üçü de sessizce bozulabilecek türden: kod çalışmaya devam eder,
  * sadece taht sıradan bir bölgeye dönüşür ve kimse fark etmez.
  *
  *   1. Günlük saldırı limitine tabi değil — hem kontrolde hem sayaçta
@@ -23,7 +23,7 @@ function kontrol(ad, kosul, detay = '') {
   if (!kosul) hata++;
 }
 
-console.log('Lordlar Çağı — Taht Kalesi testi\n');
+console.log('Lordlar Çağı — taht testi\n');
 
 const d = Date.now();
 /*
@@ -31,9 +31,15 @@ const d = Date.now();
  * ~47 saniyede bir tekrar ediyor ve süiti üst üste koşturunca "Bu lord
  * adı alınmış" (409) ile düşüyordu. Yardımcı rastgelelik de katıyor.
  */
+/*
+ * Moğolistan: az şehirli, az kalabalık bir ülke. Testlerin çoğu Türkiye'de
+ * başlıyor; Ankara'yı burada almak öbür testlerin hedeflerini değiştirirdi.
+ */
+const ULKE = 'MNG';
 const { token } = await kayitOl(API, {
   email: `taht${d}@lordlar.dev`,
   lordName: benzersizAd('Taht'),
+  ulke: ULKE,
 });
 const h = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
 const P = (u, b) =>
@@ -48,8 +54,14 @@ const puan = (await G('/me')).lord.statPoints;
 if (puan > 0) await P('/me/stats', { liderlik: puan });
 await P('/test/kalkanlari-kaldir');
 
-const taht = (await G('/map')).regions.find((x) => x.type === 'taht');
-kontrol('Diyarda tam bir Taht Kalesi var', Boolean(taht), taht?.name);
+const tahtlar = (await G('/map')).regions.filter((x) => x.type === 'taht');
+const taht = tahtlar.find((x) => x.province === ULKE);
+kontrol('Ülkemin başkenti bir taht', Boolean(taht), taht?.name);
+kontrol(
+  'Her ülkenin tek tahtı var',
+  new Set(tahtlar.map((x) => x.province)).size === tahtlar.length,
+  `${tahtlar.length} taht`,
+);
 
 // --- Günlük hakkı tüket: normal bölgelere saldır ---
 const limitOnce = (await G('/me')).lord.dailyAttacks;
@@ -72,7 +84,7 @@ for (let tur = 1; tur <= 6 && !alindi; tur++) {
   await P('/test/yuruyusleri-bitir');
   alindi = (await G('/me')).lord.ownsThrone;
 }
-kontrol('Taht Kalesi ele geçirildi', alindi);
+kontrol('Taht ele geçirildi', alindi);
 
 const me = await G('/me');
 kontrol(
@@ -95,35 +107,34 @@ kontrol(
   me.lord.regionCount === 0 || me.lord.ownsThrone,
   `${me.lord.regionCount} bölge, taht ayrı`,
 );
-kontrol('Diyarın Lordu şöhret bonusu aldı', me.lord.fame > 0, `şöhret ${me.lord.fame}`);
+kontrol('Hükümdar şöhret bonusu aldı', me.lord.fame > 0, `şöhret ${me.lord.fame}`);
 
 const siralama = await G('/rankings/fame?page=0');
 const benim = siralama.benim ?? siralama.satirlar.find((r) => r.lordId === me.lord.id);
-kontrol('Sıralamada Diyarın Lordu işareti var', benim?.tahtSahibi === true);
+kontrol('Sıralamada taht işareti var', benim?.tahtSahibi === true);
 
-/* --- Taht artık MEDENİYETE de yazıyor (docs/16 §13 soru 5) ---
+/* --- Dünya şeridi ÜLKEMİN tahtını söylüyor (docs/27) ---
  *
- * Taht bir lordun unvanı olmaktan çıkıp bir tarafın kazancı oldu: tutan
- * medeniyetin her üyesi küçük bir şöhret çarpanı alıyor. Uç bunu
- * söylemezse kolektif hedef oyuncuya hiç görünmez.
+ * Şerit oyuncunun kendi ülkesinin başkentini gösteriyor; yanlış tahtı
+ * (ya da hiçbirini) gösterirse kolektif hedef oyuncuya görünmez.
  */
 {
   const dunya = await G('/dunya');
   kontrol(
-    'Dünya, tahtı TUTAN MEDENİYETİ söylüyor',
-    Boolean(dunya.taht?.medeniyet?.ad),
-    dunya.taht?.medeniyet?.ad ?? 'yok',
+    'Dünya, ülkemin tahtını söylüyor',
+    dunya.taht?.regionId === taht.id,
+    dunya.taht?.name ?? 'yok',
   );
   kontrol(
-    'Taht benim medeniyetimde işaretli',
-    dunya.taht?.benimMedeniyetimde === true,
-    `benimMedeniyetimde=${dunya.taht?.benimMedeniyetimde}`,
+    'Taht sahibi ben',
+    dunya.taht?.sahip?.id === me.lord.id,
+    dunya.taht?.sahip?.name ?? 'yok',
   );
   // Sayı dengeden geliyor; uç kendi kopyasını yazmıyor.
   kontrol(
-    'Medeniyet şöhret payı dengeyle aynı',
-    dunya.taht?.medeniyetSohretBonusu === DENGE.taht_kalesi.medeniyet_sohret_bonusu,
-    String(dunya.taht?.medeniyetSohretBonusu),
+    'Şöhret payı dengeyle aynı',
+    dunya.taht?.sohretBonusu === DENGE.taht_kalesi.unvan_sohret_bonusu,
+    String(dunya.taht?.sohretBonusu),
   );
 }
 

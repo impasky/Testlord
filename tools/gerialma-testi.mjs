@@ -31,6 +31,8 @@ const { token: jeton } = await fetch(`${API}/api/auth/register`, {
     email: `ga${damga}@lordlar.dev`,
     password: 'parola1234',
     lordName: `Geri ${damga.toString(36).slice(-4) + Math.random().toString(36).slice(2, 4)}`,
+    // Ülkesi olmayan lord saldıramıyor (docs/27).
+    ulke: 'TUR',
   }),
 }).then((r) => r.json());
 

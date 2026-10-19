@@ -9,7 +9,7 @@
  * API ve web ayakta olmalı. node tools/ogretici-testi.mjs
  */
 import { tarayiciAc } from './lib/tarayici.mjs';
-import { ekrana, rehberiSustur } from './lib/gezin.mjs';
+import { ekrana, rehberiSustur, ulkeyiSec } from './lib/gezin.mjs';
 
 const WEB = process.env.WEB_URL ?? 'http://localhost:5173';
 // Varsayılan çıktı klasörü: ekran görüntüleri deponun köküne düşmesin.
@@ -37,6 +37,8 @@ await sayfa.fill('input[placeholder="Kara Yusuf"]', `Ogr ${damga.toString(36).sl
 await sayfa.fill('input[type=email]', `ogretici${damga}@lordlar.dev`);
 await sayfa.fill('input[type=password]', 'parola1234');
 await sayfa.click('button[type=submit]');
+// Yeni lord önce ülkesini seçiyor (docs/27): gerçek oyuncu gibi.
+await ulkeyiSec(sayfa);
 
 // --- 1. Yeni lord öğreticiyi görüyor
 const ogretici = sayfa.locator('[role=dialog][aria-label="Öğretici"]');

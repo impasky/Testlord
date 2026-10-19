@@ -117,7 +117,7 @@ try {
   sql(
     `UPDATE "Region" SET "ownerLordId" = '${evLordId}' WHERE "worldId" = '${evId}' AND "mapId" = 5;`,
   );
-  // Ev sahibinin lordu tahtı tutuyor: birleşmede sahipsiz kalmalı.
+  // Ev sahibinin lordu tahtları tutuyor: birleşmede hepsi sahipsiz kalmalı.
   sql(
     `UPDATE "Region" SET "ownerLordId" = '${evLordId}' WHERE "worldId" = '${evId}' AND type = 'taht';`,
   );
@@ -232,8 +232,9 @@ try {
   kontrol(
     'TAHT SAHİPSİZ — kimsenin unvanı sessizce el değiştirmedi',
     sql(
-      `SELECT coalesce("ownerLordId", 'YOK') FROM "Region" WHERE "worldId" = '${evId}' AND type = 'taht';`,
-    ) === 'YOK',
+      // Her ülkenin başkenti bir taht (docs/27): hiçbirinin sahibi kalmamalı.
+      `SELECT count(*) FROM "Region" WHERE "worldId" = '${evId}' AND type = 'taht' AND "ownerLordId" IS NOT NULL;`,
+    ) === '0',
   );
   kontrol(
     'Göçen lord geliş kalkanı altında',

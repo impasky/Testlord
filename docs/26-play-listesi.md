@@ -34,10 +34,10 @@ ORDUNU YÖNET
 • Demirhanede ekipman üret ve yükselt
 
 DİYARI FETHET
-• Altıgen bir dünya haritasında bölge al, savun, kaybet
+• Gerçek dünya haritası: 197 ülke, 3.000'i aşkın şehir; her şehir ele geçirilebilir
 • Şef kamplarına akın ederek ganimet topla
 • Keşif, kalkan ve takviye ile hamleni planla
-• 4 medeniyet, her birinin kendi oynanışı
+• Bir ülke seç, sınırdan yayıl; her ülkenin başkenti bir taht
 
 İTTİFAKINLA OYNA
 • İttifak kur ya da birine katıl; sohbet, duyuru, kaynak gönderme, paktlar
@@ -67,10 +67,10 @@ LEAD YOUR ARMY
 • Craft and upgrade equipment at the forge
 
 CONQUER THE REALM
-• Take, hold and lose regions on a hex world map
+• A real world map: 197 countries, over 3,000 cities, every one of them conquerable
 • Raid chief camps for loot
 • Plan your moves with scouting, shields and reinforcements
-• 4 civilizations, each with its own play style
+• Pick a country, expand across its borders; every capital is a throne
 
 PLAY WITH YOUR ALLIANCE
 • Found or join an alliance: chat, announcements, resource sharing, pacts

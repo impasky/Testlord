@@ -1,5 +1,10 @@
 # 16 — Medeniyetler: haritayı bireysel fetihten çıkarmak
 
+> **Kaldırıldı (docs/27).** Medeniyet katmanı gerçek dünya haritasıyla
+> birlikte kalktı: oyuncu bir ülke seçiyor, herkes kendi adına oynuyor.
+> Garnizon payı (§6) kaldı; pay artık bölgenin sahibi ve sahibin
+> ittifakı arasında bölünüyor. Bu belge kararın geçmişi olarak duruyor.
+
 **Bu bir ÖNERİ, karar değil.** `docs/09` kararları kaydeder; bu belge
 henüz verilmemiş bir kararın gerekçesini ve sayılarını taşıyor. Karar
 verilirse özeti `docs/09`a düşer.

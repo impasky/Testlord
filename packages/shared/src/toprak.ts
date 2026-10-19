@@ -191,27 +191,27 @@ export interface Sahiplik {
   benim: boolean;
   /** Tutan lordun kimliği; sahipsizse null. */
   lord: string | null;
-  /** Tutan medeniyetin kimliği; çekişmeliyse null. */
-  medeniyet: string | null;
+  /** Toprağın ülkesi (docs/27). */
+  ulke: string;
 }
 
 /**
  * İki komşu toprak arasındaki sınırın türü. Göz önce sınırı okur; dört
  * kademe var ve her biri bir soruyu cevaplıyor:
  *
- *   ben        senin toprağının kenarı — altın. "Benimki nerede bitiyor."
- *   lord       iki ayrı lordun ya da lordla sahipsizin arası — kalın.
- *              "Kimin toprağı nerede bitiyor."
- *   medeniyet  iki medeniyetin arası — orta. "Cephe hattı nerede."
- *   ic         aynı sahibin iki bölgesi — ince. Bölge yine seçilebilir
- *              ama toprak tek parça okunur.
+ *   ben   senin toprağının kenarı — altın. "Benimki nerede bitiyor."
+ *   lord  iki ayrı lordun ya da lordla sahipsizin arası — kalın.
+ *         "Kimin toprağı nerede bitiyor."
+ *   ulke  iki ülkenin arası — orta. "Sınır nerede" (docs/27).
+ *   ic    aynı sahibin iki bölgesi — ince. Bölge yine seçilebilir
+ *         ama toprak tek parça okunur.
  */
-export type SinirTuru = 'ben' | 'lord' | 'medeniyet' | 'ic';
+export type SinirTuru = 'ben' | 'lord' | 'ulke' | 'ic';
 
 export function sinirTuru(a: Sahiplik, b: Sahiplik): SinirTuru {
   if (a.benim !== b.benim) return 'ben';
   if (a.lord !== b.lord && (a.lord !== null || b.lord !== null)) return 'lord';
-  if (a.medeniyet !== b.medeniyet) return 'medeniyet';
+  if (a.ulke !== b.ulke) return 'ulke';
   return 'ic';
 }
 
@@ -297,8 +297,13 @@ export function kumeler(
 /* Hedefler merceği                                                    */
 /* ------------------------------------------------------------------ */
 
-/** Bir bölgeye saldırmanın önündeki KALICI engel. */
-export type HedefEngeli = 'cekirdek' | 'yoldas' | 'muttefik' | 'pakt' | 'kalkan';
+/**
+ * Bir bölgeye saldırmanın önündeki KALICI engel.
+ *
+ * `sinir`: başka bir ülkenin şehri ve evinin ya da toprağının komşusu
+ * değil (docs/27). `ulke`: lord henüz ülkesini seçmedi.
+ */
+export type HedefEngeli = 'ulke' | 'sinir' | 'muttefik' | 'pakt' | 'kalkan';
 
 export type HedefDurumu =
   { tur: 'benim' } | { tur: 'yasak'; sebep: HedefEngeli } | { tur: 'acik'; adim: number };
@@ -306,8 +311,8 @@ export type HedefDurumu =
 export interface HedefGirdisi {
   isMine: boolean;
   owner: { id: string } | null;
-  medeniyet: { id: string } | null;
-  cekirdek: boolean;
+  /** Sınır kuralı izin veriyor mu (`sinirdanMi`, sunucu hesaplıyor). */
+  sinirda: boolean;
   shielded: boolean;
   paktli?: boolean;
   muttefik?: boolean;
@@ -317,18 +322,15 @@ export interface HedefGirdisi {
 /**
  * "Buraya saldırabilir miyim" — sunucunun kurallarının haritadaki eşi.
  *
- * Sıra `routes/map.ts`deki kontrol sırasıyla aynı: kendi bölgen, çekirdek,
- * aynı medeniyetten bir LORDUN toprağı (medeniyetin tuttuğu ama lordu
- * olmayan bölge serbest — orada karşındaki yoldaşın değil NPC garnizonu),
- * ittifak üyesi, pakt, kalkan. Günlük hak ve lordun yarası geçici ve
- * bölgeye değil lorda ait; onlar bölge kartında söyleniyor.
+ * Sıra `routes/map.ts`deki kontrol sırasıyla aynı: kendi bölgen, ülke
+ * seçimi, sınır (docs/27), ittifak üyesi, pakt, kalkan. Günlük hak ve
+ * lordun yarası geçici ve bölgeye değil lorda ait; onlar bölge kartında
+ * söyleniyor.
  */
-export function hedefDurumu(r: HedefGirdisi, benimMedeniyet: string | null): HedefDurumu {
+export function hedefDurumu(r: HedefGirdisi, ulkem: string | null): HedefDurumu {
   if (r.isMine) return { tur: 'benim' };
-  if (r.cekirdek) return { tur: 'yasak', sebep: 'cekirdek' };
-  if (r.owner && r.medeniyet && benimMedeniyet && r.medeniyet.id === benimMedeniyet) {
-    return { tur: 'yasak', sebep: 'yoldas' };
-  }
+  if (ulkem === null) return { tur: 'yasak', sebep: 'ulke' };
+  if (!r.sinirda) return { tur: 'yasak', sebep: 'sinir' };
   if (r.owner && r.muttefik) return { tur: 'yasak', sebep: 'muttefik' };
   if (r.owner && r.paktli) return { tur: 'yasak', sebep: 'pakt' };
   if (r.shielded) return { tur: 'yasak', sebep: 'kalkan' };

@@ -21,6 +21,7 @@
 import { devices } from 'playwright';
 import { tarayiciAc } from './lib/tarayici.mjs';
 import { kayitOl } from './lib/kayit.mjs';
+import { ulkeyiSec } from './lib/gezin.mjs';
 
 const API = process.env.API_URL ?? 'http://localhost:3000';
 const WEB = process.env.WEB_URL ?? 'http://127.0.0.1:5173';
@@ -658,9 +659,12 @@ await page.waitForTimeout(2500);
   await s2.locator('input[type=email]').fill(`isikilk${d5}@lordlar.dev`);
   await s2.locator('input[type=password]').fill('parola12345');
   await s2.locator('form button[type="submit"]').last().click();
+  // Yeni lord önce ülkesini seçiyor (docs/27); öğretici ondan sonra.
+  await s2.waitForSelector('[data-ulke-secimi]', { timeout: 25000 });
+  await ulkeyiSec(s2);
 
   await s2.waitForSelector('[role="dialog"][aria-label="Öğretici"]', { timeout: 25000 });
-  kontrol('Gerçek kayıtta önce tam ekran öğretici açılıyor', true);
+  kontrol('Gerçek kayıtta ülke seçiminden sonra tam ekran öğretici açılıyor', true);
 
   // Sayfa sayısı SABİT DEĞİL: öğretici genişledikçe artıyor. "Devam"
   // görünmez olana kadar ilerliyoruz — son sayfada onun yerine
@@ -710,6 +714,8 @@ await page.waitForTimeout(2500);
   await s3.locator('input[type=email]').fill(`isikgec${d6}@lordlar.dev`);
   await s3.locator('input[type=password]').fill('parola12345');
   await s3.locator('form button[type="submit"]').last().click();
+  await s3.waitForSelector('[data-ulke-secimi]', { timeout: 25000 });
+  await ulkeyiSec(s3);
 
   await s3.waitForSelector('[role="dialog"][aria-label="Öğretici"]', { timeout: 25000 });
   // Tek sayfa bile okumadan geç.

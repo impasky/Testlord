@@ -18,8 +18,8 @@
  *
  * ── Zemin resim, bilgi DOM ──────────────────────────────────────────
  *
- * Dünya haritasıyla aynı mimari (DunyaHaritasi.tsx): yerleşim zemini tek
- * bir resim, binalar üstüne yüzdelik konumlarıyla konan düğmeler. Zemin
+ * Eski SVG dünya haritasının mimarisi: yerleşim zemini tek bir resim,
+ * binalar üstüne yüzdelik konumlarıyla konan düğmeler. Zemin
  * yoksa gradyan kalıyor ve sayfa çalışmaya devam ediyor.
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -439,7 +439,7 @@ export function Sehir({
             adim={rehberAdimi?.anahtar ?? null}
             durum={rehberDurumu}
             gorundu={lord.rehberGorundu}
-            medeniyet={lord.medeniyet}
+            ulke={lord.ulke}
           />
         </div>
         {insaat.map((i) => (

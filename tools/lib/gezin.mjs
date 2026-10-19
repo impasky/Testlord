@@ -125,6 +125,25 @@ export async function ekrana(page, ad, bekle = 1200) {
 }
 
 /**
+ * Ağ bir süre (`sessiz` ms) hiç istek başlatmayıp bitirmeyene kadar bekler,
+ * en çok `enCok` ms. Yolda kalan istek bittiğinde bir olay doğuruyor; sessiz
+ * pencere boyunca olay yoksa yolda istek kalmamış demektir.
+ */
+export async function agSakinlesin(page, sessiz = 1000, enCok = 8000) {
+  let son = Date.now();
+  const tazele = () => {
+    son = Date.now();
+  };
+  const olaylar = ['request', 'requestfinished', 'requestfailed'];
+  for (const o of olaylar) page.on(o, tazele);
+  const bas = Date.now();
+  while (Date.now() - son < sessiz && Date.now() - bas < enCok) {
+    await page.waitForTimeout(100);
+  }
+  for (const o of olaylar) page.off(o, tazele);
+}
+
+/**
  * Rehber ışığını bu OYUNCU için kapatır.
  *
  * Işık ilk oturumda ekranı karartıp TEK düğmeyi açıkta bırakıyor
@@ -156,8 +175,34 @@ export async function rehberiSustur(page, api = process.env.API_URL ?? 'http://l
     headers: { authorization: `Bearer ${jeton}` },
   });
   if (!y.ok) throw new Error(`rehberiSustur: ${y.status} ${await y.text()}`);
+  /*
+   * Yolda istek varken yenilemek onu yarıda kesiyor ve konsolu denetleyen
+   * testler bunu "istek düştü" diye sayıyordu: ülke seçiminden (docs/27)
+   * sonra açılan uygulamanın ilk istekleri yenilemeye denk geliyor.
+   * `waitForLoadState('networkidle')` burada işe yaramıyor — sayfanın ilk
+   * yüklenişinde zaten gerçekleşmiş sayılıyor ve hemen dönüyor.
+   */
+  await agSakinlesin(page);
   // /me önbellekte duruyor olabilir; yeni bayrağı okusun.
   await page.reload({ waitUntil: 'domcontentloaded' });
+}
+
+/**
+ * Ülke seçim ekranı (docs/27): arayüzden kaydolan lordun ülkesi yok ve
+ * oyuna bu ekrandan giriyor — ekran şehri, haritayı, her şeyi örtüyor.
+ * Gerçek oyuncu gibi bir ülke seçilip başlanıyor. Ekran gelmezse (ülke
+ * zaten seçili) bir şey yapmıyor.
+ *
+ * @returns ekran geldi ve seçim yapıldıysa true
+ */
+export async function ulkeyiSec(page, kod = 'TUR', bekle = 20000) {
+  await page.waitForSelector('[data-ulke-secimi], nav button', { timeout: bekle }).catch(() => {});
+  const ekran = page.locator('[data-ulke-secimi]');
+  if ((await ekran.count()) === 0) return false;
+  await page.locator(`[data-ulke="${kod}"]`).click();
+  await page.locator('[data-rehber="ulke-sec"]').click();
+  await ekran.waitFor({ state: 'detached', timeout: 15000 });
+  return true;
 }
 
 /**
@@ -179,90 +224,61 @@ export function kapida(page, secici) {
 /**
  * Haritada bir bölgeye dokunur — OYUNCUNUN dokunabileceği bir bölgeye.
  *
- * Sığdırılmış haritada her işaretçi tıklanabilir değil ve bu bir hata
- * değil: 121 bölge telefon genişliğine sığınca merkezleri ~26 piksel
- * arayla düşüyor, dokunma hedefi ise 44 piksel olmak zorunda
- * (erişilebilirlik alt sınırı, `gorsel-denetim.mjs` ölçüyor). Yarıçap 22,
- * aralığın yarısından büyük; komşu daireler birbirinin merkezini örtüyor.
- * Ölçüler 61 bölgeye göre seçilmişti, harita 121'e çıkınca aralık yarıya
- * indi. Örtülene ulaşmanın yolu yakınlaştırmak — oyuncu da bunu yapıyor.
+ * Harita bir TUVAL (docs/27): 3.000 şehrin her biri için bir DOM düğümü
+ * yok, şehir bir noktada çiziliyor. Seçici yine `[data-bolge="12"]`
+ * biçiminde yazılıyor (bir ya da virgülle ayrılmış birkaç tane); buradan
+ * bölge numaraları okunuyor ve sırayla deneniyor.
  *
- * Testler bunu bilmiyordu: `.first()` ile eşleşen ilk işaretçiye basıp,
- * o işaretçi başlığın ya da bir komşusunun altında kaldığında otuz saniye
- * bekleyip kalıyorlardı. Hangi işaretçinin örtüldüğü haritanın nereye
- * ortalandığına, o da oyuncunun kamp yerine bağlı — yani kırılma, testin
- * ölçtüğü şeyle hiç ilgisi olmayan bir sebeple ve rastgele geliyordu.
+ * Her aday için harita o şehre götürülüyor (`__dunyaHaritasi.git`, oyuncu
+ * da "listeden haritada göster" ile aynı yere varıyor), şehrin ekrandaki
+ * noktası soruluyor ve o noktanın üstünde gerçekten tuval var mı diye
+ * bakılıyor: bir düğme ya da çekmece örtüyorsa sıradaki aday. Zorlamalı
+ * tıklama değil; zorlamak, oyuncunun yapamayacağı bir şeyi ölçmek olurdu.
  *
- * Bu yardımcı eşleşenler arasından GERÇEKTEN dokunulabilir olanı seçiyor:
- * merkezine bakınca tarayıcı o düğmeyi görüyor mu. Zorlamalı tıklama
- * değil; zorlamak, oyuncunun yapamayacağı bir şeyi ölçmek olurdu.
+ * Eskiden (SVG haritada) asıl tuzak örtülen işaretçiydi: `.first()` ile
+ * eşleşen ilk işaretçiye basıp, o işaretçi başlığın altında kaldığında
+ * otuz saniye bekleyip kalıyorlardı. Kural aynı kaldı: dokunulan nokta
+ * görünür olmalı.
  *
- * @returns dokunulan düğümün `data-bolge` değeri, hiçbiri uygun değilse null
+ * @returns dokunulan bölgenin numarası (metin), hiçbiri uygun değilse null
  */
 export async function bolgeyeDokun(page, secici) {
-  const sigdir = page.getByRole('button', { name: 'Haritayı sığdır' });
-  if (await sigdir.count()) {
-    await sigdir.click();
-    await page.waitForTimeout(500);
+  const idler = [...String(secici).matchAll(/data-bolge="(\d+)"/g)].map((m) => Number(m[1]));
+  if (idler.length === 0) return null;
+  await page.waitForSelector('[data-harita-hazir]', { timeout: 20000 });
+  for (const id of idler) {
+    const nokta = await page.evaluate((id) => {
+      const h = window.__dunyaHaritasi;
+      if (!h) return null;
+      h.git(id, 3);
+      const k = h.konum(id);
+      if (!k) return null;
+      if (k.x < 0 || k.y < 0 || k.x > innerWidth || k.y > innerHeight) return null;
+      const ust = document.elementFromPoint(k.x, k.y);
+      return ust?.hasAttribute('data-harita-tuval') ? k : null;
+    }, id);
+    if (!nokta) continue;
+    // Çizim bir sonraki karede: dokunuş ondan sonra.
+    await page.waitForTimeout(120);
+    await page.mouse.click(nokta.x, nokta.y);
+    return String(id);
   }
-  const aday = await page.locator(secici).evaluateAll((dugumler) => {
-    for (const d of dugumler) {
-      /*
-       * Harita artık TOPRAK haritası (docs/23): `data-bolge` bir SVG
-       * yolunda ve kutusunun ortası kıyıda denize, dışbükey olmayan
-       * yerde komşuya düşebiliyor. Bölgenin kendi noktası (x/y) ise
-       * tanım gereği kendi toprağının içinde — oyuncunun da basacağı yer.
-       */
-      let x;
-      let y;
-      if (d.ownerSVGElement && d.dataset.x !== undefined) {
-        const s = d.ownerSVGElement.getBoundingClientRect();
-        x = s.left + (Number(d.dataset.x) / 100) * s.width;
-        y = s.top + (Number(d.dataset.y) / 100) * s.height;
-      } else {
-        const r = d.getBoundingClientRect();
-        if (r.width === 0) continue;
-        x = r.left + r.width / 2;
-        y = r.top + r.height / 2;
-      }
-      if (x < 0 || y < 0 || x > innerWidth || y > innerHeight) continue;
-      const ust = document.elementFromPoint(x, y);
-      if (ust && (ust === d || d.contains(ust))) return { id: d.getAttribute('data-bolge'), x, y };
-    }
-    return null;
-  });
-  if (!aday) return null;
-  /*
-   * NOKTAYA dokunuluyor, düğüme değil.
-   *
-   * `locator.click()` önce "görünür alana kaydır" diyor ve o kaydırma
-   * işaretçiyi sabit başlığın altına sokabiliyor: az önce dokunulabilir
-   * olan nokta kaydırmadan sonra kapanıyor, tıklama otuz saniye deneyip
-   * kalıyor. Oyuncu haritayı kaydırmıyor, gördüğü yere basıyor — fare de
-   * tam olarak bunu yapıyor. Zorlama değil: o noktanın üstünde gerçekten
-   * bu düğüm var, yukarıda doğrulandı.
-   */
-  await page.mouse.click(aday.x, aday.y);
-  return aday.id;
+  return null;
 }
 
 /**
- * BELİRLİ bir bölgeyi seçer: önce oyuncu gibi toprağına dokunur; toprağın
- * noktası bir düğmenin (araç sütunu, mercek çipleri) altında kalıyorsa
- * klavye oyuncusunun yoluna döner — toprağa odaklanıp Enter.
+ * BELİRLİ bir bölgeyi seçer: önce oyuncu gibi şehrine dokunur; nokta bir
+ * düğmenin altında kalıyorsa listeden seçer — haritanın "Liste"
+ * görünümü, klavye ve ekran okuyucu oyuncusunun da yolu.
  *
- * Neden: `getByRole(..., { name }).click()` toprağın KUTUSUNUN ortasına
- * basıyor. Kenardaki bir bölgede o nokta sağdaki araç sütununun altına
- * düşüyor ve tıklama otuz saniye bekleyip kalıyordu (CI #104,
- * dizilim-arayuz-testi — yerelde hedef başka yere düştüğü için geçiyordu).
  * Dokunma doğruluğunu `harita-testi` ölçüyor; buradaki testler bölgenin
  * ARKASINDAKİ işi sınıyor, oraya varmanın güvenilir bir yolu yeter.
  */
 export async function bolgeyiSec(page, id) {
-  const secici = `[data-bolge="${id}"]`;
-  if (await bolgeyeDokun(page, secici)) return 'dokunuş';
-  const yol = page.locator(secici).first();
-  await yol.focus();
-  await page.keyboard.press('Enter');
-  return 'klavye';
+  if (await bolgeyeDokun(page, `[data-bolge="${id}"]`)) return 'dokunuş';
+  await page.getByRole('button', { name: /Liste/ }).first().click();
+  const sekme = page.getByRole('tab', { name: /Hepsi/ });
+  if (await sekme.count()) await sekme.first().click();
+  await page.locator(`[data-liste-bolge="${id}"]`).first().click();
+  return 'liste';
 }

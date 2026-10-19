@@ -13,13 +13,13 @@
  * Toprağı ise ancak ev sahibinde o bölge BOŞSA geliyor; doluysa bir
  * günlük geliriyle tazmin ediliyor.
  *
- * ── Taht neden sıfırlanıyor ───────────────────────────────────────────
+ * ── Tahtlar neden sıfırlanıyor ────────────────────────────────────────
  *
- * İki diyarın iki "Diyarın Lordu" var ve birleşen diyarda taht tek.
- * Birinin unvanını alıp ötekine vermek, kazanılmış bir şeyi kavga
- * olmadan elinden almak olurdu. Taht sahipsiz kalıyor ve garnizonu geri
- * geliyor: birleşen diyarın ilk savaşı taht için oluyor. Kayıp değil,
- * sebep.
+ * Her ülkenin başkenti bir taht (docs/27) ve iki diyarın aynı ülkede iki
+ * hükümdarı olabiliyor; birleşen diyarda her ülkenin tahtı tek. Birinin
+ * unvanını alıp ötekine vermek, kazanılmış bir şeyi kavga olmadan elinden
+ * almak olurdu. Tahtlar sahipsiz kalıyor ve garnizonları geri geliyor:
+ * birleşen diyarın ilk savaşları taht için oluyor. Kayıp değil, sebep.
  */
 import {
   UNIT_TYPES,
@@ -403,9 +403,8 @@ async function birlesmeyiIsle(
         data: { worldId: merge.hostId },
       });
 
-      /* ── Taht ────────────────────────────────────────────────────── */
-      const taht = evBolgeler.find((r) => r.type === 'taht');
-      if (taht) {
+      /* ── Tahtlar ──────────────────────────────────────────────────── */
+      for (const taht of evBolgeler.filter((r) => r.type === 'taht')) {
         await tx.region.update({
           where: { id: taht.id },
           data: {
@@ -452,7 +451,7 @@ export async function bekleyenBirlesmeleriUygula(simdi = new Date()): Promise<nu
       });
       for (const l of lordlar) {
         await pushEvent(l.id, 'diyar_birlesti', {
-          mesaj: `Diyarlar birleşti: ${ozet.gocenLord} lord geldi. Taht sahipsiz — ilk alan Diyarın Lordu olur.`,
+          mesaj: `Diyarlar birleşti: ${ozet.gocenLord} lord geldi. Tahtlar sahipsiz — ilk alan o ülkenin hükümdarı olur.`,
         });
       }
     } catch (e) {

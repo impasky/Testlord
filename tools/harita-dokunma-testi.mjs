@@ -6,10 +6,11 @@
  * ve parmak gidince ekranda hiçbir şey olmuyordu — hareketsiz bir ekran
  * donmuş bir ekrandan ayırt edilemez.
  *
- * Harita artık tam ekran bir TOPRAK haritası. Sayfa arkada kaymıyor;
- * parmağın her yönü haritanın. Bu test beş şeyi koruyor:
+ * Harita artık tam ekran bir gerçek dünya TUVALİ (docs/27). Sayfa arkada
+ * kaymıyor; parmağın her yönü haritanın. Görünüm haritanın test
+ * kancasından (`window.__dunyaHaritasi`) okunuyor. Bu test beş şeyi koruyor:
  *   1. Tek parmak haritayı kaydırıyor (yatay da dikey de).
- *   2. "Sığdır"da ölü jest yok: harita parmağı dirençle izliyor ve
+ *   2. "Dünyayı göster"de ölü jest yok: harita parmağı dirençle izliyor ve
  *      bırakınca yerine yaylanıyor.
  *   3. İki parmak yakınlaştırıyor.
  *   4. Kısa dokunuş toprağı SEÇİYOR, haritayı oynatmıyor.
@@ -44,12 +45,16 @@ await s.goto(WEB, { waitUntil: 'networkidle' });
 await ogreticiyiGec(s);
 await rehberiSustur(s).catch(() => {});
 await s.click('nav button:has-text("Dünya")', { force: true });
-await s.waitForSelector('[data-bolge]', { timeout: 20000 });
+await s.waitForSelector('[data-harita-hazir]', { timeout: 20000 });
 await s.waitForTimeout(1500);
 
+/** Görünüm metin olarak: "k tx ty" (iki ondalık). */
 const donusum = () =>
-  s.evaluate(() => document.querySelector('[data-harita-tuval]')?.style.transform ?? 'YOK');
-const olcek = (t) => Number(/scale\(([\d.]+)\)/.exec(t)?.[1] ?? 'NaN');
+  s.evaluate(() => {
+    const g = window.__dunyaHaritasi?.gorunum();
+    return g ? `${g.k.toFixed(4)} ${g.tx.toFixed(2)} ${g.ty.toFixed(2)}` : 'YOK';
+  });
+const olcek = (t) => Number(t.split(' ')[0]);
 const sayfaY = () => s.evaluate(() => window.scrollY);
 
 /** Harita kutusunun ortasına yakın bir başlangıç noktası. */
@@ -94,15 +99,15 @@ const k = (ad, kosul, detay = '') => {
  * çekilen parmak doğru olarak esneyip geri yaylanır. "Kaydırıyor" ancak
  * haritanın ortasına doğru çekilince ölçülebilir.
  */
+/** Haritanın kayabileceği yön: kenara yakın değil, ortaya doğru. */
 async function bosYon() {
   return s.evaluate(() => {
-    const t = document.querySelector('[data-harita-tuval]').style.transform;
-    const [, x, y, k] = /translate3d\((-?[\d.]+)px, (-?[\d.]+)px.*scale\(([\d.]+)\)/.exec(t);
-    const r = document.querySelector('[data-harita-sayfasi]').getBoundingClientRect();
-    const D = r.width * Number(k);
+    const h = window.__dunyaHaritasi;
+    const g = h.gorunum();
+    const [x0, x1, y0, y1] = h.aralik();
     return {
-      dx: Number(x) < (r.width - D) / 2 ? 1 : -1,
-      dy: Number(y) < (r.height - D) / 2 ? 1 : -1,
+      dx: g.tx - x0 < x1 - g.tx ? 1 : -1,
+      dy: g.ty - y0 < y1 - g.ty ? 1 : -1,
     };
   });
 }
@@ -151,30 +156,45 @@ console.log('=== İki parmak ===');
   k('iki parmak açılınca harita yakınlaşıyor', sonra > once + 0.2, `${once} -> ${sonra}`);
 }
 
-console.log('=== "Haritayı sığdır" sonrası ===');
-await s.getByRole('button', { name: 'Haritayı sığdır' }).click();
+console.log('=== "Dünyayı göster" sonrası ===');
+await s.getByRole('button', { name: 'Dünyayı göster' }).click();
 await s.waitForTimeout(700);
 const sigdir = await surukle(-150, 0);
-k("sığdır'da ÖLÜ JEST YOK: harita parmağı izliyor", sigdir.ortada !== sigdir.once, sigdir.ortada);
+k(
+  'dünya sığmışken ÖLÜ JEST YOK: harita parmağı izliyor',
+  sigdir.ortada !== sigdir.once,
+  sigdir.ortada,
+);
 k('bırakınca yerine yaylanıyor', sigdir.sonra === sigdir.once, sigdir.sonra);
 
 console.log('=== Kısa dokunuş ===');
 {
-  // Bir toprağın kendi noktasına dokun: haritanın ortasına en yakın,
-  // dokunulabilir (üstünde düğme olmayan) bölge.
-  const hedef = await s.evaluate(() => {
-    const kutu = document.querySelector('[data-harita-sayfasi]').getBoundingClientRect();
-    const svg = document.querySelector('[data-toprak-katmani]').getBoundingClientRect();
-    let en = null;
-    for (const p of document.querySelectorAll('path[data-bolge]')) {
-      const x = svg.left + (Number(p.dataset.x) / 100) * svg.width;
-      const y = svg.top + (Number(p.dataset.y) / 100) * svg.height;
-      if (document.elementFromPoint(x, y) !== p) continue;
-      const d = Math.hypot(x - (kutu.left + kutu.width / 2), y - (kutu.top + kutu.height * 0.4));
-      if (!en || d < en.d) en = { x, y, d, id: p.dataset.bolge };
-    }
-    return en;
-  });
+  // Bir şehrin kendi noktasına dokun: kampa yakın, ekranda ve üstünde
+  // düğme olmayan bir şehir. Önce kampa dönülüyor ki şehirler görünsün.
+  await s.getByRole('button', { name: 'Kampıma git' }).click();
+  await s.waitForTimeout(600);
+  const harita = await fetch(`${API}/api/map`, {
+    headers: { Authorization: `Bearer ${token}` },
+  }).then((r) => r.json());
+  const hedef = await s.evaluate(
+    (idler) => {
+      const h = window.__dunyaHaritasi;
+      const kutu = document.querySelector('[data-harita-sayfasi]').getBoundingClientRect();
+      let en = null;
+      for (const id of idler) {
+        const p = h.konum(id);
+        if (!p) continue;
+        if (!document.elementFromPoint(p.x, p.y)?.hasAttribute('data-harita-tuval')) continue;
+        const d = Math.hypot(
+          p.x - (kutu.left + kutu.width / 2),
+          p.y - (kutu.top + kutu.height * 0.4),
+        );
+        if (!en || d < en.d) en = { ...p, d, id };
+      }
+      return en;
+    },
+    harita.regions.map((r) => r.id),
+  );
   const once = await donusum();
   await cdp.send('Input.dispatchTouchEvent', {
     type: 'touchStart',

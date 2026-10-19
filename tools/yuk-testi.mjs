@@ -145,6 +145,8 @@ async function kaydol(i) {
         email: `yuk${damga}_${i}@lordlar.dev`,
         password: 'parola1234',
         lordName: `Yuk${damga.toString(36).slice(-3) + Math.random().toString(36).slice(2, 4)}${i}`,
+        // Ülkesi olmayan lord saldıramıyor (docs/27).
+        ulke: 'TUR',
       }),
     });
     if (v?.token) {

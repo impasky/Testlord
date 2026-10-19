@@ -54,16 +54,13 @@ export function regionIncome(
   incomeMult: number,
   generalBonus?: GeneralBonus,
   arastirma?: ArastirmaBonusu,
-  /** Medeniyetin OCAK çekirdeği (docs/16 §7). */
-  medeniyet?: { ocak: number },
 ): Resources & { sohret: number } {
   const base = regionBaseIncome(type);
   const levelMult = 1 + B.bolgeler.seviye_basina_gelir * (level - 1);
   // General ve araştırma bonusları TOPLANIYOR, çarpılmıyor: iki kaynak
   // üst üste çarpıldığında yüzdeler sessizce birbirini büyütüyor ve
   // oyuncuya gösterilen "+%20" gerçekte +%38 oluyordu.
-  const bonus =
-    1 + (generalBonus?.bolgeGeliri ?? 0) + (arastirma?.bolgeGeliri ?? 0) + (medeniyet?.ocak ?? 0);
+  const bonus = 1 + (generalBonus?.bolgeGeliri ?? 0) + (arastirma?.bolgeGeliri ?? 0);
   const f = incomeMult * levelMult;
   return {
     altin: (base.altin ?? 0) * f * (bonus + (arastirma?.altinGeliri ?? 0)),
@@ -139,8 +136,6 @@ export function storageCapacity(
   lordLevel: number,
   arastirma?: ArastirmaBonusu,
   binalar?: Record<string, number>,
-  /** Medeniyetin AMBAR çekirdeği (docs/16 §7). */
-  medeniyet?: { ambar: number },
 ): number {
   const taban =
     B.kaynaklar.depo_kapasitesi.taban +
@@ -149,7 +144,7 @@ export function storageCapacity(
   // Oranlar TOPLANIYOR, çarpılmıyor: iki kaynak üst üste çarpıldığında
   // oyuncuya gösterilen yüzdeler sessizce birbirini büyütüyor
   // (bkz. `regionIncome` yorumu).
-  return Math.round(taban * (1 + (arastirma?.depoCarpani ?? 0) + (medeniyet?.ambar ?? 0)));
+  return Math.round(taban * (1 + (arastirma?.depoCarpani ?? 0)));
 }
 
 /** Ordunun saatlik erzak gideri. */

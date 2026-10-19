@@ -9,14 +9,13 @@
  *
  * Bu uç o üç cümlenin verisini veriyor. (docs/08 İ5, İ6)
  */
-import { B, WORLD_MAP, liderAviGecerliMi, liderAviYagmaBonusu } from '@lordlar/shared';
+import { B, SEHIR_SAYISI, ULKELER, liderAviGecerliMi, liderAviYagmaBonusu } from '@lordlar/shared';
 import type { FastifyInstance } from 'fastify';
 import { requireAuth } from '../auth.js';
 import { prisma } from '../db.js';
 import { env } from '../env.js';
 import { findLordByUser } from '../services/lord.js';
 import { AKTIF_GUN, acikDiyarlar } from '../services/world.js';
-import { kartopuDurumu, medeniyetBilgileri } from '../services/medeniyet.js';
 
 export async function dunyaRoutes(app: FastifyInstance): Promise<void> {
   /*
@@ -62,7 +61,7 @@ export async function dunyaRoutes(app: FastifyInstance): Promise<void> {
     const lordId = await findLordByUser(req.user.userId);
     const ben = await prisma.lord.findUniqueOrThrow({
       where: { id: lordId },
-      select: { worldId: true, fame: true, name: true, medeniyetId: true },
+      select: { worldId: true, fame: true, name: true, ulke: true },
     });
 
     const aktifSinir = new Date(Date.now() - AKTIF_GUN * 86_400_000);
@@ -93,11 +92,6 @@ export async function dunyaRoutes(app: FastifyInstance): Promise<void> {
         }
       : null;
 
-    const [kartopu, medeniyetler] = await Promise.all([
-      kartopuDurumu(ben.worldId),
-      medeniyetBilgileri(ben.worldId),
-    ]);
-
     const [dunya, lordSayisi, aktif, ustumde, taht, lider, sonSavaslar] = await Promise.all([
       prisma.world.findUniqueOrThrow({
         where: { id: ben.worldId },
@@ -108,15 +102,14 @@ export async function dunyaRoutes(app: FastifyInstance): Promise<void> {
       prisma.lord.count({
         where: { worldId: ben.worldId, id: { not: lordId }, fame: { gt: ben.fame } },
       }),
-      prisma.region.findFirst({
-        where: { worldId: ben.worldId, type: 'taht' },
-        select: {
-          id: true,
-          name: true,
-          ownerMedeniyetId: true,
-          owner: { select: { id: true, name: true } },
-        },
-      }),
+      // ÜLKEMİN tahtı (docs/27): her ülkenin başkenti bir taht; oyuncunun
+      // ilk bakacağı, başladığı ülkeninki.
+      ben.ulke
+        ? prisma.region.findFirst({
+            where: { worldId: ben.worldId, type: 'taht', province: ben.ulke },
+            select: { id: true, name: true, owner: { select: { id: true, name: true } } },
+          })
+        : Promise.resolve(null),
       // Lider avı: diyarın en yüksek şöhretli lordu. Kartopu freni buna
       // bağlı ve oyuncunun kimin peşine düşeceğini bilmesi gerekiyor.
       prisma.lord.findFirst({
@@ -154,7 +147,8 @@ export async function dunyaRoutes(app: FastifyInstance): Promise<void> {
       // bir `bolgeler.toplam` vardı ve 61'de kalmıştı: harita 121 bölgeye
       // çıkınca kopya sayı onunla birlikte büyümedi, diyar tanıtımı yeni
       // oyuncuya dünyayı yarısı kadar gösteriyordu. Kopya silindi.
-      bolgeSayisi: WORLD_MAP.region_count,
+      bolgeSayisi: SEHIR_SAYISI,
+      ulkeSayisi: ULKELER.size,
       /*
        * İLAN EDİLMİŞ birleşme. Haritası bir sabah değişmiş oyuncu, oyunu
        * bırakan oyuncudur; bu yüzden birleşme önce duyuruluyor ve duyuru
@@ -176,21 +170,7 @@ export async function dunyaRoutes(app: FastifyInstance): Promise<void> {
             name: taht.name,
             sahip: taht.owner ? { id: taht.owner.id, name: taht.owner.name } : null,
             sohretBonusu: B.taht_kalesi.unvan_sohret_bonusu,
-            /*
-             * TAHTI TUTAN MEDENİYET (docs/16 §13 soru 5).
-             *
-             * Taht artık yalnız bir lordun unvanı değil, bir TARAFIN
-             * kazancı: tutan medeniyetin her üyesi küçük bir şöhret
-             * çarpanı alıyor. Kim tuttuğu görünmezse kolektif hedef de
-             * görünmez — "bizim tarafın tahtı" cümlesinin ekranda bir
-             * karşılığı olmalı.
-             */
-            medeniyet: taht.ownerMedeniyetId
-              ? (medeniyetler.get(taht.ownerMedeniyetId) ?? null)
-              : null,
-            medeniyetSohretBonusu: B.taht_kalesi.medeniyet_sohret_bonusu,
-            benimMedeniyetimde:
-              taht.ownerMedeniyetId !== null && taht.ownerMedeniyetId === ben.medeniyetId,
+            ulke: ben.ulke ? (ULKELER.get(ben.ulke)?.name ?? ben.ulke) : null,
           }
         : null,
       // Lider tek başınaysa (ya da dünya çok küçükse) av yok: iki kişilik
@@ -205,33 +185,6 @@ export async function dunyaRoutes(app: FastifyInstance): Promise<void> {
               benMiyim: lider.id === lordId,
             }
           : null,
-      /*
-       * FRAKSİYON LİDER AVI (docs/16 §10).
-       *
-       * Bireysel lider avının yanında duruyor ve ikisi ayrı satır:
-       * biri bir LORDU, öbürü bir TARAFI işaret ediyor. Aynı kutuya
-       * koysaydık oyuncu hangisine saldırdığında hangi bonusu
-       * alacağını bilemezdi — ikisi üst üste binebiliyor.
-       */
-      medeniyetAvi: kartopu
-        ? {
-            /*
-             * DENGE ANAHTARI, satır kimliği DEĞİL ("demirocagi").
-             *
-             * Bölge kartı da medeniyeti anahtarla taşıyor
-             * (`medeniyetBilgileri`), ve harita "bu bölge önde gidenin
-             * mi" sorusunu ikisini karşılaştırarak cevaplıyor. Satır
-             * kimliğini gönderseydik karşılaştırma HİÇBİR ZAMAN
-             * tutmaz, hap hiç görünmez, hiçbir hata da çıkmazdı.
-             */
-            medeniyetId: medeniyetler.get(kartopu.medeniyetId)?.id ?? kartopu.medeniyetId,
-            ad: medeniyetler.get(kartopu.medeniyetId)?.ad ?? null,
-            renk: medeniyetler.get(kartopu.medeniyetId)?.renk ?? null,
-            pay: kartopu.pay,
-            yagmaBonusu: kartopu.yagmaBonusu,
-            benimMi: kartopu.medeniyetId === ben.medeniyetId,
-          }
-        : null,
       olaylar: sonSavaslar.map((b) => {
         const log = b.log as { regionName?: string } | null;
         return {

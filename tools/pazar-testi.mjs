@@ -29,6 +29,8 @@ const { token: jeton } = await fetch(`${API}/api/auth/register`, {
     email: `pz${damga}@lordlar.dev`,
     password: 'parola1234',
     lordName: `Tuccar ${damga.toString(36).slice(-4) + Math.random().toString(36).slice(2, 4)}`,
+    // Ülkesi olmayan lord saldıramıyor (docs/27).
+    ulke: 'TUR',
   }),
 }).then((r) => r.json());
 
@@ -110,6 +112,8 @@ kontrol('elde olmayan kaynak reddedildi', yok.s === 400, yok.b?.error ?? '');
       email: `pzd${d2}@lordlar.dev`,
       password: 'parola1234',
       lordName: `Depocu ${d2.toString(36).slice(-4) + Math.random().toString(36).slice(2, 4)}`,
+      // Ülkesi olmayan lord saldıramıyor (docs/27).
+      ulke: 'TUR',
     }),
   }).then((r) => r.json());
   const b2 = { authorization: `Bearer ${j2}`, 'content-type': 'application/json' };

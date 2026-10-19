@@ -13,7 +13,7 @@
  *
  * API ve arayüz ayakta olmalı. node tools/omurga-testi.mjs
  */
-import { rehberiSustur } from './lib/gezin.mjs';
+import { rehberiSustur, ulkeyiSec } from './lib/gezin.mjs';
 import { devices } from 'playwright';
 import { tarayiciAc } from './lib/tarayici.mjs';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
@@ -100,6 +100,8 @@ await page.fill('input[placeholder="Kara Yusuf"]', `Omurga ${damga.toString(36).
 await page.fill('input[type=email]', `omurga${damga}@lordlar.dev`);
 await page.fill('input[type=password]', 'parola1234');
 await page.click('button[type=submit]');
+// Yeni lord önce ülkesini seçiyor (docs/27): gerçek oyuncu gibi.
+await ulkeyiSec(page);
 await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 20000 });
 // Öğretici tam ekran açılıyor ve arkasını tıklatmıyor: gerçek oyuncu
 // gibi geçiyoruz (bkz. tools/lib/ogretici.mjs).

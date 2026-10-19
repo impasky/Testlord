@@ -8,7 +8,6 @@
 import {
   B,
   UNIT_TYPES,
-  WORLD_MAP,
   fortressBonus,
   BASKENT_TURLERI,
   regionIncome,
@@ -17,6 +16,7 @@ import {
   type Resources,
   type UnitType,
 } from '@lordlar/shared';
+import { WORLD_MAP } from '@lordlar/shared/kanonik';
 import { prisma, type Tx } from '../db.js';
 import { binalariOku, pushEvent } from './lord.js';
 
@@ -55,18 +55,10 @@ export function regionFortressBonus(type: string, level: number): number {
 export function bolgeTahkimati(
   region: { type: string; level: number; mapId: number },
   sahip: { binalar?: unknown; baskentBolgeId?: number | null } | null | undefined,
-  /**
-   * Bölgeyi tutan medeniyetin SUR çekirdeği oranı (docs/16 §7).
-   *
-   * Oran tahkimatın TAMAMINI büyütüyor — taban + başkent suru. Surun
-   * anlamı "bu toprağı savunmak daha zor" ve medeniyetin sur yatırımı
-   * tam olarak bunu yapıyor.
-   */
-  surOrani = 0,
 ): number {
   const taban = fortressBonus(region.type, region.level);
   const bina = sahip && sahip.baskentBolgeId === region.mapId ? tahkimatEki(binalariOku(sahip)) : 0;
-  return (taban + bina) * (1 + surOrani);
+  return taban + bina;
 }
 
 /**
@@ -152,8 +144,8 @@ export async function accrueRegionStores(now: Date): Promise<void> {
 /**
  * Bölgeyi devreder: sahibi değişir, NPC garnizonu temizlenir, kalkan konur.
  *
- * Taht Kalesi'nin kalkanı bilerek kısa (docs/01 §5): taht endgame'in odağı,
- * sürekli el değiştirmesi gereken tek hedef. Normal bölge kalkanı oraya da
+ * Tahtın (başkentin) kalkanı bilerek kısa (docs/01 §5): taht endgame'in
+ * odağı, sürekli el değiştirmesi gereken hedef. Normal bölge kalkanı oraya da
  * uygulansaydı taht alan oyuncu yarım gün dokunulmaz olurdu ve rekabetin
  * varış noktası donardı.
  */
@@ -173,33 +165,14 @@ export async function transferRegion(
 
   const onceki = await tx.region.findUniqueOrThrow({
     where: { id: regionId },
-    select: { ownerLordId: true, ownerMedeniyetId: true, mapId: true, name: true },
+    select: { ownerLordId: true, mapId: true, name: true },
   });
 
-  /*
-   * TOPRAK MEDENİYETİN OLUYOR (docs/16 §2).
-   *
-   * Fetih artık iki şey birden yapıyor: bölge fatihin bookkeeping
-   * sahipliğine geçiyor (başkent, bölge tavanı, şöhret hâlâ oradan
-   * okunuyor) ve BÖLGEYİ TUTAN MEDENİYET fatihin medeniyeti oluyor.
-   * İkincisi haritanın rengini ve gelir payını belirliyor: aynı
-   * medeniyetten bir yoldaşın oraya garnizon bırakırsa o da pay alıyor.
-   *
-   * Bölge BIRAKILDIĞINDA (`newOwnerId = null`) medeniyet damgası
-   * DURUYOR. Toprağı bırakan bir lord onu kimseye iade etmiş olmuyor;
-   * medeniyet o toprağı başka bir medeniyet alana kadar tutuyor.
-   * Sahipsiz ama bir medeniyetin elinde olan bölge tam olarak
-   * `docs/16` §5'in tarif ettiği hâl.
-   */
-  const fatih = newOwnerId
-    ? await tx.lord.findUnique({ where: { id: newOwnerId }, select: { medeniyetId: true } })
-    : null;
-
+  // Toprak fatihin (docs/27: herkes kendi adına).
   await tx.region.update({
     where: { id: regionId },
     data: {
       ownerLordId: newOwnerId,
-      ...(fatih?.medeniyetId ? { ownerMedeniyetId: fatih.medeniyetId } : {}),
       npcGarrison: {},
       shieldUntil: new Date(Date.now() + saat * 3_600_000),
     },

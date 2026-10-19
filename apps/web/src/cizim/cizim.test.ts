@@ -8,7 +8,6 @@ import {
 } from '@lordlar/shared';
 import { BINA_ADLARI, BINA_KUTUSU, TABELA, binaModeli } from './binalar';
 import { diyarModeli } from './diyarlar';
-import { dunyaUcgenleri } from './dunya';
 import { ZEMIN_ADLARI, zeminModeli } from './zeminler';
 import {
   GENERAL_ADLARI,
@@ -646,21 +645,6 @@ describe('ekran zeminleri ve dünya', () => {
     const c = ciz(zeminModeli(ad)!);
     expect(c.cokgenler.length).toBeGreaterThan(200);
     for (const p of c.cokgenler) expect(sayilar(p.n).every(Number.isFinite)).toBe(true);
-  });
-
-  it('dünya zemini: kara, deniz ve orman var; koordinatlar haritanın içinde', () => {
-    const u = dunyaUcgenleri(4);
-    expect(u.length).toBeGreaterThan(1000);
-    const renkler = new Set(u.map((x) => x.renk));
-    expect(renkler.size).toBeGreaterThan(50);
-    for (const x of u)
-      for (const v of x.n) {
-        expect(Number.isFinite(v)).toBe(true);
-        expect(v).toBeGreaterThan(-2);
-        expect(v).toBeLessThan(102);
-      }
-    // Belirlenimci: iki üretim aynı.
-    expect(dunyaUcgenleri(4)).toEqual(u);
   });
 });
 

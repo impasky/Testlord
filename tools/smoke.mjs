@@ -6,7 +6,7 @@
  *
  * Çıkış kodu 0 = akış çalışıyor ve konsolda hata yok.
  */
-import { rehberiSustur } from './lib/gezin.mjs';
+import { rehberiSustur, ulkeyiSec } from './lib/gezin.mjs';
 import { tarayiciAc } from './lib/tarayici.mjs';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
 
@@ -61,6 +61,9 @@ async function kaydolmayiDene() {
   for (let deneme = 0; deneme < 3; deneme++) {
     await page.click('button[type=submit]');
     try {
+      // Yeni lord önce ülkesini seçiyor (docs/27).
+      await page.waitForSelector('[data-ulke-secimi]', { timeout: 15000 });
+      await ulkeyiSec(page);
       await page.waitForSelector('text=Malikâne', { timeout: 15000 });
       return true;
     } catch {

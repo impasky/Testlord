@@ -10,7 +10,7 @@ import {
   bolgeAdi,
   vilayetCarpani,
   vilayetCarpanlari,
-  VILAYET_ADI,
+  ULKE_ADI,
   varsayilanDizilim,
   type Army,
   type Dizilim,
@@ -29,7 +29,7 @@ import {
   type QueueItem,
   type RegionDetailDto,
 } from '../api/client';
-import { DunyaHaritasi } from '../components/harita/DunyaHaritasi';
+import { GercekHarita } from '../components/harita/GercekHarita';
 import { BirimIkonu, IkonKapali, IkonSure } from '../components/Ikonlar';
 import { Cumle } from '../components/Cumle';
 import { bolgeGorselAdi } from '../components/Gorsel';
@@ -536,7 +536,7 @@ export function Harita({
   onGuncelle: () => void;
   /** Boş hâllerden çıkış yolu — hiçbir ekran çıkmaz sokak olmamalı. */
   onGit: (s: Sekme) => void;
-  /** Medeniyet panelini açar (docs/16) — kapı ana ızgarada değil, burada. */
+  /** Ülkem panelini açar (docs/27) — kapı ana ızgarada değil, burada. */
   onKapiAc: (k: Kapi) => void;
 }) {
   const lordId = lord.id;
@@ -558,7 +558,7 @@ export function Harita({
   const [taktik, setTaktik] = useState<string | null>(null);
   const [hata, setHata] = useState<string | null>(null);
   const [bilgi, setBilgi] = useState<string | null>(null);
-  /** Diyar çekmecesi açık mı (olaylar, yürüyüşler, medeniyet). */
+  /** Diyar çekmecesi açık mı (olaylar, yürüyüşler, ülkem). */
   const [cekmeceAcik, setCekmeceAcik] = useState(false);
   /** Bölge kartı tam yükseklikte mi; değilse yarım — harita görünür kalıyor. */
   const [sayfaTam, setSayfaTam] = useState(false);
@@ -706,37 +706,30 @@ export function Harita({
         uzun: 'İyileşene kadar saldıramazsın. Malikâne ekranında kalan süreyi görebilirsin.',
       };
     }
-    // Taht Kalesi günlük limitten muaf (docs/01 §5) — sunucu da böyle
+    // Taht günlük limitten muaf (docs/01 §5) — sunucu da böyle
     // davranıyor. Burada muafiyeti atlamak, sunucunun izin verdiği bir
     // saldırıyı arayüzün kapatması demekti.
     const limitMuaf = bolge.type === 'taht' && B.korumalar.taht_kalesi_limitten_muaf;
     if (!limitMuaf && lord.dailyAttacks >= B.korumalar.gunluk_saldiri_limiti) {
       return {
         kisa: 'Günlük saldırı hakkın bitti',
-        uzun: `Günde en fazla ${B.korumalar.gunluk_saldiri_limiti} saldırı yapabilirsin. Taht Kalesi bu limitten muaftır; yarın sıfırlanır.`,
+        uzun: `Günde en fazla ${B.korumalar.gunluk_saldiri_limiti} saldırı yapabilirsin. Başkentler (taht) bu limitten muaftır; yarın sıfırlanır.`,
       };
     }
     /*
-     * Medeniyet kuralları (docs/16 §5). Sunucu ikisini de reddediyor;
-     * buradaki iş, oyuncunun sebebi ordusunu yola çıkarmadan ÖNCE
-     * görmesi. Çekirdek işaretçisi haritada da duruyor ama kart açıkken
-     * "neden saldıramıyorum" sorusunun cevabı burada olmalı.
+     * Ülke ve sınır (docs/27). Sunucu ikisini de reddediyor; buradaki iş,
+     * oyuncunun sebebi ordusunu yola çıkarmadan ÖNCE görmesi.
      */
-    if (bolge.cekirdek) {
+    if (!lord.ulke) {
       return {
-        kisa: 'Çekirdek bölge — ele geçirilemez',
-        uzun: `${bolge.medeniyet?.ad ?? 'Bir medeniyetin'} çekirdeği. Kaybeden medeniyet ölmesin diye çekirdekler dokunulmaz; yalnız kendi üyeleri geliştirebilir.`,
+        kisa: 'Önce ülkeni seç',
+        uzun: 'Kampın seçtiğin ülkede kurulacak; ondan sonra saldırabilirsin.',
       };
     }
-    if (
-      bolge.owner &&
-      bolge.medeniyet &&
-      lord.medeniyet &&
-      bolge.medeniyet.id === lord.medeniyet.id
-    ) {
+    if (!bolge.sinirda && !bolge.isMine) {
       return {
-        kisa: 'Yoldaşının toprağı',
-        uzun: `${bolge.owner.name} seninle aynı medeniyetten (${bolge.medeniyet.ad}). Kendi medeniyetinin lorduna saldıramazsın.`,
+        kisa: 'Sınırında değil',
+        uzun: `${ULKE_ADI[bolge.province] ?? 'Bu ülke'} topraklarına ancak sınırdan geçebilirsin: evinin ya da tuttuğun bir şehrin komşusu olan şehre saldır.`,
       };
     }
     if (bolge.shielded) {
@@ -836,7 +829,7 @@ export function Harita({
         data-harita-sayfasi=""
       >
         <h2 className="sr-only">{dunya.data?.ad ?? 'Dünya Haritası'}</h2>
-        <DunyaHaritasi
+        <GercekHarita
           regions={harita.data.regions}
           homeBolgeId={harita.data.homeBolgeId}
           seciliId={seciliId}
@@ -849,7 +842,7 @@ export function Harita({
                 }
               : null
           }
-          benimMedeniyetId={lord.medeniyet?.id ?? null}
+          ulkem={lord.ulke?.kod ?? null}
           altBosluk={altBosluk}
           gostergeGizli={seciliId !== null || cekmeceAcik}
           onSec={secimYap}
@@ -901,27 +894,24 @@ export function Harita({
               <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain px-3 pb-3">
                 {dunya.data && <DunyaBasligi dunya={dunya.data} />}
                 <p className="text-[11px] text-solgun">{`Bölgen ${benimSayi}/${harita.data.maxRegions}`}</p>
-                {lord.medeniyet && (
-                  <button
-                    type="button"
-                    className="bas mb-2 flex w-full items-center gap-2 rounded-xl border border-kenar bg-yuzey px-3 py-2 text-left"
-                    onClick={() => onKapiAc('medeniyet')}
-                    data-rehber="medeniyet-serit"
-                  >
-                    <span
-                      className="h-3.5 w-3.5 shrink-0 rounded-full border border-gece"
-                      style={{ background: lord.medeniyet.renk }}
-                      aria-hidden
-                    />
-                    <span className="min-w-0 flex-1 truncate text-[12px]">
-                      <span className="baslik text-parsomen">{lord.medeniyet.ad}</span>
-                      <span className="text-solgun"> — medeniyetin</span>
-                    </span>
-                    <span className="shrink-0 text-[11px] text-altin">
-                      {`${formatSayi(lord.faydaPuani)} fayda ›`}
-                    </span>
-                  </button>
-                )}
+                <button
+                  type="button"
+                  className="bas mb-2 flex w-full items-center gap-2 rounded-xl border border-kenar bg-yuzey px-3 py-2 text-left"
+                  onClick={() => onKapiAc('ulke')}
+                  data-rehber="ulke-serit"
+                >
+                  <span className="min-w-0 flex-1 truncate text-[12px]">
+                    {lord.ulke ? (
+                      <>
+                        <span className="baslik text-parsomen">{lord.ulke.ad}</span>
+                        <span className="text-solgun"> — ülken</span>
+                      </>
+                    ) : (
+                      <span className="baslik text-altin">Ülkeni seç</span>
+                    )}
+                  </span>
+                  <span className="shrink-0 text-[11px] text-altin">›</span>
+                </button>
                 {harita.data.ittifakHedefi && (
                   <button
                     type="button"
@@ -1041,6 +1031,7 @@ export function Harita({
                   ustyazi={
                     <>
                       <h2
+                        data-bolge-baslik={bolge.id}
                         className="baslik text-[20px] leading-tight text-parsomen"
                         style={{ textShadow: '0 2px 6px rgba(0,0,0,0.9)' }}
                       >
@@ -1066,7 +1057,9 @@ export function Harita({
                   <div className="flex flex-wrap gap-1.5">
                     {bolge.type === 'taht' && (
                       <Hap renk="var(--color-altin)">
-                        {bolge.owner ? `Diyarın Lordu · ${bolge.owner.name}` : 'taht boş'}
+                        {bolge.owner
+                          ? `${ULKE_ADI[bolge.province] ?? ''} hükümdarı · ${bolge.owner.name}`
+                          : 'taht boş'}
                       </Hap>
                     )}
                     <Hap renk="var(--color-mavi)">{`${bolge.distance} adım`}</Hap>
@@ -1078,11 +1071,10 @@ export function Harita({
                     sormuyordu.
 
                     Kendi bölgende mevcut çarpan, başkasınınkinde ALIRSAN ne
-                    olacağı yazıyor. Taht Vilayeti'nde tek bölge var, orada
-                    birlik diye bir şey yok. */}
+                    olacağı yazıyor. Vilayet artık ÜLKE (docs/27). */}
                     {(() => {
-                      const ad = VILAYET_ADI[bolge.province];
-                      if (!ad || bolge.province === 'taht') return null;
+                      const ad = ULKE_ADI[bolge.province];
+                      if (!ad) return null;
                       const oradaki = bolgelerim.filter(
                         (r) => r.province === bolge.province && r.id !== bolge.id,
                       ).length;
@@ -1118,16 +1110,6 @@ export function Harita({
                       bolge.owner?.id === dunya.data.liderAvi.lordId && (
                         <Hap renk="var(--color-kirmizi)">{`lider avı · +%${Math.round(dunya.data.liderAvi.yagmaBonusu * 100)} yağma`}</Hap>
                       )}
-                    {/* Fraksiyon lider avı (docs/16 §10): bu toprağı önde
-                    giden medeniyet tutuyorsa yağma bonuslu. Aynı
-                    gerekçe — teşvik, oyuncunun kararı verdiği yerde
-                    yazmalı. İki hap aynı anda görünebilir ve bu doğru:
-                    iki bonus da alınıyor. */}
-                    {dunya.data?.medeniyetAvi &&
-                      !dunya.data.medeniyetAvi.benimMi &&
-                      bolge.medeniyet?.id === dunya.data.medeniyetAvi.medeniyetId && (
-                        <Hap renk="var(--color-kirmizi)">{`${dunya.data.medeniyetAvi.ad ?? 'medeniyet'} önde · +%${Math.round(dunya.data.medeniyetAvi.yagmaBonusu * 100)} yağma`}</Hap>
-                      )}
                     {bolge.fortressBonus > 0 && (
                       <Hap renk="var(--color-kirmizi)">{`tahkimat +%${Math.round(bolge.fortressBonus * 100)}`}</Hap>
                     )}
@@ -1144,8 +1126,8 @@ export function Harita({
                 <div className="space-y-3 px-4 pt-3">
                   {bolge.type === 'taht' && (
                     <Kart className="p-3" vurgu="var(--color-altin)">
-                      <h3 className="baslik mb-1 text-[11px] text-altin">Taht Kalesi</h3>
-                      <p className="text-[12px] text-solgun">{`Diyarda tek. Sahibi %${Math.round(B.taht_kalesi.unvan_sohret_bonusu * 100)}${' '}şöhret bonusu alır, bölge limitine sayılmaz. Buraya saldırmak günlük hakkından düşmez ve el değiştirdikten sonra kalkanı yalnızca${' '}${B.taht_kalesi.kaybetme_korumasi_saat} saat sürer.`}</p>
+                      <h3 className="baslik mb-1 text-[11px] text-altin">{`Taht — ${ULKE_ADI[bolge.province] ?? ''} başkenti`}</h3>
+                      <p className="text-[12px] text-solgun">{`Her ülkenin başkenti bir taht. Sahibi o ülkenin hükümdarı olur, %${Math.round(B.taht_kalesi.unvan_sohret_bonusu * 100)}${' '}şöhret bonusu alır, bölge limitine sayılmaz. Buraya saldırmak günlük hakkından düşmez ve el değiştirdikten sonra kalkanı yalnızca${' '}${B.taht_kalesi.kaybetme_korumasi_saat} saat sürer.`}</p>
                     </Kart>
                   )}
 

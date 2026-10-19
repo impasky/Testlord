@@ -68,9 +68,14 @@ export function ipuclari(): Ipucu[] {
         'Yeni bölge almak tek yol değil: elindekini yükseltmek o bölgenin saatlik gelirini büyütür, garnizonunun payı da onunla birlikte büyür.',
     },
     {
-      baslik: 'Çekirdeğe bağış herkese yarar',
+      baslik: 'Sınırdan yayıl',
       metin:
-        'Medeniyetinin çekirdeklerini büyütmek depoyu, eğitimi, savunmayı ve geliri o medeniyetteki HERKES için artırır. Senin karşılığın fayda puanı olarak döner.',
+        'Kendi ülkenin her şehri açık. Başka bir ülkenin şehrine ancak sınırdan geçebilirsin: evinin ya da tuttuğun bir toprağın komşusu olmalı — kara sınırı ya da deniz yolu.',
+    },
+    {
+      baslik: 'Başkent bir taht',
+      metin:
+        'Her ülkenin başkenti bir TAHT. Tutan lord o ülkenin hükümdarı olur ve şöhreti artar; taht bölge sınırına sayılmaz.',
     },
   ];
 }

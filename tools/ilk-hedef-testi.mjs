@@ -24,14 +24,18 @@ import { readFileSync } from 'node:fs';
 import { kayitOl } from './lib/kayit.mjs';
 const API = process.env.API_URL ?? 'http://localhost:3000';
 
-// Doğum yerleri SABİT ve SAYILI: pickHomeAnchor en az yüklü KÖYÜ
-// seçiyor, yani art arda gelen kayıtlar bütün çapaları sırayla dolaşıyor.
-// Bu yüzden test örneklem değil TAM TARAMA yapabiliyor: çapa sayısı kadar
-// oyuncu kurmak her doğum yerini bir kez ziyaret ediyor. Rastgele 12 oyuncu
-// denemek yanıltıcıydı — turun neresine denk geldiğine göre bozuk çapaların
-// hepsini ıskalayabiliyordu.
+// Doğum yerleri SABİT ve SAYILI (docs/27): kayıtlar Türkiye'de açılıyor
+// (`lib/kayit.mjs`) ve kamp, ülkenin EN ZAYIF sahipsiz şehirlerinden en az
+// kalabalık olanının yanına kuruluyor (`kampYeri`). Art arda gelen kayıtlar
+// o şehirleri sırayla dolaşıyor; o yüzden test örneklem değil TAM TARAMA
+// yapabiliyor: zayıf şehir sayısı kadar oyuncu her doğum yerini bir kez
+// ziyaret ediyor. Rastgele 12 oyuncu denemek yanıltıcıydı — turun neresine
+// denk geldiğine göre bozuk çapaların hepsini ıskalayabiliyordu.
 const DUNYA = JSON.parse(readFileSync(new URL('../data/world-map.json', import.meta.url), 'utf8'));
-const OYUNCU = DUNYA.regions.filter((r) => r.type === 'koy').length;
+const garnizon = (r) => Object.values(r.npc_garrison).reduce((t, n) => t + n, 0);
+const yurt = DUNYA.regions.filter((r) => r.province === 'TUR' && r.type !== 'taht');
+const enZayif = Math.min(...yurt.map(garnizon));
+const OYUNCU = yurt.filter((r) => garnizon(r) === enZayif).length;
 
 let hata = 0;
 function kontrol(ad, kosul, detay = '') {

@@ -9,7 +9,6 @@ import { BIRLIK_ADLARI, DUSMAN_ADLARI, EKIPMAN_ADLARI } from './birlikler';
 import { BOLGE_KUTUSU, BOLGE_TIPLERI } from './bolgeler';
 import { GENERAL_ADLARI, LORD_ADLARI, PORTRE_ADLARI, PORTRE_KUTUSU, kusamAdiMi } from './kisiler';
 import { HARITA_KUTUSU, KAPAK_KUTUSU, type Kadraj } from './diyarlar';
-import { dunyaUcgenleri, type Ucgen } from './dunya';
 import type { KaliciGrup } from './kalici';
 import { SAVAS_KUTUSU } from './savas';
 import { ZEMIN_ADLARI, ZEMIN_KUTUSU } from './zeminler';
@@ -310,16 +309,25 @@ export function DiyarCizimi({
   );
 }
 
-let kucukDunya: Ucgen[] | null = null;
-
-/** Dünyanın kaba önizlemesi (kasa karosu): ağaçsız, seyrek ızgara. */
+/**
+ * Dünyanın küçük simgesi (kasa karosu): enlem-boylam çizgili bir küre.
+ * Gerçek dünya haritasının geometrisi (docs/27) büyük ve ayrı pakette;
+ * karo onu indirmesin.
+ */
 export function DunyaKucuk({ className }: { className?: string }) {
-  kucukDunya ??= dunyaUcgenleri(4, false);
   return (
     <svg viewBox="0 0 100 100" className={className} aria-hidden>
-      {kucukDunya.map((u, i) => (
-        <polygon key={i} points={u.n.join(' ')} fill={u.renk} stroke={u.renk} strokeWidth={0.3} />
-      ))}
+      <rect width="100" height="100" fill="#142128" />
+      <circle cx="50" cy="50" r="38" fill="#2f5d6e" stroke="#e9c46a" strokeWidth="2" />
+      <path
+        d="M30 34c6-6 16-8 22-4s4 10-2 12-10 8-6 14-2 10-10 6-10-14-4-28zM58 58c6-2 12 2 12 8s-6 10-10 8-8-14-2-16zM60 26c8 0 16 6 14 12s-10 4-14 0-6-12 0-12z"
+        fill="#6b8f4e"
+        opacity="0.9"
+      />
+      <g fill="none" stroke="#f0e1c8" strokeOpacity="0.35" strokeWidth="1">
+        <ellipse cx="50" cy="50" rx="16" ry="38" />
+        <path d="M12 50h76M18 32h64M18 68h64" />
+      </g>
     </svg>
   );
 }

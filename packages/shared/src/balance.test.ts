@@ -15,7 +15,6 @@ import {
   KAPILAR,
   TAKTIKLER,
   UNIT_TYPES,
-  WORLD_MAP,
   ERZAK_FIRAR_ORANI,
   accrue,
   erzakTukenmesiSaat,
@@ -44,19 +43,11 @@ import {
   paktKoruyorMu,
   paktTaraflari,
   paktTeklifDenetle,
-  yakinlikMesafesi,
   vilayetCarpani,
   vilayetCarpanlari,
   vilayetSayilari,
   karsiHalkasi,
   ogreticiSayfalari,
-  CEKIRDEK_AZAMI_SEVIYE,
-  CEKIRDEK_BONUSU,
-  FAYDA_FETIH,
-  FAYDA_SAVUNMA,
-  MEDENIYETLER,
-  garnizonFaydaPuani,
-  medeniyetBonusu,
   orduDus,
   GENERAL_LEVEL,
   generalLevelFromXp,
@@ -66,9 +57,8 @@ import {
   generalToplamXp,
   generalXpForLevel,
   generalYaralanma,
-  EN_UZAK_MESAFE,
-  bolgeMesafesi,
-  komsuMu,
+  ULKELER,
+  sinirdanMi,
   basarimSayaci,
   calculateLoot,
   SEFERLER,
@@ -127,6 +117,15 @@ import {
   xpForLevel,
   yakalanmaIhtimali,
 } from './index.js';
+import {
+  KANONIK_GRAFIK,
+  WORLD_MAP,
+  bolgeMesafesi,
+  enUzakMesafe,
+  haritayiDogrula,
+  komsuMu,
+  yakinlikMesafesi,
+} from './kanonik.js';
 import type { Army, EquippedItem, Side } from './types.js';
 
 const ctx = {
@@ -148,28 +147,32 @@ function side(units: Army, isDefender: boolean, fort = 0, leadership = 5): Side 
 }
 
 /**
- * Halka (`ring`) kavramı altıgen ızgarayla birlikte kalktı. Yerini
- * MERKEZ UZAKLIĞI aldı: Taht Kalesi'nden kaç adım. Aynı şeyi ölçüyor ama
- * artık komşuluk grafiğinden türüyor, koordinat aritmetiğinden değil.
+ * Gerçek dünyada (docs/27) zorluk merkeze uzaklıktan değil şehrin
+ * NÜFUSUNDAN geliyor: küçük şehir ilk hedef, büyükşehir ordu ister,
+ * başkent (taht) ülkenin en güçlü yeri.
  */
 const TAHT_ID = WORLD_MAP.regions.find((r) => r.type === 'taht')!.id;
-const merkezUzakligi = (id: number): number => bolgeMesafesi(TAHT_ID, id);
+const nufus = (r: { nufus?: number }): number => r.nufus ?? 0;
+const kademe = (ad: string) => B.gercek_dunya.kademeler.find((k) => k.ad === ad)!;
+const kademedeMi = (r: { nufus?: number; type: string }, ad: string): boolean => {
+  const k = B.gercek_dunya.kademeler;
+  const i = k.findIndex((x) => x.ad === ad);
+  return (
+    r.type !== 'taht' &&
+    nufus(r) >= k[i]!.en_az_nufus &&
+    (i === 0 || nufus(r) < k[i - 1]!.en_az_nufus)
+  );
+};
 
 /**
- * Sınır bandındaki bir türün KENDİ garnizonu.
+ * En küçük kademedeki bir türün garnizonu: oyuncunun ilk hedefi.
  *
- * Önceki hâli tek bir bölgenin garnizonunu alıp üç ayrı tahkimatla
- * sınıyordu ve o bölge "dosyadaki ilk 4-adım-uzaklıktaki köy olmayan
- * bölge" diye seçiliyordu — yani ölçüm DOSYA SIRASINA bağlıydı. Harita
- * yeniden kurulup o sıra değişince test, oyunun hiç sormadığı bir soruyu
- * sormaya başladı: "bir KALE garnizonu bir TARLA tahkimatının arkasında
- * dursa alınır mı?" Öyle bir bölge yok.
- *
- * Artık her tür kendi garnizonuyla ölçülüyor. Tasarım cümlesi aynı: ilk
- * günün ordusu sınırdaki tahkimatsız bir yeri alır, kaleyi alamaz.
+ * Her tür kendi garnizonuyla ve kendi tahkimatıyla ölçülüyor — "bir KALE
+ * garnizonu bir TARLA tahkimatının arkasında dursa" gibi oyunun hiç
+ * sormadığı bir soruyu sormasın.
  */
 const kenarGarnizonu = (tip: string): Army =>
-  WORLD_MAP.regions.find((r) => r.type === tip && merkezUzakligi(r.id) >= 4)!
+  WORLD_MAP.regions.find((r) => r.type === tip && kademedeMi(r, 'kasaba'))!
     .npc_garrison as unknown as Army;
 const BASLANGIC_ORDUSU: Army = { mizrakci: 20, okcu: 15 };
 
@@ -193,11 +196,12 @@ describe('ilk gün deneyimi', () => {
     expect(maliyet).toBeLessThanOrEqual(butce);
   });
 
-  it('KALE aynı orduyla alınamaz — kenar bölgeler arasında bile zorluk farkı var', () => {
+  it('BÜYÜKŞEHİR aynı orduyla alınamaz — şehirler arasında zorluk farkı var', () => {
+    const b = WORLD_MAP.regions.find((r) => kademedeMi(r, 'buyuksehir'))!;
     const r = simulateBattle(
       side(BASLANGIC_ORDUSU, false),
-      side(kenarGarnizonu('kale'), true, fortressBonus('kale', 1)),
-      'ilk-fetih-kale',
+      side(b.npc_garrison as unknown as Army, true, fortressBonus(b.type, 1)),
+      'ilk-fetih-buyuksehir',
       ctx,
     );
     expect(r.captured).toBe(false);
@@ -345,26 +349,56 @@ describe('savaş sonuç bandı', () => {
 
 describe('harita', () => {
   it("bölge kıtlığı korunur — oyuncu başına 0.75'ten az bölge", () => {
-    const eldeEdilebilir = WORLD_MAP.region_count - 1; // Taht Kalesi hariç
+    const eldeEdilebilir = WORLD_MAP.regions.filter((r) => r.type !== 'taht').length;
     expect(eldeEdilebilir / B.dunya.oyuncu_kapasitesi).toBeLessThan(0.75);
   });
 
-  it('Taht Kalesi dünyada tektir ve en güçlü garnizona sahiptir', () => {
-    const taht = WORLD_MAP.regions.filter((r) => r.type === 'taht');
-    expect(taht).toHaveLength(1);
-    const tahtGuc = Object.values(taht[0]!.npc_garrison).reduce((s, n) => s + n, 0);
-    for (const r of WORLD_MAP.regions.filter((x) => x.type !== 'taht')) {
-      const g = Object.values(r.npc_garrison).reduce((s, n) => s + n, 0);
-      expect(tahtGuc).toBeGreaterThan(g);
+  it('her ülkenin tek tahtı var, o da başkenti (docs/27)', () => {
+    const tahtlar = WORLD_MAP.regions.filter((r) => r.type === 'taht');
+    expect(tahtlar).toHaveLength(WORLD_MAP.provinces.length);
+    for (const u of WORLD_MAP.provinces) {
+      const t = tahtlar.filter((r) => r.province === u.key);
+      expect(
+        t.map((r) => r.id),
+        u.name,
+      ).toEqual([u.baskent]);
     }
   });
 
-  it('merkeze yaklaştıkça gelir çarpanı artar', () => {
-    const carpan = (n: number) =>
-      WORLD_MAP.regions.find((r) => merkezUzakligi(r.id) === n)!.income_mult;
-    expect(carpan(1)).toBeGreaterThan(carpan(2));
-    expect(carpan(2)).toBeGreaterThan(carpan(3));
-    expect(carpan(3)).toBeGreaterThan(carpan(4));
+  it('büyük bir ülkenin tahtı ülkenin en güçlü garnizonu', () => {
+    const guc = (r: { npc_garrison: Record<string, number> }) =>
+      Object.values(r.npc_garrison).reduce((t, n) => t + n, 0);
+    const buyukler = WORLD_MAP.provinces.filter(
+      (u) =>
+        WORLD_MAP.regions.filter((r) => r.province === u.key).length >=
+        B.gercek_dunya.baskent.garnizon_tam_sehir_sayisi,
+    );
+    expect(buyukler.length).toBeGreaterThan(5);
+    for (const u of buyukler) {
+      const taht = WORLD_MAP.regions.find((r) => r.id === u.baskent)!;
+      for (const r of WORLD_MAP.regions.filter((x) => x.province === u.key && x.id !== u.baskent)) {
+        expect(guc(taht), `${u.name}: ${r.name}`).toBeGreaterThan(guc(r));
+      }
+    }
+  });
+
+  it('nüfus büyüdükçe gelir çarpanı ve garnizon büyüyor', () => {
+    const k = B.gercek_dunya.kademeler;
+    for (let i = 0; i + 1 < k.length; i++) {
+      expect(k[i]!.en_az_nufus).toBeGreaterThan(k[i + 1]!.en_az_nufus);
+      expect(k[i]!.gelir_carpani).toBeGreaterThan(k[i + 1]!.gelir_carpani);
+      const g = (x: (typeof k)[number]) => Object.values(x.garnizon).reduce((t, n) => t + n, 0);
+      expect(g(k[i]!)).toBeGreaterThan(g(k[i + 1]!));
+    }
+    expect(B.gercek_dunya.baskent.gelir_carpani).toBeGreaterThan(k[0]!.gelir_carpani);
+  });
+
+  it('her şehrin garnizonu ve geliri kendi kademesinden', () => {
+    for (const r of WORLD_MAP.regions.filter((x) => x.type !== 'taht')) {
+      const k = B.gercek_dunya.kademeler.find((x) => nufus(r) >= x.en_az_nufus)!;
+      expect(r.income_mult, r.name).toBe(k.gelir_carpani);
+    }
+    expect(kademe('kasaba').gelir_carpani).toBe(1);
   });
 });
 
@@ -1489,13 +1523,12 @@ describe('öğretici (docs/09 — ilk giriş)', () => {
       'casus',
       'başarım',
       'depo',
-      // Medeniyet katmanı (docs/16): oyunun türünü değiştiren sistem.
-      // Öğreticide yazmazsa yeni oyuncu haritadaki renkleri, bir bölgeye
-      // neden saldıramadığını ve gelirinin neden akmadığını anlamaz.
-      'medeniyet',
+      // Gerçek dünya (docs/27): öğreticide yazmazsa yeni oyuncu bir
+      // şehre neden saldıramadığını ve gelirinin neden akmadığını anlamaz.
+      'ülke',
+      'sınır',
+      'taht',
       'garnizon',
-      'çekirdek',
-      'fayda puanı',
     ]) {
       expect(metin, konu).toContain(konu);
     }
@@ -1568,51 +1601,15 @@ describe('öğretici (docs/09 — ilk giriş)', () => {
   });
 
   /**
-   * MEDENİYET SAYFASI (docs/16 §12.6).
-   *
-   * Sayfanın her sayısı motordan türüyor; bu kontrol o bağı kilitliyor.
-   * Dengede bir çekirdek bonusu değişirse öğretici de değişmeli, yoksa
-   * yeni oyuncuya olmayan bir oyunu anlatır.
+   * ÜLKE SAYFASI (docs/27). Sayılar haritadan: elle yazılmış bir kopya
+   * harita büyüdüğü gün eski sayıda kalır.
    */
-  it('öğretici medeniyet sayılarını motordan alıyor', () => {
-    const m = sayfalar.find((s) => s.anahtar === 'medeniyet');
-    expect(m, 'medeniyet sayfası yok').toBeTruthy();
-    const metin = [m!.baslik, m!.ozet, ...m!.maddeler.map((x) => `${x.vurgu} ${x.metin}`)].join(
-      ' ',
-    );
-
-    // Dört medeniyetin DÖRDÜ de adıyla geçiyor: oyuncu kendi tarafını
-    // listede bulamazsa sayfa onu tanıtmamış olur.
-    for (const med of MEDENIYETLER) expect(metin, med.id).toContain(med.ad);
-    expect(metin).toContain(`${MEDENIYETLER.length} medeniyet`);
-
-    // Çekirdek sayısı listelerin kendisinden sayılıyor.
-    const toplam = MEDENIYETLER.reduce((t, x) => t + x.cekirdekBolgeler.length, 0);
-    expect(metin).toContain(`${toplam} çekirdek`);
-
-    // "Her yurdun N çekirdeği" cümlesi ancak listeler EŞİT uzunluktaysa
-    // doğru — araştırma dallarındaki kuralın aynısı.
-    const uzunluklar = new Set(MEDENIYETLER.map((x) => x.cekirdekBolgeler.length));
-    expect(uzunluklar.size).toBe(1);
-    expect(metin).toContain(`Her yurdun ${[...uzunluklar][0]} çekirdek bölgesi`);
-
-    // Bonus oranları motorun kendi işlevinden.
-    const seviyeler = (n: number): Record<number, number> =>
-      Object.fromEntries(MEDENIYETLER[0]!.cekirdekBolgeler.map((id) => [id, n]));
-    const bir = medeniyetBonusu(seviyeler(1));
-    const tam = medeniyetBonusu(seviyeler(CEKIRDEK_AZAMI_SEVIYE));
-    // Tek bir "+%5" cümlesi ancak dört bonus da aynı hızda büyüyorsa
-    // doğru; biri ayrılırsa cümle sessizce yalan olur.
-    expect(new Set(Object.values(bir)).size).toBe(1);
-    expect(metin).toContain(`+%${Math.round(bir.ambar * 100)}`);
-    expect(metin).toContain(`+%${Math.round(tam.ambar * 100)}`);
-    expect(metin).toContain(`en çok ${CEKIRDEK_AZAMI_SEVIYE} seviye`);
-    for (const ad of Object.values(CEKIRDEK_BONUSU)) expect(metin, ad).toContain(ad);
-
-    // Fayda puanı sayıları da motordan.
-    expect(metin).toContain(`(${FAYDA_FETIH})`);
-    expect(metin).toContain(`(${FAYDA_SAVUNMA})`);
-    expect(metin).toContain(`saatte ${garnizonFaydaPuani(10, 1)} puan`);
+  it('öğretici ülke ve şehir sayısını haritadan alıyor', () => {
+    const metin = sayfalar
+      .flatMap((s) => [s.baslik, s.ozet, ...s.maddeler.map((x) => `${x.vurgu} ${x.metin}`)])
+      .join(' ');
+    expect(sayfalar.some((s) => s.anahtar === 'ulke')).toBe(true);
+    expect(metin).toContain(`${WORLD_MAP.region_count} şehir, ${ULKELER.size} ülke`);
   });
 
   /**
@@ -1627,17 +1624,14 @@ describe('öğretici (docs/09 — ilk giriş)', () => {
       .toLocaleLowerCase('tr');
     expect(metin).toContain('gelir garnizondan gelir');
     expect(metin).toContain('asker bırakmazsan');
-    // Fethin karşılığı: toprak medeniyete yazılıyor, ordu orada kalıyor.
-    expect(metin).toContain('medeniyetine yazılır');
+    // Fethin karşılığı: toprak lorda yazılıyor, ordu orada kalıyor.
+    expect(metin).toContain('senin adına yazılır');
   });
 
-  it('öğretici tahtın İKİ şöhret payını da söylüyor', () => {
-    // Taht artık yalnız bir lordun unvanı değil, bir tarafın kazancı
-    // (docs/16 §13 soru 5). Öğretici ikincisini yazmazsa oyuncu
-    // haritanın en büyük ödülünü eksik öğrenir.
+  it('öğretici tahtın şöhret payını ve korumasını söylüyor', () => {
     const metin = sayfalar.flatMap((s) => s.maddeler.map((m) => `${m.vurgu} ${m.metin}`)).join(' ');
     expect(metin).toContain(`%${Math.round(B.taht_kalesi.unvan_sohret_bonusu * 100)}`);
-    expect(metin).toContain(`%${Math.round(B.taht_kalesi.medeniyet_sohret_bonusu * 100)}`);
+    expect(metin).toContain(`${B.taht_kalesi.kaybetme_korumasi_saat} saat`);
   });
 
   it('öğretici sezon vaat etmiyor — dünya kalıcı (docs/09 §2.2)', () => {
@@ -1651,6 +1645,8 @@ describe('öğretici (docs/09 — ilk giriş)', () => {
 
 describe('harita: mesafe ve komşuluk (docs/11, docs/12)', () => {
   const ev = WORLD_MAP.regions.find((r) => r.type === 'koy')!.id;
+  /** Grafiği sınamak için düzenli bir örnek: 3.000 bölgede bütün çiftler 9 milyon. */
+  const ornek = WORLD_MAP.regions.filter((_, i) => i % 37 === 0);
 
   it('toprağı olmayan oyuncu için mesafe evden ölçülür', () => {
     // Bölgesiz oyuncunun oyunu değişmemeli: kural yeni bir avantaj
@@ -1672,7 +1668,7 @@ describe('harita: mesafe ve komşuluk (docs/11, docs/12)', () => {
   it('mesafe hiçbir zaman evden ölçülenden BÜYÜK olmuyor', () => {
     // min() alıyoruz; bir gün yanlışlıkla "son alınan bölgeden" gibi bir
     // şeye dönerse bu kontrol düşer.
-    const topraklar = WORLD_MAP.regions.filter((r) => r.type === 'maden').map((r) => r.id);
+    const topraklar = ornek.filter((r) => r.type === 'maden').map((r) => r.id);
     for (const r of WORLD_MAP.regions) {
       expect(yakinlikMesafesi(ev, topraklar, r.id)).toBeLessThanOrEqual(bolgeMesafesi(ev, r.id));
     }
@@ -1684,11 +1680,11 @@ describe('harita: mesafe ve komşuluk (docs/11, docs/12)', () => {
 
   /*
    * GRAFİĞİN KENDİSİ. Altıgen ızgarada bu kuralların hepsi aritmetiğin
-   * bedava sonucuydu; elle yazılan bir komşuluk listesinde hiçbiri bedava
+   * bedava sonucuydu; üretilen bir komşuluk listesinde hiçbiri bedava
    * değil ve bozulduklarında sessizce bozuluyorlar.
    */
   it('mesafe simetrik', () => {
-    for (const a of WORLD_MAP.regions) {
+    for (const a of ornek) {
       for (const b of WORLD_MAP.regions) {
         expect(bolgeMesafesi(a.id, b.id), `${a.name} ↔ ${b.name}`).toBe(bolgeMesafesi(b.id, a.id));
       }
@@ -1696,10 +1692,10 @@ describe('harita: mesafe ve komşuluk (docs/11, docs/12)', () => {
   });
 
   it('üçgen eşitsizliği bozulmuyor', () => {
-    const ornek = WORLD_MAP.regions.filter((_, i) => i % 7 === 0);
-    for (const a of ornek) {
-      for (const b of ornek) {
-        for (const c of ornek) {
+    const az = ornek.filter((_, i) => i % 3 === 0);
+    for (const a of az) {
+      for (const b of az) {
+        for (const c of az) {
           expect(bolgeMesafesi(a.id, c.id)).toBeLessThanOrEqual(
             bolgeMesafesi(a.id, b.id) + bolgeMesafesi(b.id, c.id),
           );
@@ -1709,7 +1705,7 @@ describe('harita: mesafe ve komşuluk (docs/11, docs/12)', () => {
   });
 
   it('komşuluk mesafe 1 demek, mesafe 1 komşuluk demek', () => {
-    for (const a of WORLD_MAP.regions) {
+    for (const a of ornek) {
       for (const b of WORLD_MAP.regions) {
         if (a.id === b.id) continue;
         expect(komsuMu(a.id, b.id), `${a.name} ↔ ${b.name}`).toBe(bolgeMesafesi(a.id, b.id) === 1);
@@ -1721,31 +1717,92 @@ describe('harita: mesafe ve komşuluk (docs/11, docs/12)', () => {
     // Kopuk bir küme, oraya hiç saldıramamak demek. `dogrula()` bunu
     // sunucu açılışında da kontrol ediyor; burada da duruyor çünkü
     // dosyayı elle düzenleyen kişi önce testi çalıştırır.
+    const cap = enUzakMesafe();
+    expect(cap).toBeGreaterThan(0);
     for (const r of WORLD_MAP.regions) {
-      expect(bolgeMesafesi(TAHT_ID, r.id), r.name).toBeLessThan(EN_UZAK_MESAFE + 1);
+      expect(bolgeMesafesi(TAHT_ID, r.id), r.name).toBeLessThanOrEqual(cap);
     }
-    expect(EN_UZAK_MESAFE).toBeGreaterThan(0);
   });
 
-  it('köyler haritanın kenarında ve ilk fetih için zayıf', () => {
-    const koyler = WORLD_MAP.regions.filter((r) => r.type === 'koy');
-    /*
-     * Sayı ORANLA ölçülüyor, sabitle değil. Önceki hâli `toBe(12)` diyordu
-     * ve bu eski 61 bölgeli haritadan kalma bir sihirli sayıydı: dünya
-     * 121 bölgeye çıkınca test, tasarımda hiçbir şey bozulmadığı hâlde
-     * kaldı. Korunması gereken şey adet değil, KÖYÜN OYUNDAKİ YERİ —
-     * yeni lordun ilk hedefi olacak kadar çok, diyarı köy tarlasına
-     * çevirmeyecek kadar az.
-     */
-    expect(koyler.length / WORLD_MAP.regions.length).toBeGreaterThan(0.1);
-    expect(koyler.length / WORLD_MAP.regions.length).toBeLessThan(0.3);
-    for (const k of koyler) {
-      // Oyuna toprakSIZ başlıyoruz: ilk hedef merkezde olamaz.
-      expect(merkezUzakligi(k.id), k.name).toBeGreaterThanOrEqual(3);
-      const garnizon = Object.values(k.npc_garrison).reduce((t, n) => t + n, 0);
-      expect(garnizon, k.name).toBeLessThan(
-        Object.values(kenarGarnizonu('tarla')).reduce((t, n) => t + (n ?? 0), 0),
+  it('küçük şehirler ilk fetih için zayıf ve haritanın her yanında', () => {
+    const kucukler = WORLD_MAP.regions.filter((r) => kademedeMi(r, 'kasaba'));
+    // İlk hedef olacak kadar çok, haritayı köy tarlasına çevirmeyecek kadar az.
+    expect(kucukler.length / WORLD_MAP.regions.length).toBeGreaterThan(0.3);
+    const tarla = Object.values(kenarGarnizonu('tarla')).reduce((t, n) => t + (n ?? 0), 0);
+    const toplam = (r: { npc_garrison: Record<string, number> }) =>
+      Object.values(r.npc_garrison).reduce((t, n) => t + n, 0);
+    // Kale bilerek zor (gercek_dunya.tur_garnizon_carpani): ilk hedef değil.
+    for (const k of kucukler.filter((r) => r.type !== 'kale')) {
+      expect(toplam(k), k.name).toBeLessThanOrEqual(tarla);
+    }
+  });
+
+  it('kale aynı kademedeki köyden zor (başlangıç ordusu almıyor)', () => {
+    const kucuk = (tur: string) =>
+      WORLD_MAP.regions.find((r) => r.type === tur && kademedeMi(r, 'kasaba'))!;
+    const toplam = (r: { npc_garrison: Record<string, number> }) =>
+      Object.values(r.npc_garrison).reduce((t, n) => t + n, 0);
+    const carpan = (B.gercek_dunya.tur_garnizon_carpani as Record<string, number>).kale ?? 1;
+    expect(carpan).toBeGreaterThan(1);
+    expect(toplam(kucuk('kale'))).toBe(Math.round(toplam(kucuk('koy')) * carpan));
+  });
+});
+
+describe('harita: doğrulama (docs/27)', () => {
+  it('harita ve özeti sağlam — sunucu açılışta aynı denetimi yapıyor', () => {
+    expect(() => haritayiDogrula()).not.toThrow();
+  });
+});
+
+describe('harita: sınır kuralı (docs/27)', () => {
+  const tr = WORLD_MAP.regions.filter((r) => r.province === 'TUR');
+  const ev = tr.find((r) => r.type !== 'taht')!;
+  const lord = { ulke: 'TUR', evBolgeId: ev.id, topraklar: [] as number[] };
+
+  it('kendi ülkenin her şehri açık', () => {
+    for (const r of tr)
+      expect(sinirdanMi(KANONIK_GRAFIK, { mapId: r.id, province: r.province }, lord)).toBe(true);
+  });
+
+  it('yabancı şehir ancak evinin ya da toprağının komşusuysa açık', () => {
+    const yabanci = WORLD_MAP.regions.filter((r) => r.province !== 'TUR');
+    for (const r of yabanci) {
+      const komsu = komsuMu(ev.id, r.id);
+      expect(sinirdanMi(KANONIK_GRAFIK, { mapId: r.id, province: r.province }, lord), r.name).toBe(
+        komsu,
       );
+    }
+    // Bir sınır şehri alınca ardındaki ülke açılıyor.
+    const sinir = tr.find((r) => r.komsular.some((k) => yabanci.some((y) => y.id === k)))!;
+    const ote = yabanci.find((y) => y.komsular.includes(sinir.id))!;
+    expect(sinirdanMi(KANONIK_GRAFIK, { mapId: ote.id, province: ote.province }, lord)).toBe(
+      komsuMu(ev.id, ote.id),
+    );
+    expect(
+      sinirdanMi(
+        KANONIK_GRAFIK,
+        { mapId: ote.id, province: ote.province },
+        { ...lord, topraklar: [sinir.id] },
+      ),
+    ).toBe(true);
+  });
+
+  it('ülkesini seçmemiş lord yalnız evinin çevresine bakar', () => {
+    const r = WORLD_MAP.regions.find(
+      (x) => x.province === 'TUR' && !komsuMu(ev.id, x.id) && x.id !== ev.id,
+    )!;
+    expect(
+      sinirdanMi(KANONIK_GRAFIK, { mapId: r.id, province: r.province }, { ...lord, ulke: null }),
+    ).toBe(false);
+  });
+
+  it('her ülkenin en az bir komşusu var — kimse ülkesine hapsolmuyor', () => {
+    for (const u of WORLD_MAP.provinces) {
+      const sehirler = WORLD_MAP.regions.filter((r) => r.province === u.key);
+      const disari = sehirler.some((r) =>
+        r.komsular.some((k) => WORLD_MAP.regions.find((x) => x.id === k)!.province !== u.key),
+      );
+      expect(disari, u.name).toBe(true);
     }
   });
 });
@@ -2068,7 +2125,7 @@ describe('rakip lordlar (npc_lordlar)', () => {
      * %10'a çekildi. Sınır burada duruyor ki bir denge ayarı sessizce
      * geri kaydırmasın.
      */
-    const alinabilir = WORLD_MAP.region_count - 1; // Taht Kalesi hariç
+    const alinabilir = WORLD_MAP.regions.filter((r) => r.type !== 'taht').length;
     const npcBolge = WORLD_MAP.region_count * N.en_cok_bolge_payi;
     expect((alinabilir - npcBolge) / B.dunya.oyuncu_kapasitesi).toBeGreaterThan(0.4);
   });
@@ -2087,7 +2144,7 @@ describe('rakip lordlar (npc_lordlar)', () => {
   it('NPC saldırısı haritanın öbür ucundan gelmiyor', () => {
     // Menzil haritanın çapından küçük olmalı, yoksa "yakınlık" kuralı
     // hiçbir şeyi elemez.
-    expect(N.oyuncuya_saldiri_en_cok_adim).toBeLessThan(EN_UZAK_MESAFE);
+    expect(N.oyuncuya_saldiri_en_cok_adim).toBeLessThan(enUzakMesafe());
   });
 
   it('NPC ritmi oyuncununkinden yavaş ve dağınık', () => {

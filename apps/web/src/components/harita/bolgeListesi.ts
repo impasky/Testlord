@@ -1,8 +1,8 @@
 /**
  * Dünya haritasının LİSTE görünümü — süzme ve sıralama (docs/23 Faz 3).
  *
- * Harita gözle tarandığında iyi; ama "bana en yakın saldırılabilir köy
- * hangisi" sorusunun cevabı yüz yirmi bir toprağı tek tek dokunarak
+ * Harita gözle tarandığında iyi; ama "bana en yakın saldırılabilir şehir
+ * hangisi" sorusunun cevabı binlerce toprağı tek tek dokunarak
  * aranıyordu. Ekran okuyucu kullanan oyuncu için harita bir düğme
  * yığınıydı. Liste aynı veriyi (`/map`) sıralı satırlar olarak veriyor.
  *
@@ -16,7 +16,14 @@ import type { RegionDto } from '../../api/client';
 export type ListeSuzgeci = 'hedef' | 'benim' | 'hepsi';
 
 /** Bir satırın rozeti: neden saldırılamıyor ya da ne özelliği var. */
-export type Rozet = 'kalkan' | 'pakt' | 'muttefik' | 'cekirdek' | 'yoldas' | 'taht' | 'garnizon';
+export type Rozet = 'kalkan' | 'pakt' | 'muttefik' | 'sinir' | 'ulke' | 'taht' | 'garnizon';
+
+/**
+ * "Hepsi"nde en çok bu kadar satır: dünyada 3.000'i aşkın şehir var ve
+ * hepsini tek listede çizmek telefonu dondurur. Liste yakından uzağa
+ * sıralı; uzaktakiler haritada.
+ */
+export const LISTE_TAVANI = 250;
 
 export interface ListeSatiri {
   r: RegionDto;
@@ -26,11 +33,11 @@ export interface ListeSatiri {
 export function bolgeListesi(
   regions: readonly RegionDto[],
   suzgec: ListeSuzgeci,
-  benimMedeniyetId: string | null,
+  ulkem: string | null,
 ): ListeSatiri[] {
   const satirlar: ListeSatiri[] = [];
   for (const r of regions) {
-    const d = hedefDurumu(r, benimMedeniyetId);
+    const d = hedefDurumu(r, ulkem);
     // "Toprağım": sahibi olduğun bölge ve garnizonunun durduğu bölge —
     // ikisinden de gelir alıyorsun, ikisini de korumak senin işin.
     const garnizon = !r.isMine && r.pay != null;
@@ -43,22 +50,24 @@ export function bolgeListesi(
     satirlar.push({ r, rozetler });
   }
   // Yakın önce; eşitse yüksek seviye (daha değerli), sonra ad (kararlı sıra).
-  return satirlar.sort(
-    (a, b) =>
-      a.r.distance - b.r.distance ||
-      b.r.level - a.r.level ||
-      a.r.name.localeCompare(b.r.name, 'tr'),
-  );
+  return satirlar
+    .sort(
+      (a, b) =>
+        a.r.distance - b.r.distance ||
+        b.r.level - a.r.level ||
+        a.r.name.localeCompare(b.r.name, 'tr'),
+    )
+    .slice(0, LISTE_TAVANI);
 }
 
 /** Süzgeç düğmelerindeki sayılar — üçü birden, tek geçişte. */
 export function suzgecSayilari(
   regions: readonly RegionDto[],
-  benimMedeniyetId: string | null,
+  ulkem: string | null,
 ): Record<ListeSuzgeci, number> {
   const n = { hedef: 0, benim: 0, hepsi: regions.length };
   for (const r of regions) {
-    const d = hedefDurumu(r, benimMedeniyetId);
+    const d = hedefDurumu(r, ulkem);
     if (d.tur === 'acik') n.hedef++;
     if (d.tur === 'benim' || r.pay != null) n.benim++;
   }

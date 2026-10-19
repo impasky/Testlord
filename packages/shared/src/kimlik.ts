@@ -96,8 +96,8 @@ export interface Unvan {
 /**
  * Şöhretten unvan.
  *
- * Taht sahibi olan herkesin unvanını "Diyarın Lordu" eziyor — taht zaten
- * oyunun tepesi ve orada iki farklı unvan görmek anlamsız olurdu.
+ * Bir ülkenin tahtını tutan herkesin unvanını "Hükümdar" eziyor (docs/27) —
+ * taht oyunun tepesi ve orada iki farklı unvan görmek anlamsız olurdu.
  */
 /**
  * Lordun portresi: addan türetilir, kayıtta tutulmaz.

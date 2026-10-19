@@ -15,7 +15,6 @@ import { binaModeli } from './binalar';
 import { birlikModeli, dusmanModeli, ekipmanModeli } from './birlikler';
 import { bolgeModeli } from './bolgeler';
 import { diyarModeli, type Kadraj } from './diyarlar';
-import { dunyaModeli } from './dunya';
 import { generalModeli, lordModeli, portreModeli } from './kisiler';
 import { savasModeli } from './savas';
 import type { Model } from './uc';
@@ -42,9 +41,6 @@ const TARIFLER: Record<string, (ad: string) => Model | null> = {
   zemin: zeminModeli,
   // Savaş raporunun sahnesi: anahtar raporun verisini taşıyor (savas.ts).
   savas: savasModeli,
-  // Dünya haritasının zemini: yakınlık yaması işçide kurulmuş modelden
-  // (her yama için elli bin üçgen yeniden kurulmasın).
-  dunya: (ad) => (ad === 'zemin' ? dunyaModeli() : null),
 };
 
 /** Anahtarın modeli; tarifi olmayan (ya da bilinmeyen) anahtar için null. */

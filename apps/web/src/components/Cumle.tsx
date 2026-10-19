@@ -6,13 +6,13 @@
  * JSX'te bir cümlenin ortasına renk koymak onu üçe bölüyor:
  *
  *     <p>
- *       Yalnız <span className="text-parsomen">nüfusu az</span> bir
- *       medeniyete geçebilirsin — kazanan tarafa geçiş yok.
+ *       Başka bir ülkeye ancak <span className="text-parsomen">sınırdan</span>
+ *       geçebilirsin — evinin ya da bir şehrinin komşusundan.
  *     </p>
  *
  * Çeviri eklentisi her JSX metnini ayrı ayrı sarıyor, yani çevirmene
- * `"Yalnız"`, `"nüfusu az"` ve `"bir medeniyete geçebilirsin — kazanan
- * tarafa geçiş yok."` diye üç satır gidiyor. İlki ve sonuncusu tek
+ * `"Başka bir ülkeye ancak"`, `"sınırdan"` ve `"geçebilirsin — evinin ya
+ * da bir şehrinin komşusundan."` diye üç satır gidiyor. İlki ve sonuncusu tek
  * başına ÇEVRİLEMEZ: bağlamı yok, üstelik İngilizcede sözcük sırası
  * değişince parça yanlış yere düşer. `ceviri-liste.mjs` bu yüzden
  * onları "cümle parçası" diye ayırıyor ve listeye hiç koymuyor —
@@ -21,8 +21,8 @@
  * ── Çözüm ───────────────────────────────────────────────────────────
  *
  *     <Cumle
- *       metin="Yalnız {0} bir medeniyete geçebilirsin — kazanan tarafa geçiş yok."
- *       parca={[<span className="text-parsomen">nüfusu az</span>]}
+ *       metin="Başka bir ülkeye ancak {0} geçebilirsin — evinin ya da bir şehrinin komşusundan."
+ *       parca={[<span className="text-parsomen">sınırdan</span>]}
  *     />
  *
  * Cümle tek bir dizge; eklenti onu bütün olarak sarıyor, çevirmen

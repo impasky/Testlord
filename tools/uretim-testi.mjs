@@ -15,7 +15,7 @@
  *     node apps/api/dist/index.js
  *   node tools/uretim-testi.mjs
  */
-import { ekrana, kapiyiKapat, rehberiSustur } from './lib/gezin.mjs';
+import { ekrana, kapiyiKapat, rehberiSustur, ulkeyiSec } from './lib/gezin.mjs';
 import { devices } from 'playwright';
 import { tarayiciAc } from './lib/tarayici.mjs';
 import { ogreticiyiGec } from './lib/ogretici.mjs';
@@ -87,6 +87,8 @@ await page.fill('input[placeholder="Kara Yusuf"]', lordAdi);
 await page.fill('input[type=email]', `tel${d}@lordlar.dev`);
 await page.fill('input[type=password]', 'parola1234');
 await page.click('button[type=submit]');
+// Yeni lord önce ülkesini seçiyor (docs/27): gerçek oyuncu gibi.
+await ulkeyiSec(page);
 let girdi = true;
 try {
   await page.waitForSelector('nav button:has-text("Şehir")', { timeout: 15000 });
@@ -170,19 +172,14 @@ k('Sıralamada rakip lordlar var', satir >= 5, `${satir} lord`);
 await kapiyiKapat(page);
 await page.locator('nav button:has-text("Dünya")').click();
 await page.waitForTimeout(1500);
-// Düşman bölgesi bölgenin erişilebilir adından okunuyor ("…, sahibi X,
-// …"; DunyaHaritasi.tsx). Eski `svg path[fill="url(#dusman)"]` seçicisi
-// hex haritasından kalmaydı; resimli haritada o desen yok ve kontrol
-// rakip lordlar varken bile 0 sayıyordu.
-await page.waitForSelector('[data-bolge]', { timeout: 15000 });
-const dusman = await page.locator('[data-bolge]').evaluateAll(
-  (ogeler, ben) =>
-    ogeler.filter((o) => {
-      const m = /sahibi ([^,]+)/.exec(o.getAttribute('aria-label') ?? '');
-      return m && m[1] !== ben;
-    }).length,
-  lordAdi,
-);
+// Harita bir tuval (docs/27): bölge başına DOM düğümü yok. Düşman bölgesi
+// haritanın kendi verisinden sayılıyor — oyuncunun gördüğü boyama o veriden.
+await page.waitForSelector('[data-harita-hazir]', { timeout: 20000 });
+const jeton = await page.evaluate(() => localStorage.getItem('lordlar_token'));
+const haritaVerisi = await fetch(`${URL}/api/map`, {
+  headers: { Authorization: `Bearer ${jeton}` },
+}).then((r) => r.json());
+const dusman = haritaVerisi.regions.filter((r) => r.owner && !r.isMine).length;
 k('Haritada düşman bölgesi var', dusman > 0, `${dusman} bölge`);
 
 k('Konsolda hata yok', hatalar.length === 0, hatalar[0] ?? '');

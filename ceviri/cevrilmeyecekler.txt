@@ -6,140 +6,2981 @@ görebilesin diye yazılıyor.
 
 ==========================================================================
 
---- Bölge ve vilayet adları (126) ---
+--- Bölge ve vilayet adları (2967) ---
 
 Bunlar ÖZEL AD. "Akçakavak Köyü" İngilizce oynayan biri için de Akçakavak
 Köyü; Londra'nın Fransızcada Londra kalması gibi. Oyun Anadolu'da geçiyor
 ve yer adları o dünyanın parçası.
 
-  Akpazar
-  Aksu Ovası
-  Akçakavak Köyü
-  Akçaova
-  Altınbaşak
-  Altınçarşı
-  Ardıçlı Köyü
-  Arpalık
-  Aslanyatağı
-  Bakırcılar
-  Bakırdağ
-  Bakırtepe
-  Ballıova
-  Balıkçıburnu
-  Başakçayır
-  Bekçitepe
-  Bereketli
-  Beyazbaşak
-  Bezirgan
-  Bostanlı
-  Boyacılar
-  Buğdaylı
-  Buğdayova
-  Böğürtlen Köyü
-  Camlıçarşı
-  Cevherli
-  Demirbel
-  Demirkapı
-  Demirliman
-  Demirocak
-  Demirtaş
-  Demirvadi
-  Denizkapı
-  Dikmen Kalesi
-  Dutluca Köyü
-  Dörtburç
-  Dörtyol
-  Ekinbaşı
-  Eğrigürgen Köyü
-  Fenerbaşı
-  Gedikkale
-  Gemlik
-  Gökçepelit Köyü
-  Gümüşliman
-  Gümüşoluk
-  Günbatı Kıyıları
-  Gürgenli Köyü
-  Handibi
-  Harmanlı
-  Ihlamurlu Köyü
-  Kalafatlı
-  Karaağaç Köyü
-  Karakaya
-  Karakule
-  Karaorman
-  Karataş
-  Kartalyuva
-  Kayaardı
-  Kayınlık Köyü
-  Kekikova
-  Kervanbaşı
-  Kestanelik Köyü
-  Konaklı
-  Kurşunlu
-  Kuzeymark
-  Kuşburnu Köyü
-  Kömürlük
-  Köprübaşı
-  Körfezkent
-  Közlüce
-  Kızılçam Köyü
-  Madenkuyu
-  Menzilhan
-  Mercanlı
-  Mercimekli
-  Mermerli
-  Meşelik Köyü
-  Nadaslı
-  Nohutlu
-  Otluca
-  Palamutlu Köyü
-  Pancarlı
-  Pelitli Köyü
-  Samanlık
-  Sapçayır
-  Sarpgeçit
-  Sarphisar
-  Sarpkaya
-  Sarıkervan
-  Sarıova
-  Sarıçam Köyü
-  Sazlıdere Köyü
-  Susamlık
-  Söğütlü Köyü
-  Sütlüce
-  Sıradağ Kalesi
-  Taht Vilayeti
-  Taneli
-  Tarlabaşı
-  Taşbaşı
-  Taşgeçit
-  Taşocağı
-  Tellallar
-  Tezgâhlı
-  Tozlukoru Köyü
-  Tuzlaburnu
-  Tuzpazarı
-  Verimli
-  Yabanardıç Köyü
-  Yalçınkapı
-  Yalçınkaya
-  Yaşlımeşe Köyü
-  Yelkenli
-  Yemlik
-  Yoncalı
-  Çakmaktaş
-  Çamlıbel Köyü
-  Çayırbaşı
-  Çelikkapı
-  Çeliktaş
-  Çeltikli
-  Çınaraltı Köyü
-  Örensivri
-  Üzümlü
-  İskelebaşı
-  Şahinkaya
+  's-Hertogenbosch
+  Aalborg
+  Aba
+  Abadan
+  Abakan
+  Abbotsford
+  Abbottabad
+  Abengourou
+  Abeokuta
+  Aberdeen
+  Abha
+  Abidjan
+  Abilene
+  Abohar
+  Abu Dhabi
+  Abuja
+  Abéché
+  Acapulco
+  Acarigua
+  Accra
+  Achinsk
+  Ad Damazīn
+  Ad Diwaniyah
+  Adana
+  Addis Ababa
+  Adelaide
+  Aden
+  Adigrat
+  Ado Ekiti
+  Adıyaman
+  Afyonkarahisar
+  Agadez
+  Agadir
+  Agana
+  Agartala
+  Agra
+  Aguascalientes
+  Ahar
+  Ahmedabad
+  Ahmednagar
+  Ahvaz
+  Aix-en-Provence
+  Aizawl
+  Ajdabiya
+  Ajmer
+  Akita
+  Akola
+  Akron
+  Aksu
+  Akure
+  Al Amarah
+  Al Ayn
+  Al Fallujah
+  Al Hasakah
+  Al Hillah
+  Al Hudaydah
+  Al Jahra
+  Al Jubayl
+  Al Khalil
+  Al Kharj
+  Al Khums
+  Al Kut
+  Al Marj
+  Al Mukalla
+  Al Qamishli
+  Al-Ubayyid
+  Alagoinhas
+  Alajuela
+  Alappuzha
+  Albacete
+  Albany
+  Albuquerque
+  Albury
+  Alert
+  Alicante
+  Aligarh
+  Alipur Duar
+  Allahabad
+  Allentown
+  Almaty
+  Almería
+  Almetyevsk
+  Alor Setar
+  Altay
+  Alwar
+  Amahai
+  Amaravati
+  Amarillo
+  Ambala
+  Ambato
+  Ambon
+  Americana
+  Amiens
+  Amman
+  Amol
+  Amravati
+  Amritsar
+  Amsterdam
+  An Nasiriyah
+  Anaco
+  Anchorage
+  Ancona
+  Anda
+  Andijan
+  Andong
+  Angarsk
+  Angeles
+  Angers
+  Angren
+  Ankang
+  Ankara
+  Ann Arbor
+  Annaba
+  Annecy
+  Anqing
+  Ansan
+  Anshan
+  Anshun
+  Antakya
+  Antalya
+  Antananarivo
+  Antofagasta
+  Antsirabe
+  Antwerpen
+  Anuradhapura
+  Anyang
+  Anápolis
+  Aomori
+  Apia
+  Appleton
+  Apucarana
+  Aqtobe
+  Ar Ramadi
+  Ar Raqqah
+  Aracaju
+  Arad
+  Arak
+  Arapiraca
+  Arar
+  Araçatuba
+  Archangel
+  Ardabil
+  Arequipa
+  Arica
+  Arlington
+  Arlit
+  Armavir
+  Armenia
+  Arnhem
+  Arua
+  Arusha
+  Arzamas
+  As Salt
+  As Samawah
+  As Sulaymaniyah
+  Asahikawa
+  Asansol
+  Ash Shatrah
+  Asheville
+  Asmara
+  Assab
+  Astana
+  Astrakhan
+  Asunción
+  Aswan
+  Asyut
+  At Taif
+  Atbarah
+  Athens
+  Atina
+  Atlanta
+  Atyrau
+  Auckland
+  Augsburg
+  Augusta
+  Aurangabad
+  Aurora
+  Austin
+  Awasa
+  Awka
+  Ayacucho
+  Aydın
+  Ayutthaya
+  Az Aubayr
+  Az Zarqa
+  Az Zawiyah
+  Azare
+  Aşkabat
+  Babruysk
+  Bacolod
+  Bacău
+  Badajoz
+  Bafoussam
+  Baghlan
+  Bago
+  Baguio
+  Bagé
+  Bahawalpur
+  Bahir Dar
+  Bahraich
+  Bahía Blanca
+  Baia Mare
+  Baicheng
+  Baishan
+  Bakersfield
+  Bakü
+  Balakovo
+  Balikpapan
+  Balkanabat
+  Balkh
+  Ballari
+  Baltimore
+  Balıkesir
+  Bama
+  Bamako
+  Bamenda
+  Banda Aceh
+  Bandar Lampung
+  Bandar Seri Begawan
+  Bandar-e Bushehr
+  Bandar-e-Abbas
+  Bandjarmasin
+  Bandundu
+  Bandung
+  Bangkok
+  Bangui
+  Banja Luka
+  Banjul
+  Bannu
+  Banyuwangi
+  Baoding
+  Baoji
+  Baoshan
+  Baotou
+  Baqubah
+  Baramula
+  Baranavichy
+  Barbacena
+  Barcelona
+  Barddhaman
+  Bareilly
+  Bari
+  Barinas
+  Barishal
+  Barlett
+  Barletta
+  Barnaul
+  Barquisimeto
+  Barrancabermeja
+  Barranquilla
+  Barreiras
+  Barretos
+  Barrie
+  Barysaw
+  Basel
+  Basra
+  Basseterre
+  Bata
+  Batangas
+  Batman
+  Batna
+  Baton Rouge
+  Battambang
+  Batticaloa
+  Batu Pahat
+  Batum
+  Bauchi
+  Bauru
+  Bayamo
+  Baydhabo
+  Bağdat
+  Beaumont
+  Beaver Falls
+  Beer Sheva
+  Bei'an
+  Beihai
+  Beipiao
+  Beira
+  Bekasi
+  Belagavi
+  Belfast
+  Belgorod
+  Belgrad
+  Belleville
+  Belmopan
+  Belo Horizonte
+  Belém
+  Bengaluru
+  Bengbu
+  Bengkulu
+  Benguela
+  Benha
+  Beni
+  Beni Suef
+  Benin City
+  Benoni
+  Benxi
+  Berbera
+  Berdyansk
+  Berezniki
+  Bergamo
+  Bergen
+  Berlin
+  Bern
+  Bertoua
+  Besançon
+  Bethal
+  Beyrut
+  Bhagalpur
+  Bharatpur
+  Bhatpara
+  Bhavnagar
+  Bhilai
+  Bhilwara
+  Bhisho
+  Bhiwani
+  Bhopal
+  Bhubaneswar
+  Bhuj
+  Bhusawal
+  Biak
+  Biarritz
+  Białystok
+  Bida
+  Bidar
+  Bielefeld
+  Bikaner
+  Bila Tserkva
+  Bilaspur
+  Bilbao
+  Billings
+  Bingazi
+  Binghamton
+  Binjai
+  Bintulu
+  Biratnagar
+  Birganj
+  Birjand
+  Birmingham
+  Birnin Kebbi
+  Biskra
+  Bissau
+  Biysk
+  Bizerte
+  Biên Hòa
+  Bişkek
+  Blackpool
+  Blagoveshchensk
+  Blantyre
+  Blida
+  Blitar
+  Bloemfontein
+  Bloomington
+  Blumenau
+  Bo
+  Boa Vista
+  Bobo Dioulasso
+  Bogor
+  Bogota
+  Boise
+  Bojnurd
+  Boké
+  Bologna
+  Boma
+  Bongor
+  Bonn
+  Bontang
+  Bordeaux
+  Bordj Bou Arréridj
+  Borujerd
+  Bose
+  Boston
+  Botoșani
+  Botucatu
+  Bouaké
+  Boulder
+  Bournemouth
+  Bouïra
+  Braga
+  Bragança Paulista
+  Brahmapur
+  Brasília
+  Bratislava
+  Bratsk
+  Braunschweig
+  Brazzaville
+  Brașov
+  Bremen
+  Bremerhaven
+  Bremerton
+  Brest
+  Breves
+  Bridgeport
+  Bridgetown
+  Brighton
+  Brikama
+  Brindisi
+  Brisbane
+  Bristol
+  Brits
+  Brno
+  Brownsville
+  Brugge
+  Bryan
+  Bryansk
+  Brüksel
+  Brăila
+  Bucaramanga
+  Budapest
+  Budaun
+  Buenaventura
+  Buenos Aires
+  Buffalo
+  Buhara
+  Buizhou
+  Bujumbura
+  Bukavu
+  Bukittinggi
+  Bukoba
+  Bulandshahr
+  Bulawayo
+  Bumba
+  Buon Me Thuot
+  Bur Said
+  Buraydah
+  Burco
+  Burgas
+  Burgos
+  Burhanpur
+  Bursa
+  Busan
+  Butembo
+  Butuan
+  Buzău
+  Bydgoszcz
+  Bærum
+  Béchar
+  Béjaïa
+  Bükreş
+  Bălți
+  Bạc Liêu
+  Cabanatuan
+  Cabimas
+  Cabo Frio
+  Cabo de Santo Agostinho
+  Cachoeiro de Itapemirim
+  Cadiz
+  Caen
+  Cagayan de Oro
+  Cagliari
+  Cairns
+  Cajamarca
+  Calabar
+  Calabozo
+  Calama
+  Calbayog
+  Caldwell
+  Calgary
+  Cali
+  Cam Ranh
+  Camagüey
+  Cambridge
+  Cambridge Bay
+  Campeche
+  Campina Grande
+  Campinas
+  Campo Grande
+  Campos
+  Can Tho
+  Canberra
+  Cancún
+  Cangzhou
+  Canton
+  Cao Lãnh
+  Cap-Haïtien
+  Cape Coast
+  Cape Town
+  Caracas
+  Cardiff
+  Carora
+  Carpina
+  Cartagena
+  Cartago
+  Caruaru
+  Carúpano
+  Cascavel
+  Caserta
+  Castanhal
+  Castello
+  Castries
+  Catamarca
+  Catanduva
+  Catania
+  Caxias
+  Caxias do Sul
+  Cayenne
+  Cebu
+  Cedar Rapids
+  Ceerigaabo
+  Celaya
+  Cenevre
+  Cenova
+  Cerro de Pasco
+  Chamdo
+  Chandigarh
+  Chandrapur
+  Changchun
+  Changde
+  Changhua
+  Changping
+  Changsha
+  Changwon
+  Changzhi
+  Changzhou
+  Chaoyang
+  Chaozhou
+  Chapayevsk
+  Charleroi
+  Charleston
+  Charlotte
+  Chattanooga
+  Chattogram
+  Cheboksary
+  Chelyabinsk
+  Chemnitz
+  Chengde
+  Chengdu
+  Chennai
+  Chenzhou
+  Cheongju
+  Cherepovets
+  Cherkasy
+  Cherkessk
+  Chernihiv
+  Chernivtsi
+  Chetumal
+  Chiang Mai
+  Chiang Rai
+  Chiayi
+  Chicago
+  Chiclayo
+  Chifeng
+  Chihuahua
+  Chillán
+  Chilpancingo
+  Chimbote
+  Chimoio
+  Chinandega
+  Chincha Alta
+  Chingola
+  Chiniot
+  Chirala
+  Chita
+  Chitungwiza
+  Chlef
+  Chon Buri
+  Chongjin
+  Chongju
+  Chongqing
+  Christchurch
+  Chuncheon
+  Chuxiong
+  Cidde
+  Ciego de Ávila
+  Cienfuegos
+  Cilacap
+  Cincinnati
+  Cirebon
+  Ciudad Bolívar
+  Ciudad Guayana
+  Ciudad Juárez
+  Ciudad Obregon
+  Ciudad Valles
+  Ciudad Victoria
+  Ciudad del Carmen
+  Ciudad del Este
+  Ciénaga
+  Clarksville
+  Clermont-Ferrand
+  Cleveland
+  Cluj-Napoca
+  Coatzacoalcos
+  Cochabamba
+  Coimbatore
+  Coimbra
+  Colima
+  Colombo
+  Colorado Springs
+  Columbia
+  Columbus
+  Colón
+  Comilla
+  Como
+  Comodoro Rivadavia
+  Conakry
+  Concepción
+  Concordia
+  Conselheiro Lafaiete
+  Constantine
+  Constanța
+  Copiapó
+  Coquimbo
+  Coral Harbour
+  Coral Springs
+  Cork
+  Coro
+  Corpus Christi
+  Corrientes
+  Cotabato
+  Cotonou
+  Cottbus
+  Coventry
+  Craiova
+  Cranbourne
+  Crato
+  Criciúma
+  Cuddalore
+  Cuenca
+  Cuernavaca
+  Cuiabá
+  Culiacán
+  Cumaná
+  Curepipe
+  Curicó
+  Curitiba
+  Cusco
+  Cuttack
+  Cà Mau
+  Cádiz
+  Córdoba
+  Cúcuta
+  Cẩm Phả
+  Da Lat
+  Da Nang
+  Daegu
+  Daejeon
+  Dagupan
+  Dakar
+  Dakka
+  Dali
+  Dalian
+  Dallas
+  Daloa
+  Damanhûr
+  Damaturu
+  Dammam
+  Dandong
+  Daqing
+  Dar es Salaam
+  Dar'a
+  Datong
+  Daugavpils
+  Davangere
+  Davao
+  Davenport
+  David
+  Dawei
+  Dayr az Zawr
+  Dayton
+  Daytona Beach
+  Daşoguz
+  Debrecen
+  Dehra Dun
+  Delicias
+  Denizli
+  Denow
+  Denpasar
+  Denton
+  Denver
+  Dera Ghazi Khan
+  Dera Ismail Khan
+  Derbent
+  Derne
+  Des Moines
+  Dese
+  Detroit
+  Deyang
+  Dezful
+  Dezhou
+  Dhamar
+  Dhanbad
+  Dhule
+  Dibrugarh
+  Dijon
+  Dili
+  Dimitrovgrad
+  Dindigul
+  Dingzhou
+  Diourbel
+  Dire Dawa
+  Divinópolis
+  Divo
+  Diyarbakır
+  Djelfa
+  Djibouti
+  Djougou
+  Dnipro
+  Dodoma
+  Doha
+  Donetsk
+  Dongguan
+  Dortmund
+  Douala
+  Douliou
+  Dourados
+  Dresden
+  Drobeta-Turnu Severin
+  Drohobych
+  Dubai
+  Dublin
+  Duhok
+  Duisburg
+  Duitama
+  Dumyat
+  Dundee
+  Dunedin
+  Dunhua
+  Dunhuang
+  Duque de Caxias
+  Durango
+  Durban
+  Durham
+  Durrës
+  Duşanbe
+  Dzerzhinsk
+  Düsseldorf
+  East London
+  Edinburgh
+  Edirne
+  Edmonton
+  Edéa
+  Eindhoven
+  Ekibastuz
+  El Arish
+  El Faiyum
+  El Fasher
+  El Jadida
+  El Manaqil
+  El Mansura
+  El Minya
+  El Oued
+  El Paso
+  El Progreso
+  El Tigre
+  Elazığ
+  Elbasan
+  Elbląg
+  Eldoret
+  Elgin
+  Elista
+  Elkhart
+  En Nuhud
+  Encarnación
+  Ensenada
+  Entebbe
+  Enugu
+  Er Rachidia
+  Erfurt
+  Erie
+  Erivan
+  Erzincan
+  Erzurum
+  Escuintla
+  Eskişehir
+  Esmeraldas
+  Essen
+  Estelí
+  Etawah
+  Eugene
+  Evanston
+  Evansville
+  Everett
+  Exeter
+  Faisalabad
+  Faizabad
+  Fargo
+  Fargona
+  Faridabad
+  Fasa
+  Fatehpur
+  Fayetteville
+  Feira de Santana
+  Ferrara
+  Fez
+  Fianarantsoa
+  Filibe
+  Firozabad
+  Flint
+  Floransa
+  Florencia
+  Florianópolis
+  Focșani
+  Foggia
+  Formosa
+  Fort Collins
+  Fort Lauderdale
+  Fort Pierce
+  Fort Wayne
+  Fort-de-France
+  Fortaleza
+  Foshan
+  Foz do Iguaçu
+  Franca
+  Frankfurt
+  Fredericksburg
+  Freetown
+  Freiburg
+  Fresnillo
+  Fresno
+  Ft. Myers
+  Ft. Worth
+  Fukui
+  Fukuoka
+  Fukushima
+  Funafuti
+  Funchal
+  Funtua
+  Fushun
+  Fuxin
+  Fuyang
+  Fuzhou
+  Gaborone
+  Gabès
+  Gafsa
+  Gagnoa
+  Gainesville
+  Galați
+  Ganca
+  Gandajika
+  Gandhinagar
+  Gangneung
+  Ganzhou
+  Gao
+  Garanhuns
+  Gardiz
+  Garoua
+  Gary
+  Gashua
+  Gaya
+  Gaziantep
+  Gazze
+  Gdańsk
+  Gdynia
+  Gedaref
+  Geelong
+  Gejiu
+  Gemena
+  Geneina
+  General Santos
+  Gent
+  George
+  George Town
+  Georgetown
+  Gera
+  Ghardaia
+  Gharyan
+  Ghaziabad
+  Ghazni
+  Gibraltar
+  Gifu
+  Gijón
+  Gilgit
+  Girardot
+  Girga
+  Giyon
+  Gjoa Haven
+  Glasgow
+  Glazov
+  Gliwice
+  Goiânia
+  Gold Coast
+  Golmud
+  Goma
+  Gombe
+  Gonaïves
+  Gonbad-e Kavus
+  Gondar
+  Gorakhpur
+  Gorgan
+  Gorontalo
+  Goulimine
+  Governador Valadares
+  Goyang
+  Granada‎
+  Grand Junction
+  Grand Rapids
+  Graz
+  Greeley
+  Green Bay
+  Greensboro
+  Greenville
+  Grenoble
+  Groningen
+  Grozny
+  Grudziądz
+  Guadalajara
+  Guanajuato
+  Guanare
+  Guangshui
+  Guangyuan
+  Guangzhou
+  Guantánamo
+  Guarapuava
+  Guaratinguetá
+  Guayaquil
+  Guaymas
+  Gueckedou
+  Guelma
+  Guilin
+  Guiyang
+  Gujranwala
+  Gujrat
+  Gulu
+  Gunsan
+  Guntur
+  Gurgaon
+  Gusau
+  Guwahati
+  Gwalior
+  Gwangju
+  Gweru
+  Gyeongju
+  Gyumri
+  Győr
+  Göteborg
+  Göttingen
+  Güney Lefkoşa
+  Haarlem
+  Hachinohe
+  Hachiōji
+  Haeju
+  Hafar al Batin
+  Haifa
+  Haikou
+  Hail
+  Hailar
+  Hailun
+  Haiphong
+  Hajjah
+  Hakodate
+  Haldia
+  Halep
+  Halifax
+  Hama
+  Hamadan
+  Hamamatsu
+  Hamburg
+  Hamhung
+  Hami
+  Hamilton
+  Hampton
+  Hancheng
+  Handan
+  Hangu
+  Hangzhou
+  Hannover
+  Hanoi
+  Hanzhong
+  Hapur
+  Harar
+  Harare
+  Harbin
+  Hargeisa
+  Harkov
+  Harlingen
+  Harrisburg
+  Hartford
+  Hartum
+  Hat Yai
+  Hathras
+  Havana
+  Hebi
+  Hechi
+  Hefei
+  Hegang
+  Heidelberg
+  Heihe
+  Helsinki
+  Hengshui
+  Hengyang
+  Herat
+  Hermosillo
+  Hetauda
+  Heyuan
+  Heze
+  Hidalgo del Parral
+  Higuey
+  Hindupur
+  Hinthada
+  Hirosaki
+  Hiroshima
+  Ho Chi Minh City
+  Hoa Binh
+  Hobart
+  Hofuf
+  Hohhot
+  Holguín
+  Homyel
+  Hong Gai
+  Hong Kong
+  Honiara
+  Honolulu
+  Horlivka
+  Hosapete
+  Hoshiarpur
+  Hotan
+  Houma
+  Houston
+  Hrodna
+  Hsinchu
+  Huaibei
+  Huainan
+  Huaiyin
+  Hualien
+  Huambo
+  Huancayo
+  Huanghua
+  Huangshi
+  Huangyan
+  Huanren
+  Hubballi
+  Hue
+  Huelva
+  Huizhou
+  Hulan Ergi
+  Humus
+  Huntsville
+  Hurghada
+  Huzhou
+  Huánuco
+  Hyderabad
+  Hyeson
+  Hà Tĩnh
+  Iași
+  Ibadan
+  Ibagué
+  Ibarra
+  Ibb
+  Ibri
+  Ica
+  Idlib
+  Ife
+  Iguala
+  Ijebu Ode
+  Ikare
+  Iksan
+  Ilam
+  Ilebo
+  Ilhéus
+  Iligan
+  Iloilo
+  Ilorin
+  Imperatriz
+  Imphal
+  Incheon
+  Independence
+  Indianapolis
+  Indore
+  Indramayu
+  Ingolstadt
+  Innsbruck
+  Ipatinga
+  Ipiales
+  Ipoh
+  Ipswich
+  Iqaluit
+  Iquique
+  Iquitos
+  Iraklio
+  Irapuato
+  Irbid
+  Irbil
+  Iringa
+  Irkutsk
+  Irvine
+  Isiro
+  Iskandar
+  Islamabad
+  Ismaïlia
+  Isna
+  Isparta
+  Itabuna
+  Itajaí
+  Itapetininga
+  Itu
+  Ivano-Frankivsk
+  Ivanovo
+  Iwaki
+  Iwo
+  Izhevsk
+  Jabalpur
+  Jackson
+  Jacksonville
+  Jaffna
+  Jaipur
+  Jakarta
+  Jalal Abad
+  Jalalabad
+  Jalingo
+  Jamaame
+  Jamalpur
+  Jambi
+  Jammu
+  Jamshedpur
+  Jaraguá do Sul
+  Jashore
+  Jawhar
+  Jayapura
+  Jaén
+  Jaú
+  Jeju
+  Jember
+  Jena
+  Jeonju
+  Jequié
+  Jhang
+  Jhansi
+  Jiamusi
+  Jian
+  Jiangmen
+  Jianmen
+  Jiaohe
+  Jiaojing
+  Jiaozuo
+  Jiaxing
+  Jiayuguan
+  Jieshou
+  Jijel
+  Jilin
+  Jima
+  Jinan
+  Jinchang
+  Jincheng
+  Jingdezhen
+  Jingmen
+  Jingzhou
+  Jinhua
+  Jining
+  Jinja
+  Jinshi
+  Jinxi
+  Jinzhou
+  Jiujiang
+  Jiutai
+  Jixi
+  Jizan
+  Jizzax
+  Jodhpur
+  Johannesburg
+  Johor Bahru
+  Joinville
+  Joliet
+  Jos
+  João Pessoa
+  Juba
+  Juiz de Fora
+  Juliaca
+  Jullundur
+  Jundiaí
+  Kabil
+  Kabwe
+  Kadugli
+  Kaduna
+  Kaesong
+  Kafr el Sheikh
+  Kagoshima
+  Kahire
+  Kahramanmaraş
+  Kaifeng
+  Kakinada
+  Kalaburagi
+  Kalamazoo
+  Kalemie
+  Kaliningrad
+  Kalküta
+  Kaluga
+  Kalyan
+  Kamensk Uralskiy
+  Kamina
+  Kampala
+  Kamyanets-Podilskyy
+  Kamyshin
+  Kananga
+  Kanazawa
+  Kanchipuram
+  Kandahar
+  Kandi
+  Kandy
+  Kanggye
+  Kankan
+  Kano
+  Kanpur
+  Kansas City
+  Kansk
+  Kaohsiung
+  Kaolack
+  Kaposvár
+  Karabük
+  Karaj
+  Karaman
+  Karamay
+  Karaçi
+  Karimnagar
+  Karlsruhe
+  Karnal
+  Kasama
+  Kashan
+  Kashgar
+  Kashmar
+  Kassala
+  Kassel
+  Kasur
+  Katmandu
+  Katowice
+  Katsina
+  Kattaqorgon
+  Kaunas
+  Kawagoe
+  Kayseri
+  Kazablanka
+  Kazan
+  Kecskemét
+  Kediri
+  Keelung
+  Kelang
+  Kelowna
+  Keluang
+  Kemerovo
+  Kendari
+  Kenema
+  Kenitra
+  Kennewick
+  Kerbela
+  Kerch
+  Keren
+  Kerkük
+  Kerman
+  Kermanshah
+  Khabarovsk
+  Khammam
+  Kherson
+  Khiwa
+  Khmelnytskyy
+  Khomeini Shahr
+  Khon Kaen
+  Khorramabad
+  Khujand
+  Khulna
+  Khvoy
+  Kiel
+  Kielce
+  Kiev
+  Kigali
+  Kigoma
+  Kikwit
+  Kilchu
+  Kilinochchi
+  Killeen
+  Kimbe
+  Kimberley
+  Kimchaek
+  Kindia
+  Kindu
+  Kingston
+  Kingston upon Hull
+  Kingstown
+  Kinshasa
+  Kipushi
+  Kirov
+  Kirovohrad
+  Kisangani
+  Kislovodsk
+  Kismaayo
+  Kissimmee
+  Kisumu
+  Kitakyūshū
+  Kitale
+  Kitami
+  Kitchener
+  Kitwe
+  Kişinev
+  Klaipėda
+  Klerksdorp
+  Knoxville
+  Koblenz
+  Kochi
+  Kodiak
+  Koforidua
+  Kohat
+  Kokshetau
+  Kolar
+  Kolhapur
+  Kollam
+  Kolomna
+  Kolpino
+  Kolwezi
+  Kom Ombo
+  Komsomolsk na Amure
+  Kon Tum
+  Kondoz
+  Kongolo
+  Konibodom
+  Konotop
+  Konya
+  Kopenhag
+  Korhogo
+  Korla
+  Kosti
+  Kostroma
+  Koszalin
+  Kota
+  Kota Baharu
+  Kota Kinabalu
+  Koutiala
+  Kovrov
+  Kozhikode
+  Košice
+  Kpalimé
+  Kragujevac
+  Kraków
+  Kramatorsk
+  Krasino
+  Krasnodar
+  Krasnoyarsk
+  Kremenchuk
+  Krishnanagar
+  Kroonstad
+  Kryvyy Rih
+  Ksar El Kebir
+  Kuala Lumpur
+  Kuala Terengganu
+  Kuantan
+  Kuching
+  Kudüs
+  Kuito
+  Kulob
+  Kum
+  Kumamoto
+  Kumasi
+  Kumba
+  Kumbakonam
+  Kumbo
+  Kunming
+  Kupang
+  Kuqa
+  Kure
+  Kurgan
+  Kurnool
+  Kursk
+  Kushiro
+  Kutaisi
+  Kyoto
+  Kyzyl
+  Köln
+  Kütahya
+  Kırıkkale
+  Kōbe
+  Kōchi
+  Kōfu
+  Kōriyama
+  La Ceiba
+  La Coruña
+  La Paz
+  La Plata
+  La Rioja
+  La Romana
+  La Vega
+  Laayoune
+  Labé
+  Lae
+  Lafayette
+  Lafia
+  Laghouat
+  Lagos
+  Lahad Datu
+  Lahey
+  Lahore
+  Laiwu
+  Laiyang
+  Lajes
+  Lakeville
+  Lampang
+  Lancaster
+  Langfang
+  Langsa
+  Lansing
+  Lanzhou
+  Laoag
+  Larache
+  Laredo
+  Larissa
+  Larkana
+  Las Cruces
+  Las Palmas
+  Las Tunas
+  Las Vegas
+  Lashkar Gah
+  Latur
+  Lausanne
+  Lazkiye
+  Le Havre
+  Le Mans
+  Lecce
+  Leeds
+  Leeuwarden
+  Lefkoşa
+  Legazpi
+  Leicester
+  Leipzig
+  Lemosos
+  Leninsk Kuznetsky
+  Les Cayes
+  Leshan
+  Letpadan
+  Lexington
+  León
+  Lhasa
+  Lhokseumawe
+  Lianxian
+  Lianyungang
+  Liaocheng
+  Liaoyang
+  Liaoyuan
+  Liberec
+  Libreville
+  Lichinga
+  Lida
+  Likasi
+  Lille
+  Lilongwe
+  Lima
+  Limbe
+  Limeira
+  Limoges
+  Linchuan
+  Lincoln
+  Linfen
+  Lingyuan
+  Linhai
+  Linhares
+  Linqing
+  Linxia
+  Linyi
+  Linz
+  Lipetsk
+  Lira
+  Lishui
+  Little Rock
+  Liupanshui
+  Liuzhou
+  Liverpool
+  Livingstone
+  Livorno
+  Lizbon
+  Liège
+  Ljubljana
+  Lobito
+  Logroño
+  Loja
+  Lomé
+  London
+  Londra
+  Londrina
+  Long Beach
+  Long Xuyen
+  Longjiang
+  Longxi
+  Longyan
+  Longyearbyen
+  Los Angeles
+  Los Mochis
+  Louangphrabang
+  Loubomo
+  Louisville
+  Lowell
+  Lower Hutt
+  Luan
+  Luanda
+  Luanshya
+  Lubango
+  Lubbock
+  Lublin
+  Lubumbashi
+  Lucknow
+  Ludhiana
+  Lugano
+  Luhansk
+  Luohe
+  Luoyang
+  Lusaka
+  Luton
+  Lutsk
+  Luxor
+  Luzern
+  Luzhou
+  Lviv
+  Lynchburg
+  Lyon
+  Lysychansk
+  Lázaro Cárdenas
+  Lübeck
+  Lạng Sơn
+  M'sila
+  Maanshan
+  Maastricht
+  Macapá
+  Macaé
+  Maceió
+  Machakos
+  Machala
+  Macheng
+  Machilipatnam
+  Macon
+  Madison
+  Madiun
+  Madrid
+  Madurai
+  Maebashi
+  Magangué
+  Magdeburg
+  Magelang
+  Magnitogorsk
+  Magway
+  Mahabad
+  Mahajanga
+  Mahilyow
+  Maiduguri
+  Majene
+  Majuro
+  Makassar
+  Makhachkala
+  Makurdi
+  Malabo
+  Malacca
+  Maladzyechna
+  Malakal
+  Malang
+  Malanje
+  Malatya
+  Malayer
+  Malegaon
+  Mallawi
+  Malmö
+  Malé
+  Man
+  Manado
+  Managua
+  Manama
+  Manaus
+  Manbij
+  Manchester
+  Mandalay
+  Mandya
+  Mangaluru
+  Mangyshlak
+  Manila
+  Manisa
+  Manizales
+  Mannheim
+  Manpo
+  Manta
+  Manukau
+  Manzanillo
+  Manzini
+  Maoming
+  Maputo
+  Mar del Plata
+  Marabá
+  Maracaibo
+  Maracay
+  Maragheh
+  Marakeş
+  Marbella
+  Mardan
+  Maribor
+  Maringá
+  Mariupol
+  Maroua
+  Marseille
+  Martapura
+  Marv Dasht
+  Mary
+  Marília
+  Masaya
+  Mascara
+  Maseru
+  Masjed Soleyman
+  Maskat
+  Massawa
+  Matadi
+  Matagalpa
+  Matamoros
+  Matanzas
+  Mataram
+  Mataró
+  Mathura
+  Matočkin Šar
+  Matruh
+  Matsue
+  Matsumoto
+  Matsuyama
+  Maturín
+  Maumere
+  Mawlamyine
+  Maxixe
+  May Pen
+  Mayagüez
+  Maykop
+  Mazar-i-Sharif
+  Mazatlán
+  Mazyr
+  Mbabane
+  Mbale
+  Mbandaka
+  Mbanza-Ngungu
+  Mbeya
+  Mbombela
+  Mbuji-Mayi
+  McAllen
+  Medan
+  Medani
+  Medellín
+  Medford
+  Medine
+  Medinipur
+  Meerut
+  Meizhou
+  Mekke
+  Meknes
+  Meksiko
+  Melbourne
+  Melekeok
+  Melitopol
+  Melun
+  Memphis
+  Mendefera
+  Mendoza
+  Mengzi
+  Mersin
+  Mesa
+  Messina
+  Metz
+  Mexicali
+  Meymaneh
+  Meşhed
+  Miami
+  Mianyang
+  Miaoli
+  Miass
+  Middelburg
+  Middlesbrough
+  Milagro
+  Milano
+  Milwaukee
+  Minatitlán
+  Minna
+  Minneapolis
+  Minsk
+  Miri
+  Mirpur Khas
+  Mirzapur
+  Miskolc
+  Misrata
+  Mito
+  Miyazaki
+  Mmabatho
+  Moanda
+  Mobile
+  Modena
+  Modesto
+  Mogadişu
+  Mojokerto
+  Mokpo
+  Mombasa
+  Monaco
+  Monclova
+  Monroe
+  Monrovia
+  Montego Bay
+  Monterey
+  Monterrey
+  Montería
+  Montes Claros
+  Montevideo
+  Montgomery
+  Montpellier
+  Montréal
+  Monywa
+  Mopti
+  Moradabad
+  Moratuwa
+  Morelia
+  Morioka
+  Morogoro
+  Moroni
+  Moshi
+  Moskova
+  Mossoró
+  Mostaganem
+  Mostar
+  Moundou
+  Moçâmedes
+  Muar
+  Mubi
+  Mudangiang
+  Mudon
+  Mufulira
+  Mulhouse
+  Multan
+  Mumbai
+  Murcia
+  Murfreesboro
+  Murmansk
+  Murom
+  Muroran
+  Muskegon
+  Musoma
+  Musul
+  Mutare
+  Muzaffarnagar
+  Muzaffarpur
+  Mwanza
+  Mwene-Ditu
+  Myeik
+  Myingyan
+  Myitkyina
+  Mykolayiv
+  Mymensingh
+  Mysuru
+  Mzuzu
+  Málaga
+  Médéa
+  Mérida
+  Münih
+  Münster
+  Mỹ Tho
+  N'Djamena
+  Naberezhnyye Chelny
+  Nabeul
+  Nablus
+  Nacala
+  Naga
+  Nagano
+  Nagaoka
+  Nagasaki
+  Nagercoil
+  Nagoya
+  Nagpur
+  Naha
+  Nairobi
+  Najran
+  Nakhodka
+  Nakhon Pathom
+  Nakhon Ratchasima
+  Nakhon Sawan
+  Nakhon Si Thammarat
+  Nakuru
+  Nalchik
+  Nam Định
+  Namangan
+  Nampo
+  Nampula
+  Namur
+  Nancha
+  Nanchang
+  Nanchong
+  Nancy
+  Nanded
+  Nandyal
+  Nanjing
+  Nanning
+  Nanping
+  Nantes
+  Nantong
+  Nantou
+  Nanyang
+  Naples
+  Napoli
+  Narayanganj
+  Nashville
+  Nasik
+  Nassau
+  Natal
+  National City
+  Navajoa
+  Navoi
+  Navsari
+  Nawabganj
+  Nawabshah
+  Naypyidaw
+  Nazareth
+  Nazret
+  Ndola
+  Necef
+  Neftekamsk
+  Nefteyugansk
+  Nehe
+  Neijiang
+  Neiva
+  Nellore
+  Nema
+  Neuquén
+  Nevinnomyssk
+  New Bedford
+  New Haven
+  New Orleans
+  New York
+  Newark
+  Newcastle
+  Neyshabur
+  Ngaoundéré
+  Nguru
+  Nha Trang
+  Niagara Falls
+  Niamey
+  Nice
+  Niigata
+  Nikopol
+  Ninde
+  Ningbo
+  Ninh Bình
+  Nizamabad
+  Nizhenvartovsk
+  Nizhnekamsk
+  Nizhny Novgorod
+  Nizhny Tagil
+  Nizhyn
+  Niš
+  Nkongsamba
+  Nogales
+  Noginsk
+  Nong Khai
+  Nongan
+  Norfolk
+  Norilsk
+  Norman
+  Norwich
+  Nottingham
+  Nouakchott
+  Nouméa
+  Nova Friburgo
+  Nova Iguaçu
+  Novara
+  Novi Sad
+  Novo Hamburgo
+  Novocherkassk
+  Novokuybishevsk
+  Novokuznetsk
+  Novomoskovsk
+  Novorossiysk
+  Novosibirsk
+  Novotroitsk
+  Noyabrsk
+  Nsukka
+  Nuevo Laredo
+  Nuku'alofa
+  Nukus
+  Nusaybin
+  Nuuk
+  Nyala
+  Nyanza
+  Nyíregyháza
+  Nzérékoré
+  Nîmes
+  Nürnberg
+  Oakland
+  Oaxaca
+  Obihiro
+  Obninsk
+  Obuasi
+  Ocala
+  Oceanside
+  Ocumare del Tuy
+  Odense
+  Odessa
+  Ogbomosho
+  Ogden
+  Okara
+  Okayama
+  Oklahoma City
+  Oktyabrskiy
+  Oldenburg
+  Olmaliq
+  Olomouc
+  Olongapo
+  Olsztyn
+  Olympia
+  Omaha
+  Omsk
+  Ondo
+  Ongole
+  Oostanay
+  Opole
+  Oradea
+  Oral
+  Oran
+  Orekhovo-Zuevo
+  Orel
+  Orenburg
+  Orizaba
+  Orlando
+  Orléans
+  Ormac
+  Orsha
+  Orsk
+  Oruro
+  Osaka
+  Osh
+  Oshawa
+  Oshogbo
+  Oskemen
+  Oslo
+  Osnabrück
+  Osorno
+  Ostrava
+  Otaru
+  Ottawa
+  Ouagadougou
+  Ouargla
+  Oujda
+  Oulu
+  Oum el Bouaghi
+  Ourense
+  Oviedo
+  Owerri
+  Owo
+  Oxford
+  Oyo
+  Paarl
+  Pabna
+  Pachuca
+  Padang
+  Padangsidempuan
+  Pagadian
+  Pakalongan
+  Pakokku
+  Pakxe
+  Palangkaraya
+  Palembang
+  Palermo
+  Pali
+  Palikir
+  Palm Springs
+  Palma
+  Palma Soriano
+  Palmas
+  Palu
+  Pamplona
+  Panama City
+  Panevežys
+  Pangkalpinang
+  Panipat
+  Panzhihua
+  Papeete
+  Parakou
+  Paramaribo
+  Paranaguá
+  Paraná
+  Parbhani
+  Pardubice
+  Paris
+  Parma
+  Parnaíba
+  Pasadena
+  Passo Fundo
+  Pasto
+  Pasuruan
+  Paterson
+  Pathankot
+  Pathein
+  Pathum Thani
+  Pati
+  Patiala
+  Patna
+  Patra
+  Pattani
+  Pavlodar
+  Pec
+  Pedro Juan Caballero
+  Pekanbaru
+  Pekin
+  Pelotas
+  Pematangsiantar
+  Pemba
+  Pensacola
+  Penza
+  Peoria
+  Perabumulih
+  Pereira
+  Perm
+  Perpignan
+  Perth
+  Perugia
+  Pervouralsk
+  Pescara
+  Peshawar
+  Peterborough
+  Petersburg
+  Petrolina
+  Petropavlovsk
+  Petropavlovsk-Kamchatsky
+  Petrozavodsk
+  Petrópolis
+  Phan Rang
+  Phan Thiet
+  Philadelphia
+  Phitsanulok
+  Phnom Penh
+  Phoenix
+  Phuket
+  Piatra-Neamt
+  Piedras Negras
+  Pietermaritzburg
+  Pilibhit
+  Pinar del Rio
+  Pingdingshan
+  Pingliang
+  Pingtung
+  Pingxiang
+  Pinrang
+  Pinsk
+  Piracicaba
+  Pisa
+  Pitești
+  Pittsburgh
+  Piura
+  Pizen
+  Play Ku
+  Pleven
+  Ploiești
+  Plymouth
+  Podgorica
+  Podolsk
+  Pohang
+  Pointe-Noire
+  Pointe-à-Pitre
+  Pokhara
+  Polokwane
+  Poltava
+  Ponce
+  Ponta Grossa
+  Pontianak
+  Popayán
+  Porbandar
+  Porlamar
+  Port Blair
+  Port Elizabeth
+  Port Harcourt
+  Port Louis
+  Port Moresby
+  Port Sudan
+  Port Vila
+  Port-Gentil
+  Port-au-Prince
+  Port-of-Spain
+  Portland
+  Porto
+  Porto Alegre
+  Porto Seguro
+  Porto Velho
+  Portoviejo
+  Portsmouth
+  Posadas
+  Potchefstroom
+  Potosí
+  Potsdam
+  Poughkeepsie
+  Pouso Alegre
+  Poza Rica de Hidalgo
+  Poznań
+  Poços de Caldas
+  Prag
+  Praia
+  Presidente Prudente
+  Pretoria
+  Prijedor
+  Prizren
+  Priştine
+  Probolinggo
+  Proddatur
+  Prokopyevsk
+  Providence
+  Provideniya
+  Provo
+  Pskov
+  Pucallpa
+  Puducherry
+  Puebla
+  Pueblo
+  Puerto Cabello
+  Puerto Montt
+  Puerto Plata
+  Puerto Princesa
+  Puerto Vallarta
+  Pune
+  Puno
+  Punta Arenas
+  Punta del Este
+  Punto Fijo
+  Puqi
+  Puri
+  Purnia
+  Putian
+  Puyang
+  Pyatigorsk
+  Pyay
+  Pyongyang
+  Pécs
+  Qairouan
+  Qaraghandy
+  Qarshi
+  Qazvin
+  Qena
+  Qeqertasuaq
+  Qingdao
+  Qingyuan
+  Qinhuangdao
+  Qinzhou
+  Qiqihar
+  Qitaihe
+  Qomsheh
+  Qoqon
+  Quanzhou
+  Quchan
+  Queenstown
+  Quelimane
+  Querétaro
+  Quetta
+  Quetzaltenango
+  Qui Nhon
+  Quito
+  Qurghonteppa
+  Quzhou
+  Québec
+  Quảng Ngãi
+  Qyzylorda
+  Raba
+  Rabat
+  Racine
+  Rahim Yar Khan
+  Raichur
+  Raipur
+  Rajahmundry
+  Rajapalaiyam
+  Rajkot
+  Rajshahi
+  Raleigh
+  Rampur
+  Rancagua
+  Ranchi
+  Rangpur
+  Ras al Khaymah
+  Rashid
+  Rasht
+  Ratchaburi
+  Ratlam
+  Raurkela
+  Ravenna
+  Rawalpindi
+  Reading
+  Recife
+  Regensburg
+  Regina
+  Reims
+  Rennes
+  Reno
+  Resistencia
+  Resolute
+  Reykjavík
+  Reynosa
+  Ribeirão Preto
+  Richmond
+  Riga
+  Rijeka
+  Rimnicu Vilcea
+  Rio Branco
+  Rio Claro
+  Rio Grande
+  Rio Largo
+  Rio de Janeiro
+  Riobamba
+  Riohacha
+  Rivera
+  Riverside
+  Rivne
+  Riyad
+  Rize
+  Rizhao
+  Roanoke
+  Rochester
+  Rockford
+  Rohtak
+  Roma
+  Rondonópolis
+  Rosario
+  Roseau
+  Rostock
+  Rostov
+  Rotterdam
+  Rouen
+  Roxas
+  Rubtsovsk
+  Rudniy
+  Ruse
+  Rustavi
+  Rustenburg
+  Ryazan
+  Rybinsk
+  Rzeszów
+  Río Cuarto
+  Rạch Giá
+  Saarbrücken
+  Sabha
+  Sabzewar
+  Sacramento
+  Sadah
+  Sadiqabad
+  Safi
+  Sagar
+  Saginaw
+  Saharanpur
+  Sahiwal
+  Saida
+  Saidpur
+  Saidu
+  Saint George's
+  Saint John's
+  Saint-Louis
+  Saint-Étienne
+  Sakakah
+  Sakarya
+  Sakata
+  Salalah
+  Salamanca
+  Salatiga
+  Salavat
+  Salem
+  Salerno
+  Salinas
+  Salt Lake City
+  Salta
+  Saltillo
+  Salto
+  Salvador
+  Salzburg
+  Samalut
+  Samara
+  Samarinda
+  Samarra
+  Sambalpur
+  Samsun
+  Samut Prakan
+  San Antonio
+  San Bernardino
+  San Bernardo
+  San Cristobal de Las Casas
+  San Cristóbal
+  San Diego
+  San Fernando
+  San Fernando de Apure
+  San Francisco
+  San Francisco de Macorís
+  San Jose
+  San José
+  San Juan
+  San Juan del Río
+  San Luis
+  San Luis Potosí
+  San Martín
+  San Mateo
+  San Miguel
+  San Nicolas
+  San Pablo
+  San Pedro Sula
+  San Pedro de Macorís
+  San Rafael
+  San Salvador
+  San Salvador de Jujuy
+  San Sebastián
+  San-Pedro
+  Sana
+  Sanandaj
+  Sancti Spíritus
+  Sandakan
+  Sanford
+  Sangli
+  Sanming
+  Santa Ana
+  Santa Barbara
+  Santa Clara
+  Santa Cruz
+  Santa Cruz de Tenerife
+  Santa Cruz do Sul
+  Santa Fe
+  Santa Maria
+  Santa Marta
+  Santa Rosa
+  Santander
+  Santarém
+  Santiago
+  Santiago de Cuba
+  Santiago del Estero
+  Santo Domingo
+  Santos
+  Sanya
+  Sapele
+  Sapporo
+  Saransk
+  Sarapul
+  Sarasota
+  Saratov
+  Saraybosna
+  Sargodha
+  Sarh
+  Sari
+  Sariwon
+  Sarnia
+  Sasebo
+  Saskatoon
+  Sassari
+  Satu Mare
+  Savannah
+  Saveh
+  Saïda
+  Schenectady
+  Scranton
+  Seattle
+  Seeb
+  Sekondi
+  Selanik
+  Semarang
+  Semerkant
+  Semey
+  Semnan
+  Sendai
+  Sennar
+  Serang
+  Seremban
+  Sergiyev Posad
+  Serpukhov
+  Sete Lagoas
+  Settat
+  Setúbal
+  Seul
+  Severodvinsk
+  Sevilla
+  Sfax
+  Shache
+  Shahjahanpur
+  Shahrekord
+  Shahrisabz
+  Shahrud
+  Shakhty
+  Shangqiu
+  Shangrao
+  Shantou
+  Shaoguan
+  Shaowu
+  Shaoxing
+  Sharjah
+  Shashemene
+  Sheffield
+  Sheikhu Pura
+  Shendi
+  Shenyang
+  Shenzhen
+  Sherbrooke
+  Shibin el Kom
+  Shihezi
+  Shijiazhuang
+  Shillong
+  Shimonoseki
+  Shinyanga
+  Shishou
+  Shivamogga
+  Shiyan
+  Shizuishan
+  Shizuoka
+  Shkodër
+  Sholapur
+  Shreveport
+  Shuangcheng
+  Shuangyashan
+  Shuozhou
+  Shuyang
+  Shymkent
+  Si Racha
+  Sialkote
+  Sibiu
+  Sibolga
+  Sibu
+  Sidi bel Abbes
+  Siem Reap
+  Siirt
+  Sikar
+  Sikasso
+  Silchar
+  Siliguri
+  Simao
+  Simferopol
+  Simla
+  Sincelejo
+  Singaraja
+  Singkawang
+  Sinuiju
+  Sioux Falls
+  Siping
+  Siracusa
+  Sirjan
+  Sirsa
+  Sitapur
+  Sittwe
+  Sivas
+  Sivastopol
+  Skikda
+  Smolensk
+  Sobral
+  Sochi
+  Sofya
+  Sogamoso
+  Sohag
+  Sokodé
+  Sokoto
+  Solikamsk
+  Songea
+  Songnam
+  Songyuan
+  Sonipat
+  Sonsonate
+  Sorocaba
+  Sorong
+  Soubré
+  Souk Ahras
+  Sousse
+  South Bend
+  Southampton
+  Southaven
+  Southend-on-Sea
+  Spanish Town
+  Spartanburg
+  Split
+  Spokane
+  Spring Hill
+  Springfield
+  Springs
+  Srinagar
+  St. Charles
+  St. Cloud
+  St. John's
+  St. Louis
+  St. Petersburg
+  St.-Denis
+  Stamford
+  Stara Zagora
+  Starsy Oskol
+  Stavanger
+  Stavropol
+  Sterlitamak
+  Stockholm
+  Stockton
+  Stoke
+  Strasbourg
+  Stuttgart
+  Subotica
+  Suceava
+  Sucre
+  Sudbury
+  Suez
+  Suhar
+  Suihua
+  Suining
+  Sukabumi
+  Sukkur
+  Sullana
+  Sumqayt
+  Sumy
+  Sunchon
+  Sunderland
+  Sungai Petani
+  Surabaya
+  Surakarta
+  Surat
+  Surat Thani
+  Surgut
+  Surt
+  Suva
+  Suwon
+  Suzhou
+  Swansea
+  Sydney
+  Syktyvkar
+  Sylhet
+  Syracuse
+  Syzran
+  Szczecin
+  Szeged
+  Szolnok
+  Szombathely
+  Székesfehérvár
+  São Carlos
+  São José do Rio Preto
+  São José dos Campos
+  São José dos Pinhais
+  São Luís
+  São Paulo
+  São Tomé
+  Ségou
+  Sétif
+  Sóc Trăng
+  Sơn Tây
+  Tabora
+  Tabuk
+  Tacloban
+  Tacna
+  Tacoma
+  Taganrog
+  Tahoua
+  Tahran
+  Taian
+  Taichung
+  Tainan
+  Taipei
+  Taiping
+  Taitung
+  Taiyuan
+  Taizhou
+  Taizz
+  Takamatsu
+  Takaoka
+  Talca
+  Tall Afar
+  Tallahassee
+  Tallinn
+  Tamale
+  Tambov
+  Tampa
+  Tampere
+  Tampico
+  Tan An
+  Tandil
+  Tanga
+  Tangail
+  Tangier
+  Tangshan
+  Tanjungpinang
+  Tanta
+  Taonan
+  Tapachula
+  Tarakan
+  Taranto
+  Tarawa
+  Taraz
+  Tarija
+  Tarlac
+  Tarragona
+  Tarsus
+  Tartu
+  Tartus
+  Tasikmalaya
+  Taubaté
+  Taunggyi
+  Taungoo
+  Tauranga
+  Tawau
+  Taza
+  Taşkent
+  Tebingtinggi
+  Tebriz
+  Tegal
+  Tegucigalpa
+  Tehuacan
+  Tekirdağ
+  Tel Aviv
+  Teluk Intan
+  Tema
+  Temirtau
+  Temuco
+  Tengchong
+  Tepic
+  Teresina
+  Termiz
+  Ternate
+  Ternopil
+  Tete
+  Tetovo
+  Teziutlán
+  Teófilo Otoni
+  Thanh Hóa
+  Thanjavur
+  Thimphu
+  Thiruvananthapuram
+  Thiès
+  Thohoyandou
+  Thu Dau Mot
+  Thái Nguyên
+  Tianjin
+  Tianshui
+  Tiarat
+  Tieli
+  Tieling
+  Tiflis
+  Tijuana
+  Timișoara
+  Tiran
+  Tiraspol
+  Tirgu Mures
+  Tiruchirappalli
+  Tirunelveli
+  Tirupati
+  Tiruppur
+  Tiruvannamalai
+  Tizi-Ouzou
+  Tlaxcala
+  Tlimcen
+  Toamasina
+  Tobolsk
+  Tobruk
+  Tokat
+  Tokmak
+  Tokushima
+  Tokyo
+  Toledo
+  Toliara
+  Toluca
+  Tolyatti
+  Tomakomai
+  Tomsk
+  Tongchuan
+  Tongliao
+  Tongling
+  Tongren
+  Tonk
+  Topeka
+  Torbat-e Jam
+  Toronto
+  Tororo
+  Torreón
+  Tottori
+  Touggourt
+  Toulon
+  Toulouse
+  Tours
+  Townsville
+  Toyama
+  Tra Vinh
+  Trablus
+  Trabzon
+  Trang
+  Trento
+  Trenton
+  Treviso
+  Trieste
+  Trincomalee
+  Trois-Rivières
+  Trondheim
+  Trujillo
+  Tshikapa
+  Tsu
+  Tucson
+  Tucumán
+  Tuguegarao
+  Tukuyu
+  Tula
+  Tulsa
+  Tuluá
+  Tumakuru
+  Tumbes
+  Tunis
+  Tunja
+  Turbat
+  Turin
+  Turku
+  Turpan
+  Tuscaloosa
+  Tuticorin
+  Tuxpam
+  Tuxtla Gutiérrez
+  Tuzla
+  Tver
+  Tyler
+  Tyumen
+  Tây Ninh
+  Tébessa
+  Türkmenabat
+  Uberaba
+  Uberlândia
+  Ubon Ratchathani
+  Udaipur
+  Udine
+  Udon Thani
+  Ufa
+  Uitenhage
+  Ujjain
+  Ukhta
+  Ulan Batur
+  Ulan Hot
+  Ulan-Ude
+  Ulm
+  Ulsan
+  Ulyanovsk
+  Umtata
+  Umuahia
+  Uppsala
+  Urbana
+  Urgentch
+  Urmia
+  Uroteppa
+  Uruapan
+  Uruguaiana
+  Ushuaia
+  Ussuriysk
+  Ust-Ilimsk
+  Utica
+  Utrecht
+  Utsunomiya
+  Uvira
+  Uyo
+  Uzhgorod
+  Uşak
+  Vadodara
+  Vaduz
+  Valdivia
+  Valencia
+  Valera
+  Valladolid
+  Valledupar
+  Vallejo
+  Valletta
+  Valparai
+  Valparaíso
+  Van
+  Vanadzor
+  Vancouver
+  Varamin
+  Varanasi
+  Varna
+  Varşova
+  Velikiy Novgorod
+  Velikiye Luki
+  Vellore
+  Venedik
+  Veracruz
+  Vereeniging
+  Verona
+  Victoria
+  Vientiane
+  Vigo
+  Vijayapura
+  Villahermosa
+  Villavicencio
+  Vilnius
+  Vinh
+  Vinnytsya
+  Virginia Beach
+  Visalia
+  Vishakhapatnam
+  Vitoria
+  Vitsyebsk
+  Vitória
+  Vitória da Conquista
+  Viyana
+  Vizianagaram
+  Việt Trì
+  Vladikavkaz
+  Vladimir
+  Vladivostok
+  Volgodonsk
+  Volgograd
+  Vologda
+  Volos
+  Volta Redonda
+  Volzhskiy
+  Voronezh
+  Vryheid
+  Vung Tau
+  Vyborg
+  Västerås
+  Vĩnh Long
+  Waco
+  Wafangdian
+  Wahiawa
+  Waitakere
+  Wakayama
+  Wamba
+  Wanzhou
+  Warangal
+  Warri
+  Washington
+  Waterbury
+  Wau
+  Waukegan
+  Waukesha
+  Weifang
+  Weihai
+  Weinan
+  Welkom
+  Wellington
+  Wenshan
+  Wenzhou
+  West Palm Beach
+  Wichita
+  Wichita Falls
+  Wiesbaden
+  Wilkes-Barre
+  Willemstad
+  Wilmington
+  Windhoek
+  Windsor
+  Winnipeg
+  Winston-Salem
+  Winter Haven
+  Wollongong
+  Wonju
+  Wonsan
+  Worcester
+  Wrocław
+  Wuhai
+  Wuhan
+  Wuhu
+  Wuppertal
+  Wuwei
+  Wuxi
+  Wuzhou
+  Würzburg
+  Xai-Xai
+  Xalapa
+  Xapeco
+  Xiamen
+  Xian
+  Xiangtai
+  Xiangtan
+  Xiangyang
+  Xiantao
+  Xianyang
+  Xiaogan
+  Xichang
+  Xilinhot
+  Xingyi
+  Xining
+  Xinxiang
+  Xinyang
+  Xinyi
+  Xinyu
+  Xinzhou
+  Xuanhua
+  Xuanzhou
+  Xuchang
+  Xuzhou
+  Yaan
+  Yakeshi
+  Yakutsk
+  Yala
+  Yamagata
+  Yamoussoukro
+  Yanbu al Bahr
+  Yancheng
+  Yangjiang
+  Yangon
+  Yangquan
+  Yangzhou
+  Yanji
+  Yantai
+  Yaoundé
+  Yaroslavl
+  Yaynangyoung
+  Yazd
+  Yei
+  Yekaterinburg
+  Yelets
+  Yeni Delhi
+  Yeosu
+  Yevpatoriya
+  Yibin
+  Yichang
+  Yichun
+  Yilan
+  Yinchuan
+  Yingkow
+  Yining
+  Yiyang
+  Yogyakarta
+  Yokohama
+  Yongzhou
+  York
+  Yoshkar Ola
+  Youngstown
+  Yuba City
+  Yuci
+  Yueyang
+  Yulin
+  Yumen
+  Yunxian
+  Yuxi
+  Yuzhno Sakhalinsk
+  Zabol
+  Zabīd
+  Zacatecas
+  Zagazig
+  Zagreb
+  Zahedan
+  Zakho
+  Zalantun
+  Zamboanga
+  Zamora
+  Zanjan
+  Zanzibar
+  Zaozhuang
+  Zaporizhzhya
+  Zaragoza
+  Zaria
+  Zarzis
+  Zemlya Bunge
+  Zenica
+  Zhangjiakou
+  Zhangye
+  Zhangzhou
+  Zhanjiang
+  Zhanyi
+  Zhaodong
+  Zhaoqing
+  Zhaotang
+  Zhengzhou
+  Zhenjiang
+  Zhezqazghan
+  Zhijiang
+  Zhongli
+  Zhoukou
+  Zhuanghe
+  Zhucheng
+  Zhuhai
+  Zhuozhou
+  Zhuzhou
+  Zhytomyr
+  Zibo
+  Zicheng
+  Zielona Góra
+  Zigong
+  Ziguinchor
+  Zinder
+  Zlatoust
+  Zlín
+  Zonguldak
+  Zumpango
+  Zunyi
+  Zuwara
+  Zwolle
+  Zürich
+  Århus
+  Çorum
+  Ürümqi
+  Üsküp
+  Čačak
+  Đồng Hới
+  İsfahan
+  İskenderiye
+  İskenderun
+  İstanbul
+  İzmir
+  İzmit
+  Łódź
+  Ōita
+  Şam
+  Şanghay
+  Şanlıurfa
+  Şiraz
+  Šiauliai
+  Ṭarābulus
 
---- Cümle parçaları (11) ---
+--- Cümle parçaları (16) ---
 
 Bunlar tek başına çevrilemez, çünkü tek başına bir anlamı yok: kodda başka
 metinlerle birleşerek cümle oluyorlar (" ve ", ", boş" gibi). Bir
@@ -153,7 +2994,7 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
   " ya da "
       apps/web/src/screens/Generaller.tsx:200
   "{0} · Sv {1} · "
-      apps/web/src/components/harita/BolgeListesi.tsx:168
+      apps/web/src/components/harita/BolgeListesi.tsx:170
   "{0} · T{1}"
       apps/web/src/screens/Akin.tsx:278
   "{0} asker seferde ·"
@@ -164,9 +3005,19 @@ bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
       apps/web/src/screens/Arastirma.tsx:912
   "canlandir: kareler aynı yüzlerden kurulmalı"
       apps/web/src/cizim/canli.ts:67
+  "dunya-ozet.json: şehir sayısı world-map.json ile uyuşmuyor"
+      packages/shared/src/kanonik.ts:238
+  "dunya-ozet.json: ülkeler world-map.json ile uyuşmuyor (tools/gercek-dunya-uret.mjs)"
+      packages/shared/src/kanonik.ts:242
   "elmas · {0} dk biriken reklam süresi"
       apps/web/src/screens/Magaza.tsx:104
   "T{0}"
       apps/web/src/screens/Akin.tsx:290
   "T{0}{1}"
-      apps/web/src/screens/LordEkrani.tsx:709
+      apps/web/src/screens/LordEkrani.tsx:700
+  "world-map.json: harita kopuk — {0} bölgenin {1} tanesine ulaşılıyor"
+      packages/shared/src/kanonik.ts:227
+  "world-map.json: region_count ile gerçek bölge sayısı uyuşmuyor"
+      packages/shared/src/kanonik.ts:157
+  "world-map.json: tekrar eden bölge kimliği var"
+      packages/shared/src/kanonik.ts:191

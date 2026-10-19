@@ -10,6 +10,9 @@
  *   - Çekirdek dokunulmazlığı geldiğinde (docs/16 §5): çekirdekler de
  *     sahipsiz görünüyor ve seçen araç yine düşüyordu.
  *
+ * Gerçek dünyada (docs/27) çekirdek yok; yerine SINIR geldi: sınır dışı
+ * şehir sahipsiz görünüyor ama saldırı reddediliyor (`sinirda`).
+ *
  * İkisinde de düşme sebebi, sınamanın ölçtüğü şeyle hiç ilgili değildi.
  * Koşul artık tek yerde: dokuzuncu kural geldiğinde burası değişecek.
  *
@@ -27,5 +30,5 @@
  * geçirmek öbür yarısı. Bir kopya kalırsa er ya da geç o kopya düşer.
  */
 export function fethedilebilirMi(r) {
-  return Boolean(r) && !r.owner && !r.cekirdek && !r.shielded && r.type !== 'taht';
+  return Boolean(r) && !r.owner && r.sinirda !== false && !r.shielded && r.type !== 'taht';
 }

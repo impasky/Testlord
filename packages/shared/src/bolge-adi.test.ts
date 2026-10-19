@@ -10,7 +10,7 @@
  * girerse burası kırmızı yanar.
  */
 import { describe, expect, it } from 'vitest';
-import { WORLD_MAP } from './balance.js';
+import { WORLD_MAP } from './kanonik.js';
 import { BOLGE_ADI, bolgeAdi } from './bolge-adi.js';
 
 describe('bolgeAdi', () => {

@@ -175,6 +175,8 @@ try {
         email: `${ad}@lordlar.dev`,
         password: 'parola1234',
         lordName: `Krm${Date.now().toString(36).slice(-4)}`,
+        // Ülkesi olmayan lord saldıramıyor (docs/27).
+        ulke: 'TUR',
       }),
     }).then((r) => r.json());
 

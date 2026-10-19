@@ -230,19 +230,19 @@ const YERLER = [
     burada: panelAcikMi,
   })),
   {
-    ad: 'kapi:medeniyet',
+    ad: 'kapi:ulke',
     git: async () => {
       await kurtar();
       await page.click('nav button:has-text("Dünya")');
       await page.waitForTimeout(900);
-      // Medeniyet şeridi haritanın alt çekmecesinde (docs/23): oyuncu gibi
+      // Ülke şeridi haritanın alt çekmecesinde (docs/27): oyuncu gibi
       // önce çekmeceyi aç.
       const kapali = page.locator('[data-diyar-cekmecesi] button[aria-expanded="false"]');
       if (await kapali.count()) {
         await kapali.first().click({ timeout: 5000 });
         await page.waitForTimeout(500);
       }
-      await page.locator('[data-rehber="medeniyet-serit"]').first().click({ timeout: 5000 });
+      await page.locator('[data-rehber="ulke-serit"]').first().click({ timeout: 5000 });
       await page.waitForTimeout(900);
     },
     burada: panelAcikMi,

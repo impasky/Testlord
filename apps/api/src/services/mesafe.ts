@@ -28,7 +28,7 @@
  * yalnız `seed` değiştirebiliyor, o da ayrı bir süreçte çalıştığı için
  * kaydın tazeliği süreyle de sınırlanıyor.
  */
-import { haritaGrafi, type HaritaGrafi, yakinlikMesafesiGraf } from '@lordlar/shared';
+import { haritaGrafi, type HaritaGrafi, sinirdanMi, yakinlikMesafesiGraf } from '@lordlar/shared';
 import { prisma } from '../db.js';
 
 /** Ölçer bölge KİMLİĞİ alıyor: kanonik haritadaki `mapId`, satır no değil. */
@@ -79,6 +79,41 @@ export async function mesafeOlcer(lordId: string, tx: Istemci = prisma): Promise
   ]);
   const topraklarim = topraklar.map((t) => t.mapId);
   return (hedef) => yakinlikMesafesiGraf(graf, lord.homeBolgeId, topraklarim, hedef);
+}
+
+/** Bu bölge lordun sınırında mı (docs/27) — `sinirdanMi`nin dünya grafiğiyle hâli. */
+export type SinirOlcer = (hedef: { mapId: number; province: string }) => boolean;
+
+/**
+ * SINIR KURALI tek yerden: saldırı ucu, harita listesi, bölge kartı ve
+ * öneri motoru aynı soruyu soruyor ("buraya saldırabilir miyim").
+ */
+export async function sinirOlcer(lordId: string, tx: Istemci = prisma): Promise<SinirOlcer> {
+  const lord = await tx.lord.findUniqueOrThrow({
+    where: { id: lordId },
+    select: { homeBolgeId: true, worldId: true, ulke: true },
+  });
+  const [topraklar, graf] = await Promise.all([
+    tx.region.findMany({ where: { ownerLordId: lordId }, select: { mapId: true } }),
+    dunyaGrafigi(lord.worldId, tx),
+  ]);
+  return sinirOlcerHazir(
+    graf,
+    lord.ulke,
+    lord.homeBolgeId,
+    topraklar.map((t) => t.mapId),
+  );
+}
+
+/** Ev, ülke ve topraklar elde olduğunda sorgusuz kurulan sınır ölçeri. */
+export function sinirOlcerHazir(
+  graf: HaritaGrafi,
+  ulke: string | null,
+  evMapId: number,
+  topraklar: readonly number[],
+): SinirOlcer {
+  const lord = { ulke, evBolgeId: evMapId, topraklar };
+  return (hedef) => sinirdanMi(graf, hedef, lord);
 }
 
 /**

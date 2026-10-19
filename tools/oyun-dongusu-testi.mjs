@@ -154,11 +154,12 @@ kontrol(
     : `${adaylar.length} aday denendi, hiçbiri alınamıyor`,
 );
 
-// Çekirdek kaleye SALDIRILAMIYOR (docs/16 §5) ve bu sınamanın ölçtüğü
-// şey zorluk farkı, dokunulmazlık değil: süzgeç çekirdeği eliyor.
-const kale = harita.regions.find(
-  (r) => kenar.has(r.id) && fethedilebilirMi(r) && r.type === 'kale',
-);
+// Ölçülen şey zorluk farkı: önizleme sınır kuralına bakmıyor (saldırı
+// bakıyor), o yüzden en yakın sahipsiz kale yetiyor — en küçüğü bile
+// kademesindeki köyün iki katı garnizon ve %30 sur (docs/27).
+const kale = harita.regions
+  .filter((r) => !r.owner && !r.shielded && r.type === 'kale')
+  .sort((a, b) => a.distance - b.distance)[0];
 const kaleOnizleme = await post('/battle/preview', {
   toRegionId: kale.id,
   army: { mizrakci: 20, okcu: 15 },

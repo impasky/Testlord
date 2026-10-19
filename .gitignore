@@ -23,6 +23,10 @@ yedek/
 __pycache__/
 *.pyc
 
+# Gerçek dünya haritasının kaynak verisi (tools/gercek-dunya-uret.mjs indiriyor).
+# Kaynak sabit bir sürüm (Natural Earth v5.1.2); depoya yalnız üretilen harita giriyor.
+tools/.dunya-kaynak/
+
 # Test araçlarının ürettiği ekran görüntüleri (tools/*.mjs, CIKTI/SMOKE_OUT).
 # Bunlar kaynak değil çıktı: her koşuda yeniden üretiliyorlar. Depoya girdikleri
 # sürece her test koşusu 20 MB'lık ikili dosyayı "değişti" diye işaretliyor ve

@@ -8,6 +8,7 @@ import { existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { validateBalance, yayinOzeti } from '@lordlar/shared';
+import { haritayiDogrula } from '@lordlar/shared/kanonik';
 import Fastify from 'fastify';
 import { ZodError } from 'zod';
 import { prisma } from './db.js';
@@ -35,7 +36,7 @@ import { ticaretRoutes } from './routes/ticaret.js';
 import { generalRoutes } from './routes/generals.js';
 import { itemRoutes } from './routes/items.js';
 import { mapRoutes } from './routes/map.js';
-import { medeniyetRoutes } from './routes/medeniyet.js';
+import { ulkeRoutes } from './routes/ulke.js';
 import { pushRoutes } from './routes/push.js';
 import { meRoutes } from './routes/me.js';
 import { olcumRoutes } from './routes/olcum.js';
@@ -47,12 +48,14 @@ import { profilRoutes } from './routes/profil.js';
 import { magazaRoutes } from './routes/magaza.js';
 import { appAdsRoutes } from './routes/appAds.js';
 import { seedDemoLords } from './services/demoWorld.js';
+import { eskiDunyalariGocur } from './services/goc.js';
 import { createWorld } from './services/world.js';
 import { kurulumMu, yayinKontrolu, yayinRaporu } from './services/yayin.js';
 import { startWorker } from './worker.js';
 
 // Bozuk denge verisiyle ayağa kalkmaktansa hemen ölmek iyidir.
 validateBalance();
+haritayiDogrula();
 
 // Sunucu kurulmadan önce: Sentry'nin otomatik araçlaması, izleyeceği
 // kütüphaneler yüklenmeden önce başlatılmayı bekler.
@@ -341,7 +344,7 @@ export async function buildServer() {
   await app.register(itemRoutes, { prefix: '/api' });
   await app.register(armyRoutes, { prefix: '/api' });
   await app.register(mapRoutes, { prefix: '/api' });
-  await app.register(medeniyetRoutes, { prefix: '/api' });
+  await app.register(ulkeRoutes, { prefix: '/api' });
   await app.register(pushRoutes, { prefix: '/api' });
   await app.register(generalRoutes, { prefix: '/api' });
   await app.register(rankingRoutes, { prefix: '/api' });
@@ -454,6 +457,13 @@ async function acilisHazirligi(): Promise<void> {
       execFileSync(komut!, argumanlar, { stdio: 'inherit', cwd: kok });
     }
   }
+
+  /*
+   * Harita kuşağı eski dünyalar gerçek dünyaya göçüyor (docs/27). Worker
+   * bundan SONRA başlıyor: göç sürerken yürüyüş çözülmemeli. Göç yoksa
+   * tek bir sayım sorgusu.
+   */
+  await eskiDunyalariGocur();
 
   let dunya = await prisma.world.findFirst({ where: { status: 'open' } });
   if (!dunya) {

@@ -210,8 +210,8 @@ export const EKRANLAR = [
   'arastirma',
   'hesap',
   'moderasyon',
-  /** Medeniyet paneli (docs/16) — Dünya ekranından açılıyor. */
-  'medeniyet',
+  /** Ülkem paneli (docs/27) — Dünya ekranından açılıyor; ülke seçimi de orada. */
+  'ulke',
   /** Yönetici paneli (docs/14) — yalnız yöneticide, Hesap ekranından. */
   'yoneticiPaneli',
   /** Pazar (docs/19) — şehirdeki Pazar binasından ve Malikâne'den. */
@@ -298,16 +298,14 @@ export const KAPILAR = [
    */
   'moderasyon',
   /**
-   * Medeniyet paneli (docs/16). `moderasyon` gibi ana sayfa ızgarasında
+   * Ülkem paneli (docs/27). `moderasyon` gibi ana sayfa ızgarasında
    * ÇİZİLMİYOR: kapı sayısının tavanı dokuz ve o tavan bir sayı değil
    * bir kural — "ana sayfa tek bakışta taranabilsin".
    *
-   * Yeri Dünya ekranı, çünkü medeniyetin anlamı orada: haritanın rengi,
-   * tuttuğun toprak ve çekirdekler. Ana sayfaya bir onuncu taş koymak
-   * kuralı bozmak olurdu; oysa panel, ait olduğu ekranın içinden
-   * açılınca hem bulunur hem duvar büyümez.
+   * Yeri Dünya ekranı, çünkü ülkenin anlamı orada: başladığın topraklar,
+   * başkent (taht) ve sınır komşuların.
    */
-  'medeniyet',
+  'ulke',
   /**
    * Yönetici paneli (docs/14). `moderasyon` gibi YALNIZ yöneticilere
    * açık ve ana sayfada çizilmiyor; ikisi de Hesap ekranından açılıyor.
@@ -346,14 +344,14 @@ export type Kapi = (typeof KAPILAR)[number];
  * `KAPILAR` yönlendirilebilir HER kapıyı sayıyor; bu liste oyuncunun
  * ana sayfada görebildiklerini. Dışarıdakiler: `moderasyon` ve
  * `yoneticiPaneli` yalnız yönetici hesaplarına açık ve Hesap ekranından,
- * `medeniyet` Dünya ekranından, `pazar` ise zaten haritada duran Pazar
+ * `ulke` Dünya ekranından, `pazar` ise zaten haritada duran Pazar
  * binasından açılıyor. Tavan kuralının amacı "ana sayfa simge duvarına
  * dönmesin" ve ızgarada çizilmeyen bir kapı o duvara taş koymuyor.
  */
 export const OYUNCU_KAPILARI = KAPILAR.filter(
   (k) =>
     k !== 'moderasyon' &&
-    k !== 'medeniyet' &&
+    k !== 'ulke' &&
     k !== 'yoneticiPaneli' &&
     k !== 'pazar' &&
     k !== 'sohbet' &&
@@ -372,7 +370,7 @@ export const KAPI_ADI: Record<Kapi, string> = {
   siralama: 'Sıralama',
   hesap: 'Hesap',
   moderasyon: 'Şikâyet Kuyruğu',
-  medeniyet: 'Medeniyet',
+  ulke: 'Ülkem',
   yoneticiPaneli: 'Yönetici Paneli',
   pazar: 'Pazar',
   sohbet: 'Genel Sohbet',
@@ -403,7 +401,14 @@ export interface RegionDef {
   id: number;
   name: string;
   type: RegionType;
+  /** Ülke kodu (docs/27): `WORLD_MAP.provinces` anahtarı. */
   province: string;
+  /** Denize değiyor mu — deniz yolları kıyıdan kıyıya. */
+  kiyi?: boolean;
+  /** Şehrin nüfusu (Natural Earth); kademe ve garnizon buradan. */
+  nufus?: number;
+  lat?: number;
+  lon?: number;
   /** Harita resmi üzerindeki yüzdelik yer. YALNIZ çizim için (harita.ts). */
   x: number;
   y: number;

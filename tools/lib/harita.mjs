@@ -4,9 +4,9 @@ import { readFileSync } from 'node:fs';
  * Harita yardımcıları — testler için.
  *
  * Altıgen ızgara kalkınca `ring` alanı da kalktı (docs/12 §1). Testler onu
- * "haritanın kenarı" anlamında kullanıyordu; karşılığı artık Taht
- * Kalesi'nden kaç ADIM uzakta olduğu ve o sayı komşuluk grafiğinden
- * türetiliyor. Aynı ölçü, koordinat aritmetiği olmadan.
+ * "haritanın kenarı" anlamında kullanıyordu; karşılığı artık en yakın
+ * TAHTTAN (bir ülkenin başkenti, docs/27) kaç ADIM uzakta olduğu ve o sayı
+ * komşuluk grafiğinden türetiliyor. Aynı ölçü, koordinat aritmetiği olmadan.
  */
 
 /**
@@ -21,13 +21,13 @@ export const HARITA = JSON.parse(
 /** Haritadaki bölge sayısı — testler bunu elle yazmasın. */
 export const BOLGE_SAYISI = HARITA.region_count;
 
-/** Bölge kimliği → Taht Kalesi'nden adım sayısı. */
+/** Bölge kimliği → en yakın tahttan adım sayısı. */
 export function merkezUzakliklari(regions) {
-  const taht = regions.find((r) => r.type === 'taht');
-  if (!taht) return new Map();
+  const tahtlar = regions.filter((r) => r.type === 'taht');
+  if (tahtlar.length === 0) return new Map();
   const komsu = new Map(regions.map((r) => [r.id, r.komsular ?? []]));
-  const uzaklik = new Map([[taht.id, 0]]);
-  const kuyruk = [taht.id];
+  const uzaklik = new Map(tahtlar.map((t) => [t.id, 0]));
+  const kuyruk = tahtlar.map((t) => t.id);
   for (let i = 0; i < kuyruk.length; i++) {
     const su = kuyruk[i];
     for (const k of komsu.get(su) ?? []) {

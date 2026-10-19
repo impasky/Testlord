@@ -11,9 +11,7 @@
  */
 import {
   GEAR_LINES,
-  MEDENIYETLER,
   UNIT_TYPES,
-  WORLD_MAP,
   armySlots,
   calculateFame,
   commandCapacity,
@@ -25,10 +23,13 @@ import {
 import { hashPassword } from '../auth.js';
 import { prisma } from '../db.js';
 import { bosLordAdi, lordAdiAnahtari } from './adDenetimi.js';
-import { medeniyetAta } from './medeniyet.js';
+import { kampYeri } from './ulke.js';
 
-/** Çekirdekler ele geçirilemez (docs/16 §5): demo lord da tutamaz. */
-const CEKIRDEK_IDLER = MEDENIYETLER.flatMap((m) => m.cekirdekBolgeler);
+/**
+ * Demo lordların ülkeleri (docs/27): Türkiye ve komşuları önde — oyunun
+ * dili Türkçe ve yeni oyuncu rakibi ilk önce kendi ülkesinde görmeli.
+ */
+const DEMO_ULKELERI = ['TUR', 'TUR', 'GRC', 'BGR', 'DEU', 'FRA', 'USA', 'RUS'];
 
 interface DemoTanim {
   ad: string;
@@ -102,22 +103,22 @@ export async function seedDemoLords(worldId: string): Promise<number> {
   });
   if (zaten > 0) return 0;
 
-  const koyler = WORLD_MAP.regions.filter((r) => r.type === 'koy');
   const parola = await hashPassword(`demo-${Math.random().toString(36).slice(2)}`);
   let eklenen = 0;
 
   for (let i = 0; i < DEMO.length; i++) {
     const d = DEMO[i]!;
-    const ev = koyler[(i * 4) % koyler.length]!;
+    const ulke = DEMO_ULKELERI[i % DEMO_ULKELERI.length]!;
+    const ev = await kampYeri(worldId, ulke);
 
-    // Sahipsiz bir bölge bul: kale, taht ve çekirdek dışında. Demo lord bir
-    // dolgu, hangi bölgeyi tuttuğu değil TUTUYOR olması önemli.
+    // Kendi ülkesinde sahipsiz bir şehir: kale ve taht dışında. Demo lord
+    // bir dolgu, hangi şehri tuttuğu değil TUTUYOR olması önemli.
     const bolge = await prisma.region.findFirst({
       where: {
         worldId,
+        province: ulke,
         ownerLordId: null,
         type: { notIn: ['kale', 'taht'] },
-        mapId: { notIn: CEKIRDEK_IDLER },
       },
       orderBy: { id: 'asc' },
     });
@@ -135,11 +136,7 @@ export async function seedDemoLords(worldId: string): Promise<number> {
           },
         },
         world: { connect: { id: worldId } },
-        // Demo lord da bir medeniyete yazılıyor (docs/16). Medeniyetsiz
-        // bir lord haritada renksiz duruyor, kendi medeniyetinin
-        // toprağına saldırabiliyor ve fethettiği yerin rengini
-        // değiştirmiyor — yani dünyayı tutarsız bırakıyor.
-        medeniyet: { connect: { id: (await medeniyetAta(worldId)).id } },
+        ulke,
         name: ad,
         adAnahtari: lordAdiAnahtari(ad),
         level: d.seviye,
@@ -152,7 +149,7 @@ export async function seedDemoLords(worldId: string): Promise<number> {
         altin: 20000,
         demir: 8000,
         erzak: 15000,
-        homeBolgeId: ev.id,
+        homeBolgeId: ev,
         // Demo lord bir başkente sahip: şehir sayfası olan bir rakip,
         // sıralamada kampta oturan bir isimden daha inandırıcı.
         baskentBolgeId: bolge?.mapId ?? null,
@@ -220,9 +217,6 @@ export async function seedDemoLords(worldId: string): Promise<number> {
           pvpWins: 0,
           fortressFameAccrued: 0,
           ownsThrone: false,
-          // Demo lordları tohumlanırken taht daima sahipsiz: hiçbir
-          // medeniyet onu tutmuyor.
-          medeniyetTahti: false,
         }),
       },
     });

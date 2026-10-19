@@ -9,20 +9,13 @@
  * KARTTA NE VAR, NE YOK. Oyuncunun isteği: "profil ve bazı bilgiler
  * görünsün, kritik bilgiler görünmesin." Kartta yalnız oyunun zaten
  * herkese gösterdiği şeyler var — ad, arma, seviye, unvan, şöhret,
- * medeniyet, ittifak, bölge sayısı (haritada da sayılabiliyor), diyar ve
+ * ülke, ittifak, bölge sayısı (haritada da sayılabiliyor), diyar ve
  * katıldığı ay. YOK: e-posta, kaynaklar, ordunun büyüklüğü ve yeri,
  * ekipman, son görülme, kampın yeri. Bunların her biri ya kişisel veri ya
  * da bir saldırgana hedef seçtiren istihbarat — casusluk oyunun içinde
  * bir bedelle alınıyor, profil kartı onu bedavaya vermemeli.
  */
-import {
-  MEDENIYETLER,
-  faydaRutbesi,
-  profilResmiCoz,
-  unvan,
-  type Arma,
-  type ProfilResmi,
-} from '@lordlar/shared';
+import { ULKE_ADI, profilResmiCoz, unvan, type Arma, type ProfilResmi } from '@lordlar/shared';
 import { prisma } from '../db.js';
 import { hata } from '../errors.js';
 import { lordArmasi, pushEvent } from './lord.js';
@@ -67,12 +60,11 @@ export async function profilKarti(hedefId: string, bakanId: string) {
       ...YAZAR_SEC,
       level: true,
       fame: true,
-      faydaPuani: true,
       isNpc: true,
       createdAt: true,
       ittifakRutbe: true,
       world: { select: { name: true } },
-      medeniyet: { select: { key: true } },
+      ulke: true,
       alliance: { select: { name: true, tag: true, leaderLordId: true } },
     },
   });
@@ -87,7 +79,6 @@ export async function profilKarti(hedefId: string, bakanId: string) {
     }),
   ]);
 
-  const m = l.medeniyet ? MEDENIYETLER.find((x) => x.id === l.medeniyet!.key) : undefined;
   const rutbe = l.alliance
     ? l.alliance.leaderLordId === l.id
       ? 'lider'
@@ -101,8 +92,8 @@ export async function profilKarti(hedefId: string, bakanId: string) {
     seviye: l.level,
     sohret: l.fame,
     unvan: unvan(l.fame, tahtSayisi > 0).ad,
-    medeniyet: m ? { ad: m.ad, renk: m.renk } : null,
-    faydaRutbesi: l.medeniyet ? faydaRutbesi(l.faydaPuani).ad : null,
+    /** Başladığı ülke (docs/27); seçmediyse null. */
+    ulke: l.ulke ? (ULKE_ADI[l.ulke] ?? l.ulke) : null,
     ittifak: l.alliance ? { ad: l.alliance.name, etiket: l.alliance.tag, rutbe } : null,
     bolgeSayisi,
     diyar: l.world.name,

@@ -31,13 +31,7 @@ import { GameError } from '../errors.js';
 import { AKTIF_GUN } from '../services/world.js';
 import { okuArastirmalar } from '../services/lord.js';
 import { olcumPanosu } from '../services/olcumPanosu.js';
-import {
-  GRUPLAR,
-  KARTOPU_FRENI,
-  arastirmaIlerlemesi,
-  grupSecenekleri,
-  grupSecimi,
-} from '@lordlar/shared';
+import { GRUPLAR, arastirmaIlerlemesi, grupSecenekleri, grupSecimi } from '@lordlar/shared';
 
 /** İlk oturum sayılan pencere. */
 const ILK_OTURUM_DK = 30;
@@ -48,15 +42,14 @@ function ortanca(sayilar: number[]): number | null {
   return s[Math.floor(s.length / 2)]!;
 }
 
-/** Ölçümün medeniyet bölümüne giren lord alanları. */
+/** Ölçümün ülke bölümüne giren lord alanları. */
 interface OlcumLordu {
   id: string;
-  medeniyetId: string | null;
-  faydaPuani: number;
+  ulke: string | null;
   lastSeenAt: Date;
 }
 
-/** En büyük payın toplam içindeki oranı. Dört eşit taraf için 0,25. */
+/** En büyük payın toplam içindeki oranı. */
 function enBuyukPay(sayilar: number[]): number | null {
   const toplam = sayilar.reduce((t, n) => t + n, 0);
   if (toplam <= 0) return null;
@@ -64,65 +57,39 @@ function enBuyukPay(sayilar: number[]): number | null {
 }
 
 /**
- * MEDENİYET ÖLÇÜMÜ — docs/16 §10'un dört riski, dört sayı.
+ * ÜLKE VE TOPRAK ÖLÇÜMÜ (docs/27).
  *
- * | Risk                | Sayı                                            |
- * | ------------------- | ----------------------------------------------- |
- * | Nüfus dengesizliği  | en kalabalık tarafın aktif nüfus payı           |
- * | Fraksiyon kartopu   | en geniş tarafın toprak payı                    |
- * | Bedavacılık         | puanlı lord oranı + üst ondalığın puan payı     |
- * | Etkisizlik hissi    | garnizon tutan lord oranı                       |
+ * | Soru                         | Sayı                                       |
+ * | ---------------------------- | ------------------------------------------ |
+ * | Oyuncular nereye yığılıyor   | en kalabalık ülkenin aktif nüfus payı      |
+ * | Kim ülkesini seçmedi         | ülkesiz lord (göçten sonra seçim bekleyen) |
+ * | Harita ne kadar dolu         | lordların tuttuğu şehir payı               |
+ * | Toprak üstünde asker var mı  | garnizon tutan lord oranı                  |
  *
- * Beşinci sayı riskin değil SİSTEMİN kendi sınaması: `paylasilanBolge`.
- * "Bölge bölünemez, bölgedeki PAY bölünür" cümlesi ancak gerçekten
- * paylaşılan bölge varsa doğru. Hiçbir bölgede iki lord birden
- * durmuyorsa garnizon payı tiyatro demektir ve bunu ancak bu sayı
- * söyler.
- *
- * Medeniyetler DİYAR BAŞINA satır tutuyor ama ölçüm ANAHTARA göre
- * toplanıyor: iki diyarda iki "Demir Ocağı" satırı var ve ikisi aynı
- * medeniyet. Anahtara toplamayan bir ölçüm dört tarafı sekiz gösterirdi.
+ * `paylasilanBolge`: iki lordun birden durduğu şehir — ittifak
+ * takviyesinin gelir payına dönüştüğü yer. Sıfırsa takviye payı tiyatro.
  */
-async function medeniyetOlcusu(lordlar: OlcumLordu[]): Promise<unknown> {
-  const medeniyetler = await prisma.medeniyet.findMany({ select: { id: true, key: true } });
-  if (medeniyetler.length === 0) return null;
-
+async function ulkeOlcusu(lordlar: OlcumLordu[]): Promise<unknown> {
   const aktifSiniri = new Date(Date.now() - AKTIF_GUN * 86_400_000);
-  const [bolgeSayilari, toplamBolge, cekirdekler, garnizonlar] = await Promise.all([
-    prisma.region.groupBy({ by: ['ownerMedeniyetId'], _count: { _all: true } }),
+  const [tutulanBolge, toplamBolge, garnizonlar] = await Promise.all([
+    prisma.region.count({ where: { ownerLordId: { not: null } } }),
     prisma.region.count(),
-    prisma.cekirdekYatirim.groupBy({ by: ['medeniyetId'], _sum: { seviye: true } }),
-    // Garnizonların tamamı TEK sorguda: bölge başına sorgu atan bir hâl,
-    // 121 bölgede 121 gidiş dönüş demekti.
+    // Garnizonların tamamı TEK sorguda.
     prisma.armyUnit.findMany({
       where: { locationType: 'region' },
       select: { lordId: true, locationId: true },
     }),
   ]);
 
-  const bolgeBasina = new Map(bolgeSayilari.map((b) => [b.ownerMedeniyetId, b._count._all]));
-  const cekirdekBasina = new Map(cekirdekler.map((c) => [c.medeniyetId, c._sum.seviye ?? 0]));
-
-  const taraflar = new Map<
-    string,
-    { key: string; lord: number; aktifLord: number; bolge: number; cekirdekSeviyesi: number }
-  >();
-  for (const m of medeniyetler) {
-    const t = taraflar.get(m.key) ?? {
-      key: m.key,
-      lord: 0,
-      aktifLord: 0,
-      bolge: 0,
-      cekirdekSeviyesi: 0,
-    };
-    const uyeler = lordlar.filter((l) => l.medeniyetId === m.id);
-    t.lord += uyeler.length;
-    t.aktifLord += uyeler.filter((l) => l.lastSeenAt >= aktifSiniri).length;
-    t.bolge += bolgeBasina.get(m.id) ?? 0;
-    t.cekirdekSeviyesi += cekirdekBasina.get(m.id) ?? 0;
-    taraflar.set(m.key, t);
+  const ulkeler = new Map<string, { kod: string; lord: number; aktifLord: number }>();
+  for (const l of lordlar) {
+    if (!l.ulke) continue;
+    const u = ulkeler.get(l.ulke) ?? { kod: l.ulke, lord: 0, aktifLord: 0 };
+    u.lord++;
+    if (l.lastSeenAt >= aktifSiniri) u.aktifLord++;
+    ulkeler.set(l.ulke, u);
   }
-  const liste = [...taraflar.values()];
+  const liste = [...ulkeler.values()].sort((a, b) => b.aktifLord - a.aktifLord || b.lord - a.lord);
 
   /* Garnizon: bölge → orada duran lordlar, lord → tuttuğu bölgeler. */
   const bolgeninLordlari = new Map<string, Set<string>>();
@@ -138,50 +105,18 @@ async function medeniyetOlcusu(lordlar: OlcumLordu[]): Promise<unknown> {
   }
   const paylasilan = [...bolgeninLordlari.values()].filter((s) => s.size >= 2).length;
 
-  /* Fayda puanı yoğunluğu: üst ondalık toplamın ne kadarını tutuyor. */
-  const puanlar = lordlar.map((l) => l.faydaPuani).sort((a, b) => b - a);
-  const puanToplami = puanlar.reduce((t, n) => t + n, 0);
-  const ustDilim = puanlar.slice(0, Math.max(1, Math.ceil(puanlar.length * 0.1)));
-  const puanliLord = puanlar.filter((p) => p > 0).length;
-
   return {
     aktifGun: AKTIF_GUN,
-    taraflar: liste,
-
-    nufusDengesizligi: {
-      // Dört eşit taraf 0,25 verir; 1'e yaklaşması "herkes aynı tarafa
-      // yazıldı" demek ve §10'un birinci panzehiri çalışmıyor demektir.
-      enKalabalikAktifPay: enBuyukPay(liste.map((t) => t.aktifLord)),
-      enKalabalik: liste.reduce((a, b) => (b.aktifLord > a.aktifLord ? b : a)).key,
-    },
-
-    kartopu: {
-      // Toprak payı nüfus payından belirgin biçimde büyükse fraksiyon
-      // kartopu dönüyor demektir: büyüyen taraf daha çok kazanıyor.
-      enGenisToprakPayi: enBuyukPay(liste.map((t) => t.bolge)),
-      tutulanBolge: liste.reduce((t, x) => t + x.bolge, 0),
+    /** En kalabalık on ülke. */
+    ulkeler: liste.slice(0, 10),
+    ulkeSayisi: liste.length,
+    ulkesizLord: lordlar.filter((l) => !l.ulke).length,
+    enKalabalikAktifPay: enBuyukPay(liste.map((u) => u.aktifLord)),
+    toprak: {
+      tutulanBolge,
       toplamBolge,
-      /*
-       * Frenin eşiği ve durumu (docs/16 §10).
-       *
-       * `frenAcikMi` BÜTÜN DİYARLARI toplayarak bakıyor; gerçek fren
-       * diyar başına açılıp kapanıyor (`kartopuDurumu`). Tek dünyalı
-       * tasarımda ikisi aynı sayı, çok diyarlı bir veritabanında ise bu
-       * satır "ortalama olarak fren bölgesindeyiz" demek. Eşiği yanına
-       * yazıyoruz ki okuyan kendi kararını verebilsin.
-       */
-      frenEsigi: KARTOPU_FRENI.esik,
-      frenAcikMi: (enBuyukPay(liste.map((t) => t.bolge)) ?? 0) > KARTOPU_FRENI.esik,
-      frenYagmaBonusu: KARTOPU_FRENI.yagmaBonusu,
+      tutulanPay: toplamBolge === 0 ? null : tutulanBolge / toplamBolge,
     },
-
-    bedavacilik: {
-      puanliLord,
-      puanliLordOrani: lordlar.length === 0 ? null : puanliLord / lordlar.length,
-      ortancaPuan: ortanca(lordlar.map((l) => l.faydaPuani)),
-      ustOndalikPayi: puanToplami <= 0 ? null : ustDilim.reduce((t, n) => t + n, 0) / puanToplami,
-    },
-
     garnizonKatilimi: {
       garnizonTutanLord: lordunBolgeleri.size,
       garnizonTutanLordOrani: lordlar.length === 0 ? null : lordunBolgeleri.size / lordlar.length,
@@ -307,17 +242,16 @@ export async function olcumRoutes(app: FastifyInstance): Promise<void> {
         createdAt: true,
         lastSeenAt: true,
         lastScreen: true,
-        // Medeniyet bölümü de bu satırlardan besleniyor: ayrı bir sorgu
+        // Ülke bölümü de bu satırlardan besleniyor: ayrı bir sorgu
         // aynı lordları ikinci kez çekerdi.
-        medeniyetId: true,
-        faydaPuani: true,
+        ulke: true,
         arastirmalar: true,
         arastirmaDegisim: true,
       },
     });
     // İlk oturum ve geri dönüş yalnız OYUNCULARIN: NPC lord `/me`
     // çağırmıyor, son görülmesi kayıt anında kalıyor ve her biri "dönmedi"
-    // sayılıp oranı aşağı çekiyordu. Medeniyet nüfusu ise NPC'yi de sayıyor
+    // sayılıp oranı aşağı çekiyordu. Ülke nüfusu ise NPC'yi de sayıyor
     // (haritada toprak tutan onlar da).
     const lordlar = tumLordlar.filter((l) => !l.isNpc);
     if (lordlar.length === 0) return { lordSayisi: 0, not: 'Henüz oyuncu yok.' };
@@ -382,7 +316,7 @@ export async function olcumRoutes(app: FastifyInstance): Promise<void> {
       };
     };
 
-    const medeniyet = await medeniyetOlcusu(tumLordlar);
+    const ulke = await ulkeOlcusu(tumLordlar);
 
     const ekranlar = new Map<string, number>();
     for (const l of lordlar) {
@@ -424,8 +358,8 @@ export async function olcumRoutes(app: FastifyInstance): Promise<void> {
       /** Günlük aktif ve kohort tutundurması — yönetici panosunun aynısı. */
       pano: await olcumPanosu(),
 
-      /** Medeniyet katmanı; sistem hiç kurulmamışsa null (docs/16 §15). */
-      medeniyet,
+      /** Ülkeler, toprak ve garnizon (docs/27). */
+      ulke,
 
       /** Eşya pazarı: kullanım ve kötüye kullanım izi (docs/19 §13). */
       esyaPazari: await esyaPazariOlcusu(),

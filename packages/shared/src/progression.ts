@@ -98,17 +98,8 @@ export interface FameInput {
   army: Army;
   pvpWins: number;
   fortressFameAccrued: number;
+  /** Lord bir ya da daha çok ülkenin tahtını (başkentini) tutuyor mu (docs/27). */
   ownsThrone: boolean;
-  /**
-   * Tahtı tutan medeniyet BENİM medeniyetim mi (docs/16 §13 soru 5).
-   *
-   * ZORUNLU alan ve bilerek: şöhret beş ayrı yerde hesaplanıyor (tick,
-   * iki fetih önizlemesi, ekipman önizlemesi, demo tohumu) ve isteğe
-   * bağlı bir alan bunların birinde sessizce `false` kalırdı — önizleme
-   * ile gerçeğin ayrışması bu projenin en çok tekrarlayan hatası. Alan
-   * zorunlu olunca derleyici çağıranların hepsini tek tek gösteriyor.
-   */
-  medeniyetTahti: boolean;
 }
 
 /** Şöhret: genel sıralamanın puanı. */
@@ -122,14 +113,8 @@ export function calculateFame(input: FameInput): number {
   fame += armyPower(input.army) * S.ordu_carpani;
   fame += input.pvpWins * S.pvp_galibiyet;
   fame += input.fortressFameAccrued;
-  /*
-   * İKİ ÇARPAN ÜST ÜSTE BİNEBİLİR ve binmesi doğru: tahtı bizzat tutan
-   * lord hem "Diyarın Lordu" hem de tahtı tutan medeniyetin üyesidir.
-   * Şahsi unvan büyük (%20), medeniyetinki küçük (%5) — biri bir kişiye,
-   * öbürü binlerce kişiye işliyor.
-   */
+  // Hükümdar unvanı: kaç taht tutulduğundan bağımsız, bir kez.
   if (input.ownsThrone) fame *= 1 + B.taht_kalesi.unvan_sohret_bonusu;
-  if (input.medeniyetTahti) fame *= 1 + B.taht_kalesi.medeniyet_sohret_bonusu;
   return Math.round(fame);
 }
 

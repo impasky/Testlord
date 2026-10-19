@@ -1,8 +1,8 @@
 {
   "schema": "unvanlar/v1",
   "_aciklama": "Sohretten TURETILEN unvanlar. docs/10 §1.2: Travian Kingdoms'in en cok konusulan yani rol sistemi (Vali/Duk/Kral); bizde ise taht sahibi disinda herkes sadece 'lord'du. Yeni tablo ve yeni sayac YOK -- sohret zaten oyunun tek 'ne kadar buyuksun' olcusu ve siralamanin da olcusu; ikinci bir olcu icat etmek iki ayri buyukluk fikri yaratirdi.",
-  "_taht": "Taht sahibi olan herkesin unvanini 'Diyarin Lordu' eziyor: taht zaten oyunun tepesi, orada iki farkli unvan gormek anlamsiz olurdu.",
-  "taht_unvani": "Diyarın Lordu",
+  "_taht": "Bir ulkenin tahtini (baskentini) tutan herkesin unvanini 'Hukumdar' eziyor (docs/27): taht oyunun tepesi, orada iki farkli unvan gormek anlamsiz olurdu.",
+  "taht_unvani": "Hükümdar",
   "kademeler": [
     { "esik": 0, "ad": "Çaylak Lord", "aciklama": "Bir malikâne, bir umut." },
     { "esik": 400, "ad": "Toprak Sahibi", "aciklama": "İlk toprağını aldın." },

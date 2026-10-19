@@ -183,10 +183,10 @@ function partiNo(v) {
 /** İnsanın "nerede geçiyor" diye sorduğunda okuyacağı ad. */
 function alanAdi(v) {
   const y = v.nerede[0] ?? '';
-  // balance.json'dan gelenler: birim, yerleşim kademesi, medeniyet ve
-  // rütbe adları. "Diğer" başlığı altında kalınca çevirmen neye
+  // balance.json'dan gelenler: birim, yerleşim kademesi ve taht
+  // adları. "Diğer" başlığı altında kalınca çevirmen neye
   // baktığını anlamıyordu.
-  if (y.includes('data/balance.json')) return 'Adlar (birim, yerleşim, medeniyet, rütbe)';
+  if (y.includes('data/balance.json')) return 'Adlar (birim, yerleşim, taht)';
   if (v.grup === 'veri') return 'İçerik (bina, general, araştırma, başarım)';
   if (y.includes('apps/api')) return 'Sunucu mesajları';
   if (/ogretici/.test(y)) return 'Öğretici';
