@@ -125,15 +125,23 @@ if (topla(hastane) > 0) {
   // Hedef KAYIP verdiren bir şehir: önizleme saldıranın kaybını söylüyor.
   // Öneri hedefi en kârlısını seçiyor ve kampın yanındaki zayıf şehirde
   // (docs/27) bu ordu kayıpsız kazanabiliyordu — yaralı çıkmıyordu.
+  // Evde yalnız iyileşen birkaç asker var: ilk savaştan sağ kalanlar
+  // fethedilen bölgede garnizon (docs/16 §6) ve komuta yerini de onlar
+  // tutuyor. Garnizon eve çekiliyor; kayıp verecek ordu o.
+  for (const r of (await al('/map')).regions.filter((x) => x.isMine)) {
+    await post(`/map/${r.id}/garrison`, { army: {} });
+  }
   const ordu2 = (await al('/army')).home ?? {};
   const adaylar = (await al('/map')).regions
     .filter(fethedilebilirMi)
     .sort((a, b) => a.distance - b.distance)
-    .slice(0, 20);
+    .slice(0, 40);
+  // Ham kaybın yalnız %30'u yaralı dönüyor (savas.kayip.saldirida_yarali_donus):
+  // 3 kayıplı savaşta yuvarlama yaralıyı sıfırlayabiliyordu (CI'da oldu).
   let hedef2 = null;
   for (const r of adaylar) {
     const o = await post('/battle/preview', { toRegionId: r.id, army: ordu2, generalIds: [] });
-    if (topla(o.b?.tahmin?.saldiranKayip ?? {}) >= 3) {
+    if (topla(o.b?.tahmin?.saldiranKayip ?? {}) >= 10) {
       hedef2 = { regionId: r.id };
       break;
     }
