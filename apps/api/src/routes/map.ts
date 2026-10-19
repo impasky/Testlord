@@ -150,27 +150,9 @@ async function assertCanAttack(
     throw new GameError('Kendi bölgene saldıramazsın.', 400, 'KENDI_BOLGEN');
   }
 
-  /*
-   * ÜLKE VE SINIR (docs/27).
-   *
-   * Oyuncu bir ülke seçip orada başlıyor; o ülkenin her şehri ona açık.
-   * Başka bir ülkenin şehrine ancak SINIRDAN — evinin ya da tuttuğu bir
-   * toprağın komşusuysa (kara sınırı ya da deniz yolu). Kural shared
-   * `sinirdanMi`de; öneri motoru ve harita da aynı işlevi soruyor.
-   *
-   * SIRA: "kendi bölgen"den sonra. Özel olan genelin önünde durmalı —
-   * kendi bölgesine saldıran oyuncuya "sınırın yok" demek doğru ama işe
-   * yaramaz bir cevap olurdu.
-   */
+  // Ülkesi olmayan lordun kampı yok (docs/27): önce ülkesini seçmeli.
   if (!attacker.ulke) {
     throw new GameError('Önce ülkeni seç: kampın orada kurulacak.', 400, 'ULKE_SECILMEDI');
-  }
-  if (!(await sinirOlcer(attackerId, tx))(region)) {
-    throw new GameError(
-      'Bu şehir sınırında değil: başka bir ülkeye ancak evinin ya da bir toprağının komşusundan geçebilirsin.',
-      400,
-      'SINIR_YOK',
-    );
   }
 
   // İttifak içi saldırı yok. İttifağın tek zorunlu kuralı bu ve tek
@@ -243,6 +225,27 @@ async function assertCanAttack(
         'TEKRAR_SALDIRI',
       );
     }
+  }
+
+  /*
+   * SINIR (docs/27).
+   *
+   * Oyuncu bir ülke seçip orada başlıyor; o ülkenin her şehri ona açık.
+   * Başka bir ülkenin şehrine ancak SINIRDAN — evinin ya da tuttuğu bir
+   * toprağın komşusuysa (kara sınırı ya da deniz yolu). Kural shared
+   * `sinirdanMi`de; öneri motoru ve harita da aynı işlevi soruyor.
+   *
+   * SIRA: en sonda. Kalıcı yasak (ittifak, pakt) ve koruma durumsal
+   * olandan önce söylenmeli: ittifak arkadaşına saldırmaya çalışana
+   * "sınırında değil" demek doğru ama yanıltıcı — sınıra varsa da
+   * saldıramayacak. Harita (`hedefDurumu`) aynı sırayla söylüyor.
+   */
+  if (!(await sinirOlcer(attackerId, tx))(region)) {
+    throw new GameError(
+      'Bu şehir sınırında değil: başka bir ülkeye ancak evinin ya da bir toprağının komşusundan geçebilirsin.',
+      400,
+      'SINIR_YOK',
+    );
   }
 }
 

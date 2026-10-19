@@ -323,16 +323,18 @@ export interface HedefGirdisi {
  * "Buraya saldırabilir miyim" — sunucunun kurallarının haritadaki eşi.
  *
  * Sıra `routes/map.ts`deki kontrol sırasıyla aynı: kendi bölgen, ülke
- * seçimi, sınır (docs/27), ittifak üyesi, pakt, kalkan. Günlük hak ve
+ * seçimi, ittifak üyesi, pakt, kalkan, sınır (docs/27). Kalıcı yasak
+ * durumsal olandan önce: ittifak arkadaşına "sınırında değil" demek
+ * yanıltıcı olurdu. Günlük hak ve
  * lordun yarası geçici ve bölgeye değil lorda ait; onlar bölge kartında
  * söyleniyor.
  */
 export function hedefDurumu(r: HedefGirdisi, ulkem: string | null): HedefDurumu {
   if (r.isMine) return { tur: 'benim' };
   if (ulkem === null) return { tur: 'yasak', sebep: 'ulke' };
-  if (!r.sinirda) return { tur: 'yasak', sebep: 'sinir' };
   if (r.owner && r.muttefik) return { tur: 'yasak', sebep: 'muttefik' };
   if (r.owner && r.paktli) return { tur: 'yasak', sebep: 'pakt' };
   if (r.shielded) return { tur: 'yasak', sebep: 'kalkan' };
+  if (!r.sinirda) return { tur: 'yasak', sebep: 'sinir' };
   return { tur: 'acik', adim: r.distance };
 }

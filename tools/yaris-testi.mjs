@@ -15,6 +15,7 @@
  * API ayakta olmalı. node tools/yaris-testi.mjs
  */
 import { benzersizAd, kayitOl, onerilenDiyar } from './lib/kayit.mjs';
+import { fethedilebilirMi } from './lib/hedef.mjs';
 
 const API = process.env.API_URL ?? 'http://localhost:3000';
 const N = 10;
@@ -176,14 +177,27 @@ console.log('Lordlar Çağı — yarış testi\n');
   const K = 3;
   const worldId = await onerilenDiyar(API);
   const lordlar = await Promise.all(Array.from({ length: K }, () => yeniLord('Kusatma', worldId)));
-  const hedef = (await lordlar[0].al('/map')).oneri?.regionId;
+  // Hedef ÜÇÜNÜN DE sınırında olmalı (docs/27): lordlar aynı ülkede ama
+  // farklı şehirlerin yanında doğuyor. Birinin önerisi komşu ülkenin
+  // şehri çıkınca öbürlerinin yürüyüşü `SINIR_YOK` ile reddediliyor ve
+  // "her yürüyüş bir kez çözüldü" 2/3 kalıyordu. Kendi ülkelerinin bir
+  // şehri hepsine açık.
+  const hedef = (await lordlar[0].al('/map')).regions
+    .filter((r) => r.province === 'TUR' && fethedilebilirMi(r))
+    .sort((a, b) => a.distance - b.distance)[0]?.id;
+  const yuruyusler = [];
   for (const l of lordlar) {
     await l.post('/test/kaynak-ver', { altin: 100000, demir: 100000, erzak: 100000 });
     await l.post('/army/train', { unitType: 'mizrakci', count: 12 });
     await l.post('/test/kuyruklari-bitir');
     const home = (await l.al('/army')).home ?? {};
-    await l.post('/march', { toRegionId: hedef, army: home, generalIds: [] });
+    yuruyusler.push(await l.post('/march', { toRegionId: hedef, army: home, generalIds: [] }));
   }
+  kontrol(
+    'Üç yürüyüş de yola çıktı',
+    yuruyusler.every((y) => y.s === 200),
+    yuruyusler.map((y) => (y.s === 200 ? 200 : `${y.s} ${y.b?.code ?? ''}`)).join(','),
+  );
   const s = await ayni(lordlar.map((l) => () => l.post('/test/yuruyusleri-bitir')));
   kontrol(
     'Aynı bölgeye eşzamanlı saldırılar: sunucu hatası yok',

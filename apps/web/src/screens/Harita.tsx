@@ -718,7 +718,8 @@ export function Harita({
     }
     /*
      * Ülke ve sınır (docs/27). Sunucu ikisini de reddediyor; buradaki iş,
-     * oyuncunun sebebi ordusunu yola çıkarmadan ÖNCE görmesi.
+     * oyuncunun sebebi ordusunu yola çıkarmadan ÖNCE görmesi. Sıra
+     * sunucununki: kalkan sınırdan önce.
      */
     if (!lord.ulke) {
       return {
@@ -726,16 +727,16 @@ export function Harita({
         uzun: 'Kampın seçtiğin ülkede kurulacak; ondan sonra saldırabilirsin.',
       };
     }
-    if (!bolge.sinirda && !bolge.isMine) {
-      return {
-        kisa: 'Sınırında değil',
-        uzun: `${ULKE_ADI[bolge.province] ?? 'Bu ülke'} topraklarına ancak sınırdan geçebilirsin: evinin ya da tuttuğun bir şehrin komşusu olan şehre saldır.`,
-      };
-    }
     if (bolge.shielded) {
       return {
         kisa: 'Bölge kalkan altında',
         uzun: 'Yeni ele geçirilmiş ya da yeni oyuncuya ait bölgelere bir süre saldırılamaz.',
+      };
+    }
+    if (!bolge.sinirda && !bolge.isMine) {
+      return {
+        kisa: 'Sınırında değil',
+        uzun: `${ULKE_ADI[bolge.province] ?? 'Bu ülke'} topraklarına ancak sınırdan geçebilirsin: evinin ya da tuttuğun bir şehrin komşusu olan şehre saldır.`,
       };
     }
     if (secimBos) {
