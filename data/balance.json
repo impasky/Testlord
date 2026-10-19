@@ -387,7 +387,7 @@
     },
     "kale_bonusu_seviye_basina": 0.05,
     "garnizon": "Sahip, ordusunun bir kismini bolgede birakabilir. Sadece garnizon savunur; evdeki ordu bolgeyi savunmaz.",
-    "ilk_fetih_hedefi": "Koy bolgeleri (12 adet, haritanin kenarinda) yeni oyuncunun ILK fethi icin ayarlandi: garnizon ~16 birim. Oyuna toprakSIZ basliyoruz (docs/12 §8), o yuzden ilk hedef herkes icin dakikalar icinde ulasilabilir olmali.",
+    "ilk_fetih_hedefi": "Yeni oyuncunun ILK fethi bir yerlesim (koy, sehir, kale): sehri ancak o kuruluyor. Kamp ulkenin en zayif sahipsiz sehrinin yaninda, esitlikte yerlesimin (kampYeri); baskenti olmayan lorda oneri once yerlesim gosteriyor (onerilenHedef, docs/27 §4). Oyuna toprakSIZ basliyoruz (docs/12 §8), o yuzden ilk hedef herkes icin dakikalar icinde ulasilabilir olmali.",
     "_koy_notu": "Koy en kucuk yerlesim ve BASKENT olabilen turlerden biri. Geliri dusuk ama yerlesim kademesi verdigi icin degeri gelirinde degil: koyu olan oyuncu sehir sayfasina, bina dikmeye ve oyunun geri kalanina kavusuyor."
   },
   "taht_kalesi": {

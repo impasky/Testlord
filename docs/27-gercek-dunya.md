@@ -102,9 +102,14 @@ değişmediğini ölçüyor ("Harita yeniden üretilebiliyor").
 
 - **Ülke seçimi bir kez.** Ülkesi olmayan lord oyuna ülke seçim ekranından
   giriyor (`UlkeSecimi.tsx`, `POST /ulke/sec`). Kamp o ülkede, tahtı olmayan
-  ve en az kalabalık şehrin yanına kuruluyor (`kampYeri`); tek şehirli
-  ülkede başkentin yanına. İkinci seçim reddediliyor (`ULKE_SECILDI`).
-  Ülkesi olmayan lord saldıramıyor (`ULKE_SECILMEDI`).
+  en zayıf sahipsiz şehrin yanına kuruluyor (`kampYeri`; eşitlikte önce
+  yerleşim, sonra en az kamp); tek şehirli ülkede başkentin yanına. İkinci
+  seçim reddediliyor (`ULKE_SECILDI`). Ülkesi olmayan lord saldıramıyor
+  (`ULKE_SECILMEDI`).
+- **İlk hedef bir yerleşim.** Şehir ancak köy, şehir ya da kale alınınca
+  kuruluyor; tarla ve maden yalnız gelir. Başkenti olmayan lorda öneri önce
+  yerleşim gösteriyor (`onerilenHedef`); yerleşim yapılabilir değilse
+  (kazanılmıyor, eksik ordu karşılanamıyor) bütün şehirlere bakıyor.
 - **Sınır kuralı** (`sinirdanMi`, `packages/shared/src/harita.ts`):
   kendi ülkenin her şehri açık; başka bir ülkenin şehri ancak evinin ya da
   tuttuğun bir şehrin komşusuysa — karadan ya da deniz yolundan. Sunucu

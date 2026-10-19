@@ -9,7 +9,7 @@
  * Seçim BİR KEZ. Ülke değiştirmek, kampı bir gecede dünyanın öbür ucuna
  * taşıyıp sınır kuralını boşa çıkarmak olurdu.
  */
-import { ULKELER } from '@lordlar/shared';
+import { BASKENT_TURLERI, ULKELER } from '@lordlar/shared';
 import { prisma, type Tx } from '../db.js';
 import { GameError } from '../errors.js';
 
@@ -18,11 +18,13 @@ import { GameError } from '../errors.js';
  *
  * İlk hedef kampın yanındaki şehir oluyor ("ilk saldırı dakikalar içinde
  * biter", docs/08 İ3); garnizonu en küçük olan şehir o sözü tutuyor.
- * Sıra: sahipsiz şehir, sonra en küçük garnizon, eşitlikte en az kamp.
- * Önce kalabalığa bakılıyordu ve ülke dolunca yeni oyuncular güçlü
- * şehirlerin (68 birlik) yanında doğuyordu: ilk hedefe başlangıç kaynağı
- * yetmiyordu (`ilk-hedef-testi`). Zayıf şehir bir ülkede genelde çok;
- * kamplar onların arasında dağılıyor. Başkent (taht) yalnız ülkenin tek
+ * Sıra: sahipsiz şehir, sonra en küçük garnizon, eşitlikte YERLEŞİM (köy,
+ * şehir, kale), en son en az kamp. Önce kalabalığa bakılıyordu ve ülke
+ * dolunca yeni oyuncular güçlü şehirlerin (68 birlik) yanında doğuyordu:
+ * ilk hedefe başlangıç kaynağı yetmiyordu (`ilk-hedef-testi`). Yerleşim
+ * tercihi öneriyle aynı kural (`onerilenHedef`): başkenti olmayan lorda
+ * önce yerleşim öneriliyor, kamp da o yerleşimin yanında kurulunca ilk
+ * hedef kampın kendi şehri oluyor. Başkent (taht) yalnız ülkenin tek
  * şehriyse seçiliyor — tek şehirli bir ülkede başka yer yok.
  *
  * Adaylar DÜNYANIN KENDİ bölgelerinden okunuyor, kanonik dosyadan değil
@@ -52,9 +54,10 @@ export async function kampYeri(
   const guc = (g: unknown) =>
     Object.values((g ?? {}) as Record<string, number>).reduce((t, n) => t + (n ?? 0), 0);
 
-  const anahtar = (a: (typeof adaylar)[number]): [number, number, number] => [
+  const anahtar = (a: (typeof adaylar)[number]): [number, number, number, number] => [
     a.ownerLordId ? 1 : 0,
     guc(a.npcGarrison),
+    BASKENT_TURLERI.includes(a.type) ? 0 : 1,
     yuk.get(a.mapId) ?? 0,
   ];
   let enIyi = adaylar[0]!;

@@ -11,6 +11,7 @@
  * SADECE GELİŞTİRME. /api/test/* uçlarını kullanır.
  * API ayakta olmalı. node tools/pakt-testi.mjs
  */
+import { fethedilebilirMi } from './lib/hedef.mjs';
 import { kayitOl, onerilenDiyar } from './lib/kayit.mjs';
 
 const API = process.env.API_URL ?? 'http://localhost:3000';
@@ -51,18 +52,32 @@ async function orduKur(l) {
   await l.post('/test/kuyruklari-bitir');
 }
 
-/** Öneri motorunun dediğini yaparak bir bölge alır. */
+/**
+ * Öneri motorunun dediğini yaparak bir bölge alır — öneri lordun KENDİ
+ * ülkesindeyse. Başkentsiz lorda öneri önce yerleşim gösteriyor ve en
+ * yakın yerleşim sınırın öbür yanında olabiliyor (Halep): oraya öbür
+ * lordun sınırı yok, saldırısı SINIR_YOK ile dönüyor. Testin ölçtüğü şey
+ * pakt, sınır değil; öneri dışarıdaysa ülkenin en yakın küçük şehri.
+ */
 async function bolgeAl(l) {
   for (let i = 0; i < 8; i++) {
-    const o = (await l.get('/map')).oneri;
+    const harita = await l.get('/map');
+    const o = harita.oneri;
     if (!o) return null;
     if (o.eksik?.adet > 0) {
       await l.post('/army/train', { unitType: o.eksik.birim, count: o.eksik.adet });
       await l.post('/test/kuyruklari-bitir');
     }
+    const yurtta = harita.regions.find((r) => r.id === o.regionId)?.province === 'TUR';
+    const hedef = yurtta
+      ? o.regionId
+      : harita.regions
+          .filter((r) => r.province === 'TUR' && fethedilebilirMi(r) && r.type !== 'sehir')
+          .sort((x, y) => x.distance - y.distance)[0]?.id;
+    if (!hedef) return null;
     const ordu = (await l.get('/army')).home;
     if (Object.keys(ordu).length === 0) return null;
-    await l.post('/march', { toRegionId: o.regionId, army: ordu });
+    await l.post('/march', { toRegionId: hedef, army: ordu });
     await l.post('/test/yuruyusleri-bitir');
     await l.post('/test/yuruyusleri-bitir');
     const benim = (await l.get('/map')).regions.find((r) => r.isMine && r.type !== 'taht');

@@ -14,6 +14,7 @@
  */
 import {
   B,
+  BASKENT_TURLERI,
   UNIT_TYPES,
   aggregateGeneralBonus,
   altinKarsiligi,
@@ -182,8 +183,19 @@ function kazananPuani(
  *
  * Taht Kalesi de dışarıda: 890 birimlik garnizonu oyunun bitiş hedefi,
  * yol gösterici bir ilk adım değil.
+ *
+ * Başkenti olmayan lorda önce YERLEŞİM (köy, şehir, kale) önerilir: şehri
+ * ancak bir yerleşim alınca kuruluyor (`ilkBaskentiAta`). Gerçek dünyada
+ * tarla ve maden her yere serpili; en yakın hedefe bakan öneri yeni oyuncuyu
+ * bir madene yolluyor, toprağı alan oyuncu şehrinin büyümesini bekleyip
+ * duruyordu. Yerleşim YAPILABİLİR değilse (ne kazanılıyor ne de eksik ordu
+ * karşılanabiliyor) `yerlesimOnce` kapanıp bütün havuza bakılır: yapılabilir
+ * ilk talimat, yerleşimden önce gelir.
  */
-export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null> {
+export async function onerilenHedef(
+  lordId: string,
+  yerlesimOnce = true,
+): Promise<HedefOnerisi | null> {
   const lord = await prisma.lord.findUniqueOrThrow({
     where: { id: lordId },
     include: { regions: true, items: true },
@@ -304,8 +316,10 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
     topraklar: lord.regions.map((r) => r.mapId),
   };
   const acik = adaylar.filter((r) => sinirdanMi(graf, r, sinir));
+  const yerlesimler = acik.filter((r) => BASKENT_TURLERI.includes(r.type));
+  const kisitli = yerlesimOnce && lord.baskentBolgeId == null && yerlesimler.length > 0;
 
-  const liste: Aday[] = acik.map((r) => {
+  const liste: Aday[] = (kisitli ? yerlesimler : acik).map((r) => {
     const garrison: Army = {};
     const ham = (r.npcGarrison ?? {}) as Record<string, number>;
     for (const t of UNIT_TYPES) if ((ham[t] ?? 0) > 0) garrison[t] = ham[t]!;
@@ -577,6 +591,9 @@ export async function onerilenHedef(lordId: string): Promise<HedefOnerisi | null
     }
   }
 
+  if (kisitli && !(enIyi?.kazanir || enIyi?.eksik?.karsilanabilir)) {
+    return onerilenHedef(lordId, false);
+  }
   return enIyi;
 }
 
