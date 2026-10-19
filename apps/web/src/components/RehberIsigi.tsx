@@ -200,6 +200,8 @@ function basilabilirMi(e: HTMLElement): boolean {
  * kırardı.
  */
 function ondeMi(e: HTMLElement): boolean {
+  // Gizli ama kurulu şehirdeki düğme (App.tsx) ekranda değil.
+  if (e.closest('[data-gizli-sahne]')) return false;
   const r = e.getBoundingClientRect();
   const x = r.left + r.width / 2;
   const y = r.top + r.height / 2;

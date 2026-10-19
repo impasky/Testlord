@@ -509,6 +509,81 @@ export interface MapDto {
   regions: RegionDto[];
 }
 
+/** Bölgenin değişmeyen bilgisi — `/harita/bolgeler` listesinin bir satırı. */
+type SabitBolgeDto = Pick<
+  RegionDto,
+  'id' | 'mapId' | 'name' | 'type' | 'province' | 'x' | 'y' | 'komsular' | 'incomeMult'
+>;
+
+/** `/harita`: haritanın değişen hâli, kısa biçimde (apps/api/src/services/haritaDurumu.ts). */
+interface HaritaDurumuDto extends Omit<MapDto, 'regions'> {
+  /** Değişmeyen listenin adresi; sürümü içinde, tarayıcı bir kez indirip saklıyor. */
+  bolgeler: string;
+  /** Aşağıdakiler listenin sırasıyla. */
+  level: number[];
+  /** Her bölge için '1' ya da '0'. */
+  sinirda: string;
+  distance: number[];
+  fortressBonus: number[];
+  /** Yalnız sahipli, kalkanlı ya da payım olan bölgeler; `i` listedeki sıra. */
+  ozel: ({ i: number } & Pick<
+    RegionDto,
+    'owner' | 'isMine' | 'pay' | 'shielded' | 'paktli' | 'muttefik'
+  >)[];
+}
+
+/** Son indirilen değişmeyen liste — adresiyle; sürüm değişince yenisi iniyor. */
+let sabitListe: { adres: string; soz: Promise<SabitBolgeDto[]> } | null = null;
+
+function sabitBolgeler(adres: string): Promise<SabitBolgeDto[]> {
+  if (sabitListe?.adres !== adres) {
+    // Kimliksiz: liste herkes için aynı ve sunucu onu bir yıl saklatıyor
+    // (adresteki sürüm değişmedikçe). Tarayıcı ikinci açılışta indirmiyor.
+    const soz = fetch(`${BASE}/api${adres}`).then(async (r) => {
+      if (!r.ok) throw new ApiError('Harita yüklenemedi.', r.status);
+      return cevrilmis((await r.json()) as SabitBolgeDto[]);
+    });
+    sabitListe = { adres, soz };
+    soz.catch(() => {
+      if (sabitListe?.soz === soz) sabitListe = null;
+    });
+  }
+  return sabitListe.soz;
+}
+
+/**
+ * Harita: değişen hâl (`/harita`, ~4 KB) + değişmeyen liste (bir kez, ~95 KB),
+ * `/map`in biçiminde birleşmiş.
+ *
+ * `/map` her istekte 3.047 bölgeyi bütün alanlarıyla gönderiyordu (~900 KB);
+ * 0,1 CPU'lu sunucuda 1–5 sn sürüyor ve alt şeritteki rehber yüzünden her
+ * sekmede isteniyordu. Biçim aynı kaldığı için haritayı okuyan hiçbir ekran
+ * değişmedi; sunucu iki biçimi aynı hesaptan yazıyor.
+ */
+async function haritaYukle(): Promise<MapDto> {
+  const { bolgeler, level, sinirda, distance, fortressBonus, ozel, ...govde } =
+    await request<HaritaDurumuDto>('/harita');
+  const liste = await sabitBolgeler(bolgeler);
+  const ozelIle = new Map(ozel.map((o) => [o.i, o]));
+  const regions = liste.map((b, i): RegionDto => {
+    const o = ozelIle.get(i);
+    return {
+      ...b,
+      level: level[i] ?? 1,
+      owner: o?.owner ?? null,
+      isMine: o?.isMine ?? false,
+      pay: o?.pay ?? null,
+      sinirda: sinirda[i] === '1',
+      shielded: o?.shielded ?? false,
+      distance: distance[i] ?? 0,
+      paktli: o?.paktli ?? false,
+      muttefik: o?.muttefik ?? false,
+      fortressBonus: fortressBonus[i] ?? 0,
+    };
+  });
+  return { ...govde, regions };
+}
+
 export interface RegionDetailDto extends RegionDto {
   /** Bölge benim başkentim mi. */
   baskentim: boolean;
@@ -1446,7 +1521,7 @@ export const api = {
   gear: () => request<GearDto[]>('/gear'),
   upgradeGear: (line: string) => post(`/gear/${line}/upgrade`),
 
-  map: () => request<MapDto>('/map'),
+  map: haritaYukle,
   region: (id: number) => request<RegionDetailDto>(`/map/${id}`),
   /** Ülke seçim ekranı (docs/27). */
   ulkeler: () => request<{ ulkem: string | null; ulkeler: UlkeSatiriDto[] }>('/ulkeler'),

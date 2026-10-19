@@ -623,6 +623,24 @@ svg g[role='button']:focus-visible > path:first-of-type {
   animation-play-state: paused !important;
 }
 
+/*
+ * Kurulu ama başka sekmedeyken gizli şehir (App.tsx, `sehirKuruldu`).
+ * `visibility`: boyut değişmiyor, tuvaller ve resimler yerinde; dönüşte
+ * hiçbir şey yeniden çizilmiyor. Görünmeyen öğe dokunuş da almıyor.
+ */
+[data-gizli-sahne] {
+  visibility: hidden;
+}
+/*
+ * Yalnız hareket katmanları duruyor. `[data-gizli-sahne] *` her geçişte
+ * bütün alt ağacın stilini yeniden hesaplatıyordu: SVG'ye düşen cihazda
+ * şehir 15.000 düğüm, sekme değişimi başına 4× yavaş işlemcide ~700 ms.
+ */
+[data-gizli-sahne] .hareket,
+[data-gizli-sahne] .hareket * {
+  animation-play-state: paused !important;
+}
+
 /* Hareket kısıtlıysa katman hiç yok (JS de kurmuyor; bu ikinci savunma hattı). */
 @media (prefers-reduced-motion: reduce) {
   .hareket {

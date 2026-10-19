@@ -19,7 +19,7 @@
 - **Aynı anda gelen okumalar (tek uçuş), vadesi gelenleri kapatma:** `apps/api/src/services/tekUcus.ts`, `apps/api/src/services/gecikmis.ts`
 - **Kuyruk (inşa, eğitim, araştırma bitişi):** `apps/api/src/services/queue.ts`, `apps/api/src/worker.ts`
 - **Ordu, kışla, eğitim:** `apps/api/src/routes/army.ts`, `apps/web/src/screens/Kisla.tsx`, `packages/shared/src/combat.ts`
-- **Dünya haritası, yürüyüş, fetih, savaş:** `apps/api/src/routes/map.ts`, `apps/api/src/services/march.ts`, `packages/shared/src/harita.ts`, `apps/web/src/screens/Harita.tsx`, `apps/web/src/components/harita/GercekHarita.tsx`, `apps/web/src/components/harita/dunyaGeometri.ts`
+- **Dünya haritası, yürüyüş, fetih, savaş:** `apps/api/src/routes/map.ts`, `apps/api/src/services/haritaDurumu.ts`, `apps/api/src/services/dunyaBolgeleri.ts`, `apps/api/src/services/march.ts`, `packages/shared/src/harita.ts`, `apps/web/src/screens/Harita.tsx`, `apps/web/src/components/harita/GercekHarita.tsx`, `apps/web/src/components/harita/dunyaGeometri.ts`
 - **Gerçek dünya: ülkeler, sınır kuralı, ülke seçimi, göç:** `docs/27-gercek-dunya.md`, `tools/gercek-dunya-uret.mjs`, `packages/shared/src/kanonik.ts`, `packages/shared/src/ulkeler.ts`, `apps/api/src/services/ulke.ts`, `apps/api/src/routes/ulke.ts`, `apps/api/src/services/goc.ts`, `apps/web/src/screens/UlkeSecimi.tsx`, `apps/web/src/screens/Ulkem.tsx`
 - **Akın (NPC haritaları):** `apps/api/src/routes/akin.ts`, `apps/api/src/services/akin.ts`, `packages/shared/src/akin.ts`, `apps/web/src/screens/Akin.tsx`
 - **Şehir / Malikâne (yerleşke):** `apps/api/src/routes/sehir.ts`, `apps/web/src/screens/Sehir.tsx`
@@ -29,7 +29,7 @@
 - **Mağaza (P2S): elmas, hızlandırma, Google Play, AdMob:** `packages/shared/src/magaza.ts`, `apps/api/src/routes/magaza.ts`, `apps/api/src/services/play.ts`, `apps/api/src/services/reklam.ts`, `apps/web/src/screens/Magaza.tsx`, `docs/25-magaza.md`
 - **Öğretici ve zorunlu rehber (kâhya ışığı, omurga):** `packages/shared/src/rehber.ts`, `apps/web/src/components/Ogretici.tsx`, `apps/web/src/components/RehberIsigi.tsx`, `apps/web/src/components/Rehber.tsx`
 - **Çizim motoru (3B, GPU, kalıcı önbellek):** `apps/web/src/cizim/uc.ts`, `apps/web/src/cizim/Sahne.tsx`, `apps/web/src/cizim/gl.ts`, `apps/web/src/cizim/kalici.ts`
-- **Akıcılık, kasma, canlı sahne (bayrak, duman, su, ışık, hava):** `apps/web/src/lib/turOlayi.ts`, `apps/web/src/cizim/Sahne.tsx`, `apps/web/src/styles.css`, `apps/web/src/components/HavaKatmani.tsx`, `apps/web/src/screens/yerleskeYakinligi.ts`
+- **Akıcılık, kasma, canlı sahne (bayrak, duman, su, ışık, hava):** `apps/web/src/App.tsx`, `apps/web/src/lib/turOlayi.ts`, `apps/web/src/cizim/Sahne.tsx`, `apps/web/src/styles.css`, `apps/web/src/components/HavaKatmani.tsx`, `apps/web/src/screens/yerleskeYakinligi.ts`
 - **Arayüz kabuğu, alt gezinme, API istemcisi:** `apps/web/src/App.tsx`, `apps/web/src/components/MobilKabuk.tsx`, `apps/web/src/api/client.ts`
 - **Çeviri (Türkçe → İngilizce):** `tools/metin-cikar.mjs`, `tools/ceviri-al.mjs`, `apps/web/vite-ceviri.mjs`, `packages/shared/src/dil.ts`
 - **Yayın kontrolü (eksik sunucu ayarları):** `packages/shared/src/yayin.ts`, `apps/api/src/services/yayin.ts`
@@ -117,7 +117,7 @@
 - `apps/api/src/routes/items.ts` — Ekipman: üretim, kuşanma, yükseltme, satış. · dışa: itemRoutes · uçlar: GET /api/items, POST /api/items/craft, POST /api/items/:id/equip, POST /api/items/:id/upgrade, POST /api/items/:id/sell
 - `apps/api/src/routes/ittifak.ts` — İttifak: kur, katıl, ayrıl, üye çıkar. · dışa: ittifakRoutes, ayniIttifaktaMi · uçlar: GET /api/ittifak, POST /api/ittifak/kur, POST /api/ittifak/:id/katil, POST /api/ittifak/ayril, GET /api/ittifak/sohbet, POST /api/ittifak/sohbet, POST /api/ittifak/sohbet/rapor, POST /api/ittifak/hedef, POST /api/ittifak/uye-cikar, POST /api/ittifak/arma, POST /api/ittifak/ayarlar, POST /api/ittifak/:id/basvur, POST /api/ittifak/basvuru/:id/geri-cek, GET /api/ittifak/basvurular, POST /api/ittifak/basvuru/:id/karar, GET /api/ittifak/kayit, GET /api/ittifak/:id/incele, GET /api/ittifak/paktlar, POST /api/ittifak/pakt, POST /api/ittifak/pakt/:id/kabul, POST /api/ittifak/pakt/:id/reddet, POST /api/ittifak/pakt/:id/fesih, GET /api/ittifak/bagis, POST /api/ittifak/bagis, POST /api/ittifak/duyuru, POST /api/ittifak/rutbe
 - `apps/api/src/routes/magaza.ts` — Mağaza uçları (docs/25): durum, hızlandırma, Play satın alma, ödüllü reklam. · dışa: magazaRoutes · uçlar: GET /api/magaza, POST /api/kuyruk/:id/hizlandir, POST /api/magaza/play/dogrula, POST /api/reklam/oturum, GET /api/reklam/oturum/:id, GET /api/reklam/ssv
-- `apps/api/src/routes/map.ts` — Harita, bölgeler, yürüyüş ve savaş. · dışa: mapRoutes · uçlar: GET /api/map, GET /api/map/:id, POST /api/map/:id/upgrade, POST /api/map/:id/kesif, POST /api/map/:id/takviye, POST /api/map/:id/takviye-geri, POST /api/map/:id/garrison, POST /api/battle/preview, POST /api/march, DELETE /api/march/:id, POST /api/map/:id/birak, GET /api/marches, GET /api/battles, GET /api/battles/:id
+- `apps/api/src/routes/map.ts` — Harita, bölgeler, yürüyüş ve savaş. · dışa: mapRoutes · uçlar: GET /api/map, GET /api/harita, GET /api/harita/bolgeler/:worldId, GET /api/map/:id, POST /api/map/:id/upgrade, POST /api/map/:id/kesif, POST /api/map/:id/takviye, POST /api/map/:id/takviye-geri, POST /api/map/:id/garrison, POST /api/battle/preview, POST /api/march, DELETE /api/march/:id, POST /api/map/:id/birak, GET /api/marches, GET /api/battles, GET /api/battles/:id
 - `apps/api/src/routes/me.ts` — Lordun durumu (`/me`), arma, istatistik puanı, öğretici/rehber bitişi, savunma düzeni · dışa: meRoutes · uçlar: GET /api/me, POST /api/me/arma, POST /api/me/stats, POST /api/me/ogretici-bitti, GET /api/me/savunma-duzeni, PUT /api/me/savunma-duzeni, POST /api/me/rehber-bitti, POST /api/me/ogretici-sifirla, POST /api/me/parola, DELETE /api/me
 - `apps/api/src/routes/moderasyon.ts` — Moderasyon uçları. · dışa: moderasyonRoutes, GIZLI_MESAJ, SILINMIS_MESAJ · uçlar: GET /api/engel, POST /api/engel/:lordId, DELETE /api/engel/:lordId, GET /api/moderasyon/sebepler, GET /api/moderasyon/durum, POST /api/rapor/mesaj/:mesajId, POST /api/rapor/genel/:mesajId, POST /api/rapor/resim/:lordId, GET /api/moderasyon/kuyruk, POST /api/moderasyon/karar, GET /api/moderasyon/resimler, POST /api/moderasyon/resim/:id, POST /api/moderasyon/susturma-kaldir
 - `apps/api/src/routes/olcum.ts` — İlk oturum ölçümü. · dışa: olcumRoutes · uçlar: GET /api/olcum
@@ -142,6 +142,7 @@
 - `apps/api/src/services/akin.ts` — Akın çözümü: NPC grubuna gidilir, savaşılır, dönülür — tek adımda. · dışa: resolveAkin, gecikmisAkinlariCoz, akinVuruslari, sahadakiAkinlar, akindakiOrdu
 - `apps/api/src/services/birlesme.ts` — Diyar birleşmesi — planlama ve uygulama. · dışa: BirlesmeOzeti, birlesmeyiPlanla, vaktiGelenBirlesmeler, birlesmeyiUygula, bekleyenBirlesmeleriUygula
 - `apps/api/src/services/demoWorld.ts` — Test dağıtımı için dünyaya rakip lordlar ekler. · dışa: seedDemoLords, toplamXp
+- `apps/api/src/services/dunyaBolgeleri.ts` — Dünyanın DEĞİŞMEYEN bölge bilgisi — bellekte, dünya başına bir kez. · dışa: SabitBolge, DunyaBolgeleri, dunyaBolgeleri, dunyaBolgeleriniUnut, statikSikistirilmis
 - `apps/api/src/services/eposta.ts` — E-posta gönderimi. · dışa: Posta, postaGonder
 - `apps/api/src/services/epostaDogrulama.ts` — E-posta doğrulama — veritabanına ve postaya dokunan kısım. · dışa: ozet, hesapDogrulamaDurumu, dogrulamaGonder, dogrulamaKontrol
 - `apps/api/src/services/esyaPazari.ts` — Eşya pazarının veritabanı tarafı (docs/19). · dışa: FiyatSatiri, grubu, urunu, zar, tl, grupKilitle, tabanOku, grubunBandi, lordlariKilitle, pazarDegisti, defterOku, emir, eslesebilirIlanlar, Takas, TakasSonucu, takasYap +5
@@ -149,6 +150,7 @@
 - `apps/api/src/services/gelir.ts` — GARNİZON PAYI — bölge geliri orada DURANIN (docs/16 §6, docs/27). · dışa: GelirPayiGirdisi, garnizonPayGirdileri
 - `apps/api/src/services/girisFreni.ts` — Hesap başına giriş freni — parola tahminine karşı. · dışa: HATA_TAVANI, PENCERE_MS, girisFreniKur, girisFreni · (testi var)
 - `apps/api/src/services/goc.ts` — GÖÇ — eski kuşak haritadaki dünyayı gerçek dünyaya taşır (docs/27). · dışa: GocOzeti, dunyayiGocur, eskiDunyalariGocur
+- `apps/api/src/services/haritaDurumu.ts` — Haritanın oyuncuya göre DEĞİŞEN hâli — `/map` ve `/harita` aynı hesabı kullanıyor. · dışa: OzelBolge, HaritaDurumu, haritaDurumu
 - `apps/api/src/services/hedef.ts` — "Şimdi neye saldırmalıyım?" · dışa: lordSide, HedefOnerisi, onerilenHedef, EksikOrdu, FetihOdulu, fetihOdulu, EkipmanEtkisi, ekipmanEtkisi, onizlemeTohumu, savasOrneklemesi, taramaSonucu, SavasOrneklemesi, TaramaSonucu
 - `apps/api/src/services/hizlandirma.ts` — Kuyruk hızlandırma — elmasla, reklam bankasıyla ya da reklam ödülüyle (docs/25). · dışa: KuyrukDurumu, hizlandirilacakKuyruk, kuyruguKisalt
 - `apps/api/src/services/ittifakSeviye.ts` — İttifak seviyesi ve ayrıcalıkları — tek okuma noktası. · dışa: ittifakAyricaligi, lordunAyricaligi
@@ -240,7 +242,7 @@
 - `apps/web/src/cizim/cayir.ts` — ÇAYIR — yerleşkenin zemini ve otları (docs/24 "Çayır"). · dışa: cayirZemini, otlar, yolKenari
 - `apps/web/src/cizim/cevre.ts` — YERLEŞKENİN ÇEVRESİ (docs/24): kasabayı saran köy hayatı ve doğa. · dışa: doluMu, evAyari, bostan, cevre
 - `apps/web/src/cizim/cizim.test.ts`
-- `apps/web/src/cizim/cizimOlcumu.ts` — Telefonda çizim ölçümü (docs/24 "Telefonda ölçüm"). · dışa: olcumAcik, olcumuKapat, CizimKaydi, olcumKaydet, olcumKayitlari, olcumuTemizle, olcumuDinle, olcerek, kisaAd, ozet · (testi var)
+- `apps/web/src/cizim/cizimOlcumu.ts` — Telefonda çizim ölçümü (docs/24 "Telefonda ölçüm"). · dışa: olcumAcik, olcumuKapat, CizimKaydi, olcumKaydet, olcumKayitlari, olcumuTemizle, olcumuDinle, olcerek, kisaAd, ozet, TakilmaKaydi, KARE_ESIGI, takilmaKaydet, takilmalar, izlenenKareler, takilmaIzle +2 · (testi var)
 - `apps/web/src/cizim/diyarlar.ts` — AKIN DİYARLARI — beş diyarın kapağı (16:9) ve haritası (kare) (docs/24). · dışa: DIYAR_ADLARI, Diyar, Kadraj, KAPAK_KUTUSU, HARITA_KUTUSU, diyarModeli
 - `apps/web/src/cizim/duman.ts` — Canlı dumanın kaynakları (docs/24 "Hareket"): hareketli GPU resminde duman yok; sayfada CSS yumruları olarak yükseliyor. · dışa: DumanKaynagi, dumanKaynaklari
 - `apps/web/src/cizim/figur.ts` — FİGÜRLER — asker, düşman, at, mancınık (docs/24). · dışa: BaslikTipi, EsyaTipi, Esya, Insan, kalkan, kilicModeli, insan, AtAyari, at, mancinik
@@ -538,6 +540,7 @@
 - `tools/gorsel-denetim.mjs` — Görsel denetim: kayma, taşma ve örtüşme avı.
 - `tools/gunluk-testi.mjs` — Günlük görev ve ödül testi (docs/09 K4, K4b).
 - `tools/guvenlik-testi.mjs` — Güvenlik denetiminin kapattığı açıklar — geri gelmesinler diye.
+- `tools/harita-bicim-testi.mjs` — HARİTA İKİ BİÇİMDE AYNI ŞEYİ SÖYLÜYOR — `/map` ile `/harita` (docs/27 §7).
 - `tools/harita-dokunma-testi.mjs` — HARİTA DOKUNMA JESTLERİ — gerçek parmakla (docs/23).
 - `tools/harita-surumu-testi.mjs` — HARİTA SÜRÜMLEMESİ — canlı dünya yeni haritadan etkilenmemeli.
 - `tools/harita-testi.mjs` — Harita testi (docs/11).

@@ -175,15 +175,52 @@ gelirse tek sayı.
 - **Paket bölme:** çizim verisi (`dunyaGeo.json`) ayrı paket ve yalnız harita
   açılınca iniyor; ana pakete yalnız ülke özeti giriyor.
 
-| Paket              | Boyut                         |
-| ------------------ | ----------------------------- |
-| Ana (`index-*.js`) | 714 KB (gzip 255 KB)          |
-| Harita ekranı      | 58 KB                         |
-| Dünya çizimi       | 756 KB (gzip 273 KB), bir kez |
-| `/api/map` yanıtı  | ~870 KB (gzip ~110 KB)        |
+- **Harita verisi iki parça** (`services/haritaDurumu.ts`): bölgenin
+  değişmeyen bilgisi (ad, tür, ülke, konum, komşular, gelir çarpanı)
+  `/api/harita/bolgeler/:diyar?s=<özet>` adresinde; tarayıcı onu bir kez
+  indirip bir yıl saklıyor (özet değişirse adres de değişir). Her istekte
+  yalnız değişenler gidiyor: `/api/harita` — seviye, sınır, mesafe,
+  tahkimat bölge sırasıyla dizi; sahibi, kalkanı ya da payı olan birkaç
+  bölge ayrıca. İstemci ikisini birleştirip eski biçimi kuruyor
+  (`api/client.ts` → `haritaYukle`); haritayı okuyan ekranlar değişmedi.
+  Eski `/api/map` aynı hesaptan aynı biçimde yazılıyor: eski uygulama
+  sürümleri ve test araçları onu okuyor. İkisinin birebir aynı haritayı
+  söylediğini `tools/harita-bicim-testi.mjs` ölçüyor.
+- **Sunucuda bölgeler bellekte** (`services/dunyaBolgeleri.ts`): değişmeyen
+  bilgi ve komşuluk grafiği dünya başına bir sorgudan, beş dakika. Öneri
+  motoru adayları saldırılabilen şehirlerle (kendi ülken + sınır)
+  sınırlayıp öyle okuyor.
+
+| Paket                    | Boyut                         |
+| ------------------------ | ----------------------------- |
+| Ana (`index-*.js`)       | 714 KB (gzip 255 KB)          |
+| Harita ekranı            | 58 KB                         |
+| Dünya çizimi             | 756 KB (gzip 273 KB), bir kez |
+| Değişmeyen bölge listesi | 455 KB (br 95 KB), bir kez    |
+| `/api/harita` yanıtı     | ~28 KB (br ~4 KB)             |
+| `/api/map` yanıtı (eski) | ~900 KB (br ~115 KB)          |
 
 Ölçüm (telefon boyutu, başsız Chromium): harita 150 ms'de hazır, kaydırırken
 kare aralığı p95 16,9 ms.
+
+**Hız (0,1 CPU'lu sunucu, 4× yavaş işlemci, 70 ms gecikme; 2026-10-19).**
+`/map` her istekte 3.047 bölgeyi bütün sütunlarıyla okuyor, öneri motoru
+sahipsizlerin hepsini bir kez daha: istek başına ~240 ms CPU, ücretsiz
+sunucuda 3–7 sn. Sunucu tek iş parçacıklı olduğu için o sırada gelen `/me`
+ve `/sehir` de bekliyordu; alt şeritteki rehber haritayı her sekmede
+istediğinden her sekme geçişi buna takılıyordu.
+
+| Ne                     | Önce   | Sonra  |
+| ---------------------- | ------ | ------ |
+| Dünya sekmesi          | 5,8 sn | 0,9 sn |
+| Şehir'e dönüş          | 5,1 sn | 0,2 sn |
+| Yeniden yükleme        | 7,1 sn | 1,7 sn |
+| Yüklemede ana iş uzun  | 2,7 sn | 0,2 sn |
+| Harita isteği (sunucu) | 240 ms | ~45 ms |
+
+Şehir'e dönüşteki kazancın yarısı istemcide: şehir artık bir kez kuruluyor
+ve başka sekmedeyken gizleniyor (`App.tsx` → `sehirKuruldu`); her dönüşte
+sökülüp yeniden kurulması telefonda ~1 sn'lik donmaydı.
 
 ## 8. Testler
 
@@ -195,6 +232,8 @@ kare aralığı p95 16,9 ms.
   dokunma, mercek, adlar, görünümün hatırlanması, parmak jestleri — test
   kancası `window.__dunyaHaritasi` üzerinden.
 - `tools/taht-testi.mjs`: ülkenin tahtı.
+- `tools/harita-bicim-testi.mjs`: `/harita` + değişmeyen liste = `/map`
+  (sahipli, kalkanlı, paylı bölgeler dahil); listenin saklanma kuralı.
 - Arayüzden kaydolan testler önce ülke seçiyor (`tools/lib/gezin.mjs` →
   `ulkeyiSec`); API'den kaydolanlar Türkiye'yle kaydoluyor
   (`tools/lib/kayit.mjs`).

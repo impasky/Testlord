@@ -54,7 +54,8 @@ import { prisma, type Tx } from '../db.js';
 import { puanaGore } from './adaySirasi.js';
 import { arastirmaBonusuOku, equippedGenerals, gearBonusFrom } from './lord.js';
 import { regionFortressBonus } from './region.js';
-import { dunyaGrafigi, mesafeOlcerHazir } from './mesafe.js';
+import { dunyaBolgeleri } from './dunyaBolgeleri.js';
+import { mesafeOlcerHazir } from './mesafe.js';
 
 /** Lordun savaş tarafını kurar (ekipman, donanım, generaller dahil). */
 export async function lordSide(
@@ -215,19 +216,42 @@ export async function onerilenHedef(
   const orduVar = armyCount(evOrdusu) > 0;
   const onerAr = arastirmaBonusuOku(lord);
 
-  const [saldiran, yuruyusSayisi, bolgeSayisi, adaylar, graf] = await Promise.all([
+  /*
+   * SINIR KURALI (docs/27): saldırılamayacak bir yeri önermek, omurganın
+   * oyuncuyu reddedilecek bir saldırıya yollaması olurdu — "şuna saldır"
+   * deyip sonra "sınırın yok" demek. Kural `assertCanAttack`teki ile aynı
+   * işlev.
+   *
+   * Süzgeç SORGUDAN ÖNCE, bölgelerin bellekteki değişmeyen bilgisiyle
+   * (`dunyaBolgeleri`): saldırılabilen yer kendi ülken ve sınır komşuların,
+   * birkaç düzine şehir. Sahipsiz 2.850 bölgenin hepsini bütün sütunlarıyla
+   * okuyup sonra süzmek istek başına ~110 ms CPU'ydu — 0,1 CPU'lu sunucuda
+   * bir saniyeden fazla, her harita isteğinde.
+   */
+  const dunya = await dunyaBolgeleri(lord.worldId);
+  const { graf } = dunya;
+  const sinir = {
+    ulke: lord.ulke,
+    evBolgeId: lord.homeBolgeId,
+    topraklar: lord.regions.map((r) => r.mapId),
+  };
+  const acikMapIdler = dunya.liste
+    .filter((b) => b.type !== 'taht' && sinirdanMi(graf, b, sinir))
+    .map((b) => b.mapId);
+
+  const [saldiran, yuruyusSayisi, bolgeSayisi, acik] = await Promise.all([
     lordSide(lordId, evOrdusu, []),
     prisma.march.count({ where: { lordId } }),
     prisma.region.count({ where: { ownerLordId: lordId, type: { not: 'taht' } } }),
     prisma.region.findMany({
       where: {
         worldId: lord.worldId,
+        mapId: { in: acikMapIdler },
         ownerLordId: null,
         type: { not: 'taht' },
         OR: [{ shieldUntil: null }, { shieldUntil: { lte: new Date() } }],
       },
     }),
-    dunyaGrafigi(lord.worldId),
   ]);
 
   const limitDolu = bolgeSayisi >= maxRegions(lord.level);
@@ -270,7 +294,7 @@ export async function onerilenHedef(
    * çalışmıyor.
    */
   interface Aday {
-    r: (typeof adaylar)[number];
+    r: (typeof acik)[number];
     garrison: Army;
     distance: number;
     ilkSaldiri: boolean;
@@ -304,18 +328,6 @@ export async function onerilenHedef(
    */
   const vilayetSayaci = vilayetSayilari(lord.regions);
 
-  /*
-   * SINIR KURALI (docs/27): saldırılamayacak bir yeri önermek, omurganın
-   * oyuncuyu reddedilecek bir saldırıya yollaması olurdu — "şuna saldır"
-   * deyip sonra "sınırın yok" demek. Kural `assertCanAttack`teki ile aynı
-   * işlev.
-   */
-  const sinir = {
-    ulke: lord.ulke,
-    evBolgeId: lord.homeBolgeId,
-    topraklar: lord.regions.map((r) => r.mapId),
-  };
-  const acik = adaylar.filter((r) => sinirdanMi(graf, r, sinir));
   const yerlesimler = acik.filter((r) => BASKENT_TURLERI.includes(r.type));
   const kisitli = yerlesimOnce && lord.baskentBolgeId == null && yerlesimler.length > 0;
 

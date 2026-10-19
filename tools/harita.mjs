@@ -79,6 +79,8 @@ const KONULAR = [
     'Dünya haritası, yürüyüş, fetih, savaş',
     [
       'apps/api/src/routes/map.ts',
+      'apps/api/src/services/haritaDurumu.ts',
+      'apps/api/src/services/dunyaBolgeleri.ts',
       'apps/api/src/services/march.ts',
       'packages/shared/src/harita.ts',
       'apps/web/src/screens/Harita.tsx',
@@ -158,6 +160,7 @@ const KONULAR = [
   [
     'Akıcılık, kasma, canlı sahne (bayrak, duman, su, ışık, hava)',
     [
+      'apps/web/src/App.tsx',
       'apps/web/src/lib/turOlayi.ts',
       'apps/web/src/cizim/Sahne.tsx',
       'apps/web/src/styles.css',

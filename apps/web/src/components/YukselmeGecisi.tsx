@@ -44,7 +44,15 @@ export function yukselenleriBul(
   return [...simdi].filter(([k, s]) => s > (onceki.get(k) ?? 0));
 }
 
-export function useYukselenler(binalar: BinaDurumu[] | undefined): Map<string, number> {
+export function useYukselenler(
+  binalar: BinaDurumu[] | undefined,
+  /**
+   * Şehir ekranda mı. Şehir başka sekmedeyken de kurulu (App.tsx); orada
+   * biten yükseltme görülmeden oynayıp geçerdi. Görünmüyorken değişiklik
+   * BEKLİYOR, oyuncu dönünce oynuyor.
+   */
+  gorunur = true,
+): Map<string, number> {
   const [yukselen, setYukselen] = useState<Map<string, number>>(() => new Map());
   const canli = useRef(true);
   useEffect(() => {
@@ -54,7 +62,7 @@ export function useYukselenler(binalar: BinaDurumu[] | undefined): Map<string, n
     };
   }, []);
   useEffect(() => {
-    if (!binalar) return;
+    if (!binalar || !gorunur) return;
     const simdi = new Map(binalar.map((b) => [b.key, b.seviye]));
     const yeni = yukselenleriBul(sonGorulen, simdi);
     sonGorulen = simdi;
@@ -71,7 +79,7 @@ export function useYukselenler(binalar: BinaDurumu[] | undefined): Map<string, n
         return n;
       });
     }, GECIS_MS);
-  }, [binalar]);
+  }, [binalar, gorunur]);
   return yukselen;
 }
 

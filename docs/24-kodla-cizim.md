@@ -941,6 +941,15 @@ yok) çizimler SVG'den ve ölçülecek bir şey yok; pano bunu söylüyor.
 Kapalıyken maliyet bir bayrak okumak: pano parçası hiç yüklenmiyor
 (`main.tsx`, tembel) ve `glCiz` süre tutmuyor.
 
+**Takılma** da aynı panoda (`takilmaIzle`, 2026-10-19): 50 ms'yi aşan her
+kare ve tarayıcının bildirdiği her uzun görev, o an açık ekranla (alt
+çubuktaki ad). Pano ekran ekran özetliyor — kaç kare izlendi, kaçı takıldı,
+en uzunu, uzun görevlerin toplamı — ve son takılmaları rapora yazıyor.
+"Şehirde kasma" şikâyeti defalarca bu kabın yazılım GPU'suyla ölçülüp
+düzeltildi ve telefonda sürdü; takılmanın nerede olduğunu artık telefonun
+kendisi söylüyor. Kare izleme her karede ana iş parçacığını uyandırdığı
+için yalnız ölçüm açıkken çalışıyor ve kapatılınca duruyor.
+
 ## Yeni bir çizim eklemek
 
 1. Tarifi ilgili dosyaya yaz. Bir general için `kisiler.ts`teki

@@ -23,7 +23,7 @@
  * yoksa gradyan kalıyor ve sayfa çalışmaya devam ediyor.
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { ApiError, api, type BinaDurumu, type LordState, type QueueItem } from '../api/client';
 import { useOmurgaAdimi } from '../components/Omurga';
 import { Rehber } from '../components/Rehber';
@@ -216,12 +216,16 @@ function BinaIkonu({
   );
 }
 
+/** Şehrin okuduğu sorgular: kendi verisi ve kâhyanın adımı (`useOmurgaAdimi`). */
+const SEHRIN_SORGULARI = ['sehir', 'map', 'marches', 'generals', 'arastirma', 'items'];
+
 export function Sehir({
   lord,
   queues,
   onGit,
   onKapiAc,
   onBolumeGit,
+  gorunur = true,
 }: {
   lord: LordState;
   queues: QueueItem[];
@@ -229,6 +233,8 @@ export function Sehir({
   onKapiAc: (k: Kapi) => void;
   /** Aynı ekrandaki bir bölüme kaydırır. */
   onBolumeGit: (bolumId: string) => void;
+  /** Ekranda mı — başka sekmedeyken şehir kurulu ama gizli (App.tsx). */
+  gorunur?: boolean;
 }) {
   const qc = useQueryClient();
   // Kâhya ve omurga ANA SAYFANIN tepesinde. "Şimdi ne yapmalısın"
@@ -237,8 +243,23 @@ export function Sehir({
   const rehberAdimi = useOmurgaAdimi(lord, queues);
   const rehberDurumu = useRehberDurumu(lord);
   const veri = useQuery({ queryKey: ['sehir'], queryFn: api.sehir });
+  /*
+   * DÖNÜŞTE TAZELE. Şehir başka sekmedeyken kurulu kalıyor (App.tsx);
+   * eskiden her dönüş yeni bir kurulumdu ve bayatlamış veri kendiliğinden
+   * yeniden çekiliyordu. Aynı kural burada: görünür olunca şehrin okuduğu
+   * sorguların bayatlamışları yenileniyor. Fark şu: şehir beklemeden eski
+   * hâliyle görünüyor, yenisi arkadan geliyor.
+   */
+  const gorunurdu = useRef(gorunur);
+  useEffect(() => {
+    if (gorunur && !gorunurdu.current) {
+      for (const k of SEHRIN_SORGULARI)
+        void qc.refetchQueries({ queryKey: [k], type: 'active', stale: true });
+    }
+    gorunurdu.current = gorunur;
+  }, [gorunur, qc]);
   // Az önce seviye atlayan yapılar: üstlerinde geçiş oynuyor.
-  const yukselenler = useYukselenler(veri.data?.binalar);
+  const yukselenler = useYukselenler(veri.data?.binalar, gorunur);
   const [secili, setSecili] = useState<string | null>(null);
   const [hata, setHata] = useState<string | null>(null);
   /** Yapı listesi açık mı (seviye yükseltme oradan; dokunuş yapının içine giriyor). */

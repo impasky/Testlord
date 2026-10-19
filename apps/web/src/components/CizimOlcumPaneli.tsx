@@ -1,7 +1,8 @@
 /**
  * Telefonda çizim ölçümü panosu (`?olcum=1`, bkz. `cizim/cizimOlcumu.ts`).
  *
- * Köşede kapalı bir şerit: kaç çizim, ortalama ve en uzun süre. Açılınca
+ * Köşede kapalı bir şerit: kaç çizim, ortalama ve en uzun süre, kaç
+ * takılma (50 ms'yi aşan kare ya da uzun görev, ekran ekran). Açılınca
  * cihaz bilgisi (GPU'nun adı, ekran, çekirdek), kaynağa göre özet ve son
  * çizimler; "Kopyala" hepsini düz metin olarak panoya alıyor — oyuncu
  * yapıştırıp gönderiyor. Pano yalnız ölçüm açıkken yükleniyor (`main.tsx`,
@@ -9,13 +10,19 @@
  */
 import { useEffect, useMemo, useState } from 'react';
 import {
+  KARE_ESIGI,
+  izlenenKareler,
   kisaAd,
   olcumKayitlari,
   olcumuDinle,
   olcumuKapat,
   olcumuTemizle,
   ozet,
+  takilmaIzle,
+  takilmalar,
+  takilmaOzeti,
   type CizimKaydi,
+  type EkranTakilmasi,
 } from '../cizim/cizimOlcumu';
 import { glVarMi } from '../cizim/gl';
 
@@ -50,8 +57,22 @@ function cihaz() {
   };
 }
 
-function rapor(kayitlar: readonly CizimKaydi[], c: ReturnType<typeof cihaz>): string {
+const yuzde = (x: number) => `%${(x * 100).toFixed(1).replace('.', ',')}`;
+
+function takilmaSatiri(t: EkranTakilmasi): string {
+  return (
+    `${t.ekran}: ${t.kare} kare, ${t.takilma} takılma (${yuzde(t.oran)}), en uzun ${ms(t.enUzunKare)}` +
+    ` · uzun görev ${t.gorev} (${ms(t.gorevToplam)})`
+  );
+}
+
+function rapor(
+  kayitlar: readonly CizimKaydi[],
+  takilma: EkranTakilmasi[],
+  c: ReturnType<typeof cihaz>,
+): string {
   const o = ozet(kayitlar);
+  const sonTakilmalar = [...takilmalar()].reverse().slice(0, 40);
   const satir = (ad: string, g: ReturnType<typeof ozet>['cizim']) =>
     `${ad}: ${g.sayi}, ortalama ${ms(g.ortalama)} (çizimde ${ms(g.cizimOrtalama)}), en uzun ${ms(g.enUzun)}`;
   return [
@@ -63,6 +84,13 @@ function rapor(kayitlar: readonly CizimKaydi[], c: ReturnType<typeof cihaz>): st
     satir('Çizim', o.cizim),
     satir('Taslak', o.taslak),
     `Kesilme: ${o.kesilme}`,
+    `Takılma (${KARE_ESIGI} ms'yi aşan kare, uzun görev), ekran ekran:`,
+    ...takilma.map(takilmaSatiri),
+    'Son takılmalar (en yenisi üstte):',
+    ...sonTakilmalar.map(
+      (t) =>
+        `${t.ekran} · ${t.tur === 'kare' ? 'kare' : 'görev'} ${ms(t.sure)} · ${(t.an / 1000).toFixed(1)} sn`,
+    ),
     'Son çizimler (en yenisi üstte):',
     ...[...kayitlar]
       .reverse()
@@ -87,12 +115,15 @@ export function CizimOlcumPaneli() {
   const [gorunur, setGorunur] = useState(true);
   const [kopyaDurumu, setKopyaDurumu] = useState<'yok' | 'oldu' | 'olmadi'>('yok');
   useEffect(() => olcumuDinle(() => yenile((n) => n + 1)), []);
+  useEffect(takilmaIzle, []);
   // Cihaz bilgisi bir kez (GPU'ya sormak bir bağlam açıyor).
   const c = useMemo(cihaz, []);
   if (!gorunur) return null;
   const kayitlar = olcumKayitlari();
   const o = ozet(kayitlar);
-  const metin = rapor(kayitlar, c);
+  const takilma = takilmaOzeti(takilmalar(), izlenenKareler());
+  const takilmaSayisi = takilma.reduce((a, t) => a + t.takilma + t.gorev, 0);
+  const metin = rapor(kayitlar, takilma, c);
 
   const kopyala = async () => {
     try {
@@ -118,7 +149,7 @@ export function CizimOlcumPaneli() {
       >
         <span className="font-bold text-altin">Ölçüm</span>
         <span className="tabular text-solgun">
-          {`${o.cizim.sayi} çizim · ort ${ms(o.cizim.ortalama)} · en uzun ${ms(o.cizim.enUzun)}`}
+          {`${o.cizim.sayi} çizim · ort ${ms(o.cizim.ortalama)} · en uzun ${ms(o.cizim.enUzun)} · takılma ${takilmaSayisi}`}
         </span>
       </button>
       {acikMi && (
@@ -137,6 +168,13 @@ export function CizimOlcumPaneli() {
             <li>{`Çizim: ${o.cizim.sayi} · ort ${ms(o.cizim.ortalama)} · en uzun ${ms(o.cizim.enUzun)}`}</li>
             <li>{`Taslak: ${o.taslak.sayi} · ort ${ms(o.taslak.ortalama)}`}</li>
             <li>{`Kesilme: ${o.kesilme}`}</li>
+          </ul>
+          <p className="mt-2 font-bold text-altin">Takılma</p>
+          <ul className="tabular space-y-0.5">
+            {takilma.length === 0 && <li className="text-solgun">Henüz yok.</li>}
+            {takilma.map((t) => (
+              <li key={t.ekran}>{takilmaSatiri(t)}</li>
+            ))}
           </ul>
           <div className="mt-2 flex flex-wrap gap-2">
             <button

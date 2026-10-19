@@ -3,7 +3,7 @@ LORDLAR ÇAĞI — ÇEVİRİ 3/3: KUYRUK
 Sunucu hataları ve bildirimleri. Oyuncu bunları ancak bir şey ters gidince
 görüyor; en sona bırakılabilir ama atlanamaz.
 
-Bu dosyada 358 satır var.
+Bu dosyada 364 satır var.
 
 NASIL ÇEVİRİLİR
   Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.
@@ -35,7 +35,7 @@ NASIL ÇEVİRİLİR
 
 ==========================================================================
 
---- Sunucu mesajları (358) ---
+--- Sunucu mesajları (364) ---
 
 72. Raid
 161. Region
@@ -354,6 +354,7 @@ NASIL ÇEVİRİLİR
 2730. You can't report your own picture.
 2731. Your profile picture was removed for breaking the rules. If inappropriate content is repeated, your account may be restricted.
 2732. Your profile picture was approved; everyone can see it now.
+2733. public, max-age=31536000, immutable
 2734. Picture
 2735. The picture is empty.
 2736. The picture is too large (max {0} MB).
@@ -395,3 +396,8 @@ NASIL ÇEVİRİLİR
 3253. Dünya değişti: artık gerçek dünya haritasındasın. Şehrin, ordun ve eşyaların yerinde; topraklarının karşılığı hazinene eklendi. Bir ülke seç, kampın orada kurulsun.
 3254. Önce ülkeni seç: kampın orada kurulacak.
 3255. Ülkeni zaten seçtin; seçim bir kez yapılıyor.
+3466. {0} garnizon satırı eve döndü, {1} toprak tazmin edildi.
+3467. {0}: GERÇEK DÜNYAYA GÖÇTÜ — {1} lord, {2} yürüyüş ve 
+3468. {0}: kapalı ve boş — eski haritası silindi.
+3469. application/json; charset=utf-8
+3470. Vary

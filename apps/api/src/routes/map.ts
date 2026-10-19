@@ -31,22 +31,12 @@ import { garnizonPayGirdileri } from '../services/gelir.js';
 import { liderAviGecerli } from '../services/march.js';
 import { arastirmaBonusuOku, binalariOku, findLordByUser, pushEvent } from '../services/lord.js';
 import { lordIslemi } from '../services/kilit.js';
-import {
-  dunyaGrafigi,
-  mesafeOlcer,
-  mesafeOlcerHazir,
-  sinirOlcer,
-  sinirOlcerHazir,
-} from '../services/mesafe.js';
-import { paktVarMi, paktliIttifaklar } from '../services/pakt.js';
+import { dunyaBolgeleri, statikSikistirilmis } from '../services/dunyaBolgeleri.js';
+import { haritaDurumu } from '../services/haritaDurumu.js';
+import { mesafeOlcer, sinirOlcer } from '../services/mesafe.js';
+import { paktVarMi } from '../services/pakt.js';
 import { lordunAyricaligi } from '../services/ittifakSeviye.js';
-import {
-  fetihOdulu,
-  lordSide,
-  onerilenHedef,
-  onizlemeTohumu,
-  savasOrneklemesi,
-} from '../services/hedef.js';
+import { fetihOdulu, lordSide, onizlemeTohumu, savasOrneklemesi } from '../services/hedef.js';
 import {
   addUnitsHome,
   assertQueueSlot,
@@ -259,145 +249,93 @@ async function lordunDiyari(lordId: string): Promise<string> {
 }
 
 export async function mapRoutes(app: FastifyInstance): Promise<void> {
-  app.get('/map', { preHandler: requireAuth }, async (req) => {
+  /*
+   * HARİTA İKİ BİÇİMDE (services/haritaDurumu.ts): hesap tek, yazım iki.
+   *
+   * `/map` eski, tam biçim — her bölge bütün alanlarıyla, ~900 KB. Eski
+   * uygulama sürümleri ve test araçları bunu okuyor; biçimi değişmiyor.
+   *
+   * Cevap ELLE dizilen JSON. 3.047 nesneyi kurup `JSON.stringify`a vermek
+   * istek başına ~12 ms CPU'ydu (0,1 CPU'da 120 ms); değişmeyen baş hazır
+   * (`SabitBolge.json`) ve arkasına değişen alanlar ekleniyor.
+   */
+  app.get('/map', { preHandler: requireAuth }, async (req, reply) => {
     const lordId = await findLordByUser(req.user.userId);
-    // Öneri ORDUYA bakarak hesaplanıyor: biten eğitim henüz orduya
-    // katılmamışsa "ordun yetmiyor" der ve omurga oyuncuyu olmayan bir
-    // işe yollar. Aynı yarış `/me` ve `/army`'de de vardı.
-    await gecikmisleriKapat(lordId);
-    const me = await prisma.lord.findUniqueOrThrow({
-      where: { id: lordId },
-      select: { worldId: true, homeBolgeId: true, level: true, allianceId: true, ulke: true },
+    const h = await haritaDurumu(lordId);
+    const satirlar = h.dunya.liste.map((b, i) => {
+      const o = h.ozel.get(i);
+      return (
+        b.json +
+        `,"level":${h.level[i]}` +
+        `,"owner":${o?.owner ? JSON.stringify(o.owner) : 'null'}` +
+        `,"isMine":${o?.isMine ?? false}` +
+        `,"pay":${JSON.stringify(o?.pay ?? null)}` +
+        `,"sinirda":${h.sinirda[i]}` +
+        `,"shielded":${o?.shielded ?? false}` +
+        `,"distance":${JSON.stringify(h.distance[i])}` +
+        `,"paktli":${o?.paktli ?? false}` +
+        `,"muttefik":${o?.muttefik ?? false}` +
+        `,"fortressBonus":${JSON.stringify(h.fortressBonus[i])}}`
+      );
     });
+    reply.type('application/json; charset=utf-8');
+    return `${JSON.stringify(h.govde).slice(0, -1)},"regions":[${satirlar.join(',')}]}`;
+  });
 
-    const [regions, oneri, ittifak, graf] = await Promise.all([
-      prisma.region.findMany({
-        where: { worldId: me.worldId },
-        include: {
-          owner: {
-            // binalar + baskentBolgeId: surların tahkimata kattığı ek
-            // haritada da görünmeli, yoksa önizleme ile savaş ayrışır.
-            select: {
-              id: true,
-              name: true,
-              level: true,
-              binalar: true,
-              baskentBolgeId: true,
-            },
-          },
-        },
-        orderBy: { id: 'asc' },
-      }),
-      onerilenHedef(lordId),
-      // Ortak hedef HARİTADA görünmeli: ittifak ekranında duran bir hedef,
-      // oyuncunun saldırıya karar verdiği yerde yok demektir.
-      me.allianceId
-        ? prisma.alliance.findUnique({
-            where: { id: me.allianceId },
-            select: { targetRegionId: true, targetNote: true, tag: true },
-          })
-        : Promise.resolve(null),
-      // Grafik DÜNYANIN kendi bölgelerinden (bkz. services/mesafe.ts):
-      // haritanın çizdiği yollarla motorun yürüdüğü yollar aynı olmalı.
-      dunyaGrafigi(me.worldId),
-    ]);
-
-    // Mesafe en yakın TOPRAĞINDAN ölçülüyor (docs/11 §1.2 H1). Bölgeler
-    // zaten elde: ölçeri buradan kuruyoruz, ikinci bir sorgu açmadan.
-    const topraklarim = regions.filter((r) => r.ownerLordId === lordId).map((r) => r.mapId);
-    const olc = mesafeOlcerHazir(graf, me.homeBolgeId, topraklarim);
-    // Sınır kuralı (docs/27) — saldırı ucuyla aynı işlev.
-    const sinirda = sinirOlcerHazir(graf, me.ulke, me.homeBolgeId, topraklarim);
-
-    // Paktlı ittifaklar bir kez okunuyor: bölge başına ayrı sorgu 61 sorgu
-    // demekti. Sahiplerin ittifakı da tek sorguda geliyor.
-    const sahipIdler = [...new Set(regions.map((r) => r.owner?.id).filter(Boolean))] as string[];
-    const [paktlilar, sahipler] = await Promise.all([
-      paktliIttifaklar(me.allianceId),
-      sahipIdler.length
-        ? prisma.lord.findMany({
-            where: { id: { in: sahipIdler } },
-            select: { id: true, allianceId: true },
-          })
-        : Promise.resolve([]),
-    ]);
-    const sahipIttifaki = new Map(sahipler.map((l) => [l.id, l.allianceId ?? '']));
-
-    /*
-     * Komşuluk ve kamp çıpası, İSTEMCİNİN KİMLİK UZAYINA çevriliyor.
-     *
-     * Sunucuda iki kimlik var: `mapId` kanonik haritadaki numara (1-61,
-     * her dünyada aynı) ve `id` veritabanı satır numarası (dünya başına
-     * farklı). `komsular` ile `homeBolgeId` mapId taşıyor; istemcinin
-     * gördüğü ve saldırırken gönderdiği ise `id`.
-     *
-     * Çevirmeseydik istemci grafiği hiç gezemezdi: komşu numaraları
-     * listedeki hiçbir bölgeyle eşleşmezdi. İlk denemede tam olarak bu
-     * oldu ve haritada hiçbir aday bulunamadı.
-     */
-    /*
-     * GARNİZON PAYLARI: gelir sahipliğe değil garnizona bağlı
-     * (docs/16 §6). Arayüz bölge kartındaki geliri kendisi hesaplıyor;
-     * payı göndermezsek oyuncuya ALMADIĞI bir sayı yazardı.
-     */
-    const paylar = new Map(
-      (await garnizonPayGirdileri(lordId)).map((p) => [
-        p.regionId,
-        { oran: p.oran, yer: p.yer, toplamYer: p.toplamYer },
-      ]),
-    );
-
-    const mapIdToId = new Map(regions.map((r) => [r.mapId, r.id]));
-    const cevir = (ham: unknown): number[] =>
-      (Array.isArray(ham) ? ham : [])
-        .map((k) => mapIdToId.get(Number(k)))
-        .filter((x): x is number => x !== undefined);
-
+  /*
+   * `/harita` yeni, kısa biçim (~28 KB, sıkışınca ~4 KB): değişen alanlar
+   * bölge sırasıyla dizi; sahibi, kalkanı ya da payı olan birkaç bölge
+   * ayrıca (`ozel`, listedeki sırasıyla `i`). Değişmeyen liste `bolgeler`
+   * adresinde; istemci ikisini birleştirip `/map`in biçimini kuruyor
+   * (apps/web/src/api/client.ts → `haritaYukle`).
+   *
+   * Sebep ölçüldü: 0,1 CPU'lu sunucuda `/map` 1–2 sn sürüyordu ve
+   * yalnız Dünya'da değil, alt şeritteki rehber yüzünden her sekmede
+   * isteniyordu.
+   */
+  app.get('/harita', { preHandler: requireAuth }, async (req) => {
+    const lordId = await findLordByUser(req.user.userId);
+    const h = await haritaDurumu(lordId);
+    const { worldId } = await prisma.lord.findUniqueOrThrow({
+      where: { id: lordId },
+      select: { worldId: true },
+    });
     return {
-      // Kampın çıpası: hangi bölgenin yanında durduğu. Harita bunu
-      // "burası senin kampın" işaretini koymak için kullanıyor.
-      homeBolgeId: mapIdToId.get(me.homeBolgeId) ?? regions[0]?.id ?? 0,
-      /** Lordun seçtiği ülke (docs/27); null: henüz seçmedi. */
-      ulke: me.ulke,
-      maxRegions: maxRegions(me.level),
-      ittifakHedefi: ittifak?.targetRegionId
-        ? { regionId: ittifak.targetRegionId, not: ittifak.targetNote, etiket: ittifak.tag }
-        : null,
-      // Oyuncu haritaya baktığında "neye saldırayım" sorusunun cevabı
-      // hazır olsun; hedef seçmek bir bulmaca olmamalı.
-      oneri,
-      regions: regions.map((r) => ({
-        id: r.id,
-        /** Kanonik harita numarası — çizimdeki toprak (`dunyaGeo.json`) bununla eşleşiyor. */
-        mapId: r.mapId,
-        name: r.name,
-        type: r.type,
-        province: r.province,
-        x: r.x,
-        y: r.y,
-        komsular: cevir(r.komsular),
-        level: r.level,
-        incomeMult: r.incomeMult,
-        owner: r.owner ? { id: r.owner.id, name: r.owner.name, level: r.owner.level } : null,
-        isMine: r.ownerLordId === lordId,
-        /** Bu bölgenin gelirinden bana düşen pay — garnizonum yoksa null. */
-        pay: paylar.get(r.id) ?? null,
-        /** Sınır kuralı izin veriyor mu (docs/27): kendi ülkem ya da komşum. */
-        sinirda: sinirda(r),
-        shielded: r.shieldUntil ? r.shieldUntil > new Date() : false,
-        distance: olc(r.mapId),
-        // Pakt: saldırılamaz ama müttefik de değil. Haritada ayrı bir
-        // işaret alıyor, yoksa oyuncu saldırıya kalkışıp reddediliyor.
-        paktli: r.owner ? paktlilar.has(sahipIttifaki.get(r.owner.id) ?? '') : false,
-        // İttifak arkadaşı: saldırılamaz, takviye gönderilebilir. Ayrıntı
-        // ucunda vardı; haritanın Hedefler merceği bunu bölgeye dokunmadan
-        // bilmeli (docs/23).
-        muttefik: r.owner
-          ? ayniIttifaktaMi(me.allianceId, sahipIttifaki.get(r.owner.id) || null)
-          : false,
-        fortressBonus: bolgeTahkimati(r, r.owner),
-      })),
+      ...h.govde,
+      bolgeler: `/harita/bolgeler/${worldId}?s=${h.dunya.surum}`,
+      level: h.level,
+      sinirda: h.sinirda.map((x) => (x ? '1' : '0')).join(''),
+      distance: h.distance,
+      fortressBonus: h.fortressBonus,
+      ozel: [...h.ozel].map(([i, o]) => ({ i, ...o })),
     };
+  });
+
+  /*
+   * Dünyanın DEĞİŞMEYEN bölge listesi — herkes için aynı, gizli bir şey
+   * yok (haritanın kendisi). Adresteki `s` listenin özeti: özet tutuyorsa
+   * cevap bir yıl saklanabilir (liste değişirse adres de değişir), tutmuyorsa
+   * hiç saklanmaz. Sıkıştırma bir kez yapılıp bellekte duruyor
+   * (`statikSikistirilmis`); genel sıkıştırıcı bu uçta kapalı.
+   */
+  app.get('/harita/bolgeler/:worldId', { compress: false }, async (req, reply) => {
+    const { worldId } = z.object({ worldId: z.string().min(1).max(64) }).parse(req.params);
+    const { s } = z.object({ s: z.string().max(64).optional() }).parse(req.query);
+    const dunya = await prisma.world.findUnique({ where: { id: worldId }, select: { id: true } });
+    if (!dunya) throw new GameError('Böyle bir diyar yok.', 404, 'DIYAR_YOK');
+    const bolgeler = await dunyaBolgeleri(worldId);
+    reply
+      .type('application/json; charset=utf-8')
+      .header('Vary', 'Accept-Encoding')
+      .header(
+        'Cache-Control',
+        s === bolgeler.surum ? 'public, max-age=31536000, immutable' : 'no-cache',
+      );
+    const kabul = String(req.headers['accept-encoding'] ?? '');
+    const kodlama = /\bbr\b/.test(kabul) ? 'br' : /\bgzip\b/.test(kabul) ? 'gzip' : null;
+    if (!kodlama) return bolgeler.statikJson;
+    reply.header('Content-Encoding', kodlama);
+    return statikSikistirilmis(bolgeler, kodlama);
   });
 
   app.get('/map/:id', { preHandler: requireAuth }, async (req) => {

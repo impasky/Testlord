@@ -28,44 +28,27 @@
  * yalnız `seed` değiştirebiliyor, o da ayrı bir süreçte çalıştığı için
  * kaydın tazeliği süreyle de sınırlanıyor.
  */
-import { haritaGrafi, type HaritaGrafi, sinirdanMi, yakinlikMesafesiGraf } from '@lordlar/shared';
+import { type HaritaGrafi, sinirdanMi, yakinlikMesafesiGraf } from '@lordlar/shared';
 import { prisma } from '../db.js';
+import { dunyaBolgeleri, dunyaBolgeleriniUnut } from './dunyaBolgeleri.js';
 
 /** Ölçer bölge KİMLİĞİ alıyor: kanonik haritadaki `mapId`, satır no değil. */
 export type Mesafeci = (hedefMapId: number) => number;
 
 type Istemci = Pick<typeof prisma, 'lord' | 'region' | 'world'>;
 
-interface Kayit {
-  graf: HaritaGrafi;
-  kuruldu: number;
-}
-
-const bellek = new Map<string, Kayit>();
-/** Seed ayrı bir süreçte harita değiştirebilir; kayıt sonsuza kadar yaşamasın. */
-const TAZELIK_MS = 5 * 60_000;
-
-/** Bu dünyanın komşuluk grafiği — kendi bölge satırlarından. */
+/**
+ * Bu dünyanın komşuluk grafiği — kendi bölge satırlarından. Kayıt
+ * `dunyaBolgeleri.ts`te: grafik, bölgelerin değişmeyen bilgisiyle aynı
+ * sorgudan kuruluyor ve aynı anda unutuluyor.
+ */
 export async function dunyaGrafigi(worldId: string, tx: Istemci = prisma): Promise<HaritaGrafi> {
-  const kayit = bellek.get(worldId);
-  if (kayit && Date.now() - kayit.kuruldu < TAZELIK_MS) return kayit.graf;
-
-  const satirlar = await tx.region.findMany({
-    where: { worldId },
-    select: { mapId: true, komsular: true },
-  });
-  const komsuluk = new Map<number, readonly number[]>(
-    satirlar.map((r) => [r.mapId, (Array.isArray(r.komsular) ? r.komsular : []).map(Number)]),
-  );
-  const graf = haritaGrafi(komsuluk);
-  bellek.set(worldId, { graf, kuruldu: Date.now() });
-  return graf;
+  return (await dunyaBolgeleri(worldId, tx)).graf;
 }
 
 /** Dünyanın bölgeleri değiştiyse kaydı at (aynı süreçteyse anında etki eder). */
 export function grafigiUnut(worldId?: string): void {
-  if (worldId) bellek.delete(worldId);
-  else bellek.clear();
+  dunyaBolgeleriniUnut(worldId);
 }
 
 export async function mesafeOlcer(lordId: string, tx: Istemci = prisma): Promise<Mesafeci> {

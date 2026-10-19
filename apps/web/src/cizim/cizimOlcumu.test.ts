@@ -115,4 +115,30 @@ describe('telefonda çizim ölçümü', () => {
     expect(o.deneme).toBe(2);
     expect(o.cizim).toBeGreaterThanOrEqual(0);
   });
+
+  it('takılma: kapalıyken kaydedilmiyor, açıkken ekran ekran özetleniyor', async () => {
+    const kapali = await yukle('');
+    kapali.m.takilmaKaydet({ tur: 'kare', sure: 120, ekran: 'Şehir', an: 0 });
+    expect(kapali.m.takilmalar()).toHaveLength(0);
+
+    const { m } = await yukle('?olcum=1');
+    m.takilmaKaydet({ tur: 'kare', sure: 120, ekran: 'Şehir', an: 0 });
+    m.takilmaKaydet({ tur: 'kare', sure: 340, ekran: 'Şehir', an: 1 });
+    m.takilmaKaydet({ tur: 'gorev', sure: 90, ekran: 'Şehir', an: 2 });
+    m.takilmaKaydet({ tur: 'gorev', sure: 60, ekran: 'Dünya', an: 3 });
+    const izlenen = new Map([
+      ['Şehir', { kare: 200, sure: 4000 }],
+      ['Dünya', { kare: 100, sure: 1700 }],
+      ['Lord', { kare: 50, sure: 840 }],
+    ]);
+    const o = m.takilmaOzeti(m.takilmalar(), izlenen);
+    // En çok takılan önce; hiç takılmayan da listede (ölçüldü, temiz).
+    expect(o.map((t) => t.ekran)).toEqual(['Şehir', 'Dünya', 'Lord']);
+    expect(o[0]).toMatchObject({ kare: 200, takilma: 2, oran: 0.01, enUzunKare: 340, gorev: 1 });
+    expect(o[1]).toMatchObject({ takilma: 0, gorev: 1, gorevToplam: 60 });
+    expect(o[2]).toMatchObject({ takilma: 0, gorev: 0, oran: 0 });
+
+    m.olcumuTemizle();
+    expect(m.takilmalar()).toHaveLength(0);
+  });
 });

@@ -137,6 +137,17 @@ export function App() {
   }, []);
   const [girisli, setGirisli] = useState(() => getToken() !== null);
   const [sekme, setSekme] = useState<AltSekme>(ANA_SEKME);
+  /*
+   * ŞEHİR BİR KEZ KURULUYOR. Başka sekmeye geçince sökülmüyor, gizleniyor
+   * (`data-gizli-sahne`, styles.css): görünmüyor, dokunulmuyor, animasyonu
+   * duruyor. Sökülüp yeniden kurulunca kırk tuval yeniden açılıyor, resimler
+   * yeniden çözülüyor ve boyanıyordu — telefonda dönüş başına bir saniyeye
+   * yakın donma; oyuncunun "ağaçlar, okçular yok olup geri geliyor" dediği
+   * buydu. Gizlemek `visibility` ile, `display: none` ile değil: boyut
+   * değişmiyor, sahnenin boyut gözlemcileri bir şey olmamış sayıyor.
+   */
+  const [sehirKuruldu, setSehirKuruldu] = useState(ANA_SEKME === 'sehir');
+  if (sekme === 'sehir' && !sehirKuruldu) setSehirKuruldu(true);
   /**
    * Açık kapı — konusunun içinde duran pop-up sayfa.
    *
@@ -571,15 +582,6 @@ export function App() {
           iskelet: boş ekran yerine "bir şey geliyor" demek, bekleyişi
           kısaltmıyor ama anlamlı kılıyor. */}
       <Suspense fallback={<Iskelet satir={4} />}>
-        {sekme === 'sehir' && (
-          <Sehir
-            lord={lord}
-            queues={queues}
-            onGit={setSekme}
-            onKapiAc={kapiAc}
-            onBolumeGit={bolumeGit}
-          />
-        )}
         {sekme === 'kisla' && <Kisla lord={lord} queues={queues} onGuncelle={tazele} />}
         {sekme === 'harita' && (
           <Harita
@@ -605,6 +607,27 @@ export function App() {
           />
         )}
       </Suspense>
+      {/* Kurulu şehir (yukarıda, `sehirKuruldu`). Öbür sekmelerden SONRA:
+          gizliyken aynı yazılı bir düğme ekrandakinin önüne geçmesin. Kendi
+          Suspense'i var — paylaşılan sınır askıya alınınca içindekileri
+          `display: none` ile gizliyor, o da sahneyi yeniden ölçtürürdü. */}
+      {sehirKuruldu && (
+        <Suspense fallback={null}>
+          <div
+            data-gizli-sahne={sekme === 'sehir' ? undefined : ''}
+            aria-hidden={sekme === 'sehir' ? undefined : true}
+          >
+            <Sehir
+              lord={lord}
+              queues={queues}
+              onGit={setSekme}
+              onKapiAc={kapiAc}
+              onBolumeGit={bolumeGit}
+              gorunur={sekme === 'sehir'}
+            />
+          </div>
+        </Suspense>
+      )}
 
       {/* ---- Kapılar ----
           Beş sekme dışındaki her şey burada, konusunun içinde açılıyor.

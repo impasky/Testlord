@@ -10,6 +10,12 @@
  * Açık olduğu cihazda kalıyor (`localStorage`): ana ekrana eklenmiş uygulama
  * adres çubuğu olmadan açılıyor. `?olcum=0` kapatıyor. Kapalıyken hiçbir
  * şey kaydedilmiyor; maliyeti bir bayrak okumak.
+ *
+ * TAKILMA da burada (`takilmaIzle`): 50 ms'yi aşan kareler ve tarayıcının
+ * bildirdiği uzun görevler, o an açık ekranla. "Şehirde kasma var" şikâyeti
+ * defalarca geliştirme kabında ölçülüp düzeltildi ve telefonda sürdü; kabın
+ * GPU'su yazılım, telefonunki değil. Takılmanın NEREDE olduğunu artık
+ * telefonun kendisi söylüyor.
  */
 
 const ANAHTAR = 'cizim-olcum';
@@ -88,6 +94,8 @@ export function olcumKayitlari(): readonly CizimKaydi[] {
 
 export function olcumuTemizle(): void {
   KAYITLAR.length = 0;
+  TAKILMALAR.length = 0;
+  IZLENEN.clear();
   haberVer();
 }
 
@@ -136,4 +144,122 @@ export function ozet(kayitlar: readonly CizimKaydi[]) {
     taslak: grup((k) => k.kaynak === 'cizim' && k.taslak),
     kesilme: kayitlar.reduce((a, k) => a + k.kesilme, 0),
   };
+}
+
+/* ── Takılma ─────────────────────────────────────────────────────────── */
+
+/** Takılma: eşiği aşan bir kare ya da tarayıcının bildirdiği uzun görev. */
+export interface TakilmaKaydi {
+  tur: 'kare' | 'gorev';
+  /** Süre (ms). */
+  sure: number;
+  /** O an açık ekran (alt çubuktaki adı). */
+  ekran: string;
+  /** Sayfa açıldıktan sonra (ms). */
+  an: number;
+}
+
+/** Bundan uzun kare takılma sayılıyor: 60 Hz'de üç kare kaçmış demek. */
+export const KARE_ESIGI = 50;
+
+const TAKILMALAR: TakilmaKaydi[] = [];
+/** Ekran başına izlenen kare sayısı ve süre: takılmayı orana çevirmek için. */
+const IZLENEN = new Map<string, { kare: number; sure: number }>();
+
+export function takilmaKaydet(k: TakilmaKaydi): void {
+  if (!olcumAcik()) return;
+  TAKILMALAR.push(k);
+  if (TAKILMALAR.length > SINIR) TAKILMALAR.shift();
+  haberVer();
+}
+
+export function takilmalar(): readonly TakilmaKaydi[] {
+  return TAKILMALAR;
+}
+
+export function izlenenKareler(): ReadonlyMap<string, { kare: number; sure: number }> {
+  return IZLENEN;
+}
+
+function acikEkran(): string {
+  return document.querySelector('nav [aria-current="page"]')?.textContent?.trim() || '?';
+}
+
+let izleniyor = false;
+
+/**
+ * Kare ve uzun görev izlemeyi başlatır — pano açılınca, yalnız ölçüm
+ * açıkken. Kare izlemenin kendisi her karede ana iş parçacığını uyandırıyor;
+ * ölçüm kapalıyken hiç çalışmıyor, kapatılınca duruyor.
+ */
+export function takilmaIzle(): void {
+  if (izleniyor || !olcumAcik()) return;
+  izleniyor = true;
+  let son = performance.now();
+  // Arka plandayken kare gelmiyor: dönüşteki boşluk takılma değil.
+  document.addEventListener('visibilitychange', () => {
+    son = performance.now();
+  });
+  const kare = (t: number) => {
+    if (!olcumAcik()) {
+      izleniyor = false;
+      return;
+    }
+    const ara = t - son;
+    son = t;
+    if (document.visibilityState === 'visible') {
+      const ekran = acikEkran();
+      const iz = IZLENEN.get(ekran) ?? { kare: 0, sure: 0 };
+      iz.kare++;
+      iz.sure += ara;
+      IZLENEN.set(ekran, iz);
+      if (ara > KARE_ESIGI) takilmaKaydet({ tur: 'kare', sure: ara, ekran, an: t });
+    }
+    requestAnimationFrame(kare);
+  };
+  requestAnimationFrame(kare);
+  try {
+    new PerformanceObserver((liste) => {
+      for (const g of liste.getEntries())
+        takilmaKaydet({ tur: 'gorev', sure: g.duration, ekran: acikEkran(), an: g.startTime });
+    }).observe({ type: 'longtask' });
+  } catch {
+    // Uzun görev bildirimi yok (Safari): kareler yine ölçülüyor.
+  }
+}
+
+export interface EkranTakilmasi {
+  ekran: string;
+  kare: number;
+  /** Eşiği aşan kare sayısı. */
+  takilma: number;
+  /** Takılan karelerin izlenen karelere oranı (0–1). */
+  oran: number;
+  enUzunKare: number;
+  gorev: number;
+  gorevToplam: number;
+}
+
+/** Ekran başına takılma özeti — en çok takılan önce. */
+export function takilmaOzeti(
+  kayitlar: readonly TakilmaKaydi[],
+  izlenen: ReadonlyMap<string, { kare: number; sure: number }>,
+): EkranTakilmasi[] {
+  const ekranlar = new Set([...izlenen.keys(), ...kayitlar.map((k) => k.ekran)]);
+  return [...ekranlar]
+    .map((ekran) => {
+      const kareler = kayitlar.filter((k) => k.ekran === ekran && k.tur === 'kare');
+      const gorevler = kayitlar.filter((k) => k.ekran === ekran && k.tur === 'gorev');
+      const kare = izlenen.get(ekran)?.kare ?? 0;
+      return {
+        ekran,
+        kare,
+        takilma: kareler.length,
+        oran: kare ? kareler.length / kare : 0,
+        enUzunKare: kareler.reduce((m, k) => Math.max(m, k.sure), 0),
+        gorev: gorevler.length,
+        gorevToplam: gorevler.reduce((a, k) => a + k.sure, 0),
+      };
+    })
+    .sort((a, b) => b.takilma + b.gorev - (a.takilma + a.gorev));
 }
