@@ -3,7 +3,7 @@ LORDLAR ÇAĞI — ÇEVİRİ 2/3: DERINLIK
 Savaş raporu, demirhane, generaller, araştırma, ittifak, akın — ve bina,
 general, araştırma, başarım içerikleri.
 
-Bu dosyada 1728 satır var.
+Bu dosyada 1739 satır var.
 
 NASIL ÇEVİRİLİR
   Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.
@@ -790,6 +790,61 @@ NASIL ÇEVİRİLİR
 3027. Same network · {0} day|Same network · {0} days
 3034. Last {0} [day|days]. The game's own traces first: shipments, reinforcements, market. "Same network" appears only on a pair with a flow between them; not the address but a keyed digest of it is kept, and crowded networks (mobile carriers, dorms) are not counted. The same home is not the same person. No automatic penalty; look at both files and decide.
 
+--- CizimOlcumPaneli (52) ---
+
+2381. on
+2785. off-limits
+2789.  · interrupted {0} time| · interrupted {0} times
+2790.  (drawing {0}){1}
+2791.  (draft)
+2792. {0} · cores {1} · GPU path {2}
+2794. {0}: {1}, average {2} (drawing {3}), longest {4}
+2795. drawn
+2796. Drawn
+2797. Drawn: {0} · avg {1} · longest {2}
+2798. Screen: {0} · cores {1} · memory {2} GB
+2799. GPU path off: drawings use the old path (SVG) and are not measured here.
+2800. GPU: {0}
+2801. GPU: {0} · GPU path {1}
+2802. off (SVG)
+2803. from storage
+2804. From storage
+2805. From storage: {0} · avg {1}
+2806. Interruptions: {0}
+2807. Copy
+2808. Could not copy; select and copy the text below.
+2809. Copied.
+2810. Age of Lords — drawing measurement
+2811. Measurement
+2812. Measurement report
+2813. Turn off measurement
+2814. Latest drawings (newest first):
+2815. Browser: {0}
+2816. Draft
+2817. Draft: {0} · avg {1}
+2818. Clear
+2819. No WebGL
+3455.  · long tasks {0} ({1})
+3457. {0} drawings · avg {1} · longest {2} · stutters {3}
+3458. {0}: {1} frames, {2} stutters ({3}), longest {4}
+3459. task
+3461. None yet.
+3463. Recent stutters (newest first):
+3464. Stutter
+3465. Stutters (frames over {0} ms, long tasks), by screen:
+3471. \n  stages: {0}
+3472.  ({0} frames)
+3473. main pass
+3474. blur and PNG
+3475. live frames: drawing
+3476. resolve
+3477. longest GPU job
+3478. shadow
+3479. preparation
+3480. frame geometry
+3481. frame PNG
+3482. edges and resolve
+
 --- Demirhane (49) ---
 
 34. {0} queue is full
@@ -991,50 +1046,6 @@ NASIL ÇEVİRİLİR
 2887. Shared in alliance chat.
 2888. Could not share.
 2889. Shared
-
---- CizimOlcumPaneli (41) ---
-
-2381. on
-2785. off-limits
-2789.  · interrupted {0} time| · interrupted {0} times
-2790.  (drawing {0}){1}
-2791.  (draft)
-2792. {0} · cores {1} · GPU path {2}
-2794. {0}: {1}, average {2} (drawing {3}), longest {4}
-2795. drawn
-2796. Drawn
-2797. Drawn: {0} · avg {1} · longest {2}
-2798. Screen: {0} · cores {1} · memory {2} GB
-2799. GPU path off: drawings use the old path (SVG) and are not measured here.
-2800. GPU: {0}
-2801. GPU: {0} · GPU path {1}
-2802. off (SVG)
-2803. from storage
-2804. From storage
-2805. From storage: {0} · avg {1}
-2806. Interruptions: {0}
-2807. Copy
-2808. Could not copy; select and copy the text below.
-2809. Copied.
-2810. Age of Lords — drawing measurement
-2811. Measurement
-2812. Measurement report
-2813. Turn off measurement
-2814. Latest drawings (newest first):
-2815. Browser: {0}
-2816. Draft
-2817. Draft: {0} · avg {1}
-2818. Clear
-2819. No WebGL
-3455.  · long tasks {0} ({1})
-3456. {0} · {1} {2} · {3} s
-3457. {0} drawings · avg {1} · longest {2} · stutters {3}
-3458. {0}: {1} frames, {2} stutters ({3}), longest {4}
-3459. task
-3461. None yet.
-3463. Recent stutters (newest first):
-3464. Stutter
-3465. Stutters (frames over {0} ms, long tasks), by screen:
 
 --- Arastirma (40) ---
 

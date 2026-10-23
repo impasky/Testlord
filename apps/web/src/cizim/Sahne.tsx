@@ -46,7 +46,7 @@ import {
   type Katmanlar,
 } from './gl';
 import type { KaliciGrup } from './kalici';
-import { sonrakiVakit, vakitAnahtari, type Vakit } from './vakit';
+import { sonrakiVakit, sonrakiVakitAni, vakitAnahtari, type Vakit } from './vakit';
 import { ciz, kutusu, type Cizilmis, type Kamera, type Model } from './uc';
 
 const ONBELLEK = new Map<string, Cizilmis>();
@@ -147,11 +147,18 @@ const kova = (x: number) => Math.pow(1.25, Math.ceil(Math.log(Math.max(x, 8)) / 
 export const OnceKaba = createContext(300 * 300);
 const KABA_KAT = 3;
 /**
- * Canlı resim geldikten bu kadar sonra (ms) bir sonraki vaktin resmi
+ * Canlı resim geldikten en az bu kadar sonra (ms) bir sonraki vaktin resmi
  * önceden çiziliyor (`glOnceden`): açılışın ve oyuncunun ilk dokunuşlarının
  * çizimleriyle yarışmasın.
  */
 const ONCEDEN_BEKLE = 10_000;
+/**
+ * ...ve vakit dönmeden en çok bu kadar önce (ms). Önceden çizim her
+ * açılışta yapılıyordu; yerleşkenin canlı resmi zayıf bir telefonda
+ * (Mali-G52) 40 sn GPU ve o sürede ekran takılıyor. Oyuncu vaktin döndüğü
+ * ana çoğu zaman hiç yetişmiyor: çizim yalnız dönüşe yakınken.
+ */
+const ONCEDEN_PAYI = 45 * 60_000;
 
 /**
  * GPU resmini ister; hazır olunca url, yoksa null. Öğe ölçülüyor: resim
@@ -251,14 +258,18 @@ function useGpuResmi(
         if (!iki || !vakit || !kalici) return;
         const sonraki = sonrakiVakit(vakit);
         clearTimeout(onceden);
-        onceden = setTimeout(() => {
-          if (iptal) return;
-          glOnceden(
-            `${vakitliTaban(sonraki)}|h|${en}x${boy}`,
-            istek(true, en, boy, false, sonraki),
-            { piksel: en * boy, istenmiyor: () => iptal, grup: kalici },
-          );
-        }, ONCEDEN_BEKLE);
+        const donuseKalan = sonrakiVakitAni().getTime() - Date.now();
+        onceden = setTimeout(
+          () => {
+            if (iptal) return;
+            glOnceden(
+              `${vakitliTaban(sonraki)}|h|${en}x${boy}`,
+              istek(true, en, boy, false, sonraki),
+              { piksel: en * boy, istenmiyor: () => iptal, grup: kalici },
+            );
+          },
+          Math.max(ONCEDEN_BEKLE, donuseKalan - ONCEDEN_PAYI),
+        );
       };
       const var_ = RESIMLER.get(taban);
       if (var_ && var_.en >= en) {
@@ -400,6 +411,14 @@ type Kutu = [number, number, number, number];
 const YAMA_PAYI = 0.15;
 /** Yama ancak ana resimden bu kat yoğunsa çiziliyor: azı göze görünmüyor. */
 const YAMA_KAZANC = 1.25;
+/**
+ * Görünen bölge bildirildikten (hareket durduktan 220 ms sonra) yamanın
+ * çizimine başlamadan önce bu kadar daha bekleniyor (ms). Telefonda oyuncu
+ * kısa duraklamalarla kaydırınca her duraklama bir yama çizimi başlatıyor
+ * ve hemen bırakılıyordu (Mali-G52'de her biri ~1,5 sn GPU): bitmeyen iş
+ * ekranı da takıltıyordu.
+ */
+const YAMA_BEKLE = 600;
 
 interface Yama {
   /** `glCiz` anahtarı: yerine yenisi konunca bellekten bırakılıyor. */
@@ -667,10 +686,15 @@ function useYama(
       if (guncel.current.yama?.url !== url) goster(url);
       return true;
     };
-    void (async () => {
-      if (!(await iste(false)) || !hareketli) return;
-      await iste(true);
-    })();
+    // Hareket gerçekten durunca (`YAMA_BEKLE`); arada yenisi geldiyse bu
+    // oturum iptal edilmiş oluyor ve hiç çizilmiyor.
+    setTimeout(() => {
+      if (yeni.iptal || kapandi.current) return;
+      void (async () => {
+        if (!(await iste(false)) || !hareketli) return;
+        await iste(true);
+      })();
+    }, YAMA_BEKLE);
     // `v` ve `gorunen` içerik olarak anahtarlarda. Oturum etkiyle değil,
     // yerine yenisi gelince ya da sahne kapanınca bitiyor.
   }, [etkin, anahtar, tarif, gorunenAnahtar, tabanEn, hareketli, tilt, sicak, vakit, bakildi, ref]);

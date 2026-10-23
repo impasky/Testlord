@@ -263,7 +263,7 @@
 - `apps/web/src/cizim/savas.ts` — SAVAŞ SAHNESİ — raporun tepesinde iki ordunun karşılaştığı tek kare (docs/09 §4.2 G4, docs/24). · dışa: SAVAS_KUTUSU, SavasGirdisi, savasAnahtari, savasModeli · (testi var)
 - `apps/web/src/cizim/tarif.ts` — Çizim tarifleri (docs/24): sahnenin anahtarından modeli. · dışa: tarifModeli
 - `apps/web/src/cizim/uc.ts` — KÜÇÜK 3B MOTOR — bütün nesne çizimlerinin ortak dili (docs/24). · dışa: V3, Doku, Yuz, Model, normal, tasi, olcekle, dondur, parlat, dokula, oneAl, katmanla, boya, kutu, prizma, cember +24
-- `apps/web/src/cizim/vakit.ts` — Günün saatine göre ışık (docs/24 "Günün saati") — yalnız görsel. · dışa: Vakit, VAKITLER, gununVakti, sonrakiVakit, VakitIsigi, VAKIT_ISIGI, vakitAnahtari · (testi var)
+- `apps/web/src/cizim/vakit.ts` — Günün saatine göre ışık (docs/24 "Günün saati") — yalnız görsel. · dışa: Vakit, VAKITLER, gununVakti, sonrakiVakit, sonrakiVakitAni, VakitIsigi, VAKIT_ISIGI, vakitAnahtari · (testi var)
 - `apps/web/src/cizim/yerlesim.ts` — YERLEŞİM ZEMİNİ — kamp, köy, kasaba, şehir, kale, metropol (docs/24). · dışa: Kademe, KASABA_KUTUSU, YERLESIM_KUTUSU, BINA_YUVALARI, YERLESIM_KADEMELERI, YERLESIM_OLCEK, yerlesimModeli, BINA_TABAN_BOY, YerlesimBinasi, yerlesimAnahtari, yerlesimAnahtariCoz, sahneBinasi, YURUYEN, yerlesimMerkezi, ASAMA_BUYUME, yerlesimNoktasi +1
 - `apps/web/src/cizim/zeminler.ts` — EKRAN ZEMİNLERİ — her sekmenin tepesindeki manzara şeridi (docs/24). · dışa: ZEMIN_ADLARI, ZeminAdi, ZEMIN_KUTUSU, zeminModeli
 

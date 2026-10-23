@@ -77,7 +77,10 @@ kapsam.onmessage = (e) => {
   const { id, istek } = e.data;
   zincir = zincir.then(async () => {
     if (KESILECEK.delete(id)) return kapsam.postMessage({ id, kesildi: true });
+    const hazirlikBasi = performance.now();
     const { c, dumanlar } = hazirla(istek);
+    // Telefonda ölçüm: model ve ağ kurulumu da bir aşama (`CizimSonucu.evreler`).
+    const hazirlik = performance.now() - hazirlikBasi;
     let kesildi = false;
     const sonuc = await cizBlob(
       c,
@@ -99,6 +102,10 @@ kapsam.onmessage = (e) => {
           { id, yok: true, ag: c.ag, bayrak: c.bayrak, dumanlar },
           aktarilanlar(c),
         );
-    } else kapsam.postMessage({ id, sonuc: sonuc && { ...sonuc, dumanlar } });
+    } else
+      kapsam.postMessage({
+        id,
+        sonuc: sonuc && { ...sonuc, dumanlar, evreler: { hazirlik, ...sonuc.evreler } },
+      });
   });
 };

@@ -316,6 +316,25 @@ ms). Kesilince GPU'ya gitmiş küçük parça yine bitiyor, sonrası
 gönderilmiyor. Denendi: 400×400'lük çizim 60×60'lık iş gelince 12–108 ms
 sonra kesildi, küçük önce çizildi, büyük baştan tamamlandı.
 
+**Şerit boyu cihazın hızından** (2026-10-23; `SERIT_MS`, `HIZ`). GPU'ya
+gitmiş iş yarıda kesilmediği gibi ekranın karesi de onun arkasında
+bekliyor: şerit ne kadar sürüyorsa ekran o kadar takılıyor. Bir milyon
+örnek masaüstünde birkaç ms, ama telefondan gelen raporda (Mali-G52,
+`?olcum=1`) yerleşke 40 sn çizildi ve o sürede Şehir'in kareleri 70–260
+ms takıldı. Şerit artık süreyle ölçülüyor: geçişin (ana, kenar) hızı
+şeritten şeride ölçülüyor (örnek/ms, işçinin ömrü boyunca), sonraki şerit
+~25 ms sürecek boyda; hız bilinmiyorsa ilk şerit küçük bir ölçüm şeridi
+(125 bin örnek). Bir geçiş en çok 64 şerit (her şerit bütün geometriyi
+yeniden işliyor). Küçük çizim de o hızda 50 ms'yi aşacaksa şeritleniyor.
+Atlas karesinde parçaların çizimi ile çözmesi ayrı iş (arada durak).
+Çıktı değişmiyor: yazılım GPU'sunda yerleşkenin resmi, katmanları ve
+atlası bayt bayt aynı; tek seferdeki en uzun GPU işi 834 → 399 ms
+(kalan en uzunu atlasın bir karesi), toplam süre aynı (~23 sn).
+Denenip bırakıldı: yoğun ekranda (yerleşke CSS pikseli başına 1,75 çıktı
+pikseli) 2×2 örneklemeyi kapatmak yazılım GPU'sunda süreyi 23'ten 12
+sn'ye indirdi, ama çatıların kiremit ve saz dokusu düz renge döndü,
+gölge kenarları kumlandı.
+
 Ağır canlı sahne önce DURAĞAN (`Sahne.onceDurgun`; Şehir'in yerleşkesi):
 önce bütün parçaları içinde çizili durağan resim (hızlı), canlı resim ve
 katmanları sonra. Canlı iş `glCiz` `sonra` ile sıraya giriyor: öncelikli
@@ -584,7 +603,11 @@ görünüm 8,6 → 11,2 sn (katmanlar ve ilk kare ondan önce), canlı 29,7 →
   (katman ölçüsü bu yüzden düzen boyundan, dönüşümsüz). Ana resim
   `EN_BUYUK`la sınırlı, yakında bulanıklaşıyordu: hareket durunca görünen
   bölge her yanından %15 payla, ekrandaki boyunun piksel yoğunluğunda
-  ayrıca çiziliyor ve ana resmin üstüne oturuyor (yakınlık yaması). Yama
+  ayrıca çiziliyor ve ana resmin üstüne oturuyor (yakınlık yaması).
+  Çizim hareket durduktan ~0,8 sn sonra başlıyor (bölge 220 ms sonra
+  bildiriliyor, `YAMA_BEKLE` 600 ms daha): telefonda kısa duraklamalarla
+  kaydıran oyuncunun her duraklaması bir yama başlatıp bırakıyordu
+  (raporda üç yama "gelmedi", her biri ~1,5 sn GPU). Yama
   canlı resmin ana resmi gibi kuruluyor (`GlIstek.yama`: salınan parça,
   canlı figür, duman yok — atlasa giremeseler de durağan çizilmiyor; su,
   ışık, çimen katmanı ve duman sahneninki), ortam gölgesi bütün sahnenin
@@ -622,9 +645,16 @@ görünüm 8,6 → 11,2 sn (katmanlar ve ilk kare ondan önce), canlı 29,7 →
   beklenirken eldeki canlı yama korunuyor). Ölçüldü (yazılım GPU'su):
   yeniden açılışta ana resim 0,6 sn, canlı katman ve keskin yama 1 sn
   (ilk açılışta 24 + 14 sn). Anahtar çizimin kendisi (sahne, yapıların
-  seviyesi, boy); sürüm çizim kodunun ve verinin içerik özeti
-  (`vite-cizim-surumu.mjs`: `src/cizim`, `data`, `packages/shared`):
-  biri değişince eski kayıt okunmuyor, siliniyor. Kayıtlar gruplarda,
+  seviyesi, boy); sürüm çizimi belirleyen kaynakların içerik özeti
+  (`vite-cizim-surumu.mjs`): biri değişince eski kayıt okunmuyor,
+  siliniyor. Özet önce `src/cizim`, bütün `data` ve `packages/shared`'di:
+  denge ayarı ya da sunucu kodu her değişince bütün cihazların resimleri
+  silinip baştan çiziliyordu (telefon raporunda "Kayıttan: 0", yerleşke
+  40 sn). Artık yalnız çizim kodu (testler, ölçüm ve depo dosyaları
+  hariç) ve çizimin dışarıdan okuduğu tek veri (`akinlar.json`, shared
+  `AKIN_YOL` üstünden). `kalici.test.ts` çizim kodunun dışarıdan ne
+  içe aktardığını sayıyor: yeni bir kaynak eklenirse test kırılıyor, o
+  kaynak özete girmeli. Kayıtlar gruplarda,
   her grubun kendi sınırı; en uzun süredir kullanılmayan yalnız kendi
   grubundan atılıyor (bölgeden bölgeye gezenin afişleri yerleşkeyi
   atmasın). `sahne`: en çok on iki (yerleşke üç, dünya haritası iki, her
@@ -868,13 +898,16 @@ gösteriyor.
 
 Bir sonraki vakit önceden çiziliyor (`sonrakiVakit`, `gl.glOnceden`):
 ışık vakitle değiştiği için yerleşke günde üç kez baştan çiziliyordu
-(telefonda saniyelerce durağan, sonra canlı). Canlı resim geldikten 10
-sn sonra, öncelikli işler bitince, bir sonraki vaktin canlı resmi boşta
+(telefonda saniyelerce durağan, sonra canlı). Vakit dönmeden en çok 45
+dakika önce (`ONCEDEN_PAYI`; canlı resim geldikten en az 10 sn sonra),
+öncelikli işler bitince, bir sonraki vaktin canlı resmi boşta
 çizilip YALNIZ cihaza yazılıyor (bellekte tutulmuyor, sayfaya
 verilmiyor); cihazda varsa çizilmiyor. Vakit dönünce sahne onu cihazdan
 alıyor. Ölçüm (Pixel 5 taklidi, yazılım GPU'su): öğlede açılan şehrin
 akşam kaydı ~34 sn sonra cihazda; akşama geçince canlı 23 sn yerine
-0,5 sn.
+0,5 sn. Önceden çizim önce her açılışta yapılıyordu: zayıf telefonda
+yerleşkenin ikinci bir 40 sn'lik GPU işi ve o sürede ekran takılıyor;
+oyuncu vaktin döndüğü ana çoğu zaman yetişmiyor bile.
 
 ## Hava
 
@@ -949,6 +982,14 @@ en uzunu, uzun görevlerin toplamı — ve son takılmaları rapora yazıyor.
 düzeltildi ve telefonda sürdü; takılmanın nerede olduğunu artık telefonun
 kendisi söylüyor. Kare izleme her karede ana iş parçacığını uyandırdığı
 için yalnız ölçüm açıkken çalışıyor ve kapatılınca duruyor.
+
+Rapordaki her çizimin başlangıç–bitiş anı (sayfa açıldıktan sonra, sn)
+takılmalarla aynı saatte: hangi çizim sürerken takıldığı okunuyor. Yarım
+saniyeyi aşan çizimin **aşamaları** da (`CizimSonucu.evreler`, işçi
+ölçüyor): hazırlık (model ve ağ), gölge, ana geçiş, kenar ve çözme,
+bulanıklık ve PNG, katmanlar, kare geometrisi, canlı karelerin çizimi ve
+çözmesi (kare sayısıyla), kare PNG ve tek seferde GPU'ya giden en uzun
+iş — ekran en çok o kadar bekledi (bkz. "Şerit boyu cihazın hızından").
 
 ## Yeni bir çizim eklemek
 

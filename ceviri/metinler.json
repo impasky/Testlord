@@ -1,4 +1,12 @@
 {
+  "t1c50395f": {
+    "grup": "arayuz",
+    "tr": "\n  aşamalar: {0}",
+    "en": "\n  stages: {0}",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:104"
+    ]
+  },
   "t308a5ae3": {
     "grup": "arayuz",
     "tr": " — {0} şehir. Kampın en az kalabalık küçük şehrin yanına kurulacak.",
@@ -116,7 +124,7 @@
     "tr": " · uzun görev {0} ({1})",
     "en": " · long tasks {0} ({1})",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:65"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:66"
     ]
   },
   "tdcefd02d": {
@@ -125,6 +133,14 @@
     "en": " · admin",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:476"
+    ]
+  },
+  "t6fd37091": {
+    "grup": "arayuz",
+    "tr": " ({0} kare)",
+    "en": " ({0} frames)",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:132"
     ]
   },
   "t07a293f0": {
@@ -449,14 +465,6 @@
       "apps/web/src/components/ProfilKarti.tsx:199"
     ]
   },
-  "t42db26f8": {
-    "grup": "arayuz",
-    "tr": "{0} · {1} {2} · {3} sn",
-    "en": "{0} · {1} {2} · {3} s",
-    "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:92"
-    ]
-  },
   "t89eb3d42": {
     "grup": "arayuz",
     "tr": "{0} · +%{1} yağma",
@@ -486,7 +494,7 @@
     "tr": "{0} · çekirdek {1} · GPU yolu {2}",
     "en": "{0} · cores {1} · GPU path {2}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:159"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:190"
     ]
   },
   "t381449cb": {
@@ -823,7 +831,7 @@
     "tr": "{0} çizim · ort {1} · en uzun {2} · takılma {3}",
     "en": "{0} drawings · avg {1} · longest {2} · stutters {3}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:152"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:183"
     ]
   },
   "ta012b2a3": {
@@ -1491,7 +1499,7 @@
     "tr": "{0}: {1} kare, {2} takılma ({3}), en uzun {4}",
     "en": "{0}: {1} frames, {2} stutters ({3}), longest {4}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:64"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:65"
     ]
   },
   "tdfb3b8bb": {
@@ -1499,7 +1507,7 @@
     "tr": "{0}: {1}, ortalama {2} (çizimde {3}), en uzun {4}",
     "en": "{0}: {1}, average {2} (drawing {3}), longest {4}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:77"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:78"
     ]
   },
   "tc31d749f": {
@@ -1970,8 +1978,8 @@
     "tr": "açık",
     "en": "on",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:159",
-      "apps/web/src/components/CizimOlcumPaneli.tsx:82"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:190",
+      "apps/web/src/components/CizimOlcumPaneli.tsx:83"
     ]
   },
   "t32e351f6": {
@@ -2193,6 +2201,14 @@
     "en": "Add to Home Screen",
     "nerede": [
       "apps/web/src/components/BildirimKarti.tsx:77"
+    ]
+  },
+  "t555f8eec": {
+    "grup": "arayuz",
+    "tr": "ana geçiş",
+    "en": "main pass",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:116"
     ]
   },
   "t7d9c08a4": {
@@ -3548,6 +3564,14 @@
       "apps/web/src/components/GunlukKart.tsx:144"
     ]
   },
+  "t1012bec5": {
+    "grup": "arayuz",
+    "tr": "bulanıklık ve PNG",
+    "en": "blur and PNG",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:118"
+    ]
+  },
   "tb8daecb0": {
     "grup": "arayuz",
     "tr": "Bütün diyarların lordları burada. Saygılı ol: ⚑ ile şikâyet et, ⊘ ile engelle; ada ya da resme dokununca profil açılır.",
@@ -3586,6 +3610,14 @@
     "en": "",
     "nerede": [
       "apps/web/src/cizim/canli.ts:67"
+    ]
+  },
+  "t4f672480": {
+    "grup": "arayuz",
+    "tr": "canlı kareler: çizim",
+    "en": "live frames: drawing",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:121"
     ]
   },
   "t25bfe7af": {
@@ -3673,7 +3705,7 @@
     "tr": "çizildi",
     "en": "drawn",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:108"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:139"
     ]
   },
   "t413450ab": {
@@ -3681,7 +3713,7 @@
     "tr": "Çizim",
     "en": "Drawn",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:84"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:85"
     ]
   },
   "t326d2b0c": {
@@ -3689,7 +3721,7 @@
     "tr": "Çizim: {0} · ort {1} · en uzun {2}",
     "en": "Drawn: {0} · avg {1} · longest {2}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:168"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:199"
     ]
   },
   "t21d6cbb0": {
@@ -3706,6 +3738,14 @@
     "en": "Multi-account suspicion: {0}",
     "nerede": [
       "apps/web/src/screens/YoneticiPaneli.tsx:151"
+    ]
+  },
+  "tdd555704": {
+    "grup": "arayuz",
+    "tr": "çözme",
+    "en": "resolve",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:122"
     ]
   },
   "tfa0c522b": {
@@ -4585,7 +4625,7 @@
     "tr": "Ekran: {0} · çekirdek {1} · bellek {2} GB",
     "en": "Screen: {0} · cores {1} · memory {2} GB",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:81"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:82"
     ]
   },
   "tf76bac8b": {
@@ -4772,6 +4812,14 @@
     "en": "Cheapest listing is {0} gold: you pay less than you offered and the item is yours now.",
     "nerede": [
       "apps/web/src/screens/EsyaPazari.tsx:467"
+    ]
+  },
+  "t8b8b74a7": {
+    "grup": "arayuz",
+    "tr": "en uzun GPU işi",
+    "en": "longest GPU job",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:125"
     ]
   },
   "t704faa78": {
@@ -5406,6 +5454,14 @@
       "apps/web/src/screens/Gizlilik.tsx:88"
     ]
   },
+  "t03acafe4": {
+    "grup": "arayuz",
+    "tr": "gölge",
+    "en": "shadow",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:115"
+    ]
+  },
   "t5228efad": {
     "grup": "arayuz",
     "tr": "Gönder",
@@ -5512,7 +5568,7 @@
     "tr": "GPU yolu kapalı: çizimler eski yoldan (SVG) yapılıyor, burada ölçülmüyor.",
     "en": "GPU path off: drawings use the old path (SVG) and are not measured here.",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:163"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:194"
     ]
   },
   "t304e01a3": {
@@ -5520,7 +5576,7 @@
     "tr": "GPU: {0}",
     "en": "GPU: {0}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:157"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:188"
     ]
   },
   "t113e8c40": {
@@ -5528,7 +5584,7 @@
     "tr": "GPU: {0} · GPU yolu {1}",
     "en": "GPU: {0} · GPU path {1}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:82"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:83"
     ]
   },
   "tec5ebccb": {
@@ -5762,6 +5818,14 @@
       "apps/web/src/components/ProfilResmiSecici.tsx:242"
     ]
   },
+  "t1b34d875": {
+    "grup": "arayuz",
+    "tr": "hazırlık",
+    "en": "preparation",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:114"
+    ]
+  },
   "tfb97ff2e": {
     "grup": "arayuz",
     "tr": "Hedef diyarın nüfusuyla ölçülüyor: şimdilik {0} {1}. Hafta sonu bütün lordlar aynı çubuğu dolduruyor.",
@@ -5944,7 +6008,7 @@
     "tr": "Henüz yok.",
     "en": "None yet.",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:174"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:205"
     ]
   },
   "t9148a36e": {
@@ -6879,7 +6943,7 @@
     "tr": "kapalı",
     "en": "off-limits",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:159"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:190"
     ]
   },
   "tca1abff0": {
@@ -6887,7 +6951,7 @@
     "tr": "kapalı (SVG)",
     "en": "off (SVG)",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:82"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:83"
     ]
   },
   "t926ba486": {
@@ -6968,6 +7032,22 @@
     "en": "Resolved",
     "nerede": [
       "apps/web/src/screens/Moderasyon.tsx:82"
+    ]
+  },
+  "t4700e87c": {
+    "grup": "arayuz",
+    "tr": "kare geometrisi",
+    "en": "frame geometry",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:120"
+    ]
+  },
+  "tb8834d7b": {
+    "grup": "arayuz",
+    "tr": "kare PNG",
+    "en": "frame PNG",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:123"
     ]
   },
   "tbff7fa0c": {
@@ -7196,7 +7276,7 @@
     "tr": "kayıttan",
     "en": "from storage",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:107"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:138"
     ]
   },
   "t86e73760": {
@@ -7204,7 +7284,7 @@
     "tr": "Kayıttan",
     "en": "From storage",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:83"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:84"
     ]
   },
   "teeccea05": {
@@ -7212,7 +7292,7 @@
     "tr": "Kayıttan: {0} · ort {1}",
     "en": "From storage: {0} · avg {1}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:167"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:198"
     ]
   },
   "t1ea0a49d": {
@@ -7313,6 +7393,14 @@
       "apps/web/src/components/SaldiriOnizleme.tsx:101"
     ]
   },
+  "tbc7e7ae0": {
+    "grup": "arayuz",
+    "tr": "kenar ve çözme",
+    "en": "edges and resolve",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:117"
+    ]
+  },
   "t7a6ac1f4": {
     "grup": "arayuz",
     "tr": "KENDİ RESMİN",
@@ -7359,8 +7447,8 @@
     "tr": "Kesilme: {0}",
     "en": "Interruptions: {0}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:170",
-      "apps/web/src/components/CizimOlcumPaneli.tsx:86"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:201",
+      "apps/web/src/components/CizimOlcumPaneli.tsx:87"
     ]
   },
   "tb766e201": {
@@ -7575,7 +7663,7 @@
     "tr": "Kopyala",
     "en": "Copy",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:185"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:216"
     ]
   },
   "t653a2491": {
@@ -7583,7 +7671,7 @@
     "tr": "Kopyalanamadı; aşağıdaki metni seçip kopyala.",
     "en": "Could not copy; select and copy the text below.",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:207"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:238"
     ]
   },
   "t7d0bdf3d": {
@@ -7591,7 +7679,7 @@
     "tr": "Kopyalandı.",
     "en": "Copied.",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:205"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:236"
     ]
   },
   "t0d0d93bf": {
@@ -7924,7 +8012,7 @@
     "tr": "Lordlar Çağı — çizim ölçümü",
     "en": "Age of Lords — drawing measurement",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:79"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:80"
     ]
   },
   "t8efe9043": {
@@ -8175,7 +8263,7 @@
     "tr": "nav [aria-current=\"page\"]",
     "en": "",
     "nerede": [
-      "apps/web/src/cizim/cizimOlcumu.ts:185"
+      "apps/web/src/cizim/cizimOlcumu.ts:187"
     ]
   },
   "t7db547ab": {
@@ -8732,7 +8820,7 @@
     "tr": "Ölçüm",
     "en": "Measurement",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:150",
+      "apps/web/src/components/CizimOlcumPaneli.tsx:181",
       "apps/web/src/screens/YoneticiPaneli.tsx:236"
     ]
   },
@@ -8741,7 +8829,7 @@
     "tr": "Ölçüm raporu",
     "en": "Measurement report",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:211"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:242"
     ]
   },
   "t7e519a3e": {
@@ -8757,7 +8845,7 @@
     "tr": "Ölçümü kapat",
     "en": "Turn off measurement",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:202"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:233"
     ]
   },
   "t96de5998": {
@@ -10346,7 +10434,7 @@
     "tr": "Son takılmalar (en yenisi üstte):",
     "en": "Recent stutters (newest first):",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:89"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:90"
     ]
   },
   "t9564f32e": {
@@ -11042,7 +11130,7 @@
     "tr": "Takılma",
     "en": "Stutter",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:172"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:203"
     ]
   },
   "ta7eb6b30": {
@@ -11050,7 +11138,7 @@
     "tr": "Takılma ({0} ms'yi aşan kare, uzun görev), ekran ekran:",
     "en": "Stutters (frames over {0} ms, long tasks), by screen:",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:87"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:88"
     ]
   },
   "t655690a1": {
@@ -11138,7 +11226,7 @@
     "tr": "Tarayıcı: {0}",
     "en": "Browser: {0}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:80"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:81"
     ]
   },
   "t43b5a719": {
@@ -11146,7 +11234,7 @@
     "tr": "Taslak",
     "en": "Draft",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:85"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:86"
     ]
   },
   "te90564c2": {
@@ -11154,7 +11242,7 @@
     "tr": "Taslak: {0} · ort {1}",
     "en": "Draft: {0} · avg {1}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:169"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:200"
     ]
   },
   "t3c819dd0": {
@@ -11210,7 +11298,7 @@
     "tr": "Temizle",
     "en": "Clear",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:192"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:223"
     ]
   },
   "tf4719125": {

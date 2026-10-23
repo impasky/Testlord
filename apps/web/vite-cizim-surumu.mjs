@@ -5,10 +5,17 @@
  * çizilmeden geliyor. Saklanan resim onu çizen kodun ve verinin ürünü;
  * çizim kodu ya da veri değişince eski resim yanlış olur (eski çatı, eski
  * renk). Sürüm bu yüzden elle artırılan bir sayı değil, çizimi belirleyen
- * dosyaların İÇERİK ÖZETİ: `src/cizim` (testler hariç), `data/*.json`,
- * `packages/shared/src` ve çizimin dışarıdan okuduğu kıyı yolu
- * (`components/harita/kara.ts`). Biri değişince sürüm değişiyor, eski kayıtlar
- * okunmuyor. Elle artırılan sayı unutulurdu.
+ * dosyaların İÇERİK ÖZETİ: `src/cizim` (testler, ölçüm, galeri ve depo
+ * hariç) ve çizimin ortak paketten okuduğu tek değerin kaynağı
+ * (`AKIN_YOL` → `data/akinlar.json`). Biri değişince sürüm değişiyor, eski
+ * kayıtlar okunmuyor. Elle artırılan sayı unutulurdu.
+ *
+ * Eskiden `data/*.json`ın ve `packages/shared/src`in TAMAMI da özetteydi:
+ * çizimle ilgisi olmayan bir denge ya da kural değişikliği bile her
+ * cihazdaki bütün resimleri siliyordu. Zayıf bir telefonda (Mali-G52)
+ * yerleşkenin canlı resmi 40 sn GPU; her güncellemeden sonra şehir o
+ * kadar takıldı. Çizim kodu ortak paketten yeni bir şey okumaya başlarsa
+ * `kalici.test.ts` kırılıyor ve kaynağı buraya eklemeyi söylüyor.
  *
  * Özet `kalici.ts` içindeki `__CIZIM_SURUMU__` yerine yazılıyor. Geliştirme
  * sunucusunda bu dosyalardan biri değişince özet yeniden hesaplanıyor ve
@@ -20,18 +27,20 @@ import { join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const KOK = fileURLToPath(new URL('../..', import.meta.url));
+/**
+ * `src/cizim`de resme dokunmayan dosyalar: ölçüm panosu, geliştirme
+ * galerisi, kalıcı depo (biçimi `SURUM_DB` ile sürümlü) ve testlerin parmak
+ * izi aracı.
+ */
+const RESIMSIZ = new Set(['cizimOlcumu.ts', 'Galeri.tsx', 'kalici.ts', 'parmakizi.ts']);
 const KAYNAKLAR = [
   {
     dizin: join(KOK, 'apps/web/src/cizim'),
-    uygun: (f) => /\.tsx?$/.test(f) && !/\.test\./.test(f),
+    uygun: (f) =>
+      /\.tsx?$/.test(f) && !/\.test\./.test(f) && !RESIMSIZ.has(String(f).split(/[\\/]/).pop()),
   },
-  { dizin: join(KOK, 'data'), uygun: (f) => f.endsWith('.json') },
-  { dizin: join(KOK, 'packages/shared/src'), uygun: (f) => f.endsWith('.ts') },
-  // Dünya modelinin kıyı yolu (`cizim/dunya.ts` buradan okuyor).
-  {
-    dizin: join(KOK, 'apps/web/src/components/harita'),
-    uygun: (f) => /(^|[\\/])kara\.ts$/.test(f),
-  },
+  // `AKIN_YOL` (diyarlar.ts) `data/akinlar.json`dan geliyor.
+  { dizin: join(KOK, 'data'), uygun: (f) => /(^|[\\/])akinlar\.json$/.test(f) },
 ];
 const HEDEF = '/cizim/kalici.ts';
 /** Vite kimlikleri ve değişen dosya yolları her işletim sisteminde `/` ile. */
@@ -66,6 +75,8 @@ export function cizimSurumu() {
     name: 'cizim-surumu',
     transform(kod, id) {
       if (!duz(id.split('?')[0]).endsWith(HEDEF) || !kod.includes('__CIZIM_SURUMU__')) return null;
+      // Metin olarak okunan kaynak (`?raw`, testte) değişmiyor.
+      if (/[?&]raw\b/.test(id)) return null;
       ozet ??= hesapla();
       return { code: kod.replaceAll('__CIZIM_SURUMU__', JSON.stringify(ozet)), map: null };
     },

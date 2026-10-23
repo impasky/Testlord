@@ -42,6 +42,22 @@ export function sonrakiVakit(v: Vakit): Vakit {
   return VAKITLER[(VAKITLER.indexOf(v) + 1) % VAKITLER.length]!;
 }
 
+/** Vakitlerin başladığı saatler (yerel): sabah, öğle, akşam. */
+const VAKIT_SAATLERI = [5, 11, 17];
+
+/** Bir sonraki vaktin başladığı an (cihazın yerel saatiyle). */
+export function sonrakiVakitAni(an: Date = new Date()): Date {
+  for (const saat of VAKIT_SAATLERI) {
+    const d = new Date(an);
+    d.setHours(saat, 0, 0, 0);
+    if (d > an) return d;
+  }
+  const d = new Date(an);
+  d.setDate(d.getDate() + 1);
+  d.setHours(VAKIT_SAATLERI[0]!, 0, 0, 0);
+  return d;
+}
+
 const birim = (a: V3): V3 => {
   const l = Math.hypot(a[0], a[1], a[2]) || 1;
   return [a[0] / l, a[1] / l, a[2] / l];

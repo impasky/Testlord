@@ -703,9 +703,28 @@ export function glCiz(
     });
   const teslim = secenek.kademeli ? 'kademeli' : 'erken';
   // Telefonda ölçüm (`?olcum=1`, `cizimOlcumu.ts`): kapalıyken hiçbir şey.
-  const olc = olcumAcik() ? { istendi: performance.now(), cizim: 0, deneme: 0 } : null;
+  const olc = olcumAcik()
+    ? {
+        istendi: performance.now(),
+        cizim: 0,
+        deneme: 0,
+        evreler: undefined as CizimSonucu['evreler'],
+      }
+    : null;
   const cizdir = (y?: (s: CizimSonucu) => void) =>
-    olc ? olcerek(olc, () => calistir(istek, y, yay, teslim)) : calistir(istek, y, yay, teslim);
+    olc
+      ? olcerek(olc, () =>
+          calistir(
+            istek,
+            (s) => {
+              olc.evreler = s.evreler;
+              y?.(s);
+            },
+            yay,
+            teslim,
+          ),
+        )
+      : calistir(istek, y, yay, teslim);
   const calis = grup ? async () => (await okuma) ?? cizdir(yaz) : () => cizdir();
   const sirala = (): Promise<string | null> => {
     if (secenek.sonra) {
@@ -754,6 +773,7 @@ export function glCiz(
       cizim: olc.cizim,
       kesilme: Math.max(0, olc.deneme - 1),
       bitti: simdi,
+      evreler: olc.evreler,
     });
   });
   ONBELLEK.set(anahtar, is);

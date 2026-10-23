@@ -57,6 +57,7 @@ function cihaz() {
   };
 }
 
+const saniye = (x: number) => `${(x / 1000).toFixed(1)} sn`;
 const yuzde = (x: number) => `%${(x * 100).toFixed(1).replace('.', ',')}`;
 
 function takilmaSatiri(t: EkranTakilmasi): string {
@@ -88,8 +89,7 @@ function rapor(
     ...takilma.map(takilmaSatiri),
     'Son takılmalar (en yenisi üstte):',
     ...sonTakilmalar.map(
-      (t) =>
-        `${t.ekran} · ${t.tur === 'kare' ? 'kare' : 'görev'} ${ms(t.sure)} · ${(t.an / 1000).toFixed(1)} sn`,
+      (t) => `${t.ekran} · ${t.tur === 'kare' ? 'kare' : 'görev'} ${ms(t.sure)} · ${saniye(t.an)}`,
     ),
     'Son çizimler (en yenisi üstte):',
     ...[...kayitlar]
@@ -98,9 +98,40 @@ function rapor(
       .map(
         (k) =>
           `${kisaAd(k.anahtar)} · ${KAYNAK[k.kaynak]}${k.taslak ? ' (taslak)' : ''} · ${ms(k.toplam)}` +
-          ` (çizimde ${ms(k.cizim)})${k.kesilme ? ` · ${k.kesilme} kez kesildi` : ''}`,
+          ` (çizimde ${ms(k.cizim)})${k.kesilme ? ` · ${k.kesilme} kez kesildi` : ''}` +
+          // Takılmalarla aynı saat: hangi çizim sürerken takıldığı okunsun.
+          ` · ${saniye(k.bitti - k.toplam)}–${saniye(k.bitti)}` +
+          (k.evreler && k.cizim >= EVRE_ESIGI ? `\n  aşamalar: ${evreSatiri(k.evreler)}` : ''),
       ),
   ].join('\n');
+}
+
+/** Bundan uzun süren çizimin aşamaları da yazılıyor (ms). */
+const EVRE_ESIGI = 500;
+
+/** Aşamaların okunur adları, çizim sırasıyla (`CizimSonucu.evreler`). */
+const EVRE_ADI: [string, string][] = [
+  ['hazirlik', 'hazırlık'],
+  ['golge', 'gölge'],
+  ['ana', 'ana geçiş'],
+  ['coz', 'kenar ve çözme'],
+  ['png', 'bulanıklık ve PNG'],
+  ['katman', 'katmanlar'],
+  ['kareKur', 'kare geometrisi'],
+  ['atlasCiz', 'canlı kareler: çizim'],
+  ['atlasCoz', 'çözme'],
+  ['atlasPng', 'kare PNG'],
+  // Tek seferde GPU'ya giden en uzun iş: ekran en çok bu kadar bekledi.
+  ['enUzunDurak', 'en uzun GPU işi'],
+];
+
+function evreSatiri(e: Record<string, number>): string {
+  return EVRE_ADI.filter(([k]) => e[k] !== undefined)
+    .map(
+      ([k, ad]) =>
+        `${ad} ${ms(e[k]!)}${k === 'atlasCiz' && e.atlasKare ? ` (${e.atlasKare} kare)` : ''}`,
+    )
+    .join(' · ');
 }
 
 const KAYNAK: Record<CizimKaydi['kaynak'], string> = {

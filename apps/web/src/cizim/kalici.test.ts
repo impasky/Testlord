@@ -26,4 +26,33 @@ describe('kalıcı çizim deposu', () => {
     // Başka dosyaya dokunmuyor.
     expect(e.transform(kod, '/proje/apps/web/src/cizim/gl.ts')).toBeNull();
   });
+
+  /*
+   * Sürüm yalnız çizimi belirleyen kaynaklardan (`vite-cizim-surumu.mjs`):
+   * çizim kodu ve okuduğu tek ortak değerin kaynağı. Çizim dışarıdan yeni
+   * bir şey okumaya başlarsa o kaynak özete girmeli, yoksa değişince
+   * cihazdaki eski resim kalır. Bu test o anı yakalıyor.
+   */
+  it('çizim kodu dışarıdan yalnız özetteki kaynakları okuyor', () => {
+    const kaynaklar = import.meta.glob<string>(['./*.ts', './*.tsx', '!./*.test.*'], {
+      query: '?raw',
+      import: 'default',
+      eager: true,
+    });
+    const disaridan = new Set<string>();
+    for (const kod of Object.values(kaynaklar)) {
+      for (const [, adlar, yer] of kod.matchAll(
+        /import\s+(?:type\s+)?\{([^}]*)\}\s+from\s+'([^']+)'/g,
+      )) {
+        if (yer!.startsWith('./') || yer === 'react') continue;
+        for (const a of adlar!.split(',').map((x: string) => x.trim().replace(/^type\s+/, '')))
+          if (a) disaridan.add(`${yer} ${a}`);
+      }
+      for (const [, yer] of kod.matchAll(/from\s+'([^']+)'/g))
+        if (!yer!.startsWith('./') && yer !== 'react' && yer !== '@lordlar/shared')
+          disaridan.add(yer!);
+    }
+    // Yeni bir satır eklendiyse: kaynağını vite-cizim-surumu.mjs KAYNAKLAR'a ekle.
+    expect([...disaridan].sort()).toEqual(['@lordlar/shared AKIN_YOL']);
+  });
 });

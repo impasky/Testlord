@@ -72,6 +72,8 @@ export interface CizimKaydi {
   kesilme: number;
   /** Ne zaman bitti (sayfa açıldıktan sonra, ms). */
   bitti: number;
+  /** Çizimin aşama süreleri (`CizimSonucu.evreler`); kayıttan gelende yok. */
+  evreler?: Record<string, number>;
 }
 
 const KAYITLAR: CizimKaydi[] = [];

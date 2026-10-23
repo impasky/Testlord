@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { ISIK } from './uc';
-import { VAKITLER, VAKIT_ISIGI, gununVakti, sonrakiVakit, vakitAnahtari } from './vakit';
+import {
+  VAKITLER,
+  VAKIT_ISIGI,
+  gununVakti,
+  sonrakiVakit,
+  sonrakiVakitAni,
+  vakitAnahtari,
+} from './vakit';
 
 const saat = (s: number, d = 0) => new Date(2026, 9, 16, s, d);
 
@@ -59,5 +66,17 @@ describe('günün vakti', () => {
     expect(a.ortam).toBeLessThan(1);
     expect(a.gunes[0]).toBeGreaterThan(a.gunes[2]);
     expect(a.acikTon[0]).toBeGreaterThan(a.acikTon[2]);
+  });
+
+  it('bir sonraki vaktin başladığı an: aynı gün ya da ertesi sabah', () => {
+    expect(sonrakiVakitAni(saat(4, 59))).toEqual(saat(5));
+    expect(sonrakiVakitAni(saat(5))).toEqual(saat(11));
+    expect(sonrakiVakitAni(saat(16, 30))).toEqual(saat(17));
+    expect(sonrakiVakitAni(saat(23, 10))).toEqual(new Date(2026, 9, 17, 5, 0));
+    // Dönülen vakit, o anın vaktinden sonraki vakit.
+    for (const s of [0, 6, 12, 18]) {
+      const an = saat(s);
+      expect(gununVakti(sonrakiVakitAni(an))).toBe(sonrakiVakit(gununVakti(an)));
+    }
   });
 });

@@ -1,4 +1,5 @@
 {
+  "t1c50395f": "\n  aşamalar: {0}",
   "te04af9d4": " · {0} bölgen",
   "teaf79905": " · {0} cihaz",
   "t6bfb7bdb": " · {0} kez kesildi",
@@ -8,6 +9,7 @@
   "t21aeb7e9": " · birlik {0}",
   "t64fe69d3": " · en az Sv{0}",
   "t55a9c0fe": " · uzun görev {0} ({1})",
+  "t6fd37091": " ({0} kare)",
   "t07a293f0": " (çizimde {0}){1}",
   "tb5cd679c": ", {0} sürüyor",
   "tfc687484": ", araştırmadan {0}",
@@ -27,7 +29,6 @@
   "t54b472ad": "{0} — profil",
   "t5272cb67": "{0} — profil resmi şikâyeti",
   "t20ea3efc": "{0} — şikâyet",
-  "t42db26f8": "{0} · {1} {2} · {3} sn",
   "t89eb3d42": "{0} · +%{1} yağma",
   "t5eef9690": "{0} · AÇ",
   "t56145914": "{0} · bina tavanı {1}",

@@ -1258,6 +1258,14 @@ export interface CizimSonucu {
   bayrak?: BayrakAtlasi;
   /** Canlı dumanın kaynakları (hareketli sahne; bkz. `duman.ts`). */
   dumanlar?: DumanKaynagi[];
+  /**
+   * Aşama süreleri (ms; `atlasKare` sayı): telefonda ölçüm raporu
+   * (`cizimOlcumu.ts`) hangi aşamanın pahalı olduğunu buradan söylüyor.
+   * Aşamalar arasında GPU bekleniyor (şerit durakları, PNG), süreler GPU
+   * işini de içeriyor. `enUzunDurak`: tek seferde GPU'ya giden en uzun iş —
+   * ekran en çok bu kadar bekledi (bkz. `SERIT_MS`).
+   */
+  evreler?: Record<string, number>;
 }
 
 /** Atlas rafının eni: çok ağaçlı sahnede atlas tek uzun sütun olmasın. */
@@ -1361,8 +1369,8 @@ export class CizimKesildi extends Error {}
 let kesmeSorusu: (() => boolean) | undefined;
 
 /**
- * Bir şeridin örnek sayısı: büyük çizim bu boyda şeritlere bölünüp tek tek
- * GPU'ya gidiyor. Tek bir GPU çizimi yarıda durdurulamıyor (işçiyi
+ * Bundan çok örnekli çizim şeritlere bölünüp tek tek GPU'ya gidiyor (şerit
+ * boyu `SERIT_MS`'ten). Tek bir GPU çizimi yarıda durdurulamıyor (işçiyi
  * sonlandırmak da durdurmuyordu: Chrome'da gönderilmiş komutlar bitiriliyor,
  * yeni işçinin çizimi onları bekliyordu). Şerit arasında GPU'nun bitirmesi
  * bekleniyor ve kesme isteğine bakılıyor: kesilen çizim en çok bir şerit
@@ -1372,13 +1380,42 @@ let kesmeSorusu: (() => boolean) | undefined;
  */
 const SERIT_ORNEK = 1_000_000;
 
+/**
+ * Bir şeridin hedef süresi (ms). GPU'ya gitmiş iş yarıda kesilmiyor ve
+ * ekranın karesi de onun arkasında bekliyor. Şerit sabit bir milyon
+ * örnekti: masaüstünde birkaç ms, telefonda (Mali-G52) şehir çizilirken
+ * kareler 70–260 ms takılıyordu. Hız bilinmiyorsa ilk şerit küçük
+ * (`OLCUM_SERIDI`), ölçü ondan; sonrakiler ölçülen hızdan (`HIZ`) bu
+ * süreye göre. Hızlı GPU'da şerit büyüyor, durak azalıyor.
+ */
+const SERIT_MS = 25;
+
+/** Hız bilinmeyen geçişin ilk şeridi (örnek): yavaş GPU'da da kısa sürsün. */
+const OLCUM_SERIDI = 125_000;
+
+/**
+ * Bir geçişin en çok şerit sayısı: her şerit bütün geometriyi yeniden
+ * işliyor, durakta GPU boş bekliyor.
+ */
+const EN_COK_SERIT = 64;
+
+/** Geçişlerin ölçülen hızı (örnek / ms), işçinin ömrü boyunca (`seritle`). */
+const HIZ: Record<string, number> = {};
+
+/** Süren çizimin en uzun durağı (ms): ölçüm raporunda (`CizimSonucu.evreler`). */
+let enUzunDurak = 0;
+
 /** Kesme istendiyse dur. */
 function kesildiyse() {
   if (kesmeSorusu?.()) throw new CizimKesildi();
 }
 
-/** Durak: GPU buraya kadarki komutları bitirsin (beklerken işçi mesaj alıyor). */
-async function durak(gl: WebGL2RenderingContext) {
+/**
+ * Durak: GPU buraya kadarki komutları bitirsin (beklerken işçi mesaj
+ * alıyor). Döndürdüğü: bekleme süresi (ms), GPU'nun o işi bitirme süresi.
+ */
+async function durak(gl: WebGL2RenderingContext): Promise<number> {
+  const bas = performance.now();
   const f = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
   gl.flush();
   if (f) {
@@ -1386,7 +1423,10 @@ async function durak(gl: WebGL2RenderingContext) {
       await new Promise((r) => setTimeout(r, 0));
     gl.deleteSync(f);
   }
+  const sure = performance.now() - bas;
+  enUzunDurak = Math.max(enUzunDurak, sure);
   kesildiyse();
+  return sure;
 }
 
 /**
@@ -1411,27 +1451,45 @@ async function ara(gl: WebGL2RenderingContext, n: number) {
 }
 
 /**
- * Hedefin tamamına `ciz`; `n` şeritte (makasla, alttan üste), her şeritten
- * sonra durakla. `n` 1 ise tek seferde, sonra yoklama; 0 ise (kesilemeyen
- * çizim, ana iş parçacığında) hiçbiri.
+ * Hedefin tamamına `ciz`; şeritte (makasla, alttan üste), her şeritten
+ * sonra durakla. Şerit boyu geçişin (`tur`) ölçülen hızından, `SERIT_MS`
+ * sürecek kadar; ölçü yoksa önce küçük bir ölçüm şeridi. `n` 1 ise
+ * (küçük) tek seferde, sonra yoklama — o hızda `SERIT_MS`'in iki katını
+ * aşmıyorsa. 0 ise (kesilemeyen çizim, ana iş parçacığında) hiçbiri.
+ * Şerit boyu çıktıyı değiştirmiyor: aynı çizim, yalnız makas.
  */
 async function seritle(
   gl: WebGL2RenderingContext,
   w: number,
   h: number,
   n: number,
+  tur: string,
   ciz: () => void,
 ) {
-  if (n <= 1) {
+  const hiz = HIZ[tur];
+  if (n === 0 || (n === 1 && (!hiz || (w * h) / hiz <= 2 * SERIT_MS))) {
     ciz();
     return ara(gl, n);
   }
-  const adim = Math.ceil(h / n);
+  const enAz = Math.ceil(h / EN_COK_SERIT);
   gl.enable(gl.SCISSOR_TEST);
-  for (let y = 0; y < h; y += adim) {
-    gl.scissor(0, y, w, Math.min(adim, h - y));
+  for (let y = 0; y < h;) {
+    const v = HIZ[tur];
+    const adim = Math.min(
+      h - y,
+      v
+        ? Math.max(enAz, Math.floor((v * SERIT_MS) / w))
+        : Math.max(enAz, Math.ceil(OLCUM_SERIDI / w)),
+    );
+    gl.scissor(0, y, w, adim);
     ciz();
-    await durak(gl);
+    const sure = await durak(gl);
+    y += adim;
+    // Bekleme yoklamayla ölçülüyor (birkaç ms payı); çok kısa şerit ölçü değil.
+    if (sure >= 4) {
+      const yeni = (w * adim) / sure;
+      HIZ[tur] = v ? (v + yeni) / 2 : yeni;
+    }
   }
   gl.disable(gl.SCISSOR_TEST);
 }
@@ -1480,6 +1538,14 @@ async function ciz(istek: CizimIstegi, kismi?: KismiGonder): Promise<CizimSonucu
   // Şerit sayısı: kesilebilen çizimde (işçide) en az bir, büyükte birden
   // çok (bkz. `SERIT_ORNEK`); kesilemiyorsa 0, durak yok.
   const n = kesmeSorusu ? Math.max(1, Math.ceil((sen * sboy) / SERIT_ORNEK)) : 0;
+  const evreler: Record<string, number> = {};
+  enUzunDurak = 0;
+  let evreBasi = performance.now();
+  const evre = (ad: string) => {
+    const simdi = performance.now();
+    evreler[ad] = (evreler[ad] ?? 0) + (simdi - evreBasi);
+    evreBasi = simdi;
+  };
   try {
     // 1) Gölge haritası: yalnız nesneler, iki yüzlü.
     if (golgeVar) {
@@ -1503,6 +1569,7 @@ async function ciz(istek: CizimIstegi, kismi?: KismiGonder): Promise<CizimSonucu
       gl.disable(gl.POLYGON_OFFSET_FILL);
     }
 
+    evre('golge');
     // Salınan parçalar (bayrak, sancak, ağaç) için kare atlası kurulabilir
     // mi: kurulamazsa (çok büyük, bellek) onlar ana resme çiziliyor.
     const by = istek.hareket ? istek.bayrak : undefined;
@@ -1580,7 +1647,7 @@ async function ciz(istek: CizimIstegi, kismi?: KismiGonder): Promise<CizimSonucu
     const tBez = !plan && ag.bez.length && !istek.yama ? tampon(gl, ag.bez) : null;
     const tSaydam = ag.saydam.length ? tampon(gl, ag.saydam) : null;
     for (const t of [tYer, tNesne, tBez, tSaydam]) if (t) silinecek.push(t.sil);
-    await seritle(gl, sen, sboy, n, () => {
+    await seritle(gl, sen, sboy, n, 'ana', () => {
       gl.drawBuffers([
         gl.COLOR_ATTACHMENT0,
         gl.COLOR_ATTACHMENT1,
@@ -1618,6 +1685,7 @@ async function ciz(istek: CizimIstegi, kismi?: KismiGonder): Promise<CizimSonucu
       }
     });
 
+    evre('ana');
     // 3) Kenar + indirgeme → tuval (tilt-shift varsa önce ara dokuya).
     if (k.tuval.width !== en) k.tuval.width = en;
     if (k.tuval.height !== boy) k.tuval.height = boy;
@@ -1674,7 +1742,8 @@ async function ciz(istek: CizimIstegi, kismi?: KismiGonder): Promise<CizimSonucu
     gl.uniform3f(uc('u_golgeTon'), vi.golgeTon[0], vi.golgeTon[1], vi.golgeTon[2]);
     gl.uniform3f(uc('u_acikTon'), vi.acikTon[0], vi.acikTon[1], vi.acikTon[2]);
     gl.bindVertexArray(null);
-    await seritle(gl, en, boy, n, () => gl.drawArrays(gl.TRIANGLES, 0, 3));
+    await seritle(gl, en, boy, n, 'coz', () => gl.drawArrays(gl.TRIANGLES, 0, 3));
+    evre('coz');
 
     // 4) Tilt-shift: ara doku → tuval.
     const ub = (ad: string) => gl.getUniformLocation(k.bulanik, ad);
@@ -1715,7 +1784,8 @@ async function ciz(istek: CizimIstegi, kismi?: KismiGonder): Promise<CizimSonucu
     if (gl.isContextLost()) return null;
     const resim = await blobla(k.tuval);
     if (!resim) return null;
-    const sonuc: CizimSonucu = { resim };
+    evre('png');
+    const sonuc: CizimSonucu = { resim, evreler };
     if (!istek.hareket) return sonuc;
 
     // 5) Hareket katmanları: aynı hedeflerden, aynı kırpım ve bulanıklıkla.
@@ -1753,6 +1823,7 @@ async function ciz(istek: CizimIstegi, kismi?: KismiGonder): Promise<CizimSonucu
       if (b) sonuc[ad] = b;
     }
 
+    evre('katman');
     // 6) Salınan parçalar (bayrak, sancak, ağaç): her karede bütün parçalar
     // tek geçişte, ana hedeflerde çakışmayan hücrelere kaydırılarak
     // çiziliyor (sayfa). Sahnenin önündekiler (kule, çatı, yamaç) ana geçişin
@@ -1785,7 +1856,10 @@ async function ciz(istek: CizimIstegi, kismi?: KismiGonder): Promise<CizimSonucu
       const kareSayisi = (i: number) => by.kareSayilari?.[i] ?? kare;
       for (let f = 0; f < kare; f++) {
         await ara(gl, n);
+        evre('atlasCoz');
+        // Karenin geometrisi işlemcide kuruluyor (`kareAl`): ayrı ölçülüyor.
         const t = tampon(gl, kareTamponu(by, f));
+        evre('kareKur');
         for (let sayfa = 0; sayfa < sayfaSayisi; sayfa++) {
           // Turu bu kareden kısa olan parça çizilmiyor (atlasta yeri yok).
           const uyeler = dolu.filter((i) => yerlesim[i]!.sayfa === sayfa && f < kareSayisi(i));
@@ -1832,6 +1906,9 @@ async function ciz(istek: CizimIstegi, kismi?: KismiGonder): Promise<CizimSonucu
           gl.uniform1i(u('u_sahneVar'), 0);
           gl.disable(gl.DEPTH_TEST);
           gl.disable(gl.SCISSOR_TEST);
+          // Çizim ile çözme ayrı GPU işi: biri bitmeden öteki gitmiyor (`SERIT_MS`).
+          await ara(gl, n);
+          evre('atlasCiz');
           // b) Çözme: kenar ve ortam gölgesi parçanın kendi derinliğinden,
           // renk düzenlemesi; hare yok. Tilt-shift varsa bütün sayfa ara
           // dokuya, yoksa hücre hücre doğrudan atlasa.
@@ -1929,6 +2006,7 @@ async function ciz(istek: CizimIstegi, kismi?: KismiGonder): Promise<CizimSonucu
           );
         }
       }
+      evre('atlasCoz');
       // Atlas → tuval → PNG (tek okuma).
       k.tuval.width = Wa;
       k.tuval.height = Ha;
@@ -1952,9 +2030,13 @@ async function ciz(istek: CizimIstegi, kismi?: KismiGonder): Promise<CizimSonucu
       }
       const resim = await blobla(k.tuval);
       if (resim) sonuc.bayrak = { resim, ...atlas };
+      evre('atlasPng');
+      evreler.atlasKare = kare;
     }
     return sonuc;
   } finally {
+    // Sonuçla aynı nesne: erken dönüşte de yazılıyor.
+    evreler.enUzunDurak = enUzunDurak;
     // Kesildiyse de tamponlar bırakılıyor, makas kapanıyor.
     for (const s of silinecek.splice(0)) s();
     gl.disable(gl.SCISSOR_TEST);
