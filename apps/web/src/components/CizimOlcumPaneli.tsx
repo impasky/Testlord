@@ -25,6 +25,7 @@ import {
   type EkranTakilmasi,
 } from '../cizim/cizimOlcumu';
 import { glVarMi } from '../cizim/gl';
+import { kaliciDurumu, type KaliciDurum } from '../cizim/kalici';
 
 /** GPU'nun adı: küçük bir bağlam açılıp sürücüye soruluyor, hemen bırakılıyor. */
 function gpuAdi(): string {
@@ -58,6 +59,32 @@ function cihaz() {
 }
 
 const saniye = (x: number) => `${(x / 1000).toFixed(1)} sn`;
+const mb = (x: number | undefined) =>
+  x === undefined ? '?' : x >= 1e9 ? `${(x / 1e9).toFixed(1)} GB` : `${Math.round(x / 1e6)} MB`;
+
+/**
+ * Cihaz kaydının durumu tek satırda (`kalici.ts`): "Kayıttan: 0" ise
+ * nedeni burada — depo açılmadı mı, kayıt yazılamadı mı, sürüm mü değişti.
+ */
+function depoSatiri(d: KaliciDurum | null): string {
+  if (!d) return 'Cihaz kaydı: ?';
+  if (!d.acik) return `Cihaz kaydı: açılamadı${d.sonHata ? ` (${d.sonHata})` : ''}`;
+  return (
+    `Cihaz kaydı: sürüm ${d.surum} · ${d.kayit} kayıt (${d.guncel} bu sürümün)` +
+    ` · okundu ${d.okunan}, bulunamadı ${d.yok}, eski sürüm ${d.eski}` +
+    ` · yazıldı ${d.yazilan}, yazılamadı ${d.yazmaHatasi}${d.sonHata ? ` (${d.sonHata})` : ''}` +
+    ` · kalıcı ${d.kalici === undefined ? '?' : d.kalici ? 'evet' : 'hayır'}` +
+    ` · ${mb(d.kullanim)} / ${mb(d.kota)}`
+  );
+}
+
+/** Şehrin ortam katmanı nasıl oynuyor (docs/24 "Ortam tuvali"). */
+function ortamSatiri(): string {
+  if (document.querySelector('.ortam-tuvali')) return 'Ortam katmanı: tuval (işçide)';
+  if (document.querySelector('.hareket-su, .hareket-cimen, .hareket-isik'))
+    return 'Ortam katmanı: CSS katmanları';
+  return 'Ortam katmanı: yok';
+}
 const yuzde = (x: number) => `%${(x * 100).toFixed(1).replace('.', ',')}`;
 
 function takilmaSatiri(t: EkranTakilmasi): string {
@@ -71,6 +98,7 @@ function rapor(
   kayitlar: readonly CizimKaydi[],
   takilma: EkranTakilmasi[],
   c: ReturnType<typeof cihaz>,
+  depo: KaliciDurum | null,
 ): string {
   const o = ozet(kayitlar);
   const sonTakilmalar = [...takilmalar()].reverse().slice(0, 40);
@@ -85,6 +113,8 @@ function rapor(
     satir('Çizim', o.cizim),
     satir('Taslak', o.taslak),
     `Kesilme: ${o.kesilme}`,
+    depoSatiri(depo),
+    ortamSatiri(),
     `Takılma (${KARE_ESIGI} ms'yi aşan kare, uzun görev), ekran ekran:`,
     ...takilma.map(takilmaSatiri),
     'Son takılmalar (en yenisi üstte):',
@@ -113,6 +143,7 @@ const EVRE_ESIGI = 500;
 const EVRE_ADI: [string, string][] = [
   ['hazirlik', 'hazırlık'],
   ['golge', 'gölge'],
+  ['yukleme', 'gölge ve yükleme (GPU)'],
   ['ana', 'ana geçiş'],
   ['coz', 'kenar ve çözme'],
   ['png', 'bulanıklık ve PNG'],
@@ -149,12 +180,24 @@ export function CizimOlcumPaneli() {
   useEffect(takilmaIzle, []);
   // Cihaz bilgisi bir kez (GPU'ya sormak bir bağlam açıyor).
   const c = useMemo(cihaz, []);
+  // Cihaz kaydı açılışta ve pano açıkken birkaç saniyede bir.
+  const [depo, setDepo] = useState<KaliciDurum | null>(null);
+  useEffect(() => {
+    let bitti = false;
+    const al = () => void kaliciDurumu().then((d) => !bitti && setDepo(d));
+    al();
+    const z = acikMi ? setInterval(al, 5000) : undefined;
+    return () => {
+      bitti = true;
+      clearInterval(z);
+    };
+  }, [acikMi]);
   if (!gorunur) return null;
   const kayitlar = olcumKayitlari();
   const o = ozet(kayitlar);
   const takilma = takilmaOzeti(takilmalar(), izlenenKareler());
   const takilmaSayisi = takilma.reduce((a, t) => a + t.takilma + t.gorev, 0);
-  const metin = rapor(kayitlar, takilma, c);
+  const metin = rapor(kayitlar, takilma, c, depo);
 
   const kopyala = async () => {
     try {
@@ -168,7 +211,7 @@ export function CizimOlcumPaneli() {
 
   return (
     <div
-      className="fixed left-2 z-[70] max-w-[calc(100vw-16px)] rounded-xl border border-kenar bg-gece/95 text-[12px] text-parsomen shadow-lg backdrop-blur"
+      className="fixed left-2 z-[70] max-w-[calc(100vw-16px)] rounded-xl border border-kenar bg-gece/95 text-[12px] text-parsomen shadow-lg"
       style={{ bottom: 'calc(var(--alt-bar) + var(--omurga-serit) + 8px)' }}
       data-cizim-olcumu=""
     >
@@ -199,6 +242,7 @@ export function CizimOlcumPaneli() {
             <li>{`Çizim: ${o.cizim.sayi} · ort ${ms(o.cizim.ortalama)} · en uzun ${ms(o.cizim.enUzun)}`}</li>
             <li>{`Taslak: ${o.taslak.sayi} · ort ${ms(o.taslak.ortalama)}`}</li>
             <li>{`Kesilme: ${o.kesilme}`}</li>
+            <li>{depoSatiri(depo)}</li>
           </ul>
           <p className="mt-2 font-bold text-altin">Takılma</p>
           <ul className="tabular space-y-0.5">

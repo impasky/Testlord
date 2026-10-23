@@ -2980,7 +2980,7 @@ ve yer adları o dünyanın parçası.
   Šiauliai
   Ṭarābulus
 
---- Cümle parçaları (16) ---
+--- Cümle parçaları (17) ---
 
 Bunlar tek başına çevrilemez, çünkü tek başına bir anlamı yok: kodda başka
 metinlerle birleşerek cümle oluyorlar (" ve ", ", boş" gibi). Bir
@@ -2989,6 +2989,8 @@ bilmeden çeviremez, üstelik İngilizcede sözcük sırası değişince parça
 yanlış yere düşer. Bunların çözümü çeviri değil KOD: birleştirmelerin tek
 bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
 
+  " · okundu {0}, bulunamadı {1}, eski sürüm {2}"
+      apps/web/src/components/CizimOlcumPaneli.tsx:74
   " ve "
       apps/web/src/screens/Arastirma.tsx:944
   " ya da "

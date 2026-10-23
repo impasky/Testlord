@@ -29,7 +29,7 @@
 - **Mağaza (P2S): elmas, hızlandırma, Google Play, AdMob:** `packages/shared/src/magaza.ts`, `apps/api/src/routes/magaza.ts`, `apps/api/src/services/play.ts`, `apps/api/src/services/reklam.ts`, `apps/web/src/screens/Magaza.tsx`, `docs/25-magaza.md`
 - **Öğretici ve zorunlu rehber (kâhya ışığı, omurga):** `packages/shared/src/rehber.ts`, `apps/web/src/components/Ogretici.tsx`, `apps/web/src/components/RehberIsigi.tsx`, `apps/web/src/components/Rehber.tsx`
 - **Çizim motoru (3B, GPU, kalıcı önbellek):** `apps/web/src/cizim/uc.ts`, `apps/web/src/cizim/Sahne.tsx`, `apps/web/src/cizim/gl.ts`, `apps/web/src/cizim/kalici.ts`
-- **Akıcılık, kasma, canlı sahne (bayrak, duman, su, ışık, hava):** `apps/web/src/App.tsx`, `apps/web/src/lib/turOlayi.ts`, `apps/web/src/cizim/Sahne.tsx`, `apps/web/src/styles.css`, `apps/web/src/components/HavaKatmani.tsx`, `apps/web/src/screens/yerleskeYakinligi.ts`
+- **Akıcılık, kasma, canlı sahne (bayrak, duman, su, ışık, hava):** `apps/web/src/App.tsx`, `apps/web/src/lib/turOlayi.ts`, `apps/web/src/cizim/Sahne.tsx`, `apps/web/src/cizim/ortamIsci.ts`, `apps/web/src/styles.css`, `apps/web/src/components/HavaKatmani.tsx`, `apps/web/src/screens/yerleskeYakinligi.ts`
 - **Arayüz kabuğu, alt gezinme, API istemcisi:** `apps/web/src/App.tsx`, `apps/web/src/components/MobilKabuk.tsx`, `apps/web/src/api/client.ts`
 - **Çeviri (Türkçe → İngilizce):** `tools/metin-cikar.mjs`, `tools/ceviri-al.mjs`, `apps/web/vite-ceviri.mjs`, `packages/shared/src/dil.ts`
 - **Yayın kontrolü (eksik sunucu ayarları):** `packages/shared/src/yayin.ts`, `apps/api/src/services/yayin.ts`
@@ -246,15 +246,18 @@
 - `apps/web/src/cizim/diyarlar.ts` — AKIN DİYARLARI — beş diyarın kapağı (16:9) ve haritası (kare) (docs/24). · dışa: DIYAR_ADLARI, Diyar, Kadraj, KAPAK_KUTUSU, HARITA_KUTUSU, diyarModeli
 - `apps/web/src/cizim/duman.ts` — Canlı dumanın kaynakları (docs/24 "Hareket"): hareketli GPU resminde duman yok; sayfada CSS yumruları olarak yükseliyor. · dışa: DumanKaynagi, dumanKaynaklari
 - `apps/web/src/cizim/figur.ts` — FİGÜRLER — asker, düşman, at, mancınık (docs/24). · dışa: BaslikTipi, EsyaTipi, Esya, Insan, kalkan, kilicModeli, insan, AtAyari, at, mancinik
-- `apps/web/src/cizim/gl.ts` — GPU çiziminin kapısı (docs/24): sıra, önbellek ve işçi. · dışa: GlIstek, Katmanlar, glKatmanlari, glVarMi, KismiAlan, glCiz, glOnceden, glBirak, seritKutusu, glSerit, glSeritKes, glKaydet, glKalici, glOnYukle, EN_BUYUK, aoYaricapi +2 · (testi var)
+- `apps/web/src/cizim/gl.ts` — GPU çiziminin kapısı (docs/24): sıra, önbellek ve işçi. · dışa: GlIstek, Katmanlar, glKatmanlari, glVarMi, glKatmanBlobu, KismiAlan, glCiz, glOnceden, glBirak, seritKutusu, glSerit, glSeritKes, glKaydet, glKalici, glOnYukle, EN_BUYUK +3 · (testi var)
 - `apps/web/src/cizim/glAg.ts` — Modelden GPU ağı (docs/24). · dışa: KOSE, DOKU_NO, dokuBul, Ag, agYap
 - `apps/web/src/cizim/glCizici.ts` — GPU ÇİZİMİ (WebGL2) — aynı 3B model, tarayıcının izin verdiği en temiz hâliyle (docs/24). · dışa: EN_BUYUK, yazilimMi, sayfalaraYerlestir, goruntuMatrisi, CizimIstegi, KismiSonuc, KismiGonder, ornekSayisi, aoYaricapi, BayrakKareleri, BayrakAtlasi, CizimSonucu, atlasDuzeni, IsciIstegi, IsciCevabi, aktarilanlar +3
 - `apps/web/src/cizim/glIsci.ts` — GPU çizim işçisi (docs/24): `glCizici`yi ana iş parçacığının dışında koşturuyor.
 - `apps/web/src/cizim/hava.ts` — Hava (docs/24 "Hava") — yalnız görsel, ara sıra. · dışa: Hava, HAVALAR, HAVA_DILIMI_SAAT, havaDurumu, havaDilimSonu · (testi var)
 - `apps/web/src/cizim/kalabalik.ts` — KALABALIK — yerleşkenin insanları ve evleri (docs/24 "Kalabalık"). · dışa: KalabalikAyari, kalabalik
-- `apps/web/src/cizim/kalici.ts` — Kalıcı çizim deposu (docs/24 "Yakınlaştırma"): GPU resimleri cihazda, IndexedDB'de. · dışa: KaliciGrup, SINIR, KaliciKayit, kaliciOku, kaliciYaz · (testi var)
+- `apps/web/src/cizim/kalici.ts` — Kalıcı çizim deposu (docs/24 "Yakınlaştırma"): GPU resimleri cihazda, IndexedDB'de. · dışa: KaliciGrup, SINIR, KaliciKayit, kaliciOku, kaliciYaz, KaliciDurum, kaliciDurumu · (testi var)
 - `apps/web/src/cizim/kir.ts` — KIR VE KALE PARÇALARI — bölge sahnelerinin ölçeğinde (docs/24). · dışa: EvAyari, ev, ambar, degirmen, balya, araba, kuyuKucuk, citKisa, tezgah, kilise, katedral, kopru, tahtaKopru, suDegirmeni, madenAgzi, kuyuKulesi +15
 - `apps/web/src/cizim/kisiler.ts` — GENERALLER, LORD VE PORTRELER (docs/24). · dışa: GENERAL_ADLARI, LORD_ADLARI, PORTRE_ADLARI, generalModeli, giyimliLord, lordModeli, kusamAdiMi, portreModeli, PORTRE_KUTUSU
+- `apps/web/src/cizim/ortam.ts` — Canlı sahnenin ortam katmanları (docs/24 "Hareket", "Ortam tuvali"): su parıltısı, çimende rüzgâr, ışık titremesi. · dışa: tohumlu, Ciz2B, leke, SU_KARO, suDeseni, RUZGAR_KARO, ruzgarDeseni, ISIK_KARO, isikLekeleri, SU_A, SU_B, SU_SAYDAM, RUZGAR, CIMEN_SAYDAM, ISIK_A, ISIK_B +7 · (testi var)
+- `apps/web/src/cizim/ortamIsci.ts` — / <reference lib="webworker" />
+- `apps/web/src/cizim/ortamTuvali.ts` — Ortam tuvalinin sayfa yanı (docs/24 "Ortam tuvali"): işçi (`ortamIsci.ts`) tek, tuvaller kimlikle. · dışa: OrtamTuvali, ortamTuvaliKur
 - `apps/web/src/cizim/parca.ts` — MİMARİ VE DOĞA PARÇALARI (docs/24). · dışa: Yon, zeminPlakasi, doseme, yuzeyKutusu, ince, pencere, kapi, fener, Ikon, tabela, kirisler, tasDokusu, baca, duman, BAYRAK_FAZ, SANCAK_FAZ +28
 - `apps/web/src/cizim/parmakizi.json` — Görsel bozulma testinin kayıtlı izleri
 - `apps/web/src/cizim/parmakizi.ts` — ÇİZİMİN PARMAK İZİ — görsel bozulma testi (docs/24 "Görsel bozulma testi"). · dışa: ParmakIzi, parmakIzi, PAY, karsilastir · (testi var)

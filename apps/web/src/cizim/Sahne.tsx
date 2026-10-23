@@ -20,9 +20,11 @@
 import {
   createContext,
   memo,
+  useCallback,
   useContext,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
   type CSSProperties,
@@ -46,6 +48,16 @@ import {
   type Katmanlar,
 } from './gl';
 import type { KaliciGrup } from './kalici';
+import {
+  ISIK_KARO,
+  RUZGAR_KARO,
+  SU_KARO,
+  isikLekeleri,
+  ruzgarDeseni,
+  suDeseni,
+  type OrtamKatmani,
+} from './ortam';
+import { ortamTuvaliKur, type OrtamTuvali as OrtamTuvaliIsi } from './ortamTuvali';
 import { sonrakiVakit, sonrakiVakitAni, vakitAnahtari, type Vakit } from './vakit';
 import { ciz, kutusu, type Cizilmis, type Kamera, type Model } from './uc';
 
@@ -813,14 +825,9 @@ export const Cokgenler = memo(function Cokgenler({ c }: { c: Cizilmis }) {
 
 /* ── Hareket ───────────────────────────────────────────────────────── */
 
-/** Tohumlu rastgele: dokular her açılışta aynı. */
-function tohumlu(t: number): () => number {
-  return () => (t = (t * 1664525 + 1013904223) >>> 0) / 4294967296;
-}
-
 /**
- * Dikişsiz bir döşeme karosu çizer (kenardan taşan leke öbür yandan
- * giriyor). Tuval yoksa (test ortamı) null: o katman çizilmiyor.
+ * Dikişsiz bir döşeme karosu çizer (desenler `ortam.ts`te). Tuval yoksa
+ * (test ortamı) null: o katman çizilmiyor.
  */
 function karo(en: number, boy: number, ciz: (c: CanvasRenderingContext2D) => void): string | null {
   try {
@@ -836,109 +843,26 @@ function karo(en: number, boy: number, ciz: (c: CanvasRenderingContext2D) => voi
   }
 }
 
-/** Yumuşak kenarlı elips leke; karonun dört yanına sarılarak. */
-function leke(
-  c: CanvasRenderingContext2D,
-  en: number,
-  boy: number,
-  x: number,
-  y: number,
-  rx: number,
-  ry: number,
-  renk: string,
-) {
-  for (const ox of [-en, 0, en])
-    for (const oy of [-boy, 0, boy]) {
-      c.save();
-      c.translate(x + ox, y + oy);
-      c.scale(rx, ry);
-      const g = c.createRadialGradient(0, 0, 0, 0, 0, 1);
-      g.addColorStop(0, renk);
-      g.addColorStop(1, 'rgba(255,255,255,0)');
-      c.fillStyle = g;
-      c.beginPath();
-      c.arc(0, 0, 1, 0, Math.PI * 2);
-      c.fill();
-      c.restore();
-    }
-}
-
-/** Suyun parıltısı: yatık, ince ışık çizgileri (ekran pikselinde; suyun dalgasıyla aynı boy). */
-const SU_KARO: [number, number] = [256, 128];
 let suKaro: string | null | undefined;
 function suKarosu(): string | null {
-  return (suKaro ??= karo(...SU_KARO, (c) => {
-    const r = tohumlu(7);
-    for (let i = 0; i < 36; i++)
-      leke(
-        c,
-        ...SU_KARO,
-        r() * SU_KARO[0],
-        r() * SU_KARO[1],
-        7 + r() * 12,
-        0.8 + r() * 0.7,
-        `rgba(255,255,255,${(0.35 + r() * 0.45).toFixed(2)})`,
-      );
-  }));
+  return (suKaro ??= karo(...SU_KARO, suDeseni));
 }
 
-/**
- * Çimenin rüzgâr dalgası: rüzgâra dik uzamış, iri ve çok yumuşak açık
- * bantlar (eğilen otların ışığı yakalaması), aralarında hafif gölge. Karo
- * çimen maskesinin (yer ve ot tutamları) üstünden rüzgâr yönünde kayıyor;
- * dokuyu otların kendisi veriyor. Rüzgâr dumanla aynı yönde (sola).
- */
-const RUZGAR_KARO: [number, number] = [640, 320];
 let ruzgarKaro: string | null | undefined;
 function ruzgarKarosu(): string | null {
-  return (ruzgarKaro ??= karo(...RUZGAR_KARO, (c) => {
-    const r = tohumlu(23);
-    for (let i = 0; i < 9; i++) {
-      const acik = i % 3 < 2;
-      leke(
-        c,
-        ...RUZGAR_KARO,
-        r() * RUZGAR_KARO[0],
-        r() * RUZGAR_KARO[1],
-        34 + r() * 40,
-        90 + r() * 80,
-        acik
-          ? `rgba(246,250,196,${(0.5 + r() * 0.3).toFixed(2)})`
-          : `rgba(20,40,8,${(0.3 + r() * 0.15).toFixed(2)})`,
-      );
-    }
-  }));
+  return (ruzgarKaro ??= karo(...RUZGAR_KARO, ruzgarDeseni));
 }
 
-/**
- * Işığın titreme deseni: iri, yumuşak lekeler ve tersi. Işık katmanının iki
- * kopyası bunlarla örtülü ve ayrı ritimde titriyor: yan yana iki ateş aynı
- * anda sönüp parlamıyor.
- */
-const ISIK_KARO = 150;
+/** Işık katmanının iki kopyasının maskesi: lekeler ve tersi (`isikLekeleri`). */
 let isikKarolari: [string, string] | null | undefined;
 function isikKarosu(): [string, string] | null {
   if (isikKarolari !== undefined) return isikKarolari;
-  const lekeler = (c: CanvasRenderingContext2D) => {
-    const r = tohumlu(11);
-    for (let i = 0; i < 7; i++)
-      leke(
-        c,
-        ISIK_KARO,
-        ISIK_KARO,
-        r() * ISIK_KARO,
-        r() * ISIK_KARO,
-        26 + r() * 20,
-        26 + r() * 20,
-        '#fff',
-      );
-  };
-  const a = karo(ISIK_KARO, ISIK_KARO, lekeler);
+  const a = karo(ISIK_KARO, ISIK_KARO, isikLekeleri);
   const b = karo(ISIK_KARO, ISIK_KARO, (c) => {
     c.fillStyle = '#fff';
     c.fillRect(0, 0, ISIK_KARO, ISIK_KARO);
     c.globalCompositeOperation = 'destination-out';
-    lekeler(c);
+    isikLekeleri(c);
   });
   return (isikKarolari = a && b ? [a, b] : null);
 }
@@ -956,6 +880,69 @@ function maske(url: string, boy: string, tekrar: string): CSSProperties {
 }
 
 /**
+ * Ortam tuvali (docs/24 "Ortam tuvali"): su, çimen ve ışık katmanları tek
+ * tuvalde, işçide (`ortamIsci.ts`). Tuval bir kez kuruluyor (çizimi işçiye
+ * veriliyor); katman, boy ve oynama değişince işçiye haber gidiyor.
+ * Kurulamaz ya da düşerse `hata`: CSS katmanlarına dönülüyor.
+ */
+function OrtamKatmanTuvali({
+  katman,
+  en,
+  boy,
+  acik,
+  hata,
+}: {
+  katman: OrtamKatmani;
+  /** Çerçevenin boyu (CSS pikseli, dönüşümsüz): karolar bu ölçüde. */
+  en: number;
+  boy: number;
+  acik: boolean;
+  hata: () => void;
+}) {
+  const kap = useRef<HTMLSpanElement>(null);
+  const is = useRef<OrtamTuvaliIsi | null>(null);
+  const css: [number, number] = [en, boy];
+  const son = useRef({ katman, css, acik, hata });
+  son.current = { katman, css, acik, hata };
+  useEffect(() => {
+    const el = kap.current;
+    if (!el) return;
+    // Tuval elle: çizimi işçiye bir kez verilebiliyor, yeniden kurulumda yenisi.
+    const tuval = document.createElement('canvas');
+    tuval.className = 'ortam-tuvali';
+    el.appendChild(tuval);
+    const ilk = son.current;
+    const t = ortamTuvaliKur(tuval, ilk.css, ilk.katman, ilk.acik, () => son.current.hata());
+    if (!t) {
+      tuval.remove();
+      ilk.hata();
+      return;
+    }
+    is.current = t;
+    return () => {
+      t.kapat();
+      is.current = null;
+      tuval.remove();
+    };
+  }, []);
+  useEffect(() => is.current?.katman(katman), [katman]);
+  useEffect(() => is.current?.boyut([en, boy]), [en, boy]);
+  useEffect(() => is.current?.oyna(acik), [acik]);
+  return <span ref={kap} className="ortam-kabi" />;
+}
+
+/** Sayfa görünüyor mu (sekme arka planda değil). */
+function useSayfaGorunur(): boolean {
+  const [g, setG] = useState(() => typeof document === 'undefined' || !document.hidden);
+  useEffect(() => {
+    const d = () => setG(!document.hidden);
+    document.addEventListener('visibilitychange', d);
+    return () => document.removeEventListener('visibilitychange', d);
+  }, []);
+  return g;
+}
+
+/**
  * Resmin üstündeki canlı katmanlar. Kutu ölçülüyor: GPU resmi görüş
  * kutusunu doldurup taşanı kırpıyor (`kirp`) ya da içine sığıyor; katmanlar
  * aynı dikdörtgene oturuyor.
@@ -965,10 +952,19 @@ function HareketKatmani({
   kirp,
   katman,
   yama,
+  ortam,
+  aksam,
+  oynasin,
 }: {
   v: [number, number, number, number];
   kirp: boolean;
   katman: Katmanlar | undefined;
+  /** Su, çimen ve ışık tek tuvalde (`OrtamKatmanTuvali`), CSS katmanları yerine. */
+  ortam: boolean;
+  /** Akşam: ışık katmanı daha parlak (tuvalde; CSS'te `data-vakit`). */
+  aksam: boolean;
+  /** Sahne görünüyor mu (gizli sekmede değil): tuval durunca GPU boşalıyor. */
+  oynasin: boolean;
   /**
    * Yakınlık yamasının parça atlası (bkz. `useYama`): yamaya giren parçalar
    * onun çözünürlüğünde oynuyor, sahnedeki kopyaları gizli.
@@ -1005,6 +1001,15 @@ function HareketKatmani({
     return () => ro.disconnect();
   }, []);
 
+  const sayfaGorunur = useSayfaGorunur();
+  const [ortamYok, setOrtamYok] = useState(false);
+  const ortamHata = useCallback(() => setOrtamYok(true), []);
+  const ortamKatmani = useMemo<OrtamKatmani>(
+    () => ({ su: katman?.su, cimen: katman?.cimen, isik: katman?.isik, aksam }),
+    [katman?.su, katman?.cimen, katman?.isik, aksam],
+  );
+  const tuvalde =
+    ortam && !ortamYok && !!(ortamKatmani.su || ortamKatmani.cimen || ortamKatmani.isik);
   // Yamanın atlasında yeri olan parçalar sahnede gizli (aynı model, aynı sıra).
   const gizli = yama?.bayrak.kutular.map(([, , w, h]) => w > 0 && h > 0);
   let icerik: React.ReactNode = null;
@@ -1013,14 +1018,23 @@ function HareketKatmani({
     const [vx, vy, vw, vh] = v;
     // Görüş kutusunun bir birimi kaç CSS pikseli.
     const s = kirp ? Math.max(W / vw, H / vh) : Math.min(W / vw, H / vh);
-    const su = katman?.su && suKarosu();
-    const ruzgar = katman?.cimen && ruzgarKarosu();
-    const isik = katman?.isik ? isikKarosu() : null;
+    const su = !tuvalde && katman?.su && suKarosu();
+    const ruzgar = !tuvalde && katman?.cimen && ruzgarKarosu();
+    const isik = !tuvalde && katman?.isik ? isikKarosu() : null;
     icerik = (
       <span
         className="hareket-cerceve"
         style={{ left: (W - vw * s) / 2, top: (H - vh * s) / 2, width: vw * s, height: vh * s }}
       >
+        {tuvalde && (
+          <OrtamKatmanTuvali
+            katman={ortamKatmani}
+            en={vw * s}
+            boy={vh * s}
+            acik={gorunur && oynasin && sayfaGorunur}
+            hata={ortamHata}
+          />
+        )}
         {ruzgar && (
           <span className="hareket-cimen" style={maske(katman!.cimen!, '100% 100%', 'no-repeat')}>
             <span className="hareket-cimen-a" style={{ backgroundImage: `url(${ruzgar})` }} />
@@ -1033,6 +1047,7 @@ function HareketKatmani({
           </span>
         )}
         {katman?.isik &&
+          !tuvalde &&
           (isik ?? [null]).map((m, i) => (
             <img
               key={i}
@@ -1275,6 +1290,8 @@ export const Sahne = memo(function Sahne({
   tarif = false,
   yama,
   kalici,
+  ortamTuvali = false,
+  oynasin = true,
 }: {
   anahtar: string;
   uret: () => Model;
@@ -1356,6 +1373,14 @@ export const Sahne = memo(function Sahne({
    * birlik, düşman, ekipman. `karo`: kapak ve afişin küçük hareketsiz hâli.
    */
   kalici?: KaliciGrup;
+  /**
+   * Canlı sahnenin su, çimen ve ışık katmanları tek tuvalde, işçide
+   * (`ortamIsci.ts`; docs/24 "Ortam tuvali"): büyük sahnede (yerleşke) CSS
+   * katmanları telefonun GPU'sunu her karede dolduruyordu.
+   */
+  ortamTuvali?: boolean;
+  /** Sahne görünüyor mu (gizli sekmede değil); değilse ortam tuvali duruyor. */
+  oynasin?: boolean;
 }) {
   const ref = useRef<SVGSVGElement>(null);
   const kabaEnaz = useContext(OnceKaba);
@@ -1490,6 +1515,9 @@ export const Sahne = memo(function Sahne({
               ? { kutu: yamaUygun.kutu, bayrak: yamaUygun.katman.bayrak }
               : undefined
           }
+          ortam={ortamTuvali}
+          aksam={vakit === 'aksam'}
+          oynasin={oynasin}
         />
       )}
     </span>

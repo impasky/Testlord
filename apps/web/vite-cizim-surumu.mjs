@@ -29,10 +29,18 @@ import { fileURLToPath } from 'node:url';
 const KOK = fileURLToPath(new URL('../..', import.meta.url));
 /**
  * `src/cizim`de resme dokunmayan dosyalar: ölçüm panosu, geliştirme
- * galerisi, kalıcı depo (biçimi `SURUM_DB` ile sürümlü) ve testlerin parmak
- * izi aracı.
+ * galerisi, kalıcı depo (biçimi `SURUM_DB` ile sürümlü), testlerin parmak
+ * izi aracı ve sayfada resmin üstünde oynayan ortam katmanı (`ortam*`).
  */
-const RESIMSIZ = new Set(['cizimOlcumu.ts', 'Galeri.tsx', 'kalici.ts', 'parmakizi.ts']);
+const RESIMSIZ = new Set([
+  'cizimOlcumu.ts',
+  'Galeri.tsx',
+  'kalici.ts',
+  'parmakizi.ts',
+  'ortam.ts',
+  'ortamIsci.ts',
+  'ortamTuvali.ts',
+]);
 const KAYNAKLAR = [
   {
     dizin: join(KOK, 'apps/web/src/cizim'),

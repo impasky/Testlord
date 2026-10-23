@@ -434,10 +434,14 @@ export function MobilKabuk({
 
   return (
     <div className="min-h-dvh">
-      {/* ---- Üst durum çubuğu ---- */}
+      {/* ---- Üst durum çubuğu ----
+          Arka plan bulanıklığı (`backdrop-blur`) yok, çubuklarda ve Şehir'in
+          düğmelerinde: arkadaki canlı şehir her karede değiştiği için her
+          karede yeniden hesaplanıyordu (docs/24 "Ortam tuvali"). Zemin %95
+          örtük; bulanıklık zaten neredeyse görünmüyordu. */}
       <header
         ref={baslikRef}
-        className="fixed inset-x-0 top-0 z-30 border-b border-kenar bg-derin/95 backdrop-blur"
+        className="fixed inset-x-0 top-0 z-30 border-b border-kenar bg-derin/95"
       >
         <div className="mx-auto max-w-lg px-3 pt-2 pb-2">
           <div className="mb-2 flex items-center gap-2">
@@ -552,7 +556,7 @@ export function MobilKabuk({
 
       {/* ---- Alt gezinme ---- */}
       <nav
-        className="fixed inset-x-0 bottom-0 z-50 border-t border-kenar bg-derin/95 backdrop-blur"
+        className="fixed inset-x-0 bottom-0 z-50 border-t border-kenar bg-derin/95"
         // touch-none: çubuk yukarı çekilirken tarayıcı sayfayı kaydırmasın.
         style={{ height: 'var(--alt-bar)', touchAction: 'none' }}
         onPointerDown={(e) => cekmeyeBasla(e.clientY)}

@@ -91,12 +91,15 @@ export function YerlesimCizimi({
   binalar,
   className,
   gorunen,
+  oynasin = true,
 }: {
   kademe: string;
   binalar?: YerlesimBinasi[];
   className?: string;
   /** Ekranda görünen bölge (yerleşke biriminde): yakınlaşınca keskin çiziliyor (`Sahne.yama`). */
   gorunen?: [number, number, number, number];
+  /** Şehir görünüyor mu (başka sekmede gizli değil): ortam tuvali duruyor. */
+  oynasin?: boolean;
 }) {
   const anahtar = 'yerlesim:' + yerlesimAnahtari(kademe as Kademe, binalar);
   const vakit = useVakit();
@@ -117,6 +120,8 @@ export function YerlesimCizimi({
       vakit={vakit}
       yama={gorunen}
       kalici="sahne"
+      ortamTuvali
+      oynasin={oynasin}
     />
   );
 }

@@ -312,6 +312,26 @@ export function glVarMi(): boolean {
 const SONUCLAR = new Map<string, CizimSonucu>();
 
 /**
+ * Katmanların (su, ışık, çimen) blob'u, nesne url'sine göre. Ortam tuvali
+ * (`ortamTuvali.ts`) resmi işçiye blob olarak veriyor: sayfanın güvenlik
+ * politikası (`connect-src 'self'`) `blob:` adresini `fetch` ile okutmuyor,
+ * işçi de okuyamıyor.
+ */
+const KATMAN_BLOBLARI = new Map<string, Blob>();
+
+function katmanUrl(b: Blob | undefined): string | undefined {
+  if (!b) return undefined;
+  const u = URL.createObjectURL(b);
+  KATMAN_BLOBLARI.set(u, b);
+  return u;
+}
+
+/** Katmanın blob'u (`Katmanlar.su` / `isik` / `cimen` url'sinden); bırakıldıysa yok. */
+export function glKatmanBlobu(url: string | undefined): Blob | undefined {
+  return url ? KATMAN_BLOBLARI.get(url) : undefined;
+}
+
+/**
  * Sonucun resmine ve katmanlarına nesne url'si verir. Atlas url'siz: bir
  * kimlik (`ATLASLAR`), PNG'si oradan çözülüyor.
  */
@@ -321,9 +341,9 @@ function urlle(s: CizimSonucu): string {
   if (s.su || s.isik || s.cimen || s.bayrak || s.dumanlar?.length) {
     const { resim, ...bayrak } = s.bayrak ?? {};
     KATMANLAR.set(url, {
-      su: s.su && URL.createObjectURL(s.su),
-      isik: s.isik && URL.createObjectURL(s.isik),
-      cimen: s.cimen && URL.createObjectURL(s.cimen),
+      su: katmanUrl(s.su),
+      isik: katmanUrl(s.isik),
+      cimen: katmanUrl(s.cimen),
       bayrak: resim && {
         ...(bayrak as Omit<BayrakAtlasi, 'resim'>),
         url: atlasKoy(undefined, resim),
@@ -353,7 +373,7 @@ function kismiUrlle(k: KismiSonuc, onceki: Teslim | null): Teslim {
   const ok = onceki && KATMANLAR.get(onceki.url);
   const ayni = (a?: Blob, b?: Blob) => a !== undefined && a === b;
   const katman = (b: Blob | undefined, eski: Blob | undefined, eskiUrl: string | undefined) =>
-    b && (ayni(b, eski) && eskiUrl ? eskiUrl : URL.createObjectURL(b));
+    b && (ayni(b, eski) && eskiUrl ? eskiUrl : katmanUrl(b));
   const { bitmap, ...bayrak } = k.bayrak ?? {};
   const atlas = bitmap && atlasKoy(bitmap);
   KATMANLAR.set(url, {
@@ -844,7 +864,11 @@ export function glBirak(anahtar: string): void {
     if (!k) return;
     KATMANLAR.delete(url);
     if (k.bayrak) atlasBirak(k.bayrak.url);
-    for (const u of [k.su, k.isik, k.cimen]) if (u) URL.revokeObjectURL(u);
+    for (const u of [k.su, k.isik, k.cimen])
+      if (u) {
+        URL.revokeObjectURL(u);
+        KATMAN_BLOBLARI.delete(u);
+      }
   });
 }
 

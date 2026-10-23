@@ -93,6 +93,20 @@ export interface KaliciKayit {
 
 let acilis: Promise<IDBDatabase | null> | undefined;
 
+/**
+ * Bu açılışın sayaçları (telefonda ölçüm, `kaliciDurumu`): her hata sessizce
+ * boş dönüyor, rapor neyin olmadığını söylesin ("Kayıttan: 0" iki raporda
+ * da; kayıt hiç yazılmadı mı, sürüm mü değişti, depo mu açılmadı).
+ */
+const SAYAC = { okunan: 0, yok: 0, eski: 0, yazilan: 0, yazmaHatasi: 0 };
+let acilmadi = false;
+let sonHata: string | undefined;
+
+function hata(h: unknown) {
+  sonHata =
+    h instanceof DOMException || h instanceof Error ? h.name : typeof h === 'string' ? h : 'hata';
+}
+
 function ac(): Promise<IDBDatabase | null> {
   acilis ??= new Promise((coz) => {
     try {
@@ -110,9 +124,19 @@ function ac(): Promise<IDBDatabase | null> {
         r.result.onversionchange = () => r.result.close();
         coz(r.result);
       };
-      r.onerror = () => coz(null);
-      r.onblocked = () => coz(null);
-    } catch {
+      r.onerror = () => {
+        acilmadi = true;
+        hata(r.error ?? 'acilmadi');
+        coz(null);
+      };
+      r.onblocked = () => {
+        acilmadi = true;
+        hata('engellendi');
+        coz(null);
+      };
+    } catch (h) {
+      acilmadi = true;
+      hata(h);
       coz(null);
     }
   });
@@ -137,15 +161,37 @@ export async function kaliciOku(yuva: string): Promise<KaliciKayit | null> {
   try {
     const depo = db.transaction(DEPO, 'readwrite').objectStore(DEPO);
     const k = (await iste(depo.get(yuva))) as KaliciKayit | undefined | null;
-    if (!k) return null;
+    if (!k) {
+      SAYAC.yok++;
+      return null;
+    }
     if (k.surum !== SURUM) {
+      SAYAC.eski++;
       depo.delete(yuva);
       return null;
     }
+    SAYAC.okunan++;
     depo.put({ ...k, zaman: Date.now() });
     return k;
-  } catch {
+  } catch (h) {
+    hata(h);
     return null;
+  }
+}
+
+/**
+ * Tarayıcıdan kalıcı depolama istenir (bir kez): yer daralınca "en iyi
+ * çaba" verisi sorulmadan siliniyor. Chrome soru sormuyor; siteyle
+ * etkileşime göre veriyor ya da vermiyor.
+ */
+let kaliciIstendi = false;
+function kaliciIste() {
+  if (kaliciIstendi) return;
+  kaliciIstendi = true;
+  try {
+    void navigator.storage?.persist?.().catch(() => undefined);
+  } catch {
+    /* yok */
   }
 }
 
@@ -168,6 +214,18 @@ export function kaliciYaz(
     if (!db) return;
     try {
       const tx = db.transaction(DEPO, 'readwrite');
+      const bitti = new Promise<void>((coz) => {
+        tx.oncomplete = () => {
+          SAYAC.yazilan++;
+          coz();
+        };
+        // Dolu depo (QuotaExceededError) işlemi böyle bitiriyor.
+        tx.onabort = () => {
+          SAYAC.yazmaHatasi++;
+          hata(tx.error ?? 'iptal');
+          coz();
+        };
+      });
       const depo = tx.objectStore(DEPO);
       const kayit: KaliciKayit = {
         yuva,
@@ -186,8 +244,66 @@ export function kaliciYaz(
         const eskiler = (await iste(dizin.getAllKeys(aralik, fazla))) ?? [];
         for (const y of eskiler) depo.delete(y);
       }
-    } catch {
-      /* dolu depo ya da kapalı sekme: bir dahaki açılış yeniden çizer */
+      await bitti;
+      kaliciIste();
+    } catch (h) {
+      // Dolu depo ya da kapalı sekme: bir dahaki açılış yeniden çizer.
+      SAYAC.yazmaHatasi++;
+      hata(h);
     }
   });
+}
+
+/** Cihaz kaydının durumu (telefonda ölçüm raporu, `CizimOlcumPaneli`). */
+export interface KaliciDurum {
+  /** Depo açıldı mı (açılmadıysa her şey her açılışta yeniden çiziliyor). */
+  acik: boolean;
+  surum: string;
+  /** Depodaki kayıtlar ve bu sürümün kayıtları. */
+  kayit: number;
+  guncel: number;
+  okunan: number;
+  /** Okunmak istenip bulunamayan, sürümü eski çıkan. */
+  yok: number;
+  eski: number;
+  yazilan: number;
+  yazmaHatasi: number;
+  sonHata?: string;
+  /** Tarayıcı veriyi kalıcı tutuyor mu (`navigator.storage.persisted`). */
+  kalici?: boolean;
+  /** Kullanılan ve izin verilen (bayt). */
+  kullanim?: number;
+  kota?: number;
+}
+
+export async function kaliciDurumu(): Promise<KaliciDurum> {
+  const d: KaliciDurum = { acik: false, surum: SURUM, kayit: 0, guncel: 0, ...SAYAC, sonHata };
+  try {
+    d.kalici = await navigator.storage?.persisted?.();
+    const t = await navigator.storage?.estimate?.();
+    d.kullanim = t?.usage;
+    d.kota = t?.quota;
+  } catch {
+    /* yok */
+  }
+  const db = acilmadi ? null : await ac();
+  if (!db) return d;
+  d.acik = true;
+  try {
+    const imlec = db.transaction(DEPO, 'readonly').objectStore(DEPO).openCursor();
+    await new Promise<void>((coz) => {
+      imlec.onsuccess = () => {
+        const c = imlec.result;
+        if (!c) return coz();
+        d.kayit++;
+        if ((c.value as KaliciKayit).surum === SURUM) d.guncel++;
+        c.continue();
+      };
+      imlec.onerror = () => coz();
+    });
+  } catch (h) {
+    hata(h);
+    d.sonHata = sonHata;
+  }
+  return d;
 }

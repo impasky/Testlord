@@ -509,9 +509,7 @@ export function OmurgaSeridi({
        * kapatma düğmesi, perdenin üstünde kalması gerek.
        */}
       <div
-        className={`fixed inset-x-0 border-t border-altin/30 bg-derin/95 backdrop-blur ${
-          acik ? 'z-50' : 'z-30'
-        }`}
+        className={`fixed inset-x-0 border-t border-altin/30 bg-derin/95 ${acik ? 'z-50' : 'z-30'}`}
         style={{ bottom: 'var(--alt-bar)', height: 'var(--omurga-serit)' }}
       >
         <div className="mx-auto flex h-full max-w-lg items-center gap-2 px-3">

@@ -163,6 +163,7 @@ const KONULAR = [
       'apps/web/src/App.tsx',
       'apps/web/src/lib/turOlayi.ts',
       'apps/web/src/cizim/Sahne.tsx',
+      'apps/web/src/cizim/ortamIsci.ts',
       'apps/web/src/styles.css',
       'apps/web/src/components/HavaKatmani.tsx',
       'apps/web/src/screens/yerleskeYakinligi.ts',

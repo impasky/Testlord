@@ -1087,3 +1087,15 @@ svg g[role='button']:focus-visible > path:first-of-type {
     animation: none;
   }
 }
+
+/*
+ * Ortam tuvali (docs/24 "Ortam tuvali"): su, çimen ve ışık tek tuvalde,
+ * çerçeveyi dolduruyor. Çözünürlüğü işçide (`ortamIsci.ts`); burada boyu.
+ */
+.ortam-kabi,
+.ortam-tuvali {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}

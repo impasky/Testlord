@@ -316,20 +316,28 @@ ms). Kesilince GPU'ya gitmiş küçük parça yine bitiyor, sonrası
 gönderilmiyor. Denendi: 400×400'lük çizim 60×60'lık iş gelince 12–108 ms
 sonra kesildi, küçük önce çizildi, büyük baştan tamamlandı.
 
-**Şerit boyu cihazın hızından** (2026-10-23; `SERIT_MS`, `HIZ`). GPU'ya
+**Şerit boyu süreden** (2026-10-23; `SERIT_MS`, `ORNEK_MS`). GPU'ya
 gitmiş iş yarıda kesilmediği gibi ekranın karesi de onun arkasında
 bekliyor: şerit ne kadar sürüyorsa ekran o kadar takılıyor. Bir milyon
 örnek masaüstünde birkaç ms, ama telefondan gelen raporda (Mali-G52,
 `?olcum=1`) yerleşke 40 sn çizildi ve o sürede Şehir'in kareleri 70–260
-ms takıldı. Şerit artık süreyle ölçülüyor: geçişin (ana, kenar) hızı
-şeritten şeride ölçülüyor (örnek/ms, işçinin ömrü boyunca), sonraki şerit
-~25 ms sürecek boyda; hız bilinmiyorsa ilk şerit küçük bir ölçüm şeridi
-(125 bin örnek). Bir geçiş en çok 64 şerit (her şerit bütün geometriyi
-yeniden işliyor). Küçük çizim de o hızda 50 ms'yi aşacaksa şeritleniyor.
-Atlas karesinde parçaların çizimi ile çözmesi ayrı iş (arada durak).
-Çıktı değişmiyor: yazılım GPU'sunda yerleşkenin resmi, katmanları ve
-atlası bayt bayt aynı; tek seferdeki en uzun GPU işi 834 → 399 ms
-(kalan en uzunu atlasın bir karesi), toplam süre aynı (~23 sn).
+ms takıldı. Şeridin süresi iki parça: sabit maliyet (bütün geometri her
+şeritte yeniden işleniyor; GPU başka işle doluysa onun sırası) ve örnek
+başına maliyet. İlk şerit tek satır: süresi sabit maliyetin ölçüsü.
+Sonrakiler örnek başına maliyetle (geçişin türüne göre, işçinin ömrü
+boyunca) ~25 ms sürecek boyda; sabit maliyet bunun yarısını aşıyorsa
+şerit onun iki katı sürecek kadar. Bir geçiş en çok 64 şerit. Küçük
+çizim (bir milyon örnekten az) tek parça. Ana geçişten önce bir durak:
+gölge haritası, hedeflerin temizliği ve tampon yüklemesi kendi GPU işi
+(raporda "gölge ve yükleme"), ölçüm şeridine karışmıyor. Atlas karesinde
+parçaların çizimi ile çözmesi ayrı iş (arada durak). Çıktı değişmiyor:
+yazılım GPU'sunda yerleşkenin resmi, katmanları ve atlası bayt bayt
+aynı; tek seferdeki en uzun GPU işi 834 → 399 ms (kalan en uzunu
+atlasın bir karesi), toplam süre aynı (~23 sn). İlk sürüm yalnız hızı
+(örnek/ms) ölçüyordu ve küçük çizimi de şeritliyordu: ikinci telefon
+raporunda Şehir görünürken 136×155'lik bir yapının ana geçişi 5,8 sn
+sürdü — GPU şehri bileştirmekle doluyken her şerit ~85 ms sıra
+bekliyordu, ölçülen "hız" düştükçe şerit küçülüp 60'ı aştı.
 Denenip bırakıldı: yoğun ekranda (yerleşke CSS pikseli başına 1,75 çıktı
 pikseli) 2×2 örneklemeyi kapatmak yazılım GPU'sunda süreyi 23'ten 12
 sn'ye indirdi, ama çatıların kiremit ve saz dokusu düz renge döndü,
@@ -833,6 +841,9 @@ eskisi bırakılıyor. Zemin GPU'da değilse (düz üçgenler) yama yok.
 | `Cizimler.tsx`                        | Ekranların kullandığı bileşenler: `BinaCizimi`, `BolgeCizimi`, `NesneCizimi`, `PortreCizimi`, `DiyarCizimi`, `ZeminCizimi`, …                                                  |
 | `Galeri.tsx`                          | Geliştirme galerisi                                                                                                                                                            |
 | `cizimOlcumu.ts`                      | Telefonda çizim ölçümü (`?olcum=1`): her çizim işinin süresi; pano `components/CizimOlcumPaneli.tsx`                                                                           |
+| `ortam.ts`                            | Ortam katmanlarının desenleri ve zamanlaması (su, rüzgâr, ışık); CSS ve ortam tuvali ortak                                                                                     |
+| `ortamIsci.ts`                        | Ortam tuvali işçisi: su, çimen ve ışık tek tuvalde, tek geçişte (WebGL2, `OffscreenCanvas`)                                                                                    |
+| `ortamTuvali.ts`                      | Ortam tuvalinin sayfa yanı: işçi, tuvaller, resimler Blob olarak                                                                                                               |
 
 Dünya haritasının arazisi bir kez çiziliyor (GPU'da 2048 piksellik resim,
 2D yedekte 1600 piksellik tuval) ve modül düzeyinde saklanıyor. Harita her açıldığında
@@ -952,6 +963,58 @@ ekipman yalnız sahibinin eylemiyle değişiyor ve `tickLord` her eylemden
 sonra kodu tazeliyor (yazma yalnız kod değişince). Galeride "Kuşam" bölümü
 altı düz kademeyi ve karışık takımları gösteriyor.
 
+## Ortam tuvali
+
+İkinci telefon raporu (Mali-G52, 2026-10-23): Şehir'de karelerin %15'i
+takıldı (67–117 ms), hiçbir çizim sürmezken de; Ordu, Akın, Dünya ve
+Lord'da hiç. Uzun görev neredeyse yok: ana iş parçacığı değil,
+bileşikleyici. Şehrin ortam katmanları CSS'te dört sahne boyu katmandı —
+çimen rüzgârı ve su parıltısı maskeli (`mask-image`), ışığın iki kopyası
+maskeli ve "ekran" karışımlı (akşam bir de süzgeçli) — ve her biri her
+karede ara bir yüzeyde çizilip karıştırılıyordu. Üstüne üst ve alt
+çubuğun, Şehir'in yüzen düğmelerinin arka plan bulanıklığı
+(`backdrop-blur`): arkadaki şehir her karede değiştiği için o da her
+karede yeniden. Ölçüm (bileşikleyici GPU yolunda, yazılım GPU'su,
+telefon ekranı 393×895 @2,75; GPU sürecinin işlemci süresi GPU işinin
+vekili): ortam katmanları kapalıyken 60 kare/sn, hepsi açıkken 20,6
+kare/sn ve 6 sn'de 23 takılma.
+
+- Bulanıklık kalktı (çubuklar %95 örtük; şehir düğmeleri %85 → %90):
+  20,6 → ~25–31 kare/sn.
+- Su, çimen ve ışık TEK tuvalde, ayrı bir işçide
+  (`ortamIsci.ts`, `OffscreenCanvas`, WebGL2; sayfa yanı
+  `ortamTuvali.ts`, `Sahne.ortamTuvali`; yalnız yerleşkede): tek geçiş,
+  saniyede 20 kare, ~0,6 megapiksel; sayfada tek düz katman (önceden
+  çarpılmış renk, "üstüne"). Maskeler bir kez tek dokuya paketleniyor
+  (kırmızı çimen, yeşil su); karolar yalnız maskenin dolu olduğu yerde
+  okunuyor. 24,6 → 43,6–47,7 kare/sn, 0–3 takılma (aynı derlemenin CSS
+  yoluyla karşılaştırma). Yazılım GPU'sunda gölgelendirici işlemcide
+  koşuyor; telefonun GPU'sunda tuvalin kendi payı bundan da küçük.
+- Hareketler CSS'tekinin aynısı (`ortam.ts`: süreler, kaymalar,
+  titremenin anahtar kareleri; `ortam.test.ts` bunların styles.css ile
+  aynı olduğunu denetliyor). Işığın "ekran" karışımının yerine "üstüne":
+  ışık PNG'si zaten öyle (renk ve en parlak kanal saydamlık); baskın
+  kanal aynı, öbürleri hâlenin altında biraz koyu. Akşamın
+  `brightness(1.6) saturate(1.25)`i gölgelendiricide.
+- Resimler işçiye Blob olarak (`gl.glKatmanBlobu`): sayfanın güvenlik
+  politikası (`connect-src 'self'`) `blob:` adresini `fetch` ile
+  okutmuyor, işçi de okuyamıyor ("Failed to fetch" — ilk denemede tuval
+  boştu).
+- Duruyor: sahne ekranda değilken (`IntersectionObserver`), Şehir başka
+  sekmedeyken (`Sahne.oynasin`, Şehir'in `gorunur`u) ve sayfa arka
+  plandayken. Ölçüm: Lord sekmesinde GPU süreci boşta (27 ms/sn).
+- Kurulamazsa (işçi, `OffscreenCanvas` ya da işçide WebGL2 yok, bağlam
+  düştü) CSS katmanları eskisi gibi. `localStorage['ortam-tuvali'] =
+'0'` tuvali kapatıyor (karşılaştırma, sorun).
+- Bedeli: yakınlaşınca su parıltısının ince çizgileri biraz yumuşuyor
+  (tuval sahnenin çözünürlüğünde; CSS karoları ekranın piksel
+  yoğunluğundaydı). Rüzgâr ve ışık zaten yumuşak.
+
+Kalan maliyet işlemcide, ilk çizimde: yerleşkenin canlı parçaları (14
+aktör, en çok 40 kare) için duruşlar toplam ~183 bin yüz; masaüstünde
+~1 sn, telefonda raporda "hazırlık" 7,4 sn ve "kare geometrisi" 3,7 sn.
+Cihaz kaydı varken ödenmiyor (bkz. "Telefonda ölçüm", cihaz kaydı).
+
 ## Telefonda ölçüm
 
 Oyuncu: "telefonda çizim ölçüm ekranı." Bu belgedeki bütün süreler
@@ -982,6 +1045,16 @@ en uzunu, uzun görevlerin toplamı — ve son takılmaları rapora yazıyor.
 düzeltildi ve telefonda sürdü; takılmanın nerede olduğunu artık telefonun
 kendisi söylüyor. Kare izleme her karede ana iş parçacığını uyandırdığı
 için yalnız ölçüm açıkken çalışıyor ve kapatılınca duruyor.
+
+Raporda cihaz kaydının durumu da (`kalici.kaliciDurumu`): depo açıldı mı,
+sürümü, kaç kayıt (kaçı bu sürümün), bu açılışta kaç okuma (bulunamayan,
+sürümü eski çıkan), kaç yazma (yazılamayan ve son hatanın adı),
+tarayıcının veriyi kalıcı tutup tutmadığı ve kullanılan alan. İki raporda
+da "Kayıttan: 0" vardı; depo her hatayı sessizce yutuyordu, neden
+bilinmiyordu. Yazmadan sonra tarayıcıdan kalıcı depolama isteniyor
+(`navigator.storage.persist`). Ortam katmanının nasıl oynadığı (tuval,
+CSS) da yazılıyor. Kalıcı profilde iki açılışla denendi: ikincide
+yerleşke kayıttan, 17 ms.
 
 Rapordaki her çizimin başlangıç–bitiş anı (sayfa açıldıktan sonra, sn)
 takılmalarla aynı saatte: hangi çizim sürerken takıldığı okunuyor. Yarım

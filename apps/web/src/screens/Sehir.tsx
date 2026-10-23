@@ -425,6 +425,7 @@ export function Sehir({
               binalar={sahnedekiler}
               className="absolute inset-0 h-full w-full"
               gorunen={gorunenKutu}
+              oynasin={gorunur}
             />
           </div>
           {/* Kasaba: binalar yüzdeleriyle, yerleşkenin ortasındaki çerçevede. */}
@@ -466,7 +467,7 @@ export function Sehir({
         {insaat.map((i) => (
           <div
             key={i.id}
-            className="pointer-events-auto flex items-center gap-2 rounded-full border border-altin/50 bg-gece/85 py-1 pr-1 pl-3 text-[12px] backdrop-blur"
+            className="pointer-events-auto flex items-center gap-2 rounded-full border border-altin/50 bg-gece/90 py-1 pr-1 pl-3 text-[12px]"
           >
             <span className="min-w-0 flex-1 truncate text-altin">{`${i.ad} inşa ediliyor`}</span>
             <span className="tabular shrink-0 text-parsomen">
@@ -489,7 +490,7 @@ export function Sehir({
         {tasinabilir.map((t) => (
           <div
             key={t.bolgeId}
-            className="pointer-events-auto flex items-center gap-2 rounded-xl border border-altin/50 bg-gece/85 p-2 backdrop-blur"
+            className="pointer-events-auto flex items-center gap-2 rounded-xl border border-altin/50 bg-gece/90 p-2"
             data-tasinabilir={t.bolgeId}
           >
             <div className="min-w-0 flex-1">
@@ -586,7 +587,7 @@ export function Sehir({
             {/* Yakınlık: kıstırmanın düğmeli karşılığı (fare, ekran okuyucu). */}
             <div
               data-yakinlik-araci=""
-              className="pointer-events-auto flex divide-x divide-kenar overflow-hidden rounded-full border border-kenar bg-gece/85 shadow-[0_2px_8px_rgba(0,0,0,0.5)] backdrop-blur"
+              className="pointer-events-auto flex divide-x divide-kenar overflow-hidden rounded-full border border-kenar bg-gece/90 shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
             >
               <YakinlikDugmesi
                 etiket="Uzaklaştır"
@@ -605,7 +606,7 @@ export function Sehir({
               type="button"
               data-yapilar-ac=""
               onClick={() => setListe(true)}
-              className="bas pointer-events-auto flex items-center gap-1.5 rounded-full border border-kenar bg-gece/85 px-3 py-2 text-[12px] font-bold text-altin shadow-[0_2px_8px_rgba(0,0,0,0.5)] backdrop-blur"
+              className="bas pointer-events-auto flex items-center gap-1.5 rounded-full border border-kenar bg-gece/90 px-3 py-2 text-[12px] font-bold text-altin shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
             >
               <BinaIkonu binaKey="malikane" boyut={16} seviye={1} seviyeli={false} />
               Yapılar
