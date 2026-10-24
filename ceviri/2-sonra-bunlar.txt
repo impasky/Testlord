@@ -3,7 +3,7 @@ LORDLAR ÇAĞI — ÇEVİRİ 2/3: DERINLIK
 Savaş raporu, demirhane, generaller, araştırma, ittifak, akın — ve bina,
 general, araştırma, başarım içerikleri.
 
-Bu dosyada 1756 satır var.
+Bu dosyada 1757 satır var.
 
 NASIL ÇEVİRİLİR
   Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.
@@ -790,7 +790,7 @@ NASIL ÇEVİRİLİR
 3027. Same network · {0} day|Same network · {0} days
 3034. Last {0} [day|days]. The game's own traces first: shipments, reinforcements, market. "Same network" appears only on a pair with a flow between them; not the address but a keyed digest of it is kept, and crowded networks (mobile carriers, dorms) are not counted. The same home is not the same person. No automatic penalty; look at both files and decide.
 
---- CizimOlcumPaneli (65) ---
+--- CizimOlcumPaneli (66) ---
 
 2381. on
 2785. off-limits
@@ -857,6 +857,7 @@ NASIL ÇEVİRİLİR
 3495. Screen switches: {0}
 3496. Longest stutters:
 3498. strip fixed cost
+3500. Cleared: {0} (report covers what follows)
 
 --- Demirhane (49) ---
 

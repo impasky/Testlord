@@ -1091,6 +1091,31 @@ açılıştaki 1,7 sn ise betik (React'in ilk çizimi). Rapor ayrıca en uzun
 15 takılmayı (son kırkın dışında kalan büyükler kaybolmasın) ve ekran
 geçişlerinin anlarını yazıyor.
 
+Dördüncü telefon raporu (2026-10-24): Şehir %0,3 (yalnız temizlikten
+sonrası), takılmaların çoğu "boşta (GPU)" ve ekran zemininin ilk çizimi
+sürerken (67–311 ms; taslağın tek GPU işi 244–409 ms); sekme geçişinde
+Ordu'nun tıklaması 121 ms betik (react-dom `dispatchDiscreteEvent`),
+Generaller'in verisi gelince 119 ms (TanStack `notifyManager`). Konumlar
+yayındaki paketten kaynak haritasıyla bulundu: aynı commit yerelde aynı adlı
+paketi veriyor (`vite build --sourcemap hidden`, harita yorumu eklemiyor).
+Raporun okunması için: "Temizle"nin anı yazılıyor ve geçişler de
+siliniyor (o raporda Şehir'in çizimi temizlikle gitmişti, geçişler
+kalmıştı); ekranın adında üstte açık panel de var ("Akın › Sıralama":
+kapılar sekmenin üstünde açılıyor, hepsi "Akın" sayılıyordu); aşamalar 300
+ms'yi aşan çizimde de; şeritsiz çizimin ölçülmeyen "en uzun GPU işi 0 ms"si
+yazılmıyor.
+
+Çizim sürümünü değiştirmeyen tur: sürüm özeti çizim kodunun ham içeriği,
+yorum bile değişse bütün cihazların kayıtları siliniyor. Dört raporda da
+"Kayıttan: 0"; son ikisinde cihaz kaydı güncellemeden sonraki ilk açılışı
+gösteriyor ("eski sürüm 19", "eski sürüm 31"): telefonda kayıttan gelişi
+henüz görmedik. Bu turda `src/cizim`de
+yalnız özete girmeyen dosyalar değişti (`cizimOlcumu.ts`), sürüm aynı
+(956193e75c9f). Profilde (4× yavaşlatılmış) kalan ana iş parçacığı
+kalemleri çizim kodunda: canlı parçaların atlas kesimi (`gl.ts`
+`seritleriHazirla`, `glSeritKes`: `createImageBitmap(atlas, x, y, w, h)`
+Ordu'ya geçişte 64–71 ms, Dünya'nın bölge kartında 256–315 ms).
+
 Raporda cihaz kaydının durumu da (`kalici.kaliciDurumu`): depo açıldı mı,
 sürümü, kaç kayıt (kaçı bu sürümün), bu açılışta kaç okuma (bulunamayan,
 sürümü eski çıkan), kaç yazma (yazılamayan ve son hatanın adı),
@@ -1102,8 +1127,8 @@ CSS) da yazılıyor. Kalıcı profilde iki açılışla denendi: ikincide
 yerleşke kayıttan, 17 ms.
 
 Rapordaki her çizimin başlangıç–bitiş anı (sayfa açıldıktan sonra, sn)
-takılmalarla aynı saatte: hangi çizim sürerken takıldığı okunuyor. Yarım
-saniyeyi aşan çizimin **aşamaları** da (`CizimSonucu.evreler`, işçi
+takılmalarla aynı saatte: hangi çizim sürerken takıldığı okunuyor. 300
+ms'yi aşan çizimin **aşamaları** da (`CizimSonucu.evreler`, işçi
 ölçüyor): hazırlık (model ve ağ), gölge, ana geçiş, kenar ve çözme,
 bulanıklık ve PNG, katmanlar, kare geometrisi, canlı karelerin çizimi ve
 çözmesi (kare sayısıyla), kare PNG, tek seferde GPU'ya giden en uzun

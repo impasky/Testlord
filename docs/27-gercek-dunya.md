@@ -169,6 +169,16 @@ gelirse tek sayı.
   kez, çakışanlar elenerek yerleşiyor: uzakta ülke adları, yakında şehir
   adları. Dokunma: 14 piksel içindeki şehir noktası, yoksa toprağın kendisi.
   Kenarda direnç ve geri yaylanma: harita hiçbir zaman ölü jest vermiyor.
+- **Taban sekmeler arasında saklı** (`sonTaban`, 2026-10-24): sekme
+  değişince harita kaldırılıyor ve dönünce bütün yollar yeniden
+  rasterleşiyordu — telefonda Dünya'ya her dönüş ~200 ms GPU (ölçüm
+  raporunda "boşta 178–201 ms (GPU/bileşikleyici)"), 4× yavaşlatılmış
+  yazılım tuvalinde ana iş parçacığında ~210 ms. Son çizilen taban bileşenin
+  dışında duruyor; aynı geometri, boy, görünüm ve boyamayla (`tabanImzasi`:
+  bölgelerin boyası, benimkiler, yerleri) aynısı kullanılıyor. Aynı veriyle
+  yeniden gelen sorgu da tabanı yeniden çizdirmiyor. Ölçüldü: dönüşteki
+  uzun kareler 437 + 391 ms'den 82–240 ms'ye (4×), tuval piksel piksel aynı;
+  mercek değişince yeniden çiziliyor.
 - **İki görünüm** (`docs/23`'teki gibi): kim nerede ve Hedefler — sınır dışı,
   ittifak, paktlı ve kalkanlı toprak karanlık.
 - **Liste:** Hedefler, Toprağım ve en yakın 250 şehir.

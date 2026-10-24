@@ -94,10 +94,21 @@ export function olcumKayitlari(): readonly CizimKaydi[] {
   return KAYITLAR;
 }
 
+/** Pano en son ne zaman temizlendi (sayfa açıldıktan sonra, ms): rapor ondan sonrası. */
+let temizlendi: number | null = null;
+
+export function temizlenmeAni(): number | null {
+  return temizlendi;
+}
+
 export function olcumuTemizle(): void {
   KAYITLAR.length = 0;
   TAKILMALAR.length = 0;
   IZLENEN.clear();
+  // Geçişler de: sayılan karelerle aynı dönemi anlatsın (dördüncü raporda
+  // geçişler baştan, kareler temizlikten sonrasıydı).
+  GECISLER.length = 0;
+  temizlendi = performance.now();
   haberVer();
 }
 
@@ -258,8 +269,17 @@ export function uzunKareyiKaydet(k: UzunKare, ekran: string): void {
     takilmaKaydet({ tur: 'gorev', sure: k.duration, ekran, an: k.startTime, neden });
 }
 
-function acikEkran(): string {
-  return document.querySelector('nav [aria-current="page"]')?.textContent?.trim() || '?';
+/**
+ * O an açık ekran: alt çubuktaki sekme ve üstünde açık panel varsa onun adı
+ * ("Akın › Sıralama"). Kapılar sekmenin üstünde açılıyor (`KapiPaneli`):
+ * dördüncü raporda Sıralama, Görevler, Pazar ve Generaller'in takılmaları
+ * hep "Akın" diye sayılmıştı.
+ */
+export function acikEkran(): string {
+  const sekme = document.querySelector('nav [aria-current="page"]')?.textContent?.trim() || '?';
+  const paneller = document.querySelectorAll('[role="dialog"][aria-label]');
+  const panel = paneller[paneller.length - 1]?.getAttribute('aria-label')?.trim();
+  return panel ? `${sekme} › ${panel}` : sekme;
 }
 
 let izleniyor = false;

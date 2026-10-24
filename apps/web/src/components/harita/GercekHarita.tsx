@@ -59,6 +59,17 @@ const SURUKLE_ESIGI = 8;
 /** Taban katmanı ekranın her yanından bu kadar fazlasına çiziliyor (CSS piksel). */
 const PAY = 240;
 
+/**
+ * Son çizilen taban, haritanın dışında. Sekme değişince harita kaldırılıyor;
+ * dönünce bütün ülke ve şehir yolları yeniden rasterleşiyordu: telefonda
+ * Dünya'ya her dönüşte ~200 ms GPU (dördüncü ölçüm raporu, "boşta 178–201
+ * ms (GPU/bileşikleyici)"), yazılım tuvalinde 4× yavaşlatılmış ana iş
+ * parçacığında ~210 ms `drawImage`. Aynı geometri, boy, görünüm ve boyamayla
+ * (`tabanImzasi`) aynısı kullanılıyor. Harita tek yerde (`Harita.tsx`).
+ */
+let sonTaban: { c: HTMLCanvasElement; g: Gorunum; geo: DunyaGeometrisi; imza: string } | null =
+  null;
+
 interface Gorunum {
   /** CSS pikseli / izdüşüm birimi. */
   k: number;
@@ -191,6 +202,22 @@ export function GercekHarita({
     for (const r of regions) m.set(r.mapId, boya(r, mercek, ulkem));
     return m;
   }, [regions, mercek, ulkem]);
+  /**
+   * Tabana giren her şey (geometri dışında): boy, yoğunluk, bölgelerin
+   * boyası, benimkiler (altın kenar) ve yerleri (deniz yolları). Veri her
+   * sekme dönüşünde yeniden geliyor; aynıysa imza da aynı.
+   */
+  const tabanImzasi = useMemo(
+    () =>
+      `${Math.min(2, window.devicePixelRatio || 1)}|${boyut.en}x${boyut.boy}|` +
+      regions
+        .map((r) => {
+          const b = boyamalar.get(r.mapId);
+          return `${r.mapId}:${b?.renk}:${b?.alfa}:${r.isMine ? 1 : 0}:${r.x}:${r.y}`;
+        })
+        .join(';'),
+    [regions, boyamalar, boyut.en, boyut.boy],
+  );
 
   const gorunurBoy = Math.max(0, boyut.boy - altBosluk);
   const enAz = geo && boyut.en > 0 ? Math.min(boyut.en / geo.en, gorunurBoy / geo.boy) : 0.1;
@@ -433,8 +460,24 @@ export function GercekHarita({
       Math.abs(t.g.ty - g.ty) < PAY;
     const elde = isaretciler.current.size > 0;
     if (!tazeMi && !(elde && t && t.surum === tabanSurumu.current)) {
-      const c = tabanCiz(g);
-      if (c) taban.current = { c, g: { ...g }, surum: tabanSurumu.current };
+      // Sekmeye dönüş: aynı görünüm ve veriyle çizilmişi varsa o (`sonTaban`).
+      const s = sonTaban;
+      if (
+        s &&
+        s.geo === geo &&
+        s.imza === tabanImzasi &&
+        s.g.k === g.k &&
+        Math.abs(s.g.tx - g.tx) < PAY &&
+        Math.abs(s.g.ty - g.ty) < PAY
+      )
+        taban.current = { c: s.c, g: s.g, surum: tabanSurumu.current };
+      else {
+        const c = tabanCiz(g);
+        if (c) {
+          taban.current = { c, g: { ...g }, surum: tabanSurumu.current };
+          sonTaban = { c, g: { ...g }, geo, imza: tabanImzasi };
+        }
+      }
     }
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.fillStyle = DENIZ;
@@ -574,6 +617,7 @@ export function GercekHarita({
     boyut.en,
     boyut.boy,
     tabanCiz,
+    tabanImzasi,
     seciliId,
     idIle,
     ittifakHedefi,

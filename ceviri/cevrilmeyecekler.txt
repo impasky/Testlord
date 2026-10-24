@@ -2990,7 +2990,7 @@ yanlış yere düşer. Bunların çözümü çeviri değil KOD: birleştirmeleri
 bir şablona dönmesi gerekiyor. Dil ayarını kurarken bu işi yapacağım.
 
   " · okundu {0}, bulunamadı {1}, eski sürüm {2}"
-      apps/web/src/components/CizimOlcumPaneli.tsx:75
+      apps/web/src/components/CizimOlcumPaneli.tsx:76
   " ve "
       apps/web/src/screens/Arastirma.tsx:944
   " ya da "

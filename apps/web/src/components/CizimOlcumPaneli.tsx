@@ -22,6 +22,7 @@ import {
   takilmaIzle,
   takilmalar,
   takilmaOzeti,
+  temizlenmeAni,
   type CizimKaydi,
   type EkranTakilmasi,
 } from '../cizim/cizimOlcumu';
@@ -110,11 +111,14 @@ function rapor(
     (t.neden ? ` · ${t.neden}` : '');
   const satir = (ad: string, g: ReturnType<typeof ozet>['cizim']) =>
     `${ad}: ${g.sayi}, ortalama ${ms(g.ortalama)} (çizimde ${ms(g.cizimOrtalama)}), en uzun ${ms(g.enUzun)}`;
+  const temizlendi = temizlenmeAni();
   return [
     'Lordlar Çağı — çizim ölçümü',
     `Tarayıcı: ${c.tarayici}`,
     `Ekran: ${c.ekran} · çekirdek ${c.cekirdek ?? '?'} · bellek ${c.bellek ?? '?'} GB`,
     `GPU: ${c.gpu} · GPU yolu ${c.gpuYolu ? 'açık' : 'kapalı (SVG)'}`,
+    // Temizlenmişse sayılar o andan sonrası: önceki çizimler raporda yok.
+    ...(temizlendi === null ? [] : [`Temizlendi: ${saniye(temizlendi)} (rapor bundan sonrası)`]),
     satir('Kayıttan', o.kayit),
     satir('Çizim', o.cizim),
     satir('Taslak', o.taslak),
@@ -145,8 +149,12 @@ function rapor(
   ].join('\n');
 }
 
-/** Bundan uzun süren çizimin aşamaları da yazılıyor (ms). */
-const EVRE_ESIGI = 500;
+/**
+ * Bundan uzun süren çizimin aşamaları da yazılıyor (ms). Dördüncü raporda
+ * ekran zemininin 395 ms'lik taslağı aşamasız kaldı; taslakların tek GPU
+ * işi telefonu 244–409 ms bekletiyordu.
+ */
+const EVRE_ESIGI = 300;
 
 /** Aşamaların okunur adları, çizim sırasıyla (`CizimSonucu.evreler`). */
 const EVRE_ADI: [string, string][] = [
@@ -168,7 +176,8 @@ const EVRE_ADI: [string, string][] = [
 ];
 
 function evreSatiri(e: Record<string, number>): string {
-  return EVRE_ADI.filter(([k]) => e[k] !== undefined)
+  // Şeritsiz (küçük) çizimde GPU beklenmiyor: "en uzun GPU işi 0 ms" ölçülmedi demek.
+  return EVRE_ADI.filter(([k]) => e[k] !== undefined && !(k === 'enUzunDurak' && !e[k]))
     .map(
       ([k, ad]) =>
         `${ad} ${ms(e[k]!)}${k === 'atlasCiz' && e.atlasKare ? ` (${e.atlasKare} kare)` : ''}`,

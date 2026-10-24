@@ -220,4 +220,29 @@ describe('telefonda çizim ölçümü', () => {
     m.uzunKareyiKaydet(uzun({ duration: 50, blockingDuration: 10 }), 'Ordu');
     expect(m.takilmalar()).toHaveLength(4);
   });
+
+  it('açık ekran: sekme, üstünde açık panel varsa onun adıyla', async () => {
+    const { m } = await yukle('?olcum=1');
+    let paneller: { getAttribute: (a: string) => string | null }[] = [];
+    vi.stubGlobal('document', {
+      querySelector: () => ({ textContent: ' Akın ' }),
+      querySelectorAll: () => paneller,
+    });
+    expect(m.acikEkran()).toBe('Akın');
+    paneller = [{ getAttribute: () => 'Öğretici' }, { getAttribute: () => 'Sıralama' }];
+    // En üstteki (en son) panel.
+    expect(m.acikEkran()).toBe('Akın › Sıralama');
+  });
+
+  it('temizle: kayıtlar, takılmalar ve geçişler gidiyor, anı kalıyor', async () => {
+    const { m } = await yukle('?olcum=1');
+    expect(m.temizlenmeAni()).toBeNull();
+    m.olcumKaydet(kayit({}));
+    m.takilmaKaydet({ tur: 'kare', sure: 80, ekran: 'Şehir', an: 5 });
+    m.olcumuTemizle();
+    expect(m.olcumKayitlari()).toHaveLength(0);
+    expect(m.takilmalar()).toHaveLength(0);
+    expect(m.ekranGecisleri()).toHaveLength(0);
+    expect(m.temizlenmeAni()).toBeGreaterThanOrEqual(0);
+  });
 });
