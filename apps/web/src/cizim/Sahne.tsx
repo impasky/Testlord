@@ -40,13 +40,11 @@ import {
   glKatmanlari,
   glOnYukle,
   glOnceden,
-  glSerit,
-  glSeritKes,
   glVarMi,
   ornekSayisi,
-  seritKutusu,
   type Katmanlar,
 } from './gl';
+import { glSerit, glSeritKes, seritKutusu } from './atlas';
 import type { KaliciGrup } from './kalici';
 import {
   ISIK_KARO,

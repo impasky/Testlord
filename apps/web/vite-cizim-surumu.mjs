@@ -30,7 +30,11 @@ const KOK = fileURLToPath(new URL('../..', import.meta.url));
 /**
  * `src/cizim`de resme dokunmayan dosyalar: ölçüm panosu, geliştirme
  * galerisi, kalıcı depo (biçimi `SURUM_DB` ile sürümlü), testlerin parmak
- * izi aracı ve sayfada resmin üstünde oynayan ortam katmanı (`ortam*`).
+ * izi aracı, sayfada resmin üstünde oynayan ortam katmanı (`ortam*`) ve
+ * canlı parçaların atlasını gösteren kod (`atlas.ts`, `seritIsci.ts`:
+ * kaydedilmiş atlası çözüp kesiyor, kaydı değiştirmiyor). Buradakiler
+ * değişince cihazlardaki kayıtlar silinmiyor; çıktıyı değiştiren kod
+ * bunlara girmemeli.
  */
 const RESIMSIZ = new Set([
   'cizimOlcumu.ts',
@@ -40,6 +44,8 @@ const RESIMSIZ = new Set([
   'ortam.ts',
   'ortamIsci.ts',
   'ortamTuvali.ts',
+  'atlas.ts',
+  'seritIsci.ts',
 ]);
 const KAYNAKLAR = [
   {

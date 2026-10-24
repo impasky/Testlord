@@ -228,7 +228,8 @@ export function CizimOlcumPaneli() {
   const o = ozet(kayitlar);
   const takilma = takilmaOzeti(takilmalar(), izlenenKareler());
   const takilmaSayisi = takilma.reduce((a, t) => a + t.takilma + t.gorev, 0);
-  const metin = rapor(kayitlar, takilma, c, depo);
+  // Rapor metni yalnız pano açıkken: kapalı şerit her kayıtta yeniden çiziliyor.
+  const metin = acikMi ? rapor(kayitlar, takilma, c, depo) : '';
 
   const kopyala = async () => {
     try {
@@ -240,9 +241,12 @@ export function CizimOlcumPaneli() {
     }
   };
 
+  // Alt çubuğun (z-50) üstünde, kapı panelinin (z-53), sayfa kasasının ve
+  // alt sayfaların altında: üstlerindeyken en alt düğmelerini örtüyordu
+  // (kasanın son satırına basılamıyordu). Onlar açıkken şerit görünmüyor.
   return (
     <div
-      className="fixed left-2 z-[70] max-w-[calc(100vw-16px)] rounded-xl border border-kenar bg-gece/95 text-[12px] text-parsomen shadow-lg"
+      className="fixed left-2 z-[51] max-w-[calc(100vw-16px)] rounded-xl border border-kenar bg-gece/95 text-[12px] text-parsomen shadow-lg"
       style={{ bottom: 'calc(var(--alt-bar) + var(--omurga-serit) + 8px)' }}
       data-cizim-olcumu=""
     >

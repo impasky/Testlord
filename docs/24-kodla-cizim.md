@@ -479,8 +479,12 @@ görünüm 8,6 → 11,2 sn (katmanlar ve ilk kare ondan önce), canlı 29,7 →
   resim gösterilmeden önce ana iş parçacığının dışında kesiliyor
   (`glOnYukle`), ilk karede çizili. Atlas hep `ImageBitmap`: taze
   çizimde işçiden PNG'ye çevrilmeden geliyor (ara teslim, bkz. aşağıda
-  "Canlıya geçiş"), cihaz kaydındaki PNG'si `createImageBitmap` ile
-  çözülüyor. Arka plan resmi olan bir öğeyken tarayıcı şeridi karo karo
+  "Canlıya geçiş"), cihaz kaydındaki PNG'si şerit işçisinde
+  (`seritIsci.ts`) çözülüp kesiliyor, şeritler aktarılarak dönüyor: ana iş
+  parçacığında kesmek (`createImageBitmap(atlas, x, y, w, h)` orada
+  eşzamanlı bir kopya) kayıttan açılan ekranı telefonda 47–213 ms
+  donduruyordu. Atlasın sayfa yanı `atlas.ts`; ikisi de yalnız gösterim,
+  çizim sürümüne girmiyor (`RESIMSIZ`). Arka plan resmi olan bir öğeyken tarayıcı şeridi karo karo
   rasterliyordu ve uzaktaki karelerin karolarını "sonra lazım" diye atıp
   adım onlara gelince yeniden çiziyordu; telefonda o arada parça boştu
   ("ağaçlar, okçular yok olup geri geliyor"). Tuval kaynak
@@ -864,6 +868,7 @@ eskisi bırakılıyor. Zemin GPU'da değilse (düz üçgenler) yama yok.
 | `glAg.ts`                             | Modelden GPU üçgen tamponu (saf)                                                                                                                                               |
 | `glCizici.ts`                         | WebGL2 çizici: gölge haritası, ana geçiş, kenar + süper örnekleme                                                                                                              |
 | `gl.ts`, `glIsci.ts`                  | GPU sırası, önbellek ve çizim işçisi; yedekler                                                                                                                                 |
+| `atlas.ts`, `seritIsci.ts`            | Canlı parçaların atlası ve şeritleri (yalnız gösterim, sürüme girmiyor); kayıttaki atlas işçide çözülüp kesiliyor                                                              |
 | `Sahne.tsx`                           | Modeli çizen bileşen: SVG, GPU resmi hazır olunca onun yerine; `kutu`, `kirp` (doldur, taşanı kırp), `kare` (kareye tamamla), `hareket`, `yama` (yakında görünen bölge keskin) |
 | `Cizimler.tsx`                        | Ekranların kullandığı bileşenler: `BinaCizimi`, `BolgeCizimi`, `NesneCizimi`, `PortreCizimi`, `DiyarCizimi`, `ZeminCizimi`, …                                                  |
 | `Galeri.tsx`                          | Geliştirme galerisi                                                                                                                                                            |
@@ -1059,7 +1064,9 @@ cihaza yazıp sayfayı yeniliyor, pano açılışta yükleniyor; aynı yerden
 kapanıyor. Uygulamanın deposu tarayıcınınkinden ayrı: çizim kayıtları da
 ayrı, uygulamadaki ilk açılış her şeyi çiziyor. Pano açıkken içerik
 dolgusu kapalı şeridi de sayıyor (`--olcum-serit`, 52 px): şerit Lord'un en
-altındaki Hesap kapısını örtüyordu, ölçüm kapatılamıyordu.
+altındaki Hesap kapısını örtüyordu, ölçüm kapatılamıyordu. Şerit kapı
+panelinin, sayfa kasasının ve alt sayfaların altında (z-51): üstlerindeyken
+en alt düğmelerini örtüyordu (kasanın son satırına basılamıyordu).
 
 Açıkken her `glCiz` işi bir kayıt bırakıyor (`cizim/cizimOlcumu.ts`):
 anahtar, piksel, nereden geldiği (cihazdaki kayıttan, çizilerek, gelmedi),
@@ -1081,7 +1088,10 @@ en uzunu, uzun görevlerin toplamı — ve son takılmaları rapora yazıyor.
 "Şehirde kasma" şikâyeti defalarca bu kabın yazılım GPU'suyla ölçülüp
 düzeltildi ve telefonda sürdü; takılmanın nerede olduğunu artık telefonun
 kendisi söylüyor. Kare izleme her karede ana iş parçacığını uyandırdığı
-için yalnız ölçüm açıkken çalışıyor ve kapatılınca duruyor.
+için yalnız ölçüm açıkken çalışıyor ve kapatılınca duruyor. Açık ekranın
+adı (iki DOM sorgusu) 100 ms'de bir ve her takılmada soruluyor: her karede
+sormak ölçümün kendisini pahalı yapıyordu (4× yavaşlatılmış işlemcide ekran
+açılışı başına 45–95 ms). Rapor metni yalnız pano açıkken kuruluyor.
 
 Takılmanın NEDENİ de (2026-10-24; `uzunKareyiKaydet`): Chrome'da uzun
 görev yerine Long Animation Frames. Uzun karede en uzun betik (çağıran,
@@ -1122,6 +1132,34 @@ yalnız özete girmeyen dosyalar değişti (`cizimOlcumu.ts`), sürüm aynı
 kalemleri çizim kodunda: canlı parçaların atlas kesimi (`gl.ts`
 `seritleriHazirla`, `glSeritKes`: `createImageBitmap(atlas, x, y, w, h)`
 Ordu'ya geçişte 64–71 ms, Dünya'nın bölge kartında 256–315 ms).
+
+Uygulamadan ilk iki rapor (2026-10-24, Android, aynı telefon): ilk
+açılışta 48 çizim, 15'i kayıttan; kapatıp açınca 54'ü kayıttan, 3 çizim —
+yerleşke kayıttan 18 ms. Telefonda kayıttan geliş ilk kez görüldü. Kalan
+takılmalar kayıttan açılan ekranlardaydı: okumanın devamı
+(`IDBRequest.onsuccess`, Akın'da 351 ms), atlas çözülünce şerit kesimi
+(`Promise.resolve`, Şehir'de 213 ms); birlik resimleri kayıttan 1,0–1,5
+sn'de geliyordu. Ordu'ya ilk geçişte 512 ms React çizimi
+(`MessagePort.onmessage`) ve 290 ms TanStack bildirimi; ekran açılırken
+"boşta" (GPU) 170–366 ms.
+
+- Şerit kesimi işçide (`seritIsci.ts`, yukarıda "Bayrak"). Atlasın sayfa
+  yanı `gl.ts`ten `atlas.ts`e taşındı: ikisi özete girmiyor, gösterimdeki
+  sonraki değişiklikler kayıtları silmiyor. 4× yavaşlatılmış işlemcide
+  kayıttan açılan Araştırma, Sıralama ve İttifak'ta (16 şerit) ve Ordu'da
+  (23) şeritlerin hepsi işçiden, ana iş parçacığında kesim yok. Taze
+  çizimin atlası işçiden zaten çözülmüş geliyor: onun şeritleri sayfada
+  kesiliyor (Sıralama'da 19 ms, çizim başına bir kez).
+- Okuma yalnız okuyor (`kaliciOku`, `readonly`). Her okuma kaydı aynı
+  işlemde resimleriyle yeniden yazıyordu (son kullanım zamanı için);
+  yazan işlemler sırayla yürüdüğünden açılıştaki okumalar da birbirini
+  bekliyordu. Zaman artık ancak bir saatten eskiyse yenileniyor, boşta ve
+  tek işlemde (`sonradanDuzelt`); arada yenisi yazılan kayda dokunulmuyor.
+- Ölçümün kendi yükü ve pano şeridi (yukarıda).
+
+Bu tur `gl.ts`i ve `Sahne.tsx`i değiştirdiği için çizim sürümü değişti:
+telefondaki kayıtlar bir kez daha siliniyor. Karşılaştırma ikinci
+açılışın raporuyla.
 
 Raporda cihaz kaydının durumu da (`kalici.kaliciDurumu`): depo açıldı mı,
 sürümü, kaç kayıt (kaçı bu sürümün), bu açılışta kaç okuma (bulunamayan,

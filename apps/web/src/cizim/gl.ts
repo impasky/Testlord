@@ -8,13 +8,13 @@
  * tamponlar kopyasız aktarılıyor. İşçi açılamazsa ya da WebGL2 orada yoksa
  * aynı çizici burada koşuyor; o da yoksa null — çağıran SVG'ye düşüyor.
  */
+import { atlasBirak, atlasKoy, atlasPngKoy, seritleriHazirla, type AtlasKatmani } from './atlas';
 import { bayrakKareleri, kareleriKur } from './bayrakAni';
 import { olcerek, olcumAcik, olcumKaydet } from './cizimOlcumu';
 import { dumanKaynaklari, type DumanKaynagi } from './duman';
 import { agYap, type Ag } from './glAg';
 import {
   aktarilanlar,
-  atlasDuzeni,
   cizBlob,
   glDurumu,
   yazilimMi,
@@ -244,8 +244,8 @@ export interface Katmanlar {
   isik?: string;
   /** Çimen maskesi: üstünden rüzgâr dalgaları kayıyor. */
   cimen?: string;
-  /** Bayrak atlası ve bayrakların resimdeki kutuları (bkz. `BayrakAtlasi`). */
-  bayrak?: Omit<BayrakAtlasi, 'resim'> & { url: string };
+  /** Bayrak atlası ve bayrakların resimdeki kutuları (bkz. `BayrakAtlasi`, `atlas.ts`). */
+  bayrak?: AtlasKatmani;
   /** Canlı dumanın kaynakları (görüş kutusu biriminde). */
   dumanlar?: DumanKaynagi[];
 }
@@ -420,7 +420,7 @@ async function calistir(
       // gelmediyse (bağlam düştü) kayıt yazılmıyor: atlassız kayıt sonraki
       // açılışta figürsüz bir sahne gösterirdi.
       SONUCLAR.set(son.url, s);
-      if (son.atlas && s.bayrak) ATLAS_KAYNAK.set(son.atlas, s.bayrak.resim);
+      if (son.atlas && s.bayrak) atlasPngKoy(son.atlas, s.bayrak.resim);
       if (s.bayrak || !son.kismi.bayrak) sonra?.(s);
       return son.url;
     }
@@ -873,165 +873,6 @@ export function glBirak(anahtar: string): void {
 }
 
 /**
- * Bayrak atlasları, kimliğe göre (`Katmanlar.bayrak.url`): sayfadaki kayan
- * şeritler tuvale buradan çiziliyor (Sahne `Serit`).
- *
- * Atlas hep çözülmüş (`ImageBitmap`): taze çizimde işçiden öyle geliyor
- * (PNG'ye çevrilmeden; bkz. `KismiSonuc`), cihaz kaydından gelende PNG'si
- * `createImageBitmap` ile ana iş parçacığının DIŞINDA çözülüyor. Önceden
- * atlas bir `<img>`di: tuvale ilk çizimde 10 megapiksellik resim ana iş
- * parçacığında yeniden çözülüyordu (ölçüm: canlıya geçerken 130–210 ms
- * donma, telefonda birkaç katı). `glOnYukle` resim gösterilmeden önce
- * hazırlıyor: şerit ilk karesinde çizili, bir kare bile figürsüz değil.
- *
- * Çözülmüş atlas bellek tutuyor (yerleşkeninki ~10 MP, ~40 MB): toplamı
- * `ATLAS_BUTCE`yi aşınca en eskisi kapatılıyor (PNG'si varsa; yeniden
- * kurulan sahne onu yeniden çözüyor). Bırakılan yamanınki hemen gidiyor.
- */
-const ATLASLAR = new Map<string, ImageBitmap>();
-/** Atlasın PNG'si (cihaz kaydı ya da taze çizimin sonradan gelen PNG'si). */
-const ATLAS_KAYNAK = new Map<string, Blob>();
-/** Çözülmekte olanlar: aynı atlas iki kez çözülmesin. */
-const ATLAS_COZULEN = new Map<string, Promise<ImageBitmap | null>>();
-/** Çözülmüş atlasların toplam piksel sınırı (yerleşke ve birkaç afiş). */
-const ATLAS_BUTCE = 16_000_000;
-let atlasSayaci = 0;
-
-/** Atlası kaydeder (bitmap'iyle ya da PNG'siyle), kimliğini verir. */
-function atlasKoy(bitmap?: ImageBitmap, png?: Blob): string {
-  const kimlik = `atlas:${++atlasSayaci}`;
-  if (png) ATLAS_KAYNAK.set(kimlik, png);
-  if (bitmap) atlasSakla(kimlik, bitmap);
-  return kimlik;
-}
-
-/** Çözülmüşü en sona koyar; bütçe aşılınca en eskileri (PNG'si olanları) kapatır. */
-function atlasSakla(kimlik: string, b: ImageBitmap) {
-  ATLASLAR.delete(kimlik);
-  ATLASLAR.set(kimlik, b);
-  let toplam = 0;
-  for (const a of ATLASLAR.values()) toplam += a.width * a.height;
-  for (const [k, a] of ATLASLAR) {
-    if (toplam <= ATLAS_BUTCE) break;
-    // PNG'si gelmemiş (taze, çizimi süren) atlas kapatılamaz: yeniden çözülemez.
-    if (k === kimlik || !ATLAS_KAYNAK.has(k)) continue;
-    toplam -= a.width * a.height;
-    a.close();
-    ATLASLAR.delete(k);
-  }
-}
-
-function atlasBirak(kimlik: string) {
-  ATLASLAR.get(kimlik)?.close();
-  ATLASLAR.delete(kimlik);
-  ATLAS_KAYNAK.delete(kimlik);
-  for (const b of SERIT_HAZIR.get(kimlik) ?? []) b?.close();
-  SERIT_HAZIR.delete(kimlik);
-}
-
-/**
- * Önceden kesilmiş şeritler (atlas kimliği → parça sırasıyla): resim
- * gösterilmeden kesiliyor (`glOnYukle`), ilk kurulan tuval kendisininkini
- * alıyor (`glSerit`). Şerit tuvali bitmap'i kopyasız gösteriyor
- * (`bitmaprenderer`); 2d tuvale çizmek 41 tuvalde ana iş parçacığını
- * donduruyordu (her tuval kendi GPU kaynağını o karede üretiyordu).
- * Alınmayanlar (sahneden önce çıkıldı) bir süre sonra kapatılıyor.
- */
-const SERIT_HAZIR = new Map<string, (ImageBitmap | undefined)[]>();
-const SERIT_BEKLE = 10_000;
-
-/** Parçanın atlastaki şeridi (x, y, en, boy; çıktı pikseli). */
-export function seritKutusu(
-  b: NonNullable<Katmanlar['bayrak']>,
-  duzen: ReturnType<typeof atlasDuzeni>,
-  i: number,
-): [number, number, number, number] {
-  const [, , w, h] = b.kutular[i]!;
-  const sutun = duzen.sutun[i]!;
-  return [duzen.yer[i]![0], duzen.yer[i]![1], sutun * w, (b.kareSayilari[i]! / sutun) * h];
-}
-
-async function seritleriHazirla(b: NonNullable<Katmanlar['bayrak']>) {
-  const kimlik = b.url;
-  if (SERIT_HAZIR.has(kimlik)) return;
-  const atlas = await glAtlasYukle(kimlik);
-  if (!atlas || SERIT_HAZIR.has(kimlik)) return;
-  const duzen = atlasDuzeni(b.kutular, b.kareSayilari);
-  const kesik = await Promise.all(
-    b.kutular.map(([, , w, h], i) =>
-      w > 0 && h > 0
-        ? createImageBitmap(atlas, ...seritKutusu(b, duzen, i)).catch(() => undefined)
-        : undefined,
-    ),
-  );
-  if (!ATLASLAR.has(kimlik) && !ATLAS_KAYNAK.has(kimlik)) {
-    // O arada bırakıldı.
-    for (const k of kesik) k?.close();
-    return;
-  }
-  SERIT_HAZIR.set(kimlik, kesik);
-  setTimeout(() => {
-    const l = SERIT_HAZIR.get(kimlik);
-    if (l !== kesik) return;
-    for (const k of l) k?.close();
-    SERIT_HAZIR.delete(kimlik);
-  }, SERIT_BEKLE);
-}
-
-/** Önceden kesilmiş şerit (bir kez verilir: tuval onu sahipleniyor). */
-export function glSerit(kimlik: string, i: number): ImageBitmap | undefined {
-  const l = SERIT_HAZIR.get(kimlik);
-  const b = l?.[i];
-  if (l) l[i] = undefined;
-  return b;
-}
-
-/** Şeridi atlastan keser (önceden kesilmişi yoksa: sahne yeniden kurulunca). */
-export async function glSeritKes(
-  kimlik: string,
-  kutu: [number, number, number, number],
-): Promise<ImageBitmap | null> {
-  const atlas = await glAtlasYukle(kimlik);
-  return atlas ? createImageBitmap(atlas, ...kutu).catch(() => null) : null;
-}
-
-/** Çözülmüş atlas, varsa (eşzamanlı: çizim aynı karede). Kapatılmışın eni 0. */
-function glAtlas(kimlik: string): ImageBitmap | undefined {
-  const a = ATLASLAR.get(kimlik);
-  return a && a.width > 0 ? a : undefined;
-}
-
-/** Atlası çözer (gerekirse; ana iş parçacığının dışında). */
-function glAtlasYukle(kimlik: string): Promise<ImageBitmap | null> {
-  const var_ = glAtlas(kimlik);
-  if (var_) {
-    atlasSakla(kimlik, var_);
-    return Promise.resolve(var_);
-  }
-  let p = ATLAS_COZULEN.get(kimlik);
-  if (!p) {
-    const png = ATLAS_KAYNAK.get(kimlik);
-    p = png
-      ? createImageBitmap(png).then(
-          (b) => {
-            // O arada bırakıldıysa (yama değişti) tutulmuyor.
-            if (!ATLAS_KAYNAK.has(kimlik)) {
-              b.close();
-              return null;
-            }
-            atlasSakla(kimlik, b);
-            return b;
-          },
-          () => null,
-        )
-      : Promise.resolve(null);
-    ATLAS_COZULEN.set(kimlik, p);
-    void p.finally(() => ATLAS_COZULEN.delete(kimlik));
-  }
-  return p;
-}
-
-/**
  * Çizilmiş bir resmi (ve katmanlarını) cihazdaki yuvaya yazar (yakınlık
  * yaması: sahne kapanınca ya da uygulama arka plana geçince; büyük
  * sahnelerin grubunda). `ek` geri yüklerken dönüyor.
@@ -1061,8 +902,8 @@ export async function glKalici(
 /**
  * Resmi ve katmanlarını çözer (yükler, bitmap'e açar): durağan resmin
  * yerine canlısı konurken bir kare bile figürsüz görünmesin (canlı
- * resimde hareketli parçalar yok, atlasta). Atlas `glAtlasYukle`yle
- * (taze çizimde zaten çözülmüş).
+ * resimde hareketli parçalar yok, atlasta). Atlasın şeritleri
+ * `seritleriHazirla`yla (`atlas.ts`; kayıttan gelende şerit işçisinde).
  */
 export async function glOnYukle(url: string): Promise<void> {
   const k = KATMANLAR.get(url);

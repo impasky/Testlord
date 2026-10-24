@@ -234,6 +234,7 @@
 - `apps/web/src/cizim/Galeri.tsx` — Çizim galerisi: koddan çizilen her görsel tek sayfada (docs/24). · dışa: Galeri
 - `apps/web/src/cizim/Sahne.tsx` — Bir 3B modeli SVG olarak çizer (docs/24). · dışa: cizimiAl, OnceKaba, Cokgenler, Sahne
 - `apps/web/src/cizim/arazi.ts` — ARAZİ — düşük çokgenli yükseklik alanı (docs/24). · dışa: Yukseklik, Nokta, gurultu, yumusakAdim, gecis, tepe, cizgiyeUzaklik, nehirOy, Duzluk, duzle, yumusat, AraziAyari, arazi, yerYolu, parsel, ekrandanYere
+- `apps/web/src/cizim/atlas.ts` — Canlı parçaların atlası ve kayan şeritleri — yalnız GÖSTERİM (docs/24 "GPU çizimi", Bayrak). · dışa: AtlasKatmani, atlasKoy, atlasPngKoy, atlasBirak, seritKutusu, seritleriHazirla, glSerit, glSeritKes
 - `apps/web/src/cizim/bayrakAni.ts` — Dalgalanan bayrak ve salınan sancak (docs/24 "Hareket"): kumaşın bir turu, GPU için. · dışa: BAYRAK_KARE, bayrakGruplari, bayrakKareleri, kareleriKur, AGAC_SURE, ASKER_SURE, BAYRAK_SURE, SANCAK_SURE
 - `apps/web/src/cizim/binalar.ts` — ŞEHİR YAPILARI — 12 bina × 3 aşama + arsa, görev panosu, haberci kulesi, onur meydanı (docs/24). · dışa: BINA_KUTUSU, kukla, mizrakSehpasi, ates, ors, ocak, BINA_ADLARI, binaModeli, TABELA
 - `apps/web/src/cizim/birlikler.ts` — BİRLİK, DÜŞMAN VE EKİPMAN ÇİZİMLERİ (docs/24). · dışa: Kademe, KADEME, BIRLIK_ADLARI, DUSMAN_ADLARI, EKIPMAN_ADLARI, birlikModeli, dusmanModeli, ekipmanModeli
@@ -246,7 +247,7 @@
 - `apps/web/src/cizim/diyarlar.ts` — AKIN DİYARLARI — beş diyarın kapağı (16:9) ve haritası (kare) (docs/24). · dışa: DIYAR_ADLARI, Diyar, Kadraj, KAPAK_KUTUSU, HARITA_KUTUSU, diyarModeli
 - `apps/web/src/cizim/duman.ts` — Canlı dumanın kaynakları (docs/24 "Hareket"): hareketli GPU resminde duman yok; sayfada CSS yumruları olarak yükseliyor. · dışa: DumanKaynagi, dumanKaynaklari
 - `apps/web/src/cizim/figur.ts` — FİGÜRLER — asker, düşman, at, mancınık (docs/24). · dışa: BaslikTipi, EsyaTipi, Esya, Insan, kalkan, kilicModeli, insan, AtAyari, at, mancinik
-- `apps/web/src/cizim/gl.ts` — GPU çiziminin kapısı (docs/24): sıra, önbellek ve işçi. · dışa: GlIstek, Katmanlar, glKatmanlari, glVarMi, glKatmanBlobu, KismiAlan, glCiz, glOnceden, glBirak, seritKutusu, glSerit, glSeritKes, glKaydet, glKalici, glOnYukle, EN_BUYUK +3 · (testi var)
+- `apps/web/src/cizim/gl.ts` — GPU çiziminin kapısı (docs/24): sıra, önbellek ve işçi. · dışa: GlIstek, Katmanlar, glKatmanlari, glVarMi, glKatmanBlobu, KismiAlan, glCiz, glOnceden, glBirak, glKaydet, glKalici, glOnYukle, EN_BUYUK, aoYaricapi, atlasDuzeni, ornekSayisi · (testi var)
 - `apps/web/src/cizim/glAg.ts` — Modelden GPU ağı (docs/24). · dışa: KOSE, DOKU_NO, dokuBul, Ag, agYap
 - `apps/web/src/cizim/glCizici.ts` — GPU ÇİZİMİ (WebGL2) — aynı 3B model, tarayıcının izin verdiği en temiz hâliyle (docs/24). · dışa: EN_BUYUK, yazilimMi, sayfalaraYerlestir, goruntuMatrisi, CizimIstegi, KismiSonuc, KismiGonder, ornekSayisi, aoYaricapi, BayrakKareleri, BayrakAtlasi, CizimSonucu, atlasDuzeni, IsciIstegi, IsciCevabi, aktarilanlar +3
 - `apps/web/src/cizim/glIsci.ts` — GPU çizim işçisi (docs/24): `glCizici`yi ana iş parçacığının dışında koşturuyor.
@@ -264,6 +265,7 @@
 - `apps/web/src/cizim/rastgele.ts` — Tohumlu rastgele sayı: aynı anahtar her zaman aynı çizimi verir. · dışa: tohum, rastgele, aralik
 - `apps/web/src/cizim/renk.ts` — Renk yardımcıları ve ortak palet (docs/24). · dışa: Rgb, rgb, hex, isikla, karistir, P
 - `apps/web/src/cizim/savas.ts` — SAVAŞ SAHNESİ — raporun tepesinde iki ordunun karşılaştığı tek kare (docs/09 §4.2 G4, docs/24). · dışa: SAVAS_KUTUSU, SavasGirdisi, savasAnahtari, savasModeli · (testi var)
+- `apps/web/src/cizim/seritIsci.ts` — Şerit işçisi (docs/24 "GPU çizimi", Bayrak): cihaz kaydından gelen atlasın PNG'sini çözüp canlı parçaların şeritlerini keser; kesikler aktarılarak… · dışa: SeritKutusu, SeritIstegi, SeritCevabi
 - `apps/web/src/cizim/tarif.ts` — Çizim tarifleri (docs/24): sahnenin anahtarından modeli. · dışa: tarifModeli
 - `apps/web/src/cizim/uc.ts` — KÜÇÜK 3B MOTOR — bütün nesne çizimlerinin ortak dili (docs/24). · dışa: V3, Doku, Yuz, Model, normal, tasi, olcekle, dondur, parlat, dokula, oneAl, katmanla, boya, kutu, prizma, cember +24
 - `apps/web/src/cizim/vakit.ts` — Günün saatine göre ışık (docs/24 "Günün saati") — yalnız görsel. · dışa: Vakit, VAKITLER, gununVakti, sonrakiVakit, sonrakiVakitAni, VakitIsigi, VAKIT_ISIGI, vakitAnahtari · (testi var)

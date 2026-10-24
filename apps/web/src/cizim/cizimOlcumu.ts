@@ -298,6 +298,8 @@ export function acikEkran(): string {
 }
 
 let izleniyor = false;
+/** Kare izlemede açık ekranın adı en çok bu aralıkla soruluyor (bkz. `takilmaIzle`). */
+const EKRAN_SOR_MS = 100;
 
 /**
  * Kare ve uzun görev izlemeyi başlatır — pano açılınca, yalnız ölçüm
@@ -312,6 +314,12 @@ export function takilmaIzle(): void {
   document.addEventListener('visibilitychange', () => {
     son = performance.now();
   });
+  // Ekranın adı iki DOM sorgusu (`acikEkran`): her karede sormak ölçümün
+  // kendisini pahalı yapıyordu (4× yavaş işlemcide ekran açılışı başına
+  // 45–95 ms). 100 ms'de bir ve her takılmada soruluyor: takılan kare yine
+  // doğru ekrana yazılıyor.
+  let ekran = '?';
+  let sorulan = -Infinity;
   const kare = (t: number) => {
     if (!olcumAcik()) {
       izleniyor = false;
@@ -320,7 +328,10 @@ export function takilmaIzle(): void {
     const ara = t - son;
     son = t;
     if (document.visibilityState === 'visible') {
-      const ekran = acikEkran();
+      if (t - sorulan >= EKRAN_SOR_MS || ara > KARE_ESIGI) {
+        ekran = acikEkran();
+        sorulan = t;
+      }
       if (GECISLER[GECISLER.length - 1]?.ekran !== ekran) {
         GECISLER.push({ ekran, an: t });
         if (GECISLER.length > SINIR) GECISLER.shift();

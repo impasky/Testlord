@@ -151,15 +151,26 @@ function iste<T>(r: IDBRequest<T>): Promise<T | null> {
   });
 }
 
+/** Yazılacak kayıtlar sırayla: aynı yuvaya üst üste yazım karışmasın. */
+let yazim: Promise<unknown> = Promise.resolve();
+
 /**
- * Yuvadaki kaydı okur; sürümü tutmuyorsa siler ve boş döner. Okunan kaydın
- * zamanı yenileniyor: her açılışta okunan resim en eski sayılıp atılmasın.
+ * Yuvadaki kaydı okur; sürümü tutmuyorsa boş döner (kayıt sonradan
+ * siliniyor). Okunan kaydın zamanı yenileniyor (her açılışta okunan resim
+ * en eski sayılıp atılmasın), ama ancak `YENILE_MS`den eskiyse ve sonradan
+ * (`sonradanDuzelt`).
+ *
+ * Önceden okuma kaydı aynı işlemde yeniden yazıyordu (resimleriyle). Telefon
+ * raporu (uygulama, ikinci açılış: 54 kayıt okundu): kayıttan açılan ekran
+ * okumanın devamında 94–351 ms donuyordu (`IDBRequest.onsuccess`); yazan
+ * işlemler de sırayla yürüdüğünden açılıştaki okumalar birbirini bekliyordu.
+ * Artık okuma yalnız okuyor (`readonly`, okumalar bir arada yürüyor).
  */
 export async function kaliciOku(yuva: string): Promise<KaliciKayit | null> {
   const db = await ac();
   if (!db) return null;
   try {
-    const depo = db.transaction(DEPO, 'readwrite').objectStore(DEPO);
+    const depo = db.transaction(DEPO, 'readonly').objectStore(DEPO);
     const k = (await iste(depo.get(yuva))) as KaliciKayit | undefined | null;
     if (!k) {
       SAYAC.yok++;
@@ -167,16 +178,59 @@ export async function kaliciOku(yuva: string): Promise<KaliciKayit | null> {
     }
     if (k.surum !== SURUM) {
       SAYAC.eski++;
-      depo.delete(yuva);
+      sonradanDuzelt(yuva, k.zaman);
       return null;
     }
     SAYAC.okunan++;
-    depo.put({ ...k, zaman: Date.now() });
+    if (Date.now() - k.zaman > YENILE_MS) sonradanDuzelt(yuva, k.zaman);
     return k;
   } catch (h) {
     hata(h);
     return null;
   }
+}
+
+/**
+ * Okunan kaydın zamanı ancak bu kadar eskiyse yenileniyor: bir saat içinde
+ * yeniden okunanınki yenilenmiyor. Sıra yine yaklaşık en son kullanılan;
+ * atılan yine en uzun süredir kullanılmayan.
+ */
+const YENILE_MS = 60 * 60_000;
+/** Sonradan düzeltilecek yuvalar, okunduklarındaki zamanlarıyla. */
+const DUZELT = new Map<string, number>();
+let duzeltmeKurulu = false;
+
+/**
+ * Okunan kayıtları boşta, tek yazma işleminde düzeltir: sürümü eskiyse
+ * siler, değilse zamanını yeniler. Arada yuvaya yenisi yazıldıysa (zamanı
+ * başka) dokunulmuyor; yazımların sırasına giriyor (`yazim`).
+ */
+function sonradanDuzelt(yuva: string, zaman: number) {
+  DUZELT.set(yuva, zaman);
+  if (duzeltmeKurulu) return;
+  duzeltmeKurulu = true;
+  const calis = () => {
+    duzeltmeKurulu = false;
+    const liste = [...DUZELT];
+    DUZELT.clear();
+    yazim = yazim.then(async () => {
+      const db = await ac();
+      if (!db) return;
+      try {
+        const depo = db.transaction(DEPO, 'readwrite').objectStore(DEPO);
+        for (const [y, z] of liste) {
+          const k = (await iste(depo.get(y))) as KaliciKayit | undefined | null;
+          if (!k || k.zaman !== z) continue;
+          if (k.surum !== SURUM) depo.delete(y);
+          else depo.put({ ...k, zaman: Date.now() });
+        }
+      } catch (h) {
+        hata(h);
+      }
+    });
+  };
+  if (typeof requestIdleCallback === 'function') requestIdleCallback(calis, { timeout: 5000 });
+  else setTimeout(calis, 1000);
 }
 
 /**
@@ -194,9 +248,6 @@ function kaliciIste() {
     /* yok */
   }
 }
-
-/** Yazılacak kayıtlar sırayla: aynı yuvaya üst üste yazım karışmasın. */
-let yazim: Promise<unknown> = Promise.resolve();
 
 /**
  * Yuvaya yazar (eskisinin yerine), sonra grubunda sınırın üstündeki en
