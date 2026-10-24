@@ -533,8 +533,10 @@ export function MobilKabuk({
         className="mx-auto max-w-lg px-3"
         style={{
           paddingTop: 'var(--ust-bar)',
-          // Şerit varsa içerik onun da altında kalmamalı.
-          paddingBottom: 'calc(var(--alt-bar) + var(--omurga-serit) + 16px)',
+          // Şerit varsa içerik onun da altında kalmamalı; ölçüm panosu
+          // açıkken onun şeridi de (`CizimOlcumPaneli`, `--olcum-serit`).
+          paddingBottom:
+            'calc(var(--alt-bar) + var(--omurga-serit) + var(--olcum-serit, 0px) + 16px)',
         }}
       >
         {/*

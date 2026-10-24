@@ -292,7 +292,7 @@
     "tr": "· Seviye",
     "en": "· Level",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:104"
+      "apps/web/src/screens/Hesap.tsx:105"
     ]
   },
   "t135e851c": {
@@ -518,7 +518,7 @@
     "tr": "{0} · çekirdek {1} · GPU yolu {2}",
     "en": "{0} · cores {1} · GPU path {2}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:253"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:262"
     ]
   },
   "t381449cb": {
@@ -855,7 +855,7 @@
     "tr": "{0} çizim · ort {1} · en uzun {2} · takılma {3}",
     "en": "{0} drawings · avg {1} · longest {2} · stutters {3}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:246"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:255"
     ]
   },
   "ta012b2a3": {
@@ -1390,7 +1390,7 @@
     "tr": "{0} şikâyet karar bekliyor.",
     "en": "{0} [report is|reports are] waiting for a decision.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:172"
+      "apps/web/src/screens/Hesap.tsx:174"
     ]
   },
   "t38001c91": {
@@ -2003,7 +2003,7 @@
     "en": "on",
     "nerede": [
       "apps/web/src/components/CizimOlcumPaneli.tsx:119",
-      "apps/web/src/components/CizimOlcumPaneli.tsx:253"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:262"
     ]
   },
   "t32e351f6": {
@@ -2020,7 +2020,7 @@
     "en": "Turning on…",
     "nerede": [
       "apps/web/src/components/BildirimKarti.tsx:96",
-      "apps/web/src/screens/Hesap.tsx:229"
+      "apps/web/src/screens/Hesap.tsx:231"
     ]
   },
   "t9b280d99": {
@@ -2805,7 +2805,7 @@
     "tr": "Bekleyen şikâyet yok.",
     "en": "No pending reports.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:173"
+      "apps/web/src/screens/Hesap.tsx:175"
     ]
   },
   "t225a2417": {
@@ -2837,7 +2837,7 @@
     "tr": "betik {0} ms ({1}{2}{3})",
     "en": "script {0} ms ({1}{2}{3})",
     "nerede": [
-      "apps/web/src/cizim/cizimOlcumu.ts:239"
+      "apps/web/src/cizim/cizimOlcumu.ts:254"
     ]
   },
   "t66d6523c": {
@@ -2845,7 +2845,7 @@
     "tr": "betikler toplam {0} ms",
     "en": "scripts total {0} ms",
     "nerede": [
-      "apps/web/src/cizim/cizimOlcumu.ts:241"
+      "apps/web/src/cizim/cizimOlcumu.ts:256"
     ]
   },
   "tfc8bbaee": {
@@ -2870,7 +2870,7 @@
     "en": "Notifications",
     "nerede": [
       "apps/web/src/screens/Gizlilik.tsx:143",
-      "apps/web/src/screens/Hesap.tsx:213"
+      "apps/web/src/screens/Hesap.tsx:215"
     ]
   },
   "taa1c034e": {
@@ -3110,7 +3110,7 @@
     "tr": "boşta {0} ms (GPU/bileşikleyici)",
     "en": "idle {0} ms (GPU/compositor)",
     "nerede": [
-      "apps/web/src/cizim/cizimOlcumu.ts:247"
+      "apps/web/src/cizim/cizimOlcumu.ts:262"
     ]
   },
   "t875a03d7": {
@@ -3219,7 +3219,7 @@
     "tr": "Bölgelerin sahipsiz kalır ve başkaları tarafından yeniden fethedilebilir.",
     "en": "Your regions become unowned and can be reconquered by others.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:276"
+      "apps/web/src/screens/Hesap.tsx:278"
     ]
   },
   "tada95535": {
@@ -3235,7 +3235,7 @@
     "tr": "Bölgende reklam için ayrıca bir onay gerekmiyor.",
     "en": "No separate ad consent is required in your region.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:396"
+      "apps/web/src/screens/Hesap.tsx:398"
     ]
   },
   "tc94ced4d": {
@@ -3430,7 +3430,7 @@
     "tr": "Bu işlem geri alınamaz.",
     "en": "This action cannot be undone.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:276"
+      "apps/web/src/screens/Hesap.tsx:278"
     ]
   },
   "te4cb2870": {
@@ -3788,12 +3788,28 @@
       "apps/web/src/components/CizimOlcumPaneli.tsx:123"
     ]
   },
+  "t0185ccbc": {
+    "grup": "arayuz",
+    "tr": "Çizim ölçümünü aç (telefonda hız raporu)",
+    "en": "Turn on drawing measurement (speed report on phone)",
+    "nerede": [
+      "apps/web/src/screens/Hesap.tsx:434"
+    ]
+  },
+  "t57b72ee2": {
+    "grup": "arayuz",
+    "tr": "Çizim ölçümünü kapat",
+    "en": "Turn off drawing measurement",
+    "nerede": [
+      "apps/web/src/screens/Hesap.tsx:434"
+    ]
+  },
   "t326d2b0c": {
     "grup": "arayuz",
     "tr": "Çizim: {0} · ort {1} · en uzun {2}",
     "en": "Drawn: {0} · avg {1} · longest {2}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:262"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:271"
     ]
   },
   "t21d6cbb0": {
@@ -3857,7 +3873,7 @@
     "tr": "Değişikliği doğrulamak için gerekiyor.",
     "en": "Required to verify the change.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:85"
+      "apps/web/src/screens/Hesap.tsx:86"
     ]
   },
   "t56f6ebbc": {
@@ -4099,7 +4115,7 @@
     "tr": "Dil",
     "en": "Language",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:190"
+      "apps/web/src/screens/Hesap.tsx:192"
     ]
   },
   "taa9c8b99": {
@@ -4383,7 +4399,7 @@
     "tr": "Doğrulama bağlantısı gönder",
     "en": "Send verification link",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:156"
+      "apps/web/src/screens/Hesap.tsx:158"
     ]
   },
   "t5bbae6d0": {
@@ -4407,7 +4423,7 @@
     "tr": "Doğrulanmadan ittifak sohbetine yazamaz ve kaynak gönderemezsin. Postayı bulamıyorsan spam klasörüne bak.",
     "en": "You cannot write in alliance chat and send resources without verification. If you cannot find the mail, check your spam folder.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:146"
+      "apps/web/src/screens/Hesap.tsx:148"
     ]
   },
   "t99cead47": {
@@ -4565,7 +4581,7 @@
     "en": "Email",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:241",
-      "apps/web/src/screens/Hesap.tsx:142"
+      "apps/web/src/screens/Hesap.tsx:144"
     ]
   },
   "t2909af14": {
@@ -4841,7 +4857,7 @@
     "tr": "En az 8 karakter",
     "en": "At least 8 characters",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:245",
+      "apps/web/src/screens/Hesap.tsx:247",
       "apps/web/src/screens/ParolaSifirla.tsx:46"
     ]
   },
@@ -4850,7 +4866,7 @@
     "tr": "En az 8 karakter olmalı.",
     "en": "Must be at least 8 characters.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:87",
+      "apps/web/src/screens/Hesap.tsx:88",
       "apps/web/src/screens/ParolaSifirla.tsx:66"
     ]
   },
@@ -4964,7 +4980,7 @@
     "en": "Unblock",
     "nerede": [
       "apps/web/src/components/ProfilKarti.tsx:159",
-      "apps/web/src/screens/Hesap.tsx:374"
+      "apps/web/src/screens/Hesap.tsx:376"
     ]
   },
   "t9d906c99": {
@@ -4981,7 +4997,7 @@
     "tr": "Engellediklerin",
     "en": "Blocked lords",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:356"
+      "apps/web/src/screens/Hesap.tsx:358"
     ]
   },
   "t445cb1b6": {
@@ -5571,7 +5587,7 @@
     "tr": "Gönderildi",
     "en": "Sent",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:156"
+      "apps/web/src/screens/Hesap.tsx:158"
     ]
   },
   "t3b8e7ae3": {
@@ -5596,7 +5612,7 @@
     "en": "Could not be sent.",
     "nerede": [
       "apps/web/src/components/KaynakGonder.tsx:40",
-      "apps/web/src/screens/Hesap.tsx:160"
+      "apps/web/src/screens/Hesap.tsx:162"
     ]
   },
   "tc4320737": {
@@ -5612,7 +5628,7 @@
       "apps/web/src/screens/Generaller.tsx:161",
       "apps/web/src/screens/Giris.tsx:319",
       "apps/web/src/screens/Harita.tsx:1222",
-      "apps/web/src/screens/Hesap.tsx:261",
+      "apps/web/src/screens/Hesap.tsx:263",
       "apps/web/src/screens/Kisla.tsx:293",
       "apps/web/src/screens/ParolaSifirla.tsx:62",
       "apps/web/src/screens/Sehir.tsx:965"
@@ -5664,7 +5680,7 @@
     "tr": "GPU yolu kapalı: çizimler eski yoldan (SVG) yapılıyor, burada ölçülmüyor.",
     "en": "GPU path off: drawings use the old path (SVG) and are not measured here.",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:257"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:266"
     ]
   },
   "t304e01a3": {
@@ -5672,7 +5688,7 @@
     "tr": "GPU: {0}",
     "en": "GPU: {0}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:251"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:260"
     ]
   },
   "t113e8c40": {
@@ -5810,7 +5826,7 @@
     "en": "What data we keep",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:291",
-      "apps/web/src/screens/Hesap.tsx:114"
+      "apps/web/src/screens/Hesap.tsx:115"
     ]
   },
   "t7c9b86e8": {
@@ -6112,7 +6128,7 @@
     "tr": "Henüz yok.",
     "en": "None yet.",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:269"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:278"
     ]
   },
   "t9148a36e": {
@@ -6179,7 +6195,7 @@
     "tr": "Hesabı Sil",
     "en": "Delete Account",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:272"
+      "apps/web/src/screens/Hesap.tsx:274"
     ]
   },
   "t67e3a2c7": {
@@ -6205,7 +6221,7 @@
     "nerede": [
       "apps/api/src/routes/me.ts:68",
       "apps/web/src/api/client.ts:1487",
-      "apps/web/src/screens/Hesap.tsx:299"
+      "apps/web/src/screens/Hesap.tsx:301"
     ]
   },
   "te485c18d": {
@@ -6213,7 +6229,7 @@
     "tr": "Hesabımı silmek istiyorum",
     "en": "I want to delete my account",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:282"
+      "apps/web/src/screens/Hesap.tsx:284"
     ]
   },
   "t438cca8f": {
@@ -6237,7 +6253,7 @@
     "tr": "Hesabın, lordun, ordun ve ekipmanın kalıcı olarak silinir.",
     "en": "Your account, lord, army, and equipment will be permanently deleted.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:275"
+      "apps/web/src/screens/Hesap.tsx:277"
     ]
   },
   "t970d9a25": {
@@ -6278,7 +6294,7 @@
     "tr": "Hesap silinemedi.",
     "en": "Account could not be deleted.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:80"
+      "apps/web/src/screens/Hesap.tsx:81"
     ]
   },
   "td9498625": {
@@ -6972,7 +6988,7 @@
     "tr": "Kalıcı olarak sil",
     "en": "Permanently delete",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:324"
+      "apps/web/src/screens/Hesap.tsx:326"
     ]
   },
   "t454fce83": {
@@ -7047,7 +7063,7 @@
     "tr": "kapalı",
     "en": "off-limits",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:253"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:262"
     ]
   },
   "tca1abff0": {
@@ -7396,7 +7412,7 @@
     "tr": "Kayıttan: {0} · ort {1}",
     "en": "From storage: {0} · avg {1}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:261"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:270"
     ]
   },
   "t1ea0a49d": {
@@ -7552,7 +7568,7 @@
     "en": "Interruptions: {0}",
     "nerede": [
       "apps/web/src/components/CizimOlcumPaneli.tsx:125",
-      "apps/web/src/components/CizimOlcumPaneli.tsx:264"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:273"
     ]
   },
   "tb766e201": {
@@ -7711,7 +7727,7 @@
     "tr": "Kimseyi engellemedin. Sohbette bir mesajın yanındaki ⊘ ile o lordun mesajlarını görmemeyi seçebilirsin.",
     "en": "You haven't blocked anyone. Tap ⊘ next to a chat message to stop seeing that lord's messages.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:360"
+      "apps/web/src/screens/Hesap.tsx:362"
     ]
   },
   "t0c8cef8c": {
@@ -7767,7 +7783,7 @@
     "tr": "Kopyala",
     "en": "Copy",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:280"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:289"
     ]
   },
   "t653a2491": {
@@ -7775,7 +7791,7 @@
     "tr": "Kopyalanamadı; aşağıdaki metni seçip kopyala.",
     "en": "Could not copy; select and copy the text below.",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:302"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:311"
     ]
   },
   "t7d0bdf3d": {
@@ -7783,7 +7799,7 @@
     "tr": "Kopyalandı.",
     "en": "Copied.",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:300"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:309"
     ]
   },
   "t0d0d93bf": {
@@ -7800,7 +7816,7 @@
     "en": "Terms of use",
     "nerede": [
       "apps/web/src/screens/Giris.tsx:285",
-      "apps/web/src/screens/Hesap.tsx:120"
+      "apps/web/src/screens/Hesap.tsx:121"
     ]
   },
   "ta55f9054": {
@@ -7923,7 +7939,7 @@
     "tr": "Kutuya birebir HESABIMI SIL yazman gerekiyor.",
     "en": "You need to type DELETE MY ACCOUNT exactly into the box.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:94"
+      "apps/web/src/screens/Hesap.tsx:95"
     ]
   },
   "ta64656fc": {
@@ -7931,7 +7947,7 @@
     "tr": "Kutuya HESABIMI SIL yaz",
     "en": "Type DELETE MY ACCOUNT in the box",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:295"
+      "apps/web/src/screens/Hesap.tsx:297"
     ]
   },
   "t11d481cd": {
@@ -8105,7 +8121,7 @@
     "en": "Age of Lords",
     "nerede": [
       "apps/api/src/routes/push.ts:135",
-      "apps/web/src/components/MobilKabuk.tsx:551",
+      "apps/web/src/components/MobilKabuk.tsx:553",
       "apps/web/src/screens/EpostaDogrula.tsx:38",
       "apps/web/src/screens/Giris.tsx:200",
       "apps/web/src/screens/ParolaSifirla.tsx:31"
@@ -8140,7 +8156,7 @@
     "tr": "Lordun",
     "en": "Your lord",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:104"
+      "apps/web/src/screens/Hesap.tsx:105"
     ]
   },
   "t752657eb": {
@@ -8292,7 +8308,7 @@
     "tr": "Mevcut parola",
     "en": "Current password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:236"
+      "apps/web/src/screens/Hesap.tsx:238"
     ]
   },
   "t180f3ffb": {
@@ -8300,7 +8316,7 @@
     "tr": "Mevcut parolanı gir",
     "en": "Enter your current password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:85"
+      "apps/web/src/screens/Hesap.tsx:86"
     ]
   },
   "t8fa4cc21": {
@@ -8367,7 +8383,7 @@
     "tr": "nav [aria-current=\"page\"]",
     "en": "",
     "nerede": [
-      "apps/web/src/cizim/cizimOlcumu.ts:279"
+      "apps/web/src/cizim/cizimOlcumu.ts:294"
     ]
   },
   "t7db547ab": {
@@ -8480,7 +8496,7 @@
     "tr": "Onay",
     "en": "Confirmation",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:295"
+      "apps/web/src/screens/Hesap.tsx:297"
     ]
   },
   "t280ff98c": {
@@ -8488,7 +8504,7 @@
     "tr": "Onay metnini yaz",
     "en": "Type the confirmation text",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:94"
+      "apps/web/src/screens/Hesap.tsx:95"
     ]
   },
   "t317646a5": {
@@ -8835,7 +8851,7 @@
     "tr": "Oyunun ne olduğunu, nasıl savaşıldığını ve seni koruyan kuralları baştan okumak istersen öğreticiyi tekrar açabilirsin.",
     "en": "If you want to read again what the game is, how to fight, and the rules that protect you, you can reopen the tutorial.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:220"
+      "apps/web/src/screens/Hesap.tsx:222"
     ]
   },
   "t84547925": {
@@ -8924,7 +8940,7 @@
     "en": "Tutorial",
     "nerede": [
       "apps/web/src/components/Ogretici.tsx:130",
-      "apps/web/src/screens/Hesap.tsx:217"
+      "apps/web/src/screens/Hesap.tsx:219"
     ]
   },
   "t47d30263": {
@@ -8940,7 +8956,7 @@
     "tr": "Öğreticiyi tekrar oku",
     "en": "Reread the tutorial",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:229"
+      "apps/web/src/screens/Hesap.tsx:231"
     ]
   },
   "t1adc9383": {
@@ -8948,7 +8964,7 @@
     "tr": "Ölçüm",
     "en": "Measurement",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:244",
+      "apps/web/src/components/CizimOlcumPaneli.tsx:253",
       "apps/web/src/screens/YoneticiPaneli.tsx:236"
     ]
   },
@@ -8957,7 +8973,7 @@
     "tr": "Ölçüm raporu",
     "en": "Measurement report",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:306"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:315"
     ]
   },
   "t7e519a3e": {
@@ -8973,7 +8989,7 @@
     "tr": "Ölçümü kapat",
     "en": "Turn off measurement",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:297"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:306"
     ]
   },
   "t96de5998": {
@@ -9126,7 +9142,7 @@
     "tr": "Parola Değiştir",
     "en": "Change Password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:234"
+      "apps/web/src/screens/Hesap.tsx:236"
     ]
   },
   "t0cb4198c": {
@@ -9134,7 +9150,7 @@
     "tr": "Parola değiştirilemedi.",
     "en": "Password could not be changed.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:65"
+      "apps/web/src/screens/Hesap.tsx:66"
     ]
   },
   "t4369fb1e": {
@@ -9166,7 +9182,7 @@
     "tr": "Parolan",
     "en": "Your password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:286"
+      "apps/web/src/screens/Hesap.tsx:288"
     ]
   },
   "t0fb7e6b4": {
@@ -9190,7 +9206,7 @@
     "tr": "Parolan değişti. Diğer cihazlarda yeniden giriş yapman gerekebilir.",
     "en": "Your password has changed. You may need to log in again on other devices.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:59"
+      "apps/web/src/screens/Hesap.tsx:60"
     ]
   },
   "ta02569d1": {
@@ -9198,7 +9214,7 @@
     "tr": "Parolanı gir",
     "en": "Enter your password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:92"
+      "apps/web/src/screens/Hesap.tsx:93"
     ]
   },
   "tac35c883": {
@@ -9230,7 +9246,7 @@
     "tr": "Parolayı değiştir",
     "en": "Change the password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:261"
+      "apps/web/src/screens/Hesap.tsx:263"
     ]
   },
   "tf68e5744": {
@@ -9446,7 +9462,7 @@
     "tr": "Reklam ayarları şu an açılamadı.",
     "en": "Couldn't open ad settings right now.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:397"
+      "apps/web/src/screens/Hesap.tsx:399"
     ]
   },
   "tcbe6e0b7": {
@@ -9463,7 +9479,7 @@
     "tr": "Reklam gizlilik seçenekleri",
     "en": "Ad privacy options",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:407"
+      "apps/web/src/screens/Hesap.tsx:409"
     ]
   },
   "tf8a63f7c": {
@@ -10066,7 +10082,7 @@
     "tr": "Seçim bu cihazda kalır, hesabına bağlı değil. Dil değişince oyun bir kez yenilenir.",
     "en": "The choice stays on this device, it is not tied to your account. When the language changes the game reloads once.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:208"
+      "apps/web/src/screens/Hesap.tsx:210"
     ]
   },
   "t4a0b9f87": {
@@ -10394,7 +10410,7 @@
     "tr": "Siliniyor…",
     "en": "Deleting…",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:324"
+      "apps/web/src/screens/Hesap.tsx:326"
     ]
   },
   "t51f40fea": {
@@ -10402,7 +10418,7 @@
     "tr": "Silme işlemini doğrulamak için gerekiyor.",
     "en": "Required to verify the deletion process.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:92"
+      "apps/web/src/screens/Hesap.tsx:93"
     ]
   },
   "tf7e83981": {
@@ -10627,7 +10643,7 @@
     "tr": "stil+yerleşim {0} ms",
     "en": "style+layout {0} ms",
     "nerede": [
-      "apps/web/src/cizim/cizimOlcumu.ts:243"
+      "apps/web/src/cizim/cizimOlcumu.ts:258"
     ]
   },
   "tb27f170d": {
@@ -10675,7 +10691,7 @@
     "tr": "Susturma",
     "en": "Mute",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:126"
+      "apps/web/src/screens/Hesap.tsx:128"
     ]
   },
   "t16aafb87": {
@@ -10727,7 +10743,7 @@
     "tr": "Süre dolunca ittifak sohbetine yeniden yazabilirsin. Oyunun geri kalanı açık.",
     "en": "You can write in the alliance chat again when the time is up. The rest of the game is open.",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:130"
+      "apps/web/src/screens/Hesap.tsx:132"
     ]
   },
   "t63c9c717": {
@@ -10892,7 +10908,7 @@
     "tr": "Şikâyet kuyruğu",
     "en": "Report queue",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:180"
+      "apps/web/src/screens/Hesap.tsx:182"
     ]
   },
   "tb7ef16a6": {
@@ -11274,7 +11290,7 @@
     "tr": "Takılma",
     "en": "Stutter",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:267"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:276"
     ]
   },
   "ta7eb6b30": {
@@ -11386,7 +11402,7 @@
     "tr": "Taslak: {0} · ort {1}",
     "en": "Draft: {0} · avg {1}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:263"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:272"
     ]
   },
   "t3c819dd0": {
@@ -11442,7 +11458,7 @@
     "tr": "Temizle",
     "en": "Clear",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:287"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:296"
     ]
   },
   "t18b9bcc4": {
@@ -11546,7 +11562,7 @@
     "tr": "Tüm sayfalar",
     "en": "All pages",
     "nerede": [
-      "apps/web/src/components/MobilKabuk.tsx:576",
+      "apps/web/src/components/MobilKabuk.tsx:578",
       "apps/web/src/components/UygulamaKasasi.tsx:171",
       "apps/web/src/components/UygulamaKasasi.tsx:182"
     ]
@@ -11789,7 +11805,7 @@
       "apps/web/src/components/SohbetMesajlari.tsx:197",
       "apps/web/src/screens/Arastirma.tsx:1066",
       "apps/web/src/screens/Harita.tsx:1309",
-      "apps/web/src/screens/Hesap.tsx:316"
+      "apps/web/src/screens/Hesap.tsx:318"
     ]
   },
   "teacb0314": {
@@ -12157,7 +12173,7 @@
     "tr": "Yeni parola",
     "en": "New password",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:245",
+      "apps/web/src/screens/Hesap.tsx:247",
       "apps/web/src/screens/ParolaSifirla.tsx:46"
     ]
   },
@@ -12166,7 +12182,7 @@
     "tr": "Yeni parola çok kısa",
     "en": "New password is too short",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:87"
+      "apps/web/src/screens/Hesap.tsx:88"
     ]
   },
   "tf46d6ce7": {
@@ -12301,7 +12317,7 @@
     "tr": "Yönetici paneli",
     "en": "Admin panel",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:183"
+      "apps/web/src/screens/Hesap.tsx:185"
     ]
   },
   "tfb3f07d7": {
@@ -12309,7 +12325,7 @@
     "tr": "Yönetim",
     "en": "Administration",
     "nerede": [
-      "apps/web/src/screens/Hesap.tsx:168",
+      "apps/web/src/screens/Hesap.tsx:170",
       "data/arastirma.json:gruplar[2].ad"
     ]
   },

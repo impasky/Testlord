@@ -242,7 +242,7 @@
 - `apps/web/src/cizim/cayir.ts` — ÇAYIR — yerleşkenin zemini ve otları (docs/24 "Çayır"). · dışa: cayirZemini, otlar, yolKenari
 - `apps/web/src/cizim/cevre.ts` — YERLEŞKENİN ÇEVRESİ (docs/24): kasabayı saran köy hayatı ve doğa. · dışa: doluMu, evAyari, bostan, cevre
 - `apps/web/src/cizim/cizim.test.ts`
-- `apps/web/src/cizim/cizimOlcumu.ts` — Telefonda çizim ölçümü (docs/24 "Telefonda ölçüm"). · dışa: olcumAcik, olcumuKapat, CizimKaydi, olcumKaydet, olcumKayitlari, temizlenmeAni, olcumuTemizle, olcumuDinle, olcerek, kisaAd, ozet, TakilmaKaydi, KARE_ESIGI, takilmaKaydet, takilmalar, izlenenKareler +8 · (testi var)
+- `apps/web/src/cizim/cizimOlcumu.ts` — Telefonda çizim ölçümü (docs/24 "Telefonda ölçüm"). · dışa: olcumAcik, olcumuKapat, olcumuAc, CizimKaydi, olcumKaydet, olcumKayitlari, temizlenmeAni, olcumuTemizle, olcumuDinle, olcerek, kisaAd, ozet, TakilmaKaydi, KARE_ESIGI, takilmaKaydet, takilmalar +9 · (testi var)
 - `apps/web/src/cizim/diyarlar.ts` — AKIN DİYARLARI — beş diyarın kapağı (16:9) ve haritası (kare) (docs/24). · dışa: DIYAR_ADLARI, Diyar, Kadraj, KAPAK_KUTUSU, HARITA_KUTUSU, diyarModeli
 - `apps/web/src/cizim/duman.ts` — Canlı dumanın kaynakları (docs/24 "Hareket"): hareketli GPU resminde duman yok; sayfada CSS yumruları olarak yükseliyor. · dışa: DumanKaynagi, dumanKaynaklari
 - `apps/web/src/cizim/figur.ts` — FİGÜRLER — asker, düşman, at, mancınık (docs/24). · dışa: BaslikTipi, EsyaTipi, Esya, Insan, kalkan, kilicModeli, insan, AtAyari, at, mancinik

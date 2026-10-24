@@ -55,6 +55,21 @@ export function olcumuKapat(): void {
   haberVer();
 }
 
+/**
+ * Ölçümü bu cihazda açar — Hesap ekranından. Oyuncu: "uygulamada ölçüm
+ * görünmüyor": Android uygulamasında adres çubuğu yok, `?olcum=1`
+ * yazılamıyor. Pano açılışta yükleniyor (`main.tsx`): çağıran sayfayı
+ * yeniliyor.
+ */
+export function olcumuAc(): void {
+  acik = true;
+  try {
+    localStorage.setItem(ANAHTAR, '1');
+  } catch {
+    /* depo kapalı: yalnız bu oturum */
+  }
+}
+
 export interface CizimKaydi {
   /** Çizimin anahtarı (`bina:kisla_3|…|136x136`). */
   anahtar: string;

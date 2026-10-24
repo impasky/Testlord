@@ -3,7 +3,7 @@ LORDLAR ÇAĞI — ÇEVİRİ 2/3: DERINLIK
 Savaş raporu, demirhane, generaller, araştırma, ittifak, akın — ve bina,
 general, araştırma, başarım içerikleri.
 
-Bu dosyada 1757 satır var.
+Bu dosyada 1759 satır var.
 
 NASIL ÇEVİRİLİR
   Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.
@@ -911,6 +911,58 @@ NASIL ÇEVİRİLİR
 2569. T{0} unlocks at lord level {1}.
 2570. T{0}, locked: {1}
 
+--- Hesap (49) ---
+
+50. {0} [report is|reports are] waiting for a decision.
+135. No pending reports.
+172. Your regions become unowned and can be reconquered by others.
+197. This action cannot be undone.
+226. Required to verify the change.
+304. At least 8 characters
+305. Must be at least 8 characters.
+404. Delete Account
+406. I want to delete my account
+407. Your account, lord, army, and equipment will be permanently deleted.
+409. Account could not be deleted.
+468. Permanently delete
+539. You need to type DELETE MY ACCOUNT exactly into the box.
+540. Type DELETE MY ACCOUNT in the box
+561. Your lord
+579. Current password
+580. Enter your current password
+605. Confirmation
+606. Type the confirmation text
+641. If you want to read again what the game is, how to fight, and the rules that protect you, you can reopen the tutorial.
+646. Reread the tutorial
+659. Change Password
+660. Password could not be changed.
+664. Your password
+666. Your password has changed. You may need to log in again on other devices.
+667. Enter your password
+669. Change the password
+750. Deleting…
+751. Required to verify the deletion process.
+764. Mute
+768. You can write in the alliance chat again when the time is up. The rest of the game is open.
+778. Report queue
+876. New password
+877. New password is too short
+887. Administration
+1658. Language
+1661. The choice stays on this device, it is not tied to your account. When the language changes the game reloads once.
+1837. · Level
+2208. Admin panel
+2222. Send verification link
+2225. You cannot write in alliance chat and send resources without verification. If you cannot find the mail, check your spam folder.
+2228. Sent
+2615. Blocked lords
+2620. You haven't blocked anyone. Tap ⊘ next to a chat message to stop seeing that lord's messages.
+3057. No separate ad consent is required in your region.
+3082. Couldn't open ad settings right now.
+3084. Ad privacy options
+3501. Turn on drawing measurement (speed report on phone)
+3502. Turn off drawing measurement
+
 --- Gizlilik (49) ---
 
 138. Notifications
@@ -962,56 +1014,6 @@ NASIL ÇEVİRİLİR
 3149. To confirm that a purchase or an ad reward belongs to your account, an irreversible tag of your account is sent to Google — not your email or your lord name. We verify purchases with Google Play, and ad rewards with the signed notice Google sends to our server.
 3150. None of this exists in the web version: no ads and no purchases.
 3454. On your profile card, others only see your lord name, profile picture, coat of arms, level, title, fame, country, alliance, region count, realm and the month you joined. Your resources, army, email and last login are never shown to anyone.
-
---- Hesap (47) ---
-
-50. {0} [report is|reports are] waiting for a decision.
-135. No pending reports.
-172. Your regions become unowned and can be reconquered by others.
-197. This action cannot be undone.
-226. Required to verify the change.
-304. At least 8 characters
-305. Must be at least 8 characters.
-404. Delete Account
-406. I want to delete my account
-407. Your account, lord, army, and equipment will be permanently deleted.
-409. Account could not be deleted.
-468. Permanently delete
-539. You need to type DELETE MY ACCOUNT exactly into the box.
-540. Type DELETE MY ACCOUNT in the box
-561. Your lord
-579. Current password
-580. Enter your current password
-605. Confirmation
-606. Type the confirmation text
-641. If you want to read again what the game is, how to fight, and the rules that protect you, you can reopen the tutorial.
-646. Reread the tutorial
-659. Change Password
-660. Password could not be changed.
-664. Your password
-666. Your password has changed. You may need to log in again on other devices.
-667. Enter your password
-669. Change the password
-750. Deleting…
-751. Required to verify the deletion process.
-764. Mute
-768. You can write in the alliance chat again when the time is up. The rest of the game is open.
-778. Report queue
-876. New password
-877. New password is too short
-887. Administration
-1658. Language
-1661. The choice stays on this device, it is not tied to your account. When the language changes the game reloads once.
-1837. · Level
-2208. Admin panel
-2222. Send verification link
-2225. You cannot write in alliance chat and send resources without verification. If you cannot find the mail, check your spam folder.
-2228. Sent
-2615. Blocked lords
-2620. You haven't blocked anyone. Tap ⊘ next to a chat message to stop seeing that lord's messages.
-3057. No separate ad consent is required in your region.
-3082. Couldn't open ad settings right now.
-3084. Ad privacy options
 
 --- SavasRaporu (45) ---
 

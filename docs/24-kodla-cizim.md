@@ -1053,6 +1053,13 @@ telefonda ne kadar sürdüğünü bilmiyorduk. Adresin sonuna `?olcum=1`
 eklenince (`https://…/?olcum=1`) ölçüm o cihazda açılıyor ve açık kalıyor
 (`localStorage`; ana ekrana eklenmiş uygulama adres çubuğu olmadan
 açıldığı için). `?olcum=0` ya da panodaki "Ölçümü kapat" kapatıyor.
+Android uygulamasında adres çubuğu yok (oyuncu: "uygulamada ölçüm
+görünmüyor"): Hesap ekranında "Çizim ölçümünü aç" (`olcumuAc`) ayarı
+cihaza yazıp sayfayı yeniliyor, pano açılışta yükleniyor; aynı yerden
+kapanıyor. Uygulamanın deposu tarayıcınınkinden ayrı: çizim kayıtları da
+ayrı, uygulamadaki ilk açılış her şeyi çiziyor. Pano açıkken içerik
+dolgusu kapalı şeridi de sayıyor (`--olcum-serit`, 52 px): şerit Lord'un en
+altındaki Hesap kapısını örtüyordu, ölçüm kapatılamıyordu.
 
 Açıkken her `glCiz` işi bir kayıt bırakıyor (`cizim/cizimOlcumu.ts`):
 anahtar, piksel, nereden geldiği (cihazdaki kayıttan, çizilerek, gelmedi),

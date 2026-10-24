@@ -51,6 +51,14 @@ describe('telefonda çizim ölçümü', () => {
     expect((await yukle('', depo)).m.olcumAcik()).toBe(false);
   });
 
+  it('Hesap ekranından açılıyor (uygulamada adres çubuğu yok), cihazda kalıyor', async () => {
+    const { m, depo } = await yukle('');
+    expect(m.olcumAcik()).toBe(false);
+    m.olcumuAc();
+    expect(m.olcumAcik()).toBe(true);
+    expect((await yukle('', depo)).m.olcumAcik()).toBe(true);
+  });
+
   it('depo kapalıyken yalnız adres', async () => {
     vi.resetModules();
     vi.stubGlobal('window', { location: { search: '?olcum=1' } });

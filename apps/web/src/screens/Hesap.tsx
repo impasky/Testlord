@@ -13,6 +13,7 @@ import { BildirimKarti } from '../components/BildirimKarti';
 import { DILLER, type Kapi } from '@lordlar/shared';
 import { useDil } from '../lib/dil';
 import { reklamGizlilikSecenekleri, uygulamadaMi } from '../lib/yerel';
+import { olcumAcik, olcumuAc, olcumuKapat } from '../cizim/cizimOlcumu';
 
 export function Hesap({
   lord,
@@ -119,6 +120,7 @@ export function Hesap({
         >
           Kullanım koşulları
         </a>
+        <OlcumAnahtari />
         {uygulamadaMi() && <ReklamGizliligi />}
       </Bolum>
 
@@ -408,5 +410,28 @@ function ReklamGizliligi() {
       </button>
       {not && <p className="text-[11px] text-solgun">{not}</p>}
     </>
+  );
+}
+
+/**
+ * Çizim ölçümünün anahtarı (docs/24 "Telefonda ölçüm"). Web'de `?olcum=1`
+ * de açıyor; Android uygulamasında adres çubuğu yok (oyuncu: "uygulamada
+ * ölçüm görünmüyor"). Pano açılışta yükleniyor: sayfa yenileniyor.
+ */
+function OlcumAnahtari() {
+  const acik = olcumAcik();
+  return (
+    <button
+      type="button"
+      data-olcum-anahtari=""
+      onClick={() => {
+        if (acik) olcumuKapat();
+        else olcumuAc();
+        window.location.reload();
+      }}
+      className="bas block py-2 text-left text-[12px] text-sonuk underline decoration-dotted underline-offset-2"
+    >
+      {acik ? 'Çizim ölçümünü kapat' : 'Çizim ölçümünü aç (telefonda hız raporu)'}
+    </button>
   );
 }

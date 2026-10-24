@@ -327,6 +327,8 @@ function dugmeSec({ gezilen, aileSayim, tehlikeliSona, azamiAile, onceki }) {
     if (e.closest('nav')) return false; // alt çubuk: yerler zaten onu geziyor
     const y = (e.textContent ?? '').replace(/\s+/g, ' ').trim();
     if (/^Çıkış$/i.test(y)) return false; // oturumu kapatır — hesap testinin işi
+    // Sayfayı yeniler (ölçüm panosu açılışta yükleniyor): bot yerini kaybederdi.
+    if (e.hasAttribute('data-olcum-anahtari')) return false;
     // Bölgeyi GERÇEKTEN bırakır: bot başkenti bırakınca şehir kademesi
     // düşüyor, sonraki yerlerin kapıları kilitleniyordu. İlk dokunuş (onay
     // kartını açan) ve Vazgeç deneniyor; bırakmanın kendisi denetim-testi'nde.

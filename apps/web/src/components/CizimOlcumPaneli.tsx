@@ -198,6 +198,17 @@ export function CizimOlcumPaneli() {
   const [kopyaDurumu, setKopyaDurumu] = useState<'yok' | 'oldu' | 'olmadi'>('yok');
   useEffect(() => olcumuDinle(() => yenile((n) => n + 1)), []);
   useEffect(takilmaIzle, []);
+  // Kapalı şerit sayfanın son satırını örtüyordu (Lord'un en altındaki
+  // Hesap kapısı, ölçümün Hesap'tan kapatıldığı yer): içerik dolgusu onu da
+  // sayıyor (`MobilKabuk`). 44 px şerit + 8 px ara.
+  useEffect(() => {
+    if (!gorunur) return;
+    const kok = document.documentElement.style;
+    kok.setProperty('--olcum-serit', '52px');
+    return () => {
+      kok.removeProperty('--olcum-serit');
+    };
+  }, [gorunur]);
   // Cihaz bilgisi bir kez (GPU'ya sormak bir bağlam açıyor).
   const c = useMemo(cihaz, []);
   // Cihaz kaydı açılışta ve pano açıkken birkaç saniyede bir.
