@@ -11,6 +11,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   KARE_ESIGI,
+  ekranGecisleri,
   izlenenKareler,
   kisaAd,
   olcumKayitlari,
@@ -102,6 +103,11 @@ function rapor(
 ): string {
   const o = ozet(kayitlar);
   const sonTakilmalar = [...takilmalar()].reverse().slice(0, 40);
+  // En uzunlar ayrıca: son kırkın dışında kalan büyük takılma kaybolmasın.
+  const enUzunlar = [...takilmalar()].sort((a, b) => b.sure - a.sure).slice(0, 15);
+  const takilmaYazisi = (t: (typeof sonTakilmalar)[number]) =>
+    `${t.ekran} · ${t.tur === 'kare' ? 'kare' : 'görev'} ${ms(t.sure)} · ${saniye(t.an)}` +
+    (t.neden ? ` · ${t.neden}` : '');
   const satir = (ad: string, g: ReturnType<typeof ozet>['cizim']) =>
     `${ad}: ${g.sayi}, ortalama ${ms(g.ortalama)} (çizimde ${ms(g.cizimOrtalama)}), en uzun ${ms(g.enUzun)}`;
   return [
@@ -117,10 +123,13 @@ function rapor(
     ortamSatiri(),
     `Takılma (${KARE_ESIGI} ms'yi aşan kare, uzun görev), ekran ekran:`,
     ...takilma.map(takilmaSatiri),
+    'En uzun takılmalar:',
+    ...enUzunlar.map(takilmaYazisi),
+    `Ekran geçişleri: ${ekranGecisleri()
+      .map((g) => `${g.ekran} ${saniye(g.an)}`)
+      .join(' · ')}`,
     'Son takılmalar (en yenisi üstte):',
-    ...sonTakilmalar.map(
-      (t) => `${t.ekran} · ${t.tur === 'kare' ? 'kare' : 'görev'} ${ms(t.sure)} · ${saniye(t.an)}`,
-    ),
+    ...sonTakilmalar.map(takilmaYazisi),
     'Son çizimler (en yenisi üstte):',
     ...[...kayitlar]
       .reverse()
@@ -154,6 +163,8 @@ const EVRE_ADI: [string, string][] = [
   ['atlasPng', 'kare PNG'],
   // Tek seferde GPU'ya giden en uzun iş: ekran en çok bu kadar bekledi.
   ['enUzunDurak', 'en uzun GPU işi'],
+  // Tek satırlık şeridin süresi: geometri ve GPU'nun sırası (`seritle`).
+  ['seritSabiti', 'şerit sabiti'],
 ];
 
 function evreSatiri(e: Record<string, number>): string {

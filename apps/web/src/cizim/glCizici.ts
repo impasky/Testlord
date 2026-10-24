@@ -1390,7 +1390,7 @@ const SERIT_ORNEK = 1_000_000;
  */
 const SERIT_MS = 25;
 
-/** Örnek başına maliyeti bilinmeyen geçişin ilk şeridi (örnek). */
+/** Sabiti ölçen tek satırdan sonraki ilk şerit (örnek): maliyet buradan ölçülüyor. */
 const OLCUM_SERIDI = 125_000;
 
 /**
@@ -1405,11 +1405,18 @@ const EN_COK_SERIT = 64;
  */
 const EN_UCUZ_ORNEK = 1e-5;
 
-/** Geçişlerin örnek başına ölçülen maliyeti (ms), işçinin ömrü boyunca. */
-const ORNEK_MS: Record<string, number> = {};
+/**
+ * Geçişlerin örnek başına son ölçülen maliyeti (ms), işçinin ömrü boyunca:
+ * küçük çizimi şeritleyip şeritlememeye karar için (`seritle`). Ölçü
+ * yokken telefonun (Mali-G52) yerleşkedeki değerleri: ana geçiş ~0,2 µs,
+ * kenar ve çözme ~0,6 µs; hızlı GPU'da ilk çizimden sonra küçülüyor.
+ */
+const ORNEK_MS: Record<string, number> = { ana: 2e-4, coz: 6e-4 };
 
 /** Süren çizimin en uzun durağı (ms): ölçüm raporunda (`CizimSonucu.evreler`). */
 let enUzunDurak = 0;
+/** Süren çizimde ölçülen en büyük şerit sabiti (ms; `seritle`): raporda. */
+let enBuyukSabit = 0;
 
 /** Kesme istendiyse dur. */
 function kesildiyse() {
@@ -1458,17 +1465,25 @@ async function ara(gl: WebGL2RenderingContext, n: number) {
 
 /**
  * Hedefin tamamına `ciz`; şeritte (makasla, alttan üste), her şeritten
- * sonra durakla. `n` 1 ise (küçük) tek seferde, sonra yoklama; 0 ise
- * (kesilemeyen çizim, ana iş parçacığında) hiçbiri. Şerit boyu çıktıyı
- * değiştirmiyor: aynı çizim, yalnız makas.
+ * sonra durakla. Şerit boyu çıktıyı değiştirmiyor: aynı çizim, yalnız
+ * makas. `n` 0 ise (kesilemeyen çizim, ana iş parçacığında) tek seferde.
+ * `n` 1 ise (küçük) tek seferde ve sonra yoklama — geçişin örnek başına
+ * maliyetiyle `SERIT_MS`'in iki katını aşmayacaksa: yerleşkenin taslağı
+ * (896×934 örnek, bütün geometri) tek parça gidiyordu, telefonda o
+ * çizimin kenar ve çözme aşaması 1,4 sn ölçüldü.
  *
- * Şerit boyu süreden (`SERIT_MS`). İlk şerit tek satır: süresi şeridin
- * sabit maliyeti (geometri, GPU'nun sırası). Sonrakiler örnek başına
- * maliyetle (`ORNEK_MS`, geçişin türüne göre) hedef süreye göre. Sabit
- * maliyet hedefin yarısını aşıyorsa şerit onun iki katı sürecek kadar:
- * küçültmek ekranı daha az bekletmiyor, yalnız işi uzatıyordu. Telefonda
- * şehir görünürken 136×155'lik bir yapının ana geçişi böyle 5,8 sn
- * sürmüştü (her şerit ~85 ms GPU sırası, 60'tan çok şerit).
+ * Şeridin süresi iki parça: sabit maliyet (bütün geometri her şeritte
+ * yeniden işleniyor; GPU başka işle doluysa onun sırası) ve örnek başına
+ * maliyet. İlk iki şerit tek satır, sabit ikisinin küçüğü: ilki
+ * tamponların ilk kullanımının bir kerelik işini de içerebiliyor (yazılım
+ * GPU'sunda ~600 ms; tek ölçümle yerleşkenin sabiti 616 ms çıktı, şerit
+ * 2,7 sn'ye kadar uzadı). Sonraki şeritler bu çizimde ölçülen örnek
+ * maliyetiyle `SERIT_MS` sürecek boyda; ilki küçük (`OLCUM_SERIDI`), her
+ * biri öncekinin en çok iki katı. Sabit hedefin yarısını aşıyorsa şerit
+ * ondan biraz uzun (en çok iki katı, en çok `2 × SERIT_MS` fazlası):
+ * küçültmek ekranı daha az bekletmiyor, yalnız işi uzatıyordu (telefonda
+ * şehir görünürken 136×155'lik bir yapının ana geçişi 60'tan çok şeritte
+ * 5,8 sn sürmüştü).
  */
 async function seritle(
   gl: WebGL2RenderingContext,
@@ -1478,24 +1493,34 @@ async function seritle(
   tur: string,
   ciz: () => void,
 ) {
-  if (n <= 1) {
+  const bilinen = ORNEK_MS[tur];
+  if (n === 0 || (n === 1 && !(bilinen && w * h * bilinen > 2 * SERIT_MS))) {
     ciz();
     return ara(gl, n);
   }
   const enAz = Math.ceil(h / EN_COK_SERIT);
   gl.enable(gl.SCISSOR_TEST);
-  gl.scissor(0, 0, w, 1);
-  ciz();
-  const sabit = await durak(gl);
-  let ms = ORNEK_MS[tur];
-  for (let y = 1; y < h;) {
-    const hedef = Math.max(SERIT_MS, 2 * sabit);
+  let sabit = Infinity;
+  for (let y = 0; y < Math.min(2, h); y++) {
+    gl.scissor(0, y, w, 1);
+    ciz();
+    sabit = Math.min(sabit, await durak(gl));
+  }
+  enBuyukSabit = Math.max(enBuyukSabit, sabit);
+  const hedef = Math.max(SERIT_MS, Math.min(2 * sabit, sabit + 2 * SERIT_MS));
+  // Örnek başına maliyet bu çizimde ölçülüyor: sahneden sahneye değişiyor.
+  let ms: number | undefined;
+  let onceki = 0;
+  for (let y = 2; y < h;) {
     const ornek = ms ? (hedef - sabit) / ms : OLCUM_SERIDI;
-    const adim = Math.min(h - y, Math.max(enAz, Math.round(ornek / w)));
+    let adim = Math.max(enAz, Math.round(ornek / w));
+    if (onceki) adim = Math.min(adim, 2 * onceki);
+    adim = Math.min(h - y, adim);
     gl.scissor(0, y, w, adim);
     ciz();
     const sure = await durak(gl);
     y += adim;
+    onceki = adim;
     // Bekleme yoklamayla ölçülüyor (birkaç ms payı); çok kısa şerit ölçü değil.
     if (sure >= 4) {
       const yeni = Math.max(EN_UCUZ_ORNEK, (sure - sabit) / (w * adim));
@@ -1552,6 +1577,7 @@ async function ciz(istek: CizimIstegi, kismi?: KismiGonder): Promise<CizimSonucu
   const n = kesmeSorusu ? Math.max(1, Math.ceil((sen * sboy) / SERIT_ORNEK)) : 0;
   const evreler: Record<string, number> = {};
   enUzunDurak = 0;
+  enBuyukSabit = 0;
   let evreBasi = performance.now();
   const evre = (ad: string) => {
     const simdi = performance.now();
@@ -2053,6 +2079,7 @@ async function ciz(istek: CizimIstegi, kismi?: KismiGonder): Promise<CizimSonucu
   } finally {
     // Sonuçla aynı nesne: erken dönüşte de yazılıyor.
     evreler.enUzunDurak = enUzunDurak;
+    if (enBuyukSabit) evreler.seritSabiti = enBuyukSabit;
     // Kesildiyse de tamponlar bırakılıyor, makas kapanıyor.
     for (const s of silinecek.splice(0)) s();
     gl.disable(gl.SCISSOR_TEST);

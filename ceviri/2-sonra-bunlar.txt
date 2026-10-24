@@ -3,7 +3,7 @@ LORDLAR ÇAĞI — ÇEVİRİ 2/3: DERINLIK
 Savaş raporu, demirhane, generaller, araştırma, ittifak, akın — ve bina,
 general, araştırma, başarım içerikleri.
 
-Bu dosyada 1749 satır var.
+Bu dosyada 1756 satır var.
 
 NASIL ÇEVİRİLİR
   Her satırın başındaki numara DEĞİŞMEMELİ — çeviriyi metne o bağlıyor.
@@ -790,7 +790,7 @@ NASIL ÇEVİRİLİR
 3027. Same network · {0} day|Same network · {0} days
 3034. Last {0} [day|days]. The game's own traces first: shipments, reinforcements, market. "Same network" appears only on a pair with a flow between them; not the address but a keyed digest of it is kept, and crowded networks (mobile carriers, dorms) are not counted. The same home is not the same person. No automatic penalty; look at both files and decide.
 
---- CizimOlcumPaneli (62) ---
+--- CizimOlcumPaneli (65) ---
 
 2381. on
 2785. off-limits
@@ -854,6 +854,9 @@ NASIL ÇEVİRİLİR
 3490. Ambient layer: CSS layers
 3491. Ambient layer: canvas (in worker)
 3492. Ambient layer: none
+3495. Screen switches: {0}
+3496. Longest stutters:
+3498. strip fixed cost
 
 --- Demirhane (49) ---
 
@@ -1693,6 +1696,22 @@ NASIL ÇEVİRİLİR
 883. none
 906. Background color
 
+--- Diğer (13) ---
+
+143. An unknown error occurred.
+248. Realm loading…
+354. Return to login screen
+640. Could not log in. You need to sign in again.
+761. The server might be waking up from sleep. This can take 30–60 seconds on the first launch.
+879. Try again
+3081. Play did not return a purchase token.
+3460. Could not load the map.
+3462. nav [aria-current="page"]
+3493. script {0} ms ({1}{2}{3})
+3494. scripts total {0} ms
+3497. style+layout {0} ms
+3499. idle {0} ms (GPU/compositor)
+
 --- OrduSahnesi (11) ---
 
 512. Train troops in the Barracks, so this place fills up.
@@ -1760,18 +1779,6 @@ NASIL ÇEVİRİLİR
 865. Type
 2605. {0} blocked. You won't see their messages anymore; you can undo this from the Account screen.
 2616. Could not block.
-
---- Diğer (9) ---
-
-143. An unknown error occurred.
-248. Realm loading…
-354. Return to login screen
-640. Could not log in. You need to sign in again.
-761. The server might be waking up from sleep. This can take 30–60 seconds on the first launch.
-879. Try again
-3081. Play did not return a purchase token.
-3460. Could not load the map.
-3462. nav [aria-current="page"]
 
 --- Hastane (8) ---
 

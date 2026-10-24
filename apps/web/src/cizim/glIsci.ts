@@ -44,22 +44,56 @@ function modelAl(tarif: string): Model {
   return m;
 }
 
-function hazirla(istek: IsciIstegi): { c: CizimIstegi; dumanlar?: DumanKaynagi[] } {
-  if (!('tarif' in istek)) return { c: istek };
-  const { tarif, ...geri } = istek;
-  const model = modelAl(tarif);
+/** Tarifin pahalı hazırlığı: ağ, canlı parça kareleri, duman kaynakları. */
+interface Hazirlik {
+  ag: CizimIstegi['ag'];
+  bayrak: CizimIstegi['bayrak'];
+  dumanlar?: DumanKaynagi[];
+}
+
+function hazirla(istek: IsciIstegi & { tarif: string }): Hazirlik {
+  const model = modelAl(istek.tarif);
   const h = istek.hareket;
   // Yama, canlı sahnenin ana resmi gibi: salınan parça ve duman katmanlarda.
   const parcasiz = h || istek.yama;
   return {
-    c: {
-      ...geri,
-      ag: agYap(model, istek.kamera, { dumansiz: parcasiz, bayraksiz: parcasiz }),
-      bayrak: h ? bayrakKareleri(model, istek.kamera) : undefined,
-    },
+    ag: agYap(model, istek.kamera, { dumansiz: parcasiz, bayraksiz: parcasiz }),
+    bayrak: h ? bayrakKareleri(model, istek.kamera) : undefined,
     // Yamanın dumanı yok: sahnenin kendi dumanı onun üstünde yükseliyor.
     dumanlar: h && !istek.yama ? dumanKaynaklari(model, istek.kamera) : undefined,
   };
+}
+
+/**
+ * Kesilen işin hazırlığı (ağ, canlı parça kareleri, duman). İş sıraya geri
+ * dönüyor (`gl.ts`, en çok üç kez); önce onu kesen küçük işler çiziliyor,
+ * sonra o yeniden geliyor: hazırlık baştan kurulmasın. Telefonda
+ * yerleşkenin ilk çizimi iki kez kesildi, her seferinde ~4,4 sn hazırlık
+ * boşa gitti. Yalnız sonuncusu; aynı iş gelince bırakılıyor, gelmezse
+ * (isteyen kalmadı, sayfadan çıkıldı) `KESILEN_SAKLA_MS` sonra: bellekte
+ * büyük. Kesilme çoğunlukla canlı parçaların 1. aşamasından önce (`gl.ts`
+ * `korunur`); sonra kesildiyse kaydı bırakılmış kare duruştan yeniden
+ * kuruluyor (`bayrakKareleri`), aynı kare.
+ */
+let kesilenin: { anahtar: string; h: Hazirlik } | null = null;
+let kesileniBirak: ReturnType<typeof setTimeout> | undefined;
+const KESILEN_SAKLA_MS = 30_000;
+
+function kesileniSakla(k: typeof kesilenin) {
+  clearTimeout(kesileniBirak);
+  kesilenin = k;
+  if (k) kesileniBirak = setTimeout(() => (kesilenin = null), KESILEN_SAKLA_MS);
+}
+
+/** Hazırlığı belirleyen: tarif, kamera, canlı mı, yama mı (boy, vakit değil). */
+function hazirlikAnahtari(istek: IsciIstegi): string | null {
+  if (!('tarif' in istek)) return null;
+  return [
+    istek.tarif,
+    JSON.stringify(istek.kamera ?? null),
+    istek.hareket ? 1 : 0,
+    istek.yama ? 1 : 0,
+  ].join('|');
 }
 
 let zincir: Promise<unknown> = Promise.resolve();
@@ -78,7 +112,18 @@ kapsam.onmessage = (e) => {
   zincir = zincir.then(async () => {
     if (KESILECEK.delete(id)) return kapsam.postMessage({ id, kesildi: true });
     const hazirlikBasi = performance.now();
-    const { c, dumanlar } = hazirla(istek);
+    const anahtar = hazirlikAnahtari(istek);
+    let hazir: Hazirlik | null = null;
+    let c: CizimIstegi;
+    if ('tarif' in istek) {
+      if (kesilenin && kesilenin.anahtar === anahtar) {
+        hazir = kesilenin.h;
+        kesileniSakla(null);
+      } else hazir = hazirla(istek);
+      const { tarif: _tarif, ...geri } = istek;
+      c = { ...geri, ag: hazir.ag, bayrak: hazir.bayrak };
+    } else c = istek;
+    const dumanlar = hazir?.dumanlar;
     // Telefonda ölçüm: model ve ağ kurulumu da bir aşama (`CizimSonucu.evreler`).
     const hazirlik = performance.now() - hazirlikBasi;
     let kesildi = false;
@@ -92,7 +137,10 @@ kapsam.onmessage = (e) => {
       return null;
     });
     KESILECEK.delete(id);
-    if (kesildi) return kapsam.postMessage({ id, kesildi: true });
+    if (kesildi) {
+      if (anahtar && hazir) kesileniSakla({ anahtar, h: hazir });
+      return kapsam.postMessage({ id, kesildi: true });
+    }
     if (glDurumu() === 'yok') {
       // Tembel kareler (işlev) aktarılamıyor: ağ da gitmiyor, ana iş
       // parçacığı sahneyi tariften yeniden kuruyor.

@@ -316,6 +316,20 @@ ms). Kesilince GPU'ya gitmiş küçük parça yine bitiyor, sonrası
 gönderilmiyor. Denendi: 400×400'lük çizim 60×60'lık iş gelince 12–108 ms
 sonra kesildi, küçük önce çizildi, büyük baştan tamamlandı.
 
+Kesilen işin hazırlığı (ağ, canlı parça kareleri, duman) işçide saklanıyor
+(`glIsci` `kesilenin`, 2026-10-24): iş, onu kesen küçük işlerden sonra
+yeniden gelince baştan kurulmuyor. Üçüncü telefon raporunda yerleşkenin
+ilk çizimi iki kez kesilmişti, her seferinde ~4,4 sn hazırlık boşa
+gidiyordu (toplam 43 sn, çizimde 28 sn). Yalnız sonuncusu; aynı iş
+(tarif, kamera, canlı mı, yama mı) gelince bırakılıyor, gelmezse
+(isteyen kalmadı) 30 sn sonra — bellekte büyük. Kesilme çoğunlukla canlı
+parçaların 1. aşamasından önce (`korunur`); sonra kesildiyse kaydı
+bırakılmış kare duruştan yeniden kuruluyor, aynı kare. Denendi: yerleşke
+çizilirken Ordu'ya gidip dönülünce araya yedi iş girdi (beş figür, kışla
+zemininin taslağı ve kendisi), yerleşkenin yeniden denemesinde hazırlık
+0 ms. İlk yazılan hâli saklananı araya giren ilk işte bırakıyordu; kesen
+iş hep araya girdiği için hiç işe yaramıyordu.
+
 **Şerit boyu süreden** (2026-10-23; `SERIT_MS`, `ORNEK_MS`). GPU'ya
 gitmiş iş yarıda kesilmediği gibi ekranın karesi de onun arkasında
 bekliyor: şerit ne kadar sürüyorsa ekran o kadar takılıyor. Bir milyon
@@ -323,17 +337,30 @@ bekliyor: şerit ne kadar sürüyorsa ekran o kadar takılıyor. Bir milyon
 `?olcum=1`) yerleşke 40 sn çizildi ve o sürede Şehir'in kareleri 70–260
 ms takıldı. Şeridin süresi iki parça: sabit maliyet (bütün geometri her
 şeritte yeniden işleniyor; GPU başka işle doluysa onun sırası) ve örnek
-başına maliyet. İlk şerit tek satır: süresi sabit maliyetin ölçüsü.
-Sonrakiler örnek başına maliyetle (geçişin türüne göre, işçinin ömrü
-boyunca) ~25 ms sürecek boyda; sabit maliyet bunun yarısını aşıyorsa
-şerit onun iki katı sürecek kadar. Bir geçiş en çok 64 şerit. Küçük
-çizim (bir milyon örnekten az) tek parça. Ana geçişten önce bir durak:
+başına maliyet. İlk iki şerit tek satır, sabit maliyet ikisinin küçüğü:
+ilki tamponların ilk kullanımının bir kerelik işini de taşıyabiliyor
+(yazılım GPU'sunda ~600 ms; tek ölçümle yerleşkenin sabiti 616 ms çıktı,
+şerit 2,7 sn'ye uzadı). Sonrakiler bu çizimde ölçülen örnek başına
+maliyetle ~25 ms sürecek boyda; ilki küçük (`OLCUM_SERIDI`), her biri
+öncekinin en çok iki katı. Sabit maliyet bunun yarısını aşıyorsa şerit
+ondan biraz uzun (en çok iki katı, en çok 50 ms fazlası). Bir geçiş en
+çok 64 şerit. Küçük çizim (bir milyon örnekten az) tek parça — örnek
+başına maliyetle 50 ms'yi aşmayacaksa (`ORNEK_MS`; ölçü yokken telefonun
+değerleri: ana geçiş ~0,2 µs, kenar ve çözme ~0,6 µs). Yerleşkenin
+taslağı (896×934 örnek, bütün geometri) tek parça gidiyordu: üçüncü
+telefon raporunda kenar ve çözmesi 1455 ms tek iş, Şehir'in en uzun
+karesi 1204 ms. Raporda en büyük şerit sabiti de var ("şerit sabiti"):
+telefonda geometri mi, sıra mı, oradan okunacak. Bileşikleyici de
+yazılım GPU'sundayken (GPU sürecinin aynı iş parçacığı) sabit aynı
+çizimde 13 ile 979 ms arasında oynuyor; şerit boyu oradan ayarlanmıyor.
+Ana geçişten önce bir durak:
 gölge haritası, hedeflerin temizliği ve tampon yüklemesi kendi GPU işi
 (raporda "gölge ve yükleme"), ölçüm şeridine karışmıyor. Atlas karesinde
 parçaların çizimi ile çözmesi ayrı iş (arada durak). Çıktı değişmiyor:
 yazılım GPU'sunda yerleşkenin resmi, katmanları ve atlası bayt bayt
-aynı; tek seferdeki en uzun GPU işi 834 → 399 ms (kalan en uzunu
-atlasın bir karesi), toplam süre aynı (~23 sn). İlk sürüm yalnız hızı
+aynı (iki ölçümlü sabitle de: önceki sürümle aynı vakitte aynı özet); tek
+seferdeki en uzun GPU işi 834 → 399 ms, iki ölçümle 303–387 ms (kalan
+en uzunu atlasın bir karesi), toplam süre aynı (~23 sn). İlk sürüm yalnız hızı
 (örnek/ms) ölçüyordu ve küçük çizimi de şeritliyordu: ikinci telefon
 raporunda Şehir görünürken 136×155'lik bir yapının ana geçişi 5,8 sn
 sürdü — GPU şehri bileştirmekle doluyken her şerit ~85 ms sıra
@@ -1010,6 +1037,9 @@ kare/sn ve 6 sn'de 23 takılma.
   (tuval sahnenin çözünürlüğünde; CSS karoları ekranın piksel
   yoğunluğundaydı). Rüzgâr ve ışık zaten yumuşak.
 
+Üçüncü telefon raporu (2026-10-24, bu sürümle): Şehir'in takılması
+%14,9 → %1,9 (1873 karede 36), ortam katmanı tuvalde, işçide.
+
 Kalan maliyet işlemcide, ilk çizimde: yerleşkenin canlı parçaları (14
 aktör, en çok 40 kare) için duruşlar toplam ~183 bin yüz; masaüstünde
 ~1 sn, telefonda raporda "hazırlık" 7,4 sn ve "kare geometrisi" 3,7 sn.
@@ -1046,6 +1076,21 @@ düzeltildi ve telefonda sürdü; takılmanın nerede olduğunu artık telefonun
 kendisi söylüyor. Kare izleme her karede ana iş parçacığını uyandırdığı
 için yalnız ölçüm açıkken çalışıyor ve kapatılınca duruyor.
 
+Takılmanın NEDENİ de (2026-10-24; `uzunKareyiKaydet`): Chrome'da uzun
+görev yerine Long Animation Frames. Uzun karede en uzun betik (çağıran,
+işlev, dosya:konum), birden çoksa toplamı, stil + yerleşim ve ikisinin
+dışında kalan — "boşta N ms (GPU/bileşikleyici)": ana iş parçacığı boştu,
+kareyi GPU ya da bileşikleyici bekletti. Neden aynı karenin takılmasına
+yazılıyor; ana iş parçacığı tıkandıysa (`blockingDuration`) ayrıca uzun
+görev, tıkanmadıysa takılma zaten karede sayılı. Üçüncü telefon
+raporunda Ordu ve Akın'daki takılmalar sekme geçişlerindeydi, Şehir'in
+en uzun karesi 1204 ms; hangisinin betik, hangisinin GPU olduğu
+bilinmiyordu. Geliştirme kabında (bileşikleyici GPU yolunda) Şehir'in
+0,6–1,9 sn'lik kareleri "boşta" çıktı — işçinin GPU işi sürüyordu —,
+açılıştaki 1,7 sn ise betik (React'in ilk çizimi). Rapor ayrıca en uzun
+15 takılmayı (son kırkın dışında kalan büyükler kaybolmasın) ve ekran
+geçişlerinin anlarını yazıyor.
+
 Raporda cihaz kaydının durumu da (`kalici.kaliciDurumu`): depo açıldı mı,
 sürümü, kaç kayıt (kaçı bu sürümün), bu açılışta kaç okuma (bulunamayan,
 sürümü eski çıkan), kaç yazma (yazılamayan ve son hatanın adı),
@@ -1061,8 +1106,9 @@ takılmalarla aynı saatte: hangi çizim sürerken takıldığı okunuyor. Yarı
 saniyeyi aşan çizimin **aşamaları** da (`CizimSonucu.evreler`, işçi
 ölçüyor): hazırlık (model ve ağ), gölge, ana geçiş, kenar ve çözme,
 bulanıklık ve PNG, katmanlar, kare geometrisi, canlı karelerin çizimi ve
-çözmesi (kare sayısıyla), kare PNG ve tek seferde GPU'ya giden en uzun
-iş — ekran en çok o kadar bekledi (bkz. "Şerit boyu cihazın hızından").
+çözmesi (kare sayısıyla), kare PNG, tek seferde GPU'ya giden en uzun
+iş — ekran en çok o kadar bekledi — ve ölçülen en büyük şerit sabiti
+(bkz. "Şerit boyu süreden").
 
 ## Yeni bir çizim eklemek
 

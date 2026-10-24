@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { CizimKaydi } from './cizimOlcumu';
+import type { CizimKaydi, UzunKare } from './cizimOlcumu';
 
 /** Bayrak modülde bir kez okunuyor: her durum için modül yeniden yükleniyor. */
 async function yukle(adres: string, depo: Record<string, string> = {}) {
@@ -140,5 +140,84 @@ describe('telefonda çizim ölçümü', () => {
 
     m.olcumuTemizle();
     expect(m.takilmalar()).toHaveLength(0);
+  });
+
+  it('uzun kare: nedeni karenin takılmasında; ana iş parçacığı tıkandıysa uzun görev de', async () => {
+    const { m } = await yukle('?olcum=1');
+    const uzun = (k: Partial<UzunKare>): UzunKare => ({
+      name: 'long-animation-frame',
+      entryType: 'long-animation-frame',
+      startTime: 1000,
+      duration: 600,
+      styleAndLayoutStart: 1599,
+      blockingDuration: 0,
+      scripts: [],
+      toJSON: () => ({}),
+      ...k,
+    });
+    // Betik yok, stil 1 ms, tıkanma yok: kare GPU'yu ya da bileşikleyiciyi bekledi.
+    m.takilmaKaydet({ tur: 'kare', sure: 600, ekran: 'Şehir', an: 1590 });
+    m.uzunKareyiKaydet(uzun({}), 'Şehir');
+    expect(m.takilmalar()).toHaveLength(1);
+    expect(m.takilmalar()[0]?.neden).toBe('boşta 599 ms (GPU/bileşikleyici)');
+    // Kısa bir uzun görev ve uzun bekleme: ikisi de yazılıyor.
+    expect(
+      m.uzunKareNedeni(
+        uzun({
+          duration: 588,
+          styleAndLayoutStart: 1588,
+          blockingDuration: 4,
+          scripts: [
+            {
+              invoker: 'TimerHandler:setTimeout',
+              sourceURL: 'https://lordlar.dev/assets/index-abc.js',
+              sourceFunctionName: '',
+              sourceCharPosition: 16742,
+              duration: 54,
+            },
+          ],
+        }),
+      ),
+    ).toBe(
+      'betik 54 ms (TimerHandler:setTimeout index-abc.js:16742), boşta 534 ms (GPU/bileşikleyici)',
+    );
+
+    // Uzun betik: en uzunu, dosya adı sorgusuz; karenin dışındaki takılmaya yazılmıyor.
+    m.takilmaKaydet({ tur: 'kare', sure: 80, ekran: 'Ordu', an: 1800 });
+    m.takilmaKaydet({ tur: 'kare', sure: 600, ekran: 'Ordu', an: 2690 });
+    m.uzunKareyiKaydet(
+      uzun({
+        startTime: 2100,
+        styleAndLayoutStart: 2670,
+        blockingDuration: 490,
+        scripts: [
+          {
+            invoker: 'Worker.onmessage',
+            sourceURL: '',
+            sourceFunctionName: '',
+            sourceCharPosition: -1,
+            duration: 20,
+          },
+          {
+            invoker: 'MessagePort.onmessage',
+            sourceURL: 'https://lordlar.dev/assets/index-abc.js?v=1',
+            sourceFunctionName: 'V',
+            sourceCharPosition: 54403,
+            duration: 540,
+          },
+        ],
+      }),
+      'Ordu',
+    );
+    const neden =
+      'betik 540 ms (MessagePort.onmessage V index-abc.js:54403), betikler toplam 560 ms, stil+yerleşim 30 ms';
+    const [, disari, kare, gorev] = m.takilmalar();
+    expect(disari?.neden).toBeUndefined();
+    expect(kare?.neden).toBe(neden);
+    expect(gorev).toEqual({ tur: 'gorev', sure: 600, ekran: 'Ordu', an: 2100, neden });
+
+    // Eşiği aşmayan kare sayılmıyor.
+    m.uzunKareyiKaydet(uzun({ duration: 50, blockingDuration: 10 }), 'Ordu');
+    expect(m.takilmalar()).toHaveLength(4);
   });
 });

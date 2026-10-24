@@ -4,7 +4,7 @@
     "tr": "\n  aşamalar: {0}",
     "en": "\n  stages: {0}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:134"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:143"
     ]
   },
   "t308a5ae3": {
@@ -36,7 +36,7 @@
     "tr": " · {0} kez kesildi",
     "en": " · interrupted {0} time| · interrupted {0} times",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:131"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:140"
     ]
   },
   "ta8e565e3": {
@@ -116,7 +116,7 @@
     "tr": " · kalıcı {0}",
     "en": " · persistent {0}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:76"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:77"
     ]
   },
   "tfc56ad2d": {
@@ -124,7 +124,7 @@
     "tr": " · okundu {0}, bulunamadı {1}, eski sürüm {2}",
     "en": " · read {0}, not found {1}, old version {2}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:74"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:75"
     ]
   },
   "t03cbc446": {
@@ -140,7 +140,7 @@
     "tr": " · uzun görev {0} ({1})",
     "en": " · long tasks {0} ({1})",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:93"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:94"
     ]
   },
   "t99c7a80e": {
@@ -148,7 +148,7 @@
     "tr": " · yazıldı {0}, yazılamadı {1}{2}",
     "en": " · written {0}, failed {1}{2}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:75"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:76"
     ]
   },
   "tdcefd02d": {
@@ -164,7 +164,7 @@
     "tr": " ({0} kare)",
     "en": " ({0} frames)",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:163"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:174"
     ]
   },
   "t07a293f0": {
@@ -172,7 +172,7 @@
     "tr": " (çizimde {0}){1}",
     "en": " (drawing {0}){1}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:131"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:140"
     ]
   },
   "t0cd67a40": {
@@ -180,7 +180,7 @@
     "tr": " (taslak)",
     "en": " (draft)",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:130"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:139"
     ]
   },
   "t69efe19a": {
@@ -518,7 +518,7 @@
     "tr": "{0} · çekirdek {1} · GPU yolu {2}",
     "en": "{0} · cores {1} · GPU path {2}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:233"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:244"
     ]
   },
   "t381449cb": {
@@ -855,7 +855,7 @@
     "tr": "{0} çizim · ort {1} · en uzun {2} · takılma {3}",
     "en": "{0} drawings · avg {1} · longest {2} · stutters {3}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:226"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:237"
     ]
   },
   "ta012b2a3": {
@@ -1523,7 +1523,7 @@
     "tr": "{0}: {1} kare, {2} takılma ({3}), en uzun {4}",
     "en": "{0}: {1} frames, {2} stutters ({3}), longest {4}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:92"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:93"
     ]
   },
   "tdfb3b8bb": {
@@ -1531,7 +1531,7 @@
     "tr": "{0}: {1}, ortalama {2} (çizimde {3}), en uzun {4}",
     "en": "{0}: {1}, average {2} (drawing {3}), longest {4}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:106"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:112"
     ]
   },
   "tc31d749f": {
@@ -2002,8 +2002,8 @@
     "tr": "açık",
     "en": "on",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:111",
-      "apps/web/src/components/CizimOlcumPaneli.tsx:233"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:117",
+      "apps/web/src/components/CizimOlcumPaneli.tsx:244"
     ]
   },
   "t32e351f6": {
@@ -2232,7 +2232,7 @@
     "tr": "ana geçiş",
     "en": "main pass",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:147"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:156"
     ]
   },
   "t7d9c08a4": {
@@ -2832,6 +2832,22 @@
       "apps/web/src/screens/YoneticiPaneli.tsx:166"
     ]
   },
+  "t9ff9764f": {
+    "grup": "arayuz",
+    "tr": "betik {0} ms ({1}{2}{3})",
+    "en": "script {0} ms ({1}{2}{3})",
+    "nerede": [
+      "apps/web/src/cizim/cizimOlcumu.ts:228"
+    ]
+  },
+  "t66d6523c": {
+    "grup": "arayuz",
+    "tr": "betikler toplam {0} ms",
+    "en": "scripts total {0} ms",
+    "nerede": [
+      "apps/web/src/cizim/cizimOlcumu.ts:230"
+    ]
+  },
   "tfc8bbaee": {
     "grup": "arayuz",
     "tr": "Bırakılıyor…",
@@ -3087,6 +3103,14 @@
     "en": "Empty slot — pick a node from the tree.",
     "nerede": [
       "apps/web/src/screens/Arastirma.tsx:384"
+    ]
+  },
+  "tc25fbeb8": {
+    "grup": "arayuz",
+    "tr": "boşta {0} ms (GPU/bileşikleyici)",
+    "en": "idle {0} ms (GPU/compositor)",
+    "nerede": [
+      "apps/web/src/cizim/cizimOlcumu.ts:236"
     ]
   },
   "t875a03d7": {
@@ -3593,7 +3617,7 @@
     "tr": "bulanıklık ve PNG",
     "en": "blur and PNG",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:149"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:158"
     ]
   },
   "tb8daecb0": {
@@ -3641,7 +3665,7 @@
     "tr": "canlı kareler: çizim",
     "en": "live frames: drawing",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:152"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:161"
     ]
   },
   "t25bfe7af": {
@@ -3681,7 +3705,7 @@
     "tr": "Cihaz kaydı: ?",
     "en": "Device storage: ?",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:70"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:71"
     ]
   },
   "t913982cf": {
@@ -3689,7 +3713,7 @@
     "tr": "Cihaz kaydı: açılamadı{0}",
     "en": "Device storage: could not open{0}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:71"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:72"
     ]
   },
   "tf8b455de": {
@@ -3697,7 +3721,7 @@
     "tr": "Cihaz kaydı: sürüm {0} · {1} kayıt ({2} bu sürümün)",
     "en": "Device storage: version {0} · {1} records ({2} of this version)",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:73"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:74"
     ]
   },
   "t0c12817e": {
@@ -3753,7 +3777,7 @@
     "tr": "çizildi",
     "en": "drawn",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:170"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:181"
     ]
   },
   "t413450ab": {
@@ -3761,7 +3785,7 @@
     "tr": "Çizim",
     "en": "Drawn",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:113"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:119"
     ]
   },
   "t326d2b0c": {
@@ -3769,7 +3793,7 @@
     "tr": "Çizim: {0} · ort {1} · en uzun {2}",
     "en": "Drawn: {0} · avg {1} · longest {2}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:242"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:253"
     ]
   },
   "t21d6cbb0": {
@@ -3793,7 +3817,7 @@
     "tr": "çözme",
     "en": "resolve",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:153"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:162"
     ]
   },
   "tfa0c522b": {
@@ -4660,6 +4684,14 @@
       "apps/web/src/components/SikayetSayfasi.tsx:107"
     ]
   },
+  "t5bae7fe7": {
+    "grup": "arayuz",
+    "tr": "Ekran geçişleri: {0}",
+    "en": "Screen switches: {0}",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:128"
+    ]
+  },
   "t9322a83e": {
     "grup": "arayuz",
     "tr": "Ekran yüklenirken beklenmedik bir hata oluştu. Sayfayı yenilemek çoğu zaman yeterlidir; sürerse ilerlemen kaybolmadı, sunucuda duruyor.",
@@ -4673,7 +4705,7 @@
     "tr": "Ekran: {0} · çekirdek {1} · bellek {2} GB",
     "en": "Screen: {0} · cores {1} · memory {2} GB",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:110"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:116"
     ]
   },
   "tf76bac8b": {
@@ -4867,7 +4899,15 @@
     "tr": "en uzun GPU işi",
     "en": "longest GPU job",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:156"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:165"
+    ]
+  },
+  "te1dd1536": {
+    "grup": "arayuz",
+    "tr": "En uzun takılmalar:",
+    "en": "Longest stutters:",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:126"
     ]
   },
   "t704faa78": {
@@ -5507,7 +5547,7 @@
     "tr": "gölge",
     "en": "shadow",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:145"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:154"
     ]
   },
   "t1dbf94cb": {
@@ -5515,7 +5555,7 @@
     "tr": "gölge ve yükleme (GPU)",
     "en": "shadow and upload (GPU)",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:146"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:155"
     ]
   },
   "t5228efad": {
@@ -5583,7 +5623,7 @@
     "tr": "görev",
     "en": "task",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:122"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:109"
     ]
   },
   "t5b346f80": {
@@ -5624,7 +5664,7 @@
     "tr": "GPU yolu kapalı: çizimler eski yoldan (SVG) yapılıyor, burada ölçülmüyor.",
     "en": "GPU path off: drawings use the old path (SVG) and are not measured here.",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:237"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:248"
     ]
   },
   "t304e01a3": {
@@ -5632,7 +5672,7 @@
     "tr": "GPU: {0}",
     "en": "GPU: {0}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:231"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:242"
     ]
   },
   "t113e8c40": {
@@ -5640,7 +5680,7 @@
     "tr": "GPU: {0} · GPU yolu {1}",
     "en": "GPU: {0} · GPU path {1}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:111"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:117"
     ]
   },
   "tec5ebccb": {
@@ -5863,7 +5903,7 @@
     "tr": "hayır",
     "en": "no",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:76"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:77"
     ]
   },
   "t39bc2f60": {
@@ -5887,7 +5927,7 @@
     "tr": "hazırlık",
     "en": "preparation",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:144"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:153"
     ]
   },
   "tfb97ff2e": {
@@ -6072,7 +6112,7 @@
     "tr": "Henüz yok.",
     "en": "None yet.",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:249"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:260"
     ]
   },
   "t9148a36e": {
@@ -7007,7 +7047,7 @@
     "tr": "kapalı",
     "en": "off-limits",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:233"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:244"
     ]
   },
   "tca1abff0": {
@@ -7015,7 +7055,7 @@
     "tr": "kapalı (SVG)",
     "en": "off (SVG)",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:111"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:117"
     ]
   },
   "t926ba486": {
@@ -7103,7 +7143,7 @@
     "tr": "kare geometrisi",
     "en": "frame geometry",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:151"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:160"
     ]
   },
   "tb8834d7b": {
@@ -7111,7 +7151,7 @@
     "tr": "kare PNG",
     "en": "frame PNG",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:154"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:163"
     ]
   },
   "tbff7fa0c": {
@@ -7340,7 +7380,7 @@
     "tr": "kayıttan",
     "en": "from storage",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:169"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:180"
     ]
   },
   "t86e73760": {
@@ -7348,7 +7388,7 @@
     "tr": "Kayıttan",
     "en": "From storage",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:112"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:118"
     ]
   },
   "teeccea05": {
@@ -7356,7 +7396,7 @@
     "tr": "Kayıttan: {0} · ort {1}",
     "en": "From storage: {0} · avg {1}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:241"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:252"
     ]
   },
   "t1ea0a49d": {
@@ -7462,7 +7502,7 @@
     "tr": "kenar ve çözme",
     "en": "edges and resolve",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:148"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:157"
     ]
   },
   "t7a6ac1f4": {
@@ -7511,8 +7551,8 @@
     "tr": "Kesilme: {0}",
     "en": "Interruptions: {0}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:115",
-      "apps/web/src/components/CizimOlcumPaneli.tsx:244"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:121",
+      "apps/web/src/components/CizimOlcumPaneli.tsx:255"
     ]
   },
   "tb766e201": {
@@ -7727,7 +7767,7 @@
     "tr": "Kopyala",
     "en": "Copy",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:260"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:271"
     ]
   },
   "t653a2491": {
@@ -7735,7 +7775,7 @@
     "tr": "Kopyalanamadı; aşağıdaki metni seçip kopyala.",
     "en": "Could not copy; select and copy the text below.",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:282"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:293"
     ]
   },
   "t7d0bdf3d": {
@@ -7743,7 +7783,7 @@
     "tr": "Kopyalandı.",
     "en": "Copied.",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:280"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:291"
     ]
   },
   "t0d0d93bf": {
@@ -8076,7 +8116,7 @@
     "tr": "Lordlar Çağı — çizim ölçümü",
     "en": "Age of Lords — drawing measurement",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:108"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:114"
     ]
   },
   "t8efe9043": {
@@ -8327,7 +8367,7 @@
     "tr": "nav [aria-current=\"page\"]",
     "en": "",
     "nerede": [
-      "apps/web/src/cizim/cizimOlcumu.ts:187"
+      "apps/web/src/cizim/cizimOlcumu.ts:262"
     ]
   },
   "t7db547ab": {
@@ -8691,7 +8731,7 @@
     "tr": "Ortam katmanı: CSS katmanları",
     "en": "Ambient layer: CSS layers",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:85"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:86"
     ]
   },
   "td69717a7": {
@@ -8699,7 +8739,7 @@
     "tr": "Ortam katmanı: tuval (işçide)",
     "en": "Ambient layer: canvas (in worker)",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:83"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:84"
     ]
   },
   "t236cef5c": {
@@ -8707,7 +8747,7 @@
     "tr": "Ortam katmanı: yok",
     "en": "Ambient layer: none",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:86"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:87"
     ]
   },
   "t2302bad8": {
@@ -8908,7 +8948,7 @@
     "tr": "Ölçüm",
     "en": "Measurement",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:224",
+      "apps/web/src/components/CizimOlcumPaneli.tsx:235",
       "apps/web/src/screens/YoneticiPaneli.tsx:236"
     ]
   },
@@ -8917,7 +8957,7 @@
     "tr": "Ölçüm raporu",
     "en": "Measurement report",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:286"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:297"
     ]
   },
   "t7e519a3e": {
@@ -8933,7 +8973,7 @@
     "tr": "Ölçümü kapat",
     "en": "Turn off measurement",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:277"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:288"
     ]
   },
   "t96de5998": {
@@ -10482,7 +10522,7 @@
     "tr": "Son çizimler (en yenisi üstte):",
     "en": "Latest drawings (newest first):",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:124"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:133"
     ]
   },
   "t8b64bc8a": {
@@ -10522,7 +10562,7 @@
     "tr": "Son takılmalar (en yenisi üstte):",
     "en": "Recent stutters (newest first):",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:120"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:131"
     ]
   },
   "t9564f32e": {
@@ -10580,6 +10620,14 @@
     "en": "For questions, requests and appeals:",
     "nerede": [
       "apps/web/src/components/DestekSatiri.tsx:20"
+    ]
+  },
+  "t3aeb9964": {
+    "grup": "arayuz",
+    "tr": "stil+yerleşim {0} ms",
+    "en": "style+layout {0} ms",
+    "nerede": [
+      "apps/web/src/cizim/cizimOlcumu.ts:232"
     ]
   },
   "tb27f170d": {
@@ -10794,6 +10842,14 @@
     "en": "",
     "nerede": [
       "apps/web/src/screens/Ulkem.tsx:31"
+    ]
+  },
+  "t446d7f4a": {
+    "grup": "arayuz",
+    "tr": "şerit sabiti",
+    "en": "strip fixed cost",
+    "nerede": [
+      "apps/web/src/components/CizimOlcumPaneli.tsx:167"
     ]
   },
   "tf2f98882": {
@@ -11218,7 +11274,7 @@
     "tr": "Takılma",
     "en": "Stutter",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:247"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:258"
     ]
   },
   "ta7eb6b30": {
@@ -11226,7 +11282,7 @@
     "tr": "Takılma ({0} ms'yi aşan kare, uzun görev), ekran ekran:",
     "en": "Stutters (frames over {0} ms, long tasks), by screen:",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:118"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:124"
     ]
   },
   "t655690a1": {
@@ -11314,7 +11370,7 @@
     "tr": "Tarayıcı: {0}",
     "en": "Browser: {0}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:109"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:115"
     ]
   },
   "t43b5a719": {
@@ -11322,7 +11378,7 @@
     "tr": "Taslak",
     "en": "Draft",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:114"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:120"
     ]
   },
   "te90564c2": {
@@ -11330,7 +11386,7 @@
     "tr": "Taslak: {0} · ort {1}",
     "en": "Draft: {0} · avg {1}",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:243"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:254"
     ]
   },
   "t3c819dd0": {
@@ -11386,7 +11442,7 @@
     "tr": "Temizle",
     "en": "Clear",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:267"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:278"
     ]
   },
   "tf4719125": {
@@ -11789,7 +11845,7 @@
     "tr": "WebGL yok",
     "en": "No WebGL",
     "nerede": [
-      "apps/web/src/components/CizimOlcumPaneli.tsx:35"
+      "apps/web/src/components/CizimOlcumPaneli.tsx:36"
     ]
   },
   "t884b8a52": {

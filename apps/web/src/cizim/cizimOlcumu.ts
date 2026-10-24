@@ -159,12 +159,20 @@ export interface TakilmaKaydi {
   ekran: string;
   /** Sayfa açıldıktan sonra (ms). */
   an: number;
+  /**
+   * Uzun karede ne oldu (Long Animation Frames; Chrome): en uzun betik
+   * (çağıran, işlev, dosya), stil + yerleşim süresi; ana iş parçacığı
+   * boştuysa çizimi GPU ya da bileşikleyici bekletmiş. Bilinmiyorsa boş.
+   */
+  neden?: string;
 }
 
 /** Bundan uzun kare takılma sayılıyor: 60 Hz'de üç kare kaçmış demek. */
 export const KARE_ESIGI = 50;
 
 const TAKILMALAR: TakilmaKaydi[] = [];
+/** Açık ekranın değiştiği anlar: takılmalar geçişlerle yan yana okunsun. */
+const GECISLER: { ekran: string; an: number }[] = [];
 /** Ekran başına izlenen kare sayısı ve süre: takılmayı orana çevirmek için. */
 const IZLENEN = new Map<string, { kare: number; sure: number }>();
 
@@ -181,6 +189,73 @@ export function takilmalar(): readonly TakilmaKaydi[] {
 
 export function izlenenKareler(): ReadonlyMap<string, { kare: number; sure: number }> {
   return IZLENEN;
+}
+
+export function ekranGecisleri(): readonly { ekran: string; an: number }[] {
+  return GECISLER;
+}
+
+/** Long Animation Frames kaydının kullanılan kısmı (TypeScript'in tiplerinde yok). */
+export interface UzunKare extends PerformanceEntry {
+  styleAndLayoutStart: number;
+  /** Karedeki 50 ms'yi aşan görevlerin aşan kısımları toplamı: 0 ise ana iş parçacığı tıkanmadı. */
+  blockingDuration: number;
+  scripts: {
+    invoker: string;
+    sourceURL: string;
+    sourceFunctionName: string;
+    sourceCharPosition: number;
+    duration: number;
+  }[];
+}
+
+/**
+ * Uzun kareyi tek satıra: en uzun betik (birden çoksa toplamı da), stil +
+ * yerleşim ve ikisinin dışında kalan. Kalan, ana iş parçacığı tıkanmadıysa
+ * ya da 100 ms'yi aşıyorsa yazılıyor: kare çizimi beklemiş (GPU ya da
+ * bileşikleyici). Geliştirme kabında Şehir'in en uzun kareleri (0,6–1,9 sn)
+ * böyleydi: betik yok, stil ve yerleşim 0 ms; o sırada işçinin GPU işi
+ * sürüyordu. Kalanın içinde 5 ms'den kısa betikler de var (listede yoklar).
+ */
+export function uzunKareNedeni(k: UzunKare): string {
+  const parca: string[] = [];
+  const betik = [...k.scripts].sort((a, b) => b.duration - a.duration)[0];
+  const betikler = k.scripts.reduce((a, s) => a + s.duration, 0);
+  if (betik) {
+    const dosya = betik.sourceURL.split('/').pop()?.split('?')[0] ?? '';
+    const yer = dosya ? ` ${dosya}:${betik.sourceCharPosition}` : '';
+    const islev = betik.sourceFunctionName ? ` ${betik.sourceFunctionName}` : '';
+    parca.push(`betik ${Math.round(betik.duration)} ms (${betik.invoker}${islev}${yer})`);
+  }
+  if (k.scripts.length > 1) parca.push(`betikler toplam ${Math.round(betikler)} ms`);
+  const stil = k.styleAndLayoutStart > 0 ? k.startTime + k.duration - k.styleAndLayoutStart : 0;
+  if (stil >= 5) parca.push(`stil+yerleşim ${Math.round(stil)} ms`);
+  // Ana iş parçacığı boştu: kareyi GPU ya da bileşikleyici bekletti.
+  const bos = k.duration - betikler - stil;
+  if (!k.blockingDuration || bos >= 100)
+    parca.push(`boşta ${Math.round(bos)} ms (GPU/bileşikleyici)`);
+  return parca.join(', ');
+}
+
+/**
+ * Uzun kare bildirimi: nedeni aynı karenin takılmasına (`requestAnimationFrame`
+ * aralığı, `an` karenin içinde) yazılıyor. Ana iş parçacığı tıkandıysa
+ * ayrıca uzun görev; tıkanmadıysa takılma zaten karede sayılı.
+ */
+export function uzunKareyiKaydet(k: UzunKare, ekran: string): void {
+  if (k.duration <= KARE_ESIGI) return;
+  const neden = uzunKareNedeni(k);
+  const bitis = k.startTime + k.duration;
+  for (let i = TAKILMALAR.length - 1; i >= Math.max(0, TAKILMALAR.length - 10); i--) {
+    const t = TAKILMALAR[i]!;
+    if (t.tur === 'kare' && !t.neden && t.an >= k.startTime - 1 && t.an <= bitis + 1) {
+      t.neden = neden;
+      haberVer();
+      break;
+    }
+  }
+  if (k.blockingDuration > 0)
+    takilmaKaydet({ tur: 'gorev', sure: k.duration, ekran, an: k.startTime, neden });
 }
 
 function acikEkran(): string {
@@ -211,6 +286,10 @@ export function takilmaIzle(): void {
     son = t;
     if (document.visibilityState === 'visible') {
       const ekran = acikEkran();
+      if (GECISLER[GECISLER.length - 1]?.ekran !== ekran) {
+        GECISLER.push({ ekran, an: t });
+        if (GECISLER.length > SINIR) GECISLER.shift();
+      }
       const iz = IZLENEN.get(ekran) ?? { kare: 0, sure: 0 };
       iz.kare++;
       iz.sure += ara;
@@ -220,7 +299,15 @@ export function takilmaIzle(): void {
     requestAnimationFrame(kare);
   };
   requestAnimationFrame(kare);
+  // Uzun görev: varsa Long Animation Frames (neyin çalıştığıyla), yoksa
+  // eski "longtask" (yalnız süre). İkisi birden değil: aynı görev iki kez sayılmasın.
   try {
+    if (PerformanceObserver.supportedEntryTypes?.includes('long-animation-frame')) {
+      new PerformanceObserver((liste) => {
+        for (const g of liste.getEntries()) uzunKareyiKaydet(g as UzunKare, acikEkran());
+      }).observe({ type: 'long-animation-frame' });
+      return;
+    }
     new PerformanceObserver((liste) => {
       for (const g of liste.getEntries())
         takilmaKaydet({ tur: 'gorev', sure: g.duration, ekran: acikEkran(), an: g.startTime });
