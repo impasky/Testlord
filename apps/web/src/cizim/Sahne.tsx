@@ -45,7 +45,7 @@ import {
   type Katmanlar,
 } from './gl';
 import { glSerit, glSeritKes, seritKutusu } from './atlas';
-import type { KaliciGrup } from './kalici';
+import { kaliciKutu, kaliciKutuYaz, type KaliciGrup } from './kalici';
 import {
   ISIK_KARO,
   RUZGAR_KARO,
@@ -88,12 +88,19 @@ const KIRP = ['xMidYMid', 'slice'].join(' ');
 
 /**
  * Tarifli, kendi çerçevesine oturan çizimin (birlik, eşya) görüş kutusu:
- * GPU varken çokgen hesaplanmıyor, yalnız kutusu. Model küçük; kutu bir kez.
+ * GPU varken çokgen hesaplanmıyor, yalnız kutusu. Kutu bir kez ve cihazda
+ * (`kaliciKutu`): resmi kayıttan gelen çizim için model hiç kurulmuyor.
  */
 const KUTULAR = new Map<string, [number, number, number, number]>();
 function kutuAl(anahtar: string, uret: () => Model, kamera?: Kamera) {
   let k = KUTULAR.get(anahtar);
-  if (!k) KUTULAR.set(anahtar, (k = kutusu(modelAl(anahtar, uret), kamera)));
+  if (k) return k;
+  k = kaliciKutu(anahtar);
+  if (!k) {
+    k = kutusu(modelAl(anahtar, uret), kamera);
+    kaliciKutuYaz(anahtar, k);
+  }
+  KUTULAR.set(anahtar, k);
   return k;
 }
 
@@ -864,6 +871,21 @@ function isikKarosu(): [string, string] | null {
   });
   return (isikKarolari = a && b ? [a, b] : null);
 }
+
+/*
+ * Karolar boşta, önceden: ilk canlı sahnenin çiziminde tuvalden PNG
+ * (`toDataURL`, eşzamanlı) ekranın açılışını uzatıyordu (Ordu'ya ilk
+ * geçişte 6× yavaşlatılmış işlemcide ~25 ms).
+ */
+if (typeof requestIdleCallback === 'function')
+  requestIdleCallback(
+    () => {
+      suKarosu();
+      ruzgarKarosu();
+      isikKarosu();
+    },
+    { timeout: 15_000 },
+  );
 
 /** CSS maskesi, önekli (Safari) ve öneksiz. */
 function maske(url: string, boy: string, tekrar: string): CSSProperties {

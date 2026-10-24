@@ -253,7 +253,7 @@
 - `apps/web/src/cizim/glIsci.ts` — GPU çizim işçisi (docs/24): `glCizici`yi ana iş parçacığının dışında koşturuyor.
 - `apps/web/src/cizim/hava.ts` — Hava (docs/24 "Hava") — yalnız görsel, ara sıra. · dışa: Hava, HAVALAR, HAVA_DILIMI_SAAT, havaDurumu, havaDilimSonu · (testi var)
 - `apps/web/src/cizim/kalabalik.ts` — KALABALIK — yerleşkenin insanları ve evleri (docs/24 "Kalabalık"). · dışa: KalabalikAyari, kalabalik
-- `apps/web/src/cizim/kalici.ts` — Kalıcı çizim deposu (docs/24 "Yakınlaştırma"): GPU resimleri cihazda, IndexedDB'de. · dışa: KaliciGrup, SINIR, KaliciKayit, kaliciOku, kaliciYaz, KaliciDurum, kaliciDurumu · (testi var)
+- `apps/web/src/cizim/kalici.ts` — Kalıcı çizim deposu (docs/24 "Yakınlaştırma"): GPU resimleri cihazda, IndexedDB'de. · dışa: KaliciGrup, SINIR, KaliciKayit, kaliciOku, kaliciYaz, kaliciKutu, kaliciKutuYaz, KaliciDurum, kaliciDurumu · (testi var)
 - `apps/web/src/cizim/kir.ts` — KIR VE KALE PARÇALARI — bölge sahnelerinin ölçeğinde (docs/24). · dışa: EvAyari, ev, ambar, degirmen, balya, araba, kuyuKucuk, citKisa, tezgah, kilise, katedral, kopru, tahtaKopru, suDegirmeni, madenAgzi, kuyuKulesi +15
 - `apps/web/src/cizim/kisiler.ts` — GENERALLER, LORD VE PORTRELER (docs/24). · dışa: GENERAL_ADLARI, LORD_ADLARI, PORTRE_ADLARI, generalModeli, giyimliLord, lordModeli, kusamAdiMi, portreModeli, PORTRE_KUTUSU
 - `apps/web/src/cizim/ortam.ts` — Canlı sahnenin ortam katmanları (docs/24 "Hareket", "Ortam tuvali"): su parıltısı, çimende rüzgâr, ışık titremesi. · dışa: tohumlu, Ciz2B, leke, SU_KARO, suDeseni, RUZGAR_KARO, ruzgarDeseni, ISIK_KARO, isikLekeleri, SU_A, SU_B, SU_SAYDAM, RUZGAR, CIMEN_SAYDAM, ISIK_A, ISIK_B +7 · (testi var)

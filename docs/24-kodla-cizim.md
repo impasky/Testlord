@@ -1155,6 +1155,18 @@ sn'de geliyordu. Ordu'ya ilk geçişte 512 ms React çizimi
   yazan işlemler sırayla yürüdüğünden açılıştaki okumalar da birbirini
   bekliyordu. Zaman artık ancak bir saatten eskiyse yenileniyor, boşta ve
   tek işlemde (`sonradanDuzelt`); arada yenisi yazılan kayda dokunulmuyor.
+- Ordu'ya ilk geçiş (6× yavaşlatılmış işlemcide en uzun kare 290–361
+  ms, TanStack bildiriminin içinde React çizimi): resmi kayıttan gelen
+  birlik ve eşyanın görüş kutusu için model ana iş parçacığında baştan
+  kuruluyordu (`Sahne.kutuAl`; model, izdüşüm, çöp toplama ~90 ms).
+  Kutular da cihazda (`kalici.kaliciKutu`, `localStorage`, çizim
+  sürümüyle; en çok 400): kayıttan gelen çizim için model hiç kurulmuyor.
+  Kutu JSON'dan bit bit aynı dönüyor (resmin kayıt anahtarı kutuyu
+  içeriyor; yenilemeden sonra birlikler yine kayıttan). Canlı katmanların
+  döşeme karoları (`toDataURL`, ~25 ms) açılıştan sonra boşta önceden
+  üretiliyor. En uzun kare 144–212 ms; kalan çoğunlukla ekranın ilk
+  yerleşimi (`getBoundingClientRect` onu öne çekiyor; açılışta toplam 5–6
+  yerleşim, tekrar yok).
 - Ölçümün kendi yükü ve pano şeridi (yukarıda).
 
 Bu tur `gl.ts`i ve `Sahne.tsx`i değiştirdiği için çizim sürümü değişti:

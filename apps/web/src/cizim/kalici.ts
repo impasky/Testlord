@@ -305,6 +305,55 @@ export function kaliciYaz(
   });
 }
 
+/**
+ * Tarifli çizimlerin görüş kutuları da cihazda (`localStorage`, çizim
+ * sürümüyle; `Sahne.kutuAl`). Resmi kayıttan gelen birlik ve eşyanın
+ * kutusunu bulmak için sahne modeli ana iş parçacığında baştan kuruyordu:
+ * Ordu'ya ilk geçişin en uzun karesinde 6× yavaşlatılmış işlemcide ~90 ms
+ * (model, izdüşüm, çöp toplama). Kutu modelden geliyor: sürüm değişince
+ * hepsi gidiyor. En çok `KUTU_SINIRI` kutu, en eskisi düşüyor.
+ */
+const KUTU_ANAHTARI = 'cizim-kutulari';
+const KUTU_SINIRI = 400;
+type Kutu = [number, number, number, number];
+let kutular: Map<string, Kutu> | undefined;
+let kutuYazimi: ReturnType<typeof setTimeout> | undefined;
+
+function kutulariAc(): Map<string, Kutu> {
+  if (kutular) return kutular;
+  kutular = new Map();
+  try {
+    const k = JSON.parse(localStorage.getItem(KUTU_ANAHTARI) ?? 'null') as {
+      surum?: string;
+      kutular?: [string, Kutu][];
+    } | null;
+    if (k?.surum === SURUM && Array.isArray(k.kutular)) kutular = new Map(k.kutular);
+  } catch {
+    // Depo kapalı ya da bozuk: kutular yeniden hesaplanıyor.
+  }
+  return kutular;
+}
+
+export function kaliciKutu(anahtar: string): Kutu | undefined {
+  return kutulariAc().get(anahtar);
+}
+
+/** Kutuyu ekler; depoya biraz sonra, toplu yazılıyor. */
+export function kaliciKutuYaz(anahtar: string, kutu: Kutu): void {
+  const k = kutulariAc();
+  k.delete(anahtar);
+  k.set(anahtar, kutu);
+  if (k.size > KUTU_SINIRI) k.delete(k.keys().next().value!);
+  clearTimeout(kutuYazimi);
+  kutuYazimi = setTimeout(() => {
+    try {
+      localStorage.setItem(KUTU_ANAHTARI, JSON.stringify({ surum: SURUM, kutular: [...k] }));
+    } catch {
+      // Dolu ya da kapalı: bir dahaki açılış yeniden hesaplar.
+    }
+  }, 2000);
+}
+
 /** Cihaz kaydının durumu (telefonda ölçüm raporu, `CizimOlcumPaneli`). */
 export interface KaliciDurum {
   /** Depo açıldı mı (açılmadıysa her şey her açılışta yeniden çiziliyor). */
